@@ -52,3 +52,10 @@ void RegisterPropertys(ZeroFps* zfps)
 }
 */
 
+void PropertyFactory::GetAllProperties(vector<string>& vkList)
+{
+	vkList.reserve( m_kProperyLinks.size() + 1 );
+
+	for(unsigned int i=0; i<m_kProperyLinks.size(); i++)
+		vkList.push_back( m_kProperyLinks[i].m_szName ); 
+}

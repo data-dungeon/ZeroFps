@@ -36,5 +36,6 @@ const int ID_ADDPROPERTY_BN				= 9030;
 const int ID_ADDPROPERTY_WND			= 9031;
 const int ID_ADDPROPERTY_CLOSE			= 9032;
 const int ID_ADDPROPERTY_OK				= 9033;
+const int ID_PROPERTY_RADIOGROUP		= 9034;
  
 #endif

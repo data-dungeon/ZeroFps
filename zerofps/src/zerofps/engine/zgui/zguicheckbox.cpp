@@ -5,6 +5,7 @@
 #include "zguicheckbox.h"
 #include "../../render/zguirenderer.h"
 #include "zguilabel.h"
+#include "../../basic/zguifont.h"
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
@@ -18,9 +19,7 @@ ZGuiCheckbox::ZGuiCheckbox(Rect kRectangle, ZGuiWnd* pkParent, bool bVisible, in
 	m_iMaskTexUnchecked = -1; 
 	m_iMaskTexChecked = -1;
 
-	//Resize(20, 20);
-
-	m_pkLabel = new ZGuiLabel(kRectangle, this, true, 0);
+	m_pkLabel = new ZGuiLabel(Rect(0, 0, kRectangle.Width(), kRectangle.Height()), this, true, 0);
 	m_pkLabel->Move(20,0); 
 }
 
@@ -85,7 +84,7 @@ void ZGuiCheckbox::CheckButton()
 	m_pkSkin = m_pkSkinButtonChecked;
 	m_iBkMaskTexture = m_iMaskTexChecked;
 }
-
+ 
 void ZGuiCheckbox::UncheckButton()
 {
 	m_bChecked = false;
@@ -95,9 +94,38 @@ void ZGuiCheckbox::UncheckButton()
 
 void ZGuiCheckbox::SetText(char* strText)
 {
-	m_pkLabel->SetText( strText);
+	int iWidth = 0;
+
+	ZGuiFont* pkFont = m_pkFont;
+
+	if(pkFont)
+	{
+		for(int i=0; i<strlen(strText); i++)
+		{
+			char letter = strText[i];
+			iWidth += ( pkFont->m_aChars[letter].iSizeX + 
+				pkFont->m_cPixelGapBetweenChars );
+		}
+	}
+	else
+	{
+		for(int i=0; i<strlen(strText); i++)
+			iWidth += 16;
+	}
+
+	iWidth += 10;
+
+	m_pkLabel->SetText(strText);
+	m_pkLabel->Resize(iWidth,16); 
+	m_pkLabel->Enable();
 }
 
+char* ZGuiCheckbox::GetText() 
+{ 
+	return m_pkLabel->GetText(); 
+} 
 
-
-
+bool ZGuiCheckbox::IsChecked()
+{
+	return m_bChecked;
+}

@@ -25,13 +25,13 @@ public:
 	ZGuiCheckbox* GetButton() { return m_pkCheckbox; }
 	bool Notify(ZGuiWnd* pkWnd, int iCode);
 	void SetText(char* strText);
+	ZGuiRadiobutton* GetNext() { return m_pkNext; }
 
 private:
 
 	int GetGroupID() {return m_iGroupID;}
 	void ConnectToGroup(int iGroupID, ZGuiRadiobutton* pbNeigbour);
 	ZGuiRadiobutton* GetPrev() { return m_pkPrev; }
-	ZGuiRadiobutton* GetNext() { return m_pkNext; }
 	void SetNext(ZGuiRadiobutton* pkNext) { m_pkNext = pkNext; }
 	void SetPrev(ZGuiRadiobutton* pkPrev) { m_pkPrev = pkPrev; }
 

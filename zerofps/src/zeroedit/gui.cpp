@@ -5,6 +5,7 @@
 //#include "zeroedit.h"
 #include "gui.h"
 #include "fileopendlg.h"
+#include "editpropertydlg.h"
 #include "resource_id.h"
 #include <algorithm>
 
@@ -16,9 +17,6 @@ extern ZeroEdit Editor;
 static bool WINPROC( ZGuiWnd* pkWindow, unsigned int uiMessage, int iNumberOfParams, void *pkParams ) {
 	return Editor.m_pkGui->WndProc(pkWindow, uiMessage, iNumberOfParams, pkParams); }
 
-static bool PROPERTYPROC( ZGuiWnd* pkWindow, unsigned int uiMessage, int iNumberOfParams, void *pkParams ) {
-	return Editor.m_pkGui->PropertyProc(pkWindow, uiMessage, iNumberOfParams, pkParams); }
-
 //////////////////////////
 
 Gui::Gui(ZeroEdit* pkEdit)
@@ -27,7 +25,8 @@ Gui::Gui(ZeroEdit* pkEdit)
 	m_iScreenCY = pkEdit->m_iHeight / 2;
 	m_pkEdit = pkEdit;
 	m_pkFileDlgbox = NULL;
-
+	m_pkEditPropDlgBox = NULL;
+	
 	InitSkins();
 	CreateWindows();
 
@@ -39,84 +38,6 @@ Gui::Gui(ZeroEdit* pkEdit)
 Gui::~Gui()
 {
 
-}
-
-bool Gui::PropertyProc( ZGuiWnd* pkWindow, unsigned int uiMessage, int iNumberOfParams, void *pkParams )
-{
-	int iControllID;
-
-	switch(uiMessage)
-	{
-	case ZGM_COMMAND:
-		iControllID = ((int*)pkParams)[0];
-
-		switch(iControllID)
-		{
-		case ID_PROPERTY_CANCEL:
-		case ID_PROPERTY_WND_CLOSE:
-			if(OnCloseEditProperty(false))
-				m_pkEdit->pkGui->ShowMainWindow(ID_PROPERTY_WND_MAIN, false);
-			break;
-		case ID_PROPERTY_OK:
-			if(OnCloseEditProperty(true))
-				m_pkEdit->pkGui->ShowMainWindow(ID_PROPERTY_WND_MAIN, false);
-			break;
-		case ID_ADDPROPERTY_BN:
-			CreateAddPropertyDlg(0,0,200,300);
-			break;
-		case ID_ADDPROPERTY_CLOSE:
-			if(OnCloseAddProperty(true))
-				Get("AddPropWnd")->Hide();
-			break;
-		case ID_ADDPROPERTY_OK:
-			if(OnCloseAddProperty(true))
-				Get("AddPropWnd")->Hide();
-			break;
-		}
-		break;
-
-	case ZGM_CBN_SELENDOK:
-		{
-			int iID = ((int*)pkParams)[0];
-			ZGuiWnd *win = ((ZGuiWnd*)m_pkEdit->pkGui->GetWindow(iID));
-
-			if(iID == ID_OBJECTS_CB)
-			{
-				ZGuiListitem* pkSelItem = ((ZGuiCombobox*)(win))->GetListbox()->GetSelItem();
-
-				if(pkSelItem)
-				{
-					Object* pkObject = m_pkEdit->pkFps->m_pkObjectMan->GetObject(pkSelItem->GetText());
-
-					if(pkObject)
-					{
-						ZGuiWnd* pkWnd = m_pkEdit->pkGui->GetWindow(ID_PROPERTIES_CB);
-
-						if(pkWnd)
-						{
-							ZGuiCombobox* pkCB = (ZGuiCombobox*) pkWnd;
-							pkCB->RemoveAllItems();
-
-							list<Property*> pkList;
-							pkObject->GetPropertys(&pkList, PROPERTY_TYPE_ALL, PROPERTY_SIDE_ALL);
-
-							list<Property*>::iterator s = pkList.begin();
-							list<Property*>::iterator e = pkList.end();
-							int counter=0;
-
-							for( ; s != e; s++ )
-							{
-								pkCB->SetLabelText((*s)->m_acName);
-								AddItemToList(pkCB, true, (*s)->m_acName, counter++);
-							}
-						}
-					}
-				}
-			}
-		}
-		break;
-	}
-	return true;
 }
 
 bool Gui::WndProc( ZGuiWnd* pkWindow, unsigned int uiMessage, int iNumberOfParams, void *pkParams )
@@ -160,7 +81,6 @@ bool Gui::WndProc( ZGuiWnd* pkWindow, unsigned int uiMessage, int iNumberOfParam
 				ZGuiCombobox *cbox = (ZGuiCombobox*) win;
 
 				int iItemID = ((int*)pkParams)[1];
-				int w, h;
 
 				switch(iItemID)
 				{
@@ -169,21 +89,29 @@ bool Gui::WndProc( ZGuiWnd* pkWindow, unsigned int uiMessage, int iNumberOfParam
 					break;
 
 				case IDM_LOAD_HEIGHTMAP:
-					{
-						if(m_pkFileDlgbox)
-						{
-							delete m_pkFileDlgbox;
-							m_pkFileDlgbox = NULL;
-						}
 
-						m_pkFileDlgbox = new FileOpenDlg(this, m_pkEdit->pkFps->m_pkBasicFS, WINPROC, DIRECTORIES_ONLY);
+					if(m_pkFileDlgbox)
+					{
+						delete m_pkFileDlgbox;
+						m_pkFileDlgbox = NULL;
 					}
+
+					m_pkFileDlgbox = new FileOpenDlg(this, m_pkEdit->pkFps->m_pkBasicFS, 
+						WINPROC, DIRECTORIES_ONLY);
 					break;
 
 				case IDM_CREATE_NEW_PROPERTY:
-					w = 500;
-					h = 500;
-					CreateEditPropertyDialog(0,0,w,h);
+
+					if(m_pkEditPropDlgBox)
+					{
+						delete m_pkEditPropDlgBox;
+						m_pkEditPropDlgBox = NULL;
+					}
+
+					m_pkEditPropDlgBox = new EditPropertyDlg(this, 
+						m_pkEdit->pkPropertyFactory, 
+						m_pkEdit->pkObjectMan, 
+						m_pkEdit->m_pkCurentChild, WINPROC);
 					break;
 				}
 			}
@@ -257,9 +185,9 @@ bool Gui::InitSkins()
 	m_kSkinMap.insert( map<string, ZGuiSkin*>::value_type(string("titlebar"), 
 		new ZGuiSkin(-1, -1, -1, -1, 64, 64, 128, 0, 0, 0, 0)) ); 
 	m_kSkinMap.insert( map<string, ZGuiSkin*>::value_type(string("rbn_down"), 
-		new ZGuiSkin(rbn_up, -1, -1, -1, 64, 64, 128, 0, 0, 0, 0)) ); 
+		new ZGuiSkin(rbn_up, -1, -1, -1, 255, 255, 255, 0, 0, 0, 0)) ); 
 	m_kSkinMap.insert( map<string, ZGuiSkin*>::value_type(string("rbn_up"), 
-		new ZGuiSkin(rbn_down, -1, -1, -1, 64, 64, 128, 0, 0, 0, 0)) ); 
+		new ZGuiSkin(rbn_down, -1, -1, -1, 255, 255, 255, 0, 0, 0, 0)) ); 
 
 	return true;
 }
@@ -314,8 +242,8 @@ ZGuiButton* Gui::CreateButton(ZGuiWnd* pkParent, int iID, int x, int y, int w, i
 	return pkButton;
 }
 
-void Gui::CreateRadiobuttons(ZGuiWnd* pkParent, char** pstrNames, int antal, 
-							 int start_id, int x, int y, int w, int h)
+void Gui::CreateRadiobuttons(ZGuiWnd* pkParent, vector<string>& vkNames,
+							 char* strRadioGroupName, int start_id, int x, int y, int size)
 {
 	int rbn_a = m_pkEdit->pkTexMan->Load("file:../data/textures/radiobn_a.bmp", 0);
 
@@ -323,18 +251,25 @@ void Gui::CreateRadiobuttons(ZGuiWnd* pkParent, char** pstrNames, int antal,
 
 	ZGuiRadiobutton* pkPrev = NULL;
 
-	Rect rc = Rect(x,y,x+w,y+h);
+	Rect rc = Rect(x,y,x+size,y+size);
 
-	for(int i=1; i<2; i++)
+	const int antal = vkNames.size();
+
+	for(int i=0; i<antal; i++)
 	{
-		rc = rc.Move(0,i*20);
 		ZGuiRadiobutton* pkGroupbutton = new ZGuiRadiobutton(rc,pkParent,
-			start_id,start_id,pkPrev,true);
+			start_id+i,start_id,pkPrev,true);
 		pkGroupbutton->SetButtonUnselectedSkin(GetSkin("rbn_down"),rbn_a);
 		pkGroupbutton->SetButtonSelectedSkin(GetSkin("rbn_up"),rbn_a);
-		pkGroupbutton->SetText(pstrNames[0]);
+		pkGroupbutton->SetText((char*)vkNames[i].c_str());
+
+		if(pkPrev == NULL)
+		{
+			Register(pkGroupbutton, strRadioGroupName);
+		}
 
 		pkPrev = pkGroupbutton;
+		rc = rc.Move(0,12);
 	}
 }
 
@@ -389,55 +324,6 @@ ZGuiLabel* Gui::CreateLabel(ZGuiWnd* pkParent, int iID, int x, int y, int w, int
 	return pkLabel;
 }
 
-ZGuiWnd* Gui::CreateEditPropertyDialog(int x, int y, int w, int h)
-{
-	if( m_pkEdit->pkGui->GetMainWindow(ID_PROPERTY_WND_MAIN))
-	{
-		m_pkEdit->pkGui->ShowMainWindow(ID_PROPERTY_WND_MAIN, true);
-		OnOpenEditProperty();
-		return false;
-	}
-
-	ZGuiWnd* pkMainWindow = new ZGuiWnd(Rect(x,y,x+w,y+h),NULL,true,ID_PROPERTY_WND);
-	pkMainWindow->SetSkin(GetSkin("blue"));
-	pkMainWindow->SetMoveArea(Rect(0,0,m_pkEdit->m_iWidth,m_pkEdit->m_iHeight));
-	pkMainWindow->SetWindowFlag(WF_CLOSEABLE);
-
-	int y_pos;
-
-	CreateButton(pkMainWindow, ID_PROPERTY_WND_CLOSE, w-20, 0, 20, 20, "x")->SetWindowFlag(WF_CENTER_TEXT);
-	CreateLabel(pkMainWindow, 0, 20, 20, 16*5, 20, "Name:");
-	Register( CreateTextbox(pkMainWindow, ID_NAME_TEXTBOX, 16*6, 20, 200, 20), "ObjectNameEB" );
-
-	CreateLabel(pkMainWindow, 0, 20, 60, 16*4, 20, "Pos:");
-	Register( CreateTextbox(pkMainWindow, ID_POSX_TEXTBOX, 16*6, 60, 16*6, 20), "ObjectPosXEB");
-	Register( CreateTextbox(pkMainWindow, ID_POSY_TEXTBOX, 16*6+16*7, 60, 16*6, 20), "ObjectPosYEB"); 
-	Register( CreateTextbox(pkMainWindow, ID_POSZ_TEXTBOX, 16*6+16*7*2, 60, 16*6, 20), "ObjectPosZEB");
-
-	y_pos = 100;
-
-	CreateLabel(pkMainWindow, 0, 20, y_pos, 16*9-5, 20, "Props:");
-
-	ZGuiCombobox* cb;
-	Register(cb = CreateCombobox(pkMainWindow, ID_PROPERTIES_CB, 16*6, 
-		y_pos, 16*6+16*7*2, h-(y_pos+60), false), "PropertyCB");
-	cb->SetNumVisibleRows(20);
-
-	ZGuiButton* bn;
-	Register(bn = CreateButton(pkMainWindow, ID_ADDPROPERTY_BN, 16*6+16*6+16*7*2+10, 
-		y_pos, 50, 20, "Add"), "AddPropertyBN");
-	bn->SetWindowFlag(WF_CENTER_TEXT);
-
-	CreateButton(pkMainWindow, ID_PROPERTY_OK, w-100, h-50, 80, 20, "OK")->SetWindowFlag(WF_CENTER_TEXT);
-	CreateButton(pkMainWindow, ID_PROPERTY_CANCEL, w-100, h-25, 80, 20, "Cancel")->SetWindowFlag(WF_CENTER_TEXT);
-	
-	m_pkEdit->pkGui->AddMainWindow(ID_PROPERTY_WND_MAIN, pkMainWindow, PROPERTYPROC, true);
-
-	OnOpenEditProperty();
-
-	return pkMainWindow;
-}
-
 void Gui::AddItemsToList(ZGuiWnd *pkWnd, bool bCombobox, char **items, int iNumber)
 {
 	int test = 2;
@@ -489,135 +375,3 @@ ZGuiWnd* Gui::Get(char* strName)
 {
 	return m_pkEdit->pkGuiMan->Wnd(string(strName));
 }
-
-void Gui::OnOpenEditProperty()
-{
-	ZGuiWnd* pkPropertysCB = Get("PropertyCB");
-	ZGuiWnd* pkNameEB = Get("ObjectNameEB");
-	ZGuiWnd* pkPosXEB = Get("ObjectPosXEB");
-	ZGuiWnd* pkPosYEB = Get("ObjectPosYEB");
-	ZGuiWnd* pkPosZEB = Get("ObjectPosZEB");
-
-	if(pkPropertysCB == NULL)
-	{
-		cout << "Failed to find combox named [PropertyCB]" << endl;
-		return;
-	}
-
-	if(pkNameEB == NULL)
-	{
-		cout << "Failed to find editbox named [ObjectNameEB]" << endl;
-		return;
-	}
-
-	if(m_pkEdit->m_pkCurentChild)
-	{
-		char text[50];
-		Vector3 p = m_pkEdit->m_pkCurentChild->GetPos();
-		
-		((ZGuiTextbox*) pkNameEB)->SetText((char*)m_pkEdit->m_pkCurentChild->GetName().c_str());
-
-		sprintf(text, "%0.3f", p.x); ((ZGuiTextbox*) pkPosXEB)->SetText(text);
-		sprintf(text, "%0.3f", p.y); ((ZGuiTextbox*) pkPosYEB)->SetText(text);
-		sprintf(text, "%0.3f", p.z); ((ZGuiTextbox*) pkPosZEB)->SetText(text);
-
-		list<Property*> akPropertys;
-
-		m_pkEdit->m_pkCurentChild->GetPropertys(&akPropertys, PROPERTY_TYPE_ALL, PROPERTY_SIDE_ALL);
-
-		list<Property*>::iterator s = akPropertys.begin();
-		list<Property*>::iterator e = akPropertys.end();
- 
-		for(int counter ; s != e; s++, counter++ )
-		{
-			if(pkPropertysCB)
-			{
-				((ZGuiCombobox*) pkPropertysCB)->RemoveAllItems();
-				AddItemToList(pkPropertysCB, true, (*s)->m_acName, counter++);
-			}
-		}	
-	}
-}
-
-bool Gui::OnCloseEditProperty(bool bSave)
-{
-	if(!m_pkEdit->m_pkCurentChild)
-		return true;
-
-	ZGuiWnd* pkNameEB = Get("ObjectNameEB");
-	ZGuiWnd* pkXPosEB = Get("ObjectPosXEB");
-	ZGuiWnd* pkYPosEB = Get("ObjectPosYEB");
-	ZGuiWnd* pkZPosEB = Get("ObjectPosZEB");
-
-	if(pkNameEB)
-	{
-		char* strName = pkNameEB->GetText();
-		char* strXPos = pkXPosEB->GetText();
-		char* strYPos = pkYPosEB->GetText();
-		char* strZPos = pkZPosEB->GetText();
-
-		if( strName != NULL && strXPos != NULL && 
-			strYPos != NULL && strZPos != NULL)
-		{
-			float x,y,z;
-
-			x = atof(strXPos);
-			y = atof(strYPos);
-			z = atof(strZPos);
-
-			char strText[512];
-			strcpy(strText, pkNameEB->GetText());
-		
-			if(m_pkEdit->m_pkCurentChild)
-			{
-				m_pkEdit->m_pkCurentChild->GetName() = string(strText);
-				m_pkEdit->m_pkCurentChild->GetPos() = Vector3(x,y,z);
-			}
-		}
-	}
-	return true;
-}
-
-ZGuiWnd* Gui::CreateAddPropertyDlg(int x, int y, int w, int h)
-{
-	if( Get("AddPropWnd") )
-	{
-		Get("AddPropWnd")->Show();
-		return false;
-	}
-
-	ZGuiWnd* mamma = m_pkEdit->pkGui->GetMainWindow(ID_PROPERTY_WND_MAIN);
-
-	ZGuiWnd* pkDlg = new ZGuiWnd(Rect(x,y,x+w,y+h),mamma,true,ID_ADDPROPERTY_WND);
-	pkDlg->SetSkin(GetSkin("red"));
-	pkDlg->SetMoveArea(Rect(0,0,m_pkEdit->m_iWidth,m_pkEdit->m_iHeight));
-	//pkDlg->SetWindowFlag(WF_CLOSEABLE);
-
-	Register( pkDlg, "AddPropWnd" );
-
-	CreateButton(pkDlg, ID_ADDPROPERTY_CLOSE, w-20, 0, 20, 20, "x")->SetWindowFlag(WF_CENTER_TEXT);
-	CreateButton(pkDlg, ID_ADDPROPERTY_OK, w-40, h-30, 40, 20, "OK")->SetWindowFlag(WF_CENTER_TEXT);
-	
-	m_pkEdit->pkGui->RegisterWindow(pkDlg);
-	pkDlg->SetZValue(434343);
-	mamma->SortChilds();
-
-	//m_pkEdit->pkGui->AddMainWindow(ID_ADDPROPERTY_WND_MAIN, pkDlg, PROPERTYPROC, true);
-
-	char* names[] =
-	{
-		"apa", "piss", "neger"
-	};
-
-	CreateRadiobuttons(pkDlg, names, 3, 122, 0, 0, 100, 20);
-
-	return pkDlg;
-}
-
-bool Gui::OnCloseAddProperty(bool bSave)
-{
-	return true;
-}
-
-
-

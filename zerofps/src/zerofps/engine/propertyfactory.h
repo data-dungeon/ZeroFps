@@ -41,8 +41,10 @@ public:
 
 	Property*	CreateProperty(const char* szName);
 	void		Register(char* szName, Property*	(*Create)());
-
+	
 	void		Display();
+
+	void GetAllProperties(vector<string>& vkList);
 };
 
 class ZeroFps;

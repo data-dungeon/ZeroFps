@@ -4,7 +4,6 @@
 
 #include "zguiradiobutton.h"
 #include "../../render/zguirenderer.h"
-#include "zgui.h"
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
@@ -76,6 +75,7 @@ bool ZGuiRadiobutton::Notify(ZGuiWnd* pkWnd, int iCode)
 
 		m_pkCheckbox->CheckButton();
 	}
+
 	return true;
 }
 

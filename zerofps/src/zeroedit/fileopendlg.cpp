@@ -9,12 +9,18 @@
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
-//////////////////////////////////////////////////////////////////////
+///////////
+///////////////////////////////////////////////////////////
+
+// Window proc wrappers
+//////////////////////////
 
 extern ZeroEdit Editor;
 
 static bool OPENFILEPROC( ZGuiWnd* pkWindow, unsigned int uiMessage, int iNumberOfParams, void *pkParams ){
 	return Editor.m_pkGui->m_pkFileDlgbox->DlgProc(pkWindow, uiMessage, iNumberOfParams, pkParams); }
+
+/////////////////////////
 
 FileOpenDlg::FileOpenDlg(Gui* pkGui, ZFBasicFS* pkBasicFS, callback cb, bitset<NUMBER_OF_FLAGS> flags)
 {

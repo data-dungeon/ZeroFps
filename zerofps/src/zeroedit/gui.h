@@ -16,19 +16,16 @@
 #include "zeroedit.h"
 
 class FileOpenDlg;
+class EditPropertyDlg;
 typedef bool (*ZGuiCallBack)(ZGuiWnd*, unsigned int, int, void*);
 
 class Gui
 {
 private:
-	ZGuiWnd* CreateAddPropertyDlg(int x, int y, int w, int h);
-	bool OnCloseAddProperty(bool bSave);
-	bool OnCloseEditProperty(bool bSave);
-	void OnOpenEditProperty();
 	bool Register(ZGuiFont* pkFont, char* strName);
 	bool Register(ZGuiSkin* pkSkin, char* strName);
 	bool Register(ZGuiWnd* pkWnd, char* strName);
-	void CreateRadiobuttons(ZGuiWnd* pkParent, char** strNames, int antal, int start_id, int x, int y, int w, int h);
+	void CreateRadiobuttons(ZGuiWnd* pkParent, vector<string>& strNames, char* strGroupName, int start_id, int x, int y, int size);
 	ZGuiTextbox* CreateTextbox(ZGuiWnd* pkParent, int iID, int x, int y, int w, int h, bool bMulitLine=false);
 	ZGuiCombobox* CreateCombobox(ZGuiWnd* pkParent, int iID, int x, int y, int w, int h, bool bMenu);
 	ZGuiListbox* CreateListbox(ZGuiWnd* pkParent, int iID, int x, int y, int w, int h);
@@ -58,8 +55,6 @@ private:
 	ZGuiWnd* Get(char* strName);
 
 public:
-
-	bool PropertyProc( ZGuiWnd* pkWindow, unsigned int uiMessage, int iNumberOfParams, void *pkParams );
 	bool WndProc( ZGuiWnd* pkWindow, unsigned int uiMessage, int iNumberOfParams, void *pkParams );
 	bool IsMenuActive() { return m_bMenuActive; }
 
@@ -67,8 +62,10 @@ public:
 	virtual ~Gui();
 
 	FileOpenDlg* m_pkFileDlgbox;
+	EditPropertyDlg* m_pkEditPropDlgBox;
 
 	friend class FileOpenDlg;
+	friend class EditPropertyDlg;
 
 };
 

@@ -479,15 +479,25 @@ bool ZGui::OnKeyUpdate()
 		{
 			if(m_pkActiveMainWin)
 			{
+				if(ZGuiWnd::m_pkFocusWnd)
+				{
+					if(ZGuiWnd::m_pkFocusWnd->GetWindowFlag(WF_CLOSEABLE))
+					{
+						ZGuiWnd::m_pkFocusWnd->Hide();
+						return true;
+					}
+				}
+				
 				if(m_pkActiveMainWin->pkWin->GetWindowFlag(WF_CLOSEABLE))
 				{
-					m_pkActiveMainWin->pkWin->Hide();
-
 					// Notify the window that it are going to hidden
 					int* pkParams = new int[1];
 					pkParams[0] = false; // window are beeing hidden
 					m_pkActiveMainWin->pkCallback(m_pkActiveMainWin->pkWin, ZGM_SHOWWINDOW, 1, pkParams);
 					delete[] pkParams;
+
+					int id = m_pkActiveMainWin->iID;
+					ShowMainWindow(id, false);
 				}
 			}
 		}

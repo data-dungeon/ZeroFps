@@ -31,10 +31,13 @@ public:
 	ZGuiSkin* GetUncheckedSkin() { return m_pkSkinButtonUnchecked; }
 	int GetTexUnchecked() { return m_iMaskTexUnchecked; }
 	int GetTexChecked() { return m_iMaskTexChecked; }
+	char* GetText();// overloaded
 
 	void CheckButton();
 	void UncheckButton();
 	void SetText(char* strText);
+
+	bool IsChecked();
 
 protected:
 	ZGuiSkin* m_pkSkinButtonChecked, *m_pkSkinButtonUnchecked;

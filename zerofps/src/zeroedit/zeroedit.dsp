@@ -92,6 +92,10 @@ SOURCE=.\ballobject.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\editpropertydlg.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\fh.cpp
 # End Source File
 # Begin Source File
@@ -117,6 +121,10 @@ SOURCE=.\zeroedit.cpp
 # Begin Source File
 
 SOURCE=.\ballobject.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\editpropertydlg.h
 # End Source File
 # Begin Source File
 
