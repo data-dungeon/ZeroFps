@@ -22,7 +22,6 @@ class MadView :public Application , public ZGuiApp
 {
 	private:
 
-
 		//console funktions
 		enum FuncId_e
 		{
@@ -42,6 +41,13 @@ class MadView :public Application , public ZGuiApp
 			OBJ_ROT_XYZ
 		};
 
+		enum SelectFileMode_e
+		{
+			SEL_MAD,
+			SEL_MATERIAL,
+		};
+
+		int m_iSelFileMode;
 		int m_iObjRotMode;
 		float m_fObjRotDelay;
 		float m_fRotTimer;
@@ -49,6 +55,7 @@ class MadView :public Application , public ZGuiApp
 		int m_iCurrRotAngle;
 		float* m_apObjRotAngles[3];
 
+		Mad_CoreSubMesh* m_pkSelMesh;
 		Entity* m_pkViewObject;
 		string m_strMadFile;
 	
@@ -62,22 +69,9 @@ class MadView :public Application , public ZGuiApp
 		Entity*	m_pkCameraObject;
 		Camera*	m_pkCamera;
 		float 	m_CamMoveSpeed;		
-				
-		//physics stuff
-		Vector3	m_kLocalGrabPos;
-		Vector3	m_kGrabPos;
-		Vector3	m_kGrabCurrentPos;
-		int		m_iGrabEntity;
-		float		m_fArmLength;
-						
+										
 		//camera stuff
 		void  CreateCamera();
-
-		//picking
-		Vector3	Get3DMousePos(bool m_bMouse);
-		Vector3	Get3DMouseDir(bool bMouse);
-		Entity*	GetTargetObject();		
-		int		GetTargetTCS(Vector3* pkPos);		
 				
 		// gui stuff
 		void	SetupGuiEnviroment();

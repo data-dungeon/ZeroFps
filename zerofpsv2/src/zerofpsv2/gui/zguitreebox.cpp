@@ -120,6 +120,7 @@ ZGuiTreeboxNode* ZGuiTreebox::CreateNode(ZGuiTreeboxNode* pkParent, char* szText
 	else
 	{
 		x = y = -m_iButtonSize;
+		szText = "";
 	}
 
 	pkNewItem->pkNext = NULL;

@@ -123,18 +123,45 @@ void MadView::OnClickTreeItem(char *szTreeBox, char *szParentNodeText,
 	if(strcmp(szTreeBox, "SelectFileTree") == 0)
 	{
 		string strFullpath;
-		strFullpath = string("data/mad/");
 
-		if(szParentNodeText)
-			strFullpath += string(szParentNodeText);
-
-		if(szClickNodeText)
-			strFullpath += string(szClickNodeText);
-
-		if(strFullpath.find(".mad") != string::npos)
+		if(m_iSelFileMode == SEL_MAD)
 		{
-			ChangeMad(strFullpath);
-			ShowWnd("SelectFileWnd", false); // close window
+			strFullpath = string("data/mad/");
+
+			if(szParentNodeText)
+				strFullpath += string(szParentNodeText);
+
+			if(szClickNodeText)
+				strFullpath += string(szClickNodeText);
+
+			if(strFullpath.find(".mad") != string::npos)
+			{
+				ChangeMad(strFullpath);
+				ShowWnd("SelectFileWnd", false); // close window
+			}
+		}
+		else
+		if(m_iSelFileMode == SEL_MATERIAL)
+		{
+			strFullpath = string("data/material/");
+
+			if(szParentNodeText)
+				strFullpath += string(szParentNodeText);
+
+			if(szClickNodeText)
+				strFullpath += string(szClickNodeText);
+
+			if(strFullpath.find(".zmt") != string::npos)
+			{
+				P_Mad* pkMad = (P_Mad*) m_pkViewObject->GetProperty("P_Mad");
+
+				Mad_Core* pkCore = dynamic_cast<Mad_Core*>(pkMad->kMadHandle.GetResourcePtr()); 
+
+				pkCore->GetMeshByID(0)->GetLODMesh(0)->SetTextureHandle(
+					m_pkSelMesh->iTextureIndex, strFullpath);
+
+				ShowWnd("SelectFileWnd", false); // close window
+			}
 		}
 	}
 	else
@@ -147,6 +174,34 @@ void MadView::OnClickTreeItem(char *szTreeBox, char *szParentNodeText,
 			pkMad->SetAnimation(szClickNodeText, 0);
 
 		m_pkGui->SetFocus(GetWnd("GuiMainWnd"));
+
+		unsigned int min, max, pos;
+		((ZGuiTreebox*)GetWnd("AnimationFileTree"))->GetScrollbar(true)->GetScrollInfo(min,max,pos);
+		GetWnd("MaterialFileTree")->SetPos(0,120+max*20,false,true);
+	}
+	else
+	if(strcmp(szTreeBox, "MaterialFileTree") == 0)
+	{
+		string strText = szClickNodeText;
+
+		if(szClickNodeText && strText.find(string(" : ")) != string::npos)
+		{
+			P_Mad* pkMad = (P_Mad*) m_pkViewObject->GetProperty("P_Mad");
+			Mad_Core* pkCore = dynamic_cast<Mad_Core*>(pkMad->kMadHandle.GetResourcePtr()); 
+
+			string format = strText;
+			format.erase(0,5);
+			int pos = format.find(":");
+			format.erase(pos, format.length()-pos); 
+			m_pkSelMesh = pkCore->GetMeshByID(0)->GetLODMesh(0)->GetSubMesh(atoi(format.c_str()));
+
+			if(m_iSelFileMode != SEL_MATERIAL)
+				BuildFileTree("SelectFileTree", "data/material", ".zmt");
+
+			m_iSelFileMode = SEL_MATERIAL;
+			ShowWnd("SelectFileWnd", true);
+			ShowWnd("MadViewInfoWnd", false);
+		}
 	}
 }
 
@@ -165,7 +220,9 @@ void MadView::ChangeMad(string strName)
 
 	char szText[100];
 
-	sprintf(szText, "Name: %s", m_strMadFile.c_str());
+	string strFormated = m_strMadFile;
+	strFormated.erase(0, strlen("data/mad/"));
+	sprintf(szText, "Name: %s", strFormated.c_str());
 	SetText("MadNameLabel", szText);
 
 	sprintf(szText, "Vertices: %i", pkMad->GetNumVertices());
@@ -188,21 +245,24 @@ void MadView::ChangeMad(string strName)
 	sprintf(szText, "Animations (%i)", iNumAnimations);
 	AddTreeItem("AnimationFileTree", "Animations", "RootNode", szText, 1, 2);
 
-	if(iNumAnimations > 0)
+	for(int i=0; i<iNumAnimations; i++)
 	{
-		for(int i=0; i<pkCore->GetNumOfAnimations(); i++)
-		{
-			string strName = pkCore->GetAnimationName(i); 
-			AddTreeItem("AnimationFileTree", strName.c_str(), "Animations", (char*) strName.c_str(), 0, 1);
-		}
+		string strName = pkCore->GetAnimationName(i); 
+		AddTreeItem("AnimationFileTree", strName.c_str(), "Animations", (char*) strName.c_str(), 0, 1);
 	}
 
-	printf("Num meshes = %i\n", pkCore->NumOfMeshes());
-	printf("Num sub meshes = %i\n", pkCore->GetMeshByID(0)->m_kLodMesh[0].SizeSubMesh() );
-	printf("Num textures = %i\n", pkCore->GetMeshByID(0)->m_kLodMesh[0].SizeTextures() );
+	GetWnd("MaterialFileTree")->SetPos(0,120+20,false,true);
+
+	((ZGuiTreebox*)GetWnd("MaterialFileTree"))->Clear(); 
+	
+	sprintf(szText, "Materials (%i)", pkCore->GetMeshByID(0)->m_kLodMesh[0].SizeTextures());
+	AddTreeItem("MaterialFileTree", "Materials", "RootNode", szText, 1, 2);
 
 	for(int i=0; i<pkCore->GetMeshByID(0)->m_kLodMesh[0].SizeTextures(); i++)
 	{
-		printf("%s\n", pkCore->GetMeshByID(0)->m_kLodMesh[0].GetTextureName(i));
+		char mesh[64];
+		sprintf(mesh, "mesh %i", i);
+		string strName = mesh + string(" : ") + pkCore->GetMeshByID(0)->m_kLodMesh[0].GetTextureName(i);
+		AddTreeItem("MaterialFileTree", strName.c_str(), "Materials", (char*) strName.c_str(), 0, 1);
 	}
 }

@@ -49,6 +49,8 @@ MadView::MadView(char* aName,int iWidth,int iHeight,int iDepth)
 	m_apObjRotAngles[1] = &m_fObjRotY;
 	m_apObjRotAngles[2] = &m_fObjRotZ;
 
+	m_pkSelMesh = NULL;
+
 	Register_Cmd("open_mad", FID_OPENMAD);	
 
 	Register_Cmd("object_rotation_mode", FID_OBJECTROTATIONMODE);	
@@ -205,6 +207,10 @@ void MadView::RunCommand(int cmdid, const CmdArgument* kCommand)
 	switch(cmdid) 
 	{
 		case FID_OPENMAD:
+			if(m_iSelFileMode != SEL_MAD)
+				BuildFileTree("SelectFileTree", "data/mad", ".mad");
+
+			m_iSelFileMode = SEL_MAD;
 			ShowWnd("SelectFileWnd", true);
 			break;
 
