@@ -14,8 +14,8 @@
 
 class ZeroRTS :public Application {
 	private:
-		Camera *m_pkCamera;;
-
+		Camera*		m_pkCamera;
+		HeightMap*	m_pkMap;
 
 		// actions
 		int m_iActionCamLeft;
@@ -41,18 +41,20 @@ class ZeroRTS :public Application {
 		void OnHud(void);
 		
 		void Init();
-		void RegisterActions();
-		
+		void RegisterActions();		
 		void Input();
-
 		void OnServerStart(void);
 		void OnClientStart(void);
 		
-		Vector3 Get3DMousePos();
-		
+		Vector3 Get3DMousePos();		
 		Object* PickObject();
+		HM_vert* PickMap();
 		
 		void RunCommand(int cmdid, const CmdArgument* kCommand);
+		
+		void SetCamPos(Vector3 kPos);
+		Vector3 GetCamPos();
+		void MoveCam(Vector3 kVel);
 };
 
 

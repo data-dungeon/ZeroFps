@@ -832,3 +832,154 @@ void HeightMap::DrawMask(int iPosX,int iPosy,int iMask,int iSize,int r,int g,int
 }
 
 
+HM_vert* HeightMap::LinePick(Vector3 kPos,Vector3 kDir,Vector3 kCenterPos,int iWidth)
+{
+	float minx = kCenterPos.x - iWidth/2; 
+	float maxx = kCenterPos.x + iWidth/2; 
+	float minz = kCenterPos.z - iWidth/2; 
+	float maxz = kCenterPos.z + iWidth/2; 
+	
+	kPos+=Vector3(1,0,1)*HEIGHTMAP_SCALE;
+
+	Vector3 kPos2 = kPos + (kDir * 500);
+	
+	//convert to map cordinats
+	GetMapXZ(minx,minz);	
+	GetMapXZ(maxx,maxz);	
+	GetMapXZ(kPos.x,kPos.z);
+	GetMapXZ(kPos2.x,kPos2.z);
+		
+	
+	if(minx < 0)
+		minx = 0;
+	
+	if(minz < 0)
+		minz = 0;
+		
+	if(maxx > m_iHmSize)
+		maxx = m_iHmSize;
+		
+	if(maxz > m_iHmSize)
+		maxz = m_iHmSize;
+	
+		
+	float cdist=99999999;	
+	HM_vert* closest=NULL;
+		
+	for(float x = minx;x<maxx-1;x++)
+	{
+		for(float z = minz;z<maxz-1;z++)
+		{			
+			Vector3 kColPos;
+			Vector3 verts[3];
+			
+			//over left polygon
+			verts[0]=Vector3(x,0,z);
+			verts[1]=Vector3(x,0,z+1);
+			verts[2]=Vector3(x+1,0,z);
+			verts[0].y = ((GetVert((int)verts[0].x,(int)verts[0].z)->height)*HEIGHTMAP_SCALE)+m_kPosition.y;
+			verts[1].y = ((GetVert((int)verts[1].x,(int)verts[1].z)->height)*HEIGHTMAP_SCALE)+m_kPosition.y;			
+			verts[2].y = ((GetVert((int)verts[2].x,(int)verts[2].z)->height)*HEIGHTMAP_SCALE)+m_kPosition.y;			
+						
+			if(LineVSPolygon(verts,kPos,kPos2,kColPos))
+			{
+				float dist = (kPos - kColPos).Length();
+				if(dist < cdist)
+				{
+					cdist=dist;
+					closest=GetVert((int)x,(int)z);
+				}
+			}
+			
+			//down right polygon
+			verts[0]=Vector3(x+1,0,z+1);
+			verts[1]=Vector3(x+1,0,z);
+			verts[2]=Vector3(x,0,z+1);
+			verts[0].y = ((GetVert((int)verts[0].x,(int)verts[0].z)->height)*HEIGHTMAP_SCALE)+m_kPosition.y;
+			verts[1].y = ((GetVert((int)verts[1].x,(int)verts[1].z)->height)*HEIGHTMAP_SCALE)+m_kPosition.y;		
+			verts[2].y = ((GetVert((int)verts[2].x,(int)verts[2].z)->height)*HEIGHTMAP_SCALE)+m_kPosition.y;		
+			
+			if(LineVSPolygon(verts,kPos,kPos2,kColPos))
+			{
+				float dist = (kPos - kColPos).Length();
+				if(dist < cdist)
+				{
+					cdist=dist;
+					closest=GetVert((int)x,(int)z);
+				}
+			}	
+		}
+	}
+	
+//	cout<<"bla: X"<<minx<<" "<<maxx<<" Y"<< minz<<" "<<maxz<<endl;
+	return closest;
+}
+
+bool HeightMap::LineVSPolygon(Vector3* pkVerts,Vector3 kPos1,Vector3 kPos2,Vector3& kColPos)
+{
+	Plane P;
+	
+	Vector3 V1 = pkVerts[1] - pkVerts[0];
+	Vector3 V2 = pkVerts[2] - pkVerts[0];		
+	Vector3 Normal= V1.Cross(V2);	
+	
+	if(Normal.Length() == 0)
+	{
+		return false;
+	}
+
+	Normal.Normalize();
+	P.m_fD = -Normal.Dot(pkVerts[0]);	
+	P.m_kNormal = Normal;	
+
+
+	if(P.LineTest(kPos1, kPos2 ,&kColPos))
+	{
+		if(TestSides(pkVerts,&Normal,kColPos))		
+		{
+			return true;
+		}
+	}
+
+	return false;
+}
+
+bool HeightMap::TestSides(Vector3* kVerts,Vector3* pkNormal,Vector3 kPos)
+{
+	Plane side[6];
+	
+	Vector3 V1 = kVerts[1] - kVerts[0];
+	Vector3 V2 = kVerts[2] - kVerts[1];	
+	Vector3 V3 = kVerts[0] - kVerts[2];	
+	
+	side[0].m_kNormal = pkNormal->Cross(V1).Unit();
+	side[1].m_kNormal = pkNormal->Cross(V2).Unit();	
+	side[2].m_kNormal = pkNormal->Cross(V3).Unit();
+
+	side[3].m_kNormal = (side[0].m_kNormal + side[2].m_kNormal).Unit();
+	side[4].m_kNormal = (side[0].m_kNormal + side[1].m_kNormal).Unit();
+	side[5].m_kNormal = (side[1].m_kNormal + side[2].m_kNormal).Unit();
+
+
+	side[0].m_fD = -side[0].m_kNormal.Dot(kVerts[0]);
+	side[1].m_fD = -side[1].m_kNormal.Dot(kVerts[1]);	
+	side[2].m_fD = -side[2].m_kNormal.Dot(kVerts[2]);	
+
+	side[3].m_fD = -side[3].m_kNormal.Dot(kVerts[0]);
+	side[4].m_fD = -side[4].m_kNormal.Dot(kVerts[1]);	
+	side[5].m_fD = -side[5].m_kNormal.Dot(kVerts[2]);	
+	
+	
+	bool inside = true;
+	
+	for(int i=0;i<6;i++)
+	{
+		if(!side[i].PointInside(kPos)){
+			inside=false;
+		}
+	}
+		
+	return inside;	
+}
+
+

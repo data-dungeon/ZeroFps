@@ -21,7 +21,10 @@ void ZeroRTS::OnInit()
 }
 
 void ZeroRTS::Init()
-{
+{	
+	//get heightmap pointer 
+	m_pkMap = pkLevelMan->GetHeightMap();	
+
 	//register commmands
 	g_ZFObjSys.Register_Cmd("load",FID_LOAD,this);		
 	g_ZFObjSys.Register_Cmd("unload",FID_UNLOAD,this);			
@@ -31,7 +34,7 @@ void ZeroRTS::Init()
 	glEnable(GL_LIGHTING );
 	
 	//initiate our camera
-	m_pkCamera=new Camera(Vector3(0,40,0),Vector3(70,0,0),90,1.333,0.25,250);	
+	m_pkCamera=new Camera(Vector3(0,30,0),Vector3(70,0,0),90,1.333,0.25,250);	
 	
 	//disable zones modells
 	pkLevelMan->SetVisibleZones(false);
@@ -71,13 +74,12 @@ void ZeroRTS::OnIdle(void)
 {
 	pkFps->SetCamera(m_pkCamera);		
 	pkFps->GetCam()->ClearViewPort();	
-	pkFps->DevPrintf("common","Active Propertys: %d",pkObjectMan->GetActivePropertys());
 			
 	Input();
 	
-/*	
+
 	Vector3 mpos = Get3DMousePos();
-	
+/*	
 	glDisable(GL_LIGHTING);
 		pkRender->Sphere(mpos,1,20,Vector3(1,0,0),false);
 	glEnable(GL_LIGHTING);
@@ -90,44 +92,57 @@ void ZeroRTS::Input()
 	//camera movements
 	if(pkInput->Action(m_iActionCamLeft))
 	{
-		m_pkCamera->GetPos().x -= 100*pkFps->GetFrameTime();
+		MoveCam(Vector3(-100,0,0));
 	}
 	if(pkInput->Action(m_iActionCamRight))
 	{
-		m_pkCamera->GetPos().x += 100*pkFps->GetFrameTime();
+		MoveCam(Vector3(100,0,0));
 	}
 	if(pkInput->Action(m_iActionCamUp))
 	{
-		m_pkCamera->GetPos().z -= 100*pkFps->GetFrameTime();
+		MoveCam(Vector3(0,0,-100));
 	}
 	if(pkInput->Action(m_iActionCamDown))
 	{
-		m_pkCamera->GetPos().z += 100*pkFps->GetFrameTime();
+		MoveCam(Vector3(0,0,100));
 	}
 
 	if(pkInput->Action(m_iActionSelect))
 	{
+	
+		HM_vert* bla = PickMap();
+		
+		if(bla != NULL)
+		{
+			bla->height -= 1;
+		
+		}
+		
+		/*
 		Object* bla=PickObject();
 		
 		if(bla != NULL)
 		{	
 			pkObjectMan->Delete(bla);
 			cout<<"diiiiiiiiie object from hell"<<endl;
-		}
+		}*/
 	}
 	if(pkInput->Action(m_iActionScroll))
 	{
 		int x,y;
 		pkInput->RelMouseXY(x,y);
 	
-		m_pkCamera->GetPos().x +=(x/2);
-		m_pkCamera->GetPos().z +=(y/2);		
+		MoveCam(Vector3(x*10,0,y*10));		
 	}
 }
 
 
 void ZeroRTS::OnHud(void) 
 {	
+	pkFps->DevPrintf("common","Active Propertys: %d",pkObjectMan->GetActivePropertys());	
+	pkFps->DevPrintf("common", "Fps: %f",pkFps->m_fFps);	
+	pkFps->DevPrintf("common","Avrage Fps: %f",pkFps->m_fAvrageFps);			
+
 	pkFps->m_bGuiMode = false;
 	pkFps->ToggleGui();
 }
@@ -172,9 +187,10 @@ Vector3 ZeroRTS::Get3DMousePos()
 	mpos.y = 0;
 	pkInput->UnitMouseXY(mpos.x,mpos.z);
 	
-	mpos.x*=100;
-	mpos.z*=75;
-	mpos.z-=14;
+	//these have to be recalculated depending on camera distsance 
+	mpos.x*=75;
+	mpos.z*=56;
+	mpos.z-=10.5;
 	
 	Matrix4 bla;
 	bla.Identity();
@@ -217,6 +233,52 @@ Object* ZeroRTS::PickObject()
 	obs.clear();
 	return close;
 }
+
+HM_vert* ZeroRTS::PickMap()
+{
+	Vector3 dir=(Get3DMousePos() - m_pkCamera->GetPos()).Unit();
+	Vector3 center = (m_pkCamera->GetPos() - Vector3(0,0,20));
+	HM_vert* vert = m_pkMap->LinePick(m_pkCamera->GetPos(),dir,center,140);
+
+	return vert;
+}
+
+void ZeroRTS::SetCamPos(Vector3 kPos)
+{
+	float wb = 75;	//width border
+	float tb = 74;	//top border
+	float bb = 20;	//bothom border
+
+	if(kPos.x < (-m_pkMap->GetSize()/2 + wb))
+		kPos.x = (-m_pkMap->GetSize()/2 + wb);
+	
+	if(kPos.x > (m_pkMap->GetSize()/2 - wb))
+		kPos.x = (m_pkMap->GetSize()/2 - wb);
+
+	if(kPos.z < (-m_pkMap->GetSize()/2 +tb))
+		kPos.z = (-m_pkMap->GetSize()/2 +tb );
+
+	if(kPos.z > (m_pkMap->GetSize()/2 -bb))
+		kPos.z = (m_pkMap->GetSize()/2 -bb);
+
+	m_pkCamera->GetPos().x = kPos.x;
+	m_pkCamera->GetPos().z = kPos.z;
+	
+	
+}
+
+Vector3 ZeroRTS::GetCamPos()
+{
+	return m_pkCamera->GetPos();
+}
+
+void ZeroRTS::MoveCam(Vector3 kVel)
+{
+	SetCamPos(GetCamPos() + kVel * pkFps->GetFrameTime());
+}
+
+
+
 
 
 
