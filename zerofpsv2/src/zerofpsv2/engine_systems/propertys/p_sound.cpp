@@ -209,8 +209,9 @@ namespace SI_P_Sound
 		g_pkScript->GetArgNumber(pkLua, 0, &dTemp);
 		id = (int)dTemp;
 
-		char	acSound[256];
-		g_pkScript->GetArgString(pkLua, 1, acSound);					
+		//char	acSound[256];
+		string strSound;
+		g_pkScript->GetArgString(pkLua, 1, strSound);					
 		
 						
 		Entity* pkObject = g_pkObjMan->GetEntityByID(id);
@@ -218,7 +219,7 @@ namespace SI_P_Sound
 		{
 			if(P_Sound* pe = (P_Sound*)pkObject->GetProperty("P_Sound"))
 			{
-				pe->StartSound(acSound,false);			
+				pe->StartSound(strSound,false);			
 			}
 			else
 				cout<<"WARNING: StartSoundLua on entity without P_Sound"<<endl;

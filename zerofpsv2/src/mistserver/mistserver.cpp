@@ -1596,11 +1596,12 @@ namespace SI_MistServer
 		g_pkScript->GetArgNumber(pkLua, 0, &dTemp);
 		id = (int)dTemp;
 		
-		char	acMessage[256];
-		g_pkScript->GetArgString(pkLua, 1, acMessage);		
+		//char	acMessage[256];
+		string strMessage;
+		g_pkScript->GetArgString(pkLua, 1, strMessage);		
 		
 		if(PlayerData* pkData = g_kMistServer.m_pkPlayerDB->GetPlayerDataByCharacterID(id))		
-			g_kMistServer.SayToClients(acMessage,"Server",-1,pkData->m_iConnectionID);
+			g_kMistServer.SayToClients(strMessage,"Server",-1,pkData->m_iConnectionID);
 		else
 			cout<<"WARNING: could not find character ID:"<<id<<endl;
 						

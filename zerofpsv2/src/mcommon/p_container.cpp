@@ -850,12 +850,13 @@ namespace SI_P_Container
 		
 		int iContainerID;
 		double dTemp;
-		char czItemName[128];
+		//char czItemName[128];
+		string strItemName;
 		
 		g_pkScript->GetArgNumber(pkLua, 0, &dTemp);
 		iContainerID = (int)dTemp;
 		
-		g_pkScript->GetArgString(pkLua, 1,czItemName);
+		g_pkScript->GetArgString(pkLua, 1,strItemName);
 	
 		//get cotnainer entity
 		if(Entity* pkContainerEnt = g_pkObjMan->GetEntityByID(iContainerID))
@@ -864,7 +865,7 @@ namespace SI_P_Container
 			if(P_Container* pkCP = (P_Container*)pkContainerEnt->GetProperty("P_Container"))
 			{			
 				//create new item
-				if(Entity* pkEnt = g_pkObjMan->CreateEntityFromScript(czItemName))
+				if(Entity* pkEnt = g_pkObjMan->CreateEntityFromScript(strItemName.c_str()))
 				{
 					//try adding it to the container
 					if(pkCP->AddMove(pkEnt->GetEntityID(),-1,-1,-1))
@@ -874,14 +875,14 @@ namespace SI_P_Container
 					}
 					else
 					{
-						cout<<"WARNING: could not create item "<<czItemName<<" in container "<<iContainerID<<endl;
+						cout<<"WARNING: could not create item "<<strItemName<<" in container "<<iContainerID<<endl;
 						g_pkObjMan->Delete(pkEnt);
 						return 0;
 					}
 					
 				}
 				else
-					cout<<"WARNING: CreateItemInContainerLua could not create item "<<czItemName<<endl;
+					cout<<"WARNING: CreateItemInContainerLua could not create item "<<strItemName<<endl;
 			}
 		}
 		

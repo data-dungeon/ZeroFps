@@ -114,19 +114,20 @@ int CreateEntityLua (lua_State* pkLua)
 {
 	if( g_pkScript->GetNumArgs(pkLua) == 2)
 	{
-     	char	acType[128];
-		g_pkScript->GetArgString(pkLua, 0, acType);
+     	//char	acType[128];
+		string strType;
+		g_pkScript->GetArgString(pkLua, 0, strType);
 
 		Vector3 kPos;
 		kPos = GetVectorArg(pkLua, 2);
 
-		if(Entity* pkEntity = g_pkObjMan->CreateEntityFromScriptInZone(acType,kPos))
+		if(Entity* pkEntity = g_pkObjMan->CreateEntityFromScriptInZone(strType.c_str(),kPos))
 		{
 			g_pkScript->AddReturnValue( pkLua, pkEntity->GetEntityID() );
 			return 1;
 		}
 		else
-			cout<<"Error CreateEntityLua ,while creating entity from script"<<acType<<endl;
+			cout<<"Error CreateEntityLua ,while creating entity from script"<<strType<<endl;
 	}
 
 	g_pkScript->AddReturnValue( pkLua, -1 );
@@ -259,8 +260,9 @@ int InitParameterLua(lua_State* pkLua)
 	if(!g_pkScript->VerifyArg(pkLua, 2))
 		return 0;
 
-	char acName[50];
-	g_pkScript->GetArg(pkLua, 0, acName);
+// 	char acName[50];
+	string strName;
+	g_pkScript->GetArgString(pkLua, 0, strName);
 	
 	//char acData[50];
 	//g_pkScript->GetArgString(pkLua, 1, (char*)acData);
@@ -270,8 +272,8 @@ int InitParameterLua(lua_State* pkLua)
 	//if(!g_kScriptState.g_pkLastProperty->SetValue((string)acName,(string)acData))
 	//	cout<<"Error setting parameter:"<<acName<<" to "<<acData<<endl;
 
-	if(!g_kScriptState.g_pkLastProperty->SetValue((string)acName, strData))
-		cout<<"Error setting parameter:"<<acName<<" to "<<strData.c_str()<<endl;
+	if(!g_kScriptState.g_pkLastProperty->SetValue(strName, strData))
+		cout<<"Error setting parameter:"<<strName<<" to "<<strData<<endl;
 	return 0;
 }	
 
@@ -469,13 +471,15 @@ int SendEventLua(lua_State* pkLua)
 	g_pkScript->GetArgNumber(pkLua, 0, &dTemp);
 	int iTargetEntity = (int)dTemp;
 	
-	char acEvent[128];
-	g_pkScript->GetArgString(pkLua, 1, acEvent);
+// 	char acEvent[128];
+	string strEvent;
+	g_pkScript->GetArgString(pkLua, 1, strEvent);
 
-	char acEventParam[128];
-	g_pkScript->GetArgString(pkLua, 2, acEventParam);
+// 	char acEventParam[128];
+	string strEventParam;
+	g_pkScript->GetArgString(pkLua, 2, strEventParam);
 
-	g_pkObjMan->SendMsg(string(acEvent), string(acEventParam), g_kScriptState.g_iCurrentObjectID, iTargetEntity);
+	g_pkObjMan->SendMsg(strEvent, strEventParam, g_kScriptState.g_iCurrentObjectID, iTargetEntity);
 	return 0;
 }
 

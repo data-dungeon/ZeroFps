@@ -270,10 +270,11 @@ int SetPSystemLua(lua_State* pkLua)
 			
 			if(ps)
 			{
-				char	acType[128];
-				g_pkScript->GetArgString(pkLua, 1, acType);
+				//char	acType[128];
+				string strType;
+				g_pkScript->GetArgString(pkLua, 1, strType);
 				
-				ps->SetPSType((string)acType);
+				ps->SetPSType(strType);
 				return 0;
 			}
 		}

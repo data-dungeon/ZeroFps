@@ -2129,14 +2129,16 @@ int SetParameterLua(lua_State* pkLua)
 		return 0;
 	}
 
-	char acName[50];
-	g_pkScript->GetArg(pkLua, 2, acName);
+	//char acName[50];
+	string strName;
+	g_pkScript->GetArgString(pkLua, 2, strName);
 	
-	char acData[50];
-	g_pkScript->GetArgString(pkLua, 3, (char*)acData);
+	//char acData[50];
+	string strData;
+	g_pkScript->GetArgString(pkLua, 3, strData);
 	
-	if(!pkProp->SetValue((string)acName,(string)acData))
-		cout<<"Error setting parameter:"<<acName<<" to "<<acData<<endl;
+	if(!pkProp->SetValue(strName,strData))
+		cout<<"Error setting parameter:"<<strName<<" to "<<strData<<endl;
 	return 0;
 }
 

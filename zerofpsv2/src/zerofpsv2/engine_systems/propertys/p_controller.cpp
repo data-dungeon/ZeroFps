@@ -197,13 +197,14 @@ namespace SI_PController
 // p_controller: objectID(0), NameOfKey(string)(1), axis:X,Y,Z(2), force(float)(3), input (optional, default=KEYBOARD)(4)
 int BindKeyLua(lua_State* pkLua)
 {
-	char strKeyName[255];
+	//char strKeyName[255];
+	string strName;
 	double dObjectID, dAxis, dForce;
 
 	if( g_pkScript->GetNumArgs(pkLua) == 4 )
 	{
 		g_pkScript->GetArgNumber(pkLua, 0, &dObjectID);
-		g_pkScript->GetArgString(pkLua, 1, strKeyName);
+		g_pkScript->GetArgString(pkLua, 1, strName);
 		g_pkScript->GetArgNumber(pkLua, 2, &dAxis);
 		g_pkScript->GetArgNumber(pkLua, 3, &dForce);
 
@@ -212,7 +213,7 @@ int BindKeyLua(lua_State* pkLua)
 			return 0;
 
 		if ( P_Controller* pkP_Controller = (P_Controller*)pkEntity->GetProperty("P_Controller") )
-			pkP_Controller->AddTrigger (string(strKeyName), int(dAxis), dForce);
+			pkP_Controller->AddTrigger (strName, int(dAxis), dForce);
 	}
 
 	return 0;

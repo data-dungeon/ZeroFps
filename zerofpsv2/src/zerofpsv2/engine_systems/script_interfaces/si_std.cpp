@@ -80,10 +80,11 @@ int PrintLua(lua_State* pkLua)
 {
 	for(int i=0;i<g_pkScript->GetNumArgs(pkLua);i++)
 	{
-		char acText[256];
-		g_pkScript->GetArgString(pkLua, i, acText);
+		//char acText[256];
+		string strText;
+		g_pkScript->GetArgString(pkLua, i, strText);
 	
-		cout<<acText;
+		cout<<strText;
 	}
 	
 	cout<<endl;
