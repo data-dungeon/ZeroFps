@@ -22,8 +22,6 @@ bool ZShader::StartUp()
 			
 	SetVertexProgram(NO_VPROGRAM);
 			
-	testvp = new 	ZFResourceHandle();
-		
 			
 	return true;
 } 
@@ -643,7 +641,7 @@ bool ZShader::HaveVertexProgramExt()
 {
 	unsigned char* pcExt = const_cast<unsigned char*>(glGetString(GL_EXTENSIONS));		
 
-	if(strcmp("GL_ARB_vertex_program",(const char*)pcExt) >= 0)
+	if(strstr((const char*)pcExt,"GL_ARB_vertex_program") != NULL)
 	{
 		return true;	
 	}

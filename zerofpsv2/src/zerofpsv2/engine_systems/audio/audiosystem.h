@@ -87,7 +87,7 @@ class ENGINE_SYSTEMS_API ZFSound : public ZFResource
 		int m_iNrOfPlays;					// added by 1 each time this sound is played		
 		int m_iPriority;	
 
-		friend ZFAudioSystem;	
+		friend class ZFAudioSystem;	
 };
 
 ENGINE_SYSTEMS_API ZFResource* Create__WavSound();

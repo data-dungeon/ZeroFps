@@ -155,8 +155,6 @@ class RENDER_API ZShader : public ZFSubSystem
 		//vertex program is NO_VPROGRAM if no vertex program is active
 		int			m_iCurrentVertexProgram;
 		
-		ZFResourceHandle* testvp;
-	
 	
 		//this enable/disable client states if pointers have been set
 		void SetupClientStates();			

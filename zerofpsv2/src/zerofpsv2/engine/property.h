@@ -9,7 +9,7 @@
 #include "network.h"
 #include <cfloat>
 #include "../basic/zfmempackage.h"
-#include <typeinfo.h> 
+#include <typeinfo> 
 using namespace std;
 
 struct Collision;
