@@ -6,6 +6,7 @@
 #include "zguiscrollbar.h"
 #include "zguicheckbox.h"
 #include "zguitreebox.h"
+#include "zgui.h"
 
 const int BUTTON_SIZE = 16;
 const int VERT_ROW_SPACE = 1;
@@ -24,6 +25,7 @@ const int SCROLLBAR_WIDTH = 16;
 ZGuiTreebox::ZGuiTreebox(Rect kArea, ZGuiWnd* pkParent, bool bVisible, int iID) 
 	: ZGuiWnd(kArea, pkParent, bVisible, iID)
 {
+	m_pkSelectedNode = NULL;
 	m_pkVertScrollbar = NULL;
 	m_pkHorzScrollbar = NULL;
 	m_iStartrow = 0;
@@ -50,21 +52,20 @@ ZGuiTreeboxNode* ZGuiTreebox::AddItem(ZGuiTreeboxNode* pkParent,
 	return pkNewBranch;
 }
 
-ZGuiTreeboxNode* ZGuiTreebox::CreateNode( ZGuiTreeboxNode* pkParent, char* szText, 
-											unsigned char ucSkinIndex,
-											unsigned char ucSkinIndexSelected)
+ZGuiTreeboxNode* ZGuiTreebox::CreateNode(ZGuiTreeboxNode* pkParent, char* szText, 
+										 unsigned char ucSkinIndex,
+										 unsigned char ucSkinIndexSelected)
 {
-	static int s_iRootLevel = 0;
-	int x = 0, y = s_iRootLevel * (BUTTON_SIZE+VERT_ROW_SPACE);
-
-	ZGuiTreeboxNode* pkNewItem = new ZGuiTreeboxNode;
-	pkNewItem->uiRootLevel = s_iRootLevel;
-	
-	if(pkParent == NULL)
+	if(m_kNodeList.empty() == false && pkParent == NULL)
 	{
-		s_iRootLevel++;
+		printf("Failed to create node! Node must have a parent.\n");
+		return NULL;
 	}
-	else
+
+	int x = 0, y = 0;
+	ZGuiTreeboxNode* pkNewItem = new ZGuiTreeboxNode;
+	
+	if(pkParent != NULL)
 	{
 		int iNumItems = pkParent->kChilds.size();
 
@@ -76,6 +77,10 @@ ZGuiTreeboxNode* ZGuiTreebox::CreateNode( ZGuiTreeboxNode* pkParent, char* szTex
 		// Nu när vi har laggt till ett barn till föräldern så kan vi
 		// byta skin på föräldern.
 		pkParent->pkButton->SetButtonCheckedSkin(GetItemSkin(pkParent->ucSkinIndexSelected)); 
+	}
+	else
+	{
+		x = y = -BUTTON_SIZE;
 	}
 
 	pkNewItem->pkNext = NULL;
@@ -119,6 +124,10 @@ ZGuiTreeboxNode* ZGuiTreebox::CreateNode( ZGuiTreeboxNode* pkParent, char* szTex
 	}
 
 	m_kNodeList.push_back(pkNewItem);
+
+	// Öppna noden om dess parent är root noden (så att den syns från början).
+	if(pkParent == GetRoot())
+		OpenNode(pkParent, true);
 
 	return pkNewItem;
 }
@@ -224,6 +233,8 @@ void ZGuiTreebox::OpenNode(ZGuiTreeboxNode *pkClickNode, bool bOpen)
 		}
 	}
 
+	min += BUTTON_SIZE; // räkna inte med root noden.
+
 	if(!(max == -10000000 && min == 10000000))
 		m_iItemHeight = abs(max-min);
 	else
@@ -244,7 +255,19 @@ bool ZGuiTreebox::Notify(ZGuiWnd* pkWnd, int iCode)
 				// Öppna/stäng noden som har klickats.
 				bool bShow = ((ZGuiCheckbox*) pkWnd)->IsChecked(); 
 				OpenNode((*it), bShow);
+				m_pkSelectedNode = (*it);
+				SetSelColor(m_pkSelectedNode);
+				break;
 			}
+		}
+
+		// Set focus on selected row if clicked outside 
+		// the nodetree (but inside the controll window).
+		if(m_pkSelectedNode)
+		{
+			ZGui* pkGui = GetGUI();
+			if(pkGui)
+				pkGui->SetFocus(m_pkSelectedNode->pkButton);
 		}
 	}
 	else
@@ -255,6 +278,7 @@ bool ZGuiTreebox::Notify(ZGuiWnd* pkWnd, int iCode)
 			ScrollRows(true);
 		}		
 	}
+
 	return true;
 }
 
@@ -295,6 +319,10 @@ void ZGuiTreebox::CreateInternalControls()
 	m_pkHorzScrollbar = new ZGuiScrollbar(Rect(x,y,x+w,y+h),
 		this,true,HORZ_SCROLLBAR_ID); 
 	m_pkHorzScrollbar->SetScrollInfo(0,1,1.0f,0); 
+
+	// Create root node.
+	ZGuiTreeboxNode* pkRoot = AddItem(NULL, "Root", 1, 1);
+	pkRoot->bIsOpen = true;
 }
 
 void ZGuiTreebox::ChangeScrollbarRange(int width, int height)
@@ -439,3 +467,14 @@ void ZGuiTreebox::PrintHierarchy()
 	printf("-----------------------------------------------------\n");
 	PrintNode(m_kNodeList.front());
 }
+
+ZGuiTreeboxNode* ZGuiTreebox::GetRoot()
+{
+	return m_kNodeList.front();
+}
+
+void ZGuiTreebox::SetSelColor(ZGuiTreeboxNode* pkNode)
+{
+
+}
+

@@ -169,16 +169,6 @@ bool Gui::CreateWindows()
 {	
 	CreateMenu(m_pkEdit->pkIni, "../data/gui_resource_files/menu.txt");
 
-	// testing treebox
-	bool bTestingTreeBox = false;
-	if(bTestingTreeBox)
-	{
-		CreateTestWnd();
-		Get("TestWnd")->Show();
-		m_pkEdit->pkInput->ToggleGrab();
-		m_pkEdit->m_eCameraMode = Precision;
-	}
-
 	m_kDialogs.insert(map<string,DlgBox*>::value_type(
 		string("PropertyDlg"), new EditPropertyDlg(this, 
 		m_pkEdit->pkPropertyFactory, 
@@ -191,6 +181,16 @@ bool Gui::CreateWindows()
 			m_pkEdit->pkInput, MAINWINPROC)));
 
 	GetDlg("WorkPanelDlg")->Open(); 
+
+	// testing treebox
+	bool bTestingTreeBox = false;
+	if(bTestingTreeBox)
+	{
+		CreateTestWnd();
+		Get("TestWnd")->Show();
+		m_pkEdit->pkInput->ToggleGrab();
+		m_pkEdit->m_eCameraMode = Precision;
+	}
 
 	return true;
 }
@@ -217,8 +217,9 @@ bool Gui::InitSkins()
 	int cbox_on = m_pkEdit->pkTexMan->Load("file:../data/textures/checkbox_on.bmp",0);
 	int slider = m_pkEdit->pkTexMan->Load("file:../data/textures/slider.bmp",0);
 	int slider_a = m_pkEdit->pkTexMan->Load("file:../data/textures/slider_a.bmp",0);
-	int treenode = m_pkEdit->pkTexMan->Load("file:../data/textures/treenode.bmp",0);
-	int treenode_s = m_pkEdit->pkTexMan->Load("file:../data/textures/treenode_s.bmp",0);
+	int treenode_c = m_pkEdit->pkTexMan->Load("file:../data/textures/treenode_c.bmp",0);
+	int treenode_pc = m_pkEdit->pkTexMan->Load("file:../data/textures/treenode_pc.bmp",0);
+	int treenode_po = m_pkEdit->pkTexMan->Load("file:../data/textures/treenode_po.bmp",0);
 
 	m_kSkinMap.insert( map<string, ZGuiSkin*>::value_type(string("main"), 
 		new ZGuiSkin(bk1,bd1,bd2,bd3,-1,-1,-1,bda,16,true) ) ); 
@@ -276,10 +277,12 @@ bool Gui::InitSkins()
 		new ZGuiSkin(0, 0, 255, 0, 0, 0, 1)) ); 
 	m_kSkinMap.insert( map<string, ZGuiSkin*>::value_type(string("slider_bk_a"), 
 		new ZGuiSkin(255, 0, 255, 0, 0, 0, 1)) ); 
-	m_kSkinMap.insert( map<string, ZGuiSkin*>::value_type(string("treenode"), 
-		new ZGuiSkin(treenode,false)) ); 
-	m_kSkinMap.insert( map<string, ZGuiSkin*>::value_type(string("treenode_s"), 
-		new ZGuiSkin(treenode_s,false)) );
+	m_kSkinMap.insert( map<string, ZGuiSkin*>::value_type(string("treenode_c"), 
+		new ZGuiSkin(treenode_c,false)) ); 
+	m_kSkinMap.insert( map<string, ZGuiSkin*>::value_type(string("treenode_pc"), 
+		new ZGuiSkin(treenode_pc,false)) );
+	m_kSkinMap.insert( map<string, ZGuiSkin*>::value_type(string("treenode_po"), 
+		new ZGuiSkin(treenode_po,false)) );
 
 	return true;
 }
@@ -648,53 +651,42 @@ bool Gui::HaveFocus()
 void Gui::CreateTestWnd()
 {
 	int id = 5000;
-	int w = 400, h = 500;
-	int x = m_pkEdit->m_iWidth/2 - w/2;
-	int y = m_pkEdit->m_iHeight/2 - h/2;
+	int w = GetDlg("WorkPanelDlg")->Width(), 
+		h = m_pkEdit->m_iHeight - GetDlg("WorkPanelDlg")->Height()-21;
+	int x = m_pkEdit->m_iWidth - w;
+	int y = m_pkEdit->m_iHeight - h;
 
 	ZGuiWnd* pkWnd = new ZGuiWnd(Rect(x,y,x+w,y+h),NULL,
 		false,id++);
 
 	m_pkGui->AddMainWindow(id++,pkWnd,"TestWnd",MAINWINPROC,false);
 
-	ZGuiTreebox* pkTreebox = new ZGuiTreebox(Rect(50,50,50+300,50+300), 
+	ZGuiTreebox* pkTreebox = new ZGuiTreebox(Rect(0,0,w,h), 
 		pkWnd, true, id++);
 
-	pkTreebox->InsertBranchSkin(0, GetSkin("treenode"));
-	pkTreebox->InsertBranchSkin(1, GetSkin("treenode_s"));
-	pkTreebox->InsertBranchSkin(2, GetSkin("arrow_prev_up"));
+	pkTreebox->InsertBranchSkin(0, GetSkin("treenode_c"));
+	pkTreebox->InsertBranchSkin(1, GetSkin("treenode_pc"));
+	pkTreebox->InsertBranchSkin(2, GetSkin("treenode_po"));
 
-	ZGuiTreeboxNode* pkParent = pkTreebox->AddItem(NULL, "Animals", 0, 1);
-	ZGuiTreeboxNode* pkApa = pkTreebox->AddItem(pkParent, "Aps", 0, 1);
-	ZGuiTreeboxNode* pkParent7 = pkTreebox->AddItem(pkParent, "Cows", 0, 1);
-	ZGuiTreeboxNode* pkParent4 = pkTreebox->AddItem(pkApa, "Big ape", 0, 1);
-	pkTreebox->AddItem(pkParent4, "Big ape, big nose", 0, 1);
-	ZGuiTreeboxNode* pkParent5 = pkTreebox->AddItem(pkParent4, "Big ape, wicked", 0, 1);
-	pkTreebox->AddItem(pkParent5, "Donkey Kong", 0, 1);
-	ZGuiTreeboxNode* pkParent6 = pkTreebox->AddItem(pkParent5, "King Kong", 0, 1);
-	pkTreebox->AddItem(pkParent6, "Climbing", 0, 1);
-	pkTreebox->AddItem(pkParent6, "Eating", 0, 1);
-	pkTreebox->AddItem(pkParent4, "Big ape, small eyes", 0, 1);
-	pkTreebox->AddItem(pkParent4, "Big ape, no smell", 0, 1);
-	pkTreebox->AddItem(pkApa, "Brown ape", 0, 1);
-	ZGuiTreeboxNode* pkParent2 = pkTreebox->AddItem(pkParent, "Cats", 0, 1);
-	pkTreebox->AddItem(pkParent2, "Katten Gustav", 0, 1);
-	ZGuiTreeboxNode* pkParent3 = pkTreebox->AddItem(pkParent2, "Wild cats", 0, 1);
-	pkTreebox->AddItem(pkParent3, "Lion", 0, 1);
-	pkTreebox->AddItem(pkParent3, "Tiger", 0, 1);
-	pkTreebox->AddItem(pkParent3, "Black Panter", 0, 1);
-	pkTreebox->AddItem(pkParent7, "KoBo", 0, 1);
-	pkTreebox->AddItem(pkParent7, "Tjuren Ferdinand", 0, 1);
-	ZGuiTreeboxNode* pkParent8 = pkTreebox->AddItem(pkParent, "Dogs", 0, 1);
-	ZGuiTreeboxNode* pkParent9 = pkTreebox->AddItem(pkParent8, "Bulldog", 0, 1);
-	pkTreebox->AddItem(pkParent9, "Fet", 0, 1);
-	pkTreebox->AddItem(pkParent9, "AsFet", 0, 1);
-	pkTreebox->AddItem(pkParent8, "Labrador", 0, 1);
-	pkTreebox->AddItem(pkParent8, "Newfoundland", 0, 1);
-	pkTreebox->AddItem(pkParent3, "Pamela Andersson", 2, 1);
+	ZGuiTreeboxNode* pkRoot = pkTreebox->GetRoot();
+
+	ZGuiTreeboxNode* pkObject = pkTreebox->AddItem(pkRoot, "Objects", 1, 2);
+	ZGuiTreeboxNode* pkPhysics = pkTreebox->AddItem(pkObject, "Physics", 1, 2);
+	ZGuiTreeboxNode* pkShips = pkTreebox->AddItem(pkPhysics, "Ships", 1, 2);
+	pkTreebox->AddItem(pkShips, "Playership", 0, 1);
+	ZGuiTreeboxNode* pkByggnad = pkTreebox->AddItem(pkPhysics, "Buildings", 1, 2);
+	pkTreebox->AddItem(pkByggnad, "az3", 0, 1);
+	ZGuiTreeboxNode* pkBall = pkTreebox->AddItem(pkPhysics, "Balls", 1, 2);
+	pkTreebox->AddItem(pkBall, "Ball1", 0, 1);
+	pkTreebox->AddItem(pkBall, "Ball2", 0, 1);
+	pkTreebox->AddItem(pkBall, "Ball3", 0, 1);
+	pkTreebox->AddItem(pkPhysics, "Tree", 0, 1);
+	ZGuiTreeboxNode* pkWeapons = pkTreebox->AddItem(pkObject, "Weapons", 0, 1);
+	ZGuiTreeboxNode* pkProjectiles = pkTreebox->AddItem(pkObject, "Projectiles", 1, 2);
+	pkTreebox->AddItem(pkProjectiles, "Torpedo", 0, 1);
+	pkTreebox->AddItem(pkProjectiles, "Homingmissile", 0, 1);
 	
-	pkWnd->SetSkin(new ZGuiSkin(255,255,255,0,0,0,1));
-	pkTreebox->SetSkin(new ZGuiSkin(255,128,64,0,0,0,1));
+	pkTreebox->SetSkin(new ZGuiSkin(255,255,255,0,0,0,1));
 	pkTreebox->SetScrollbarSkin(GetSkin("menu_item_sel"), 
 		GetSkin("menu_item_hl"), GetSkin("menu_item_hl"));
 

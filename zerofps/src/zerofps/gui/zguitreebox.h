@@ -22,7 +22,6 @@ struct GUI_API ZGuiTreeboxNode
 
 	unsigned char ucSkinIndex;	
 	unsigned char ucSkinIndexSelected;
-	unsigned int  uiRootLevel;
 	ZGuiTreeboxNode *pkParent, *pkNext;
 
 	bool bIsOpen; // samma sak som m_bVisible fast ignoreras av renderingen och används när höjden på träden skall räknas fram.
@@ -33,6 +32,7 @@ struct GUI_API ZGuiTreeboxNode
 class GUI_API ZGuiTreebox : public ZGuiWnd
 {
 public:
+	ZGuiTreeboxNode* GetRoot();
 	void PrintHierarchy();
 	ZGuiTreebox(Rect kArea, ZGuiWnd* pkParent, bool bVisible, int iID);
 	virtual ~ZGuiTreebox();
@@ -56,6 +56,7 @@ protected:
 	bool Notify(ZGuiWnd* pkWnd, int iCode);
 	
 private:
+	void SetSelColor(ZGuiTreeboxNode* pkNode);
 	void ScrollRows(bool bVertically);
 	void ChangeScrollbarRange(int width, int height);
 	void MoveNode(ZGuiTreeboxNode* pkNode, int steps, bool bRecursive=true);
@@ -74,6 +75,7 @@ private:
 	list<ZGuiSkin*> m_kItemSkinList;
 	list<ZGuiTreeboxNode*> m_kNodeList;
 
+	ZGuiTreeboxNode* m_pkSelectedNode;
 	ZGuiScrollbar* m_pkVertScrollbar;
 	ZGuiScrollbar* m_pkHorzScrollbar;
 	int m_iStartrow;
