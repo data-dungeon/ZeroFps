@@ -132,6 +132,9 @@ class ENGINE_API ZeroFps : public I_ZeroFps {
 		float		m_fEngineTime;						// Time since engine start.
 		int		m_iRenderOn;
 		
+		int	m_iServerConnection;	// The Connection num we have on the server.		
+		int	m_iRTSClientObject;
+		
 		Camera *m_pkCamera;
 		Camera *m_pkConsoleCamera;
 		string m_kCurentDir;
@@ -269,15 +272,15 @@ class ENGINE_API ZeroFps : public I_ZeroFps {
 		// ZeroRTS - 
 		/* Returns ID of of object Client use to send data to server. Returns -1 if object is unknown at the moment.
 			Keep asking :).*/
-		int	m_iRTSClientObject;
 		int GetClientObjectID();
-		int	m_iServerConnection;	// The Connection num we have on the server.
-
+		int GetConnectionID() {return m_iServerConnection;};
 		
 		bool StartUp();
 		bool ShutDown();
 		bool IsValid();
 
+
+		friend class NetWork;
 };
 
 

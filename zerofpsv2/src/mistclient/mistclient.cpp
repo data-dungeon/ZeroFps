@@ -231,21 +231,29 @@ void MistClient::OnSystem()
 
 
 	if(m_pkServerInfo)
-	{
-		int id = m_pkServerInfo->GetPlayerInfo(0)->kControl[m_iActiveCaracter];	
-		Object* pkObj = pkObjectMan->GetObjectByNetWorkID(id);
-		
-		if(pkObj)
+	{		
+		PlayerInfo* pi = m_pkServerInfo->GetPlayerInfo(pkFps->GetConnectionID());
+		if(pi)
 		{
-			CameraProperty* cp = (CameraProperty*)pkObj->GetProperty("CameraProperty");
+			int id = pi->kControl[m_iActiveCaracter];	
+			Object* pkObj = pkObjectMan->GetObjectByNetWorkID(id);
 			
-			if(!cp)
-				CameraProperty* cp = (CameraProperty*)pkObj->AddProperty("CameraProperty");
+			if(pkObj)
+			{
+				CameraProperty* cp = (CameraProperty*)pkObj->GetProperty("CameraProperty");
+			
+				if(!cp)
+					CameraProperty* cp = (CameraProperty*)pkObj->AddProperty("CameraProperty");
 		
-			if(cp)
-				cp->SetCamera(m_pkCamera);
-		
-		}		
+				if(cp)
+				{
+					cp->SetCamera(m_pkCamera);
+					cp->SetType(CAM_TYPE3PERSON);
+					m_pkCamProp = cp;
+				}
+			}		
+		}else
+			cout<<"cant find player object id"<<pkFps->GetConnectionID()<<endl;
 	}
 
 }
@@ -262,13 +270,13 @@ void MistClient::Input()
 		if(m_pkCamProp)
 		{
 			m_fAngle +=x/100.0;
-			m_fDistance += z/10.0;
+			m_fDistance += z/60.0;
 	
-			if(m_fDistance < 10)
-				m_fDistance = 10;
+			if(m_fDistance < 0.5)
+				m_fDistance = 0.5;
 		
-			if(m_fDistance > 35)
-				m_fDistance = 35;
+			if(m_fDistance > 2)
+				m_fDistance = 2;
 				
 			m_pkCamProp->Set3PYAngle(m_fAngle);
 			m_pkCamProp->Set3PDistance(m_fDistance);
@@ -337,6 +345,14 @@ void MistClient::Input()
 	{
 		if(pkFps->GetTicks() - m_fClickDelay > 0.2)
 		{	
+			ClientOrder order;
+			strcpy(order.m_csOrderName,"Klicka");
+			order.m_iClientID = pkFps->GetConnectionID();
+			order.m_iObjectID = 0;
+			
+			if(m_pkClientControlP)
+				m_pkClientControlP->AddOrder(order);
+	
 	
 			Object* pkObject = GetTargetObject();
 			

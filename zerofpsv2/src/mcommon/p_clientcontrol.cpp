@@ -1,5 +1,7 @@
 #include "p_clientcontrol.h" 
 
+queue<ClientOrder> P_ClientControl::m_kServerOrders;
+
 P_ClientControl::P_ClientControl()
 {
 	strcpy(m_acName,"P_ClientControl");		
@@ -10,13 +12,68 @@ P_ClientControl::P_ClientControl()
 	
 	m_pkFps=static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
 
-
-	cout<<"client Control created------------------------------"<<endl;
+	m_iMaxOrders = 4;
 }
 
 void P_ClientControl::Update()
 {
 
+	cout<<"Got "<<m_kServerOrders.size()<< " pending orders"<<endl;
+}
+
+
+void P_ClientControl::PackTo( NetPacket* pkNetPacket ) 
+{
+	int iNrOO = m_kClientOrders.size();
+	
+	//make sure we dont send more orders than allowed
+	if(iNrOO > m_iMaxOrders)
+		iNrOO = m_iMaxOrders;
+	
+	pkNetPacket->Write(&iNrOO,sizeof(iNrOO));	
+
+	cout<<"sending orders:"<<iNrOO<<endl;
+
+	while(!m_kClientOrders.empty())
+	{
+		pkNetPacket->Write_Str(m_kClientOrders.front().m_csOrderName);		
+		pkNetPacket->Write(&m_kClientOrders.front().m_iObjectID,sizeof(m_kClientOrders.front().m_iObjectID));		
+		pkNetPacket->Write(&m_kClientOrders.front().m_iClientID,sizeof(m_kClientOrders.front().m_iClientID));				
+		m_kClientOrders.pop(); 
+	}
+}
+
+void P_ClientControl::PackFrom( NetPacket* pkNetPacket ) 
+{
+	int iNrOO;
+	pkNetPacket->Read(&iNrOO,sizeof(iNrOO));
+	
+	cout<<"got orders:"<<iNrOO<<endl;
+	//never process more orders then clients are allowed to do
+	if(iNrOO > m_iMaxOrders)
+		cout<<"Error client has added to many orders in queue:"<<endl;
+
+	ClientOrder temporder;
+	
+	for(int i = 0;i<iNrOO;i++)
+	{
+		pkNetPacket->Read_Str(temporder.m_csOrderName);
+		pkNetPacket->Read(&temporder.m_iObjectID,sizeof(temporder.m_iObjectID));
+		pkNetPacket->Read(&temporder.m_iClientID,sizeof(temporder.m_iClientID));		
+		
+		//if we already gotten max nr of orders, dont add this one
+		if(i > m_iMaxOrders)
+			if(temporder.m_iClientID == m_iClientID)
+				m_kServerOrders.push(temporder);
+			else
+				cout<<"Client :"<<m_iClientID<<" is trying to cheat"<<endl;
+	}
+}
+
+void P_ClientControl::AddOrder(ClientOrder kNewOrder)
+{
+	m_kClientOrders.push(kNewOrder);
+	cout<<"added order"<<endl;
 }
 
 

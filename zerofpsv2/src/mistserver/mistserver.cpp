@@ -528,14 +528,29 @@ void MistServer::OnServerClientJoin(ZFClient* pkClient,int iConID)
 	//TrackProperty* pkTrack = dynamic_cast<TrackProperty*>(pkClient->m_pkObject->GetProperty("TrackProperty"));
 	//pkTrack->SetClient(iConID);
 
-	pkClient->m_pkObject->AddProperty("P_ClientControl");
+	P_ClientControl* pcc = (P_ClientControl*)pkClient->m_pkObject->AddProperty("P_ClientControl");
+	if(pcc)	
+		pcc->m_iClientID = iConID;
 		
 	UpdateStartLocatons();
-	int iPlayerID  = CreatePlayer("Olle","Start",iConID);
+	
+	
+	vector<string> kNames;
+	kNames.push_back("Kalle");
+	kNames.push_back("stefan");	
+	kNames.push_back("olle");	
+	kNames.push_back("bengt");	
+	kNames.push_back("röva");	
+	kNames.push_back("fitta");	
+	kNames.push_back("hellvete");	
+	kNames.push_back("kuk");	
+	kNames.push_back("hora");	
+	
+	int iPlayerID  = CreatePlayer(kNames[iConID].c_str(),"Start",iConID);
 	
 	if(m_pkServerInfoP)
 	{	
-		m_pkServerInfoP->AddPlayer(iConID,"UnKnownPlayer");
+		m_pkServerInfoP->AddPlayer(iConID,kNames[iConID].c_str());
 		m_pkServerInfoP->AddObject(iConID,iPlayerID);
 	}
 }

@@ -71,6 +71,7 @@ ZeroFps::ZeroFps(void) : I_ZeroFps("ZeroFps")
 	m_fAvrageFpsTime			= 0;
 	m_iAvrageFrameCount			= 0;
 	m_iRenderOn					= 1;
+	m_iServerConnection		= -1;
 
 	// Register Variables
 	RegisterVariable("r_maddraw",			&m_iMadDraw,CSYS_INT);

@@ -20,7 +20,7 @@ CameraProperty::CameraProperty()
 	m_kInterPos.Set(0,0,0);
 	m_f3PYAngle = 0;
 	m_f3PYPos = 1;
-	m_f3PDistance = 20;
+	m_f3PDistance = 1;
 }
 
 
@@ -47,12 +47,12 @@ void CameraProperty::Update()
 				m_kInterPos +=dir/8;
 				
 				
-				float xp = sin(m_f3PYAngle) *1 ;
-				float zp = cos(m_f3PYAngle) *1 ;				
+				float xp = sin(m_f3PYAngle);
+				float zp = cos(m_f3PYAngle);				
 				
 				Vector3 campos = m_kInterPos + Vector3(xp,m_f3PYPos,zp).Unit() * m_f3PDistance;
 				
-				LookAt(campos, m_pkObject->GetWorldPosV(),Vector3(0,1,0));
+				LookAt(campos, m_kInterPos,Vector3(0,1,0));
 				
 				
 				strCamName = " 3P ";
