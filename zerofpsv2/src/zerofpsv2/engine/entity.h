@@ -336,6 +336,7 @@ class ENGINE_API Entity
 		void			SetRadius(float fRadius);
 
 		void			SetInterpolate(bool bInterpolate);
+		bool			GetInterpolate()						{	return m_bInterpolate;	};
 		
 		// Inlines & get/set functions
 		inline bool IsZone() 								{	return m_bZone;			};

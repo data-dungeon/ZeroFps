@@ -276,7 +276,8 @@ void MistClient::UpdateCharacter()
 				pkCam->Set3PDistance(4);									
 			}
 			
-			pkEnt->SetInterpolate(true);
+			if(!pkEnt->GetInterpolate())
+				cout<<"NO INTERPOLATION WTF!!"<<endl;
 		}
 		
 		//setup enviroment
