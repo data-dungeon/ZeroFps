@@ -163,46 +163,41 @@ void PlayerControlProperty::Update() {
 	
 	
 	
-	//camera tilting when walking
-	if(walk>6.28)
-		walk=0;
-	if(walk<0)
-		walk=6.28;
-	if(walking)
-		walk+=m_pkFps->GetFrameTime()*5;
-	else
-		walk*=0.99;
-//	m_pkObject->GetRot().z = (sin(walk))*2.5;	
 	
-	// Get mouse x,y		
-	int x,z;		
-	m_pkInput->RelMouseXY(x,z);
-
-	m_pkCameraProperty	=	static_cast<CameraProperty*>(m_pkObject->GetProperty("CameraProperty"));
 	
-	if(m_pkInput->Pressed(KEY_X) == false && !m_bLockCamera){
-		// Rrotate the camera and scale with fov.		
-		Vector3 newrot = m_pkObject->GetRot();
+	if(!m_bLockCamera)
+	{		
+		// Get mouse x,y		
+		int x,z;		
 		
-		newrot.x += z / (180 / m_fFov);
-		newrot.y += x / (180 / m_fFov);
+		m_pkInput->RelMouseXY(x,z);
 
-		if(newrot.x>90)
-			newrot.x=90;
 		
-		if(newrot.x<-90)
-			newrot.x=-90;
-			
-		m_pkObject->SetRot(newrot);
-	}
-	else {
-		if(m_pkCameraProperty) {
-			m_pkCameraProperty->GetDynamicAngles().x += z / (180 / m_fFov);
-			m_pkCameraProperty->GetDynamicAngles().y += x / (180 / m_fFov);
-			}
+		m_pkCameraProperty	=	static_cast<CameraProperty*>(m_pkObject->GetProperty("CameraProperty"));
+	
+		if(m_pkInput->Pressed(KEY_X) == false){
+			// Rrotate the camera and scale with fov.		
+			Vector3 newrot = m_pkObject->GetRot();
+		
+			newrot.x += z / (180 / m_fFov);
+			newrot.y += x / (180 / m_fFov);
+
+			if(newrot.x>90)
+				newrot.x=90;
+		
+			if(newrot.x<-90)
+				newrot.x=-90;
+				
+			m_pkObject->SetRot(newrot);
 		}
-
-	if(m_bLockCamera)
+		else {
+			if(m_pkCameraProperty) {
+				m_pkCameraProperty->GetDynamicAngles().x += z / (180 / m_fFov);
+				m_pkCameraProperty->GetDynamicAngles().y += x / (180 / m_fFov);
+				}
+			}
+	}
+	else	
 		m_pkObject->SetRot(m_pkObject->GetRot());
 	
 	//update sound possition
@@ -420,8 +415,10 @@ bool PlayerControlProperty::PickUp(Object* pkObject)
 
 void PlayerControlProperty::Drop(Object *pkObject)
 {
-	pkObject->GetPos() = m_pkObject->GetPos();
-	pkObject->SetPos(m_pkObject->GetPos());	
+	Vector3 kPos = m_pkObject->GetPos() + (m_pkObject->GetRot().AToU() *1);
+
+	pkObject->GetPos() = kPos;
+	pkObject->SetPos(kPos);	
 	pkObject->AttachToClosestZone();
 
 }
