@@ -1,7 +1,7 @@
 #ifndef _TEXTUREPSPROP_H_
 #define _TEXTUREPSPROP_H_
 
-#include "ParticleProperty.h"
+#include "particleproperty.h"
 
 class TexturePSProp : public ParticleProperty
 {

@@ -17,6 +17,7 @@ extern "C"  {
 using namespace std;
 
 #include "script_x.h"
+#include "../basic/zfobjectmanger.h"
 
 #pragma warning (disable : 4251)
 
@@ -35,7 +36,7 @@ enum ScripObjectType
 	tVector3,
 };
 
-class SCRIPT_API ZFScript  
+class SCRIPT_API ZFScript  : public ZFSubSystem
 {
 public:
 	void AddReturnValue(lua_State* state,char *szValue, int legth);
@@ -54,14 +55,22 @@ public:
 	bool GetArgString(lua_State* state, int iIndex, char* data);
 
 	bool ExposeClass(char *szName, ScripObjectType eType, 
-		lua_CFunction o_LuaGet, lua_CFunction o_LuaSet);
+	lua_CFunction o_LuaGet, lua_CFunction o_LuaSet);
 	bool ExposeObject(const char* szName, void* pkData, ScripObjectType eType);
 	bool ExposeVariable(const char* szName, void* pkData, ScripVarType eType);
 	bool ExposeFunction(const char* szName, lua_CFunction o_Function);
 	bool CallScript(char* szFuncName, int iNumParams, int iNumResults);
 	bool RunScript(char* szFileName);
+	
+	
+	bool StartUp();
+	bool ShutDown();
+	bool IsValid();	
+	
 	ZFScript();
 	virtual ~ZFScript();
+
+
 
 private:
 

@@ -2,8 +2,8 @@
 #define _ENGINE_PSYSTEM_H_
 
 #include "../propertys/psproperties/particleproperty.h"
-#include "../../basic/Vector3.h"
-#include "../../basic/Vector2.h"
+#include "../../basic/vector3.h"
+#include "../../basic/vector2.h"
 
 #include <vector>
 	using namespace std;
@@ -102,3 +102,11 @@ public:
 };
 
 #endif
+
+
+
+
+
+
+
+

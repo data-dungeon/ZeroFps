@@ -1,7 +1,7 @@
 #ifndef _SIZEPSPROP_H_
 #define _SIZEPSPROP_H_
 
-#include "ParticleProperty.h"
+#include "particleproperty.h"
 
 class SizePSProp : public ParticleProperty
 {

@@ -15,8 +15,9 @@ void MovePSProp::Update()
 
 	vector<Particle>* pkParticles = &m_pkParent->m_kParticles;
 
+	int i;
 	// Update velocity
-	for ( int i = m_pkParent->Start(); i < m_pkParent->End(); i++ )
+	for ( i = m_pkParent->Start(); i < m_pkParent->End(); i++ )
 		m_pkParent->m_kParticles[i].m_kVelocity += m_pkParent->m_kParticles[i].m_kForce * fFrameTime;
  
 	// Update position

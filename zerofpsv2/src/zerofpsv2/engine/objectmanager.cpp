@@ -8,8 +8,7 @@
 #include "../engine_systems/propertys/primitives3d.h"
 #include "../engine_systems/propertys/proxyproperty.h"
 #include "fh.h"
-
-
+#include "../engine_systems/script_interfaces/objectmanager_scriptinterface.h"
 
 ZoneData& ZoneData::operator=(const ZoneData &kOther) 
 {
@@ -68,6 +67,7 @@ bool ObjectManager::StartUp()
 {
 	m_pkZeroFps	=	static_cast<ZeroFps*>(GetSystem().GetObjectPtr("ZeroFps"));		
 	m_pkNetWork	= static_cast<NetWork*>(GetSystem().GetObjectPtr("NetWork"));
+	m_pkScript = static_cast<ZFScript*>(GetSystem().GetObjectPtr("ZFScript"));
 
 	m_fEndTimeForceNet		= m_pkZeroFps->GetEngineTime();
 
@@ -80,6 +80,9 @@ bool ObjectManager::StartUp()
 
 	TESTVIM_LoadArcheTypes("zfoh.txt");
 
+	//setup script interface
+	ObjectManagerLua::Init(this,m_pkScript);
+	
 	return true; 
 }
 
@@ -316,6 +319,19 @@ Object* ObjectManager::CreateObjectByNetWorkID(int iNetID)
 
 //	pkNew->AddProperty("P_Primitives3D");
 	return pkNew;
+}
+
+Object* ObjectManager::CreateObjectFromScript(const char* acName)
+{
+	ObjectManagerLua::Reset();
+
+	if(!m_pkScript->RunScript((char*)acName))
+		return NULL;
+		
+	if(!m_pkScript->CallScript("Create", 0, 0))
+		return NULL;
+	
+	return ObjectManagerLua::g_pkReturnObject;
 }
 
 Object* ObjectManager::CreateObjectByArchType(const char* acName)
@@ -1510,4 +1526,5 @@ void ObjectManager::UnLoadZone(int iId)
 	Delete(kZData->m_pkZone);
 	kZData->m_pkZone = NULL;
 }
+
 

@@ -1,8 +1,8 @@
 #ifndef _MOVEPSPROP_H_
 #define _MOVEPSPROP_H_
 
-#include "ParticleProperty.h"
-#include "../../../basic/Vector3.h"
+#include "particleproperty.h"
+#include "../../../basic/vector3.h"
 
 class MovePSProp : public ParticleProperty
 {

@@ -71,7 +71,9 @@ void PSystem::Update( Vector3 kNewPosition )
 	}
 
 	// Update lifetime for particles
-	for ( int i = m_uiFirstParticle; i < m_uiLastParticle + 1; i++ )
+	int i;
+	
+	for (  i = m_uiFirstParticle; i < m_uiLastParticle + 1; i++ )
 	{
 		// if particle is active
 		if ( m_kParticles[i].m_bActive )
@@ -276,8 +278,9 @@ void PSystem::DisableParticle ( int iParticleIndex )
 {
 	m_kParticles[iParticleIndex].m_bActive = false;
 
+	int i;
 	// last...
-	for ( int i = m_uiLastParticle; i > m_uiFirstParticle; i-- )
+	for ( i = m_uiLastParticle; i > m_uiFirstParticle; i-- )
 		if ( !m_kParticles[i].m_bActive )
 			m_uiLastParticle--;
 		else

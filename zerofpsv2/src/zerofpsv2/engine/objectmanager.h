@@ -5,6 +5,7 @@
 #include "property.h"
 #include <vector>
 #include <list>
+#include "../script/zfscript.h"
 
 using namespace std;
 
@@ -60,7 +61,7 @@ class ENGINE_API ObjectManager : public ZFSubSystem{
 		} Less_Property;
 	
 		ZeroFps*	m_pkZeroFps;
-
+		ZFScript* m_pkScript;
 		Object*	m_pkWorldObject;											///< Top level object.
 		
 		// Object ArcheTypes
@@ -124,6 +125,7 @@ class ENGINE_API ObjectManager : public ZFSubSystem{
 		Object* CreateObject(ObjectDescriptor* pkObjDesc);			///< Create object from ObjectDescriptor
 		Object* CreateObjectByNetWorkID(int iNetID);					///< Create object with selected NetworkID
 		Object* CreateObjectByArchType(const char* acName);		///< Create object from archtype
+		Object* CreateObjectFromScript(const char* acName);
 //		Object* CloneObject(int iNetID);									
 
 		// Template

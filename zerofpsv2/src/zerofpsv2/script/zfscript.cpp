@@ -10,6 +10,7 @@
 //////////////////////////////////////////////////////////////////////
  
 ZFScript::ZFScript()
+: ZFSubSystem("ZFScript")
 {
 	Open();
 }
@@ -18,6 +19,21 @@ ZFScript::~ZFScript()
 {
 	Close();
 }
+
+
+bool ZFScript::StartUp()
+{ 
+	
+	return true; 
+}
+
+bool ZFScript::ShutDown() 
+{ 
+	return true; 
+}
+
+bool ZFScript::IsValid()	{ return true; }
+
 
 ///////////////////////////////////////////////////////////////////////////////
 // Name:		OpenLua

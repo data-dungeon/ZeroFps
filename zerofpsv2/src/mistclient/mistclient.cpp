@@ -41,6 +41,10 @@ void MistClient::OnInit()
 	if(!pkIni->ExecuteCommands("mistclient_autoexec.ini"))
 		pkConsole->Printf("No game_autoexec.ini.ini found");
 
+
+	Object* test = pkObjectMan->CreateObjectFromScript("test.lua");
+//	if(test)
+//		test->AttachToClosestZone();
 }
 
 void MistClient::Init()
@@ -317,7 +321,7 @@ void MistClient::OnServerClientPart(ZFClient* pkClient,int iConID)
 
 void MistClient::OnServerStart(void)
 {		
-	m_pkTestobj = pkObjectMan->CreateObjectByArchType("playertest");
+	m_pkTestobj = pkObjectMan->CreateObjectFromScript("t_player.lua");
 	if(m_pkTestobj)
 	{
 		m_pkTestobj->AttachToClosestZone();
