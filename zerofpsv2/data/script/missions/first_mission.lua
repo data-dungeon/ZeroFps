@@ -9,25 +9,29 @@ MissionInfo = { name="Kill XXX", difficulty=1, xp=1000, cash=2000 } -- difficult
 
 MissionText = 
 { 
-	short = "mission 1",
+	short = "mission 1 - Kill the evil badguy.",
 	long = "Find the evil maffia boss XXX and kill him. He is somewhere in the park at night and is very angry!. You will get 1000 xp and some money if you kill him"
 }
 
 function OnMissionSuccess()
 	SetNewMission("data/script/missions/second_mission.lua")
+	Print ("Starting mission - 2!");
 end
 
 function IsMissionDone()
-
-	local object = 1; -- vi låstsas att ha finns  GetDMCharacterByName("XXX");
 
 	-----------------------------------------------------------------------
 	-- Kolla om XXX inte finns. I så fall antar vi att han död och 
 	-- uppdraget är slutfört.
 	-----------------------------------------------------------------------
-	if object == -1 then
+
+
+	if GetVar("BadGuyDead") == 1 then
 		g_iMissionStatus = 1; -- success
+		Print ("MissionDone!!!");
 	end
+
+	OnMissionSuccess();
 
 end
 

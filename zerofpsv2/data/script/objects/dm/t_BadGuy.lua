@@ -4,7 +4,7 @@ function Create()
 	
 	InitObject();
 		InitProperty("P_Mad");	
-			InitParameter("m_kMadFile","/data/mad/citizen_mechanic.mad");			
+			InitParameter("m_kMadFile","/data/mad/goblin.mad");			
 			InitParameter("m_fScale","1");		
 
 		InitProperty("P_PfPath");
@@ -25,7 +25,6 @@ function Init()
 end
 
 function HeartBeat()
-
 
 	if HavePath(SIGetSelfID()) then
 		return;
@@ -54,10 +53,6 @@ function Dead()
 	PlayAnim(SIGetSelfID(), "die");
 	SetNextAnim(SIGetSelfID(), "dead");
 	ClearPathFind(SIGetSelfID());
-	PlaySound (SIGetSelfID(), "death/DEATH6.WAV");
-	deadtime[SIGetSelfID()] = 0;
-
-	if Random(10) < 3 then
-		RunScript ("data/script/objects/dm/t_money.lua", SIGetSelfID());
-	end
+	PlaySound (SIGetSelfID(), "death/DEATH1.WAV");
+	SetVar ("BadGuyDead", 1);
 end
