@@ -240,11 +240,16 @@ void P_ServerUnit::HandleGameMessage(GameMessage& Msg)
 	}
 }
 
-void P_ServerUnit::Damage(int iDamage)
+bool P_ServerUnit::Damage(int iDamage)
 {
 	m_iHealth -= iDamage;
 	cout<<"Damaging unit "<<iDamage<<endl;
 	cout<<"Unit Got "<<m_iHealth<<" health left"<<endl;
+	
+	if(m_iHealth <= 0)
+		return false;
+	else
+		return true;
 }
 
 

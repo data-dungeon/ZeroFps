@@ -83,11 +83,11 @@ Armor* P_UnitSystem::GetArmorPointer(int iPlayer,int iArmor)
 }
 
 
-void P_UnitSystem::FireWeapon(P_ServerUnit* pkSu,Point kTarget,int iWeapon)
+bool P_UnitSystem::FireWeapon(P_ServerUnit* pkSu,Point kTarget,int iWeapon)
 {
 	Weapon* pkWeapon = GetWeaponPointer((int)pkSu->m_kInfo.m_Info2.m_cTeam,iWeapon);
 	if(!pkWeapon)
-		return;
+		return false;
 	
 	cout<<"Fireing weapon "<<pkWeapon->sName<<endl;
 	
@@ -95,7 +95,7 @@ void P_UnitSystem::FireWeapon(P_ServerUnit* pkSu,Point kTarget,int iWeapon)
 	Tile* tg = TileEngine::m_pkInstance->GetTile(kTarget.x,kTarget.y);
 	
 	if(!tg)
-		return;
+		return false;
 
 	
 	switch(pkWeapon->iType)
@@ -105,7 +105,7 @@ void P_UnitSystem::FireWeapon(P_ServerUnit* pkSu,Point kTarget,int iWeapon)
 			if(tg->kUnits.empty())
 			{		
 				cout<<"boom..miss"<<endl;
-				return;
+				return false;
 			}
 			
 			for(list<int>::iterator it = tg->kUnits.begin();it != tg->kUnits.end();it++)		
@@ -119,10 +119,10 @@ void P_UnitSystem::FireWeapon(P_ServerUnit* pkSu,Point kTarget,int iWeapon)
 					{
 						Armor* pkArmor = GetArmorPointer((int)pkTarget->m_kInfo.m_Info2.m_cTeam,(int)pkTarget->m_kInfo.m_Info2.m_cArmor);
 						if(!pkArmor)					
-							return;
+							return false;
 					
 						int iDamage = int(pkWeapon->iDamage * pkWeapon->afModifiers[pkTarget->m_kInfo.m_Info2.m_cArmor] * pkArmor->fModifier);
-						pkTarget->Damage(iDamage);
+						return pkTarget->Damage(iDamage);
 					
 					}
 				}
@@ -137,6 +137,7 @@ void P_UnitSystem::FireWeapon(P_ServerUnit* pkSu,Point kTarget,int iWeapon)
 
 
 
+	return false;
 }
 
 COMMON_API Property* Create_P_UnitSystem()

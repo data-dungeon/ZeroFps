@@ -82,7 +82,7 @@ class COMMON_API P_ServerUnit: public Property {
 		bool RemoveExternalCommand(string kCommandName);
 		AIBase* RunExternalCommand(UnitCommand* kCommand);
 
-		void Damage(int iDamage);
+		bool Damage(int iDamage);
 };
 
 COMMON_API Property* Create_P_ServerUnit();

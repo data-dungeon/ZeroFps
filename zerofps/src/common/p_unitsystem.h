@@ -79,7 +79,7 @@ class COMMON_API P_UnitSystem: public Property {
 		Weapon* GetWeaponPointer(int iPlayer,int iWeapon);
 		Armor* GetArmorPointer(int iPlayer,int iArmor);		
 		
-		void FireWeapon(P_ServerUnit* pkSu,Point kTarget,int iWeapon);
+		bool FireWeapon(P_ServerUnit* pkSu,Point kTarget,int iWeapon);
 };
 
 COMMON_API Property* Create_P_UnitSystem();
