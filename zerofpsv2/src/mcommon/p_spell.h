@@ -17,7 +17,7 @@ class MCOMMON_API P_Spell: public Property
 
       int m_iPSIndex;
       vector<int> m_kAttackedObjects; // keep track of objects already affected by the spell
-      vector<Object*> m_kPSystems; // which PSystems spell has created. If spell vanish, so shall Psystems
+      vector<Entity*> m_kPSystems; // which PSystems spell has created. If spell vanish, so shall Psystems
 
       void DoCollisions();
 
@@ -30,7 +30,7 @@ class MCOMMON_API P_Spell: public Property
 
 		vector<PropertyValues> GetPropertyValues(); 
 
-		bool CastOn ( Object *pkObject ); // which object the spell is cast upon
+		bool CastOn ( Entity *pkObject ); // which object the spell is cast upon
 
       void SetCaster ( int iNetWorkID )            { m_kAttackedObjects.push_back(iNetWorkID); }
 

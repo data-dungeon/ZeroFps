@@ -45,7 +45,7 @@ int AudioLua::PlaySoundLua(lua_State* pkLua)
 	{
 	case 3:
 		g_pkScript->GetArgNumber(pkLua, 1, &dValue);
-		Object* pkObject;
+		Entity* pkObject;
 		pkObject = g_pkObjectMan->GetObjectByNetWorkID((int)dValue);
 		if(pkObject == NULL)
 		{
@@ -151,7 +151,7 @@ int AudioLua::StopSoundLua(lua_State* pkLua)
 	{
 	case 3:
 		g_pkScript->GetArgNumber(pkLua, 1, &dValue);
-		Object* pkObject;
+		Entity* pkObject;
 		pkObject = g_pkObjectMan->GetObjectByNetWorkID((int)dValue);
 		if(pkObject == NULL)
 		{

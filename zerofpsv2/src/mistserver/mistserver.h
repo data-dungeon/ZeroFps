@@ -49,7 +49,7 @@ class MistServer :public Application , public ZGuiApp {
 		};
 
 		//server stuff
-		Object* m_pkServerInfo;
+		Entity* m_pkServerInfo;
 		P_ServerInfo* m_pkServerInfoP;
 
 		vector<pair<string,Vector3> >	m_kLocations;
@@ -60,7 +60,7 @@ class MistServer :public Application , public ZGuiApp {
 		string	m_strActiveZoneName, m_strPrevZoneName;
 		string	m_strActiveObjectName;
 		string	m_strActiveEnviroment;
-		Object*	m_pkCameraObject;
+		Entity*	m_pkCameraObject;
 		Camera*	m_pkCamera;
 
 		Vector3	m_kZoneSize;
@@ -73,7 +73,7 @@ class MistServer :public Application , public ZGuiApp {
 		int 		m_iCurrentMarkedZone;
 
 		Vector3	Get3DMousePos(bool m_bMouse);
-		Object*	GetTargetObject();		
+		Entity*	GetTargetObject();		
 
 		void SetZoneEnviroment(const char* szEnviroment);
 		string GetZoneEnviroment();

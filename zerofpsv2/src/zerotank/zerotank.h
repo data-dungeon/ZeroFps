@@ -23,7 +23,7 @@
 class ZeroTank :public Application, public ZGuiApp {
 	private:
 		Camera*			m_pkCamera;
-		Object*			m_pkCameraObject;
+		Entity*			m_pkCameraObject;
 		
 		//this is true when client has got heightmap from server
 		bool				m_HaveFoundHMapObject;
@@ -39,23 +39,23 @@ class ZeroTank :public Application, public ZGuiApp {
 
 //		Mad_Modell			m_pkTestMod;
 		
-		Object*				m_pkME;
-		Object*				m_pkTestObject;
+		Entity*				m_pkME;
+		Entity*				m_pkTestObject;
 
-		Object*				m_pkZeroTankClientObject;
-		Object*				m_pkZeroTankHull;
+		Entity*				m_pkZeroTankClientObject;
+		Entity*				m_pkZeroTankHull;
 //		Object*				m_pkZeroTankTower;
 //		Object*				m_pkZeroTankGun;
-		Object*				m_pkZeroTankTrack;			// Owned by Vim
+		Entity*				m_pkZeroTankTrack;			// Owned by Vim
 
-		Object*				m_pkZeroTank_Modify;
+		Entity*				m_pkZeroTank_Modify;
 
 		// Test for rotations - Vim
-		Object*				m_pkGoblinLord;
-		Object*				m_pkGoblinSlave;
-		Object*				m_pkGoblinSword;
+		Entity*				m_pkGoblinLord;
+		Entity*				m_pkGoblinSlave;
+		Entity*				m_pkGoblinSword;
 
-		vector<Object*>	m_kEditList;					// Lista of object we can controll.
+		vector<Entity*>	m_kEditList;					// Lista of object we can controll.
 		int					m_iContollIndex;
 		
 		void NextControllObject();

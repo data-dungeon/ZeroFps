@@ -1,6 +1,6 @@
 #include "p_body.h"
 #include "../../basic/zfsystem.h"
-#include "../../engine/object.h"
+#include "../../engine/entity.h"
 #include "p_mad.h"
  
 P_Body::P_Body()

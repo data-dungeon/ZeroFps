@@ -72,7 +72,7 @@ void P_Spell::Update()
          if ( m_fAge >= m_pkSpellType->m_kGraphicEffects[m_iPSIndex].m_fStartTime )
          {
             // can't have more than one PSystem/object, so create a new object for each new PS *sigh*
-            Object *pkNewObject = m_pkObject->m_pkObjectMan->CreateObject();
+            Entity *pkNewObject = m_pkObject->m_pkObjectMan->CreateObject();
 
             // create and attach PS to new object
             pkNewObject->AddProperty ("P_PSystem");
@@ -121,7 +121,7 @@ void P_Spell::Update()
 // ------------------------------------------------------------------------------------------
  
 // which object the spell is cast upon
-bool P_Spell::CastOn ( Object *pkObject )
+bool P_Spell::CastOn ( Entity *pkObject )
 {  
    // temp test...i think....
 
@@ -305,7 +305,7 @@ void P_Spell::DoCollisions()
    ZoneData* pkZone = m_pkObject->GetObjectMan()->GetZone( m_pkObject->GetWorldPosV() );
 
    // get all objects in zone
-   vector<Object*> kObjects;
+   vector<Entity*> kObjects;
    pkZone->m_pkZone->GetAllObjects(&kObjects);
 
    for ( unsigned int i = 0; i < kObjects.size(); i++ )
@@ -375,7 +375,7 @@ void P_Spell::DoCollisions()
                // attach new spell to hit object
                if ( m_pkSpellType->m_kOnHit[0] == "attachnewspell" )
                {
-                  Object *pkNewSpell =
+                  Entity *pkNewSpell =
                   m_pkObject->m_pkObjectMan->CreateObjectFromScript ( m_pkSpellType->m_kOnHit[1].c_str() );
 
                   if ( pkNewSpell )
@@ -401,7 +401,7 @@ void P_Spell::DoCollisions()
                // creates a new spell at the hit location and removes the old one
                if ( m_pkSpellType->m_kOnHit[0] == "createnewspell" ) 
                {
-                  Object *pkNewSpell =
+                  Entity *pkNewSpell =
                   m_pkObject->m_pkObjectMan->CreateObjectFromScriptInZone (m_pkSpellType->m_kOnHit[1].c_str(), 
                                                                            kObjects[i]->GetWorldPosV() );
                   pkNewSpell->SetWorldPosV ( kObjects[i]->GetWorldPosV() );
@@ -424,7 +424,7 @@ void P_Spell::DoCollisions()
                // creates a psystem at the hit location and removes the spell
                if ( m_pkSpellType->m_kOnHit[0] == "createpsystem" ) 
                {
-                  Object *pkNewPSystem = m_pkObject->m_pkObjectMan->CreateObject();
+                  Entity *pkNewPSystem = m_pkObject->m_pkObjectMan->CreateObject();
             
                   P_PSystem *pkNewPSProp = new P_PSystem;
                   kObjects[i]->AddProperty( pkNewPSProp );

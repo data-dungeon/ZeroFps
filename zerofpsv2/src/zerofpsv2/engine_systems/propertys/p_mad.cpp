@@ -1,5 +1,5 @@
 #include "p_mad.h"
-#include "../../engine/object.h"
+#include "../../engine/entity.h"
 #include "../../render/render.h"
 #include "../../basic/zfsystem.h"
  

@@ -1,10 +1,10 @@
 #include "objectmanager.h"
 #include "network.h"
 #include "zerofps.h"
-#include "netslaveobject.h"
+//#include "netslaveobject.h"
 #include "../basic/zfsystem.h"
 #include "../basic/simplescript.h"
-#include "../engine_systems/common/zoneobject.h"
+//#include "../engine_systems/common/zoneobject.h"
 #include "../engine_systems/propertys/p_primitives3d.h"
 #include "../engine_systems/propertys/p_track.h"
 #include "../engine_systems/propertys/p_mad.h"
@@ -138,7 +138,7 @@ ObjectManager::~ObjectManager()
   This function is called by objects as they are created. It assigned a NetWorkID to the object and
   also put them in the ObjectManger.
 */
-void ObjectManager::Link(Object* pkObject) 
+void ObjectManager::Link(Entity* pkObject) 
 {
 	pkObject->iNetWorkID = iNextObjectID++;
 	m_akObjects.push_back(pkObject);
@@ -148,7 +148,7 @@ void ObjectManager::Link(Object* pkObject)
 
   Remvoves object from the Object Manger.
 */
-void ObjectManager::UnLink(Object* pkObject) 
+void ObjectManager::UnLink(Entity* pkObject) 
 {	
 	// If i own object mark so we remove it on clients.
 	//	if(pkObject->m_eRole == NETROLE_AUTHORITY && pkObject->m_eRemoteRole == NETROLE_PROXY)
@@ -181,27 +181,27 @@ void ObjectManager::CreateBaseObjects()
 	iNextObjectID = 0;
 	
 	//top world object parent to all objects
-	m_pkWorldObject						=	new Object();	
+	m_pkWorldObject						=	new Entity();	
 	m_pkWorldObject->GetName()			= "WorldObject";
 	m_pkWorldObject->m_eRole			= NETROLE_AUTHORITY;
 	m_pkWorldObject->m_eRemoteRole	= NETROLE_NONE;
 
 	//object that is parent to all zones
-	m_pkZoneObject							=	new Object();	
+	m_pkZoneObject							=	new Entity();	
 	m_pkZoneObject->SetParent(m_pkWorldObject);
 	m_pkZoneObject->GetName()			= "ZoneObject";
 	m_pkZoneObject->m_eRole				= NETROLE_AUTHORITY;
 	m_pkZoneObject->m_eRemoteRole		= NETROLE_NONE;
 
 	//object that is parent to all client objects
-	m_pkClientObject						=	new Object();	
+	m_pkClientObject						=	new Entity();	
 	m_pkClientObject->SetParent(m_pkWorldObject);
 	m_pkClientObject->GetName()		= "ClientObject";
 	m_pkClientObject->m_eRole			= NETROLE_AUTHORITY;
 	m_pkClientObject->m_eRemoteRole	= NETROLE_NONE;
 
 	//object that is parent to all global objects (server information etc)
-	m_pkGlobalObject						=	new Object();	
+	m_pkGlobalObject						=	new Entity();	
 	m_pkGlobalObject->SetParent(m_pkWorldObject);
 	m_pkGlobalObject->GetName()		= "GlobalObject";
 	m_pkGlobalObject->m_eRole			= NETROLE_AUTHORITY;
@@ -216,9 +216,9 @@ void ObjectManager::CreateBaseObjects()
 
 	Creates a basic object without any propertys and all values set to defualt. 
 */
-Object* ObjectManager::CreateObject()
+Entity* ObjectManager::CreateObject()
 {
-	Object* pkObj = new Object;
+	Entity* pkObj = new Entity;
 	//cout << "CreateObject :" << pkObj->iNetWorkID << endl;
 	return pkObj;
 }
@@ -228,13 +228,13 @@ Object* ObjectManager::CreateObject()
 	Creates a object as described in the zfoh.txt file (poor man script). If a object is
 	not found with the choosen name no object will be created.
 */
-Object* ObjectManager::CreateObjectByArchType(const char* acName)
+Entity* ObjectManager::CreateObjectByArchType(const char* acName)
 {
 	ObjectArcheType* pkAt = GetArcheType(string(acName));
 	if(!pkAt)
 		return false;
 
-	Object* pkObj	=	CreateObject();
+	Entity* pkObj	=	CreateObject();
 	pkObj->m_eRemoteRole	= NETROLE_PROXY;
 	pkObj->m_eRole			= NETROLE_AUTHORITY;
 
@@ -248,7 +248,7 @@ Object* ObjectManager::CreateObjectByArchType(const char* acName)
 
 /**	\brief	Adds an object to delete qeue
 */
-void ObjectManager::Delete(Object* pkObject) 
+void ObjectManager::Delete(Entity* pkObject) 
 {
 	if(pkObject == NULL)
 		return;
@@ -278,7 +278,7 @@ void ObjectManager::UpdateDelete()
 	
 	for(vector<int>::iterator it=m_aiDeleteList.begin();it!=m_aiDeleteList.end();it++) 
 	{
-		Object* pkObject = GetObjectByNetWorkID((*it));
+		Entity* pkObject = GetObjectByNetWorkID((*it));
 
 		if(pkObject) { // If i own object mark so we remove it on clients.
 			/*if(pkObject->m_eRole == NETROLE_AUTHORITY && pkObject->m_eRemoteRole == NETROLE_PROXY)
@@ -361,7 +361,7 @@ bool ObjectManager::IsUpdate(int iFlags)
 void ObjectManager::UpdateGameMessages(void)
 {
 	// Let Objects/Propertys handle messages
-	for(list<Object*>::iterator it=m_akObjects.begin();it!=m_akObjects.end();it++) {
+	for(list<Entity*>::iterator it=m_akObjects.begin();it!=m_akObjects.end();it++) {
 		(*it)->HandleMessages();
 	}
 }
@@ -372,10 +372,10 @@ void ObjectManager::UpdateGameMessages(void)
 	Creates a basic object without any propertys and all values set to defualt. 
 */
 
-Object* ObjectManager::CreateObjectByNetWorkID(int iNetID)
+Entity* ObjectManager::CreateObjectByNetWorkID(int iNetID)
 {
 //	Object *pkNew = new NetSlaveObject;
-	Object *pkNew = CreateObject();
+	Entity *pkNew = CreateObject();
 
 	//	Add(pkNew);
 	pkNew->iNetWorkID = iNetID;
@@ -395,7 +395,7 @@ Object* ObjectManager::CreateObjectByNetWorkID(int iNetID)
 	Creates a object from a script and use it to set values and propertys. If script file
 	is not found no object will be created. 
 */
-Object* ObjectManager::CreateObjectFromScriptInZone(const char* acName,Vector3 kPos,int iCurrentZone)
+Entity* ObjectManager::CreateObjectFromScriptInZone(const char* acName,Vector3 kPos,int iCurrentZone)
 {
 	int id = GetZoneIndex(kPos,iCurrentZone,false);
 	
@@ -409,7 +409,7 @@ Object* ObjectManager::CreateObjectFromScriptInZone(const char* acName,Vector3 k
 		return NULL;
 		
 		
-	Object* newobj = CreateObjectFromScript(acName);
+	Entity* newobj = CreateObjectFromScript(acName);
 	
 	if(newobj)
 	{      
@@ -422,7 +422,7 @@ Object* ObjectManager::CreateObjectFromScriptInZone(const char* acName,Vector3 k
 	return newobj;
 }
 
-Object* ObjectManager::CreateObjectFromScript(const char* acName)
+Entity* ObjectManager::CreateObjectFromScript(const char* acName)
 {
 	if(m_pScriptFileHandle)
 		delete m_pScriptFileHandle;
@@ -461,7 +461,7 @@ Object* ObjectManager::CreateObjectFromScript(const char* acName)
 	ObjectManagerLua::g_pkReturnObject->m_strName	= string("A ") + &acName[pos];
 	ObjectManagerLua::g_pkReturnObject->m_pScriptFileHandle->SetRes(acName);
 	
-	Object* pkReturnObj = ObjectManagerLua::g_pkReturnObject;
+	Entity* pkReturnObj = ObjectManagerLua::g_pkReturnObject;
 	
 	//pop pointers
 	ObjectManagerLua::Pop();
@@ -471,7 +471,7 @@ Object* ObjectManager::CreateObjectFromScript(const char* acName)
 	return pkReturnObj;
 }
 
-bool ObjectManager::IsA(Object* pkObj, string strStringType)
+bool ObjectManager::IsA(Entity* pkObj, string strStringType)
 {
 	ObjectArcheType* pkAt = GetArcheType(pkObj->m_strType);
 	if(!pkAt)
@@ -496,17 +496,17 @@ bool ObjectManager::IsA(Object* pkObj, string strStringType)
 }
 
 // Gets
-void ObjectManager::GetAllObjects(vector<Object*> *pakObjects)
+void ObjectManager::GetAllObjects(vector<Entity*> *pakObjects)
 {
 	m_pkWorldObject->GetAllObjects(pakObjects);
 }
 
-Object* ObjectManager::GetObject(const char* acName)
+Entity* ObjectManager::GetObject(const char* acName)
 {
-	vector<Object*> kObjects;		
+	vector<Entity*> kObjects;		
 	GetAllObjects(&kObjects);
 	
-	for(vector<Object*>::iterator it=kObjects.begin();it!=kObjects.end();it++) {
+	for(vector<Entity*>::iterator it=kObjects.begin();it!=kObjects.end();it++) {
 		if((*it)->GetName() == acName)
 		{
 			return (*it);
@@ -516,12 +516,12 @@ Object* ObjectManager::GetObject(const char* acName)
 	return NULL;
 }
 
-Object*	ObjectManager::GetObjectByNetWorkID(int iNetID)
+Entity*	ObjectManager::GetObjectByNetWorkID(int iNetID)
 {
 	if(iNetID == -1)
 		return NULL;
 
-	for(list<Object*>::iterator it=m_akObjects.begin();it!=m_akObjects.end();it++) {
+	for(list<Entity*>::iterator it=m_akObjects.begin();it!=m_akObjects.end();it++) {
 		if((*it)->iNetWorkID == iNetID)
 		{	
 			return (*it);
@@ -538,7 +538,7 @@ Object*	ObjectManager::GetObjectByNetWorkID(int iNetID)
 
 void ObjectManager::UpdateState(NetPacket* pkNetPacket)
 {
-	Object* pkNetSlave;
+	Entity* pkNetSlave;
 	int iObjectID;
 	pkNetPacket->Read(iObjectID);
 
@@ -568,12 +568,12 @@ void ObjectManager::UpdateState(NetPacket* pkNetPacket)
 		}	
 }
 
-void ObjectManager::PackToClient(int iClient, vector<Object*> kObjects)
+void ObjectManager::PackToClient(int iClient, vector<Entity*> kObjects)
 {
 	int iPacketSize = 0;
 	int iEndOfObject = -1;
 
-	Object* pkPackObj;
+	Entity* pkPackObj;
 
 	NetPacket NP;
 	NP.Clear();
@@ -715,7 +715,7 @@ void ObjectManager::PackToClients()
 		m_iForceNetUpdate  = 0x0;					
 		}*/
 
-	vector<Object*>	kObjects;
+	vector<Entity*>	kObjects;
 	m_iForceNetUpdate = 0xFFFFFFFF;
 	NetPacket NP;
 	
@@ -724,7 +724,7 @@ void ObjectManager::PackToClients()
 	int iPacketSize		= 0;
 	int iEndOfObject	= -1;
 
-	Object* pkZone;
+	Entity* pkZone;
 	int iClient;
 
 	// Clear Active Zones for clients.
@@ -732,7 +732,7 @@ void ObjectManager::PackToClients()
 		m_pkZeroFps->m_kClient[iClient].m_iActiveZones.clear();
 	
 	// Refresh list of active Zones for each client.
-	for(list<Object*>::iterator iT=m_kTrackedObjects.begin();iT!=m_kTrackedObjects.end();iT++) {
+	for(list<Entity*>::iterator iT=m_kTrackedObjects.begin();iT!=m_kTrackedObjects.end();iT++) {
 		P_Track* pkTrack = dynamic_cast<P_Track*>((*iT)->GetProperty("P_Track"));
 		if(pkTrack->m_iConnectID != -1)
 				m_pkZeroFps->m_kClient[pkTrack->m_iConnectID].m_iActiveZones.insert(
@@ -781,7 +781,7 @@ void ObjectManager::PackToClients()
 			}
 		}
 
-	for(list<Object*>::iterator it = m_akObjects.begin(); it != m_akObjects.end(); it++) {
+	for(list<Entity*>::iterator it = m_akObjects.begin(); it != m_akObjects.end(); it++) {
 		(*it)->m_aiNetDeleteList.clear();
 		}
 
@@ -943,7 +943,7 @@ void ObjectManager::SendMsg()
 
 void ObjectManager::RouteMessage(GameMessage& Msg)
 {
-	Object*	pkObject = GetObjectByNetWorkID(Msg.m_ToObject);
+	Entity*	pkObject = GetObjectByNetWorkID(Msg.m_ToObject);
 
 	if(pkObject == NULL) {
 		cout << "No Valid object for message" << endl;		
@@ -1031,7 +1031,7 @@ ObjectArcheType*	ObjectManager::GetArcheType(string strName)
 	
 }
 
-void ObjectManager::AddArchPropertys(Object* pkObj, string strName)
+void ObjectManager::AddArchPropertys(Entity* pkObj, string strName)
 {
 	ObjectArcheType* pkAt = GetArcheType(strName);
 	if(!pkAt)
@@ -1149,11 +1149,11 @@ void ObjectManager::GetPropertys(int iType,int iSide)
 	m_pkWorldObject->GetAllPropertys(&m_akPropertys,iType,iSide);
 }
 
-bool ObjectManager::TestLine(vector<Object*>* pkPPList,Vector3 kPos,Vector3 kVec)
+bool ObjectManager::TestLine(vector<Entity*>* pkPPList,Vector3 kPos,Vector3 kVec)
 {
 	pkPPList->clear();
 
-	for(list<Object*>::iterator it=m_akObjects.begin();it!=m_akObjects.end();it++) 
+	for(list<Entity*>::iterator it=m_akObjects.begin();it!=m_akObjects.end();it++) 
 	{	
 		Vector3 c=(*it)->GetWorldPosV() - kPos;		
 		kVec.Normalize();		
@@ -1233,7 +1233,7 @@ void ObjectManager::RunCommand(int cmdid, const CmdArgument* kCommand)
 
 }
 
-void ObjectManager::OwnerShip_Take(Object* pkObj)
+void ObjectManager::OwnerShip_Take(Entity* pkObj)
 {
 	if(!pkObj)
 		return;
@@ -1241,7 +1241,7 @@ void ObjectManager::OwnerShip_Take(Object* pkObj)
 	pkObj->m_eRemoteRole	= NETROLE_PROXY;
 }
 
-void ObjectManager::OwnerShip_Give(Object* pkObj)
+void ObjectManager::OwnerShip_Give(Entity* pkObj)
 {
 	if(!pkObj)
 		return;
@@ -1249,7 +1249,7 @@ void ObjectManager::OwnerShip_Give(Object* pkObj)
 	pkObj->m_eRemoteRole	= NETROLE_AUTHORITY;
 }
 
-void ObjectManager::OwnerShip_Request(Object* pkObj)
+void ObjectManager::OwnerShip_Request(Entity* pkObj)
 {
 	if(pkObj == NULL)
 		return;
@@ -1269,7 +1269,7 @@ void ObjectManager::OwnerShip_Request(Object* pkObj)
 	
 }
 
-void ObjectManager::OwnerShip_OnRequest(Object* pkObj)
+void ObjectManager::OwnerShip_OnRequest(Entity* pkObj)
 {
 	if(pkObj == NULL)
 		return;
@@ -1291,7 +1291,7 @@ void ObjectManager::OwnerShip_OnRequest(Object* pkObj)
 
 }
 
-void ObjectManager::OwnerShip_OnGrant(Object* pkObj)
+void ObjectManager::OwnerShip_OnGrant(Entity* pkObj)
 {
 	if(pkObj == NULL)
 		return;
@@ -1300,13 +1300,13 @@ void ObjectManager::OwnerShip_OnGrant(Object* pkObj)
 	Logf("net", " This node now own %d\n", pkObj->iNetWorkID);
 }
 
-Object* ObjectManager::CloneObject(int iNetID)
+Entity* ObjectManager::CloneObject(int iNetID)
 {
-	Object* pkObjOrginal = GetObjectByNetWorkID(iNetID);
+	Entity* pkObjOrginal = GetObjectByNetWorkID(iNetID);
 	if(pkObjOrginal == NULL)
 		return NULL;
 
-	Object* pkObjClone =	CreateObject();
+	Entity* pkObjClone =	CreateObject();
 	pkObjClone->MakeCloneOf(pkObjOrginal);
 	return pkObjClone;
 }
@@ -1414,18 +1414,18 @@ int ObjectManager::GetNumOfZones()
 	return m_kZones.size();
 }
 
-list<Object*>* ObjectManager::GetTrackerList()
+list<Entity*>* ObjectManager::GetTrackerList()
 {
 	return &m_kTrackedObjects;
 }
 
-void ObjectManager::AddTracker(Object* kObject)
+void ObjectManager::AddTracker(Entity* kObject)
 {
 	cout << "Now tracking " << kObject->iNetWorkID << endl;
 	m_kTrackedObjects.push_back(kObject);
 }
 
-void ObjectManager::RemoveTracker(Object* kObject)
+void ObjectManager::RemoveTracker(Entity* kObject)
 {
 	m_kTrackedObjects.remove(kObject);
 }
@@ -1454,7 +1454,7 @@ ZoneData* ObjectManager::GetZone(Vector3 kPos)
 }
 
 
-ZoneData* ObjectManager::GetZone(Object* PkObject)
+ZoneData* ObjectManager::GetZone(Entity* PkObject)
 {
 	for(unsigned int iZ=0;iZ<m_kZones.size();iZ++) {
 		if(!m_kZones[iZ].m_bUsed)
@@ -1467,7 +1467,7 @@ ZoneData* ObjectManager::GetZone(Object* PkObject)
 	return NULL;
 }
 
-int ObjectManager::GetZoneIndex(Object* PkObject,int iCurrentZone,bool bClosestZone)
+int ObjectManager::GetZoneIndex(Entity* PkObject,int iCurrentZone,bool bClosestZone)
 {
 	return GetZoneIndex(PkObject->GetWorldPosV(),iCurrentZone,bClosestZone);
 }
@@ -1554,7 +1554,7 @@ void ObjectManager::UpdateZones()
 
 	//cout<<"nr of trackers:"<<m_kTrackedObjects.size()<<endl;
 	// For each tracker.
-	for(list<Object*>::iterator iT=m_kTrackedObjects.begin();iT!=m_kTrackedObjects.end();iT++) {
+	for(list<Entity*>::iterator iT=m_kTrackedObjects.begin();iT!=m_kTrackedObjects.end();iT++) {
 		// Find Active Zone.
 		P_Track* pkTrack = dynamic_cast<P_Track*>((*iT)->GetProperty("P_Track"));
 		pkTrack->m_iActiveZones.clear();
@@ -1809,7 +1809,7 @@ void ObjectManager::LoadZone(int iId)
 		return;
 
 	// Create Object.
-	Object* object = new Object;//ZoneObject;
+	Entity* object = new Entity;//ZoneObject;
 	object->m_bZone = true;
 	kZData->m_pkZone = object;
 	kZData->m_pkZone->SetParent(GetZoneObject());	

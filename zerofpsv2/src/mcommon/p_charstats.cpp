@@ -1,6 +1,6 @@
 #include "rulesystem/character/characterfactory.h"
 #include "p_charstats.h"
-#include "../zerofpsv2/engine/object.h"
+#include "../zerofpsv2/engine/entity.h"
 
 // ------------------------------------------------------------------------------------------
 
@@ -65,7 +65,7 @@ void CharacterProperty::Save(ZFIoInterface* pkPackage)
 
    map<string, string>::iterator kDataIte;
    map<string, StatDescriber>::iterator kIte;
-   map<string, Object*>::iterator kEqIte;
+   map<string, Entity*>::iterator kEqIte;
    map<string, int>::iterator kFightIte;
 
    iData = m_pkCharStats->m_kData.size();
@@ -171,7 +171,7 @@ void CharacterProperty::Load(ZFIoInterface* pkPackage)
 
    map<string, string>::iterator kDataIte;
    map<string, StatDescriber>::iterator kIte;
-   map<string, Object*>::iterator kEqIte;
+   map<string, Entity*>::iterator kEqIte;
    map<string, int>::iterator kFightIte;
 
     // load counters 

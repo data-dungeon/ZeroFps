@@ -134,10 +134,10 @@ each and every object diffrent are the type of properties they have.
 */
 
 
-class ENGINE_API Object 
+class ENGINE_API Entity 
 {
 	private:
-		Object*						m_pkParent;							///< Parent Object. NULL If None
+		Entity*						m_pkParent;							///< Parent Object. NULL If None
 		vector<GameMessage>		m_kGameMessages;					///< Messages that are waiting to be handled by this object.
 		vector<int>					m_aiNetDeleteList;				
 
@@ -204,10 +204,10 @@ class ENGINE_API Object
 
 		bool						m_bUseZones;
 		int							m_iCurrentZone;
-		vector<Object*>				m_akChilds;							///< List of child objects.
+		vector<Entity*>				m_akChilds;							///< List of child objects.
 		vector<Property*>			m_akPropertys;						///< List of propertys of object.
 		
-		Object();				
+		Entity();				
 		
 	public:
 		int							iNetWorkID;							///< ID used by network state code.
@@ -219,7 +219,7 @@ class ENGINE_API Object
 
       string                  m_strCreatedFromScript; // which script the object was created from. used when splitting items
 
-		~Object();
+		~Entity();
 		
 		// Object Type Handling
 		bool IsA(string strStringType);								///< Returns true if this object is based on type.
@@ -237,14 +237,14 @@ class ENGINE_API Object
 		bool Update(const char* acName);							///< Run update on property 'name'.
 
 		// Child/Parent object mangement.
-		void AddChild(Object* pkObject);							// Set a object to be child to this.	
-		void RemoveChild(Object* pkObject);						// Remove a child from this.
-		void SetParent(Object* pkObject);						// Set the parent of this object.
-		Object* GetParent(){return m_pkParent;};				///< Get parent of this object.
-		bool HasChild(Object* pkObject);							
+		void AddChild(Entity* pkObject);							// Set a object to be child to this.	
+		void RemoveChild(Entity* pkObject);						// Remove a child from this.
+		void SetParent(Entity* pkObject);						// Set the parent of this object.
+		Entity* GetParent(){return m_pkParent;};				///< Get parent of this object.
+		bool HasChild(Entity* pkObject);							
 		int NrOfChilds();												///< Return num of childs to this object.
 		void DeleteAllChilds();										// Remove all childs from this object.
-		void GetAllObjects(vector<Object*> *pakObjects);	// Return this + all childs.
+		void GetAllObjects(vector<Entity*> *pakObjects);	// Return this + all childs.
 
 		bool AttachToZone();		
 		bool AttachToZone(Vector3 kPos);		
@@ -316,7 +316,7 @@ class ENGINE_API Object
 		inline float* GetRadiusPointer()			{	return &m_fRadius;		};		
 		inline ObjectManager *GetObjectMan()	{	return m_pkObjectMan;	};				
 		
-		void MakeCloneOf(Object* pkOrginal);
+		void MakeCloneOf(Entity* pkOrginal);
 		
 		float GetI();
 		

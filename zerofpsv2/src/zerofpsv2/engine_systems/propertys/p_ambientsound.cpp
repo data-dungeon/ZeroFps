@@ -30,7 +30,7 @@ void P_AmbientSound::CloneOf(Property* pkProperty)
 
 void P_AmbientSound::Update()
 {
-	Object* pkObject = GetObject();
+	Entity* pkObject = GetObject();
 
 	Vector3 pos = pkObject->GetWorldPosV();
 
@@ -163,7 +163,7 @@ void P_AmbientSound::Load(ZFIoInterface* pkFile)
 
 	if(m_bSoundHaveBeenSaved)
 	{
-		Object* pkObject = GetObject();
+		Entity* pkObject = GetObject();
 		m_pkAudioSystem->StopSound(m_strFileName, pkObject->GetWorldPosV());
 		m_bSoundHaveBeenSaved = false;
 		m_bStarted = false;

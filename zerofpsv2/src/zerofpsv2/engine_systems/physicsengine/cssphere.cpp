@@ -22,8 +22,8 @@ Collision* CSSphere::Test(CollisionShape* kOther,bool bContinue)
 
 Collision* CSSphere::Collide_CSSphere(CSSphere* kOther)
 {
-	Object* O1=m_pkPP->GetObject();
-	Object* O2=kOther->m_pkPP->GetObject();
+	Entity* O1=m_pkPP->GetObject();
+	Entity* O2=kOther->m_pkPP->GetObject();
 
 	//caluculate movevector for both spheres
 	Vector3 movevec1=m_pkPP->m_kNewPos - O1->GetWorldPosV();//-     m_pkPhysEngine->GetNewVel(m_pkPP);

@@ -206,7 +206,7 @@ void MistServer::OnIdle()
 	
 		if(m_iCurrentObject != -1)
 		{
-			Object* pkObj = pkObjectMan->GetObjectByNetWorkID(m_iCurrentObject);
+			Entity* pkObj = pkObjectMan->GetObjectByNetWorkID(m_iCurrentObject);
 			
 			if(pkObj)
 			{
@@ -254,7 +254,7 @@ void MistServer::Input()
 	pkInput->RelMouseXY(x,z);	
 
 	P_Mad* mp;
-	Object* pkAnimObj = pkObjectMan->GetObjectByNetWorkID(m_iCurrentObject);								
+	Entity* pkAnimObj = pkObjectMan->GetObjectByNetWorkID(m_iCurrentObject);								
 	if(pkAnimObj)
 		mp = (P_Mad*)pkAnimObj->GetProperty("MadProperty");
 	
@@ -412,7 +412,7 @@ void MistServer::Input()
 				{	
 					m_fClickDelay = pkFps->GetTicks();		
 					
-					Object* pkObj =  GetTargetObject();
+					Entity* pkObj =  GetTargetObject();
 				
 					if(pkObj)
 					{
@@ -426,7 +426,7 @@ void MistServer::Input()
 			{
 				cout<<"Deleting object:"<<m_iCurrentObject<<endl;
 				
-				Object* pkObj = pkObjectMan->GetObjectByNetWorkID(m_iCurrentObject);
+				Entity* pkObj = pkObjectMan->GetObjectByNetWorkID(m_iCurrentObject);
 								
 				if(pkObj)
 					cout<<"name:"<<pkObj->GetName()<<endl;
@@ -437,7 +437,7 @@ void MistServer::Input()
 				m_iCurrentObject = -1;
 			}
 		
-			Object* pkObj = pkObjectMan->GetObjectByNetWorkID(m_iCurrentObject);								
+			Entity* pkObj = pkObjectMan->GetObjectByNetWorkID(m_iCurrentObject);								
 			if(!pkObj)
 				return;		
 		
@@ -665,19 +665,19 @@ Vector3 MistServer::Get3DMousePos(bool m_bMouse=true)
 	return dir;
 }
 
-Object* MistServer::GetTargetObject()
+Entity* MistServer::GetTargetObject()
 {
 	Vector3 start = pkFps->GetCam()->GetPos();
 	Vector3 dir = Get3DMousePos();
 
-	vector<Object*> kObjects;
+	vector<Entity*> kObjects;
 	kObjects.clear();
 	
 	pkObjectMan->TestLine(&kObjects,start,dir);
 	
 	
 	float closest = 9999999999;
-	Object* pkClosest = NULL;	
+	Entity* pkClosest = NULL;	
 	for(int i=0;i<kObjects.size();i++)
 	{
 		if(kObjects[i] == m_pkCameraObject)
@@ -830,7 +830,7 @@ void MistServer::OnCommand(int iID, ZGuiWnd *pkMainWnd)
 		else
 		if(strName == "DeleteObjectButton")
 		{		
-			Object* pkObj = pkObjectMan->GetObjectByNetWorkID(m_iCurrentObject);		
+			Entity* pkObj = pkObjectMan->GetObjectByNetWorkID(m_iCurrentObject);		
 			if(pkObj) {
 				pkObjectMan->Delete(pkObj);
 				m_iCurrentObject = -1;
@@ -839,7 +839,7 @@ void MistServer::OnCommand(int iID, ZGuiWnd *pkMainWnd)
 		else
 		if(strName == "PlaceongroundButton")
 		{
-			Object* pkObj = pkObjectMan->GetObjectByNetWorkID(m_iCurrentObject);		
+			Entity* pkObj = pkObjectMan->GetObjectByNetWorkID(m_iCurrentObject);		
 			if(pkObj) {
 				Vector3 pos = pkObj->GetLocalPosV(); pos.y = 0.0;
 				pkObj->SetLocalPosV(pos); 
@@ -976,7 +976,7 @@ int MistServer::CreatePlayer(const char* csName,const char* csLocation,int iConI
 	
 	Vector3 kStartPos = GetPlayerStartLocation(csLocation);
 	
-	Object* pkObject = pkObjectMan->CreateObjectFromScriptInZone("data/script/objects/t_player.lua",kStartPos);
+	Entity* pkObject = pkObjectMan->CreateObjectFromScriptInZone("data/script/objects/t_player.lua",kStartPos);
 	
 	if(pkObject)
 	{	
@@ -1010,7 +1010,7 @@ void MistServer::DeletePlayer(int iConID)
 			{
 				if(pi->kControl[i].second & PR_OWNER)
 				{
-					Object* pkObj = pkObjectMan->GetObjectByNetWorkID(pi->kControl[i].first);
+					Entity* pkObj = pkObjectMan->GetObjectByNetWorkID(pi->kControl[i].first);
 					
 					//save object here
 					
@@ -1064,7 +1064,7 @@ void MistServer::HandleOrders()
 		//ground klick order		
 		if(order->m_iFace != -1)
 		{
-			Object* ob = pkObjectMan->GetObjectByNetWorkID(order->m_iCaracter);			
+			Entity* ob = pkObjectMan->GetObjectByNetWorkID(order->m_iCaracter);			
 			if(ob)
 			{
 				P_Event* pe = (P_Event*)ob->GetProperty("P_Event");
@@ -1076,7 +1076,7 @@ void MistServer::HandleOrders()
 		else
 		{
 			//other orders
-			Object* ob = pkObjectMan->GetObjectByNetWorkID(order->m_iObjectID);
+			Entity* ob = pkObjectMan->GetObjectByNetWorkID(order->m_iObjectID);
 			if(ob)
 			{
 				P_Event* pe = (P_Event*)ob->GetProperty("P_Event");

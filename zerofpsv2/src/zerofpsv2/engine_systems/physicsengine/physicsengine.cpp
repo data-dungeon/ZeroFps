@@ -58,7 +58,7 @@ Vector3 PhysicsEngine::GetNewPos(P_Physic* pkPP)
 
 Vector3 PhysicsEngine::GetNewVel(P_Physic* pkPP)
 {
-	Object* pkObject=pkPP->GetObject();
+	Entity* pkObject=pkPP->GetObject();
 	
 	//add object acceleration
 	Vector3 Acc=pkObject->GetAcc();
@@ -352,7 +352,7 @@ void PhysicsEngine::ClearCollisions()
 }
 
 
-bool PhysicsEngine::TestLine(list<Object*>* pkObList,Vector3 kPos,Vector3 kVec)
+bool PhysicsEngine::TestLine(list<Entity*>* pkObList,Vector3 kPos,Vector3 kVec)
 {
 	pkObList->clear();
 	

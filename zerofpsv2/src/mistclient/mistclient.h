@@ -60,14 +60,14 @@ class MistClient :public Application, public ZGuiApp {
 
 		//clients own little qute object
 		int					m_iSelfObjectID;				// Network ID that i use to send data to server.
-		Object*				m_pkClientObject;
+		Entity*				m_pkClientObject;
 		P_ClientControl*	m_pkClientControlP;
 
 		P_ServerInfo*		m_pkServerInfo;
 
 		
 		Camera*				m_pkCamera;
-		Object*				m_pkTestobj;
+		Entity*				m_pkTestobj;
 		P_Camera*			m_pkCamProp;		
 		float					m_fAngle;
 		float					m_fDistance;		
@@ -82,13 +82,13 @@ class MistClient :public Application, public ZGuiApp {
 		int					m_iTargetFace;		
 		
 		Vector3	Get3DMousePos();
-		Object*	GetTargetObject();	
+		Entity*	GetTargetObject();	
 		bool PickZones();
 		
 		InventoryDlg*	  m_pkInventDlg;
 		void CreateGuiInterface();
 
-		Object* m_pkActiveCharacter;
+		Entity* m_pkActiveCharacter;
 
 		vector<HenchmanButton*> m_vkHenchmanIcons;
 		HenchmanButton* m_pkSelHenchmanIcon;

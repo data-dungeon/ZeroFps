@@ -1,5 +1,5 @@
 #include "p_item.h"
-#include "../zerofpsv2/engine/object.h"
+#include "../zerofpsv2/engine/entity.h"
 #include "../zerofpsv2/engine/objectmanager.h"
 
 // ------------------------------------------------------------------------------------------
@@ -235,7 +235,7 @@ void P_Item::PackFrom(NetPacket* pkNetPacket, int iConnectionID )
 
 // ------------------------------------------------------------------------------------------
 
-Object* P_Item::Split ( int iTookens )
+Entity* P_Item::Split ( int iTookens )
 {
    // only works if object was created from script 
    if ( m_pkObject->m_strCreatedFromScript.size() && iTookens > 0 && iTookens < m_pkItemStats->GetQuantity() )
@@ -243,7 +243,7 @@ Object* P_Item::Split ( int iTookens )
       m_pkItemStats->AddQuantity( -iTookens );      
 
       // in zone???
-      Object *pkNewObject = m_pkObjMan->CreateObjectFromScript ( m_pkObject->m_strCreatedFromScript.c_str() );
+      Entity *pkNewObject = m_pkObjMan->CreateObjectFromScript ( m_pkObject->m_strCreatedFromScript.c_str() );
 
       // copy all object data
       P_Item *pkNewItemProp = (P_Item*)pkNewObject->GetProperty("P_Item");
@@ -260,7 +260,7 @@ Object* P_Item::Split ( int iTookens )
 
 // ------------------------------------------------------------------------------------------
 
-bool P_Item::Stock ( Object *pkObject )
+bool P_Item::Stock ( Entity *pkObject )
 {
    P_Item *pkIP = (P_Item*)pkObject->GetProperty("P_Item");
 

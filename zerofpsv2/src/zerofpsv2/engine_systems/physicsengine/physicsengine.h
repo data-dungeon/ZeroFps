@@ -3,7 +3,7 @@
 
 #include "../../engine/zerofps.h"
 #include "../engine_systems_x.h"
-#include "../../engine/object.h"
+#include "../../engine/entity.h"
 //#include "physicproperty.h"
 
 #include <list>
@@ -14,7 +14,7 @@
 
 using namespace std;
 
-class Object;
+class Entity;
 class P_Physic;
 
 struct ENGINE_SYSTEMS_API Collision
@@ -122,7 +122,7 @@ class ENGINE_SYSTEMS_API PhysicsEngine : public ZFSubSystem
 		Collision* CheckIfColliding(P_Physic* pkPP);
 		
 		bool TestLine(list<P_Physic*>* pkPPList,Vector3 kPos,Vector3 kVec);
-		bool TestLine(list<Object*>* pkObList,Vector3 kPos,Vector3 kVec);
+		bool TestLine(list<Entity*>* pkObList,Vector3 kPos,Vector3 kVec);
 		
 		void SetUpdate(bool bUpdate) { m_bUpdate=bUpdate;};
 		bool GetUpdate() {return m_bUpdate;};

@@ -1,23 +1,24 @@
-#include "object.h"
+#include "entity.h"
 
 #include "../engine_systems/physicsengine/physicsengine.h"
 #include "../basic/zfsystem.h"
 #include "objectmanager.h"
 #include "../engine_systems/propertys/p_physic.h"
  
-typedef list<Object*>::iterator		itListObject;
+typedef list<Entity*>::iterator		itListObject;
 typedef list<Property*>::iterator	itListProperty;
  
-Object::Object() 
+
+Entity::Entity() 
 {
 	// Get Ptrs to some usefull objects.
 	m_pkObjectMan			= static_cast<ObjectManager*>(g_ZFObjSys.GetObjectPtr("ObjectManager"));
 	m_pkPropertyFactory		= static_cast<PropertyFactory*>(g_ZFObjSys.GetObjectPtr("PropertyFactory"));	
 	m_pkFps					= static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
 		
-	ZFAssert(m_pkObjectMan,			"Object::Object(): Failed to find ObjectManger");
-	ZFAssert(m_pkPropertyFactory,	"Object::Object(): Failed to find PropertyFactory");
-	ZFAssert(m_pkFps,				"Object::Object(): Failed to find ZeroFps");
+	ZFAssert(m_pkObjectMan,			"Entity::Entity(): Failed to find ObjectManger");
+	ZFAssert(m_pkPropertyFactory,	"Entity::Entity(): Failed to find PropertyFactory");
+	ZFAssert(m_pkFps,				"Entity::Entity(): Failed to find ZeroFps");
 
 	m_pkObjectMan->Link(this);		// Add ourself to objectmanger and get a NetID.
 
@@ -28,8 +29,8 @@ Object::Object()
 	m_kAcc		= Vector3::ZERO;
 	m_fRadius	= 1;
 	
-  	m_strName	= "A Object";	
-	m_strType	= "Object";
+  	m_strName	= "A Entity";	
+	m_strType	= "Entity";
 
 	m_pScriptFileHandle	= new ZFResourceHandle;
 
@@ -52,7 +53,7 @@ Object::Object()
 	ResetGotData();
 }
 
-Object::~Object() 
+Entity::~Entity() 
 {
 	// First we remove all childs
 	DeleteAllChilds();
@@ -74,20 +75,20 @@ Object::~Object()
 		delete TempProperty;
 	}
 
-	// Tell object manger that we are no more.
+	// Tell Entity manger that we are no more.
 	m_pkObjectMan->UnLink(this);
 	
 	delete(m_pScriptFileHandle);
 }
 
-bool Object::IsA(string strStringType)
+bool Entity::IsA(string strStringType)
 {
 	return m_pkObjectMan->IsA(this, strStringType);
 }
 
-/**	\brief	Adds a property to the object.
+/**	\brief	Adds a property to the Entity.
 */
-Property* Object::AddProperty(Property* pkNewProperty) 
+Property* Entity::AddProperty(Property* pkNewProperty) 
 {
 	if(pkNewProperty == NULL)
 		return NULL;
@@ -106,11 +107,11 @@ Property* Object::AddProperty(Property* pkNewProperty)
 	return pkNewProperty;
 }
 
-/**	\brief	Creates and adds a property to the object.
+/**	\brief	Creates and adds a property to the Entity.
 */
-Property* Object::AddProperty(const char* acName)
+Property* Entity::AddProperty(const char* acName)
 {
-	ZFAssert(acName, "Object::AddProperty(): acName is NULL");
+	ZFAssert(acName, "Entity::AddProperty(): acName is NULL");
 	Property* pProp = m_pkPropertyFactory->CreateProperty(acName);
 	
 	if(pProp==NULL)
@@ -123,9 +124,9 @@ Property* Object::AddProperty(const char* acName)
 	return pProp;
 }
 
-/**	\brief	Removes the property from the object.
+/**	\brief	Removes the property from the Entity.
 */
-void Object::RemoveProperty(Property* pkProp) 
+void Entity::RemoveProperty(Property* pkProp) 
 {
 	//m_akPropertys.remove(pkProp);
 	
@@ -145,9 +146,9 @@ void Object::RemoveProperty(Property* pkProp)
 
 /**	\brief	Removes and deletes the property. 
 	
-	Removes a property from the object and then deletes it,
+	Removes a property from the Entity and then deletes it,
 */
-bool Object::DeleteProperty(const char* acName) 
+bool Entity::DeleteProperty(const char* acName) 
 {
 	if(m_akPropertys.empty())
 		return false;
@@ -170,7 +171,7 @@ bool Object::DeleteProperty(const char* acName)
 	return false;
 }
 
-void Object::PropertyLost(Property* pkProp)
+void Entity::PropertyLost(Property* pkProp)
 {
 	if(pkProp->m_pkObject == this)
 	{
@@ -187,9 +188,9 @@ void Object::PropertyLost(Property* pkProp)
 
 /**	\brief	Returns a pointer to the choosen property.
 	
-	Returns a pointer the the property 'name' or NULL if the property is not part of the object.
+	Returns a pointer the the property 'name' or NULL if the property is not part of the Entity.
 */
-Property* Object::GetProperty(const char* acName) 
+Property* Entity::GetProperty(const char* acName) 
 {
 	if(strstr(acName, "P_") == NULL) {
 		if(strcmp(acName, "nons") != 0) {
@@ -215,7 +216,7 @@ Property* Object::GetProperty(const char* acName)
 	
 	Returns a vector with the the propertys that have the correct type and side flags.
 */
-void  Object::GetPropertys(vector<Property*> *akPropertys,int iType,int iSide)
+void  Entity::GetPropertys(vector<Property*> *akPropertys,int iType,int iSide)
 {
 	for(vector<Property*>::iterator it = m_akPropertys.begin(); it != m_akPropertys.end(); it++) {
 		if((*it)->m_iType & iType /*|| iType & PROPERTY_TYPE_ALL*/ ){
@@ -226,12 +227,12 @@ void  Object::GetPropertys(vector<Property*> *akPropertys,int iType,int iSide)
 	}
 }
 
-/**	\brief	Returns a vector with propertys for the object and child objects.
+/**	\brief	Returns a vector with propertys for the Entity and child objects.
 	
 	Returns a vector with the the propertys that have the correct type and side flags.
-	Walks child objects of selected object.
+	Walks child objects of selected Entity.
 */
-void Object::GetAllPropertys(vector<Property*> *akPropertys,int iType,int iSide)
+void Entity::GetAllPropertys(vector<Property*> *akPropertys,int iType,int iSide)
 {
 	if(m_iUpdateStatus & UPDATE_NONE)
 		return;
@@ -241,7 +242,7 @@ void Object::GetAllPropertys(vector<Property*> *akPropertys,int iType,int iSide)
 	//get this objects propertys
 	GetPropertys(akPropertys,iType,iSide);	
 	
-	for(vector<Object*>::iterator it=m_akChilds.begin();it!=m_akChilds.end();it++)
+	for(vector<Entity*>::iterator it=m_akChilds.begin();it!=m_akChilds.end();it++)
 	{	
 		if(m_iUpdateStatus & UPDATE_ALL)
 		{
@@ -276,9 +277,9 @@ void Object::GetAllPropertys(vector<Property*> *akPropertys,int iType,int iSide)
 	}
 }
 
-/**	\brief	Adds a property to an object if it does not have it yet.
+/**	\brief	Adds a property to an Entity if it does not have it yet.
 */
-Property* Object::AddProxyProperty(const char* acName)
+Property* Entity::AddProxyProperty(const char* acName)
 {
 	Property* pProp = GetProperty(acName);
 	if(pProp)
@@ -288,7 +289,7 @@ Property* Object::AddProxyProperty(const char* acName)
 	return pProp;
 }
 
-bool Object::Update(const char* acName)
+bool Entity::Update(const char* acName)
 {
 	for(vector<Property*>::iterator it=m_akPropertys.begin();it!=m_akPropertys.end();it++) 
 	{
@@ -301,11 +302,11 @@ bool Object::Update(const char* acName)
 	return false;
 }
 
-/**	\brief	Add a object to be a our child.
+/**	\brief	Add a Entity to be a our child.
 
-	Checks that we don't have this object as a child and if not adds it.
+	Checks that we don't have this Entity as a child and if not adds it.
 */
-void Object::AddChild(Object* pkObject) 
+void Entity::AddChild(Entity* pkObject) 
 {
 	// Check so we don't have child already.
 	if(HasChild(pkObject))
@@ -315,18 +316,18 @@ void Object::AddChild(Object* pkObject)
 	pkObject->SetParent(this);
 }
 
-/**	\brief	Remove a object from our list of children.
+/**	\brief	Remove a Entity from our list of children.
 
-	Check that we have this object as a child and if so removes it.
+	Check that we have this Entity as a child and if so removes it.
 */
-void Object::RemoveChild(Object* pkObject)
+void Entity::RemoveChild(Entity* pkObject)
 {
-	// If we don't have object as a child return.
+	// If we don't have Entity as a child return.
 	if(HasChild(pkObject) == false)
 		return;
 
-	//m_akChilds.remove(pkObject);	// Remove object as child.
-	vector<Object*>::iterator kIt = m_akChilds.begin();
+	//m_akChilds.remove(pkObject);	// Remove Entity as child.
+	vector<Entity*>::iterator kIt = m_akChilds.begin();
 	while(kIt != m_akChilds.end())
 	{
 		if((*kIt) == pkObject)
@@ -342,9 +343,9 @@ void Object::RemoveChild(Object* pkObject)
 	pkObject->SetParent(NULL);		// Set objects parent to NULL.
 }
 
-/**	\brief	Sets object to be our parent.
+/**	\brief	Sets Entity to be our parent.
 */
-void Object::SetParent(Object* pkObject) 
+void Entity::SetParent(Entity* pkObject) 
 {
 	// Check so we don't try to set ourself to be our own parent.
 //	ZFAssert(this != pkObject, "SetParent(this)");
@@ -356,7 +357,7 @@ void Object::SetParent(Object* pkObject)
 		if(m_pkParent == NULL)
 			return;
 		
-		Object* pkParent = m_pkParent;
+		Entity* pkParent = m_pkParent;
 		m_pkParent = NULL;
 		pkParent->RemoveChild(this);
 		return;
@@ -370,31 +371,31 @@ void Object::SetParent(Object* pkObject)
 	m_pkParent->AddChild(this);
 }
 
-/**	\brief	Returns true if object is our child of this.
+/**	\brief	Returns true if Entity is our child of this.
 */
-bool Object::HasChild(Object* pkObject)
+bool Entity::HasChild(Entity* pkObject)
 {
-	//check if this object is in the child list
-	for(vector<Object*>::iterator it=m_akChilds.begin();it!=m_akChilds.end();it++) {
+	//check if this Entity is in the child list
+	for(vector<Entity*>::iterator it=m_akChilds.begin();it!=m_akChilds.end();it++) {
 		if((*it)==pkObject) return true;
 	}
 	
 	return false;
 }
 
-int Object::NrOfChilds()
+int Entity::NrOfChilds()
 {
 	return m_akChilds.size();
 }
 
-/**	\brief	Delete all children of the choosen object.
+/**	\brief	Delete all children of the choosen Entity.
 
-	Deletes all children and the children of those object down the the youngest most defenseless object.
+	Deletes all children and the children of those Entity down the the youngest most defenseless Entity.
 	MOhhahah HAIL AND KILL:
 */
-void Object::DeleteAllChilds()
+void Entity::DeleteAllChilds()
 {
-	Object* pkChildObject;
+	Entity* pkChildObject;
 
 	while(m_akChilds.size()) {
 		pkChildObject = (*m_akChilds.begin());
@@ -407,13 +408,13 @@ void Object::DeleteAllChilds()
 	m_akChilds.clear();
 }
 
-bool Object::AttachToZone()
+bool Entity::AttachToZone()
 {
 	return AttachToZone(GetLocalPosV());
 }
 
 
-bool Object::AttachToZone(Vector3 kPos)
+bool Entity::AttachToZone(Vector3 kPos)
 {
 	if(!m_bZone)
 	{
@@ -422,7 +423,7 @@ bool Object::AttachToZone(Vector3 kPos)
 			int nZ = m_pkObjectMan->GetZoneIndex(kPos,m_iCurrentZone,false);
 			if(nZ == -1)
 			{
-				//cout<<"object tried to move outside zone"<<endl;
+				//cout<<"Entity tried to move outside zone"<<endl;
 				return false;
 			}
 			
@@ -435,7 +436,7 @@ bool Object::AttachToZone(Vector3 kPos)
 	
 			if(!cz->m_pkZone)
 			{
-				//cout<<"object tried to move to a unloaded zone"<<endl;
+				//cout<<"Entity tried to move to a unloaded zone"<<endl;
 				return  false;
 			}
 	
@@ -444,7 +445,7 @@ bool Object::AttachToZone(Vector3 kPos)
 			
 			ZoneChange(m_iCurrentZone,nZ);
 			m_iCurrentZone = nZ;
-			SetParent((Object*)cz->m_pkZone);				
+			SetParent((Entity*)cz->m_pkZone);				
 			return true;
 		}
 	}	
@@ -452,7 +453,7 @@ bool Object::AttachToZone(Vector3 kPos)
 	return false;
 }
 
-void Object::ZoneChange(int iCurrent,int iNew)
+void Entity::ZoneChange(int iCurrent,int iNew)
 {
 	for(vector<Property*>::iterator it=m_akPropertys.begin();it!=m_akPropertys.end();it++) 
 	{
@@ -463,19 +464,19 @@ void Object::ZoneChange(int iCurrent,int iNew)
 
 /**	\brief	Adds ourself and all our children to the list of objects.
 */
-void Object::GetAllObjects(vector<Object*> *pakObjects)
+void Entity::GetAllObjects(vector<Entity*> *pakObjects)
 {
 	pakObjects->push_back(this);	
 	
-	for(vector<Object*>::iterator it=m_akChilds.begin();it!=m_akChilds.end();it++) {
+	for(vector<Entity*>::iterator it=m_akChilds.begin();it!=m_akChilds.end();it++) {
 		(*it)->GetAllObjects(pakObjects);
 	}	
 }
 
 
-/**	\brief	Returns true if object is one that need to be sent over network.
+/**	\brief	Returns true if Entity is one that need to be sent over network.
 */
-bool Object::IsNetWork()
+bool Entity::IsNetWork()
 {
 	m_bIsNetWork = false;
 
@@ -493,16 +494,16 @@ bool Object::IsNetWork()
 	return m_bIsNetWork;
 }
 
-/**	\brief	Returns true if there is any netactive properys in object
+/**	\brief	Returns true if there is any netactive properys in Entity
 
-	Returns true if this object needs to be sent over network (if anything has changed since last
+	Returns true if this Entity needs to be sent over network (if anything has changed since last
 	net update).
 */
-bool Object::NeedToPack()
+bool Entity::NeedToPack()
 {
-	// We can only send data for object we own.
+	// We can only send data for Entity we own.
 	if( m_eRole != NETROLE_AUTHORITY)			return false;
-	// We only send object that the other side need to know about
+	// We only send Entity that the other side need to know about
 	if( m_eRemoteRole	== NETROLE_NONE)		return false;
 
 	int iUpdateFlags = m_iNetUpdateFlags | m_pkObjectMan->m_iForceNetUpdate;
@@ -521,9 +522,9 @@ bool Object::NeedToPack()
 
 
 
-/**	\brief	Pack Object.
+/**	\brief	Pack Entity.
 */
-void Object::PackTo(NetPacket* pkNetPacket, int iConnectionID)
+void Entity::PackTo(NetPacket* pkNetPacket, int iConnectionID)
 {
 	int iParentID	=	-1;
 	if(m_pkParent)
@@ -536,7 +537,7 @@ void Object::PackTo(NetPacket* pkNetPacket, int iConnectionID)
 	if(m_aiNetDeleteList.size())
 		m_iNetUpdateFlags |= OBJ_NETFLAG_DEL;
 
-	// Write Object Update Flags.
+	// Write Entity Update Flags.
 	pkNetPacket->Write( m_iNetUpdateFlags );
 
 	// Write Delete List
@@ -590,9 +591,9 @@ void Object::PackTo(NetPacket* pkNetPacket, int iConnectionID)
 	m_iNetUpdateFlags = 0;
 }
 
-/**	\brief	Unpack Object.
+/**	\brief	Unpack Entity.
 */
-void Object::PackFrom(NetPacket* pkNetPacket, int iConnectionID)
+void Entity::PackFrom(NetPacket* pkNetPacket, int iConnectionID)
 {
 	int iDelObjectID;
 
@@ -611,7 +612,7 @@ void Object::PackFrom(NetPacket* pkNetPacket, int iConnectionID)
 
 	if(m_iNetUpdateFlags & OBJ_NETFLAG_DEL) {
 		int iNumDelObjects;
-		Object* pkNetSlave;
+		Entity* pkNetSlave;
 
 		pkNetPacket->Read(iNumDelObjects);
 
@@ -671,15 +672,15 @@ void Object::PackFrom(NetPacket* pkNetPacket, int iConnectionID)
 
 	int iEnd = pkNetPacket->m_iPos;
 	//g_ZFObjSys.Logf("net", " .End Of Propertys size: 4\n");
-	//g_ZFObjSys.Logf("net", " .Size for Object %d\n",(iEnd - iStart) );
+	//g_ZFObjSys.Logf("net", " .Size for Entity %d\n",(iEnd - iStart) );
 	m_pkObjectMan->m_iTotalNetObjectData += (iEnd - iStart);
 	m_pkObjectMan->m_iNumOfNetObjects ++;
 	//g_ZFObjSys.Logf("net", "\n");
 }
 
-/**	\brief	Load object.
+/**	\brief	Load Entity.
 */
-void Object::Load(ZFIoInterface* pkFile)
+void Entity::Load(ZFIoInterface* pkFile)
 {
 	Vector3 pos;
 	Matrix4 rot;
@@ -749,15 +750,15 @@ void Object::Load(ZFIoInterface* pkFile)
 	//save all childs
 	for(i = 0;i<iChilds;i++)
 	{
-		Object* newobj = m_pkObjectMan->CreateObject();
+		Entity* newobj = m_pkObjectMan->CreateObject();
 		newobj->SetParent(this);
 		newobj->Load(pkFile);		
 	}
 }
 
-/**	\brief	Save Object.
+/**	\brief	Save Entity.
 */
-void Object::Save(ZFIoInterface* pkFile)
+void Entity::Save(ZFIoInterface* pkFile)
 {
 	Vector3 pos = GetLocalPosV();
 	Matrix4 rot = GetLocalRotM();
@@ -837,7 +838,7 @@ void Object::Save(ZFIoInterface* pkFile)
 
 
 // Collision / Shape.
-float Object::GetBoundingRadius()
+float Entity::GetBoundingRadius()
 {
 	Property* pr=GetProperty("P_Physic");
 	if(pr==NULL)
@@ -846,7 +847,7 @@ float Object::GetBoundingRadius()
 	return (static_cast<P_Physic*>(pr))->GetBoundingRadius();
 }
 
-void Object::Touch(Collision* pkCol)
+void Entity::Touch(Collision* pkCol)
 {
 	for(vector<Property*>::iterator it=m_akPropertys.begin();it!=m_akPropertys.end();it++) 
 	{
@@ -855,13 +856,13 @@ void Object::Touch(Collision* pkCol)
 }
 
 // Game Messages
-/// Adds a GameMessage to be handled later by object.
-void Object::AddGameMessage(GameMessage& Msg)
+/// Adds a GameMessage to be handled later by Entity.
+void Entity::AddGameMessage(GameMessage& Msg)
 {
 	m_kGameMessages.push_back(Msg);
 }
 
-void Object::HandleMessages()
+void Entity::HandleMessages()
 {
 	GameMessage Msg;
 
@@ -873,8 +874,8 @@ void Object::HandleMessages()
 	m_kGameMessages.clear();
 }
 
-/// Send a GameMessage to all object propertys.
-void Object::RouteMessage(GameMessage& Msg)
+/// Send a GameMessage to all Entity propertys.
+void Entity::RouteMessage(GameMessage& Msg)
 {
 	for(vector<Property*>::iterator it=m_akPropertys.begin();it!=m_akPropertys.end();it++) 
 		(*it)->HandleGameMessage(Msg);
@@ -884,7 +885,7 @@ void Object::RouteMessage(GameMessage& Msg)
 
 	Checks that the parent/child links is ok and returns false if they are not.
 */
-bool Object::CheckLinks(bool bCheckChilds, int iPos)
+bool Entity::CheckLinks(bool bCheckChilds, int iPos)
 {
 	// Check that our parent link to us.
 	if(m_pkParent) {
@@ -893,7 +894,7 @@ bool Object::CheckLinks(bool bCheckChilds, int iPos)
 			}
 		}
 	
-	for(vector<Object*>::iterator it=m_akChilds.begin();it!=m_akChilds.end();it++) {
+	for(vector<Entity*>::iterator it=m_akChilds.begin();it!=m_akChilds.end();it++) {
 		if((*it)->m_pkParent != this)
 			return false;
 	}
@@ -908,9 +909,9 @@ void TabIn(int iSpaces)
 		g_ZFObjSys.Logf("fisklins", " " );
 }
 
-/**	\brief	Print Info about a object and all its children to file.
+/**	\brief	Print Info about a Entity and all its children to file.
 */
-void Object::PrintTree(int pos)
+void Entity::PrintTree(int pos)
 {
 	const char* szValue;
 	string strValue;
@@ -919,7 +920,7 @@ void Object::PrintTree(int pos)
 
 	TabIn(pos);
 
-	TabIn(pos);			g_ZFObjSys.Logf("fisklins", "Object[%d]\n", iNetWorkID);
+	TabIn(pos);			g_ZFObjSys.Logf("fisklins", "Entity[%d]\n", iNetWorkID);
 	TabIn(pos);			g_ZFObjSys.Logf("fisklins", "{\n" );
 
 	TabIn(pos + 3);	g_ZFObjSys.Logf("fisklins", "Name = %s\n", GetName().c_str() );
@@ -950,14 +951,14 @@ void Object::PrintTree(int pos)
 			}
 		}
 
-	for(vector<Object*>::iterator it2=m_akChilds.begin();it2!=m_akChilds.end();it2++) {
+	for(vector<Entity*>::iterator it2=m_akChilds.begin();it2!=m_akChilds.end();it2++) {
 		(*it2)->PrintTree(pos+1);
 	}
 
 	TabIn(pos);	g_ZFObjSys.Logf("fisklins", "}\n" );
 }
 
-void Object::MakeCloneOf(Object* pkOrginal)
+void Entity::MakeCloneOf(Entity* pkOrginal)
 {
 	SetParent(m_pkParent);
 
@@ -985,17 +986,17 @@ void Object::MakeCloneOf(Object* pkOrginal)
 		}
 }
 
-void Object::ResetChildsGotData()
+void Entity::ResetChildsGotData()
 {
 	ResetGotData();
 	
-	for(vector<Object*>::iterator it=m_akChilds.begin();it!=m_akChilds.end();it++) {
+	for(vector<Entity*>::iterator it=m_akChilds.begin();it!=m_akChilds.end();it++) {
 		if((*it)->GetRelativeOri())
 			(*it)->ResetChildsGotData();	
 	}	
 }
 
-void Object::SetLocalRotM(Matrix4 kNewRot)
+void Entity::SetLocalRotM(Matrix4 kNewRot)
 {
 	m_iNetUpdateFlags |= OBJ_NETFLAG_ROT;
 	ResetChildsGotData();
@@ -1003,7 +1004,7 @@ void Object::SetLocalRotM(Matrix4 kNewRot)
 	m_kLocalRotM = kNewRot;
 }
 
-void Object::SetLocalRotV(Vector3 kRot)
+void Entity::SetLocalRotV(Vector3 kRot)
 {
 	ResetChildsGotData();
 	
@@ -1012,7 +1013,7 @@ void Object::SetLocalRotV(Vector3 kRot)
 	
 }
 
-void Object::SetWorldRotV(Vector3 kRot)
+void Entity::SetWorldRotV(Vector3 kRot)
 {
 	Vector3 crot = GetWorldRotV();
 	Vector3 	newlocal = GetLocalRotV();	
@@ -1037,7 +1038,7 @@ void Object::SetWorldRotV(Vector3 kRot)
 	SetLocalRotV(newlocal);
 }
 
-void Object::SetLocalPosV(Vector3 kPos)
+void Entity::SetLocalPosV(Vector3 kPos)
 {
 	//check new zone
 	if(m_bUseZones)
@@ -1052,7 +1053,7 @@ void Object::SetLocalPosV(Vector3 kPos)
 	m_kLocalPosV = kPos;
 }
 
-void Object::SetWorldPosV(Vector3 kPos)
+void Entity::SetWorldPosV(Vector3 kPos)
 {
 	m_iNetUpdateFlags |= OBJ_NETFLAG_POS;
 	Vector3 kDiff = kPos - GetWorldPosV();
@@ -1061,7 +1062,7 @@ void Object::SetWorldPosV(Vector3 kPos)
 	SetLocalPosV(newlocalpos);
 }
 
-void Object::RotateLocalRotV(Vector3 kRot)
+void Entity::RotateLocalRotV(Vector3 kRot)
 {
 	ResetChildsGotData();
 	
@@ -1069,7 +1070,7 @@ void Object::RotateLocalRotV(Vector3 kRot)
 }
 
 
-Vector3 Object::GetLocalRotV()
+Vector3 Entity::GetLocalRotV()
 {
 	if(!m_kGotData[LOCAL_ROT_V])
 	{
@@ -1080,17 +1081,17 @@ Vector3 Object::GetLocalRotV()
 	return m_kLocalRotV;
 }
 
-Vector3 Object::GetLocalPosV()
+Vector3 Entity::GetLocalPosV()
 {	
 	return m_kLocalPosV;
 }
 
-Matrix4 Object::GetLocalRotM()
+Matrix4 Entity::GetLocalRotM()
 {
 	return m_kLocalRotM;
 }
 
-Vector3 Object::GetWorldPosV()
+Vector3 Entity::GetWorldPosV()
 {
 	if(!m_kGotData[WORLD_POS_V])
 	{
@@ -1119,7 +1120,7 @@ Vector3 Object::GetWorldPosV()
 	return m_kWorldPosV;
 }
 
-Matrix4 Object::GetWorldRotM()
+Matrix4 Entity::GetWorldRotM()
 {
 	if(!m_kGotData[WORLD_ROT_M])
 	{	
@@ -1149,7 +1150,7 @@ Matrix4 Object::GetWorldRotM()
 	return m_kWorldRotM;
 }
 
-Vector3 Object::GetWorldRotV()
+Vector3 Entity::GetWorldRotV()
 {
 	if(!m_kGotData[WORLD_ROT_V])
 	{	
@@ -1160,7 +1161,7 @@ Vector3 Object::GetWorldRotV()
 	return m_kWorldRotV;
 }
 
-Matrix4 Object::GetWorldOriM()
+Matrix4 Entity::GetWorldOriM()
 {
 	if(!m_kGotData[WORLD_ORI_M])
 	{	
@@ -1190,7 +1191,7 @@ Matrix4 Object::GetWorldOriM()
 
 }
 
-Matrix4 Object::GetLocalOriM()
+Matrix4 Entity::GetLocalOriM()
 {
 	if(!m_kGotData[LOCAL_ORI_M])
 	{	

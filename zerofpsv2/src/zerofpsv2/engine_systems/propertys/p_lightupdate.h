@@ -3,7 +3,7 @@
 
 #include "../../engine/property.h"
 #include "../../engine/engine_x.h"
-#include "../../engine/object.h"
+#include "../../engine/entity.h"
 #include "../engine_systems_x.h"
 
 using namespace std;

@@ -22,7 +22,7 @@ int DealDamage ( FightStats *pkAttacker, CharacterStats* pkVictim )
 
 // -----------------------------------------------------------------------------------------------
 
-int DealDamage ( map<string,int>* pkDamage, Object* pkVictim )
+int DealDamage ( map<string,int>* pkDamage, Entity* pkVictim )
 {
    // check if victim has character stats
    CharacterProperty* pkCharProp = (CharacterProperty*)pkVictim->GetProperty("P_CharStats");

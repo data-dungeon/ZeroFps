@@ -1,6 +1,6 @@
 #include "p_crossrender.h"
 #include "../../basic/zfsystem.h"
-#include "../../engine/object.h"
+#include "../../engine/entity.h"
 #include "../../engine/zerofps.h"
 
 P_CrossRender::P_CrossRender()

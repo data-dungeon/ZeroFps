@@ -13,7 +13,7 @@
 #include "../basic/zfresourcedb.h"
 #include "../physics_engine/physics_engine.h"
 #include "fh.h"
-#include "object.h"
+#include "entity.h"
 #include "camera.h"
 #include "../basic/cmdsystem.h"
 #include "../engine_systems/audio/zfaudiosystem.h"
@@ -78,7 +78,7 @@ class ENGINE_API ZFClient
 public:
 	float		m_fConnectTime;	
 	string		m_strName;			// Name of player.
-	Object*		m_pkObject;			// Object used for client.
+	Entity*		m_pkObject;			// Object used for client.
 	set<int>	m_iActiveZones;		// Activated Zones.
 };
 

@@ -6,7 +6,7 @@
 
 class ObjectManager;
 class ZFScriptSystem;
-class Object;
+class Entity;
 class Property;
 
 namespace ObjectManagerLua
@@ -20,15 +20,15 @@ namespace ObjectManagerLua
 	
 	extern ObjectManager* g_pkObjMan;
 	
-	extern Object*			g_pkLastObject;
-	extern Object*			g_pkLastParent;
+	extern Entity*			g_pkLastObject;
+	extern Entity*			g_pkLastParent;
 	extern Property*		g_pkLastProperty;
-	extern Object*			g_pkReturnObject;
+	extern Entity*			g_pkReturnObject;
 
 	//extern Object*			g_pkLastObjectBak;
-	extern Object*			g_pkLastParentBak;
+	extern Entity*			g_pkLastParentBak;
 	extern Property*		g_pkLastPropertyBak;
-	extern Object*			g_pkReturnObjectBak;
+	extern Entity*			g_pkReturnObjectBak;
 
 	int ENGINE_SYSTEMS_API InitObjectLua(lua_State* pkLua);	
 	int ENGINE_SYSTEMS_API InitPropertyLua(lua_State* pkLua);

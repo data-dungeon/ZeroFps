@@ -7,15 +7,15 @@
 ZFScriptSystem* ObjectManagerLua::g_pkScript;
 ObjectManager*  ObjectManagerLua::g_pkObjMan;
 
-Object*			 ObjectManagerLua::g_pkLastObject;
-Object*			 ObjectManagerLua::g_pkLastParent;
+Entity*			 ObjectManagerLua::g_pkLastObject;
+Entity*			 ObjectManagerLua::g_pkLastParent;
 Property*		 ObjectManagerLua::g_pkLastProperty;
-Object*			 ObjectManagerLua::g_pkReturnObject;
+Entity*			 ObjectManagerLua::g_pkReturnObject;
 
 //Object*			 ObjectManagerLua::g_pkLastObjectBak;
-Object*			 ObjectManagerLua::g_pkLastParentBak;
+Entity*			 ObjectManagerLua::g_pkLastParentBak;
 Property*		 ObjectManagerLua::g_pkLastPropertyBak;
-Object*			 ObjectManagerLua::g_pkReturnObjectBak;
+Entity*			 ObjectManagerLua::g_pkReturnObjectBak;
 
 
 void ObjectManagerLua::Init(ObjectManager* pkObjMan, ZFScriptSystem* pkScript)
@@ -213,7 +213,7 @@ int ObjectManagerLua::PlayAnim(lua_State* pkLua)
 
 //	printf("Should Play A Animation '%s' on object %d", acName,  iId1);
 
-	Object* o1 = g_pkObjMan->GetObjectByNetWorkID(iId1);
+	Entity* o1 = g_pkObjMan->GetObjectByNetWorkID(iId1);
 	P_Mad* mp = dynamic_cast<P_Mad*>(o1->GetProperty("P_Mad"));
 	mp->PlayAnimation(acName,0);
 	
@@ -230,7 +230,7 @@ int ObjectManagerLua::SetNextAnim(lua_State* pkLua)
 	g_pkScript->GetArg(pkLua, 1, acName);
 //	printf("Next Anim to play is '%s' on object %d", acName,  iId1);
 
-	Object* o1 = g_pkObjMan->GetObjectByNetWorkID(iId1);
+	Entity* o1 = g_pkObjMan->GetObjectByNetWorkID(iId1);
 	P_Mad* mp = dynamic_cast<P_Mad*>(o1->GetProperty("P_Mad"));
 	mp->SetNextAnimation(acName);
 	return 1;

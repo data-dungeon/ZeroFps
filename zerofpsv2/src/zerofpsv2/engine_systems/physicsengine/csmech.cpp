@@ -47,8 +47,8 @@ Collision* CSMech::Collide_CSSphere(CSSphere* kOther)
 
 	GenerateModelMatrix();
 
-	Object* O1=m_pkPP->GetObject();
-	Object* O2=kOther->m_pkPP->GetObject();
+	Entity* O1=m_pkPP->GetObject();
+	Entity* O2=kOther->m_pkPP->GetObject();
 
 	Vector3 kPos1 = O2->GetWorldPosV();
 	Vector3 kPos2 = kOther->m_pkPP->m_kNewPos;
@@ -358,8 +358,8 @@ Collision* CSMech::Collide_CSBox(CSBox* kOther)
 	GenerateModelMatrix();
 	
 	
-	Object* O1=m_pkPP->GetObject();
-	Object* O2=kOther->m_pkPP->GetObject();
+	Entity* O1=m_pkPP->GetObject();
+	Entity* O2=kOther->m_pkPP->GetObject();
 
 	Vector3 kPos1 = O2->GetWorldPosV();
 	Vector3 kPos2 = kOther->m_pkPP->m_kNewPos;

@@ -32,8 +32,8 @@ Collision* HeightMapCS::Test(CollisionShape* kOther,bool bContinue)
 
 Collision* HeightMapCS::Collide_CSSphere(CSSphere* kOther)
 {
-	Object* O1=m_pkPP->GetObject();
-	Object* O2=kOther->m_pkPP->GetObject();
+	Entity* O1=m_pkPP->GetObject();
+	Entity* O2=kOther->m_pkPP->GetObject();
 	
 	
 	if(O2->GetWorldPosV().x<m_pkMap->GetPos().x-m_pkMap->GetSize()/2 ||
@@ -88,8 +88,8 @@ Collision* HeightMapCS::Collide_CSSphere(CSSphere* kOther)
 
 Collision* HeightMapCS::Collide_CSBox(CSBox* kOther)
 {
-	Object* O1=m_pkPP->GetObject();
-	Object* O2=kOther->m_pkPP->GetObject();
+	Entity* O1=m_pkPP->GetObject();
+	Entity* O2=kOther->m_pkPP->GetObject();
 	
 	
 	if(O2->GetWorldPosV().x<m_pkMap->GetPos().x-m_pkMap->GetSize()/2 ||

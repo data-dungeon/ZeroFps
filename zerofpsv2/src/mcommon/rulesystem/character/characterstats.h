@@ -13,7 +13,7 @@
 #include <map>
 #include <vector>
 #include "../../../zerofpsv2/basic/zfini.h"
-#include "../../../zerofpsv2/engine/object.h"
+#include "../../../zerofpsv2/engine/entity.h"
 
 	using namespace std;
 
@@ -46,9 +46,9 @@ private:
 
    map<string, StatDescriber> m_kSpells;
 
-   map<string, Object*> m_kEquipment;
+   map<string, Entity*> m_kEquipment;
 
-   Object *m_pkParent;
+   Entity *m_pkParent;
 
    FightStats m_kFightStats;
 
@@ -63,7 +63,7 @@ public:
    
 	int test_var;
 
-	CharacterStats( Object *pkParent );
+	CharacterStats( Entity *pkParent );
 
    FightStats* GetFightStats()             { return &m_kFightStats; }
 
@@ -120,10 +120,10 @@ public:
 
    void SetCounter( string kName, int iValue );
 
-   map<string, Object*>* GetEquippedList()           { return &m_kEquipment; }
+   map<string, Entity*>* GetEquippedList()           { return &m_kEquipment; }
    
-   bool Equip ( Object *pkObject, string kSlot );
-   Object* UnEquip ( string kSlot );
+   bool Equip ( Entity *pkObject, string kSlot );
+   Entity* UnEquip ( string kSlot );
 
 
 

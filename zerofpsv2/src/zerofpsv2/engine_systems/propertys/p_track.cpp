@@ -1,5 +1,5 @@
 #include "p_track.h"
-#include "../common/zoneobject.h"
+//#include "../common/zoneobject.h"
 
 /*
 ProxyProperty::ProxyProperty() 

@@ -348,8 +348,8 @@ void ZeroTank::OnServerStart(void)
 	}
 
 	// Create test objects.
-	Object* pkObj;
-	Object* pkObj2;
+	Entity* pkObj;
+	Entity* pkObj2;
 
 
 	m_pkZeroTankHull = pkObjectMan->CreateObjectByArchType("Goblin");

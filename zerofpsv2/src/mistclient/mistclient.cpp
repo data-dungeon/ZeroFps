@@ -248,7 +248,7 @@ void MistClient::OnSystem()
 		
 		if(!m_pkServerInfo)
 		{
-			Object* pkServerI = pkObjectMan->GetObject("A t_serverinfo.lua");
+			Entity* pkServerI = pkObjectMan->GetObject("A t_serverinfo.lua");
 			if(pkServerI)
 				m_pkServerInfo = (P_ServerInfo*)pkServerI->GetProperty("P_ServerInfo");
 				
@@ -274,7 +274,7 @@ void MistClient::OnSystem()
 		if(pi)
 		{
 			int id = pi->kControl[m_iActiveCaracter].first;	
-			Object* pkObj = pkObjectMan->GetObjectByNetWorkID(id);
+			Entity* pkObj = pkObjectMan->GetObjectByNetWorkID(id);
 			
 			if(pkObj)
 			{
@@ -331,7 +331,7 @@ void MistClient::Input()
 	{
 		if(pkFps->GetTicks() - m_fClickDelay > 0.2)
 		{	
-			Object* pkObject = GetTargetObject();
+			Entity* pkObject = GetTargetObject();
 			
 			if(pkObject)
 			{
@@ -629,12 +629,12 @@ Vector3 MistClient::Get3DMousePos()
 	return dir;
 }
 
-Object* MistClient::GetTargetObject()
+Entity* MistClient::GetTargetObject()
 {
 	Vector3 start = m_pkCamera->GetPos();
 	Vector3 dir = Get3DMousePos();
 
-	vector<Object*> kObjects;
+	vector<Entity*> kObjects;
 	kObjects.clear();
 	
 	pkObjectMan->TestLine(&kObjects,start,dir);
@@ -642,7 +642,7 @@ Object* MistClient::GetTargetObject()
 	//cout<<"nr of targets: "<<kObjects.size()<<endl;
 	
 	float closest = 9999999999;
-	Object* pkClosest = NULL;	
+	Entity* pkClosest = NULL;	
 	for(unsigned int i=0;i<kObjects.size();i++)
 	{
 		
@@ -722,7 +722,7 @@ void MistClient::SetActiveCaracter(int iCaracter)
 			if(m_iActiveCaracter != -1)
 			{
 				int id = pi->kControl[m_iActiveCaracter].first;	
-				Object* pkObj = pkObjectMan->GetObjectByNetWorkID(id);
+				Entity* pkObj = pkObjectMan->GetObjectByNetWorkID(id);
 			
 				if(pkObj)
 				{
@@ -751,7 +751,7 @@ void MistClient::SetActiveCaracter(int iCaracter)
 				if(pi->kControl[iCaracter].second & PR_LOOKAT)
 				{
 					int id = pi->kControl[iCaracter].first;	
-					Object* pkObj = pkObjectMan->GetObjectByNetWorkID(id);
+					Entity* pkObj = pkObjectMan->GetObjectByNetWorkID(id);
 		
 					//object found
 					if(pkObj)
@@ -812,13 +812,13 @@ void MistClient::PickUp()
 
 			if(stats)
 			{
-				map<string, Object*>* vkEquipmentList = stats->GetEquippedList();
+				map<string, Entity*>* vkEquipmentList = stats->GetEquippedList();
 
 				int size = vkEquipmentList->size();
 
 				printf("Num of objects in inventory = %i\n", size);
 
-				map<string, Object*>::iterator it;
+				map<string, Entity*>::iterator it;
 				for( it=vkEquipmentList->begin(); it!=vkEquipmentList->end(); it++)
 				{
 					P_Item* pkItemProp = static_cast<P_Item*>(it->second->GetProperty("P_Item"));
@@ -942,7 +942,7 @@ bool MistClient::PickZones()
 	Vector3 start = m_pkCamera->GetPos();
 	Vector3 dir = Get3DMousePos();
 	
-	vector<Object*> kObjects;	
+	vector<Entity*> kObjects;	
 	pkObjectMan->GetZoneObject()->GetAllObjects(&kObjects);
 		
 	int iNrOfZones=0;

@@ -155,6 +155,10 @@ SOURCE=..\engine_systems\physicsengine\cssphere.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\entity.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\ogl\extgl.c
 # End Source File
 # Begin Source File
@@ -199,15 +203,7 @@ SOURCE=.\main.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\netslaveobject.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\network.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\object.cpp
 # End Source File
 # Begin Source File
 
@@ -325,10 +321,6 @@ SOURCE=.\zerofps.cpp
 
 SOURCE=..\engine_systems\audio\zfaudiosystem.cpp
 # End Source File
-# Begin Source File
-
-SOURCE=..\engine_systems\common\zoneobject.cpp
-# End Source File
 # End Group
 # Begin Group "Header Files"
 
@@ -368,6 +360,10 @@ SOURCE=..\engine_systems\physicsengine\cssphere.h
 # Begin Source File
 
 SOURCE=.\engine_x.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\entity.h
 # End Source File
 # Begin Source File
 
@@ -415,15 +411,7 @@ SOURCE=.\main.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\netslaveobject.h
-# End Source File
-# Begin Source File
-
 SOURCE=.\network.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\object.h
 # End Source File
 # Begin Source File
 
@@ -544,10 +532,6 @@ SOURCE=.\zerofps.h
 # Begin Source File
 
 SOURCE=..\engine_systems\audio\zfaudiosystem.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\engine_systems\common\zoneobject.h
 # End Source File
 # End Group
 # Begin Group "Resource Files"

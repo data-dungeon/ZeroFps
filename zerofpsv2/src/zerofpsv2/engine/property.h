@@ -14,7 +14,7 @@
 using namespace std;
 
 struct Collision;
-class Object;
+class Entity;
 class PropertyFactory;
 class ObjectManager;
 class GameMessage;
@@ -151,7 +151,7 @@ class ENGINE_API Property
 		///////////////////////////////////////////
 	protected:
 		ZeroFps*				m_pkZeroFps;			// Vim - Change To ObjectManger
-		Object*				m_pkObject;
+		Entity*				m_pkObject;
       ObjectManager*    m_pkObjMan;
 		//PropertyFactory*		m_pkPropertyFactory;	// Vim - Removes
 	
@@ -241,12 +241,12 @@ class ENGINE_API Property
 		virtual void CloneOf(Property* pkProperty) = 0;
 
 		// Inlines
-		inline void SetObject(Object* pkObject)	{	m_pkObject=pkObject;	};
-		inline Object *GetObject()						{	return m_pkObject;	};
+		inline void SetObject(Entity* pkObject)	{	m_pkObject=pkObject;	};
+		inline Entity *GetObject()						{	return m_pkObject;	};
 
 		bool operator<(Property& kOther);
 
-		friend class Object;
+		friend class Entity;
 };
 
 

@@ -1,7 +1,7 @@
 #ifndef _ENGINE_THE_OBJECTMANAGER_H_
 #define _ENGINE_THE_OBJECTMANAGER_H_
 
-#include "object.h"
+#include "entity.h"
 #include "property.h"
 #include <vector>
 #include <list>
@@ -25,7 +25,7 @@ public:
 
 	bool					m_bNew;
 	bool					m_bUsed;
-	Object*				m_pkZone;
+	Entity*				m_pkZone;
 	int					m_iZoneID;
 	Vector3				m_kPos;
 	Vector3				m_kSize;
@@ -73,10 +73,10 @@ class ENGINE_API ObjectManager : public ZFSubSystem{
 		NetWork*						m_pkNetWork;
 
 		//base objects
-		Object*						m_pkWorldObject;											///< Top level object.
-		Object*						m_pkZoneObject;											///< Top level object.
-		Object*						m_pkClientObject;											///< Top level object.
-		Object*						m_pkGlobalObject;											///< Top level object.
+		Entity*						m_pkWorldObject;											///< Top level object.
+		Entity*						m_pkZoneObject;											///< Top level object.
+		Entity*						m_pkClientObject;											///< Top level object.
+		Entity*						m_pkGlobalObject;											///< Top level object.
 		
 		//current world directory to save/load zone data to 
 		string						m_kWorldDirectory;
@@ -84,7 +84,7 @@ class ENGINE_API ObjectManager : public ZFSubSystem{
 		// Object ArcheTypes
 		list<ObjectArcheType*>	m_akArcheTypes;						///< List of all object Archetypes.
 
-		list<Object*>				m_akObjects;									///< List of all objects.
+		list<Entity*>				m_akObjects;									///< List of all objects.
 		
 		// DELETE
 		vector<int>					m_aiDeleteList;
@@ -94,7 +94,7 @@ class ENGINE_API ObjectManager : public ZFSubSystem{
 		vector<ZoneData>			m_kZones;
 		
 		// Trackers
-		list<Object*> 				m_kTrackedObjects;	
+		list<Entity*> 				m_kTrackedObjects;	
 		int							m_iTrackerLOS;					//tracker line of sight
 
 		list<ObjectDescriptor*> m_akTemplates;							///< List of templates.
@@ -110,7 +110,7 @@ class ENGINE_API ObjectManager : public ZFSubSystem{
 		void GetPropertys(int iType,int iSide);						///< Fill propery list.
 		void TESTVIM_LoadArcheTypes(char* szFileName);
 		ObjectArcheType* GetArcheType(string strName);				///< Get ptr to AT. NULL if not found.
-		void AddArchPropertys(Object* pkObj, string strName);
+		void AddArchPropertys(Entity* pkObj, string strName);
 
 
 	public:
@@ -127,21 +127,21 @@ class ENGINE_API ObjectManager : public ZFSubSystem{
 		~ObjectManager();
 	
 		// Add/Remove Objects
-		void Link(Object* pkNewObject);									///< Link this to the Object manager
-		void UnLink(Object* pkObject);									///< UnLink this from Object Manger.
+		void Link(Entity* pkNewObject);									///< Link this to the Object manager
+		void UnLink(Entity* pkObject);									///< UnLink this from Object Manger.
 		void Clear();															///< Delete all objects.
 		void CreateBaseObjects();											/// create all base objects	
 
 		// Create 
-		Object* CreateObject();												///< Create a empty object.
+		Entity* CreateObject();												///< Create a empty object.
 //		Object* CreateObject(const char* acName);						///< Create object from template.
-		Object* CreateObjectByNetWorkID(int iNetID);					///< Create object with selected NetworkID
-		Object* CreateObjectByArchType(const char* acName);		///< Create object from archtype
-		Object* CreateObjectFromScript(const char* acName);
-		Object* CreateObjectFromScriptInZone(const char* acName,Vector3 kPos,int iCurrentZone = -1);
+		Entity* CreateObjectByNetWorkID(int iNetID);					///< Create object with selected NetworkID
+		Entity* CreateObjectByArchType(const char* acName);		///< Create object from archtype
+		Entity* CreateObjectFromScript(const char* acName);
+		Entity* CreateObjectFromScriptInZone(const char* acName,Vector3 kPos,int iCurrentZone = -1);
 
 		// Delete
-		void Delete(Object* pkNewObject);								///< Adds an object to delete qeue
+		void Delete(Entity* pkNewObject);								///< Adds an object to delete qeue
 		void UpdateDelete();													///< Deletes objects in delete qeue	
 //		void UpdateDeleteList(NetPacket* pkNetPacket);
 
@@ -153,26 +153,26 @@ class ENGINE_API ObjectManager : public ZFSubSystem{
 		
 
 		// Arch types
-		bool IsA(Object* pkObj, string strStringType);
+		bool IsA(Entity* pkObj, string strStringType);
 
 		// Gets
-		Object* GetWorldObject()	{	return m_pkWorldObject;				};
-		Object* GetZoneObject()		{	return m_pkZoneObject;					};		
-		Object* GetClientObject()	{	return m_pkClientObject;				};		
-		Object* GetGlobalObject()	{	return m_pkGlobalObject;				};				
+		Entity* GetWorldObject()	{	return m_pkWorldObject;				};
+		Entity* GetZoneObject()		{	return m_pkZoneObject;					};		
+		Entity* GetClientObject()	{	return m_pkClientObject;				};		
+		Entity* GetGlobalObject()	{	return m_pkGlobalObject;				};				
 		
 		int	GetNumOfObjects()		{	return m_akObjects.size();			}
 		int	GetActivePropertys() {	return m_iNrOfActivePropertys;	};
-		void GetAllObjects(vector<Object*> *pakObjects);
-		Object* GetObject(const char* acName);							///< Get a ptr to object by name
-		Object*	GetObjectByNetWorkID(int iNetID);					///< Get a ptr to object by networkID
+		void GetAllObjects(vector<Entity*> *pakObjects);
+		Entity* GetObject(const char* acName);							///< Get a ptr to object by name
+		Entity*	GetObjectByNetWorkID(int iNetID);					///< Get a ptr to object by networkID
 		void	GetArchObjects(vector<string>* pkFiles, string strParentName);
 
 		// NetWork
 		void UpdateZoneList(NetPacket* pkNetPacket);
 		void PackZoneListToClient(int iClient, set<int>& iZones );
 		void UpdateState(NetPacket* pkNetPacket);						//Updates objects.
-		void PackToClient(int iClient, vector<Object*> kObjects);
+		void PackToClient(int iClient, vector<Entity*> kObjects);
 		void PackToClients();												//Packs and Sends to ALL clients.
 
 		// Debug / Help Functions		
@@ -189,16 +189,16 @@ class ENGINE_API ObjectManager : public ZFSubSystem{
 		char* GetPropertyTypeName(int iType);
 		char* GetPropertySideName(int iSide);
 
-		Object* ObjectManager::CloneObject(int iNetID);
+		Entity* ObjectManager::CloneObject(int iNetID);
 
 		//picking of objects
-		bool TestLine(vector<Object*>* pkObList,Vector3 kPos,Vector3 kVec);
+		bool TestLine(vector<Entity*>* pkObList,Vector3 kPos,Vector3 kVec);
 
-		void OwnerShip_Request(Object* pkObj);		// Use this to request ownership of a object.
-		void OwnerShip_OnRequest(Object* pkObj);	// Called when a request for ownership arrives on server.
-		void OwnerShip_OnGrant(Object* pkObj);		// Recv on client of he gets controll of a object from server.	
-		void OwnerShip_Take(Object* pkObj);		
-		void OwnerShip_Give(Object* pkObj);
+		void OwnerShip_Request(Entity* pkObj);		// Use this to request ownership of a object.
+		void OwnerShip_OnRequest(Entity* pkObj);	// Called when a request for ownership arrives on server.
+		void OwnerShip_OnGrant(Entity* pkObj);		// Recv on client of he gets controll of a object from server.	
+		void OwnerShip_Take(Entity* pkObj);		
+		void OwnerShip_Give(Entity* pkObj);
 		
 		bool StartUp();
 		bool ShutDown();
@@ -209,8 +209,8 @@ class ENGINE_API ObjectManager : public ZFSubSystem{
 		void Test_CreateZones();
 		void Test_DrawZones();
 		void UpdateZones();
-		ZoneData* GetZone(Object* PkObject);
-		int GetZoneIndex(Object* PkObject,int iCurrentZone,bool bClosestZone);
+		ZoneData* GetZone(Entity* PkObject);
+		int GetZoneIndex(Entity* PkObject,int iCurrentZone,bool bClosestZone);
 		int GetZoneIndex(Vector3 kMyPos,int iCurrentZone,bool bClosestZone);
 
 		ZoneData* GetZone(Vector3 kPos);
@@ -218,10 +218,10 @@ class ENGINE_API ObjectManager : public ZFSubSystem{
 		Vector3 GetZoneCenter(int iZoneNum);
 	
 		//trackers
-		void AddTracker(Object* kObject);
-		void RemoveTracker(Object* kObject);
+		void AddTracker(Entity* kObject);
+		void RemoveTracker(Entity* kObject);
 		int GetNrOfTrackedObjects();
-		list<Object*>* GetTrackerList();
+		list<Entity*>* GetTrackerList();
 		void ClearTrackers();
 		vector<int>	GetActiveZoneIDs(int iTracker);	// Returns a list with zones that the tracked activates,
 		
@@ -255,7 +255,7 @@ class ENGINE_API ObjectManager : public ZFSubSystem{
 		//box vs vox test
 		bool BoxVSBox(Vector3 kPos1,Vector3 kSize1,Vector3 kPos2,Vector3 kSize2);
 
-		friend class Object;
+		friend class Entity;
 		friend class ZeroFps;		
 };
 

@@ -7,7 +7,7 @@
 
 // ------------------------------------------------------------------------------------------
 
-CharacterStats::CharacterStats( Object *pkParent )
+CharacterStats::CharacterStats( Entity *pkParent )
 {
 	test_var = 44;
 
@@ -406,7 +406,7 @@ void CharacterStats::SetDefenceValue (string kDefenceType, int iValue)
 
 // ------------------------------------------------------------------------------------------
 
-bool CharacterStats::Equip ( Object *pkObject, string kSlot )
+bool CharacterStats::Equip ( Entity *pkObject, string kSlot )
 {
    // check if object is itemobject (has a itemproperty)
 
@@ -438,11 +438,11 @@ bool CharacterStats::Equip ( Object *pkObject, string kSlot )
 
 // ---------------------------------------------------------------------------------------------
 
-Object* CharacterStats::UnEquip (string kSlot)
+Entity* CharacterStats::UnEquip (string kSlot)
 {
    if ( m_kEquipment[kSlot] != 0 )
    {
-      Object *pkTemp = m_kEquipment[kSlot];
+      Entity *pkTemp = m_kEquipment[kSlot];
 
       P_Item* pkP_Item = (P_Item*)pkTemp->GetProperty("P_Item");
 

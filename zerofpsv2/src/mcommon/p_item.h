@@ -30,8 +30,8 @@ class MCOMMON_API P_Item: public Property
 
 		bool HandleSetValue( string kValueName, string kValue );
 
-      Object* Split ( int iTookens );
-      bool Stock ( Object *pkObject );
+      Entity* Split ( int iTookens );
+      bool Stock ( Entity *pkObject );
 };
 
 MCOMMON_API Property* Create_P_Item();
