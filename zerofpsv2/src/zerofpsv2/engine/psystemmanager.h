@@ -36,13 +36,13 @@ struct v2 {
 struct PSystemTypeData
 {
 
-	Vector3 m_kStart_OuterStartArea;
-	Vector3 m_kStart_InnerStartArea;
-
-	Vector3 m_kEnd_OuterStartArea;
-	Vector3 m_kEnd_InnerStartArea;
-
-	Vector3 m_kPosOffset;
+	Vector3 
+		m_kStart_OuterStartArea,
+		m_kStart_InnerStartArea,
+		m_kEnd_OuterStartArea,
+		m_kEnd_InnerStartArea,
+		m_kPosOffset,
+		m_kMaxSize;
 
 	bool m_bCirkularStart;
 		
@@ -135,6 +135,7 @@ private:
 	bool LoadNewPSystem ( string kName );
 	bool LoadData ( PSystemType *pkPSType );
 	void SetProperties ( PSystemType *pkPSType );
+	void CalculateMaxSize ( PSystemType *pkPSType );
 
 	ZFIni m_kIniLoader;
 

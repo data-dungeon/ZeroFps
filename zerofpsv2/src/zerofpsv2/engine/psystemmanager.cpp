@@ -81,14 +81,14 @@ PSystem* PSystemManager::GetPSSystem ( string kPSName )
 		if ( m_kPSystemTypes[kPSName].m_kPSystemBehaviour.m_kProperties[i] == "AlphaTest" )
 			pkPS->AddPSProperty ( new AlphaTestPSProp ( m_kPSystemTypes[kPSName].m_kPSystemBehaviour.m_uiAlphaTest ) );
 
-		// Light property
-		pkPS->AddPSProperty ( new LightPSProp ( m_kPSystemTypes[kPSName].m_kPSystemBehaviour.m_bLightOn ) );
-
-		// Move property
-		pkPS->AddPSProperty ( new MovePSProp ( pkPS ) );	
 
 	}
 
+	// Light property
+	pkPS->AddPSProperty ( new LightPSProp ( m_kPSystemTypes[kPSName].m_kPSystemBehaviour.m_bLightOn ) );
+
+	// Move property
+	pkPS->AddPSProperty ( new MovePSProp ( pkPS ) );	
 
 	// Create vertices for PS
 	pkPS->SetVertices( CreateVertices(&m_kPSystemTypes[kPSName]) );
@@ -170,6 +170,7 @@ bool PSystemManager::LoadNewPSystem ( string kName )
 
 	LoadData		  ( &kNewType );
 	SetProperties ( &kNewType );
+	CalculateMaxSize ( &kNewType );
 
 	// Calculate max number of particles the PSystem can emitt
 	kNewType.m_kPSystemBehaviour.m_iMaxParticles = 
@@ -245,6 +246,10 @@ bool PSystemManager::LoadData ( PSystemType *pkPSType )
 	else
 		pkPSType->m_kParticleBehaviour.m_fLifeTime = 1;
 
+	if ( m_kIniLoader.KeyExist("particle_lifetime", "random") )
+		pkPSType->m_kParticleBehaviour.m_iLifeTimeRandom = m_kIniLoader.GetFloatValue("particle_lifetime", "random");
+	else
+		pkPSType->m_kParticleBehaviour.m_iLifeTimeRandom = 0;
 
 	
 	// Blending
@@ -384,7 +389,7 @@ bool PSystemManager::LoadData ( PSystemType *pkPSType )
 
 	// Particles / second
 	if( m_kIniLoader.KeyExist("particles_persecond", "time") )
-		pkPSType->m_kPSystemBehaviour.m_fParticlesPerSec = m_kIniLoader.GetFloatValue("particles_persecond", "time");
+		pkPSType->m_kPSystemBehaviour.m_fParticlesPerSec = 1.f / m_kIniLoader.GetIntValue("particles_persecond", "time");
 	else
 		pkPSType->m_kPSystemBehaviour.m_fParticlesPerSec = 0.2f;
 
@@ -419,12 +424,6 @@ bool PSystemManager::LoadData ( PSystemType *pkPSType )
 		pkPSType->m_kPSystemBehaviour.m_fLifeTime = m_kIniLoader.GetFloatValue("ps_lifetime", "time");
 	else
 		pkPSType->m_kPSystemBehaviour.m_fLifeTime = -1;
-
-	if ( m_kIniLoader.KeyExist("particle_lifetime", "random") )
-		pkPSType->m_kParticleBehaviour.m_iLifeTimeRandom = m_kIniLoader.GetFloatValue("particle_lifetime", "random");
-	else
-		pkPSType->m_kParticleBehaviour.m_iLifeTimeRandom = 0;
-
 
 	// Start speed
 	if ( m_kIniLoader.KeyExist("speed", "startspeed") )
@@ -477,17 +476,17 @@ bool PSystemManager::LoadData ( PSystemType *pkPSType )
 	if ( m_kIniLoader.KeyExist("wideness", "x") )
 		pkPSType->m_kParticleBehaviour.m_kWideness.x = m_kIniLoader.GetFloatValue("wideness", "x");
 	else
-		pkPSType->m_kParticleBehaviour.m_kWideness.x = 0;
+		pkPSType->m_kParticleBehaviour.m_kWideness.x = 1;
 
 	if ( m_kIniLoader.KeyExist("wideness", "y") )
 		pkPSType->m_kParticleBehaviour.m_kWideness.y = m_kIniLoader.GetFloatValue("wideness", "y");
 	else
-		pkPSType->m_kParticleBehaviour.m_kWideness.y = 0;
+		pkPSType->m_kParticleBehaviour.m_kWideness.y = 1;
 
 	if ( m_kIniLoader.KeyExist("wideness", "z") )
 		pkPSType->m_kParticleBehaviour.m_kWideness.z = m_kIniLoader.GetFloatValue("wideness", "z");
 	else
-		pkPSType->m_kParticleBehaviour.m_kWideness.z = 0;
+		pkPSType->m_kParticleBehaviour.m_kWideness.z = 1;
 
 
 	// Billboarding
@@ -569,6 +568,35 @@ void PSystemManager::SetProperties ( PSystemType *pkPSType )
 	// Alphatest
 	if ( pkPSType->m_kPSystemBehaviour.m_uiAlphaTest )
 		pkPSType->m_kPSystemBehaviour.m_kProperties.push_back ("AlphaTest");
+}
+
+// ------------------------------------------------------------------------------------------
+
+void PSystemManager::CalculateMaxSize ( PSystemType *pkPSType )
+{
+	Vector3 kOuterCircle;
+
+
+	if ( pkPSType->m_kPSystemBehaviour.m_kEnd_OuterStartArea.x > pkPSType->m_kPSystemBehaviour.m_kStart_OuterStartArea.x )
+		kOuterCircle.x = pkPSType->m_kPSystemBehaviour.m_kEnd_OuterStartArea.x;
+	else
+		kOuterCircle.x = pkPSType->m_kPSystemBehaviour.m_kStart_OuterStartArea.x;
+
+	if ( pkPSType->m_kPSystemBehaviour.m_kEnd_OuterStartArea.y > pkPSType->m_kPSystemBehaviour.m_kStart_OuterStartArea.y )
+		kOuterCircle.y = pkPSType->m_kPSystemBehaviour.m_kEnd_OuterStartArea.y;
+	else
+		kOuterCircle.y = pkPSType->m_kPSystemBehaviour.m_kStart_OuterStartArea.y;
+
+	if ( pkPSType->m_kPSystemBehaviour.m_kEnd_OuterStartArea.z > pkPSType->m_kPSystemBehaviour.m_kStart_OuterStartArea.z )
+		kOuterCircle.z = pkPSType->m_kPSystemBehaviour.m_kEnd_OuterStartArea.z;
+	else
+		kOuterCircle.z = pkPSType->m_kPSystemBehaviour.m_kStart_OuterStartArea.z;
+
+	
+	pkPSType->m_kPSystemBehaviour.m_kMaxSize = (pkPSType->m_kParticleBehaviour.m_kDirection * pkPSType->m_kParticleBehaviour.m_fStartSpeed) *  
+							 pkPSType->m_kParticleBehaviour.m_fLifeTime + 
+							 pkPSType->m_kParticleBehaviour.m_kForce * 
+							 pow(pkPSType->m_kParticleBehaviour.m_fLifeTime, 2) / 2.f + kOuterCircle;
 }
 
 // ------------------------------------------------------------------------------------------

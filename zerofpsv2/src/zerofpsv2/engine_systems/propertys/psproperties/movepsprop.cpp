@@ -15,8 +15,8 @@ void MovePSProp::Update()
 
 	vector<Particle>* pkParticles = &m_pkParent->m_kParticles;
 
-
 	int i;
+
 	// Update velocity
 	for ( i = m_pkParent->Start(); i < m_pkParent->End(); i++ )
 	{
@@ -29,7 +29,8 @@ void MovePSProp::Update()
  
 	// Update position
 	for ( i = m_pkParent->Start(); i < m_pkParent->End(); i++ )
-			m_pkParent->m_kParticles[i].m_kCenter += m_pkParent->m_kParticles[i].m_kVelocity * fFrameTime;
+		m_pkParent->m_kParticles[i].m_kCenter += m_pkParent->m_kParticles[i].m_kVelocity * fFrameTime;
+
 
 	// get modelviewmatrix
 	float *afM = new float[16];

@@ -88,7 +88,7 @@ public:
 
 	int Particles()									{ return m_uiLastParticle - m_uiFirstParticle;	 }
 	int Start()											{ return m_uiFirstParticle; }
-	int End()											{ return m_uiLastParticle; }
+	int End()											{ return m_uiLastParticle + 1; }
 
 	void SetParticles (unsigned int uiNrOf)	{ m_uiParticles = uiNrOf;		 }
 

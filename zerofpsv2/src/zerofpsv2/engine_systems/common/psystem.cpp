@@ -32,7 +32,6 @@ void PSystem::Update( Vector3 kNewPosition, Matrix4 kNewRotation )
 	if ( m_fAge != -1 )
 		m_fAge -= m_fFrameTime;
 
-
 	// Update age life percent
 	m_fAgePercent = m_fAge / m_pkPSystemType->m_kPSystemBehaviour.m_fLifeTime;
 
@@ -47,12 +46,13 @@ void PSystem::Update( Vector3 kNewPosition, Matrix4 kNewRotation )
 	{
 		m_fTimeSinceLastCreatedParticle += m_fFrameTime;
 
-
 		// create a new particle
 		if ( m_fTimeSinceLastCreatedParticle >= m_pkPSystemType->m_kPSystemBehaviour.m_fParticlesPerSec )
 		{
 
 			int iCreate = m_fTimeSinceLastCreatedParticle / m_pkPSystemType->m_kPSystemBehaviour.m_fParticlesPerSec;
+			float fTempTime = m_fTimeSinceLastCreatedParticle / iCreate;
+
 
 			// more than one particle could be created / frame
 			for ( int i = 0; i < iCreate; i++)
@@ -61,14 +61,13 @@ void PSystem::Update( Vector3 kNewPosition, Matrix4 kNewRotation )
 
 				m_kParticles.push_back ( kNewParticle );
 
-				ResetParticle ( m_kParticles.size() - 1, 
-									 m_pkPSystemType->m_kPSystemBehaviour.m_fParticlesPerSec - 
-									 m_fTimeSinceLastCreatedParticle - (m_pkPSystemType->m_kPSystemBehaviour.m_fParticlesPerSec * i) );
+				ResetParticle ( m_kParticles.size() - 1, fTempTime * (iCreate - i) );
 
 				// check so we don't create more particles than there could be in the PSystem
 				if ( m_kParticles.size() == m_uiParticles )
 					break;
 			}
+
 		}
 
 	}
@@ -76,20 +75,21 @@ void PSystem::Update( Vector3 kNewPosition, Matrix4 kNewRotation )
 	// Update lifetime for particles
 	int i;
 	
-	for (  i = m_uiFirstParticle; i < m_uiLastParticle + 1; i++ )
+	for ( i = m_uiFirstParticle; i < m_uiLastParticle + 1; i++ )
 	{
 		// if particle is active
 		if ( m_kParticles[i].m_bActive )
 		{
 			m_kParticles[i].m_fAge -= m_fFrameTime;
+
 			// if lifetime if over, particle is reseted
 			if ( m_kParticles[i].m_fAge < 0 )
 				// is particle system finished, don't reset particle
 				if ( m_fAge > 0 || m_fAge == -1)
-					ResetParticle( i, m_kParticles[i].m_fAge );
+					ResetParticle( i, -m_kParticles[i].m_fAge );
 				else
 					DisableParticle ( i );
-		} 
+		}
 	}
 
 	// Update properties
@@ -152,6 +152,8 @@ PSystem::PSystem(PSystemType* pkPSystemType)
 
 	m_fAge = pkPSystemType->m_kPSystemBehaviour.m_fLifeTime;
 
+	m_fAgePercent = 1;
+
 }
 
 // ------------------------------------------------------------------------------------------
@@ -202,20 +204,20 @@ void PSystem::ResetParticle (int iParticleIndex, float fTimeOffset)
 	if ( fXOuterRadius != 0 )
 		m_kParticles[iParticleIndex].m_kCenter.x = (cos(dRAD) * fXOuterRadius * dRadius) + (cos(dRAD) * fXInnerRadius * (1-dRadius));
 	else
-		m_kParticles[iParticleIndex].m_kCenter.x = -fXOuterRadius / 2.f;
+		m_kParticles[iParticleIndex].m_kCenter.x = 0;
 
 	if ( fYOuterRadius != 0 )
 		m_kParticles[iParticleIndex].m_kCenter.y = (cos(dRADy) * fYOuterRadius * dRadius) + (cos(dRADy) * fYInnerRadius * (1-dRadius));
 	else
-		m_kParticles[iParticleIndex].m_kCenter.y = m_pkPSystemType->m_kParticleBehaviour.m_kStartSize.y - fYOuterRadius / 2.f;
+		m_kParticles[iParticleIndex].m_kCenter.y = 0;
 
 	if ( fZOuterRadius != 0 )
 		m_kParticles[iParticleIndex].m_kCenter.z = (sin(dRAD) * fZOuterRadius * dRadius) + (sin(dRAD) * fZInnerRadius * (1 - dRadius));
 	else
-		m_kParticles[iParticleIndex].m_kCenter.z = -fZOuterRadius / 2.f;
+		m_kParticles[iParticleIndex].m_kCenter.z = 0;
 
 	m_kParticles[iParticleIndex].m_kCenter += m_kPosition + m_kPosOffset;
- 
+
 	// Set current particle to active
 	m_kParticles[iParticleIndex].m_bActive = true;
 
@@ -237,7 +239,7 @@ void PSystem::ResetParticle (int iParticleIndex, float fTimeOffset)
 															 * (m_pkPSystemType->m_kParticleBehaviour.m_iLifeTimeRandom/100.f)));
 
 	// Set age to max lifetime
-	m_kParticles[iParticleIndex].m_fAge = m_kParticles[iParticleIndex].m_fLifeTime + fTimeOffset;
+	m_kParticles[iParticleIndex].m_fAge = m_kParticles[iParticleIndex].m_fLifeTime - fTimeOffset;
 
 	m_kParticles[iParticleIndex].m_kForce = m_pkPSystemType->m_kParticleBehaviour.m_kForce;
 	
@@ -254,10 +256,9 @@ void PSystem::ResetParticle (int iParticleIndex, float fTimeOffset)
 	kRandomDir.z = ((rand()%2 * 2) - 1) * sin(kRandomDir.z / degtorad) + 
 						m_pkPSystemType->m_kParticleBehaviour.m_kDirection.z;
 
-	
+//	m_kParticles[iParticleIndex].m_kVelocity = m_kRotation.VectorRotate(kRandomDir * m_pkPSystemType->m_kParticleBehaviour.m_fStartSpeed);
+	m_kParticles[iParticleIndex].m_kVelocity = kRandomDir * m_pkPSystemType->m_kParticleBehaviour.m_fStartSpeed;
 
-	m_kParticles[iParticleIndex].m_kVelocity = m_kRotation.VectorRotate(kRandomDir * m_pkPSystemType->m_kParticleBehaviour.m_fStartSpeed);
-	
 	m_kParticles[iParticleIndex].m_kStartSize.x = m_pkPSystemType->m_kParticleBehaviour.m_kStartSize.x;
 	m_kParticles[iParticleIndex].m_kStartSize.y = m_pkPSystemType->m_kParticleBehaviour.m_kStartSize.y;
 
@@ -289,6 +290,9 @@ void PSystem::ResetParticle (int iParticleIndex, float fTimeOffset)
 	m_kParticles[iParticleIndex].m_kSize.x = m_kParticles[iParticleIndex].m_kStartSize.x;
 	m_kParticles[iParticleIndex].m_kSize.y = m_kParticles[iParticleIndex].m_kStartSize.y;
 
+	// Update startposition
+	m_kParticles[iParticleIndex].m_kVelocity += m_kParticles[iParticleIndex].m_kForce * fTimeOffset;
+	m_kParticles[iParticleIndex].m_kCenter += m_kParticles[iParticleIndex].m_kVelocity * fTimeOffset;
 
 }
 
@@ -299,6 +303,7 @@ void PSystem::DisableParticle ( int iParticleIndex )
 	m_kParticles[iParticleIndex].m_bActive = false;
 
 	int i;
+
 	// last...
 	for ( i = m_uiLastParticle; i > m_uiFirstParticle; i-- )
 		if ( !m_kParticles[i].m_bActive )
@@ -306,7 +311,7 @@ void PSystem::DisableParticle ( int iParticleIndex )
 		else
 			break;
 
-		// first...
+	// first...
 	for ( i = m_uiFirstParticle; i < m_uiLastParticle; i++ )
 		if ( !m_kParticles[i].m_bActive )
 			m_uiFirstParticle++;
@@ -332,45 +337,16 @@ unsigned int PSystem::GetDepthValue()
 
 void PSystem::TimeoffSet ()
 {
-	glPushAttrib(GL_ALL_ATTRIB_BITS);
-
-	m_fFrameTime = m_pkPSystemType->m_kPSystemBehaviour.m_fParticlesPerSec;
-
-	cout << m_pkPSystemType->m_kParticleBehaviour.m_fLifeTime *
-								m_pkPSystemType->m_kPSystemBehaviour.m_fParticlesPerSec << endl;
-
 	// create particles
-	for ( int i = 0; i < m_pkPSystemType->m_kParticleBehaviour.m_fLifeTime *
-								m_pkPSystemType->m_kPSystemBehaviour.m_fParticlesPerSec; i++ )
+	for ( int i = 0; i < m_pkPSystemType->m_kPSystemBehaviour.m_iMaxParticles; i++ )
 	{
 		Particle kNewParticle;
 
 		m_kParticles.push_back ( kNewParticle );
 
-		ResetParticle ( m_kParticles.size() - 1, 0 );
-
-		m_kParticles[ m_kParticles.size() - 1].m_fAge = (m_fFrameTime * i);
-
-		cout << m_kParticles[ m_kParticles.size() - 1].m_fAge << endl;
-
-		// check so we don't create more particles than there could be in the PSystem
-		if ( m_kParticles.size() == m_uiParticles )
-			break;
+		ResetParticle ( m_kParticles.size() - 1, i * m_pkPSystemType->m_kPSystemBehaviour.m_fParticlesPerSec );
 	}
 
-	// Update velocity
-	for ( int j = 0; j < m_kParticles.size(); j++ )
-	{
-		m_kParticles[j].m_kVelocity += m_kParticles[j].m_kForce * m_kParticles[j].m_fAge;
-		m_kParticles[j].m_kCenter += m_kParticles[j].m_kVelocity * ( pow (m_kParticles[j].m_fAge,2 ) / 2.f );
-
-		cout << m_kParticles[j].m_kVelocity.x << endl;
-		cout << m_kParticles[j].m_kVelocity.y << endl;
-		cout << m_kParticles[j].m_kVelocity.z << endl << endl;
-	}
-	
-
-	glPopAttrib();
 }
 
 // ------------------------------------------------------------------------------------------

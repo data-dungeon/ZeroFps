@@ -78,6 +78,8 @@ void ZeroTank::OnInit()
 	// PSystem
 	Object* pk13 = pkObjectMan->CreateObjectByArchType("FireSword");
 
+	Object* pk14 = pkObjectMan->CreateObjectByArchType("Rain");
+
 	pk7->SetWorldPosV ( Vector3 (20,0,20) );
 
 	pk8->SetWorldPosV ( Vector3 (-15, 0, 15) );
@@ -113,6 +115,7 @@ void ZeroTank::OnInit()
 	pk11->AttachToClosestZone();
 	pk12->AttachToClosestZone();
 	pk13->AttachToClosestZone();
+	pk14->AttachToClosestZone();
 	pkGob->AttachToClosestZone();
 }
 
