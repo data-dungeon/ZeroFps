@@ -668,7 +668,8 @@ void Render::DrawBillboard(const Matrix4& kModelMatrix,const Vector3& kPos,float
 	//glEnable(GL_ALPHA_TEST);
 	glDepthMask(GL_FALSE);
 	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+	//glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+	glBlendFunc(GL_SRC_ALPHA,GL_ONE);
 	
 
 //	glTranslatef(kPos.x,kPos.y,kPos.z);	

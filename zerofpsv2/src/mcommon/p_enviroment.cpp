@@ -494,6 +494,7 @@ void P_Enviroment::DrawSun()
 	//max number of samples 
 	static int iMaxSamples = 0.001*float(m_pkRender->GetWidth()*m_pkRender->GetHeight());
 	static float fMaxAngle = 45.0;
+	static float fFlareSize = 1.5;
 	
 	//positions for sun and flare
 	Vector3 kSunPos =   m_pkZeroFps->GetCam()->GetRenderPos() + m_kSunPos * 100;
@@ -523,12 +524,12 @@ void P_Enviroment::DrawSun()
 			fSize = 1.0;
 			
 		//draw flare
-		m_pkRender->DrawBillboard(m_pkZeroFps->GetCam()->GetModelViewMatrix(),kFlarePos,fSize*fAmp,iSunFlareTex);
+		m_pkRender->DrawBillboard(m_pkZeroFps->GetCam()->GetModelViewMatrix(),kFlarePos,fFlareSize*fSize*fAmp,iSunFlareTex);
 	}
 	else
 	{
 		m_pkRender->DrawBillboard(m_pkZeroFps->GetCam()->GetModelViewMatrix(),kSunPos,10,iSunTex);
-		m_pkRender->DrawBillboard(m_pkZeroFps->GetCam()->GetModelViewMatrix(),kFlarePos,fAmp,iSunFlareTex);	
+		m_pkRender->DrawBillboard(m_pkZeroFps->GetCam()->GetModelViewMatrix(),kFlarePos,fFlareSize*fAmp,iSunFlareTex);	
 	}
 }
 
