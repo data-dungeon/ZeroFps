@@ -3,6 +3,7 @@
 ZoneObject::ZoneObject()
 {
 	m_kName="ZoneObject";
+	m_bSave=false;	
 	
 	m_pkFps = static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
 

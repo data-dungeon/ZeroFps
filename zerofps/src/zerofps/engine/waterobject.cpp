@@ -3,9 +3,8 @@
 WaterObject::WaterObject(int iSize,int iStep,const char* acTexture)
 {
 	m_kName="WaterObject";
+	m_bSave=false;
 
-	
-//	AddProperty(new WaterRenderProperty(iSize,iStep,acTexture));
 	AddProperty("WaterRenderProperty");
 	(static_cast<WaterRenderProperty*>(GetProperty("WaterRenderProperty")))->SetProperty(iSize,iStep,acTexture);
 

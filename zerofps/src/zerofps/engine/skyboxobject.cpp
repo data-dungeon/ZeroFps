@@ -2,7 +2,8 @@
 
 SkyBoxObject::SkyBoxObject(const char* acHor,const char* acTop) {
 	m_kName="SkyBoxObject";
-//	AddProperty(new SkyBoxRenderProperty(acHor,acTop));
+	m_bSave=false;
+
 	AddProperty("SkyBoxRenderProperty");
 	(static_cast<SkyBoxRenderProperty*>(GetProperty("SkyBoxRenderProperty")))->SetTexture(acHor,acTop);
 }

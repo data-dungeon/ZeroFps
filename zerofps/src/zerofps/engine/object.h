@@ -29,12 +29,14 @@ class ENGINE_API ObjectDescriptor{
 		Vector3 m_kRot;
 		Vector3 m_kVel;
 		
+		bool m_bSave;
+		
 		list<PropertyDescriptor*> m_acPropertyList;		
 		
 		~ObjectDescriptor();
 		void Clear();
-		void SaveToFile(ZFFile* pkFile);
-		void LoadFromFile(ZFFile* pkFile);		
+		bool SaveToFile(ZFFile* pkFile);
+		bool LoadFromFile(ZFFile* pkFile);		
 		void SaveToMem(ZFMemPackage* pkPackage);
 		void LoadFromMem(ZFMemPackage* pkPackage);		
 };
@@ -62,6 +64,8 @@ class ENGINE_API Object {
 		bool m_bLoadChilds;
 		bool m_bLockedChilds;
 		bool m_bAutoParent;
+		
+		bool m_bSave;
 		
 		list<Property*> m_akPropertys;
 		ObjectManager* m_pkObjectMan; 
@@ -108,6 +112,7 @@ class ENGINE_API Object {
 
 		inline int &GetUpdateStatus() {return m_iUpdateStatus;};
 
+		inline bool &GetSave(){return m_bSave;};
 		inline string &GetName(){return m_kName;};
 		inline Vector3 &GetPos(){return m_kPos;};
 		inline Vector3 &GetRot(){return m_kRot;};

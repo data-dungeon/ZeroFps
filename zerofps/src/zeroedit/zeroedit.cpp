@@ -23,7 +23,8 @@ void ZeroEdit::OnInit(void)
 	g_ZFObjSys.Register_Cmd("listtemplates",FID_LISTTEMPLATES,this);
 	g_ZFObjSys.Register_Cmd("savetemplate",FID_SAVETEMPLATE,this);
 	g_ZFObjSys.Register_Cmd("loadtemplate",FID_LOADTEMPLATE,this);	
-
+	g_ZFObjSys.Register_Cmd("save",FID_SAVE,this);	
+	g_ZFObjSys.Register_Cmd("load",FID_LOAD,this);		
 
 	//start text =)
 	pkConsole->Printf("            ZeroEdit ");
@@ -245,24 +246,38 @@ void ZeroEdit::RunCommand(int cmdid, const CmdArgument* kCommand)
 				break;
 			}
 			
-			/*
-			ObjectDescriptor* objtemplate=pkObjectMan->GetTemplate(kCommand->m_kSplitCommand[1].c_str());
-			if(objtemplate==NULL)
-			{
-				pkConsole->Printf("Template does not exist");
-				break;
-			}
-
-			ZFFile tempfile;
-			tempfile.Open(kCommand->m_kSplitCommand[2].c_str(),true);
-			
-			objtemplate->SaveToFile(&tempfile);
-			
-			tempfile.Close();				
-			*/
-			
 			pkConsole->Printf("Template %s Saved",kCommand->m_kSplitCommand[1].c_str());
 			break;
+		case FID_SAVE:
+			if(kCommand->m_kSplitCommand.size() <= 1) {
+				pkConsole->Printf("save [file]");
+				break;				
+			}
+			
+			if(!pkObjectMan->SaveAllObjects(kCommand->m_kSplitCommand[1].c_str())){
+				pkConsole->Printf("Error Saving");
+				break;			
+			}
+				
+			pkConsole->Printf("Objects Saved");
+			
+			break;
+			
+		case FID_LOAD:
+			if(kCommand->m_kSplitCommand.size() <= 1) {
+				pkConsole->Printf("load [file]");
+				break;				
+			}
+			
+			if(!pkObjectMan->LoadAllObjects(kCommand->m_kSplitCommand[1].c_str())){
+				pkConsole->Printf("Error loading");
+				break;			
+			}
+				
+			pkConsole->Printf("Objects loaded");
+			
+			break;
+			
 	}
 }
 

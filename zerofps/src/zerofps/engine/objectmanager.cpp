@@ -267,13 +267,16 @@ bool ObjectManager::MakeTemplate(const char* acName,Object* pkObject)
 
 Object* ObjectManager::CreateObject(const char* acName)
 {	
-	Object* tempobject=new Object;
-	
 	ObjectDescriptor *objtemplate = GetTemplate(acName);
 	
 	//return null if the template does not exist
 	if(objtemplate==NULL)
 		return NULL;
+	
+	return CreateObject(objtemplate);
+	
+/*	
+	Object* tempobject=new Object;
 	
 	tempobject->GetName()=objtemplate->m_kName;
 	tempobject->GetPos()=objtemplate->m_kPos;
@@ -289,7 +292,30 @@ Object* ObjectManager::CreateObject(const char* acName)
 	}
 	
 	return tempobject;
+	*/
+	
 }
+
+Object* ObjectManager::CreateObject(ObjectDescriptor* pkObjDesc)
+{
+	Object* tempobject=new Object;
+
+	tempobject->GetName()=pkObjDesc->m_kName;
+	tempobject->GetPos()=pkObjDesc->m_kPos;
+	tempobject->GetRot()=pkObjDesc->m_kRot;
+	tempobject->GetVel()=pkObjDesc->m_kVel;
+	
+	for(list<PropertyDescriptor*>::iterator it=pkObjDesc->m_acPropertyList.begin();it!=pkObjDesc->m_acPropertyList.end();it++) 
+	{
+		if(tempobject->AddProperty((*it)->m_kName.c_str()))
+		{
+			tempobject->GetProperty((*it)->m_kName.c_str())->Load(&(*it)->m_kData);
+		}
+	}
+	
+	return tempobject;
+}
+
 
 void ObjectManager::ClearTemplates()
 {
@@ -358,18 +384,52 @@ bool ObjectManager::SaveAllObjects(const char* acFile)
 	if(!kFile.Open(acFile,true))
 		return false;
 	
-	ObjectDescriptor obd;
-	ZFMemPackage mpkg;
+	ObjectDescriptor kObd;
 	
-	list<Object*> objectlist;
+	list<Object*> kObjectlist;
 	
-	GetAllObjects(&objectlist);
+	GetAllObjects(&kObjectlist);
 	
+	for(list<Object*>::iterator it=kObjectlist.begin();it!=kObjectlist.end();it++)
+	{
+		//the the object dont want to save dont save it
+		if(!(*it)->GetSave())
+			continue;
+	
+		(*it)->Save(&kObd);
+				
+		kObd.SaveToFile(&kFile);
+		
+		kObd.Clear();
+	}
 
-
+	kFile.Close();
 
 	return true;
 }
+
+bool ObjectManager::LoadAllObjects(const char* acFile)
+{
+	ZFFile kFile;
+	if(!kFile.Open(acFile,false))
+		return false;
+	
+	ObjectDescriptor kObd;
+
+	while(kObd.LoadFromFile(&kFile))
+	{		
+		Object* kObject = CreateObject(&kObd);
+		kObject->AttachToClosestZone();
+//		kObject->SetParent(GetWorldObject());
+		
+		kObd.Clear();
+	}
+	
+	kFile.Close();
+	
+	return true;
+}
+
 
 void ObjectManager::GetAllObjects(list<Object*> *pakObjects)
 {

@@ -3,9 +3,10 @@
 HeightMapObject::HeightMapObject(HeightMap *pkMap) {
 	m_kName="HeightMapObject";
 	m_pkHeightMap=pkMap;
-//	m_bStatic=true;
+	m_bSave=false;
+
 	AddProperty(new CollisionProperty(pkMap));
-//	AddProperty(new HeightMapRenderProperty(pkMap));
+
 	AddProperty("HeightMapRenderProperty");
 	(static_cast<HeightMapRenderProperty*>(GetProperty("HeightMapRenderProperty")))->SetHeightMap(pkMap);	
 	
