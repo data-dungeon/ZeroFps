@@ -6,13 +6,14 @@
 Input::Input() 
  : ZFSubSystem("Input") {
 	
-	m_bBindMode = 0;
+	m_bBindMode = 				0;
 
 	// Set Default values
-	m_fMouseSensitivity = 1;	
-
+	m_fMouseSensitivity = 	1;	
+	m_bGrabInput = 			true;
+	
 	// Register Variables
-	RegisterVariable("m_sens",	&m_fMouseSensitivity,	CSYS_FLOAT);
+	RegisterVariable("m_sens",			&m_fMouseSensitivity,	CSYS_FLOAT);
 
 	// Register Commands
 	Register_Cmd("i_togglegrab",		FID_TOGGLEGRAB);
@@ -539,29 +540,23 @@ void Input::ToggleGrab(void)
 		m_fGrabtime	= 	m_pkZeroFps->GetTicks();
 		if(SDL_WM_GrabInput(SDL_GRAB_QUERY)==SDL_GRAB_OFF) 
 		{
-			GrabInput();
-		} else {
-			ReleaseInput();
+			ToggleGrab(true);
+		} else 
+		{
+			ToggleGrab(false);
 		}
 	} 	
 }
 
-void Input::ToggleGrab(bool bGrab) {
+void Input::ToggleGrab(bool bGrab,bool bLog) 
+{
+	if(bLog)
+		m_bGrabInput = bGrab;
+
 	if(bGrab)
-		GrabInput();
+		SDL_WM_GrabInput(SDL_GRAB_ON);
 	else
-		ReleaseInput();
-}
-
-
-void Input::GrabInput(void) 
-{
-	SDL_WM_GrabInput(SDL_GRAB_ON);
-}
-
-void Input::ReleaseInput(void) 
-{
-	SDL_WM_GrabInput(SDL_GRAB_OFF);
+		SDL_WM_GrabInput(SDL_GRAB_OFF);
 }
 	
 

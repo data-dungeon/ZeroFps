@@ -105,7 +105,8 @@ class ENGINE_API Input : public ZFSubSystem {
 		float				m_fAbsMouseX,m_fAbsMouseY;
 		unsigned int	m_iQueueLength;
 		bool 				m_bKeyRepeat;
-
+		bool				m_bGrabInput;
+		
 		int				m_iSDLMouseX, m_iSDLMouseY;
 		float				m_fMouseSensitivity;
 		bool				m_bVisibleHWCursor;
@@ -124,8 +125,6 @@ class ENGINE_API Input : public ZFSubSystem {
 		BasicKey TranslateKey(SDL_keysym* pkSdlKey);
 		int  SDLToZeroFpsKey(int iSdlSym);		
 		
-		void GrabInput(void);
-		void ReleaseInput(void);
 		
 		void AddQueuedKey(BasicKey* pkKey,bool bPressed);		
 		void UpdateMousePos();		
@@ -158,10 +157,12 @@ public:
 
 		void ShowCursor(bool bShow);				
 		void ToggleGrab(void);
-		void ToggleGrab(bool bGrab);		
+		void ToggleGrab(bool bGrab,bool bLog = true);		
 
-		float GetMouseSens() { return m_fMouseSensitivity; }
-
+		float GetMouseSens() 				{	return m_fMouseSensitivity; 	}
+		bool	GetGrabInput()					{	return m_bGrabInput;				}
+		//void	SetGrabInput(bool bGrab)	{	m_bGrabInput = m_bGrab;			}
+		
 		//virtual keys
 		void StartBindMode(string strBindKey, int iBindIndex);
 		
