@@ -18,10 +18,10 @@ class ZFClient;
 class ENGINE_API Application : public ZFSubSystem {	
 	protected:
 		ZeroFps*					pkFps;
-		Console*				pkConsole;			
+		Console*					pkConsole;			
 		Render*					pkRender;
 		Input*					pkInput;
-		TextureManager*			pkTexMan;
+		TextureManager*		pkTexMan;
 		FileIo*					pkFile;
 		ZFBasicFS*				pkBasicFS;
 		Light*					pkLight;
