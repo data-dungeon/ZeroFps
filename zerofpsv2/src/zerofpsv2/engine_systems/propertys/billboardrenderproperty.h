@@ -10,7 +10,7 @@
 using namespace std;
 
 
-class ENGINE_SYSTEMS_API BillBoardRenderProperty: public Property {
+class ENGINE_SYSTEMS_API P_BillBoardRender : public Property {
 		TextureManager* m_pkTexMan;
 		Render* m_pkRender;	
 		ZeroFps* m_pkFps;
@@ -25,7 +25,7 @@ class ENGINE_SYSTEMS_API BillBoardRenderProperty: public Property {
 		bool HandleSetValue( string kValueName ,string kValue );		
 	
 	public:
-		BillBoardRenderProperty();
+		P_BillBoardRender();
 		void CloneOf(Property* pkProperty) { }
 		void Update();
 

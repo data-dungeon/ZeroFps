@@ -1,6 +1,6 @@
 #include "skyboxrenderproperty.h"
 
-SkyBoxRenderProperty::SkyBoxRenderProperty(const char* acHor,const char* acTop) 
+P_SkyBoxRender::P_SkyBoxRender(const char* acHor,const char* acTop) 
 {
 	strcpy(m_acName,"SkyBoxRenderProperty");		
 //	m_pkFrustum=static_cast<Frustum*>(g_ZFObjSys.GetObjectPtr("Frustum"));
@@ -27,7 +27,7 @@ SkyBoxRenderProperty::SkyBoxRenderProperty(const char* acHor,const char* acTop)
 
 }
 
-void SkyBoxRenderProperty::SetTexture(const char* acHor,const char* acTop)
+void P_SkyBoxRender::SetTexture(const char* acHor,const char* acTop)
 {
 	string strTexName;
 	string strBase(acHor);
@@ -56,13 +56,13 @@ void SkyBoxRenderProperty::SetTexture(const char* acHor,const char* acTop)
 
 }
 
-void SkyBoxRenderProperty::SetRotate(Vector3 kRotate)
+void P_SkyBoxRender::SetRotate(Vector3 kRotate)
 {
 	m_kRotateSpd = kRotate;
 }
 
 
-void SkyBoxRenderProperty::Update() 
+void P_SkyBoxRender::Update() 
 {	
 	/* Dvoid
 	m_kHead = m_kHead + m_kRotateSpd * m_pkZeroFps->GetFrameTime();
@@ -76,5 +76,5 @@ void SkyBoxRenderProperty::Update()
 
 Property* Create_SkyBoxRenderProperty()
 {
-	return new SkyBoxRenderProperty("NONE","NONE");
+	return new P_SkyBoxRender("NONE","NONE");
 }

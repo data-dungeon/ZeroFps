@@ -13,7 +13,7 @@ using namespace std;
 class CollisionShape;
 
 /// Property to make a object use the physicsengine.
-class ENGINE_SYSTEMS_API PhysicProperty :public Property
+class ENGINE_SYSTEMS_API P_Physic : public Property
 {
 	private:
 		CollisionShape* m_pkColSphere;
@@ -39,8 +39,8 @@ class ENGINE_SYSTEMS_API PhysicProperty :public Property
 		Vector3 m_kNewAcc;	//for the physicengine
 		
 		
-		PhysicProperty();
-		~PhysicProperty();		
+		P_Physic();
+		~P_Physic();		
 		void CloneOf(Property* pkProperty) { }
 		
 		void Update();

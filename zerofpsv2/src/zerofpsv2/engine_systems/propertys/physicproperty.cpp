@@ -7,7 +7,7 @@
 #include "../physicsengine/csbox.h"
 #include "../physicsengine/csmech.h"
 
-PhysicProperty::PhysicProperty()
+P_Physic::P_Physic()
 {
 	strcpy(m_acName,"PhysicProperty");
 	
@@ -35,13 +35,13 @@ PhysicProperty::PhysicProperty()
 
 }
 
-PhysicProperty::~PhysicProperty()
+P_Physic::~P_Physic()
 {
 	delete m_pkColSphere;
 	delete m_pkColObject;
 }
 
-void PhysicProperty::Update()
+void P_Physic::Update()
 {
 	if(static_cast<CSSphere*>(m_pkColSphere)->m_fRadius==0)
 	{
@@ -49,7 +49,7 @@ void PhysicProperty::Update()
 	}
 }
 
-float PhysicProperty::GetBoundingRadius()
+float P_Physic::GetBoundingRadius()
 {
 	P_Mad* mp = static_cast<P_Mad*>(m_pkObject->GetProperty("MadProperty"));
 	if(mp!=NULL)
@@ -73,7 +73,7 @@ float PhysicProperty::GetBoundingRadius()
 	return 1;
 }
 
-void PhysicProperty::Save(ZFIoInterface* pkPackage)
+void P_Physic::Save(ZFIoInterface* pkPackage)
 {
 	pkPackage->Write((void*)&m_bGravity,4,1);
 	pkPackage->Write((void*)&m_bFloat,4,1);	
@@ -124,7 +124,7 @@ void PhysicProperty::Save(ZFIoInterface* pkPackage)
 	
 }
 
-void PhysicProperty::Load(ZFIoInterface* pkPackage)
+void P_Physic::Load(ZFIoInterface* pkPackage)
 {
 	pkPackage->Read((void*)&m_bGravity,4,1);
 	pkPackage->Read((void*)&m_bFloat,4,1);
@@ -159,14 +159,14 @@ void PhysicProperty::Load(ZFIoInterface* pkPackage)
 }
 
 
-void PhysicProperty::SetColShape(CollisionShape* pkCs)
+void P_Physic::SetColShape(CollisionShape* pkCs)
 {
 	m_pkColObject = pkCs;
 	m_pkColObject->SetPPPointer(this);	
 }
 
 
-vector<PropertyValues> PhysicProperty::GetPropertyValues()
+vector<PropertyValues> P_Physic::GetPropertyValues()
 {
 	vector<PropertyValues> kReturn(10);
 
@@ -244,7 +244,7 @@ vector<PropertyValues> PhysicProperty::GetPropertyValues()
 	return kReturn;
 };
 
-bool PhysicProperty::HandleSetValue( string kValueName ,string kValue )
+bool P_Physic::HandleSetValue( string kValueName ,string kValue )
 {
 	if(strcmp(kValueName.c_str(), "m_fColShape") == 0) 
 	{
@@ -290,7 +290,7 @@ bool PhysicProperty::HandleSetValue( string kValueName ,string kValue )
 
 Property* Create_PhysicProperty()
 {
-	return new PhysicProperty;
+	return new P_Physic;
 }
 
 

@@ -16,10 +16,10 @@ class ENGINE_SYSTEMS_API CollisionShape
 	protected:
 		
 	public:
-		PhysicProperty* m_pkPP;			
+		P_Physic* m_pkPP;			
 		PhysicsEngine* m_pkPhysEngine;
 		
-		void SetPPPointer(PhysicProperty* pkPP);
+		void SetPPPointer(P_Physic* pkPP);
 		
 		virtual Collision* Test(CollisionShape* kOther,bool bContinue)=0;
 };

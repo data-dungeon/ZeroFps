@@ -15,12 +15,12 @@
 using namespace std;
 
 class Object;
-class PhysicProperty;
+class P_Physic;
 
 struct ENGINE_SYSTEMS_API Collision
 {
-	PhysicProperty* m_pkPP1;
-	PhysicProperty* m_pkPP2;
+	P_Physic* m_pkPP1;
+	P_Physic* m_pkPP2;
 
 	Vector3 m_kPos1;
 	Vector3 m_kPos2;
@@ -38,13 +38,13 @@ struct ENGINE_SYSTEMS_API Collision
 
 struct ENGINE_SYSTEMS_API CP
 {
-	PhysicProperty* m_pkPP;
+	P_Physic* m_pkPP;
 	
 	Collision* m_pkCol;
 };
 
 struct ENGINE_SYSTEMS_API Sphere{
-	PhysicProperty* m_pkPP;
+	P_Physic* m_pkPP;
 	float m_fRadius;
 	Vector3 m_kPos;
 };
@@ -106,22 +106,22 @@ class ENGINE_SYSTEMS_API PhysicsEngine : public ZFSubSystem
 		
 		void Update();
 
-		Vector3 GetNewPos(PhysicProperty* pkPP);
-		Vector3 GetNewVel(PhysicProperty* pkPP);
+		Vector3 GetNewPos(P_Physic* pkPP);
+		Vector3 GetNewVel(P_Physic* pkPP);
 		
 		
 		void CalcNewPos();
 		void CheckCollisions();
 		void GenerateMotionSpheres();
-		bool TestMotionSpheres(PhysicProperty* pkPP1,PhysicProperty* pkPP2);
-		Collision* DeepTest(PhysicProperty* pkPP1,PhysicProperty* pkPP2);		
+		bool TestMotionSpheres(P_Physic* pkPP1,P_Physic* pkPP2);
+		Collision* DeepTest(P_Physic* pkPP1,P_Physic* pkPP2);		
 		void HandleCollisions();
 		void ClearCollisions();	
 		
-		bool Stride(PhysicProperty* pkPP);
-		Collision* CheckIfColliding(PhysicProperty* pkPP);
+		bool Stride(P_Physic* pkPP);
+		Collision* CheckIfColliding(P_Physic* pkPP);
 		
-		bool TestLine(list<PhysicProperty*>* pkPPList,Vector3 kPos,Vector3 kVec);
+		bool TestLine(list<P_Physic*>* pkPPList,Vector3 kPos,Vector3 kVec);
 		bool TestLine(list<Object*>* pkObList,Vector3 kPos,Vector3 kVec);
 		
 		void SetUpdate(bool bUpdate) { m_bUpdate=bUpdate;};

@@ -1,7 +1,7 @@
 #include "billboardrenderproperty.h"
 #include "../../engine/zerofps.h"
  
-BillBoardRenderProperty::BillBoardRenderProperty()
+P_BillBoardRender::P_BillBoardRender()
 {
 	strcpy(m_acName,"BillBoardRenderProperty");		
 
@@ -22,18 +22,18 @@ BillBoardRenderProperty::BillBoardRenderProperty()
 
 }
 
-void BillBoardRenderProperty::SetTexture(const char* acTexure)//,const char* acTex2)
+void P_BillBoardRender::SetTexture(const char* acTexure)//,const char* acTex2)
 {
 	m_kTexture=acTexure;	
 	m_iTexture=m_pkTexMan->Load(acTexure,0);
 }
 
-void BillBoardRenderProperty::UpdateSet()
+void P_BillBoardRender::UpdateSet()
 {
 	SetTexture(m_kTexture.c_str());
 }
 
-void BillBoardRenderProperty::Update()
+void P_BillBoardRender::Update()
 {
 	if(!m_pkFps->GetCam()->m_kFrustum.SphereInFrustum(m_pkObject->GetWorldPosV(),m_fScale))
 		return;
@@ -42,7 +42,7 @@ void BillBoardRenderProperty::Update()
 	m_pkRender->DrawBillboard(m_pkFps->GetCam()->GetModelViewMatrix(),pos,m_fScale,m_iTexture);
 }
 
-vector<PropertyValues> BillBoardRenderProperty::GetPropertyValues()
+vector<PropertyValues> P_BillBoardRender::GetPropertyValues()
 {
 	vector<PropertyValues> kReturn(2);
 
@@ -56,7 +56,7 @@ vector<PropertyValues> BillBoardRenderProperty::GetPropertyValues()
 	return kReturn;
 }
 
-bool BillBoardRenderProperty::HandleSetValue( string kValueName ,string kValue )
+bool P_BillBoardRender::HandleSetValue( string kValueName ,string kValue )
 {
 	if(strcmp(kValueName.c_str(), "m_kTexture") == 0) {
 		SetTexture(kValue.c_str());
@@ -67,7 +67,7 @@ bool BillBoardRenderProperty::HandleSetValue( string kValueName ,string kValue )
 }
 
 
-void BillBoardRenderProperty::Save(ZFIoInterface* pkPackage)
+void P_BillBoardRender::Save(ZFIoInterface* pkPackage)
 {
 	char temp[128];
 	strcpy(temp,m_kTexture.c_str());	
@@ -77,7 +77,7 @@ void BillBoardRenderProperty::Save(ZFIoInterface* pkPackage)
 
 }
 
-void BillBoardRenderProperty::Load(ZFIoInterface* pkPackage)
+void P_BillBoardRender::Load(ZFIoInterface* pkPackage)
 {
 	char temp[128];
 	
@@ -92,7 +92,7 @@ void BillBoardRenderProperty::Load(ZFIoInterface* pkPackage)
 
 Property* Create_BillBoardRenderProperty()
 {
-	return new BillBoardRenderProperty;
+	return new P_BillBoardRender;
 
 }
 

@@ -836,7 +836,7 @@ float Object::GetBoundingRadius()
 	if(pr==NULL)
 		return 1;
 
-	return (static_cast<PhysicProperty*>(pr))->GetBoundingRadius();
+	return (static_cast<P_Physic*>(pr))->GetBoundingRadius();
 }
 
 void Object::Touch(Collision* pkCol)

@@ -10,7 +10,7 @@
 using namespace std;
 
 
-class ENGINE_SYSTEMS_API CrossRenderProperty: public Property {
+class ENGINE_SYSTEMS_API P_CrossRender : public Property {
 
 		TextureManager* m_pkTexMan;
 		Render* m_pkRender;	
@@ -25,7 +25,7 @@ class ENGINE_SYSTEMS_API CrossRenderProperty: public Property {
 		bool HandleSetValue( string kValueName ,string kValue );		
 	
 	public:
-		CrossRenderProperty();
+		P_CrossRender();
 		void CloneOf(Property* pkProperty) { }
 		void Update();
 

@@ -12,7 +12,7 @@
 using namespace std;
 
 /// Property for a SkyBox.
-class ENGINE_SYSTEMS_API SkyBoxRenderProperty: public Property {
+class ENGINE_SYSTEMS_API P_SkyBoxRender : public Property {
 		TextureManager* m_pkTexMan;
 		ZeroFps* m_pkZeroFps;
 		Render* m_pkRender;	
@@ -28,7 +28,7 @@ class ENGINE_SYSTEMS_API SkyBoxRenderProperty: public Property {
 		bool	m_bModeSixSides;
 
 	public:
-		SkyBoxRenderProperty(const char* acHor,const char* acTop);
+		P_SkyBoxRender(const char* acHor,const char* acTop);
 		void CloneOf(Property* pkProperty) { }
 		void SetTexture(const char* acHor,const char* acTop);			//the skybox textures acHor is the horisontal texture, actop is top and botom texture
 		void SetRotate(Vector3 kRotate);

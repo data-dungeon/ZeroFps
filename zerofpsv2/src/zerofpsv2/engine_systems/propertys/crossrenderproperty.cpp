@@ -3,7 +3,7 @@
 #include "../../engine/object.h"
 #include "../../engine/zerofps.h"
 
-CrossRenderProperty::CrossRenderProperty()
+P_CrossRender::P_CrossRender()
 {
 	strcpy(m_acName,"CrossRenderProperty");		
 
@@ -23,19 +23,19 @@ CrossRenderProperty::CrossRenderProperty()
 
 }
 
-void CrossRenderProperty::SetTexture(const char* acTex1)//,const char* acTex2)
+void P_CrossRender::SetTexture(const char* acTex1)//,const char* acTex2)
 {
 	m_kTex1=acTex1;	
 	m_iTex1=m_pkTexMan->Load(acTex1,0);
 //	m_iTex2=m_pkTexMan->Load(acTex2,0);
 }
 
-void CrossRenderProperty::UpdateSet()
+void P_CrossRender::UpdateSet()
 {
 	SetTexture(m_kTex1.c_str());//,m_kTex2.c_str());
 }
 
-void CrossRenderProperty::Update()
+void P_CrossRender::Update()
 {
 //	return;
 	if(!m_pkFps->GetCam()->m_kFrustum.SphereInFrustum(m_pkObject->GetWorldPosV(),m_kScale.x))
@@ -44,7 +44,7 @@ void CrossRenderProperty::Update()
 	m_pkRender->DrawCross(m_pkObject->GetWorldPosV(),m_pkObject->GetWorldRotV(),m_kScale,m_iTex1);//,m_iTex2);
 }
 
-vector<PropertyValues> CrossRenderProperty::GetPropertyValues()
+vector<PropertyValues> P_CrossRender::GetPropertyValues()
 {
 	vector<PropertyValues> kReturn(2);
 
@@ -65,7 +65,7 @@ vector<PropertyValues> CrossRenderProperty::GetPropertyValues()
 	return kReturn;
 }
 
-bool CrossRenderProperty::HandleSetValue( string kValueName ,string kValue )
+bool P_CrossRender::HandleSetValue( string kValueName ,string kValue )
 {
 	if(strcmp(kValueName.c_str(), "m_kTex1") == 0) {
 		SetTexture(kValue.c_str());
@@ -83,7 +83,7 @@ bool CrossRenderProperty::HandleSetValue( string kValueName ,string kValue )
 }
 
 
-void CrossRenderProperty::Save(ZFIoInterface* pkPackage)
+void P_CrossRender::Save(ZFIoInterface* pkPackage)
 {
 	char temp[128];
 	strcpy(temp,m_kTex1.c_str());	
@@ -96,7 +96,7 @@ void CrossRenderProperty::Save(ZFIoInterface* pkPackage)
 
 }
 
-void CrossRenderProperty::Load(ZFIoInterface* pkPackage)
+void P_CrossRender::Load(ZFIoInterface* pkPackage)
 {
 	char temp[128];
 	
@@ -114,7 +114,7 @@ void CrossRenderProperty::Load(ZFIoInterface* pkPackage)
 
 Property* Create_CrossRenderProperty()
 {
-	return new CrossRenderProperty;
+	return new P_CrossRender;
 
 }
 

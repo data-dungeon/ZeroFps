@@ -9,7 +9,7 @@
 
 class ZeroFps;
 
-class ENGINE_SYSTEMS_API WorldInfoProperty: public Property {
+class ENGINE_SYSTEMS_API P_WorldInfo : public Property {
 	private:
 		ZeroFps *m_pkFps;
 	
@@ -31,7 +31,7 @@ class ENGINE_SYSTEMS_API WorldInfoProperty: public Property {
 		Vector3 m_kMoonColor;
 		Vector3 m_kAmbientColor;
 		
-		WorldInfoProperty();
+		P_WorldInfo();
 		void Update();
 		
 		void Save(ZFIoInterface* pkPackage);

@@ -1,7 +1,7 @@
 #include "worldinfoproperty.h"
 #include "../../engine/zerofps.h"
  
-WorldInfoProperty::WorldInfoProperty()
+P_WorldInfo::P_WorldInfo()
 {
 	m_pkFps = static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
 
@@ -28,11 +28,11 @@ WorldInfoProperty::WorldInfoProperty()
 	
 }
 
-void WorldInfoProperty::Update()
+void P_WorldInfo::Update()
 {
 }
 
-void WorldInfoProperty::Save(ZFIoInterface* pkPackage)
+void P_WorldInfo::Save(ZFIoInterface* pkPackage)
 {
 	//skybox
 	char data[100];
@@ -61,7 +61,7 @@ void WorldInfoProperty::Save(ZFIoInterface* pkPackage)
 	pkPackage->Write((void*)&m_kAmbientColor,12,1);				
 }
 
-void WorldInfoProperty::Load(ZFIoInterface* pkPackage)
+void P_WorldInfo::Load(ZFIoInterface* pkPackage)
 {
 	//skybox
 	char data[100];
@@ -93,5 +93,5 @@ void WorldInfoProperty::Load(ZFIoInterface* pkPackage)
 
 Property* Create_WorldInfoProperty()
 {
-	return new WorldInfoProperty();
+	return new P_WorldInfo();
 }

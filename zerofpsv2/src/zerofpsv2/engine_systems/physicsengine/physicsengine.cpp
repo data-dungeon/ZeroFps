@@ -42,7 +42,7 @@ void PhysicsEngine::Update()
 		"PROPERTY_TYPE_PHYSIC","PROPERTY_SIDE_SERVER",0,iSize);
 
 	for(vector<Property*>::iterator it=m_kPropertys.begin();it!=m_kPropertys.end();it++) {	
-		static_cast<PhysicProperty*>(*it)->Update();		
+		static_cast<P_Physic*>(*it)->Update();		
 	}
 
 	CalcNewPos();
@@ -51,12 +51,12 @@ void PhysicsEngine::Update()
 
 }
 
-Vector3 PhysicsEngine::GetNewPos(PhysicProperty* pkPP)
+Vector3 PhysicsEngine::GetNewPos(P_Physic* pkPP)
 {
 	return pkPP->GetObject()->GetWorldPosV() + GetNewVel(pkPP) * m_fFrameTime;
 }
 
-Vector3 PhysicsEngine::GetNewVel(PhysicProperty* pkPP)
+Vector3 PhysicsEngine::GetNewVel(P_Physic* pkPP)
 {
 	Object* pkObject=pkPP->GetObject();
 	
@@ -79,7 +79,7 @@ Vector3 PhysicsEngine::GetNewVel(PhysicProperty* pkPP)
 
 
 
-Collision* PhysicsEngine::DeepTest(PhysicProperty* pkPP1,PhysicProperty* pkPP2)
+Collision* PhysicsEngine::DeepTest(P_Physic* pkPP1,P_Physic* pkPP2)
 {
 //	cout<<"deep testing "<<endl;
 
@@ -109,7 +109,7 @@ void PhysicsEngine::CalcNewPos()
 {
 	for(vector<Property*>::iterator it=m_kPropertys.begin();it!=m_kPropertys.end();it++) 
 	{	
-		PhysicProperty* PP = static_cast<PhysicProperty*>(*it);
+		P_Physic* PP = static_cast<P_Physic*>(*it);
 		
 		PP->m_kOldPos = PP->GetObject()->GetWorldPosV();
 		PP->m_kNewPos=GetNewPos(PP);
@@ -127,7 +127,7 @@ void PhysicsEngine::CheckCollisions()
 	
 	for(vector<Property*>::iterator it3=m_kPropertys.begin();it3!=m_kPropertys.end();it3++) 
 	{	
-		PhysicProperty* PP1 = static_cast<PhysicProperty*>(*it3);			
+		P_Physic* PP1 = static_cast<P_Physic*>(*it3);			
 	
 		if(PP1->m_bStride)
 			Stride(PP1);		
@@ -136,7 +136,7 @@ void PhysicsEngine::CheckCollisions()
 	
 	for(vector<Property*>::iterator it1=m_kPropertys.begin();it1!=m_kPropertys.end();it1++) 
 	{	
-		PhysicProperty* PP1 = static_cast<PhysicProperty*>(*it1);			
+		P_Physic* PP1 = static_cast<P_Physic*>(*it1);			
 		
 		
 		for(vector<Property*>::iterator it2 = it1;it2!=m_kPropertys.end();it2++) 
@@ -145,7 +145,7 @@ void PhysicsEngine::CheckCollisions()
 			if(it1==it2)
 				continue;
 				
-			PhysicProperty* PP2 = static_cast<PhysicProperty*>(*it2);
+			P_Physic* PP2 = static_cast<P_Physic*>(*it2);
 	
 			//dont collide two static objects =)
 			if(PP1->GetObject()->GetObjectType()==OBJECT_TYPE_STATIC &&
@@ -186,7 +186,7 @@ void PhysicsEngine::CheckCollisions()
 }
 
 
-bool PhysicsEngine::TestMotionSpheres(PhysicProperty* pkPP1,PhysicProperty* pkPP2)
+bool PhysicsEngine::TestMotionSpheres(P_Physic* pkPP1,P_Physic* pkPP2)
 {
 	Sphere sp1;
 	Sphere sp2;
@@ -218,7 +218,7 @@ void PhysicsEngine::HandleCollisions()
 	m_kCPs.sort(SortCollision);
 
 
-	PhysicProperty* pkSPP=NULL;
+	P_Physic* pkSPP=NULL;
 	Collision* pkCO=NULL;
 	for(list<CP*>::iterator itCp=m_kCPs.begin();itCp!=m_kCPs.end();itCp++) 
 	{
@@ -318,10 +318,10 @@ void PhysicsEngine::HandleCollisions()
 	for(vector<Property*>::iterator it=m_kPropertys.begin();it!=m_kPropertys.end();it++) 
 	{	
 //		(*it)->GetObject()->GetPos() = static_cast<PhysicProperty*>(*it)->m_kOldPos;
-		(*it)->GetObject()->SetWorldPosV(static_cast<PhysicProperty*>(*it)->m_kOldPos);	
-		(*it)->GetObject()->SetWorldPosV(static_cast<PhysicProperty*>(*it)->m_kNewPos);	
+		(*it)->GetObject()->SetWorldPosV(static_cast<P_Physic*>(*it)->m_kOldPos);	
+		(*it)->GetObject()->SetWorldPosV(static_cast<P_Physic*>(*it)->m_kNewPos);	
 //		(*it)->GetObject()->GetPos()=static_cast<PhysicProperty*>(*it)->m_kNewPos;
-		(*it)->GetObject()->GetVel()=static_cast<PhysicProperty*>(*it)->m_kNewVel;
+		(*it)->GetObject()->GetVel()=static_cast<P_Physic*>(*it)->m_kNewVel;
 		(*it)->GetObject()->GetAcc().Set(0,0,0);		
 	}
 
@@ -356,7 +356,7 @@ bool PhysicsEngine::TestLine(list<Object*>* pkObList,Vector3 kPos,Vector3 kVec)
 {
 	pkObList->clear();
 	
-	list<PhysicProperty*> pkPPList;	
+	list<P_Physic*> pkPPList;	
 	pkPPList.clear();
 
 	
@@ -365,7 +365,7 @@ bool PhysicsEngine::TestLine(list<Object*>* pkObList,Vector3 kPos,Vector3 kVec)
 		return false;	
 	
 	//put objects in object list
-	for(list<PhysicProperty*>::iterator it=pkPPList.begin();it!=pkPPList.end();it++) 	
+	for(list<P_Physic*>::iterator it=pkPPList.begin();it!=pkPPList.end();it++) 	
 	{
 		pkObList->push_back((*it)->GetObject());	
 	}
@@ -377,7 +377,7 @@ bool PhysicsEngine::TestLine(list<Object*>* pkObList,Vector3 kPos,Vector3 kVec)
 }
 
 
-bool PhysicsEngine::TestLine(list<PhysicProperty*>* pkPPList,Vector3 kPos,Vector3 kVec)
+bool PhysicsEngine::TestLine(list<P_Physic*>* pkPPList,Vector3 kPos,Vector3 kVec)
 {
 	pkPPList->clear();
 
@@ -390,11 +390,11 @@ bool PhysicsEngine::TestLine(list<PhysicProperty*>* pkPPList,Vector3 kPos,Vector
 		float kdis=k.Length();
 		float Distance = sqrt((cdis*cdis)-(kdis*kdis));
 		
-		float fRadius=static_cast<CSSphere*>(static_cast<PhysicProperty*>(*it)->GetColSphere())->m_fRadius;
+		float fRadius=static_cast<CSSphere*>(static_cast<P_Physic*>(*it)->GetColSphere())->m_fRadius;
 		
 		if(Distance < fRadius)
 		{			
-			pkPPList->push_back(static_cast<PhysicProperty*>(*it));
+			pkPPList->push_back(static_cast<P_Physic*>(*it));
 		}		
 	}
 	
@@ -406,7 +406,7 @@ bool PhysicsEngine::TestLine(list<PhysicProperty*>* pkPPList,Vector3 kPos,Vector
 
 
 
-bool PhysicsEngine::Stride(PhysicProperty* pkPP)
+bool PhysicsEngine::Stride(P_Physic* pkPP)
 {
 	float fStep = 0.00;
 
@@ -511,14 +511,14 @@ bool PhysicsEngine::Stride(PhysicProperty* pkPP)
 	return true;
 }
 
-Collision* PhysicsEngine::CheckIfColliding(PhysicProperty* pkPP)
+Collision* PhysicsEngine::CheckIfColliding(P_Physic* pkPP)
 {
 	Collision* pkCD = NULL; 
 	Collision* pkClosest = NULL;
 	float fMinDis=99999999;
 
 	
-	PhysicProperty* PP1 = pkPP;			
+	P_Physic* PP1 = pkPP;			
 	
 	for(vector<Property*>::iterator it2 = m_kPropertys.begin();it2!=m_kPropertys.end();it2++) 
 	{	
@@ -527,7 +527,7 @@ Collision* PhysicsEngine::CheckIfColliding(PhysicProperty* pkPP)
 			continue;
 			
 			
-		PhysicProperty* PP2 = static_cast<PhysicProperty*>(*it2);
+		P_Physic* PP2 = static_cast<P_Physic*>(*it2);
 
 		if(!PP2->m_bSolid)
 			continue;
