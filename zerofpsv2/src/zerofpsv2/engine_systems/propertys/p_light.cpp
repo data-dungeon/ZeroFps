@@ -69,7 +69,8 @@ void P_Light::DrawFlare()
 	
 		pkTestMat->GetPass(0)->m_kTUs[0]->SetRes("data/textures/clear.tga");
 		pkTestMat->GetPass(0)->m_iPolygonModeFront = 	FILL_POLYGON;
-		pkTestMat->GetPass(0)->m_iCullFace = 				CULL_FACE_BACK;		
+		pkTestMat->GetPass(0)->m_iCullFace = 				CULL_FACE_BACK;
+		pkTestMat->GetPass(0)->m_bDepthMask = 				false;
 		pkTestMat->GetPass(0)->m_bBlend = 					true;	
 		pkTestMat->GetPass(0)->m_iBlendSrc = 				SRC_ALPHA_BLEND_SRC;
 		pkTestMat->GetPass(0)->m_iBlendDst = 				ONE_MINUS_SRC_ALPHA_BLEND_DST;	
@@ -153,7 +154,7 @@ void P_Light::PackFrom( NetPacket* pkNetPacket, int iConnectionID  )
 	pkNetPacket->Read(m_fFlareSize);
 	
 	string strFlareMaterial;
-	pkNetPacket->Write_Str(strFlareMaterial);
+	pkNetPacket->Read_Str(strFlareMaterial);
 	SetMaterial(strFlareMaterial);
 	
 	
