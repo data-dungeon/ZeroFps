@@ -594,7 +594,7 @@ void Render::DrawConsole(char* m_aCommand,vector<char*>* m_kText,int iStartLine,
 		kMarker[0] = iMarker;
 		kMarker[1] = 0;
 		//if(m_bShowInputToken)
-		Print2(Vector3(8+iMarkerPos*8,8,0), kMarker);		
+		Print2(Vector3( float(8+iMarkerPos*8), float(8), 0), kMarker);		
 		//m_bShowInputToken = !m_bShowInputToken;
 		}
 
@@ -691,7 +691,7 @@ void Render::DrawCircle(vector<Vector3> kCircel, Vector3 kColor)
 	glDisable(GL_TEXTURE_2D );
 
 	glBegin(GL_LINE_LOOP );
-	for(int i=0; i<kCircel.size(); i++) {
+	for(unsigned int i=0; i<kCircel.size(); i++) {
 		glVertex3f(kCircel[i].x,kCircel[i].y, kCircel[i].z);
 		
 		}
@@ -1473,7 +1473,7 @@ void GlDump_GetFloatvName(int iGlEnum, char* szName, int iValues)
 //	cout << szName << " : ";
 	fprintf(pkGlDumpLog, "%s : ", szName);
 	for( i=0; i<iValues; i++) {
-		fprintf(pkGlDumpLog, "%s : ", GetOpenGLDefine(afValues[i]));
+		fprintf(pkGlDumpLog, "%s : ", GetOpenGLDefine(int(afValues[i])));
 		//cout <<  << " ";
 		}
 	fprintf(pkGlDumpLog, "\n");
@@ -2093,7 +2093,7 @@ Vector3 Render::GetEditColor(string strName)
 {
 	Vector3 kColor(1,0,0);
 
-	for(int i=0; i<m_kEditColor.size(); i++) 
+	for(unsigned int i=0; i<m_kEditColor.size(); i++) 
 	{
 		if(m_kEditColor[i].m_strName == strName)
 			return m_kEditColor[i].m_kColor;

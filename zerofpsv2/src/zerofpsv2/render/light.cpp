@@ -122,7 +122,7 @@ void Light::Update(Vector3 kRefPos)
 			//		opengl LightIntesity equation	min(1, 1 / ((*it)-> + l*d + q*d*d))
 
 			Vector3 kPos = (*it)->kPos;
-			float fDistance = kRefPos.DistanceTo(kPos);
+			float fDistance = float(kRefPos.DistanceTo(kPos));
 			//float fIntensity = min(1 , 1 / ( (*it)->fConst_Atten + ((*it)->fLinear_Atten*fDistance) + ((*it)->fQuadratic_Atten*(fDistance*fDistance)) ));
 			float fIntensity = 1 / ( (*it)->fConst_Atten + ((*it)->fLinear_Atten*fDistance) + ((*it)->fQuadratic_Atten*(fDistance*fDistance)) );
 
@@ -275,9 +275,9 @@ void Light::GetClosestLights(vector<LightSource*>* pkLights,int iNrOfLights,Vect
 		}
 		else
 		{
-			float fDistance = kPos.DistanceTo((*it)->kPos);
+			float fDistance = float(kPos.DistanceTo((*it)->kPos));
 
-			(*it)->fIntensity = 1.0 / ( (*it)->fConst_Atten + ((*it)->fLinear_Atten*fDistance) + ((*it)->fQuadratic_Atten*(fDistance*fDistance)) );
+			(*it)->fIntensity = float( 1.0 / ( (*it)->fConst_Atten + ((*it)->fLinear_Atten*fDistance) + ((*it)->fQuadratic_Atten*(fDistance*fDistance)) ) );
 
 			kSorted.push_back(*it);
 		}
