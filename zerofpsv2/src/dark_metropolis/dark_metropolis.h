@@ -84,7 +84,7 @@ class DarkMetropolis : public Application, public ZGuiApp
 		int			m_iCurrentPickedEntity;
 		
 		vector<int> m_kAgentsOnField;					//list of agents active in the field
-		vector<int> m_kSelectedEntitys;					//list of selected entitys		
+		int			m_iSelectedEntity;
 		int			m_iCurrentFormation;				//what formation to use when moving characters
 		
 		int			m_iActiveHQ;						//id of the active HQ, used by the gui etc		

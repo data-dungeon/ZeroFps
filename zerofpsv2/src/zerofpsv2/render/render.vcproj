@@ -104,14 +104,14 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386"
-				AdditionalDependencies="glee.lib  basic.lib glu32.lib opengl32.lib sdlmain.lib sdl.lib odbc32.lib odbccp32.lib"
-				OutputFile="..\..\..\bin\render.dll"
+				AdditionalDependencies="glee.lib  basic_debug.lib glu32.lib opengl32.lib sdlmain.lib sdl.lib odbc32.lib odbccp32.lib"
+				OutputFile="..\..\..\bin\render_debug.dll"
 				LinkIncremental="2"
 				SuppressStartupBanner="TRUE"
 				AdditionalLibraryDirectories="..\..\..\bin"
 				GenerateDebugInformation="TRUE"
 				ProgramDatabaseFile=".\Debug/render.pdb"
-				ImportLibrary=".\Debug/render.lib"/>
+				ImportLibrary=".\Debug/render_debug.lib"/>
 			<Tool
 				Name="VCMIDLTool"
 				PreprocessorDefinitions="_DEBUG"

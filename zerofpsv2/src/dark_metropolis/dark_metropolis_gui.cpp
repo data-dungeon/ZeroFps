@@ -318,7 +318,7 @@ void DarkMetropolis::GUI_OnClick(int x, int y, bool bMouseDown,
 	// Klickat på kartan?
 	if(strMainWnd == "MapWnd" && bLeftButton == false)
 	{
-		if(m_kSelectedEntitys.empty() == false)
+		if(m_iSelectedEntity != -1)
 		{
 			float	fWorldWidth = m_fWorldMaxX-m_fWorldMinX;
 			float	fWorldHeight = m_fWorldMaxY-m_fWorldMinY;
@@ -334,26 +334,25 @@ void DarkMetropolis::GUI_OnClick(int x, int y, bool bMouseDown,
 
 			Vector3 kClickPos = Vector3(fx,0,fy);
 
-			for(int i=0; i<m_kSelectedEntitys.size(); i++)
+			Entity* pkEnt = m_pkObjectMan->GetObjectByNetWorkID(m_iSelectedEntity);
+				
+			if(pkEnt)
 			{
-				Entity* pkEnt = m_pkObjectMan->GetObjectByNetWorkID(m_kSelectedEntitys[i]);
-					
-				if(pkEnt)
-				{
-					if(P_DMCharacter* pkCharProp = (P_DMCharacter*)pkEnt->GetProperty("P_DMCharacter"))
-					{	
-						DMOrder kWalkOrder;
-						kWalkOrder.m_iEntityID = m_kSelectedEntitys[i]; 
-						kWalkOrder.m_iOrderType = eWalk;							 
-						kWalkOrder.m_kPosition = kClickPos + 
-							GetFormationPos(m_iCurrentFormation,m_kSelectedEntitys.size(),i);
-						kWalkOrder.m_kPosition.y = pkEnt->GetWorldPosV().y; 
+				// TODO: remake some stuff so we can have formations
+				if(P_DMCharacter* pkCharProp = (P_DMCharacter*)pkEnt->GetProperty("P_DMCharacter"))
+				{	
+					DMOrder kWalkOrder;
+					kWalkOrder.m_iEntityID = m_iSelectedEntity; 
+					kWalkOrder.m_iOrderType = eWalk;							 
+					kWalkOrder.m_kPosition = kClickPos + 
+						GetFormationPos(m_iCurrentFormation,0,1); // 0 was m_kSelectedEntitys.size(), 1 was i(index for member) //Zerom
+					kWalkOrder.m_kPosition.y = pkEnt->GetWorldPosV().y; 
 
-						pkCharProp->ClearOrders();
-						pkCharProp->AddOrder(kWalkOrder);		
-					}
+					pkCharProp->ClearOrders();
+					pkCharProp->AddOrder(kWalkOrder);		
 				}
 			}
+			
 		}
 	}
 	

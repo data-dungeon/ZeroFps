@@ -198,21 +198,17 @@ void DarkMetropolis::RenderInterface(void)
 	
 	}
 	
-	// TODO: only one entity can be selected
 	//draw markers for selected entitys
-	for(unsigned int i = 0;i< m_kSelectedEntitys.size();i++)
+	Entity* pkEnt = m_pkObjectMan->GetObjectByNetWorkID(m_iSelectedEntity);
+	if(pkEnt)
 	{
-		Entity* pkEnt = m_pkObjectMan->GetObjectByNetWorkID(m_kSelectedEntitys[i]);
-		if(pkEnt)
-		{
-			glEnable(GL_ALPHA_TEST);
-			glAlphaFunc(GL_GEQUAL, 0.1);
+		glEnable(GL_ALPHA_TEST);
+		glAlphaFunc(GL_GEQUAL, 0.1);
 
-			m_pkRender->Quad (pkEnt->GetIWorldPosV(), Vector3 (-90, 0, 0), Vector3(0.9, 0.9, 0.9), m_iMarkerTextureID, Vector3(0,255,0) );
+		m_pkRender->Quad (pkEnt->GetIWorldPosV(), Vector3 (-90, 0, 0), Vector3(0.9, 0.9, 0.9), m_iMarkerTextureID, Vector3(0,255,0) );
 
-			glDisable(GL_ALPHA_TEST);
-		}	
-	}
+		glDisable(GL_ALPHA_TEST);
+	}	
 	
 	//draw HQ marker
 	if(m_iHQID != -1)
@@ -246,7 +242,10 @@ void DarkMetropolis::OnSystem()
 	{
 		m_iMainAgent = FindMainAgent();
 		if (m_iMainAgent != -1)
+		{
+			m_iSelectedEntity = m_iMainAgent;
 			cout << "Found Main agent:" << m_iMainAgent << endl;
+		}
 	}
 
 	//do line test
@@ -316,7 +315,7 @@ void DarkMetropolis::OnServerStart()
 	}
 			
 	//m_kAgentsOnField.clear();			
-	m_kSelectedEntitys.clear();
+	m_iSelectedEntity = -1;
 	m_bSelectSquare = 		false;
 	m_iCurrentFormation =	FORMATION_CIRCLE;
 	m_bActionPressed =		false;
@@ -422,8 +421,8 @@ void DarkMetropolis::Input()
 	}
 	
 	if(m_pkInputHandle->Pressed(KEY_P))
-		if(!m_kSelectedEntitys.empty())
-			if(Entity* pkEnt = m_pkObjectMan->GetObjectByNetWorkID(m_kSelectedEntitys[0]))
+		if(m_iSelectedEntity != -1)
+			if(Entity* pkEnt = m_pkObjectMan->GetObjectByNetWorkID(m_iSelectedEntity))
 				if(P_DMCharacter* pkHQ = (P_DMCharacter*)pkEnt->GetProperty("P_DMCharacter"))
 				{
 					pkHQ->GetStats()->Print();
@@ -431,8 +430,8 @@ void DarkMetropolis::Input()
 				}
 
 	if(m_pkInputHandle->Pressed(KEY_O))
-		if(!m_kSelectedEntitys.empty())
-			if(Entity* pkEnt = m_pkObjectMan->GetObjectByNetWorkID(m_kSelectedEntitys[0]))
+		if(m_iSelectedEntity != -1)
+			if(Entity* pkEnt = m_pkObjectMan->GetObjectByNetWorkID(m_iSelectedEntity))
 				if(P_DMCharacter* pkHQ = (P_DMCharacter*)pkEnt->GetProperty("P_DMCharacter"))
 					pkHQ->m_pkBackPack->DropAll();				
 				
@@ -482,112 +481,50 @@ void DarkMetropolis::Input()
 
 
 	//check for selection
-	/*
+	
 	if(m_pkInputHandle->VKIsDown("select"))
 	{
-		Entity* pkEnt = GetTargetObject(true);
-	
+		Entity* pkEnt = GetTargetObject();
+
 		if(pkEnt)
 		{
-			m_bSelectSquare = true;
-			m_kSelectSquareStart = m_kPickPos;
-			m_kSelectSquareStop = m_kPickPos;
-		}	
-
-	}
-	else
-	{
-		if(m_bSelectSquare)
-		{
-			int iAgentInFocus = -1;
-
-			m_bSelectSquare = false;
-			if(!m_pkInputHandle->VKIsDown("multiselect"))			
-				SelectAgent(-1,false,true,false);
-			
-			//reset hq selection
-			m_iHQID = -1;	
-			
-			//is there a box? , else do a quick check
-			if( m_kSelectSquareStart.DistanceTo(m_kSelectSquareStop) < 0.1)
+			if(pkEnt->GetProperty("P_DMCharacter"))   //selected a character
 			{
-				Entity* pkEnt = GetTargetObject();
-				if(pkEnt)
-					if(pkEnt->GetProperty("P_DMCharacter"))   //selected a character
-					{
-						// check if character is on your team
-						if ( ((P_DMCharacter*)pkEnt->GetProperty("P_DMCharacter"))->m_iTeam == 0 )
-						{
-							SelectAgent(pkEnt->GetEntityID(), false,false, false);
-							iAgentInFocus = pkEnt->GetEntityID();
-						}
-					}
-					else if(pkEnt->GetProperty("P_DMHQ"))		//selected a HQ , 
-					{
-						m_kSelectedEntitys.clear();		//clear all selected entitys if a hq is selected
-						m_iHQID = pkEnt->GetEntityID();
-						
-						// Test for double click and in that case open HQ dlg.
-						////////////////////////////////////////////////////////
-						float fGameTime = m_pkFps->m_pkObjectMan->GetSimTime();
-						static bool s_bClickedOnes = false;
-						static float s_fClickTime = fGameTime;
-
-						if(s_bClickedOnes == true && fGameTime-s_fClickTime<0.25f)
-						{
-							m_pkHQDlg->OpenDlg(); // Open the HQ dialog and Pause game
-							s_bClickedOnes = false;
-						}
-
-						if(s_bClickedOnes == false)
-							s_bClickedOnes = true;
-
-						s_fClickTime = fGameTime; 
-						////////////////////////////////////////////////////////
-
-					}
+				// check if character is on your team
+				if ( ((P_DMCharacter*)pkEnt->GetProperty("P_DMCharacter"))->m_iTeam == 0 )
+					SelectAgent(pkEnt->GetEntityID(), false,false, false);
 			}
-			else  //else check for entitys inside the selection square
+			else if(pkEnt->GetProperty("P_DMHQ"))		//selected a HQ , 
 			{
-				Vector3 tl( (m_kSelectSquareStart.x < m_kSelectSquareStop.x) ? m_kSelectSquareStart.x : m_kSelectSquareStop.x,
-								m_kSelectSquareStart.y ,
-								(m_kSelectSquareStart.z < m_kSelectSquareStop.z) ? m_kSelectSquareStart.z : m_kSelectSquareStop.z);
-							
-				Vector3 br( (m_kSelectSquareStart.x > m_kSelectSquareStop.x) ? m_kSelectSquareStart.x : m_kSelectSquareStop.x,
-								m_kSelectSquareStart.y ,
-								(m_kSelectSquareStart.z > m_kSelectSquareStop.z) ? m_kSelectSquareStart.z : m_kSelectSquareStop.z);		
+				//m_kSelectedEntitys.clear();		//clear all selected entitys if a hq is selected
+				m_iHQID = pkEnt->GetEntityID();
 				
-				vector<Entity*> kObjects;	
-				m_pkObjectMan->GetZoneObject()->GetAllEntitys(&kObjects,false);
-	
-				for(unsigned int i=0;i<kObjects.size();i++)
-				{		
-					//objects that should not be clicked on (special cases)
-					if(kObjects[i]->GetEntityID() <100000)
-						continue;
-							
-					Vector3 pos = kObjects[i]->GetWorldPosV();
-			
-					if(pos.x > tl.x && pos.x < br.x)
-						if(pos.z > tl.z && pos.z < br.z)
-							if(kObjects[i]->GetProperty("P_DMCharacter"))
-							{
-								// only select characters on your team
-								if ( ((P_DMCharacter*)kObjects[i]->GetProperty("P_DMCharacter"))->m_iTeam == 0 )
-								{
-									iAgentInFocus = kObjects[i]->GetEntityID();								
-									SelectAgent(kObjects[i]->GetEntityID(), false,false, false);
-								}
-							}
-				}			
-			}
+				// Test for double click and in that case open HQ dlg.
+				////////////////////////////////////////////////////////
+				float fGameTime = m_pkFps->m_pkObjectMan->GetSimTime();
+				static bool s_bClickedOnes = false;
+				static float s_fClickTime = fGameTime;
 
-			// Uppdatera GUI:t med den nya agenten i fokus.
-			((CGamePlayDlg*)m_pkGamePlayDlg)->SelectAgentGUI(iAgentInFocus, false); 
+				if(s_bClickedOnes == true && fGameTime-s_fClickTime<0.25f)
+				{
+					m_pkHQDlg->OpenDlg(); // Open the HQ dialog and Pause game
+					s_bClickedOnes = false;
+				}
+
+				if(s_bClickedOnes == false)
+					s_bClickedOnes = true;
+
+				s_fClickTime = fGameTime; 
+				////////////////////////////////////////////////////////
+
+			}
 		}
 
+		// Uppdatera GUI:t med den nya agenten i fokus.
+		((CGamePlayDlg*)m_pkGamePlayDlg)->SelectAgentGUI(m_iSelectedEntity, false); 
 	}
-*/
+
+
 	//check if we want do do any action
 	if(m_pkInputHandle->VKIsDown("shoot"))
 	{
@@ -676,93 +613,86 @@ void DarkMetropolis::Input()
 			//enter HQ
 			if(P_DMHQ* pkHQ = (P_DMHQ*)pkPickEnt->GetProperty("P_DMHQ"))
 			{				
-
-				for(unsigned int i = 0;i < m_kSelectedEntitys.size();i++)
-				{					
-					if(Entity* pkEnt = m_pkObjectMan->GetObjectByNetWorkID(m_kSelectedEntitys[i]))
+				if(Entity* pkEnt = m_pkObjectMan->GetObjectByNetWorkID(m_iSelectedEntity))
+				{
+					
+					if( pkPickEnt->GetWorldPosV().DistanceTo(pkEnt->GetWorldPosV()) < 4) 
 					{
+						cout<<"entering hq"<<endl;
+					
+						SelectAgent(m_iSelectedEntity, false, false,false); // remove selection
+						pkHQ->InsertCharacter(m_iSelectedEntity);
 						
-						if( pkPickEnt->GetWorldPosV().DistanceTo(pkEnt->GetWorldPosV()) < 4) 
+						// Remove selected agent from list
+						((CGamePlayDlg*)m_pkGamePlayDlg)->UpdateAgentList();
+
+						// Uppdatera GUI:t och berätta att ingen agent är i fokus.
+						((CGamePlayDlg*)m_pkGamePlayDlg)->SelectAgentGUI(-1, false);
+						
+					}
+
+					if(P_DMCharacter* pkCh = (P_DMCharacter*)pkEnt->GetProperty("P_DMCharacter"))
+					{
+						if( pkPickEnt->GetWorldPosV().DistanceTo(pkEnt->GetWorldPosV()) < 1) 
 						{
 							cout<<"entering hq"<<endl;
-						
-							SelectAgent(m_kSelectedEntitys[i], false, false,false); // remove selection
-							pkHQ->InsertCharacter(m_kSelectedEntitys[i]);
-							
-							// Remove selected agent from list
-							((CGamePlayDlg*)m_pkGamePlayDlg)->UpdateAgentList();
+							//SelectAgent(m_kSelectedEntitys[i], true, false,false); // remove selection
 
-							// Uppdatera GUI:t och berätta att ingen agent är i fokus.
-							((CGamePlayDlg*)m_pkGamePlayDlg)->SelectAgentGUI(-1, false);
-							
+							DMOrder kOrder;
+							kOrder.m_iOrderType = eEnterHQ;
+							kOrder.m_iEntityID = pkPickEnt->GetEntityID();
+
+							pkCh->ClearOrders();
+							pkCh->AddOrder(kOrder);
 						}
-
-						if(P_DMCharacter* pkCh = (P_DMCharacter*)pkEnt->GetProperty("P_DMCharacter"))
+						else
 						{
-							if( pkPickEnt->GetWorldPosV().DistanceTo(pkEnt->GetWorldPosV()) < 1) 
-							{
-								cout<<"entering hq"<<endl;
-								//SelectAgent(m_kSelectedEntitys[i], true, false,false); // remove selection
-
-								DMOrder kOrder;
-								kOrder.m_iOrderType = eEnterHQ;
-								kOrder.m_iEntityID = pkPickEnt->GetEntityID();
-
-								pkCh->ClearOrders();
-								pkCh->AddOrder(kOrder);
-							}
-							else
-							{
-								//SelectAgent(m_kSelectedEntitys[i], true, false,false); // remove selection
-								
-								pkCh->ClearOrders();
-								
-								DMOrder kOrder;
-								
-								//first walk to the item
-								kOrder.m_iOrderType = eWalk;
-								kOrder.m_kPosition = pkPickEnt->GetWorldPosV();
-								pkCh->AddOrder(kOrder);
+							//SelectAgent(m_kSelectedEntitys[i], true, false,false); // remove selection
 							
-								//then pick it up
-								kOrder.m_iOrderType = eEnterHQ;
-								kOrder.m_iEntityID = pkPickEnt->GetEntityID();
-								pkCh->AddOrder(kOrder);							
-								
-							}
+							pkCh->ClearOrders();
+							
+							DMOrder kOrder;
+							
+							//first walk to the item
+							kOrder.m_iOrderType = eWalk;
+							kOrder.m_kPosition = pkPickEnt->GetWorldPosV();
+							pkCh->AddOrder(kOrder);
+						
+							//then pick it up
+							kOrder.m_iOrderType = eEnterHQ;
+							kOrder.m_iEntityID = pkPickEnt->GetEntityID();
+							pkCh->AddOrder(kOrder);							
+							
 						}
 					}
-				}
+				}				
 				return;
 			}
 
 			// Clicked a ClickMe object :)
 			if(P_DMClickMe* pkClick = (P_DMClickMe*)pkPickEnt->GetProperty("P_DMClickMe"))
 			{
-				// loop through all selected characters.. hmm :/
-				for ( int i = 0; i < m_kSelectedEntitys.size(); i++ )
+				if(Entity* pkEnt = m_pkObjectMan->GetObjectByNetWorkID(m_iSelectedEntity))
 				{
-					if(Entity* pkEnt = m_pkObjectMan->GetObjectByNetWorkID(m_kSelectedEntitys[i]))
+					if(P_DMCharacter* pkCh = (P_DMCharacter*)pkEnt->GetProperty("P_DMCharacter"))
 					{
-						if(P_DMCharacter* pkCh = (P_DMCharacter*)pkEnt->GetProperty("P_DMCharacter"))
-						{
-							//add move order
-							DMOrder kOrder;
-							kOrder.m_iOrderType = eWalk;
-							kOrder.m_kPosition = pkPickEnt->GetWorldPosV();
+						//add move order
+						DMOrder kOrder;
+						kOrder.m_iOrderType = eWalk;
+						kOrder.m_kPosition = pkPickEnt->GetWorldPosV();
 
-							pkCh->ClearOrders();
-							pkCh->AddOrder(kOrder);
+						pkCh->ClearOrders();
+						pkCh->AddOrder(kOrder);
 
-							//add click order
-							kOrder.m_iOrderType = eClickMe;
-							kOrder.m_iEntityID = pkPickEnt->GetEntityID();
+						//add click order
+						kOrder.m_iOrderType = eClickMe;
+						kOrder.m_iEntityID = pkPickEnt->GetEntityID();
 
-							pkCh->AddOrder(kOrder);
+						pkCh->AddOrder(kOrder);
 
-							cout<<"clickmed"<<endl;
-						}
+						cout<<"clickmed"<<endl;
 					}
+				}
 /*
 					if(Entity* pkEnt = m_pkObjectMan->GetObjectByNetWorkID(m_kSelectedEntitys[i]))
 					{
@@ -785,7 +715,7 @@ void DarkMetropolis::Input()
 								pkPF->MakePathFind(m_kPickPos);
 						}
 					}*/
-				}
+				
 
 				//m_kSelectedEntitys.clear();
 			}
@@ -1172,14 +1102,16 @@ int DarkMetropolis::FindMainAgent()
 //
 void DarkMetropolis::SelectAgent(int id, bool bToggleSelect, bool bResetFirst, 
 											bool bMoveCamera) 
-{ 
-	if(bResetFirst)
-		m_kSelectedEntitys.clear(); 
+{
+	m_iSelectedEntity = id;
+	
+	//if(bResetFirst)
+	//	m_kSelectedEntitys.clear(); 
  
 	if(id == -1)
 		return;
 
-	if(bToggleSelect=false)
+	/*if(bToggleSelect=false)
 		m_kSelectedEntitys.push_back(id); 
 	else
 	{
@@ -1200,7 +1132,7 @@ void DarkMetropolis::SelectAgent(int id, bool bToggleSelect, bool bResetFirst,
 			m_kSelectedEntitys.push_back(id); 
 		}
 	}
-
+*/
 	Entity* pkEnt = m_pkObjectMan->GetObjectByNetWorkID(id);
 
 	if(pkEnt)
@@ -1226,30 +1158,31 @@ void DarkMetropolis::ValidateSelection()
 {
 	bool update_list = false;
 
-	for(int i = 0;i < m_kSelectedEntitys.size();i++)
+	if(Entity* pkEnt = m_pkObjectMan->GetObjectByNetWorkID(m_iSelectedEntity))
 	{
-		if(Entity* pkEnt = m_pkObjectMan->GetObjectByNetWorkID(m_kSelectedEntitys[i]))
-		{
+		if( pkEnt->GetParent() )
 			if(!pkEnt->GetParent()->IsZone())		
 			{
 				cout<<"avmarkerad"<<endl;
-				SelectAgent(m_kSelectedEntitys[i], true, false,false);
+				SelectAgent(m_iSelectedEntity, true, false,false);
 
 				// TODO: alltid en agent i fokus
 				// Uppdatera GUI:t och berätta att ingen agent är i fokus.
 				if(m_pkGamePlayDlg)
 					((CGamePlayDlg*)m_pkGamePlayDlg)->SelectAgentGUI(-1, false);
 
-				i = 0;
-
 				update_list = true;
 			}
-		}
-		else
-		{
-			SelectAgent(m_kSelectedEntitys[i], true, false,false);
-		}
+			//else
+			//	SelectAgent(m_iMainAgent, true, false, false)
+			// TODO: om avmarkerad, markera alltid mainagent
 	}
+	else
+	{
+		SelectAgent(m_iMainAgent, true, false, true);
+		//SelectAgent(m_iSelectedEntity, true, false,false);
+	}
+	
 
 	if(m_pkGamePlayDlg && update_list == true)
 		((CGamePlayDlg*)m_pkGamePlayDlg)->UpdateAgentList();

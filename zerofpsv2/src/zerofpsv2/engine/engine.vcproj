@@ -40,15 +40,15 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386 /nodefaultlib:libc /nodefaultlib:libcd /nodefaultlib:libcmt"
-				AdditionalDependencies="glee.lib script.lib physics_engine.lib ogg_static.lib vorbis_static.lib vorbisfile_static.lib sdl_net.lib OpenAL32.lib ALut.lib gui.lib render.lib basic.lib glu32.lib opengl32.lib sdl.lib sdlmain.lib odbc32.lib odbccp32.lib"
-				OutputFile="..\..\..\bin\engine.dll"
+				AdditionalDependencies="glee.lib script_debug.lib ogg_static.lib vorbis_static.lib vorbisfile_static.lib sdl_net.lib OpenAL32.lib ALut.lib gui_debug.lib render_debug.lib basic_debug.lib glu32.lib opengl32.lib sdl.lib sdlmain.lib odbc32.lib odbccp32.lib"
+				OutputFile="..\..\..\bin\engine_debug.dll"
 				LinkIncremental="2"
 				SuppressStartupBanner="TRUE"
 				AdditionalLibraryDirectories="..\..\..\bin"
 				IgnoreDefaultLibraryNames=""
 				GenerateDebugInformation="TRUE"
 				ProgramDatabaseFile=".\Debug/engine.pdb"
-				ImportLibrary=".\Debug/engine.lib"/>
+				ImportLibrary=".\Debug/engine_debug.lib"/>
 			<Tool
 				Name="VCMIDLTool"
 				PreprocessorDefinitions="_DEBUG"
@@ -106,7 +106,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386"
-				AdditionalDependencies="script.lib physics_engine.lib ogg_static.lib vorbis_static.lib vorbisfile_static.lib sdl_net.lib OpenAL32.lib ALut.lib gui.lib render.lib basic.lib glu32.lib opengl32.lib sdl.lib sdlmain.lib odbc32.lib odbccp32.lib"
+				AdditionalDependencies="script.lib ogg_static.lib vorbis_static.lib vorbisfile_static.lib sdl_net.lib OpenAL32.lib ALut.lib gui.lib render.lib basic.lib glu32.lib opengl32.lib sdl.lib sdlmain.lib odbc32.lib odbccp32.lib"
 				OutputFile="..\..\..\bin\engine.dll"
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"

@@ -40,13 +40,13 @@
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386"
 				AdditionalDependencies="sdl.lib odbc32.lib odbccp32.lib"
-				OutputFile="..\..\..\bin\basic.dll"
+				OutputFile="..\..\..\bin\basic_debug.dll"
 				LinkIncremental="2"
 				SuppressStartupBanner="TRUE"
 				AdditionalLibraryDirectories="c:\cppdev\cppdev\"
 				GenerateDebugInformation="TRUE"
 				ProgramDatabaseFile=".\Debug/basic.pdb"
-				ImportLibrary=".\Debug/basic.lib"/>
+				ImportLibrary=".\Debug/basic_debug.lib"/>
 			<Tool
 				Name="VCMIDLTool"
 				PreprocessorDefinitions="_DEBUG"

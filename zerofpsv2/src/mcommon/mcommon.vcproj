@@ -40,14 +40,14 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386"
-				AdditionalDependencies="gui.lib glu32.lib opengl32.lib engine.lib render.lib script.lib basic.lib odbc32.lib odbccp32.lib"
-				OutputFile="..\..\bin\mcommon.dll"
+				AdditionalDependencies="gui_debug.lib glu32.lib opengl32.lib engine_debug.lib render_debug.lib script_debug.lib basic_debug.lib odbc32.lib odbccp32.lib"
+				OutputFile="..\..\bin\mcommon_debug.dll"
 				LinkIncremental="2"
 				SuppressStartupBanner="TRUE"
 				AdditionalLibraryDirectories="..\..\bin"
 				GenerateDebugInformation="TRUE"
 				ProgramDatabaseFile=".\Debug/mcommon.pdb"
-				ImportLibrary=".\Debug/mcommon.lib"/>
+				ImportLibrary=".\Debug/mcommon_debug.lib"/>
 			<Tool
 				Name="VCMIDLTool"
 				PreprocessorDefinitions="_DEBUG"
