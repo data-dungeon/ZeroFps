@@ -43,6 +43,8 @@ class Game :public Application {
 //		void Clear();		
 //		void CreateNew(int iSize);
 		
+		PlayerObject* m_pkPlayer;
+
 	public:
 //		Core	m_kTestCore;
 

@@ -6,6 +6,7 @@ Game::Game(char* aName,int iWidth,int iHeight,int iDepth): Application(aName,iWi
 
 void Game::OnInit() 
 {
+	m_pkPlayer = NULL;
 	Init();
 	
 	pkConsole->Printf(" ZeroFPS project game");
@@ -75,6 +76,13 @@ void Game::OnIdle(void) {
 			break;
 		}
 	}
+
+	if(pkInput->Pressed(KEY_C)) {
+		CameraProperty* pkCam = dynamic_cast<CameraProperty*>(m_pkPlayer->GetProperty("CameraProperty"));
+		if(pkCam) {
+			pkCam->NextType((CameraProperty::CamType_e) 0);
+			}
+		}
 }
 
 void Game::OnHud(void) 
@@ -119,7 +127,8 @@ void Game::OnHud(void)
 
 void Game::input() 
 {
-		
+	cout << ";(" << endl;
+
 		/*
 	//Get mouse x,y		
 	int x,z;		
@@ -192,7 +201,7 @@ void Game::SetupLevel()
 		if((*it)->GetName() == "PLAYER_SPAWN_POINT")
 		{
 			//player
-			PlayerObject* m_pkPlayer=new PlayerObject(pkLevelMan->GetHeightMap(),pkInput);
+			m_pkPlayer=new PlayerObject(pkLevelMan->GetHeightMap(),pkInput);
 			m_pkPlayer->GetPos() = (*it)->GetPos();
 			m_pkPlayer->GetRot() = (*it)->GetRot();			
 			m_pkPlayer->AddProperty(new CameraProperty(m_pkCamera));

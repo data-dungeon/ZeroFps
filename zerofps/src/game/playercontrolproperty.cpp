@@ -1,5 +1,14 @@
 #include "playercontrolproperty.h"
 
+Vector3 GetYawVector(float fAngleDeg)
+{
+	Vector3 kYaw;
+	kYaw.x = sin(DegToRad(fAngleDeg));	
+	kYaw.y = 0;
+	kYaw.z = cos(DegToRad(fAngleDeg));	
+	return kYaw;
+}
+
 PlayerControlProperty::PlayerControlProperty(Input *pkInput,HeightMap *pkMap)
 {
 	m_pkMap=pkMap;
@@ -45,6 +54,8 @@ public:
 */
 
 void PlayerControlProperty::Update() {
+
+
 	m_pkObject->GetObjectType()=OBJECT_TYPE_PLAYER;
 	
 	
@@ -116,6 +127,9 @@ void PlayerControlProperty::Update() {
 	if(m_pkObject->GetRot().x<-90)
 		m_pkObject->GetRot().x=-90;
 	
+	Vector3 kShowDirYaw = GetYawVector(m_pkObject->GetRot().y - 180);
+	Render *pkRender = static_cast<Render*>(g_ZFObjSys.GetObjectPtr("Render"));
+	pkRender->Line(m_pkObject->GetPos() + Vector3(0,0.7,0), (m_pkObject->GetPos() + kShowDirYaw * 5) + Vector3(0,0.7,0));
 	
 	//update sound possition
 	walksound->m_kPos=m_pkObject->GetPos();

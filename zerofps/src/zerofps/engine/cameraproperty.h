@@ -11,8 +11,17 @@
 using namespace std;
 
 class ENGINE_API CameraProperty:public Property{
+	public:
+		enum CamType_e
+		{
+			CAM_TYPEFIRSTPERSON,
+			CAM_TYPETOPDOWN,
+			CAM_TYPEMAX,
+		};
+
 	private:
-		Camera *m_pkCamera;
+		Camera*		m_pkCamera;
+		CamType_e	m_eCameraType;
 		
 	public:
 		CameraProperty(Camera * pkCamera);
@@ -20,6 +29,9 @@ class ENGINE_API CameraProperty:public Property{
 		void Update();
 
 		void SetCamera(Camera *pkCamera){m_pkCamera=pkCamera;};
+		void SetType(CamType_e kType);
+		void NextType(CamType_e kType);
+				
 };
 
 Property* Create_CameraProperty();
