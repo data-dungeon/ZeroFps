@@ -90,8 +90,6 @@ void MistClient::OnInit()
 	// create gui for mistlands
 	SetupGUI();
 	
-	ToggleGuiCapture(1);
-
 	//run autoexec script
 	if(!m_pkIni->ExecuteCommands("mistclient_autoexec.ini"))
 		m_pkConsole->Printf("No game_autoexec.ini.ini found");	
@@ -337,9 +335,11 @@ bool MistClient::DelayCommand()
 void MistClient::Input()
 {
 	if(m_pkInputHandle->VKIsDown("togglegui") && !DelayCommand())
-		ToggleGuiCapture();
+	{
+		bool bSet = !m_bGuiCapture;
+		SetGuiCapture(bSet);
+	}
 
-	
 	//get relative mouse
 	float x=0;
 	float z=0;		
@@ -966,13 +966,10 @@ Vector3 MistClient::Get3DMouseDir(bool bMouse)
 }
 
 
-void MistClient::ToggleGuiCapture(int iForce)
+void MistClient::SetGuiCapture(bool bCapture)
 {
-	if(iForce == -1)
-		m_bGuiCapture = !m_bGuiCapture;
-	else
-		m_bGuiCapture = (bool) iForce;
-
+	m_bGuiCapture = bCapture;
+	
 	if(m_bGuiCapture == true)
 	{
 		m_pkInputHandle->SetCursorInputPos(m_pkRender->GetWidth()/2,m_pkRender->GetHeight()/2);

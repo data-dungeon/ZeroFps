@@ -151,4 +151,6 @@ void MistClient::SetupGUI()
    g_kMistClient.m_pkInput->ShowCursor(false);
 
 	GetWnd("ContinueGameBn")->Hide();
+
+	SetGuiCapture(true);
 }

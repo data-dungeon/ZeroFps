@@ -82,7 +82,7 @@ void ActionMenu::Open()
 
 	char szIcon[512];
 
-	g_kMistClient.ToggleGuiCapture(true);
+	g_kMistClient.SetGuiCapture(true);
 
 	ResetIconSkins();
 
@@ -193,7 +193,7 @@ void ActionMenu::Close()
 
 	m_pkEntity = NULL;
 	m_pkMainWnd->Hide();
-	g_kMistClient.ToggleGuiCapture();
+	g_kMistClient.SetGuiCapture(false);
 }
 
 ZGuiSkin* ActionMenu::GetFreeIconSkin()

@@ -72,7 +72,7 @@ class MistClient :public Application, public ZGuiApp {
 		void LoadInGameGui();
 		void LoadStartScreenGui(bool bShowSplashImage);
 		void SetupGUI();
-		void ToggleGuiCapture(int iForce=-1);
+		void SetGuiCapture(bool bSet);
 						
 		void RegisterPropertys();
 		void RegisterResources();

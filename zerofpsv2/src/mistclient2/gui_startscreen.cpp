@@ -203,7 +203,7 @@ bool MistClient::NameIPFromServerList(string& strName, string& strIP)
 
 void MistClient::LoadStartScreenGui(bool bShowSplashImage)
 {
-	ToggleGuiCapture(1);
+	SetGuiCapture(true);
 
 	ShowWnd("GameGuiToolbar",	false);
 	ShowWnd("ChatDlgMainWnd",	false);
