@@ -66,6 +66,11 @@ void P_Ml::Update()
 	pos += Vector3((rand() % 1000)/1000.0 - 0.5,(rand() % 1000)/1000.0-0.5,(rand() % 1000)/1000.0-0.5)*4;
 	m_pkObject->SetLocalPosV(pos);
 */
+/*	Entity* pkEnt = m_pkEntityMan->GetObjectByNetWorkID(m_pkObject->iNetWorkID);
+	
+	if(m_pkObject != pkEnt)
+		cout<<"SOMETHING IS FUCKING WRONG!!!!"<<endl;
+*/
 	m_bJustSaved = false;
 
 }

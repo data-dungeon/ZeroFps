@@ -82,7 +82,8 @@ class ENGINE_API EntityManager : public ZFSubSystem{
 		//current world directory to save/load zone data to 
 		string						m_kWorldDirectory;
 		
-		list<Entity*>				m_akObjects;												///< List of all objects.
+//		list<Entity*>				m_akObjects;												///< List of all objects.
+		map<int,Entity*>			m_akEntitys;
 		
 		// DELETE
 		vector<int>					m_aiDeleteList;
@@ -155,7 +156,7 @@ class ENGINE_API EntityManager : public ZFSubSystem{
 		Entity* GetGlobalObject()	{	return m_pkGlobalObject;				};				
 		
 		int	GetNextObjectID()		{	return iNextObjectID;					};
-		int	GetNumOfObjects()		{	return m_akObjects.size();			}
+		int	GetNumOfObjects()		{	return m_akEntitys.size();			}
 		int	GetActivePropertys() {	return m_iNrOfActivePropertys;		};
 		void GetAllObjects(vector<Entity*> *pakObjects);
 		Entity* GetObject(const char* acName);							///< Get a ptr to object by name

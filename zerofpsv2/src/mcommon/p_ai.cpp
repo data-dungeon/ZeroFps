@@ -67,6 +67,7 @@ void P_AI::Update()
 
 				//rotate to target
 				Vector3 kdiff = pkEnemy->GetWorldPosV() - kPos;
+				kdiff.y = 0;
 				Matrix4 kRotM;
 				kRotM.LookDir(kdiff.Unit(),Vector3(0,1,0));
 				kRotM.Transponse();		

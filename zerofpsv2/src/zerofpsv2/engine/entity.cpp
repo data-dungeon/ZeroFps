@@ -50,6 +50,7 @@ Entity::Entity()
 	m_bRelativeOri			= false;
 	m_bFirstSetPos			= true;
 	m_bInterpolate			= true;
+	iNetWorkID			= -1;
 //	m_kVariables.clear();
 
 	//clear child list

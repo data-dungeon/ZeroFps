@@ -21,7 +21,7 @@ ZoneData& ZoneData::operator=(const ZoneData &kOther)
 	m_fInactiveTime	= kOther.m_fInactiveTime;
 	m_bActive			= kOther.m_bActive;
 	m_iRange				= kOther.m_iRange;
-	return *this;
+	return *this; 
 }
 
 ZoneData::ZoneData()
@@ -144,11 +144,13 @@ EntityManager::~EntityManager()
 */
 void EntityManager::Link(Entity* pkObject,int iId) 
 {
-	if(IsLinked(pkObject))
+	if(pkObject->iNetWorkID != -1)
 	{
-		cout<<"Error Object is already linked"<<endl;
-		return;
-	
+		if(IsLinked(pkObject))
+		{
+			cout<<"Error Object is already linked"<<endl;
+			return;	
+		}
 	}
 
 	if(iId == -1)
@@ -164,16 +166,22 @@ void EntityManager::Link(Entity* pkObject,int iId)
 			pkObject->iNetWorkID = iId;
 	}
 		
-	m_akObjects.push_back(pkObject);
+	//m_akObjects.push_back(pkObject);
+	m_akEntitys[pkObject->iNetWorkID] = pkObject; 
 }
 
 bool EntityManager::IsLinked(Entity* pkObject)
 {
-	for(list<Entity*>::iterator it=m_akObjects.begin();it!=m_akObjects.end();it++)
+	if(m_akEntitys.find(pkObject->iNetWorkID) == m_akEntitys.end())
+		return false;
+	else
+		return true;
+
+/*	for(list<Entity*>::iterator it=m_akObjects.begin();it!=m_akObjects.end();it++)
 		if((*it) == pkObject)
 			return true;
 		
-	return false;
+	return false;*/
 }
 
 /**	\brief	UnLink this from Object Manger.
@@ -185,7 +193,8 @@ void EntityManager::UnLink(Entity* pkObject)
 	// If i own object mark so we remove it on clients.
 	//	if(pkObject->m_eRole == NETROLE_AUTHORITY && pkObject->m_eRemoteRole == NETROLE_PROXY)
 	//		m_aiNetDeleteList.push_back(pkObject->iNetWorkID);
-	m_akObjects.remove(pkObject);
+	//m_akObjects.remove(pkObject);
+	m_akEntitys.erase(pkObject->iNetWorkID);
 }
 
 /**	\brief	Delete all objects.
@@ -195,8 +204,11 @@ void EntityManager::UnLink(Entity* pkObject)
 void EntityManager::Clear()
 {
 	//delete all objects in world
-	while(m_akObjects.begin() != m_akObjects.end())
-		delete(*m_akObjects.begin());
+	while(m_akEntitys.begin() != m_akEntitys.end())
+		delete((*m_akEntitys.begin()).second);
+
+//	while(m_akObjects.begin() != m_akObjects.end())
+//		delete(*m_akObjects.begin());
 	
 	//clear all zones
 	m_kZones.clear();
@@ -372,10 +384,10 @@ bool EntityManager::IsUpdate(int iFlags)
 
 void EntityManager::UpdateGameMessages(void)
 {
-	// Let Objects/Propertys handle messages
+/*	// Let Objects/Propertys handle messages
 	for(list<Entity*>::iterator it=m_akObjects.begin();it!=m_akObjects.end();it++) {
 		(*it)->HandleMessages();
-	}
+	}*/
 }
 
 
@@ -549,15 +561,24 @@ Entity*	EntityManager::GetObjectByNetWorkID(int iNetID)
 	if(iNetID == -1)
 		return NULL;
 
-	for(list<Entity*>::iterator it=m_akObjects.begin();it!=m_akObjects.end();it++) {
+//	cout<<"requested object:"<<iNetID<<endl;
+
+	map<int,Entity*>::iterator it = m_akEntitys.find(iNetID);
+	
+	if(it != m_akEntitys.end())
+		return (*it).second;
+	else
+		return NULL;
+
+/*	for(list<Entity*>::iterator it=m_akObjects.begin();it!=m_akObjects.end();it++) {
 		if((*it)->iNetWorkID == iNetID)
 		{	
 			return (*it);
 		}
 	}
-	
 
-	return NULL;
+
+	return NULL;*/
 }
 
 
@@ -793,7 +814,7 @@ void EntityManager::PackToClients()
 	NetPacket NP;
 	
 	// Keep it alive.
-	int iNumOfObjects	= m_akObjects.size();
+	int iNumOfObjects	= m_akEntitys.size();
 	int iPacketSize		= 0;
 	int iEndOfObject	= -1;
 
@@ -871,10 +892,10 @@ void EntityManager::PackToClients()
 		
 		
 
-	for(list<Entity*>::iterator it = m_akObjects.begin(); it != m_akObjects.end(); it++) 
+	for(map<int,Entity*>::iterator it = m_akEntitys.begin(); it != m_akEntitys.end(); it++) 
 	{
 		//(*it)->m_aiNetDeleteList.clear();
-		(*it)->UpdateDeleteList();
+		(*it).second->UpdateDeleteList();
 	}
 
 /*	if(m_aiNetDeleteList.size() == 0)
@@ -1155,9 +1176,9 @@ bool EntityManager::TestLine(vector<Entity*>* pkPPList,Vector3 kPos,Vector3 kVec
 {
 	pkPPList->clear();
 
-	for(list<Entity*>::iterator it=m_akObjects.begin();it!=m_akObjects.end();it++) 
+	for(map<int,Entity*>::iterator it=m_akEntitys.begin();it!=m_akEntitys.end();it++) 
 	{	
-		Vector3 c=(*it)->GetWorldPosV() - kPos;		
+		Vector3 c=(*it).second->GetWorldPosV() - kPos;		
 		kVec.Normalize();		
 		Vector3 k=kVec.Proj(c);		
 		float cdis=c.Length();
@@ -1165,11 +1186,11 @@ bool EntityManager::TestLine(vector<Entity*>* pkPPList,Vector3 kPos,Vector3 kVec
 		float Distance = sqrt((cdis*cdis)-(kdis*kdis));
 		
 		
-		float fRadius=(*it)->GetRadius();
+		float fRadius=(*it).second->GetRadius();
 		
 		if(Distance < fRadius)
 		{			
-			pkPPList->push_back((*it));
+			pkPPList->push_back((*it).second);
 		}		
 	}
 	
@@ -2396,8 +2417,8 @@ void EntityManager::CommitZone(int iId)
 
 void EntityManager::ResetNetUpdateFlags(int iConID)
 {
-	for(list<Entity*>::iterator it=m_akObjects.begin();it!=m_akObjects.end();it++) {
-		(*it)->ResetAllNetUpdateFlags(iConID);
+	for(map<int,Entity*>::iterator it=m_akEntitys.begin();it!=m_akEntitys.end();it++) {
+		(*it).second->ResetAllNetUpdateFlags(iConID);
 	}
 	
 }

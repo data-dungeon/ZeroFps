@@ -157,7 +157,7 @@ void P_Event::Load(ZFIoInterface* pkPackage)
 {
    pkPackage->Read ( (void*)&m_bFirstRun, sizeof(m_bFirstRun), 1 );
    pkPackage->Read ( (void*)&m_fHeartRate, sizeof(m_fHeartRate), 1 );
-
+	SetHeartRate(m_fHeartRate);
 }
 
 
