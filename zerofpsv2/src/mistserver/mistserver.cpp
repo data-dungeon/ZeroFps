@@ -13,7 +13,7 @@
 #include "../zerofpsv2/gui/zgui.h"
 #include "../zerofpsv2/engine_systems/script_interfaces/si_gui.h"
 
-#include <set>
+#include <set> 
 #include <algorithm>
 
 MistServer g_kMistServer("MistServer",0,0,0);
@@ -723,7 +723,7 @@ void MistServer::DrawCrossMarker(Vector3 kPos)
 
 void MistServer::UpdateZoneMarkerPos()
 {
-	Vector3 temp = pkFps->GetCam()->GetPos() + Get3DMousePos(false)*20;
+	Vector3 temp = pkFps->GetCam()->GetPos() + Get3DMousePos(false)*10;
 
 	float fStep = 2.0;
 

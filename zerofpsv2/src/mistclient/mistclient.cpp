@@ -582,7 +582,7 @@ Vector3 MistClient::Get3DMousePos()
 
 Object* MistClient::GetTargetObject()
 {
-	Vector3 start = pkFps->GetCam()->GetPos();
+	Vector3 start = m_pkCamera->GetPos();
 	Vector3 dir = Get3DMousePos();
 
 	vector<Object*> kObjects;

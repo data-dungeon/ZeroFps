@@ -7,7 +7,7 @@
 extern ZFSystem g_ZFObjSys;
 
 using namespace std;
-
+ 
 
 //char format_text[4096];	
 
@@ -15,6 +15,16 @@ using namespace std;
 BasicConsole::BasicConsole(char* szName)
 : ZFSubSystem(szName)
 {
+}
+
+BasicConsole::~BasicConsole()
+{
+	for(int i =0;i<m_kText.size();i++)
+	{
+		delete[] m_kText[i];	
+	}
+	
+	m_kText.clear();
 }
 
 void BasicConsole::Print(const char* aText) 

@@ -18,6 +18,7 @@ protected:
 
 public:
 		BasicConsole(char* szName);
+		virtual ~BasicConsole();
 		
 		// Print output to console.
 		virtual void Print(const char* aText);					///< Print text to console.

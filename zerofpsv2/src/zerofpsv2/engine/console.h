@@ -43,6 +43,7 @@ class ENGINE_API Console : public BasicConsole {
 
 	public:
 		Console();
+		~Console(){};
 		
 		void Update(void);
 		bool Execute(char* aText);

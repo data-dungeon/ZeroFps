@@ -10,7 +10,7 @@ Console::Console()
   : BasicConsole("Console"), MAX_CMD_HISTRORY_LENGTH(50) {
    	
 
-	GetSystem().Log_Create("console");
+	GetSystem().Log_Create("console"); 
 }
 
 bool Console::StartUp()	
