@@ -228,6 +228,8 @@ class ENGINE_API EntityManager : public ZFSubSystem{
 		Entity* 	GetEntityByName(const char* acName);							///< Get a ptr to Entity by name
 		Entity*	GetEntityByID(int iNetID);						///< Get a ptr to Entity by networkID
 
+		Property* GetPropertyFromEntityID(int iEntityID,const char* czPropertyName);
+		
 		void GetAllEntitysInArea(vector<Entity*> *pkEntitys,Vector3 kPos,float fRadius);
 
 		

@@ -629,6 +629,15 @@ Entity*	EntityManager::GetEntityByID(int iNetID)
 		return NULL;
 }
 
+Property* EntityManager::GetPropertyFromEntityID(int iEntityID,const char* czPropertyName)
+{
+	if(Entity* pkEnt = GetEntityByID(iEntityID))
+		return pkEnt->GetProperty(czPropertyName);
+		
+	return NULL;
+}
+
+
 // NetWork
 void EntityManager::UpdateState(NetPacket* pkNetPacket)
 {
