@@ -20,11 +20,9 @@ ZGuiToolTip::ZGuiToolTip(float fDisplayTime) : m_fDisplayTime(fDisplayTime)
 
 	m_iPrevCursorX = m_iPrevCursorY = -1;
 
-	if(m_pkToolTipWnd == NULL)
-	{
-		m_pkToolTipWnd = new ZGuiLabel(Rect(300,300,400,400),  NULL, true, 432342);
-		m_pkToolTipWnd->SetSkin(new ZGuiSkin( 255, 0, 0, 255, 0, 0,  2));
-	}
+	m_pkToolTipWnd = new ZGuiLabel(Rect(300,300,400,400),  NULL, false, 432342);
+	m_pkToolTipWnd->SetSkin(new ZGuiSkin( 255, 0, 0, 255, 0, 0,  2));
+
 }
 
 ZGuiToolTip::~ZGuiToolTip()
@@ -35,9 +33,7 @@ ZGuiToolTip::~ZGuiToolTip()
 void ZGuiToolTip::Update(int mouse_x, int mouse_y, bool bMouseClick, float fGameTime)
 {
 	if(m_pkToolTipWnd->GetFont() == NULL )
-	{
 		m_pkToolTipWnd->SetFont(m_pkGui->GetBitmapFont(ZG_DEFAULT_GUI_FONT));  
-	}
 
 	if(!(mouse_x == m_iPrevCursorX && mouse_y == m_iPrevCursorY))
 	{
@@ -118,6 +114,5 @@ void ZGuiToolTip::SetToolTip(ZGuiWnd* pkWnd, string strText)
 void ZGuiToolTip::SetSkin(ZGuiSkin kSkin)
 {
 	ZGuiSkin* pkSkin = m_pkToolTipWnd->GetSkin();
-
 	memcpy(pkSkin, &kSkin, sizeof(ZGuiSkin));
 }
