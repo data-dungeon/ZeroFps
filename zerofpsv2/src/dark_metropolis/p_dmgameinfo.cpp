@@ -15,6 +15,7 @@ P_DMGameInfo::P_DMGameInfo()
 	m_strClanLogo = "";
 	
 	m_iMoney = 0;
+	m_kCameraPos.Set(0,0,0);
 }
 
 P_DMGameInfo::~P_DMGameInfo()
@@ -55,6 +56,8 @@ void P_DMGameInfo::Save(ZFIoInterface* pkPackage)
 	
 	pkPackage->Write(&m_iMoney,sizeof(m_iMoney),1);	
 	
+	pkPackage->Write(&m_kCameraPos,sizeof(m_kCameraPos),1);	
+	
 }
 
 void P_DMGameInfo::Load(ZFIoInterface* pkPackage)
@@ -71,6 +74,8 @@ void P_DMGameInfo::Load(ZFIoInterface* pkPackage)
 	m_strClanLogo = temp;
 
 	pkPackage->Read(&m_iMoney,sizeof(m_iMoney),1);	
+
+	pkPackage->Read(&m_kCameraPos,sizeof(m_kCameraPos),1);	
 
 }
 

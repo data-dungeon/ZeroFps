@@ -24,7 +24,7 @@ class P_DMGameInfo: public Property {
 		
 		int		m_iMoney;
 				
-				
+		Vector3	m_kCameraPos;		
 		
 		
 		

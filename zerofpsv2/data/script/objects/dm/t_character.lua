@@ -14,7 +14,6 @@ function Create()
 end
 
 function FirstRun()
-	Print("BLUB!!!");	
 	SISetHeartRate(SIGetSelfID(),1);
 end
 

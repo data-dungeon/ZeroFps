@@ -24,7 +24,7 @@ P_DMHQ::~P_DMHQ()
 
 void P_DMHQ::Init()
 {
-	cout<< "New HQ created"<<endl;
+	//cout<< "New HQ created"<<endl;
 	m_pkObject->SetUpdateStatus(UPDATE_NOCHILDS);
 }
 

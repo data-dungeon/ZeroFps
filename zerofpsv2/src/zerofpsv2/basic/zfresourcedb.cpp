@@ -213,13 +213,13 @@ bool ZFResourceDB::Refresh()
 		// No one is using it. Check for expire time.
 		if(m_bInstantExpire == false && (*it)->m_fExpireTimer == 0) {
 			(*it)->m_fExpireTimer = fTime + float(RES_EXPIRE_TIME);
-			cout << "Set Expire: '" << (*it)->m_strName << "'" << endl;
+//			cout << "Set Expire: '" << (*it)->m_strName << "'" << endl;
 			}
 		else {
 			if(m_bInstantExpire == true || (*it)->m_fExpireTimer < fTime) {
 				// Time to die.
 				g_ZFObjSys.Logf("resdb", "Remove %s\n", (*it)->m_strName.c_str());
-				cout << "Expires: '" << (*it)->m_strName << "'" << endl;
+//				cout << "Expires: '" << (*it)->m_strName << "'" << endl;
 				
 				m_kResourceFactory[(*it)->m_pkResource->m_iTypeIndex].m_iActive --;
 				delete (*it);

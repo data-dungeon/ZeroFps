@@ -2052,6 +2052,8 @@ bool EntityManager::LoadZones(string strSaveDir )
 	return true;
 }
 
+
+
 bool EntityManager::SaveZones(string strSaveDir)
 {
 	string filename;
@@ -2110,6 +2112,85 @@ bool EntityManager::SaveZones(string strSaveDir)
 	return true;
 }
 
+bool EntityManager::SaveTrackers(string strSaveDir)
+{
+	string filename;
+
+	if(strSaveDir.empty())
+		filename = m_kWorldDirectory;	
+	else
+		filename = strSaveDir;
+	
+	filename+="/trackers.dat";
+	
+	
+	cout<<"Saving trackeres to :"<<filename<<endl;
+	
+	ZFVFile kFile;
+	if(!kFile.Open(filename.c_str(),0,true))
+	{	
+		cout<<"Could not open tracker save file"<<endl;
+		return false;
+	}
+
+
+	int iNrOfTrackers = m_kTrackedObjects.size();
+	kFile.Write(&iNrOfTrackers,sizeof(iNrOfTrackers),1);
+
+	for(list<P_Track*>::iterator iT=m_kTrackedObjects.begin();iT!=m_kTrackedObjects.end();iT++) 
+	{		
+		int iZone = GetZoneIndex((*iT)->GetObject(),(*iT)->GetObject()->m_iCurrentZone,(*iT)->m_bClosestZone);				
+		kFile.Write(&iZone, sizeof(iZone), 1);		
+		//cout<<"Saving tracker for zone:"<<iZone<<endl;			
+	}
+	
+	kFile.Close();
+	
+	cout<<"trackers saved"<<endl;
+	
+	return true;
+}
+
+bool EntityManager::LoadTrackers(string strSaveDir)
+{
+	string filename;
+
+	if(strSaveDir.empty())
+		filename = m_kWorldDirectory;	
+	else
+		filename = strSaveDir;
+	
+	filename+="/trackers.dat";
+	
+	
+	cout<<"Loading trackers from:"<<filename<<endl;
+	
+	ZFVFile kFile;
+	if(!kFile.Open(filename.c_str(),0,false))
+	{	
+		cout<<"Could not open tracker save file"<<endl;
+		return false;
+	}
+
+
+	int iNrOfTrackers;
+	kFile.Read(&iNrOfTrackers,sizeof(iNrOfTrackers),1);
+
+	for(int i = 0;i<iNrOfTrackers;i++) 
+	{		
+		int iZone;
+		kFile.Read(&iZone,sizeof(iZone),1);
+		
+		LoadZone(iZone);	//load the zone in wich theres suppose to be a tracker
+	}
+	
+	kFile.Close();
+	
+	cout<<"trackers loaded"<<endl;
+	
+	return true;
+}
+
 ZoneData* EntityManager::GetZoneData(int iID)
 {
 	if(iID < 0 || iID >= (int) m_kZones.size())
@@ -2162,22 +2243,21 @@ void EntityManager::LoadZone(int iId,string strSaveDir)
 		
 			if(kFile.Open(zonefilename.c_str(),0,false))
 			{
-				cout<<"load from zonefile:"<<zonefilename<<endl;				
+				//cout<<"Loading zone:"<<zonefilename<<endl;				
 				kZData->m_bNew = false;
 			}
 		}
-		else
+		else			//if the zone still is not loaded try to load it from the default world directory
 		{
 			string zonefilename(m_kWorldDirectory);
 			zonefilename+="/";
 			zonefilename+=nr;
 			zonefilename+=".dynamic.zone";
 			
-			//if the zone still is not loaded try to load it from the default world directory
 			if(kZData->m_bNew == true)
 				if(kFile.Open(zonefilename.c_str(),0,false))
 				{
-					cout<<"load from zonefile:"<<zonefilename<<endl;								
+					//cout<<"Loading zone:"<<zonefilename<<endl;								
 					kZData->m_bNew = false;		
 				}
 		}
@@ -2255,7 +2335,7 @@ void EntityManager::SaveZone(int iId,string strSaveDir )
 	filename+=".dynamic.zone";
 
 	
-	cout<<"saving to :"<<filename<<endl;
+	//cout<<"Saving zone :"<<filename<<endl;
 	
 	ZFVFile kFile;
 	if(!kFile.Open(filename.c_str(),0,true))
@@ -2567,6 +2647,14 @@ bool EntityManager::SaveWorld(string strSaveDir,bool bForce)
 		return false;
 	}
 	
+	//save trackers
+	if(!SaveTrackers(strSaveDir))
+	{
+		cout<<"ERROR: could not save trackers"<<endl;
+		return false;
+	}
+	
+	
 	
 	//now load zones and then save them in the save directory
 	for(unsigned int i=0;i<m_kZones.size();i++) 
@@ -2679,6 +2767,15 @@ bool EntityManager::LoadWorld(string strLoadDir)
 	
 	//make sure all entitys created in the load process is deleted. this may caus problem if the load funkction is called from whitin a property etc
 	UpdateDelete();
+	
+	
+	//finaly load the tracker list
+	if(!LoadTrackers(strLoadDir))
+	{
+		cout<<"ERROR: error loading trackers"<<endl;
+		return false;
+	}
+			
 	
 	return true;
 }

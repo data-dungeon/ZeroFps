@@ -60,7 +60,7 @@ void DarkMetropolis::OnInit()
 	m_pkObjectMan->m_fSimTimeScale = 0.33;
 	
 	//set tracker los
-	m_pkObjectMan->SetTrackerLos(5);
+	m_pkObjectMan->SetTrackerLos(3);
 	
 	//enable light
 	m_pkLight->SetLighting(true);
@@ -164,6 +164,10 @@ void DarkMetropolis::RenderInterface(void)
 
 void DarkMetropolis::OnSystem() 
 {				
+	if(m_pkCameraEntity)
+	{
+//		m_pkCameraEntity->DeleteProperty("P_Track");
+	}
 }
 
 void DarkMetropolis::OnServerClientJoin(ZFClient* pkClient,int iConID, 
@@ -177,9 +181,14 @@ void DarkMetropolis::OnServerClientPart(ZFClient* pkClient,int iConID)
 
 void DarkMetropolis::OnServerStart()
 {
-	m_pkCameraEntity = m_pkObjectMan->CreateObjectFromScript("data/script/objects/t_camedit.lua");	
+//	m_pkCameraEntity = m_pkObjectMan->CreateObjectFromScript("data/script/objects/t_camedit.lua");	
+	m_pkCameraEntity = m_pkObjectMan->CreateObject();
+
 	if(m_pkCameraEntity)
 	{
+		//m_pkCameraEntity->AddProperty("P_Track");		
+		m_pkCameraEntity->AddProperty("P_Camera");	
+	
 		m_pkCameraEntity->SetParent( m_pkObjectMan->GetWorldObject() );
 		m_pkCameraEntity->SetWorldPosV(Vector3(0,0,0));
 		
@@ -493,6 +502,36 @@ void DarkMetropolis::RunCommand(int cmdid, const CmdArgument* kCommand)
 	}
 }
 
+bool DarkMetropolis::StartNewGame(string strClanName,string strClanColor)
+{
+	
+	//GetSystem().RunCommand("load dmworld",CSYS_SRC_SUBSYS);
+	
+	//load world
+	if(!m_pkObjectMan->LoadWorld("dmworld"))
+	{
+		cout<<"ERROR: default world dmworld not found"<<endl;
+		return false;
+	
+	}
+	
+	//start server
+	GetSystem().RunCommand("server Default server",CSYS_SRC_SUBSYS);			
+
+	//create a new gameinfo entity
+	m_pkGameInfoEntity = m_pkObjectMan->CreateObject();
+	m_pkGameInfoEntity->SetParent(m_pkObjectMan->GetGlobalObject());
+	m_pkGameInfoProperty = (P_DMGameInfo*)m_pkGameInfoEntity->AddProperty("P_DMGameInfo");
+
+
+	//setup startup gamesettings
+	m_pkGameInfoProperty->m_strClanName = strClanName;
+	m_pkGameInfoProperty->m_strClanColor = strClanColor;
+
+
+	return true;
+}
+
 
 bool DarkMetropolis::LoadGame(string strClanName)
 {
@@ -526,52 +565,38 @@ bool DarkMetropolis::LoadGame(string strClanName)
 		return false;
 	}
 	
+	
 	cout<<"CLAN NAME:"<<m_pkGameInfoProperty->m_strClanName<<endl;
 	
-	
 	//start server
 	GetSystem().RunCommand("server Default server",CSYS_SRC_SUBSYS);			
 	
-	return true;
-}
-
-bool DarkMetropolis::StartNewGame(string strClanName,string strClanColor)
-{
-	
-	//GetSystem().RunCommand("load dmworld",CSYS_SRC_SUBSYS);
-	
-	//load world
-	if(!m_pkObjectMan->LoadWorld("dmworld"))
+	//set camera position
+	if(m_pkCameraEntity)
 	{
-		cout<<"ERROR: default world dmworld not found"<<endl;
-		return false;
-	
+		cout<<"seting cam pos"<<endl;
+		m_pkCameraEntity->SetWorldPosV(m_pkGameInfoProperty->m_kCameraPos);
 	}
 	
-	//start server
-	GetSystem().RunCommand("server Default server",CSYS_SRC_SUBSYS);			
-
-	//create a new gameinfo entity
-	m_pkGameInfoEntity = m_pkObjectMan->CreateObject();
-	m_pkGameInfoEntity->SetParent(m_pkObjectMan->GetGlobalObject());
-	m_pkGameInfoProperty = (P_DMGameInfo*)m_pkGameInfoEntity->AddProperty("P_DMGameInfo");
-
-
-	//setup startup gamesettings
-	m_pkGameInfoProperty->m_strClanName = strClanName;
-	m_pkGameInfoProperty->m_strClanColor = strClanColor;
-
-
+	
 	return true;
 }
+
 
 bool DarkMetropolis::SaveGame(string strsavegame)
 {
 	m_pkBasicFS->CreateDir(m_strSaveDirectory.c_str());
 
 	//first save gameinfo
+	
+	
+	
 	if(m_pkGameInfoEntity)
 	{
+		if(m_pkCameraEntity)
+			m_pkGameInfoProperty->m_kCameraPos  = m_pkCameraEntity->GetWorldPosV();
+	
+	
 		ZFVFile blub;
 		if(!blub.Open(m_strSaveDirectory+strsavegame+"/gameinfo.dat",0,true))
 		{

@@ -185,7 +185,7 @@ bool TextureManager::LoadTexture(texture *pkTex,const char *acFilename)
 	}
 
 	if(pkTex->m_bAlphaOnly) {
-		cout << "Setting alpha on " <<acFilename << endl;
+		//cout << "Setting alpha on " <<acFilename << endl;
 		iInternalFormat=GL_ALPHA;
 //		iFormat=GL_ALPHA;
 		}

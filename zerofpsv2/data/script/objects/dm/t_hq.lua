@@ -5,6 +5,7 @@ function Create()
 			InitParameter("m_kMadFile","/data/mad/cube.mad");
 			InitParameter("m_fScale","1");		
 
+		InitProperty("P_Track");
 		InitProperty("P_DMHQ");
 		InitProperty("P_ScriptInterface");
 

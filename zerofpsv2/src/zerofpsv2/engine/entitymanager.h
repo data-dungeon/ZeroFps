@@ -255,6 +255,8 @@ class ENGINE_API EntityManager : public ZFSubSystem{
 		void ForceSave();													//forcing save of all loaded zones
 		bool LoadZones(string strSaveDir ="");						//load zone info list
 		bool SaveZones(string strSaveDir ="");						//save zone info list
+		bool SaveTrackers(string strSaveDir = "");
+		bool LoadTrackers(string strSaveDir = "");
 		void LoadZone(int iId,string strLoadDir = "");			//load zone
 		void SaveZone(int iId,string strSaveDir = "");			//save zone
 		void UnLoadZone(int iId);										//unload zone (saves and deletes)

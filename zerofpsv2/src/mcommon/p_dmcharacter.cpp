@@ -23,7 +23,7 @@ P_DMCharacter::~P_DMCharacter()
 
 void P_DMCharacter::Init()
 {
-	cout<< "New character created"<<endl;
+	//cout<< "New character created"<<endl;
 
 }
 

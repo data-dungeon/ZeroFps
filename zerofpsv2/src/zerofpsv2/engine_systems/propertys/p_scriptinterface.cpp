@@ -17,7 +17,7 @@ P_ScriptInterface::P_ScriptInterface()
 	m_fTimer = m_pkFps->m_pkObjectMan->GetGameTime();
 	
 	
-	cout<<"P_ScriptInterface created"<<endl;
+	//cout<<"P_ScriptInterface created"<<endl;
 }
 
 P_ScriptInterface::~P_ScriptInterface()
