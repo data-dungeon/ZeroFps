@@ -22,7 +22,7 @@ void Music::Load(char* nmusicfile) {	//detta laddar låten i filen nmusicfile
 	mus = Mix_LoadMUS(m_pkFile->File(musicfile));
 	if ( mus == NULL ) {
 		cout <<"could not load file "<<musicfile<<endl;
-		exit(2);
+//		exit(2);
 	}                            
 };
 
