@@ -1036,7 +1036,7 @@ bool Tcs::IsInNerbyZone(P_Tcs* pkBody1,P_Tcs* pkBody2)
 	static int iZoneID1,iZoneID2;
 	static int iZoneLinks;
 	static ZoneData* pkZoneData;
-
+	
 	iZoneID1 = pkBody1->GetEntity()->GetCurrentZone();
 	iZoneID2 = pkBody2->GetEntity()->GetCurrentZone();
 		
@@ -1237,6 +1237,7 @@ bool Tcs::CharacterTestLineVSMesh(const Vector3& kStart,const Vector3& kDir,P_Tc
 	static Vector3 kClosestPos;
 	static Vector3 verts[3];	
 	static Vector3 kPoint2;
+	static int iFaces;
 	
 	kModelMatrix = pkMesh->GetModelMatrix();
 	
@@ -1245,7 +1246,8 @@ bool Tcs::CharacterTestLineVSMesh(const Vector3& kStart,const Vector3& kDir,P_Tc
 	kPoint2 = kStart + kDir * 1000;
 	float d;
 	
-	for(unsigned int f=0;f<pkMesh->m_pkFaces->size();f++)
+	iFaces = pkMesh->m_pkFaces->size();
+	for(unsigned int f=0;f<iFaces;f++)
 	{		 
 		verts[0] = kModelMatrix.VectorTransform((*pkMesh->m_pkVertex)[(*pkMesh->m_pkFaces)[f].iIndex[0]]);
 		verts[1] = kModelMatrix.VectorTransform((*pkMesh->m_pkVertex)[(*pkMesh->m_pkFaces)[f].iIndex[1]]);		
@@ -1463,26 +1465,25 @@ bool Tcs::CollideSphereVSMesh(P_Tcs* pkSphere,P_Tcs* pkMesh)
 // 	if(!CollideSphereVSSphere(pkSphere,pkMesh))
 // 		return false;
 	
-	
 	static Matrix4 kModelMatrix;
 	static Vector3 kClosestNormal;
 	static Vector3 kClosestPos;
 	static Vector3 verts[3];		 
 	static float closest,d;
 	static bool bHaveColided;
-	 
+	static int iFaces;	 
 	
 	kModelMatrix = pkMesh->GetModelMatrix();	
 	closest = 99999999;
 	bHaveColided = false;	
 	d;
 
-
-	for(unsigned int f=0;f<pkMesh->m_pkFaces->size();f++)
+	iFaces = pkMesh->m_pkFaces->size();
+	for(unsigned int f=0;f<iFaces;f++)
 	{		 
-		verts[0] = kModelMatrix.VectorTransform((*pkMesh->m_pkVertex)[(*pkMesh->m_pkFaces)[f].iIndex[0]]);
-		verts[1] = kModelMatrix.VectorTransform((*pkMesh->m_pkVertex)[(*pkMesh->m_pkFaces)[f].iIndex[1]]);		
-		verts[2] = kModelMatrix.VectorTransform((*pkMesh->m_pkVertex)[(*pkMesh->m_pkFaces)[f].iIndex[2]]);		
+		verts[0] = kModelMatrix.VectorTransform( (*pkMesh->m_pkVertex)[(*pkMesh->m_pkFaces)[f].iIndex[0]]);
+		verts[1] = kModelMatrix.VectorTransform( (*pkMesh->m_pkVertex)[(*pkMesh->m_pkFaces)[f].iIndex[1]]);		
+		verts[2] = kModelMatrix.VectorTransform( (*pkMesh->m_pkVertex)[(*pkMesh->m_pkFaces)[f].iIndex[2]]);		
 		
 		if(m_iDebugGraph == 2)
 		{
@@ -1548,10 +1549,13 @@ bool Tcs::TestSphereVSPolygon(Vector3* kVerts,P_Tcs* pkSphere)
 	}
 	
 	//do edge tests
-	bool didcollide = false;
-	float closest = 99999999;	
-	int p1 ,p2;
-	float d;
+	static bool didcollide;
+	static float closest;
+	static int p1,p2;
+	static float d;
+	
+	didcollide = false;
+	closest = 99999999;	
 	
 	for(int i = 0;i<3;i++)
 	{
