@@ -1026,8 +1026,8 @@ bool Image::load_bmp(FILE* pkFile)
 		delete[] kBitmap.pkData;
 
 	// check height to see if the image is reversed or not.
-	if(kBitmap.kInfoheader.lHeight > 0)
-		Flip(false, true);
+	//if(kBitmap.kInfoheader.lHeight > 0)
+	//	Flip(false, true);
 
 	return true;
 }
