@@ -580,9 +580,6 @@ void EntityManager::PackToClient(int iClient, vector<Entity*> kObjects,bool bZon
 	NP.m_kData.m_kHeader.m_iPacketType = ZF_NETTYPE_UNREL;
 	NP.Write((char) ZFGP_OBJECTSTATE);
 
-
-
-
 	
 	//if this is the zone object, do some special stuff =)
 	if(bZoneObject)
@@ -634,9 +631,12 @@ void EntityManager::PackToClient(int iClient, vector<Entity*> kObjects,bool bZon
 			
 		}
 		
-		if(iSentSize > iMaxSendSize)
+		if(bZoneObject)
 		{
-			break;
+			if(iSentSize > iMaxSendSize)
+			{
+				break;
+			}
 		}
 	}
 	
