@@ -1,7 +1,7 @@
 #ifndef FILE__MADEXPORT_H
 #define FILE__MADEXPORT_H
 
-#include "../../zerofps/basic/mad_core.h"
+#include "../../zerofps/engine/mad_core.h"
 
 void Error(char* SzError);
 void LogIt(const char *fmt, ...);

@@ -66,7 +66,7 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /GZ /c
-# ADD CPP /nologo /MTd /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /GZ /c
+# ADD CPP /nologo /MTd /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /D "ENGINE_EXPORTS" /YX /FD /GZ /c
 # ADD BASE RSC /l 0x41d /d "_DEBUG"
 # ADD RSC /l 0x41d /d "_DEBUG"
 BSC32=bscmake.exe
@@ -100,6 +100,26 @@ SOURCE=.\3ds.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\zerofps\engine\core.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\zerofps\engine\core_bone.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\zerofps\engine\core_boneanim.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\zerofps\engine\core_mesh.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\zerofps\engine\core_meshanim.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\halflife.cpp
 
 !IF  "$(CFG)" == "madmake - Win32 Release"
@@ -118,6 +138,10 @@ SOURCE=.\mad.cpp
 # Begin Source File
 
 SOURCE=.\madmake.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\main.cpp
 # End Source File
 # Begin Source File
 
@@ -175,6 +199,10 @@ SOURCE=.\xxx.cpp
 !ENDIF 
 
 # End Source File
+# Begin Source File
+
+SOURCE=..\..\zerofps\engine\zfresource.cpp
+# End Source File
 # End Group
 # Begin Group "Header Files"
 
@@ -193,7 +221,15 @@ SOURCE=.\halflife.h
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\zerofps\engine\mad_core.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\madexport.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\madmake.h
 # End Source File
 # Begin Source File
 
@@ -210,6 +246,10 @@ SOURCE=.\script.h
 # Begin Source File
 
 SOURCE=.\xxx.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\zerofps\engine\zfresource.h
 # End Source File
 # End Group
 # Begin Group "Resource Files"

@@ -71,6 +71,7 @@ public:
 	void Run(int argc, char* argv[]);
 };
 
+
 MadMake::MadMake()
 {
 	bQuit = false;
@@ -221,7 +222,7 @@ void Error(char* SzError)
 	cout << "Error: " << SzError << endl;
 }
 
-int main(int argc, char* argv[])
+int HATASDL(int argc, char* argv[])
 {
 	MadMake	mad;
 	mad.Run(argc, argv);
