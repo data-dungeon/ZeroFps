@@ -88,15 +88,18 @@ void MachineGunProperty::Use()
 	m_kAim=m_pkObject->GetRot().AToU();	
 	
 	Object* Bullet=new Object;
-	Bullet->GetName()="MassDriver_Bullet";
+	Bullet->GetName()="MachineGun_Bullet";
 	Bullet->GetVel()=m_kAim*PROJECTILE_SPEED;
-	Bullet->GetPos()=m_pkObject->GetPos()+Vector3(0,0.5,0) + Bullet->GetVel().Unit();		
+	Bullet->GetPos()=m_pkObject->GetPos()+Vector3(0,0.6,0) + Bullet->GetVel().Unit();		
 	Bullet->AddProperty("MachineGunProjectile");	
 	
 //	Bullet->AddProperty("ModelProperty");
 //	ModelProperty* mp = dynamic_cast<ModelProperty*>(Bullet->GetProperty("ModelProperty"));
 //	mp->m_fRadius=0.01;
-	static_cast<CSSphere*>(static_cast<PhysicProperty*>(Bullet->AddProperty("PhysicProperty"))->GetColSphere())->m_fRadius=0.01;	
+	PhysicProperty* mp = dynamic_cast<PhysicProperty*>(Bullet->AddProperty("PhysicProperty"));
+	mp->m_bGravity=false;
+	mp->m_bFloat=false;
+	static_cast<CSSphere*>(mp->GetColSphere())->m_fRadius=0.01;	
 	
 	Bullet->SetParent(m_pkObjectMan->GetWorldObject());
 

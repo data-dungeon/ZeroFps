@@ -151,7 +151,7 @@ void AdaptorSniper::Fire(Vector3 kAim)
 	Bullet->GetName()="MassDriver_Bullet";
 	Bullet->GetVel()=kAim*25;
 	Bullet->GetPos()=m_pkObject->GetPos()+Vector3(0,0.5,0) + Bullet->GetVel().Unit();		
-	Bullet->AddProperty("MassDriverProjectile");		
+	Bullet->AddProperty("MachineGunProjectile");		
 	
 	CrossRenderProperty* cr=static_cast<CrossRenderProperty*>(Bullet->AddProperty("CrossRenderProperty"));
 	cr->SetTexture("../data/textures/adaptor_energyball.tga");

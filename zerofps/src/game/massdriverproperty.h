@@ -2,15 +2,7 @@
 #define _MASSDRIVERPROPERTY_H_
 
 #include "inventoryproperty.h"
-
-/*
-#include "../zerofps/engine/objects.pkg"
-#include "../zerofps/engine/engine.pkg"
-#include "../zerofps/basic/basic.pkg"
-#include <iostream>
 #include "massdriverprojectile.h"
-//#include "playerobject.h"
-*/
 
 using namespace std;
 

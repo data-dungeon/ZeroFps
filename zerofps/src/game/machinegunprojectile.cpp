@@ -3,7 +3,7 @@
 
 MachineGunProjectile::MachineGunProjectile()
 {
-	strcpy(m_acName,"MassDriverProjectile");
+	strcpy(m_acName,"MachineGunProjectile");
 	m_iType=PROPERTY_TYPE_NORMAL;
 	m_iSide=PROPERTY_SIDE_SERVER;
 	

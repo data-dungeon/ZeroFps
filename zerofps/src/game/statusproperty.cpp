@@ -7,6 +7,8 @@ StatusProperty::StatusProperty()
 	m_pkObjectMan = static_cast<ObjectManager*>(g_ZFObjSys.GetObjectPtr("ObjectManager"));
 	m_pkFps = static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));	
 
+	m_fMaxArmor=100;
+	m_fMaxHealth=100;
 	m_fArmor=100;
 	m_fHealth=100;
 	m_fArmorModifier=1;

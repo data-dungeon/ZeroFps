@@ -20,7 +20,10 @@ class StatusProperty: public Property {
 		float m_fArmorModifier;
 		float m_fHealthModifier;		
 		float m_fHealth;	
-			
+		
+		float m_fMaxArmor;
+		float m_fMaxHealth;
+		
 		StatusProperty();			
 		
 		void Damage(float fDamage);

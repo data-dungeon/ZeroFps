@@ -171,7 +171,7 @@ void Game::RegisterPropertys()
 	pkPropertyFactory->Register("MassDriverProperty", Create_MassDriverProperty);	
 	pkPropertyFactory->Register("MachineGunProperty", Create_MachineGunProperty);		
 	pkPropertyFactory->Register("MassDriverProjectile", Create_MassDriverProjectile);		
-	pkPropertyFactory->Register("MachineGunProjectile", Create_MassDriverProjectile);			
+	pkPropertyFactory->Register("MachineGunProjectile", Create_MachineGunProjectile);			
 }
 
 
