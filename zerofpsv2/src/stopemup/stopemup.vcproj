@@ -32,7 +32,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="engine_debug.lib opengl32.lib mcommon_debug.lib sdlmain.lib sdl.lib gui_debug.lib render_debug.lib basic_debug.lib script_debug.lib odbc32.lib odbccp32.lib"
+				AdditionalDependencies="engine_debug.lib mcommon_debug.lib sdlmain.lib sdl.lib gui_debug.lib render_debug.lib basic_debug.lib script_debug.lib odbc32.lib odbccp32.lib"
 				OutputFile="..\..\bin\stopemup_debug.exe"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="..\..\bin"
@@ -129,6 +129,9 @@
 				RelativePath=".\p_player.cpp">
 			</File>
 			<File
+				RelativePath=".\p_powerup.cpp">
+			</File>
+			<File
 				RelativePath=".\stopemup.cpp">
 			</File>
 			<File
@@ -144,6 +147,9 @@
 			</File>
 			<File
 				RelativePath=".\p_player.h">
+			</File>
+			<File
+				RelativePath=".\p_powerup.h">
 			</File>
 			<File
 				RelativePath=".\stopemup.h">
