@@ -21,9 +21,11 @@ typedef bool (*ZGuiCallBack)(ZGuiWnd*, unsigned int, int, void*);
 class Gui
 {
 private:
-	bool Register(ZGuiFont* pkSkin, string szName);
-	bool Register(ZGuiSkin* pkSkin, string szName);
-	bool Register(ZGuiWnd* pkWnd, string szName);
+	bool OnCloseEditProperty(bool bSave);
+	void OnOpenEditProperty();
+	bool Register(ZGuiFont* pkFont, char* strName);
+	bool Register(ZGuiSkin* pkSkin, char* strName);
+	bool Register(ZGuiWnd* pkWnd, char* strName);
 	ZGuiTextbox* CreateTextbox(ZGuiWnd* pkParent, int iID, int x, int y, int w, int h, bool bMulitLine=false);
 	ZGuiCombobox* CreateCombobox(ZGuiWnd* pkParent, int iID, int x, int y, int w, int h, bool bMenu);
 	ZGuiListbox* CreateListbox(ZGuiWnd* pkParent, int iID, int x, int y, int w, int h);
@@ -46,9 +48,11 @@ private:
 
 	void AddItemToList(ZGuiWnd *pkWnd, bool bCombobox, const char *item, int id);
 	void AddItemsToList(ZGuiWnd* pkWnd, bool bCombobox, char** items, int Number);
-	ZGuiWnd* CreatePropertyDialog(int x, int y, int Widht, int Height);
+	ZGuiWnd* CreateEditPropertyDialog(int x, int y, int Widht, int Height);
 	bool CreateWindows();
 	bool InitSkins();
+
+	ZGuiWnd* Get(string szName);
 
 public:
 

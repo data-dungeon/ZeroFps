@@ -28,7 +28,6 @@ ZGuiWnd* ZGuiResourceManager::Wnd(string szName)
 	it = m_kWindows.find(szName);
 	if(it != m_kWindows.end())
 		return it->second;
-	printf("Failed to find Wnd resource [%s]", szName);
 	return NULL;
 }
 
@@ -38,7 +37,6 @@ ZGuiSkin* ZGuiResourceManager::Skin(string szName)
 	it = m_kSkins.find(szName);
 	if(it != m_kSkins.end())
 		return it->second;
-	printf("Failed to find Skin resource [%s]", szName);
 	return NULL;
 }
 
@@ -48,7 +46,6 @@ ZGuiFont* ZGuiResourceManager::Font(string szName)
 	it = m_kFonts.find(szName);
 	if(it != m_kFonts.end())
 		return it->second;
-	printf("Failed to find Font resource [%s]", szName);
 	return NULL;
 }
 

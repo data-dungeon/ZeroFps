@@ -229,6 +229,10 @@ SOURCE=.\playerobject.cpp
 !ENDIF 
 
 # End Source File
+# Begin Source File
+
+SOURCE=.\teleportproperty.cpp
+# End Source File
 # End Group
 # Begin Group "Header Files"
 
@@ -256,6 +260,10 @@ SOURCE=.\playercontrolproperty.h
 # Begin Source File
 
 SOURCE=.\playerobject.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\teleportproperty.h
 # End Source File
 # End Group
 # Begin Group "Resource Files"

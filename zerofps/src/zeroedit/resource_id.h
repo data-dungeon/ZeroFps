@@ -31,5 +31,6 @@ const int ID_PROPERTY_OK				= 9025;
 const int ID_PROPERTY_CANCEL			= 9026;
 const int IDM_LOAD_HEIGHTMAP			= 9027;
 const int ID_MAINWND_MENU_CB			= 9028;
+const int ID_CLOSE_GUI_BN				= 9029;
 
 #endif

@@ -32,7 +32,7 @@ ZGuiCombobox::ZGuiCombobox(Rect kRectangle, ZGuiWnd* pkParent, bool bVisible, in
 	m_pkLabel = new ZGuiLabel(rc,this,true,COMBOBOX_LABEL_ID);
 	m_pkLabel->SetSkin(pkTopItemSkin, iTopItemTextureMask);
 
-	m_unNumVisibleRows = 7;
+	m_unNumVisibleRows = 10;
 	rc.Top = 20;
 	rc.Bottom = rc.Top+iItemHeight*m_unNumVisibleRows;
 
