@@ -17,7 +17,7 @@ P_ClientControl::P_ClientControl()
 
 void P_ClientControl::Update()
 {
-	cout<<"Got "<<m_kServerOrders.size()<< " pending orders"<<endl;
+	//cout<<"Got "<<m_kServerOrders.size()<< " pending orders"<<endl;
 }
 
 
@@ -31,7 +31,7 @@ void P_ClientControl::PackTo( NetPacket* pkNetPacket )
 	
 	pkNetPacket->Write(&iNrOO,sizeof(iNrOO));	
 
-	cout<<"sending orders:"<<iNrOO<<endl;
+	//cout<<"sending orders:"<<iNrOO<<endl;
 
 	while(!m_kClientOrders.empty())
 	{
@@ -47,7 +47,7 @@ void P_ClientControl::PackFrom( NetPacket* pkNetPacket )
 	int iNrOO;
 	pkNetPacket->Read(&iNrOO,sizeof(iNrOO));
 	
-	cout<<"got orders:"<<iNrOO<<endl;
+	//cout<<"got orders:"<<iNrOO<<endl;
 	//never process more orders then clients are allowed to do
 	if(iNrOO > m_iMaxOrders)
 		cout<<"Error client has added to many orders in queue:"<<endl;
