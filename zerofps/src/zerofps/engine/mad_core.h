@@ -92,6 +92,7 @@ public:
 
 	friend class Mad_CoreMesh;
 	friend class Mad_Core;
+	friend class Body;
 };
 
 class ENGINE_API Mad_CoreKeyFrame
@@ -226,7 +227,7 @@ public:
 	void FlipFaces();
 
 	friend class Mad_Core;
-
+	friend class Body;
 };
 
 // MAD - SD (Skeletal Data)

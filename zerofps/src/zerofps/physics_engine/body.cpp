@@ -89,14 +89,14 @@ bool Body::SetMad(Mad_Core* pkMad,int iMesh)
 	Mad_CoreMesh* pkCoreMech;
 
 	//look for mech pointer in core
-	pkCoreMech = pkMad->GetMeshByID(iMesh);					
+	pkCoreMech = GetMeshByID(pkMad,iMesh);					
 	if(pkCoreMech != NULL)		
 	{
 		cout<<"found mech"<<endl;
 		
-		m_pkFaces = pkCoreMech->GetFacesPointer();
-		m_pkVertex = (*pkCoreMech->GetVertexFramePointer())[0].GetVertexPointer();
-		m_pkNormal = (*pkCoreMech->GetVertexFramePointer())[0].GetNormalPointer();
+		m_pkFaces = &pkCoreMech->akFaces;
+		m_pkVertex = &pkCoreMech->akFrames[0].akVertex;
+		m_pkNormal = &pkCoreMech->akFrames[0].akNormal;
 		
 		m_fRadius = pkMad->GetRadius();
 		
@@ -108,7 +108,15 @@ bool Body::SetMad(Mad_Core* pkMad,int iMesh)
 	return false;
 }
 
+Mad_CoreMesh* Body::GetMeshByID(Mad_Core* pkMad,int iMesh)
+{
+	if(iMesh < 0)	
+		return NULL;
+	if(iMesh >= pkMad->m_kMesh.size())
+		return NULL;
 
+	return &pkMad->m_kMesh[iMesh];
+}
 
 
 

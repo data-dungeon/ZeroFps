@@ -64,6 +64,9 @@ class PHYSICSENGINE_API Body
 		
 		bool SetMad(Mad_Core* pkMad,int iMesh);
 		void SetScalep(float* pfScale) { m_pfScale = pfScale;};
+		Mad_CoreMesh* GetMeshByID(Mad_Core* pkMad,int iMesh);
+		
+		
 		
 		friend class Physics_Engine;
 };
