@@ -57,7 +57,7 @@ void GuiMsgIngameScreen( string strMainWnd, string	strController,
 				}
 
 				ZGuiWnd::m_pkFocusWnd->KillFocus();
-				g_kMistClient.m_pkGui->SetFocus(g_kMistClient.GetWnd("GuiMainWnd"), false);				
+				g_kMistClient.m_pkGui->SetFocus(g_kMistClient.GetWnd("GuiMainWnd"), true);				
 				g_kMistClient.ToggleGuiCapture(0);
 			}
 			else
@@ -97,7 +97,7 @@ void MistClient::ToogleChatWnd(bool	bOpen, bool	bSetInputFocus)
 	if(bSetInputFocus)
 	{
 		SetText("SayTextbox",	"");
-		m_pkGui->SetFocus( g_kMistClient.GetWnd("SayTextbox"), false); 
+		m_pkGui->SetFocus( g_kMistClient.GetWnd("SayTextbox"), true); 
 		ToggleGuiCapture(1);
 	}
 }
