@@ -30,6 +30,12 @@ ZGuiButton::~ZGuiButton()
 
 bool ZGuiButton::Notify(ZGuiWnd* pkWindow, int iCode)
 {
+	if(m_bEnabled == false)
+	{
+		m_pkSkin = m_pkSkinBnUp;
+		return false;
+	}
+
 	if(iCode == NCODE_CLICK_DOWN)
 	{
 		if(GetMoveArea() == GetScreenRect())

@@ -8,7 +8,7 @@
 #include "../engine_systems/propertys/primitives3d.h"
 #include "../engine_systems/propertys/proxyproperty.h"
 #include "fh.h"
-#include "../engine_systems/script_interfaces/objectmanager_scriptinterface.h"
+#include "../engine_systems/script_interfaces/si_objectmanager.h"
 
 ZoneData& ZoneData::operator=(const ZoneData &kOther) 
 {

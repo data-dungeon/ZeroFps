@@ -119,6 +119,8 @@ bool ZGuiApp::CreateWnd(GuiType eType, char* szResourceName, char* szText, int i
 	case Listbox:
 		pkWnd = new ZGuiListbox( Rect(x,y,x+w,y+h), pkParent, true, iID, 
 			LISTBOX_ITEM_HEIGHT, NULL, NULL, NULL);
+		if(uiFlags & READ_ONLY) 
+			((ZGuiListbox*) pkWnd)->SetEnable(false);
 		break;
 	case Combobox:
 		pkWnd = new ZGuiCombobox( Rect(x,y,x+w,y+h), pkParent, true, iID,

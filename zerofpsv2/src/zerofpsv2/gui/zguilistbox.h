@@ -14,6 +14,7 @@ class ZGuiScrollbar;
 class GUI_API ZGuiListbox : public ZGuiWnd
 {
 public:
+	void SetEnable(bool bEnable);
 	bool SelItem(int iIndex);
 	int GetItemCount();
 	void SelNone();

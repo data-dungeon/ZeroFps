@@ -4,7 +4,7 @@
 
 #include "../../script/zfscript.h"
 #include "../../gui/zgui.h"
-#include "gui_scriptinterface.h"
+#include "si_gui.h"
 
 void GuiAppLua::Init(ZGuiApp* pkGuiApp, ZFScriptSystem* pkScript)
 {
@@ -23,6 +23,7 @@ void GuiAppLua::Init(ZGuiApp* pkGuiApp, ZFScriptSystem* pkScript)
 	pkScript->ExposeFunction("IsWndVisible", GuiAppLua::IsWndVisibleLua); 
 	pkScript->ExposeFunction("SetTextInt", GuiAppLua::SetTextInt); 
 }
+
 
 // Name: CreateWndLua
 // Parameters:

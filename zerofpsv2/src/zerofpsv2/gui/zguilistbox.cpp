@@ -28,6 +28,7 @@ ZGuiListbox::ZGuiListbox(Rect kRectangle, ZGuiWnd* pkParent, bool bVisible,
 {
 	m_iScrollbarWidth = 20;
 	m_bIsMenu = false;
+	m_bEnabled = true;
 
 	m_pkSelectedItem = NULL;
 	m_pkSkinBnUp = pkSkinItem;
@@ -139,6 +140,9 @@ ZGuiListitem* ZGuiListbox::AddItem(char* strText, unsigned int iIndex, bool bSel
 	pkNewItem = new ZGuiListitem(this, strText, iIndex, 
 		m_pkSkinBnUp, m_pkSkinBnDown, m_pkSkinBnHLight);
 	pkNewItem->GetButton()->SetGUI(GetGUI());
+
+	if(!m_bEnabled)
+		pkNewItem->GetButton()->Disable();
 
 	m_pkItemList.push_back(pkNewItem);
 
@@ -264,7 +268,7 @@ bool ZGuiListbox::Notify(ZGuiWnd* pkWnd, int iCode)
 		return true;
 	}
 
-	if(iCode == NCODE_CLICK_DOWN)
+	if(m_bEnabled && iCode == NCODE_CLICK_DOWN)
 	{
 		list<ZGuiListitem*>::iterator it;
 		for( it = m_pkItemList.begin();
@@ -521,6 +525,19 @@ void ZGuiListbox::CopyNonUniqueData(const ZGuiWnd* pkSrc)
 	ZGuiWnd::CopyNonUniqueData(pkSrc);
 }
 
+void ZGuiListbox::SetEnable(bool bEnable)
+{
+	m_bEnabled = bEnable;
 
+	list<ZGuiListitem*>::iterator it;
+	for(  it = m_pkItemList.begin();
+			it != m_pkItemList.end(); it++)
 
+		 {
+			 if(m_bEnabled)
+				 (*it)->GetButton()->Enable();  
+			 else
+				 (*it)->GetButton()->Disable();  
+		 }
+}
 

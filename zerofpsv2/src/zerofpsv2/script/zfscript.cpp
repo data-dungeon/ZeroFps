@@ -159,8 +159,7 @@ void ZFScriptSystem::Close()
 // Description:	Registrera en C++ klass som Lua kan se.
 //
 bool ZFScriptSystem::ExposeClass(char *szName, ScripObjectType eType, 
-						   lua_CFunction o_LuaGet, 
-						   lua_CFunction o_LuaSet)
+						   lua_CFunction o_LuaGet, lua_CFunction o_LuaSet)
 {
 	// check if type is already registered
 /*	bool bAlreadyExist = true;

@@ -187,10 +187,6 @@ SOURCE=.\fh.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\engine_systems\script_interfaces\gui_scriptinterface.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=..\engine_systems\common\heightmap.cpp
 # End Source File
 # Begin Source File
@@ -267,10 +263,6 @@ SOURCE=.\objectmanager.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\engine_systems\script_interfaces\objectmanager_scriptinterface.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=..\engine_systems\audio\OggMusic.cpp
 # End Source File
 # Begin Source File
@@ -311,11 +303,19 @@ SOURCE=.\res_texture.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\engine_systems\propertys\skyboxrenderproperty.cpp
+SOURCE=..\engine_systems\script_interfaces\si_gui.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\engine_systems\script_interfaces\std_scriptinterface.cpp
+SOURCE=..\engine_systems\script_interfaces\si_objectmanager.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\engine_systems\script_interfaces\si_std.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\engine_systems\propertys\skyboxrenderproperty.cpp
 # End Source File
 # Begin Source File
 
@@ -411,10 +411,6 @@ SOURCE=.\fh.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\engine_systems\script_interfaces\gui_scriptinterface.h
-# End Source File
-# Begin Source File
-
 SOURCE=..\engine_systems\common\heightmap.h
 # End Source File
 # Begin Source File
@@ -495,10 +491,6 @@ SOURCE=.\objectmanager.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\engine_systems\script_interfaces\objectmanager_scriptinterface.h
-# End Source File
-# Begin Source File
-
 SOURCE=..\engine_systems\audio\oggmusic.h
 # End Source File
 # Begin Source File
@@ -547,11 +539,19 @@ SOURCE=.\res_texture.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\engine_systems\propertys\skyboxrenderproperty.h
+SOURCE=..\engine_systems\script_interfaces\si_gui.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\engine_systems\script_interfaces\std_scriptinterface.h
+SOURCE=..\engine_systems\script_interfaces\si_objectmanager.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\engine_systems\script_interfaces\si_std.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\engine_systems\propertys\skyboxrenderproperty.h
 # End Source File
 # Begin Source File
 

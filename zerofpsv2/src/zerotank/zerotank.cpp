@@ -1,5 +1,5 @@
 #include "zerotank.h"
-#include "../zerofpsv2/engine_systems/script_interfaces/gui_scriptinterface.h"
+#include "../zerofpsv2/engine_systems/script_interfaces/si_gui.h"
 #include "../zerofpsv2/engine_systems/common/heightmap.h"
 #include "../zerofpsv2/engine_systems/propertys/madproperty.h"
 #include "../zerofpsv2/engine_systems/propertys/primitives3d.h"
