@@ -41,7 +41,7 @@ ZGuiMenu::~ZGuiMenu()
 
 bool ZGuiMenu::Notify(ZGuiWnd* pkWindow, int iCode)
 {
-	if(iCode == NCODE_CLICK_DOWN) // NCODE_OVER_CTRL
+	if(iCode == NCODE_CLICK_UP)
 	{
 		int iMenuID = pkWindow->GetID();
 
@@ -49,55 +49,40 @@ bool ZGuiMenu::Notify(ZGuiWnd* pkWindow, int iCode)
 		{
 			if((int)m_vkItems[i]->pkButton->GetID() == iMenuID)
 			{
-				if(m_vkItems[i]->bOpenSubMenu)
+				if(m_vkItems[i]->bOpenSubMenu == false)
 				{
-					if(m_vkItems[i]->pkParent == NULL)
-						HideAll();
-
-					m_bIsOpen = true;
-
-					ZGuiMenuItem* pkSubMenu = m_vkItems[i];
-
-					map<ZGuiMenuItem*, bool>::iterator res = m_mkSubMenuStateMap.find( pkSubMenu );
-					if ( res != m_mkSubMenuStateMap.end() )
-							res->second = !res->second;
-
-					OpenSubMenu(pkSubMenu, res->second);
-
-					Resize(GetScreenRect().Width(), 500);
-					/*GetGUI()->PlaceWndFrontBack(m_vkItems[i]->pkButton->GetParent(), true);
-					GetGUI()->PlaceWndFrontBack(this, true);*/
-
-				}
-				else
-				{
-
 					Resize(GetScreenRect().Width(), 20);
-
 					m_bIsOpen = false;
-
-
-		// Skicka ett Command medelande till valt fönster.
-		int* pkParams = new int[2];
-		int id = iMenuID; // control id
-		pkParams[0] = id;
-		pkParams[1] = 0;
-
-		ZGuiWnd* pkMain = this;
-
-		if(pkMain == NULL)
-			pkMain = GetGUI()->GetActiveMainWnd();
-
-		GetGUI()->GetActiveCallBackFunc()(pkMain,ZGM_COMMAND, 2, pkParams);
-
-		delete[] pkParams;
-
-
-
-
 					HideAll();
 				}
 
+				break;
+			}
+		}
+	}
+	else
+	if(iCode == NCODE_CLICK_DOWN || iCode == NCODE_OVER_CTRL)
+	{
+		int iMenuID = pkWindow->GetID();
+
+		for(int i=0; i<m_vkItems.size(); i++)
+		{
+			if((int)m_vkItems[i]->pkButton->GetID() == iMenuID)
+			{
+				HideAll();
+
+				m_bIsOpen = true;
+
+				ZGuiMenuItem* pkSubMenu = m_vkItems[i];
+
+				map<ZGuiMenuItem*, bool>::iterator res = m_mkSubMenuStateMap.find( pkSubMenu );
+				if ( res != m_mkSubMenuStateMap.end() )
+						res->second = !res->second;
+
+				OpenSubMenu(pkSubMenu, res->second);
+
+				Resize(GetScreenRect().Width(), 500);
+				
 				break;
 			}
 		}
@@ -266,7 +251,6 @@ bool ZGuiMenu::AddItem(const char* szText, const char* szNameID,
 	new_item->pkButton->SetText((char*) szText, false); 
 	new_item->pkButton->m_bCenterTextHorz = false;
 
-
 	new_item->pkButton->SetID(s_iMenuIDCounter++);
 
 	new_item->bOpenSubMenu = bOpenSubMenu;
@@ -340,55 +324,17 @@ ZGuiMenuItem* ZGuiMenu::GetRightParent()
 
 void ZGuiMenu::OpenSubMenu(ZGuiMenuItem* pkSubMenu, bool bOpen)
 {
-	vector<ZGuiMenuItem*> test;
+	ZGuiMenuItem* pkCurr = pkSubMenu;
 
-	for(int i=0; i<m_vkItems.size(); i++)
+	while(pkCurr != NULL)
 	{
-		ZGuiMenuItem* s = m_vkItems[i]->pkParent;
-		bool bShow = true;
-
-		while(1)
+		for(int i=0; i<m_vkItems.size(); i++)
 		{
-			if(s == NULL)
-				break;
-
-			if(MenuIsOpen(s) == false) 
-				bShow = false;
-
-			s = s->pkParent;
+			if(m_vkItems[i]->pkParent == pkCurr)
+				m_vkItems[i]->pkButton->Show();
 		}
 
-		if(bShow)
-		{			
-			
-			m_vkItems[i]->pkButton->Show();
-		}
-		else
-		{
-			m_vkItems[i]->pkButton->Hide();
-
-			if(m_vkItems[i]->bOpenSubMenu)
-			{
-				test.push_back( m_vkItems[i] );
-			}
-		}
-	}
-
-	vector<ZGuiMenuItem*> temp = m_vkItems;
-
-	if(bOpen == false)
-	{
-		for(int i=0; i<test.size(); i++)
-		{
-			map<ZGuiMenuItem*, bool>::iterator it = m_mkSubMenuStateMap.begin();
-			for( ; it != m_mkSubMenuStateMap.end(); it++)
-			{
-				if(it->first == test[i])
-				{
-					it->second = false;
-				}
-			}
-		}
+		pkCurr = pkCurr->pkParent;
 	}
 }
 
@@ -414,13 +360,14 @@ void ZGuiMenu::HideAll()
 			m_vkItems[i]->pkButton->Hide();
 	}
 
+	m_bIsOpen = false;
+	
 	map<ZGuiMenuItem*, bool>::iterator it = m_mkSubMenuStateMap.begin();
 	for( ; it != m_mkSubMenuStateMap.end(); it++)
 	{
-		it->second = false;
-	}
-
-	m_bIsOpen = false;
+		if(!it->first->pkButton->IsVisible())
+			it->second = false;
+	}	
 }
 
 void ZGuiMenu::ResizeMenu()
@@ -538,12 +485,17 @@ void ZGuiMenu::ResizeMenu()
 	}
 }
 
-
-
-
 bool ZGuiMenu::IsOpen()
 {
-	return m_bIsOpen;
+	for(int i=0; i<m_vkItems.size(); i++)
+	{
+		if(m_vkItems[i]->pkButton->IsVisible() &&
+			m_vkItems[i]->pkParent != NULL)
+			return true;
+	}
+
+	return false;
+	//return m_bIsOpen;
 }	
 
 bool ZGuiMenu::IsMenuItem(ZGuiWnd* pkButton)
@@ -551,6 +503,18 @@ bool ZGuiMenu::IsMenuItem(ZGuiWnd* pkButton)
 	for(int i=0; i<m_vkItems.size(); i++)
 	{
 		if(m_vkItems[i]->pkButton == pkButton)
+			return true;
+	}
+
+	return false;
+}
+
+bool ZGuiMenu::HooverItem(int x, int y)
+{
+	for(int i=0; i<m_vkItems.size(); i++)
+	{
+		if(m_vkItems[i]->pkButton->IsVisible() &&
+			m_vkItems[i]->pkButton->GetScreenRect().Inside(x,y))
 			return true;
 	}
 

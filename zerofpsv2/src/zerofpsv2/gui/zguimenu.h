@@ -46,6 +46,7 @@ public:
 
 	bool IsOpen();
 	bool IsMenuItem(ZGuiWnd* pkButton);
+	bool HooverItem(int x, int y);
 
 protected:
 	bool Notify(ZGuiWnd* pkWnd, int iCode);

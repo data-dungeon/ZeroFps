@@ -71,6 +71,8 @@ void MadView::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 				return;
 			}
 
+			//printf("strWndClicked = %s\n", strWndClicked.c_str());
+
 			vector<string> akSections;
 			m_pkIni->GetSectionNames(akSections);
 

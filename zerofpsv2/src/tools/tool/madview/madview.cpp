@@ -56,7 +56,7 @@ MadView::MadView(char* aName,int iWidth,int iHeight,int iDepth)
 	Register_Cmd("open_mad", FID_OPENMAD);	
 	Register_Cmd("object_rotation_mode", FID_OBJECTROTATIONMODE);	
 	Register_Cmd("object_rotation_speed", FID_OBJECTROTATIONSPEED);	
-	Register_Cmd ("mad_draw_mode", FID_MAD_DRAW_MODE);	
+	Register_Cmd("mad_draw_mode", FID_MAD_DRAW_MODE);	
 	Register_Cmd("change_bkcolor_infownd", FID_TOGGLE_BKCOLOR);	
 
 	m_strMadFile = "data/mad/cube.mad";
@@ -192,6 +192,8 @@ void MadView::RunCommand(int cmdid, const CmdArgument* kCommand)
 	switch(cmdid) 
 	{
 		case FID_OPENMAD:
+			printf("FID_OPENMAD\n");
+			
 			if(m_iSelFileMode != SEL_MAD)
 				BuildFileTree("SelectFileTree", "data/mad", ".mad");
 
@@ -200,6 +202,7 @@ void MadView::RunCommand(int cmdid, const CmdArgument* kCommand)
 			break;
 
 		case FID_OBJECTROTATIONMODE:
+			printf("FID_OBJECTROTATIONMODE\n");
 			m_iObjRotMode = atoi(kCommand->m_kSplitCommand[1].c_str());
 
 			if(m_iObjRotMode != 0)
@@ -232,6 +235,8 @@ void MadView::RunCommand(int cmdid, const CmdArgument* kCommand)
 			break;
 
 		case FID_TOGGLE_BKCOLOR:
+
+			printf("FID_TOGGLE_BKCOLOR\n");
 			
 			static bool toogle = true;
 

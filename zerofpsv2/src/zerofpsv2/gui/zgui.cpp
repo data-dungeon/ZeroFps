@@ -1230,12 +1230,12 @@ void ZGui::FormatKey(int& iKey, bool bShiftIsPressed)
 
 void ZGui::CloseActiveMenu(void)
 {
-	if(m_pkActiveMenu && m_bClickedMenu == false)
-	{
-		m_pkActiveMenu->HideAll(); 
-		m_pkActiveMenu = NULL;
-		m_bClickedMenu = true;
-	}
+	//if(m_pkActiveMenu && m_bClickedMenu == false)
+	//{
+	//	m_pkActiveMenu->HideAll(); 
+	//	m_pkActiveMenu = NULL;
+	//	m_bClickedMenu = true;
+	//}
 }
 
 bool ZGui::OnMouseUpdate(int x, int y, bool bLBnPressed, 
@@ -1294,6 +1294,11 @@ bool ZGui::OnMouseUpdate(int x, int y, bool bLBnPressed,
 		MAIN_WINDOW* wnd; // = FindMainWnd(x,y);
 		if( bClicked )
 		{ 
+			if(m_pkActiveMenu && !m_pkActiveMenu->HooverItem(x,y))
+			{
+				m_pkActiveMenu->HideAll();
+			}
+
 			if((wnd = FindMainWnd(x,y)) != NULL) //if(wnd = FindMainWnd(x,y) ) -- Ändring 040701
 			{
 				if(wnd != m_pkActiveMainWin)
@@ -1381,13 +1386,12 @@ bool ZGui::OnMouseUpdate(int x, int y, bool bLBnPressed,
 	bool bLeftPressed =  (m_bLeftButtonDown  == false && bLeftButtonDown  == true);
 	bool bRightPressed = (m_bRightButtonDown == false && bRightButtonDown == true);
 	
-
 	// Har vänster musknapp klickats (men inte släppt)
 	if( bLeftPressed || bRightPressed )
 	{		
-
 		if(pkFocusWindow)
 		{			
+
 			if(pkFocusWindow->m_bUseAlhpaTest)
 			{
 				if(ClickedWndAlphaTex(x,y,pkFocusWindow) == false)
