@@ -590,7 +590,12 @@ void P_DMCharacter::AddXP(int iXP)
 
 vector<PropertyValues> P_DMCharacter::GetPropertyValues()
 {
-	vector<PropertyValues> kReturn(0);
+	vector<PropertyValues> kReturn(1);
+
+	kReturn[0].kValueName = "team";
+	kReturn[0].iValueType = VALUETYPE_INT;
+	kReturn[0].pkValue    = &m_iTeam;		
+
 	return kReturn;
 }
 

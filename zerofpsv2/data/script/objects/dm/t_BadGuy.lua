@@ -11,6 +11,7 @@ function Create()
 		InitProperty("P_Track");
 		InitProperty("P_Sound");
 		InitProperty("P_DMCharacter");
+			InitParameter("team",1)
 		InitProperty("P_ScriptInterface");
 		InitProperty("P_ShadowBlob");
 

@@ -268,6 +268,7 @@ bool CGamePlayDlg::InitDlg()
 
 	m_bInitialized = true;
 
+
 	return true;
 }
 
@@ -406,7 +407,7 @@ DMCharacterStats* CGamePlayDlg::GetAgentStats(int iAgent)
 void CGamePlayDlg::UpdateAgentList()
 {
 	vector<Entity*> kMembersInField;
-		GetAllAgentsInField(kMembersInField);
+	GetAllAgentsInField(kMembersInField);
 	
 	for(unsigned int i=0; i<5; i++)
 	{

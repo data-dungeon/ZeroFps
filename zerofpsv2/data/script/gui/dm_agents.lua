@@ -144,10 +144,10 @@ function GUICreate()
 	ChangeSkin("HireAgentBn","Skin2","Button down")
 	ChangeSkin("HireAgentBn","Skin3","Button focus")
 
-	CreateWnd(4,"CurrentAgentToHireLabel","AgentsWnd","Agent to hire 1/40 - Mr Smith",27,191,455,17,0)
+	CreateWnd(4,"CurrentAgentToHireLabel","AgentsWnd","",27,191,455,17,0)
 	ChangeSkin("CurrentAgentToHireLabel","Skin14","Label")
 
-	CreateWnd(4,"AgentInHQLabel","AgentsWnd","Your agent 1/10 - Mr Smith",29,90,455,17,0)
+	CreateWnd(4,"AgentInHQLabel","AgentsWnd","",29,90,455,17,0)
 	ChangeSkin("AgentInHQLabel","Skin14","Label")
 
 	CreateWnd(1,"SendOutAgentBn","AgentsWnd","Send out",155,216,64,33,0)

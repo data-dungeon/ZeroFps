@@ -8,6 +8,7 @@ function Create()
 		InitProperty("P_PfPath");
 		InitProperty("P_Track");
 		InitProperty("P_DMCharacter");
+			InitParameter("team",0)
 		InitProperty("P_ScriptInterface");
 		InitProperty("P_ShadowBlob");
 

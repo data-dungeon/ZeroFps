@@ -112,8 +112,8 @@ void DarkMetropolis::OnIdle()
 
 	GUI_OnIdle();
 
-	if(m_pkMembersDlg)
-		((CMembersDlg*)m_pkMembersDlg)->UpdateCamera();
+//	if(m_pkMembersDlg)
+//		((CMembersDlg*)m_pkMembersDlg)->UpdateCamera();
 }
 
 void DarkMetropolis::RenderInterface(void)
@@ -256,6 +256,7 @@ void DarkMetropolis::OnServerStart()
 	m_iActiveHQ = 				-1;
 	
 	UpdateAgentsOnField();
+	
 }
 
 void DarkMetropolis::OnClientStart()
@@ -335,11 +336,13 @@ void DarkMetropolis::Input()
 			}
 	
 	if(m_pkInputHandle->Pressed(KEY_O))
+	{
 		if(Entity* pkEnt = m_pkObjectMan->GetObjectByNetWorkID(m_iHQID))
 			if(P_DMHQ* pkHQ = (P_DMHQ*)pkEnt->GetProperty("P_DMHQ"))
 			{
 				pkHQ->EjectAllCharacters();
 			}
+	}
 	
 	if(m_pkInputHandle->Pressed(KEY_P))
 		if(!m_kSelectedEntitys.empty())
@@ -675,7 +678,7 @@ void DarkMetropolis::Input()
 								kOrder.m_iEntityID = pkPickEnt->GetEntityID();							 
 								
 								pkCh->ClearOrders();
-								pkCh->AddOrder(kOrder);										
+								pkCh->AddOrder(kOrder);	
 							}
 							else
 							{
@@ -1158,8 +1161,8 @@ void DarkMetropolis::ValidateSelection()
 		{
 			if(!pkEnt->GetParent()->IsZone())		
 			{	
+				((CGamePlayDlg*)m_pkGamePlayDlg)->UpdateAgentList();
 				SelectAgent(m_kSelectedEntitys[i], true, false,false);
-				//((CGamePlayDlg*)m_pkGamePlayDlg)->InitDlg();
 				i = 0;
 			}		
 		}	
