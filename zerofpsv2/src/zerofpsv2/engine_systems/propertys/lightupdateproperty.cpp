@@ -3,6 +3,7 @@
   	
 LightUpdateProperty::LightUpdateProperty()
 {
+	bNetwork = true;
 	m_pkLight = static_cast<Light*>(g_ZFObjSys.GetObjectPtr("Light")); 	
 	
 	strcpy(m_acName,"LightUpdateProperty");

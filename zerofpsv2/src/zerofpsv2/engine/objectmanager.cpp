@@ -642,19 +642,19 @@ void ObjectManager::UpdateZoneList(NetPacket* pkNetPacket)
 		pkNetPacket->Read(iZoneID);
 		}
 
+/*	
 	cout << "Active Zones: "; 
 	for(i=0; i<kZones.size(); i++) 
 		cout << kZones[i] << ", ";
 	cout << endl;
-
+*/
 
 	for(i=0; i<m_pkZoneObject->m_akChilds.size(); i++) {
 		int iLocalZoneID = m_pkZoneObject->m_akChilds[i]->iNetWorkID;
 		
 		if(IsInsideVector(iLocalZoneID, kZones) == false) {
 			Delete(m_pkZoneObject->m_akChilds[i]);
-			cout << "Removing Zone: " << iLocalZoneID << endl;
-
+			//cout << "Removing Zone: " << iLocalZoneID << endl;
 			}
 		}
 }
