@@ -832,7 +832,7 @@ void HeightMap::DrawMask(int iPosX,int iPosy,int iMask,int iSize,int r,int g,int
 }
 
 
-HM_vert* HeightMap::LinePick(Vector3 kPos,Vector3 kDir,Vector3 kCenterPos,int iWidth)
+HM_vert* HeightMap::LinePick(Vector3 kPos,Vector3 kDir,Vector3 kCenterPos,int iWidth,Vector3& kHitPos)
 {
 	float minx = kCenterPos.x - iWidth/2; 
 	float maxx = kCenterPos.x + iWidth/2; 
@@ -866,6 +866,7 @@ HM_vert* HeightMap::LinePick(Vector3 kPos,Vector3 kDir,Vector3 kCenterPos,int iW
 	float cdist=99999999;	
 	HM_vert* closest=NULL;
 		
+		
 	for(float x = minx;x<maxx-1;x++)
 	{
 		for(float z = minz;z<maxz-1;z++)
@@ -888,6 +889,7 @@ HM_vert* HeightMap::LinePick(Vector3 kPos,Vector3 kDir,Vector3 kCenterPos,int iW
 				{
 					cdist=dist;
 					closest=GetVert((int)x,(int)z);
+					kHitPos = kColPos;
 				}
 			}
 			
@@ -906,12 +908,22 @@ HM_vert* HeightMap::LinePick(Vector3 kPos,Vector3 kDir,Vector3 kCenterPos,int iW
 				{
 					cdist=dist;
 					closest=GetVert((int)x,(int)z);
+					kHitPos = kColPos;					
 				}
 			}	
 		}
 	}
 	
-//	cout<<"bla: X"<<minx<<" "<<maxx<<" Y"<< minz<<" "<<maxz<<endl;
+	if(closest != NULL)
+	{
+		kHitPos = (kHitPos - Vector3(m_iHmSize/2,0,m_iHmSize/2)); 
+		kHitPos.x *= HEIGHTMAP_SCALE;
+		kHitPos.z *= HEIGHTMAP_SCALE;		
+		kHitPos-=Vector3(1,0,1)*HEIGHTMAP_SCALE;
+		
+		//cout<<"HM: "<<kHitPos.x<< " "<<kHitPos.z<<endl;
+	}
+
 	return closest;
 }
 

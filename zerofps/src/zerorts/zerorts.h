@@ -15,6 +15,14 @@
 
 class UserPanel;
 
+struct PickInfo
+{
+	Object* pkObject;
+	HM_vert* pkVert;
+	
+	Vector3 kHitPos;
+};
+
 
 class ZeroRTS :public Application {
 	private:
@@ -28,6 +36,8 @@ class ZeroRTS :public Application {
 		int m_iActionCamDown;
 		int m_iActionSelect;
 		int m_iActionScroll;		
+
+		
 
 		//console funktions
 		enum FuncId_e
@@ -55,7 +65,8 @@ class ZeroRTS :public Application {
 		
 		Vector3 Get3DMousePos();		
 		Object* PickObject();
-		HM_vert* PickMap();
+		HM_vert* PickMap(Vector3& kHitPos);
+		PickInfo Pick();
 		
 		void RunCommand(int cmdid, const CmdArgument* kCommand);
 		

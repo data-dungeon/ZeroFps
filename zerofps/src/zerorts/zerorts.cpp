@@ -116,7 +116,16 @@ void ZeroRTS::Input()
 
 	if(pkInput->Action(m_iActionSelect))
 	{
+		Vector3 pos = Pick().kHitPos;
 	
+		glDisable(GL_LIGHTING);
+			pkRender->Sphere(pos,1,20,Vector3(1,0,0),false);
+		glEnable(GL_LIGHTING);	
+	
+		//m_pkMap->GetVert((int)pos.x,(int)pos.z)->height =0;
+	
+
+	/*
 		HM_vert* bla = PickMap();
 		
 		if(bla != NULL)
@@ -124,7 +133,7 @@ void ZeroRTS::Input()
 			bla->height -= 1;
 		
 		}
-		
+		*/
 		/*
 		Object* bla=PickObject();
 		
@@ -241,13 +250,23 @@ Object* ZeroRTS::PickObject()
 	return close;
 }
 
-HM_vert* ZeroRTS::PickMap()
+HM_vert* ZeroRTS::PickMap(Vector3& kHitPos)
 {
 	Vector3 dir=(Get3DMousePos() - m_pkCamera->GetPos()).Unit();
 	Vector3 center = (m_pkCamera->GetPos() - Vector3(0,0,20));
-	HM_vert* vert = m_pkMap->LinePick(m_pkCamera->GetPos(),dir,center,140);
+	HM_vert* vert = m_pkMap->LinePick(m_pkCamera->GetPos(),dir,center,140,kHitPos);
 
 	return vert;
+}
+
+PickInfo ZeroRTS::Pick()
+{
+	PickInfo temp;
+	
+	temp.pkVert = PickMap(temp.kHitPos);
+	temp.pkObject = PickObject();	
+
+	return temp;
 }
 
 void ZeroRTS::SetCamPos(Vector3 kPos)
