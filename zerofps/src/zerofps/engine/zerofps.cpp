@@ -485,11 +485,9 @@ void ZeroFps::RunCommand(int cmdid, const CmdArgument* kCommand)
 			{
 				vector<string> kFiles;
 
-				string kDir;
-				kDir=".";
-				m_pkBasicFS->ListDir(&kFiles,kDir.c_str());
+				m_pkBasicFS->ListDir(&kFiles,m_kCurentDir.c_str(),false);
 				
-				m_pkConsole->Printf("DIRECTORY %s",kDir.c_str());
+				m_pkConsole->Printf("DIRECTORY %s",m_kCurentDir.c_str());
 				for(i=0;i<kFiles.size();i++)
 				{
 					m_pkConsole->Printf(kFiles[i].c_str());
