@@ -1,7 +1,7 @@
-#include "massdriverprojectile.h"
+#include "machinegunprojectile.h"
 #include "statusproperty.h"
 
-MassDriverProjectile::MassDriverProjectile()
+MachineGunProjectile::MachineGunProjectile()
 {
 	strcpy(m_acName,"MassDriverProjectile");
 	m_iType=PROPERTY_TYPE_NORMAL;
@@ -15,7 +15,7 @@ MassDriverProjectile::MassDriverProjectile()
 	m_iMode=0;
 }
 
-void MassDriverProjectile::Update()
+void MachineGunProjectile::Update()
 {
 	
 	if(m_iMode==0)
@@ -34,7 +34,7 @@ void MassDriverProjectile::Update()
 
 }
 
-void MassDriverProjectile::Touch(Object* pkObject)
+void MachineGunProjectile::Touch(Object* pkObject)
 {
 //	if(pkObject->iNetWorkID == shoterid)
 //		return;
@@ -45,7 +45,7 @@ void MassDriverProjectile::Touch(Object* pkObject)
 		StatusProperty* sp=static_cast<StatusProperty*>(pkObject->GetProperty("StatusProperty"));
 		if(sp!=NULL)
 		{
-			sp->Damage(200);
+			sp->Damage(10);
 		}
 		
 		m_iMode=1;	
@@ -59,9 +59,9 @@ void MassDriverProjectile::Touch(Object* pkObject)
 }
 
 
-Property* Create_MassDriverProjectile()
+Property* Create_MachineGunProjectile()
 {
-	return new MassDriverProjectile;
+	return new MachineGunProjectile;
 
 }
 

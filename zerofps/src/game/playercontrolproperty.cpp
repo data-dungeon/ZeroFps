@@ -34,8 +34,9 @@ PlayerControlProperty::PlayerControlProperty(Input *pkInput,HeightMap *pkMap)
 	m_iActionZoomIn=m_pkInput->RegisterAction("zoomin");
 	m_iActionZoomOut=m_pkInput->RegisterAction("zoomout");
 	
+	m_kInventory.clear();
+	m_kCurentInv=m_kInventory.begin();
 	
-	m_kCurentInv=m_kInventory.begin();	
 //	NextInvItem();
 	
 	walksound=new Sound();
@@ -50,6 +51,8 @@ PlayerControlProperty::~PlayerControlProperty()
 {
 	m_pkAlSys->RemoveSound(walksound);
 	delete walksound;
+	
+//	m_kInventory.clear();
 }
 
 void PlayerControlProperty::Update() {
@@ -118,7 +121,7 @@ void PlayerControlProperty::Update() {
 	}
 	if(m_pkInput->Action(m_iActionNextItem))
 	{
-		if(m_pkFps->GetTicks() - m_fNextTime >=1)
+		if(m_pkFps->GetTicks() - m_fNextTime >=.2)
 		{
 			m_fNextTime=m_pkFps->GetTicks();
 	
@@ -235,17 +238,37 @@ void PlayerControlProperty::RemoveObject(InventoryProperty* pkProperty)
 	cout<<"Removing "<<pkProperty->m_acName<<" from players inventory"<<endl;
 
 	//check if trying to remove active item
-	if(pkProperty == (*m_kCurentInv))
-	{
+//	if(pkProperty == (*m_kCurentInv))
+//	{
 		//if active try chaning
-		NextInvItem();
+		//NextInvItem();
 		
 		//if still active set pointer to begin and cross your fingers
-		if(pkProperty == (*m_kCurentInv))
-			m_kCurentInv=m_kInventory.begin();
-	}
+		//if(pkProperty == (*m_kCurentInv))
+//cout<<"bla"<<endl;			
+
+//		cout<<"bla"<<endl;
+//	}
+/*
+	cout<<"SIZE"<<m_kInventory.size()<<endl;
+	cout<<"1"<<endl;
+	for(list<InventoryProperty*>::iterator it=m_kInventory.begin();it!=m_kInventory.end();it++)
+	{
+		cout<<"1.1"<<endl;	
+		if(pkProperty==(*it)){
+			cout<<"1.2"<<endl;
+			m_kInventory.erase(it);
+			cout<<"1.3"<<endl;
+			break;
+		}
+//		delete (*it);
+	}*/
 	
 	m_kInventory.remove(pkProperty);	
+//	cout<<"2"<<endl;
+	m_kCurentInv=m_kInventory.end();	
+	
+	cout<<"removed"<<endl;
 }
 
 void PlayerControlProperty::NextInvItem()

@@ -7,6 +7,7 @@
 //#include "gravityproperty.h"
 #include "ballobject.h"
 #include "massdriverproperty.h"
+#include "machinegunproperty.h"
 #include "statusproperty.h"
 //#include "floatproperty.h"
 //#include "heightmapobject.h"

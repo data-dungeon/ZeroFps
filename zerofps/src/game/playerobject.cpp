@@ -11,6 +11,7 @@ PlayerObject::PlayerObject(HeightMap *pkMap,Input *pkInput)
 	
 	AddProperty("StatusProperty");	
 	AddProperty("MassDriverProperty");	
+	AddProperty("MachineGunProperty");		
 	AddProperty("AutoParentProperty");	
 	AddProperty("CameraProperty");	
 

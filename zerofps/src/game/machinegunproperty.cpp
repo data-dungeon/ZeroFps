@@ -1,13 +1,13 @@
-#include "massdriverproperty.h"
+#include "machinegunproperty.h"
 #include "../zerofps/engine/modelproperty.h"
 #include "../zerofps/engine/cssphere.h"
 #include "playercontrolproperty.h"
 
-MassDriverProperty::MassDriverProperty()
+MachineGunProperty::MachineGunProperty()
 {
-	cout<<"MASS DRIVER CREATED:...mohaha"<<endl;
+	cout<<"Machinegun CREATED:...mohaha"<<endl;
 
-	strcpy(m_acName,"MassDriverProperty");
+	strcpy(m_acName,"MachineGunProperty");
 	m_iType=PROPERTY_TYPE_NORMAL;
 	m_iSide=PROPERTY_SIDE_SERVER;
 	
@@ -18,7 +18,7 @@ MassDriverProperty::MassDriverProperty()
 		
 	m_iActionFire=m_pkInput->RegisterAction("fire_massdriver");
 	
-	m_fFireRate=2;
+	m_fFireRate=0.1;
 	m_iAmmo=100;
 	m_kAim.Set(0,0,1);
 	m_bAdded=false;
@@ -27,12 +27,12 @@ MassDriverProperty::MassDriverProperty()
 	m_fLastShot=m_pkFps->GetTicks();
 	
 	firesound=new Sound();
-	firesound->m_acFile="file:../data/sound/massdriver_fire.wav";
+	firesound->m_acFile="file:../data/sound/massdriver_autofire.wav";
 	firesound->m_bLoop=false;
 
 }
 
-MassDriverProperty::~MassDriverProperty()
+MachineGunProperty::~MachineGunProperty()
 {
 /*	
 	if(m_bAdded)
@@ -45,10 +45,10 @@ MassDriverProperty::~MassDriverProperty()
 			m_bAdded=false;
 		}
 	}
-*/	
+*/
 }
 
-void MassDriverProperty::Update()
+void MachineGunProperty::Update()
 {
 	if(!m_bAdded)
 	{
@@ -64,13 +64,13 @@ void MassDriverProperty::Update()
 
 	if(m_bUse)
 		Use();
-//	else
-//		m_pkAlSys->RemoveSound(firesound);
+	else
+		m_pkAlSys->RemoveSound(firesound);
 		
 	m_bUse=false;		
 }
 
-void MassDriverProperty::Use()
+void MachineGunProperty::Use()
 {
 	if(m_pkFps->GetTicks()-m_fLastShot < m_fFireRate)
 		return;		
@@ -91,7 +91,7 @@ void MassDriverProperty::Use()
 	Bullet->GetName()="MassDriver_Bullet";
 	Bullet->GetVel()=m_kAim*PROJECTILE_SPEED;
 	Bullet->GetPos()=m_pkObject->GetPos()+Vector3(0,0.5,0) + Bullet->GetVel().Unit();		
-	Bullet->AddProperty("MassDriverProjectile");	
+	Bullet->AddProperty("MachineGunProjectile");	
 	
 //	Bullet->AddProperty("ModelProperty");
 //	ModelProperty* mp = dynamic_cast<ModelProperty*>(Bullet->GetProperty("ModelProperty"));
@@ -106,9 +106,9 @@ void MassDriverProperty::Use()
 
 }
 
-Property* Create_MassDriverProperty()
+Property* Create_MachineGunProperty()
 {
-	return new MassDriverProperty;
+	return new MachineGunProperty;
 
 }
 

@@ -169,7 +169,9 @@ void Game::RegisterPropertys()
 	pkPropertyFactory->Register("StatusProperty", Create_StatusProperty);
 	pkPropertyFactory->Register("TeleportProperty", Create_TeleportProperty);
 	pkPropertyFactory->Register("MassDriverProperty", Create_MassDriverProperty);	
+	pkPropertyFactory->Register("MachineGunProperty", Create_MachineGunProperty);		
 	pkPropertyFactory->Register("MassDriverProjectile", Create_MassDriverProjectile);		
+	pkPropertyFactory->Register("MachineGunProjectile", Create_MassDriverProjectile);			
 }
 
 
