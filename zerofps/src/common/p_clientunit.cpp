@@ -98,7 +98,7 @@ void P_ClientUnit::Load(ZFMemPackage* pkPackage)
 
 void P_ClientUnit::PackTo(NetPacket* pkNetPacket)
 {
-	g_ZFObjSys.Logf("net", "PackCliUnit Start\n");
+//	g_ZFObjSys.Logf("net", "PackCliUnit Start\n");
 //	pkNetPacket->Write(&m_kInfo, sizeof(m_kInfo));
 	pkNetPacket->Write( m_iNetUpdateFlags );
 	if( m_iNetUpdateFlags & PCLIENT_NET_INFOUPDATE)
@@ -143,7 +143,9 @@ void P_ClientUnit::PackTo(NetPacket* pkNetPacket)
 	else 
 		pkNetPacket->Write(&iCommandsToSend, sizeof(iCommandsToSend));*/
 	
-	g_ZFObjSys.Logf("net", "PackCliUnit End\n");
+//	g_ZFObjSys.Logf("net", "PackCliUnit End\n");
+
+	m_iNetUpdateFlags = 0;
 }
 
  

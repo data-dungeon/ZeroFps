@@ -558,11 +558,11 @@ void ObjectManager::PackToClients()
 		if((*it)->m_eRole != NETROLE_AUTHORITY)		continue;
 
 		NP.Write((*it)->iNetWorkID);
-		g_ZFObjSys.Logf("net", "Object: %d\n",(*it)->iNetWorkID );
+		g_ZFObjSys.Logf("net", "Object [%d]\n",(*it)->iNetWorkID );
 		(*it)->PackTo(&NP);
 		iPacketSize++;
 
-		g_ZFObjSys.Logf("net", "PackSize Is: %d\n",NP.m_iPos );
+		g_ZFObjSys.Logf("net", " Size: %d\n\n",NP.m_iPos );
 
 		if(NP.m_iPos >= 512) {
 			NP.Write(iEndOfObject);

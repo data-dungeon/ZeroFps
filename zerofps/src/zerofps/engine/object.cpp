@@ -377,7 +377,26 @@ void Object::AttachToClosestZone()
 	SetParent(minobject);
 }
 
+
 // NetWork/Demo/Save/Load Code.
+/* 
+	Returns true if object is one that need to be sent over network.
+*/
+bool Object::IsNetWork()
+{
+	for(list<Property*>::iterator it=m_akPropertys.begin();it!=m_akPropertys.end();it++) {
+		if((*it)->bNetwork == true) {
+			return true;
+		}
+	}
+	
+	return false;
+}
+
+/*
+	Returns true if this object needs to be sent over network (if anything has changed since last
+	net update).
+*/
 bool Object::NeedToPack()
 {
 	// We can only send data for object we own.
@@ -385,11 +404,23 @@ bool Object::NeedToPack()
 	// We only send object that the other side need to know about
 	if( m_eRemoteRole	== NETROLE_NONE)	return false;
 
-	for(list<Property*>::iterator it=m_akPropertys.begin();it!=m_akPropertys.end();it++) {
+	int iUpdateFlags = m_iNetUpdateFlags | m_pkObjectMan->m_iForceNetUpdate;
+
+	if(IsNetWork()) {
+		for(list<Property*>::iterator it=m_akPropertys.begin();it!=m_akPropertys.end();it++) {
+			iUpdateFlags |= (*it)->m_iNetUpdateFlags; 
+			}
+	
+		if(iUpdateFlags)
+			return true;
+		}
+
+
+/*	for(list<Property*>::iterator it=m_akPropertys.begin();it!=m_akPropertys.end();it++) {
 		if((*it)->bNetwork == true) {
 			return true;
 		}
-	}
+	}*/
 
 	return false;
 }
@@ -407,23 +438,28 @@ void Object::PackTo(NetPacket* pkNetPacket)
 		pkNetPacket->Write(m_kRot);
 
 	pkNetPacket->Write(m_fRadius);
-	pkNetPacket->Write_NetStr(m_kName.c_str());
 
-	g_ZFObjSys.Logf("net", " Object Name '%s':", m_kName.c_str() );
+	pkNetPacket->Write_NetStr(m_kName.c_str());
+	g_ZFObjSys.Logf("net", " .Name '%s':", m_kName.c_str() );
 	
-	char szPropertyName[256];
+//	char szPropertyName[256];
 
 	// Write propertys med Propery::bNetwork = true
 	for(list<Property*>::iterator it=m_akPropertys.begin();it!=m_akPropertys.end();it++) {
-		g_ZFObjSys.Logf("net", "Check '%s':",(*it)->m_acName );
+		g_ZFObjSys.Logf("net", " Check '%s': ",(*it)->m_acName );
 		if((*it)->bNetwork) {
-			g_ZFObjSys.Logf("net", "Add\n");
-
-			strcpy(szPropertyName, (*it)->m_acName);
-			pkNetPacket->Write_NetStr((*it)->m_acName);
-			//Property* hora = (*it);
 			(*it)->m_iNetUpdateFlags |= m_pkObjectMan->m_iForceNetUpdate;
-			(*it)->PackTo(pkNetPacket);
+
+			//Property* hora = (*it);
+			//strcpy(szPropertyName, (*it)->m_acName);
+			if((*it)->m_iNetUpdateFlags) {
+				g_ZFObjSys.Logf("net", "Add\n");
+				pkNetPacket->Write_NetStr((*it)->m_acName);
+				(*it)->PackTo(pkNetPacket);
+				}
+			else {
+				g_ZFObjSys.Logf("net", "Same as last year.\n");
+				}
 			}
 		else 
 			g_ZFObjSys.Logf("net", "Dont Add\n");

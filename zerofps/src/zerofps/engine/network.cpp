@@ -264,8 +264,10 @@ string NetWork::NetString_GetString(int iIndex)
 
 	if(m_kStringTable[iIndex].m_bInUse)
 		return m_kStringTable[iIndex].m_NetString.c_str();
-	else 
+	else {
+		m_kStringTable[iIndex].m_bNeedUpdate = true;
 		return string("nons");
+		}
 }
 
 void NetWork::NetString_ReSendAll()
@@ -322,6 +324,19 @@ bool NetWork::NetStringIsUpdated()
 		}
 
 	return false;
+}
+
+void NetWork::NetString_Refresh()
+{
+	if( m_eNetStatus == NET_NONE )	return;
+	if( m_eNetStatus == NET_SERVER )	return;
+
+	for(int i=0; i < ZF_NET_MAXSTRINGS; i++) {
+		if(m_kStringTable[i].m_bNeedUpdate) {
+			m_kStringTable[i].m_bNeedUpdate = false;
+			NetString_Request(i);
+			}
+		}
 }
 
 void NetWork::NetString_Request(int iIndex)
@@ -777,6 +792,8 @@ void NetWork::Run()
 		m_fStatsUpdate = fEngineTime + 1.0;	
 
 	Send_NetStrings();
+	NetString_Refresh();
+
 
 	g_ZFObjSys.Logf("netpac", " Num of bytes total: %d\n", iRecvBytes);
 }

@@ -37,8 +37,9 @@ void P_ClientInput::AddOrder(UnitCommand kCommand)
 		if(m_kCommands.size() < m_iMaxOrders)
 			m_kCommands.push(kCommand);
 	}
-}
 
+	m_iNetUpdateFlags = 1;
+}
 
 void P_ClientInput::PackTo(NetPacket* pkNetPacket)
 {	
@@ -55,6 +56,7 @@ void P_ClientInput::PackTo(NetPacket* pkNetPacket)
 		m_kCommands.pop();
 	}
 
+	m_iNetUpdateFlags = 0;
 }
 
 void P_ClientInput::PackFrom(NetPacket* pkNetPacket)

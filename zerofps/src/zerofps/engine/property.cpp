@@ -8,6 +8,7 @@ Property::Property()
 	m_pkPropertyFactory = static_cast<PropertyFactory*>(g_ZFObjSys.GetObjectPtr("PropertyFactory"));			
 	
 	bNetwork = false;
+	m_iNetUpdateFlags = 0;
 	m_bSave = true;
 	
 	m_iType=PROPERTY_TYPE_NORMAL;

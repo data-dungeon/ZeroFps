@@ -158,6 +158,7 @@ struct ZFNet_String
 	bool		m_bInUse;		// True if this net string is in use.
 	bool		m_bUpdated;		// True if is updated.
 	string	m_NetString;	// Da string
+	bool		m_bNeedUpdate;	// True if we need to request a update from server.
 };
 
 class ENGINE_API NetWork : public ZFObject 
@@ -201,6 +202,7 @@ public:
 	void Send_NetStrings();
 	bool NetStringIsUpdated();
 	void NetString_Request(int iIndex);
+	void NetString_Refresh();
 
 	bool Init();
 	bool Close();

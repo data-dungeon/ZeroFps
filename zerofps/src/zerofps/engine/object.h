@@ -216,6 +216,7 @@ class ENGINE_API Object
 		void AttachToClosestZone();								///< Attacth to closest ZoneObject.
 
 		// NetWork/Demo/Save/Load Code.
+		bool IsNetWork();												// True if this object has any netactive propertys.
 		bool NeedToPack();											///< Returns true if there is any netactive properys in object
 		void PackTo(NetPacket* pkNetPacket);					///< Pack Object.
 		void PackFrom(NetPacket* pkNetPacket);					///< Unpack Object.

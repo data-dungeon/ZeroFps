@@ -390,6 +390,7 @@ void ZeroRTS::Input()
 				cmd.m_iUnitID = (*it);						
 				
 				m_pkClientInput->AddOrder(cmd);	
+				cout << "Adding Order: " << cmd.m_acCommandName << ", " << cmd.m_iUnitID << endl;
 			}	
 		}	
 	}

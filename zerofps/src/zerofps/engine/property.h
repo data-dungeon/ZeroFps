@@ -89,7 +89,8 @@ class ENGINE_API Property
 		virtual bool HandleGetValue( string kValueName );
 
 	public:
-		int							m_iNetUpdateFlags;					
+		int						m_iNetUpdateFlags;					
+		int						NeedToSend( ) { return m_iNetUpdateFlags; }
 
 		Property();
 		virtual ~Property() { };

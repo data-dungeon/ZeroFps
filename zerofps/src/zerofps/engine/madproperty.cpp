@@ -11,11 +11,11 @@ MadProperty::MadProperty()
 	m_iType=PROPERTY_TYPE_RENDER;
 	m_iSide=PROPERTY_SIDE_CLIENT;
 	
-	bNetwork		= true;
+	bNetwork			= true;
 	m_bIsVisible	= true;
 
-	m_pkFrustum=static_cast<Frustum*>(g_ZFObjSys.GetObjectPtr("Frustum"));
-	m_pkZeroFps = static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
+	m_pkFrustum	=	static_cast<Frustum*>(g_ZFObjSys.GetObjectPtr("Frustum"));
+	m_pkZeroFps =	static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
 }
 
 MadProperty::MadProperty(string strResName) 
@@ -24,8 +24,8 @@ MadProperty::MadProperty(string strResName)
 	strcpy(m_acName,"MadProperty");
 	m_iType=PROPERTY_TYPE_RENDER;
 	m_iSide=PROPERTY_SIDE_CLIENT;
-	m_pkFrustum=static_cast<Frustum*>(g_ZFObjSys.GetObjectPtr("Frustum"));
-	m_pkZeroFps = static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
+	m_pkFrustum	=	static_cast<Frustum*>(g_ZFObjSys.GetObjectPtr("Frustum"));
+	m_pkZeroFps =	static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
 
 	ZFResourceDB* pkResDB = static_cast<ZFResourceDB*>(g_ZFObjSys.GetObjectPtr("ZFResourceDB"));
 	pkResDB->GetResource(kMadHandle, strResName);
@@ -125,7 +125,8 @@ void MadProperty::Update()
 void MadProperty::SetBase(const char* acName)
 {
 	SetBasePtr(string(acName));
-//	SetBasePtr(m_pkZeroFps->GetMADPtr(acName));
+	m_iNetUpdateFlags = 1;
+	//	SetBasePtr(m_pkZeroFps->GetMADPtr(acName));
 }
 
 void MadProperty::Save(ZFMemPackage* pkPackage)
@@ -154,6 +155,7 @@ void MadProperty::PackTo(NetPacket* pkNetPacket)
 //	pkNetPacket->Write_Str(m_kMadFile.c_str());
 	pkNetPacket->Write_NetStr(m_kMadFile.c_str());
 	pkNetPacket->Write(m_fScale);
+	m_iNetUpdateFlags = 0;
 }
  
 void MadProperty::PackFrom(NetPacket* pkNetPacket)
