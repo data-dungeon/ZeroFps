@@ -902,7 +902,7 @@ void Render::DrawPatch(HeightMap* kMap,Vector3 CamPos,int xp,int zp,int iSize,bo
 							  kMap->m_kCornerPos.y + 7.5*HEIGHTMAP_SCALE,
 							  kMap->m_kCornerPos.z + (zp + iSize/2)*HEIGHTMAP_SCALE);
 		
-	fDistance=(CamPos-PatchCenter).Length();
+	fDistance=(CamPos-PatchCenter).Length() ;
 		
 	if(fDistance > m_iViewDistance)
 		return;

@@ -3,7 +3,7 @@
 #include "minimap.h" 
 //#include "../common/p_clientinput.h"
 
-ZeroRTS g_kZeroRTS("ZeroRTS",1024,768,16);
+ZeroRTS g_kZeroRTS("ZeroRTS",800,600,16);
 
 static bool USERPANELPROC( ZGuiWnd* win, unsigned int msg, int numparms, void *params ) { 
 	return g_kZeroRTS.m_pkUserPanel->DlgProc(win,msg,numparms,params); }
