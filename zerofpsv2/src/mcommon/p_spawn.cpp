@@ -31,7 +31,7 @@ void P_Spawn::Update()
 	if( m_pkObjMan->IsUpdate(PROPERTY_TYPE_RENDER) ) 
 	{
 		if(m_pkFps->m_bServerMode)
-			m_pkRender->Sphere(m_pkObject->GetWorldPosV(),0.5,5,Vector3(1,0,0),true);
+			m_pkRender->Sphere(m_pkObject->GetWorldPosV(),0.5,1,Vector3(1,0,0),true);
 		return;
 	}
 	
