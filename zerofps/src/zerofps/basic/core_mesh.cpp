@@ -77,71 +77,85 @@ void Mad_CoreMesh::ShowInfo(void)
 }
 
 
-void Mad_CoreMesh::Save(FILE* fp)
+void Mad_CoreMesh::Save(ZFVFile* pkZFile)
 {
 	kHead.iNumOfAnimation = akAnimation.size();
 
 	ShowInfo();
 
 	// Write Head.
-	fwrite(&kHead,sizeof(Mad_CoreMeshHeader),1,fp);
+	pkZFile->Write(&kHead,sizeof(Mad_CoreMeshHeader),1);
+	//fwrite(&kHead,sizeof(Mad_CoreMeshHeader),1,fp);
 
 	// Write SubMesh
-	fwrite(&akSubMeshes[0],sizeof(Mad_CoreSubMesh),kHead.iNumOfSubMeshes,fp);
+	pkZFile->Write(&akSubMeshes[0],sizeof(Mad_CoreSubMesh),kHead.iNumOfSubMeshes);
+	//fwrite(&akSubMeshes[0],sizeof(Mad_CoreSubMesh),kHead.iNumOfSubMeshes,fp);
 
 
 	// Write Textures
-	fwrite((void *)&akTextures[0],sizeof(Mad_CoreTexture),kHead.iNumOfTextures,fp);
+	pkZFile->Write((void *)&akTextures[0],sizeof(Mad_CoreTexture),kHead.iNumOfTextures);
+	//fwrite((void *)&akTextures[0],sizeof(Mad_CoreTexture),kHead.iNumOfTextures,fp);
 
 	// Write Texture Coo
-	fwrite((void *)&akTextureCoo[0],sizeof(Mad_TextureCoo),kHead.iNumOfVertex,fp);
+	pkZFile->Write((void *)&akTextureCoo[0],sizeof(Mad_TextureCoo),kHead.iNumOfVertex);
+	//fwrite((void *)&akTextureCoo[0],sizeof(Mad_TextureCoo),kHead.iNumOfVertex,fp);
 
 	// Write Bone Vikter
-	fwrite((void *)&this->akBoneConnections[0],sizeof(int),kHead.iNumOfVertex,fp);
+	pkZFile->Write((void *)&this->akBoneConnections[0],sizeof(int),kHead.iNumOfVertex);
+	//fwrite((void *)&this->akBoneConnections[0],sizeof(int),kHead.iNumOfVertex,fp);
 
 	// Write Alla vertex Frames.
 	int size;
 	for(int i=0; i<kHead.iNumOfFrames; i++) {
 		size = akFrames[i].akVertex.size();
-		fwrite(&akFrames[i].akVertex[0],sizeof(Vector3),kHead.iNumOfVertex,fp);
+		pkZFile->Write(&akFrames[i].akVertex[0],sizeof(Vector3),kHead.iNumOfVertex);
+		//fwrite(&akFrames[i].akVertex[0],sizeof(Vector3),kHead.iNumOfVertex,fp);
 		size = akFrames[i].akNormal.size();
-		fwrite(&akFrames[i].akNormal[0],sizeof(Vector3),kHead.iNumOfVertex,fp);
+		pkZFile->Write(&akFrames[i].akNormal[0],sizeof(Vector3),kHead.iNumOfVertex);
+		//fwrite(&akFrames[i].akNormal[0],sizeof(Vector3),kHead.iNumOfVertex,fp);
 		}
 
 	// Write triangles.
-	fwrite(&akFaces[0],sizeof(Mad_Face),kHead.iNumOfFaces,fp);
+	pkZFile->Write(&akFaces[0],sizeof(Mad_Face),kHead.iNumOfFaces);
+	//fwrite(&akFaces[0],sizeof(Mad_Face),kHead.iNumOfFaces,fp);
 
 	// Write Animations.
 	int iNumOfAnimations = this->akAnimation.size();
-	fwrite(&iNumOfAnimations,sizeof(int), 1 ,fp);
+	pkZFile->Write(&iNumOfAnimations,sizeof(int), 1 );
+	//fwrite(&iNumOfAnimations,sizeof(int), 1 ,fp);
 
 	vector<Mad_CoreMeshAnimation>::iterator		itAnim;
 	vector<Mad_CoreKeyFrame>::iterator		itKeyF;
 
 	for(itAnim = akAnimation.begin(); itAnim != akAnimation.end(); itAnim++)
 	{
-		fwrite(itAnim->Name,sizeof(char), 64 ,fp);
+		pkZFile->Write(itAnim->Name,sizeof(char), 64);
+		//fwrite(itAnim->Name,sizeof(char), 64 ,fp);
 		int iNumOfKeyFrames = itAnim->KeyFrame.size();
-		fwrite(&iNumOfKeyFrames,sizeof(int), 1 ,fp);
+		pkZFile->Write(&iNumOfKeyFrames,sizeof(int), 1);
+		//fwrite(&iNumOfKeyFrames,sizeof(int), 1 ,fp);
 		
 		for(itKeyF = itAnim->KeyFrame.begin(); itKeyF != itAnim->KeyFrame.end(); itKeyF++)
 		{
-			fwrite(&itKeyF->iVertexFrame,sizeof(int), 1 ,fp);
+			pkZFile->Write(&itKeyF->iVertexFrame,sizeof(int), 1);
+			//fwrite(&itKeyF->iVertexFrame,sizeof(int), 1 ,fp);
 		}
 	}
 	
 }
 
-void Mad_CoreMesh::Load(FILE* fp)
+void Mad_CoreMesh::Load(ZFVFile* pkZFile)
 {
 	int i,j;
 	// Read head
-	fread(&kHead,sizeof(Mad_CoreMeshHeader),1,fp);
+	pkZFile->Read(&kHead,sizeof(Mad_CoreMeshHeader),1);
+	//fread(&kHead,sizeof(Mad_CoreMeshHeader),1,fp);
 
 	// Read SubMesh
 	for(i = 0; i<kHead.iNumOfSubMeshes; i++) {
 		Mad_CoreSubMesh	kSubMesh;
-		fread(&kSubMesh,sizeof(Mad_CoreSubMesh),1,fp);
+		pkZFile->Read(&kSubMesh,sizeof(Mad_CoreSubMesh),1);
+		//fread(&kSubMesh,sizeof(Mad_CoreSubMesh),1,fp);
 		akSubMeshes.push_back(kSubMesh);
 
 		}
@@ -149,7 +163,8 @@ void Mad_CoreMesh::Load(FILE* fp)
 	// Read textures
 	for(i = 0; i<kHead.iNumOfTextures; i++) {
 		Mad_CoreTexture	kTexture;
-		fread(&kTexture,sizeof(Mad_CoreTexture),1,fp);
+		pkZFile->Read(&kTexture,sizeof(Mad_CoreTexture),1);
+		//fread(&kTexture,sizeof(Mad_CoreTexture),1,fp);
 		akTextures.push_back(kTexture);
 		}
 //	fread((void *)akTextures,sizeof(Mad_Texture),kHead.iNumOfTextures,fp);
@@ -157,14 +172,16 @@ void Mad_CoreMesh::Load(FILE* fp)
 	// Read Texture Coo
 	for(i = 0; i<kHead.iNumOfVertex; i++) {
 		Mad_TextureCoo	kTexCoo;
-		fread(&kTexCoo,sizeof(Mad_TextureCoo),1,fp);
+		pkZFile->Read(&kTexCoo,sizeof(Mad_TextureCoo),1);
+		//fread(&kTexCoo,sizeof(Mad_TextureCoo),1,fp);
 		akTextureCoo.push_back(kTexCoo);
 		}
 
 	// Read Bone Vikter
 	for(i = 0; i<kHead.iNumOfVertex; i++) {
 		int iBoneVikt;
-		fread(&iBoneVikt,sizeof(int),1,fp);
+		pkZFile->Read(&iBoneVikt,sizeof(int),1);
+		//fread(&iBoneVikt,sizeof(int),1,fp);
 		akBoneConnections.push_back(iBoneVikt);
 		}
 
@@ -174,11 +191,13 @@ void Mad_CoreMesh::Load(FILE* fp)
 	for(i = 0; i<kHead.iNumOfFrames; i++) {
 		Mad_CoreVertexFrame	kVertexFrame;
 
-		fread(pkVector,sizeof(Vector3),kHead.iNumOfVertex,fp);
+		pkZFile->Read(pkVector,sizeof(Vector3),kHead.iNumOfVertex);
+		//fread(pkVector,sizeof(Vector3),kHead.iNumOfVertex,fp);
 		for(j=0; j<kHead.iNumOfVertex; j++)
 			kVertexFrame.akVertex.push_back(pkVector[j]);
 
-		fread(pkVector,sizeof(Vector3),kHead.iNumOfVertex,fp);
+		pkZFile->Read(pkVector,sizeof(Vector3),kHead.iNumOfVertex);
+		//fread(pkVector,sizeof(Vector3),kHead.iNumOfVertex,fp);
 		for(j=0; j<kHead.iNumOfVertex; j++)
 			kVertexFrame.akNormal.push_back(pkVector[j]);
 
@@ -190,14 +209,16 @@ void Mad_CoreMesh::Load(FILE* fp)
 	// Read triangles.
 	for(i = 0; i<kHead.iNumOfFaces; i++) {
 		Mad_Face	kFace;
-		fread(&kFace, sizeof(Mad_Face),1,fp);
+		pkZFile->Read(&kFace, sizeof(Mad_Face),1);
+		//fread(&kFace, sizeof(Mad_Face),1,fp);
 		akFaces.push_back(kFace);
 
 		}
 
 	// Read Animations.
 	int iNumOfAnimations;
-	fread(&iNumOfAnimations,sizeof(int), 1 ,fp);
+	pkZFile->Read(&iNumOfAnimations,sizeof(int), 1);
+	//fread(&iNumOfAnimations,sizeof(int), 1 ,fp);
 
 	Mad_CoreMeshAnimation kNyAnim;
 	Mad_CoreKeyFrame kNyKey;
@@ -205,15 +226,18 @@ void Mad_CoreMesh::Load(FILE* fp)
 	for(int iA = 0; iA < iNumOfAnimations; iA++)
 	{
 		kNyAnim.Clear();
-		fread(kNyAnim.Name,sizeof(char), 64 ,fp);
+		pkZFile->Read(kNyAnim.Name,sizeof(char), 64);
+		//fread(kNyAnim.Name,sizeof(char), 64 ,fp);
 
 		int iNumOfKeyFrames;
-		fread(&iNumOfKeyFrames,sizeof(int), 1 ,fp);
+		pkZFile->Read(&iNumOfKeyFrames,sizeof(int), 1);
+		//fread(&iNumOfKeyFrames,sizeof(int), 1 ,fp);
 	
 		for(int iK = 0; iK < iNumOfKeyFrames; iK++ )
 		{
 			kNyKey.Clear();
-			fread(&kNyKey.iVertexFrame,sizeof(int), 1 ,fp);
+			pkZFile->Read(&kNyKey.iVertexFrame,sizeof(int), 1);
+			//fread(&kNyKey.iVertexFrame,sizeof(int), 1 ,fp);
 			kNyAnim.KeyFrame.push_back(kNyKey);
 		}
 

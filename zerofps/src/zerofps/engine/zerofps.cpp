@@ -73,8 +73,8 @@ ZeroFps::ZeroFps(void)
 	g_ZFObjSys.Register_Cmd("slist",FID_SLIST,this);
 	g_ZFObjSys.Register_Cmd("connect",FID_CONNECT,this);
 	g_ZFObjSys.Register_Cmd("server",FID_SERVER,this);
-	g_ZFObjSys.Register_Cmd("dir",FID_DIR,this);	
-	g_ZFObjSys.Register_Cmd("cd",FID_CD,this);	
+//	g_ZFObjSys.Register_Cmd("dir",FID_DIR,this);	
+//	g_ZFObjSys.Register_Cmd("cd",FID_CD,this);	
 	g_ZFObjSys.Register_Cmd("listmad",FID_LISTMAD,this);	
 	g_ZFObjSys.Register_Cmd("printobject",FID_PRINTOBJECT,this);	
 	g_ZFObjSys.Register_Cmd("version",FID_VERSION,this);	

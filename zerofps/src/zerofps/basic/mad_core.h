@@ -6,6 +6,7 @@
 using namespace std;
 #include "basicmath.pkg"
 #include "basic_x.h"
+#include "zfvfs.h"
 
 #define MAD_MAX_ANIMATIONNAME	256		 
 #define MAD_MAX_NAME			64		
@@ -198,8 +199,8 @@ public:
 	vector<Mad_CoreVertexFrame>* GetVertexFramePointer() {return &akFrames;};	
 
 	void CreateRigidBoneConnections(int iBoneId = 0);
-	void Save(FILE* fp);
-	void Load(FILE* fp);
+	void Save(ZFVFile* pkZFile);
+	void Load(ZFVFile* pkZFile);
 	void ShowInfo(void);
 	Mad_CoreMeshAnimation*	Mad_CoreMesh::GetAnimation(char* ucaName);
 	void CreateVertexNormals();
@@ -250,8 +251,8 @@ public:
 		m_kRotation = kOther.m_kRotation;
 	}
 
-	void Save(FILE* fp);
-	void Load(FILE* fp);
+	void Save(ZFVFile* pkZFile);
+	void Load(ZFVFile* pkZFile);
 	friend class Mad_Core;
 
 };
@@ -276,8 +277,8 @@ public:
 		m_kBonePose = kOther.m_kBonePose;
 	}
 
-	void Save(FILE* fp);
-	void Load(FILE* fp);
+	void Save(ZFVFile* pkZFile);
+	void Load(ZFVFile* pkZFile);
 
 	int Size();
 	void Resize(int iNewSize);
@@ -300,8 +301,8 @@ public:
 	void Clear(void);
 	void operator=(const Mad_CoreBoneAnimation& kOther);
 
-	void Save(FILE* fp);									///< Save animation	
-	void Load(FILE* fp);									///< Load animation
+	void Save(ZFVFile* pkZFile);									///< Save animation	
+	void Load(ZFVFile* pkZFile);									///< Load animation
 
 	int Size();												
 	void Resize(int iNewSize);
@@ -373,18 +374,18 @@ public:
 	Mad_CoreMesh* CreateCoreMesh(const char* szName);
 	int	NumOfMeshes();
 
-	void Save_SD(FILE* pkFp);
-	void Save_MD(int iMeshId, FILE* pkFp);
-	void Save_AD(int iAnimId, FILE* pkFp);
+	void Save_SD(ZFVFile* pkZFile);
+	void Save_MD(int iMeshId, ZFVFile* pkZFile);
+	void Save_AD(int iAnimId, ZFVFile* pkZFile);
 
 	void Save_SD(const char* filename);
 	void Save_MD(int iMeshId, const char* filename);
 	void Save_AD(int iMeshId, const char* filename);
 	void Save_MAD(const char* filename);
 
-	void LoadSkelleton(FILE* pkFp);
-	void LoadAnimation(FILE* pkFp); 
-	void LoadMesh(FILE* pkFp);
+	void LoadSkelleton(ZFVFile* pkZFile);
+	void LoadAnimation(ZFVFile* pkZFile); 
+	void LoadMesh(ZFVFile* pkZFile);
 
 	void LoadSkelleton(const char* MadFileName);
 	void LoadAnimation(const char* MadFileName); 

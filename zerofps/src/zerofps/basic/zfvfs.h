@@ -16,11 +16,12 @@ class BASIC_API ZFVFile
 {
 private:
 	ZFVFileSystem*	m_pkFileSystem;
-	FILE*			m_pkFilePointer;
 
 public:
 	ZFVFile();
 	~ZFVFile();
+
+	FILE*			m_pkFilePointer;
 	
 	bool Open(string strFileName, int iOptions, bool bWrite );
 	bool Close();
@@ -39,6 +40,8 @@ class BASIC_API ZFVFileSystem : public ZFObject
 	private:
 		ZFBasicFS*	m_pkBasicFS;					
 		vector<string>	m_kstrRootPath;				///< Active Root Paths (Maps dir into our VFS).
+
+		string			m_kCurentDir;
 
 	public:
 		ZFVFileSystem();
@@ -72,6 +75,14 @@ class BASIC_API ZFVFileSystem : public ZFObject
 		bool ListDirFilter(vector<string>* pkFiles, vector<string>& pkFilters, 
 			string strName, bool bIgnoreMaps = false);
 		bool DirExist(string strName);
+
+		enum FuncId_e
+			{
+			FID_CD,
+			FID_DIR,
+			};
+
+		void RunCommand(int cmdid, const CmdArgument* kCommand);
 
 };	
 

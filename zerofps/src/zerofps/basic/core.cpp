@@ -31,46 +31,69 @@ Mad_Core::~Mad_Core()
 
 }
 
-void Mad_Core::Save_SD(FILE* pkFp)
+void Mad_Core::Save_SD(ZFVFile* pkZFile)
 {
 	int iNumOfBones = m_kSkelleton.size();
-	fwrite(&iNumOfBones, sizeof(int),1,pkFp);
+	pkZFile->Write(&iNumOfBones, sizeof(int),1);
+	//	fwrite(&iNumOfBones, sizeof(int),1,pkFp);
 
 	for(unsigned int i=0; i < m_kSkelleton.size(); i++) {
-		fwrite(&m_kSkelleton[i],sizeof(Mad_CoreBone),1,pkFp);
+		pkZFile->Write(&m_kSkelleton[i],sizeof(Mad_CoreBone),1);
+	//	fwrite(&m_kSkelleton[i],sizeof(Mad_CoreBone),1,pkFp);
 	}
 }
 
-void Mad_Core::Save_MD(int iMeshId, FILE* pkFp)
+void Mad_Core::Save_MD(int iMeshId, ZFVFile* pkZFile)
 {
-	m_kMesh[iMeshId].Save(pkFp);
+	m_kMesh[iMeshId].Save(pkZFile);
 }
 
-void Mad_Core::Save_AD(int iMeshId, FILE* pkFp)
+void Mad_Core::Save_AD(int iMeshId, ZFVFile* pkZFile)
 {
-	m_kBoneAnim[iMeshId].Save(pkFp);
+	m_kBoneAnim[iMeshId].Save(pkZFile);
 }
 
 void Mad_Core::Save_SD(const char* filename)
 {
-	FILE* fp = fopen(filename, "wb");
-	Save_SD(fp);
-	fclose(fp);
+	ZFVFile kZFile;
+	if( !kZFile.Open(string(filename),0,true) ) {
+		cout << "Failed to open " << filename << endl;
+		return;
+		}
+	
+	//FILE* fp = fopen(filename, "wb");
+	Save_SD(&kZFile);
+	kZFile.Close();
+	//fclose(fp);
 }
 
 void Mad_Core::Save_AD(int iMeshId, const char* filename)
 {
-	FILE* fp = fopen(filename, "wb");
-	Save_AD(iMeshId, fp);
-	fclose(fp);
+	ZFVFile kZFile;
+	if( !kZFile.Open(string(filename),0,true) ) {
+		cout << "Failed to open " << filename << endl;
+		return;
+		}
+
+	//FILE* fp = fopen(filename, "wb");
+	Save_AD(iMeshId, &kZFile);
+	kZFile.Close();
+//	fclose(fp);
 }
 
 
 void Mad_Core::Save_MD(int iMeshId, const char* filename)
 {
-	FILE* MadFp = fopen(filename, "wb");
-	Save_MD(iMeshId, MadFp);
-	fclose(MadFp);
+	ZFVFile kZFile;
+	if( !kZFile.Open(string(filename),0,true) ) {
+		cout << "Failed to open " << filename << endl;
+		return;
+		}
+
+//	FILE* MadFp = fopen(filename, "wb");
+	Save_MD(iMeshId, &kZFile);
+	kZFile.Close();
+//	fclose(MadFp);
 	
 }
 
@@ -82,11 +105,16 @@ void Mad_Core::Save_MAD(const char* filename)
 
 //	m_kMesh[0].CreateVertexNormals();
 
-	FILE* MadFp = fopen(filename, "wb");
+	ZFVFile kZFile;
+	if( !kZFile.Open(string(filename),0,true) ) {
+		cout << "Failed to open " << filename << endl;
+		return;
+		}
+/*	FILE* MadFp = fopen(filename, "wb");
 	if(!MadFp) {
 		cout << "Failed to open '" << filename << "' for writing" << endl;
 		return;
-		}
+		}*/
 
 	Mad_Header m_kMadHeader;
 	// Setup MAD Header.
@@ -95,22 +123,24 @@ void Mad_Core::Save_MAD(const char* filename)
 	m_kMadHeader.m_iNumOfAnimations = m_kBoneAnim.size();
 		
 	// Write MAD Header.
-	fwrite(&m_kMadHeader,sizeof(Mad_Header), 1, MadFp);
+	kZFile.Write(&m_kMadHeader,sizeof(Mad_Header), 1);
+	//fwrite(&m_kMadHeader,sizeof(Mad_Header), 1, MadFp);
 	
 	// Write SD
-	Save_SD(MadFp);
+	Save_SD(&kZFile);
 
 	// Write AD
 	for(i=0; i<m_kMadHeader.m_iNumOfAnimations; i++)
-		Save_AD(i, MadFp);
+		Save_AD(i, &kZFile);
 
 	// Write MD
 	for(i=0; i<m_kMadHeader.m_iNumOfMeshes; i++)
-		Save_MD(i, MadFp);
+		Save_MD(i, &kZFile);
 
 	// Write MA
 
-	fclose(MadFp);
+	kZFile.Close();
+//	fclose(MadFp);
 
 }
 
@@ -378,30 +408,32 @@ void Mad_Core::SetBoneAnimationTime(int iAnim, float fTime )
 }
 
 
-void Mad_Core::LoadSkelleton(FILE* pkFp)
+void Mad_Core::LoadSkelleton(ZFVFile* pkZFile)
 {
 	Mad_CoreBone kNewBone;
 	int iNumOfBones;
-	fread(&iNumOfBones, 1, sizeof(int), pkFp);
+	pkZFile->Read(&iNumOfBones, 1, sizeof(int));
+	//fread(&iNumOfBones, 1, sizeof(int), pkFp);
 
 	for(int i=0; i<iNumOfBones; i++) {
-		fread(&kNewBone, 1, sizeof(Mad_CoreBone), pkFp);
+		pkZFile->Read(&kNewBone, 1, sizeof(Mad_CoreBone));
+		//fread(&kNewBone, 1, sizeof(Mad_CoreBone), pkFp);
 		m_kSkelleton.push_back(kNewBone);
 		}
 }
 
-void Mad_Core::LoadAnimation(FILE* pkFp)
+void Mad_Core::LoadAnimation(ZFVFile* pkZFile)
 {
 	Mad_CoreBoneAnimation NewBoneAnim;
 	NewBoneAnim.Clear();
-	NewBoneAnim.Load(pkFp);
+	NewBoneAnim.Load(pkZFile);
 	m_kBoneAnim.push_back(NewBoneAnim);
 }
 
-void Mad_Core::LoadMesh(FILE* pkFp)
+void Mad_Core::LoadMesh(ZFVFile* pkZFile)
 {
 	Mad_CoreMesh	kNewMesh;
-	kNewMesh.Load(pkFp);
+	kNewMesh.Load(pkZFile);
 	m_kMesh.push_back(kNewMesh);
 
 //	Mad_CoreMesh* pkMesh = &m_kMesh[0];
@@ -410,24 +442,44 @@ void Mad_Core::LoadMesh(FILE* pkFp)
 
 void Mad_Core::LoadSkelleton(const char* MadFileName)
 {
-	FILE*	fp = fopen("test.sd","rb");
-	LoadSkelleton(fp);
-	fclose(fp);
+	ZFVFile kZFile;
+	if( !kZFile.Open(string("test.sd"),0,true) ) {
+		cout << "Failed to open " << "test.sd" << endl;
+		return;
+		}
+
+	//FILE*	fp = fopen("test.sd","rb");
+	LoadSkelleton(&kZFile);
+	kZFile.Close();
+	//fclose(fp);
 	SetUpBindPose();
 }
 
 void Mad_Core::LoadAnimation(const char* MadFileName)
 {
-	FILE*	fp = fopen("test.ad","rb");
-	LoadAnimation(fp);
-	fclose(fp);
+	ZFVFile kZFile;
+	if( !kZFile.Open(string("test.sd"),0,true) ) {
+		cout << "Failed to open " << "test.sd" << endl;
+		return;
+		}
+
+	//FILE*	fp = fopen("test.ad","rb");
+	LoadAnimation(&kZFile);
+	kZFile.Close();
+	//fclose(fp);
 }
 
 void Mad_Core::LoadMesh(const char* MDFileName)
 {
-	FILE* fp = fopen(MDFileName, "rb");
-	LoadMesh(fp);
-	fclose(fp);
+	ZFVFile kZFile;
+	if( !kZFile.Open(string("test.sd"),0,true) ) {
+		cout << "Failed to open " << "test.sd" << endl;
+		return;
+		}
+//	FILE* fp = fopen(MDFileName, "rb");
+	LoadMesh(&kZFile);
+	kZFile.Close();
+//	fclose(fp);
 }
 
 
@@ -436,15 +488,23 @@ bool Mad_Core::LoadMad(const char* MadFileName)
 {
 	strcpy(Name,MadFileName);
 
-	FILE* MadFp = fopen(MadFileName, "rb");
-
-	if(!MadFp) {
+	ZFVFile kZFile;
+	if( !kZFile.Open(string(MadFileName),0,false) ) {
 		cout << "Failed to find" << MadFileName << endl;
 		return false;
 		}
 
+/*	FILE* MadFp = fopen(MadFileName, "rb");
+	if(!MadFp) {
+		cout << "Failed to find" << MadFileName << endl;
+		return false;
+		}
+	
+	*/
+
 	Mad_Header kMadHeader;
-	fread(&kMadHeader,sizeof(Mad_Header), 1, MadFp);
+	kZFile.Read(&kMadHeader,sizeof(Mad_Header), 1);
+	//fread(&kMadHeader,sizeof(Mad_Header), 1, MadFp);
 	
 	// Check Versions Num
 	if(kMadHeader.m_iVersionNum != MAD_VERSION) {
@@ -458,17 +518,21 @@ bool Mad_Core::LoadMad(const char* MadFileName)
 */
 	
 
-	LoadSkelleton(MadFp);
+	LoadSkelleton(&kZFile);
+//	LoadSkelleton(MadFp);
 	SetUpBindPose();
 
 	unsigned int i;
 	for(i=0; i<kMadHeader.m_iNumOfAnimations; i++)
-		LoadAnimation(MadFp);
+		LoadAnimation(&kZFile);
+		//LoadAnimation(MadFp);
 
 	for(i=0; i<kMadHeader.m_iNumOfMeshes; i++)
-		LoadMesh(MadFp);
+		LoadMesh(&kZFile);
+		//LoadMesh(MadFp);
 
-	fclose(MadFp);
+//	fclose(MadFp);
+	kZFile.Close();
 	PrintCoreInfo();
 
 	if(m_kSkelleton.size() == 1) {
