@@ -1085,14 +1085,6 @@ void Entity::Save(ZFIoInterface* pkFile)
 	}
 }
 
-void Entity::Touch(Collision* pkCol)
-{
-	for(vector<Property*>::iterator it=m_akPropertys.begin();it!=m_akPropertys.end();it++) 
-	{
-		(*it)->Touch(pkCol);
-	}
-}
-
 void Entity::Touch(int iId)
 {
 	for(vector<Property*>::iterator it=m_akPropertys.begin();it!=m_akPropertys.end();it++) 

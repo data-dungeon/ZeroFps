@@ -11,10 +11,12 @@
 #include "../basic/zfmempackage.h"
 #include <typeinfo> 
 #include "../basic/zfvfs.h"
+#include "entity.h"
+
 using namespace std;
 
 struct Collision;
-class Entity;
+//class Entity;
 class PropertyFactory;
 class EntityManager;
 class GameMessage;
@@ -231,7 +233,6 @@ class ENGINE_API Property
 		virtual void OnEvent(GameMessage& Msg);
 
 		// Virtuals
-		virtual void Touch(Collision* pkCol) {};					//executet when collision occurs
 		virtual void Touch(int iId) {};								//executet when collision occurs		
 		virtual void ZoneChange(int iCurrent,int iNew) {};
 		virtual void Init() {};											//executet when property is added to an entity

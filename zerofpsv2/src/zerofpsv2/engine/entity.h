@@ -8,7 +8,7 @@
 #include <string.h>
 #include <bitset>
 #include "engine_x.h"
-#include "property.h"
+//#include "property.h"
 #include "propertyfactory.h"
 #include "network.h"
 #include "../basic/quaternion.h"
@@ -18,6 +18,7 @@
 using namespace std;
 
 class		EntityManager;
+class		Property;
 //struct	CollisionData;
 
 enum UpdateStatus 
@@ -67,12 +68,6 @@ public:
 	string		m_Name;				///< Name of GameMessage.
 };
 
-class ENGINE_API PropertyDescriptor
-{
-	public:
-		string m_kName;
-		ZFMemPackage m_kData;
-};
 
 class ENGINE_API PropertyValue
 {
@@ -302,7 +297,6 @@ class ENGINE_API Entity
 		void GetStaticData(int iEntityID);
 
 		// Collision / Shape.
-		void Touch(Collision* pkCol);								///< Run touch on all properys of this Entity.
 		void Touch(int iId);
 		void ZoneChange(int iCurrent,int iNew);				//callback when Entity changes zone
 

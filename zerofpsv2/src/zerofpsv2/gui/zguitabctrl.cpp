@@ -599,7 +599,7 @@ bool ZGuiTabCtrl::SendNotifyMessageTabCtrl(int iType, int iParams, void *pMsg)
 
 void ZGuiTabCtrl::GetWndSkinsDesc(vector<SKIN_DESC>& pkSkinDesc) const
 {
-	pkSkinDesc.push_back( SKIN_DESC(&(ZGuiSkin*)m_pkSkin, string("Tabctrl")) );
+	pkSkinDesc.push_back( SKIN_DESC((ZGuiSkin**)&m_pkSkin, string("Tabctrl")) );
 	
 	unsigned int i;
 	int iStart = pkSkinDesc.size(); 
@@ -621,7 +621,7 @@ void ZGuiTabCtrl::GetWndSkinsDesc(vector<SKIN_DESC>& pkSkinDesc) const
 			sprintf(szText, "Tabctrl: UnSeltab");
 		else
 			sprintf(szText, "Tabctrl: Seltab");
-		pkSkinDesc.push_back( SKIN_DESC(&(ZGuiSkin*)(*itSkin), string(szText)) );
+		pkSkinDesc.push_back( SKIN_DESC((ZGuiSkin**)&(*itSkin), string(szText)) );
 	}
 }
 

@@ -581,10 +581,10 @@ bool ZGuiListbox::SelItem(const char* szText)
 
 void ZGuiListbox::GetWndSkinsDesc(vector<SKIN_DESC>& pkSkinDesc) const
 {
-	pkSkinDesc.push_back( SKIN_DESC(&(ZGuiSkin*)m_pkSkin, string("Listbox")) );
-	pkSkinDesc.push_back( SKIN_DESC(&(ZGuiSkin*)m_pkSkinBnUp, string("Listbox: Button up")) );
-	pkSkinDesc.push_back( SKIN_DESC(&(ZGuiSkin*)m_pkSkinBnDown, string("Listbox: Button down")) );
-	pkSkinDesc.push_back( SKIN_DESC(&(ZGuiSkin*)m_pkSkinBnHLight, string("Listbox: Button focus")) );
+	pkSkinDesc.push_back( SKIN_DESC((ZGuiSkin**)&m_pkSkin, string("Listbox")) );
+	pkSkinDesc.push_back( SKIN_DESC((ZGuiSkin**)&m_pkSkinBnUp, string("Listbox: Button up")) );
+	pkSkinDesc.push_back( SKIN_DESC((ZGuiSkin**)&m_pkSkinBnDown, string("Listbox: Button down")) );
+	pkSkinDesc.push_back( SKIN_DESC((ZGuiSkin**)&m_pkSkinBnHLight, string("Listbox: Button focus")) );
 
 	int iStart = pkSkinDesc.size(); 
 	m_pkScrollbarVertical->GetWndSkinsDesc(pkSkinDesc);

@@ -683,7 +683,7 @@ void ZGuiWnd::GetWndSkinsDesc(vector<SKIN_DESC>& pkSkinDesc) const
 	if(t==typeid(ZGuiTreebox))
 		strType = "Treebox";
 
-	pkSkinDesc.push_back( SKIN_DESC(&(ZGuiSkin*)m_pkSkin, strType) );
+	pkSkinDesc.push_back( SKIN_DESC((ZGuiSkin**)&m_pkSkin, strType) );
 }
 
 void ZGuiWnd::Enable()

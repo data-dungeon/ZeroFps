@@ -7,10 +7,12 @@
 
 #include "engine_x.h"
 //#include "engine.pkg"
+#include "../basic/zfsubsystem.h"
 
 using namespace std;
 
 class NetWork;
+class Property;
 
 /// Links property name to a create function.
 class ProperyCreateLink

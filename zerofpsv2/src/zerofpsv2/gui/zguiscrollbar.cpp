@@ -112,7 +112,7 @@ void ZGuiScrollbar::SetScrollInfo(unsigned int min, unsigned int max,
 		real_bn_height = size;
 		
 		m_pkThumbButton->Resize(size, rc.Height());
-		m_usThumbSize = max(size, rc.Height());
+		m_usThumbSize = Max(size, rc.Height());
 	}
 	else
 	{
@@ -128,7 +128,7 @@ void ZGuiScrollbar::SetScrollInfo(unsigned int min, unsigned int max,
 			test = 10;
 		m_pkThumbButton->Resize(rc.Width(),test);
 		
-		m_usThumbSize = max(size, rc.Width());
+		m_usThumbSize = Max(size, rc.Width());
 	}
 
 	float x=0, y=0;
@@ -375,7 +375,7 @@ void ZGuiScrollbar::SetZValue(int iValue)
 
 void ZGuiScrollbar::GetWndSkinsDesc(vector<SKIN_DESC>& pkSkinDesc) const
 {
-	pkSkinDesc.push_back( SKIN_DESC(&(ZGuiSkin*)m_pkSkin, string("Scrollbar")) );
+	pkSkinDesc.push_back( SKIN_DESC( (ZGuiSkin**)&m_pkSkin, string("Scrollbar")) );
 	
 	int iStart = pkSkinDesc.size(); 
 	m_pkThumbButton->GetWndSkinsDesc(pkSkinDesc);
