@@ -313,7 +313,8 @@ int ObjectManagerLua::GetLocalDouble(lua_State* pkLua)
 	g_pkScript->GetArg(pkLua, 1, acName);
 
 	Entity* o1 = g_pkObjMan->GetObjectByNetWorkID(iId1);
-	double dValue = o1->GetVarDouble(string(acName));
+	string arne = acName;
+	double dValue = o1->GetVarDouble(arne);
 	//printf("GetLocalDouble Entity[%d] = %s is %f\n", iId1, acName, dValue);
 	g_pkScript->AddReturnValue(pkLua, dValue);
 	return 1;
@@ -336,7 +337,8 @@ int ObjectManagerLua::SetLocalDouble(lua_State* pkLua)
 
 	Entity* o1 = g_pkObjMan->GetObjectByNetWorkID(iId1);
 	//printf("SetLocalDouble Entity[%d] = %s is set to %f \n", iId1, acName,fValue);
-	o1->SetVarDouble(string(acName), fValue);
+	string arne = acName;
+	o1->SetVarDouble(arne, fValue);
 	return 1;	
 }
 
