@@ -5,6 +5,7 @@
 #include <iostream>
 #include "basic_x.h"
 #include "os.h"
+#include <cmath>
 
 using namespace std;
 
@@ -23,5 +24,7 @@ float BASIC_API RadToDeg(float fAngle);
 
 void BASIC_API Gemens(char* aText);
 void BASIC_API IntToChar(char* aText,int iValue);
+
+int BASIC_API PowerOf2(int iVal);
 
 #endif

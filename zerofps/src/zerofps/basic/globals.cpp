@@ -48,3 +48,28 @@ float BASIC_API RadToDeg(float fAngle)
 {
 	return float((fAngle * NRDEG_IN_ONE_RAD));
 }
+
+int BASIC_API PowerOf2(int iVal)
+{
+	int list[] = {2,4,8,16,32,64,128};
+
+	int smalest=999999999;
+	int tal;
+	int blub;
+
+	for(int i=0;i<7;i++)
+	{
+		blub=abs(iVal-list[i]);
+		
+		if( blub < smalest)
+		{
+			smalest=blub;
+			tal=list[i];
+		}		
+	}
+	
+	return tal;
+}
+
+
+

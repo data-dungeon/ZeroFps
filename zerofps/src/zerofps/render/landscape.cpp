@@ -717,10 +717,13 @@ void Render::DrawHMLodSplat(HeightMap* kMap,Vector3 CamPos,int iFps)
 	}
 	
 	glPushMatrix();
+	glPushAttrib(GL_DEPTH_BUFFER_BIT);
+	
 	glTranslatef(kMap->m_kPosition.x,kMap->m_kPosition.y,kMap->m_kPosition.z);
 	glColor4f(1,1,1,1);
 
 
+	//setup TUs
 	glActiveTextureARB(GL_TEXTURE0_ARB);
 	glDisable(GL_TEXTURE_2D);
 	glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE);	
@@ -730,26 +733,29 @@ void Render::DrawHMLodSplat(HeightMap* kMap,Vector3 CamPos,int iFps)
 	glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE);	
 	
 	
-	m_pkTexMan->BindTexture("detail.bmp",0);
-
-	DrawPatch(kMap,CamPos);
+	//Draw default texture
+	m_pkTexMan->BindTexture("detail1.bmp",0);
+	
+	
+	DrawAllHM(kMap,CamPos);
+//	DrawPatch(kMap,CamPos,1,1,8);
 		
-		
-	glDisable(GL_DEPTH_TEST);	
+	//set blending
+	glDepthFunc(GL_EQUAL);
 	glEnable(GL_BLEND);		
 	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);		
 		
 		
 	glActiveTextureARB(GL_TEXTURE0_ARB);
 	glEnable(GL_TEXTURE_2D);	
-	glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE);	
-	m_pkTexMan->BindTexture("land2.tga",0);
+	m_pkTexMan->BindTexture("land1.tga",0);
 	
 	
 	glActiveTextureARB(GL_TEXTURE1_ARB);
 	m_pkTexMan->BindTexture("detail2.bmp",0);		
 
-	DrawPatch(kMap,CamPos);
+	DrawAllHM(kMap,CamPos);
+//	DrawPatch(kMap,CamPos,0,0,kMap->m_iHmSize);
 	
 
 	glActiveTextureARB(GL_TEXTURE1_ARB);
@@ -760,37 +766,58 @@ void Render::DrawHMLodSplat(HeightMap* kMap,Vector3 CamPos,int iFps)
 	glEnable(GL_DEPTH_TEST);
 	glDisable(GL_BLEND);		
 
+	glPopAttrib();
 	glPopMatrix();
 }
 
-void Render::DrawPatch(HeightMap* kMap,Vector3 CamPos)
+void Render::DrawAllHM(HeightMap* kMap,Vector3 CamPos)
 {
-	for(int z=0;z<kMap->m_iHmSize;z++){
-		glBegin(GL_TRIANGLE_STRIP);
+	int iPatchSize=32;
+
+	for(int z=0;z<kMap->m_iHmSize;z+=iPatchSize)
+	{
+		for(int x=0;x<kMap->m_iHmSize;x+=iPatchSize)
+		{
+			DrawPatch(kMap,CamPos,x,z,iPatchSize);		
+		}
+	}
+}
+
+void Render::DrawPatch(HeightMap* kMap,Vector3 CamPos,int xp,int zp,int iSize)
+{
+	int iStep;
+	float fDistance;
 	
-		glNormal3fv((float*)&kMap->verts[z*kMap->m_iHmSize].normal);
-		glMultiTexCoord2fARB(GL_TEXTURE0_ARB,0,(float)z/kMap->m_iHmSize);		 		
-		glMultiTexCoord2fARB(GL_TEXTURE1_ARB,0,(float)z/8);		 				
-		glVertex3f(0,kMap->verts[z*kMap->m_iHmSize].height,z);
-			
-		glNormal3fv((float*)&kMap->verts[(z+1)*kMap->m_iHmSize].normal);
-		glMultiTexCoord2fARB(GL_TEXTURE0_ARB,0,((float)z+1)/kMap->m_iHmSize); 		 		
-		glMultiTexCoord2fARB(GL_TEXTURE1_ARB,0.125,(float)z/8);			
-		glVertex3f(0,kMap->verts[(z+1)*kMap->m_iHmSize].height,z+1);
+	Vector3 PatchCenter(kMap->m_kPosition.x + xp + iSize/2,
+							  kMap->m_kPosition.y+34,
+							  kMap->m_kPosition.z + zp + iSize/2);
 		
-		for(int x=1;x<kMap->m_iHmSize;x++){	
-			glNormal3fv((float*)&kMap->verts[z*kMap->m_iHmSize+x].normal);
+	fDistance=(CamPos-PatchCenter).Length();
+		
+	if(fDistance > m_iViewDistance)
+		return;
+		
+	iStep=PowerOf2(int(fDistance / m_iDetail));
+		
+		
+	//cull
+	if(!m_pkFrustum->CubeInFrustum(PatchCenter.x,PatchCenter.y,PatchCenter.z,iSize/2,54,iSize/2))
+		return;
+	
+	//draw
+	for(int z = zp ; z < zp+iSize ; z+=iStep){
+		glBegin(GL_TRIANGLE_STRIP);
+		for(int x = xp ; x <= xp+iSize ; x+=iStep){	
 			glMultiTexCoord2fARB(GL_TEXTURE0_ARB,(float)x/kMap->m_iHmSize,(float)z/kMap->m_iHmSize);		 		 			 		
 			glMultiTexCoord2fARB(GL_TEXTURE1_ARB,(float)x/8,(float)z/8);						
+			glNormal3fv((float*)&kMap->verts[z*kMap->m_iHmSize+x].normal);			
 			glVertex3f(x,kMap->verts[z*kMap->m_iHmSize+x].height,z);					
 			
-			glNormal3fv((float*)&kMap->verts[(z+1)*kMap->m_iHmSize+x].normal);
-			glMultiTexCoord2fARB(GL_TEXTURE0_ARB,(float)x/kMap->m_iHmSize,((float)z+1)/kMap->m_iHmSize);		 		 			 			 		
-			glMultiTexCoord2fARB(GL_TEXTURE1_ARB,(float)x/8,(float)(z+1)/8);						
-			glVertex3f(x,kMap->verts[(z+1)*kMap->m_iHmSize+x].height,z+1);
-			
-		}
-		
+			glMultiTexCoord2fARB(GL_TEXTURE0_ARB,(float)x/kMap->m_iHmSize,((float)z+iStep)/kMap->m_iHmSize);		 		 			 			 		
+			glMultiTexCoord2fARB(GL_TEXTURE1_ARB,(float)x/8,((float)z+iStep)/8);						
+			glNormal3fv((float*)&kMap->verts[(z+iStep)*kMap->m_iHmSize+x].normal);			
+			glVertex3f(x,kMap->verts[(z+iStep)*kMap->m_iHmSize+x].height,z+iStep);			
+		}		
 		glEnd();
 	}
 }

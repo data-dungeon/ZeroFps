@@ -29,7 +29,7 @@ void LevelManager::CreateEmptyLevel(int iSize)
 
 void LevelManager::Clear() 
 {
-	CreateNew(100);
+	CreateNew(128);
 }
 
 void LevelManager::CreateNew(int iSize) 

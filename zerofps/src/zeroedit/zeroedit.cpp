@@ -90,7 +90,7 @@ void ZeroEdit::OnInit(void)
 	
 	
 	//create a default small world
-	pkLevelMan->CreateEmptyLevel(100);
+	pkLevelMan->CreateEmptyLevel(128);
 
 
 	//default light

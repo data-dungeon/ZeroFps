@@ -60,7 +60,8 @@ class RENDER_API Render : public ZFObject {
 		void DrawConsole(char* m_aCommand,vector<char*>* m_kText); 
 		
 		void DrawHMLodSplat(HeightMap* kmap,Vector3 CamPos,int iFps);
-		void DrawPatch(HeightMap* kmap,Vector3 CamPos);
+		void DrawAllHM(HeightMap* kmap,Vector3 CamPos);
+		void DrawPatch(HeightMap* kmap,Vector3 CamPos,int xp,int zp,int iSize);
 		
 		void DrawHM(HeightMap* kmap);
 		void DrawHMlod(HeightMap* kmap,Vector3 CamPos,int iFps);		
