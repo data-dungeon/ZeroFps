@@ -1,4 +1,4 @@
-#include "std_scriptinterface.h"
+#include "si_std.h"
 #include <cmath>                    // for trigonometry functions
 
 ZFScriptSystem* StdLua::g_pkScript;

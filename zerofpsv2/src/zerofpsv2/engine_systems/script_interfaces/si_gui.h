@@ -2,8 +2,8 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#ifndef _SCRIPTINTERFACES_H
-#define _SCRIPTINTERFACES_H
+#ifndef _SI_GUI_H
+#define _SI_GUI_H
 
 class ZGuiApp;
 class ZFScriptSystem;
@@ -30,4 +30,4 @@ namespace GuiAppLua
 	int ENGINE_SYSTEMS_API SetTextInt(lua_State* pkLua);
 };
 
-#endif // #ifndef _SCRIPTINTERFACES_H
+#endif // #ifndef _SI_GUI_H

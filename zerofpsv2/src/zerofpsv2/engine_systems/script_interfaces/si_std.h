@@ -1,6 +1,6 @@
 
-#ifndef _STD_SCRIPTINTERFACE_H_
-#define _STD_SCRIPTINTERFACE_H_
+#ifndef _SI_STD_H_
+#define _SI_STD_H_
 
 class ZFScriptSystem;
 

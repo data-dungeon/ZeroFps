@@ -1,5 +1,5 @@
 #include "../../script/zfscript.h"
-#include "objectmanager_scriptinterface.h"
+#include "si_objectmanager.h"
 #include "../../engine/objectmanager.h"
 #include "../../script/zfscript.h"
 

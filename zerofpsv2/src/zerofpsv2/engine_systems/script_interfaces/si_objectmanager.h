@@ -1,6 +1,6 @@
 
-#ifndef _OBJECTMANAGER_SCRIPTINTERFACE_H_
-#define _OBJECTMANAGER_SCRIPTINTERFACE_H_
+#ifndef _SI_OBJECTMANAGER_
+#define _SI_OBJECTMANAGER_
 
 #include "../engine_systems_x.h"
 
