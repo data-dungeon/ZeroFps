@@ -197,6 +197,23 @@ bool ZeroEd::SetViewPort(const char* szVpName)
 	if(!pkWnd->IsVisible())
 		return false;
 
+	ZGuiWnd* akViewports[4] = {GetWnd("vp1"),GetWnd("vp2"),GetWnd("vp3"),GetWnd("vp4")};	
+	for(int i=0; i<4; i++)
+	{
+		if(akViewports[i] != pkWnd)
+		{
+			akViewports[i]->GetSkin()->m_afBorderColor[0] = 0;
+			akViewports[i]->GetSkin()->m_afBorderColor[1] = 0;
+			akViewports[i]->GetSkin()->m_afBorderColor[2] = 0;
+		}
+		else
+		{
+			akViewports[i]->GetSkin()->m_afBorderColor[0] = 1;
+			akViewports[i]->GetSkin()->m_afBorderColor[1] = 0;
+			akViewports[i]->GetSkin()->m_afBorderColor[2] = 0;
+		}
+	}
+
 	Camera* pkCam = dynamic_cast<Camera*>(pkWnd->GetRenderTarget());
 	//Camera* pkCam = pkWnd->GetRenderTarget();
 	if(!pkCam)
