@@ -702,6 +702,8 @@ void ZGuiApp::InitGui(ZFScriptSystem* pkScriptSys, char* szFontName,
 	m_pkScriptSystem = pkScriptSys;
 	m_pkRenderer = static_cast<ZGuiRender*>(g_ZFObjSys.GetObjectPtr("ZGuiRender"));
 
+	FindGuiTextureByResolution();
+
 	m_iScaleMode = iScaleMode;
 
 	//	m_pkTextureMan->Load("data/textures/gui/slask.bmp", 0); // första misslyckas, vet inte varför..
@@ -771,9 +773,10 @@ void ZGuiApp::InitGui(ZFScriptSystem* pkScriptSys, char* szFontName,
 
 int ZGuiApp::GetTexID(char *szFile)
 {
-	char szPath[256];
-	sprintf(szPath, "%s%s", "/data/textures/gui/", szFile);
-	return m_pkTextureMan->Load(szPath, 0);
+	//char szPath[256];
+	//sprintf(szPath, "%s%s", "/data/textures/gui/", szFile);
+	//return m_pkTextureMan->Load(szPath, 0);
+	return LoadGuiTextureByRes(szFile);
 }
 
 
@@ -1305,6 +1308,18 @@ ZFScript* ZGuiApp::GetGuiScript()
 	return (ZFScript*) m_pkScriptResHandle->GetResourcePtr();  
 }
 
+int ZGuiApp::LoadGuiTextureByRes(string strFile)
+{
+	string strFullName = "data/textures/gui/" + strFile;
+
+	map<string, string>::iterator res = m_kGuiImagePaths.find(strFile);
+	if(res != m_kGuiImagePaths.end())
+		strFullName = res->second;
+
+	//printf("Found tex: %s\n", strFullName.c_str());
+
+	return m_pkTextureMan->Load(strFullName.c_str(), 0);
+}
 
 bool ZGuiApp::LoadGuiFromScript(const char* szFileName)
 {
@@ -1427,7 +1442,7 @@ bool ZGuiApp::CreateMenu(char* szFileName, char* szName, bool bPopup)
 
 bool ZGuiApp::BuildFileTree(char* szTreeBoxName, char* szRootPath, char* szExtension)
 {
-	ZFVFileSystem* m_pkFileSys = reinterpret_cast<ZFVFileSystem*>(
+	ZFVFileSystem* pkFileSys = reinterpret_cast<ZFVFileSystem*>(
 		g_ZFObjSys.GetObjectPtr("ZFVFileSystem"));	
 
 	// kolla inparametrar
@@ -1461,7 +1476,7 @@ bool ZGuiApp::BuildFileTree(char* szTreeBoxName, char* szRootPath, char* szExten
 
 		// Hämta filerna i den aktuella katalogen och sortera listan.
 		vector<string> t;
-		m_pkFileSys->ListDir(&t, currentFolder);
+		pkFileSys->ListDir(&t, currentFolder);
 		for(unsigned int i=0; i<t.size(); i++)
 			vkFileNames.push_back(t[i]); 
 		t.clear(); vkFileNames.sort(SortFiles);
@@ -1685,4 +1700,95 @@ void ZGuiApp::MsgBox(char* text, char* caption, int type)
 		pkNo->SetText("No");
 	}
 	
+}
+
+void ZGuiApp::FindGuiTextureByResolution()
+{
+	vector<string> kTexMap_640x480;
+	vector<string> kTexMap_800x600;
+	vector<string> kTexMap_1024x768;
+	vector<string> kTexMap_1280x1024;
+	vector<string> kTexMap_1600x1200;
+
+	ZFVFileSystem* pkFileSys = reinterpret_cast<ZFVFileSystem*>(g_ZFObjSys.GetObjectPtr("ZFVFileSystem"));	
+
+	pkFileSys->ListDir(&kTexMap_640x480, string("data/textures/gui/640x480/"));
+	pkFileSys->ListDir(&kTexMap_800x600, string("data/textures/gui/800x600/"));
+	pkFileSys->ListDir(&kTexMap_1024x768, string("data/textures/gui/1024x768/"));
+	pkFileSys->ListDir(&kTexMap_1280x1024, string("data/textures/gui/1280x1024/"));
+	pkFileSys->ListDir(&kTexMap_1600x1200, string("data/textures/gui/1600x1200/"));
+
+	struct TEST
+	{
+		vector<string>* t;
+		string strResFolder;
+		int res;
+	};
+
+	TEST tt[5] = 
+	{
+		{&kTexMap_640x480, "data/textures/gui/640x480/", 640*480 },
+		{&kTexMap_800x600, "data/textures/gui/800x600/", 800*600 },
+		{&kTexMap_1024x768, "data/textures/gui/1024x768/", 1024*768 }, 
+		{&kTexMap_1280x1024, "data/textures/gui/1280x1024/", 1280*1024 }, 
+		{&kTexMap_1600x1200, "data/textures/gui/1600x1200/", 1600*1200 }
+	};
+
+	int iCurrentRes = GetWidth() * GetHeight();
+	int iBestValue = 99999;
+
+	map<string, int> kFileResValMap;
+
+	for(int t=0; t<5; t++)
+	{
+		for(int i=0; i<tt[t].t->size(); i++)
+		{
+			string strFile = (*tt[t].t)[i];
+			
+			map<string, string>::iterator res = m_kGuiImagePaths.find(strFile);
+
+			if(res == m_kGuiImagePaths.end()) // bilden fanns inte med alls, lägg till den.
+			{
+				m_kGuiImagePaths.insert( map<string, string>::value_type(strFile, tt[t].strResFolder+strFile) );	
+				
+				int iValue = abs(iCurrentRes - tt[t].res);
+				kFileResValMap.insert( map<string, int>::value_type(strFile, iValue) );	
+			}
+			else
+			// Bilden fanns redan i mappen.
+			{
+				// Hur nära den riktiga upplösningen är denna bilden? Destå lägre destå bättre.
+				int iValue = abs(iCurrentRes - tt[t].res);
+
+				int best_value;
+
+				// Plocka fram den bästa bilden ur värde mappen och jämför.
+				map<string, int>::iterator res2 = kFileResValMap.find(strFile);
+				if(res2 == kFileResValMap.end()) // finns ej, sätt bästa värdet till nått högt.
+				{
+					best_value = 999999;
+				}
+				else 
+				{					
+					best_value = res2->second;
+				}
+
+
+				if( iValue < best_value )
+				{
+					if(res2 != kFileResValMap.end())
+						kFileResValMap.erase(res2);
+
+					kFileResValMap.insert( map<string, int>::value_type(strFile, iValue) );	
+
+					// Ta bort den gamla sökvägen
+					m_kGuiImagePaths.erase(res);
+
+					// Lägg till den nya som är bättre.
+					m_kGuiImagePaths.insert( map<string, string>::value_type(strFile, tt[t].strResFolder+strFile) );	
+				}
+			}
+		}
+
+	}
 }

@@ -97,6 +97,7 @@ public:
 		ZFScriptSystem* pkScriptSys;
 	};
 
+	int LoadGuiTextureByRes(string strFile); ///< Use this function instead of LoadTexture in texturemanager to load correct image based on resolution.
 	bool BuildFileTree(char* szTreeBoxName, char* szRootPath, char* szExtension=NULL);
 	bool CreateMenu(char* szFileName, char* szName, bool bPopup);
 	int  GetWndID(char* szResName); // returns -1 if no window exist and can be used to check if a window exist from script.
@@ -193,6 +194,7 @@ private:
 
 	int GetTexID(char* szFile);
 	void InitDefaultSkins();
+	void FindGuiTextureByResolution();
 
 	ZGui* m_pkGuiSys;
 	ZGuiResourceManager* m_pkResMan;
@@ -201,7 +203,11 @@ private:
 	ZFScriptSystem* m_pkScriptSystem;
 	map<string, ZGuiSkin*> m_kSkins;
 	map<int, ZGuiWnd*> m_kWindows;
-	
+
+	// 1: namn på bilden (tex "icons/sword.tga") 
+   // 2: hela filnmanmet baserat på upplösning (tex "data/textures/gui/800x600/icons/sword.tga")
+	map<string, string> m_kGuiImagePaths; 
+		
 	callback m_oMainWndProc;
 	ZGuiRadiobutton* m_pkLastRadiobutton;
 

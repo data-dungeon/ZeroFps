@@ -49,9 +49,10 @@ ActionMenu::ActionMenu() : ICON_WIDTH(64), ICON_HEIGHT(64)
 		"ActionMenuSelLabel", "ActionMenuMain", "", 0, 0, ICON_WIDTH, ICON_HEIGHT, 0);
 	m_pkIconSelection->Hide();
 
+
 	m_pkIconSelection->SetSkin(new ZGuiSkin());
-	m_pkIconSelection->GetSkin()->m_iBkTexID = m_pkTexMan->Load(
-		"data/textures/gui/actions/action_selection_border.tga", 0) ;	
+	m_pkIconSelection->GetSkin()->m_iBkTexID = g_kMistClient.LoadGuiTextureByRes(
+		"actions/action_selection_border.tga") ;	
 }
 
 ActionMenu::~ActionMenu()
@@ -202,9 +203,9 @@ void ActionMenu::Open()
 				strTemp[u] = (char) (ch + 32);
 		}
 
-		sprintf(szIcon, "data/textures/gui/actions/%s.tga", strTemp.c_str());
+		sprintf(szIcon, "actions/%s.tga", strTemp.c_str());
 
-		int iTexID = m_pkTexMan->Load(szIcon, 0);
+		int iTexID = g_kMistClient.LoadGuiTextureByRes(szIcon);
 		
 		pkButton->GetButtonUpSkin()->m_iBkTexID = iTexID ;
 		pkButton->GetButtonDownSkin()->m_iBkTexID = iTexID ;
