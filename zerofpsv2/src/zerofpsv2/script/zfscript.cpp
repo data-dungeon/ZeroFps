@@ -744,7 +744,7 @@ bool ZFScriptSystem::Call(ZFResourceHandle* pkResHandle, char* szFuncName,
 
 	double d;
 
-	for(int j=0; j<vkParams.size(); j++)
+	for(unsigned int j=0; j<vkParams.size(); j++)
 	{
 		switch(vkParams[j].eType)
 		{
@@ -808,7 +808,7 @@ bool ZFScriptSystem::Call(ZFResourceHandle* pkResHandle, char* szFuncName,
 
 void ZFScriptSystem::DeleteTable(vector<TABLE_DATA>& data)
 {
-	for(int i=0; i<data.size(); i++)
+	for(unsigned int i=0; i<data.size(); i++)
 	{
 		if(data[i].pData)
 			delete data[i].pData;
