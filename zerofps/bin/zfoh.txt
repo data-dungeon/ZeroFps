@@ -45,12 +45,14 @@ class object
 		class ZeroRTSLightTank
 			parent ZeroRTSUnit
 			add P_UnitMoveAI
+			add P_UnitAttackAI			
 			set MadProperty m_kMadFile /data/mad/rts/unit/tankl.mad
 			set MadProperty m_fScale 0.3
 
 		class ZeroRTSHeavyTank
 			parent ZeroRTSUnit
 			add P_UnitMoveAI
+			add P_UnitAttackAI						
 			set MadProperty m_kMadFile /data/mad/rts/unit/tankh.mad
 			set MadProperty m_fScale 0.3
 

@@ -406,7 +406,8 @@ void ZeroRTS::Input()
 			{
 				pkConsole->Printf("Server Name: %s",si->m_kSInfo.m_acServerName);
 			
-				for(i=0;i<4;i++)				
+				int i;
+				for( i=0;i<4;i++)				
 					pkConsole->Printf("Player %d has color %d",i,si->m_kSInfo.m_acColor[i]);			
 			
 				for( i=0;i<4;i++)				
