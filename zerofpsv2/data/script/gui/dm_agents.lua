@@ -241,6 +241,11 @@ function GUICreate()
 	ChangeSkin("AgentsToHireBn7","Skin6","Checkbox: Label")
 
 
+	CreateWnd(4,"AgentsMoneyLabel","AgentsWnd","Money:",10,275,190,20,0)
+	ChangeSkin("AgentsMoneyLabel","Skin14","Label")
+
+	CreateWnd(4,"AgentsReputaionLabel","AgentsWnd","Reputation: ",200,275,210,20,0)
+	ChangeSkin("AgentsReputaionLabel","Skin14","Label")
 
 
 
@@ -261,6 +266,9 @@ function GUICreate()
 
 	CreateWnd(4,"AgentInFocusMemberHP","AgentsWnd","HP:",10,400,400,20,0)
 	ChangeSkin("AgentInFocusMemberHP","Skin14","Label")
+
+
+
 
 
 end

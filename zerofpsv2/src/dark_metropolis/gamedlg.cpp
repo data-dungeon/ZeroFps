@@ -249,7 +249,7 @@ void CGameDlg::SetButtonIcon(ZGuiWnd* pkButton, string strIconNameUp,
 				GetTexID((char*)strIconNameUp.c_str());
 			((ZGuiButton*)pkButton)->GetButtonDownSkin()->m_iBkTexAlphaID = alpha_tex;
 			((ZGuiButton*)pkButton)->GetButtonDownSkin()->m_afBorderColor[0] = 0;
-			((ZGuiButton*)pkButton)->GetButtonDownSkin()->m_afBorderColor[1] = 0;
+			((ZGuiButton*)pkButton)->GetButtonDownSkin()->m_afBorderColor[1] = 0.5f;
 			((ZGuiButton*)pkButton)->GetButtonDownSkin()->m_afBorderColor[2] = 0;
 			((ZGuiButton*)pkButton)->GetButtonDownSkin()->m_unBorderSize = 2;
 		}
@@ -259,7 +259,7 @@ void CGameDlg::SetButtonIcon(ZGuiWnd* pkButton, string strIconNameUp,
 				GetTexID((char*)strIconNameUp.c_str());
 			((ZGuiCheckbox*)pkButton)->GetCheckedSkin()->m_iBkTexAlphaID = alpha_tex;
 			((ZGuiCheckbox*)pkButton)->GetCheckedSkin()->m_afBorderColor[0] = 0;
-			((ZGuiCheckbox*)pkButton)->GetCheckedSkin()->m_afBorderColor[1] = 0;
+			((ZGuiCheckbox*)pkButton)->GetCheckedSkin()->m_afBorderColor[1] = 0.5f;
 			((ZGuiCheckbox*)pkButton)->GetCheckedSkin()->m_afBorderColor[2] = 0;
 			((ZGuiCheckbox*)pkButton)->GetCheckedSkin()->m_unBorderSize = 2;
 

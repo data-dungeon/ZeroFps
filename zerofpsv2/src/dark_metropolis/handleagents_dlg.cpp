@@ -278,6 +278,17 @@ bool CHandleAgents::InitDlg()
 	m_iStartHireAgent = 0;
 	m_iSelAgentToHire = -1;
 
+	P_DMGameInfo* pkGameInfo = (P_DMGameInfo*)
+		GetDMObject(GAME_INFO)->GetProperty("P_DMGameInfo");
+
+	char szText[50];
+
+	sprintf(szText, "Money: %i", pkGameInfo->m_iMoney);
+	SetText("AgentsMoneyLabel", szText);
+
+	sprintf(szText, "Reputation: %f", pkGameInfo->m_fReputation);
+	SetText("AgentsReputaionLabel", szText); 
+
 	if(!m_bInitialized)
 	{
 		m_vkCharsInBaseBns.push_back(pair<ZGuiCheckbox*, int>
@@ -389,8 +400,12 @@ void CHandleAgents::UpdateAgentInBaseList(int iStartAgent)
 				m_vkCharsInBaseBns[i].first->Show();
 				m_vkCharsInBaseBns[i].first->GetUncheckedSkin()->m_iBkTexID = tex_id; 			
 				m_vkCharsInBaseBns[i].first->GetCheckedSkin()->m_iBkTexID = tex_id; 
-				m_vkCharsInBaseBns[i].first->GetCheckedSkin()->m_afBkColor[1] = 0;
+				m_vkCharsInBaseBns[i].first->GetCheckedSkin()->m_afBkColor[0] = 0.5f; 
+				m_vkCharsInBaseBns[i].first->GetCheckedSkin()->m_afBkColor[1] = 1.0f; 
+				m_vkCharsInBaseBns[i].first->GetCheckedSkin()->m_afBkColor[2] = 0.0f; 
 				m_vkCharsInBaseBns[i].second = vkCharsInBase[i+iStartAgent];	
+
+				SetButtonIcon(m_vkCharsInBaseBns[i].first, szTexName, false, true);
 
 				if(m_vkCharsInBaseBns[i].second == m_iSelAgent)
 				{
@@ -469,8 +484,12 @@ void CHandleAgents::UpdateAgentToHireList(int iStartAgent)
 				m_vkAgentsToHireBns[i].first->Show();
 				m_vkAgentsToHireBns[i].first->GetUncheckedSkin()->m_iBkTexID = tex_id; 			
 				m_vkAgentsToHireBns[i].first->GetCheckedSkin()->m_iBkTexID = tex_id; 
-				m_vkAgentsToHireBns[i].first->GetCheckedSkin()->m_afBkColor[1] = 0;
+				m_vkAgentsToHireBns[i].first->GetCheckedSkin()->m_afBkColor[0] = 1.0f;
+				m_vkAgentsToHireBns[i].first->GetCheckedSkin()->m_afBkColor[1] = 0.5f;
+				m_vkAgentsToHireBns[i].first->GetCheckedSkin()->m_afBkColor[2] = 0.5f;
 				m_vkAgentsToHireBns[i].second = stats;	
+
+				SetButtonIcon(m_vkAgentsToHireBns[i].first, szTexName, false, true);
 
 		/*		if(m_vkCharsInBaseBns[i].second == m_iSelAgent)
 				{

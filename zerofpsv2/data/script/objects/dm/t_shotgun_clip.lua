@@ -8,7 +8,7 @@ function Create()
 			InitParameter("name","ShotgunClip");
 			InitParameter("sizex",1);
 			InitParameter("sizey",1);
-			InitParameter("icon","stol.bmp");
+			InitParameter("icon","shotgun_clip.bmp");
 			InitParameter("type","4");
 		InitProperty("P_ScriptInterface");
 

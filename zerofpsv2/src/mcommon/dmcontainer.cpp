@@ -272,13 +272,14 @@ bool DMContainer::DropItem(int iID)
 				pkItem->SetUpdateStatus(UPDATE_ALL);				
 				pkItem->SetUseZones(true);
 				pkItem->SetParent(pkOwner->GetParent());				
+				
 				pkItem->SetWorldPosV( pkOwner->GetWorldPosV() );
 				
 				return true;
 			}
 		}
 	}
-	
+
 	return false;
 }
 

@@ -62,6 +62,13 @@ void CItemTransactionDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName)
 		m_pkAudioSys->StartSound("data/sound/computer beep 5.wav", 
 			m_pkAudioSys->GetListnerPos()); 
 
+		P_DMGameInfo* pkGameInfo = (P_DMGameInfo*)
+			GetDMObject(GAME_INFO)->GetProperty("P_DMGameInfo");
+
+		char szText[50];
+		sprintf(szText, "Money: %i", pkGameInfo->m_iMoney);
+		SetText("AgentsMoneyLabel", szText);
+
 		return;
 	}
 	else

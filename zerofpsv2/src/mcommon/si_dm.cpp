@@ -1493,7 +1493,8 @@ int DMLua::AddItemToShopLua(lua_State* pkLua)
 	g_pkScript->GetArgNumber(pkLua, 2, &dPrice);
 
    // create the new object
-	Entity* pkNewObj = g_pkObjMan->CreateObjectFromScript(acScript );
+	Entity* pkNewObj = g_pkObjMan->CreateObjectFromScriptInZone(acScript,
+		pkShop->GetWorldPosV() );
 
 	if(pkNewObj == NULL)
 	{

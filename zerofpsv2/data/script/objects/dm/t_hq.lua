@@ -20,6 +20,7 @@ function Init()
 	AddItemToShop(SIGetSelfID(), "/data/script/objects/dm/t_gun.lua", 400);
 	AddItemToShop(SIGetSelfID(), "/data/script/objects/dm/t_gun.lua", 400);
 	AddItemToShop(SIGetSelfID(), "/data/script/objects/dm/t_shotgun_clip.lua", 50);
+	AddItemToShop(SIGetSelfID(), "/data/script/objects/dm/t_handgun_clip.lua", 25);	
 end
 
 function FirstRun()

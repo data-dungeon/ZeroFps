@@ -5,10 +5,10 @@
 CGamePlayDlg::CGamePlayDlg() : CGameDlg("GamePlayScreen", &g_kDM)
 {
 	m_iSelectedAgent = -1;
-	m_bSkillbarIsOut = false;
-	m_bActionbarIsOut = false;
-	m_bCharbarIsOut = false;
-	m_bItembarIsOut = false;
+	m_bSkillbarIsOut = true;
+	m_bActionbarIsOut = true;
+	m_bCharbarIsOut = true;
+	m_bItembarIsOut = true;
 }
 
 CGamePlayDlg::~CGamePlayDlg()
