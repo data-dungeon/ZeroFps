@@ -170,14 +170,15 @@ void MadView::ToogleLight(bool bEnabled)
 		m_kSun.kRot = Vector3(1,2,1);
 		m_kSun.kDiffuse=Vector4(1,1,1,0);
 		m_kSun.kAmbient=Vector4(0.2,0.2,0.2,0);
-		m_kSun.iType=DIRECTIONAL_LIGHT;			
+		m_kSun.iType=POINT_LIGHT;			
 		m_kSun.iPriority=10;
 		m_kSun.fConst_Atten=1;
 		m_kSun.fLinear_Atten=0;
 		m_kSun.fQuadratic_Atten=0;
 
+
 		m_pkLight->Add(&m_kSun);
-		s_bAdded = true;
+		s_bAdded = true; 
 	}
 	else
 	{
