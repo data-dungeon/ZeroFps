@@ -9,25 +9,57 @@ int main( int argc, char* argv[] )
 {
 Korv Nisse;
 
-
+	bool slut = false;
 	vector<string> hej = Nisse.GetValueNames();
-	vector<string>::iterator i = hej.begin();
+	
+	while(!slut)
+	{
+		int j = 0;
+		vector<string>::iterator i = hej.begin();
 		while (i != hej.end())
 		{
-			cout<< *i <<endl;
+			
+			cout<< j++ <<". "<< *i <<endl;
 			i++;
 		
 		}
-	cout<< endl;
-	//if(!Nisse.SetValue("Storlek","1.909")) cout<<"fel vid tilldelning!";
-	//cout<<Nisse.GetValue("Storlek")<<endl;
+		cout << endl 
+			 << hej.size() <<". Quit" <<endl
+			 << ":>"; 
+		int select;
+		cin>>select;
+		if(select==hej.size()) 
+			slut=true;
+		else 
+		{
+			cout << endl 
+				 << hej[select] 
+				 <<"  Value: " << Nisse.GetValue(hej[select])
+				 <<"  UpperBound: " << Nisse.GetUpperBound(hej[select])
+				 <<"  LowerBound: " << Nisse.GetLowerBound(hej[select])
+				 << endl
+				 << "1. Change Value" <<endl
+				 << "2. Quit"<<endl
+				 << ":>"; 
+			int select2=0;
+			cin>>select2;
+				cout <<endl;
+				if(select2==2) 
+					slut=true;
+				else if(select2==1) 
+				{
+					string str;
+					cout<<"New Value: ";
+					cin >> str;
+					Nisse.SetValue(hej[select], str);
+					cout<< endl <<Nisse.GetValue(hej[select]);
+				}
+		}
 
-	//cout<<Nisse.GetNumberOfValues("TestVek") <<endl <<endl;
-	//cout<<Nisse.GetValue("TestVek",1) <<endl;
-	//if(!Nisse.SetValue("TestVek",1, "87")) cout<<"fel vid tilldelning!";						
-	//cout<<Nisse.GetValue("TestVek",1) <<endl;
-	cout<<"upperbound: " <<Nisse.GetUpperBound("Status") <<endl;
-	if(Nisse.GetUpperBound("Status")==0) cout <<"ds";
+	};
+
+	//cout<<"upperbound: " <<Nisse.GetUpperBound("Status") <<endl;
+	//if(Nisse.GetUpperBound("Status")==0) cout <<"ds";
 return 0;
 };
 

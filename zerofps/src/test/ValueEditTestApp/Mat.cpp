@@ -752,17 +752,21 @@ return false;
 
 float Mat::GetUpperBound(string kValueName)
 {
-
-	PropertyValues* pkTemp;
-			
-	if( FindPropertyValue(kValueName,pkTemp))
+vector<PropertyValues> kTemp= GetPropertyValues();
+	if(!kTemp.empty())
+	{
+		vector<PropertyValues>::iterator kItor = kTemp.begin();
+		while (kItor != kTemp.end())
+		{
+			if( kValueName == kItor->kValueName)
 			{
 				
-				return pkTemp->fUpperBound;
+				return kItor->fUpperBound;
 			}	
-			
-	else
-		return 0;
+			kItor++;
+		};
+	}
+	return 0;
 }
 
 float Mat::GetLowerBound(string kValueName)
