@@ -152,7 +152,7 @@ public:
 		
 		VKData*	GetVKByName(string strName);
 		bool VKBind(string strName, Buttons kKey, int iIndex );
-		bool VKBind(string strName, string strKeyName);
+		bool VKBind(string strName, string strKeyName,int iIndex = 0);
 		
 		void VKList();
 		void Save(string strCfgName);

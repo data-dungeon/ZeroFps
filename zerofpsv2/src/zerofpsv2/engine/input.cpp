@@ -298,26 +298,32 @@ VKData* Input::GetVKByName(string strName)
 
 bool Input::VKBind(string strName, Buttons kKey, int iIndex)
 {
+	if(iIndex < 0 || iIndex >= VKMAPS) 
+		return false;
+
 	VKData* pkVk = GetVKByName(strName);
-
-	if(pkVk) {
+	if(pkVk) 
+	{
 		pkVk->m_iInputKey[iIndex] = kKey;
-		return true;
-		}
+	}
+	else
+	{
+	   VKData	kVk;
+		kVk.m_strName = strName;
+		kVk.m_iInputKey[0] = kKey;
+		kVk.m_iInputKey[1] = 0;
+		kVk.m_iInputKey[2] = 0;
+		m_VirtualKeys.push_back(kVk);
+	}
+	
 
-   VKData	kVk;
-	kVk.m_strName = strName;
-	kVk.m_iInputKey[0] = kKey;
-	kVk.m_iInputKey[1] = 0;
-	kVk.m_iInputKey[2] = 0;
-	m_VirtualKeys.push_back(kVk);
-	return true;
+	return true;	//how could this possible hapen
 }
 
-bool Input::VKBind(string strName, string strKeyName)
+bool Input::VKBind(string strName, string strKeyName,int iIndex)
 {
 	Buttons eKey = GetNameByKey( strKeyName );
-	return VKBind(strName, eKey, 0);
+	return VKBind(strName, eKey, iIndex);
 }
 
 
@@ -516,6 +522,34 @@ void Input::RunCommand(int cmdid, const CmdArgument* kCommand)
 			break;*/
 
 		case FID_BINDVK:
+			if(kCommand->m_kSplitCommand.size() >= 3)
+			{
+				bool nice = true;
+				
+				if(!VKBind(kCommand->m_kSplitCommand[1],kCommand->m_kSplitCommand[2],0))
+					nice = false;
+			
+				if(kCommand->m_kSplitCommand.size() >= 4)
+					if(!VKBind(kCommand->m_kSplitCommand[1],kCommand->m_kSplitCommand[3],1))
+						nice = false;
+								
+				if(kCommand->m_kSplitCommand.size() >= 5)
+					if(!VKBind(kCommand->m_kSplitCommand[1],kCommand->m_kSplitCommand[4],2))
+						nice = false;
+			
+				if(nice)
+					cout<<"Bind succes "<<kCommand->m_kSplitCommand[1]<<endl;
+				else
+					cout<<"Bind fail "<<kCommand->m_kSplitCommand[1]<<endl;
+				
+			}
+			else			
+				if(GetConsole())
+					m_pkConsole->Printf("bind <vkey> <key> (<key> <key>  optional)");	
+					
+			break;
+			
+/*			
 			if(kCommand->m_kSplitCommand.size()==3)
 			{
 				if(VKBind(kCommand->m_kSplitCommand[1],kCommand->m_kSplitCommand[2]))
@@ -526,7 +560,7 @@ void Input::RunCommand(int cmdid, const CmdArgument* kCommand)
 			} else
 				if(GetConsole())
 					m_pkConsole->Printf("bind <vkey> <key>");	
-			break;
+			break;*/
 			
 		
 /*		case FID_UNBINDALL:
