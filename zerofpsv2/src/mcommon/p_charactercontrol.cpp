@@ -13,7 +13,8 @@ P_CharacterControl::P_CharacterControl()
 	
 	m_fYAngle = 0;
 	m_fPAngle = 0;	
-	m_fSoundFixDelay = 0;
+	m_fSoundWalkDelay = 0;
+	m_fSoundRunDelay = 0;
 	
 	m_fSpeed = 75.0;
 	m_fJumpForce = 4.0; 
@@ -76,18 +77,23 @@ void P_CharacterControl::Update()
 			//check if where walking or running or nothing
 			if(kVel.Length() > 0 && pkTcs->GetOnGround())
 			{
-				m_fSoundFixDelay = m_pkZeroFps->GetTicks();												
-				if(m_kControls[eCRAWL])					
+				if(m_kControls[eCRAWL])
+				{
+					m_fSoundWalkDelay = m_pkZeroFps->GetTicks();
 					SetCharacterState(eWALKING,true);
+				}
 				else
+				{
+					m_fSoundRunDelay = m_pkZeroFps->GetTicks();
 					SetCharacterState(eRUNNING,true);
+				}
 			}
 					
-			if(m_pkZeroFps->GetTicks() - m_fSoundFixDelay > 0.25)
-			{
-				SetCharacterState(eRUNNING,false);
-				SetCharacterState(eWALKING,false);
-			}
+			//only stop play walk/run sound when we havent touch the ground for 0.25 sec
+			if(m_pkZeroFps->GetTicks() - m_fSoundWalkDelay > 0.25)
+				SetCharacterState(eWALKING,false);				
+			if(m_pkZeroFps->GetTicks() - m_fSoundRunDelay > 0.25)
+				SetCharacterState(eRUNNING,false);				
 			
 			
 			//jump
@@ -116,35 +122,13 @@ void P_CharacterControl::Update()
 			
 		}
 	
+		//rotate character
 		Matrix4 kRot;
 		kRot.Identity();
 		kRot.Rotate(0,m_fYAngle,0);
 		kRot.Transponse();				
 		GetEntity()->SetLocalRotM(kRot);	
-	}
-	
-	/*
-	if(m_pkEntityManager->IsUpdate(PROPERTY_SIDE_SERVER))
-		if(P_Sound* pkSound = (P_Sound*)GetEntity()->GetProperty("P_Sound"))
-		{
-			if(bMoveButtonPressed == true)
-			{
-				if(m_bMoveButtonReleased == true)
-				{
-					m_bMoveButtonReleased = false;
-					pkSound->StartSound("data/sound/footstep_forest.wav", true);
-				}
-			}
-			else
-			{
-				if(m_bMoveButtonReleased == false)
-					pkSound->StopSound("data/sound/footstep_forest.wav");
-	
-				m_bMoveButtonReleased = true;
-			}
-		}
 	}	
-	*/
 }
 
 void P_CharacterControl::PackTo( NetPacket* pkNetPacket, int iConnectionID ) 
@@ -156,18 +140,7 @@ void P_CharacterControl::PackTo( NetPacket* pkNetPacket, int iConnectionID )
 
 void P_CharacterControl::PackFrom( NetPacket* pkNetPacket, int iConnectionID  ) 
 {
-	//cout<<"blub:"<<sizeof(m_kCharacterStates)<<endl;
-	
 	pkNetPacket->Read(m_kCharacterStates);
-
-	
-	/*
-	for(int i = 0;i<8;i++)
-		if(m_kCharacterStates[i])
-			cout<<"state:"<<i<<" true"<<endl;
-		else
-			cout<<"state:"<<i<<" false"<<endl;
-	*/
 }
 
 void P_CharacterControl::SetCharacterState(int iState,bool bValue)

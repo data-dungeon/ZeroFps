@@ -38,7 +38,8 @@ class MCOMMON_API P_CharacterControl: public Property
 		
 		bool			m_bHaveJumped;
 		
-		float			m_fSoundFixDelay;
+		float			m_fSoundWalkDelay;
+		float			m_fSoundRunDelay;
 
 
 		
