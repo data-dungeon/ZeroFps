@@ -20,6 +20,12 @@ static char Devformat_text[4096];	//
 
 ZeroFps::ZeroFps(void) : I_ZeroFps("ZeroFps") 
 {
+
+	// StartUp SDL
+	if(SDL_Init(SDL_OPENGL | SDL_INIT_NOPARACHUTE )<0){
+		g_Logf("Error: Failed to StartUp SDL\n");
+	}	
+
 	/* Create Engine SubSystems 
 		*/
 
@@ -155,7 +161,13 @@ bool ZeroFps::StartUp()
 	m_kFpsGraph.SetMinMax(0,1000);		
 	m_kFpsGraph.SetSize(100,100,100);
 
-//	m_pkObjectMan->Test_CreateZones();
+	//setup default console camera
+	m_pkConsoleCamera=new Camera(Vector3(0,0,0),Vector3(0,0,0),84,1.333,0.3,250);	
+	
+	//setup gui stuff
+	m_pkGui->SetRes(m_pkRender->GetWidth(), m_pkRender->GetHeight());
+	m_pkApp->m_iWidth = m_pkRender->GetWidth();
+	m_pkApp->m_iHeight = m_pkRender->GetHeight();
 
 	return true;
 }
@@ -193,11 +205,7 @@ bool ZeroFps::Init(int iNrOfArgs, char** paArgs)
 	g_ZFObjSys.HandleArgs(iNrOfArgs,paArgs);		//	handle arguments
 
 
-	// StartUp SDL
-	if(SDL_Init(SDL_OPENGL | SDL_INIT_NOPARACHUTE )<0){
-		g_Logf("Error: Failed to StartUp SDL\n");
-		return false;
-	}	
+
 	
 	atexit(SDL_Quit);
 
@@ -209,7 +217,8 @@ bool ZeroFps::Init(int iNrOfArgs, char** paArgs)
 	if(!g_ZFObjSys.StartUp())
 		return false;
 	
-	InitDisplay(m_pkApp->m_iWidth,m_pkApp->m_iHeight,m_pkApp->m_iDepth);
+	
+	//InitDisplay(m_pkApp->m_iWidth,m_pkApp->m_iHeight,m_pkApp->m_iDepth);
 
 	m_iState=state_normal;									// init gamestate to normal		
 
@@ -487,19 +496,6 @@ void ZeroFps::RemoveRenderTarget(Camera* pkCamera)
 }
 
 
-void ZeroFps::InitDisplay(int iWidth,int iHeight,int iDepth) 
-{
-	m_pkRender->InitDisplay(iWidth,iHeight,iDepth);
-
-	// Must call set res again or else GUI doesnt work..
-	m_pkGui->SetRes(m_pkRender->GetWidth(), m_pkRender->GetHeight());
-
-	m_pkApp->m_iWidth = m_pkRender->GetWidth();
-	m_pkApp->m_iHeight = m_pkRender->GetHeight();
-
-	m_pkConsoleCamera=new Camera(Vector3(0,0,0),Vector3(0,0,0),84,1.333,0.3,250);	
-}
-
 void ZeroFps::Swap(void) {
 	DrawDevStrings();
 
@@ -553,7 +549,22 @@ void ZeroFps::ToggleGui(void)
 	}
 }
 
+/*
+void ZeroFps::InitDisplay(int iWidth,int iHeight,int iDepth) 
+{
+	//m_pkRender->InitDisplay(iWidth,iHeight,iDepth);
 
+	// Must call set res again or else GUI doesnt work..
+	m_pkGui->SetRes(m_pkRender->GetWidth(), m_pkRender->GetHeight());
+
+	m_pkApp->m_iWidth = m_pkRender->GetWidth();
+	m_pkApp->m_iHeight = m_pkRender->GetHeight();
+
+	m_pkConsoleCamera=new Camera(Vector3(0,0,0),Vector3(0,0,0),84,1.333,0.3,250);	
+}
+*/
+
+/*
 void ZeroFps::SetDisplay(int iWidth,int iHeight,int iDepth)
 {
 	m_pkRender->SetDisplay(iWidth,iHeight,iDepth);
@@ -572,7 +583,7 @@ void ZeroFps::SetDisplay()
 		printf("Failed to set GUI display!\n");
 	}
 }
-
+*/
 
 void ZeroFps::SetCamera(Camera* pkCamera)
 {
@@ -698,7 +709,7 @@ void ZeroFps::RunCommand(int cmdid, const CmdArgument* kCommand)
 
 	switch(cmdid) {
 		case FID_SETDISPLAY:
-			SetDisplay();
+			m_pkRender->SetDisplay();
 			break;
 
 		case FID_QUIT:

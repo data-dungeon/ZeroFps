@@ -201,9 +201,9 @@ class ENGINE_API ZeroFps : public I_ZeroFps {
 		void SetApp(void);
 		bool Init(int iNrOfArgs, char** paArgs);	
 		void MainLoop(void);		
-		void InitDisplay(int iWidth,int iHeight,int iDepth);		
+/*		void InitDisplay(int iWidth,int iHeight,int iDepth);		
 		void SetDisplay(int iWidth,int iHeight,int iDepth);
-		void SetDisplay();
+		void SetDisplay();*/
 		void Swap(void);											//	swap gl buffers
 		
 		void ToggleFullScreen(void);

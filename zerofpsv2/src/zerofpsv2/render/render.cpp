@@ -52,12 +52,13 @@ bool Render::StartUp()
 {
 	// Get SubSystem Ptrs
 	m_pkTexMan	= static_cast<TextureManager*>(GetSystem().GetObjectPtr("TextureManager"));
-// 	m_pkFrustum = static_cast<Frustum*>(GetSystem().GetObjectPtr("Frustum"));
  	m_pkLight	= static_cast<Light*>(GetSystem().GetObjectPtr("Light")); 	
  	m_pkZShader = static_cast<ZShader*>(GetSystem().GetObjectPtr("ZShader")); 	 	
  	m_pkConsole = static_cast<BasicConsole*>(GetSystem().GetObjectPtr("Console")); 	 	
 
-
+	InitDisplay(m_iWidth,m_iHeight,m_iDepth);
+//	SetDisplay();
+	
 	return true;
 }
 

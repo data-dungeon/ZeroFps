@@ -614,8 +614,7 @@ bool ZShader::HaveVertexProgramExt()
 {
 	unsigned char* pcExt1 = const_cast<unsigned char*>(glGetString(GL_EXTENSIONS));		
 
-
-	printf("Extensions: %s \n",pcExt1);
+	cout<<"Exnstions "<<pcExt1<<endl;
 	//strcmp("
 	
 	return true;

@@ -70,16 +70,12 @@ void MistClient::Init()
 	// set caption
 	SDL_WM_SetCaption("Mistland", NULL);
 	
-	cout<<"blahop 1"<<endl;
-	
 	// create gui script
 	GuiAppLua::Init(&g_kMistClient, GetScript());
-
-	cout<<"blahop 2"<<endl;
+	
 	// init gui
 	InitializeGui(pkGui, pkTexMan, pkScript, pkGuiMan);
-
-	cout<<"blahop 3"<<endl;
+	
 	// hide cursor
 	SDL_ShowCursor(SDL_DISABLE);
 
