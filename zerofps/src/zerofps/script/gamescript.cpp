@@ -52,21 +52,6 @@ static int LuaSetVector3(lua_State* pkLua)
 	return 0;
 }
 
-static int LuaGetEngineScriptInterface(lua_State* pkLua) 
-{
-	EngineScriptInterface* var=(EngineScriptInterface*) lua_touserdata(pkLua,2);
-	lua_pushusertag(pkLua, var, tolua_tag(pkLua, "EngineScriptInterface"));
-	return 1;
-}
-
-static int LuaSetEngineScriptInterface(lua_State* pkLua) 
-{
-	EngineScriptInterface* var=(EngineScriptInterface*) lua_touserdata(pkLua,2);
-	EngineScriptInterface* val=(EngineScriptInterface*) lua_touserdata(pkLua,3);
-	var=val;
-	return 0;
-}
-
 void GameScript::OpenPackageFiles()
 {	
 	tolua_zfscript_bind_open(GetLua());
