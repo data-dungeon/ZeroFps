@@ -1344,9 +1344,9 @@ Entity* ZeroEd::GetTargetObject()
 	Vector3 dir		= Get3DMouseDir(true);
 //	dir.Set(0,1,0);
 
-	start.Print();
+	//start.Print();
 	//cout << " - "; 
-	dir.Print();
+	//dir.Print();
 	//cout << endl; 
 
 	vector<Entity*> kObjects;

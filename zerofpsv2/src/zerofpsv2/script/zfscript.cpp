@@ -471,7 +471,7 @@ int ZFScript::CalculateSize()
 	return 4;
 }
 
-bool ZFScriptSystem::Run(ZFResourceHandle* pkResHandle)
+/*bool ZFScriptSystem::Run(ZFResourceHandle* pkResHandle)
 {	
 	ZFScript* pkScript = (ZFScript*) pkResHandle->GetResourcePtr();
 
@@ -500,45 +500,31 @@ bool ZFScriptSystem::Run(ZFResourceHandle* pkResHandle)
 	}	
 
 	return true;
-}
+}*/
 
 bool ZFScriptSystem::Run(ZFScript* pkScript)
 {	
 	if(pkScript->m_pkLuaState == NULL)
 		return false;
 
-	// Försök att hitta sökvägen via det virituella filsystemet.
 	string strPath = m_pkFileSys->GetFullPath(pkScript->m_szScriptName);
-
-	char szError[150];
 
 	if( strPath.empty() )
 	{
-		sprintf(szError, "Failed to find script: \"%s\"\n", pkScript->m_szScriptName);
-		printf(szError);
-		//ZFAssert(0, szError);
-		//		return false; // TEST VC7!!!
+		printf("Failed to find script: \"%s\"\n", pkScript->m_szScriptName);
+		return false;
 	}
 
-	int iDoFileRes = lua_dofile(pkScript->m_pkLuaState, strPath.c_str());
-
-	if( iDoFileRes )
+	if( luaL_loadfile(pkScript->m_pkLuaState, strPath.c_str()) != 0 )
 	{
-		switch(iDoFileRes)
-		{
-			case LUA_ERRRUN:		sprintf(szError, "LUA_ERRRUN");		break;
-			case LUA_ERRSYNTAX:	sprintf(szError, "LUA_ERRSYNTAX");		break;
-			case LUA_ERRMEM:		sprintf(szError, "LUA_ERRMEM");		break;
-			case LUA_ERRERR:		sprintf(szError, "LUA_ERRERR");		break;
-			case LUA_ERRFILE:		sprintf(szError, "LUA_ERRFILE");		break;
-		}
+		string test = lua_tostring(pkScript->m_pkLuaState, -1);
 
-		//sprintf(szError, "Failed to run script! \"%s\" does not exist.\n", strPath.c_str());
-		printf(szError);
-		//ZFAssert(0, szError);	
+		printf("Failed to load script: \"%s\", %s!\n", 
+			pkScript->m_szScriptName, test.c_str());
+		return false;
 	}
 
-	return true;
+	return (lua_pcall(pkScript->m_pkLuaState, 0, 0, 0) == 0);
 }
 
 bool ZFScriptSystem::Call(ZFResourceHandle* pkResHandle, char* szFuncName, 

@@ -145,7 +145,7 @@ public:
 
 	bool Call(ZFResourceHandle* pkResHandle, char* szFuncName, vector<ScriptFuncArg>& vkParams);
 	bool Call(ZFResourceHandle* pkResHandle, char* szFuncName, int iNumParams, int iNumResults);
-	bool Run(ZFResourceHandle* pkResHandle);
+	//bool Run(ZFResourceHandle* pkResHandle);
 
 	void AddReturnValueTable(lua_State* state, vector<TABLE_DATA>& vkData);
 	void AddReturnValue(lua_State* state,char *szValue, int legth);
