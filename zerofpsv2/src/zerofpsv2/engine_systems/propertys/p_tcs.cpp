@@ -712,8 +712,9 @@ void P_Tcs::DrawAABBTree()
 	int iSize = kAABBList.size();
 	for(int i =iSize-1;i>=0;i--)
 	{
-			m_pkRender->DrawAABB(kAABBList[i].m_kMin,
-										kAABBList[i].m_kMax,kColor );
+			m_pkRender->DrawAABB(m_pkEntity->GetWorldPosV() + kAABBList[i].m_kMin,
+										m_pkEntity->GetWorldPosV() + kAABBList[i].m_kMax,
+										kColor );
 	}
 }
 

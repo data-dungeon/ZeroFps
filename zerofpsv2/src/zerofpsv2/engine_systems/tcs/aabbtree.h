@@ -89,8 +89,7 @@ class AABBTree
 						vector<Vector3>* m_pkVertex, 
 						vector<Vector3>* m_pkNormal, 
 						const Matrix4& kRotation, 
-						float fScale,
-						const Vector3& kPos
+						float fScale
 						);
 		
 		void GetAABBList(vector<AABB>* pkAABBList);

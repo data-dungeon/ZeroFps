@@ -1072,8 +1072,7 @@ void Tcs::UpdateAABBs()
 														pkBody->m_pkVertex,
 														pkBody->m_pkNormal,
 														pkBody->m_kNewRotation,
-														pkBody->m_fScale,
-														pkBody->m_kNewPos
+														pkBody->m_fScale
 														);
 				}
 				else
@@ -1351,7 +1350,13 @@ bool Tcs::CharacterTestLineVSMesh(const Vector3& kStart,const Vector3& kDir,P_Tc
 
 	if(pkMesh->m_kAABBTree.IsValid())
 	{
-		return pkMesh->m_kAABBTree.m_pkRootNode->TestLine(kStart,kPoint2,&m_kLastTestPos);
+		if(pkMesh->m_kAABBTree.m_pkRootNode->TestLine(kStart - pkMesh->m_kNewPos,kPoint2 - pkMesh->m_kNewPos,&m_kLastTestPos))
+		{
+			m_kLastTestPos += pkMesh->m_kNewPos;
+			return true;
+		}
+		else
+			return false;
 	}
 	else
 	{
@@ -1588,9 +1593,9 @@ void Tcs::TestSphereVsMesh(P_Tcs* pkBody1,P_Tcs* pkBody2,vector<Tcs_collission*>
 bool Tcs::CollideSphereVSAABBTree(P_Tcs* pkSphere,P_Tcs* pkMesh)
 {
 
-	if(pkMesh->m_kAABBTree.m_pkRootNode->TestSphere(pkSphere->m_kNewPos ,pkSphere->m_fRadius,&m_kLastTestPos))
+	if(pkMesh->m_kAABBTree.m_pkRootNode->TestSphere(pkSphere->m_kNewPos - pkMesh->m_kNewPos,pkSphere->m_fRadius,&m_kLastTestPos))
 	{
-//  		m_kLastTestPos += pkMesh->m_kNewPos;
+  		m_kLastTestPos += pkMesh->m_kNewPos;
 		return true;
 	}
 	

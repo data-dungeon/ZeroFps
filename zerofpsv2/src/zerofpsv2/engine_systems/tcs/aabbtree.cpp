@@ -26,8 +26,7 @@ void AABBTree::Create(	vector<Mad_Face>* m_pkFaces,
 								vector<Vector3>* m_pkVertex, 
 								vector<Vector3>* m_pkNormal, 
 								const Matrix4& kRotation, 
-								float fScale,
-								const Vector3& kPos
+								float fScale
 							)
 {
 
@@ -44,11 +43,7 @@ void AABBTree::Create(	vector<Mad_Face>* m_pkFaces,
 		kTemp.m_kVerts[2] =  kRotation.VectorTransform( (*m_pkVertex)[(*m_pkFaces)[f].iIndex[2]] );	
 		kTemp.m_kVerts[0] *= fScale;
 		kTemp.m_kVerts[1] *= fScale;
-		kTemp.m_kVerts[2] *= fScale;
- 		kTemp.m_kVerts[0] += kPos;
- 		kTemp.m_kVerts[1] += kPos;
- 		kTemp.m_kVerts[2] += kPos;
-		
+		kTemp.m_kVerts[2] *= fScale;	
 		
 		//setup triangles plane
 		kTemp.m_kPlane.Set(kTemp.m_kVerts[0],kTemp.m_kVerts[1],kTemp.m_kVerts[2]);
