@@ -21,6 +21,9 @@ P_CharacterControl::P_CharacterControl()
 	m_eMoveState = idle;
 	m_kPrevPos = Vector3(-9999,-9999,-9999);
 	m_bMoveButtonReleased = true;
+	
+	m_kCharacterStates.reset();
+	m_kControls.reset();
 }
 
 P_CharacterControl::~P_CharacterControl()

@@ -14,7 +14,7 @@ P_CharacterProperty::P_CharacterProperty()
 	bNetwork = 		true;
 	m_iVersion = 	1;
 	
-	
+	m_kCurrentCharacterStates.reset();
 	
 	m_strName =					"NoName";
 	m_strOwnedByPlayer =		"NoPlayer";
@@ -124,12 +124,12 @@ void P_CharacterProperty::PackTo( NetPacket* pkNetPacket, int iConnectionID )
 	pkNetPacket->Write_Str(m_strName);
 	pkNetPacket->Write_Str(m_strOwnedByPlayer);
 	pkNetPacket->Write(m_bIsPlayerCharacter);
-	
+/*	
 	pkNetPacket->Write_Str(m_strWalkSound);
 	pkNetPacket->Write_Str(m_strRunSound);
 	pkNetPacket->Write_Str(m_strJumpSound);
 	pkNetPacket->Write_Str(m_strSwimSound);
-	
+*/	
 	SetNetUpdateFlag(iConnectionID,false);
 }
 
@@ -138,11 +138,12 @@ void P_CharacterProperty::PackFrom( NetPacket* pkNetPacket, int iConnectionID  )
 	pkNetPacket->Read_Str(m_strName);
 	pkNetPacket->Read_Str(m_strOwnedByPlayer);
 	pkNetPacket->Read(m_bIsPlayerCharacter);
-
+/*
 	pkNetPacket->Read_Str(m_strWalkSound);
 	pkNetPacket->Read_Str(m_strRunSound);
 	pkNetPacket->Read_Str(m_strJumpSound);
 	pkNetPacket->Read_Str(m_strSwimSound);		
+*/	
 }
 
 
