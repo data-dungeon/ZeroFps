@@ -17,6 +17,7 @@
 #include "p_serverunit.h"
 #include "externalcommand.h"
 #include "aibase.h"
+#include "p_unitsystem.h"
 
 #include "p_serverunit.h"
 #include "unitcommandinfo.h"
@@ -26,6 +27,7 @@ using namespace std;
 class COMMON_API P_UnitAttackAI : public Property, public AIBase
 {
 public:
+	Vector3 m_kTargetPrevPos;
 	bool RegisterExternalCommands();
 	void Init();
 	AIBase* UpdateAI();
@@ -34,7 +36,9 @@ public:
 	P_UnitAttackAI();
 	virtual ~P_UnitAttackAI();
 private:
+	HeightMap* m_pkMap;
 	P_ServerUnit* m_pkUnit;
+	P_UnitSystem* m_pkUnitSystem;
 	ExternalCommand* m_pkAttackCommand;
 	int m_iCurrentState;
 	Object* m_pkTargetObject;

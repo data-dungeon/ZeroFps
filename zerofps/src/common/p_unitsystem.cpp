@@ -62,7 +62,10 @@ void P_UnitSystem::SetupSystems()
 
 Weapon* P_UnitSystem::GetWeaponPointer(int iPlayer,int iWeapon)
 {
-	if(iPlayer >= m_iPlayers)
+	if(iPlayer == 255)
+		iPlayer = 0;
+
+	if(iPlayer >= m_iPlayers )
 		return NULL;
 		
 	if(iWeapon >= m_kPlayerSystems[iPlayer].kWeapons.size())
@@ -73,6 +76,9 @@ Weapon* P_UnitSystem::GetWeaponPointer(int iPlayer,int iWeapon)
 
 Armor* P_UnitSystem::GetArmorPointer(int iPlayer,int iArmor)
 {
+	if(iPlayer == 255)
+		iPlayer = 0;
+
 	if(iPlayer >= m_iPlayers)
 		return NULL;
 		
@@ -87,7 +93,10 @@ bool P_UnitSystem::FireWeapon(P_ServerUnit* pkSu,Point kTarget,int iWeapon)
 {
 	Weapon* pkWeapon = GetWeaponPointer((int)pkSu->m_kInfo.m_Info2.m_cTeam,iWeapon);
 	if(!pkWeapon)
+	{
+		cout<<"FireWeapon: no weapon!" <<endl;
 		return false;
+	}
 	
 	cout<<"Fireing weapon "<<pkWeapon->sName<<endl;
 	
@@ -95,7 +104,10 @@ bool P_UnitSystem::FireWeapon(P_ServerUnit* pkSu,Point kTarget,int iWeapon)
 	Tile* tg = TileEngine::m_pkInstance->GetTile(kTarget.x,kTarget.y);
 	
 	if(!tg)
+	{
+		cout<<"FireWeapon: no weapon!" <<endl;
 		return false;
+	}
 
 	
 	switch(pkWeapon->iType)
@@ -118,8 +130,11 @@ bool P_UnitSystem::FireWeapon(P_ServerUnit* pkSu,Point kTarget,int iWeapon)
 					if(pkTarget)
 					{
 						Armor* pkArmor = GetArmorPointer((int)pkTarget->m_kInfo.m_Info2.m_cTeam,(int)pkTarget->m_kInfo.m_Info2.m_cArmor);
-						if(!pkArmor)					
+						if(!pkArmor)
+						{
+							cout<<"FireWeapon: no Armour!" <<endl;
 							return false;
+						}
 					
 						int iDamage = int(pkWeapon->iDamage * pkWeapon->afModifiers[pkTarget->m_kInfo.m_Info2.m_cArmor] * pkArmor->fModifier);
 						return pkTarget->Damage(iDamage);
@@ -136,7 +151,7 @@ bool P_UnitSystem::FireWeapon(P_ServerUnit* pkSu,Point kTarget,int iWeapon)
 	}
 
 
-
+	cout<<"FireWeapon: oh no! reached the end of this function" <<endl;
 	return false;
 }
 

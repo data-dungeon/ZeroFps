@@ -3,13 +3,15 @@
 //////////////////////////////////////////////////////////////////////
 
 #include "p_unitattackai.h"
+#include "tileengine.h"
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 
 P_UnitAttackAI::P_UnitAttackAI()
-	:m_pkAttackCommand(NULL),m_pkUnit(NULL),m_pkTargetObject(NULL),m_fRange(20),m_pkAi(NULL)
+	:m_pkAttackCommand(NULL),m_pkUnit(NULL),m_pkTargetObject(NULL),
+	m_fRange(20),m_pkAi(NULL), m_pkUnitSystem(NULL)
 {
 	strcpy(m_acName,"P_UnitAttackAI");
 	m_iType=PROPERTY_TYPE_NORMAL;
@@ -25,7 +27,7 @@ P_UnitAttackAI::~P_UnitAttackAI()
 void P_UnitAttackAI::Init()
 {
 	RegisterExternalCommands();
-
+	m_pkMap = static_cast<HeightMap*>(g_ZFObjSys.GetObjectPtr("HeightMap"));
 }
 
 bool P_UnitAttackAI::RegisterExternalCommands()
@@ -61,6 +63,7 @@ AIBase* P_UnitAttackAI::RunUnitCommand(int iCommandID, int iXDestinaton, int iYD
 				{
 					cout<< "P_UnitAttackAI:found target!" <<endl;
 					m_iCurrentState = UNIT_ATTACK;
+					m_kTargetPrevPos = m_pkTargetObject->GetPos();
 					return this;
 				}
 				else
@@ -82,42 +85,81 @@ AIBase* P_UnitAttackAI::UpdateAI()
 	{
 	case UNIT_ATTACK:
 		{
-			cout<<"hehjehejejhe" <<endl;
+			//cout<<"hehjehejejhe" <<endl;
 			if(m_pkTargetObject)
 			{
 				Vector3 kDistVec = m_pkTargetObject->GetPos() - m_pkObject->GetPos();
 				float TempDist = (kDistVec.x * kDistVec.x) + (kDistVec.y * kDistVec.y) + (kDistVec.z * kDistVec.z);
 				if(TempDist<m_fRange)
 				{
+					cout<<"P_UnitAttackAI : Target in Range : "<<TempDist <<"<" <<m_fRange <<endl;
 					if(m_pkAi)
 					{
 						UnitCommand TempCommand;
 						strcpy(TempCommand.m_acCommandName, "Stop");
 						//TempCommand.m_iTarget = m_pkObject->iNetWorkID;
 						m_pkAi = m_pkUnit->RunExternalCommand(&TempCommand);
-						//m_pkAi->UpdateAI();
 					}
-					cout<<"P_UnitAttackAI : Target in Range : "<<TempDist <<"<" <<m_fRange <<endl;
+					if(!m_pkUnitSystem)
+					{
+						Object* sio = m_pkObject->m_pkObjectMan->GetObject("A ServerInfoObject");
+						if(sio)
+							m_pkUnitSystem=static_cast<P_UnitSystem*>(sio->GetProperty("P_UnitSystem"));
+					}
+					if(m_pkUnitSystem)
+					{
+						if(m_pkMap)
+						{
+							Point Target = TileEngine::m_pkInstance->GetSqrFromPos(m_pkTargetObject->GetPos());
+							//Point Target(int(m_pkMap->m_iHmSize/2+ceil((m_pkTargetObject->GetPos().x / HEIGHTMAP_SCALE))),
+							//	int(m_pkMap->m_iHmSize/2+ceil((m_pkTargetObject->GetPos().z / HEIGHTMAP_SCALE))));
+							if(!m_pkUnitSystem->FireWeapon(m_pkUnit,Target,0))//m_pkUnit->m_kInfo.m_cWeapon)
+							{
+								cout<<"fwpe: false" <<endl;
+								return m_pkAi;
+							}
+							else
+							{
+								if(m_pkAi)
+									m_pkAi = m_pkAi->UpdateAI();
+								return this;
+							}
+						}
+					}
+					else
+					{ 
+						cout<<"no P_UnitSystem" <<endl;
+						return m_pkAi->UpdateAI(); 
+					}
+					//P_UnitSystem
+					//m_pkAi->UpdateAI();
+					//if(m_pkAi)
+					//m_pkAi = m_pkAi->UpdateAI();
+					
 				}
+				
+				
 				else
 				{
 					cout<<"P_UnitAttackAI : Target not in Range : "<<TempDist <<">" <<m_fRange <<endl;
-					if(!m_pkAi)
+					if(!m_pkAi)// || ((m_pkTargetObject->GetPos() - m_kTargetPrevPos) > 300))
 					{
 						UnitCommand TempCommand;
 						strcpy(TempCommand.m_acCommandName, "Move");
 						TempCommand.m_iTarget = m_pkTargetObject->iNetWorkID;
 						m_pkAi = m_pkUnit->RunExternalCommand(&TempCommand);
 					}
-					else m_pkAi->UpdateAI();
-
+					if(m_pkAi)
+						m_pkAi = m_pkAi->UpdateAI();
+					m_kTargetPrevPos = m_pkTargetObject->GetPos();
 					return this;
 				}
-			}     
-		}
-	}
+			}
+		}     
 	
-	return NULL;
+}
+
+return NULL;
 }
 
 COMMON_API Property* Create_P_UnitAttackAI()
