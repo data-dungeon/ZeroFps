@@ -63,6 +63,7 @@ static bool GUIPROC( ZGuiWnd* win, unsigned int msg, int numparms, void *params 
 		break;
 
 	case ZGM_KEYPRESS:
+		printf("%s\n", win->GetName()); 
 		g_kMistClient.OnKeyPress(((int*)params)[0], win);		
 		break;
 

@@ -1,11 +1,6 @@
 #ifndef _MISTSERVER_H_
 #define _MISTSERVER_H_
 
-#ifndef _DONT_MAIN
-	#define _MAINAPPLICATION_
-	#define _DONT_MAIN
-#endif
-
 #include <iostream>
 #include <cmath>
 #include <list>
@@ -49,6 +44,12 @@
 */
 class ZeroEd :public Application , public ZGuiApp {
 	private:
+
+		void FillPropertyValList();
+		bool FillPropertyList();
+		bool UpdatePropertyList(int iID);
+		bool PlaceObjectOnGround(int iObjectID, int iZoneID);
+		char* GetSelEnviromentString();
 
 		//console funktions
 		enum FuncId_e
@@ -173,9 +174,8 @@ class ZeroEd :public Application , public ZGuiApp {
 		void Input_EditZone();
 		void Input_EditObject(float fMouseX, float fMouseY);
 
-		bool UpdatePropertyList(int iID);
 		bool PlaceObjectOnGround(int iObjectID);
-		char* GetSelEnviromentString();
+
 
 		
 		
@@ -203,6 +203,7 @@ class ZeroEd :public Application , public ZGuiApp {
 		void OnServerStart();
 		void OnClientStart(){};
 
+		void AddPropertyVal();
 	
 		Vector3 GetPlayerStartLocation(const char* csName);
 		void UpdateStartLocatons();

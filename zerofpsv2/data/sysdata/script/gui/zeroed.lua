@@ -182,12 +182,27 @@ function GUICreate()
 	CreateWnd(0,"PropertyPage","WorkTabWnd","Properties",2,27,252,227,0,0,0)
 	ChangeSkin("PropertyPage","Skin4","Window")
 
-	CreateWnd(5,"PropertyList","PropertyPage","",10,9,200,200,0,0,0)
+	CreateWnd(5,"PropertyList","PropertyPage","",10,20,200,200,0,0,0)
+
+	CreateWnd(1,"RemovePropertyBn","PropertyPage","",224,12,16,16,0,0,0)
+	ChangeSkin("RemovePropertyBn","Skin1","Button up")
+	ChangeSkin("RemovePropertyBn","Skin2","Button down")
+	ChangeSkin("RemovePropertyBn","Skin3","Button focus")
+
+	CreateWnd(1,"OpenAllPropertyWnd","PropertyPage","+",224,38,16,16,0,0,0)
+	ChangeSkin("OpenAllPropertyWnd","Skin11","Button up")
+	ChangeSkin("OpenAllPropertyWnd","Skin2","Button down")
+	ChangeSkin("OpenAllPropertyWnd","Skin11","Button focus")
+
+	CreateWnd(1,"OpenEditPropertyWnd","PropertyPage","?",224,64,16,16,0,0,0)
+	ChangeSkin("OpenEditPropertyWnd","Skin11","Button up")
+	ChangeSkin("OpenEditPropertyWnd","Skin2","Button down")
+	ChangeSkin("OpenEditPropertyWnd","Skin11","Button focus")
 
 	CreateWnd(0,"EnviromentPage","WorkTabWnd","Enviroment",2,27,252,227,0,0,0)
 	ChangeSkin("EnviromentPage","Skin4","Window")
 
-	CreateWnd(5,"EnviromentPresetList","EnviromentPage","",10,9,200,200,0,0,0)
+	CreateWnd(5,"EnviromentPresetList","EnviromentPage","",10,20,200,200,0,0,0)
 	ChangeSkin("EnviromentPresetList","Skin5","Listbox")
 	ChangeSkin("EnviromentPresetList","Skin6","Listbox: Button up")
 	ChangeSkin("EnviromentPresetList","Skin7","Listbox: Button down")
@@ -197,6 +212,22 @@ function GUICreate()
 	ChangeSkin("EnviromentPresetList","Skin11","Listbox: Scrollbar: Button down")
 	ChangeSkin("EnviromentPresetList","Skin11","Listbox: Scrollbar: Button focus")
 
+	CreateWnd(0,"AddNewProperyWnd","GuiMainWnd","",527,288-257+16,256,227,0,0,0)
+	ShowWnd("AddNewProperyWnd",0,0)
+
+	CreateWnd(5,"AllPropertyList","AddNewProperyWnd","",10,8,200,200,0,0,0)
+
+	CreateWnd(1,"AddPropertyBn","AddNewProperyWnd","+",224,12,16,16,0,0,0)
+	ChangeSkin("AddPropertyBn","Skin11","Button up")
+	ChangeSkin("AddPropertyBn","Skin2","Button down")
+	ChangeSkin("AddPropertyBn","Skin11","Button focus")
+
+	CreateWnd(0,"EditPropertyWnd","GuiMainWnd","",527,288-257+16,256,227,0,0,0)
+	ShowWnd("EditPropertyWnd",0,0)
+
+	CreateWnd(5,"PropertyValList","EditPropertyWnd","",10,10,236,200-22,0,0,0)
+	CreateWnd(10,"PropertyValEb","EditPropertyWnd","",10,198+4,236,20,0,0,0)
+	ChangeSkin("PropertyValEb","Skin31","Textbox")
 
 
 end

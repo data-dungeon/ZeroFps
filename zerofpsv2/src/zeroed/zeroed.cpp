@@ -3,7 +3,12 @@
 	\ingroup MistLand
 
   ZeroEd is the Editor Application of the game MistLands.
-*/ 
+*/
+
+#ifndef _DONT_MAIN					// <- OBS! Flytta inte på denna. Måste ligga i
+	#define _MAINAPPLICATION_		// just denna fil och inte på flera ställen.
+	#define _DONT_MAIN
+#endif
  
 #include <set> 
 #include <algorithm>
@@ -26,26 +31,35 @@
 #include "../mcommon/si_dm.h"
 #include "../zerofpsv2/engine_systems/propertys/p_scriptinterface.h"
 
-ZeroEd g_kMistServer("ZeroEd", 0, 0, 0);
+ZeroEd g_kZeroEd("ZeroEd", 0, 0, 0);
 
 static bool GUIPROC( ZGuiWnd* win, unsigned int msg, int numparms, void *params ) 
-{
+{static int oka = 0;
 	switch(msg)
 	{
 	case ZGM_COMMAND:
-		g_kMistServer.OnCommand(((int*)params)[0], (((int*)params)[1] == 1) ? true : false, win);
+		g_kZeroEd.OnCommand(((int*)params)[0], (((int*)params)[1] == 1) ? true : false, win);
 		break;
 	case ZGM_SELECTLISTITEM:
-		g_kMistServer.OnClickListbox(((int*)params)[0],((int*)params)[1],win);
+		g_kZeroEd.OnClickListbox(((int*)params)[0],((int*)params)[1],win);
 		break;
 	case ZGM_SELECTTREEITEM:
 		char** pszParams; pszParams = (char**) params;
-		g_kMistServer.OnClickTreeItem( pszParams[0], pszParams[1], 
+		g_kZeroEd.OnClickTreeItem( pszParams[0], pszParams[1], 
 			pszParams[2], pszParams[3][0] == '1' ? true : false);		
 		break;
 	case ZGM_TCN_SELCHANGE:
 		int* data; data = (int*) params; 
-		g_kMistServer.OnClickTabPage((ZGuiTabCtrl*) data[2], data[0], data[1]);// fram med släggan
+		g_kZeroEd.OnClickTabPage((ZGuiTabCtrl*) data[2], data[0], data[1]);// fram med släggan
+		break;
+	case ZGM_KEYPRESS:
+		if(((int*)params)[0] == KEY_RETURN)
+		{
+			if(strcmp("PropertyValEb", win->GetName()) == 0)
+			{
+				g_kZeroEd.AddPropertyVal();
+			}
+		}
 		break;
 	}
 	return true;
@@ -278,7 +292,7 @@ void ZeroEd::Init()
 	pkRenderer->SetScaleMode(GUIScaleManually);
 	
 	// create gui script funktions
-	GuiAppLua::Init(&g_kMistServer, m_pkScript);
+	GuiAppLua::Init(&g_kZeroEd, m_pkScript);
 
 	// Load default texture and create default font and menu (NULL = No menu).
 	InitGui(m_pkScript, 
@@ -1708,15 +1722,32 @@ void ZeroEd::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 		{
 			if(strWndClicked == "OpenWorkTabButton")
 			{
+				static bool state[2] = {0,0};
 				if( IsWndVisible("worktab") )
 				{
 					m_pkAudioSys->StartSound("/data/sound/close_window.wav",m_pkAudioSys->GetListnerPos());
 					GetWnd("worktab")->Hide(); 
+
+					state[0] = GetWnd("AddNewProperyWnd")->IsVisible();
+					state[1] = GetWnd("EditPropertyWnd")->IsVisible();
+
+					GetWnd("AddNewProperyWnd")->Hide();
+					GetWnd("EditPropertyWnd")->Hide();
 				}
 				else 
 				{
 					m_pkAudioSys->StartSound("/data/sound/open_window.wav",m_pkAudioSys->GetListnerPos());
 					GetWnd("worktab")->Show(); 
+
+					if(state[0] == true)
+						GetWnd("AddNewProperyWnd")->Show();
+					else
+						GetWnd("AddNewProperyWnd")->Hide();
+
+					if(state[1] == true)
+						GetWnd("EditPropertyWnd")->Show();
+					else
+						GetWnd("EditPropertyWnd")->Hide();
 				}
 			}
 			else
@@ -1762,6 +1793,36 @@ void ZeroEd::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 				m_bPlaceObjectsOnGround = IsButtonChecked((char*)strWndClicked.c_str());
 				if(m_bPlaceObjectsOnGround)
 					PlaceObjectOnGround(m_iCurrentObject);
+			}
+		}
+		else
+		if(strMainWnd == "PropertyPage")
+		{
+			if(strWndClicked == "OpenAllPropertyWnd")
+			{
+				ShowWnd("EditPropertyWnd",false);
+				ShowWnd("AddNewProperyWnd",!IsWndVisible("AddNewProperyWnd"));
+				FillPropertyList();
+			}
+			else
+			if(strWndClicked == "OpenEditPropertyWnd")
+			{
+				ShowWnd("AddNewProperyWnd",false);
+				ShowWnd("EditPropertyWnd",!IsWndVisible("EditPropertyWnd"));
+				FillPropertyValList();
+			}
+		}
+		else
+		if(strMainWnd == "AddNewProperyWnd")
+		{
+			char* item;
+			Entity* pkEnt;
+			if(strWndClicked == "AddPropertyBn")
+			{
+				if((item = GetSelItem("AllPropertyList")))
+					if((pkEnt = m_pkObjectMan->GetObjectByNetWorkID(m_iCurrentObject)))
+						if(pkEnt->AddProperty(item))
+							UpdatePropertyList(pkEnt->GetEntityID());
 			}
 		}
 		else
@@ -1832,6 +1893,26 @@ void ZeroEd::OnClickListbox(int iListBoxID, int iListboxIndex, ZGuiWnd* pkMain)
 				SetZoneEnviroment( szFull.c_str()  );  
 			}
 		}
+	}
+
+	if(strListBox == "PropertyList")
+	{
+		ShowWnd("AddNewProperyWnd",false);
+		ShowWnd("EditPropertyWnd",true);
+		FillPropertyValList();
+	}
+
+	if(strListBox == "PropertyValList")
+	{
+		char* szProperty, *item;
+		Entity* pkEnt;
+		Property* pkProp;
+
+		if((szProperty=GetSelItem("PropertyList")))
+			if((pkEnt = m_pkObjectMan->GetObjectByNetWorkID(m_iCurrentObject)))
+				if((item = GetSelItem("PropertyValList")))
+					if((pkProp = pkEnt->GetProperty(szProperty)))
+						SetText("PropertyValEb", (char*)pkProp->GetValue(item).c_str());
 	}
 }
 
@@ -2055,32 +2136,4 @@ bool ZeroEd::PlaceObjectOnGround(int iObjectID)
 	}
 
 	return false;
-}
-
-bool ZeroEd::UpdatePropertyList(int iID)
-{
-	ZGuiListbox* pkProperyList = (ZGuiListbox*) GetWnd("PropertyList");
-	if(pkProperyList == NULL)
-		return false;
-
-	pkProperyList->RemoveAllItems();
-
-	vector<string> vkProperties;
-	PropertyFactory* pkPropFuck = 
-		static_cast<PropertyFactory*>(g_ZFObjSys.GetObjectPtr("PropertyFactory"));
-
-	list<string> temp;
-	pkPropFuck->GetAllProperties(vkProperties);
-	for(int i=0; i<vkProperties.size(); i++)
-		temp.push_back(vkProperties[i]);
-
-	temp.sort(); 
-
-	int i=0;
-
-	list<string>::iterator it = temp.begin();
-	for( ; it!=temp.end(); it++) 
-		pkProperyList->AddItem((char*)(*it).c_str(), i++, false);
-
-	return true;
 }
