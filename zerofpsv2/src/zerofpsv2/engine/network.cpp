@@ -351,6 +351,8 @@ void NetWork::ClientStart(const char* szIp, const char* szLogin, const char* szP
 	NetP.Write_Str(szLogin);
 	NetP.Write_Str(szPass);
 	SendRaw(&NetP);
+
+	m_kServerAddress = NetP.m_kAddress;
 }
 
 /**	\brief	Checks for incoming packets and return them.

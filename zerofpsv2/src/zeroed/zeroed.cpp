@@ -360,6 +360,12 @@ void ZeroEd::OnServerStart(void)
 
 void ZeroEd::OnClientStart()
 {
+	char szIpPort[256];
+	char szTitle[256];
+	m_pkFps->m_pkNetWork->AddressToStr( &m_pkFps->m_pkNetWork->m_kServerAddress, szIpPort);
+	sprintf(szTitle, "ZeroEd - %s", szIpPort);
+	SetTitle(szTitle);
+
 	m_pkActiveCameraObject = NULL;
 }
 
