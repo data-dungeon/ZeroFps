@@ -135,9 +135,10 @@ void ZeroRTS::OnIdle()
 	if(m_pkMoveObject)
 		MovePath(m_pkMoveObject);
 
-	int iObjID = pkFps->GetClientObjectID();
-	m_iSelfObjectID = iObjID;
-
+	if(pkFps->m_bServerMode) {
+		int iObjID = pkFps->GetClientObjectID();
+		m_iSelfObjectID = iObjID;
+		}
 
 	Object* pkObj = pkObjectMan->GetObjectByNetWorkID( m_iSelfObjectID );
 	if(pkObj) {
@@ -176,6 +177,7 @@ void ZeroRTS::OnSystem()
 	//if server is running
 	if(pkFps->m_bServerMode)
 	{
+		
 		if(P_ClientInput::m_kServerCommands.size() > 0)
 		{
 			cout<<"GOT "<<P_ClientInput::m_kServerCommands.size()<<" Commands"<<endl;
