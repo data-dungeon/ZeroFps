@@ -134,13 +134,13 @@ void P_ShadowBlob::Init()
 {
 
 	m_pkMaterial = new ZMaterial;
-	m_pkMaterial->GetPass(0)->m_kTUs[0]->SetRes("data/textures/shadowblob.bmp");
+	m_pkMaterial->GetPass(0)->m_kTUs[0]->SetRes("data/textures/shadowblob.tga");
 	m_pkMaterial->GetPass(0)->m_iPolygonModeFront = FILL_POLYGON;
 	m_pkMaterial->GetPass(0)->m_bLighting = 			false;		
 	m_pkMaterial->GetPass(0)->m_bBlend = 				true;
 	m_pkMaterial->GetPass(0)->m_bFog =	 				true;
-	m_pkMaterial->GetPass(0)->m_iBlendDst = 			ZERO_BLEND_DST;
-	m_pkMaterial->GetPass(0)->m_iBlendSrc = 			SRC_COLOR_BLEND_DST;
+	m_pkMaterial->GetPass(0)->m_iBlendSrc = SRC_ALPHA_BLEND_SRC;
+	m_pkMaterial->GetPass(0)->m_iBlendDst = ONE_MINUS_SRC_ALPHA_BLEND_DST;	
 }
 
 void P_ShadowBlob::Save(ZFIoInterface* pkPackage)

@@ -71,6 +71,11 @@ void GLGuiRender::SetScaleMode(GUIScaleMode eGUIScaleMode)
 //
 bool GLGuiRender::StartRender(bool bClear)
 {
+	//binds a default material, so all gl settings is the same each time gui is rendered
+	static ZMaterial kEmptyMaterial;	
+	m_pkShader->BindMaterial(&kEmptyMaterial);
+	
+	//pushes all settings for the material system, 
 	m_pkShader->Push("gui");
 
 	glPushAttrib(GL_TEXTURE_BIT | GL_LIGHTING_BIT | GL_FOG_BIT | 
