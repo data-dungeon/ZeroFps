@@ -19,9 +19,10 @@ P_Car::~P_Car()
 void P_Car::Init()
 {
 	cout<< "New car created"<<endl;
-
-	m_pkInputHandle = new InputHandle("CarControl");
-	m_pkInputHandle->SetActive(true);
+	
+	//m_pkInputHandle = m_pknew InputHandle("CarControl");
+	m_pkInputHandle = m_pkZeroFps->m_pkInput->GetInputHandle("Application");
+	//m_pkInputHandle->SetActive(true);
 
 }
 
