@@ -101,6 +101,9 @@ public:
    int GetItemValue ()                        { return int(m_iValue * m_iQuantity * m_fQuality); }
    void AddItemValue ( int iValue );
 
+   void AddAfterName ( string kAddName );
+   void AddBeforeName ( string kAddName );
+
    void Print();
 
    bool operator== ( ItemStats &kItemStats );

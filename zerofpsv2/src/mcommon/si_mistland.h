@@ -95,6 +95,9 @@ namespace MistLandLua
 
    int MCOMMON_API SetIconLua (lua_State* pkLua);
 
+   int MCOMMON_API AddBeforeItemNameLua (lua_State* pkLua);
+   int MCOMMON_API AddAfterItemNameLua (lua_State* pkLua);
+
    // equip / unequip character
 
    int MCOMMON_API EquipFromScriptLua (lua_State* pkLua);
@@ -106,9 +109,20 @@ namespace MistLandLua
    int MCOMMON_API RunScriptLua (lua_State* pkLua);
 
 
+   // returns a stat-category (fire, ice, lightning, poision etc...)
+   int MCOMMON_API GetRandomCategoryLua (lua_State* pkLua);
+   int MCOMMON_API GetRandomSkillLua (lua_State* pkLua);
+   int MCOMMON_API GetRandomAttributeLua (lua_State* pkLua);
+   int MCOMMON_API RandomLua(lua_State* pkLua); //takes a number and returns a number between 0-entered number
+
+
 	int MCOMMON_API SetPSystemLua(lua_State* pkLua);				//(int objectid,string pssystem) set wich particle effect to use, if none dont send any parameters
 
 	int MCOMMON_API SetVelToLua(lua_State* pkLua);				//(int objectid,int objectid,double speed) set the velocity of and object towards another object
+
+
+   int MCOMMON_API SetPropertyValueLua(lua_State* pkLua); //which property, data in property and last, value
+
 
 };
 

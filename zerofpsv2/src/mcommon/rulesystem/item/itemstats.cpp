@@ -449,8 +449,23 @@ bool ItemStats::LoadIcons ( char *cpIcon, char *cpIconMask )
 
 // ---------------------------------------------------------------------------------------------
 
+void ItemStats::AddAfterName ( string kAddName )
+{
+   m_kItemName += " " + kAddName;
+}
+
+// ---------------------------------------------------------------------------------------------
+
+void ItemStats::AddBeforeName ( string kAddName )
+{
+   m_kItemName = kAddName + " " + m_kItemName;
+}
+
+// ---------------------------------------------------------------------------------------------
+
 void ItemStats::RegisterAsContainer()
 { 
 	s_iContainerCounter++;
 	m_iContainerID = s_iContainerCounter;
 }
+

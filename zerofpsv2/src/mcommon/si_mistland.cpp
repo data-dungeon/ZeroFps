@@ -1,5 +1,6 @@
 #include "si_mistland.h"
 #include "rulesystem/character/characterstats.h"
+#include "rulesystem/rulesystem.h" // for getting all types of skills&attributes
 #include "rulesystem/item/itemstats.h"
 #include "p_charstats.h"
 #include "p_item.h"
@@ -85,6 +86,9 @@ void MistLandLua::Init(ObjectManager* pkObjMan,ZFScriptSystem* pkScript)
    pkScript->ExposeFunction("SetItemWeight",			   MistLandLua::SetItemWeightLua);
    pkScript->ExposeFunction("SetIcon",			         MistLandLua::SetIconLua);
 
+   pkScript->ExposeFunction("AddBeforeItemName",			MistLandLua::AddBeforeItemNameLua);
+   pkScript->ExposeFunction("AddAfterItemName",	         MistLandLua::AddAfterItemNameLua);
+
    // Lua Lua commands
    pkScript->ExposeFunction("RunScript",			      MistLandLua::RunScriptLua);		
 
@@ -93,6 +97,15 @@ void MistLandLua::Init(ObjectManager* pkObjMan,ZFScriptSystem* pkScript)
    pkScript->ExposeFunction("Equip",   		         MistLandLua::EquipLua);			
    pkScript->ExposeFunction("UnEquip",	      		   MistLandLua::UnEquipLua);			
 	pkScript->ExposeFunction("Equip",	      		   MistLandLua::EquipLua);			
+
+   // random function
+   pkScript->ExposeFunction("Random",	      		   MistLandLua::RandomLua);			
+   pkScript->ExposeFunction("GetRandomCategory",	   MistLandLua::GetRandomCategoryLua);
+   pkScript->ExposeFunction("GetRandomSkill",	      MistLandLua::GetRandomSkillLua);	
+   pkScript->ExposeFunction("GetRandomAttribute",	   MistLandLua::GetRandomAttributeLua);
+
+   pkScript->ExposeFunction("SetPropertyValue",	      MistLandLua::SetPropertyValueLua);
+
 
 }
 
@@ -1665,6 +1678,61 @@ int MistLandLua::AddItemValueLua (lua_State* pkLua)
 
 // ----------------------------------------------------------------------------------------------
 
+int MistLandLua::AddBeforeItemNameLua (lua_State* pkLua)
+{
+	if( g_pkScript->GetNumArgs(pkLua) == 1 )
+   {
+		Object* pkObject = g_pkObjMan->GetObjectByNetWorkID(g_iCurrentObjectID);
+
+	   if (pkObject)
+		{
+     		char	acType[128];
+			g_pkScript->GetArgString(pkLua, 0, acType);	
+
+  			P_Item* pkCP = (P_Item*)pkObject->GetProperty("P_Item");
+
+         if ( pkCP )
+            pkCP->m_pkItemStats->AddBeforeName ( string(acType ) );
+         else
+            cout << "Warning! Tried to use a item function on a non-item object!" << endl;
+ 
+      }
+
+   }
+
+   return 0;
+}
+
+// ----------------------------------------------------------------------------------------------
+
+int MistLandLua::AddAfterItemNameLua (lua_State* pkLua)
+{
+	if( g_pkScript->GetNumArgs(pkLua) == 1 )
+   {
+		Object* pkObject = g_pkObjMan->GetObjectByNetWorkID(g_iCurrentObjectID);
+
+	   if (pkObject)
+		{
+     		char	acType[128];
+			g_pkScript->GetArgString(pkLua, 0, acType);	
+
+  			P_Item* pkCP = (P_Item*)pkObject->GetProperty("P_Item");
+
+         if ( pkCP )
+            pkCP->m_pkItemStats->AddAfterName ( string(acType ) );
+         else
+            cout << "Warning! Tried to use a item function on a non-item object!" << endl;
+ 
+      }
+
+   }
+
+   return 0;
+}
+
+// ----------------------------------------------------------------------------------------------
+
+
 int MistLandLua::UnEquipLua (lua_State* pkLua)
 {
 	if( g_pkScript->GetNumArgs(pkLua) == 1 )
@@ -1810,6 +1878,90 @@ int MistLandLua::EquipLua (lua_State* pkLua)
 
 // ----------------------------------------------------------------------------------------------
 
+int MistLandLua::RandomLua (lua_State* pkLua)
+{
+ 	if( g_pkScript->GetNumArgs(pkLua) == 1 )
+   {
+      double dTemp;
+      g_pkScript->GetArgNumber(pkLua, 0, &dTemp);
+
+      if ( dTemp < 0 )
+         dTemp = 1;
+
+
+      g_pkScript->AddReturnValue(pkLua, rand()%int(dTemp) );
+
+      return 1;
+   }
+
+   return 0;
+}
+
+// ----------------------------------------------------------------------------------------------
+
+int MistLandLua::GetRandomCategoryLua (lua_State* pkLua)
+{
+   int iRand = rand()%6;
+
+   string kType;
+
+   switch (iRand)
+   {
+      case 0:
+         kType = "Fire";
+         break;
+      case 1:
+         kType = "Ice";
+         break;
+      case 2:
+         kType = "Lightning";
+         break;
+      case 3:
+         kType = "Poison";
+         break;
+      case 4:
+         kType = "Earth";
+         break;
+      case 5:
+         kType = "Water";
+         break;
+   }
+
+   g_pkScript->AddReturnValue(pkLua, (char*)kType.c_str(), kType.size() );
+
+   return 1;
+}
+
+
+// ----------------------------------------------------------------------------------------------
+
+int MistLandLua::GetRandomSkillLua (lua_State* pkLua)
+{
+	// if stat-types isn't loaded
+	if ( !g_kSkills.size() && !g_kAttributes.size() && !g_kData.size() )
+      LoadStatTypes();
+   
+   int iRand = rand()%g_kSkills.size();
+   g_pkScript->AddReturnValue(pkLua, (char*)g_kSkills[iRand].c_str(), g_kSkills[iRand].size() );
+
+   return 1;
+}
+
+// ----------------------------------------------------------------------------------------------
+
+int MistLandLua::GetRandomAttributeLua (lua_State* pkLua)
+{
+	// if stat-types isn't loaded
+	if ( !g_kSkills.size() && !g_kAttributes.size() && !g_kData.size() )
+      LoadStatTypes();
+
+   int iRand = rand()%g_kAttributes.size();
+   g_pkScript->AddReturnValue(pkLua, (char*)g_kAttributes[iRand].c_str(), g_kAttributes[iRand].size() );
+
+   return 1;
+}
+
+// ----------------------------------------------------------------------------------------------
 
 int MistLandLua::RunScriptLua (lua_State* pkLua)
 {/*
@@ -1839,6 +1991,38 @@ int MistLandLua::RunScriptLua (lua_State* pkLua)
    }*/ 
    return 0;  
 
+}
+
+// ----------------------------------------------------------------------------------------------
+
+int MistLandLua::SetPropertyValueLua(lua_State* pkLua)
+{
+	if( g_pkScript->GetNumArgs(pkLua) == 3 )
+   {
+		Object* pkObject = g_pkObjMan->GetObjectByNetWorkID(g_iCurrentObjectID);
+
+	   if (pkObject)
+		{
+     		char	acProp[128];
+			g_pkScript->GetArgString(pkLua, 0, acProp);
+
+     		char	acPropData[128];
+			g_pkScript->GetArgString(pkLua, 1, acPropData);
+
+     		char	acValue[128];
+			g_pkScript->GetArgString(pkLua, 2, acValue);
+
+         Property *pkProp = pkObject->GetProperty(acProp);
+
+         if ( pkProp )
+            pkProp->SetValue ( string(acPropData), string(acValue) );
+         else
+            cout << "Property " << acProp << " didn't exist on object." << endl;
+       }
+
+   }
+
+   return 0;
 }
 
 // ----------------------------------------------------------------------------------------------
