@@ -67,18 +67,19 @@ class MCOMMON_API P_Container: public Property
 		int				m_iOwnerID;
 		bool				m_bStaticOwner;
 		
+		string			m_strAttachToJoint;
+		
+		bool				m_bFirstUpdate;
+		
+				
 		bool SetItem(P_Item* pkItem,int iX,int iY,int iW,int iH);
 		bool HaveItem(int iID);
 		bool GetItemPos(int iID,int& iRX,int& iRY);
 		void ClearItem(int iID);	
-		bool ItemTypeOK(int iType);		
-		
-		
-		bool	m_bFirstUpdate;
+		bool ItemTypeOK(int iType);				
 	
 		vector<PropertyValues> GetPropertyValues();
 		bool HandleSetValue( string kValueName ,string kValue );
-
 		
 	public:		
 		P_Container();		
@@ -88,25 +89,33 @@ class MCOMMON_API P_Container: public Property
 		void Update();
 		void Save(ZFIoInterface* pkPackage);
 		void Load(ZFIoInterface* pkPackage,int iVersion);			
-
+		
+		void Print();				
 		void FindMyItems();					//must be called after loading, and after childs has been created
 		
+		//set/get's
 		void SetSize(int iX,int iY);
 		char GetSizeX()								{return char(m_iSizeX);};
 		char GetSizeY()								{return char(m_iSizeY);};
 
-		int GetOwnerID()								{return m_iOwnerID;};
+		int  GetOwnerID()								{return m_iOwnerID;};
 		void SetOwnerID(int iOwner)				{m_iOwnerID = iOwner;};						
 		
 		void SetStaticOwner(bool bStatic)		{m_bStaticOwner = bStatic;};
-		
+
+		void SetJoint(const string& strBone)	{m_strAttachToJoint = strBone;};
+		string GetJoint()								{return m_strAttachToJoint;};
+						
 		void AddItemType(int iType) 				{m_kItemTypes.push_back(iType);};
 		void ClearItemTypes() 						{m_kItemTypes.clear();};		
+		
 		void SetMaxItems(int iItems) 				{m_iMaxItems = iItems;}; 
+		
 		void SetContainerType(int iType)			{m_iContainerType = iType;};
 		int  GetContainerType()						{return m_iContainerType;};
 		
 		
+		//item management
 		bool MoveItem(int iID,int iX,int iY);
 		bool MoveItem(int iID,P_Container* pkDest,int iX,int iY);
 		bool MoveItem(int iID,P_Container* pkDest);
@@ -125,7 +134,7 @@ class MCOMMON_API P_Container: public Property
 		int 				GetNrOfItems();
 		int* 				GetItem(int iX,int iY); // Zeb: Flytta denna så den blev public..EEEVIL
 		
-		void Print();		
+
 };
 
 MCOMMON_API Property* Create_P_Container();

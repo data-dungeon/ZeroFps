@@ -915,7 +915,7 @@ void EntityManager::PackToClients()
 		//pack and send global objects
 		m_pkGlobalEntity->GetAllEntitys(&kObjects,bForceAll,bCheckSendStatus);
 
-		// Loop all zones activated by client.
+		// Loop all zones activated by client, featching all entitys in them
 		Entity* pkZoneE;
 		ZoneData* pkZoneD;
 		for(set<int>::iterator itActiveZone = m_pkZeroFps->m_kClient[iClient].m_iActiveZones.begin(); itActiveZone != m_pkZeroFps->m_kClient[iClient].m_iActiveZones.end(); itActiveZone++ ) 
@@ -927,16 +927,14 @@ void EntityManager::PackToClients()
 					continue;
 				
 				// Get Zone and all subobjects.
-				//int iZoneID = (*itActiveZone);
 				pkZoneE = pkZoneD->m_pkZone;
-				assert(pkZoneE);
-	
+				assert(pkZoneE);	
 				
 				pkZoneE->GetAllEntitys(&kObjects,bForceAll,bCheckSendStatus);
 			}
 		}
 		
-		//send all data
+		//send all entitys in zones data
 		PackEntityToClient(iClient, kObjects,true);			//send in true to packtoclient 
 		
 		m_OutNP.Write(ZFGP_ENDOFPACKET);

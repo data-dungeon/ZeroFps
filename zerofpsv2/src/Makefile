@@ -9,7 +9,7 @@ all:
 	cd mistserver/; $(MAKE) $@
 #	cd dark_metropolis/; $(MAKE) $@
 #	cd dm_arcad/; $(MAKE) $@
-	cd zgresedit; $(MAKE) $@
+#	cd zgresedit; $(MAKE) $@
 	cd zeroed/; $(MAKE) $@
 #	cd fps_test/; $(MAKE) $@
 	cd tools/tool/madview/; $(MAKE) $@
@@ -23,7 +23,7 @@ clean:
 	cd mistserver/; $(MAKE) $@
 #	cd dark_metropolis/; $(MAKE) $@
 #	cd dm_arcad/; $(MAKE) $@
-	cd zgresedit/; $(MAKE) $@	
+#	cd zgresedit/; $(MAKE) $@	
 	cd zeroed/; $(MAKE) $@
 #	cd fps_test/; $(MAKE) $@
 	cd tools/tool/madview/; $(MAKE) $@
@@ -37,6 +37,6 @@ clean_apps:
 	cd mistserver/; $(MAKE) clean
 	cd mistclient2/; $(MAKE) clean
 	cd tools/tool/madview/; $(MAKE) clean	
-	cd zgresedit/; $(MAKE) clean
+#	cd zgresedit/; $(MAKE) clean
 		
 	

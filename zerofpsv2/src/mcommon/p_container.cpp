@@ -2,6 +2,7 @@
 #include "p_container.h"
 #include "../zerofpsv2/engine/entitymanager.h"
 #include "../zerofpsv2/engine_systems/script_interfaces/si_objectmanager.h" 
+#include "../zerofpsv2/engine_systems/propertys/p_linktojoint.h" 
 #include <iomanip>
 
 // -----------------------------------------------------------------------------------------------
@@ -15,7 +16,7 @@ P_Container::P_Container()
 	m_iSide=PROPERTY_SIDE_SERVER;
 
 	m_bNetwork = 	false;
-	m_iVersion = 	2;
+	m_iVersion = 	3;
 
 	m_bFirstUpdate = true;
 	
@@ -31,14 +32,13 @@ P_Container::P_Container()
 
 P_Container::~P_Container()
 {
-	//delete m_pkContainer;
 
 }
 
 
 void P_Container::Init()
 {
-	//m_pkContainer		=	new MLContainer(m_pkEntityMan,GetEntity()->GetEntityID(),m_iSizeX,m_iSizeY,true);	
+
 }
 
 void P_Container::Update()
@@ -280,10 +280,26 @@ bool P_Container::AddItem(int iID,int iX,int iY)
 			pkItem->SetUseZones(false);				
 			pkItem->SetParent(GetEntity());				
 			
-			pkItem->SetUpdateStatus(UPDATE_NONE);									
-			//this will also stop the entity from beeing sent to the client, therefore we tell the client to delete it
-			m_pkEntMan->AddEntityToAllClientDeleteQueues(pkItem->GetEntityID());
-
+			
+			if(m_strAttachToJoint.empty())
+			{
+				pkItem->SetUpdateStatus(UPDATE_NONE);									
+				//this will also stop the entity from beeing sent to the client, therefore we tell the client to delete it
+				m_pkEntMan->AddEntityToAllClientDeleteQueues(pkItem->GetEntityID());
+			}
+			else
+			{
+				pkItem->SetUpdateStatus(UPDATE_ALL);
+			
+				if(!pkItem->GetProperty("P_LinkToJoint"))
+					pkItem->AddProperty("P_LinkToJoint");
+			
+				if(P_LinkToJoint* pkLTJ = (P_LinkToJoint*)pkItem->GetProperty("P_LinkToJoint"))
+				{
+					pkLTJ->SetLinkEntity(GetEntity()->GetParent()->GetEntityID());
+					pkLTJ->SetJoint(m_strAttachToJoint);
+				}					
+			}
 			
 			//set item's owned by setting
 			pkPItem->m_iInContainerID = GetEntity()->GetEntityID();
@@ -384,11 +400,8 @@ bool P_Container::DropItem(int iID,const Vector3& kPos)
 				{
 					ClearItem(iID);
 	
-					// check for joint stuff...
-					//if ( pkItem->GetProperty("P_LinkToJoint") )
-					//	pkItem->RemoveProperty (pkItem->GetProperty("P_LinkToJoint"));
-					pkItem->DeleteProperty("P_LinkToJoint");
-						
+					// remove link to joint
+					pkItem->DeleteProperty("P_LinkToJoint");						
 	
 					// reset rotation
 					pkItem->SetWorldRotV (Vector3(0,pkItem->GetWorldRotV().y,0));
@@ -396,7 +409,7 @@ bool P_Container::DropItem(int iID,const Vector3& kPos)
 					cout<<"enabling item"<<endl;
 					pkItem->SetUpdateStatus(UPDATE_ALL);				
 					pkItem->SetUseZones(true);
-					//pkItem->SetParent(pkOwner->GetParent());				
+					
 					pkPItem->m_iInContainerID = -1;
 	
 					pkItem->SetWorldPosV( kPos );
@@ -571,6 +584,8 @@ void P_Container::Save(ZFIoInterface* pkPackage)
 	pkPackage->Write(m_iContainerType);
 	pkPackage->Write(m_bStaticOwner);	
 	
+	pkPackage->Write_Str(m_strAttachToJoint);	
+	
 	
 	//save item types
 	int iTypes = m_kItemTypes.size();
@@ -582,7 +597,31 @@ void P_Container::Save(ZFIoInterface* pkPackage)
 
 void P_Container::Load(ZFIoInterface* pkPackage,int iVersion)
 {
-	if(iVersion == 2)
+	if(iVersion == 3)
+	{
+		pkPackage->Read(&m_iMaxItems,sizeof(m_iMaxItems),1);	
+		
+		pkPackage->Read(&m_iSizeX,sizeof(m_iSizeX),1);
+		pkPackage->Read(&m_iSizeY,sizeof(m_iSizeY),1);
+	
+		SetSize(m_iSizeX,m_iSizeY);
+	
+		pkPackage->Read(m_iContainerType);
+		pkPackage->Read(m_bStaticOwner);
+		pkPackage->Read_Str(m_strAttachToJoint);
+	
+		//load types
+		int iTypes;
+		pkPackage->Read(&iTypes,sizeof(iTypes),1);		
+		m_kItemTypes.clear();
+		for(int i = 0 ;i < iTypes;i++)
+		{
+			int iT;
+			pkPackage->Read(&iT,sizeof(iT),1);				
+			m_kItemTypes.push_back(iT);
+		}				
+	}
+	else if(iVersion == 2)
 	{
 		pkPackage->Read(&m_iMaxItems,sizeof(m_iMaxItems),1);	
 		

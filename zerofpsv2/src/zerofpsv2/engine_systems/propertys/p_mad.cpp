@@ -649,6 +649,40 @@ Vector3 P_Mad::GetJointPosition(const char* szJointName)
 	
 	return m_kOffset;
 }
+
+Matrix4 P_Mad::GetJointRotation(const char* szJointName)
+{
+	if(Mad_Core* pkMc = (Mad_Core*)kMadHandle.GetResourcePtr())
+	{
+	
+		//update joint positions
+		UpdateBones();
+	
+		if( pkMc->GetJointID(szJointName) == -1)
+			cout<<"Joint "<<szJointName<<" not found"<<endl;
+		
+		Matrix4 kMat;
+		Vector3 kPos;
+		
+		kMat = pkMc->GetBoneTransform(pkMc->GetJointID(szJointName));
+		kMat*=m_pkEntity->GetWorldRotM();
+		kMat.SetPos(Vector3(0,0,0));
+		
+		return kMat;
+		//kPos = kMat.GetPos() * m_fScale;
+		
+		//rotate joint with entity rotation
+		//kPos = m_pkEntity->GetWorldRotM().VectorTransform(kPos);
+		
+		//kPos = -pkMc->GetJointPosition(szJointName);
+		
+		//return kPos + m_kOffset;	
+	}
+	cout<<"Error: No Model loaded when trying to get joint position"<<endl;
+	
+	return Matrix4();
+}
+
 /*
 bool P_Mad::operator<(Property& kOther)
 {

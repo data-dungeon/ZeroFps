@@ -8,10 +8,13 @@ P_LinkToJoint::P_LinkToJoint()
 {
 	strcpy(m_acName,"P_LinkToJoint");		
 	m_iType = PROPERTY_TYPE_RENDER;
-	m_iSide = PROPERTY_SIDE_SERVER | PROPERTY_SIDE_CLIENT;
+	m_iSide = PROPERTY_SIDE_CLIENT;
 
+	m_iVersion = 2;
+	
 	SetJoint("joint0");
 	
+	m_iLinkEntityID = -1;
 	m_bNetwork = true;
 }
 
@@ -22,48 +25,69 @@ P_LinkToJoint::~P_LinkToJoint()
 void P_LinkToJoint::Init()			
 {	
 	//turn off interpolation of current objects madss
-	m_pkEntity->SetInterpolate(false);
+	
 }
 
 void P_LinkToJoint::Update() 
 {
-	P_Mad* pkMad = dynamic_cast<P_Mad*>(m_pkEntity->GetParent()->GetProperty("P_Mad"));
-	if(!pkMad)
-		return;
-
-	Mad_Core* pkCore = dynamic_cast<Mad_Core*>(pkMad->kMadHandle.GetResourcePtr()); 
-	if(!pkCore)
-		return;
-
-
- 	pkCore->SetBoneAnimationTime(pkMad->iActiveAnimation, pkMad->fCurrentTime,pkMad->m_bLoop);
-	pkCore->SetupBonePose();
+	Entity* pkHost=NULL;;
+	
+	//get host object
+	if(m_iLinkEntityID == -1)
+		pkHost = GetEntity()->GetParent();
+	else		
+		pkHost = m_pkEntityManager->GetEntityByID(m_iLinkEntityID);
 	
 	
-	//dvoid ultra hax deluxe  ..dont mess whit this code
-	Matrix4 kMat;
-	Matrix4 kParentMat;
-	Vector3 kPos;
-	kMat = pkCore->GetBoneTransform(pkCore->GetJointID(m_strToJoint.c_str()));
-	kPos = kMat.GetPos() * pkMad->m_fScale;
-	kMat.SetPos(Vector3(0,0,0));
-	kParentMat = m_pkEntity->GetParent()->GetWorldRotM();
-	kMat *= kParentMat;	//add parents rotation , cos where not using realtive orientation anymore
+	if(pkHost)
+	{
+		if(P_Mad* pkMad = (P_Mad*)pkHost->GetProperty("P_Mad"))
+		{
+			Vector3 kPos = pkHost->GetIWorldPosV() + pkMad->GetJointPosition(m_strToJoint.c_str());				
+			Matrix4 kRot = pkMad->GetJointRotation(m_strToJoint.c_str());
+			
+			m_pkEntity->SetLocalPosV(kPos);
+			m_pkEntity->SetLocalRotM(kRot);
+			m_pkEntity->SetInterpolate(false);
+				
+		}
+	}		
+		
+/*			if(Mad_Core* pkCore = (Mad_Core*)pkMad->kMadHandle.GetResourcePtr())
+			{
+*/	
+	
+				//pkCore->SetBoneAnimationTime(pkMad->iActiveAnimation, pkMad->fCurrentTime,pkMad->m_bLoop);
+				//pkCore->SetupBonePose();
+				
+				
 
-	Matrix3 kMat3;
-	kMat3 = kMat;
-	m_pkEntity->SetLocalRotM(kMat3);
-	
-	kMat = m_pkEntity->GetParent()->GetWorldRotM();
-	kPos = kMat.VectorRotate(kPos);	//apply object rotation to joint offset
-	kPos += m_pkEntity->GetParent()->GetIWorldPosV();							//apply interpolatet parent position 
-	
-	m_pkEntity->SetLocalPosV(kPos);
-	
-//	cout << "P_LinkToJoint LocalPosV: " << kPos.x << ", " << kPos.y << ", " << kPos.z << endl;
-
-//	m_pkObject->SetNetUpdateFlag(NETUPDATEFLAG_POS,false);
-//	m_pkObject->SetNetUpdateFlag(NETUPDATEFLAG_ROT,false);	
+				
+				
+				/*
+				//dvoid ultra hax deluxe  ..dont mess whit this code
+				Matrix4 kMat;
+				Matrix4 kParentMat;
+				Vector3 kPos;
+				kMat = pkCore->GetBoneTransform(pkCore->GetJointID(m_strToJoint.c_str()));
+				kPos = kMat.GetPos() * pkMad->m_fScale;
+				kMat.SetPos(Vector3(0,0,0));
+				kParentMat = pkHost->GetWorldRotM();
+				kMat *= kParentMat;	//add parents rotation , cos where not using realtive orientation anymore
+			
+				Matrix3 kMat3;
+				kMat3 = kMat;
+				m_pkEntity->SetLocalRotM(kMat3);
+				
+				kMat = pkHost->GetWorldRotM();
+				kPos = kMat.VectorRotate(kPos);	//apply object rotation to joint offset
+				kPos += pkHost->GetIWorldPosV();							//apply interpolatet parent position 
+				
+				m_pkEntity->SetLocalPosV(kPos);
+				*/
+//			}
+//		}
+//	}
 }
 
 vector<PropertyValues> P_LinkToJoint::GetPropertyValues()
@@ -90,42 +114,68 @@ bool P_LinkToJoint::HandleSetValue( string kValueName ,string kValue )
 
 void P_LinkToJoint::Save(ZFIoInterface* pkPackage)
 {	
+	/*
 	char temp[50];
 	strcpy(temp,m_strToJoint.c_str());
-
 	pkPackage->Write((void*)temp,50,1);
+	*/
+	
+	pkPackage->Write_Str(m_strToJoint);
+	pkPackage->Write(m_iLinkEntityID);
+	
 }
 
 void P_LinkToJoint::Load(ZFIoInterface* pkPackage,int iVersion)
 {
-	char temp[50];
-	pkPackage->Read((void*)temp,50,1);	
-	m_strToJoint = temp;
+	if(iVersion == 2)
+	{
+		pkPackage->Read_Str(m_strToJoint);
+		pkPackage->Read(m_iLinkEntityID);
+	}
+	else
+	{
+		char temp[50];
+		pkPackage->Read((void*)temp,50,1);	
+		m_strToJoint = temp;
+	}
 }
 
 void P_LinkToJoint::PackTo(NetPacket* pkNetPacket, int iConnectionID )
 {
-	pkNetPacket->Write_Str(m_strToJoint.c_str());
+
+	pkNetPacket->Write(m_iLinkEntityID);
+	pkNetPacket->Write_Str(m_strToJoint);
 	
 	SetNetUpdateFlag(iConnectionID,false);
 }
  
 void P_LinkToJoint::PackFrom(NetPacket* pkNetPacket, int iConnectionID )
 {
-	char temp[128];
+	pkNetPacket->Read(m_iLinkEntityID);
+
+	string temp;
 	pkNetPacket->Read_Str(temp);
-	SetJoint(temp);
+	SetJoint(temp.c_str());
 	
 	
 }
 
-void P_LinkToJoint::SetJoint(const char* czJoint)
+void P_LinkToJoint::SetJoint(const string& strJoint)
 {
-	if(m_strToJoint == czJoint)
+	if(m_strToJoint == strJoint)
 		return;
 
-	m_strToJoint = czJoint;
+	m_strToJoint = strJoint;
 
+	SetNetUpdateFlag(true);
+}
+
+void P_LinkToJoint::SetLinkEntity(int iID)
+{
+	if(m_iLinkEntityID == iID)
+		return;
+
+	m_iLinkEntityID = iID;
 	SetNetUpdateFlag(true);
 }
 

@@ -596,18 +596,6 @@ void Entity::PackTo(NetPacket* pkNetPacket, int iConnectionID)
 	   pkNetPacket->Write( m_iUpdateStatus );		   
 	}
 
-
-	//send deleteproperty list
-	if(GetNetUpdateFlag(iConnectionID,NETUPDATEFLAG_DELETEPROPLIST))
-	{
-		SetNetUpdateFlag(iConnectionID,NETUPDATEFLAG_DELETEPROPLIST,false);
-	
-		pkNetPacket->Write((int) m_kNetDeletePropertyList.size() );
-		for(unsigned int i=0; i<m_kNetDeletePropertyList.size(); i++)
-		{
-			pkNetPacket->Write_Str(	m_kNetDeletePropertyList[i]);
-		}
-	}
 	
 	if(GetNetUpdateFlag(iConnectionID,NETUPDATEFLAG_RELPOS) || GetNetUpdateFlag(iConnectionID,NETUPDATEFLAG_INTERPOLATE) || GetNetUpdateFlag(iConnectionID,NETUPDATEFLAG_ISZONE))
 	{
@@ -615,13 +603,11 @@ void Entity::PackTo(NetPacket* pkNetPacket, int iConnectionID)
       if(m_bRelativeOri)	ucEntityFlags |= 1;
       if(m_bInterpolate)	ucEntityFlags |= 2;
 		if(m_bZone)				ucEntityFlags |= 4;
-		pkNetPacket->Write((unsigned char) ucEntityFlags );
-		
+		pkNetPacket->Write(ucEntityFlags );		
 		
 		SetNetUpdateFlag(iConnectionID,NETUPDATEFLAG_RELPOS		,false);
 		SetNetUpdateFlag(iConnectionID,NETUPDATEFLAG_INTERPOLATE	,false);
-		SetNetUpdateFlag(iConnectionID,NETUPDATEFLAG_ISZONE		,false);
-		
+		SetNetUpdateFlag(iConnectionID,NETUPDATEFLAG_ISZONE		,false);		
 	}
 
 
@@ -694,6 +680,20 @@ void Entity::PackTo(NetPacket* pkNetPacket, int iConnectionID)
 	
 	//end whit and empty property name so that client knows theres no more propertys
 	pkNetPacket->Write_Str("");
+	
+	
+	//send deleteproperty list
+	if(GetNetUpdateFlag(iConnectionID,NETUPDATEFLAG_DELETEPROPLIST))
+	{
+		SetNetUpdateFlag(iConnectionID,NETUPDATEFLAG_DELETEPROPLIST,false);
+	
+		pkNetPacket->Write((int) m_kNetDeletePropertyList.size() );
+		for(unsigned int i=0; i<m_kNetDeletePropertyList.size(); i++)
+		{
+			pkNetPacket->Write_Str(	m_kNetDeletePropertyList[i]);
+		}
+	}	
+	
 }
 
 /**	\brief	Unpack Entity.
@@ -727,52 +727,16 @@ void Entity::PackFrom(NetPacket* pkNetPacket, int iConnectionID)
 	}
 
 
-	//get deleteproperty list
-	if(GetNetUpdateFlag(0,NETUPDATEFLAG_DELETEPROPLIST))
-	{
-		int iSize; 
-		string strPropertyName;
-		
-		pkNetPacket->Read(iSize );
-
-		for(unsigned int i=0; i<iSize; i++)
-		{
-			pkNetPacket->Read_Str(strPropertyName);
-			
-			//cout<<"deleting property:"<<strPropertyName<<" from entity "<<m_strName<<endl;
-			DeleteProperty(strPropertyName.c_str());
-		}
-	}	
 	
 	if(GetNetUpdateFlag(0,NETUPDATEFLAG_RELPOS) || GetNetUpdateFlag(0,NETUPDATEFLAG_INTERPOLATE) || GetNetUpdateFlag(0,NETUPDATEFLAG_ISZONE) )
 	{
 		unsigned char ucEntityFlags = 0;
-		pkNetPacket->Read((unsigned char&) ucEntityFlags );
-		
-		/*
-		if(GetNetUpdateFlag(0,NETUPDATEFLAG_RELPOS))			m_bRelativeOri = ucEntityFlags & 1;
-		if(GetNetUpdateFlag(0,NETUPDATEFLAG_INTERPOLATE))	m_bInterpolate = ucEntityFlags & 2;
-		if(GetNetUpdateFlag(0,NETUPDATEFLAG_ISZONE))			m_bZone 			= ucEntityFlags & 4;
-		*/
+		pkNetPacket->Read(ucEntityFlags );
 		
 		m_bRelativeOri = ucEntityFlags & 1;
 		m_bInterpolate = ucEntityFlags & 2;
 		m_bZone 			= ucEntityFlags & 4;
 	}
-	
-/*	//get rel position flag
-	if(GetNetUpdateFlag(0, NETUPDATEFLAG_RELPOS))
-	{
-		pkNetPacket->Read((int&) m_bRelativeOri );
-		LOGSIZE("Entity::RelativePos", 4);
-	}
-
-	//get interpolation flag
-	if(GetNetUpdateFlag(0, NETUPDATEFLAG_INTERPOLATE))
-	{
-		pkNetPacket->Read((int&) m_bInterpolate );
-		LOGSIZE("Entity::Interpolate", 4);
-	}*/
 
 	//get position
 	if(GetNetUpdateFlag(0,NETUPDATEFLAG_POS))
@@ -866,6 +830,26 @@ void Entity::PackFrom(NetPacket* pkNetPacket, int iConnectionID)
 		pkNetPacket->Read_Str(szProperty);
 	}	
 
+	
+	
+	//get deleteproperty list
+	if(GetNetUpdateFlag(0,NETUPDATEFLAG_DELETEPROPLIST))
+	{
+		int iSize; 
+		string strPropertyName;
+		
+		pkNetPacket->Read(iSize );
+
+		for(unsigned int i=0; i<iSize; i++)
+		{
+			pkNetPacket->Read_Str(strPropertyName);
+			
+			//cout<<"deleting property:"<<strPropertyName<<" from entity "<<m_strName<<endl;
+			DeleteProperty(strPropertyName.c_str());
+		}
+	}		
+	
+	
 	int iEnd = pkNetPacket->m_iPos;
 	
 	m_pkEntityManager->m_iTotalNetEntityData += (iEnd - iStart);

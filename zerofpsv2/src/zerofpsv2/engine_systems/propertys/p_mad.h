@@ -77,6 +77,7 @@ class ENGINE_SYSTEMS_API P_Mad : public Property, public Mad_Modell {
 
 		//get joint position
 		Vector3 GetJointPosition(const char* szJointName);
+		Matrix4 GetJointRotation(const char* szJointName);
 
 		//line test
 		bool TestLine(Vector3 kPos,Vector3 kDir,bool bSphereOnly = false,bool bIgnoreY = false);

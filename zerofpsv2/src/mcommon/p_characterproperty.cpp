@@ -190,6 +190,7 @@ void P_CharacterProperty::SetupContainers()
 				pkCon->SetContainerType(eInventory);
 				pkCon->SetOwnerID(GetEntity()->GetEntityID());
 				pkCon->SetStaticOwner(true);
+			//	pkCon->SetJoint("hand_left");
 				
 		//body	
 		pkContainer = m_pkEntityMan->CreateEntity();
@@ -226,6 +227,7 @@ void P_CharacterProperty::SetupContainers()
 				pkCon->SetStaticOwner(true);
 				pkCon->SetMaxItems(1);
 				pkCon->AddItemType(MLITEM_HAND);
+				pkCon->SetJoint("hand_left");
 				
 		//right hand
 		pkContainer = m_pkEntityMan->CreateEntity();
@@ -238,7 +240,8 @@ void P_CharacterProperty::SetupContainers()
 				pkCon->SetStaticOwner(true);
 				pkCon->SetMaxItems(1);
 				pkCon->AddItemType(MLITEM_HAND);
-
+				pkCon->SetJoint("hand_right");
+				
 		//eGloves
 		pkContainer = m_pkEntityMan->CreateEntity();
 			m_iGloves = pkContainer->GetEntityID();

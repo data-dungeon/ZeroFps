@@ -19,6 +19,7 @@ class ENGINE_SYSTEMS_API P_LinkToJoint : public Property
 		bool HandleSetValue( string kValueName ,string kValue );
 
 		string	m_strToJoint;
+		int		m_iLinkEntityID;
 		
 	public:
 
@@ -34,8 +35,8 @@ class ENGINE_SYSTEMS_API P_LinkToJoint : public Property
 		void PackTo(NetPacket* pkNetPacket, int iConnectionID );
 		void PackFrom(NetPacket* pkNetPacket, int iConnectionID );
 
-		void SetJoint(const char* czJoint);
-
+		void SetJoint(const string& strJoint);
+		void SetLinkEntity(int iID);
 };
 
 Property* Create_LinkToJoint();
