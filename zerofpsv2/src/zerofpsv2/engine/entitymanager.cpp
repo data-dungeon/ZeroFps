@@ -2475,13 +2475,13 @@ void EntityManager::SetZoneModel(const char* szName,int iId)
 	}
 
 	//setup pathfinding
-	P_PfMesh* pkMesh = (P_PfMesh*)zd->m_pkZone->GetProperty("P_PfMesh");
-	
-	if(!pkMesh)
-		pkMesh = (P_PfMesh*)zd->m_pkZone->AddProperty("P_PfMesh");
-	
-	if(pkMesh)
-		pkMesh->SetMad(mp);
+// 	P_PfMesh* pkMesh = (P_PfMesh*)zd->m_pkZone->GetProperty("P_PfMesh");
+// 	
+// 	if(!pkMesh)
+// 		pkMesh = (P_PfMesh*)zd->m_pkZone->AddProperty("P_PfMesh");
+// 	
+// 	if(pkMesh)
+// 		pkMesh->SetMad(mp);
 
 
 

@@ -1427,6 +1427,12 @@ Entity* MistClient::GetTargetObject()
 		if(kObjects[i]->GetEntityID() <100000)
 			continue;
 		
+		if(kObjects[i]->IsZone())
+			continue;
+		if(kObjects[i]->GetName() == "ZoneObject")
+			continue;
+			
+						
 		if(kObjects[i]->GetName() == "A t_serverinfo.lua")
 			continue;		
 		if(kObjects[i]->GetType() == "hosplayer.lua")
@@ -1438,6 +1444,8 @@ Entity* MistClient::GetTargetObject()
 			continue;
 		
 		//-------------
+		
+		
 		
 		//get mad property and do a linetest
 		P_Mad* mp = (P_Mad*)kObjects[i]->GetProperty("P_Mad");
