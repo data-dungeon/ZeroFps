@@ -1817,17 +1817,17 @@ int DMLua::GetEntityPosLua (lua_State* pkLua)
 	temp.bNumber = true;
 	temp.pData = new double;
 	(*(double*) temp.pData) = (double) xPos;
-	vkData.insert(vkData.begin(), temp);
+	vkData.push_back(temp);
 
 	temp.bNumber = true;
 	temp.pData = new double;
 	(*(double*) temp.pData) = (double) yPos;
-	vkData.insert(vkData.begin(), temp);
+	vkData.push_back(temp);
 
 	temp.bNumber = true;
 	temp.pData = new double;
 	(*(double*) temp.pData) = (double) zPos;
-	vkData.insert(vkData.begin(), temp);
+	vkData.push_back(temp);
 
 	g_pkScript->AddReturnValueTable(pkLua, vkData);
 
@@ -1839,7 +1839,7 @@ int DMLua::GetEntityPosLua (lua_State* pkLua)
 //
 // Tar ett nummer, returnerar Entity ID på ett object eller -1 om inget finns.
 // 0 = HQ
-//
+// 1 = Hospital
 int DMLua::GetDMObjectLua(lua_State* pkLua)
 {
 	double dObjectType = -1;
@@ -1857,7 +1857,6 @@ int DMLua::GetDMObjectLua(lua_State* pkLua)
 			switch((int)dObjectType)
 			{
 			case 0: // HQ
-
 				for ( i = 0; i < kObjs.size(); i++ )
 				{
 					P_DMHQ* pkHQProperty = (P_DMHQ*)kObjs[i]->GetProperty("P_DMHQ");
@@ -1867,7 +1866,25 @@ int DMLua::GetDMObjectLua(lua_State* pkLua)
 						break;
 					}
 				}
+				break;
 
+			case 1: // Hospital
+				for ( i = 0; i < kObjs.size(); i++ )
+				{
+					P_DMClickMe* pkHQProperty = (P_DMClickMe*)kObjs[i]->GetProperty("P_DMClickMe");
+					if(pkHQProperty)
+					{
+						string strEntName = kObjs[i]->GetName();
+
+						// Kolla om det är ett sjukhus genom att titta på objektets namn
+						if( strEntName.find("t_door_hospit") != string::npos)
+						{
+							dEntID = (double)kObjs[i]->GetEntityID();
+							break;
+						}
+						break;
+					}
+				}				
 				break;
 			}
 		}

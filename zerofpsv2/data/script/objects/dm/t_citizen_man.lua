@@ -23,6 +23,11 @@ function Init()
 	SetTeam (SIGetSelfID(), 1);
 end
 
+function Exit()
+	PlayAnim(SIGetSelfID(), "open");
+	SetNextAnim(SIGetSelfID(), "idle");
+end
+
 function HeartBeat()
 
 	if HavePath(SIGetSelfID()) == 1 then

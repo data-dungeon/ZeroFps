@@ -9,9 +9,11 @@ MissionInfo = { name="Dr Gun", difficulty=1, xp=100, cash=500, success=0 } -- di
 
 NumCivilians = 0
 NumCiviliansWounded = 0
-CivWounded = {} -- lista på vilka civilians som har blivit skadade
+NumCiviliansAtDoctor = 0
+CivWoundedList = {} -- lista på vilka civilians som har blivit skadade
 InjureList = {} -- en annan lista som söks igenom för att se om några skadeskjutna civila har dött
-HQObject = -1
+RuningToHospitleList = {} -- lista som håller reda på vilka som springer till sjukhuset
+HospitalObject = -1
 
 MissionText = 
 { 
@@ -23,30 +25,34 @@ MissionText =
 
 function OnMissionStart()
 
-	Print( "starting mission Dr Gun" )
+	Print("Starting mission Dr Gun")
 
-	CivWounded = {} -- töm listan
+	-- töm listor
+	CivWoundedList = {} 
+	InjureList = {}
+	RuningToHospitleList = {}
 
 	local team = 1 -- team civilians
 	local civ_list = GetCharsByFraction(team) -- hämta en lista på alla civila
 	NumCivilians = civ_list[1] -- första arg är vektorns size
 
+	-- Hämta information om dom civila i staden
 	local counter = 0 
 	for x = 2, NumCivilians+1, 1
 	do
 		local obj_id = civ_list[x]
 		local life = GetCharStats( obj_id, 0 ) -- 0 = Life
 		
-		CivWounded[counter] = obj_id
+		CivWoundedList[counter] = obj_id
 		counter = counter + 1
 
-		CivWounded[counter] = life
+		CivWoundedList[counter] = life
 		counter = counter + 1
 	end
 
-	HQObject = GetDMObject(0)
+	HospitalObject = GetDMObject(1)
 
-	Print("----- HQ object = ", HQObject)
+	Print("Hospital object = ", HospitalObject)
 
 end
 
@@ -62,14 +68,56 @@ function OnMissionFailed()
 
 end
 
+function GetRangeBetween(a, b) -- tar 2 tabeller med 3 double vardera
+
+	local xdif = a[1] - b[1]
+	local zdif = a[3] - b[3]
+
+	-- vi är intresserade av avstånd
+	if xdif < 0 then xdif = -xdif end
+	if zdif < 0 then zdif = -zdif end
+
+	range = xdif + zdif
+
+	return range
+end
+
 function SendObjectToHospitle(object)
 
-	Print( "Sendin object: ", object, " to hosptile")
+	local hq_pos = GetEntityPos(HospitalObject)
+	local obj_pos = GetEntityPos(object)
 
-	local hq_pos = GetEntityPos(HQObject)
+	-- Kolla om den skadade personen har kommit fram till sjukhuset
+	-- i så fall ta bort det objektet och öka upp "NumCiviliansAtDoctor"
+	if GetRangeBetween( hq_pos, obj_pos ) < 1 then
 
-	MakePathFind(HQObject, hq_pos)
+		Print("------------------------------------------------")
+		Print( "Removing patient at doctor Gun: ", object)
+		Print("------------------------------------------------")
 
+		Delete(object)
+
+		NumCiviliansAtDoctor = NumCiviliansAtDoctor + 1
+
+		return 1
+
+	end
+
+	-- Se om en ny pathfind behövs göras mot sjukhuset
+	if HavePath(object) == 1 then
+		return 0
+	end	
+
+	Print("------------------------------------------------")
+	Print( "Sending object: ", object, " to hosptile, pos: ")
+	Print( hq_pos[1] )
+	Print( hq_pos[2] )
+	Print( hq_pos[3] )
+	Print("------------------------------------------------")
+
+	MakePathFind(object, hq_pos)
+
+	return 0
 end
 
 -- Anropas var 3:e sekund
@@ -78,23 +126,24 @@ function IsMissionDone()
 	-- Kolla om några civila har blivit skadade
 	for x = 0, NumCivilians-1, 1
 	do
-		local obj = CivWounded[x*2] 
+		local obj = CivWoundedList[x*2] 
 
 		if obj > -1 then -- hoppa förbi dom som redan har blivit räknade som skadade
 
-			local prev_life = CivWounded[x*2+1] 
+			local prev_life = CivWoundedList[x*2+1] 
 			local curr_life = GetCharStats( obj, 0 ) -- 0 = Life
 			local dmg = prev_life - curr_life
 
 			if dmg > 0 then
 				
-				CivWounded[x*2] = -1 -- markera att denna inte skall räknas mer
+				CivWoundedList[x*2] = -1 -- markera att denna inte skall räknas mer
 
 				InjureList[NumCiviliansWounded] = obj -- lägg till till lista över skadeskjutna gubbar
+				RuningToHospitleList[NumCiviliansWounded] = obj
 
 				NumCiviliansWounded = NumCiviliansWounded + 1 -- öka antalet skadade personer
 
-				SendObjectToHospitle(obj)
+			--	SendObjectToHospitle(obj)
 			end
 
 		end
@@ -102,7 +151,6 @@ function IsMissionDone()
 	end
 
 	-- Kolla om några har blivit skadeskjutna till döds
-
 	if NumCiviliansWounded > 0 then
 
 		for y = 0, NumCiviliansWounded-1, 1 
@@ -125,12 +173,30 @@ function IsMissionDone()
 
 	end
 
+	-- PathFind'a till sjukhuset med dom som skall ditt
+	if NumCiviliansWounded > 0 then
+
+		for y = 0, NumCiviliansWounded-1, 1
+		do
+			if RuningToHospitleList[y] > 0 then
+
+				local obj_running = RuningToHospitleList[y]
+				local swallowed = SendObjectToHospitle( obj_running )
+
+				if swallowed == 1 then
+					RuningToHospitleList[y] = -1
+				end
+
+			end
+		end
+
+	end
+
 	Print("Person wounded: ", NumCiviliansWounded)
+	Print("Persons in hospital: ", NumCiviliansAtDoctor)
 
-	if NumCiviliansWounded == 5 then
-
+	if NumCiviliansAtDoctor == 5 then
 		MissionInfo.success = 1 -- Uppdraget har lyckats!
-
 	end
 
 end
