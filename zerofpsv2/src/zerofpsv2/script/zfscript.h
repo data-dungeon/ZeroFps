@@ -84,8 +84,6 @@ public:
 	bool ExposeObject(const char* szName, void* pkData, ScripObjectType eType);
 	bool ExposeVariable(const char* szName, void* pkData, ScripVarType eType, lua_State* pkState=NULL);
 	bool ExposeFunction(const char* szName, lua_CFunction o_Function, lua_State* pkState=NULL);
-	bool CallScript(char* szFuncName, int iNumParams, int iNumResults, lua_State* pkState=NULL);
-	int RunScript(char* szFileName, lua_State* pkState=NULL);
 	
 	bool StartUp();
 	bool ShutDown();

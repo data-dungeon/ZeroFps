@@ -17,7 +17,7 @@
 
 ZGuiApp::ZGuiApp(ZGui::callback oMainWndProc)
 {
-	m_pkResHandle = NULL;
+	m_pkScriptResHandle = NULL;
 	m_oMainWndProc = oMainWndProc;
 	m_szLastRadioBGroup = NULL;
 	CreateNewRadiobuttonGroup("DefGUIRadioGroup", 1);
@@ -33,8 +33,8 @@ ZGuiApp::~ZGuiApp()
 	}
 
 // OBS! denna resurs hinner inte laddas ur eftersom expire delayen ligger på 5 sek.
-//	if(m_pkResHandle)
-//		delete m_pkResHandle;
+//	if(m_pkScriptResHandle)
+//		delete m_pkScriptResHandle;
 
 /*	map<int, ZGuiWnd*>::iterator itWnds = m_kWindows.begin();
 	while(itWnds != m_kWindows.end())
@@ -346,11 +346,11 @@ void ZGuiApp::InitializeGui(ZGui* pkGui, TextureManager* pkTexMan,
 	// Start skript filen för GUI:t.
 	// Läs in tex filnamn på textuerer osv.
 
-	if(m_pkResHandle)
-		delete m_pkResHandle;
+	if(m_pkScriptResHandle)
+		delete m_pkScriptResHandle;
 
-	m_pkResHandle = new ZFResourceHandle;
-	if(!m_pkResHandle->SetRes("data/script/gui/gui_script.lua"))
+	m_pkScriptResHandle = new ZFResourceHandle;
+	if(!m_pkScriptResHandle->SetRes("data/script/gui/gui_script.lua"))
 		printf("Failed to load gui_script.lua\n");
 
 	m_pkGui = pkGui;
@@ -748,5 +748,5 @@ int ZGuiApp::GetHeight()
 
 ZFScript* ZGuiApp::GetGuiScript()
 {
-	return (ZFScript*) m_pkResHandle->GetResourcePtr();  
+	return (ZFScript*) m_pkScriptResHandle->GetResourcePtr();  
 }

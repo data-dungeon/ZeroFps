@@ -155,52 +155,6 @@ void ZFScriptSystem::Close()
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-// Name:		RunScript
-// Description:	Kör ett script från en fil.
-//
-int ZFScriptSystem::RunScript(char* szFileName, lua_State* pkState)
-{
-	if(pkState == NULL)
-		pkState = m_pkLua;
-	
-	// Försök att hitta sökvägen via det virituella filsystemet.
-	string strPath = m_pkFileSys->GetFullPath(szFileName);
-
-	if(strPath.empty())
-		ZFAssert(0, "Failed to run scrip! Bad path.\n");
-
-	if(lua_dofile(pkState, strPath.c_str()) != 0)
-		ZFAssert(0, "Failed to run scrip! Script does not exist.\n");
-
-	return true;
-}
-
-///////////////////////////////////////////////////////////////////////////////
-// Name:		CallScript
-// Description:	Kör en skript funktion från en fil som redan är inladdad.
-//
-bool ZFScriptSystem::CallScript(char* szFuncName, int iNumParams, int iNumResults, lua_State* pkState)
-{
-	if(pkState == NULL)
-		pkState = m_pkLua;
-
-	//printf("SCRIPT_API: Calling script function %s\n", szFuncName);
-	lua_getglobal( pkState, szFuncName);
-	
-	// Måste kolla så att den global funktion finns. 
-	// Låser sig fett om den int gör det!
-	if(lua_isnil( pkState, 1) )
-	{
-		printf("Failed to find Lua function: %s\n", szFuncName);
-		return false;
-	}
-
-	return (lua_call(pkState, iNumParams, iNumResults) == 0);
-
-	return false;
-}
-
-///////////////////////////////////////////////////////////////////////////////
 // Name:		RegisterClass
 // Description:	Registrera en C++ klass som Lua kan se.
 //
@@ -279,7 +233,7 @@ bool ZFScriptSystem::ExposeFunction(const char *szName, lua_CFunction o_Function
 		strcpy(func_info->szName, szName);
 		m_vkGlobalFunctions.push_back(func_info);
 
-		printf(" Adding global function (%i) : %s\n", m_vkGlobalFunctions.size(), szName);
+		//printf(" Adding global function (%i) : %s\n", m_vkGlobalFunctions.size(), szName);
 	}
 
 	return true;
@@ -324,7 +278,7 @@ bool ZFScriptSystem::ExposeVariable(const char* szName, void* pkData, ScripVarTy
 		var_info->pvData = pkData;
 		m_vkGlobalVariables.push_back(var_info);
 
-		printf("  Adding global variable (%i) : %s\n", m_vkGlobalVariables.size(), szName);
+		//printf("  Adding global variable (%i) : %s\n", m_vkGlobalVariables.size(), szName);
 	}
 
 	return true;
@@ -676,8 +630,6 @@ bool ZFScriptSystem::Call(ZFScript *pkScript, char* szFuncName, int iNumParams, 
 {	
 	if(pkScript->m_pkLuaState == NULL)
 		return false;
-
-	int size = lua_gettop(pkScript->m_pkLuaState);
 
 	// Försök att hitta sökvägen via det virituella filsystemet.
 	string strPath = m_pkFileSys->GetFullPath(pkScript->m_szScriptName);

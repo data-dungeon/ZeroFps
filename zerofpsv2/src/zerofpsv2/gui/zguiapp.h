@@ -105,7 +105,7 @@ private:
 	int m_iLastRadioBGroup;
 	char m_szTexName[250];
 
-	ZFResourceHandle* m_pkResHandle;
+	ZFResourceHandle* m_pkScriptResHandle;
 };
 
 #endif // #ifndef _GUIBUILDER_H

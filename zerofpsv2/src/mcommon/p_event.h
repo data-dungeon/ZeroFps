@@ -13,7 +13,8 @@ using namespace std;
 class MCOMMON_API P_Event: public Property {
 	private:
 		ZeroFps* m_pkFps;
-		ZFScriptSystem* m_pkScript;
+		ZFScriptSystem* m_pkScriptSys;
+		ZFResourceHandle* m_pkScriptResHandle;
 
 		bool m_bHaveRunInit;
 
