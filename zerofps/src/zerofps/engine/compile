@@ -1,1 +1,1 @@
-g++ *.cpp *.c -o ../../../bin/libengine.so --shared -O3 -lSDL_mixer -lGL -lGLU -L/usr/X11R6/lib `sdl-config --cflags --libs`
+g++ *.cpp -o ../../../bin/libengine.so --shared -O3 -lSDL_mixer -lGL -lGLU -L/usr/X11R6/lib `sdl-config --cflags --libs`

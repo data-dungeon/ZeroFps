@@ -105,8 +105,10 @@ void ZeroFps::InitDisplay(int iWidth,int iHeight,int iDepth) {
 	m_pkScreen= SDL_SetVideoMode(iWidth,iHeight,iDepth,SDL_OPENGL);
 	glViewport(0, 0,iWidth,iHeight);	
 
+#ifdef _WIN32
 	RenderDLL_InitExtGL();
 	extgl_Initialize();
+#endif
 
 	//setup some opengl stuff =)
 	glEnable(GL_TEXTURE_2D);
