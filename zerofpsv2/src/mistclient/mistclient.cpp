@@ -605,9 +605,9 @@ void MistClient::OnCommand(int iID, ZGuiWnd *pkMainWnd)
 		else
 		if(strClickWndName == "ConnectToServerButton")
 		{
-			//GetWnd("IPNumberEditbox")->GetText()
+			char* szIpName = GetWnd("IPNumberEditbox")->GetText();
 
-			pkFps->m_pkNetWork->ClientStart("192.168.0.160:4242");
+			pkFps->m_pkNetWork->ClientStart(szIpName);
 			pkApp->OnClientStart();
 			
 
