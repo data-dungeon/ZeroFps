@@ -183,7 +183,7 @@ bool CSMech::TestPolygon(Vector3* kVerts,Vector3 kPos1,Vector3 kPos2,float fR)
 //	cout<<"Normal "<<P.m_kNormal.x<<" "<<P.m_kNormal.y<<" "<<P.m_kNormal.z<<endl;
 //	cout<<"D "<<P.m_fD<<endl;	
 	
-	if(P.LineTest(kPos1 - (Normal * fR), kPos2 - (Normal * fR),&m_kColPos)){
+	if(P.LineTest(kPos1 - (Normal * (fR*0.8)), kPos2 - (Normal * fR),&m_kColPos)){
 //	if(P.LineTest(kPos1 , kPos2 ,&m_kColPos)){	
 		if(TestSides(kNLVerts,&Normal,m_kColPos,fR))
 		{

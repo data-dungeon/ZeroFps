@@ -126,11 +126,11 @@ void AdaptorSniper::Touch(Collision* pkCol)
 	else
 		pkOther=pkCol->m_pkPP1->GetObject();
 
-
+/*
 	if(pkOther->GetObjectType() != OBJECT_TYPE_STATIC)
 	{		
 		pkOther->GetRot().y+=180;
-	}
+	}*/
 }
 
 void AdaptorSniper::Fire(Vector3 kAim)
