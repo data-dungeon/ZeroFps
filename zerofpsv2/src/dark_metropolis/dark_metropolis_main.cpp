@@ -225,10 +225,6 @@ void DarkMetropolis::RenderInterface(void)
 		}
 	}
 	
-	// TODO: no select square
-	//draw select square
-	//if(m_bSelectSquare)
-	//	m_pkRender->DrawAABB(m_kSelectSquareStart,Vector3(m_kSelectSquareStop.x, m_kSelectSquareStart.y+0.2, m_kSelectSquareStop.z),Vector3(0,1,0));
 }
 
 void DarkMetropolis::OnSystem()
@@ -470,7 +466,7 @@ void DarkMetropolis::Input()
 			if(m_pkFps->GetTicks()-m_fDelayTimer > 0.3)
 			{
 				m_fDelayTimer = m_pkFps->GetTicks();
-				m_fAngle += 1.570796327; // 90 degrees in rad
+				m_fAngle += PI / 2.f; // 90 degrees in rad
 			}
 
 		// rotate camera to the right
@@ -478,64 +474,26 @@ void DarkMetropolis::Input()
 			if(m_pkFps->GetTicks()-m_fDelayTimer > 0.3)
 			{
 				m_fDelayTimer = m_pkFps->GetTicks();
-				m_fAngle -= 1.570796327; // 90 degrees in rad
+				m_fAngle -= PI / 2.f; // 90 degrees in rad
 			}
 
 		m_pkCameraProp->Set3PYAngle(m_fAngle);
 	}
 
-/*
-	//setup player controls
-	if(m_pkInputHandle->VKIsDown("camera"))	//do we want to zoom?
-	{
-		m_pkInput->ShowCursor(false);
 
-		if(m_pkCameraProp)
-		{
-			m_fDistance += z/60.f;
-			m_fAngle -=x/300.f;
-	
-			if(m_fDistance < m_fMinCamDistance)
-				m_fDistance = m_fMinCamDistance;
-		
-			if(m_fDistance > m_fMaxCamDistance)
-				m_fDistance = m_fMaxCamDistance;				
-		
-			m_pkCameraProp->Set3PYAngle(m_fAngle);
-			//m_pkCameraProp->Set3PDistance(m_fDistance);				
-		}
-	}
-	else
-	{
-		if(m_pkGui->m_bUseHardwareMouse == true)
-			m_pkInput->ShowCursor(true);
-	}
-*/		
-	// TODO: change to shoot
 	//check for selection
 	/*
 	if(m_pkInputHandle->VKIsDown("select"))
 	{
-		if(!m_bSelectSquare)
+		Entity* pkEnt = GetTargetObject(true);
+	
+		if(pkEnt)
 		{
-			Entity* pkEnt = GetTargetObject(true);
-		
-			if(pkEnt)
-			{
-				m_bSelectSquare = true;
-				m_kSelectSquareStart = m_kPickPos;
-				m_kSelectSquareStop = m_kPickPos;
-			}	
-		}
-		else
-		{
-			Entity* pkEnt = GetTargetObject(true);
-			
-			if(pkEnt)
-			{
-				m_kSelectSquareStop  =  m_kPickPos;
-			}
-		}
+			m_bSelectSquare = true;
+			m_kSelectSquareStart = m_kPickPos;
+			m_kSelectSquareStop = m_kPickPos;
+		}	
+
 	}
 	else
 	{
@@ -832,12 +790,14 @@ void DarkMetropolis::Input()
 				//m_kSelectedEntitys.clear();
 			}
 
+			// TODO: make selected character pick up item. If not maincharacter, use pathfind
 			//pick item
 			if(P_DMItem* pkItem = (P_DMItem*)pkPickEnt->GetProperty("P_DMItem"))
 			{
-				for(unsigned int i = 0;i < m_kSelectedEntitys.size();i++)
-				{
-					if(Entity* pkEnt = m_pkObjectMan->GetObjectByNetWorkID(m_kSelectedEntitys[i]))				
+				cout << "ItemClick" << endl;
+				//for(unsigned int i = 0;i < m_kSelectedEntitys.size();i++)
+				//{
+					if(Entity* pkEnt = m_pkObjectMan->GetObjectByNetWorkID(m_iMainAgent))				
 					{
 						if(P_DMCharacter* pkCh = (P_DMCharacter*)pkEnt->GetProperty("P_DMCharacter"))
 						{																
@@ -852,6 +812,7 @@ void DarkMetropolis::Input()
 								pkCh->ClearOrders();
 								pkCh->AddOrder(kOrder);							
 							}
+							// TODO: write "not close enough" message
 							else
 							{
 								pkCh->ClearOrders();
@@ -871,7 +832,7 @@ void DarkMetropolis::Input()
 							}
 						}
 					}
-				}
+				//}
 			}
 		}
 	}
@@ -1259,16 +1220,6 @@ void DarkMetropolis::SelectAgent(int id, bool bToggleSelect, bool bResetFirst,
 		}
 	}
 
-	
-
-	//
-	// TODO: Flytta kameran till samma plats.
-	//
-
-	if(bMoveCamera)
-	{
-
-	}
 }
 
 void DarkMetropolis::ValidateSelection()
