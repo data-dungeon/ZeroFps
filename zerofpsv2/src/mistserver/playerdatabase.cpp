@@ -2,7 +2,7 @@
 #include "../zerofpsv2/basic/zfbasicfs.h"
 
 #include "../mcommon/p_characterproperty.h"
-
+#include "../zerofpsv2/engine_systems/propertys/p_light.h"1
 
 PlayerDatabase::PlayerDatabase()
 {
@@ -224,12 +224,18 @@ bool PlayerDatabase::CreateNewCharacter(string strPlayer, string strCharacter)
 	//setup propertys
 	if(!pkEntity->GetProperty("P_Track"))	//check if theres a tracker property
 		 pkEntity->AddProperty("P_Track");	//else create one
-	
+		
 	if(P_CharacterProperty* cp = (P_CharacterProperty*)pkEntity->GetProperty("P_CharacterProperty"))
 	{
 		cp->SetName(strCharacter);
 		cp->SetOwnedByPlayer(strPlayer);
 		cp->SetIsPlayerCharacter(true);
+	}
+	
+	if(strCharacter == "dvoid")
+	{
+		P_Light* pkLight = (P_Light*)pkEntity->AddProperty("P_Light");
+		pkLight->SetDiffuse(Vector4(-0.5,-0.5,-0.5,1));
 	}
 		 
 	//save it
