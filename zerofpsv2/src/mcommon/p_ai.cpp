@@ -65,6 +65,13 @@ void P_AI::Update()
          {
             string kWhenHit = ((CharacterProperty*)pkEnemy->GetProperty("P_CharStats"))->GetCharStats()->m_strScriptWhenHit;
 
+				//rotate to target
+				Vector3 kdiff = pkEnemy->GetWorldPosV() - kPos;
+				Matrix4 kRotM;
+				kRotM.LookDir(kdiff.Unit(),Vector3(0,1,0));
+				kRotM.Transponse();		
+				m_pkObject->SetLocalRotM(kRotM);
+
             // create splattblood PSystem
             if ( kWhenHit.size() )
                m_pkObject->m_pkObjectMan->CreateObjectFromScriptInZone ( kWhenHit.c_str(), pkEnemy->GetWorldPosV() );

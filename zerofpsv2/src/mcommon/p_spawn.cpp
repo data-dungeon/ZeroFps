@@ -70,7 +70,7 @@ void P_Spawn::Update()
 					if(m_iEntityCounter + nr >= m_iMaxEntitys)
 						nr = m_iMaxEntitys - m_iEntityCounter;
 						
-					cout<<"spawning: "<<nr<<endl;
+					//cout<<"spawning: "<<nr<<endl;
 					for(int i = 0;i<nr;i++)
 					{
 						Vector3 kPos = m_pkObject->GetLocalPosV() + Vector3( (rand() % (int)m_fSpawnRadius) - m_fSpawnRadius/2 ,0,(rand() % (int)m_fSpawnRadius) - m_fSpawnRadius/2);					
@@ -95,7 +95,7 @@ void P_Spawn::RemoveEntity(Entity* pkEnt)
 			m_kEntitys.erase(it);*/
 			m_iEntityCounter--;
 			
-			cout<<"counter is at :"<<m_iEntityCounter<<endl;
+			//cout<<"counter is at :"<<m_iEntityCounter<<endl;
 			
 /*			break;
 		}
