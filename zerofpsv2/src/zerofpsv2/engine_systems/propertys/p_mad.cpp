@@ -39,6 +39,15 @@ P_Mad::P_Mad()
 	m_fLastAnimationUpdateTime = 0;
 	m_iLastAnimationUpdateFrame = -1;
 
+	
+	//bounding box
+	m_bHaveAABB		=false;
+	m_AABBMax		=Vector3::ZERO;
+	m_AABBMin		=Vector3::ZERO;
+	m_fOldScale		=0;
+	m_fLastAABBTest=0;	
+	m_kLastRot.Zero();
+	
 }
 
 void P_Mad::Update()
@@ -78,36 +87,76 @@ void P_Mad::Update()
 		DoAnimationUpdate();
 		
 		
-		//cull spwhere
+		//Cull against sphere
 		if(!m_pkZeroFps->GetCam()->GetFrustum()->SphereInFrustum(m_pkEntity->GetWorldPosV(),GetRadius()))
 		{
 			StopProfileTimer("r___mad");
 			return;
 		}
-	
-		/*
-		// Set Object LOD.
-		if(g_iMadLODLock == 0) {
-			Vector3 kDiff = m_pkZeroFps->GetCam()->GetPos() - m_pkObject->GetWorldPosV();
-		}
-		g_fMadLODScale = m_fLod;
-		*/
 
+		//get entity rotation
+		static Matrix3 kRot;
+		kRot = m_pkEntity->GetWorldRotM();		
 		
+		//passed sphere, do AABB test
+		if(m_bHaveAABB)
+		{
+			if(GetCurrentAnimation() == MAD_NOANIMINDEX &&
+				m_fScale == m_fOldScale &&
+				m_kLastRot == kRot)		
+			{
+				//have up to date AABB
+				if(!m_pkZeroFps->GetCam()->GetFrustum()->CubeInFrustum(m_AABBMin + m_pkEntity->GetIWorldPosV(),m_AABBMax + m_pkEntity->GetIWorldPosV()))
+				{
+					StopProfileTimer("r___mad");
+					return;
+				}								
+			}
+			else
+			{
+				//AABB is not up to date
+				//cout<<"aabb not up do date,removing"<<endl;
+				m_bHaveAABB = false;
+			}
+		}
+			
 		
 		//always update bones
 		UpdateBones();
 		
 		if(m_bIsVisible)
-		{
+		{			
+			//update AABB 
+			if(!m_bHaveAABB)
+			{
+				if(m_pkZeroFps->GetTicks() - m_fLastAABBTest > 2)
+				{
+					if(	GetCurrentAnimation() == MAD_NOANIMINDEX &&
+							m_fScale == m_fOldScale &&
+							m_kLastRot == kRot)
+					{
+						//create AABB
+						m_bHaveAABB = true;
+						
+						//cout<<"creating new AABB"<<endl;
+						CreateAABB();
+					}
+					else
+					{
+						//update test information
+						m_fLastAABBTest = m_pkZeroFps->GetTicks();
+						m_fOldScale = m_fScale;
+						m_kLastRot = kRot;
+					}
+				}
+			}
+			
 			//update lighting
-			m_pkLight->Update(&m_kLightProfile,GetEntity()->GetWorldPosV());					
-// 			m_pkLight->Update(GetEntity()->GetWorldPosV());
-		
+			m_pkLight->Update(&m_kLightProfile,GetEntity()->GetWorldPosV());						
 		
 			m_pkZShaderSystem->MatrixPush();
 				m_pkZShaderSystem->MatrixTranslate(m_pkEntity->GetIWorldPosV() + m_kOffset);
-				m_pkZShaderSystem->MatrixMult(Matrix4(m_pkEntity->GetWorldRotM()));
+				m_pkZShaderSystem->MatrixMult(Matrix4(kRot));
 				m_pkZShaderSystem->MatrixScale(m_fScale);
 	
 				
@@ -119,16 +168,20 @@ void P_Mad::Update()
 		if(m_pkZeroFps->m_iMadDraw & MAD_DRAW_SPHERE) 
 		{
 			m_pkZShaderSystem->MatrixPush();
-				m_pkZShaderSystem->MatrixTranslate(m_pkEntity->GetIWorldPosV() + m_kOffset);
-				m_pkRender->Sphere(Vector3::ZERO, GetRadius(), 2, Vector3(1,1,1),false);
+				
+				if(m_bHaveAABB)
+				{
+					m_pkRender->DrawAABB(m_AABBMin + m_pkEntity->GetIWorldPosV(),m_AABBMax + m_pkEntity->GetIWorldPosV(),Vector3(1,1,1));				
+				}
+				else
+				{
+					m_pkZShaderSystem->MatrixTranslate(m_pkEntity->GetIWorldPosV() + m_kOffset);					
+					m_pkRender->Sphere(Vector3::ZERO, GetRadius(), 2, Vector3(1,1,1),false);				
+				}
+				
 			m_pkZShaderSystem->MatrixPop();
 			
 			
-			//glPushMatrix();
-			//	glTranslatef(m_pkObject->GetWorldPosV().x,m_pkObject->GetWorldPosV().y,m_pkObject->GetWorldPosV().z);
-			//	glRotatef(90 ,1,0,0);
-			//	m_pkRender->Sphere(Vector3::ZERO, GetRadius(), 2, Vector3(1,1,1),false);
-			//glPopMatrix();
 		}
 				
 		//increse mad counter
@@ -136,6 +189,97 @@ void P_Mad::Update()
 				
 		StopProfileTimer("r___mad");			
 	}	
+}
+
+void P_Mad::CreateAABB()
+{
+	m_AABBMax.Set(-99999999,-99999999,-99999999);
+	m_AABBMin.Set(99999999,99999999,99999999);
+	Matrix3 kRot = m_pkEntity->GetWorldRotM();
+	
+	Mad_Core* pkCore = dynamic_cast<Mad_Core*>(kMadHandle.GetResourcePtr()); 
+
+
+	int iNumOfMesh = m_kActiveMesh.size();	//GetNumOfMesh();
+	int iNumOfFaces;
+	int iNumOfSubMesh;
+
+	Vector3 kVert;
+	
+	for(int iM = 0; iM <iNumOfMesh; iM++) 
+	{
+		SelectMesh(m_kActiveMesh[iM]);		//SelectMesh(iM);
+		pkCore->PrepareMesh(pkCore->GetMeshByID(m_kActiveMesh[iM]));
+		
+		int iVerts = GetNumVertices();
+		Vector3* kVertexPointer = GetVerticesPtr();
+		for(int i = 0;i<iVerts;i++)
+		{
+			kVert = kRot.VectorTransform(kVertexPointer[i]) * m_fScale;
+		
+			
+			//max
+			if(kVert.x > m_AABBMax.x)
+				m_AABBMax.x = kVert.x;
+
+			if(kVert.y > m_AABBMax.y)
+				m_AABBMax.y = kVert.y;
+			
+			if(kVert.z > m_AABBMax.z)
+				m_AABBMax.z = kVert.z;	
+				
+			//min	
+			if(kVert.x < m_AABBMin.x)
+				m_AABBMin.x = kVert.x;
+
+			if(kVert.y < m_AABBMin.y)
+				m_AABBMin.y = kVert.y;
+			
+			if(kVert.z < m_AABBMin.z)
+				m_AABBMin.z = kVert.z;				
+		}
+					
+	}
+		
+// 		iNumOfSubMesh = GetNumOfSubMesh(m_kActiveMesh[iM]);
+// 		
+// 		for(int iSubM = 0; iSubM < iNumOfSubMesh; iSubM++) 
+// 		{
+// 			SelectSubMesh(iSubM);
+// 
+// 			if(iDrawFlags & MAD_DRAW_MESH) 
+// 			{
+// 				iNumOfFaces = GetNumFaces();	// * g_fMadLODScale;
+// 
+// 				ZFResourceHandle* pkRes;
+// 				if(m_akReplaceTexturesHandles[ m_pkSubMesh->iTextureIndex ].IsValid()) 
+// 				{
+// 					pkRes = &m_akReplaceTexturesHandles[m_pkSubMesh->iTextureIndex];
+// 				}
+// 				else 
+// 				{
+// 					pkRes = m_pkMesh->GetLODMesh(0)->GetTextureHandle(m_pkSubMesh->iTextureIndex);
+// 				}
+// 				
+// 				//setup material
+// 				ZMaterial* pkMaterial = (ZMaterial*)(pkRes->GetResourcePtr());		
+// 				
+// 				if(iNumOfSubMesh == 1)
+// 					m_iFirstMaterialID = pkMaterial->GetID();
+// 				else
+// 					m_iFirstMaterialID = -1;
+// 				
+// 				m_pkShader->BindMaterial(pkMaterial);				
+// 				m_pkShader->SetPointer(INDEX_POINTER,GetFacesPtr());				
+// 				m_pkShader->SetNrOfIndexes(iNumOfFaces * 3);
+// 				
+// 				m_pkShader->DrawArray();
+// 				g_iNumOfMadSurfaces += iNumOfFaces;
+// 			}
+// 		}
+// 	}
+		
+	
 }
 
 void P_Mad::DoAnimationUpdate()

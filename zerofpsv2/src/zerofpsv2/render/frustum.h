@@ -28,8 +28,8 @@ class RENDER_API Frustum
 		bool 	SphereInFrustum(const Vector4& kPoint);			
 		bool 	SphereInFrustum(const Vector3& kPos,float fRadius);				
 		bool 	CubeInFrustum( float x, float y, float z, float sizex,float sizey,float sizez );
-		bool 	CubeInFrustum ( const Vector3& kPos, const Vector3& kCenter, const Vector3& kSize, Matrix4 kRotation );
-
+		bool 	CubeInFrustum( const Vector3& kPos, const Vector3& kCenter, const Vector3& kSize, Matrix4 kRotation );
+		bool	CubeInFrustum( const Vector3& kMin,const Vector3& kMax);
 };
 
 

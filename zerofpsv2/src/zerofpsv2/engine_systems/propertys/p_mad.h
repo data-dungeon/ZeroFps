@@ -33,6 +33,14 @@ class ENGINE_SYSTEMS_API P_Mad : public Property, public Mad_Modell {
 		
 		LightProfile	m_kLightProfile;				//used for lighting
 		
+		//bounding box
+		bool			m_bHaveAABB;
+		Vector3		m_AABBMax;
+		Vector3		m_AABBMin;
+		Matrix3		m_kLastRot;
+		float			m_fOldScale;
+		float			m_fLastAABBTest;
+		
 		//linetest stuff
 		Matrix4		m_kModelMatrix;
 		Vector3		m_kColPos;
@@ -46,6 +54,8 @@ class ENGINE_SYSTEMS_API P_Mad : public Property, public Mad_Modell {
 		bool TestPolygon(Vector3* kVerts,Vector3 kPos,Vector3 kDir);
 
 		void DoAnimationUpdate();
+		
+		void CreateAABB();
 		
 	public:
 		bool	m_bCanBeInvisible;	// True if this Mad fades away if it gets between the cam and the player.		
