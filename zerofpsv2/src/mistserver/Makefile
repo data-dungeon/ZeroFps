@@ -15,6 +15,6 @@ $T: $(OBJS)
 	$(CC) $(C_ARGS) -o $@ $(OBJS) $(LIBS)
 
 clean:
-	rm -f *.o
+	rm -f $(OBJS)
 	rm -f $(BINDIR)$(BINARY)
 	
