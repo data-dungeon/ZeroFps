@@ -23,8 +23,8 @@ public:
 	virtual bool RenderBorder(Rect kScreenRect/*, bool bMask=false*/) = 0;
 	virtual bool SetSkin(ZGuiSkin* pkSkin) = 0;
 	virtual bool SetFont(ZGuiFont* pkFont) = 0;
-	virtual bool RenderText( char *stText, Rect kScreenRect, int iCursorPos, bool bCenterTextVertically=true) = 0;
-	//virtual bool SetMaskTexture(int iID) = 0;
+	virtual void RenderText( char *stText, Rect kScreenRect, int iCursorPos, 
+		int& rCharsPrinted, int& rRowsPrinted) = 0;
 	virtual bool SetDisplay(int w, int h) = 0;
 	virtual void GetScreenSize(int& x, int& y) = 0;
 };

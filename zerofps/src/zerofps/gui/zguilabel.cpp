@@ -41,7 +41,8 @@ bool ZGuiLabel::Render( ZGuiRender* pkRenderer )
 		if(m_pkFont)
 			pkRenderer->SetFont(m_pkFont);
 
-		pkRenderer->RenderText(m_strText, GetScreenRect(), -1, false);
+		int iLetters, iRows;
+		pkRenderer->RenderText(m_strText, GetScreenRect(), -1, iLetters, iRows);
 	}
 	return true;
 } 

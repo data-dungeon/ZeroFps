@@ -22,6 +22,7 @@
 ZGuiTextbox::ZGuiTextbox(Rect kArea, ZGuiWnd* pkParent, bool bVisible, int iID, bool bMultiLine) :
 	ZGuiWnd(kArea, pkParent, bVisible, iID)
 {
+	m_iNumRows = 0;
 	m_bMultiLine = bMultiLine;
 	m_iStartrow = 0;
 	m_iCursorPos = 0;
@@ -83,7 +84,11 @@ bool ZGuiTextbox::Render( ZGuiRender* pkRenderer )
 
 		int cursor_pos = m_bBlinkCursor ? m_iCursorPos : -1;
 
-		if(!pkRenderer->RenderText(m_strText, kRect, cursor_pos, false))
+		int iLetters, iRows;
+		pkRenderer->RenderText(m_strText, kRect, cursor_pos, iLetters, iRows);
+		m_iNumRows = iRows;
+
+		if(m_bMultiLine == false && iLetters < strlen(m_strText))
 			m_iMaxCharsOneRow = 0;
 		else
 			m_iMaxCharsOneRow = 1;
@@ -104,13 +109,13 @@ bool ZGuiTextbox::Render( ZGuiRender* pkRenderer )
 
 bool ZGuiTextbox::ProcessKBInput(int nKey)
 {
-	//if(nKey == 'a')
-		printf("%i\n%i\n", nKey, '\n');
-
-
-
 	if(IgnoreKey(nKey))
 		return true;
+
+	if(nKey == KEY_RETURN)
+	{
+		nKey = '\n';
+	}
 
 	if(nKey == KEY_LEFT)
 	{
@@ -138,7 +143,7 @@ bool ZGuiTextbox::ProcessKBInput(int nKey)
 		return true;
 	}
 
-	if(nKey == KEY_ESCAPE || (nKey == KEY_RETURN && m_bMultiLine == true) )
+	if(nKey == KEY_ESCAPE || (nKey == KEY_RETURN && m_bMultiLine == false) )
 	{
 		KillFocus();
 		if(m_pkGUI)
@@ -493,15 +498,36 @@ int ZGuiTextbox::GetNumRows(char* szText)
 		return -1;
 	}
 
-	int iLength = m_pkFont->GetLength(szText);
+/*	int iLength = m_pkFont->GetLength(szText);
 	int iWidth = GetScreenRect().Width();
+	return iLength/iWidth + 1;*/
 
-	return iLength/iWidth + 1;
+	ZGuiFont::CHARINFO* font = m_pkFont->m_aChars;
+	int gap = (int) m_pkFont->m_cPixelGapBetweenChars;
+	int row_height = (int) m_pkFont->m_cCharCellSize;
+
+	int width = GetScreenRect().Width();
+	int xpos=0, ypos=0;
+
+	for(int i=0; i<strlen(szText); i++)
+	{
+		xpos += font[i].iSizeX;
+		
+		if(szText[i] != ' ')
+			xpos += gap;
+
+		if(xpos > width)
+		{
+			xpos = 0;
+			ypos += row_height;
+		}
+	}
+
 }
 
 int ZGuiTextbox::GetNumRows()
 {
-	return GetNumRows(m_strText);
+	return m_iNumRows; //GetNumRows(m_strText);
 }
 
 

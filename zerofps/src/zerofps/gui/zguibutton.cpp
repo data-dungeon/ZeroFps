@@ -99,7 +99,8 @@ bool ZGuiButton::Render( ZGuiRender* pkRenderer )
 			rcTextRect.Bottom += y_diff;*/
 		}
 
-		pkRenderer->RenderText(m_strText, rcTextRect, -1);
+		int iLetters, iRows;
+		pkRenderer->RenderText(m_strText, rcTextRect, -1, iLetters, iRows);
 	}
 
 	return true;

@@ -23,18 +23,20 @@ public:
 	bool RenderBorder(Rect kScreenRect/*, bool bMask=false*/);
 	bool SetSkin(ZGuiSkin* pkSkin);
 	//bool SetMaskTexture(int iID) { m_iMaskTexture = iID; return true; }
-	bool RenderText( char *stText, Rect kScreenRect, int iCursorPos, bool bCenterTextVertically=true);
+	void RenderText( char *stText, Rect kScreenRect, int iCursorPos, 
+		int& rCharsPrinted, int& rRowsPrinted);
 	bool SetDisplay(int w, int h);
 	bool SetFont(ZGuiFont* pkFont);
 	void GetScreenSize(int& cx, int& cy);
 
 private:
+	pair<int,int> GetWordLength(char* text, int offset);
 
 	ZGuiSkin* m_pkSkin; // current skin
 	ZGuiFont* m_pkFont; // current font
 	//int m_iMaskTexture;
 	int m_iScreenWidth, m_iScreenHeight;
-	bool PrintRows(char* text, Rect rc, int iCursorPos);
+	bool PrintRows(char* text, Rect rc, int iCursorPos, int& chars_printed, int& rows_printed);
 	TextureManager* m_pkTextureManger;
 };
 

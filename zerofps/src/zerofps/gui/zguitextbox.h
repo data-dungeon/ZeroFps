@@ -46,6 +46,7 @@ private:
 	int m_iMaxCharsOneRow;
 	int m_iMaxVisibleRows;
 	int m_iStartrow;
+	int m_iNumRows;
 
 	ZGuiScrollbar* m_pkScrollbarVertical;
 	bool m_bMultiLine;
