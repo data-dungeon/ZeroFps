@@ -42,13 +42,14 @@ class ENGINE_SYSTEMS_API P_Tcs : public Property
 		float		m_fAirFriction;
       bool		m_bOnGround;
 		bool		m_bActiveMoment;
+		float		m_fBounce;
 		
       Vector3	m_kRotVel;
 		Vector3	m_kWalkVel;
 
 		Vector3	m_kExternalLinearForce;
 		Vector3	m_kExternalRotForce;
-				
+		
 		bool		m_bLocalStoredData;
 		
 		//test flags
@@ -81,6 +82,8 @@ class ENGINE_SYSTEMS_API P_Tcs : public Property
 		float GetBoundingRadius();
 		bool SetupMeshData();
 	
+
+		
 	public:
 		
 		P_Tcs();
@@ -109,12 +112,13 @@ class ENGINE_SYSTEMS_API P_Tcs : public Property
 		void SetWalkGroupFlag(int iFlag,bool bValue) {m_akWalkableGroups[iFlag] = bValue;};			
 		
 		//forces
-		void ApplyForce(Vector3 kAttachPos,const Vector3& kForce);
+		void ApplyForce(Vector3 kAttachPos,const Vector3& kForce,bool bLocal =true);
 		void ApplyForce(const Vector3& kForce);
+		void ApplyImpulsForce(Vector3 kAttachPos,const Vector3& kForce,bool bLocal=true);
+		void ApplyImpulsForce(const Vector3& kForce);
 		
 		//sets 
-		void SetWalkVel(Vector3 kWalkVel) { m_kWalkVel = kWalkVel;};
-		//void SetExternalForces(const Vector3& kForce) { m_kExternalForces = kForce;};
+		void SetWalkVel(Vector3 kWalkVel) { m_kWalkVel = kWalkVel;};		
       void SetRotVel (Vector3 kRotVel)    { m_kRotVel = kRotVel; }		
 		void SetPolygonTest(bool t) {m_bPolygonTest = t;};
 		void SetRadius(float t) {m_fRadius = t;};
@@ -126,8 +130,7 @@ class ENGINE_SYSTEMS_API P_Tcs : public Property
 		void SetHmap(HeightMap* pkMap) { m_pkHmap = pkMap; }
 		
 		//gets		
-		Vector3 GetWalkVel() { return m_kWalkVel;}; 		
-		//Vector3 GetExternalForces() { return m_kExternalForces;};
+		Vector3 GetWalkVel() { return m_kWalkVel;}; 				
 		bool GetOnGround() { return m_bOnGround;};
 		
 		

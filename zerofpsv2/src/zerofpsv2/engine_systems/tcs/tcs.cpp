@@ -5,7 +5,6 @@
 Tcs::Tcs(): ZFSubSystem("Tcs")
 {
 	Logf("zerofps","Tiny Collission system created");
-	//cout<<"Tiny Collission system created"<<endl;
 	
 }
 
@@ -21,7 +20,9 @@ bool Tcs::StartUp()
 	m_pkZeroFps		= static_cast<ZeroFps*>(GetSystem().GetObjectPtr("ZeroFps"));		
 	m_pkRender		= static_cast<Render*>(GetSystem().GetObjectPtr("Render"));		
 	
-	m_iMaxTests = 20;
+ 	m_iMaxTests = 1000;
+	m_fMinTime = 0.01;
+	m_fMinForce = 0.01;
 	
 	m_pkBodyCopy1 = new P_Tcs;
 	m_pkBodyCopy2 = new P_Tcs;	
@@ -42,7 +43,7 @@ bool Tcs::IsValid()
 
 void Tcs::AddBody(P_Tcs* pkPTcs)
 {
-	//check so its not added twice
+ 	//check so its not added twice
 	for(unsigned int i=0;i<m_kBodys.size();i++)
 	{
 		if(m_kBodys[i] == pkPTcs)
@@ -72,6 +73,12 @@ void Tcs::RemoveBody(P_Tcs* pkPTcs)
 
 void Tcs::Update(float fAlphaTime)
 {
+/*	Vector3 v1(-1,0,0);
+	Vector3 v2(0,0,0);
+	
+	cout<< "dot:"<<v1.Dot(v2)<<endl;
+*/
+
 
 	if(m_kBodys.empty())
 		return;
@@ -85,6 +92,7 @@ void Tcs::Update(float fAlphaTime)
 	//make sure there is no collissions	
 	m_kCollissions.clear();	
 	
+	//calculate current forces
 	UpdateForces();
 	
 	while(fRTime > 0)
@@ -107,8 +115,8 @@ void Tcs::Update(float fAlphaTime)
 			HandleCollission(pkCol);
 			
 			//dont shrink rest time with to little not good for FPS =)
-			if(pkCol->fAtime < 0.001)
-				pkCol->fAtime = 0.001;
+			if(pkCol->fAtime < m_fMinTime)
+				pkCol->fAtime = m_fMinTime;
 		
 			//set new Resttime			
 			fRTime -= pkCol->fAtime;			
@@ -131,9 +139,12 @@ void Tcs::Update(float fAlphaTime)
 	//synd all entitys to bodys
 	SyncEntitys();
 	
-	if(iNrOfCollissions > 0)
-		cout<<"collissions:"<<iNrOfCollissions<<endl;
-
+	//clear all forces
+	ResetForces();
+	
+	//if(iNrOfCollissions > 0)
+	//	cout<<"collissions:"<<iNrOfCollissions<<endl;
+		
 }
 
 void Tcs::UpdateLineTests()
@@ -165,34 +176,69 @@ void Tcs::HandleCollission(Tcs_collission* pkCol)
 {
 //	m_pkRender->Sphere(pkCol->kPos,0.1,1,Vector3(1,1,0),false);
 //	m_pkRender->Line(pkCol->pkBody1->m_kNewPos,pkCol->pkBody1->m_kNewPos + pkCol->kNormal);	
-			
-	float b = 2;		
-			
-			
+
+	
+	//setup Masses, treat static bodys as having infinit mass
+	float fMass1;
+	float fMass2;
+	
+	if(!pkCol->pkBody1->m_bStatic)
+		fMass1 = pkCol->pkBody1->m_fMass;
+	else
+		fMass1 = 999999999;
+	
+	if(!pkCol->pkBody2->m_bStatic)
+		fMass2 = pkCol->pkBody2->m_fMass;
+	else
+		fMass2 = 999999999;
+
+	
+	//setup bounce
+	float fBounce1;
+	float fBounce2;
+	
+	if(!pkCol->pkBody1->m_bStatic)
+		fBounce1 = pkCol->pkBody1->m_fBounce;
+	else
+		fBounce1 = 1;
+	
+	if(!pkCol->pkBody2->m_bStatic)
+		fBounce2 = pkCol->pkBody2->m_fBounce;
+	else
+		fBounce2 = 1;
+	
+						
+	float b = fBounce1 * fBounce2;					
 	float j  = (-(1+b) * (pkCol->kRelVel * pkCol->kNormal)) /
 				  ( (pkCol->kNormal*pkCol->kNormal) *
-				  ( 1/pkCol->pkBody1->m_fMass + 1/pkCol->pkBody2->m_fMass)); 	
-			
-			
-	//make sure the power is not to small
-	if(j < 0.5)
-		j = 0.5;
-			
-//	if(j > 10)
-//		return;
-			
-	//cout<<"J:"<<j<<endl;
-			
-			
+				  ( 1/fMass1 + 1/fMass2)); 	
+		
+	
+	//make sure the impact force is not to small
+	if(j < m_fMinForce)
+		j = m_fMinForce;
+	
+	float fFriction = 0.1;
+		
 	//cout<<"handling collission"<<endl;
 	if(!pkCol->pkBody1->m_bStatic)
 	{		
-		pkCol->pkBody1->m_kLinearVelocity += (pkCol->kNormal * j) / pkCol->pkBody1->m_fMass;	
+		//pkCol->pkBody1->ApplyImpulsForce(pkCol->kNormal * j);			
+		//pkCol->pkBody1->m_kLinearVelocity += (pkCol->kNormal * j) / pkCol->pkBody1->m_fMass;	
+		//pkCol->pkBody1->ApplyImpulsForce(Vector3(0,0,0),pkCol->kNormal * j,true);	
+		
+		pkCol->pkBody1->ApplyImpulsForce(pkCol->kPos,pkCol->kNormal * j ,false);		
+		pkCol->pkBody1->ApplyImpulsForce(pkCol->kPos,(-pkCol->kTangent * j)*fFriction ,false);
 	}
 
 	if(!pkCol->pkBody2->m_bStatic)
 	{
-		pkCol->pkBody2->m_kLinearVelocity -= (pkCol->kNormal * j) / pkCol->pkBody2->m_fMass;			
+		//pkCol->pkBody2->ApplyImpulsForce(-pkCol->kNormal * j);			
+		//pkCol->pkBody2->m_kLinearVelocity -= (pkCol->kNormal * j) / pkCol->pkBody2->m_fMass;		
+		//pkCol->pkBody2->ApplyImpulsForce(Vector3(0,0,0),-pkCol->kNormal * j,true);	
+		
+		pkCol->pkBody2->ApplyImpulsForce(pkCol->kPos,-pkCol->kNormal * j,false );			
+		pkCol->pkBody1->ApplyImpulsForce(pkCol->kPos,(pkCol->kTangent * j)*fFriction ,false);
 	}
 
 
@@ -219,7 +265,7 @@ void Tcs::SyncBodys()
 //		m_pkRender->Sphere(m_kBodys[i]->m_kNewPos,m_kBodys[i]->m_fRadius,1,Vector3(1,0,0),false);
 		
 		m_kBodys[i]->m_kNewPos = m_kBodys[i]->GetObject()->GetWorldPosV();		
-		m_kBodys[i]->m_kLinearVelocity = m_kBodys[i]->GetObject()->GetVel();				
+		//m_kBodys[i]->m_kLinearVelocity = m_kBodys[i]->GetObject()->GetVel();				
 		m_kBodys[i]->m_kNewRotation = m_kBodys[i]->GetObject()->GetLocalRotM();
 	}
 }
@@ -234,9 +280,8 @@ void Tcs::UpdateForces()
 		// LINEAR FORCE / ACCLERERATION			
 			m_kBodys[i]->m_kLinearForce.Set(0,0,0);
 		
-			//add external forces and clear it
+			//add external linear force
 			m_kBodys[i]->m_kLinearForce += m_kBodys[i]->m_kExternalLinearForce; 
-			m_kBodys[i]->m_kExternalLinearForce.Set(0,0,0);
 			
 			//Apply walk force
 			m_kBodys[i]->m_kLinearForce+=m_kBodys[i]->m_kWalkVel;
@@ -244,7 +289,7 @@ void Tcs::UpdateForces()
 			//apply gravity if enabled
 			if(m_kBodys[i]->m_bGravity)
 			{
-				m_kBodys[i]->m_kLinearForce += Vector3(0,-0.5,0);
+				m_kBodys[i]->m_kLinearForce.y -= 1;
 			}
 			
 			//apply some air friction		
@@ -258,9 +303,8 @@ void Tcs::UpdateForces()
 		// ROTATIONAL FORCE / ACCLERATION		
 			m_kBodys[i]->m_kRotForce.Set(0,0,0);
 			
-			//add external moment and clera it
+			//add external rotation force
 			m_kBodys[i]->m_kRotForce += m_kBodys[i]->m_kExternalRotForce; 		
-			m_kBodys[i]->m_kExternalRotForce.Set(0,0,0);	
 			
 			//apply some air friction				
 			m_kBodys[i]->m_kRotForce -= m_kBodys[i]->m_kRotVelocity * m_kBodys[i]->m_fAirFriction;
@@ -294,7 +338,10 @@ void Tcs::UpdateBodyVelnPos(P_Tcs* pkBody,float fAtime)
 	pkBody->m_kLinearVelocity += pkBody->m_kLinearForce * fAtime;	
 	//apply rotation acceleration
 	pkBody->m_kRotVelocity += pkBody->m_kRotForce * fAtime;
-		
+	
+	//apply impulse forces
+	//pkBody->m_kLinearVelocity += pkBody->m_kExternalImpulsLinearForce / pkBody->m_fMass;
+	//pkBody->m_kRotVelocity += pkBody->m_kExternalImpulsRotForce / pkBody->m_fInertia;
 	
 	//Calculate new position
 	pkBody->m_kNewPos += (pkBody->m_kLinearVelocity * fAtime);// + (pkBody->m_kWalkVel * fAtime);	
@@ -625,8 +672,8 @@ void Tcs::TestSphereVsSphere(P_Tcs* pkBody1,P_Tcs* pkBody2,float fAtime)
 				memcpy(m_pkBodyCopy1,pkBody1,sizeof(P_Tcs));
 				memcpy(m_pkBodyCopy2,pkBody2,sizeof(P_Tcs));		
 			
-				UpdateBodyVelnPos(m_pkBodyCopy1,0);
-				UpdateBodyVelnPos(m_pkBodyCopy2,0);	
+				//UpdateBodyVelnPos(m_pkBodyCopy1,0);
+				//UpdateBodyVelnPos(m_pkBodyCopy2,0);	
 			
 				if(CollideSphereVSSphere(m_pkBodyCopy1,m_pkBodyCopy2))
 				{
@@ -659,9 +706,10 @@ void Tcs::TestSphereVsSphere(P_Tcs* pkBody1,P_Tcs* pkBody2,float fAtime)
 	
 		temp.kNormal = (m_pkBodyCopy1->m_kNewPos - m_pkBodyCopy2->m_kNewPos).Unit();
 		temp.kPos = m_pkBodyCopy1->m_kNewPos - (temp.kNormal * m_pkBodyCopy1->m_fRadius);	
-		temp.kRelVel = (m_pkBodyCopy1->m_kLinearVelocity ) - (m_pkBodyCopy2->m_kLinearVelocity);						
+		temp.kRelVel = (m_pkBodyCopy1->m_kLinearVelocity - m_pkBodyCopy2->m_kLinearVelocity);						
 		temp.fAtime =	fAtime;
-		
+		temp.kTangent = (temp.kNormal.Cross(temp.kRelVel.Unit())).Cross(temp.kNormal);
+			
 		m_kCollissions.push_back(temp);		
 	}
 
@@ -723,8 +771,8 @@ void Tcs::TestSphereVsMesh(P_Tcs* pkBody1,P_Tcs* pkBody2,float fAtime)
 					memcpy(m_pkBodyCopy1,pkBody1,sizeof(P_Tcs));
 					memcpy(m_pkBodyCopy2,pkBody2,sizeof(P_Tcs));		
 				
-					UpdateBodyVelnPos(m_pkBodyCopy1,0);
-					UpdateBodyVelnPos(m_pkBodyCopy2,0);	
+					//UpdateBodyVelnPos(m_pkBodyCopy1,0);
+					//UpdateBodyVelnPos(m_pkBodyCopy2,0);	
 				
 					if(CollideSphereVSMesh(m_pkBodyCopy1,m_pkBodyCopy2))
 					{
@@ -757,10 +805,12 @@ void Tcs::TestSphereVsMesh(P_Tcs* pkBody1,P_Tcs* pkBody2,float fAtime)
 		temp.pkBody1 = pkBody1;
 		temp.pkBody2 = pkBody2;
 	
-		temp.kNormal = m_kLastTestNormal;
+		temp.kNormal = (m_pkBodyCopy1->m_kNewPos - m_kLastTestPos).Unit();
+		//temp.kNormal = m_kLastTestNormal;
 		temp.kPos = m_kLastTestPos;	
 		temp.kRelVel = (m_pkBodyCopy1->m_kLinearVelocity ) - (m_pkBodyCopy2->m_kLinearVelocity);				
 		temp.fAtime =	fAtime;
+		temp.kTangent = (temp.kNormal.Cross(temp.kRelVel.Unit())).Cross(temp.kNormal);
 		
 		m_kCollissions.push_back(temp);		
 	}	
@@ -813,5 +863,16 @@ bool Tcs::CollideSphereVSMesh(P_Tcs* pkSphere,P_Tcs* pkMesh)
 
 }
 
-
+void Tcs::ResetForces()
+{
+	for(unsigned int i=0;i<m_kBodys.size();i++)
+	{	
+		if(m_kBodys[i]->m_bStatic)
+			continue;
+				
+		m_kBodys[i]->m_kExternalLinearForce.Set(0,0,0);
+		m_kBodys[i]->m_kExternalRotForce.Set(0,0,0);	
+	
+	}
+}
 

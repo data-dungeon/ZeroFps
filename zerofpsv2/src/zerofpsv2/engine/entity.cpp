@@ -55,7 +55,7 @@ Entity::Entity()
 	m_pkParent				= NULL;
 	m_bRelativeOri			= false;
 	m_bFirstSetPos			= true;
-	m_bInterpolate			= true;
+	m_bInterpolate			= false;
 	m_iEntityID				= -1;
 	m_bSendChilds			= true;
 	m_bIsNetWork			= false;

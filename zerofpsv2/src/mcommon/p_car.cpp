@@ -15,8 +15,8 @@ void P_Car::Init()
 {
 	cout<< "New car created"<<endl;
 
-	//m_pkInputHandle = new InputHandle("CarControl");
-	//m_pkInputHandle->SetActive(true);
+	m_pkInputHandle = new InputHandle("CarControl");
+	m_pkInputHandle->SetActive(true);
 
 	m_kAcceleration.Set(0,0,0);
 	m_kCurrentVel.Set(0,0,0);
@@ -44,6 +44,15 @@ void P_Car::Update()
 
 	
 	pkTcs->ApplyForce(Vector3(0,0,1),kForce);
+	
+	
+	static float t = m_pkZeroFps->GetTicks();
+	if(m_pkInputHandle->Pressed(KEY_B) && (m_pkZeroFps->GetTicks() - t) > 1.0)
+	{
+		t = m_pkZeroFps->GetTicks();
+		pkTcs->ApplyImpulsForce(Vector3(0,0,1),Vector3(0,1,0));
+	
+	}
 	
 	/*
 	Entity* pkCam = m_pkObjMan->GetObject("A light_red.lua");

@@ -18,7 +18,8 @@ class ENGINE_SYSTEMS_API Tcs_collission
 
 		Vector3	kPos;					//collission point
 		Vector3	kNormal;				//pkBody2's normal
-		Vector3	kRelVel;				//pkBody2's normal		
+		Vector3	kRelVel;				//pkBody2's normal
+		Vector3	kTangent;		
 	
 		float		fAtime;					//alpha time when collission occured	
 };
@@ -36,10 +37,13 @@ class ENGINE_SYSTEMS_API Tcs : public ZFSubSystem
 		Vector3				m_kLastLineTestColPos;
 		Vector3				m_kLastTestPos;
 		Vector3				m_kLastTestNormal;		
-		int					m_iMaxTests;
 		
-		P_Tcs*					m_pkBodyCopy1;
-		P_Tcs*					m_pkBodyCopy2;		
+		int					m_iMaxTests;
+		float					m_fMinTime;
+		float					m_fMinForce;
+		
+		P_Tcs*				m_pkBodyCopy1;
+		P_Tcs*				m_pkBodyCopy2;		
 		
 		//main funktions
 		void UpdateForces();
@@ -49,10 +53,10 @@ class ENGINE_SYSTEMS_API Tcs : public ZFSubSystem
 		void SyncEntitys();
 		void SyncBodys();		
 		void HandleCollission(Tcs_collission* pkCol);
-		
+		void ResetForces();
+				
 		//help funktions
 		Tcs_collission* FindNextCollission();
-	
 		
 		//collission funktions
 		void TestSphereVsSphere(P_Tcs* pkBody1,P_Tcs* pkBody2,float fAtime);
@@ -77,6 +81,7 @@ class ENGINE_SYSTEMS_API Tcs : public ZFSubSystem
 		
 		void GenerateModelMatrix();
 
+		
 		
 	public:
 		
