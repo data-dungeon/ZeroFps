@@ -125,13 +125,23 @@ void DarkMetropolis::RenderInterface(void)
 	}
 	*/
 	
+	if(Entity* pkEnt = m_pkObjectMan->GetObjectByNetWorkID(m_iCurrentPickedEntity))
+	{
+		if(pkEnt->GetProperty("P_DMItem"))
+			m_pkRender->Sphere(pkEnt->GetWorldPosV(),0.5,1,Vector3(0.5,0.5,0.5),false);					
+	
+		if(pkEnt->GetProperty("P_DMCharacter"))
+			m_pkRender->Sphere(pkEnt->GetWorldPosV() + Vector3(0,1,0),0.8,1,Vector3(0.5,0.5,0.5),false);					
+	
+	}
+	
 	//draw markers for selected entitys
 	for(unsigned int i = 0;i< m_kSelectedEntitys.size();i++)
 	{
 		Entity* pkEnt = m_pkObjectMan->GetObjectByNetWorkID(m_kSelectedEntitys[i]);
 		if(pkEnt)
 		{
-			m_pkRender->Sphere(pkEnt->GetWorldPosV(),0.5,2,Vector3(0,1,0),false);		
+			m_pkRender->Sphere(pkEnt->GetWorldPosV() + Vector3(0,2,0),0.1,1,Vector3(0,1,0),false);		
 		}	
 	}
 	
@@ -149,7 +159,7 @@ void DarkMetropolis::RenderInterface(void)
 	//draw select square
 	if(m_bSelectSquare)
 	{				
-		m_pkRender->DrawAABB(m_kSelectSquareStart,Vector3(m_kSelectSquareStop.x,m_kSelectSquareStart.y+0.02,m_kSelectSquareStop.z),Vector3(0,1,0));								
+		m_pkRender->DrawAABB(m_kSelectSquareStart,Vector3(m_kSelectSquareStop.x,m_kSelectSquareStart.y+0.2,m_kSelectSquareStop.z),Vector3(0,1,0));								
 	}
 }
 
@@ -163,6 +173,11 @@ void DarkMetropolis::OnSystem()
 			cout<<"Found Active HQ :"<<m_iActiveHQ<<endl;
 	}
 
+	//do line test
+	if(Entity* pkEnt = GetTargetObject())
+		m_iCurrentPickedEntity = pkEnt->GetEntityID();
+	else
+		m_iCurrentPickedEntity = -1;
 }
 
 void DarkMetropolis::OnServerClientJoin(ZFClient* pkClient,int iConID, 
@@ -906,7 +921,7 @@ Vector3 DarkMetropolis::GetFormationPos(int iType,int iTotal,int iPos)
 	{
 		float g = float((360 / iTotal) * iPos);
 	
-		return Vector3(cos(DegToRad(g)),0,sin(DegToRad(g)))*2;	
+		return Vector3(cos(DegToRad(g)),0,sin(DegToRad(g)))*1;	
 	}
 	
 	if(iType == FORMATION_SQUARE)

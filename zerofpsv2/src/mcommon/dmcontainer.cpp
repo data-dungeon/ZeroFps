@@ -231,6 +231,26 @@ bool DMContainer::AddItem(int iID)
 	return false;
 }
 
+bool DMContainer::RemoveItem(int iID)
+{
+	if(HaveItem(iID))
+		return false;	
+
+	ClearItem(iID);	
+	m_pkEntMan->Delete(iID);
+	
+	return true;
+}
+
+bool DMContainer::RemoveItem(int iX,int iY)
+{
+	int* i = GetItem(iX,iY);
+	if(i)
+		return RemoveItem(*i);
+	
+	return false;
+}
+
 bool DMContainer::DropItem(int iID)
 {
 	if(Entity* pkOwner = m_pkEntMan->GetObjectByNetWorkID(m_iOwnerID))

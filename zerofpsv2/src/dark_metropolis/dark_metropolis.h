@@ -79,6 +79,8 @@ class DarkMetropolis : public Application, public ZGuiApp
 		float			m_fDelayTimer;
 		bool			m_bActionPressed;
 		
+		int			m_iCurrentPickedEntity;
+		
 		vector<int> m_kSelectedEntitys;					//list of selected entitys		
 		int			m_iCurrentFormation;					//what formation to use when moving characters
 		

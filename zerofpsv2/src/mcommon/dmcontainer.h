@@ -61,7 +61,7 @@ class MCOMMON_API DMContainer
 		
 		void SetMaxItems(int iItems) {m_iMaxItems = iItems;}; 
 		
-		int* GetItem(int iX,int iY); // Zeb: Flytta denna så den blev public..
+		int* GetItem(int iX,int iY); // Zeb: Flytta denna så den blev public..EEEVIL
 
 		bool MoveItem(int iID,int iX,int iY);
 		bool MoveItem(int iID,DMContainer* pkDest,int iX,int iY);
@@ -71,6 +71,9 @@ class MCOMMON_API DMContainer
 		bool AddItem(int iID);
 		bool DropItem(int iID);
 		void DropAll();		
+		
+		bool RemoveItem(int iID);
+		bool RemoveItem(int iX,int iY);
 		
 		void GetItemList(vector<ContainerInfo>* pkItemList);
 		vector<int>* GetItemTypes ()		{ return &m_kItemTypes; }
