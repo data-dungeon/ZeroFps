@@ -17,11 +17,12 @@ using namespace std;
 
 class ZFBasicFS;
 
-enum Flags
+enum FileOpenFlags
 {
 	NORMAL,
 	DIRECTORIES_ONLY,
 	DISALLOW_DIR_CHANGE,
+	SAVE_FILES,
 	NUMBER_OF_FLAGS
 };
 
@@ -48,8 +49,6 @@ private:
 	Gui* m_pkGui;
 	ZGui* m_pkZGui;
 	ZFBasicFS* m_pkBasicFS;
-	bool m_bListDirOnly;
-	bool m_bNoChangeDir;
 	callback m_oGuiCallback;
 	ZGuiWnd* m_pkWindow;
 

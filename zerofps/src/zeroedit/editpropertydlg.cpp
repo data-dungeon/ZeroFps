@@ -136,6 +136,10 @@ void EditPropertyDlg::OnOpenEditProperty()
 		return;
 	}
 
+	((ZGuiCombobox*) pkPropertysCB)->RemoveAllItems();
+	((ZGuiCombobox*) pkPropertyValuesCB)->RemoveAllItems();
+	((ZGuiTextbox*) m_pkGui->Get("PropertyValueSetEB"))->SetText(" ");
+
 	if(m_pkCurrentChild)
 	{
 		char text[50];
@@ -154,8 +158,6 @@ void EditPropertyDlg::OnOpenEditProperty()
 
 		list<Property*>::iterator s = akPropertys.begin();
 		list<Property*>::iterator e = akPropertys.end();
-
-		((ZGuiCombobox*) pkPropertysCB)->RemoveAllItems();
  
 		for(int i ; s != e; s++, i++ )
 		{

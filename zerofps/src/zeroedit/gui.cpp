@@ -46,6 +46,9 @@ bool Gui::WndProc( ZGuiWnd* pkWindow, unsigned int uiMessage, int iNumberOfParam
 
 	int iControllID;
 
+	unsigned long flags;
+	flags = 0;
+
 	switch(uiMessage)
 	{
 	case ZGM_COMMAND:
@@ -63,15 +66,22 @@ bool Gui::WndProc( ZGuiWnd* pkWindow, unsigned int uiMessage, int iNumberOfParam
 
 		case ID_FILEPATH_OPEN_BN:
 			char cmd[512];
-			sprintf(cmd, "load %s", m_pkFileDlgbox->m_szCurrentDir.c_str()); 
-
+			
 			switch(m_kSearchTask)
 			{
 			case MAP:
+				sprintf(cmd, "load %s", m_pkFileDlgbox->m_szCurrentDir.c_str()); 
 				m_pkEdit->pkFps->m_pkConsole->Execute(cmd);
-				m_pkEdit->pkGui->ShowMainWindow(ID_FILEPATH_WND_MAIN, false);
-				m_pkEdit->pkFps->ToggleGui();
+				break;
+
+			case TEMPLATE:
+				sprintf(cmd, "loadtemplate %s", m_pkFileDlgbox->m_szCurrentDir.c_str()); 
+				m_pkEdit->pkFps->m_pkConsole->Execute(cmd);			
+				break;
 			}
+
+			m_pkEdit->pkGui->ShowMainWindow(ID_FILEPATH_WND_MAIN, false);
+			m_pkEdit->pkFps->ToggleGui();	
 			break;
 		}
 		break;
@@ -100,6 +110,7 @@ bool Gui::WndProc( ZGuiWnd* pkWindow, unsigned int uiMessage, int iNumberOfParam
 					{
 					case IDM_LOAD_HEIGHTMAP:
 						m_kSearchTask = MAP;
+						flags = DIRECTORIES_ONLY; 
 						break;
 					case IDM_LOAD_TEMPLATE:
 						m_kSearchTask = TEMPLATE;
@@ -113,7 +124,27 @@ bool Gui::WndProc( ZGuiWnd* pkWindow, unsigned int uiMessage, int iNumberOfParam
 					}
 
 					m_pkFileDlgbox = new FileOpenDlg(this, m_pkEdit->pkFps->m_pkBasicFS, 
-						WINPROC, DIRECTORIES_ONLY);
+						WINPROC, flags);
+					break;
+
+				case IDM_SAVE_TEMPLATE:
+
+					switch(iItemID)
+					{
+					case IDM_SAVE_TEMPLATE:
+						m_kSearchTask = TEMPLATE;
+						flags = SAVE_FILES; 
+						break;
+					}
+
+					if(m_pkFileDlgbox)
+					{
+						delete m_pkFileDlgbox;
+						m_pkFileDlgbox = NULL;
+					}
+
+					m_pkFileDlgbox = new FileOpenDlg(this, m_pkEdit->pkFps->m_pkBasicFS, 
+						WINPROC, SAVE_FILES);
 					break;
 
 				case IDM_CREATE_NEW_PROPERTY:
@@ -152,6 +183,7 @@ bool Gui::CreateWindows()
 	pkMenuCBox->IsMenu(true);
 	pkMenuCBox->AddItem("Load map...", IDM_LOAD_HEIGHTMAP);
 	pkMenuCBox->AddItem("Load template...", IDM_LOAD_TEMPLATE);
+	pkMenuCBox->AddItem("Save template...", IDM_SAVE_TEMPLATE);
 	pkMenuCBox->AddItem("Edit property...", IDM_CREATE_NEW_PROPERTY);
 	pkMenuCBox->AddItem("Quit", IDM_CLOSE);
 
