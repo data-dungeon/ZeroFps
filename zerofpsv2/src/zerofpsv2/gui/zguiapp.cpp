@@ -691,6 +691,7 @@ void ZGuiApp::InitDefaultSkins(/*ZFScriptSystem* pkScript*/)
 		m_kSkins.insert( strSkin(szDefNames[i], AddSkinFromScript(szDefNames[i]) ) );
 }
 
+// Måste anropas före allt annat!
 void ZGuiApp::InitGui(ZFScriptSystem* pkScriptSys, char* szFontName, 
 							 char* szScriptFile, char* szMenuFile,
 							 bool bUseHardwareMouse, int iScaleMode)

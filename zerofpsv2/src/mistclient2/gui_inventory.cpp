@@ -153,10 +153,10 @@ void InventoryDlg::Open()
 	ZGuiSkin* pkToolTipSkin = new ZGuiSkin();
 	pkToolTipSkin->m_unBorderSize = 8;
 
-	pkToolTipSkin->m_iBkTexID = m_pkTexMan->Load( "data/textures/gui/textbox.bmp", 0 );
-	pkToolTipSkin->m_iVertBorderTexID = m_pkTexMan->Load( "data/textures/gui/wndborder_top.bmp", 0 );
-	pkToolTipSkin->m_iHorzBorderTexID = m_pkTexMan->Load( "data/textures/gui/wndborder_left.bmp", 0 );
-	pkToolTipSkin->m_iBorderCornerTexID = m_pkTexMan->Load( "data/textures/gui/wndborder_corner.bmp", 0 );
+	pkToolTipSkin->m_iBkTexID = g_kMistClient.LoadGuiTextureByRes("textbox.bmp");
+	pkToolTipSkin->m_iVertBorderTexID = g_kMistClient.LoadGuiTextureByRes("wndborder_top.bmp");
+	pkToolTipSkin->m_iHorzBorderTexID = g_kMistClient.LoadGuiTextureByRes("wndborder_left.bmp");
+	pkToolTipSkin->m_iBorderCornerTexID = g_kMistClient.LoadGuiTextureByRes("wndborder_corner.bmp");
 	  
 	g_kMistClient.m_pkGui->GetToolTip()->GetWnd()->SetFont(
 			g_kMistClient.m_pkGuiMan->Font("book_antiqua_outlined10"));
@@ -496,7 +496,7 @@ void InventoryDlg::CreateContainerGrid()
 	if(pkSlotBkSkin == NULL)
 	{
 		pkSlotBkSkin = new ZGuiSkin();
-		pkSlotBkSkin->m_iBkTexID = m_pkTexMan->Load("data/textures/gui/inventory/slots_1x1.tga", 0);
+		pkSlotBkSkin->m_iBkTexID = g_kMistClient.LoadGuiTextureByRes("inventory/slots_1x1.tga");
 		pkSlotBkSkin->m_bTileBkSkin = false;
 		pkSlotBkSkin->m_afBorderColor[0] = 237.0f / 255.0f;
 		pkSlotBkSkin->m_afBorderColor[1] = 190.0f / 255.0f;
@@ -620,8 +620,7 @@ void InventoryDlg::UpdateInventory(vector<MLContainerInfo>& vkItemList)
 		}
 
 		pkNewSlot->SetSkin(new ZGuiSkin());
-		pkNewSlot->GetSkin()->m_iBkTexID = m_pkTexMan->Load(
-			string(string("data/textures/gui/items/") + vkItemList[i].m_strIcon).c_str(), 0) ;
+		pkNewSlot->GetSkin()->m_iBkTexID = g_kMistClient.LoadGuiTextureByRes("items/" + vkItemList[i].m_strIcon) ;
 		pkNewSlot->GetSkin()->m_bTileBkSkin = 0;
 
 		ITEM_SLOT kNewSlot;
@@ -678,8 +677,7 @@ void InventoryDlg::UpdateContainer(vector<MLContainerInfo>& vkItemList)
 
 		pkNewSlot->SetSkin(new ZGuiSkin());
 		pkNewSlot->GetSkin()->m_bTileBkSkin = 0;
-		pkNewSlot->GetSkin()->m_iBkTexID = m_pkTexMan->Load(
-			string(string("data/textures/gui/items/") + vkItemList[i].m_strIcon).c_str(), 0) ;	
+		pkNewSlot->GetSkin()->m_iBkTexID = g_kMistClient.LoadGuiTextureByRes("items/" + vkItemList[i].m_strIcon);
 
 		ITEM_SLOT kNewSlot;
 		kNewSlot.pkWnd = pkNewSlot;
@@ -811,13 +809,9 @@ void InventoryDlg::OnDropItem(int mx, int my)
 	}
 
 	// Show normal cursor again.
-	//g_kMistClient.m_pkGui->SetCursor((int)mx+m_kCursorRangeDiff.x, (int)my+m_kCursorRangeDiff.y, 
-	//		m_pkTexMan->Load("data/textures/gui/cursor.bmp", 0),
-	//		m_pkTexMan->Load("data/textures/gui/cursor_a.bmp", 0), 32, 32);
-
 	float w = g_kMistClient.GetScaleX()*64.0f, h = g_kMistClient.GetScaleY()*64.0f ;
 	g_kMistClient.m_pkGui->SetCursor( (int)mx+m_kCursorRangeDiff.x, (int)my+m_kCursorRangeDiff.y, 
-		m_pkTexMan->Load("data/textures/gui/cursor_sword.tga", 0), -1, w, h);
+		g_kMistClient.LoadGuiTextureByRes("cursor_sword.tga"), -1, w, h);
 
 	g_kMistClient.m_pkInputHandle->SetCursorInputPos(mx+m_kCursorRangeDiff.x,my+m_kCursorRangeDiff.y);	
 

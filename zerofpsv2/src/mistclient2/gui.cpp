@@ -104,9 +104,9 @@ void MistClient::InitGUIFonts()
 	glyph = 0;
 	strOldFont = "defguifont";
 	sprintf(szFontData, "data/textures/gui/fonts/%s.fnt", strNewFont.c_str());
-	sprintf(szFontTex, "data/textures/gui/fonts/%s.tga", strNewFont.c_str());
+	sprintf(szFontTex, "fonts/%s.tga", strNewFont.c_str());
 	ZGuiFont* pkFont = new ZGuiFont((char*)strNewFont.c_str());
-	if(pkFont->Create(szFontData, m_pkTexMan->Load(szFontTex, 0), glyph))
+	if(pkFont->Create(szFontData, g_kMistClient.LoadGuiTextureByRes(szFontTex), glyph))
 	{
 		m_pkGui->GetResMan()->RemoveFont(strOldFont);
 		m_pkGui->GetResMan()->Add(strOldFont, pkFont);	
@@ -125,9 +125,9 @@ void MistClient::InitGUIFonts()
 	glyph = 1;
 	strOldFont = "book_antiqua_outlined10";
 	sprintf(szFontData, "data/textures/gui/fonts/%s.fnt", strNewFont.c_str());
-	sprintf(szFontTex, "data/textures/gui/fonts/%s.tga", strNewFont.c_str());
+	sprintf(szFontTex, "fonts/%s.tga", strNewFont.c_str());
 	pkFont = new ZGuiFont((char*)strNewFont.c_str());
-	if(pkFont->Create(szFontData, m_pkTexMan->Load(szFontTex, 0), glyph))
+	if(pkFont->Create(szFontData, g_kMistClient.LoadGuiTextureByRes(szFontTex), glyph))
 	{
 		m_pkGui->GetResMan()->RemoveFont(strOldFont);
 		m_pkGui->GetResMan()->Add(strOldFont, pkFont);	
@@ -146,9 +146,9 @@ void MistClient::InitGUIFonts()
 	glyph = 0;
 	strOldFont = "small7";
 	sprintf(szFontData, "data/textures/gui/fonts/%s.fnt", strNewFont.c_str());
-	sprintf(szFontTex, "data/textures/gui/fonts/%s.tga", strNewFont.c_str());
+	sprintf(szFontTex, "fonts/%s.tga", strNewFont.c_str());
 	pkFont = new ZGuiFont((char*)strNewFont.c_str());
-	if(pkFont->Create(szFontData, m_pkTexMan->Load(szFontTex, 0), glyph))
+	if(pkFont->Create(szFontData, g_kMistClient.LoadGuiTextureByRes(szFontTex), glyph))
 	{
 		m_pkGui->GetResMan()->RemoveFont(strOldFont);
 		m_pkGui->GetResMan()->Add(strOldFont, pkFont);	
@@ -157,16 +157,16 @@ void MistClient::InitGUIFonts()
 
 void MistClient::SetupGUI()
 {
+	// initialize gui system with default skins, font etc
+	g_kMistClient.InitGui(m_pkScript, "defguifont", "data/script/gui/defskins.lua", 
+		NULL, false, AUTO_SCALE); 
+
 	// Create new font based on resolution.
 	InitGUIFonts();
 
 	// Search the gui script folder and find the correct script for this app
 	// based on the resolution suffix of the file, like "800x600".
 	FindGUIScriptsByResSuffix();
-
-	// initialize gui system with default skins, font etc
-	g_kMistClient.InitGui(m_pkScript, "defguifont", "data/script/gui/defskins.lua", 
-		NULL, false, AUTO_SCALE); 
 
    // load startup screen 
    if(!g_kMistClient.LoadGuiFromScript(m_kGuiScrips[GSF_START].c_str()))
@@ -234,7 +234,7 @@ void MistClient::SetupGUI()
 
    // load software cursor
 	float w = g_kMistClient.GetScaleX()*64.0f, h = g_kMistClient.GetScaleY()*64.0f ;
-	g_kMistClient.m_pkGui->SetCursor( 0,0, m_pkTexMan->Load("data/textures/gui/cursor_sword.tga", 0), -1, w, h);
+	g_kMistClient.m_pkGui->SetCursor( 0,0, g_kMistClient.LoadGuiTextureByRes("cursor_sword.tga"), -1, w, h);
 	g_kMistClient.m_pkGui->ShowCursor(false); 
    g_kMistClient.m_pkInput->ShowCursor(false);
 	SetGuiCapture(true);

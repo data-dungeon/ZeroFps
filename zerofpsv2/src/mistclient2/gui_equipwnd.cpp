@@ -373,8 +373,7 @@ void EquipmentDlg::Update(int iContainerID, int iContainerType, vector<MLContain
 			(*pSlot).m_iSlotsW = vkItemList[0].m_cItemW;
 			(*pSlot).m_iSlotsH = vkItemList[0].m_cItemH;
 
-			(*pSlot).m_pkWnd->GetSkin()->m_iBkTexID = m_pkTexMan->Load(
-				string(string("data/textures/gui/items/") +  vkItemList[0].m_strIcon).c_str(), 0) ;
+			(*pSlot).m_pkWnd->GetSkin()->m_iBkTexID = g_kMistClient.LoadGuiTextureByRes( "items/" + vkItemList[0].m_strIcon);
 			(*pSlot).m_pkWnd->GetSkin()->m_bTransparent = false; 
 			(*pSlot).m_pkWnd->Show();
 			RescaleSlotIcon((*pSlot), (*pSlot).m_iSlotsW, (*pSlot).m_iSlotsH);
@@ -487,7 +486,7 @@ void EquipmentDlg::OnDropItem(int mx, int my)
 	// Show normal cursor again.
 	float w = g_kMistClient.GetScaleX()*64.0f, h = g_kMistClient.GetScaleY()*64.0f ;
 	g_kMistClient.m_pkGui->SetCursor( (int)mx+m_kCursorRangeDiff.x, (int)my+m_kCursorRangeDiff.y, 
-		m_pkTexMan->Load("data/textures/gui/cursor_sword.tga", 0), -1, w, h);
+		g_kMistClient.LoadGuiTextureByRes("cursor_sword.tga"), -1, w, h);
 
 	g_kMistClient.m_pkInputHandle->SetCursorInputPos(mx+m_kCursorRangeDiff.x,my+m_kCursorRangeDiff.y);	
 
