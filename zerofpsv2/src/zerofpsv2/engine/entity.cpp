@@ -480,7 +480,8 @@ bool Entity::GetZoneNeighbours(vector<Entity*>* pkZones)
 		
 		for(int i = 0;i<pkZD->m_iZoneLinks.size();i++)
 			if(ZoneData* pkZD2 =	m_pkEntityMan->GetZoneData(pkZD->m_iZoneLinks[i]))
-				pkZones->push_back(pkZD2->m_pkZone);
+				if(pkZD2->m_pkZone)
+					pkZones->push_back(pkZD2->m_pkZone);
 				
 		return true;
 	}

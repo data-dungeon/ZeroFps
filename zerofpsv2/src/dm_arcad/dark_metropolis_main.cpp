@@ -1053,9 +1053,14 @@ bool DarkMetropolis::CreatePlayer()
 			{			
 				//save id
 				m_iPlayerEntityID = m_pkPlayerEntity->GetEntityID();
+				
+				//create camera entity and attach it to the player
+				m_pkCameraEntity = m_pkObjectMan->CreateObject();
+				m_pkCameraEntity->SetRelativeOri(true);
+				m_pkCameraEntity->SetParent(m_pkPlayerEntity);
 								
 				//create camera
-				if(m_pkCameraProp = (P_Camera*)m_pkPlayerEntity->AddProperty("P_Camera"))
+				if(m_pkCameraProp = (P_Camera*)m_pkCameraEntity->AddProperty("P_Camera"))
 				{
 					m_pkCameraProp->SetCamera(m_pkCamera);
 					m_pkCameraProp->SetType(CAM_TYPEBIRDSEYE);
@@ -1066,7 +1071,7 @@ bool DarkMetropolis::CreatePlayer()
 							
 				//create enviroment
 				
-				if(P_Enviroment* pkEnv = (P_Enviroment*)m_pkPlayerEntity->AddProperty("P_Enviroment"))
+				if(P_Enviroment* pkEnv = (P_Enviroment*)m_pkCameraEntity->AddProperty("P_Enviroment"))
 				{
 					pkEnv->SetEnable(true);
 					pkEnv->SetEnviroment("data/enviroments/dm.env");			

@@ -415,7 +415,7 @@ void P_Enviroment::MakeRainSplashes()
 			{
 				cout<<"not attacthed to a zone"<<endl;
 				return;
-			}		
+			}
 		}
 		else
 			return;
