@@ -457,15 +457,12 @@ void ZeroFps::DrawDevStrings()
 
 	m_pkRender->SetFont("file:../data/textures/text/devstr.bmp");
 
-	if(m_bDrawDevList == true)
+	float fYOffset = 0.75;
+	for(int i=0; i<akDevString.size(); i++) 
 	{
-		float fYOffset = 0.85;
-		for(int i=0; i<akDevString.size(); i++) 
-		{
-			m_pkRender->Print(Vector3(-1.1,fYOffset,-1),Vector3(0,0,0),Vector3(0.02,0.02,0.02), 
-				const_cast<char*>(akDevString[i].c_str()));	
-			fYOffset -= 0.02;
-		}
+		m_pkRender->Print(Vector3(-1.1,fYOffset,-1),Vector3(0,0,0),Vector3(0.02,0.02,0.02), 
+			const_cast<char*>(akDevString[i].c_str()));	
+		fYOffset -= 0.02;
 	}
 
 	akDevString.clear();

@@ -128,30 +128,35 @@ bool ZGResEdit::WinProc(ZGuiWnd* pkWnd,unsigned int uiMessage,
 			m_bUseGrid = m_pkGuiBuilder->IsButtonChecked("GridCB"); 
 			break;
 		case ID_FILEPATH_OPEN_BN:
-			char szFile[512];
-			sprintf(szFile, "%s/%s.zgr", m_pkFileOpenDlg->m_szSearchPath.c_str(),
-				m_pkFileOpenDlg->m_szCurrentFile.c_str());
 			// Open File
 			if(!m_pkFileOpenDlg->GetFlag(SAVE_FILES))
 			{
-				Serialization kLoadRC("../data/gui_resource/zgresource_rc.txt", m_pkINI, false);
+				char szFile[512];
+				sprintf(szFile, "%s/%s", m_pkFileOpenDlg->m_szSearchPath.c_str(),
+					m_pkFileOpenDlg->m_szCurrentFile.c_str());
+
+				Serialization kLoadRC(szFile, m_pkINI, false);
 				m_pkControlBox->LoadGUI(m_pkINI, pkTexMan);
 			}
 			// Save File
 			else
 			{
-				Serialization kSaveIDs("../data/gui_resource_files/zgresource_id.h", 
-					m_pkINI, true);
+				char szFile[512];
+				sprintf(szFile, "%s/%s", m_pkFileOpenDlg->m_szSearchPath.c_str(),
+					"zgresource_id.h");
+
+				Serialization kSaveIDs(szFile, m_pkINI, true);
 				kSaveIDs.Output("#ifndef _ZGRESOURCE_ID_H\n#define _ZGRESOURCE_ID_H\n\nenum WindowID\n{\n");
 				m_pkControlBox->PrintWindowIDs(&kSaveIDs);
 				kSaveIDs.Outputa("};\n\n#endif // #ifndef _ZGRESOURCE_ID_H");
 
-				Serialization kSaveRC("../data/gui_resource_files/zgresource_rc.txt", 
-					m_pkINI, true);
+				sprintf(szFile, "%s/%s", m_pkFileOpenDlg->m_szSearchPath.c_str(),
+					"zgresource_rc.txt");
+
+				Serialization kSaveRC(szFile, m_pkINI, true);
 				kSaveRC.Output("; ZGui resource script.\n\n");
 				m_pkControlBox->PrintWindowRC(&kSaveRC, pkTexMan);
 			}
-
 			break;
 		}
 		break;

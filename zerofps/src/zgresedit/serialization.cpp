@@ -20,6 +20,8 @@ Serialization::Serialization(const char* szFileName, ZFIni* pkINI, bool bWrite)
 	if(bWrite)
 	{
 		m_pkFile = fopen(szFileName, "wt");
+
+
 		ZFAssert(m_pkFile, "Serialization::Serialization(): Failed to create file.");
 	}
 	else
