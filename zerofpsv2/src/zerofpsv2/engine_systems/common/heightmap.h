@@ -9,6 +9,7 @@
 #include "../../basic/rect.h"
 #include "../../basic/zfsystem.h"
 #include "../../render/texturemanager.h"
+#include "../../engine/res_texture.h"
 
 #define HEIGHTMAP_SCALE 1
 
@@ -23,20 +24,47 @@ struct ENGINE_SYSTEMS_API HM_vert
 struct HM_fileheader 
 {
 	int	m_iHmSize;
+	int	m_iNumOfLayers;
 };
 
+/*
 struct TileSet
 {
 	char	m_acTexture[256];
 	char	m_acDetailTexture[256];
 	char	m_acMask[256];
 };
+*/
 
+class HM_Layer
+{
+public:
+	string	m_strName;					// Name of layer.
+	string	m_strTexture;	
+	string	m_strDetailTexture;
+	string	m_strMask;
+
+	ZFResourceHandle	m_kMaskHandle;
+
+	HM_Layer& operator=(const HM_Layer &kOther) {
+		m_strName = kOther.m_strName;
+		m_strTexture = kOther.m_strTexture;
+		m_strDetailTexture = kOther.m_strDetailTexture;
+		m_strMask = kOther.m_strMask;
+		m_kMaskHandle = kOther.m_kMaskHandle;
+		return *this;
+		}	
+
+	void Load(ZFVFile* pkFile);
+	void Save(ZFVFile* pkFile);
+};
+
+/*
 struct TerrainBlock
 {
 	Vector3	kAABB_Min;
 	Vector3	kAABB_Max;
-};
+};*/
 
 class ENGINE_SYSTEMS_API HMSelectVertex
 {
@@ -51,12 +79,16 @@ class ENGINE_SYSTEMS_API HeightMap
 		TextureManager*	m_pkTexMan;		
 		ZFBasicFS*			m_pkBasicFS;
 
+		int					m_iID;			// ID Assigned to each Hm in the game. Used for savefile names.
+
 		int m_iTilesSide;					// The number of edges/tiles on each side.
 		int m_iVertexSide;				// The number of vertex on each side (tiles + 1)
 		int m_iNumOfHMVertex;			// Total number of HMVertex that are in this map.
 
 		HM_vert* verts;	
-		vector<TileSet>		m_kSets;
+//		vector<TileSet>		m_kSets;
+		vector<HM_Layer>		m_kLayer;
+
 		//vector<TerrainBlock>	m_kTerrainBlocks;
 
 		int		m_iHmScaleSize;
@@ -64,6 +96,7 @@ class ENGINE_SYSTEMS_API HeightMap
 
 		Uint32 GetPixel(SDL_Surface* surface, int x, int y);
 		bool AllocHMMemory(int iSize);
+	
 
 	public:
 		Vector3	m_kCornerPos;			// Position for Corner for rendering.
@@ -71,6 +104,9 @@ class ENGINE_SYSTEMS_API HeightMap
 		// Construct & Destruct
 		HeightMap();		
 		~HeightMap();		
+		
+		bool		m_bInverted;
+		void		Invert() { m_bInverted = !m_bInverted; }
 
 		// Init
 		void Create(int iTilesSide);
@@ -108,8 +144,8 @@ class ENGINE_SYSTEMS_API HeightMap
 		void DrawMask(Vector3 kPos,int iMode,int iSize,int r,int g,int b,int a);
 		
 		int GetSize(){return m_iTilesSide*HEIGHTMAP_SCALE;};				// Return the size of one side of the Hm.
-		void AddSet(const char* acTexture,const char* acDetailTexture,const char* acMask);
-		void ClearSet();
+		//void AddSet(const char* acTexture,const char* acDetailTexture,const char* acMask);
+		//void ClearSet();
 
 
 		HM_vert* LinePick(Vector3 kPos,Vector3 kDir,Vector3 kCenterPos,int iWidth,Vector3& kHitPos);		
@@ -126,6 +162,28 @@ class ENGINE_SYSTEMS_API HeightMap
 		
 		void GetCollData(vector<Mad_Face>* pkFace,vector<Vector3>* pkVertex , vector<Vector3>* pkNormal);
 		
+		// Layer Mangment
+		bool Layer_Create(string strName, string strTexture);
+		bool Layer_Delete(string strName);
+		bool Layer_Clone(string strNameFrom, string strName);
+
+		vector<string>	Layers_GetNames();
+		
+		void SetID(int iId) { m_iID = iId; }
+ 
+		float GetBrushSizeInAlphaUVSpace(float fSize);
+
+		/*
+			-Create
+			-Delete
+			-Duplicate	-
+			-GetLayers	- Returns lista med namn på alla layers.
+			-MoveLaye		- Flyttar layer upp/ned i listan på layers som ritas ut.
+			-Fill			- Fyller lager med vald färg.
+			-Draw			- Använder brush för att rita på layer.
+
+*/
+
 		friend class Render;
 };
 

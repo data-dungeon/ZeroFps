@@ -1217,6 +1217,7 @@ void ZeroFps::AddHMProperty(ZoneData* pkZd, int iNetWorkId, Vector3 kZoneSize)
 
 	// Create a new Hmap and add it.
 	HeightMap* pkMap = new HeightMap;
+	pkMap->SetID(iNetWorkId);
 	pkMap->Create( (int)kZoneSize.x );
 	//pkMap->Random();
 

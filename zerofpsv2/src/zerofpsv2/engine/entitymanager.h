@@ -242,6 +242,7 @@ class ENGINE_API EntityManager : public ZFSubSystem{
 		void CommitZone(int iId);
 
 		void SetWorldDir(const char* acDir) {m_kWorldDirectory = acDir;};
+		string GetWorldDir() { return m_kWorldDirectory; };
 		bool LoadWorld(const char* acDir);
 		void ForceUnload();					//forcing unload of all loaded zones
 		void ForceSave();						//forcing save of all loaded zones

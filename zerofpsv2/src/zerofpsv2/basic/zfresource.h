@@ -54,6 +54,7 @@ private:
 
 public:
 	ZFResourceHandle();
+	ZFResourceHandle(const ZFResourceHandle& kOther);
 	~ZFResourceHandle();
 	ZFResourceHandle& operator=(const ZFResourceHandle& kOther);
 

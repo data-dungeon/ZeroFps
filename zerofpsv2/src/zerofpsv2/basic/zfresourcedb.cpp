@@ -3,6 +3,7 @@
 #include "zfresourcedb.h"
 #include "globals.h"
 #include "zfsystem.h"
+#include "assert.h"
 
 #define	RES_EXPIRE_TIME	30.0
 
@@ -29,6 +30,13 @@ ZFResourceHandle::ZFResourceHandle()
 {
 	m_iHandleID = g_iResourceHandleID ++;
 	m_iID = -1;
+}
+
+ZFResourceHandle::ZFResourceHandle(const ZFResourceHandle& kOther)
+{
+	m_iHandleID = g_iResourceHandleID ++;
+	m_iID = -1;
+	SetRes(kOther.m_strName);
 }
 
 ZFResourceHandle& ZFResourceHandle::operator=(const ZFResourceHandle& kOther)
@@ -62,6 +70,8 @@ void ZFResourceHandle::FreeRes()
 {
 	if(m_iID == -1)
 		return;
+
+	g_ZFObjSys.Logf("resdb", "ZFResourceHandle::FreeRes %d %s\n", m_iHandleID, m_strName.c_str());
 
 	ZFResourceDB* pkResDB = static_cast<ZFResourceDB*>(g_ZFObjSys.GetObjectPtr("ZFResourceDB"));
 	pkResDB->FreeResource(*this);
@@ -304,6 +314,10 @@ void ZFResourceDB::FreeResource(ZFResourceHandle& kResHandle)
 		}
 
 	pkRes->m_iNumOfUsers --;
+	g_ZFObjSys.Logf("resdb", "Res '%s' - %d.\n", pkRes->m_strName.c_str(), pkRes->m_iNumOfUsers);
+
+	//if(pkRes->m_iNumOfUsers < 0)
+	//	assert(0);
 	kResHandle.m_iID = -1;
 	kResHandle.m_strName = "";
 }

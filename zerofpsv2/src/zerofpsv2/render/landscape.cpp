@@ -735,10 +735,11 @@ void Render::DrawCross(Vector3& kPos,Vector3& kHead,Vector3& kScale,int& iTextur
 
 void Render::DrawHMLodSplat(HeightMap* kMap,Vector3 CamPos,int iFps)
 {
+	if(kMap->m_iNumOfHMVertex == 0)
+		return;
 
 	if(!m_iDrawLandscape)
 		return;
-
 
   if(m_iAutoLod>0){
 		if((int)SDL_GetTicks()>(m_iLodUpdate+500)){
@@ -757,7 +758,8 @@ void Render::DrawHMLodSplat(HeightMap* kMap,Vector3 CamPos,int iFps)
 	
 	glTranslatef(kMap->m_kCornerPos.x,kMap->m_kCornerPos.y,kMap->m_kCornerPos.z);
 	glColor4f(1,1,1,1);
-	
+	if(kMap->m_bInverted) glCullFace(GL_FRONT);
+
 //	DrawHMVertex(kMap);
 //	glPopAttrib();
 //	glPopMatrix();
@@ -785,11 +787,11 @@ void Render::DrawHMLodSplat(HeightMap* kMap,Vector3 CamPos,int iFps)
 	//setup TUs
 	glActiveTextureARB(GL_TEXTURE0_ARB);
 	glDisable(GL_TEXTURE_2D);//disable for the first texture
-	glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE);	
+	glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE, GL_REPLACE  );	// GL_MODULATE	 GL_REPLACE
 
 	glActiveTextureARB(GL_TEXTURE1_ARB);
 	glEnable(GL_TEXTURE_2D);
-	glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE);	
+	glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE, GL_REPLACE );	
 	
 	
 	//Draw default texture	
@@ -801,8 +803,8 @@ void Render::DrawHMLodSplat(HeightMap* kMap,Vector3 CamPos,int iFps)
 	
 	m_pkTexMan->BindTexture(pkTexture->m_iTextureID);*/
 
-	m_pkTexMan->BindTexture(kMap->m_kSets[0].m_acTexture,0);
-	m_pkTexMan->AddMipMapLevel(0,kMap->m_kSets[0].m_acDetailTexture);	
+	m_pkTexMan->BindTexture(kMap->m_kLayer[0].m_strTexture.c_str(),0);
+	m_pkTexMan->AddMipMapLevel(0,kMap->m_kLayer[0].m_strTexture.c_str());	
 	
 //	m_pkTexMan->BindTexture(kMap->m_kSets[0].m_acTexture,0);
 //	m_pkTexMan->AddMipMapLevel(0,kMap->m_kSets[0].m_acDetailTexture);	
@@ -818,18 +820,18 @@ void Render::DrawHMLodSplat(HeightMap* kMap,Vector3 CamPos,int iFps)
 	glActiveTextureARB(GL_TEXTURE0_ARB);	
 	glEnable(GL_TEXTURE_2D);	
 		
-	for(unsigned int i=1;i<kMap->m_kSets.size();i++)
+	for(unsigned int i=1;i<kMap->m_kLayer.size();i++)
 	{	
 		if(i >= m_iMaxLandscapeLayers)
 			break;
 
 		glActiveTextureARB(GL_TEXTURE0_ARB);	
-		m_pkTexMan->BindTexture(kMap->m_kSets[i].m_acMask,T_NOMIPMAPPING);	
+		m_pkTexMan->BindTexture(kMap->m_kLayer[i].m_strMask.c_str(),T_NOMIPMAPPING);	
 		
 		
 		glActiveTextureARB(GL_TEXTURE1_ARB);
-		m_pkTexMan->BindTexture(kMap->m_kSets[i].m_acTexture,0);		
-		m_pkTexMan->AddMipMapLevel(0,kMap->m_kSets[i].m_acDetailTexture);					
+		m_pkTexMan->BindTexture(kMap->m_kLayer[i].m_strTexture.c_str(),0);		
+		m_pkTexMan->AddMipMapLevel(0,kMap->m_kLayer[i].m_strTexture.c_str());					
 		
 		DrawAllHM(kMap,CamPos,true);	
 	}
@@ -841,7 +843,9 @@ void Render::DrawHMLodSplat(HeightMap* kMap,Vector3 CamPos,int iFps)
 	glDisable(GL_TEXTURE_2D);
 	glActiveTextureARB(GL_TEXTURE0_ARB);
 	glDisable(GL_BLEND);	
-	
+
+	if(kMap->m_bInverted) glCullFace(GL_BACK);
+
 	glPopAttrib();
 	glPopMatrix();
 }

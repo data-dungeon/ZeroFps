@@ -335,13 +335,6 @@ int SetNextAnim(lua_State* pkLua)
 	return 1;
 }
 
-/**	\page AddMesh AddMesh(ObjectID, MeshID)
-
-	Adds a mesh to be rendered on the object.
-
-   \param	ObjectID	ID of object to add mesh to.
-   \param	MeshID	ID of mesh to add.
-*/
 int AddMesh(lua_State* pkLua)
 {
 	// Get ObjectID ID

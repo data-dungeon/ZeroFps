@@ -585,6 +585,7 @@ void Image::set_pixel(int x, int y, unsigned char r,unsigned char g,unsigned cha
 	m_pkPixels[offset].r = r;
 	m_pkPixels[offset].g = g;
 	m_pkPixels[offset].b = b;
+	m_pkPixels[offset].a = 0;
 }
 
 bool Image::get_pixel(int x, int y, color_rgba& rkColor)

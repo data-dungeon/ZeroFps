@@ -33,6 +33,7 @@ class ENGINE_SYSTEMS_API P_HMRP2: public Property
 		HeightMap* GetHeightMap() {return m_pkHeightMap;};
 		void SetPolyMode(PolygonMode eMode);
 
+		void Init();
 
 
 		void PackTo(NetPacket* pkNetPacket, int iConnectionID);

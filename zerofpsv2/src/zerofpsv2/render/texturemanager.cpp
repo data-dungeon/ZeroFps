@@ -584,7 +584,7 @@ SDL_Surface* TextureManager::GetTexture(int iLevel)
 	
 	iDepth = iRSize+iGSize+iBSize+iASize;
 	
-	/*
+	
 	cout << " iInternalFormat "<< iInternalFormat << "\n";
 	cout << " iDepth "<< iDepth << "\n";	
 	
@@ -596,7 +596,7 @@ SDL_Surface* TextureManager::GetTexture(int iLevel)
 	cout<<"green size:"<<iGSize<<endl;	
 	cout<<"blue size: "<<iBSize<<endl;	
 	cout<<"alpha size:"<<iASize<<endl;	
-	*/
+	
 
 	int iFormat=-1;
 	int iType=-1;
@@ -682,13 +682,13 @@ SDL_Surface* TextureManager::GetTexture(int iLevel)
 		return NULL;
 	}
 	
-	//	cout << "TextureManager::GetTexture: " glGetError(); << endl;
-	//	cout << "GetTexture:" << GetOpenGLErrorName(glGetError()) << "\n";
+	cout << "TextureManager::GetTexture: " << glGetError() << endl;
+	cout << "GetTexture:" << GetOpenGLErrorName(glGetError()) << "\n";
 
 	//download pixels from opengl
 	glGetTexImage(GL_TEXTURE_2D,iLevel,iFormat,iType,image->pixels);
 	
-	//	cout << "GetTexture:" << GetOpenGLErrorName(glGetError()) << "\n";
+	cout << "GetTexture:" << GetOpenGLErrorName(glGetError()) << "\n";
 
 	return image;
 }

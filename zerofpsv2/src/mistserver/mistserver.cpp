@@ -383,6 +383,14 @@ void MistServer::HMModifyCommand(float fSize)
 // Handles input for EditMode Terrain.
 void MistServer::Input_EditTerrain()
 {
+	P_HMRP2* hmrp = NULL;
+
+	int id = m_iCurrentMarkedZone;
+	ZoneData* kZData = m_pkObjectMan->GetZoneData(id);
+	if(kZData)
+		hmrp = dynamic_cast<P_HMRP2*>(kZData->m_pkZone->GetProperty("P_HMRP2"));
+
+
 	if(m_pkInput->VKIsDown("inrad+"))	m_fHMInRadius += 1 * m_pkFps->GetGameFrameTime();
 	if(m_pkInput->VKIsDown("inrad-"))	m_fHMInRadius -= 1 * m_pkFps->GetGameFrameTime();
 	if(m_pkInput->VKIsDown("outrad+"))	m_fHMOutRadius += 1 * m_pkFps->GetGameFrameTime();
@@ -392,20 +400,22 @@ void MistServer::Input_EditTerrain()
 
 		if(m_pkInput->VKIsDown("hmraise"))
 			HMModifyCommand(5); 
-		if(m_pkInput->VKIsDown("hmlower"))
+		if(m_pkInput->VKIsDown("hmlower")) {
+			//Vector3 kLocalOffset = m_kDrawPos - hmrp->m_pkHeightMap->m_kCornerPos;
+			//hmrp->m_pkHeightMap->Smooth(kLocalOffset.x,kLocalOffset.z,5,5);
 			HMModifyCommand(-5); 
+			}
 
 		if(m_pkInput->VKIsDown("hmpaint")) {
-			int id = m_iCurrentMarkedZone;
-			ZoneData* kZData = m_pkObjectMan->GetZoneData(id);
-			P_HMRP2* hmrp = dynamic_cast<P_HMRP2*>(kZData->m_pkZone->GetProperty("P_HMRP2"));
 			Vector3 kLocalOffset = m_kDrawPos - hmrp->m_pkHeightMap->m_kCornerPos;
-			hmrp->m_pkHeightMap->DrawMask(m_kDrawPos, m_iEditLayer,m_fHMInRadius,255,255,255,255);
+			hmrp->m_pkHeightMap->DrawMask(m_kDrawPos, m_iEditLayer,m_fHMInRadius,255,255,255,128);
 			}
 
 	if(m_pkInput->Pressed(KEY_1)) m_iEditLayer = 1;		
 	if(m_pkInput->Pressed(KEY_2)) m_iEditLayer = 2;			
 	if(m_pkInput->Pressed(KEY_3)) m_iEditLayer = 3;			
+
+	if(m_pkInput->Pressed(KEY_4) && hmrp) hmrp->m_pkHeightMap->Invert();			
 
 }
 
