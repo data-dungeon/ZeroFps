@@ -12,8 +12,6 @@ using namespace std;
 
 ZFSystem* ZFSystem::pkInstance;
 
-
-
 /*
 	Print all system variables.
 */
@@ -65,6 +63,11 @@ void ZFSystem::LogVariables(void)
 	}
 }
 
+/**	\brief	Runs App Arguments as cmd's into the ZFSystem.
+
+	Takes the arguments of the application and runs them. Should only be called
+	once. the arguments is then stored in AppArguments.
+*/
 void ZFSystem::HandleArgs(int iNrOfArgs, char** paArgs)
 {
 	string	strFullArg;
@@ -93,10 +96,8 @@ void ZFSystem::HandleArgs(int iNrOfArgs, char** paArgs)
 
 	cout<<"Nr of arguments: "<< strFullArg.size() <<endl;
 	for(int ia = 0; ia < AppArguments.size(); ia++) {
-		
-		RunCommand(AppArguments[ia].c_str(), CSYS_SRC_CMDLINE);
-
 		cout << "Argument[" << ia << "]: "<< AppArguments[ia] << endl;
+		RunCommand(AppArguments[ia].c_str(), CSYS_SRC_CMDLINE);
 		}
 }
 
@@ -141,7 +142,7 @@ ZFSystem::~ZFSystem()
 	Registers a SubSystem to be accsessible t the ZFSystem. Set the name and parent
 	subsystem (NULL) if no parent. Name must be uniqe or reg will fail.
 */
-void ZFSystem::Register(ZFSubSystem* pkObject, char* acName /*, ZFSubSystem* pkParent*/)
+void ZFSystem::Register(ZFSubSystem* pkObject, char* acName)
 {
 #ifdef _DEBUG
 	g_Logf("Register '%s'", acName);
@@ -281,34 +282,6 @@ bool ZFSystem::IsValid()
 	return true;
 }
 
-/*
-void ZFSystem::Link(ZFSubSystem* pkParent, ZFSubSystem* pkObject)
-{
-	pkObject->m_pkParent = pkParent;
-	pkParent->m_akChild.push_back(pkObject);
-}
-
-void ZFSystem::UnLink(ZFSubSystem* pkObject)
-{
-	if(pkObject->m_pkParent == NULL)	
-		return;
-
-	pkObject->m_pkParent = NULL;
-	
-}
-
-void ZFSystem::PrintObjectsHer(void)
-{
-	g_Logf("ZFSystem::PrintObjectsHer\n");
-
-	for(unsigned int i=0; i < kObjectNames.size();i++) {
-		if(kObjectNames[i].pkObject->m_pkParent == NULL) {
-			kObjectNames[i].pkObject->PrintChilds("");
-		}
-	}
-
-}*/
-
 ZFCmdData* ZFSystem::FindArea(const char* szName)
 {
 	for(unsigned int i=0; i<m_kCmdDataList.size(); i++) {
@@ -319,7 +292,16 @@ ZFCmdData* ZFSystem::FindArea(const char* szName)
 	return NULL;
 }
 
+/**	\brief	Registers a Command.
 
+  Registers a new command and the SubSystem that will handle the commands. Also
+  set options for the cmd.
+
+	iCmdID:	This is the value that will be sent to ZFSubSystem::RunCommand.<BR>
+	iFlags:	Options for cmd.<BR>
+	szHelp:	Help text to be displayed to user.<BR>
+	iNumArg:	Min num of arguments this commands need.<BR>
+*/
 bool ZFSystem::Register_Cmd(char* szName, int iCmdID, ZFSubSystem* kObject,int iFlags, char* szHelp, int iNumOfArg)
 {
 	// Validate parameters
@@ -354,6 +336,10 @@ bool ZFSystem::Register_Cmd(char* szName, int iCmdID, ZFSubSystem* kObject,int i
 	return true;
 }
 
+/**	\brief	Unregisters Commands.
+	
+	Unregister all cmd data registred by this SubSystem.
+*/
 bool ZFSystem::UnRegister_Cmd(ZFSubSystem* kObject)
 {
 	vector<ZFCmdData>::iterator itCmds;
@@ -372,6 +358,10 @@ bool ZFSystem::UnRegister_Cmd(ZFSubSystem* kObject)
 	return true;
 }
 
+/**	\brief	Runs a Cmd into the ZFSystem.
+	
+	
+*/
 bool ZFSystem::RunCommand(const char* szCmdArg, ZFCmdSource iCmdSource)
 {
 	CmdArgument kcmdargs;
@@ -736,10 +726,4 @@ void CmdArgument::Set(const char* szCmdArgs)
 			args++;
 	}
 }
-/**	\brief	Get a ptr to the ZFSystem object.
-	FittHORA
-*/
-/*ZFSystem* ZFSystem::GetInstance()
-{
-	return ZFSystem::pkInstance;
-}*/
+

@@ -13,27 +13,33 @@ using namespace std;
 class ZFSubSystem;
 class ZFSystem;
 
-/// Type of Command
+/**	\brief	Type of Command
+
+	Describes the type of data stored.
+*/
 enum ZFCmdDataType 
 {
-	CSYS_NONE = 0,					// None valid data.
-	CSYS_FUNCTION,					// Function ptr.
-	CSYS_INT,						// int.
-	CSYS_FLOAT,						// float.
-	CSYS_DOUBLE,					// float.
-	CSYS_LONG,						// float.
-	CSYS_BOOL,						// bool.
-	CSYS_STRING,					// /0 terminated string.
+	CSYS_NONE = 0,					///< None valid data.
+	CSYS_FUNCTION,					///< Function ptr.
+	CSYS_INT,						///< int.
+	CSYS_FLOAT,						///< float.
+	CSYS_DOUBLE,					///< float.
+	CSYS_LONG,						///< float.
+	CSYS_BOOL,						///< bool.
+	CSYS_STRING,					///< /0 terminated string.
 };
 
-/*	Cmd Source is used to describe from were a commands come*/
+/**	\brief	The src of a command.
+
+	The src from were the commands comes. 
+*/
 enum ZFCmdSource
 {
-	CSYS_SRC_CMDLINE,				// Cmd is from the program cmd line.
-	CSYS_SRC_INITFILE,			// Cmd is from the ini files that is run at startup
-	CSYS_SRC_CONSOLE,				// Cmd is from the console.
-	CSYS_SRC_SUBSYS,				// Cmd was sent from a subsystem.
-	CSYS_SRC_UNKNOWN,
+	CSYS_SRC_CMDLINE,				///< Cmd is from the program cmd line.
+	CSYS_SRC_INITFILE,			///< Cmd is from the ini files that is run at startup
+	CSYS_SRC_CONSOLE,				///< Cmd is from the console.
+	CSYS_SRC_SUBSYS,				///< Cmd was sent from a subsystem.
+	CSYS_SRC_UNKNOWN,				///< Unknown Src. Will be ignored and written to log.
 };
 
 /* Flags changes settings for variables/commands.
@@ -83,42 +89,41 @@ class BASIC_API ZFSubSystem
 {
 private:
 	string					m_strZFpsName;					///<	Name of this objekt.
-//	void DestroyChildren();									///<	Remove and delete children.
 		
 protected:
-//	vector<ZFSubSystem*>		m_akChild;					///<	List of all object we own.
-//	ZFSubSystem*				m_pkParent;					///<	Ptr to object that own us.
-
 	ZFSubSystem(char *szName);		
+	ZFSystem*				m_pkSystem;						///<  Ptr to the System.
 
 public:
-	ZFSystem*					m_pkSystem;					///<  Ptr to the System.
 	
 	ZFSystem&	GetSystem();
 
-/*	ZFSubSystem*	GetParent() const;					///< Get ptr to object parent.
-
-	int GetNumChildren() const;							///< Get num of children we have.
-	int GetChildIndex(ZFSubSystem* pkChild);			///< Get index for child.
-	int GetChildIndex(char* szName);						///< Get index for child.
-	ZFSubSystem* GetChildPtr(int iIndex);				///< Get ptr to child.
-	ZFSubSystem* GetChildPtr(char* szName);			///< Get ptr to child.
-	void AddChild(ZFSubSystem* pkObject);				///< Make a object child to this.
-	void RemoveChild(ZFSubSystem* pkObject);			///< Remove one of our children.
-	void PrintChilds(const char* szParentName);		///< Debug: Prints childs from this object. 
-*/
-
-	bool Register_Cmd(char* szName, int iCmdID, int iFlags = CSYS_FLAG_SRC_ALL, char* szHelp = NULL, int iNumOfArg = 0);		///< Register a Cmd for this SubSys.
-	bool RegisterVariable(const char* szName, void* pvAddress, ZFCmdDataType eType, int iFlags = CSYS_FLAG_SRC_ALL);			///< Register a var for this SubSys
+	bool Register_Cmd(char* szName, int iCmdID, int iFlags = CSYS_FLAG_SRC_ALL, char* szHelp = NULL, int iNumOfArg = 0);		
+	bool RegisterVariable(const char* szName, void* pvAddress, ZFCmdDataType eType, int iFlags = CSYS_FLAG_SRC_ALL);		
  	void Logf(const char* szName, const char* szMessageFmt,...);
 
 	virtual ~ZFSubSystem();
 
 	friend class ZFSystem;
 
+	
+	/**	\brief	Runs Cmd Sent to this SubSystem from ZFSystem.
+
+		This function is called when a command is sent to the subsystem. cmdid is set to
+		the id used when the command was reg. kCommand contains the whole text command.
+	*/
 	virtual void RunCommand(int cmdid, const CmdArgument* kCommand) {};
+
+	/**	\brief	Starts up this SubSystem.
+	*/
 	virtual bool StartUp()  = 0;
+
+	/**	\brief	Shut Down this SubSystem.
+	*/
 	virtual bool ShutDown() = 0;
+
+	/**	\brief	Check if SubSystem is Ok.
+	*/
 	virtual bool IsValid()  = 0;
 };
 

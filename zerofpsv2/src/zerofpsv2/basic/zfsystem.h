@@ -37,12 +37,6 @@ struct NameObject
 class BASIC_API ZFCmdData
 {
 public:
-//	ZFCmdData();
-//	~ZFCmdData();
-	
-//	ZFCmdData(const ZFCmdData& pack);
-//	ZFCmdData&  operator=(const ZFCmdData& pack);
-
 	string			m_strName;				// Name for this data/commmand.
 	ZFCmdDataType	m_eType;					// Type of data.
 	int				m_iFlags;				// flags.
@@ -75,13 +69,18 @@ class BASIC_API ZFSystem	/*	ZFSystem	*/
 private:
 	vector<ZFCmdData>		m_kCmdDataList;		///< List of all cmd functions/variables.
 	vector<ZFLogFile>		m_kLogFiles;			///< List of all Log files.
-	FILE*						m_pkLogFile;
+	FILE*						m_pkLogFile;			///< Master Log File (zerofps.txt).
 
 	void PrintVariables();
 	void PrintCommands();
 	void PrintObjects(void);
 	void LogVariables(void);
-//	void PrintObjectsHer(void);
+
+	bool SetVariable(const char* szName, const char* szValue);
+	void SetValue(ZFCmdData* pkArea, const char* szValue);
+	void SetString(ZFCmdData* pkArea, const char* szValue);
+	void* GetVar(ZFCmdData* pkArea);
+	string GetVarValue(ZFCmdData* pkArea);
 
 protected:
 	vector<string>			AppArguments;			///< Arguments sent to app at startup.
@@ -105,9 +104,6 @@ public:
 	bool ShutDown();
 	bool IsValid();
 
-//	void Link(ZFSubSystem* pkParent, ZFSubSystem* pkObject);								///< Links a object as a child to another.
-//	void UnLink(ZFSubSystem* pkObject);															///< Unlinks a object from another.
-
 // Cmd / Functions.
 	ZFCmdData* FindArea(const char* szName);	// GALLA
 	/// Register a Cmd and object that will handle it.
@@ -117,13 +113,6 @@ public:
 
 // Variables
 	bool RegisterVariable(const char* szName, void* pvAddress, ZFCmdDataType eType, ZFSubSystem* kObject, int iFlags);
-	bool SetVariable(const char* szName, const char* szValue);
-
-	void SetValue(ZFCmdData* pkArea, const char* szValue);
-	void SetString(ZFCmdData* pkArea, const char* szValue);
-
-	void* GetVar(ZFCmdData* pkArea);
-	string GetVarValue(ZFCmdData* pkArea);
 
 // Log Files
 	bool Log_Create(const char* szName);
