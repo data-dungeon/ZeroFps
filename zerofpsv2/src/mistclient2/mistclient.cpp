@@ -458,7 +458,7 @@ void MistClient::Input()
 	//perform the first action in the action list
 	if( m_pkInputHandle->VKIsDown("use") )
 	{
-		if(!DelayCommand())
+		if(!DelayCommand() && m_iPickedUpItem == -1)
 		{			
 			if(Entity* pkEnt = m_pkEntityManager->GetEntityByID(m_iPickedEntityID))
 			{				
@@ -488,12 +488,9 @@ void MistClient::Input()
 		}	
 	}	
 
-	if(!m_pkInputHandle->VKIsDown("use"))
+	if(!m_pkInputHandle->VKIsDown("use") && m_iPickedUpItem != -1)
 	{
-		if(m_iPickedUpItem)
-		{			
-			m_iPickedUpItem = -1;
-		}
+		m_iPickedUpItem = -1;		
 	}
 			
 	//check buttons

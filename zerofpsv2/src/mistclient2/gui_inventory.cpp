@@ -209,7 +209,7 @@ void InventoryDlg::Update(vector<MLContainerInfo>& vkItemList)
 			szItemName, "", m_pkInventoryWnd, x, y, w, h, 0);
 		pkNewSlot->Show();
 
-		if(g_kMistClient.m_iPickedUpItem != vkItemList[i].m_iItemID)
+		if(g_kMistClient.m_iPickedUpItem != vkItemList[i].m_iItemID || i==0) // dont knwo why
 			pkNewSlot->Show();
 		else
 			pkNewSlot->Hide();
