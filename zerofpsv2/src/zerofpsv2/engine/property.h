@@ -245,7 +245,7 @@ class ENGINE_API Property
 		inline void SetObject(Entity* pkObject)	{	m_pkObject=pkObject;	};
 		inline Entity *GetObject()						{	return m_pkObject;	};
 
-		bool operator<(Property& kOther);
+		virtual bool operator<(Property& kOther);
 
 		friend class Entity;
 };

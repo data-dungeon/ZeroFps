@@ -412,7 +412,7 @@ void Render::PrintChar(unsigned char cChar)
 	glPopAttrib();
 }
 
-void Render::PrintChar2(char cChar)
+void Render::PrintChar2(char cChar,float fPos)
 {
 	int texwidth	=	FONTWIDTH*16;	
 	int pos			=	int(cChar)*FONTWIDTH;		
@@ -422,47 +422,15 @@ void Render::PrintChar2(char cChar)
 	float y	=	(float(int(pos/texwidth)*FONTWIDTH)*glu+width);
 	float x	=	float(pos%texwidth)*glu;//+width/2;
 
-// 	m_pkTexMan->BindTexture(aCurentFont,T_NOMIPMAPPING);  
-// RES	ResTexture* pkTexture = static_cast<ResTexture*>(m_kConsoleText.GetResourcePtr());
-// RES	m_pkTexMan->BindTexture( pkTexture->m_iTextureID );
-//	m_pkTexMan->BindTexture(aCurentFont ,T_NOMIPMAPPING );
-
-
-	int iFontSize = 8;
-/*
-	if(glIsEnabled(GL_LIGHTING))
-		cout << "Horrrrrrrrrrraa " << endl;
-	glDisable(GL_LIGHT0);	
-	glDisable(GL_LIGHT1);	
-	glDisable(GL_LIGHT2);	
-	glDisable(GL_LIGHT3);	
-	glDisable(GL_LIGHT4);	
-	glDisable(GL_LIGHT5);	
-	glDisable(GL_LIGHT6);	
-	glDisable(GL_LIGHT7);	*/	
+	float iFontSize = 8;
 
 	
-	m_pkZShaderSystem->ClearGeometry();
-	m_pkZShaderSystem->AddQuadV(	Vector3(0,0,0),						Vector3(iFontSize,0,0),
-											Vector3(iFontSize,iFontSize,0),	Vector3(0,iFontSize,0));
-
+	m_pkZShaderSystem->AddQuadV(	Vector3(fPos,0,0),						Vector3(fPos + iFontSize,0,0),
+											Vector3(fPos + iFontSize,iFontSize,0),	Vector3(fPos,iFontSize,0));
 												
 	m_pkZShaderSystem->AddQuadUV(	Vector2(x,y),							Vector2(x+width,y),
 											Vector2(x+width,y-width),			Vector2(x,y-width));
 					
-	m_pkZShaderSystem->SetDrawMode(QUADS_MODE);
-	m_pkZShaderSystem->DrawGeometry();
-									
-/*																						
-	glBegin(GL_QUADS);		
-		glNormal3f(0,0,1);
- 	  
-		glTexCoord2f(x,y);				glVertex3i(0,0,0);		 
-		glTexCoord2f(x+width,y);		glVertex3i(iFontSize,0,0);		
-		glTexCoord2f(x+width,y-width);	glVertex3i(iFontSize,iFontSize,0);    
-		glTexCoord2f(x,y-width);		glVertex3i(0,iFontSize,0);    
-	glEnd();				
-*/	
 }
 
 
@@ -538,27 +506,28 @@ void Render::Print(Vector3 kPos,Vector3 kHead,Vector3 kScale,char* aText) {
 	glPopMatrix();
 }
 
-void Render::Print2(Vector3 kPos,char* aText) {
-	char paText[TEXT_MAX_LENGHT];
+void Render::Print2(Vector3 kPos,char* aText) 
+{
+	float fSize = 8;
 	
+	char paText[TEXT_MAX_LENGHT];	
 	strcpy(paText,aText);
 	
 	m_pkZShaderSystem->MatrixPush();
-	//glPushMatrix();
-		//glTranslatef(kPos.x,kPos.y,kPos.z);	
-		m_pkZShaderSystem->MatrixTranslate(kPos);
+	m_pkZShaderSystem->MatrixTranslate(kPos);
+	
+	m_pkZShaderSystem->ClearGeometry();
 		
-		int i=0;
-		while(paText[i]!='\0') {
-			PrintChar2(paText[i]);
-			m_pkZShaderSystem->MatrixTranslate(Vector3(8,0,0));
-			//glTranslatef(8,0,0);
-		
-			i++;
-		}
+	int i=0;
+	while(aText[i]!='\0') 
+	{
+		PrintChar2(aText[i],float(i*8.0));
+		i++;
+	}
 
+	m_pkZShaderSystem->DrawGeometry(QUADS_MODE);
+	
 	m_pkZShaderSystem->MatrixPop();		
-	//glPopMatrix();
 }
 
 
@@ -682,8 +651,9 @@ void Render::DrawConsole(char* m_aCommand,vector<char*>* m_kText,int iStartLine,
 		pkConsole->GetPass(0)->m_bColorMaterial = true;
 		pkConsole->GetPass(0)->m_bFog = false;		
 		
-		pkConsole->m_bCopyData = true;
-		pkConsole->m_bWaves = true;
+		//uncomment these for a more funny looking console =D
+		//pkConsole->m_bCopyData = true;
+		//pkConsole->m_bWaves = true;
 	}
 	
 	pkConsole->GetPass(0)->m_kVertexColor = m_kConsoleColor;

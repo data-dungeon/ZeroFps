@@ -102,7 +102,8 @@ class RENDER_API ZMaterial : public ZFResource
 		bool Create(string strName);	//	for resource system
 		int  CalculateSize();				
 	
-		int GetNrOfPasses() {return m_kPasses.size();};
+		int GetID() 			{return m_iID;};
+		int GetNrOfPasses() 	{return m_kPasses.size();};
 		ZMaterialSettings* GetPass(int iPass);
 		ZMaterialSettings* AddPass();
 				

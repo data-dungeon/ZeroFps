@@ -542,7 +542,46 @@ Vector3 P_Mad::GetJointPosition(char* szJointName)
 	
 	return Vector3(0,0,0);
 }
-
+/*
+bool P_Mad::operator<(Property& kOther)
+{
+	float d1,d2;	
+	
+	if(m_iSortPlace < kOther.m_iSortPlace)
+	{		
+		return true;		
+	}else 
+	{
+		if(m_iSortPlace == kOther.m_iSortPlace)
+		{	
+			SelectMesh(0);
+			SelectSubMesh(0);
+				
+							
+				ZFResourceHandle* pkRes1 = m_pkMesh->GetLODMesh(0)->GetTextureHandle(m_pkSubMesh->iTextureIndex);
+				ZFResourceHandle* pkRes2 = m_pkMesh->GetLODMesh(0)->GetTextureHandle(m_pkSubMesh->iTextureIndex);
+			
+				ZMaterial* pkMaterial1 = (ZMaterial*)(pkRes1->GetResourcePtr());		
+				ZMaterial* pkMaterial2 = (ZMaterial*)(pkRes2->GetResourcePtr());		
+	
+				
+				if(pkMaterial1 && pkMaterial2)
+					if(pkMaterial1->GetID() < pkMaterial2->GetID())
+					{
+						cout<<"bah"<<endl;
+						return true;
+				
+					}
+			
+			
+			return false;
+		} else 
+		{
+			return false;
+		}
+	}
+}
+*/
 
 Property* Create_MadProperty()
 {

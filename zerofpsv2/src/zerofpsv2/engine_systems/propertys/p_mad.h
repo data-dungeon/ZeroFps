@@ -80,6 +80,8 @@ class ENGINE_SYSTEMS_API P_Mad : public Property, public Mad_Modell {
 		int GetNumVertices()						{return Mad_Modell::GetNumVertices();};
 		int GetNumFaces()							{return Mad_Modell::GetNumFaces();};
 
+		
+		//bool operator<(Property& kOther);
 };
 
 Property* Create_MadProperty();

@@ -1,7 +1,8 @@
+
 #include "zmaterial.h"
 #include "zshader.h"
 #include "../basic/globals.h"
- 
+#include "zshadersystem.h" 
 
 map<string,int> ZMaterial::m_kEnums;
 int ZMaterial::m_iNextID = 1;

@@ -1157,7 +1157,7 @@ bool DarkMetropolis::CreatePlayer()
 		
 			
 			//create entity
-			if(m_pkPlayerEntity = m_pkObjectMan->CreateObjectFromScriptInZone("data/script/objects/particles/arcadeplayer.lua",kStartPos))
+			if(m_pkPlayerEntity = m_pkObjectMan->CreateObjectFromScriptInZone("data/script/objects/characters/arcadeplayer.lua",kStartPos))
 			{			
 				//save id
 				m_iPlayerEntityID = m_pkPlayerEntity->GetEntityID();

@@ -1,4 +1,5 @@
 #include "zshader.h"
+#include "zshadersystem.h"
 
 ZShader::ZShader() : ZFSubSystem("ZShader")
 {

@@ -815,6 +815,8 @@ void ZeroFps::DrawDevStrings()
 	glDisable(GL_DEPTH_TEST);
  	glEnable(GL_TEXTURE_2D);
 	glPolygonMode(GL_FRONT, GL_FILL);
+	glDisable(GL_FOG);
+	glDisable(GL_BLEND);
 	
 	m_pkRender->SetFont("data/textures/text/devstr.bmp");
 
