@@ -41,7 +41,7 @@ void Camera::Update(int iWidth,int iHeight)
 	m_fAppWidth  = iWidth;
 	m_fAppHeight = iHeight;
 
-	if(m_bViewChange)
+	if(m_bViewChange)   
 	{
 		m_bViewChange = false;
 	

@@ -32,7 +32,6 @@ Property* Create_LinkToJoint();
 ZeroFps::ZeroFps(void) : I_ZeroFps("ZeroFps") 
 {
 	// StartUp SDL
-//	if(SDL_Init(SDL_OPENGL | SDL_INIT_NOPARACHUTE )<0)
 	if(SDL_Init(SDL_INIT_VIDEO)<0)
 	{
 		g_Logf("Error: Failed to StartUp SDL\n");
@@ -68,7 +67,7 @@ ZeroFps::ZeroFps(void) : I_ZeroFps("ZeroFps")
 	// Set Default values
 	m_fFrameTime				= 0;
 	m_fLastFrameTime			= 0;
-	m_fSystemUpdateFps		= 10;
+	m_fSystemUpdateFps		= 30;
 	m_fSystemUpdateFpsDelta = 1.0 / m_fSystemUpdateFps;
 	m_fSystemUpdateTime		= 0;
 	m_bServerMode				= false;
@@ -89,9 +88,7 @@ ZeroFps::ZeroFps(void) : I_ZeroFps("ZeroFps")
 	m_bDrawAxisIcon			= true;
 	m_fEngineTime				= 0;
 	m_bDebugGraph				= false;
-//	m_fGameTime					= 0;
-//	m_fGameFrameTime			= 0;
-
+	m_iClientEntityID			= -1;
 	m_bAlwaysWork				= true;
 
 	// Register Variables
@@ -116,7 +113,6 @@ ZeroFps::ZeroFps(void) : I_ZeroFps("ZeroFps")
 	Register_Cmd("version",FID_VERSION);	
 	Register_Cmd("credits",FID_CREDITS);	
 	Register_Cmd("echo",FID_ECHO);	
-//	Register_Cmd("gldump",FID_GLDUMP);	
 	Register_Cmd("devshow",FID_DEV_SHOWPAGE, CSYS_FLAG_SRC_ALL, "devshow name", 1);	
 	Register_Cmd("devhide",FID_DEV_HIDEPAGE, CSYS_FLAG_SRC_ALL, "devhide name", 1);	
 	Register_Cmd("devtog",FID_DEV_TOGGLE, CSYS_FLAG_SRC_ALL, "devtog name", 1);	
@@ -173,17 +169,6 @@ bool ZeroFps::StartUp()
 	m_pkInput->AddActiveInputHandle("Gui");
 	m_pkInput->AddActiveInputHandle("Application");	
 	 
-	/* [zeb] ////////////////////////////////////////////////
-	cout << "m_kCurentDir: " << m_kCurentDir.c_str() << endl;
-	char szWorkDir[256];
-	strcpy(szWorkDir, m_kCurentDir.c_str());
-	char* szDiv =  strrchr(szWorkDir, '/');
-	if(szDiv)
-		szDiv[1] = 0;
-	m_pkZFVFileSystem->AddRootPath(szWorkDir);
-	m_pkZFVFileSystem->AddRootPath("h:/");
-	/////////////////////////////////////////////////[/zeb]*/
-
 	RegisterPropertys();
 	RegisterResources();
 
@@ -197,7 +182,7 @@ bool ZeroFps::StartUp()
 	m_pkNetWork->SetMaxNodes( m_iMaxPlayers );
 	
 
-	m_iRTSClientObject = -1;
+	//m_iClientEntityID = -1;
 
 	m_bDevPagesVisible = true;
 
@@ -253,8 +238,6 @@ bool ZeroFps::Init(int iNrOfArgs, char** paArgs)
 
 	if(!g_ZFObjSys.StartUp())
 		return false;
-
-	//InitDisplay(m_pkApp->m_iWidth,m_pkApp->m_iHeight,m_pkApp->m_iDepth);
 
 	m_iState=state_normal;									// init gamestate to normal		
 	m_pkApp->OnInit();										// call the applications oninit funktion
@@ -385,7 +368,7 @@ void ZeroFps::Run_Client()
 	//JAG VET...den borde inte vara här..men för tillfället så får den vara det för jag behöver kunna göra debugutringingar i full FPS
 	//update new super duper rigid body physics engine deluxe
 	//m_pkPhysics_Engine->Update(GetFrameTime());	
-	m_pkTcs->Update(GetFrameTime());	
+	//m_pkTcs->Update(GetFrameTime());	
 
 
 	if(g_iLogRenderPropertys) {
@@ -446,7 +429,8 @@ void ZeroFps::Update_System(bool bServer)
 		//server only code
 		if(m_bServerMode)
 		{
-			if(m_bRunWorldSim) {			
+			if(m_bRunWorldSim)
+			{			
 			
 				//update all normal propertys
 				if(bServer)					
@@ -463,7 +447,7 @@ void ZeroFps::Update_System(bool bServer)
 				
 	
 				//update Tiny Collission system
-				//m_pkTcs->Update(m_pkObjectMan->GetSimDelta());	
+				m_pkTcs->Update(m_pkObjectMan->GetSimDelta());	
 				
 			}	
 		}
@@ -539,26 +523,10 @@ void ZeroFps::MainLoop(void)
 		{
 			m_fEngineTime = GetTicks();
 			Swap();											//swap buffers n calculate fps
-			 
-			 
+			 			 
 			//handle locked fps delay
-			if(m_bLockFps || (!(SDL_GetAppState() & SDL_APPACTIVE) ) )
-			{
-				float fDelay = m_pkObjectMan->GetSimDelta() - (GetTicks() - m_fLockFrameTime);
-			
-				if(fDelay < 0)
-					fDelay = 0;
-		
-				SDL_Delay((int)(fDelay*1000.0f));	
-				
-				m_fLockFrameTime = GetTicks();
-		
-				//	cout<<"Frametime:"<<fFrameT<<endl;
-				//	cout<<"Frametime shuld be:"<<pkFps->GetGameFrameTime()<<endl;
-				//	cout<<"Delaying:"<<fDelay<<endl;		
-				//end of delay code ---				
-			}
-			 
+			MakeDelay();
+			  
 			Run_EngineShell();
 
 			if(m_bServerMode)
@@ -571,7 +539,26 @@ void ZeroFps::MainLoop(void)
 
 		}
 	}
+}
 
+void ZeroFps::MakeDelay()
+{
+	if(m_bLockFps || (!(SDL_GetAppState() & SDL_APPACTIVE) ) )
+	{
+		float fDelay = m_pkObjectMan->GetSimDelta() - (GetTicks() - m_fLockFrameTime);
+	
+		if(fDelay < 0)
+			fDelay = 0;
+
+		SDL_Delay((int)(fDelay*1000.0f));	
+		
+		m_fLockFrameTime = GetTicks();
+
+		//	cout<<"Frametime:"<<fFrameT<<endl;
+		//	cout<<"Frametime shuld be:"<<pkFps->GetGameFrameTime()<<endl;
+		//	cout<<"Delaying:"<<fDelay<<endl;		
+		//end of delay code ---				
+	}
 }
 
 void ZeroFps::SetRenderTarget(Camera* pkCamera)
@@ -591,10 +578,15 @@ void ZeroFps::RemoveRenderTarget(Camera* pkCamera)
 //	m_kRenderTarget.remo(pkCamera);	
 }
 
+void ZeroFps::Draw_RenderTargets()
+{
+	for(unsigned int i=0; i<m_kRenderTarget.size(); i++)
+		Draw_RenderTarget(m_kRenderTarget[i]);
+}
+
+
 void ZeroFps::Draw_RenderTarget(Camera* pkCamera)
 {
-//	cout << "DrawCam: " << pkCamera->GetName();
-//	cout << endl;
 
 	// Save State
 	glPushAttrib(GL_TEXTURE_BIT | GL_LIGHTING_BIT | GL_FOG_BIT | 
@@ -604,15 +596,21 @@ void ZeroFps::Draw_RenderTarget(Camera* pkCamera)
 	glMatrixMode(GL_MODELVIEW);
 	glPushMatrix();
 
-
+	//is this camera enabled
 	if(pkCamera->IsRenderOn() == false)	return;
 
+	//set this camera as active
 	SetCamera(pkCamera);
+	
+	//clear active camera viewport
 	GetCam()->ClearViewPort();
 	
+	//update camera
 	UpdateCamera();
+		
 	if(m_bDrawAxisIcon)
 		m_pkRender->Draw_AxisIcon(5);
+		
 	if(m_bRenderOn == 1)
 	{
 		//update all render propertys that shuld be shadowed
@@ -635,36 +633,8 @@ void ZeroFps::Draw_RenderTarget(Camera* pkCamera)
 	glPopMatrix();
 	glMatrixMode(GL_MODELVIEW);
 	glPopMatrix();
-	//glViewport(0,0,800,600);
-	//glScissor(0,0,800,600);
-
 }
 
-void ZeroFps::Draw_RenderTargets()
-{
-//	cout << "Render: ";
-	for(unsigned int i=0; i<m_kRenderTarget.size(); i++)
-		Draw_RenderTarget(m_kRenderTarget[i]);
-
-/*	{
-		if(m_kRenderTarget[i]->m_bRender == false)	continue;
-
-		SetCamera(m_kRenderTarget[i]);
-		GetCam()->ClearViewPort();	
-		
-		UpdateCamera();
-		if(m_bDrawAxisIcon)
-			m_pkRender->Draw_AxisIcon(5);
-		if(m_bRenderOn == 1)
-			m_pkObjectMan->Update(PROPERTY_TYPE_RENDER,PROPERTY_SIDE_CLIENT,true);
-		m_pkObjectMan->Test_DrawZones();
-		m_pkApp->RenderInterface();
-		//cout << i;
-	}
-
-	//cout << endl;
-*/
-}
 
 void ZeroFps::Swap(void) {
 	DrawDevStrings();
@@ -729,8 +699,6 @@ void ZeroFps::UpdateCamera()
 	//update camera
 	m_pkCamera->Update(m_pkRender->GetWidth(),m_pkRender->GetHeight());
 	
-	//get the frustrum for frustum culling
-	//m_pkFrustum->GetFrustum();				
 }
 
 DevStringPage*	ZeroFps::DevPrint_FindPage(const char* szName)
@@ -858,41 +826,14 @@ void ZeroFps::RunCommand(int cmdid, const CmdArgument* kCommand)
 			break;
 
 		case FID_CONNECT:
-			if(kCommand->m_kSplitCommand.size() <= 1) {
-
+			if(kCommand->m_kSplitCommand.size() <= 1) 
 				return;
-				}
 
-						
-
-
-			if(strcmp(kCommand->m_kSplitCommand[1].c_str(), "vim") == 0) {
-				strcpy(g_szIpPort, "192.168.0.153:4242");
-				}
-			else if(strcmp(kCommand->m_kSplitCommand[1].c_str(), "hugo") == 0) {
-				strcpy(g_szIpPort, "192.168.0.156:4242");
-				}
-			else if(strcmp(kCommand->m_kSplitCommand[1].c_str(), "dvoid") == 0) {
-				strcpy(g_szIpPort, "192.168.0.178:4242");
-				}
-			else if(strcmp(kCommand->m_kSplitCommand[1].c_str(), "zeb") == 0) {
-				strcpy(g_szIpPort, "192.168.0.160:4242");
-				}
-			else if(strcmp(kCommand->m_kSplitCommand[1].c_str(), "zeb2") == 0) {
-				strcpy(g_szIpPort, "192.168.0.170:4242");
-            }
-			else if(strcmp(kCommand->m_kSplitCommand[1].c_str(), "zerom") == 0) {
-				strcpy(g_szIpPort, "192.168.0.154:4242");
-				}
-			else if(strcmp(kCommand->m_kSplitCommand[1].c_str(), "gubb") == 0) {
-				strcpy(g_szIpPort, "192.168.0.176:4242");
-				}
-			else if(strcmp(kCommand->m_kSplitCommand[1].c_str(), "dvhome") == 0) {
-				strcpy(g_szIpPort, "81.225.139.132:4242"); 
-				}
-			else if(strcmp(kCommand->m_kSplitCommand[1].c_str(), "lh") == 0) {
+			
+			if(strcmp(kCommand->m_kSplitCommand[1].c_str(), "lh") == 0) 
+			{
 				strcpy(g_szIpPort, "127.0.0.1:4242");
-				}
+			}
 			else
 				sprintf(g_szIpPort, "%s:4242", kCommand->m_kSplitCommand[1].c_str());
 
@@ -1005,10 +946,6 @@ void ZeroFps::RunCommand(int cmdid, const CmdArgument* kCommand)
 				m_pkConsole->Printf(kCreditsStrings[i].c_str());
 			break;
 		
-/*		case FID_GLDUMP:
-			m_pkRender->DumpGLState();
-			break;*/
-
 		case FID_LISTMAD:
 			if(kCommand->m_kSplitCommand.size() <= 1) {
 				m_pkConsole->Printf("Debug: %%s");
@@ -1024,10 +961,8 @@ void ZeroFps::RunCommand(int cmdid, const CmdArgument* kCommand)
 			strMad += kCommand->m_kSplitCommand[1];
 			pkMad->SetBase(strMad.c_str());
 			pkMad->SetScale(1.0);
-			m_pkConsole->Printf("Para1 %s", kCommand->m_kSplitCommand[1].c_str());
+			m_pkConsole->Printf("Para1 %s", kCommand->m_kSplitCommand[1].c_str());			
 			break;
-
-
 
 		case FID_DEV_SHOWPAGE:
 			DevPrintf(kCommand->m_kSplitCommand[1].c_str(), "=)");	// Force creation of page.
@@ -1048,12 +983,6 @@ void ZeroFps::RunCommand(int cmdid, const CmdArgument* kCommand)
 				page->m_bVisible = !page->m_bVisible;
 			break;
 
-			
-/*		case FID_MASSSPAWN:	
-			for()
-			break;*/
-
-
 		case FID_SCREENSHOOT:	m_pkRender->ScreenShot();	break;
 
 		case FID_SERVERCOMMAND:
@@ -1068,14 +997,6 @@ void ZeroFps::RunCommand(int cmdid, const CmdArgument* kCommand)
 				" z:" << kCamPos.z << endl;
 			m_pkCamera->SetPos(kCamPos);
 			break;
-/*			
-		case FID_SENDMESSAGE:
-			gm.m_FromObject = -1;
-			gm.m_ToObject	= atoi(kCommand->m_kSplitCommand[2].c_str());
-			gm.m_Name		= kCommand->m_kSplitCommand[1].c_str();
-			m_pkConsole->Printf("Sending Msg '%s' to %d from %d", gm.m_Name.c_str(), gm.m_ToObject, gm.m_FromObject);
-			m_pkObjectMan->RouteMessage(gm);
-			break;*/
 	}	
 }
 
@@ -1089,7 +1010,6 @@ void ZeroFps::PrintToClient(int iConnectionID, const char* szMsg)
 	kNp.Write(ZFGP_ENDOFPACKET);
 	kNp.TargetSetClient(iConnectionID);
 	m_pkNetWork->Send2(&kNp);
-
 }
 
 void ZeroFps::HandleNetworkPacket(NetPacket* pkNetPacket)
@@ -1155,8 +1075,6 @@ void ZeroFps::HandleNetworkPacket(NetPacket* pkNetPacket)
 
 		pkNetPacket->Read(ucGamePacketType);
 		}
-
-
 }
 
 void ZeroFps::RegisterResources()
@@ -1172,37 +1090,33 @@ void ZeroFps::RegisterResources()
 
 void ZeroFps::RegisterPropertys()
 {
-	// Propertys Used in MistLand
+	//render propertys
 	m_pkPropertyFactory->Register("P_Primitives3D",		Create_Prim3DProperty);			
 	m_pkPropertyFactory->Register("P_LightUpdate",		Create_LightUpdateProperty);							
 	m_pkPropertyFactory->Register("P_Light",				Create_LightProperty);					
 	m_pkPropertyFactory->Register("P_LinkToJoint",		Create_LinkToJoint);										
-	m_pkPropertyFactory->Register("P_Track",				Create_TrackProperty);							
-
 	m_pkPropertyFactory->Register("P_Mad",					Create_MadProperty);				
-	m_pkPropertyFactory->Register("P_AmbientSound",		Create_AmbientSound);
-	m_pkPropertyFactory->Register("P_Sound",				Create_SoundProperty);		
-	m_pkPropertyFactory->Register("P_PSystem",			Create_PSystemProperty);											
-
-	
-	m_pkPropertyFactory->Register("P_PfPath",				Create_P_PfPath);											
-	m_pkPropertyFactory->Register("P_PfMesh",				Create_P_PfMesh);											
-
-	// Other Propertys.
-	m_pkPropertyFactory->Register("P_Tcs",					Create_P_Tcs);					
 	m_pkPropertyFactory->Register("P_Heightmap2",		Create_P_Heightmap2);
 	m_pkPropertyFactory->Register("P_Camera",				Create_CameraProperty);			
-	m_pkPropertyFactory->Register("P_WorldInfo",			Create_WorldInfoProperty);						
 	m_pkPropertyFactory->Register("P_Vegitation",		Create_VegitationProperty);
 	m_pkPropertyFactory->Register("P_WaterRender",		Create_WaterRenderProperty);	
 	m_pkPropertyFactory->Register("P_BillBoardRender", Create_BillBoardRenderProperty);
 	m_pkPropertyFactory->Register("P_CrossRender",		Create_CrossRenderProperty);
 	m_pkPropertyFactory->Register("P_SkyBoxRender",		Create_SkyBoxRenderProperty);		
-	m_pkPropertyFactory->Register("P_Body",				Create_BodyProperty);
 	m_pkPropertyFactory->Register("P_HeightMapRender",	Create_HeightMapRenderProperty);		
 	m_pkPropertyFactory->Register("P_HMRP2",				Create_HMRP2);			
-	
-	m_pkPropertyFactory->Register("P_ScriptInterface",	Create_P_ScriptInterface); // <- RESULTAT AV ATT EN FIL INTE FINNS!
+	m_pkPropertyFactory->Register("P_PSystem",			Create_PSystemProperty);											
+
+	//normal propertys
+	m_pkPropertyFactory->Register("P_Track",				Create_TrackProperty);							
+	m_pkPropertyFactory->Register("P_AmbientSound",		Create_AmbientSound);
+	m_pkPropertyFactory->Register("P_Sound",				Create_SoundProperty);		
+	m_pkPropertyFactory->Register("P_PfPath",				Create_P_PfPath);											
+	m_pkPropertyFactory->Register("P_PfMesh",				Create_P_PfMesh);											
+	m_pkPropertyFactory->Register("P_Tcs",					Create_P_Tcs);					
+	m_pkPropertyFactory->Register("P_WorldInfo",			Create_WorldInfoProperty);						
+	m_pkPropertyFactory->Register("P_Body",				Create_BodyProperty);	
+	m_pkPropertyFactory->Register("P_ScriptInterface",	Create_P_ScriptInterface);
 }
 
 
@@ -1210,13 +1124,15 @@ void ZeroFps::QuitEngine()
 {
 	vector<string> kPropertyNames;
 	
-	if(m_pkObjectMan->GetWorldObject()) {
+	if(m_pkObjectMan->GetWorldObject())
+	{
 		m_pkObjectMan->GetWorldObject()->GetAllVarNames(kPropertyNames);
 
 		Logf("net", "WorldObject Dump %f\n", GetEngineTime());
-		for(unsigned int i=0; i<kPropertyNames.size(); i++) {
+		for(unsigned int i=0; i<kPropertyNames.size(); i++) 
+		{
 			Logf("net", " %s %f\n",kPropertyNames[i].c_str(),  m_pkObjectMan->GetWorldObject()->GetVarDouble(kPropertyNames[i]));
-			}
+		}
 	}
 
 	printf("ZeroFps::QuitEngine\n");
@@ -1229,14 +1145,11 @@ void ZeroFps::GetEngineCredits(vector<string>& kCreditsStrings)
 
 	kCreditsStrings.push_back( string("		  ZeroFps Engine		") );
 	kCreditsStrings.push_back( string("		       by				") );
-	kCreditsStrings.push_back( string("								") );
-	kCreditsStrings.push_back( string("   Jimmy 'Vim' Magnusson		") );
-	kCreditsStrings.push_back( string("   Martin 'Diz' Kopparhed	") );
-	kCreditsStrings.push_back( string("   Richard 'Dvoid' Svensson	") );
-	kCreditsStrings.push_back( string("   Erik 'Zeb' Glans			") );
-	kCreditsStrings.push_back( string("   Patrik 'Gubb' Sellin		") );
-	kCreditsStrings.push_back( string("   Nina 'Nanna3d' Rydqvist	") );
-	kCreditsStrings.push_back( string("   Magnus 'Zerom' ?			") );
+	kCreditsStrings.push_back( string("									") );
+	kCreditsStrings.push_back( string("   Jimmy Magnusson			") );
+	kCreditsStrings.push_back( string("   Richard Svensson		") );
+	kCreditsStrings.push_back( string("   Erik Glans				") );
+	kCreditsStrings.push_back( string("   Magnus 'Zerom' 			") );
 }
 
 /**	\brief	Called before someone would like to connect.
@@ -1320,25 +1233,11 @@ int ZeroFps::GetClientObjectID()
 		m_pkNetWork->RTS_RequestClientObjectID();
 		}*/
 
-	return m_iRTSClientObject;
+	return m_iClientEntityID;
 }
 
-		/* .*/
 
-/*Object* ZeroFps::CreateScriptObject(const char *szName)
-{
-	ObjectManagerLua::Reset();
-
-	if(!m_pkScript->RunScript((char*)szName))
-		return NULL;
-		
-	if(!m_pkScript->CallScript("Create", 0, 0))
-		return NULL;
-	
-	return ObjectManagerLua::g_pkReturnObject;
-}*/
-
-
+//vad gör denna här igentligen?
 void ZeroFps::AddHMProperty(Entity* pkEntity, int iNetWorkId, Vector3 kZoneSize)
 {
 	// Get Entity, Check For Valid and Check if its already have a hmap.

@@ -10,6 +10,11 @@ P_Car::P_Car()
 
 }
 
+P_Car::~P_Car()
+{
+	delete m_pkInputHandle;
+}
+
 
 void P_Car::Init()
 {
@@ -77,7 +82,7 @@ void P_Car::Trust(Vector3 kPos,Vector3 kForce)
 
 	Vector3 kGround = LineTest(kWPos,kWPos + (kForce.Unit() * 100));		
 	
-	float fFd = kGround.DistanceTo(kWPos);
+	float fFd = kGround.DistanceTo(kWPos); 
 	Vector3 kRealForce = kUpForce / fFd ;
 	
 	if(kRealForce.Length() > fMaxForce)
@@ -86,7 +91,7 @@ void P_Car::Trust(Vector3 kPos,Vector3 kForce)
 	pkTcs->ApplyForce(kPos,kRealForce);
 }
 
-
+ 
 Vector3 P_Car::LineTest(Vector3 kStart,Vector3 kStop)
 {
 	Vector3 start = kStart;

@@ -407,20 +407,18 @@ void Tcs::UpdateCollissions(float fAtime)
 			//dont test if both bodys are static or sleeping
 			if( (m_kBodys[B1]->m_bStatic || m_kBodys[B1]->m_bSleeping) && (m_kBodys[B2]->m_bStatic || m_kBodys[B2]->m_bSleeping))
 				continue;
-				
-			//dont test if both bodys are sleeping
-			//if(m_kBodys[B1]->m_bSleeping && m_kBodys[B2]->m_bSleeping)
-			//	continue;
-			
+		
 				
 			if(m_kBodys[B1]->m_akTestGroups[m_kBodys[B2]->m_iGroup] ||
 				m_kBodys[B2]->m_akTestGroups[m_kBodys[B1]->m_iGroup])			
 			{
 			
+				if(!TestMotionSpheres(m_kBodys[B1],m_kBodys[B2],fAtime))
+					continue;
+					
 				if(m_kBodys[B1]->m_bPolygonTest && m_kBodys[B2]->m_bPolygonTest)
 				{
 					TestMeshVsMesh(m_kBodys[B1],m_kBodys[B2],fAtime);
-					//cout<<"unsuported collission mesh VS mesh"<<endl;
 				}
 				else if(m_kBodys[B1]->m_bPolygonTest || m_kBodys[B2]->m_bPolygonTest)
 				{				
@@ -447,7 +445,23 @@ void Tcs::HandleCharacterCollission(P_Tcs* pkCharacter,P_Tcs* pkBody)
 	}
 }
 
+bool Tcs::TestMotionSpheres(P_Tcs* pkBody1,P_Tcs* pkBody2,float fAtime)
+{
+	memcpy(m_pkBodyCopy1,pkBody1,sizeof(P_Tcs));
+	memcpy(m_pkBodyCopy2,pkBody2,sizeof(P_Tcs));
+		
+	UpdateBodyVelnPos(m_pkBodyCopy1,fAtime);
+	UpdateBodyVelnPos(m_pkBodyCopy2,fAtime);	
 
+
+	Vector3 kMedPos1 = (pkBody1->m_kNewPos + m_pkBodyCopy1->m_kNewPos) / 2.0;
+	Vector3 kMedPos2 = (pkBody2->m_kNewPos + m_pkBodyCopy2->m_kNewPos) / 2.0;
+
+	float d = kMedPos1.DistanceTo(kMedPos2) - (pkBody1->m_fRadius + pkBody2->m_fRadius);
+
+	return (d <= 0);
+	
+}
 
 
 bool Tcs::TestSides(Vector3* kVerts,Vector3* pkNormal,const Vector3& kPos)

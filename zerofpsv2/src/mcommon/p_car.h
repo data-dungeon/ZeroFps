@@ -23,7 +23,7 @@ class MCOMMON_API P_Car : public Property
 	public:
 
 		P_Car();
-		~P_Car() {};
+		~P_Car();
 
 		void CloneOf(Property* pkProperty) { }
 

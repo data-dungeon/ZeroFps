@@ -129,8 +129,9 @@ class ENGINE_API ZeroFps : public I_ZeroFps {
 		};
 
 
-		bool		m_bDevPagesVisible;
-
+		bool							m_bDevPagesVisible;
+		vector<DevStringPage>	m_DevStringPage;					
+		
 		float 	m_fLastFrameTime;
 		float 	m_fAvrageFpsTime;
 		int		m_iAvrageFrameCount;
@@ -141,24 +142,23 @@ class ENGINE_API ZeroFps : public I_ZeroFps {
 		float 	m_fSystemUpdateFps;				// Number of GameLogic Updates each second.
 		float		m_fSystemUpdateFpsDelta;		// Time between each gamelogic update.
 		float 	m_fSystemUpdateTime;
-//		float 	m_fGameTime;
-//		float 	m_fGameFrameTime;
 		float		m_fEngineTime;						// Time since engine start.
 		bool		m_bRenderOn;
 		bool		m_bDrawAxisIcon;
-		
-		int		m_iServerConnection;	// The Connection num we have on the server.		
-		int		m_iRTSClientObject;
-		
-		int		m_iMaxPlayers;
 		bool		m_bDebugGraph;							//shuld we show debug graphics, like spheres where theres lights etc
+				
+		int		m_iServerConnection;	// The Connection num we have on the server.		
+		int		m_iClientEntityID;						
+		int		m_iMaxPlayers;
+
+		vector<Camera*>	m_kRenderTarget;
+		
 
 		Camera *m_pkCamera;
 		Camera *m_pkConsoleCamera;
 		string m_kCurentDir;
 
 		void RunCommand(int cmdid, const CmdArgument* kCommand);
-		//void HandleArgs(int iNrOfArgs, char** paArgs);		
 		void ConfigFileRun();
 		void ConfigFileSave();
 		void Run_EngineShell();
@@ -166,9 +166,21 @@ class ENGINE_API ZeroFps : public I_ZeroFps {
 		void Run_Client();
 		void Draw_EngineShell();		
 		void Update_System(bool bServer);
+		void MakeDelay(); 
 
 		
-
+		void SetApp(void);
+		void Swap(void);											//	swap gl buffers		
+		void HandleNetworkPacket(NetPacket* pkNetPacket);
+		void RegisterPropertys();
+		void RegisterResources();
+		void GetEngineCredits(vector<string>& kCreditsStrings);
+		void DrawDevStrings();		
+		
+		void DevPrint_Show(bool bVisible);
+		DevStringPage*	DevPrint_FindPage(const char* szName);		
+		
+		
 	public:
 //		Object* CreateScriptObject(const char* szName);
 		/*
@@ -216,67 +228,66 @@ class ENGINE_API ZeroFps : public I_ZeroFps {
 		bool		m_bAlwaysWork;								///< Paramater that should be set if engine should work (ie. Update) no matter if the application is minimized or not.
 		int		m_iMadDraw;									//	Flags for what part's of mad's that should be draw.
 		float		m_fMadLod;									//	If not 0 then force this LOD % on every mad.
-
+		int		m_iNumOfMadRender;
+		
+		
 		InputHandle*	m_pkInputHandle;
 		InputHandle*	m_pkGuiInputHandle;
 
 		vector<ZFClient>		m_kClient;
 
+		
+		//basic engine funktions
 		ZeroFps(void);
 		~ZeroFps();
-		void SetApp(void);
 		bool Init(int iNrOfArgs, char** paArgs);
 		void MainLoop(void);
-		void Swap(void);											//	swap gl buffers
+		void QuitEngine();
 		
-		void ToggleFullScreen(void);
-		void ToggleGui(void);
+		//system 
+		bool StartUp();
+		bool ShutDown();
+		bool IsValid();
+
+		//dont know what these are doing here anyway =P
+		void PrintToClient(int iConnectionID, const char* szMsg);
+		void AddHMProperty(Entity* pkEntity,int iNetWorkId, Vector3 kZoneSize);
 		
 		// Timer Functions.
 		float GetTicks()					{	return float((SDL_GetTicks()/1000.0));};
 		float GetFrameTime()				{	return float((m_fFrameTime/1000.0));};
-//		float GetGameTime()				{	return m_fGameTime;};
-//		float GetGameFrameTime()		{	return m_fGameFrameTime;};
 		float GetLastGameUpdateTime()	{	return m_fSystemUpdateTime;};
 		float GetEngineTime()			{	return m_fEngineTime; }
+		void SetSystemFps(int iFps) {m_fSystemUpdateFps = float(iFps);};
 
+		
+		//camera
 		void SetCamera(Camera* pkCamera);	
 		void UpdateCamera();
 		Camera *GetCam() {return m_pkCamera;};		
-	
-		vector<DevStringPage>	m_DevStringPage;					
-		DevStringPage*	DevPrint_FindPage(const char* szName);		
-		void DrawDevStrings();
-		void DevPrintf(const char* szName, const char *fmt, ...);
-		void DevPrint_Show(bool bVisible);
 
-		void HandleNetworkPacket(NetPacket* pkNetPacket);
-		
-		void RegisterPropertys();
-		void RegisterResources();
-		
-		void QuitEngine();
-
-		void SetSystemFps(int iFps) {m_fSystemUpdateFps = float(iFps);};
-
-		bool GetDebugGraph() {return m_bDebugGraph;};
-		void SetDebugGraph(bool bDebug) {m_bDebugGraph = bDebug;};
-
-		// Statistik Data
-		int	m_iNumOfMadRender;
-
-		void GetEngineCredits(vector<string>& kCreditsStrings);
-		 
-		vector<Camera*>	m_kRenderTarget;
-		
+		//render targets
 		void SetRenderTarget(Camera* pkCamera);
 		void RemoveRenderTarget(Camera* pkCamera);
 		void Draw_RenderTargets();
 		void Draw_RenderTarget(Camera* pkCamera);
-		
+
+		//screen info
 		int GetWidth(){return m_pkRender->GetWidth();}
 		int GetHeight(){return m_pkRender->GetHeight();};		
 		int GetDepth(){return m_pkRender->GetDepth();};		
+		
+		//toggle functions		
+		void ToggleFullScreen(void);
+		void ToggleGui(void);
+				
+		//devpage
+		void DevPrintf(const char* szName, const char *fmt, ...);
+
+		//graphs
+		bool GetDebugGraph() {return m_bDebugGraph;};
+		void SetDebugGraph(bool bDebug) {m_bDebugGraph = bDebug;};
+
 
 		// Called by network.
 		bool	PreConnect(IPaddress kRemoteIp, char* szLogin, char* szPass, char* szWhy256);
@@ -284,20 +295,10 @@ class ENGINE_API ZeroFps : public I_ZeroFps {
 		void	Disconnect(int iConnectionID);
 		int	GetClientObjectID();
 		int	GetConnectionID() {	return m_iServerConnection;	};		///< Return our Connection Num on the Server.
-		
-		
 		int	GetMaxPlayers() {return m_iMaxPlayers;};
 		
-		bool StartUp();
-		bool ShutDown();
-		bool IsValid();
-
-		void PrintToClient(int iConnectionID, const char* szMsg);
-
+		
 		friend class NetWork;
-
-	
-		void AddHMProperty(Entity* pkEntity,int iNetWorkId, Vector3 kZoneSize);
 };
 
 

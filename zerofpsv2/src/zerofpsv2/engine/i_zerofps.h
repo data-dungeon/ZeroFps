@@ -25,16 +25,12 @@ public:
 
 	virtual float GetTicks() = 0;
 	virtual float GetFrameTime() = 0;
-//	virtual float GetGameTime() = 0;
-//	virtual float GetGameFrameTime() = 0;
 	virtual float GetLastGameUpdateTime() = 0;
 	virtual float GetEngineTime() = 0;
 
 	virtual void SetCamera(Camera* pkCamera)= 0;	
 	virtual void UpdateCamera()= 0;
 	virtual Camera* GetCam()= 0;		
-//	virtual	int	NumberOfArgs()= 0;			
-//	virtual	string GetArg(int iArgIndex)= 0;
 						
 	virtual DevStringPage* DevPrint_FindPage(const char* szName)= 0;	
 	virtual	void DrawDevStrings()= 0;

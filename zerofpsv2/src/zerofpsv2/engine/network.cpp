@@ -535,7 +535,7 @@ void NetWork::HandleControlMessage(NetPacket* pkNetPacket)
 			pkNetPacket->Read( iConnID ); 
 			pkNetPacket->Read( iObjId ); 
 			m_pkZeroFps->m_iServerConnection	= iConnID;
-			m_pkZeroFps->m_iRTSClientObject		= iObjId;
+			m_pkZeroFps->m_iClientEntityID		= iObjId;
 			m_pkZeroFps->Connect(iClientID,NULL,NULL);
 			m_pkConsole->Printf("ConnID: %d, ObjID: %d", iConnID, iObjId);
 			break;
@@ -561,7 +561,7 @@ void NetWork::HandleControlMessage(NetPacket* pkNetPacket)
 
 		case ZF_NETCONTROL_CLIENTID:
 			pkNetPacket->Read(iObjId);
-			m_pkZeroFps->m_iRTSClientObject = iObjId;
+			m_pkZeroFps->m_iClientEntityID = iObjId;
 			break;
 
 		case ZF_NETCONTROL_DISCONNECT:
