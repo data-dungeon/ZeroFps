@@ -603,6 +603,12 @@ void ZeroEd::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 
 					GUIServerInfo item;
 					item.ConvertFromFullName(strWndClicked);
+					printf("------------------------------------\n");
+					printf("strServerName = %s\n", item.strServerName.c_str());
+					printf("strServerIP = %s\n", item.strServerIP.c_str());
+					printf("strUserName = %s\n", item.strUserName.c_str());
+					printf("strPassword = %s\n", item.strPassword.c_str());
+					printf("------------------------------------\n");
 					m_pkZeroFps->StartClient(item.strUserName, item.strPassword, item.strServerIP);
 				}				
 			}

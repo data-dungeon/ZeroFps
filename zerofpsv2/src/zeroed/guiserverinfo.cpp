@@ -38,8 +38,16 @@ void GUIServerInfo::Save(vector<GUIServerInfo>& rkServerAray)
 	FILE* pkFile = pkFile = fopen("serverlist.txt", "wt");
 	if(pkFile)
 	{
-		for(int i=0; i<rkServerAray.size(); i++)
-			fprintf(pkFile, "%s\n", rkServerAray[i].FullName());
+		const int servers = rkServerAray.size();
+		for(int i=0; i<servers; i++)
+		{
+			fprintf(pkFile, "%s", rkServerAray[i].FullName().c_str());
+
+			if(i != servers-1)
+				fprintf(pkFile, "\n");
+		}
+
+		fclose(pkFile);
 	}
 }
 
