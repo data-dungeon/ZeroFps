@@ -109,6 +109,8 @@ bool ObjectManager::StartUp()
 
 bool ObjectManager::ShutDown() 
 { 
+	Clear();
+
 	return true; 
 }
 
