@@ -609,7 +609,7 @@ bool ZGuiTextbox::ProcessKBInput(int iKey)
 			return true;
 	}
 
-	if(iKey == KEY_LSHIFT || iKey == KEY_RSHIFT)
+	if(iKey == KEY_LSHIFT || iKey == KEY_RSHIFT || iKey == KEY_TAB)
 		return false;
 
 	if( m_bMultiLine )

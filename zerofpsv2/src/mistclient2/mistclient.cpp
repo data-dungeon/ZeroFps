@@ -59,7 +59,7 @@ void MistClient::OnInit()
 	GuiAppLua::Init(&g_kMistClient, m_pkScript);
 
 	//set window title		
-   SetTitle("MistClient - Hacka och slå");
+   SetTitle("MistClient - Banka och slå");
 	
 	//set client in server mode to show gui etc
 	m_pkZeroFps->StartServer(true,false);
@@ -85,6 +85,12 @@ void MistClient::OnInit()
       GetWnd("LoginPWEb")->SetFont(font); 
       GetWnd("NewServerIPName")->SetFont(font); 
       GetWnd("NewServerNameEB")->SetFont(font); 
+
+      m_pkGui->AddKeyCommand(KEY_RETURN, GetWnd("NewServerNameEB"), GetWnd("AddNewServerOK"));
+      m_pkGui->AddKeyCommand(KEY_RETURN, GetWnd("NewServerIPName"), GetWnd("AddNewServerOK"));
+
+      m_pkGui->AddKeyCommand(KEY_RETURN, GetWnd("LoginNameEB"), GetWnd("LoginOK"));
+      m_pkGui->AddKeyCommand(KEY_RETURN, GetWnd("LoginPWEb"), GetWnd("LoginOK"));
    }
 
    // load software cursor

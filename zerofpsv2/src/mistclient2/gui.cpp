@@ -26,6 +26,24 @@ bool GUIPROC( ZGuiWnd* win, unsigned int msg, int numparms, void *params )
 		   }
 	   }
    }
+   else
+   if(msg == ZGM_KEYPRESS)
+   {
+      string strWnd = win->GetName();
+
+      if( ((int*)params)[0] == KEY_TAB)
+      {  
+         if( strWnd == "NewServerNameEB" )
+            g_kMistClient.m_pkGui->SetFocus( g_kMistClient.GetWnd("NewServerIPName") ); 
+         if( strWnd == "NewServerIPName" )
+            g_kMistClient.m_pkGui->SetFocus( g_kMistClient.GetWnd("NewServerNameEB") ); 
+
+         if( strWnd == "LoginPWEb" )
+            g_kMistClient.m_pkGui->SetFocus( g_kMistClient.GetWnd("LoginNameEB") ); 
+         if( strWnd == "LoginNameEB" )
+            g_kMistClient.m_pkGui->SetFocus( g_kMistClient.GetWnd("LoginPWEb") ); 
+      }
+   }
 
    if(strController.empty())
       return false;
@@ -64,16 +82,9 @@ bool GUIPROC( ZGuiWnd* win, unsigned int msg, int numparms, void *params )
             s_bChangeServerName = true;
             g_kMistClient.ShowWnd("AddNewServerWnd", true, true, true);
 
-            char* szSelItem = g_kMistClient.GetSelItem("ServerList");
-            if( szSelItem )
+            string strName, strIP;
+            if(g_kMistClient.NameIPFromServerList(strName, strIP))
             {
-               string strText = string(szSelItem);
-
-               int pos = (int) strText.find("-");
-
-               string strName = strText.substr(0, pos-1);
-               string strIP = strText.substr(pos+2, strText.length()-pos);
-
                g_kMistClient.SetText("NewServerNameEB", (char*)strName.c_str());
                g_kMistClient.SetText("NewServerIPName", (char*)strIP.c_str());
             }
@@ -81,16 +92,9 @@ bool GUIPROC( ZGuiWnd* win, unsigned int msg, int numparms, void *params )
          else
          if(strController == "RemoveServerBn")
          {
-            char* szSelItem = g_kMistClient.GetSelItem("ServerList");
-            if( szSelItem )
+            string strName, strIP;
+            if(g_kMistClient.NameIPFromServerList(strName, strIP))
             {
-               string strText = string(szSelItem);
-
-               int pos = (int) strText.find("-");
-
-               string strName = strText.substr(0, pos-1);
-               string strIP = strText.substr(pos+2, strText.length()-pos);
-
                g_kMistClient.AddRemoveServer(strName.c_str(), strIP.c_str(), false);
                g_kMistClient.UpdateServerListbox();
             }
@@ -140,38 +144,31 @@ bool GUIPROC( ZGuiWnd* win, unsigned int msg, int numparms, void *params )
       {
          if(strController == "LoginOK")
          {
-            string strLogin, strPassword, strServerIP;
+            string strLogin, strPassword, strServerName, strServerIP;
 
             char* text;
-            if((text = g_kMistClient.GetSelItem("ServerList")))
-            {
-               strServerIP = string(text);
-               int pos = (int) strServerIP.find("-");
-               strServerIP = strServerIP.substr(pos+2, strServerIP.length()-pos);
-               printf("strServerIP = %s\n", strServerIP.c_str());
-            }
 
-            if((text = g_kMistClient.GetText("LoginNameEB")))
+            if(g_kMistClient.NameIPFromServerList(strServerName, strServerIP))
             {
-               strLogin = text;
-               printf("strLogin = %s\n", strLogin.c_str());
-            }
+               if((text = g_kMistClient.GetText("LoginNameEB")))
+                  strLogin = text;
 
-            if((text = g_kMistClient.GetText("LoginPWEb")))
-            {
-               strPassword = text;
-               printf("strPassword = %s\n", strPassword.c_str());
-            }
+               if((text = g_kMistClient.GetText("LoginPWEb")))
+                  strPassword = text;
 
-            if(!strLogin.empty() && !strPassword.empty() && !strServerIP.empty())
-            {
-               g_kMistClient.m_pkZeroFps->StartClient(strLogin, strPassword, strServerIP);
-            
-               g_kMistClient.ShowWnd("MLStartWnd", false);
-               g_kMistClient.ShowWnd("ConnectWnd", false);
-               g_kMistClient.ShowWnd("AddNewServerWnd", false);
-               g_kMistClient.ShowWnd("LoginWnd", false);
-            }
+               if(!strLogin.empty() && !strPassword.empty() && !strServerIP.empty())
+               {
+                  g_kMistClient.m_pkFps->StartClient(strLogin, strPassword, strServerIP);
+               
+                  g_kMistClient.ShowWnd("MLStartWnd", false);
+                  g_kMistClient.ShowWnd("ConnectWnd", false);
+                  g_kMistClient.ShowWnd("AddNewServerWnd", false);
+                  g_kMistClient.ShowWnd("LoginWnd", false);
+
+                  printf("%s connecting to %s.", strLogin.c_str(), strServerIP.c_str());
+               }
+               else
+                  printf("Input error, failed to connect.");
          }
          else
          if(strController == "LoginCancel")
