@@ -174,7 +174,7 @@ bool ZGuiSlider::Notify(ZGuiWnd* pkWnd, int iCode)
 {
 	if(iCode == NCODE_MOVE)
 	{
-		if(pkWnd->GetID() == ID_SLIDER)
+		if(pkWnd->GetID() == (unsigned int) ID_SLIDER)
 		{
 			Rect rcArea = GetScreenRect();
 			Rect rcButton = m_pkButton->GetScreenRect();

@@ -111,7 +111,7 @@ void ZGuiScrollbar::SetScrollInfo(unsigned int min, unsigned int max,
 	{
 		int bn_width = real_bn_height; 
 
-		float size = (max - min);
+		float size = (float) (max - min);
 		if(size <= 0) size = 1; // don´t devide by zero
 
 		y = ((float) pos / (float) (size)) * rc.Height()  - bn_width/2;	
@@ -148,11 +148,11 @@ bool ZGuiScrollbar::Notify(ZGuiWnd* pkWnd, int iCode)
 			static int POS_BEFORE;
 			POS_BEFORE = (int)m_nPos;
 
-			m_nPos = fProcentAvMax * (float)(m_nMax-m_nMin+1);
+			m_nPos = (unsigned int) (fProcentAvMax * (float)(m_nMax-m_nMin+1));
 
 			int change = abs(POS_BEFORE-(int)m_nPos);
 
-			if(m_nPos < POS_BEFORE)
+			if(m_nPos < (unsigned int) POS_BEFORE)
 				m_iScrollChange = change;
 			else
 				m_iScrollChange = -change;

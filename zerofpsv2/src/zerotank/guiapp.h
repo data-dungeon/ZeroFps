@@ -27,11 +27,20 @@ enum GuiType
 	TabControl,
 	Textbox,
 	Treebox,
+	GuiType_Error
 };
 
 class GuiApp  
 {
 public:
+	bool IsButtonChecked(int iWndID);
+	float GetTextFloat(int iWndID, bool* pkSuccess);
+	int GetTextInt(int iWndID, bool* pkSuccess);
+	char* GetText(int iWndID);
+
+	void SetTextFloat(int iWndID, float fNumber, bool bResize=false);
+	void SetTextInt(int iWndID, int iNumber, bool bResize=false);
+	void SetText(int iWndID, char* szText, bool bResize=false);
 	ZGuiWnd* GetTabPage(int iTabCtrlID, int iPage);
 	void AddTabPage(int iTabCtrlID, char* szName);
 	void AddTreeItem(int iTreeboxID, const char* szID, const char* szIDParent, char* szText,
@@ -48,6 +57,7 @@ public:
 	~GuiApp();
 
 private:
+	GuiType GetType(ZGuiWnd* pkWnd);
 	int GetTexID(char* szFile);
 	void InitTextures();
 	ZGuiWnd* GetWnd(int iID);

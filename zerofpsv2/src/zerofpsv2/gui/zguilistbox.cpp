@@ -469,14 +469,14 @@ int ZGuiListbox::Find(char* strString)
 
 bool ZGuiListbox::SelItem(int iIndex)
 {
-	if(iIndex < 0 || iIndex > m_pkItemList.size()-1)
+	if(iIndex < 0 || iIndex > (int) m_pkItemList.size()-1)
 		return false;
 
 	list<ZGuiListitem*>::iterator it;
 	for( it = m_pkItemList.begin();
 		 it != m_pkItemList.end(); it++)
 		 {
-			 if((*it)->GetIndex() == iIndex)
+			 if((*it)->GetIndex() == (unsigned int) iIndex)
 			 {
 				 if(m_pkSelectedItem)
 					m_pkSelectedItem->Deselect();

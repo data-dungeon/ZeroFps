@@ -370,7 +370,7 @@ bool ZeroTank::IsValid()	{ return true; }
 
 void ZeroTank::SetupGUI()
 {
-	CreateWnd(Wnd, "TestWnd", NULL,  10, -1, 0, 0, 300, 300, 0);
+/*	CreateWnd(Wnd, "TestWnd", NULL,  10, -1, 0, 0, 300, 300, 0);
 	CreateWnd(Textbox, "TestTextBox", "Apa", 11, 10, 100, 100, 50, 20, 0);
-	CreateWnd(Button, "TestButton", "Apa", 12, 10, 100, 140, 50, 20, 0);
+	CreateWnd(Button, "TestButton", "Apa", 12, 10, 100, 140, 50, 20, 0);*/
 }

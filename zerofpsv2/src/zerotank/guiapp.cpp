@@ -363,12 +363,145 @@ void GuiApp::AddTabPage(int iTabCtrlID, char* szName)
 
 ZGuiWnd* GuiApp::GetTabPage(int iTabCtrlID, int iPage)
 {
-	ZGuiWnd* pkTabCtrl = GetWnd(iTabCtrlID);
+	ZGuiWnd* pkWnd = GetWnd(iTabCtrlID);
 
-	bool bIsTabCtrl = typeid(*pkTabCtrl) == 
-		typeid(ZGuiTabCtrl) ? true : false;
+	bool bIsTabCtrl = (GetType(pkWnd) == TabControl);
 
-	ZFAssert(bIsTabCtrl, "GuiApp::GetTabPage: Window is not a tab control!");
+	ZFAssert(pkWnd, "GuiApp::GetTabPage: Window is not a tab control!");
 
-	return static_cast<ZGuiTabCtrl*>(pkTabCtrl)->GetPage(iPage);	
+	return static_cast<ZGuiTabCtrl*>(pkWnd)->GetPage(iPage);	
+}
+
+void GuiApp::SetText(int iWndID, char* szText, bool bResize)
+{
+	ZGuiWnd* pkWnd;
+	if((pkWnd = GetWnd(iWndID)))
+		pkWnd->SetText(szText, bResize);
+}
+
+void GuiApp::SetTextInt(int iWndID, int iNumber, bool bResize)
+{
+	ZGuiWnd* pkWnd;
+	if((pkWnd = GetWnd(iWndID)))
+	{
+		char szText[25];
+		sprintf(szText, "%i", iNumber);
+		pkWnd->SetText(szText, bResize);
+	}
+}
+
+void GuiApp::SetTextFloat(int iWndID, float fNumber, bool bResize)
+{
+	ZGuiWnd* pkWnd;
+	if((pkWnd = GetWnd(iWndID)))
+	{
+		char szText[25];
+		sprintf(szText, "%f", fNumber);
+		pkWnd->SetText(szText, bResize);
+	}
+}
+
+char* GuiApp::GetText(int iWndID)
+{
+	ZGuiWnd* pkWnd;
+	if((pkWnd = GetWnd(iWndID)))
+		return pkWnd->GetText(); 	
+	
+	return NULL;
+}
+
+int GuiApp::GetTextInt(int iWndID, bool* pkSuccess)
+{
+	ZGuiWnd* pkWnd;
+
+	if(pkSuccess)
+		*pkSuccess = false;
+
+	if((pkWnd = GetWnd(iWndID)))
+	{
+		char* szText = pkWnd->GetText();
+		if(szText != NULL)
+		{
+			if(pkSuccess)
+				*pkSuccess = true;
+			return atoi(szText);
+		}
+	}	
+
+	return 0;
+}
+
+float GuiApp::GetTextFloat(int iWndID, bool *pkSuccess)
+{
+	if(pkSuccess)
+		*pkSuccess = false;
+
+	ZGuiWnd* pkWnd;
+	if((pkWnd = GetWnd(iWndID)))
+	{
+		char* szText = pkWnd->GetText();
+		if(szText != NULL)
+		{
+			if(pkSuccess)
+				*pkSuccess = true;
+			return (float) atof(szText);
+		}
+	}
+
+	return 0;
+}
+
+bool GuiApp::IsButtonChecked(int iWndID)
+{
+	ZGuiWnd* pkWnd;
+	if((pkWnd = GetWnd(iWndID)))
+	{
+		if(GetType(pkWnd) == Radiobutton)
+			return true;
+	}
+
+	return false;
+}
+
+GuiType GuiApp::GetType(ZGuiWnd *pkWnd)
+{
+	const type_info& t = typeid(*pkWnd);
+
+	if(t==typeid(ZGuiTextbox))
+		return Textbox;
+	else
+	if(t==typeid(ZGuiScrollbar))
+		return Scrollbar;
+	else
+	if(t==typeid(ZGuiRadiobutton))
+		return Radiobutton;
+	else
+	if(t==typeid(ZGuiListbox))
+		return Listbox;
+	else
+	if(t==typeid(ZGuiLabel))
+		return Label;
+	else
+	if(t==typeid(ZGuiCheckbox))
+		return Checkbox;
+	else
+	if(t==typeid(ZGuiButton))
+		return Button;
+	else
+	if(t==typeid(ZGuiWnd))
+		return Wnd;
+	else
+	if(t==typeid(ZGuiCombobox))
+		return Combobox;
+	else
+	if(t==typeid(ZGuiTreebox))
+		return Treebox;
+	else
+	if(t==typeid(ZGuiTabCtrl))
+		return TabControl;
+	else
+	if(t==typeid(ZGuiSlider))
+		return Slider;	
+
+	return GuiType_Error;
 }

@@ -97,7 +97,7 @@ bool ZGuiTextbox::Render( ZGuiRender* pkRenderer )
 			m_iRenderDistFromTop, m_bMultiLine, iLetters, iRows);
 		m_iNumRows = iRows;
 
-		if(m_bMultiLine == false && iLetters < strlen(m_strText))
+		if(m_bMultiLine == false && (unsigned int) iLetters < strlen(m_strText))
 			m_bTextFit = false;
 		else
 			m_bTextFit = true;
@@ -283,7 +283,7 @@ bool ZGuiTextbox::ProcessKBInput(int iKey)
 		unsigned int uiSzLength=0;
 		if(m_strText)
 			uiSzLength = strlen(m_strText); 
-		if( uiSzLength >= m_iCurrMaxText-2 || uiSzLength == 0)
+		if( uiSzLength >= (unsigned int) (m_iCurrMaxText-2) || uiSzLength == 0)
 			ResizeTextBuffer(10);
 	}
 
@@ -452,7 +452,7 @@ void ZGuiTextbox::SetText(char* strText, bool bResizeWnd)
 	}
 
 	if(m_bNumberOnly)
-		for(int i=0; i<strlen(strText); i++)
+		for(unsigned int i=0; i<strlen(strText); i++)
 			if(strText[i] < 48 || strText[i] > 57)
 				return;
 
@@ -1045,7 +1045,7 @@ int ZGuiTextbox::GetCursorRow()
 {
 	int row = 0;
 
-	for(int i=0; i<m_kRowOffsets.size(); i++)
+	for(unsigned int i=0; i<m_kRowOffsets.size(); i++)
 	{
 		if(m_iCursorPos > m_kRowOffsets[i] &&
 		   m_iCursorPos < m_kRowOffsets[i+1])
