@@ -16,18 +16,30 @@ P_CharacterProperty::P_CharacterProperty()
 	
 	m_kCurrentCharacterStates.reset();
 	
-	m_strName =					"NoName";
-	m_strOwnedByPlayer =		"NoPlayer";
+	m_strName 				=	"NoName";
+	m_strOwnedByPlayer 	=	"NoPlayer";
 	m_bIsPlayerCharacter =	false;
 	
+	//basic sounds
 	m_strWalkSound			=	"data/sound/footstep_forest.wav";
 	m_strRunSound			=	"data/sound/footstep_forest_run.wav";
 	m_strJumpSound			=	"data/sound/jump.wav";
-	m_strSwimSound			=	"swim.wav";
+	m_strSwimSound			=	"swim.wav";	
+	m_iWalkSoundID 		= 	-1;
+	m_iRunSoundID 			= 	-1;
+	m_iSwimSoundID 		= 	-1;
 	
-	m_iWalkSoundID = -1;
-	m_iRunSoundID = -1;
-	m_iSwimSoundID = -1;
+	//animations
+	m_strWalkForward		=	"walk_forward";
+	m_strWalkBackward		=	"walk_backward";
+	m_strWalkSideway		=	"walk_sideway";
+	m_strRunForward		=	"run_forward";
+	m_strRunBackward		=	"run_backward";
+	m_strRunSideway		=	"run_sideway";
+	m_strSwimForward		=	"swim_forward";
+	m_strSwimBackward		=	"swim_backward";
+	m_strSwimSideway		=	"swimsideway";
+	m_strJump				=	"jump";
 }
 
 
@@ -43,10 +55,48 @@ P_CharacterProperty::~P_CharacterProperty()
 
 void P_CharacterProperty::Update()
 {
+	if(m_pkEntityManager->IsUpdate(PROPERTY_SIDE_SERVER))
+	{
+		UpdateAnimation();
+	}
+		
 	if(m_pkEntityManager->IsUpdate(PROPERTY_SIDE_CLIENT))
 	{
-		PlayCharacterMovementSounds();	
-		
+		PlayCharacterMovementSounds();			
+	}
+	
+	
+}
+
+void P_CharacterProperty::UpdateAnimation()
+{
+	if(P_Mad* pkMad = (P_Mad*)GetEntity()->GetProperty("P_Mad"))
+	{
+		if(P_CharacterControl* pkCC = (P_CharacterControl*)GetEntity()->GetProperty("P_CharacterControl"))
+		{		
+			if(pkCC->GetCharacterState(eJUMPING))
+			{			
+			
+			}
+			else if(pkCC->GetCharacterState(eRUNNING))
+			{
+			
+			}
+			else if(pkCC->GetCharacterState(eWALKING))
+			{
+				
+			}
+			else if(pkCC->GetCharacterState(eSWIMING))
+			{
+				
+			}
+			else
+			{
+				//idle
+				
+				
+			}		
+		}
 	}
 }
 

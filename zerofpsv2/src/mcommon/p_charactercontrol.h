@@ -29,7 +29,7 @@ class MCOMMON_API P_CharacterControl: public Property
 {
 	private:
 		bitset<6>	m_kControls;
-		bitset<8>	m_kCharacterStates;
+		bitset<8>	m_kCharacterStates;			//sent to client
 		float			m_fSpeed;
 		float			m_fJumpForce;
 		
@@ -56,7 +56,8 @@ class MCOMMON_API P_CharacterControl: public Property
 																			m_fPAngle = fPAngle;			}
 										
 		void SetCharacterState(int iState,bool bValue);
-		bool GetCharacterState(int iState);																			
+		bool GetCharacterState(int iState);		
+		bool GetControl(int iKey);																	
 																												
 		void PackTo(NetPacket* pkNetPacket, int iConnectionID ) ;
 		void PackFrom(NetPacket* pkNetPacket, int iConnectionID ) ;		

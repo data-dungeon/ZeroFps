@@ -24,14 +24,26 @@ class P_CharacterProperty: public Property
 		string	m_strWalkSound;
 		string	m_strRunSound;
 		string	m_strJumpSound;
-		string	m_strSwimSound;
-		
+		string	m_strSwimSound;		
 		int		m_iWalkSoundID;
 		int		m_iRunSoundID;
 		int		m_iSwimSoundID;
 		
-		void PlayCharacterMovementSounds();
+		//basic animations
+		string	m_strWalkForward;
+		string	m_strWalkBackward;
+		string	m_strWalkSideway;
+		string	m_strRunForward;
+		string	m_strRunBackward;
+		string	m_strRunSideway;		
+		string	m_strSwimForward;
+		string	m_strSwimBackward;
+		string	m_strSwimSideway;				
+		string	m_strJump;
 		
+		void PlayCharacterMovementSounds();
+		void UpdateAnimation();
+
 	public:
 	
 		P_CharacterProperty();

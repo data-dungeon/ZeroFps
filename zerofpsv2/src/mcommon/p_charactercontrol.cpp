@@ -50,10 +50,10 @@ void P_CharacterControl::Update()
 		{
 			Vector3 kVel(0,0,0);	
 	
-			if(m_kControls[eUP]) 	kVel.z =  1;
-			if(m_kControls[eDOWN])	kVel.z = -1;
-			if(m_kControls[eLEFT])	kVel.x =  1; 
-			if(m_kControls[eRIGHT])	kVel.x = -1; 
+			if(m_kControls[eUP]) 	kVel.z +=  1;
+			if(m_kControls[eDOWN])	kVel.z += -1;
+			if(m_kControls[eLEFT])	kVel.x +=  1; 
+			if(m_kControls[eRIGHT])	kVel.x += -1; 
 		
 			//transform velocity
 			kVel = GetEntity()->GetWorldRotM().VectorTransform(kVel);							
@@ -162,6 +162,14 @@ bool P_CharacterControl::GetCharacterState(int iState)
 		return false;
 
 	return m_kCharacterStates[iState];
+}
+
+bool P_CharacterControl::GetControl(int iKey)
+{
+	if(iKey < 0 || iKey >= 6)
+		return false;
+
+	return m_kControls[iKey];
 }
 
 Property* Create_P_CharacterControl()
