@@ -182,20 +182,23 @@ void Tcs::UpdateLineTests(float fAlphaTime)
 					m_kBodys[i]->m_bOnGround = true;
 					m_kBodys[i]->m_kLinearVelocity.y= 0;
 				
-					//if(m_kBodys[i]->m_kWalkVel.Length() == 0)
-					//	m_kBodys[i]->m_kLinearVelocity.Set(0,0,0);
+					//ground breaks
+					m_kBodys[i]->m_kLinearVelocity -= 10*(m_kBodys[i]->m_kLinearVelocity * fAlphaTime);											
 				}			
 				else
+				{
 					m_kBodys[i]->m_bOnGround = false;			
 					
 
-				//add breaks to character :D					
-				float fOld = m_kBodys[i]->m_kLinearVelocity.y;
-				m_kBodys[i]->m_kLinearVelocity -= 10*(m_kBodys[i]->m_kLinearVelocity * fAlphaTime);						
+					//add breaks to character :D					
+					float fOld = m_kBodys[i]->m_kLinearVelocity.y;
 				
-				//m_kBodys[i]->m_kLinearVelocity.Set(0,fOld,0);
-				m_kBodys[i]->m_kLinearVelocity.y = fOld;
+					//air breaks
+					m_kBodys[i]->m_kLinearVelocity -= 4*(m_kBodys[i]->m_kLinearVelocity * fAlphaTime);						
 				
+					//m_kBodys[i]->m_kLinearVelocity.Set(0,fOld,0);
+					m_kBodys[i]->m_kLinearVelocity.y = fOld;
+				}		
 			}
 		}
 	}
