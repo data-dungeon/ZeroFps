@@ -891,7 +891,7 @@ void ZeroFps::RunCommand(int cmdid, const CmdArgument* kCommand)
 			
 			
 			m_pkConsole->Printf("Connecting: %s, %s, %s", g_szIpPort,strLogin.c_str(), strPass.c_str());			
-			StartClient(strLogin,strPass,kCommand->m_kSplitCommand[1].c_str(),194);
+			StartClient(strLogin,strPass,kCommand->m_kSplitCommand[1].c_str(),4242);
 
 			break;
 		}
