@@ -159,7 +159,7 @@ void MistClient::Init()
 /*	OggMusic* pkMusic = static_cast<OggMusic*>(g_ZFObjSys.GetObjectPtr("OggMusic"));
 	pkMusic->LoadFile("data/music/ambient_loops/grotta3_fx_120bpm.ogg");
 	pkMusic->Play();
-*/	
+*/
 }
 
 void MistClient::RegisterResources()
@@ -474,6 +474,18 @@ void MistClient::Input()
 		int iNumActiveChannels = pkAudioSys->GetNumActiveChannels(); 
 
 		printf("sounds =%i, channels =%i\n",  iNumSounds, iNumActiveChannels);
+	}
+	
+	if(pkInput->Pressed(KEY_RETURN))
+	{
+		if(pkFps->GetTicks() - m_fClickDelay > 0.2)
+		{		
+			m_fClickDelay = pkFps->GetTicks();					
+			
+			pkScript->Call(m_pkScriptResHandle, "OnClickToggleInput", 0, 0);
+			pkGui->SetFocus(GetWnd("InputBox"));	
+			
+		}
 	}
 }
 
@@ -1196,6 +1208,9 @@ bool MistClient::PickZones()
 
 void MistClient::OnClientInputSend(char *szText)
 {
+	if(strcmp(szText,"") == 0)
+		return;
+
 	string message = "(IM)";
 	message+=szText;
 

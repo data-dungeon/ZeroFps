@@ -257,11 +257,6 @@ void MistServer::Input()
 	if(m_iEditMode == EDIT_OBJECTS)
 		speed = 5;
 	
-
-	if(pkInput->Pressed(KEY_F5) ) {
-		if(m_pkServerInfoP)
-			m_pkServerInfoP->MessagePlayer(-1,"Tjena julle");
-	} 
 	
 	int x,z;		
 	pkInput->RelMouseXY(x,z);	
@@ -1230,27 +1225,42 @@ void MistServer::HandleOrders()
 		if(strncmp(order->m_sOrderName.c_str(),"(IM)",4) == 0) 
 		{
 			order->m_sOrderName.erase(0,4);
-			string playername; 
-			string message;
+			string playername=""; 
+			string message="";
+					
+			int pos=0;
 			
-			int pos;
-			for(pos=0;pos<order->m_sOrderName.size();pos++)
+			if(strncmp(order->m_sOrderName.c_str(),"/w",2)==0)
 			{
-				if(order->m_sOrderName[pos] == ' ' && playername.size()>0)
-					break;
-				playername+=order->m_sOrderName[pos];
+				for(pos=3;pos<order->m_sOrderName.size();pos++)
+				{
+					if(order->m_sOrderName[pos] == ' ' && playername.size()>0)
+						break;
+					playername+=order->m_sOrderName[pos];
+				}
 			}
 			
 			for(;pos<order->m_sOrderName.size();pos++)
 			{	
 				message+=order->m_sOrderName[pos];
 			}
-			 	
+			 
 			//cout<<"got message to "<<playername<<": "<<message<<endl;
 			
 			if(m_pkServerInfoP)
 			{
-				m_pkServerInfoP->MessagePlayer(playername.c_str(),message);
+				PlayerInfo* pi = m_pkServerInfoP->GetPlayerInfo(order->m_iClientID);
+				
+				if(pi)
+				{
+					message = pi->sPlayerName + " : " + message;
+				
+				}
+				
+				if(playername == "")
+					m_pkServerInfoP->MessagePlayer(-1,message);
+				else
+					m_pkServerInfoP->MessagePlayer(playername.c_str(),message);
 			}
 		}
 		else if(strncmp(order->m_sOrderName.c_str(),"G_",2)==0)
@@ -1264,40 +1274,6 @@ void MistServer::HandleOrders()
 				pe->SendGroudClickEvent(order->m_sOrderName.c_str(), order->m_kPos,order->m_iCharacter);
 								
 		}
-/*		else if(order->m_sOrderName == "Move") 		//else ground klick
-		{
-			Entity* ob = pkObjectMan->GetObjectByNetWorkID(order->m_iCharacter);			
-			if(ob)
-			{
-				P_PfPath* pm = (P_PfPath*)ob->GetProperty("P_PfPath");
-				if(pm)
-				{
-					pm->MakePathFind(order->m_kPos);
-				}
-			}
-		}
-				/* Vim Test Path*
-				kPathStart = ob->GetWorldPosV();
-				kPathEnd   = order->m_kPos;
-				kPath.clear();
-				bool bres = m_pkAStar->GetFullPath(kPathStart,kPathEnd,kPath);
-
-				if(bres) {
-					P_PfPath* pm = (P_PfPath*)ob->GetProperty("P_PfPath");
-					if(pm) {
-						reverse(kPath.begin(), kPath.end());
-						kPath.push_back(order->m_kPos);
-						pm->SetPath(kPath);
-						}
-					
-					}
-				else {
-					cout << "Path was NOT found" << endl;
-					}
-
-			}
-		}
-*/		
 	  // request orders
       else if ( order->m_sOrderName == "(rq)item" )    
       {
