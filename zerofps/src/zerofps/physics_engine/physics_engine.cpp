@@ -4,7 +4,6 @@ Physics_Engine::Physics_Engine()
 : ZFObject("Physics_Engine")
 {
 	m_fCtol =		0.01;
-	m_fTtol =		0.0001;
 	m_iMaxTests =	20;
 	
 	Clear();
@@ -188,7 +187,6 @@ bool Physics_Engine::TestSphereVSPlane(Body* pkBody,Plane* pkPlane,float fATime)
 	bool collission = false;
 	int nroftests = 0;
 	
-	Collission tempcol;
 	
 	while(retry && nroftests < m_iMaxTests)
 	{
@@ -220,7 +218,7 @@ bool Physics_Engine::TestSphereVSPlane(Body* pkBody,Plane* pkPlane,float fATime)
 		
 			didpen = true;			
 			retry = true;
-			atime /=2;//1.3;//-= 0.001;//(fATime/20);
+			atime /=2;
 			
 			continue;
 		}
@@ -233,6 +231,7 @@ bool Physics_Engine::TestSphereVSPlane(Body* pkBody,Plane* pkPlane,float fATime)
 		if(check == NOT && didpen == false)
 			return false;
 		
+		//if time is infinit short set it to 0	
 		if(atime < 0.0001)
 		{	
 			atime =0;
@@ -244,6 +243,8 @@ bool Physics_Engine::TestSphereVSPlane(Body* pkBody,Plane* pkPlane,float fATime)
 		
 	if(didpen)
 	{	
+		Collission tempcol;
+
 		tempcol.pkBody1 = pkBody;
 		tempcol.pkBody2 = NULL;
 		
@@ -339,7 +340,7 @@ bool Physics_Engine::TestBodyVSBody(Body* pkBody1,Body* pkBody2,float fATime)
 			
 			didpen = true;			
 			retry = true;
-			atime /=2;//1.3;//-= 0.001;//(fATime/20);
+			atime /=2;
 		
 			continue;
 		}
@@ -352,30 +353,24 @@ bool Physics_Engine::TestBodyVSBody(Body* pkBody1,Body* pkBody2,float fATime)
 		if(check == NOT && didpen == false)
 			return false;
 		
-
+	
+		//if time is infinit short set it to 0	
 		if(atime < 0.0001)
 		{	
 			atime =0;
 			break;
 		}	
-
 	}	
 	
 	if(didpen)
 	{	
-		Vector3 relv = (BodyCopy1.m_kVelocity - BodyCopy2.m_kVelocity);
-		Vector3 norm = (BodyCopy1.m_kPosition - BodyCopy2.m_kPosition).Unit();
-	
-		//only collide if relative velocity is towards each other
-		//cout<<norm.Dot(relv)<<endl;
-		
 		Collission temp;
 		temp.pkBody1 = pkBody1;
 		temp.pkBody2 = pkBody2;
 	
-		temp.kNormal = norm;
+		temp.kNormal = (BodyCopy1.m_kPosition - BodyCopy2.m_kPosition).Unit();
 		temp.kPos = BodyCopy1.m_kPosition - (temp.kNormal * BodyCopy1.m_fRadius);	
-		temp.kRelVelocity = relv;
+		temp.kRelVelocity = BodyCopy1.m_kVelocity - BodyCopy2.m_kVelocity;
 		temp.kRelAcceleration = BodyCopy1.m_kAcceleration - BodyCopy2.m_kAcceleration;
 		temp.fAtime =	atime;
 		temp.kCollissionTangent = (temp.kNormal.Cross(temp.kRelVelocity.Unit())).Cross(temp.kNormal);		

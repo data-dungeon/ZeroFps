@@ -44,7 +44,6 @@ class PHYSICSENGINE_API Physics_Engine : public ZFObject
 		float						m_fRTime;
 	
 		float						m_fCtol;
-		float						m_fTtol;
 		int						m_iMaxTests;
 		
 	public:
