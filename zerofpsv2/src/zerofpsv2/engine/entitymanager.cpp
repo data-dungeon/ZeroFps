@@ -569,8 +569,15 @@ void EntityManager::PackToClient(int iClient, vector<Entity*> kObjects,bool bZon
 	int iPacketSize = 0;
 	int iEndOfObject = -1;
 	int iSentSize = 0;
+	int iMaxPacketSize = 512;
 	unsigned int iObj = 0;	
 	int iMaxSendSize = m_pkNetWork->GetMaxSendSize();
+
+
+	//if max allowed sendsize is less then the package size, shrink the package
+	if(bZoneObject)
+		if(iMaxSendSize < iMaxPacketSize)
+			iMaxPacketSize = iMaxSendSize;
 
 	Entity* pkPackObj;
 
@@ -580,22 +587,15 @@ void EntityManager::PackToClient(int iClient, vector<Entity*> kObjects,bool bZon
 	NP.Write((char) ZFGP_OBJECTSTATE);
 
 	
-	//if this is the zone object, do some special stuff =)
+	//if this is the zone object, start packing att last packed object
 	if(bZoneObject)
 	{
-		//cout<<"packing zone object"<<kObjects.size()<<endl;
-		
-		
 		if(m_pkNetWork->m_RemoteNodes[iClient].m_iCurrentObject >=  kObjects.size())
 			m_pkNetWork->m_RemoteNodes[iClient].m_iCurrentObject = 0;
 		
-		 iObj =  m_pkNetWork->m_RemoteNodes[iClient].m_iCurrentObject;
-	
+		 iObj =  m_pkNetWork->m_RemoteNodes[iClient].m_iCurrentObject;	
 	}
 	
-	//int nso=0;
-	//int obs=0;
-
 	for(; iObj < kObjects.size(); iObj++)	{
 		pkPackObj = kObjects[iObj];
 
@@ -604,11 +604,9 @@ void EntityManager::PackToClient(int iClient, vector<Entity*> kObjects,bool bZon
 		if(pkPackObj->NeedToPack() == false)						continue;
 		if(pkPackObj->m_eRole != NETROLE_AUTHORITY)				continue;
 		
-		//obs++;				//count objects to send
 		if(pkPackObj->HaveSomethingToSend(iClient) == false) 
 		{
 			//cout << "No need to send object" << endl;
-			//nso++;	//count object not sent
 			continue;
 		}
 
@@ -619,7 +617,7 @@ void EntityManager::PackToClient(int iClient, vector<Entity*> kObjects,bool bZon
 
 		//Logf("net", " Size: %d\n\n",NP.m_iPos );
 
-		if(NP.m_iPos >= 512) 
+		if(NP.m_iPos >= iMaxPacketSize) 
 		{
 			iSentSize += NP.m_iPos;			//increse total amount of data sent
 			
@@ -646,6 +644,14 @@ void EntityManager::PackToClient(int iClient, vector<Entity*> kObjects,bool bZon
 		}
 	}
 	
+	//write final package
+	NP.Write(iEndOfObject);
+	NP.Write(ZFGP_ENDOFPACKET);
+	NP.TargetSetClient(iClient);
+	m_pkNetWork->Send2(&NP);
+	
+	
+	//cout<<"sent size:"<<iSentSize<<endl;	
 	//cout<<"Sent "<<obs-nso <<" object of "<<obs<<endl;
 	
 	//if zone object save this object is, so that we can continue at this object next frame
@@ -654,10 +660,6 @@ void EntityManager::PackToClient(int iClient, vector<Entity*> kObjects,bool bZon
 		m_pkNetWork->m_RemoteNodes[iClient].m_iCurrentObject = iObj;		
 	}
 
-	NP.Write(iEndOfObject);
-	NP.Write(ZFGP_ENDOFPACKET);
-	NP.TargetSetClient(iClient);
-	m_pkNetWork->Send2(&NP);
 
 }
 
