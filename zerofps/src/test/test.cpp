@@ -32,6 +32,9 @@ void Test::OnInit(void) {
 //	test->Save("blub.hm");
 //	test->Load("blub.hm");
 
+	// Detta är ett test
+	int apa = 2;
+
 	test->SetPosition(Vector3(0,-4,0));
 //----------------------------
 	
