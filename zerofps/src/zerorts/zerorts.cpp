@@ -27,6 +27,8 @@ void ZeroRTS::OnInit()
 	//run autoexec script
 	if(!pkIni->ExecuteCommands("zerorts_autoexec.ini"))
 		pkConsole->Printf("No game_autoexec.ini.ini found");
+		
+//	pkObjectMan->GetWorldObject()->AddProperty("P_FogRender");
 }
 
 void ZeroRTS::Init()
@@ -87,6 +89,7 @@ void ZeroRTS::RegisterActions()
 
 void ZeroRTS::RegisterPropertys()
 {
+	pkPropertyFactory->Register("P_FogRender", Create_P_FogRender);	
 	pkPropertyFactory->Register("P_RenderSelection", Create_P_RenderSelection);	
 	pkPropertyFactory->Register("P_ClientUnit", Create_P_ClientUnit);
 	pkPropertyFactory->Register("P_ServerUnit", Create_P_ServerUnit);	
@@ -102,13 +105,12 @@ void ZeroRTS::OnIdle(void)
 
 	Vector3 mpos = Get3DMousePos();
 	
-	glDisable(GL_LIGHTING);
+/*	glDisable(GL_LIGHTING);
 		pkRender->Line(mpos-Vector3(1,0,0),mpos+Vector3(1,0,0));
 		pkRender->Line(mpos-Vector3(0,1,0),mpos+Vector3(0,1,0));		
 		pkRender->Line(mpos-Vector3(0,0,1),mpos+Vector3(0,0,1));				
-//		pkRender->Sphere(mpos,1,20,Vector3(1,0,0),false);
 	glEnable(GL_LIGHTING);
-
+*/
 	// tassa
 	if(m_pkMoveObject)
 		MovePath(m_pkMoveObject);

@@ -26,6 +26,7 @@
 #include "p_clientunit.h"
 #include "p_serverunit.h"
 #include "p_renderselection.h"
+#include "p_fogrender.h"
 
 
 
