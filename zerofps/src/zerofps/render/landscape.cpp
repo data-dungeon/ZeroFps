@@ -39,7 +39,7 @@ void Render::DrawWater(Vector3 kCamPos,Vector3 kPosition,Vector3 kHead,int iSize
 	float amp=0.5;
 	
 	glPushMatrix();
-	
+	glPushAttrib(GL_FOG_BIT | GL_LIGHTING_BIT | GL_TEXTURE_BIT | GL_COLOR_BUFFER_BIT );
 	
 	glTranslatef(kPosition.x,kPosition.y,kPosition.z);
 	glRotatef(kHead.x, 1, 0, 0);
@@ -96,6 +96,8 @@ void Render::DrawWater(Vector3 kCamPos,Vector3 kPosition,Vector3 kHead,int iSize
 	glDisable(GL_BLEND);	
 	glEnable(GL_LIGHTING);
 	glEnable(GL_CULL_FACE);
+
+	glPopAttrib();
 	glPopMatrix();
 }
 

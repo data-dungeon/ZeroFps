@@ -9,6 +9,7 @@ class CollisionPoint;
 #include "object.h"
 #include "property.h"
 #include "modelproperty.h"
+#include "madproperty.h"
 #include "collisionproperty.h"
 #include "collisionobject.h"
 #include "collisionsphere.h"

@@ -2,7 +2,7 @@
 
 
 BallObject::BallObject(HeightMap *pkMap) {
-	AddProperty(new ModelProperty());
+//	AddProperty(new ModelProperty());
 	AddProperty(new CollisionProperty(&m_kPos,new float(1)));
 
 }

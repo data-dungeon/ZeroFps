@@ -54,7 +54,6 @@ void Core::Load(char* MadFileName)
 	// Read Animations.
 	int iNumOfAnimations;
 	fread(&iNumOfAnimations,sizeof(int), 1 ,fp);
-	cout << "iNumOfAnimations " << iNumOfAnimations << endl;	
 
 	Mad_Animation kNyAnim;
 	Mad_KeyFrame kNyKey;
@@ -72,7 +71,6 @@ void Core::Load(char* MadFileName)
 			kNyKey.Clear();
 			fread(&kNyKey.iVertexFrame,sizeof(int), 1 ,fp);
 			kNyAnim.KeyFrame.push_back(kNyKey);
-			cout << "VertexIndex " << kNyKey.iVertexFrame << endl;
 		}
 
 		akAnimation.push_back(kNyAnim);
@@ -118,14 +116,14 @@ char* Core::GetName(void)
 void Core::draw()
 {
 	glColor3f(1,1,1);
-	glDisable(GL_LIGHTING);
-
-	glPushMatrix();
 	
+	glPushMatrix();
+	glPushAttrib(GL_LIGHTING_BIT);
+	//glDisable(GL_LIGHTING);
+
 	char nisse[256];
 	sprintf(nisse, "%s.bmp", akTextures[0].ucTextureName);
 	pkTextureManger->BindTexture(nisse,0);
-//	pkTextureManger->BindTexture("file:../data/textures/bitch.bmp",0);
 	glCullFace(GL_FRONT);
 
 	glVertexPointer(3,GL_FLOAT,0,pakFrames[iActiveFrame].pVertex);
@@ -134,6 +132,7 @@ void Core::draw()
 	glDrawElements(GL_TRIANGLES,kHead.iNumOfFaces*3,GL_UNSIGNED_INT,pakFaces[0].iIndex);
 	glCullFace(GL_BACK);
 
+	glPopAttrib();
 	glPopMatrix();
 }
 

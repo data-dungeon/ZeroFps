@@ -79,11 +79,11 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 render.lib basic.lib glu32.lib opengl32.lib sdl_mixer.lib sdl.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /debug /machine:I386 /out:"..\..\..\bin\engine.dll" /pdbtype:sept /libpath:"..\..\..\bin"
+# ADD LINK32 render.lib basic.lib glu32.lib opengl32.lib sdl_mixer.lib sdl.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /profile /debug /machine:I386 /out:"..\..\..\bin\engine.dll" /libpath:"..\..\..\bin"
 # Begin Special Build Tool
 ProjDir=.
 SOURCE="$(InputPath)"
-PostBuild_Cmds=copy                  $(ProjDir)\debug\*.lib                  ..\..\..\bin\ 
+PostBuild_Cmds=copy                     $(ProjDir)\debug\*.lib                     ..\..\..\bin\ 
 # End Special Build Tool
 
 !ENDIF 
@@ -102,6 +102,10 @@ SOURCE=.\application.cpp
 # Begin Source File
 
 SOURCE=.\audiomanager.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\collisionmanager.cpp
 # End Source File
 # Begin Source File
 
@@ -126,6 +130,10 @@ SOURCE=..\ogl\extgl.c
 # Begin Source File
 
 SOURCE=.\input.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\madproperty.cpp
 # End Source File
 # Begin Source File
 
@@ -169,6 +177,10 @@ SOURCE=.\audiomanager.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\collisionmanager.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\collisionobject.h
 # End Source File
 # Begin Source File
@@ -201,7 +213,15 @@ SOURCE=.\input.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\madproperty.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\main.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\modelproperty.h
 # End Source File
 # Begin Source File
 

@@ -41,11 +41,6 @@ void MadInstans::PlayAnimation(int iAnimNum, float fStartTime)
 	fCurrentTime = fStartTime;
 
 	fLastUpdate = fGameTime; 
-
-	cout << "iActiveAnimation " << iActiveAnimation << endl;
-
-
-
 }
 
 

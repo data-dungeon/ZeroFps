@@ -73,7 +73,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 opengl32.lib sdlmain.lib sdl.lib basic.lib render.lib engine.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /debug /machine:I386 /nodefaultlib:"msvcrt.lib" /out:"..\..\bin\test.exe" /pdbtype:sept /libpath:"..\..\bin"
+# ADD LINK32 opengl32.lib sdlmain.lib sdl.lib basic.lib render.lib engine.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /profile /debug /machine:I386 /nodefaultlib:"msvcrt.lib" /out:"..\..\bin\test.exe" /libpath:"..\..\bin"
 
 !ENDIF 
 
@@ -86,7 +86,15 @@ LINK32=link.exe
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 # Begin Source File
 
+SOURCE=.\ballobject.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\normaldrawproperty.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\playerballobject.cpp
 # End Source File
 # Begin Source File
 
@@ -102,7 +110,15 @@ SOURCE=.\test.cpp
 # PROP Default_Filter "h;hpp;hxx;hm;inl"
 # Begin Source File
 
+SOURCE=.\ballobject.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\normaldrawproperty.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\playerballobject.h
 # End Source File
 # Begin Source File
 

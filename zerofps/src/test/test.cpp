@@ -1,7 +1,8 @@
 #include "test.h"
 
 
-Test olle("MegaGame",1024,768,16);
+Test olle("MegaGame",640,480,16);
+//Test olle("MegaGame",1024,768,16);
 
 Test::Test(char* aName,int iWidth,int iHeight,int iDepth): Application(aName,iWidth,iHeight,iDepth) {
 
@@ -96,14 +97,9 @@ void Test::OnInit(void) {
 	pkObjectMan->Add(kul);
 	pkCollisionMan->Add(kul);
 
-
-	
-	/*
 	for(int i=0;i<200;i++) {
 		Object *ball=new BallObject(test);
-//		ball->AddProperty(new PlayerControlProperty(pkInput,pkFps,test));
-//		ball->AddProperty(new ModelProperty());
-//		ball->AddProperty(new CollisionProperty(&ball->GetPos(),new float(1)));		
+		ball->AddProperty(new MadProperty(&akCoreModells[0]));
 		float x=rand()%100;
 		float y=rand()%100;
 		ball->GetPos()=Vector3(x,test->Height(x,y),y);
@@ -111,20 +107,9 @@ void Test::OnInit(void) {
 		pkObjectMan->Add(ball);
 		pkCollisionMan->Add(ball);
 	}
-*/
-/*
-	CollisionSphere *sp1=new CollisionSphere(Vector3(0,0,0),8);
-	CollisionSphere *sp2=new CollisionSphere(Vector3(4,0,0),4);
-	CollisionPoint *p1=new CollisionPoint(Vector3(1,1,1));
-	CollisionPoint *p2=new CollisionPoint(Vector3(0,2,0));
-	
-	if(p1->Collide(p2,true))
-		cout<<"fuck ass"<<endl;
-	if(sp1->Collide(sp2,true))
-		cout<<"KROOOOOCK"<<endl;
-	if(p2->Collide(sp1,true))
-		cout<<"BLAAAAAAM"<<endl;
-		*/
+
+
+	glEnable(GL_LIGHTING );
 }
 
 
@@ -156,13 +141,13 @@ void Test::OnIdle(void) {
 			for(int iy=0;iy<500;iy+=25)
 				pkRender->DrawGrassPatch(*pkFps->m_kCamPos,Vector3(ix,0,iy),Vector3(1.5,.3,1.5),25,m_iGrassVolyme,test,pkTexMan->Load("file:../data/textures/grass2.tga",T_NOMIPMAPPING),pkFps->m_iFps);
 
-		FH_UpdateraObject();
-		FH_RitaObject();
-
-
-	pkRender->DrawWater(*pkFps->m_kCamPos,Vector3(512,0,512),Vector3(0,0,0),1200,30);	
 
 	
+	pkRender->DrawWater(*pkFps->m_kCamPos,Vector3(512,0,512),Vector3(0,0,0),1200,30);	
+
+	//FH_UpdateraObject();
+	//FH_RitaObject();
+
 //	cout<<pkFps->m_iFps<<endl;
 	input();
 	float z=pkFps->m_kCamPos->z;
