@@ -1,18 +1,20 @@
 #include "playercontrolproperty.h"
 #include "../zerofps/engine/cssphere.h"
 
-PlayerControlProperty::PlayerControlProperty(Input *pkInput,HeightMap *pkMap)
+PlayerControlProperty::PlayerControlProperty(/*Input *pkInput ,HeightMap *pkMap*/)
 {
-	m_pkMap			= pkMap;
 	m_pkFps			= static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
 	m_pkObjectMan	= static_cast<ObjectManager*>(g_ZFObjSys.GetObjectPtr("ObjectManager"));	
 	m_pkAlSys		= static_cast<OpenAlSystem*>(g_ZFObjSys.GetObjectPtr("OpenAlSystem"));		
 	m_pkAlSys		= static_cast<OpenAlSystem*>(g_ZFObjSys.GetObjectPtr("OpenAlSystem"));		
 	m_pkPhyEngine	= static_cast<PhysicsEngine*>(g_ZFObjSys.GetObjectPtr("PhysicsEngine"));			
-
+	m_pkInput		= static_cast<Input*>(g_ZFObjSys.GetObjectPtr("Input"));
+	
+	//	m_pkInput	=	pkInput;	
+	//	m_pkMap		=	pkMap;
+	
 	m_pkStatusProperty=NULL;
 
-	m_pkInput=pkInput;	
 	strcpy(m_acName,"PlayerControlProperty");
 
 	m_iType=PROPERTY_TYPE_NORMAL;

@@ -4,13 +4,10 @@
 #include "../zerofps/engine/objects.pkg"
 #include "../zerofps/basic/basic.pkg"
 #include "playercontrolproperty.h"
-//#include "gravityproperty.h"
 #include "ballobject.h"
 #include "massdriverproperty.h"
 #include "machinegunproperty.h"
 #include "statusproperty.h"
-//#include "floatproperty.h"
-//#include "heightmapobject.h"
 #include "common_x.h"
 
 class COMMON_API PlayerObject: public Object {
@@ -18,13 +15,7 @@ class COMMON_API PlayerObject: public Object {
 		ZeroFps *m_pkFps;
 
 	public:
-//		bool onGround;
-	
 		PlayerObject(HeightMap *pkMap,Input *pkInput);
-		
-//		void HandleCollision(Object* pkObject,Vector3 kPos,bool bContinue);
-
-//		void ObjectUpdate();
 };
 
 

@@ -8,6 +8,20 @@
 ;				; commando should be executed.
 ;
 
+
+[Menu_Ost]
+Title=Ost
+Parent=NULL
+Cmd=NULL
+
+[Menu_OstOsta]
+Title=Osta
+Parent=Menu_Ost
+Cmd=echo ostttttttttttttttttt
+
+
+
+
 [Menu_Load]
 Title=Load
 Parent=NULL
@@ -17,3 +31,8 @@ Cmd=NULL
 Title=Village
 Parent=Menu_Load
 Cmd=load village
+
+[Menu_LoadMassSpawn]
+Title=Die Fps Die
+Parent=Menu_Load
+Cmd=massspawn

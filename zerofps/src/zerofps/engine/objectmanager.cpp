@@ -726,7 +726,15 @@ void ObjectManager::TESTVIM_LoadArcheTypes(char* szFileName)
 	
 				pkAt->SetValue(strPropName, strPropVar, strPropValue);
 				cout << "Set:  " << strPropName << "." <<  strPropVar << "=" << strPropValue << endl;
+				}
+			}
 
+		if (!strcmp (ucpToken, "add")) {
+			if(pkAt) {
+				ucpToken = kMMScipt.GetToken();
+				strPropName = ucpToken;
+				pkAt->GetAddArchProperty(string (strPropName) );
+				cout << "Add:  " << strPropName << endl;
 				}
 			}
 
@@ -882,7 +890,9 @@ Object* ObjectManager::CreateObjectByArchType(const char* acName)
 
 	Object* pkObj =	new Object;
 	AddArchPropertys(pkObj, string(acName));
-//	pkObj->AddProperty("ModelProperty");
-	
+
+	pkObj->m_strType	= acName;
+	pkObj->m_kName		= string("A ") + pkObj->m_strType;
+
 	return pkObj;
 }

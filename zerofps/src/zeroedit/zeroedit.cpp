@@ -582,12 +582,17 @@ void ZeroEdit::RunCommand(int cmdid, const CmdArgument* kCommand)
 			pkConsole->Printf("Die FPS, DIE.");				
 			int x,y;
 			x = y = 0;
-			for( x=0; x < 150; x+=1) {
-				for(y=0; y < 150; y+=1) {
-					//pkmad = new FHObject("../data/mad/cube.mad");
-					pkmad = new FHObject(NULL);
+			for( x=0; x < 10; x+=1) {
+				for(y=0; y < 10; y+=1) {
+					pkmad = pkObjectMan->CreateObjectByArchType("tree");
+					if(pkmad) {
+						pkmad->GetPos() = m_kDrawPos + Vector3(x,0,y);
+						pkmad->AttachToClosestZone();
+						}
+					//pkmad  = new FHObject("../data/mad/cube.mad");
+					/*pkmad = new FHObject(NULL);
 					pkmad->GetPos() = m_kDrawPos + Vector3(x,0,y);
-					pkmad->AttachToClosestZone();
+					pkmad->AttachToClosestZone();*/
 					}
 				}
 			

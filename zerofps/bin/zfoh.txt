@@ -1,17 +1,38 @@
 class object
 	set ModelProperty Radius 1
 
-class tree
-	parent object
+	class physics
+		parent object
+
+		set PhysicProperty m_bGravity 	false
+			set 	PhysicProperty 	ColShape 	1
+
+
+		class ships
+			parent	physics
+			set 	MadProperty 	m_fScale 	1
+			set 	PhysicProperty 	ColShape 	3
+
+			class playership
+				parent ships
+				set MadProperty m_kMadFile /data/mad/xw.mad
+				set MadProperty m_fScale 1
 	
-	set MadProperty m_kMadFile ../data/mad/tree.mad
-	set MadProperty m_fScale 1
+	class weapons
+		parent	physics
 
-class avsats
-	parent object
+		class	lasercannon
+			
+		class	photonramp
 
-	set MadProperty m_kMadFile ../data/mad/avsats.mad
-	set MadProperty m_fScale 1
+	class projectiles
+		
+		class torpedo
+			set MadProperty m_kMadFile ../data/mad/missile.mad
+			set MadProperty m_fScale 1
 
-	set PhysicProperty ColShape 3
-	set PhysicProperty m_bGravity false
+		class homingmissile
+			set MadProperty m_kMadFile ../data/mad/missile.mad
+			set MadProperty m_fScale 1
+
+	

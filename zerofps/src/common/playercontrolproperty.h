@@ -23,7 +23,7 @@ class COMMON_API PlayerControlProperty: public Property {
 		int FORWARD_ACTION;
 		Input *m_pkInput;
 		ZeroFps *m_pkFps;
-		HeightMap *m_pkMap;
+		//HeightMap *m_pkMap;
 		OpenAlSystem* m_pkAlSys;
 		PhysicsEngine* m_pkPhyEngine;
 		ObjectManager *m_pkObjectMan;
@@ -70,7 +70,7 @@ class COMMON_API PlayerControlProperty: public Property {
 	public:
 		void Drop(Object* pkObject);
 
-		PlayerControlProperty(Input *pkInput,HeightMap *pkMap);
+		PlayerControlProperty(/*Input *pkInput ,HeightMap *pkMap*/);
 		~PlayerControlProperty();		
 
 		void Update();

@@ -106,7 +106,6 @@ class ENGINE_API ObjectArcheType
 private:
 	void AddArchProperty(string strArchPropertys);
 	PropertyArcheType*	GetArchProperty(string strArchPropertys);
-	PropertyArcheType*	GetAddArchProperty(string strArchPropertys);
 
 public:
 	string	m_strName;
@@ -115,6 +114,7 @@ public:
 	vector<PropertyArcheType>	m_kArchPropertys;
 
 	void SetValue(string strProperty, string strVariable, string Value);
+	PropertyArcheType*	GetAddArchProperty(string strArchPropertys);
 
 	ObjectArcheType();
 	~ObjectArcheType();
@@ -144,7 +144,8 @@ class ENGINE_API Object
 		Vector3				m_kOldRot;
 		
 		
-		string				m_kName;							///< Object type name
+		string				m_kName;								///< Object name
+		string				m_strType;							///< Object type name.
 
 		ObjectType			m_iObjectType;						
 		int					m_iUpdateStatus;					
@@ -230,6 +231,8 @@ class ENGINE_API Object
 		void	AddGameMessage(GameMessage& Msg);
 		void	RouteMessage(GameMessage& Msg);
 		void	HandleMessages();
+
+		friend ObjectManager;
 
 		// Force class to be polymorfic.
 		virtual void DoNothing() {}

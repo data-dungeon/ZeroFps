@@ -5,7 +5,7 @@
 PlayerObject::PlayerObject(HeightMap *pkMap,Input *pkInput)
 {
 	m_pkFps = static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
-	AddProperty(new PlayerControlProperty(pkInput,pkMap));
+	AddProperty(new PlayerControlProperty(/* pkInput ,pkMap */));
 	
 	GetName()="Player";
 	
@@ -20,20 +20,18 @@ PlayerObject::PlayerObject(HeightMap *pkMap,Input *pkInput)
 	PhysicProperty* pp=static_cast<PhysicProperty*>(GetProperty("PhysicProperty"));
 	pp->m_bStride=true;
 	pp->m_bGlide=false;	
-//	pp->SetColShape(new CSBox(Vector3(.8,1.8,.8)));	
-	
 
+	//	pp->SetColShape(new CSBox(Vector3(.8,1.8,.8)));	
+	//	AddProperty("MadProperty");
+	//	MadProperty* madp = dynamic_cast<MadProperty*>(GetProperty("MadProperty"));
+	//	madp->SetBasePtr(m_pkFps->GetMADPtr("../data/mad/player.mad"));
 
-//	AddProperty("MadProperty");
-//	MadProperty* madp = dynamic_cast<MadProperty*>(GetProperty("MadProperty"));
-//	madp->SetBasePtr(m_pkFps->GetMADPtr("../data/mad/player.mad"));
-
-/*	
-	AddProperty("LightProperty");
-	LightProperty* pkJumpLight = dynamic_cast<LightProperty*>(GetProperty("LightProperty"));
-	pkJumpLight->SetDiffuse(Vector4(.1,.1,.1,0));
-	pkJumpLight->SetQuadratic_Atten(0.01);
-*/	
+	/*	
+		AddProperty("LightProperty");
+		LightProperty* pkJumpLight = dynamic_cast<LightProperty*>(GetProperty("LightProperty"));
+		pkJumpLight->SetDiffuse(Vector4(.1,.1,.1,0));
+		pkJumpLight->SetQuadratic_Atten(0.01);
+	*/	
 }
 
 /*
