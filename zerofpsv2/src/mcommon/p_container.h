@@ -51,6 +51,8 @@ public:
    // throws out all objects in container, or something :)
    void Empty();
 
+   void Init();
+
    void AddSendsData ( SendType kData );
 
    void RequestUpdateFromServer();

@@ -10,6 +10,18 @@ P_Container::P_Container()
    m_iCapacity = 500;
    m_uiVersion = 0;
    
+   m_iSide = PROPERTY_SIDE_SERVER;
+
+	strcpy(m_acName,"P_Container");
+
+	bNetwork = true;
+
+}
+
+// -----------------------------------------------------------------------------------------------
+
+void P_Container::Init()
+{
    m_iContainerID = m_pkObject->iNetWorkID;
 }
 
@@ -163,6 +175,8 @@ void P_Container::RequestUpdateFromServer()
 
       pkCP->AddOrder (kOrder);
    }
+
+   SetNetUpdateFlag(true);
 }
 
 // -----------------------------------------------------------------------------------------------
@@ -183,7 +197,7 @@ void P_Container::Update()
 // -----------------------------------------------------------------------------------------------
 
 void P_Container::Save(ZFIoInterface* pkPackage)
-{
+{/*
    // save capacity
    pkPackage->Write ( (void*)&m_iCapacity, sizeof(int), 1 );
 
@@ -199,13 +213,13 @@ void P_Container::Save(ZFIoInterface* pkPackage)
 
    // save contained items ID
    for ( int i = 0; i < iContSize; i++ )
-      pkPackage->Write( (void*)&m_kContainedObjects[i], sizeof(int), 1);
+      pkPackage->Write( (void*)&m_kContainedObjects[i], sizeof(int), 1); */
 }
 
 // -----------------------------------------------------------------------------------------------
 
 void P_Container::Load(ZFIoInterface* pkPackage)
-{
+{/*
    // load capacity
    pkPackage->Read ( (void*)&m_iCapacity, sizeof(int), 1 );
 
@@ -226,7 +240,7 @@ void P_Container::Load(ZFIoInterface* pkPackage)
       pkPackage->Read ( (void*)&iID, sizeof(int), 1);
 
       AddObject (iID);
-   }
+   }*/
 }
 
 // -----------------------------------------------------------------------------------------------
@@ -250,6 +264,8 @@ void P_Container::PackTo(NetPacket* pkNetPacket, int iConnectionID )
 
    // version
    pkNetPacket->Write( &m_uiVersion, sizeof(unsigned int) );
+
+   SetNetUpdateFlag(iConnectionID, false);
 }
 
 // -----------------------------------------------------------------------------------------------
@@ -276,6 +292,14 @@ void P_Container::PackFrom(NetPacket* pkNetPacket, int iConnectionID )
    {
       pkNetPacket->Read( &iID, sizeof(int) );
       AddObject (iID);
+
+      // request update for item at the same time
+      Entity* pkObj = m_pkObject->m_pkObjectMan->GetObjectByNetWorkID(iID);
+
+      if ( pkObj )
+         ((P_Item*)pkObj->GetProperty("P_Item"))->RequestUpdateFromServer("data");
+      else
+         cout << "Error! Object in container doesn't exist! (P_Container::PackFrom)" << endl;
    }
 
    // version
@@ -291,8 +315,6 @@ vector<PropertyValues> P_Container::GetPropertyValues()
 }
 
 // ------------------------------------------------------------------------------------------
-
-
 
 Property* Create_P_Container()
 {
