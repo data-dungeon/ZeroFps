@@ -62,7 +62,7 @@ pkRender->DrawHMlod(test,*pkFps->m_kCamPos);
 
 
 //	pkRender->DrawHM(test);		
-	pkRender->DrawWater(*pkFps->m_kCamPos,Vector3(0,-6,200),Vector3(0,90,0),800);
+	pkRender->DrawWater(*pkFps->m_kCamPos,Vector3(-300,-6,300),Vector3(0,90,0),800);
 	cout<<pkFps->m_iFps<<endl;
 }
 

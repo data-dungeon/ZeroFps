@@ -268,6 +268,7 @@ HM_vert* HeightMap::GetVert(int x,int z) {
 
 void HeightMap::GenerateTextures() {
 	float slope;
+	float height;
 	Vector3 diff;
 	for(int z=0;z<m_iHmSize-1;z++) {
 		for(int x=0;x<m_iHmSize-1;x++) {
@@ -280,7 +281,7 @@ void HeightMap::GenerateTextures() {
 			}
 			diff.normalize();
 			slope=diff.dot(Vector3(0,1,0)) *degtorad;
-						
+			height=GetVert(x,z)->height;						
 //			cout<<"Slope:"<<slope<<endl;
 
 			if(slope<30) {
@@ -292,8 +293,13 @@ void HeightMap::GenerateTextures() {
 				GetVert(x,z)->color=Vector3(.4,.4,.2);				
 			}				
 			else {
-				GetVert(x,z)->texture=1;//grass
-				GetVert(x,z)->color=Vector3(.35,.65,.0);				
+				if(height<6) {  //if we are very low draw nice sand =)
+					GetVert(x,z)->texture=0;
+					GetVert(x,z)->color=Vector3(1,.95,0.86);												
+				} else {//else i like som grass
+					GetVert(x,z)->texture=1;
+					GetVert(x,z)->color=Vector3(.35,.65,.0);				
+				}
 			}
 			GetVert(x,z)->color.normalize();
 		}
