@@ -86,8 +86,6 @@ class MCOMMON_API P_DMCharacter: public Property {
 		void UpdateOrders();
 		bool HandleOrder(DMOrder* pkOrder,bool bNew);
 
-		static vector< pair<Vector3,int> > m_sCallMap; // < Fulhack delux 
-	
 	public:
 		//item slots
 		DMContainer*		m_pkBackPack;

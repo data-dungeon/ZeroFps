@@ -434,7 +434,7 @@ void P_ServerInfo::AddSound(int iObjectGenSoundID, char *szFileName)
 			if(m_kPlayers[i].kControl[j].second & PR_CONTROLS) 
 			{
 				m_kPlayers[i].kSounds.push(pair<int,string>(iObjectGenSoundID,string(szFileName)));	
-				printf("P_ServerInfo::AddSoundToPlayer\n");
+				//printf("P_ServerInfo::AddSoundToPlayer\n");
 			}	
 		}
 	}

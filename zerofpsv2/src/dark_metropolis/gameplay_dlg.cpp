@@ -312,7 +312,7 @@ void CGamePlayDlg::SelectAgentGUI(int iAgent, bool bSelectModels)
 	if(m_bInitialized == false)
 		return;
 
-	printf("CGamePlayDlg::SelectAgentGUI\n");
+//	printf("CGamePlayDlg::SelectAgentGUI\n");
 
 	Entity* pkAgentObject;
 	P_DMCharacter* pkCharProperty;

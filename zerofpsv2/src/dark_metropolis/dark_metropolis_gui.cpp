@@ -400,7 +400,7 @@ void DarkMetropolis::GUI_OnKeyPress(int iKey, ZGuiWnd *pkWnd)
 	if(pkWnd)
 	{
 		strMainWnd = pkWnd->GetName();	
-		printf("pkWnd = %s\n", pkWnd->GetName());
+		//printf("pkWnd = %s\n", pkWnd->GetName());
 	}
 	else
 		return;

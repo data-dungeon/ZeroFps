@@ -61,7 +61,6 @@ void CMembersDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName,
 		{
 			m_pkGui->KillWndCapture(); 
 			m_pkGui->SetCaptureToWnd(GetWnd("AgentsWnd"));
-			printf("APA APA APA\n");
 		}
 		else
 		{
@@ -157,7 +156,6 @@ void CMembersDlg::SetWindowMode(WINDOW_MODE eType)
 	{
 		case HQ_EQUIP_MEMBERS:
 
-			printf("HQ_EQUIP_MEMBERS\n");
 
 			ShowWnd("MembersEquipBn", true); // visa equip knappen
 			ShowWnd("MembersDropItemBn", false); // dölj drop knappen

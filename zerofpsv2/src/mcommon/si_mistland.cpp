@@ -2489,7 +2489,9 @@ int MistLandLua::EquipLua (lua_State* pkLua)
             if ( pkChar )
             {      
                if ( pkChar->GetCharStats()->Equip ( pkObject, string(acSlot) ) )
-					   printf("Succeeded to equip item\n");
+					{
+					//	printf("Succeeded to equip item\n");
+					}
             }
             else
                cout << "Warning! Tried to equip something on a non-character object!" << endl;
