@@ -69,7 +69,7 @@ void P_Enviroment::Update()
 
 void P_Enviroment::UpdateEnviroment()
 {
-	float fIf = m_pkZeroFps->GetFrameTime()*0.5;
+	float fIf = m_pkZeroFps->GetFrameTime()*0.3;
 	
 	if(fIf > 1.0)
 		fIf = 1.0;
