@@ -793,6 +793,7 @@ void EntityManager::PackToClient(int iClient, vector<Entity*> kObjects,bool bZon
 
 void EntityManager::PackZoneListToClient(int iClient, set<int>& iZones)
 {
+	//cout<<"Sending "<<iZones.size()<< " to client "<<iClient<<endl;
 		
 	int iNetID;
 
@@ -801,12 +802,13 @@ void EntityManager::PackZoneListToClient(int iClient, set<int>& iZones)
 	//NP.m_kData.m_kHeader.m_iPacketType = ZF_NETTYPE_UNREL;
 	m_OutNP.Write((char) ZFGP_ZONELIST);
 
-	for(set<int>::iterator itActiveZone = iZones.begin(); itActiveZone != iZones.end(); itActiveZone++ ) {
+	for(set<int>::iterator itActiveZone = iZones.begin(); itActiveZone != iZones.end(); itActiveZone++ ) 
+	{
 		int iZoneID = (*itActiveZone);
 		iNetID = m_kZones[iZoneID].m_pkZone->iNetWorkID;
 
 		m_OutNP.Write(iNetID);
-		}
+	}
 
 		
 	m_OutNP.Write(-1);

@@ -72,9 +72,7 @@ class MistClient :public Application, public ZGuiApp {
 		Entity*				m_pkClientObject;
 		Entity*				m_pkTargetObject, *m_pkTargetObject2;
 		P_ClientControl*	m_pkClientControlP;
-
 		P_ServerInfo*		m_pkServerInfo;
-
 		
 		Camera*				m_pkCamera;
 		Entity*				m_pkTestobj;
@@ -90,15 +88,15 @@ class MistClient :public Application, public ZGuiApp {
 		//zone picking 
 		Vector3				m_kTargetPos;
 		int					m_iTargetZoneObject;
-		int					m_iTargetFace;	
+		int					m_iTargetFace;			
 		
+		//gui
 		bool					m_bActionMenuIsOpen;
 		const unsigned int MAX_NUM_ACTION_BUTTONS;
-		map<ZGuiButton*, string> m_kActionBnTranslator;
+		map<ZGuiButton*, string> m_kActionBnTranslator;		
 		
-		Vector3	Get3DMousePos();
-		Entity*	GetTargetObject();	
-		bool PickZones();
+		vector<HenchmanButton*> m_vkHenchmanIcons;
+		HenchmanButton* m_pkSelHenchmanIcon;
 		
 		InventoryDlg*	  m_pkInventDlg;
 		SpellDlg*		  m_pkSpellDlg;
@@ -106,18 +104,18 @@ class MistClient :public Application, public ZGuiApp {
 		SkillDlg*		  m_pkSkillDlg;
 		StatsDlg*		  m_pkStatsDlg;
 		ContainerDlg*	  m_pkContainerDlg;
+		
+		
+		//picking funkctions
+		Vector3	Get3DMousePos(bool m_bMouse);		
+		Entity*	GetTargetObject();	
+		bool PickZones();
 
 		void CreateGuiInterface();
-
-
-		vector<HenchmanButton*> m_vkHenchmanIcons;
-		HenchmanButton* m_pkSelHenchmanIcon;
-
-		void UpdateObjectList(PlayerInfo* pkPlayerInfo);
-		
+		void UpdateObjectList(PlayerInfo* pkPlayerInfo);		
 		void UpdateCullObjects();
-
 		void UpdateManaAndHealthBar(CharacterStats* pkCharacterProperty);
+		void DrawCrossHair();
 		
 	public:
 		void OnKeyPress(int iKey, ZGuiWnd* pkWnd);
@@ -148,7 +146,6 @@ class MistClient :public Application, public ZGuiApp {
 		void Input();
 		void OnServerStart(void);
 		void OnClientStart(void);
-		
 		
 //		void SetActiveCaracter(int iCaracter);
 		void SetActiveCaracter(bool bEnabled);

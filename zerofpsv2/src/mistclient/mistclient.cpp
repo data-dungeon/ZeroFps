@@ -117,9 +117,6 @@ void MistClient::Init()
 	Register_Cmd("unload",FID_UNLOAD);			
 	Register_Cmd("massspawn",FID_MASSSPAWN);			
 
-	//damn "#¤(="%#( lighting fix bös
-	//glEnable(GL_LIGHTING );
-	
 	//initiate our camera bös
 	m_pkCamera=new Camera(Vector3(0,0,0),Vector3(0,0,0),70,1.333,0.25,250);	
 	
@@ -172,11 +169,6 @@ void MistClient::Init()
 	pkScript->Call(&kIpSetupScript, "SetupIP", 0, 0);
 
 
-/*	OggMusic* pkMusic = static_cast<OggMusic*>(g_ZFObjSys.GetObjectPtr("OggMusic"));
-	pkMusic->LoadFile("data/music/ambient_loops/grotta3_fx_120bpm.ogg");
-	pkMusic->Play();
-*/
-
 }
 
 void MistClient::RegisterResources()
@@ -228,14 +220,12 @@ void MistClient::OnIdle()
 	
  	pkFps->UpdateCamera(); 	
 	
-
-	Vector3 pos = Get3DMousePos();
-	pos+=pkFps->GetCam()->GetPos();
 	
 	// FULHACK Tm Vim
 	pkObjectMan->OwnerShip_Take( pkObjectMan->GetObjectByNetWorkID( pkFps->GetClientObjectID() ) );
 	
 
+	//printouts
 	if(m_pkServerInfo)
 	{
 		pkFps->DevPrintf("client","ServerName: %s", m_pkServerInfo->GetServerName().c_str());
@@ -246,6 +236,7 @@ void MistClient::OnIdle()
 			pkFps->DevPrintf("client","PlayerName: %s", pi->sPlayerName.c_str());		
 	}	
 
+	//gui
 	if(m_pkSkillDlg && m_pkSkillDlg->IsVisible())
 		m_pkSkillDlg->Update();
 
@@ -374,7 +365,7 @@ void MistClient::OnSystem()
 
 void MistClient::Input()
 {
-	//get mous
+	//get mouse
 	int x,z;		
 	pkInput->RelMouseXY(x,z);	
 		
@@ -444,7 +435,7 @@ void MistClient::Input()
 			m_fClickDelay = pkFps->GetTicks();	
 		}	
 	}
-
+*/
 	if(pkInput->Pressed(MOUSELEFT))
 	{
 		if(m_bActionMenuIsOpen) 
@@ -497,7 +488,22 @@ void MistClient::Input()
 			m_fClickDelay = pkFps->GetTicks();					
 		}
 	}
-*/
+	
+	if(pkInput->Pressed(MOUSERIGHT))			//if no shift is pressed bring up action menu
+	{
+		m_pkTargetObject = GetTargetObject();
+
+		pkGui->SetFocus(GetWnd("MainWnd")); // set focus to main wnd.
+
+		//DVOID här behövs en fix för att sätta menyn i mitten oavset skärmupplösning,samt frigöra musmarkören
+		int mx, my;
+		//pkInput->MouseXY(mx,my);
+		mx = 200;
+		my = 200;
+		OpenActionMenu(mx, my); 
+	}
+
+
 /*	if(pkInput->Pressed(MOUSERIGHT)  && (pkInput->Pressed(KEY_RSHIFT) || pkInput->Pressed(KEY_LSHIFT)) )
 	{
 		//attack ground
@@ -522,17 +528,10 @@ void MistClient::Input()
 			m_fClickDelay = pkFps->GetTicks();					
 		}	
 	}
-	else if(pkInput->Pressed(MOUSERIGHT))			//if no shift is pressed bring up action menu
-	{
-		m_pkTargetObject = GetTargetObject();
+	else */
 
-		pkGui->SetFocus(GetWnd("MainWnd")); // set focus to main wnd.
 
-		int mx, my;
-		pkInput->MouseXY(mx,my);
-		OpenActionMenu(mx, my); 
-	}
-*/
+
 	int pressed_key = pkInput->GetQueuedKey();
 
 	if(pressed_key == KEY_F1)
@@ -577,9 +576,24 @@ void MistClient::OnHud(void)
 	pkFps->DevPrintf("common","SelfID: %d", m_iSelfObjectID);	
 	
 	
+	DrawCrossHair();
+	
 	pkFps->m_bGuiMode = false;
 	pkFps->ToggleGui();
 
+}
+
+void MistClient::DrawCrossHair()
+{
+	glPushAttrib(GL_ALPHA_TEST|GL_LIGHTING);
+	
+	glDisable(GL_LIGHTING);
+	glAlphaFunc(GL_GREATER,0.1);
+	glEnable(GL_ALPHA_TEST);
+
+	pkRender->Quad(Vector3(0,0,-1),Vector3(0,0,0),Vector3(.05,.05,.05),pkTexMan->Load("data/textures/crosshair.tga",0));
+
+	glPopAttrib();
 }
 
 void MistClient::RunCommand(int cmdid, const CmdArgument* kCommand)
@@ -1006,7 +1020,7 @@ void MistClient::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 
 
 
-Vector3 MistClient::Get3DMousePos()
+Vector3 MistClient::Get3DMousePos(bool m_bMouse=true)
 {
 	Vector3 dir;
 	float x,y;		
@@ -1016,29 +1030,29 @@ Vector3 MistClient::Get3DMousePos()
 	float yp=3;
 	float fovshit=-2.15;
 	
-	pkInput->UnitMouseXY(x,y);	
-	dir.Set(x*xp,-y*yp,fovshit);
-	dir.Normalize();
+	if(m_bMouse)
+	{
+		pkInput->UnitMouseXY(x,y);	
+		dir.Set(x*xp,-y*yp,fovshit);
+		dir.Normalize();
+	}
+	else
+	{
+		dir.Set(0,0,fovshit);
+		dir.Normalize();
+	}	
 	
 	Matrix4 rm = m_pkCamera->GetRotM();
 	rm.Transponse();
 	dir = rm.VectorTransform(dir);
 	
-/*	Vector3 pos = (dir*1)+m_pkCamera->GetPos();//m_pkTestobj->GetLocalPosV();
-
-	pkRender->Line(pos,pos+Vector3(2,0,0));
-	pkRender->Line(pos,pos+Vector3(0,2,0));	
-	pkRender->Line(pos,pos+Vector3(0,0,2));	
-	pkRender->Sphere(pos,0.1,10,Vector3(0,1,0),false);
-*/
-
 	return dir;
 }
 
 Entity* MistClient::GetTargetObject()
 {
 	Vector3 start = m_pkCamera->GetPos();
-	Vector3 dir = Get3DMousePos();
+	Vector3 dir = Get3DMousePos(false);
 
 	vector<Entity*> kObjects;
 	kObjects.clear();

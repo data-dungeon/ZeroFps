@@ -1350,10 +1350,12 @@ void MistServer::HandleOrders()
 		
 			Entity* ob = pkObjectMan->GetObjectByNetWorkID(order->m_iCharacter);			
 		
-			P_Event* pe = (P_Event*)ob->GetProperty("P_Event");
-			if(pe)
-				pe->SendGroudClickEvent(order->m_sOrderName.c_str(), order->m_kPos,order->m_iCharacter);
-								
+			if(ob)
+			{
+				P_Event* pe = (P_Event*)ob->GetProperty("P_Event");
+				if(pe)
+					pe->SendGroudClickEvent(order->m_sOrderName.c_str(), order->m_kPos,order->m_iCharacter);
+			}					
 		}
       // equip
       else if ( order->m_sOrderName == "equip" )
