@@ -29,12 +29,16 @@ class ENGINE_SYSTEMS_API P_WaterRender : public Property
 		string	m_sTexture;
 		Vector3	m_kSize;
 		int		m_iStep;
+		float		m_fWave;
 
 		float		m_fBlendValue;
 		bool		m_bBlendDirUp;
 		
 		vector<PropertyValues> GetPropertyValues();
 		bool HandleSetValue( string kValueName ,string kValue );		
+		
+		
+		void DrawSurface();
 		
 	public:
 		P_WaterRender();

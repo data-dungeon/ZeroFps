@@ -1312,11 +1312,7 @@ void Render::DrawAABB( const Vector3& kMin,const Vector3& kMax)
 	m_pkZShaderSystem->AddQuadUV(Vector2(0,0),Vector2(1,0),Vector2(1,1),Vector2(1,0));
 	m_pkZShaderSystem->AddQuadV(kMin,Vector3(kMin.x,kMin.y,kMax.z),
 										Vector3(kMin.x,kMax.y,kMax.z),Vector3(kMin.x,kMax.y,kMin.z));
-	
-/*	Vector3(kMin.x,kMax.y,kMin.z),
-										 Vector3(kMin.x,kMax.y,kMax.z),Vector3(kMin.x,kMin.y,kMax.z));*/
-										 
-										 										 
+									 										 
 										 
 										 										 
 	m_pkZShaderSystem->DrawGeometry(QUADS_MODE);

@@ -13,6 +13,7 @@ P_WaterRender::P_WaterRender()
  	m_iType = PROPERTY_TYPE_RENDER;
 	m_iSide = PROPERTY_SIDE_CLIENT;
 	
+	m_iVersion = 2;
 
 	m_iSortPlace	=	2;
 	m_fBlendValue	=	0.7;
@@ -22,6 +23,8 @@ P_WaterRender::P_WaterRender()
 	
 	
 	m_kSize.Set(0.5,0.5,0.5);
+	m_iStep = 1;
+	m_fWave = 0.1;
 	
 	m_pkMaterial = new ZFResourceHandle;
 	SetMaterial("data/material/water.zmt");	
@@ -61,13 +64,52 @@ void P_WaterRender::Update()
 	m_pkLight->Update(&m_kLightProfile,kPos);	
 	
 	m_pkZShaderSystem->BindMaterial((ZMaterial*)(m_pkMaterial->GetResourcePtr()));
-	m_pkRender->DrawAABB(kMin,kMax);
+ 	
+	DrawSurface();
 
+	
+	
 
  	if(m_pkZeroFps->GetDebugGraph())
+	{
  		m_pkRender->Sphere(kPos,0.5,1,Vector3(1,1,1),true);	
+		m_pkRender->DrawAABB(kMin,kMax,Vector3(1,1,1));
+	}
+
+}
 
 
+void P_WaterRender::DrawSurface()
+{
+	static float fY1,fY2;
+	static Vector3 kNormal = Vector3(0,1,0);
+	static float t;										
+	
+	m_pkZShaderSystem->ClearGeometry();
+	m_pkZShaderSystem->MatrixPush();
+	m_pkZShaderSystem->MatrixTranslate(m_pkEntity->GetWorldPosV());
+	
+	t = m_pkZeroFps->GetEngineTime();
+	
+	for(int x = -m_kSize.x;x< m_kSize.x;x+=m_iStep)
+	{
+		fY1 = sin(x*0.5+t)*m_fWave  + m_kSize.y;
+		fY2 = sin((x+m_iStep)*0.5+t)*m_fWave + m_kSize.y;
+	
+		for(int z = -m_kSize.z;z< m_kSize.z;z+=m_iStep)
+		{
+			m_pkZShaderSystem->AddQuadUV(Vector2(x*0.1,z*0.1),Vector2(x*0.1+0.1,z*0.1),Vector2(x*0.1+0.1,z*0.1+0.1),Vector2(x*0.1,z*0.1+0.1));
+ 			m_pkZShaderSystem->AddQuadN(kNormal,kNormal,kNormal,kNormal);
+			
+			m_pkZShaderSystem->AddQuadV(	Vector3(x,fY1,z),Vector3(x+m_iStep,fY2,z),
+													Vector3(x+m_iStep,fY2,z+m_iStep),Vector3(x,fY1,z+m_iStep));
+		
+		}
+	}
+
+	m_pkZShaderSystem->DrawGeometry(QUADS_MODE);
+	
+	m_pkZShaderSystem->MatrixPop();
 }
 
 void P_WaterRender::PackTo(NetPacket* pkNetPacket, int iConnectionID )
@@ -86,8 +128,11 @@ void P_WaterRender::PackFrom(NetPacket* pkNetPacket, int iConnectionID )
 
 void P_WaterRender::Save(ZFIoInterface* pkPackage)
 {
+	
+
 	pkPackage->Write(m_kSize);
 	pkPackage->Write(m_iStep);
+	pkPackage->Write(m_fWave);
 	
 	pkPackage->Write_Str(m_strMaterial);
 
@@ -95,17 +140,27 @@ void P_WaterRender::Save(ZFIoInterface* pkPackage)
 
 void P_WaterRender::Load(ZFIoInterface* pkPackage,int iVersion)
 {
-	pkPackage->Read(m_kSize);
-	pkPackage->Read(m_iStep);
+	if(iVersion == 2)
+	{
+		pkPackage->Read(m_kSize);
+		pkPackage->Read(m_iStep);
+		pkPackage->Read(m_fWave);
+		pkPackage->Read_Str(m_strMaterial);	
+		SetMaterial(m_strMaterial);
+	}
+	else
+	{
+		pkPackage->Read(m_kSize);
+		pkPackage->Read(m_iStep);
+		pkPackage->Read_Str(m_strMaterial);	
+		SetMaterial(m_strMaterial);		
+	}
 
-	pkPackage->Read_Str(m_strMaterial);
-	
-	SetMaterial(m_strMaterial);
 }
 
 vector<PropertyValues> P_WaterRender::GetPropertyValues()
 {
-	vector<PropertyValues> kReturn(3);
+	vector<PropertyValues> kReturn(4);
 			
 	kReturn[0].kValueName="size";
 	kReturn[0].iValueType=VALUETYPE_VECTOR3;
@@ -119,6 +174,11 @@ vector<PropertyValues> P_WaterRender::GetPropertyValues()
 	kReturn[2].iValueType=VALUETYPE_STRING;
 	kReturn[2].pkValue=(void*)&m_strMaterial;
 
+	kReturn[3].kValueName="wave";
+	kReturn[3].iValueType=VALUETYPE_FLOAT;
+	kReturn[3].pkValue=(void*)&m_fWave;
+	
+	
 	return kReturn;
 }
 
