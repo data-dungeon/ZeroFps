@@ -13,7 +13,7 @@ class TextureManager;
 
 enum GuiType
 {
-	Window,
+	Wnd,
 	Button,
 	Checkbox,
 	Combobox,
@@ -30,6 +30,7 @@ enum GuiType
 class GuiBuilder  
 {
 public:
+	bool CreateNewRadiobuttonGroup(const char *szName, int id);
 	void Initialize();
 	bool Create(GuiType eType, char* szResourceName, char* szText,
 		int iID, int parentID, int x, int y, int w, int h, unsigned long uiFlags);
@@ -49,6 +50,10 @@ private:
 	map<int, ZGuiWnd*> m_kWindows;
 	
 	ZGui::callback m_oMainWndProc;
+	ZGuiRadiobutton* m_pkLastRadiobutton;
+
+	char* m_szLastRadioBGroup;
+	int m_iLastRadioBGroup;
 };
 
 #endif // #ifndef _GUIBUILDER_H

@@ -32,50 +32,17 @@ ZFIni::ZFIni() : ZFSubSystem("ZFIni")
 
 ZFIni::~ZFIni()
 {
-	int i, j;
-
-	if(m_pstrLines)
-	{
-		for( i=0; i<m_iLines; i++)
-			delete[] m_pstrLines[i];
-	}
-
-	if(m_pstrSections)
-	{
-		for( i=0; i<m_iNumSections; i++)
-			delete[] m_pstrSections[i];
-	}
-
-	if(m_pkSectionData)
-	{
-		for( j=0; j<m_iNumSections; j++)
-		{
-			for( i=0; i<m_pkSectionData[j].iNumKeys; i++)
-			{
-				delete[] m_pkSectionData[j].strKeyName[i];
-				delete[] m_pkSectionData[j].strKeyValue[i];
-			}
-		}
-
-		delete[] m_pkSectionData;
-	}
-
-	if(m_pkCommandData)
-	{
-		for( i=0; i<m_pkCommandData->iNumCommands; i++)
-		{
-			delete[] m_pkCommandData->strCommand[i];
-		}
-
-		delete[] m_pkCommandData;
-	}
+	Close();
 }
 
 bool ZFIni::Open(const char *strFileName, bool bCommandFile)
 {
+	// Stäng den gamla filen automatiskt..
+	Close();
+
 	m_bCommandFile = bCommandFile;
 
-	FILE* pkFile;
+	FILE* pkFile = NULL;
 	if ((pkFile = fopen(strFileName, "rb")) == NULL)
 	{
 		printf("Failed to load ini file %s\n", strFileName);
@@ -107,6 +74,9 @@ bool ZFIni::Open(const char *strFileName, bool bCommandFile)
 		memset(m_pstrLines[i], 0, iLineLength);
 		strcpy(m_pstrLines[i], strLine);
 	}
+
+	if(pkFile)
+		fclose(pkFile);
 
 	if(m_bCommandFile == true)
 	{
@@ -494,4 +464,45 @@ int ZFIni::GetIntValue(const char* strSection, char* strKey)
 	return atoi(str);
 }
 
+void ZFIni::Close()
+{
+	int i, j;
 
+	if(m_pstrLines)
+	{
+		for( i=0; i<m_iLines; i++)
+			delete[] m_pstrLines[i];
+	}
+
+	if(m_pstrSections)
+	{
+		for( i=0; i<m_iNumSections; i++)
+			delete[] m_pstrSections[i];
+	}
+
+	if(m_pkSectionData)
+	{
+		for( j=0; j<m_iNumSections; j++)
+		{
+			for( i=0; i<m_pkSectionData[j].iNumKeys; i++)
+			{
+				delete[] m_pkSectionData[j].strKeyName[i];
+				delete[] m_pkSectionData[j].strKeyValue[i];
+			}
+		}
+
+		delete[] m_pkSectionData;
+	}
+
+	if(m_pkCommandData)
+	{
+		for( i=0; i<m_pkCommandData->iNumCommands; i++)
+		{
+			delete[] m_pkCommandData->strCommand[i];
+		}
+
+		delete[] m_pkCommandData;
+	}
+
+	m_bFileReady = false;
+}

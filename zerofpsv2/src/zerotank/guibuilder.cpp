@@ -17,6 +17,9 @@ GuiBuilder::GuiBuilder(ZGui* pkGui, TextureManager* pkTexMan,
 	m_pkGui = pkGui;
 	m_oMainWndProc = oMainWndProc;
 	m_pkTexMan = pkTexMan;
+
+	m_szLastRadioBGroup = NULL;
+	CreateNewRadiobuttonGroup("DefGUIRadioGroup", 1);
 }
 
 GuiBuilder::~GuiBuilder()
@@ -48,7 +51,7 @@ bool GuiBuilder::Create(GuiType eType, char* szResourceName, char* szText, int i
 	
 	switch(eType)
 	{
-	case Window:
+	case Wnd:
 		pkWnd = new ZGuiWnd( Rect(x,y,x+w,y+h), GetWnd(parentID), true, iID);
 		break;
 	case Button:
@@ -57,11 +60,24 @@ bool GuiBuilder::Create(GuiType eType, char* szResourceName, char* szText, int i
 	case Label:
 		pkWnd = new ZGuiLabel( Rect(x,y,x+w,y+h), GetWnd(parentID), true, iID);
 		break;
+	case Radiobutton:
+		pkWnd = new ZGuiRadiobutton( Rect(x,y,x+w,y+h), GetWnd(parentID), iID, 
+			m_iLastRadioBGroup, m_szLastRadioBGroup, NULL, true);
+		break;
+	case Checkbox:
+		pkWnd = new ZGuiCheckbox( Rect(x,y,x+w,y+h), GetWnd(parentID), true, iID);
+		break;
+	case Scrollbar:
+		pkWnd = new ZGuiScrollbar( Rect(x,y,x+w,y+h), GetWnd(parentID), true, iID);
+		break;
+	case Slider:
+		pkWnd = new ZGuiSlider( Rect(x,y,x+w,y+h), GetWnd(parentID), true, iID);
+		break;
 	}
 	
 	switch(eType)
 	{
-	case Window:
+	case Wnd:
 		pkWnd->SetSkin(GetSkin("DefWndSkin"));
 		break;
 	case Button:
@@ -71,9 +87,26 @@ bool GuiBuilder::Create(GuiType eType, char* szResourceName, char* szText, int i
 		break;
 	case Label:
 		break;
+	case Radiobutton:
+		static_cast<ZGuiRadiobutton*>(pkWnd)->SetButtonUnselectedSkin(GetSkin("DefRBnUSkin"));
+		static_cast<ZGuiRadiobutton*>(pkWnd)->SetButtonSelectedSkin(GetSkin("DefRBnDSkin"));
+		break;
+	case Checkbox:
+		static_cast<ZGuiCheckbox*>(pkWnd)->SetButtonUncheckedSkin(GetSkin("DefCBnUSkin"));
+		static_cast<ZGuiCheckbox*>(pkWnd)->SetButtonCheckedSkin(GetSkin("DefCBnDSkin"));
+		break;
+	case Scrollbar:
+		static_cast<ZGuiCheckbox*>(pkWnd)->SetSkin(GetSkin("DefSBrBkSkin"));
+		static_cast<ZGuiScrollbar*>(pkWnd)->SetThumbButtonSkins(GetSkin("DefSBrNSkin"), 
+			GetSkin("DefSBrFSkin"));
+		break;
+	case Slider:
+		static_cast<ZGuiSlider*>(pkWnd)->SetSliderSkin(GetSkin("DefSliderSkin"));
+		static_cast<ZGuiSlider*>(pkWnd)->SetBkSkin(GetSkin("DefSliderBkSkin"));
+		break;
 	}
 
-	if(eType == Window)
+	if(eType == Wnd)
 	{
 		if(!m_pkGui->AddMainWindow(iID, pkWnd, szResourceName, m_oMainWndProc, true))
 			return false;
@@ -100,7 +133,18 @@ void GuiBuilder::InitTextures()
 	m_kSkins.insert(strSkin("DefBnUSkin", new ZGuiSkin(GetTexID("bn_u.bmp"),0)));
 	m_kSkins.insert(strSkin("DefBnDSkin", new ZGuiSkin(GetTexID("bn_d.bmp"),0)));
 	m_kSkins.insert(strSkin("DefBnFSkin", new ZGuiSkin(GetTexID("bn_f.bmp"),0)));
-	
+	m_kSkins.insert(strSkin("DefRBnUSkin", new ZGuiSkin(GetTexID("rbn_u.bmp"),GetTexID("rbn_a.bmp"),0)));
+	m_kSkins.insert(strSkin("DefRBnDSkin", new ZGuiSkin(GetTexID("rbn_d.bmp"),GetTexID("rbn_a.bmp"),0)));
+	m_kSkins.insert(strSkin("DefCBnUSkin", new ZGuiSkin(GetTexID("cbn_u.bmp"),0)));
+	m_kSkins.insert(strSkin("DefCBnDSkin", new ZGuiSkin(GetTexID("cbn_d.bmp"),0)));
+	m_kSkins.insert(strSkin("DefSBrNSkin", new ZGuiSkin(GetTexID("sb_n.bmp"),0)));
+	m_kSkins.insert(strSkin("DefSBrFSkin", new ZGuiSkin(GetTexID("sb_f.bmp"),0)));
+	m_kSkins.insert(strSkin("DefSBrBkSkin", new ZGuiSkin(GetTexID("sb_bk.bmp"),1)));
+
+	m_kSkins.insert(strSkin("DefSliderSkin", new ZGuiSkin(GetTexID("slider_a.bmp"),
+		GetTexID("slider.bmp"))));
+	m_kSkins.insert(strSkin("DefSliderBkSkin", new ZGuiSkin(255,0,0,  0,0,255, 0)));
+
 }
 
 void GuiBuilder::Initialize()
@@ -121,3 +165,16 @@ int GuiBuilder::GetTexID(char *szFile)
 	return m_pkTexMan->Load(szPath, 0);
 }
 
+
+bool GuiBuilder::CreateNewRadiobuttonGroup(const char *szName, int id)
+{
+	if(m_szLastRadioBGroup)
+		delete[] m_szLastRadioBGroup;
+
+	m_szLastRadioBGroup = new char[strlen(szName)+1];
+	strcpy(m_szLastRadioBGroup, szName);
+
+	m_iLastRadioBGroup = id;
+
+	return true;
+}
