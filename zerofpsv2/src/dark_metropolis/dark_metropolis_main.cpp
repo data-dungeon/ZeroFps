@@ -112,6 +112,7 @@ void DarkMetropolis::OnIdle()
 
 void DarkMetropolis::RenderInterface(void)
 {
+	/*
 	//draw a ugly 3D marker
 	if(m_pkCameraEntity)
 	{
@@ -121,6 +122,7 @@ void DarkMetropolis::RenderInterface(void)
 		m_pkRender->Line(kPos-Vector3(0,1,0),kPos+Vector3(0,1,0));	
 		m_pkRender->Line(kPos-Vector3(0,0,1),kPos+Vector3(0,0,1));		
 	}
+	*/
 	
 	//draw markers for selected entitys
 	for(int i = 0;i< m_kSelectedEntitys.size();i++)
@@ -277,7 +279,7 @@ void DarkMetropolis::Input()
 				if(m_pkFps->GetTicks()-m_fDelayTimer > 1)
 				{
 					m_fDelayTimer = m_pkFps->GetTicks();								
-					pkHQ->SpawnNewCharacter();
+					pkHQ->SpawnNewCharacter(0);
 					
 					cout<<"spawning a new character"<<endl;
 				}

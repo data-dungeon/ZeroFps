@@ -16,6 +16,10 @@ P_DMHQ::P_DMHQ()
 	m_strName = "Unnamed HQ";
 	m_kExitOffset.Set(0,0,2);
 	m_bActiveHQ = false;
+	
+	m_kForHireList.clear();
+	
+	RandomizeHireList(10);
 }
 
 P_DMHQ::~P_DMHQ()
@@ -32,11 +36,60 @@ void P_DMHQ::Init()
 }
 
 
-void P_DMHQ::SpawnNewCharacter()
+void P_DMHQ::SpawnNewCharacter(int iNr)
 {
 	Entity* pkEnt = m_pkObjMan->CreateObjectFromScript("data/script/objects/dm/t_character.lua");
 	
+	if(iNr != -1)
+	{
+		if(iNr >= 0 && iNr < m_kForHireList.size())
+		{
+			if(P_DMCharacter* pkCh = (P_DMCharacter*)pkEnt->GetProperty("P_DMCharacter"))
+			{
+				pkCh->GetStats()->Set(m_kForHireList[iNr]);			
+				//cout<<"created objet from list"<<endl;
+			
+			
+				int i = 0;
+				for(vector<DMCharacterStats>::iterator kIte = m_kForHireList.begin();
+	        		kIte != m_kForHireList.end(); kIte++ )
+   	     	{
+      	  		if(i == iNr)
+        			{
+        				m_kForHireList.erase(kIte);        			
+        				break;
+     	   		}        		
+	        		i++;
+      	  	}			
+			}
+		}
+		else
+			cout<<"that character does not exist"<<endl;
+	
+		//cout<<"gubbar kvar"<<m_kForHireList.size()<<endl;
+
+	}
+	
+	
 	InsertCharacter(pkEnt->GetEntityID());
+}
+
+void P_DMHQ::RandomizeHireList(int iNr)
+{
+	m_kForHireList.clear();
+	
+	
+	for(int i = 0 ;i<iNr;i++)
+	{
+		DMCharacterStats temp;
+		temp.Randomize();	
+		m_kForHireList.push_back(temp);
+	}
+	
+	for(int i = 0 ;i<iNr;i++)
+	{
+		cout<<"names:"<<m_kForHireList[i].m_strName<<endl;
+	}
 }
 
 bool P_DMHQ::InsertCharacter(int iID)

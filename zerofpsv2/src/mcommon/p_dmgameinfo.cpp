@@ -16,6 +16,7 @@ P_DMGameInfo::P_DMGameInfo()
 	
 	m_iMoney = 0;
 	m_kCameraPos.Set(0,0,0);
+	
 }
 
 P_DMGameInfo::~P_DMGameInfo()

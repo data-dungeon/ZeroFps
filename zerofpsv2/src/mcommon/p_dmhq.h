@@ -10,6 +10,8 @@
 #include <string>
 #include <vector>
 
+#include "p_dmcharacter.h"
+
 using namespace std;
 
 class MCOMMON_API P_DMHQ: public Property {
@@ -20,10 +22,14 @@ class MCOMMON_API P_DMHQ: public Property {
 		Vector3	m_kExitOffset;
 		bool		m_bActiveHQ;
 
-		int m_iMoney;
+		vector<DMCharacterStats>	m_kForHireList;
 
+		int m_iMoney;
 		int		m_iReputation;	// Börjar på 1 och bestämmer vilka uppdrag som finns tillgängliga,
 									   // ökas när uppdrag lyckas, minskas när uppdrag misslyckas / avbryts.
+		
+		
+		
 		void Eject(Entity* pkEnt);
 	
 	public:
@@ -49,7 +55,9 @@ class MCOMMON_API P_DMHQ: public Property {
 		bool EjectCharacter(int iID);
 		void EjectAllCharacters();
 		
-		void SpawnNewCharacter();
+		void SpawnNewCharacter(int iNr = -1);
+		void RandomizeHireList(int iNr);
+		vector<DMCharacterStats>* GetHireList() {return &m_kForHireList;};
 		
 		void Save(ZFIoInterface* pkPackage);
 		void Load(ZFIoInterface* pkPackage);
