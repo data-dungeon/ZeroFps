@@ -45,6 +45,8 @@ class MCOMMON_API P_Item: public Property
 
 		void AddSendsData(SendType);
 
+      bool UseOn ( Entity *pkCharacterObject );
+
       friend class Container;
 };
 

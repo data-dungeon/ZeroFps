@@ -41,6 +41,8 @@ CharacterProperty::CharacterProperty()
 
 	bNetwork = false;
 
+   cout << "TJOFF!" << endl;
+
 }
 
 // ------------------------------------------------------------------------------------------

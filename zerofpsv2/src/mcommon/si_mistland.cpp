@@ -107,6 +107,8 @@ void MistLandLua::Init(EntityManager* pkObjMan,ZFScriptSystem* pkScript)
    pkScript->ExposeFunction("AddBeforeItemName",		MistLandLua::AddBeforeItemNameLua);
    pkScript->ExposeFunction("AddAfterItemName",	      MistLandLua::AddAfterItemNameLua);
 
+   pkScript->ExposeFunction("UseOn",	               MistLandLua::UseItemOnLua);
+
    // Lua Lua commands
    pkScript->ExposeFunction("RunScript",			      MistLandLua::RunScriptLua);		
 
@@ -1399,6 +1401,36 @@ int MistLandLua::RegisterAsContainerLua (lua_State* pkLua)
    return 0;
 }
 
+
+// ----------------------------------------------------------------------------------------------
+
+int MistLandLua::UseItemOnLua (lua_State* pkLua)
+{
+	if( g_pkScript->GetNumArgs(pkLua) == 1 )
+   {
+		Entity* pkObject = g_pkObjMan->GetObjectByNetWorkID(g_iCurrentObjectID);
+
+	   if (pkObject)
+		{
+         double dCharacterID;
+         g_pkScript->GetArgNumber(pkLua, 0, &dCharacterID);
+
+         Entity* pkChar = g_pkObjMan->GetObjectByNetWorkID(dCharacterID);
+
+  			P_Item* pkIP = (P_Item*)pkObject->GetProperty("P_Item");
+
+         if ( pkIP )
+            pkIP->UseOn ( pkChar );
+         else
+            cout << "Warning! Tried to use a function UseItemOnLua on a non-item object or non character!" << endl;
+ 
+      }
+
+   }
+
+   return 0;
+
+}
 
 // ----------------------------------------------------------------------------------------------
 

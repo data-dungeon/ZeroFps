@@ -499,6 +499,8 @@ bool ItemStats::MakeContainer ()
          
       m_iContainerID = s_iContainerCounter++;
 
+      cout << "Made new container" << " of " << m_kItemName << endl;
+
       m_pkContainer = new Container ( (Property*)m_pkProperty );
 
       return true;

@@ -122,6 +122,8 @@ namespace MistLandLua
    int MCOMMON_API AddBeforeItemNameLua (lua_State* pkLua);
    int MCOMMON_API AddAfterItemNameLua (lua_State* pkLua);
 
+   int MCOMMON_API UseItemOnLua (lua_State* pkLua);
+
    // equip / unequip character
 
    int MCOMMON_API EquipFromScriptLua (lua_State* pkLua);

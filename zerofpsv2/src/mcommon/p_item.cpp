@@ -3,6 +3,7 @@
 #include "../zerofpsv2/engine/entity.h"
 #include "../zerofpsv2/engine/entitymanager.h"
 #include "../zerofpsv2/engine/zerofps.h"
+#include "p_charstats.h"
 
 // ------------------------------------------------------------------------------------------
 
@@ -31,8 +32,6 @@ P_Item::P_Item()
 
    m_pkItemStats = new ItemStats(this);
 
-   m_pkItemStats->MakeContainer();
-
 	bNetwork = true;
 
    m_pkInventoryList = 0;
@@ -48,8 +47,6 @@ P_Item::P_Item( string kName )
 	m_iSide = PROPERTY_SIDE_CLIENT;
 
    m_pkItemStats = new ItemStats(this);
-
-   m_pkItemStats->MakeContainer();
 
 	bNetwork = true;
 
@@ -529,6 +526,37 @@ void P_Item::AddSendsData(SendType ns)
 	
 	m_kSends.push_back(ns);
 }
+
+// ---------------------------------------------------------------------------------------------
+
+bool P_Item::UseOn ( Entity *pkCharacterObject )
+{
+   if ( !pkCharacterObject )
+   {
+      cout << "Error! Tried to use a object on a null pointer. Character wanted!" << endl;
+      return false;
+   }
+
+   // check if target object is character
+   CharacterProperty* pkChar = (CharacterProperty*)pkCharacterObject->GetProperty ("P_CharStats");
+
+   if ( pkChar )
+   {
+      m_pkItemStats->EquipOn ( pkChar->GetCharStats() );
+
+      // Object is destroyed when used
+      m_pkObject->m_pkObjectMan->Delete ( m_pkObject );
+
+      return true;
+   }
+   else
+   {
+      cout << "Tried to use a item on a object without characterproperty." << endl;
+      return false;
+   }
+}
+
+// ---------------------------------------------------------------------------------------------
 
 Property* Create_P_Item()
 {
