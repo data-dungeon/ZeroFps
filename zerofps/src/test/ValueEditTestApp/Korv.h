@@ -23,9 +23,11 @@ public:
 	vector<PropertyValues> GetPropertyValues();
 	
 private:
+	int ko;
 	bool Skin;
 	float Storlek;
-	string Status;
+	//string Status;
+	char Status[12];
 	Vector4 Vek;
 	vector<int> TestVek;
 };

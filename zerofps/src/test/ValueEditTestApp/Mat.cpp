@@ -380,6 +380,13 @@ string Mat::ValueToString(void *pkValue, PropertyValues *pkPropertyValue)
 		kBuffer+=" ";
 		kBuffer+=pk_chBuffer;
 		return kBuffer;
+	
+	case VALUETYPE_CHARS:
+		{
+			//char* pcTemp;
+			//strcpy(kBuffer.c_str(), reinterpret_cast<char*>(pkValue));
+			return string(reinterpret_cast<char*>(pkValue));
+		}
 	};
 	string kStrTemp;
 	return kStrTemp;				
@@ -516,7 +523,15 @@ bool Mat::StringToValue(string kValue, void *pkValue, PropertyValues *pkProperty
 										((Vector4*)pkValue)->set(fTemp1,fTemp2,fTemp3,fTemp4); 
 										return true;
 										
-										
+		case VALUETYPE_CHARS:
+		if((pkPropertyValue->fUpperBound)!=FLT_MAX)
+			if(kValue.size()>(pkPropertyValue->fUpperBound))
+				return false;
+			if((pkPropertyValue->fLowerBound)!=FLT_MIN)
+				if(kValue.size()<(pkPropertyValue->fLowerBound))
+					return false;
+				strcpy(reinterpret_cast<char*>(pkValue),kValue.c_str());
+				return true;						
 				};
 				return false;	
 }

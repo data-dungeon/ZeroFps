@@ -65,6 +65,7 @@ protected:
 		VALUETYPE_STRING,
 		VALUETYPE_VECTOR3,
 		VALUETYPE_VECTOR4,
+		VALUETYPE_CHARS
 	};
 	virtual vector<PropertyValues> GetPropertyValues();
 
