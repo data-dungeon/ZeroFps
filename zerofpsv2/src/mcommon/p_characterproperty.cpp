@@ -211,7 +211,7 @@ P_CharacterProperty::P_CharacterProperty()
 	m_iSide=PROPERTY_SIDE_SERVER|PROPERTY_SIDE_CLIENT;
 
 	m_bNetwork = 	true;
-	m_iVersion = 	3;
+	m_iVersion = 	4;
 	
 	
 	
@@ -227,6 +227,8 @@ P_CharacterProperty::P_CharacterProperty()
 	m_strChatMsg			=	"";
 	m_fStatTimer			=	0;
 	m_iFaction				=	0;
+	m_bWalkSound			=	true;
+
 	
 	//container id's
 	m_iInventory	= -1;		
@@ -280,9 +282,11 @@ void P_CharacterProperty::Init()
 
 vector<PropertyValues> P_CharacterProperty::GetPropertyValues()
 {
-	vector<PropertyValues> kReturn(0);
+	vector<PropertyValues> kReturn(1);
 
-		
+	kReturn[0].kValueName = "walksound";
+	kReturn[0].iValueType = VALUETYPE_BOOL; 
+	kReturn[0].pkValue    = (void*)&m_bWalkSound;	
 
 	return kReturn;	
 }
@@ -694,7 +698,8 @@ void P_CharacterProperty::Update()
 			
 		//CLIENT
 		if(m_pkEntityManager->IsUpdate(PROPERTY_SIDE_CLIENT))
-			PlayCharacterMovementSounds();					
+			if(m_bWalkSound)
+				PlayCharacterMovementSounds();					
 		
 		//CLIENT AND SERVER
 		//reset chat msg
@@ -732,6 +737,7 @@ void P_CharacterProperty::AddChatMsg(const string& strChatMsg)
 void P_CharacterProperty::PlayCharacterMovementSounds()
 {
 	static float fWalkGain = 0.05;
+	static Vector3 kOffset(0,0.5,0);
 
 	if(P_CharacterControl* pkCC = (P_CharacterControl*)GetEntity()->GetProperty("P_CharacterControl"))
 	{
@@ -743,7 +749,7 @@ void P_CharacterProperty::PlayCharacterMovementSounds()
 			if(!m_kCurrentCharacterStates[eWALKING])
 			{
 				//m_pkAudioSystem->StopAudio(m_iWalkSoundID);
-				m_iWalkSoundID = m_pkAudioSystem->PlayAudio(m_strWalkSound,GetEntity()->GetIWorldPosV(),Vector3(0,0,0),ZFAUDIO_LOOP,fWalkGain);
+				m_iWalkSoundID = m_pkAudioSystem->PlayAudio(m_strWalkSound,GetEntity()->GetIWorldPosV()+kOffset,Vector3(0,0,0),ZFAUDIO_LOOP,fWalkGain);
 			}
 			else
 				m_pkAudioSystem->MoveAudio(m_iWalkSoundID, GetEntity()->GetIWorldPosV());
@@ -760,7 +766,7 @@ void P_CharacterProperty::PlayCharacterMovementSounds()
 			if(!m_kCurrentCharacterStates[eRUNNING])
 			{
 				//m_pkAudioSystem->StopSound(m_iRunSoundID);
-				m_iRunSoundID = m_pkAudioSystem->PlayAudio(m_strRunSound,GetEntity()->GetIWorldPosV(),Vector3(0,0,0),ZFAUDIO_LOOP,fWalkGain);
+				m_iRunSoundID = m_pkAudioSystem->PlayAudio(m_strRunSound,GetEntity()->GetIWorldPosV()+kOffset,Vector3(0,0,0),ZFAUDIO_LOOP,fWalkGain);
 			}
 			else
 				m_pkAudioSystem->MoveAudio(m_iRunSoundID, GetEntity()->GetIWorldPosV());
@@ -779,7 +785,7 @@ void P_CharacterProperty::PlayCharacterMovementSounds()
 			if(!m_kCurrentCharacterStates[eSWIMMING])
 			{	
 				//m_pkAudioSystem->StopAudio(m_iSwimSoundID);
-				m_iSwimSoundID = m_pkAudioSystem->PlayAudio(m_strSwimSound,GetEntity()->GetIWorldPosV(),Vector3(0,0,0),ZFAUDIO_LOOP,fWalkGain);
+				m_iSwimSoundID = m_pkAudioSystem->PlayAudio(m_strSwimSound,GetEntity()->GetIWorldPosV()+kOffset,Vector3(0,0,0),ZFAUDIO_LOOP,fWalkGain);
 			}
 			else
 				m_pkAudioSystem->MoveAudio(m_iSwimSoundID,GetEntity()->GetIWorldPosV());
@@ -917,6 +923,7 @@ void P_CharacterProperty::Save(ZFIoInterface* pkPackage)
 	pkPackage->Write_Str(m_strOwnedByPlayer);
 	pkPackage->Write(m_bIsPlayerCharacter);
 	pkPackage->Write(m_iFaction);
+	pkPackage->Write(m_bWalkSound);
 		
 	
 	m_kCharacterStats.Save(pkPackage);
@@ -963,6 +970,20 @@ void P_CharacterProperty::Load(ZFIoInterface* pkPackage,int iVersion)
 			m_kCharacterStats.Load(pkPackage);
 			break;
 		}		
+		
+		case 4:
+		{
+			pkPackage->Read_Str(m_strName);	
+			pkPackage->Read_Str(m_strOwnedByPlayer);	
+			pkPackage->Read(m_bIsPlayerCharacter); 		
+			pkPackage->Read(m_iFaction); 		
+			pkPackage->Read(m_bWalkSound); 		
+		
+			m_kCharacterStats.Load(pkPackage);
+			break;
+		}		
+		
+		
 	}
 	
 	
@@ -998,7 +1019,10 @@ void P_CharacterProperty::PackTo( NetPacket* pkNetPacket, int iConnectionID )
 	pkNetPacket->Write_Str(m_strName);
 	pkNetPacket->Write_Str(m_strOwnedByPlayer);
 	pkNetPacket->Write(m_bIsPlayerCharacter);
+
+	pkNetPacket->Write(m_bWalkSound);
 	
+		
 	pkNetPacket->Write_Str(m_strWalkSound);
 	pkNetPacket->Write_Str(m_strRunSound);
 	pkNetPacket->Write_Str(m_strJumpSound);
@@ -1031,6 +1055,8 @@ void P_CharacterProperty::PackFrom( NetPacket* pkNetPacket, int iConnectionID  )
 	pkNetPacket->Read_Str(m_strOwnedByPlayer);
 	pkNetPacket->Read(m_bIsPlayerCharacter);
 
+	pkNetPacket->Read(m_bWalkSound);
+	
 	pkNetPacket->Read_Str(m_strWalkSound);
 	pkNetPacket->Read_Str(m_strRunSound);
 	pkNetPacket->Read_Str(m_strJumpSound);

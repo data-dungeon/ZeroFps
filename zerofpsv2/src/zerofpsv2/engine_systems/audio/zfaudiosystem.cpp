@@ -216,7 +216,7 @@ ZFAudioSystem::ZFAudioSystem(int uiMaxCachSize) : ZFSubSystem("ZFAudioSystem")
 
 	RegisterVariable("a_enablesound",&m_bEnableSound,CSYS_BOOL);
 	RegisterVariable("a_enablemusic",&m_bEnableMusic,CSYS_BOOL);
-	RegisterVariable("a_soundrefdist",&m_fReferenceDistance,CSYS_FLOAT);
+// 	RegisterVariable("a_soundrefdist",&m_fReferenceDistance,CSYS_FLOAT);
 
 	m_fMainVolume = 1.0f;
 

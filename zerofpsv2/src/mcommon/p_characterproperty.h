@@ -72,7 +72,7 @@ class MCOMMON_API P_CharacterProperty: public Property
 		ZMaterial*	m_pkTextMaterial;
 		ZGuiFont*	m_pkFont;		
 		bool			m_bOverHeadText;			//shuld overhead text be drawn?
-			 
+		
 		
 		string		m_strName;					//character name		
 		bool			m_bIsPlayerCharacter;	//is this and NPC or PC ?
@@ -88,6 +88,8 @@ class MCOMMON_API P_CharacterProperty: public Property
 		bitset<CHARACTER_STATES>	m_kCurrentCharacterStates;
 			
 		//basic sounds
+		bool		m_bWalkSound;		
+		
 		string	m_strWalkSound;
 		string	m_strRunSound;
 		string	m_strJumpSound;
