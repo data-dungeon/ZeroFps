@@ -29,7 +29,7 @@ void P_Sound::Update()
 		if(m_kSounds[i].m_eAction == SA_START_SOUND)
 		{
 			m_pkAudioSystem->StartSound(m_kSounds[i].m_strFileName, 
-				pkEnt->GetWorldPosV(), pkEnt->GetVel(), m_kSounds[i].m_bLoop);
+				pkEnt->GetIWorldPosV(), pkEnt->GetVel(), m_kSounds[i].m_bLoop);
 			m_kSounds[i].m_eAction = SA_DO_NOTHING;
 			m_kSounds[i].m_bPlaying = true;
 		}
@@ -37,7 +37,7 @@ void P_Sound::Update()
 		if(m_kSounds[i].m_eAction == SA_STOP_SOUND)
 		{
 			m_pkAudioSystem->StopSound(m_kSounds[i].m_strFileName, 
-				pkEnt->GetWorldPosV());
+				pkEnt->GetIWorldPosV());
 			m_kSounds[i].m_eAction = SA_DO_NOTHING;
 			m_kSounds[i].m_bPlaying = false;
 		}
@@ -49,7 +49,7 @@ void P_Sound::Update()
 			if(m_kSounds[i].m_bPlaying)
 			{
 				m_pkAudioSystem->MoveSound(m_kSounds[i].m_strFileName.c_str(), 
-					pkEnt->GetWorldPosV(), pkEnt->GetWorldPosV(), pkEnt->GetVel());
+					pkEnt->GetIWorldPosV(), pkEnt->GetIWorldPosV(), pkEnt->GetVel());
 			}
 	}	
 }
@@ -109,8 +109,6 @@ void P_Sound::PackTo(NetPacket* pkNetPacket, int iConnectionID )
 
 void P_Sound::PackFrom(NetPacket* pkNetPacket, int iConnectionID )
 {
-	cout<<"packa upp"<<endl;
-
 	m_kSounds.clear(); 
 
 	int iNumElements;
