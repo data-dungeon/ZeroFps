@@ -865,7 +865,7 @@ void MistServer::Input_Camera(float fMouseX, float fMouseY)
 		Matrix4 kRm;
 		kRm = m_pkActiveCameraObject->GetLocalRotM();
 
-		kRm.Transponse();
+		//kRm.Transponse();
 
 		
 		Vector3 xv = kRm.GetAxis(0);
@@ -895,7 +895,9 @@ void MistServer::Input_Camera(float fMouseX, float fMouseY)
 		Vector3 bla = Vector3(0,0,1);
 		bla = kRm.VectorTransform(bla);
 		kRm.LookDir(bla,Vector3(0,1,0));
-		
+		kRm.Transponse();		
+
+				
 		m_pkActiveCameraObject->SetLocalPosV(newpos);		
 		if(m_pkInputHandle->VKIsDown("pancam"))
 		{

@@ -47,7 +47,6 @@ Entity::Entity()
 	m_eRemoteRole			= NETROLE_PROXY;
 	m_bHaveNetPropertys	= false;
 
-//	m_iObjectType			= OBJECT_TYPE_DYNAMIC;	
 	m_iUpdateStatus		= UPDATE_ALL;
 	m_bZone					= false;
 	m_iCurrentZone			= -1;

@@ -23,7 +23,7 @@ P_Camera::P_Camera()
 	m_f3PDistance = 3;
 	m_kOffset.Set(0,2.5,0);
 
-}
+} 
 
 
 void P_Camera::Update() 
@@ -31,11 +31,12 @@ void P_Camera::Update()
 	if(!m_pkCamera)
 		return;
 
+		
 	Vector3		kYawVector;
 	string		strCamName;
 
 
-	P_Mad* madp = dynamic_cast<P_Mad*>(m_pkObject->GetProperty("P_Mad"));
+	//P_Mad* madp = dynamic_cast<P_Mad*>(m_pkObject->GetProperty("P_Mad"));
 
 	if(m_pkCamera!=NULL) {
 		switch(m_eCameraType) {
@@ -85,11 +86,11 @@ void P_Camera::Update()
 			}	
 			case CAM_TYPEFIRSTPERSON:
 			{
-				m_pkCamera->SetPos(m_pkObject->GetWorldPosV() + Vector3(0,0.95,0));
+				m_pkCamera->SetPos(m_pkObject->GetIWorldPosV() + Vector3(0,1.5,0) );
 				Matrix4 kMat4;
-				kMat4 = m_pkObject->GetWorldRotM();
+				kMat4 = m_pkObject->GetWorldRotM();		
+				kMat4.Transponse();				
 				m_pkCamera->SetRotM(kMat4);
-				
 				strCamName = " 1P ";
 
 				break;

@@ -357,26 +357,17 @@ void ZeroFps::Run_Client()
 
 	//   _---------------------------------- fulhack deluxe 
 	Draw_RenderTargets();
-	/*UpdateCamera();
 	
-	if(m_bDrawAxisIcon)
-		m_pkRender->Draw_AxisIcon(5);
- 
-	if(m_bRenderOn == 1)
-		m_pkObjectMan->Update(PROPERTY_TYPE_RENDER,PROPERTY_SIDE_CLIENT,true);*/
-
-	//JAG VET...den borde inte vara här..men för tillfället så får den vara det för jag behöver kunna göra debugutringingar i full FPS
-	//update new super duper rigid body physics engine deluxe
+	
 	//m_pkPhysics_Engine->Update(GetFrameTime());	
-	//m_pkTcs->Update(GetFrameTime());	
+	m_pkTcs->Update(GetFrameTime());	
 
 
-	if(g_iLogRenderPropertys) {
+	if(g_iLogRenderPropertys) 
+	{
 		m_pkObjectMan->DumpActiverPropertysToLog("PROPERTY_TYPE_RENDER,PROPERTY_SIDE_CLIENT,true");
 		g_iLogRenderPropertys = 0;
-		}
-
-	//m_pkObjectMan->Test_DrawZones();
+	}
 
 	//update sound system
 	m_pkAudioSystem->SetListnerPosition(m_pkCamera->GetPos(),m_pkCamera->GetRotM());
@@ -447,7 +438,7 @@ void ZeroFps::Update_System(bool bServer)
 				
 	
 				//update Tiny Collission system
-				m_pkTcs->Update(m_pkObjectMan->GetSimDelta());	
+				//m_pkTcs->Update(m_pkObjectMan->GetSimDelta());	
 				
 			}	
 		}

@@ -38,11 +38,11 @@ void P_Car::Update()
 		pkTcs->ClearExternalForces();
 		
 				
-		Vector3 kStearPos = Vector3(0,0, 2);
-		Vector3 kDrivePos = Vector3(0,0,-2);
+		Vector3 kStearPos = Vector3(0,0,-2);
+		Vector3 kDrivePos = Vector3(0,0, 2);
 		
-		Vector3 kDriveForce = Vector3(0,0,10);
-		Vector3 kStearForce = Vector3(-3,0,0);
+		Vector3 kDriveForce = Vector3(0,0,-10);
+		Vector3 kStearForce = Vector3( 6,0,0);
 				
 		kDriveForce = GetObject()->GetLocalRotM().VectorTransform(kDriveForce);
 		kStearForce = GetObject()->GetLocalRotM().VectorTransform(kStearForce);
@@ -63,11 +63,11 @@ void P_Car::Update()
 			
 		//apply some trust
 		
-		Trust(Vector3( 0.75,0.2,-1.5),Vector3(0,-0.25,0));
-		Trust(Vector3(-0.75,0.2,-1.5),Vector3(0,-0.25,0));
+		Trust(Vector3( 0.75,0.2,-1.5),Vector3(0,-0.35,0));
+		Trust(Vector3(-0.75,0.2,-1.5),Vector3(0,-0.35,0));
 
-		Trust(Vector3( 0.75,0.2,1.5),Vector3(0,-0.25,0));
-		Trust(Vector3(-0.75,0.2,1.5),Vector3(0,-0.25,0));
+		Trust(Vector3( 0.75,0.2,1.5),Vector3(0,-0.35,0));
+		Trust(Vector3(-0.75,0.2,1.5),Vector3(0,-0.35,0));
 				
 }
 
@@ -80,10 +80,13 @@ void P_Car::Trust(Vector3 kPos,Vector3 kForce)
 	Vector3 kWPos = GetObject()->GetLocalRotM().VectorTransform(kPos);
 	kWPos += GetObject()->GetLocalPosV();
 
-	Vector3 kGround = LineTest(kWPos,kWPos + (kForce.Unit() * 100));		
+	Vector3 kGround = LineTest(kWPos,kWPos + (kForce.Unit() * 50));		
 	
 	float fFd = kGround.DistanceTo(kWPos); 
-	Vector3 kRealForce = kUpForce / fFd ;
+	if(fFd > 3)
+		return;
+	
+	Vector3 kRealForce = kUpForce / (fFd * fFd) ;
 	
 	if(kRealForce.Length() > fMaxForce)
 		kRealForce = kRealForce.Unit() * fMaxForce;

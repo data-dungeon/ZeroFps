@@ -6,6 +6,7 @@ function Create()
 			InitParameter("m_fScale","0.5");
 			InitParameter("m_iShadowGroup","2");
 
+		InitProperty("P_Track");
 		InitProperty("P_Car");
 		InitProperty("P_Tcs");
 			InitParameter("radius",-1);
