@@ -55,6 +55,7 @@ class ENGINE_SYSTEMS_API Tcs : public ZFSubSystem
 		float					m_fMaxVel;
 		float					m_fAlmostZero;
 		float					m_fTimeSlice;
+		float					m_fGravity;
 		
 		P_Tcs*				m_pkBodyCopy1;
 		P_Tcs*				m_pkBodyCopy2;		
@@ -123,11 +124,13 @@ class ENGINE_SYSTEMS_API Tcs : public ZFSubSystem
 		void AddBody(P_Tcs* pkPTcs);
 		void RemoveBody(P_Tcs* pkPTcs);		
 
-		int GetNrOfCollissions() 	{ return m_iNrOfCollissions	;};
-		int GetNrOfTests() 			{ return m_iNrOfTests			;};
-		int GetNrOfActiveBodies() 	{ return m_iNrOfActiveBodies	;};
 		
-		int GetDebugGraph()			{ return m_iDebugGraph			;};
+		void SetGravity(float fGravity)	{ m_fGravity=fGravity			;};
+		int GetNrOfCollissions() 			{ return m_iNrOfCollissions	;};
+		int GetNrOfTests() 					{ return m_iNrOfTests			;};
+		int GetNrOfActiveBodies() 			{ return m_iNrOfActiveBodies	;};
+		
+		int GetDebugGraph()					{ return m_iDebugGraph			;};
 		
 		bool StartUp();
 		bool ShutDown();

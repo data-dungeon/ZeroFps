@@ -4,6 +4,7 @@
 #include "engine_x.h"
 #include "zerofps.h"
 #include "entitymanager.h"
+#include "../engine_systems/tcs/tcs.h"
 #include "../basic/zfvfs.h"
 #include "inputhandle.h"
 #include "../engine_systems/audio/zfaudiosystem.h"
@@ -17,6 +18,7 @@ class Input;
 class FileIo;
 class ZFClient; 
 class ZShadow;
+class Tcs;
 
 /** \brief	The application object.
 	 \ingroup Engine
@@ -42,6 +44,7 @@ class ENGINE_API Application : public ZFSubSystem {
 		ZShadow*					m_pkZShadow;
 		ZeroFps*					m_pkZeroFps;
 		ZShaderSystem*			m_pkZShaderSystem;
+		Tcs*						m_pkTcs;
 		
 	public:
 		static Application*	m_pkApp;												///< The one and Only App Instance.

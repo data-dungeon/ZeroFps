@@ -28,7 +28,7 @@ void Application::SetEnginePointer(ZeroFps* pkZeroFps)
 	m_pkTexMan				=	m_pkZeroFps->m_pkTexMan;
 	m_pkBasicFS				=	m_pkZeroFps->m_pkBasicFS;
 	m_pkLight				=	m_pkZeroFps->m_pkLight;
-	m_pkEntityManager			=	m_pkZeroFps->m_pkEntityManager;
+	m_pkEntityManager		=	m_pkZeroFps->m_pkEntityManager;
 	m_pkAudioSys			=	m_pkZeroFps->m_pkAudioSystem;
 	m_pkPropertyFactory	=	m_pkZeroFps->m_pkPropertyFactory;
 	m_pkGui					=	m_pkZeroFps->m_pkGui;
@@ -39,7 +39,7 @@ void Application::SetEnginePointer(ZeroFps* pkZeroFps)
 	m_pkResourceDB			=	m_pkZeroFps->m_pkResourceDB;
 	m_pkZShadow				=	m_pkZeroFps->m_pkZShadow;
 	m_pkZShaderSystem		=	m_pkZeroFps->m_pkZShaderSystem;
-
+	m_pkTcs					=	m_pkZeroFps->m_pkTcs;
 
 	m_pkInputHandle = new InputHandle("Application");
 }
