@@ -98,6 +98,27 @@ void Primitives::PrintChar(char cChar) {
 			aTexture="data/textures/text/2.bmp";break;
 		case '3':
 			aTexture="data/textures/text/3.bmp";break;
+		case '4':
+			aTexture="data/textures/text/4.bmp";break;
+		case '5':
+			aTexture="data/textures/text/5.bmp";break;
+		case '6':
+			aTexture="data/textures/text/6.bmp";break;
+		case '7':
+			aTexture="data/textures/text/7.bmp";break;
+		case '8':
+			aTexture="data/textures/text/8.bmp";break;
+		case '9':
+			aTexture="data/textures/text/9.bmp";break;
+		case '0':
+			aTexture="data/textures/text/0.bmp";break;
+		
+		case '+':
+			aTexture="data/textures/text/+.bmp";break;
+		case '-':
+			aTexture="data/textures/text/-.bmp";break;
+	
+	
 	}
 			
 	if(aTexture!=NULL)
@@ -119,17 +140,14 @@ void Primitives::Print(Vector3 kPos,Vector3 kHead,Vector3 kScale,char* aText) {
 		glRotatef(kHead.z, 0, 0, 1);
 		glScalef(kScale.x,kScale.y,kScale.z);
 		
-//		cout<<"printing ";
-
 		int i=0;
 		while(paText[i]!='\0') {
-//			cout<<paText[i];
 			PrintChar(paText[i]);
 			glTranslatef(1,0,0);
 		
 			i++;
 		}
-		cout<<endl;
+
 
 	glPopMatrix();
 }

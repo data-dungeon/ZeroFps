@@ -13,6 +13,7 @@
 #include "TextureManager.h"
 #include "Console.h"
 #include "Primitives.h"
+#include "Input.h"
 
 class Application;
 
@@ -34,6 +35,7 @@ class ZeroFps {
 		Application* m_pkApp;		
 		CmdSystem* m_pkCmd;
 		TextureManager* m_pkTexMan;
+		Input* m_pkInput;
 		Primitives* m_pkPrims;
 		Console* m_pkConsole;	
 	

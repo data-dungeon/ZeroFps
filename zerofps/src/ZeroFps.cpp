@@ -5,6 +5,7 @@ ZeroFps::ZeroFps(void) {
 	m_pkTexMan=new TextureManager;
 	m_pkPrims=new Primitives(m_pkTexMan);
 	m_pkConsole=new Console(this);	
+	m_pkInput=new Input();
 	
 	m_pkCmd->Add(&m_iState,"m_iState",type_int);
 }
@@ -35,14 +36,27 @@ void ZeroFps::Init(int iNrOfArgs, char** paArgs){
 }
 
 void ZeroFps::MainLoop(void) {
+	
+	m_pkPrims->Pyra(0,0,-3);
+	m_pkPrims->Pyra(1,0,-2);	
+	
+	
+	m_pkConsole->Print("123");	
+	m_pkConsole->Print("321");	
+	m_pkConsole->Print("111");	
+	m_pkConsole->Print("000000000 111111 22222 3");
+	m_pkConsole->Print("+-----------------------------+");
+	
 	while(m_iState!=state_exit) {
 		switch(m_iState){
 			case state_normal:
+				m_pkInput->Update();
 				m_pkApp->OnIdle();			
 				Swap();								
 				break;			
 			
 			case state_console:
+				m_pkInput->Update();			
 				m_pkConsole->Update();
 				m_pkConsole->Draw();
 				Swap();
