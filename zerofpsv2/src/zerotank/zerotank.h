@@ -70,6 +70,12 @@ class ZeroTank :public Application, public GuiApp {
 		Object*				m_pkME;
 		Object*				m_pkTestObject;
 
+		Object*				m_pkZeroTankHull;
+		Object*				m_pkZeroTankTower;
+		Object*				m_pkZeroTankGun;
+
+		Object*				m_pkZeroTank_Modify;
+
 		//GuiBuilder*			m_pkGuiBuilder;
 
 	public:

@@ -8,3 +8,20 @@ class object
 		parent object
 		set MadProperty m_kMadFile /data/mad/rts/unit/ecrew.mad
 	
+
+
+
+	class ZeroRTSHull
+		parent object
+		set MadProperty m_kMadFile /data/mad/rts/unit/hull.mad
+	
+
+	class ZeroRTSTower
+		parent object
+		set MadProperty m_kMadFile /data/mad/rts/unit/tower.mad
+	
+
+	class ZeroRTSGun
+		parent object
+		set MadProperty m_kMadFile /data/mad/rts/unit/gun.mad
+	
