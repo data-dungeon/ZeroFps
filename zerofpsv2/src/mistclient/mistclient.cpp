@@ -613,11 +613,13 @@ void MistClient::OnCommand(int iID, ZGuiWnd *pkMainWnd)
 	{
 		if(strClickWndName == "SendInputBoxBn")
 		{
-			ZGuiWnd* pkInputWnd = GetWnd("InputWnd");
+			ZGuiWnd* pkInputWnd = GetWnd("InputWnd");		
 			pkInputWnd->Hide();
 			pkAudioSys->StartSound("/data/sound/close_window2.wav",pkAudioSys->GetListnerPos());
 			
+			pkInputWnd = GetWnd("InputBox");			
 			OnClientInputSend(pkInputWnd->GetText());
+			//pkInputWnd->SetText("");
 		}
 	}
 	else
@@ -1083,5 +1085,18 @@ bool MistClient::PickZones()
 
 void MistClient::OnClientInputSend(char *szText)
 {
+	string message = "(IM)";
+	message+=szText;
 
+	cout<<"sending:"<<szText<<endl;
+	cout<<"sending:"<<message<<endl;
+	
+	ClientOrder order;
+						
+	order.m_sOrderName = message; 
+	order.m_iClientID = pkFps->GetConnectionID();
+	order.m_iCaracter = m_iActiveCaracterObjectID;				
+	order.m_iFace = -1;
+						
+	m_pkClientControlP->AddOrder(order);
 }

@@ -239,6 +239,7 @@ void P_ServerInfo::MessagePlayer(const char* czName,string strMessage)
 	{	
 		if(m_kPlayers[i].sPlayerName == czName)
 		{	
+			cout<<"found player"<<endl;
 			m_kPlayers[i].kMessages.push(strMessage);	
 			return;
 		}

@@ -1124,8 +1124,34 @@ void MistServer::HandleOrders()
 		}
 		cout<<"handling order "<<order->m_sOrderName<<" from client:"<<order->m_iClientID<<endl;
 		
-		//ground klick order		
-		if(order->m_iFace != -1)
+		//handle input messages from client
+		if(strncmp(order->m_sOrderName.c_str(),"(IM)",4) == 0) 
+		{
+			order->m_sOrderName.erase(0,4);
+			string playername; 
+			string message;
+			
+			int pos;
+			for(pos=0;pos<order->m_sOrderName.size();pos++)
+			{
+				if(order->m_sOrderName[pos] == ' ' && playername.size()>0)
+					break;
+				playername+=order->m_sOrderName[pos];
+			}
+			
+			for(;pos<order->m_sOrderName.size();pos++)
+			{	
+				message+=order->m_sOrderName[pos];
+			}
+				
+			//cout<<"got message to "<<playername<<": "<<message<<endl;
+			
+			if(m_pkServerInfoP)
+			{
+				m_pkServerInfoP->MessagePlayer(playername.c_str(),message);
+			}
+		}
+		else if(order->m_iFace != -1) 		//else ground klick
 		{
 			Entity* ob = pkObjectMan->GetObjectByNetWorkID(order->m_iCaracter);			
 			if(ob)
