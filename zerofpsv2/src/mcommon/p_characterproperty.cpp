@@ -559,7 +559,6 @@ void P_CharacterProperty::SetupCharacterStats()
 	m_kCharacterStats.AddStat("Load"			,0,0);
 	m_kCharacterStats.AddStat("LoadMax"		,0,0);
 
-	m_kCharacterStats.AddStat("Attack"			,0,0);	
 	m_kCharacterStats.AddStat("DamageSlashingMin"	,0,0);
 	m_kCharacterStats.AddStat("DamageSlashingMax"	,0,0);
 	m_kCharacterStats.AddStat("DamageCrushingMin"	,0,0);
@@ -585,9 +584,9 @@ void P_CharacterProperty::SetupCharacterStats()
 	m_kCharacterStats.AddStat("AbsorbLightning"	,0,0);
 	m_kCharacterStats.AddStat("AbsorbMagic"		,0,0);
 	m_kCharacterStats.AddStat("AbsorbPoison"		,0,0);
-	
-	m_kCharacterStats.AddStat("Avoid"				,0,0);		//chance to avoid an attack in %
-	m_kCharacterStats.AddStat("Block"				,0,0);		//chance to block an attack in %	
+
+	m_kCharacterStats.AddStat("Attack"			,0,0);	
+	m_kCharacterStats.AddStat("Defense"			,0,0);
 }
 
 void P_CharacterProperty::UpdateStats()

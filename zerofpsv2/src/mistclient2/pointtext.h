@@ -27,7 +27,9 @@ class PointText
 		vector<PText>	m_kText;
 		
 		//font
-		ZMaterial*	m_pkTextMaterial;
+		ZMaterial*	m_pkRedMaterial;
+		ZMaterial*	m_pkGreenMaterial;
+		ZMaterial*	m_pkBlueMaterial;
 		ZGuiFont*	m_pkFont;		
 		
 	

@@ -8,17 +8,34 @@ PointText::PointText()
 
 
 	//setup material
-	m_pkTextMaterial = new ZMaterial;
-	m_pkTextMaterial->GetPass(0)->m_kTUs[0]->SetRes("data/textures/text/fetfont.tga");
-	m_pkTextMaterial->GetPass(0)->m_iPolygonModeFront = 	FILL_POLYGON;
-	m_pkTextMaterial->GetPass(0)->m_iCullFace = 				CULL_FACE_BACK;		
-	m_pkTextMaterial->GetPass(0)->m_bLighting = 				false;		
-	m_pkTextMaterial->GetPass(0)->m_bColorMaterial = 		true;
-	m_pkTextMaterial->GetPass(0)->m_kVertexColor =			Vector3(1,0,0);
-	m_pkTextMaterial->GetPass(0)->m_bFog = 					false;		
-	m_pkTextMaterial->GetPass(0)->m_bAlphaTest =				true;		
-	m_pkTextMaterial->GetPass(0)->m_bDepthTest = 			false;
+	m_pkRedMaterial = new ZMaterial;
+	m_pkRedMaterial->GetPass(0)->m_kTUs[0]->SetRes("data/textures/text/fetfont.tga");
+	m_pkRedMaterial->GetPass(0)->m_bLighting = 				false;		
+	m_pkRedMaterial->GetPass(0)->m_bColorMaterial = 		true;
+	m_pkRedMaterial->GetPass(0)->m_kVertexColor =			Vector3(1,0,0);
+	m_pkRedMaterial->GetPass(0)->m_bFog = 					false;		
+	m_pkRedMaterial->GetPass(0)->m_bAlphaTest =				true;		
+	m_pkRedMaterial->GetPass(0)->m_bDepthTest = 			false;
 
+	m_pkGreenMaterial = new ZMaterial;
+	m_pkGreenMaterial->GetPass(0)->m_kTUs[0]->SetRes("data/textures/text/fetfont.tga");
+	m_pkGreenMaterial->GetPass(0)->m_bLighting = 				false;		
+	m_pkGreenMaterial->GetPass(0)->m_bColorMaterial = 		true;
+	m_pkGreenMaterial->GetPass(0)->m_kVertexColor =			Vector3(0,1,0);
+	m_pkGreenMaterial->GetPass(0)->m_bFog = 					false;		
+	m_pkGreenMaterial->GetPass(0)->m_bAlphaTest =				true;		
+	m_pkGreenMaterial->GetPass(0)->m_bDepthTest = 			false;
+	
+	m_pkBlueMaterial = new ZMaterial;
+	m_pkBlueMaterial->GetPass(0)->m_kTUs[0]->SetRes("data/textures/text/fetfont.tga");
+	m_pkBlueMaterial->GetPass(0)->m_bLighting = 				false;		
+	m_pkBlueMaterial->GetPass(0)->m_bColorMaterial = 		true;
+	m_pkBlueMaterial->GetPass(0)->m_kVertexColor =			Vector3(0,0,1);
+	m_pkBlueMaterial->GetPass(0)->m_bFog = 					false;		
+	m_pkBlueMaterial->GetPass(0)->m_bAlphaTest =				true;		
+	m_pkBlueMaterial->GetPass(0)->m_bDepthTest = 			false;
+	
+			
 	//setup font
 	m_pkFont = new ZGuiFont("CharacterFont");
 	m_pkFont->Create("/data/textures/text/fetfont.fnt",-1);	
@@ -60,16 +77,29 @@ void PointText::Draw()
  	for(int i = 0;i<m_kText.size();i++)
 	{
 		m_kText[i].m_kPos += m_kText[i].m_kVel * fAlpha;
-	
-	
+		
 		float fDistance = m_pkZeroFps->GetCam()->GetRenderPos().DistanceTo(m_kText[i].m_kPos);
 		if(fDistance < 20)
 		{
   			float fScale = 0.05 * fDistance;
-// 			float fScale = 0.2;			
 
-			m_pkRender->PrintBillboard(m_pkZeroFps->GetCam()->GetRotM(),m_kText[i].m_kPos,
-												fScale,m_kText[i].m_strText,m_pkTextMaterial,m_pkFont,true);													
+			switch(m_kText[i].m_iType)
+			{
+				case 0:			
+					m_pkRender->PrintBillboard(m_pkZeroFps->GetCam()->GetRotM(),m_kText[i].m_kPos,
+														fScale,m_kText[i].m_strText,m_pkRedMaterial,m_pkFont,true);
+					break;
+				
+				case 1:			
+					m_pkRender->PrintBillboard(m_pkZeroFps->GetCam()->GetRotM(),m_kText[i].m_kPos,
+														fScale,m_kText[i].m_strText,m_pkGreenMaterial,m_pkFont,true);
+					break;
+				
+				case 2:			
+					m_pkRender->PrintBillboard(m_pkZeroFps->GetCam()->GetRotM(),m_kText[i].m_kPos,
+														fScale,m_kText[i].m_strText,m_pkBlueMaterial,m_pkFont,true);
+					break;
+			}
 		}	
 	}
 }

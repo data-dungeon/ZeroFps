@@ -28,8 +28,7 @@ class MCOMMON_API RuleSystem : public ZFSubSystem
 		bool IsValid()		{	return true;	};		
 		
 		void Damage(int iCharacter,float fDamage);
-
-
+		void Attack(int iAttacker,int iDefender);
 };
 
 
@@ -37,6 +36,8 @@ namespace SI_RuleSystem
 {
 	//rule system
 	int DamageLua(lua_State* pkLua);
+	int AttackLua(lua_State* pkLua);
+	
 };
 
 
