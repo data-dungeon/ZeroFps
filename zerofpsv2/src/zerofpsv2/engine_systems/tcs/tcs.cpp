@@ -8,7 +8,7 @@ Tcs::Tcs(): ZFSubSystem("Tcs")
 
  	m_iMaxTests = 5;
 	m_fMinTime = 0.000;
-	m_fMinForce = 0.1;
+	m_fMinForce = 0.05;
 	m_fAlmostZero = 0.001;
 	m_fSleepVel = 0.1;
 	
