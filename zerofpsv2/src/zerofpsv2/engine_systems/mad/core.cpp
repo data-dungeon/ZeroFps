@@ -468,7 +468,8 @@ bool Mad_Core::Create(string MadFileName)
 		}
 
 	CalculateRadius();
-
+	
+	
 	return true;
 }
 

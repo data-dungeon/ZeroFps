@@ -53,6 +53,7 @@ class ENGINE_SYSTEMS_API P_Mad : public Property, public Mad_Modell {
 
 		//model handling
 		void SetBase(const char* acName);
+		void SetScale(float fScale);
 		bool AddMesh(int iSId);
 		
 		//animation

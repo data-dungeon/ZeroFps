@@ -99,7 +99,6 @@ class ZeroEd :public Application , public ZGuiApp {
 		
 		};
 
-		void EditRunCommand(FuncId_e eEditCmd);
 
 		bool m_bEditSun;
 
@@ -137,6 +136,9 @@ class ZeroEd :public Application , public ZGuiApp {
 		int		m_iGrabEntity;
 		float		m_fArmLength;
 		bool		m_bGrabing;
+		
+		
+		void EditRunCommand(FuncId_e eEditCmd);
 		
 		Vector3	Get3DMousePos(bool m_bMouse);
 		Vector3 Get3DMouseDir(bool bMouse);

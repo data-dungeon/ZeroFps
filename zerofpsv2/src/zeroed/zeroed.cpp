@@ -455,17 +455,36 @@ void ZeroEd::DrawSelectedEntity()
 	
 		if(pkEnt) 
 		{
-			float fRadius = pkEnt->GetRadius();
-			if(fRadius < 0.1)
-				fRadius = 0.1;
-
-			Vector3 kMin = pkEnt->GetWorldPosV() - fRadius;
-			Vector3 kMax = pkEnt->GetWorldPosV() + fRadius;
-
-			if(m_iCurrentObject == (*itEntity))
-				m_pkRender->DrawAABB( kMin,kMax, m_pkRender->GetEditColor("active/firstentity") );
-			else
-				m_pkRender->DrawAABB( kMin,kMax, m_pkRender->GetEditColor("active/entity") );
+			//zone selected
+			if(pkEnt->IsZone())
+			{
+				if(ZoneData* pkZone = m_pkEntityManager->GetZone(pkEnt))
+				{
+					Vector3 kMin = pkZone->m_kPos - (pkZone->m_kSize/2.0) - pkZone->m_kSize.Unit() *0.2;
+					Vector3 kMax = pkZone->m_kPos + (pkZone->m_kSize/2.0) + pkZone->m_kSize.Unit() *0.2;
+									
+					
+					if(m_iCurrentObject == (*itEntity))
+						m_pkRender->DrawAABB( kMin,kMax, m_pkRender->GetEditColor("active/firstentity") );
+					else
+						m_pkRender->DrawAABB( kMin,kMax, m_pkRender->GetEditColor("active/entity") );
+							
+				}
+			}
+			else //object selected
+			{
+				float fRadius = pkEnt->GetRadius();
+				if(fRadius < 0.1)
+					fRadius = 0.1;
+						
+				Vector3 kMin = pkEnt->GetWorldPosV() - fRadius;
+				Vector3 kMax = pkEnt->GetWorldPosV() + fRadius;
+	
+				if(m_iCurrentObject == (*itEntity))
+					m_pkRender->DrawAABB( kMin,kMax, m_pkRender->GetEditColor("active/firstentity") );
+				else
+					m_pkRender->DrawAABB( kMin,kMax, m_pkRender->GetEditColor("active/entity") );
+			}
 		}
 	}
 }
@@ -1295,9 +1314,9 @@ void ZeroEd::UpdateZoneMarkerPos()
 	
 		float fStep = 2.0;
 	
-		m_kZoneMarkerPos.x = int(temp.x/fStep) * fStep;
-		m_kZoneMarkerPos.y = int(temp.y/fStep) * fStep;
-		m_kZoneMarkerPos.z = int(temp.z/fStep) * fStep;
+		//m_kZoneMarkerPos.x = int(temp.x/fStep) * fStep;
+		//m_kZoneMarkerPos.y = int(temp.y/fStep) * fStep;
+		//m_kZoneMarkerPos.z = int(temp.z/fStep) * fStep;
 	
 	
 		m_kZoneMarkerPos.x = round2(temp.x/fStep) * fStep;

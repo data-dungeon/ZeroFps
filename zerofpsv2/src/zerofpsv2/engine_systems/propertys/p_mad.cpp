@@ -96,9 +96,20 @@ void P_Mad::Update()
 
 void P_Mad::SetBase(const char* acName)
 {
-	SetBasePtr(string(acName));
+	SetBasePtr(string(acName));		
+	m_pkEntity->SetRadius(GetRadius());
 	SetNetUpdateFlag(true);
 }
+
+void P_Mad::SetScale(float fScale)
+{
+	Mad_Modell::SetScale(fScale);
+	m_pkEntity->SetRadius(GetRadius());	
+	
+	SetNetUpdateFlag(true);
+
+}
+
 
 int P_Mad::GetCurrentAnimation()
 {
@@ -178,10 +189,6 @@ void P_Mad::Load(ZFIoInterface* pkPackage,int iVersion)
 			break;
 		}
 	}
-	
-	
-	//update object radius
-	m_pkEntity->SetRadius(GetRadius());
 	
 	SetNetUpdateFlag(true);	
 }

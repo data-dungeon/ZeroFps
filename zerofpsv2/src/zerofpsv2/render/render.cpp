@@ -2182,8 +2182,8 @@ void Render::Setup_EditColors()
 
 	// Active - Selected Items in the editor.
 	m_kEditColor.push_back( EditColor(string("active/zone"),				Vector3(1,1,1) ));	
-	m_kEditColor.push_back( EditColor(string("active/entity"),			Vector3(1,1,1) ));	
-	m_kEditColor.push_back( EditColor(string("active/firstentity"),	Vector3(0.263,1.000,0.639) ));	
+	m_kEditColor.push_back( EditColor(string("active/entity"),			Vector3(1.0,0.5,1.0) ));	
+	m_kEditColor.push_back( EditColor(string("active/firstentity"),	Vector3(1.0,0.0,1.0) ));	
 
 	// Inactive - Items not selected.
 	m_kEditColor.push_back( EditColor(string("inactive/zonebuild"),		Vector3(0,		1,			1) ));	
