@@ -18,6 +18,17 @@
 
 using namespace std;
 
+enum SkyBoxSides 
+{
+	SKYBOXSIDE_FORWARD,
+	SKYBOXSIDE_RIGHT,
+	SKYBOXSIDE_BACK,
+	SKYBOXSIDE_LEFT,
+	SKYBOXSIDE_UP,
+	SKYBOXSIDE_DOWN,
+	SKYBOXSIDE_MAX,
+};
+
 class RENDER_API Render : public ZFObject {
 	private:
 		Frustum* m_pkFrustum;
@@ -61,6 +72,7 @@ class RENDER_API Render : public ZFObject {
 		void DrawPatch(HeightMap* kmap,Vector3 CamPos,int xp,int zp,int iSize);
 		
 		void DrawSkyBox(Vector3 CamPos,Vector3 kHead,int iHor,int iTop);
+		void DrawSkyBox_SixSided(Vector3 CamPos,Vector3 kHead,int* aiSideTextures);
 		void DrawWater(Vector3 kCamPos,Vector3 kPosition,Vector3 kHead,int iSize,int iStep,int iTexture);
 		void DrawSimpleWater(Vector3 kPosition,Vector4 kColor,int iSize,int iTexture);
 		void SetFog(Vector4 kFogColor,float FogStart,float FogStop,bool FogEnable);		

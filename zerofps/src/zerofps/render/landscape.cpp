@@ -1,5 +1,123 @@
 #include "render.h"
  
+
+
+void Render::DrawSkyBox_SixSided(Vector3 CamPos,Vector3 kHead,int* aiSideTextures)
+{
+	glPushMatrix();
+	glPushAttrib(GL_LIGHTING_BIT|GL_FOG_BIT);
+
+	glDisable(GL_FOG);
+	glDisable(GL_LIGHTING);	//dont want lighting on the skybox		
+	glDepthMask(GL_FALSE);	//want the skybox to be faaaaaar away =)
+
+	glTranslatef(CamPos.x,CamPos.y,CamPos.z);
+
+	glRotatef(kHead.x, 1, 0, 0);
+	glRotatef(kHead.y, 0, 1, 0);	
+	glRotatef(kHead.z, 0, 0, 1);
+
+//	glScalef(200,200,200);
+
+//	glDisable(GL_TEXTURE_2D);
+
+	glDisable(GL_CULL_FACE);
+
+	Vector3 CubeVertex[8];
+	CubeVertex[0].Set(-1,  1, -1);	//Front	// Top Left	
+	CubeVertex[1].Set(-1, -1, -1);	// Low left
+	CubeVertex[2].Set(1,  -1, -1);	// Low right
+	CubeVertex[3].Set(1,   1, -1);	// Top right
+	CubeVertex[4].Set(-1,  1,  1);	// Back
+	CubeVertex[5].Set(-1, -1,  1);
+	CubeVertex[6].Set(1,  -1,  1);
+	CubeVertex[7].Set(1,   1,  1);
+
+	glColor4f(1,1,1,1);
+
+	m_pkTexMan->BindTexture(aiSideTextures[SKYBOXSIDE_FORWARD]);	
+	glBegin(GL_QUADS);
+		glTexCoord2f(0, 0);		glVertex3fv( &CubeVertex[0].x );		
+		glTexCoord2f(0, 1);		glVertex3fv( &CubeVertex[1].x);
+		glTexCoord2f(1, 1);		glVertex3fv( &CubeVertex[2].x);		
+		glTexCoord2f(1, 0);		glVertex3fv( &CubeVertex[3].x);		
+	glEnd();
+
+	m_pkTexMan->BindTexture(aiSideTextures[SKYBOXSIDE_LEFT]);	
+	glBegin(GL_QUADS);
+		glTexCoord2f(0, 0);		glVertex3fv( &CubeVertex[3].x );		
+		glTexCoord2f(0, 1);		glVertex3fv( &CubeVertex[2].x);
+		glTexCoord2f(1, 1);		glVertex3fv( &CubeVertex[6].x);		
+		glTexCoord2f(1, 0);		glVertex3fv( &CubeVertex[7].x);		
+	glEnd();
+	
+	m_pkTexMan->BindTexture(aiSideTextures[SKYBOXSIDE_BACK]);	
+	glBegin(GL_QUADS);
+		glTexCoord2f(0, 0);		glVertex3fv( &CubeVertex[7].x );		
+		glTexCoord2f(0, 1);		glVertex3fv( &CubeVertex[6].x);
+		glTexCoord2f(1, 1);		glVertex3fv( &CubeVertex[5].x);		
+		glTexCoord2f(1, 0);		glVertex3fv( &CubeVertex[4].x);		
+	glEnd();
+
+	m_pkTexMan->BindTexture(aiSideTextures[SKYBOXSIDE_RIGHT]);	
+	glBegin(GL_QUADS);
+		glTexCoord2f(0, 0);		glVertex3fv( &CubeVertex[4].x );		
+		glTexCoord2f(0, 1);		glVertex3fv( &CubeVertex[5].x);
+		glTexCoord2f(1, 1);		glVertex3fv( &CubeVertex[1].x);		
+		glTexCoord2f(1, 0);		glVertex3fv( &CubeVertex[0].x);		
+	glEnd();
+
+	m_pkTexMan->BindTexture(aiSideTextures[SKYBOXSIDE_UP]);	
+	glBegin(GL_QUADS);
+		glTexCoord2f(0, 0);		glVertex3fv( &CubeVertex[7].x );		
+		glTexCoord2f(0, 1);		glVertex3fv( &CubeVertex[4].x);
+		glTexCoord2f(1, 1);		glVertex3fv( &CubeVertex[0].x);		
+		glTexCoord2f(1, 0);		glVertex3fv( &CubeVertex[3].x);		
+	glEnd();
+
+	m_pkTexMan->BindTexture(aiSideTextures[SKYBOXSIDE_DOWN]);	
+	glBegin(GL_QUADS);
+		glTexCoord2f(0, 1);		glVertex3fv( &CubeVertex[6].x );		
+		glTexCoord2f(0, 0);		glVertex3fv( &CubeVertex[5].x);  
+		glTexCoord2f(1, 0);		glVertex3fv( &CubeVertex[1].x);		
+		glTexCoord2f(1, 1);		glVertex3fv( &CubeVertex[2].x);		
+	glEnd();
+
+
+	/*	
+
+	m_pkTexMan->BindTexture(aiSideTextures[SKYBOXSIDE_LEFT]);	
+	glBegin(GL_QUADS);
+		glTexCoord2f(0, 0);		glVertex3f( -1,	1,		-1);		
+		glTexCoord2f(0, 1);		glVertex3f( -1,	-1,		-1);
+		glTexCoord2f(1, 1);		glVertex3f( 1 ,	-1,	-1);		
+		glTexCoord2f(1, 0);		glVertex3f( 1 ,	1,	-1);		
+	glEnd();
+
+	m_pkTexMan->BindTexture(aiSideTextures[SKYBOXSIDE_UP]);	
+	glBegin(GL_QUADS);
+		glTexCoord2f(0, 0);		glVertex3f( -1,	1,		-1);		
+		glTexCoord2f(0, 1);		glVertex3f( -1,	-1,		-1);
+		glTexCoord2f(1, 1);		glVertex3f( 1 ,	-1,	-1);		
+		glTexCoord2f(1, 0);		glVertex3f( 1 ,	1,	-1);		
+	glEnd();
+
+	m_pkTexMan->BindTexture(aiSideTextures[SKYBOXSIDE_DOWN]);	
+	glBegin(GL_QUADS);
+		glTexCoord2f(0, 0);		glVertex3f( -1,	1,		-1);		
+		glTexCoord2f(0, 1);		glVertex3f( -1,	-1,		-1);
+		glTexCoord2f(1, 1);		glVertex3f( 1 ,	-1,	-1);		
+		glTexCoord2f(1, 0);		glVertex3f( 1 ,	1,	-1);		
+	glEnd();*/
+
+	glEnable(GL_CULL_FACE);
+	glPopAttrib();
+	glDepthMask(GL_TRUE);	
+	glPopMatrix();
+
+}
+
+
 void Render::DrawSkyBox(Vector3 CamPos,Vector3 kHead,int iHor,int iTop) {
 	float fYpos;
 	
@@ -8,6 +126,8 @@ void Render::DrawSkyBox(Vector3 CamPos,Vector3 kHead,int iHor,int iTop) {
 	else
 		fYpos=0;
 	
+	fYpos=0;
+
 	glPushMatrix();
 	glPushAttrib(GL_LIGHTING_BIT|GL_FOG_BIT);
 	

@@ -63,6 +63,7 @@ class ZeroEdit :public Application {
 			FID_FOG,
 			FID_WATER,
 			FID_SKYBOX,
+			FID_SKYBOX6,
 			FID_ADDLAND,
 			FID_REMOVELAND,
 			FID_LISTLAND,

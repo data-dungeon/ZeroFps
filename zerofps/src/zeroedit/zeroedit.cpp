@@ -38,6 +38,7 @@ void ZeroEdit::OnInit(void)
 	g_ZFObjSys.Register_Cmd("fog",FID_FOG,this);		
 	g_ZFObjSys.Register_Cmd("water",FID_WATER,this);		
 	g_ZFObjSys.Register_Cmd("skybox",FID_SKYBOX,this);		
+	g_ZFObjSys.Register_Cmd("skybox6",FID_SKYBOX6,this);		
 	g_ZFObjSys.Register_Cmd("addland",FID_ADDLAND,this);		
 	g_ZFObjSys.Register_Cmd("removeland",FID_REMOVELAND,this);		
 	g_ZFObjSys.Register_Cmd("listland",FID_LISTLAND,this);		
@@ -179,6 +180,8 @@ void ZeroEdit::RunCommand(int cmdid, const CmdArgument* kCommand)
 {
 	int iObjectID;
 	Object *pkmad;
+	Vector3 kRot(0,0,0);
+	string BaseEnvMap("../data/textures/env/");
 
 	switch(cmdid) {
 		case FID_AMBIENT:{
@@ -280,6 +283,20 @@ void ZeroEdit::RunCommand(int cmdid, const CmdArgument* kCommand)
 			
 			break;
 	
+		case FID_SKYBOX6: {
+			string strSkyPath = BaseEnvMap + kCommand->m_kSplitCommand[1] + "/sky";
+
+			if(kCommand->m_kSplitCommand.size() == 5) {
+				kRot.Set(atof(kCommand->m_kSplitCommand[2].c_str()),
+						 atof(kCommand->m_kSplitCommand[3].c_str()),
+						 atof(kCommand->m_kSplitCommand[4].c_str()));
+				}
+
+			pkLevelMan->SkyBox(strSkyPath.c_str(),"mode6",kRot);
+
+			break;
+			}
+
 		case FID_SKYBOX:{
 			if(kCommand->m_kSplitCommand.size() < 3) {
 				pkConsole->Printf("skybox [Horizontal texture] [top,botom texture] (rot[x][y][z])");
@@ -288,7 +305,6 @@ void ZeroEdit::RunCommand(int cmdid, const CmdArgument* kCommand)
 			
 			if(kCommand->m_kSplitCommand.size() < 6)
 			{
-				Vector3 kRot(0,0,0);
 				pkLevelMan->SkyBox(kCommand->m_kSplitCommand[1].c_str(),kCommand->m_kSplitCommand[2].c_str(),kRot);
 			} else{
 				Vector3 kRot(atof(kCommand->m_kSplitCommand[3].c_str()),

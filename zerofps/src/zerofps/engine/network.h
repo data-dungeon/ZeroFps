@@ -34,8 +34,8 @@ public:
 	RemoteNode() {};
 	~RemoteNode() {};
 
-	IPaddress			m_kAddress;
-	ClientConnectStatus	m_eConnectStatus;
+	IPaddress					m_kAddress;
+	ClientConnectStatus		m_eConnectStatus;
 
 	void SetAddress(IPaddress* pkAddress);
 };
