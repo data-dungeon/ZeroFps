@@ -15,6 +15,47 @@ using namespace std;
 
 class ObjectManager;
 
+class ENGINE_API PropertyDescriptor{
+	public:
+		string m_kName;
+		ZFMemPackage m_kData;
+};
+
+class ENGINE_API ObjectDescriptor{
+	public:
+		string m_kName;
+		
+		Vector3 m_kPos;
+		Vector3 m_kRot;
+		Vector3 m_kVel;
+		
+		list<PropertyDescriptor*> m_acPropertyList;		
+		
+		~ObjectDescriptor()
+		{
+			for(list<PropertyDescriptor*>::iterator it=m_acPropertyList.begin();it!=m_acPropertyList.end();it++)
+			{
+				delete (*it);
+			}
+		}
+		
+		void Clear()
+		{
+			m_kName="";
+			m_kPos.Set(0,0,0);
+			m_kRot.Set(0,0,0);
+			m_kVel.Set(0,0,0);			
+			
+			for(list<PropertyDescriptor*>::iterator it=m_acPropertyList.begin();it!=m_acPropertyList.end();it++)
+			{
+				delete (*it);
+			}
+			
+			m_acPropertyList.clear();
+		}
+};
+
+
 enum UPDATE_STATUS{
 	UPDATE_NONE,
 	UPDATE_ALL,
@@ -22,9 +63,6 @@ enum UPDATE_STATUS{
 	UPDATE_DYNAMIC,
 	UPDATE_PLAYERS
 };
-
-
-
 
 
 class ENGINE_API Object {
@@ -39,6 +77,7 @@ class ENGINE_API Object {
 		int m_iUpdateStatus;
 		bool m_bLoadChilds;
 		bool m_bLockedChilds;
+		bool m_bAutoParent;
 		
 		list<Property*> m_akPropertys;
 		ObjectManager* m_pkObjectMan; 
@@ -82,6 +121,8 @@ class ENGINE_API Object {
 		bool NeedToPack();				// Returns true if there is any netactive properys in object
 		void PackTo(NetPacket* pkNetPacket);
 		void PackFrom(NetPacket* pkNetPacket);
+
+		void Save(ObjectDescriptor* ObjDesc);
 
 		inline int &GetUpdateStatus() {return m_iUpdateStatus;};
 

@@ -424,3 +424,29 @@ void Object::AttachToClosestZone()
 	SetParent(minobject);
 }
 
+void Object::Save(ObjectDescriptor* ObjDesc)
+{
+
+//	ObjectDescriptor* tempdesc = new ObjectDescriptor;
+	ObjDesc->Clear();
+	
+	//set name
+	ObjDesc->m_kName=GetName();
+	ObjDesc->m_kPos=GetPos();
+	ObjDesc->m_kRot=GetRot();
+	ObjDesc->m_kVel=GetVel();
+	
+	list<Property*> pkPropertys;
+	
+	GetPropertys(&pkPropertys,PROPERTY_TYPE_ALL,PROPERTY_SIDE_ALL);
+	
+	for(list<Property*>::iterator it=pkPropertys.begin();it!=pkPropertys.end();it++) 
+	{
+		PropertyDescriptor* pkP=new PropertyDescriptor;
+		pkP->m_kName=(*it)->m_acName;
+		(*it)->Save(&pkP->m_kData);
+		
+		ObjDesc->m_acPropertyList.push_back(pkP);
+	}
+	
+}

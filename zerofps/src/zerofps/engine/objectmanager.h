@@ -8,27 +8,8 @@
 
 using namespace std;
 
-class ENGINE_API PropertyDescriptor{
-	public:
-		string m_kName;
-		ZFMemPackage m_kData;
-};
-
-class ENGINE_API ObjectDescriptor{
-	public:
-		string m_kName;
-		list<PropertyDescriptor*> m_acPropertyList;		
-		
-		
-		~ObjectDescriptor()
-		{
-			for(list<PropertyDescriptor*>::iterator it=m_acPropertyList.begin();it!=m_acPropertyList.end();it++)
-			{
-				delete (*it);
-			}
-		}
-		
-};
+class PropertyDescriptor;
+class ObjectDescriptor;
 
 
 class ENGINE_API ObjectManager : public ZFObject{

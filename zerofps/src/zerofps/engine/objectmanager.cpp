@@ -232,11 +232,14 @@ bool ObjectManager::MakeTemplate(const char* acName,Object* pkObject)
 	if(GetTemplate(acName)!=NULL)
 		return false;
 		
-
+/*
 	ObjectDescriptor* tempdesc = new ObjectDescriptor;
 	
 	//set name
 	tempdesc->m_kName=acName;
+	tempdesc->m_kPos=pkObject->GetPos();
+	tempdesc->m_kRot=pkObject->GetRot();
+	tempdesc->m_kVel=pkObject->GetVel();
 	
 	list<Property*> pkPropertys;
 	
@@ -250,6 +253,13 @@ bool ObjectManager::MakeTemplate(const char* acName,Object* pkObject)
 		
 		tempdesc->m_acPropertyList.push_back(pkP);
 	}
+	*/
+	
+	ObjectDescriptor* tempdesc = new ObjectDescriptor;
+	
+	pkObject->Save(tempdesc);	
+	
+	tempdesc->m_kName=acName;
 	
 	AddTemplate(tempdesc);
 	return true;
@@ -266,6 +276,9 @@ Object* ObjectManager::CreateObject(const char* acName)
 		return NULL;
 	
 	tempobject->GetName()=objtemplate->m_kName;
+	tempobject->GetPos()=objtemplate->m_kPos;
+	tempobject->GetRot()=objtemplate->m_kRot;
+	tempobject->GetVel()=objtemplate->m_kVel;
 	
 	for(list<PropertyDescriptor*>::iterator it=objtemplate->m_acPropertyList.begin();it!=objtemplate->m_acPropertyList.end();it++) 
 	{
