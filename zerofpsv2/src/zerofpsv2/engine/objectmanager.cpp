@@ -606,12 +606,13 @@ void ObjectManager::PackToClients()
 	NetPacket NP;
 	
 	// Keep it alive.
-	NP.Clear();
+	
+/*	NP.Clear();
 	NP.m_kData.m_kHeader.m_iPacketType = ZF_NETTYPE_CONTROL;
 	NP.Write((char) ZF_NETCONTROL_NOP);
 	NP.Write(ZFGP_ENDOFPACKET);
-	m_pkNetWork->SendToAllClients(&NP);
-	
+	m_pkNetWork->SendToAllClients(&NP);*/
+
 
 
 	NP.Clear();
@@ -627,7 +628,9 @@ void ObjectManager::PackToClients()
 
 	if(m_pkZeroFps->m_bClientMode && !m_pkZeroFps->m_bServerMode) {
 		m_pkWorldObject->GetAllObjects(&kObjects);
-		PackToClient(0, kObjects);
+		//PackToClient(0, kObjects);
+		m_pkNetWork->SendToAllClients(&NP);
+		cout << "Sending ClientData" << endl;
 		return;
 		}
 

@@ -684,6 +684,8 @@ void ZeroFps::DrawDevStrings()
 
 	m_pkRender->SetFont("data/textures/text/devstr.bmp");
 
+	glColor3f(1,1,1);
+
 	float fYOffset = 0.75;
 
 	for(page = 0; page <m_DevStringPage.size(); page++ ) {

@@ -953,7 +953,6 @@ void Object::SetWorldRotV(Vector3 kRot)
 
 void Object::SetLocalPosV(Vector3 kPos)
 {
-	
 	//check new zone
 	if(m_bUseZones)
 	{
@@ -987,7 +986,6 @@ void Object::SetLocalPosV(Vector3 kPos)
 		}
 	}
 
-	
 	m_iNetUpdateFlags |= OBJ_NETFLAG_POS;
 	ResetChildsGotData();
 	

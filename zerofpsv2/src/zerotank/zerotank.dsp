@@ -74,7 +74,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 sdlmain.lib sdl.lib gui.lib rulesystem.lib render.lib basic.lib script.lib physics_engine.lib engine.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /debug /machine:I386 /out:"..\..\bin\zerotank.exe" /pdbtype:sept /libpath:"..\..\bin"
+# ADD LINK32 sdlmain.lib sdl.lib gui.lib render.lib basic.lib script.lib physics_engine.lib engine.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /debug /machine:I386 /out:"..\..\bin\zerotank.exe" /pdbtype:sept /libpath:"..\..\bin"
 # SUBTRACT LINK32 /pdb:none
 
 !ENDIF 
@@ -86,18 +86,6 @@ LINK32=link.exe
 # Begin Group "Source Files"
 
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
-# Begin Source File
-
-SOURCE=..\rulesystem\character\characterfactory.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\zerofpsv2\engine_systems\propertys\characterproperty.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\rulesystem\character\characterstats.cpp
-# End Source File
 # Begin Source File
 
 SOURCE=.\zerotank.cpp
