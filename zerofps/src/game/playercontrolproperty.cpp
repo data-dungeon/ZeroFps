@@ -46,7 +46,7 @@ void PlayerControlProperty::Update() {
 	else
 	{
 		if(m_pkStatusProperty->m_fHealth<0){
-			cout<<"PLAYER DIED !!!!"<<endl;
+			//cout<<"PLAYER DIED !!!!"<<endl;
 			
 			PhysicProperty* pp = dynamic_cast<PhysicProperty*>(m_pkObject->GetProperty("PhysicProperty"));
 			static_cast<CSSphere*>(pp->GetColSphere())->m_fRadius=0.2;

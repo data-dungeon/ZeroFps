@@ -50,7 +50,7 @@ void ObjectManager::Delete(Object* pkObject)
 		if(pkObject == (*it)) {
 			cout << "Object already in delete list" << endl;
 			return;
-			}
+		}
 	}
 	
 	m_akDeleteList.push_back(pkObject);
@@ -97,7 +97,7 @@ void ObjectManager::UpdateDelete()
 	for(vector<Object*>::iterator it2=m_akDeleteList.begin();it2!=m_akDeleteList.end();it2++) 
 	{
 		Object* pkObject = (*it2);
-		cout << "[" << i << "]:" << pkObject->GetName() << "," << pkObject->iNetWorkID << endl;
+		//cout << "[" << i << "]:" << pkObject->GetName() << "," << pkObject->iNetWorkID << endl;
 		i++;
 	}
 

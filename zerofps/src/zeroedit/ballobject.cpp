@@ -10,16 +10,16 @@ BallObject::BallObject() {
 //	AddProperty(new GravityProperty());
 //	AddProperty(new FloatProperty());	
 
-
+/*
 	AddProperty("MadProperty");
 	MadProperty* madp = dynamic_cast<MadProperty*>(GetProperty("MadProperty"));
 	madp->SetBase("../data/mad/adaptor.mad");
-
+*/
 	
-//	m_iObjectType=OBJECT_TYPE_STATIC;
-	m_iObjectType=OBJECT_TYPE_STATDYN;
+	m_iObjectType=OBJECT_TYPE_STATIC;
+//	m_iObjectType=OBJECT_TYPE_STATDYN;
 
-//	AddProperty("ModelProperty");
+	AddProperty("ModelProperty");
 //	AddProperty("LightProperty");
 //	AddProperty("StatusProperty");
 //	AddProperty("AdaptorSniper");

@@ -8,13 +8,13 @@ Render::Render()
  	m_pkLight = static_cast<Light*>(g_ZFObjSys.GetObjectPtr("Light")); 	
 //	m_pkTexMan=pkTexMan;
 	
-	m_iSlicesize=32;		//grid size of lod tiles
-	m_iDetail=30;				//height meens greater detail att longer range	
-	m_iViewDistance=250;
-	m_iFpsLock=60;
+	m_iSlicesize = 32;		//grid size of lod tiles
+	m_iDetail = 30;				//height meens greater detail att longer range	
+	m_iViewDistance = 250;
+	m_iFpsLock = 60;
 	m_iAutoLod = 1;
-	m_iLodUpdate=0;	
-	m_kOldCamPos=Vector3(0,0,0);
+	m_iLodUpdate = 0;	
+	m_kOldCamPos = Vector3(0,0,0);
 	
 	m_iHmTempList=0;
 }

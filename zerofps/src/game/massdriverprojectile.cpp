@@ -11,29 +11,51 @@ MassDriverProjectile::MassDriverProjectile()
 	m_pkFps = static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));	
 	
 	m_fCreateTime=m_pkFps->GetTicks();
+	
+	m_iMode=0;
 }
 
 void MassDriverProjectile::Update()
 {
-	if(m_pkFps->GetTicks() - m_fCreateTime >3)
-		m_pkObjectMan->Delete(m_pkObject);		
+	
+	if(m_iMode==0)
+	{		
+		if(m_pkFps->GetTicks() - m_fCreateTime >3)
+			m_pkObjectMan->Delete(m_pkObject);		
+	}
+	else
+	{
+		m_pkObject->DeleteProperty("PhysicProperty");
+		if(m_pkFps->GetTicks() - m_fCreateTime >.5)
+			m_pkObjectMan->Delete(m_pkObject);			
+	}
+
+
+
 }
 
 void MassDriverProjectile::Touch(Object* pkObject)
 {
-//	m_pkObject->GetVel().Set(0,0,0);
-	
-//	m_pkObject->DeleteProperty("PhysicProperty");
-	
-	
-	StatusProperty* sp=static_cast<StatusProperty*>(pkObject->GetProperty("StatusProperty"));
-	if(sp!=NULL)
-	{
-		sp->Damage(50);
-	}
-	
-	m_pkObjectMan->Delete(m_pkObject);	
+//	if(pkObject->iNetWorkID == shoterid)
+//		return;
 
+	if(m_iMode==0)
+	{	
+	
+		StatusProperty* sp=static_cast<StatusProperty*>(pkObject->GetProperty("StatusProperty"));
+		if(sp!=NULL)
+		{
+			sp->Damage(10);
+		}
+		
+		m_iMode=1;	
+		CrossRenderProperty* cr=static_cast<CrossRenderProperty*>(m_pkObject->AddProperty("CrossRenderProperty"));
+		cr->SetTexture("massdriver_hit.tga");
+		cr->SetScale(Vector3(.3,.3,.3));
+	
+
+		m_fCreateTime=m_pkFps->GetTicks();
+	}
 }
 
 

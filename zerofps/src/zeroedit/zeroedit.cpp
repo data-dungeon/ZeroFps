@@ -64,7 +64,7 @@ void ZeroEdit::OnInit(void)
 	m_kDrawPos.Set(0,0,0);
 	
 	pkObjectMan->SetUpdate(false);
-//	pkPhysEngine->SetUpdate(false);
+	pkPhysEngine->SetUpdate(false);
 	
 	m_pkCurentChild=NULL;
 	
@@ -736,7 +736,7 @@ void ZeroEdit::Input()
 					if(object==NULL)
 						break;
 					
-					object->GetPos()=m_kDrawPos-Vector3(0,1,0);
+					object->GetPos()=m_kDrawPos;
 					
 					if(m_iRandom){
 						object->GetRot().y+=rand()%360;					

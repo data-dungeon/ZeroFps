@@ -10,7 +10,7 @@
 
 using namespace std;
 
-#define PROJECTILE_SPEED 200
+#define PROJECTILE_SPEED 150
 
 class MassDriverProperty: public Property {
 

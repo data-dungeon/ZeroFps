@@ -22,6 +22,7 @@ CrossRenderProperty::CrossRenderProperty()
 
 void CrossRenderProperty::SetTexture(const char* acTex1)//,const char* acTex2)
 {
+	m_kTex1=acTex1;	
 	m_iTex1=m_pkTexMan->Load(acTex1,0);
 //	m_iTex2=m_pkTexMan->Load(acTex2,0);
 }
@@ -61,7 +62,7 @@ bool CrossRenderProperty::HandleSetValue( string kValueName ,string kValue )
 {
 	if(strcmp(kValueName.c_str(), "m_kTex1") == 0) {
 		SetTexture(kValue.c_str());
-		return false;
+		return true;
 	}
 	
 /*

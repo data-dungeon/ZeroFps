@@ -9,6 +9,7 @@ AdaptorSniper::AdaptorSniper()
 		
 	m_pkFps = static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));	
 	m_pkObjectMan = static_cast<ObjectManager*>(g_ZFObjSys.GetObjectPtr("ObjectManager"));	
+	m_pkAlSys=static_cast<OpenAlSystem*>(g_ZFObjSys.GetObjectPtr("OpenAlSystem"));				
 		
 	m_kDir.Set(0,0,0);
 	
@@ -19,31 +20,54 @@ AdaptorSniper::AdaptorSniper()
 	m_fHitTime=m_pkFps->GetTicks();	
 	m_fDirUpdate=4;
 	m_fRotateSpeed=2;
-	m_fWalkSpeed=3;	
+	m_fWalkSpeed=1;	
+	m_bActive=false;;	
+	
+	walksound=new Sound();
+	walksound->m_acFile="file:../data/sound/walk.wav";
+	walksound->m_bLoop=true;
+	
+
 }
 
+AdaptorSniper::~AdaptorSniper()
+{
+
+	m_pkAlSys->RemoveSound(walksound);
+	delete walksound;
+}
 
 void AdaptorSniper::Update()
 {
+	//update sound possition
+	walksound->m_kPos=m_pkObject->GetPos();
+	m_pkAlSys->AddSound(walksound);
 
+
+	//get and update status property
 	if(m_pkStatusProperty==NULL)
 	{
 		m_pkStatusProperty=static_cast<StatusProperty*>(m_pkObject->GetProperty("StatusProperty"));
 	}
 	else
 	{
+		if(m_pkStatusProperty->m_fArmor < 100) 
+			m_bActive=true;		
+	
 		if(m_pkStatusProperty->m_fHealth < 0){
 			cout<<"DIEEEEEEEEEEEED!"<<endl;
 			m_pkObjectMan->Delete(m_pkObject);
 		}	
 	}
 
+	//check direction every m_fDirUpdate second
 	if(m_pkFps->GetTicks() - m_fChangeTime >= m_fDirUpdate) 
 	{
 		m_fChangeTime=m_pkFps->GetTicks();
 		m_kDir.Set(0,rand()%360,0);		
 	}
 	
+	//find the player and go after him
 	if(m_pkPlayer==NULL)
 	{
 		m_pkPlayer=m_pkObjectMan->GetObject("Player");
@@ -52,25 +76,27 @@ void AdaptorSniper::Update()
 	{
 		if((m_pkObject->GetPos() - m_pkPlayer->GetPos()).Length() < 30){		
 			m_kDir.y=GetYawAngle(m_pkObject->GetPos() - m_pkPlayer->GetPos())+90;
+			
+			m_bActive=true;
 		}
 	}	
 	
 	
-	if(m_pkObject->GetRot().y>360)
-		m_pkObject->GetRot().y-=360;
+	if(m_bActive)
+	{
+		if(m_pkObject->GetRot().y>360)
+			m_pkObject->GetRot().y-=360;
 	
-	if(m_pkObject->GetRot().y<0)
-		m_pkObject->GetRot().y+=360;
+		if(m_pkObject->GetRot().y<0)
+			m_pkObject->GetRot().y+=360;
 	
 	
-	m_pkObject->GetRot().y = BestYawTurnDir(m_pkObject->GetRot().y,m_kDir.y,m_fRotateSpeed);
+		m_pkObject->GetRot().y = BestYawTurnDir(m_pkObject->GetRot().y,m_kDir.y,m_fRotateSpeed);
 	
-	Vector3 vel(0,m_pkObject->GetVel().y,0);
-	vel += GetYawVector2(m_pkObject->GetRot().y) * m_fWalkSpeed;
-	m_pkObject->GetVel()=vel;
-	
-
-
+		Vector3 vel(0,m_pkObject->GetVel().y,0);
+		vel += GetYawVector2(m_pkObject->GetRot().y) * m_fWalkSpeed;
+		m_pkObject->GetVel()=vel;
+	}
 }
 
 void AdaptorSniper::Touch(Object* pkObject)

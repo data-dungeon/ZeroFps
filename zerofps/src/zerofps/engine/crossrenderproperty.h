@@ -32,6 +32,7 @@ class ENGINE_API CrossRenderProperty: public Property {
 		void Update();
 
 		void SetTexture(const char* acTex1);//,const char* acTex2);// {m_kTex1=acTex1 ; m_kTex2=acTex2;};
+		void SetScale(Vector3 kScale) {m_kScale=kScale;};
 		void UpdateSet();
 		
 		void Save(ZFMemPackage* pkPackage);

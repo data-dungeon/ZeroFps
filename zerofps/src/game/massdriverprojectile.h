@@ -10,19 +10,18 @@
 using namespace std;
 
 class MassDriverProjectile: public Property {
-	private:
-	
+	private:	
 		ObjectManager *m_pkObjectMan;
-		ZeroFps *m_pkFps;
-			
-		float m_fCreateTime;
-			
+		ZeroFps *m_pkFps;			
+		float m_fCreateTime;		
+		int m_iMode;
+		
 	public:
-		MassDriverProjectile();
-	
+		int shoterid;
+		
+		MassDriverProjectile();	
 		void Update();
 		void Touch(Object* pkObject);
-
 };
 
 
