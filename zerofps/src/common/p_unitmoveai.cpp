@@ -27,6 +27,7 @@ P_UnitMoveAI::P_UnitMoveAI() :m_pkMoveUnitCommand(NULL),m_pkUnit(NULL), m_bTemp(
 	m_fSpeedMod = 1;
 
 	m_pkPathFind = NULL; 
+	m_pkSu = NULL;
 }
 
 P_UnitMoveAI::~P_UnitMoveAI()
@@ -90,7 +91,6 @@ AIBase* P_UnitMoveAI::RunUnitCommand(int iCommandID, int iXDestinaton, int iYDes
 	{
 	case UNIT_MOVE:
 		{
-			m_pkPathFind->Reset();
 			cout<<"MOVEMOVE" <<endl;
 			//add a waiting move destination
 			if(iTarget>=0)
@@ -125,11 +125,21 @@ AIBase* P_UnitMoveAI::RunUnitCommand(int iCommandID, int iXDestinaton, int iYDes
 
 AIBase* P_UnitMoveAI::UpdateAI()
 {
+	//setup serverunit pointer
+	if(!m_pkSu)
+	{
+		m_pkSu = (P_ServerUnit*)m_pkObject->GetProperty("P_ServerUnit");	
+		
+		if(!m_pkSu)
+			return NULL;
+	}
+	
 	//if we are not doint anything check for orders
 	if(m_iCurrentState == -1)
 	{
 		CheckForOrder();	
 	}
+	
 	
 	switch(m_iCurrentState)
 	{
@@ -167,15 +177,13 @@ AIBase* P_UnitMoveAI::UpdateAI()
 				//cout<<"New destination is "<<iX<<" "<<iY<<endl;
 			
 				//remove old marker
-				TileEngine::m_pkInstance->RemoveUnit(m_pkObject->GetPos(),
-					(P_ServerUnit*)m_pkObject->GetProperty("P_ServerUnit"));										
+				TileEngine::m_pkInstance->RemoveUnit(m_pkObject->GetPos(),m_pkSu);										
 						
 				if(!TileEngine::m_pkInstance->GetTile(iX-1,iY-1)->kUnits.empty())
 				{
 
 					//cout<<"Hit something trying to find a new way"<<endl;
-					TileEngine::m_pkInstance->AddUnit(m_pkObject->GetPos(),
-						(P_ServerUnit*)m_pkObject->GetProperty("P_ServerUnit"));						
+					TileEngine::m_pkInstance->AddUnit(m_pkObject->GetPos(),m_pkSu);						
 					
 					//set pos one finale time to prevent ugly interpolation										
 					m_pkObject->SetPos(m_pkObject->GetPos());										
@@ -209,8 +217,7 @@ AIBase* P_UnitMoveAI::UpdateAI()
 				
 				
 				//tell tile engine that im standing on kCurretDestination now
-				TileEngine::m_pkInstance->AddUnit(m_kCurretDestination,
-					(P_ServerUnit*)m_pkObject->GetProperty("P_ServerUnit"));
+				TileEngine::m_pkInstance->AddUnit(m_kCurretDestination,m_pkSu);
 				
 				//now we can move 
 				MoveTo(m_kCurretDestination);
@@ -301,15 +308,13 @@ bool P_UnitMoveAI::DoPathFind(Vector3 kStart,Vector3 kStop,bool exact)
 	m_kStartPoint.y = int((m_pkMap->m_iHmSize/2.0)+ceil((kStart.z / HEIGHTMAP_SCALE)));		
 	
 	//temporary remove this unit so path finding
-	TileEngine::m_pkInstance->RemoveUnit(m_pkObject->GetPos(),
-		(P_ServerUnit*)m_pkObject->GetProperty("P_ServerUnit"));						
+	TileEngine::m_pkInstance->RemoveUnit(m_pkObject->GetPos(),m_pkSu);						
 	
 
 	if(!m_pkPathFind->Rebuild(m_kStartPoint.x, m_kStartPoint.y, m_kEndPoint.x, m_kEndPoint.y,exact))
 	{
 		//put this unit back
-		TileEngine::m_pkInstance->AddUnit(m_pkObject->GetPos(),
-			(P_ServerUnit*)m_pkObject->GetProperty("P_ServerUnit"));								
+		TileEngine::m_pkInstance->AddUnit(m_pkObject->GetPos(),m_pkSu);								
 		
 		m_kEndPoint = m_kStartPoint;
 		//printf("Pathfinding Failed\n");
@@ -318,12 +323,13 @@ bool P_UnitMoveAI::DoPathFind(Vector3 kStart,Vector3 kStop,bool exact)
 	else
 	{
 		//put this unit back
-		TileEngine::m_pkInstance->AddUnit(m_pkObject->GetPos(),
-			(P_ServerUnit*)m_pkObject->GetProperty("P_ServerUnit"));								
+		TileEngine::m_pkInstance->AddUnit(m_pkObject->GetPos(),m_pkSu);								
 		
 		m_kCurretDestination = m_pkObject->GetPos();
 		m_fSpeedMod = 1;
 		m_iCurrentState=UNIT_MOVE;
+		
+		//cout<<"sucessfull"<<endl;
 		return true;
 	}
 }

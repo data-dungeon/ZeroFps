@@ -52,6 +52,8 @@ private:
 	static HeightMap* m_pkMap;
 	ZeroFps*				m_pkFps;
 	PathFind* 			m_pkPathFind;
+	P_ServerUnit* 		m_pkSu;
+	
 	Point 				m_kStartPoint, m_kEndPoint;
 	Vector3				m_kStartPos,m_kEndPos;
 	
