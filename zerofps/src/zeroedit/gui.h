@@ -33,8 +33,9 @@ enum SEARCH_TASK
 class Gui
 {
 private:
+	void MoveColorSliders(char* szLeader);
 	bool CreateSlider(ZGuiWnd* pkParent, int iID, int x, int y, int w, int h, 
-		bool bHorizontal, char* szResName, char* szBkSkin);
+		bool bHorizontal, int min, int max, char* szResName, char* szBkSkin);
 	bool IsButtonChecked(char* szName, char* szGroupName=NULL);
 	bool CreateWorkPanel();
 	void OpenPropertyDlg();
@@ -99,6 +100,7 @@ private:
 	ZGuiWnd* Get(char* strName);
 
 	map<string, DlgBox*> m_kDialogs;
+	bool m_bLockMaskSliders;
 
 public:
 	bool OpenFileDlg(SEARCH_TASK eTask); 

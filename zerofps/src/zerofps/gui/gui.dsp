@@ -184,6 +184,10 @@ SOURCE=.\zguiscrollbar.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\zguislider.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\zguitabctrl.cpp
 # End Source File
 # Begin Source File
@@ -253,6 +257,10 @@ SOURCE=.\zguiresourcemanager.h
 # Begin Source File
 
 SOURCE=.\zguiscrollbar.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\zguislider.h
 # End Source File
 # Begin Source File
 

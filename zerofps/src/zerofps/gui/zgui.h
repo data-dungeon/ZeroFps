@@ -20,6 +20,7 @@
 #include "zguitextbox.h"
 #include "zguitreebox.h"
 #include "zguitabctrl.h"
+#include "zguislider.h"
 
 #pragma warning( disable : 4786) // truncate long names
 #include <list>
@@ -56,6 +57,7 @@ class ZGuiResourceManager;
 #define ZGM_EN_CHANGE					 0x0300
 #define ZGM_SELECTLISTITEM				 0x0311
 #define ZGM_TCN_SELCHANGE				 0x5501
+#define ZGM_SCN_SETPOS					 0x5601
 
 #define ZG_DEFAULT_GUI_FONT				 1
 
