@@ -102,7 +102,7 @@ class MistServer :public Application , public ZGuiApp {
 		void UpdateObjectMakerPos();
 		void DrawZoneMarker(Vector3 kPos);
 		void DrawCrossMarker(Vector3 kPos);
-		void AddZone();
+		void AddZone(bool bEmpty=false);
 
 		void HandleOrders();
 		bool CheckValidOrder(ClientOrder* pkOrder);

@@ -100,8 +100,8 @@ void MistServer::Init()
 	//zone defaults
 	m_kZoneSize.Set(8,8,8);
 	m_iCurrentMarkedZone = -1;
-	m_strActiveZoneName = "data/mad/zones/emptyzone.mad";
-	m_strActiveObjectName = "";//data/script/objects/t_test.lua";
+//	m_strActiveZoneName = "data/mad/zones/emptyzone.mad";
+	m_strActiveZoneName = "";
 	m_strActiveEnviroment = "data/enviroments/sun.env";
 
 	//click delay
@@ -146,6 +146,7 @@ void MistServer::Init()
 	// hide cursor
 	SDL_ShowCursor(SDL_DISABLE);
 
+	//setup caption
 	SDL_WM_SetCaption("MistServer", NULL);
 
 	// give focus to main window
@@ -380,6 +381,11 @@ void MistServer::Input()
 			if(pkInput->Pressed(MOUSELEFT))
 			{
 				AddZone();	
+			}
+			
+			if(pkInput->Pressed(KEY_T))
+			{
+				AddZone(true);	
 			}
 	
 			if(pkInput->Pressed(KEY_R))
@@ -823,7 +829,7 @@ Entity* MistServer::GetTargetObject()
 }
 
 
-void MistServer::AddZone()
+void MistServer::AddZone(bool bEmpty)
 {
 	if(pkObjectMan->IsInsideZone(m_kZoneMarkerPos,m_kZoneSize))
 		return;
@@ -838,8 +844,8 @@ void MistServer::AddZone()
 
 	if(id != -1)
 	{
-		pkObjectMan->SetZoneModel(m_strActiveZoneName.c_str(),id);
-	
+		if(!bEmpty)
+			pkObjectMan->SetZoneModel(m_strActiveZoneName.c_str(),id);
 		//pkObjectMan->SetUnderConstruction(id);
 	}	
 
@@ -1119,12 +1125,14 @@ void MistServer::RotateActiveZoneObject()
 		ZoneData* pkData = pkObjectMan->GetZoneData(m_iCurrentMarkedZone);
 		if(pkData) 
 		{
-			pkData->m_pkZone->RotateLocalRotV( Vector3(0,90.0f,0) ); 
+			if(pkData->m_pkZone)
+			{
+				pkData->m_pkZone->RotateLocalRotV( Vector3(0,90.0f,0) ); 
 		
-			// Update PFind Mesh
-			P_PfMesh* pkMesh = (P_PfMesh*)pkData->m_pkZone->GetProperty("P_PfMesh");
-			if(pkMesh) {
-				pkMesh->CalcNaviMesh();
+				// Update PFind Mesh
+				P_PfMesh* pkMesh = (P_PfMesh*)pkData->m_pkZone->GetProperty("P_PfMesh");
+				if(pkMesh)
+					pkMesh->CalcNaviMesh();
 			}		
 		}
 		

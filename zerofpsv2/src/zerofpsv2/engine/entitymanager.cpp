@@ -2051,8 +2051,8 @@ void EntityManager::LoadZone(int iId)
 		//object->GetUpdateStatus()=UPDATE_DYNAMIC;
 		object->AddProperty("P_LightUpdate");	//always attach a lightupdateproperty to new zones
 
-//		object->AddProperty("P_PfMesh");
-		SetZoneModel("data/mad/zones/emptyzone.mad",iId);
+		//SetZoneModel("data/mad/zones/emptyzone.mad",iId);
+		SetZoneModel("",iId);		
 
 		//add static entity
 		Entity* staticentity = CreateObject();
@@ -2300,6 +2300,13 @@ void EntityManager::SetZoneModel(const char* szName,int iId)
 	{
 		return;
 	}	
+	
+	if(strlen(szName) == 0)
+	{
+		zd->m_pkZone->DeleteProperty("P_Mad");
+		zd->m_pkZone->DeleteProperty("P_Tcs");
+		zd->m_pkZone->DeleteProperty("P_PfMesh");		
+	}
 
 	//setup mad
 	P_Mad* mp = (P_Mad*)zd->m_pkZone->GetProperty("P_Mad");
