@@ -135,7 +135,7 @@ void Test::OnInit(void) {
 	
 	//skybox
 	SkyBoxObject *sky=new SkyBoxObject("file:../data/textures/skybox-hor.bmp","file:../data/textures/skybox-topbotom.bmp");
-	sky->SetRotate(Vector3(1,1,0));
+	sky->SetRotate(Vector3(10,10,0));
 	pkObjectMan->Add(sky);	
 	pkCollisionMan->Add(sky);
 	
