@@ -164,7 +164,15 @@ class ENGINE_SYSTEMS_API P_Tcs : public Property
 		friend class Tcs;
 };
 
+
+namespace SI_PTcs
+{
+	int ENGINE_SYSTEMS_API ApplyImpulsLua(lua_State* pkLua);
+}
+
 Property* Create_P_Tcs();
+void ENGINE_SYSTEMS_API Register_PTcs(ZeroFps* pkZeroFps);
+
 
 #endif
 

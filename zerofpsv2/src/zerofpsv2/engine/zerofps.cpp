@@ -1583,7 +1583,7 @@ void ZeroFps::RegisterPropertys()
 	m_pkPropertyFactory->Register("P_LightUpdate",		Create_LightUpdateProperty);							
 	m_pkPropertyFactory->Register("P_Light",				Create_LightProperty);					
 	m_pkPropertyFactory->Register("P_LinkToJoint",		Create_LinkToJoint);										
-	m_pkPropertyFactory->Register("P_Mad",					Create_MadProperty);				
+	//m_pkPropertyFactory->Register("P_Mad",					Create_MadProperty);				
 	//m_pkPropertyFactory->Register("P_Heightmap2",		Create_P_Heightmap2);
 	m_pkPropertyFactory->Register("P_Camera",				Create_CameraProperty);			
 	m_pkPropertyFactory->Register("P_Vegitation",		Create_VegitationProperty);
@@ -1605,6 +1605,9 @@ void ZeroFps::RegisterPropertys()
 	m_pkPropertyFactory->Register("P_WorldInfo",			Create_WorldInfoProperty);						
 	m_pkPropertyFactory->Register("P_ScriptInterface",	Create_P_ScriptInterface);
 	m_pkPropertyFactory->Register("P_Controller",		Create_P_Controller);
+
+	Register_MadProperty(this);
+	Register_PTcs(this);
 }
 
 

@@ -65,11 +65,6 @@ void Init(EntityManager* pkObjMan, ZFScriptSystem* pkScript)
 	pkScript->ExposeFunction("CreateEntity", 			ObjectManagerLua::CreateEntityLua);
 	pkScript->ExposeFunction("Delete",  				ObjectManagerLua::DeleteLua);
 
-	// mad handling
-//	pkScript->ExposeFunction("PlayAnim",				ObjectManagerLua::PlayAnim);
-//	pkScript->ExposeFunction("SetNextAnim",			ObjectManagerLua::SetNextAnim);
-//	pkScript->ExposeFunction("AddMesh",					ObjectManagerLua::AddMesh);
-
 	// entity Variables
 	pkScript->ExposeFunction("GetLocalDouble",		ObjectManagerLua::GetLocalDouble);
 	pkScript->ExposeFunction("SetLocalDouble",		ObjectManagerLua::SetLocalDouble);
@@ -87,10 +82,6 @@ void Init(EntityManager* pkObjMan, ZFScriptSystem* pkScript)
 
 	// velocity functions
 	pkScript->ExposeFunction("SetVelTo",				ObjectManagerLua::SetVelToLua);
-	
-	// TCS
-	pkScript->ExposeFunction("ApplyImpuls",			ObjectManagerLua::ApplyImpulsLua);
-	
 	
 	//zone management
 	pkScript->ExposeFunction("GetZoneIDAtPos",		ObjectManagerLua::GetZoneIDAtPosLua);
@@ -798,34 +789,6 @@ int SetVelToLua(lua_State* pkLua)
    return 0;
 }
 
-int ApplyImpulsLua(lua_State* pkLua)
-{
-	if(g_pkScript->GetNumArgs(pkLua) == 2)
-	{
-		double dId;
-		vector<TABLE_DATA> vkData;
-
-		g_pkScript->GetArgNumber(pkLua, 0, &dId);
-		g_pkScript->GetArgTable(pkLua, 2, vkData);
-
-		Vector3 kDir((float) (*(double*) vkData[0].pData),
-						(float) (*(double*) vkData[1].pData),
-						(float) (*(double*) vkData[2].pData));
-
-		if(Entity* pkEnt = g_pkObjMan->GetEntityByID((int)dId))
-		{
-			if(P_Tcs* pkTcs = (P_Tcs*)pkEnt->GetProperty("P_Tcs"))
-			{
-				pkTcs->ApplyImpulsForce(kDir);
-				return 1;
-			}
-		}
-		return 0;
-	}
-
-   return 0;	
-
-}
 
 
 int GetZoneIDLua(lua_State* pkLua)

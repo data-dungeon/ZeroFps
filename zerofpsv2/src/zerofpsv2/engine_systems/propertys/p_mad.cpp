@@ -662,19 +662,18 @@ bool P_Mad::operator<(Property& kOther)
 }
 */
 
-Property* Create_MadProperty()
-{
-	return new P_Mad;
-}
-
-
+/* ********************************** SCRIPT INTERFACE ****************************************/
+/**	\brief Script functions for Mad
+	\ingroup si
+*/
+class SIMad { };
 
 namespace SI_PMad
 {
 
 /**	\fn SetNextAnim(ObjectID, AnimName)
- 	\relates MistLandScript
-   \brief Sets the next animation for a object to play.
+ 	\relates SIMad
+	\brief Sets the next animation for a object to play.
 
 	Sets the next animation to play on a object. Stops to looping of the currently playing animation
 	(if any) and then play the one given as a parameter. That animation will the loop. 
@@ -696,7 +695,7 @@ int SetNextAnim(lua_State* pkLua)
 }
 
 /**	\fn PlayAnim(ObjectID, AnimName)
- 	\relates MistLandScript
+ 	\relates SIMad
    \brief Sets the playing animation.
 */
 int PlayAnim(lua_State* pkLua)
@@ -717,7 +716,10 @@ int PlayAnim(lua_State* pkLua)
 	return 1;
 }
 
-
+/**	\fn AddMesh
+ 	\relates SIMad
+   \brief 
+*/
 int AddMesh(lua_State* pkLua)
 {
 	// Get ObjectID ID
@@ -736,11 +738,20 @@ int AddMesh(lua_State* pkLua)
 	return 1;
 }
 
+}
 
+
+Property* Create_MadProperty()
+{
+	return new P_Mad;
 }
 
 void Register_MadProperty(ZeroFps* pkZeroFps)
 {
+	// Register Property
+	pkZeroFps->m_pkPropertyFactory->Register("P_Mad", Create_MadProperty);				
+
+	// Register Property Script Interface
 	g_pkScript->ExposeFunction("SetNextAnim",	SI_PMad::SetNextAnim);
 	g_pkScript->ExposeFunction("PlayAnim",		SI_PMad::PlayAnim);
 	g_pkScript->ExposeFunction("AddMesh",		SI_PMad::AddMesh);

@@ -1,5 +1,7 @@
 #include "p_tcs.h"
+#include "../script_interfaces/si_objectmanager.h" 
 //#include "p_mad.h"
+using namespace ObjectManagerLua;
 
 
 P_Tcs::P_Tcs()
@@ -700,10 +702,64 @@ void P_Tcs::Wakeup(bool bWakeChilds)
 	*/
 }
 
+/* ********************************** SCRIPT INTERFACE ****************************************/
+/**	\brief Script functions for Tcs
+	\ingroup si
+*/
+class SITcs { };
+
+
+namespace SI_PTcs
+{
+
+/**	\fn SetNextAnim(ObjectID, AnimName)
+ 	\relates SITcs
+	\brief Sets the next animation for a object to play.
+
+	Sets the next animation to play on a object. Stops to looping of the currently playing animation
+	(if any) and then play the one given as a parameter. That animation will the loop. 
+*/
+int ApplyImpulsLua(lua_State* pkLua)
+{
+	if(g_pkScript->GetNumArgs(pkLua) == 2)
+	{
+		double dId;
+		vector<TABLE_DATA> vkData;
+
+		g_pkScript->GetArgNumber(pkLua, 0, &dId);
+		g_pkScript->GetArgTable(pkLua, 2, vkData);
+
+		Vector3 kDir((float) (*(double*) vkData[0].pData),
+						(float) (*(double*) vkData[1].pData),
+						(float) (*(double*) vkData[2].pData));
+
+		if(Entity* pkEnt = g_pkObjMan->GetEntityByID((int)dId))
+		{
+			if(P_Tcs* pkTcs = (P_Tcs*)pkEnt->GetProperty("P_Tcs"))
+			{
+				pkTcs->ApplyImpulsForce(kDir);
+				return 1;
+			}
+		}
+		return 0;
+	}
+
+   return 0;	
+
+}
+}
+
+
 Property* Create_P_Tcs()
 {
 	return new P_Tcs;
 }
 
+void ENGINE_SYSTEMS_API Register_PTcs(ZeroFps* pkZeroFps)
+{
+	// Register Property
+	pkZeroFps->m_pkPropertyFactory->Register("P_Tcs", Create_P_Tcs);					
 
-
+	// Register Property Script Interface
+	g_pkScript->ExposeFunction("ApplyImpuls",	SI_PTcs::ApplyImpulsLua);
+}

@@ -70,17 +70,9 @@ namespace ObjectManagerLua
 	// Event
 	int ENGINE_SYSTEMS_API SendEventLua(lua_State* pkLua);						//(int objectid,string event) send event to target object
 
-
-
-	// Animations
-/*	int ENGINE_SYSTEMS_API PlayAnim(lua_State* pkLua);
-	int ENGINE_SYSTEMS_API SetNextAnim(lua_State* pkLua);
-	int ENGINE_SYSTEMS_API AddMesh(lua_State* pkLua);*/
-
 	// Physics
 	int ENGINE_SYSTEMS_API SetVelToLua(lua_State* pkLua);
 	int ENGINE_SYSTEMS_API SetObjectRotVelLua(lua_State* pkLua);
-	int ENGINE_SYSTEMS_API ApplyImpulsLua(lua_State* pkLua);
 	
 	//zone management
 	int ENGINE_SYSTEMS_API GetZoneIDLua(lua_State* pkLua);					//returns the zone id that contains entity id
