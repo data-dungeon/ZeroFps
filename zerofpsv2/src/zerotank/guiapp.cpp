@@ -46,6 +46,7 @@ bool GuiApp::CreateWnd(GuiType eType, char* szResourceName, char* szText, int iI
 	ZGuiWnd* pkWnd;
 
 	const int LISTBOX_ITEM_HEIGHT = 20;
+	const int COMBOBOX_ITEM_HEIGHT = 20;
 	
 	switch(eType)
 	{
@@ -74,6 +75,17 @@ bool GuiApp::CreateWnd(GuiType eType, char* szResourceName, char* szText, int iI
 	case Listbox:
 		pkWnd = new ZGuiListbox( Rect(x,y,x+w,y+h), GetWnd(parentID), true, iID, 
 			LISTBOX_ITEM_HEIGHT, NULL, NULL, NULL);
+		break;
+	case Combobox:
+		pkWnd = new ZGuiCombobox( Rect(x,y,x+w,y+h), GetWnd(parentID), true, iID,
+			COMBOBOX_ITEM_HEIGHT, NULL, NULL, NULL, GetSkin("DefCBTopItemSkin"));
+		break;
+	case Textbox:
+		pkWnd = new ZGuiTextbox( Rect(x,y,x+w,y+h), GetWnd(parentID), true, iID, 
+			uiFlags & EB_IS_MULTILINE);
+		break;
+	case Treebox:
+		pkWnd = new ZGuiTreebox( Rect(x,y,x+w,y+h), GetWnd(parentID), true, iID);
 		break;
 	}
 	
@@ -113,6 +125,27 @@ bool GuiApp::CreateWnd(GuiType eType, char* szResourceName, char* szText, int iI
 		static_cast<ZGuiListbox*>(pkWnd)->SetItemHighLightSkin(GetSkin("DefLBitemFSkin"));
 		static_cast<ZGuiListbox*>(pkWnd)->SetScrollbarSkin(GetSkin("DefSBrBkSkin"),
 			GetSkin("DefSBrNSkin"), GetSkin("DefSBrFSkin") );
+		break;
+	case Combobox:
+		static_cast<ZGuiCombobox*>(pkWnd)->GetListbox()->SetSkin( GetSkin("DefCBBkSkin") );
+		static_cast<ZGuiCombobox*>(pkWnd)->GetListbox()->SetItemNormalSkin(   GetSkin("DefCBitemUSkin"));
+		static_cast<ZGuiCombobox*>(pkWnd)->GetListbox()->SetItemSelectedSkin( GetSkin("DefCBitemDSkin"));
+		static_cast<ZGuiCombobox*>(pkWnd)->GetListbox()->SetItemHighLightSkin(GetSkin("DefCBitemFSkin"));
+		static_cast<ZGuiCombobox*>(pkWnd)->GetListbox()->SetScrollbarSkin(GetSkin("DefSBrBkSkin"),
+			GetSkin("DefSBrNSkin"), GetSkin("DefSBrFSkin") );
+		break;
+	case Textbox:
+		static_cast<ZGuiTextbox*>(pkWnd)->SetSkin(GetSkin("DefTextboxSkin"));
+		static_cast<ZGuiTextbox*>(pkWnd)->SetScrollbarSkin(GetSkin("DefSBrBkSkin"),
+			GetSkin("DefSBrNSkin"), GetSkin("DefSBrFSkin") );
+		break;
+	case Treebox:
+		static_cast<ZGuiTreebox*>(pkWnd)->SetScrollbarSkin(GetSkin("DefSBrBkSkin"),
+			GetSkin("DefSBrNSkin"), GetSkin("DefSBrFSkin") );
+		static_cast<ZGuiTreebox*>(pkWnd)->SetSkin(GetSkin("DefTreeboxBkSkin"));
+		static_cast<ZGuiTreebox*>(pkWnd)->InsertBranchSkin(0, GetSkin("DefTreeNodeChildSkin"));
+		static_cast<ZGuiTreebox*>(pkWnd)->InsertBranchSkin(1, GetSkin("DefTreeNodeParentClosedSkin"));
+		static_cast<ZGuiTreebox*>(pkWnd)->InsertBranchSkin(2, GetSkin("DefTreeNodeParentOpenSkin"));
 		break;
 	}
 
@@ -168,8 +201,39 @@ void GuiApp::InitTextures()
 	skin->m_afBorderColor[0] = 0.22f; skin->m_afBorderColor[1] = 0.22f;
 	skin->m_afBorderColor[2] = 0.22f; skin->m_unBorderSize = 1;
 	m_kSkins.insert(strSkin("DefLBBkSkin", skin));
+
+	m_kSkins.insert(strSkin("DefCBitemUSkin", new ZGuiSkin(GetTexID("cb_u.bmp"),0)));
+	m_kSkins.insert(strSkin("DefCBitemDSkin", new ZGuiSkin(GetTexID("cb_d.bmp"),0)));
+	
+	skin = new ZGuiSkin(GetTexID("cb_f.bmp"),1);
+	skin->m_afBorderColor[0] = 0.22f; skin->m_afBorderColor[1] = 0.22f;
+	skin->m_afBorderColor[2] = 0.22f; skin->m_unBorderSize = 1;
+	m_kSkins.insert(strSkin("DefCBitemFSkin", skin));
+
+	skin = new ZGuiSkin(GetTexID("cb_bk.bmp"),1);
+	skin->m_afBorderColor[0] = 0.22f; skin->m_afBorderColor[1] = 0.22f;
+	skin->m_afBorderColor[2] = 0.22f; skin->m_unBorderSize = 1;
+	m_kSkins.insert(strSkin("DefCBBkSkin", skin));
+
+	m_kSkins.insert(strSkin("DefCBTopItemSkin", new ZGuiSkin(GetTexID("cb_topItem.bmp"),1)));
+
+	skin = new ZGuiSkin(GetTexID("textbox.bmp"),1);
+	skin->m_afBorderColor[0] = 0.22f; skin->m_afBorderColor[1] = 0.22f;
+	skin->m_afBorderColor[2] = 0.22f; skin->m_unBorderSize = 1;
+	m_kSkins.insert(strSkin("DefTextboxSkin", skin));
+
+	skin = new ZGuiSkin(GetTexID("treebox_bk.bmp"),1);
+	skin->m_afBorderColor[0] = 0.22f; skin->m_afBorderColor[1] = 0.22f;
+	skin->m_afBorderColor[2] = 0.22f; skin->m_unBorderSize = 1;
+	m_kSkins.insert(strSkin("DefTreeboxBkSkin", skin));
+
+	m_kSkins.insert(strSkin("DefTreeNodeChildSkin", new ZGuiSkin(GetTexID("tn_c.bmp"),0)));
+	m_kSkins.insert(strSkin("DefTreeNodeParentClosedSkin", new ZGuiSkin(GetTexID("tn_pc.bmp"),0)));
+	m_kSkins.insert(strSkin("DefTreeNodeParentOpenSkin", new ZGuiSkin(GetTexID("tn_po.bmp"),0)));
+
 	
 
+	
 }
 
 void GuiApp::InitializeGui(ZGui* pkGui, TextureManager* pkTexMan)
@@ -221,4 +285,14 @@ void GuiApp::AddListItem(int iListboxID, char *szText, bool bCombobox)
 		pkComboBox->AddItem(szText, -1, false); 
 	}
 
+}
+
+void GuiApp::AddTreeItem(int iTreeboxID, const char* szID, const char* szIDParent, char* szText,
+						 unsigned char iNodeSkinNormal, unsigned char iNodeSkinSelected)
+{
+	ZGuiTreebox* pkTreeBox = static_cast<ZGuiTreebox*>(GetWnd(iTreeboxID));
+
+	string strParent = string(szIDParent);
+
+	pkTreeBox->AddItem(strParent, szText, iNodeSkinNormal, iNodeSkinSelected, szID);
 }

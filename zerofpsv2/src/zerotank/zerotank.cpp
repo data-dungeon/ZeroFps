@@ -4,8 +4,13 @@
 
 ZeroTank g_kZeroTank("ZeroTank",0,0,0);
 
+static bool GUIPROC( ZGuiWnd* win, unsigned int msg, int numparms, void *params ) 
+{ 
+	return true;
+}
+
 ZeroTank::ZeroTank(char* aName,int iWidth,int iHeight,int iDepth) 
-	: Application(aName,iWidth,iHeight,iDepth) 
+	: Application(aName,iWidth,iHeight,iDepth), GuiApp(GUIPROC)
 { 
 	m_iSelfObjectID				= -1;
 	m_HaveFoundHMapObject		= false;
@@ -89,6 +94,8 @@ void ZeroTank::Init()
 	sprintf(szTitle, "zero rts - %s",szRandom[rand()%(sizeof(szRandom)/sizeof(szRandom[1]))]);
 */
 	//SDL_WM_SetCaption("Mistland, the land of mist", NULL);
+
+	InitializeGui(pkGui, pkTexMan);
 
 	SetupGUI();
 }
@@ -337,24 +344,13 @@ bool ZeroTank::StartUp()	{ return true; }
 bool ZeroTank::ShutDown()	{ return true; }
 bool ZeroTank::IsValid()	{ return true; }
 
-static bool GUIPROC( ZGuiWnd* win, unsigned int msg, int numparms, void *params ) 
-{ 
-	return true;
-}
+
 
 void ZeroTank::SetupGUI()
 {
-	// Setup Gui system.
-	m_pkGuiBuilder = new GuiBuilder(pkGui, pkTexMan, GUIPROC);
-	m_pkGuiBuilder->Initialize();
+	CreateWnd(Wnd, "TestWnd",    NULL,  10, -1, 0, 0, 300, 300, 0);
 
-	m_pkGuiBuilder->Create(Wnd, "TestWnd",    NULL,   10, -1, 0, 0, 200, 200, 0);
-	m_pkGuiBuilder->Create(Button, "TestButton", "Button",  11, 10, 0, 0,  40,  20, 0);
-	m_pkGuiBuilder->Create(Label,  "TestLabel",  "Label", 12, 10, 0, 20, 40,  20, 0);
-	m_pkGuiBuilder->Create(Radiobutton, "TestRadioButton", "Radibutton", 13, 10, 0,40, 16, 16, 0);
-	m_pkGuiBuilder->Create(Checkbox, "TestCheckox", "Checkbox", 14, 10, 0,60, 16, 16, 0);
-	m_pkGuiBuilder->Create(Scrollbar, "TestScrollbar", "Scrollbar", 15, 10, 0, 90, 100, 16, 0);
-	m_pkGuiBuilder->Create(Slider, "TestSlider", "Slider", 16, 10, 0, 120, 100, 16, 0);
+	CreateWnd(Treebox, "TestTreebox", NULL, 11, 10, 0, 0, 150, 150, 0);
+	//AddTreeItem(11, "Apa", "Mamma", "Test", 0, 1);
 
-	
 }

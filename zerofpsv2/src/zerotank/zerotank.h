@@ -16,12 +16,12 @@
 
 #include "../zerofpsv2/engine_systems/mad/mad_modell.h"
 
-#include "guibuilder.h"
+#include "guiapp.h"
 
 //#include "../common/common.pkg"
 
 
-class ZeroTank :public Application {
+class ZeroTank :public Application, public GuiApp {
 	private:
 		
 		Camera*			m_pkCamera;
@@ -65,7 +65,7 @@ class ZeroTank :public Application {
 
 		Mad_Modell			m_pkTestMod;
 
-		GuiBuilder*			m_pkGuiBuilder;
+		//GuiBuilder*			m_pkGuiBuilder;
 
 	public:
 		

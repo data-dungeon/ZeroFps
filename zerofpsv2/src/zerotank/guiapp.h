@@ -11,25 +11,29 @@ using namespace std;
 
 class TextureManager;
 
+#define EB_IS_MULTILINE 0x1
+
 enum GuiType
 {
-	Wnd,
-	Button,
-	Checkbox,
-	Combobox,
-	Label,
-	Listbox,
-	Radiobutton,
-	Scrollbar,
-	Slider,
+	Wnd,//
+	Button,//
+	Checkbox,//
+	Combobox,//
+	Label,//
+	Listbox,//
+	Radiobutton,//
+	Scrollbar,//
+	Slider,//
 	TabControl,
-	Textbox,
-	Treebox,
+	Textbox,//
+	Treebox, 
 };
 
 class GuiApp  
 {
 public:
+	void AddTreeItem(int iTreeboxID, const char* szID, const char* szIDParent, char* szText,
+		unsigned char iNodeSkinNormal, unsigned char iNodeSkinSelected);
 	void AddListItem(int iListboxID, char* szText, bool bCombobox=false);
 	bool CreateNewRadiobuttonGroup(const char *szName, int id);
 	void InitializeGui(ZGui* pkGui, TextureManager* pkTexMan);
