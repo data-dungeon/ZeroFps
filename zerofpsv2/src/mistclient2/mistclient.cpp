@@ -553,7 +553,7 @@ void MistClient::Input()
 	} else if(!m_pkInputHandle->Pressed(KEY_ESCAPE))
 		s_bEscPressed = false;
 
-	if(m_pkInputHandle->Pressed(KEY_I) && !DelayCommand())
+	if(m_pkInputHandle->VKIsDown("inventory") && !DelayCommand())
 	{			
 		if(m_pkInventoryDlg->IsVisible())
 			m_pkInventoryDlg->Close(); 
@@ -561,7 +561,7 @@ void MistClient::Input()
 			RequestOpenInventory();
 	}
 
-	if(m_pkInputHandle->Pressed(KEY_E) && !DelayCommand())
+	if(m_pkInputHandle->VKIsDown("eqipment") && !DelayCommand())
 	{			
 		if(m_pkEquipmentDlg->IsVisible())
 			m_pkEquipmentDlg->Close(); 
@@ -697,7 +697,7 @@ void MistClient::Input()
 				}
 			}				
 		
-			//capture mouse pointer?
+			//captured mouse pointer?
 			if(!m_bGuiCapture)
 			{
 				pkCam->Set3PYAngle(pkCam->Get3PYAngle() - (x/5.0));
@@ -716,6 +716,10 @@ void MistClient::Input()
 				if(fAy <= -0.49)
 					pkCam->Set3PPAngle(pkCam->Get3PPAngle() - m_pkZeroFps->GetFrameTime()*100);
 			}
+			
+			//rotate camera by keyboard
+			if(m_pkInputHandle->VKIsDown("rotate_left"))		pkCam->Set3PYAngle(pkCam->Get3PYAngle() + m_pkZeroFps->GetFrameTime()*150);
+			if(m_pkInputHandle->VKIsDown("rotate_right"))	pkCam->Set3PYAngle(pkCam->Get3PYAngle() - m_pkZeroFps->GetFrameTime()*150);			
 			
 			//get current distance
 			float fDistance = pkCam->Get3PDistance();
