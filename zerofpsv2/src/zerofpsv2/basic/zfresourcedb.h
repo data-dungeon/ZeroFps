@@ -63,6 +63,8 @@ class BASIC_API ZFResourceDB : public ZFSubSystem {
 		{
 			FID_LISTRES,
 			FID_LISTTYPES,
+			FID_RESRELOAD,
+			FID_RESRELOADALL,
 		};
 
 		bool								m_bInstantExpire;		
@@ -79,6 +81,8 @@ class BASIC_API ZFResourceDB : public ZFSubSystem {
 		ResourceCreateLink*	FindResourceType(string strName);
 		ZFResourceInfo*	GetResourceData(string strResName);
 		ZFResourceInfo* FindResource(string strResName);
+
+		void ReloadAllResorces();
 
 	public:
 		ZFResourceDB();
@@ -98,7 +102,8 @@ class BASIC_API ZFResourceDB : public ZFSubSystem {
 		bool IsResourceLoaded(string strResName);		
 		ZFResource* GetResourcePtr(ZFResourceHandle& kResHandle);
 
-		
+		void ReloadResource(string strResName);
+		void ReloadResource(ZFResourceInfo* pkResInfo);
 		void GetResource(ZFResourceHandle& kResHandle, string strResName);
 		void FreeResource(ZFResourceHandle& kResHandle);
 

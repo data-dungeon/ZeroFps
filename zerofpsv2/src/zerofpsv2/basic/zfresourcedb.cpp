@@ -131,10 +131,19 @@ void ZFResourceDB::RunCommand(int cmdid, const CmdArgument* kCommand)
 				GetSystem().Printf(" [%d] = %s, %d",i, m_kResourceFactory[i].m_strName.c_str(),m_kResourceFactory[i].m_iActive);
 				}
 			break;
+
+		case FID_RESRELOAD:
+			if(kCommand->m_kSplitCommand.size() >= 2)
+			{
+				ReloadResource(kCommand->m_kSplitCommand[1]);
+			}
+			break;
+
+		case FID_RESRELOADALL:
+				ReloadAllResorces();
+			break;
 		};
 }
-
-
 
 ZFResourceDB::ZFResourceDB()
  : ZFSubSystem("ZFResourceDB") 
@@ -142,8 +151,13 @@ ZFResourceDB::ZFResourceDB()
 	m_iNextID			= 0;
 	m_bInstantExpire	= false;
 
-	Register_Cmd("res_list",	FID_LISTRES,	CSYS_FLAG_SRC_ALL);
-	Register_Cmd("res_types",	FID_LISTTYPES,	CSYS_FLAG_SRC_ALL);
+	Register_Cmd("res_list",		FID_LISTRES,			CSYS_FLAG_SRC_ALL);
+	Register_Cmd("res_types",		FID_LISTTYPES,			CSYS_FLAG_SRC_ALL);
+	Register_Cmd("res_reload",		FID_RESRELOAD,			CSYS_FLAG_SRC_ALL);
+	Register_Cmd("res_reloadall",	FID_RESRELOADALL,		CSYS_FLAG_SRC_ALL);
+
+	
+
 	g_ZFObjSys.Log_Create("resdb");
 }
 
@@ -258,6 +272,51 @@ bool ZFResourceDB::IsResourceLoaded(string strResName)
 	
 	return false;
 }
+
+void ZFResourceDB::ReloadResource(ZFResourceInfo* pkResInfo)
+{
+	// Remove Old Resource
+	delete pkResInfo->m_pkResource;
+	pkResInfo->m_pkResource = NULL;
+
+	// Create new resource.
+	ZFResource* pkRes = CreateResource(pkResInfo->m_strName);
+
+	// Failed to create resource.
+	if(!pkRes) {
+		g_ZFObjSys.Logf("resdb", "Failed to create resource %s\n", pkResInfo->m_strName.c_str());
+		return;
+		}
+
+	if(pkRes->Create(pkResInfo->m_strName.c_str()) == false) {
+		g_ZFObjSys.Logf("resdb", "Failed to Load resource %s\n", pkResInfo->m_strName.c_str());
+		return;
+		}
+
+	 pkResInfo->m_pkResource = pkRes;
+}
+
+
+void ZFResourceDB::ReloadResource(string strResName)
+{
+	ZFResourceInfo* pkResInfo = GetResourceData(strResName);
+
+	if(!pkResInfo)
+		return;
+
+	ReloadResource( pkResInfo );
+}
+
+void ZFResourceDB::ReloadAllResorces()
+{
+	list<ZFResourceInfo*>::iterator it;
+
+	for(it = m_kResources.begin(); it != m_kResources.end(); it++ ) 
+	{
+		ReloadResource((*it)->m_strName);
+	}	
+}
+
 
 void ZFResourceDB::GetResource(ZFResourceHandle& kResHandle, string strResName)
 {
