@@ -683,6 +683,9 @@ void MistServer::OnServerClientJoin(ZFClient* pkClient,int iConID, char* szLogin
 	}
 	else
 		SpawnPlayer(iConID);
+		
+		
+	SayToClients(string("SERVER:") + strPlayer + string(" connected"));
 }
 
 void MistServer::SpawnPlayer(int iConID)
@@ -717,9 +720,17 @@ void MistServer::SpawnPlayer(int iConID)
 
 void MistServer::OnServerClientPart(ZFClient* pkClient,int iConID)
 {
+	if(PlayerData* pkNewPlayer = m_pkPlayerDB->GetPlayerData(iConID))
+	{
+		SayToClients(string("SERVER:") + pkNewPlayer->m_strPlayerName + string(" disconnected"));				
+	}	
+
+	
 	DeletePlayerCharacter(iConID);
 	m_pkPlayerDB->Logout(pkClient->m_strLogin);
 	cout<<"Client "<<iConID<<" Parted"<<endl;	
+	
+
 }
 
 
