@@ -3,7 +3,12 @@
 #include <string.h> 
 #include "image.h"
 
+#include <windows.h>
+
 // Defines
+#define BITMAP_ID				0x4D42	// universal id for a bitmap
+#define PC_NOCOLLAPSE			0x04    /* do not match color to system kPalette */
+
 // TGA FORMAT
 #define TGA_IMAGETYPE_NONE		0		// No image data included.
 #define TGA_IMAGETYPE_UMAP		1		// Uncompressed, color-mapped images.
@@ -313,7 +318,7 @@ bool Image::load_pcx(const char* filename)
 
 bool Image::load_pcx(FILE *fp, color_rgb* pal)
 {
-	color_rgb palette[768];
+	color_rgb kPalette[768];
 	int i;
 
 	pcx_header_s head;
@@ -346,12 +351,12 @@ bool Image::load_pcx(FILE *fp, color_rgb* pal)
 		else	data1[count++] = readc;
 		}
 
-	// Read palette from pcx image.
+	// Read kPalette from pcx image.
 	fseek(fp, -768L, SEEK_END);
 	for(i=0; i<256; i++) {
-		palette[i].r = (getc(fp));
-		palette[i].g = (getc(fp));
-		palette[i].b = (getc(fp));
+		kPalette[i].r = (getc(fp));
+		kPalette[i].g = (getc(fp));
+		kPalette[i].b = (getc(fp));
 		}
 
 	// Translate image to rgb-24.
@@ -364,9 +369,9 @@ bool Image::load_pcx(FILE *fp, color_rgb* pal)
 		}
 	else {
 		for(i = 0; i<img_size; i++) {
-			pixels[i].r = palette[ data1[i] ].r;
-			pixels[i].g = palette[ data1[i] ].g;
-			pixels[i].b = palette[ data1[i] ].b;
+			pixels[i].r = kPalette[ data1[i] ].r;
+			pixels[i].g = kPalette[ data1[i] ].g;
+			pixels[i].b = kPalette[ data1[i] ].b;
 			}
 		}
 
@@ -611,3 +616,118 @@ void Image::MapColorToAlpha(float fR, float fG, float fB, float fAlpha)
 
 }
 
+static unsigned long GetFileLength(FILE *pkFile)
+{
+	fpos_t lenght;
+	fseek(pkFile,0,SEEK_END);
+	fgetpos(pkFile,&lenght); 
+	fseek(pkFile, 0, SEEK_SET);
+	return (unsigned long) lenght;
+}
+
+bool Image::load_bmp(char* szFileName)
+{
+	FILE *pkFile = fopen(szFileName, "rb");
+	if(pkFile == NULL)
+		return false;
+
+	bool bSuccess = load_bmp(pkFile);
+
+	fclose(pkFile);
+
+	return bSuccess;
+}
+
+bool Image::load_bmp(FILE* pkFile)
+{
+	bmp_t kBitmap;
+
+	fread(&kBitmap.kFileheader, sizeof(bmpheader_t), 1, pkFile);
+	fread(&kBitmap.kInfoheader, sizeof(bmpinfo_t), 1, pkFile);
+
+	// load kPalette if there is one
+	if (kBitmap.kInfoheader.usBitCount == 8)
+	{
+		fread(&kBitmap.kPalette, 256*sizeof(bmppal_t), 1, pkFile);
+
+		for (int i=0; i<256; i++)
+		{
+			int buffer = kBitmap.kPalette[i].ucRed;
+			kBitmap.kPalette[i].ucRed  = kBitmap.kPalette[i].ucBlue;
+			kBitmap.kPalette[i].ucBlue = buffer;
+			kBitmap.kPalette[i].ucFlags = PC_NOCOLLAPSE;
+		} 
+	}
+
+	fseek(pkFile,-(int)(kBitmap.kInfoheader.ulSizeImage),SEEK_END);
+
+	switch(kBitmap.kInfoheader.usBitCount)
+	{
+	case 8:
+	case 16:
+		printf("Found 8 or 16bits bitmap.\n");
+
+		if(kBitmap.pkData)
+		{
+			delete[] kBitmap.pkData;
+			kBitmap.pkData=NULL;
+		}
+
+		kBitmap.pkData = new unsigned char[kBitmap.kInfoheader.ulSizeImage];
+		fread(kBitmap.pkData, kBitmap.kInfoheader.ulSizeImage, 1, pkFile);
+		break;
+	case 24:
+		printf("Found 24 bits bitmap.\n");
+
+		unsigned char* temp = new unsigned char[kBitmap.kInfoheader.ulSizeImage];
+
+		kBitmap.pkData = new unsigned char[2*kBitmap.kInfoheader.lWidth*
+			kBitmap.kInfoheader.lHeight];
+
+		fread(temp, kBitmap.kInfoheader.ulSizeImage, 1, pkFile);
+
+		bool bFormatIsRGB565 = true;
+		if(bFormatIsRGB565)
+		{
+			int size = kBitmap.kInfoheader.lWidth * 
+				kBitmap.kInfoheader.lHeight;
+
+	        for (int i=0; i<size; i++)
+	        {
+				unsigned char blue  = (temp[(i*3) + 0] >> 3);
+				unsigned char green = (temp[(i*3) + 1] >> 2);
+	            unsigned char red   = (temp[(i*3) + 2] >> 3);
+	
+				// build up 16 bit color word
+		        unsigned char color = ((blue%32 << 0) + (green%64 << 5) + (red%32 << 11));
+				((unsigned short *)kBitmap.pkData)[i] = color;
+			}
+		}
+
+		kBitmap.kInfoheader.usBitCount=16;
+		break;
+	}
+	
+	width = kBitmap.kInfoheader.lWidth;
+	height = kBitmap.kInfoheader.lHeight;
+	int iSize = width*height;
+
+	pixels = new color_rgba[width*height];
+
+	int oka2=0;
+	int oka=0;
+	for(int y=0; y<height; y++)
+		for(int x=0; x<width; x++)
+		{
+			pixels[oka2].r = kBitmap.pkData[oka++];
+			pixels[oka2].g = kBitmap.pkData[oka++];
+			pixels[oka2].b = kBitmap.pkData[oka++];
+			pixels[oka2].a = 0;
+			oka2++;
+		}
+
+	if(kBitmap.pkData)
+		delete[] kBitmap.pkData;
+
+	return true;
+}

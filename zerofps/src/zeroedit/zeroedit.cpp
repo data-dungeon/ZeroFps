@@ -1037,12 +1037,22 @@ void ZeroEdit::Input()
 			break;
 
 		case KEY_F10:
-			DlgBox* pkWorkpanel = m_pkGui->GetDlg("WorkPanelDlg");
+			DlgBox* pkWorkpanel;
+			pkWorkpanel = m_pkGui->GetDlg("WorkPanelDlg");
 			
 			if(pkWorkpanel->IsOpen())
 				pkWorkpanel->Close(false);
 			else
 				pkWorkpanel->Open();
+			break;
+
+		case KEY_F1:
+			{
+				Image kImage;
+				kImage.load_bmp("apa.bmp");
+				kImage.save("apa.tga",false);
+				// load_bmp pk
+			}
 			break;
 	}
 }

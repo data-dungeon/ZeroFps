@@ -61,6 +61,49 @@ struct pcx_header_s
 
 #pragma pack(  )
 
+struct bmppal_t 
+{ 
+	unsigned char ucRed; 
+	unsigned char ucGreen; 
+	unsigned char ucBlue; 
+	unsigned char ucFlags; 
+}; 
+
+#pragma pack( 1 )
+
+	struct bmpheader_t 
+	{ 
+		unsigned short	usType; 
+		unsigned long	ulSize; 
+		unsigned short	usReserved1; 
+		unsigned short	usReserved2; 
+		unsigned long	ulOffBits; 
+	};
+
+#pragma pack(  )
+
+struct bmpinfo_t
+{ 
+    unsigned long	ulSize; 
+    long			lWidth; 
+    long			lHeight; 
+    unsigned short	usPlanes; 
+    unsigned short	usBitCount;
+    unsigned long	ulCompression; 
+    unsigned long	ulSizeImage; 
+    long			lXPelsPerMeter; 
+    long			lYPelsPerMeter; 
+    unsigned long	ulClrUsed; 
+    unsigned long	ulClrImportant; 
+}; 
+
+struct bmp_t
+{
+	bmpheader_t		kFileheader;  
+	bmpinfo_t		kInfoheader;
+	bmppal_t		kPalette[256];      
+	unsigned char	*pkData;           
+};
 
 /// Class to load images in diffrent file formats.
 class BASIC_API Image 
@@ -72,6 +115,9 @@ private:
 	
 
 public:
+	bool load_bmp(char* szFileName);
+	bool load_bmp(FILE* pkFile);
+
 	int width, height;					///< Size of image.
 	color_rgba* pixels;					///< Ptr to pixels in image.
 	bool	bHasAlpha;					///< True if image was loaded with alpha.
