@@ -47,6 +47,10 @@ class ZeroEdit :public Application {
 
 		Object* m_pkCurentParent;
 		Object* m_pkCurentChild;
+		
+		float m_fTimer;
+		float m_fDrawRate;
+		bool m_bDrawing;
 
 	public:
 		ZeroEdit(char* aName,int iWidth,int iHeight,int iDepth);
@@ -62,7 +66,7 @@ class ZeroEdit :public Application {
 		void CreateNew(int iSize);
 		void SetPointer();	
 		void DrawMarkers();
-	
+		void Clear();
 };
 
 

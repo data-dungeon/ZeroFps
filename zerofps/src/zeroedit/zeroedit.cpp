@@ -9,8 +9,6 @@ ZeroEdit::ZeroEdit(char* aName,int iWidth,int iHeight,int iDepth): Application(a
 
 void ZeroEdit::OnInit(void) 
 {
-	m_pkMap=new HeightMap();	
-	HeightMapObject *m_pkHeightMapObject=new HeightMapObject(m_pkMap);	
 	
 	//register commands
 	g_ZFObjSys.Register_Cmd("loadmap",FID_LOADMAP,this);	
@@ -24,16 +22,23 @@ void ZeroEdit::OnInit(void)
 	pkConsole->Printf("--------------------------------");
 
 	//init
+	
+	m_pkMap=new HeightMap();	
+//	HeightMapObject *m_pkHeightMapObject=new HeightMapObject(m_pkMap);		
 	m_pkCamera=new Camera(Vector3(0,10,0),Vector3(0,0,0),85,1.333,0.25,250);	
 
 	glEnable(GL_LIGHTING);
 	
 
+	m_fTimer=pkFps->GetTicks();
 	m_kDrawPos.Set(0,0,0);
 	pkObjectMan->SetNoUpdate(true);
 	
 	m_pkCurentParent=m_pkHeightMapObject;
 	m_pkCurentChild=NULL;
+	
+	m_fDrawRate=0.2;
+	pkFps->m_pkCmd->Add(&m_fDrawRate,"g_DrawRate",type_float);		
 	
 	m_iMode=FLATTEN;		
 	pkFps->m_pkCmd->Add(&m_iMode,"g_mode",type_int);		
@@ -45,12 +50,13 @@ void ZeroEdit::OnInit(void)
 	pkFps->m_pkCmd->Add(&m_fPointDistance,"g_PointDistance",type_float);	
 	
 	//Heightmap		
-	m_pkMap->GenerateNormals(); 
-	m_pkMap->GenerateTextures();
+//	m_pkMap->GenerateNormals(); 
+//	m_pkMap->GenerateTextures();
 
-	m_pkHeightMapObject->GetPos().Set(0,-4,0);			
-	pkObjectMan->Add(m_pkHeightMapObject);	
-	pkCollisionMan->Add(m_pkHeightMapObject);
+//	m_pkHeightMapObject->GetPos().Set(0,-4,0);			
+//	pkObjectMan->Add(m_pkHeightMapObject);	
+//	pkCollisionMan->Add(m_pkHeightMapObject);
+	CreateNew(100);
 
 
 	//default light
@@ -121,6 +127,7 @@ void ZeroEdit::RunCommand(int cmdid, const CmdArgument* kCommand)
 				return;
 			}
 			
+			Clear();		//clear objects
 			if(!m_pkMap->Load(kCommand->m_kSplitCommand[1].c_str()))
 				pkConsole->Printf("Could not load map =(");
 			break;
@@ -130,6 +137,7 @@ void ZeroEdit::RunCommand(int cmdid, const CmdArgument* kCommand)
 				return;
 			}
 			
+			Clear();		//clear objects
 			if(!m_pkMap->LoadImageHmap(kCommand->m_kSplitCommand[1].c_str())){
 				pkConsole->Printf("Could not load map =(");
 			} else  {
@@ -173,6 +181,7 @@ void ZeroEdit::OnClientStart(void)
 
 void ZeroEdit::Input() 
 {
+	
 	float speed=40;
 
 	if(pkInput->Pressed(KEY_X)){
@@ -245,7 +254,12 @@ void ZeroEdit::Input()
 		case ADDOBJECT:
 			if(pkInput->Pressed(MOUSELEFT))
 			{
-				Object *object = new BunnyObject();
+				if(pkFps->GetTicks()-m_fTimer < m_fDrawRate)
+					break;
+			
+				m_fTimer=pkFps->GetTicks();
+			
+				Object *object = new BallObject();
 				object->GetPos()=m_kDrawPos;
 				pkObjectMan->Add(object);
 				m_pkCurentChild=object;
@@ -257,10 +271,22 @@ void ZeroEdit::Input()
 	}
 }
 
+void ZeroEdit::Clear() 
+{
+	CreateNew(100);
+}
 
 void ZeroEdit::CreateNew(int iSize) 
 {
 	pkObjectMan->Clear();
+	m_pkCurentChild=NULL;
+	m_pkCurentParent=m_pkHeightMapObject;
+
+
+	HeightMapObject *m_pkHeightMapObject=new HeightMapObject(m_pkMap);		
+	m_pkHeightMapObject->GetPos().Set(0,-4,0);			
+	pkObjectMan->Add(m_pkHeightMapObject);	
+	pkCollisionMan->Add(m_pkHeightMapObject);
 
 	m_pkMap->Create(iSize);
 	m_pkMap->GenerateNormals(); 
@@ -299,7 +325,6 @@ void ZeroEdit::DrawMarkers()
 		if(size < .5)
 			size=.5;
 		pkRender->DrawBillboard(pkFps->GetCam()->GetModelMatrix(),m_pkCurentChild->GetPos(),size*2,pkTexMan->Load("file:../data/textures/childmarker.tga",T_NOMIPMAPPING));	
-	cout<<"SIZE"<<m_pkCurentChild->GetBoundingRadius()<<endl;	
 	}
 
 }

@@ -11,7 +11,8 @@ using namespace std;
 class ENGINE_API MadProperty: public Property {
 	private:
 		Core*	pkCore;
-
+		Frustum* m_pkFrustum;
+		
 		int		iActiveAnimation;
 		float	fCurrentTime;
 		float	fLastUpdate;

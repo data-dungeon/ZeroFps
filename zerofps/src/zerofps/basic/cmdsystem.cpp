@@ -162,13 +162,15 @@ void CmdSystem::RunCommand(int cmdid, const CmdArgument* kCommand)
 			m_pkCon->Printf("### variable list ###");
 
 			for(int i=0;i<GetList().size();i++){
-				strcpy(text,GetList()[i]->aName);
-				strcat(text," = ");
-				IntToChar(value,(int)GetVar(i));
-				strcat(text,value);
+				m_pkCon->Printf(" %s  =  %.3f",GetList()[i]->aName,GetVar(i));
+				
+//				strcpy(text,GetList()[i]->aName);
+//				strcat(text," = ");
+//		IntToChar(value,(int)GetVar(i));
+//				strcat(text,value);
 				//strcat(text,atoi(m_pkCmd->GetVar(i)))
 				//cout<<<<" = "<<m_pkCmd->GetVar(i)<<endl;
-				m_pkCon->Printf(text);
+//				m_pkCon->Printf(text);
 			}
 
 			break;

@@ -21,6 +21,8 @@ void ObjectManager::Clear()
 	for(list<Object*>::iterator it=m_akObjects.begin();it!=m_akObjects.end();it++) {
 		Delete(*it);
 	}
+	
+	UpdateDelete();
 }
 
 void ObjectManager::Delete(Object* pkObject) {
@@ -175,6 +177,8 @@ void ObjectManager::GetPropertys(int iType,int iSide)
 
 void ObjectManager::Update(int iType,int iSide,bool bSort)
 {
+	UpdateDelete();
+
 	if(m_bNoUpdate)
 		if(iType!=PROPERTY_TYPE_RENDER)
 			return;

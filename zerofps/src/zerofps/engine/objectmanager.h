@@ -9,20 +9,21 @@ using namespace std;
 
 class ENGINE_API ObjectManager : public ZFObject{
 	private:
-	struct Property_Less : public binary_function<Property*, Property*, bool> {
-		bool operator()(Property* x, Property* y) { return *x < *y; };
-	} Less_Property;
+		struct Property_Less : public binary_function<Property*, Property*, bool> {
+			bool operator()(Property* x, Property* y) { return *x < *y; };
+		} Less_Property;
 	
 	
 	
-	list<Object*>	m_akObjects;
-	vector<Object*> m_akDeleteList;
-	list<Property*> m_akPropertys;
+		list<Object*>	m_akObjects;
+		vector<Object*> m_akDeleteList;
+		list<Property*> m_akPropertys;
 
-	void RunCommand(int cmdid, const CmdArgument* kCommand) { }
-
-	int	iNextObjectID;
-	bool m_bNoUpdate;
+		int	iNextObjectID;
+		bool m_bNoUpdate;
+	
+		void RunCommand(int cmdid, const CmdArgument* kCommand) { }
+		void Remove(Object* pkObject);				//dont use this..use Delete instead
 
 	public:
 		ObjectManager();
@@ -36,7 +37,6 @@ class ENGINE_API ObjectManager : public ZFObject{
 		void SetNoUpdate(bool bNoUpdate) {m_bNoUpdate=bNoUpdate;};
 		void Add(Object* pkNewObject);				//add object to the manager
 		void Delete(Object* pkNewObject);			//adds an object to delete qeue
-		void Remove(Object* pkObject);				//dont use this..use Delete instead
 		void Update();								//update all objects in manager
 		void Update(int iType);						//update all objects of specified type
 		void UpdateDelete();						//deletes objects in delete qeue	

@@ -17,6 +17,8 @@ MadProperty::MadProperty()
 	m_iType=PROPERTY_TYPE_RENDER;
 	m_iSide=PROPERTY_SIDE_CLIENT;
 
+	m_pkFrustum=static_cast<Frustum*>(g_ZFObjSys.GetObjectPtr("Frustum"));
+
 }
 
 MadProperty::MadProperty(Core* pkModell) {
@@ -34,6 +36,7 @@ MadProperty::MadProperty(Core* pkModell) {
 
 
 void MadProperty::Update() {
+
 	if(!pkCore)
 		return;
 
@@ -55,7 +58,12 @@ void MadProperty::Update() {
 		//glRotatef(0,1,0,0);
 		glRotatef(m_pkObject->GetRot().y ,0,1,0);
 		//glRotatef(0,0,0,1);
-		pkCore->draw();
+		
+		Vector4 sphere=m_pkObject->GetPos();
+		sphere.w=4;
+		if(m_pkFrustum->SphereInFrustum(sphere))
+			pkCore->draw();
+	
 	glPopMatrix();
 
 	if(bFlipFace)
