@@ -355,7 +355,7 @@ bool ObjectManager::SaveTemplate(const char* acName,const char* acFile)
 bool SaveAllObjects(const char* acFile)
 {
 
-
+	return true;
 }
 
 
