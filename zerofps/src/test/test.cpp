@@ -59,7 +59,7 @@ void Test::OnInit(void) {
 
 
 	testa.Load("babe.pmd");
-/*	
+	
 	LightSource *sol=new LightSource;
 	Vector3 *solpos=new Vector3(200,10,200);
 	Vector3 *solrot=new Vector3(0,0,0);
@@ -78,7 +78,8 @@ void Test::OnInit(void) {
 		sol->fQuadratic_Atten=0;
 		sol->iType=POINT;			
 	pkLight->Add(sol);
-*/
+
+	pkLight->Remove(sol);
 }
 
 

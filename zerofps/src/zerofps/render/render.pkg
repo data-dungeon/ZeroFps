@@ -1,10 +1,12 @@
+class Light;
 class Render;
 class TextureManager;
-class Light;
 
+
+#include "light.h"
 #include "render.h"
 #include "texturemanager.h"
-#include "light.h"
+
 
 
 

@@ -21,7 +21,7 @@ void Application::SetEnginePointer(ZeroFps* pkZeroFps)
 	pkInput=pkFps->m_pkInput;
 	pkTexMan=pkFps->m_pkTexMan;
 	pkFile=pkFps->m_pkFile;
-//	pkLight=pkFps->m_pkLight;
+	pkLight=pkFps->m_pkLight;
 }
 	
 	
