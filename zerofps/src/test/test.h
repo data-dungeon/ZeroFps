@@ -20,7 +20,7 @@ class Test :public Application {
 	private:
 		bool InitUI();
 		HeightMap *test;
-		HeightMap *test2;
+//		HeightMap *test2;
 
 		Vector4 light_position;
 		Vector4 white_light;
@@ -61,7 +61,7 @@ class Test :public Application {
 		void OnClientStart(void);
 		
 		void input();
-		
+		void CreateZones();
 		void RunCommand(int cmdid, const CmdArgument* kCommand);
 };
 

@@ -40,7 +40,7 @@ class ZeroEdit :public Application {
 			FID_LISTTEMPLATES,
 			FID_MAKETEMPLATE,
 			FID_SAVE,
-			FID_LOAD,
+			FID_LOAD
 		};	
 	
 		Camera *m_pkCamera;

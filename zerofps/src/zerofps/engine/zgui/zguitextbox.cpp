@@ -10,7 +10,7 @@
 #include "zguiscrollbar.h"
 #include "../../engine/input.h"
 #include <stdio.h>
-#include "../Input.h"
+#include "../input.h"
 
 #define VERT_SCROLLBAR_TEXBOX_ID 22
 #define HORZ_SCROLLBAR_TEXBOX_ID 23

@@ -107,7 +107,7 @@ void Test::OnInit(void)
 	float waterlevel;
 	
 
-	
+/*	
 	for( i=0;i<2000;i++) {
 		Object *ball=new BallObject();
 		
@@ -121,6 +121,9 @@ void Test::OnInit(void)
 			waterlevel = test->Height(x,y);
 			}
 	}
+*/
+	CreateZones();
+	pkObjectMan->LoadAllObjects("forest.zol");
 
 
 	glEnable(GL_LIGHTING );
@@ -230,7 +233,7 @@ void Test::OnIdle(void) {
 //		pkRender->DrawSkyBox(pkFps->GetCam()->GetPos());
 //		pkRender->DrawHMlod(test,pkFps->GetCam()->GetPos(),pkFps->m_iFps);			
 		pkObjectMan->Update(PROPERTY_TYPE_RENDER, PROPERTY_SIDE_CLIENT, true);
-
+	pkFps->DevPrintf("Active Propertys: %d",pkObjectMan->GetActivePropertys());
 
 		glEnable(GL_ALPHA_TEST);
 		glAlphaFunc(GL_GREATER,0.3);
@@ -268,6 +271,7 @@ void Test::OnHud(void)
 	//pkRender->Print(Vector3(-.9,.85,-1),Vector3(0,0,0),Vector3(0.06,0.06,0.06),fps);
 
 	pkFps->DevPrintf("Fps: %d",pkFps->m_iFps);
+
 
 	glAlphaFunc(GL_GREATER,0.3);
 	glEnable(GL_ALPHA_TEST);
@@ -371,9 +375,10 @@ bool ZGWinProc( ZGuiWnd* pkWindow, unsigned int uiMessage, int iNumberOfParams, 
 
 bool Test::InitUI()
 {
-	ZGuiWnd* pkMainWindow = new ZGuiWnd(Rect(1024/2-500/2,768/2-500/2,1024/2+500/2,768/2+500/2));
-	ZGuiWnd* pkMainWindow2 = new ZGuiWnd(Rect(1024/2-200/2,768/2-200/2,1024/2+200/2,768/2+200/2));
 
+	ZGuiWnd* pkMainWindow = new ZGuiWnd(Rect(1024/2-500/2,768/2-500/2,1024/2+500/2,768/2+500/2));
+//	ZGuiWnd* pkMainWindow2 = new ZGuiWnd(Rect(1024/2-200/2,768/2-200/2,1024/2+200/2,768/2+200/2));
+/*
 	int bk_image1 = pkRender->GetTexMangager()->Load("file:../data/textures/Image1.bmp", 0);
 	int bk_image2 = pkRender->GetTexMangager()->Load("file:../data/textures/Image2.bmp", 0);
 	int bk_image1_a = pkRender->GetTexMangager()->Load("file:../data/textures/Mask1.bmp", 0);
@@ -402,7 +407,7 @@ bool Test::InitUI()
 			  const unsigned char byBorderB=255, 
 			  const unsigned short unBorderSize=0, 
 			  const bool bTileBkSkin = false); */
-
+/*
 	ZGuiSkin* sk_main = new ZGuiSkin(bk_image1, -1, -1, -1, 255, 255, 255, 255, 0, 0, 5);
 	ZGuiSkin* sk_bn1_up = new ZGuiSkin(bn1_up, -1, -1, -1, 255, 255, 255, 0, 0, 0, 0);
 	ZGuiSkin* sn_bn1_down = new ZGuiSkin(bn1_down, -1, -1, -1, 255, 255, 255, 0, 0, 0, 0);
@@ -431,7 +436,32 @@ bool Test::InitUI()
 	pkScrollbar->SetThumbButtonSkins(sk_bn1_up,sk_bn1_up);
 	
 	pkGui->AddMainWindow(ID_MAINWND1, pkMainWindow, ZGWinProc, true);
-	pkGui->AddMainWindow(ID_MAINWND1+1, pkMainWindow2, ZGWinProc, true);
+*/	
+//	pkGui->AddMainWindow(ID_MAINWND1+1, pkMainWindow, ZGWinProc, true);
 
 	return true;
 }
+
+
+void Test::CreateZones()
+{
+	int radius=250;
+
+	HeightMap *m_pkMap=test;
+//	cout<<"SIZE"<<m_pkMap->m_iHmSize<<endl;
+
+	for(int x=0;x<m_pkMap->m_iHmSize;x+=radius/3){
+		for(int z=0;z<m_pkMap->m_iHmSize;z+=radius/3){
+			if(m_pkMap->Height(x,z)>-1){
+				ZoneObject *object = new ZoneObject();
+				object->GetPos()=Vector3(x,m_pkMap->Height(x,z),z);
+				object->SetRadius(radius);
+				object->SetParent(pkObjectMan->GetWorldObject());			
+			}
+		}
+	}
+}
+
+
+
+
