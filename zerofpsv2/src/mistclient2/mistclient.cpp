@@ -964,6 +964,7 @@ void MistClient::ToggleGuiCapture(int iForce)
 
 	if(m_bGuiCapture == true)
 	{
+		m_pkInputHandle->SetCursorInputPos(m_pkRender->GetWidth()/2,m_pkRender->GetHeight()/2);
 		m_pkGui->ShowCursor(true);
 	}
 	else
