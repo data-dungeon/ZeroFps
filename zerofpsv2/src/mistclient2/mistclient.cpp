@@ -94,6 +94,10 @@ void MistClient::OnInit()
 	//init mistland script intreface
 	//MistLandLua::Init(m_pkEntityManager,m_pkScript);
 
+	
+	//register emote names
+	RegisterEmotes();
+	
    // init gui script intreface
 	GuiAppLua::Init(&g_kMistClient, m_pkScript);
 
@@ -180,11 +184,23 @@ void MistClient::RunCommand(int cmdid, const CmdArgument* kCommand)
 	}
 }
 
+void MistClient::RegisterEmotes()
+{
+	m_kEmotes.push_back("wave");
+	m_kEmotes.push_back("boo");
+	m_kEmotes.push_back("yawn");
+	m_kEmotes.push_back("donno");
+	m_kEmotes.push_back("confused");
+	
+}
+
+
 void MistClient::Say(string strMsg)
 {
 	if(strMsg.size() == 0)
 		return;
 
+		
 	if(strMsg[0] == '/')
 	{
 		//handle different chatbox functions		
@@ -192,56 +208,84 @@ void MistClient::Say(string strMsg)
 		{
 			//list users
 			if(strMsg.substr(1) == "users" || strMsg.substr(1) == "players")
+			{
 				SendRequestPlayerList();
+				return;
+			}
+		
+			//emote with "/emote [emote] [text]"
+			if(strMsg.substr(1,5) == "emote")
+			{
+				if(strMsg.length() >= 7)
+				{
+					//cout<<"emote:"<<strMsg.substr(7,strMsg.find(" ",7) - 7)<<"|"<<endl;
+					SendTaunt(strMsg.substr( 7 , strMsg.find(" ",7) - 7) );
+					
+					if(strMsg.length() > strMsg.find(" ",7))
+						SendMessage(strMsg.substr(strMsg.find(" ",7))  ,MLCM_TALK,""); 	
+				}
+				
+				return;
+			}
 			
-			//emote hello
-			if(strMsg.substr(1,5) == "hello")
+			//emote with "/e[nr] [text]"	
+			if(strMsg.substr(1,1) == "e")
 			{
-				SendTaunt(1);
-				if(strMsg.size() <= 7)
-					SendMessage("hello",MLCM_TALK,""); 	
-				else				
-					SendMessage(strMsg.substr(7),MLCM_TALK,""); 					
-			}						
-			if(strMsg.substr(1,5) == "scare")
-			{
-				SendTaunt(2);
-				if(strMsg.size() <= 7)
-					SendMessage("boo",MLCM_TALK,""); 	
-				else				
-					SendMessage(strMsg.substr(7),MLCM_TALK,""); 					
-			}									
-			if(strMsg.substr(1,5) == "yawn")
-			{
-				SendTaunt(3);
-				if(strMsg.size() <= 7)
-					SendMessage("yawn",MLCM_TALK,""); 	
-				else				
-					SendMessage(strMsg.substr(7),MLCM_TALK,""); 					
+				if(strMsg.length() >= 3)
+				{
+					string strNr = strMsg.substr(2);										
+					SendTaunt(atoi(strNr.c_str()));
+									
+					if(strMsg.length() > strMsg.find(" "))
+						SendMessage(strMsg.substr(strMsg.find(" "))  ,MLCM_TALK,""); 	
+				
+				}
+				
+				return;
 			}
-			if(strMsg.substr(1,5) == "donno")
-			{
-				SendTaunt(4);
-				if(strMsg.size() <= 7)
-					SendMessage("donno",MLCM_TALK,""); 	
-				else				
-					SendMessage(strMsg.substr(7),MLCM_TALK,""); 					
-			}
-			if(strMsg.substr(1,5) == "confused")
-			{
-				SendTaunt(5);
-				if(strMsg.size() <= 7)
-					SendMessage("confused",MLCM_TALK,""); 	
-				else				
-					SendMessage(strMsg.substr(7),MLCM_TALK,""); 					
-			}	
 		}
 	}
-	else
+		
+		
+	//check for inline emotes
+	int iEmoteStart = strMsg.find("/");
+	
+	if(iEmoteStart != -1)
 	{
-		//default to normal talk
+		int iEmoteEnd = strMsg.find(" ",iEmoteStart)-1;		
+		//cout<<"line:"<<iEmoteStart<<" - "<<iEmoteEnd<<endl;		
+		//cout<<"emote:"<<strMsg.substr(iEmoteStart+1,iEmoteEnd - iEmoteStart)<<"|"<<endl;
+		
+		SendTaunt(strMsg.substr(iEmoteStart+1,iEmoteEnd - iEmoteStart));
+		
+		string msg = strMsg.substr(0,iEmoteStart);
+		if(strMsg.length() > iEmoteEnd+1)
+		{
+			msg+=strMsg.substr(iEmoteEnd+1);			
+			//cout<<"msg:"<<msg<<"|"<<endl;
+			//SendMessage(strMsg,MLCM_TALK,"");
+		}
+					
+		if(!msg.empty())			
+			SendMessage(msg,MLCM_TALK,""); 	
+		return;
+	}
+		
+	
+	
+	
+	//default to normal talk
+	if(strMsg[0] != '/')
 		SendMessage(strMsg,MLCM_TALK,""); 	
-	}									
+									
+}
+
+void MistClient::SendTaunt(const string& strEmote)
+{
+	for(int i = 0;i< m_kEmotes.size();i++)
+		if(m_kEmotes[i] == strEmote)
+			SendTaunt(i+1);							//emotes start at ID 1
+
 }
 
 void MistClient::SendTaunt(int iID)

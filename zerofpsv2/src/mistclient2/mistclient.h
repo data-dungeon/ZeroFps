@@ -39,31 +39,35 @@ class MistClient :public Application, public ZGuiApp {
 		//delay
 		float			m_fDelayTime;
 
+		//character and camera
 		Camera*		m_pkCamera;						//main camera
-		bool			m_bFrontView;
-		
+		bool			m_bFrontView;				
 		int			m_iCharacterID;				//current active character ID      
-		int			m_iPickedEntityID;			// Selected entity for use.				
-		
-		
+		int			m_iPickedEntityID;			// Selected entity for use.								
 		bitset<6>	m_kCharacterControls;
 		
+		
+		vector<string>	m_kEmotes;					//emote list
+		
+		
+		//states
 		bool			m_bShowMenulevel;
 		bool			m_bQuickStart; 
 		string		m_strQuickStartAddress;	
 		bool			m_bGuiCapture;
 		string		m_strLoginName, m_strLoginPW;
-		map<GUI_SCRIPT, string> m_kGuiScrips;
 		
 		vector<string>	m_kPlayerList;		//list of players since last playerlist update
-	
-		vector<pair<string,string> > m_kServerList;
-		map<string, msgScreenProg> m_kGuiMsgProcs;
 
-		OptionsDlg* m_pkOptionsDlg;
-		ActionMenu* m_pkActionDlg;
-		InventoryDlg* m_pkInventoryDlg;
-		EquipmentDlg* m_pkEquipmentDlg;
+		//gui
+		map<GUI_SCRIPT, string> m_kGuiScrips;			
+		vector<pair<string,string> > 	m_kServerList;
+		map<string, msgScreenProg> 	m_kGuiMsgProcs;
+
+		OptionsDlg* 	m_pkOptionsDlg;
+		ActionMenu* 	m_pkActionDlg;
+		InventoryDlg* 	m_pkInventoryDlg;
+		EquipmentDlg* 	m_pkEquipmentDlg;
 
 		bool ReadWriteServerList(bool bRead);
 
@@ -75,6 +79,7 @@ class MistClient :public Application, public ZGuiApp {
 		
 		//chat system
 		void Say(string strMsg);
+		void RegisterEmotes();
 		
 		//specifik network requests
 		void RequestOpenInventory();
@@ -89,11 +94,12 @@ class MistClient :public Application, public ZGuiApp {
 		void SendRequestKillMe();
 		void SendRequestOpenEqipment();			
 		void SendTaunt(int iID);
+		void SendTaunt(const string& strEmote);
 		
-			/*SendMoveItem hjälp.
-				iItemID : alltid entity id't för itemet i fråga
-				iTraget : target container entity ID , om -1 så antas i spelarens inventory
-				iPosX   : position i containern som föremålet skall flyttas till, om -1 så sätts föremålet på en ledig plats
+			/*SendMoveItem hjï¿½p.
+				iItemID : alltid entity id't fï¿½ itemet i frï¿½a
+				iTraget : target container entity ID , om -1 sï¿½antas i spelarens inventory
+				iPosX   : position i containern som fï¿½emï¿½et skall flyttas till, om -1 sï¿½sï¿½ts fï¿½emï¿½et pï¿½en ledig plats
 			*/
 		
 		

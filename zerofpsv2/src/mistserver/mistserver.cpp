@@ -1091,7 +1091,7 @@ void MistServer::OnNetworkMessage(NetPacket *PkNetMessage)
 					cout<<"picking up item from ground"<<endl;
 					
 					//try adding item from gound									
-					if(!pkTargetContainer->AddMove(iItemID,iPosX,iPosY,iCount));
+					if(!pkTargetContainer->AddMove(iItemID,iPosX,iPosY,iCount))
 						SayToClients("You could not pick that up","Server",-1,PkNetMessage->m_iClientID);					
 					
 					SendContainer(iTargetContainer,PkNetMessage->m_iClientID,false);											
