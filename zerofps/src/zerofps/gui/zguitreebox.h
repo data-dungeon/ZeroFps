@@ -16,6 +16,20 @@ class ZGuiCheckbox;
 class ZGuiScrollbar;
 class ZGuiRender;
 
+struct GUI_API ZGuiTreeboxNode
+{
+	ZGuiCheckbox* pkButton;
+
+	unsigned char ucSkinIndex;	
+	unsigned char ucSkinIndexSelected;
+	unsigned int  uiRootLevel;
+	ZGuiTreeboxNode *pkParent, *pkNext;
+
+	bool bIsOpen; // samma sak som m_bVisible fast ignoreras av renderingen och används när höjden på träden skall räknas fram.
+	bool bChildListIsOpen; // måste känna till detta för att kunna öppna/stänga tillräckligt många "steg".
+	vector<ZGuiTreeboxNode*> kChilds;
+};
+
 class GUI_API ZGuiTreebox : public ZGuiWnd
 {
 public:
@@ -23,26 +37,11 @@ public:
 	ZGuiTreebox(Rect kArea, ZGuiWnd* pkParent, bool bVisible, int iID);
 	virtual ~ZGuiTreebox();
 
-	struct Node
-	{
-		ZGuiCheckbox* pkButton;
-
-		unsigned char ucSkinIndex;	
-		unsigned char ucSkinIndexSelected;
-		unsigned int uiRootLevel;
-		unsigned int uiChildIndex;
-		
-		Node *pkParent, *pkNext;
-
-		bool bChildListIsOpen; // måste känna till detta för att kunna öppna/stänga tillräckligt många "steg".
-		vector<Node*> kChilds;
-	};
-
-	typedef vector<Node*>::iterator itChild;
-	typedef list<Node*>::iterator itNode;
-	typedef list<Node*>::reverse_iterator ritNode;
+	typedef vector<ZGuiTreeboxNode*>::iterator itChild;
+	typedef list<ZGuiTreeboxNode*>::iterator itNode;
+	typedef list<ZGuiTreeboxNode*>::reverse_iterator ritNode;
 	
-	Node* AddItem(Node* pkParent, char* szText, unsigned char ucSkinIndex, 
+	ZGuiTreeboxNode* AddItem(ZGuiTreeboxNode* pkParent, char* szText, unsigned char ucSkinIndex, 
 		unsigned char ucSkinIndexSelected);
 
 	ZGuiSkin* GetItemSkin(unsigned int uiIndex);
@@ -50,30 +49,35 @@ public:
 	bool InsertBranchSkin(unsigned int uiIndex, ZGuiSkin* pkSkin);
 	unsigned int GetNumItemSkins();
 
+	void SetScrollbarSkin(ZGuiSkin* pkSkinScrollArea, 
+		ZGuiSkin* pkSkinThumbButton, ZGuiSkin* pkSkinThumbButtonHighLight);
+
 protected:
 	bool Notify(ZGuiWnd* pkWnd, int iCode);
 	
 private:
-	int m_iStepSum;
-	int GetNumExpandSteps(Node* pkNode);
-	void MoveNode(Node* pkNode, int steps, bool bRecursive=true);
-	void OpenChilds(vector<Node*> kChilds, bool bOpen);
-	void OpenNode(Node* pkNode, bool bOpen);
+	void ScrollRows(bool bVertically);
+	void ChangeScrollbarRange(int width, int height);
+	void MoveNode(ZGuiTreeboxNode* pkNode, int steps, bool bRecursive=true);
+	void OpenChilds(vector<ZGuiTreeboxNode*> kChilds, bool bOpen);
+	void OpenNode(ZGuiTreeboxNode* pkNode, bool bOpen);
 	
-	void PrintNode(Node* pkNode);
-	void PrintChilds(vector<Node*> kList);
+	void PrintNode(ZGuiTreeboxNode* pkNode);
+	void PrintChilds(vector<ZGuiTreeboxNode*> kList);
 
-	Node* CreateNode(Node* pkParent, char* szText, unsigned char ucSkinIndex,
+	ZGuiTreeboxNode* CreateNode(ZGuiTreeboxNode* pkParent, char* szText, unsigned char ucSkinIndex,
 		unsigned char ucSkinIndexSelected);
 
 	void CreateInternalControls();
 	int m_iID;
 
 	list<ZGuiSkin*> m_kItemSkinList;
-	list<Node*> m_kNodeList;
+	list<ZGuiTreeboxNode*> m_kNodeList;
 
 	ZGuiScrollbar* m_pkVertScrollbar;
 	ZGuiScrollbar* m_pkHorzScrollbar;
+	int m_iStartrow;
+	int m_iItemWidth, m_iItemHeight;
 };
 
 #endif // !defined(AFX_ZGUITREEBOX_H__BF9294AD_DC4A_4533_9A72_1D79F95BFE4F__INCLUDED_)
