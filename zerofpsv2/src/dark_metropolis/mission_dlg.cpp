@@ -144,88 +144,117 @@ bool CMissionDlg::InitDlg()
 
 void CMissionDlg::UpdateMessageboxes(int iVectorOffset)
 {
-	Entity* pkHQ = GetDMObject(HQ);
+	//GetWnd("Mission_A_Eb")->GetSkin()->m_afBkColor[0] = 1; 
+	//GetWnd("Mission_A_Eb")->GetSkin()->m_afBkColor[1] = 1; 
+	//GetWnd("Mission_A_Eb")->GetSkin()->m_afBkColor[2] = 1; 
+	//GetWnd("Mission_B_Eb")->GetSkin()->m_afBkColor[0] = 1; 
+	//GetWnd("Mission_B_Eb")->GetSkin()->m_afBkColor[1] = 1; 
+	//GetWnd("Mission_B_Eb")->GetSkin()->m_afBkColor[2] = 1; 
+	//GetWnd("Mission_C_Eb")->GetSkin()->m_afBkColor[0] = 1; 
+	//GetWnd("Mission_C_Eb")->GetSkin()->m_afBkColor[1] = 1; 
+	//GetWnd("Mission_C_Eb")->GetSkin()->m_afBkColor[2] = 1; 
 
-	GetWnd("Mission_A_Eb")->GetSkin()->m_afBkColor[0] = 1; 
-	GetWnd("Mission_A_Eb")->GetSkin()->m_afBkColor[1] = 1; 
-	GetWnd("Mission_A_Eb")->GetSkin()->m_afBkColor[2] = 1; 
-	GetWnd("Mission_B_Eb")->GetSkin()->m_afBkColor[0] = 1; 
-	GetWnd("Mission_B_Eb")->GetSkin()->m_afBkColor[1] = 1; 
-	GetWnd("Mission_B_Eb")->GetSkin()->m_afBkColor[2] = 1; 
-	GetWnd("Mission_C_Eb")->GetSkin()->m_afBkColor[0] = 1; 
-	GetWnd("Mission_C_Eb")->GetSkin()->m_afBkColor[1] = 1; 
-	GetWnd("Mission_C_Eb")->GetSkin()->m_afBkColor[2] = 1; 
+	P_DMMission* pkMissionProperty = (P_DMMission*) 
+		GetDMObject(GAME_INFO)->GetProperty("P_DMMission");
 
-	if(pkHQ)
+	Entity* pkGameInfoObj = GetDMObject(GAME_INFO);
+	P_DMGameInfo* pkGameInfo = (P_DMGameInfo*) pkGameInfoObj->GetProperty("P_DMGameInfo");
+
+	float reputation = pkGameInfo->m_fReputation;
+
+	vector<DMMissionInfo> vkInfo;
+	pkMissionProperty->GetPossibleMissions(reputation, vkInfo); 
+
+	printf("Num possible missions: %i\n", vkInfo.size());
+
+	unsigned int iStart_index = iVectorOffset;// - vkInfo.size();
+
+	if(iStart_index  < 0)
+		iStart_index  = 0;
+	if(iStart_index  > vkInfo.size()-1)
+		iStart_index  = vkInfo.size()-1;
+
+	//if(vkInfo.size() > iStart_index)
+	//{
+	//	((ZGuiTextbox*)GetWnd("Mission_A_Eb"))->ToggleMultiLine(true);
+	//	((ZGuiTextbox*)GetWnd("Mission_A_Eb"))->SetReadOnly(true);
+	//	SetText("Mission_A_Eb", (char*) 
+	//		vkInfo[iStart_index].m_strInfoTextShort.c_str() );
+
+	//	if(m_strSelMission == vkInfo[iStart_index].m_strName)
+	//	{
+	//		GetWnd("Mission_A_Eb")->GetSkin()->m_afBkColor[0] = 0.22; 
+	//		GetWnd("Mission_A_Eb")->GetSkin()->m_afBkColor[1] = 0.52; 
+	//		GetWnd("Mission_A_Eb")->GetSkin()->m_afBkColor[2] = 0.12; 	
+	//	}
+	//}
+	//else
+	//	SetText("Mission_A_Eb", "");
+
+	//if(vkInfo.size() > iStart_index+1)
+	//{
+	//	((ZGuiTextbox*)GetWnd("Mission_B_Eb"))->ToggleMultiLine(true);
+	//	((ZGuiTextbox*)GetWnd("Mission_B_Eb"))->SetReadOnly(true);
+	//	SetText("Mission_B_Eb", (char*) 
+	//		vkInfo[iStart_index+1].m_strInfoTextShort.c_str() );
+
+	//	if(m_strSelMission == vkInfo[iStart_index+1].m_strName)
+	//	{
+	//		GetWnd("Mission_B_Eb")->GetSkin()->m_afBkColor[0] = 0.22; 
+	//		GetWnd("Mission_B_Eb")->GetSkin()->m_afBkColor[1] = 0.52; 
+	//		GetWnd("Mission_B_Eb")->GetSkin()->m_afBkColor[2] = 0.12; 	
+	//	}
+	//}
+	//else
+	//	SetText("Mission_B_Eb", "");
+
+	//if(vkInfo.size() > iStart_index+2)
+	//{
+	//	((ZGuiTextbox*)GetWnd("Mission_C_Eb"))->ToggleMultiLine(true);
+	//	((ZGuiTextbox*)GetWnd("Mission_C_Eb"))->SetReadOnly(true);
+	//	SetText("Mission_C_Eb", (char*) 
+	//		vkInfo[iStart_index+2].m_strInfoTextShort.c_str() );
+
+	//	if(m_strSelMission == vkInfo[iStart_index+2].m_strName)
+	//	{
+	//		GetWnd("Mission_C_Eb")->GetSkin()->m_afBkColor[0] = 0.22; 
+	//		GetWnd("Mission_C_Eb")->GetSkin()->m_afBkColor[1] = 0.52; 
+	//		GetWnd("Mission_C_Eb")->GetSkin()->m_afBkColor[2] = 0.12; 	
+	//	}
+	//}
+	//else
+	//	SetText("Mission_C_Eb", "");
+
+	char* test[] = {
+		"Mission_A_Eb", "Mission_B_Eb", "Mission_C_Eb",
+	};
+
+	for(int i=0; i<3; i++)
 	{
-		P_DMMission* pkMissionProperty = (P_DMMission*) 
-			GetDMObject(GAME_INFO)->GetProperty("P_DMMission");
-
-		Entity* pkGameInfoObj = GetDMObject(GAME_INFO);
-		P_DMGameInfo* pkGameInfo = (P_DMGameInfo*) pkGameInfoObj->GetProperty("P_DMGameInfo");
-
-		float reputation = pkGameInfo->m_fReputation;
-
-		vector<DMMissionInfo> vkInfo;
-		pkMissionProperty->GetPossibleMissions(reputation, vkInfo); 
-
-		unsigned int iStart_index = iVectorOffset;// - vkInfo.size();
-
-		if(iStart_index  < 0)
-			iStart_index  = 0;
-		if(iStart_index  > vkInfo.size()-1)
-			iStart_index  = vkInfo.size()-1;
-	
-		if(vkInfo.size() > iStart_index)
+		if(vkInfo.size() > iStart_index+i)
 		{
-			((ZGuiTextbox*)GetWnd("Mission_A_Eb"))->ToggleMultiLine(true);
-			((ZGuiTextbox*)GetWnd("Mission_A_Eb"))->SetReadOnly(true);
-			SetText("Mission_A_Eb", (char*) 
-				vkInfo[iStart_index].m_strInfoTextShort.c_str() );
-
-			if(m_strSelMission == vkInfo[iStart_index].m_strName)
-			{
-				GetWnd("Mission_A_Eb")->GetSkin()->m_afBkColor[0] = 0.22; 
-				GetWnd("Mission_A_Eb")->GetSkin()->m_afBkColor[1] = 0.52; 
-				GetWnd("Mission_A_Eb")->GetSkin()->m_afBkColor[2] = 0.12; 	
-			}
+			((ZGuiTextbox*)GetWnd(test[i]))->ToggleMultiLine(true);
+			((ZGuiTextbox*)GetWnd(test[i]))->SetReadOnly(true);
+			SetText(test[i], (char*) 
+				vkInfo[iStart_index+i].m_strInfoTextShort.c_str() );
 		}
 		else
-			SetText("Mission_A_Eb", "");
-
-		if(vkInfo.size() > iStart_index+1)
 		{
-			((ZGuiTextbox*)GetWnd("Mission_B_Eb"))->ToggleMultiLine(true);
-			((ZGuiTextbox*)GetWnd("Mission_B_Eb"))->SetReadOnly(true);
-			SetText("Mission_B_Eb", (char*) 
-				vkInfo[iStart_index+1].m_strInfoTextShort.c_str() );
+			SetText(test[i], "");
+		}
 
-			if(m_strSelMission == vkInfo[iStart_index+1].m_strName)
-			{
-				GetWnd("Mission_B_Eb")->GetSkin()->m_afBkColor[0] = 0.22; 
-				GetWnd("Mission_B_Eb")->GetSkin()->m_afBkColor[1] = 0.52; 
-				GetWnd("Mission_B_Eb")->GetSkin()->m_afBkColor[2] = 0.12; 	
-			}
+		if(m_strSelMission == vkInfo[iStart_index+i].m_strName)
+		{
+			GetWnd(test[i])->GetSkin()->m_afBkColor[0] = 0.22; 
+			GetWnd(test[i])->GetSkin()->m_afBkColor[1] = 0.52; 
+			GetWnd(test[i])->GetSkin()->m_afBkColor[2] = 0.12; 	
 		}
 		else
-			SetText("Mission_B_Eb", "");
-
-		if(vkInfo.size() > iStart_index+2)
 		{
-			((ZGuiTextbox*)GetWnd("Mission_C_Eb"))->ToggleMultiLine(true);
-			((ZGuiTextbox*)GetWnd("Mission_C_Eb"))->SetReadOnly(true);
-			SetText("Mission_C_Eb", (char*) 
-				vkInfo[iStart_index+2].m_strInfoTextShort.c_str() );
-
-			if(m_strSelMission == vkInfo[iStart_index+2].m_strName)
-			{
-				GetWnd("Mission_C_Eb")->GetSkin()->m_afBkColor[0] = 0.22; 
-				GetWnd("Mission_C_Eb")->GetSkin()->m_afBkColor[1] = 0.52; 
-				GetWnd("Mission_C_Eb")->GetSkin()->m_afBkColor[2] = 0.12; 	
-			}
+			GetWnd(test[i])->GetSkin()->m_afBkColor[0] = 1; 
+			GetWnd(test[i])->GetSkin()->m_afBkColor[1] = 1; 
+			GetWnd(test[i])->GetSkin()->m_afBkColor[2] = 1; 
 		}
-		else
-			SetText("Mission_C_Eb", "");
 	}
 }
 

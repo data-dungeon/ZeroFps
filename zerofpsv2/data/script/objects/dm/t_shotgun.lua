@@ -6,9 +6,9 @@ function Create()
 			InitParameter("m_fScale","1");		
 		InitProperty("P_DMItem");	
 			InitParameter("name","shotgun");
-			InitParameter("sizex",2);
+			InitParameter("sizex",3);
 			InitParameter("sizey",2);
-			InitParameter("icon","stol.bmp");
+			InitParameter("icon","shotgun.bmp");
 			InitParameter("type","5");
 		InitProperty("P_DMGun");
 		InitProperty("P_ScriptInterface");

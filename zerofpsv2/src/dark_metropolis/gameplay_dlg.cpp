@@ -252,15 +252,14 @@ bool CGamePlayDlg::InitDlg()
 		((ZGuiTextbox*)GetWnd("MissionInfoLabel"))->ToggleMultiLine(true);
 		((ZGuiTextbox*)GetWnd("MissionInfoLabel"))->SetReadOnly(true);	
 
-		GetWnd("GamePlayDlgQuickItem1")->Hide();
-		GetWnd("GamePlayDlgQuickItem2")->Hide();
-		GetWnd("GamePlayDlgQuickItem3")->Hide();
-		GetWnd("GamePlayDlgQuickItem4")->Hide();
-		GetWnd("GamePlayDlgWeaponBn")->Hide();
-
 		m_pkDM->m_pkGamePlayInfoLabel = GetWnd("GamePlayInfoLabel");
-
 	}
+
+	GetWnd("GamePlayDlgQuickItem1")->Hide();
+	GetWnd("GamePlayDlgQuickItem2")->Hide();
+	GetWnd("GamePlayDlgQuickItem3")->Hide();
+	GetWnd("GamePlayDlgQuickItem4")->Hide();
+	GetWnd("GamePlayDlgWeaponBn")->Hide();
 
 	if(m_iSelectedAgent == -1)
 	{

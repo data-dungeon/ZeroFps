@@ -39,7 +39,10 @@ void P_DMMission::Init()
 	vector<string> t;
 	vector<string> final;
 	pkFileSys->ListDir(&t, "data/script/missions/");
-	for(unsigned int i=0; i<t.size(); i++)
+
+	int antal = t.size();
+
+	for(unsigned int i=0; i<antal; i++)
 	{
 		if(t[i].find(".lua") != string::npos)
 		{
