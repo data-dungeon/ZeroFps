@@ -1,4 +1,5 @@
 #include "logproperty.h"
+#include "itemproperty.h"
 
 LogProperty::LogProperty()
 {
@@ -29,7 +30,7 @@ void LogProperty::RegisterActions()
 
 	if(pkIP != NULL)
 	{
-		pkIP->RegisterAction(NORMALUSE,"Read Log","ReadLog");
+		pkIP->RegisterAction(INVENTORYUSE,"Read Log","ReadLog");
 	}
 }	
 
@@ -39,7 +40,7 @@ void LogProperty::UnRegisterActions()
 
 	if(pkIP != NULL)
 	{
-		pkIP->UnRegisterAction(NORMALUSE,"Read Log");
+		pkIP->UnRegisterAction(INVENTORYUSE,"Read Log");
 	}
 }	
 
@@ -102,10 +103,7 @@ void LogProperty::Load(ZFMemPackage* pkPackage)
 		
 }
 
-
-
-
-Property* Create_LogProperty()
+COMMON_API Property* Create_LogProperty()
 {
 	return new LogProperty();
 }

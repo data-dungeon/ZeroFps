@@ -115,7 +115,7 @@ void ContainerProperty::UnRegisterActions()
 	}
 }
 
-Property* Create_ContainerProperty()
+COMMON_API Property* Create_ContainerProperty()
 {
 	return new ContainerProperty();
 }

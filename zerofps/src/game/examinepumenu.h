@@ -14,9 +14,12 @@ class TextureManager;
 class ItemProperty;
 class PlayerControlProperty;
 
+extern enum Action_Type;
+
 class ExaminePUMenu : public DlgBox  
 {
 public:
+	void SetUseState(Action_Type eNewActionType);
 	char* GetUseString(int index);
 	void SetPlayerControlProperty(PlayerControlProperty *pkPlayerProp);
 	void SetItemProperty(ItemProperty* pkItemProp);
@@ -45,6 +48,7 @@ private:
 
 	ItemProperty* m_pkItemProperty;
 	PlayerControlProperty* m_pkPlayerProp;
+	Action_Type m_eCurrActionType;
 
 };
 

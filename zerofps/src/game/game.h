@@ -69,7 +69,7 @@ class Game :public Application {
 		int m_iActionOpenInventory, m_iActionCloseInventory;
 
 	public:
-		void OpenExamineMenu(Object* pkObject, int x=-1, int y=-1);
+		void OpenExamineMenu(Object* pkObject, Action_Type eActionType, int x=-1, int y=-1);
 		void OpenContainer();
 		void LockPlayerCamera(bool bTrue);
 		

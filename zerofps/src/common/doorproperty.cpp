@@ -130,7 +130,7 @@ bool DoorProperty::HandleSetValue( string kValueName ,string kValue )
 
 
 
-Property* Create_DoorProperty()
+COMMON_API Property* Create_DoorProperty()
 {
 	return new DoorProperty();
 }
