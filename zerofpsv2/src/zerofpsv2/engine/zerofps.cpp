@@ -418,11 +418,6 @@ void ZeroFps::Run_Client()
 	m_pkAudioSystem->Update();
 
 	
-	//run application Head On Display
-	//SetCamera(m_pkConsoleCamera);
-	m_pkConsoleCamera->Update();
-	m_pkConsoleCamera->ClearViewPort(false);
-	m_pkApp->OnHud();
 	
 	
 	m_pkObjectMan->UpdateDelete();
@@ -559,6 +554,10 @@ void ZeroFps::Draw_EngineShell()
 	//draw devstrings
 	DrawDevStrings();
 	
+	//on hud drawing
+	m_pkApp->OnHud();
+
+	
 	if(m_pkConsole->IsActive()) 
 		m_pkConsole->Draw();
 }
@@ -665,6 +664,14 @@ Camera* ZeroFps::GetRenderCamera(string strName)
 
 void ZeroFps::Draw_RenderCamera(Camera* pkCamera)
 {
+	//if render is disable just clear the viewport (looks better)
+	if(!m_bRenderOn)
+	{
+		pkCamera->Update();
+		pkCamera->ClearViewPort(true);
+		return;
+	}
+
 	//set active camera
 	m_pkCamera=pkCamera;			
 	
