@@ -299,7 +299,7 @@ int ObjectManagerLua::AddMesh(lua_State* pkLua)
 	return 1;
 }
 
-float fLocalTest;
+//float fLocalTest;
 
 int ObjectManagerLua::GetLocalDouble(lua_State* pkLua)
 {
@@ -312,9 +312,10 @@ int ObjectManagerLua::GetLocalDouble(lua_State* pkLua)
 	char acName[100];
 	g_pkScript->GetArg(pkLua, 1, acName);
 
-
-	printf("SetLocalDouble Entity[%d] = %s \n", iId1, acName);
-	g_pkScript->AddReturnValue(pkLua, fLocalTest);
+	Entity* o1 = g_pkObjMan->GetObjectByNetWorkID(iId1);
+	double dValue = o1->GetVarDouble(string(acName));
+	//printf("GetLocalDouble Entity[%d] = %s is %f\n", iId1, acName, dValue);
+	g_pkScript->AddReturnValue(pkLua, dValue);
 	return 1;
 
 }
@@ -334,11 +335,11 @@ int ObjectManagerLua::SetLocalDouble(lua_State* pkLua)
 	float fValue = dTemp;
 
 	Entity* o1 = g_pkObjMan->GetObjectByNetWorkID(iId1);
-
-	printf("GetLocalDouble Entity[%d] = %s is set to %f \n", iId1, acName,fValue);
-	fLocalTest = fValue; 
+	//printf("SetLocalDouble Entity[%d] = %s is set to %f \n", iId1, acName,fValue);
+	o1->SetVarDouble(string(acName), fValue);
 	return 1;	
 }
+
 /*
 	SetLocalString
 	GotLocalString

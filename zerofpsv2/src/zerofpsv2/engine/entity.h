@@ -92,6 +92,40 @@ public:
 #define OBJ_NETFLAG_ROT		2
 #define OBJ_NETFLAG_DEL		4
 
+#define MAX_NETUPDATEFLAGS	10
+
+#define MAX_ENTITY_VARIABLENAME	64
+
+enum EntityVariableType
+{
+	EVAR_DOUBLE,
+	EVAR_STRING,
+};
+
+/**	\brief	A EntityVariable is a variable saved in a entity with a name and a value.
+
+*/
+class EntityVariable
+{
+public:
+	EntityVariable& operator=(const EntityVariable& kIn)
+	{
+		m_strName	= kIn.m_strName;
+		m_eType		= kIn.m_eType;
+		m_fValue		= kIn.m_fValue;
+		m_strValue	= kIn.m_strValue;
+		return *this;
+	}
+
+	string					m_strName;		// Name of variable.
+	EntityVariableType	m_eType;			 
+	double					m_fValue;		// Value if double
+	string					m_strValue;		// Value if string.
+};
+
+
+
+
 
 /**	\brief	Game Object for things in game 
 
@@ -105,14 +139,14 @@ stored in the OM, the all have a type, a ID, a name and some other things. The t
 each and every object diffrent are the type of properties they have. 
 */
 
-#define MAX_NETUPDATEFLAGS	10
-
 class ENGINE_API Entity 
 {
 	private:
 		Entity*						m_pkParent;							///< Parent Object. NULL If None
 		vector<GameMessage>		m_kGameMessages;					///< Messages that are waiting to be handled by this object.
 		vector<int>					m_aiNetDeleteList;				
+
+		vector<EntityVariable>	m_kVariables;
 
 	protected:
 		enum HAVE_DATA				//used in m_kGotData
@@ -331,7 +365,17 @@ class ENGINE_API Entity
 		void MakeCloneOf(Entity* pkOrginal);
 		
 		float GetI();
+
+		// Entity Variables
+		EntityVariable* CreateVar(string& strName, EntityVariableType eType);
+		EntityVariable* GetVar(string& strName);
+
+		double GetVarDouble(string& strName);
+		string GetVarString(string& strName);
+		void	 SetVarDouble(string& strName, double fValue);
+		void	 SetVarString(string& strName, string strValue);
 		
+
 		friend class EntityManager;
 		friend class Property;
 

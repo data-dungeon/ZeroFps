@@ -49,6 +49,8 @@ Entity::Entity()
 	m_bRelativeOri			= false;
 	m_bFirstSetPos			= true;
 	
+//	m_kVariables.clear();
+
 	//clear child list
 	m_akChilds.clear();	
 	
@@ -1031,7 +1033,23 @@ void Entity::Load(ZFIoInterface* pkFile)
 	pkFile->Read(&m_eRemoteRole,sizeof(m_eRemoteRole),1);				
 
 	char acTemp[128];
-	
+
+	int i;
+
+	int iNumOfEntVars;
+	pkFile->Read(&iNumOfEntVars,sizeof(iNumOfEntVars), 1);		
+	EntityVariable kEntVar;
+
+	for(i=0; i<iNumOfEntVars; i++) {
+		pkFile->Read(acTemp,128,1);		
+		kEntVar.m_strName = acTemp;
+		pkFile->Read(&kEntVar.m_eType ,sizeof(int), 1);		
+		pkFile->Read(&kEntVar.m_fValue ,sizeof(kEntVar.m_fValue), 1);		
+		pkFile->Read(acTemp,128,1);		
+		kEntVar.m_strValue = acTemp;
+		m_kVariables.push_back(kEntVar);
+		}
+
 	//name
 	pkFile->Read(acTemp,128,1);		
 	m_strName = acTemp;
@@ -1047,8 +1065,6 @@ void Entity::Load(ZFIoInterface* pkFile)
 		m_pScriptFileHandle->FreeRes();
 	else
 		m_pScriptFileHandle->SetRes(string(acTemp));
-	
-	int i;
 	
 	//nr of propertys
 	int iProps = 0;
@@ -1107,10 +1123,22 @@ void Entity::Save(ZFIoInterface* pkFile)
 	pkFile->Write(&m_eRole,sizeof(m_eRole),1);		
 	pkFile->Write(&m_eRemoteRole,sizeof(m_eRemoteRole),1);				
 
-
-
 	char acTemp[128];
+	int i;
+
+	// Write Ent Vars
+	int iNumOfEntVars = m_kVariables.size();
+	pkFile->Write(&iNumOfEntVars,sizeof(iNumOfEntVars), 1);		
 	
+	for(i=0; i<iNumOfEntVars; i++) {
+		strcpy(acTemp,m_kVariables[i].m_strName.c_str());
+		pkFile->Write(acTemp,128,1);		
+		pkFile->Write(&m_kVariables[i].m_eType ,sizeof(int), 1);		
+		pkFile->Write(&m_kVariables[i].m_fValue ,sizeof(m_kVariables[i].m_fValue), 1);		
+		strcpy(acTemp,m_kVariables[i].m_strValue.c_str());
+		pkFile->Write(acTemp,128,1);		
+	}
+
 	//name
 	strcpy(acTemp,m_strName.c_str());
 	pkFile->Write(acTemp,128,1);		
@@ -1126,7 +1154,6 @@ void Entity::Save(ZFIoInterface* pkFile)
 		strcpy(acTemp,"none");	
 	pkFile->Write(acTemp,128,1);		
 		
-	int i;
 		
 	//nr of propertys
 	int iProps = m_akPropertys.size();		
@@ -1777,4 +1804,67 @@ void Entity::UpdateDeleteList()
 	
 	//clear delete list 
 	m_aiNetDeleteList.clear();
+}
+
+EntityVariable* Entity::CreateVar(string& strName, EntityVariableType eType)
+{
+	EntityVariable kEntVar;
+	kEntVar.m_eType		= eType;
+	kEntVar.m_strName		= strName;
+	kEntVar.m_fValue		= 0.0;
+	kEntVar.m_strValue	= "";
+	m_kVariables.push_back(kEntVar);
+
+	return GetVar(strName);
+}
+
+EntityVariable* Entity::GetVar(string& strName)
+{
+	for(int i=0; i<m_kVariables.size(); i++) {
+		if(strName == m_kVariables[i].m_strName) 
+			return &m_kVariables[i];
+		}	
+
+	return NULL;
+
+}
+
+double Entity::GetVarDouble(string& strName) 
+{
+	EntityVariable* pkVar = GetVar(strName);
+	
+	if(pkVar == NULL)
+		return 0.0;
+
+	return pkVar->m_fValue;
+}
+
+string Entity::GetVarString(string& strName)
+{
+	EntityVariable* pkVar = GetVar(strName);
+	
+	if(pkVar == NULL)
+		return string("");
+
+	return pkVar->m_strValue;
+}
+
+void	 Entity::SetVarDouble(string& strName, double fValue)
+{
+	EntityVariable* pkVar = GetVar(strName);
+	
+	if(pkVar == NULL)
+		pkVar = CreateVar(strName, EVAR_DOUBLE);
+
+	pkVar->m_fValue = fValue;
+}
+
+void	 Entity::SetVarString(string& strName, string strValue)
+{
+	EntityVariable* pkVar = GetVar(strName);
+	
+	if(pkVar == NULL)
+		pkVar = CreateVar(strName, EVAR_STRING);
+
+	pkVar->m_strValue = strValue;
 }
