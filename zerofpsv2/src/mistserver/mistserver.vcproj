@@ -150,9 +150,6 @@
 			<File
 				RelativePath=".\playerdatabase.cpp">
 			</File>
-			<File
-				RelativePath=".\rulesystem.cpp">
-			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
@@ -165,9 +162,6 @@
 			</File>
 			<File
 				RelativePath=".\resource.h">
-			</File>
-			<File
-				RelativePath=".\rulesystem.h">
 			</File>
 		</Filter>
 		<Filter

@@ -194,6 +194,9 @@
 				RelativePath=".\p_spawn.cpp">
 			</File>
 			<File
+				RelativePath=".\rulesystem.cpp">
+			</File>
+			<File
 				RelativePath=".\si_mistland.cpp">
 			</File>
 			<File
@@ -256,6 +259,9 @@
 			</File>
 			<File
 				RelativePath=".\p_spawn.h">
+			</File>
+			<File
+				RelativePath=".\rulesystem.h">
 			</File>
 			<File
 				RelativePath=".\si_mistland.h">
