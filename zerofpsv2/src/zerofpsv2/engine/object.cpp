@@ -19,6 +19,7 @@ Object::Object() {
 
 	m_pkObjectMan->Add(this);	// Add ourself to objectmanger and get NetID.
 
+
 	// SetDefault Values.
 //	m_kPos		= Vector3::ZERO;
 //	m_kRot		= Vector3::ZERO;
@@ -31,6 +32,8 @@ Object::Object() {
 	
 	m_strName	= "A Object";	
 	m_strType	= "Object";
+
+	m_pScriptFileHandle = new ZFResourceHandle;
 
 	m_iNetUpdateFlags = 0;
 
@@ -77,6 +80,8 @@ Object::~Object()
 	}
 	// Tell object manger that we are no more.
 	m_pkObjectMan->Remove(this);
+	
+	delete(m_pScriptFileHandle);
 }
 
 bool Object::IsA(string strStringType)

@@ -332,8 +332,11 @@ Object* ObjectManager::CreateObjectFromScript(const char* acName)
 
 	m_pScriptFileHandle = new ZFResourceHandle;
 	if(!m_pScriptFileHandle->SetRes(acName))
+	{
 		printf("Failed to load object script %s\n", acName);
-
+		return NULL;
+	}
+	
 	ObjectManagerLua::Reset();
 
 	if(!m_pkScript->Run(GetObjectManagerScript()))
@@ -344,6 +347,7 @@ Object* ObjectManager::CreateObjectFromScript(const char* acName)
 	
 	ObjectManagerLua::g_pkReturnObject->m_strType	= acName;
 	ObjectManagerLua::g_pkReturnObject->m_strName	= string("A ") + acName;
+	ObjectManagerLua::g_pkReturnObject->m_pScriptFileHandle->SetRes(acName);
 	
 	return ObjectManagerLua::g_pkReturnObject;
 }

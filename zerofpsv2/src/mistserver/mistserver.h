@@ -16,7 +16,7 @@
 #include "../zerofpsv2/engine_systems/propertys/cameraproperty.h"
 #include "../zerofpsv2/gui/zgui.h"
 
-class MistServer :public Application {
+class MistServer :public Application , public ZGuiApp {
 	private:
 		//console funktions
 		enum FuncId_e

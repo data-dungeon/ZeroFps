@@ -10,6 +10,7 @@
 #include "propertyfactory.h"
 #include "network.h"
 #include "../basic/quaternion.h"
+#include "../script/zfscript.h"
 
 using namespace std;
 
@@ -193,6 +194,8 @@ class ENGINE_API Object
 		
 		string						m_strName;								///< Object name
 		string						m_strType;							///< Object type name.
+
+		ZFResourceHandle*			m_pScriptFileHandle;			//handle for the objects create script if any
 
 		ObjectType					m_iObjectType;						
 		int							m_iUpdateStatus;					

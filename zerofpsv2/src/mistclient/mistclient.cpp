@@ -309,11 +309,11 @@ void MistClient::RunCommand(int cmdid, const CmdArgument* kCommand)
 				break;				
 			}
 			
-			if(!pkLevelMan->LoadLevel(kCommand->m_kSplitCommand[1].c_str()))	
+/*			if(!pkLevelMan->LoadLevel(kCommand->m_kSplitCommand[1].c_str()))	
 			{
 				pkConsole->Printf("Error loading level");
 				break;			
-			}
+			}*
 
 			
 			pkConsole->Printf("Level loaded");

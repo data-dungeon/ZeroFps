@@ -12,6 +12,7 @@ P_Event::P_Event()
 	m_pkScriptResHandle = NULL;
 	
 	m_bHaveRunInit=false;
+
 }
 
 void P_Event::Update()
@@ -42,7 +43,6 @@ bool P_Event::SendEvent(const char* acEvent)
 	if(!m_pkScriptSys->Call(pkScriptRes, (char*)acEvent, 0, 0))
 		return false;
 
-//	cout<<"hohoa"<<endl;
 	return true;
 }
 

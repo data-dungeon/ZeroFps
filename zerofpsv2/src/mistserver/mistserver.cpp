@@ -7,8 +7,18 @@
 
 MistServer g_kMistServer("MistServer",0,0,0);
 
+static bool GUIPROC( ZGuiWnd* win, unsigned int msg, int numparms, void *params ) 
+{
+	switch(msg)
+	{
+	case ZGM_COMMAND:
+		g_kMistServer.OnCommand(((int*)params)[0], win);
+		break;
+	}
+	return true;
+}
 MistServer::MistServer(char* aName,int iWidth,int iHeight,int iDepth) 
-	: Application(aName,iWidth,iHeight,iDepth)
+	: Application(aName,iWidth,iHeight,iDepth), ZGuiApp(GUIPROC)
 { 
 	g_ZFObjSys.Log_Create("mistserver");
 } 
