@@ -745,7 +745,9 @@ void MistClient::OnCommand(int iID, ZGuiWnd *pkMainWnd)
 		if(strClickWndName == "ConnectToServerButton")
 		{
 			char* szIpName = GetWnd("IPNumberEditbox")->GetText();
-			pkFps->m_pkNetWork->ClientStart(szIpName,NULL, NULL);
+			char* szLoginName = GetWnd("UserEditbox")->GetText();
+			char* szPassName = GetWnd("PasswordEditbox")->GetText();
+			pkFps->m_pkNetWork->ClientStart(szIpName,szLoginName,szPassName);
 			pkApp->OnClientStart();
 		}
 	}
