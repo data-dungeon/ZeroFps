@@ -24,7 +24,7 @@ ZGuiListbox::ZGuiListbox(Rect kRectangle, ZGuiWnd* pkParent, bool bVisible,
 						 ZGuiSkin* pkSkinItem, 
 						 ZGuiSkin* pkSkinItemSelected, 
 						 ZGuiSkin* pkSkinItemHighLight) :
-	ZGuiControl(kRectangle, pkParent, bVisible, iID)
+	ZGuiWnd(kRectangle, pkParent, bVisible, iID)
 {
 	m_iScrollbarWidth = 20;
 	m_bIsMenu = false;

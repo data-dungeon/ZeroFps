@@ -46,7 +46,6 @@ class Game :public Application {
 		int m_iGameState;
 
 		void RegisterPropertys();	
-		void CreateZones();
 		void Init();
 		void SetUpMenuScreen();
 
@@ -70,6 +69,7 @@ class Game :public Application {
 		int m_iActionOpenInventory, m_iActionCloseInventory;
 
 	public:
+		void OpenContainer();
 		void LockPlayerCamera(bool bTrue);
 		
 //		Core	m_kTestCore;

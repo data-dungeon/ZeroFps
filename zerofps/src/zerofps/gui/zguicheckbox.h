@@ -7,12 +7,12 @@
 
 #include "gui_x.h"
 #include "../basic/rect.h"
-#include "zguicontrol.h"
+#include "zguiwindow.h"
 
 class ZGuiRender;
 class ZGuiLabel;
 
-class GUI_API ZGuiCheckbox : public ZGuiControl
+class GUI_API ZGuiCheckbox : public ZGuiWnd
 {
 public:
 	ZGuiCheckbox(Rect kRectangle, ZGuiWnd* pkParent=NULL, bool bVisible=true, int iID=0);

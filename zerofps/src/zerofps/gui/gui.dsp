@@ -156,10 +156,6 @@ SOURCE=.\zguicombobox.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\zguicontrol.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\zguicursor.cpp
 # End Source File
 # Begin Source File
@@ -221,10 +217,6 @@ SOURCE=.\zguicheckbox.h
 # Begin Source File
 
 SOURCE=.\zguicombobox.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\zguicontrol.h
 # End Source File
 # Begin Source File
 

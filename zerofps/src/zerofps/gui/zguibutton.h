@@ -8,11 +8,11 @@
 
 #include "gui_x.h"
 #include "../basic/rect.h"
-#include "zguicontrol.h"
+#include "zguiwindow.h"
 
 class ZGuiRender;
 
-class GUI_API ZGuiButton : public ZGuiControl 
+class GUI_API ZGuiButton : public ZGuiWnd 
 {
 public:
 	ZGuiButton(Rect kRectangle, ZGuiWnd* pkParent=NULL, bool bVisible=true, int iID=0);

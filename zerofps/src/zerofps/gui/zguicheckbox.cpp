@@ -16,7 +16,7 @@
 //
 ZGuiCheckbox::ZGuiCheckbox(Rect kRectangle, ZGuiWnd* pkParent, 
 						   bool bVisible, int iID) :
-	ZGuiControl(kRectangle, pkParent, bVisible, iID)
+	ZGuiWnd(kRectangle, pkParent, bVisible, iID)
 {
 	m_bChecked = false;
 	m_bEnabled = true;

@@ -7,11 +7,11 @@
 
 #include "gui_x.h"
 #include "../basic/rect.h"
-#include "zguicontrol.h"
+#include "zguiwindow.h"
 
 class ZGuiButton;
 
-class GUI_API ZGuiScrollbar : public ZGuiControl
+class GUI_API ZGuiScrollbar : public ZGuiWnd
 {
 public:
 	bool AutoHideOn();

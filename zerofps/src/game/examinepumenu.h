@@ -17,6 +17,7 @@ class PlayerControlProperty;
 class ExaminePUMenu : public DlgBox  
 {
 public:
+	char* GetUseString(int index);
 	void SetPlayerControlProperty(PlayerControlProperty *pkPlayerProp);
 	void SetItemProperty(ItemProperty* pkItemProp);
 	ExaminePUMenu(ZGui* pkGui, ZGuiWndProc oMainWndProc, TextureManager* pkTexMan);

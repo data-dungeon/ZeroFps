@@ -16,7 +16,7 @@ const int SCROLLTHUMB_ID = 520;
 //////////////////////////////////////////////////////////////////////
 
 ZGuiScrollbar::ZGuiScrollbar(Rect kArea, ZGuiWnd* pkParent, bool bVisible, int iID) :
-	ZGuiControl(kArea, pkParent, bVisible, iID)
+	ZGuiWnd(kArea, pkParent, bVisible, iID)
 {
 	CreateInternalControls();
 	m_bEnabled = true;

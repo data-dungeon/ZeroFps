@@ -6,11 +6,11 @@
 #define _GUI_ZGUILABEL_H_
 
 #include "gui_x.h"
-#include "zguicontrol.h"
+#include "zguiwindow.h"
 
 class ZGuiRender;
 
-class GUI_API ZGuiLabel : public ZGuiControl 
+class GUI_API ZGuiLabel : public ZGuiWnd 
 {
 public:
 	ZGuiLabel(Rect kRectangle, ZGuiWnd* pkParent=NULL, bool bVisible=true, int iID=0);

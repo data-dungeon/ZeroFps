@@ -40,7 +40,6 @@ static bool PLAYER_INVENTORYPROC( ZGuiWnd* wnd, unsigned int msg, int num, void 
 		switch(((int*)parms)[0]) // control id
 		{
 		case InventCloseBN:
-			g_kGame.LockPlayerCamera(false);
 			g_kGame.m_pkPlayerInventoryBox->OnClose(false);
 			break;
 		}
@@ -58,7 +57,6 @@ static bool CONTAINER_BOXPROC( ZGuiWnd* wnd, unsigned int msg, int num, void *pa
 		switch(((int*)parms)[0]) // control id
 		{
 		case ContainerClose:
-			g_kGame.LockPlayerCamera(false);
 			g_kGame.m_pkContainerBox->OnClose(false);
 			break;
 		}
@@ -74,7 +72,18 @@ static bool EXAMINE_BOXPROC( ZGuiWnd* wnd, unsigned int msg, int num, void *parm
 	{
 	// Command Messages
 	case ZGM_SELECTLISTITEM:
-		g_kGame.LockPlayerCamera(false); 
+		char* szUseString;
+		szUseString = g_kGame.m_pkExamineMenu->GetUseString(((int*)parms)[1]);
+		
+		if(szUseString && strcmp(szUseString, "Open container") == 0)
+		{
+			g_kGame.m_pkExamineMenu->OnClose(true);
+			g_kGame.OpenContainer();
+			return true;
+		}
+		else
+		{
+		}
 		break;
 	}
 
@@ -144,10 +153,16 @@ void Game::OnIdle(void)
 			if(m_pkPlayerInventoryBox->IsOpen())
 				m_pkPlayerInventoryBox->Update();
 
-			if(m_pkContainerBox)
+			if(m_pkContainerBox->IsOpen())
 				m_pkContainerBox->Update();
 
 			PlayerExamineObject();
+
+			if(m_pkPlayerInventoryBox->IsOpen() || m_pkContainerBox->IsOpen() ||
+				m_pkExamineMenu->IsOpen())
+				LockPlayerCamera(true);
+			else
+				LockPlayerCamera(false);
 
 			Input();
 
@@ -248,12 +263,10 @@ void Game::Input()
 		// Open/Close inventory window
 		if(m_pkPlayerInventoryBox->IsOpen() == false)
 		{
-			LockPlayerCamera(true);
 			m_pkPlayerInventoryBox->OnOpen(-1,-1); 
 		}
 		else
 		{
-			LockPlayerCamera(false);
 			m_pkPlayerInventoryBox->OnClose(false);
 		}
 		break;
@@ -263,13 +276,11 @@ void Game::Input()
 		if(m_pkExamineMenu->IsOpen())
 		{
 			m_pkExamineMenu->OnClose(false);
-			LockPlayerCamera(false);
 		}
 
 		if(m_pkPlayerInventoryBox->IsOpen())
 		{
 			m_pkPlayerInventoryBox->OnClose(false);
-			LockPlayerCamera(false);
 		}
 		break;
 
@@ -279,12 +290,10 @@ void Game::Input()
 
 		if(m_pkContainerBox->IsOpen() == false)
 		{
-			LockPlayerCamera(true);
 			m_pkContainerBox->OnOpen(x,0); 
 		}
 		else
 		{
-			LockPlayerCamera(false);
 			m_pkContainerBox->OnClose(false);
 		}
 		break;
@@ -384,7 +393,7 @@ void Game::SetupLevel()
 			pkPlayerContainerProp->m_kContainer.SetSize(5,5);
 
 			m_pkPlayerInventoryBox->SetContainer(&pkPlayerContainerProp->m_kContainer);
-			m_pkContainerBox->SetContainer(&pkPlayerContainerProp->m_kContainer);
+			//m_pkContainerBox->SetContainer(&pkPlayerContainerProp->m_kContainer);
 		}		
 	}
 	
@@ -453,9 +462,10 @@ void Game::InitGui()
 	m_pkPlayerInventoryBox->Create(0,0,
 		"../data/gui_resource_files/inventary_rc.txt", "InventoryWnd");
 
+	// Create container windows
 	m_pkContainerBox = new ItemBox(pkGui, CONTAINER_BOXPROC, pkTexMan, pkInput);
-	m_pkContainerBox->Create(400,400,
-		"../data/gui_resource_files/container_rc.txt", "ContainerWnd");
+	m_pkContainerBox->Create(0,0,"../data/gui_resource_files/container_rc.txt",
+		"ContainerWnd");
 
 	// Create examine menu
 	m_pkExamineMenu = new ExaminePUMenu(pkGui, EXAMINE_BOXPROC, pkTexMan);
@@ -489,6 +499,15 @@ void Game::PlayerExamineObject()
 
 	if(pkObjectTouched != NULL)
 	{
+		ContainerProperty* cp = static_cast<ContainerProperty*>
+			(pkObjectTouched->GetProperty("ContainerProperty"));
+
+		if(cp != NULL)
+		{
+			if(cp->IsOpen() == false)
+				m_pkContainerBox->SetContainer(&cp->m_kContainer);
+		}
+
 		ItemProperty* ip = static_cast<ItemProperty*>
 			(pkObjectTouched->GetProperty("ItemProperty"));
 
@@ -497,12 +516,9 @@ void Game::PlayerExamineObject()
 			m_pkExamineMenu->SetItemProperty(ip);
 			m_pkExamineMenu->SetPlayerControlProperty(m_pkPlayerCtrl);
 
-			int x = m_iWidth/2 - m_pkExamineMenu->Width()/2;
-			int y = m_iHeight/2 - m_pkExamineMenu->Height()/2;
 			if(m_pkExamineMenu->IsOpen() == false)
 			{
-				LockPlayerCamera(true);
-				m_pkExamineMenu->OnOpen(x,y);
+				m_pkExamineMenu->OnOpen(m_iWidth/2,m_iHeight/2);
 			}
 		}
 	}
@@ -517,4 +533,15 @@ void Game::LockPlayerCamera(bool bTrue)
 		m_pkPlayerCtrl->m_bLockCamera = bTrue;
 }
 
-
+void Game::OpenContainer()
+{
+	if(m_pkContainerBox->GetContainer() != NULL)
+	{
+		m_pkContainerBox->OnOpen(m_iWidth-m_pkContainerBox->Width(),0);
+	}
+	else
+	{
+		printf("Failed to open container GUI box!\n");
+		
+	}
+}

@@ -102,7 +102,7 @@ bool ExaminePUMenu::OnOpen(int x, int y)
 	// Add new items to listbox.
 	m_kListbox->RemoveAllItems();
 
-	int counter = 1, i=0;
+	int counter = 0, i=0;
 
 	if(bPickable)
 	{
@@ -116,7 +116,11 @@ bool ExaminePUMenu::OnOpen(int x, int y)
 	m_pkGui->ShowMainWindow(m_pkDlgBox, true);
 
 	if(!(x==-1 && y==-1))
+	{
+		x -= m_pkDlgBox->GetScreenRect().Width()/2;
+		y -= m_pkDlgBox->GetScreenRect().Height()/2;
 		m_pkDlgBox->SetPos(x,y,true,true);
+	}
 
 	m_pkGui->ShowCursor(true,m_pkDlgBox->GetScreenRect().Left,
 		m_pkDlgBox->GetScreenRect().Top);
@@ -135,7 +139,7 @@ bool ExaminePUMenu::OnClose(bool bSave)
 		}
 
 		if(m_pkPlayerProp && m_pkItemProperty->m_bPickable &&
-			m_iPickedListIndex == 1)
+			m_iPickedListIndex == 0)
 		{
 			m_pkPlayerProp->PickUp( m_pkItemProperty->GetObject() );
 		}
@@ -168,4 +172,12 @@ char* ExaminePUMenu::GenMainWndName()
 	char* szApa = new char[50];
 	sprintf(szApa, "ExaminePUMainWnd%i", s_iExamineMainWndID);
 	return szApa;
+}
+
+char* ExaminePUMenu::GetUseString(int index)
+{
+	if(index >= 0 && index < m_kListbox->GetItemCount())
+		return m_kListbox->GetItem(index)->GetText();
+
+	return "null";
 }

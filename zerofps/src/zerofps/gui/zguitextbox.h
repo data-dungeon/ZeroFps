@@ -6,12 +6,12 @@
 #define _GUI_ZGUITEXTBOX_H_
 
 #include "gui_x.h"
-#include "zguicontrol.h"
+#include "zguiwindow.h"
 
 class ZGuiRender;
 class ZGuiScrollbar;
 
-class GUI_API ZGuiTextbox : public ZGuiControl
+class GUI_API ZGuiTextbox : public ZGuiWnd
 {
 public:
 	int GetRowLength(int iRow);

@@ -611,10 +611,11 @@ void ZeroEdit::OnClientStart(void)
 }
 
 void ZeroEdit::Input() 
-{
+{	
 	if(m_pkGui->HaveFocus()) 
 	{
-		pkInput->SetInputEnabled(false); 
+		pkInput->SetInputEnabled(false);
+		
 	}
 
 	float childmovespeed=2;
@@ -815,8 +816,8 @@ void ZeroEdit::Input()
 
 					m_pkGui->UpdatePropertybox();
 				}
-				if(pkInput->Pressed(MOUSERIGHT) && pkInput->Pressed(KEY_LSHIFT) ||
-					pkInput->Pressed(MOUSEMIDDLE) )
+				if( /*(pkInput->Pressed(MOUSERIGHT) && pkInput->Pressed(KEY_LSHIFT)) ||*/
+					 pkInput->Pressed(MOUSERIGHT) )
 				{
 					SelectChild();
 				}

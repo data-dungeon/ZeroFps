@@ -6,6 +6,12 @@ ContainerProperty::ContainerProperty()
 	
 	m_iType=PROPERTY_TYPE_NORMAL;
 	m_iSide=PROPERTY_SIDE_SERVER;
+	m_bOpen = false;
+}
+
+ContainerProperty::~ContainerProperty()
+{
+	UnRegisterActions();
 }
 
 
@@ -51,6 +57,15 @@ bool ContainerProperty::HandleSetValue( string kValueName ,string kValue )
 	return false;
 }
 
+void ContainerProperty::HandleGameMessage(GameMessage& Msg)
+{
+	if(Msg.m_Name == "OpenContainer")
+		OpenContainer();
+				
+	if(Msg.m_Name == "Register_Actions")
+		RegisterActions();
+}
+
 
 void ContainerProperty::Save(ZFMemPackage* pkPackage)
 {
@@ -75,11 +90,37 @@ void ContainerProperty::Load(ZFMemPackage* pkPackage)
 
 }
 
+void ContainerProperty::Init()
+{
+	RegisterActions();
+}
+
+void ContainerProperty::RegisterActions()
+{
+	ItemProperty* pkIP = static_cast<ItemProperty*>(m_pkObject->GetProperty("ItemProperty"));
+
+	if(pkIP != NULL)
+	{
+		pkIP->RegisterAction(NORMALUSE,"Open container","OpenContainer");
+	}
+}	
+
+void ContainerProperty::UnRegisterActions()
+{
+	ItemProperty* pkIP = static_cast<ItemProperty*>(m_pkObject->GetProperty("ItemProperty"));
+
+	if(pkIP != NULL)
+	{
+		pkIP->UnRegisterAction(NORMALUSE,"Open container");
+	}
+}
+
 Property* Create_ContainerProperty()
 {
 	return new ContainerProperty();
 }
 
-
-
-
+void ContainerProperty::OpenContainer()
+{
+	m_bOpen = true;
+}

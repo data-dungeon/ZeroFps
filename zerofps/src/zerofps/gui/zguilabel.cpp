@@ -12,7 +12,7 @@
 //////////////////////////////////////////////////////////////////////
 
 ZGuiLabel::ZGuiLabel(Rect kRectangle, ZGuiWnd* pkParent, bool bVisible, int iID) :
-	ZGuiControl(kRectangle, pkParent, bVisible, iID)
+	ZGuiWnd(kRectangle, pkParent, bVisible, iID)
 {
 	m_bEnabled = false; // labels are static by default
 	RemoveWindowFlag(WF_CANHAVEFOCUS); // fönster har focus by default

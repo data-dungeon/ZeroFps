@@ -204,6 +204,11 @@ void ItemBox::SetContainer(Container* pkContainer)
 	m_pkContainer = pkContainer;
 }
 
+Container* ItemBox::GetContainer()
+{
+	return m_pkContainer;
+}
+
 void ItemBox::AddSlot(GuiData* pkData)
 {
 	Rect rc(pkData->iPosX*m_ciSlotSize, pkData->iPosY*m_ciSlotSize,

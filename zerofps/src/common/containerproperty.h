@@ -20,14 +20,23 @@ class COMMON_API ContainerProperty: public Property {
 	private:
 		vector<PropertyValues> GetPropertyValues();
 		bool HandleSetValue( string kValueName ,string kValue );
+		void HandleGameMessage(GameMessage& Msg);
+		bool m_bOpen;
 	
 	public:
+		const bool IsOpen() {return m_bOpen; }
+		void OpenContainer();
 		Container	m_kContainer;
 		
 		ContainerProperty();
+		~ContainerProperty();
 
 		void Save(ZFMemPackage* pkPackage);
 		void Load(ZFMemPackage* pkPackage);
+
+		void RegisterActions();
+		void UnRegisterActions();
+		void Init();
 };
 
 COMMON_API Property* Create_ContainerProperty();

@@ -12,7 +12,7 @@
 //////////////////////////////////////////////////////////////////////
 
 ZGuiButton::ZGuiButton(Rect kArea, ZGuiWnd* pkParent, bool bVisible, int iID) :
-	ZGuiControl(kArea, pkParent, bVisible, iID)
+	ZGuiWnd(kArea, pkParent, bVisible, iID)
 {
 	m_bEnabled = true;
 	m_pkSkinBnUp=NULL;

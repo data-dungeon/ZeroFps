@@ -16,7 +16,7 @@ ZGuiRadiobutton* ZGuiRadiobutton::m_pkLastbutton = NULL;
 ZGuiRadiobutton::ZGuiRadiobutton(Rect kRectangle, ZGuiWnd* pkParent, int iID, 
 								 int iGroupID, char* szGroupName, 
 								 ZGuiRadiobutton* pkPrev, bool bVisible) :
-	ZGuiControl(kRectangle, pkParent, bVisible, iID)
+	ZGuiWnd(kRectangle, pkParent, bVisible, iID)
 {
 	m_pkPrev = NULL;
 	m_pkNext = NULL;

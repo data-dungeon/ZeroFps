@@ -19,6 +19,7 @@ struct GuiData;
 class ItemBox : public DlgBox 
 {
 public:
+	Container* GetContainer();
 	void SetContainer(Container* pkContainer);
 	void Update();
 	ItemBox(ZGui* pkGui, ZGuiWndProc oMainWndProc, TextureManager* pkTexMan, 

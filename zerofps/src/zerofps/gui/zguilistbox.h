@@ -7,13 +7,13 @@
 
 #include "gui_x.h"
 #include "../basic/rect.h"
-#include "zguicontrol.h"
 #include "zguilistitem.h"
+#include "zguiwindow.h"
 
 class ZGuiRender;
 class ZGuiScrollbar;
 
-class GUI_API ZGuiListbox : public ZGuiControl
+class GUI_API ZGuiListbox : public ZGuiWnd
 {
 public:
 	bool SelItem(int iIndex);

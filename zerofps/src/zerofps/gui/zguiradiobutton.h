@@ -8,7 +8,7 @@
 #include "gui_x.h"
 #include "zguicheckbox.h"
 
-class GUI_API ZGuiRadiobutton : public ZGuiControl
+class GUI_API ZGuiRadiobutton : public ZGuiWnd
 {
 public:
 	void ChangeGroupName(char* szNewName);

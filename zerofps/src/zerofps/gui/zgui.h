@@ -25,7 +25,6 @@
 #include <map>
 using namespace std;
 
-class ZGuiControl;
 class ZGuiRender;
 class Input;
 class ZeroFps;

@@ -7,14 +7,14 @@
 
 #include "gui_x.h"
 #include "../basic/rect.h"
-#include "zguicontrol.h"
+#include "zguiwindow.h"
 
 class ZGuiRender;
 class ZGuiLabel;
 class ZGuiListbox;
 class ZGuiListitem;
 
-class GUI_API ZGuiCombobox : public ZGuiControl
+class GUI_API ZGuiCombobox : public ZGuiWnd
 {
 public:
 	ZGuiCombobox(Rect kRectangle, ZGuiWnd* pkParent=NULL, 

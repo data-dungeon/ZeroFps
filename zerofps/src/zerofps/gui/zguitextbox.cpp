@@ -20,7 +20,7 @@
 //////////////////////////////////////////////////////////////////////
 
 ZGuiTextbox::ZGuiTextbox(Rect kArea, ZGuiWnd* pkParent, bool bVisible, int iID, bool bMultiLine) :
-	ZGuiControl(kArea, pkParent, bVisible, iID)
+	ZGuiWnd(kArea, pkParent, bVisible, iID)
 {
 	m_bMultiLine = bMultiLine;
 	m_iStartrow = 0;

@@ -22,7 +22,7 @@ ZGuiCombobox::ZGuiCombobox(Rect kRectangle,ZGuiWnd* pkParent,
 						   bool bVisible,int iID,int iItemHeight,
 						   ZGuiSkin* pkSkinItem,ZGuiSkin* pkSkinItemSelected,
 						   ZGuiSkin* pkSkinItemHighLight,ZGuiSkin* pkTopItemSkin) :
-	ZGuiControl(kRectangle,pkParent,bVisible,iID)
+	ZGuiWnd(kRectangle,pkParent,bVisible,iID)
 {
 	m_bIsMenu = false;
 	Rect rc = GetWndRect();
