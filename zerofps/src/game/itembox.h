@@ -41,6 +41,7 @@ private:
 	//ZGuiButton* m_pkClickButton;
 	Container* m_pkContainer;
 	Object* m_pkMoveObject;
+	map< slot_pos, ZGuiButton* >::iterator m_pkMoveItem;
 
 };
 

@@ -50,20 +50,62 @@ bool ItemBox::DlgProc( ZGuiWnd* pkWnd,unsigned int uiMessage,
 				{
 					m_pkMoveObject = m_pkContainer->GetItem(it->first.first, 
 						it->first.second);
-
-					if(m_pkMoveObject)
-					{
-						cout << "removed object named "<< m_pkMoveObject->GetName() << endl;
-						m_pkContainer->RemoveItem(m_pkMoveObject);
-
-						it->second->Resize(m_ciSlotSize, m_ciSlotSize);
-						it->second->GetSkin()->m_iBkTexID = -1;
-					}
-
+					m_pkMoveItem = it;
 					break;
 				}
 			}
 		}
+		break;
+
+	case ZGM_LBUTTONUP:
+
+		if(m_pkMoveObject)
+		{
+			int mx = ((int*)pkParams)[0], my = ((int*)pkParams)[1];
+
+			int x=-1,y=-1;
+			map<slot_pos, ZGuiButton*>>::iterator it;
+			for(it = m_kSlotsTable.begin(); it != m_kSlotsTable.end(); it++)
+			{
+				if(it->second->GetScreenRect().Inside(mx,my))
+				{
+					x = it->first.first;
+					y = it->first.second;
+					break;
+				}
+			}
+
+			if( !(x==-1&&y==-1) )
+			{
+				int tx = m_pkMoveItem->first.first;
+				int ty = m_pkMoveItem->first.second;
+				int sx = tx+m_pkMoveItem->second->GetScreenRect().Width() / m_ciSlotSize;
+				int sy = ty+m_pkMoveItem->second->GetScreenRect().Height() / m_ciSlotSize;
+
+				for(int y=ty; y<sy; y++)
+					for(int x=tx; x<sx; x++)
+					{
+						map<slot_pos,ZGuiButton*>::iterator res =
+							m_kSlotsTable.find(slot_pos(x,y));
+
+						if(res != m_kSlotsTable.end())
+						{
+							res->second->Show();
+						}
+					}
+
+				cout << "removed object named "<< m_pkMoveObject->GetName() << endl;
+				m_pkContainer->RemoveItem(m_pkMoveObject);
+
+				m_pkMoveItem->second->Resize(m_ciSlotSize, m_ciSlotSize);
+				m_pkMoveItem->second->GetSkin()->m_iBkTexID = -1;
+
+				m_pkContainer->AddItem(m_pkMoveObject, x, y);
+			}
+
+			m_pkMoveObject = NULL;
+		}
+
 		break;
 	}
 
@@ -105,8 +147,6 @@ bool ItemBox::Create(int x, int y, int w, int h, ZGuiWndProc pkWndProc)
 		// insert all buttons in a dictionary.
 		m_kSlotsTable.insert(map<slot_pos,ZGuiButton*>::value_type( 
 			slot_pos(rc.Left, rc.Top), (ZGuiButton*)(*it)));
-
-		//printf("(%i, %i), %i\n", rc.Left, rc.Top, (ZGuiButton*)(*it));
 	}
 
 	map<slot_pos, ZGuiButton*>>::iterator it2;
@@ -156,9 +196,9 @@ void ItemBox::Update()
 	// Loopa igenom alla items.
 	for(int i=0; i<iNumItems; i++)
 	{
-		GuiData kData = m_pkContainer->GetGuiData(i);
-
 		ZGuiButton* pkItemButton = NULL;
+
+		GuiData kData = m_pkContainer->GetGuiData(i);  
 
 		// Dölj alla knappar som den nya knappen kommer att täcka
 		// och registrera den nya knappen.
