@@ -197,7 +197,7 @@ void DarkMetropolis::RenderInterface(void)
 		m_pkRender->DrawAABB(m_kSelectSquareStart,Vector3(m_kSelectSquareStop.x, m_kSelectSquareStart.y+0.2, m_kSelectSquareStop.z),Vector3(0,1,0));
 }
 
-void DarkMetropolis::OnSystem() 
+void DarkMetropolis::OnSystem()
 {	
 	//update camera position
 	CheckCameraPos();
@@ -211,7 +211,7 @@ void DarkMetropolis::OnSystem()
 	{
 		m_iActiveHQ = FindActiveHQ();
 		if(m_iActiveHQ != -1)
-			cout<<"Found Active HQ :"<<m_iActiveHQ<<endl;
+		cout<<"Found Active HQ :"<<m_iActiveHQ<<endl;
 	}
 
 	//do line test

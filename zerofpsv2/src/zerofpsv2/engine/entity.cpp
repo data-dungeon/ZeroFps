@@ -1850,3 +1850,6 @@ void Entity::GetAllObjects(vector<Entity*> *pakObjects, bool bForceSendAll,bool 
 	}	
 }
 */
+
+
+
