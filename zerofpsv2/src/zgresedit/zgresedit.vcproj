@@ -100,7 +100,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386"
-				AdditionalDependencies="opengl32.lib mcommon.lib sdlmain.lib sdl.lib gui.lib render.lib basic.lib script.lib physics_engine.lib"
+				AdditionalDependencies="opengl32.lib mcommon.lib sdlmain.lib sdl.lib gui.lib render.lib basic.lib script.lib"
 				OutputFile="..\..\bin\zgresedit.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"

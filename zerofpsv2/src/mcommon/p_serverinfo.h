@@ -70,7 +70,7 @@ class MCOMMON_API P_ServerInfo: public Property {
 		void SetServerName(string strName);
 		string GetServerName(){return m_sServerName;};
 
-		int GetNrOfPlayers(){return m_kPlayers.size();};
+		int GetNrOfPlayers() {return int(m_kPlayers.size()); }
 		
       void PackTo(NetPacket* pkNetPacket, int iConnectionID );
 		void PackFrom(NetPacket* pkNetPacket, int iConnectionID );

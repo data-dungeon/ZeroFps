@@ -36,6 +36,7 @@
 				OutputFile="..\..\bin\mistclient2_debug.exe"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="..\..\bin"
+				IgnoreDefaultLibraryNames="msvcrt.lib"
 				GenerateDebugInformation="TRUE"
 				ProgramDatabaseFile="$(OutDir)/mistclient2.pdb"
 				SubSystem="1"
@@ -80,6 +81,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
+				AdditionalDependencies="engine.lib opengl32.lib mcommon.lib sdlmain.lib sdl.lib gui_debug.lib render.lib basic.lib script.lib odbc32.lib odbccp32.lib"
 				OutputFile="..\..\bin\mistclient2.exe"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="..\..\bin"
