@@ -617,27 +617,27 @@ void ZGuiListbox::SetEnable(bool bEnable)
 		 }
 }
 
-bool ZGuiListbox::Rescale(int iOldWidth, int iOldHeight, int iNewWidth, int iNewHeight)
-{
-	ZGuiWnd::Rescale(iOldWidth, iOldHeight, iNewWidth, iNewHeight);
-
-	for(itItemList it = m_pkItemList.begin(); it != m_pkItemList.end(); it++)
-		(*it)->GetButton()->Rescale(iOldWidth, iOldHeight, iNewWidth, iNewHeight);
-
-	m_pkScrollbarVertical->ZGuiScrollbar::Rescale(iOldWidth, iOldHeight, iNewWidth, iNewHeight); 
-
-	m_unItemHeight = (int) ((float) m_unItemHeight * (float) ((float)iNewHeight/(float)iOldHeight));
-	m_iScrollbarWidth = (int) ((float) m_iScrollbarWidth * (float) ((float)iNewWidth/(float)iOldWidth));
-
-	int iWidth = GetScreenRect().Width();
-
-	m_kItemArea = GetWndRect();
-	m_kItemArea = m_kItemArea.Left + iWidth;
-
-	UpdateList();
-
-	return true;
-}
+//bool ZGuiListbox::Rescale(int iOldWidth, int iOldHeight, int iNewWidth, int iNewHeight)
+//{
+//	ZGuiWnd::Rescale(iOldWidth, iOldHeight, iNewWidth, iNewHeight);
+//
+//	for(itItemList it = m_pkItemList.begin(); it != m_pkItemList.end(); it++)
+//		(*it)->GetButton()->Rescale(iOldWidth, iOldHeight, iNewWidth, iNewHeight);
+//
+//	m_pkScrollbarVertical->ZGuiScrollbar::Rescale(iOldWidth, iOldHeight, iNewWidth, iNewHeight); 
+//
+//	m_unItemHeight = (int) ((float) m_unItemHeight * (float) ((float)iNewHeight/(float)iOldHeight));
+//	m_iScrollbarWidth = (int) ((float) m_iScrollbarWidth * (float) ((float)iNewWidth/(float)iOldWidth));
+//
+//	int iWidth = GetScreenRect().Width();
+//
+//	m_kItemArea = GetWndRect();
+//	m_kItemArea = m_kItemArea.Left + iWidth;
+//
+//	UpdateList();
+//
+//	return true;
+//}
 
 void ZGuiListbox::SetResizeFlags(bool bHorz, bool bVert)
 {

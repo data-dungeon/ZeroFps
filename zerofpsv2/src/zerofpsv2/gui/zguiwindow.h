@@ -146,7 +146,7 @@ public:
 	bool m_bUseAlhpaTest; ///< true om systemet skall ta hänsyn till om man har klickat på en alpha yta
 	bool m_bAcceptRightClicks;
 
-	virtual bool Rescale(int iOldWidth, int iOldHeight, int iNewWidth, int iNewHeight);
+	//virtual bool Rescale(int iOldWidth, int iOldHeight, int iNewWidth, int iNewHeight);
 
 	virtual void SetResizeFlags(bool bHorz, bool bVert);
 

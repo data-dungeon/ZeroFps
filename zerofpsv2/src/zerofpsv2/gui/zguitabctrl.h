@@ -33,7 +33,7 @@ public:
 	void SetPrevButtonSkin(ZGuiSkin* pkUp, ZGuiSkin* pkDown, ZGuiSkin* pkFocus);
 	void SetFont(ZGuiFont* pkFont);
 
-	bool Rescale(int iOldWidth, int iOldHeight, int iNewWidth, int iNewHeight);
+	//bool Rescale(int iOldWidth, int iOldHeight, int iNewWidth, int iNewHeight);
 
 	void GetWndSkinsDesc(vector<SKIN_DESC>& pkSkinDesc) const; // overloaded
 

@@ -44,7 +44,7 @@ public:
 	bool IsReadOnly();
 	void SetReadOnly(bool bReadOnly);
 	int GetRowCount() { return m_iNumRows; }
-	bool Rescale(int iOldWidth, int iOldHeight, int iNewWidth, int iNewHeight);
+	//bool Rescale(int iOldWidth, int iOldHeight, int iNewWidth, int iNewHeight);
 	void Resize(int Width, int Height, bool bChangeMoveArea=true);
 	bool m_bNumberOnly;
 

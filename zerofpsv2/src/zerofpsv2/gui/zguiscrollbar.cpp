@@ -500,16 +500,16 @@ void ZGuiScrollbar::SetScrollPos(unsigned int pos)
 	Notify(m_pkThumbButton, NCODE_MOVE);
 }
 
-bool ZGuiScrollbar::Rescale(int iOldWidth, int iOldHeight, int iNewWidth, int iNewHeight)
-{
-	ZGuiWnd::Rescale(iOldWidth, iOldHeight, iNewWidth, iNewHeight);
-
-	m_pkThumbButton->Rescale(iOldWidth, iOldHeight, iNewWidth, iNewHeight);
-	m_pkArrowBnUp->Rescale(iOldWidth, iOldHeight, iNewWidth, iNewHeight);
-	m_pkArrowBnDown->Rescale(iOldWidth, iOldHeight, iNewWidth, iNewHeight);
-
-	return true;
-}
+//bool ZGuiScrollbar::Rescale(int iOldWidth, int iOldHeight, int iNewWidth, int iNewHeight)
+//{
+//	ZGuiWnd::Rescale(iOldWidth, iOldHeight, iNewWidth, iNewHeight);
+//
+//	m_pkThumbButton->Rescale(iOldWidth, iOldHeight, iNewWidth, iNewHeight);
+//	m_pkArrowBnUp->Rescale(iOldWidth, iOldHeight, iNewWidth, iNewHeight);
+//	m_pkArrowBnDown->Rescale(iOldWidth, iOldHeight, iNewWidth, iNewHeight);
+//
+//	return true;
+//}
 
 int ZGuiScrollbar::GetArrowButtonHeight()
 {

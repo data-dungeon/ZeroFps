@@ -201,6 +201,7 @@ ZFAudioSystem::ZFAudioSystem(int uiMaxCachSize) : ZFSubSystem("ZFAudioSystem")
 	m_uiCurrentCachSize = 0;
 	m_uiMaxCachSize = uiMaxCachSize;
 	m_fReferenceDistance = 1.0f;
+	m_iEnableSound = 1;
 
 	RegisterVariable("r_enablesound",&m_iEnableSound,CSYS_INT);
 	RegisterVariable("r_ReferenceDistance",&m_fReferenceDistance,CSYS_FLOAT);

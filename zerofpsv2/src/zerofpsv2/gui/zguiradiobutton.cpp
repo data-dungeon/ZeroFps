@@ -241,13 +241,13 @@ void ZGuiRadiobutton::ChangeGroupName(char *szNewName)
 	strcpy(m_szGroupName, szNewName);
 }
 
-bool ZGuiRadiobutton::Rescale(int iOldWidth, int iOldHeight, int iNewWidth, int iNewHeight)
-{
-	ZGuiWnd::Rescale(iOldWidth, iOldHeight, iNewWidth, iNewHeight);
-
-	m_pkCheckbox->ZGuiCheckbox::Rescale(iOldWidth, iOldHeight, iNewWidth, iNewHeight);	
-	return true;
-}
+//bool ZGuiRadiobutton::Rescale(int iOldWidth, int iOldHeight, int iNewWidth, int iNewHeight)
+//{
+//	ZGuiWnd::Rescale(iOldWidth, iOldHeight, iNewWidth, iNewHeight);
+//
+//	m_pkCheckbox->ZGuiCheckbox::Rescale(iOldWidth, iOldHeight, iNewWidth, iNewHeight);	
+//	return true;
+//}
 
 void ZGuiRadiobutton::Check()
 {

@@ -199,10 +199,10 @@ void ZGuiCheckbox::CopyNonUniqueData(const ZGuiWnd* pkSrc)
 	ZGuiWnd::CopyNonUniqueData(pkSrc);
 }
 
-bool ZGuiCheckbox::Rescale(int iOldWidth, int iOldHeight, int iNewWidth, int iNewHeight)
-{
-	ZGuiWnd::Rescale(iOldWidth, iOldHeight, iNewWidth, iNewHeight);
-	m_pkLabel->Rescale(iOldWidth, iOldHeight, iNewWidth, iNewHeight);
-	
-	return true;
-}
+//bool ZGuiCheckbox::Rescale(int iOldWidth, int iOldHeight, int iNewWidth, int iNewHeight)
+//{
+//	ZGuiWnd::Rescale(iOldWidth, iOldHeight, iNewWidth, iNewHeight);
+//	m_pkLabel->Rescale(iOldWidth, iOldHeight, iNewWidth, iNewHeight);
+//	
+//	return true;
+//}

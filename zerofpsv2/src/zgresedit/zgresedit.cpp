@@ -195,6 +195,10 @@ ZGuiWnd* ZGResEdit::DeleteWnd(ZGuiWnd *pkWnd)
 
 void ZGResEdit::OnInit()
 {
+	m_pkZFVFileSystem->AddRootPath( string("../data/zgresedit/") ,"data/");
+//	m_pkZFVFileSystem->AddRootPath( string("../data/mistlands/") ,"data/");
+	m_pkZFVFileSystem->AddRootPath( string("../data/dm/") ,"data/");
+
 	glEnable(GL_LIGHTING );
 
 	m_pkLight->SetLighting(true);
@@ -209,7 +213,7 @@ void ZGResEdit::OnInit()
 		"data/script/gui/gui_res_edit.lua",
 		NULL, true);
 
-	SetTitle("GUI Editor Mistlands");
+	SetTitle("ZeroFps GUI Editor");
 	m_pkInput->ShowCursor(true);
 
 	m_pkScene = new Scene();

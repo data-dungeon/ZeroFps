@@ -5,12 +5,8 @@
 #include "glguirender.h" 
 #include "../basic/zguiskin.h"
 #include "texturemanager.h"
-//#include "../engine/fh.h"
-//#include "../engine/zfresource.h"
 #include "../basic/zfresourcedb.h"
 
-int g_bLettersPrinted=0;
-int textDL=-1;
 
 ///////////////////////////////////////////////////////////////////////////////
 // Construction/Destruction
@@ -402,77 +398,9 @@ bool GLGuiRender::RenderBorder(Rect rc)
 	return true;
 }
 
-///////////////////////////////////////////////////////////////////////////////
-// Name: RenderText
-//
-/*void GLGuiRender::RenderText( char *strText, Rect rc, int iCursorPos, int iRenderDistFromTop,
-							  bool bMultiLine, int& chars_printed, int& rows_printed)
-{
-	g_bLettersPrinted = 0;
-
-	if(m_pkFont == NULL)
-		return; 
-
-	bool bDrawMasked = true;
-
-	int fontTexture = m_pkTextureManger->Load(m_pkFont->m_szFileName.c_str(),0);
-
-	m_iCursorPos = iCursorPos;
-
-	m_rcTextBox = rc;
-
-	Rect t = rc;
-
-	m_rcTextBox = Rect(t.Left,m_iScreenHeight-t.Bottom,t.Right,m_iScreenHeight-t.Top);
-
-	if(bDrawMasked)
-	{
-		glEnable(GL_BLEND);					// Enable Blending
-		glDisable(GL_DEPTH_TEST);			// Disable Depth Testing
-		glBlendFunc(GL_DST_COLOR,GL_ZERO);	// Blend Screen Color With Zero (Black)
-		m_pkTextureManger->BindTexture( fontTexture );				
-		glDisable(GL_TEXTURE_2D);
-
-		glColor3f(1,1,1);
-		
-		if(bMultiLine)
-			PrintRows(strText, rc, iCursorPos, iRenderDistFromTop, 
-				chars_printed, rows_printed);
-		else
-			PrintRow(strText, rc, iCursorPos, iRenderDistFromTop, chars_printed);
-	}
-
-	int texture = fontTexture;
-		 		
-	if(texture >=0 )
-	{
-		m_pkTextureManger->BindTexture( texture );		
-		glEnable(GL_TEXTURE_2D);
-
-		if(bDrawMasked)
-			glBlendFunc(GL_ZERO, GL_SRC_COLOR);				
-	}
-	else
-	{
-		return;
-	}
-
-	glColor3f(1,1,1);
-
-	if(bMultiLine)
-		PrintRows(strText, rc, iCursorPos, iRenderDistFromTop, 
-			chars_printed, rows_printed);
-	else
-		PrintRow(strText, rc, iCursorPos, iRenderDistFromTop, chars_printed);
-
-	if(bDrawMasked)
-		glDisable(GL_BLEND);
-}*/
 void GLGuiRender::RenderText( char *strText, Rect rc, int iCursorPos, int iRenderDistFromTop,
 							  bool bMultiLine, int& chars_printed, int& rows_printed)
 {
-	g_bLettersPrinted = 0;
-
 	if(m_pkFont == NULL)
 		return; 
 
@@ -482,8 +410,6 @@ void GLGuiRender::RenderText( char *strText, Rect rc, int iCursorPos, int iRende
 
 	
 	int fontTexture_a = fontTexture; //m_pkTextureManger->Load(m_pkFont->m_szFileName.c_str(),0);
-
-
 
 	m_iCursorPos = iCursorPos;
 
@@ -700,31 +626,6 @@ bool GLGuiRender::PrintRow(char *text, Rect rc, int iCursorPos,
 	return true;
 }
 
-
-///////////////////////////////////////////////////////////////////////////////
-// Name: SetSkin
-//
-bool GLGuiRender::SetSkin(ZGuiSkin* pkSkin)
-{
-	m_pkSkin = pkSkin;
-	return true;
-}
-
-///////////////////////////////////////////////////////////////////////////////
-// Name: SetFont
-//
-bool GLGuiRender::SetFont(ZGuiFont* pkFont)
-{
-	m_pkFont = pkFont;
-	return true;
-}
-
-void GLGuiRender::GetScreenSize(int& cx, int& cy)
-{
-	cx = m_iScreenWidth;
-	cy = m_iScreenHeight;
-}
-
 pair<int,int> GLGuiRender::GetWordLength(char *text, int offset, int max_width)
 {
 	int char_counter = 0;
@@ -829,13 +730,36 @@ void GLGuiRender::PrintWord(int x, int y, char *szWord,
 				glTexCoord2f(tx+tw,ty);		glVertex2i(x+fw,y+fh);    
 				glTexCoord2f(tx+tw,ty+th);	glVertex2i(x+fw,y);    
 				glTexCoord2f(tx,ty+th);		glVertex2i(x,y);
-				
-				g_bLettersPrinted++;
 			}
 		}
 
 		x+=iCurrLegth;
 	}
+}
+
+
+///////////////////////////////////////////////////////////////////////////////
+// Name: SetSkin
+//
+bool GLGuiRender::SetSkin(ZGuiSkin* pkSkin)
+{
+	m_pkSkin = pkSkin;
+	return true;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// Name: SetFont
+//
+bool GLGuiRender::SetFont(ZGuiFont* pkFont)
+{
+	m_pkFont = pkFont;
+	return true;
+}
+
+void GLGuiRender::GetScreenSize(int& cx, int& cy)
+{
+	cx = m_iScreenWidth;
+	cy = m_iScreenHeight;
 }
 
 bool GLGuiRender::RenderLines(vector<Point>& akLines, 

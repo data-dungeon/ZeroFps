@@ -1184,13 +1184,6 @@ void ZGuiTextbox::ScrollRowIntoView(int row)
 	ScrollText(row);
 }
 
-bool ZGuiTextbox::Rescale(int iOldWidth, int iOldHeight, int iNewWidth, int iNewHeight)
-{
-	ZGuiWnd::Rescale(iOldWidth, iOldHeight, iNewWidth, iNewHeight);
-	m_pkScrollbarVertical->ZGuiScrollbar::Rescale(iOldWidth, iOldHeight, iNewWidth, iNewHeight);	
-	return true;
-}
-
 void ZGuiTextbox::Resize(int Width, int Height, bool bChangeMoveArea)
 {
 	if(m_pkScrollbarVertical)

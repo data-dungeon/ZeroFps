@@ -223,14 +223,14 @@ void ZGuiSlider::RemoveAllBuddys()
 	m_akBuddys.clear(); 
 }
 
-bool ZGuiSlider::Rescale(int iOldWidth, int iOldHeight, int iNewWidth, int iNewHeight)
-{
-	ZGuiWnd::Rescale(iOldWidth, iOldHeight, iNewWidth, iNewHeight);
-
-	m_pkButton->Rescale(iOldWidth, iOldHeight, iNewWidth, iNewHeight);	
-	m_pkLabel->Rescale(iOldWidth, iOldHeight, iNewWidth, iNewHeight);	
-	return true;
-}
+//bool ZGuiSlider::Rescale(int iOldWidth, int iOldHeight, int iNewWidth, int iNewHeight)
+//{
+//	ZGuiWnd::Rescale(iOldWidth, iOldHeight, iNewWidth, iNewHeight);
+//
+//	m_pkButton->Rescale(iOldWidth, iOldHeight, iNewWidth, iNewHeight);	
+//	m_pkLabel->Rescale(iOldWidth, iOldHeight, iNewWidth, iNewHeight);	
+//	return true;
+//}
 
 void ZGuiSlider::GetWndSkinsDesc(vector<SKIN_DESC>& pkSkinDesc) const
 {

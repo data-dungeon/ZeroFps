@@ -574,26 +574,26 @@ bool ZGuiTabCtrl::SendNotifyMessage(int iType, int iParams, void *pMsg)
 	return false;
 }
 
-bool ZGuiTabCtrl::Rescale(int iOldWidth, int iOldHeight, int iNewWidth, int iNewHeight)
-{
-	ZGuiWnd::Rescale(iOldWidth, iOldHeight, iNewWidth, iNewHeight);
-
-/*	list<ZGuiWnd*>::iterator it = m_kPageList.begin();
-	for( ; it != m_kPageList.end(); it++)
-		(*it)->Rescale( iOldWidth, iOldHeight, iNewWidth, iNewHeight );*/
-
-	list<ZGuiButton*>::iterator it2 = m_kTabList.begin();
-	for( ; it2 != m_kTabList.end(); it2++)
-		(*it2)->Rescale( iOldWidth, iOldHeight, iNewWidth, iNewHeight );
-
-	m_pkNextTabBn->Rescale( iOldWidth, iOldHeight, iNewWidth, iNewHeight );
-	m_pkPrevTabBn->Rescale( iOldWidth, iOldHeight, iNewWidth, iNewHeight );
-
-	m_uiMarg = (unsigned int) round2((float) m_uiMarg * (float) ((float)iNewWidth/(float)iOldWidth));
-	m_uiTabHeight = (unsigned int) round2((float) m_uiTabHeight * (float) ((float)iNewHeight/(float)iOldHeight));
-
-	return true;
-}
+//bool ZGuiTabCtrl::Rescale(int iOldWidth, int iOldHeight, int iNewWidth, int iNewHeight)
+//{
+//	ZGuiWnd::Rescale(iOldWidth, iOldHeight, iNewWidth, iNewHeight);
+//
+///*	list<ZGuiWnd*>::iterator it = m_kPageList.begin();
+//	for( ; it != m_kPageList.end(); it++)
+//		(*it)->Rescale( iOldWidth, iOldHeight, iNewWidth, iNewHeight );*/
+//
+//	list<ZGuiButton*>::iterator it2 = m_kTabList.begin();
+//	for( ; it2 != m_kTabList.end(); it2++)
+//		(*it2)->Rescale( iOldWidth, iOldHeight, iNewWidth, iNewHeight );
+//
+//	//m_pkNextTabBn->Rescale( iOldWidth, iOldHeight, iNewWidth, iNewHeight );
+//	//m_pkPrevTabBn->Rescale( iOldWidth, iOldHeight, iNewWidth, iNewHeight );
+//
+//	m_uiMarg = (unsigned int) round2((float) m_uiMarg * (float) ((float)iNewWidth/(float)iOldWidth));
+//	m_uiTabHeight = (unsigned int) round2((float) m_uiTabHeight * (float) ((float)iNewHeight/(float)iOldHeight));
+//
+//	return true;
+//}
 
 void ZGuiTabCtrl::GetWndSkinsDesc(vector<SKIN_DESC>& pkSkinDesc) const
 {

@@ -921,25 +921,25 @@ bool ZGuiTreebox::ProcessKBInput(int iKey)
 	return true;
 }
 
-bool ZGuiTreebox::Rescale(int iOldWidth, int iOldHeight, int iNewWidth, int iNewHeight)
-{
-	ZGuiWnd::Rescale(iOldWidth, iOldHeight, iNewWidth, iNewHeight);
-
-	for(itNode it = m_kNodeList.begin(); it != m_kNodeList.end(); it++)
-	{
-		ZGuiCheckbox* pkWnd = (*it)->pkButton;
-		pkWnd->ZGuiCheckbox::Rescale(iOldWidth, iOldHeight, iNewWidth, iNewHeight);
-	}
-
-	m_pkSelLabel->Rescale(iOldWidth, iOldHeight, iNewWidth, iNewHeight);
-
-	m_pkHorzScrollbar->ZGuiScrollbar::Rescale(iOldWidth, iOldHeight, iNewWidth, iNewHeight);
-	m_pkVertScrollbar->ZGuiScrollbar::Rescale(iOldWidth, iOldHeight, iNewWidth, iNewHeight);
-	
-	m_iButtonSize = (int) ((float) m_iButtonSize * (float) ((float)iNewHeight/(float)iOldHeight));
-	
-	return true;
-}
+//bool ZGuiTreebox::Rescale(int iOldWidth, int iOldHeight, int iNewWidth, int iNewHeight)
+//{
+//	ZGuiWnd::Rescale(iOldWidth, iOldHeight, iNewWidth, iNewHeight);
+//
+//	for(itNode it = m_kNodeList.begin(); it != m_kNodeList.end(); it++)
+//	{
+//		ZGuiCheckbox* pkWnd = (*it)->pkButton;
+//		pkWnd->ZGuiCheckbox::Rescale(iOldWidth, iOldHeight, iNewWidth, iNewHeight);
+//	}
+//
+//	m_pkSelLabel->Rescale(iOldWidth, iOldHeight, iNewWidth, iNewHeight);
+//
+//	m_pkHorzScrollbar->ZGuiScrollbar::Rescale(iOldWidth, iOldHeight, iNewWidth, iNewHeight);
+//	m_pkVertScrollbar->ZGuiScrollbar::Rescale(iOldWidth, iOldHeight, iNewWidth, iNewHeight);
+//	
+//	m_iButtonSize = (int) ((float) m_iButtonSize * (float) ((float)iNewHeight/(float)iOldHeight));
+//	
+//	return true;
+//}
 
 bool ZGuiTreebox::SetPos(int x, int y, bool bScreenSpace, bool bFreeMovement)
 {	

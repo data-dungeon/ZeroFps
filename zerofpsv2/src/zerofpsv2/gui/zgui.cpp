@@ -1163,17 +1163,17 @@ ZGuiToolTip* ZGui::GetToolTip()
 	return m_pkToolTip; 
 }
 
-void ZGui::OnScreenSizeChange(int iPrevWidth, int iPrevHeight, int iNewWidth, int iNewHeight)
-{
-	map<string,ZGuiWnd*> kWindows;
-	m_pkResManager->GetWindows(kWindows); 
-
-	map<string,ZGuiWnd*>::iterator it = kWindows.begin();
-	for( ; it != kWindows.end(); it++)
-	{
-		(*it).second->Rescale(iPrevWidth, iPrevHeight, iNewWidth, iNewHeight);
-	}
-}
+//void ZGui::OnScreenSizeChange(int iPrevWidth, int iPrevHeight, int iNewWidth, int iNewHeight)
+//{
+//	map<string,ZGuiWnd*> kWindows;
+//	m_pkResManager->GetWindows(kWindows); 
+//
+//	map<string,ZGuiWnd*>::iterator it = kWindows.begin();
+//	for( ; it != kWindows.end(); it++)
+//	{
+//		(*it).second->Rescale(iPrevWidth, iPrevHeight, iNewWidth, iNewHeight);
+//	}
+//}
 
 void ZGui::TranslateMousePos(int &x, int &y)
 {

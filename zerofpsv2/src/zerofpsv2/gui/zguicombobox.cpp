@@ -355,15 +355,15 @@ void ZGuiCombobox::KillFocus()
 	ZGuiWnd::KillFocus();
 }
 
-bool ZGuiCombobox::Rescale(int iOldWidth, int iOldHeight, int iNewWidth, int iNewHeight)
-{
-	ZGuiWnd::Rescale(iOldWidth, iOldHeight, iNewWidth, iNewHeight);
-
-	m_pkLabel->ZGuiLabel::Rescale(iOldWidth, iOldHeight, iNewWidth, iNewHeight); 
-	m_pkListbox->ZGuiListbox::Rescale(iOldWidth, iOldHeight, iNewWidth, iNewHeight); 
-
-	return true;
-}
+//bool ZGuiCombobox::Rescale(int iOldWidth, int iOldHeight, int iNewWidth, int iNewHeight)
+//{
+//	ZGuiWnd::Rescale(iOldWidth, iOldHeight, iNewWidth, iNewHeight);
+//
+//	m_pkLabel->ZGuiLabel::Rescale(iOldWidth, iOldHeight, iNewWidth, iNewHeight); 
+//	m_pkListbox->ZGuiListbox::Rescale(iOldWidth, iOldHeight, iNewWidth, iNewHeight); 
+//
+//	return true;
+//}
 
 void ZGuiCombobox::SetResizeFlags(bool bHorz, bool bVert)
 {

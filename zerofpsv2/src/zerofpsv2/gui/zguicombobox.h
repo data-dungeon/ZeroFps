@@ -47,7 +47,7 @@ public:
 	const int GetNumVisibleRows() { return m_unNumVisibleRows; }
 	void CopyNonUniqueData(const ZGuiWnd* pkSrc);
 	void KillFocus();
-	bool Rescale(int iOldWidth, int iOldHeight, int iNewWidth, int iNewHeight);
+	//bool Rescale(int iOldWidth, int iOldHeight, int iNewWidth, int iNewHeight);
 	void SetResizeFlags(bool bHorz, bool bVert);
 
 private:

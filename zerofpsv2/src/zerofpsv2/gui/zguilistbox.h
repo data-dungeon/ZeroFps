@@ -45,7 +45,7 @@ public:
 	void SetItemHighLightSkin(ZGuiSkin* pkSkin);
 	bool Notify(ZGuiWnd* pkWnd, int iCode);
 	bool Render( ZGuiRender* renderer );
-	bool Rescale(int iOldWidth, int iOldHeight, int iNewWidth, int iNewHeight);
+	//bool Rescale(int iOldWidth, int iOldHeight, int iNewWidth, int iNewHeight);
 
 	void SetZValue(int iValue); // överlagrad
 	unsigned short GetItemHeight() { return m_unItemHeight; }

@@ -49,7 +49,7 @@ public:
 	void SetScrollButtonUpSkins(ZGuiSkin* pkSkinUp, ZGuiSkin* pkSkinDown);
 	void SetScrollButtonDownSkins(ZGuiSkin* pkSkinUp, ZGuiSkin* pkSkinDown);
 
-	bool Rescale(int iOldWidth, int iOldHeight, int iNewWidth, int iNewHeight);
+	//bool Rescale(int iOldWidth, int iOldHeight, int iNewWidth, int iNewHeight);
 	
 private:
 

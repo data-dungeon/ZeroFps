@@ -169,7 +169,7 @@ public:
 	bool m_bDisableAlphatest;
 	bool m_bUseHardwareMouse;  // true = snabb, go mus
 
-	void OnScreenSizeChange(int iPrevWidth, int iPrevHeight, int iNewWidth, int iNewHeight);
+	//void OnScreenSizeChange(int iPrevWidth, int iPrevHeight, int iNewWidth, int iNewHeight);
 	void SetWndForeground(ZGuiWnd* pkWnd);
 	void SetRes(int iResX, int iResY); // should only be called one time before app start!
 	static int m_iResX;
