@@ -227,10 +227,6 @@ SOURCE=.\input.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\levelmanager.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=..\engine_systems\propertys\lightproperty.cpp
 # End Source File
 # Begin Source File
@@ -452,10 +448,6 @@ SOURCE=.\i_zfresourcedb.h
 # Begin Source File
 
 SOURCE=.\input.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\levelmanager.h
 # End Source File
 # Begin Source File
 

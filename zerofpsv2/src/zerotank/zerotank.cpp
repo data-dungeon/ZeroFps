@@ -76,14 +76,14 @@ void ZeroTank::OnInit()
 	Object* pk10 = pkObjectMan->CreateObjectByArchType("Inn_walls");
 
 	// PSystem
-	Object* pk13 = pkObjectMan->CreateObjectByArchType("Fire");
+	Object* pk13 = pkObjectMan->CreateObjectByArchType("FireSword");
 
 	pk7->SetWorldPosV ( Vector3 (20,0,20) );
 
 	pk8->SetWorldPosV ( Vector3 (-15, 0, 15) );
 	pk11->SetWorldPosV ( Vector3 (-15, 0, 15) );
 	pk12->SetWorldPosV ( Vector3 (48.5, 17, -40) );
-//	pk13->SetWorldPosV ( Vector3 (48.5, 0.7, -40) );
+	pk13->SetWorldPosV ( Vector3 (-16,7,-20.3) );
 
 	pkGob->SetWorldPosV ( Vector3 (15, 0, -15) );
 
@@ -275,7 +275,6 @@ void ZeroTank::Input()
 		//m_pkZeroTank_Modify	= NULL;
 		}
 
-	
 /*
 	if(pkInput->Action(m_iActionPrintServerInfo))
 	{

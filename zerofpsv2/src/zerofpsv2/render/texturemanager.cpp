@@ -391,6 +391,9 @@ void TextureManager::BindTexture(int iTexture)
 
 int TextureManager::GetSizeOfTexture(int iTexture)
 {
+	if(iTexture == -1)
+		return 0;
+
 	if(m_iTextures[iTexture] == NULL)
 		return 0;
 

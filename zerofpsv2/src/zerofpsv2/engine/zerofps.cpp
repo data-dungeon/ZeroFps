@@ -272,6 +272,8 @@ void ZeroFps::Run_EngineShell()
 	// Update Local Input.
 	m_pkInput->Update();
 
+	if(m_pkInput->Pressed(KEY_F8))	GetSystem().RunCommand("shot",CSYS_SRC_SUBSYS);	
+
 	//toggle keyboard/mouse grabing		// SHELL
 	if(m_pkInput->Pressed(KEY_F12))
 		m_pkInput->ToggleGrab();

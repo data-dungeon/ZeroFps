@@ -66,6 +66,14 @@ class object
 		parent object
 		set MadProperty m_kMadFile /data/mad/adaptor.mad
 		set MadProperty m_kMadFile /data/mad/rts/unit/ecrew.mad
+
+	class ZeroTankPlayer
+		parent object
+		set MadProperty m_kMadFile /data/mad/player.mad
+
+	class ZeroRTSTestBox
+		parent object
+		set MadProperty m_kMadFile /data/mad/player.mad
 	
 	class TVimBollus
 		parent object
@@ -133,6 +141,11 @@ class object
 		parent object
 		Add PSystemProperty
 		set PSystemProperty PSType Fire
+
+	class FireSword
+		parent object
+		Add PSystemProperty
+		set PSystemProperty PSType firesword
 
 	class Snow
 		parent object
