@@ -216,7 +216,10 @@ void MistClient::Input()
 		ToggleGuiCapture();
 
 	if(m_bGuiCapture)
+	{
+		memset(&m_kCharacterControls, 0, sizeof(m_kCharacterControls));
 		return;
+	}
 
 	//get mouse
 	float x,z;		
