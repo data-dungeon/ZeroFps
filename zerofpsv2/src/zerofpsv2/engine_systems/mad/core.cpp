@@ -184,7 +184,7 @@ string Mad_Core::GetAnimationName(int iIndex)
 	
 }
 
-int Mad_Core::GetAnimIndex(char* szName)
+int Mad_Core::GetAnimIndex(const char* szName)
 {
 	for(unsigned int i=0; i<m_kBoneAnim.size(); i++) {
 		if(strcmp(szName, m_kBoneAnim[i].m_szName) == 0)

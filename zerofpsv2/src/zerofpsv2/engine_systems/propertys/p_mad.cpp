@@ -122,14 +122,14 @@ string P_Mad::GetCurrentAnimationName()
 	return Mad_Modell::GetCurrentAnimationName();
 }
 
-void P_Mad::SetAnimation(char* szName, float fStartTime)
+void P_Mad::SetAnimation(const char* szName, float fStartTime)
 {
 	PlayAnimation(szName,fStartTime);
 	Mad_Modell::SetNextAnimation(-1);
 	SetNetUpdateFlag(true);	
 }
 
-void P_Mad::SetNextAnimation(char* szName)
+void P_Mad::SetNextAnimation(const char* szName)
 {
 	Mad_Modell::SetNextAnimation(szName);
 	SetNetUpdateFlag(true);	

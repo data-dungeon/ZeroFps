@@ -20,6 +20,8 @@ P_CharacterControl::P_CharacterControl()
 	m_fJumpForce = 4.0; 
 	
 	m_bHaveJumped = false;
+	
+	m_iDirection = eMOVE_NONE;
 		
 	m_kCharacterStates.reset();
 	m_kControls.reset();
@@ -44,17 +46,30 @@ void P_CharacterControl::Update()
 		//SetCharacterState(eRUNNING,false);
 		//SetCharacterState(eWALKING,false);
 		SetCharacterState(eJUMPING,false);
-		SetCharacterState(eSWIMING,false);
+		SetCharacterState(eIDLE_SWIMING,false);
 			
 		if(P_Tcs* pkTcs = (P_Tcs*)GetEntity()->GetProperty("P_Tcs"))
 		{
 			Vector3 kVel(0,0,0);	
-	
+				
+			
 			if(m_kControls[eUP]) 	kVel.z +=  1;
 			if(m_kControls[eDOWN])	kVel.z += -1;
 			if(m_kControls[eLEFT])	kVel.x +=  1; 
 			if(m_kControls[eRIGHT])	kVel.x += -1; 
 		
+			//determin movement direction
+			if(kVel == Vector3::ZERO)
+				SetMoveDirection(eMOVE_NONE);
+			else if(kVel.z > 0)
+				SetMoveDirection(eMOVE_FORWARD);						
+			else if(kVel.z < 0)
+				SetMoveDirection(eMOVE_BACKWARD);
+			else if(kVel.x < 0)
+				SetMoveDirection(eMOVE_RIGHT);			
+			else if(kVel.x > 0)
+				SetMoveDirection(eMOVE_LEFT);
+				
 			//transform velocity
 			kVel = GetEntity()->GetWorldRotM().VectorTransform(kVel);							
 			kVel.y = 0;
@@ -134,6 +149,7 @@ void P_CharacterControl::Update()
 void P_CharacterControl::PackTo( NetPacket* pkNetPacket, int iConnectionID ) 
 {
 	pkNetPacket->Write(m_kCharacterStates);
+	pkNetPacket->Write(m_iDirection);
 	
 	SetNetUpdateFlag(iConnectionID,false);
 }
@@ -141,6 +157,16 @@ void P_CharacterControl::PackTo( NetPacket* pkNetPacket, int iConnectionID )
 void P_CharacterControl::PackFrom( NetPacket* pkNetPacket, int iConnectionID  ) 
 {
 	pkNetPacket->Read(m_kCharacterStates);
+	pkNetPacket->Read(m_iDirection);
+}
+
+void P_CharacterControl::SetMoveDirection(int iDir)
+{
+	if(m_iDirection == iDir)
+		return;
+			
+	m_iDirection = iDir;
+	SetNetUpdateFlag(true);
 }
 
 void P_CharacterControl::SetCharacterState(int iState,bool bValue)

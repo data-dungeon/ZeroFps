@@ -30,16 +30,22 @@ P_CharacterProperty::P_CharacterProperty()
 	m_iSwimSoundID 		= 	-1;
 	
 	//animations
-	m_strWalkForward		=	"walk_forward";
-	m_strWalkBackward		=	"walk_backward";
-	m_strWalkSideway		=	"walk_sideway";
-	m_strRunForward		=	"run_forward";
-	m_strRunBackward		=	"run_backward";
-	m_strRunSideway		=	"run_sideway";
-	m_strSwimForward		=	"swim_forward";
-	m_strSwimBackward		=	"swim_backward";
-	m_strSwimSideway		=	"swimsideway";
-	m_strJump				=	"jump";
+	m_strWalkForward		=	"run";
+	m_strWalkBackward		=	"run";
+	m_strWalkLeft			=	"stand";
+	m_strWalkRight			=	"stand";
+	m_strRunForward		=	"run";
+	m_strRunBackward		=	"run";
+	m_strRunLeft			=	"stand";
+	m_strRunRight			=	"stand";
+	m_strSwimForward		=	"swim_f";
+	m_strSwimBackward		=	"swim_b";
+	m_strSwimLeft			=	"swim_l";
+	m_strSwimRight			=	"swim_r";
+	m_strJump				=	"attack";
+	m_strIdleStanding		=	"idle";
+	m_strIdleSitting		=	"riding";
+	m_strIdleSwiming		=	"idle";
 }
 
 
@@ -74,26 +80,79 @@ void P_CharacterProperty::UpdateAnimation()
 	{
 		if(P_CharacterControl* pkCC = (P_CharacterControl*)GetEntity()->GetProperty("P_CharacterControl"))
 		{		
+			//jumping
 			if(pkCC->GetCharacterState(eJUMPING))
-			{			
-			
+			{							
+				if(pkMad->GetCurrentAnimationName() != m_strJump)
+				{
+					pkMad->SetAnimation(m_strJump.c_str(), 0);
+					pkMad->SetNextAnimation(m_strIdleStanding.c_str());
+				}			
 			}
+			//RUNNING
 			else if(pkCC->GetCharacterState(eRUNNING))
 			{
-			
+				switch(pkCC->GetMovedirection())
+				{
+					case eMOVE_FORWARD:
+						if(pkMad->GetCurrentAnimationName() != m_strRunForward)
+							pkMad->SetAnimation(m_strRunForward.c_str(), 0);
+						break;
+					case eMOVE_BACKWARD:
+						if(pkMad->GetCurrentAnimationName() != m_strRunBackward)
+							pkMad->SetAnimation(m_strRunBackward.c_str(), 0);
+						break;
+					case eMOVE_LEFT:
+						if(pkMad->GetCurrentAnimationName() != m_strRunLeft)
+							pkMad->SetAnimation(m_strRunLeft.c_str(), 0);
+						break;
+					case eMOVE_RIGHT:
+						if(pkMad->GetCurrentAnimationName() != m_strRunRight)
+							pkMad->SetAnimation(m_strRunRight.c_str(), 0);
+						break;										
+				}			
 			}
+			//WALKING
 			else if(pkCC->GetCharacterState(eWALKING))
 			{
-				
+				switch(pkCC->GetMovedirection())
+				{
+					case eMOVE_FORWARD:
+						if(pkMad->GetCurrentAnimationName() != m_strWalkForward)
+							pkMad->SetAnimation(m_strWalkForward.c_str(), 0);
+						break;
+					case eMOVE_BACKWARD:
+						if(pkMad->GetCurrentAnimationName() != m_strWalkBackward)
+							pkMad->SetAnimation(m_strWalkBackward.c_str(), 0);
+						break;
+					case eMOVE_LEFT:
+						if(pkMad->GetCurrentAnimationName() != m_strWalkLeft)
+							pkMad->SetAnimation(m_strWalkLeft.c_str(), 0);
+						break;
+					case eMOVE_RIGHT:
+						if(pkMad->GetCurrentAnimationName() != m_strWalkRight)
+							pkMad->SetAnimation(m_strWalkRight.c_str(), 0);
+						break;										
+				}						
 			}
+			//swiming
 			else if(pkCC->GetCharacterState(eSWIMING))
 			{
+				if(pkMad->GetCurrentAnimationName() != m_strIdleSwiming)
+					pkMad->SetAnimation(m_strIdleSwiming.c_str(), 0);
 				
 			}
+			//sitting
+			else if(pkCC->GetCharacterState(eSITTING))
+			{
+				if(pkMad->GetCurrentAnimationName() != m_strIdleSitting)
+					pkMad->SetAnimation(m_strIdleSitting.c_str(), 0);			
+			}
+			//idle standing
 			else
 			{
-				//idle
-				
+				if(pkMad->GetCurrentAnimationName() != m_strIdleStanding)
+					pkMad->SetAnimation(m_strIdleStanding.c_str(), 0);
 				
 			}		
 		}
@@ -166,12 +225,13 @@ void P_CharacterProperty::PlayCharacterMovementSounds()
 		
 														
 		//update staes
-		m_kCurrentCharacterStates[eRUNNING] = pkCC->GetCharacterState(eRUNNING);
-		m_kCurrentCharacterStates[eWALKING] = pkCC->GetCharacterState(eWALKING);
-		m_kCurrentCharacterStates[eJUMPING] = pkCC->GetCharacterState(eJUMPING);
-		m_kCurrentCharacterStates[eSWIMING] = pkCC->GetCharacterState(eSWIMING);
+		m_kCurrentCharacterStates[eRUNNING] =	pkCC->GetCharacterState(eRUNNING);
+		m_kCurrentCharacterStates[eWALKING] =	pkCC->GetCharacterState(eWALKING);
+		m_kCurrentCharacterStates[eJUMPING] =	pkCC->GetCharacterState(eJUMPING);
+		m_kCurrentCharacterStates[eSWIMING] =	pkCC->GetCharacterState(eSWIMING);
 	}
 }
+
 
 
 void P_CharacterProperty::Save(ZFIoInterface* pkPackage)
@@ -214,6 +274,7 @@ void P_CharacterProperty::PackFrom( NetPacket* pkNetPacket, int iConnectionID  )
 	pkNetPacket->Read_Str(m_strSwimSound);		
 
 }
+
 
 
 

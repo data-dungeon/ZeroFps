@@ -57,8 +57,8 @@ class ENGINE_SYSTEMS_API P_Mad : public Property, public Mad_Modell {
 		bool AddMesh(int iSId);
 		
 		//animation
-		void SetAnimation(char* szName, float fStartTime);
-		void SetNextAnimation(char* szName);		
+		void SetAnimation(const char* szName, float fStartTime);
+		void SetNextAnimation(const char* szName);		
 		int GetCurrentAnimation();
 		string GetCurrentAnimationName();
 		

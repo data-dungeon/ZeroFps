@@ -55,7 +55,7 @@ void Mad_Modell::PlayAnimation(int iAnimNum, float fStartTime)
 //	SetLoopedStatus(true);
 }
 
-void Mad_Modell::PlayAnimation(char* szName, float fStartTime)
+void Mad_Modell::PlayAnimation(const char* szName, float fStartTime)
 {
 	if(kMadHandle.IsValid() == false)
 		return;
@@ -132,7 +132,7 @@ void	Mad_Modell::SetNextAnimation(int iAnimNum)
 	
 }
 
-void Mad_Modell::SetNextAnimation(char* szName)
+void Mad_Modell::SetNextAnimation(const char* szName)
 {
 	if(kMadHandle.IsValid() == false)
 		return;

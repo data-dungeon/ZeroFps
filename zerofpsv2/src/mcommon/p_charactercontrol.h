@@ -19,17 +19,32 @@ enum ControlKeys
 
 enum CharcterStates
 {
-	eWALKING	=	0,
-	eRUNNING	=	1,
-	eJUMPING	=	2,
-	eSWIMING	=	3,
+	eIDLE_STANDING=0,
+	eSITTING =		1,
+	eSWIMING =		2,
+	eWALKING	=		3,
+	eRUNNING	=		4,
+	eJUMPING	=		5,
 };
+
+enum CharacterMoveDirection
+{
+	eMOVE_NONE		=0,
+	eMOVE_FORWARD	=1,
+	eMOVE_BACKWARD	=2,
+	eMOVE_LEFT		=3,
+	eMOVE_RIGHT		=4,
+};
+
+#define CHARACTER_STATES 6
 
 class MCOMMON_API P_CharacterControl: public Property
 {
 	private:
 		bitset<6>	m_kControls;
-		bitset<8>	m_kCharacterStates;			//sent to client
+		bitset<CHARACTER_STATES>	m_kCharacterStates;			//sent to client
+		int								m_iDirection;
+		
 		float			m_fSpeed;
 		float			m_fJumpForce;
 		
@@ -54,7 +69,8 @@ class MCOMMON_API P_CharacterControl: public Property
 		void SetKeys(bitset<6>* kControls) 					{	m_kControls = *kControls;	}
 		void SetRotation(float fYAngle,float fPAngle) 	{	m_fYAngle = fYAngle;
 																			m_fPAngle = fPAngle;			}
-										
+		void SetMoveDirection(int iDir);
+		int  GetMovedirection()									{	return m_iDirection;			}
 		void SetCharacterState(int iState,bool bValue);
 		bool GetCharacterState(int iState);		
 		bool GetControl(int iKey);																	

@@ -4,6 +4,7 @@
 #include "mcommon_x.h"
 #include "../zerofpsv2/engine/property.h"
 #include "../zerofpsv2/engine_systems/audio/zfaudiosystem.h"
+#include "p_charactercontrol.h"
 
 using namespace std;
 
@@ -12,13 +13,13 @@ class P_CharacterProperty: public Property
 	private:
 		ZFAudioSystem*	m_pkAudioSystem;
 	
-	
+	 
 		string	m_strName;			
 		
 		bool		m_bIsPlayerCharacter;
 		string	m_strOwnedByPlayer;
 
-		bitset<8>	m_kCurrentCharacterStates;
+		bitset<CHARACTER_STATES>	m_kCurrentCharacterStates;
 			
 		//basic sounds
 		string	m_strWalkSound;
@@ -32,18 +33,25 @@ class P_CharacterProperty: public Property
 		//basic animations
 		string	m_strWalkForward;
 		string	m_strWalkBackward;
-		string	m_strWalkSideway;
+		string	m_strWalkLeft;
+		string	m_strWalkRight;
 		string	m_strRunForward;
 		string	m_strRunBackward;
-		string	m_strRunSideway;		
+		string	m_strRunLeft;		
+		string	m_strRunRight;
 		string	m_strSwimForward;
 		string	m_strSwimBackward;
-		string	m_strSwimSideway;				
+		string	m_strSwimLeft;				
+		string	m_strSwimRight;						
 		string	m_strJump;
+		string	m_strIdleStanding;
+		string	m_strIdleSitting;
+		string	m_strIdleSwiming;
 		
 		void PlayCharacterMovementSounds();
 		void UpdateAnimation();
 
+		
 	public:
 	
 		P_CharacterProperty();
