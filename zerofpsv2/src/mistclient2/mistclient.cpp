@@ -12,7 +12,8 @@
  
 #include "mistclient.h"
 #include "../zerofpsv2/engine_systems/script_interfaces/si_gui.h"
-#include "../mcommon/p_arcadecharacter.h"
+//#include "../mcommon/p_arcadecharacter.h"
+#include "../zerofpsv2/engine/inputhandle.h"
 #include "../mcommon/ml_netmessages.h"
 
 #include "../mcommon/p_characterproperty.h"
