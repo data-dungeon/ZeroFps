@@ -54,6 +54,8 @@ bool TextureManager::LoadTexture(GLuint &iNr,char *acFilename,int iOption) {
 	}
   
   glBindTexture(GL_TEXTURE_2D,0);
+  m_iCurrentTexture = -1;
+
   return true;
 }
 
@@ -136,6 +138,9 @@ void TextureManager::BindTexture(int iTexture) {
 
 void TextureManager::BindTexture(char* acFileName,int iOption) {
 	int iTexture=Load(acFileName,iOption);
+
+	m_iCurrentTexture = -1;
+
 	if(iTexture!=m_iCurrentTexture){
 		m_iCurrentTexture=iTexture;
 		glBindTexture(GL_TEXTURE_2D,iTexture);

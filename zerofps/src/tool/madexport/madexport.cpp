@@ -155,6 +155,7 @@ MStatus	MadExport::getMesh(void)
 			continue;
 		}
 		
+
 		MFnMesh fnMesh(path, &status);
 		if (status != MStatus::kSuccess) {
 			// this object is not a mesh
@@ -235,11 +236,11 @@ MStatus MadExport::parsePolySet(MItMeshPolygon &meshPoly,MStringArray rgTextures
 		}
 
 		// verify polygon has UV information
-		if (!meshPoly.hasUVs (&status)) {
+		/*if (!meshPoly.hasUVs (&status)) {
 			status = MS::kFailure;
 			cout << "polygon is missing UV information\n";
 			return status;
-		} 
+		}*/
 		 
  		for (int i=0; i < cTri; i++) {
 
