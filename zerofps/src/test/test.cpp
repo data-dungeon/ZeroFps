@@ -61,7 +61,9 @@ pkRender->DrawHMlod(test,*pkFps->m_kCamPos);
 
 
 //	pkRender->DrawHM(test);		
-	pkRender->Quad(Vector3(0,-9,0),Vector3(-90,0,0),Vector3(2000,2000,2000),pkTexMan->Load("file:../data/textures/water.bmp"));
+	for(int x=0;x<2000;x+=100)
+		for(int z=0;z<2000;z+=100)
+			pkRender->Quad(Vector3(x-50,-9,z-50),Vector3(-90,0,0),Vector3(100,100,100),pkTexMan->Load("file:../data/textures/water.bmp"));
 
 //	cout<<pkFps->m_iFps<<endl;
 }
