@@ -55,7 +55,7 @@ void ZeroEdit::OnInit(void)
 
 	m_fTimer=pkFps->GetTicks();
 	m_kDrawPos.Set(0,0,0);
-	pkObjectMan->SetNoUpdate(true);
+//	pkObjectMan->SetNoUpdate(true);
 	
 	m_pkCurentChild=NULL;
 	

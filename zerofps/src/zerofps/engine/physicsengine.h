@@ -32,12 +32,22 @@ class ENGINE_API PhysicsEngine : public ZFObject
 		ObjectManager* m_pkObjectMan;
 		ZeroFps* m_pkZeroFps;
 
+		float m_fFrameTime;
+
+		bool m_bUpdate;
+
 	public:
 		PhysicsEngine();
 		
 		void Update();
 
+		Vector3 GetNewPos(Object* pkObject,float fTime);
+		void MoveObject(Object* pkObject);
+
+		void SetUpdate(bool bUpdate) { m_bUpdate=bUpdate;};
+		bool GetUpdate() {return m_bUpdate;};
 };
+
 
 
 

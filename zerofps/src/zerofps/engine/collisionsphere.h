@@ -11,7 +11,7 @@ class ENGINE_API CollisionSphere:public CollisionObject{
 		
 	public:
 		Vector3 *m_kPos;
-		float *m_fRadius;	
+		float *m_fRadius;
 	
 		CollisionSphere(Vector3 kPos,float fRadius);
 		CollisionSphere(Vector3 *kPos,float *fRadius);

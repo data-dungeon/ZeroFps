@@ -14,10 +14,15 @@ BallObject::BallObject() {
 	madp->SetBase("../data/mad/tree.mad");
 	madp->SetScale(0.5);
 */
+	
+	m_iObjectType=OBJECT_TYPE_DYNAMIC;
 
 	AddProperty("ModelProperty");
 //	AddProperty("LightProperty");
 	AddProperty("AutoParentProperty");	
+	AddProperty("PhysicProperty");
+
+	m_kAcc.Set(5,0,0);
 
 	onGround = false;
 }

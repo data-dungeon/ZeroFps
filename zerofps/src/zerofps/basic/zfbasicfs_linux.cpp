@@ -19,7 +19,7 @@ bool ZFBasicFS::DirExist(const char* acName)
 	return false;
 }
 
-bool ZFBasicFS::ListDir(vector<string>* pkFiles,const char* acName)
+bool ZFBasicFS::ListDir(vector<string>* pkFiles,const char* acName,bool bOnlyMaps)
 {
 
 	DIR* kDir;
@@ -34,7 +34,19 @@ bool ZFBasicFS::ListDir(vector<string>* pkFiles,const char* acName)
 	{
 		string kNamn;
 		kNamn=kDirEnt->d_name;
-		pkFiles->push_back(kNamn);
+		
+		
+		if(bOnlyMaps)
+		{
+			string temp= acName;
+			temp+="/";
+			temp+=kNamn;
+		
+			if(DirExist(temp.c_str()))
+				pkFiles->push_back(kNamn);			
+		}
+		else		
+			pkFiles->push_back(kNamn);
 	}
 	
 	return true;

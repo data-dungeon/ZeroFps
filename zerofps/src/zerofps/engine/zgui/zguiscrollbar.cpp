@@ -88,7 +88,7 @@ void ZGuiScrollbar::SetScrollInfo(unsigned int min, unsigned int max, float page
 	}
 
 	m_pkThumbButton->SetMoveArea(GetScreenRect());
-	m_pkThumbButton->SetPos(x, y, false, false);
+	m_pkThumbButton->SetPos((int)x,(int)y, false, false);
 
 	m_nMax = max, m_nMin = min, m_nPos = pos;
 }
@@ -106,7 +106,7 @@ bool ZGuiScrollbar::Notify(ZGuiWnd* pkWnd, int iCode)
 			static int POS_BEFORE;
 			POS_BEFORE = (int)m_nPos;
 
-			m_nPos = fProcentAvMax * (m_nMax-m_nMin+1);
+			m_nPos = fProcentAvMax * (float)(m_nMax-m_nMin+1);
 
 			int change = abs(POS_BEFORE-(int)m_nPos);
 

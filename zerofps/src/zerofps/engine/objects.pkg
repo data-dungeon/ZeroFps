@@ -10,6 +10,7 @@ class ProxyProperty;
 class LightUpdateProperty;
 class WorldInfoProperty;
 class AutoParentProperty;
+class PhysicProperty;
 
 class Object;
 class CollisionObject;
@@ -45,6 +46,6 @@ class CollisionHeightMap;
 #include "worldinfoproperty.h"
 #include "autoparentproperty.h"
 #include "hmrp2.h"
-
+#include "physicproperty.h"
 
 

@@ -215,6 +215,8 @@ void ZeroFps::MainLoop(void) {
 //				m_pkObjectMan->Update(PROPERTY_TYPE_RENDER,PROPERTY_SIDE_ALL,false);				
 			DevPrintf("Num Objects: %d", m_pkObjectMan->GetNumOfObjects());
 
+	
+			m_pkPhysEngine->Update();
 
 			//update all collisions
 			m_pkCollisionMan->Update();				
@@ -630,6 +632,7 @@ void ZeroFps::RegisterPropertys()
 	m_pkPropertyFactory->Register("LightUpdateProperty",Create_LightUpdateProperty);					
 	m_pkPropertyFactory->Register("WorldInfoProperty",Create_WorldInfoProperty);						
 	m_pkPropertyFactory->Register("AutoParentProperty",Create_AutoParentProperty);							
+	m_pkPropertyFactory->Register("PhysicProperty",Create_PhysicProperty);								
 }
 
 void ZeroFps::QuitEngine()
