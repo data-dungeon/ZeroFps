@@ -265,6 +265,12 @@ void StopEmUp::Input()
 					if(m_pkInputHandle->Pressed(KEY_RIGHT) || m_pkInputHandle->Pressed(JOYSTICK0_AXIS0_MAX))
 						fYAngle -= m_pkZeroFps->GetFrameTime()*100;
 				}
+				
+				if(m_pkInputHandle->Pressed(JOYSTICK0_BUTTON6))
+					m_kCharacterControls[eLEFT] = true;
+				if(m_pkInputHandle->Pressed(JOYSTICK0_BUTTON7))
+					m_kCharacterControls[eRIGHT] = true;
+				
 								
 				pkCam->Set3PYAngle( fYAngle);
 				
