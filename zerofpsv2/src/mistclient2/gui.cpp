@@ -67,9 +67,6 @@ bool GUIPROC( ZGuiWnd* win, unsigned int msg, int numparms,	void *params )
 	if(strController.empty())
 		return false;
 
-//	if(g_kMistClient.GetWnd(strController.c_str())->GetParent())
-//		strMainWnd = g_kMistClient.GetWnd(strController.c_str())->GetParent()->GetName();
-
 	map<string,msgScreenProg>::iterator itCallback;
 	itCallback = g_kMistClient.m_kGuiMsgProcs.find(strMainWnd);
 	if(itCallback != g_kMistClient.m_kGuiMsgProcs.end())

@@ -178,7 +178,7 @@ void ActionMenu::Open()
 
 		ZGuiButton* pkButton;
 		pkButton = (ZGuiButton*) g_kMistClient.CreateWnd(Button, 
-			szName, "ActionMenuMain", "", 0, 0, ICON_WIDTH, ICON_HEIGHT, 0);
+			szName, "", m_pkMainWnd, 0, 0, ICON_WIDTH, ICON_HEIGHT, 0);
 		
 		ZGuiSkin* pkUpSkin = GetFreeIconSkin();
 		ZGuiSkin* pkDownFocusSkin = GetFreeIconSkin();
@@ -225,8 +225,8 @@ void ActionMenu::Open()
 
 	m_pkIconSelection->SetZValue(iHeighestZValue+1);
 
-	ZGuiWnd::m_pkFocusWnd = m_pkMainWnd;
-
+	g_kMistClient.m_pkGui->SetFocus(m_pkMainWnd, true);
+	g_kMistClient.m_pkGui->PlaceWndFrontBack(m_pkMainWnd, true);
 	
 }
 
@@ -280,6 +280,7 @@ void ActionMenu::OnCommand(string strController)
 
 void ActionMenu::OnMouseMove(bool bLeftButtonPressed, int mx, int my)
 {
+	
 	ZGuiWnd* pkWndButtonCursor = NULL;
 
 	// Kolla vilken knapp som är vald.
@@ -288,6 +289,7 @@ void ActionMenu::OnMouseMove(bool bLeftButtonPressed, int mx, int my)
 	for(list<ZGuiWnd*>::iterator it = kChilds.begin(); it!=kChilds.end(); it++) 
 	{
 		ZGuiWnd* pkChild = (*it);
+
 		if(pkChild != m_pkIconSelection && pkChild->IsVisible() )
 		{
 			Rect rc = pkChild->GetScreenRect();
@@ -299,6 +301,7 @@ void ActionMenu::OnMouseMove(bool bLeftButtonPressed, int mx, int my)
 			}
 		}
 	}
+
 
 	// Om höger musknapp har släpps skall vi sända valt action
 	if(g_kMistClient.m_pkGui->m_bMouseRightPressed == false) 
@@ -323,6 +326,7 @@ void ActionMenu::OnMouseMove(bool bLeftButtonPressed, int mx, int my)
 		}
 		Close();
 	}
+
 
 }
 
