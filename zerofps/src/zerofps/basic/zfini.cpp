@@ -25,10 +25,9 @@ ZFIni::ZFIni() : ZFObject("ZFIni")
 	m_pstrLines = NULL;
 	m_pkCommandData = NULL;	
 
-	g_ZFObjSys.Register_Cmd("execommands",FID_EXECUTECOMMANDS,this);
+	g_ZFObjSys.Register_Cmd("exec",FID_EXECUTECOMMANDS,this);
 
-	//m_pkBasicFS = static_cast<ZFBasicFS*>(g_ZFObjSys.GetObjectPtr("ZFBasicFS"));	
-	
+	//m_pkBasicFS = static_cast<ZFBasicFS*>(g_ZFObjSys.GetObjectPtr("ZFBasicFS"));
 }
 
 ZFIni::~ZFIni()
@@ -397,12 +396,15 @@ void ZFIni::RunCommand(int cmdid, const CmdArgument* kCommand)
 	switch(cmdid) 
 	{
 		case FID_EXECUTECOMMANDS:
-			if(Open(kCommand->m_kSplitCommand[1].c_str(), true))
+			if(kCommand->m_kSplitCommand.size() > 1)
 			{
-				if(m_pkCommandData)
+				if(Open(kCommand->m_kSplitCommand[1].c_str(), true))
 				{
-					for(int i=0; i<m_pkCommandData->iNumCommands; i++)
-						g_ZFObjSys.RunCommand(m_pkCommandData->strCommand[i]);
+					if(m_pkCommandData)
+					{
+						for(int i=0; i<m_pkCommandData->iNumCommands; i++)
+							g_ZFObjSys.RunCommand(m_pkCommandData->strCommand[i]);
+					}
 				}
 			}
 			break;
