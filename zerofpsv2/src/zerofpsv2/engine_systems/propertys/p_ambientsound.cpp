@@ -3,7 +3,7 @@
 #include "p_ambientsound.h"
 #include "../../engine/entity.h"
 
-const float FADE_TIME_AMBIENT_AREA = 4.0f; // sekunder.
+const float FADE_TIME_AMBIENT_AREA = 2.5f; // sekunder.
 
 P_AmbientSound::P_AmbientSound()
 {
@@ -38,7 +38,7 @@ void P_AmbientSound::Update()
 	{
 		if(m_bDotFileLoaded == false)
 		{
-			if(LoadDotFile("asa.dot"))
+			if(LoadDotFile(m_pEntityMan->GetLoadDir() + string("/asa.dot")))
 			{
 				m_bDotFileLoaded = true;
 			}
@@ -50,7 +50,7 @@ void P_AmbientSound::Update()
 			int area = -999;
 
 			for(int i=0; i<m_kDotArray.size(); i++)
-				if(/*m_pkAudioSystem->*/PntInPolygon(&pos, m_kDotArray[i].m_kPolygon))
+				if(PntInPolygon(&pos, m_kDotArray[i].m_kPolygon))
 				{
 					area = i;
 					break;

@@ -123,8 +123,6 @@ ZeroEd::ZeroEd(char* aName,int iWidth,int iHeight,int iDepth)
 	Register_Cmd("snapsave",	FID_SNAPSAVE);
 	Register_Cmd("snapload",	FID_SNAPLOAD);
 
-	Register_Cmd("toggle_ambientsoundarea",	FID_TOGGLE_AMBIENTSOUNDAREA);
-
 	m_kDrawPos.Set(0,0,0);
 
 	m_fHMInRadius  = 1;

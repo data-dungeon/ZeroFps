@@ -80,8 +80,6 @@ class ZeroEd :public Application , public ZGuiApp {
 			FID_SNAPSAVE,
 			FID_SNAPLOAD,
 			FID_TEST_JIDDRA,		// Owned by Vim.
-
-			FID_TOGGLE_AMBIENTSOUNDAREA
 		};
 			
 		enum EditMode_e

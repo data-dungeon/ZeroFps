@@ -95,6 +95,7 @@ class ENGINE_API EntityManager : public ZFSubSystem{
 		
 		//current world directory to save/load zone data to 
 		string						m_kWorldDirectory;
+		string						m_strLoadDirectory;
 		
 		//hash map of entitys, for fast entity trough ID access
 		map<int,Entity*>			m_akEntitys;
@@ -266,6 +267,7 @@ class ENGINE_API EntityManager : public ZFSubSystem{
 		void 		UpdateZoneSystem();
 		void 		SetWorldDir(string strDir) 							{	m_kWorldDirectory = strDir;	};
 		string 	GetWorldDir() 												{	return m_kWorldDirectory;		};
+		string	GetLoadDir()												{  return m_strLoadDirectory;   };
 		bool 		SaveWorld(string strSaveDir,bool bForce=false);
 		bool 		LoadWorld(string strLoadDir);
 

@@ -2473,6 +2473,8 @@ bool EntityManager::SaveWorld(string strSaveDir,bool bForce)
 
 bool EntityManager::LoadWorld(string strLoadDir)
 {
+	m_strLoadDirectory = strLoadDir;
+
 	//check if directory exist
 	if(!m_pkBasicFS->DirExist(strLoadDir.c_str()))
 	{
