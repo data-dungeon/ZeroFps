@@ -1,6 +1,7 @@
 #include "zerorts.h"
 #include "userpanel.h"
 #include "minimap.h"
+//#include "../common/p_clientinput.h"
 
 ZeroRTS g_kZeroRTS("ZeroRTS",1024,768,16);
 
@@ -12,6 +13,7 @@ ZeroRTS::ZeroRTS(char* aName,int iWidth,int iHeight,int iDepth)
 {
 	m_pkMiniMap = NULL;
 	m_pkTestPath = NULL;
+	m_pkClientInput = NULL;
 	m_pkStart = Point(-1,-1);
 	m_pkEnd = Point(-1,-1);
 	m_iSelfObjectID = -1;
@@ -157,8 +159,35 @@ void ZeroRTS::OnSystem()
 		m_fFogTimer = pkFps->GetTicks();
 	}
 	
-
-
+	if(pkFps->m_bClientMode)
+	{
+		if(m_pkClientInput == NULL)		
+		{
+			if(m_iSelfObjectID != -1)
+			{
+				m_pkClientInput = (P_ClientInput*)pkObjectMan->GetObjectByNetWorkID(m_iSelfObjectID)->GetProperty("P_ClientInput");
+				
+				if(m_pkClientInput != NULL)
+					cout<<"Found client input property"<<endl;
+			}
+		}
+	};
+	
+	//if server is running
+	if(pkFps->m_bServerMode)
+	{
+		if(m_kServerCommands.size() > 0)
+		{
+			cout<<"GOT "<<m_kServerCommands.size()<<" Commands"<<endl;
+			
+			for(int i=0;i<m_kServerCommands.size();i++)
+			{
+				cout<<"executing "<<m_kServerCommands[i].m_acCommandName<<endl;		
+			}
+		
+			m_kServerCommands.clear();
+		}
+	}
 }
 
 void ZeroRTS::Input()
@@ -231,7 +260,18 @@ void ZeroRTS::Input()
 	}
 	
 	if(pkInput->Action(m_iActionExploreAll))
+	{
 		m_pkFogRender->ExploreAll();
+		
+		
+		if(m_pkClientInput)
+		{
+			UnitCommand bla;
+			strcpy(bla.m_acCommandName,"HOCKER MOVE TO TREE ATT 4 o clock");
+			m_pkClientInput->AddOrder(bla);
+		
+		}
+	}
 	
 	if(pkInput->Action(m_iActionUnExploreAll))
 		m_pkFogRender->UnExploreAll();

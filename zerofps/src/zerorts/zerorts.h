@@ -16,6 +16,7 @@
 
 class UserPanel;
 class MiniMap;
+class P_ClientInput;
 #include "guibuilder.h"
 
 
@@ -33,11 +34,11 @@ const float CAMERA_HEIGHT = 30.0f;
 class ZeroRTS :public Application {
 	private:
 		
-		Camera*		m_pkCamera;
-		HeightMap*	m_pkMap;
-		MiniMap*		m_pkMiniMap;
-		P_FogRender* m_pkFogRender;
-		
+		Camera*			m_pkCamera;
+		HeightMap*		m_pkMap;
+		MiniMap*			m_pkMiniMap;
+		P_FogRender*	m_pkFogRender;
+		P_ClientInput* m_pkClientInput;
 
 		// actions
 		int 			m_iActionCamLeft;
@@ -59,8 +60,12 @@ class ZeroRTS :public Application {
 			FID_UNLOAD,
 		};
 
+		//list containin network ID of all selected units
 		list<int>	m_kSelectedObjects;
-
+		
+		//list of commands that is going to be executed on the server
+		vector<UnitCommand>	m_kServerCommands;
+		
 		//client delay
 		float			m_fClickTimer;
 		float			m_fClickDelay;
@@ -129,6 +134,7 @@ class ZeroRTS :public Application {
 
 	//Palls (friends) =)
 	friend class UserPanel;
+	friend class P_ClientInput;
 };
 
 

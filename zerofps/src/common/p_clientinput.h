@@ -7,20 +7,29 @@
 #include <iostream>
 #include "common_x.h"
 
+#include "../zerorts/zerorts.h"
+#include "unitcommand.h"
+#include <vector>
 using namespace std;
 
-class COMMON_API P_ClientInput: public Property {
-public:
-	P_ClientInput();
-	void CloneOf(Property* pkProperty) { }
-	void Update();
-	
-	//bool DispatchCommand
-	//void PackTo(NetPacket* pkNetPacket);
-	//void PackFrom(NetPacket* pkNetPacket);
+class ZeroRTS;
 
-	void Save(ZFMemPackage* pkPackage) { }
-	void Load(ZFMemPackage* pkPackage) { }
+class COMMON_API P_ClientInput: public Property {
+	private:
+		vector<UnitCommand>	m_kCommands;
+		ZeroRTS*					 m_kZeroRts;
+		ZeroFps*					 m_pkFps;
+
+	public:
+		P_ClientInput();
+		void CloneOf(Property* pkProperty) { }
+		void Update();
+
+		void AddOrder(UnitCommand kCommand);
+		
+		void PackTo(NetPacket* pkNetPacket);
+		void PackFrom(NetPacket* pkNetPacket);
+
 };
 
 COMMON_API Property* Create_P_ClientInput();
