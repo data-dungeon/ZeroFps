@@ -35,6 +35,8 @@ ZeroTank::ZeroTank(char* aName,int iWidth,int iHeight,int iDepth)
 	m_pkZeroTankTower		= NULL;
 	m_pkZeroTankGun		= NULL;
 	m_pkZeroTank_Modify	= NULL;
+	m_pkZeroTankClientObject = NULL;
+
 } 
 
 void ZeroTank::OnInit() 
@@ -101,7 +103,8 @@ void ZeroTank::RegisterPropertys()
 
 void ZeroTank::OnIdle() 
 {
-		
+	
+
 	pkFps->SetCamera(m_pkCamera);		
 	pkFps->GetCam()->ClearViewPort();	
 			
@@ -113,12 +116,29 @@ void ZeroTank::OnIdle()
 //	pkRender->DrawHM2(m_pkMap2,pkFps->GetCam()->GetPos());
 
 	//update player possition 
-	Object* pkObj = pkObjectMan->GetObjectByNetWorkID( m_iSelfObjectID );
-	if(pkObj) {
+	if(pkFps->m_bClientMode && !pkFps->m_bServerMode) {
+		if(!m_pkZeroTankClientObject) {
+			m_pkZeroTankClientObject = pkObjectMan->GetObjectByNetWorkID( m_iSelfObjectID );
+			if(m_pkZeroTankClientObject) {
+				m_pkZeroTankClientObject->AddProperty("CameraProperty");
+				CameraProperty* cam = (CameraProperty*)m_pkZeroTankClientObject->GetProperty("CameraProperty");
+				cam->SetCamera(m_pkCamera);
+				}
+			}
+		else {
+			m_pkZeroTank_Modify = m_pkZeroTankClientObject;
+			pkObjectMan->OwnerShip_Take( m_pkZeroTankClientObject );
+	//		pkObj->SetWorldPosV(pkFps->GetCam()->GetPos());
+			m_pkZeroTankClientObject->SetWorldPosV(m_pkZeroTankClientObject->GetLocalPosV());	// **************** CLIENT CANT MOVE ERROR VIM ****************
+		}
+	}	
+
+/*	if(pkObj) {
+		m_pkZeroTank_Modify = pkObj;
 		pkObjectMan->OwnerShip_Take( pkObj );
 //		pkObj->SetWorldPosV(pkFps->GetCam()->GetPos());
-		pkObj->SetWorldPosV(pkFps->GetCam()->GetPos());	// **************** CLIENT CANT MOVE ERROR VIM ****************
-	}
+		pkObj->SetWorldPosV(m_pkZeroTank_Modify->GetLocalPosV());	// **************** CLIENT CANT MOVE ERROR VIM ****************
+	}*/
 }
 
 void ZeroTank::OnSystem() 

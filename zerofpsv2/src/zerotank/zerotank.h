@@ -66,6 +66,7 @@ class ZeroTank :public Application, public ZGuiApp {
 		Object*				m_pkME;
 		Object*				m_pkTestObject;
 
+		Object*				m_pkZeroTankClientObject;
 		Object*				m_pkZeroTankHull;
 		Object*				m_pkZeroTankTower;
 		Object*				m_pkZeroTankGun;
