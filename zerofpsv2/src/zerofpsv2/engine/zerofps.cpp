@@ -1396,10 +1396,14 @@ void ZeroFps::HandleEditCommand(NetPacket* pkNetPacket)
 	{
 		pkNetPacket->Read(iEntId);
 		pkNetPacket->Read(kMove);
-		Entity* pkObj = m_pkEntityManager->GetEntityByID(iEntId);								
-		if(!pkObj)
-			return;	
-		pkObj->SetLocalPosV(kMove);
+		
+		if(Entity* pkObj = m_pkEntityManager->GetEntityByID(iEntId))
+		{	
+			if(pkObj->IsZone())
+				return;	
+		
+			pkObj->SetLocalPosV(kMove);
+		}
 	}
 
 	if( szCmd == string("rot"))
@@ -1409,6 +1413,11 @@ void ZeroFps::HandleEditCommand(NetPacket* pkNetPacket)
 		Entity* pkObj = m_pkEntityManager->GetEntityByID(iEntId);								
 		if(!pkObj)
 			return;	
+
+		if(pkObj->IsZone())
+			return;	
+			
+			
 		pkObj->RotateLocalRotV(kMove);
 	}
 
