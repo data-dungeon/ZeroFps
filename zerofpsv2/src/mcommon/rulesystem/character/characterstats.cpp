@@ -4,7 +4,6 @@
 #include "../../../zerofpsv2/engine_systems/propertys/p_linktojoint.h"
 #include "characterstats.h"
 #include "../../p_charstats.h"
-#include "../../p_clientcontrol.h"
 #include "../item/itemstats.h"
 #include <iostream>
 #include <string>
@@ -26,7 +25,20 @@ CharacterStats::CharacterStats( Entity *pkParent )
 
    m_bIsPlayer = m_pkParent->GetType() == "t_player.lua";
 
-   cout << "PLayer is:" << m_bIsPlayer << endl;
+   // only on server
+   if ( m_pkParent->m_pkFps->m_bServerMode )
+   {
+      // find serverInfoObject
+      Entity* pkEnt = m_pkParent->m_pkObjectMan->GetObject("A t_serverinfo.lua");
+
+      if ( !pkEnt )
+         cout << "ERROR!!! CharStats couln't find ServerInfoObject!!! :(" << endl;
+
+      m_pkServInf = (P_ServerInfo*)pkEnt->GetProperty("P_ServerInfo");
+
+   }
+   else 
+      m_pkServInf = 0;
 
 	// if stat-types isn't loaded
 	if ( !g_kSkills.size() && !g_kAttributes.size() && !g_kData.size() )
@@ -403,23 +415,18 @@ void CharacterStats::AddHP( int iValue )
    m_uiVersion++;
 
    // if character is player, send updated life to client
-   if ( m_bIsPlayer )
+   if ( m_bIsPlayer && m_pkServInf )
    {
+      for ( int i = 0; i < m_pkServInf->GetPlayers()->size(); i++ )
+         for ( int j = 0; j < m_pkServInf->GetPlayers()->at(i).kControl.size(); j++ )
+            if (m_pkServInf->GetPlayers()->at(i).kControl[j].first == m_pkParent->iNetWorkID)
+            {
+               SendType kNewSend;
 
-      P_ClientControl* pkCC = (P_ClientControl*)m_pkParent->GetProperty("P_ClientControl");
-
-      if ( pkCC )
-      {
-         SendType kNewSend;
-
-         kNewSend.m_iClientID = pkCC->m_iClientID;
-         kNewSend.m_kSendType = "hp";
-         ((CharacterProperty*)m_pkParent->GetProperty("P_CharStats"))->AddSendsData (kNewSend);
-
-         cout << "Sent datastuff" << endl;
-      }
-      else
-         cout << "stuff didn't have clientcontrol" << endl;
+               kNewSend.m_iClientID = m_pkServInf->GetPlayers()->at(i).iId;
+               kNewSend.m_kSendType = "hp";
+               ((CharacterProperty*)m_pkParent->GetProperty("P_CharStats"))->AddSendsData (kNewSend);
+            }
    }
    
    if(m_kPointStats["hp"].Value() <= 0)

@@ -45,6 +45,8 @@ class MCOMMON_API P_ServerInfo: public Property {
 		P_ServerInfo();
 		
 		PlayerInfo* GetPlayerInfo(int id);
+
+      vector<PlayerInfo>* GetPlayers()                { return &m_kPlayers; }
 		
 		void Update();
 		

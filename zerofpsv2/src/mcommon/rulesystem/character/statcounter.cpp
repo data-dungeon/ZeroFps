@@ -43,8 +43,6 @@ void StatCounter::operator= (string kValue)
 
    }
 
-   cout << "Set LifeTo (str)" << m_iValue << endl;
-
 }
 // ----------------------------------------------------------------------------------------------
 
@@ -57,7 +55,6 @@ void StatCounter::operator= (int iValue)
    else if ( m_iValue < m_iMin )
       m_iValue = m_iMin;
 
-   cout << "setLifeto(int)" << m_iValue << endl;
 }
 // ----------------------------------------------------------------------------------------------
 

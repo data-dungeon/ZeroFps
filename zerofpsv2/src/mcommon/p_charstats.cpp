@@ -328,8 +328,6 @@ void CharacterProperty::PackTo(NetPacket* pkNetPacket, int iConnectionID )
             // attribute value
             pkNetPacket->Write( &(*kIte).second.m_iValue, sizeof(int) );
          }
-
-         cout << "Sent attr" << endl;
       }
       // send character data (name, rase, sex...)
       else if ( m_kSends.front().m_iClientID == iConnectionID && m_kSends.front().m_kSendType == "data" )
@@ -354,8 +352,6 @@ void CharacterProperty::PackTo(NetPacket* pkNetPacket, int iConnectionID )
             // attribute value
             pkNetPacket->Write_Str( (*kIte).second.c_str() );
          }
-
-         cout << "Sent data" << endl;
       }
       // send hp
       else if ( m_kSends.front().m_iClientID == iConnectionID && m_kSends.front().m_kSendType == "hp" )
@@ -365,18 +361,19 @@ void CharacterProperty::PackTo(NetPacket* pkNetPacket, int iConnectionID )
          pkNetPacket->Write( &iStuff, sizeof(int) );
           
          int iHP = m_pkCharStats->GetHP(); 
+         int iMaxHP = m_pkCharStats->m_kPointStats["hp"].Max();
 
          // send hp
          pkNetPacket->Write( &iHP, sizeof(int) );
+         pkNetPacket->Write( &iMaxHP, sizeof(int) );
 
-         cout << "SentHP:" << iHP << endl;
           
       }
       else
       {
          pkNetPacket->Write( &iStuff, sizeof(int) );
 
-         cout << "P_CharStats::PackTo SendOrder:" << m_kSends.front().m_kSendType << " invalid!" << endl;
+         cout << "P_CharStats::PackTo SendOrder:" << m_kSends.front().m_kSendType << " ConnID:" << iConnectionID << " invalid!" << endl;
       }
 
       m_kSends.erase ( m_kSends.begin() );
@@ -437,8 +434,6 @@ void CharacterProperty::PackFrom(NetPacket* pkNetPacket, int iConnectionID )
 
          m_pkCharStats->m_kAttributes[string(caAttrName)].m_iValue = iValue;
       }
-
-      cout << "got attribute data from server" << endl;
    }
    else if ( iType == eDATA )
    {
@@ -458,18 +453,16 @@ void CharacterProperty::PackFrom(NetPacket* pkNetPacket, int iConnectionID )
 
          m_pkCharStats->m_kData[string(caAttrName)] = caAttrValue;
       }
-
-      cout << "got attribute data from server" << endl;
    }
    else if ( iType == eHP )
    {
-      int iHP;
+      int iHP, iMaxHP;
 
       pkNetPacket->Read ( &iHP, sizeof(int) );
+      pkNetPacket->Read ( &iMaxHP, sizeof(int) );
 
+      m_pkCharStats->m_kPointStats["hp"].SetMaxValue(iMaxHP);;
       m_pkCharStats->m_kPointStats["hp"] = iHP;
-
-      cout << "Got hp:" << m_pkCharStats->GetHP() << endl;
 
    }
    else
@@ -572,6 +565,8 @@ void CharacterProperty::RequestUpdateFromServer( string kData )
 
          pkCP->AddOrder (kOrder);
       }
+      else
+         cout << "Unknown request:" << kData << " made in p_charstats::RequestUpdateFromServer" << endl;
    }
    else
       cout << "P_Item::RequestUpdateFromServer(): no client object found!" << endl;

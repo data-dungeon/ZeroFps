@@ -9,6 +9,7 @@
 #include "statcounter.h"
 #include "../fightstats.h"
 #include "../container.h"
+#include "../../p_serverinfo.h"
 
 #include <string>
 #include <map>
@@ -52,6 +53,8 @@ private:
    Entity *m_pkParent;
 
    FightStats m_kFightStats;
+
+   P_ServerInfo* m_pkServInf;
 
    
    bool m_bIsPlayer;
