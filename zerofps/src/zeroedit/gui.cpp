@@ -152,13 +152,6 @@ bool Gui::WorkPanelProc( ZGuiWnd* pkWindow, unsigned int uiMessage,
 			break;
 		}
 		break;
-/*	case ZGM_LBUTTONDOWN:
-		if( pkWindow == Get("SliderRBn") || pkWindow == Get("SliderGBn") ||
-			pkWindow == Get("SliderBBn") || pkWindow == Get("SliderABn"))
-		{
-			m_pkGui->SetCaptureToWnd(pkWindow);
-		}
-		break;*/
 
 	case ZGM_LBUTTONUP:
 		if( pkWindow == Get("SliderRBn") || pkWindow == Get("SliderGBn") ||
@@ -222,14 +215,16 @@ bool Gui::WorkPanelProc( ZGuiWnd* pkWindow, unsigned int uiMessage,
 			}
 			break;
 		case ID_CREATEMADFILE_BN:
-			Object *pkNewObject = new BallObject();					
+			Object *pkNewObject; 
+			pkNewObject = new BallObject();					
 			pkNewObject->SetPos(m_pkEdit->m_kDrawPos);	
 			pkNewObject->SetPos(m_pkEdit->m_kDrawPos);					
 			
 			pkNewObject->AttachToClosestZone();
 			m_pkEdit->m_pkCurentChild=pkNewObject;
 
-			int* pkParams = new int[1];
+			int* pkParams;
+			pkParams = new int[1];
 			pkParams[0] = (int) ID_LOADMADFILE_BN; // control id
 			WorkPanelProc(pkWindow, uiMessage,1,pkParams);
 			delete[] pkParams;
@@ -238,7 +233,13 @@ bool Gui::WorkPanelProc( ZGuiWnd* pkWindow, unsigned int uiMessage,
 			UpdatePropertybox();
 			break;
 
+		case ID_CAMERAMODE_RADIOGROUP:
+			m_pkEdit->m_eCameraMode = FreeFlight;
+			break;
 
+		case ID_CAMERAMODE_RADIOGROUP+1:
+			m_pkEdit->m_eCameraMode = Precision;
+			break;
 		}
 		break;
 
@@ -1096,6 +1097,15 @@ bool Gui::CreateWorkPanel()
 	CreateLabel(pkPage, 0, 5, 25+iHeight, 50, 20, "Draw rate:");
 	CreateTextbox(pkPage, ID_DRAWRATE_EB, 80, 25+iHeight, 30, 20, 
 		false, szRate, "DrawRateEB");
+
+	vkNames.clear();
+	vkNames.push_back("FreeFlight");
+	vkNames.push_back("Precision");
+	
+	CreateLabel(pkPage, 0, 5, 45+iHeight, 50, 20, "Camera mode");
+	iHeight = CreateRadiobuttons(pkPage, vkNames, 
+		"CameraModeRadioGroup", ID_CAMERAMODE_RADIOGROUP, 5, 65+iHeight, 16);
+	CheckRadioButton("CameraModeRadioGroup", (char*) vkNames[m_pkEdit->m_eCameraMode].c_str());
 
 	// Create page 2: - Elevation tool
 	pkPage = m_pkWorkPanel->GetPage(1);

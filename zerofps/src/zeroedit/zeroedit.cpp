@@ -11,8 +11,8 @@ ZeroEdit Editor("ZeroEdit",1024,768,16);
 
 ZeroEdit::ZeroEdit(char* aName,int iWidth,int iHeight,int iDepth) 
 	: Application(aName,iWidth,iHeight,iDepth) 
-{
-	
+{	
+	m_eCameraMode = FreeFlight;
 }
 
 void ZeroEdit::OnInit(void) 
@@ -139,8 +139,6 @@ void ZeroEdit::OnInit(void)
 		pkConsole->Printf("No zeroedit_autoexec.ini found");
 
 	m_iCopyNetWorkID = -1;
-
-
 
 
 	pkTexMan->BindTexture("grass2.tga",0);			
@@ -756,9 +754,7 @@ void ZeroEdit::Input()
 		}
 		
 		m_pkCurentChild->SetPos(pos);	
-		
-
-	
+			
 		//child rotation
 		Vector3 rot = m_pkCurentChild->GetRot();		
 		
@@ -802,18 +798,8 @@ void ZeroEdit::Input()
 
 	//Get mouse x,y		
 	int x,z;		
-	pkInput->RelMouseXY(x,z);
-
-	//rotate the camera		
-	//if(!pkGui->IsActive())
-    //if(pkInput->Pressed(MOUSERIGHT))
-	{
-		if(pkInput->Pressed(KEY_LSHIFT) == false)
-		{
-			pkFps->GetCam()->GetRot().x+=z/5.0;
-			pkFps->GetCam()->GetRot().y+=x/5.0;	
-		}
-	}
+	pkInput->RelMouseXY(x,z);	
+    RotateCamera(x,z);
 
 	switch(m_iMode){
 		case FLATTEN:
@@ -1309,8 +1295,26 @@ void ZeroEdit::HeightMapDraw(Vector3 kPencilPos)
 
 }
 
+bool ZeroEdit::RotateCamera(int relMouseX, int relMouseY)
+{
+	bool bRotate = false;
 
+	switch(m_eCameraMode)
+	{
+	case FreeFlight:
+		bRotate = true;
+		break;
+	case Precision:
+		if(pkInput->Pressed(MOUSELEFT) || pkInput->Pressed(MOUSERIGHT))
+			bRotate = true;
+		break;
+	}
 
+	if(bRotate)
+	{
+		pkFps->GetCam()->GetRot().x+=relMouseY/5.0;
+		pkFps->GetCam()->GetRot().y+=relMouseX/5.0;	
+	}
 
-
-
+	return false;
+}

@@ -37,6 +37,12 @@ enum EDIT_MODES{
 	SMOOTH=6,
 };
 
+enum CameraMode
+{
+	FreeFlight=0,
+	Precision,
+};
+
 class LandType{
 	public:
 		int m_iTexture;
@@ -45,6 +51,7 @@ class LandType{
 
 class ZeroEdit :public Application {
 	private:
+		bool RotateCamera(int relMouseX, int relMouseY);
 
 		enum FuncId_e
 		{
@@ -101,6 +108,8 @@ class ZeroEdit :public Application {
 			FID_FUNC4,
 
 		};	
+
+		CameraMode m_eCameraMode;
 	
 		Object* m_pkCamObj;
 		Camera* m_pkCamera;
@@ -156,6 +165,7 @@ class ZeroEdit :public Application {
 		void DeleteSelected();
 
 	public:
+
 		ZeroEdit(char* aName,int iWidth,int iHeight,int iDepth);
 		~ZeroEdit() {};
 	 	void OnInit(void);
