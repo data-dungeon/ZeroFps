@@ -376,7 +376,12 @@ void Mad_Modell::LoadTextures()
 			*/
 
 			//m_pkMesh->SetTextureID(m_pkSubMesh->iTextureIndex, iTexID);
-			m_pkMesh->SetTextureHandle(m_pkSubMesh->iTextureIndex, szFullTexName);
+
+	
+			// här har dvoid haxat lite			
+			// m_pkMesh->SetTextureHandle(m_pkSubMesh->iTextureIndex, pkTexInfo->ucTextureName);			
+			
+			m_pkMesh->SetTextureHandle(m_pkSubMesh->iTextureIndex, pkTexInfo->ucTextureName);
 			}
 		}
 }
