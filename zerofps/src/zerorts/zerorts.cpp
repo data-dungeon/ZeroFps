@@ -116,10 +116,11 @@ void ZeroRTS::Input()
 
 	if(pkInput->Action(m_iActionSelect))
 	{
-		Vector3 pos = Pick().kHitPos;
+		PickInfo hocker = Pick();
+		Vector3 pos = hocker.kHitPos;
 	
 		glDisable(GL_LIGHTING);
-			pkRender->Sphere(pos,1,20,Vector3(1,0,0),false);
+			pkRender->Sphere(Vector3(pos.x,m_pkMap->Height(pos.x,pos.z),pos.z),1,20,Vector3(1,0,0),false);
 		glEnable(GL_LIGHTING);	
 	
 		//m_pkMap->GetVert((int)pos.x,(int)pos.z)->height =0;
@@ -134,14 +135,14 @@ void ZeroRTS::Input()
 		
 		}
 		*/
-		/*
-		Object* bla=PickObject();
+		
+		Object* bla=hocker.pkObject;
 		
 		if(bla != NULL)
 		{	
 			pkObjectMan->Delete(bla);
 			cout<<"diiiiiiiiie object from hell"<<endl;
-		}*/
+		}
 	}
 	if(pkInput->Action(m_iActionScroll))
 	{
