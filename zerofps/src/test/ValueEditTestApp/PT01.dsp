@@ -104,6 +104,10 @@ SOURCE=.\Mat.cpp
 
 SOURCE=.\vector3.cpp
 # End Source File
+# Begin Source File
+
+SOURCE=.\vector4.cpp
+# End Source File
 # End Group
 # Begin Group "Header Files"
 
@@ -123,6 +127,10 @@ SOURCE=.\Mat.h
 # Begin Source File
 
 SOURCE=.\vector3.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\vector4.h
 # End Source File
 # End Group
 # Begin Group "Resource Files"

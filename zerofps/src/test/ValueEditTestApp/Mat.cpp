@@ -148,6 +148,36 @@ string Mat::GetValue(string kValueName)
 					if(iSign !=0)
 					kBuffer1.insert(0, "-");
 					kBuffer+=kBuffer1;
+					return kBuffer; 
+				
+				case VALUETYPE_VECTOR4:
+					kBuffer1=fcvt(( (Vector4*) kItor->pkValue)->operator[](0), 5, &iDecimal, &iSign );
+					kBuffer1.insert(iDecimal, ".");
+					if(iSign !=0)
+					kBuffer1.insert(0, "-");
+					kBuffer1+=" ";
+					kBuffer=kBuffer1;	
+					
+					kBuffer1=fcvt(( (Vector4*) kItor->pkValue)->operator[](1), 5, &iDecimal, &iSign );
+					kBuffer1.insert(iDecimal, ".");
+					if(iSign !=0)
+					kBuffer1.insert(0, "-");
+					kBuffer1+=" ";
+					kBuffer+=kBuffer1;
+					
+					kBuffer1=fcvt(( (Vector4*) kItor->pkValue)->operator[](2), 5, &iDecimal, &iSign );
+					kBuffer1.insert(iDecimal, ".");
+					if(iSign !=0)
+					kBuffer1.insert(0, "-");
+					kBuffer1+=" ";
+					kBuffer+=kBuffer1;
+
+					kBuffer1=fcvt(( (Vector4*) kItor->pkValue)->operator[](3), 5, &iDecimal, &iSign );
+					kBuffer1.insert(iDecimal, ".");
+					if(iSign !=0)
+					kBuffer1.insert(0, "-");
+					kBuffer+=kBuffer1;
+					return kBuffer; 
 				};
 				
 			}	
@@ -171,7 +201,7 @@ bool Mat::SetValue(string kValueName, string kValue)
 			if( kValueName == kItor->kValueName)
 			{
 				int iTemp1,iTemp2;
-				float fTemp1, fTemp2,fTemp3;
+				float fTemp1, fTemp2,fTemp3, fTemp4;
 				string kTemp1, kTemp2, kTemp3;
 				char *cStop;
 
@@ -220,10 +250,7 @@ bool Mat::SetValue(string kValueName, string kValue)
 				case VALUETYPE_VECTOR3:
 					if((iTemp1=kValue.find(" ")) == -1)//kollar efter ett mellanslag. obs! vet ej om -1 alltid är -1 vid fel...
 						return false;		
-					
 					kTemp1=kValue.substr(0,iTemp1); //tar ut först talet ur stringen.
-					
-										
 					fTemp1= strtod( kTemp1.c_str(), &cStop ); //omvandlar första talet till float
 					if((kItor->fUpperBound)!=FLT_MAX)      //kollar om det finns någon upper bound
 						if(fTemp1>(kItor->fUpperBound))	   // kollar om talet är högre än upperbound
@@ -235,8 +262,6 @@ bool Mat::SetValue(string kValueName, string kValue)
 					if((iTemp2=kValue.find(" ",iTemp1+1)) == -1) //kollar efter andra mellanslaget
 						return false;
 					kTemp1=kValue.substr(iTemp1,kValue.length()); //tar ut andra talet ur stringen.
-					
-										
 					fTemp2= strtod( kTemp1.c_str(), &cStop ); 
 					if((kItor->fUpperBound)!=FLT_MAX)      
 						if(fTemp2>(kItor->fUpperBound))	   
@@ -244,11 +269,8 @@ bool Mat::SetValue(string kValueName, string kValue)
 					if((kItor->fLowerBound)!=FLT_MIN)	
 						if(fTemp2<(kItor->fLowerBound))
 							return false;
-					
-							
-					kTemp1=kValue.substr(iTemp2,kValue.length()); //tar ut andra talet ur stringen.
-					
-										
+												
+					kTemp1=kValue.substr(iTemp2,kValue.length());
 					fTemp3= strtod( kTemp1.c_str(), &cStop ); 
 					if((kItor->fUpperBound)!=FLT_MAX)      
 						if(fTemp3>(kItor->fUpperBound))	   
@@ -259,6 +281,54 @@ bool Mat::SetValue(string kValueName, string kValue)
 				
 					((Vector3*)kItor->pkValue)->Set(fTemp1,fTemp2,fTemp3); 
 					return true;
+				
+				case VALUETYPE_VECTOR4:
+					if((iTemp1=kValue.find(" ")) == -1)//kollar efter ett mellanslag. obs! vet ej om -1 alltid är -1 vid fel...
+						return false;		
+					kTemp1=kValue.substr(0,iTemp1); //tar ut först talet ur stringen.
+					fTemp1= strtod( kTemp1.c_str(), &cStop ); //omvandlar första talet till float
+					if((kItor->fUpperBound)!=FLT_MAX)      //kollar om det finns någon upper bound
+						if(fTemp1>(kItor->fUpperBound))	   // kollar om talet är högre än upperbound
+							return false;
+					if((kItor->fLowerBound)!=FLT_MIN)	//kollar lowerbound
+						if(fTemp1<(kItor->fLowerBound))
+							return false;
+
+					if((iTemp2=kValue.find(" ",iTemp1+1)) == -1) //kollar efter andra mellanslaget
+						return false;
+					kTemp1=kValue.substr(iTemp1,kValue.length()); //tar ut andra talet ur stringen.
+					fTemp2= strtod( kTemp1.c_str(), &cStop ); 
+					if((kItor->fUpperBound)!=FLT_MAX)      
+						if(fTemp2>(kItor->fUpperBound))	   
+							return false;
+					if((kItor->fLowerBound)!=FLT_MIN)	
+						if(fTemp2<(kItor->fLowerBound))
+							return false;
+												
+					if((iTemp1=kValue.find(" ",iTemp2+1)) == -1) //kollar efter andra mellanslaget
+						return false;
+					kTemp1=kValue.substr(iTemp2,kValue.length()); //tar ut andra talet ur stringen.
+					fTemp3= strtod( kTemp1.c_str(), &cStop ); 
+					if((kItor->fUpperBound)!=FLT_MAX)      
+						if(fTemp2>(kItor->fUpperBound))	   
+							return false;
+					if((kItor->fLowerBound)!=FLT_MIN)	
+						if(fTemp2<(kItor->fLowerBound))
+							return false;
+
+					kTemp1=kValue.substr(iTemp1,kValue.length());
+					fTemp4= strtod( kTemp1.c_str(), &cStop ); 
+					if((kItor->fUpperBound)!=FLT_MAX)      
+						if(fTemp3>(kItor->fUpperBound))	   
+							return false;
+					if((kItor->fLowerBound)!=FLT_MIN)	
+						if(fTemp3<(kItor->fLowerBound))
+							return false;
+				
+					((Vector4*)kItor->pkValue)->set(fTemp1,fTemp2,fTemp3, fTemp4); 
+					return true;
+					
+				
 				};
 				
 			}	

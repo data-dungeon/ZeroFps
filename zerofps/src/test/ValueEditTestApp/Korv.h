@@ -26,7 +26,7 @@ private:
 	bool Skin;
 	int Storlek;
 	string Status;
-	Vector3 Vek;
+	Vector4 Vek;
 };
 
 #endif // !defined(AFX_KORV_H__1C2A8B4F_306B_4E8C_946F_2914CBB65A1F__INCLUDED_)

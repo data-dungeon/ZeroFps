@@ -14,6 +14,7 @@
 #include <iostream>
 #include <cfloat>
 #include "vector3.h"
+#include "vector4.h"
 
 #pragma warning (disable : 4786)
 
@@ -46,7 +47,7 @@ protected:
 		VALUETYPE_BOOL,
 		VALUETYPE_STRING,
 		VALUETYPE_VECTOR3,
-
+		VALUETYPE_VECTOR4,
 	};
 	virtual vector<PropertyValues> GetPropertyValues();
 };
