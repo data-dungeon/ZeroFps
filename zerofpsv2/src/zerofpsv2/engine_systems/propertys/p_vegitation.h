@@ -24,6 +24,7 @@ class ENGINE_SYSTEMS_API P_Vegitation : public Property {
 		};
 
 		TextureManager*	m_pkTexMan;
+		Light*				m_pkLight;
 		Render*				m_pkRender;	
 		ZeroFps*				m_pkFps;
 		ZShaderSystem*		m_pkZShaderSystem;
@@ -38,6 +39,8 @@ class ENGINE_SYSTEMS_API P_Vegitation : public Property {
 		int					m_iAmount;
 		int					m_iSize;		
 		float					m_fWind;
+		
+		LightProfile		m_kLightProfile;				//used for lighting		
 		
 		bool					m_CheckedForHM;
 		

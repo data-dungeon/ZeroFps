@@ -1438,7 +1438,7 @@ void ZeroEd::UpdateModelMarker(Vector3 kPos,bool bEnabled)
 		m_pkZoneMarkerEntity->SetParent(m_pkEntityManager->GetWorldEntity());
 		m_pkZoneMarkerEntity->SetSave(false);
 		m_pkZoneMarkerEntity->SetInterpolate(false);
-		m_pkZoneMarkerEntity->AddProperty("P_LightUpdate");
+		//m_pkZoneMarkerEntity->AddProperty("P_LightUpdate");
 		m_pkZoneMarkerEntity->AddProperty("P_Mad");
 	}	
 	

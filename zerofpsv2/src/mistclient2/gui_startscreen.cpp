@@ -160,7 +160,7 @@ void GuiMsgStartScreen( string strMainWnd, string strController,
 						Entity* pkModellEnt = g_kMistClient.m_pkEntityManager->CreateEntity();
 						pkModellEnt->SetSave(false);
 						pkModellEnt->SetWorldPosV(Vector3(0,0,0));
-						pkModellEnt->AddProperty("P_LightUpdate");
+						//pkModellEnt->AddProperty("P_LightUpdate");
 						pkModellEnt->AddProperty("P_Mad");
 
 						Vector4 kCurrentDiffuse(1,1,1,1);
@@ -261,7 +261,7 @@ void GuiMsgStartScreen( string strMainWnd, string strController,
 					Entity* pkModellEnt = g_kMistClient.m_pkEntityManager->CreateEntity();
 					pkModellEnt->SetSave(false);
 					pkModellEnt->SetWorldPosV(Vector3(0,0,0));
-					pkModellEnt->AddProperty("P_LightUpdate");
+					//pkModellEnt->AddProperty("P_LightUpdate");
 					pkModellEnt->AddProperty("P_Mad");
 
 					Vector4 kCurrentDiffuse(1,1,1,1);

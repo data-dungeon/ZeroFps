@@ -8,16 +8,17 @@ P_LightUpdate::P_LightUpdate()
 	strcpy(m_acName,"P_LightUpdate");
 	m_bNetwork = true;
 
-	m_iType = PROPERTY_TYPE_RENDER;
+// 	m_iType = PROPERTY_TYPE_RENDER;
+	m_iType = PROPERTY_TYPE_NORMAL;
 	m_iSide = PROPERTY_SIDE_CLIENT;
 
 }
 
 void P_LightUpdate::Update()
 {
-	//StartProfileTimer("r___LightUpdate");	
+/*	StartProfileTimer("r___LightUpdate");	
 	m_pkLight->Update(m_pkEntity->GetWorldPosV());
-	//StopProfileTimer("r___LightUpdate");	
+	StopProfileTimer("r___LightUpdate");*/	
 }
 
 

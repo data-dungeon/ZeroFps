@@ -12,13 +12,35 @@
 #include "../basic/zfsystem.h"
 
 using namespace std;
+
+
+class ZeroFps;
+
+
 enum LIGHT_TYPE {
 	DIRECTIONAL_LIGHT =	0,
 	POINT_LIGHT = 			1,
 	SPOT_LIGHT =			2,
 };
 
-using namespace std;
+
+class RENDER_API LightProfile
+{
+	public:
+		int		m_iLastVersion;
+		float		m_fLastTime;	
+		int		m_aiLights[8];		
+		
+	LightProfile()
+	{
+		m_iLastVersion =	-1;
+		m_fLastTime		=	-1;
+		
+		for(int i =0;i<8;i++)
+			m_aiLights[i] = -1;
+	}
+};
+
 
 /**	\brief	Light Source used by render.
 		\ingroup Render
@@ -47,7 +69,8 @@ class RENDER_API LightSource
 		int iType;
 		int iPriority;
 		
-		float fIntensity;
+		float fIntensity;				//used for sorting
+		int	iListPos;				//used for sorting
 		
 		LightSource();
 /*		bool operator<(const LightSource& kOther)
@@ -61,41 +84,43 @@ class RENDER_API LightSource
 /**	\brief	SubSystem that handles all lights in ZeroFPS.
 		\ingroup Render
 */
-class RENDER_API Light : public ZFSubSystem {
+class RENDER_API Light : public ZFSubSystem 
+{
 	private:
+	
+		struct More_LightSource : public binary_function<LightSource*, LightSource*, bool> {
+			inline bool operator()(LightSource* x, LightSource* y) { return x->fIntensity > y->fIntensity; };
+		} More_Light; 		
+		
+		ZeroFps*	m_pkZeroFps;
+	
 		Vector3 m_kCamPos;
 
 		vector<LightSource*> m_kLights;
 		vector<LightSource*> m_kSorted;
 		vector<LightSource*> m_kActiveLights;
 
-		bool		m_bAmbientOnly;
-		bool		m_bEnabled;
+		int		m_iNrOfLights;		//max number of lights used at the same time
+		bool		m_bAmbientOnly;	//enables use of only ambient light
+		bool		m_bEnabled;			//lighting enabled?
 		
-		int		m_iVersion;
+		int		m_iVersion;			//is updated each time the number of lights is changed
 		
 		void TurnOffAll();
 		
 	public:
-		int m_iNrOfLights;
-		
-		/*
-		struct Less_LightSource : public binary_function<LightSource*, LightSource*, bool> {
-			bool operator()(LightSource* x, LightSource* y) { return x->fIntensity < y->fIntensity; };
-		} Less_Light;
-		*/
-
-		struct More_LightSource : public binary_function<LightSource*, LightSource*, bool> {
-			inline bool operator()(LightSource* x, LightSource* y) { return x->fIntensity > y->fIntensity; };
-		} More_Light;
 
 		Light();
-		
+		bool StartUp();
+		bool ShutDown();
+		bool IsValid();
+
 		void Add(LightSource* kNewLight);
 		void EnableLight(LightSource* pkLight,int iGlLight);
 		void Remove(LightSource *kLight);
 		void SetCamera(Vector3 kCamPos);
 		void Update(Vector3 kPos);
+		void Update(LightProfile* pkLightProfile,Vector3 kRefPos);
 		void RunCommand(int cmdid, const CmdArgument* kCommand) { } 
 
 		void SetLighting(bool bOn);
@@ -105,10 +130,6 @@ class RENDER_API Light : public ZFSubSystem {
 		
 		void GetClosestLights(vector<LightSource*>* pkLights,int iNrOfLights,Vector3 kPos,bool bNoDirectional = false);
 		LightSource* GetFirstDirectionalLight();
-		
-		bool StartUp();
-		bool ShutDown();
-		bool IsValid();
 
 };
 

@@ -14,7 +14,7 @@ P_Light::P_Light()
 	
 	strcpy(m_acName,"P_Light");
 	m_bNetwork = true;
-	m_iVersion = 4;
+	m_iVersion = 5;
 	m_iSortPlace=10;
 	
 	m_pkLightSource=new LightSource();
@@ -252,7 +252,21 @@ bool P_Light::HandleSetValue( string kValueName ,string kValue )
 
 void P_Light::Save(ZFIoInterface* pkPackage)
 {	
-	pkPackage->Write(*m_pkLightSource);
+// 	pkPackage->Write(*m_pkLightSource);
+	pkPackage->Write( m_pkLightSource->kPos);
+	pkPackage->Write( m_pkLightSource->kRot);				
+	pkPackage->Write( m_pkLightSource->kDiffuse );		
+	pkPackage->Write( m_pkLightSource->kAmbient);			
+	pkPackage->Write( m_pkLightSource->kSpecular );						
+	pkPackage->Write( m_pkLightSource->fCutoff);		
+	pkPackage->Write( m_pkLightSource->fExp);					
+	pkPackage->Write( m_pkLightSource->fConst_Atten);		
+	pkPackage->Write( m_pkLightSource->fLinear_Atten);		
+	pkPackage->Write( m_pkLightSource->fQuadratic_Atten);				
+	pkPackage->Write( m_pkLightSource->iType);	
+	pkPackage->Write( m_pkLightSource->iPriority);	
+
+
 	pkPackage->Write(m_iMode);		
 	pkPackage->Write(m_kOffset);		
 	pkPackage->Write(m_fFlareSize);		
@@ -283,7 +297,23 @@ void P_Light::Load(ZFIoInterface* pkPackage,int iVersion)
 			break;	
 			
 		case 4:
-			pkPackage->Read(*m_pkLightSource);
+		{
+// 			pkPackage->Read(*m_pkLightSource);
+			
+			pkPackage->Read( m_pkLightSource->kPos);
+			pkPackage->Read( m_pkLightSource->kRot);
+			pkPackage->Read( m_pkLightSource->kDiffuse );		
+			pkPackage->Read( m_pkLightSource->kAmbient);			
+			pkPackage->Read( m_pkLightSource->kSpecular );						
+			pkPackage->Read( m_pkLightSource->fCutoff);		
+			pkPackage->Read( m_pkLightSource->fExp);				
+			pkPackage->Read( m_pkLightSource->fConst_Atten);		
+			pkPackage->Read( m_pkLightSource->fLinear_Atten);		
+			pkPackage->Read( m_pkLightSource->fQuadratic_Atten);		
+			pkPackage->Read( m_pkLightSource->iType);	
+			pkPackage->Read( m_pkLightSource->iPriority);	
+			pkPackage->Read( m_pkLightSource->fIntensity);	
+			
 			pkPackage->Read(m_iMode);		
 			pkPackage->Read(m_kOffset);	
 			pkPackage->Read(m_fFlareSize);	
@@ -291,7 +321,32 @@ void P_Light::Load(ZFIoInterface* pkPackage,int iVersion)
 			string strTemp;
 			pkPackage->Read_Str(strTemp);	
 			SetMaterial(strTemp);
-			break;				
+			break;
+		}	
+		case 5:
+		{
+			pkPackage->Read( m_pkLightSource->kPos);
+			pkPackage->Read( m_pkLightSource->kRot);				
+			pkPackage->Read( m_pkLightSource->kDiffuse );		
+			pkPackage->Read( m_pkLightSource->kAmbient);			
+			pkPackage->Read( m_pkLightSource->kSpecular );						
+			pkPackage->Read( m_pkLightSource->fCutoff);		
+			pkPackage->Read( m_pkLightSource->fExp);					
+			pkPackage->Read( m_pkLightSource->fConst_Atten);		
+			pkPackage->Read( m_pkLightSource->fLinear_Atten);		
+			pkPackage->Read( m_pkLightSource->fQuadratic_Atten);				
+			pkPackage->Read( m_pkLightSource->iType);	
+			pkPackage->Read( m_pkLightSource->iPriority);				
+			
+			pkPackage->Read(m_iMode);		
+			pkPackage->Read(m_kOffset);	
+			pkPackage->Read(m_fFlareSize);	
+			
+			string strTemp;
+			pkPackage->Read_Str(strTemp);	
+			SetMaterial(strTemp);
+			break;
+		}
 	}
 	
 	

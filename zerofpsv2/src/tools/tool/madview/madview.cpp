@@ -185,7 +185,7 @@ void MadView::CreateViewObject()
 {
 	m_pkViewObject = m_pkEntityManager->CreateEntity();
 	m_pkViewObject->SetParent( m_pkEntityManager->GetWorldEntity() ); 
-	m_pkViewObject->AddProperty("P_LightUpdate");
+// 	m_pkViewObject->AddProperty("P_LightUpdate");
 	m_pkViewObject->AddProperty("P_Mad");
 	m_pkViewObject->SetWorldPosV(Vector3(0,0,0));
 }

@@ -17,7 +17,8 @@ enum ENGINE_SYSTEMS_API LIGHT_MODES
 };
 
 /// Property to make an object cast light.
-class ENGINE_SYSTEMS_API P_Light : public Property {
+class ENGINE_SYSTEMS_API P_Light : public Property 
+{
 	private:
 		ZeroFps*				m_pkZeroFps;
 		LightSource*		m_pkLightSource;

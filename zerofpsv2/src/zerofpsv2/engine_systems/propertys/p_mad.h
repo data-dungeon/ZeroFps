@@ -16,6 +16,7 @@ class ENGINE_SYSTEMS_API P_Mad : public Property, public Mad_Modell {
 		vector<PropertyValues> GetPropertyValues();
 		bool HandleSetValue( string kValueName ,string kValue );
 	
+		Light*			m_pkLight;
 		Render*			m_pkRender;		// Ptr to render sys.
 		ZeroFps*			m_pkZeroFps;	// Ptr to zerofps sys.
 		ZShaderSystem* m_pkZShaderSystem;
@@ -29,6 +30,8 @@ class ENGINE_SYSTEMS_API P_Mad : public Property, public Mad_Modell {
 		int		m_iLastAnimationUpdateFrame;
 		
 		Vector3	m_kOffset;
+		
+		LightProfile	m_kLightProfile;				//used for lighting
 		
 		//linetest stuff
 		Matrix4		m_kModelMatrix;

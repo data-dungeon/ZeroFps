@@ -244,7 +244,7 @@ bool ZeroFps::StartUp()
 	CreateMaterials();
 	
 	//set captured input as default
-	m_pkInput->ToggleGrab(true);
+// 	m_pkInput->ToggleGrab(true);
 	
 	return true;
 }

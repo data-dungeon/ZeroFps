@@ -10,11 +10,12 @@ P_Vegitation::P_Vegitation()
 	m_iType=PROPERTY_TYPE_RENDER;
 	m_iSide=PROPERTY_SIDE_CLIENT;
 	
-	m_pkTexMan=static_cast<TextureManager*>(g_ZFObjSys.GetObjectPtr("TextureManager"));	
-	m_pkRender=static_cast<Render*>(g_ZFObjSys.GetObjectPtr("Render"));			
-	m_pkZShaderSystem=static_cast<ZShaderSystem*>(g_ZFObjSys.GetObjectPtr("ZShaderSystem"));			
-	m_pkFps = static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
-		
+	m_pkTexMan=				static_cast<TextureManager*>(g_ZFObjSys.GetObjectPtr("TextureManager"));	
+	m_pkRender=				static_cast<Render*>(g_ZFObjSys.GetObjectPtr("Render"));			
+	m_pkZShaderSystem=	static_cast<ZShaderSystem*>(g_ZFObjSys.GetObjectPtr("ZShaderSystem"));			
+	m_pkFps = 				static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
+	m_pkLight=				static_cast<Light*>(g_ZFObjSys.GetObjectPtr("Light")); 
+	
 	m_iSortPlace=9;
 	m_bNetwork = true;
 	
@@ -86,8 +87,12 @@ void P_Vegitation::Update()
 	if(!m_pkFps->GetCam()->GetFrustum()->SphereInFrustum(m_pkEntity->GetWorldPosV(),m_fRadius))
 		return;
 
-	StartProfileTimer("r___Vegitation");	
-							
+// 	StartProfileTimer("r___Vegitation");	
+
+	//update light					
+	m_pkLight->Update(&m_kLightProfile,GetEntity()->GetWorldPosV());					
+	
+		
 	if(!m_CheckedForHM)
 	{
 		m_CheckedForHM = true;
@@ -172,7 +177,7 @@ void P_Vegitation::Update()
 	}
 
 
-	StopProfileTimer("r___Vegitation");	
+// 	StopProfileTimer("r___Vegitation");	
 
 /*	for(unsigned int i=0;i<m_akPositions.size();i += iStep)
 //	for(unsigned int i=0;i<m_akPositions.size();i++)

@@ -12,10 +12,12 @@ extern float	g_fMadLODScale;
  
 P_Mad::P_Mad()
 {
+
 	m_pkZeroFps =		static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
 	m_pkRender	=		static_cast<Render*>(g_ZFObjSys.GetObjectPtr("Render")); 
 	m_pkZShaderSystem = static_cast<ZShaderSystem*>(g_ZFObjSys.GetObjectPtr("ZShaderSystem")); 
-	
+	m_pkLight=		static_cast<Light*>(g_ZFObjSys.GetObjectPtr("Light")); 
+		
 	strcpy(m_acName,"P_Mad");
 	m_bNetwork	 = true;
 	m_iVersion = 4;
@@ -70,7 +72,9 @@ void P_Mad::Update()
 	if( m_pkEntityManager->IsUpdate(PROPERTY_TYPE_RENDER) ) 
 	{		
 		StartProfileTimer("r___mad");				
+				
 		DoAnimationUpdate();
+		
 		
 		//cull spwhere
 		if(!m_pkZeroFps->GetCam()->GetFrustum()->SphereInFrustum(m_pkEntity->GetWorldPosV(),GetRadius()))
@@ -78,7 +82,7 @@ void P_Mad::Update()
 			StopProfileTimer("r___mad");
 			return;
 		}
-			
+	
 		/*
 		// Set Object LOD.
 		if(g_iMadLODLock == 0) {
@@ -94,12 +98,18 @@ void P_Mad::Update()
 		
 		if(m_bIsVisible)
 		{
-					
+			//update lighting
+			m_pkLight->Update(&m_kLightProfile,GetEntity()->GetWorldPosV());					
+// 			m_pkLight->Update(GetEntity()->GetWorldPosV());
+		
+		
 			m_pkZShaderSystem->MatrixPush();
 				m_pkZShaderSystem->MatrixTranslate(m_pkEntity->GetIWorldPosV() + m_kOffset);
 				m_pkZShaderSystem->MatrixMult(Matrix4(m_pkEntity->GetWorldRotM()));
 				m_pkZShaderSystem->MatrixScale(m_fScale);
 	
+				
+				
 				Draw_All(m_pkZeroFps->m_iMadDraw);
 			m_pkZShaderSystem->MatrixPop();
 		}

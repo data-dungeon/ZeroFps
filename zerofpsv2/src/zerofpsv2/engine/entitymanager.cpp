@@ -2099,7 +2099,7 @@ void EntityManager::LoadZone(int iId,string strSaveDir)
 		Vector3 kPos = kZData->m_kPos;
 		kZoneEntity->SetLocalPosV(kPos);
 
-		kZoneEntity->AddProperty("P_LightUpdate");	//always attach a lightupdateproperty to new zones
+		//kZoneEntity->AddProperty("P_LightUpdate");	//always attach a lightupdateproperty to new zones
 
 		SetZoneModel("",iId);		
 
