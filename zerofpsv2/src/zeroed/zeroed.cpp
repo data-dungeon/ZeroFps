@@ -77,9 +77,9 @@ ZeroEd::ZeroEd(char* aName,int iWidth,int iHeight,int iDepth)
 	g_ZFObjSys.Log_Create("zeroed");
 
 	// Set Default values
-	m_bEditSun		= false;
-	m_bSoloMode     = true;
-	m_bPlaceObjectsOnGround = false;
+	m_bEditSun		= 				true;
+	m_bSoloMode     = 			true;
+	m_bPlaceObjectsOnGround = 	false;
 	m_bDisableFreeZonePlacement = false;
 
 	// Register Variables
