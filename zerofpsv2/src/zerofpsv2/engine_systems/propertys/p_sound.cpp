@@ -14,7 +14,19 @@ P_Sound::P_Sound()
 
 P_Sound::~P_Sound()
 {
+	Entity* pkEnt = GetEntity();
 
+	// stoppa alla ljud när propertyt förstörs
+	for(int i=0; i<m_kSounds.size(); i++) 
+	{
+		if(m_kSounds[i].m_bPlaying)
+		{
+			m_pkAudioSystem->StopSound(m_kSounds[i].m_strFileName, 
+				pkEnt->GetIWorldPosV());
+		}
+	}
+
+	printf("P_Sound::~P_Sound\n");
 }
 
 void P_Sound::Update()
