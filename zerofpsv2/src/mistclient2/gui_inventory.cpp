@@ -98,6 +98,8 @@ void InventoryDlg::Open()
 
 		m_pkInventoryWnd = g_kMistClient.GetWnd("InventoryWnd");
 		m_pkContainerWnd = g_kMistClient.GetWnd("ContainerWnd");
+
+		CreateContainerGrid();
 	}
 
 	m_ppCursorSkin = g_kMistClient.m_pkGui->GetCursorSkin();
@@ -388,7 +390,7 @@ void InventoryDlg::OpenContainerWnd(int id, char slots_x, char slots_y)
 	m_iSlotsVertContainer = slots_y;
 	m_iActiveContainerID = id;
 
-	CreateContainerGrid(slots_x, slots_y);
+	RebuidContainerGrid(slots_x, slots_y);
 
 	m_pkContainerWnd->SetZValue(22);
 	
@@ -396,12 +398,39 @@ void InventoryDlg::OpenContainerWnd(int id, char slots_x, char slots_y)
 	g_kMistClient.m_pkGui->SetFocus(m_pkContainerWnd, false);
 }
 
-// Skapa bakgrundsbilden genom att klistra samman massa labels som har skapats från skript.
-void InventoryDlg::CreateContainerGrid(char slots_horz, char slots_vert)
+void InventoryDlg::CreateContainerGrid()
 {
-	list<ZGuiWnd*> kChilds;
-	m_pkContainerWnd->GetChildrens(kChilds);
+	const float MAX_SLOTS_X = 15;
+	const float MAX_SLOTS_Y = 15;
 
+	static ZGuiSkin* pkSlotBkSkin = NULL;
+	
+	if(pkSlotBkSkin == NULL)
+	{
+		pkSlotBkSkin = new ZGuiSkin();
+		pkSlotBkSkin->m_iBkTexID = m_pkTexMan->Load("data/textures/gui/inventory/slots_3x3.tga", 0);
+		pkSlotBkSkin->m_bTileBkSkin = true;
+	}
+
+	ZGuiWnd* pkLabel;
+
+	const int iNumOfLabelsNeeded = (MAX_SLOTS_X / 3 ) * (MAX_SLOTS_Y / 3 ) + 
+		(((MAX_SLOTS_X+MAX_SLOTS_Y)/2+1) / 3);
+
+	for(int i=0; i<iNumOfLabelsNeeded; i++)
+	{
+		char szSlotBkLabelName[50];
+		sprintf(szSlotBkLabelName, "CSlotBkLabel_%i", i);
+		pkLabel = g_kMistClient.CreateWnd(Label, szSlotBkLabelName, "ContainerWnd", 
+			"", 0, 0, 100, 100, 0, TopLeft, eNone);
+		pkLabel->SetSkin(pkSlotBkSkin);
+		m_vkContainerGridSlots.push_back(pkLabel);
+	}	
+}
+
+// Skapa bakgrundsbilden genom att klistra samman massa labels som har skapats från skript.
+void InventoryDlg::RebuidContainerGrid(char slots_horz, char slots_vert)
+{
 	const int MAX_WIDTH = slots_horz*33+1;
 	const int MAX_HEIGHT = slots_vert*33+1;
 
@@ -417,47 +446,44 @@ void InventoryDlg::CreateContainerGrid(char slots_horz, char slots_vert)
 
 	int current_slot_x=0, current_slot_y=0;
 	int dx=0, dy=0;
-	
-	for(list<ZGuiWnd*>::iterator it=kChilds.begin(); it!=kChilds.end(); it++)
+		
+	for(int i=0; i<m_vkContainerGridSlots.size(); i++)
 	{
-		string strName = (*it)->GetName();
+		ZGuiWnd* pkWnd = m_vkContainerGridSlots[i];
 
-		if(strName.find("CSlotBkLabel_") != string::npos)
-		{	
-			(*it)->SetPos(dx, dy, false, true);
-			(*it)->Resize(99, 99);
+		pkWnd->SetPos(dx, dy, false, true);
+		pkWnd->Resize(99, 100);
 
-			current_slot_x += 3;
-			dx += 99;
+		current_slot_x += 3;
+		dx += 99;
 
-			if(current_slot_y > slots_vert)
-			{
-				(*it)->Hide();				
-			}
-			else
-			{
-				(*it)->Show();
-				(*it)->SetZValue(1);
-
-				Rect rc = (*it)->GetWndRect();
-
-				int w = rc.Width();
-				int h = rc.Height();
-
-				if(rc.Right > MAX_WIDTH)  w = MAX_WIDTH-rc.Left;
-				if(rc.Bottom > MAX_HEIGHT) h = MAX_HEIGHT-rc.Top;
-
-				(*it)->Resize(w, h);
-			}
-
-			if(current_slot_x > slots_horz)
-			{
-				current_slot_x = 0;
-				current_slot_y += 3;
-				dx = 0;
-				dy += 99;
-			}
+		if(current_slot_y > slots_vert)
+		{
+			pkWnd->Hide();				
 		}
+		else
+		{
+			pkWnd->Show();
+			pkWnd->SetZValue(1);
+
+			Rect rc = pkWnd->GetWndRect();
+
+			int w = rc.Width();
+			int h = rc.Height();
+
+			if(rc.Right > MAX_WIDTH)  w = MAX_WIDTH-rc.Left;
+			if(rc.Bottom > MAX_HEIGHT) h = MAX_HEIGHT-rc.Top;
+
+			pkWnd->Resize(w, h);
+		}
+
+		if(current_slot_x > slots_horz)
+		{
+			current_slot_x = 0;
+			current_slot_y += 3;
+			dx = 0;
+			dy += 99;
+		}		
 	}
 }
 
@@ -508,9 +534,12 @@ void InventoryDlg::UpdateInventory(vector<MLContainerInfo>& vkItemList)
 		// If left mouse button is pressed, hide the icon and set it to be visible under cursor.
 		if(g_kMistClient.m_pkGui->m_bMouseLeftPressed)
 		{
-			m_iItemUnderCursor = vkItemList[i].m_iItemID;			
-			m_fPickUpTimer = g_kMistClient.m_pkZeroFps->GetTicks();
-			pkNewSlot->Hide();
+			if(g_kMistClient.m_iPickedEntityID == vkItemList[i].m_iItemID)
+			{
+				m_iItemUnderCursor = vkItemList[i].m_iItemID;			
+				m_fPickUpTimer = g_kMistClient.m_pkZeroFps->GetTicks();
+				pkNewSlot->Hide();
+			}
 		}
 
 		pkNewSlot->SetSkin(new ZGuiSkin());
@@ -836,3 +865,4 @@ void InventoryDlg::SetSelectionBorder(int iIndex, bool bInventory, bool bRemove)
 		(*pkVector)[iIndex].pkWnd->GetSkin()->m_afBorderColor[2] = 1;
 	}
 }
+

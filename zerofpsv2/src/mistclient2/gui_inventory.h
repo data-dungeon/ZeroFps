@@ -65,7 +65,8 @@ private:
 	};
 
 	void OnDropItem(int mx, int my);
-	void CreateContainerGrid(char slots_horz, char slots_vert);
+	void CreateContainerGrid();
+	void RebuidContainerGrid(char slots_horz, char slots_vert);
 	int TestForCollision(int iTestSlot, bool bInventory); // returns -1 if no collision or index to list eitherwise
 	int TestForCollision(Point test_slot, Point test_size, bool bInventory); // returns -1 if no collision or index to list eitherwise
 	Point SlotFromScreenPos(int x, int y, bool bInventory);
@@ -80,6 +81,7 @@ private:
 	int GetInventoryContainerID();
 	InventoryDropTarget GetDropTargetFromScreenPos(int x, int y);
 	void SetSelectionBorder(int iIndex, bool bInventory, bool bRemove);
+	
 
 	TextureManager* m_pkTexMan;
 	
@@ -99,6 +101,7 @@ private:
 	int m_iSlotsVertContainer;
 
 	ZGuiSkin** m_ppCursorSkin;
+	vector<ZGuiWnd*> m_vkContainerGridSlots;
 
 	Point m_kCursorRangeDiff;
 	
