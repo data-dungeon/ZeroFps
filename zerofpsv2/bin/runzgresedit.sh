@@ -5,7 +5,7 @@ export templdpath=$LD_LIBRARY_PATH
 export LD_LIBRARY_PATH=./:$LD_LIBRARY_PATH
 
 cd `dirname $0`
-./zgresedit.bin $2 $3 $4 $5 $6 $7 $8 $9
+./zguiresed.bin $2 $3 $4 $5 $6 $7 $8 $9
 
 export LD_LIBRARY_PATH=$templdpath
 
