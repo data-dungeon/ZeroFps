@@ -33,8 +33,8 @@ MistClient::MistClient(char* aName,int iWidth,int iHeight,int iDepth)
  
 void MistClient::OnInit() 
 {
-	m_pkZFVFileSystem->AddRootPath( string("../datafiles/mistlands/") ,"data/");
-	m_pkZFVFileSystem->AddRootPath( string("../datafiles/dm/") ,"data/");
+	m_pkZFVFileSystem->AddRootPath( string("../datafiles/mistlands") ,"/data");
+	m_pkZFVFileSystem->AddRootPath( string("../datafiles/dm") ,"/data");
 
 	//register commands
 	Register_Cmd("say",			FID_SAY);	

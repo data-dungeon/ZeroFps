@@ -98,8 +98,8 @@ void MistServer::CreateEditCameras()
 
 void MistServer::OnInit() 
 {
-	m_pkZFVFileSystem->AddRootPath( string("../datafiles/mistlands/") ,"data/");
-	m_pkZFVFileSystem->AddRootPath( string("../datafiles/dm/") ,"data/");
+	m_pkZFVFileSystem->AddRootPath( string("../datafiles/mistlands") ,"/data");
+	m_pkZFVFileSystem->AddRootPath( string("../datafiles/dm") ,"/data");
 	
 	m_pkConsole->Printf(" MistServer (mistland dedicated server)");
 	m_pkConsole->Printf("--------------------------------");
