@@ -25,10 +25,10 @@ const int ID_POSZ_TEXTBOX				= 9019;
 const int ID_OBJECTS_CB					= 9020;
 const int ID_PROPERTIES_CB				= 9021;
 const int ID_FILEPATH_OPEN_BN			= 9022;
-const int ID_FILEPATH_CLOSE_BN			= 9023;
+const int ID_FILEPATH_CANCEL_BN			= 9023;
 const int ID_BITMAP_FONT				= 9024;
 const int ID_PROPERTY_OK				= 9025;
-const int ID_PROPERTY_CANEL				= 9026;
+const int ID_PROPERTY_CANCEL			= 9026;
 const int IDM_LOAD_HEIGHTMAP			= 9027;
 const int ID_MAINWND_MENU_CB			= 9028;
 

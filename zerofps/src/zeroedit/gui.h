@@ -52,7 +52,7 @@ private:
 
 public:
 
-	
+	bool PropertyProc( ZGuiWnd* pkWindow, unsigned int uiMessage, int iNumberOfParams, void *pkParams );
 	bool WndProc( ZGuiWnd* pkWindow, unsigned int uiMessage, int iNumberOfParams, void *pkParams );
 	bool IsMenuActive() { return m_bMenuActive; }
 
