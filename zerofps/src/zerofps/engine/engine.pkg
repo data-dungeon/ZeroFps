@@ -11,7 +11,9 @@ class PropertyFactory;
 class LevelManager;
 class PhysicsEngine;
 class HeightMap;
+class PathFind;
 
+#include "pathfind.h"
 #include "soundbuffermanager.h"
 #include "openalsystem.h"
 #include "camera.h"

@@ -619,3 +619,9 @@ const string LevelManager::GetLogFileFullName()
 	strPath.append("log.txt");
 	return strPath;
 }
+
+void LevelManager::ChangeLandscapeFillMode(PolygonMode eMode)
+{
+	HMRP2* hp= static_cast<HMRP2*>(m_pkHeightMapObject->GetProperty("HMRP2"));
+	hp->SetPolyMode(eMode);
+}

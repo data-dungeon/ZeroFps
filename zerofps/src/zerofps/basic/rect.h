@@ -58,4 +58,23 @@ public:
 	inline int Height() { return (Bottom-Top); }
 };
 
+class BASIC_API Point  
+{
+public:
+	Point() { }
+	Point(int nx, int ny) { x=nx, y=ny; }
+
+	inline bool operator==(Point a)
+	{
+		return (a.x == x && a.y == y);
+	}
+
+	inline bool operator!=(Point a)
+	{
+		return (a.x != x || a.y != y);
+	}
+
+	int x,y;
+};
+
 #endif // !defined(AFX_RECT_H__9D6EA35C_226A_4A91_BE8F_5E90ADCEC058__INCLUDED_)

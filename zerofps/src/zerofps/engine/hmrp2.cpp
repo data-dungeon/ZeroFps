@@ -38,5 +38,7 @@ Property* Create_HMRP2()
 	return new HMRP2(NULL);
 }
 
-
-
+void HMRP2::SetPolyMode(PolygonMode eMode)
+{
+	m_pkRender->m_eLandscapePolygonMode = eMode;
+}

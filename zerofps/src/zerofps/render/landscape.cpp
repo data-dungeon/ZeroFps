@@ -759,8 +759,7 @@ void Render::DrawHMLodSplat(HeightMap* kMap,Vector3 CamPos,int iFps)
 	//Draw default texture	
 	m_pkTexMan->BindTexture(kMap->m_kSets[0].m_acTexture,0);
 	m_pkTexMan->AddMipMapLevel(0,kMap->m_kSets[0].m_acDetailTexture);	
-	
-	
+		
 	DrawAllHM(kMap,CamPos);
 		
 	//set blending
@@ -815,16 +814,28 @@ void Render::DrawAllHM(HeightMap* kMap,Vector3 CamPos)
 
 	int iPatchSize = 32;
 
+	switch(m_eLandscapePolygonMode)
+	{
+	case LINE:
+		glPushAttrib(GL_POLYGON_BIT);
+		glPolygonMode(GL_FRONT, GL_LINE);
+		break;
+	case FILL:
+		glPushAttrib(GL_POLYGON_BIT);
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+		break;
+	}
+
 	for(int z=0;z<kMap->m_iHmSize;z+=iPatchSize)
 	{
 		for(int x=0;x<kMap->m_iHmSize;x+=iPatchSize)
 		{
 			DrawPatch(kMap,CamPos,x,z,iPatchSize);		
-			//DrawPatch_Vim1(kMap,CamPos,x,z,iPatchSize);		
-			
+			//DrawPatch_Vim1(kMap,CamPos,x,z,iPatchSize);	
 		}
 	}
 
+	glPopAttrib(); // m_eLandscapePolygonMode
 }
 
 void Render::DrawHMVertex(HeightMap* kMap)
@@ -1018,7 +1029,6 @@ void Render::DrawPatch(HeightMap* kMap,Vector3 CamPos,int xp,int zp,int iSize)
 		glVertex3f(x*HEIGHTMAP_SCALE,(pkHmVertex[z*kMap->m_iHmSize+x].height)*HEIGHTMAP_SCALE,z*HEIGHTMAP_SCALE);					
 	}
 	glEnd();	
-
 
 //	glPolygonMode(GL_FRONT,GL_FILL);
 }

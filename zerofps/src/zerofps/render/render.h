@@ -30,6 +30,12 @@ enum SkyBoxSides
 	SKYBOXSIDE_MAX,
 };
 
+enum PolygonMode 
+{ 
+	FILL, 
+	LINE 
+};
+
 class RENDER_API Render : public ZFObject {
 	private:
 		Frustum*				m_pkFrustum;
@@ -56,6 +62,8 @@ class RENDER_API Render : public ZFObject {
 		int	m_iViewDistance;		//	how far until we cut the landscape	
 		int	m_iFpsLock;
 		int	m_iAutoLod;
+
+		PolygonMode m_eLandscapePolygonMode;
 	
 		bool StartUp()		{ return true;	}
 		bool ShutDown()	{ return true;	}

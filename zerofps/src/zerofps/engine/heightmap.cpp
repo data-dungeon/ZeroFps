@@ -726,7 +726,6 @@ void HeightMap::Flatten(int iPosx,int iPosy,int iSize)
 		iPosy - (iSize/2) >=0 &&
 		iPosy + (iSize/2) <=m_iHmSize)
 	{		
-
 		float height=GetVert(iPosx,iPosy)->height;
 
 		for(int xp=-(iSize/2);xp<=(iSize/2);xp++){

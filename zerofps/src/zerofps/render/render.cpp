@@ -4,7 +4,7 @@
 #include "GL/glut.h"
 
 Render::Render()  
- :	ZFObject("Render") {
+:	ZFObject("Render") , m_eLandscapePolygonMode(FILL) {
  
  	m_pkTexMan = static_cast<TextureManager*>(g_ZFObjSys.GetObjectPtr("TextureManager"));
  	m_pkFrustum = static_cast<Frustum*>(g_ZFObjSys.GetObjectPtr("Frustum"));

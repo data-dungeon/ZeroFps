@@ -22,12 +22,14 @@ class ENGINE_API HMRP2: public Property {
 	
 	
 	public:
+		void SetPolyMode(int iMode);
 		HMRP2(HeightMap* pkHeightMap);
 		void CloneOf(Property* pkProperty) { }
 		void Update();
 
 		void SetHeightMap(HeightMap* pkHeightMap);
 		HeightMap* GetHeightMap() {return m_pkHeightMap;};
+		void SetPolyMode(PolygonMode eMode);
 };
 
 Property* Create_HMRP2();

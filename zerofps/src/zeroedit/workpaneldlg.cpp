@@ -98,6 +98,15 @@ bool WorkPanelDlg::Create(int x, int y, char* szResourceFile, char* szDlgName)
 	m_pkGuiBuilder->CreateCheckbox(pkPage, ID_AUTOSMOOTHGROUND_CHB, 5, 5+iHeight, 16, 16, true,
 		"Auto-smooth", "AutoSmoothGroundChB");
 
+	m_pkGuiBuilder->CreateLabel(pkPage, 0, 5, 30+iHeight, 150, 20, "Landscape polygon mode");
+	vkNames.clear();
+	vkNames.push_back("Solid");
+	vkNames.push_back("Wireframe");	
+	iHeight = m_pkGuiBuilder->CreateRadiobuttons(pkPage, vkNames, 
+		"LandscapePolyModeGroup", ID_LANDSCAPEPOLYMODE_RADIOGROUP, 5, 50+iHeight, 16);
+	m_pkGuiBuilder->CheckRadioButton("LandscapePolyModeGroup", 
+		(char*) vkNames[0].c_str());
+
 	// Create page 3: - Paint terrain
 	pkPage = WorkPanel()->GetPage(2);
 
@@ -290,6 +299,14 @@ bool WorkPanelDlg::DlgProc( ZGuiWnd* pkWnd, unsigned int uiMessage,
 
 		case ID_CAMERAMODE_RADIOGROUP:
 			m_pkEdit->m_eCameraMode = FreeFlight;
+			break;
+
+		case ID_LANDSCAPEPOLYMODE_RADIOGROUP:
+			m_pkEdit->pkLevelMan->ChangeLandscapeFillMode(FILL);
+			break;
+
+		case ID_LANDSCAPEPOLYMODE_RADIOGROUP+1:
+			m_pkEdit->pkLevelMan->ChangeLandscapeFillMode(LINE);
 			break;
 
 		case ID_CAMERAMODE_RADIOGROUP+1:

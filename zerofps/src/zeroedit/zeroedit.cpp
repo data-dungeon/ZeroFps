@@ -1385,7 +1385,7 @@ bool ZeroEdit::RotateCamera(int relMouseX, int relMouseY)
 		bRotate = true;
 		break;
 	case Precision:
-		if(pkInput->Pressed(MOUSELEFT) || pkInput->Pressed(MOUSERIGHT))
+		if(pkInput->Pressed(MOUSELEFT))
 			bRotate = true;
 		break;
 	}

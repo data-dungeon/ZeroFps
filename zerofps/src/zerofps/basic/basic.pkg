@@ -9,6 +9,7 @@ class ZFObjectManger;
 class ZFObject;
 //class HeightMap;
 class Rect;
+class Point;
 class ZGuiSkin;
 class ZGuiFont;
 

@@ -28,6 +28,7 @@ class ENGINE_API LevelManager : public ZFObject {
 		ZFIni* 				m_pkIni;
 		Light*				m_pkLight;
 		
+		PathFind*			m_pkPathFind;
 		HeightMap* 			m_pkMap;
 		Object*				m_pkHeightMapObject;
 		
@@ -82,6 +83,7 @@ class ENGINE_API LevelManager : public ZFObject {
 		void SetMoonColor(Vector3 kColor);		
 		void SetSunColor(Vector3 kColor);		
 		void SetAmbientColor(Vector3 kColor);
+		void ChangeLandscapeFillMode(PolygonMode eMode);
 		
 		void AddTracker(Object* kObject);
 		void RemoveTracker(Object* kObject);
