@@ -1,5 +1,5 @@
 #include "zerotank.h"
-#include "scriptinterfaces.h"
+#include "../zerofpsv2/engine_systems/script_interfaces/gui_scriptinterface.h"
 #include "../zerofpsv2/engine_systems/common/heightmap.h"
 #include "../zerofpsv2/engine_systems/propertys/madproperty.h"
 #include "../zerofpsv2/engine_systems/propertys/primitives3d.h"
@@ -111,10 +111,12 @@ void ZeroTank::Init()
 */
 	//SDL_WM_SetCaption("Mistland, the land of mist", NULL);
 	
+	GuiAppLua::Init(&g_kZeroTank, GetScript());
+
 	InitializeScript();
 	InitializeGui(pkGui, pkTexMan, pkScript, pkGuiMan);
 
-//	SetupGUI();
+	SDL_ShowCursor(SDL_DISABLE);
 	
 	
 }
