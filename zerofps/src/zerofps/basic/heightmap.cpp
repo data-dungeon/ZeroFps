@@ -364,7 +364,7 @@ void HeightMap::GenerateTextures() {
 //			cout<<"Slope:"<<slope<<endl;
 
 //			GetVert(x,z)->color=Vector3(1,1,1);			
-			if(slope<30) {
+			if(slope<35) {
 				GetVert(x,z)->texture=3;//stone
 				GetVert(x,z)->color=Vector3(0.7,0.7,0.7);			
 			}

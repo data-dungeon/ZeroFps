@@ -13,7 +13,7 @@ PlayerControlProperty::PlayerControlProperty(Input *pkInput,ZeroFps *pkFps,Heigh
 void PlayerControlProperty::Update() {
 //	m_pkObject->GetPos().x+=0.1;
 //	m_pkObject->GetPos().z+=0.1;	
-	float speed=0.002;
+	float speed=0.005;
 	
 	if(m_pkInput->Pressed(KEY_D)){
 //		m_pkObject->GetPos().x+=speed*m_pkFps->GetFrameTime();
