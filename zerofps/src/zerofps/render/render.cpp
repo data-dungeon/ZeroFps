@@ -213,5 +213,19 @@ void Render::DrawHM(HeightMap *kmap) {
 }
 
 
+void Render::DrawConsole(char* m_aCommand,vector<char*>* m_kText) {
+	SetFont("file:../data/textures/text/console.bmp");
+
+	Quad(Vector3(0,0,-.50),Vector3(0,0,0),Vector3(1,1,1),m_pkTexMan->Load("file:../data/textures/background.bmp"));
+	
+	Print(Vector3(-0.45,-0.45,-0.499),Vector3(0,0,0),Vector3(.03,.03,.03),m_aCommand);		
+	
+	for(int i=0;i<22;i++) {
+		if((*m_kText)[i]!=NULL){
+			Print(Vector3(-0.45,-0.40+i/(float)25,-0.499),Vector3(0,0,0),Vector3(.03,.03,.03),(*m_kText)[i]);		
+		}
+	}
+}
+
 
 

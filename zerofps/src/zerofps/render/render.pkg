@@ -1,8 +1,6 @@
-class Console;
 class Render;
 class TextureManager;
 
-#include "console.h"
 #include "render.h"
 #include "texturemanager.h"
 

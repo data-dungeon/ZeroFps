@@ -74,8 +74,7 @@ class ZeroFps {
 		inline Vector3& CamRot(Vector3 kCamRot){*m_kCamPos=kCamRot;return *m_kCamRot;};
 		inline Vector3& CamRot(void){return *m_kCamRot;};		
 		inline void SetCamRotPointer(Vector3* pkNewCamRot) {m_kCamRot=pkNewCamRot;};
-		
-		void HandleCommands(char* aText);
+	
 };
 
 
