@@ -61,6 +61,8 @@ class ENGINE_API ZeroFps : public ZFObject {
 			FID_CREDITS,	// Print Credits to console.
 		
 			FID_GLDUMP,
+		
+			FID_SENDMESSAGE,
 		};
 		
 		SDL_Surface* m_pkScreen;		

@@ -80,6 +80,7 @@ ZeroFps::ZeroFps(void)
 	g_ZFObjSys.Register_Cmd("credits",FID_CREDITS,this);	
 	g_ZFObjSys.Register_Cmd("gldump",FID_GLDUMP,this);	
 
+	g_ZFObjSys.Register_Cmd("sendmsg",FID_SENDMESSAGE,this);	
 
 	m_kCurentDir=m_pkBasicFS->GetCWD();
 
@@ -221,6 +222,7 @@ void ZeroFps::MainLoop(void) {
 			
 			//update all normal propertys
 			m_pkObjectMan->Update(PROPERTY_TYPE_NORMAL,PROPERTY_SIDE_ALL,false);
+			m_pkObjectMan->UpdateGameMessages();
 
 			//update physicsengine
 			m_pkPhysEngine->Update();
@@ -479,6 +481,9 @@ void ZeroFps::RunCommand(int cmdid, const CmdArgument* kCommand)
 	vector<string> kFiles;
 	vector<string> kCreditsStrings;
 	
+	GameMessage gm;
+
+
 	switch(cmdid) {
 		case FID_SETDISPLAY:
 			SetDisplay();
@@ -594,12 +599,23 @@ void ZeroFps::RunCommand(int cmdid, const CmdArgument* kCommand)
 			GetEngineCredits(kCreditsStrings);
 			for(i=0; i<kCreditsStrings.size(); i++)
 				m_pkConsole->Printf(kCreditsStrings[i].c_str());
-			
 			break;
-
 		
 		case FID_GLDUMP:
 			m_pkRender->DumpGLState();
+			break;
+
+		case FID_SENDMESSAGE:
+			if(kCommand->m_kSplitCommand.size() <= 2) {
+				m_pkConsole->Printf("sendmsg name id");
+				return;
+			}
+
+			gm.m_FromObject = -1;
+			gm.m_ToObject	= atoi(kCommand->m_kSplitCommand[2].c_str());
+			gm.m_Name		= kCommand->m_kSplitCommand[1].c_str();
+			m_pkConsole->Printf("Sending Msg '%s' to %d from %d", gm.m_Name.c_str(), gm.m_ToObject, gm.m_FromObject);
+			m_pkObjectMan->RouteMessage(gm);
 			break;
 
 		case FID_LISTMAD:

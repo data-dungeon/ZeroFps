@@ -21,6 +21,9 @@ class ENGINE_API LightProperty: public Property {
 		void Save(ZFMemPackage* pkPackage);
 		void Load(ZFMemPackage* pkPackage);
 	 
+		void TurnOn();
+		void TurnOff();
+
 	public:
 		LightProperty();
 		~LightProperty();
@@ -41,6 +44,9 @@ class ENGINE_API LightProperty: public Property {
 		inline void SetConst_Atten(float fConst_Atten) {m_pkLightSource->fConst_Atten=fConst_Atten;};
 		inline void SetLinear_Atten(float fLinear_Atten) {m_pkLightSource->fLinear_Atten=fLinear_Atten;};
 		inline void SetQuadratic_Atten(float fQuadratic_Atten) {fQuadratic_Atten=fQuadratic_Atten;};	
+
+		void	HandleGameMessage(GameMessage& Msg);
+
 };
 
 Property* Create_LightProperty();

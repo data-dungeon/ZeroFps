@@ -322,6 +322,18 @@ bool Property::HandleGetValue( string kValueName )
 	return false;
 }
 
+void Property::HandleGameMessage(GameMessage& Msg)	
+{	
+	cout << "[Property]: Recv GM: " << m_acName << ", ";
+	cout << Msg.m_ToObject << ", ";
+	cout << Msg.m_FromObject << ", ";
+	cout << Msg.m_Name;
+	cout << endl;
+
+}
+
+
+
 
 PropertyValues::PropertyValues()
 {

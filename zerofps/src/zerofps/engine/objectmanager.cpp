@@ -116,6 +116,13 @@ void ObjectManager::UpdateDelete()
 }
 
 
+void ObjectManager::UpdateGameMessages(void)
+{
+	// Let Objects/Propertys handle messages
+	for(list<Object*>::iterator it=m_akObjects.begin();it!=m_akObjects.end();it++) {
+		(*it)->HandleMessages();
+	}
+}
 
 
 
@@ -508,8 +515,33 @@ void ObjectManager::SaveGameObjects(const char* szFileName)
 
 }
 
+void ObjectManager::SendMsg()
+{
 
+}
 
+void ObjectManager::RouteMessage(GameMessage& Msg)
+{
+	Object*	pkObject = GetObjectByNetWorkID(Msg.m_ToObject);
+
+	if(pkObject == NULL) {
+		cout << "No Valid object for message" << endl;		
+		return;
+		}
+
+	pkObject->AddGameMessage(Msg);
+}
+
+/*
+Object*	ObjectManager::GetObjectByNetWorkID(int iNetID)
+{
+	for(list<Object*>::iterator it=m_akObjects.begin();it!=m_akObjects.end();it++) {
+		if((*it)->iNetWorkID == iNetID)
+			return (*it);
+	}
+
+	return NULL;
+}*/
 
 
 

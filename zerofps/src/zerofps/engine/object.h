@@ -31,11 +31,19 @@ enum UpdateStatus {
 };
 
 enum ObjectType {
-	OBJECT_TYPE_DYNAMIC,
-	OBJECT_TYPE_STATIC,
+	OBJECT_TYPE_DYNAMIC,	// Full update, Full Collision
+	OBJECT_TYPE_STATIC,	
 	OBJECT_TYPE_PLAYER,
 	OBJECT_TYPE_STATDYN,	
 	OBJECT_TYPE_DECORATION,
+};
+
+class GameMessage
+{
+public:
+	int			m_FromObject;
+	int			m_ToObject;
+	string		m_Name;
 };
 
 class ENGINE_API PropertyDescriptor{
@@ -71,6 +79,9 @@ class ENGINE_API ObjectDescriptor{
 class ENGINE_API Object {
 	private:
 		Object*				m_pkParent;							// Parent Object.
+		vector<GameMessage>	m_kGameMessages;					// Messages that are waiting to be handled by this object.
+		
+
 
 	protected:
 		Vector3				m_kPos;								// Position of object in world.
@@ -152,6 +163,11 @@ class ENGINE_API Object {
 		inline ObjectManager *GetObjectMan() {return m_pkObjectMan;};				
 		
 		bool CheckLinks(bool bCheckChilds, int iPos);		// Checks that parent/child links are ok. 
+
+		void	AddGameMessage(GameMessage& Msg);
+		void	RouteMessage(GameMessage& Msg);
+		void	HandleMessages();
+
 		// Force class to be polymorfic.
 		virtual void DoNothing() {}
 };

@@ -22,7 +22,7 @@ BallObject::BallObject() {
 	m_iObjectType=OBJECT_TYPE_DECORATION;
 
 	AddProperty("ModelProperty");
-//	AddProperty("LightProperty");
+	AddProperty("LightProperty");
 //	AddProperty("StatusProperty");
 //	AddProperty("AdaptorSniper");
 	PhysicProperty* pp=static_cast<PhysicProperty*>(AddProperty("PhysicProperty"));

@@ -148,3 +148,31 @@ void LightProperty::Load(ZFMemPackage* pkPackage)
 	//cout<<"m_pkObject->GetPos():" <<m_pkObject->GetPos().x <<endl;
 }
 
+void LightProperty::TurnOn()
+{
+	m_pkLight->Add(m_pkLightSource);
+}
+
+void LightProperty::TurnOff()
+{
+	m_pkLight->Remove(m_pkLightSource);
+}
+
+
+
+void LightProperty::HandleGameMessage(GameMessage& Msg)
+{
+	if(Msg.m_Name == "on")
+		TurnOn();
+	if(Msg.m_Name == "off")
+		TurnOff();
+
+
+	cout << "[LightProperty]: Recv GM: " << m_acName << ", ";
+	cout << Msg.m_ToObject << ", ";
+	cout << Msg.m_FromObject << ", ";
+	cout << Msg.m_Name;
+	cout << endl;
+	
+}
+

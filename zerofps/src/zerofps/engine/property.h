@@ -18,6 +18,7 @@ using namespace std;
 struct Collision;
 class Object;
 class PropertyFactory;
+class GameMessage;
 
 enum PROPERTY_TYPES{
 	PROPERTY_TYPE_ALL,
@@ -105,6 +106,9 @@ class ENGINE_API Property
 		virtual void PackFrom(NetPacket* pkNetPacket){} ;
 		virtual void Save(ZFMemPackage* pkPackage);
 		virtual void Load(ZFMemPackage* pkPackage);
+		
+		virtual void HandleGameMessage(GameMessage& Msg);
+
 		inline void SetObject(Object* pkObject){m_pkObject=pkObject;};
 		inline Object *GetObject() {return m_pkObject;};
 

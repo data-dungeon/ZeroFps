@@ -12,6 +12,7 @@ using namespace std;
 class PropertyDescriptor;
 class ObjectDescriptor;
 
+class GameMessage;
 
 class ENGINE_API ObjectManager : public ZFObject{
 	private:
@@ -52,6 +53,7 @@ class ENGINE_API ObjectManager : public ZFObject{
 		void Update(int iType,int iSide,bool bSort);					// Update selected propertys.
 		void SetUpdate(bool bUpdate) { m_bUpdate=bUpdate; };
 		void UpdateDelete();											// Deletes objects in delete qeue	
+		void UpdateGameMessages(void);
 
 			// Create 
 		Object* CreateObject(const char* acName);
@@ -92,6 +94,9 @@ class ENGINE_API ObjectManager : public ZFObject{
 
 		// Debug / Help Functions		
 		void DisplayTree();
+
+		void SendMsg();
+		void RouteMessage(GameMessage& Msg);
 };
 
 //		void Update();								//update all objects in manager

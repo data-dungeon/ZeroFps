@@ -820,7 +820,28 @@ void Object::Touch(Collision* pkCol)
 	}
 }
 
+void Object::AddGameMessage(GameMessage& Msg)
+{
+	m_kGameMessages.push_back(Msg);
+}
 
+void Object::HandleMessages()
+{
+	GameMessage Msg;
+
+	for(int i=0; i<m_kGameMessages.size(); i++) {
+		Msg = m_kGameMessages[i];
+		RouteMessage(Msg);
+		}
+
+	m_kGameMessages.clear();
+}
+
+void Object::RouteMessage(GameMessage& Msg)
+{
+	for(list<Property*>::iterator it=m_akPropertys.begin();it!=m_akPropertys.end();it++) 
+		(*it)->HandleGameMessage(Msg);
+}
 
 /*
 void Object::Update(int iType,int iSide){
