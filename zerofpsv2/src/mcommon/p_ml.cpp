@@ -14,6 +14,8 @@ P_Ml::P_Ml()
 	
 	m_iSpawn= -1;
 	m_iSpawnZon = -1;
+	
+	m_bJustSaved= false;
 }
 
 P_Ml::~P_Ml()
