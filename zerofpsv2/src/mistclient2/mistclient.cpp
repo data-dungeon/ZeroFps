@@ -103,7 +103,7 @@ void MistClient::OnInit()
 	GuiAppLua::Init(&g_kMistClient, m_pkScript);
 
 	//set window title		
-   SetTitle("MistClient - Banka och sl");
+   SetTitle("MistClient - Banka och slå");
 	
 	//set client in server mode to show gui etc
 	m_pkZeroFps->StartServer(true,false);
