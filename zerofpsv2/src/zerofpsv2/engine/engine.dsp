@@ -271,6 +271,10 @@ SOURCE=..\engine_systems\propertys\p_heightmap2.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\p_pfmesh.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\engine_systems\propertys\physicproperty.cpp
 # End Source File
 # Begin Source File
@@ -488,6 +492,10 @@ SOURCE=..\engine_systems\propertys\p_clientinput.h
 # Begin Source File
 
 SOURCE=..\engine_systems\propertys\p_heightmap2.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\p_pfmesh.h
 # End Source File
 # Begin Source File
 
