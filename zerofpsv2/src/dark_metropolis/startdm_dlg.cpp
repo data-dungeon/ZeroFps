@@ -155,6 +155,8 @@ void CStartDMDlg::PlayIntroScreen()
 
 void CStartDMDlg::Update(float fFrameTime)
 {
+	static float fViewTime = 0;
+
 	if(m_bPlayIntro && m_kApa.oka <= m_iNumPictures)
 	{
 		if(m_kApa.first)
@@ -170,11 +172,18 @@ void CStartDMDlg::Update(float fFrameTime)
 		
 		if(m_kApa.oka != m_iNumPictures)
 		{
-			if(m_fFadeOffset > 1)
+			if(m_fFadeOffset > 0.99f)
 			{
-				m_fFadeOffset = 1;
-				m_kApa.pkCurrent->Hide();
-				m_kApa.pkCurrent = NULL;
+				fViewTime += procent;
+
+				if(fViewTime > 0.99f)
+				{
+					m_fFadeOffset = 1;
+					m_kApa.pkCurrent->Hide();
+					m_kApa.pkCurrent = NULL;
+					fFrameTime = fFrameTime;
+					fViewTime = 0;
+				}
 			}
 
 			if(m_kApa.pkCurrent == NULL)
@@ -198,7 +207,8 @@ void CStartDMDlg::Update(float fFrameTime)
 		{
 			if(m_fFadeOffset > 0.98)
 			{
-				CancelIntro();
+				m_bPlayIntro = false;
+				//CancelIntro();
 			}
 		}
 
