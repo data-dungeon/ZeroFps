@@ -58,7 +58,10 @@ public:
 	static TClass* pkInstance;		\
 	static TClass* GetInstance();	\
 
-/// Tracks all Engine Sub Systems objects.
+/// 
+/**	\brief	Tracks all Engine Sub Systems objects.
+
+*/
 class BASIC_API ZFObjectManger
 {
 private:

@@ -50,7 +50,7 @@ bool Render::StartUp()
 void Render::Sphere(Vector3 kPos,float fRadius,int iRes,Vector3 kColor,bool bSolid)
 {
 	glPushAttrib(GL_ENABLE_BIT|GL_POLYGON_BIT|GL_FOG_BIT|GL_LIGHTING_BIT | GL_TEXTURE_BIT | GL_COLOR_BUFFER_BIT );
-//	glDisable(GL_LIGHTING);
+	glDisable(GL_LIGHTING);
 	glDisable(GL_COLOR_MATERIAL);	
 	glDisable(GL_TEXTURE_2D);
 	
@@ -67,7 +67,7 @@ void Render::Sphere(Vector3 kPos,float fRadius,int iRes,Vector3 kColor,bool bSol
 	
 	glPushMatrix();
 		glTranslatef(kPos.x,kPos.y,kPos.z);
-//		glutSolidSphere(fRadius, iRes, iRes);
+		glutSolidSphere(fRadius, iRes, iRes);
 	glPopMatrix();
 	
 

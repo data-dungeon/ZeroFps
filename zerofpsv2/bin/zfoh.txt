@@ -6,5 +6,5 @@ class object
 	
 	class ZeroRTSTestBox
 		parent object
-		set MadProperty m_kMadFile /data/mad/adaptor.mad
+		set MadProperty m_kMadFile /data/mad/Helmet.mad
 	

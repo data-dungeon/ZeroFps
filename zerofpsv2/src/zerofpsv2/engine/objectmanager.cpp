@@ -162,7 +162,9 @@ void ObjectManager::UpdateGameMessages(void)
 // Create 
 Object* ObjectManager::CreateObject()
 {
-	return new Object;
+	Object* pkObj = new Object;
+//	pkObj->AddProperty("ModelProperty");
+	return pkObj;
 }
 
 Object* ObjectManager::CreateObject(const char* acName)

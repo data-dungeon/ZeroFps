@@ -11,7 +11,11 @@ using namespace std;
 
 class ZFVFileSystem;
 
-/// A Open File in the VFS
+/**	\brief	A Open File in the VFS
+
+This class is used to describe a file in the ZFPS Virtual File Systems (VFS).
+It should be used to open all files the ZeroFPS uses. 
+*/
 class BASIC_API ZFVFile
 {
 private:
@@ -36,7 +40,10 @@ public:
 
 /**	\brief	ZeroFps Virtual File Systems.
 
-The VFS 
+The VFS should be used for all file operations i ZeroFPS. Use ZFVFile to open and
+close files with it.
+
+The VFS can be set to many root paths. The base one is one step above the exe file.
 */
 
 class BASIC_API ZFVFileSystem : public ZFSubSystem 

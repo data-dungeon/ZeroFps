@@ -14,6 +14,7 @@ ModelProperty::ModelProperty() {
 	m_kColor.Set(1,1,1);
 	
 	m_pkRender=static_cast<Render*>(g_ZFObjSys.GetObjectPtr("Render"));	
+	m_pkFps=static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));	
 }
 
 
@@ -21,8 +22,8 @@ void ModelProperty::Update() {
 //	Vector4 sphere=m_pkObject->GetPos();
 //	sphere.w=m_fRadius;
 	
-	if(!m_pkFps->GetCam()->m_kFrustum.SphereInFrustum(m_pkObject->GetPos(),m_fRadius))
-		return;
+//	if(!m_pkFps->GetCam()->m_kFrustum.SphereInFrustum(m_pkObject->GetPos(),m_fRadius))
+//		return;
 
 
 	m_pkRender->Sphere(m_pkObject->GetIPos(),m_fRadius,m_iSlices,m_kColor,true);

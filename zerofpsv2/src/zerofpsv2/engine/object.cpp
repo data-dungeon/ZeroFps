@@ -44,6 +44,7 @@ Object::Object() {
 	m_bSave					=	true;
 	m_pkParent				=	NULL;
 	m_akChilds.clear();	
+
 }
 
 Object::~Object() 

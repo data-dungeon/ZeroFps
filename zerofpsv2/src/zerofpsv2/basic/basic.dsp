@@ -144,6 +144,10 @@ SOURCE=.\simplescript.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\vector2.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\vector3.cpp
 # End Source File
 # Begin Source File
@@ -265,6 +269,10 @@ SOURCE=.\rect.h
 # Begin Source File
 
 SOURCE=.\simplescript.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\vector2.h
 # End Source File
 # Begin Source File
 

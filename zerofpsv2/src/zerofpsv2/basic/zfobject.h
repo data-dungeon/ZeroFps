@@ -57,7 +57,25 @@ public:
 	void Set(const char* szCmdArgs);
 };
 
-/// Base class for all engine sub systems like graphic, audio, input...
+/**	\brief	Base class for all engine sub systems like graphic, audio, input.
+
+This class is the base for all engine subsystems. A engine subsystem is a single object 
+in the engine that is used in many other places. All Subsystems can be accessed by using
+the ZFObjectManger. A subsystem can make its variables changeable from the console and
+other places and also respond to commands sent from console, cmd line and init files.
+
+The create a subsystem one need to create the following functions:
+
+Constructor:	Init variables, register variables and commands. Do NOT acces any other
+					subsystem.
+StartUp:			Get Ptr's to other subsystems we will use. Startup ourself
+ShutDown:		Sutdown ourself.
+Destructor:		
+
+RunCommand:		This is used to handles the commands that we have registred. Evey commands
+					is registred by a name and i sent to us as a Int ID that we can specify when
+					we registred it.
+*/
 class BASIC_API ZFSubSystem
 {
 private:

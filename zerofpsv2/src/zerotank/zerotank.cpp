@@ -32,28 +32,8 @@ void ZeroTank::OnInit()
 	//run autoexec script
 	if(!pkIni->ExecuteCommands("zerotank_autoexec.ini"))
 		pkConsole->Printf("No game_autoexec.ini.ini found");
-		
 
-//	m_pkTestMod.SetBasePtr("data/mad/rts/unit/tankl.mad");
-	
-	
-
-	Object* pk0 = pkObjectMan->CreateObjectByArchType("ZeroRTSSpawnPoint");
-	if(pk0) {
-		pk0->SetPos(Vector3(0,0,0));
-		pk0->AttachToClosestZone();
-		}
-
-	Object* pk1 = pkObjectMan->CreateObjectByArchType("ZeroRTSSpawnPoint");
-	if(pk1) {
-		pk1->SetPos(Vector3(30,0,0));
-		pk1->AttachToClosestZone();
-	}
-/*
-	Object* pk2 = pkObjectMan->CreateObjectByArchType("ZeroRTSSpawnPoint");
-	pk2->SetPos(Vector3(60,0,0));
-	pk2->AttachToClosestZone();*/
-
+	// Moved oject creation to OnServerStart
 }
 
 void ZeroTank::Init()
@@ -81,7 +61,7 @@ void ZeroTank::Init()
 	pkLevelMan->SetVisibleZones(false);
 
 	m_pkMap2 = new Heightmap2(/*"HeightMap"*/);
-	m_pkMap2->CreateHMFromImage("test.tga");
+	m_pkMap2->CreateHMFromImage("/data/textures/hmap.tga");
 
 	//register actions bös
 	RegisterActions();
@@ -347,6 +327,20 @@ void ZeroTank::SetupSpawnPoints()
 
 void ZeroTank::OnServerStart(void)
 {		
+
+	Object* pk0 = pkObjectMan->CreateObjectByArchType("ZeroRTSSpawnPoint");
+	if(pk0) {
+		pk0->SetPos(Vector3(0,0,0));
+		pk0->AttachToClosestZone();
+		}
+
+	Object* pk1 = pkObjectMan->CreateObjectByArchType("ZeroRTSTestBox");
+	if(pk1) {
+		pk1->SetPos(Vector3(30,0,0));
+		pk1->AttachToClosestZone();
+	}
+
+
 	//add server info property
 	if(!pkObjectMan->GetObject("A ServerInfoObject"))
 	{
