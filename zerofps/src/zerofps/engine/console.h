@@ -14,7 +14,7 @@ class ZeroFps;
 //max lenght of an entered command
 #define COMMAND_LENGHT 31
 
-class RENDER_API Console {
+class ENGINE_API Console {
 	private:
 		ZeroFps* m_pkEngine;		
 		CmdSystem* m_pkCmd;

@@ -186,11 +186,12 @@ void Render::DrawHM(HeightMap *kmap) {
 	Vector3 p3;
 	Vector3 p4;
 //	glTranslatef(0,0,0);
-	
+
 //	SetColor(Vector3(255,255,255));
-	glScalef(0.5,.5,.5);
+//	glScalef(0.5,.5,.5);
 	
 	m_pkTexMan->BindTexture("file:../data/textures/grass.bmp");
+//	m_pkTexMan->BindTexture(0);
 	
 	for(int z=0;z<HM_SIZE-1;z++){
 		for(int x=0;x<HM_SIZE-1;x++) {
@@ -200,7 +201,7 @@ void Render::DrawHM(HeightMap *kmap) {
 			p4=Vector3(x+1,kmap->verts[(z+1)*HM_SIZE+x+1].height,-z-1);
 					
 	    glBegin(GL_QUADS);			
-//				glColor4f(1.0,1.0,1.0,1.0);  	  
+//			glColor4f(1.0,1.0,1.0,1.0);  	  
 //  		  glNormal3f(0,1,0);
     		glTexCoord2f(0.0,0.0);glVertex3fv((float*)&p1);		 
 	   		glTexCoord2f(1.0,0.0);glVertex3fv((float*)&p2);		

@@ -24,9 +24,10 @@ void Test::OnIdle(void) {
 	
 	cout<<pkFps->m_iFps<<endl;
 	
-	for(int i=2;i<60;i++)
-		pkRender->Pyra(sin(pkFps->GetTicks()/1000.0*i/2)*2,cos(pkFps->GetTicks()/1000.0*i/2)*2,-i/2);
+//	for(int i=2;i<60;i++)
+//		pkRender->Pyra(sin(pkFps->GetTicks()/1000.0*i/2)*2,cos(pkFps->GetTicks()/1000.0*i/2)*2,-i/2);
 
+//	pkRender->Pyra(0,0,0);
 
 }
 

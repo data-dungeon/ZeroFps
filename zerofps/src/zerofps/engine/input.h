@@ -53,7 +53,7 @@ enum Buttons {
 
 };
 
-class Input {
+class ENGINE_API Input {
 		bool m_akButtonList[400];
 		SDL_Event m_kEvent;
 		unsigned int m_iGrabtime;
