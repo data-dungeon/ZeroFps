@@ -37,6 +37,15 @@ class ENGINE_API Application {
 
 int ENGINE_API EngineStart(int iNrOfArgs, char* paArgs[]);
 
+#ifdef _MAINAPPLICATION_
+	#ifndef _MAINFUNKTION_
+		#define _MAINFUNKTION_
+		int main(int iNrOfArgs, char* paArgs[])
+		{
+			return EngineStart(iNrOfArgs, paArgs);
+		}
+	#endif	
+#endif
 
 
 #endif

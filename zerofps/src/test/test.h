@@ -1,10 +1,12 @@
 #ifndef _TEST_H_
 #define _TEST_H_
 
+#define _MAINAPPLICATION_
 
 #include <iostream>
 #include <cmath>
 #include "../zerofps/engine/application.h"
+
 
 class Test :public Application {
 	
