@@ -108,6 +108,10 @@ SOURCE=.\p_ml.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\p_serverinfo.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\si_mistland.cpp
 # End Source File
 # End Group
@@ -129,6 +133,10 @@ SOURCE=.\p_event.h
 # Begin Source File
 
 SOURCE=.\p_ml.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\p_serverinfo.h
 # End Source File
 # Begin Source File
 
@@ -173,6 +181,10 @@ SOURCE=.\rulesystem\character\statcounter.h
 # Begin Group "item"
 
 # PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=.\rulesystem\item\itemdatabase.cpp
+# End Source File
 # Begin Source File
 
 SOURCE=.\rulesystem\item\itemdatabase.h

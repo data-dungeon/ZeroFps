@@ -1041,9 +1041,11 @@ void ZeroFps::Connect(int iConnectionID)
 	m_kClient[iConnectionID].m_pkObject->SetWorldPosV(Vector3(0,0,2));
 
 	// Connect all client objects to top level object,
-	m_kClient[iConnectionID].m_pkObject->SetParent(m_pkObjectMan->GetWorldObject());
+	m_kClient[iConnectionID].m_pkObject->SetParent(m_pkObjectMan->m_pkClientObject);	// GetWorldObject()
 	//m_kClient[iConnectionID].m_pkObject->AttachToClosestZone();
 	
+	
+
 	m_kClient[iConnectionID].m_fConnectTime = GetEngineTime();
 
 	m_pkConsole->Printf("Player Object %d", m_kClient[iConnectionID].m_pkObject->iNetWorkID);

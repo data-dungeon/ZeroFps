@@ -643,7 +643,7 @@ void ObjectManager::PackToClients()
 
 	if(m_pkZeroFps->m_bClientMode && !m_pkZeroFps->m_bServerMode) {
 		m_pkWorldObject->GetAllObjects(&kObjects);
-		//PackToClient(0, kObjects);
+		PackToClient(0, kObjects);
 		m_pkNetWork->SendToAllClients(&NP);
 		cout << "Sending ClientData" << endl;
 		return;
@@ -656,6 +656,12 @@ void ObjectManager::PackToClients()
 		// Get Ptr to clients tracker.
 		TrackProperty* pkTrack = dynamic_cast<TrackProperty*>(m_pkZeroFps->m_kClient[iClient].m_pkObject->GetProperty("TrackProperty"));
 
+		// Pack and Send CLient Objects
+		kObjects.clear();
+		m_pkClientObject->GetAllObjects(&kObjects);
+		cout << "Num Of Object To Send: " << kObjects.size() << endl;
+		PackToClient(iClient, kObjects);
+
 		// Loop all zones activated by client.
 		for(set<int>::iterator itActiveZone = pkTrack->m_iActiveZones.begin(); itActiveZone != pkTrack->m_iActiveZones.end(); itActiveZone++ ) {
 			// Get Zone and all subobjects.
@@ -666,6 +672,8 @@ void ObjectManager::PackToClients()
 			kObjects.clear();
 			pkZone->GetAllObjects(&kObjects);
 			PackToClient(iClient, kObjects);
+
+			
 
 			/*for(int iObj=0; iObj < kObjects.size(); iObj++)	{
 				pkPackObj = kObjects[iObj];
