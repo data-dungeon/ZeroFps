@@ -415,7 +415,7 @@ bool PlayerControlProperty::PickUp(Object* pkObject)
 
 void PlayerControlProperty::Drop(Object *pkObject)
 {
-	Vector3 kPos = m_pkObject->GetPos() + (m_pkObject->GetRot().AToU() *1);
+	Vector3 kPos = m_pkObject->GetPos() + (m_pkObject->GetRot().AToU() *2);
 
 	pkObject->GetPos() = kPos;
 	pkObject->SetPos(kPos);	

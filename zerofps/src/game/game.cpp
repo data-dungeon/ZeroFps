@@ -536,11 +536,14 @@ void Game::LockPlayerCamera(bool bLock)
 	{
 		pkInput->MouseXY(prev_x, prev_y);
 		bSet = false;
+		cout<<"getting y "<<prev_y<<endl;
 	}
 	
 	if(bLock == false && bSet == false)
 	{
 		pkInput->SetCursorInputPos(prev_x, prev_y);
+		
+		cout<<"setting y "<<prev_y<<endl;
 		bSet = true;
 	}
 

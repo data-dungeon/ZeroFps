@@ -12,6 +12,7 @@
 #include <SDL/SDL_image.h>
 #include "render_x.h"
 #include "../ogl/zfpsgl.h"
+#include <bitset>
 
 using namespace std;
 
@@ -32,6 +33,8 @@ struct texture
 	bool m_bMipMapping;		// True if we would like to have mipmapping.
 	bool m_bCompression;
 	bool b_bClamp;			// Texture Clamping.
+
+	bitset<20>	m_abLevels;		//level x is true if mipmap level is loaded	
 };
 
 /// Handles all textures in the game. Texture can be refered to by name
@@ -62,6 +65,7 @@ class RENDER_API TextureManager : public ZFObject {
 	public:
 		TextureManager(FileIo* pkFile);
 		int Load(const char* acFileName,int iOption);		
+		bool AddMipMapLevel(int iLevel,const char* acNewFile);
 		void BindTexture(int iTexture);
 		void BindTexture(const char* acFileName,int iOption);
 		void ClearAll();

@@ -69,14 +69,14 @@ bool TextureManager::LoadTexture(texture *pkTex,const char *acFilename) {
 	
 	SDL_Surface *image;
 
-  image= LoadImage(acFilename);
-  if(!image) {    
-    return false;
-  };
+	image= LoadImage(acFilename);
+	if(!image) {    
+   	return false;
+	};
   
 
-  glGenTextures(1,&pkTex->index);
-  glBindTexture(GL_TEXTURE_2D,pkTex->index);
+	glGenTextures(1,&pkTex->index);
+	glBindTexture(GL_TEXTURE_2D,pkTex->index);
 
 	if(pkTex->b_bClamp){
 		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_CLAMP);
@@ -98,6 +98,8 @@ bool TextureManager::LoadTexture(texture *pkTex,const char *acFilename) {
   
   glBindTexture(GL_TEXTURE_2D,0);
   m_iCurrentTexture = NO_TEXTURE;
+  
+  	SDL_FreeSurface(image); ;
 
   return true;
 }
@@ -292,6 +294,43 @@ void TextureManager::ReloadAll(void)
 
 	}
 	
+}
+
+bool TextureManager::AddMipMapLevel(int iLevel,const char* acNewFile)
+{
+	
+	//check if level already is loaded then return false
+	if(m_iTextures[m_iCurrentTexture]->m_abLevels.test(iLevel))
+		return false;
+
+		
+	GLint iInternalFormat=GL_RGB;
+	GLint iFormat=GL_BGR;
+	
+	//use sdlimage to load texture
+	SDL_Surface *image;
+	image= LoadImage(acNewFile);	
+	if(!image) {    
+   	return false;
+	};
+	
+	//enable mipmaping on curent texture
+	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);		
+	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR_MIPMAP_LINEAR);  
+	
+	//load texture to opengl from sdl surface *image
+	glTexImage2D(GL_TEXTURE_2D,iLevel,iInternalFormat,image->w,image->h,0,iFormat,GL_UNSIGNED_BYTE,image->pixels);
+
+	//frea sdlsurface
+	SDL_FreeSurface(image); 
+
+	cout<<"Added "<<acNewFile<<" as mipmap level "<<iLevel<<" for curent texture"<<endl;
+
+	//set the level bit
+	m_iTextures[m_iCurrentTexture]->m_abLevels.flip(iLevel);
+	
+	
+	return true;
 }
 
 void TextureManager::RunCommand(int cmdid, const CmdArgument* kCommand)

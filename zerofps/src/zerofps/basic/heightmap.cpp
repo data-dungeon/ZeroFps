@@ -38,7 +38,7 @@ void HeightMap::Create(int iHmSize)
 	SetTileSet("file:../data/textures/landbw.bmp");
 	
 	ClearSet();
-	AddSet("file:../data/textures/detail1.bmp","FEL");
+	AddSet("file:../data/textures/nodetail1.bmp","file:../data/textures/detail1.bmp","FEL");
 }
 
 void HeightMap::Zero() {
@@ -516,10 +516,11 @@ void HeightMap::RunCommand(int cmdid, const CmdArgument* kCommand)
 
 }
 
-void HeightMap::AddSet(const char* acTexture,const char* acMask)
+void HeightMap::AddSet(const char* acTexture,const char* acDetailTexture,const char* acMask)
 {
 	TileSet temp;
 	strcpy(temp.m_acTexture,acTexture);
+	strcpy(temp.m_acDetailTexture,acDetailTexture);	
 	strcpy(temp.m_acMask,acMask);
 	
 	m_kSets.push_back(temp);

@@ -16,13 +16,16 @@
 #include <vector>
 #include <string>
 
+
+
 #define HEIGHTMAP_SCALE 2
 
 struct BASIC_API HM_vert {
-	float height;	//land height
-	Vector3 normal;
-	int texture;	//what texture to use
-	Vector3 color;
+	float			height;		//land height
+	Vector3		normal;
+	int			texture;		//what texture to use
+	Vector3		color;
+
 
 //	HM_vert *childs[8];
 };
@@ -33,6 +36,7 @@ struct HM_fileheader {
 
 struct TileSet{
 	char m_acTexture[256];
+	char m_acDetailTexture[256];
 	char m_acMask[256];
 };
 
@@ -74,7 +78,7 @@ class BASIC_API HeightMap: public ZFObject {
 		HM_vert* GetVert(int x,int z);		
 		
 		int GetSize(){return m_iHmSize*HEIGHTMAP_SCALE;};
-		void AddSet(const char* acTexture,const char* acMask);
+		void AddSet(const char* acTexture,const char* acDetailTexture,const char* acMask);
 		void ClearSet();
 };
 

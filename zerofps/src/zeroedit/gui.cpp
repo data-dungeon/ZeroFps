@@ -243,7 +243,7 @@ bool Gui::CreateWindows()
 
 	//m_pkEdit->pkGui->Resize(1024,768,m_pkEdit->m_iWidth,m_pkEdit->m_iHeight);
 
-	CreateTestWnd();
+	//CreateTestWnd();
 
 	return true;
 }

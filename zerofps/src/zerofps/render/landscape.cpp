@@ -747,20 +747,19 @@ void Render::DrawHMLodSplat(HeightMap* kMap,Vector3 CamPos,int iFps)
 	glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE);	
 	
 	
-	//Draw default texture
+	//Draw default texture	
 	m_pkTexMan->BindTexture(kMap->m_kSets[0].m_acTexture,0);
+	m_pkTexMan->AddMipMapLevel(0,kMap->m_kSets[0].m_acDetailTexture);	
 	
-//	glNewList(m_iHmTempList,GL_COMPILE);
+	
 	DrawAllHM(kMap,CamPos);
-//	glEndList();			
-//	glCallList(m_iHmTempList);		
-		
+
 		
 	//set blending
 	glDepthFunc(GL_EQUAL);
 	glEnable(GL_BLEND);		
 	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);				
-		
+
 	
 	//enable TU0 again
 	glActiveTextureARB(GL_TEXTURE0_ARB);	
@@ -774,10 +773,9 @@ void Render::DrawHMLodSplat(HeightMap* kMap,Vector3 CamPos,int iFps)
 		
 		glActiveTextureARB(GL_TEXTURE1_ARB);
 		m_pkTexMan->BindTexture(kMap->m_kSets[i].m_acTexture,0);		
+		m_pkTexMan->AddMipMapLevel(0,kMap->m_kSets[i].m_acDetailTexture);					
 		
 		DrawAllHM(kMap,CamPos);	
-//		glCallList(m_iHmTempList);
-
 	}
 
 

@@ -261,7 +261,6 @@ void ZeroFps::Run_Client()
 
 void ZeroFps::Update_System()
 {
-
 	float fATime = GetTicks() - m_fSystemUpdateTime; 	
 	int iLoops = int(m_fSystemUpdateFps * fATime);
 

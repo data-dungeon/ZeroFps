@@ -178,10 +178,10 @@ bool LevelManager::LoadLevel(const char* acFile)
 	
 	//load textures
 	m_pkMap->ClearSet();
-	m_pkMap->AddSet("../data/textures/detail1.bmp","FEL");
-	m_pkMap->AddSet("../data/textures/detail2.bmp",(kBase+"mask1.tga").c_str());
-	m_pkMap->AddSet("../data/textures/detail3.bmp",(kBase+"mask2.tga").c_str());		
-	m_pkMap->AddSet("../data/textures/detail4.bmp",(kBase+"mask3.tga").c_str());	
+	m_pkMap->AddSet("../data/textures/nodetail1.bmp","../data/textures/detail1.bmp","FEL");
+	m_pkMap->AddSet("../data/textures/nodetail2.bmp","../data/textures/detail2.bmp",(kBase+"mask1.tga").c_str());
+	m_pkMap->AddSet("../data/textures/nodetail3.bmp","../data/textures/detail3.bmp",(kBase+"mask2.tga").c_str());		
+	m_pkMap->AddSet("../data/textures/nodetail4.bmp","../data/textures/detail4.bmp",(kBase+"mask3.tga").c_str());	
 	
 	
 	//create zoneobjects
