@@ -399,7 +399,7 @@ void Object::PackTo(NetPacket* pkNetPacket)
 	// Loop all properys med Propery::bNetwork = true
 	for(list<Property*>::iterator it=m_akPropertys.begin();it!=m_akPropertys.end();it++) {
 		if((*it)->bNetwork) {
-			cout << "Object::PackTo : " << (*it)->m_acName << endl;
+			//cout << "Object::PackTo : " << (*it)->m_acName << endl;
 			strcpy(szPropertyName, (*it)->m_acName);
 			pkNetPacket->Write_Str((*it)->m_acName);
 			Property* hora = (*it);

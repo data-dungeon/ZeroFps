@@ -279,8 +279,9 @@ bool WorkPanelDlg::DlgProc( ZGuiWnd* pkWnd, unsigned int uiMessage,
 			}
 			break;
 		case ID_CREATEMADFILE_BN:
-			Object *pkNewObject; 
-			pkNewObject = new BallObject();					
+			Object *pkNewObject;
+			//pkNewObject = new BallObject();					
+			pkNewObject = m_pkEdit->pkObjectMan->CreateObject();	//  new BallObject();					
 			pkNewObject->SetPos(m_pkEdit->m_kDrawPos);	
 			pkNewObject->SetPos(m_pkEdit->m_kDrawPos);					
 			
