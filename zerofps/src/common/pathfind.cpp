@@ -55,13 +55,13 @@ bool PathFind::Rebuild(int iStartPosX, int iStartPosY, int iDestPosX, int iDestP
 	for(int y=1; y<m_siMapWidth+1; y++)
 		for(int x=1; x<m_siMapWidth+1; x++)
 		{
-/*			Tile* pkTile = TileEngine::m_pkInstance->GetTile(x-1,y-1);
+			Tile* pkTile = TileEngine::m_pkInstance->GetTile(x-1,y-1);
 			if( pkTile != NULL && pkTile->kUnits.size() > 0)
-				TEMP_TERRAIN[y*m_siMapWidth+x] = BLOCKED_VALUE;*/
+				TEMP_TERRAIN[y*m_siMapWidth+x] = BLOCKED_VALUE;
 
-			unsigned int offset = ((y-1)*m_siMapWidth)+(x-1);
-			if(/*offset < array_size && */!(*pkTiles)[offset].kUnits.empty())
-				TEMP_TERRAIN[offset] = BLOCKED_VALUE;
+	/*		unsigned int offset = ((y-1)*m_siMapWidth)+(x-1);
+			if(!(*pkTiles)[offset].kUnits.empty())
+				TEMP_TERRAIN[offset] = BLOCKED_VALUE;*/
 		}
 
 	if(ImpossibleToReach(iStartPosX, iStartPosY, iDestPosX, iDestPosY))
