@@ -75,7 +75,7 @@ MistServer::MistServer(char* aName,int iWidth,int iHeight,int iDepth)
 
 void MistServer::CreateEditCameras()
 {
-	m_pkActiveCameraObject = m_pkEntityManager->CreateEntityFromScript("data/script/objects/t_camedit.lua");
+	m_pkActiveCameraObject = m_pkEntityManager->CreateEntityFromScript("data/script/objects/cameraedit.lua");
 	if(m_pkActiveCameraObject) 
 	{
 		m_pkActiveCameraObject->SetParent( m_pkEntityManager->GetWorldEntity() );
