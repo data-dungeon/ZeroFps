@@ -1317,21 +1317,27 @@ bool ZGui::LoadDialog(char* szResourceFile, char* szWndResName, callback cb)
 				((ZGuiButton*) pkNewWnd)->SetButtonHighLightSkin(new ZGuiSkin());
 				break;
 			case COMBOBOX:
-				pkNewWnd = new ZGuiCombobox(rc,pkParent,bVisible,wnd_id,20,
-					new ZGuiSkin(),new ZGuiSkin(),new ZGuiSkin(),new ZGuiSkin());
-				((ZGuiCombobox*)pkNewWnd)->SetScrollbarSkin(
-					new ZGuiSkin(),new ZGuiSkin(),new ZGuiSkin());
-				
-				int iNumVisRows;
-				iNumVisRows = atoi(pkINI->GetValue(vkSections[i].c_str(),
-					"num_visible_rows"));
-				((ZGuiCombobox*)pkNewWnd)->SetNumVisibleRows(iNumVisRows); 
+				{
+					pkNewWnd = new ZGuiCombobox(rc,pkParent,bVisible,wnd_id,20,
+						new ZGuiSkin(),new ZGuiSkin(),new ZGuiSkin(),new ZGuiSkin());
+					((ZGuiCombobox*)pkNewWnd)->SetScrollbarSkin(
+						new ZGuiSkin(),new ZGuiSkin(),new ZGuiSkin());
+					
+					char* szRows = pkINI->GetValue(vkSections[i].c_str(),
+						"num_visible_rows");
 
-				int iIsMenu;
-				iIsMenu = atoi(pkINI->GetValue(vkSections[i].c_str(),
-					"is_menu"));
-				((ZGuiCombobox*)pkNewWnd)->IsMenu(iIsMenu == 1); 
+					if(szRows)
+					{
+						int iNumVisRows;
+						iNumVisRows = atoi(szRows);
+						((ZGuiCombobox*)pkNewWnd)->SetNumVisibleRows(iNumVisRows); 
+					}
 
+					int iIsMenu;
+					iIsMenu = atoi(pkINI->GetValue(vkSections[i].c_str(),
+						"is_menu"));
+					((ZGuiCombobox*)pkNewWnd)->IsMenu(iIsMenu == 1); 
+				}
 				break;
 			default:
 				continue;
