@@ -19,6 +19,8 @@ class ENGINE_SYSTEMS_API P_HMRP2: public Property
 		Render*				m_pkRender;	
 		Light*				m_pkLight;	
 		
+		LightProfile		m_kLightProfile;				//used for lighting
+		
 		vector<PropertyValues> GetPropertyValues();
 
 	public:

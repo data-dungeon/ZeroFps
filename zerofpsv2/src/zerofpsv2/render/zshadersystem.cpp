@@ -113,26 +113,10 @@ void ZShaderSystem::Push(const char* czNote)
 	glMatrixMode(GL_MODELVIEW);
 	glPushMatrix();
 
-	//disable all texture units
-	glActiveTextureARB(GL_TEXTURE3_ARB);	
-	glClientActiveTextureARB(GL_TEXTURE3_ARB);		
-	glDisable(GL_TEXTURE_2D);	
-
-	glActiveTextureARB(GL_TEXTURE2_ARB);	
-	glClientActiveTextureARB(GL_TEXTURE2_ARB);		
-	glDisable(GL_TEXTURE_2D);	
-
-	glActiveTextureARB(GL_TEXTURE1_ARB);	
-	glClientActiveTextureARB(GL_TEXTURE1_ARB);		
-	glDisable(GL_TEXTURE_2D);	
-
-	glActiveTextureARB(GL_TEXTURE0_ARB);	
-	glClientActiveTextureARB(GL_TEXTURE0_ARB);		
-	glEnable(GL_TEXTURE_2D);	
 	
-	//disable gpu programs
-	glDisable(GL_FRAGMENT_PROGRAM_ARB);
-	glDisable(GL_VERTEX_PROGRAM_ARB);
+	//load empty material
+	BindMaterial(&m_kEmptyMaterial);
+
 	
 	m_iPushPop ++;		
 }
@@ -149,9 +133,6 @@ void ZShaderSystem::Pop()
 	glPopMatrix();
 	glMatrixMode(GL_MODELVIEW);
 	glPopMatrix();
-
-
-	ReloadMaterial();
 	
 	m_iPushPop--;
 }

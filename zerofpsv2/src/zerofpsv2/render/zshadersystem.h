@@ -181,7 +181,10 @@ class RENDER_API ZShaderSystem : public ZFSubSystem
 		Light*				m_pkLight;	
 		
 		//current selected material
-		ZMaterial*			m_pkCurrentMaterial;
+		ZMaterial*		m_pkCurrentMaterial;
+		
+		//empty material, used when pushing 
+		ZMaterial		m_kEmptyMaterial;
 
 		//hardware shader data
 		bool				m_bSupportVertexProgram;

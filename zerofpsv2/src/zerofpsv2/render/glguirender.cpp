@@ -66,8 +66,6 @@ bool GLGuiRender::SetDisplay(int w, int h)
 bool GLGuiRender::StartRender(bool bClear)
 {
 	//binds a default material, so all gl settings is the same each time gui is rendered
-	static ZMaterial kEmptyMaterial;	
-	m_pkShader->BindMaterial(&kEmptyMaterial);
 	
 	//pushes all settings for the material system, 
 	m_pkShader->Push("gui");

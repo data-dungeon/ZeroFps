@@ -1884,6 +1884,7 @@ void ZeroFps::AddHMProperty(Entity* pkEntity, int iNetWorkId, Vector3 kZoneSize)
 	if(!pkEntity)										return;
 	if(pkEntity->GetProperty("P_HMRP2"))		return;
 
+	
 	// Create a new Hmap and add it.
 	HeightMap* pkMap = new HeightMap;
 	pkMap->SetID(iNetWorkId);
@@ -1891,9 +1892,15 @@ void ZeroFps::AddHMProperty(Entity* pkEntity, int iNetWorkId, Vector3 kZoneSize)
 	//pkMap->Random();
 
 	// Create a new Hmrp and set hmap and add it to Entity.
-	P_HMRP2* pkhmrp2 = new P_HMRP2();
-	pkhmrp2->SetHeightMap(pkMap, "Spya");
-	pkEntity->AddProperty(pkhmrp2);
+	if(P_HMRP2* pkhmrp2 = (P_HMRP2*)pkEntity->AddProperty("P_HMRP2"))
+	{
+		pkhmrp2->SetHeightMap(pkMap, "Spya");	
+	}
+	
+// 	P_HMRP2* pkhmrp2 = new P_HMRP2();
+// 	pkhmrp2->SetHeightMap(pkMap, "Spya");
+// 	pkEntity->AddProperty(pkhmrp2);
+
 	P_Tcs* pp = (P_Tcs*)pkEntity->GetProperty("P_Tcs");
 	if(!pp)
 	{

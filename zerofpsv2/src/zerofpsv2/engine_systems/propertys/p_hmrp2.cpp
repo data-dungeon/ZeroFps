@@ -11,11 +11,12 @@ P_HMRP2::P_HMRP2()
 	m_pkRender	=	static_cast<Render*>(g_ZFObjSys.GetObjectPtr("Render"));		
 	m_pkLight   =	static_cast<Light*>(g_ZFObjSys.GetObjectPtr("Light"));	
 
-	SetHeightMap(NULL,string(""));
 	
 	m_iType	=	PROPERTY_TYPE_RENDER;
 	m_iSide	=	PROPERTY_SIDE_CLIENT;
 	m_bNetwork	=	true;
+	
+	SetHeightMap(NULL,string(""));
 }
 
 P_HMRP2::~P_HMRP2()
@@ -26,6 +27,8 @@ P_HMRP2::~P_HMRP2()
 
 void P_HMRP2::SetHeightMap(HeightMap* pkHeightMap, string strMapName)
 {
+	cout<<"SETTING HMAP"<<endl;
+
 	m_pkHeightMap	=	pkHeightMap;	
 	m_strMapName	=	strMapName;
 }
@@ -40,15 +43,20 @@ void P_HMRP2::Init()
 	char szFileName[256];
 	sprintf(szFileName, "%s/hm%d", m_pkEntity->m_pkEntityManager->GetWorldDir().c_str(), m_pkEntity->GetEntityID());
 	m_strMapName = szFileName;
+	
 }
 
 void P_HMRP2::Update() 
 {	
+	
 	//cout << "Render HMAP" << endl; 
-	if(m_pkHeightMap!=NULL)
+	if(m_pkHeightMap)
 	{
+		
 		m_pkHeightMap->SetPosition(m_pkEntity->GetWorldPosV());
-		m_pkLight->Update(m_pkEntity->GetWorldPosV());
+		
+		m_pkLight->Update(&m_kLightProfile,GetEntity()->GetWorldPosV());					
+// 		m_pkLight->Update(m_pkEntity->GetWorldPosV());
 		m_pkRender->DrawHMLodSplat(m_pkHeightMap,m_pkZeroFps->GetCam()->GetPos(),int(m_pkZeroFps->m_fFps));
 		//m_pkRender->DrawNormals(m_pkHeightMap,m_pkEntity->GetWorldPosV(),int(m_pkZeroFps->m_fFps));
 	}

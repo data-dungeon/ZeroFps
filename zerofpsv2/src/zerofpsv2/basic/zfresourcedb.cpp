@@ -37,9 +37,12 @@ ZFResourceHandle::ZFResourceHandle()
 
 ZFResourceHandle::ZFResourceHandle(const ZFResourceHandle& kOther)
 {
+	m_pkResDB = static_cast<ZFResourceDB*>(g_ZFObjSys.GetObjectPtr("ZFResourceDB"));
+	
 	m_iHandleID = g_iResourceHandleID ++;
 	m_iID = -1;
 	m_pkResource = NULL;
+	
 	SetRes(kOther.m_strName);
 }
 

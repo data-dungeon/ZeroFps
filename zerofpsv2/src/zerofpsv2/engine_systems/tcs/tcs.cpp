@@ -912,7 +912,7 @@ void Tcs::UpdateCollissions(vector<Tcs_collission*>*	pkCollissions)
 			//increse number of tests
 			m_iNrOfTests++;
 
-												
+			
 			if(((pkBody1->m_iTestType==E_BOX) && (pkBody2->m_iTestType==E_MESH)) || 
 				((pkBody1->m_iTestType==E_MESH) && (pkBody2->m_iTestType==E_BOX)))
 			{
@@ -930,7 +930,8 @@ void Tcs::UpdateCollissions(vector<Tcs_collission*>*	pkCollissions)
 				TestMeshVsMesh(pkBody1,pkBody2,pkCollissions);
 			}
 			
-			else if( (pkBody1->m_iTestType==E_MESH) || (pkBody2->m_iTestType==E_MESH))
+			else if( ((pkBody1->m_iTestType==E_MESH) && (pkBody2->m_iTestType==E_SPHERE)) ||
+						((pkBody2->m_iTestType==E_MESH) && (pkBody1->m_iTestType==E_SPHERE)))
 			{				
 				//SPHERE VS MESH
 				TestSphereVsMesh(pkBody1,pkBody2,pkCollissions);
@@ -946,6 +947,12 @@ void Tcs::UpdateCollissions(vector<Tcs_collission*>*	pkCollissions)
 				//SPHERE VS MESH ( HEIGHTMAP)
 				TestSphereVsMesh(pkBody1,pkBody2,pkCollissions);			
 			}
+ 			else if	(((pkBody1->m_iTestType==E_MESH) && (pkBody2->m_iTestType==E_HMAP)) || 
+ 						((pkBody1->m_iTestType==E_HMAP) && (pkBody2->m_iTestType==E_MESH)))
+ 			{
+ 				//HMAP VS MESH
+ 				TestMeshVsMesh(pkBody1,pkBody2,pkCollissions);			
+ 			}
 		}
 	}
 }

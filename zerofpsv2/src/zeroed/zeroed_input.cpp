@@ -556,14 +556,17 @@ void ZeroEd::Input()
 			m_fDelayTime = m_pkZeroFps->GetEngineTime() + float(0.5);
 	}
 
-	if(m_pkInputHandle->VKIsDown("makeland")) {
-		Entity* pkObj = m_pkEntityManager->GetEntityByID(m_iCurrentObject);								
-		if(!pkObj)
-			return;		
+	if(m_pkInputHandle->VKIsDown("makeland")) 
+	{
+		
+		if(Entity* pkObj = m_pkEntityManager->GetEntityByID(m_iCurrentObject))
+		{
+			m_pkZeroFps->AddHMProperty(pkObj, pkObj->GetEntityID(),m_kZoneSize);
+		}
 		//int id = m_pkEntityManager->GetZoneIndex(m_kZoneMarkerPos,-1,false);
 		//ZoneData* z = m_pkEntityManager->GetZoneData(id);
 		//m_pkFps->AddHMProperty(z, z->m_iZoneObjectID,z->m_kSize);
-		m_pkZeroFps->AddHMProperty(pkObj, pkObj->GetEntityID(),m_kZoneSize);
+		
 	}  
 	/*
 	if(m_pkInputHandle->Pressed(KEY_F6)) 

@@ -413,6 +413,7 @@ void Render::DrawHMLodSplat(HeightMap* kMap,Vector3 CamPos,int iFps)
 	if(!m_iDrawLandscape)					return;
 	if(kMap->m_iNumOfHMVertex == 0)		return;
 
+	
   if(m_iAutoLod>0)
   {
 		if((int)SDL_GetTicks()>(m_iLodUpdate+500))
@@ -429,9 +430,12 @@ void Render::DrawHMLodSplat(HeightMap* kMap,Vector3 CamPos,int iFps)
 			}
 		}
 	}
+
+	m_pkZShaderSystem->Push("Render::DrawHMLodSplat");	
 	
-	glPushMatrix();
-	glPushAttrib(GL_DEPTH_BUFFER_BIT);
+		
+// 	glPushMatrix();
+// 	glPushAttrib(GL_DEPTH_BUFFER_BIT);
 	glDisable(GL_COLOR_MATERIAL);
 
 	glEnable(GL_LIGHTING);
@@ -449,12 +453,16 @@ void Render::DrawHMLodSplat(HeightMap* kMap,Vector3 CamPos,int iFps)
 	glActiveTextureARB(GL_TEXTURE0_ARB);
 	glDisable(GL_TEXTURE_2D);
 	glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE, GL_MODULATE  );	// GL_MODULATE	 GL_REPLACE
-
+	glDisable(GL_TEXTURE_GEN_S);
+	glDisable(GL_TEXTURE_GEN_T);
+	
 	glActiveTextureARB(GL_TEXTURE1_ARB);
 	glEnable(GL_TEXTURE_2D);
 	glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE, GL_MODULATE );	
-		
-	m_pkTexMan->BindTexture(kMap->m_kLayer[0].m_strTexture.c_str(),0);
+	glDisable(GL_TEXTURE_GEN_S);
+	glDisable(GL_TEXTURE_GEN_T);
+			
+	m_pkTexMan->BindTexture(kMap->m_kLayer[0]->m_strTexture.c_str(),0);
 	DrawAllHM(kMap,CamPos,true);
 
 	// Set blending
@@ -473,16 +481,16 @@ void Render::DrawHMLodSplat(HeightMap* kMap,Vector3 CamPos,int iFps)
 
 		glActiveTextureARB(GL_TEXTURE0_ARB);	
 		//m_pkTexMan->BindTexture(kMap->m_kLayer[i].m_strMask.c_str(),T_NOMIPMAPPING|T_ALPHA);	
-		string kLayerStr = kMap->m_kLayer[i].m_strMask + string("ost");
+		string kLayerStr = kMap->m_kLayer[i]->m_strMask + string("ost");
 		int iTexID = m_pkTexMan->CreateTextureFromRGB(kLayerStr.c_str(), 
-			(color_rgb*)kMap->m_kLayer[i].m_kAlphaImage.m_pkPixels, 
-			kMap->m_kLayer[i].m_kAlphaImage.m_iWidth, kMap->m_kLayer[i].m_kAlphaImage.m_iHeight, 
+			(color_rgb*)kMap->m_kLayer[i]->m_kAlphaImage.m_pkPixels, 
+			kMap->m_kLayer[i]->m_kAlphaImage.m_iWidth, kMap->m_kLayer[i]->m_kAlphaImage.m_iHeight, 
 			TextureManager::RGBA,
          false, TextureManager::RGBA);
 		m_pkTexMan->BindTexture( iTexID );
 
 		glActiveTextureARB(GL_TEXTURE1_ARB);
-		m_pkTexMan->BindTexture(kMap->m_kLayer[i].m_strTexture.c_str(),0);		
+		m_pkTexMan->BindTexture(kMap->m_kLayer[i]->m_strTexture.c_str(),0);		
 		DrawAllHM(kMap,CamPos,true);	
 	}
 	
@@ -501,12 +509,14 @@ void Render::DrawHMLodSplat(HeightMap* kMap,Vector3 CamPos,int iFps)
 		glDisable(GL_POLYGON_OFFSET_LINE);	glPolygonOffset(0,0);	
 	}
 
-	glPopAttrib();
-	glPopMatrix();
+// 	glPopAttrib();
+// 	glPopMatrix();
 
 	if(m_iDrawLandNormal)
 		DrawNormals(kMap,kMap->m_kPosition,0);
 
+		
+	m_pkZShaderSystem->Pop();
 }
 
 void Render::DrawAllHM(HeightMap* kMap,Vector3 CamPos,bool bBorders)

@@ -817,7 +817,7 @@ HeightMap* ZeroEd::SetPointer()
 
 void ZeroEd::HMModifyCommand(float fSize)
 {
-	float fTime = m_pkZeroFps->m_pkEntityManager->GetSimDelta();
+	float fTime = m_pkZeroFps->GetFrameTime();
 	P_HMRP2* hmrp;
 
 	for(set<int>::iterator itEntity = m_SelectedEntitys.begin(); itEntity != m_SelectedEntitys.end(); itEntity++ ) 

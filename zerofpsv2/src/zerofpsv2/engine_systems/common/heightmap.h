@@ -44,15 +44,17 @@ public:
 
 	ZFResourceHandle	m_kMaskHandle;
 
-	HM_Layer& operator=(const HM_Layer &kOther) {
-		m_strName = kOther.m_strName;
-		m_strTexture = kOther.m_strTexture;
-		m_strDetailTexture = kOther.m_strDetailTexture;
-		m_strMask = kOther.m_strMask;
-		m_kMaskHandle = kOther.m_kMaskHandle;
-		m_kAlphaImage = kOther.m_kAlphaImage;
-		return *this;
-		}	
+	
+// 	HM_Layer& operator=(const HM_Layer &kOther) 
+// 	{
+// 		m_strName = 			kOther.m_strName;
+// 		m_strTexture = 		kOther.m_strTexture;
+// 		m_strDetailTexture = kOther.m_strDetailTexture;
+// 		m_strMask =				kOther.m_strMask;
+// 		m_kMaskHandle = 		kOther.m_kMaskHandle;
+// 		m_kAlphaImage = 		kOther.m_kAlphaImage;
+// 		return *this;
+// 	}	
 
 	void Load(ZFVFile* pkFile);
 	void Save(ZFVFile* pkFile);
@@ -82,7 +84,7 @@ class ENGINE_SYSTEMS_API HeightMap
 		float					m_fTileSize;				// The size in meters of each Tile.
 
 		HM_vert*				verts;						// Ptr to array of HMVertex. 
-		vector<HM_Layer>	m_kLayer;					// All layers in the HM.
+		vector<HM_Layer*>	m_kLayer;					// All layers in the HM.
 		unsigned char*		m_pkTileFlags;				// Bitflags for the tiles.
 
 
