@@ -297,6 +297,8 @@ bool ZeroFps::Init(int iNrOfArgs, char** paArgs)
 	m_fLastFrameTime	= GetTicks();
 	m_fLockFrameTime  = GetTicks();
 
+	GLeeInit();
+
 	return true;
 }
 

@@ -107,7 +107,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386"
-				AdditionalDependencies="script.lib ogg_static.lib vorbis_static.lib vorbisfile_static.lib sdl_net.lib OpenAL32.lib ALut.lib gui.lib render.lib basic.lib glu32.lib opengl32.lib sdl.lib sdlmain.lib odbc32.lib odbccp32.lib"
+				AdditionalDependencies="glee.lib  script.lib ogg_static.lib vorbis_static.lib vorbisfile_static.lib sdl_net.lib OpenAL32.lib ALut.lib gui.lib render.lib basic.lib glu32.lib opengl32.lib sdl.lib sdlmain.lib odbc32.lib odbccp32.lib"
 				OutputFile="..\..\..\bin\engine.dll"
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"
