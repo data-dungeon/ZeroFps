@@ -10,7 +10,7 @@ AutoParentProperty::AutoParentProperty()
 
 	m_fUpdateTime=1;
 	//add a random time so we dont get that many updates at the same frame
-	m_fLastUpdate=m_pkFps->GetTicks() + (rand()%1)/1000;
+	m_fLastUpdate=m_pkFps->GetTicks();// + (rand()%1)/1000;
 }
 
 void AutoParentProperty::Update()
@@ -20,7 +20,8 @@ void AutoParentProperty::Update()
 
 	if(fCurentTime - m_fLastUpdate >= m_fUpdateTime)
 	{
-		m_fLastUpdate=fCurentTime + m_fUpdateTime + (rand()%1)/1000;
+		m_fLastUpdate = fCurentTime;// + m_fUpdateTime + (rand()%1)/1000;
+		m_fUpdateTime = 1 + (rand()%2000)/1000.0;
 
 		m_pkObject->AttachToClosestZone();
 	}
