@@ -12,6 +12,10 @@ P_CharacterProperty::P_CharacterProperty()
 	bNetwork = 		true;
 	m_iVersion = 	1;
 	
+	
+	
+	m_strName =					"NoName";
+	m_bIsPlayerCharacter =	false;
 }
 
 
@@ -21,6 +25,17 @@ P_CharacterProperty::~P_CharacterProperty()
 
 }
 
+void P_CharacterProperty::Save(ZFIoInterface* pkPackage)
+{
+	pkPackage->Write_Str(m_strName);
+	pkPackage->Write(m_bIsPlayerCharacter);
+}
+
+void P_CharacterProperty::Load(ZFIoInterface* pkPackage,int iVersion)
+{
+	pkPackage->Read_Str(m_strName);	
+	pkPackage->Read(m_bIsPlayerCharacter);
+}
 
 
 

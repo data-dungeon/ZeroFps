@@ -10,13 +10,17 @@ using namespace std;
 class P_CharacterProperty: public Property
 {
 	private:
-
+		string	m_strName;		
+	
+		bool		m_bIsPlayerCharacter;
 
 	public:
 
 		P_CharacterProperty();
 		~P_CharacterProperty();
 
+		void Save(ZFIoInterface* pkPackage);
+		void Load(ZFIoInterface* pkPackage,int iVersion);
 
 };
 

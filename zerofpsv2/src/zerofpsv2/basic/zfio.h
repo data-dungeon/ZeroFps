@@ -4,21 +4,10 @@
 //#include <stdint.h>
 #include "basic_x.h"
 
-/*
-class BASIC_API ZFIo {
-	private:
-		
-	
-	public:
-		virtual bool Open(const char* file,bool bWriteable)=0;
-		virtual bool Close()=0;
-			
-		virtual bool Write(void *data,int iSize)=0;
-		virtual bool Read(void *data,int iSize)=0;
-		
-		virtual int GetPos()=0;
-		virtual bool SetPos(int iPos)=0;
-};*/
+#include <string>
+
+using namespace std;
+
 
 /**	\brief	Interface to read/write data.
 		\ingroup Basic
@@ -26,6 +15,39 @@ class BASIC_API ZFIo {
 class BASIC_API ZFIoInterface 
 {
 	public:
+		bool Write_Str(const string& strString)
+		{
+			Write(strString.size()+1);
+			Write((void*)strString.c_str(),strString.size()+1,1);					
+		
+		}
+		
+		bool Read_Str(string& strString)
+		{
+			int iSize;
+			Read(iSize);
+			char* czStr = new(char[iSize]);
+			
+			Read(czStr,iSize,1);	
+			strString = czStr;
+			delete czStr;							
+		}
+		
+
+		
+		template <class Any> 		
+		bool Write(Any type) 
+			{
+				return Write((void*)&type,sizeof(Any),1);		
+			}
+		
+		template <class Any> 					
+		bool Read(Any& type) 
+			{
+				return Read(&type,sizeof(Any),1);			
+			}
+		
+	
 		virtual bool Read  (void* pkData, int iSize, int iCount)=0;		// Read data 
 		virtual bool Write (void* pkData, int iSize, int iCount)=0;		// Write data 
 
