@@ -134,6 +134,18 @@ bool GLGuiRender::EndRender()
 	return true;
 }
 
+void GLGuiRender::UpdateAnimation()
+{	
+	if(m_pkSkin->m_pkZIFAnimation->Update())
+	{
+		m_pkSkin->m_iBkTexID = m_pkTextureManger->CreateTextureFromRGB(
+			m_pkSkin->m_pkZIFAnimation->m_szFileName, 
+			(color_rgb*)m_pkSkin->m_pkZIFAnimation->m_pPixelData, 
+			m_pkSkin->m_pkZIFAnimation->m_iWidth, m_pkSkin->m_pkZIFAnimation->m_iHeight, 
+			TextureManager::BGR, true);
+	}
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 // Name: RenderQuad
 //
@@ -141,6 +153,9 @@ bool GLGuiRender::RenderQuad(Rect rc)
 {
 	if(!m_pkSkin)
 		return false;
+
+	if(m_pkSkin->m_pkZIFAnimation != NULL)
+		UpdateAnimation();
 
 	float tx = 0.0,  ty = 0.0f; // offset into the texture
 	float tw = 1.0f, th = -1.0f; // size of the texture
@@ -239,11 +254,12 @@ bool GLGuiRender::RenderQuad(Rect rc)
 
 		glBegin(GL_QUADS);		
 			glColor3f(1,1,1);
+
 //			glTexCoord2f(tx,ty);				glVertex2i(rc.Left,m_iScreenHeight-rc.Bottom);		 
 //			glTexCoord2f(tx,th);				glVertex2i(rc.Left,m_iScreenHeight-rc.Top);		
 //			glTexCoord2f(tx+tw,th);			glVertex2i(rc.Right,m_iScreenHeight-rc.Top);    
 //			glTexCoord2f(tx+tw,ty);			glVertex2i(rc.Right,m_iScreenHeight-rc.Bottom);  
-
+			
 			glTexCoord2f(txs[0],tys[0]);	glVertex2i(rc.Left,m_iScreenHeight-rc.Bottom);		 
 			glTexCoord2f(txs[1],tys[1]);	glVertex2i(rc.Left,m_iScreenHeight-rc.Top);		
 			glTexCoord2f(txs[2],tys[2]);	glVertex2i(rc.Right,m_iScreenHeight-rc.Top);     
@@ -291,10 +307,21 @@ bool GLGuiRender::RenderQuad(Rect rc)
 		}
 		else
 		{
-			glTexCoord2f(txs[0],tys[0]);	glVertex2i(rc.Left,m_iScreenHeight-rc.Bottom);		 
-			glTexCoord2f(txs[1],tys[1]);	glVertex2i(rc.Left,m_iScreenHeight-rc.Top);		
-			glTexCoord2f(txs[2],tys[2]);	glVertex2i(rc.Right,m_iScreenHeight-rc.Top);    
-			glTexCoord2f(txs[3],tys[3]);	glVertex2i(rc.Right,m_iScreenHeight-rc.Bottom);  
+			if(m_pkSkin->m_pkZIFAnimation == NULL)
+			{
+				glTexCoord2f(txs[0],tys[0]);	glVertex2i(rc.Left,m_iScreenHeight-rc.Bottom);		 
+				glTexCoord2f(txs[1],tys[1]);	glVertex2i(rc.Left,m_iScreenHeight-rc.Top);		
+				glTexCoord2f(txs[2],tys[2]);	glVertex2i(rc.Right,m_iScreenHeight-rc.Top);    
+				glTexCoord2f(txs[3],tys[3]);	glVertex2i(rc.Right,m_iScreenHeight-rc.Bottom);  
+			}
+			else
+			{
+				glTexCoord2f(txs[0],tys[2]);	glVertex2i(rc.Left,m_iScreenHeight-rc.Bottom);		 
+				glTexCoord2f(txs[1],tys[3]);	glVertex2i(rc.Left,m_iScreenHeight-rc.Top);		
+				glTexCoord2f(txs[2],tys[0]);	glVertex2i(rc.Right,m_iScreenHeight-rc.Top);    
+				glTexCoord2f(txs[3],tys[1]);	glVertex2i(rc.Right,m_iScreenHeight-rc.Bottom);  
+			}
+
 		}
 
 

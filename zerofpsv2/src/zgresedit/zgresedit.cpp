@@ -10,6 +10,9 @@
 #include "../zerofpsv2/engine/inputhandle.h"
 #include "../zerofpsv2/basic/zguifont.h"
 
+bool bPlayAnimation = false;
+FILE* pkAnimationFile = NULL;
+
 ZGResEdit g_kResEdit("ResEdit",0,0,0);
 
 static bool GUIPROC( ZGuiWnd* win, unsigned int msg, int numparms, void *params ) 
@@ -244,7 +247,7 @@ void ZGResEdit::OnInit()
 	//	m_pkTexMan->Load("data/textures/text/syflen16.tga"));
 	//m_pkGuiMan->Add("syflen16", pkNewFont);
 	
-	CreateWnd(Wnd, "TestWnd", "", "", 10, 10, 128, 128, 0);
+	CreateWnd(Wnd, "TestWnd", "", "", 10, 10, 256, 256, 0);
 
 	//ZGuiTextbox* textbox = (ZGuiTextbox*) CreateWnd(Textbox, "TestTextbox", "TestWnd", "", 45, 45, 550, 350, 0);
 	//textbox->ToggleMultiLine(true);
@@ -276,7 +279,8 @@ void ZGResEdit::OnInit()
 
 	ZGuiSkin* pkSkin = new ZGuiSkin();
 	pkSkin->m_iBkTexID = m_pkTexMan->Load("data/textures/gui/sysdata_gui.bmp");
-	pkSkin->m_rcBkTile = Rect(0,48,128,128);
+	//pkSkin->m_rcBkTile = Rect(0,48,128,128);
+	pkSkin->m_pkZIFAnimation = new ZIFAnimation("test.zif"); 
 
 	GetWnd("TestWnd")->SetSkin(pkSkin);
 
@@ -299,6 +303,48 @@ void ZGResEdit::OnIdle()
 
 	if(m_eEditMode == VIEW)
 		return;
+
+	if(/*bPlayAnimation*/0)
+	{
+		//static int anim = 0;
+		//static float fPrevTick = 0;
+
+		//float fTick = m_pkFps->GetTicks();
+
+		//if(fTick - fPrevTick > 0.04f) // har det gått 40 msek sen sist?
+		//{
+		//	fPrevTick = fTick;
+
+		//	static int oka = 0;
+
+		//	bPlayAnimation = true;
+		//	pkAnimationFile = fopen("test.zif", "rb");
+
+		//	int w, h, frames, Msecs_Per_Frame;
+		//	fread(&w, sizeof(int), 1, pkAnimationFile);
+		//	fread(&h, sizeof(int), 1, pkAnimationFile);
+		//	fread(&Msecs_Per_Frame, sizeof(int), 1, pkAnimationFile);
+		//	fread(&frames, sizeof(int), 1, pkAnimationFile);
+
+		//	char* data = new char[w*h*3];
+		//	
+		//	fseek(pkAnimationFile, (w*h*3)*oka+(sizeof(int)*4), SEEK_SET);
+		//	fread(data, sizeof(char), w*h*3, pkAnimationFile);
+
+		//	int id = m_pkTexMan->CreateTextureFromRGB("animation_data1", (color_rgb*)data, w, h,
+		//		TextureManager::BGR, true);
+		//	GetWnd("TestWnd")->GetSkin()->m_iBkTexID = id;
+
+		//	delete[] data;
+
+		//	oka++;
+
+		//	if(oka==frames-1)
+		//		oka=0;
+
+		//	fclose(pkAnimationFile);
+		//}
+	}
 
 	int x,y;
 	//m_pkInputHandle->MouseXY(x,y);
@@ -463,47 +509,7 @@ void ZGResEdit::OnKeyDown(int iKey)
 
 	case KEY_K:
 		{
-
-
-
-
-			//ZGuiFont* pkFont = new ZGuiFont(16,16,0,2312);
-			//if(pkFont->CreateFromFile("data/zgresedit/textures/text/test.tga"))
-			//{
-			//	printf("Setting font\n");
-			//	m_pkFocusWnd->SetFont(pkFont); 
-			//}
-
-			//m_pkFocusWnd->SetText("<col:255,0,0>Apan<col:0,0,255> e brun"); 
-
-			//m_pkFocusWnd->GetSkin()->m_afBkColor[0] =
-			//m_pkFocusWnd->GetSkin()->m_afBkColor[1] =
-			//m_pkFocusWnd->GetSkin()->m_afBkColor[2] = 0;
-
-
-			//int tex = m_pkFocusWnd->GetSkin()->m_iBkTexID;
-
-			//m_pkTexMan->EditStart( tex );
-			//Image* pkSurface = m_pkTexMan->EditGetImage( tex );
-
-			//if(pkSurface == NULL)
-			//{
-			//	printf("Failed to call GetImage from texturemanager!\n");
-			//	return;
-			//}
-
-			//color_rgba kColor;
-			//if(!pkSurface->get_pixel(0, 0, kColor))
-			//{
-			//	printf("Image::get_pixel Failed\n");
-			//}
-
-			//printf("color = %i, %i, %i, %i", kColor.r, kColor.g, kColor.b, kColor.a); 
-
-			//m_pkTexMan->EditEnd( tex );
-
-
-
+			GetWnd("TestWnd")->GetSkin()->m_pkZIFAnimation->m_bPlay=true;
 		}
 		break;
 
@@ -2346,6 +2352,9 @@ bool ZGResEdit::ShutDown()
 	}
 
 //	delete m_pkInputHandle;
+
+	if(pkAnimationFile)
+		fclose(pkAnimationFile);
 
 	return true;
 }

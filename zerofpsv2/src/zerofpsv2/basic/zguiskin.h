@@ -7,6 +7,30 @@
 
 #include "basic_x.h"
 #include "rect.h"
+#include <stdio.h>
+
+class BASIC_API ZIFAnimation
+{
+public:
+	ZIFAnimation();
+	ZIFAnimation(char* szFileName);
+	~ZIFAnimation();
+
+	bool Update();
+	
+	char* m_pPixelData;
+	int m_iWidth, m_iHeight;
+	char* m_szFileName;
+	bool m_bPlay;
+
+private:
+	FILE* m_pkFile;
+	float m_fLastTick;
+	
+	int m_iNumFrames, m_iCurrentFrame;
+	int m_iMsecsPerFrame;
+	int m_iPixelDataSize;
+};
 
 class BASIC_API ZGuiSkin  
 {
@@ -80,6 +104,8 @@ public:
 	unsigned char m_ucRots90Degree; // Hur många gången texturen skall roteras åt vänster (0,1,2 eller 3)
 	bool m_bTileBkSkin;
 	bool m_bTransparent; // andvänds bla. av labels som inte skall ha nån bakgrundsfärg.
+
+	ZIFAnimation* m_pkZIFAnimation;
 };
 
 #endif

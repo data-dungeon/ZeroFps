@@ -2,6 +2,10 @@
 //
 ///////////////////////////////////////////////////////////////////////////////
 
+#include <string.h>
+#include <SDL/SDL.h>
+using namespace std;
+
 #include "zguiskin.h"
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -36,6 +40,8 @@ ZGuiSkin::ZGuiSkin( int t1,int t2,int t3,int t4,	// Textures
 	m_bTransparent				= transparent;
 
 	m_ucRots90Degree		= 0;
+
+	m_pkZIFAnimation		= NULL;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -67,6 +73,8 @@ ZGuiSkin::ZGuiSkin( int t1,int t2,int t3,int t4,	// Textures
 	m_bTransparent				= false;
 
 	m_ucRots90Degree		= 0;
+
+	m_pkZIFAnimation		= NULL;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -98,6 +106,8 @@ ZGuiSkin::ZGuiSkin( int r1,int g1,int b1,			// Background color
 	m_bTileBkSkin				= false;
 	m_bTransparent				= bTransparent;
 	m_ucRots90Degree		= 0;
+
+	m_pkZIFAnimation		= NULL;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -129,6 +139,8 @@ ZGuiSkin::ZGuiSkin( int r1,int g1,int b1,			// Background color
 	m_bTransparent				= false;
 
 	m_ucRots90Degree		= 0;
+
+	m_pkZIFAnimation		= NULL;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -159,6 +171,8 @@ ZGuiSkin::ZGuiSkin( int t1,int t2,int t3,int t4,	// Textures
 	m_bTransparent				= false;
 
 	m_ucRots90Degree		= 0;
+
+	m_pkZIFAnimation		= NULL;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -189,6 +203,8 @@ ZGuiSkin::ZGuiSkin(	int t1,	int a1,				// Textures
 	m_bTransparent				= false;
 
 	m_ucRots90Degree		= 0;
+
+	m_pkZIFAnimation		= NULL;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -220,6 +236,8 @@ ZGuiSkin::ZGuiSkin(	int t1,						// Textures
 	m_bTransparent				= false;
 
 	m_ucRots90Degree		= 0;
+
+	m_pkZIFAnimation		= NULL;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -249,6 +267,8 @@ ZGuiSkin::ZGuiSkin()
 	m_bTransparent				= false;
 
 	m_ucRots90Degree		= 0;
+
+	m_pkZIFAnimation		= NULL;
 }
 
 const ZGuiSkin& ZGuiSkin::operator=(const ZGuiSkin& pkSkinSrc )
@@ -278,6 +298,7 @@ const ZGuiSkin& ZGuiSkin::operator=(const ZGuiSkin& pkSkinSrc )
 	m_ucRots90Degree		= pkSkinSrc.m_ucRots90Degree;
 
 	m_rcBkTile				= pkSkinSrc.m_rcBkTile;
+	m_pkZIFAnimation		= pkSkinSrc.m_pkZIFAnimation;
 
 	return *this;
 }
@@ -309,6 +330,8 @@ ZGuiSkin::ZGuiSkin(ZGuiSkin* pkCopy)
 	m_ucRots90Degree		= pkCopy->m_ucRots90Degree;
 
 	m_rcBkTile				= pkCopy->m_rcBkTile;
+
+	m_pkZIFAnimation		= pkCopy->m_pkZIFAnimation;
 }
 
 bool ZGuiSkin::operator==(ZGuiSkin d) 
@@ -339,5 +362,90 @@ bool ZGuiSkin::operator==(ZGuiSkin d)
 
 	if(m_rcBkTile					!= d.m_rcBkTile) return false;
 
+	if(m_pkZIFAnimation != d.m_pkZIFAnimation) return false;
+
 	return true;
 } 
+
+ZIFAnimation::ZIFAnimation()
+{
+	m_pkFile = NULL;
+	m_fLastTick=0;
+	m_szFileName=NULL;
+	m_iWidth=0;
+	m_iHeight=0;
+	m_iNumFrames=0;
+	m_iMsecsPerFrame=0;
+	m_iCurrentFrame=0;
+	m_bPlay=false;
+	m_pPixelData=NULL;
+	m_iPixelDataSize=0;
+}
+
+ZIFAnimation::ZIFAnimation(char* szFileName)
+{
+	m_pkFile = NULL;
+	m_fLastTick=0;
+	m_szFileName=new char[strlen(szFileName)+1];
+	strcpy(m_szFileName,szFileName);
+	m_iWidth=0;
+	m_iHeight=0;
+	m_iNumFrames=0;
+	m_iMsecsPerFrame=0;
+	m_iCurrentFrame=0;
+	m_bPlay=false;
+	m_pPixelData=NULL;
+	m_iPixelDataSize=0;
+}
+
+ZIFAnimation::~ZIFAnimation()
+{
+	if(m_pPixelData)
+		delete[] m_pPixelData;
+
+	if(m_szFileName)
+		delete[] m_szFileName;
+}
+
+bool ZIFAnimation::Update()
+{
+	float fTick = (float(SDL_GetTicks()) /1000.0f);	
+
+	if(m_bPlay == false || m_szFileName == NULL)
+		return false;
+
+	float update_time = m_iMsecsPerFrame / 1000.0f;
+
+	if(fTick - m_fLastTick > update_time) // har det gått X msek sen sist?
+	{
+		m_fLastTick = fTick;
+		m_pkFile = fopen(m_szFileName, "rb");
+
+		if(m_pkFile == NULL)
+			return false;
+
+		if(m_iNumFrames==0) // not initialized
+		{
+			fread(&m_iWidth, sizeof(int), 1, m_pkFile);
+			fread(&m_iHeight, sizeof(int), 1, m_pkFile);
+			fread(&m_iMsecsPerFrame, sizeof(int), 1, m_pkFile);
+			fread(&m_iNumFrames, sizeof(int), 1, m_pkFile);
+			m_iPixelDataSize = m_iWidth*m_iHeight*3;
+			m_pPixelData = new char[m_iPixelDataSize];
+		}
+
+		fseek(m_pkFile, m_iPixelDataSize*m_iCurrentFrame+(sizeof(int)*4), SEEK_SET);
+		fread(m_pPixelData, sizeof(char), m_iPixelDataSize, m_pkFile);
+
+		m_iCurrentFrame++;
+
+		if(m_iCurrentFrame==m_iNumFrames-1)
+			m_iCurrentFrame=0;
+
+		fclose(m_pkFile);
+
+		return true; // behöver läsa in ny bild till texturen
+	}
+
+	return false; // behöver inte uppdatera
+}

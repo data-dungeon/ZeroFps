@@ -301,6 +301,67 @@ int TextureManager::Load(const char* szFileName, int iOption)
 	return pkTex->TexID;
 }  
 
+int TextureManager::CreateTextureFromRGB(const char* acName, color_rgb* pkPixels, 
+										 int iWidth, int iHeight, PixelFormat eFormat,
+										 bool bOverWrite)
+{
+	texture *pkTex;
+
+	int iTexture;
+	
+	// Check if texture is already loaded.
+	iTexture = GetIndex(acName);
+
+	// If NOT Exist
+	if(iTexture == NO_TEXTURE)
+	{
+		pkTex = GetFreeTexture();
+		pkTex->file	= acName;
+	}
+	else
+	{
+		if(bOverWrite == false)
+			return iTexture;
+		else
+		{
+			// Else find the texture
+			for(unsigned int i=0; i<m_iTextures.size(); i++)
+				if(m_iTextures[i]->file == acName) 
+				{
+					pkTex = m_iTextures[i];
+					break;
+				}
+
+			glDeleteTextures(1,&pkTex->index);
+		}
+	}
+
+	GLint iInternalFormat =	GL_RGB;
+	
+	// make sure the m_pkImage is null for swaping;
+	pkTex->m_pkImage2 = NULL;
+	
+	// Calc Size of texture.
+	pkTex->m_iSizeInBytes = iWidth * iHeight * 3;
+
+	glGenTextures(1,&pkTex->index);
+	glBindTexture(GL_TEXTURE_2D,pkTex->index);
+
+	// Set All Options.
+	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_REPEAT);		
+
+	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);		
+	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);  
+	glTexImage2D(GL_TEXTURE_2D,0,iInternalFormat,iWidth,iHeight,0,/*GL_RGB*/
+/*GL_BGR*/eFormat,GL_UNSIGNED_BYTE,pkPixels);
+
+	glBindTexture(GL_TEXTURE_2D,0);
+	m_iCurrentTexture = NO_TEXTURE;
+
+	return pkTex->TexID;
+}
+
 // Bind Textures
 void TextureManager::BindTexture(int iTexture) 
 {

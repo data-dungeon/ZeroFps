@@ -58,6 +58,8 @@ public:
 	
 private:
 
+	void UpdateAnimation();
+
 	void PrintWord(int x, int y, char* szWord, int offset, int length);
 	pair<int,int> GetWordLength(char* text, int offset, int max_width);
 	bool PrintRows(char* text, Rect rc, int iCursorPos, int iRenderDistFromTop, 
