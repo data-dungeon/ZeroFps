@@ -28,7 +28,7 @@ PathBuilder::~PathBuilder()
 
 void PathBuilder::Build(int pkObjectTypeCost[5])
 {
-	int iMapSize = m_pkHeightMap->GetSize();
+	int iMapSize = m_pkHeightMap->m_iHmSize;
 	int z,x;
 
 	if(m_piTerrain == NULL)
