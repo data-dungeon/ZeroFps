@@ -9,8 +9,6 @@ ZeroEdit::ZeroEdit(char* aName,int iWidth,int iHeight,int iDepth): Application(a
 
 void ZeroEdit::OnInit(void) 
 {
-//	pkBasicFS->CreateDirectory("cpblubfan/.");
-
 	vector<string> blub;
 
 	pkBasicFS->ListDirectory(&blub,".");

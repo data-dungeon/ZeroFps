@@ -30,14 +30,23 @@ bool ZFBasicFS::CreateDirectory(const char* acName)
 
 //linux code
 #ifndef  WIN32	
+	if(mkdir(acName,S_IRWXU)==-1)
+		return false;
 	
-	cout<<"FILE:"<< creat(acName,0);
-
-
-
 	return true;
 #endif
 
+}
+
+bool ZFBasicFS::RemoveDirectory(const char* acName)
+{
+	//linux code
+	#ifndef  WIN32		 
+	if(rmdir(acName)==-1)
+		return false;
+
+	return true;
+	#endif
 }
 
 

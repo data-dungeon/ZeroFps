@@ -53,6 +53,7 @@ ZeroFps::ZeroFps(void)
 	g_ZFObjSys.Register_Cmd("slist",FID_SLIST,this);
 	g_ZFObjSys.Register_Cmd("connect",FID_CONNECT,this);
 	g_ZFObjSys.Register_Cmd("server",FID_SERVER,this);
+	g_ZFObjSys.Register_Cmd("dir",FID_DIR,this);	
 
 	RegisterPropertys();
 }
@@ -454,6 +455,24 @@ void ZeroFps::RunCommand(int cmdid, const CmdArgument* kCommand)
 			m_pkNetWork->ServerStart();
 
 			m_pkApp->OnServerStart();
+			break;
+	
+		case FID_DIR:
+			vector<string> kFiles;
+
+			string kDir;
+			kDir=".";
+			m_pkBasicFS->ListDirectory(&kFiles,kDir.c_str());
+			
+			m_pkConsole->Printf("DIRECTORY %s",kDir.c_str());
+			for(int i=0;i<kFiles.size();i++)
+			{
+				m_pkConsole->Printf(kFiles[i].c_str());
+			}
+			m_pkConsole->Printf("%i files",kFiles.size());		
+		
+			kFiles.clear();
+		
 			break;
 	}	
 }

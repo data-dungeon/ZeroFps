@@ -65,6 +65,7 @@ class ENGINE_API ZeroFps : public ZFObject {
 			FID_SLIST,			// List all servers
 			FID_CONNECT,		// Connect to server.
 			FID_SERVER,			// Start a Server.
+			FID_DIR
 			};
 
 		void RunCommand(int cmdid, const CmdArgument* kCommand);
