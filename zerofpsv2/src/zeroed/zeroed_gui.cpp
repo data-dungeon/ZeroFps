@@ -4,7 +4,9 @@
 void ZeroEd::SetupGuiEnviroment()
 {
 	// Create from script.
-	LoadGuiFromScript("data/script/gui/zeroed2.lua");
+	ZFAssert(LoadGuiFromScript("data/script/gui/zeroed2.lua"),
+		"Failed to load GUI script!\n");
+
 	GetWnd("worktab")->Hide();
 
 	m_pkGui->SetCursor( 0,0, m_pkTexMan->Load("data/textures/gui/blue_cursor.bmp", 0),

@@ -74,7 +74,8 @@ void MistClient::SetupGUI()
 	g_kMistClient.m_pkGui->GetResMan()->Add("chatboxfont", font);
 
    // load startup screen 
-   g_kMistClient.LoadGuiFromScript("data/script/gui/ml_start.lua");
+   ZFAssert(g_kMistClient.LoadGuiFromScript("data/script/gui/ml_start.lua"),
+		"Failed to load GUI script!\n");
 
 	font = g_kMistClient.m_pkGui->GetResMan()->Font("chatboxfont");
 

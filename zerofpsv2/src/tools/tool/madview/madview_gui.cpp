@@ -5,7 +5,7 @@
 void MadView::SetupGuiEnviroment()
 {
 	// Create from script.
-	LoadGuiFromScript("data/script/gui/madview.lua");
+	ZFAssert(LoadGuiFromScript("data/script/gui/madview.lua"), "Failed to load GUI script!\n");
 
 	m_pkGui->SetCursor( 0,0, m_pkTexMan->Load("data/textures/gui/blue_cursor.bmp", 0),
 		m_pkTexMan->Load("data/textures/gui/blue_cursor_a.bmp", 0), 32, 32);

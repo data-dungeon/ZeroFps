@@ -28,9 +28,11 @@ void GuiMsgStartScreen( string strMainWnd, string strController,
 			else
 			if(strController == "OptionsBn")
 			{
-				g_kMistClient.LoadGuiFromScript("data/script/gui/ml_option.lua");
-				g_kMistClient.ShowWnd("OptionsWnd",	true,	true,	true);
-				g_kMistClient.m_pkOptionsDlg->Open();
+				if(g_kMistClient.LoadGuiFromScript("data/script/gui/ml_option.lua"))
+				{
+					g_kMistClient.ShowWnd("OptionsWnd",	true,	true,	true);
+					g_kMistClient.m_pkOptionsDlg->Open();
+				}
 			}
 			else
 			if(strController == "ContinueGameBn")
