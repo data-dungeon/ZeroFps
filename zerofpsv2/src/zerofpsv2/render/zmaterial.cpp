@@ -75,8 +75,11 @@ bool ZMaterial::LoadShader(const char* acFile)
 	if(m_kIni.Open(acFile,0))		
 		open=true;
 	else		//if file didt open, try to load a default texture
+	{
+		cout<<"Error loading shader: "<<acFile<<" using nomaterial"<<endl;
 		if(m_kIni.Open("../data/material/nomaterial.zmt",0))
 			open=true;
+	}
 
 	if(open)
 	{
@@ -144,8 +147,6 @@ bool ZMaterial::LoadPass(int iPass)
 	char nr;
 	IntToChar(&nr,iPass);			
 	passname+=nr;
-	
-	//cout<<"loading pass "<<passname<<endl;
 	
 	if(!m_kIni.SectionExist(passname.c_str()))
 	{
