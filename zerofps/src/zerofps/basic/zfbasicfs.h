@@ -4,6 +4,7 @@
 #include <vector>
 #include <string>
 #include "basic_x.h"
+#include "zfobject.h"
 
 //linux code
 #ifndef WIN32
@@ -18,11 +19,15 @@
 using namespace std;
 
 
-class BASIC_API ZFBasicFS
+class BASIC_API ZFBasicFS : public ZFObject 
 {
 	char m_acDir[2048];
 
 	public:
+		ZFBasicFS() : ZFObject("ZFBasicFS") 
+		{
+		}
+		
 		char* GetCWD();		
 		bool CreateDir(const char* acName);
 		bool RemoveDir(const char* acName);

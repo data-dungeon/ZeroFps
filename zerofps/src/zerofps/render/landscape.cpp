@@ -122,7 +122,8 @@ void Render::DrawWater(Vector3 kCamPos,Vector3 kPosition,Vector3 kHead,int iSize
 	for(int x=0;x<iSize;x+=iStep){	
 		glBegin(GL_TRIANGLE_STRIP);
 		glNormal3f(0,1,0);
-		glColor4f(.5,.5,.7,0.5);	
+//		glColor4f(.5,.5,.7,0.5);	
+		glColor4f(1,1,1,0.5);	
 	
 		for(int z=0;z<iSize;z+=iStep) {
 			float y=sin((SDL_GetTicks()/1000.0)+(z/iStep)*freq)*amp;		
@@ -493,7 +494,8 @@ void Render::DrawHM(HeightMap *kmap) {
 	glPopMatrix();			
 }
 
-void Render::SetFog(Vector4 kFogColor,float FogDensity,float FogStart,float FogStop,bool FogEnabled){
+//void Render::SetFog(Vector4 kFogColor,float FogDensity,float FogStart,float FogStop,bool FogEnabled){
+void Render::SetFog(Vector4 kFogColor,float FogStart,float FogStop,bool FogEnabled){
 	if(FogEnabled){
 		glEnable(GL_FOG);
 		m_FogEnable=true;
@@ -506,7 +508,7 @@ void Render::SetFog(Vector4 kFogColor,float FogDensity,float FogStart,float FogS
 	glHint(GL_FOG_HINT,GL_NICEST);	
 	
 	glFogfv(GL_FOG_COLOR,(float*)&kFogColor[0]);
-	glFogf(GL_FOG_DENSITY,FogDensity);
+//	glFogf(GL_FOG_DENSITY,FogDensity);
 	glFogf(GL_FOG_START,FogStart);
 	glFogf(GL_FOG_END,FogStop);	
 }

@@ -21,12 +21,12 @@ enum GAME_STATE
 
 class Game :public Application {
 	private:
-		HeightMap *m_pkMap;
-		HeightMapObject *m_pkHeightMapObject;
+//		HeightMap *m_pkMap;
+//		HeightMapObject *m_pkHeightMapObject;
 
 		Camera *m_pkCamera;;
 
-		string m_kMapBaseDir;
+//		string m_kMapBaseDir;
 
 		int m_iGameState;
 
@@ -36,10 +36,11 @@ class Game :public Application {
 		void SetUpMenuScreen();
 		
 		void input();				
-		bool LoadLevel(const char* acFile);				
-		void SetupLevel();
-		void Clear();		
-		void CreateNew(int iSize);
+		void SetupLevel();		
+//		bool LoadLevel(const char* acFile);				
+
+//		void Clear();		
+//		void CreateNew(int iSize);
 		
 	public:
 		Core	m_kTestCore;

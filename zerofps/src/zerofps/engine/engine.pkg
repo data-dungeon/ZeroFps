@@ -10,6 +10,7 @@ class SoundBufferManager;
 class OpenAlSystem;
 class PropertyFactory;
 class ZGui;
+class LevelManager;
 
 #include "soundbuffermanager.h"
 #include "openalsystem.h"
@@ -25,5 +26,9 @@ class ZGui;
 #include "fh.h"
 #include "propertyfactory.h"
 #include "property.h"
+#include "levelmanager.h"
 #include "lightproperty.h"
 #include "zgui/zgui.h"
+
+
+

@@ -10,6 +10,7 @@
 #include <cstdlib>
 
 #include "ballobject.h"
+//#include "worldinfoproperty.h"
 
 //#include "normaldrawproperty.h"
 //#include "playercontrolproperty.h"
@@ -45,15 +46,16 @@ class ZeroEdit :public Application {
 			FID_LOADOBJECTS,
 			FID_SAVE,
 			FID_LOAD,
+			FID_FOG,
+			FID_WATER,
 		};	
 	
-		Camera *m_pkCamera;
+		Camera* m_pkCamera;
+		HeightMap* m_pkMap;
 
-		HeightMap *m_pkMap;
-		HeightMapObject *m_pkHeightMapObject;
-		
+
 		int m_iMode;
-
+		
 		int m_iTexture;
 		Vector3 m_kDrawPos;
 		float m_fPointDistance;
@@ -69,9 +71,6 @@ class ZeroEdit :public Application {
 		bool m_iRandom;
 		bool m_bMenuActive;
 	
-		string m_kMapBaseDir;
-
-
 		void Input();				
 		void CreateNew(int iSize);
 		void SetPointer();	
@@ -80,9 +79,6 @@ class ZeroEdit :public Application {
 		Object* GetClosest(Vector3 kPos);
 		void SelectChild();
 		void SelectParent();		
-		void CreateZones();				
-		bool LoadLevel(const char* acFile);				
-		bool SaveLevel(const char* acFile);												
 		void ListTemplates();		
 		void RegisterPropertys();
 		

@@ -372,7 +372,7 @@ Property* Object::AddProxyProperty(char* acName)
 }
 
 
-bool Object::RemoveProperty(const char* acName) {
+bool Object::DeleteProperty(const char* acName) {
 	for(list<Property*>::iterator it=m_akPropertys.begin();it!=m_akPropertys.end();it++) {
 		if(strcmp((*it)->m_acName,acName)==0) {
 			delete (*it);
@@ -382,6 +382,17 @@ bool Object::RemoveProperty(const char* acName) {
 	}
 	return false;
 }
+
+bool Object::RemoveProperty(Property* pkProp) {
+	for(list<Property*>::iterator it=m_akPropertys.begin();it!=m_akPropertys.end();it++) {
+		if((*it) == pkProp) {
+			m_akPropertys.erase(it);
+			return true;
+		}
+	}
+	return false;
+}
+
 
 bool Object::Update(const char* acName){
 	for(list<Property*>::iterator it=m_akPropertys.begin();it!=m_akPropertys.end();it++) {

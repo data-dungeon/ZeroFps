@@ -35,8 +35,10 @@ bool ZFMemPackage::Read(void* pData,int iSize)
 {
 	char* datapointer=(char*)pData;
 	
-	if(m_acData.size() < m_iPos+iSize)
+	if(m_acData.size() < m_iPos+iSize){
+		cout<<"ERROR: Trying to read outside of mempackage"<<endl;
 		return false;
+	}
 	
 	for(int i=0;i<iSize;i++)
 	{

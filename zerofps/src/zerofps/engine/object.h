@@ -95,7 +95,8 @@ class ENGINE_API Object {
 		bool AddProperty(Property* pkNewProperty);
 		bool AddProperty(const char* acName);		
 		Property* AddProxyProperty(char* acName);
-		bool RemoveProperty(const char* acName);
+		bool DeleteProperty(const char* acName);
+		bool RemoveProperty(Property* pkProp);
 		bool Update(const char* acName);
 		
 		void AddChild(Object* pkObject);

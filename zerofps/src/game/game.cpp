@@ -20,7 +20,6 @@ void Game::OnInit()
 void Game::Init()
 {
 	//setup some default variables
-	m_kMapBaseDir="../data/maps";		
 	RegisterPropertys();
 
 	//register commmands
@@ -121,11 +120,13 @@ void Game::RunCommand(int cmdid, const CmdArgument* kCommand)
 				pkConsole->Printf("load [mapname]");
 				break;				
 			}
-			if(!LoadLevel(kCommand->m_kSplitCommand[1].c_str()))	
+			if(!pkLevelMan->LoadLevel(kCommand->m_kSplitCommand[1].c_str()))	
 			{
 				pkConsole->Printf("Error loading level");
 				break;			
 			}		
+			
+			SetupLevel();
 			
 			pkConsole->Printf("Level loaded");
 			
@@ -137,6 +138,7 @@ void Game::RunCommand(int cmdid, const CmdArgument* kCommand)
 	}
 }
 
+/*
 void Game::CreateZones()
 {
 	int radius=250;
@@ -151,12 +153,12 @@ void Game::CreateZones()
 				object->GetPos()=Vector3(x,m_pkMap->Height(x,z),z);
 				object->SetRadius(radius);
 				object->SetParent(pkObjectMan->GetWorldObject());
-				object->RemoveProperty("MadProperty");
+				object->DeleteProperty("MadProperty");
 			}
 		}
 	}
 }
-
+*/
 
 void Game::RegisterPropertys()
 {
@@ -166,7 +168,7 @@ void Game::RegisterPropertys()
 }
 
 
-
+/*
 bool Game::LoadLevel(const char* acFile)
 {
 	for(int i=0;acFile[i]!='\0';i++)
@@ -268,10 +270,11 @@ void Game::CreateNew(int iSize)
 
 	cout<<"new map"<<endl;
 }
+*/
 
 void Game::SetUpMenuScreen()
 {
-	LoadLevel("menu");
+	pkLevelMan->LoadLevel("menu");
 
 	m_pkCamera->GetPos().Set(94.5,23,98.1);	
 	m_pkCamera->GetRot().Set(13,138,0);	
@@ -292,7 +295,7 @@ void Game::SetupLevel()
 		if((*it)->GetName() == "PLAYER_SPAWN_POINT")
 		{
 			//player
-			PlayerObject* m_pkPlayer=new PlayerObject(m_pkMap,pkInput);
+			PlayerObject* m_pkPlayer=new PlayerObject(pkLevelMan->GetHeightMap(),pkInput);
 			m_pkPlayer->GetPos() = (*it)->GetPos();
 			m_pkPlayer->GetRot() = (*it)->GetRot();			
 			m_pkPlayer->AddProperty(new CameraProperty(m_pkCamera));

@@ -30,6 +30,7 @@ class ENGINE_API Application : public ZFObject {
 		OpenAlSystem* pkAlSys;
 		ZGui* pkGui;		
 		ZFIni* pkIni;
+		LevelManager* pkLevelMan;
 		
 	public:
 		static Application* pkApp;

@@ -21,7 +21,7 @@ class BASIC_API Vector4 {
 		// Assign
 		Vector4 operator=(const Vector4 &kOtherV3);		
 		Vector4 operator=(const Vector3 &kOtherV3);				
-		void set(float nx, float ny, float nz,float nw);			
+		void Set(float nx, float ny, float nz,float nw);			
 		
 		float &operator[](const int i);
 		

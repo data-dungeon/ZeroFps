@@ -21,7 +21,7 @@ void ZeroEdit::OnInit(void)
 
 	RegisterPropertys();
 		
-	pkRender->SetFog(Vector4(0,0,0,1),8,100,150,true);
+	pkLevelMan->Fog(Vector3(0,0,0),200,250);
 	
 	//register commands
 	g_ZFObjSys.Register_Cmd("loadmap",FID_LOADMAP,this);	
@@ -37,6 +37,8 @@ void ZeroEdit::OnInit(void)
 	g_ZFObjSys.Register_Cmd("loadobjects",FID_LOADOBJECTS,this);		
 	g_ZFObjSys.Register_Cmd("save",FID_SAVE,this);	
 	g_ZFObjSys.Register_Cmd("load",FID_LOAD,this);		
+	g_ZFObjSys.Register_Cmd("fog",FID_FOG,this);		
+	g_ZFObjSys.Register_Cmd("water",FID_WATER,this);		
 
 
 	//start text =)
@@ -44,7 +46,7 @@ void ZeroEdit::OnInit(void)
 	pkConsole->Printf("--------------------------------");
 
 	
-	m_pkMap=new HeightMap();	
+	m_pkMap=pkLevelMan->GetHeightMap();
 	m_pkCamera=new Camera(Vector3(0,10,0),Vector3(0,0,0),85,1.333,0.25,250);	
 
 	glEnable(GL_LIGHTING);
@@ -57,9 +59,7 @@ void ZeroEdit::OnInit(void)
 	m_pkCurentChild=NULL;
 	
 	m_fPointerHeight=1;
-	
-	m_kMapBaseDir="../data/maps";
-	
+		
 	m_kCurentTemplate="null";
 	pkFps->m_pkCmd->Add(&m_kCurentTemplate,"g_template",type_string);			
 	
@@ -79,9 +79,9 @@ void ZeroEdit::OnInit(void)
 	pkFps->m_pkCmd->Add(&m_fPointDistance,"g_PointDistance",type_float);	
 	
 	
-//	pkFps->m_pkCmd->Add(&m_kCurentTemplate,"g_ful",type_string);			
-	
-	CreateNew(100);
+	//create a default small world
+//	Clear();
+	pkLevelMan->CreateEmptyLevel(100);
 
 
 	//default light
@@ -90,7 +90,7 @@ void ZeroEdit::OnInit(void)
 	Vector3 *solpos=new Vector3(1000,1000,1000);
 		sol->kRot=solrot;
 		sol->kPos=solpos;		
-		sol->kDiffuse=Vector4(.8,.8,.8,1);	//Dag
+		sol->kDiffuse=Vector4(.9,.9,.9,1);	//Dag
 //		sol->kDiffuse=Vector4(.01,.01,.01,1);	//Dag
 //		sol->kAmbient=Vector4(0.01,0.01,0.01,0.01);
 		sol->iType=POINT_LIGHT;			
@@ -155,9 +155,40 @@ void ZeroEdit::OnHud(void)
 
 void ZeroEdit::RunCommand(int cmdid, const CmdArgument* kCommand)
 {
-	int size;
-
 	switch(cmdid) {
+		case FID_WATER:
+			if(kCommand->m_kSplitCommand.size() <= 1) {
+				pkConsole->Printf("water 1(on) / 0 (off)");
+				break;
+			}
+			
+			if(kCommand->m_kSplitCommand[1] == "1")
+				pkLevelMan->Water(true);
+				
+			if(kCommand->m_kSplitCommand[1] == "0")
+				pkLevelMan->Water(false);
+		
+			break;
+			
+		case FID_FOG:{
+			if(kCommand->m_kSplitCommand.size() < 5) {
+				pkConsole->Printf("fog [r] [g ] [b] [start] [stop]");
+				break;
+			}
+		
+			Vector3 color;		
+			color.Set(atof(kCommand->m_kSplitCommand[1].c_str()),
+						 atof(kCommand->m_kSplitCommand[2].c_str()),
+						 atof(kCommand->m_kSplitCommand[3].c_str()));
+						
+			float start=atof(kCommand->m_kSplitCommand[4].c_str());
+			float stop=atof(kCommand->m_kSplitCommand[5].c_str());
+		
+			pkLevelMan->Fog(color,start,stop);
+		
+			break;
+			}
+			
 		case FID_OBJECTTREE:
 			pkObjectMan->GetWorldObject()->PrintTree(0);
 			break;		
@@ -172,9 +203,9 @@ void ZeroEdit::RunCommand(int cmdid, const CmdArgument* kCommand)
 			if(!m_pkMap->Load(kCommand->m_kSplitCommand[1].c_str())){
 				pkConsole->Printf("Could not load map =(");
 			} else {
-				CreateZones();			
+				pkLevelMan->CreateZones(250,true);			
 			}
-				
+			
 			break;
 			
 		case FID_LOADIMAGEMAP:
@@ -189,7 +220,7 @@ void ZeroEdit::RunCommand(int cmdid, const CmdArgument* kCommand)
 			} else  {
 				m_pkMap->GenerateNormals(); 
 				m_pkMap->GenerateTextures();
-				CreateZones();
+				pkLevelMan->CreateZones(250,true);
 			}
 			
 			break;
@@ -202,21 +233,21 @@ void ZeroEdit::RunCommand(int cmdid, const CmdArgument* kCommand)
 			
 			if(!m_pkMap->Save(kCommand->m_kSplitCommand[1].c_str()))
 				pkConsole->Printf("Could not save map =(");			
+
 			break;
 			
-		case FID_NEWMAP:	
+		case FID_NEWMAP:{
 			if(kCommand->m_kSplitCommand.size() <= 1) {
 				pkConsole->Printf("Please Type a mapsize");
 				break;
 			}
-			size=atoi(kCommand->m_kSplitCommand[1].c_str());
+			int size=atoi(kCommand->m_kSplitCommand[1].c_str());
 			
 			pkConsole->Printf("Creating new map with size %d",size);
-			CreateNew(size);
-			CreateZones();
+			pkLevelMan->CreateEmptyLevel(size);
 			
 			break;
-			
+			}
 		case FID_MAKETEMPLATE:
 			if(kCommand->m_kSplitCommand.size() <= 1) {
 				pkConsole->Printf("maketemplate [template]");
@@ -307,7 +338,7 @@ void ZeroEdit::RunCommand(int cmdid, const CmdArgument* kCommand)
 				pkConsole->Printf("load [mapname]");
 				break;				
 			}
-			if(!LoadLevel(kCommand->m_kSplitCommand[1].c_str()))	
+			if(!pkLevelMan->LoadLevel(kCommand->m_kSplitCommand[1].c_str()))	
 			{
 				pkConsole->Printf("Error loading level");
 				break;			
@@ -322,7 +353,7 @@ void ZeroEdit::RunCommand(int cmdid, const CmdArgument* kCommand)
 				pkConsole->Printf("load [mapname]");
 				break;				
 			}
-			if(!SaveLevel(kCommand->m_kSplitCommand[1].c_str()))	
+			if(!pkLevelMan->SaveLevel(kCommand->m_kSplitCommand[1].c_str()))	
 			{
 				pkConsole->Printf("Error saving level");
 				break;			
@@ -425,11 +456,11 @@ void ZeroEdit::Input()
 		//child delete mohahaha
 		if(pkInput->Pressed(BACKSPACE)) {
 			if(m_pkCurentChild!=NULL)
-				if(m_pkCurentChild!=m_pkHeightMapObject) 
-					if(m_pkCurentChild!=pkObjectMan->GetWorldObject()){					
+				if(m_pkCurentChild->GetName() != "HeightMapObject") 
+					if(m_pkCurentChild->GetName() != "WorldObject"){					
 						delete m_pkCurentChild;
 						m_pkCurentChild=NULL;
-						m_pkCurentParent=m_pkHeightMapObject;
+//						m_pkCurentParent=m_pkHeightMapObject;
 					}
 
 		}
@@ -520,10 +551,6 @@ void ZeroEdit::Input()
 			{
 				SelectParent();
 			}
-			if(pkInput->Pressed(KEY_C))
-			{
-				m_pkCurentParent=m_pkHeightMapObject;
-			}
 			if(pkInput->Pressed(KEY_V))
 			{
 				if(pkFps->GetTicks()-m_fTimer < .5)
@@ -536,14 +563,6 @@ void ZeroEdit::Input()
 //				pkObjectMan->Add(object);
 				m_pkCurentChild=object;								
 				m_pkCurentParent=object;
-			}
-			if(pkInput->Pressed(KEY_B))
-			{
-				if(pkFps->GetTicks()-m_fTimer < 1)
-					break;			
-				m_fTimer=pkFps->GetTicks();
-			
-				CreateZones();
 			}
 			if(pkInput->Pressed(KEY_Z))
 			{
@@ -577,9 +596,16 @@ void ZeroEdit::Clear()
 
 void ZeroEdit::CreateNew(int iSize) 
 {
+	pkLevelMan->CreateNew(iSize);
+	
+	m_pkMap=pkLevelMan->GetHeightMap();
+	m_pkCurentChild=NULL;
+	m_pkCurentParent=NULL;
+
+/*
 	pkObjectMan->Clear();
 	m_pkCurentChild=NULL;
-
+	
 	m_pkHeightMapObject=new HeightMapObject(m_pkMap);		
 	m_pkHeightMapObject->SetParent(pkObjectMan->GetWorldObject());
 	
@@ -597,6 +623,7 @@ void ZeroEdit::CreateNew(int iSize)
 
 
 	cout<<"new map"<<endl;
+*/
 }
 
 
@@ -679,30 +706,11 @@ Object* ZeroEdit::GetClosest(Vector3 kPos)
 	return minobject;
 }
 
-void ZeroEdit::CreateZones()
-{
-	int radius=250;
-
-//	cout<<"SIZE"<<m_pkMap->m_iHmSize<<endl;
-
-	for(int x=0;x<m_pkMap->m_iHmSize;x+=radius/3){
-		for(int z=0;z<m_pkMap->m_iHmSize;z+=radius/3){
-			if(m_pkMap->Height(x,z)>-1){
-				ZoneObject *object = new ZoneObject();
-				object->GetPos()=Vector3(x,m_pkMap->Height(x,z),z);
-				object->SetRadius(radius);
-				object->SetParent(pkObjectMan->GetWorldObject());			
-			}
-		}
-	}
-}
-
-
 void ZeroEdit::RegisterPropertys()
 {
 	pkPropertyFactory->Register("FloatProperty", Create_FloatProperty);
 	pkPropertyFactory->Register("GravityProperty", Create_GravityProperty);	
-
+//	pkPropertyFactory->Register("WorldInfoProperty", Create_WorldInfoProperty);	
 }
 
 void ZeroEdit::ListTemplates()
@@ -720,105 +728,6 @@ void ZeroEdit::ListTemplates()
 	akNames.clear();
 }
 
-bool ZeroEdit::LoadLevel(const char* acFile)
-{
-	for(int i=0;acFile[i]!='\0';i++)
-	{
-		if(acFile[i]=='\\' || acFile[i]=='/')
-		{
-			pkConsole->Print("Bad filename");
-			return false;
-		}
-	}
-		
-	string kHmfile;
-	string kZolfile;
-
-	kHmfile=m_kMapBaseDir;
-	kHmfile+="/";
-	kHmfile+=acFile;
-	kHmfile+="/";	
-	kHmfile+="heightmap.hm";
-
-	kZolfile=m_kMapBaseDir;
-	kZolfile+="/";
-	kZolfile+=acFile;
-	kZolfile+="/";	
-	kZolfile+="objects.zol";
-
-	Clear();
-	
-	if(!m_pkMap->Load(kHmfile.c_str())){
-		pkConsole->Printf("Error loading heightmap");
-		return false;
-	};
-	
-	cout<<"heightmap loaded"<<endl;
-	
-	//create zoneobjects
-	CreateZones();		
-	
-	if(!pkObjectMan->LoadAllObjects(kZolfile .c_str())){
-		pkConsole->Printf("Error loading objects");
-		return false;
-	}	
-	
-	cout<<"objects loaded"<<endl;
-
-	return true;
-}
-
-bool ZeroEdit::SaveLevel(const char* acFile)
-{
-	for(int i=0;acFile[i]!='\0';i++)
-	{
-		if(acFile[i]=='\\' || acFile[i]=='/')
-		{
-			pkConsole->Print("Bad filename");
-			return false;
-		}
-	}
-	
-	string dir;
-	dir=m_kMapBaseDir+"/";
-	dir+=acFile;
-	
-	if(pkBasicFS->DirExist(dir.c_str()))
-		pkConsole->Printf("Overwriting old %s",acFile);
-	else
-		pkBasicFS->CreateDir(dir.c_str());
-		
-	string kHmfile;
-	string kZolfile;
-
-	kHmfile=m_kMapBaseDir;
-	kHmfile+="/";
-	kHmfile+=acFile;
-	kHmfile+="/";	
-	kHmfile+="heightmap.hm";
-
-	kZolfile=m_kMapBaseDir;
-	kZolfile+="/";
-	kZolfile+=acFile;
-	kZolfile+="/";	
-	kZolfile+="objects.zol";
-
-	if(!m_pkMap->Save(kHmfile.c_str())){
-		pkConsole->Printf("Error saving heightmap");
-		return false;
-	};
-	
-	cout<<"heightmap saved"<<endl;
-	
-	if(!pkObjectMan->SaveAllObjects(kZolfile .c_str())){
-		pkConsole->Printf("Error saving objects");
-		return false;
-	}	
-	
-	cout<<"objects saved"<<endl;
-
-	return true;
-}
 
 bool ZeroEdit::ZGWinProc( ZGuiWnd* pkWindow, unsigned int uiMessage, int iNumberOfParams, void *pkParams )
 {
@@ -829,6 +738,7 @@ bool ZeroEdit::ZGWinProc( ZGuiWnd* pkWindow, unsigned int uiMessage, int iNumber
 	case ZGM_COMMAND:
 		if( ((int*)pkParams)[0] == ID_CLOSE)
 		{
+			cout<<"blub"<<endl;		
 			pkFps->QuitEngine();
 		}
 		break;
@@ -839,7 +749,7 @@ bool ZeroEdit::ZGWinProc( ZGuiWnd* pkWindow, unsigned int uiMessage, int iNumber
 bool ZeroEdit::InitGUI()
 {
 	int tex_font = pkTexMan->Load("file:../data/textures/text/font.bmp", 0);
-	int tex_font_a = pkTexMan->Load("file:../data/textures/text/uitfont_a.bmp", 0);
+	int tex_font_a = pkTexMan->Load("file:../data/textures/text/font_a.bmp", 0);
 	int tex_bn_up = pkTexMan->Load("file:../data/textures/button_up.bmp", 0);
 	int tex_bn_down = pkTexMan->Load("file:../data/textures/button_down.bmp", 0);
 	int tex_bn_focus = pkTexMan->Load("file:../data/textures/button_focus.bmp", 0);

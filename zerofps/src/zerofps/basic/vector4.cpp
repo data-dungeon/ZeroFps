@@ -58,7 +58,7 @@ Vector4 Vector4::operator=(const Vector3 &kOtherV3)
 }
 
 
-void Vector4::set(float nx, float ny, float nz,float nw)
+void Vector4::Set(float nx, float ny, float nz,float nw)
 {
 	x = nx;
 	y = ny;
@@ -164,7 +164,7 @@ float &Vector4::operator[](const int i)
 Vector4 Vector4::operator*(const Matrix4 &f) const 
 {
 	Vector4 ny;
-	ny.set(0,0,0,0);
+	ny.Set(0,0,0,0);
 	
 	
 	for(int j=0;j<4;j++) 

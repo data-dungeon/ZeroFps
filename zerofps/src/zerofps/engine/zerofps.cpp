@@ -26,6 +26,7 @@ ZeroFps::ZeroFps(void)
 	m_pkGuiRenderer = new GLGuiRender();
 	m_pkGui = new ZGui();
 	m_pkIni = new ZFIni();
+	m_pkLevelMan = new LevelManager();
 
 	m_iFullScreen=0;
 	m_fFrameTime=0;
@@ -48,7 +49,6 @@ ZeroFps::ZeroFps(void)
 	m_pkCmd->Add(&m_iHeight,"r_Height",type_int);		
 	m_pkCmd->Add(&m_iDepth,"r_Depth",type_int);		
 	m_pkCmd->Add(&m_iFullScreen,"r_FullScreen",type_int);	
-	
 
 	g_ZFObjSys.Register_Cmd("setdisplay",FID_SETDISPLAY,this);
 	g_ZFObjSys.Register_Cmd("quit",FID_QUIT,this);
@@ -57,6 +57,7 @@ ZeroFps::ZeroFps(void)
 	g_ZFObjSys.Register_Cmd("server",FID_SERVER,this);
 	g_ZFObjSys.Register_Cmd("dir",FID_DIR,this);	
 	g_ZFObjSys.Register_Cmd("cd",FID_CD,this);	
+
 
 	m_kCurentDir=m_pkBasicFS->GetCWD();
 
@@ -627,9 +628,14 @@ void ZeroFps::RegisterPropertys()
 	m_pkPropertyFactory->Register("CameraProperty",Create_CameraProperty);			
 	m_pkPropertyFactory->Register("ProxyProperty",Create_ProxyProperty);				
 	m_pkPropertyFactory->Register("LightUpdateProperty",Create_LightUpdateProperty);					
+	m_pkPropertyFactory->Register("WorldInfoProperty",Create_WorldInfoProperty);						
 }
 
 void ZeroFps::QuitEngine()
 {
 	m_iState = state_exit;
 }
+
+
+
+

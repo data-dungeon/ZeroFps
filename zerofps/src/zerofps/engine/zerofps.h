@@ -3,18 +3,18 @@
 
 #include "../basic/basic.pkg"
 #include "../render/render.pkg"
+#include "engine.pkg"
 #include <string>
 #include <vector>
 #include <SDL/SDL.h>
 #include "../ogl/zfpsgl.h"
 #include <iostream>
 #include <cstdlib>
-#include "engine.pkg"
-#include "propertyfactory.h"
 #include <cstdio>
 #include <cstdarg>
 #include "network.h"
-#include "zgui/zgui.h"
+//#include "propertyfactory.h"
+//#include "zgui/zgui.h"
 
 using namespace std;
 
@@ -48,7 +48,7 @@ class ENGINE_API ZeroFps : public ZFObject {
 			FID_CONNECT,		// Connect to server.
 			FID_SERVER,			// Start a Server.
 			FID_DIR,
-			FID_CD
+			FID_CD,
 		};
 		
 		SDL_Surface* m_pkScreen;		
@@ -90,6 +90,7 @@ class ENGINE_API ZeroFps : public ZFObject {
 		ZGui* m_pkGui;
 		GLGuiRender* m_pkGuiRenderer;
 		ZFIni* m_pkIni;
+		LevelManager* m_pkLevelMan;
 
 		vector<Core>		akCoreModells;
 				
@@ -124,7 +125,6 @@ class ENGINE_API ZeroFps : public ZFObject {
 		inline float GetFrameTime() {return (m_fFrameTime/1000.0);};
 		inline float GetGameTime(void) {return (SDL_GetTicks()/1000.0);};
 		
-	
 		void SetCamera(Camera* pkCamera);
 	
 		inline Camera *GetCam() {return m_pkCamera;};		

@@ -273,27 +273,7 @@ Object* ObjectManager::CreateObject(const char* acName)
 	if(objtemplate==NULL)
 		return NULL;
 	
-	return CreateObject(objtemplate);
-	
-/*	
-	Object* tempobject=new Object;
-	
-	tempobject->GetName()=objtemplate->m_kName;
-	tempobject->GetPos()=objtemplate->m_kPos;
-	tempobject->GetRot()=objtemplate->m_kRot;
-	tempobject->GetVel()=objtemplate->m_kVel;
-	
-	for(list<PropertyDescriptor*>::iterator it=objtemplate->m_acPropertyList.begin();it!=objtemplate->m_acPropertyList.end();it++) 
-	{
-		if(tempobject->AddProperty((*it)->m_kName.c_str()))
-		{
-			tempobject->GetProperty((*it)->m_kName.c_str())->Load(&(*it)->m_kData);
-		}
-	}
-	
-	return tempobject;
-	*/
-	
+	return CreateObject(objtemplate);	
 }
 
 Object* ObjectManager::CreateObject(ObjectDescriptor* pkObjDesc)
@@ -309,7 +289,10 @@ Object* ObjectManager::CreateObject(ObjectDescriptor* pkObjDesc)
 	{
 		if(tempobject->AddProperty((*it)->m_kName.c_str()))
 		{
+			//cout<<"Added property "<<(*it)->m_kName.c_str()<<endl;
+			(*it)->m_kData.SetPos(0);
 			tempobject->GetProperty((*it)->m_kName.c_str())->Load(&(*it)->m_kData);
+			//cout<<"Loaded "<<(*it)->m_kName.c_str()<<endl;
 		}
 	}
 	
@@ -420,7 +403,6 @@ bool ObjectManager::LoadAllObjects(const char* acFile)
 	{		
 		Object* kObject = CreateObject(&kObd);
 		kObject->AttachToClosestZone();
-//		kObject->SetParent(GetWorldObject());
 		
 		kObd.Clear();
 	}
@@ -436,7 +418,20 @@ void ObjectManager::GetAllObjects(list<Object*> *pakObjects)
 	m_pkWorldObject->GetAllObjects(pakObjects);
 }
 
-
+Object* ObjectManager::GetObject(const char* acName)
+{
+	list<Object*> kObjects;		
+	GetAllObjects(&kObjects);
+	
+	for(list<Object*>::iterator it=kObjects.begin();it!=kObjects.end();it++) {
+		if((*it)->GetName() == acName)
+		{
+			return (*it);
+		}
+	}	
+	
+	return NULL;
+}
 
 
 

@@ -7,6 +7,7 @@ class SkyBoxRenderProperty;
 class WaterRenderProperty;
 class ProxyProperty;
 class LightUpdateProperty;
+class WorldInfoProperty;
 
 class Object;
 class CollisionObject;
@@ -39,7 +40,7 @@ class CollisionHeightMap;
 #include "proxyproperty.h"
 #include "zoneobject.h"
 #include "lightupdateproperty.h"
-
+#include "worldinfoproperty.h"
 
 
 

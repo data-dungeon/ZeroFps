@@ -44,8 +44,10 @@ void Test::OnInit(void)
 //	test->SetPosition(Vector3(0,-4,0));
 //----------------------------
 	
-	Clear();
+//	Clear();
 //LoadLevel("forest");
+	m_pkMap=pkLevelMan->GetHeightMap();
+	pkLevelMan->CreateEmptyLevel(100);
 	
 	
 	m_kMapBaseDir="../data/maps";	
@@ -61,7 +63,7 @@ void Test::OnInit(void)
   
 
 //	pkRender->SetFog(Vector4(.50,.55,.88,1),8,100,200,true);
-	pkRender->SetFog(Vector4(0,0,0,1),8,100,200,true);
+	pkRender->SetFog(Vector4(0,0,0,1),100,200,true);
 	
 	LightSource *spot=new LightSource();
 	Vector3 *spotpos=new Vector3(55,50,40);
@@ -361,7 +363,7 @@ void Test::RunCommand(int cmdid, const CmdArgument* kCommand)
 				pkConsole->Printf("load [mapname]");
 				break;				
 			}
-			if(!LoadLevel(kCommand->m_kSplitCommand[1].c_str()))	
+			if(!pkLevelMan->LoadLevel(kCommand->m_kSplitCommand[1].c_str()))	
 			{
 				pkConsole->Printf("Error loading level");
 				break;			
@@ -457,7 +459,7 @@ void Test::CreateZones()
 				object->GetPos()=Vector3(x,m_pkMap->Height(x,z),z);
 				object->SetRadius(radius);
 				object->SetParent(pkObjectMan->GetWorldObject());
-				object->RemoveProperty("MadProperty");
+				object->DeleteProperty("MadProperty");
 			}
 		}
 	}
