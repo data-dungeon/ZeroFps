@@ -1,0 +1,625 @@
+#include <iostream>
+#include "mdl.h"
+
+//extern color_rgb quake_palette[768];
+
+static int num_mdls_loaded;
+
+
+
+
+
+/*
+bool LoadPCXBilder(img_c* bild, FILE *fp, color_rgb* pal)
+{
+	color_rgb palette[768];
+	int i;
+
+	pcx_header_s head;
+	fread(&head,sizeof(pcx_header_s),1,fp);
+
+	// Alloc image mem.
+	bild->width  = head.xmax + 1;
+	bild->height = head.ymax + 1;
+	int img_size = bild->width * bild->height;
+
+	bild->pixels = new color_rgba [img_size];
+	unsigned char *data1 = new unsigned char [img_size];
+
+	// Load and unpack image.
+	int count = 0;
+	int readc;
+	int num_bytes;
+	
+	while(count <= img_size) {	
+		readc = getc(fp);
+
+		// Check if RLE
+		if(readc > 192 && readc <= 255) {
+			num_bytes = readc - 192;	// Get nr of bytes in rle.
+			readc = getc(fp);			// Get data in rle.
+			while(num_bytes-- > 0)	data1[count++] = readc;
+			 }
+		 
+		else	data1[count++] = readc;
+		}
+
+	// Read palette from pcx image.
+	fseek(fp, -768L, SEEK_END);
+	for(i=0; i<256; i++) {
+		palette[i].r = (getc(fp));
+		palette[i].g = (getc(fp));
+		palette[i].b = (getc(fp));
+		}
+
+	// Translate image to rgb-24.
+	if(pal) {
+		for(i = 0; i<img_size; i++) {
+			bild->pixels[i].r = pal[ data1[i] ].r;
+			bild->pixels[i].g = pal[ data1[i] ].g;
+			bild->pixels[i].b = pal[ data1[i] ].b;
+			}
+		}
+	else {
+		for(i = 0; i<img_size; i++) {
+			bild->pixels[i].r = palette[ data1[i] ].r;
+			bild->pixels[i].g = palette[ data1[i] ].g;
+			bild->pixels[i].b = palette[ data1[i] ].b;
+			}
+		}
+
+	//delete [] data1;	//** Fix_me ** [Vim], [Läcker som ett såll :)]
+	return true;
+}
+*/
+
+
+
+
+
+void free_mdlmem(mdl_t* mdl)
+{
+	if(mdl->skinvert)	delete [] mdl->skinvert;
+	if(mdl->tris)		delete [] mdl->tris;
+
+	if(mdl->frames) {
+		for(int i=0; i<mdl->head.numframes; i++) {
+			if(mdl->frames[i].vertex)	delete mdl->frames[i].vertex;
+			}
+
+		delete [] mdl->frames;
+		}
+
+}
+
+bool mdl_readframes(mdl_t* mdl)
+{
+	int type;					
+
+	// Alloc mem for frames.
+	mdl->frames = new mframe_s [mdl->head.numframes];
+	memset(mdl->frames,0,sizeof(mframe_s) * mdl->head.numframes);
+
+	for(int i=0; i<mdl->head.numframes; i++) {
+		mdl->mdlfp->Read(&type, 4, 1);
+
+		if(type == 0)	{
+			// Read a single frame.
+			mdl->mdlfp->Read(&mdl->frames[i].head, sizeof(daliasframe_s),1);
+			mdl->frames[i].vertex = new dtrivertx_s [mdl->head.numverts];
+			mdl->mdlfp->Read(mdl->frames[i].vertex, sizeof(dtrivertx_s),mdl->head.numverts);
+			}
+		
+		else		return false;	// Don't support multiframes.
+		}
+
+	return true;
+}
+
+/*
+void mdl_loadskin(FILE* fp, int w, int h,img_c* img)
+{
+	img->height = h;
+	img->width  = w;
+	int img_size = img->width * img->height;
+	img->pixels = new color_rgba [img_size];
+	
+	unsigned char* data = new unsigned char [img_size];
+	fread(data,1,img_size,fp);
+
+	// Translate image to rgb-24.
+	for(int i = 0; i<img_size; i++) {
+		img->pixels[i].r = quake_palette[ data[i] ].r;
+		img->pixels[i].g = quake_palette[ data[i] ].g;
+		img->pixels[i].b = quake_palette[ data[i] ].b;
+		img->pixels[i].a = 0;
+		}
+
+	delete [] data;
+}*/
+
+/*
+int mdl_readskins(mdl_t* mdl,img_c* img)
+{
+	int skintype;
+	int skinsize;
+	int num_of_muliskins;
+
+	skinsize = mdl->head.skinwidth*mdl->head.skinheight;
+
+	for(int i=0; i<mdl->head.numskins; i++) {
+		mdl->mdlfp->read(&skintype, 4,1);
+
+		if(skintype == 0) {
+			if(!img->pixels)
+				mdl_loadskin(mdl->mdlfp->fp, mdl->head.skinwidth, mdl->head.skinheight,img);
+			else	
+				mdl->mdlfp->seek(skinsize,SEEK_CUR);
+			}
+		else {
+			mdl->mdlfp->read(&num_of_muliskins, 4,1);
+			mdl->mdlfp->seek(sizeof(float)*num_of_muliskins,SEEK_CUR);	// Skip time values.
+			
+			// If no skin read first of the multiskins.
+			if(!img->pixels) {
+				mdl_loadskin(mdl->mdlfp->fp, mdl->head.skinwidth, mdl->head.skinheight,img);
+				num_of_muliskins--;
+				}
+				
+			// Skip the rest of the skins.
+			mdl->mdlfp->seek(num_of_muliskins * skinsize,SEEK_CUR);	
+			}
+		}
+
+	mdl->skinvert = new dstvert_s [mdl->head.numverts];
+	mdl->mdlfp->read(mdl->skinvert, sizeof(dstvert_s),mdl->head.numverts);
+	
+//	delete [] skinddata;
+	return true;
+}
+*/
+void mdl_readtriangles(mdl_t* mdl)
+{
+	// Alloc triangles.
+	mdl->tris = new dtriangle_s [mdl->head.numtris];
+	mdl->mdlfp->Read(mdl->tris, sizeof(dtriangle_s),mdl->head.numtris);
+}
+
+/*bool ReadMDL(mdl_t* mdl, img_c* img)
+{
+	// Read the header.
+	mdl->mdlfp->read(&mdl->head, sizeof(mdlhead_s),1);
+
+	if(!mdl_readskins(mdl,img))		return false;
+	mdl_readtriangles(mdl);
+	if(!mdl_readframes(mdl)) 		return false;
+	return true;
+}
+*/
+
+void mdl_writest(mdl_t* mdl, int t, int v, Vector3 *st)
+{
+	st->x = (float) mdl->skinvert[v].s;		
+	st->y = (float) mdl->skinvert[v].t;	
+	st->z = 0;
+
+	if( (mdl->skinvert[v].onseam) && (!mdl->tris[t].facesfront)) {
+		st->x += (mdl->head.skinwidth / 2);
+		}
+
+	st->x = (float) st->x / mdl->head.skinwidth;	
+	st->y = (float) st->y / mdl->head.skinheight;
+	st->z = 0;
+}
+
+/*
+bool read_mdl(polygon_mdl_c* pmd, pakfilefp_c* mdlFp)
+{
+//	img_c image_skin;
+
+	mdl_t mdl;
+	memset(&mdl,0,sizeof(mdl_t));
+	mdl.mdlfp = mdlFp;
+
+	if(!ReadMDL(&mdl,&image_skin)) {
+		mdl.mdlfp->close(); //fclose(mdl.fp);
+		free_mdlmem(&mdl);
+		return false;
+		}
+
+	// Transfer to pmd struct.
+	mdl.new_skinwidth  = getsize(mdl.head.skinwidth);
+	mdl.new_skinheight = getsize(mdl.head.skinheight);
+
+	pmd->num_of_vertex = mdl.head.numverts;
+	pmd->num_of_surfaces = mdl.head.numtris;
+	pmd->num_of_frames = mdl.head.numframes;
+
+	pmd->set_max_surfaces(pmd->num_of_surfaces);
+	pmd->frame = new frame_s [pmd->num_of_frames];
+	pmd->vertex = NULL;
+
+	int tri[10];
+	vector_c testv[10];
+	vector_c color(1,1,1);
+
+	// Read Triangles
+	for(int i=0; i<pmd->num_of_surfaces; i++) {
+		tri[0] = mdl.tris[i].vertices[0];
+		tri[1] = mdl.tris[i].vertices[1];
+		tri[2] = mdl.tris[i].vertices[2];
+	
+		pmd->set_surface(i, 3, tri, &color);
+
+		mdl_writest(&mdl, i, mdl.tris[i].vertices[0], &testv[0]);
+		mdl_writest(&mdl, i, mdl.tris[i].vertices[1], &testv[1]);
+		mdl_writest(&mdl, i, mdl.tris[i].vertices[2], &testv[2]);
+
+		pmd->surface[i].set_uv(0, testv[0].x, testv[0].y);
+		pmd->surface[i].set_uv(1, testv[1].x, testv[1].y);
+		pmd->surface[i].set_uv(2, testv[2].x, testv[2].y);
+		pmd->surface[i].set_texture(NO_TEXTURE);
+		}
+
+	int f;
+	dtrivertx_s *vert;
+	float x,y,z;
+
+	for(f=0; f<pmd->num_of_frames; f++) {
+		// Alloc frame mem
+		pmd->frame[f].Vertex = new vector_c [pmd->num_of_vertex];
+
+		for(int v=0; v<pmd->num_of_vertex; v++) {
+			vert = &mdl.frames[f].vertex[v];
+
+			x = (float) (mdl.head.scale.x * vert->packedposition[0]) + mdl.head.scale_origin.x;
+			y = (float) (mdl.head.scale.y * vert->packedposition[1]) + mdl.head.scale_origin.y;
+			z = (float) (mdl.head.scale.z * vert->packedposition[2]) + mdl.head.scale_origin.z;
+			
+			pmd->frame[f].Vertex[v].x = y;	// / 3.2;
+			pmd->frame[f].Vertex[v].y = z;	// / 3.2;
+			pmd->frame[f].Vertex[v].z = x;	// / 3.2;
+			}
+		}
+
+	pmd->set_frame(0);
+	pmd->texture_num = 0;
+
+	// Load skin to texture sys.
+	char skinname[16];
+
+	if(image_skin.pixels)	{
+		image_skin.downsample();
+		sprintf(skinname, "MDLSKin%d", num_mdls_loaded);
+		pmd->texture_num = GetGraphic()->textures.load_tex(&image_skin, skinname);
+		}
+
+	free_mdlmem(&mdl);
+	num_mdls_loaded++;
+	return true;
+}*/
+
+// Quake2 Loading Code
+md2_dtrivertx_t max_xyz[4096];
+char g_skins[MD2_MAX_SKINS][MD2_MAX_SKINNAME];
+
+void ReadMD2(mdl2_t* md2)
+{
+	// Read the header.
+	md2->md2fp->Read(&md2->head, sizeof(q2mdlhead_s),1);
+
+	md2->md2fp->Read(g_skins, md2->head.num_skins * MD2_MAX_SKINNAME, 1);
+
+	// Read texture coo
+	md2->skinvert = new md2_dstvert_t [md2->head.num_st];
+	md2->md2fp->Read(md2->skinvert, md2->head.num_st * sizeof(md2_dstvert_t), 1);
+
+	// Read triangles.
+	md2->tris = new md2_dtriangle_t [md2->head.num_tris];
+	md2->md2fp->Read(md2->tris, md2->head.num_tris * sizeof(md2_dtriangle_t), 1);
+
+	// Read frames.
+	md2->frames = new q2frame_t [md2->head.num_frames];
+	memset(md2->frames,0,sizeof(q2frame_t) * md2->head.num_frames);
+
+	for(int i=0;i<md2->head.num_frames;i++)
+	{
+		md2->md2fp->Read(&md2->frames[i].aliasframe, sizeof(md2_daliasframe_t), 1);
+		md2->frames[i].vertex = new md2_dtrivertx_t [md2->head.num_xyz];
+		md2->md2fp->Read(md2->frames[i].vertex, md2->head.framesize - sizeof(md2_daliasframe_t),1);
+	}
+}
+
+void SplitAnimNumAndFrameNum(int AnimAndFrame, int& Anim, int& Frame)
+{
+	Anim = Frame = 0;
+
+	while(AnimAndFrame >= 100)
+	{
+		AnimAndFrame -= 100;
+		Anim += 1;
+	}
+
+	Frame = AnimAndFrame;
+}
+
+char NewSkinName[256];
+void unpack(char* ucPakFileName, char* ucNewFileName);
+
+bool read_md2(pmd_c* pmd, PAKFileFp* md2Fp)
+{
+	int i;
+
+	mdl2_t md2;
+	memset(&md2,0,sizeof(mdl2_t));
+	md2.md2fp = md2Fp;
+
+	ReadMD2(&md2);
+	md2Fp->Close ();
+
+	// Transfer to pmd struct.
+	pmd->head.num_of_vertex		= md2.head.num_xyz;
+	pmd->head.num_of_triangles	= md2.head.num_tris;
+	pmd->head.num_of_vertexcoo  = md2.head.num_st;
+	pmd->head.num_of_frames		= md2.head.num_frames;
+	pmd->head.num_of_drawstates = 0;
+	pmd->head.version_num		= VERSION_NUM;
+	pmd->head.num_of_textures	= 1;
+
+	for(i=0; i<md2.head.num_skins; i++) {
+		sprintf(NewSkinName,"skin_%d", i);
+		strcpy(pmd->textures[i].texname, NewSkinName);
+		g_PakFileSystem.Unpack(g_skins[i], NewSkinName);
+		}
+
+	pmd->frames = new pmd_vertexframe [pmd->head.num_of_frames];
+	pmd->triangle	= new pmd_triangle_s [pmd->head.num_of_triangles];
+	pmd->texture_coo = new pmd_texcoo_s [pmd->head.num_of_vertexcoo];
+
+	pmd->vertex_normals		= new Vector3 [pmd->head.num_of_vertex];
+	pmd->surface_normals	= new Vector3 [pmd->head.num_of_triangles];
+
+	//pmd->set_max_surfaces(pmd->num_of_surfaces);
+	//pmd->frame = new frame_s [pmd->num_of_frames];
+	//pmd->vertex = NULL;
+
+
+/*	int tri[10];
+	vector_c testv[10];
+	vector_c color(1,1,1);*/
+	int vi = 0;
+
+	// Read Triangles
+	for(i=0; i<pmd->head.num_of_triangles; i++) {
+/*		pmd->triangle[i].vertex_index[0] = vi;
+		pmd->texture_coo[vi].s = (float) md2.skinvert[md2.tris[i].index_st[0]].s / md2.head.skinwidth;
+		pmd->texture_coo[vi].t = (float) md2.skinvert[md2.tris[i].index_st[0]].t / md2.head.skinheight;
+		vi++;
+
+		pmd->triangle[i].vertex_index[1] = vi;
+		pmd->texture_coo[vi].s = (float) md2.skinvert[md2.tris[i].index_st[1]].s / md2.head.skinwidth;
+		pmd->texture_coo[vi].t = (float) md2.skinvert[md2.tris[i].index_st[1]].t / md2.head.skinheight;
+		vi++;
+
+		pmd->triangle[i].vertex_index[2] = vi;
+		pmd->texture_coo[vi].s = (float) md2.skinvert[md2.tris[i].index_st[2]].s / md2.head.skinwidth;
+		pmd->texture_coo[vi].t = (float) md2.skinvert[md2.tris[i].index_st[2]].t / md2.head.skinheight;
+		vi++;*/
+
+		pmd->triangle[i].vertex_index[0] = md2.tris[i].index_xyz[0];
+		pmd->triangle[i].texcoo_index[0] = md2.tris[i].index_st[0];
+		pmd->triangle[i].vertex_index[1] = md2.tris[i].index_xyz[1];
+		pmd->triangle[i].texcoo_index[1] = md2.tris[i].index_st[1];
+		pmd->triangle[i].vertex_index[2] = md2.tris[i].index_xyz[2];
+		pmd->triangle[i].texcoo_index[2] = md2.tris[i].index_st[2];
+		pmd->triangle[i].texture_num = 0;
+
+		/*
+		pmd->surface[i].set_uv(0, (float) md2.skinvert[md2.tris[i].index_st[0]].s / md2.head.skinwidth, (float) md2.skinvert[md2.tris[i].index_st[0]].t / md2.head.skinheight);
+		pmd->surface[i].set_uv(1, (float) md2.skinvert[md2.tris[i].index_st[1]].s / md2.head.skinwidth, (float) md2.skinvert[md2.tris[i].index_st[1]].t / md2.head.skinheight);
+		pmd->surface[i].set_uv(2, (float) md2.skinvert[md2.tris[i].index_st[2]].s / md2.head.skinwidth, (float) md2.skinvert[md2.tris[i].index_st[2]].t / md2.head.skinheight);
+		*/
+		}
+
+	for(i=0; i<pmd->head.num_of_vertexcoo; i++) {
+		pmd->texture_coo[i].s = (float) md2.skinvert[i].s / md2.head.skinwidth;
+		pmd->texture_coo[i].t = (float) md2.skinvert[i].t / md2.head.skinheight;
+		}
+	
+	
+	md2_dtrivertx_t		*vert;
+	md2_daliasframe_t	*af;
+	af = &md2.frames[0].aliasframe;
+	float x,y,z;
+
+/*	for(int f=0; f<pmd->head.num_of_frames; f++) {
+		vi = 0;
+		// Alloc frame mem
+		af = &md2.frames[f].aliasframe;
+		pmd->frames[f].vertex = new Vector3 [pmd->head.num_of_vertex];
+	
+		for(i=0; i<pmd->head.num_of_triangles; i++) 
+		{
+			for(int v=0; v<3; v++)
+			{
+				vert = &md2.frames[0].vertex[md2.tris[i].index_xyz[v]];
+
+				x = (float) (af->scale[0] * vert->v[0]) + af->translate[0];
+				y = (float) (af->scale[1] * vert->v[1]) + af->translate[1];
+				z = (float) (af->scale[2] * vert->v[2]) + af->translate[2];
+				
+				pmd->frames[f].vertex[vi].x = y;
+				pmd->frames[f].vertex[vi].y = z;
+				pmd->frames[f].vertex[vi].z = x;
+				vi++;
+			}
+		}
+	}*/
+
+	//	pmd->vertex		= new Vector3 [pmd->head.num_of_vertex];
+/*
+class Pmd_KeyFrame
+{
+public:
+	int		iVertexFrame;				// 
+	float	fFrameTime;					// Antal Sekunder denna frame ska vara.
+};
+
+class Pmd_Animation
+{
+public:
+	void Clear(void);
+	void operator=(Pmd_Animation& kOther);
+
+	char Name[256];
+	vector<Pmd_KeyFrame>	KeyFrame;	
+};
+*/
+	Pmd_Animation* pkAnim;
+	Pmd_KeyFrame kKeyFrame;
+	int iAnimNum, iFrameNum;
+	char AnimName[256];
+	char AnimNumAsString[256];
+
+	for(int f=0; f<pmd->head.num_of_frames; f++) {
+		// Alloc frame mem
+		af = &md2.frames[f].aliasframe;
+
+		int iFrameNumIndex = strcspn( af->name, "1234567890" );
+
+		int iAnimFrameNum = atoi(&af->name[iFrameNumIndex]);
+		SplitAnimNumAndFrameNum(iAnimFrameNum, iAnimNum, iFrameNum);
+		strncpy( AnimName, af->name, iFrameNumIndex);
+		AnimName[iFrameNumIndex] = 0;
+//		cout << af->name <<"/" << AnimName  << "  " << iAnimFrameNum << ","<< iAnimNum << ","<< iFrameNum << endl;
+		
+		_itoa(iAnimNum,AnimNumAsString,10);
+		strcat(AnimName,AnimNumAsString);
+		pkAnim = pmd->GetAnimation(AnimName);
+
+		kKeyFrame.Clear();
+		kKeyFrame.fFrameTime = 0.1;
+		kKeyFrame.iVertexFrame = f;
+		pkAnim->KeyFrame.push_back(kKeyFrame);
+
+		pmd->frames[f].vertex = new Vector3 [pmd->head.num_of_vertex];
+
+		for(int v=0; v < pmd->head.num_of_vertex; v++) {
+			vert = &md2.frames[f].vertex[v];
+
+			x = (float) (af->scale[0] * vert->v[0]) + af->translate[0];
+			y = (float) (af->scale[1] * vert->v[1]) + af->translate[1];
+			z = (float) (af->scale[2] * vert->v[2]) + af->translate[2];
+			
+			pmd->frames[f].vertex[v].x = y;
+			pmd->frames[f].vertex[v].y = z;
+			pmd->frames[f].vertex[v].z = x;
+			}
+	}
+
+/*	int f;
+	md2_dtrivertx_t		*vert;
+	md2_daliasframe_t	*af;
+	float x,y,z;
+
+	for(f=0; f<pmd->num_of_frames; f++) {
+		// Alloc frame mem
+		af = &md2.frames[f].aliasframe;
+		pmd->frame[f].Vertex = new vector_c [pmd->num_of_vertex];
+
+		for(int v=0; v<pmd->num_of_vertex; v++) {
+			vert = &md2.frames[f].vertex[v];
+
+			x = (float) (af->scale[0] * vert->v[0]) + af->translate[0];
+			y = (float) (af->scale[1] * vert->v[1]) + af->translate[1];
+			z = (float) (af->scale[2] * vert->v[2]) + af->translate[2];
+			
+			pmd->frame[f].Vertex[v].x = y;
+			pmd->frame[f].Vertex[v].y = z;
+			pmd->frame[f].Vertex[v].z = x;
+			}
+		}*/
+
+//	pmd->set_frame(0);
+//	pmd->texture_num = 0;
+	
+	// Load skin to texture sys.
+/*	img_c skinbild;
+	pakfilefp_c pakfp;
+	pakfp.open(g_skins[0]);
+	if(pakfp.fp == NULL)	return true;
+
+	LoadPCXBilder(&skinbild,pakfp.fp, quake_palette);
+	//skinbild.load_pcx(pakfp.fp, quake_palette);
+	skinbild.downsample();
+
+	char skinname[16];
+	if(skinbild.pixels)	{
+		sprintf(skinname, "MDLSKin%d", num_mdls_loaded);
+		pmd->texture_num = GetGraphic()->textures.load_tex(&skinbild, skinname);
+		}
+
+	num_mdls_loaded++;*/
+	return true;
+}
+
+// Returns mdl version for quake mdl (1-3) or 0 if not a quake series mdl.
+int GetQuakeModellVersion(PAKFileFp *mdlfp, char* filename)
+{
+	int	name_version = 0;	// Version from file ext.
+	int head_version = 0;	// Version from file header.
+
+	// First get version from file name. 
+	char* strpre = strchr( filename, '.');
+
+	if(_stricmp(strpre,".mdl") == 0)	name_version = 1;	
+	if(_stricmp(strpre,".md2") == 0)	name_version = 2;	
+
+//	name_version = 1;
+
+	// Now chek file head.
+	int		ident;
+	int		version;			
+
+	mdlfp->Read(&ident,	sizeof(ident),	1);
+	mdlfp->Read(&version,	sizeof(version),1);
+	
+	if(name_version == 1) {
+		if(ident != MDL_IDENT_TAG)			return 0;
+		if(version == MDL_ALIAS_VERSION)	return 1;
+		}
+
+	if(name_version == 2) {
+		if(ident != MD2_IDENT_TAG)			return 0;
+		if(version == MD2_ALIAS_VERSION)	return 2;
+		}
+
+	return 0;
+}
+
+
+bool ReadQuakeSeriesModell(pmd_c* pmd, char* filename)
+{
+	PAKFileFp mdlFp;
+	mdlFp.Open(filename);
+	if(mdlFp.pkFp == NULL)	return false;
+
+	// Check that its a quake series modell file.
+	int q_ver = GetQuakeModellVersion(&mdlFp, filename);
+	//int q_ver = 2;
+
+	if (q_ver == 0)	{
+		mdlFp.Close();	
+		return false;
+		}
+
+//	Logf(LF_LOG, "Quake Mdl Version is %d\n", q_ver );
+
+	// Load modell
+//	if(q_ver == 1)	read_mdl(pmd, &mdlFp);
+	if(q_ver == 2)	read_md2(pmd, &mdlFp);
+
+	mdlFp.Close();
+	return true;
+}
+
