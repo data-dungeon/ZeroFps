@@ -85,10 +85,15 @@ ZeroFps::ZeroFps(void) : I_ZeroFps("ZeroFps")
 	// Set Default values
 	m_fFrameTime				= 0;
 	m_fLastFrameTime			= 0;
+	
 	m_fSystemUpdateFps		= 30;
-	m_bEditMode					= false;
-
 	m_fSystemUpdateTime		= 0;
+	m_fSystemUpdateFpsDelta = 0;
+	m_fNetworkUpdateFps		= 20;
+	m_fNetworkUpdateTime		= 0;
+	m_fNetworkUpdateFpsDelta= 0;	
+		
+	m_bEditMode					= false;
 	m_bServerMode				= false;
 	m_bClientMode				= false;
 	m_bGuiMode					= false;
@@ -119,6 +124,7 @@ ZeroFps::ZeroFps(void) : I_ZeroFps("ZeroFps")
 	RegisterVariable("r_madlod",			&g_fMadLODScale,			CSYS_FLOAT);
 	RegisterVariable("r_madlodlock",		&g_iMadLODLock,			CSYS_FLOAT);
 	RegisterVariable("e_systemfps",		&m_fSystemUpdateFps,		CSYS_FLOAT);	
+	RegisterVariable("e_networkfps",		&m_fNetworkUpdateFps,		CSYS_FLOAT);	
 	RegisterVariable("e_runsim",			&m_bRunWorldSim,			CSYS_BOOL);	
 	RegisterVariable("r_logrp",			&g_iLogRenderPropertys,	CSYS_INT);
 	RegisterVariable("r_render",			&m_bRenderOn,				CSYS_BOOL);
@@ -489,7 +495,8 @@ void ZeroFps::Run_EngineShell()
 void ZeroFps::Run_Server()
 {
 	//update system
-	Update_System();
+	//Update_System();
+	
 
 	if(m_bTcsFullframe)
 		m_pkTcs->Update(GetFrameTime());	
@@ -498,8 +505,8 @@ void ZeroFps::Run_Server()
 
 void ZeroFps::Run_Client()
 {
-	if(!m_bServerMode)
-		Update_System();	
+	//if(!m_bServerMode)
+	//	Update_System();	
 	
 	//update sound system
 	if(m_kRenderCamera.size()  == 1)
@@ -509,6 +516,70 @@ void ZeroFps::Run_Client()
 	StartProfileTimer("s__Sound");
 	m_pkAudioSystem->Update();
 	StopProfileTimer("s__Sound");
+}
+
+void ZeroFps::Update_Network()
+{
+
+
+
+	int iLoops			= 0;
+	float fRestTime	= 0;
+	float fATime		= 0;
+
+	//calculate new system delta time
+	m_fNetworkUpdateFpsDelta = float(1.0) / m_fNetworkUpdateFps;	
+
+	//time since last update
+	fATime = GetTicks() - m_fNetworkUpdateTime; 	
+
+	if(fATime > m_fNetworkUpdateFpsDelta)
+	{
+		//cout<<"update"<<endl;
+		
+		//update last network update time
+		m_fNetworkUpdateTime = GetTicks();;
+	
+		//update network for client & server
+		m_pkNetWork->Run();		
+		
+		//pack objects to clients
+		m_pkEntityManager->PackToClients();		
+		
+	}
+	
+/*		
+	//how many system loops shuld we make?
+	iLoops = int(fATime / m_fNetworkUpdateFpsDelta);		
+			
+	//save rest time to add it att end of function
+	fRestTime = fATime - (iLoops * m_fNetworkUpdateFpsDelta);				
+			
+	//if no loops are to be done, just return
+	if(iLoops<=0)
+		return;
+	
+	//set maximum number of loops, dont know if this is realy that good...but what the hell
+	if(iLoops > 10)
+	{
+		//cout<<"engine runs to slow (try kicking your computer and punching your screen for better performance)"<<endl;
+		iLoops = 10;
+	}
+*/
+	/*
+	for(int i=0;i<iLoops;i++)
+	{		
+		//cout<<"updating network" <<iLoops<<endl;
+		
+			
+		
+		//save current update time, 
+		m_fNetworkUpdateTime = GetTicks();		
+	}
+	
+	//finaly add rest time
+	m_fNetworkUpdateTime -= fRestTime;
+	*/
 }
 
 void ZeroFps::Update_System()
@@ -564,7 +635,7 @@ void ZeroFps::Update_System()
 		m_pkEntityManager->UpdateSimTime();
 		
 		//update network for client & server
-		m_pkNetWork->Run();				
+		//m_pkNetWork->Run();				
 		
 		//update application systems
 		m_pkApp->OnSystem();
@@ -601,7 +672,7 @@ void ZeroFps::Update_System()
 		
 				
 		//pack objects to clients
-		m_pkEntityManager->PackToClients();		
+		//m_pkEntityManager->PackToClients();		
 		
 		//delete objects
 		m_pkEntityManager->UpdateDelete();
@@ -672,16 +743,27 @@ void ZeroFps::MainLoop(void)
 			//update basic engine systems			
 			Run_EngineShell();
 			
+			/*
 			//update server only systems			
 			StartProfileTimer("s_System");			
-			if(m_bServerMode)
-				Run_Server();		
 				
 			//update client only systems
 			if(m_bClientMode)
 				Run_Client();		
 			StopProfileTimer("s_System");							
-				
+			*/	
+			
+			//update system
+			Update_System();
+						
+			//client/server specifik updates
+			if(m_bServerMode) Run_Server();		
+			if(m_bClientMode) Run_Client();		
+			
+			//update network
+			Update_Network();			
+			
+			
 			//render stuff			
 			Draw_EngineShell();			
 			

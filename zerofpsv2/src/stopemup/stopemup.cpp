@@ -88,6 +88,8 @@ void StopEmUp::OnInit()
 	SetTitle("StopEmUp (C) Richard Svensson");
 
 	m_pkZeroFps->SetSystemFps(20);
+	m_pkZeroFps->SetNetworkFps(15);
+	m_pkNetwork->SetNetSpeed(20000);
 	
 	//setup physics
 	m_pkTcs->SetColIt(2);

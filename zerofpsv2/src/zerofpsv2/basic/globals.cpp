@@ -18,6 +18,20 @@ using namespace std;
 
 extern ZFSystem g_ZFObjSys;
 
+void BASIC_API StringReverse(char* czString)
+{
+	int iLength = strlen(czString);
+	
+	char cBakup;
+	for(int i = 0;i<iLength;i++)
+	{
+		cBakup = czString[i];
+		czString[i] = czString[ (iLength-1) - i];
+		czString[ (iLength-1) - i] = cBakup;
+	}
+
+}
+
 void Gemens(char* aText) 
 {
 	int i=0;

@@ -86,6 +86,10 @@ void MistClient::OnInit()
 	
 	//setup referense sound distance
 	m_pkAudioSys->SetReferensDistance(0.25);
+	
+	//m_pkZeroFps->SetSystemFps(30);
+	//m_pkZeroFps->SetNetworkFps(15);
+	//m_pkNetwork->SetNetSpeed(4000);	
 
 	//init mistland script intreface
 	//MistLandLua::Init(m_pkEntityManager,m_pkScript);
@@ -291,10 +295,12 @@ void MistClient::OnIdle()
 	{
 		if(Entity* pkCharacter = m_pkEntityManager->GetEntityByID(m_iCharacterID))
 		{
-			P_Camera* pkCam = (P_Camera*)pkCharacter->GetProperty("P_Camera");
-			float fAngle = pkCam->Get3PYAngle();
-			float fMultipel = (PI+PI) / 360.0f;
-			pkCompass->GetSkin()->m_fRotDegree = fMultipel * fAngle; 
+			if(P_Camera* pkCam = (P_Camera*)pkCharacter->GetProperty("P_Camera"))
+			{
+				float fAngle = pkCam->Get3PYAngle();
+				float fMultipel = (PI+PI) / 360.0f;
+				pkCompass->GetSkin()->m_fRotDegree = fMultipel * fAngle; 
+			}
 		}
 	}
 	

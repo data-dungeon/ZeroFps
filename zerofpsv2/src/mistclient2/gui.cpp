@@ -342,9 +342,10 @@ void MistClient::FindGUIScriptsByResSuffix()
 						}
 					}
 
-					char* rev = strrev(szWidth);
-					strcpy(szWidth, rev);
-
+					//char* rev = strrev(szWidth);
+					//strcpy(szWidth, rev);
+					StringReverse(szWidth);
+					
 					int sw = atoi(szWidth), sh = atoi(szHeight);
 					int iNumOfPixels = sw*sh;
 					int diff = abs(iNumOfPixelsInCurrentResolution-iNumOfPixels);

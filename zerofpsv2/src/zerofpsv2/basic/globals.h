@@ -59,9 +59,9 @@ float BASIC_API GetYawAngle(Vector3 kDir);
 void BASIC_API ConvertToLower(string& strText);
 void BASIC_API Gemens(char* aText);									///< Turn a string into lowcase.
 void BASIC_API IntToChar(char* aText,int iValue);				//
-char* BoolStr(bool bFlag);												//returns string "true" or "false" i think	
+char* BASIC_API BoolStr(bool bFlag);												//returns string "true" or "false" i think	
 bool BASIC_API IsSameIgnoreCase(const char* szString1, const char* szString2);
-
+void BASIC_API StringReverse(char* czString);
 string BASIC_API IntToString(int iValue);
 
 //error handling

@@ -38,6 +38,7 @@ class ZShadow;
 class ZFScriptSystem;
 class ZShaderSystem;
 class InputHandle;
+class NetWork;
 
 //class IPaddress;
 class NetPacket;
@@ -65,6 +66,7 @@ class ENGINE_API Application : public ZFSubSystem {
 		FileIo*					m_pkFile;
 		ZShadow*					m_pkZShadow;
 		ZeroFps*					m_pkZeroFps;
+		NetWork*					m_pkNetwork;
 		ZShaderSystem*			m_pkZShaderSystem;
 		Tcs*						m_pkTcs;
 		

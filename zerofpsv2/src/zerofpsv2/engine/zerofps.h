@@ -145,7 +145,12 @@ class ENGINE_API ZeroFps : public I_ZeroFps {
 
 		float 	m_fSystemUpdateFps;				// Number of GameLogic Updates each second.
 		float		m_fSystemUpdateFpsDelta;		// Time between each gamelogic update.
-		float 	m_fSystemUpdateTime;
+		float 	m_fSystemUpdateTime;				// last system update
+		
+		float		m_fNetworkUpdateFps;				// number of network updates each second
+		float		m_fNetworkUpdateFpsDelta;		// time between each network update
+		float 	m_fNetworkUpdateTime;			// last system update
+		
 		float		m_fEngineTime;						// Time since engine start.
 		bool		m_bRenderOn;
 		bool		m_bMinimized;
@@ -180,7 +185,8 @@ class ENGINE_API ZeroFps : public I_ZeroFps {
 		void Run_Server();
 		void Run_Client();
 		void Draw_EngineShell();		
-		void Update_System();
+		void Update_System();				//system updates
+		void Update_Network();				//network updates
 		void MakeDelay(); 
 
 		void UpdateDevPages();
@@ -286,7 +292,9 @@ class ENGINE_API ZeroFps : public I_ZeroFps {
 		float GetLastGameUpdateTime()		{	return m_fSystemUpdateTime;					}
 		float GetEngineTime()				{	return m_fEngineTime;							}
 		void SetSystemFps(int iFps) 		{	m_fSystemUpdateFps = float(iFps);			}
+		void SetNetworkFps(int iFps) 		{	m_fNetworkUpdateFps = float(iFps);			}
 		float GetSystemFps()					{	return m_fSystemUpdateFps;						}
+		float GetNetworkFps()				{	return m_fNetworkUpdateFps;					}
 		float GetSystemUpdateFpsDelta() 	{	return m_fSystemUpdateFpsDelta;				}
 		
 		//camera

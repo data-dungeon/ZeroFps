@@ -343,9 +343,8 @@ void EntityManager::Delete(Entity* pkEntity)
 	//if where the owner of this entity also add entity to clients delete lists
 	if(pkEntity->m_eRole == NETROLE_AUTHORITY)
 	{
-		AddEntityToAllClientDeleteQueues(pkEntity->GetEntityID());
-	
-		/*
+		//AddEntityToAllClientDeleteQueues(pkEntity->GetEntityID());	
+		
 		for(int i = 0;i<m_pkZeroFps->GetMaxPlayers();i++)
 		{
 			//only add to clients who is suppose to have the entity
@@ -353,7 +352,7 @@ void EntityManager::Delete(Entity* pkEntity)
 			{			
 				AddEntityToClientDeleteQueue(i,pkEntity->GetEntityID());
 			}
-		}*/
+		}
 	}
 }
  
@@ -825,7 +824,7 @@ void EntityManager::PackToClients()
 	bool bForceAll = false;
 
 
-	int iMaxSendSize = m_pkNetWork->GetNetSpeed() / m_pkZeroFps->GetSystemFps();
+	int iMaxSendSize = m_pkNetWork->GetNetSpeed() / m_pkZeroFps->GetNetworkFps();
 	m_pkNetWork->SetMaxSendSize(iMaxSendSize);
 
 	// If no clients we don't send anything.
@@ -2892,11 +2891,12 @@ void EntityManager::AddEntityToClientDeleteQueue(int iClient,int iEntityID)
 	m_pkZeroFps->m_kClient[iClient].m_kDeleteQueue.push(iEntityID);
 	
 	//entity shuld not exist anymore on the client, after this
-/*	if(Entity* pkEnt = GetEntityByID(iEntityID))
+	if(Entity* pkEnt = GetEntityByID(iEntityID))
 	{
+		//cout<<"entity exist"<<endl;
 		pkEnt->ResetAllNetUpdateFlagsAndChilds(iClient);		
 		pkEnt->SetExistOnClient(iClient,false);	
-	}*/
+	}
 	
 	//cout<<"added entity:"<<iEntityID<<" to client "<<iClient<< " delete queue"<<endl;
 }
@@ -2930,7 +2930,8 @@ void EntityManager::SendDeleteQueue(int iClient)
 	while(!m_pkZeroFps->m_kClient[iClient].m_kDeleteQueue.empty())
 	{
 		iID = m_pkZeroFps->m_kClient[iClient].m_kDeleteQueue.front();
-				
+			
+		/*	
 		//get entity
 		if(Entity* pkEnt = GetEntityByID(iID))
 		{
@@ -2946,6 +2947,7 @@ void EntityManager::SendDeleteQueue(int iClient)
 			pkEnt->ResetAllNetUpdateFlagsAndChilds(iClient);		
 			pkEnt->SetExistOnClient(iClient,false);	
 		}
+		*/
 	
 		//send delete
 		m_OutNP.Write(iID);

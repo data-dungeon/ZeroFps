@@ -40,7 +40,8 @@ void Application::SetEnginePointer(ZeroFps* pkZeroFps)
 	m_pkZShadow				=	m_pkZeroFps->m_pkZShadow;
 	m_pkZShaderSystem		=	m_pkZeroFps->m_pkZShaderSystem;
 	m_pkTcs					=	m_pkZeroFps->m_pkTcs;
-
+	m_pkNetwork				=	m_pkZeroFps->m_pkNetWork;
+	
 	m_pkInputHandle = new InputHandle("Application");
 }
 

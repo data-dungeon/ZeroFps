@@ -25,7 +25,7 @@ NetWork::NetWork()
 	// Set Default values
 	m_fConnectTimeOut		= ZF_NET_CONNECTION_TIMEOUT;
 	m_iMaxNumberOfNodes	= 0;
-	m_iNetSpeed				= 3300;
+	m_iNetSpeed				= 4000;
 	m_iMaxSendSize			= m_iNetSpeed / 20;
 	m_iDefPort				= 4242;
 
@@ -431,7 +431,7 @@ bool NetWork::Recv(NetPacket* pkNetPacket)
 			return true;
 			}
 	}
-	// dvoid tröttna på jobbiga utskrifter
+	// dvoid trï¿½tna pï¿½jobbiga utskrifter
 	//else
 	//	cout << "Hit max per frame number"<< endl;
 
@@ -826,7 +826,7 @@ void NetWork::DevShow_ClientConnections()
 
 		AddressToStr(&m_RemoteNodes[i].m_kAddress,szAdress);
 
-		// Räkna antal använda buffers.
+		// Rï¿½na antal anvï¿½da buffers.
 		int iNumOfUsesBuffers = 0;
 		for(int iRel=0; iRel<ZF_NET_MAXREL; iRel++)
 		{

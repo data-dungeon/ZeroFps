@@ -142,6 +142,9 @@ void MistServer::Init()
 	m_pkPlayerDB = new PlayerDatabase();
 
 	//m_pkZShaderSystem->SetForceLighting(LIGHT_ALWAYS_OFF);	
+	//m_pkZeroFps->SetSystemFps(30);
+	//m_pkZeroFps->SetNetworkFps(15);
+	//m_pkNetwork->SetNetSpeed(4000);	
 	
 	//set tracker los
 	m_pkEntityManager->SetTrackerLos(25);

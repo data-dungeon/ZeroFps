@@ -218,9 +218,10 @@ public:
 	int GetClientNumber(IPaddress* pkAddress);				// Get ID of client, CLIENT_UNCONNECTED if none.	***
 	int GetFreeClientNum();
 	
-	int GetMaxSendSize() {return m_iMaxSendSize;} 
-	void SetMaxSendSize(int iMaxSend) { m_iMaxSendSize = iMaxSend; }
-	int GetNetSpeed() { return m_iNetSpeed; }
+	int GetMaxSendSize() 					{	return m_iMaxSendSize;		} 
+	void SetMaxSendSize(int iMaxSend) 	{	m_iMaxSendSize = iMaxSend; }
+	int GetNetSpeed() 						{	return m_iNetSpeed; 			}
+	void SetNetSpeed(int iSpeed)			{	m_iNetSpeed = iSpeed;		}
 
 	void UpdateNetSpeed();
 

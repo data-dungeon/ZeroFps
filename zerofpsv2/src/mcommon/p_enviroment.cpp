@@ -309,8 +309,13 @@ void P_Enviroment::ZoneChange(int iCurrent,int iNew)
 
 void P_Enviroment::PackTo(NetPacket* pkNetPacket, int iConnectionID )
 {
+
 	if(!m_pkZoneEnvSetting)
+	{
 		cout<<"ERROR: tried to send unset zone"<<endl;
+		//return;
+		m_pkZoneEnvSetting = &m_kCurrentEnvSetting;
+	}
 
 	pkNetPacket->Write_Str(m_pkZoneEnvSetting->m_strMusic);
 	pkNetPacket->Write_Str(m_pkZoneEnvSetting->m_strParticles);
@@ -349,6 +354,7 @@ void P_Enviroment::PackTo(NetPacket* pkNetPacket, int iConnectionID )
 
 void P_Enviroment::PackFrom(NetPacket* pkNetPacket, int iConnectionID)
 {
+
 
 	pkNetPacket->Read_Str(m_kCurrentEnvSetting.m_strMusic);
 	pkNetPacket->Read_Str(m_kCurrentEnvSetting.m_strParticles);
