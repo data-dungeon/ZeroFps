@@ -7,10 +7,11 @@ P_CharacterControl::P_CharacterControl()
 	m_iType=PROPERTY_TYPE_NORMAL;
 	m_iSide=PROPERTY_SIDE_SERVER;
 	m_bNetwork = 			true;
-	m_iVersion = 			3;
+	m_iVersion = 			4;
 		
 	
 	m_fLockTime = 			-1;
+	m_bEnabled=				true;
 	
 	m_fYAngle = 			0;
 	m_fPAngle = 			0;	
@@ -341,6 +342,7 @@ void P_CharacterControl::Save(ZFIoInterface* pkPackage)
 	pkPackage->Write(m_fSpeed);
 	pkPackage->Write(m_fJumpForce);
 	pkPackage->Write_Str(m_strRunForward);
+	pkPackage->Write_Str(m_strWalkForward);
 	
 	pkPackage->Write(m_bEnabled);
 	
@@ -363,6 +365,15 @@ void P_CharacterControl::Load(ZFIoInterface* pkPackage,int iVersion)
 		pkPackage->Read_Str(m_strRunForward);
 		pkPackage->Read(m_bEnabled);
 	}
+	
+	if(iVersion == 4)
+	{
+		pkPackage->Read(m_fSpeed);
+		pkPackage->Read(m_fJumpForce);
+		pkPackage->Read_Str(m_strRunForward);
+		pkPackage->Read_Str(m_strWalkForward);
+		pkPackage->Read(m_bEnabled);
+	}	
 }
 
 void P_CharacterControl::PackTo( NetPacket* pkNetPacket, int iConnectionID ) 
