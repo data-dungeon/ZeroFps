@@ -49,9 +49,9 @@ class HeapComp
 class AStarCellNode
 {
 public:
-	float m_fGValue;			// cost of this node + it's predecessors
-	float m_fHValue;			// heuristic estimate of distance to goal
-	float m_fFValue;			// sum of cumulative cost of predecessors and self and heuristic
+	float				m_fGValue;			// cost of this node + it's predecessors
+	float				m_fHValue;			// heuristic estimate of distance to goal
+	float				m_fFValue;			// sum of cumulative cost of predecessors and self and heuristic
 
 	P_PfMesh*		m_pkNaviMesh;
 	NaviMeshCell*	pkNaviCell;
@@ -60,13 +60,13 @@ public:
 
 	AStarCellNode(ZoneData*	pkZoneData, P_PfMesh* pkNaviMesh, NaviMeshCell* pkCell)
 	{
-		m_pkZoneData = pkZoneData;
-		m_pkNaviMesh = pkNaviMesh;
-		pkNaviCell	= pkCell;
-		m_fGValue	= 0;
-		m_fHValue	= 0;
-		m_fFValue	= 0;
-		m_pParent	= NULL;
+		m_pkZoneData	= pkZoneData;
+		m_pkNaviMesh	= pkNaviMesh;
+		pkNaviCell		= pkCell;
+		m_fGValue		= 0;
+		m_fHValue		= 0;
+		m_fFValue		= 0;
+		m_pParent		= NULL;
 	}
 };
 
@@ -95,26 +95,20 @@ class ENGINE_API AStar : public ZFSubSystem
 private:
 	EntityManager*	m_pkObjectManger;
 
-	Vector3	m_kStart;
-	Vector3	m_kGoal;
-	int		m_iStartZone;
-	int		m_iEndZone;
+	Vector3			m_kStart;
+	Vector3			m_kGoal;
+	int				m_iStartZone;
+	int				m_iEndZone;
 
 	vector<AStarCellNode*>	kOpenList;
 	vector<AStarCellNode*>	kClosedList;
 	
-	bool		m_bDrawNaviMesh;
-	bool		m_bDrawPaths;
+	bool				m_bDrawNaviMesh;
+	bool				m_bDrawPaths;
 
 public:
 	AStar();
 	virtual ~AStar() {}
-
-//	AStarNode* FindNodeInList(vector<AStarNodePtr>& List, int iID);
-//	bool GetPath(Vector3 kStart, Vector3 kEnd, vector<Vector3>& kPath);
-//	void CalcCoset(AStarNode* pkNode);
-//	void MakePath(AStarNode* pkNode, vector<Vector3>& kPath);
-	
 
 	bool GetFullPath(Vector3 kStart, Vector3 kEnd, vector<PathNode>& kPath);
 	void Reset();
@@ -128,12 +122,17 @@ public:
 	P_PfMesh*	GetPathFindMesh(Vector3 kPos);
 
 	bool StartUp();
-	bool ShutDown() { return true; }
-	bool IsValid() { return true;  }
+	bool ShutDown()	{ return true;		}
+	bool IsValid()		{ return true;		}
 
 	friend class P_PfMesh;
 	friend class P_PfPath;
 };
+
+//	AStarNode* FindNodeInList(vector<AStarNodePtr>& List, int iID);
+//	bool GetPath(Vector3 kStart, Vector3 kEnd, vector<Vector3>& kPath);
+//	void CalcCoset(AStarNode* pkNode);
+//	void MakePath(AStarNode* pkNode, vector<Vector3>& kPath);
 
 #endif
 

@@ -8,10 +8,13 @@
 
 using namespace std;
 
+/** \brief	Gives a entity ability to follow a path of points. 
+	 \ingroup Engine
+*/
 class ENGINE_API P_PfPath : public Property 
 {
 	private:
-		ZeroFps*				m_pkFps;			
+		ZeroFps*				m_pkFps;				
 		AStar*				m_pkAStar;
 		
 		vector<Vector3>	m_kPath;				// The path we are following (if any).
@@ -21,10 +24,10 @@ class ENGINE_API P_PfPath : public Property
 		bool					m_bTilt;				// Shuld the character tilt when walking (used for 4-leged creatures)
 		int					m_iNavMeshCell;	// The cell we are in. 0 if unknown.
 
-		Vector3				m_kOffset;
-		bool					m_bHaveOffset;
+		Vector3				m_kOffset;			
+		bool					m_bHaveOffset;		
 		
-		void					SetupOffset();
+		void					SetupOffset();		
 
 	public:
 		P_PfPath();
@@ -40,15 +43,13 @@ class ENGINE_API P_PfPath : public Property
 		void Save(ZFIoInterface* pkFile);
 		void Load(ZFIoInterface* pkFile);
 
-		void PackTo(NetPacket* pkNetPacket, int iConnectionID );
-		void PackFrom(NetPacket* pkNetPacket, int iConnectionID );
+		void PackTo(NetPacket* pkNetPacket, int iConnectionID )		{ }
+		void PackFrom(NetPacket* pkNetPacket, int iConnectionID )	{ }
 
 		void SetPath(vector<Vector3> kPath);
 		bool MakePathFind(Vector3 kDestination);
 		bool HavePath();				
-		
-//		vector<Vector3> OptimizePath(vector<Vector3> kInPath);
-		
+	
 		void RenderPath();
 
 		void SetSpeed(float fSpeed) { m_fSpeed = fSpeed;};
@@ -56,7 +57,6 @@ class ENGINE_API P_PfPath : public Property
 		
 		bool GetTilt() {return m_bTilt;};
 		float GetSpeed() {return m_fSpeed;};
-		
 
 	protected:
 		vector<PropertyValues> GetPropertyValues();

@@ -14,26 +14,29 @@ P_PfPath::P_PfPath()
 	m_iType = PROPERTY_TYPE_NORMAL | PROPERTY_TYPE_RENDER;
 	m_iSide = PROPERTY_SIDE_SERVER | PROPERTY_SIDE_CLIENT;
 
-	m_pkFps=static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
-	m_pkAStar=static_cast<AStar*>(g_ZFObjSys.GetObjectPtr("AStar"));	
+	m_pkFps		=	static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
+	m_pkAStar	=	static_cast<AStar*>(g_ZFObjSys.GetObjectPtr("AStar"));	
 
-	m_fSpeed = 5;
-	m_bTilt = false;
+	m_fSpeed			= 5;
+	m_bTilt			= false;
 	m_iNavMeshCell = 0;
 	
 	m_kOffset.Set(0,0.1,0);
-	m_bHaveOffset = false;
+	m_bHaveOffset	= false;
 }
+
 
 P_PfPath::~P_PfPath()
 {
 
 }
 
+
 void P_PfPath::Init()
 {
 
 }
+
 
 void P_PfPath::RenderPath()
 {
@@ -44,27 +47,32 @@ void P_PfPath::RenderPath()
 	unsigned int i;
 
 	glColor3f(1,0,0);
-	if(m_kRawPath.size() >= 2) {
-		for(i=0; i<m_kRawPath.size() - 1; i++) {
+	if(m_kRawPath.size() >= 2) 
+	{
+		for(i=0; i<m_kRawPath.size() - 1; i++) 
+		{
 			pkRender->Line(m_kRawPath[i].kPosition + Vector3(0,0.1,0), m_kRawPath[i+1].kPosition + Vector3(0,0.1,0));
-			}	
-		}
+		}	
+	}
 
 	glColor3f(0,1,0);
-	if(m_kPath.size() >= 2) {
-		for(i=0; i < (m_kPath.size() - 1); i++) {
+	if(m_kPath.size() >= 2) 
+	{
+		for(i=0; i < (m_kPath.size() - 1); i++) 
+		{
 			pkRender->Line(m_kPath[i] + Vector3(0,0.1,0), m_kPath[i+1] + Vector3(0,0.1,0));
-			}	
-		}
+		}	
+	}
 }
 
 
 void P_PfPath::Update()
 {
-	if( m_pkObjMan->IsUpdate(PROPERTY_TYPE_RENDER) && m_pkObjMan->IsUpdate(PROPERTY_TYPE_RENDER)) {
+	if( m_pkObjMan->IsUpdate(PROPERTY_TYPE_RENDER) && m_pkObjMan->IsUpdate(PROPERTY_TYPE_RENDER)) 
+	{
 		RenderPath();
 		return;
-		}
+	}
 
 	if( m_pkObjMan->IsUpdate(PROPERTY_TYPE_NORMAL) && m_pkObjMan->IsUpdate(PROPERTY_SIDE_CLIENT))
 		return;
@@ -140,10 +148,8 @@ void P_PfPath::Update()
 	kRotM.Transponse();
 		
 	m_pkObject->SetLocalRotM(kRotM);
-		
-
-
 }
+
 
 void P_PfPath::Save(ZFIoInterface* pkFile)
 {
@@ -158,6 +164,7 @@ void P_PfPath::Save(ZFIoInterface* pkFile)
 		pkFile->Write((void*)&(m_kPath[i]),sizeof(m_kPath[i]),1);	
 	}
 }
+
 
 void P_PfPath::Load(ZFIoInterface* pkFile)
 {
@@ -176,16 +183,6 @@ void P_PfPath::Load(ZFIoInterface* pkFile)
 	}
 }
 
-void P_PfPath::PackTo(NetPacket* pkNetPacket, int iConnectionID )
-{
-
-}
-
-void P_PfPath::PackFrom(NetPacket* pkNetPacket, int iConnectionID )
-{
-
-
-}
 
 vector<PropertyValues> P_PfPath::GetPropertyValues()
 {
@@ -195,16 +192,16 @@ vector<PropertyValues> P_PfPath::GetPropertyValues()
 	kReturn[0].iValueType=VALUETYPE_BOOL;
 	kReturn[0].pkValue=(void*)&m_bTilt;
 	
-	
-	
 	return kReturn;
 }
+
 
 void P_PfPath::SetPath(vector<Vector3> kPath)
 {
 	m_kPath = kPath;
 	m_iNextGoal = 0;
 }
+
 
 bool P_PfPath::MakePathFind(Vector3 kDestination)
 {
@@ -264,12 +261,6 @@ bool P_PfPath::HavePath()
 	else
 		return true;
 }
-
-/*
-vector<Vector3> P_PfPath::OptimizePath(vector<Vector3> kInPath)
-{
-	
-}*/
 
 
 Property* Create_P_PfPath()

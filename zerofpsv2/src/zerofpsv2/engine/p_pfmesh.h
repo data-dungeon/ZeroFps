@@ -62,6 +62,9 @@ public:
 class AStar;
 struct Mad_Face;
 
+/** \brief	Gives a entity ability to have a mesh used for pathfinding on it. 
+	 \ingroup Engine
+*/
 class ENGINE_API P_PfMesh : public Property 
 {
 	private:

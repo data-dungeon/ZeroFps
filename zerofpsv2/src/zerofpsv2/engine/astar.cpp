@@ -1,19 +1,18 @@
 #include "astar.h"
 #include "p_pfmesh.h"
 
-
-
 AStar::AStar()
 : ZFSubSystem("AStar")
 {
 	// Set Default values
-	m_bDrawNaviMesh = false;
+	m_bDrawNaviMesh	= false;
+	m_bDrawPaths		= false;
 
 	// Register Variables
 	RegisterVariable("ai_shownavmesh", &m_bDrawNaviMesh,	CSYS_BOOL);	
 	RegisterVariable("ai_showpath",	&m_bDrawPaths,	CSYS_BOOL);	
-
 }
+
 
 bool AStar::StartUp()
 {
@@ -21,138 +20,6 @@ bool AStar::StartUp()
 
 	return true;
 }
-
-/*
-AStarNode* FindNodeInList(vector<AStarNodePtr>& List, int iID)
-{
-	for(unsigned int i=0; i<List.size(); i++) {
-		if(List[i]->m_iZoneID == iID)
-			return List[i];
-		}
-
-	return NULL;
-}
-
-bool AStar::GetPath(Vector3 kStart, Vector3 kEnd, vector<Vector3>& kPath)
-{
-	m_kStart		= kStart;
-	m_kGoal			= kEnd;
-	m_iStartZone	= m_pkObjectManger->GetZoneIndex(m_kStart,-1, false);
-	m_iEndZone		= m_pkObjectManger->GetZoneIndex(m_kGoal,-1, false);
-
-	kPath.clear();
-
-	AStarNode* pkNewNode;
-	ZoneData* pkZone;
-
-	vector<AStarNodePtr>	kOpenList;
-	vector<AStarNodePtr>	kClosedList;
-
-	if(m_iStartZone < 0)	// No path found.
-		return false;
-	if(m_iEndZone < 0)		// No path found.
-		return false;
-
-	// 1: Let P = the starting point.
-	pkNewNode = new AStarNode(m_iStartZone);
-
-	// 2: Assign f,g and h values to P.
-	pkNewNode->m_pParent = NULL;
-	pkNewNode->m_fGValue = 0;
-	pkNewNode->m_fHValue = 0;
-	pkNewNode->m_fFValue = 0;
-
-	// 3: Add P to open list.
-	kOpenList.push_back(pkNewNode);
-	push_heap( kOpenList.begin(), kOpenList.end(), HeapComp() );
-
-	// 4: Let B be the best node from the open list.
-	while(kOpenList.size()) {
-		// Get best node from open list
-		AStarNode* pkNode = kOpenList.front();
-		pop_heap( kOpenList.begin(), kOpenList.end(), HeapComp() );
-		kOpenList.pop_back();
-
-		// 4:a	If B is the goal node.
-		if(pkNode->m_iZoneID == m_iEndZone) {
-			MakePath(pkNode, kPath);
-			return true;
-			}
-
-		pkZone = m_pkObjectManger->GetZoneData(pkNode->m_iZoneID);
-
-		// 5: Let C be a node connected to B.
-		for(unsigned int i=0; i<pkZone->m_iZoneLinks.size(); i++) {
-			// 5:a Assign f,g and h values to C.
-			pkNewNode = new AStarNode( pkZone->m_iZoneLinks[i] );
-			pkNewNode->m_pParent = pkNode;
-			CalcCoset(pkNewNode);
-
-			// 5:b Check if C is in the open or closed list
-			AStarNode* pkInOpen   = FindNodeInList(kOpenList, pkNewNode->m_iZoneID);
-			AStarNode* pkInClosed = FindNodeInList(kClosedList, pkNewNode->m_iZoneID);
-			
-			if(pkInOpen || pkInClosed) {
-				if(pkInOpen) {
-					if(pkNewNode->m_fGValue < pkInOpen->m_fGValue) {
-						*pkInOpen = *pkNewNode;
-						delete pkNewNode;
-						push_heap( kOpenList.begin(), kOpenList.end(), HeapComp() );
-						}
-					}
-				if(pkInClosed) {
-					// Ignore step 5bi1
-					delete pkNewNode;
-					}
-				}
-			else {
-				// 5bii
-				kOpenList.push_back(pkNewNode);
-				push_heap( kOpenList.begin(), kOpenList.end(), HeapComp() );
-				}
-			}
-		}
-
-	return false;
-}*/
-
-/*
-void AStar::CalcCoset(AStarNode* pkNode)
-{
-	ZoneData* pkZone;
-	pkZone = m_pkObjectManger->GetZoneData(pkNode->m_iZoneID);
-
-	pkNode->m_fGValue = pkNode->m_pParent->m_fFValue + 1;
-	Vector3 kDist = m_kStart - pkZone->m_kPos;
-	pkNode->m_fHValue = kDist.Length();
-	pkNode->m_fFValue = pkNode->m_fGValue + pkNode->m_fHValue;
-
-}
-
-void AStar::MakePath(AStarNode* pkNode, vector<Vector3>& kPath)
-{
-	do {
-		kPath.push_back(m_pkObjectManger->GetZoneData(pkNode->m_iZoneID)->m_kPos);
-		pkNode = pkNode->m_pParent;
-	} while(pkNode);
-}
-
-
-
-*/
-
-
-/*
-AStarNode* FindNodeInList(vector<AStarNodePtr>& List, int iID)
-{
-	for(unsigned int i=0; i<List.size(); i++) {
-		if(List[i]->m_iZoneID == iID)
-			return List[i];
-		}
-
-	return NULL;
-}
-*/
 
 
 AStarCellNode* FindNodeInList( vector< AStarCellNode*>& List, NaviMeshCell* pkCell)
@@ -165,6 +32,7 @@ AStarCellNode* FindNodeInList( vector< AStarCellNode*>& List, NaviMeshCell* pkCe
 
 	return NULL;
 }
+
 
 void AStar::MakePath(AStarCellNode* pkNode, vector<PathNode>& kPath)
 {
@@ -191,8 +59,8 @@ void AStar::CalcCoset(AStarCellNode* pkNode)
 	Vector3 kDist		= m_kStart - pkNode->pkNaviCell->m_kCenter;
 	pkNode->m_fHValue = kDist.Length();
 	pkNode->m_fFValue = pkNode->m_fGValue + pkNode->m_fHValue;
-
 }
+
 
 AStarCellNode* AStar::GetConnectedZone(ZoneData* pkZoneData, Vector3 kA, Vector3 kB)
 {
@@ -221,6 +89,7 @@ AStarCellNode* AStar::GetConnectedZone(ZoneData* pkZoneData, Vector3 kA, Vector3
 
 	return NULL;
 }
+
 
 void AStar::Reset()
 {
@@ -260,24 +129,29 @@ bool AStar::GetFullPath(Vector3 kStart, Vector3 kEnd, vector<PathNode>& kPath)
 
 	Vector3 kA, kB;
 
-	if(m_iStartZone < 0) {		// No path found.
+	if(m_iStartZone < 0) 
+	{	// No path found.
 		printf("No Start Zone Was Found\n");
 		return false;
-		}
+	}
 
-	if(m_iEndZone < 0) {
+	if(m_iEndZone < 0) 
+	{
 		printf("No Start Zone Was Found\n");
 		return false;
-		}
+	}
 
-	if(m_pkObjectManger->GetZoneData(m_iStartZone) == NULL) {
+	if(m_pkObjectManger->GetZoneData(m_iStartZone) == NULL) 
+	{
 		printf("Failed to get data for start zone\n");
 		return false;
-		}
-	if(m_pkObjectManger->GetZoneData(m_iEndZone) == NULL)	{
+	}
+
+	if(m_pkObjectManger->GetZoneData(m_iEndZone) == NULL)	
+	{
 		printf("Failed to get data for end zone\n");
 		return false;
-		}
+	}
 
 	AStarCellNode* pkNewNode;
 	NaviMeshCell* pkEndCell;
@@ -449,7 +323,8 @@ vector<Vector3> AStar::OptimizePath(vector<PathNode>& kInPath)
 	pkStartMesh = kInPath[0].pkStartMesh;	//GetPathFindMesh( kStart );
 	pkStartCell = kInPath[0].pkStartCell;	//pkStartMesh->GetCurrentCell( kStart );
 
-	for(i=1; i<kInPath.size(); i++) {
+	for(i=1; i<kInPath.size(); i++) 
+	{
 		kEnd		= kInPath[i].kPosition;
 		pkEndMesh = kInPath[i].pkStartMesh;	//GetPathFindMesh( kEnd );
 		pkEndCell = kInPath[i].pkStartCell;	//pkEndMesh->GetCurrentCell( kEnd );
@@ -459,25 +334,28 @@ vector<Vector3> AStar::OptimizePath(vector<PathNode>& kInPath)
 		assert(pkEndMesh);
 		assert(pkEndCell);
 
-		if(pkStartMesh != pkEndMesh) {
+		if(pkStartMesh != pkEndMesh) 
+		{
 			kResult.push_back( kInPath[ i - 1 ].kPosition );
 			kResult.push_back( kInPath[ i ].kPosition );
 			kStart = kInPath[ i ].kPosition;
 			pkStartMesh = kInPath[i].pkStartMesh;	//GetPathFindMesh( kStart );
 			pkStartCell = kInPath[i].pkStartCell;	//pkStartMesh->GetCurrentCell( kStart );
 			i++;
-			}
-		else {
-			if(pkStartMesh->LineOfSightTest(pkStartCell, kStart, pkEndCell, kEnd) == false && pkEndCell->m_bNonWalkable == false) {
+		}
+		else 
+		{
+			if(pkStartMesh->LineOfSightTest(pkStartCell, kStart, pkEndCell, kEnd) == false && pkEndCell->m_bNonWalkable == false) 
+			{
 				kResult.push_back( kInPath[ i - 1].kPosition );
 				kStart = kInPath[ i - 1 ].kPosition;
 				pkStartMesh = kInPath[ i - 1 ].pkStartMesh;	//GetPathFindMesh( kStart );
 				pkStartCell = kInPath[ i - 1 ].pkStartCell;	//pkStartMesh->GetCurrentCell( kStart );
-				}
+			}
 			//else 
 			//	cout << "Skipping Path step " << i << endl;
-			}
 		}
+	}
 
 	kResult.push_back( kInPath[kInPath.size() - 1].kPosition );
 //	cout << "Optimized Path: " << kResult.size() << endl;
@@ -487,4 +365,136 @@ vector<Vector3> AStar::OptimizePath(vector<PathNode>& kInPath)
 //bool P_PfMesh::LineOfSightTest(NaviMeshCell* pkStartCell, Vector3& kStartPos, NaviMeshCell* pkEndCell, Vector3& kEndPos)
 
 
+/*
+AStarNode* FindNodeInList(vector<AStarNodePtr>& List, int iID)
+{
+	for(unsigned int i=0; i<List.size(); i++) {
+		if(List[i]->m_iZoneID == iID)
+			return List[i];
+		}
 
+	return NULL;
+}
+
+bool AStar::GetPath(Vector3 kStart, Vector3 kEnd, vector<Vector3>& kPath)
+{
+	m_kStart		= kStart;
+	m_kGoal			= kEnd;
+	m_iStartZone	= m_pkObjectManger->GetZoneIndex(m_kStart,-1, false);
+	m_iEndZone		= m_pkObjectManger->GetZoneIndex(m_kGoal,-1, false);
+
+	kPath.clear();
+
+	AStarNode* pkNewNode;
+	ZoneData* pkZone;
+
+	vector<AStarNodePtr>	kOpenList;
+	vector<AStarNodePtr>	kClosedList;
+
+	if(m_iStartZone < 0)	// No path found.
+		return false;
+	if(m_iEndZone < 0)		// No path found.
+		return false;
+
+	// 1: Let P = the starting point.
+	pkNewNode = new AStarNode(m_iStartZone);
+
+	// 2: Assign f,g and h values to P.
+	pkNewNode->m_pParent = NULL;
+	pkNewNode->m_fGValue = 0;
+	pkNewNode->m_fHValue = 0;
+	pkNewNode->m_fFValue = 0;
+
+	// 3: Add P to open list.
+	kOpenList.push_back(pkNewNode);
+	push_heap( kOpenList.begin(), kOpenList.end(), HeapComp() );
+
+	// 4: Let B be the best node from the open list.
+	while(kOpenList.size()) {
+		// Get best node from open list
+		AStarNode* pkNode = kOpenList.front();
+		pop_heap( kOpenList.begin(), kOpenList.end(), HeapComp() );
+		kOpenList.pop_back();
+
+		// 4:a	If B is the goal node.
+		if(pkNode->m_iZoneID == m_iEndZone) {
+			MakePath(pkNode, kPath);
+			return true;
+			}
+
+		pkZone = m_pkObjectManger->GetZoneData(pkNode->m_iZoneID);
+
+		// 5: Let C be a node connected to B.
+		for(unsigned int i=0; i<pkZone->m_iZoneLinks.size(); i++) {
+			// 5:a Assign f,g and h values to C.
+			pkNewNode = new AStarNode( pkZone->m_iZoneLinks[i] );
+			pkNewNode->m_pParent = pkNode;
+			CalcCoset(pkNewNode);
+
+			// 5:b Check if C is in the open or closed list
+			AStarNode* pkInOpen   = FindNodeInList(kOpenList, pkNewNode->m_iZoneID);
+			AStarNode* pkInClosed = FindNodeInList(kClosedList, pkNewNode->m_iZoneID);
+			
+			if(pkInOpen || pkInClosed) {
+				if(pkInOpen) {
+					if(pkNewNode->m_fGValue < pkInOpen->m_fGValue) {
+						*pkInOpen = *pkNewNode;
+						delete pkNewNode;
+						push_heap( kOpenList.begin(), kOpenList.end(), HeapComp() );
+						}
+					}
+				if(pkInClosed) {
+					// Ignore step 5bi1
+					delete pkNewNode;
+					}
+				}
+			else {
+				// 5bii
+				kOpenList.push_back(pkNewNode);
+				push_heap( kOpenList.begin(), kOpenList.end(), HeapComp() );
+				}
+			}
+		}
+
+	return false;
+}*/
+
+
+
+/*
+void AStar::CalcCoset(AStarNode* pkNode)
+{
+	ZoneData* pkZone;
+	pkZone = m_pkObjectManger->GetZoneData(pkNode->m_iZoneID);
+
+	pkNode->m_fGValue = pkNode->m_pParent->m_fFValue + 1;
+	Vector3 kDist = m_kStart - pkZone->m_kPos;
+	pkNode->m_fHValue = kDist.Length();
+	pkNode->m_fFValue = pkNode->m_fGValue + pkNode->m_fHValue;
+
+}
+
+void AStar::MakePath(AStarNode* pkNode, vector<Vector3>& kPath)
+{
+	do {
+		kPath.push_back(m_pkObjectManger->GetZoneData(pkNode->m_iZoneID)->m_kPos);
+		pkNode = pkNode->m_pParent;
+	} while(pkNode);
+}
+
+
+
+*/
+
+
+/*
+AStarNode* FindNodeInList(vector<AStarNodePtr>& List, int iID)
+{
+	for(unsigned int i=0; i<List.size(); i++) {
+		if(List[i]->m_iZoneID == iID)
+			return List[i];
+		}
+
+	return NULL;
+}
+*/
