@@ -1716,7 +1716,7 @@ bool EntityManager::LoadZones(string strSaveDir )
 	{
 		kFile.Read(&kZData.m_iStatus, 	sizeof(kZData.m_iStatus), 1);
 		kFile.Read(&kZData.m_bNew, 		sizeof(kZData.m_bNew), 1);
-		kFile.Read(&iVersion,			sizeof(kZData.m_iVersion), 1);
+		kFile.Read(&iVersion,			sizeof(iVersion), 1);
 		kFile.Read(&kZData.m_iZoneID, 	sizeof(kZData.m_iZoneID), 1);
 		kFile.Read(&kZData.m_kSize, 	sizeof(kZData.m_kSize), 1);
 		kFile.Read(&kZData.m_kPos, 		sizeof(kZData.m_kPos), 1);

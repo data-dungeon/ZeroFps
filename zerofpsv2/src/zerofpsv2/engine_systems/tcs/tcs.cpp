@@ -600,6 +600,9 @@ P_Tcs Tcs::TestLine2(Vector3 kStart,Vector3 kDir,P_Tcs* pkTester)
 
 		}	*/
 	}
+	P_Tcs tjoff;
+
+	return tjoff;
 }
 
 P_Tcs* Tcs::TestLine(Vector3 kStart,Vector3 kDir,P_Tcs* pkTester)

@@ -1702,7 +1702,12 @@ void ZeroEd::OnNetworkMessage(NetPacket *PkNetMessage)
 				PkNetMessage->Read(kTemp.m_iZoneID);
 				PkNetMessage->Read(kTemp.m_iZoneObjectID);
 				PkNetMessage->Read(kTemp.m_kPos);
-				PkNetMessage->Read(kTemp.m_kSize);						
+				PkNetMessage->Read(kTemp.m_kSize);
+				// calculate testing position for zone
+				kTemp.m_kTestPos.x = kTemp.m_kPos.x + ( (kTemp.m_kSize.x / 2) - int(kTemp.m_kSize.x / 2) );
+				kTemp.m_kTestPos.y = kTemp.m_kPos.y + ( (kTemp.m_kSize.y / 2) - int(kTemp.m_kSize.y / 2) );
+				kTemp.m_kTestPos.z = kTemp.m_kPos.z + ( (kTemp.m_kSize.z / 2) - int(kTemp.m_kSize.z / 2) );
+
 
 				//remove or add zone?
 				if(!bRemove)
