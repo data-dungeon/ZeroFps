@@ -25,7 +25,6 @@
 
 //for ZeroRTS
 #include "p_clientinput.h"
-#include "pathfindproperty.h"
 #include "p_clientunit.h"
 #include "p_serverunit.h"
 #include "p_serverinfo.h"

@@ -9,8 +9,8 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
-#include "engine_x.h"
-#include "../basic/basic.pkg"
+#include "common_x.h"
+#include "../zerofps/basic/basic.pkg"
 
 #include <map>
 #include <string>
@@ -19,7 +19,7 @@ using namespace std;
 class HeightMap;
 class PathFind;
 
-class ENGINE_API PathBuilder : public ZFObject
+class COMMON_API PathBuilder : public ZFObject
 {
 public:
 	Point GetSqrFromPos(Vector3 pos);

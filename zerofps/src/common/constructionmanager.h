@@ -24,11 +24,11 @@ struct StructureUpgrade
 
 struct Structure
 {
-	char szName[64];	// vad den heter
+	char szName[64];	// vad byggnaden heter
 	vector<StructureUpgrade*> akUpgrades;
-	int iCost;			// vad den kostar att bygga
-	int iArmor;			// vad den skyddar
-	int iHitPoints;		// vad den tål innan den rasar
+	int iCost;			// vad byggnaden kostar att konstruera
+	int iArmor;			// vad byggnaden skyddar
+	int iHitPoints;		// vad byggnaden tål innan den rasar
 };
 
 class ConstructionManager  
@@ -37,13 +37,15 @@ public:
 	ConstructionManager(int iNumTeams);
 	virtual ~ConstructionManager();
 
-	void GetPossibleBuildings(unsigned char iTeam, vector<Structure>& akStructures);
+	// Funktion som returnerar en ny tech level.
+	int GetPossibleBuildings(unsigned int uiTechLevel, vector<Structure>& akStructures);
+
 
 	const int c_iNumTeams;
 
 private:
 	vector<Structure> m_kAllStructures;
-	vector<Structure> *m_paTechTree;
+	vector<Structure> *m_paTeamTechTree;
 };
 
 #endif // !defined(AFX_CONSTRUCTIONMANAGER_H__7CB50AE5_958B_4A02_AA3A_E2F7CD829953__INCLUDED_)

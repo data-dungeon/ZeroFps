@@ -23,6 +23,8 @@
 
 using namespace std;
 
+#include "pathfind.h"
+#include "pathbuilder.h"
 
 
 class COMMON_API P_UnitMoveAI : public Property, public AIBase

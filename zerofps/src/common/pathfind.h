@@ -9,8 +9,8 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
-#include "engine_x.h"
-#include "../basic/basic.pkg"
+#include "common_x.h"
+#include "../zerofps/basic/basic.pkg"
 
 #include <vector>
 #include <queue>
@@ -29,7 +29,7 @@ enum TerrainType
 
 const int BLOCKED = 999;	// Unpassable square
 
-class ENGINE_API PathFind : public ZFObject 
+class COMMON_API PathFind : public ZFObject 
 {
 private:
 

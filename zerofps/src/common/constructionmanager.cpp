@@ -11,16 +11,16 @@
 ConstructionManager::ConstructionManager(int iNumTeams)
 	: c_iNumTeams(iNumTeams)
 {
-	m_paTechTree = new vector<Structure>(iNumTeams);
+	m_paTeamTechTree = new vector<Structure>(iNumTeams);
 }
 
 ConstructionManager::~ConstructionManager()
 {
-	delete[] m_paTechTree;
+	delete[] m_paTeamTechTree;
 }
 
-void ConstructionManager::GetPossibleBuildings(unsigned char iTeam, 
-											   vector<Structure>& akStructures)
+int ConstructionManager::GetPossibleBuildings(unsigned int uiTechLevel, 
+											  vector<Structure>& akStructures)
 {
-
+	return 0;
 }

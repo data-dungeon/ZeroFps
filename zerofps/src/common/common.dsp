@@ -59,7 +59,7 @@ LINK32=link.exe
 # Begin Special Build Tool
 ProjDir=.
 SOURCE="$(InputPath)"
-PostBuild_Cmds=copy                 $(ProjDir)\release\*.lib                 ..\..\bin\ 
+PostBuild_Cmds=copy                   $(ProjDir)\release\*.lib                   ..\..\bin\ 
 # End Special Build Tool
 
 !ELSEIF  "$(CFG)" == "common - Win32 Debug"
@@ -92,7 +92,7 @@ LINK32=link.exe
 # Begin Special Build Tool
 ProjDir=.
 SOURCE="$(InputPath)"
-PostBuild_Cmds=copy                             $(ProjDir)\debug\*.lib                             ..\..\bin\ 
+PostBuild_Cmds=copy                               $(ProjDir)\debug\*.lib                               ..\..\bin\ 
 # End Special Build Tool
 
 !ELSEIF  "$(CFG)" == "common - Win32 Release Profile"
@@ -154,6 +154,10 @@ SOURCE=.\bunnyaiproperty.cpp
 # Begin Source File
 
 SOURCE=.\bunnyobject.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\constructionmanager.cpp
 # End Source File
 # Begin Source File
 
@@ -237,7 +241,11 @@ SOURCE=.\p_unitsystem.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\pathfindproperty.cpp
+SOURCE=.\pathbuilder.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\pathfind.cpp
 # End Source File
 # Begin Source File
 
@@ -302,6 +310,10 @@ SOURCE=.\common.pkg
 # Begin Source File
 
 SOURCE=.\common_x.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\constructionmanager.h
 # End Source File
 # Begin Source File
 
@@ -389,7 +401,11 @@ SOURCE=.\p_unitsystem.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\pathfindproperty.h
+SOURCE=.\pathbuilder.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\pathfind.h
 # End Source File
 # Begin Source File
 

@@ -11,8 +11,8 @@ class PropertyFactory;
 class LevelManager;
 class PhysicsEngine;
 class HeightMap;
-class PathBuilder;
-class PathFind;
+//class PathBuilder;
+//class PathFind;
 
 
 #include "soundbuffermanager.h"
@@ -34,8 +34,8 @@ class PathFind;
 
 #include "heightmap.h"
 
-#include "pathbuilder.h"
-#include "pathfind.h"
+//#include "pathbuilder.h"
+//#include "pathfind.h"
 
 
 

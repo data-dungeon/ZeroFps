@@ -3,7 +3,7 @@
 //////////////////////////////////////////////////////////////////////
 
 #include "pathbuilder.h"
-#include "heightmap.h"
+#include "../zerofps/engine/heightmap.h"
 #include "pathfind.h"
 
 int* PathBuilder::m_piTerrain = NULL;
