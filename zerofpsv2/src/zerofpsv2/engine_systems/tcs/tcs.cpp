@@ -1352,7 +1352,7 @@ bool Tcs::CollideMeshVSMesh3(P_Tcs* pkBody1,P_Tcs* pkBody2,Tcs_collission* pkTem
 bool Tcs::TestLineVSPolygon(Vector3* pkPolygon,Vector3* pkPos1,Vector3* pkPos2,Plane* pkPlane,const Vector3& kNormal1,const Vector3& kNormal2)
 {
 
-	static float fMinDist = 0.05;
+	static float fMinDist = 0.01;
 
 	if(pkPlane->LineTest(*pkPos1,*pkPos2,&m_kLastTestPos))
 	{
@@ -1362,10 +1362,10 @@ bool Tcs::TestLineVSPolygon(Vector3* pkPolygon,Vector3* pkPos1,Vector3* pkPos2,P
 			//return true;
 			
 			if( m_kLastTestPos.DistanceTo(*pkPos1) < fMinDist ||
-				 m_kLastTestPos.DistanceTo(*pkPos2) < fMinDist || 
+				 m_kLastTestPos.DistanceTo(*pkPos2) < fMinDist /*|| 
 				 m_kLastTestPos.DistanceTo(pkPolygon[0]) < fMinDist ||
 				 m_kLastTestPos.DistanceTo(pkPolygon[1]) < fMinDist ||
-				 m_kLastTestPos.DistanceTo(pkPolygon[2]) < fMinDist)
+				 m_kLastTestPos.DistanceTo(pkPolygon[2]) < fMinDist*/)
 			{			
 				//vertex VS face
 				m_kLastTestNormal = -pkPlane->m_kNormal;
@@ -1401,6 +1401,24 @@ bool Tcs::TestLineVSPolygon(Vector3* pkPolygon,Vector3* pkPos1,Vector3* pkPos2,P
 					m_kLastTestNormal = n3;
 				};			
 				
+				
+				//if(kNormal1 != kNormal2) cout<<"bah"<<endl;				
+				//cout<<"huma:"<<m_kLastTestNormal.Dot(kNormal1)<<" - "<<m_kLastTestNormal.Dot(kNormal2)<<endl;;
+				
+				if( 	(m_kLastTestNormal.Dot(kNormal1) > 0) 
+					&& (m_kLastTestNormal.Dot(kNormal2) > 0)) 
+				{
+					return true;				
+				}
+				
+				m_kLastTestNormal = -m_kLastTestNormal;									
+				if( 	(m_kLastTestNormal.Dot(kNormal1) > 0) 
+					&& (m_kLastTestNormal.Dot(kNormal2) > 0)) 
+				{
+					return true;				
+				}
+				
+				/*
 				// pi / 2  = 1.570796327				
 				//compare to face normal to chose wich direction the normal shuld have
 				if(   (m_kLastTestNormal.Angle( kNormal1) < 1.570796327 ) 
@@ -1417,7 +1435,8 @@ bool Tcs::TestLineVSPolygon(Vector3* pkPolygon,Vector3* pkPos1,Vector3* pkPos2,P
 				{			
 					return true;
 				}
-									
+				*/	
+								
 				return false;		
 			}			
 		}
@@ -1434,7 +1453,7 @@ Vector3 Tcs::GetNeighbourFaceNormal(const Vector3& kVert1,const Vector3& kVert2,
 
 	for(unsigned int g=0;g<pkBody->m_pkFaces->size();g++)
 	{
-		if(g != iCurrentFace)
+		if(g == iCurrentFace)
 			continue;
 		
 		verts[0] = kModelMatrix2.VectorTransform((*pkBody->m_pkVertex)[(*pkBody->m_pkFaces)[g].iIndex[0]]);
@@ -1465,8 +1484,14 @@ Vector3 Tcs::GetNeighbourFaceNormal(const Vector3& kVert1,const Vector3& kVert2,
 
 	//cout<<"found: "<<found<<endl;
 	//cout<<"match: "<<match<<endl;
-	cout<<"warning could nto find neightbour"<<endl;
-	return Vector3(0,1,0);
+	//cout<<"warning could nto find neightbour"<<endl;
+	
+	//no neighbour found, returns known normal
+	verts[0] = kModelMatrix2.VectorTransform((*pkBody->m_pkVertex)[(*pkBody->m_pkFaces)[iCurrentFace].iIndex[0]]);
+	verts[1] = kModelMatrix2.VectorTransform((*pkBody->m_pkVertex)[(*pkBody->m_pkFaces)[iCurrentFace].iIndex[1]]);		
+	verts[2] = kModelMatrix2.VectorTransform((*pkBody->m_pkVertex)[(*pkBody->m_pkFaces)[iCurrentFace].iIndex[2]]);		
+	
+	return ((verts[1] - verts[0]).Cross(verts[2] - verts[0])).Unit();;
 }
 
 
