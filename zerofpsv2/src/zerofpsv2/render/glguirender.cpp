@@ -250,10 +250,10 @@ bool GLGuiRender::RenderQuad(Rect rc)
 		glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_WIDTH, &iTextureWidth);
 		glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_HEIGHT, &iTextureHeight);
 
-		tw = (float) m_pkSkin->m_rcBkTile.Right / (float) iTextureWidth;
-		tx = (float) m_pkSkin->m_rcBkTile.Left / (float) iTextureWidth;
-		th = (float) m_pkSkin->m_rcBkTile.Top / (float) iTextureHeight;
-		ty = ((float) m_pkSkin->m_rcBkTile.Bottom / (float) iTextureHeight) + th;
+		tw = (float) iTextureWidth  / (float) m_pkSkin->m_rcBkTile.Width();
+		tx = 0;//(float) m_pkSkin->m_rcBkTile.Left / (float) iTextureWidth;
+		th = -(float) iTextureHeight / (float) m_pkSkin->m_rcBkTile.Height();
+		ty = 0;//((float) m_pkSkin->m_rcBkTile.Bottom / (float) iTextureHeight) + th;
 	}
 	else
 	if(m_pkSkin->m_bTileBkSkin == true && texture > 0)
