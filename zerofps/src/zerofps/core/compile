@@ -1,1 +1,0 @@
-g++ *.cpp -o ../../../bin/libbase.so --shared
