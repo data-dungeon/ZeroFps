@@ -75,12 +75,15 @@ bool ZGuiMenu::Notify(ZGuiWnd* pkWindow, int iCode)
 					if(m_bPopup)
 						Hide();
 
+					// By Zeb 25 jag 2005: Kommentarar ut... verkar bli dubbla anrop till messageproccen.
+					////////////////////////////////////////////////////////////////////////////////
 					// Skicka ett command message till mainprocen.
-					int* pkParams = new int[2];
-					pkParams[0] = iMenuID;
-					pkParams[1] = 0;
-
-					GetGUI()->GetActiveCallBackFunc()(this, ZGM_COMMAND, 2, pkParams);
+					// int* pkParams = new int[2];
+					// pkParams[0] = iMenuID;
+					// pkParams[1] = 0;
+					// GetGUI()->GetActiveCallBackFunc()(this, ZGM_COMMAND, 2, pkParams);
+					//	delete[] pkParams;
+					////////////////////////////////////////////////////////////////////////////////
 
 					// Bocka av kryss alternativ
 					if(m_vkItems[i]->iCheckMarkGroup == -1)
@@ -103,7 +106,7 @@ bool ZGuiMenu::Notify(ZGuiWnd* pkWindow, int iCode)
 					}
 
 
-					delete[] pkParams;
+	
 				}
 
 				break;
