@@ -23,6 +23,7 @@ ZGuiScrollbar::ZGuiScrollbar(Rect kArea, ZGuiWnd* pkParent, bool bVisible, int i
 	m_iScrollChange = 0;
 	m_bAutoHideScrollbar = true;
 	m_usThumbSize = 20;
+	m_fPageSize = 1.0f;
 }
 
 ZGuiScrollbar::~ZGuiScrollbar()
@@ -70,6 +71,7 @@ void ZGuiScrollbar::SetScrollInfo(unsigned int min, unsigned int max,
 								  float page_size, unsigned int pos)
 {
 	m_nMax = max, m_nMin = min, m_nPos = pos;
+	m_fPageSize = page_size;
 
 	if(page_size < 0.0f) page_size = 0.0f;
 	if(page_size > 1.0f) page_size = 1.0f;
@@ -158,7 +160,7 @@ bool ZGuiScrollbar::Notify(ZGuiWnd* pkWnd, int iCode)
 		int* piParams = new int[3];
 		piParams[0] = GetID(); // id
 		piParams[1] = m_bHorzintal; // horizontal or vertical
-		piParams[2] = GetPos();
+		piParams[2] = m_nPos;
 		GetGUI()->GetActiveCallBackFunc()(
 			GetGUI()->GetActiveMainWnd(), ZGM_SCROLL, 1, piParams);
 
@@ -283,9 +285,10 @@ void ZGuiScrollbar::CopyNonUniqueData(const ZGuiWnd* pkSrc)
 
 }
 
-
 void ZGuiScrollbar::SetScrollPos(unsigned int pos)
 {
 	if(pos >= m_nMin && pos <= m_nMax)
-		SetScrollInfo(m_nMin, m_nMax, m_usThumbSize, pos);
+		SetScrollInfo(m_nMin, m_nMax, m_fPageSize, pos);
+
+	Notify(m_pkThumbButton, NCODE_MOVE);
 }

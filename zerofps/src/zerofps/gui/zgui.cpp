@@ -1064,7 +1064,14 @@ void ZGui::OnKeyPress(int iKey)
 		if(!RunKeyCommand(iKey))
 			ZGuiWnd::m_pkFocusWnd->ProcessKBInput(iKey);
 
-		if(iKey == KEY_DOWN || iKey == KEY_UP)
+		bool bIsTextbox = typeid(*ZGuiWnd::m_pkFocusWnd) == 
+			typeid(ZGuiTextbox) ? true : false;
+
+		bool bMultiLine = false;
+		if(bIsTextbox)
+			bMultiLine = ((ZGuiTextbox*) ZGuiWnd::m_pkFocusWnd)->IsMultiLine();
+
+		if((iKey==KEY_DOWN || iKey==KEY_UP) && !(bIsTextbox && bMultiLine))
 		{
 			// Find the child with the next tab nr...
 			ZGuiWnd* pkNext = FindNextTabWnd(ZGuiWnd::m_pkFocusWnd,
@@ -1075,8 +1082,8 @@ void ZGui::OnKeyPress(int iKey)
 		}
 
 		// Send a WM Command message when Return or space ar being hit
-		if( (iKey == KEY_RETURN && typeid(*ZGuiWnd::m_pkFocusWnd) != 
-			 typeid(ZGuiTextbox)) || iKey == KEY_SPACE)
+		if( (iKey == KEY_RETURN || iKey == KEY_SPACE) 
+			&& !(bIsTextbox && bMultiLine) )
 		{
 			ZGuiWnd::m_pkFocusWnd->Notify(ZGuiWnd::m_pkFocusWnd,
 				NCODE_CLICK_DOWN);

@@ -19,7 +19,8 @@
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 
-ZGuiTextbox::ZGuiTextbox(Rect kArea, ZGuiWnd* pkParent, bool bVisible, int iID, bool bMultiLine) :
+ZGuiTextbox::ZGuiTextbox(Rect kArea, ZGuiWnd* pkParent, bool bVisible, 
+						 int iID, bool bMultiLine) : 
 	ZGuiWnd(kArea, pkParent, bVisible, iID)
 {
 	m_iCursorRow = 1	;
@@ -45,6 +46,11 @@ ZGuiTextbox::ZGuiTextbox(Rect kArea, ZGuiWnd* pkParent, bool bVisible, int iID, 
 		m_iMaxVisibleRows = 1;
 
 	SetWindowFlag(WF_CANHAVEFOCUS); // textboxar har focus by default
+
+	m_kRowOffsets.reserve(1000); 
+	m_kRowOffsets.assign(1000,0);
+	
+	m_kRowOffsets[0] = 0;
 }
 
 ZGuiTextbox::~ZGuiTextbox()
@@ -124,10 +130,55 @@ bool ZGuiTextbox::ProcessKBInput(int nKey)
 		nKey = '\n';
 	}
 
+	if(nKey == KEY_SPACE)
+	{
+		printf("--------------\n");
+		for(int x=0; x<10; x++)
+		{
+			printf("%i\n", m_kRowOffsets[x]);
+		}
+		printf("--------------\n");
+		return true;
+	}
+
+	if( (nKey == KEY_DOWN && m_bMultiLine == true) ||
+		(nKey == KEY_UP   && m_bMultiLine == true) )
+	{
+		if(nKey == KEY_DOWN)
+			MoveDownOneRow();
+		else
+			MoveUpOneRow();
+
+		int y_pos = m_iRenderDistFromTop + m_iCursorRow * m_pkFont->m_cCharCellSize; 
+
+		bool bScroll = false;
+
+		if(nKey == KEY_DOWN &&
+			y_pos >= GetScreenRect().Height()-m_pkFont->m_cCharCellSize)
+			bScroll = true;
+
+		if(nKey == KEY_UP &&
+			y_pos <= m_pkFont->m_cCharCellSize)
+			bScroll = true;
+
+		if(bScroll)
+			ScrollText(m_iCursorRow);
+
+		return true;
+	}
+
 	if(nKey == KEY_LEFT)
 	{
 		if(m_iCursorPos > 0)
 			m_iCursorPos--;	
+
+		int cursor_row = GetCursorRow();
+
+		int y_pos = m_iRenderDistFromTop + cursor_row * m_pkFont->m_cCharCellSize; 
+
+		if(y_pos <= m_pkFont->m_cCharCellSize)
+			ScrollText( cursor_row );
+
 		return true;
 	}
 
@@ -135,18 +186,31 @@ bool ZGuiTextbox::ProcessKBInput(int nKey)
 	{
 		if((unsigned)m_iCursorPos < strlen(m_strText))
 			m_iCursorPos++;	
+
+		int cursor_row = GetCursorRow();
+
+		int y_pos = m_iRenderDistFromTop + cursor_row * m_pkFont->m_cCharCellSize; 
+
+		if(y_pos >= GetScreenRect().Height()-m_pkFont->m_cCharCellSize)
+			ScrollText( cursor_row );
+
+		printf("%i\n", m_iCursorPos);
 		return true;
 	}
 
 	if(nKey == KEY_END && m_strText)
 	{
 		m_iCursorPos = strlen(m_strText);
+		unsigned int min,max,pos;
+		m_pkScrollbarVertical->GetScrollInfo(min,max,pos);
+		m_pkScrollbarVertical->SetScrollPos(max-1);
 		return true;
 	}
 
 	if(nKey == KEY_HOME)
 	{
 		m_iCursorPos = 0;
+		m_pkScrollbarVertical->SetScrollPos(0);
 		return true;
 	}
 
@@ -281,48 +345,57 @@ void ZGuiTextbox::SetFocus()
 	m_bBlinkCursor = true;
 
 	Input* pkInput = static_cast<Input*>(g_ZFObjSys.GetObjectPtr("Input"));
-	int iClickPosX, iClickPosY;
-	pkInput->MouseXY(iClickPosX,iClickPosY);
 
-	// Placera markören där man klickade.
-	Rect rcTextbox = GetScreenRect();
-	if(rcTextbox.Inside(iClickPosX,iClickPosY) && pkInput->Pressed(MOUSELEFT))
+	if(pkInput->Pressed(MOUSELEFT))
 	{
-		int iHorzOffset = iClickPosX-GetScreenRect().Left;
-		int iVertOffset = iClickPosY-GetScreenRect().Top;
+		int iClickPosX, iClickPosY;
+		pkInput->MouseXY(iClickPosX,iClickPosY);
 
-		if(m_pkFont && m_strText && strlen(m_strText) > 0)
+		iClickPosX -= GetScreenRect().Left;
+		iClickPosY -= GetScreenRect().Top;
+
+		// Placera markören där man klickade.
+		if(m_pkFont != NULL && m_strText != NULL)
 		{
-			// Adderar för vertikalt avstånd från ovankant.
-			int row = iVertOffset / m_pkFont->m_cCharCellSize;
-			int rows = GetNumRows();
+			int rowheight = (m_pkFont != NULL) ? m_pkFont->m_cCharCellSize : 12;
+			int row = m_iStartrow + iClickPosY/rowheight;
+			if(row < m_iNumRows)
+				m_iCursorPos = m_kRowOffsets[row]; 
 
-			int i;
+			int last_row_pos;
+			if(row != m_iNumRows-1)
+				last_row_pos = m_kRowOffsets[row+1]-1;
+			else
+				last_row_pos = 100000000;
 
-			for(i=0; i<row; i++)
-				m_iCursorPos += GetRowLength(i);
-
-			// Adderar för horizontellt avstånd från vänsterkant.
-			int offset = 0;
-			int row_length = GetRowLength(row);
-			for( i=0; i<row_length; i++)
+			int pixel_offset=0;
+			while(1)
 			{
-				if(offset > iHorzOffset)
+				int cell = m_strText[m_iCursorPos];
+				int font_size = 0;
+				
+				if(cell != '\n')
+					font_size = m_pkFont->m_aChars[cell].iSizeX;
+
+				if( m_strText[m_iCursorPos] != ' ' &&
+					m_strText[m_iCursorPos] != '\n')
+					font_size += m_pkFont->m_cPixelGapBetweenChars;
+
+				pixel_offset += font_size;
+				if( pixel_offset >= iClickPosX ||
+					m_iCursorPos >= last_row_pos)
 					break;
 
-				int pos = m_strText[m_iCursorPos+i]-32;
-				if(pos >= 0 && pos < 256)
-					offset += m_pkFont->m_aChars[pos].iSizeX;
+				m_iCursorPos++;
 			}
-
-			m_iCursorPos += i;
 		}
 	}
 }
 
 void ZGuiTextbox::KillFocus()
 {
-	m_bBlinkCursor = false;
+	if(ZGuiWnd::m_pkWndClicked != m_pkScrollbarVertical->GetButton())
+		m_bBlinkCursor = false;
 
 /*	// Send a message to the main winproc...
 	int* piParams = new int[1];
@@ -418,7 +491,6 @@ void ZGuiTextbox::CreateInternalControls()
 		m_pkScrollbarVertical = new ZGuiScrollbar(Rect(x,y,x+w,y+h),
 			this,true,VERT_SCROLLBAR_TEXBOX_ID);
 		m_pkScrollbarVertical->SetScrollInfo(0,0,1.0f,0); 
-		//m_pkScrollbarVertical->SetAutoHide(false);
 	}
 	else
 	{
@@ -452,6 +524,18 @@ bool ZGuiTextbox::Notify(ZGuiWnd* pkWnd, int iCode)
 		}
 	}
 
+	if(pkWnd == m_pkScrollbarVertical)
+	{
+		ZGui* pkGui = GetGUI();
+
+		if(iCode == NCODE_CLICK_UP && pkGui)			
+		{
+			int prev_cursor_pos = m_iCursorPos;
+			pkGui->SetFocus(this);
+			m_iCursorPos = prev_cursor_pos;
+		}
+	}
+
 	return true;
 }
 
@@ -470,6 +554,22 @@ void ZGuiTextbox::ScrollText(ZGuiScrollbar* pkScrollbar)
 
 	// Reset parameter
 	pkScrollbar->m_iScrollChange = 0;
+}
+
+void ZGuiTextbox::ScrollText(int row)
+{	
+	unsigned int min,max,pos;
+	m_pkScrollbarVertical->GetScrollInfo(min,max,pos);
+	float fPos = (float)(max-min) * ((float)row / m_iNumRows);
+	m_pkScrollbarVertical->SetScrollPos((int)fPos);
+	
+	ZGui* pkGui = GetGUI();
+	if(pkGui)
+	{
+		int prev_cursor_pos = m_iCursorPos;
+		pkGui->SetFocus(this);
+		m_iCursorPos = prev_cursor_pos;
+	}
 }
 
 void ZGuiTextbox::GetWndSkinsDesc(vector<SKIN_DESC>& pkSkinDesc) const
@@ -494,7 +594,7 @@ bool ZGuiTextbox::IgnoreKey(int iKey)
 
 	if( iKey == KEY_BACKSPACE || iKey == KEY_DELETE || iKey == KEY_LEFT || 
 		iKey == KEY_RIGHT || iKey == KEY_END || iKey == KEY_HOME ||
-		iKey == KEY_RETURN )
+		iKey == KEY_RETURN || KEY_DOWN || KEY_UP)
 		bIgnore = false;
 
 	if(iKey >= 32 && iKey < 256)
@@ -504,6 +604,55 @@ bool ZGuiTextbox::IgnoreKey(int iKey)
 }
 
 int ZGuiTextbox::GetNumRows(char* szText)
+{
+	if(!m_pkFont)
+	{
+		printf("Can't get num rows because szTextbox have no font!\n");
+		return -1;
+	}
+
+	if(szText == NULL || strlen(szText) < 1)
+	{
+		printf("Can't get num rows because string is bad!\n");
+		return -1;
+	}
+
+	int characters_totalt = strlen(szText);
+	int width = GetScreenRect().Width();
+	int xpos=0, ypos=0, row_height = m_pkFont->m_cCharCellSize;
+	int rows = 0, offset = 0, max_width = width;
+
+	pair<int,int> kLength; // first = character, second = pixels.
+
+	while(offset < characters_totalt) // antal ord
+	{
+		kLength = GetWordLength(szText, offset, max_width);
+
+		offset += kLength.first;
+		xpos += kLength.second;
+
+		bool bRowBreak = false;
+		//bool bCarr
+
+		if(szText[offset] == '\n')
+			bRowBreak = true;
+		if(xpos > max_width)
+			bRowBreak = true;
+
+		if(bRowBreak)
+		{
+			xpos = 0;
+			ypos += row_height;
+			m_kRowOffsets[rows] = kLength.first;
+		}
+			
+	}
+
+
+	return rows;
+}
+
+/*int ZGuiTextbox::GetNumRows(char* szText)
 {
 	if(!m_pkFont)
 	{
@@ -520,47 +669,59 @@ int ZGuiTextbox::GetNumRows(char* szText)
 	int characters_totalt = strlen(szText);
 	int width = GetScreenRect().Width();
 	int xpos=0, ypos=0, row_height = m_pkFont->m_cCharCellSize;
-	int rows = 1, offset = 0;
+	int rows = 0, offset = 0, max_widht = width;
 
 	pair<int,int> kLength; // first = character, second = pixels.
 
-	static bool bHavePrinted = false;
+	static bool apa = true;
 
 	while(1) // antal ord
 	{
-		kLength = GetWordLength(szText, offset);
-
-		if(offset == m_iCursorPos)
-			m_iCursorRow = rows;
+		kLength = GetWordLength(szText, offset, max_widht);
 		
 		offset += kLength.first;
 		xpos += kLength.second;
 		
-		if(!bHavePrinted)
+		if(xpos >= width || szText[offset-1] == '\n')
 		{
-			printf("%i\n", m_iMaxVisibleRows);
+			// Registrera offset in i texten för första tecknet
+			// på varje rad.
+			rows++;
+
+			if(rows > m_kRowOffsets.size())
+				m_kRowOffsets.reserve(rows+100);
+
+			m_kRowOffsets[rows] = offset;
+
+			if(m_iCursorPos < m_kRowOffsets[rows] &&
+			   m_iCursorPos >= m_kRowOffsets[rows-1])
+			   m_iCursorRow = rows-1;
+
+			ypos += row_height;	
+
+			if(xpos >= width)
+			{
+				m_kRowOffsets[rows] -= kLength.first;
+			}
+			
+			if(szText[offset-1] != '\n')
+				xpos = kLength.second;
+			else
+				xpos = 0;
 		}
 
 		if(offset >= characters_totalt)
 			break;
-
-		if(xpos > width || szText[offset-1] == '\n')
-		{
-			xpos = kLength.second;
-			ypos += row_height;
-			rows++;
-		}
-
-		if(kLength.first == 0)
-			offset++;
 	}
 
-	bHavePrinted = true;
+	printf("antal rader: %i\n", rows);
+
+	apa = false;
 
 	return rows;
-}
+}*/
 
-pair<int,int> ZGuiTextbox::GetWordLength(char *text, int offset)
+/*pair<int,int> ZGuiTextbox::GetWordLength(char *text, int offset)
 {
 	int char_counter = 0;
 	int length_counter = 0;
@@ -572,19 +733,54 @@ pair<int,int> ZGuiTextbox::GetWordLength(char *text, int offset)
 		if(index < 0 || index > 255)
 			continue;
 
-		if(text[i] == ' ' || text[i] == '\n')
-		{
-			char_counter++; // lägg till ett så att sluttecknet får plats.
+		if(text[i] != '\n')
 			length_counter += m_pkFont->m_aChars[index].iSizeX;
-			return pair<int,int>(char_counter, length_counter); // break
-		}
 
-		length_counter += m_pkFont->m_aChars[index].iSizeX;
-
-		if(text[i] != ' ')
+		if(text[i] != ' ' && text[i] != '\n')
 			length_counter += m_pkFont->m_cPixelGapBetweenChars;
 
 		char_counter++;
+
+		if(text[i] == ' ' || text[i] == '\n')
+			break;
+	}
+
+	return pair<int,int>(char_counter, length_counter);
+}*/
+
+pair<int,int> ZGuiTextbox::GetWordLength(char *text, int offset, int max_width)
+{
+	int char_counter = 0;
+	int length_counter = 0;
+
+	int iMax = strlen(text);
+	for(int i=offset; i<iMax; i++)
+	{
+		if(text[i] == '\n')
+		{
+			char_counter++;
+			break;
+		}
+
+		int index = text[i]-32;
+		if(index < 0 || index > 255)
+		{
+			char_counter++;
+			continue;
+		}
+
+		if(text[i] != '\n')
+			length_counter += m_pkFont->m_aChars[index].iSizeX;
+
+		// Break words bigger then then the length
+		// of one row in the textbox.
+		if(length_counter > max_width)
+			break;
+
+		char_counter++;
+
+		if(text[i] == ' ')
+			break;
 	}
 
 	return pair<int,int>(char_counter, length_counter);
@@ -593,56 +789,6 @@ pair<int,int> ZGuiTextbox::GetWordLength(char *text, int offset)
 int ZGuiTextbox::GetNumRows()
 {
 	return GetNumRows(m_strText);
-}
-
-
-///////////////////////////////////////////////////////////////////////////////
-// Name: GetRowLength
-// Description: Get number of characters on a row (search_row).
-//				The row starts with 0.
-int ZGuiTextbox::GetRowLength(int search_row)
-{
-	if(!m_pkFont)
-	{
-		printf("Can't get row length because textbox have no font!\n");
-		return -1;
-	}
-
-	if(m_strText)
-	{
-		int textbox_width = GetScreenRect().Width();
-		int text_width = 0, row_counter = 0, character_counter = 0;
-
-		// Loopa igenom alla bokstäver i texten.
-		for(int i=0; i < strlen(m_strText) ; i++)
-		{
-			// Öka textbredden med storleken på aktuellt tecken.
-			text_width += m_pkFont->m_aChars[m_strText[i]-32].iSizeX;
-
-			// Är textbredden störren än textboxens bredd?
-			if(text_width >= textbox_width)
-			{
-				// Öka på rad räknaren,
-				row_counter++;
-				// Nollställ textbredden.
-				text_width = 0;
-			}
-			// Är textbredden mindre än textboxens bredd?
-			else
-			{
-				// Är den sökta raden lika med den aktuella raden?
-				if(search_row == row_counter)
-				{
-					// Öka tecken räknaren, 
-					character_counter++;
-				}
-			}
-		}
-
-		return character_counter;
-	}
-
-	return -1;
 }
 
 void ZGuiTextbox::CopyNonUniqueData(const ZGuiWnd* pkSrc)
@@ -684,12 +830,9 @@ bool ZGuiTextbox::UpdateScrollbar()
 	int iTextboxSize = GetScreenRect().Height();
 	if(iRowSize <= 0) iRowSize = 1; // don´t devide by zero
 	float fThumbSize = (float) iTextboxSize / (float) iRowSize;
-
 	m_pkScrollbarVertical->SetScrollInfo(0,iRows,fThumbSize,0);
 
 	m_pkScrollbarVertical->Show();
-
-	//m_pkScrollbarVertical->SetScrollPos(m_iCursorRow);
 
 	m_bScrollbarUpdated = true;
 
@@ -701,4 +844,224 @@ void ZGuiTextbox::SetFont(ZGuiFont* pkFont)
 {
 	m_pkFont = pkFont;
 	UpdateScrollbar();
+}
+
+void ZGuiTextbox::MoveDownOneRow()
+{
+	if(m_pkFont == NULL)
+		return;
+
+	int curr_row = 0;
+	int curr_x=0;
+	int old_cursor_pos = m_iCursorPos;
+
+	for(int j=0; j<m_iNumRows; j++)
+	{
+		if(old_cursor_pos == m_kRowOffsets[j])
+		{
+			if(j+1 != m_iNumRows)
+			{
+				m_iCursorRow = j+1;
+				m_iCursorPos = m_kRowOffsets[m_iCursorRow];
+			}
+			return;
+		}
+	}
+
+	for(int i=0; i<m_iNumRows; i++)
+	{
+		if(i==m_iNumRows-1)
+		{
+			m_iCursorRow = m_iNumRows-1;
+			m_iCursorPos = strlen(m_strText);
+			return;
+		}
+
+		// Är nästa rads offset större än cursor pos?
+		if(m_kRowOffsets[i+1] >= m_iCursorPos)
+		{
+			// Registera nuvarande rad.
+			curr_row = i;
+
+			// Räkna ut x värdet på current cursor pos.
+			int char_counter  = m_kRowOffsets[i];
+			int curr_row_length = 0; 
+
+			while(1)
+			{
+				if(char_counter >= m_iCursorPos)
+				{
+					break;
+				}
+				else
+				{
+					int letter_size = 0;
+					int gap_size = 0;
+
+					int element = m_strText[char_counter];
+
+					if(element == '\n')
+						break;
+					
+					letter_size = m_pkFont->m_aChars[element].iSizeX;  
+
+					if(element != ' ')
+						gap_size = m_pkFont->m_cPixelGapBetweenChars;
+
+					curr_row_length += (letter_size + gap_size);
+				}
+
+				char_counter++;
+			}
+
+			// Flytta m_iCursorPos till nästa rad och motsvarande x pos
+			// eller mindre (om raden är kortare)
+
+			m_iCursorPos = m_kRowOffsets[i+1];
+			m_iCursorRow = i+1;
+			int pixel_counter = 0; 
+
+			while(1)
+			{
+				if(pixel_counter >= curr_row_length)
+					break;
+
+				int letter_size = 0;
+				int gap_size = 0;
+
+				int element = m_strText[m_iCursorPos];
+
+				if(element == '\n')
+					break;
+
+				letter_size = m_pkFont->m_aChars[element].iSizeX;  
+
+				if(element != ' ')
+					gap_size = m_pkFont->m_cPixelGapBetweenChars;
+
+				pixel_counter += (letter_size + gap_size);
+
+				m_iCursorPos++;
+			}
+
+			break;
+		}
+	}
+}
+
+void ZGuiTextbox::MoveUpOneRow()
+{
+	if(m_pkFont == NULL)
+		return;
+
+	int curr_row = 0;
+	int curr_x=0;
+	int old_cursor_pos = m_iCursorPos;
+
+	if(m_iCursorPos < m_kRowOffsets[1])
+	{
+		m_iCursorPos = 0;
+		m_iCursorRow = 0;
+		return;
+	}
+
+	for(int j=0; j<m_iNumRows; j++)
+	{
+		if(old_cursor_pos == m_kRowOffsets[j])
+		{
+			m_iCursorPos = m_kRowOffsets[j-1];
+			m_iCursorRow = j-1;
+			return;
+		}
+	}
+
+	for(int i=0; i<m_iNumRows; i++)
+	{
+		// Är nästa rads offset större än cursor pos?
+		if(i == m_iNumRows-1 || m_kRowOffsets[i+1] >= m_iCursorPos)
+		{
+			// Registera nuvarande rad.
+			curr_row = i;
+
+			// Räkna ut x värdet på current cursor pos.
+			int char_counter  = m_kRowOffsets[i];
+			int curr_row_length = 0; 
+
+			while(1)
+			{
+				if(char_counter >= m_iCursorPos)
+				{
+					break;
+				}
+				else
+				{
+					int letter_size = 0;
+					int gap_size = 0;
+
+					int element = m_strText[char_counter];
+
+					if(element == '\n')
+						break;
+					
+					letter_size = m_pkFont->m_aChars[element].iSizeX;  
+
+					if(element != ' ')
+						gap_size = m_pkFont->m_cPixelGapBetweenChars;
+
+					curr_row_length += (letter_size + gap_size);
+				}
+
+				char_counter++;
+			}
+
+			// Flytta m_iCursorPos till nästa rad och motsvarande x pos
+			// eller mindre (om raden är kortare)
+
+			m_iCursorPos = m_kRowOffsets[i-1];
+			m_iCursorRow = i-1;
+			int pixel_counter = 0; 
+
+			while(1)
+			{
+				if(pixel_counter >= curr_row_length)
+					break;
+
+				int letter_size = 0;
+				int gap_size = 0;
+
+				int element = m_strText[m_iCursorPos];
+
+				if(element == '\n')
+					break;
+
+				letter_size = m_pkFont->m_aChars[element].iSizeX;  
+
+				if(element != ' ')
+					gap_size = m_pkFont->m_cPixelGapBetweenChars;
+
+				pixel_counter += (letter_size + gap_size);
+
+				m_iCursorPos++;
+			}
+
+			break;
+		}
+	}
+}
+
+int ZGuiTextbox::GetCursorRow()
+{
+	int row = 0;
+
+	for(int i=0; i<m_kRowOffsets.size(); i++)
+	{
+		if(m_iCursorPos > m_kRowOffsets[i] &&
+		   m_iCursorPos < m_kRowOffsets[i+1])
+		{
+			row = i;
+			return row;
+		}
+	}
+
+	return row;
 }

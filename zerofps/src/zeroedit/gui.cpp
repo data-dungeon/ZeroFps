@@ -579,22 +579,29 @@ void Gui::CreateTestWnd()
 
 	ZGuiTextbox* pkTextbox = CreateTextbox(pkWnd,id++,0,0,w,h,true);
 
-	const char* word = "maskros";
-	int words = 30;
+/*	int words = 50;
 	string text;
 	for(int i=0; i<words; i++)
 	{
-		text += word;
+		//char oka[20]; 
+		//sprintf(oka, "%i\n", i);
+		text += "apfett apfett ";
+		//text += oka;
+	}*/
 
-		char number[20];
-		sprintf(number, " %i\n", i);
-		text += number;
-	}
+	char* szText = new char[1643+52+1]; //text.length()+1];
 
-	char* szText = new char[1000];
-	sprintf(szText, text.c_str());
-	pkTextbox->SetText(szText);
+	FILE* pkFile = fopen("textbox.txt", "r+t");
+	fread(szText, sizeof(char), 1643+52, pkFile);
+	szText[1643+52] = '\0';
+
+	//sprintf(szText, text.c_str());
+	pkTextbox->SetText(szText);//"Hej din tjockis,\nvill du ha smisk? Inte det??? Kan du multiplikationstabellen eller inte?");
 	delete[] szText;
+
+
+	
+
 
 	m_pkEdit->pkGui->RegisterWindow(pkTextbox, "TestTextBox");
 }

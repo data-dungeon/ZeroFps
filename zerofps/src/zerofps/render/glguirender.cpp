@@ -327,6 +327,8 @@ void GLGuiRender::RenderText( char *strText, Rect rc, int iCursorPos, int iRende
 	if(!fontTexture)
 		return; // false;
 
+	m_iCursorPos = iCursorPos;
+
 	if(bDrawMasked)
 	{
 		glEnable(GL_BLEND);					// Enable Blending
@@ -369,7 +371,7 @@ void GLGuiRender::RenderText( char *strText, Rect rc, int iCursorPos, int iRende
 ///////////////////////////////////////////////////////////////////////////////
 // Name: PrintRows
 //
-bool GLGuiRender::PrintRows(char* text, Rect rc, int iCursorPos, int iRenderDistFromTop,
+/*bool GLGuiRender::PrintRows(char* text, Rect rc, int iCursorPos, int iRenderDistFromTop,
 							bool bMultiLine, int& chars_printed, int& rows_printed) 
 {
 	unsigned int x = rc.Left;
@@ -391,7 +393,7 @@ bool GLGuiRender::PrintRows(char* text, Rect rc, int iCursorPos, int iRenderDist
 			curr_length = GetWordLength(text, i);
 			int prev_x = x;
 
-			if(prev_x + curr_length.second > rc.Right || text[i-1] == '\n')
+			if(prev_x + curr_length.second >= rc.Right || text[i-1] == '\n')
 			{
 				x = rc.Left;
 				y -= m_pkFont->m_cCharCellSize;
@@ -441,12 +443,6 @@ bool GLGuiRender::PrintRows(char* text, Rect rc, int iCursorPos, int iRenderDist
 
 				if(text[j] != ' ') // lägg inte till extra utrymmer efter ett space
 					iCurrLegth = (fw + m_pkFont->m_cPixelGapBetweenChars);
-
-/*				if(row >= max_rows)
-				{
-					bFit = false;
-					break;
-				}*/
 
 				if(rc.Inside(x,y+2) || !bMultiLine)
 				{
@@ -498,6 +494,82 @@ bool GLGuiRender::PrintRows(char* text, Rect rc, int iCursorPos, int iRenderDist
 	rows_printed = rows;
 
 	return true;
+}*/
+
+bool GLGuiRender::PrintRows(char* text, Rect rc, int iCursorPos, int iRenderDistFromTop,
+							bool bMultiLine, int& chars_printed, int& rows_printed) 
+{
+	vector<int> row_start_pos;
+	pair<int,int> curr_length;
+
+	glBegin(GL_QUADS);	 
+
+		int characters_totalt = strlen(text);
+		int width = rc.Width();
+		int xpos=0, ypos=0, row_height = m_pkFont->m_cCharCellSize;
+		int rows = 0, offset = 0, max_widht = rc.Width();
+
+		pair<int,int> kLength; // first = character, second = pixels.
+
+		while(offset < characters_totalt) // antal ord
+		{
+			kLength = GetWordLength(text, offset, max_widht);
+
+			if(xpos+kLength.second >= width)
+			{
+				// Räkna inte in sista tecknets längd om det är ett space.
+				// och om längden på ordet överskrider den tillåtna längden.
+				if(text[offset+kLength.first-1] == ' ')
+				{
+					int index = ' ' - 32;
+					kLength.second -= m_pkFont->m_aChars[index].iSizeX;
+				}
+
+				if(xpos+kLength.second >= width)
+				{
+					if(text[offset+kLength.first-1] == ' ')
+					{
+						int index = ' ' - 32;
+						kLength.second += m_pkFont->m_aChars[index].iSizeX;
+					}
+
+					rows++;
+					ypos += row_height;
+					xpos = 0;
+				}
+			}
+
+			int x,y;
+			x = rc.Left + xpos;
+			y = m_iScreenHeight-rc.Top-m_pkFont->m_cCharCellSize -
+				ypos - iRenderDistFromTop;
+
+			//if(rc.Inside(x,y+2) || !bMultiLine)
+				PrintWord(x, y, text, offset, kLength.first);
+
+			bool bRowBreak = false;
+			
+			if(text[offset+kLength.first-1] == '\n')
+			{	
+				rows++;
+				ypos += row_height;	
+				xpos = 0;
+
+				bRowBreak = true;
+			}
+
+			if(bRowBreak == false)
+				xpos += kLength.second;
+
+			offset += kLength.first;
+		}
+		
+	glEnd();
+
+	chars_printed = offset;
+	rows_printed = rows;
+
+	return true;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -524,7 +596,7 @@ void GLGuiRender::GetScreenSize(int& cx, int& cy)
 	cy = m_iScreenHeight;
 }
 
-pair<int,int> GLGuiRender::GetWordLength(char *text, int offset)
+/*pair<int,int> GLGuiRender::GetWordLength(char *text, int offset)
 {
 	int char_counter = 0;
 	int length_counter = 0;
@@ -532,7 +604,7 @@ pair<int,int> GLGuiRender::GetWordLength(char *text, int offset)
 	int iLength = strlen(text);
 	for(int i=offset; i<iLength; i++)
 	{
-		if(text[i] == ' ' || text[i] == '\n' || text[i] == '\t')
+		if(text[i] == ' ' || text[i] == '\n')
 		{
 			char_counter++; // lägg till ett så att sluttecknet får plats.
 
@@ -540,9 +612,10 @@ pair<int,int> GLGuiRender::GetWordLength(char *text, int offset)
 			if(index < 0 || index > 255)
 				continue;
 
-			length_counter += m_pkFont->m_aChars[index].iSizeX;
+			if(text[i] != '\n')
+				length_counter += m_pkFont->m_aChars[index].iSizeX;
 
-			if(text[i] != ' ')
+			if(text[i] != ' ' && text[i] != '\n')
 				length_counter += m_pkFont->m_cPixelGapBetweenChars;
 
 			return pair<int,int>(char_counter, length_counter); // break
@@ -552,7 +625,8 @@ pair<int,int> GLGuiRender::GetWordLength(char *text, int offset)
 		if(index < 0 || index > 255)
 			continue;
 
-		length_counter += m_pkFont->m_aChars[index].iSizeX;
+		if(text[i] != '\n')
+			length_counter += m_pkFont->m_aChars[index].iSizeX;
 
 		if(text[i] != ' ')
 			length_counter += m_pkFont->m_cPixelGapBetweenChars;
@@ -561,4 +635,102 @@ pair<int,int> GLGuiRender::GetWordLength(char *text, int offset)
 	}
 
 	return pair<int,int>(char_counter, length_counter);
+}*/
+
+pair<int,int> GLGuiRender::GetWordLength(char *text, int offset, int max_width)
+{
+	int char_counter = 0;
+	int length_counter = 0;
+
+	int iMax = strlen(text);
+	for(int i=offset; i<iMax; i++)
+	{
+		if(text[i] == '\n')
+		{
+			char_counter++;
+			break;
+		}
+
+		int index = text[i]-32;
+		if(index < 0 || index > 255)
+		{
+			char_counter++;
+			continue;
+		}
+
+		if(text[i] != '\n')
+			length_counter += m_pkFont->m_aChars[index].iSizeX;
+
+		// Break words bigger then then the length
+		// of one row in the textbox.
+		if(length_counter > max_width)
+			break;
+
+		char_counter++;
+
+		if(text[i] == ' ')
+			break;
+	}
+
+	return pair<int,int>(char_counter, length_counter);
+}
+
+void GLGuiRender::PrintWord(int x, int y, char *szWord, 
+							int offset, int length)
+{
+	for(int i=offset; i<offset+length; i++)
+	{
+
+		// Print cursor
+		if(i == m_iCursorPos)
+		{
+			int iCursorX = x;
+			int iCursorY = y;
+
+			int index = '|'-32;
+			int fx = m_pkFont->m_aChars[index].iPosX;
+			int fy = m_pkFont->m_aChars[index].iPosY;
+			int fw = m_pkFont->m_aChars[index].iSizeX;
+			int fh = m_pkFont->m_aChars[index].iSizeY;
+
+			float tx = (float) fx / m_pkFont->m_iBMPWidth;
+			float ty = (float) fy / m_pkFont->m_iBMPWidth;
+			float tw = (float) fw / m_pkFont->m_iBMPWidth;
+			float th = (float) fh / m_pkFont->m_iBMPWidth;
+
+			iCursorX -= 2;	// minska markörens xpos ytterligare 2 pixlar.
+							// som en kompensation för tecknets egen storlek.
+
+			glTexCoord2f(tx,ty);		glVertex2i(iCursorX,iCursorY+fh);		 
+			glTexCoord2f(tx+tw,ty);		glVertex2i(iCursorX+fw,iCursorY+fh);    
+			glTexCoord2f(tx+tw,ty+th);	glVertex2i(iCursorX+fw,iCursorY);    
+			glTexCoord2f(tx,ty+th);		glVertex2i(iCursorX,iCursorY);
+		}
+
+		int pos = szWord[i]-32;
+		if(pos < 0 || pos > 255)
+			continue;
+
+		if(szWord[i] == '\n')
+			return;
+
+		int fx = m_pkFont->m_aChars[pos].iPosX;
+		int fy = m_pkFont->m_aChars[pos].iPosY;
+		int fw = m_pkFont->m_aChars[pos].iSizeX;
+		int fh = m_pkFont->m_aChars[pos].iSizeY;
+
+		int iCurrLegth = fw;
+
+		float tx = (float) fx / m_pkFont->m_iBMPWidth;
+		float ty = (float) fy / m_pkFont->m_iBMPWidth;
+		float tw = (float) fw / m_pkFont->m_iBMPWidth;
+		float th = (float) fh / m_pkFont->m_iBMPWidth;
+
+		glTexCoord2f(tx,ty);		glVertex2i(x,y+fh);		 
+		glTexCoord2f(tx+tw,ty);		glVertex2i(x+fw,y+fh);    
+		glTexCoord2f(tx+tw,ty+th);	glVertex2i(x+fw,y);    
+		glTexCoord2f(tx,ty+th);		glVertex2i(x,y);
+
+		x+=iCurrLegth;
+	}
 }

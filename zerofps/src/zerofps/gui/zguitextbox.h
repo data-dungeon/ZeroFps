@@ -14,8 +14,8 @@ class ZGuiScrollbar;
 class GUI_API ZGuiTextbox : public ZGuiWnd
 {
 public:
+	int GetCursorRow();
 	bool IsMultiLine();
-	int GetRowLength(int iRow);
 	int GetNumRows();
 
 	ZGuiTextbox(Rect kRectangle, ZGuiWnd* pkParent=NULL, bool bVisible=true, 
@@ -36,12 +36,16 @@ public:
 	void SetFont(ZGuiFont* pkFont); //överlagrad
 
 private:
+	void MoveDownOneRow();
+	void MoveUpOneRow();
+	vector<int> m_kRowOffsets;
 	int m_iRenderDistFromTop;
 	bool UpdateScrollbar();
-	pair<int,int> GetWordLength(char *text, int offset);
+	pair<int,int> GetWordLength(char *text, int offset, int max_width);
 	int GetNumRows(char* szText);
 	bool IgnoreKey(int Key);
 	void ScrollText(ZGuiScrollbar* pkScrollbar);
+	void ScrollText(int row);
 	void ResizeTextBuffer( int nCharacters );
 	bool m_bBlinkCursor;
 	bool m_bSingleLine;

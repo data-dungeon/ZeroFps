@@ -76,6 +76,10 @@ MTL=midl.exe
 # Name "zerofps - Win32 Release Profile"
 # Begin Source File
 
+SOURCE=.\render\glguirender.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\basic\zfobjectmanger.cpp
 # End Source File
 # Begin Source File

@@ -31,7 +31,8 @@ public:
 	void GetScreenSize(int& cx, int& cy);
 
 private:
-	pair<int,int> GetWordLength(char* text, int offset);
+	void PrintWord(int x, int y, char* szWord, int offset, int length);
+	pair<int,int> GetWordLength(char* text, int offset, int max_width);
 
 	ZGuiSkin* m_pkSkin; // current skin
 	ZGuiFont* m_pkFont; // current font
@@ -40,6 +41,7 @@ private:
 	bool PrintRows(char* text, Rect rc, int iCursorPos, int iRenderDistFromTop, 
 		bool bMultiLine, int& chars_printed, int& rows_printed);
 	TextureManager* m_pkTextureManger;
+	int m_iCursorPos;
 };
 
 #endif
