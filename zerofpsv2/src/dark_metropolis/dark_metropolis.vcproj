@@ -143,7 +143,16 @@
 				RelativePath=".\gameplay_dlg.cpp">
 			</File>
 			<File
-				RelativePath=".\ingame_dlg.cpp">
+				RelativePath=".\handleagents_dlg.cpp">
+			</File>
+			<File
+				RelativePath=".\hq_dlg.cpp">
+			</File>
+			<File
+				RelativePath=".\itemtransaction_dlg.cpp">
+			</File>
+			<File
+				RelativePath=".\members_dlg.cpp">
 			</File>
 			<File
 				RelativePath=".\mission_dlg.cpp">
@@ -175,7 +184,16 @@
 				RelativePath=".\gameplay_dlg.h">
 			</File>
 			<File
-				RelativePath=".\ingame_dlg.h">
+				RelativePath=".\handleagents_dlg.h">
+			</File>
+			<File
+				RelativePath=".\hq_dlg.h">
+			</File>
+			<File
+				RelativePath=".\itemtransaction_dlg.h">
+			</File>
+			<File
+				RelativePath=".\members_dlg.h">
 			</File>
 			<File
 				RelativePath=".\mission_dlg.h">

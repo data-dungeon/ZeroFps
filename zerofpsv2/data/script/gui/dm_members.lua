@@ -43,6 +43,13 @@ function GUICreate()
 	 bkB=255, borderR=255, borderG=255, borderB=255, bd_size=0, tile=0, trans=0 }
 	Skin18 = { tex1="dm/next_f.bmp", tex2="0", tex3="0", tex4="0", tex1a="0", tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=255,
 	 bkB=255, borderR=255, borderG=255, borderB=255, bd_size=0, tile=0, trans=0 }
+	Skin19 = { tex1="delete_u.bmp", tex2="0", tex3="0", tex4="0", tex1a="0", tex2a="0", tex3a="0", tex4a="0", bkR=255,
+	 bkG=255, bkB=255, borderR=255, borderG=255, borderB=255, bd_size=0, tile=0, trans=0 }
+	Skin20 = { tex1="delete_d.bmp", tex2="0", tex3="0", tex4="0", tex1a="0", tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=255,
+	 bkB=255, borderR=255, borderG=255, borderB=255, bd_size=0, tile=0, trans=0 }
+	Skin21 = { tex1="delete_f.bmp", tex2="0", tex3="0", tex4="0", tex1a="0", tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=255,
+	 bkB=255, borderR=255, borderG=255, borderB=255, bd_size=0, tile=0, trans=0 }
+
 	-------------------------------------------------------------------------
 	-- Create all windows in correct order (parents before childrens etc.)
 	-- 0 = Wnd, 1 = Button, 2 = Checkbox, 3 = Combobox, 4 = Label, 5 = Listbox, 6 = Radiobutton,
@@ -53,6 +60,11 @@ function GUICreate()
 
 	CreateWnd(0,"MembersWnd","","",65,75,688,432,0)
 	ChangeSkin("MembersWnd","Skin15","Window")
+
+	CreateWnd(1,"MembersClosBn","MembersWnd","",660,8,20,20,0)
+	ChangeSkin("MembersClosBn","Skin19","Button up")
+	ChangeSkin("MembersClosBn","Skin20","Button down")
+	ChangeSkin("MembersClosBn","Skin21","Button focus")
 
 	CreateWnd(4,"LevelbarTopic","MembersWnd","Level : 3",137,364,100,20,0)
 	ChangeSkin("LevelbarTopic","Skin1","Label")
@@ -121,6 +133,18 @@ function GUICreate()
 
 	CreateWnd(4,"MemberWageField","MembersWnd","722%",378,359,50,20,0)
 	ChangeSkin("MemberWageField","Skin1","Label")
+
+	CreateWnd(1,"MembersEquipBn","MembersWnd","Equip",500,250,64,20,0)
+	ChangeSkin("MembersEquipBn","Skin13","Button up")
+	ChangeSkin("MembersEquipBn","Skin14","Button down")
+	ChangeSkin("MembersEquipBn","Skin14","Button focus")
+
+	CreateWnd(1,"MembersDropItemBn","MembersWnd","Drop",500,250,64,20,0)
+	ChangeSkin("MembersDropItemBn","Skin13","Button up")
+	ChangeSkin("MembersDropItemBn","Skin14","Button down")
+	ChangeSkin("MembersDropItemBn","Skin14","Button focus")
+
+
 
 end
 

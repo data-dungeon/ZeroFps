@@ -27,12 +27,12 @@ void CNewGameDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName)
 			}
 		}
 	}
-	else
+/*	else
 	if(strClickName == "StartNewGameBack")
 	{
 		LoadDlg("data/script/gui/dm_start.lua");
 		pkMainWnd->Hide();
-	}		
+	}	*/	
 	else
 	if(strClickName == "SelectNextBaseBn")
 	{

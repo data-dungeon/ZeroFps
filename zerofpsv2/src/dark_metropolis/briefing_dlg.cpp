@@ -10,22 +10,16 @@ CBriefingDlg::~CBriefingDlg()
 
 void CBriefingDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName)
 {
-	//if(strClickName == "BriefingAcceptBn")
-	//{
-	//	ZGuiWnd* pkInGamePanel = GetWnd("InGamePanelWnd");
-
-	//	if(pkInGamePanel)
-	//		pkInGamePanel->Hide();
-
-	//	GetWnd("ReputationLabel")->Hide();
-	//	GetWnd("MoneyLabel")->Hide();
-
-	//	LoadDlg("data/script/gui/dm_gameplay.lua");
-	//	pkMainWnd->Hide();	
-	//}
-	//else
-	//if(strClickName == "BriefingCancelBn")
-	//{
-	//	pkMainWnd->Hide();
-	//}
+	if(strClickName == "BriefingAcceptBn")
+	{
+		ShowWnd("HQWnd", false, false);
+		LoadDlg("data/script/gui/dm_gameplay.lua");
+		pkMainWnd->Hide();	
+		m_pkGui->KillWndCapture();
+	}
+	else
+	if(strClickName == "BriefingCancelBn")
+	{
+		pkMainWnd->Hide();
+	}
 }

@@ -1,13 +1,11 @@
 #pragma once
 #include "gamedlg.h"
 
-class CGamePlayDlg : public CGameDlg
+class CHandleAgents : public CGameDlg
 {
 public:
-	CGamePlayDlg();
-	~CGamePlayDlg();
+	CHandleAgents();
+	~CHandleAgents();
 
 	void OnCommand(ZGuiWnd *pkMainWnd, string strClickName);
-
-
 };

@@ -141,12 +141,15 @@ class DarkMetropolis : public Application, public ZGuiApp
 
 		void GUI_InGameDlg_OnCommand(ZGuiWnd* pkMainWnd, string strClickName);
 
-		CGameDlg* m_pkInGameDlg;
+		CGameDlg* m_pkHQDlg;
 		CGameDlg* m_pkGamePlayDlg;
 		CGameDlg* m_pkStartDMDlg;
 		CGameDlg* m_pkNewGameDlg;
 		CGameDlg* m_pkMissionDlg;
 		CGameDlg* m_pkBriefingDlg;
+		CGameDlg* m_pkShopDlg;
+		CGameDlg* m_pkMembersDlg;
+		CGameDlg* m_pkHandleAgents;
 
 		friend class CGameDlg;
 };

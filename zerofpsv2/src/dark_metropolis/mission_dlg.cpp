@@ -12,12 +12,12 @@ void CMissionDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName)
 {
 	if(strClickName == "BriefingBn")
 	{
+		ShowWnd("MissionWnd", false, true);
 		LoadDlg("data/script/gui/dm_briefing.lua");
-		pkMainWnd->Hide();	
 	}
 	else
 	if(strClickName == "MissionCancelBn")
 	{
-		pkMainWnd->Hide();
+		ShowWnd("MissionWnd", false, true);
 	}
 }

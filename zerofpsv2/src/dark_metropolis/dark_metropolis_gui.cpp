@@ -2,12 +2,15 @@
 
 #include "dark_metropolis.h"
 #include "gamedlg.h"
-#include "ingame_dlg.h"
+#include "hq_dlg.h"
 #include "gameplay_dlg.h"
 #include "startdm_dlg.h"
 #include "mission_dlg.h"
 #include "briefing_dlg.h"
 #include "newgame_dlg.h"
+#include "itemtransaction_dlg.h"
+#include "members_dlg.h"
+#include "handleagents_dlg.h"
 #include "../zerofpsv2/engine_systems/script_interfaces/si_gui.h"
 
 bool GUIPROC(ZGuiWnd* win, unsigned int msg, int numparms, void *params ) 
@@ -32,6 +35,7 @@ bool GUIPROC(ZGuiWnd* win, unsigned int msg, int numparms, void *params )
 			win);
 		break;
 	case ZGM_LBUTTONDBLCLK:
+		printf("mamma\n");
 		g_kDM.GUI_OnDoubleClick(((int*)params)[0], ((int*)params)[1], true, win);
 		break;
 	case ZGM_RBUTTONDBLCLK:
@@ -77,10 +81,13 @@ void DarkMetropolis::GUI_Init()
 	// Create all screens
 	m_pkStartDMDlg = new CStartDMDlg();
 	m_pkNewGameDlg = new CNewGameDlg();
-	m_pkInGameDlg = new CInGameDlg();
+	m_pkHQDlg = new CHQDlg();
 	m_pkMissionDlg = new CMissionDlg();
 	m_pkBriefingDlg = new CBriefingDlg();
 	m_pkGamePlayDlg = new CGamePlayDlg();
+	m_pkShopDlg = new CItemTransactionDlg();
+	m_pkMembersDlg = new CMembersDlg();
+	m_pkHandleAgents = new CHandleAgents();
 }
 
 void DarkMetropolis::GUI_OnCommand(int iID, bool bRMouseBnClick, 
@@ -116,9 +123,14 @@ void DarkMetropolis::GUI_OnCommand(int iID, bool bRMouseBnClick,
 		m_pkNewGameDlg->OnCommand(pkMainWnd, strClickName);
 	}
 	else
-	if(strMainWnd == "InGamePanelWnd")
+	if(strMainWnd == "HQWnd")
 	{
-		m_pkInGameDlg->OnCommand(pkMainWnd, strClickName);
+		m_pkHQDlg->OnCommand(pkMainWnd, strClickName);
+	}
+	else
+	if(strMainWnd == "MembersWnd")
+	{
+		m_pkMembersDlg->OnCommand(pkMainWnd, strClickName);
 	}
 	else
 	if(strMainWnd == "MissionWnd")
@@ -136,6 +148,15 @@ void DarkMetropolis::GUI_OnCommand(int iID, bool bRMouseBnClick,
 		m_pkGamePlayDlg->OnCommand(pkMainWnd, strClickName);
 	}
 	else
+	if(strMainWnd == "ItemTransactionWnd")
+	{
+		m_pkShopDlg->OnCommand(pkMainWnd, strClickName);
+	}
+	else
+	if(strMainWnd == "AgentsWnd")
+	{		
+		m_pkHandleAgents->OnCommand(pkMainWnd, strClickName);
+	}
 	if(strMainWnd == "LoadListWnd")
 	{
 		if(strClickName == "LoadListCancelBn")
@@ -294,7 +315,7 @@ bool DarkMetropolis::GUI_NewGame(ZGuiWnd *pkMainWnd)
 	//	"GamePlayChar5Wnd", "GamePlayPanelWnd",
 	//	"GamePlayInfoWnd", "MembersWnd",
 	//	"MissionWnd", "BriefingWnd",
-	//	"BuyWnd", "SellWnd", 
+	//	"ItemAddWnd", "ItemRemoveWnd", 
 	//};
 
 	//for(int i=0; i<sizeof(szWndToHide)/sizeof(szWndToHide[1]); i++)

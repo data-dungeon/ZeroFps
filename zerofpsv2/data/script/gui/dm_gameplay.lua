@@ -5,8 +5,6 @@ function GUICreate()
 	-------------------------------------------------------------------------
 	-- Skins.
 	-------------------------------------------------------------------------
-	Skin1 = { tex1="dm/portrait3.bmp", tex2="0", tex3="0", tex4="0", tex1a="0", tex2a="0", tex3a="0", tex4a="0", bkR=255,
-	 bkG=255, bkB=255, borderR=255, borderG=255, borderB=255, bd_size=0, tile=0, trans=0 }
 	Skin2 = { tex1="0", tex2="0", tex3="0", tex4="0", tex1a="0", tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=255,
 	 bkB=255, borderR=255, borderG=255, borderB=255, bd_size=0, tile=0, trans=1 }
 	Skin3 = { tex1="black.bmp", tex2="0", tex3="0", tex4="0", tex1a="0", tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=255,
@@ -70,6 +68,12 @@ function GUICreate()
 	Skin31 = { tex1="dm/attack_bn_u.bmp", tex2="0", tex3="0", tex4="0", tex1a="0", tex2a="0", tex3a="0", tex4a="0", bkR=255,
 	 bkG=255, bkB=255, borderR=255, borderG=255, borderB=255, bd_size=0, tile=0, trans=0 }
 	Skin32 = { tex1="dm/attack_bn_d.bmp", tex2="0", tex3="0", tex4="0", tex1a="0", tex2a="0", tex3a="0", tex4a="0", bkR=255,
+	 bkG=255, bkB=255, borderR=255, borderG=255, borderB=255, bd_size=0, tile=0, trans=0 }
+	Skin33 = { tex1="dm/portrait3.bmp", tex2="0", tex3="0", tex4="0", tex1a="0", tex2a="0", tex3a="0", tex4a="0", bkR=255,
+	 bkG=255, bkB=255, borderR=255, borderG=255, borderB=255, bd_size=0, tile=0, trans=0 }
+	Skin34 = { tex1="dm/portrait3.bmp", tex2="0", tex3="0", tex4="0", tex1a="0", tex2a="0", tex3a="0", tex4a="0", bkR=255,
+	 bkG=0, bkB=255, borderR=255, borderG=255, borderB=255, bd_size=0, tile=0, trans=0 }
+	Skin35 = { tex1="dm/portrait3.bmp", tex2="0", tex3="0", tex4="0", tex1a="0", tex2a="0", tex3a="0", tex4a="0", bkR=255,
 	 bkG=255, bkB=255, borderR=255, borderG=255, borderB=255, bd_size=0, tile=0, trans=0 }
 
 	-------------------------------------------------------------------------
@@ -135,8 +139,10 @@ function GUICreate()
 	CreateWnd(4,"WeaponIcon","GamePlayPanelWnd","",617,9,64,75,0)
 	ChangeSkin("WeaponIcon","Skin21","Label")
 
-	CreateWnd(4,"ActiveCharacterPortrait","GamePlayPanelWnd","",698,0,92,92,0)
-	ChangeSkin("ActiveCharacterPortrait","Skin1","Label")
+	CreateWnd(1,"ActiveCharacterPortraitBn","GamePlayPanelWnd","",698,0,92,92,0)
+	ChangeSkin("ActiveCharacterPortraitBn","Skin33","Button up")
+	ChangeSkin("ActiveCharacterPortraitBn","Skin34","Button down")
+	ChangeSkin("ActiveCharacterPortraitBn","Skin35","Button focus")
 
 	CreateWnd(4,"AmmoLabel","GamePlayPanelWnd","",647,12,30,20,0)
 	ChangeSkin("AmmoLabel","Skin2","Label")
