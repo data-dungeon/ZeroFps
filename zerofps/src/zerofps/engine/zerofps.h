@@ -76,7 +76,6 @@ class ZeroFps {
 		void SetDisplay(int iWidth,int iHeight,int iDepth);
 		void SetDisplay();
 		void Swap(void);								//swap gl buffers
-		void UpdateCamera(void);
 		
 		void ToggleFullScreen(void);
 		

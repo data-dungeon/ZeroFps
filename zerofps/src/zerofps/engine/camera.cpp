@@ -22,8 +22,6 @@ void Camera::Update(int iWidth,int iHeight) {
 	if(m_bViewChange){
 		m_bViewChange=false;
 	
-//		cout<<"balle"<<endl;
-	
 		//load projection matrix
 		glMatrixMode(GL_PROJECTION);
 		glLoadMatrixf((float*)&m_kCamMatrix[0]);
@@ -77,5 +75,12 @@ void Camera::SetViewPort(float fX,float fY,float fW,float fH)
 	m_fHeight=fH;
 
 }
+
+
+void Camera::ClearViewPort() {
+	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);	
+}
+
+
 
 

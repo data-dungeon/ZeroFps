@@ -12,7 +12,7 @@ Test::Test(char* aName,int iWidth,int iHeight,int iDepth): Application(aName,iWi
 void Test::OnInit(void) {
 	
 	pkConsole->Print("MegaUltraSuper Duper Game");
-	pkFps->m_pkAudioMan->LoadMusic("file:../data/music/alien.mp3");		
+	pkFps->m_pkAudioMan->LoadMusic("file:../data/music/test.mp3");		
 //	pkFps->m_pkAudioMan->PlayMusic();
 
 
@@ -117,11 +117,12 @@ void Test::OnInit(void) {
 	glEnable(GL_LIGHTING );
 	
 	cam1=new Camera(Vector3(50,50,200),Vector3(0,0,0),90,1.333,0.25,400);
-	cam1->SetViewPort(0,.4,.6,.6);
+//	cam1->SetViewPort(0,.4,.6,.6);
 	
 	cam2=new Camera(Vector3(50,50,100),Vector3(0,0,0),90,1.333,0.25,400);
 	cam2->SetViewPort(0.6,0,.4,.4);
 	
+//	cam3=new Camera(Vector3(50,50,100),Vector3(0,0,0),90,1.333,0.25,400);
 //	pkFps->SetCamera(cam1);
 //	pkFps->SetCamera(cam2);	
 
@@ -130,9 +131,10 @@ void Test::OnInit(void) {
 
 void Test::OnIdle(void) {
 //	pkFps->SetCamera(cam2);	
-	
+	pkFps->GetCam()->ClearViewPort();	
 	OnHud();
 	pkFps->SetCamera(cam1);		
+//	pkFps->GetCam()->ClearViewPort();
 	
 	m_kSpotpos->x=sin(SDL_GetTicks()/1000.0)*50.0+80;
 	m_kSpotpos->z=cos(SDL_GetTicks()/1000.0)*50.0+80;
@@ -145,8 +147,8 @@ void Test::OnIdle(void) {
 	pkRender->DrawHMlod(test,pkFps->GetCam()->GetPos(),pkFps->m_iFps);			
 	
 
-	pkFps->SetCamera(cam2);
-	pkRender->DrawSkyBox(pkFps->GetCam()->GetPos());
+//	pkFps->SetCamera(cam2);
+//	pkRender->DrawSkyBox(pkFps->GetCam()->GetPos());
 	
 //	pkRender->DrawHMlod(test,pkFps->GetCam()->GetPos(),pkFps->m_iFps);			
 	pkFps->SetCamera(cam1);

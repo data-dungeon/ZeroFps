@@ -104,13 +104,13 @@ void ZeroFps::MainLoop(void) {
 			}
 			case state_console: {
 				SetCamera(m_pkCamera);			
+				m_pkCamera->ClearViewPort();
+				
 				m_pkConsole->Update();
 				Swap();
 				
 				if(m_iState==state_normal){
 					SetCamera(m_pkTempCamera);
-//					m_pkCamera=m_pkGameCamera;
-//					m_pkCamera->UpdateAll(m_iWidth,m_iHeight);
 				}					
 				
 				break;
@@ -159,20 +159,12 @@ void ZeroFps::InitDisplay(int iWidth,int iHeight,int iDepth) {
 	SDL_GL_SetAttribute( SDL_GL_DEPTH_SIZE, 16 );
 	SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1 );
 	
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();													//
-//	glFrustum(-.3,.3,-.225,.225,.25,400);				//
+//	glMatrixMode(GL_PROJECTION);
+//	glLoadIdentity();													//
+
 	m_pkDefaultCamera=new Camera(Vector3(0,0,0),Vector3(0,0,0),90,1.333,0.25,400);
 	m_pkConsoleCamera=new Camera(Vector3(0,0,0),Vector3(0,0,0),84,1.333,0.3,400);	
-//	m_pkConsoleCamera->SetViewPort(0.2,0.2,0.4,0.4);
-	
-//	m_pkCamera->UppLoad();
-//	gluPerspective(90,1.333,0.25,400);
-	
-	//set camera mode
-//	m_iCamMode=cam_look; 
-//	m_kCamPos=new Vector3(0,0,0);
-//	m_kCamRot=new Vector3(0,0,0);
+
   
 	glMatrixMode(GL_MODELVIEW);
 
@@ -184,7 +176,7 @@ void ZeroFps::InitDisplay(int iWidth,int iHeight,int iDepth) {
 void ZeroFps::Swap(void) {
 	SDL_GL_SwapBuffers();  //guess
 
-	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+//	glClear(GL_DEPTH_BUFFER_BIT);	
 	glLoadIdentity();
   
 	//count FPS
@@ -192,47 +184,6 @@ void ZeroFps::Swap(void) {
 	m_fLastFrameTime=SDL_GetTicks();
 	m_iFps=int(1000.0/m_fFrameTime);	
 
-
-}
-
-
-void ZeroFps::UpdateCamera(void) {
-
-//	m_pkCamera->Update();		
-
-
-
-
-/*
-
-//	if(m_iState==state_normal) {
-		// Update Camera
-
-
-
-		switch(m_iCamMode)
-		{
-		case cam_look:
-			m_pkCamera->Update();		
-			
-			/*
-			//rotate the camera
-			glRotatef(m_kCamRot->x,1,0,0);	
-			glRotatef(m_kCamRot->y,0,1,0);	
-			glRotatef(m_kCamRot->z,0,0,1);	
-		
-			//translate the camera
-			glTranslatef(-m_kCamPos->x,-m_kCamPos->y,-m_kCamPos->z);
-			
-			
-			break;
-		case cam_target:
-			gluLookAt(m_kCamPos->x,m_kCamPos->y,m_kCamPos->z,
-				m_kCamRot->x,m_kCamRot->y,m_kCamRot->z,0,1,0);
-			break;
-		}
-//	}
-*/
 
 }
 
@@ -265,7 +216,7 @@ void ZeroFps::SetDisplay()
 void ZeroFps::SetCamera(Camera* pkCamera)
 {
 	if(m_pkCamera!=pkCamera){
-		cout<<"Changing Camera"<<endl;
+//		cout<<"Changing Camera"<<endl;
 		m_pkCamera=pkCamera;		
 		m_pkCamera->UpdateAll(m_iWidth,m_iHeight);					
 

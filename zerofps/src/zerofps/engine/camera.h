@@ -27,6 +27,7 @@ class Camera {
 		void UpdateAll(int iWidth,int iHeight);
 		void SetView(float fFov,float fAspect,float fNear,float fFar);
 		void SetViewPort(float iX,float iY,float iW,float iH);
+		void ClearViewPort();
 		void SetPos(Vector3 kPos){ m_kPos=kPos;};
 		void SetRot(Vector3 kRot){ m_kRot=kRot;};
 		Vector3 &GetPos(){return m_kPos;};
