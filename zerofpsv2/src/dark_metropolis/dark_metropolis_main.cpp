@@ -287,19 +287,20 @@ void DarkMetropolis::Input()
 	if(m_pkCameraEntity)
 	{
 		Vector3 pos = m_pkCameraEntity->GetWorldPosV();
+
 		float s = m_pkFps->GetFrameTime() * 10;
 		
-		if(m_pkInputHandle->VKIsDown("cam_left"))
-			pos += Vector3(-1,0,0) * s;
-		
-		if(m_pkInputHandle->VKIsDown("cam_right"))
-			pos += Vector3(1,0,0) * s;
-		
 		if(m_pkInputHandle->VKIsDown("cam_up"))
-			pos += Vector3(0,0,-1) * s;
+			pos += Vector3(-1 * sin(m_fAngle), 0, -1 * cos(m_fAngle)) * s;
 		
 		if(m_pkInputHandle->VKIsDown("cam_down"))
-			pos += Vector3(0,0,1) * s;
+			pos += Vector3(1 * sin(m_fAngle), 0, 1 * cos(m_fAngle)) * s;
+		
+		if(m_pkInputHandle->VKIsDown("cam_left"))
+			pos += Vector3(-1 * cos((PI*2)-m_fAngle), 0, -1 * sin((PI*2)-m_fAngle)) * s;
+		
+		if(m_pkInputHandle->VKIsDown("cam_right"))
+			pos += Vector3(1 * cos((PI*2)-m_fAngle), 0, 1 * sin((PI*2)-m_fAngle)) * s;
 		
 		m_pkCameraEntity->SetWorldPosV(pos);
 	}
