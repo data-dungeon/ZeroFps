@@ -1,0 +1,247 @@
+
+#ifndef _DONT_MAIN					// <- OBS! Flytta inte på denna. Måste ligga i
+	#define _MAINAPPLICATION_		// just denna fil och inte på flera ställen.
+	#define _DONT_MAIN
+#endif
+ 
+#include "madview.h"
+#include "../../../zerofpsv2/engine_systems/propertys/p_mad.h"
+#include "../../../zerofpsv2/engine_systems/script_interfaces/si_gui.h"
+
+MadView g_kZeroEd("MadView", 0, 0, 0);
+
+static bool GUIPROC( ZGuiWnd* win, unsigned int msg, int numparms, void *params ) 
+{
+	switch(msg)
+	{
+	case ZGM_COMMAND:
+		g_kZeroEd.OnCommand(((int*)params)[0], (((int*)params)[1] == 1) ? true : false, win);
+		break;
+	case ZGM_SELECTLISTITEM:
+		g_kZeroEd.OnClickListbox(((int*)params)[0],((int*)params)[1],win);
+		break;
+	case ZGM_SELECTTREEITEM:
+		char** pszParams; pszParams = (char**) params;
+		g_kZeroEd.OnClickTreeItem( pszParams[0], pszParams[1], 
+			pszParams[2], pszParams[3][0] == '1' ? true : false);		
+		break;
+	case ZGM_TCN_SELCHANGE:
+		int* data; data = (int*) params; 
+		g_kZeroEd.OnClickTabPage((ZGuiTabCtrl*) data[2], data[0], data[1]);// fram med släggan
+		break;
+	case ZGM_KEYPRESS:
+		break;
+	}
+	return true;
+}
+
+
+MadView::MadView(char* aName,int iWidth,int iHeight,int iDepth) 
+	: Application(aName,iWidth,iHeight,iDepth), ZGuiApp(GUIPROC)
+{ 
+	g_ZFObjSys.Log_Create("madview");
+
+	// Set Default values	
+	m_bIsEditor = true;
+	
+	m_fDelayTime   = 0.0;
+
+	m_iObjRotMode = OBJ_ROT_NONE;
+	m_fObjRotDelay = 0.005f;
+
+	m_fObjRotX=0;
+	m_fObjRotY=0;
+	m_fObjRotZ=0;
+	m_iCurrRotAngle = 0;
+	m_apObjRotAngles[0] = &m_fObjRotX;
+	m_apObjRotAngles[1] = &m_fObjRotY;
+	m_apObjRotAngles[2] = &m_fObjRotZ;
+
+	Register_Cmd("open_mad", FID_OPENMAD);	
+
+	Register_Cmd("object_rotation_mode", FID_OBJECTROTATIONMODE);	
+	Register_Cmd("object_rotation_speed", FID_OBJECTROTATIONSPEED);	
+	
+	
+} 
+
+void MadView::OnInit() 
+{
+	m_pkZFVFileSystem->AddRootPath( "../datafiles/mistlands/",	"/data");
+	m_pkZFVFileSystem->AddRootPath( "../datafiles/madview/", "/data");
+
+	m_pkConsole->Printf(" MadView ");
+	m_pkConsole->Printf("--------------------------------");
+	m_pkConsole->Printf("");
+
+	Init();
+
+	//run autoexec script
+	if(!m_pkIni->ExecuteCommands("/zeroed_autoexec.ini"))
+		m_pkConsole->Printf("No zeroed_autoexec.ini found");
+}
+
+void MadView::Init()
+{		
+	RegisterPropertys();
+	RegisterResources();
+
+	GuiAppLua::Init(&g_kZeroEd, m_pkScript);
+
+	InitGui(m_pkScript, "defguifont", "data/script/gui/defskins.lua", 
+		"data/script/gui/menu_madview.txt", true, true); 
+
+	SetTitle("MadView");
+
+	m_pkInput->ShowCursor(true);
+
+	SetupGuiEnviroment();
+
+	CreateCamera();
+	CreateViewObject();
+	
+	P_Enviroment* pe = (P_Enviroment*)m_pkCameraObject->AddProperty("P_Enviroment");
+	pe->SetEnviroment("data/enviroments/madview.env");
+	pe->SetEnable(true);		
+
+	m_fDelayTime = m_pkZeroFps->GetEngineTime();
+	
+	ToogleLight(true);
+
+	m_fRotTimer = (float) SDL_GetTicks() / 1000.0f;
+}
+
+void MadView::RegisterResources()
+{
+	m_pkResourceDB->RegisterResource( string(".env"), Create__EnvSetting	);
+}
+
+void MadView::RegisterPropertys()
+{
+	m_pkPropertyFactory->Register("P_Enviroment", Create_P_Enviroment);
+}
+
+void MadView::OnIdle()
+{	
+	float fTime = (float) SDL_GetTicks() / 1000.0f;
+
+	if(m_pkGui->m_bHandledMouse == false)
+	{
+		Input();	
+	}
+
+	if(m_pkViewObject)
+	{
+		float fTimeSinceLastFrame = fTime - m_fRotTimer;
+		float dif = fTimeSinceLastFrame / m_fObjRotDelay;
+
+		m_fRotTimer = fTime;
+
+		if(m_iObjRotMode != OBJ_ROT_NONE)
+		{
+			(*m_apObjRotAngles)[m_iCurrRotAngle] += dif;
+
+			if((*m_apObjRotAngles)[m_iCurrRotAngle] >= 360 )
+			{
+				(*m_apObjRotAngles)[m_iCurrRotAngle] = 0.0f;
+
+				if(m_iObjRotMode == OBJ_ROT_XYZ)
+					m_iCurrRotAngle++;
+
+				if(m_iCurrRotAngle==3)
+					m_iCurrRotAngle=0;
+			}
+		}
+
+		m_pkViewObject->SetWorldRotV(Vector3(m_fObjRotX,m_fObjRotY,m_fObjRotZ));
+	}
+}
+
+void MadView::ToogleLight(bool bEnabled)
+{
+	static bool s_bAdded = false;
+
+	if(bEnabled)
+	{	
+		m_kSun.kRot = Vector3(1,2,1);
+		m_kSun.kDiffuse=Vector4(1,1,1,0);
+		m_kSun.kAmbient=Vector4(0.2,0.2,0.2,0);
+		m_kSun.iType=DIRECTIONAL_LIGHT;			
+		m_kSun.iPriority=10;
+		m_kSun.fConst_Atten=1;
+		m_kSun.fLinear_Atten=0;
+		m_kSun.fQuadratic_Atten=0;
+
+		m_pkLight->Add(&m_kSun);
+		s_bAdded = true;
+	}
+	else
+	{
+		if(s_bAdded)
+			m_pkLight->Remove(&m_kSun);
+	}
+}
+
+void MadView::CreateCamera()
+{
+	m_pkCamera=new Camera(Vector3(0,0,0),Vector3(0,0,0),70,1.333,0.25,250);	
+	m_pkCamera->m_bForceFullScreen = true;
+	m_pkCamera->SetName("persp");
+	m_pkZeroFps->AddRenderCamera(m_pkCamera);
+
+	m_pkCameraObject = m_pkEntityManager->CreateEntityFromScript("data/script/objects/t_camedit.lua");
+	m_pkCameraObject->SetParent( m_pkEntityManager->GetWorldEntity() );				
+	
+	P_Camera* m_pkCamProp = (P_Camera*)m_pkCameraObject->GetProperty("P_Camera");
+	m_pkCamProp->SetCamera(m_pkCamera);
+	m_pkCameraObject->SetSave(false);	
+
+	m_pkCameraObject->SetWorldPosV(Vector3(0,-2,-2)); 
+}
+
+void MadView::CreateViewObject()
+{
+	m_pkViewObject = m_pkEntityManager->CreateEntity();
+	m_pkViewObject->SetParent( m_pkEntityManager->GetWorldEntity() ); 
+
+	P_Mad* pkMad = (P_Mad*) m_pkViewObject->AddProperty("P_Mad");
+	pkMad->SetBase("/data/mad/cleaver.mad");
+	pkMad->SetScale(1);
+
+	m_pkViewObject->AddProperty("P_LightUpdate");
+
+	m_pkViewObject->SetWorldPosV(Vector3(0,0,5));
+}
+
+void MadView::RunCommand(int cmdid, const CmdArgument* kCommand)
+{
+	switch(cmdid) 
+	{
+		case FID_OPENMAD:
+			ShowWnd("SelectFileWnd", true);
+			break;
+
+		case FID_OBJECTROTATIONMODE:
+
+			m_iObjRotMode = atoi(kCommand->m_kSplitCommand[1].c_str());
+
+			if(m_iObjRotMode != 0)
+			{
+				m_fObjRotX = m_fObjRotY = m_fObjRotZ = 0.0f;
+			}
+			
+			if(m_iObjRotMode != 4)
+				m_iCurrRotAngle = m_iObjRotMode-1;
+			else
+				m_iCurrRotAngle = 0;
+			break;
+
+		case FID_OBJECTROTATIONSPEED:
+			int speed;
+			speed = atoi(kCommand->m_kSplitCommand[1].c_str());
+			if(speed == 1) m_fObjRotDelay = 0.100f;
+			if(speed == 2) m_fObjRotDelay = 0.009f;
+			if(speed == 3) m_fObjRotDelay = 0.002f;
+			break;
+	}
+}
