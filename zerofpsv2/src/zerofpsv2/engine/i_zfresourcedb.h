@@ -27,12 +27,12 @@ public:
 	virtual ZFResource*	CreateResource(string strName) = 0;
 	virtual void RegisterResource(string strName, ZFResource* (*Create)()) = 0;
 
-	virtual ZFResourceInfo*	GetResourceData(string strResName) = 0;
+	virtual ZFResourceInfo*	GetResourceData(const string& strResName) = 0;
 
 	//virtual ZFResourceInfo* FindResource(string strResName) = 0;
 	virtual bool IsResourceLoaded(string strResName) = 0;		
 	
-	virtual void GetResource(ZFResourceHandle& kResHandle, string strResName) = 0;
+	virtual void GetResource(ZFResourceHandle& kResHandle,const string& strResName) = 0;
 	virtual void FreeResource(ZFResourceHandle& kResHandle) = 0;
 
 	virtual void Refresh() = 0;

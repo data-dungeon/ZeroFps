@@ -226,11 +226,11 @@ void ZFSystem::UnRegister(ZFSubSystem* pkObject)
 */
 ZFSubSystem* ZFSystem::GetObjectPtr(char* acName,bool bWarning)
 {
-	string Test(acName);
+// cout<<"requesting:"<<acName<<endl;
 
 	for(unsigned int i=0; i < kObjectNames.size();i++) 
 	{
-		if(kObjectNames[i].m_strName == Test) 
+		if(kObjectNames[i].m_strName == acName) 
 		{
 			kObjectNames[i].m_iNumOfRequests ++;
 			return kObjectNames[i].pkObject;
@@ -239,6 +239,8 @@ ZFSubSystem* ZFSystem::GetObjectPtr(char* acName,bool bWarning)
 
 	if(bWarning)
 		cout<<"WARNING: Requested system pointer not found:"<<acName<<endl;
+		
+	
 		
 	return NULL;
 }

@@ -48,9 +48,13 @@ public:
 class BASIC_API ZFResourceHandle
 {
 private:
+	ZFResourceDB*	m_pkResDB;
+
 	int		m_iHandleID;
 	string	m_strName;
 	int		m_iID;
+	
+	ZFResource*	m_pkResource;
 
 public:
 	ZFResourceHandle();
@@ -58,8 +62,8 @@ public:
 	~ZFResourceHandle();
 	ZFResourceHandle& operator=(const ZFResourceHandle& kOther);
 
-	bool SetRes(string strName);
-	string GetRes() {return m_strName;};
+	bool SetRes(const string& strName);
+	string GetRes() 							{return m_strName;};
 	void FreeRes();
 	bool IsValid();
 

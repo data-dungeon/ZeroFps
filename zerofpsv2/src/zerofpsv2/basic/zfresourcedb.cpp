@@ -28,14 +28,18 @@ ZFResourceInfo::~ZFResourceInfo()
 
 ZFResourceHandle::ZFResourceHandle()
 {
+	m_pkResDB = static_cast<ZFResourceDB*>(g_ZFObjSys.GetObjectPtr("ZFResourceDB"));
+
 	m_iHandleID = g_iResourceHandleID ++;
 	m_iID = -1;
+	m_pkResource = NULL;
 }
 
 ZFResourceHandle::ZFResourceHandle(const ZFResourceHandle& kOther)
 {
 	m_iHandleID = g_iResourceHandleID ++;
 	m_iID = -1;
+	m_pkResource = NULL;
 	SetRes(kOther.m_strName);
 }
 
@@ -50,15 +54,13 @@ ZFResourceHandle::~ZFResourceHandle()
 	FreeRes();
 }
 
-bool ZFResourceHandle::SetRes(string strName)
+bool ZFResourceHandle::SetRes(const string& strName)
 {
 	FreeRes();
 //	g_ZFObjSys.Logf("resdb", "ZFResourceHandle::SetRes %d to  %s\n", m_iHandleID, strName.c_str());
 //	cout << "ZFResourceHandle::SetRes: " << m_iHandleID << " to " << strName << endl;
-
 	m_strName = strName;
-	ZFResourceDB* pkResDB = static_cast<ZFResourceDB*>(g_ZFObjSys.GetObjectPtr("ZFResourceDB"));
-   pkResDB->GetResource(*this,strName);
+   m_pkResDB->GetResource(*this,strName);
 
 	if(m_iID == -1)
 		return false;
@@ -72,11 +74,10 @@ void ZFResourceHandle::FreeRes()
 		return;
 
 //	g_ZFObjSys.Logf("resdb", "ZFResourceHandle::FreeRes %d %s\n", m_iHandleID, m_strName.c_str());
-
-	ZFResourceDB* pkResDB = static_cast<ZFResourceDB*>(g_ZFObjSys.GetObjectPtr("ZFResourceDB"));
-	pkResDB->FreeResource(*this);
+	m_pkResDB->FreeResource(*this);
 	m_iID = -1;
 	m_strName = "";
+	m_pkResource = NULL;
 }
 
 bool  ZFResourceHandle::IsValid()
@@ -92,8 +93,8 @@ ZFResource* ZFResourceHandle::GetResourcePtr()
 	if(m_iID == -1)
 		return NULL;
 	
-	ZFResourceDB* pkResDB = static_cast<ZFResourceDB*>(g_ZFObjSys.GetObjectPtr("ZFResourceDB"));
-	return pkResDB->GetResourcePtr(*this);
+// 	return m_pkResDB->GetResourcePtr(*this);
+	return m_pkResource;
 }
 
 
@@ -115,7 +116,7 @@ ResourceCreateLink*	ZFResourceDB::FindResourceTypeFromFullName(string strResName
 
 void ZFResourceDB::RunCommand(int cmdid, const CmdArgument* kCommand)
 {
-	list<ZFResourceInfo*>::iterator it;
+	vector<ZFResourceInfo*>::iterator it;
 
 	switch (cmdid) {
 		case FID_LISTRES:
@@ -186,7 +187,7 @@ bool ZFResourceDB::ShutDown()
 	{
 		//Logf("resdb", "ZFResourceDB::ShutDown: There are res left\n");
 		
-		list<ZFResourceInfo*>::iterator it;
+		vector<ZFResourceInfo*>::iterator it;
 
 		for(it = m_kResources.begin(); it != m_kResources.end(); it++ )
 			g_ZFObjSys.Logf("resdb", " [%d] = %s\n", (*it)->m_iNumOfUsers, (*it)->m_strName.c_str() );
@@ -216,19 +217,63 @@ bool ZFResourceDB::Refresh()
 
 	float fTime = float(SDL_GetTicks()/1000.0);
 
+	ZFResourceInfo* pkRes;
+	
+	
+	for(vector<ZFResourceInfo*>::iterator it = m_kResources.begin();it != m_kResources.end();it++)
+	{
+		pkRes = 	*it;
+	
+		//still in use
+		if(pkRes->m_iNumOfUsers != 0)	continue;
+		
+		
+		if( (!m_bInstantExpire)  && (pkRes->m_fExpireTimer == 0) ) 
+		{
+			pkRes->m_fExpireTimer = fTime + float(RES_EXPIRE_TIME);
+			//cout << "Set Expire: '" << (*it)->m_strName << "'" << endl;
+		}
+		else 
+		{
+			if(m_bInstantExpire || (pkRes->m_fExpireTimer < fTime) ) 
+			{
+				// Time to die.
+				// g_ZFObjSys.Logf("resdb", "Remove %s\n", (*it)->m_strName.c_str());
+				//	cout << "Expires: '" << (*it)->m_strName << "'" << endl;
+				
+				m_kResourceFactory[pkRes->m_pkResource->m_iTypeIndex].m_iActive --;
+				delete pkRes;
+												
+				it = m_kResources.erase(it);				
+				
+				bWasUnloaded = true;
+			}
+		}			
+	}
+	
+	
+	
+	
+	
+	
+/*	
 	list<ZFResourceInfo*>::iterator it;
 
-	for(it = m_kResources.begin(); it != m_kResources.end(); it++ ) {
+	for(it = m_kResources.begin(); it != m_kResources.end(); it++ ) 
+	{
 		// If someone still using this res.
 		if((*it)->m_iNumOfUsers != 0)	continue;
 
 		// No one is using it. Check for expire time.
-		if(m_bInstantExpire == false && (*it)->m_fExpireTimer == 0) {
+		if(m_bInstantExpire == false && (*it)->m_fExpireTimer == 0) 
+		{
 			(*it)->m_fExpireTimer = fTime + float(RES_EXPIRE_TIME);
 //			cout << "Set Expire: '" << (*it)->m_strName << "'" << endl;
-			}
-		else {
-			if(m_bInstantExpire == true || (*it)->m_fExpireTimer < fTime) {
+		}
+		else 
+		{
+			if(m_bInstantExpire == true || (*it)->m_fExpireTimer < fTime) 
+			{
 				// Time to die.
 				// g_ZFObjSys.Logf("resdb", "Remove %s\n", (*it)->m_strName.c_str());
 				//	cout << "Expires: '" << (*it)->m_strName << "'" << endl;
@@ -237,30 +282,34 @@ bool ZFResourceDB::Refresh()
 				delete (*it);
 				it = m_kResources.erase(it);
 				bWasUnloaded = true;
-				}
 			}
 		}
+	}*/
 
-	for(it = m_kResources.begin(); it != m_kResources.end(); it++ ) {
-		//m_pkZeroFps->DevPrintf("res", "%s - %d", (*it)->m_strName.c_str(), (*it)->m_iNumOfUsers);
-		}
+// 	for(it = m_kResources.begin(); it != m_kResources.end(); it++ ) 
+// 	{
+// 		m_pkZeroFps->DevPrintf("res", "%s - %d", (*it)->m_strName.c_str(), (*it)->m_iNumOfUsers);
+// 	}
 
 	return bWasUnloaded;
 }
 
-ZFResourceInfo*	ZFResourceDB::GetResourceData(string strResName)
+ZFResourceInfo*	ZFResourceDB::GetResourceData(const string& strResName)
 {
 	return FindResource(strResName);
 }
 
-ZFResourceInfo*	ZFResourceDB::FindResource(string strResName)
+ZFResourceInfo*	ZFResourceDB::FindResource(const string& strResName)
 {
-	list<ZFResourceInfo*>::iterator it;
+	for(int i = 0;i<m_kResources.size();i++)
+		if(m_kResources[i]->m_strName == strResName)
+			return m_kResources[i];
 
-	for(it = m_kResources.begin(); it != m_kResources.end(); it++ ) {
-		if(strResName == (*it)->m_strName)
-			return (*it);
-		}
+// 	list<ZFResourceInfo*>::iterator it;
+// 	for(it = m_kResources.begin(); it != m_kResources.end(); it++ ) {
+// 		if(strResName == (*it)->m_strName)
+// 			return (*it);
+// 		}
 
 	return NULL;
 }
@@ -309,28 +358,39 @@ void ZFResourceDB::ReloadResource(string strResName)
 
 void ZFResourceDB::ReloadAllResorces()
 {
-	list<ZFResourceInfo*>::iterator it;
+	for(int i = 0;i<m_kResources.size();i++)
+		ReloadResource(m_kResources[i]->m_strName);
 
-	for(it = m_kResources.begin(); it != m_kResources.end(); it++ ) 
-	{
-		ReloadResource((*it)->m_strName);
-	}	
+
+// 	list<ZFResourceInfo*>::iterator it;
+// 	for(it = m_kResources.begin(); it != m_kResources.end(); it++ ) 
+// 	{
+// 		ReloadResource((*it)->m_strName);
+// 	}	
 }
 
 
-void ZFResourceDB::GetResource(ZFResourceHandle& kResHandle, string strResName)
+void ZFResourceDB::GetResource(ZFResourceHandle& kResHandle,const string& strResName)
 {
-	ZFResourceInfo* pkResInfo = GetResourceData(strResName);
 	
+	//check if resource is already loaded
+	ZFResourceInfo* pkResInfo = GetResourceData(strResName);
+		
 	// If Resource is loaded we inc ref and return handle to it.
-	if(pkResInfo) {
+	if(pkResInfo) 
+	{
 		pkResInfo->m_iNumOfUsers++;
 
 		kResHandle.m_strName	= pkResInfo->m_strName;
 		kResHandle.m_iID		= pkResInfo->m_iID;
+		kResHandle.m_pkResource = pkResInfo->m_pkResource;
+		
 		return;
-		}
+	}
 
+	//resource was not loaded , lets create it
+	
+	
 	// Create Res Class
 	ZFResource* pkRes = CreateResource(strResName);
 
@@ -357,8 +417,9 @@ void ZFResourceDB::GetResource(ZFResourceHandle& kResHandle, string strResName)
 
 	m_kResources.push_back(kResInfo);
 
-	kResHandle.m_strName	= kResInfo->m_strName;
-	kResHandle.m_iID		= kResInfo->m_iID;
+	kResHandle.m_strName	= 		kResInfo->m_strName;
+	kResHandle.m_iID		= 		kResInfo->m_iID;
+	kResHandle.m_pkResource =	kResInfo->m_pkResource;
 	return;
 }
 
@@ -388,7 +449,7 @@ ZFResource* ZFResourceDB::GetResourcePtr(ZFResourceHandle& kResHandle)
 	return pkRes->m_pkResource;
 }
 
-ResourceCreateLink*	ZFResourceDB::FindResourceType(string strName)
+ResourceCreateLink*	ZFResourceDB::FindResourceType(const string& strName)
 {
 	for(unsigned int i=0; i<m_kResourceFactory.size(); i++) {
 		if(m_kResourceFactory[i].m_strName == strName)
@@ -398,7 +459,7 @@ ResourceCreateLink*	ZFResourceDB::FindResourceType(string strName)
 	return NULL;
 }
 
-ZFResource*	ZFResourceDB::CreateResource(string strName)
+ZFResource*	ZFResourceDB::CreateResource(const string& strName)
 {
 	ResourceCreateLink* pkLink = FindResourceTypeFromFullName(strName);
 	if(pkLink == NULL)
@@ -418,10 +479,14 @@ int ZFResourceDB::GetResSizeInBytes()
 {
 	int iTotalBytes = 0;
 
-	list<ZFResourceInfo*>::iterator it;
-
-	for(it = m_kResources.begin(); it != m_kResources.end(); it++ )
-		iTotalBytes += (*it)->m_pkResource->GetSize();
+	
+	for(int i=0;i<m_kResources.size();i++)
+		iTotalBytes += m_kResources[i]->m_pkResource->GetSize();
+		
+// 	list<ZFResourceInfo*>::iterator it;
+// 
+// 	for(it = m_kResources.begin(); it != m_kResources.end(); it++ )
+// 		iTotalBytes += (*it)->m_pkResource->GetSize();
 
 	return iTotalBytes;
 }

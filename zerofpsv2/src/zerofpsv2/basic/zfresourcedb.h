@@ -70,7 +70,7 @@ class BASIC_API ZFResourceDB : public ZFSubSystem {
 
 		bool								m_bInstantExpire;		
 		int								m_iNextID;
-		list<ZFResourceInfo*>		m_kResources;
+		vector<ZFResourceInfo*>		m_kResources;
 		vector<ResourceCreateLink>	m_kResourceFactory;
 
 		ResourceCreateLink*	FindResourceTypeFromFullName(string strResName);
@@ -78,10 +78,10 @@ class BASIC_API ZFResourceDB : public ZFSubSystem {
 		void RunCommand(int cmdid, const CmdArgument* kCommand);
 
 		// Creating Resources.
-		ZFResource*	CreateResource(string strName);
-		ResourceCreateLink*	FindResourceType(string strName);
-		ZFResourceInfo*	GetResourceData(string strResName);
-		ZFResourceInfo* FindResource(string strResName);
+		ZFResource*				CreateResource(const string& strName);
+		ResourceCreateLink*	FindResourceType(const string& strName);
+		ZFResourceInfo*		GetResourceData(const string& strResName);
+		ZFResourceInfo* 		FindResource(const string& strResName);
 
 		void ReloadAllResorces();
 
@@ -105,7 +105,7 @@ class BASIC_API ZFResourceDB : public ZFSubSystem {
 
 		void ReloadResource(string strResName);
 		void ReloadResource(ZFResourceInfo* pkResInfo);
-		void GetResource(ZFResourceHandle& kResHandle, string strResName);
+		void GetResource(ZFResourceHandle& kResHandle, const string& strResName);
 		void FreeResource(ZFResourceHandle& kResHandle);
 
 		bool Refresh();
