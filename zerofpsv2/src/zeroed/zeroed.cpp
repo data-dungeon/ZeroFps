@@ -89,13 +89,13 @@ ZeroEd::ZeroEd(char* aName,int iWidth,int iHeight,int iDepth)
 	int olle = 2;
 
 	// Register Variables
-	RegisterVariable("coolname",				&strMasterSmiley,			CSYS_STRING);	
+	RegisterVariable("ap_coolname",				&strMasterSmiley,			CSYS_STRING);	
 
 	m_strLoginName = "madviewclient";
    m_strLoginPW = "topsecret";
 
-   RegisterVariable("loginname", 	&m_strLoginName, CSYS_STRING);
-   RegisterVariable("loginpw", 	&m_strLoginPW, CSYS_STRING);
+   RegisterVariable("ap_loginname", 	&m_strLoginName, CSYS_STRING);
+   RegisterVariable("ap_loginpw", 	&m_strLoginPW, CSYS_STRING);
 	
 	// Register Commands
 	Register_Cmd("new",			FID_NEW);		

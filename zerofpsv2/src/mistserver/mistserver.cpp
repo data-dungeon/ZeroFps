@@ -54,10 +54,10 @@ MistServer::MistServer(char* aName,int iWidth,int iHeight,int iDepth)
 
 
 	// Register Variables
-	RegisterVariable("s_newlogins",				&m_AcceptNewLogins,			CSYS_BOOL);	
+	RegisterVariable("ap_newlogins",				&m_AcceptNewLogins,			CSYS_BOOL);	
 
 	m_bStartMinimized = false;
-	RegisterVariable("r_startminimized", 	&m_bStartMinimized, CSYS_BOOL);
+	RegisterVariable("ap_startminimized", 	&m_bStartMinimized, CSYS_BOOL);
 
 	// Register Commands
 	Register_Cmd("new",			FID_NEW);		

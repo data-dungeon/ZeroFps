@@ -29,7 +29,7 @@ DarkMetropolis::DarkMetropolis(char* aName,int iWidth,int iHeight,int iDepth)
 { 
 	g_ZFObjSys.Log_Create("DM_arcad");	
 
-	RegisterVariable("r_enablemusic",&m_iEnableMusic,CSYS_INT);
+	RegisterVariable("ap_enablemusic",&m_iEnableMusic,CSYS_INT);
 
 	pkTreadInfo = new THREAD_INFO;
 	
