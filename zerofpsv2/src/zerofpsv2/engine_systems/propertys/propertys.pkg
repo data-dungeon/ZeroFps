@@ -19,6 +19,7 @@
 #include "p_controller.h"
 
 #include "p_sound.h"
+#include "p_editicon.h"
 
 
 

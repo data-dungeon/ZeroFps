@@ -168,7 +168,7 @@ class ENGINE_API Entity
 			*/
 		string						m_strName;
 		
-	
+
 		bool							m_bZone;								///< True if this entity is a Zone.
 		bool							m_bSave;								///< True if this entity should save to disk.
 	
@@ -378,6 +378,8 @@ class ENGINE_API Entity
 		// Temporary Place For this Functions - Vim
 		bool SendObjectClickEvent(const char* acType,int iCallerObject );		
 		bool SendGroudClickEvent(const char* acType,Vector3 kPos,int iCallerObject);
+	
+		unsigned char				m_ucIcon;							// Icon, 0 = None.
 		
 		//friends
 		friend class NetWork;

@@ -56,6 +56,7 @@ Entity::Entity()
 	m_iEntityID				= -1;
 	m_bSendChilds			= true;
 	m_fInterPolateFactor = 10;						//lower factor = slower moving objects/smoother movements
+	m_ucIcon					= 0;
 
 	//clear child list
 	m_akChilds.clear();	
@@ -525,16 +526,23 @@ void Entity::GetAllEntitys(vector<Entity*> *pakEntitys,bool bForceAll,bool bChec
 bool Entity::HaveSomethingToSend(int iConnectionID)
 {
 	if( m_eRole != NETROLE_AUTHORITY)		return false;
-	if( m_eRemoteRole	== NETROLE_NONE)		return false;
+	
+	if( m_eRemoteRole	== NETROLE_NONE )
+	{
+		if(m_ucIcon && m_pkZeroFps->m_kClient[iConnectionID].m_bIsEditor )
+			return true;
+		else
+			return false;
+	}
 	
 	bool bNeedUpdate = false;
-
-	bNeedUpdate |= IsAnyNetUpdateFlagTrue(iConnectionID);
+	bool bHasNetPropertys = false;
 
 	for(vector<Property*>::iterator it=m_akPropertys.begin();it!=m_akPropertys.end();it++) 
 	{
 		if((*it)->bNetwork) 
 		{
+			bHasNetPropertys = true;
 			bNeedUpdate |= (*it)->GetNetUpdateFlag(iConnectionID);
 			
 			/*
@@ -546,6 +554,14 @@ bool Entity::HaveSomethingToSend(int iConnectionID)
 			*/
 		}
 	}
+
+	if(!bHasNetPropertys)
+	{
+		m_eRemoteRole = NETROLE_NONE;
+		return false;
+	}
+
+	bNeedUpdate |= IsAnyNetUpdateFlagTrue(iConnectionID);
 	
 	return bNeedUpdate;
 }
@@ -559,7 +575,7 @@ void Entity::PackTo(NetPacket* pkNetPacket, int iConnectionID)
 
 	//send update flags
 	pkNetPacket->Write(m_kNetUpdateFlags[iConnectionID]);
-	
+
 	//send parent
 	if(GetNetUpdateFlag(iConnectionID,NETUPDATEFLAG_PARENT))
 	{
@@ -657,6 +673,7 @@ void Entity::PackTo(NetPacket* pkNetPacket, int iConnectionID)
 	{
 		SetNetUpdateFlag(iConnectionID,NETUPDATEFLAG_TYPE,false);	
 		pkNetPacket->Write_Str(m_strType.c_str());
+		pkNetPacket->Write( m_ucIcon );
 	}	
 
 	//send propertys
@@ -813,6 +830,9 @@ void Entity::PackFrom(NetPacket* pkNetPacket, int iConnectionID)
 		char szStr[256];
 		pkNetPacket->Read_Str(szStr);
 		m_strType = szStr;		
+		pkNetPacket->Read( m_ucIcon );
+		if(m_ucIcon != 0 && m_pkZeroFps->m_bEditMode)
+			AddProxyProperty("P_EditIcon");
 		LOGSIZE("Entity::Type", strlen(szStr) + 1);
 	}		
 	
@@ -866,6 +886,7 @@ void Entity::Load(ZFIoInterface* pkFile,bool bLoadID,bool bLoadChilds)
 	else
 		m_pkEntityManager->Link(this);	
 
+	pkFile->Read(&m_ucIcon,sizeof(m_ucIcon),1);	
 	pkFile->Read(&m_bRelativeOri,sizeof(m_bRelativeOri),1);	
 	pkFile->Read(&m_bInterpolate,sizeof(m_bInterpolate),1);	
 	
@@ -981,6 +1002,8 @@ void Entity::Save(ZFIoInterface* pkFile)
 
 	pkFile->Write(&m_iEntityID,sizeof(m_iEntityID),1);	
 	
+
+	pkFile->Write(&m_ucIcon,sizeof(m_ucIcon),1);	
 	pkFile->Write(&m_bRelativeOri,sizeof(m_bRelativeOri),1);	
 	pkFile->Write(&m_bInterpolate,sizeof(m_bInterpolate),1);	
 	
@@ -2499,7 +2522,29 @@ int GetObjectRotLua(lua_State* pkLua)
 	return 1;
 }
 
+int SetEditIcon(lua_State* pkLua)
+{
+	// Get ObjectID ID
+	double dTemp;
+	g_pkScript->GetArgNumber(pkLua, 0, &dTemp);		
+	int iId1 = (int)dTemp;
+
+	g_pkScript->GetArgNumber(pkLua, 1, &dTemp);		
+	int iIcon = (int) dTemp;
+
+	Entity* o1 = g_pkObjMan->GetEntityByID(iId1);
+	if(!o1)
+		return 1;
+
+	o1->m_ucIcon = iIcon;
+	o1->AddProxyProperty("P_EditIcon");
+
+	return 1;	
 }
+
+}
+
+
 
 void Register_SIEntityProperty(ZeroFps* pkZeroFps)
 {
@@ -2523,5 +2568,6 @@ void Register_SIEntityProperty(ZeroFps* pkZeroFps)
 
 	g_pkScript->ExposeFunction("SetLocalVector",		SI_Entity::SetLocalVector);
 	g_pkScript->ExposeFunction("GetLocalVector",		SI_Entity::GetLocalVector);
+	g_pkScript->ExposeFunction("SetEditIcon",			SI_Entity::SetEditIcon);
 
 }

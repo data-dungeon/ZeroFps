@@ -135,7 +135,7 @@ void P_DMGun::Update()
 			// draw hit-sparkle
 			m_pkZeroFps->m_pkRender->DrawBillboard(
 				m_pkEntity->m_pkZeroFps->GetCam()->GetModelViewMatrix(), 
-				m_kHitPos[i].first, 0.4, m_iHitSparkleTextureID);
+				m_kHitPos[i].first, 0.4, m_iHitSparkleTextureID, false);
 		}
 	
 		//vector<pair<Vector3,float> >::iterator kIte2;

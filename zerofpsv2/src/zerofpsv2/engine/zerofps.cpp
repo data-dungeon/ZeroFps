@@ -93,6 +93,7 @@ ZeroFps::ZeroFps(void) : I_ZeroFps("ZeroFps")
 	m_fFrameTime				= 0;
 	m_fLastFrameTime			= 0;
 	m_fSystemUpdateFps		= 30;
+	m_bEditMode					= false;
 
 	m_fSystemUpdateTime		= 0;
 	m_bServerMode				= false;
@@ -1633,6 +1634,9 @@ void ZeroFps::RegisterPropertys()
 	//m_pkPropertyFactory->Register("P_ScriptInterface",	Create_P_ScriptInterface);
 	//m_pkPropertyFactory->Register("P_Controller",		Create_P_Controller);
 
+	m_pkPropertyFactory->Register("P_EditIcon",			Create_EditIcon);						
+	
+
 	Register_MadProperty(this);
 	Register_PTcs(this);
 	Register_PController(this);
@@ -1703,6 +1707,7 @@ int ZeroFps::Connect(int iConnectionID, char* szLogin, char* szPass, bool bIsEdi
 		m_kClient[iConnectionID].m_pkObject = m_pkEntityManager->CreateEntity();//m_pkEntityManager->CreateObjectByArchType("ZeroRTSPlayer");
 		m_kClient[iConnectionID].m_pkObject->SetName("A Client Obj");
 		m_kClient[iConnectionID].m_pkObject->SetWorldPosV(Vector3(0,0,2));
+		m_kClient[iConnectionID].m_bIsEditor = bIsEditor;
 	
 		// Connect all client objects to top level object,
 		m_kClient[iConnectionID].m_pkObject->SetParent(m_pkEntityManager->m_pkClientEntity);

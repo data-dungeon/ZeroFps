@@ -683,7 +683,8 @@ void MistServer::OnServerClientJoin(ZFClient* pkClient,int iConID, char* szLogin
 		if(P_Track* pkTrack = (P_Track*)pkClient->m_pkObject->AddProperty("P_Track"))
 			pkTrack->SetClient(iConID);			
 		
-		pkClient->m_pkObject->AddProperty("P_Primitives3D");
+		pkClient->m_pkObject->AddProperty("P_EditIcon");
+		pkClient->m_pkObject->m_ucIcon = 1;
 		
 		return;
 	}

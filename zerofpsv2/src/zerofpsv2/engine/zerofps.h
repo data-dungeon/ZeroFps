@@ -90,6 +90,8 @@ public:
 	string	m_strLogin;				// Login Name
 	string	m_strCharacter;
 	Entity*	m_pkObject;				// Object used for client.
+
+	bool		m_bIsEditor;
 	
 	set<int>		m_iActiveZones;		// Activated Zones.
 	set<int>		m_iUnloadZones;		// Activated Zones.
@@ -241,6 +243,7 @@ class ENGINE_API ZeroFps : public I_ZeroFps {
 
 		bool		m_bServerMode;
 		bool		m_bClientMode;
+		bool		m_bEditMode;
 		bool		m_bGuiMode, m_bGuiTakeControl;
 		bool		m_bRunWorldSim;
 

@@ -293,6 +293,8 @@ void ZeroEd::OnInit()
 
 void ZeroEd::Init()
 {	
+	m_pkZeroFps->m_bEditMode = true;
+
 	//default edit mode 
 	m_iEditMode = EDIT_ZONES;
 
@@ -459,7 +461,7 @@ void ZeroEd::DrawHMEditMarker(HeightMap* pkHmap, Vector3 kCenterPos, float fInRa
 	if(pkHmap == NULL)	return;
 
 	m_pkRender->DrawBillboard(m_pkZeroFps->GetCam()->GetModelViewMatrix(),kCenterPos,1,
-		m_pkTexMan->Load("/data/textures/pointer.tga",T_NOMIPMAPPING));	
+		m_pkTexMan->Load("/data/textures/pointer.tga",T_NOMIPMAPPING), false);	
 
 	Vector3	kVertex;
 	vector<Vector3>	kVertexList;
