@@ -158,16 +158,25 @@ void PlayerControlProperty::Update() {
 	int x,z;		
 	m_pkInput->RelMouseXY(x,z);
 
-	// Rrotate the camera and scale with fov.		
-	m_pkObject->GetRot().x += z / (180 / m_fFov);
-	m_pkObject->GetRot().y += x / (180 / m_fFov);
+	m_pkCameraProperty	=	static_cast<CameraProperty*>(m_pkObject->GetProperty("CameraProperty"));
 	
-	if(m_pkObject->GetRot().x>90)
-		m_pkObject->GetRot().x=90;
-	
-	if(m_pkObject->GetRot().x<-90)
-		m_pkObject->GetRot().x=-90;
-	
+	if(m_pkInput->Pressed(KEY_X) == false){
+		// Rrotate the camera and scale with fov.		
+		m_pkObject->GetRot().x += z / (180 / m_fFov);
+		m_pkObject->GetRot().y += x / (180 / m_fFov);
+
+		if(m_pkObject->GetRot().x>90)
+			m_pkObject->GetRot().x=90;
+		
+		if(m_pkObject->GetRot().x<-90)
+			m_pkObject->GetRot().x=-90;
+	}
+	else {
+		if(m_pkCameraProperty) {
+			m_pkCameraProperty->GetDynamicAngles().x += z / (180 / m_fFov);
+			m_pkCameraProperty->GetDynamicAngles().y += x / (180 / m_fFov);
+			}
+		}
 	
 	//update sound possition
 	walksound->m_kPos=m_pkObject->GetPos();
@@ -177,7 +186,6 @@ void PlayerControlProperty::Update() {
 
 
 // Set FOV
-	m_pkCameraProperty	=	static_cast<CameraProperty*>(m_pkObject->GetProperty("CameraProperty"));
 	if(m_pkCameraProperty) {
 		if(m_pkInput->Action(m_iActionZoomIn)) {
 			m_fFov -= 5;
@@ -192,17 +200,15 @@ void PlayerControlProperty::Update() {
 				m_fFov = 90;
 			m_pkCameraProperty->SetFpFov(m_fFov);
 			}
-		}
 
-	if(m_pkInput->Pressed(KEY_C)) {
-		if(m_fCamSwitchTimer < m_pkFps->GetTicks()) {
-			m_fCamSwitchTimer = m_pkFps->GetTicks() + 0.5;	
-
-			if(m_pkCameraProperty) {
+		if(m_pkInput->Pressed(KEY_C)) {
+			if(m_fCamSwitchTimer < m_pkFps->GetTicks()) {
+				m_fCamSwitchTimer = m_pkFps->GetTicks() + 0.5;	
 				m_pkCameraProperty->NextType((CameraProperty::CamType_e) 0);
 				}
 			}
 		}
+
 
 
 	onGround=false;

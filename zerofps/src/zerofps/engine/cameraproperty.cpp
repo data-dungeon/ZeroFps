@@ -13,6 +13,7 @@ CameraProperty::CameraProperty()
 	m_iSide=PROPERTY_SIDE_CLIENT;
 
 	m_fFov = 90;
+	m_kDynamicIso.Set(0,0,0);
 }
 
 
@@ -74,7 +75,7 @@ void CameraProperty::Update()
 				m_pkCamera->SetPos(m_pkObject->GetPos() - (kYawVector * CHASE_CAM_DISTANCE) + 
 					Vector3(0,CHASE_CAM_DISTANCE,0));
 				m_pkCamera->SetRot(Vector3(m_kDynamicIso + Vector3(0,90,0)));
-				strCamName = " Chase ";
+				strCamName = " Dyn ISO ";
 				if(madp)
 					madp->m_bIsVisible = true;
 				m_pkCamera->SetFov(m_fFov);

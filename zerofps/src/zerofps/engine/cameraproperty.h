@@ -41,6 +41,7 @@ class ENGINE_API CameraProperty:public Property
 		void SetType(CamType_e kType);
 		void NextType(CamType_e kType);
 		void SetFpFov(float fFov);		
+		Vector3& GetDynamicAngles() { return m_kDynamicIso; } 
 };
 
 Property* Create_CameraProperty();
