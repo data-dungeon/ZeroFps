@@ -672,7 +672,7 @@ void ZGuiResEd::OnCommand(string strCtrlID, int iCmdExtra)
 		vector<string> ext;
 		ext.push_back(".lua"); 
 
-		m_pkFileSys->ListDirRecursive(&kFiles, string("..\\datafiles"), ext, (strCtrlID == "GuiEd_SaveScript"));
+		m_pkFileSys->ListDirRecursive(&kFiles, string("../datafiles"), ext, (strCtrlID == "GuiEd_SaveScript"));
 
 		//if(SearchFiles(kFiles, "..\\datafiles", ".lua", (strCtrlID == "GuiEd_SaveScript")))
 		if(1)
