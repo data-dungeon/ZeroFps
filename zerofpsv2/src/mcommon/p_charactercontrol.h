@@ -35,6 +35,8 @@ class MCOMMON_API P_CharacterControl: public Property
 		MOVE_STATE m_eMoveState;
 		Vector3 m_kPrevPos;
 
+		bool m_bMoveButtonReleased;
+
 	public:
 	
 		P_CharacterControl();

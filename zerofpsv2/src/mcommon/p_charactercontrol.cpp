@@ -20,6 +20,7 @@ P_CharacterControl::P_CharacterControl()
 	
 	m_eMoveState = idle;
 	m_kPrevPos = Vector3(-9999,-9999,-9999);
+	m_bMoveButtonReleased = true;
 }
 
 P_CharacterControl::~P_CharacterControl()
@@ -34,25 +35,22 @@ void P_CharacterControl::Init()
 }
 
 void P_CharacterControl::Update()
-{
-
-	Vector3 kVel(0,0,0);	
-
-	bool bHoppa = false;
+{	
+	bool bMoveButtonPressed = false;
 
 	if(P_Tcs* pkTcs = (P_Tcs*)GetEntity()->GetProperty("P_Tcs"))
 	{
-		
-			
+		Vector3 kVel(0,0,0);	
+
 		if(m_kControls[eUP])
-			kVel.z = 1;
+		{ kVel.z =  1; bMoveButtonPressed=true; }
 		if(m_kControls[eDOWN])
-			kVel.z = -1;
+		{ kVel.z = -1; bMoveButtonPressed=true; }
 		if(m_kControls[eLEFT])
-			kVel.x = 1;
+		{ kVel.x =  1; bMoveButtonPressed=true; }
 		if(m_kControls[eRIGHT])
-			kVel.x = -1;
-			
+		{ kVel.x = -1; bMoveButtonPressed=true; }
+	
 		//transform velocity
 		kVel = GetEntity()->GetWorldRotM().VectorTransform(kVel);							
 		kVel.y = 0;
@@ -75,47 +73,35 @@ void P_CharacterControl::Update()
 				{
 					m_fJumpDelay = m_pkZeroFps->GetTicks();
 					pkTcs->ApplyImpulsForce(Vector3(0,m_fJumpForce,0));
-					bHoppa = true;
+
+					if(P_Sound* pkSound = (P_Sound*)GetEntity()->GetProperty("P_Sound"))
+						pkSound->StartSound("data/sound/jump.wav", false);
 				}		
 	}
 
-	//setup entity rotation
 	Matrix4 kRot;
 	kRot.Identity();
 	kRot.Rotate(0,m_fYAngle,0);
 	kRot.Transponse();				
 	GetEntity()->SetLocalRotM(kRot);	
 
-
-	// Spela upp ett walkljud
-	// OBS! Detta skall flyttas till en kommande Characterklass.
-	Entity* pkEnt = GetEntity();	
-	if(P_Sound* pkSound = (P_Sound*)pkEnt->GetProperty("P_Sound"))
+	if(P_Sound* pkSound = (P_Sound*)GetEntity()->GetProperty("P_Sound"))
 	{
-		if(bHoppa)
+		if(bMoveButtonPressed == true)
 		{
-			pkSound->StartSound("data/sound/jump2.wav", false);
-		}
-
-		Vector3 currpos = pkEnt->GetWorldPosV();
-
-		if(m_kPrevPos.NearlyEquals(currpos,0.1f)) // står stilla
-		{
-			if(m_eMoveState == moving)
+			if(m_bMoveButtonReleased == true)
 			{
-				m_eMoveState = idle;
-				pkSound->StopSound("data/sound/footstep_forest.wav");
+				m_bMoveButtonReleased = false;
+				pkSound->StartSound("data/sound/footstep_forest.wav", true);
 			}
 		}
 		else
-		if(m_eMoveState == idle && !kVel.NearlyZero(0.1f) )
 		{
-			m_eMoveState = moving;
-			pkSound->StartSound("data/sound/footstep_forest.wav", true);
+			if(m_bMoveButtonReleased == false)
+				pkSound->StopSound("data/sound/footstep_forest.wav");
+
+			m_bMoveButtonReleased = true;
 		}
-
-		m_kPrevPos = currpos;
-
 	}
 	
 }
