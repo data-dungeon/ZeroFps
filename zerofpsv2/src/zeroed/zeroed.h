@@ -79,6 +79,7 @@ class ZeroEd :public Application , public ZGuiApp {
 			FID_SNAPSAVE,
 			FID_SNAPLOAD,
 			FID_TEST_JIDDRA,		// Owned by Vim.
+			FID_SNAPSIZE,
 		};
 			
 		enum EditMode_e
@@ -119,6 +120,9 @@ class ZeroEd :public Application , public ZGuiApp {
 		
 		//delay
 		float	m_fDelayTime;
+
+		// snapsize
+		float	m_fSnapSize;
 		
 		//edit sun
 		bool 			m_bEditSun;

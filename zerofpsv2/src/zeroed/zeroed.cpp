@@ -117,6 +117,7 @@ ZeroEd::ZeroEd(char* aName,int iWidth,int iHeight,int iDepth)
 	Register_Cmd("selnone", 	FID_SELNONE);
 	Register_Cmd("gridsize", 	FID_GRIDSIZE);
 	Register_Cmd("gridsnap", 	FID_GRIDSNAP);
+	Register_Cmd("snapsize", 	FID_SNAPSIZE);
 	Register_Cmd("camfollow",	FID_CAMFOLLOW);
 	Register_Cmd("camnofollow",FID_CAMNOFOLLOW);
 	Register_Cmd("delsel", 		FID_DELETE);
@@ -143,6 +144,8 @@ ZeroEd::ZeroEd(char* aName,int iWidth,int iHeight,int iDepth)
 	m_strActiveViewPort = "none";
 	
 	m_bGrabing = false;
+
+	m_fSnapSize = 2;
 
 	m_kTestGraph.SetSize(60,60,100);
 	m_kTestGraph.SetMinMax(0,1500);
@@ -1020,6 +1023,14 @@ void ZeroEd::RunCommand(int cmdid, const CmdArgument* kCommand)
 				break;
 			m_pkActiveCamera->SetViewMode(kCommand->m_kSplitCommand[1]);
 			break;
+
+		case FID_SNAPSIZE:
+			if(kCommand->m_kSplitCommand.size() <= 1)
+				break;
+
+			fTest = float( atof( kCommand->m_kSplitCommand[1].c_str()) );
+			m_fSnapSize = fTest;
+			break;
 	
 		case FID_GRIDSIZE:
 			if(kCommand->m_kSplitCommand.size() <= 1)
@@ -1342,15 +1353,9 @@ void ZeroEd::UpdateZoneMarkerPos()
 	{
 		Vector3 temp = m_pkActiveCamera->GetPos() + Get3DMousePos(false)*15;
 	
-		float fStep = 2.0;
-	
-		//m_kZoneMarkerPos.x = int(temp.x/fStep) * fStep;
-		//m_kZoneMarkerPos.y = int(temp.y/fStep) * fStep;
-		//m_kZoneMarkerPos.z = int(temp.z/fStep) * fStep;
-	
-		m_kZoneMarkerPos.x = round2(temp.x/fStep) * fStep;
-		m_kZoneMarkerPos.y = round2(temp.y/fStep) * fStep;
-		m_kZoneMarkerPos.z = round2(temp.z/fStep) * fStep;
+		m_kZoneMarkerPos.x = round2(temp.x/m_fSnapSize) * m_fSnapSize;
+		m_kZoneMarkerPos.y = round2(temp.y/m_fSnapSize) * m_fSnapSize;
+		m_kZoneMarkerPos.z = round2(temp.z/m_fSnapSize) * m_fSnapSize;
 
 		//
 		// Tvinga kameran att behålla samma X,Y eller Z position som tidigare
@@ -1387,11 +1392,9 @@ void ZeroEd::UpdateObjectMakerPos()
 	{
 		Vector3 temp = m_pkActiveCamera->GetPos() + Get3DMousePos(false)*15;
 	
-		float fStep = 2.0;
-		
-		m_kObjectMarkerPos.x = round2(temp.x/fStep) * fStep;
+		m_kObjectMarkerPos.x = round2(temp.x/m_fSnapSize) * m_fSnapSize;
 		m_kObjectMarkerPos.y = 0;
-		m_kObjectMarkerPos.z = round2(temp.z/fStep) * fStep;
+		m_kObjectMarkerPos.z = round2(temp.z/m_fSnapSize) * m_fSnapSize;
 	}	
 }
 
