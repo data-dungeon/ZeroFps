@@ -21,7 +21,7 @@ MistClient::MistClient(char* aName,int iWidth,int iHeight,int iDepth)
 void MistClient::OnInit() 
 {
 	m_pkZFVFileSystem->AddRootPath( string("../data/mistlands/") ,"data/");
-	//m_pkZFVFileSystem->AddRootPath( string("../data/dm/") ,"data/");
+	m_pkZFVFileSystem->AddRootPath( string("../data/dm/") ,"data/");
 
 
 	//initiate our mainview camera
@@ -60,6 +60,7 @@ void MistClient::RegisterResources()
 void MistClient::RegisterPropertys()
 {
 	m_pkPropertyFactory->Register("P_Enviroment", Create_P_Enviroment);
+	m_pkPropertyFactory->Register("P_ServerInfo", Create_P_ServerInfo);
 }
 
 
@@ -100,8 +101,7 @@ void MistClient::OnServerStart(void)
 
 void MistClient::OnClientStart(void)
 {
-	m_pkConsole->Printf("Connected, Waiting for client object");
-	m_pkConsole->Printf("To Start Play use command 'play'");
+	m_pkConsole->Printf("Trying to connect");
 }
 
 

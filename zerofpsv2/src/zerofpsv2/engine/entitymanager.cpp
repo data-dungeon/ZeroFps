@@ -628,33 +628,43 @@ void EntityManager::UpdateState(NetPacket* pkNetPacket)
 {
 	Entity* pkNetSlave;
 	int iObjectID;
+	
+	//get the first entity id
 	pkNetPacket->Read(iObjectID);
 
-	while(iObjectID != -1) {
-//		LOGSIZE("EntityID", 4);
-
+	//loop until end of list, or something bad hapens
+	while(iObjectID != -1) 
+	{
+		//check if entity exist
 		pkNetSlave = GetObjectByNetWorkID(iObjectID);
-		if(pkNetSlave == NULL) {
+		
+		//if not try to create it
+		if(!pkNetSlave) 
+		{
 			pkNetSlave = CreateObjectByNetWorkID(iObjectID);
-			cout << "Spawnin: " << iObjectID << endl;
-			}
+			cout << "Creating Entity: " << iObjectID << endl;
+		}
 				
-		if( pkNetSlave ) {
-			pkNetSlave->PackFrom(pkNetPacket, ZF_NET_NOCLIENT);
-			if(pkNetPacket->IsReadError()) {
+		//if entity now exist, pack it up
+		if(pkNetSlave) 
+		{ 
+			pkNetSlave->PackFrom(pkNetPacket, ZF_NET_NOCLIENT);			
+						
+			if(pkNetPacket->IsReadError()) 
+			{
 				printf("pkNetPacket Read Error\n"); 
 				return;
-				}
+			}
 
+			//get next entity id
 			pkNetPacket->Read(iObjectID);
-			}
-		else {
-			//Logf("net", " Object '%d' not found (again) :(.\n", iObjectID);
+		}
+		else
+		{
+			//if the entity was not created , we cant continue
 			return;
-			}
-		}	
-
-//	LOGSIZE("EntityID", 4);
+		}
+	}	
 }
 
 void EntityManager::PackToClient(int iClient, vector<Entity*> kObjects,bool bZoneObject)

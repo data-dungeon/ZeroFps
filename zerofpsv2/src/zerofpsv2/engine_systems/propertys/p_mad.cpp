@@ -194,10 +194,11 @@ void P_Mad::PackFrom(NetPacket* pkNetPacket, int iConnectionID )
 
 	ClearAllMesh();
 	pkNetPacket->Read( ucNumOfMesh );
-	for(int i=0; i<ucNumOfMesh; i++) {
+	for(int i=0; i<ucNumOfMesh; i++) 
+	{
 		pkNetPacket->Read( iMesh );
 		AddMesh(iMesh);
-		}
+	}
 }
 
 bool P_Mad::AddMesh(int iSId)

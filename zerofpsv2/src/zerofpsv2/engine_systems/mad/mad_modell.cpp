@@ -615,12 +615,17 @@ void Mad_Modell::ClearAllMesh()
 
 bool Mad_Modell::AddMesh(int iSubId)
 {
-	Mad_Core* pkCore = dynamic_cast<Mad_Core*>(kMadHandle.GetResourcePtr()); 
-	if(pkCore->GetMeshByID(iSubId) == NULL)
+	if(Mad_Core* pkCore = dynamic_cast<Mad_Core*>(kMadHandle.GetResourcePtr())) 
+	{	
+		if(pkCore->GetMeshByID(iSubId) == NULL)
+			return false;
+	
+		m_kActiveMesh.push_back(iSubId);
+		return true;
+	}
+	else
 		return false;
-
-	m_kActiveMesh.push_back(iSubId);
-	return true;
+	
 }
 
 bool Mad_Modell::AddMesh(char* szName)		

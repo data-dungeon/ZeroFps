@@ -604,18 +604,25 @@ void MistServer::OnServerClientJoin(ZFClient* pkClient,int iConID, char* szLogin
 	pkClient->m_strCharacter = "MrBadq";
 	pkClient->m_strLogin = szLogin;
 
+	if(!pkClient->m_pkObject)
+		cout<<"ERROR: client object not created"<<endl;
+	
+	
 	//add client control to client object
-	P_ClientControl* pcc = (P_ClientControl*)pkClient->m_pkObject->AddProperty("P_ClientControl");
-	if(pcc)	
-		pcc->m_iClientID = iConID;
+	//P_ClientControl* pcc = (P_ClientControl*)pkClient->m_pkObject->AddProperty("P_ClientControl");
+	//if(pcc)	
+	//	pcc->m_iClientID = iConID;
 	
 	bool bEditorConnect = true;
-	if(bEditorConnect) {
-		P_Track* pkTrack = dynamic_cast<P_Track*>((P_ClientControl*)pkClient->m_pkObject->AddProperty("P_Track"));
-		pkTrack->SetClient(iConID);
-		(P_ClientControl*)pkClient->m_pkObject->AddProperty("P_Primitives3D");
+	if(bEditorConnect) 
+	{
+		if(P_Track* pkTrack = (P_Track*)pkClient->m_pkObject->AddProperty("P_Track"))
+			pkTrack->SetClient(iConID);			
+		
+		pkClient->m_pkObject->AddProperty("P_Primitives3D");
+		
 		return;
-		}
+	}
 	else
 		SpawnPlayer(iConID);
 }
