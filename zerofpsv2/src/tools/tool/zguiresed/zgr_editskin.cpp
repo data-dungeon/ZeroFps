@@ -73,7 +73,6 @@ void ZGuiResEd::AddFilesInFolderToListbox(const char* szFolderName)
 	}
 }
 
-
 bool ZGuiResEd::UpdateTextureList()
 {
 	ClearListbox("GuiEd_TextureList");

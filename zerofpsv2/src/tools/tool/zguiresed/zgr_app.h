@@ -10,7 +10,7 @@
 
 // Remove the console window
 #ifdef WIN32
-	#pragma comment(linker, "/subsystem:\"windows\" /entry:\"mainCRTStartup\"")
+//	#pragma comment(linker, "/subsystem:\"windows\" /entry:\"mainCRTStartup\"")
 #endif 
 
 class ZGuiResEd : public Application, public ZGuiApp
@@ -74,6 +74,7 @@ private:
 	bool m_bPickedColor;
 	bool m_bAlphaTextureMode;
 	bool m_bSelectFont; // true = openfiledlg contains fonts
+	bool m_bConfirmSaveScript;
 
 	bool m_bMouseClick, m_bMouseDown;
 	int m_iMouseX, m_iMouseY;

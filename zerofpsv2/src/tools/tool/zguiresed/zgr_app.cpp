@@ -74,7 +74,7 @@ void ZGuiResEd::OnIdle()
 	}
 	if(m_iTask == TASK_SAVE_SCRIPT) 
 	{ 
-		if(SaveScript(m_strNewFileToLoad.c_str(), true))
+		if(SaveScript(m_strNewFileToLoad.c_str(), m_bConfirmSaveScript))
 		{
 			UpdateScriptList();
 			char msg[512];
@@ -885,6 +885,7 @@ void ZGuiResEd::UpdateInfo()
 	else
 	{
 		rc = m_pkFocusWnd->GetScreenRect();
+		SetText("GuiEd_WndParent", "");
 	}
 
 	sprintf(text, "%i", rc.Left); SetText("GuiEd_WndPosX", text);

@@ -84,7 +84,7 @@ void ZGuiResEd::OnInit()
 
 	m_iTask = 5; // update texture list
 
-	LoadGuiFromScript("data/script/gui/guied.lua");
+	LoadGuiFromScript("data/script/gui/zguiresed.lua");
 
 	GetWnd("GuiEd_SelectFileWnd")->Hide();
 

@@ -63,12 +63,15 @@ bool ZGuiResEd::SaveScript(const char* szFileName, bool bConfirmOverwrite, bool 
 	fprintf(m_pkSaveFile, "\tSetDesignResolution(%i, %i)\n", 
 		m_iDesignResX, m_iDesignResY);
 
+	printf("writing skins\n");
 	if(!WriteSkins())
 		return false;
 
+	printf("writing windows\n");
 	if(!WriteWindows())
 		return false;
 
+	printf("writing special properties\n");
 	if(!WriteSpecialProperties())
 		return false;
 	
@@ -267,7 +270,7 @@ bool ZGuiResEd::WriteWindows()
 	m_pkGuiMan->GetWindows(kWindows);
 	for( map<string, ZGuiWnd*>::iterator it = kWindows.begin(); it != kWindows.end(); it++)
 	{
-		if(IsEditorWnd(it->second) == false)
+		if(IsEditorWnd(it->second) == false || it->second == pkMainWnd)
 			vkCandidates.push_back(it->second);
 	}
 	

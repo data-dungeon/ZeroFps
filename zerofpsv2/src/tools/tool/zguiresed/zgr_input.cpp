@@ -774,6 +774,7 @@ void ZGuiResEd::OnCommand(string strCtrlID, int iCmdExtra)
 
 					m_strNewFileToLoad = strFullName;
 					m_iTask = TASK_SAVE_SCRIPT;
+					m_bConfirmSaveScript = true;
 				}
 			}
 			else
@@ -1269,7 +1270,10 @@ void ZGuiResEd::OnConfirmMsgBox(bool bAnswer)
 	if(strMsgBoxCaption == "Confirm Save Script")
 	{
 		if(bAnswer == true)
+		{
 			m_iTask = TASK_SAVE_SCRIPT;
+			m_bConfirmSaveScript = false;
+		}
 	}
 	else
 	if(strMsgBoxCaption == "Delete Wnd")
