@@ -34,7 +34,11 @@ public:
 	int GetSize();
 };
 
-/// ZeroFps Virtual File Systems.
+/**	\brief	ZeroFps Virtual File Systems.
+
+The VFS 
+*/
+
 class BASIC_API ZFVFileSystem : public ZFSubSystem 
 {
 	private:
