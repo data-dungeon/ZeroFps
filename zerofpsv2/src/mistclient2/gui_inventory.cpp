@@ -129,7 +129,6 @@ void InventoryDlg::OnCommand(string strController)
 
 void InventoryDlg::OnMouseMove(bool bLeftButtonPressed, int mx, int my)
 {
-
 	static bool s_bRightMouseButtonPressed = false;
 
 	if(m_iItemUnderCursor)
@@ -161,10 +160,10 @@ void InventoryDlg::OnMouseMove(bool bLeftButtonPressed, int mx, int my)
 		}
 	}
 
-	if(g_kMistClient.m_pkGui->m_bMouseRightPressed)
-	{
-		m_iSelItemID = -1;
-	}
+	//if(g_kMistClient.m_pkGui->m_bMouseRightPressed)
+	//{
+	//	m_iSelItemID = -1;
+	//}
 
 	for(int i=0; i<m_vkInventoryItemList.size(); i++)
 	{		
@@ -193,11 +192,25 @@ void InventoryDlg::OnMouseMove(bool bLeftButtonPressed, int mx, int my)
 
 				m_kMoveSlot.m_iIndex = -1;
 			}	
-
 			
 			if(g_kMistClient.m_pkGui->m_bMouseRightPressed && s_bRightMouseButtonPressed == false)
 			{	
-				g_kMistClient.SendRequestContainer(m_vkInventoryItemList[i].iItemID);
+				if(m_iActiveContainerID == m_vkInventoryItemList[i].iItemID)
+				{
+					CloseContainerWnd();
+					if(m_iSelItemID == m_vkInventoryItemList[i].iItemID)
+					{
+						m_iSelItemID = -1;
+						m_vkInventoryItemList[i].pkWnd->GetSkin()->m_unBorderSize = 0;
+					}
+				}
+				else
+				{
+					g_kMistClient.SendRequestContainer(m_vkInventoryItemList[i].iItemID);
+					m_iSelItemID = m_vkInventoryItemList[i].iItemID;
+					m_vkInventoryItemList[i].pkWnd->GetSkin()->m_unBorderSize = 1;
+				}
+
 				s_bRightMouseButtonPressed = true;
 			}
 			else if(!g_kMistClient.m_pkGui->m_bMouseRightPressed)
@@ -241,14 +254,14 @@ void InventoryDlg::OnMouseMove(bool bLeftButtonPressed, int mx, int my)
 				m_kMoveSlot.m_iIndex = -1;
 			}	
 
-			if(g_kMistClient.m_pkGui->m_bMouseRightPressed)
-			{	
-				m_iSelItemID = m_vkContainerItemList[i].iItemID;
-			}
+			//if(g_kMistClient.m_pkGui->m_bMouseRightPressed)
+			//{	
+			//	m_iSelItemID = m_vkContainerItemList[i].iItemID;
+			//}
 		}
 		else
 		{
-			if( m_vkContainerItemList[i].iItemID != m_iSelItemID)
+			//if( m_vkContainerItemList[i].iItemID != m_iSelItemID)
 				m_vkContainerItemList[i].pkWnd->GetSkin()->m_unBorderSize = 0;
 		}		
 	}
@@ -396,7 +409,7 @@ void InventoryDlg::UpdateInventory(vector<MLContainerInfo>& vkItemList)
 		pkNewSlot->GetSkin()->m_afBorderColor[2] = BD_B;
 
 		if(m_iSelItemID == vkItemList[i].m_iItemID)
-			pkNewSlot->GetSkin()->m_unBorderSize = 2;
+			pkNewSlot->GetSkin()->m_unBorderSize = 1;
 
 		ITEM_SLOT kNewSlot;
 		kNewSlot.pkWnd = pkNewSlot;
@@ -624,6 +637,7 @@ void InventoryDlg::CloseContainerWnd()
 		m_pkContainerWnd->Hide();
 		g_kMistClient.GetWnd("ContainerCloseButton")->Hide();
 		g_kMistClient.m_pkGui->SetFocus(m_pkInventoryWnd, false);
+		m_iActiveContainerID = -1;
 	}
 }
 
