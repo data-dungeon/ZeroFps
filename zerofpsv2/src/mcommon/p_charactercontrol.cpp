@@ -21,7 +21,9 @@ P_CharacterControl::P_CharacterControl()
 	m_eMoveState = idle;
 	m_kPrevPos = Vector3(-9999,-9999,-9999);
 	m_bMoveButtonReleased = true;
-	
+
+	m_bHaveJumped = false;
+		
 	m_kCharacterStates.reset();
 	m_kControls.reset();
 }
@@ -41,8 +43,6 @@ void P_CharacterControl::Update()
 {	
 	if(m_pkEntityManager->IsUpdate(PROPERTY_SIDE_SERVER))
 	{
-		bool bMoveButtonPressed = false;
-		
 		//reset character states
 		SetCharacterState(eRUNNING,false);
 		SetCharacterState(eWALKING,false);
@@ -53,14 +53,10 @@ void P_CharacterControl::Update()
 		{
 			Vector3 kVel(0,0,0);	
 	
-			if(m_kControls[eUP])
-			{ kVel.z =  1; bMoveButtonPressed=true; }
-			if(m_kControls[eDOWN])
-			{ kVel.z = -1; bMoveButtonPressed=true; }
-			if(m_kControls[eLEFT])
-			{ kVel.x =  1; bMoveButtonPressed=true; }
-			if(m_kControls[eRIGHT])
-			{ kVel.x = -1; bMoveButtonPressed=true; }
+			if(m_kControls[eUP]) 	kVel.z =  1;
+			if(m_kControls[eDOWN])	kVel.z = -1;
+			if(m_kControls[eLEFT])	kVel.x =  1; 
+			if(m_kControls[eRIGHT])	kVel.x = -1; 
 		
 			//transform velocity
 			kVel = GetEntity()->GetWorldRotM().VectorTransform(kVel);							
@@ -89,21 +85,30 @@ void P_CharacterControl::Update()
 					SetCharacterState(eRUNNING,true);
 			
 			
-			//make the poor bastard jump
-			if(m_kControls[eJUMP])
-				if(pkTcs->GetOnGround())
-					if( (m_pkZeroFps->GetTicks() - m_fJumpDelay) > 0.1)
+			if(pkTcs->GetOnGround())
+			{
+				if(m_bHaveJumped)
+					m_bHaveJumped = false;
+				else
+				{
+					if(m_kControls[eJUMP])
 					{
-						//where jumping
-						SetCharacterState(eJUMPING,true);
-					
-						m_fJumpDelay = m_pkZeroFps->GetTicks();
-						pkTcs->ApplyImpulsForce(Vector3(0,m_fJumpForce,0));
-	
-						
-						//if(P_Sound* pkSound = (P_Sound*)GetEntity()->GetProperty("P_Sound"))
-						//	pkSound->StartSound("data/sound/jump.wav", false);
-					}		
+						if(pkTcs->GetOnGround())
+						{
+							m_bHaveJumped = true;
+							
+							m_fJumpDelay = m_pkZeroFps->GetTicks();
+							pkTcs->ApplyImpulsForce(Vector3(0,m_fJumpForce,0));		
+						}
+					}
+				}
+			}
+				
+			if(m_bHaveJumped)
+			{
+				SetCharacterState(eJUMPING,true);
+			}
+			
 		}
 	
 		Matrix4 kRot;
@@ -146,7 +151,7 @@ void P_CharacterControl::PackTo( NetPacket* pkNetPacket, int iConnectionID )
 
 void P_CharacterControl::PackFrom( NetPacket* pkNetPacket, int iConnectionID  ) 
 {
-	cout<<"blub:"<<sizeof(m_kCharacterStates)<<endl;
+	//cout<<"blub:"<<sizeof(m_kCharacterStates)<<endl;
 	
 	pkNetPacket->Read(m_kCharacterStates);
 

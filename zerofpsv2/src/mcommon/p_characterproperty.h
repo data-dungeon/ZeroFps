@@ -19,7 +19,7 @@ class P_CharacterProperty: public Property
 		string	m_strOwnedByPlayer;
 
 		bitset<8>	m_kCurrentCharacterStates;
-		
+			
 		//basic sounds
 		string	m_strWalkSound;
 		string	m_strRunSound;

@@ -38,6 +38,7 @@ class MCOMMON_API P_CharacterControl: public Property
 		float			m_fYAngle;
 		float			m_fPAngle;
 		
+		bool			m_bHaveJumped;
 		
 		float			m_fJumpDelay;
 

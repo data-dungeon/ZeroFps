@@ -76,11 +76,6 @@ void P_CharacterProperty::PlayCharacterMovementSounds()
 			if(m_kCurrentCharacterStates[eRUNNING])
 				m_pkAudioSystem->StopSound(m_strRunSound,GetEntity()->GetIWorldPosV());
 		}			
-
-		//jump sound
-		if(pkCC->GetCharacterState(eJUMPING))
-			if(!m_kCurrentCharacterStates[eJUMPING])
-				m_pkAudioSystem->StartSound(m_strJumpSound,GetEntity()->GetIWorldPosV());
 			
 		//swim sound
 		if(pkCC->GetCharacterState(eSWIMING))
@@ -95,7 +90,13 @@ void P_CharacterProperty::PlayCharacterMovementSounds()
 			if(m_kCurrentCharacterStates[eSWIMING])
 				m_pkAudioSystem->StopSound(m_strSwimSound,GetEntity()->GetIWorldPosV());
 		}			
-								
+
+		//jump sound
+		if(pkCC->GetCharacterState(eJUMPING))
+			if(!m_kCurrentCharacterStates[eJUMPING])
+				m_pkAudioSystem->StartSound(m_strJumpSound,GetEntity()->GetIWorldPosV());
+
+														
 		//update staes
 		m_kCurrentCharacterStates[eRUNNING] = pkCC->GetCharacterState(eRUNNING);
 		m_kCurrentCharacterStates[eWALKING] = pkCC->GetCharacterState(eWALKING);
