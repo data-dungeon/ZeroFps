@@ -73,6 +73,7 @@ class ENGINE_SYSTEMS_API P_Tcs : public Property
 		vector<Mad_Face>*		m_pkFaces;			// Faces in mesh.
 		vector<Vector3>*		m_pkVertex;			// Vertex frames for mesh.
 		vector<Vector3>*		m_pkNormal;
+	
 		
 		//temp data
 		Vector3	m_kLinearVelocity;

@@ -1183,7 +1183,7 @@ bool Tcs::CollideMeshVSMesh(P_Tcs* pkBody1,P_Tcs* pkBody2,Tcs_collission* pkTemp
 						break;
 				}			
 				
-				if(TestLineVSPolygon(verts1,&verts2[i1],&verts2[i2],&P))
+/*				if(TestLineVSPolygon(verts1,&verts2[i1],&verts2[i2],&P,NULL))
 				{
 					if(pkTempCol)
 					{
@@ -1202,7 +1202,7 @@ bool Tcs::CollideMeshVSMesh(P_Tcs* pkBody1,P_Tcs* pkBody2,Tcs_collission* pkTemp
 					}
 					else
 						return true;
-				}
+				}*/
 			}			
 		}
 	}
@@ -1233,7 +1233,7 @@ bool Tcs::CollideMeshVSMesh3(P_Tcs* pkBody1,P_Tcs* pkBody2,Tcs_collission* pkTem
 		verts1[0] = kModelMatrix1.VectorTransform((*pkBody1->m_pkVertex)[(*pkBody1->m_pkFaces)[f].iIndex[0]]);
 		verts1[1] = kModelMatrix1.VectorTransform((*pkBody1->m_pkVertex)[(*pkBody1->m_pkFaces)[f].iIndex[1]]);		
 		verts1[2] = kModelMatrix1.VectorTransform((*pkBody1->m_pkVertex)[(*pkBody1->m_pkFaces)[f].iIndex[2]]);		
-	
+		
 		if(verts1[0] == verts1[1])
 			continue;		
 		if(verts1[0] == verts1[2])
@@ -1241,9 +1241,20 @@ bool Tcs::CollideMeshVSMesh3(P_Tcs* pkBody1,P_Tcs* pkBody2,Tcs_collission* pkTem
 		if(verts1[1] == verts1[2])
 			continue;
 			
+		if(m_iDebugGraph == 2)
+		{
+			//debug stuff
+			m_pkRender->Line(verts1[0],verts1[1]);
+			m_pkRender->Line(verts1[1],verts1[2]);		
+			m_pkRender->Line(verts1[2],verts1[0]);		
+		}					
+			
 										
 		Normal1= ((verts1[1] - verts1[0]).Cross(verts1[2] - verts1[0])).Unit();				
 		P1.Set(Normal1,verts1[0]);
+		
+
+		
 		
 		for(unsigned int g=0;g<pkBody2->m_pkFaces->size();g++)
 		{
@@ -1258,6 +1269,14 @@ bool Tcs::CollideMeshVSMesh3(P_Tcs* pkBody1,P_Tcs* pkBody2,Tcs_collission* pkTem
 			if(verts2[1] == verts2[2])
 				continue;					
 
+			if(m_iDebugGraph == 2)
+			{
+				//debug stuff
+				m_pkRender->Line(verts1[0],verts1[1]);
+				m_pkRender->Line(verts1[1],verts1[2]);		
+				m_pkRender->Line(verts1[2],verts1[0]);		
+			}						
+				
 			Normal2= ((verts2[1] - verts2[0]).Cross(verts2[2] - verts2[0])).Unit();				
 			P2.Set(Normal2,verts2[0]);
 
@@ -1284,34 +1303,16 @@ bool Tcs::CollideMeshVSMesh3(P_Tcs* pkBody1,P_Tcs* pkBody2,Tcs_collission* pkTem
 				
 				if(pkTempCol)				
 				{
-					if(TestLineVSPolygon(verts1,&verts2[i1],&verts2[i2],&P1))
+					if(TestLineVSPolygon(verts1,&verts2[i1],&verts2[i2],&P1,Normal2,GetNeighbourFaceNormal(verts2[i1],verts2[i2],Normal2,pkBody2)))
 					{
-						/*
-						if(!bHaveCleared)
-						{
-							bHaveCleared = true;
-							pkTempCol->kNormals.clear();
-							pkTempCol->kPositions.clear();
-						}					
-						*/	
-						
 						pkTempCol->kPositions.push_back(m_kLastTestPos);
 						pkTempCol->kNormals.push_back(m_kLastTestNormal);
 							
 						bHaveColided = true;	
 					}
 					
-					if(TestLineVSPolygon(verts2,&verts1[i1],&verts1[i2],&P2))
-					{
-						/*
-						if(!bHaveCleared)
-						{
-							bHaveCleared = true;
-							pkTempCol->kNormals.clear();
-							pkTempCol->kPositions.clear();
-						}	
-						*/				
-							
+					if(TestLineVSPolygon(verts2,&verts1[i1],&verts1[i2],&P2,Normal1,GetNeighbourFaceNormal(verts1[i1],verts1[i2],Normal1,pkBody1)))
+					{							
 						pkTempCol->kPositions.push_back(m_kLastTestPos);
 						pkTempCol->kNormals.push_back(-m_kLastTestNormal);
 							
@@ -1339,9 +1340,10 @@ bool Tcs::CollideMeshVSMesh3(P_Tcs* pkBody1,P_Tcs* pkBody2,Tcs_collission* pkTem
 }
 
 
-bool Tcs::TestLineVSPolygon(Vector3* pkPolygon,Vector3* pkPos1,Vector3* pkPos2,Plane* pkPlane)
+bool Tcs::TestLineVSPolygon(Vector3* pkPolygon,Vector3* pkPos1,Vector3* pkPos2,Plane* pkPlane,const Vector3& kNormal1,const Vector3& kNormal2)
 {
-	static float fMinDist = 0.05;
+
+	static float fMinDist = 0.01;
 
 	if(pkPlane->LineTest(*pkPos1,*pkPos2,&m_kLastTestPos))
 	{
@@ -1351,10 +1353,10 @@ bool Tcs::TestLineVSPolygon(Vector3* pkPolygon,Vector3* pkPos1,Vector3* pkPos2,P
 			//return true;
 			
 			if( m_kLastTestPos.DistanceTo(*pkPos1) < fMinDist ||
-				 m_kLastTestPos.DistanceTo(*pkPos2) < fMinDist ||
-				 m_kLastTestPos.DistanceTo(pkPolygon[0]) < fMinDist ||
+				 m_kLastTestPos.DistanceTo(*pkPos2) < fMinDist 
+/*				 m_kLastTestPos.DistanceTo(pkPolygon[0]) < fMinDist ||
 				 m_kLastTestPos.DistanceTo(pkPolygon[1]) < fMinDist ||
-				 m_kLastTestPos.DistanceTo(pkPolygon[2]) < fMinDist)
+				 m_kLastTestPos.DistanceTo(pkPolygon[2]) < fMinDist*/)
 			{			
 				//vertex VS face
 				m_kLastTestNormal = -pkPlane->m_kNormal;
@@ -1375,67 +1377,112 @@ bool Tcs::TestLineVSPolygon(Vector3* pkPolygon,Vector3* pkPos1,Vector3* pkPos2,P
 				float f1 = (pkPolygon[0] - *pkPos1).Proj(n1).Length();
 				float f2 = (pkPolygon[1] - *pkPos1).Proj(n2).Length();
 				float f3 = (pkPolygon[2] - *pkPos1).Proj(n3).Length();
-				
-				
-				Vector3 v2;
+								
+				//Vector3 v2;				
 				
 				if((f1 < f2) && (f1 < f3))
 				{
 					m_kLastTestNormal = n1;
-					v2 = (pkPolygon[0] + pkPolygon[1]) *0.5;
 				};
 				if((f2 < f1) && (f2 < f3))
 				{
 					m_kLastTestNormal = n2;
-					v2 = (pkPolygon[1] + pkPolygon[2]) *0.5;
 				};
 				if((f3 < f1) && (f3 < f2))
 				{
 					m_kLastTestNormal = n3;
-					v2 = (pkPolygon[2] + pkPolygon[0]) *0.5;
 				};			
 				
-				if( (f1 == f2) && (f2 == f3))
-					cout<<"FUCK!!!!!!!!!!!!!!!!!!!"<<endl;
-				
+			
 				//compare to face normal to chose wich direction the normal shuld have
-				if( m_kLastTestNormal.Angle(-pkPlane->m_kNormal) < 1.5707)
-	//				if(pkPlane->PointInside(m_kLastTestPos+m_kLastTestNormal))				
-					{
+				if(   (m_kLastTestNormal.Angle( kNormal1) <= 1.570796327 ) 
+					&& (m_kLastTestNormal.Angle( kNormal2) <= 1.570796327 ) )  
+				{			
+					return true;
+				}
 				
-					//cout<<"Angle1:"<<m_kLastTestNormal.Angle(-pkPlane->m_kNormal)<<endl;
-						return true;
-					}
 					
+				//invert normal and try again
 				m_kLastTestNormal = -m_kLastTestNormal;									
-				if( m_kLastTestNormal.Angle(-pkPlane->m_kNormal) < 1.5707)
-	//				if(pkPlane->PointInside(m_kLastTestPos+m_kLastTestNormal))				
-					{
-				
-					//cout<<"Angle1:"<<m_kLastTestNormal.Angle(-pkPlane->m_kNormal)<<endl;
-						return true;
-					}
-
-/*				//generate reference normal , in case of 90degredes angle, use a fuzzy calculated normal
-				Vector3 v1 = (*pkPos2 + *pkPos1) *0.5;
-				Vector3 refn = (v1 - v2).Unit();				
-				
-				if(m_kLastTestNormal.Angle(refn) < 1.5707)
+				if(   (m_kLastTestNormal.Angle( kNormal1) <= 1.570796327 ) 
+					&& (m_kLastTestNormal.Angle( kNormal2) <= 1.570796327 ) )  
+				{			
 					return true;
-				
-				m_kLastTestNormal = -m_kLastTestNormal;													
-				if(m_kLastTestNormal.Angle(refn) < 1.5707)
-					return true;
-*/				
+				}
 					
 				return false;		
-
 			}			
 		}
 	}
 	
 	return false;
 }
+
+Vector3 Tcs::GetNeighbourFaceNormal(const Vector3& kVert1,const Vector3& kVert2,const Vector3& kOldNormal,P_Tcs* pkBody)
+{
+	Matrix4 kModelMatrix2 = pkBody->GetModelMatrix();
+	static Vector3 verts[3];
+	static Vector3 kNormal;	
+
+	int found = 0;
+	int match = 0;
+	
+	for(unsigned int g=0;g<pkBody->m_pkFaces->size();g++)
+	{
+		verts[0] = kModelMatrix2.VectorTransform((*pkBody->m_pkVertex)[(*pkBody->m_pkFaces)[g].iIndex[0]]);
+		verts[1] = kModelMatrix2.VectorTransform((*pkBody->m_pkVertex)[(*pkBody->m_pkFaces)[g].iIndex[1]]);		
+		verts[2] = kModelMatrix2.VectorTransform((*pkBody->m_pkVertex)[(*pkBody->m_pkFaces)[g].iIndex[2]]);		
+	
+		//edge 1
+		if((verts[0] == kVert1 && verts[1] == kVert2) ||
+		 	(verts[1] == kVert1 && verts[0] == kVert2))
+		{
+			found++;
+		
+			kNormal = ((verts[1] - verts[0]).Cross(verts[2] - verts[0])).Unit();			
+			if(kNormal != kOldNormal)
+			{
+				match++;
+				return kNormal;
+			}
+		}
+		
+		//edge 2		
+		if((verts[1] == kVert1 && verts[2] == kVert2) ||
+		 	(verts[2] == kVert1 && verts[1] == kVert2))
+		{
+			found++;
+		
+			kNormal = ((verts[1] - verts[0]).Cross(verts[2] - verts[0])).Unit();			
+			if(kNormal != kOldNormal)
+			{
+				match++;
+				return kNormal;
+			}
+		}
+		
+		//edge 3
+		if((verts[2] == kVert1 && verts[0] == kVert2) ||
+		 	(verts[0] == kVert1 && verts[2] == kVert2))
+		{
+			found++;
+		
+			kNormal = ((verts[1] - verts[0]).Cross(verts[2] - verts[0])).Unit();			
+			if(kNormal != kOldNormal)
+			{
+				match++;
+				//cout<<"bla3"<<endl;				
+				return kNormal;
+			}
+		}		
+	}
+
+	//cout<<"found: "<<found<<endl;
+	//cout<<"match: "<<match<<endl;
+	//cout<<"warning could nto find neightbour"<<endl;
+	return kNormal;
+}
+
 
 bool Tcs::TestLineVSPolygonNoNormal(Vector3* pkPolygon,Vector3* pkPos1,Vector3* pkPos2,Plane* pkPlane)
 {

@@ -337,7 +337,7 @@ bool P_Tcs::SetupMeshData()
 			if(pkCoreMech != NULL)		
 			{
 				//cout<<"found mech"<<endl;
-				
+				 
 				m_pkMad = pkMP;
 				m_pkFaces = pkCoreMech->GetLODMesh(0)->GetFacesPointer();
 				m_pkVertex = (*pkCoreMech->GetLODMesh(0)->GetVertexFramePointer())[0].GetVertexPointer();
@@ -346,6 +346,12 @@ bool P_Tcs::SetupMeshData()
 				m_fScale = pkMP->m_fScale;
 				
 				//printf("TCS: Found The Mesh (%d, %d, %d)\n",m_pkFaces->size(), m_pkVertex->size(), m_pkNormal->size() );
+						
+				
+					
+				
+				
+				
 				return true;
 			}
 		}	
