@@ -92,7 +92,7 @@ public:
 	virtual void CreateInternalControls() { /* do nothing */ }
 
 	const bool Enabled()	{ return m_bEnabled; }
-	const bool IsVisible();
+	const bool IsVisible(bool bSearchParents=true);
 	void Move(int dx, int dy, bool bScreenSpace=false, bool bFreeMovement=false);
 
 	Rect GetMoveArea() { return m_kMoveArea; }

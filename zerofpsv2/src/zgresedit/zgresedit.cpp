@@ -522,7 +522,7 @@ void ZGResEdit::OnKeyDown(int iKey)
 
 	case KEY_K:
 		{
-			m_pkFocusWnd->GetSkin()->SetAnimation("TestAnimation.zif",3,0,true);
+			//m_pkFocusWnd->GetSkin()->SetAnimation("TestAnimation.zif",3,0,true);
 		}
 		break;
 
@@ -1085,6 +1085,7 @@ void ZGResEdit::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 				if(IsButtonChecked("ShowHideWndCB"))
 				{
 					m_pkScene->GetWnd(szItem)->Show();
+               MoveWndToTop(m_pkScene->GetWnd(szItem));
 				}
 				else
 				{
@@ -1207,6 +1208,7 @@ void ZGResEdit::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 						{
 							m_pkScene->AddStandardElements(it2->second);
 							it2->second->Disable();
+
 						}
 					}
 
@@ -1245,8 +1247,6 @@ void ZGResEdit::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 	{
 		if(strClickWndName == "FreemoveCheckbox")
 		{
-			printf("ooooeee\n");
-
 			if(IsButtonChecked("FreemoveCheckbox"))
 				m_pkFocusWnd->SetMoveArea(Rect(0,0,800,600), true);
 			else
@@ -1274,6 +1274,21 @@ void ZGResEdit::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 					GetSkin("DefSBrScrollDownSkin_u"), GetSkin("DefSBrScrollDownSkin_d") );
 			}
 		}
+      else
+      {
+         map<string,ZGRES_WND_INFO>::iterator itWndInfo;
+         if((itWndInfo = m_pkScene->m_kWndInfoMap.find( string(m_pkFocusWnd->GetName()))) != m_pkScene->m_kWndInfoMap.end())
+         {
+            m_pkScene->m_kWndInfoMap[ string( m_pkFocusWnd->GetName() ) ].bVisible = IsButtonChecked("VisibleCheckbox");
+         }
+         else
+         {
+            ZGRES_WND_INFO info;
+            info.bVisible = IsButtonChecked("VisibleCheckbox");
+            m_pkScene->m_kWndInfoMap.insert( 
+               map<string, ZGRES_WND_INFO>::value_type(m_pkFocusWnd->GetName(), info));
+         }
+      }
 	}
 }
 
@@ -1771,6 +1786,8 @@ void ZGResEdit::OnSelectWnd(ZGuiWnd *pkWnd)
 
 	UpdateSkinList(pkWnd);
 	UpdatePropertyWnd();
+   
+
 	
 	if(m_pkInputHandle->Pressed(KEY_LCTRL))
 	{
@@ -1826,6 +1843,8 @@ void ZGResEdit::OnClickListbox(int iListBoxID, int iListboxIndex, ZGuiWnd* pkMai
 				if(pkWnd->IsVisible())
 				{
 					((ZGuiCheckbox*)GetWnd("ShowHideWndCB"))->CheckButton();
+
+               MoveWndToTop(pkWnd);
 
 					ZGuiWnd* pkNewActiveWnd = m_pkScene->GetWnd(szItem);
 					m_pkFocusWnd = pkNewActiveWnd;

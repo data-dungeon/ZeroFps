@@ -15,6 +15,18 @@
 class ZFBasicFS;
 class TextureManager;
 
+struct ZGRES_WND_INFO
+{
+   ZGRES_WND_INFO()
+   {
+      bVisible = true;
+      bMoveable = false;
+   };
+
+   bool bVisible;
+   bool bMoveable;
+};
+
 
 class Scene  
 {
@@ -32,6 +44,7 @@ public:
 	ZGuiWnd* m_pkOptionsWnd;
 
    map<string,int> m_kWndAlignentMap;
+   map<string,ZGRES_WND_INFO> m_kWndInfoMap;
 
 	void AddStandardElements(ZGuiWnd *pkWnd);
 	bool BuildFileTree(char* szTreeBoxName, char* szRootPath, char* szExtension);
@@ -47,6 +60,8 @@ public:
 	void ScaleWndToTexSize(ZGuiWnd* pkWnd, char* szSelSkinType);
 	ZGuiWnd* CloneWnd(ZGuiWnd* pkWnd, int xpos, int ypos);
 //	ZGuiWnd* DeleteWnd(ZGuiWnd *pkWnd); // returns the new focuswnd
+
+   
 
 
 private:

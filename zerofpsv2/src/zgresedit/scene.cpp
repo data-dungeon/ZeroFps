@@ -352,7 +352,7 @@ void Scene::CreateUI()
 	// Create view window
 	//
 	m_pkApp->CreateWnd(Wnd, "ViewWindow", "",  "", 580, 50, 200, 200, 0);
-	(m_pkViewWindow = m_pkApp->GetWnd("ViewWindow"))->SetMoveArea(Rect(-190,-190,800+190,600+190),true);
+	(m_pkViewWindow = m_pkApp->GetWnd("ViewWindow"))->SetMoveArea(Rect(-1200,-1200,1800+200,1600+200),true);
 	m_pkViewWindow->Hide();
 	m_pkViewWindow->GetSkin()->m_iBkTexID = -1;
 	memcpy(m_pkViewWindow->GetSkin()->m_afBkColor, aSceneWndBk, sizeof(float)*3);
@@ -417,7 +417,7 @@ void Scene::CreateUI()
 
 	// Create options window
 
-	m_pkOptionsWnd = m_pkApp->CreateWnd(Wnd, "OptionsWnd", "PropertyWnd", "", -484,0,470,110,0);
+	m_pkOptionsWnd = m_pkApp->CreateWnd(Wnd, "OptionsWnd", "PropertyWnd", "", -374,0,360,110,0);
 	m_pkOptionsWnd->GetSkin()->m_iBkTexID = -1;
 	memcpy(m_pkOptionsWnd->GetSkin()->m_afBkColor, aSceneWndBk, sizeof(float)*3);
 
@@ -770,7 +770,14 @@ ZGuiWnd* Scene::CloneWnd(ZGuiWnd *pkWnd, int xpos, int ypos)
 
 void Scene::AddStandardElements(ZGuiWnd *pkWnd)
 {
+   if(pkWnd == NULL)
+      return;
+
 	GuiType eWndType = m_pkApp->GetWndType(pkWnd);
+
+
+
+   pkWnd->Show(); // visa alltid fönster i editorn
 
 	char* szName = (char*) pkWnd->GetName();
 
@@ -820,18 +827,20 @@ void Scene::UpdateOptionsWnd(ZGuiWnd* pkFocusWnd)
 		m_pkGui->UnregisterWindow((*it));
 	}
 
+   m_pkApp->CreateWnd(Checkbox, "VisibleCheckbox", "OptionsWnd", "Visible", 10, 10, 16, 16, 0);
+
 	switch(m_pkApp->GetWndType(pkFocusWnd))
 	{
 	case Wnd:
-		m_pkApp->CreateWnd(Checkbox, "FreemoveCheckbox", "OptionsWnd", "Moveable", 10, 10, 16, 16, 0);
+		m_pkApp->CreateWnd(Checkbox, "FreemoveCheckbox", "OptionsWnd", "Moveable", 10, 10+20, 16, 16, 0);
 		if(pkFocusWnd->GetMoveArea() == Rect(0,0,800,600) )
 			((ZGuiCheckbox*)m_pkApp->GetWnd("FreemoveCheckbox"))->CheckButton();
 		else
 			((ZGuiCheckbox*)m_pkApp->GetWnd("FreemoveCheckbox"))->UncheckButton();
 		break;
 	case Textbox:
-		m_pkApp->CreateWnd(Checkbox, "ReadOnlyCheckbox", "OptionsWnd", "Read-only", 10, 10, 16, 16, 0);
-		m_pkApp->CreateWnd(Checkbox, "MultiLineCheckbox", "OptionsWnd", "Multi-line", 10, 10+20*1, 16, 16, 0);
+		m_pkApp->CreateWnd(Checkbox, "ReadOnlyCheckbox", "OptionsWnd", "Read-only", 10, 10+20, 16, 16, 0);
+		m_pkApp->CreateWnd(Checkbox, "MultiLineCheckbox", "OptionsWnd", "Multi-line", 10, 10+20*2, 16, 16, 0);
 
 		if(((ZGuiTextbox*)pkFocusWnd)->IsReadOnly())
 			((ZGuiCheckbox*)m_pkApp->GetWnd("ReadOnlyCheckbox"))->CheckButton();
@@ -844,4 +853,14 @@ void Scene::UpdateOptionsWnd(ZGuiWnd* pkFocusWnd)
 			((ZGuiCheckbox*)m_pkApp->GetWnd("MultiLineCheckbox"))->UncheckButton();		
 		break;
 	}
+
+   map<string,ZGRES_WND_INFO>::iterator itWndInfo;
+   if((itWndInfo = m_kWndInfoMap.find( string(pkFocusWnd->GetName()))) != m_kWndInfoMap.end())
+   {
+      m_pkApp->CheckButton("VisibleCheckbox", itWndInfo->second.bVisible);
+   }
+   else
+   {
+      m_pkApp->CheckButton("VisibleCheckbox", pkFocusWnd->IsVisible() );
+   }
 }

@@ -740,15 +740,18 @@ void ZGuiWnd::SetResizeFlags(bool bHorz, bool bVert)
 	m_bResizeVert = bVert;
 }
 
-const bool ZGuiWnd::IsVisible()	
+const bool ZGuiWnd::IsVisible(bool bSearchParents)	
 {
-	if(m_bVisible == false)
-		return false;
+   if(bSearchParents)
+   {
+	   if(m_bVisible == false)
+	   	return false;
 
-	ZGuiWnd* pkParent = GetParent();
+	   ZGuiWnd* pkParent = GetParent();
 
-	if(pkParent)
-		return pkParent->IsVisible();
+	   if(pkParent)
+	   	return pkParent->IsVisible();
+   }
 	
 	return m_bVisible; 
 }

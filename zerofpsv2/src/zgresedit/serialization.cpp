@@ -222,7 +222,18 @@ bool Serialization::SaveGUI(char* szFileName, Scene* pkScene)
 		}
 
 	}
-	
+
+
+   for( map<string,ZGRES_WND_INFO>::iterator itWndInfo = pkScene->m_kWndInfoMap.begin();
+        itWndInfo != pkScene->m_kWndInfoMap.end(); itWndInfo++)
+   {
+      const char* szName = itWndInfo->first.c_str();
+
+      if(itWndInfo->second.bVisible == false)
+	      fprintf(m_pkFile, "\n\tShowWnd(\"%s\",%i,%i)\n", szName, 0, 0);
+   }
+
+   	
 	//
 	// funktion för att skapa allt, Slut
 	//
@@ -267,6 +278,9 @@ bool Serialization::LoadGUI(const char* szFileName, Scene* pkScene)
    // Rensa AlignementSettings mappen...
    pkScene->m_kWndAlignentMap.clear();
 
+   // Och Wnd Info mappen
+   pkScene->m_kWndInfoMap.clear();
+
 	printf("Loading file %s\n", szFileName);
 
 	ZFResourceHandle* pkScriptResHandle = new ZFResourceHandle;
@@ -288,6 +302,34 @@ bool Serialization::LoadGUI(const char* szFileName, Scene* pkScene)
 	}
 
 	pkApp->m_pkScriptResHandle->FreeRes(); 
+
+
+
+
+   // Registera om fönstret är dolt eller visat
+	map<string, ZGuiWnd*> kWindows2;
+	m_pkGuiResMan->GetWindows(kWindows2);
+	map<string, ZGuiWnd*>::iterator it3;
+
+	for( it3 = kWindows2.begin(); it3 != kWindows2.end(); it3++)
+	{
+		ZGuiWnd* pkWnd = it3->second;
+
+		if(pkWnd)
+		{
+			if(pkWnd != pkMainWnd && pkScene->IsSceneWnd(pkWnd) == false)
+			{
+            if( pkWnd->IsVisible(false) == false)
+            {
+               pkScene->m_kWndInfoMap[string(pkWnd->GetName())].bVisible = false;
+               pkWnd->Show(); // visa fönstret igen i editorn
+            }
+			}
+		}
+	}
+
+
+
 	return true;
 }
 
@@ -353,6 +395,7 @@ ZGuiWnd* Serialization::TempLoad(Scene* pkScene)
 			if(pkScene->IsSceneWnd(it->second) == false && it->second != pkMainWnd)
 			{
 				pkScene->AddStandardElements(it->second);
+
 				it->second->Disable();
 			}
 		}
@@ -459,8 +502,6 @@ bool Serialization::PrintWnd(ZGuiWnd* pkWnd)
 		szName, szParent, szLabel, rc.Left, rc.Top, rc.Width(), rc.Height(), iAlignment,iResizeType);
 
 	m_kSavedWnds.push_back(pkWnd);
-
-
 
 	return true;
 }
