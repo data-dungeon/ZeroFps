@@ -712,6 +712,11 @@ void Matrix4::SetAxis(int iAxisNum, Vector3 kNewAxis)
         RowCol[iAxisNum][2] = kNewAxis.z;
 }
 
+Vector3 Matrix4::GetAxis(int iAxisNum)
+{
+	return Vector3(RowCol[iAxisNum][0], RowCol[iAxisNum][1], RowCol[iAxisNum][2]);
+}
+
 
 
 

@@ -121,6 +121,8 @@ class BASIC_API Matrix4 {
 		Matrix4 Invert2( );
 		
 		void SetAxis(int iAxisNum, Vector3 kNewAxis);
+		Vector3 GetAxis(int iAxisNum);
+
 
 };
 

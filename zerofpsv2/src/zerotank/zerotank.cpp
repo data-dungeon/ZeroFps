@@ -28,7 +28,6 @@ ZeroTank::ZeroTank(char* aName,int iWidth,int iHeight,int iDepth)
 
 	m_iSelfObjectID			= -1;
 	m_HaveFoundHMapObject	= false;
-//	m_iGameType					= 1;
 	
 	g_ZFObjSys.Log_Create("zerorts");
  
@@ -36,7 +35,6 @@ ZeroTank::ZeroTank(char* aName,int iWidth,int iHeight,int iDepth)
 	m_pkZeroTankTower		= NULL;
 	m_pkZeroTankGun		= NULL;
 	m_pkZeroTank_Modify	= NULL;
-//	m_fConePosY				= 0.0f;
 } 
 
 void ZeroTank::OnInit() 
@@ -50,8 +48,6 @@ void ZeroTank::OnInit()
 	//run autoexec script
 	if(!pkIni->ExecuteCommands("zerotank_autoexec.ini"))
 		pkConsole->Printf("No game_autoexec.ini.ini found");
-
-	// Moved oject creation to OnServerStart
 }
 
 void ZeroTank::Init()
@@ -97,22 +93,6 @@ void ZeroTank::Init()
 	SDL_ShowCursor(SDL_DISABLE);
 }
 
-/*
-void ZeroTank::RegisterActions()
-{
-	m_iActionDoOrder=pkInput->RegisterAction("DoOrder");
-//	m_iActionPrintServerInfo=pkInput->RegisterAction("PrintServerInfo");
-	m_iActionUnExploreAll=pkInput->RegisterAction("UnExploreAll");
-	m_iActionExploreAll=pkInput->RegisterAction("ExploreAll");
-	m_iActionCamLeft=pkInput->RegisterAction("CamLeft");
-	m_iActionCamRight=pkInput->RegisterAction("CamRight");
-	m_iActionCamUp=pkInput->RegisterAction("CamUp");
-	m_iActionCamDown=pkInput->RegisterAction("CamDown");
-	m_iActionSelect=pkInput->RegisterAction("Select");
-	m_iActionScroll=pkInput->RegisterAction("Scroll");	
-	m_iActionSelectManyModifier=pkInput->RegisterAction("SelectManyModifier");	
-}*/
-
 void ZeroTank::RegisterPropertys()
 {
 
@@ -129,46 +109,16 @@ void ZeroTank::OnIdle()
 	
  	pkFps->UpdateCamera(); 	
 	
-	
-
-	
 //	m_pkMap2->SetPos(Vector3(0,0,0));
 //	pkRender->DrawHM2(m_pkMap2,pkFps->GetCam()->GetPos());
 
-
-/*
-	Vector3 pos = pkFps->GetCam()->GetPos();
-	pos.y  = m_pkMap2->Height(pos.x,pos.z) ;
-	pkFps->GetCam()->SetPos(pos);
-	
-	Vector3 norm = m_pkMap2->Tilt(pos.x,pos.z);
-	float deg=Vector3(0,1,0).Angle(norm);
-/*	
-	norm.Angels();
-	cout<<"x:"<<norm.x<<endl;
-	cout<<"y:"<<norm.y<<endl;	
-	cout<<"z:"<<norm.z<<endl;	
-	
-	norm.x *= degtorad;
-	norm.y *= degtorad;
-	norm.z *= degtorad;
-	
-	pkFps->GetCam()->SetRot(Vector3(norm.x,pkFps->GetCam()->GetRot().y,norm.z));
-*/	
-
-	
 	//update player possition 
 	Object* pkObj = pkObjectMan->GetObjectByNetWorkID( m_iSelfObjectID );
 	if(pkObj) {
 		pkObjectMan->OwnerShip_Take( pkObj );
-		pkObj->SetWorldPosV(pkFps->GetCam()->GetPos());
+//		pkObj->SetWorldPosV(pkFps->GetCam()->GetPos());
+		pkObj->SetWorldPosV(pkFps->GetCam()->GetPos());	// **************** CLIENT CANT MOVE ERROR VIM ****************
 	}
-
-/*	if(m_pkTestObject)
-	{
-		m_pkTestObject->SetWorldPosV(Vector3(0,-10+m_fConePosY,0)); 
-	}*/
-
 }
 
 void ZeroTank::OnSystem() 
@@ -178,17 +128,10 @@ void ZeroTank::OnSystem()
 	{
 		GetSystem().Logf("net","??? m_iSelfObjectID %d\n", m_iSelfObjectID);
 
-
-
-
 		//try to get self id
 		if(m_iSelfObjectID == -1)
 			m_iSelfObjectID = pkFps->GetClientObjectID();
-
 	};
-	
-
-
 }
 
 void ZeroTank::Input()
@@ -203,57 +146,64 @@ void ZeroTank::Input()
 	int iNewCursorTex=0;
 	int iNewCursorTex_a=0;
 
-
-
 	int x,z;		
 	pkInput->RelMouseXY(x,z);
 	
 	float speed = 20;
 
-	if(m_pkCameraObject)
-	{
+	// Switch Modify Object
+	if(pkInput->Pressed(KEY_1))	m_pkZeroTank_Modify = m_pkCameraObject;
+	if(pkInput->Pressed(KEY_2))	m_pkZeroTank_Modify = m_pkZeroTankHull;
+	if(pkInput->Pressed(KEY_3))	m_pkZeroTank_Modify = m_pkZeroTankTower;
+	if(pkInput->Pressed(KEY_4))	m_pkZeroTank_Modify = m_pkZeroTankGun;
+	if(pkInput->Pressed(KEY_5))	m_pkZeroTank_Modify = m_pkZeroTankTrack;
 
-		//camera movements
+
+	if(m_pkZeroTank_Modify)
+	{
 		if(pkInput->Pressed(KEY_X)){
 			speed*=0.25;
 		}
 	
-		Vector3 newpos = m_pkCameraObject->GetLocalPosV();
+		float fSpeedScale = pkFps->GetFrameTime()*speed;
+
+		Vector3 newpos = m_pkZeroTank_Modify->GetLocalPosV();
 		Vector3 rot;
 		rot.Set(0,0,0);
 		
-		Matrix4 kRm = m_pkCameraObject->GetLocalRotM();
-		kRm.Transponse();
-	
-		if(pkInput->Pressed(KEY_D)){
-			newpos-=kRm.VectorRotate(Vector3(-1,0,0))* pkFps->GetFrameTime()*speed;		
-		}
-		if(pkInput->Pressed(KEY_A)){
-			newpos-=kRm.VectorRotate(Vector3(1,0,0))* pkFps->GetFrameTime()*speed;		
-		}	
-		if(pkInput->Pressed(KEY_W))	{
-			newpos-=kRm.VectorRotate(Vector3(0,0,1))* pkFps->GetFrameTime()*speed;
-		}					
-		if(pkInput->Pressed(KEY_S))	{
-			newpos-=kRm.VectorRotate(Vector3(0,0,-1))* pkFps->GetFrameTime()*speed;	
-		}		
-	
-		if(pkInput->Pressed(KEY_Q))
-			rot.z+= 5 * pkFps->GetFrameTime()*speed;
-		if(pkInput->Pressed(KEY_E))
-			rot.z-= 5 * pkFps->GetFrameTime()*speed;
+		Matrix4 kRm = m_pkZeroTank_Modify->GetLocalRotM();
 
+		if(m_pkZeroTank_Modify == m_pkCameraObject)
+			kRm.Transponse();
+	
+		/*
+		if(pkInput->Pressed(KEY_D))	newpos-=kRm.VectorRotate(Vector3(-1,0,0))	* fSpeedScale;		
+		if(pkInput->Pressed(KEY_A))	newpos-=kRm.VectorRotate(Vector3(1,0,0))	* fSpeedScale;		
+		if(pkInput->Pressed(KEY_W))	newpos-=kRm.VectorRotate(Vector3(0,0,1))	* fSpeedScale;
+		if(pkInput->Pressed(KEY_S))	newpos-=kRm.VectorRotate(Vector3(0,0,-1)) * fSpeedScale;	
+		*/
+
+		if(pkInput->Pressed(KEY_D))	newpos += kRm.GetAxis(0) * fSpeedScale;		
+		if(pkInput->Pressed(KEY_A))	newpos += kRm.GetAxis(0) * -fSpeedScale;		
+		if(pkInput->Pressed(KEY_W))	newpos += kRm.GetAxis(2) * -fSpeedScale;
+		if(pkInput->Pressed(KEY_S))	newpos += kRm.GetAxis(2) * fSpeedScale;	
+	
+		if(pkInput->Pressed(KEY_Q))	rot.z += 5 * fSpeedScale;
+		if(pkInput->Pressed(KEY_E))	rot.z -= 5 * fSpeedScale;
 		
-		rot.x+=z/5.0;
-		rot.y-=x/5.0;	
+		rot.x += z / 5.0;
+		rot.y -= x / 5.0;	
 
-		m_pkCameraObject->SetLocalPosV(newpos);
-		m_pkCameraObject->RotateLocalRotV(rot);
+		m_pkZeroTank_Modify->SetLocalPosV(newpos);
+		m_pkZeroTank_Modify->RotateLocalRotV(rot);
 	
 	}
 
-	if(pkInput->Pressed(KEY_C))
-		this->pkObjectMan->Delete(m_pkZeroTankHull);
+	if(pkInput->Pressed(KEY_C) && m_pkZeroTankHull) {
+		pkObjectMan->Delete(m_pkZeroTankHull);
+		m_pkZeroTankHull		= NULL;
+		m_pkZeroTank_Modify	= NULL;
+		}
 
 	
 /*
@@ -307,11 +257,6 @@ void ZeroTank::Input()
 	m_pkCamera->SetPos(newpos);
 	m_pkCamera->SetRot(rot);
 	
-	// Switch Modify Object
-	if(pkInput->Pressed(KEY_1))	m_pkZeroTank_Modify = m_pkZeroTankHull;
-	if(pkInput->Pressed(KEY_2))	m_pkZeroTank_Modify = m_pkZeroTankTower;
-	if(pkInput->Pressed(KEY_3))	m_pkZeroTank_Modify = m_pkZeroTankGun;
-	if(pkInput->Pressed(KEY_4))	m_pkZeroTank_Modify = m_pkZeroTankTrack;
 
 	static float fRotate = 0;
 	static Vector3 kRotate(0,0,0); 
@@ -446,13 +391,9 @@ void ZeroTank::OnHud(void)
 			}
 
 		}
-
-
-
 	
 	pkFps->m_bGuiMode = false;
 	pkFps->ToggleGui();
-
 }
 
 void ZeroTank::RunCommand(int cmdid, const CmdArgument* kCommand)
@@ -472,12 +413,9 @@ void ZeroTank::RunCommand(int cmdid, const CmdArgument* kCommand)
 				pkConsole->Printf("Error loading level");
 				break;			
 			}
-
 			
 			pkConsole->Printf("Level loaded");
 
-//			SetupSpawnPoints();
-					
 			pkConsole->Printf("Everything is loaded ,Starting server");
 			GetSystem().RunCommand("server Default server",CSYS_SRC_SUBSYS);	
 			break;		
@@ -493,27 +431,11 @@ void ZeroTank::RunCommand(int cmdid, const CmdArgument* kCommand)
 					Vector3 kPos = pkObjectMan->GetZoneCenter(iRandZone);
 					kPos.y = -4;
 					m_pkZeroTankTrack->SetWorldPosV( kPos );
-					//m_pkZeroTankTrack->AttachToClosestZone();
 					m_pkZeroTankTrack->SetParent(pkObjectMan->GetWorldObject());
 					pkObjectMan->AddTracker(m_pkZeroTankTrack);
 				}
 			}
-
-
-			
-/*		for(int i=0; i<5; i++) {
-			m_pkZeroTankTrack = pkObjectMan->CreateObjectByArchType("TrackObject");
-			if(m_pkZeroTankTrack) {
-				int iRandZone =  rand() % pkObjectMan->GetNumOfZones();
-				m_pkZeroTankTrack->SetWorldPosV( pkObjectMan->GetZoneCenter(iRandZone) );
-				m_pkZeroTankTrack->AttachToClosestZone();
-				pkObjectMan->AddTracker(m_pkZeroTankTrack);
-
-			}
-		}*/
 			break;
-
-
 	}
 }
 
@@ -528,123 +450,35 @@ void ZeroTank::HandleOrders()
 void ZeroTank::ClientInit()
 {
 	cout<<"Client Join granted"<<endl;
-
 	int mapwidth = pkLevelMan->GetHeightMap()->GetSize();
-
 	cout<<"Mapsize is :"<<mapwidth<<endl;
-	
 //	m_pkMap = pkLevelMan->GetHeightMap();	
-
-	
 	cout<<"Join Complete"<<endl;
 }
 
 void ZeroTank::OnServerClientJoin(ZFClient* pkClient,int iConID)
 {
 	cout<<"Client "<<iConID<<" Joined"<<endl;
-	
 	pkClient->m_pkObject->AddProperty("P_Primitives3D");	
 	cout << "Now adding tracker to client" << endl;
 	pkClient->m_pkObject->AddProperty("TrackProperty");	
 	pkObjectMan->AddTracker(pkClient->m_pkObject);
-	
-	//setup client input
-	//pkClient->m_pkObject->AddProperty("P_ClientInput");
-
-
 }
 
 void ZeroTank::OnServerClientPart(ZFClient* pkClient,int iConID)
 {
 	cout<<"Client "<<iConID<<" Parted"<<endl;	
-	
 }
-
-/*
-void ZeroTank::SetupSpawnPoints()
-{
-	cout<<"Searching for spawn points"<<endl;	
-	
-	vector<Object*>	kObjects;	
-	kObjects.clear();
-//	m_kSpawnPoints.clear();
-	
-	pkObjectMan->GetAllObjects(&kObjects);
-	
-	for(unsigned int i=0;i<kObjects.size();i++)
-	{
-		if(kObjects[i]->GetName() == "A ZeroRTSSpawnPoint")
-		{
-			m_kSpawnPoints.push_back(kObjects[i]->GetWorldPosV());
-			pkObjectMan->Delete(kObjects[i]);
-		}
-	}
-
-	cout<<"found "<<m_kSpawnPoints.size()<< " spawn points"<<endl;	
-}*/
 
 void ZeroTank::OnServerStart(void)
 {		
-	m_pkCameraObject = pkObjectMan->CreateObjectByArchType("camera");
-	if(m_pkCameraObject)
-	{
-		m_pkCameraObject->AttachToClosestZone();
-		CameraProperty* cam = (CameraProperty*)m_pkCameraObject->GetProperty("CameraProperty");
-		cam->SetCamera(m_pkCamera);
-	}
-	
-
-/*	m_pkME = pkObjectMan->CreateObject();
-	m_pkME->AttachToClosestZone();
-	m_pkME->AddProperty("CameraProperty");
-	
-	CameraProperty* cam = (CameraProperty*)m_pkME->GetProperty("CameraProperty");
-	cam->SetCamera(m_pkCamera);
-	*/
-
-/*	m_pkME = pkObjectMan->CreateObjectByArchType("body");
-	if(m_pkME) {
-		m_pkME->SetWorldPosV(Vector3(0,0,0));
-		m_pkME->AttachToClosestZone();
-	
-		
-		m_pkME->AddProperty("CameraProperty");
-	
-		//CameraProperty* cam = (CameraProperty*)m_pkME->GetProperty("CameraProperty");
-		//cam->SetCamera(m_pkCamera);
-	}*/
-
-/*	Object* pk1 = pkObjectMan->CreateObjectByArchType("ZeroRTSTestBox");
-	if(pk1) {
-		pk1->SetParent(m_pkME);
-		pk1->SetLocalPosV(Vector3(5,0.81,0));
-		//pk1->AttachToClosestZone();		
-	}
-
-	Object* pk2 = pkObjectMan->CreateObjectByArchType("ZeroRTSGun");
-	if(pk2) {
-		pk2->SetParent(pk1);
-		pk2->SetLocalPosV(Vector3(0,0.0,0));
-	}*/
-
-
 	pkObjectMan->Test_CreateZones();
-
 
 	// ZeroTank
  	m_pkZeroTankHull	= NULL;
 	m_pkZeroTankTower	= NULL;
 	m_pkZeroTankGun	= NULL;
-
-/*	m_pkZeroTankHull = pkObjectMan->CreateObjectByArchType("Node1");
-	if(m_pkZeroTankHull) {
-		m_pkZeroTankHull->SetWorldPosV(Vector3(0,0,0));
-		m_pkZeroTankHull->AttachToClosestZone();
-
-		//m_pkZeroTankHull->AddProperty("CameraProperty");
-		//CameraProperty* cam = (CameraProperty*)m_pkZeroTankHull->GetProperty("CameraProperty");
-		//cam->SetCamera(m_pkCamera);
-	}*/
+	m_pkCameraObject	= NULL;
 
 	m_pkZeroTankHull = pkObjectMan->CreateObjectByArchType("ZeroRTSHull");
 	if(m_pkZeroTankHull) {
@@ -656,7 +490,7 @@ void ZeroTank::OnServerStart(void)
 		//cam->SetCamera(m_pkCamera);
 	}
 
-/*	m_pkZeroTankTower = pkObjectMan->CreateObjectByArchType("ZeroRTSTower");
+	m_pkZeroTankTower = pkObjectMan->CreateObjectByArchType("ZeroRTSTower");
 	if(m_pkZeroTankTower) {
 		m_pkZeroTankTower->SetParent(m_pkZeroTankHull);
 		m_pkZeroTankTower->SetLocalPosV(Vector3(0,0.81,0));
@@ -668,35 +502,29 @@ void ZeroTank::OnServerStart(void)
 		m_pkZeroTankGun->SetParent(m_pkZeroTankTower);
 		m_pkZeroTankGun->SetLocalPosV(Vector3(-1.1,0.4,0));
 		m_pkZeroTankGun->SetRelativeOri(true);
-	}*/
-
-	if(pkObjectMan->GetNumOfZones() != 0) {
-		pkConsole->Printf("Num of Zones: %d",pkObjectMan->GetNumOfZones());
-
-/*		for(int i=0; i<5; i++) {
-			m_pkZeroTankTrack = pkObjectMan->CreateObjectByArchType("TrackObject");
-			if(m_pkZeroTankTrack) {
-				int iRandZone =  rand() % pkObjectMan->GetNumOfZones();
-				m_pkZeroTankTrack->SetWorldPosV( pkObjectMan->GetZoneCenter(iRandZone) );
-				m_pkZeroTankTrack->AttachToClosestZone();
-				pkObjectMan->AddTracker(m_pkZeroTankTrack);
-
-			}
-		}*/
-
-	
 	}
 
+	m_pkCameraObject = pkObjectMan->CreateObjectByArchType("camera");
+	if(m_pkCameraObject)
+	{
+		//m_pkCameraObject->SetParent(m_pkZeroTankGun);
+		//m_pkCameraObject->SetRelativeOri(true);
+		m_pkCameraObject->AttachToClosestZone();
+		CameraProperty* cam = (CameraProperty*)m_pkCameraObject->GetProperty("CameraProperty");
+		cam->SetCamera(m_pkCamera);
+	}
+
+	pkConsole->Printf("Num of Zones: %d",pkObjectMan->GetNumOfZones());
 
 	//add server info property
-	if(!pkObjectMan->GetObject("A ServerInfoObject"))
+/*	if(!pkObjectMan->GetObject("A ServerInfoObject"))
 	{
 		Object* pkObj = pkObjectMan->CreateObjectByArchType("ServerInfoObject");
 		if(!pkObj)
 			cout<<"Faild to create serverinfoobject"<<endl;
 		 else
 			pkObjectMan->GetWorldObject()->AddChild(pkObj);
-	}	
+	}*/
 }
 
 void ZeroTank::OnClientStart(void)

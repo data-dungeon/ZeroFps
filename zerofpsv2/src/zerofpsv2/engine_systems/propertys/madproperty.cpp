@@ -94,6 +94,7 @@ void MadProperty::Update()
 
 	g_fMadLODScale = m_fLod;
 
+		Render* pkRender = static_cast<Render*>(g_ZFObjSys.GetObjectPtr("Render")); 
 
 	glPushMatrix();
 		Matrix4 ori = m_pkObject->GetWorldOriM();
@@ -108,6 +109,8 @@ void MadProperty::Update()
 		glRotatef(- rot.z ,0,0,1);		
 		glRotatef(- rot.x ,1,0,0);*/
 
+		pkRender->Draw_AxisIcon(5);
+
 		Draw_All(m_pkZeroFps->m_iMadDraw);
 	glPopMatrix();
 
@@ -115,7 +118,6 @@ void MadProperty::Update()
 		glPushMatrix();
 			glTranslatef(m_pkObject->GetWorldPosV().x,m_pkObject->GetWorldPosV().y,m_pkObject->GetWorldPosV().z);
 			glRotatef(90 ,1,0,0);
-			Render* pkRender = static_cast<Render*>(g_ZFObjSys.GetObjectPtr("Render")); 
 			pkRender->DrawBoundSphere(GetRadius(),Vector3::ZERO);		
 		glPopMatrix();
 	}

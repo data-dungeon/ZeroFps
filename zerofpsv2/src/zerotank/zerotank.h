@@ -22,11 +22,10 @@
 
 class ZeroTank :public Application, public ZGuiApp {
 	private:
-		
 		Camera*			m_pkCamera;
-		//HeightMap*		m_pkMap;
-		Object*		m_pkCameraObject;
+		Object*			m_pkCameraObject;
 		
+		//HeightMap*		m_pkMap;
 		// actions
 /*		int 			m_iActionCamLeft;
 		int 			m_iActionCamRight;
@@ -56,12 +55,11 @@ class ZeroTank :public Application, public ZGuiApp {
 
 		//list of possible spawn points
 //		vector<Vector3>	m_kSpawnPoints;
-
 		//wich gametype for server to use
 //		int					m_iGameType;
-
-
 //		Heightmap2*			m_pkMap2;
+		//GuiBuilder*			m_pkGuiBuilder;
+		//float m_fConePosY;
 
 		Mad_Modell			m_pkTestMod;
 		
@@ -75,8 +73,6 @@ class ZeroTank :public Application, public ZGuiApp {
 
 		Object*				m_pkZeroTank_Modify;
 
-		//GuiBuilder*			m_pkGuiBuilder;
-		//float m_fConePosY;
 
 	public:
 		void OnCommand(int iID, ZGuiWnd* pkMainWnd);
@@ -90,7 +86,6 @@ class ZeroTank :public Application, public ZGuiApp {
 				
 		void RunCommand(int cmdid, const CmdArgument* kCommand);		
 		void Init();
-		//void RegisterActions();		
 		void RegisterPropertys();
 		void Input();
 		void OnServerStart(void);
@@ -103,8 +98,6 @@ class ZeroTank :public Application, public ZGuiApp {
 		//order handler
 		void HandleOrders();
 
-		//Setup spawn points
-		//void SetupSpawnPoints();
 
 		//on client join, server runs this
 		void OnServerClientJoin(ZFClient* pkClient,int iConID);
@@ -116,6 +109,9 @@ class ZeroTank :public Application, public ZGuiApp {
 
 		ZFScript* GetScript() { return pkScript; }
 
+		//void RegisterActions();		
+		//Setup spawn points
+		//void SetupSpawnPoints();
 };
 
 
