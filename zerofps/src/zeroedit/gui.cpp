@@ -137,10 +137,16 @@ bool Gui::WorkPanelProc( ZGuiWnd* pkWindow, unsigned int uiMessage,
 			m_pkEdit->m_iMode = TEXTURE;
 			break;
 		case 2: // Elevation tool
-			if(IsButtonChecked("RaiseLowerGroundChB"))
+			if(IsButtonChecked("Raise", "ElevationModeRadioGroup"))
 				m_pkEdit->m_iMode = RAISE;
 			else
+			if(IsButtonChecked("Lower", "ElevationModeRadioGroup"))
 				m_pkEdit->m_iMode = LOWER;
+			else
+			if(IsButtonChecked("Smooth", "ElevationModeRadioGroup"))
+				m_pkEdit->m_iMode = SMOOTH;
+			else
+				m_pkEdit->m_iMode = RAISE;
 			break;
 		}
 		break;
@@ -169,7 +175,7 @@ bool Gui::WorkPanelProc( ZGuiWnd* pkWindow, unsigned int uiMessage,
 		case ID_PENCILSIZE_RADIOGROUP+3:
 			m_pkEdit->m_iPencilSize = 20; // extra-large
 			break;
-		case ID_LOADMADFILE:
+		case ID_LOADMADFILE_BN:
 			Object* pkCurObject;
 			if((pkCurObject=m_pkEdit->m_pkCurentChild) != NULL)
 			{
@@ -186,6 +192,22 @@ bool Gui::WorkPanelProc( ZGuiWnd* pkWindow, unsigned int uiMessage,
 				if((pkModelProp=pkCurObject->GetProperty("ModelProperty")) != NULL)
 					pkCurObject->RemoveProperty(pkModelProp);
 			}
+			break;
+		case ID_CREATEMADFILE_BN:
+			Object *pkNewObject = new BallObject();					
+			pkNewObject->SetPos(m_pkEdit->m_kDrawPos);	
+			pkNewObject->SetPos(m_pkEdit->m_kDrawPos);					
+			
+			pkNewObject->AttachToClosestZone();
+			m_pkEdit->m_pkCurentChild=pkNewObject;
+
+			int* pkParams = new int[1];
+			pkParams[0] = (int) ID_LOADMADFILE_BN; // control id
+			WorkPanelProc(pkWindow, uiMessage,1,pkParams);
+			delete[] pkParams;
+
+			((EditPropertyDlg*)GetDlg("PropertyDlg"))->m_pkCurrentChild = pkNewObject;
+			UpdatePropertybox();
 			break;
 		}
 		break;
@@ -941,7 +963,8 @@ bool Gui::CreateWorkPanel()
 	for(unsigned int i=1; i<vkNames.size(); i++)
 		AddItemToList(pkMadList, false, vkNames[i].c_str(), i, false);
 
-	CreateButton(pkPage, ID_LOADMADFILE, 5, 170, 50, 20, "Open");
+	CreateButton(pkPage, ID_LOADMADFILE_BN, 5, 170, 50, 20, "Change");
+	CreateButton(pkPage, ID_CREATEMADFILE_BN, 60, 170, 50, 20, "Create");
 
 	// Create page 2: - Paint terrain
 	pkPage = m_pkWorkPanel->GetPage(1);
@@ -958,11 +981,13 @@ bool Gui::CreateWorkPanel()
 	CheckRadioButton("BrushSizeRadioGroup", "Medium");
 
 	CreateLabel(pkPage, 0, 120, 50, 10, 16, "R");
-	CreateLabel(pkPage, 0, 120, 80, 10, 16, "G");
-	CreateLabel(pkPage, 0, 120, 110, 10, 16, "B");
+	CreateLabel(pkPage, 0, 120, 70, 10, 16, "G");
+	CreateLabel(pkPage, 0, 120, 90, 10, 16, "B");
+	CreateLabel(pkPage, 0, 120, 110, 10, 16, "A");
 	CreateTextbox(pkPage, ID_TEXCOLOR_RED_EB,   140, 50, 30, 16, false, "128"); 
-	CreateTextbox(pkPage, ID_TEXCOLOR_GREEN_EB, 140, 80, 30, 16, false, "128"); 
-	CreateTextbox(pkPage, ID_TEXCOLOR_BLUE_EB,  140, 110, 30, 16, false, "128");
+	CreateTextbox(pkPage, ID_TEXCOLOR_GREEN_EB, 140, 70, 30, 16, false, "128"); 
+	CreateTextbox(pkPage, ID_TEXCOLOR_BLUE_EB,  140, 90, 30, 16, false, "128");
+	CreateTextbox(pkPage, ID_TEXCOLOR_ALPHA_EB,  140, 110, 30, 16, false, "128");
 
 	CreateLabel(pkPage, 0, 5, 5, 209, 20, "Map");
 	ZGuiCombobox* pkTextureCB = CreateCombobox(pkPage, ID_TERRAINTEXTURE_CB, 
@@ -1001,8 +1026,33 @@ bool Gui::CreateWorkPanel()
 	return true;
 }
 
-bool Gui::IsButtonChecked(char *szName)
+bool Gui::IsButtonChecked(char *szName, char* szGroupName)
 {
+	if(szGroupName != NULL)
+	{
+		ZGuiWnd* pkGroup = Get(szGroupName);
+
+		if(pkGroup == NULL)
+			return false;
+
+		ZGuiRadiobutton* pkSearchButton = (ZGuiRadiobutton*) pkGroup;
+		
+		while(1)
+		{
+			char* szText = pkSearchButton->GetButton()->GetText();
+
+			if(szText)
+				if(strcmp(szText, szName) == 0)
+					return pkSearchButton->GetButton()->IsChecked();
+
+			pkSearchButton = pkSearchButton->GetNext();
+			if(pkSearchButton == NULL)
+				break;
+		}
+
+		return false;
+	}
+
 	ZGuiWnd* pkButton = Get(szName);
 
 	if(pkButton == NULL)

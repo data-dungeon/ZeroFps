@@ -33,7 +33,7 @@ enum SEARCH_TASK
 class Gui
 {
 private:
-	bool IsButtonChecked(char* szName);
+	bool IsButtonChecked(char* szName, char* szGroupName=NULL);
 	bool CreateWorkPanel();
 	void OpenPropertyDlg();
 	
