@@ -48,9 +48,13 @@ void ZGuiEd::UpdatePreviewImage(const char* szFileName)
 		SetBitmapDimensionEx(preview_bitmap, kImage.m_iWidth, kImage.m_iHeight, NULL);
 	}
 
-	RECT rc = {0,768-128-8,128+8,768};	
+	RECT rc = {0,768-128-30,128+8,768-128-30+128};	
 	InvalidateRect(g_kDlgBoxRight, &rc, true);
 	UpdateWindow(g_kDlgBoxRight);
+
+	char szImageInfo[128];
+	sprintf(szImageInfo, "%ix%i", kImage.m_iWidth, kImage.m_iHeight);
+	SetDlgItemText(g_kDlgBoxRight, IDC_IMAGE_INFO_LABEL, szImageInfo);
 }
 
 void ZGuiEd::AddFilesInFolderToListbox(const char* szFolderName)
@@ -136,11 +140,11 @@ void ZGuiEd::SelNewSkin(int iIndex)
 	{
 		int id = (*ppkSkin)->m_iBkTexID;
 
-		if(IsDlgButtonChecked(g_kDlgBoxBottom, IDC_SKINTYPE_HORZBORDER_RB))
+		if(IsDlgButtonChecked(g_kDlgBoxRight, IDC_SKINTYPE_HORZBORDER_RB))
 			id = (*ppkSkin)->m_iHorzBorderTexID;
-		if(IsDlgButtonChecked(g_kDlgBoxBottom, IDC_SKINTYPE_VERTBORDER_RB))
+		if(IsDlgButtonChecked(g_kDlgBoxRight, IDC_SKINTYPE_VERTBORDER_RB))
 			id = (*ppkSkin)->m_iVertBorderTexID;
-		if(IsDlgButtonChecked(g_kDlgBoxBottom, IDC_SKINTYPE_CORNERBORDER_RB))
+		if(IsDlgButtonChecked(g_kDlgBoxRight, IDC_SKINTYPE_CORNERBORDER_RB))
 			id = (*ppkSkin)->m_iBorderCornerTexID;
 
 		if(id > 0)
@@ -232,16 +236,16 @@ void ZGuiEd::SetTexture(bool bSet)
 					strFileName = m_strCurrTexDir + string("/") + string(szTexName);
 
 				ZGuiSkin* pSkin = *ppkSkin;
-				if(IsDlgButtonChecked(g_kDlgBoxBottom, IDC_SKINTYPE_BACKGROUND_RB))
+				if(IsDlgButtonChecked(g_kDlgBoxRight, IDC_SKINTYPE_BACKGROUND_RB))
 					pSkin->m_iBkTexID = bSet ? m_pkTexMan->Load(strFileName.c_str()) : -1;
 				else
-				if(IsDlgButtonChecked(g_kDlgBoxBottom, IDC_SKINTYPE_HORZBORDER_RB))
+				if(IsDlgButtonChecked(g_kDlgBoxRight, IDC_SKINTYPE_HORZBORDER_RB))
 					pSkin->m_iHorzBorderTexID = bSet ? m_pkTexMan->Load(strFileName.c_str()) : -1;
 				else
-				if(IsDlgButtonChecked(g_kDlgBoxBottom, IDC_SKINTYPE_VERTBORDER_RB))
+				if(IsDlgButtonChecked(g_kDlgBoxRight, IDC_SKINTYPE_VERTBORDER_RB))
 					pSkin->m_iVertBorderTexID = bSet ? m_pkTexMan->Load(strFileName.c_str()) : -1;
 				else
-				if(IsDlgButtonChecked(g_kDlgBoxBottom, IDC_SKINTYPE_CORNERBORDER_RB))
+				if(IsDlgButtonChecked(g_kDlgBoxRight, IDC_SKINTYPE_CORNERBORDER_RB))
 					pSkin->m_iBorderCornerTexID = bSet ? m_pkTexMan->Load(strFileName.c_str()) : -1;
 				
 			}

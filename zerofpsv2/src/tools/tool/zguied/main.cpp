@@ -26,6 +26,7 @@ ZGuiEd g_kZGuiEd("zguied",1024,768,0);
 void CreateTooltip (HWND hwnd, char* text);
 void DrawBitmap (HDC hdc, int x, int y, int sw, int sh, HBITMAP hBitmap);
 void ActivateHelp(bool bActivate);
+int GetWindowSize(int iID, bool bRightPanel, bool bWidth);
 static bool GUIPROC( ZGuiWnd* win, unsigned int msg, int numparms, void *params ){ return true; };
 
 ZGuiEd::ZGuiEd(char* aName,int iWidth,int iHeight,int iDepth) 
@@ -35,6 +36,12 @@ LRESULT CALLBACK WndProc (HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	HDC         hdc ;
 	PAINTSTRUCT ps ;
+
+	RECT rc;
+	GetWindowRect(GetCtrl(IDC_SET_TEXTURE_BN,1), &rc);
+
+	RECT rcParent;
+	GetWindowRect(GetParent(GetCtrl(IDC_SET_TEXTURE_BN,1)), &rcParent);
 
 	switch(message)
 	{
@@ -47,7 +54,7 @@ LRESULT CALLBACK WndProc (HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 			{
 				SIZE sz;
 				GetBitmapDimensionEx( preview_bitmap, &sz);
-				DrawBitmap(hdc, 8, 768-128-8, sz.cx, sz.cy, preview_bitmap);
+				DrawBitmap(hdc, 8, 768-128-30, sz.cx, sz.cy, preview_bitmap);
 			}
 		EndPaint (hwnd, &ps) ;
 		break;
@@ -200,16 +207,16 @@ int Win32ThreadMain(void *v)
 	CreateTooltip(GetDlgItem(g_kDlgBoxBottom, IDC_WINDOWTYPE_EB), 
 		"The widget type. You can't change this.");
 
-	CreateTooltip(GetDlgItem(g_kDlgBoxBottom, IDC_SKINTYPE_BACKGROUND_RB), 
+	CreateTooltip(GetDlgItem(g_kDlgBoxRight, IDC_SKINTYPE_BACKGROUND_RB), 
 		"Select the background element of the widget to be affected.");
 
-	CreateTooltip(GetDlgItem(g_kDlgBoxBottom, IDC_SKINTYPE_HORZBORDER_RB), 
+	CreateTooltip(GetDlgItem(g_kDlgBoxRight, IDC_SKINTYPE_HORZBORDER_RB), 
 		"Select the horizontal border element of the widget to be affected.");
 
-	CreateTooltip(GetDlgItem(g_kDlgBoxBottom, IDC_SKINTYPE_VERTBORDER_RB), 
+	CreateTooltip(GetDlgItem(g_kDlgBoxRight, IDC_SKINTYPE_VERTBORDER_RB), 
 		"Select the vertical border element of the widget to be affected.");
 
-	CreateTooltip(GetDlgItem(g_kDlgBoxBottom, IDC_SKINTYPE_CORNERBORDER_RB), 
+	CreateTooltip(GetDlgItem(g_kDlgBoxRight, IDC_SKINTYPE_CORNERBORDER_RB), 
 		"Select the corner element of the widget to be affected.");
 
 	CreateTooltip(GetDlgItem(g_kDlgBoxBottom, IDC_ROTATION_EB), 
@@ -286,7 +293,50 @@ int Win32ThreadMain(void *v)
 		"Press this button to place a widget in front of all other. Use it to bring up windows " \
 		"that are hidden behind other windows. Not neccesery to set this for every window, the " \
 		"editor will rearrange all widgets automatically anyway on save.");
-	
+
+	HBITMAP hIcon;
+	hIcon = (HBITMAP) LoadImage(NULL, 
+		"../datafiles/sysdata/textures/gui/wndalignent_topleft.bmp", 
+		IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION );
+	SendMessage(GetDlgItem(g_kDlgBoxBottom, IDC_WNDALIGNMENT_TOPLEFT), 
+		BM_SETIMAGE, IMAGE_BITMAP, (LPARAM) (HANDLE) hIcon);
+
+	hIcon = (HBITMAP) LoadImage(NULL, 
+		"../datafiles/sysdata/textures/gui/wndalignent_topright.bmp", 
+		IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION );
+	SendMessage(GetDlgItem(g_kDlgBoxBottom, IDC_WNDALIGNMENT_TOPRIGHT), 
+		BM_SETIMAGE, IMAGE_BITMAP, (LPARAM) (HANDLE) hIcon);
+
+	hIcon = (HBITMAP) LoadImage(NULL, 
+		"../datafiles/sysdata/textures/gui/wndalignent_bottomright.bmp", 
+		IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION );
+	SendMessage(GetDlgItem(g_kDlgBoxBottom, IDC_WNDALIGNMENT_BOTTOMRIGHT), 
+		BM_SETIMAGE, IMAGE_BITMAP, (LPARAM) (HANDLE) hIcon);
+
+	hIcon = (HBITMAP) LoadImage(NULL, 
+		"../datafiles/sysdata/textures/gui/wndalignent_bottomleft.bmp", 
+		IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION );
+	SendMessage(GetDlgItem(g_kDlgBoxBottom, IDC_WNDALIGNMENT_BOTTOMLEFT), 
+		BM_SETIMAGE, IMAGE_BITMAP, (LPARAM) (HANDLE) hIcon);
+
+	hIcon = (HBITMAP) LoadImage(NULL, 
+		"../datafiles/sysdata/textures/gui/wndalignent_centerhorz.bmp", 
+		IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION );
+	SendMessage(GetDlgItem(g_kDlgBoxBottom, IDC_WNDALIGNMENT_CENTERHORZ), 
+		BM_SETIMAGE, IMAGE_BITMAP, (LPARAM) (HANDLE) hIcon);
+
+	hIcon = (HBITMAP) LoadImage(NULL, 
+		"../datafiles/sysdata/textures/gui/wndalignent_centervert.bmp", 
+		IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION );
+	SendMessage(GetDlgItem(g_kDlgBoxBottom, IDC_WNDALIGNMENT_CENTERVERT), 
+		BM_SETIMAGE, IMAGE_BITMAP, (LPARAM) (HANDLE) hIcon);
+
+	hIcon = (HBITMAP) LoadImage(NULL, 
+		"../datafiles/sysdata/textures/gui/wndalignent_center.bmp", 
+		IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION );
+	SendMessage(GetDlgItem(g_kDlgBoxBottom, IDC_WNDALIGNMENT_CENTER), 
+		BM_SETIMAGE, IMAGE_BITMAP, (LPARAM) (HANDLE) hIcon);
+
 	while (GetMessage (&msg, NULL, 0, 0))
 	{
 		TranslateMessage (&msg) ;
@@ -316,7 +366,8 @@ void ZGuiEd::OnInit()
 	m_bDisableGuiScaleMode = true;
 
 	// create gui script
-	GuiAppLua::Init(&g_kZGuiEd, m_pkScript);
+	GuiAppLua::
+		Init(&g_kZGuiEd, m_pkScript);
 	InitGui(m_pkScript, "defguifont", "data/script/gui/defskins.lua", NULL, true, true);
 
 	SetTitle("ZeroFps GUI Editor");
@@ -332,10 +383,45 @@ void ZGuiEd::OnInit()
 	
 	m_pkGui->Activate(false);
 
-	if( GetWidth() != 1024 && GetHeight() != 768)
+	int horizontal_res = GetDeviceCaps(GetDC(NULL), HORZRES);
+	int vertical_res = GetDeviceCaps(GetDC(NULL), VERTRES);
+	int iFullscreen = m_pkRender->GetFullscreen();
+
+	if( GetWidth() != 1024 || GetHeight() != 768)
 	{
-		m_pkRender->SetDisplay(1024,768,16,0);
-		MessageBox(sdl_wnd, "Bad windowsize. Please restart application", "Error", MB_OK);
+		string strMessage = 
+			"The window is to small. " \
+			"Press OK and restart the application again.\r\n" \
+			"If you see this message again, " \
+			"you must manually open zguied.ini in the bin folder and change " \
+			"the key \"r_width\" and \"r_height\" to at least 1024x768.\r\n\r\n" \
+			"You must also have a resolution of least 1280x1024 in windows " \
+			"or else the applcation are forced to run in fullscreen mode.";
+
+		if(horizontal_res < 1024 || vertical_res < 768)
+		{
+			iFullscreen = 1;
+		}
+		else
+		{			
+			iFullscreen = 0;
+		}
+
+		m_pkRender->SetDisplay(1024,768,16,iFullscreen);
+
+		MessageBox(sdl_wnd, strMessage.c_str(), "Error", MB_OK);
+		m_pkZeroFps->QuitEngine();			
+		
+		return;
+	}
+
+	if(iFullscreen == false &&
+		(horizontal_res < 1024 || vertical_res < 768))
+	{
+		if(IDYES == MessageBox(sdl_wnd, "To use this program in window mode, you must change to higher resoulution in Windows.\r\n" \
+				"Do you want to run i fullscreen? (you must restart first)", "Error", MB_YESNO))
+			m_pkRender->SetDisplay(1024,768,16,1);
+
 		m_pkZeroFps->QuitEngine();
 		return;
 	}
@@ -348,6 +434,14 @@ void ZGuiEd::OnInit()
 	m_iTask = 5; // update texture list
 
 	SendMessage(sdl_wnd, WM_SETICON, ICON_SMALL, (LPARAM) LoadIcon(hInstance, MAKEINTRESOURCE(IDI_ICON1)));
+	
+	ShowWindow(sdl_wnd, SW_SHOWMAXIMIZED);
+
+	//DWORD dwStyle = GetWindowLong(sdl_wnd, GWL_STYLE);
+	//dwStyle = dwStyle | WS_MAXIMIZE;
+	//SetWindowLong(sdl_wnd, GWL_STYLE, dwStyle);
+
+	
 }
 
 HWND GetCtrl(int iID, bool bRightPanel)
@@ -371,13 +465,24 @@ void DrawBitmap (HDC hdc, int x, int y, int sw, int sh, HBITMAP hBitmap)
 	SelectObject (hMemDC, hBitmap) ;
 	GetObject (hBitmap, sizeof (BITMAP), &bm) ;
 
-	if(sw > PREVIEW_SIZE || sh > PREVIEW_SIZE)
+	float width = sw;
+	float height = sh;
+
+	if(width > height)
 	{
-		SetStretchBltMode(hdc, HALFTONE);
-		StretchBlt(hdc, x, y, PREVIEW_SIZE, PREVIEW_SIZE, hMemDC, 0, 0, sw, sh, SRCCOPY) ;
+		float mod = width / 128.0f;
+		height = height / mod;
+		width = 128;
 	}
 	else
-		BitBlt(hdc, x, y, PREVIEW_SIZE, PREVIEW_SIZE, hMemDC, 0, 0, SRCCOPY) ;
+	{
+		float mod = height / 128.0f;
+		width = width / mod;
+		height = 128;
+	}
+
+	SetStretchBltMode(hdc, HALFTONE);
+	StretchBlt(hdc, x, y, width, height, hMemDC, 0, 0, sw, sh, SRCCOPY) ;
 
 	DeleteDC (hMemDC) ;
 }
@@ -478,4 +583,22 @@ void ActivateHelp(bool bActivate)
 	{
 		SendMessage(g_vkToolTips[i], TTM_ACTIVATE, bActivate ? TRUE : FALSE, 0);	
 	}
+}
+
+int GetWindowSize(int iID, bool bRightPanel, bool bWidth)
+{
+	HWND ctrl = GetCtrl(iID, bRightPanel);
+
+	if(ctrl)
+	{
+		RECT rc;
+		GetWindowRect(ctrl, &rc);
+
+		if(bWidth)
+			return rc.right - rc.left;
+		else
+			return rc.bottom - rc.top;
+	}
+
+	return -1;
 }

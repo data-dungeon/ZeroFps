@@ -3,6 +3,15 @@
 
 void ZGuiEd::OnIdle()
 {
+	if(!IsWindowVisible(GetDlgItem(g_kDlgBoxRight, IDC_CLOSE_BUTTON)))
+		if(m_pkRender->GetFullscreen() || 
+			GetDeviceCaps(GetDC(NULL), HORZRES) <= 1024 || 
+			GetDeviceCaps(GetDC(NULL), VERTRES) <= 768)
+		{
+			ShowWindow(GetDlgItem(g_kDlgBoxRight, IDC_CLOSE_BUTTON), SW_SHOW);
+			ShowWindow(GetDlgItem(g_kDlgBoxRight, IDC_MINIMIZE_BUTTON), SW_SHOW);			
+		}
+
 	if(m_bTestGUI && m_iTask != 11)
 		return;
 
@@ -453,6 +462,9 @@ void ZGuiEd::CreateNewWindow(ZGuiWnd* pkCloneTarget)
 			SelNewSkin(0);
 
 		AddSampleCtrlItem(m_pkFocusWnd);
+
+		ShowSpecialControls();
+
 	}
 }
 
@@ -815,6 +827,8 @@ void ZGuiEd::FilterWnd()
 
 void ZGuiEd::UpdateInfo()
 {
+	ShowSpecialControls();
+
 	if(m_pkFocusWnd == NULL)
 	{
 		SetWindowText(GetCtrl(IDC_WINDOW_NAMEID_EB, 0), "");
@@ -830,6 +844,25 @@ void ZGuiEd::UpdateInfo()
 		SendDlgItemMessage(g_kDlgBoxRight, IDC_TEXTURE_LIST, LB_SETCURSEL, -1, 0);
 		SendDlgItemMessage(g_kDlgBoxBottom, IDC_SKINELEMENTS_LIST, LB_SETCURSEL, -1, 0);		
 		CheckDlgButton(g_kDlgBoxBottom, IDC_FREE_MOVEMENT_CB, BST_UNCHECKED);
+
+		CheckDlgButton(g_kDlgBoxBottom, IDC_WNDALIGNMENT_TOPLEFT, BST_UNCHECKED);
+		CheckDlgButton(g_kDlgBoxBottom, IDC_WNDALIGNMENT_CENTERVERT, BST_UNCHECKED);
+		CheckDlgButton(g_kDlgBoxBottom, IDC_WNDALIGNMENT_TOPRIGHT, BST_UNCHECKED);
+		CheckDlgButton(g_kDlgBoxBottom, IDC_WNDALIGNMENT_CENTER, BST_UNCHECKED);
+		CheckDlgButton(g_kDlgBoxBottom, IDC_WNDALIGNMENT_BOTTOMLEFT, BST_UNCHECKED);
+		CheckDlgButton(g_kDlgBoxBottom, IDC_WNDALIGNMENT_CENTERHORZ, BST_UNCHECKED);
+		CheckDlgButton(g_kDlgBoxBottom, IDC_WNDALIGNMENT_BOTTOMRIGHT, BST_UNCHECKED);
+
+		CheckDlgButton(g_kDlgBoxBottom, IDC_RESIZETYPE_DONT, BST_UNCHECKED);
+		CheckDlgButton(g_kDlgBoxBottom, IDC_RESIZETYPE_HEIGHT, BST_UNCHECKED);
+		CheckDlgButton(g_kDlgBoxBottom, IDC_RESIZETYPE_WIDTH, BST_UNCHECKED);
+		CheckDlgButton(g_kDlgBoxBottom, IDC_RESIZETYPE_BOTH, BST_UNCHECKED);
+
+	/*	CheckDlgButton(g_kDlgBoxBottom, IDC_SKINTYPE_HORZBORDER_RB, BST_UNCHECKED);
+		CheckDlgButton(g_kDlgBoxBottom, IDC_SKINTYPE_VERTBORDER_RB, BST_UNCHECKED);
+		CheckDlgButton(g_kDlgBoxBottom, IDC_SKINTYPE_BACKGROUND_RB, BST_UNCHECKED);
+		CheckDlgButton(g_kDlgBoxBottom, IDC_SKINTYPE_CORNERBORDER_RB, BST_UNCHECKED);*/
+
 		UpdateSkinList();
 		return;
 	}
@@ -859,7 +892,7 @@ void ZGuiEd::UpdateInfo()
 	SetWindowText(GetCtrl(IDC_WINDOWTYPE_EB, 0), FormatWndType(GetWndType(m_pkFocusWnd)).c_str());
 
 	// if selection a tab page, show it
-	if(GetWndType(m_pkFocusWnd) == Wnd && m_pkFocusWnd->GetParent() != NULL)
+	if( GetWndType(m_pkFocusWnd) == Wnd && m_pkFocusWnd->GetParent() != NULL)
 	{
 		if(GetWndType(m_pkFocusWnd->GetParent()) == TabControl)
 		{
@@ -883,6 +916,30 @@ void ZGuiEd::UpdateInfo()
 		CheckDlgButton(g_kDlgBoxBottom, IDC_FREE_MOVEMENT_CB, BST_UNCHECKED);
 	else
 		CheckDlgButton(g_kDlgBoxBottom, IDC_FREE_MOVEMENT_CB, BST_CHECKED);
+
+	if(m_pkFocusWnd->m_iWndAlignment == TopLeft)
+		CheckRadioButton(g_kDlgBoxBottom, IDC_WNDALIGNMENT_TOPLEFT, IDC_WNDALIGNMENT_BOTTOMRIGHT, IDC_WNDALIGNMENT_TOPLEFT);
+	if(m_pkFocusWnd->m_iWndAlignment == TopRight)
+		CheckRadioButton(g_kDlgBoxBottom, IDC_WNDALIGNMENT_TOPLEFT, IDC_WNDALIGNMENT_BOTTOMRIGHT, IDC_WNDALIGNMENT_TOPRIGHT);
+	if(m_pkFocusWnd->m_iWndAlignment == BottomLeft)
+		CheckRadioButton(g_kDlgBoxBottom, IDC_WNDALIGNMENT_TOPLEFT, IDC_WNDALIGNMENT_BOTTOMRIGHT, IDC_WNDALIGNMENT_BOTTOMLEFT);		
+	if(m_pkFocusWnd->m_iWndAlignment == BottomRight)
+		CheckRadioButton(g_kDlgBoxBottom, IDC_WNDALIGNMENT_TOPLEFT, IDC_WNDALIGNMENT_BOTTOMRIGHT, IDC_WNDALIGNMENT_BOTTOMRIGHT);
+	if(m_pkFocusWnd->m_iWndAlignment == CenterHorz)
+		CheckRadioButton(g_kDlgBoxBottom, IDC_WNDALIGNMENT_TOPLEFT, IDC_WNDALIGNMENT_BOTTOMRIGHT, IDC_WNDALIGNMENT_CENTERHORZ);
+	if(m_pkFocusWnd->m_iWndAlignment == CenterVert)
+		CheckRadioButton(g_kDlgBoxBottom, IDC_WNDALIGNMENT_TOPLEFT, IDC_WNDALIGNMENT_BOTTOMRIGHT, IDC_WNDALIGNMENT_CENTERVERT);
+	if(m_pkFocusWnd->m_iWndAlignment == Center)
+		CheckRadioButton(g_kDlgBoxBottom, IDC_WNDALIGNMENT_TOPLEFT, IDC_WNDALIGNMENT_BOTTOMRIGHT, IDC_WNDALIGNMENT_CENTER);
+
+	if(m_pkFocusWnd->m_iResizeType == eNone)
+		CheckRadioButton(g_kDlgBoxBottom, IDC_RESIZETYPE_DONT, IDC_RESIZETYPE_BOTH, IDC_RESIZETYPE_DONT);
+	if(m_pkFocusWnd->m_iResizeType == ResizeWidth)
+		CheckRadioButton(g_kDlgBoxBottom, IDC_RESIZETYPE_DONT, IDC_RESIZETYPE_BOTH, IDC_RESIZETYPE_WIDTH);
+	if(m_pkFocusWnd->m_iResizeType == ResizeHeight)
+		CheckRadioButton(g_kDlgBoxBottom, IDC_RESIZETYPE_DONT, IDC_RESIZETYPE_BOTH, IDC_RESIZETYPE_HEIGHT);
+	if(m_pkFocusWnd->m_iResizeType == Resize)
+		CheckRadioButton(g_kDlgBoxBottom, IDC_RESIZETYPE_DONT, IDC_RESIZETYPE_BOTH, IDC_RESIZETYPE_BOTH);
 
 	UpdateSkinList();
 }
@@ -917,6 +974,9 @@ void ZGuiEd::TestGUI()
 			}
 			AddSampleCtrlItem(it->second);
 		}
+
+		m_bGuiHaveFocus = false;
+		m_pkGui->m_bHandledMouse = false;
 	}
 }
 
@@ -1123,4 +1183,22 @@ void ZGuiEd::PasteWnd()
 
 	if(kNewSelWnd != NULL)
 		m_pkFocusWnd = kNewSelWnd;
+}
+
+void ZGuiEd::ShowSpecialControls()
+{
+	int x = 5, y = 141;
+	if(m_pkFocusWnd != NULL && GetWndType(m_pkFocusWnd) == Textbox)
+	{
+		ShowWindow(GetDlgItem(g_kDlgBoxBottom, IDC_MULTILINE_CB), SW_SHOW);
+		SetWindowPos(GetDlgItem(g_kDlgBoxBottom, IDC_MULTILINE_CB), NULL,
+			x, y, 0, 0, SWP_NOZORDER | SWP_NOSIZE);
+		x += (GetWindowSize(IDC_MULTILINE_CB, false, true) + 5);
+		CheckDlgButton(g_kDlgBoxBottom, IDC_MULTILINE_CB, 
+			((ZGuiTextbox*) m_pkFocusWnd)->IsMultiLine()); 
+	}
+	else
+		ShowWindow(GetDlgItem(g_kDlgBoxBottom, IDC_MULTILINE_CB), SW_HIDE);
+
+
 }

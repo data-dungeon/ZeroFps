@@ -65,6 +65,9 @@ bool ZGuiEd::SaveScript(const char* szFileName, bool bCreateBackUp)
 	if(!WriteWindows())
 		return false;
 
+	if(!WriteSpecialProperties())
+		return false;
+	
 	fprintf(m_pkSaveFile, "end\n");
 
 	fclose(m_pkSaveFile);
@@ -320,6 +323,9 @@ bool ZGuiEd::WriteWindows()
 
 			iType = (int) GetWndType(sortlist[k]);
 
+			iAlignment = sortlist[k]->m_iWndAlignment;
+			iResizeType = sortlist[k]->m_iResizeType;
+
 			fprintf(m_pkSaveFile, "\tCreateWnd(%s, \"%s\", \"%s\", \"%s\", %i, %i, %i, %i, 0, %i, %i)\n", 
 				FormatWndType(GetWndType(sortlist[k])).c_str(), szName, szParent, szLabel, rc.Left, rc.Top, 
 				rc.Width(), rc.Height(), iAlignment, iResizeType);			
@@ -329,6 +335,50 @@ bool ZGuiEd::WriteWindows()
 			fprintf(m_pkSaveFile, "\n");
 		}
 	}
+
+	return true;
+}
+
+bool ZGuiEd::WriteSpecialProperties()
+{
+	map<string, ZGuiWnd*> kWindows;
+	m_pkGuiMan->GetWindows(kWindows);
+	for( map<string, ZGuiWnd*>::iterator it = kWindows.begin(); it != kWindows.end(); it++)
+	{
+		ZGuiWnd* pkWnd = it->second;
+
+		ZGuiFont* pkFont = pkWnd->GetFont();
+		if(pkFont != NULL)
+		{
+			string strFontName = pkFont->m_szNameID;
+			unsigned char r,g,b;
+			pkWnd->GetTextColor(r,g,b);
+
+			if(!(strFontName == "defguifont" && r == 0 && g == 0 && b == 0))
+			{			
+				fprintf(m_pkSaveFile, "\tSetFont(\"%s\",\"%s\",%i,%i,%i)\n", 
+					pkWnd->GetName(), strFontName.c_str(), (int)r, (int)g, (int)b);
+			}
+		}
+
+		Rect rc;
+		if((rc=pkWnd->GetMoveArea()) != pkWnd->GetScreenRect())
+		{
+			fprintf(m_pkSaveFile, "\tSetMoveArea(\"%s\",%i,%i,%i,%i)\n", 
+				pkWnd->GetName(), rc.Left, rc.Top, rc.Right, rc.Bottom);
+		}
+
+		GuiType eType = GetWndType(pkWnd);
+
+		if(eType == Textbox)
+		{
+			ZGuiTextbox* pkTextbox = (ZGuiTextbox*) pkWnd;
+
+			if(pkTextbox->IsMultiLine())
+				fprintf(m_pkSaveFile, "\tChangeWndParameter(\"%s\",\"TOGGLE_MULTILINE\")\n", 
+					pkWnd->GetName());			
+		}
+	}	
 
 	return true;
 }

@@ -14,6 +14,7 @@ void ZGuiEd::HandleInput()
 	static bool s_bArrowDownPressed = false;
 	static bool s_bLCPressed = false;
 	static bool s_bLVPressed = false;
+	static bool s_bEscPressed = false;
 	
 	if(m_pkFocusWnd && !TextboxFocus())
 	{			
@@ -38,6 +39,9 @@ void ZGuiEd::HandleInput()
 			CheckMovement();
 		}
 	}
+
+	if(!m_pkInputHandle->Pressed(KEY_ESCAPE))
+		s_bEscPressed = false;
 
 	if(m_pkInputHandle->Pressed(KEY_DELETE) && !DelayCommand() ) {
 		if(m_pkFocusWnd && !TextboxFocus())
@@ -123,6 +127,12 @@ void ZGuiEd::HandleInput()
 			s_bLVPressed = false;
 	}
 
+	if(m_pkInputHandle->Pressed(KEY_ESCAPE) && !s_bEscPressed)
+	{
+		s_bEscPressed = true;
+		m_pkZeroFps->QuitEngine();
+	}
+	else
 	if(m_pkInputHandle->Pressed(KEY_RETURN) && s_bLShiftPressed == false)
 	{
 		s_bReturnPressed = true;
@@ -398,7 +408,33 @@ void ZGuiEd::OnCommand(int iCtrlID, int iEvent)
 	ZGuiSkin** ppkSkin;
 
 	switch(iCtrlID)
-	{
+	{	
+		case IDC_MULTILINE_CB:
+			if(m_pkFocusWnd)
+			{
+				bool bMultiLine = IsDlgButtonChecked(g_kDlgBoxBottom, IDC_MULTILINE_CB);
+				((ZGuiTextbox*)m_pkFocusWnd)->ToggleMultiLine(bMultiLine);
+
+				if(bMultiLine)
+				{
+					((ZGuiTextbox*)m_pkFocusWnd)->SetScrollbarSkin(GetSkin("DefSBrBkSkin"),
+						GetSkin("DefSBrNSkin"), GetSkin("DefSBrFSkin"),
+						GetSkin("DefSBrScrollUpSkin_u"), GetSkin("DefSBrScrollUpSkin_d"),
+						GetSkin("DefSBrScrollDownSkin_u"), GetSkin("DefSBrScrollDownSkin_d"));
+						}
+				}
+			break;
+
+		case IDC_CLOSE_BUTTON:
+			m_pkZeroFps->QuitEngine();
+			break;
+
+		case IDC_MINIMIZE_BUTTON:
+			//ShowWindow(GetParent(GetParent(g_kDlgBoxRight)), SW_HIDE);
+			
+			SetWindowPos(GetParent(GetParent(g_kDlgBoxRight)), 0, 0, 320, 240, 0, SWP_NOZORDER);
+			break;
+
 		case IDC_ACTIVATE_HELP_CB:
 			ActivateHelp(IsDlgButtonChecked(g_kDlgBoxRight, iCtrlID));
 			break;
@@ -665,6 +701,41 @@ void ZGuiEd::OnCommand(int iCtrlID, int iEvent)
 			
 				MessageBox(GetParent(g_kDlgBoxRight), text, "Input Info", MB_OK);
 			}
+			break;
+
+		case IDC_WNDALIGNMENT_TOPLEFT:
+			if(m_pkFocusWnd) m_pkFocusWnd->m_iWndAlignment = TopLeft;
+			break;
+		case IDC_WNDALIGNMENT_TOPRIGHT:
+			if(m_pkFocusWnd) m_pkFocusWnd->m_iWndAlignment = TopRight;
+			break;
+		case IDC_WNDALIGNMENT_BOTTOMLEFT:
+			if(m_pkFocusWnd) m_pkFocusWnd->m_iWndAlignment = BottomLeft;
+			break;
+		case IDC_WNDALIGNMENT_BOTTOMRIGHT:
+			if(m_pkFocusWnd) m_pkFocusWnd->m_iWndAlignment = BottomRight;
+			break;
+		case IDC_WNDALIGNMENT_CENTERHORZ:
+			if(m_pkFocusWnd) m_pkFocusWnd->m_iWndAlignment = CenterHorz;
+			break;
+		case IDC_WNDALIGNMENT_CENTERVERT:
+			if(m_pkFocusWnd) m_pkFocusWnd->m_iWndAlignment = CenterVert;
+			break;
+		case IDC_WNDALIGNMENT_CENTER:
+			if(m_pkFocusWnd) m_pkFocusWnd->m_iWndAlignment = Center;
+			break;
+
+		case IDC_RESIZETYPE_DONT:
+			if(m_pkFocusWnd) m_pkFocusWnd->m_iResizeType = Center;
+			break;
+		case IDC_RESIZETYPE_WIDTH:
+			if(m_pkFocusWnd) m_pkFocusWnd->m_iResizeType = ResizeWidth;
+			break;
+		case IDC_RESIZETYPE_HEIGHT:
+			if(m_pkFocusWnd) m_pkFocusWnd->m_iResizeType = ResizeHeight;
+			break;
+		case IDC_RESIZETYPE_BOTH:
+			if(m_pkFocusWnd) m_pkFocusWnd->m_iResizeType = Resize;
 			break;
 	}
 }

@@ -218,13 +218,13 @@ int GuiAppLua::ChangeSkinLua(lua_State* pkLua)
 	if(iNumArgs != 3)
 		return 0;
 
-	char szID[50];
+	char szID[150];
 	g_pkScript->GetArg(pkLua, 0, szID);
 
-	char szSkinName[50];
+	char szSkinName[150];
 	g_pkScript->GetArg(pkLua, 1, szSkinName);
 
-	char szSkinType[50];
+	char szSkinType[150];
 	g_pkScript->GetArg(pkLua, 2, szSkinType);
 
 	g_pkGuiApp->ChangeSkin(pkLua, szID, szSkinName, szSkinType);

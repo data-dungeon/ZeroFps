@@ -10,9 +10,9 @@
 #define PREVIEW_SIZE 128
 
 // Remove the console window
-//#ifdef WIN32
-//	#pragma comment(linker, "/subsystem:\"windows\" /entry:\"mainCRTStartup\"")
-//#endif 
+#ifdef WIN32
+	#pragma comment(linker, "/subsystem:\"windows\" /entry:\"mainCRTStartup\"")
+#endif 
 
 class ZGuiEd : public Application, public ZGuiApp
 {
@@ -99,6 +99,7 @@ private:
 	bool CreateBackup(const char* szFileName);
 	bool WriteSkins();
 	bool WriteWindows();
+	bool WriteSpecialProperties();
 	void AddFilesInFolderToListbox(const char* szFolderName);
 	string GetTexNameFromID(int id, bool bFullName=true);
 	void PrintSkins(ZGuiWnd* pkWnd);
@@ -111,6 +112,7 @@ private:
 	bool CloneSkins(ZGuiWnd* pkDst, ZGuiWnd* pkSrc);
 	void HandleInput();
 	bool AlreadyInList(vector<ZGuiWnd*>& kList, ZGuiWnd* kWindow);
+	void ShowSpecialControls();
 
 	Point m_kCursorRangeDiff;
 };
@@ -119,6 +121,7 @@ extern HWND GetCtrl(int iID, bool bRightPanel);
 extern bool TextboxFocus();
 extern string GetSelItemText(int iID, bool bRightPanel);
 void ActivateHelp(bool bActivate);
+extern int GetWindowSize(int iID, bool bRightPanel, bool bWidth);
 extern HWND g_kDlgBoxRight;
 extern HWND g_kDlgBoxBottom;
 extern HINSTANCE hInstance;

@@ -41,7 +41,6 @@
 #define IDC_VISIBLE_CHECK               1034
 #define IDC_ONLY_OF_WND_TYPE_CB         1035
 #define IDC_BUTTON1                     1036
-#define IDC_SHOW_KEYS_BN                1036
 #define IDC_COPY_WND_BN                 1037
 #define IDC_SELECTFONT_OK_BN            1038
 #define IDC_BRING_TO_FRONT              1039
@@ -73,6 +72,8 @@
 #define IDC_RGB_COLOR_G_EB              1065
 #define IDC_RGB_COLOR_B_EB              1066
 #define IDC_FONT_COLOR_R_EB             1067
+#define IDC_FREE_MOVEMENT_CB2           1067
+#define IDC_MULTILINE_CB                1067
 #define IDC_ZVALUE_EB                   1068
 #define IDC_FONT_COLOR_G_EB             1069
 #define IDC_FONT_COLOR_B_EB             1070
@@ -80,6 +81,26 @@
 #define IDC_COPY_ALL_SKINS              1072
 #define IDC_CHECK1                      1073
 #define IDC_ACTIVATE_HELP_CB            1074
+#define IDC_RADIO6                      1075
+#define IDC_RADIO7                      1076
+#define IDC_RADIO8                      1077
+#define IDC_RADIO9                      1078
+#define IDC_SHOW_KEYS_BN                1079
+#define IDC_CLOSE_BUTTON                1080
+#define IDC_WNDALIGNMENT_TOPLEFT        1081
+#define IDC_CLOSE_BUTTON2               1081
+#define IDC_WNDALIGNMENT_CENTERVERT     1082
+#define IDC_WNDALIGNMENT_TOPRIGHT       1083
+#define IDC_WNDALIGNMENT_CENTER         1084
+#define IDC_WNDALIGNMENT_BOTTOMLEFT     1085
+#define IDC_WNDALIGNMENT_CENTERHORZ     1086
+#define IDC_WNDALIGNMENT_BOTTOMRIGHT    1087
+#define IDC_RESIZETYPE_DONT             1088
+#define IDC_IMAGE_INFO_LABEL            1088
+#define IDC_RESIZETYPE_HEIGHT           1089
+#define IDC_RESIZETYPE_WIDTH            1090
+#define IDC_RESIZETYPE_BOTH             1091
+#define IDC_MINIMIZE_BUTTON             1092
 #define ID_SDSD_DSFSD                   40001
 #define ID_SDFSDF_SDF                   40002
 #define ID_SDF_SDF                      40003
@@ -105,7 +126,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        106
 #define _APS_NEXT_COMMAND_VALUE         40022
-#define _APS_NEXT_CONTROL_VALUE         1073
+#define _APS_NEXT_CONTROL_VALUE         1093
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif
