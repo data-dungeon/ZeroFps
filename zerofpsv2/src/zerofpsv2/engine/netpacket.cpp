@@ -94,6 +94,17 @@ void RemoteNode::FreeRelStore(int iRelID)
 	}
 }
 
+int RemoteNode::GetRel(int iID)
+{
+	for(int i=0; i<ZF_NET_MAXREL; i++) {
+		if(m_akRelPack[i].m_kHeader.m_iPacketType != ZF_NETTYPE_NONE && m_akRelPack[i].m_kHeader.m_iOrder == iID)
+			return i;
+		}
+
+	return -1;
+}
+
+
 int RemoteNode::GetFreeRelRecv()
 {
 	for(int i=0; i<ZF_NET_MAXREL; i++) {

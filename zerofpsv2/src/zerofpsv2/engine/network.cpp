@@ -472,7 +472,8 @@ bool NetWork::SendRaw(NetPacket* pkNetPacket)
 			memcpy(pkRelPak, &pkNetPacket->m_kData, sizeof( ZFNetPacketData ));
 			m_RemoteNodes[pkNetPacket->m_iClientID].m_akRelPackSendTime[iIndex] = m_pkZeroFps->GetEngineTime();
 			m_RemoteNodes[pkNetPacket->m_iClientID].m_aiRelPackSize[iIndex] = pkNetPacket->m_iLength;
-		
+			m_RemoteNodes[pkNetPacket->m_iClientID].m_kRelSend.insert( pkNetPacket->m_kData.m_kHeader.m_iOrder );
+
 			// WRITE: Store time to update ping.
 			if(m_RemoteNodes[pkNetPacket->m_iClientID].m_iRelPingIndex == 0)
 			{
@@ -761,6 +762,8 @@ void NetWork::HandleControlMessage(NetPacket* pkNetPacket)
 			{
 				pkNetPacket->Read( iRelID ); 
 				m_RemoteNodes[ pkNetPacket->m_iClientID ].FreeRelStore( iRelID );
+				m_RemoteNodes[pkNetPacket->m_iClientID].m_kRelSend.erase( pkNetPacket->m_kData.m_kHeader.m_iOrder );
+
 
 				if( m_RemoteNodes[pkNetPacket->m_iClientID].m_iRelPingIndex == iRelID )
 				{
@@ -1052,19 +1055,32 @@ void NetWork::Run()
 			m_RemoteNodes[i].m_eConnectStatus = NETSTATUS_DISCONNECT;
 		}
 
+		
 
-		// Resend any old packets
-		for(int iRel = 0; iRel < ZF_NET_MAXREL; iRel++)
+		for(set<int>::iterator it = m_RemoteNodes[i].m_kRelSend.begin(); it != m_RemoteNodes[i].m_kRelSend.end(); it++)
 		{
-			if(m_RemoteNodes[i].m_akRelPack[iRel].m_kHeader.m_iPacketType == ZF_NETTYPE_NONE)
-				continue;
-	
+			int iRel = m_RemoteNodes[i].GetRel( (*it) );
+
 			if(( m_RemoteNodes[i].m_akRelPackSendTime[iRel] + 0.25 ) < fEngineTime)
 			{
 				m_RemoteNodes[i].m_akRelPackSendTime[iRel] = fEngineTime;
 				SendUDP(&m_RemoteNodes[i].m_akRelPack[iRel], m_RemoteNodes[i].m_aiRelPackSize[iRel], &m_RemoteNodes[i].m_kAddress);
 			}
 		}
+
+		/*
+		// Resend any old packets
+		for(int iRel = 0; iRel < ZF_NET_MAXREL; iRel++)
+		{
+			if(m_RemoteNodes[i].m_akRelPack[iRel].m_kHeader.m_iPacketType == ZF_NETTYPE_NONE)
+				continue;
+			
+			if(( m_RemoteNodes[i].m_akRelPackSendTime[iRel] + 0.25 ) < fEngineTime)
+			{
+				m_RemoteNodes[i].m_akRelPackSendTime[iRel] = fEngineTime;
+				SendUDP(&m_RemoteNodes[i].m_akRelPack[iRel], m_RemoteNodes[i].m_aiRelPackSize[iRel], &m_RemoteNodes[i].m_kAddress);
+			}
+		}*/
 
 		SendAckList(i, m_RemoteNodes[i].m_kRelAckList);
 		m_RemoteNodes[i].m_kRelAckList.clear();

@@ -110,6 +110,7 @@ public:
 	int GetFreeRelStore();
 	void FreeRelStore(ZFNetPacketData* pkRel);
 	void FreeRelStore(int iRelID);
+	int GetRel(int iID);
 
 	int GetFreeRelRecv();
 	int GetRelRecv(int iID);
