@@ -8,11 +8,11 @@ ZoneObject::ZoneObject()
 
 	AddProperty("ProxyProperty");
 	
-/*	
+	
 	AddProperty("MadProperty");
 	MadProperty* madp = dynamic_cast<MadProperty*>(GetProperty("MadProperty"));
-	madp->SetBase(m_pkFps->GetMADPtr("../data/mad/cube.mad"));
-*/
+	madp->SetBase(m_pkFps->GetMADPtr("../data/mad/zoneobject.mad"));
+
 }
 
 

@@ -53,6 +53,7 @@ class ZeroEdit :public Application {
 		float m_fTimer;
 		float m_fDrawRate;
 		bool m_bDrawing;
+		bool m_iRandom;
 
 	public:
 		ZeroEdit(char* aName,int iWidth,int iHeight,int iDepth);

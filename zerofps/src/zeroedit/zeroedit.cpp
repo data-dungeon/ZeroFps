@@ -40,6 +40,9 @@ void ZeroEdit::OnInit(void)
 	
 	m_fPointerHeight=1;
 	
+	m_iRandom=0;
+	pkFps->m_pkCmd->Add(&m_iRandom,"g_Random",type_int);		
+	
 	m_fDrawRate=0.2;
 	pkFps->m_pkCmd->Add(&m_fDrawRate,"g_DrawRate",type_float);		
 	
@@ -115,7 +118,7 @@ void ZeroEdit::OnHud(void)
 	glAlphaFunc(GL_GREATER,0.3);
 	glEnable(GL_ALPHA_TEST);
 
-	pkRender->Quad(Vector3(.8,.8,-1),Vector3(0,0,pkFps->GetCam()->GetRot().y),Vector3(0.2,0.2,0.2),pkTexMan->Load("file:../data/textures/compas.tga",0));
+	pkRender->Quad(Vector3(.8,.8,-1),Vector3(0,0,m_pkCamera->GetRot().y),Vector3(0.2,0.2,0.2),pkTexMan->Load("file:../data/textures/compas.tga",0));
 	
 	glDisable(GL_ALPHA_TEST);
 	
@@ -302,6 +305,7 @@ void ZeroEdit::Input()
 	pkFps->GetCam()->GetRot().y+=x/5.0;	
 
 
+
 	switch(m_iMode){
 		case FLATTEN:
 			if(pkInput->Pressed(MOUSELEFT))
@@ -343,6 +347,13 @@ void ZeroEdit::Input()
 			
 				Object *object = new BallObject();
 				object->GetPos()=m_kDrawPos-Vector3(0,1,0);
+				
+				if(m_iRandom){
+					object->GetRot().y+=rand()%360;					
+					object->GetRot().x+=((rand()%25000)-12500)/1000.0;
+
+					object->GetRot().z+=((rand()%25000)-12500)/1000.0;					
+				}
 //				object->SetParent(m_pkCurentParent);
 //				pkObjectMan->Add(object);				
 				

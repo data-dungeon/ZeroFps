@@ -230,7 +230,7 @@ void Test::OnIdle(void) {
 
 //		pkRender->DrawSkyBox(pkFps->GetCam()->GetPos());
 //		pkRender->DrawHMlod(test,pkFps->GetCam()->GetPos(),pkFps->m_iFps);			
-		pkObjectMan->Update(PROPERTY_TYPE_RENDER,PROPERTY_SIDE_CLIENT,true);
+		pkObjectMan->Update(P.0,PROPERTY_SIDE_CLIENT,true);
 
 
 		glEnable(GL_ALPHA_TEST);

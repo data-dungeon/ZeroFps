@@ -3,7 +3,7 @@
 ProxyProperty::ProxyProperty() 
 {
 	strcpy(m_acName,"ProxyProperty");		
-	m_fRadius=200;
+	m_fRadius=250;
 	m_iAktion=UPDATECHILDS;
 	m_iType=PROPERTY_TYPE_RENDER;
 	m_iSide=PROPERTY_SIDE_CLIENT;

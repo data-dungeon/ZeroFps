@@ -384,7 +384,7 @@ void Quaternion::AngleQuaternion( const Vector3 angles )
 	qY.FromAngleAxis(angles.y,Vector3(0,1,0));
 	qZ.FromAngleAxis(angles.z,Vector3(0,0,1));
 
-	*this = qX * qY * qZ;
+//	*this = qX * qY * qZ;
 
 /*	float		angle;
 	float		sr, sp, sy, cr, cp, cy;
