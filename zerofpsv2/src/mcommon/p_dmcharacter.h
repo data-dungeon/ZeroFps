@@ -46,6 +46,10 @@ class MCOMMON_API P_DMCharacter: public Property {
 		vector<PropertyValues> GetPropertyValues();
 	
 		DMCharacterStats	m_kStats;
+		ZFAudioSystem* m_pkAudioSys;
+
+		bool m_bCharacterIdle;
+		bool m_bPlayWalkSound;
 	
 	
 	public:
@@ -67,7 +71,7 @@ class MCOMMON_API P_DMCharacter: public Property {
 		
 		
 		void Init();		
-//		void Update();		
+		void Update();		
 		void CloneOf(Property* pkProperty) { }		
 		void Save(ZFIoInterface* pkPackage);
 		void Load(ZFIoInterface* pkPackage);

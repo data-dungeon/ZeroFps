@@ -3,7 +3,7 @@
 #include "../zerofpsv2/engine_systems/propertys/p_mad.h" 
 #include "../zerofpsv2/engine_systems/propertys/p_scriptinterface.h"
 
-
+#include "../zerofpsv2/engine/p_pfpath.h"
 
 // ---- DMCharacterStats
 DMCharacterStats::DMCharacterStats()
@@ -97,11 +97,16 @@ P_DMCharacter::P_DMCharacter()
 	m_pkBelt =		NULL;
 	m_pkHand = 		NULL;
 	m_pkImplants = NULL;	
+
+	m_bCharacterIdle = true;
+	m_bPlayWalkSound = false;
 	
 	
 	m_iTeam =		0;
 	
 	m_kStats.Randomize();
+
+	m_pkAudioSys = static_cast<ZFAudioSystem*>(g_ZFObjSys.GetObjectPtr("ZFAudioSystem"));
 }
 
 P_DMCharacter::~P_DMCharacter()
@@ -232,6 +237,46 @@ void P_DMCharacter::Load(ZFIoInterface* pkPackage)
 	m_pkHand->Load(pkPackage);
 	m_pkImplants->Load(pkPackage);
 
+}
+
+
+void P_DMCharacter::Update()
+{
+	if(P_PfPath* pkPF = (P_PfPath*)m_pkObject->GetProperty("P_PfPath"))
+	{
+		if(pkPF->HavePath() == false)
+		{
+			if(m_bCharacterIdle == false)
+			{
+				m_bCharacterIdle = true;
+			}
+			else
+			{
+				if(m_bPlayWalkSound == true)
+				{
+					m_pkAudioSys->StopSound("/data/sound/walk_zombie.wav", 
+						m_pkObject->GetIWorldPosV()); 	
+					m_bPlayWalkSound = false;
+					//printf("stoppa ljud!\n");
+				}
+			}
+		}
+		else
+		{
+			if(m_bCharacterIdle)
+			{
+				m_bCharacterIdle = false;
+				if(m_bPlayWalkSound == false)
+				{
+					m_pkAudioSys->StartSound("/data/sound/walk_zombie.wav", 
+						m_pkObject->GetIWorldPosV(), 
+						Vector3(0,0,1), true );
+					m_bPlayWalkSound = true;
+					//printf("starta ljud!\n");
+				}
+			}
+		}
+	}
 }
  
 

@@ -242,10 +242,13 @@ bool ZFAudioSystem::StopSound(string strName, Vector3 pos)
 	if(pkSound != NULL)
 	{
 		if(DeleteSound(pkSound, true))
+		{
+		//	printf("Stoping sound %s\n", strName.c_str());
 			return true;
+		}
 	}
 
-	printf("Failed to stop sound %s\n", strName.c_str());
+//	printf("Failed to stop sound %s\n", strName.c_str());
 
 	return false;
 }

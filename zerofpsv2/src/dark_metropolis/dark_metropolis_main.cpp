@@ -533,7 +533,11 @@ void DarkMetropolis::Input()
 						if(pkPF)//we have selected an entity whit a pathfind property, lets take a walk =)
 						{					
 							if(i==0)
+							{
 								m_pkAudioSys->StartSound("/data/sound/run.wav", pkEnt->GetIWorldPosV());
+
+								
+							}
 
 							//randomize position a bit if theres many characters selected
 							if(m_kSelectedEntitys.size() > 1)
