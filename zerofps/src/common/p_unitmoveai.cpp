@@ -116,6 +116,14 @@ AIBase* P_UnitMoveAI::RunUnitCommand(int iCommandID, int iXDestinaton, int iYDes
 		}
 	case UNIT_STOP:
 		{
+			if(!m_pkSu)
+			{
+				m_pkSu = (P_ServerUnit*)m_pkObject->GetProperty("P_ServerUnit");	
+			
+				if(!m_pkSu)
+					return NULL;
+			}
+			
 			
 			m_pkPathFind->Reset();
 			//Vector3 kTempVect = m_pkObject->GetPos();
@@ -124,8 +132,15 @@ AIBase* P_UnitMoveAI::RunUnitCommand(int iCommandID, int iXDestinaton, int iYDes
 			//move.x = int((m_pkMap->m_iHmSize/2.0)+ceil((m_pkObject->GetPos().x / HEIGHTMAP_SCALE)));
 			//move.y = int((m_pkMap->m_iHmSize/2.0)+ceil((m_pkObject->GetPos().z / HEIGHTMAP_SCALE)));
 			
+			float fX = -(m_pkMap->m_iHmSize/2)*HEIGHTMAP_SCALE + m_pkSu->m_kTile.x*HEIGHTMAP_SCALE + HEIGHTMAP_SCALE/2;
+			float fZ = -(m_pkMap->m_iHmSize/2)*HEIGHTMAP_SCALE + m_pkSu->m_kTile.y*HEIGHTMAP_SCALE + HEIGHTMAP_SCALE/2;				
+			
+			
+			float fY = m_pkMap->Height(fX,fZ);
+			
 			//ful hack deluxe..så att enheter in blir rädda o springer iväg
-			m_kCurretDestination=m_pkObject->GetPos();
+			m_kCurretDestination.Set(fX,fY,fZ);//=m_pkObject->GetPos();
+			//m_kCurretDestination==m_pkObject->GetPos();
 			
 			m_iCurrentState = UNIT_MOVE;
 			//m_fSpeedMod = 1;
