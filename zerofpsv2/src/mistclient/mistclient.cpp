@@ -68,6 +68,9 @@ MistClient::MistClient(char* aName,int iWidth,int iHeight,int iDepth)
 	m_pkServerInfo				= NULL;
 	m_pkActiveCharacter		= NULL;
 	
+	m_fMaxCamDistance			= 8;
+	m_fMinCamDistance			= 2;
+	
 	g_ZFObjSys.Log_Create("mistclient");
 
 
@@ -114,8 +117,6 @@ void MistClient::Init()
 	//register resources
 	RegisterResources();
 
-//	m_pkMap2 = new Heightmap2(/*"HeightMap"*/);
-//	m_pkMap2->CreateHMFromImage("/data/textures/hmap.tga");
 
 	// set caption
 	SDL_WM_SetCaption("MistClient", NULL);
@@ -312,11 +313,11 @@ void MistClient::Input()
 			m_fAngle +=x/100.0;
 			m_fDistance += z/60.0;
 	
-			if(m_fDistance < 0.5)
-				m_fDistance = 0.5;
+			if(m_fDistance < m_fMinCamDistance)
+				m_fDistance = m_fMinCamDistance;
 		
-			if(m_fDistance > 2)
-				m_fDistance = 2;
+			if(m_fDistance > m_fMaxCamDistance)
+				m_fDistance = m_fMaxCamDistance;
 				
 			m_pkCamProp->Set3PYAngle(m_fAngle);
 			m_pkCamProp->Set3PDistance(m_fDistance);
@@ -462,6 +463,7 @@ void MistClient::OnServerStart(void)
 		m_pkCamProp = (P_Camera*)m_pkTestobj->GetProperty("CameraProperty");
 		m_pkCamProp->SetCamera(m_pkCamera);
 		m_pkCamProp->SetType(CAM_TYPE3PERSON);
+		m_pkCamProp->Set3PDistance(m_fMinCamDistance);	
 	
 		m_pkTestobj->SetWorldPosV(Vector3(0,0.1,0));
 		MistLandLua::g_iCurrentPCID = m_pkTestobj->iNetWorkID;

@@ -20,7 +20,7 @@ P_Camera::P_Camera()
 	m_kInterPos.Set(0,0,0);
 	m_f3PYAngle = 0;
 	m_f3PYPos = 1;
-	m_f3PDistance = 1;
+	m_f3PDistance = 4;
 }
 
 

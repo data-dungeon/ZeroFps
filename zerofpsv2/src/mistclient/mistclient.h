@@ -65,8 +65,6 @@ class MistClient :public Application, public ZGuiApp {
 
 		P_ServerInfo*		m_pkServerInfo;
 
-
-//		Heightmap2*			m_pkMap2;
 		
 		Camera*				m_pkCamera;
 		Object*				m_pkTestobj;
@@ -74,6 +72,9 @@ class MistClient :public Application, public ZGuiApp {
 		float					m_fAngle;
 		float					m_fDistance;		
 		float 				m_fClickDelay;
+		
+		float					m_fMaxCamDistance;
+		float					m_fMinCamDistance;		
 		
 		//zone picking 
 		Vector3				m_kTargetPos;
