@@ -38,3 +38,15 @@ enum WindowID
 };
 
 #endif // #ifndef _ZGRESOURCE_ID_H
+
+
+
+
+
+
+
+
+
+
+
+

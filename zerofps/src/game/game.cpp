@@ -311,3 +311,10 @@ void Game::InitGUI()
 
 	pkFps->m_bGuiTakeControl = false;
 }
+
+
+
+
+
+
+

@@ -182,7 +182,6 @@ bool CSMech::TestPolygon(Vector3* kVerts,Vector3 kPos1,Vector3 kPos2,float fR)
 //	cout<<"D "<<P.m_fD<<endl;	
 	
 	if(P.LineTest(kPos1 + (-Normal * fR), kPos2 + (-Normal * fR),&m_kColPos)){
-//	if(P.LineTest(kPos1 + (-Normal * fR), kPos2  ,&m_kColPos)){
 		if(TestSides(kNLVerts,&Normal,m_kColPos,fR))
 		{
 			//cout<<"Collision"<<endl;
@@ -190,14 +189,17 @@ bool CSMech::TestPolygon(Vector3* kVerts,Vector3 kPos1,Vector3 kPos2,float fR)
 			m_kColPos += (Normal*m_fcoloffset) + (Normal * fR);			
 			
 			
+//			if(m_kCollidedFaces.size() <1)
+//			{
 			//glide point
-			if(m_bOtherGlide)
-			{
-				Vector3 NewPos=m_kOtherDest + (Normal * fR);	
-				Vector3 mov=NewPos - m_kColPos;
-				Vector3 mov2=Normal.Proj(mov);
-				m_kColPos=NewPos-mov2;		
-			}							
+				if(m_bOtherGlide)
+				{
+					Vector3 NewPos=m_kOtherDest + (Normal * fR);	
+					Vector3 mov=NewPos - m_kColPos;
+					Vector3 mov2=Normal.Proj(mov);
+					m_kColPos=NewPos-mov2;		
+				}
+//			}
 			
 			return true;
 		}
@@ -209,7 +211,7 @@ bool CSMech::TestPolygon(Vector3* kVerts,Vector3 kPos1,Vector3 kPos2,float fR)
 
 bool CSMech::TestSides(Vector3* kVerts,Vector3* pkNormal,Vector3 kPos,float fR)
 {
-//	fR+=0.5;
+//	fR-=0.05;
 
 	Plane side[3];
 	
