@@ -303,6 +303,10 @@ SOURCE=..\engine_systems\propertys\proxyproperty.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\engine_systems\propertys\psystemproperty.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\res_texture.cpp
 # End Source File
 # Begin Source File
@@ -531,6 +535,10 @@ SOURCE=..\engine_systems\propertys\proxyproperty.h
 # End Source File
 # Begin Source File
 
+SOURCE=..\engine_systems\propertys\psystemproperty.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\res_texture.h
 # End Source File
 # Begin Source File
@@ -561,6 +569,90 @@ SOURCE=..\engine_systems\common\zoneobject.h
 # Begin Group "Resource Files"
 
 # PROP Default_Filter "ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe"
+# End Group
+# Begin Group "PSystemStuff"
+
+# PROP Default_Filter ""
+# Begin Group "PSProperties"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=..\engine_systems\propertys\psproperties\alphatestprop.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\engine_systems\propertys\psproperties\alphatestprop.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\engine_systems\propertys\psproperties\blendpsprop.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\engine_systems\propertys\psproperties\blendpsprop.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\engine_systems\propertys\psproperties\colorpsprop.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\engine_systems\propertys\psproperties\colorpsprop.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\engine_systems\propertys\psproperties\lightpsprop.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\engine_systems\propertys\psproperties\lightpsprop.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\engine_systems\propertys\psproperties\movepsprop.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\engine_systems\propertys\psproperties\movepsprop.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\engine_systems\propertys\psproperties\particleproperty.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\engine_systems\propertys\psproperties\sizepsprop.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\engine_systems\propertys\psproperties\sizepsprop.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\engine_systems\propertys\psproperties\texturepsprop.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\engine_systems\propertys\psproperties\texturepsprop.h
+# End Source File
+# End Group
+# Begin Source File
+
+SOURCE=..\engine_systems\common\psystem.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\engine_systems\common\psystem.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\psystemmanager.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\psystemmanager.h
+# End Source File
 # End Group
 # End Target
 # End Project
