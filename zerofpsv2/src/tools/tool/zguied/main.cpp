@@ -144,7 +144,7 @@ int Win32ThreadMain(void *v)
 		"buttons if you want to change image of the border.");
 
 	CreateTooltip(GetDlgItem(g_kDlgBoxRight, IDC_RESIZE_TO_IMAGE), 
-		"Press this button to resize selected widget to same size as background image.");
+		"Press this button to resize selected widget to same size as the image selected in the list.");
 
 	CreateTooltip(GetDlgItem(g_kDlgBoxBottom, IDC_SKINELEMENTS_LIST), "Skin List\r\n\r\n" \
 		"Select the element of the widget that you want to change the appearance of.");
@@ -346,6 +346,8 @@ void ZGuiEd::OnInit()
 	NewGUI(false);
 
 	m_iTask = 5; // update texture list
+
+	SendMessage(sdl_wnd, WM_SETICON, ICON_SMALL, (LPARAM) LoadIcon(hInstance, MAKEINTRESOURCE(IDI_ICON1)));
 }
 
 HWND GetCtrl(int iID, bool bRightPanel)

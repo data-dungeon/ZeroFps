@@ -652,11 +652,18 @@ void ZGuiEd::OnCommand(int iCtrlID, int iEvent)
 					"Hold Left Ctrl and click on a widget or press Left Ctrl + C and then Left Ctrl + V.\r\n" \
 					"\r\n" \
 					"Resize\r\n" \
-					"Press Left Shift and click close to right side to resize the widget horizontally \r\n" \
+					"Hold Left Shift and click close to right side to resize the widget horizontally \r\n" \
 					"or close to bottom side to resize the widget vertically.\r\n" \
+					"\r\n" \
+					"Delete\r\n" \
+					"Press Delete key.\r\n" \
+					"\r\n" \
+					"Move widget\r\n" \
+					"Press Left, Right, Up or Down Arrow key to move to that direction." \
+					"\r\n" \
 				};
 			
-				MessageBox(GetParent(g_kDlgBoxRight), text, "Keyboard Info", MB_OK);
+				MessageBox(GetParent(g_kDlgBoxRight), text, "Input Info", MB_OK);
 			}
 			break;
 	}

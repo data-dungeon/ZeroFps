@@ -5,6 +5,7 @@
 #define IDD_DIALOGLEFT                  102
 #define IDD_DIALOGBOTTOM                103
 #define IDD_SELECTFONT_DLGBOX           104
+#define IDI_ICON1                       105
 #define IDC_WINDOW_NAMEID_EB            1002
 #define IDC_TEXTLABEL_EB                1003
 #define IDC_NEWCNTRL_CB                 1004
@@ -102,7 +103,7 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        105
+#define _APS_NEXT_RESOURCE_VALUE        106
 #define _APS_NEXT_COMMAND_VALUE         40022
 #define _APS_NEXT_CONTROL_VALUE         1073
 #define _APS_NEXT_SYMED_VALUE           101

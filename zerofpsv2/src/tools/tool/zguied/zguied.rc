@@ -180,7 +180,7 @@ BEGIN
                     BS_AUTOCHECKBOX | WS_TABSTOP,77,244,58,10
     CONTROL         "Help",IDC_ACTIVATE_HELP_CB,"Button",BS_AUTOCHECKBOX | 
                     WS_TABSTOP,94,456,30,10
-    PUSHBUTTON      "Key Help",IDC_SHOW_KEYS_BN,94,439,47,14
+    PUSHBUTTON      "Input Help",IDC_SHOW_KEYS_BN,94,439,47,14
 END
 
 IDD_DIALOGBOTTOM DIALOGEX 0, 0, 533, 110
@@ -268,6 +268,15 @@ BEGIN
     0
 END
 
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IDI_ICON1               ICON                    "icon1.ico"
 #endif    // Swedish resources
 /////////////////////////////////////////////////////////////////////////////
 
