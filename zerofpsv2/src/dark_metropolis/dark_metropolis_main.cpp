@@ -101,8 +101,8 @@ void DarkMetropolis::OnInit()
 	//registering resources
 	m_pkResourceDB->RegisterResource( string(".env"), Create__EnvSetting	);
 
-	ZGuiRender* pkRenderer = static_cast<ZGuiRender*>(g_ZFObjSys.GetObjectPtr("ZGuiRender"));
-	pkRenderer->SetScaleMode(GUIScaleManually);
+	//ZGuiRender* pkRenderer = static_cast<ZGuiRender*>(g_ZFObjSys.GetObjectPtr("ZGuiRender"));
+	//pkRenderer->SetScaleMode(GUIScaleManually);
 
 	// create gui script
 	GUI_Init();

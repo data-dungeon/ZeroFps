@@ -606,9 +606,9 @@ void ZGuiApp::InitDefaultSkins(/*ZFScriptSystem* pkScript*/)
 		m_kSkins.insert( strSkin(szDefNames[i], AddSkinFromScript(szDefNames[i]) ) );
 }
 
-void ZGuiApp::InitGui(ZFScriptSystem* pkScriptSys, char* szFontTexture, 
+void ZGuiApp::InitGui(ZFScriptSystem* pkScriptSys, char* szFontName, 
 							 char* szScriptFile, char* szMenuFile,
-							 bool bUseHardwareMouse)
+							 bool bUseHardwareMouse, bool bScaleGUIManually)
 {
 	// Spara undan viktiga pekare till system.
 	m_pkGuiSys = static_cast<ZGui*>(g_ZFObjSys.GetObjectPtr("Gui"));
@@ -617,11 +617,23 @@ void ZGuiApp::InitGui(ZFScriptSystem* pkScriptSys, char* szFontTexture,
 	m_pkScriptSystem = pkScriptSys;
 	m_pkRenderer = static_cast<ZGuiRender*>(g_ZFObjSys.GetObjectPtr("ZGuiRender"));
 
+   if(bScaleGUIManually)
+	   m_pkRenderer->SetScaleMode(GUIScaleManually);
+   else
+      m_pkRenderer->SetScaleMode(GUIScaleProjMatBeforeRendering);
+
 	//	m_pkTextureMan->Load("data/textures/gui/slask.bmp", 0); // första misslyckas, vet inte varför..
 
+	//ZGuiFont* pkDefaultFont = new ZGuiFont("defguifont");				// LEAK - MistServer, Nothing loaded. (FIXED)
+	//pkDefaultFont->Create("data/textures/text/defguifont.fnt",
+	//			m_pkTextureMan->Load("data/textures/text/defguifont.tga"));
+	//m_pkResMan->Add("defguifont", pkDefaultFont);
 	ZGuiFont* pkDefaultFont = new ZGuiFont("defguifont");				// LEAK - MistServer, Nothing loaded. (FIXED)
-	pkDefaultFont->Create("data/textures/text/defguifont.fnt",
-				m_pkTextureMan->Load("data/textures/text/defguifont.tga"));
+
+   char szFontData[512], szFontTex[512];
+   sprintf(szFontData, "data/textures/gui/fonts/%s.fnt", szFontName);
+   sprintf(szFontTex, "data/textures/gui/fonts/%s.tga", szFontName);
+	pkDefaultFont->Create(szFontData, m_pkTextureMan->Load(szFontTex));
 	m_pkResMan->Add("defguifont", pkDefaultFont);
 
 	if(m_pkScriptResHandle)
@@ -670,6 +682,8 @@ void ZGuiApp::InitGui(ZFScriptSystem* pkScriptSys, char* szFontTexture,
 	m_pkGuiSys->ShowFPSCounter(m_pkGuiSys->m_iShowFPSCounter);
 
 	m_pkGuiSys->Activate(true);
+
+
 	
 }
 

@@ -53,7 +53,7 @@ void MistClient::OnInit()
 	GuiAppLua::Init(&g_kMistClient, m_pkScript);
 
 	//set window title		
- 	SetTitle("MistClient");
+   SetTitle("MistClient - Hacka och slå");
 	
 	//run autoexec script
 	if(!m_pkIni->ExecuteCommands("mistclient_autoexec.ini"))
@@ -63,11 +63,9 @@ void MistClient::OnInit()
 	m_pkFps->StartServer(true,false);
 
    // initialize gui system with default skins, font etc
-	InitGui(m_pkScript, 
-		"data/textures/text/ms_sans_serif8.tga", 
-		"data/script/gui/defskins.lua", NULL, false, true); 
+	InitGui(m_pkScript, "morpheus10", "data/script/gui/defskins.lua", NULL, false, true); 
 
-   // load gui startup screen 
+   // load startup screen 
    LoadGuiFromScript("data/script/gui/ml_start.lua");
 
    // load software cursor

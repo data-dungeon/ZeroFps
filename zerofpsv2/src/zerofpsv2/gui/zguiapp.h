@@ -116,7 +116,7 @@ public:
 	bool CreateNewRadiobuttonGroup(const char *szName, int id);
 	
 	void InitGui(ZFScriptSystem* pkScriptSys, char* szFontTexture, 
-		char* szScriptFile, char* szMenuFile, bool bUseHardwareMouse);
+		char* szScriptFile, char* szMenuFile, bool bUseHardwareMouse, bool bScaleGUIManually);
 
 	ZGuiWnd* CreateWnd(GuiType eType, char* szWndName, char* szParentName, 
 		char* szLabel, int x, int y, int w, int h, unsigned long uiFlags,

@@ -302,18 +302,12 @@ void ZeroEd::Init()
 
 	//init mistland script intreface
 	MistLandLua::Init(m_pkObjectMan,m_pkScript);
-
-	ZGuiRender* pkRenderer = static_cast<ZGuiRender*>(g_ZFObjSys.GetObjectPtr("ZGuiRender"));
-	pkRenderer->SetScaleMode(GUIScaleManually);
 	
 	// create gui script funktions
 	GuiAppLua::Init(&g_kZeroEd, m_pkScript);
 
 	// Load default texture and create default font and menu (NULL = No menu).
-	InitGui(m_pkScript, 
-		"data/textures/text/ms_sans_serif8.tga", 
-		"data/script/gui/defskins.lua", 
-		"data/script/gui/menu.txt", true); 
+	InitGui(m_pkScript, "defguifont", "data/script/gui/defskins.lua", "data/script/gui/menu.txt", true, true); 
 
 	//setup caption
 	SetTitle("ZeroEd");

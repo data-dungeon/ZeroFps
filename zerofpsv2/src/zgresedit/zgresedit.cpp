@@ -209,16 +209,10 @@ void ZGResEdit::OnInit()
 
 	m_pkCamera=new Camera(Vector3(0,0,0),Vector3(0,0,0),70,1.333,0.25,100);	
 
-   ZGuiRender* pkRenderer = static_cast<ZGuiRender*>(g_ZFObjSys.GetObjectPtr("ZGuiRender"));
-	pkRenderer->SetScaleMode(GUIScaleManually);
-
 	// create gui script
 	GuiAppLua::Init(&g_kResEdit, m_pkScript);
 
-	InitGui(m_pkScript,
-		"data/textures/text/small.bmp",
-		"data/script/gui/gui_res_edit.lua",
-		NULL, true);
+	InitGui(m_pkScript, "defguifont", "data/script/gui/gui_res_edit.lua", NULL, true, true);
 
    m_bDisableGuiScaleMode = true;
 

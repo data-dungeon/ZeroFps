@@ -155,10 +155,7 @@ void MistClient::Init()
 		m_pkTexMan->Load("/data/textures/gui/portraits/portrait_a.bmp", 0);
 
 	// init gui
-	InitGui(m_pkScript, 
-		"data/textures/text/paternoster8.bmp", 
-		"data/script/gui/gui_create_client.lua",
-		NULL, true);
+	InitGui(m_pkScript, "paternoster8", "data/script/gui/gui_create_client.lua", NULL, true, false);
 
 	//init mistland script intreface
 	MistLandLua::Init(m_pkObjectMan,m_pkScript);
