@@ -15,7 +15,7 @@ PhysicProperty::PhysicProperty()
 	m_iSide=PROPERTY_SIDE_SERVER;	
 	
 	m_bGravity=false;
-	m_bFloat=true;	
+	m_bFloat=false;	
 	m_bSolid=true;	
 	m_bGlide=true;
 	m_bStride=false;

@@ -21,10 +21,12 @@ namespace MistLandLua
 	
 	extern int						g_iCurrentObjectID;
 	extern int						g_iLastCollidedID;
+	extern int						g_iCurrentPCID;
 
 	void MCOMMON_API Init(ObjectManager* pkObjMan,ZFScriptSystem* pkScript);	
 	
 	int MCOMMON_API GetSelfIDLua(lua_State* pkLua);					//() return the callers object id
+	int MCOMMON_API GetCurrentPCIDLua(lua_State* pkLua);					//() return the callers object id	
 	int MCOMMON_API GetObjectTypeLua(lua_State* pkLua);				//(int objectid) return the type of the object id
 	int MCOMMON_API GetObjectNameLua(lua_State* pkLua);				//(int objectid) return the object name
 	int MCOMMON_API GetLastCollidedObjectLua(lua_State* pkLua);	
@@ -33,6 +35,8 @@ namespace MistLandLua
 	int MCOMMON_API SendEventLua(lua_State* pkLua);					//(int objectid,string event) send event to target object
 	
 	int MCOMMON_API SetPSystemLua(lua_State* pkLua);				//(int objectid,string pssystem) set wich particle effect to use, if none dont send any parameters
+
+	int MCOMMON_API SetVelToLua(lua_State* pkLua);				//(int objectid,int objectid,double speed) set the velocity of and object towards another object
 
 };
 

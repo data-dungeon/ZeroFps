@@ -6,6 +6,7 @@ ZFScriptSystem*	MistLandLua::g_pkScript;
 ObjectManager*		MistLandLua::g_pkObjMan;
 int					MistLandLua::g_iCurrentObjectID;
 int					MistLandLua::g_iLastCollidedID;
+int					MistLandLua::g_iCurrentPCID;
 
 void MistLandLua::Init(ObjectManager* pkObjMan,ZFScriptSystem* pkScript)
 {
@@ -15,6 +16,7 @@ void MistLandLua::Init(ObjectManager* pkObjMan,ZFScriptSystem* pkScript)
 	g_iLastCollidedID = -1;
 	
 	pkScript->ExposeFunction("GetSelfID",					MistLandLua::GetSelfIDLua);	
+	pkScript->ExposeFunction("GetCurrentPCID",					MistLandLua::GetCurrentPCIDLua);		
 	pkScript->ExposeFunction("GetObjectType",				MistLandLua::GetObjectTypeLua);		
 	pkScript->ExposeFunction("GetObjectName",				MistLandLua::GetObjectNameLua);		
 	pkScript->ExposeFunction("GetLastCollidedObject",	MistLandLua::GetLastCollidedObjectLua);		
@@ -22,6 +24,7 @@ void MistLandLua::Init(ObjectManager* pkObjMan,ZFScriptSystem* pkScript)
 	pkScript->ExposeFunction("RemoveObject",				MistLandLua::RemoveObjectLua);		
 	pkScript->ExposeFunction("SendEvent",					MistLandLua::SendEventLua);			
 	pkScript->ExposeFunction("SetPSystem",					MistLandLua::SetPSystemLua);		
+	pkScript->ExposeFunction("SetVelTo",					MistLandLua::SetVelToLua);			
 
 }
 
@@ -32,6 +35,14 @@ int MistLandLua::GetSelfIDLua(lua_State* pkLua)
 	
 	return 1;
 }
+
+int MistLandLua::GetCurrentPCIDLua(lua_State* pkLua)
+{
+	g_pkScript->AddReturnValue(pkLua,g_iCurrentPCID);
+	
+	return 1;
+}
+
 
 int MistLandLua::GetLastCollidedObjectLua(lua_State* pkLua)
 {
@@ -236,3 +247,36 @@ int MistLandLua::SetPSystemLua(lua_State* pkLua)
 }
 
 
+int MistLandLua::SetVelToLua(lua_State* pkLua)
+{
+	if(g_pkScript->GetNumArgs(pkLua) != 3)
+		return 0;
+		
+	double dTemp;
+	
+	g_pkScript->GetArgNumber(pkLua, 0, &dTemp);		
+	int iId1 = (int)dTemp;
+		
+	g_pkScript->GetArgNumber(pkLua, 1, &dTemp);		
+	int iId2 = (int)dTemp;
+		
+	g_pkScript->GetArgNumber(pkLua, 2, &dTemp);		
+	float fVel = (float)dTemp;
+		
+		
+	if(iId1 == iId2)
+		return 0;
+		
+	Object* o1 = g_pkObjMan->GetObjectByNetWorkID(iId1);
+	Object* o2 = g_pkObjMan->GetObjectByNetWorkID(iId2);
+
+	if(o1 && o2)
+	{
+		if(o2->GetWorldPosV() == o1->GetWorldPosV())
+			return 0;
+		
+		Vector3 dir = (o2->GetWorldPosV() - o1->GetWorldPosV()).Unit();
+		
+		o1->GetVel() = dir*fVel;
+	}
+}

@@ -361,6 +361,8 @@ void MistClient::OnServerStart(void)
 		m_pkCamProp->SetType(CAM_TYPE3PERSON);
 	
 		m_pkTestobj->SetWorldPosV(Vector3(0,0.1,0));
+		
+		MistLandLua::g_iCurrentPCID = m_pkTestobj->iNetWorkID;
 	}
 	pkObjectMan->Test_CreateZones();
 
@@ -374,14 +376,14 @@ void MistClient::OnServerStart(void)
 
 
 	//add server info property
-	if(!pkObjectMan->GetObject("A ServerInfoObject"))
+/*	if(!pkObjectMan->GetObject("A ServerInfoObject"))
 	{
 		Object* pkObj = pkObjectMan->CreateObjectByArchType("ServerInfoObject");
 		if(!pkObj)
 			cout<<"Faild to create serverinfoobject"<<endl;
 		 else
 			pkObjectMan->GetWorldObject()->AddChild(pkObj);
-	}	
+	}	*/
 }
 
 void MistClient::OnClientStart(void)
