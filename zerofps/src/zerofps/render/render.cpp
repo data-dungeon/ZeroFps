@@ -52,7 +52,7 @@ void Render::PrintChar(char cChar) {
 	glAlphaFunc(GL_GREATER,0.1);
 	glEnable(GL_ALPHA_TEST);
  	
- 	m_pkTexMan->BindTexture(aCurentFont,0);  
+ 	m_pkTexMan->BindTexture(aCurentFont,T_NOMIPMAPPING);  
 
 	glPushMatrix();
 	glBegin(GL_QUADS);			
