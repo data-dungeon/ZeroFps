@@ -3066,42 +3066,58 @@ int MistLandLua::AIIdleLua(lua_State* pkLua)
 // -----------------------------------------------------------------------------------------------
 int MistLandLua::AIFaceDirectionLua(lua_State* pkLua) 
 {
-   return 0;
+	if( g_pkScript->GetNumArgs(pkLua) == 2 )
+	{
+		double dId, dDirection;      
+
+		g_pkScript->GetArgNumber(pkLua, 0, &dId);
+		g_pkScript->GetArgNumber(pkLua, 1, &dDirection);
+		
+		Entity* pkObj = g_pkObjMan->GetObjectByNetWorkID(dId);
+
+      if(pkObj)
+		{
+         // check if object has AI
+         P_AI* pkAI = (P_AI*)pkObj->GetProperty("P_AI");
+
+         if ( pkAI )
+         {
+            pkAI->AddDynamicOrder ("Face", 0, 0, Vector3(0, dDirection, 0), ".");
+
+         }
+         else
+            cout << "Error! Tried to add AIOrder AIFaceObjectLua on a object without P_AI" << endl;
+		}
+
+	}
+	return 0;
 }
 // -----------------------------------------------------------------------------------------------
 
 int MistLandLua::AIFaceObjectLua(lua_State* pkLua) 
-{/*
+{
 	if( g_pkScript->GetNumArgs(pkLua) == 2 )
 	{
-		double dId;      
+		double dId, dObjectFaceID;      
 
 		g_pkScript->GetArgNumber(pkLua, 0, &dId);
 		g_pkScript->GetArgNumber(pkLua, 1, &dObjectFaceID);
 		
 		Entity* pkObj = g_pkObjMan->GetObjectByNetWorkID(dId);
-      Entity* pkFaceObj = g_pkObjMan->GetObjectByNetWorkID(dId);
+      Entity* pkFaceObj = g_pkObjMan->GetObjectByNetWorkID(dObjectFaceID);
 
-      if(pkEnt)
+      if(pkObj && pkFaceObj)
 		{
          // check if object has AI
-         P_AI* pkAI = (P_AI*)pkEnt->GetProperty("P_AI");
-
-         // is AI is player, clear all other orders
-         if ( pkAI->PlayerAI() )
-            pkAI->ClearDynamicOrders();
-         else if ( pkAI->PlayerAI() )
-         {
-            cout << "Warning! Tried to add static order to player" << endl;
-            return 0;
-         }
+         P_AI* pkAI = (P_AI*)pkObj->GetProperty("P_AI");
 
          if ( pkAI )
-            pkAI->AddStaticOrder ("Idle", dWaitTime*10000, dWaitTime*10000, Vector3::ZERO, ".");
+            pkAI->AddDynamicOrder ("Face", dObjectFaceID, 0, Vector3::ZERO, ".");
+         else
+            cout << "Error! Tried to add AIOrder AIFaceObjectLua on a object without P_AI" << endl;
 		}
-      else
-         cout << "Tried to us AIMoveTo on a object without P_AI" << endl;
-	}*/
+
+	}
 	return 0;
 }
 

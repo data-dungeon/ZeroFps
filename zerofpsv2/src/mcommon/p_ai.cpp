@@ -125,6 +125,37 @@ void P_AI::Update()
       else
          m_pkCurrentOrder->m_iTargetID -= m_pkZeroFps->GetGameFrameTime() * 10000;
    }
+   else if ( m_pkCurrentOrder->m_kOrderType == "Face" )
+   {
+      // face object
+      if ( m_pkCurrentOrder->m_iTargetID )
+      {
+         Entity* pkFaceObj = m_pkObject->m_pkObjectMan->GetObjectByNetWorkID( m_pkCurrentOrder->m_iTargetID );
+
+		   //rotate to target
+		   Vector3 kdiff = pkFaceObj->GetWorldPosV() - m_pkObject->GetWorldPosV();
+		   kdiff.y = 0;
+		   Matrix4 kRotM;
+
+         // crashed if vector is null
+         if ( kdiff != Vector3::ZERO )
+         {
+			   kRotM.LookDir(kdiff.Unit(),Vector3(0,1,0));
+   		   kRotM.Transponse();		
+         }
+
+		   m_pkObject->SetLocalRotM(kRotM);
+      }
+      else
+      {
+         Matrix4 kM = m_pkObject->GetLocalRotM();
+         kM.LookDir ( m_pkCurrentOrder->m_kPosition, Vector3(0,1,0) );
+         m_pkObject->SetLocalRotM ( kM );
+      }
+
+      NextOrder();
+
+   }
    else if ( m_pkCurrentOrder->m_kOrderType == "Action" )
    {
       Entity* pkEnt = m_pkObject->m_pkObjectMan->GetObjectByNetWorkID( m_pkCurrentOrder->m_iTargetID );

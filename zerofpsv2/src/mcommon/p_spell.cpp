@@ -361,7 +361,7 @@ void P_Spell::DoCollisions()
          if ( bOk )
          {
 				Vector3 Pos = m_pkObject->GetLocalPosV();
-            float fDist = kObjects[i]->GetLocalPosV().DistanceTo (Pos );
+            float fDist = kObjects[i]->GetLocalPosV().DistanceXZTo (Pos );
 
             // calculate collision radius
             float fColRad = ((m_fAge / m_pkSpellType->m_fLifeTime) * m_pkSpellType->m_fEndRadius) +
@@ -445,8 +445,10 @@ void P_Spell::DoCollisions()
                // remember which objects is hit by the spell so it can't hit same object twice
                m_kAttackedObjects.push_back (kObjects[i]->iNetWorkID);
 
-               DealDamage( &m_pkSpellType->m_kDamage, 
-                  ((CharacterProperty*)kObjects[i]->GetProperty("P_CharStats"))->GetCharStats() );
+               CharacterProperty* pkCP = (CharacterProperty*)kObjects[i]->GetProperty("P_CharStats");
+
+               if ( pkCP )
+                  DealDamage( &m_pkSpellType->m_kDamage, pkCP->GetCharStats() );
 
             }
          }
