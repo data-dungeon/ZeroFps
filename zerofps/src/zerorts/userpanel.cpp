@@ -318,7 +318,7 @@ void UserPanel::OnClickCmdButton(int iCtrlID)
 	r = m_kClickInfoMap.find(pkButton);
 	if(r != m_kClickInfoMap.end())	
 	{
-		m_pkLastCmd = r->second;
+		
 
 		if(r->second->m_bNeedArgument == false)
 		{
@@ -328,14 +328,19 @@ void UserPanel::OnClickCmdButton(int iCtrlID)
 			for(list<int>::iterator it = m_pkZeroRts->m_kSelectedObjects.begin(); 
 				it != m_pkZeroRts->m_kSelectedObjects.end(); it++)
 			{
-				strcpy(cmd.m_acCommandName, m_pkLastCmd->m_acCommandName);
+				//strcpy(cmd.m_acCommandName, m_pkLastCmd->m_acCommandName);
+				strcpy(cmd.m_acCommandName, r->second->m_acCommandName);
 				cmd.m_iXDestinaton = 0;
 				cmd.m_iYDestinaton = 0;	
 				cmd.m_iTarget = 0;
 				cmd.m_iUnitID = (*it);			
 				m_pkZeroRts->m_pkClientInput->AddOrder(cmd);
+				
 			}
+			//m_pkLastCmd = NULL;
 		}
+		else 
+			m_pkLastCmd = r->second;
 	}
 	
 }
