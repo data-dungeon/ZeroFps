@@ -711,12 +711,30 @@ void ZeroRTS::ClientInit()
 	m_pkMiniMap->Create(/*pkTexMan,*/ pkLevelMan); 
 	
 	
-	
 	cout<<"Join Complete"<<endl;
 }
 
-void ZeroRTS::OnServerClientJoin()
+void ZeroRTS::OnServerClientJoin(ZFClient* pkClient,int iConID)
 {
-	cout<<"client connected"<<endl;
+	cout<<"Client "<<iConID<<" Joined"<<endl;
+	
+	pkClient->m_pkObject->AddProperty("ModelProperty");	
+	pkClient->m_pkObject->AddProperty("P_ClientInput");
+
+	P_ClientInput* ci = (P_ClientInput*)pkClient->m_pkObject->GetProperty("P_ClientInput");
+	
+	ci->m_iPlayerID = iConID;
 
 }
+
+void ZeroRTS::OnServerClientPart(ZFClient* pkClient,int iConID)
+{
+	cout<<"Client "<<iConID<<" Parted"<<endl;	
+}
+
+
+
+
+
+
+

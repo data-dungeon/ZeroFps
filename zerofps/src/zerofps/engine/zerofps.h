@@ -55,7 +55,7 @@ public:
 };
 
 /* Information about a connectet client*/
-class ZFClient
+class ENGINE_API ZFClient
 {
 public:
 	float			m_fConnectTime;	

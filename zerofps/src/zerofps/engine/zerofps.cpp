@@ -1013,7 +1013,7 @@ void ZeroFps::Connect(int iConnectionID)
 	sprintf(szName, "Player%d", iConnectionID);
 	m_kClient[iConnectionID].m_strName = szName;
 
-	m_kClient[iConnectionID].m_pkObject = m_pkObjectMan->CreateObjectByArchType("ZeroRTSPlayer");
+	m_kClient[iConnectionID].m_pkObject = m_pkObjectMan->CreateObject();//m_pkObjectMan->CreateObjectByArchType("ZeroRTSPlayer");
 	assert(m_kClient[iConnectionID].m_pkObject);	
 	m_kClient[iConnectionID].m_pkObject->SetPos(Vector3(0,0,2));
 	m_kClient[iConnectionID].m_pkObject->SetPos(Vector3(0,0,2));
@@ -1022,13 +1022,19 @@ void ZeroFps::Connect(int iConnectionID)
 
 	m_pkConsole->Printf("Player Object %d", m_kClient[iConnectionID].m_pkObject->iNetWorkID);
 
-	m_pkApp->OnServerClientJoin();
+	m_pkApp->OnServerClientJoin(&m_kClient[iConnectionID],iConnectionID);
 }
 
 void ZeroFps::Disconnect(int iConnectionID)
 {
+	if(!m_bServerMode)
+		return;
+	
 	m_pkConsole->Printf("ZeroFps::Disconnect(%d)", iConnectionID);
 	assert( m_kClient[iConnectionID].m_pkObject );
+	
+	m_pkApp->OnServerClientPart(&m_kClient[iConnectionID],iConnectionID);	
+	
 	m_pkObjectMan->Delete( m_kClient[iConnectionID].m_pkObject );
 }
 

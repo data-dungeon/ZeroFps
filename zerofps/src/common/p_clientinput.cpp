@@ -2,7 +2,6 @@
 
 
 vector<UnitCommand>	P_ClientInput::m_kServerCommands;		//all orders
-int 						P_ClientInput::m_iNextPlayerID = 0;
 		
 P_ClientInput::P_ClientInput()
 {
@@ -16,8 +15,7 @@ P_ClientInput::P_ClientInput()
 	bNetwork =		true;
 	m_iMaxOrders = 200;	
 	
-	m_iPlayerID =	m_iNextPlayerID;
-	m_iNextPlayerID++;
+	m_iPlayerID =	-1;
 
 
 	cout<<"PLAYER "<<m_iPlayerID<<" Created"<<endl;

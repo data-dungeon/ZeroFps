@@ -16,6 +16,7 @@ class Console;
 class Render;
 class Input;
 class FileIo;
+class ZFClient;
 
 class ENGINE_API Application : public ZFObject {	
 	protected:
@@ -53,7 +54,8 @@ class ENGINE_API Application : public ZFObject {
 		virtual void OnIdle(void)=0;
 		virtual void OnHud(void)=0;
 		virtual void OnSystem(void)=0;
-		virtual void OnServerClientJoin(void)=0;
+		virtual void OnServerClientJoin(ZFClient* pkClient,int iConID)=0;
+		virtual void OnServerClientPart(ZFClient* pkClient,int iConID)=0;
 
 		virtual void OnServerStart(void)=0;
 		virtual void OnClientStart(void)=0;

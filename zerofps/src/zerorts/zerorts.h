@@ -135,7 +135,8 @@ class ZeroRTS :public Application {
 		void HandleOrders();
 
 		//on client join, server runs this
-		void OnServerClientJoin();
+		void OnServerClientJoin(ZFClient* pkClient,int iConID);
+		void OnServerClientPart(ZFClient* pkClient,int iConID);
 
 	//Palls (friends) =)
 	friend class UserPanel;
