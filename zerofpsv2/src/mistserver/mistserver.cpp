@@ -668,6 +668,8 @@ void MistServer::Input()
 	Vector3 kMove(0,0,0);
 //	Vector3 kRotate(0,0,0);
 
+	if(m_pkInput->Pressed(KEY_H))	m_pkRender->DumpGLState("zzz.txt");			
+
 	if(m_pkCameraObject)	
 	{	
 		Input_Camera(x,z);

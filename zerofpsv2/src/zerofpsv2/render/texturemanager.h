@@ -91,6 +91,7 @@ class RENDER_API TextureManager : public ZFSubSystem {
 
 
 	public:
+		string GetTextureNameFromOpenGlIndex(int iGlObject);	// Returns name of texture from opengl texture object ID:
 
       void FreeTexture(texture* pkTex);
 
@@ -131,6 +132,7 @@ class RENDER_API TextureManager : public ZFSubSystem {
 		bool ShutDown();
 
 		bool IsValid()	{ return true;	}
+
 
 		
 		friend class ZFResourceDB;

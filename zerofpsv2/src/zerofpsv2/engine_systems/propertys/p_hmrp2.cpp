@@ -43,7 +43,7 @@ void P_HMRP2::Update()
 		m_pkHeightMap->SetPosition(m_pkObject->GetWorldPosV());
 		m_pkLight->Update(m_pkObject->GetWorldPosV());
 		m_pkRender->DrawHMLodSplat(m_pkHeightMap,m_pkZeroFps->GetCam()->GetPos(),int(m_pkZeroFps->m_fFps));
-		//m_pkRender->DrawNormals(m_pkHeightMap,m_pkObject->GetWorldPosV(),int(m_pkZeroFps->m_fFps));
+//		m_pkRender->DrawNormals(m_pkHeightMap,m_pkObject->GetWorldPosV(),int(m_pkZeroFps->m_fFps));
 //		m_pkRender->G4DrawHMLodSplat(m_pkHeightMap,m_pkZeroFps->GetCam()->GetPos(),m_pkZeroFps->m_iFps);		
 	}
 	

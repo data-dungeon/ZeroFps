@@ -1049,3 +1049,18 @@ void TextureManager::Debug_TestTexturesLoader(void)
 	kTest1.Save("test.tga", 0);
 }
 
+string TextureManager::GetTextureNameFromOpenGlIndex(int iGlObject)
+{
+	string strName("Unknown");
+
+	for(unsigned int i=0; i<m_iTextures.size(); i++){
+		if(m_iTextures[i] == NULL)
+			continue;
+		
+		if(m_iTextures[i]->index == iGlObject) {
+			return m_iTextures[i]->file;		
+		}		
+	}	
+
+	return strName;
+}

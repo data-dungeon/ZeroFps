@@ -1426,6 +1426,16 @@ void GlDump_GetMatrixv(int iGlEnum, char* szName, int iValues)
 
 void Render::DumpGLState(char* szFileName)
 {
+	glPushAttrib(GL_ALL_ATTRIB_BITS);
+
+	glActiveTextureARB(GL_TEXTURE0_ARB);
+	glDisable(GL_TEXTURE_2D);//disable for the first texture
+	glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE, GL_REPLACE  );	// GL_MODULATE	 GL_REPLACE
+
+	glActiveTextureARB(GL_TEXTURE1_ARB);
+	glEnable(GL_TEXTURE_2D);
+	glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE, GL_MODULATE );	
+
 	pkGlDumpLog = fopen(szFileName,"wt");
 	
 	// Get and Dump OpenGL State to log.
@@ -1627,6 +1637,46 @@ void Render::DumpGLState(char* szFileName)
 	// Rasterization 6.12
 	// Multisampling 6.13
 	// Texture Objects 6.14
+	
+	// Texture Objects 6.17
+	int iEnvMode;
+	char* szGlConstName;
+	char szNameUnknown[32];
+	strcpy(szNameUnknown, "<UNKNOWN>");
+	int iTexObject;
+	string strTextureName;
+	int iMaxTexUnits;
+	glGetIntegerv(GL_MAX_TEXTURE_UNITS, &iMaxTexUnits);	
+
+	fprintf(pkGlDumpLog, "\n\nTexture: \n");
+	for(int i=0; i<iMaxTexUnits; i++) {
+		fprintf(pkGlDumpLog, "TextureUnit %d \n", i);
+		glActiveTextureARB(GL_TEXTURE0_ARB + i);
+
+		GlDump_IsEnabled(GL_TEXTURE_1D ,				" GL_TEXTURE_1D");
+		GlDump_IsEnabled(GL_TEXTURE_2D ,				" GL_TEXTURE_2D");
+		GlDump_IsEnabled(GL_TEXTURE_3D ,				" GL_TEXTURE_3D");
+		GlDump_IsEnabled(GL_TEXTURE_CUBE_MAP ,		" GL_TEXTURE_CUBE_MAP");
+		GlDump_GetIntv(GL_TEXTURE_BINDING_1D,		" GL_TEXTURE_BINDING_1D", 1);			
+
+		glGetIntegerv(GL_TEXTURE_BINDING_2D, &iTexObject);	
+		strTextureName = m_pkTexMan->GetTextureNameFromOpenGlIndex(iTexObject);
+		fprintf(pkGlDumpLog, " GL_TEXTURE_BINDING_2D: %d - %s \n", iTexObject, strTextureName.c_str());
+
+		GlDump_GetIntv(GL_TEXTURE_BINDING_3D,		" GL_TEXTURE_BINDING_3D", 1);			
+
+		glGetTexEnviv(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, &iEnvMode);
+		szGlConstName = szNameUnknown;
+		switch(iEnvMode) {
+			case  GL_MODULATE:	szGlConstName = "GL_MODULATE";	break;	
+			case  GL_DECAL:		szGlConstName = "GL_DECAL";		break;	
+			case  GL_BLEND:		szGlConstName = "GL_BLEND";		break;	
+			case  GL_REPLACE:		szGlConstName = "GL_REPLACE";		break;	
+			}
+
+		fprintf(pkGlDumpLog, " GL_TEXTURE_ENV.GL_TEXTURE_ENV_MODE: %s \n", szGlConstName);
+		}
+
 	// Texture Environment and Generation Version 6.17
 
 	// Pixel Operations 6.18
@@ -1717,6 +1767,8 @@ void Render::DumpGLState(char* szFileName)
 
 
 	fclose(pkGlDumpLog);
+
+	glPopAttrib();
 }
 
 

@@ -755,7 +755,9 @@ void Render::DrawHMLodSplat(HeightMap* kMap,Vector3 CamPos,int iFps)
 	
 	glPushMatrix();
 	glPushAttrib(GL_DEPTH_BUFFER_BIT);
-	
+	glDisable(GL_COLOR_MATERIAL);
+	glEnable(GL_LIGHTING);
+
 	glTranslatef(kMap->m_kCornerPos.x,kMap->m_kCornerPos.y,kMap->m_kCornerPos.z);
 	glColor4f(1,1,1,1);
 	if(kMap->m_bInverted) glCullFace(GL_FRONT);
@@ -787,11 +789,11 @@ void Render::DrawHMLodSplat(HeightMap* kMap,Vector3 CamPos,int iFps)
 	//setup TUs
 	glActiveTextureARB(GL_TEXTURE0_ARB);
 	glDisable(GL_TEXTURE_2D);//disable for the first texture
-	glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE, GL_REPLACE  );	// GL_MODULATE	 GL_REPLACE
+	glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE, GL_MODULATE  );	// GL_MODULATE	 GL_REPLACE
 
 	glActiveTextureARB(GL_TEXTURE1_ARB);
 	glEnable(GL_TEXTURE_2D);
-	glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE, GL_REPLACE );	
+	glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE, GL_MODULATE );	
 	
 	
 	//Draw default texture	
@@ -842,6 +844,7 @@ void Render::DrawHMLodSplat(HeightMap* kMap,Vector3 CamPos,int iFps)
 	glActiveTextureARB(GL_TEXTURE1_ARB);
 	glDisable(GL_TEXTURE_2D);
 	glActiveTextureARB(GL_TEXTURE0_ARB);
+
 	glDisable(GL_BLEND);	
 
 	if(kMap->m_bInverted) glCullFace(GL_BACK);
@@ -896,7 +899,7 @@ void Render::DrawHMVertex(HeightMap* kMap)
 void Render::DrawNormals(HeightMap* kMap,Vector3 CamPos,int iFps)
 {
 	glDisable(GL_TEXTURE_2D);
-	glDisable(GL_LIGHTING );
+//	glDisable(GL_LIGHTING );
 
 	Vector3 kVertex;
 	Vector3 kNormal;
@@ -968,6 +971,7 @@ void Render::DrawPatch(HeightMap* kMap,Vector3 CamPos,int xp,int zp,int iSize,bo
 	fDistance = (CamPos-PatchCenter).Length() ;
 	if(fDistance > m_iViewDistance)
 		return;
+//	glDisable(GL_TEXTURE_2D);
 		
 /*	if(!m_pkFrustum->CubeInFrustum(PatchCenter.x,PatchCenter.y,PatchCenter.z,
 		(iSize/2)*HEIGHTMAP_SCALE,15*HEIGHTMAP_SCALE,(iSize/2)*HEIGHTMAP_SCALE))
@@ -988,6 +992,8 @@ void Render::DrawPatch(HeightMap* kMap,Vector3 CamPos,int xp,int zp,int iSize,bo
 	int z;
 	//int iTestX = kMap->m_iTilesSide;
 	int iTestX = kMap->m_iVertexSide;
+
+//	this->DumpGLState("horatyp.txt");
 
 	for(z = zp ; z < zp+iSize; z+=iStep){
 		//if(z >= kMap->m_iHmSize-iStep)

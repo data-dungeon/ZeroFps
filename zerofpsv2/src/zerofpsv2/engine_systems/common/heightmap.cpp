@@ -797,6 +797,8 @@ void HeightMap::Raise(vector<HMSelectVertex> kSelected, float fSize)
 	for(int i=0; i<kSelected.size(); i++) {
 		verts[kSelected[i].m_iIndex].height += fSize * kSelected[i].m_fValue;
 		}
+
+	GenerateNormals();
 }
 
 float HeightMap::GetBrushSizeInAlphaUVSpace(float fSize)
