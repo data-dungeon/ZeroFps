@@ -654,7 +654,7 @@ void EntityManager::SendDeleteEntity(int iClient,int iEntityID)
 {
 	m_OutNP.Clear();
 	m_OutNP.m_kData.m_kHeader.m_iPacketType = ZF_NETTYPE_UNREL;
-	m_OutNP.TargetSetClient(0);
+	m_OutNP.TargetSetClient(iClient);
 		
 	m_OutNP.Write((char) ZFGP_DELETEOBJECT);
 	m_OutNP.Write(iEntityID);

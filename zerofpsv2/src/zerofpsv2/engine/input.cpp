@@ -750,7 +750,7 @@ void Input::SetupMapToKeyState()
 	m_akMapToKeyState[ SDLK_F15 ] = KEY_F15;
 	
 	// Print sqr
-	m_akMapToKeyState[ SDLK_SCROLLOCK ] = KEY_SCROLLOCK;
+	m_akMapToKeyState[ SDLK_SCROLLOCK ] = KEY_SCROLLLOCK;
 	// Pause
 
 	// Half?
@@ -879,7 +879,7 @@ void Input::SetupMapToKeyState()
 	m_akMapToKeyState[ SDL_BUTTON_WHEELUP ]	= MOUSEWUP;
 	m_akMapToKeyState[ SDL_BUTTON_WHEELDOWN ]	= MOUSEWDOWN;
 
-	m_akKeyState[KEY_ESCAPE].m_strName = "esc";
+	m_akKeyState[KEY_ESCAPE].m_strName = "escape";
 
 	m_akKeyState[KEY_F1].m_strName = "f1";
 	m_akKeyState[KEY_F2].m_strName = "f2";
@@ -897,7 +897,7 @@ void Input::SetupMapToKeyState()
 	m_akKeyState[KEY_F14].m_strName = "f14";
 	m_akKeyState[KEY_F15].m_strName = "f15";
 
-	m_akKeyState[KEY_SCROLLOCK].m_strName = "scrolllock";
+	m_akKeyState[KEY_SCROLLLOCK].m_strName = "scrolllock";
 	m_akKeyState[KEY_1].m_strName = "1";
 	m_akKeyState[KEY_2].m_strName = "2";
 	m_akKeyState[KEY_3].m_strName = "3";
@@ -908,14 +908,14 @@ void Input::SetupMapToKeyState()
 	m_akKeyState[KEY_8].m_strName = "8";
 	m_akKeyState[KEY_9].m_strName = "9";
 	m_akKeyState[KEY_0].m_strName = "0";
-	m_akKeyState[KEY_BACKSPACE].m_strName = "bckspc";
+	m_akKeyState[KEY_BACKSPACE].m_strName = "backspace";
 
-	m_akKeyState[KEY_INSERT].m_strName		= "ins";
+	m_akKeyState[KEY_INSERT].m_strName		= "insert";
 	m_akKeyState[KEY_HOME].m_strName			= "home";
 	m_akKeyState[KEY_PAGEUP].m_strName		= "pageup";
-	m_akKeyState[KEY_DELETE].m_strName		= "del";
+	m_akKeyState[KEY_PAGEDOWN].m_strName	= "pagedown";	
+	m_akKeyState[KEY_DELETE].m_strName		= "delete";
 	m_akKeyState[KEY_END].m_strName			= "end";
-	m_akKeyState[KEY_PAGEDOWN].m_strName	= "pagedown";
 
 	m_akKeyState[KEY_TAB].m_strName = "tab";
 	m_akKeyState[KEY_Q].m_strName = "q";
@@ -961,11 +961,11 @@ void Input::SetupMapToKeyState()
 	m_akKeyState[KEY_RIGHT].m_strName			= "right";
 	m_akKeyState[KEY_DOWN].m_strName				= "down";
 
-	m_akKeyState[KEY_EXCLAIM].m_strName			= "exc";
+	m_akKeyState[KEY_EXCLAIM].m_strName			= "exclaim";
 	m_akKeyState[KEY_QUOTEDBL].m_strName		= "quotedbl";
 	m_akKeyState[KEY_HASH].m_strName				= "hash";
 	m_akKeyState[KEY_DOLLAR].m_strName			= "dollar";
-	m_akKeyState[KEY_AMPERSAND].m_strName		= "amp";
+	m_akKeyState[KEY_AMPERSAND].m_strName		= "ampersand";
 	m_akKeyState[KEY_QUOTE].m_strName			= "quote";
 	m_akKeyState[KEY_LEFTPAREN].m_strName		= "(";
 	m_akKeyState[KEY_RIGHTPAREN].m_strName		= ")";
@@ -981,7 +981,7 @@ void Input::SetupMapToKeyState()
 	m_akKeyState[KEY_LESS].m_strName				= "<";
 	m_akKeyState[KEY_EQUALS].m_strName			= "=";
 	m_akKeyState[KEY_GREATER].m_strName			= ">";
-	m_akKeyState[KEY_QUESTION].m_strName		= "que";
+	m_akKeyState[KEY_QUESTION].m_strName		= "question";
 	m_akKeyState[KEY_AT].m_strName				= "at";
 	m_akKeyState[KEY_LEFTBRACKET].m_strName	= "[";
 	m_akKeyState[KEY_BACKSLASH].m_strName		= "\\";
@@ -1001,7 +1001,7 @@ void Input::SetupMapToKeyState()
 	m_akKeyState[KEY_KP8].m_strName				= "kp8";
 	m_akKeyState[KEY_KP9].m_strName				= "kp9";
 
-	m_akKeyState[KEY_KP_PERIOD].m_strName		= "kpdel";
+	m_akKeyState[KEY_KP_PERIOD].m_strName		= "kpdelete";
 	m_akKeyState[KEY_KP_DIVIDE].m_strName		= "kpslash";
 	m_akKeyState[KEY_KP_MULTIPLY].m_strName	= "kp*";
 	m_akKeyState[KEY_KP_MINUS].m_strName		= "kpminus";
@@ -1012,11 +1012,11 @@ void Input::SetupMapToKeyState()
 	m_akKeyState[KEY_NUMLOCK].m_strName			= "kpnumlock";
 	m_akKeyState[KEY_CAPSLOCK].m_strName		= "capslock";
 
-	m_akKeyState[MOUSELEFT].m_strName			= "mus1";
-	m_akKeyState[MOUSEMIDDLE].m_strName			= "mus3";
-	m_akKeyState[MOUSERIGHT].m_strName			= "mus2";
-	m_akKeyState[MOUSEWUP].m_strName				= "mwup";
-	m_akKeyState[MOUSEWDOWN].m_strName			= "mwdown";
+	m_akKeyState[MOUSELEFT].m_strName			= "mouseleft";
+	m_akKeyState[MOUSEMIDDLE].m_strName			= "mousemiddle";
+	m_akKeyState[MOUSERIGHT].m_strName			= "mouseright";
+	m_akKeyState[MOUSEWUP].m_strName				= "mousewup";
+	m_akKeyState[MOUSEWDOWN].m_strName			= "mousewdown";
 
 //	m_akKeyState[KEY_].m_strName = "";
 }
