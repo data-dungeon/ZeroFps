@@ -42,7 +42,7 @@ namespace MistLandLua
 	int MCOMMON_API MessageCaracterLua(lua_State* pkLua);				//(int objectid,string message) send a message to caracters controling player
 
 	// sound crap
-	int MCOMMON_API StartSoundLua(lua_State* pkLua);
+	int MCOMMON_API StartPrivateSoundLua(lua_State* pkLua);
 
 	// ip crap
 	extern map<string,string> MCOMMON_API	g_kServerList;

@@ -148,14 +148,14 @@ void P_ServerInfo::PackTo( NetPacket* pkNetPacket, int iConnectionID  )
 			}
 
 			 //----------------------------------------------------------------------- zeb
-			int sounds = m_kPlayers[i].kSounds.size();
+			int sounds = m_kPlayers[i].kPrivateSounds.size();
 			pkNetPacket->Write(&sounds,sizeof(sounds)); // write nr of sounds
-			while(!m_kPlayers[i].kSounds.empty())
+			while(!m_kPlayers[i].kPrivateSounds.empty())
 			{
-				int gen_id = m_kPlayers[i].kSounds.front().first;
+				int gen_id = m_kPlayers[i].kPrivateSounds.front().first;
 				pkNetPacket->Write(&gen_id,sizeof(gen_id)); // write obj id
-				pkNetPacket->Write_Str(m_kPlayers[i].kSounds.front().second.c_str()); // write sound name
-				m_kPlayers[i].kSounds.pop();		
+				pkNetPacket->Write_Str(m_kPlayers[i].kPrivateSounds.front().second.c_str()); // write sound name
+				m_kPlayers[i].kPrivateSounds.pop();		
 			}
 			//----------------------------------------------------------------------- zeb 
 		}
@@ -218,8 +218,8 @@ void P_ServerInfo::PackFrom( NetPacket* pkNetPacket, int iConnectionID  )
 		 //----------------------------------------------------------------------- zeb
 
 		// read sounds
-		while(!temp.kSounds.empty())			//clean sound queue
-			temp.kSounds.pop();
+		while(!temp.kPrivateSounds.empty())			//clean sound queue
+			temp.kPrivateSounds.pop();
 
 		int sounds; 
 		pkNetPacket->Read(&sounds,sizeof(sounds));	// read nr of sounds	
@@ -232,7 +232,7 @@ void P_ServerInfo::PackFrom( NetPacket* pkNetPacket, int iConnectionID  )
 			pkNetPacket->Read(&object_gen_sound, sizeof(object_gen_sound)); // read obj id
 			pkNetPacket->Read_Str(tempstr);
 
-			temp.kSounds.push(pair<int,string>(object_gen_sound,string(tempstr)));	// read sound name 	
+			temp.kPrivateSounds.push(pair<int,string>(object_gen_sound,string(tempstr)));	// read sound name 	
 		}
 
 		//----------------------------------------------------------------------- zeb 
@@ -316,7 +316,7 @@ Property* Create_P_ServerInfo()
 	return new P_ServerInfo;
 }
 
-void P_ServerInfo::AddSoundToPlayer(int iPlayerObjectID, int iObjectGenSoundID, char *szFileName)
+void P_ServerInfo::AddPrivateSoundToPlayer(int iPlayerObjectID, int iObjectGenSoundID, char *szFileName)
 {
 	for(int i =0 ;i< m_kPlayers.size();i++)
 	{	
@@ -328,7 +328,7 @@ void P_ServerInfo::AddSoundToPlayer(int iPlayerObjectID, int iObjectGenSoundID, 
 				//check rights 
 				if(m_kPlayers[i].kControl[i].second & PR_CONTROLS) 
 				{
-					m_kPlayers[i].kSounds.push(pair<int,string>(iObjectGenSoundID,string(szFileName)));	
+					m_kPlayers[i].kPrivateSounds.push(pair<int,string>(iObjectGenSoundID,string(szFileName)));	
 					printf("P_ServerInfo::AddSoundToPlayer\n");
 				}
 			}		

@@ -315,9 +315,9 @@ void MistClient::OnSystem()
 			}
 
 			//play sounds
-			while(!pi->kSounds.empty())
+			while(!pi->kPrivateSounds.empty())
 			{
-				pair<int,string> sound_info = pi->kSounds.front();
+				pair<int,string> sound_info = pi->kPrivateSounds.front();
 
 				Entity* pkGenerator = pkObjectMan->GetObjectByNetWorkID(sound_info.first);
 
@@ -330,7 +330,7 @@ void MistClient::OnSystem()
 						sound_info.second.c_str(), pos, dir, false);  
 				}
 
-				pi->kSounds.pop();
+				pi->kPrivateSounds.pop();
 			}
 			
 		}else

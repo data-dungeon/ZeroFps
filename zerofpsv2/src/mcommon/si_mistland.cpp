@@ -41,7 +41,7 @@ void MistLandLua::Init(EntityManager* pkObjMan,ZFScriptSystem* pkScript)
 
 	pkScript->ExposeFunction("AddAction",					MistLandLua::AddActionLua);			
 	pkScript->ExposeFunction("MessageCaracter",			MistLandLua::MessageCaracterLua);
-	pkScript->ExposeFunction("StartSound",					MistLandLua::StartSoundLua);
+	pkScript->ExposeFunction("StartPrivateSound",		MistLandLua::StartPrivateSoundLua);
 
    // char.stats-scipts
    pkScript->ExposeFunction("RollSkillDice",				MistLandLua::RollSkillDiceLua);			
@@ -360,7 +360,7 @@ int MistLandLua::MessageCaracterLua(lua_State* pkLua)
 // Arg 2. ID på objektet som genererar ljudet.
 // Arg 3. Namn på ljudet som skall spelas.
 
-int MistLandLua::StartSoundLua(lua_State* pkLua)
+int MistLandLua::StartPrivateSoundLua(lua_State* pkLua)
 {
 	if(g_pkScript->GetNumArgs(pkLua) != 3)
 		return 0;
@@ -388,7 +388,7 @@ int MistLandLua::StartSoundLua(lua_State* pkLua)
 	g_pkScript->GetArgString(pkLua, 2, acFileName);
 		
 	//send message
-	g_pkServerInfo->AddSoundToPlayer(id_player,id_object_generating_sound,acFileName);
+	g_pkServerInfo->AddPrivateSoundToPlayer(id_player,id_object_generating_sound,acFileName);
 	
 	return 0;
 }
