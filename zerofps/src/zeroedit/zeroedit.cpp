@@ -153,7 +153,7 @@ void ZeroEdit::OnHud(void)
 	pkFps->DevPrintf("Pointer Altidude: %f",m_fPointerHeight);
 
 	if(m_pkCurentChild) {
-		pkFps->DevPrintf("Object: %i: %s selected.",m_pkCurentChild->iNetWorkID, m_pkCurentChild->GetName());
+		pkFps->DevPrintf("Object: %i: %s selected.",m_pkCurentChild->iNetWorkID, m_pkCurentChild->GetName().c_str());
 
 		}
 
@@ -845,7 +845,7 @@ void ZeroEdit::DrawMarkers()
 
 void ZeroEdit::SelectChild()
 {
-		
+/*		
 	list<PhysicProperty*> kPPs;
 	kPPs.clear();
 	pkPhysEngine->TestLine(&kPPs,pkFps->GetCam()->GetPos(),pkFps->GetCam()->GetRot().AToU());
@@ -876,6 +876,20 @@ void ZeroEdit::SelectChild()
 	}
 	
 	m_pkCurentChild=pp->GetObject();
+	*/
+	Object* p = GetClosest(m_kDrawPos);
+	
+	if(p->GetName() == "ZoneObject" ||
+		p->GetName() == "WorldObject" ||
+		p->GetName() == "HeightMapObject")
+	{
+		m_pkCurentChild=NULL;
+		return;
+	}
+		
+		
+	m_pkCurentChild=p;
+
 }
 
 void ZeroEdit::SelectParent()
