@@ -133,7 +133,7 @@ void ZeroRTS::OnIdle()
 	if(m_pkMoveObject)
 		MovePath(m_pkMoveObject);
 
-	if(pkFps->m_bClientMode && !pkFps->m_bServerMode) {
+	if(pkFps->m_bServerMode == false) {
 		int iObjID = pkFps->GetClientObjectID();
 		m_iSelfObjectID = iObjID;
 		}
@@ -381,8 +381,11 @@ void ZeroRTS::OnServerStart(void)
 	//add server info property
 	if(!pkObjectMan->GetObject("A ServerInfoObject"))
 	{
+		Object* pkObj = pkObjectMan->CreateObjectByArchType("ServerInfoObject");
 		if(!pkObjectMan->CreateObjectByArchType("ServerInfoObject"))
 			cout<<"Faild to create serverinfoobject"<<endl;
+		else
+			pkObjectMan->GetWorldObject()->AddChild(pkObj);
 	}
 	
 }

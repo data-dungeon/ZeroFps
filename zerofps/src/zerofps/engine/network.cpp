@@ -447,7 +447,7 @@ void NetWork::HandleControlMessage(NetPacket* pkNetPacket)
 void NetWork::DevShow_ClientConnections()
 {
 	float fEngineTime = m_pkZeroFps->GetEngineTime();
-	m_pkZeroFps->DevPrint_Show("conn");
+//	m_pkZeroFps->DevPrint_Show("conn");
 
 	char* pkName = "Die Vim";
 	char szAdress[256];
