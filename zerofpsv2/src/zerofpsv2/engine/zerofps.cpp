@@ -297,8 +297,11 @@ bool ZeroFps::Init(int iNrOfArgs, char** paArgs)
 	m_fLastFrameTime	= GetTicks();
 	m_fLockFrameTime  = GetTicks();
 
-	GLeeInit();
-
+	
+	#ifdef _WIN32	
+		GLeeInit();
+	#endif	
+		
 	return true;
 }
 

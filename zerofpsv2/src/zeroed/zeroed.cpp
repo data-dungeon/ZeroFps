@@ -357,7 +357,7 @@ void ZeroEd::Init()
 	
 	
 	// Setup the Edit Sun that are used for simple lightning in the editor.
-	m_kSun.kRot = Vector3(2,2,1);
+	m_kSun.kRot = Vector3(2,4,1);
 	m_kSun.kDiffuse=Vector4(0.5,0.5,0.5,0);
 	m_kSun.kAmbient=Vector4(0.5,0.5,0.5,0);
 
