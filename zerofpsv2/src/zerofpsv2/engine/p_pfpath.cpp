@@ -82,6 +82,10 @@ void P_PfPath::Update()
 	if( m_pkObjMan->IsUpdate(PROPERTY_TYPE_NORMAL) && m_pkObjMan->IsUpdate(PROPERTY_SIDE_CLIENT))
 		return;
 
+	//TCS TEST
+	P_Tcs* pkTcs = (P_Tcs*)m_pkObject->GetProperty("P_Tcs");
+		
+		
 	Vector3 kPos = m_pkObject->GetWorldPosV();
 
 	// This section are about to be removed, i think, could be, don't know what it is doing... - Vim
@@ -113,12 +117,15 @@ void P_PfPath::Update()
 	// Get Distance to next goal.
 	Vector3 kGoal = m_kPath[m_iNextGoal] + m_kOffset;
 	Vector3 kdiff = kGoal - kPos;
-
+	kdiff.y = 0;
+	
 	// Check if we are so close to the goal that we will reach it in this frame. If so move to it and go for the next one.
 	float fdist = kdiff.Length();
 	if(fdist < (m_fSpeed) * m_pkFps->m_pkObjectMan->GetSimDelta() ) 
 	{
-		m_pkObject->SetWorldPosV(kGoal);
+		if(!pkTcs)
+			m_pkObject->SetWorldPosV(kGoal);
+		
 		m_iNextGoal++;
 		if(m_iNextGoal == m_kPath.size()) 
 		{
@@ -132,20 +139,34 @@ void P_PfPath::Update()
 			P_Mad* pm = (P_Mad*)m_pkObject->GetProperty("P_Mad");
 			if(pm)
 				pm->SetAnimation((char*)m_kIdleAnim.c_str(),0);
+					
+		
+			if(pkTcs)
+				pkTcs->SetWalkVel(Vector3(0,0,0));
+		
 		}
 		else
 		{
-		
 		}
 
 		return;
 	}
 
 	// Move towards current goal.
-	kdiff.Normalize();
+	if(kdiff.Length() != 0)
+		kdiff.Normalize();
+		
 	kPos += (kdiff * m_fSpeed) * m_pkFps->m_pkObjectMan->GetSimDelta();
-	m_pkObject->SetWorldPosV(kPos);
-
+	
+	//TCS TEST
+	if(pkTcs)
+	{
+		pkTcs->SetWalkVel(kdiff*20);	
+	}
+	else
+		m_pkObject->SetWorldPosV(kPos);
+	
+		
 	//setup character orientation
 	if(!m_bTilt)
 		kdiff.y = 0;
