@@ -46,7 +46,7 @@ bool LevelManager::StartUp()
 	m_pkMap=new HeightMap();
 
 	//default light
-	m_bSun=new LightSource;	
+/*	m_bSun=new LightSource;	
 		m_bSun->kRot=new Vector3(1,2,1);
 		m_bSun->kDiffuse=Vector4(1,1,1,1);
 		m_bSun->kAmbient=Vector4(0.05,0.05,0.05,1);
@@ -72,7 +72,7 @@ bool LevelManager::StartUp()
 	
 	m_pkLight->Add(m_bSun);
 	m_pkLight->Add(m_bMoon);
-
+*/
 	return true; 
 }
 

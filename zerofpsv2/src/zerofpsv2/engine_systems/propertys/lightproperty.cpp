@@ -51,8 +51,8 @@ void LightProperty::Init()
 
 void LightProperty::Update() 
 {
-	Vector3 kPos = m_pkObject->GetWorldPosV(); 
-	Vector3 kRot = m_pkObject->GetWorldRotV();
+	kPos = m_pkObject->GetWorldPosV(); 
+	kRot = m_pkObject->GetWorldRotV();
 
 	//m_pkLightSource->kPos->Set(pos.x,pos.y,pos.z);
 	//m_pkLightSource->kRot->Set(rot.x,rot.y,rot.z);	

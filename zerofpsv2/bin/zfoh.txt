@@ -2,14 +2,13 @@ class object
 	class camera
 		parent object
 		add CameraProperty
+		add LightProperty
 	
 	class playertest
 		parent object
 		set MadProperty m_kMadFile /data/mad/orc.mad
 		set MadProperty m_fScale 1
 		add CameraProperty		
-		add LightProperty
-		add LightUpdateProperty
 
 	class body
 		parent object
@@ -30,8 +29,6 @@ class object
 		set MadProperty m_kMadFile /data/mad/orc.mad
 		set MadProperty m_fScale 0.1
 		add TrackProperty
-		add LightProperty
-		
 
 	class Node4x
 		parent object

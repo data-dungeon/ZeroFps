@@ -112,7 +112,7 @@ void ZeroTank::Init()
 void ZeroTank::RegisterActions()
 {
 	m_iActionDoOrder=pkInput->RegisterAction("DoOrder");
-	m_iActionPrintServerInfo=pkInput->RegisterAction("PrintServerInfo");
+//	m_iActionPrintServerInfo=pkInput->RegisterAction("PrintServerInfo");
 	m_iActionUnExploreAll=pkInput->RegisterAction("UnExploreAll");
 	m_iActionExploreAll=pkInput->RegisterAction("ExploreAll");
 	m_iActionCamLeft=pkInput->RegisterAction("CamLeft");

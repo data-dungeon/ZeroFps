@@ -18,7 +18,6 @@ CmdSystem::CmdSystem()
 bool CmdSystem::StartUp()	
 { 
 	m_pkCon = dynamic_cast<BasicConsole*>((GetSystem().GetObjectPtr("Console")));
-	cout << "Guldfisk" << endl;
 	return true; 
 }
 

@@ -881,7 +881,7 @@ void ObjectManager::TESTVIM_LoadArcheTypes(char* szFileName)
 			pkAt = new ObjectArcheType;
 			ucpToken = kMMScipt.GetToken();
 			pkAt->m_strName = ucpToken;
-			cout << "Creating class: " << ucpToken << endl;
+			//cout << "Creating class: " << ucpToken << endl;
 			}
 
 		
@@ -897,7 +897,7 @@ void ObjectManager::TESTVIM_LoadArcheTypes(char* szFileName)
 				strPropValue = ucpToken;
 	
 				pkAt->SetValue(strPropName, strPropVar, strPropValue);
-				cout << "Set:  " << strPropName << "." <<  strPropVar << "=" << strPropValue << endl;
+				//cout << "Set:  " << strPropName << "." <<  strPropVar << "=" << strPropValue << endl;
 				}
 			}
 
@@ -906,7 +906,7 @@ void ObjectManager::TESTVIM_LoadArcheTypes(char* szFileName)
 				ucpToken = kMMScipt.GetToken();
 				strPropName = ucpToken;
 				pkAt->GetAddArchProperty(string (strPropName) );
-				cout << "Add:  " << strPropName << endl;
+				//cout << "Add:  " << strPropName << endl;
 				}
 			}
 
@@ -1471,8 +1471,6 @@ void ObjectManager::LoadZone(int iId)
 	object->SetParent(GetWorldObject());				
 	object->GetUpdateStatus()=UPDATE_DYNAMIC;
 	object->AddProperty("LightUpdateProperty");
-
-
 
 	kZData->m_pkZone = object;
 

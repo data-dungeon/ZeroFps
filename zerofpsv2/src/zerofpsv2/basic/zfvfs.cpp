@@ -131,10 +131,9 @@ FILE* ZFVFileSystem::Open(string strFileName, int iOptions, bool bWrite)
 		strRootMerge = m_kstrRootPath[i] + strFileName;
 		pkFp = fopen(strRootMerge.c_str(), szOptions);
 		if(pkFp) {
-			cout << "Path: " << strRootMerge.c_str();
-			cout << "\n";
+			//cout << "Path: " << strRootMerge.c_str();
+			//cout << "\n";
 			return pkFp;
-			
 			}
 		}
 

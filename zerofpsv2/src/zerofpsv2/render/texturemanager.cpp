@@ -343,8 +343,9 @@ int TextureManager::Load(const char* acFileName,int iOption)
 	if(iTexture != NO_TEXTURE)
 		return iTexture;
 
-	cout << "Load Texture: "<<  acFileName << endl;
-	
+//	cout << "Load Texture: "<<   << endl;
+	g_ZFObjSys.Logf("resdb", "Load Texture: %s \n", acFileName);
+
 	//else load it
 	texture *temp = GetFreeTexture();
 	temp->file=acFileName;

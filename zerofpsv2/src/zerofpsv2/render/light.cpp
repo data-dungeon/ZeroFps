@@ -3,40 +3,37 @@
 #include "../basic/globals.h"
 
  
-LightSource::LightSource() {
-//cout<<"new light"<<endl;
-	
+LightSource::LightSource() 
+{
 	//position and rotation
-	kPos=NULL;
-	kRot=NULL;
-	kConstPos=Vector3(0,0,0);
-	kConstRot=Vector3(0,0,0);
+	kPos					=	NULL;
+	kRot					=	NULL;
+	kConstPos			=	Vector3(0,0,0);
+	kConstRot			=	Vector3(0,0,0);
 	
 		//light color
-	kDiffuse=Vector4(.5,.5,.5,1);
-	kAmbient=Vector4(0,0,0,1);
-	kSpecular=Vector4(0,0,0,1);
+	kDiffuse				=	Vector4(1,1,1,1);
+	kAmbient				=	Vector4(0,0,0,1);
+	kSpecular			=	Vector4(0,0,0,1);
 	
 	//spotlight
-	fCutoff=20;
-	fExp=20;
+	fCutoff				=	20;
+	fExp					=	20;
 	
 		//distance attenuation 
-	fConst_Atten=0;
-	fLinear_Atten=0;
-	fQuadratic_Atten=0.01;
+	fConst_Atten		=	0;
+	fLinear_Atten		=	0;
+	fQuadratic_Atten	=	0.01;
 
-	iType=POINT_LIGHT;
-	iPriority=0;
-	
-
+	iType					=	POINT_LIGHT;
+	iPriority			=	0;
 }
 
 
 Light::Light() 
 : ZFSubSystem("Light") 
 {
-	m_iNrOfLights=8;				//this shuld never be greater than 8
+	m_iNrOfLights=8;							//this shuld never be greater than 8
 
 	RegisterVariable("r_maxlights",		&m_iNrOfLights,CSYS_INT);
 
@@ -44,7 +41,7 @@ Light::Light()
 
 bool Light::StartUp()	
 { 
-	glLightModelf(GL_LIGHT_MODEL_TWO_SIDE,0);
+	glLightModelf(GL_LIGHT_MODEL_TWO_SIDE, 0);
 	glEnable(GL_LIGHTING);
 	return true;	
 }
@@ -58,8 +55,6 @@ bool Light::IsValid()
 { 
 	return true;
 }
-
-
 
 
 void Light::SetCamera(Vector3 kCamPos) {
@@ -125,7 +120,7 @@ void Light::Update(Vector3 kRefPos)
 		
 	sort(m_kSorted.begin(),m_kSorted.end(),More_Light);
 
-	//cout<<"LIGHTS:"<<m_kSorted.size()<<endl;
+//	cout<<"LIGHTS:"<<m_kSorted.size()<<endl;
 
 	int max = m_kSorted.size();
 	if(max>m_iNrOfLights)
@@ -136,6 +131,7 @@ void Light::Update(Vector3 kRefPos)
 		EnableLight(m_kSorted[i],i);							
 	
 	}
+
 }
 
 void Light::TurnOffAll() {
