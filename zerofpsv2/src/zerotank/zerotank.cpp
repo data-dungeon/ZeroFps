@@ -534,18 +534,22 @@ void ZeroTank::OnServerStart(void)
 		m_pkZeroTankGun->SetLocalPosV(Vector3(-1.1,0.4,0));
 	}
 
-	for(int i=0; i<5; i++) {
-		m_pkZeroTankTrack = pkObjectMan->CreateObjectByArchType("TrackObject");
-		if(m_pkZeroTankTrack) {
-			int iRandZone =  rand() % pkObjectMan->GetNumOfZones();
-			m_pkZeroTankTrack->SetWorldPosV( pkObjectMan->GetZoneCenter(iRandZone) );
-			m_pkZeroTankTrack->AttachToClosestZone();
-			pkObjectMan->AddTracker(m_pkZeroTankTrack);
+	if(pkObjectMan->GetNumOfZones() != 0) {
+		pkConsole->Printf("Num of Zones: %d",pkObjectMan->GetNumOfZones());
 
+		for(int i=0; i<5; i++) {
+			m_pkZeroTankTrack = pkObjectMan->CreateObjectByArchType("TrackObject");
+			if(m_pkZeroTankTrack) {
+				int iRandZone =  rand() % pkObjectMan->GetNumOfZones();
+				m_pkZeroTankTrack->SetWorldPosV( pkObjectMan->GetZoneCenter(iRandZone) );
+				m_pkZeroTankTrack->AttachToClosestZone();
+				pkObjectMan->AddTracker(m_pkZeroTankTrack);
+
+			}
 		}
 	}
 
-	pkConsole->Printf("Num of Zones: %d",pkObjectMan->GetNumOfZones());
+
 
 	//add server info property
 	if(!pkObjectMan->GetObject("A ServerInfoObject"))
