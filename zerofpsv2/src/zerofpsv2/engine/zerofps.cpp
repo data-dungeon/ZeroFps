@@ -68,8 +68,8 @@ ZeroFps::ZeroFps(void) : I_ZeroFps("ZeroFps")
 	// Set Default values
 	m_fFrameTime				= 0;
 	m_fLastFrameTime			= 0;
-	m_fSystemUpdateFps			= 25;
-	m_fSystemUpdateTime			= 0;
+	m_fSystemUpdateFps		= 10;
+	m_fSystemUpdateTime		= 0;
 	m_bServerMode				= false;
 	m_bClientMode				= false;
 	m_bGuiMode					= false;
@@ -78,13 +78,12 @@ ZeroFps::ZeroFps(void) : I_ZeroFps("ZeroFps")
 	g_iMadLODLock				= 0;
 	m_pkCamera					= NULL;
 	m_bRunWorldSim				= true;
-	g_iLogRenderPropertys		= 0;
+	g_iLogRenderPropertys	= 0;
 	m_fAvrageFpsTime			= 0;
-	m_iAvrageFrameCount			= 0;
+	m_iAvrageFrameCount		= 0;
 	m_bRenderOn					= true;
 	m_iServerConnection		= -1;
 	m_iMaxPlayers				= ZF_DEF_PLAYERS;
-
 	m_iLockFps					= false;
 	
 
