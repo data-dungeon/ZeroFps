@@ -382,7 +382,7 @@ int GuiAppLua::TestTableSetLua(lua_State* pkLua)
 
 	printf("data in table: \n");
 
-	for(int i=0; i<vkData.size(); i++)
+	for(unsigned int i=0; i<vkData.size(); i++)
 	{
 		if(vkData[i].bNumber)
 			printf("%f\n", (float) (*(double*) vkData[i].pData));

@@ -1627,7 +1627,7 @@ bool MistClient::OpenActionMenu(int mx, int my)
 		sprintf(name, "%s%i", "ActionButton", i);
 		bWndExist = GetWnd(name) != NULL;
 
-		CreateWnd(Button, name, "MainWnd", "", mx-x_diff+x-fOffset, my-y_diff+y-fOffset, 32, 32, 0);
+		CreateWnd(Button, name, "MainWnd", "", mx-x_diff+x-(int)fOffset, my-y_diff+y-(int)fOffset, 32, 32, 0);
 		ZGuiButton* pkButton = static_cast<ZGuiButton*>(GetWnd(name));
 
 		if(!bWndExist)
@@ -1654,7 +1654,7 @@ bool MistClient::OpenActionMenu(int mx, int my)
 		{
 			ZGuiWnd* pkWnd = GetWnd(name);
 			pkWnd->Show();
-			pkWnd->SetPos(mx+x-fOffset-x_diff, my+y-fOffset-y_diff, true, true);
+			pkWnd->SetPos(mx+x-fOffset-x_diff, my+y-(int)fOffset-y_diff, true, true);
 		}
 
 		if(i < vkActions.size())

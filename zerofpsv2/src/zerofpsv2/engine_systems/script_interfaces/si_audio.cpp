@@ -200,9 +200,9 @@ int AudioLua::StopSoundLua(lua_State* pkLua)
 		break;
 
 	case 5:
-		g_pkScript->GetArgNumber(pkLua, 1, &dValue); pos.x = dValue;
-		g_pkScript->GetArgNumber(pkLua, 2, &dValue); pos.y = dValue;
-		g_pkScript->GetArgNumber(pkLua, 3, &dValue); pos.z = dValue;
+		g_pkScript->GetArgNumber(pkLua, 1, &dValue); pos.x = (float) dValue;
+		g_pkScript->GetArgNumber(pkLua, 2, &dValue); pos.y = (float) dValue;
+		g_pkScript->GetArgNumber(pkLua, 3, &dValue); pos.z = (float) dValue;
 
 		g_pkScript->GetArgNumber(pkLua, 4, &dValue);
 		fMaxSearchRange = (float) dValue;
