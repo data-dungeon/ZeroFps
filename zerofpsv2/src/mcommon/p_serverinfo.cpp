@@ -15,11 +15,13 @@ P_ServerInfo::P_ServerInfo()
 
 void P_ServerInfo::Update()
 {
+/*	  //force update every 10th second
 	if(m_pkFps->GetTicks() - m_fTimer > 10)
 	{
 		m_fTimer = m_pkFps->GetTicks();
 		SetNetUpdateFlag(true);
 	}
+*/	
 }
 
 void P_ServerInfo::AddPlayer(int id,string sName)
