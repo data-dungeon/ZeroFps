@@ -1667,6 +1667,12 @@ int ZeroFps::Connect(int iConnectionID, char* szLogin, char* szPass, bool bIsEdi
 */
 void ZeroFps::Disconnect(int iConnectionID)
 {
+	if(!m_kClient[iConnectionID].m_pkObject)
+	{
+		cout << "ZeroFps::Disconnect - Client is already disconnected." <<endl;
+		return;
+	}
+
 	//reset all netupdate flags in the world
 	m_pkEntityManager->ResetNetUpdateFlags(iConnectionID);	
 	
@@ -1680,11 +1686,6 @@ void ZeroFps::Disconnect(int iConnectionID)
 		
 	m_pkConsole->Printf("ZeroFps::Disconnect(%d)", iConnectionID);
 	
-	if(!m_kClient[iConnectionID].m_pkObject)
-	{
-		cout<<"ERROR:WTF IS THIS, im already disconnected damit!!"<<endl;
-		return;
-	}
 	//assert( m_kClient[iConnectionID].m_pkObject );
 	
 	m_pkApp->OnServerClientPart(&m_kClient[iConnectionID],iConnectionID);	
