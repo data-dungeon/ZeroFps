@@ -10,6 +10,12 @@ bool ZShader::StartUp()
  	m_pkTexMan	= static_cast<TextureManager*>(GetSystem().GetObjectPtr("TextureManager"));
  	m_pkLight	= static_cast<Light*>(GetSystem().GetObjectPtr("Light"));
 
+
+	m_iForceLighting = LIGHT_MATERIAL;
+	m_iForceBledning = BLEND_MATERIAL;	
+	m_kModelMatrix.Identity();
+
+
 	//check if we have arb_vertex_program support
 	if(HaveVertexProgramExt())
 		m_bVertexProgram = true;
@@ -27,15 +33,13 @@ bool ZShader::StartUp()
 		cout<<"ARB Fragment program not supported"<<endl;
 		m_bFragmentProgram = false;
 	}	
-
+	
+		
+	//initiate GPU states
 	SetVertexProgram(NO_VPROGRAM);
 	SetFragmentProgram(NO_FPROGRAM);
 
-	m_iForceLighting = LIGHT_MATERIAL;
-	m_iForceBledning = BLEND_MATERIAL;
-
-	m_kModelMatrix.Identity();
-
+		
 	return true;
 }
 

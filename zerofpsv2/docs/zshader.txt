@@ -119,4 +119,9 @@ settings in [pass-x]
 			1  = flickering
 			2  = pulsating
 						
-						
+	vertexprogram = string [none]
+		set what hardware ARB vertex program to use,  (.zvp files)
+		
+	fragmentprogram = string [none]
+		set what hardware ARB fragment program to use, (.zfp files)
+		
