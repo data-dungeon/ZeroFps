@@ -9,7 +9,7 @@ function Create()
 			InitParameter("PSType","Smoke");
 		InitProperty("P_Event");
 		InitProperty("P_Ml");		
-		
+		InitProperty("PhysicProperty");		
 		AttachToClosestZone();
 	
 end
@@ -39,3 +39,12 @@ function Use()
 
 end
 
+function Collission()
+	id  = GetLastCollidedObject();
+
+	Print("i collided whit object:",id);
+	Print("Its of type:",GetObjectType(id));
+	
+	SetPSystem(id,"Smoke");
+	
+end

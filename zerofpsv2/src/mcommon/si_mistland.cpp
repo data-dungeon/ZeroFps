@@ -5,20 +5,23 @@
 ZFScriptSystem*	MistLandLua::g_pkScript;
 ObjectManager*		MistLandLua::g_pkObjMan;
 int					MistLandLua::g_iCurrentObjectID;
+int					MistLandLua::g_iLastCollidedID;
 
 void MistLandLua::Init(ObjectManager* pkObjMan,ZFScriptSystem* pkScript)
 {
 	g_pkObjMan = pkObjMan;
 	g_pkScript = pkScript;
 	g_iCurrentObjectID = -1;
+	g_iLastCollidedID = -1;
 	
-	pkScript->ExposeFunction("GetSelfID",				MistLandLua::GetSelfIDLua);	
-	pkScript->ExposeFunction("GetClosestObject",		MistLandLua::GetClosestObjectLua);		
-	pkScript->ExposeFunction("RemoveObject",			MistLandLua::RemoveObjectLua);		
-	pkScript->ExposeFunction("SendEvent",				MistLandLua::SendEventLua);		
-	
-	pkScript->ExposeFunction("SetPSystem",				MistLandLua::SetPSystemLua);		
-
+	pkScript->ExposeFunction("GetSelfID",					MistLandLua::GetSelfIDLua);	
+	pkScript->ExposeFunction("GetObjectType",				MistLandLua::GetObjectTypeLua);		
+	pkScript->ExposeFunction("GetObjectName",				MistLandLua::GetObjectNameLua);		
+	pkScript->ExposeFunction("GetLastCollidedObject",	MistLandLua::GetLastCollidedObjectLua);		
+	pkScript->ExposeFunction("GetClosestObject",			MistLandLua::GetClosestObjectLua);		
+	pkScript->ExposeFunction("RemoveObject",				MistLandLua::RemoveObjectLua);		
+	pkScript->ExposeFunction("SendEvent",					MistLandLua::SendEventLua);			
+	pkScript->ExposeFunction("SetPSystem",					MistLandLua::SetPSystemLua);		
 
 }
 
@@ -30,6 +33,54 @@ int MistLandLua::GetSelfIDLua(lua_State* pkLua)
 	return 1;
 }
 
+int MistLandLua::GetLastCollidedObjectLua(lua_State* pkLua)
+{
+	g_pkScript->AddReturnValue(pkLua,g_iLastCollidedID);
+	
+	return 1;
+}
+
+int MistLandLua::GetObjectTypeLua(lua_State* pkLua)
+{
+	int iId = g_iCurrentObjectID;
+	
+	//get id
+	if(g_pkScript->GetNumArgs(pkLua) == 1)
+	{
+		double dTemp;
+		g_pkScript->GetArgNumber(pkLua, 0, &dTemp);
+		iId = (int)dTemp;
+	}
+	
+	//get object
+	Object*	pkObj = g_pkObjMan->GetObjectByNetWorkID(iId);
+	
+	if(pkObj)
+		g_pkScript->AddReturnValue(pkLua,(char*)pkObj->GetType().c_str(),pkObj->GetType().size());
+	
+	return 1;
+}
+
+int MistLandLua::GetObjectNameLua(lua_State* pkLua)
+{
+	int iId = g_iCurrentObjectID;
+	
+	//get id
+	if(g_pkScript->GetNumArgs(pkLua) == 1)
+	{
+		double dTemp;
+		g_pkScript->GetArgNumber(pkLua, 0, &dTemp);
+		iId = (int)dTemp;
+	}
+	
+	//get object
+	Object*	pkObj = g_pkObjMan->GetObjectByNetWorkID(iId);
+	
+	if(pkObj)
+		g_pkScript->AddReturnValue(pkLua,(char*)pkObj->GetName().c_str(),pkObj->GetName().size());
+	
+	return 1;
+}
 
 int MistLandLua::RemoveObjectLua(lua_State* pkLua)
 {
@@ -183,3 +234,5 @@ int MistLandLua::SetPSystemLua(lua_State* pkLua)
 		return 0;
 	}
 }
+
+

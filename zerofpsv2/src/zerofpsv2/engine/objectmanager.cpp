@@ -342,8 +342,20 @@ Object* ObjectManager::CreateObjectFromScript(const char* acName)
 	if(!m_pkScript->Call(m_pScriptFileHandle, "Create", 0, 0))
 		return NULL;
 	
-	ObjectManagerLua::g_pkReturnObject->m_strType	= acName;
-	ObjectManagerLua::g_pkReturnObject->m_strName	= string("A ") + acName;
+	//find last /
+	int len = strlen(acName);
+	int pos = 0;
+	for(int i = len;i > 0 ;i--)
+	{
+		if(acName[i] == '/')
+		{	
+			pos = i+1;
+			break;
+		}
+	}
+	
+	ObjectManagerLua::g_pkReturnObject->m_strType	= &acName[pos];
+	ObjectManagerLua::g_pkReturnObject->m_strName	= string("A ") + &acName[pos];
 	ObjectManagerLua::g_pkReturnObject->m_pScriptFileHandle->SetRes(acName);
 	
 	return ObjectManagerLua::g_pkReturnObject;

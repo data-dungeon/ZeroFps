@@ -48,6 +48,7 @@ void MistClient::OnInit()
 		{*/
 			Object* test = pkObjectMan->CreateObjectFromScript("data/script/objects/t_test.lua");
 			test->SetLocalPosV(Vector3(10,0,0));
+//			test->GetVel() = Vector3(-10,0,0);
 			test = pkObjectMan->CreateObjectFromScript("data/script/objects/t_test.lua");
 			test->SetLocalPosV(Vector3(-10,0,0));			
 //			if(test)

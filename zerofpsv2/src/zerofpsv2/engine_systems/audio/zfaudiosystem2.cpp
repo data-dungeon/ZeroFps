@@ -17,8 +17,8 @@ ZFAudioSystem2::ZFAudioSystem2() : ZFSubSystem("ZFAudioSystem2")
 
 ZFAudioSystem2::~ZFAudioSystem2()
 {
-	if(m_pkMusic)
-		delete m_pkMusic;
+//	if(m_pkMusic)
+//		delete m_pkMusic;
 }
 
 bool ZFAudioSystem2::StartUp()

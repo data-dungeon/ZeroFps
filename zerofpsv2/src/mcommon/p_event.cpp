@@ -59,6 +59,17 @@ bool P_Event::SendEvent(const char* acEvent)
 	return false;
 }
 
+void P_Event::Touch(Collision* pkCol)
+{
+	if(pkCol->m_pkPP1->GetObject() == m_pkObject)
+		MistLandLua::g_iLastCollidedID = pkCol->m_pkPP2->GetObject()->iNetWorkID;
+	else
+		MistLandLua::g_iLastCollidedID = pkCol->m_pkPP1->GetObject()->iNetWorkID;
+		
+	SendEvent("Collission");	
+}
+
+
 Property* Create_P_Event()
 {
 	return new P_Event;

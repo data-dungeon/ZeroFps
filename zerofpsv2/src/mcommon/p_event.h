@@ -3,6 +3,7 @@
 
 #include "../zerofpsv2/engine/property.h"
 #include "../zerofpsv2/engine/zerofps.h"
+#include "../zerofpsv2/engine_systems/propertys/physicproperty.h"
 #include "../zerofpsv2/script/zfscript.h"
 #include <iostream>
 #include <string.h>
@@ -30,6 +31,7 @@ class MCOMMON_API P_Event: public Property {
 		
 		void Update();				
 		bool SendEvent(const char* acEvent);
+		void Touch(Collision* pkCol);					//executet when collision occurs
 };
 
 MCOMMON_API Property* Create_P_Event();

@@ -7,6 +7,7 @@ function Create()
 		InitProperty("CameraProperty");
 		InitProperty("P_Event");
 		InitProperty("P_Ml");		
+		InitProperty("PhysicProperty");	
 		SetParentObject();
 		SetReturnObject();
 	
@@ -50,7 +51,7 @@ end
 
 
 function Use()
-	Print("U clicked on me");
+	Print("U clicked on me, now im using the closest object");
 
-	PlaySound("test.wav",GetSelfID());
+	SendEvent(GetClosestObject(),"Use");
 end
