@@ -27,6 +27,9 @@ bool ZeroEd::UpdatePropertyList(int iID)
 
 	int j=0;
 
+	// Add for the entity variables display.
+	pkProperyList->AddItem("Variables", j++, false);
+
 	Entity* pkEnt = m_pkObjectMan->GetObjectByNetWorkID(iID);
    if(pkEnt)
    {
@@ -86,8 +89,28 @@ void ZeroEd::FillPropertyValList()
 	pkProperyValList->RemoveAllItems();
 
 	if((pkEnt = m_pkObjectMan->GetObjectByNetWorkID(m_iCurrentObject)))
-		if((item = GetSelItem("PropertyList")))
-			if((pkProp = pkEnt->GetProperty(item)))
+		if((item = GetSelItem("PropertyList"))) 
+		{
+
+			if(string("Variables") == string(item))
+			{
+				cout << "Would like to look at entity vars";
+				vector<string> kValNames;
+				pkEnt->GetAllVarNames(kValNames);
+				
+				list<string> temp;
+				for(int i=0; i<kValNames.size(); i++)
+					temp.push_back(kValNames[i]);
+
+				temp.sort(); 
+
+				int j=0;
+				list<string>::iterator it = temp.begin();
+				for( ; it!=temp.end(); it++) 
+					pkProperyValList->AddItem((char*)(*it).c_str(), j++, false);
+			}
+
+			else if((pkProp = pkEnt->GetProperty(item)))
 			{
 				vector<string> kValNames;
 				kValNames = pkProp->GetValueNames();
@@ -103,6 +126,7 @@ void ZeroEd::FillPropertyValList()
 				for( ; it!=temp.end(); it++) 
 					pkProperyValList->AddItem((char*)(*it).c_str(), j++, false);
 			}
+		}
 }
 
 void ZeroEd::AddPropertyVal()
@@ -113,14 +137,23 @@ void ZeroEd::AddPropertyVal()
 
 	if((pkEnt = m_pkObjectMan->GetObjectByNetWorkID(m_iCurrentObject)))
 		if((item = GetSelItem("PropertyList")))
+		{
+			char* val = GetSelItem("PropertyValList");
+			char* res = GetText("PropertyValEb");
+
+			if(string("Variables") == string(item))
+			{
+				if(val != NULL && res != NULL)
+					pkEnt->SetVarString(string(val), string(res));
+				
+			}
+
 			if((pkProp = pkEnt->GetProperty(item)))
 			{
-				char* val = GetSelItem("PropertyValList");
-				char* res = GetText("PropertyValEb");
-				
 				if(val != NULL && res != NULL)
 					pkProp->SetValue(val, res);
 			}
+		}
 
 	m_pkGui->SetFocus(GetWnd("EditPropertyWnd"));
 }

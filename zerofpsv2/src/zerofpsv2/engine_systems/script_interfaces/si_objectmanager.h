@@ -60,6 +60,8 @@ namespace ObjectManagerLua
 	// Object Variables
 	int ENGINE_SYSTEMS_API GetLocalDouble(lua_State* pkLua);		
 	int ENGINE_SYSTEMS_API SetLocalDouble(lua_State* pkLua);		
+	int ENGINE_SYSTEMS_API GetLocalString(lua_State* pkLua);		
+	int ENGINE_SYSTEMS_API SetLocalString(lua_State* pkLua);		
 
 	// Entity Information
 	int ENGINE_SYSTEMS_API GetObjectTypeLua(lua_State* pkLua);				//(int objectid) return the type of the object id

@@ -1781,7 +1781,17 @@ string Entity::GetVarString(string& strName)
 	if(pkVar == NULL)
 		return string("");
 
-	return pkVar->m_strValue;
+	if(pkVar->m_eType == EVAR_STRING)
+		return pkVar->m_strValue;
+	if(pkVar->m_eType == EVAR_DOUBLE)
+	{
+		char szValue[128];
+		double dValue = pkVar->m_fValue;
+		sprintf(szValue,"%f",dValue);
+		return string(szValue);
+	}
+
+	return string("");
 }
 
 void	 Entity::SetVarDouble(string& strName, double fValue)
@@ -1801,7 +1811,13 @@ void Entity::SetVarString(string& strName, string strValue)
 	if(pkVar == NULL)
 		pkVar = CreateVar(strName, EVAR_STRING);
 
-	pkVar->m_strValue = strValue;
+	if(pkVar->m_eType == EVAR_STRING)
+		pkVar->m_strValue = strValue;
+
+	if(pkVar->m_eType == EVAR_DOUBLE)
+	{
+		pkVar->m_fValue = atof(strValue.c_str());
+	}
 }
 
 void Entity::AddVarDouble(string strName, double fValueToAdd)

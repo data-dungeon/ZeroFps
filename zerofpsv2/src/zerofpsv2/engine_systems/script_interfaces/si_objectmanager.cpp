@@ -71,6 +71,8 @@ void Init(EntityManager* pkObjMan, ZFScriptSystem* pkScript)
 	// entity Variables
 	pkScript->ExposeFunction("GetLocalDouble",		ObjectManagerLua::GetLocalDouble);
 	pkScript->ExposeFunction("SetLocalDouble",		ObjectManagerLua::SetLocalDouble);
+	pkScript->ExposeFunction("GetLocalString",		ObjectManagerLua::GetLocalString);
+	pkScript->ExposeFunction("SetLocalString",		ObjectManagerLua::SetLocalString);
 
 	// entity orientation
 	pkScript->ExposeFunction("GetObjectPos",			ObjectManagerLua::GetObjectPosLua);
@@ -615,10 +617,44 @@ int SetLocalDouble(lua_State* pkLua)
 	return 1;	
 }
 
-/*
-	SetLocalString
-	GotLocalString
-*/
+int GetLocalString(lua_State* pkLua)
+{
+	// Get ObjectID ID
+	double dTemp;
+	g_pkScript->GetArgNumber(pkLua, 0, &dTemp);		
+	int iId1 = (int)dTemp;
+
+	// Get Variable Name
+	char acName[100];
+	g_pkScript->GetArg(pkLua, 1, acName);
+
+	Entity* o1 = g_pkObjMan->GetObjectByNetWorkID(iId1);
+	string arne = acName;
+	string strValue = o1->GetVarString(arne);
+
+	g_pkScript->AddReturnValue(pkLua,(char*)strValue.c_str(),strValue.size());
+	return 1;
+}
+
+int SetLocalString(lua_State* pkLua)
+{
+	// Get ObjectID ID
+	double dTemp;
+	g_pkScript->GetArgNumber(pkLua, 0, &dTemp);		
+	int iId1 = (int)dTemp;
+
+	// Get Variable Name
+	char acName[100];
+	g_pkScript->GetArg(pkLua, 1, acName);
+
+	char acValue[100];
+	g_pkScript->GetArg(pkLua, 2, acValue);
+
+	Entity* o1 = g_pkObjMan->GetObjectByNetWorkID(iId1);
+	string arne = acName;
+	o1->SetVarString(arne, string(acValue));
+	return 1;	
+}
 
 int SetObjectRotVelLua (lua_State* pkLua)
 {
