@@ -15,7 +15,7 @@
  
 ZFScriptSystem::ZFScriptSystem() : ZFSubSystem("ZFScriptSystem")
 {
-	Open();
+	Open(); 
 }
 
 ZFScriptSystem::~ZFScriptSystem()

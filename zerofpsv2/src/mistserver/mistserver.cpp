@@ -627,8 +627,11 @@ void MistServer::Input_Camera(float fMouseX, float fMouseY)
 	m_pkCameraObject->SetLocalPosV(newpos);		
 	if(m_pkInput->VKIsDown("pancam"))
 		m_pkCameraObject->SetLocalRotM(kRm);	
-}
 
+	if(m_pkInput->Pressed(KEY_F6))	m_pkCamera->SetViewMode(Camera::CAMMODE_ORTHO_FRONT);	
+	if(m_pkInput->Pressed(KEY_F7))	m_pkCamera->SetViewMode(Camera::CAMMODE_PERSP);	
+
+}
 
 void MistServer::Input()
 {

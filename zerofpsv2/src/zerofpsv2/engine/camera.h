@@ -10,15 +10,25 @@
 /** \brief	A Camera (ViewPoint) in ZeroFPS
 	 \ingroup Engine
 */
-class ENGINE_API Camera {
-	private:		
+class ENGINE_API Camera 
+{
+	public:
+		enum CamMode 
+		{
+			CAMMODE_PERSP,
+			CAMMODE_ORTHO_TOP,
+			CAMMODE_ORTHO_FRONT,
+			CAMMODE_ORTHO_LEFT,
+		};
+
+	private:	
+
 		Matrix4 m_kCamProjectionMatrix;
 		Matrix4 m_kCamModelViewMatrix;
 		Vector3 m_kPos;
 		Vector3 m_kRot;	
 		Matrix4 m_kRotM;
 			
-		
 		
 		bool m_bViewChange;
 		bool m_bViewPortChange;				
@@ -35,6 +45,9 @@ class ENGINE_API Camera {
 		float	m_fNear;
 		float	m_fFar;
 		
+		//bool	m_bPerspective;
+		CamMode	m_eMode;
+
 	public:
 		Frustum m_kFrustum;
 		
@@ -42,24 +55,25 @@ class ENGINE_API Camera {
 		void Update(int iWidth,int iHeight);
 		void UpdateAll(int iWidth,int iHeight);
 		void SetView(float fFov,float fAspect,float fNear,float fFar);
+		void SetViewMode(CamMode eMode);
+		void SetOrthoView();
 		void SetViewPort(float iX,float iY,float iW,float iH);
 		void ClearViewPort();
-		
-		void SetRotM(Matrix4 kRotM) { m_kRotM = kRotM;};
-		void RotateV(Vector3 kRot) { m_kRotM.Rotate(kRot);};
-		void MultRotM(Matrix4 kRotM) { m_kRotM = kRotM * m_kRotM ;};
-		
-		Matrix4 GetRotM() { return m_kRotM;};
-		void SetPos(Vector3 kPos){ m_kPos=kPos;};
-		void SetRot(Vector3 kRot){ m_kRot=kRot;};
-		Vector3 &GetPos(){return m_kPos;};
-		Vector3 &GetRot(){return m_kRot;};
-		Matrix4& GetModelViewMatrix() {return m_kCamModelViewMatrix;};
-		Matrix4& GetProjectionMatrix() {return m_kCamProjectionMatrix;};		
-
 		void SetFov(float fFov);
-		void SetName(string strName) { m_strName = strName; } 
-		string GetName( ) { return m_strName; }
+		
+		void SetRotM(Matrix4 kRotM)		{	m_kRotM = kRotM;};
+		void RotateV(Vector3 kRot)			{	m_kRotM.Rotate(kRot);};
+		void MultRotM(Matrix4 kRotM)		{	m_kRotM = kRotM * m_kRotM ;};
+		
+		Matrix4 GetRotM()						{	return m_kRotM;	};
+		void SetPos(Vector3 kPos)			{	m_kPos=kPos;		};
+		void SetRot(Vector3 kRot)			{	m_kRot=kRot;		};
+		Vector3 &GetPos()						{	return m_kPos;		};
+		Vector3 &GetRot()						{	return m_kRot;		};
+		Matrix4& GetModelViewMatrix()		{	return m_kCamModelViewMatrix;};
+		Matrix4& GetProjectionMatrix()	{	return m_kCamProjectionMatrix;};		
+		void SetName(string strName)		{	m_strName = strName; } 
+		string GetName( )						{	return m_strName; }
 
 		string GetCameraDesc();
 };
