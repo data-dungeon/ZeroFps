@@ -9,7 +9,7 @@
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 
-P_UnitMoveAI::P_UnitMoveAI() :m_pkMoveUnitCommand(NULL),m_pkUnit(NULL) 
+P_UnitMoveAI::P_UnitMoveAI() :m_pkMoveUnitCommand(NULL),m_pkUnit(NULL), m_bTemp(false) 
 {
 	strcpy(m_acName,"P_UnitMoveAI");
 	m_iType=PROPERTY_TYPE_NORMAL;
@@ -43,12 +43,14 @@ bool P_UnitMoveAI::RegisterExternalCommands()
 	
 AIBase* P_UnitMoveAI::RunUnitCommand(int iCommandID, int iXDestinaton, int iYDestinaton, int iTarget)
 {
-	if(iCommandID = UNIT_MOVE)
+	cout<<"sdad" <<endl;
+	if(iCommandID == UNIT_MOVE)
 	{
 		Vector3 Vec3;
 		Vec3= m_pkObject->GetPos();
 		Vec3.z+=20;
 		m_pkObject->SetPos(Vec3);
+		cout <<"ich bin ein affe" <<endl;
 	}
 	return NULL;
 }
@@ -66,5 +68,17 @@ COMMON_API Property* Create_P_UnitMoveAI()
 
 void P_UnitMoveAI::Init()
 {
-	RegisterExternalCommands();
+	m_bTemp=RegisterExternalCommands();
 }
+
+vector<PropertyValues> P_UnitMoveAI::GetPropertyValues()
+{
+	vector<PropertyValues> kReturn(1);
+
+	kReturn[0].kValueName="FoundServerUnit";
+	kReturn[0].iValueType=VALUETYPE_BOOL;
+	kReturn[0].pkValue=(void*)&m_bTemp;;
+	
+	return kReturn;
+};
+

@@ -41,7 +41,12 @@ void P_ClientUnit::Update()
 			DisableSelectionRender();
 	}
 	
-	/*if(!m_pkObject->m_kGameMessages.empty())
+/*	if(m_bTemp)
+	{
+		TestCommand();
+		m_bTemp=false;
+	}
+	if(!m_pkObject->m_kGameMessages.empty())
 	{
 		for(int i =0; i<m_pkObject->m_kGameMessages.size; i++)
 			if m_pkObject->m_kGameMessages[i]->mName = string("apa")
@@ -53,12 +58,6 @@ void P_ClientUnit::Update()
 
 void P_ClientUnit::HandleGameMessage(GameMessage& Msg)
 {
-	cout <<"3wrw34523523" <<endl;
-	if(Msg.m_Name == "apa")
-	{
-		TestCommand();
-		cout<<"unit is a APA" <<endl;
-	}
 		
 }
 
@@ -131,7 +130,7 @@ void P_ClientUnit::PackTo(NetPacket* pkNetPacket)
 	else 
 		pkNetPacket->Write(&iCommandsToSend, sizeof(iCommandsToSend));
 	
-	iCommandsToSend = -1; 
+	/*iCommandsToSend = -1; 
 	if(!m_kCommandsToDo.empty())
 	{
 		iCommandsToSend=m_kCommandsToDo.size();
@@ -143,7 +142,7 @@ void P_ClientUnit::PackTo(NetPacket* pkNetPacket)
 		}
 	}
 	else 
-		pkNetPacket->Write(&iCommandsToSend, sizeof(iCommandsToSend));
+		pkNetPacket->Write(&iCommandsToSend, sizeof(iCommandsToSend));*/
 	
 	g_ZFObjSys.Logf("net", "PackCliUnit End\n");
 }
@@ -165,7 +164,7 @@ void P_ClientUnit::PackFrom(NetPacket* pkNetPacket)
 			m_kUnitCommands.push_back(kTempUCInfo);
 		}
 	}
-	pkNetPacket->Read(&iCommandsToRecive, sizeof(iCommandsToRecive));
+	/*pkNetPacket->Read(&iCommandsToRecive, sizeof(iCommandsToRecive));
 	if(iCommandsToRecive > 0)
 	{
 		UnitCommand TempCommand;
@@ -174,16 +173,17 @@ void P_ClientUnit::PackFrom(NetPacket* pkNetPacket)
 			pkNetPacket->Read(&TempCommand, sizeof(UnitCommand));
 			m_kCommandsPending.push(TempCommand);
 		}
-	}	
+	}*/	
 		
 }
 
-void P_ClientUnit::TestCommand()
+/*void P_ClientUnit::TestCommand()
 {
+	cout<<"TEst command!!!" <<endl; 
 	UnitCommand Temp;
 	strcpy(Temp.m_acCommandName,"Move");
 	m_kCommandsToDo.push(Temp);
-}
+}*/
 
 
 COMMON_API Property* Create_P_ClientUnit()
@@ -191,3 +191,15 @@ COMMON_API Property* Create_P_ClientUnit()
 	return new P_ClientUnit();
 
 }
+
+/*vector<PropertyValues> P_ClientUnit::GetPropertyValues()
+{
+	vector<PropertyValues> kReturn(1);
+
+	kReturn[0].kValueName="MoveApa!";
+	kReturn[0].iValueType=VALUETYPE_BOOL;
+	kReturn[0].pkValue=(void*)&m_bTemp;;
+	
+	return kReturn;
+};*/
+

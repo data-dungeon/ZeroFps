@@ -16,7 +16,7 @@
 #include <string>
 #include "common_x.h"
 #include "externalcommand.h"
-#include "UnitCommand.h"
+#include "unitcommand.h"
 
 
 using namespace std;
@@ -48,7 +48,7 @@ class COMMON_API P_ServerUnit: public Property {
 		
 	public:
 		UnitInfo				m_kInfo;
-
+		void HandleGameMessage(GameMessage& Msg);
 	
 		P_ServerUnit();
 		void CloneOf(Property* pkProperty) { }
@@ -64,6 +64,8 @@ class COMMON_API P_ServerUnit: public Property {
 		bool RegisterExternalCommand(ExternalCommand* kCommand);
 		bool RemoveExternalCommand(string kCommandName);
 		bool RunExternalCommand(UnitCommand* kCommand);
+
+
 };
 
 COMMON_API Property* Create_P_ServerUnit();

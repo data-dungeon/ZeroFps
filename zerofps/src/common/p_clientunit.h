@@ -18,6 +18,7 @@
 #include "p_serverunit.h"
 #include "unitcommandinfo.h"
 #include "p_clientinput.h"
+#include "unitcommand.h"
 
 using namespace std;
 
@@ -25,7 +26,7 @@ using namespace std;
 class COMMON_API P_ClientUnit: public Property {
 	private:
 		ZeroFps*				 m_pkFps;
-		queue<UnitCommand> m_kCommandsToDo;
+//		queue<UnitCommand> m_kCommandsToDo;
 		
 		bool					 m_bCurrentSelectionRenderState;
 		//P_ClientInput*     m_pkClientInput;
@@ -49,9 +50,12 @@ class COMMON_API P_ClientUnit: public Property {
 		void PackTo(NetPacket* pkNetPacket);
 		void PackFrom(NetPacket* pkNetPacket);
 		
-		void TestCommand();
+//		void TestCommand();
 		void HandleGameMessage(GameMessage& Msg);
-		queue<UnitCommand> m_kCommandsPending;
+//		queue<UnitCommand> m_kCommandsPending;
+/// TempTemp
+//		vector<PropertyValues> GetPropertyValues();
+//		bool m_bTemp;
 };
 
 COMMON_API Property* Create_P_ClientUnit();

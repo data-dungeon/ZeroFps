@@ -33,14 +33,16 @@ void P_ServerUnit::Update()
 	
 	GetClientUnitP();
 	UpdateClient();
-	if(!m_pkClientUnit->m_kCommandsPending.empty())
+	//cout<<"external com:" <<m_kExternalCommands.size() <<endl;
+	/*if(!m_pkClientUnit->m_kCommandsPending.empty())
 	{
+		cout<<"commands pendeing" <<endl;
 		while(!m_pkClientUnit->m_kCommandsPending.empty())
 		{
 			RunExternalCommand(&m_pkClientUnit->m_kCommandsPending.front());
 			m_pkClientUnit->m_kCommandsPending.pop();
 		}
-	}
+	}*/
 }
 
 
@@ -136,7 +138,7 @@ COMMON_API Property* Create_P_ServerUnit()
 bool P_ServerUnit::RegisterExternalCommand(ExternalCommand* kCommand)
 {
 	map<string, ExternalCommand*>::iterator kIt = m_kExternalCommands.find(string(kCommand->m_kUnitCommandInfo.m_acCommandName));
-	if(kIt!= m_kExternalCommands.end())
+	if(kIt== m_kExternalCommands.end())
 	{
 		m_kExternalCommands[string(kCommand->m_kUnitCommandInfo.m_acCommandName)] = kCommand;
 		m_bUpdateCommands = true;
@@ -162,6 +164,7 @@ bool P_ServerUnit::RemoveExternalCommand(string kCommandName)
 			
 bool P_ServerUnit::RunExternalCommand(UnitCommand* kCommand)
 {
+	cout<<"run exrt" <<endl;
 	map<string, ExternalCommand*>::iterator kIt = m_kExternalCommands.find(string(kCommand->m_acCommandName));
 	if(kIt!= m_kExternalCommands.end())
 	{
@@ -172,3 +175,16 @@ bool P_ServerUnit::RunExternalCommand(UnitCommand* kCommand)
 	else 
 		return false;
 };
+
+void P_ServerUnit::HandleGameMessage(GameMessage& Msg)
+{
+	
+	if(Msg.m_Name == "fisk")
+	{
+	UnitCommand Temp;
+	strcpy(Temp.m_acCommandName,"Move");
+	RunExternalCommand(&Temp);
+		
+	}
+		
+}

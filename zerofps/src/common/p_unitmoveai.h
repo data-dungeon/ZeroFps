@@ -18,6 +18,7 @@
 #include "externalcommand.h"
 #include "aibase.h"
 
+
 //#include "unitcommandinfo.h"
 
 using namespace std;
@@ -34,9 +35,11 @@ public:
 	AIBase* RunUnitCommand(int iCommandID, int iXDestinaton, int iYDestinaton, int iTarget);
 	void CloneOf(Property* pkProperty) { }
 	void Init();
+	vector<PropertyValues> GetPropertyValues();
 private: 
 	P_ServerUnit* m_pkUnit;
 	ExternalCommand* m_pkMoveUnitCommand;
+	bool m_bTemp;
 	enum 
 	{ UNIT_MOVE };
 
