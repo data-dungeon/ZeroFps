@@ -11,7 +11,8 @@ void PSystemProperty::Update()
       // returns true if the PSystem is finished
 		if ( !m_pkPSystem->Update( m_pkObject->GetWorldPosV(), m_pkObject->GetWorldRotM() ) )
  		   m_pkPSystem->Draw();
-//      else
+      else
+         glPopAttrib();
 //      {
 //         delete m_pkPSystem;
 
