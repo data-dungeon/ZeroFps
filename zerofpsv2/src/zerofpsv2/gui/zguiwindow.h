@@ -135,6 +135,9 @@ public:
 	typedef pair<ZGuiSkin*, string> SKIN_DESC;
 
 	virtual void GetWndSkinsDesc(vector<SKIN_DESC>& pkSkinDesc) const;
+	void SetClipperArea(Rect rc);
+
+	bool m_bUseClipper;
 
 protected:
 
@@ -150,6 +153,7 @@ protected:
 	ZGuiFont* m_pkFont;
 	char* m_strText;
 	int m_iTextLength;
+	Rect m_kClipperArea; ///< Pixels outside this area will not be rendered
 
 	char m_szName[50]; // Same name as the resource manager use to find the window.
 	unsigned int m_iID; // Kan vara 0 och är i så fall ett statisk fönster.

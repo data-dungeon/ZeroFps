@@ -61,6 +61,9 @@ ZGuiWnd::ZGuiWnd(Rect kRectangle, ZGuiWnd* pkParent, bool bVisible, int iID)
 	SetWindowFlag(WF_TOPWINDOW); // ett vanligt fönster kan vara ett top fönster
 
 	//afBkColorBuffer[0]=afBkColorBuffer[1]=afBkColorBuffer[2]=-1.0f;
+
+	m_bUseClipper = false;
+	m_kClipperArea = Rect(0,0,800,600);
 }
 
 ZGuiWnd::~ZGuiWnd()
@@ -254,10 +257,20 @@ bool ZGuiWnd::Render(ZGuiRender* pkRenderer)
 	pkRenderer->RenderBorder(m_kArea);
 
 	// Render childrens back to front
-	for( WINrit w = m_kChildList.rbegin();
-		 w != m_kChildList.rend(); w++)
+	for( WINrit w = m_kChildList.rbegin(); w != m_kChildList.rend(); w++)
 			if( (*w)->m_bVisible == true)
+			{
+				if((*w)->m_bUseClipper)
+				{
+					pkRenderer->EnableClipper(true); 
+					pkRenderer->SetClipperArea((*w)->m_kClipperArea);
+				}
+
 				(*w)->Render( pkRenderer );
+
+				if((*w)->m_bUseClipper)
+					pkRenderer->EnableClipper(false);
+			}
 
 	return true;
 	
@@ -614,4 +627,9 @@ void ZGuiWnd::CopyNonUniqueData(const ZGuiWnd* pkSrc)
 	m_pkParent = pkSrc->m_pkParent;
 	m_pkGUI =pkSrc->m_pkGUI;
 	m_pkCallback = pkSrc->m_pkCallback;
+}
+
+void ZGuiWnd::SetClipperArea(Rect rc)
+{
+	m_kClipperArea = rc;
 }

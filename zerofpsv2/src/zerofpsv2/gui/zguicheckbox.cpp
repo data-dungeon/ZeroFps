@@ -56,6 +56,7 @@ bool ZGuiCheckbox::Render( ZGuiRender* pkRenderer )
 	}
 
 	pkRenderer->SetSkin(m_pkSkin);
+	pkRenderer->SetClipperArea(m_kClipperArea);  
 	pkRenderer->RenderQuad(GetScreenRect());
 
 	if(m_pkSkin)

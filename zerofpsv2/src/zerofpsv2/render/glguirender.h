@@ -16,6 +16,7 @@ class TextureManager;
 class RENDER_API GLGuiRender : public ZGuiRender  
 {
 public:
+	void EnableClipper(bool bEnable);
 	GLGuiRender();
 	virtual ~GLGuiRender();
 
@@ -38,6 +39,7 @@ public:
 	bool SetDisplay(int w, int h);
 	bool SetFont(ZGuiFont* pkFont);
 	void GetScreenSize(int& cx, int& cy);
+	void SetClipperArea(Rect rc);
 
 private:
 	void PrintWord(int x, int y, char* szWord, int offset, int length);
@@ -54,6 +56,8 @@ private:
 	int m_iCursorPos;
 
 	Rect m_rcTextBox;
+	Rect m_rcClipperArea;
+	bool m_bClipperEnabled;
 };
 
 #endif

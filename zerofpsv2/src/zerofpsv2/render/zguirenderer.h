@@ -26,7 +26,9 @@ public:
 
 	virtual bool StartRender() = 0;
 	virtual bool EndRender() = 0;
-	
+	virtual void EnableClipper(bool bEnable) = 0;
+
+	virtual void SetClipperArea(Rect rc) = 0;
 	virtual bool RenderRects(vector<tRGBRect>& akLines) = 0;
 	virtual bool RenderPoints(vector<tRGBPoint>& akLines) = 0;
 	virtual bool RenderQuad(Rect kScreenRect) = 0;
@@ -44,8 +46,6 @@ public:
 };
 
 #endif 
-
-//Kan man säga till OpenGL att den skall rendera ens punkter i 2D-fönster koordinater?
 
 
 

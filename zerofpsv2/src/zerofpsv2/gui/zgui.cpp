@@ -296,7 +296,21 @@ bool ZGui::Render()
 	// Blit windows with lowest z order first.
 	for(list<MAIN_WINDOW*>::reverse_iterator it = m_pkMainWindows.rbegin();
 	 it != m_pkMainWindows.rend(); it++)
-			(*it)->pkWnd->Render(m_pkRenderer);
+	 {
+		 ZGuiWnd* pkWnd = (*it)->pkWnd;
+
+		 if(pkWnd->m_bUseClipper)
+		 {
+			 m_pkRenderer->EnableClipper(true); 
+			 m_pkRenderer->SetClipperArea(pkWnd->m_kClipperArea);
+		 }
+
+		(*it)->pkWnd->Render(m_pkRenderer);
+
+		 if(pkWnd->m_bUseClipper)
+			 m_pkRenderer->EnableClipper(false);
+		
+	 }
 
 	// Render a yellow frame around the window that have focus if the bk texture isn't hollow.
 /*	if(ZGuiWnd::m_pkFocusWnd)

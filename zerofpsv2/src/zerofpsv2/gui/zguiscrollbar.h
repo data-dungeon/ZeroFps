@@ -51,6 +51,7 @@ private:
 	bool m_bAutoHideScrollbar;
 	unsigned int m_nMax, m_nMin, m_nPos, m_usThumbSize;
 	float m_fPageSize;
+	int m_iScrollPosXBefore, m_iScrollPosYBefore;
 	
 };
 

@@ -99,6 +99,8 @@ private:
 	int m_iStartrow, m_iStartcol;
 	int m_iItemWidth, m_iItemHeight;
 	map<string,ZGuiTreeboxNode*> m_kNodeMap;
+
+	int PREV_VERT_SCROLLROW, PREV_HORZ_SCROLLCOL;
 };
 
 #endif // #ifndef _GUI_ZGUITREEBOX_H

@@ -43,6 +43,9 @@ ZGuiTreebox::ZGuiTreebox(Rect kArea, ZGuiWnd* pkParent, bool bVisible, int iID)
 	CreateInternalControls();
 	m_iItemHeight = 0;
 	m_iItemWidth = 0;
+
+	PREV_VERT_SCROLLROW = -1000;
+	PREV_HORZ_SCROLLCOL = -1000;
 }
 
 ZGuiTreebox::~ZGuiTreebox()
@@ -132,6 +135,12 @@ ZGuiTreeboxNode* ZGuiTreebox::CreateNode(ZGuiTreeboxNode* pkParent, char* szText
 	
 	pkButton->SetMoveArea(pkNewItem->pkButton->GetScreenRect());
 	pkButton->SetText(szText);
+
+	Rect rcClipper = GetScreenRect();
+	rcClipper.Right -= SCROLL_BUTTON_HEIGHT;
+	rcClipper.Bottom -= SCROLL_BUTTON_HEIGHT;
+	pkButton->SetClipperArea(rcClipper); 
+	pkButton->m_bUseClipper = true;
 
 	// Sätt normal skin på både checked/unchecked eftersom noden ännu inte
 	// har några barn (byts ut när ett barn skapas med denna nod som förälder).
@@ -232,7 +241,8 @@ void ZGuiTreebox::OpenNode(ZGuiTreeboxNode *pkClickNode, bool bOpen)
 		}
 	}
 
-	int max = -10000000, min =  10000000;
+	int max_y = -10000000, min_y =  10000000;
+	int max_x = -10000000, min_x =  10000000;
 
 	for(itNode it=m_kNodeList.begin(); it!=m_kNodeList.end(); it++)
 	{
@@ -261,27 +271,44 @@ void ZGuiTreebox::OpenNode(ZGuiTreeboxNode *pkClickNode, bool bOpen)
 												// eftersom den kan ha ändrats.
 		if((*it)->bIsOpen)
 		{
-			if(rc.Bottom > max)
-				max = rc.Bottom;
-			if(rc.Top < min)
-				min = rc.Top;
+			if(rc.Bottom > max_y)
+				max_y = rc.Bottom;
+			if(rc.Top < min_y)
+				min_y = rc.Top;
 
 			if(rc.Bottom>GetScreenRect().Bottom || rc.Top<GetScreenRect().Top)
 				(*it)->pkButton->Hide();
 			else
 				(*it)->pkButton->Show();
+
+			ZGuiFont* pkFont = (*it)->pkButton->GetFont();
+
+			if(pkFont)
+			{
+				int x_pos = rc.Left + pkFont->GetLength((*it)->pkButton->GetText());
+
+				if(x_pos > max_x) max_x = x_pos;
+				if(x_pos < min_x) min_x = x_pos;
+			}
 		}
 	}
 
-	min += BUTTON_SIZE; // räkna inte med root noden.
+	min_y += BUTTON_SIZE; // räkna inte med root noden.
+	min_x += BUTTON_SIZE; 
 
-	if(!(max == -10000000 && min == 10000000))
-		m_iItemHeight = abs(max-min);
+	if(!(max_y == -10000000 && min_y == 10000000))
+		m_iItemHeight = abs(max_y-min_y);
 	else
 		m_iItemHeight = BUTTON_SIZE+VERT_ROW_SPACE;
 
+	if(!(max_x == -10000000 && min_x == 10000000))
+		m_iItemWidth = abs(max_x-min_x);
+	else
+		m_iItemWidth = BUTTON_SIZE+VERT_ROW_SPACE;
+
 	// Change range of vertical scrollbar
 	ChangeScrollbarRange(m_iItemWidth,m_iItemHeight,true);
+	ChangeScrollbarRange(m_iItemWidth,m_iItemHeight,false);
 }
 
 bool ZGuiTreebox::Notify(ZGuiWnd* pkWnd, int iCode)
@@ -376,12 +403,15 @@ bool ZGuiTreebox::Notify(ZGuiWnd* pkWnd, int iCode)
 		if(pkWnd->GetID() == VERT_SCROLLBAR_ID)
 			ScrollRows();
 		if(pkWnd->GetID() == HORZ_SCROLLBAR_ID)
-			ScrollCols();
+			ScrollCols();		
 	}
 	else
 	if(iCode == NCODE_CLICK_DOWN)
 	{
-		ScrollRows();
+		if(pkWnd->GetID() == VERT_SCROLLBAR_ID)
+			ScrollRows();
+		if(pkWnd->GetID() == HORZ_SCROLLBAR_ID)
+			ScrollCols();
 	}
 
 	return true;
@@ -457,20 +487,24 @@ void ZGuiTreebox::ChangeScrollbarRange(int width, int height, bool bVerticalScro
 
 		m_pkVertScrollbar->SetScrollInfo(0,iRows,fPageSize,0);
 	}
+	else
+	{
+		int iMax = 100;
+		fPageSize = (float) (m_pkHorzScrollbar->GetScreenRect().Width()-SCROLL_BUTTON_HEIGHT*2) / width; 
+		if(fPageSize > 1.0f)
+			fPageSize = 1.0f;
+
+		m_pkHorzScrollbar->SetScrollInfo(0,iMax,fPageSize,0);
+	}
 }
 
 void ZGuiTreebox::ScrollRows()
 {	
-	static int PREV_VERT_SCROLLROW = -1000;
+	//static int PREV_VERT_SCROLLROW = -1000;
 
 	m_iStartrow = m_pkVertScrollbar->GetPos();
 	if(m_iStartrow < 0)
 		m_iStartrow = 0;
-
-	int row_size = 12;
-
-	if(m_pkFont)
-		row_size = m_pkFont->m_cCharCellSize;
 
 	// Reset parameter
 	m_pkVertScrollbar->m_iScrollChange = 0;
@@ -507,9 +541,9 @@ void ZGuiTreebox::ScrollRows()
 
 void ZGuiTreebox::ScrollCols()
 {
-	static int PREV_HORZ_SCROLLCOL = -1000;
+	//static int PREV_HORZ_SCROLLCOL = -1000;
 
-	m_iStartcol = m_pkVertScrollbar->GetPos();
+	m_iStartcol = m_pkHorzScrollbar->GetPos();
 	if(m_iStartcol < 0)
 		m_iStartcol = 0;
 
@@ -519,15 +553,12 @@ void ZGuiTreebox::ScrollCols()
 		if(PREV_HORZ_SCROLLCOL != -1000)
 			offset -= PREV_HORZ_SCROLLCOL;
 
-		for(itNode it=m_kNodeList.begin(); it!=m_kNodeList.end(); it++)
-		{
-			(*it)->pkButton->Move(-offset, 0, true, true);
+		for(itNode it=m_kNodeList.begin(); it!=m_kNodeList.end(); it++) {
+			(*it)->pkButton->Move(-(offset*(BUTTON_SIZE+VERT_ROW_SPACE)), 0, true, true);
 			(*it)->pkButton->SetMoveArea((*it)->pkButton->GetScreenRect());
 		}
 
 		PREV_HORZ_SCROLLCOL = m_iStartcol;
-
-		printf("olle\n");
 	}
 }
 
@@ -543,8 +574,7 @@ bool ZGuiTreebox::InsertBranchSkin(unsigned int uiIndex, ZGuiSkin* pkSkin)
 	list<ZGuiSkin*>::iterator itSkin = m_kItemSkinList.begin();
 	for( ; itSkin != m_kItemSkinList.end(); itSkin++)
 	{
-		if(counter == uiIndex)
-		{
+		if(counter == uiIndex) {
 			m_kItemSkinList.insert(itSkin,pkSkin);
 			return true;
 		}

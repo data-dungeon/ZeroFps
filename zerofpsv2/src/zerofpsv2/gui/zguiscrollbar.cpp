@@ -23,6 +23,8 @@ ZGuiScrollbar::ZGuiScrollbar(Rect kArea, ZGuiWnd* pkParent, bool bVisible, int i
 	CreateInternalControls();
 	m_bEnabled = true;
 	m_iScrollChange = 0;
+	m_iScrollPosXBefore = 0;
+	m_iScrollPosYBefore = 0;
 	m_bAutoHideScrollbar = true;
 	m_usThumbSize = 20;
 	m_fPageSize = 1.0f;
@@ -196,24 +198,46 @@ bool ZGuiScrollbar::Notify(ZGuiWnd* pkWnd, int iCode)
 		if(pkWnd->GetID() == SCROLLTHUMB_ID)
 		{
 			Rect rcButton = pkWnd->GetScreenRect();
-
 			Rect rcArea = GetScreenRect();
-			rcArea.Top += SCROLL_BUTTON_HEIGHT;
-			rcArea.Bottom -= SCROLL_BUTTON_HEIGHT;
 
-			int size = rcArea.Height();
-			int y = rcButton.Top - rcArea.Top;
+			float fProcentAvMax;
 
-			float fProcentAvMax = (float) y / (float) size;
+			int  scroll_pos;
 
-			static int POS_BEFORE;
-			POS_BEFORE = (int)m_nPos;
+			if(!m_bHorzintal)
+			{
+				rcArea.Top += SCROLL_BUTTON_HEIGHT;
+				rcArea.Bottom -= SCROLL_BUTTON_HEIGHT;
 
+				int size = rcArea.Height();
+				int y = rcButton.Top - rcArea.Top;
+
+				fProcentAvMax = (float) y / (float) size;
+
+				m_iScrollPosYBefore = (int)m_nPos;
+				scroll_pos = m_iScrollPosYBefore;
+			}
+			else
+			{
+				rcArea.Left += SCROLL_BUTTON_HEIGHT;
+				rcArea.Right -= SCROLL_BUTTON_HEIGHT;
+
+				int size = rcArea.Width();
+				int x = rcButton.Left - rcArea.Left;
+
+				fProcentAvMax = (float) x / (float) size;
+
+				m_iScrollPosXBefore = (int)m_nPos;
+				scroll_pos = m_iScrollPosXBefore;
+			}
+
+			//static int m_iScrollPosBefore;
+			
 			m_nPos = (unsigned int) (fProcentAvMax * (float)(m_nMax-m_nMin+1));
 
-			int change = abs(POS_BEFORE-(int)m_nPos);
+			int change = abs(scroll_pos-(int)m_nPos);
 
-			if(m_nPos < (unsigned int) POS_BEFORE)
+			if(m_nPos < (unsigned int) scroll_pos)
 				m_iScrollChange = change;
 			else
 				m_iScrollChange = -change;

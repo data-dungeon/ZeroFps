@@ -22,6 +22,7 @@ GLGuiRender::GLGuiRender()
 	m_pkSkin = NULL;
 	m_iScreenWidth = 1024;
 	m_iScreenHeight = 768;
+	m_bClipperEnabled = false;
 }
 
 bool GLGuiRender::StartUp()	
@@ -100,6 +101,13 @@ bool GLGuiRender::RenderQuad(Rect rc)
 {
 	if(!m_pkSkin)
 		return false;
+
+	if(m_bClipperEnabled)
+	{
+		if(m_rcClipperArea.Left > rc.Left || m_rcClipperArea.Right < rc.Right || 
+			m_rcClipperArea.Top > rc.Top || m_rcClipperArea.Bottom < rc.Bottom)
+			return true;
+	}
 
 	// Don't render if skin is transparent.
 	if(m_pkSkin->m_bTransparent)
@@ -697,17 +705,22 @@ void GLGuiRender::PrintWord(int x, int y, char *szWord,
 
 		if(m_rcTextBox.Inside(x, y))
 		{
-			float tx = (float) fx / m_pkFont->m_iBMPWidth;
-			float ty = (float) fy / m_pkFont->m_iBMPWidth;
-			float tw = (float) fw / m_pkFont->m_iBMPWidth;
-			float th = (float) fh / m_pkFont->m_iBMPWidth;
+			if( !m_bClipperEnabled || (m_bClipperEnabled && 
+				 x > m_rcClipperArea.Left && x+fw < m_rcClipperArea.Right &&
+				 y < 600-m_rcClipperArea.Top && y+fh > 600-m_rcClipperArea.Bottom))
+			{
+				float tx = (float) fx / m_pkFont->m_iBMPWidth;
+				float ty = (float) fy / m_pkFont->m_iBMPWidth;
+				float tw = (float) fw / m_pkFont->m_iBMPWidth;
+				float th = (float) fh / m_pkFont->m_iBMPWidth;
 
-			glTexCoord2f(tx,ty);		glVertex2i(x,y+fh);		 
-			glTexCoord2f(tx+tw,ty);		glVertex2i(x+fw,y+fh);    
-			glTexCoord2f(tx+tw,ty+th);	glVertex2i(x+fw,y);    
-			glTexCoord2f(tx,ty+th);		glVertex2i(x,y);
-
-			g_bLettersPrinted++;
+				glTexCoord2f(tx,ty);		glVertex2i(x,y+fh);		 
+				glTexCoord2f(tx+tw,ty);		glVertex2i(x+fw,y+fh);    
+				glTexCoord2f(tx+tw,ty+th);	glVertex2i(x+fw,y);    
+				glTexCoord2f(tx,ty+th);		glVertex2i(x,y);
+				
+				g_bLettersPrinted++;
+			}
 		}
 
 		x+=iCurrLegth;
@@ -784,11 +797,12 @@ bool GLGuiRender::RenderRects(vector<tRGBRect>& akRects)
 	return true;
 }
 
+void GLGuiRender::SetClipperArea(Rect rc)
+{
+	m_rcClipperArea = rc;
+}
 
-
-
-
-
-
-
-
+void GLGuiRender::EnableClipper(bool bEnable)
+{
+	m_bClipperEnabled = bEnable;
+}
