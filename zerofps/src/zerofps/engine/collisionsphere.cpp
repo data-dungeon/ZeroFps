@@ -36,12 +36,13 @@ bool CollisionSphere::CollideSphere(CollisionSphere *kCs,Vector3 *pkPos) {
 	
 
 	if( kDistance.Length() < (*m_fRadius + *kCs->m_fRadius) ){
-		kDistance.Normalize();
+		if(kDistance.Length()==0){
+			*pkPos=*m_kPos;
+		} else {
 		
-//		kDistance.Print();
-//		cout<<endl;
-		
-		*pkPos= *m_kPos + (kDistance * (*m_fRadius));
+			kDistance.Normalize();
+			*pkPos= *m_kPos + (kDistance * (*m_fRadius));
+		}
 		return true;
 	}
 	

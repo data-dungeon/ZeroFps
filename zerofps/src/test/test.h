@@ -13,6 +13,7 @@
 #include "ballobject.h"
 #include "playerballobject.h"
 #include "playerobject.h"
+#include "bunnyobject.h"
 
 class Test :public Application {
 	HeightMap *test;

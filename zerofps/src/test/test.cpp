@@ -94,7 +94,7 @@ void Test::OnInit(void) {
 	
 	
 	
-	
+/*	
 	
 	for(int i=0;i<50;i++) {
 		Object *ball=new BallObject(test,pkFps);
@@ -105,8 +105,17 @@ void Test::OnInit(void) {
 		ball->GetPos()=Vector3(x,test->Height(x,y)+10,y);
 		pkObjectMan->Add(ball);
 		pkCollisionMan->Add(ball);
-	}
+	}*/
 
+	for(int i=0;i<200;i++) {
+
+		Object *sussi=new BunnyObject(test,pkFps);
+		float x=300 + rand()%100;
+		float y=720 + rand()%100;
+		sussi->GetPos()=Vector3(x,test->Height(x,y),y);
+		pkObjectMan->Add(sussi);
+		pkCollisionMan->Add(sussi);
+	}
 
 	glEnable(GL_LIGHTING );
 	
@@ -214,3 +223,11 @@ void Test::input() {
 	pkFps->GetCam()->GetRot().x+=z/5.0;
 	pkFps->GetCam()->GetRot().y+=x/5.0;
 }
+
+
+
+
+
+
+
+

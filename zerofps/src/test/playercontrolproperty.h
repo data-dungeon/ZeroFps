@@ -16,7 +16,6 @@ class PlayerControlProperty: public Property {
 		HeightMap *m_pkMap;
 				
 	public:
-		float ner;		
 		
 		PlayerControlProperty(Input *pkInput,ZeroFps *pkFps,HeightMap *pkMap);
 
