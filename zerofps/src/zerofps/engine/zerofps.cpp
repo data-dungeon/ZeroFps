@@ -364,6 +364,7 @@ void ZeroFps::Update_System()
 
 		m_fSystemUpdateTime = GetTicks();
 	}
+
 }
 
 void ZeroFps::Draw_EngineShell()
@@ -759,10 +760,10 @@ void ZeroFps::RunCommand(int cmdid, const CmdArgument* kCommand)
 			
 			
 			if(strcmp(kCommand->m_kSplitCommand[1].c_str(), "vim") == 0) {
-				strcpy(g_szIpPort, "192.168.0.145:4242");
+				strcpy(g_szIpPort, "192.168.0.101:4242");
 				}
 			else if(strcmp(kCommand->m_kSplitCommand[1].c_str(), "hugo") == 0) {
-				strcpy(g_szIpPort, "192.168.0.101:4242");
+				strcpy(g_szIpPort, "192.168.0.145:4242");
 				}
 			else if(strcmp(kCommand->m_kSplitCommand[1].c_str(), "dvoid") == 0) {
 				strcpy(g_szIpPort, "192.168.0.126:4242");
