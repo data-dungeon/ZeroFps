@@ -107,6 +107,7 @@ void InventoryDlg::Open()
 	g_kMistClient.GetWnd("OpenInventoryBn")->Hide();
 	g_kMistClient.PositionActionButtons();
 
+	// Create tooltip
 	ZGuiSkin* pkToolTipSkin = new ZGuiSkin();
 	pkToolTipSkin->m_unBorderSize = 8;
 
@@ -270,6 +271,9 @@ void InventoryDlg::OnMouseMove(bool bLeftButtonPressed, int mx, int my)
 
 void InventoryDlg::PickUpFromGround(bool bLeftButtonPressed, int mx, int my)
 {
+	if(m_kMoveSlot.m_iIndex != -1)
+		return;
+
 	const float WAIT_TIME_PICKUP = 0.25f;
 
 	float fTime = (float) SDL_GetTicks() / 1000.0f;
@@ -281,21 +285,19 @@ void InventoryDlg::PickUpFromGround(bool bLeftButtonPressed, int mx, int my)
 			for(int i=0; i<m_vkInventoryItemList.size(); i++)
 				if(m_vkInventoryItemList[i].iItemID == m_iItemUnderCursor)
 				{
-					if(bLeftButtonPressed)
-					{
-						m_kMoveSlot.bIsInventoryItem = true;
-						m_kMoveSlot.m_iIndex = i;
-					
-						Point size = SlotSizeFromWnd(m_vkInventoryItemList[i].pkWnd);
-						int id = m_vkInventoryItemList[i].pkWnd->GetSkin()->m_iBkTexID;
+					m_kMoveSlot.bIsInventoryItem = true;
+					m_kMoveSlot.m_iIndex = i;
+				
+					Point size = SlotSizeFromWnd(m_vkInventoryItemList[i].pkWnd);
+					int id = m_vkInventoryItemList[i].pkWnd->GetSkin()->m_iBkTexID;
 
-						m_kCursorRangeDiff = Point(0,0);
-						g_kMistClient.m_pkGui->SetCursor( mx, my, id, -1, size.x*32, size.y*32);							
-					}					
+					m_kCursorRangeDiff = Point(0,0);
+					g_kMistClient.m_pkGui->SetCursor( mx, my, id, -1, size.x*32, size.y*32);				
 					break;
 				}
 
 			m_iItemUnderCursor = -1;
+			static int apa = 0; printf("apa = %i\n", apa++);
 		}
 	}
 	else
@@ -489,13 +491,12 @@ void InventoryDlg::UpdateInventory(vector<MLContainerInfo>& vkItemList)
 
 		((ZGuiLabel*) pkNewSlot)->m_eTextAlignment = ZGLA_BottomRight;
 
-		//if(g_kMistClient.m_pkGui->m_bMouseLeftPressed)
-			if(m_iItemUnderCursor == vkItemList[i].m_iItemID)
-			{
-				float fTime = (float) SDL_GetTicks() / 1000.0f;
-				m_fPickUpTimer = fTime;
-				pkNewSlot->Hide();
-			}
+		if(m_iItemUnderCursor == vkItemList[i].m_iItemID)
+		{
+			float fTime = (float) SDL_GetTicks() / 1000.0f;
+			m_fPickUpTimer = fTime;
+			pkNewSlot->Hide();
+		}
 
 		pkNewSlot->SetSkin(new ZGuiSkin());
 		pkNewSlot->GetSkin()->m_iBkTexID = m_pkTexMan->Load(

@@ -471,6 +471,10 @@ void MistClient::Input()
 						m_pkInventoryDlg->m_iItemUnderCursor = m_iPickedEntityID;	
 					else
 						m_pkInventoryDlg->m_iItemUnderCursor = -1;
+
+					if(m_bGuiCapture == false)
+						m_pkInventoryDlg->m_iItemUnderCursor = -1;
+
 				}
 				else 
 				// if not an item do first action
