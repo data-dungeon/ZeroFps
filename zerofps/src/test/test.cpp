@@ -35,7 +35,7 @@ void Test::OnInit(void) {
 	float b=1.2;
 
 	pkFps->m_pkCmd->Add(&speed,"g_speed",type_float);		
-	speed=0.05;
+	speed=0.025;
   	
   	m_iGrass=0;	
 	pkFps->m_pkCmd->Add(&m_iGrass,"g_grass",type_int);		  	
@@ -43,54 +43,39 @@ void Test::OnInit(void) {
 	pkFps->m_pkCmd->Add(&m_iGrassVolyme,"g_grassvolyme",type_int);		  	
 
   
-  pkRender->SetFog(Vector4(.50,.55,.88,1),2,225,350,true);
+  pkRender->SetFog(Vector4(.50,.55,.88,1),2,150,200,true);
 
 	testa.Load("babe.pmd");
 	
 	pkLight->SetCamera(pkFps->m_kCamPos);
 	
 	LightSource *spot=new LightSource();
-	Vector3 *spotpos=new Vector3(50,15,50);
+	Vector3 *spotpos=new Vector3(25,10,25);
 	Vector3 *spotrot=new Vector3(.8,-.2,0);	
 		spot->kPos=spotpos;
 		spot->kRot=spotrot;
-		spot->kDiffuse=Vector4(0,0,8,1);
+		spot->kDiffuse=Vector4(0,0,2,1);
+		spot->kAmbient=Vector4(0,0,0,0);		
 		spot->fCutoff=20;	
 		spot->fExp=20;
 		spot->fConst_Atten=0;
 		spot->fQuadratic_Atten=0.001;
 		spot->iType=SPOT_LIGHT;			
 
-	LightSource *spot2=new LightSource();
-	Vector3 *spotpos2=new Vector3(370,100,420);
-	Vector3 *spotrot2=new Vector3(0,-.5,-.5);	
-		spot2->kPos=spotpos2;
-		spot2->kRot=spotrot2;
-		spot2->kDiffuse=Vector4(2,0,0,1);
-		spot2->fCutoff=15;	
-		spot2->fExp=15;
-		spot2->fConst_Atten=0;
-		spot2->fQuadratic_Atten=0.001;		
-		spot2->iType=SPOT_LIGHT;
-
 
 	LightSource *sol=new LightSource;	
-	Vector3 *solrot=new Vector3(0,0,0);	
-	m_kSolpos=new Vector3(300,20,350);
-		sol->kPos=m_kSolpos;
+	Vector3 *solrot=new Vector3(.4,.4,.2);	
+	Vector3 *solpos=new Vector3(1000,1000,1000);
 		sol->kRot=solrot;
-		sol->kDiffuse=Vector4(1.2,1.2,0.9,1);
+		sol->kPos=solpos;		
+		sol->kDiffuse=Vector4(1.0,1.0,1.0,1);
 		sol->kAmbient=Vector4(.1,.1,.1,.1);
-		sol->fCutoff=20;	
-		sol->fExp=20;
-		sol->fConst_Atten=1;
 		sol->iType=POINT_LIGHT;			
 		sol->iPriority=10;
 
 
-	pkLight->Add(spot);
+//	pkLight->Add(spot);
 	pkLight->Add(sol);
-	pkLight->Add(spot2);	
 
 }
 
@@ -102,9 +87,9 @@ void Test::OnIdle(void) {
 	pkRender->DrawHMlod(test,*pkFps->m_kCamPos,pkFps->m_iFps);		
 
 
-	m_kSolpos->x=sin(SDL_GetTicks()/4000.0)*2000+512;
-	m_kSolpos->y=cos(SDL_GetTicks()/4000.0)*2000;
-	m_kSolpos->z=512;
+//	m_kSolpos->x=sin(SDL_GetTicks()/4000.0)*2000+512;
+//	m_kSolpos->y=cos(SDL_GetTicks()/4000.0)*2000;
+//	m_kSolpos->z=512;
 
 /*	glPushMatrix();
 		glTranslatef(m_kSolpos->x,m_kSolpos->y,m_kSolpos->z);
@@ -117,15 +102,15 @@ void Test::OnIdle(void) {
 		
 	
 	if(m_iGrass>0)
-		for(int ix=0;ix<1000;ix+=50)
-			for(int iy=0;iy<1000;iy+=50)
-				pkRender->DrawGrassPatch(*pkFps->m_kCamPos,Vector3(ix,0,iy),Vector3(3.5,.8,3.5),50,m_iGrassVolyme,test,pkTexMan->Load("file:../data/textures/grass2.tga",T_NOMIPMAPPING),pkFps->m_iFps);
+		for(int ix=0;ix<500;ix+=10)
+			for(int iy=0;iy<500;iy+=10)
+				pkRender->DrawGrassPatch(*pkFps->m_kCamPos,Vector3(ix,0,iy),Vector3(1,.1,1),10,m_iGrassVolyme,test,pkTexMan->Load("file:../data/textures/grass2.tga",T_NOMIPMAPPING),pkFps->m_iFps);
 
 
 	glPushMatrix();
-		glTranslatef(370,test->Height(370,405),405);
+		glTranslatef(70,test->Height(70,50),50);
 		glColor3f(0,0,1);
-		glScalef(.025,.025,.025);
+		glScalef(.01,.01,.01);
 		testa.draw();
 	glPopMatrix();
 
@@ -137,8 +122,8 @@ void Test::OnIdle(void) {
 	float z=pkFps->m_kCamPos->z;
 	float x=pkFps->m_kCamPos->x;	
 	
-	if(pkFps->m_kCamPos->y<test->Height(x,z)+1.5)
-		pkFps->m_kCamPos->y=test->Height(x,z)+1.5;	
+	if(pkFps->m_kCamPos->y<test->Height(x,z)+.5)
+		pkFps->m_kCamPos->y=test->Height(x,z)+.5;	
 
 }
 

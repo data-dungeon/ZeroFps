@@ -329,10 +329,10 @@ void HeightMap::GenerateTextures() {
 				GetVert(x,z)->color=Vector3(.6,.45,0.3);				
 			}				
 			else {
-				if(height<6) {  //if we are very low draw nice sand =)
+				if(height<5) {  //if we are very low draw nice sand =)
 					GetVert(x,z)->texture=0;
 					GetVert(x,z)->color=Vector3(.80,.70,.60);
-					if(height<0.0001) {
+					if(height<0.00005) {//Make a bix bad hole
 						GetVert(x,z)->height=-80;
 						GetVert(x,z)->color=Vector3(.001,.001,.51);
 						GetVert(x,z)->normal=Vector3(0,0,0);

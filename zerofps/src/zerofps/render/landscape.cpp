@@ -8,10 +8,11 @@ void Render::DrawSkyBox(Vector3 CamPos) {
 	glDisable(GL_LIGHTING);//dont want lighting on the skybox		
 	glDepthMask(GL_FALSE);//want the skybox to be faaaaaar away =)
 	
-	glTranslatef(CamPos.x,CamPos.y+100,CamPos.z);
+
 	
 	
-	int iSize=501;	
+	int iSize=200;	
+	glTranslatef(CamPos.x,CamPos.y+iSize/4,CamPos.z);
 
 	Quad(Vector3(0,0,-iSize/2),Vector3(0,0,0),Vector3(iSize,iSize,iSize),m_pkTexMan->Load("file:../data/textures/front.bmp",0));
 	Quad(Vector3(0,iSize/2,0),Vector3(90,0,0),Vector3(iSize,iSize,iSize),m_pkTexMan->Load("file:../data/textures/top.bmp",0));
@@ -35,7 +36,7 @@ void Render::DrawSkyBox(Vector3 CamPos) {
 
 void Render::DrawWater(Vector3 kCamPos,Vector3 kPosition,Vector3 kHead,int iSize,int iStep) {
 	float freq=500.0;
-	float amp=1.0;
+	float amp=0.5;
 	
 	glPushMatrix();
 	
@@ -548,8 +549,8 @@ void Render::DrawGrassPatch(Vector3 kCamPos,Vector3 kPos,Vector3 kScale,int fW,i
 	
 	srand(1);
 	for(int i=0;i<iNr;i++){
-		float x=rand()%fW + (kPos.x-fW/2);
-		float z=rand()%fW + (kPos.z-fW/2);
+		float x=(rand()%fW*1000)/1000.0 + (kPos.x-fW/2);
+		float z=(rand()%fW*1000)/1000.0 + (kPos.z-fW/2);
 		float y=kMap->Height(x,z)+kScale.y/2;
 	
 		if(kMap->GetVert(int(x-kMap->m_kPosition.x),int(z-kMap->m_kPosition.z))->texture!=1)

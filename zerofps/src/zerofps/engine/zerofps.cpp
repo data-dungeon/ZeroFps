@@ -64,6 +64,7 @@ void ZeroFps::MainLoop(void) {
 				
 				//this changes mode to console
 				if(m_pkInput->Pressed(TAB)){
+					glPushAttrib(GL_LIGHTING_BIT);
 					glDisable(GL_LIGHTING);
 					m_iState=state_console;
 					m_pkInput->Reset();
@@ -129,7 +130,7 @@ void ZeroFps::InitDisplay(int iWidth,int iHeight,int iDepth) {
 	
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();													//
-	glFrustum(-.5,.5,-.5,.5,.5,500.0);				//
+	glFrustum(-.25,.25,-.25,.25,.25,400);				//
 	
 	//set camera mode
 	m_iCamMode=cam_look; 

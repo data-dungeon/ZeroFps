@@ -29,7 +29,7 @@ LightSource::LightSource() {
 Light::Light() {
 	m_iNrOfLights=8;
 	glLightModelf(GL_LIGHT_MODEL_TWO_SIDE,0);
-	glEnable(GL_LIGHTING);
+//	glEnable(GL_LIGHTING);
 }
 
 void Light::SetCamera(Vector3 *kCamPos) {

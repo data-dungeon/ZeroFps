@@ -29,7 +29,7 @@ void Console::Update(void) {
 		if(m_kEvent.type==SDL_KEYDOWN){
 
 			if(m_kEvent.key.keysym.sym==SDLK_TAB) {
-				glEnable(GL_LIGHTING);
+				glPopAttrib();
 				m_pkEngine->m_iState=state_normal;
 				return;
 			}
