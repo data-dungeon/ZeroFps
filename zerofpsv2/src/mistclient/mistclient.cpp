@@ -257,39 +257,18 @@ void MistClient::Input()
 	case KEY_P:
 		{
 			ZFSoundInfo kSound;
-
-			static int COUNTER = 0;
-
 			kSound.m_bLoop = false;
 			kSound.m_kDir = Vector3(0,0,-1);
 			kSound.m_kPos = Vector3(0,0,0);
-			
-			if(COUNTER==0)
-			{
-				strcpy(kSound.m_acFile, "data/sound/dummy.wav");
-		//		COUNTER++;
-			}
-/*			else
-			if(COUNTER==1)
-			{
-				strcpy(kSound.m_szFile, "data/sound/test.wav");
-				COUNTER++;
-			}
-			else
-			if(COUNTER==2)
-			{
-				strcpy(kSound.m_szFile, "data/sound/walk.wav");
-				COUNTER = 0;
-			}*/
-			
+			strcpy(kSound.m_acFile, "data/sound/dummy.wav");
 			pkAudioSys->StartSound(kSound);
 		}
 		break;
 
 	case KEY_O:
+		{
 
 		ZFSoundInfo kSound;
-
 		kSound.m_kDir = Vector3(0,0,-1);
 		kSound.m_kPos = Vector3(0,0,0);
 		kSound.m_bLoop = true;
@@ -299,6 +278,15 @@ void MistClient::Input()
 			printf("Failed to desroy sound\n");
 		else
 			printf("Succedded to desroy sound\n");
+		}
+		break;
+
+	case KEY_F1:
+
+		printf("Num active sounds = %i\nNum active sounds = %i\n",
+			pkAudioSys->GetNumActiveSounds(),
+			pkAudioSys->GetNumActiveChannels());
+
 		break;
 	}
 

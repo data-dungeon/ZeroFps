@@ -178,11 +178,11 @@ bool ZFAudioSystem::StartUp()
 	Register_Cmd("musicvolume",FID_MUSICVOLUME);
 	Register_Cmd("musicbuffers",FID_MUSICBUFFERS);
 
-   alutInit (0, NULL); 
+	alutInit (0, NULL); 
 	alGetError();
-   alListenerf(AL_GAIN, 1.0f);
-   alDopplerFactor(1.0f); 
-   alDopplerVelocity(343); 
+	alListenerf(AL_GAIN, 1.0f);
+	alDopplerFactor(1.0f); 
+	alDopplerVelocity(343); 
 
 	if(!GenerateSourcePool())
 	{
@@ -209,7 +209,7 @@ bool ZFAudioSystem::StartUp()
 bool ZFAudioSystem::GenerateSourcePool()
 {
 	m_uiSourcePoolSize = 15; // Vi antar att vi åtminstånde har 16 kanaler, vilket
-							 // ger oss 15 eftersom OggMusic använder en.
+									 // ger oss 15 eftersom OggMusic använder en.
 
 	m_pkSourcePool = new SOURCE_POOL[m_uiSourcePoolSize];
 
@@ -335,25 +335,21 @@ bool ZFAudioSystem::StartSound(ZFSoundInfo kSound)
 	LoadRes(pkSound);
 
 	// Hitta en ledigt ljudkanal.
-	for(unsigned int i=0; i<m_uiSourcePoolSize; i++)
+	int channel = GetFreeChannel();
+	if(channel == -1)
 	{
-		if(m_pkSourcePool[i].second == false) // ledig kanal
-		{
-			// Markera att kanalen är upptagen
-			m_pkSourcePool[i].second = true;
-
-			// Markera vilken source name index ljudet skall ha.
-			pkSound->m_uiSourceBufferName = m_pkSourcePool[i].first;
-
-			break;
-		}
+		printf("Failed to find free channel for sound\n");
+		return false;
 	}
+
+	m_pkSourcePool[channel].second = true; // markera att kanalen är upptagen
+	pkSound->m_uiSourceBufferName = m_pkSourcePool[channel].first; // registrera vilken ljudkanal ljudet spelar på
+
+	// Flagga att ljudet är initierat på nytt.
+	alSourceRewind( pkSound->m_uiSourceBufferName );
 
 	// Lägg till ljudet till vektorn med aktiva ljud.
 	m_kActiveSounds.push_back( pkSound );
-
-	// Flagga att ljudet är initierat på nytt.
-	alSourcei( pkSound->m_uiSourceBufferName, AL_SOURCE_STATE, AL_INITIAL );
 
 	return true;
 }
@@ -532,24 +528,15 @@ bool ZFAudioSystem::RestartLoopSound(ZFSoundInfo *pkSound)
 	bool bFoundChannel = false;
 
 	// Hitta en ledigt ljudkanal.
-	for(unsigned int i=0; i<m_uiSourcePoolSize; i++)
-	{
-		if(m_pkSourcePool[i].second == false) // ledig kanal
-		{
-			// Markera att kanalen är upptagen
-			m_pkSourcePool[i].second = true;
+	int channel = GetFreeChannel();
+	if(channel == -1)
+		return false;
 
-			// Markera vilken source name index ljudet skall ha.
-			pkSound->m_uiSourceBufferName = m_pkSourcePool[i].first;
-
-			bFoundChannel = true;
-
-			break;
-		}
-	}
+	m_pkSourcePool[channel].second = true;
+	pkSound->m_uiSourceBufferName = m_pkSourcePool[channel].first;
 
 	// Flagga att ljudet är initierat på nytt.
-	alSourcei( pkSound->m_uiSourceBufferName, AL_SOURCE_STATE, AL_INITIAL );
+	alSourceRewind( pkSound->m_uiSourceBufferName );
 
 	return bFoundChannel;
 }
@@ -601,6 +588,8 @@ bool ZFAudioSystem::UnLoadRes(ZFSoundInfo* pkSound)
 
 void ZFAudioSystem::Update()
 {
+	//printf("size = %i\n", m_kActiveSounds.size());
+
 	//
 	// Spela upp ogg music.
 	//
@@ -638,6 +627,8 @@ void ZFAudioSystem::Update()
 			//
 			if(bHearable)
 			{
+				printf("mmmm\n");
+
 				if(pkSound->m_pkResource == NULL)
 				{
 					printf("pkSound->m_pkResource == NULL!\n");
@@ -652,18 +643,12 @@ void ZFAudioSystem::Update()
 					return;
 				}
 
-				alSourcei(pkSound->m_uiSourceBufferName, 
-					AL_BUFFER, buffer );	
-				alSourcef(pkSound->m_uiSourceBufferName, 
-					AL_REFERENCE_DISTANCE, 3.5f);
-				alSourcef(pkSound->m_uiSourceBufferName, 
-					AL_GAIN, 1.0f);
-				alSourcefv(pkSound->m_uiSourceBufferName, 
-					AL_POSITION, &pkSound->m_kPos[0]);	
-				alSourcefv(pkSound->m_uiSourceBufferName, 
-					AL_VELOCITY, &pkSound->m_kDir[0]);
-				alSourcei(pkSound->m_uiSourceBufferName, 
-					AL_LOOPING, pkSound->m_bLoop ? 1 : 0);
+				alSourcei(pkSound->m_uiSourceBufferName, AL_BUFFER, buffer );	
+				alSourcef(pkSound->m_uiSourceBufferName, AL_REFERENCE_DISTANCE, 3.5f);
+				alSourcef(pkSound->m_uiSourceBufferName, AL_GAIN, 1.0f);
+				alSourcefv(pkSound->m_uiSourceBufferName, AL_POSITION, &pkSound->m_kPos[0]);	
+				alSourcefv(pkSound->m_uiSourceBufferName, AL_VELOCITY, &pkSound->m_kDir[0]);
+				alSourcei(pkSound->m_uiSourceBufferName, AL_LOOPING, pkSound->m_bLoop ? 1 : 0);
 
 				alGetError(); // Clear Error Code
 
@@ -689,6 +674,7 @@ void ZFAudioSystem::Update()
 					AL_POSITION,&pkSound->m_kPos[0]);	
 				alSourcefv(pkSound->m_uiSourceBufferName, 
 					AL_VELOCITY,&pkSound->m_kDir[0]);
+				printf("playing\n");
 			}
 			else
 			{
@@ -724,7 +710,6 @@ void ZFAudioSystem::Update()
 				
 				// Frigör poolen
 				m_pkSourcePool[j].second = false;
-				pkSound->m_uiSourceBufferName = 0;
 				
 				// Ta bort ljudet om det inte loopar. Ifall det loopar så 
 				// behåller vi ljudet men laddar ur resursen och flaggar att 
@@ -748,4 +733,16 @@ void ZFAudioSystem::Update()
 			}
 		}
 	}
+
+	
+}
+
+int ZFAudioSystem::GetFreeChannel()
+{
+	// Hitta en ledigt ljudkanal.
+	for(unsigned int i=0; i<m_uiSourcePoolSize; i++)
+		if(m_pkSourcePool[i].second == false) // ledig kanal
+			return i;
+
+	return -1;
 }

@@ -56,7 +56,9 @@ class ENGINE_SYSTEMS_API ZFSoundInfo
 		friend class ZFAudioSystem;
 };
 
-/**	\brief	Sub System for Sound. Use this system to play (start) or stop sounds by 
+/** \brief	Sub System for Sound. 
+
+Use this system to play (start) or stop sounds by 
 creating a (temporary) ZFSoundInfo object and call StartSound. Both loop sounds and
 single sound can be created. The system creates internal copies of the sounds and uses
 a cach system to load and unload wav files from memory when they are no longer needed,
@@ -107,6 +109,7 @@ public:
 	Vector3 GetListnerDir() { return m_kHead; }
 
 private:
+	
 	bool m_bIsValid;
 	
 	OggMusic* m_pkMusic;
@@ -132,6 +135,7 @@ private:
 	bool LoadRes(ZFSoundInfo* pkSound);
 	bool UnLoadRes(ZFSoundInfo* pkSound);
 	unsigned short ChangeResCounter(string strFileName, unsigned short modification);
+	int GetFreeChannel();
 };
 
 #endif // #ifndef _THE_ZFAUDIOSYSTEM_H_
