@@ -1,6 +1,6 @@
 #include "audiosystem.h"
 #include <stdlib.h>
-
+ 
 ZFSound::ZFSound()
 {
 	m_uiIndex = 0;
@@ -159,7 +159,7 @@ void ZFAudioSystem::Init()
 
    alDopplerVelocity(343); // using meters/second
 
-	SetListnerPosition(Vector3(0,0,0),Vector3(0,1,1),Vector3(0,1,0));
+	SetListnerPosition(Vector3(0,0,0),Vector3(0,1,0),Vector3(0,1,0));
 }
 
 void ZFAudioSystem::SetListnerPosition(Vector3 kPos,Vector3 kHead,Vector3 kUp) 

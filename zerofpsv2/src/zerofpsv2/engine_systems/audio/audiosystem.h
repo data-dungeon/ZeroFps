@@ -13,7 +13,7 @@
 #include "../../basic/vector4.h"
 #include "../../basic/zfresource.h"
 
-#define DUMMY_SOUND "../data/sound/dummy.wav"
+#define DUMMY_SOUND "/data/sound/dummy.wav"
 #define MAX_NUM_SOURCES 10
 
 class ZFSound;

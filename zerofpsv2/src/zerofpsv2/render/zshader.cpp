@@ -598,14 +598,6 @@ void ZShader::CleanCopyedData()
 
 void ZShader::Draw()
 {	
-/*	static bool hora=false;;
-	
-	if(!hora)
-	{	
-		testvp->SetRes("data/vertexprogram/testvp.zvp");
-		hora=true;
-	}*/
-
 	glPushMatrix();
 	
 	SetupPrerenderStates();
