@@ -14,7 +14,7 @@ P_Camera::P_Camera()
 	m_iSide=PROPERTY_SIDE_CLIENT;
 
 	m_pkFps = static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
-
+	
 	m_fFov = 90;
 	m_kDynamicIso.Set(0,0,0);
 	m_kInterPos.Set(0,0,0);
@@ -81,9 +81,21 @@ void P_Camera::Update()
 				kOffset = kRot.VectorTransform(kOffset);
 				kOffset *= m_f3PDistance;									
 	 			kOffset += m_kOffset;
-								
+				
+				//check camera against enviroment so nothing is betwean camera and player				
+				float fD = LineTest(m_pkEntity->GetIWorldPosV() + kOffset,m_pkEntity->GetIWorldPosV() + m_kOffset);				
+				if(fD < m_f3PDistance)
+				{
+					m_f3PDistance -= 0.2;
+				
+					kOffset.Set(0,0,-1);				
+					kOffset = kRot.VectorTransform(kOffset);
+					kOffset *= m_f3PDistance;									
+		 			kOffset += m_kOffset;
+				}
 				
 				LookAt(m_pkEntity->GetIWorldPosV() + kOffset,m_pkEntity->GetIWorldPosV() + m_kOffset,Vector3(0,1,0));
+				
 				
 
 				strCamName = " 3P ";
@@ -235,6 +247,41 @@ void P_Camera::SetCamera(Camera *pkCamera)
 		//cout<<"current camera position "<<m_pkCamera->GetPos().x<<" "<<m_pkCamera->GetPos().y<<" "<<m_pkCamera->GetPos().z<<endl;
 		//cout<<"new position "<<m_pkObject->GetWorldPosV().x<<" "<< m_pkObject->GetWorldPosV().y<<" "<<m_pkObject->GetWorldPosV().z<<endl;
 	}
+}
+
+float P_Camera::LineTest(const Vector3& kStart,const Vector3& kStop)
+{	
+	Vector3 dir = (kStop - kStart).Unit();
+
+	vector<Entity*> kObjects;
+	m_pkEntityManager->GetZoneEntity()->GetAllEntitys(&kObjects);
+	
+	float closest = 999999999;
+	Entity* pkClosest = NULL;	
+	for(unsigned int i=0;i<kObjects.size();i++)
+	{
+		if(kObjects[i] == m_pkEntity)
+			continue;
+			
+		//get mad property and do a linetest
+		P_Mad* mp = (P_Mad*)kObjects[i]->GetProperty("P_Mad");
+		if(mp)
+		{
+			if(mp->TestLine(kStart,dir))
+			{	
+				float d = (kStart - mp->GetLastColPos()).Length();
+					
+				if(d < closest)
+				{
+					closest = d;
+					pkClosest = kObjects[i];
+				}				
+			}
+		}		
+		
+	}
+	
+	return closest;
 }
 
 

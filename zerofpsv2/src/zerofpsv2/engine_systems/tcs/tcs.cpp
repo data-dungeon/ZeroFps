@@ -606,15 +606,14 @@ bool Tcs::TestLineVSMesh(Vector3 kStart,Vector3 kDir,P_Tcs* pkB)
 			return true;
 		}
 	}
-	else if (pkB->m_pkHmap) {
-			if(pkB->LineVSMesh(kStart,kDir))
-			{
-				m_kLastLineTestColPos = pkB->m_kColPos;
-				return true;
-			}
+	else if (pkB->m_pkHmap) 
+	{
+		if(pkB->LineVSMesh(kStart,kDir))
+		{
+			m_kLastLineTestColPos = pkB->m_kColPos;
+			return true;
 		}
-
-
+	}
 
 	return false;	
 }

@@ -32,7 +32,6 @@ class ENGINE_SYSTEMS_API P_Camera : public Property
 		Camera*		m_pkCamera;			// Camera to refresh.
 		CamType_e	m_eCameraType;		// How the camera will behave.
 		ZeroFps*		m_pkFps;
-		
 
 		float		m_fFov;
 		Vector3	m_kDynamicIso;		
@@ -46,6 +45,8 @@ class ENGINE_SYSTEMS_API P_Camera : public Property
 		void Look(Vector3 kCamPosision,Vector3 kLookDir,Vector3 kCamUp);
 		
 
+		float LineTest(const Vector3& kStart,const Vector3& kStop);
+		
 	public:
 		P_Camera();
 	
