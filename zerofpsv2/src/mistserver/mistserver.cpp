@@ -10,6 +10,7 @@
 #include "../zerofpsv2/engine_systems/propertys/p_mad.h"
 #include "../zerofpsv2/engine_systems/propertys/p_primitives3d.h"
 #include "../zerofpsv2/engine_systems/propertys/p_track.h"
+#include "../zerofpsv2/engine/p_pfmesh.h"
 #include "../zerofpsv2/gui/zgui.h"
 #include "../zerofpsv2/engine_systems/script_interfaces/si_gui.h"
 
@@ -1067,9 +1068,32 @@ void MistServer::HandleOrders()
 			Entity* ob = pkObjectMan->GetObjectByNetWorkID(order->m_iCaracter);			
 			if(ob)
 			{
-				P_Event* pe = (P_Event*)ob->GetProperty("P_Event");
+				/* Vim Test Path*/
+				kPathStart = ob->GetWorldPosV();
+				kPathEnd   = order->m_kPos;
+				kPath.clear();
+				bool bres = m_pkAStar->GetPath(kPathStart,kPathEnd,kPath);
+
+				if(bres) {
+					cout << "Path was found. Size " << kPath.size()  << endl;
+					P_PfMesh* pm = (P_PfMesh*)ob->GetProperty("P_PfMesh");
+					if(pm) {
+						reverse(kPath.begin(), kPath.end());
+						kPath.push_back(order->m_kPos);
+						pm->SetPath(kPath);
+						}
+					
+					}
+				else {
+					cout << "Path was NOT found" << endl;
+					}
+
+
+
+				/*P_Event* pe = (P_Event*)ob->GetProperty("P_Event");
 				if(pe)
 					pe->SendGroudClickEvent(order->m_sOrderName.c_str(), order->m_kPos,order->m_iFace,order->m_iCaracter ,order->m_iZoneObjectID);
+				*/
 			}
 
 		}

@@ -9,6 +9,8 @@ using namespace std;
 class ENGINE_API P_PfMesh : public Property 
 {
 	private:
+		vector<Vector3>	m_kPath;
+		int					m_iNextGoal;
 
 	public:
 		P_PfMesh();
@@ -22,6 +24,8 @@ class ENGINE_API P_PfMesh : public Property
 
 		void PackTo(NetPacket* pkNetPacket, int iConnectionID );
 		void PackFrom(NetPacket* pkNetPacket, int iConnectionID );
+
+		void SetPath(vector<Vector3> kPath);
 
 	protected:
 		vector<PropertyValues> GetPropertyValues();

@@ -14,8 +14,6 @@
 #define	ZF_DEF_PLAYERS	8
 #define	ZF_MAX_PLAYERS	64
 
-
-
 int		g_iNumOfFrames;
 int		g_iNumOfMadSurfaces;
 float	g_fMadLODScale;
@@ -24,6 +22,7 @@ int		g_iLogRenderPropertys;
 char g_szIpPort[256];
 
 static char Devformat_text[4096];	//
+Property* Create_P_PfMesh();
 
 ZeroFps::ZeroFps(void) : I_ZeroFps("ZeroFps") 
 {
@@ -936,6 +935,9 @@ void ZeroFps::RegisterPropertys()
 	m_pkPropertyFactory->Register("P_Mad",					Create_MadProperty);				
 	m_pkPropertyFactory->Register("P_AmbientSound",		Create_AmbientSound);			
 	m_pkPropertyFactory->Register("P_PSystem",			Create_PSystemProperty);											
+
+	
+	m_pkPropertyFactory->Register("P_PfMesh",				Create_P_PfMesh);											
 
 	// Other Propertys.
 	m_pkPropertyFactory->Register("P_Heightmap2",		Create_P_Heightmap2);
