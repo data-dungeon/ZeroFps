@@ -15,14 +15,23 @@ void Test::OnInit(void) {
 
 	test=new HeightMap();
 	test->Random();
-//	test->SetTileSet("file:../data/textures/land.bmp");
+	test->SetTileSet("file:../data/textures/land.bmp");
 	test->GenerateNormals();
-//	test->MakeQuadTree();
 
+/*
+	test2=new HeightMap();
+	test2->Random();
+	test2->GenerateNormals();
+	test2->SetPosition(Vector3(0,0,50));
+*/
+//	float x,y;
+//	pkRender->GiveTexCor(x,y,4);
 //	exit(1);
+
+
 	GLfloat light_position[] ={0,60,0,1};
-	GLfloat white_light[] = {0.5,0.5,0.5,0.5};
-	GLfloat lmodel_ambient[] = {0.5,0.5,0.5,0.5};
+	GLfloat white_light[] = {0.6,0.6,0.6,0.6};
+	GLfloat lmodel_ambient[] = {0.6,0.6,0.6,0.6};
 
   glColorMaterial(GL_FRONT,GL_AMBIENT_AND_DIFFUSE);
   glColorMaterial(GL_BACK,GL_AMBIENT_AND_DIFFUSE);
@@ -46,9 +55,10 @@ void Test::OnIdle(void) {
 	z=cos(pkFps->GetTicks()/1000.0)*400;
 //  light_position[0]=x;
 //  light_position[2]=z;
-//  glLightfv(GL_LIGHT0,GL_POSITION,light_position);	
+  glLightfv(GL_LIGHT0,GL_POSITION,light_position);	
 
 	pkRender->DrawHMlod(test,*pkFps->m_kCamPos);		
+//	pkRender->DrawHMlod(test2,*pkFps->m_kCamPos);			
 //	pkRender->DrawHM(test);		
 	pkRender->SetFont("file:../data/textures/text/console.bmp");	
 	pkRender->Print(Vector3(x,20,z),Vector3(0,0,0),Vector3(5,5,5),"HEJ JULLE");

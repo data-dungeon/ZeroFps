@@ -304,7 +304,9 @@ void Render::DrawHMlod(HeightMap* kmap,Vector3 CamPos){
 	int detail=20;//height meens greater detail att longer range
 	
 	glPushMatrix();
-//	glTranslatef(-slicesize,0,-3);
+	
+	//translate to map position
+	glTranslatef(kmap->m_kPosition.x,kmap->m_kPosition.y,kmap->m_kPosition.z);
 
 	m_pkTexMan->BindTexture(kmap->m_acTileSet);
 //	glPolygonMode(GL_FRONT,GL_LINE);	
@@ -317,37 +319,60 @@ void Render::DrawHMlod(HeightMap* kmap,Vector3 CamPos){
 	glTexEnvf(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE);
 	SetColor(Vector3(255,255,255));
 
-
-
 	Vector3 p1,p2;
 	
+	//calculate number slices depending on the size of the lod tiles size
 	int slices=(kmap->m_iHmSize-1)/slicesize;
 	int step=1;
 	
 	for(int sz=0;sz<slices;sz++) {
 		for(int sx=0;sx<slices;sx++) {
-			step=int((CamPos-Vector3(sx*slicesize+slicesize/2,0,sz*slicesize+slicesize/2)).length()/detail);
-//			step=1;
-			if(step<1)
+			//set lop steps depending on the distance to the center of the lod tile
+			step=int((CamPos-Vector3(kmap->m_kPosition.x+sx*slicesize+slicesize/2,kmap->m_kPosition.y,kmap->m_kPosition.z+sz*slicesize+slicesize/2)).length()/detail);
+			if(step<1)//step cant be lower than 1
 				step=1;				
-			if(step>6)
+			if(step>6)//if the step get to high it will look realy bad
 				step=6;
 				
-//			step=2;
-//			cout<<"Step:"<<step<<endl;
+			bool flip=false;	//texture fliper
+			float t,s;   			//texture cordinats
+			
+			//start going trouh all vertexes in the slice
 			for(int z=sz*slicesize;z<sz*slicesize+slicesize;z+=step){
-				glBegin(GL_TRIANGLE_STRIP);		
+				glBegin(GL_TRIANGLE_STRIP);						
 				for(int x=sx*slicesize;x<sx*slicesize+slicesize+step;x+=step){
-//					Dot(x,kmap->verts[z*kmap->m_iHmSize+x].height,z);	
-
+					
+					//flip texture
+					if(flip==false)
+						flip=true;
+					else
+						flip=false;
+					
+					GiveTexCor(t,s,1);//caculate texture cordinats
+					
+					
+					//vertex down
 					p1=Vector3(x,kmap->verts[z*kmap->m_iHmSize+x].height,z);				
 					glNormal3fv((float*)&kmap->verts[z*kmap->m_iHmSize+x].normal);
-			 		glTexCoord2f(x,0);glVertex3fv((float*)&p1);
+					
+					if(flip)						
+				 		glTexCoord2f(t+0.01,s-0.01);
+ 					else
+ 						glTexCoord2f(t+0.24,s-0.01);
+ 						
+			 		glVertex3fv((float*)&p1);//set vertex
  		
+ 					//vertex up
 					p2=Vector3(x,kmap->verts[(z+step)*kmap->m_iHmSize+x].height,z+step);			 		
 			 	  glNormal3fv((float*)&kmap->verts[(z+step)*kmap->m_iHmSize+x].normal);
-			 		glTexCoord2f(x,1);glVertex3fv((float*)&p2);		 				
-								
+			 		
+					if(flip)	
+				 		glTexCoord2f(t+0.01,s-0.24);
+ 					else
+ 						glTexCoord2f(t+0.24,s-0.24);
+					
+					glVertex3fv((float*)&p2); //set vertex
+			 		
 				}					
 				glEnd();
 			}
@@ -372,11 +397,16 @@ void Render::DrawConsole(char* m_aCommand,vector<char*>* m_kText) {
 	}
 }
 
+//this funktion calculates the texture cordinat for a subtexture in a 1024x1024 texture
 void Render::GiveTexCor(float &iX,float &iY,int iNr) {	
 	iX=(iNr%4);	
 	iY=(iNr-(iNr%4))/4;
 
-	cout<<"X: "<<iX<< "  Y: "<<iY<<endl;
+	iX*=0.25;
+	iY*=0.25;
+	iY=1-iY;
+	
+//	cout<<"X: "<<iX<< "  Y: "<<iY<<endl;
 }
 
 

@@ -30,14 +30,17 @@ class BASIC_API HeightMap {
 		int m_iMaxSteps;
 		char m_acTileSet[256];
 		HM_vert *m_kCenter;
+		Vector3 m_kPosition;
 		
 		HeightMap();		
 		void Zero();
 		void Random();
 		bool Load(char* acFile);
+		bool Save(char* avFile);
 		void GenerateNormals();
 		float Height(int x,int z);
 		void SetTileSet(char* acTileSet);
+		void SetPosition(Vector3 kNewPos);
 		
 		void MakeQuadTree();
 		HM_vert* CreateQuad(int x,int z,int width,int step,bool more);

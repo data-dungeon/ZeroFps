@@ -11,6 +11,7 @@
 
 class Test :public Application {
 	HeightMap *test;
+	HeightMap *test2;
 
 	GLfloat light_position[];
 	GLfloat white_light[] ;
