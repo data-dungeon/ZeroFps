@@ -683,7 +683,9 @@ bool ZeroRTS::AlreadySelected(int iID)
 
 bool ZeroRTS::RemoveSelectedObject(int iID)
 {
-	GetClientUnit(iID)->m_bSelected = false;	
+	P_ClientUnit* pkTemp = GetClientUnit(iID);
+	if(pkTemp)
+		pkTemp->m_bSelected = false;	
 	m_kSelectedObjects.remove(iID);	
 	
 	return true;
@@ -692,8 +694,11 @@ bool ZeroRTS::RemoveSelectedObject(int iID)
 void ZeroRTS::ClearSelected()
 {
 	for(list<int>::iterator it = m_kSelectedObjects.begin();it != m_kSelectedObjects.end();it++)		
-		GetClientUnit((*it))->m_bSelected = false;
-
+	{
+		P_ClientUnit* pkTemp = GetClientUnit((*it));
+		if(pkTemp)
+			pkTemp->m_bSelected = false;
+	}
 	m_kSelectedObjects.clear();
 }
 
@@ -701,8 +706,10 @@ void ZeroRTS::ClearSelected()
 P_ClientUnit* ZeroRTS::GetClientUnit(int iID)
 {
 	Object* pkObject = pkObjectMan->GetObjectByNetWorkID(iID);
-	
-	return (P_ClientUnit*)pkObject->GetProperty("P_ClientUnit");
+	if(!pkObject) 
+		return NULL;
+	else
+		return (P_ClientUnit*)pkObject->GetProperty("P_ClientUnit");
 }
 
 Point ZeroRTS::GetSqrFromPos(Vector3 pos)
