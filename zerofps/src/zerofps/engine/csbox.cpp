@@ -94,15 +94,18 @@ Collision* CSBox::Collide_CSSphere(CSSphere* kOther,float fTime)
 		}
 	}
 	
-/*	
+
+//	if(!hit)	
+	bool inside=false;
+
+		if(TestInside(O2->GetPos() , kOther->m_pkPP->m_kNewPos , kOther->m_fRadius))
+		{
+			cout<<"inside a box"<<endl;
+			HitPos=m_kColPos;
+			hit=true;
+			inside=true;
+		}
 	
-	if(TestInside(O2->GetPos() , kOther->m_pkPP->m_kNewPos , kOther->m_fRadius))
-	{
-		cout<<"inside a box"<<endl;
-		HitPos=m_kColPos;
-		hit=true;
-	}
-*/	
 	
 	
 	
@@ -112,16 +115,17 @@ Collision* CSBox::Collide_CSSphere(CSSphere* kOther,float fTime)
 
 
 	
-	
-	if(kOther->m_pkPP->m_bGlide)
+	if(!inside)
 	{
-		Vector3 NewPos=kOther->m_pkPP->m_kNewPos + (HitNormal * kOther->m_fRadius);
+		if(kOther->m_pkPP->m_bGlide)
+		{
+			Vector3 NewPos=kOther->m_pkPP->m_kNewPos + (HitNormal * kOther->m_fRadius);
 	
-		Vector3 mov=NewPos - HitPos;
-		Vector3 mov2=HitNormal.Proj(mov);
+			Vector3 mov=NewPos - HitPos;
+			Vector3 mov2=HitNormal.Proj(mov);
 
-
-		HitPos=NewPos-mov2;
+			HitPos=NewPos-mov2;
+		}
 	}
 
 
@@ -373,21 +377,24 @@ bool CSBox::TestInside(Vector3 kPos1,Vector3 kPos2,float fR)
 	int iPlane;
 	for(int i=0;i<6;i++)
 	{
-	/*
+/*	
 		if(!side[i].SphereInside(kPos1,fR))
 			inside=false;
 		
 		if(!side[i].SphereInside(kPos2,fR))
 			inside=false;
-	*/
-		if(side[i].SphereTest(kPos1,fR) >0)
+*/	
+	
+		if((side[i].SphereTest(kPos1,fR) > 0))
 			inside=false;
 		
-		
-		if(side[i].SphereTest(kPos2,fR) >0)
+		if((side[i].SphereTest(kPos2,fR) > 0))
 			inside=false;
 		
-		
+		if(!inside)	
+			return false;
+
+	
 		if(inside)
 		{
 			float d=side[i].SphereTest(kPos2,fR);
@@ -400,11 +407,13 @@ bool CSBox::TestInside(Vector3 kPos1,Vector3 kPos2,float fR)
 	
 	if(inside)
 	{
+		fDist=abs(fDist);
 		cout<<"dist:"<<fDist<<" Plane:"<<iPlane<<endl;
-		m_kColPos=kPos2+side[iPlane].m_kNormal*(fDist*-1);
+		cout<<"moving "<<fDist<<" along "<<side[iPlane].m_kNormal.x<<" "<<side[iPlane].m_kNormal.y<<" "<<side[iPlane].m_kNormal.z<<endl;
+		
+		m_kColPos=kPos2+side[iPlane].m_kNormal*(fDist+coloffset);
 	
 	}
-	
 	
 	return inside;
 }

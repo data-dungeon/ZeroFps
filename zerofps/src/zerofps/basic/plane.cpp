@@ -43,7 +43,7 @@ float Plane::PointTest(Vector3 kPoint)
 
 float Plane::SphereTest(Vector3 kPoint,float fRadius)
 {
-	return (m_kNormal.Dot(kPoint) + m_fD) + fRadius;
+	return (m_kNormal.Dot(kPoint) + m_fD) - fRadius;
 }
 
 bool Plane::LineTest(Vector3 kP1,Vector3 kP2,Vector3* kColPos)
