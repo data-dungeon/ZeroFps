@@ -20,12 +20,14 @@ class MCOMMON_API MLContainerInfo
 	public:
 		string	m_strName;
 		string	m_strIcon;
-	
+			
 		int	m_iItemID;		
 		char	m_cItemX;
 		char	m_cItemY;		
 		char	m_cItemW;
 		char	m_cItemH;
+		
+		int	m_iStackSize;
 };
 
 

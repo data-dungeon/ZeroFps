@@ -443,6 +443,7 @@ void MLContainer::GetItemList(vector<MLContainerInfo>* pkItemList)
 				kTemp.m_cItemY = iY;
 				kTemp.m_cItemW = pkItem->m_iSizeX;
 				kTemp.m_cItemH = pkItem->m_iSizeY;
+				kTemp.m_iStackSize = pkItem->m_iStackSize;
 				
 				
 				pkItemList->push_back(kTemp);

@@ -742,6 +742,7 @@ void MistClient::OnNetworkMessage(NetPacket *pkNetMessage)
 				pkNetMessage->Read(kTemp.m_cItemY);
 				pkNetMessage->Read(kTemp.m_cItemW);
 				pkNetMessage->Read(kTemp.m_cItemH);				
+				pkNetMessage->Read(kTemp.m_iStackSize);				
 				
 				kItemList.push_back(kTemp);
 			}
@@ -752,7 +753,7 @@ void MistClient::OnNetworkMessage(NetPacket *pkNetMessage)
 		
 			for(int i = 0;i<kItemList.size();i++)
 			{
-				cout<<i<<" id:"<<kItemList[i].m_iItemID<<" name:"<<kItemList[i].m_strName<<" icon:"<<kItemList[i].m_strIcon<<" pos:"<<int(kItemList[i].m_cItemX)<<" x "<<int(kItemList[i].m_cItemY)<<endl;			
+				cout<<i<<" id:"<<kItemList[i].m_iItemID<<" name:"<<kItemList[i].m_strName<<" icon:"<<kItemList[i].m_strIcon<<" pos:"<<int(kItemList[i].m_cItemX)<<" x "<<int(kItemList[i].m_cItemY)<<" stack:"<<kItemList[i].m_iStackSize<<endl;			
 			}
 			
 

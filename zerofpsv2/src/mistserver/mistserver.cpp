@@ -1090,7 +1090,8 @@ void MistServer::SendContainer(MLContainer* pkContainer,int iClientID)
 		kNp.Write(kItemList[i].m_cItemX);
 		kNp.Write(kItemList[i].m_cItemY);
 		kNp.Write(kItemList[i].m_cItemW);
-		kNp.Write(kItemList[i].m_cItemH);				
+		kNp.Write(kItemList[i].m_cItemH);						
+		kNp.Write(kItemList[i].m_iStackSize);		
 	}
 	
 	
