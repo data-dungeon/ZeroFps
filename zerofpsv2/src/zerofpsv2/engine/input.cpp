@@ -118,7 +118,7 @@ void Input::MouseXY(int &iX,int &iY)
 }
 
 void Input::UnitMouseXY(float &fX,float &fY) 
-{		
+{	
 	fX = float( (m_iAbsMouseX/(float)m_pkZeroFps->GetWidth())-0.5 );
 	fY = float( (m_iAbsMouseY/(float)m_pkZeroFps->GetHeight())-0.5 );
 }

@@ -168,7 +168,12 @@ bool ZeroFps::StartUp()
 	m_pkGui->SetRes(m_pkRender->GetWidth(), m_pkRender->GetHeight());
 	m_pkApp->m_iWidth = m_pkRender->GetWidth();
 	m_pkApp->m_iHeight = m_pkRender->GetHeight();
-
+	
+	if(m_pkGuiRenderer->SetDisplay(m_pkRender->GetWidth(),m_pkRender->GetHeight()) == false)
+	{
+		printf("Failed to set GUI display!\n");
+	}
+	
 	return true;
 }
 
