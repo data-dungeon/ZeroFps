@@ -46,10 +46,15 @@ void DMLua::Init(EntityManager* pkObjMan,ZFScriptSystem* pkScript)
 	pkScript->ExposeFunction("AddSelectCharSound", DMLua::AddSelectCharSoundLua);
 	pkScript->ExposeFunction("SetTeam", DMLua::SetTeamLua);
 
+	// character behaviours
+	pkScript->ExposeFunction("PanicArea", DMLua::PanicAreaLua);
+
 	// path finding
 	pkScript->ExposeFunction("HavePath", DMLua::HavePathLua);					
 	pkScript->ExposeFunction("MakePathFind", DMLua::MakePathFindLua);
 	pkScript->ExposeFunction("ClearPathFind", DMLua::ClearPathFindLua);
+	pkScript->ExposeFunction("SetRunAnim", DMLua::SetRunAnimLua);
+	pkScript->ExposeFunction("SetIdleAnim", DMLua::SetIdleAnimLua);
 
 	// math
 	pkScript->ExposeFunction("Random", DMLua::RandomLua);
@@ -650,6 +655,50 @@ int DMLua::ClearPathFindLua(lua_State* pkLua)
 				pf->ClearPath();
 		}
 	}
+
+	return 0;
+}
+
+// ------------------------------------------------------------------------------------------------
+
+int DMLua::SetRunAnimLua(lua_State* pkLua)
+{
+	Entity* pkObj = TestScriptInput (2, pkLua);
+
+	if ( pkObj == 0 )
+	{
+		cout << "Warning! DMLua::SetRunAnimLua: Takes two arguments, ID and animationName(str), or objectID not found." << endl;
+		return 0;
+	}
+
+	char caAnimName[255];
+	
+	g_pkScript->GetArgString (pkLua, 1, caAnimName);
+
+	if (P_PfPath* pf = (P_PfPath*)pkObj->GetProperty("P_PfPath"))
+		pf->SetRunAnim(string(caAnimName));
+
+	return 0;
+}
+
+// ------------------------------------------------------------------------------------------------
+
+int DMLua::SetIdleAnimLua(lua_State* pkLua)
+{
+	Entity* pkObj = TestScriptInput (2, pkLua);
+
+	if ( pkObj == 0 )
+	{
+		cout << "Warning! DMLua::SetIdleAnimLua: Takes two arguments, ID and animationName(str), or objectID not found." << endl;
+		return 0;
+	}
+
+	char caAnimName[255];
+	
+	g_pkScript->GetArgString (pkLua, 1, caAnimName);
+
+	if (P_PfPath* pf = (P_PfPath*)pkObj->GetProperty("P_PfPath"))
+		pf->SetIdleAnim(string(caAnimName));
 
 	return 0;
 }
@@ -1443,13 +1492,14 @@ int DMLua::ExplosionLua(lua_State* pkLua)
 
 	g_pkObjMan->GetAllObjects(&kObj);
 
+	Vector3 kBla = pkExpl->GetWorldPosV();
+
 	for ( unsigned int i = 0; i < kObj.size(); i++ )
 	{
 		// check for characters
 		if ( P_DMCharacter* pkChar = (P_DMCharacter*)kObj[i]->GetProperty("P_DMCharacter") )
 		{
 			// check distance
-			Vector3 kBla = pkExpl->GetWorldPosV();
 			double dDist = kObj[i]->GetWorldPosV().DistanceTo(kBla);
 
 			if ( dDist <= dRadie )
@@ -1524,7 +1574,7 @@ int DMLua::AddItemToShopLua(lua_State* pkLua)
 		return 0;
 	}
 
-	if( pkProperty->SetPrice( pkItemProperty->GetName(), dPrice) == false)
+	if( pkProperty->SetPrice( pkItemProperty->GetName(), int(dPrice)) == false)
 	{
 		printf("DMLua::AddItemToShopLua failed! P_DMShop::SetPrice failed.\n");
 		return 0;
@@ -1551,6 +1601,8 @@ int DMLua::AddItemToShopLua(lua_State* pkLua)
 	return 0;
 }
 
+// ------------------------------------------------------------------------------------------------
+
 Entity* DMLua::GetGameInfoEntity()
 {
 	Entity* pkGlobal =  g_pkObjMan->GetGlobalObject();
@@ -1562,5 +1614,49 @@ Entity* DMLua::GetGameInfoEntity()
 	for(unsigned int i=0;i<kObjects.size();i++)
 		if(kObjects[i]->GetProperty("P_DMGameInfo"))
 			return kObjects[i];
+
+	return 0;
 }
 
+// ------------------------------------------------------------------------------------------------
+
+// sourceID, radie (all characters (civilians) in radie from sourceID panics)
+int DMLua::PanicAreaLua(lua_State* pkLua)
+{
+	Entity* pkObj = TestScriptInput (2, pkLua);
+
+	if ( pkObj == NULL )
+	{
+		cout << "Warning! DMLua::PanicLua: Function takes two arguments, ID and radie (float) or entityID not found." << endl;
+		return 0;
+	}
+
+	vector<Entity*> kObj;
+
+	g_pkObjMan->GetAllObjects(&kObj);
+
+	double dRadie;
+
+	g_pkScript->GetArgNumber(pkLua, 1, &dRadie);
+
+	Vector3 kObjPos = pkObj->GetWorldPosV();
+	
+	for ( unsigned int i = 0; i < kObj.size(); i++ )
+	{
+		// check for characters
+		if ( P_DMCharacter* pkChar = (P_DMCharacter*)kObj[i]->GetProperty("P_DMCharacter") )
+		{
+			// check distance
+			double dDist = kObj[i]->GetWorldPosV().DistanceTo(kObjPos);
+
+			if ( dDist <= dRadie && pkChar->m_iState != PANIC && pkChar->m_iState != DEAD )
+				pkChar->ChangeState(PANIC);
+
+		}
+	}
+
+	return 0;
+
+}
+
+// ------------------------------------------------------------------------------------------------

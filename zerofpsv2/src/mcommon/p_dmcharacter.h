@@ -15,7 +15,7 @@
 
 using namespace std;
 
-enum eSTATE { eIDLE, eDEAD, eCROUCH };
+enum eSTATE { IDLE, DEAD, CROUCH, PANIC };
 class MCOMMON_API DMCharacterStats
 {
 	public:
@@ -114,6 +114,9 @@ class MCOMMON_API P_DMCharacter: public Property {
 		// and the function looks for the first item item of that index.
 		// Else ItemIndex is a slotinde, ie. = 0,1,2,3 ie. slot (0,0), (0,1).
 		void UseQuickItem(int iItemIndex, bool bIndexIsItemType); 
+
+		// idle, run, dead, panic etc
+		void ChangeState (int iState);
 		
 		// Speed pathfinding is using
 		void SetMoveSpeed (float fSpeed);		

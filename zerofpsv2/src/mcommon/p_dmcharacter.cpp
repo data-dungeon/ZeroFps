@@ -181,10 +181,7 @@ void P_DMCharacter::Damage(int iType,int iDmg)
 				m_pkObject->GetWorldPosV());
 		}
 		
-		if(P_ScriptInterface* pkSi = (P_ScriptInterface*)m_pkObject->GetProperty("P_ScriptInterface"))
-		{
-			pkSi->CallFunction("Dead");
-		}
+		ChangeState (DEAD);
 	}
 	else
 	{
@@ -701,6 +698,25 @@ bool P_DMCharacter::HandleOrder(DMOrder* pkOrder,bool bNew)
 	}
 	
 	return true;
+}
+
+void P_DMCharacter::ChangeState (int iState)
+{
+	m_iState = iState;
+
+	// if went to panic state, run script function
+	if ( m_iState == PANIC )
+	{
+		if(P_ScriptInterface* pkSi = (P_ScriptInterface*)m_pkObject->GetProperty("P_ScriptInterface"))
+			pkSi->CallFunction("Panic");
+	}
+	// character died :_(
+	else if ( m_iState == DEAD )
+	{
+		if(P_ScriptInterface* pkSi = (P_ScriptInterface*)m_pkObject->GetProperty("P_ScriptInterface"))
+			pkSi->CallFunction("Dead");
+	}
+
 }
 
 Property* Create_P_DMCharacter()

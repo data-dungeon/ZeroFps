@@ -46,6 +46,9 @@ namespace DMLua
 	int MCOMMON_API AddMoveCharSoundLua(lua_State* pkLua);
 	int MCOMMON_API AddSelectCharSoundLua(lua_State* pkLua);
 	int MCOMMON_API SetTeamLua(lua_State* pkLua);
+	
+	// behaviours for characters
+	int MCOMMON_API PanicAreaLua(lua_State* pkLua);
 
 	// SI for guns
 	int MCOMMON_API SetGunFireRateLua(lua_State* pkLua);
@@ -70,6 +73,8 @@ namespace DMLua
 	int MCOMMON_API HavePathLua(lua_State* pkLua);
 	int MCOMMON_API MakePathFindLua(lua_State* pkLua);
 	int MCOMMON_API ClearPathFindLua(lua_State* pkLua);
+	int MCOMMON_API SetRunAnimLua(lua_State* pkLua);
+	int MCOMMON_API SetIdleAnimLua(lua_State* pkLua);
 
 	// math
 	int MCOMMON_API RandomLua(lua_State* pkLua);

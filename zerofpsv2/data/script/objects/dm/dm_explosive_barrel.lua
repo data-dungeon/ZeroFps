@@ -22,4 +22,5 @@ end
 function Dead()
 	RunScript("data/script/objects/dm/t_explosion.lua",SIGetSelfID());
 	Delete (SIGetSelfID());
+	PanicArea(SIGetSelfID(), 20);
 end
