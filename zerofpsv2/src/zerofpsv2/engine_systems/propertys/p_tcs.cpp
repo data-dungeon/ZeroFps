@@ -186,7 +186,7 @@ bool P_Tcs::HandleSetValue( string kValueName, string kValue )
 	if( strcmp(kValueName.c_str(), "walkablegroupflag") == 0 ) 
 	{
 		int flag = atoi(kValue.c_str());
-		cout << "setting walkable group flag:" << flag << endl;
+		//cout << "setting walkable group flag:" << flag << endl;
 
 		SetWalkGroupFlag(flag,true);
 		
@@ -203,7 +203,7 @@ float P_Tcs::GetBoundingRadius()
 	if(mp)
 	{
 		float frad = mp->GetRadius();
-		cout<<"got radius from mad " << frad << endl;
+		//cout<<"got radius from mad " << frad << endl;
 		return frad;	
 	}
 	
@@ -238,13 +238,13 @@ bool P_Tcs::SetupMeshData()
 				
 				m_fScale = pkMP->m_fScale;
 				
-				printf("TCS: Found The Mesh (%d, %d, %d)\n",m_pkFaces->size(), m_pkVertex->size(), m_pkNormal->size() );
+				//printf("TCS: Found The Mesh (%d, %d, %d)\n",m_pkFaces->size(), m_pkVertex->size(), m_pkNormal->size() );
 				return true;
 			}
 		}	
 	}
 	
-	cout<<"TCS: error mech NOT found"<<endl;
+	//cout<<"TCS: error mech NOT found"<<endl;
 	return false;
 }
 
