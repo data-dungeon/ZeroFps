@@ -11,7 +11,6 @@ Container::Container()
 int& Container::GetID(int iX,int iY)
 {
 	return m_piGrid[ (iY * m_iSizeX) + iX ];
-
 }
 
 
@@ -64,7 +63,6 @@ int Container::GetItemPos(Object* pkObject)
 Object* Container::GetItem(int iX,int iY)
 {
 	int id = GetID(iX,iY);
-	Object* pkTemp;	
 	
 	if(id == -1)
 		return NULL;
@@ -172,7 +170,7 @@ bool Container::AddItem(Object* pkObject,int iX,int iY)
 		return false;
 	
 	//check if the slot iX,iY is free
-	if(!CheckFreeSlot(iX,iY,pkIP->m_iItemSizeX,pkIP->m_iItemSizeX))
+	if(!CheckFreeSlot(iX,iY,pkIP->m_iItemSizeX,pkIP->m_iItemSizeY))
 		return false;
 	
 	//create data
@@ -185,7 +183,7 @@ bool Container::AddItem(Object* pkObject,int iX,int iY)
 	m_kObjects.push_back(kTemp);
 
 	//set slot iX,iY to ID
-	SetID(iX,iY,pkIP->m_iItemSizeX,pkIP->m_iItemSizeX,GetItemPos(pkObject));
+	SetID(iX,iY,pkIP->m_iItemSizeX,pkIP->m_iItemSizeY,GetItemPos(pkObject));
 
 	return true;
 }
@@ -228,6 +226,8 @@ bool Container::RemoveItem(Object* pkObject)
 				GetID(x,y) = -1;		
 		}
 	}
+
+	return true;
 }
 
 

@@ -68,7 +68,7 @@ class COMMON_API Container
 		
 		void	PrintContainer();		
 		
-		int	GetNrOfItems() {return m_kObjects.size();};		
+		unsigned int	GetNrOfItems() {return m_kObjects.size();};		
 		GuiData GetGuiData(int iNr);
 };
 

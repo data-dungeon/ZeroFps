@@ -14,13 +14,16 @@
 class Container;
 class TextureManager;
 class Object;
+struct GuiData;
 
 class ItemBox : public DlgBox 
 {
 public:
+	
 	void SetContainer(Container* pkContainer);
 	void Update();
-	ItemBox(ZGui* pkGui, ZGuiWndProc oMainWndProc, TextureManager* pkTexMan);
+	ItemBox(ZGui* pkGui, ZGuiWndProc oMainWndProc, TextureManager* pkTexMan,
+		int iCols=8, int iRows=8, int iSlotSize=48, int iTopX=5, int iTopY=5);
 	virtual ~ItemBox();
 
 	bool DlgProc( ZGuiWnd* pkWnd,unsigned int uiMessage,
@@ -32,16 +35,34 @@ public:
 
 private:
 
-	typedef pair<int,int> slot_pos;
+	typedef pair<int,int > slot_pos;
 
-	map< slot_pos, ZGuiButton* > m_kSlotsTable;
+	
+	bool ButtonSlotExist(int grid_x, int grid_y);
+	void RemoveSlot(int grid_x, int grid_y);
+	void AddSlot(GuiData* pkData);
+	char* GetSlotName(int id);
 
+	/// number of rows and colls
+	const int m_ciRows, m_ciCols;
+
+	/// same pos as the top (x,y) of the first static 
+	/// grid picture in the resource file.
+	const int m_ciTopX, m_ciTopY;
+	
+	/// size of the slots in pixels
 	const int m_ciSlotSize;
+
 	TextureManager* m_pkTexMan;
-	//ZGuiButton* m_pkClickButton;
 	Container* m_pkContainer;
-	Object* m_pkMoveObject;
-	map< slot_pos, ZGuiButton* >::iterator m_pkMoveItem;
+
+	typedef pair<ZGuiButton*, slot_pos> slot;
+
+	vector< slot > m_akSlots;
+
+	slot* m_pkMoveItem;
+
+	slot_pos GetSlot(int x, int y);
 
 };
 

@@ -107,9 +107,10 @@ void MachineGunProperty::Use()
 	
 	Bullet->SetParent(m_pkObjectMan->GetWorldObject());
 
+	// COMMENT_OUT: Zeb, blir halvdöd av att lyssna på skott som avlossas när jag testar gui...
 	//play sound
-	firesound->m_kPos=m_pkObject->GetPos();
-	m_pkAlSys->AddSound(firesound);
+/*	firesound->m_kPos=m_pkObject->GetPos();
+	m_pkAlSys->AddSound(firesound);*/
 
 }
 

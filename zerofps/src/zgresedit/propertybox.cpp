@@ -225,7 +225,7 @@ void PropertyBox::Update(ZGuiWnd* pkWnd)
 {
 	if(SelectWnd::GetInstance()->m_pkWnd)
 	{
-		Rect rc = pkWnd->GetScreenRect();
+		Rect rc = pkWnd->GetWndRect();
 
 		m_pkGuiBuilder->SetTextString("PropertyBoxLabel",
 			m_pkGuiBuilder->GetTypeName(pkWnd));

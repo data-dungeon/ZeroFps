@@ -10,13 +10,13 @@
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 
-ItemBox::ItemBox(ZGui* pkGui, ZGuiWndProc oMainWndProc, TextureManager* pkTexMan) 
-	: DlgBox(pkGui, oMainWndProc), m_ciSlotSize(48)
+ItemBox::ItemBox(ZGui* pkGui, ZGuiWndProc oMainWndProc, TextureManager* pkTexMan,
+				 int iCols, int iRows, int iSlotSize, int iTopX, int iTopY) 
+	:	DlgBox(pkGui, oMainWndProc), m_ciSlotSize(iSlotSize), m_ciTopX(iTopX), 
+		m_ciTopY(iTopY), m_ciRows(iRows), m_ciCols(iCols)
 {
-	m_pkMoveObject = NULL;
 	m_pkContainer = NULL;
 	m_pkTexMan = pkTexMan;
-	//m_pkClickButton = NULL;
 	Create(0,0,0,0,oMainWndProc);
 }
 
@@ -41,75 +41,79 @@ bool ItemBox::DlgProc( ZGuiWnd* pkWnd,unsigned int uiMessage,
 		break;
 
 	case ZGM_LBUTTONDOWN:
+		unsigned int i;
+		for(i=0; i<m_akSlots.size(); i++)
 		{
-			// Check wich button that should move.
-			map<slot_pos, ZGuiButton*>::iterator it;
-			for(it = m_kSlotsTable.begin(); it != m_kSlotsTable.end(); it++)
+			if(pkWnd == m_akSlots[i].first)
 			{
-				if(pkWnd == it->second)
-				{
-					m_pkMoveObject = m_pkContainer->GetItem(it->first.first, 
-						it->first.second);
-					m_pkMoveItem = it;
-					break;
-				}
+				m_pkMoveItem = &m_akSlots[i];
+				break;
 			}
 		}
 		break;
 
 	case ZGM_LBUTTONUP:
-
-		if(m_pkMoveObject)
 		{
-			int mx = ((int*)pkParams)[0], my = ((int*)pkParams)[1];
+			if(m_pkMoveItem == NULL)
+				return false;
 
-			int x=-1,y=-1;
-			map<slot_pos, ZGuiButton*>::iterator it;
-			for(it = m_kSlotsTable.begin(); it != m_kSlotsTable.end(); it++)
+			bool bObjectMoved = false;
+
+			slot_pos kItemCell = GetSlot(((int*)pkParams)[0], ((int*)pkParams)[1]);
+			if(kItemCell.first != -1) // release button inside the grid?
 			{
-				if(it->second->GetScreenRect().Inside(mx,my))
+				Object* pkObject = m_pkContainer->GetItem(
+					m_pkMoveItem->second.first, m_pkMoveItem->second.second);
+
+				if(pkObject)
 				{
-					x = it->first.first;
-					y = it->first.second;
-					break;
+					int prev_x = m_pkMoveItem->second.first;
+					int prev_y = m_pkMoveItem->second.second;
+
+					// Remove button and item
+					m_pkContainer->RemoveItem(pkObject);
+					m_pkGui->UnregisterWindow(m_pkMoveItem->first);
+					m_akSlots.erase(m_pkMoveItem);
+
+					if(!m_pkContainer->AddItem(pkObject, kItemCell.first, kItemCell.second))
+					{
+						if( m_pkContainer->AddItem(pkObject, prev_x, prev_y) == false)
+							printf("Item box: Failed to move object in container\n");
+						else
+							bObjectMoved = true;
+					}
+					else
+						bObjectMoved = true;
+				}
+				else
+				{
+					printf("[m_pkContainer->GetItem(%i,%i)] failed \n",
+						m_pkMoveItem->second.first,
+						m_pkMoveItem->second.second);
+
+					m_pkContainer->PrintContainer();
 				}
 			}
-
-			if( !(x==-1&&y==-1) )
+			
+			// If move have failed, reset button pos.
+			if(bObjectMoved == false)
 			{
-				int tx = m_pkMoveItem->first.first;
-				int ty = m_pkMoveItem->first.second;
-				int sx = tx+m_pkMoveItem->second->GetScreenRect().Width() / m_ciSlotSize;
-				int sy = ty+m_pkMoveItem->second->GetScreenRect().Height() / m_ciSlotSize;
-
-
-				int y;
-				int x;
-				
-				for(y=ty; y<sy; y++)
-					for(x=tx; x<sx; x++)
-					{
-						map<slot_pos,ZGuiButton*>::iterator res =
-							m_kSlotsTable.find(slot_pos(x,y));
-
-						if(res != m_kSlotsTable.end())
-						{
-							res->second->Show();
-						}
-					}
-
-				cout << "removed object named "<< m_pkMoveObject->GetName() << endl;
-				m_pkContainer->RemoveItem(m_pkMoveObject);
-
-				m_pkMoveItem->second->Resize(m_ciSlotSize, m_ciSlotSize);
-				m_pkMoveItem->second->GetSkin()->m_iBkTexID = -1;
-
-				m_pkContainer->AddItem(m_pkMoveObject, x, y);
+				int px = m_ciTopX + m_pkMoveItem->second.first * m_ciSlotSize;
+				int py = m_ciTopY + m_pkMoveItem->second.second * m_ciSlotSize;
+				m_pkMoveItem->first->SetPos(px, py, false, true);
 			}
 
-			m_pkMoveObject = NULL;
+			m_pkMoveItem = NULL;
 		}
+		break;
 
+	case ZGM_MOUSEMOVE:
+		if(m_pkMoveItem)
+		{
+			int mx = ((int*)pkParams)[1]; 
+			int my = ((int*)pkParams)[2]; 
+			m_pkMoveItem->first->SetPos(mx, my,true,true);
+		}
 		break;
 	}
 
@@ -126,45 +130,6 @@ bool ItemBox::Create(int x, int y, int w, int h, ZGuiWndProc pkWndProc)
 
 	if(m_pkDlgBox == NULL)
 		return false;
-
-	list<ZGuiWnd*> pkChilds;
-	m_pkDlgBox->GetChildrens(pkChilds);
-
-	// InvetSlotBN
-	int top_x = 10000, top_y = 10000;
-
-	list<ZGuiWnd*>::iterator it;
-	for(it = pkChilds.begin(); it != pkChilds.end(); it++)
-	{
-		// Skip if "InvetSlotBN" does not appear in name.
-		if(strstr((*it)->GetName(), "InvetSlotBN") == NULL)
-			continue;
-
-		Rect rc = (*it)->GetWndRect();
-
-		if(rc.Left < top_x)
-			top_x = rc.Left;
-
-		if(rc.Top < top_y)
-			top_y = rc.Top;
-
-		// insert all buttons in a dictionary.
-		m_kSlotsTable.insert(map<slot_pos,ZGuiButton*>::value_type( 
-			slot_pos(rc.Left, rc.Top), (ZGuiButton*)(*it)));
-	}
-
-	map<slot_pos, ZGuiButton*>::iterator it2;
-	for(it2 = m_kSlotsTable.begin(); it2 != m_kSlotsTable.end(); it2++)
-	{
-		int cell_x = it2->first.first / m_ciSlotSize;
-		int cell_y = it2->first.second / m_ciSlotSize;
-		ZGuiButton* pkButton = it2->second;
-
-		m_kSlotsTable.erase(it2);
-
-		m_kSlotsTable.insert(map<slot_pos,ZGuiButton*>::value_type( 
-			slot_pos(cell_x, cell_y), pkButton));
-	}
 
 	m_pkGui->ShowMainWindow(m_pkDlgBox, false);
 	return true;
@@ -191,50 +156,123 @@ void ItemBox::Update()
 		return;
 	}
 
-	int sx, sy;
-	m_pkContainer->GetSize(sx,sy);
+	unsigned int iNumItems = m_pkContainer->GetNrOfItems();
 
-	int iNumItems = m_pkContainer->GetNrOfItems();
-	char szTexpath[512];
-
-	// Loopa igenom alla items.
-	for(int i=0; i<iNumItems; i++)
+	// Kolla om några nya knappar behövs läggas till.
+	if(iNumItems > m_akSlots.size())
 	{
-		ZGuiButton* pkItemButton = NULL;
-
-		GuiData kData = m_pkContainer->GetGuiData(i);  
-
-		// Dölj alla knappar som den nya knappen kommer att täcka
-		// och registrera den nya knappen.
-		for(int y=0; y<kData.iSizeY; y++)
-			for(int x=0; x<kData.iSizeX; x++)
-			{
-				map<slot_pos,ZGuiButton*>::iterator res =
-					m_kSlotsTable.find( slot_pos(kData.iPosX+x, kData.iPosY+y) );
-
-				if(res != m_kSlotsTable.end())
-				{
-					if(!(y==0&&x==0))
-						res->second->Hide();
-					else
-						pkItemButton = res->second;
-				}
-			}	
-
-		// Ändra storlek och byt textur på knappen.
-		if(pkItemButton)
+		for(unsigned int i=0; i<iNumItems; i++)
 		{
-			pkItemButton->Resize(kData.iSizeX*m_ciSlotSize, kData.iSizeY*m_ciSlotSize);
-			
-			ZGuiSkin* pkSkin = pkItemButton->GetSkin();
-			strcpy(szTexpath, "file:../data/textures/");
-			strcat(szTexpath, kData.sTextureName.c_str());
-			pkSkin->m_iBkTexID = m_pkTexMan->Load(szTexpath, 0);
+			GuiData kData = m_pkContainer->GetGuiData(i);  
+			if(!ButtonSlotExist(kData.iPosX, kData.iPosY))
+				AddSlot(&kData);
 		}
+	}
+	else
+	// Kolla om några nya knappar behövs ta borts.
+	if(m_akSlots.size() > iNumItems)
+	{
+		vector<slot_pos> kRemoveVector;
+		vector<slot>::iterator it;
+		vector<slot_pos>::iterator it2;
+
+		for(it = m_akSlots.begin(); it != m_akSlots.end(); it++)
+			if(m_pkContainer->GetItem(it->second.first,it->second.second)==NULL)
+				kRemoveVector.push_back(it->second);
+
+		for(it2 = kRemoveVector.begin(); it2 != kRemoveVector.end(); it2++)
+			RemoveSlot(it2->first, it2->second);
 	}
 }
 
 void ItemBox::SetContainer(Container* pkContainer)
 {
 	m_pkContainer = pkContainer;
+}
+
+void ItemBox::AddSlot(GuiData* pkData)
+{
+	static int s_iID = 10000;
+	Rect rc(pkData->iPosX*m_ciSlotSize, pkData->iPosY*m_ciSlotSize,
+		pkData->iPosX*m_ciSlotSize + pkData->iSizeX*m_ciSlotSize, 
+		pkData->iPosY*m_ciSlotSize + pkData->iSizeY*m_ciSlotSize);
+
+	rc = rc.Move(m_ciTopX, m_ciTopY);
+
+	ZGuiButton* pkButton = new ZGuiButton(rc, m_pkDlgBox, true, s_iID++);
+
+	ZGuiSkin* pkSkin = new ZGuiSkin();
+	char szTexpath[512];
+	strcpy(szTexpath, "file:../data/textures/");
+	strcat(szTexpath, pkData->sTextureName.c_str());
+	pkSkin->m_iBkTexID = m_pkTexMan->Load(szTexpath, 0);
+	pkButton->SetButtonUpSkin(pkSkin);
+	pkButton->SetButtonDownSkin(pkSkin);
+	pkButton->SetButtonHighLightSkin(pkSkin);
+	
+	char* name = GetSlotName(s_iID);
+	m_pkGui->RegisterWindow(pkButton, name);
+	delete[] name;
+
+	// Must sort all window again so that the the static grid picture
+	// doesn´t cover the new button.
+	pkButton->SetZValue(s_iID);
+	m_pkDlgBox->SortChilds();
+
+	// Add the slot to the vector
+	m_akSlots.push_back(slot(pkButton, slot_pos(pkData->iPosX, pkData->iPosY))); 
+}
+
+void ItemBox::RemoveSlot(int grid_x, int grid_y)
+{
+	for(vector<slot>::iterator it = m_akSlots.begin();
+		it != m_akSlots.end(); it++)
+		{
+			if( it->second.first == grid_x && 
+				it->second.second == grid_y)
+			{
+				m_pkGui->UnregisterWindow(it->first);
+				m_akSlots.erase(it);
+				break;
+			}
+		}
+}
+
+char* ItemBox::GetSlotName(int id)
+{
+	char* szApa = new char[50];
+	sprintf(szApa, "ItemBoxItemSlot%iBN", id);
+	return szApa;
+}
+
+bool ItemBox::ButtonSlotExist(int grid_x, int grid_y)
+{
+	for(vector<slot>::iterator it = m_akSlots.begin();
+		it != m_akSlots.end(); it++)
+		{
+			if( it->second.first == grid_x && 
+				it->second.second == grid_y)
+				return true;
+		}
+
+	return false;
+}
+
+/// x och y är i skärm koordinater
+pair<int,int> ItemBox::GetSlot(int x, int y)
+{
+	Rect test = m_pkDlgBox->GetScreenRect();
+	test = test.Move(m_ciTopX,m_ciTopY);
+	test.Right = test.Left + (m_ciCols * m_ciSlotSize);
+	test.Bottom = test.Top + (m_ciRows * m_ciSlotSize);
+	if(!test.Inside(x,y))
+		return slot_pos(-1,-1);
+
+	int wnd_x = m_ciTopX + x - m_pkDlgBox->GetScreenRect().Left;
+	int wnd_y = m_ciTopY + y - m_pkDlgBox->GetScreenRect().Top;
+
+	int col = wnd_x / m_ciSlotSize;
+	int row = wnd_y / m_ciSlotSize;
+
+	return slot_pos(col,row);
 }
