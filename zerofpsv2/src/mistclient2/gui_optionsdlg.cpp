@@ -114,6 +114,9 @@ void OptionsDlg::Open()
 	m_kOptionsValues.m_abEnabledShadowGroups[4] = m_pkZShadow->IsShadowGroupEnabled(4);
 	m_kOptionsValues.m_abEnabledShadowGroups[5] = m_pkZShadow->IsShadowGroupEnabled(5);
 
+	m_pkMC->CheckButton("ShadowmapCheckbox", m_pkMC->m_pkZeroFps->GetShadowMap() );
+	m_kOptionsValues.m_bPrevShadowMapState = m_pkMC->m_pkZeroFps->GetShadowMap(); 
+
 	m_pkMC->CheckButton("EnableShadowGroup", m_kOptionsValues.m_abEnabledShadowGroups[
 		m_kOptionsValues.m_iCurrentShadowGroup]);	
 	
@@ -170,9 +173,13 @@ void OptionsDlg::Close(bool bSave)
 		char szCmd[25];
 		sprintf(szCmd, "i_mousesens %.3f", m_kOptionsValues.m_fPrevMouseSens);
 		m_pkZeroFps->m_pkConsole->Execute(szCmd);
+
+		char cmd[50];
+		sprintf(cmd, "r_shadowmap %i", m_kOptionsValues.m_bPrevShadowMapState);
+		g_kMistClient.m_pkZeroFps->m_pkConsole->Execute(cmd);		
 	}
 	else // change options
-	{
+	{		
 		m_pkZShaderSystem->SetGamma((float)atof(m_pkMC->GetText("GammaRedLabel")),
 			(float)atof(m_pkMC->GetText("GammaGreenLabel")), (float)atof(m_pkMC->GetText("GammaBlueLabel")));
 
@@ -265,6 +272,13 @@ void GuiMsgOptionsDlg( string strMainWnd, string strController,
 				g_kMistClient.m_pkOptionsDlg->m_kOptionsValues.m_abEnabledShadowGroups[
 					g_kMistClient.m_pkOptionsDlg->m_kOptionsValues.m_iCurrentShadowGroup] =
 					g_kMistClient.IsButtonChecked("EnableShadowGroup");
+			}
+			else
+			if(strController == "ShadowmapCheckbox")
+			{
+				char cmd[50];
+				sprintf(cmd, "r_shadowmap %i", (int) g_kMistClient.IsButtonChecked("ShadowmapCheckbox"));
+				g_kMistClient.m_pkZeroFps->m_pkConsole->Execute(cmd);								
 			}
 		}
 		else

@@ -364,6 +364,10 @@ void ZFVFileSystem::ListDirRecursive(vector<string>* vkFiles, string strRootPath
 
 									// ta bort rotpathen
 									vkFiles->back().erase(0, strRootPath.length());
+
+									//int pp;
+									//if((pp=vkFiles->back().find("//"))!= string::npos)
+									//	vkFiles->back().erase(pp,1);
 								}								
 							}
 						}
