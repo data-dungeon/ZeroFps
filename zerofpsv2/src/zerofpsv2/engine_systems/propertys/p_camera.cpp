@@ -43,7 +43,7 @@ void P_Camera::Update()
 				r.Rotate(Vector3(-90,0,0));
 				m_pkCamera->SetRotM(r);
 				
-				Vector3 dir = m_pkObject->GetWorldPosV() - m_kInterPos;
+				Vector3 dir = m_pkObject->GetIWorldPosV() - m_kInterPos;
 				m_kInterPos +=dir/8;
 				
 				

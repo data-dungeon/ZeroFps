@@ -56,7 +56,10 @@ void P_Mad::Update()
 		Render* pkRender = static_cast<Render*>(g_ZFObjSys.GetObjectPtr("Render")); 
 
 		glPushMatrix();
-			Matrix4 ori = m_pkObject->GetWorldOriM();
+			Vector3 pos = m_pkObject->GetIWorldPosV();
+			glTranslatef(pos.x,pos.y,pos.z);
+		
+			Matrix4 ori = m_pkObject->GetWorldRotM();
 			glMultMatrixf(&ori[0]);
 			glScalef(m_fScale, m_fScale, m_fScale);
 			Draw_All(m_pkZeroFps->m_iMadDraw);

@@ -162,6 +162,10 @@ class ENGINE_API Entity
 		Vector3						m_kWorldRotV;
 		Vector3						m_kLocalRotV;		
 
+		Vector3						m_kOldLocalPosV;
+
+		float							m_fLastSetPos;						//time of last setpos operation
+
 		Vector3						m_kVel;								///< Velocity of object.
 		Vector3						m_kAcc;								///< Acc of object.
 		float							m_fRadius;							///< Radius of object.
@@ -257,6 +261,7 @@ class ENGINE_API Entity
 
 		Vector3		GetLocalPosV();
 		Vector3		GetWorldPosV();
+		Vector3		GetIWorldPosV();
 		
 		//set oritentation data
 		void			SetLocalRotM(Matrix4 kNewRot);
