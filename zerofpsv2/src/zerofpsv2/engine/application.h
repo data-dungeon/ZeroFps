@@ -52,6 +52,7 @@ class ENGINE_API Application : public ZFSubSystem {
 		virtual void OnIdle(void)=0;
 		virtual void OnHud(void)=0;
 		virtual void OnSystem(void)=0;
+		virtual bool OnPreConnect(IPaddress kRemoteIp, char* szLogin, char* szPass) = 0;
 		virtual void OnServerClientJoin(ZFClient* pkClient,int iConID)=0;
 		virtual void OnServerClientPart(ZFClient* pkClient,int iConID)=0;
 

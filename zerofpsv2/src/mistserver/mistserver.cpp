@@ -579,6 +579,12 @@ void MistServer::ClientInit()
 	cout<<"Join Complete"<<endl;
 }
 
+bool MistServer::OnPreConnect(IPaddress kRemoteIp, char* szLogin, char* szPass)
+{
+	printf("User %s tried to join with password %s\n", szLogin, szPass);
+	return true;
+}
+
 void MistServer::OnServerClientJoin(ZFClient* pkClient,int iConID)
 {
 	cout<<"Client "<<iConID<<" Joined"<<endl;
@@ -1253,8 +1259,6 @@ void MistServer::HandleOrders()
 				else {
 					cout << "Path was NOT found" << endl;
 					}
-
-
 
 				/*P_Event* pe = (P_Event*)ob->GetProperty("P_Event");
 				if(pe)

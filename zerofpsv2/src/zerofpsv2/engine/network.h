@@ -215,7 +215,7 @@ public:
 	void CloseSocket();
 	void ServerStart(void);
 	void ServerEnd(void);
-	void ClientStart(const char* szIp);
+	void ClientStart(const char* szIp, char* szLogin, char* szPass);
 	void ClientEnd(void);
 
 	void	SetMaxNodes(int iMaxNode);			

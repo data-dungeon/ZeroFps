@@ -725,7 +725,7 @@ void ZeroFps::RunCommand(int cmdid, const CmdArgument* kCommand)
 
 			m_pkConsole->Printf("Connect to: %s", g_szIpPort);
 
-			m_pkNetWork->ClientStart(g_szIpPort);
+			m_pkNetWork->ClientStart(g_szIpPort, "vim", "fiskbow");
 			m_pkConsole->Printf("FID_CONNECT");
 			m_pkApp->OnClientStart();
 			m_bClientMode = true;
@@ -1003,10 +1003,11 @@ void ZeroFps::GetEngineCredits(vector<string>& kCreditsStrings)
 	for a server Node that accepts connections. Never called on a client node. Return false
 	to deny connection. Put reason if any into szWhy256.
 */
-bool ZeroFps::PreConnect(IPaddress kRemoteIp, char* szWhy256)
+bool	ZeroFps::PreConnect(IPaddress kRemoteIp, char* szLogin, char* szPass, char* szWhy256)
+//bool ZeroFps::PreConnect(IPaddress kRemoteIp, char* szWhy256)
 {
 	m_pkConsole->Printf("ZeroFps::PreConnect()");
-	return true; 
+	return m_pkApp->OnPreConnect(kRemoteIp, szLogin, szPass);
 }
 
 /**	\brief	Called when someone have been connected.

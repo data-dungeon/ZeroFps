@@ -151,9 +151,9 @@ class MistServer :public Application , public ZGuiApp {
 		void DeletePlayer(int iConID);
 		Vector3 GetPlayerStartLocation(const char* csName);
 		void UpdateStartLocatons();
-		
-		
+
 		//on client join, server runs this
+		bool OnPreConnect(IPaddress kRemoteIp, char* szLogin, char* szPass);
 		void OnServerClientJoin(ZFClient* pkClient,int iConID);
 		void OnServerClientPart(ZFClient* pkClient,int iConID);
 

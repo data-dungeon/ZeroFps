@@ -475,7 +475,7 @@ void NetWork::ServerEnd(void)
 	m_eNetStatus = NET_NONE;
 }
 
-void NetWork::ClientStart(const char* szIp)
+void NetWork::ClientStart(const char* szIp, char* szLogin, char* szPass)
 {
 	if(m_eNetStatus == NET_SERVER)
 		return;
@@ -488,8 +488,9 @@ void NetWork::ClientStart(const char* szIp)
 	NetP.Clear();
 	NetP.SetTarget(szIp);
 	NetP.m_kData.m_kHeader.m_iPacketType = ZF_NETTYPE_CONTROL;
-//	NetP.Write((char) ZF_NETTYPE_CONTROL);
 	NetP.Write((char) ZF_NETCONTROL_JOIN);
+	NetP.Write_Str(szLogin);
+	NetP.Write_Str(szPass);
 	Send(&NetP);
 }
 
@@ -557,6 +558,9 @@ void NetWork::HandleControlMessage(NetPacket* pkNetPacket)
 	NetPacket kNetPRespons;
 	RemoteNode kNewNode;
 
+	char szLogin[64];
+	char szPass[64];
+
 	switch(ucControlType) {
 		// If controll handle_controllpacket.
 		case ZF_NETCONTROL_LIST:
@@ -574,8 +578,10 @@ void NetWork::HandleControlMessage(NetPacket* pkNetPacket)
 			// Server respons with yes/no.
 			kNetPRespons.Clear();
 
+			pkNetPacket->Read_Str(szLogin);
+			pkNetPacket->Read_Str(szPass);
+
 			if(GetNumOfClients() == m_iMaxNumberOfNodes) {
-				
 				m_pkConsole->Printf("Join Ignored: To many connected clients.");
 				kNetPRespons.m_kData.m_kHeader.m_iPacketType = ZF_NETTYPE_CONTROL;
 				//kNetPRespons.Write((unsigned char) ZF_NETTYPE_CONTROL);
@@ -585,7 +591,7 @@ void NetWork::HandleControlMessage(NetPacket* pkNetPacket)
 				Send(&kNetPRespons);
 				}
 			else {
-				if(! m_pkZeroFps->PreConnect(pkNetPacket->m_kAddress, szText)) {
+				if(! m_pkZeroFps->PreConnect(pkNetPacket->m_kAddress, szLogin, szPass, szText)) {
 					m_pkConsole->Printf("Join Ignored: To many connected clients.");
 					kNetPRespons.m_kData.m_kHeader.m_iPacketType = ZF_NETTYPE_CONTROL;
 					//kNetPRespons.Write((unsigned char) ZF_NETTYPE_CONTROL);

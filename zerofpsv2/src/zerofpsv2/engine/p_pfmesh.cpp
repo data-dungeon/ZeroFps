@@ -4,24 +4,33 @@
 #include "../engine_systems/mad/mad_core.h"
 #include "../render/render.h"
 
+Vector3 CalcNormal(Vector3 VertA, Vector3 VertB, Vector3 VertC)
+{
+	Vector3 kV1 = VertB - VertA;
+	Vector3 kV2 = VertC - VertA;
+
+	Vector3 kNorm = kV1.Cross(kV2);
+	kNorm.Normalize();
+	return kNorm;
+}
 
 
 
 bool NaviMeshCell::IsConnected(NaviMeshCell* pkOther, Vector3 kVertexA, Vector3 kVertexB)
 {
-	if( m_kVertex[VERT_A].NearlyEquals(kVertexA,0.3 )) {
-		if( m_kVertex[VERT_B].NearlyEquals(kVertexB,0.3 ) )	return true;
-		if( m_kVertex[VERT_C].NearlyEquals(kVertexB,0.3 )  )	return true;
+	if( m_kVertex[VERT_A].NearlyEquals(kVertexA,			0.01 )) {
+		if( m_kVertex[VERT_B].NearlyEquals(kVertexB,		0.01 ) )		return true;
+		if( m_kVertex[VERT_C].NearlyEquals(kVertexB,		0.01 )  )	return true;
 		}
 
-	else if( m_kVertex[VERT_B].NearlyEquals(kVertexA,0.3 ) ) {
-		if( m_kVertex[VERT_A].NearlyEquals(kVertexB,0.3 ) )	return true;
-		if( m_kVertex[VERT_C].NearlyEquals(kVertexB,0.3 ) )	return true;
+	else if( m_kVertex[VERT_B].NearlyEquals(kVertexA,	0.01 ) ) {
+		if( m_kVertex[VERT_A].NearlyEquals(kVertexB,		0.01 ) )		return true;
+		if( m_kVertex[VERT_C].NearlyEquals(kVertexB,		0.01 ) )		return true;
 		}
 
-	else if( m_kVertex[VERT_C].NearlyEquals(kVertexA,0.3 ) ) {
-		if( m_kVertex[VERT_A].NearlyEquals(kVertexB,0.3 ) )	return true;
-		if( m_kVertex[VERT_B].NearlyEquals(kVertexB,0.3 ) )	return true;
+	else if( m_kVertex[VERT_C].NearlyEquals(kVertexA,	0.01 ) ) {
+		if( m_kVertex[VERT_A].NearlyEquals(kVertexB,		0.01 ) )		return true;
+		if( m_kVertex[VERT_B].NearlyEquals(kVertexB,		0.01 ) )		return true;
 		}
 
 
@@ -45,41 +54,6 @@ void NaviMeshCell::GetEdgeVertex(int iEdge, Vector3& kA, Vector3& kB)
 		kB = m_kVertex[0];
 		}
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 P_PfMesh::P_PfMesh()
@@ -160,20 +134,22 @@ void P_PfMesh::SetMad(P_Mad* pkMad)
 	Matrix4 kMat = m_pkObject->GetWorldOriM();
 
 	for(int i=0; i<pkFace->size(); i++) {
-		kNormal.Set(0,0,0);
-		kNormal += (*pkNormal)[ (*pkFace)[i].iIndex[0] ];
-		kNormal += (*pkNormal)[ (*pkFace)[i].iIndex[1] ];
-		kNormal += (*pkNormal)[ (*pkFace)[i].iIndex[2] ];
-		kNormal.Normalize();
-		if(kNormal.y <= 0.9)	continue;
-			
 		kNaviMesh.m_kVertex[0] = (*pkVertex)[ (*pkFace)[i].iIndex[0] ];
 		kNaviMesh.m_kVertex[1] = (*pkVertex)[ (*pkFace)[i].iIndex[1] ];
 		kNaviMesh.m_kVertex[2] = (*pkVertex)[ (*pkFace)[i].iIndex[2] ];
-
+		
 		kNaviMesh.m_kVertex[0] = kMat.VectorTransform(kNaviMesh.m_kVertex[0]);
 		kNaviMesh.m_kVertex[1] = kMat.VectorTransform(kNaviMesh.m_kVertex[1]);
 		kNaviMesh.m_kVertex[2] = kMat.VectorTransform(kNaviMesh.m_kVertex[2]);
+
+		kNormal = CalcNormal(kNaviMesh.m_kVertex[0], kNaviMesh.m_kVertex[1], kNaviMesh.m_kVertex[2]);
+		if(kNormal.y <= 0.8)	continue;
+
+		//kNormal.Set(0,0,0);
+		//kNormal += (*pkNormal)[ (*pkFace)[i].iIndex[0] ];
+		//kNormal += (*pkNormal)[ (*pkFace)[i].iIndex[1] ];
+		//kNormal += (*pkNormal)[ (*pkFace)[i].iIndex[2] ];
+		//kNormal.Normalize();
 
 		kNaviMesh.m_kCenter = (kNaviMesh.m_kVertex[0] + kNaviMesh.m_kVertex[1] + kNaviMesh.m_kVertex[2]) / 3;
 		kNaviMesh.m_aiLinks[0] = 0;

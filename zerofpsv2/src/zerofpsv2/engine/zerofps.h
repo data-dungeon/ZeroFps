@@ -249,7 +249,7 @@ class ENGINE_API ZeroFps : public I_ZeroFps {
 		int GetDepth(){return m_pkRender->GetDepth();};		
 
 		// Called by network.
-		bool	PreConnect(IPaddress kRemoteIp, char* szWhy256);
+		bool	PreConnect(IPaddress kRemoteIp, char* szLogin, char* szPass, char* szWhy256);
 		int	Connect(int iConnectionID);
 		void	Disconnect(int iConnectionID);
 		int	GetClientObjectID();
