@@ -260,6 +260,10 @@ bool DMContainer::DropItem(int iID)
 			if(HaveItem(iID))
 			{
 				ClearItem(iID);
+
+				// check for joint stuff...
+				if ( pkItem->GetProperty("P_LinkToJoint") )
+					pkItem->RemoveProperty (pkItem->GetProperty("P_LinkToJoint"));
 				
 				cout<<"enabling item"<<endl;
 				pkItem->SetUpdateStatus(UPDATE_ALL);				
