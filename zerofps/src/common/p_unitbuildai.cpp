@@ -10,7 +10,7 @@
 //////////////////////////////////////////////////////////////////////
 
 P_UnitBuildAI::P_UnitBuildAI() 
-: m_pkUnit(NULL), m_uiCommandID(0), m_uiTechLevel(0)
+: m_pkUnit(NULL), m_uiCommandID(0), m_uiTechLevel(0), m_bIsReg(false)
 {
 	strcpy(m_acName,"P_UnitBuildAI");
 	m_iType=PROPERTY_TYPE_NORMAL;
@@ -61,7 +61,7 @@ bool P_UnitBuildAI::RegisterExternalCommands()
 	}
 	return false;
 }
-void P_UnitBuildAI::Init()
+void P_UnitBuildAI::Init2()
 {
 	cout<<"P_UnitBuildAI:m_uiTechLevel:"<<m_uiTechLevel <<endl;
 	if(ConstructionManager::GetInstance()->GetPossibleBuildings(m_uiTechLevel, m_kStructures) > 0)//(m_uiTechLevel, m_kStructures) > 0)
@@ -148,4 +148,13 @@ COMMON_API Property* Create_P_UnitBuildAI()
 {
 	return new P_UnitBuildAI();
 
+}
+
+void P_UnitBuildAI::Update()
+{
+	if(!m_bIsReg)
+	{
+		Init2();
+		m_bIsReg = true;
+	}
 }

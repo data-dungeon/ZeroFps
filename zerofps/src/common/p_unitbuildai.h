@@ -29,10 +29,11 @@ public:
 	P_UnitBuildAI();
 	virtual ~P_UnitBuildAI();
 	bool RegisterExternalCommands();
-	void Init();
+	void Init2();
 	void CloneOf(Property* pkProperty) { };
 	AIBase* UpdateAI();
 	AIBase* RunUnitCommand(int iCommandID, int iXDestinaton, int iYDestinaton, int iTarget);
+	void Update();
 private:
 	P_ServerUnit* m_pkUnit;
 	vector<PropertyValues> GetPropertyValues();
@@ -43,6 +44,7 @@ private:
 //	unsigned int m_uiNrOfBuildings;
 	void Save(ZFMemPackage* pkPackage);
 	void Load(ZFMemPackage* pkPackage);
+	bool m_bIsReg;
 };
 	COMMON_API Property* Create_P_UnitBuildAI();
 #endif // !defined(AFX_P_UNITBUILDAI_H__785E2C51_8B9E_4F78_B019_C8C1EAA500EF__INCLUDED_)
