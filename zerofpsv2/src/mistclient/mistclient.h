@@ -54,6 +54,12 @@ class MistClient :public Application, public ZGuiApp {
 		CameraProperty*	m_pkCamProp;		
 		float					m_fAngle;
 		float					m_fDistance;
+		
+		
+		
+		Vector3	Get3DMousePos();
+		
+		
 
 	public:
 		void OnCommand(int iID, ZGuiWnd* pkMainWnd);

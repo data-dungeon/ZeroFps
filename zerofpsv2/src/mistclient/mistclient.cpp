@@ -429,15 +429,8 @@ Vector3 MistClient::Get3DMousePos()
 	pkRender->Line(pos,pos+Vector3(0,2,0));	
 	pkRender->Line(pos,pos+Vector3(0,0,2));	
 	pkRender->Sphere(pos,0.1,10,Vector3(0,1,0),false);
-/
+*/
 
-	pkRender->Line(m_pkTestobj->GetLocalPosV(),m_pkTestobj->GetLocalPosV()+dir*10);
-
-	pkRender->Line(m_pkTestobj->GetLocalPosV(),m_pkTestobj->GetLocalPosV() + Vector3(10,0,0));
-	pkRender->Line(m_pkTestobj->GetLocalPosV(),m_pkTestobj->GetLocalPosV() + Vector3(0,10,0));	
-	pkRender->Line(m_pkTestobj->GetLocalPosV(),m_pkTestobj->GetLocalPosV() + Vector3(0,0,10));		
-	pkRender->Line(m_pkTestobj->GetLocalPosV(),m_pkTestobj->GetLocalPosV() + Vector3(10,0,10));		
-*/	 
 	return dir;
 }
 
