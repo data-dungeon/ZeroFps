@@ -5,6 +5,7 @@
 #include "../zerofpsv2/engine/zerofps.h"
 #include "../zerofpsv2/script/zfscript.h"
 #include "../zerofpsv2/render/zshadersystem.h"
+#include "../zerofpsv2/engine_systems/tcs/tcs.h"
 #include <iostream>
 #include <string.h>
 #include "mcommon_x.h"
@@ -17,6 +18,7 @@ class MCOMMON_API P_ShadowBlob: public Property {
 	private:
 		//Render*	m_pkRender;
 		ZShaderSystem*	m_pkZShaderSystem;
+		Tcs*				m_pkTcs;
 		
 		vector<PropertyValues> GetPropertyValues();
 		bool HandleSetValue( string kValueName ,string kValue );			
@@ -25,9 +27,12 @@ class MCOMMON_API P_ShadowBlob: public Property {
 		
 		bool		m_bHaveSet;
 		Vector3	m_kOffset;
-		Vector3	m_kScale;
+		float		m_fScale;
 	
 		ZMaterial*	m_pkMaterial;
+		
+		
+		Vector3 GetShadowPos();
 		
 	public:
 
@@ -40,7 +45,8 @@ class MCOMMON_API P_ShadowBlob: public Property {
 		void Update();
 		void Init();
 		
-		
+		void PackTo(NetPacket* pkNetPacket, int iConnectionID ) ;
+		void PackFrom(NetPacket* pkNetPacket, int iConnectionID ) ;		
 			
 		void Save(ZFIoInterface* pkPackage);
 		void Load(ZFIoInterface* pkPackage,int iVersion);

@@ -11,8 +11,6 @@
 #endif
  
 #include "mistclient.h"
-//#include "../zerofpsv2/engine_systems/propertys/p_camera.h"
-//#include "../zerofpsv2/engine_systems/propertys/p_sound.h"
 #include "../zerofpsv2/engine_systems/script_interfaces/si_gui.h"
 #include "../mcommon/p_arcadecharacter.h"
 #include "../mcommon/ml_netmessages.h"
@@ -21,6 +19,7 @@
 #include "../mcommon/p_item.h"
 #include "../mcommon/p_container.h"
 #include "../mcommon/p_fogplane.h"
+#include "../mcommon/p_shadowblob.h"
 
 #include "actionmenu.h"
 
@@ -206,8 +205,8 @@ void MistClient::RegisterResources()
 
 void MistClient::RegisterPropertys()
 {
+	m_pkPropertyFactory->Register("P_ShadowBlob", 			Create_P_ShadowBlob);
 	m_pkPropertyFactory->Register("P_CharacterProperty",	Create_P_CharacterProperty);	
-//	m_pkPropertyFactory->Register("P_CharacterControl",  Create_P_CharacterControl);	
 	m_pkPropertyFactory->Register("P_Enviroment", 			Create_P_Enviroment);
 	m_pkPropertyFactory->Register("P_Ml", 						Create_P_Ml);
 	m_pkPropertyFactory->Register("P_Item", 					Create_P_Item);

@@ -137,11 +137,10 @@ class ENGINE_SYSTEMS_API Tcs : public ZFSubSystem
 		//line tests
 		void UpdateLineTests(float fAlphaTime);		
 		
-		P_Tcs* TestLine(Vector3 kStart,Vector3 kDir,P_Tcs* pkTester);
+		
 		bool TestLineVSMesh(Vector3 kStart,Vector3 kDir,P_Tcs* pkB);
 		bool TestLineVSSphere(Vector3 kP1,Vector3 kP2,P_Tcs* pkB);
 
-		P_Tcs* CharacterLineTest(Vector3 kStart,Vector3 kDir,P_Tcs* pkMesh);
 		bool CharacterTestLineVSMesh(Vector3 kStart,Vector3 kDir,P_Tcs* pkMesh);
 		bool CharacterTestLineVSSphere(Vector3 kP1,Vector3 kP2,P_Tcs* pkB);
 		bool TestLineVSPolygon(Vector3* pkVerts,Vector3* pkPos1,Vector3* pkPos2);
@@ -174,9 +173,15 @@ class ENGINE_SYSTEMS_API Tcs : public ZFSubSystem
 		int GetNrOfCollissions() 			{ return m_iNrOfCollissions	;};
 		int GetNrOfTests() 					{ return m_iNrOfTests			;};
 		int GetNrOfActiveBodies() 			{ return m_iNrOfActiveBodies	;};
-		int GetNrOfContacts()				{ return m_iNrOfContacts		;};
-		
+		int GetNrOfContacts()				{ return m_iNrOfContacts		;};		
 		int GetDebugGraph()					{ return m_iDebugGraph			;};
+		Vector3 GetLastLineTestPos()		{ return m_kLastLineTestColPos;};
+		
+		
+		//some public tests that could be usefull =)
+		P_Tcs* TestLine(Vector3 kStart,Vector3 kDir,P_Tcs* pkTester);
+		P_Tcs* CharacterLineTest(Vector3 kStart,Vector3 kDir,P_Tcs* pkTester);
+		
 		
 		bool StartUp();
 		bool ShutDown();
