@@ -70,6 +70,11 @@ end
 
 function HeartBeat()
 	--SetZoneModel(GetZoneID(SIGetSelfID()),"data/mad/zones/dm/zon_asfalt.mad")
+	--p = {}
+	--p[1] = -6
+	--p[2] = 1
+	--p[3] = 0
+	--SetZoneModel(GetZoneIDAtPos(p),"data/mad/zones/dm/zon_asfalt.mad")
 
 	if ( IsDead(SIGetSelfID()) == 1) then
 		AddToEntityVar (SIGetSelfID(), "deadtime", 1);

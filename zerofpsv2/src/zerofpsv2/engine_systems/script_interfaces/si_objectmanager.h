@@ -72,6 +72,7 @@ namespace ObjectManagerLua
 
 	//zone management
 	int ENGINE_SYSTEMS_API GetZoneIDLua(lua_State* pkLua);					//returns the zone id that contains entity id
+	int ENGINE_SYSTEMS_API GetZoneIDAtPosLua(lua_State* pkLua);				//returns the zone id at position
 	int ENGINE_SYSTEMS_API SetZoneModelLua(lua_State* pkLua);				//sets the zonemodel of zone id
 
 	// Common used functions , used together whit P_ScriptInterface

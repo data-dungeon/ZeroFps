@@ -65,6 +65,7 @@ void Init(EntityManager* pkObjMan, ZFScriptSystem* pkScript)
 	pkScript->ExposeFunction("SetVelTo",				ObjectManagerLua::SetVelToLua);
 
 	//zone management
+	pkScript->ExposeFunction("GetZoneIDAtPos",		ObjectManagerLua::GetZoneIDAtPosLua);
 	pkScript->ExposeFunction("GetZoneID",				ObjectManagerLua::GetZoneIDLua);
 	pkScript->ExposeFunction("SetZoneModel",			ObjectManagerLua::SetZoneModelLua);
 
@@ -692,6 +693,33 @@ int GetZoneIDLua(lua_State* pkLua)
 				g_pkScript->AddReturnValue(pkLua,pkZone->m_iZoneID);
 				return 1;
 			}
+		}
+	}
+
+
+	g_pkScript->AddReturnValue(pkLua,-1);
+
+   return 0;
+}
+
+int GetZoneIDAtPosLua(lua_State* pkLua)
+{
+	if(g_pkScript->GetNumArgs(pkLua) == 1)
+	{
+		Vector3 kPos;
+		vector<TABLE_DATA> vkData;
+
+		g_pkScript->GetArgTable(pkLua, 1, vkData);
+
+		kPos = Vector3(
+			(float) (*(double*) vkData[0].pData),
+			(float) (*(double*) vkData[1].pData),
+			(float) (*(double*) vkData[2].pData));
+
+		if(ZoneData* pkZone = g_pkObjMan->GetZone(kPos))
+		{
+			g_pkScript->AddReturnValue(pkLua,pkZone->m_iZoneID);
+			return 1;
 		}
 	}
 
