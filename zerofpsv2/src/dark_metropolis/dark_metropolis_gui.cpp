@@ -100,11 +100,12 @@ void DarkMetropolis::GUI_OnCommand(int iID, bool bRMouseBnClick,
 					strcpy(info->szName, acBaseName[i]);
 					m_vkStartBaseList.push_back(info);
 				}
-
-				m_itStartBase = m_vkStartBaseList.begin(); 
 			}
 
 			SelListItem("TeamColorCB", "Red");
+			m_itStartBase = m_vkStartBaseList.begin();
+			GetWnd("StartBaseNameLabel")->SetText((*m_itStartBase)->szName);
+			GetWnd("StartBaseIconLabel")->SetSkin((*m_itStartBase)->pkIcon);
 		}
 		else
 		if(strClickName == "QuitBn")
@@ -117,6 +118,8 @@ void DarkMetropolis::GUI_OnCommand(int iID, bool bRMouseBnClick,
 	{
 		if(strClickName == "StartNewGameDone")
 		{
+			LoadGuiFromScript(m_pkScript, 
+				"data/script/gui/dm_ingame.lua");
 			pkMainWnd->Hide();
 		}
 		else
@@ -150,7 +153,16 @@ void DarkMetropolis::GUI_OnCommand(int iID, bool bRMouseBnClick,
 			}
 		}
 	}
-
+	else
+	if(strMainWnd == "InGamePanelWnd")
+	{
+		if(strClickName == "MenuBn")
+		{
+			LoadGuiFromScript(m_pkScript, 
+				"data/script/gui/dm_start.lua");
+			pkMainWnd->Hide();			
+		}
+	}
 }
 
 void DarkMetropolis::GUI_OnClick(int x, int y, bool bMouseDown, 
