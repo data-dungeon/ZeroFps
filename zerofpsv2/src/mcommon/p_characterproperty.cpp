@@ -11,7 +11,7 @@
 
 //--------SKILL----------------
 
-Skill::Skill(const string& strScriptFile, int iOwnerID)
+Skill::Skill(const string& strScriptFile,const string& strParent, int iOwnerID)
 {
 	m_pkScript = static_cast<ZFScriptSystem*>(g_ZFObjSys.GetObjectPtr("ZFScriptSystem"));
 	m_pkZeroFps= static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
@@ -25,11 +25,10 @@ Skill::Skill(const string& strScriptFile, int iOwnerID)
 	m_pkScriptFileHandle->SetRes(string("data/script/objects/game objects/skills/") + strScriptFile);
 	
 	
-	
+	m_strParentSkill=		strParent;	
 	m_iOwnerID = 			iOwnerID;
 		
 	m_strInGameName =		"UnkownSkill";
-	m_strParentSkill = 	"";
 	m_strIcon = 			"default.tga";	
 	m_iLevel = 				0;	
 	m_fReloadTime =		1;
@@ -44,6 +43,7 @@ Skill::~Skill()
 	delete m_pkScriptFileHandle;
 
 }
+
 
 void Skill::Update()
 {
@@ -1103,13 +1103,31 @@ Skill* P_CharacterProperty::GetSkillPointer(const string& strSkillName)
 	return NULL;
 }
 
-void P_CharacterProperty::ChangeSkill(const string& strSkillScript,int iValue)
+bool P_CharacterProperty::ChangeSkill(const string& strSkillScript,int iValue)
 {
 	if(Skill* pkSkill = GetSkillPointer(strSkillScript))
 	{
+		if(!pkSkill->GetParent().empty())
+		{
+			if(Skill* pkParent = GetSkillPointer(pkSkill->GetParent()))
+			{
+				if(pkParent->GetLevel() < 1)
+				{
+					cout<<"WARNING: Parent "<<pkSkill->GetParent()<<" have to be at least level 1 to level a child "<<strSkillScript<<endl;
+					return false;
+				}
+			}
+			else
+			{
+				cout<<"WARNING:"<<strSkillScript<<" missing parent skill "<<pkSkill->GetParent()<<endl;
+			}
+		}
+						
 		pkSkill->SetLevel(pkSkill->GetLevel()+iValue);
-		
+		return true;		
 	}
+	
+	return true;
 }
 
 void P_CharacterProperty::SetSkill(const string& strSkillScript,int iLevel)
@@ -1139,11 +1157,22 @@ bool P_CharacterProperty::AddSkill(const string& strSkillScript,const string& st
 		return false;		
 	}
 	
+	//try to find parent
+	if(!strParentSkill.empty())
+	{
+		if(!GetSkillPointer(strParentSkill))
+		{
+			cout<<"WARNING: parent skill "<<strParentSkill<<" not found when adding skill "<<strSkillScript<<endl;
+			return false;
+		}
+	}
 	
-	Skill* pkNewSkill = new Skill(strSkillScript,m_pkEntity->GetEntityID());	
 	
-	m_kSkills.push_back(pkNewSkill);
-	
+	//create new skill
+	Skill* pkNewSkill = new Skill(strSkillScript,strParentSkill,m_pkEntity->GetEntityID());	
+				
+	//add skill in skill list
+	m_kSkills.push_back(pkNewSkill);	
 		
 	//do a first update
 	pkNewSkill->SetLevel(0);
@@ -1459,7 +1488,7 @@ namespace SI_P_CharacterProperty
 		
 		g_pkScript->GetArgInt(pkLua, 0, &iCharcterID);
 		g_pkScript->GetArgString(pkLua, 1,strSkill);
-		g_pkScript->GetArgString(pkLua, 1,strParent);
+		g_pkScript->GetArgString(pkLua, 2,strParent);
 		
 		if(P_CharacterProperty* pkCP = (P_CharacterProperty*)g_pkObjMan->GetPropertyFromEntityID(iCharcterID,"P_CharacterProperty"))
 			pkCP->AddSkill(strSkill,strParent);		

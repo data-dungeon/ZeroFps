@@ -952,7 +952,7 @@ void Entity::Load(ZFIoInterface* pkFile,bool bLoadID,bool bLoadChilds)
 
 	if(!m_pScriptFileHandle->IsValid() && m_strType != string("Entity"))
 	{
-		ZFWarning("Entity %d do not have a entity script (Type=%s)", GetEntityID(), m_strType.c_str());
+		//ZFWarning("Entity %d do not have a entity script (Type=%s)", GetEntityID(), m_strType.c_str());
 	}
 
 

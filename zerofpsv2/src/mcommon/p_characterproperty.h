@@ -41,7 +41,7 @@ class MCOMMON_API Skill
 		float		m_fTimeLeft;
 		float		m_fLastUpdate;
 		
-		Skill(const string& strScriptFile, int iOwnerID);
+		Skill(const string& strScriptFile,const string& strParent, int iOwnerID);
 		~Skill();
 		
 		void Update();
@@ -50,11 +50,11 @@ class MCOMMON_API Skill
 		//sets
 		void SetLevel(int iLevel);
 		void SetTimeLeft(float fTime)	{	m_fTimeLeft = fTime;				}
-				
+		
 		//gets
-		string GetName()		{	return m_strSkillScript;					};
-		int	 GetLevel()		{	return m_iLevel;								};
-		string GetParent()	{	return m_strParentSkill;					};		
+		string GetName()									{	return m_strSkillScript;					};
+		int	 GetLevel()									{	return m_iLevel;								};
+		string GetParent()								{	return m_strParentSkill;					};		
 };
 
 
@@ -215,7 +215,7 @@ class MCOMMON_API P_CharacterProperty: public Property
 		
 		//skills
 		bool AddSkill(const string& strSkillScript,const string& strParentSkill);
-		void ChangeSkill(const string& strSkillScript,int iValue);
+		bool ChangeSkill(const string& strSkillScript,int iValue);
 		void SetSkill(const string& strSkillScript,int iLevel);
 		Skill* GetSkillPointer(const string& strSkillName);
 		void UseSkill(const string& strSkillScript,int iTarget,const Vector3& kPos,const Vector3& kDir);

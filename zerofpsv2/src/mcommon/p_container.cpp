@@ -351,7 +351,7 @@ bool P_Container::AddMove(int iID,int iX,int iY,int iCount)
 	}
 	else
 	{
-		cout<<"moving to position "<<iX<<" "<<iY<<endl;
+		//cout<<"moving to position "<<iX<<" "<<iY<<endl;
 		if(AddItemAtPos(pkItem,iX,iY,iCount))
 			return true;			
 	}
@@ -381,7 +381,7 @@ bool P_Container::AddItemAtPos(P_Item* pkItem,int iX,int iY,int iCount)
 		return false;
 	}
 	
-	cout<<"setting item to new location"<<endl;
+	//cout<<"setting item to new location"<<endl;
 		
 	//get current container, if any, and clear item from its current position
 	if(P_Container* pkContainer = (P_Container*)m_pkEntMan->GetPropertyFromEntityID(pkItem->m_iInContainerID,"P_Container"))
