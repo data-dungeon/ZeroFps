@@ -35,6 +35,7 @@ struct tgahead_t
 	short	height;
 	char	pixel_depth;				///< Bits per pixel (8,16,24,32).
 	char	image_desc;
+	
 };
 
 /// File Header in PCX Files.
@@ -44,7 +45,7 @@ struct pcx_header_s
 	char	version;
 	char	encoding;
 	char	bits_per_pixel;
-    short	xmin;
+   short	xmin;
 	short	ymin;
 	short	xmax;
 	short	ymax;

@@ -215,8 +215,8 @@ void Game::OnHud(void)
 	glPushAttrib(GL_LIGHTING_BIT);	
 	glDisable(GL_LIGHTING);
 	
-	pkFps->DevPrintf("common", "Fps: %d",pkFps->m_iFps);	
-			
+	pkFps->DevPrintf("common", "Fps: %f",pkFps->m_fFps);	
+	pkFps->DevPrintf("common","Avrage Fps: %f",pkFps->m_fAvrageFps);			
 			
 	switch(m_iGameState)
 	{

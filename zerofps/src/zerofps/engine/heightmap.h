@@ -43,6 +43,7 @@ class ENGINE_API HeightMap: public ZFObject {
 	private:			
 		TextureManager*	m_pkTexMan;
 		FileIo*				m_pkFile;	
+		ZFBasicFS*			m_pkBasicFS;
 		Uint32 GetPixel(SDL_Surface* surface,int x,int y);
 		bool	AllocHMMemory(int iSize);
 

@@ -28,9 +28,7 @@ void HMRP2::Update()
 {	
 	if(m_pkHeightMap!=NULL){
 		m_pkHeightMap->SetPosition(m_pkObject->GetPos());
-		m_pkRender->DrawHMLodSplat(m_pkHeightMap,m_pkZeroFps->GetCam()->GetPos(),m_pkZeroFps->m_iFps);
-		
-
+		m_pkRender->DrawHMLodSplat(m_pkHeightMap,m_pkZeroFps->GetCam()->GetPos(),m_pkZeroFps->m_fFps);
 //		m_pkRender->G4DrawHMLodSplat(m_pkHeightMap,m_pkZeroFps->GetCam()->GetPos(),m_pkZeroFps->m_iFps);		
 	}
 }

@@ -84,9 +84,12 @@ class ENGINE_API ZeroFps : public ZFObject {
 		bool	m_bDevPagesVisible;
 		
 		float m_fLastFrameTime;
+		float m_fAvrageFpsTime;
+		int	m_iAvrageFrameCount;
+		
 		int	m_iWidth,m_iHeight,m_iDepth;
 		int	m_iFullScreen;
-		bool	m_bCapture;							// True if we should capture this frame
+		bool  m_bCapture;							// True if we should capture this frame
 
 		float m_fSystemUpdateFps;
 		float m_fSystemUpdateTime;
@@ -145,13 +148,14 @@ class ENGINE_API ZeroFps : public ZFObject {
 			
 
 		int		m_iState;									//	curent game state see enum enginestates
-		int		m_iFps;										//	curent FPS
-		float	m_fFrameTime;									//	frametime in MS
+		float		m_fFps;										//	curent FPS
+		float		m_fAvrageFps;
+		float		m_fFrameTime;									//	frametime in MS
 		
-		bool	m_bServerMode;
-		bool	m_bClientMode;
+		bool		m_bServerMode;
+		bool		m_bClientMode;
 		//bool	m_bDrawDevList;
-		bool	m_bGuiMode, m_bGuiTakeControl;
+		bool		m_bGuiMode, m_bGuiTakeControl;
 		
 		int		m_iMadDraw;									//	Flags for what part's of mad's that should be draw.
 		float	m_fMadLod;										//	If not 0 then force this LOD % on every mad.

@@ -6,7 +6,7 @@
 #include <iostream>
 #include "../render/render.pkg"
 
-#include "GL/glut.h"
+
 
 using namespace std;
 
@@ -14,6 +14,7 @@ using namespace std;
 class ENGINE_API ModelProperty: public Property {
 	private:
 		Frustum *m_pkFrustum;
+		Render *m_pkRender;		
 		vector<PropertyValues> GetPropertyValues();
 	public:
 		float	m_fRadius;

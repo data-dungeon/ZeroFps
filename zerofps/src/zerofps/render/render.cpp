@@ -1,6 +1,8 @@
 #include "render.h"
 #include "../basic/basic.pkg"
 
+#include "GL/glut.h"
+
 Render::Render()  
  :	ZFObject("Render") {
  
@@ -26,6 +28,32 @@ Render::Render()
 	m_iScreenShootNum = 0;
 
 	m_iHmTempList=0;
+}
+
+void Render::Sphere(Vector3 kPos,float fRadius,int iRes,Vector3 kColor,bool bSolid)
+{
+	glPushAttrib(GL_ENABLE_BIT|GL_POLYGON_BIT|GL_FOG_BIT|GL_LIGHTING_BIT | GL_TEXTURE_BIT | GL_COLOR_BUFFER_BIT );
+//	glDisable(GL_LIGHTING);
+	glDisable(GL_COLOR_MATERIAL);	
+	glDisable(GL_TEXTURE_2D);
+	glDisable(GL_CULL_FACE);
+	
+	if(bSolid)
+	{
+		glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);		
+	}
+	else
+		glPolygonMode(GL_FRONT_AND_BACK,GL_LINE);
+
+	glColor3f(kColor.x,kColor.y,kColor.z);
+	
+	glPushMatrix();
+		glTranslatef(kPos.x,kPos.y,kPos.z);
+		glutSolidSphere(fRadius, iRes, iRes);
+	glPopMatrix();
+	
+
+	glPopAttrib();
 }
 
 void Render::Quad(Vector3 kPos,Vector3 kHead,Vector3 kScale,int iTexture){
@@ -538,7 +566,11 @@ void Render::CaptureScreenShoot( int m_iWidth, int m_iHeight )
 	sprintf(szImageName, "screen_%d.tga", m_iScreenShootNum);
 	m_iScreenShootNum++;
 	kScreen.save(szImageName ,false);
+
+	cout<<"bla:"<<sizeof(tgahead_t)<<endl;
 }
+
+
 
 char* BoolStr(bool bFlag)
 {
@@ -721,6 +753,8 @@ RENDER_API char* GetOpenGLErrorName(GLenum id )
 
 	return "*** --- ***";
 }
+
+
 
 
 

@@ -14,6 +14,7 @@ ModelProperty::ModelProperty() {
 	m_kColor.Set(1,1,1);
 	
 	m_pkFrustum=static_cast<Frustum*>(g_ZFObjSys.GetObjectPtr("Frustum"));
+	m_pkRender=static_cast<Render*>(g_ZFObjSys.GetObjectPtr("Render"));	
 }
 
 
@@ -24,6 +25,10 @@ void ModelProperty::Update() {
 	if(!m_pkFrustum->SphereInFrustum(m_pkObject->GetPos(),m_fRadius))
 		return;
 
+
+	m_pkRender->Sphere(m_pkObject->GetIPos(),m_fRadius,m_iSlices,m_kColor,true);
+
+/*
 	glPushAttrib(GL_FOG_BIT|GL_LIGHTING_BIT | GL_TEXTURE_BIT | GL_COLOR_BUFFER_BIT );
 //	glDisable(GL_LIGHTING);
 	glDisable(GL_COLOR_MATERIAL);	
@@ -34,7 +39,7 @@ void ModelProperty::Update() {
 		glTranslatef(m_pkObject->GetIPos().x,m_pkObject->GetIPos().y,m_pkObject->GetIPos().z);
 		glutSolidSphere(m_fRadius, m_iSlices, m_iStacks);
 	glPopMatrix();
-	glPopAttrib();
+	glPopAttrib();*/
 }
 
 void ModelProperty::PackTo( NetPacket* pkNetPacket ) {

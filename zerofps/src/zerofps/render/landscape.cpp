@@ -6,7 +6,7 @@
 void Render::DrawSkyBox_SixSided(Vector3 CamPos,Vector3 kHead,int* aiSideTextures)
 {
 	glPushMatrix();
-	glPushAttrib(GL_LIGHTING_BIT|GL_FOG_BIT);
+	glPushAttrib(GL_DEPTH_BUFFER_BIT|GL_LIGHTING_BIT|GL_FOG_BIT);
 
 	glDisable(GL_FOG);
 	glDisable(GL_LIGHTING);	//dont want lighting on the skybox		

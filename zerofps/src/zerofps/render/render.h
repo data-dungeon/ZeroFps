@@ -65,7 +65,7 @@ class RENDER_API Render : public ZFObject {
 		TextureManager* GetTexMangager() { return m_pkTexMan; }
 		
 		void Quad(Vector3 kPos,Vector3 kHead,Vector3 kScale,int iTexture);
-		
+		void Sphere(Vector3 kPos,float fRadius,int iRes,Vector3 kColor,bool bSolid);		
 		
 		void PrintChar(char cChar);
 		void Print(Vector3 kPos,Vector3 kHead,Vector3 kScale,char* aText);

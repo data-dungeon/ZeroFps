@@ -54,6 +54,8 @@ ZeroFps::ZeroFps(void)
 	m_bCapture			=	false;
 
 	g_iLogRenderPropertys = 0;
+	m_fAvrageFpsTime =	0;
+	m_iAvrageFrameCount =0;
 
 	g_ZFObjSys.RegisterVariable("m_sens", &m_pkInput->m_fMouseSensitivity,CSYS_FLOAT);
 	g_ZFObjSys.RegisterVariable("r_landlod", &m_pkRender->m_iDetail,CSYS_INT);
@@ -470,7 +472,16 @@ void ZeroFps::Swap(void) {
 	//count FPS
 	m_fFrameTime=SDL_GetTicks()-m_fLastFrameTime;
 	m_fLastFrameTime=SDL_GetTicks();
-	m_iFps=int(1000.0/m_fFrameTime);	
+	m_fFps=1000.0/m_fFrameTime;	
+	
+	m_iAvrageFrameCount++;
+	
+	if( (GetTicks() - m_fAvrageFpsTime) >1)
+	{
+		m_fAvrageFps = m_iAvrageFrameCount;
+		m_iAvrageFrameCount = 0;
+		m_fAvrageFpsTime = GetTicks();
+	}
 	
 #ifdef RUNPROFILE
 	g_iNumOfFrames++;

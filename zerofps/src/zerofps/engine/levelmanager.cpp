@@ -166,7 +166,7 @@ bool LevelManager::LoadLevel(const char* acFile)
 	kBase+=acFile;
 	kBase+="/";	
 
-	kHmfile=kBase+"heightmap.hm";
+	kHmfile=kBase+"heightmap";
 	kZolfile=kBase+"objects.zol";
 	kpreinifile=kBase+"preconfig.ini";
 	ksuinifile=kBase+"suconfig.ini";
@@ -183,14 +183,14 @@ bool LevelManager::LoadLevel(const char* acFile)
 		m_pkConsole->Printf("Error loading heightmap");
 		return false;
 	};	
-	
+/*	
 	//load textures
 	m_pkMap->ClearSet();
 	m_pkMap->AddSet("../data/textures/nodetail1.bmp","../data/textures/detail1.bmp","FEL");
 	m_pkMap->AddSet("../data/textures/nodetail2.bmp","../data/textures/detail2.bmp",(kBase+"mask1.tga").c_str());
 	m_pkMap->AddSet("../data/textures/nodetail3.bmp","../data/textures/detail3.bmp",(kBase+"mask2.tga").c_str());		
 	m_pkMap->AddSet("../data/textures/nodetail4.bmp","../data/textures/detail4.bmp",(kBase+"mask3.tga").c_str());	
-	
+*/	
 	
 	//create zoneobjects
 	CreateZones();		
@@ -245,7 +245,7 @@ bool LevelManager::SaveLevel(const char* acFile)
 	kHmfile+="/";
 	kHmfile+=acFile;
 	kHmfile+="/";	
-	kHmfile+="heightmap.hm";
+	kHmfile+="heightmap";
 
 	kZolfile=m_kMapBaseDir;
 	kZolfile+="/";

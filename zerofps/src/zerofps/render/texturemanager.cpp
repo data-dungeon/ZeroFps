@@ -671,7 +671,7 @@ bool TextureManager::SaveTexture(const char* acFile,int iLevel)
 	if(iInternalFormat == GL_RGBA || iInternalFormat == GL_RGBA4 || iInternalFormat == GL_RGBA8 || iInternalFormat == GL_RGB || iInternalFormat == GL_RGB5)	
 	{
 		iFormat = GL_RGBA;
-		iType = GL_UNSIGNED_INT_8_8_8_8;
+		iType = GL_UNSIGNED_INT_8_8_8_8_REV;
 	}
 	
 	if(iFormat == -1)
@@ -687,7 +687,7 @@ bool TextureManager::SaveTexture(const char* acFile,int iLevel)
 	{
 		glGetTexImage(GL_TEXTURE_2D,iLevel,iFormat,iType,temp.pixels);
 		//cout << "Arghhhhhhhhhhhhh:" << GetOpenGLErrorName(glGetError()) << "\n";		
-		
+		temp.flip(false,true);
 		temp.save(acFile,true);
 	}
 

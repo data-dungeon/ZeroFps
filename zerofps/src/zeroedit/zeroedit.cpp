@@ -141,17 +141,11 @@ void ZeroEdit::OnInit(void)
 	m_iCopyNetWorkID = -1;
 
 
-	pkTexMan->BindTexture("grass2.tga",0);			
-	
-/*	for(int x=0;x<10;x++)
-		for(int y=0;y<10;y++)
-			pkTexMan->PsetRGB(x,y,255,255,255);
 
-	for(int x2=2;x2<5;x2++)
-		for(int y2=2;y2<5;y2++)
-			pkTexMan->PsetRGB(x2,y2,255,0,0);*/
-			
-	pkTexMan->SwapTexture();				
+
+//	pkTexMan->BindTexture("grass2.tga",0);			
+//	pkTexMan->SaveTexture("fuck.tga",0);			
+//	pkTexMan->SwapTexture();				
 	
 }
 
@@ -178,7 +172,8 @@ void ZeroEdit::OnHud(void)
 
 	pkRender->SetFont("file:../data/textures/text/console.tga");
 
-	pkFps->DevPrintf("common","Fps: %d",pkFps->m_iFps);
+	pkFps->DevPrintf("common","Fps: %f",pkFps->m_fFps);
+	pkFps->DevPrintf("common","Avrage Fps: %f",pkFps->m_fAvrageFps);
 	pkFps->DevPrintf("common","Mode: %d",m_iMode);
 	pkFps->DevPrintf("common","Active Propertys: %d",pkObjectMan->GetActivePropertys());
 	pkFps->DevPrintf("common","Pointer Altidude: %f",m_fPointerHeight);
@@ -1151,13 +1146,15 @@ void ZeroEdit::DrawMarkers()
 		MadProperty* mp = static_cast<MadProperty*>(m_pkCurentChild->GetProperty("MadProperty"));
 		if( mp != NULL)
 		{
-			 size = mp->GetRadius();	//mp->pkCore->GetRadius();	
+			 size = mp->GetRadius();
 		}		
 		
 		if(size < 1)
 			size=1;
-			
-		pkRender->DrawBillboard(pkFps->GetCam()->GetModelViewMatrix(),m_pkCurentChild->GetPos(),size*2,pkTexMan->Load("file:../data/textures/childmarker.tga",T_NOMIPMAPPING));	
+		
+		glDisable(GL_LIGHTING);
+		pkRender->Sphere(m_pkCurentChild->GetPos(),size,20,Vector3(1,0,0),false);
+		glEnable(GL_LIGHTING);
 		
 		if(m_pkCurentChild->GetParent()){
 			pkRender->Line(m_pkCurentChild->GetParent()->GetPos(),m_pkCurentChild->GetPos());

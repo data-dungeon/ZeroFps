@@ -13,6 +13,7 @@ HeightMap::HeightMap()
  
  	m_pkFile=static_cast<FileIo*>(g_ZFObjSys.GetObjectPtr("FileIo"));		
 	m_pkTexMan=static_cast<TextureManager*>(g_ZFObjSys.GetObjectPtr("TextureManager"));		
+	m_pkBasicFS=static_cast<ZFBasicFS*>(g_ZFObjSys.GetObjectPtr("ZFBasicFS"));		
 	
 	m_iError	=	4;
 	verts		=	NULL;
@@ -338,14 +339,18 @@ void HeightMap::GenerateNormals(int iStartx,int iStartz,int iWidth,int iHeight)
 bool HeightMap::Load(const char* acFile) {
 	cout<<"Loading heightmap from file "<<acFile<<endl;
 	
+	//hm file
+	string hmfile = acFile;
+	hmfile+=".hm";
+	
+	//header	
 	HM_fileheader k_Fh;
 	
 	ZFFile savefile;
-	if(!savefile.Open(acFile,false)){
+	if(!savefile.Open(hmfile.c_str(),false)){
 		cout<<"Could not Load heightmap"<<endl;
 		return false;
 	}
-//	savefile.Read((void*)&k_Fh,sizeof(k_Fh));
 	savefile.Read((void*)&k_Fh, sizeof(HM_fileheader));
 	
 	m_iHmSize		=	k_Fh.m_iHmSize;
@@ -354,11 +359,6 @@ bool HeightMap::Load(const char* acFile) {
 	cout<<"MAP SIZE IS:"<<m_iHmSize<<endl;
 	AllocHMMemory(m_iHmSize);
 		
-//	delete[] verts;
-//	verts=new HM_vert[(m_iHmSize+m_iError)*m_iHmSize];
-//	delete[] m_pkVertex;
-//	m_pkVertex =new Vector3[(m_iHmSize+m_iError)*m_iHmSize];	
-
 	cout<<"SIZE:"<<sizeof(HM_vert)<<endl;
 	
 	int i;
@@ -370,6 +370,44 @@ bool HeightMap::Load(const char* acFile) {
 	savefile.Close();
 	
 	
+	
+	//setup masks
+	bool exist=false;		
+	i=2;		
+	
+	ClearSet();
+	AddSet("../data/textures/nodetail1.bmp","../data/textures/detail1.bmp","FEL");
+	
+	do
+	{
+		string file=acFile;
+		file += ".mask.";
+		char nr[5] = "    ";
+		IntToChar(nr,i);
+		file+=nr;
+		file+=".tga";		
+			
+		exist = m_pkBasicFS->FileExist(file.c_str());
+		
+		if(exist)
+		{
+			string nodetail = "../data/textures/nodetail";
+			string detail = "../data/textures/detail";			
+		
+			nodetail+=nr;
+			detail+=nr;
+			
+			nodetail+=".bmp";
+			detail+=".bmp";
+		
+		
+			AddSet(nodetail.c_str(),detail.c_str(),file.c_str());
+		}
+		i++;
+		
+	} while(exist);
+	
+	
 	return true;
 }
 
@@ -377,12 +415,16 @@ bool HeightMap::Load(const char* acFile) {
 bool HeightMap::Save(const char* acFile) {
 	cout<<"Save heightmap to file "<<acFile<<endl;
 	
+	//hm file
+	string hmfile = acFile;
+	hmfile+=".hm";
+	
 	//setup fileheader
 	HM_fileheader k_Fh;
 	k_Fh.m_iHmSize=m_iHmSize;
 	
 	ZFFile savefile;
-	if(!savefile.Open(acFile,true)){
+	if(!savefile.Open(hmfile.c_str(),true)){
 		cout<<"Could not save heightmap"<<endl;
 		return false;
 	}
@@ -394,6 +436,23 @@ bool HeightMap::Save(const char* acFile) {
 	}
 	
 	savefile.Close();
+	
+	//save texture masks
+	if(m_kSets.size() > 1)
+	{
+		for(int i=1;i<m_kSets.size();i++)
+		{
+			string file=acFile;
+			file += ".mask.";
+			char nr[5] = "    ";
+			IntToChar(nr,i+1);
+			file+=nr;
+			file+=".tga";
+			
+			m_pkTexMan->BindTexture(m_kSets[i].m_acMask,0);
+			m_pkTexMan->SaveTexture(file.c_str(),0);
+		}
+	}
 	
 	return true;
 }
@@ -738,9 +797,9 @@ void HeightMap::DrawMask(int iPosX,int iPosy,int iMask,int iSize,int r,int g,int
 			pb=cb;			
 			pa=ca;			
 			
-			pr+=r;
-			pg+=g;
-			pb+=b;			
+			pr=r;
+			pg=g;
+			pb=b;			
 			pa+=a;
 			
 			//fula men nödvändiga =P
