@@ -27,7 +27,7 @@ Render::Render()
 	m_iWidth						= 640;
 	m_iHeight					= 480;
 	m_iDepth						= 16;
-	m_iFullScreen				= 0;
+	m_iFullScreen				= 1;
 	
 	// Register Our Own variables.
 	RegisterVariable("r_maxlayers",		&m_iMaxLandscapeLayers,CSYS_INT);

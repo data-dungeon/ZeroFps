@@ -188,6 +188,7 @@ ZFSoundInfo::~ZFSoundInfo()
 
 ZFAudioSystem::ZFAudioSystem(int uiMaxCachSize) : ZFSubSystem("ZFAudioSystem") 
 {
+	m_kPos = Vector3(0,0,0);
 	m_pkMusic = NULL;
 	m_bIsValid = false;
 	m_uiCurrentCachSize = 0;

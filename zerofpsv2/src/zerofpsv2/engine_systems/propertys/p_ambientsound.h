@@ -12,7 +12,8 @@ class ENGINE_SYSTEMS_API P_AmbientSound : public Property
 	private:
 
 		float m_fHearableDistance;
-		char* m_szFileName;
+		//char* m_szFileName;
+		string m_strFileName;
 		bool m_bLoop;
 		bool m_bStarted;
 
@@ -26,6 +27,10 @@ class ENGINE_SYSTEMS_API P_AmbientSound : public Property
 
 		void CloneOf(Property* pkProperty);
 		void Update();
+
+	protected:
+
+		vector<PropertyValues> GetPropertyValues();
 
 };
 

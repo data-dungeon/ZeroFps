@@ -578,8 +578,6 @@ Object* MistServer::GetTargetObject()
 
 void MistServer::AddZone()
 {
-	printf("MistServer::AddZone\n");
-
 	if(pkObjectMan->IsInsideZone(m_kZoneMarkerPos,m_kZoneSize))
 		return;
 		
