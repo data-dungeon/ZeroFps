@@ -908,3 +908,25 @@ color_rgba TextureManager::GetPixel(int x,int y)
 
 
 
+bool TextureManager::TextureIsTGA(int iID)
+{
+	if(iID == -1)
+		return false;
+
+	map<int,bool>::iterator find = m_kIsTGAMap.find(iID);
+	if(find == m_kIsTGAMap.end())
+	{
+		char* find;
+		const char* filename = GetFileName(iID);
+
+		find = strstr(filename, ".tga");
+		m_kIsTGAMap[iID] = (find == NULL) ? false : true;
+
+		if(find == NULL)
+			return false;
+		else
+			return true;
+	}
+
+	return find->second;
+}

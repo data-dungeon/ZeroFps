@@ -185,7 +185,8 @@ bool GLGuiRender::RenderQuad(Rect rc)
 	bool bDrawMasked = (bMask == true && m_pkSkin->m_iBkTexAlphaID > 0) ? 
 		true : false;
 
-	bool bIsTGA = m_pkTextureManger->TextureHaveAlpha(m_pkSkin->m_iBkTexID);
+	bool bIsTGA;// = m_pkTextureManger->TextureHaveAlpha(m_pkSkin->m_iBkTexID);
+	bIsTGA = m_pkTextureManger->TextureIsTGA(m_pkSkin->m_iBkTexID);
 
 	if(bIsTGA)
 		bDrawMasked = false;
@@ -1209,3 +1210,19 @@ void GLGuiRender::DrawString(const char* text, const int length, int x, int y,
 
 	glEnd();
 }
+
+//bool GLGuiRender::TextureIsTGA(int iID)
+//{
+//	if(iID == -1)
+//		return false;
+//
+//	char* find;
+//	const char* filename = m_pkTextureManger->GetFileName(iID);
+//
+//	find = strstr(filename, ".tga");
+//
+//	if(find == NULL)
+//		return false;
+//	else
+//		return true;
+//}

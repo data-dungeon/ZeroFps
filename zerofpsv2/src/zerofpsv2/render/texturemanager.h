@@ -7,6 +7,7 @@
 #include <vector>
 #include <list>
 #include <string>
+#include <map>
 #include <SDL/SDL.h>
 #include "render_x.h"
 #include "../ogl/zfpsgl.h"
@@ -142,6 +143,9 @@ class RENDER_API TextureManager : public ZFSubSystem {
 		//bool Blit(SDL_Surface* pkImage,int x,int y);
 		//void PutPixel(SDL_Surface* surface, int x, int y, Uint32 pixel);
 //		SDL_Surface *LoadImage(const char *filename);	
+
+		bool TextureIsTGA(int iID);
+		map<int,bool> m_kIsTGAMap;
 
 };
 

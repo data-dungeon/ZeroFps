@@ -67,6 +67,7 @@ private:
 
 	void DoTextTag(); 
 	void RotateVertexCoords90deg(float *pfTUs, float *pfTVs, unsigned char ucRotLaps);
+	
 
 	ZGuiSkin* m_pkSkin; // current skin
 	ZGuiFont* m_pkFont; // current font

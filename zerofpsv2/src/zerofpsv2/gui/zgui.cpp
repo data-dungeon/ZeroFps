@@ -1049,7 +1049,9 @@ bool ZGui::ClickedWndAlphaTex(int mx, int my, ZGuiWnd *pkWndClicked)
 	bool bIsTGA = false;
 	int alpha_tex = pkSkin->m_iBkTexAlphaID;
 
-	if(m_pkTexMan->TextureHaveAlpha(pkSkin->m_iBkTexID))
+	//if(strstr(m_pkTexMan->GetFileName(pkSkin->m_iBkTexID), ".tga") != NULL)
+	//if(m_pkTexMan->TextureHaveAlpha(pkSkin->m_iBkTexID))
+	if(m_pkTexMan->TextureIsTGA(pkSkin->m_iBkTexID))
 	{
 		alpha_tex = pkSkin->m_iBkTexID;
 		bIsTGA = true;
