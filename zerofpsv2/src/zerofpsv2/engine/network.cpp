@@ -1099,20 +1099,13 @@ void NetWork::DisconnectAll()
 {
 	if(!m_pkSocket)	return;
 
-/*	// Create a disconnect packet and sent it to all connects.
+	// Create a disconnect packet and sent it to all connects.
 	NetPacket kNetPRespons;
 	kNetPRespons.Clear();
 	kNetPRespons.m_kData.m_kHeader.m_iPacketType = ZF_NETTYPE_CONTROL;
 	kNetPRespons.Write((unsigned char) ZF_NETCONTROL_DISCONNECT);
 	kNetPRespons.TargetSetClient(ZF_NET_ALLCLIENT);
 	Send2(&kNetPRespons);
-	//SendToAllClients(&kNetPRespons);*/
-
-	cout << "DISCONNECT ALL" << endl;
-	for(unsigned int i=0; i<m_RemoteNodes.size(); i++) {
-		m_RemoteNodes[i].m_eConnectStatus = NETSTATUS_DISCONNECT;
-		m_RemoteNodes[i].Clear();
-	}
 }
 
 void NetWork::RunCommand(int cmdid, const CmdArgument* kCommand)
