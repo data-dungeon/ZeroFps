@@ -42,6 +42,30 @@ class ENGINE_SYSTEMS_API MadProperty : public Property, public Mad_Modell {
 Property* Create_MadProperty();
 
 
+/// Property to link a object to a MAD.Joint of the parent.
+class ENGINE_SYSTEMS_API LinkToJoint : public Property
+{
+	private:
+		vector<PropertyValues> GetPropertyValues();
+
+
+	public:
+		string	m_strToJoint;
+		float		f_anka;
+
+
+		LinkToJoint();
+		~LinkToJoint();
+		void Init();
+
+		void CloneOf(Property* pkProperty) { }
+		
+		void Update();
+};
+
+Property* Create_LinkToJoint();
+
+
 #endif
 
 

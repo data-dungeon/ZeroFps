@@ -1,4 +1,24 @@
 class object	
+	class vimshield
+		parent object
+		set MadProperty m_kMadFile /data/mad/shield.mad
+		set MadProperty m_fScale 0.5
+		set LinkToJoint m_strToJoint jointlh
+		set LinkToJoint f_anka 0.5
+	
+	class vimsword
+		parent object
+		set MadProperty m_kMadFile /data/mad/Sword.mad
+		set MadProperty m_fScale 0.5
+		set LinkToJoint m_strToJoint jointrh
+		set LinkToJoint f_anka 0.5
+
+	class vimshouse
+		parent object
+		set MadProperty m_kMadFile /data/mad/inn_walls.mad
+		set MadProperty m_fScale 0.1
+		set LinkToJoint m_strToJoint jointrh
+		set LinkToJoint f_anka 0.5
 
 	class camera
 		parent object
@@ -20,7 +40,7 @@ class object
 	class FWarrior
 		parent object
 		set MadProperty m_kMadFile /data/mad/fwarrior.mad
-		set MadProperty m_fScale 0.2
+		set MadProperty m_fScale 1
 
 	class Armour
 		parent object
@@ -55,7 +75,7 @@ class object
 	class Sword
 		parent object
 		set MadProperty m_kMadFile /data/mad/Sword.mad
-		set MadProperty m_fScale 0.2
+		set MadProperty m_fScale 1
 
 	class Goblin
 		parent object

@@ -11,7 +11,6 @@
 #include <GL/glut.h>
 #include <list>
 #include "../zerofpsv2/engine/application.h"
-//#include "../zerofpsv2/engine/levelmanager.h"
 #include "../zerofpsv2/engine_systems/common/heightmap2.h"
 
 #include "../zerofpsv2/engine_systems/mad/mad_modell.h"
@@ -26,20 +25,6 @@ class ZeroTank :public Application, public ZGuiApp {
 		Camera*			m_pkCamera;
 		Object*			m_pkCameraObject;
 		
-		//HeightMap*		m_pkMap;
-		// actions
-/*		int 			m_iActionCamLeft;
-		int 			m_iActionCamRight;
-		int 			m_iActionCamUp;
-		int 			m_iActionCamDown;
-		int 			m_iActionSelect;
-		int 			m_iActionScroll;		
-		int 			m_iActionSelectManyModifier;		
-		int			m_iActionExploreAll;
-		int			m_iActionUnExploreAll;		
-//		int			m_iActionPrintServerInfo;				
-		int			m_iActionDoOrder;*/
-		
 		//this is true when client has got heightmap from server
 		bool			m_HaveFoundHMapObject;
 		
@@ -53,14 +38,6 @@ class ZeroTank :public Application, public ZGuiApp {
 
 		//clients own little qute object
 		int					m_iSelfObjectID;				// Network ID that i use to send data to server.
-
-		//list of possible spawn points
-//		vector<Vector3>	m_kSpawnPoints;
-		//wich gametype for server to use
-//		int					m_iGameType;
-//		Heightmap2*			m_pkMap2;
-		//GuiBuilder*			m_pkGuiBuilder;
-		//float m_fConePosY;
 
 		Mad_Modell			m_pkTestMod;
 		
@@ -78,6 +55,7 @@ class ZeroTank :public Application, public ZGuiApp {
 		// Test for rotations - Vim
 		Object*				m_pkGoblinLord;
 		Object*				m_pkGoblinSlave;
+		Object*				m_pkGoblinSword;
 
 
 	public:
@@ -104,7 +82,6 @@ class ZeroTank :public Application, public ZGuiApp {
 		//order handler
 		void HandleOrders();
 
-
 		//on client join, server runs this
 		void OnServerClientJoin(ZFClient* pkClient,int iConID);
 		void OnServerClientPart(ZFClient* pkClient,int iConID);
@@ -114,10 +91,6 @@ class ZeroTank :public Application, public ZGuiApp {
 		bool IsValid();
 
 		ZFScriptSystem* GetScript() { return pkScript; }
-
-		//void RegisterActions();		
-		//Setup spawn points
-		//void SetupSpawnPoints();
 };
 
 

@@ -667,6 +667,12 @@ Vector3 Mad_Core::GetBonePosition(int iBone)
 	return g_Madkbonetransform[iBone].GetPos();
 }
 
+Matrix4 Mad_Core::GetBoneTransform(int iBone)
+{
+	return g_Madkbonetransform[iBone];
+}
+
+
 int Mad_Core::GetBoneParent(int iBone)
 {
 	return m_kSkelleton[iBone].m_iParent;
@@ -798,7 +804,7 @@ float Mad_Core::GetRadius()
 	return m_fBoundRadius;	// * float(0.01);	// // BM-NOTE: Exporter scale stämmer inte ännu.
 }
 
-int Mad_Core::GetJointID(char* szJointName)
+int Mad_Core::GetJointID(const char* szJointName)
 {
 	for(unsigned int i=0; i<m_kSkelleton.size(); i++) {
 		if(strcmp(m_kSkelleton[i].m_acName, szJointName) == 0) 
@@ -812,10 +818,17 @@ Vector3 Mad_Core::GetJointPosition(char* szJointName)
 {
 	unsigned int i;
 
+	cout << "Num of joints " << m_kSkelleton.size() << endl;
+
 	if(szJointName) {
 		for(i=0; i<m_kSkelleton.size(); i++) {
-			if(strcmp(m_kSkelleton[i].m_acName, szJointName) == 0) 
-				return m_kSkelleton[i].m_kPosition;
+			//cout << "Joint " << m_kSkelleton[i].m_acName << endl;
+
+			if(strcmp(m_kSkelleton[i].m_acName, szJointName) == 0) {
+				//cout << "Joint found " << endl;
+				return g_FullBoneTransform[i].GetPosVector();
+				//return m_kSkelleton[i].m_kPosition;
+				}
 			}
 		}
 	else {
@@ -825,6 +838,7 @@ Vector3 Mad_Core::GetJointPosition(char* szJointName)
 			}
 		}
 
+	//cout << "Joint not found" << endl;
 	return Vector3::ZERO;
 }
 

@@ -992,8 +992,9 @@ void ZeroFps::RegisterPropertys()
 	m_pkPropertyFactory->Register("AutoParentProperty",Create_AutoParentProperty);							
 	m_pkPropertyFactory->Register("PhysicProperty",Create_PhysicProperty);								
 	m_pkPropertyFactory->Register("PSystemProperty",Create_PSystemProperty);								
-
+	m_pkPropertyFactory->Register("LinkToJoint",Create_LinkToJoint);								
 }
+
 
 void ZeroFps::QuitEngine()
 {

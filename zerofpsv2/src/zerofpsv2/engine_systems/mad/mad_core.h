@@ -465,6 +465,7 @@ public:
 
 	unsigned int GetNumOfBones();
 	Vector3 GetBonePosition(int iBone);
+	Matrix4 GetBoneTransform(int iBone);
 	int GetBoneParent(int iBone);
 
 	void SetSkelleton(vector<Mad_CoreBone>	kSkelleton);
@@ -484,7 +485,7 @@ public:
 	float GetRadius();
 	void CalculateRadius();
 
-	int GetJointID(char* szJointName);
+	int GetJointID(const char* szJointName);
 	Vector3 GetJointPosition(char* szJointName);	// Use NULL to get pos for first root joint.
 
 	void CreateController(char* szName, char* szJoint, ControllAxis eAxis, float fMin, float fMax);

@@ -226,3 +226,90 @@ Property* Create_MadProperty()
 	
 		pkCore->SetControll("lucka",fTestValue);
 		}*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+LinkToJoint::LinkToJoint() 
+{
+	strcpy(m_acName,"LinkToJoint");		
+	m_iType = PROPERTY_TYPE_NORMAL;
+	m_iSide = PROPERTY_SIDE_SERVER | PROPERTY_SIDE_CLIENT;
+
+	m_strToJoint = "joint0";
+}
+
+LinkToJoint::~LinkToJoint()	{ }
+void LinkToJoint::Init()		{ }
+
+void LinkToJoint::Update() 
+{
+	MadProperty* pkMad = dynamic_cast<MadProperty*>(m_pkObject->GetParent()->GetProperty("MadProperty"));
+	if(!pkMad)
+		return;
+
+	Mad_Core* pkCore = dynamic_cast<Mad_Core*>(pkMad->kMadHandle.GetResourcePtr()); 
+	if(!pkCore)
+		return;
+
+ 	pkCore->SetBoneAnimationTime(pkMad->iActiveAnimation, pkMad->fCurrentTime);
+	pkCore->SetupBonePose();
+	
+	/*
+		Vector3 kPos = pkCore->GetBonePosition(pkCore->GetJointID("joint12"));	// s_Goblin_joint12
+		cout << "Joint Pos: <" << kPos.x << "," << kPos.y << "," << kPos.z << ">" << endl;
+		m_pkObject->SetLocalPosV(kPos);
+	*/
+
+	Matrix4 kMat;
+	Vector3 kPos;
+	kMat = pkCore->GetBoneTransform(pkCore->GetJointID(m_strToJoint.c_str()));
+	kPos = kMat.GetPos();
+	kMat.SetPos(Vector3(0,0,0));
+	m_pkObject->SetLocalRotM(kMat);
+	m_pkObject->SetLocalPosV( kPos );
+}
+
+vector<PropertyValues> LinkToJoint::GetPropertyValues()
+{
+	vector<PropertyValues> kReturn(2);
+	
+	kReturn[0].kValueName = "f_anka";
+	kReturn[0].iValueType = VALUETYPE_FLOAT;
+	kReturn[0].pkValue    = (void*)&f_anka;
+
+	kReturn[1].kValueName = "m_strToJoint";
+	kReturn[1].iValueType = VALUETYPE_STRING;
+	kReturn[1].pkValue    = (void*)&m_strToJoint;
+
+	return kReturn;
+}
+
+
+Property* Create_LinkToJoint()
+{
+	return new LinkToJoint;
+}
+
+
+
+

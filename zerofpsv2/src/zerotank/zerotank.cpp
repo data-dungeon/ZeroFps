@@ -80,10 +80,12 @@ void ZeroTank::Init()
 	//register property bös
 	RegisterPropertys();
 
+	/*	
 	m_pkTestObject = pkObjectMan->CreateObject();
 	m_pkTestObject->SetLocalPosV(Vector3(0,-10,0));
 	m_pkTestObject->AttachToClosestZone();
 	m_pkTestObject->AddProperty(new P_Primitives3D(PYRAMID));
+	*/
 	
 	GuiAppLua::Init(&g_kZeroTank, GetScript());
 	InitializeGui(pkGui, pkTexMan, pkScript, pkGuiMan);
@@ -113,6 +115,7 @@ void ZeroTank::OnIdle()
 		if(!m_pkZeroTankClientObject) {
 			m_pkZeroTankClientObject = pkObjectMan->GetObjectByNetWorkID( m_iSelfObjectID );
 			if(m_pkZeroTankClientObject) {
+				cout << "Create Client Object" << m_iSelfObjectID << endl;
 				m_pkZeroTankClientObject->AddProperty("CameraProperty");
 				CameraProperty* cam = (CameraProperty*)m_pkZeroTankClientObject->GetProperty("CameraProperty");
 				cam->SetCamera(m_pkCamera);
@@ -530,6 +533,22 @@ void ZeroTank::OnServerStart(void)
 		//cam->SetCamera(m_pkCamera);
 	}
 
+	Object* pkObj;
+
+	pkObj = pkObjectMan->CreateObjectByArchType("vimshouse");
+	if(pkObj) {
+		pkObj->SetParent(m_pkZeroTankHull);
+		pkObj->SetRelativeOri(true);
+		pkObj->SetLocalPosV(Vector3(0,0,0));
+	}
+
+/*	pkObj = pkObjectMan->CreateObjectByArchType("vimsword");
+	if(pkObj) {
+		pkObj->SetParent(m_pkZeroTankHull);
+		pkObj->SetRelativeOri(true);
+		pkObj->SetLocalPosV(Vector3(0,0,0));
+	}*/
+
 /*	m_pkZeroTankTower = pkObjectMan->CreateObjectByArchType("ZeroRTSTower");
 	if(m_pkZeroTankTower) {
 		m_pkZeroTankTower->SetParent(m_pkZeroTankHull);
@@ -571,12 +590,28 @@ void ZeroTank::OnServerStart(void)
 
 	// Female warrior
 	Object* pk0 = pkObjectMan->CreateObjectByArchType("FWarrior");
-	Object* pk1 = pkObjectMan->CreateObjectByArchType("Armour");
+	pkObj = pkObjectMan->CreateObjectByArchType("vimshield");
+	if(pkObj) {
+		pkObj->SetParent(pk0);
+		pkObj->SetRelativeOri(true);
+		pkObj->SetLocalPosV(Vector3(0,0,0));
+	}
+
+	pkObj = pkObjectMan->CreateObjectByArchType("vimsword");
+	if(pkObj) {
+		pkObj->SetParent(pk0);
+		pkObj->SetRelativeOri(true);
+		pkObj->SetLocalPosV(Vector3(0,0,0));
+	}
+
+
+
+/*	Object* pk1 = pkObjectMan->CreateObjectByArchType("Armour");
 	Object* pk2 = pkObjectMan->CreateObjectByArchType("Sword");
 	Object* pk3 = pkObjectMan->CreateObjectByArchType("Armband");
 	Object* pk4 = pkObjectMan->CreateObjectByArchType("Helmet");
 	Object* pk5 = pkObjectMan->CreateObjectByArchType("Stovlar");
-	Object* pk6 = pkObjectMan->CreateObjectByArchType("Shield");
+	Object* pk6 = pkObjectMan->CreateObjectByArchType("Shield");*/
 
 	// monster
 	Object* pk7 = pkObjectMan->CreateObjectByArchType("Monster");
@@ -611,24 +646,24 @@ void ZeroTank::OnServerStart(void)
 	pkGob->SetWorldPosV ( Vector3 (15, 0, -15) );
 
 	pk0->SetWorldPosV ( Vector3 (-20,0,-20) );
-	pk1->SetWorldPosV ( Vector3 (-20,0,-20) );
+/*	pk1->SetWorldPosV ( Vector3 (-20,0,-20) );
 	pk2->SetWorldPosV ( Vector3 (-20,0,-20) );
 	pk3->SetWorldPosV ( Vector3 (-20,0,-20) );
 	pk4->SetWorldPosV ( Vector3 (-20,0,-20) );
 	pk5->SetWorldPosV ( Vector3 (-20,0,-20) );
-	pk6->SetWorldPosV ( Vector3 (-20,0,-20) );
+	pk6->SetWorldPosV ( Vector3 (-20,0,-20) );*/
 
 
 	pk9->SetWorldPosV ( Vector3 (30,0,-30) );
 	pk10->SetWorldPosV ( Vector3 (30,0,-30) );
 
 	pk0->AttachToClosestZone();
-	pk1->AttachToClosestZone();
+/*	pk1->AttachToClosestZone();
 	pk2->AttachToClosestZone();
 	pk3->AttachToClosestZone();
 	pk4->AttachToClosestZone();
 	pk5->AttachToClosestZone();
-	pk6->AttachToClosestZone();
+	pk6->AttachToClosestZone();*/
 	pk7->AttachToClosestZone();
    pk8->AttachToClosestZone();
    pk9->AttachToClosestZone();
