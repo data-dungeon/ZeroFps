@@ -49,6 +49,14 @@ P_Powerup::P_Powerup()
 		//check if type is level aproved
 		switch(iRand)
 		{
+			case 7:
+				if(iLevel >= 25 )
+				{
+					m_iPowerupType = iRand;
+					m_strPowerupName = "Spread Gun";			
+				}
+				break;
+		
 			case 0:
 				m_iPowerupType = iRand;
 				m_strPowerupName = "Health";
@@ -135,6 +143,9 @@ void P_Powerup::Touch(int iID)
 						{
 							pkPlayer->m_iEnergy += 25;
 							
+							if(pkPlayer->m_iEnergy > pkPlayer->m_iMaxEnergy)
+								pkPlayer->m_iEnergy = pkPlayer->m_iMaxEnergy;
+							
 							pkPlayer->SetNetUpdateFlag(true);						
 							break;
 						}
@@ -143,10 +154,11 @@ void P_Powerup::Touch(int iID)
 						case 1:
 						{
 							pkGun->m_iDamage = 5;
+							pkGun->SetSound("data/sound/auto_gun.wav");
 							pkGun->m_strDirectHitObject = "/data/script/objects/ybergun-bullethit.lua";
 							pkGun->m_strProjectile = "";
 							pkGun->m_fFireDelay = 0.1;
-							pkPlayer->m_strGunName = "Yber Gun";
+							pkPlayer->m_strGunName = m_strPowerupName;
 							pkPlayer->SetNetUpdateFlag(true);
 							break;
 						}										
@@ -154,24 +166,41 @@ void P_Powerup::Touch(int iID)
 						//flash gun
 						case 2:
 						{
+							pkGun->SetSound("data/sound/12ga_shotgun.wav");
 							pkGun->m_strProjectile = "/data/script/objects/bullet.lua";
 							pkGun->m_fFireDelay = 0.4;
 							pkGun->m_fBulletVel = 20;
-							pkPlayer->m_strGunName = "Flash Gun";							
-							pkPlayer->SetNetUpdateFlag(true);												
-						
+							pkGun->m_iProjectiles = 1;
+							pkGun->m_fAngle = 0;
+							pkPlayer->m_strGunName = m_strPowerupName;							
+							pkPlayer->SetNetUpdateFlag(true);																		
 							break;
 						}
-					
+
+						//spread gun
+						case 7:
+						{
+							pkGun->SetSound("data/sound/spreadgun.wav");
+							pkGun->m_strProjectile = "/data/script/objects/spreadgun-bullet.lua";
+							pkGun->m_fFireDelay = 0.5;
+							pkGun->m_fBulletVel = 20;
+							pkGun->m_iProjectiles = 3;
+							pkGun->m_fAngle = 45;
+							pkPlayer->m_strGunName = m_strPowerupName;							
+							pkPlayer->SetNetUpdateFlag(true);																		
+							break;
+						}
+						
+											
 						//mini gun
 						case 3:
 						{
-							
+							pkGun->SetSound("data/sound/auto_gun.wav");							
 							pkGun->m_iDamage = 2;
 							pkGun->m_strDirectHitObject = "/data/script/objects/bullethit.lua";
 							pkGun->m_strProjectile = "";
 							pkGun->m_fFireDelay = 0.1;
-							pkPlayer->m_strGunName = "Mini Gun";
+							pkPlayer->m_strGunName = m_strPowerupName;
 							
 							pkPlayer->SetNetUpdateFlag(true);						
 							break;
