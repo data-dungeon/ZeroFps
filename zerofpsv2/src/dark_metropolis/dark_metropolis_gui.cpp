@@ -112,16 +112,16 @@ void DarkMetropolis::GUI_OnIdle()
 void DarkMetropolis::GUI_Init()
 {
 	// Jaja... får väll ge mig dvoid :( Men efter crunchen vill jag ha detta _fixat_
-	bool bUseHardwareMouse = false;
+	bool bJagVillHellreHaHWCursorMenWTF = false;
 	m_pkGamePlayInfoLabel = NULL;
-	m_pkInput->ShowCursor(bUseHardwareMouse);
+	m_pkInput->ShowCursor(bJagVillHellreHaHWCursorMenWTF);
 
 	// Create gui script.
 	GuiAppLua::Init(&g_kDM, m_pkScript);
 	InitGui(m_pkScript,
 		"data/textures/text/ms_sans_serif8.bmp",
 		"data/script/gui/defskins.lua",
-		NULL, bUseHardwareMouse);
+		NULL, bJagVillHellreHaHWCursorMenWTF);
 
 	// Load start sceen.
 	LoadGuiFromScript(m_pkScript, "data/script/gui/dm_start.lua");
@@ -145,6 +145,9 @@ void DarkMetropolis::GUI_Init()
 
 	((CNewGameDlg*) m_pkNewGameDlg)->InitDlg(); 
 	((CNewGameDlg*) m_pkNewGameDlg)->SetFade(0.5f);
+
+	pkGui->SetCursor( 0,0, pkTexMan->Load("data/textures/gui/dm/cursor.bmp", 0),
+		pkTexMan->Load("data/textures/gui/dm/cursor_a.bmp", 0), 32, 32);
 }
 
 void DarkMetropolis::GUI_OnCommand(int iID, bool bRMouseBnClick, 
