@@ -320,9 +320,20 @@ bool PlayerDatabase::SaveCharacter(Entity* pkEntity,string strPlayer)
 
 void PlayerDatabase::DeleteCharacter(string strPlayer, string strCharacter)
 {
+	cout << "Delete Character '" << strCharacter << "' from Login '" << strPlayer << "'" << endl;
 	ZFVFileSystem* pkVFS	= static_cast<ZFVFileSystem*>(g_ZFObjSys.GetObjectPtr("ZFVFileSystem"));	
-	string strCharacterDataFile = m_strPlayerDirectory + (strPlayer + "/") + strCharacter; 
-	pkVFS->RemoveDir(strCharacterDataFile);
+
+
+	string strCharacterDataDir = m_strPlayerDirectory + (strPlayer + "/") + strCharacter; 
+	string strCharacterDataFile = strCharacterDataDir + string("/character.dat"); 
+
+	// Delete Player Data files
+	cout << "TargetFile: "<< strCharacterDataFile << endl;
+	pkVFS->RemoveFile(strCharacterDataFile.c_str());
+
+	// Delete player dir
+	cout << "TargetDir: "<< strCharacterDataDir << endl;
+	pkVFS->RemoveDir(strCharacterDataDir);
 }
 
 

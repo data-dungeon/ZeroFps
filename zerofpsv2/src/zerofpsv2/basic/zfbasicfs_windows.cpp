@@ -175,12 +175,15 @@ bool ZFBasicFS::FileExist(const char* szFile)
 
 bool ZFBasicFS::RemoveFile(const char* acName)
 {
-	HRESULT kRes = DeleteFile(acName);
-
-	if(kRes ==  S_OK) 
+	bool bRes = DeleteFile(acName);
+	if(bRes)
 		return true;
-
-	return false;
+	else
+	{
+		DWORD kHora = GetLastError();
+		int iGalla = 2;
+		return false;
+	}
 }
 
 #endif

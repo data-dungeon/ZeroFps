@@ -902,7 +902,6 @@ void MistServer::OnNetworkMessage(NetPacket *PkNetMessage)
 		{
 			string strChar;
 			PkNetMessage->Read_Str(strChar);
-			cout << "Plz Delete: " << strChar << endl;
 
 			string strLogin = m_pkZeroFps->m_kClient[PkNetMessage->m_iClientID].m_strLogin;
 			m_pkPlayerDB->DeleteCharacter(strLogin, strChar);

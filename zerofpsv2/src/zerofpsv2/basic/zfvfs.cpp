@@ -295,6 +295,12 @@ bool ZFVFileSystem::RemoveDir(string strDir)
 	return m_pkBasicFS->RemoveDir(strDir.c_str());
 }
 
+bool ZFVFileSystem::RemoveFile(const char* acName)
+{
+	return m_pkBasicFS->RemoveFile(acName);
+}
+
+
 void ZFVFileSystem::ListDirRecursive(vector<string>* vkFiles, string strRootPath, vector<string>& szExtensions)
 {
 	if(strRootPath.size() > 1)

@@ -154,7 +154,10 @@ class MistClient :public Application, public ZGuiApp {
       void AddRemoveServer(const char* szName, const char* szSeverIP, bool bAdd=true);
       void UpdateServerListbox();
 		void AddStringToChatBox(string strMsg);
-		
+
+		void RegBeginPlay(string strChar);
+		void DeleteChar(string strChar);
+		void AddChar(string strChar);
 
       friend bool GUIPROC( ZGuiWnd* win, unsigned int msg, int numparms, void *params );
       friend void GuiMsgStartScreen( string strMainWnd, string strController, unsigned int msg, int numparms, void *params );

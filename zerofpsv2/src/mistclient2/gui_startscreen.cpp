@@ -242,12 +242,7 @@ void GuiMsgStartScreen( string strMainWnd, string strController,
 				char*	szSelItem =	g_kMistClient.GetSelItem("CharGen_CharList");
 				if(szSelItem)
 				{
-					NetPacket kNp;
-					kNp.Clear();
-					kNp.Write((char) MLNM_CS_REQPLAY);
-					kNp.Write_Str(string(szSelItem));
-					kNp.TargetSetClient(0);
-					g_kMistClient.SendAppMessage(&kNp);
+					g_kMistClient.RegBeginPlay(string(szSelItem));
 					g_kMistClient.LoadInGameGui();
 				}
 
@@ -281,12 +276,7 @@ void GuiMsgStartScreen( string strMainWnd, string strController,
 				char*	szSelItem =	g_kMistClient.GetSelItem("CharGen_CharList");
 				if(szSelItem)
 				{
-					NetPacket kNp;
-					kNp.Clear();
-					kNp.Write((char) MLNM_CS_CHARDEL);
-					kNp.Write_Str(string(szSelItem));
-					kNp.TargetSetClient(0);
-					g_kMistClient.SendAppMessage(&kNp);
+					g_kMistClient.DeleteChar(string(szSelItem));
 					cout << "Should delete sel char" << szSelItem << "\n";
 				}
 			}
@@ -368,12 +358,7 @@ void GuiMsgStartScreen( string strMainWnd, string strController,
 				char*	szSelItem =	g_kMistClient.GetText("CharGen_CharNameEb");
 				if(szSelItem)
 				{
-					NetPacket kNp;
-					kNp.Clear();
-					kNp.Write((char) MLNM_CS_CHARADD);
-					kNp.Write_Str(string(szSelItem));
-					kNp.TargetSetClient(0);
-					g_kMistClient.SendAppMessage(&kNp);
+					g_kMistClient.AddChar(string(szSelItem));
 				}
 				/*
 				g_kMistClient.AddListItem("CharGen_CharList", g_kMistClient.GetText("CharGen_CharNameEb"), true);	

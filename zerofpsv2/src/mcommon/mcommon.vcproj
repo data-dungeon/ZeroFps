@@ -155,6 +155,9 @@
 				RelativePath=".\p_ai.cpp">
 			</File>
 			<File
+				RelativePath=".\p_buff.cpp">
+			</File>
+			<File
 				RelativePath=".\p_charactercontrol.cpp">
 			</File>
 			<File
@@ -217,6 +220,9 @@
 			</File>
 			<File
 				RelativePath=".\p_ai.h">
+			</File>
+			<File
+				RelativePath=".\p_buff.h">
 			</File>
 			<File
 				RelativePath=".\p_charactercontrol.h">

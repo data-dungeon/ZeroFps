@@ -123,6 +123,8 @@ class BASIC_API ZFVFileSystem : public ZFSubSystem
 
 		void RunCommand(int cmdid, const CmdArgument* kCommand);
 
+		bool RemoveFile(const char* acName);
+
 		bool StartUp();
 		bool ShutDown();
 		bool IsValid();

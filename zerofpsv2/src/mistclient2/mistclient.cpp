@@ -1337,3 +1337,34 @@ void MistClient::CloseActiveContainer()
 				m_pkInventoryDlg->CloseContainerWnd(); 
 		}
 }
+
+void MistClient::RegBeginPlay(string strChar)
+{
+	NetPacket kNp;
+	kNp.Clear();
+	kNp.Write((char) MLNM_CS_REQPLAY);
+	kNp.Write_Str( strChar );
+	kNp.TargetSetClient(0);
+	SendAppMessage(&kNp);
+}
+
+void MistClient::DeleteChar(string strChar)
+{
+	NetPacket kNp;
+	kNp.Clear();
+	kNp.Write((char) MLNM_CS_CHARDEL);
+	kNp.Write_Str(strChar);
+	kNp.TargetSetClient(0);
+	SendAppMessage(&kNp);
+}
+
+void MistClient::AddChar(string strChar)
+{
+	NetPacket kNp;
+	kNp.Clear();
+	kNp.Write((char) MLNM_CS_CHARADD);
+	kNp.Write_Str(strChar);
+	kNp.TargetSetClient(0);
+	SendAppMessage(&kNp);
+}
+
