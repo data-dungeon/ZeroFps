@@ -102,7 +102,7 @@ void Render::DrawSkyBox_SixSided(Vector3 CamPos,Vector3 kHead,int* aiSideTexture
 
 void Render::DrawSkyBox(Vector3 CamPos,Vector3 kHead,int iHor,int iTop) 
 {
-	m_pkZShaderSystem->Push("Render::DrawSkyBox_SixSided");
+	m_pkZShaderSystem->Push("Render::DrawSkyBox");
 	
 	
 	float fYpos;
