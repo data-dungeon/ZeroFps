@@ -22,6 +22,8 @@
 #include "../mcommon/ml_netmessages.h"
 #include "../mcommon/p_charactercontrol.h"
 #include "../mcommon/p_characterproperty.h"
+#include "../mcommon/zssmltime.h"
+
 #include "../zerofpsv2/engine_systems/propertys/p_track.h"
  
 MistServer g_kMistServer("MistServer", 0, 0, 0);
@@ -41,7 +43,8 @@ MistServer::MistServer(char* aName,int iWidth,int iHeight,int iDepth)
 	g_ZFObjSys.Log_Create("mistserver");
 	m_pkServerInfoP = NULL;
 
-	m_pkEnviroment = new ZSSEnviroment;
+	m_pkEnviroment =	new ZSSEnviroment;
+	m_pkTime = 			new ZSSMLTime;
 	
 	// Set Default values
 	m_AcceptNewLogins = true;
@@ -248,6 +251,10 @@ void MistServer::OnIdle()
 		m_pkZeroFps->DevPrintf("server","ServerName: %s", m_pkServerInfoP->GetServerName().c_str());
 		m_pkZeroFps->DevPrintf("server","Players: %d", m_pkServerInfoP->GetNrOfPlayers());	
 	}
+
+	
+	//print current mistlands time
+	m_pkZeroFps->DevPrintf("server","date: %s", m_pkTime->GetDateString().c_str());		
 }
 
 
@@ -258,8 +265,10 @@ void MistServer::RenderInterface(void)
 
 void MistServer::OnSystem()
 {
+	m_pkTime->SetTime(m_pkZeroFps->m_pkEntityManager->GetSimTime());
 	m_pkEnviroment->Update();
-	
+
+
 }
 
 void MistServer::Input_Camera(float fMouseX, float fMouseY)

@@ -20,6 +20,8 @@
 #include "../mcommon/p_item.h"
 #include "../mcommon/p_container.h"
 
+#include "../zerofpsv2/basic/zfbasicfs.h"
+
 DarkMetropolis g_kDM("DM_arcad",0,0,0);
 
 DarkMetropolis::DarkMetropolis(char* aName,int iWidth,int iHeight,int iDepth) 

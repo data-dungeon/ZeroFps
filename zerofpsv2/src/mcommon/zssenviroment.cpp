@@ -212,6 +212,7 @@ bool ZSSEnviroment::StartUp()
 {
 	m_pkZeroFps = static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
 
+	
 	return true;
 }
 

@@ -62,6 +62,8 @@ void BASIC_API IntToChar(char* aText,int iValue);				//
 char* BoolStr(bool bFlag);												//returns string "true" or "false" i think	
 bool BASIC_API IsSameIgnoreCase(const char* szString1, const char* szString2);
 
+string BASIC_API IntToString(int iValue);
+
 //error handling
 extern char g_szFormatText[4096];	
 BASIC_API void ZFError(const char *fmt, ...);

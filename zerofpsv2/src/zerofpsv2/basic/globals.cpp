@@ -91,6 +91,14 @@ void IntToChar(char* aText,int iValue)
 		}
 	}
 }
+
+string BASIC_API IntToString(int iValue)
+{
+	static char temp[32];
+	sprintf(temp,"%d",iValue);	
+	
+	return temp;
+}
 	
 float BASIC_API DegToRad(float fAngle)
 {

@@ -10,6 +10,8 @@
 #include "../zerofpsv2/basic/vector3.h"
 #include "../zerofpsv2/engine/zerofps.h"
 
+#include "zssmltime.h"
+
 using namespace std;
 
 class P_Enviroment;
@@ -104,13 +106,12 @@ class MCOMMON_API ZSSEnviroment : public ZFSubSystem
 		};
 	
 		ZeroFps*						m_pkZeroFps;
-	
+		
 		vector<P_Enviroment*>	m_kPEnviroments;
 		vector<EnvList*>			m_kEnvLists;
-
-		float 						m_fEnviromentChange;
-		float							m_fEnviromentTimeout;
 		
+		float 						m_fEnviromentChange;
+		float							m_fEnviromentTimeout;		
 		
 		void UpdatePEnv(P_Enviroment* pkPEnv);
 		EnvList* GetEnvList(const string& strEnviroment);
