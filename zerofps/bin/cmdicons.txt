@@ -1,6 +1,0 @@
-attack
-move
-stop
-guard
-build
-repair

@@ -1,7 +1,0 @@
-; For ZeroFps
-Vector3 = (<x>, <y>, <z>)
-Vector4 = (<x>, <y>, <z>, <w>)
-Quaternion = (<x>, <y>, <z>, <w>)
-Matrix3
-Matrix4
-

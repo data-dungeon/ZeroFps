@@ -1,3 +1,0 @@
-rm -f *.o
-../complink "*.cpp"
-./relink

@@ -1,1 +1,0 @@
-g++ *.o -o ../../bin/zgresedit -L../../bin/ -lbasic -lengine -lrender -lglut -lgui -L/usr/X11R6/lib
