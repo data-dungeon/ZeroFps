@@ -1,7 +1,7 @@
 #include "zguied.h"
 #include "resource.h"
 #include "shellapi.h"
-
+#include "../../../zerofpsv2/engine/inputhandle.h"
 
 void ZGuiEd::HandleInput()
 {
@@ -204,31 +204,7 @@ void ZGuiEd::HandleInput()
 					kFocusWnd == GetCtrl(IDC_RGB_COLOR_G_EB, 0) ||
 					kFocusWnd == GetCtrl(IDC_RGB_COLOR_B_EB, 0))
 				{
-					float fColor;
-					ZGuiSkin** ppkSkin;
-					if(GetSelSkin(ppkSkin))
-					{
-						GetWindowText(GetCtrl(IDC_RGB_COLOR_R_EB, 0), text, 512);
-						fColor = (float) atoi(text) / 255.0f;
-						if(IsDlgButtonChecked(g_kDlgBoxRight, IDC_SKINTYPE_BACKGROUND_RB))
-							(*ppkSkin)->m_afBkColor[0] = fColor;
-						else
-							(*ppkSkin)->m_afBorderColor[0] = fColor;
-					
-						GetWindowText(GetCtrl(IDC_RGB_COLOR_G_EB, 0), text, 512);
-						fColor = (float) atoi(text) / 255.0f;
-						if(IsDlgButtonChecked(g_kDlgBoxRight, IDC_SKINTYPE_BACKGROUND_RB))
-							(*ppkSkin)->m_afBkColor[1] = fColor;
-						else
-							(*ppkSkin)->m_afBorderColor[1] = fColor;
-
-						GetWindowText(GetCtrl(IDC_RGB_COLOR_B_EB, 0), text, 512);
-						fColor = (float) atoi(text) / 255.0f;
-						if(IsDlgButtonChecked(g_kDlgBoxRight, IDC_SKINTYPE_BACKGROUND_RB))
-							(*ppkSkin)->m_afBkColor[2] = fColor;
-						else
-							(*ppkSkin)->m_afBorderColor[2] = fColor;
-					}
+					OnChangeSkinColor();
 				}
 				else
 				if(kFocusWnd == GetCtrl(IDC_BORDER_EB, 0))
@@ -419,6 +395,15 @@ void ZGuiEd::OnCommand(int iCtrlID, int iEvent)
 			SetDlgItemInt(g_kFontDlg, IDC_FONT_COLOR_R_EB, m_ucaPickColor[0], FALSE);
 			SetDlgItemInt(g_kFontDlg, IDC_FONT_COLOR_G_EB, m_ucaPickColor[1], FALSE);
 			SetDlgItemInt(g_kFontDlg, IDC_FONT_COLOR_B_EB, m_ucaPickColor[2], FALSE);
+			break;
+
+		case IDC_PICK_SKINCOLOR_BN:
+			unsigned char ucaPickColor[3];
+			SelectAColor(ucaPickColor[0],ucaPickColor[1],ucaPickColor[2]);
+			SetDlgItemInt(g_kDlgBoxBottom, IDC_RGB_COLOR_R_EB, ucaPickColor[0], FALSE);
+			SetDlgItemInt(g_kDlgBoxBottom, IDC_RGB_COLOR_G_EB, ucaPickColor[1], FALSE);
+			SetDlgItemInt(g_kDlgBoxBottom, IDC_RGB_COLOR_B_EB, ucaPickColor[2], FALSE);
+			OnChangeSkinColor();
 			break;
 
 		case IDC_HIDDEN_FROM_START_CB:
@@ -1009,3 +994,4 @@ void ZGuiEd::OnCommand(int iCtrlID, int iEvent)
 			break;
 	}
 }
+

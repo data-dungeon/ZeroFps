@@ -6,6 +6,7 @@
 #include "../../../zerofpsv2/gui/zgui.h"
 #include "../../../zerofpsv2/gui/zguiresourcemanager.h"
 #include "../../../zerofpsv2/basic/zfbasicfs.h"
+#include "../../../zerofpsv2/engine/camera.h"
 
 #define PREVIEW_SIZE 128
 
@@ -132,6 +133,7 @@ private:
 	bool SearchFiles(vector<string>& vkPathList, const char* szRootPath, 
 		char* szExtension, bool bSearchForFolders);
 	void RenameSelWnd(char* text);
+	void OnChangeSkinColor();
 
 	Point m_kCursorRangeDiff;
 };

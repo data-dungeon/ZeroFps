@@ -9,6 +9,7 @@
 #include <windows.h>
 #include <Commdlg.h>
 #include <commctrl.h>
+#include <SDL/SDL_thread.h>
 
 HBITMAP preview_bitmap;
 

@@ -631,9 +631,7 @@ void InventoryDlg::OnDropItem(int mx, int my)
 	if(kTargetSlot.first == -1) // no collision
 	{					
 		if(eDropTarget == DropTarget_Ground)
-		{
-			iTarget = -1; iSlotX = -1; iSlotY = -1;
-		}
+			iTarget = iSlotX = iSlotY = -1;
 		else
 		if(eDropTarget == DropTarget_Inventory && !m_kMoveSlot.bIsInventoryItem)
 			iTarget = GetInventoryContainerID();
@@ -646,18 +644,14 @@ void InventoryDlg::OnDropItem(int mx, int my)
 	else
 	{
 		if(eDropTarget == DropTarget_Ground)
-		{
-			iTarget = -1; iSlotX = -1; iSlotY = -1;
-		}
+			iTarget = iSlotX = iSlotY = -1;
 		else
 		if( (m_kMoveSlot.bIsInventoryItem && kTargetSlot.second) || 
 			 (!m_kMoveSlot.bIsInventoryItem && !kTargetSlot.second) )
 		{
 			iTarget = (*pkVector)[kTargetSlot.first].iItemID;
 			if((*pkVector)[kTargetSlot.first].bIsContainer)
-			{
-				iSlotX = -1; iSlotY = -1;
-			}
+				iSlotX = iSlotY = -1;
 		}
 		else
 		{
@@ -669,9 +663,7 @@ void InventoryDlg::OnDropItem(int mx, int my)
 			iTarget = (*pkVector)[kTargetSlot.first].iItemID;
 
 			if((*pkVector)[kTargetSlot.first].bIsContainer)
-			{
-				iSlotX = -1; iSlotY = -1;
-			}
+				iSlotX = iSlotY = -1;
 		}
 	}
 

@@ -127,6 +127,8 @@
 #define IDC_CURRENT_PATH_EB             1114
 #define IDC_OPEN_IMAGE_BN               1115
 #define IDC_ALPHA_TEXTURE_CB            1116
+#define IDC_PASTE_SKIN2                 1117
+#define IDC_PICK_SKINCOLOR_BN           1118
 #define ID_SDSD_DSFSD                   40001
 #define ID_SDFSDF_SDF                   40002
 #define ID_SDF_SDF                      40003

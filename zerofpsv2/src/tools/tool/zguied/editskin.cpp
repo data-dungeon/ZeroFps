@@ -546,3 +546,34 @@ bool ZGuiEd::CloneSkins(ZGuiWnd* pkDst, ZGuiWnd* pkSrc)
 
 	return true;
 }
+
+void ZGuiEd::OnChangeSkinColor()
+{
+	float fColor;
+	ZGuiSkin** ppkSkin;
+	if(GetSelSkin(ppkSkin))
+	{
+		char text[64];
+
+		GetWindowText(GetCtrl(IDC_RGB_COLOR_R_EB, 0), text, 512);
+		fColor = (float) atoi(text) / 255.0f;
+		if(IsDlgButtonChecked(g_kDlgBoxRight, IDC_SKINTYPE_BACKGROUND_RB))
+			(*ppkSkin)->m_afBkColor[0] = fColor;
+		else
+			(*ppkSkin)->m_afBorderColor[0] = fColor;
+	
+		GetWindowText(GetCtrl(IDC_RGB_COLOR_G_EB, 0), text, 512);
+		fColor = (float) atoi(text) / 255.0f;
+		if(IsDlgButtonChecked(g_kDlgBoxRight, IDC_SKINTYPE_BACKGROUND_RB))
+			(*ppkSkin)->m_afBkColor[1] = fColor;
+		else
+			(*ppkSkin)->m_afBorderColor[1] = fColor;
+
+		GetWindowText(GetCtrl(IDC_RGB_COLOR_B_EB, 0), text, 512);
+		fColor = (float) atoi(text) / 255.0f;
+		if(IsDlgButtonChecked(g_kDlgBoxRight, IDC_SKINTYPE_BACKGROUND_RB))
+			(*ppkSkin)->m_afBkColor[2] = fColor;
+		else
+			(*ppkSkin)->m_afBorderColor[2] = fColor;
+	}
+}
