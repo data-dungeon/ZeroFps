@@ -2,6 +2,7 @@
 
 #include "p_ambientsound.h"
 #include "../../engine/entity.h"
+#include "../../engine/zerofps.h"
 
 P_AmbientSound::P_AmbientSound()
 {
@@ -12,6 +13,9 @@ P_AmbientSound::P_AmbientSound()
 	m_bStarted = false;
 	m_bSoundHaveBeenSaved = false;
 	SetSound("/data/sound/dummy.wav");
+	bNetwork = true;
+	m_iType=PROPERTY_TYPE_NORMAL;
+	m_iSide=PROPERTY_SIDE_CLIENT;
 }
 
 P_AmbientSound::~P_AmbientSound()
@@ -21,6 +25,8 @@ P_AmbientSound::~P_AmbientSound()
 		delete[] m_szFileName;
 		m_szFileName = NULL;
 	}*/
+
+	Stop();
 }
 
 void P_AmbientSound::CloneOf(Property* pkProperty)
@@ -32,10 +38,21 @@ void P_AmbientSound::Update()
 {
 	Entity* pkObject = GetObject();
 
+	ZeroFps* pkFps = static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
+
+	if(pkFps)
+		if(pkFps->m_bServerMode)
+		{
+			//printf("Skipping playing sound, m_bServerMode = true\n");
+			return;
+		}
+
 	Vector3 pos = pkObject->GetWorldPosV();
 
 	// Kolla avståndet till lyssnaren, om det är "tillräckligt" kort
 	float fDistanceToListener = (m_pkAudioSystem->GetListnerPos() - pos).Length();
+
+	//printf("fDistanceToListener = %f\n", fDistanceToListener);
 
 	if(fDistanceToListener < m_fHearableDistance)
 	{
@@ -47,7 +64,7 @@ void P_AmbientSound::Update()
 		{
 			if(pkObject && !m_strFileName.empty())//m_szFileName != NULL)
 			{
-				if(m_pkAudioSystem->StartSound(m_strFileName, pkObject->GetWorldPosV(),
+				if(m_pkAudioSystem->StartSound(m_strFileName, pos,
 					pkObject->GetVel(), m_bLoop))
 				{
 					m_bStarted = true;
@@ -175,10 +192,29 @@ void P_AmbientSound::Load(ZFIoInterface* pkFile)
 
 void P_AmbientSound::PackTo(NetPacket* pkNetPacket, int iConnectionID )
 {
-
+   pkNetPacket->Write_Str( m_strFileName.c_str()); // write filename
+	pkNetPacket->Write(&m_fHearableDistance,sizeof(m_fHearableDistance)); // write hearable distance
+	pkNetPacket->Write(&m_bLoop,sizeof(m_bLoop)); // loop or not
 }
 
 void P_AmbientSound::PackFrom(NetPacket* pkNetPacket, int iConnectionID )
 {
+	char file_name[128];
+	float fHearableDistance;
+	bool bLoop;
 
+   pkNetPacket->Read_Str( file_name); // write filename
+	pkNetPacket->Read(&fHearableDistance,sizeof(fHearableDistance)); // write hearable distance
+	pkNetPacket->Read(&bLoop,sizeof(bLoop)); // loop or not
+
+	m_strFileName = file_name;
+	m_fHearableDistance = fHearableDistance;
+	m_bLoop = bLoop;
+}
+
+void P_AmbientSound::Stop()
+{
+	Entity* pkObject = GetObject();
+	m_pkAudioSystem->StopSound(m_strFileName, pkObject->GetWorldPosV());
+	m_bStarted = false;
 }

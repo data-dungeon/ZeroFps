@@ -21,6 +21,11 @@ class ENGINE_SYSTEMS_API P_AmbientSound : public Property
 		ZFAudioSystem* m_pkAudioSystem;
 
 	public:
+		void Stop(); ///< OBS! Måste anropas innan ett objekt med detta property förstörs, annars 
+						 ///< forstätter ljudet att spelas upp! Detta eftersom ljud i normala fall skall
+						 ///< fortsätta spelas (hanteras av audio systmet) efter det att zonsystemet har 
+						 ///< tagit bort objektet.
+
 		bool SetSound(char* szFileName, bool bPlayOnes=false, float fHearableDistance=90.0f);
 
 		P_AmbientSound();
