@@ -1104,11 +1104,13 @@ void ZeroFps::HandleNetworkPacket(NetPacket* pkNetPacket)
 
 	pkNetPacket->Read(ucGamePacketType);
 
-	while(ucGamePacketType != ZFGP_ENDOFPACKET) {
+	while(ucGamePacketType != ZFGP_ENDOFPACKET)
+	{
 		if(pkNetPacket->IsReadError())
 			return;
 
-		switch(ucGamePacketType) {
+		switch(ucGamePacketType) 
+		{
 /*			case ZFGP_DELETEOBJECT:
 				Logf("net", "HandleNetworkPacket(ZFGP_DELETEOBJECT)\n");
 				m_pkObjectMan->UpdateDeleteList(pkNetPacket);
@@ -1162,7 +1164,7 @@ void ZeroFps::HandleNetworkPacket(NetPacket* pkNetPacket)
 		}
 
 		pkNetPacket->Read(ucGamePacketType);
-		}
+	}
 }
 
 void ZeroFps::HandleEditCommand(NetPacket* pkNetPacket)

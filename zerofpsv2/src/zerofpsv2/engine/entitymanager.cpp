@@ -321,7 +321,7 @@ void EntityManager::Delete(Entity* pkObject)
 	
 	m_aiDeleteList.push_back(pkObject->m_iEntityID);
 }
-
+ 
 /**	\brief	Adds an object to delete qeue
 
 	Walk DeleteList and delete all objects in it.
@@ -685,9 +685,6 @@ void EntityManager::PackToClient(int iClient, vector<Entity*> kObjects,bool bZon
 
 	Entity* pkPackObj;
 
-	//NetPacket NP;
-	//NP.Clear();
-	//NP.m_kData.m_kHeader.m_iPacketType = ZF_NETTYPE_UNREL;
 	m_OutNP.Write((char) ZFGP_OBJECTSTATE);
 
 	
@@ -700,28 +697,21 @@ void EntityManager::PackToClient(int iClient, vector<Entity*> kObjects,bool bZon
 		 iObj =  m_pkNetWork->m_RemoteNodes[iClient].m_iCurrentObject;	
 	}
 	
-	for(; iObj < kObjects.size(); iObj++)	{
+	for(; iObj < kObjects.size(); iObj++)	
+	{
 		pkPackObj = kObjects[iObj];
 
-//		pkPackObj->m_iNetUpdateFlags |= m_iForceNetUpdate;
-//		//if(pkPackObj->NeedToPack() == false)						continue;
-		if(pkPackObj->m_eRole != NETROLE_AUTHORITY)				continue;
-		
-		if(pkPackObj->HaveSomethingToSend(iClient) == false)  
+		if(!pkPackObj->HaveSomethingToSend(iClient))  
 		{
 			//cout << "No need to send object" << endl;
 			continue;
 		}
-
-		//NP.Write(pkPackObj->m_iEntityID);
+		
 		m_OutNP.Write(pkPackObj->m_iEntityID);
 		
-		//Logf("net", "Object [%d]\n",pkPackObj->m_iEntityID );
-		//pkPackObj->PackTo(&NP,iClient);
 		pkPackObj->PackTo(&m_OutNP,iClient);
 		iPacketSize++;
 
-		//Logf("net", " Size: %d\n\n",NP.m_iPos );
 
 		if(m_OutNP.m_iPos >= iMaxPacketSize) 
 		{
@@ -738,8 +728,7 @@ void EntityManager::PackToClient(int iClient, vector<Entity*> kObjects,bool bZon
 			m_OutNP.TargetSetClient(iClient);
 
 			iPacketSize = 0;
-			
-			
+						
 		}
 		
 		if(bZoneObject)
@@ -751,11 +740,8 @@ void EntityManager::PackToClient(int iClient, vector<Entity*> kObjects,bool bZon
 		}
 	}
 	
+	
 	//write final package
-	//NP.Write(iEndOfObject);
-	//NP.Write(ZFGP_ENDOFPACKET);
-	//NP.TargetSetClient(iClient);
-	//m_pkNetWork->Send2(&NP);
 	m_OutNP.Write(iEndOfObject);
 	
 	//cout<<"sent size:"<<iSentSize<<endl;	
@@ -766,8 +752,6 @@ void EntityManager::PackToClient(int iClient, vector<Entity*> kObjects,bool bZon
 	{	
 		m_pkNetWork->m_RemoteNodes[iClient].m_iCurrentObject = iObj;		
 	}
-
-
 }
 
 void EntityManager::PackZoneListToClient(int iClient, set<int>& iZones)
@@ -819,7 +803,7 @@ void EntityManager::UpdateZoneList(NetPacket* pkNetPacket)
 		if(IsInsideVector(iLocalZoneID, kZones)) 
 		{
 			Delete(m_pkZoneObject->m_akChilds[i]);
-			cout << "Removing Zone: " << iLocalZoneID << endl;
+			//cout << "Removing Zone: " << iLocalZoneID << endl;
 		}
 	}
 

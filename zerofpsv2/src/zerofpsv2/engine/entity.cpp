@@ -43,11 +43,8 @@ Entity::Entity()
 
 	m_pScriptFileHandle	= new ZFResourceHandle;
 
-//	m_iNetUpdateFlags		= 0;
-
 	m_eRole					= NETROLE_AUTHORITY;
 	m_eRemoteRole			= NETROLE_PROXY;
-	m_bHaveNetPropertys	= false;
 
 	m_iUpdateStatus		= UPDATE_ALL;
 	m_bZone					= false;
@@ -60,9 +57,7 @@ Entity::Entity()
 	m_bInterpolate			= true;
 	m_iEntityID				= -1;
 	m_bSendChilds			= true;
-	m_bIsNetWork			= false;
 	
-//	m_kVariables.clear();
 
 	//clear child list
 	m_akChilds.clear();	
@@ -89,6 +84,8 @@ Entity::~Entity()
 		{
 			m_pkParent->AddToDeleteList(m_aiNetDeleteList[i]);
 		}
+		
+		
 		//m_pkParent->m_aiNetDeleteList.insert(m_pkParent->m_aiNetDeleteList.begin(), m_aiNetDeleteList.begin(), m_aiNetDeleteList.end());
 	}
 
@@ -127,7 +124,6 @@ Property* Entity::AddProperty(Property* pkNewProperty)
 	pkNewProperty->SetObject(this);
 	m_akPropertys.push_back(pkNewProperty);
 	pkNewProperty->Init();
-	m_bHaveNetPropertys |= pkNewProperty->bNetwork;
 	
 	return pkNewProperty;
 }
@@ -172,7 +168,6 @@ void Entity::RemoveProperty(Property* pkProp)
    }
 
 	PropertyLost(pkProp);
-	m_bHaveNetPropertys = IsAnyPropertyNetworkActive();
 }
 
 /**	\brief	Removes and deletes the property. 
@@ -194,7 +189,7 @@ bool Entity::DeleteProperty(const char* acName)
 			m_akPropertys.pop_back();
 			delete (TempProp);
 			
-			m_bHaveNetPropertys = IsAnyPropertyNetworkActive();
+//			m_bHaveNetPropertys = IsAnyPropertyNetworkActive();
 			return true;
 		}
 		++kIt;
@@ -406,13 +401,14 @@ void Entity::DeleteAllChilds()
 {
 	Entity* pkChildObject;
 
-	while(m_akChilds.size()) {
+	while(m_akChilds.size()) 
+	{
 		pkChildObject = (*m_akChilds.begin());
 
 		//cout << "Child " << pkChildObject->m_kName << endl; 
 		pkChildObject->DeleteAllChilds();
 		delete pkChildObject;
-		}
+	}
 
 	m_akChilds.clear();
 }
@@ -452,12 +448,6 @@ bool Entity::AttachToZone(const Vector3& kPos)
 				//cout<<"Entity tried to move to a unloaded zone"<<endl;
 				return false;			
 			}
-/*			if( (!cz->m_pkZone) || (!cz->m_bTracked) )
-			{
-				//cout<<"Entity tried to move to a unloaded zone"<<endl;
-				return  false;
-			}
-*/	
 			
 			ZoneChange(m_iCurrentZone,nZ);
 			m_iCurrentZone = nZ;
@@ -520,42 +510,7 @@ void Entity::GetAllEntitys(vector<Entity*> *pakObjects,bool bForceAll,bool bChec
 }
 
 
-/**	\brief	Returns true if Entity have any propertys that need to be sent over the net.
-*/
-bool Entity::IsAnyPropertyNetworkActive()
-{
-	bool bNetwork;
-	bNetwork = false;
 
-	for(vector<Property*>::iterator it=m_akPropertys.begin();it!=m_akPropertys.end();it++) {
-		if((*it)->bNetwork == true) {
-			bNetwork = true;
-			break;
-		}
-	}
-
-	return bNetwork;
-}
-
-/**	\brief	Returns true if Entity is one that need to be sent over network.
-*/
-bool Entity::IsNetWork()
-{
-	m_bIsNetWork = false;
-
-	if(m_strName == "ZoneObject")
-	{
-		m_bIsNetWork = true;
-	}
-	else if(m_strName == "StaticEntity")
-	{
-		m_bIsNetWork = true;
-	}
-
-	m_bIsNetWork |= m_bHaveNetPropertys;
-	
-	return m_bIsNetWork;
-}
 
 /**	\brief	Returns true if there is any netactive properys in Entity
 
@@ -746,7 +701,7 @@ void Entity::PackFrom(NetPacket* pkNetPacket, int iConnectionID)
 		Entity* pkNetSlave;	
 		
 		pkNetPacket->Read(iNumDelObjects);
-
+		
 		for(int i=0; i<iNumDelObjects; i++) 
 		{
 			int iDelObjectID;
@@ -1683,19 +1638,13 @@ void Entity::SetUpdateStatus(int iUpdateStatus)
 
 void Entity::AddToDeleteList(int iId)
 {
-	if(!m_bIsNetWork)
-		return;
-
 	m_aiNetDeleteList.push_back(iId);
 	SetNetUpdateFlag(NETUPDATEFLAG_DELETE,true);
 
 }
 
 void Entity::UpdateDeleteList()
-{
-	if(!m_bIsNetWork)
-		return;
-		
+{	
 	if(m_aiNetDeleteList.empty())
 		return;
 		
@@ -1908,3 +1857,43 @@ bool Entity::NeedToPack()
 	return false;
 }
 */ 
+/**	\brief	Returns true if Entity is one that need to be sent over network.
+*/
+/*
+bool Entity::IsNetWork()
+{
+	m_bIsNetWork = false;
+
+	if(m_strName == "ZoneObject")
+	{
+		m_bIsNetWork = true;
+	}
+	else if(m_strName == "StaticEntity")
+	{
+		m_bIsNetWork = true;
+	}
+
+	m_bIsNetWork |= m_bHaveNetPropertys;
+	
+	return m_bIsNetWork;
+}
+*/
+
+/**	\brief	Returns true if Entity have any propertys that need to be sent over the net.
+*/
+/*
+bool Entity::IsAnyPropertyNetworkActive()
+{
+	bool bNetwork;
+	bNetwork = false;
+
+	for(vector<Property*>::iterator it=m_akPropertys.begin();it!=m_akPropertys.end();it++) {
+		if((*it)->bNetwork == true) {
+			bNetwork = true;
+			break;
+		}
+	}
+
+	return bNetwork;
+}
+*/
