@@ -561,37 +561,45 @@ bool PathFind::FillQueue()
 	{
 		printf("Unit have not found end node, going to closest one..\n", g_test);
 
-		// Kopiera över kön till en vektor
-		vector<Point> kPath(m_kqClosestPath.size());
-		while(m_kqClosestPath.size())
+/*		while(m_kqClosestPath.size())
 		{
 			m_kqPath.push(m_kqClosestPath.front());
+			m_kqClosestPath.pop();
+		}
+
+		FreeAllNodes();*/
+
+		// Kopiera över kön till en vektor
+		vector<Point> kPath;
+		while(m_kqClosestPath.size())
+		{
+			kPath.push_back(m_kqClosestPath.front());
 			m_kqClosestPath.pop();
 		}
 
 		// Kopiera över vektorn till kön som skall användas
 		// och hoppa över onödiga mellansteg som kan undvikas
 		// genom att gö diagonalt.
-/*		unsigned int iSize = kPath.size();
+		unsigned int iSize = kPath.size();
 		for(int i=0; i<iSize; i++)
 		{
+			Point sqr(kPath[i].x, kPath[i].y);
+
 			if(i < iSize-2)
 			{
-				int iXPos = kPath[i].x, iYPos = kPath[i].y;
-				Point kNextNext = kPath[i+2];
-				if(kNextNext.x == iXPos+1 && kNextNext.y == iYPos+1 ||
-				   kNextNext.x == iXPos-1 && kNextNext.y == iYPos+1 ||
-				   kNextNext.x == iXPos-1 && kNextNext.y == iYPos-1 ||
-				   kNextNext.x == iXPos+1 && kNextNext.y == iYPos-1)
+				Point kNextNext(kPath[i+2].x, kPath[i+2].y);
+				if( (kNextNext.x == sqr.x+1 && kNextNext.y == sqr.y+1) ||
+				    (kNextNext.x == sqr.x-1 && kNextNext.y == sqr.y+1) ||
+				    (kNextNext.x == sqr.x-1 && kNextNext.y == sqr.y-1) ||
+				    (kNextNext.x == sqr.x+1 && kNextNext.y == sqr.y-1) )
 				{
-					m_kqPath.push(kNextNext);
+					sqr = kNextNext;
 					i+=2;
-					continue;
 				}
 			}
 
-			m_kqPath.push(kPath[i]); 
-		}*/
+			m_kqPath.push(sqr); 
+		}
 
 		FreeAllNodes();
 
