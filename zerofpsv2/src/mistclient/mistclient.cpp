@@ -60,7 +60,7 @@ MistClient::MistClient(char* aName,int iWidth,int iHeight,int iDepth)
 	: Application(aName,iWidth,iHeight,iDepth), ZGuiApp(GUIPROC)
 { 
 
-	m_iActiveCaracter			= 0;
+	m_iActiveCaracter			= -1;
 	m_iSelfObjectID			= -1;
 	m_pkClientObject			= NULL;
 	m_pkClientControlP		= NULL;
@@ -241,31 +241,7 @@ void MistClient::OnSystem()
 	};
 
 
-	if(m_pkServerInfo)
-	{		
-		PlayerInfo* pi = m_pkServerInfo->GetPlayerInfo(pkFps->GetConnectionID());
-		if(pi)
-		{
-			int id = pi->kControl[m_iActiveCaracter].first;	
-			Object* pkObj = pkObjectMan->GetObjectByNetWorkID(id);
-			
-			if(pkObj)
-			{
-				CameraProperty* cp = (CameraProperty*)pkObj->GetProperty("CameraProperty");
-			
-				if(!cp)
-					CameraProperty* cp = (CameraProperty*)pkObj->AddProperty("CameraProperty");
-		
-				if(cp)
-				{
-					cp->SetCamera(m_pkCamera);
-					cp->SetType(CAM_TYPE3PERSON);
-					m_pkCamProp = cp;
-				}
-			}		
-		}else
-			cout<<"cant find player object id"<<pkFps->GetConnectionID()<<endl;
-	}
+	SetActiveCaracter(0);
 
 }
 
@@ -658,5 +634,67 @@ void MistClient::OnScroll(int iID, int iPos, ZGuiWnd *pkMain)
 		m_pkInventDlg->OnScroll(iID,iPos);
 	}	
 }
+
+void MistClient::SetActiveCaracter(int iCaracter)
+{
+	//dont try to set if caracter is already active
+	if(m_iActiveCaracter == iCaracter)
+		return;
+		
+	if(m_pkServerInfo)
+	{		
+		PlayerInfo* pi = m_pkServerInfo->GetPlayerInfo(pkFps->GetConnectionID());
+		if(pi)
+		{
+			//if theres a current carater disable its camera
+			if(m_iActiveCaracter != -1)
+			{
+				int id = pi->kControl[m_iActiveCaracter].first;	
+				Object* pkObj = pkObjectMan->GetObjectByNetWorkID(id);
+			
+				if(pkObj)
+				{
+					pkObj->DeleteProperty("CameraProperty");
+					m_pkCamProp = NULL;
+				}
+				m_iActiveCaracter = -1;
+			}
+			
+			//if the new caracter is valid
+			if(iCaracter != -1)
+			{
+				//check rights
+				if(pi->kControl[iCaracter].second & PR_LOOKAT)
+				{
+					int id = pi->kControl[iCaracter].first;	
+					Object* pkObj = pkObjectMan->GetObjectByNetWorkID(id);
+		
+					//object found
+					if(pkObj)
+					{
+						CameraProperty* cp = (CameraProperty*)pkObj->GetProperty("CameraProperty");
+				
+						if(!cp)
+							CameraProperty* cp = (CameraProperty*)pkObj->AddProperty("CameraProperty");
+		
+						if(cp)
+						{
+							cp->SetCamera(m_pkCamera);
+							cp->SetType(CAM_TYPE3PERSON);								
+							m_pkCamProp = cp;
+							
+							//set current active caracter
+							m_iActiveCaracter = iCaracter;
+							cout<<"current caracter is: "<<m_iActiveCaracter<<endl;													
+						}
+					}
+				}		
+			}
+		}
+		else
+			cout<<"Error: cant find player info, You dont exist"<<endl;
+	} 
+}	
+
 
 

@@ -100,6 +100,9 @@ class MistClient :public Application, public ZGuiApp {
 		void OnClientStart(void);
 		
 		
+		void SetActiveCaracter(int iCaracter);
+		
+		
 		//init client
 		void ClientInit();
 		
