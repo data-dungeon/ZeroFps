@@ -86,25 +86,16 @@ class MistServer :public Application , public ZGuiApp
 		Camera*	m_pkCamera;
 		Entity*	m_pkActiveCameraObject;
 		Camera*	m_pkActiveCamera;
-
-		void  CreateEditCameras();
-
 		string	m_strWorldDir;						// The current dir for the world. Use for SaveAs and Title.
 
-//		void HandleOrders();
-		void HSO_Character(ClientOrder* pkOrder);
-//		bool CheckValidOrder(ClientOrder* pkOrder);
-		void SendTextToMistClientInfoBox(char* szText);
-
+		void  CreateEditCameras();	
+		
 		void SetupGuiEnviroment();
-
 		void Input_Camera(float fMouseX, float fMouseY);
 		void DeletePlayerCharacter(int iConID);		
 		
-		void SayToClients(const string& strMsg);
-		
-		void SendPlayerListToClient(int iClient);		
-		
+		void SayToClients(const string& strMsg);		
+		void SendPlayerListToClient(int iClient);				
 		Vector3 GetPlayerStartPos();
 		
 	public:
@@ -126,12 +117,8 @@ class MistServer :public Application , public ZGuiApp
 		//init client
 		void ClientInit();
 		
-		int CreatePlayer(const char* csPlayer,const char* csCharacter,const char* csLocation,int iConID);
-		
+		int CreatePlayer(const char* csPlayer,const char* csCharacter,const char* csLocation,int iConID);		
 		void SpawnPlayer(int iConID);
-
-		Vector3 GetPlayerStartLocation(const char* csName);
-		void UpdateStartLocatons();
 
 		//on client join, server runs this
 		bool OnPreConnect(IPaddress kRemoteIp, char* szLogin, char* szPass, bool bIsEditor, string& strWhy);

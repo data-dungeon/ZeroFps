@@ -679,9 +679,6 @@ void MistServer::SpawnPlayer(int iConID)
 		return;
 	}
 
-	//update start locations  
-	UpdateStartLocatons();
-
 	//create player object
 	int iPlayerID  = CreatePlayer(m_pkZeroFps->m_kClient[iConID].m_strLogin.c_str(),m_pkZeroFps->m_kClient[iConID].m_strCharacter.c_str(),"Start",iConID);
 	
@@ -752,26 +749,6 @@ bool MistServer::StartUp()
 bool MistServer::ShutDown()	{ return true; }
 bool MistServer::IsValid()	{ return true; }
 
-void MistServer::UpdateStartLocatons()
-{
-	m_kLocations.clear();
-
-	pair<string,Vector3> temp("Start",Vector3(0,1,0));
-	m_kLocations.push_back(temp);
-}
-
-
-Vector3 MistServer::GetPlayerStartLocation(const char* csName)
-{
-	for(unsigned int i=0;i<m_kLocations.size();i++)
-		if(m_kLocations[i].first == csName)
-		{	
-			cout<<"found location: "<<csName<<endl;
-			return m_kLocations[i].second+Vector3( float((rand()%1000)/1000.0),  0,  float((rand()%1000)/1000.0));
-		}
-	
-	return Vector3(0,0,0);
-}
 
 int MistServer::CreatePlayer(const char* csPlayer,const char* csCharacter,const char* csLocation,int iConID)
 {
@@ -792,23 +769,7 @@ int MistServer::CreatePlayer(const char* csPlayer,const char* csCharacter,const 
 	
 	
 	if(pkObject)
-	{	
-		/*
-		Vector3 kStartPos = Vector3(0,3,0);
-					
-		//make sure position is valid and zone is loaded
-		int zid = m_pkEntityManager->GetZoneIndex(kStartPos,-1,false);
-		if(zid == -1)
-		{
-			cout<<"Error Character "<<csPlayer<<" -> "<<csCharacter<<" Tryed to start in a invalid location,trying 0,1,0"<<endl;
-			kStartPos = Vector3(0,1,0);
-			zid = m_pkEntityManager->GetZoneIndex(kStartPos,-1,false);						
-		}				
-		
-		//force loading of zone
-		m_pkEntityManager->LoadZone(zid);
-		*/
-		
+	{		
 		//finaly set objects position
 		pkObject->SetWorldPosV(GetPlayerStartPos());
 		
@@ -842,73 +803,8 @@ void MistServer::DeletePlayerCharacter(int iConID)
 		}
 	}
 
-/*	
-	if(m_pkServerInfoP)
-	{
-		PlayerInfo* pi = m_pkServerInfoP->GetPlayerInfo(iConID);
-		if(pi)
-		{
-			//first save and delete the player character
-			Entity* pkObj = m_pkEntityManager->GetObjectByNetWorkID(pi->iCharacterObjectID);
-			if(pkObj)
-			{
-				m_pkPlayerDB->SaveCharacter(pkObj,pi->sPlayerName);
-				m_pkEntityManager->Delete(pkObj);
-			}
-		
-			//then walk trough all characters in his control list and delete the ones the player have spawned
-			for(unsigned int i = 0;i<pi->kControl.size();i++)
-			{
-				if(pi->kControl[i].second & PR_OWNER)
-				{
-					Entity* pkObj = m_pkEntityManager->GetObjectByNetWorkID(pi->kControl[i].first);
-					
-										
-					//delete it
-					if(pkObj)
-						m_pkEntityManager->Delete(pkObj);
-				}
-			}		
-		}
-	}
-	*/
 }
 
-void MistServer::HSO_Character(ClientOrder* pkOrder)
-{
-	CmdArgument kcmdargs;
-	kcmdargs.Set(pkOrder->m_sOrderName.c_str());
-	
-	cout << "kcmdargs.m_kSplitCommand[1] " << kcmdargs.m_kSplitCommand[1].c_str(); 
-
-	if ( kcmdargs.m_kSplitCommand[1] == string("Play") )
-	{
-		cout << "Player: " << pkOrder->m_iConnectID << " wish to start play" << endl;
-		SpawnPlayer(pkOrder->m_iConnectID);
-	}
-	else if ( kcmdargs.m_kSplitCommand[1] == string("CharList") )
-	{
-		cout << "Player: " << int(pkOrder->m_iConnectID) << " wish to know what char he have." << endl;
-		vector<string> kChars;
-		kChars = m_pkPlayerDB->GetLoginCharacters( m_pkZeroFps->m_kClient[pkOrder->m_iConnectID].m_strLogin.c_str() );
-		for(unsigned int i=0; i<kChars.size(); i++)
-			m_pkZeroFps->PrintToClient(pkOrder->m_iConnectID, kChars[i].c_str());
-	}
-	else if ( kcmdargs.m_kSplitCommand[1] == string("Select") )
-	{
-		cout << "Player: " << int(pkOrder->m_iConnectID) << " wish to use char '" << kcmdargs.m_kSplitCommand[2].c_str()  << "'" << endl;
-		m_pkZeroFps->m_kClient[pkOrder->m_iConnectID].m_strCharacter = kcmdargs.m_kSplitCommand[2].c_str();
-	}
-
-	// WHO:		Kolla vilken karaktär man är.
-	// LWHO:	Kolla vilket login man är.
-}
-
-
-void MistServer::SendTextToMistClientInfoBox(char *szText)
-{
-	  
-}
 
 void MistServer::OnNetworkMessage(NetPacket *PkNetMessage)
 {
