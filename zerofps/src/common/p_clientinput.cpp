@@ -8,7 +8,7 @@ P_ClientInput::P_ClientInput()
 	strcpy(m_acName,"P_ClientInput");		
 
 	m_iType=PROPERTY_TYPE_NORMAL;
-	m_iSide=PROPERTY_SIDE_CLIENT;
+	m_iSide=PROPERTY_SIDE_CLIENT|PROPERTY_SIDE_SERVER;
 
 	bNetwork = true;
 	
@@ -23,7 +23,6 @@ void P_ClientInput::Update()
 
 void P_ClientInput::AddOrder(UnitCommand kCommand)
 {
-	cout<<"adding order"<<endl;
 	m_kCommands.push_back(kCommand);
 
 }
@@ -34,6 +33,10 @@ void P_ClientInput::PackTo(NetPacket* pkNetPacket)
 	int nrofcommands = m_kCommands.size();
 
 	pkNetPacket->Write(&nrofcommands,sizeof(nrofcommands));
+	
+	if(nrofcommands>0)	
+		cout<<"Sending: "<<nrofcommands<<" to server"<<endl;		
+
 	
 	for(int i=0;i<nrofcommands;i++)
 		pkNetPacket->Write(&m_kCommands[i],sizeof(UnitCommand));
@@ -47,7 +50,10 @@ void P_ClientInput::PackFrom(NetPacket* pkNetPacket)
 	UnitCommand tempcommand;
 		
 	pkNetPacket->Read(&nrofcommands,sizeof(nrofcommands));
-
+	
+	if(nrofcommands >0)
+		cout<<"GOT:"<<nrofcommands<<" from client"<<endl;	
+	
 	for(int i=0;i<nrofcommands;i++)
 	{
 		pkNetPacket->Read(&tempcommand,sizeof(UnitCommand));
