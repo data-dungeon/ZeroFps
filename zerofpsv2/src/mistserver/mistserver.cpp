@@ -81,7 +81,7 @@ void MistServer::Init()
 	//zone defaults
 	m_kZoneSize.Set(8,8,8);
 	m_iCurrentMarkedZone = -1;
-	m_strActiveZoneName = "emptyzone.mad";
+	m_strActiveZoneName = "data/mad/zones/emptyzone.mad";
 	
 	//click delay
 	m_fClickDelay = pkFps->GetTicks();
@@ -265,39 +265,35 @@ void MistServer::Input()
 			m_iEditMode = EDIT_OBJECTS;		
 	
 		//edit zone  mode
-/*		if(m_iEditMode == EDIT_ZONES)
+		if(m_iEditMode == EDIT_ZONES)
 		{
-			AddZone();	
-		}*/
-
-		if(pkInput->Pressed(MOUSELEFT))
-		{
-			printf("Add zone\n");
-			AddZone();	
-		}
+			if(pkInput->Pressed(MOUSELEFT))
+			{
+				AddZone();	
+			}
 	
-		if(pkInput->Pressed(KEY_R))
-		{
-			int id = pkObjectMan->GetZoneIndex(m_kZoneMarkerPos,-1,false);
-			pkObjectMan->DeleteZone(id);
-		}
+			if(pkInput->Pressed(KEY_R))
+			{
+				int id = pkObjectMan->GetZoneIndex(m_kZoneMarkerPos,-1,false);
+				pkObjectMan->DeleteZone(id);
+			}
 	
-		if(pkInput->Pressed(MOUSEMIDDLE))
-		{		
-			m_iCurrentMarkedZone =  pkObjectMan->GetZoneIndex(m_kZoneMarkerPos,-1,false);
-		}
+			if(pkInput->Pressed(MOUSEMIDDLE))
+			{		
+				m_iCurrentMarkedZone =  pkObjectMan->GetZoneIndex(m_kZoneMarkerPos,-1,false);
+			}
 
 	
-		if(pkInput->Pressed(KEY_1)) m_kZoneSize.Set(4,4,4);
-		if(pkInput->Pressed(KEY_2)) m_kZoneSize.Set(8,8,8);
-		if(pkInput->Pressed(KEY_3)) m_kZoneSize.Set(16,16,16);	
-		if(pkInput->Pressed(KEY_4)) m_kZoneSize.Set(32,16,32);	
-		if(pkInput->Pressed(KEY_5)) m_kZoneSize.Set(64,16,64);			
-		if(pkInput->Pressed(KEY_6)) m_kZoneSize.Set(16,8,8);		
-		if(pkInput->Pressed(KEY_7)) m_kZoneSize.Set(8,8,16);		
-		if(pkInput->Pressed(KEY_8)) m_kZoneSize.Set(4,8,16);				
-		if(pkInput->Pressed(KEY_9)) m_kZoneSize.Set(16,8,4);						
-	
+			if(pkInput->Pressed(KEY_1)) m_kZoneSize.Set(4,4,4);
+			if(pkInput->Pressed(KEY_2)) m_kZoneSize.Set(8,8,8);
+			if(pkInput->Pressed(KEY_3)) m_kZoneSize.Set(16,16,16);	
+			if(pkInput->Pressed(KEY_4)) m_kZoneSize.Set(32,16,32);	
+			if(pkInput->Pressed(KEY_5)) m_kZoneSize.Set(64,16,64);			
+			if(pkInput->Pressed(KEY_6)) m_kZoneSize.Set(16,8,8);		
+			if(pkInput->Pressed(KEY_7)) m_kZoneSize.Set(8,8,16);		
+			if(pkInput->Pressed(KEY_8)) m_kZoneSize.Set(4,8,16);				
+			if(pkInput->Pressed(KEY_9)) m_kZoneSize.Set(16,8,4);						
+		}	
 	
 		//edit object mode
 		if(m_iEditMode == EDIT_OBJECTS)
@@ -540,13 +536,10 @@ void MistServer::AddZone()
 	//force loading of this zone
 	pkObjectMan->LoadZone(id);
 
-	//set zone model
-	string strFullPath = "data/mad/zones/";
-	int pos = strFullPath.size();
-	strFullPath.insert(pos, m_strActiveZoneName);
+
 	if(id != -1)
 	{
-		pkObjectMan->SetZoneModel(strFullPath.c_str(),id);
+		pkObjectMan->SetZoneModel(m_strActiveZoneName.c_str(),id);
 	}	
 
 	//set to active
@@ -666,8 +659,14 @@ void MistServer::OnClickTreeItem(char *szTreeBox, char *szParentNodeText,
 		if(szClickNodeText)
 			strFullpath += string(szClickNodeText);
 
+		m_strActiveZoneName = strFullpath;
+		
 		if(m_iCurrentMarkedZone != -1)
 		{
+			//force loading of this zone
+			pkObjectMan->LoadZone(m_iCurrentMarkedZone);
+
+		
 			pkObjectMan->SetZoneModel(strFullpath.c_str(),m_iCurrentMarkedZone);
 
 			printf("Setting new zone modell to %s\n", strFullpath.c_str());
