@@ -317,10 +317,10 @@ bool GLGuiRender::RenderBorder(Rect rc)
 
 			m_pkTextureManger->BindTexture( texture );
 
-/*			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);*/
-
-		}
+			// Stäng av filtreringen
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+		}																			 
 		else
 		{
 			if((m%2)==0)
