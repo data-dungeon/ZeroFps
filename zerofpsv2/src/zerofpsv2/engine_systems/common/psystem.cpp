@@ -144,6 +144,7 @@ PSystem::PSystem(PSystemType* pkPSystemType)
 {
 	m_pkRender = static_cast<Render*>( g_ZFObjSys.GetObjectPtr("Render") );		
 	m_pkFps = static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
+	m_pkLight= static_cast<Light*>(g_ZFObjSys.GetObjectPtr("Light")); 
 	m_pkPSystemType = pkPSystemType;
 
 	m_pfVertices = 0;
@@ -267,24 +268,54 @@ void PSystem::ResetParticle (int iParticleIndex, float fTimeOffset)
 		m_kParticles[iParticleIndex].m_kEndColor = m_pkPSystemType->m_kParticleBehaviour.m_kEndColor;
 
 		// Random PSystem start colors
-		m_kParticles[iParticleIndex].m_kStartColor.x += (((rand()%100) / 100.f) * ((rand()%2) * 2 - 1)) *
-			m_kParticles[iParticleIndex].m_kStartColor.x * m_pkPSystemType->m_kParticleBehaviour.m_kStartColorRandom.x;
-		m_kParticles[iParticleIndex].m_kStartColor.y += (((rand()%100) / 100.f) * ((rand()%2) * 2 - 1)) *
-			m_kParticles[iParticleIndex].m_kStartColor.y * m_pkPSystemType->m_kParticleBehaviour.m_kStartColorRandom.y;
-		m_kParticles[iParticleIndex].m_kStartColor.z += (((rand()%100) / 100.f) * ((rand()%2) * 2 - 1)) *
-			m_kParticles[iParticleIndex].m_kStartColor.z * m_pkPSystemType->m_kParticleBehaviour.m_kStartColorRandom.z;
-		m_kParticles[iParticleIndex].m_kStartColor.w += (((rand()%100) / 100.f) * ((rand()%2) * 2 - 1)) *
-			m_kParticles[iParticleIndex].m_kStartColor.w * m_pkPSystemType->m_kParticleBehaviour.m_kStartColorRandom.w;
+		if (!m_pkPSystemType->m_kParticleBehaviour.m_bSameStartColorRandom)
+		{
+			m_kParticles[iParticleIndex].m_kStartColor.x += (((rand()%100) / 100.f) * ((rand()%2) * 2 - 1)) *
+				m_kParticles[iParticleIndex].m_kStartColor.x * m_pkPSystemType->m_kParticleBehaviour.m_kStartColorRandom.x;
+			m_kParticles[iParticleIndex].m_kStartColor.y += (((rand()%100) / 100.f) * ((rand()%2) * 2 - 1)) *
+				m_kParticles[iParticleIndex].m_kStartColor.y * m_pkPSystemType->m_kParticleBehaviour.m_kStartColorRandom.y;
+			m_kParticles[iParticleIndex].m_kStartColor.z += (((rand()%100) / 100.f) * ((rand()%2) * 2 - 1)) *
+				m_kParticles[iParticleIndex].m_kStartColor.z * m_pkPSystemType->m_kParticleBehaviour.m_kStartColorRandom.z;
+			m_kParticles[iParticleIndex].m_kStartColor.w += (((rand()%100) / 100.f) * ((rand()%2) * 2 - 1)) *
+				m_kParticles[iParticleIndex].m_kStartColor.w * m_pkPSystemType->m_kParticleBehaviour.m_kStartColorRandom.w;
+		} else
+		{
+			float fRandVal = (rand()%100)/100.f;
+			int iPlusMin = (rand()%2) * 2 - 1;
+			m_kParticles[iParticleIndex].m_kStartColor.x += fRandVal * iPlusMin *
+				m_kParticles[iParticleIndex].m_kStartColor.x * m_pkPSystemType->m_kParticleBehaviour.m_kStartColorRandom.x;
+			m_kParticles[iParticleIndex].m_kStartColor.y += fRandVal * iPlusMin *
+				m_kParticles[iParticleIndex].m_kStartColor.y * m_pkPSystemType->m_kParticleBehaviour.m_kStartColorRandom.y;
+			m_kParticles[iParticleIndex].m_kStartColor.z += fRandVal * iPlusMin *
+				m_kParticles[iParticleIndex].m_kStartColor.z * m_pkPSystemType->m_kParticleBehaviour.m_kStartColorRandom.z;
+			m_kParticles[iParticleIndex].m_kStartColor.w += fRandVal * iPlusMin *
+				m_kParticles[iParticleIndex].m_kStartColor.w * m_pkPSystemType->m_kParticleBehaviour.m_kStartColorRandom.w;
+		}
 
-		// Random PSystem end colors
-		m_kParticles[iParticleIndex].m_kEndColor.x += (((rand()%100) / 100.f) * ((rand()%2) * 2 - 1)) *
-			m_kParticles[iParticleIndex].m_kEndColor.x * m_pkPSystemType->m_kParticleBehaviour.m_kEndColorRandom.x;
-		m_kParticles[iParticleIndex].m_kEndColor.y += (((rand()%100) / 100.f) * ((rand()%2) * 2 - 1)) *
-			m_kParticles[iParticleIndex].m_kEndColor.y * m_pkPSystemType->m_kParticleBehaviour.m_kEndColorRandom.y;
-		m_kParticles[iParticleIndex].m_kEndColor.z += (((rand()%100) / 100.f) * ((rand()%2) * 2 - 1)) *
-			m_kParticles[iParticleIndex].m_kEndColor.z * m_pkPSystemType->m_kParticleBehaviour.m_kEndColorRandom.z;
-		m_kParticles[iParticleIndex].m_kEndColor.w += (((rand()%100) / 100.f) * ((rand()%2) * 2 - 1)) *
-			m_kParticles[iParticleIndex].m_kEndColor.w * m_pkPSystemType->m_kParticleBehaviour.m_kEndColorRandom.w;
+		if (!m_pkPSystemType->m_kParticleBehaviour.m_bSameEndColorRandom)
+		{
+			// Random PSystem end colors
+			m_kParticles[iParticleIndex].m_kEndColor.x += (((rand()%100) / 100.f) * ((rand()%2) * 2 - 1)) *
+				m_kParticles[iParticleIndex].m_kEndColor.x * m_pkPSystemType->m_kParticleBehaviour.m_kEndColorRandom.x;
+			m_kParticles[iParticleIndex].m_kEndColor.y += (((rand()%100) / 100.f) * ((rand()%2) * 2 - 1)) *
+				m_kParticles[iParticleIndex].m_kEndColor.y * m_pkPSystemType->m_kParticleBehaviour.m_kEndColorRandom.y;
+			m_kParticles[iParticleIndex].m_kEndColor.z += (((rand()%100) / 100.f) * ((rand()%2) * 2 - 1)) *
+				m_kParticles[iParticleIndex].m_kEndColor.z * m_pkPSystemType->m_kParticleBehaviour.m_kEndColorRandom.z;
+			m_kParticles[iParticleIndex].m_kEndColor.w += (((rand()%100) / 100.f) * ((rand()%2) * 2 - 1)) *
+				m_kParticles[iParticleIndex].m_kEndColor.w * m_pkPSystemType->m_kParticleBehaviour.m_kEndColorRandom.w;
+		} else
+		{
+			float fRandVal = (rand()%100)/100.f;
+			int iPlusMin = (rand()%2) * 2 - 1;
+			m_kParticles[iParticleIndex].m_kEndColor.x += fRandVal * iPlusMin *
+				m_kParticles[iParticleIndex].m_kEndColor.x * m_pkPSystemType->m_kParticleBehaviour.m_kEndColorRandom.x;
+			m_kParticles[iParticleIndex].m_kEndColor.y += fRandVal * iPlusMin *
+				m_kParticles[iParticleIndex].m_kEndColor.y * m_pkPSystemType->m_kParticleBehaviour.m_kEndColorRandom.y;
+			m_kParticles[iParticleIndex].m_kEndColor.z += fRandVal * iPlusMin *
+				m_kParticles[iParticleIndex].m_kEndColor.z * m_pkPSystemType->m_kParticleBehaviour.m_kEndColorRandom.z;
+			m_kParticles[iParticleIndex].m_kEndColor.w += fRandVal * iPlusMin *
+				m_kParticles[iParticleIndex].m_kEndColor.w * m_pkPSystemType->m_kParticleBehaviour.m_kEndColorRandom.w;
+		}
 
 		for ( int i = 0; i < 16; i += 4 )
 		{

@@ -25,6 +25,7 @@ void P_PSystem::Update()
 		{
  		   if(m_pkEntityManager->IsUpdate(PROPERTY_TYPE_RENDER_NOSHADOW))
  		   {
+				m_pkPSystem->m_pkLight->Update(&m_pkPSystem->m_kLightProfile, GetEntity()->GetWorldPosV());	
 	 		   m_pkPSystem->Draw();
 			}
  		}

@@ -272,6 +272,12 @@ bool PSystemManager::LoadData ( PSystemType *pkPSType )
 	if( m_kIniLoader.KeyExist("start_color", "random_a") )
 		pkPSType->m_kParticleBehaviour.m_kStartColorRandom.w = m_kIniLoader.GetFloatValue("start_color", "random_a");
 
+	if( m_kIniLoader.KeyExist("start_color", "same_randomvalue") )
+		pkPSType->m_kParticleBehaviour.m_bSameStartColorRandom = m_kIniLoader.GetBoolValue("start_color", "same_randomvalue");
+	else
+		pkPSType->m_kParticleBehaviour.m_bSameStartColorRandom = false;
+
+
 	pkPSType->m_kParticleBehaviour.m_kStartColorRandom /= 100.f;
 
 	// End RGBA
@@ -310,6 +316,11 @@ bool PSystemManager::LoadData ( PSystemType *pkPSType )
 		pkPSType->m_kParticleBehaviour.m_kEndColorRandom.z = m_kIniLoader.GetFloatValue("end_color", "random_b");
 	if( m_kIniLoader.KeyExist("end_color", "random_a") )
 		pkPSType->m_kParticleBehaviour.m_kEndColorRandom.w = m_kIniLoader.GetFloatValue("end_color", "random_a");
+
+	if( m_kIniLoader.KeyExist("end_color", "same_randomvalue") )
+		pkPSType->m_kParticleBehaviour.m_bSameEndColorRandom = m_kIniLoader.GetBoolValue("end_color", "same_randomvalue");
+	else
+		pkPSType->m_kParticleBehaviour.m_bSameEndColorRandom = false;
 
 	pkPSType->m_kParticleBehaviour.m_kEndColorRandom /= 100.f;
 

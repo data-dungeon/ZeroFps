@@ -74,6 +74,8 @@ struct ParticleTypeData
 		m_kWideness;
 
 	bool 
+		m_bSameEndColorRandom,
+		m_bSameStartColorRandom,
 		m_bBillboardX,
 		m_bBillBoardY,
 		m_bBillBoardZ,

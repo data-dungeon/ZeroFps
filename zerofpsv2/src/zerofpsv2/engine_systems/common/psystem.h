@@ -53,6 +53,9 @@ private:
 	
 	Matrix4 m_kRotation;
 
+	LightProfile		m_kLightProfile;
+	Light*				m_pkLight;
+
 	float 
 		*m_pfVertices,
 		*m_pfColors,
