@@ -314,6 +314,9 @@ void MistServer::Input()
 		}
 	} 	
 */	
+	Vector3 kMove(0,0,0);
+	Vector3 kRotate(0,0,0);
+
 	if(m_pkCameraObject)	
 	{	
 		if(pkInput->Pressed(KEY_X)){
@@ -517,19 +520,24 @@ void MistServer::Input()
 			if(pkInput->Pressed(KEY_SPACE))
 					pkObj->SetVel(Vector3(1,0,0));
 		
+
 			//move left
+			kMove.Set(0,0,0);
 			if(pkInput->Pressed(KEY_LEFT))
-					pkObj->SetLocalPosV(pkObj->GetLocalPosV() + Vector3(-1 * pkFps->GetFrameTime(),0,0));			
+				kMove += Vector3(-1 * pkFps->GetFrameTime(),0,0);			
 			if(pkInput->Pressed(KEY_RIGHT))
-					pkObj->SetLocalPosV(pkObj->GetLocalPosV() + Vector3(1 * pkFps->GetFrameTime(),0,0));			
+				kMove += Vector3(1 * pkFps->GetFrameTime(),0,0);			
 			if(pkInput->Pressed(KEY_UP))
-					pkObj->SetLocalPosV(pkObj->GetLocalPosV() + Vector3(0,0,-1 * pkFps->GetFrameTime()));			
+				kMove += Vector3(0,0,-1 * pkFps->GetFrameTime());			
 			if(pkInput->Pressed(KEY_DOWN))
-					pkObj->SetLocalPosV(pkObj->GetLocalPosV() + Vector3(0,0,1 * pkFps->GetFrameTime()));			
+				kMove += Vector3(0,0,1 * pkFps->GetFrameTime());			
 			if(pkInput->Pressed(KEY_RSHIFT))
-					pkObj->SetLocalPosV(pkObj->GetLocalPosV() + Vector3(0,1 * pkFps->GetFrameTime(),0));			
+				kMove += Vector3(0,1 * pkFps->GetFrameTime(),0);			
 			if(pkInput->Pressed(KEY_RCTRL))
-					pkObj->SetLocalPosV(pkObj->GetLocalPosV() + Vector3(0,-1 * pkFps->GetFrameTime(),0));			
+				kMove += Vector3(0,-1 * pkFps->GetFrameTime(),0);
+
+			pkObj->SetLocalPosV(pkObj->GetLocalPosV() + kMove);
+
 			//rotation		
 			if(pkInput->Pressed(KEY_INSERT))
 				pkObj->RotateLocalRotV(Vector3(100*pkFps->GetFrameTime(),0,0));			
@@ -669,34 +677,42 @@ void MistServer::OnServerClientJoin(ZFClient* pkClient,int iConID, char* szLogin
 	string strCharacter	= "mrbad";
 
 	cout<<"Client "<<iConID<<" Joined"<<endl;
-	
+
 	//add client control to client object
 	P_ClientControl* pcc = (P_ClientControl*)pkClient->m_pkObject->AddProperty("P_ClientControl");
 	if(pcc)	
 		pcc->m_iClientID = iConID;
-		
-	//update start locations  
-	UpdateStartLocatons();
-		
+	
+	bool bEditorConnect = false;
+	if(bEditorConnect) {
+		P_Track* pkTrack = dynamic_cast<P_Track*>((P_ClientControl*)pkClient->m_pkObject->AddProperty("P_Track"));
+		pkTrack->SetClient(iConID);
+		(P_ClientControl*)pkClient->m_pkObject->AddProperty("P_Primitives3D");
+		return;
+		}
+	else {
+			//update start locations  
+			UpdateStartLocatons();
 
-	//create player object
-	int iPlayerID  = CreatePlayer(strPlayer.c_str(),strCharacter.c_str(),"Start",iConID);
-	
-	if(iPlayerID == -1)
-	{
-		cout<<"Error creating playercharacter"<<endl;
-	}
-	
-	
-	if(m_pkServerInfoP)
-	{	
-		//wich rights shuld a client have on its player caracter
-		//int playerrights = PR_OWNER|PR_CONTROLS|PR_LOOKAT;
-		
-		m_pkServerInfoP->AddPlayer(iConID,strPlayer.c_str());
-		m_pkServerInfoP->SetCharacterID(iConID,iPlayerID);
-		//m_pkServerInfoP->AddObject(iConID,iPlayerID,playerrights);
-	}
+			//create player object
+			int iPlayerID  = CreatePlayer(strPlayer.c_str(),strCharacter.c_str(),"Start",iConID);
+			
+			if(iPlayerID == -1)
+			{
+				cout<<"Error creating playercharacter"<<endl;
+			}
+			
+			
+			if(m_pkServerInfoP)
+			{	
+				//wich rights shuld a client have on its player caracter
+				//int playerrights = PR_OWNER|PR_CONTROLS|PR_LOOKAT;
+				
+				m_pkServerInfoP->AddPlayer(iConID,strPlayer.c_str());
+				m_pkServerInfoP->SetCharacterID(iConID,iPlayerID);
+				//m_pkServerInfoP->AddObject(iConID,iPlayerID,playerrights);
+			}
+		}
 }
 
 void MistServer::OnServerClientPart(ZFClient* pkClient,int iConID)
