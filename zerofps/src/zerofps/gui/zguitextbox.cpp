@@ -104,6 +104,11 @@ bool ZGuiTextbox::Render( ZGuiRender* pkRenderer )
 
 bool ZGuiTextbox::ProcessKBInput(int nKey)
 {
+	//if(nKey == 'a')
+		printf("%i\n%i\n", nKey, '\n');
+
+
+
 	if(IgnoreKey(nKey))
 		return true;
 
@@ -133,7 +138,7 @@ bool ZGuiTextbox::ProcessKBInput(int nKey)
 		return true;
 	}
 
-	if(nKey == KEY_ESCAPE || nKey == KEY_RETURN)
+	if(nKey == KEY_ESCAPE || (nKey == KEY_RETURN && m_bMultiLine == true) )
 	{
 		KillFocus();
 		if(m_pkGUI)
@@ -464,7 +469,8 @@ bool ZGuiTextbox::IgnoreKey(int iKey)
 		bIgnore = true;
 
 	if( iKey == KEY_BACKSPACE || iKey == KEY_DELETE || iKey == KEY_LEFT || 
-		iKey == KEY_RIGHT || iKey == KEY_END || iKey == KEY_HOME )
+		iKey == KEY_RIGHT || iKey == KEY_END || iKey == KEY_HOME ||
+		iKey == KEY_RETURN )
 		bIgnore = false;
 
 	if(iKey >= 32 && iKey < 256)
@@ -562,12 +568,7 @@ void ZGuiTextbox::CopyNonUniqueData(const ZGuiWnd* pkSrc)
 }
 
 
-
-
-
-
-
-
-
-
-
+bool ZGuiTextbox::IsMultiLine()
+{
+	return m_bMultiLine;
+}

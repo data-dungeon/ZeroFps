@@ -232,6 +232,8 @@ bool Gui::CreateWindows()
 
 	//m_pkEdit->pkGui->Resize(1024,768,m_pkEdit->m_iWidth,m_pkEdit->m_iHeight);
 
+	CreateTestWnd();
+
 	return true;
 }
 
@@ -552,5 +554,21 @@ bool Gui::HaveFocus()
 }
 
 
+void Gui::CreateTestWnd()
+{
+	int id = 5000;
+	int w = 300, h = 400;
+	int x = m_pkEdit->m_iWidth/2 - w/2;
+	int y = m_pkEdit->m_iHeight/2 - h/2;
 
+	ZGuiWnd* pkWnd = new ZGuiWnd(Rect(x,y,x+w,y+h),NULL,
+		true,id++);
 
+	ZGuiTextbox* pkTextbox = CreateTextbox(pkWnd,id++,0,0,w,h,true);
+
+	char* szText = new char[128];
+	sprintf(szText, "This is a log!\nThis row number 2.");
+	pkTextbox->SetText(szText);
+
+	m_pkEdit->pkGui->AddMainWindow(id++,pkWnd,"TestWnd",MAINWINPROC,true);
+}

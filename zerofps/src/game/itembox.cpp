@@ -407,13 +407,17 @@ Object* ItemBox::GetItemObject(int mx, int my)
 
 
 
-void ItemBox::ResetMoveItem()
+void ItemBox::ResetMoveItem(bool bResetButtonPos)
 {
 	if(m_pkMoveItem)
 	{
-	/*	int x = m_ciTopX + m_pkMoveItem->second.first*m_ciSlotSize;
-		int y = m_ciTopY + m_pkMoveItem->second.second*m_ciSlotSize;
-		m_pkMoveItem->first->SetPos(x, y,true,true);*/
+		if(bResetButtonPos)
+		{
+			int x = m_ciTopX + m_pkMoveItem->second.first*m_ciSlotSize;
+			int y = m_ciTopY + m_pkMoveItem->second.second*m_ciSlotSize;
+			m_pkMoveItem->first->SetPos(x, y,true,true);
+		}
+
 		m_pkMoveItem = NULL;
 	}
 }

@@ -65,6 +65,7 @@ private:
 	ZGuiWnd* Get(char* strName);
 
 public:
+	void CreateTestWnd();
 	void UpdatePropertybox();
 	void ClosePropertybox();
 	bool WndProc( ZGuiWnd* pkWindow, unsigned int uiMessage, int iNumberOfParams, void *pkParams );

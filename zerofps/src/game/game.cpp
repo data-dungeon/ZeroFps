@@ -610,6 +610,7 @@ bool Game::DragAndDropItem(int mx, int my, ItemBox::slot* ppkMoveItem,
 				{
 					printf("Failed to move item from container!\n");
 					pkItemBoxFrom->ResetMoveItem();
+					pkGui->KillWndCapture();
 					return false;
 				}
 				
@@ -619,7 +620,8 @@ bool Game::DragAndDropItem(int mx, int my, ItemBox::slot* ppkMoveItem,
 					if(!pkTo->AddItem(pkObjectToMove))
 					{
 						printf("Failed to move item from container!\n");
-						pkItemBoxFrom->ResetMoveItem();
+						pkItemBoxFrom->ResetMoveItem(true);
+						pkGui->KillWndCapture();
 						return false;
 					}
 				}

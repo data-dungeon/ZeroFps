@@ -387,6 +387,13 @@ bool GLGuiRender::PrintRows(char* text, Rect rc, int iCursorPos)
 
 		for(unsigned int i=0; i<num_chars; i++)
 		{
+			if(text[i] == '\n')
+			{
+				x = rc.Left;
+				y -= m_pkFont->m_cCharCellSize;
+				continue;
+			}
+
 			int pos = text[i]-32;
 			if(pos < 0 || pos > 255)
 				continue;

@@ -20,7 +20,7 @@ struct GuiData;
 class ItemBox : public DlgBox 
 {
 public:
-	void ResetMoveItem();
+	void ResetMoveItem(bool bResetButtonPos=false);
 
 	typedef pair<int,int > slot_pos;
 	typedef pair<ZGuiButton*, slot_pos> slot;

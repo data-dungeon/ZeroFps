@@ -1075,7 +1075,8 @@ void ZGui::OnKeyPress(int iKey)
 		}
 
 		// Send a WM Command message when Return or space ar being hit
-		if( iKey == KEY_RETURN || iKey == KEY_SPACE)
+		if( (iKey == KEY_RETURN && typeid(*ZGuiWnd::m_pkFocusWnd) != 
+			 typeid(ZGuiTextbox)) || iKey == KEY_SPACE)
 		{
 			ZGuiWnd::m_pkFocusWnd->Notify(ZGuiWnd::m_pkFocusWnd,
 				NCODE_CLICK_DOWN);
@@ -1601,7 +1602,6 @@ void ZGui::SetCaptureToWnd(ZGuiWnd* pkWnd)
 void ZGui::KillWndCapture()
 {
 	m_pkCapturedWindow = NULL;
-	printf("killing mouse capture!\n");
 }
 
 ZGuiWnd* ZGui::GetWndCapture()
