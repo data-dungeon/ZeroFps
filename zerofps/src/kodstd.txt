@@ -95,6 +95,12 @@ Kommentarer
  * A more elaborated file description.
  */
 
+	Stora mängder utkommenterad kod singneras.
+
+		Detta förhindrar att någon av misstag råkar ta bort kod som i själva verket inte skulle 
+		tas bort utan som bara kommenterats ut så länge (tex. för att testa ny funktionalitet)
+		sammt förenklar för den person som vill rensa undan och snygga upp filer.
+
 
 Names:
 	Klass / Struct / Unions
