@@ -35,14 +35,8 @@ class Test :public Application {
 	
 	PlayerObject *m_pkPlayer;
 
-	//Core					CoreTest;
-	//MadInstans			kBitch;
-	//vector<Core>			akCoreModells;
-	//vector<MadInstans>	akModells;
-	//int		iCoreFrame;
 	int		TestUpdateSpeedFulHack;
 
-	Object*	TestObject;
 	public:
 		Test(char* aName,int iWidth,int iHeight,int iDepth);
 	 	void OnInit(void);
@@ -50,13 +44,6 @@ class Test :public Application {
 		void OnHud(void);
 
 		void input();
-
-/*
-		void FH_SkapaObject(void);
-		void FH_UpdateraObject(void);
-		void FH_RitaObject(void);
-*/
-
 };
 
 

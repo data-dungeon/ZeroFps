@@ -22,8 +22,10 @@ class ENGINE_API Property
 		
 		inline void SetObject(Object* pkObject){m_pkObject=pkObject;};
 		inline Object *GetObject() {return m_pkObject;};
-
-
 };
+
+
+	
+
 #endif
 

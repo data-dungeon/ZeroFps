@@ -1,11 +1,17 @@
 #include "ballobject.h"
 
-
 BallObject::BallObject(HeightMap *pkMap,ZeroFps *pkFps) {
-//	AddProperty(new ModelProperty());
+	SetPropertyFactory(&pkFps->m_kPropertyFactory);
+
 	AddProperty(new CollisionProperty(&m_kPos,new float(1)));
-//	AddProperty(new CollisionProperty(&m_kPos));
 	AddProperty(new GravityProperty(pkFps));
+
+	AddProperty("MadProperty");
+	MadProperty* madp = dynamic_cast<MadProperty*>(GetProperty("MadProperty"));
+	madp->SetBase(pkFps->GetMADPtr("bitch2.mad"));
+	madp->SetScale(0.02);
+
+	AddProperty("ModelProperty");
 
 	m_pkFps=pkFps;
 	onGround=false;

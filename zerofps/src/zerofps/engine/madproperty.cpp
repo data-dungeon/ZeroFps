@@ -9,6 +9,10 @@ void SetGameTime(void)
 	fGameTime = SDL_GetTicks() / 1000.0;
 }
 
+MadProperty::MadProperty()
+{
+	strcpy(m_acName,"MadProperty");
+}
 
 MadProperty::MadProperty(Core* pkModell) {
 	strcpy(m_acName,"MadProperty");
@@ -16,6 +20,8 @@ MadProperty::MadProperty(Core* pkModell) {
 	pkCore = pkModell;
 	
 	PlayAnimation(0, 0.0);
+	m_fScale = 1.0;
+	m_bActive = true;
 }
 
 
@@ -31,7 +37,7 @@ void MadProperty::Update() {
 	
 	glPushMatrix();
 		glTranslatef(m_pkObject->GetPos().x,m_pkObject->GetPos().y,m_pkObject->GetPos().z);
-		//glScalef(.02,.02,.02);
+		glScalef(m_fScale,m_fScale,m_fScale);
 		pkCore->draw();
 	glPopMatrix();
 
@@ -39,7 +45,11 @@ void MadProperty::Update() {
 
 void MadProperty::SetBase(Core* pkModell)
 {
+	pkCore = pkModell;
 	
+	PlayAnimation(0, 0.0);
+	m_fScale = 1.0;
+	m_bActive = true;
 }
 
 void MadProperty::PlayAnimation(int iAnimNum, float fStartTime)
@@ -53,6 +63,9 @@ void MadProperty::PlayAnimation(int iAnimNum, float fStartTime)
 
 void MadProperty::UpdateAnimation(void)
 {
+	if(!m_bActive)
+		return;
+
 	SetGameTime();
 
 	float fDelta = fGameTime - fLastUpdate;
@@ -68,68 +81,60 @@ void MadProperty::UpdateAnimation(void)
 	fLastUpdate = fGameTime; 
 }
 
-/*
-void MadInstans::PlayAnimation(int iAnimNum, float fStartTime)
-
+void MadProperty::SetScale(float fScale)
 {
-
-	SetGameTime();
-
-
-
-	iActiveAnimation = iAnimNum;
-
-	fCurrentTime = fStartTime;
-
-	fLastUpdate = fGameTime; 
+	m_fScale = fScale;
 }
 
 
-
-void MadInstans::UpdateAnimation(void)
-
+void	MadProperty::SetNextAnimation(int iAnimNum)
 {
+	m_iNextAnimation = iAnimNum;
+}
 
-	SetGameTime();
-
-
-
-	float fDelta = fGameTime - fLastUpdate;
-
-	fCurrentTime += fDelta;
-
-
-
-	float fAnimLength = pkCore->GetAnimationLengthInS(iActiveAnimation);
-
-	if(fCurrentTime >= fAnimLength)
-
-		fCurrentTime -= fAnimLength;
-
-	fLastUpdate = fGameTime; 
+void	MadProperty::PlayNextAnimations(void)
+{
 
 }
 
-
-
-void MadInstans::Draw(void)
-
+int		MadProperty::GetNextAnimation()
 {
-
-	int iNumOfFrame = pkCore->GetAnimationTimeInFrames(iActiveAnimation);
-
-	int iFrame = fCurrentTime / 0.1;
+	return m_iNextAnimation;
+}
 
 
+int		MadProperty::GetCurrentAnimation()
+{
+	return iActiveAnimation;
+}
 
-//	cout << " iFrame" << iFrame;
+void	MadProperty::SetLoopedStatus(bool bLoop)
+{
+	m_bLoop = bLoop;
+}
 
-//	cout << " fCurrentTime" << fCurrentTime;
+bool	MadProperty::IsLooped()
+{
+	return m_bLoop;
+}
 
 
+void	MadProperty::StopAnimation(void)
+{
+	m_bActive = false;
+}
 
-	pkCore->SetFrameI(iFrame);
+void	MadProperty::StartAnimation(void)
+{
+	m_bActive = true;
+}
 
-	pkCore->draw();
+void	MadProperty::NextCoreAnimation(void)
+{}
 
-}*/
+
+Property* Create_MadProperty()
+{
+	return new MadProperty;
+}
+

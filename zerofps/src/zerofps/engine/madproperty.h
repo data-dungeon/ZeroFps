@@ -6,6 +6,8 @@
 
 using namespace std;
 
+#define NO_ANIMATION_ID	-1
+
 class ENGINE_API MadProperty: public Property {
 	private:
 		Core*	pkCore;
@@ -14,8 +16,15 @@ class ENGINE_API MadProperty: public Property {
 		float	fCurrentTime;
 		float	fLastUpdate;
 
+		float	m_fScale;
+
+		int		m_iNextAnimation;
+		bool	m_bLoop;
+
+		bool	m_bActive;			// True if animation system is active.
 
 	public:
+		MadProperty();
 		MadProperty(Core* pkModell);
 
 		void Update();
@@ -24,18 +33,26 @@ class ENGINE_API MadProperty: public Property {
 		void UpdateAnimation(void);
 		void Draw(void);
 
+
+		void	SetNextAnimation(int iAnimNum);
+		void	PlayNextAnimations(void);
+		int		GetNextAnimation();
 		
+		int		GetCurrentAnimation();
+		void	SetLoopedStatus(bool bLoop);
+		bool	IsLooped();
+
+		void	StopAnimation(void);
+		void	StartAnimation(void);
+	
+		void	NextCoreAnimation(void);
+		
+		void	SetScale(float fScale);
+
 /*
 		// NEED TO WRITE
-		void SetNextAnimation(int iAnimNum);
-		void EnableLoopedAnimation(void);
-		void DisableLoopedAnimation(void);
-		bool IsAnimationLooped(void);
-		void PlayNextAnimations(void);
-		void StopAnimation(void);
-		void StartAnimation(void);
-		int GetCurrentAnimation();
-		int GetNextAnimation();
+
+
 		float GetAnimationTimeInS(void);
 		float GetAnimationTimeInFrames(void);
 		float GetAnimationLengthInS(void);
@@ -46,7 +63,7 @@ class ENGINE_API MadProperty: public Property {
 
 };
 
-
+Property* Create_MadProperty();
 
 #endif
 

@@ -31,7 +31,9 @@ ZeroFps::ZeroFps(void) {
 	m_pkCmd->Add(&m_iWidth,"r_Width",type_int);			
 	m_pkCmd->Add(&m_iHeight,"r_Height",type_int);		
 	m_pkCmd->Add(&m_iDepth,"r_Depth",type_int);		
-	m_pkCmd->Add(&m_iFullScreen,"r_FullScreen",type_int);			
+	m_pkCmd->Add(&m_iFullScreen,"r_FullScreen",type_int);	
+	
+	RegisterPropertys(this);
 }
 
 

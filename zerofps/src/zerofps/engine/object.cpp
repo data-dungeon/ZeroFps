@@ -41,6 +41,15 @@ void Object::AddProperty(Property* pkNewProperty) {
 	m_akPropertys.push_back(pkNewProperty);
 }
 
+void Object::AddProperty(char* acName)
+{
+	Property* pProp = m_pkPropFactory->CreateProperty(acName);
+	if(!pProp)
+		return;
+	AddProperty(pProp);
+}
+
+
 bool Object::RemoveProperty(char* acName) {
 	for(list<Property*>::iterator it=m_akPropertys.begin();it!=m_akPropertys.end();it++) {
 		if(strcmp((*it)->m_acName,acName)==0) {

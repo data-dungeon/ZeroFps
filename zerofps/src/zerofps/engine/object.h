@@ -9,12 +9,15 @@
 #include "property.h"
 //#include "../engine/objects.pkg"
 #include "objectmanager.h"
+#include "propertyfactory.h"
 
 using namespace std;
 
 class ObjectManager;
 
 class ENGINE_API Object {
+		PropertyFactory*	m_pkPropFactory;
+
 	protected:
 		Vector3 m_kPos;
 		Vector3 m_kRot;
@@ -32,7 +35,9 @@ class ENGINE_API Object {
 		
 		void Remove();
 		Property* GetProperty(char* acName);
+		void SetPropertyFactory(PropertyFactory* pkPropFactory) { m_pkPropFactory = pkPropFactory; }
 		void AddProperty(Property* pkNewProperty);
+		void AddProperty(char* acName);
 		bool RemoveProperty(char* acName);
 		void Update();
 		bool Update(char* acName);

@@ -8,6 +8,7 @@
 #include "../render/render.pkg"
 #include "engine.pkg"
 #include "../ogl/zfpsgl.h"
+#include "propertyfactory.h"
 
 
 using namespace std;
@@ -95,6 +96,8 @@ class ENGINE_API ZeroFps {
 		inline Camera *GetGameCam() {return m_pkGameCamera;};				
 		inline Camera *GetDefaultCam() {return m_pkDefaultCamera;};		
 //		inline void SetConsoleCam(Camera* pkCamera) {m_pkConsoleCamera=pkCamera;};
+
+		PropertyFactory	m_kPropertyFactory;
 };
 
 

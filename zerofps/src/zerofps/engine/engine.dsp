@@ -83,7 +83,7 @@ LINK32=link.exe
 # Begin Special Build Tool
 ProjDir=.
 SOURCE="$(InputPath)"
-PostBuild_Cmds=copy                       $(ProjDir)\debug\*.lib                       ..\..\..\bin\ 
+PostBuild_Cmds=copy                        $(ProjDir)\debug\*.lib                        ..\..\..\bin\ 
 # End Special Build Tool
 
 !ENDIF 
@@ -174,6 +174,10 @@ SOURCE=.\objectmanager.cpp
 # Begin Source File
 
 SOURCE=.\property.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\propertyfactory.cpp
 # End Source File
 # Begin Source File
 
@@ -277,6 +281,10 @@ SOURCE=.\property.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\propertyfactory.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\zerofps.h
 # End Source File
 # End Group
@@ -284,5 +292,9 @@ SOURCE=.\zerofps.h
 
 # PROP Default_Filter "ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe"
 # End Group
+# Begin Source File
+
+SOURCE=.\property.txt
+# End Source File
 # End Target
 # End Project
