@@ -64,7 +64,7 @@ Camera::Camera(Vector3 kPos,Vector3 kRot,float fFov,float fAspect,float fNear,fl
 	m_iShadowTexWidth = GetMaxSize(m_pkRender->GetWidth());
 	m_iShadowTexHeight = GetMaxSize(m_pkRender->GetHeight());
 		
-	cout<<"Using shadow texture size:"<<	m_iShadowTexWidth<<" "<<m_iShadowTexHeight<<endl;
+	//cout<<"Using shadow texture size:"<<	m_iShadowTexWidth<<" "<<m_iShadowTexHeight<<endl;
 	
 	m_iShadowTexture = -1;
 	m_fShadowArea = 15;

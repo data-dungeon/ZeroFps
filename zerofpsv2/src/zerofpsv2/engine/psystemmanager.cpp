@@ -158,7 +158,7 @@ bool PSystemManager::LoadNewPSystem ( string kName )
 
    kNewType.m_kName = kName;
 
-	cout << "PSystemtype " << kName << " loaded!" << endl;
+	//cout << "PSystemtype " << kName << " loaded!" << endl;
 
 	// Add new type
 	m_kPSystemTypes[kName] = kNewType;

@@ -58,5 +58,5 @@ void MCommon_RegisterPropertys(ZeroFps* pkZeroFps, PropertyFactory*	pkPropertyFa
 	pkPropertyFactory->Register("P_Spawn",					Create_P_Spawn);
 
 
-	cout << "Registred MCommon property" << endl;
+// 	cout << "Registred MCommon property" << endl;
 }

@@ -198,7 +198,7 @@ void EntityManager::Link(Entity* pkEntity,int iId)
 	{
 		if(IsLinked(pkEntity))
 		{
-			cout<<"WARNING: Entity is already linked ("<<endl;
+			cout<<"WARNING: Entity is already linked"<<endl;
 			return;	
 		}
 	}
