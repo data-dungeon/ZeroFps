@@ -72,6 +72,11 @@ void MistServer::CreateEditCameras()
 		P_Camera* m_pkCamProp = (P_Camera*)m_pkActiveCameraObject->GetProperty("P_Camera");
 		m_pkCamProp->SetCamera(m_pkCamera);
 		m_pkActiveCameraObject->GetSave() = false;
+		
+		P_Enviroment* pe = (P_Enviroment*)m_pkActiveCameraObject->AddProperty("P_Enviroment");
+		pe->SetEnable(true);		
+		pe->SetEnviroment("data/enviroments/server.env");
+
 	}
 
 	GetWnd("vp1")->SetRenderTarget(m_pkCamera);
@@ -247,10 +252,10 @@ void MistServer::Input_Camera(float fMouseX, float fMouseY)
 		xv.Normalize();
 		zv.Normalize();
 
-		if(m_pkInputHandle->VKIsDown("right"))		newpos += xv * fSpeedScale;		
-		if(m_pkInputHandle->VKIsDown("left"))		newpos += xv * -fSpeedScale;		
-		if(m_pkInputHandle->VKIsDown("forward"))	newpos += zv * -fSpeedScale;
-		if(m_pkInputHandle->VKIsDown("back"))		newpos += zv * fSpeedScale;	
+		if(m_pkInputHandle->VKIsDown("right"))		newpos += xv * -fSpeedScale;		
+		if(m_pkInputHandle->VKIsDown("left"))		newpos += xv * fSpeedScale;		
+		if(m_pkInputHandle->VKIsDown("forward"))	newpos += zv * fSpeedScale;
+		if(m_pkInputHandle->VKIsDown("back"))		newpos += zv * -fSpeedScale;	
 
 		if(m_pkInputHandle->VKIsDown("down"))		newpos.y += fSpeedScale;
 		if(m_pkInputHandle->VKIsDown("up"))			newpos.y -= fSpeedScale;
