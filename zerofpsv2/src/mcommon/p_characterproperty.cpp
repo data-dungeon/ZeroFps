@@ -26,11 +26,21 @@ P_CharacterProperty::P_CharacterProperty()
 	m_bOverHeadText		=	true;	
 	m_bFirstUpdate			=	true;
 	
-	m_iInventory			=	-1;
-	m_iHead					=	-1;
-	m_iBody					=	-1;
-	m_iLeftHand				=	-1;
-	m_iRightHand			=	-1;
+	m_iInventory	= -1;		
+	m_iHead			= -1;
+	m_iGloves		= -1;
+	m_iCape			= -1;		
+	m_iNecklace		= -1;				
+	m_iBody			= -1;
+	m_iLeftHand		= -1;
+	m_iRightHand	= -1;		
+	m_iBracers		= -1;		
+	m_iRing1			= -1;
+	m_iRing2			= -1;
+	m_iRing3			= -1;
+	m_iRing4			= -1;
+	m_iBelt			= -1;		
+	m_iFeets			= -1;
 		
 		
 	//basic sounds
@@ -353,6 +363,8 @@ void P_CharacterProperty::SetupContainers()
 		cout<<"done"<<endl;
 	}
 
+	//update network
+	SetNetUpdateFlag(true);
 }
 
 
@@ -618,7 +630,19 @@ void P_CharacterProperty::PackTo( NetPacket* pkNetPacket, int iConnectionID )
 	pkNetPacket->Write(m_iHead);
 	pkNetPacket->Write(m_iBody);
 	pkNetPacket->Write(m_iLeftHand);
-	pkNetPacket->Write(m_iRightHand);
+	pkNetPacket->Write(m_iRightHand);	
+	pkNetPacket->Write(m_iGloves);
+	pkNetPacket->Write(m_iCape);
+	pkNetPacket->Write(m_iNecklace);
+	pkNetPacket->Write(m_iBracers);
+	pkNetPacket->Write(m_iRing1);
+	pkNetPacket->Write(m_iRing2);
+	pkNetPacket->Write(m_iRing3);
+	pkNetPacket->Write(m_iRing4);
+	pkNetPacket->Write(m_iBelt);
+	pkNetPacket->Write(m_iFeets);
+	
+	
 
 	pkNetPacket->Write_Str(m_strName);
 	pkNetPacket->Write_Str(m_strOwnedByPlayer);
@@ -638,7 +662,17 @@ void P_CharacterProperty::PackFrom( NetPacket* pkNetPacket, int iConnectionID  )
 	pkNetPacket->Read(m_iHead);
 	pkNetPacket->Read(m_iBody);
 	pkNetPacket->Read(m_iLeftHand);
-	pkNetPacket->Read(m_iRightHand);
+	pkNetPacket->Read(m_iRightHand);	
+	pkNetPacket->Read(m_iGloves);
+	pkNetPacket->Read(m_iCape);
+	pkNetPacket->Read(m_iNecklace);
+	pkNetPacket->Read(m_iBracers);
+	pkNetPacket->Read(m_iRing1);
+	pkNetPacket->Read(m_iRing2);
+	pkNetPacket->Read(m_iRing3);
+	pkNetPacket->Read(m_iRing4);
+	pkNetPacket->Read(m_iBelt);
+	pkNetPacket->Read(m_iFeets);
 
 
 	pkNetPacket->Read_Str(m_strName);
