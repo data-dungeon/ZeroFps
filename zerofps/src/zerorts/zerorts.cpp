@@ -1076,7 +1076,8 @@ void ZeroRTS::RemoveClientUnits(int iID)
 			if(int(su->m_kInfo.m_Info2.m_cTeam) == iID)
 			{	
 				//yes it does,,lets kill it =) MOHAHAHA!		
-				pkObjectMan->Delete(kObjects[i]);
+				su->Damage(999999999);
+				//pkObjectMan->Delete(kObjects[i]);
 			}
 		}		
 	}
