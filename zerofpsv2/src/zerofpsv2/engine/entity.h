@@ -361,6 +361,9 @@ class ENGINE_API Entity
 		void SetUseZones(bool bUz) 						{	m_bUseZones = bUz;		};		
       void SetUpdateStatus(int iUpdateStatus);
 		
+		void Edit_GetDataNames(vector<string>& vkList);
+		string Edit_GetDataString(const string& strName);
+		void Edit_SetDataString(const string& strName, string strValue);
 
 		// Entity Variables
 		EntityVariable* CreateVar(const string& strName, EntityVariableType eType);

@@ -634,9 +634,13 @@ void ZeroEd::OnClickListbox(int iListBoxID, int iListboxIndex, ZGuiWnd* pkMain)
 			if((pkEnt = m_pkEntityManager->GetEntityByID(m_iCurrentObject)))
 				if((item = GetSelItem("PropertyValList")))
 				{
-					if(string("Variables") == string(szProperty))
+					if(string("Entity") == string(szProperty))
 					{
-
+						SetText("PropertyValEb", (char*)pkEnt->Edit_GetDataString(item).c_str());
+					}
+					
+					else if(string("Variables") == string(szProperty))
+					{
 						SetText("PropertyValEb", (char*)pkEnt->GetVarString(item).c_str());
 					}
 					

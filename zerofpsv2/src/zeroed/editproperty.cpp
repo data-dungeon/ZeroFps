@@ -32,6 +32,7 @@ bool ZeroEd::UpdatePropertyList(int iID)
 
 	// Add for the entity variables display.
 	pkProperyList->AddItem("Variables", j++, false);
+	pkProperyList->AddItem("Entity", j++, false);
 
 	Entity* pkEnt = m_pkEntityManager->GetEntityByID(iID);
    if(pkEnt)
@@ -94,8 +95,24 @@ void ZeroEd::FillPropertyValList()
 	if((pkEnt = m_pkEntityManager->GetEntityByID(m_iCurrentObject)))
 		if((item = GetSelItem("PropertyList"))) 
 		{
+			if(string("Entity") == string(item) )
+			{
+				cout << "Would like to look at entity data";
+				vector<string> kValNames;
+				pkEnt->Edit_GetDataNames(kValNames);
+				
+				list<string> temp;
+				for(int i=0; i<kValNames.size(); i++)
+					temp.push_back(kValNames[i]);
 
-			if(string("Variables") == string(item))
+				temp.sort(); 
+
+				int j=0;
+				list<string>::iterator it = temp.begin();
+				for( ; it!=temp.end(); it++) 
+					pkProperyValList->AddItem((char*)(*it).c_str(), j++, false);
+			}
+			else if(string("Variables") == string(item))
 			{
 				cout << "Would like to look at entity vars";
 				vector<string> kValNames;

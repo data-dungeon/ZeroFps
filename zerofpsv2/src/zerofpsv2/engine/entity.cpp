@@ -1795,6 +1795,76 @@ void	Entity::UpdateDeletePropertyList()
 	m_kNetDeletePropertyList.clear();	
 }
 
+void Entity::Edit_GetDataNames(vector<string>& vkList)
+{
+	vkList.reserve( 5 );
+	vkList.push_back(string( "position" ));
+	vkList.push_back(string( "name" ));
+	vkList.push_back(string( "EntityID" ));
+	vkList.push_back(string( "Type" ));
+	vkList.push_back(string( "Rotation" ));
+}
+
+string Entity::Edit_GetDataString(const string& strName)
+{
+	char szString[256];
+
+	if(strName == string("position"))
+	{
+		Vector3 kPos = GetWorldPosV();
+		sprintf(szString, "%f %f %f", kPos.x, kPos.y, kPos.z); 
+		return string(szString);
+	}
+
+	if(strName == string("name"))
+	{
+		return this->m_strName;
+	}
+
+   if(strName == string("EntityID"))
+	{
+		sprintf(szString, "%d", m_iEntityID); 
+		return string(szString);
+	}
+
+	if(strName == string("type"))
+	{
+		return this->m_strType;
+	}
+
+	if(strName == string("rotation"))
+	{
+		Vector3 kPos = GetLocalRotV();
+		sprintf(szString, "%f %f %f", kPos.x, kPos.y, kPos.z); 
+		return string(szString);
+	}
+
+	return string("");
+}
+
+void Entity::Edit_SetDataString(const string& strName, string strValue)
+{
+	Vector3 kVec;
+
+	if(strName == string("position"))
+	{
+		sscanf(strValue.c_str(),"%f %f %f",&kVec.x, &kVec.y, &kVec.z);
+		SetWorldPosV(kVec);
+	}
+
+	if(strName == string("rotation"))
+	{
+		sscanf(strValue.c_str(),"%f %f %f",&kVec.x, &kVec.y, &kVec.z);
+		SetLocalRotV(kVec);
+	}
+
+	if(strName == string("name"))
+	{
+		SetName(strValue);
+	}
+}
+
+
 void Entity::GetAllVarNames(vector<string>& vkList)
 {
 	vkList.reserve( m_kVariables.size() + 1 );
@@ -1803,7 +1873,6 @@ void Entity::GetAllVarNames(vector<string>& vkList)
 		vkList.push_back( m_kVariables[i].m_strName ); 
 		}	
 }
- 
 
 EntityVariable* Entity::CreateVar(const string& strName, EntityVariableType eType)
 {

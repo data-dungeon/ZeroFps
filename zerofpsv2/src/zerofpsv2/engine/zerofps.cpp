@@ -1491,10 +1491,14 @@ void ZeroFps::HandleEditCommand(NetPacket* pkNetPacket)
 		
 		if(Entity* pkEnt = m_pkEntityManager->GetEntityByID(iCurrentObject))
 		{
-			if(string("Variables") == string(strItem))
+			if(string("Entity") == string(strItem))
+			{
+				pkEnt->Edit_SetDataString(strValue, strRes);				
+			}	
+			else if(string("Variables") == string(strItem))
 			{
 				pkEnt->SetVarString(strValue, strRes);				
-			}			
+			}	
 			else
 			{
 				if(Property* pkProp = pkEnt->GetProperty(strItem.c_str()))
