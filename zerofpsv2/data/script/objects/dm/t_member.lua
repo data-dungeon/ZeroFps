@@ -27,6 +27,7 @@ function Init()
 	AddMoveCharSound(SIGetSelfID(), "data/sound/cyborg/slaving for you.wav");
 	AddMoveCharSound(SIGetSelfID(), "data/sound/cyborg/my bags are packed.wav");
 	AddSelectCharSound(SIGetSelfID(), "data/sound/cyborg/yes my lord.wav");
+	SetTeam (SIGetSelfID(), 0);
 end
 
 function FirstRun()

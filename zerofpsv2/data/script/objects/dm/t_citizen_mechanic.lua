@@ -31,6 +31,8 @@ function Init()
 	AddDefenciveActionQuot(SIGetSelfID(), "data/sound/mechanic/defensive/daq_you_shootin_at_me_for.wav")
 	AddDeathSound(SIGetSelfID(), "data/sound/mechanic/death/death1.wav")
 	AddDeathSound(SIGetSelfID(), "data/sound/mechanic/death/death2.wav")
+
+	SetTeam (SIGetSelfID(), 1);
 end
 
 function HeartBeat()

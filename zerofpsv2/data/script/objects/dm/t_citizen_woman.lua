@@ -19,7 +19,8 @@ function FirstRun()
 end
 
 function Init()
-	SetMoveSpeed (SIGetSelfID(), 2.7);
+	SetMoveSpeed (SIGetSelfID(), 2.5);
+	SetTeam (SIGetSelfID(), 1);
 end
 
 function HeartBeat()
@@ -53,7 +54,15 @@ function Dead()
 	PlaySound (SIGetSelfID(), "death/DEATH7.WAV");
 	SetEntityVar(SIGetSelfID, "deadtime", 0);
 
-	if Random(10) < 4 then
+	if Random(10) < 6 then
 		RunScript ("data/script/objects/dm/t_money.lua", SIGetSelfID());
 	end
+end
+
+function Panic()
+	SetMoveSpeed (SIGetSelfID(), 6);
+	SetRunAnim (SIGetSelfID(), "panic");
+	SetIdleAnim (SIGetSelfID(), "panic_idle");	
+	ClearPathFind(SIGetSelfID());
+	SISetHeartRate(SIGetSelfID(),2);
 end

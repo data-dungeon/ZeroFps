@@ -19,7 +19,8 @@ function FirstRun()
 end
 
 function Init()
-	SetMoveSpeed (SIGetSelfID(), 2.9);
+	SetMoveSpeed (SIGetSelfID(), 2.6);
+	SetTeam (SIGetSelfID(), 1);
 end
 
 function HeartBeat()
