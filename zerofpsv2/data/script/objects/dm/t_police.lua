@@ -8,7 +8,7 @@ function Create()
 		InitProperty("P_PfPath");
 		InitProperty("P_Track");
 		InitProperty("P_DMCharacter");
-			InitParameter("team",0)
+			InitParameter("team",2)
 		InitProperty("P_ScriptInterface");
 		InitProperty("P_ShadowBlob");
 
@@ -28,7 +28,6 @@ function Init()
 	AddMoveCharSound(SIGetSelfID(), "data/sound/cyborg/slaving for you.wav");
 	AddMoveCharSound(SIGetSelfID(), "data/sound/cyborg/my bags are packed.wav");
 	AddSelectCharSound(SIGetSelfID(), "data/sound/cyborg/yes my lord.wav");
-	SetTeam (SIGetSelfID(), 0);
 	SISetHeartRate(SIGetSelfID(),4);
 end
 
