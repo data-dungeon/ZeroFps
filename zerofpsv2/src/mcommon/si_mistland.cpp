@@ -77,6 +77,7 @@ void MistLandLua::Init(EntityManager* pkObjMan,ZFScriptSystem* pkScript)
    pkScript->ExposeFunction("AddHP",		            MistLandLua::AddHpLua);			
    pkScript->ExposeFunction("AddMP",			         MistLandLua::AddMpLua);			
    pkScript->ExposeFunction("PrintCharStats",			MistLandLua::PrintStatsLua);
+   pkScript->ExposeFunction("SetRecalPosition",			MistLandLua::SetRecalPositionLua);   
    
    // item stuff
    pkScript->ExposeFunction("GetQuantity",     			MistLandLua::GetQuantityLua);			
@@ -1237,6 +1238,46 @@ int MistLandLua::PrintStatsLua (lua_State* pkLua)
    return 0;
 
 }
+
+// ----------------------------------------------------------------------------------------------
+
+
+int MistLandLua::SetRecalPositionLua (lua_State* pkLua)
+{
+	if( g_pkScript->GetNumArgs(pkLua) == 2 )
+   {
+		double dID;
+		g_pkScript->GetArgNumber(pkLua, 0, &dID);		
+
+		Entity* pkObject = g_pkObjMan->GetObjectByNetWorkID((int)dID);
+
+		if(pkObject)
+		{
+			vector<TABLE_DATA> vkData;
+			g_pkScript->GetArgTable(pkLua, 2, vkData); // första argumetet startar på 1
+
+			Vector3 kPos = Vector3(
+				(float) (*(double*) vkData[0].pData),
+				(float) (*(double*) vkData[1].pData),
+				(float) (*(double*) vkData[2].pData));
+	
+			CharacterProperty* pkCP = (CharacterProperty*)pkObject->GetProperty("P_CharStats");
+	      if(pkCP)
+   	   {
+	   	   CharacterStats *pkCS = pkCP->GetCharStats();
+		
+				pkCS->SetRecalPos(kPos);		
+				cout<<"Setting recal position!!"<<endl;
+			}	
+		
+			g_pkScript->DeleteTable(vkData);
+		}
+
+		return 1;
+   }
+   return 0;
+}
+
 
 // ----------------------------------------------------------------------------------------------
 

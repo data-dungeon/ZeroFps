@@ -84,6 +84,8 @@ namespace MistLandLua
    int MCOMMON_API AddMpLua (lua_State* pkLua);
    int MCOMMON_API PrintStatsLua (lua_State* pkLua);
 
+	int MCOMMON_API SetRecalPositionLua (lua_State* pkLua);
+	
    // item stuff
    int MCOMMON_API GetQuantityLua (lua_State* pkLua);
    int MCOMMON_API SetQuantityLua (lua_State* pkLua);

@@ -63,6 +63,8 @@ private:
    float m_fReloadTime; // time before next action (attackspeed, shootspeed..etc)
    float m_fReloadTimer; // how long time has passed before last used action
 
+	Vector3 m_kRecalPos;
+
 public:
    Container* m_pkContainer;
    
@@ -101,6 +103,9 @@ public:
 
    string GetCurrentSkill()                        { return m_kCurrentSkill; }
    bool SetCurrentSkill ( string kNewCurrentSkill );
+
+	void SetRecalPos(Vector3 kPos) { m_kRecalPos = kPos;};
+	Vector3 GetRecalPos() { return m_kRecalPos;};	
 
    // Add points to stats.
    void AddSkillValue ( string kSkillName, int iValue );

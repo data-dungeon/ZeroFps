@@ -11,6 +11,8 @@
 
 CharacterStats::CharacterStats( Entity *pkParent )
 {
+	m_kRecalPos.Set(0,0,0);
+	
    m_uiVersion = 0;
 
    m_pkContainer = 0;

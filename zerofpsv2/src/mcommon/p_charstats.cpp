@@ -162,6 +162,9 @@ void CharacterProperty::Save(ZFIoInterface* pkPackage)
       iValue = 0;
 
    pkPackage->Write ( (void*)&iValue, sizeof(int), 1 );
+   
+   // save recal position
+   pkPackage->Write ( (void*)&m_pkCharStats->m_kRecalPos, sizeof(m_pkCharStats->m_kRecalPos), 1 );   
 }
 
 // ------------------------------------------------------------------------------------------
@@ -252,6 +255,8 @@ void CharacterProperty::Load(ZFIoInterface* pkPackage)
    pkPackage->Read ( (void*)&iValue, sizeof(int), 1 );
 
 
+	//load reacal position
+   pkPackage->Read ( (void*)&m_pkCharStats->m_kRecalPos, sizeof(m_pkCharStats->m_kRecalPos), 1 );   
 }
 
 // ------------------------------------------------------------------------------------------
