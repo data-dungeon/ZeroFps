@@ -232,12 +232,14 @@ bool PlayerDatabase::CreateNewCharacter(string strPlayer, string strCharacter)
 		cp->SetIsPlayerCharacter(true);
 	}
 	
+	/*
 	if(strCharacter == "dvoid")
 	{
 		P_Light* pkLight = (P_Light*)pkEntity->AddProperty("P_Light");
 		pkLight->SetDiffuse(Vector4(-0.5,-0.5,-0.5,1));
 	}
-		 
+	*/	
+	 
 	//save it
 	pkEntity->Save(&kFile);
 	
