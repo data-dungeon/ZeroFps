@@ -65,6 +65,124 @@ bool Property::operator<(Property& kOther){
 	}
 }
 
+vector<Property::PropertyValues> Property::GetPropertyValues()
+{
+vector<PropertyValues> kReturn;
+	return kReturn;
+};
+
+vector<string> Property::GetValueNames()
+{
+	vector<PropertyValues> kTemp= GetPropertyValues();
+	
+	vector<string> kReturnVector;
+	if(!kTemp.empty())
+	{
+		
+		vector<PropertyValues>::iterator kItor = kTemp.begin();
+		while (kItor != kTemp.end())
+		{
+			kReturnVector.push_back(kItor->kValueName);
+			kItor++;
+		}
+	}
+	return kReturnVector;
+}
+
+string Property::GetValue(string kValueName)
+{
+	vector<PropertyValues> kTemp= GetPropertyValues();
+	string kBuffer;
+	if(!kTemp.empty())
+	{
+	
+		vector<PropertyValues>::iterator kItor = kTemp.begin();
+		while (kItor != kTemp.end())
+		{
+			if( kValueName == kItor->kValueName)
+			{
+				
+				char pk_chBuffer[50];
+				switch(kItor->iValueType)
+				{	
+				case VALUETYPE_INT:
+					itoa(*((int*)kItor->pkValue),pk_chBuffer,10); 
+					return (kBuffer=pk_chBuffer);
+					
+				case VALUETYPE_STRING:
+					return(*(reinterpret_cast<string*>(kItor->pkValue)));
+					
+				case VALUETYPE_BOOL:
+					if(*((bool*)kItor->pkValue)) 
+						return (kBuffer="true");
+						else return(kBuffer="false");
+					
+				
+				case VALUETYPE_FLOAT:
+					int  iDecimal, iSign;
+					kBuffer= fcvt(*((float*)kItor->pkValue), 5, &iDecimal, &iSign );
+					kBuffer.insert(iDecimal, ".");
+					if(iSign !=0)
+						kBuffer.insert(0, "-");
+					return kBuffer; 
+
+				};
+				
+			}	
+		kItor++;
+		};
+
+	};
+	return kBuffer;
+}
+
+
+bool Property::SetValue(string kValueName, string kValue)
+{
+	vector<PropertyValues> kTemp= GetPropertyValues();
+	if(!kTemp.empty())
+	{
+	
+		vector<PropertyValues>::iterator kItor = kTemp.begin();
+		while (kItor != kTemp.end())
+		{
+			if( kValueName == kItor->kValueName)
+			{
+				
+				
+				switch(kItor->iValueType)
+				{	
+				case VALUETYPE_INT:
+					*((int*)kItor->pkValue)=atoi(kValue.c_str());
+					return true;
+					
+				case VALUETYPE_STRING:
+					*(reinterpret_cast<string*>(kItor->pkValue))=kValue;
+					return true;
+					
+				case VALUETYPE_BOOL:
+					if(kValue=="true")
+					*((bool*)kItor->pkValue) = true; 
+					else if(kValue=="false")
+						*((bool*)kItor->pkValue) = false; 
+					else return false;
+					return true;
+				
+				case VALUETYPE_FLOAT:
+					char *stop;
+					*((float*)kItor->pkValue) = strtod( kValue.c_str(), &stop );
+					return true;
+					
+
+				};
+				
+			}	
+		kItor++;
+		};
+
+	};
+	return false;
+}
 
 
 

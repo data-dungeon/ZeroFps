@@ -3,6 +3,7 @@
 
 #include "../basic/basic.pkg"
 #include <string>
+#include <vector>
 #include <iostream>
 //#include "object.h"
 #include "engine_x.h"
@@ -38,8 +39,27 @@ class ENGINE_API Property
 	protected:
 		Object *m_pkObject;
 		PropertyFactory*	m_pkPropertyFactory;
+		struct PropertyValues
+		{
+			string kValueName;
+			void* pkValue;
+			int iValueType;
+		};
+	
+		enum ValueTypes
+		{
+			VALUETYPE_INT,
+			VALUETYPE_FLOAT,
+			VALUETYPE_BOOL,
+			VALUETYPE_STRING,
+		};
+	virtual vector<PropertyValues> GetPropertyValues();
 
 	public:
+		bool SetValue(string kValueName ,string kValue);
+		string GetValue(string kValueName);
+		vector<string> GetValueNames();
+		
 		int m_iSortPlace;		//place in update queue
 		bool m_bSortDistance;
 		
