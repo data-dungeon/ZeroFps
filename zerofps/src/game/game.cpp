@@ -165,7 +165,7 @@ void Game::Input()
 
 	if(iKey == KEY_SPACE)
 	{
-		char szFile[] = "hulk_jump.lua";
+		char szFile[] = "delete_closest_object.lua";
 		if(!m_pkScript->RunScript(szFile))
 			printf("Failed to run script %s.\n", szFile);
 	}
@@ -281,11 +281,11 @@ void Game::InitGui()
 	int id = 1;
 	int x = m_iWidth-200, y = m_iHeight-200;
 
-	ZGuiSkin* pkMainSkin =		new ZGuiSkin(192, 192, 192, 0,   0,   0,   2);
+	ZGuiSkin* pkMainSkin     =	new ZGuiSkin(192, 192, 192, 0,   0,   0,   2);
 	ZGuiSkin* pkHealthBkSkin =	new ZGuiSkin(255, 0,   0,   0,   0,   128, 4);
-	ZGuiSkin* pkHealthSkin =	new ZGuiSkin(0,   0,   255, 0,   0,   128, 4);
-	ZGuiSkin* pkArmorBkSkin =	new ZGuiSkin(255, 0,   0,   0,   0,   128, 4);
-	ZGuiSkin* pkArmorSkin =		new ZGuiSkin(0,   255, 0,   0,   0,   128, 4);
+	ZGuiSkin* pkHealthSkin   =	new ZGuiSkin(0,   0,   255, 0,   0,   128, 4);
+	ZGuiSkin* pkArmorBkSkin  =	new ZGuiSkin(255, 0,   0,   0,   0,   128, 4);
+	ZGuiSkin* pkArmorSkin    =	new ZGuiSkin(0,   255, 0,   0,   0,   128, 4);
 
 	ZGuiWnd* pkPlayerStatusMainWnd = new ZGuiWnd(Rect(x,y,x+190,y+190),NULL,true,id++);
 	pkPlayerStatusMainWnd->SetSkin(pkMainSkin);

@@ -1,6 +1,6 @@
 /*
 ** Lua binding: zfscript_bind
-** Generated automatically by tolua 4.0 on 02/04/03 14:18:30.
+** Generated automatically by tolua 4.0 on 02/04/03 16:27:54.
 */
 
 #include "tolua.h"
@@ -925,6 +925,114 @@ tolua_lerror:
  return 0;
 }
 
+/* method: GetObjectPos of class  GameScriptInterface */
+static int toluaI_zfscript_bind_GameScriptInterface_GetObjectPos00(lua_State* tolua_S)
+{
+ if (
+ !tolua_istype(tolua_S,1,tolua_tag(tolua_S,"GameScriptInterface"),0) ||
+ !tolua_istype(tolua_S,2,LUA_TNUMBER,0) ||
+ !tolua_isnoobj(tolua_S,3)
+ )
+ goto tolua_lerror;
+ else
+ {
+  GameScriptInterface* self = (GameScriptInterface*)  tolua_getusertype(tolua_S,1,0);
+  OBJECT obj = ((OBJECT)  tolua_getnumber(tolua_S,2,0));
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'GetObjectPos'");
+ {
+  Vector3 toluaI_ret = (Vector3)  self->GetObjectPos(obj);
+ {
+#ifdef __cplusplus
+ void* toluaI_clone = new Vector3(toluaI_ret);
+#else
+ void* toluaI_clone = tolua_copy(tolua_S,(void*)&toluaI_ret,sizeof(Vector3));
+#endif
+ tolua_pushusertype(tolua_S,tolua_doclone(tolua_S,toluaI_clone,tolua_tag(tolua_S,"Vector3")),tolua_tag(tolua_S,"Vector3"));
+ }
+ }
+ }
+ return 1;
+tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'GetObjectPos'.");
+ return 0;
+}
+
+/* method: GetClosestObject of class  GameScriptInterface */
+static int toluaI_zfscript_bind_GameScriptInterface_GetClosestObject00(lua_State* tolua_S)
+{
+ if (
+ !tolua_istype(tolua_S,1,tolua_tag(tolua_S,"GameScriptInterface"),0) ||
+ !tolua_istype(tolua_S,2,LUA_TNUMBER,0) ||
+ !tolua_isnoobj(tolua_S,3)
+ )
+ goto tolua_lerror;
+ else
+ {
+  GameScriptInterface* self = (GameScriptInterface*)  tolua_getusertype(tolua_S,1,0);
+  OBJECT kFocusObj = ((OBJECT)  tolua_getnumber(tolua_S,2,0));
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'GetClosestObject'");
+ {
+  OBJECT toluaI_ret = (OBJECT)  self->GetClosestObject(kFocusObj);
+ tolua_pushnumber(tolua_S,(double)toluaI_ret);
+ }
+ }
+ return 1;
+tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'GetClosestObject'.");
+ return 0;
+}
+
+/* method: GetMetersBetween of class  GameScriptInterface */
+static int toluaI_zfscript_bind_GameScriptInterface_GetMetersBetween00(lua_State* tolua_S)
+{
+ if (
+ !tolua_istype(tolua_S,1,tolua_tag(tolua_S,"GameScriptInterface"),0) ||
+ !tolua_istype(tolua_S,2,LUA_TNUMBER,0) ||
+ !tolua_istype(tolua_S,3,LUA_TNUMBER,0) ||
+ !tolua_isnoobj(tolua_S,4)
+ )
+ goto tolua_lerror;
+ else
+ {
+  GameScriptInterface* self = (GameScriptInterface*)  tolua_getusertype(tolua_S,1,0);
+  OBJECT obj1 = ((OBJECT)  tolua_getnumber(tolua_S,2,0));
+  OBJECT obj2 = ((OBJECT)  tolua_getnumber(tolua_S,3,0));
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'GetMetersBetween'");
+ {
+  float toluaI_ret = (float)  self->GetMetersBetween(obj1,obj2);
+ tolua_pushnumber(tolua_S,(double)toluaI_ret);
+ }
+ }
+ return 1;
+tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'GetMetersBetween'.");
+ return 0;
+}
+
+/* method: DestroyObject of class  GameScriptInterface */
+static int toluaI_zfscript_bind_GameScriptInterface_DestroyObject00(lua_State* tolua_S)
+{
+ if (
+ !tolua_istype(tolua_S,1,tolua_tag(tolua_S,"GameScriptInterface"),0) ||
+ !tolua_istype(tolua_S,2,LUA_TNUMBER,0) ||
+ !tolua_isnoobj(tolua_S,3)
+ )
+ goto tolua_lerror;
+ else
+ {
+  GameScriptInterface* self = (GameScriptInterface*)  tolua_getusertype(tolua_S,1,0);
+  OBJECT obj = ((OBJECT)  tolua_getnumber(tolua_S,2,0));
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'DestroyObject'");
+ {
+  self->DestroyObject(obj);
+ }
+ }
+ return 0;
+tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'DestroyObject'.");
+ return 0;
+}
+
 /* Open function */
 int tolua_zfscript_bind_open (lua_State* tolua_S)
 {
@@ -983,6 +1091,10 @@ int tolua_zfscript_bind_open (lua_State* tolua_S)
  tolua_function(tolua_S,"GameScriptInterface","GetPlayer",toluaI_zfscript_bind_GameScriptInterface_GetPlayer00);
  tolua_function(tolua_S,"GameScriptInterface","GetClosestEnemy",toluaI_zfscript_bind_GameScriptInterface_GetClosestEnemy00);
  tolua_function(tolua_S,"GameScriptInterface","GetObjectType",toluaI_zfscript_bind_GameScriptInterface_GetObjectType00);
+ tolua_function(tolua_S,"GameScriptInterface","GetObjectPos",toluaI_zfscript_bind_GameScriptInterface_GetObjectPos00);
+ tolua_function(tolua_S,"GameScriptInterface","GetClosestObject",toluaI_zfscript_bind_GameScriptInterface_GetClosestObject00);
+ tolua_function(tolua_S,"GameScriptInterface","GetMetersBetween",toluaI_zfscript_bind_GameScriptInterface_GetMetersBetween00);
+ tolua_function(tolua_S,"GameScriptInterface","DestroyObject",toluaI_zfscript_bind_GameScriptInterface_DestroyObject00);
  return 1;
 }
 /* Close function */

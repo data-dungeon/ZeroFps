@@ -800,8 +800,6 @@ void Object::Save(ObjectDescriptor* ObjDesc)
 	}
 }
 
-
-
 float Object::GetBoundingRadius()
 {
 	Property* pr=GetProperty("CollisionProperty");
