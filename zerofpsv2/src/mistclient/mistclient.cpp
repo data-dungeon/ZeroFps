@@ -313,6 +313,25 @@ void MistClient::OnSystem()
 				PrintInfoBox(m_pkServerInfo->m_kMyMessages.front().c_str());
 				m_pkServerInfo->m_kMyMessages.pop();
 			}
+
+			//play sounds
+			while(!pi->kSounds.empty())
+			{
+				pair<int,string> sound_info = pi->kSounds.front();
+
+				Entity* pkGenerator = pkObjectMan->GetObjectByNetWorkID(sound_info.first);
+
+				if(pkGenerator)
+				{
+					Vector3 pos = pkGenerator->GetWorldPosV();
+					Vector3 dir = pkGenerator->GetVel();
+
+					pkAudioSys->StartSound(string("data/sound/") + 
+						sound_info.second.c_str(), pos, dir, false);  
+				}
+
+				pi->kSounds.pop();
+			}
 			
 		}else
 			cout<<"cant find player object id"<<pkFps->GetConnectionID()<<endl;
@@ -349,6 +368,8 @@ void MistClient::Input()
 	
 	if(pkInput->Pressed(MOUSELEFT))
 	{
+		printf("click\n");
+
 		if(m_bActionMenuIsOpen) 
 			CloseActionMenu();
 
@@ -407,7 +428,7 @@ void MistClient::Input()
 
 	if(pkInput->Pressed(MOUSERIGHT))
 	{
-		m_pkTargetObject2 = GetTargetObject();
+		m_pkTargetObject = GetTargetObject();
 
 		pkGui->SetFocus(GetWnd("MainWnd")); // set focus to main wnd.
 
@@ -635,20 +656,15 @@ void MistClient::OnCommand(int iID, ZGuiWnd *pkMainWnd)
 					{
 						if(m_pkClientControlP)
 						{
-							printf("m_pkClientControlP\n");
-							if(m_pkTargetObject2)
+							if(m_pkTargetObject)
 							{
-								printf("m_pkTargetObject2\n");
 								if(m_iActiveCaracterObjectID != -1)
 								{
-									printf("m_iActiveCaracterObjectID != -1\n");
-
 									ClientOrder order;
 
 									order.m_sOrderName = res->second;
 									order.m_iClientID = pkFps->GetConnectionID();
 									
-
 									order.m_iObjectID = m_pkTargetObject->iNetWorkID;				
 									order.m_iCharacter = m_iActiveCaracterObjectID;
 
@@ -1164,10 +1180,10 @@ void MistClient::OnClientInputSend(char *szText)
 
 void MistClient::OpenActionMenu(int mx, int my)
 {
-	if(m_bActionMenuIsOpen || m_pkTargetObject2 == NULL)
+	if(m_bActionMenuIsOpen || m_pkTargetObject == NULL)
 		return;
 
-	P_Ml* pkMistLandProp = static_cast<P_Ml*>(m_pkTargetObject2->GetProperty("P_Ml")); 
+	P_Ml* pkMistLandProp = static_cast<P_Ml*>(m_pkTargetObject->GetProperty("P_Ml")); 
 
 	if(!pkMistLandProp)
 		return;

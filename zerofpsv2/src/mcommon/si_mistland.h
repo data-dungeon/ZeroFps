@@ -41,6 +41,9 @@ namespace MistLandLua
 	int MCOMMON_API AddActionLua(lua_State* pkLua);				//(int objectid,string action) add action to action list of object
 	int MCOMMON_API MessageCaracterLua(lua_State* pkLua);				//(int objectid,string message) send a message to caracters controling player
 
+	// sound crap
+	int MCOMMON_API StartSoundLua(lua_State* pkLua);
+
 	// ip crap
 	extern map<string,string> MCOMMON_API	g_kServerList;
 	extern string MCOMMON_API g_kDefServer;

@@ -17,6 +17,7 @@ struct MCOMMON_API PlayerInfo
 	string	sPlayerName;
 	vector<pair<int,int> >	kControl; // objekt id, rättigheter
 	queue<string>	kMessages;
+	queue<pair<int,string> > kSounds; // objekt id på objektet som genererar ljudet, filnamn på ljudet
 };
 
 enum PlayerRights
@@ -32,6 +33,7 @@ class MCOMMON_API P_ServerInfo: public Property {
 
 		vector<PlayerInfo>	m_kPlayers;		
 	public:
+		void AddSoundToPlayer(int iPlayerObjectID, int iObjectGenSoundID, char* szFileName);
 		string 					m_sServerName;				
 		queue<string>			m_kMyMessages;					//messages recived is put in this queue		
 		

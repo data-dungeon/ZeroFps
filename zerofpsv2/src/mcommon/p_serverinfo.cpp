@@ -146,6 +146,18 @@ void P_ServerInfo::PackTo( NetPacket* pkNetPacket, int iConnectionID  )
 				pkNetPacket->Write_Str(m_kPlayers[i].kMessages.front().c_str());
 				m_kPlayers[i].kMessages.pop();		
 			}
+
+			/* //----------------------------------------------------------------------- zeb
+			int sounds = m_kPlayers[i].kSounds.size();
+			pkNetPacket->Write(&sounds,sizeof(sounds)); // write nr of sounds
+			while(!m_kPlayers[i].kSounds.empty())
+			{
+				int gen_id = m_kPlayers[i].kSounds.front().first;
+				pkNetPacket->Write(&gen_id,sizeof(gen_id)); // write obj id
+				pkNetPacket->Write_Str(m_kPlayers[i].kSounds.front().second.c_str()); // write sound name
+				m_kPlayers[i].kSounds.pop();		
+			}
+			//----------------------------------------------------------------------- zeb */
 		}
 		else  //else send a dummy messages
 		{
@@ -202,6 +214,28 @@ void P_ServerInfo::PackFrom( NetPacket* pkNetPacket, int iConnectionID  )
 			//temp.kMessages.push(tempstr);
 			
 		}
+
+		/* //----------------------------------------------------------------------- zeb
+
+		// read sounds
+		while(!temp.kSounds.empty())			//clean sound queue
+			temp.kSounds.pop();
+
+		int sounds; 
+		pkNetPacket->Read(&sounds,sizeof(sounds));	// read nr of sounds	
+			
+		for(int i3 =0;i3<sounds;i3++)
+		{	
+			char tempstr[64];
+			int object_gen_sound;
+
+			pkNetPacket->Read(&object_gen_sound, sizeof(object_gen_sound)); // read obj id
+			pkNetPacket->Read_Str(tempstr);
+
+			temp.kSounds.push(pair<int,string>(object_gen_sound,string(tempstr)));	// read sound name 	
+		}
+
+		//----------------------------------------------------------------------- zeb */
 		
 		m_kPlayers.push_back(temp);
 	}
@@ -282,4 +316,22 @@ Property* Create_P_ServerInfo()
 	return new P_ServerInfo;
 }
 
-
+void P_ServerInfo::AddSoundToPlayer(int iPlayerObjectID, int iObjectGenSoundID, char *szFileName)
+{
+	for(int i =0 ;i< m_kPlayers.size();i++)
+	{	
+		for(int j=0;j<m_kPlayers[i].kControl.size();j++)
+		{	
+			//check for object in player kontrol list
+			if(m_kPlayers[i].kControl[i].first == iPlayerObjectID)
+			{
+				//check rights 
+				if(m_kPlayers[i].kControl[i].second & PR_CONTROLS) 
+				{
+					m_kPlayers[i].kSounds.push(pair<int,string>(iObjectGenSoundID,string(szFileName)));	
+					printf("P_ServerInfo::AddSoundToPlayer\n");
+				}
+			}		
+		}
+	}
+}
