@@ -25,9 +25,9 @@ Håller koll på alla laddade resurser i spelet.
 ZFResource:
 Är den datan som ZFResourceManger lagrar om varje laddad resurs.
 
-	- ID:		Unikt ID för denna resurs.
+	- ID:			Unikt ID för denna resurs.
 	- Räknare:	Antal användare för denna resurs.
-	- Timer:	Tid då resurs ska laddas ur.
+	- Timer:		Tid då resurs ska laddas ur.
 	- Ptr:		Pekare till resurs objectet.
 
 	- SetRes:

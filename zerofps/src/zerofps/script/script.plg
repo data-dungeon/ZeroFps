@@ -6,23 +6,49 @@
 --------------------Configuration: script - Win32 Debug--------------------
 </h3>
 <h3>Command Lines</h3>
-Creating temporary file "C:\DOCUME~1\KRGL02~1.KRE\LOCALS~1\Temp\RSP216.tmp" with contents
+Creating temporary file "C:\DOCUME~1\jima02\LOCALS~1\Temp\RSP689.tmp" with contents
+[
+/nologo /MDd /W3 /Gm /GR /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "SCRIPT_EXPORTS" /FR"Debug/" /Fo"Debug/" /Fd"Debug/" /FD /GZ /c 
+"C:\Projects\zerofps\src\zerofps\script\gamescript.cpp"
+]
+Creating command line "cl.exe @C:\DOCUME~1\jima02\LOCALS~1\Temp\RSP689.tmp" 
+Creating temporary file "C:\DOCUME~1\jima02\LOCALS~1\Temp\RSP68A.tmp" with contents
+[
+/nologo /MDd /W3 /Gm /GR /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "SCRIPT_EXPORTS" /FR"Debug/" /Fp"Debug/script.pch" /YX /Fo"Debug/" /Fd"Debug/" /FD /GZ /c 
+"C:\Projects\zerofps\src\zerofps\script\zfscript.cpp"
+]
+Creating command line "cl.exe @C:\DOCUME~1\jima02\LOCALS~1\Temp\RSP68A.tmp" 
+Creating temporary file "C:\DOCUME~1\jima02\LOCALS~1\Temp\RSP68B.tmp" with contents
 [
 tolua.lib lua.lib engine.lib basic.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /profile /debug /machine:I386 /out:"..\..\..\bin\script.dll" /implib:"Debug/script.lib" /libpath:"..\..\..\bin" 
-".\Debug\zfscript.obj"
-".\Debug\gamescript.obj"
+.\Debug\gamescript.obj
+.\Debug\zfscript.obj
 ]
-Creating command line "link.exe @C:\DOCUME~1\KRGL02~1.KRE\LOCALS~1\Temp\RSP216.tmp"
+Creating command line "link.exe @C:\DOCUME~1\jima02\LOCALS~1\Temp\RSP68B.tmp"
 <h3>Output Window</h3>
+Compiling...
+gamescript.cpp
+c:\projects\zerofps\src\zerofps\script\zfscript.h(67) : warning C4251: 'm_kExposedClasses' : class '_STL::set<class _STL::basic_string<char,class _STL::char_traits<char>,class _STL::allocator<char> >,struct _STL::less<class _STL::basic_string<char,class _STL::char_traits<char>,class _STL::allocator<char> > >,class _STL::allocator<class _STL::basic_string<char,class _STL::char_traits<char>,class _STL::allocator<char> > > >' needs to have dll-interface to be used by clients of class 'ZFScript'
+Compiling...
+zfscript.cpp
+c:\projects\zerofps\src\zerofps\script\zfscript.h(67) : warning C4251: 'm_kExposedClasses' : class '_STL::set<class _STL::basic_string<char,class _STL::char_traits<char>,class _STL::allocator<char> >,struct _STL::less<class _STL::basic_string<char,class _STL::char_traits<char>,class _STL::allocator<char> > >,class _STL::allocator<class _STL::basic_string<char,class _STL::char_traits<char>,class _STL::allocator<char> > > >' needs to have dll-interface to be used by clients of class 'ZFScript'
 Linking...
    Creating library Debug/script.lib and object Debug/script.exp
 LINK : warning LNK4098: defaultlib "LIBCMTD" conflicts with use of other libs; use /NODEFAULTLIB:library
-Creating temporary file "C:\DOCUME~1\KRGL02~1.KRE\LOCALS~1\Temp\RSP21A.bat" with contents
+LINK : warning LNK4098: defaultlib "LIBC" conflicts with use of other libs; use /NODEFAULTLIB:library
+tolua.lib(tolua_bd.obj) : warning LNK4099: PDB "vc60.pdb" was not found with "C:\PROGRAM FILES\CODETOOLS\TOLUA\LIBS\tolua.lib" or at "C:\Projects\zerofps\bin\vc60.pdb"; linking object as if no debug info
+tolua.lib(tolua_tm.obj) : warning LNK4099: PDB "vc60.pdb" was not found with "C:\PROGRAM FILES\CODETOOLS\TOLUA\LIBS\tolua.lib" or at "C:\Projects\zerofps\bin\vc60.pdb"; linking object as if no debug info
+tolua.lib(tolua_gp.obj) : warning LNK4099: PDB "vc60.pdb" was not found with "C:\PROGRAM FILES\CODETOOLS\TOLUA\LIBS\tolua.lib" or at "C:\Projects\zerofps\bin\vc60.pdb"; linking object as if no debug info
+tolua.lib(tolua_eh.obj) : warning LNK4099: PDB "vc60.pdb" was not found with "C:\PROGRAM FILES\CODETOOLS\TOLUA\LIBS\tolua.lib" or at "C:\Projects\zerofps\bin\vc60.pdb"; linking object as if no debug info
+tolua.lib(tolua_tt.obj) : warning LNK4099: PDB "vc60.pdb" was not found with "C:\PROGRAM FILES\CODETOOLS\TOLUA\LIBS\tolua.lib" or at "C:\Projects\zerofps\bin\vc60.pdb"; linking object as if no debug info
+tolua.lib(tolua_lb.obj) : warning LNK4099: PDB "vc60.pdb" was not found with "C:\PROGRAM FILES\CODETOOLS\TOLUA\LIBS\tolua.lib" or at "C:\Projects\zerofps\bin\vc60.pdb"; linking object as if no debug info
+tolua.lib(tolua_rg.obj) : warning LNK4099: PDB "vc60.pdb" was not found with "C:\PROGRAM FILES\CODETOOLS\TOLUA\LIBS\tolua.lib" or at "C:\Projects\zerofps\bin\vc60.pdb"; linking object as if no debug info
+Creating temporary file "C:\DOCUME~1\jima02\LOCALS~1\Temp\RSP68F.bat" with contents
 [
 @echo off
 copy  .\debug\*.lib ..\..\..\bin
 ]
-Creating command line "C:\DOCUME~1\KRGL02~1.KRE\LOCALS~1\Temp\RSP21A.bat"
+Creating command line "C:\DOCUME~1\jima02\LOCALS~1\Temp\RSP68F.bat"
 
 .\debug\script.lib
         1 file(s) copied.
@@ -30,7 +56,7 @@ Creating command line "C:\DOCUME~1\KRGL02~1.KRE\LOCALS~1\Temp\RSP21A.bat"
 
 
 <h3>Results</h3>
-script.dll - 0 error(s), 1 warning(s)
+script.dll - 0 error(s), 11 warning(s)
 </pre>
 </body>
 </html>

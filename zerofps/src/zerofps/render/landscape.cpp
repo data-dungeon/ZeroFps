@@ -1,5 +1,5 @@
 #include "render.h"
-
+ 
 void Render::DrawSkyBox(Vector3 CamPos,Vector3 kHead,int iHor,int iTop) {
 	float fYpos;
 	
@@ -86,7 +86,7 @@ void Render::DrawWater(Vector3 kCamPos,Vector3 kPosition,Vector3 kHead,int iSize
 	glRotatef(kHead.x, 1, 0, 0);
 	glRotatef(kHead.y, 0, 1, 0);	
 	glRotatef(kHead.z, 0, 0, 1);
-	glTranslatef(-iSize/2,0,-iSize/2);
+	glTranslatef( float(-iSize/2), 0, float(-iSize/2) );
 	
 	glDisable(GL_CULL_FACE);
 //	glDisable(GL_FOG);		
@@ -121,11 +121,11 @@ void Render::DrawWater(Vector3 kCamPos,Vector3 kPosition,Vector3 kHead,int iSize
 		
 			glMultiTexCoord2fARB(GL_TEXTURE0_ARB,0,z/(iStep)+tx);		
 			glMultiTexCoord2fARB(GL_TEXTURE1_ARB,.5,z/(iStep)-tx);				
-			glVertex3f(x,y,z);
+			glVertex3f(float(x),float(y),float(z));
 	
 			glMultiTexCoord2fARB(GL_TEXTURE0_ARB,1,z/(iStep)+tx);		
 			glMultiTexCoord2fARB(GL_TEXTURE1_ARB,1.5,z/(iStep)-tx);						
-			glVertex3f(x+iStep,y,z);
+			glVertex3f(float(x+iStep),float(y),float(z));
 		}
 		glEnd();
 	}
@@ -181,7 +181,7 @@ void Render::DrawSimpleWater(Vector3 kPosition,Vector4 kColor,int iSize,int iTex
 //	m_pkTexMan->BindTexture("file:../data/textures/water2.bmp",0);
 	m_pkTexMan->BindTexture(iTexture);
 
-	float tx=SDL_GetTicks()/60000.0;
+	float tx = float(SDL_GetTicks()/60000.0);
 	glBegin(GL_QUADS);
 		glColor4fv(&kColor[0]);
 //		glColor4f(.3,.3,.4,.99);
@@ -489,6 +489,8 @@ void Render::DrawHM(HeightMap *kmap) {
 */
 
 //void Render::SetFog(Vector4 kFogColor,float FogDensity,float FogStart,float FogStop,bool FogEnabled){
+
+
 void Render::SetFog(Vector4 kFogColor,float FogStart,float FogStop,bool FogEnabled){
 	if(FogEnabled){
 		glEnable(GL_FOG);
@@ -512,8 +514,8 @@ void Render::SetFog(Vector4 kFogColor,float FogStart,float FogStop,bool FogEnabl
 
 //this funktion calculates the texture cordinat for a subtexture in a 1024x1024 texture
 void Render::GiveTexCor(float &iX,float &iY,int iNr) {	
-	iX=(iNr%4);	
-	iY=(iNr-(iNr%4))/4;
+	iX = float(iNr%4);	
+	iY = float((iNr-(iNr%4))/4);
 
 	iX*=0.25;
 	iY*=0.25;
@@ -696,7 +698,8 @@ void Render::DrawPatch(HeightMap* kMap,Vector3 CamPos,int xp,int zp,int iSize)
 		
 	if(fDistance > m_iViewDistance)
 		return;
-	if(!m_pkFrustum->CubeInFrustum(PatchCenter.x,PatchCenter.y,PatchCenter.z,(iSize/2)*HEIGHTMAP_SCALE,54*HEIGHTMAP_SCALE,(iSize/2)*HEIGHTMAP_SCALE))
+	if(!m_pkFrustum->CubeInFrustum(PatchCenter.x,PatchCenter.y,PatchCenter.z,
+		(iSize/2)*HEIGHTMAP_SCALE,54*HEIGHTMAP_SCALE,(iSize/2)*HEIGHTMAP_SCALE))
 		return;
 		
 		
@@ -735,8 +738,8 @@ void Render::DrawPatch(HeightMap* kMap,Vector3 CamPos,int xp,int zp,int iSize)
 			fXDivTexScale	= (float) x / TEX_SCALE;
 			fXDivHmSize		= (float) x / kMap->m_iHmSize;
 
-			fScaleX = x * HEIGHTMAP_SCALE;
-			fScaleZ = z * HEIGHTMAP_SCALE;
+			fScaleX = float(x * HEIGHTMAP_SCALE);
+			fScaleZ = float(z * HEIGHTMAP_SCALE);
 
 			float fZStepDivHmSize = ((float)z+iStep) / kMap->m_iHmSize;
 			float fZStepDivTexScale = ((float)z+iStep) / TEX_SCALE;
@@ -752,7 +755,7 @@ void Render::DrawPatch(HeightMap* kMap,Vector3 CamPos,int xp,int zp,int iSize)
 			
 			iVertexIndex = (z+iStep)*kMap->m_iHmSize+x;
 			glNormal3fv((float*)&pkHmVertex[iVertexIndex].normal);			
-			glVertex3f( fScaleX ,pkHmVertex[iVertexIndex].height*HEIGHTMAP_SCALE,(z+iStep)*HEIGHTMAP_SCALE);			
+			glVertex3f( fScaleX ,float(pkHmVertex[iVertexIndex].height*HEIGHTMAP_SCALE) , float((z+iStep)*HEIGHTMAP_SCALE));			
 		}		
 		glEnd();		
 	}

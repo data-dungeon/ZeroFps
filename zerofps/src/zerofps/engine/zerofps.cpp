@@ -11,29 +11,30 @@ int g_iMadLODLock;
 ZeroFps::ZeroFps(void) 
  : ZFObject("ZeroFps") {
 
-	m_pkFile=new FileIo;
-	m_pkBasicFS=new ZFBasicFS;
-	m_pkZFVFileSystem = new ZFVFileSystem;
-	m_pkTexMan=new TextureManager(m_pkFile);
-	m_pkInput=new Input();		
-	m_pkPropertyFactory=new PropertyFactory();
-	m_pkFrustum = new Frustum;	
-	m_pkLight=new Light();	
-	m_pkRender=new Render();
-	m_pkConsole=new Console();	
-	m_pkCmd=new CmdSystem;
-	m_pkAudioMan=new AudioManager(this);
-	m_pkObjectMan=new ObjectManager();
-	m_pkCollisionMan=new CollisionManager();	
-	m_pkSBM=new SoundBufferManager(m_pkFile);	
-	m_pkOpenAlSystem= new OpenAlSystem();
-	m_pkNetWork = new NetWork;
-	m_pkGuiRenderer = new GLGuiRender();
-	m_pkGuiMan = new ZGuiResourceManager();
-	m_pkGui = new ZGui();
-	m_pkIni = new ZFIni();
-	m_pkLevelMan = new LevelManager();
-	m_pkPhysEngine = new PhysicsEngine();
+	m_pkFile			=	new FileIo;
+	m_pkBasicFS			=	new ZFBasicFS;
+	m_pkZFVFileSystem	=	new ZFVFileSystem;
+	m_pkTexMan			=	new TextureManager(m_pkFile);
+	m_pkInput			=	new Input();		
+	m_pkPropertyFactory	=	new PropertyFactory();
+	m_pkFrustum			=	new Frustum;	
+	m_pkLight			=	new Light();	
+	m_pkRender			=	new Render();
+	m_pkConsole			=	new Console();
+	
+	m_pkCmd				=	new CmdSystem;
+	m_pkAudioMan		=	new AudioManager(this);
+	m_pkObjectMan		=	new ObjectManager();
+	m_pkCollisionMan	=	new CollisionManager();	
+	m_pkSBM				=	new SoundBufferManager(m_pkFile);	
+	m_pkOpenAlSystem	=	new OpenAlSystem();
+	m_pkNetWork			=	new NetWork;
+	m_pkGuiRenderer		=	new GLGuiRender();
+	m_pkGuiMan			=	new ZGuiResourceManager();
+	m_pkGui				=	new ZGui();
+	m_pkIni				=	new ZFIni();
+	m_pkLevelMan		=	new LevelManager();
+	m_pkPhysEngine		=	new PhysicsEngine();
 
 	m_iFullScreen=0;
 	m_fFrameTime=0;
