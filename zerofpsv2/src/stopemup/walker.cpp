@@ -28,7 +28,7 @@ P_Walker::P_Walker()
 	if(iLevel < 1)
 		iLevel = 1;
 	
-	m_iLife = (20 * iLevel) * iPlayers;
+	m_iLife = (10 * iLevel) * iPlayers;
 }
 
 void P_Walker::Update()

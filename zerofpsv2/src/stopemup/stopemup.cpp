@@ -70,6 +70,7 @@ void StopEmUp::OnInit()
 	//set title
 	SetTitle("StopEmUp (C) Richard Svensson");
 
+	m_pkZeroFps->SetSystemFps(20);
 	
 	//setup physics
 	m_pkTcs->SetColIt(2);
