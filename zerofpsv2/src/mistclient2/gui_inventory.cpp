@@ -126,9 +126,13 @@ void InventoryDlg::OnMouseMove(bool bLeftButtonPressed, int mx, int my)
 							m_kMoveSlot.bIsInventoryItem = true;
 							m_kMoveSlot.m_iIndex = i;
 
-							m_vkInventoryItemList[i].pkWnd->Show();
-							m_vkInventoryItemList[i].pkWnd->m_iZValue = m_iHighestZ++;
-							m_pkInventoryWnd->SortChilds(); 
+							//m_vkInventoryItemList[i].pkWnd->Show();
+							//m_vkInventoryItemList[i].pkWnd->m_iZValue = m_iHighestZ++;
+							//m_pkInventoryWnd->SortChilds(); 
+						
+							Point size = SlotSizeFromWnd(m_vkInventoryItemList[i].pkWnd);
+							int id = m_vkInventoryItemList[i].pkWnd->GetSkin()->m_iBkTexID;
+							g_kMistClient.m_pkGui->SetCursor( mx, my, id, -1, size.x*32, size.y*32);							
 						}					
 						break;
 					}
@@ -171,8 +175,14 @@ void InventoryDlg::OnMouseMove(bool bLeftButtonPressed, int mx, int my)
 
 					m_kMoveSlot.bIsInventoryItem = true;
 					m_kMoveSlot.m_iIndex = i; // select new item
-					m_vkInventoryItemList[i].pkWnd->m_iZValue = m_iHighestZ++;
-					m_pkInventoryWnd->SortChilds(); 
+					//m_vkInventoryItemList[i].pkWnd->m_iZValue = m_iHighestZ++;
+					//m_pkInventoryWnd->SortChilds(); 
+
+					m_vkInventoryItemList[i].pkWnd->Hide();
+
+					Point size = SlotSizeFromWnd(m_vkInventoryItemList[i].pkWnd);
+					int id = m_vkInventoryItemList[i].pkWnd->GetSkin()->m_iBkTexID;
+					g_kMistClient.m_pkGui->SetCursor( mx, my, id, -1, size.x*32, size.y*32);	
 				}
 			}
 			else
@@ -230,10 +240,16 @@ void InventoryDlg::OnMouseMove(bool bLeftButtonPressed, int mx, int my)
 					m_kItemWndPosBeforeMove.x = m_vkContainerItemList[i].pkWnd->GetWndRect().Left;
 					m_kItemWndPosBeforeMove.y = m_vkContainerItemList[i].pkWnd->GetWndRect().Top;
 
+					m_vkContainerItemList[i].pkWnd->Hide();
+
 					m_kMoveSlot.bIsInventoryItem = false;
 					m_kMoveSlot.m_iIndex = i; // select new item
-					m_vkContainerItemList[i].pkWnd->m_iZValue = m_iHighestZ++;
-					m_pkContainerWnd->SortChilds(); 
+					//m_vkContainerItemList[i].pkWnd->m_iZValue = m_iHighestZ++;
+					//m_pkContainerWnd->SortChilds(); 
+
+					Point size = SlotSizeFromWnd(m_vkContainerItemList[i].pkWnd);
+					int id = m_vkContainerItemList[i].pkWnd->GetSkin()->m_iBkTexID;
+					g_kMistClient.m_pkGui->SetCursor( mx, my, id, -1, size.x*32, size.y*32);	
 				}
 			}
 			else
@@ -276,12 +292,10 @@ void InventoryDlg::OpenContainerWnd(int id, char slots_x, char slots_y)
 
 	CreateContainerGrid(slots_x, slots_y);
 
-//	m_pkContainerWnd->m_bIncludeBorder = true;
 	m_pkContainerWnd->SetZValue(22);
 	g_kMistClient.GetWnd("ContainerCloseButton")->SetZValue(44);
 	
 	g_kMistClient.m_pkGui->PlaceWndFrontBack(m_pkContainerWnd, true); 
-
 	g_kMistClient.m_pkGui->SetFocus(m_pkContainerWnd, false);
 }
 
@@ -477,6 +491,10 @@ void InventoryDlg::UpdateContainer(vector<MLContainerInfo>& vkItemList)
 // When dropping a item, check for collision, reposition it and update the inventory.
 void InventoryDlg::OnDropItem()
 {
+	g_kMistClient.m_pkGui->SetCursor( 0, 0, 
+		m_pkTexMan->Load("data/textures/gui/cursor.bmp", 0),
+		m_pkTexMan->Load("data/textures/gui/cursor_a.bmp", 0), 32, 32);
+
 	Point upper_left;
 	Rect rcMain, rc, rcScreenMain, rcDropWnd;
 
@@ -591,12 +609,14 @@ void InventoryDlg::OnDropItem()
 		{
 			if(m_kMoveSlot.bIsInventoryItem)
 			{
+				m_vkInventoryItemList[m_kMoveSlot.m_iIndex].pkWnd->Show();
 				m_vkInventoryItemList[m_kMoveSlot.m_iIndex].pkWnd->SetPos(x, y, false, true);
 				g_kMistClient.SendMoveItem(m_vkInventoryItemList[m_kMoveSlot.m_iIndex].iItemID, 
 					-1, slot_x, slot_y);
 			}
 			else
 			{
+				m_vkContainerItemList[m_kMoveSlot.m_iIndex].pkWnd->Show();
 				m_vkContainerItemList[m_kMoveSlot.m_iIndex].pkWnd->SetPos(x, y, false, true);
 				g_kMistClient.SendMoveItem(m_vkContainerItemList[m_kMoveSlot.m_iIndex].iItemID, 
 					-1, slot_x, slot_y);
@@ -606,11 +626,13 @@ void InventoryDlg::OnDropItem()
 		{
 			if(m_kMoveSlot.bIsInventoryItem)
 			{
+				m_vkInventoryItemList[m_kMoveSlot.m_iIndex].pkWnd->Show();
 				m_vkInventoryItemList[m_kMoveSlot.m_iIndex].pkWnd->SetPos(m_kItemWndPosBeforeMove.x, 
 					m_kItemWndPosBeforeMove.y, false, true);		
 			}
 			else
 			{
+				m_vkContainerItemList[m_kMoveSlot.m_iIndex].pkWnd->Show();
 				m_vkContainerItemList[m_kMoveSlot.m_iIndex].pkWnd->SetPos(m_kItemWndPosBeforeMove.x, 
 					m_kItemWndPosBeforeMove.y, false, true);	
 			}

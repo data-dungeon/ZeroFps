@@ -638,7 +638,7 @@ void ZeroEd::OnClickListbox(int iListBoxID, int iListboxIndex, ZGuiWnd* pkMain)
 }
 
 void ZeroEd::OnClickTreeItem(char *szTreeBox, char *szParentNodeText, 
-											char *szClickNodeText, bool bHaveChilds)
+									  char *szClickNodeText, bool bHaveChilds)
 {
 	if(strcmp(szTreeBox, "ZoneModelTree") == 0)
 	{
