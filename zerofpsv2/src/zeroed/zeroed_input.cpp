@@ -91,8 +91,15 @@ void ZeroEd::Input_EditZone()
 	
 	if(m_pkInputHandle->VKIsDown("selectzone") && !DelayCommand())
 	{	
-		m_iCurrentMarkedZone = GetZoneID(m_kZoneMarkerPos);
-		m_kLastZonePos = m_kZoneMarkerPos;
+		if(m_iAutoSnapZoneCorner == -1)
+		{
+			m_iCurrentMarkedZone = GetZoneID(m_kZoneMarkerPos);
+		}
+		else
+		{
+			m_iCurrentMarkedZone = GetZoneID(m_kLastZonePos);
+			m_iAutoSnapZoneCorner = 0;
+		}
 		
 		if(ZoneData* pkData = GetZoneData(m_iCurrentMarkedZone))
 			Select_Toggle(pkData->m_iZoneObjectID, m_pkInputHandle->Pressed(KEY_LSHIFT));
