@@ -5,6 +5,7 @@
 #include "p_dmmission.h"
 #include "p_dmclickme.h"
 #include "p_dmcharacter.h"
+#include "p_dmgameinfo.h"
 #include "p_dmshop.h"
 #include "../zerofpsv2/engine/p_pfpath.h" 
 
@@ -453,11 +454,11 @@ int DMLua::GetItemCharLua(lua_State* pkLua)
 // takes an integer and add that much money to the players HQ
 int DMLua::AddMoneyLua(lua_State* pkLua)
 {
-	Entity* pkHQ = GetHQEntity();
+	Entity* pkGameInfo = GetGameInfoEntity();
 
-	if ( pkHQ == 0 )
+	if ( pkGameInfo == 0 )
 	{
-		cout << "DMLua::MoneyLua: Warning! No HQ object found!";
+		cout << "DMLua::MoneyLua: Warning! No GameInfo object found!";
 		return 0;
 	}
 
@@ -471,11 +472,10 @@ int DMLua::AddMoneyLua(lua_State* pkLua)
 
 	g_pkScript->GetArgNumber(pkLua, 0, &dAddMoney);
 
-	int *piMoney = ((P_DMHQ*)pkHQ->GetProperty("P_DMHQ"))->GetMoney();
-	*piMoney += int(dAddMoney);
+	((P_DMGameInfo*)pkGameInfo->GetProperty("P_DMGameInfo"))->m_iMoney += int(dAddMoney);
 
-	if ( *piMoney < 0 )
-		*piMoney = 0;
+	if ( ((P_DMGameInfo*)pkGameInfo->GetProperty("P_DMGameInfo"))->m_iMoney < 0 )
+		((P_DMGameInfo*)pkGameInfo->GetProperty("P_DMGameInfo"))->m_iMoney = 0;
 
 	return 0;
 }
@@ -485,15 +485,17 @@ int DMLua::AddMoneyLua(lua_State* pkLua)
 // takes nothing, returns (int) players money
 int DMLua::MoneyLua(lua_State* pkLua)
 {
-	Entity* pkHQ = GetHQEntity();
+	Entity* pkGameInfo = GetGameInfoEntity();
 
-	if ( pkHQ == 0 )
+	if ( pkGameInfo == 0 )
 	{
-		cout << "DMLua::MoneyLua: Warning! No HQ object found!";
+		cout << "DMLua::MoneyLua: Warning! No GameInfo object found!";
 		return 0;
 	}
+	
+	int iMoney = ((P_DMGameInfo*)pkGameInfo->GetProperty("P_DMGameInfo"))->m_iMoney;
 
-	g_pkScript->AddReturnValue(pkLua, double(*((P_DMHQ*)pkHQ->GetProperty("P_DMHQ"))->GetMoney()) );
+	g_pkScript->AddReturnValue(pkLua, double(iMoney));
 
 	return 1;
 	
@@ -1441,7 +1443,7 @@ int DMLua::ExplosionLua(lua_State* pkLua)
 
 	g_pkObjMan->GetAllObjects(&kObj);
 
-	for ( int i = 0; i < kObj.size(); i++ )
+	for ( unsigned int i = 0; i < kObj.size(); i++ )
 	{
 		// check for characters
 		if ( P_DMCharacter* pkChar = (P_DMCharacter*)kObj[i]->GetProperty("P_DMCharacter") )
@@ -1547,3 +1549,17 @@ int DMLua::AddItemToShopLua(lua_State* pkLua)
 
 	return 0;
 }
+
+Entity* DMLua::GetGameInfoEntity()
+{
+	Entity* pkGlobal =  g_pkObjMan->GetGlobalObject();
+
+	vector<Entity*> kObjects;
+
+	pkGlobal->GetAllEntitys(&kObjects);
+
+	for(unsigned int i=0;i<kObjects.size();i++)
+		if(kObjects[i]->GetProperty("P_DMGameInfo"))
+			return kObjects[i];
+}
+

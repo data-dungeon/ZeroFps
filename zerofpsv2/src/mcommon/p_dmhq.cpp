@@ -11,9 +11,6 @@ P_DMHQ::P_DMHQ()
 	m_pkStockroom = NULL;
 	bNetwork = true;
 	
-	// Start with 1000$$$$$$
-	m_iMoney = 1000;
-
 	m_strName = "Unnamed HQ";
 	m_kExitOffset.Set(0,0,2);
 	m_bActiveHQ = false;
@@ -138,7 +135,7 @@ void P_DMHQ::GetCharacters(vector<int>* m_pkEntitys)
 	m_pkObject->GetAllEntitys(&m_kEntitys,true);
 	
 	
-	for(int i = 0;i<m_kEntitys.size();i++)
+	for(unsigned int i = 0;i<m_kEntitys.size();i++)
 	{
 		if(m_kEntitys[i]->GetProperty("P_DMCharacter"))
 		{
@@ -153,7 +150,7 @@ bool P_DMHQ::EjectCharacter(int iID)
 	GetCharacters(&m_kEntitys);
 	
 	
-	for(int i = 0;i<m_kEntitys.size();i++)
+	for(unsigned int i = 0;i<m_kEntitys.size();i++)
 	{
 		if(m_kEntitys[i] == iID)	
 		{
@@ -173,7 +170,7 @@ void P_DMHQ::EjectAllCharacters()
 	vector<int> m_kEntitys;
 	GetCharacters(&m_kEntitys);
 	
-	for(int i = 0;i<m_kEntitys.size();i++)
+	for(unsigned int i = 0;i<m_kEntitys.size();i++)
 	{
 		if(Entity* pkEnt = m_pkObjMan->GetObjectByNetWorkID(m_kEntitys[i]))
 		{
@@ -191,15 +188,6 @@ void P_DMHQ::Eject(Entity* pkEnt)
 		pkPath->MakePathFind(m_pkObject->GetWorldPosV()+m_kExitOffset+Vector3( (rand()%20)/10.0,0,(rand()%20)/10.0));
 }
 
-bool P_DMHQ::Pay (int iCost)
-{
-	if ( iCost > m_iMoney )
-		return false;
-
-	m_iMoney -= iCost;
-
-	return true;
-}
 
 vector<PropertyValues> P_DMHQ::GetPropertyValues()
 {

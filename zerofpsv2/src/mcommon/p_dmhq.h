@@ -24,19 +24,12 @@ class MCOMMON_API P_DMHQ: public Property {
 
 		vector<DMCharacterStats>	m_kForHireList;
 
-		int m_iMoney;
-
 		void Eject(Entity* pkEnt);
 	
 	public:
 		
 		P_DMHQ();
 		~P_DMHQ();
-
-		int* GetMoney()		{ return &m_iMoney; }
-
-		// returns false if the player couln't afford the cost
-		bool Pay (int iCost);
 
 		void CloneOf(Property* pkProperty) { }
 		

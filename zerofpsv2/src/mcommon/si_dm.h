@@ -86,6 +86,7 @@ namespace DMLua
 	// functions to get less code
 	Entity* TestScriptInput (int iArgs, lua_State* pkLua);
 	Entity* GetHQEntity ();
+	Entity* GetGameInfoEntity ();
 
 	// SI for houses
 	int MCOMMON_API SwallowPlayerLua(lua_State* pkLua);
