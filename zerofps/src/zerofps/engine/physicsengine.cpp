@@ -333,10 +333,34 @@ void PhysicsEngine::ClearCollisions()
 	m_kCPs.clear();
 }
 
+
+bool PhysicsEngine::TestLine(list<Object*>* pkObList,Vector3 kPos,Vector3 kVec)
+{
+	pkObList->clear();
+	
+	list<PhysicProperty*> pkPPList;	
+	pkPPList.clear();
+
+	
+	//get all physics propertys
+	if(!TestLine(&pkPPList,kPos,kVec))
+		return false;	
+	
+	//put objects in object list
+	for(list<PhysicProperty*>::iterator it=pkPPList.begin();it!=pkPPList.end();it++) 	
+	{
+		pkObList->push_back((*it)->GetObject());	
+	}
+
+	//clear physicproperty list
+	pkPPList.clear();
+
+	return true;
+}
+
+
 bool PhysicsEngine::TestLine(list<PhysicProperty*>* pkPPList,Vector3 kPos,Vector3 kVec)
 {
-//	PhysicProperty* CPP=NULL;
-//	float CloseDist=99999999;
 	pkPPList->clear();
 
 	for(list<Property*>::iterator it=m_kPropertys.begin();it!=m_kPropertys.end();it++) 
@@ -350,17 +374,9 @@ bool PhysicsEngine::TestLine(list<PhysicProperty*>* pkPPList,Vector3 kPos,Vector
 		
 		float fRadius=static_cast<CSSphere*>(static_cast<PhysicProperty*>(*it)->GetColSphere())->m_fRadius;
 		
-//		cout<<"DISTANCE:"<<Distance<<endl;
-		
 		if(Distance < fRadius)
 		{			
 			pkPPList->push_back(static_cast<PhysicProperty*>(*it));
-			
-/*			if(cdis < CloseDist)
-			{
-				CPP=(*it);
-				CloseDist=cdis;			
-			}		*/
 		}		
 	}
 	

@@ -148,6 +148,7 @@ class ENGINE_API PhysicsEngine : public ZFObject
 		Collision* CheckIfColliding(PhysicProperty* pkPP);
 		
 		bool TestLine(list<PhysicProperty*>* pkPPList,Vector3 kPos,Vector3 kVec);
+		bool TestLine(list<Object*>* pkObList,Vector3 kPos,Vector3 kVec);
 		
 		void SetUpdate(bool bUpdate) { m_bUpdate=bUpdate;};
 		bool GetUpdate() {return m_bUpdate;};
