@@ -124,6 +124,8 @@ bool Gui::WndProc( ZGuiWnd* pkWindow, unsigned int uiMessage,
 bool Gui::WorkPanelProc( ZGuiWnd* pkWindow, unsigned int uiMessage, 
 						 int iNumberOfParams, void *pkParams )
 {
+	Rect rc;
+
 	switch(uiMessage)
 	{
 	case ZGM_TCN_SELCHANGE:
@@ -150,6 +152,32 @@ bool Gui::WorkPanelProc( ZGuiWnd* pkWindow, unsigned int uiMessage,
 			break;
 		}
 		break;
+/*	case ZGM_LBUTTONDOWN:
+		if( pkWindow == Get("SliderRBn") || pkWindow == Get("SliderGBn") ||
+			pkWindow == Get("SliderBBn") || pkWindow == Get("SliderABn"))
+		{
+			m_pkGui->SetCaptureToWnd(pkWindow);
+		}
+		break;*/
+
+	case ZGM_LBUTTONUP:
+		if( pkWindow == Get("SliderRBn") || pkWindow == Get("SliderGBn") ||
+			pkWindow == Get("SliderBBn") || pkWindow == Get("SliderABn"))
+		{
+			char szSliderText[10];
+			sprintf(szSliderText,"%i", (int) (2.5f * (float) 
+				(pkWindow->GetWndRect().Left-75)));
+			if(pkWindow == Get("SliderRBn"))
+				Get("MaskColorREB")->SetText(szSliderText);
+			if(pkWindow == Get("SliderGBn"))
+				Get("MaskColorGEB")->SetText(szSliderText);
+			if(pkWindow == Get("SliderBBn"))
+				Get("MaskColorBEB")->SetText(szSliderText);
+			if(pkWindow == Get("SliderABn"))
+				Get("MaskColorAEB")->SetText(szSliderText);
+		}
+		break;
+
 	case ZGM_COMMAND:
 		int iControllID; iControllID = ((int*)pkParams)[0];
 		switch(iControllID)
@@ -209,6 +237,8 @@ bool Gui::WorkPanelProc( ZGuiWnd* pkWindow, unsigned int uiMessage,
 			((EditPropertyDlg*)GetDlg("PropertyDlg"))->m_pkCurrentChild = pkNewObject;
 			UpdatePropertybox();
 			break;
+
+
 		}
 		break;
 
@@ -263,6 +293,8 @@ bool Gui::WorkPanelProc( ZGuiWnd* pkWindow, unsigned int uiMessage,
 			case blue:   res = &(m_pkEdit->m_iMaskColorB = atoi(szText)); break;
 			case alhpha: res = &(m_pkEdit->m_iMaskColorA = atoi(szText)); break;
 		}
+
+		printf("red: %i\n", m_pkEdit->m_iMaskColorR);
 
 		if(res != NULL)
 		{
@@ -1101,10 +1133,10 @@ bool Gui::CreateWorkPanel()
 	CreateTextbox(pkPage, ID_MASKCOLOR_ALPHA_EB, 25, 110, 30, 16, false, 
 		aszColor[3], "MaskColorAEB", true);
 
-	CreateSlider(pkPage, 12345, 75,  52, 100, 20, true, NULL, "slider_bk_r");
-	CreateSlider(pkPage, 12346, 75,  72, 100, 20, true, NULL, "slider_bk_g");
-	CreateSlider(pkPage, 12347, 75,  92, 100, 20, true, NULL, "slider_bk_b");
-	CreateSlider(pkPage, 12348, 75, 112, 100, 20, true, NULL, "slider_bk_a");
+	CreateSlider(pkPage, ID_SLIDER_R_EB, 75,  52, 104, 20, true, "SliderRBn", "slider_bk_r");
+	CreateSlider(pkPage, ID_SLIDER_G_EB, 75,  72, 104, 20, true, "SliderGBn", "slider_bk_g");
+	CreateSlider(pkPage, ID_SLIDER_B_EB, 75,  92, 104, 20, true, "SliderBBn", "slider_bk_b");
+	CreateSlider(pkPage, ID_SLIDER_A_EB, 75, 112, 104, 20, true, "SliderABn", "slider_bk_a");
 
 	CreateLabel(pkPage, 0, 5, 5, 209, 20, "Map");
 	ZGuiCombobox* pkTextureCB = CreateCombobox(pkPage, ID_TERRAINTEXTURE_CB, 
@@ -1184,6 +1216,11 @@ bool Gui::CreateSlider(ZGuiWnd *pkParent, int iID, int x, int y, int w, int h,
 	pkButton->SetButtonDownSkin(GetSkin("slider"));
 	pkButton->SetButtonUpSkin(GetSkin("slider"));
 	pkButton->SetGUI(m_pkGui);
+
+	if(szResName != NULL)
+	{
+		Register(pkButton, szResName);
+	}
 
 	rc.Left += 8;
 	rc.Right += w-8;

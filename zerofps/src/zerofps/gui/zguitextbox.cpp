@@ -468,6 +468,25 @@ void ZGuiTextbox::SetText(char* strText, bool bResizeWnd)
 		m_iCursorPos = 0;
 
 	UpdateScrollbar();
+
+	int* piParams = new int[1];
+	piParams[0] = GetID(); // Listbox ID
+	ZGui* pkGui = GetGUI();
+	if(pkGui)
+	{
+		callbackfunc cb = pkGui->GetActiveCallBackFunc();
+
+		if(cb)
+		{
+			ZGuiWnd* pkActiveWnd = pkGui->GetActiveMainWnd();
+
+			if(pkActiveWnd)
+			{
+				cb(pkActiveWnd, ZGM_EN_CHANGE, 1, piParams);
+				delete[] piParams;
+			}
+		}
+	}
 }
 
 void ZGuiTextbox::CreateInternalControls()
