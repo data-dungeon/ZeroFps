@@ -745,7 +745,7 @@ void MistClient::Input()
 
 	if(m_pkInputHandle->Pressed(KEY_4))
 		if(!DelayCommand() )
-			SendUseSkill("skill-basic_attack.lua ",m_iTargetID,Vector3(1,2,3),Vector3(10,20,30));		
+			SendUseSkill("skill-basic_attack.lua",m_iTargetID,Vector3(1,2,3),Vector3(10,20,30));		
 						
 				
 	//perform the first action in the action list or pickup
