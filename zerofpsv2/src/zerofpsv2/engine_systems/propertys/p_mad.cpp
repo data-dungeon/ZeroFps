@@ -43,7 +43,7 @@ void P_Mad::Update()
 // TODO: When MAD2.0 is finished, search for mesh with name lowpoly instead of always using mesh2
 // find lowpoly mesh, if exist
 
-// and MOVE to somewhere else..should need to be every update.. = ugly
+// and MOVE to somewhere else..shouldn't need to be every update.. = ugly
 	if (pkCore->NumOfMeshes() > 1)
 		m_iCollisionMeshID = 1;
 	else

@@ -371,6 +371,13 @@ void Mad_Core::LoadSkelleton(ZFVFile* pkZFile)
 		pkZFile->Read(&kNewBone, 1, sizeof(Mad_CoreBone));
 		m_kSkelleton.push_back(kNewBone);
 		}
+
+	// fix for models without bones
+	if ( !iNumOfBones )
+	{
+		kNewBone.Clear();
+		m_kSkelleton.push_back(kNewBone);
+	}
 }
 
 void Mad_Core::LoadAnimation(ZFVFile* pkZFile)
