@@ -233,15 +233,25 @@ void MistClient::Input()
 	if(m_pkInputHandle->VKIsDown("togglegui") && !DelayCommand())
 		ToggleGuiCapture();
 
+	
+	/*	
 	if(m_bGuiCapture)
 	{
 		memset(&m_kCharacterControls, 0, sizeof(m_kCharacterControls));
 		return;
 	}
-
-	//get mouse
-	float x,z;		
+	*/
+	
+	//get relative mouse
+	float x=0;
+	float z=0;		
 	m_pkInputHandle->RelMouseXY(x,z);	
+	
+	//get absolute unit mouse
+	float fAx=0;
+	float fAy=0;
+	m_pkInputHandle->UnitMouseXY(fAx,fAy);
+	
 	
 	//check buttons
 	m_kCharacterControls[eUP] = 	m_pkInputHandle->VKIsDown("move_forward");
@@ -334,14 +344,36 @@ void MistClient::Input()
 	if(Entity* pkCharacter = m_pkEntityManager->GetEntityByID(m_iCharacterID))
 	{
 		if(P_Camera* pkCam = (P_Camera*)pkCharacter->GetProperty("P_Camera"))
-		{			
-			pkCam->Set3PYAngle(pkCam->Get3PYAngle() - (x/5.0));
-			pkCam->Set3PPAngle(pkCam->Get3PPAngle() + (z/5.0));			
+		{	
+			if(!m_bGuiCapture)
+			{
+				pkCam->Set3PYAngle(pkCam->Get3PYAngle() - (x/5.0));
+				pkCam->Set3PPAngle(pkCam->Get3PPAngle() + (z/5.0));			
+			}
+			else
+			{
+				//hot edge camera rotation
+				if(fAx >= 0.49)
+					pkCam->Set3PYAngle(pkCam->Get3PYAngle() - m_pkZeroFps->GetFrameTime()*100);
+				if(fAx <= -0.49)
+					pkCam->Set3PYAngle(pkCam->Get3PYAngle() + m_pkZeroFps->GetFrameTime()*100);
+			
+				if(fAy >= 0.49)
+					pkCam->Set3PPAngle(pkCam->Get3PPAngle() + m_pkZeroFps->GetFrameTime()*100);
+				if(fAy <= -0.49)
+					pkCam->Set3PPAngle(pkCam->Get3PPAngle() - m_pkZeroFps->GetFrameTime()*100);
+					
+			}
+			
 			pkCam->SetOffset(Vector3(0,0,0)); 
 
 			float fDistance = pkCam->Get3PDistance();
-			if(m_pkInputHandle->VKIsDown("zoomin")) 	fDistance -= 0.5;
-			if(m_pkInputHandle->VKIsDown("zoomout"))	fDistance += 0.5;
+			
+			if(!m_bGuiCapture)
+			{
+				if(m_pkInputHandle->VKIsDown("zoomin")) 	fDistance -= 0.5;
+				if(m_pkInputHandle->VKIsDown("zoomout"))	fDistance += 0.5;
+			}
 			
 			//make sure camera is nto to far away
 			if(fDistance > 8.0)
