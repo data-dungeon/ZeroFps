@@ -410,8 +410,11 @@ void ZeroFps::Update_System(bool bServer)
 	
 	//set maximum number of loops, dont know if this is realy that good...but what the hell
 	if(iLoops > 10)
+	{
+		cout<<"engine runs to slow (try kicking your computer and punching your screen for better performance)"<<endl;
 		iLoops = 10;
-	
+	}
+		
 	//calculate new system delta time
 	m_fSystemUpdateFpsDelta = float(1.0) / m_fSystemUpdateFps;
 	
