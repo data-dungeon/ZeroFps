@@ -374,6 +374,12 @@ bool P_Container::AddItemAtPos(P_Item* pkItem,int iX,int iY,int iCount)
 		return false;
 	}
 	
+	if(!ItemTypeOK(pkItem->m_iType))
+	{
+		cout<<"type not allowed in container"<<endl;
+		return false;
+	}
+	
 	cout<<"setting item to new location"<<endl;
 		
 	//get current container, if any, and clear item from its current position

@@ -33,8 +33,7 @@ P_Mad::P_Mad()
 	m_kOffset.Set(0,0,0);
 	
 	m_fLastAnimationUpdateTime = 0;
-
-	
+	m_iLastAnimationUpdateFrame = -1;
 
 }
 
@@ -70,9 +69,7 @@ void P_Mad::Update()
 	//do render update
 	if( m_pkEntityManager->IsUpdate(PROPERTY_TYPE_RENDER) ) 
 	{		
-		StartProfileTimer("r___mad");		
-			
-		
+		StartProfileTimer("r___mad");				
 		DoAnimationUpdate();
 		
 		//cull spwhere
@@ -131,14 +128,15 @@ void P_Mad::Update()
 
 void P_Mad::DoAnimationUpdate()
 {
-	float fCurrentTime = m_pkZeroFps->GetEngineTime();
-	if(m_fLastAnimationUpdateTime != fCurrentTime)
+	if(m_iLastAnimationUpdateFrame != m_pkZeroFps->GetCurrentFrame())
 	{
+		float fCurrentTime = m_pkZeroFps->GetTicks();
+		
 		UpdateAnimation(fCurrentTime - m_fLastAnimationUpdateTime);
+	
+		m_iLastAnimationUpdateFrame = m_pkZeroFps->GetCurrentFrame();
 		m_fLastAnimationUpdateTime = fCurrentTime;
-		//UpdateAnimation(m_pkObjMan->GetSimDelta());
-		//UpdateAnimation(m_pkZeroFps->GetFrameTime());
-	}	
+	}
 }
 
 void P_Mad::SetBase(const char* acName)

@@ -88,8 +88,8 @@ bool GLGuiRender::StartRender(bool bClear)
 	//gluOrtho2D(0, m_iScreenWidth + 1, -1, m_iScreenHeight);
 	gluOrtho2D(0, m_iScreenWidth , 0, m_iScreenHeight);
 
-	glScissor  ( 0, 0,	m_iScreenWidth, m_iScreenHeight ); // lade till 22 okt 2004 för att kunna rendera camera i fönster	
-	glViewport ( 0, 0,	m_iScreenWidth, m_iScreenHeight  );	// lade till 22 okt 2004 för att kunna rendera camera i fönster	
+	glScissor  ( 0, 0,	m_iScreenWidth, m_iScreenHeight ); // lade till 22 okt 2004 fï¿½ att kunna rendera camera i fï¿½ster	
+	glViewport ( 0, 0,	m_iScreenWidth, m_iScreenHeight  );	// lade till 22 okt 2004 fï¿½ att kunna rendera camera i fï¿½ster	
 
 	if(bClear)
 		glClear(GL_COLOR_BUFFER_BIT);	
@@ -487,7 +487,7 @@ bool GLGuiRender::RenderBorder(Rect rc)
 
 			m_pkTextureManger->BindTexture( texture );
 
-			// Stäng av filtreringen
+			// Stï¿½g av filtreringen
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 		}																			 
@@ -505,22 +505,22 @@ bool GLGuiRender::RenderBorder(Rect rc)
 		if(m>3)
 		{
 			glBegin(GL_QUADS);
-				// Översta, vänstra hörnet
+				// ï¿½ersta, vï¿½stra hï¿½net
 				glTexCoord2f(0,1);	glVertex2i(rc.Left-sz,m_iScreenHeight-rc.Top);		 
 				glTexCoord2f(0,0);	glVertex2i(rc.Left-sz,m_iScreenHeight-rc.Top+sz);		
 				glTexCoord2f(1,0);	glVertex2i(rc.Left,m_iScreenHeight-rc.Top+sz);    
 				glTexCoord2f(1,1);	glVertex2i(rc.Left,m_iScreenHeight-rc.Top);    
-				// Översta, högra hörnet
+				// ï¿½ersta, hï¿½ra hï¿½net
 				glTexCoord2f(1,1);	glVertex2i(rc.Right,m_iScreenHeight-rc.Top);		 
 				glTexCoord2f(1,0);	glVertex2i(rc.Right,m_iScreenHeight-rc.Top+sz);		
 				glTexCoord2f(0,0);	glVertex2i(rc.Right+sz,m_iScreenHeight-rc.Top+sz);    
 				glTexCoord2f(0,1);	glVertex2i(rc.Right+sz,m_iScreenHeight-rc.Top);    
-				// Understa, vänstra hörnet
+				// Understa, vï¿½stra hï¿½net
 				glTexCoord2f(0,0);	glVertex2i(rc.Left-sz,m_iScreenHeight-rc.Bottom-sz);		 
 				glTexCoord2f(0,1);	glVertex2i(rc.Left-sz,m_iScreenHeight-rc.Bottom);		
 				glTexCoord2f(1,1);	glVertex2i(rc.Left,m_iScreenHeight-rc.Bottom);    
 				glTexCoord2f(1,0);	glVertex2i(rc.Left,m_iScreenHeight-rc.Bottom-sz);    
-				// Understa, högra hörnet
+				// Understa, hï¿½ra hï¿½net
 				glTexCoord2f(1,0);	glVertex2i(rc.Right,m_iScreenHeight-rc.Bottom-sz);		 
 				glTexCoord2f(1,1);	glVertex2i(rc.Right,m_iScreenHeight-rc.Bottom);		
 				glTexCoord2f(0,1);	glVertex2i(rc.Right+sz,m_iScreenHeight-rc.Bottom);    
@@ -531,7 +531,7 @@ bool GLGuiRender::RenderBorder(Rect rc)
 		if(m>1)
 		{
 			glBegin(GL_QUADS);	 
-				// Översta raden
+				// ï¿½ersta raden
 				glTexCoord2f(0,1);	glVertex2i(rc.Left,m_iScreenHeight-rc.Top);		 
 				glTexCoord2f(0,0);	glVertex2i(rc.Left,m_iScreenHeight-rc.Top+sz);		
 				glTexCoord2f(wx,0);	glVertex2i(rc.Right,m_iScreenHeight-rc.Top+sz);    
@@ -553,12 +553,12 @@ bool GLGuiRender::RenderBorder(Rect rc)
 		else
 		{
 			glBegin(GL_QUADS);
-				// Vänstra kolonnen
+				// Vï¿½stra kolonnen
 				glTexCoord2f(0,0);	glVertex2i(rc.Left-sz,m_iScreenHeight-rc.Bottom);		 
 				glTexCoord2f(0,wy);	glVertex2i(rc.Left-sz,m_iScreenHeight-rc.Top);		
 				glTexCoord2f(1,wy);	glVertex2i(rc.Left,m_iScreenHeight-rc.Top);    
 				glTexCoord2f(1,0);	glVertex2i(rc.Left,m_iScreenHeight-rc.Bottom); 
-				// Högra kolonnen
+				// Hï¿½ra kolonnen
 				glTexCoord2f(0,0);	glVertex2i(rc.Right,m_iScreenHeight-rc.Bottom);		 
 				glTexCoord2f(0,wy);	glVertex2i(rc.Right,m_iScreenHeight-rc.Top);		
 				glTexCoord2f(-1,wy); glVertex2i(rc.Right+sz,m_iScreenHeight-rc.Top);    
@@ -680,7 +680,7 @@ void GLGuiRender::DoTextTag()
 {
 	m_strSyntax.push_back('\0');
 
-	// Bli av med alla skräptecken
+	// Bli av med alla skrï¿½tecken
 	for(int bb=0; bb<m_strSyntax.length(); bb++)
 		if(m_strSyntax[bb] == '\n' || m_strSyntax[bb] == '\t' || 
 			m_strSyntax[bb] == ' '){
@@ -694,7 +694,7 @@ void GLGuiRender::DoTextTag()
 	char dst[50];
 	int length, pos;
 
-	// Byt textfärg
+	// Byt textfï¿½g
 	if((ch=m_strSyntax.find("col:", 0)) != string::npos)
 	{
 		if((ch = m_strSyntax.find(":", ch)) != string::npos)
@@ -833,8 +833,8 @@ bool GLGuiRender::PrintRows(char* text, Rect rc, int iCursorPos,
 
 			if(xpos+kLength.second >= width)
 			{
-				// Räkna inte in sista tecknets längd om det är ett space.
-				// och om längden på ordet överskrider den tillåtna längden.
+				// Rï¿½na inte in sista tecknets lï¿½gd om det ï¿½ ett space.
+				// och om lï¿½gden pï¿½ordet ï¿½erskrider den tillï¿½na lï¿½gden.
 		/*		if(text[offset+kLength.first-1] == ' ')
 				{
 					int index = ' ' - 32;
@@ -1019,8 +1019,8 @@ void GLGuiRender::PrintWord(int x, int y, char *szWord,
 			tw = (float) fw / m_pkFont->m_iTextureWidth;
 			th = (float) fh / m_pkFont->m_iTextureHeight;
 
-			iCursorX -= 2;	// minska markörens xpos ytterligare 2 pixlar.
-								// som en kompensation för tecknets egen storlek.
+			iCursorX -= 2;	// minska markï¿½ens xpos ytterligare 2 pixlar.
+								// som en kompensation fï¿½ tecknets egen storlek.
 
 //			glColor3f(0,0,0);
 

@@ -121,7 +121,8 @@ void Camera::MakeShadowTexture(const Vector3& kLightPos,const Vector3& kCenter,u
 	
 	//Disable color writes, and use flat shading for speed
   	m_pkZShaderSystem->ForceColorMask(0);
- 	m_pkZShaderSystem->ForceCullFace(CULL_FACE_FRONT);
+// 	m_pkZShaderSystem->ForceCullFace(CULL_FACE_FRONT);
+	glDepthRange (0.003, 1.0);
 	
 	//reload last material
 	m_pkZShaderSystem->ReloadMaterial();		
@@ -139,6 +140,7 @@ void Camera::MakeShadowTexture(const Vector3& kLightPos,const Vector3& kCenter,u
 	glCopyTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 0, 0, m_iShadowSize, m_iShadowSize);
 	
 	
+	glDepthRange (0.0, 1.0);
 	
  	m_pkLight->SetLighting(true);
  	glShadeModel(GL_SMOOTH);
@@ -698,7 +700,7 @@ void Camera::DrawShadowedScene()
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE_ARB, GL_COMPARE_R_TO_TEXTURE);
 	
 	//Shadow comparison should be true (ie not in shadow) if r<=texture
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_FUNC_ARB, GL_GREATER);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_FUNC_ARB, GL_GEQUAL);
 	
 	//Shadow comparison should generate an INTENSITY result
 	//glTexParameteri(GL_TEXTURE_2D, GL_DEPTH_TEXTURE_MODE_ARB, GL_INTENSITY);

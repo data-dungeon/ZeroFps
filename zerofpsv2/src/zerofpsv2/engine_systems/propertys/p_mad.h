@@ -26,6 +26,7 @@ class ENGINE_SYSTEMS_API P_Mad : public Property, public Mad_Modell {
 		int		m_iCollisionMeshID;
 		
 		float		m_fLastAnimationUpdateTime;
+		int		m_iLastAnimationUpdateFrame;
 		
 		Vector3	m_kOffset;
 		
