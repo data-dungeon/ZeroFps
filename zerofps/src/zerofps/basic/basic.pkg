@@ -2,12 +2,12 @@
 class CmdSystem;
 class FileIo;
 class Vector3;
-class HalfEdge;
+//class HalfEdge;
 class Vector4;
 class Matrix4;
 class ZFObjectManger;
 class ZFObject;
-class HeightMap;
+//class HeightMap;
 class Rect;
 class ZGuiSkin;
 class ZGuiFont;
@@ -37,11 +37,11 @@ class ZFIni;
 #include "quaternion.h"
 #include "plane.h"
 
-#include "heightmap.h"
+//#include "heightmap.h"
 #include "cmdsystem.h"
 #include "globals.h"
 #include "fileio.h"
-#include "halfedge.h"
+//#include "halfedge.h"
 #include "rect.h"
 
 #include "zfio.h"

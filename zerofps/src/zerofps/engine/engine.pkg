@@ -10,6 +10,7 @@ class OpenAlSystem;
 class PropertyFactory;
 class LevelManager;
 class PhysicsEngine;
+class HeightMap;
 
 #include "soundbuffermanager.h"
 #include "openalsystem.h"
@@ -27,3 +28,8 @@ class PhysicsEngine;
 #include "levelmanager.h"
 #include "lightproperty.h"
 #include "physicsengine.h"
+
+#include "heightmap.h"
+
+
+

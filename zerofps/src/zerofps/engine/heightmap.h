@@ -5,22 +5,23 @@
 
 #include <SDL/SDL.h>
 #include <SDL/SDL_image.h>
-#include "basic_x.h"
-#include "os.h"
-#include "vector3.h"
-#include "fileio.h"
-#include "globals.h"
-#include "zffile.h"
-#include "zfobject.h"
-#include "zfobjectmanger.h"
+#include "engine_x.h"
+//#include "os.h"
+//#include "vector3.h"
+//#include "fileio.h"
+//#include "globals.h"
+//#include "zffile.h"
+//#include "zfobject.h"
+//#include "zfobjectmanger.h"
 #include <vector>
 #include <string>
 
+#include "../basic/basic.pkg"
 
 
 #define HEIGHTMAP_SCALE 2
 
-struct BASIC_API HM_vert {
+struct ENGINE_API HM_vert {
 	float			height;		//land height
 	Vector3		normal;
 	int			texture;		//what texture to use
@@ -41,7 +42,7 @@ struct TileSet{
 };
 
 
-class BASIC_API HeightMap: public ZFObject {
+class ENGINE_API HeightMap: public ZFObject {
 	private:		
 		Uint32 GetPixel(SDL_Surface* surface,int x,int y);
 		

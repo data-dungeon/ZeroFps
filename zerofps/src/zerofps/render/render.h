@@ -16,6 +16,8 @@
 #include "texturemanager.h"
 #include "light.h"
 
+#include "../engine/heightmap.h"
+
 using namespace std;
 
 enum SkyBoxSides 

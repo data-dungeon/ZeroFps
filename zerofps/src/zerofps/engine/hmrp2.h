@@ -6,6 +6,7 @@
 #include "property.h"
 #include <iostream>
 #include "../engine/engine.pkg"
+#include "heightmap.h"
 
 #include "GL/glut.h"
 

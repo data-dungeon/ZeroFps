@@ -2,7 +2,7 @@
 #define _ENGINE_HEIGHTMAPOBJECT_H_
 
 #include "objects.pkg"
-#include "../basic/heightmap.h"
+#include "heightmap.h"
 
 
 class ENGINE_API HeightMapObject: public Object {

@@ -1,6 +1,7 @@
 #ifndef _ENGINE_HEIGHTMAPRENDERPROPERTY_H_
 #define _ENGINE_HEIGHTMAPRENDERPROPERTY_H_
 
+#include "heightmap.h"
 #include "../basic/basic.pkg"
 #include "../render/render.pkg"
 #include "property.h"
