@@ -811,7 +811,7 @@ void ZeroEd::SaveIPMenu(bool bSave)
 		if(pkFile)
 		{
 			for(int i=0; i<m_vkIPMenuItems.size(); i++)
-				fprintf(pkFile, "%s", m_vkIPMenuItems[i].c_str());
+				fprintf(pkFile, "%s\n", m_vkIPMenuItems[i].c_str());
 		}
 	}
 	else
