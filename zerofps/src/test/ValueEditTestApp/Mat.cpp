@@ -122,13 +122,16 @@ string Mat::GetValue(string kValueName)
 						else return(kBuffer="false");
 								
 				case VALUETYPE_FLOAT:
-					kBuffer= fcvt(*((float*)kItor->pkValue), 5, &iDecimal, &iSign );
+					sprintf( pk_chBuffer,"%g", *((float*)kItor->pkValue)  );
+					kBuffer=pk_chBuffer;
+					return kBuffer;
+					/*kBuffer= fcvt(*((float*)kItor->pkValue), 5, &iDecimal, &iSign );
 					kBuffer.insert(iDecimal, ".");
 					if(iSign !=0)
 						kBuffer.insert(0, "-");
-					return kBuffer; 
+					return kBuffer; */
 
-				case VALUETYPE_VECTOR3:
+			case VALUETYPE_VECTOR3:
 					kBuffer1=fcvt(( (Vector3*) kItor->pkValue)->operator[](0), 5, &iDecimal, &iSign );
 					kBuffer1.insert(iDecimal, ".");
 					if(iSign !=0)

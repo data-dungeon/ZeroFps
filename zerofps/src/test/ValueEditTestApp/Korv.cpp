@@ -10,7 +10,7 @@
 
 Korv::Korv()
 {
-Storlek=3;
+Storlek=1231231233.3111125435435435;
 Skin=true;
 Status="stinkig";
 Vek.set(1.0,2.0,3.0, 4.0);
@@ -26,7 +26,7 @@ vector<Mat::PropertyValues> Korv::GetPropertyValues()
 vector<Mat::PropertyValues> kReturn(3);
 
 kReturn[0].kValueName="Storlek";
-kReturn[0].iValueType=VALUETYPE_INT;
+kReturn[0].iValueType=VALUETYPE_FLOAT;
 kReturn[0].pkValue=(void*)&Storlek;
 //kReturn[0].fUpperBound=2.0;
 //kReturn[0].fLowerBound=-6.0;

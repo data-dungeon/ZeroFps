@@ -24,7 +24,7 @@ public:
 	
 private:
 	bool Skin;
-	int Storlek;
+	float Storlek;
 	string Status;
 	Vector4 Vek;
 };
