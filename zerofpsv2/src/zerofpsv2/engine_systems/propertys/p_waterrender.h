@@ -9,6 +9,7 @@
 #include "../../engine/zerofps.h"
 #include "../../engine/objectmanager.h"
 
+
 using namespace std;
 
 /// Property to render a watersurface.
@@ -30,6 +31,7 @@ class ENGINE_SYSTEMS_API P_WaterRender : public Property {
 		
 	public:
 		P_WaterRender();
+		
 		void CloneOf(Property* pkProperty);
 
 		void SetProperty(int iSize,int iStep,const char* acTexture);

@@ -7,6 +7,7 @@
 #include <string>
 #include "../../basic/zfsystem.h"
 #include "../../engine/zerofps.h"
+#include "../../basic/zfresource.h"
 
 using namespace std;
 
@@ -22,6 +23,8 @@ class ENGINE_SYSTEMS_API P_Vegitation : public Property {
 
 		vector<vegitation>	m_akPositions;
 
+		ZFResourceHandle* m_pkTexture;	
+
 		TextureManager*	m_pkTexMan;
 		Render*				m_pkRender;	
 		ZeroFps*				m_pkFps;
@@ -31,6 +34,9 @@ class ENGINE_SYSTEMS_API P_Vegitation : public Property {
 		Vector3				m_kScale;
 		float					m_fRadius;
 		
+		int					m_iAmount;
+		int					m_iSize;
+		
 		float					m_fWind;
 		
 		vector<PropertyValues> GetPropertyValues();
@@ -38,6 +44,8 @@ class ENGINE_SYSTEMS_API P_Vegitation : public Property {
 	
 	public:
 		P_Vegitation();
+		~P_Vegitation();
+		
 		void CloneOf(Property* pkProperty) { }
 		void Update();
 		void Init();
@@ -51,9 +59,13 @@ class ENGINE_SYSTEMS_API P_Vegitation : public Property {
 		
 		void CalculateRadius();
 		
+		void Random();
+		
 		void Save(ZFIoInterface* pkPackage);
 		void Load(ZFIoInterface* pkPackage);
 		
+		void PackTo(NetPacket* pkNetPacket, int iConnectionID );
+		void PackFrom(NetPacket* pkNetPacket, int iConnectionID );
 };
 
 ENGINE_API Property* Create_VegitationProperty();

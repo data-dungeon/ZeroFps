@@ -283,7 +283,7 @@ void ZeroTank::RunCommand(int cmdid, const CmdArgument* kCommand)
 	switch(cmdid) {
 		case FID_MASSSPAWN:
 			for(i=0; i < 64;i++) {
-				m_pkZeroTankTrack = pkObjectMan->CreateObjectByArchType("TrackObject");
+				//m_pkZeroTankTrack = pkObjectMan->CreateObjectByArchType("TrackObject");
 				if(m_pkZeroTankTrack) {
 					int iRandZone = rand() % pkObjectMan->GetNumOfZones();
 					Vector3 kPos = pkObjectMan->GetZoneCenter(iRandZone);
@@ -334,7 +334,7 @@ void ZeroTank::OnServerStart(void)
 	m_pkCameraObject	= NULL;
 
 	// Create our camera.
-	m_pkCameraObject = pkObjectMan->CreateObjectByArchType("camera");
+	//m_pkCameraObject = pkObjectMan->CreateObjectByArchType("camera");
 	if(m_pkCameraObject)
 	{
 		m_pkCameraObject->SetUseZones(false);
@@ -352,7 +352,7 @@ void ZeroTank::OnServerStart(void)
 	Entity* pkObj2;
 
 
-	m_pkZeroTankHull = pkObjectMan->CreateObjectByArchType("Goblin");
+	//m_pkZeroTankHull = pkObjectMan->CreateObjectByArchType("Goblin");
 	if(m_pkZeroTankHull) {
 		m_kEditList.push_back( m_pkZeroTankHull );
 		cout << "Goblin: " << m_pkZeroTankHull->iNetWorkID << endl;
@@ -363,14 +363,14 @@ void ZeroTank::OnServerStart(void)
 		//cam->SetCamera(m_pkCamera);
 	}
 
-		pkObj = pkObjectMan->CreateObjectByArchType("vimsshield");
+		//pkObj = pkObjectMan->CreateObjectByArchType("vimsshield");
 		if(pkObj) {
 			pkObj->SetParent(m_pkZeroTankHull);
 			pkObj->SetRelativeOri(true);
 			pkObj->SetLocalPosV(Vector3(0,0,0));
 		}
 
-		pkObj = pkObjectMan->CreateObjectByArchType("vimsword");
+//		pkObj = pkObjectMan->CreateObjectByArchType("vimsword");
 		if(pkObj) {
 			pkObj->SetParent(m_pkZeroTankHull);
 			pkObj->SetRelativeOri(true);
@@ -378,33 +378,33 @@ void ZeroTank::OnServerStart(void)
 		}
 
 	// Female warrior
-	pkObj = pkObjectMan->CreateObjectByArchType("FWarrior");
+//	pkObj = pkObjectMan->CreateObjectByArchType("FWarrior");
 	if(pkObj) {
 		m_kEditList.push_back( pkObj );
 		pkObj->SetWorldPosV ( Vector3 (0,0,0));
 		pkObj->SetParent(pkObjectMan->GetWorldObject());
 		}
 	
-		pkObj2 = pkObjectMan->CreateObjectByArchType("vimshield");
+//		pkObj2 = pkObjectMan->CreateObjectByArchType("vimshield");
 		if(pkObj) {
 			pkObj2->SetParent(pkObj);
 			pkObj2->SetRelativeOri(true);
 			pkObj2->SetLocalPosV(Vector3(0,0,0));
 		}
 
-		pkObj2 = pkObjectMan->CreateObjectByArchType("vimsword");
+//		pkObj2 = pkObjectMan->CreateObjectByArchType("vimsword");
 		if(pkObj2) {
 			pkObj2->SetParent(pkObj);
 			pkObj2->SetRelativeOri(true);
 			pkObj2->SetLocalPosV(Vector3(0,0,0));
 		}
 
-	m_pkGoblinLord =  pkObjectMan->CreateObjectByArchType("Goblin");
+//	m_pkGoblinLord =  pkObjectMan->CreateObjectByArchType("Goblin");
 	m_pkGoblinLord->SetWorldPosV ( Vector3 (20,30,20) );
 	m_pkGoblinLord->SetParent(pkObjectMan->GetWorldObject());
 	m_pkGoblinLord->AddProperty("P_Primitives3D");
 
-	m_pkGoblinSlave =  pkObjectMan->CreateObjectByArchType("Goblin");
+//	m_pkGoblinSlave =  pkObjectMan->CreateObjectByArchType("Goblin");
 	m_pkGoblinSlave->SetWorldPosV ( Vector3 (20,30,20) );
 	m_pkGoblinSlave->SetParent(pkObjectMan->GetWorldObject());
 	
