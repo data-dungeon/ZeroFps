@@ -26,7 +26,7 @@ public:
 };
 
 
-class ZFResourceHandle
+class BASIC_API ZFResourceHandle
 {
 private:
 	int		m_iHandleID;

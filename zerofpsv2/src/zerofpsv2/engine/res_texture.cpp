@@ -25,6 +25,12 @@ bool ResTexture::Create(string strName)
 		
 	return true;
 }
+/*
+ZFResource*	ResTexture::GetResourcePtr()
+{
+	return GetResourcePtr();
+}
+*/
 
 ZFResource* Create__ResTexture()
 {

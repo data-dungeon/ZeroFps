@@ -58,7 +58,7 @@ LINK32=link.exe
 # Begin Special Build Tool
 ProjDir=.
 SOURCE="$(InputPath)"
-PostBuild_Cmds=copy                              $(ProjDir)\release\*.lib                                               ..\..\..\bin\ 
+PostBuild_Cmds=copy                                $(ProjDir)\release\*.lib                                                 ..\..\..\bin\ 
 # End Special Build Tool
 
 !ELSEIF  "$(CFG)" == "basic - Win32 Debug"
@@ -75,8 +75,8 @@ PostBuild_Cmds=copy                              $(ProjDir)\release\*.lib       
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MTd /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "BASIC_EXPORTS" /YX /FD /GZ /c
-# ADD CPP /nologo /MDd /W3 /Gm /GR /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "BASIC_EXPORTS" /FR /FD /GZ /c
-# SUBTRACT CPP /YX
+# ADD CPP /nologo /MDd /W3 /Gm /GR /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "BASIC_EXPORTS" /FD /GZ /c
+# SUBTRACT CPP /Fr /YX
 # ADD BASE MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x41d /d "_DEBUG"
@@ -181,6 +181,14 @@ SOURCE=.\zfobject.cpp
 # Begin Source File
 
 SOURCE=.\zfobjectmanger.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\zfresource.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\zfresourcedb.cpp
 # End Source File
 # Begin Source File
 
@@ -301,6 +309,14 @@ SOURCE=.\zfobject.h
 # Begin Source File
 
 SOURCE=.\zfobjectmanger.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\zfresource.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\zfresourcedb.h
 # End Source File
 # Begin Source File
 

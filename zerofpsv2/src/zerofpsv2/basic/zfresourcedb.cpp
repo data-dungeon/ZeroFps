@@ -1,8 +1,8 @@
 #include "../engine/zerofps.h"
 #include "../basic/zfobjectmanger.h"
 
-ZFResource* Create__Mad_Core();
-ZFResource* Create__ResTexture();
+//ZFResource* Create__Mad_Core();
+//ZFResource* Create__ResTexture();
 
 int	g_iResourceHandleID;
 
@@ -83,9 +83,11 @@ ZFResourceDB::ZFResourceDB()
 {
 	m_iNextID = 0;
 
+/*
 	RegisterResource( string(".mad"), Create__Mad_Core		);
 	RegisterResource( string(".tga"), Create__ResTexture	);
 	RegisterResource( string(".bmp"), Create__ResTexture	);
+*/
 
 	g_ZFObjSys.Register_Cmd("res_list",FID_LISTRES,this);
 	g_ZFObjSys.Log_Create("resdb");

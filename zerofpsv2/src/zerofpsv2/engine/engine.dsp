@@ -296,6 +296,10 @@ SOURCE=..\engine_systems\propertys\proxyproperty.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\res_texture.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\engine_systems\propertys\skyboxrenderproperty.cpp
 # End Source File
 # Begin Source File
@@ -317,14 +321,6 @@ SOURCE=..\engine_systems\propertys\worldinfoproperty.cpp
 # Begin Source File
 
 SOURCE=.\zerofps.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\zfresource.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\zfresourcedb.cpp
 # End Source File
 # Begin Source File
 
@@ -517,6 +513,10 @@ SOURCE=.\propertyfactory.h
 # Begin Source File
 
 SOURCE=..\engine_systems\propertys\proxyproperty.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\res_texture.h
 # End Source File
 # Begin Source File
 
