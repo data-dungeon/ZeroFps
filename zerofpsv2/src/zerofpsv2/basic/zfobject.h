@@ -92,7 +92,7 @@ public:
 	void PrintChilds(const char* szParentName);		///< Debug: Prints childs from this object. 
 	bool Register_Cmd(char* szName, int iCmdID, int iFlags = CSYS_FLAG_SRC_ALL, char* szHelp = NULL, int iNumOfArg = 0);	///< Register a Cmd for this SubSys.
 	bool RegisterVariable(const char* szName, void* pvAddress, ZFCmdDataType eType, int iFlags = CSYS_FLAG_SRC_ALL);			///< Register a var for this SubSys
-
+ 
 	void Logf(const char* szName, const char* szMessageFmt,...);
 
 	virtual ~ZFSubSystem();

@@ -14,7 +14,7 @@ using namespace std;
 
 BASIC_API ZFObjectManger g_ZFObjSys;
 
-
+ 
 ZFSubSystem::ZFSubSystem(char *szName)
 {
 	m_strZFpsName = string("");
