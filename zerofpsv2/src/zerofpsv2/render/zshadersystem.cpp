@@ -28,6 +28,9 @@ bool ZShaderSystem::StartUp()
 	m_iCurrentVertexProgram = 		-1;
 	m_iCurrentFragmentProgram = 	-1;
 	
+	m_bOcclusion = 					false;
+	m_iOcQuery =						0;
+	
 	m_bSupportVertexBuffers =		false;
 	
 	//check for vertex and fragment program support
@@ -40,6 +43,12 @@ bool ZShaderSystem::StartUp()
 	if(!(m_bSupportVertexBuffers = HaveExtension("GL_ARB_vertex_buffer_object")))
 		cout<<"ZSHADER: No vertexbuffer support"<<endl;
 	
+	//setup ucculusion
+	if(!(m_bOcclusion = HaveExtension("GL_ARB_occlusion_query")))
+		cout<<"ZSHADER: No Occlusion support"<<endl;
+	else
+		SetupOcculusion();
+		
 	return true;
 }
 
@@ -1454,10 +1463,31 @@ unsigned int ZShaderSystem::GetDepth(int iX,int iY)
 
 
 
+void ZShaderSystem::SetupOcculusion()
+{
+	//generate one occulusion query
+	glGenQueriesARB(1,&m_iOcQuery);
+	
+}
 
+void ZShaderSystem::OcculusionBegin()
+{
+	if(!m_bOcclusion)
+		return;
 
+	glBeginQueryARB(GL_SAMPLES_PASSED_ARB, m_iOcQuery);
+}
 
+unsigned int ZShaderSystem::OcculusionEnd()
+{
+	if(!m_bOcclusion)
+		return 0;
 
-
-
+	glEndQueryARB(GL_SAMPLES_PASSED_ARB);
+	
+	unsigned int iResult;
+	glGetQueryObjectuivARB(m_iOcQuery, GL_QUERY_RESULT_ARB,&iResult);
+	
+	return iResult;
+}
 

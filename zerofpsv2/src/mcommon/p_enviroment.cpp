@@ -487,10 +487,49 @@ void P_Enviroment::DrawRainSplashes()
 
 void P_Enviroment::DrawSun()
 {
-	//int iDepth = m_pkZShaderSystem->GetDepth(m_pkRender->GetWidth() /2,m_pkRender->GetHeight() /2);
-
+	//textures
+	static int iSunTex = m_pkEntity->m_pkZeroFps->m_pkTexMan->Load("data/textures/sun.tga", 0);
+	static int iSunFlareTex = m_pkEntity->m_pkZeroFps->m_pkTexMan->Load("data/textures/sun.tga", 0);
 	
-	//cout<<"depth:"<<iDepth<<endl;
+	//max number of samples 
+	static int iMaxSamples = 0.001*float(m_pkRender->GetWidth()*m_pkRender->GetHeight());
+	static float fMaxAngle = 45.0;
+	
+	//positions for sun and flare
+	Vector3 kSunPos =   m_pkZeroFps->GetCam()->GetRenderPos() + m_kSunPos * 100;
+	Vector3 kFlarePos = m_pkZeroFps->GetCam()->GetRenderPos() + m_kSunPos;
+	
+	//calculate angle betwen sun and camera center
+	Matrix4 kRot = m_pkZeroFps->GetCam()->GetRotM();
+	kRot.Transponse();
+	Vector3 kDir = kRot.VectorTransform(Vector3(0,0,-1));	
+	float fAmp = 0;
+	float fAngle = RadToDeg(kDir.Angle(m_kSunPos.Unit()));
+	
+	//check if  angle is lower than maxangle
+	if( fAngle < fMaxAngle)
+		fAmp = 1.0 - fAngle / fMaxAngle;
+	
+	
+	if(m_pkZShaderSystem->SupportOcculusion())
+	{
+		//do occulusion test	
+		m_pkZShaderSystem->OcculusionBegin();
+		m_pkRender->DrawBillboard(m_pkZeroFps->GetCam()->GetModelViewMatrix(),kSunPos,10,iSunTex);
+		int iSamples = m_pkZShaderSystem->OcculusionEnd();
+		
+		float fSize = float(iSamples) / float(iMaxSamples);
+		if(fSize > 1.0)
+			fSize = 1.0;
+			
+		//draw flare
+		m_pkRender->DrawBillboard(m_pkZeroFps->GetCam()->GetModelViewMatrix(),kFlarePos,fSize*fAmp,iSunFlareTex);
+	}
+	else
+	{
+		m_pkRender->DrawBillboard(m_pkZeroFps->GetCam()->GetModelViewMatrix(),kSunPos,10,iSunTex);
+		m_pkRender->DrawBillboard(m_pkZeroFps->GetCam()->GetModelViewMatrix(),kFlarePos,fAmp,iSunFlareTex);	
+	}
 }
 
 

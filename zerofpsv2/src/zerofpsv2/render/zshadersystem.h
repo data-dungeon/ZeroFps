@@ -188,6 +188,10 @@ class RENDER_API ZShaderSystem : public ZFSubSystem
 		int				m_iCurrentVertexProgram;
 		int				m_iCurrentFragmentProgram; 
 		
+		//have occulusion support
+		bool				m_bOcclusion;
+		unsigned int	m_iOcQuery;
+		
 		//vertex buffers
 		bool				m_bSupportVertexBuffers;
 		
@@ -258,6 +262,9 @@ class RENDER_API ZShaderSystem : public ZFSubSystem
 		int GetCurrentVertexProgram() 					{return m_iCurrentVertexProgram;};
 		int GetCurrentFragmentProgram()					{return m_iCurrentFragmentProgram;};
 		
+		//occlusion
+		void SetupOcculusion();
+				
 		//vertex transform
 		void VertexTransform();
 		void CopyVertexData();
@@ -299,11 +306,17 @@ class RENDER_API ZShaderSystem : public ZFSubSystem
 		void SetFog(const Vector4& kColor,float fStart,float fStop,bool bEnabled);
 		unsigned int GetDepth(int iX,int iY);
 		
+		//ucculusion
+		void OcculusionBegin();
+		unsigned int  OcculusionEnd();
+
+		
 		//information
 		bool HaveExtension(const string& strExt);
 		int GetStencilBits();
-		bool SupportVertexProgram() 		{return m_bSupportVertexProgram;};
-		bool SupportFragmentProgram() 	{return m_bSupportFragmentProgram;};
+		bool SupportVertexProgram() 		{return m_bSupportVertexProgram;		}
+		bool SupportFragmentProgram() 	{return m_bSupportFragmentProgram;	}
+		bool SupportOcculusion()			{return m_bOcclusion;					}
 		
 		//arrays
 		void ResetPointers();

@@ -54,7 +54,7 @@ class ENGINE_API Camera
 		Matrix4	m_kCamModelViewMatrix;
 		Vector3	m_kPos;
 		Matrix4	m_kRotM;
-				
+		Vector3	m_kRenderPos;
 		
 		//gl stuff  , clear color and fog
 		Vector4	m_kClearColor;
@@ -144,6 +144,7 @@ class ENGINE_API Camera
 		void 		SetPos(const Vector3& kPos)	{	m_kPos=kPos;							}
 		void 		SetRot(const Vector3& kRot)	{	m_kRotM.Identity();
 																m_kRotM.Rotate(kRot);				}
+		Vector3  GetRenderPos()						{	return m_kRenderPos;					}																
 		Vector3	GetPos()								{	return m_kPos;							}
 		Matrix4	GetModelViewMatrix()				{	return m_kCamModelViewMatrix;		}
 		Matrix4	GetProjectionMatrix()			{	return m_kCamProjectionMatrix;	}		

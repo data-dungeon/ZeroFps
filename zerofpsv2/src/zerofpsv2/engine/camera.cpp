@@ -18,7 +18,8 @@ Camera::Camera(Vector3 kPos,Vector3 kRot,float fFov,float fAspect,float fNear,fl
 	SetViewPort( 0, 0, float(m_pkRender->GetWidth()), float(m_pkRender->GetHeight()));
 	SetPos(kPos);
 	m_kRotM.Identity();
-		
+	m_kRenderPos.Set(0,0,0);	
+	
 	m_kOrthoSize.Set(15,15,0);				// Defualt Size is 15 x 15 meters
 	
 	m_strName = 			"A Camera";
@@ -86,6 +87,9 @@ void Camera::InitView()//int iWidth,int iHeight)
 	m_pkZShaderSystem->MatrixMult(m_kRotM);	
 	m_pkZShaderSystem->MatrixTranslate(-m_kPos);	 	
 
+	//save render position (camera position may change during renderpass)
+	m_kRenderPos = m_kPos;
+	
 	//save modelview matrix for future use =)
 	m_pkZShaderSystem->MatrixSave(&m_kCamModelViewMatrix);
 	

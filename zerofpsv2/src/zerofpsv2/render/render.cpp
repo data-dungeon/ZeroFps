@@ -664,8 +664,12 @@ void Render::DrawBillboard(const Matrix4& kModelMatrix,const Vector3& kPos,float
 	glColor4f(1,1,1,1);
 	m_pkTexMan->BindTexture(iTexture); 	
 	
-	glAlphaFunc(GL_GREATER,0.3);
-	glEnable(GL_ALPHA_TEST);
+	//glAlphaFunc(GL_GREATER,0.3);
+	//glEnable(GL_ALPHA_TEST);
+	glDepthMask(GL_FALSE);
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA,GL_ONE);
+	
 
 //	glTranslatef(kPos.x,kPos.y,kPos.z);	
 	x.Set(kModelMatrix.data[0], kModelMatrix.data[4], kModelMatrix.data[8]);

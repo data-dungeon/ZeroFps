@@ -342,6 +342,7 @@ void MistClient::OnNetworkMessage(NetPacket *PkNetMessage)
 			string strMsg;
 			PkNetMessage->Read_Str(strMsg);
 			m_pkConsole->Printf("Msg> %s",strMsg.c_str());
+			AddStringToChatBox(strMsg);
 						
 			break;
 		}					
