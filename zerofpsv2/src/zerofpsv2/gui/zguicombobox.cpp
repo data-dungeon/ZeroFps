@@ -132,7 +132,7 @@ bool ZGuiCombobox::Notify(ZGuiWnd* pkWnd,int iCode)
 		if(pkSelItem && m_bIsMenu == false)
 		{
 			strNewText = pkSelItem->GetText();
-			strSelTextBefore = m_pkLabel->GetText();
+			strSelTextBefore = m_pkLabel->GetText() == NULL ? "" : m_pkLabel->GetText();
 			m_pkLabel->SetText(pkSelItem->GetText());
 		}
 

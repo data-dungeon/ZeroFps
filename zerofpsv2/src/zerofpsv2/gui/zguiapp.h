@@ -119,6 +119,7 @@ public:
 	char* GetText(char* szWnd);
 	char* GetSelItem(char* szWnd);
 	bool SelListItem(char* szWnd, char* szItem);
+	bool SelListItemByIndex(char* szWnd, int iIndex);
 
 	void SetTextFloat(char* szWndResName, float fNumber, bool bResize=false);
 	void SetTextInt(char* szWndResName, int iNumber, bool bResize=false);

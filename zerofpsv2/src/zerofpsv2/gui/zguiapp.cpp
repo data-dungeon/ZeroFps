@@ -431,6 +431,14 @@ ZGuiWnd* ZGuiApp::CreateWnd(GuiType eType, char* szResourceName, char* szText,
 				pkWnd->SetPos(new_x, new_y, true, true); 
 		}
 	}
+	//else
+	//{
+	//	if(pkWnd->GetSkin())
+	//	{
+	//		float s = GetScaleX() > GetScaleY() ? GetScaleX() : GetScaleY();
+	//		pkWnd->GetSkin()->m_unBorderSize =  (float) pkWnd->GetSkin()->m_unBorderSize * s;
+	//	}
+	//}
 
 	return pkWnd;
 }
@@ -607,6 +615,14 @@ ZGuiSkin* ZGuiApp::AddSkinFromScript2(char *szName, lua_State* pkLuaState,
 	// Border size, Tile texture, Transparency
 	if(m_pkScriptSystem->GetGlobal(pkLuaState, szName, "bd_size", dData))
 		pkNewSkin->m_unBorderSize = (unsigned short) dData;
+
+	// Ändra storlek på ramen baserat på upplösning
+	if(pkNewSkin->m_unBorderSize > 0)
+	{
+		float s = GetScaleX() > GetScaleY() ? GetScaleX() : GetScaleY();
+		pkNewSkin->m_unBorderSize = (unsigned short) ((float) pkNewSkin->m_unBorderSize * s);
+	}
+
 	if(m_pkScriptSystem->GetGlobal(pkLuaState, szName, "tile", dData))
 		pkNewSkin->m_bTileBkSkin = dData > 0 ? true : false;
 	if(m_pkScriptSystem->GetGlobal(pkLuaState, szName, "trans", dData))
@@ -941,6 +957,33 @@ bool ZGuiApp::SelListItem(char* szWnd, char* szItem)
 			if(bSuccess)
 			{
 				((ZGuiCombobox*) pkWnd)->SetLabelText(szItem);
+			}
+			
+			return bSuccess;
+		}
+	}
+	
+	return false;
+}
+
+bool ZGuiApp::SelListItemByIndex(char* szWnd, int iIndex)
+{
+	ZGuiWnd* pkWnd;
+	if((pkWnd = m_pkResMan->Wnd(szWnd)))
+	{
+		if(GetWndType(pkWnd) == Listbox)
+		{
+			return ((ZGuiListbox*)pkWnd)->SelItem(iIndex);
+		}
+		else
+		if(GetWndType(pkWnd) == Combobox)
+		{
+			ZGuiListbox* pkListbox = ((ZGuiCombobox*) pkWnd)->GetListbox();
+			bool bSuccess = pkListbox->SelItem(iIndex);
+			
+			if(bSuccess)
+			{
+				((ZGuiCombobox*) pkWnd)->SetLabelText(pkListbox->GetItem(iIndex)->GetText());
 			}
 			
 			return bSuccess;

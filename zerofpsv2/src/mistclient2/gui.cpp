@@ -208,7 +208,9 @@ void MistClient::SetupGUI()
 	g_kMistClient.m_kGuiMsgProcs.insert( map<string, msgScreenProg>::value_type("ConnectWnd", GuiMsgStartScreen));
 	g_kMistClient.m_kGuiMsgProcs.insert( map<string, msgScreenProg>::value_type("AddNewServerWnd", GuiMsgStartScreen));
 	g_kMistClient.m_kGuiMsgProcs.insert( map<string, msgScreenProg>::value_type("LoginWnd", GuiMsgStartScreen));
-
+	g_kMistClient.m_kGuiMsgProcs.insert( map<string, msgScreenProg>::value_type("CharGen_SelectCharWnd", GuiMsgStartScreen));
+	g_kMistClient.m_kGuiMsgProcs.insert( map<string, msgScreenProg>::value_type("CharGen_CreateCharWnd", GuiMsgStartScreen));
+	
 	g_kMistClient.m_kGuiMsgProcs.insert( map<string, msgScreenProg>::value_type("OptionsWnd", GuiMsgOptionsDlg));
 	g_kMistClient.m_kGuiMsgProcs.insert( map<string, msgScreenProg>::value_type("OptionsPageVideo", GuiMsgOptionsDlg));
 	g_kMistClient.m_kGuiMsgProcs.insert( map<string, msgScreenProg>::value_type("OptionsPageGraphic", GuiMsgOptionsDlg));
@@ -279,6 +281,7 @@ void MistClient::FindGUIScriptsByResSuffix()
 	{
 		{ "ml_gamegui_", GSF_GAMEGUI },
 		{ "ml_option_", GSF_OPTION },
+		{ "ml_chargen_", GSF_CHARGEN },
 		{ "ml_start_", GSF_START },
 	};
 
@@ -302,8 +305,19 @@ void MistClient::FindGUIScriptsByResSuffix()
 
 			const char* szSearchString = akInfo[si].strFileName;
 
-			if(strFile.find(szSearchString) != string::npos)
+			int pos = strFile.find(szSearchString);
+
+			for(int a=0; a<strlen(szSearchString); a++)
+				if(strFile[a] != szSearchString[a]) {
+					pos = -1; 
+					break;
+				}
+
+			if(pos != string::npos && pos != -1 )
 			{
+				char tee[] = { strFile[0], '\0' };
+				printf("%s\n", tee);
+
 				int p = strFile.find_last_of("x");
 				if(p != string::npos)
 				{			
@@ -362,5 +376,7 @@ void MistClient::FindGUIScriptsByResSuffix()
 
 	printf("m_kGuiScrips[GSF_GAMEGUI] = %s\n", m_kGuiScrips[GSF_GAMEGUI].c_str());
 	printf("m_kGuiScrips[GSF_OPTION] = %s\n", m_kGuiScrips[GSF_OPTION].c_str());
+	printf("m_kGuiScrips[GSF_CHARGEN] = %s\n", m_kGuiScrips[GSF_CHARGEN].c_str());
 	printf("m_kGuiScrips[GSF_START] = %s\n", m_kGuiScrips[GSF_START].c_str());
+
 }

@@ -32,6 +32,7 @@ void GuiAppLua::Init(ZGuiApp* pkGuiApp, ZFScriptSystem* pkScript)
 	pkScript->ExposeFunction("AddTreeItem", GuiAppLua::AddTreeItemLua);
 	pkScript->ExposeFunction("SetMoveArea", GuiAppLua::SetMoveAreaLua);		
 	pkScript->ExposeFunction("SetFont", GuiAppLua::SetFontLua);
+	pkScript->ExposeFunction("SetTextColor", GuiAppLua::SetTextColor);
 	pkScript->ExposeFunction("ChangeWndParameter", GuiAppLua::ChangeWndParameterLua);
 	pkScript->ExposeFunction("CreateNewRadiobuttonGroup", GuiAppLua::CreateNewRadiobuttonGroupLua);
 	pkScript->ExposeFunction("SetDesignResolution", GuiAppLua::SetDesignResolutionLua);
@@ -470,6 +471,27 @@ int GuiAppLua:: SetMoveAreaLua(lua_State* pkLua)
 	if(pkWnd)
 	{
 		pkWnd->SetMoveArea( Rect((int)l,(int)t,(int)r,(int)b), true);
+	}
+
+	return 1;
+}
+
+int GuiAppLua::SetTextColor(lua_State* pkLua)
+{
+	int iNumArgs = g_pkScript->GetNumArgs(pkLua);
+
+	char szWindow[250];
+	g_pkScript->GetArg(pkLua, 0, szWindow);
+
+	double dRed=0, dGreen=0, dBlue=0;
+	if(iNumArgs > 1) g_pkScript->GetArgNumber(pkLua, 1, &dRed);
+	if(iNumArgs > 2) g_pkScript->GetArgNumber(pkLua, 2, &dGreen);
+	if(iNumArgs > 3) g_pkScript->GetArgNumber(pkLua, 3, &dBlue);
+
+	ZGuiWnd* pkWnd = g_pkGuiApp->GetWnd(szWindow);
+	if(pkWnd)
+	{
+		pkWnd->SetTextColor((unsigned char) dRed,(unsigned char) dGreen, (unsigned char) dBlue);
 	}
 
 	return 1;

@@ -610,6 +610,7 @@ bool Image::load_jpg(FILE *fp)
 			m_pkPixels[oka].r = pixel->b;
 			m_pkPixels[oka].g = pixel->g;
 			m_pkPixels[oka++].b = pixel->r;
+			m_pkPixels[oka++].a = 0;
 			im_loc_bytes+=4;
 		}
 

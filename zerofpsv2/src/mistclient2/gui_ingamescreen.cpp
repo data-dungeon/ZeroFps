@@ -244,6 +244,7 @@ void MistClient::LoadInGameGui()
 	ShowWnd("AddNewServerWnd", false);
 	ShowWnd("LoginWnd", false);
 	ShowWnd("RestartMsgBox", false);
+	ShowWnd("CharGen_SelectCharWnd", false);
 
 	if(!LoadGuiFromScript(m_kGuiScrips[GSF_GAMEGUI].c_str()))
 	{

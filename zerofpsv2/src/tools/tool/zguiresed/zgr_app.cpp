@@ -116,6 +116,8 @@ void ZGuiResEd::OnIdle()
 	{ 
 		if(SaveScript(m_strNewFileToLoad.c_str(), m_bConfirmSaveScript))
 		{
+			m_strOpenFile = m_strNewFileToLoad; // lade till 050130
+
 			UpdateScriptList();
 			char msg[512];
 			sprintf(msg, "Script file: \r\n\"%s\"\r\nsaved successfully!\r\n", m_strNewFileToLoad.c_str());
