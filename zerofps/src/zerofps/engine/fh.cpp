@@ -172,4 +172,48 @@ void DebugGraph::DrawGraph(int x, int y)
 /*** End: Vim ***/
 
 
+/*** Start: Vim ***/
+class AxisAlignedBBox
+{
+public:
+	Vector3 m_kMin;
+	Vector3 m_kMax;
+
+	void Set(Vector3 kMin, Vector3 kMax);
+	bool InContact(Vector3 kCenter, float fRadius);
+};
+
+void AxisAlignedBBox::Set(Vector3 kMin, Vector3 kMax)
+{
+	m_kMin = kMin;
+	m_kMax = kMax;
+}
+
+/* From Gamasutra: Simple Intersection Tests For Games */
+bool AxisAlignedBBox::InContact(Vector3 kCenter, float fRadius)
+{
+	float s, d = 0; 
+
+	//find the square of the distance
+	//from the sphere to the box
+	for( long i=0 ; i<3 ; i++ ) 
+	{ 
+		if( kCenter[i] < m_kMin[i] )
+		{
+
+			s = kCenter[i] - m_kMin[i];
+			d += s*s; 
+		}
+
+		else if( kCenter[i] > m_kMax[i] )
+		{ 
+		s = kCenter[i] - m_kMax[i];	
+		d += s*s; 
+		}
+	}
+
+	return d <= fRadius * fRadius;
+}
+
+/*** End: Vim ***/
 

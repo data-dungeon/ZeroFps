@@ -36,7 +36,7 @@ void RemoteNode::Clear()
 	m_iOutOfOrderNetFrame	= 0;
 	m_iLastRecvPacket			= 0;
 
-	m_kRecvGraph.SetMinMax(0,50);		
+	m_kRecvGraph.SetMinMax(0,10000);		
 	m_kRecvGraph.SetSize(100,100,50);
 }
 
@@ -722,12 +722,15 @@ void NetWork::Run()
 		if(RemoteNodes[i].m_eConnectStatus == NETSTATUS_DISCONNECT)
 			continue;
 
+		// Refresh num of recd bytes graphs.
 		RemoteNodes[i].m_iNumOfBytesRecv += RemoteNodes[i].m_iNumOfBytesRecvNetFrame;
-		//RemoteNodes[i].m_kRecvGraph.PushValue(RemoteNodes[i].m_iNumOfBytesRecvNetFrame);
-		RemoteNodes[i].m_kRecvGraph.PushValue(RemoteNodes[i].m_iOutOfOrderNetFrame);
-		RemoteNodes[i].m_iNumOfBytesRecvNetFrame = 0;
-		RemoteNodes[i].m_iOutOfOrderNetFrame = 0;
-		
+		if(fEngineTime > m_fStatsUpdate) {
+			RemoteNodes[i].m_kRecvGraph.PushValue(RemoteNodes[i].m_iNumOfBytesRecvNetFrame);
+			RemoteNodes[i].m_iNumOfBytesRecvNetFrame = 0;
+			}
+
+		//RemoteNodes[i].m_kRecvGraph.PushValue(RemoteNodes[i].m_iOutOfOrderNetFrame);
+		//RemoteNodes[i].m_iOutOfOrderNetFrame = 0;
 
 		if(fEngineTime > ( RemoteNodes[i].m_fLastMessageTime + ZF_NET_CONNECTION_TIMEOUT )) {
 			// Time out this connection.
@@ -736,6 +739,9 @@ void NetWork::Run()
 			RemoteNodes[i].m_eConnectStatus = NETSTATUS_DISCONNECT;
 			}
 		}
+
+	if(fEngineTime > m_fStatsUpdate)
+		m_fStatsUpdate = fEngineTime + 1.0;	
 
 	Send_NetStrings();
 

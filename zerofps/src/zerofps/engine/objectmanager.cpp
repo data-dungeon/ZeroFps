@@ -526,9 +526,12 @@ void ObjectManager::UpdateState(NetPacket* pkNetPacket)
 
 void ObjectManager::PackToClients()
 {
+	NetWork* net = static_cast<NetWork*>(g_ZFObjSys.GetObjectPtr("NetWork"));
+	if(net->GetNumOfClients() == 0)
+		return;
+
 	g_ZFObjSys.Logf("net", " *** ObjectManager::PackToClients() *** \n");
 
-	NetWork* net = static_cast<NetWork*>(g_ZFObjSys.GetObjectPtr("NetWork"));
 
 /*
 	if(net->m_eNetStatus != NET_SERVER) {

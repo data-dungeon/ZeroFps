@@ -180,6 +180,7 @@ private:
 
 	void DisconnectAll();											// Send disconenct message to all nodes.
 
+	float						m_fStatsUpdate;
 	/*
 		Strings are sent over network as a number or in full. This table maps a index to a string and it 
 		can only be updated on the server so clients will always send full strings. 

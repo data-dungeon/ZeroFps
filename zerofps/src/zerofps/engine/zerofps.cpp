@@ -113,8 +113,8 @@ ZeroFps::ZeroFps(void)
 
 	m_bDevPagesVisible = true;
 
-	m_kFpsGraph.SetMinMax(0,10);		
-	m_kFpsGraph.SetSize(100,100,120);
+	m_kFpsGraph.SetMinMax(0,1000);		
+	m_kFpsGraph.SetSize(100,100,100);
 }
 
 ZeroFps::~ZeroFps()
@@ -241,6 +241,8 @@ void ZeroFps::Run_EngineShell()
 
 	//toggle keyboard/mouse grabing		// SHELL
 	if(m_pkInput->Pressed(KEY_F12))
+		m_pkInput->ToggleGrab();
+	if(m_pkInput->Pressed(KEY_F10))
 		m_pkInput->ToggleGrab();
 			
 	//toggle fullscreen on X systems	// SHELL	
@@ -442,8 +444,8 @@ void ZeroFps::MainLoop(void) {
 			}
 
 		Draw_EngineShell();
-//		m_kFpsGraph.DrawGraph(0,0);
-//		m_pkNetWork->DrawConnectionGraphs();
+//		m_kFpsGraph.DrawGraph(0,200);
+		m_pkNetWork->DrawConnectionGraphs();
 
 	}
 }
@@ -529,7 +531,8 @@ void ZeroFps::Swap(void) {
 	m_fLastFrameTime=SDL_GetTicks();
 	m_fFps=1000.0/m_fFrameTime;	
 
-	m_kFpsGraph.PushValue( m_fFps);
+//	m_kFpsGraph.PushValue( m_fFps);
+	m_kFpsGraph.PushValue( 500 );
 	
 	m_iAvrageFrameCount++;
 	
