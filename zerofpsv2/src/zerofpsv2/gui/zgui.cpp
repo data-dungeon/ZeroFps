@@ -1368,7 +1368,8 @@ bool ZGui::ClickedWndAlphaTex(int mx, int my, ZGuiWnd *pkWndClicked)
 		float x_offset = (float) horz_offset / pkWndClicked->GetScreenRect().Width();
 		float y_offset = (float) vert_offset / pkWndClicked->GetScreenRect().Height();
 
-		Image* pkSurface = m_pkTexMan->GetImage();
+		m_pkTexMan->EditStart( alpha_tex );
+		Image* pkSurface = m_pkTexMan->EditGetImage( alpha_tex );
 
 		if(pkSurface == NULL)
 		{
@@ -1381,7 +1382,8 @@ bool ZGui::ClickedWndAlphaTex(int mx, int my, ZGuiWnd *pkWndClicked)
 
 		//unsigned long pixel;
 		color_rgba kColor;
-		kColor = m_pkTexMan->GetPixel((int)(tex_w*x_offset),(int)(tex_h*y_offset));
+		pkSurface->get_pixel((int)(tex_w*x_offset),(int)(tex_h*y_offset), kColor);
+		m_pkTexMan->EditEnd( alpha_tex );
 
 		if(kColor.r == 0 && kColor.g == 0 && kColor.b == 0 && kColor.a == 0)
 			return true;

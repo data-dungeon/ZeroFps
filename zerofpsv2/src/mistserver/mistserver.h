@@ -61,7 +61,8 @@ class MistServer :public Application , public ZGuiApp {
 			FID_SAVE,
 			FID_USERS,
 			FID_LOCALORDER,
-			FID_LIGHTMODE
+			FID_LIGHTMODE,
+			FID_EDITSUN,
 		};
 
 		enum EditMode_e
@@ -74,6 +75,7 @@ class MistServer :public Application , public ZGuiApp {
 		};
 
 		bool	m_bUpdateMarker;
+		bool	m_bEditSun;
 
 		//server stuff
 		Entity* m_pkServerInfo;

@@ -22,7 +22,7 @@ Heightmap2::Heightmap2(/*char* szName*/) //: I_HeightMap2("Heightmap2")
 
 bool Heightmap2::LoadBasicDataFromImage(const char* acFile)
 {
-	Image* kImage = m_pkTexMan->LoadImage2(acFile);
+	Image* kImage = NULL;	// = m_pkTexMan->LoadImage2(acFile);
 	
 	if(!kImage){
 		return false;	

@@ -63,7 +63,8 @@ MistServer::MistServer(char* aName,int iWidth,int iHeight,int iDepth)
 
 	// Set Default values
 	m_AcceptNewLogins = true;
-	m_bUpdateMarker = true;
+	m_bUpdateMarker	= true;
+	m_bEditSun			= false;
 
 	// Register Variables
 	RegisterVariable("s_newlogins",				&m_AcceptNewLogins,			CSYS_BOOL);	
@@ -76,6 +77,7 @@ MistServer::MistServer(char* aName,int iWidth,int iHeight,int iDepth)
 	Register_Cmd("users",FID_USERS);		
 	Register_Cmd("lo",FID_LOCALORDER);		
 	Register_Cmd("lightmode", FID_LIGHTMODE);		
+	Register_Cmd("editsun", FID_EDITSUN);		
 
 	m_kDrawPos.Set(0,0,0);
 
@@ -167,15 +169,14 @@ void MistServer::Init()
 
 //	m_pkPlayerDB->GetLoginCharacters(string("user"));
 
-	m_kSun.kRot= Vector3(1,2,1);
-	m_kSun.kDiffuse=Vector4(0,0,0,0);
-	m_kSun.kAmbient=Vector4(0,0,0,0);
+	m_kSun.kRot = Vector3(1,2,1);
+	m_kSun.kDiffuse=Vector4(1,1,1,0);
+	m_kSun.kAmbient=Vector4(0.2,0.2,0.2,0);
 	m_kSun.iType=DIRECTIONAL_LIGHT;			
 	m_kSun.iPriority=10;
 	m_kSun.fConst_Atten=1;
 	m_kSun.fLinear_Atten=0;
 	m_kSun.fQuadratic_Atten=0;
-//	m_pkLight->Add(&m_kSun);
 
 }
 
@@ -238,7 +239,6 @@ void MistServer::DrawHMEditMarker(HeightMap* pkHmap, Vector3 kCenterPos, float f
 
 void MistServer::OnIdle()
 {	
-
 	m_pkFps->SetCamera(m_pkCamera);		
 	m_pkFps->GetCam()->ClearViewPort();	
 
@@ -759,7 +759,16 @@ void MistServer::RunCommand(int cmdid, const CmdArgument* kCommand)
 				}
 			break;		
 
-		
+		case FID_EDITSUN:
+			m_bEditSun = !m_bEditSun;
+
+			if(m_bEditSun)
+				m_pkLight->Add(&m_kSun);
+			else
+				m_pkLight->Remove(&m_kSun);
+
+			break;
+	
 		case FID_LIGHTMODE:
 			if(kCommand->m_kSplitCommand.size() <= 1)
 				break;
@@ -790,6 +799,7 @@ void MistServer::RunCommand(int cmdid, const CmdArgument* kCommand)
 			cout << "Sending LocalOrder: " << kOrder.m_sOrderName << "\n";
 			pkClient.AddServerOrder(kOrder);
 			break;		
+
 	}
 
 }

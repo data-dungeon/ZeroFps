@@ -8,7 +8,6 @@
 #include <list>
 #include <string>
 #include <SDL/SDL.h>
-//#include <SDL/SDL_image.h>
 #include "render_x.h"
 #include "../ogl/zfpsgl.h"
 #include <bitset>
@@ -19,13 +18,13 @@ using namespace std;
 
 enum OPTIONS 
 {
-	T_NOMIPMAPPING	=	1,
-	T_COMPRESSION	=	8,
-	T_CLAMP			=	16,
-	T_ALPHA			=	32
+	T_NOMIPMAPPING	=	1,		// No mipmapping on this texture.
+	T_COMPRESSION	=	8,		// Use texture compression on this texture.
+	T_CLAMP			=	16,	// Use clamp on this texture (s and t).
+	T_ALPHA			=	32		// This is a alpha only texture.
 };
 
-#define	NO_TEXTURE	-1
+#define	NO_TEXTURE	-1		// Texuremanger index for a non existing texture.
 
 /**	\brief	Texture file name and all paramerers.
 		\ingroup Render
@@ -42,8 +41,7 @@ struct texture
 	bool				m_bAlphaOnly;
 
 	bitset<20>		m_abLevels;			//	level x is true if mipmap level is loaded	
-	//SDL_Surface*	m_pkImage;			//	for realtime editing of surface
-	Image*			m_pkImage2;
+	Image*			m_pkImage2;			//	for realtime editing of surface
 
 	int				m_iSizeInBytes;	// Size of texture in bytes.
 };
@@ -69,76 +67,80 @@ class RENDER_API TextureManager : public ZFSubSystem {
 		int					m_iCurrentTexture;
 		vector<texture*>	m_iTextures;
 		vector<int>			m_iFreeID;
-		texture*	GetFreeTexture();
-
-		
-		SDL_Surface *LoadImage(const char *filename);	
-
-		bool LoadTexture(texture *pkTex,const char* acFilename);	
-		void RunCommand(int cmdid, const CmdArgument* kCommand);
-
-		void ListTextures(void);
-		void ReloadAll(void);
-		void SetOptions(texture *pkTex, int iOptions);
-		string GetFileName(string strFileExtFlags);
-
 		ZFVFileSystem*	m_pkZFFileSystem;
 
-		//void PutPixel(SDL_Surface* surface, int x, int y, Uint32 pixel);
 
+		texture*	GetFreeTexture();												// Returns a free texture manger texture object.
+      void FreeTexture(texture* pkTex);									// Free texture manger texture object.
+		Image* LoadImage(const char *szFileName);	
+		bool LoadTexture(texture *pkTex,const char* acFilename);	
+
+		void RunCommand(int cmdid, const CmdArgument* kCommand);
+		void ListTextures(void);
+		void ReloadAll(void);
+
+		void SetOptions(texture *pkTex, int iOptions);
 		int GetOptionsFromFileName(string strName);
+		string GetFileName(string strFileExtFlags);
 
-		bool UnLoad(const char* acFileName);		
-
+		bool	ValidIndex(int iTextureID);	// Returns true if iTextureID is a valid texture id.
+	
+		// Edit Textures
+		int	m_iEditLastTextureID;
+		Image* GetTexture(int iLevel);								
+		bool PutTexture(Image* pkImage,bool bMipMaping);
 
 	public:
-		string GetTextureNameFromOpenGlIndex(int iGlObject);	// Returns name of texture from opengl texture object ID:
-
-      void FreeTexture(texture* pkTex);
-
 		TextureManager();
-		bool AddMipMapLevel(int iLevel,const char* acNewFile);
-		void BindTexture(const char* acFileName,int iOption);
-		
-		int GetSizeOfTexture(int iTexture);
-		void BindTexture(int iTexture);
-      int GetTextureID (int iTexture);
-
-		bool UnLoad(int iTextureID);		
-		
-		int Load(const char* acFileName,int iOption=1);		
-		
-		void ClearAll();
-		int CurentTexture() { return m_iCurrentTexture;};
-
-		int GetIndex(const char* szFileName);
-		const char* GetFileName(unsigned int uiIndex);
-
-		
-		Image* GetTexture(int iLevel);							//dont use, use GetImage() insted
-		bool PutTexture(Image* pkImage,bool bMipMaping);
-		bool SwapTexture();
-		bool MakeTextureEditable();
-		bool PsetRGB(int x,int y,int r,int g,int b);
-		bool PsetRGBA(int x,int y,int r,int g,int b,int a);
-		color_rgba GetPixel(int x,int y);
-		//bool Blit(SDL_Surface* pkImage,int x,int y);
-		
-
-		Image* GetImage();		
-		bool SaveTexture(const char* acFile,int iLevel);		
-		Image* LoadImage2(const char *filename);	
-
-		void Debug_TestTexturesLoader(void);
-
 		bool StartUp();
 		bool ShutDown();
-
 		bool IsValid()	{ return true;	}
 
+		// Load/Unload textures.
+		int Load(const char* szFileName,int iOption=1);		
+		bool UnLoad(int iTextureID);		
+		bool UnLoad(const char* acFileName);		
+		void ClearAll();
 
+		// Bind Textures
+		void BindTexture(const char* acFileName,int iOption);	// Bind texture by name. Load it if not loaded.
+		void BindTexture(int iTexture);								// Bind texture by texturemanger index.
+
+		// Get Information about textures.
+		int GetIndex(const char* szFileName);
+		const char* GetFileName(unsigned int uiIndex);
+		int GetSizeOfTexture(int iTexture);							// Returns size of texture in bytes.
+      int GetTextureID (int iTexture);								// Returns opengl texture id of texture.
+
+		// Edit Textures
+		bool EditStart(string strName);								//	Make it so you can edit a texture.
+		bool EditStart(int iTextureID);								//	
+		bool EditEnd(string strName);									//	Stop edit of texture
+		bool EditEnd(int iTextureID);									//
+		Image* EditGetImage(int iTextureID);						// Get ptr to Image of texture.
+		Image* EditGetImage(string strName);	
+		bool EditCommit(string strName);								// Commit changes of texture.
 		
+		//	bool SwapTexture();
+		//bool PsetRGB(int x,int y,int r,int g,int b);
+		//bool PsetRGBA(int x,int y,int r,int g,int b,int a);
+		//color_rgba GetPixel(int x,int y);
+
+		// Save Textures
+		bool SaveTexture(const char* acFile,int iLevel);		
+
+		void Debug_TestTexturesLoader(void);
+		bool AddMipMapLevel(int iLevel,const char* acNewFile);
+		int CurentTexture() { return m_iCurrentTexture;};
+		string GetTextureNameFromOpenGlIndex(int iGlObject);	// Returns name of texture from opengl texture object ID:
+
+	
 		friend class ZFResourceDB;
+
+		//bool Blit(SDL_Surface* pkImage,int x,int y);
+		//void PutPixel(SDL_Surface* surface, int x, int y, Uint32 pixel);
+//		SDL_Surface *LoadImage(const char *filename);	
+
 };
 
 

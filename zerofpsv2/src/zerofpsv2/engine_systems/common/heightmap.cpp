@@ -637,26 +637,32 @@ void HeightMap::DrawMask(Vector3 kPos,int iMask,float fSize,int r,int g,int b,in
 	if(iMask <= 0 || iMask >= int(m_kLayer.size()))
 		return;
 		
-	m_pkTexMan->BindTexture(m_kLayer[iMask].m_strMask.c_str(),0);
+//	m_pkTexMan->BindTexture(m_kLayer[iMask].m_strMask.c_str(),0);
 	
-	if(!m_pkTexMan->MakeTextureEditable()) {
+	if(!m_pkTexMan->EditStart(m_kLayer[iMask].m_strMask.c_str())) {
 		cout << "Failed to edit texture" << endl;
 		return;
 		}
 	
 	//get texture pos
-	float fSizeW = ((float)GetSize() / (float)m_pkTexMan->GetImage()->m_iWidth);
+	float fSizeW = ((float)GetSize() / (float)m_pkTexMan->EditGetImage(m_kLayer[iMask].m_strMask.c_str())->m_iWidth);
 	float xpos = (float) ((kPos.x * HEIGHTMAP_SCALE) / (float)GetSize())  ;
 	float ypos = (float) ((kPos.z * HEIGHTMAP_SCALE) / (float)GetSize())  ;
 	
-	xpos *= (float)m_pkTexMan->GetImage()->m_iWidth;
-	ypos *= (float)m_pkTexMan->GetImage()->m_iHeight;
+	xpos *= (float)m_pkTexMan->EditGetImage(m_kLayer[iMask].m_strMask.c_str())->m_iWidth;
+	ypos *= (float)m_pkTexMan->EditGetImage(m_kLayer[iMask].m_strMask.c_str())->m_iHeight;
 	
 	float fRealSize = GetBrushSizeInAlphaUVSpace( fSize );	// * (float)m_pkTexMan->GetImage()->w;
 	int size=fRealSize;
 	
 	//cout << "Brush size: " << fRealSize << endl;
 	//cout << "Img Size: " << m_pkTexMan->GetImage()->m_iWidth << "," << m_pkTexMan->GetImage()->m_iHeight;
+
+	Image* pkImg = m_pkTexMan->EditGetImage( m_kLayer[iMask].m_strMask.c_str() );
+	int iW, iH;
+	iW = m_pkTexMan->EditGetImage(m_kLayer[iMask].m_strMask.c_str())->m_iWidth;
+	iH = m_pkTexMan->EditGetImage(m_kLayer[iMask].m_strMask.c_str())->m_iHeight;
+
 
 	for(float i=0;i<fRealSize;i+=0.5)
 	{
@@ -665,11 +671,12 @@ void HeightMap::DrawMask(Vector3 kPos,int iMask,float fSize,int r,int g,int b,in
 			int x = int(xpos + sin(z/degtorad)*i);
 			int y = int(ypos + cos(z/degtorad)*i);
 		
-			if(x<0 || x >= m_pkTexMan->GetImage()->m_iWidth 
-				|| y <0 || y>=m_pkTexMan->GetImage()->m_iHeight)	
+			if(x<0 || x >= iW
+				|| y <0 || y>= iH)	
 				continue;		
 			
-			color_rgba kColor = m_pkTexMan->GetPixel(x,y);
+			color_rgba kColor;
+			pkImg->get_pixel(x,y,kColor);	// m_pkTexMan->GetPixel(x,y);
 			
 			int pr,pg,pb,pa;
 			
@@ -703,14 +710,17 @@ void HeightMap::DrawMask(Vector3 kPos,int iMask,float fSize,int r,int g,int b,in
 			if(pa <0)
 				pa = 0;
 
-			m_pkTexMan->PsetRGBA(x,y,pr,pg,pb,pa);
+			pkImg->set_pixel(x,y,pr,pg,pb,pa);	//m_pkTexMan->PsetRGBA(x,y,pr,pg,pb,pa);
 		}
 	
 	}
 	
-	if(!m_pkTexMan->SwapTexture()) {
+/*	if(!m_pkTexMan->SwapTexture()) {
 		cout << "Failed to swap back texture" << endl;
-		}
+		}*/
+
+	m_pkTexMan->EditCommit(m_kLayer[iMask].m_strMask.c_str());
+	m_pkTexMan->EditEnd(m_kLayer[iMask].m_strMask.c_str());
 }
 
 

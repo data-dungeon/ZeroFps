@@ -11,7 +11,8 @@
 TextureManager::TextureManager()
  : ZFSubSystem("TextureManager") 
 {
-	m_iCurrentTexture = NO_TEXTURE;
+	m_iCurrentTexture		= NO_TEXTURE;
+	m_iEditLastTextureID = NO_TEXTURE;
 
 	Register_Cmd("t_list",		FID_LISTTEXTURES);
 	Register_Cmd("t_reload",	FID_FORCERELOAD);
@@ -39,7 +40,6 @@ bool TextureManager::ShutDown()
 	
 	return true;
 }
-
 
 void TextureManager::SetOptions(texture *pkTex, int iOption)
 {
@@ -81,6 +81,7 @@ string GetTextureFlags(string strName)
 		return strFlags;
 
 	int iNumOfFlags = szEOFlags - szSOFlags;
+//	cout << "There are " << iNumOfFlags << " in " << szName << endl;
 	strncpy(szFlags,szSOFlags,iNumOfFlags);
 	szFlags[iNumOfFlags] = 0;
    strFlags = szFlags;
@@ -150,38 +151,44 @@ void TextureManager::FreeTexture(texture* pkTex)
 	delete pkTex;
 }
 
+/**	\brief	Load a texture.
 
+	Load texture and upload it to opengl.
+*/
 bool TextureManager::LoadTexture(texture *pkTex,const char *acFilename) 
 {	
 	GLint iInternalFormat	=	GL_RGB;
-	GLint iFormat				=	GL_RGB;
-//	GLint iType					=	GL_UNSIGNED_BYTE;
+//	GLint iFormat				=	GL_RGB;
 	
 	//make sure the m_pkImage is null for swaping;
 	pkTex->m_pkImage2 = NULL;	
 	
+	// Load Image
+	Image* pkImage;
+	pkImage = LoadImage(acFilename);
+	if(!pkImage)
+		return false;
+
+	// Calc Size of texture.
+	pkTex->m_iSizeInBytes = pkImage->m_iWidth * pkImage->m_iHeight * 4;
+
+	glGenTextures(1,&pkTex->index);
+	glBindTexture(GL_TEXTURE_2D,pkTex->index);
+
+	// Set All Options.
+
 	//is this a tga?
-	if(strncmp(&acFilename[strlen(acFilename)-4],".tga",4)==0) {
+	if(strncmp(&acFilename[strlen(acFilename)-4],".tga",4)==0)
+	{
 		iInternalFormat=GL_RGBA4;
-		iFormat=GL_RGBA;
+//		iFormat=GL_RGBA;
 	}
 
 	if(pkTex->m_bAlphaOnly) {
 		cout << "Setting alpha on " <<acFilename << endl;
 		iInternalFormat=GL_ALPHA;
-		iFormat=GL_ALPHA;
+//		iFormat=GL_ALPHA;
 		}
-	
-	Image* pkImage;
-	pkImage = LoadImage2(acFilename);
-	if(!pkImage)
-		return false;
-
-	pkTex->m_iSizeInBytes = pkImage->m_iWidth * pkImage->m_iHeight * 4;
-
-
-	glGenTextures(1,&pkTex->index);
-	glBindTexture(GL_TEXTURE_2D,pkTex->index);
 
 	if(pkTex->b_bClamp){
 		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_CLAMP);
@@ -200,172 +207,56 @@ bool TextureManager::LoadTexture(texture *pkTex,const char *acFilename)
 		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);  
 		glTexImage2D(GL_TEXTURE_2D,0,iInternalFormat,pkImage->m_iWidth,pkImage->m_iHeight,0,GL_RGBA,GL_UNSIGNED_BYTE,pkImage->m_pkPixels);
 	}
-  glBindTexture(GL_TEXTURE_2D,0);
-  m_iCurrentTexture = NO_TEXTURE;
+
+	glBindTexture(GL_TEXTURE_2D,0);
+	m_iCurrentTexture = NO_TEXTURE;
 	delete pkImage;
 
-/*	SDL_Surface *image;
-	image= LoadImage(acFilename);
-	if(!image) {    
-   	return false;
-	};
-  
-
-	glGenTextures(1,&pkTex->index);
-	glBindTexture(GL_TEXTURE_2D,pkTex->index);
-
-	if(pkTex->b_bClamp){
-		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_CLAMP);
-		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_CLAMP);	
-	} else {
-		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_REPEAT);
-		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_REPEAT);		
-	}
-
-	if(pkTex->m_bMipMapping){
-		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);	
-		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR_MIPMAP_LINEAR);
-		gluBuild2DMipmaps(GL_TEXTURE_2D,iInternalFormat,image->w,image->h,iFormat,iType,image->pixels);  		
-	}else{
-		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);		
-		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);  
-		glTexImage2D(GL_TEXTURE_2D,0,iInternalFormat,image->w,image->h,0,iFormat,iType,image->pixels);
-	}
-  
-  glBindTexture(GL_TEXTURE_2D,0);
-  m_iCurrentTexture = NO_TEXTURE;
-  	SDL_FreeSurface(image); 
-*/  
-
-  return true;
+	return true;
 }
 
-Image* TextureManager::LoadImage2(const char *filename)
+/**	\brief	Loads a texture from file and returns it as a Image.
+	
+	This is the low level loading function that handles the loading.
+*/
+Image* TextureManager::LoadImage(const char *szFileName)
 {
 	Image* kImage = new Image;
 	if(!kImage)
 		return NULL;
 	
 	ZFVFile kFile;
-	if(! kFile.Open(filename,0, false)) {
+	if(! kFile.Open(szFileName,0, false)) {
 		delete kImage;
-		fprintf(stderr, "Unable to Open %s: \n", filename);
+		fprintf(stderr, "Unable to Open %s: \n", szFileName);
 		return(NULL);
 		}
 
-	if(! kImage->load(kFile.m_pkFilePointer, filename)) {
+	if(! kImage->load(kFile.m_pkFilePointer, szFileName)) {
 		delete kImage;
 		kFile.Close();
-		fprintf(stderr, "Unable to Read %s: \n", filename);
+		fprintf(stderr, "Unable to Read %s: \n", szFileName);
 		return(NULL);
 		}
 
 	kFile.Close();
 	return kImage;
-
-/*	Image* kImage = new Image;
-	if(!kImage)
-		return NULL;
-
-	if(! kImage->load(m_pkFile->File(filename))) {
-		delete kImage;
-		fprintf(stderr, "Unable to load %s: \n", filename);
-		return(NULL);
-		}
-
-	return kImage;*/
-	
-	// VIM
-/*	SDL_Surface *image;
-	image = IMG_Load(m_pkFile->File(acFilename));
-	if ( image == NULL ) {
-		return(NULL);
-	}
-
-   return(image);*/
-
 }
 
-SDL_Surface *TextureManager::LoadImage(const char *acFilename) 
-{
-/*	VIM
-	fprintf(stderr, "TextureManager::LoadImage(%s)\n", m_pkFile->File(acFilename));
 
-	  bool bIsTga = false;
-
-	if(strstr(acFilename,".tga"))
-		bIsTga = true;
-	
-	SDL_Surface *image;
-
-	fprintf(stderr, "SDL_GetError(%s)\n",SDL_GetError());
-
-	ZFVFile ZFFile;
-	if(! ZFFile.Open(m_pkFile->File(acFilename), 0, false)) {
-		cout << "Failed to open file " << endl;
-		return NULL;
-		}
-	else
-		cout << "ZFFile open OK " << endl;
-
-  fprintf(stderr, "SDL_GetError(%s)\n",SDL_GetError());
-	
-	SDL_RWops* pkRWOps = SDL_RWFromFP(ZFFile.m_pkFilePointer, 0);
-	if(pkRWOps == NULL) {
-      fprintf(stderr, "Unable to create RWop\n");
-		ZFFile.Close();
-		return NULL;
-		}
-	else
-		cout << "RWop created OK " << endl;
-
-  fprintf(stderr, "SDL_GetError(%s)\n",SDL_GetError());
-
-  if(bIsTga)
-		image = IMG_LoadTGA_RW(pkRWOps);
-	else
-		image = IMG_Load_RW(pkRWOps, 0);
-   SDL_FreeRW(pkRWOps);
-
-  fprintf(stderr, "SDL_GetError(%s)\n",SDL_GetError());
-
-  if ( image == NULL ) {
-		fprintf(stderr, "Unable to load %s\n", m_pkFile->File(acFilename));
-		ZFFile.Close();
-      return(NULL);
-    }
-	else
-		fprintf(stderr, "Image loaded %s\n", m_pkFile->File(acFilename));
-			
-
-	ZFFile.Close();
-*/
-	// VIM
-/*	SDL_Surface *image;
-	image = IMG_Load(acFilename);
-	if ( image == NULL ) {
-		fprintf(stderr, "Unable to load %s: %s\n", acFilename, SDL_GetError());
-		return(NULL);
-	}
-
-   return(image);*/
-
-   return NULL;
-};
 
 bool TextureManager::UnLoad(const char* acFileName)
 {
 	int iTexture;
 	iTexture = GetIndex(acFileName);
-	if(iTexture == NO_TEXTURE)
-		return false;
-
-	FreeTexture(m_iTextures[iTexture]);
+	UnLoad( iTexture );
 	return true;
 }
 
 bool TextureManager::UnLoad(int iTextureID)
 {
+	if(iTextureID == NO_TEXTURE)
+		return false;
 	if(m_iTextures[iTextureID] == NULL)
 		return true;
 
@@ -373,45 +264,45 @@ bool TextureManager::UnLoad(int iTextureID)
 	return true;
 }
 
-int TextureManager::Load(const char* acFileName,int iOption)
+/**	\brief	Load a texture.
+
+	Use to load textures. Gets a TextureManger texture object, sets parameters for it and then
+	use LoadTexture to load it. If loads fails then error texture will be loaded.
+*/
+int TextureManager::Load(const char* szFileName, int iOption)
 {
 	int iTexture;
-	iTexture = GetIndex(acFileName);
+	
+	// Check if texture is already loaded.
+	iTexture = GetIndex(szFileName);
 	if(iTexture != NO_TEXTURE)
 		return iTexture;
 
-//	cout << "Load Texture: "<<   << endl;
-	g_ZFObjSys.Logf("resdb", "Load Texture: %s \n", acFileName);
+	g_ZFObjSys.Logf("resdb", "Load Texture: %s \n", szFileName);
 
-	//else load it
-	texture *temp = GetFreeTexture();
-	temp->file=acFileName;
+	texture *pkTex = GetFreeTexture();
+	pkTex->file	=	szFileName;
+
+	iOption |= GetOptionsFromFileName(szFileName);
+	SetOptions(pkTex, iOption);
 
 	// If texture can't be loaded, Load error texture.
-	iOption |= GetOptionsFromFileName(acFileName);
-	SetOptions(temp, iOption);
-
-	if(!LoadTexture(temp,acFileName)) {
+	if(!LoadTexture(pkTex,szFileName))
+	{
 		// If error texture fails to load cry a little and return NO_TEXTURE.
-		cout << "Failed to find texture '" << acFileName << "'" << endl;
+		cout << "Failed to find texture '" << pkTex->file << "'" << endl;
 
-		if(!LoadTexture(temp,ERROR_TEXTURE)) {
-			cout<<"Error Loading texture: "<<temp->file<<endl;
+		if(!LoadTexture(pkTex, ERROR_TEXTURE)) 
+		{
+			cout<<"Error Loading texture: "<< pkTex->file <<endl;
 			return NO_TEXTURE;
 		}
 	}
 	
-	//add the texture to the loaded textures vector
-//	m_iTextures.push_back(temp);
-	
-//	cout<<"Loaded texture: "<<m_iTextures.back()->file<<" index:"<<m_iTextures.back()->index<<endl;
-	
-	//return our new texture index
-//	return m_iTextures.back()->index;
-//	return m_iTextures.size() - 1;
-	return temp->TexID;
+	return pkTex->TexID;
 }
 
+// Bind Textures
 void TextureManager::BindTexture(int iTexture) 
 {
 	if(m_iTextures[iTexture] == NULL)
@@ -419,44 +310,36 @@ void TextureManager::BindTexture(int iTexture)
 
 	m_iCurrentTexture = NO_TEXTURE;
 
-	if(iTexture != m_iCurrentTexture){
+	if(iTexture != m_iCurrentTexture)
+	{
 		m_iCurrentTexture = iTexture;
 		glBindTexture(GL_TEXTURE_2D,m_iTextures[iTexture]->index);
 	}
 }
 
-int TextureManager::GetTextureID (int iTexture)
+bool TextureManager::ValidIndex(int iTextureID)
 {
-	if(m_iTextures[iTexture] == NULL)
-		return 0;
+	if(iTextureID == NO_TEXTURE)
+		return false;
+	if(iTextureID < 0)
+		return false;
+	if(iTextureID > m_iTextures.size())
+		return false;
+	if(m_iTextures[iTextureID] == NULL)
+		return false;
 
-	m_iCurrentTexture = NO_TEXTURE;
-
-	return m_iTextures[iTexture]->index;
-}
-
-int TextureManager::GetSizeOfTexture(int iTexture)
-{
-	if(iTexture == -1)
-		return 0;
-
-	if(m_iTextures[iTexture] == NULL)
-		return 0;
-
-	return m_iTextures[iTexture]->m_iSizeInBytes;
+	return true;
 }
 
 void TextureManager::BindTexture(const char* acFileName,int iOption) 
 {
-	int iTexture=Load(acFileName,iOption);
-	m_iCurrentTexture = NO_TEXTURE;
-	BindTexture(iTexture);
+	BindTexture( Load(acFileName,iOption) );
 }
-
 
 void TextureManager::ClearAll()
 {
-	for(unsigned int i=0;i<m_iTextures.size();i++){
+	for(unsigned int i=0;i<m_iTextures.size();i++)
+	{
 		glDeleteTextures(1,&m_iTextures[i]->index);
 		delete m_iTextures[i];
 	}
@@ -465,15 +348,15 @@ void TextureManager::ClearAll()
 	m_iFreeID.clear();
 }
 
+// Get Information about textures.
 int TextureManager::GetIndex(const char* szFileName)
 {
-	for(unsigned int i=0; i<m_iTextures.size(); i++){
-		if(m_iTextures[i] == NULL)
-			continue;
+	for(unsigned int i=0; i<m_iTextures.size(); i++)
+	{
+		if(m_iTextures[i] == NULL)		continue;
 		
-		if(m_iTextures[i]->file == szFileName) {
+		if(m_iTextures[i]->file == szFileName) 
 			return i;		
-		}		
 	}
 
 	return NO_TEXTURE;
@@ -481,16 +364,30 @@ int TextureManager::GetIndex(const char* szFileName)
 
 const char* TextureManager::GetFileName(unsigned int uiIndex)
 {
-    for(unsigned int i=0; i<m_iTextures.size(); i++){
-		if(m_iTextures[i] == NULL)
-			continue;
+    for(unsigned int i=0; i<m_iTextures.size(); i++)
+	 {
+		if(m_iTextures[i] == NULL)		continue;
 
-		if(m_iTextures[i]->index == uiIndex+1) { // måste lägga till 1!
+		if(m_iTextures[i]->index == uiIndex+1)		// måste lägga till 1!
 			return m_iTextures[i]->file.c_str();        
-        }        
 	}
 
-    return NULL;
+	return NULL;
+}
+
+int TextureManager::GetSizeOfTexture(int iTexture)
+{
+	if(!ValidIndex(iTexture))
+		return 0;
+	return m_iTextures[iTexture]->m_iSizeInBytes;
+}
+
+int TextureManager::GetTextureID (int iTexture)
+{
+	if(!ValidIndex(iTexture))
+		return 0;
+	//m_iCurrentTexture = NO_TEXTURE;
+	return m_iTextures[iTexture]->index;
 }
 
 void TextureManager::ListTextures(void)
@@ -538,7 +435,6 @@ void TextureManager::ReloadAll(void)
 
 bool TextureManager::AddMipMapLevel(int iLevel,const char* acNewFile)
 {
-	
 	//check if level already is loaded then return false
 	if(m_iTextures[m_iCurrentTexture]->m_abLevels.test(iLevel))
 		return false;
@@ -549,34 +445,31 @@ bool TextureManager::AddMipMapLevel(int iLevel,const char* acNewFile)
 		
 	GLint iInternalFormat=GL_RGB;
 	GLint iFormat=GL_BGR;
-	
-	//use sdlimage to load texture
-	SDL_Surface *image;
-	image= LoadImage(acNewFile);	
+
+	Image* image;
+	image = LoadImage(acNewFile);
 	if(!image) {    
    	return false;
 	};
+	
 	
 	//enable mipmaping on curent texture
 	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);		
 	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR_MIPMAP_LINEAR);  
 	
 	//load texture to opengl from sdl surface *image
-	glTexImage2D(GL_TEXTURE_2D,iLevel,iInternalFormat,image->w,image->h,0,iFormat,GL_UNSIGNED_BYTE,image->pixels);
+	glTexImage2D(GL_TEXTURE_2D,iLevel,iInternalFormat,image->m_iWidth,image->m_iHeight,0,iFormat,GL_UNSIGNED_BYTE,image->m_pkPixels);
 
-	//frea sdlsurface
-	SDL_FreeSurface(image); 
-
+	delete image;
 	cout<<"Added "<<acNewFile<<" as mipmap level "<<iLevel<<" for curent texture"<<endl;
 
 	//set the level bit
 	m_iTextures[m_iCurrentTexture]->m_abLevels.flip(iLevel);
 	
-	
 	return true;
 }
 
-
+// Edit Textures
 Image* TextureManager::GetTexture(int iLevel)
 {
 	glGetError();
@@ -613,188 +506,75 @@ bool TextureManager::PutTexture(Image* pkImage,bool bMipMaping)
 	return true;
 }
 
-bool TextureManager::SwapTexture()
+bool TextureManager::EditStart(int iTextureID)
 {
-	if(m_iTextures[m_iCurrentTexture]->m_pkImage2 == NULL)
+	if(!ValidIndex(iTextureID))
 		return false;
-		
-	bool works = PutTexture(m_iTextures[m_iCurrentTexture]->m_pkImage2,
-		m_iTextures[m_iCurrentTexture]->m_bMipMapping);
-	
-	if(works)
-	{
-		//SDL_FreeSurface(m_iTextures[m_iCurrentTexture]->m_pkImage);
-		delete m_iTextures[m_iCurrentTexture]->m_pkImage2;
-		m_iTextures[m_iCurrentTexture]->m_pkImage2 = NULL;
-		return true;
-	}
-	else
-	{
-		cout<<"Error while swaping texture, not changed?"<<endl;
-		return false;
-	}
-	
-}
 
-bool TextureManager::MakeTextureEditable()
-{
-	if(m_iTextures[m_iCurrentTexture]->m_pkImage2 != NULL)
+	// If texture already in edit mode return.
+	if(m_iTextures[iTextureID]->m_pkImage2 != NULL)
 		return true;
 
-	m_iTextures[m_iCurrentTexture]->m_pkImage2 = GetTexture(0);
-	
-	if(m_iTextures[m_iCurrentTexture]->m_pkImage2 == NULL)
-		return false;
+	BindTexture(iTextureID);
+	m_iTextures[iTextureID]->m_pkImage2 = GetTexture(0);
 
+	if(m_iTextures[iTextureID]->m_pkImage2 == NULL)
+		return false;
+	
+	m_iEditLastTextureID = iTextureID;
 	return true;
 }
 
-bool TextureManager::PsetRGB(int x,int y,int r,int g,int b)
+bool TextureManager::EditStart(string strName)
 {
-	if(!MakeTextureEditable())
+	return EditStart(GetIndex(strName.c_str()));
+}
+
+bool TextureManager::EditEnd(int iTextureID)
+{
+	if(!ValidIndex(iTextureID))
 		return false;
 
-	if(x < 0 || x >m_iTextures[m_iCurrentTexture]->m_pkImage2->m_iWidth ||
-		y < 0 || y >m_iTextures[m_iCurrentTexture]->m_pkImage2->m_iHeight)
+	if(m_iTextures[iTextureID]->m_pkImage2 == NULL)
 		return false;
-		
 
-//	Uint32 color = SDL_MapRGB(m_iTextures[m_iCurrentTexture]->m_pkImage->format, r, g, b);
-//	PutPixel(m_iTextures[m_iCurrentTexture]->m_pkImage,x,y,color);
-	m_iTextures[m_iCurrentTexture]->m_pkImage2->set_pixel(x,y,r,g,b);
+	delete m_iTextures[iTextureID]->m_pkImage2;
+	m_iTextures[iTextureID]->m_pkImage2 = NULL;
 	return true;
 }
 
-bool TextureManager::PsetRGBA(int x,int y,int r,int g,int b,int a)
+bool TextureManager::EditEnd(string strName)
 {
-	if(!MakeTextureEditable()){
-		return false;
-	}
-	
-	if(x < 0 || x >m_iTextures[m_iCurrentTexture]->m_pkImage2->m_iWidth ||
-		y < 0 || y >m_iTextures[m_iCurrentTexture]->m_pkImage2->m_iHeight)
-		return false;
-	
-//	Uint32 color = SDL_MapRGBA(m_iTextures[m_iCurrentTexture]->m_pkImage->format, r, g, b,a);	
-//	PutPixel(m_iTextures[m_iCurrentTexture]->m_pkImage,x,y,color);
-	m_iTextures[m_iCurrentTexture]->m_pkImage2->set_pixel(x,y,r,g,b,a);
-
-	return true;
+	return EditEnd(GetIndex(strName.c_str()));
 }
 
-/*
-void TextureManager::PutPixel(SDL_Surface* surface, int x, int y, Uint32 pixel)
+bool TextureManager::EditCommit(string strName)
 {
-	 int bpp = surface->format->BytesPerPixel;
-    // Here p is the address to the pixel we want to set
-    Uint8 *p = (Uint8 *)surface->pixels + y * surface->pitch + x * bpp;
+	int iTextureID = GetIndex(strName.c_str());
+	if(!ValidIndex(iTextureID))
+		return false;
+	if(m_iTextures[iTextureID]->m_pkImage2 == NULL)
+		return false;
 
-
-    switch(bpp) {
-    case 1:
-        *p = pixel;
-        break;
-
-    case 2:
-        *(Uint16 *)p = pixel;
-        break;
-
-    case 3:
-        if(SDL_BYTEORDER == SDL_BIG_ENDIAN) {
-            p[0] = (pixel >> 16) & 0xff;
-            p[1] = (pixel >> 8) & 0xff;
-            p[2] = pixel & 0xff;
-        } else {
-            p[0] = pixel & 0xff;
-            p[1] = (pixel >> 8) & 0xff;
-            p[2] = (pixel >> 16) & 0xff;
-        }
-        
-        break;
-
-    case 4:
-        *(Uint32 *)p = pixel;
-        break;
-    }
+	BindTexture(iTextureID);
+	return PutTexture(m_iTextures[iTextureID]->m_pkImage2, m_iTextures[iTextureID]->m_bMipMapping);
 }
 
-bool TextureManager::Blit(SDL_Surface* pkImage,int x,int y)
+Image* TextureManager::EditGetImage(int iTextureID)
 {
-	if(!MakeTextureEditable()){
-		return false;
-	}
-	
-	SDL_Rect temp;
-	temp.x = x;
-	temp.y = y;
-	temp.w = pkImage->w;
-	temp.h = pkImage->h;
-	
-//	SDL_SetAlpha(m_iTextures[m_iCurrentTexture]->m_pkImage,0, 128);
-	SDL_SetAlpha(pkImage,SDL_RLEACCEL|SDL_SRCALPHA, 255);	
-	
-	if(SDL_BlitSurface(pkImage,NULL, m_iTextures[m_iCurrentTexture]->m_pkImage, &temp) != 0)
-	{		
-		cout<<"error while blitting to texture"<<endl;
-		return false;
-	}
-
-
-	return true;
-	
-
-	return false;
-}
-*/
-
-Image* TextureManager::GetImage()
-{
-	if(!m_iTextures[m_iCurrentTexture])
+	if(!ValidIndex(iTextureID))
 		return NULL;
-	
-	if(!MakeTextureEditable())
-		return NULL;
-
-	return m_iTextures[m_iCurrentTexture]->m_pkImage2;
+	return m_iTextures[iTextureID]->m_pkImage2;
 }
 
-color_rgba TextureManager::GetPixel(int x,int y)
+Image* TextureManager::EditGetImage(string strName)
 {
-	color_rgba kColor;
-	kColor.r = kColor.g = kColor.b = kColor.a = 0;
-
-	if(!MakeTextureEditable()){
-		return kColor;
-	}
-
-	m_iTextures[m_iCurrentTexture]->m_pkImage2->get_pixel(x,y, kColor);
-	return kColor;
-
-	/*	SDL_Surface* surface = m_iTextures[m_iCurrentTexture]->m_pkImage;
-
-	int bpp = surface->format->BytesPerPixel;
-	Uint8 *p = (Uint8 *)surface->pixels + y * surface->pitch + x * bpp;
-
-	switch(bpp) {
-	case 1:
-		return *p;
-
-	case 2:
-		return *(Uint16 *)p;
-
-	case 3:
-		if(SDL_BYTEORDER == SDL_BIG_ENDIAN)
-			return p[0] << 16 | p[1] << 8 | p[2];
-		else
-			return p[0] | p[1] << 8 | p[2] << 16;
-
-	case 4:
-		return *(Uint32 *)p;
-
-	default:
-		return 0;       // shouldn't happen, but avoids warnings 
-	}*/
+	return EditGetImage(GetIndex(strName.c_str()));
 }
+
+
+
+
 
 bool TextureManager::SaveTexture(const char* acFile,int iLevel)
 {
@@ -904,3 +684,215 @@ string TextureManager::GetTextureNameFromOpenGlIndex(int iGlObject)
 
 	return strName;
 }
+
+
+// ***************** OLD REMOVE *****************************************************************
+
+
+
+/*SDL_Surface *TextureManager::LoadImage(const char *acFilename) 
+{
+	VIM
+	fprintf(stderr, "TextureManager::LoadImage(%s)\n", m_pkFile->File(acFilename));
+
+	  bool bIsTga = false;
+
+	if(strstr(acFilename,".tga"))
+		bIsTga = true;
+	
+	SDL_Surface *image;
+
+	fprintf(stderr, "SDL_GetError(%s)\n",SDL_GetError());
+
+	ZFVFile ZFFile;
+	if(! ZFFile.Open(m_pkFile->File(acFilename), 0, false)) {
+		cout << "Failed to open file " << endl;
+		return NULL;
+		}
+	else
+		cout << "ZFFile open OK " << endl;
+
+  fprintf(stderr, "SDL_GetError(%s)\n",SDL_GetError());
+	
+	SDL_RWops* pkRWOps = SDL_RWFromFP(ZFFile.m_pkFilePointer, 0);
+	if(pkRWOps == NULL) {
+      fprintf(stderr, "Unable to create RWop\n");
+		ZFFile.Close();
+		return NULL;
+		}
+	else
+		cout << "RWop created OK " << endl;
+
+  fprintf(stderr, "SDL_GetError(%s)\n",SDL_GetError());
+
+  if(bIsTga)
+		image = IMG_LoadTGA_RW(pkRWOps);
+	else
+		image = IMG_Load_RW(pkRWOps, 0);
+   SDL_FreeRW(pkRWOps);
+
+  fprintf(stderr, "SDL_GetError(%s)\n",SDL_GetError());
+
+  if ( image == NULL ) {
+		fprintf(stderr, "Unable to load %s\n", m_pkFile->File(acFilename));
+		ZFFile.Close();
+      return(NULL);
+    }
+	else
+		fprintf(stderr, "Image loaded %s\n", m_pkFile->File(acFilename));
+			
+
+	ZFFile.Close();
+*/
+	// VIM
+/*	SDL_Surface *image;
+	image = IMG_Load(acFilename);
+	if ( image == NULL ) {
+		fprintf(stderr, "Unable to load %s: %s\n", acFilename, SDL_GetError());
+		return(NULL);
+	}
+
+   return(image);
+
+   return NULL;
+};*/
+
+/*
+void TextureManager::PutPixel(SDL_Surface* surface, int x, int y, Uint32 pixel)
+{
+	 int bpp = surface->format->BytesPerPixel;
+    // Here p is the address to the pixel we want to set
+    Uint8 *p = (Uint8 *)surface->pixels + y * surface->pitch + x * bpp;
+
+
+    switch(bpp) {
+    case 1:
+        *p = pixel;
+        break;
+
+    case 2:
+        *(Uint16 *)p = pixel;
+        break;
+
+    case 3:
+        if(SDL_BYTEORDER == SDL_BIG_ENDIAN) {
+            p[0] = (pixel >> 16) & 0xff;
+            p[1] = (pixel >> 8) & 0xff;
+            p[2] = pixel & 0xff;
+        } else {
+            p[0] = pixel & 0xff;
+            p[1] = (pixel >> 8) & 0xff;
+            p[2] = (pixel >> 16) & 0xff;
+        }
+        
+        break;
+
+    case 4:
+        *(Uint32 *)p = pixel;
+        break;
+    }
+}
+
+bool TextureManager::Blit(SDL_Surface* pkImage,int x,int y)
+{
+	if(!MakeTextureEditable()){
+		return false;
+	}
+	
+	SDL_Rect temp;
+	temp.x = x;
+	temp.y = y;
+	temp.w = pkImage->w;
+	temp.h = pkImage->h;
+	
+//	SDL_SetAlpha(m_iTextures[m_iCurrentTexture]->m_pkImage,0, 128);
+	SDL_SetAlpha(pkImage,SDL_RLEACCEL|SDL_SRCALPHA, 255);	
+	
+	if(SDL_BlitSurface(pkImage,NULL, m_iTextures[m_iCurrentTexture]->m_pkImage, &temp) != 0)
+	{		
+		cout<<"error while blitting to texture"<<endl;
+		return false;
+	}
+
+
+	return true;
+	
+
+	return false;
+}
+*/
+/*
+bool TextureManager::SwapTexture()
+{
+	if(m_iTextures[m_iCurrentTexture]->m_pkImage2 == NULL)
+		return false;
+		
+	bool works = PutTexture(m_iTextures[m_iCurrentTexture]->m_pkImage2,
+		m_iTextures[m_iCurrentTexture]->m_bMipMapping);
+	
+	if(works)
+	{
+		//SDL_FreeSurface(m_iTextures[m_iCurrentTexture]->m_pkImage);
+		delete m_iTextures[m_iCurrentTexture]->m_pkImage2;
+		m_iTextures[m_iCurrentTexture]->m_pkImage2 = NULL;
+		return true;
+	}
+	else
+	{
+		cout<<"Error while swaping texture, not changed?"<<endl;
+		return false;
+	}
+}*/
+
+/*
+bool TextureManager::MakeTextureEditable()
+{
+	if(m_iTextures[m_iCurrentTexture]->m_pkImage2 != NULL)
+		return true;
+
+	m_iTextures[m_iCurrentTexture]->m_pkImage2 = GetTexture(0);
+	
+	if(m_iTextures[m_iCurrentTexture]->m_pkImage2 == NULL)
+		return false;
+
+	return true;
+}*/
+
+/*
+bool TextureManager::PsetRGB(int x,int y,int r,int g,int b)
+{
+	if(x < 0 || x >m_iTextures[m_iEditLastTextureID]->m_pkImage2->m_iWidth ||
+		y < 0 || y >m_iTextures[m_iEditLastTextureID]->m_pkImage2->m_iHeight)
+		return false;
+
+	m_iTextures[m_iEditLastTextureID]->m_pkImage2->set_pixel(x,y,r,g,b);
+	return true;
+}
+
+bool TextureManager::PsetRGBA(int x,int y,int r,int g,int b,int a)
+{
+	if(x < 0 || x >m_iTextures[m_iEditLastTextureID]->m_pkImage2->m_iWidth ||
+		y < 0 || y >m_iTextures[m_iEditLastTextureID]->m_pkImage2->m_iHeight)
+		return false;
+	
+	m_iTextures[m_iEditLastTextureID]->m_pkImage2->set_pixel(x,y,r,g,b,a);
+	return true;
+}
+
+color_rgba TextureManager::GetPixel(int x,int y)
+{
+	color_rgba kColor;
+	kColor.r = kColor.g = kColor.b = kColor.a = 0;
+
+/*	if(!MakeTextureEditable()){
+		return kColor;
+	}
+
+	m_iTextures[m_iEditLastTextureID]->m_pkImage2->get_pixel(x,y, kColor);
+	return kColor;
+}*/
+
+
+
+
+

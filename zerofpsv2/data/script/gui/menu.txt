@@ -124,6 +124,10 @@ Title=Marker (T)
 Parent=Menu_Debug
 Cmd=set s_marker toggle
 
+[Menu_EditSun]
+Title=EditSun (T)
+Parent=Menu_Debug
+Cmd=editsun
 
 ; ------------- DEVPAGE MENU -------------
 
