@@ -336,12 +336,12 @@ ZGuiWnd* ZGuiApp::CreateWnd(GuiType eType, char* szResourceName, char* szText, Z
 
 	if(eScaleMode == GUIScaleManually)
 	{
-		int parent_width = 800, parent_height = 600;
+		float parent_width = 800, parent_height = 600;
 
 		if(pkWnd->GetParent() != NULL)
 		{
-			parent_width = pkWnd->GetParent()->GetScreenRect().Width();
-			parent_height = pkWnd->GetParent()->GetScreenRect().Height();
+			parent_width = (float) pkWnd->GetParent()->GetScreenRect().Width();
+			parent_height = (float) pkWnd->GetParent()->GetScreenRect().Height();
 		}
 
 		//if(pkWnd->GetParent() == NULL || pkWnd->GetParent() == GetWnd("GuiMainWnd") )
@@ -364,16 +364,20 @@ ZGuiWnd* ZGuiApp::CreateWnd(GuiType eType, char* szResourceName, char* szText, Z
 				new_y = GetHeight() - (600-rc.Bottom) - rc.Height();
 				break;
 			case CenterHorz:
-				new_x = GetWidth() / 2 - rc.Width() / 2;
+				new_x = (((rc.Left + (rc.Right-rc.Left)/2) / 800.0f) * 
+					(float) GetWidth()) - (rc.Right-rc.Left)/2; 
 				new_y = rc.Top;
 				break;
 			case CenterVert:
 				new_x = rc.Left;
-				new_y = GetHeight() / 2 - rc.Height() / 2;
+				new_y = (((rc.Top + (rc.Bottom-rc.Top)/2) / 600.0f) * 
+					(float) GetHeight()) - (rc.Bottom-rc.Top)/2; 
 				break;
 			case Center:
-				new_x = GetWidth() / 2 - rc.Width() / 2;
-				new_y = GetHeight() / 2 - rc.Height() / 2;
+				new_x = (((rc.Left + (rc.Right-rc.Left)/2) / 800.0f) * 
+					(float) GetWidth()) - (rc.Right-rc.Left)/2; 
+				new_y = (((rc.Top + (rc.Bottom-rc.Top)/2) / 600.0f) * 
+					(float) GetHeight()) - (rc.Bottom-rc.Top)/2; 
 				break;
 			}
 
