@@ -19,15 +19,19 @@ void Init(ZFScriptSystem* pkScript, EntityManager* pkObjMan)
 {
 	cout << "Add SI: Properties" << endl;
 
-	g_pkScript = pkScript;
-	g_pkObjMan = pkObjMan;
+	g_pkScript = NULL;
+	g_pkObjMan = NULL;
 
-	pkScript->ExposeFunction("RotWithCamYAxis",		PropertiesLua::RotWithCamYAxisLua);
-	pkScript->ExposeFunction("BindKey",				PropertiesLua::BindKeyLua);
+//	g_pkScript = pkScript;
+//	g_pkObjMan = pkObjMan;
+
+//	pkScript->ExposeFunction("RotWithCamYAxis",		PropertiesLua::RotWithCamYAxisLua);
+//	pkScript->ExposeFunction("BindKey",				PropertiesLua::BindKeyLua);
 }
 
 // ------------------------------------------------------------------------------------------
 
+/*
 // p_controller: objectID(0), NameOfKey(string)(1), axis:X,Y,Z(2), force(float)(3), input (optional, default=KEYBOARD)(4)
 int BindKeyLua(lua_State* pkLua)
 {
@@ -78,7 +82,7 @@ int RotWithCamYAxisLua(lua_State* pkLua)
 
 	return 0;
 }
-
+*/
 
 
 

@@ -712,12 +712,11 @@ class SITcs { };
 namespace SI_PTcs
 {
 
-/**	\fn SetNextAnim(ObjectID, AnimName)
+/**	\fn ApplyImpuls( Entity, Table.xyz)
  	\relates SITcs
-	\brief Sets the next animation for a object to play.
+	\brief Adds a one time impulse to the entity.
 
-	Sets the next animation to play on a object. Stops to looping of the currently playing animation
-	(if any) and then play the one given as a parameter. That animation will the loop. 
+	Impulse is given in the direction specified by xyz.
 */
 int ApplyImpulsLua(lua_State* pkLua)
 {

@@ -25,10 +25,10 @@ void Init(ZFScriptSystem* pkScript, ZFVFileSystem* pkVFS)
 	pkScript->ExposeFunction("GetFilesInFolder", StdLua::GetFilesInFolderLua);		
 }
 
-/**	\fn Print( szText )
- 		\relates MistLandStdScript
-		\brief Print text to std out device.
-		\param szText Text to print.
+/** \fn Print( szText )
+	\relates MistLandStdScript
+	\brief Print text to std out device.
+	\param szText Text to print.
 */
 int PrintLua(lua_State* pkLua)
 {

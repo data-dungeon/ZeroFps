@@ -684,12 +684,13 @@ class SIMad { };
 namespace SI_PMad
 {
 
-/**	\fn SetNextAnim(ObjectID, AnimName)
+/**	\fn SetNextAnim( Entity, AnimName)
  	\relates SIMad
 	\brief Sets the next animation for a object to play.
 
-	Sets the next animation to play on a object. Stops to looping of the currently playing animation
-	(if any) and then play the one given as a parameter. That animation will the loop. 
+	This function sets the next animation that the object will play after completing the current one
+	(if any). If the current playing animation is set to loop it will stop loop so AnimName can play after it.
+	The AnimName animation will be set to loop.
 */
 int SetNextAnim(lua_State* pkLua)
 {
@@ -707,9 +708,11 @@ int SetNextAnim(lua_State* pkLua)
 	return 1;
 }
 
-/**	\fn PlayAnim(ObjectID, AnimName)
+/**	\fn PlayAnim( Entity, AnimName)
  	\relates SIMad
-   \brief Sets the playing animation.
+	\brief Sets the playing animation.
+
+	Plays animation on entity. Aborts the current animation if any. The animation will loop.
 */
 int PlayAnim(lua_State* pkLua)
 {
@@ -720,8 +723,6 @@ int PlayAnim(lua_State* pkLua)
 	char acName[100];
 	g_pkScript->GetArg(pkLua, 1, acName);
 
-//	printf("Should Play A Animation '%s' on object %d", acName,  iId1);
-
 	Entity* o1 = g_pkObjMan->GetEntityByID(iId1);
 	P_Mad* mp = dynamic_cast<P_Mad*>(o1->GetProperty("P_Mad"));
 	mp->SetAnimation(acName,0);
@@ -729,9 +730,9 @@ int PlayAnim(lua_State* pkLua)
 	return 1;
 }
 
-/**	\fn AddMesh
+/**	\fn AddMesh( Entity, MeshIndex)
  	\relates SIMad
-   \brief 
+   \brief Adds the Mesh to be displayed on the entity.
 */
 int AddMesh(lua_State* pkLua)
 {

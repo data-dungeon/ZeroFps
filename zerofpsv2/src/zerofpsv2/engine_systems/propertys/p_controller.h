@@ -47,7 +47,16 @@ class ENGINE_SYSTEMS_API P_Controller : public Property {
 		void PackFrom(NetPacket* pkNetPacket, int iConnectionID );
 };
 
+
+namespace SI_PController
+{
+	int ENGINE_SYSTEMS_API BindKeyLua(lua_State* pkLua);
+	int ENGINE_SYSTEMS_API RotWithCamYAxisLua(lua_State* pkLua);
+}
+
 Property* Create_P_Controller();
+void Register_PController(ZeroFps* pkZeroFps);
+
 
 #endif
 

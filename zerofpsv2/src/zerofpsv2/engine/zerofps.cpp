@@ -1601,13 +1601,14 @@ void ZeroFps::RegisterPropertys()
 	m_pkPropertyFactory->Register("P_Sound",				Create_SoundProperty);		
 	m_pkPropertyFactory->Register("P_PfPath",				Create_P_PfPath);											
 	m_pkPropertyFactory->Register("P_PfMesh",				Create_P_PfMesh);											
-	m_pkPropertyFactory->Register("P_Tcs",					Create_P_Tcs);					
+//	m_pkPropertyFactory->Register("P_Tcs",					Create_P_Tcs);					
 	m_pkPropertyFactory->Register("P_WorldInfo",			Create_WorldInfoProperty);						
 	m_pkPropertyFactory->Register("P_ScriptInterface",	Create_P_ScriptInterface);
-	m_pkPropertyFactory->Register("P_Controller",		Create_P_Controller);
+//	m_pkPropertyFactory->Register("P_Controller",		Create_P_Controller);
 
 	Register_MadProperty(this);
 	Register_PTcs(this);
+	Register_PController(this);
 }
 
 
