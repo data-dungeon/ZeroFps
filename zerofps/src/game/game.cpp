@@ -279,7 +279,7 @@ void Game::SetUpMenuScreen()
 {
 	pkLevelMan->LoadLevel("menu");
 
-	m_pkCamera->GetPos().Set(94.5,23,98.1);	
+	m_pkCamera->GetPos().Set(100,43,98.1);	
 	m_pkCamera->GetRot().Set(13,138,0);	
 
 	m_iGameState=GAME_STATE_MENU;
