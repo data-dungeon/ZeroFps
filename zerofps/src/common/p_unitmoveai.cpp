@@ -41,8 +41,8 @@ void P_UnitMoveAI::Init()
 
 	int aiCost[5];
 	aiCost[0] = 15; // gräs (grön nyans)
-	aiCost[1] = 1; // väg (röd nyans)
-	aiCost[2] = 7; // sten (blå nyans)
+	aiCost[1] = 1;  // väg (röd nyans)
+	aiCost[2] = 7;  // sten (blå nyans)
 	aiCost[3] = 10; // öken (röd nyans)
 	aiCost[4] = 999; // vatten
 

@@ -26,10 +26,15 @@ PathBuilder::~PathBuilder()
 
 }
 
-void PathBuilder::Build(int pkObjectTypeCost[5])
+void PathBuilder::Build(int pkObjectTypeCost[5], float fMaxAngle)
 {
 	int iMapSize = m_pkHeightMap->m_iHmSize;
 	int y,x;
+
+	if(fMaxAngle > 90)
+		fMaxAngle = 90;
+	if(fMaxAngle < 0)
+		fMaxAngle = 0;
 
 	if(m_piTerrain == NULL)
 	{
@@ -53,7 +58,7 @@ void PathBuilder::Build(int pkObjectTypeCost[5])
 				Vector3 ground_plane = Vector3(0,1,0);
 				float angle = RadToDeg(sqrnorm.Angle(ground_plane));
 
-				if(pkVert->height <= 2.0f || angle > 40.0f)
+				if(pkVert->height <= 2.0f || angle > fMaxAngle)
 					texture = 4;
 
 				int iIndex = y*iMapSize+x;

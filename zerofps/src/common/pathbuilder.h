@@ -24,7 +24,7 @@ class COMMON_API PathBuilder : public ZFObject
 public:
 	Point GetSqrFromPos(Vector3 pos);
 	Vector3 GetPosFromSqr(Point square);
-	void Build(int pkObjectTypeCost[5]);
+	void Build(int pkObjectTypeCost[5], float fMaxAngle=40.0f);
 	PathBuilder(HeightMap* pkHeightMap, PathFind** m_ppkPathFind);
 	~PathBuilder();
 

@@ -99,7 +99,6 @@ private:
 	// Advances search one step 
 	SEARCH_STATE SearchStep();
 
-	int GetTerrainCost(int x, int y);
 	bool FillQueue();
 	void FreeAllNodes();
 	void DeleteUnusedNodes();
@@ -127,6 +126,7 @@ public:
 	void Reset();
 	bool GetNextStep(int &riSquareX, int &riSquareY);
 	bool Rebuild(int startx, int starty, int endx, int endy);
+	int GetTerrainCost(int x, int y);
 
 	static int m_siMapWidth;
 	friend class PathBuilder;
