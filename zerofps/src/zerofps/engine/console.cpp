@@ -10,7 +10,7 @@ Console::Console()
    	
 	m_pkEngine	= static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
 	m_pkInput	= static_cast<Input*>(g_ZFObjSys.GetObjectPtr("Input"));	
-	m_pkCmd		= m_pkEngine->m_pkCmd;
+//	m_pkCmd		= m_pkEngine->m_pkCmd;
 	m_pkRender	= m_pkEngine->m_pkRender;
 	m_pkTexMan  = m_pkEngine->m_pkTexMan;
 
@@ -24,7 +24,7 @@ Console::Console()
 	Print("ZeroFps engine started");
 	Print("ZeroFps (C) Dvoid & Vim");
 	Print("-----------------------");
-	Print(" Type help for help =)");
+//	Print(" Type help for help =)");
 	Print("");
 
 	m_nStartLine = 0;
@@ -32,7 +32,7 @@ Console::Console()
 	m_nStartLine = 0;
 
 //	g_ZFObjSys.Register_Cmd("version",FID_VERSION,this);
-	g_ZFObjSys.Register_Cmd("help",FID_HELP,this);
+//	g_ZFObjSys.Register_Cmd("help",FID_HELP,this);
 
 	m_fToggleTime = 0;
 	m_bActive = false;

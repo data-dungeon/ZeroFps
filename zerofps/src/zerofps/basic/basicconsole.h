@@ -14,19 +14,19 @@ using namespace std;
 /// A base class to create objects that you can print text to.
 class BASIC_API BasicConsole : public ZFObject {
 protected:
-		vector<char*>	m_kText;								///< Text that the console have.
+		vector<char*>	m_kText;										///< Text that the console have.
 
 public:
 		BasicConsole(char* szName);
 		
 		// Print output to console.
 		virtual void Print(const char* aText);					///< Print text to console.
-		virtual void Printf(const char *fmt, ...);				///< Print text with formation commands to console.
+		virtual void Printf(const char *fmt, ...);			///< Print text with formation commands to console.
 		
-		enum FuncId_e
+/*		enum FuncId_e
 			{
 			FID_HELP
-			};
+			};*/
 
 		void RunCommand(int cmdid, const CmdArgument* kCommand);
 };

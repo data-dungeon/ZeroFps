@@ -24,7 +24,7 @@ class ENGINE_API LevelManager : public ZFObject {
 		ZFBasicFS* 			m_pkBasicFS;
 		Console* 			m_pkConsole;
 		Render* 				m_pkRender;
-		CmdSystem* 			m_pkCmd;
+//		CmdSystem* 			m_pkCmd;
 		ZFIni* 				m_pkIni;
 		Light*				m_pkLight;
 		

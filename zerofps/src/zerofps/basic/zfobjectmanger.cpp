@@ -97,7 +97,8 @@ ZFObjectManger::ZFObjectManger()
 	g_Logf("Starting Object System\n");
 #endif
 
-
+//	g_ZFObjSys.Register_Cmd("set",		FID_SET,this, "set name value", 2);
+//	g_ZFObjSys.Register_Cmd("varlist",	FID_VARLIST,this);
 }
 
 ZFObjectManger::~ZFObjectManger()
@@ -520,6 +521,8 @@ void ZFObjectManger::PrintVariables()
 	BasicConsole*		m_pkCon;
 	m_pkCon = dynamic_cast<BasicConsole*>(g_ZFObjSys.GetObjectPtr("Console"));
 	string strValue;
+
+	m_pkCon->Printf("### variable list ###");
 
 	for(unsigned int i=0; i<m_kCmdDataList.size(); i++) {
 			strValue = GetVarValue(&m_kCmdDataList[i]);

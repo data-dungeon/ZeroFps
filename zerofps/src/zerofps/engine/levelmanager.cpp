@@ -10,7 +10,7 @@ LevelManager::LevelManager(): ZFObject("LevelManager")
 	m_pkBasicFS=static_cast<ZFBasicFS*>(g_ZFObjSys.GetObjectPtr("ZFBasicFS"));
 	m_pkConsole=static_cast<Console*>(g_ZFObjSys.GetObjectPtr("Console"));
 	m_pkRender=static_cast<Render*>(g_ZFObjSys.GetObjectPtr("Render"));
-	m_pkCmd=static_cast<CmdSystem*>(g_ZFObjSys.GetObjectPtr("CmdSystem"));
+//	m_pkCmd=static_cast<CmdSystem*>(g_ZFObjSys.GetObjectPtr("CmdSystem"));
 	m_pkIni=static_cast<ZFIni*>(g_ZFObjSys.GetObjectPtr("ZFIni"));
 	m_pkLight = static_cast<Light*>(g_ZFObjSys.GetObjectPtr("Light"));
 	

@@ -74,11 +74,11 @@ public:
 class BASIC_API ZFObjectManger
 {
 private:
-	vector<NameObject>		kObjectNames;		///< List of all object names/ptrs.
+	vector<NameObject>	kObjectNames;		///< List of all object names/ptrs.
 	vector<ZFCmdData>		m_kCmdDataList;		///< List of all cmd functions/variables.
 
 	vector<ZFLogFile>		m_kLogFiles;
-	FILE*					m_pkLogFile;
+	FILE*						m_pkLogFile;
 
 public:
 	public:

@@ -12,29 +12,9 @@
 
 using namespace std;
 
-
-enum data_types {
-	type_int,
-	type_float,
-	type_double,
-	type_long,
-	type_string
-	
-};
-
-/*
-struct variable {
-	char* aName;				// In Game variable name 
-	int iType;					// What type see enum data_types
-	void* pAddress;				// Pointer to variable
-};
-*/
-
-
 class BASIC_API CmdSystem : public ZFObject  {
 	private:
-		//vector<variable*>	kVars;		
-		BasicConsole*		m_pkCon;
+		BasicConsole*			m_pkCon;
 
 	public:
 		enum FuncId_e
@@ -47,15 +27,7 @@ class BASIC_API CmdSystem : public ZFObject  {
 
 		CmdSystem(void);
 		
-//		void Add(void* pAddress,const char* aName,int iType);					//add new ingame variable
-		//void List();															//list all variables
 		bool Set(const char* aName,const char* acData);							//set variable aName to dData
-		//void SetString(int i,const char* acData);								//set variable aName to dData		
-		//void SetValue(int i,const char* acData);								//set variable aName to dData		
-		//void* GetVar(int i);
-
-//		inline vector<variable*> &GetList(void) {return kVars;};
-//		void Get(const char* aName);														//print variable aName
 };
 
 

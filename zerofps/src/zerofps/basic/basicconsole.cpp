@@ -2,12 +2,14 @@
 #include <cstdarg>
 #include "basicconsole.h"
 #include "zfobjectmanger.h"
+#include "globals.h"
 
 extern ZFObjectManger g_ZFObjSys;
 
 using namespace std;
 
-char format_text[4096];	
+
+//char format_text[4096];	
 
 
 BasicConsole::BasicConsole(char* szName)
@@ -41,16 +43,16 @@ void BasicConsole::Printf(const char *fmt, ...)
 	if (fmt == NULL)	return;					
 
 	va_start(ap, fmt);						// Parses The String For Variables
-		vsprintf(format_text, fmt, ap);		// And Convert Symbols
+		vsprintf(g_szFormatText, fmt, ap);		// And Convert Symbols
 	va_end(ap);								// 
 
 	// Now call our print function.
-	Print(format_text);
+	Print(g_szFormatText);
 }
 
 void BasicConsole::RunCommand(int cmdid, const CmdArgument* kCommand)
 {
-	switch(cmdid) {
+/*	switch(cmdid) {
 		case FID_HELP:
 			Print("");
 			Print("### help ###");
@@ -61,7 +63,7 @@ void BasicConsole::RunCommand(int cmdid, const CmdArgument* kCommand)
 			Print(" togglegrab  -toggle input grab");
 			Print(" setdisplay  -reinit display");
 			break;
-	}
+	}*/
 }
 
 

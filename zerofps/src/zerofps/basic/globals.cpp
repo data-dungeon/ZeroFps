@@ -127,7 +127,8 @@ float GetYawAngle(Vector3 kDir)
 	return RadToDeg(fAngle);
 }
 
-char LogFormatTxt[4096];	
+//char LogFormatTxt[4096];	
+char g_szFormatText[4096];	
 
 void g_Logf(const char *fmt, ...)
 {
@@ -137,10 +138,10 @@ void g_Logf(const char *fmt, ...)
 	if (fmt == NULL)	return;					
 
 	va_start(ap, fmt);						// Parses The String For Variables
-		vsprintf(LogFormatTxt, fmt, ap);		// And Convert Symbols
+		vsprintf(g_szFormatText, fmt, ap);		// And Convert Symbols
 	va_end(ap);								// 
 
 	// Now call our print function.
-	g_ZFObjSys.Log(LogFormatTxt);
+	g_ZFObjSys.Log(g_szFormatText);
 }
 

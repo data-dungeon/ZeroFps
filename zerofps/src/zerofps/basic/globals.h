@@ -39,6 +39,8 @@ void BASIC_API g_Logf(const char *fmt, ...);
 
 bool BASIC_API IsSameIgnoreCase(const char* szString1, const char* szString2);
 
+extern char g_szFormatText[4096];	
+
 enum BASIC_API GlobalButton
 {
 	gKEY_ESCAPE=0,

@@ -60,7 +60,7 @@ LINK32=link.exe
 # Begin Special Build Tool
 ProjDir=.
 SOURCE="$(InputPath)"
-PostBuild_Cmds=copy                           $(ProjDir)\release\*.lib                                            ..\..\..\bin\ 
+PostBuild_Cmds=copy                             $(ProjDir)\release\*.lib                                              ..\..\..\bin\ 
 # End Special Build Tool
 
 !ELSEIF  "$(CFG)" == "basic - Win32 Debug"
@@ -148,7 +148,21 @@ SOURCE=.\basicconsole.cpp
 # Begin Source File
 
 SOURCE=.\cmdsystem.cpp
+
+!IF  "$(CFG)" == "basic - Win32 Release"
+
 # SUBTRACT CPP /YX
+
+!ELSEIF  "$(CFG)" == "basic - Win32 Debug"
+
+# SUBTRACT CPP /YX
+
+!ELSEIF  "$(CFG)" == "basic - Win32 Release Profile"
+
+# SUBTRACT CPP /YX
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 

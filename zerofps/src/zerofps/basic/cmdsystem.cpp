@@ -6,12 +6,53 @@
 
 CmdSystem::CmdSystem()
 : ZFObject("CmdSystem") {
-	g_ZFObjSys.Register_Cmd("set",FID_SET,this, "set name value", 2);
-	g_ZFObjSys.Register_Cmd("varlist",FID_VARLIST,this);
+	g_ZFObjSys.Register_Cmd("set",		FID_SET,this, "set name value", 2);
+	g_ZFObjSys.Register_Cmd("varlist",	FID_VARLIST,this);
 
 	m_pkCon = dynamic_cast<BasicConsole*>(g_ZFObjSys.GetObjectPtr("Console"));
-
 }
+
+bool CmdSystem::Set(const char* acName,const char* acData)
+{
+	return g_ZFObjSys.SetVariable(const_cast<char*>(acName),const_cast<char*>(acData));
+}
+
+void CmdSystem::RunCommand(int cmdid, const CmdArgument* kCommand)
+{
+	switch(cmdid) {
+		case FID_SET:
+			if(!Set(kCommand->m_kSplitCommand[1].c_str(),&kCommand->m_strFullCommand.c_str()[kCommand->m_kSplitCommand[0].length() + kCommand->m_kSplitCommand[1].length() + 2])){
+				m_pkCon->Printf("Variable not found");
+				return;
+			} else {
+				m_pkCon->Printf("Setting %s = %s",kCommand->m_kSplitCommand[1].c_str(),kCommand->m_kSplitCommand[2].c_str());
+			}
+			
+			
+			break;
+
+		case FID_VARLIST:	g_ZFObjSys.PrintVariables();	break;
+	}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 /*
 void CmdSystem::Add(void* pAddress,const char* aName,int iType) {
@@ -92,29 +133,7 @@ void* CmdSystem::GetVar(int i) {
 //	return (void*)&pdData;
 }
 */
-bool CmdSystem::Set(const char* acName,const char* acData)
-{
-	return g_ZFObjSys.SetVariable(const_cast<char*>(acName),const_cast<char*>(acData));
 
-/*	char aName[50];
-	strcpy(aName,acName);
-	Gemens(aName);
-	
-	//loop trough variable vector 
-	for(unsigned int i=0;i<kVars.size();i++) {
-		if(strcmp(kVars[i]->aName,aName)==0){	//if we find the right variable
-			if(kVars[i]->iType == type_string) {
-				SetString(i,acData);											
-			}else {
-				SetValue(i,acData);
-			}
-			
-			return true;
-		}
-	}*/
-	
-	return false;
-}
 
 
 /*
@@ -140,26 +159,6 @@ void CmdSystem::SetString(int i,const char* acData) {
 	(*(string*)kVars[i]->pAddress)=acData;
 }
 */
-void CmdSystem::RunCommand(int cmdid, const CmdArgument* kCommand)
-{
-	switch(cmdid) {
-		case FID_SET:
-			if(!Set(kCommand->m_kSplitCommand[1].c_str(),&kCommand->m_strFullCommand.c_str()[kCommand->m_kSplitCommand[0].length() + kCommand->m_kSplitCommand[1].length() + 2])){
-				m_pkCon->Printf("Variable not found");
-				return;
-			} else {
-				m_pkCon->Printf("Setting %s = %s",kCommand->m_kSplitCommand[1].c_str(),kCommand->m_kSplitCommand[2].c_str());
-			}
-			
-			
-			break;
-
-		case FID_VARLIST:
-			m_pkCon->Printf("### variable list ###");
-			g_ZFObjSys.PrintVariables();
-			break;
-	}
-}
 
 
 

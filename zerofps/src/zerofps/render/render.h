@@ -12,11 +12,8 @@
 #include <cmath>
 #include "frustum.h"
 #include "render_x.h"
-//#include "../engine/engine.pkg"
 #include "texturemanager.h"
 #include "light.h"
-
-//#include "../engine/heightmap.h"
 
 class HeightMap;
 
@@ -35,48 +32,52 @@ enum SkyBoxSides
 
 class RENDER_API Render : public ZFObject {
 	private:
-		Frustum* m_pkFrustum;
-		TextureManager* m_pkTexMan;
-		Light* m_pkLight;
+		Frustum*				m_pkFrustum;
+		TextureManager*	m_pkTexMan;
+		Light*				m_pkLight;
 		
-		char aCurentFont[256];
-		bool m_FogEnable;		
-		int m_iSlicesize;	  //height meens greater detail att longer range		
-		int m_iLodUpdate;		
-		Vector3 m_kOldCamPos;	
+		char			aCurentFont[256];
+		bool			m_FogEnable;		
+		int			m_iSlicesize;					//	height meens greater detail att longer range		
+		int			m_iLodUpdate;		
+		Vector3		m_kOldCamPos;	
 		
-		int	m_iMaxLandscapeLayers;
-		int	m_iDrawLandscape;
+		int			m_iMaxLandscapeLayers;
+		int			m_iDrawLandscape;
 
-		GLuint m_iHmTempList;
+		GLuint		m_iHmTempList;
 
-		int	m_iScreenShootNum;
+		int			m_iScreenShootNum;
 
 		void RunCommand(int cmdid, const CmdArgument* kCommand) { }
-
+   	
 	public:
-		int m_iDetail;			//grid size of lod tiles for the terran
-		int m_iViewDistance;	//how far until we cut the landscape	
-		int m_iFpsLock;
-		int m_iAutoLod;
+		int	m_iDetail;				//	grid size of lod tiles for the terran
+		int	m_iViewDistance;		//	how far until we cut the landscape	
+		int	m_iFpsLock;
+		int	m_iAutoLod;
 	
+		bool StartUp()		{ return true;	}
+		bool ShutDown()	{ return true;	}
+		bool IsValid()		{ return true;	}
 		Render();
 
-		TextureManager* GetTexMangager() { return m_pkTexMan; }
+		TextureManager* GetTexMangager()		{	return m_pkTexMan; }		///< Get ptr to texture manger.
 		
 		void Quad(Vector3 kPos,Vector3 kHead,Vector3 kScale,int iTexture);
 		void Sphere(Vector3 kPos,float fRadius,int iRes,Vector3 kColor,bool bSolid);		
 		
 		void PrintChar(char cChar);
-		void PrintChar2(char cChar);
 		void Print(Vector3 kPos,Vector3 kHead,Vector3 kScale,char* aText);
+
+		void PrintChar2(char cChar);
 		void Print2(Vector3 kPos, char* aText);
+
 		void SetFont(char* aFont);
 		void Line(Vector3 kPos1,Vector3 kPos2);
 		void Dot(float x,float y,float z);
 		void SetColor(Vector3 kColor);
 		void DrawConsole(char* m_aCommand,vector<char*>* m_kText, int iStartLine); 
-		
 
 		void DrawHMLodSplat(HeightMap* kmap,Vector3 CamPos,int iFps);
 		void DrawAllHM(HeightMap* kmap,Vector3 CamPos);
@@ -99,24 +100,16 @@ class RENDER_API Render : public ZFObject {
 		void DrawBox(Vector3 kPos,Vector3 kRot,Vector3 kScale,int iTexture);
 		void DrawColorBox(Vector3 kPos,Vector3 kRot,Vector3 kScale,Vector3 kColor);
 		void DrawAABB( float x, float y, float z, float sizex,float sizey,float sizez, Vector3 kColor );
-		void DrawAABB(  Vector3 kMin,Vector3 kMax, Vector3 kColor );
+		void DrawAABB( Vector3 kMin,Vector3 kMax, Vector3 kColor );
 
 		void GetMinMax(HeightMap* kMap, float& fMin, float& fMax, int xp,int zp,int iSize);
 
 		void DumpGLState(void);
 
-//		void DrawHM(HeightMap* kmap);
-//		void DrawHMlod(HeightMap* kmap,Vector3 CamPos,int iFps);		
+		void Draw_AxisIcon(float scale = 1.0);													///< Draw axis lines.
+		void Draw_MarkerCross(Vector3 kPos, Vector3 Color, float fScale = 1.0);		///< Draw a cross made up of lines.
 
-		void Draw_AxisIcon(float scale = 1.0);
-		void Draw_MarkerCross(Vector3 kPos, Vector3 Color, float fScale = 1.0);
-	
-
-		bool StartUp()	{ return true;	}
-		bool ShutDown()	{ return true;	}
-		bool IsValid()	{ return true;	}
-
-		void CaptureScreenShoot( int m_iWidth, int m_iHeight );		
+		void CaptureScreenShoot( int m_iWidth, int m_iHeight );							///< Take a screenshoot and save it as a TGA.		
 };
 
 RENDER_API void RenderDLL_InitExtGL(void);

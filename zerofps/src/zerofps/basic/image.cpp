@@ -29,6 +29,112 @@ enum IMG_FORMAT {
 	IMG_FORMAT_ALPHA,
 };
 
+
+// Structures	************************************
+#pragma pack( 1 )
+
+/// File Header in TGA Files.
+struct tgahead_t 
+{
+	char	id_length;					///< Num of bytes with extra info.
+	char	colormap_type;	 		 	///< 0 = No color map, 1 = color map.
+	char	image_type;					///< A TGA_IMAGETYPE_XXX value.
+
+	// Color map spec.
+	short	colormap_first;				
+	short	colormap_length;
+	char	colormap_size;
+
+	short	xorgin;
+	short	yorgin;
+	short	width;
+	short	height;
+	char	pixel_depth;				///< Bits per pixel (8,16,24,32).
+	char	image_desc;
+	
+};
+
+
+/// File Header in PCX Files.
+struct pcx_header_s
+{
+	char	manufacturer;
+	char	version;
+	char	encoding;
+	char	bits_per_pixel;
+   short	xmin;
+	short	ymin;
+	short	xmax;
+	short	ymax;
+	short	hres;
+	short	vres;
+	char	palette[48];
+	char	reserved;
+	char	color_planes;
+	short	bytes_per_line;
+	short	palette_type;
+	char	filler[58];
+} ;
+
+struct bmppal_t 
+{ 
+	unsigned char ucRed; 
+	unsigned char ucGreen; 
+	unsigned char ucBlue; 
+	unsigned char ucFlags; 
+}; 
+
+struct bmpheader_t 
+{ 
+	unsigned short	usType; 
+	unsigned long	ulSize; 
+	unsigned short	usReserved1; 
+	unsigned short	usReserved2; 
+	unsigned long	ulOffBits; 
+};
+
+struct bmpinfo_t
+{ 
+    unsigned long	ulSize; 
+    long			lWidth; 
+    long			lHeight; 
+    unsigned short	usPlanes; 
+    unsigned short	usBitCount;
+    unsigned long	ulCompression; 
+    unsigned long	ulSizeImage; 
+    long			lXPelsPerMeter; 
+    long			lYPelsPerMeter; 
+    unsigned long	ulClrUsed; 
+    unsigned long	ulClrImportant; 
+}; 
+
+struct bmp_t
+{
+	bmpheader_t		kFileheader;  
+	bmpinfo_t		kInfoheader;
+	bmppal_t		kPalette[256];      
+	unsigned char	*pkData;           
+};
+
+#pragma pack(  )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 static unsigned char getbyte (char*& ptr)
 {
   unsigned char c = *ptr++;

@@ -22,7 +22,7 @@ class ENGINE_API Console : public BasicConsole {
 	private:
 		void FormatKey(int& r_iKey);
 		ZeroFps*		m_pkEngine;		
-		CmdSystem*		m_pkCmd;
+//		CmdSystem*		m_pkCmd;
 		Render*			m_pkRender;
 		Input*			m_pkInput;
 		TextureManager* m_pkTexMan;
