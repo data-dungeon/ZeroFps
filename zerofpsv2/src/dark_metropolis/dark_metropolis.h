@@ -71,7 +71,8 @@ class DarkMetropolis : public Application, public ZGuiApp
 		void SaveGame();
 
 		void GUI_CreateLoadMenu();
-		void GUI_NewGame(char* szClanName, char* szTeamColor);
+		//bool GUI_NewGame(char* szClanName, char* szTeamColorm,ZGuiWnd *pkMainWnd);
+		bool GUI_NewGame(ZGuiWnd *pkMainWnd);
 		
 		void StartSong(char* szName);
 	

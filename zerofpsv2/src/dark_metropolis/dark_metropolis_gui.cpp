@@ -133,13 +133,18 @@ void DarkMetropolis::GUI_OnCommand(int iID, bool bRMouseBnClick,
 
 			if(szClanName && strlen(szClanName) > 0)
 			{
+			
+				
 				if(LoadGame(szClanName))
 				{
 					pkGui->KillWndCapture();
 					ShowWnd("LoadListWnd", false);
 					ShowWnd("DMStartWnd", false);
-					//GUI_NewGame(szClanName, "red");
+					
+					GUI_NewGame(pkMainWnd);
+					
 				}
+
 			}
 		}
 	}
@@ -153,8 +158,8 @@ void DarkMetropolis::GUI_OnCommand(int iID, bool bRMouseBnClick,
 				char* szClanName = GetWnd("ClanNameEB")->GetText();
 				char* szTeamColor = GetWnd("TeamColorCB")->GetText();
 
-				pkMainWnd->Hide();
-				GUI_NewGame(szClanName, szTeamColor);
+				if(StartNewGame(szClanName, szTeamColor))
+					GUI_NewGame(pkMainWnd);
 			}
 		}
 		else
@@ -389,11 +394,14 @@ void DarkMetropolis::GUI_CreateLoadMenu()
 	}
 }
 
-void DarkMetropolis::GUI_NewGame(char* szClanName, char* szTeamColor)
+//bool DarkMetropolis::GUI_NewGame(char* szClanName, char* szTeamColor,ZGuiWnd *pkMainWnd)
+bool DarkMetropolis::GUI_NewGame(ZGuiWnd *pkMainWnd)
 {
 	//start game
-	if(StartNewGame(szClanName, szTeamColor))
-	{				
+//	if(StartNewGame(szClanName, szTeamColor))
+//	{				
+		pkMainWnd->Hide();
+		
 		LoadGuiFromScript(m_pkScript,"data/script/gui/dm_ingame.lua");
 		
 		char* szWndToHide[] =
@@ -411,10 +419,14 @@ void DarkMetropolis::GUI_NewGame(char* szClanName, char* szTeamColor)
 			ShowWnd(szWndToHide[i], false);	
 
 		StartSong("data/music/dm_ingame.ogg");
-	}
+		
+		return true;
+/*	}
 	else
 	{
 		//här fär du gärna lägga till något klagomål på att en 
 		//clan med det namnet redan fins				
 	}
+	
+	return false;*/
 }
