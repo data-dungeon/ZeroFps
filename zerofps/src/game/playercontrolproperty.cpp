@@ -121,6 +121,7 @@ void PlayerControlProperty::Update() {
 		m_pkObject->GetRot().x=-90;
 	
 	
+	
 	onGround=false;
 };
 

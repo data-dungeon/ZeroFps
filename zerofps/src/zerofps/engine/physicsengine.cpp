@@ -321,6 +321,41 @@ void PhysicsEngine::ClearCollisions()
 	m_kCPs.clear();
 }
 
+bool PhysicsEngine::TestLine(list<PhysicProperty*>* pkPPList,Vector3 kPos,Vector3 kVec)
+{
+//	PhysicProperty* CPP=NULL;
+//	float CloseDist=99999999;
+	pkPPList->clear();
+
+	for(list<Property*>::iterator it=m_kPropertys.begin();it!=m_kPropertys.end();it++) 
+	{	
+		Vector3 c=(*it)->GetObject()->GetPos() - kPos;		
+		kVec.Normalize();		
+		Vector3 k=kVec.Proj(c);		
+		float cdis=c.Length();
+		float kdis=k.Length();
+		float Distance = sqrt((cdis*cdis)-(kdis*kdis));
+		
+		float fRadius=static_cast<CSSphere*>(static_cast<PhysicProperty*>(*it)->GetColSphere())->m_fRadius;
+		
+		if(Distance < fRadius)
+		{			
+			pkPPList->push_back(static_cast<PhysicProperty*>(*it));
+			
+/*			if(cdis < CloseDist)
+			{
+				CPP=(*it);
+				CloseDist=cdis;			
+			}		*/
+		}		
+	}
+	
+	if(pkPPList->size()==0)
+		return false;
+	
+	return true;
+}
+
 
 /*
 

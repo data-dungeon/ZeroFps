@@ -190,4 +190,14 @@ float& Vector3::operator[] (const int i)
 }
 
 
+Vector3 Vector3::AToU()
+{
+	Vector3 New(0,0,0);
+	
+	New.x=cos((y-90)/degtorad);
+	New.z=sin((y-90)/degtorad);
 
+	New.y+=cos((x-90)/degtorad);
+	New.z+=sin((x-90)/degtorad);
+
+}

@@ -141,6 +141,7 @@ class BASIC_API Vector3 {
 		void Lerp(Vector3& from, Vector3& to, float flerp);			// Linjär interpolering mellan två vectors.
 		
 		Vector3 Angels(void);
+		Vector3 AToU();												//convert Angel Vector to a Unit Vector
 
 		void Print(void);
 

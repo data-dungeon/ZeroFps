@@ -97,7 +97,7 @@ bool FileOpenDlg::DlgProc( ZGuiWnd* pkWindow, unsigned int uiMessage, int iNumbe
 
 					if(szFileName == string("..") /*&& !m_vkBitParams.test(DISALLOW_DIR_CHANGE)*/ )
 					{
-						int new_path_length = m_szSearchPath.find_last_of('//'); 
+						int new_path_length = m_szSearchPath.find_last_of(char(47)); 
 
 						if(new_path_length != string::npos)
 						{
@@ -176,7 +176,7 @@ ZGuiWnd* FileOpenDlg::Create(int x, int y, int w, int h)
 	ZGuiLabel* pkLabel = m_pkGui->CreateLabel(pkMainWindow, 0, 0, 0, w, 22, "Open");
 	pkLabel->SetSkin(m_pkGui->GetSkin("titlebar"));
 	m_pkGui->CreateLabel(pkMainWindow, ID_FILEPATH_WND_LABEL_PATH, 0, h-44, w-80, 20, NULL)->SetText((char*)m_szCurrentDir.c_str());
-	m_pkGui->CreateTextbox(pkMainWindow, ID_FILEPATH_WND_FILE_EB, 0, h-22, w-200, 20, NULL);
+	m_pkGui->CreateTextbox(pkMainWindow, ID_FILEPATH_WND_FILE_EB, 0, h-22, w-200, 20);
 
 	m_pkZGui->AddMainWindow(ID_FILEPATH_WND_MAIN, pkMainWindow, OPENFILEPROC, true);
 	return pkMainWindow;
@@ -229,3 +229,9 @@ bool FileOpenDlg::FillPathList(ZGuiListbox* pkListbox, string strDir)
 
 	return true;
 }
+
+
+
+
+
+

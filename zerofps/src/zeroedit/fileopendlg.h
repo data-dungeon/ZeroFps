@@ -9,7 +9,7 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
-#include "Gui.h"
+#include "gui.h"
 
 #include <string>
 #include <bitset>
@@ -57,3 +57,5 @@ private:
 };
 
 #endif // !defined(AFX_ZGUIFILEOPENDLG_H__5889E38C_500F_4A0F_979B_1CA085A4E0BC__INCLUDED_)
+
+

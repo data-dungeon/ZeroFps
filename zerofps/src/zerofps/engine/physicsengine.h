@@ -122,7 +122,7 @@ class ENGINE_API PhysicsEngine : public ZFObject
 		void HandleCollisions();
 		void ClearCollisions();	
 		
-		
+		bool TestLine(list<PhysicProperty*>* pkPPList,Vector3 kPos,Vector3 kVec);
 		
 		/*
 		void CalcMotionSpheres();
