@@ -188,6 +188,7 @@ void Core::LoadSkelleton(const char* MadFileName)
 	Mad_Bone kNewBone;
 	int iNumOfBones;
 	fread(&iNumOfBones, 1, sizeof(int), fp);
+	fread(&iNumOfBones, 1, sizeof(int), fp);
 
 	for(int i=0; i<iNumOfBones; i++) {
 		fread(&kNewBone, 1, sizeof(Mad_Bone), fp);

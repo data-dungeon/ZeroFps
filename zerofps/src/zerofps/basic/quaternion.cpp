@@ -378,32 +378,33 @@ float& Quaternion::operator[] (int i)
 
 void Quaternion::AngleQuaternion( const Vector3 angles )
 {
-	Quaternion qX,qY,qZ;
+/*	Quaternion qX,qY,qZ;
 
 	qX.FromAngleAxis(angles.x,Vector3(1,0,0));
 	qY.FromAngleAxis(angles.y,Vector3(0,1,0));
 	qZ.FromAngleAxis(angles.z,Vector3(0,0,1));
 
-//	*this = qX * qY * qZ;
+	*this = qX * qY * qZ;*/
 
-/*	float		angle;
+
+	float		angle;
 	float		sr, sp, sy, cr, cp, cy;
 
 	// FIXME: rescale the inputs to 1/2 angle
-	angle = angles.z * 0.5;
-	sy = sin(angle);
-	cy = cos(angle);
-	angle = angles.y * 0.5;
-	sp = sin(angle);
-	cp = cos(angle);
-	angle = angles.x * 0.5;
-	sr = sin(angle);
-	cr = cos(angle);
+	angle	= angles.z * 0.5;
+	sy		= sin(angle);
+	cy		= cos(angle);
+	angle	= angles.y * 0.5;
+	sp		= sin(angle);
+	cp		= cos(angle);
+	angle	= angles.x * 0.5;
+	sr		= sin(angle);
+	cr		= cos(angle);
 
-	x = sr*cp*cy-cr*sp*sy; // X
-	y = cr*sp*cy+sr*cp*sy; // Y
-	z = cr*cp*sy-sr*sp*cy; // Z
-	w = cr*cp*cy+sr*sp*sy; // W*/
+	x = sr*cp*cy - cr*sp*sy; 
+	y = cr*sp*cy + sr*cp*sy; 
+	z = cr*cp*sy - sr*sp*cy; 
+	w = cr*cp*cy + sr*sp*sy; 
 }
 
 void Quaternion::QuaternionSlerp( Quaternion* from, Quaternion* to, float t)

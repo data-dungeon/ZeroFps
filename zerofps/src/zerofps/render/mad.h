@@ -132,31 +132,53 @@ public:
 	vector<Mad_CoreAnimationTrack>	m_kTracks;
 };*/
 
+/*
+	Class CoreSkelleton
 
+	Class CoreMesh
+		Frames
+		Texture Coo
+		Faces
+		SubMesh
+		Textures
+		MeshAnim
+
+	Class CoreAnimation
+
+	
+	MadTextureCoo*			pakTextureCoo;
+	Mad_VertexFrame*		pakFrames;
+	MadFace*				pakFaces;
+
+	TextureManager*			pkTextureManger;
+	Mad_SubMesh*			pkSubMesh;
+	
+	vector<Mad_Animation>	akAnimation;
+
+*/
 
 class RENDER_API Core
 {
 public:
-//	void operator=(const Core& kOther);
-	char				Name[256];
+	char					Name[256];
 
 	Core();
 	~Core();
 
-	Mad_Header			kHead;
-	Mad_Texture			akTextures[MAX_MAD_TEXTURES];
+	Mad_Header				kHead;
+	Mad_Texture				akTextures[MAX_MAD_TEXTURES];
 
-	MadTextureCoo*		pakTextureCoo;
-	Mad_VertexFrame*	pakFrames;
-	MadFace*			pakFaces;
+	MadTextureCoo*			pakTextureCoo;
+	Mad_VertexFrame*		pakFrames;
+	MadFace*				pakFaces;
 
-	TextureManager*		pkTextureManger;
-	Mad_SubMesh*		pkSubMesh;
+	TextureManager*			pkTextureManger;
+	Mad_SubMesh*			pkSubMesh;
 	
 	vector<Mad_Animation>	akAnimation;
 
-	int					iActiveFrame;
-	int					iActiveKeyFrame;
+	int						iActiveFrame;
+	int						iActiveKeyFrame;
 
 	void SetTextureManger(TextureManager* ptex)
 	{
@@ -186,14 +208,14 @@ public:
 	/* Sets animation time as a num of seconds. Values outside current anim length will wrap
 		to valid values. */
 
-	void LoopPlayAnim(int iAnim);
+	void	LoopPlayAnim(int iAnim);
 
-	char* GetName(void);
+	char*	GetName(void);
 
 	void	draw(void);
 
-	float GetAnimationLengthInS(int iAnim);
-	int GetAnimationTimeInFrames(int iAnim);
+	float	GetAnimationLengthInS(int iAnim);
+	int		GetAnimationTimeInFrames(int iAnim);
 
 	vector<Mad_Bone>	kSkelleton;	
 };

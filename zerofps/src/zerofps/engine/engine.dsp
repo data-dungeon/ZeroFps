@@ -60,7 +60,7 @@ LINK32=link.exe
 # Begin Special Build Tool
 ProjDir=.
 SOURCE="$(InputPath)"
-PostBuild_Cmds=copy                                            $(ProjDir)\debug\*.lib                                            ..\..\..\bin\ 
+PostBuild_Cmds=copy                                             $(ProjDir)\debug\*.lib                                             ..\..\..\bin\ 
 # End Special Build Tool
 
 !ELSEIF  "$(CFG)" == "engine - Win32 Debug"
@@ -91,7 +91,7 @@ LINK32=link.exe
 # Begin Special Build Tool
 ProjDir=.
 SOURCE="$(InputPath)"
-PostBuild_Cmds=copy                                            $(ProjDir)\debug\*.lib                                            ..\..\..\bin\ 
+PostBuild_Cmds=copy                                             $(ProjDir)\debug\*.lib                                             ..\..\..\bin\ 
 # End Special Build Tool
 
 !ELSEIF  "$(CFG)" == "engine - Win32 Release Profile"
@@ -126,7 +126,7 @@ LINK32=link.exe
 # Begin Special Build Tool
 ProjDir=.
 SOURCE="$(InputPath)"
-PostBuild_Cmds=copy                                            $(ProjDir)\debug\*.lib                                            ..\..\..\bin\ 
+PostBuild_Cmds=copy                                             $(ProjDir)\debug\*.lib                                             ..\..\..\bin\ 
 # End Special Build Tool
 
 !ENDIF 
@@ -543,6 +543,10 @@ SOURCE=.\propertyfactory.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\proxyproperty.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\skyboxobject.cpp
 # End Source File
 # Begin Source File
@@ -578,6 +582,10 @@ SOURCE=.\zerofps.cpp
 
 !ENDIF 
 
+# End Source File
+# Begin Source File
+
+SOURCE=.\zoneobject.cpp
 # End Source File
 # End Group
 # Begin Group "Header Files"
@@ -709,6 +717,10 @@ SOURCE=.\propertyfactory.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\proxyproperty.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\skyboxobject.h
 # End Source File
 # Begin Source File
@@ -734,6 +746,10 @@ SOURCE=.\zerofps.h
 # Begin Source File
 
 SOURCE=..\ogl\zfpsgl.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\zoneobject.h
 # End Source File
 # End Group
 # Begin Group "Resource Files"
