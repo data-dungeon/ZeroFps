@@ -1,3 +1,5 @@
+#include "../zerofpsv2/engine_systems/propertys/p_mad.h"
+#include "../zerofpsv2/engine_systems/propertys/p_linktojoint.h"
 #include "dark_metropolis.h"
 #include "members_dlg.h"
 #include "gameplay_dlg.h"
@@ -389,6 +391,7 @@ void CMembersDlg::OnClick(int x, int y, bool bMouseDown, bool bLeftButton,
 							m_pkMoveInfo->m_pkMoveButton->SetMoveArea(
 								m_pkMoveInfo->m_pkMoveButton->GetScreenRect(),true);
 							bMoveOK = true;
+
 						}
 					}
 					else
@@ -891,7 +894,29 @@ void CMembersDlg::UpdateCamera()
 
 void CMembersDlg::OnEquip(int iItemID, DMContainer* pkDestContainer)
 {
-	printf("%i\n", iItemID);
+	Entity* pkEntity = m_pkFps->m_pkObjectMan->GetObjectByNetWorkID ( iItemID );
 
-	pkDestContainer->Print();
+	
+	// check type of item equipped
+	if ( pkEntity )
+	{
+
+		// Get owner object
+		Entity* pkOwner = m_pkFps->m_pkObjectMan->GetObjectByNetWorkID ( pkDestContainer->GetOwnerID() ); 
+
+		pkOwner->AddChild ( pkEntity );
+		//pkEntity->SetWorldPosV ( pkOwner->GetWorldPosV() );
+		pkEntity->SetLocalPosV ( Vector3(1,1,1) );
+		pkEntity->SetWorldPosV ( Vector3(0, 1, 0) );
+		pkEntity->SetUseZones(false);
+		pkEntity->SetUpdateStatus ( UPDATE_ALL );
+		pkEntity->SetRelativeOri (true);
+
+		//P_LinkToJoint* pkLink = (P_LinkToJoint*)pkEntity->AddProperty ("P_LinkToJoint");      
+		//pkLink->SetJoint( "righthand" );
+
+	}
+	else
+		cout << "FAILEDDDDDDDDDD!!!" << endl;
+
 }

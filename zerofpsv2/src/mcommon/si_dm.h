@@ -31,18 +31,21 @@ namespace DMLua
 	int MCOMMON_API KillCharacterLua(lua_State* pkLua);
 	int MCOMMON_API IsDeadLua(lua_State* pkLua);
 	int MCOMMON_API HealLua(lua_State* pkLua);
-	int MCOMMON_API BeamToLua(lua_State* pkLua);
+	int MCOMMON_API BeamToLocationLua(lua_State* pkLua);
+	int MCOMMON_API BeamToObjectLua(lua_State* pkLua);
 	int MCOMMON_API TestSkillLua(lua_State* pkLua);
 	int MCOMMON_API AddMoneyLua(lua_State* pkLua);
 	int MCOMMON_API MoneyLua(lua_State* pkLua);
 	int MCOMMON_API FireAtLocationLua(lua_State* pkLua);
 	int MCOMMON_API FireAtCharacterLua(lua_State* pkLua);
+	int MCOMMON_API SetMoveSpeedLua(lua_State* pkLua);
 
 	// lualua functions
 	int MCOMMON_API RunScriptLua(lua_State* pkLua);
 
 	// functions to get less code
-	Entity* MCOMMON_API TestScriptInput (int iArgs, lua_State* pkLua);
+	Entity* TestScriptInput (int iArgs, lua_State* pkLua);
+	Entity* GetHQEntity ();
 
 };
 

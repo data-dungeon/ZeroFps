@@ -3,6 +3,7 @@
 #include "p_dmhq.h"
 #include "p_dmmission.h"
 #include "p_dmcharacter.h"
+#include "../zerofpsv2/engine/p_pfpath.h" 
 
 ZFScriptSystem*			DMLua::g_pkScript;
 EntityManager*				DMLua::g_pkObjMan;
@@ -22,17 +23,18 @@ void DMLua::Init(EntityManager* pkObjMan,ZFScriptSystem* pkScript)
 	pkScript->ExposeFunction("SetNewMission", DMLua::SetNewMissionLua);
 	pkScript->ExposeVariable("CurrentMission", (int*)&DMLua::g_iMissionStatus, tINT); 
 
-	// character functins
+	// character functions
 	pkScript->ExposeFunction("KillCharacter", DMLua::KillCharacterLua);
 	pkScript->ExposeFunction("IsDead", DMLua::IsDeadLua);
 	pkScript->ExposeFunction("Heal", DMLua::HealLua);
-	pkScript->ExposeFunction("BeamTo", DMLua::BeamToLua);
+	pkScript->ExposeFunction("BeamToLocation", DMLua::BeamToLocationLua);
+	pkScript->ExposeFunction("BeamToObject", DMLua::BeamToObjectLua);
 	pkScript->ExposeFunction("TestSkill", DMLua::TestSkillLua);
 	pkScript->ExposeFunction("AddMoney", DMLua::AddMoneyLua);
 	pkScript->ExposeFunction("Money", DMLua::MoneyLua);
 	pkScript->ExposeFunction("FireAtLocation", DMLua::FireAtLocationLua);
 	pkScript->ExposeFunction("FireAtObject", DMLua::FireAtCharacterLua);
-
+	pkScript->ExposeFunction("SetMoveSpeed", DMLua::SetMoveSpeedLua);
 }
 // ------------------------------------------------------------------------------------------------
 
@@ -64,6 +66,7 @@ int DMLua::GetDMCharacterByNameLua(lua_State* pkLua)
 }
 // ------------------------------------------------------------------------------------------------
 
+// takes CharacterID, and optional 
 int DMLua::GetDMCharacterClosestLua(lua_State* pkLua) 
 {
 	double dObjectID = -1;
@@ -78,7 +81,7 @@ int DMLua::GetDMCharacterClosestLua(lua_State* pkLua)
 		g_pkScript->GetArgNumber(pkLua, 0, &dFromObjectID);
 
 		// if it crashed here sometime, give zerom a kick
-		Vector3 kFrom = g_pkObjMan->GetObjectByNetWorkID(dFromObjectID)->GetWorldPosV();
+		Vector3 kFrom = g_pkObjMan->GetObjectByNetWorkID(int(dFromObjectID))->GetWorldPosV();
 
 		vector<Entity*> kObjects;		
 		g_pkObjMan->GetAllObjects(&kObjects);
@@ -88,7 +91,8 @@ int DMLua::GetDMCharacterClosestLua(lua_State* pkLua)
 			    (pkCharacter = (P_DMCharacter *) kObjects[i]->GetProperty("P_DMCharacter")) )
 			{
 				double dDist = kObjects[i]->GetWorldPosV().DistanceTo (kFrom);
-				if ( dDist < dClosestDistance )
+				// ignore if dead
+				if ( dDist < dClosestDistance && pkCharacter->GetStats()->m_iLife > 0 )
 				{
 					dClosestDistance = dDist;
 					iClosestCharID = kObjects[i]->GetEntityID();
@@ -174,7 +178,7 @@ int DMLua::KillCharacterLua(lua_State* pkLua)
 	if ( pkChar == 0 )
 		return 0;
 
-	pkChar->GetStats()->m_iLife = 0;
+	pkChar->Damage (0, 99999);
 
 	return 0;
 }
@@ -221,13 +225,59 @@ int DMLua::HealLua(lua_State* pkLua)
 
 
 // takes a entityID and location (vector3?) and moves that entity to the given position
-int DMLua::BeamToLua(lua_State* pkLua)
+int DMLua::BeamToLocationLua(lua_State* pkLua)
 {
 	Entity* pkEntity = TestScriptInput (2, pkLua);
 
+	if ( pkEntity == 0 )
+	{
+		cout << "Warning! DMLua::BeamToLua: No object found with given ID." << endl;
+		return 0;
+	}
 
+	Vector3 kPos;
+	vector<TABLE_DATA> vkData;
+		
+	g_pkScript->GetArgTable(pkLua, 2, vkData);
+		
+	kPos = Vector3(
+		(float) (*(double*) vkData[0].pData),
+		(float) (*(double*) vkData[1].pData),
+		(float) (*(double*) vkData[2].pData));
 
+    pkEntity->SetWorldPosV ( kPos );
 
+	return 0;
+}
+
+// takes an entityID and moves it to EntityID2's location (id, id)
+int DMLua::BeamToObjectLua(lua_State* pkLua)
+{
+	if ( g_pkScript->GetNumArgs(pkLua) != 2 )
+	{
+		cout << "Warning! DMLua::BeamToObjectLua: Wrong number of arguments!" << endl;
+		return 0;
+	}
+
+	double dMoveID, dToID;
+
+	Entity* pkMovEnt, *pkToEnt;
+
+	g_pkScript->GetArgNumber(pkLua, 0, &dMoveID);
+	g_pkScript->GetArgNumber(pkLua, 1, &dToID);
+
+//	cout << "MoveID:" << dMoveID << " ToID:" << dToID << endl;
+
+	pkMovEnt = g_pkObjMan->GetObjectByNetWorkID (int(dMoveID));
+	pkToEnt = g_pkObjMan->GetObjectByNetWorkID (int(dToID));
+
+	if ( pkMovEnt == 0 || pkToEnt == 0 )
+	{
+		cout << "Warning! DMLua::BeamToObjectLua: One object didn't exist!" << endl;
+		return 0;
+	}
+
+	pkMovEnt->SetWorldPosV ( pkToEnt->GetWorldPosV() );
 
 	return 0;
 }
@@ -243,13 +293,75 @@ int DMLua::TestSkillLua(lua_State* pkLua)
 // takes an integer and add that much money to the players HQ
 int DMLua::AddMoneyLua(lua_State* pkLua)
 {
+	Entity* pkHQ = GetHQEntity();
+
+	if ( pkHQ == 0 )
+	{
+		cout << "DMLua::MoneyLua: Warning! No HQ object found!";
+		return 0;
+	}
+
+	if ( g_pkScript->GetNumArgs(pkLua) < 1 )
+	{
+		cout << "DMLua::AddMoneyLua: Wrong number of args given! Function takes AddMoney (int Money)" << endl;
+		return 0;
+	}
+
+	double dAddMoney;
+
+	g_pkScript->GetArgNumber(pkLua, 0, &dAddMoney);
+
+	int *piMoney = ((P_DMHQ*)pkHQ->GetProperty("P_DMHQ"))->GetMoney();
+	*piMoney += int(dAddMoney);
+
+	if ( *piMoney < 0 )
+		*piMoney = 0;
+
 	return 0;
 }
 
 // takes nothing, returns (int) players money
 int DMLua::MoneyLua(lua_State* pkLua)
 {
-	return 0;
+	Entity* pkHQ = GetHQEntity();
+
+	if ( pkHQ == 0 )
+	{
+		cout << "DMLua::MoneyLua: Warning! No HQ object found!";
+		return 0;
+	}
+
+	g_pkScript->AddReturnValue(pkLua, double(*((P_DMHQ*)pkHQ->GetProperty("P_DMHQ"))->GetMoney()) );
+
+	return 1;
+	
+}
+
+// takes characterID, moveSpeed (float)
+int DMLua::SetMoveSpeedLua(lua_State* pkLua)
+{
+	Entity* pkEnt = TestScriptInput(2, pkLua);
+
+	if ( pkEnt == 0 )
+	{
+		cout << "Warning! DMLua::SetMoveSpeedLua: Takes 2 arguments, entityID and speed." << endl;
+		return 0;
+	}
+
+	P_PfPath* pkPF = (P_PfPath*)pkEnt->GetProperty("P_PfPath");
+
+	if ( pkPF == 0 )
+		return 0;
+
+	double dSpeed;
+
+	g_pkScript->GetArgNumber(pkLua, 1, &dSpeed);
+
+	cout << "SetSpeed:" << dSpeed << endl;
+
+	pkPF->SetSpeed ( float (dSpeed) );
+
+	return 0;	
 }
 
 // takes entityID (shooter), vector3? (location to fire at)
@@ -301,4 +413,16 @@ Entity* DMLua::TestScriptInput (int iArgs, lua_State* pkLua)
 		return pkEntity;
 	else
 		return 0;	
+}
+
+Entity* DMLua::GetHQEntity()
+{
+	vector<Entity*> kObjects;		
+	g_pkObjMan->GetAllObjects(&kObjects);
+
+	for(unsigned int i=0;i<kObjects.size();i++)
+		if( (P_DMHQ*)kObjects[i]->GetProperty("P_DMHQ") != 0 )
+			return kObjects[i];
+
+	return 0;
 }

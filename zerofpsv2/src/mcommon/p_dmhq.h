@@ -18,17 +18,23 @@ class MCOMMON_API P_DMHQ: public Property {
 	
 		string	m_strName;
 		Vector3	m_kExitOffset;
-		bool		m_bActiveHQ;	
+		bool		m_bActiveHQ;
+
+		int m_iMoney;
 
 		int		m_iReputation;	// Börjar på 1 och bestämmer vilka uppdrag som finns tillgängliga,
 									   // ökas när uppdrag lyckas, minskas när uppdrag misslyckas / avbryts.
-			
 		void Eject(Entity* pkEnt);
 	
 	public:
 		
 		P_DMHQ();
 		~P_DMHQ();
+
+		int* GetMoney()		{ return &m_iMoney; }
+
+		// returns false if the player couln't afford the cost
+		bool Pay (int iCost);
 
 		void CloneOf(Property* pkProperty) { }
 		

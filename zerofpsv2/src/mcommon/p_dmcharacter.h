@@ -15,6 +15,7 @@
 
 using namespace std;
 
+enum eSTATE { eIDLE, eDEAD, eCROUCH };
 class MCOMMON_API DMCharacterStats
 {
 	public:
@@ -66,6 +67,7 @@ class MCOMMON_API P_DMCharacter: public Property {
 		DMContainer*		m_pkImplants;
 		
 		int					m_iTeam;
+		int					m_iState; // dead, crouching, shooting, idle..etc
 		
 		DMCharacterStats* GetStats() {return &m_kStats;};
 		void Damage(int iType,int iDmg);

@@ -10,6 +10,8 @@ P_DMHQ::P_DMHQ()
 
 	bNetwork = true;
 	
+	// Start with 1000$$$$$$
+	m_iMoney = 1000;
 
 	m_strName = "Unnamed HQ";
 	m_kExitOffset.Set(0,0,2);
@@ -108,6 +110,16 @@ void P_DMHQ::Eject(Entity* pkEnt)
 		pkPath->MakePathFind(m_pkObject->GetWorldPosV()+m_kExitOffset+Vector3( (rand()%20)/10.0,0,(rand()%20)/10.0));
 }
 
+bool P_DMHQ::Pay (int iCost)
+{
+	if ( iCost > m_iMoney )
+		return false;
+
+	m_iMoney -= iCost;
+
+	return true;
+}
+
 vector<PropertyValues> P_DMHQ::GetPropertyValues()
 {
 	vector<PropertyValues> kReturn(1);
@@ -119,6 +131,8 @@ vector<PropertyValues> P_DMHQ::GetPropertyValues()
 
 	return kReturn;
 }
+
+
 
 void P_DMHQ::Save(ZFIoInterface* pkPackage)
 {	
@@ -136,9 +150,6 @@ Property* Create_P_DMHQ()
 {
 	return new P_DMHQ;
 }
-
-
-
 
 
 

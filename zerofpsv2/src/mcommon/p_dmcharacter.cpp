@@ -76,13 +76,37 @@ void P_DMCharacter::Damage(int iType,int iDmg)
 
 void P_DMCharacter::Shoot (Vector3 kLocation)
 {
-	P_DMGun* pkGun = (P_DMGun*)m_pkObject->GetProperty ("P_DMGun");
+	// check if character is equipped with at weapon
+	int iWeapID;
+	Entity* pkWeapon;
+	P_DMGun* pkP_Gun;
+
+	for ( int y = 0; y < 2; y++ )
+		for ( int x = 0; x < 3; x++ )
+			if ( m_pkHand->GetItem(0,0) )
+				iWeapID = *m_pkHand->GetItem(0,0);
+
+	pkWeapon = m_pkObjMan->GetObjectByNetWorkID ( iWeapID );
+
+	if ( pkWeapon == 0 )
+	{
+		cout << "Warning! P_DMCharacter::Shoot: Tried to shoot without a weapon!" << endl;
+		return;
+	}
+
+	pkP_Gun = (P_DMGun*)pkWeapon->GetProperty ("P_DMGun");
+
+	if ( pkP_Gun == 0)
+	{
+		cout << "Error! P_DMCharacter::Shoot: Tried to shoot with a non-weapon!" << endl;
+		return;
+	}
+
 	P_Mad* pkMad = (P_Mad*)m_pkObject->GetProperty ("P_Mad");
 
-	if ( pkGun == 0 )
-		return;
+	pkP_Gun->Fire (kLocation);
 
-	pkGun->Fire (kLocation);
+	cout << "X:" << pkWeapon->GetWorldPosV().x << " y:" << pkWeapon->GetWorldPosV().y << " z:" << pkWeapon->GetWorldPosV().z << endl;
 
 	// rotate character towards target
 	Vector3 kdiff = kLocation - m_pkObject->GetWorldPosV();

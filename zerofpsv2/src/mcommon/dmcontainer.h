@@ -43,6 +43,8 @@ class MCOMMON_API DMContainer
 		void ClearItem(int iID);
 	
 	public:
+		
+		int GetOwnerID()			{ return m_iOwnerID; }
 
 		DMContainer(EntityManager* pkEntMan,int iOwnerID,int iX = 4,int iY = 4);		
 		
