@@ -588,7 +588,6 @@ bool Game::DragAndDropItem(int mx, int my, ItemBox::slot* ppkMoveItem,
 
 	if(ppkMoveItem == NULL || pkFrom == NULL || pkTo == NULL)
 	{
-		pkItemBoxFrom->ResetMoveItem();
 		return false;
 	}
 

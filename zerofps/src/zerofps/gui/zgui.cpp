@@ -1601,6 +1601,7 @@ void ZGui::SetCaptureToWnd(ZGuiWnd* pkWnd)
 void ZGui::KillWndCapture()
 {
 	m_pkCapturedWindow = NULL;
+	printf("killing mouse capture!\n");
 }
 
 ZGuiWnd* ZGui::GetWndCapture()
