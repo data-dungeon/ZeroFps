@@ -48,6 +48,8 @@ void P_Vegitation::Random()
 	{
 		AddPos(Vector3( (rand()%size -(size/2)) /100.0,0, (rand()%size -(size/2)) /100.0));
 	}
+	
+	SetNetUpdateFlag(true);	
 }
 
 void P_Vegitation::Update()
@@ -156,6 +158,8 @@ void P_Vegitation::SetTexture(const char* acNewTex)//,const char* acTex2)
 	m_pkTexture->SetRes(acNewTex);
 	
 	m_kTexture=acNewTex;	
+	
+	SetNetUpdateFlag(true);	
 }
 
 void P_Vegitation::UpdateSet()
@@ -258,16 +262,18 @@ void P_Vegitation::Load(ZFIoInterface* pkPackage)
 
 void P_Vegitation::PackTo(NetPacket* pkNetPacket, int iConnectionID )
 {
-	pkNetPacket->Write_NetStr(m_kTexture.c_str());
+	pkNetPacket->Write_Str(m_kTexture.c_str());
 	
 	pkNetPacket->Write(&m_iAmount,sizeof(m_iAmount));
 	pkNetPacket->Write(&m_iSize,sizeof(m_iSize));	
+	
+	SetNetUpdateFlag(iConnectionID,false);
 }
  
 void P_Vegitation::PackFrom(NetPacket* pkNetPacket, int iConnectionID )
 {
 	char texture[255];
-	pkNetPacket->Read_NetStr(texture);	
+	pkNetPacket->Read_Str(texture);	
 	m_kTexture=texture;
 	
 	int oldamount = m_iAmount;

@@ -3,6 +3,8 @@
 
 #include "zerofps.h"
  
+#include <bitset>
+ 
 Property::Property()
 {
 	m_pkZeroFps				= static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));		
@@ -19,6 +21,9 @@ Property::Property()
 	
 	m_iSortPlace=0;
 	m_bSortDistance=false;
+	
+
+	SetNrOfConnections(m_pkZeroFps->GetMaxPlayers());	
 }
 
 Property::~Property()
@@ -794,4 +799,37 @@ void Property::PropertyLost(Property* pkProperty)
 			++kIt;
 	}
 
+}
+
+
+void	Property::SetNrOfConnections(int iConNR)
+{
+	m_kNetUpdateFlags.resize(iConNR);
+	ResetAllNetUpdateFlags();
+}
+
+void	Property::ResetAllNetUpdateFlags()
+{
+	for(int i = 0;i<m_kNetUpdateFlags.size();i++)
+	{
+		m_kNetUpdateFlags[i]=true;
+	}
+}
+
+void Property::SetNetUpdateFlag(bool bValue)
+{
+	for(int i = 0;i<m_kNetUpdateFlags.size();i++)
+	{
+		m_kNetUpdateFlags[i] = bValue;
+	}
+}
+
+void	Property::SetNetUpdateFlag(int iConID,bool bValue)
+{
+	m_kNetUpdateFlags[iConID] = bValue;
+}
+
+bool	Property::GetNetUpdateFlag(int iConID)
+{
+	return m_kNetUpdateFlags[iConID];
 }

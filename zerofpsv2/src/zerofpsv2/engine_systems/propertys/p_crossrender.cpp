@@ -27,7 +27,8 @@ void P_CrossRender::SetTexture(const char* acTex1)//,const char* acTex2)
 {
 	m_kTex1=acTex1;	
 	m_iTex1=m_pkTexMan->Load(acTex1,0);
-//	m_iTex2=m_pkTexMan->Load(acTex2,0);
+
+
 }
 
 void P_CrossRender::UpdateSet()
@@ -52,11 +53,6 @@ vector<PropertyValues> P_CrossRender::GetPropertyValues()
 	kReturn[0].iValueType = VALUETYPE_STRING;
 	kReturn[0].pkValue    = (void*)&m_kTex1;
 
-/*
-	kReturn[1].kValueName = "m_kTex2";
-	kReturn[1].iValueType = VALUETYPE_STRING;
-	kReturn[1].pkValue    = (void*)&m_kTex2;
-*/
 
 	kReturn[1].kValueName = "m_kScale";
 	kReturn[1].iValueType = VALUETYPE_VECTOR3;
@@ -89,10 +85,9 @@ void P_CrossRender::Save(ZFIoInterface* pkPackage)
 	strcpy(temp,m_kTex1.c_str());	
 	pkPackage->Write((void*)&temp,128,1);
 
-//	strcpy(temp,m_kTex2.c_str());	
-//	pkPackage->Write((void*)&temp,128);
 
 	pkPackage->Write((void*)&m_kScale,12,1);
+
 
 }
 
@@ -103,8 +98,6 @@ void P_CrossRender::Load(ZFIoInterface* pkPackage)
 	pkPackage->Read((void*)&temp,128,1);
 	m_kTex1=temp;
 
-//	pkPackage->Read((void*)&temp,128);
-//	m_kTex2=temp;
 
 	pkPackage->Read((void*)&m_kScale,12,1);
 	

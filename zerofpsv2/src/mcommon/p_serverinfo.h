@@ -30,12 +30,12 @@ enum PlayerRights
 class MCOMMON_API P_ServerInfo: public Property {
 	private:
 		ZeroFps* m_pkFps;
-
+		string 					m_sServerName;				
 		vector<PlayerInfo>	m_kPlayers;		
 	public:
 		void AddSound(int iObjectGenSoundID, char* szFileName);
 		void AddPrivateSoundToPlayer(int iPlayerObjectID, int iObjectGenSoundID, char* szFileName);
-		string 					m_sServerName;				
+
 		queue<string>			m_kMyMessages;					//messages recived is put in this queue		
 		
 		void CloneOf(Property* pkProperty) { }
@@ -54,7 +54,8 @@ class MCOMMON_API P_ServerInfo: public Property {
 		void MessageCharacter(int iObjectID,string strMessage);
 		void MessagePlayer(int id,string strMessage);
 		void MessagePlayer(const char* czName,string strMessage);
-
+		void SetServerName(string strName);
+		string GetServerName(){return m_sServerName;};
 
 		int GetNrOfPlayers(){return m_kPlayers.size();};
 		

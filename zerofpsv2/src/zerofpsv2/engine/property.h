@@ -140,7 +140,8 @@ private:
 class ENGINE_API Property 
 {
 	private:
-
+		vector<bool>	m_kNetUpdateFlags;
+				
 		///beware of the the code /Gubb  //////////////
 		string ValueToString(void *pkValue, PropertyValues *pkPropertyValue); 
 		bool StringToValue(string kValue, void *pkValue, PropertyValues *pkPropertyValue);
@@ -155,6 +156,13 @@ class ENGINE_API Property
 		EntityManager*    m_pkObjMan;
 		//PropertyFactory*		m_pkPropertyFactory;	// Vim - Removes
 	
+		//netflags
+		void	SetNrOfConnections(int iConNR);
+		void	SetNetUpdateFlag(int iConID,bool bValue);
+		void	SetNetUpdateFlag(bool bValue);
+		bool	GetNetUpdateFlag(int iConID);
+		void	ResetAllNetUpdateFlags();
+
 
 		virtual vector<PropertyValues> GetPropertyValues();
 		virtual bool HandleSetValue( string kValueName ,string kValue );

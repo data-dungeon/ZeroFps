@@ -179,7 +179,7 @@ void MistServer::OnIdle()
    
 	if(m_pkServerInfoP)
 	{
-		pkFps->DevPrintf("server","ServerName: %s", m_pkServerInfoP->m_sServerName.c_str());
+		pkFps->DevPrintf("server","ServerName: %s", m_pkServerInfoP->GetServerName().c_str());
 		pkFps->DevPrintf("server","Players: %d", m_pkServerInfoP->GetNrOfPlayers());
 	
 	}
@@ -685,7 +685,7 @@ void MistServer::OnServerStart(void)
 		m_pkServerInfoP = (P_ServerInfo*)m_pkServerInfo->GetProperty("P_ServerInfo");		
 		if(m_pkServerInfoP)
 		{
-			m_pkServerInfoP->m_sServerName = "Test Server";
+			m_pkServerInfoP->SetServerName("Test Server");
 		}
 		else
 			cout<<"ERROR: No server P_ServerInfo property created, this is no good"<<endl;

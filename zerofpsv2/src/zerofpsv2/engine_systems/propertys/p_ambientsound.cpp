@@ -88,6 +88,8 @@ bool P_AmbientSound::SetSound(char *szFileName, bool bPlayOnes, float uiHearable
 	m_strFileName = szFileName;
 	m_bLoop = !bPlayOnes;
 
+	SetNetUpdateFlag(true);
+
 	return true;
 }
 
@@ -156,6 +158,8 @@ void P_AmbientSound::Load(ZFIoInterface* pkFile)
 	
 	if(szFileName)
 		delete[] szFileName;
+		
+	SetNetUpdateFlag(true);		
 }
 
 void P_AmbientSound::PackTo(NetPacket* pkNetPacket, int iConnectionID )
@@ -165,6 +169,8 @@ void P_AmbientSound::PackTo(NetPacket* pkNetPacket, int iConnectionID )
 	pkNetPacket->Write(&m_bLoop,sizeof(m_bLoop)); // loop or not
 	pkNetPacket->Write(&m_bManagedByAudioSystem, sizeof(m_bManagedByAudioSystem)); 
 	pkNetPacket->Write(&m_bSoundHaveBeenSaved, sizeof(m_bSoundHaveBeenSaved)); 
+	
+	SetNetUpdateFlag(iConnectionID,false);
 }
 
 void P_AmbientSound::PackFrom(NetPacket* pkNetPacket, int iConnectionID )
@@ -232,14 +238,15 @@ void P_Sound::Play(string strName) // körs endast på server sidan
 
 void P_Sound::PackTo(NetPacket* pkNetPacket, int iConnectionID )
 {
-	pkNetPacket->Write_Str( m_strFileName.c_str()); // write filename
+	pkNetPacket->Write_NetStr( m_strFileName.c_str()); // write filename
 	m_strFileName = "";
+	
 }
 
 void P_Sound::PackFrom(NetPacket* pkNetPacket, int iConnectionID )
 {
 	char file_name[128];
-	pkNetPacket->Read_Str(file_name); // read filename
+	pkNetPacket->Read_NetStr(file_name); // read filename
 	m_strFileName = file_name;
 }
 

@@ -67,6 +67,8 @@ void P_Light::PackTo( NetPacket* pkNetPacket, int iConnectionID )
 	pkNetPacket->Write( m_pkLightSource->fLinear_Atten);		
 	pkNetPacket->Write( m_pkLightSource->fQuadratic_Atten);		
 	pkNetPacket->Write( m_iMode);			
+	
+	SetNetUpdateFlag(iConnectionID,false);
 }
 
 void P_Light::PackFrom( NetPacket* pkNetPacket, int iConnectionID  ) 
@@ -150,6 +152,8 @@ void P_Light::Load(ZFIoInterface* pkPackage)
 {
 	pkPackage->Read((void*)m_pkLightSource,sizeof(LightSource),1);
 	pkPackage->Read((void*)&m_iMode,sizeof(m_iMode),1);	
+	
+	SetNetUpdateFlag(true);	
 }
 
 void P_Light::TurnOn()

@@ -209,8 +209,10 @@ void P_Enviroment::ZoneChange(int iCurrent,int iNew)
 	ZoneData* zd = m_pkObjectMan->GetZoneData(iNew);
 
 	if(zd)	
-	{
+	{	
 		m_StrCurrentEnviroment = zd->m_strEnviroment;
+		//SetNetUpdateFlag(true);
+
 	}
 }
 
@@ -314,19 +316,21 @@ void P_Enviroment::ResetEnviroment()
 
 void P_Enviroment::PackTo(NetPacket* pkNetPacket, int iConnectionID )
 {
-	pkNetPacket->Write_NetStr(m_StrCurrentEnviroment.c_str());	
+	pkNetPacket->Write_Str(m_StrCurrentEnviroment.c_str());	
+	
 }
 
 void P_Enviroment::PackFrom(NetPacket* pkNetPacket, int iConnectionID)
 {
 	char temp[128];
 	
-	pkNetPacket->Read_NetStr(temp);
+	pkNetPacket->Read_Str(temp);
 	
 	if(m_bEnabled)
 		SetEnviroment(temp);
 	else
 		SetEnviroment("");
+		
 		
 }
 

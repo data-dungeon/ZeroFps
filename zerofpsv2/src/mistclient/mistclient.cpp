@@ -228,7 +228,7 @@ void MistClient::OnIdle()
 
 	if(m_pkServerInfo)
 	{
-		pkFps->DevPrintf("client","ServerName: %s", m_pkServerInfo->m_sServerName.c_str());
+		pkFps->DevPrintf("client","ServerName: %s", m_pkServerInfo->GetServerName().c_str());
 		pkFps->DevPrintf("client","Players: %d", m_pkServerInfo->GetNrOfPlayers());
 	
 		PlayerInfo* pi = m_pkServerInfo->GetPlayerInfo(pkFps->GetConnectionID());

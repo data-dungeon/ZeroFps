@@ -16,6 +16,8 @@ P_ServerInfo::P_ServerInfo()
 
 void P_ServerInfo::AddPlayer(int id,string sName)
 {
+	SetNetUpdateFlag(true);	
+	
 	if(PlayerExist(sName))
 	{
 		cout<<"Error: player "<<sName<<" already connected"<<endl;
@@ -32,6 +34,8 @@ void P_ServerInfo::AddPlayer(int id,string sName)
 
 void P_ServerInfo::RemovePlayer(int id)
 {
+	SetNetUpdateFlag(true);	
+	
 	for(vector<PlayerInfo>::iterator it = m_kPlayers.begin(); it != m_kPlayers.end(); it++) 
 	{
 		if((*it).iId == id)
@@ -44,6 +48,8 @@ void P_ServerInfo::RemovePlayer(int id)
 
 void P_ServerInfo::RemovePlayer(string sName)
 {
+	SetNetUpdateFlag(true);	
+	
 	for(vector<PlayerInfo>::iterator it = m_kPlayers.begin(); it != m_kPlayers.end(); it++) 
 	{
 		if((*it).sPlayerName == sName)
@@ -81,6 +87,8 @@ bool P_ServerInfo::PlayerExist(int id)
 
 void P_ServerInfo::AddObject(int id,int iObjID,int iRights)
 {
+	SetNetUpdateFlag(true);	
+	
 	for(vector<PlayerInfo>::iterator it = m_kPlayers.begin(); it != m_kPlayers.end(); it++) 
 	{
 		if((*it).iId == id)
@@ -98,6 +106,8 @@ void P_ServerInfo::AddObject(int id,int iObjID,int iRights)
 
 void P_ServerInfo::RemoveObject(int id,int iObjID)
 {
+	SetNetUpdateFlag(true);
+	
 	for(vector<PlayerInfo>::iterator it = m_kPlayers.begin(); it != m_kPlayers.end(); it++) 
 	{
 		if((*it).iId == id)
@@ -165,6 +175,7 @@ void P_ServerInfo::PackTo( NetPacket* pkNetPacket, int iConnectionID  )
 		}
 	}
 	
+	SetNetUpdateFlag(iConnectionID,false);
 }
 
 
@@ -238,6 +249,8 @@ void P_ServerInfo::PackFrom( NetPacket* pkNetPacket, int iConnectionID  )
 		
 		m_kPlayers.push_back(temp);
 	}
+	
+
 }
 
 PlayerInfo* P_ServerInfo::GetPlayerInfo(int id)
@@ -253,6 +266,8 @@ PlayerInfo* P_ServerInfo::GetPlayerInfo(int id)
 
 void P_ServerInfo::MessageCharacter(int iObjectID,string strMessage)
 {
+	SetNetUpdateFlag(true);	
+
 	for(int i =0 ;i< m_kPlayers.size();i++)
 	{	
 		for(int j=0;j<m_kPlayers[i].kControl.size();j++)
@@ -273,6 +288,8 @@ void P_ServerInfo::MessageCharacter(int iObjectID,string strMessage)
 
 void P_ServerInfo::MessagePlayer(const char* czName,string strMessage)
 {
+	SetNetUpdateFlag(true);	
+	
 	for(int i =0 ;i< m_kPlayers.size();i++)
 	{	
 		if(m_kPlayers[i].sPlayerName == czName)
@@ -286,6 +303,8 @@ void P_ServerInfo::MessagePlayer(const char* czName,string strMessage)
 
 void P_ServerInfo::MessagePlayer(int id,string strMessage)
 {
+	SetNetUpdateFlag(true);	
+
 	//if target connection id is -1 send to everyone
 	if(id == -1)
 	{
@@ -317,6 +336,8 @@ Property* Create_P_ServerInfo()
 
 void P_ServerInfo::AddPrivateSoundToPlayer(int iPlayerObjectID, int iObjectGenSoundID, char *szFileName)
 {
+	SetNetUpdateFlag(true);	
+	
 	for(int i =0 ;i< m_kPlayers.size();i++)
 	{	
 		for(int j=0;j<m_kPlayers[i].kControl.size();j++)
@@ -337,6 +358,9 @@ void P_ServerInfo::AddPrivateSoundToPlayer(int iPlayerObjectID, int iObjectGenSo
 
 void P_ServerInfo::AddSound(int iObjectGenSoundID, char *szFileName)
 {
+	SetNetUpdateFlag(true);
+	
+	
 	for(int i =0 ;i< m_kPlayers.size();i++)
 	{	
 		for(int j=0;j<m_kPlayers[i].kControl.size();j++)
@@ -349,4 +373,12 @@ void P_ServerInfo::AddSound(int iObjectGenSoundID, char *szFileName)
 			}	
 		}
 	}
+}
+
+
+void P_ServerInfo::SetServerName(string strName)
+{
+	SetNetUpdateFlag(true);	
+	
+	m_sServerName = strName;
 }

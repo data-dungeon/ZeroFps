@@ -36,13 +36,12 @@ void P_Mad::Update()
 		}
 	
 	if( m_pkObjMan->IsUpdate(PROPERTY_TYPE_RENDER) ) {
-//		if(!m_bIsVisible)
-//			return;
+
 		
 		if(!m_pkZeroFps->GetCam()->m_kFrustum.SphereInFrustum(m_pkObject->GetWorldPosV(),GetRadius()))
 			return;
 		
-		// Set Object LOD.
+/*		// Set Object LOD.
 		if(g_iMadLODLock == 0) {
 			Vector3 kDiff = m_pkZeroFps->GetCam()->GetPos() - m_pkObject->GetWorldPosV();
 			float fDist = float( fabs(kDiff.Length()) );
@@ -57,7 +56,7 @@ void P_Mad::Update()
 		}
 
 		g_fMadLODScale = m_fLod;
-		
+*/		
 		//set force transparent if not visible
 		if(!m_bIsVisible)
 			m_pkZShader->SetForceBlending(BLEND_FORCE_TRANSPARENT);
@@ -95,7 +94,7 @@ void P_Mad::Update()
 void P_Mad::SetBase(const char* acName)
 {
 	SetBasePtr(string(acName));
-	m_iNetUpdateFlags = 1;
+	SetNetUpdateFlag(true);
 }
 
 void P_Mad::Save(ZFIoInterface* pkPackage)
@@ -122,22 +121,26 @@ void P_Mad::Load(ZFIoInterface* pkPackage)
 	
 	//update object radius
 	m_pkObject->SetRadius(GetRadius());
+	
+	SetNetUpdateFlag(true);	
 }
 
 void P_Mad::PackTo(NetPacket* pkNetPacket, int iConnectionID )
 {
-	pkNetPacket->Write_NetStr(m_kMadFile.c_str());
+	pkNetPacket->Write_Str(m_kMadFile.c_str());
 	pkNetPacket->Write( m_fScale );
 	pkNetPacket->Write( m_bCanBeInvisible );	
 	pkNetPacket->Write( iActiveAnimation );
 	
-	m_iNetUpdateFlags = 0;
+	//m_iNetUpdateFlags = 0;
+	
+	SetNetUpdateFlag(iConnectionID,false);
 }
  
 void P_Mad::PackFrom(NetPacket* pkNetPacket, int iConnectionID )
 {
 	char temp[128];
-	pkNetPacket->Read_NetStr(temp);
+	pkNetPacket->Read_Str(temp);
 	SetBase(temp);
 	pkNetPacket->Read(m_fScale);
 
@@ -148,6 +151,7 @@ void P_Mad::PackFrom(NetPacket* pkNetPacket, int iConnectionID )
 	if(iNewAnim != iActiveAnimation)
 		PlayAnimation(iNewAnim, 0);
 
+	//cout<<"got mad data---------------"<<endl;
 }
 
 vector<PropertyValues> P_Mad::GetPropertyValues()
@@ -180,6 +184,8 @@ bool P_Mad::HandleSetValue( string kValueName ,string kValue )
 	if(strcmp(kValueName.c_str(), "m_fScale") == 0) {
 		m_fScale = atof(kValue.c_str());
 		m_pkObject->SetRadius(GetRadius());
+				
+		SetNetUpdateFlag(true);
 		return true;
 	}
 

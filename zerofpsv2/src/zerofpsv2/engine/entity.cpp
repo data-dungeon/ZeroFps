@@ -568,6 +568,8 @@ void Entity::PackTo(NetPacket* pkNetPacket, int iConnectionID)
 	//send update flags
 	pkNetPacket->Write(m_kNetUpdateFlags[iConnectionID]);
 	
+	//cout<<"BLIB:"<<sizeof(m_kNetUpdateFlags[iConnectionID])<<endl;
+	
 	//send parent
 	if(GetNetUpdateFlag(iConnectionID,NETUPDATEFLAG_PARENT))
 	{
@@ -642,6 +644,22 @@ void Entity::PackTo(NetPacket* pkNetPacket, int iConnectionID)
 		pkNetPacket->Write_Str(m_strType.c_str());
 	}	
 
+	//send propertys
+	for(vector<Property*>::iterator it=m_akPropertys.begin();it!=m_akPropertys.end();it++) 
+	{
+		if((*it)->bNetwork) 
+		{
+			if((*it)->GetNetUpdateFlag(iConnectionID))
+			{	
+				pkNetPacket->Write_NetStr((*it)->m_acName);
+				(*it)->PackTo(pkNetPacket,iConnectionID);
+			}
+		}
+	}
+	
+	//end whit and empty property name so that client knows theres no more propertys
+	pkNetPacket->Write_NetStr("");
+	
 /*
 	// Force Pos Updates
 	m_iNetUpdateFlags |= (OBJ_NETFLAG_POS | OBJ_NETFLAG_ROT);
@@ -677,7 +695,7 @@ void Entity::PackTo(NetPacket* pkNetPacket, int iConnectionID)
 //	char szPropertyName[256];
 
 	// Write propertys med Propery::bNetwork = true
-	for(vector<Property*>::iterator it=m_akPropertys.begin();it!=m_akPropertys.end();it++) {
+/*	for(vector<Property*>::iterator it=m_akPropertys.begin();it!=m_akPropertys.end();it++) {
 //		g_ZFObjSys.Logf("net", " Check '%s': ",(*it)->m_acName );
 		if((*it)->bNetwork) {
 			(*it)->m_iNetUpdateFlags |= m_pkObjectMan->m_iForceNetUpdate;
@@ -699,7 +717,7 @@ void Entity::PackTo(NetPacket* pkNetPacket, int iConnectionID)
 
 	pkNetPacket->Write_NetStr("");
 
-//	m_iNetUpdateFlags = 0;
+//	m_iNetUpdateFlags = 0;*/
 }
 
 /**	\brief	Unpack Entity.
@@ -714,7 +732,7 @@ void Entity::PackFrom(NetPacket* pkNetPacket, int iConnectionID)
 	//get parent
 	if(GetNetUpdateFlag(0,NETUPDATEFLAG_PARENT))
 	{
-		cout<<"got parent update"<<endl;
+		//cout<<"got parent update"<<endl;
 		
 		int iParentID	=	-1;
 
@@ -725,7 +743,7 @@ void Entity::PackFrom(NetPacket* pkNetPacket, int iConnectionID)
    // get update status
 	if(GetNetUpdateFlag(0,NETUPDATEFLAG_UPDATESTATUS))
 	{
-		cout<<"got update status"<<endl;	
+		//cout<<"got update status"<<endl;	
 		
 	   pkNetPacket->Read( m_iUpdateStatus );		   
 	}
@@ -733,7 +751,7 @@ void Entity::PackFrom(NetPacket* pkNetPacket, int iConnectionID)
 	//get delete list
 	if(GetNetUpdateFlag(0,NETUPDATEFLAG_DELETE))
 	{	
-		cout<<"got delete data"<<endl;	
+		//cout<<"got delete data"<<endl;	
 	
 		int iNumDelObjects;
 		Entity* pkNetSlave;	
@@ -752,7 +770,7 @@ void Entity::PackFrom(NetPacket* pkNetPacket, int iConnectionID)
 	//get position
 	if(GetNetUpdateFlag(0,NETUPDATEFLAG_POS))
 	{
-		cout<<"got position:"<<endl;	
+		//cout<<"got position:"<<endl;	
 		Vector3 kPos;
 		pkNetPacket->Read(kPos);
 		SetLocalPosV(kPos);
@@ -761,7 +779,7 @@ void Entity::PackFrom(NetPacket* pkNetPacket, int iConnectionID)
 	//get rotation	
 	if(GetNetUpdateFlag(0,NETUPDATEFLAG_ROT))
 	{
-		cout<<"got rotation:"<<endl;	
+		//cout<<"got rotation:"<<endl;	
 		Matrix4 kRot;
 		pkNetPacket->Read(kRot);
 		SetLocalRotM(kRot);
@@ -770,7 +788,7 @@ void Entity::PackFrom(NetPacket* pkNetPacket, int iConnectionID)
 	//get velocity	
 	if(GetNetUpdateFlag(0,NETUPDATEFLAG_VEL))
 	{
-		cout<<"got velocity:"<<endl;	
+		//cout<<"got velocity:"<<endl;	
 		Vector3 kVel;
 		pkNetPacket->Read(kVel);
 		GetVel()=kVel;
@@ -779,7 +797,7 @@ void Entity::PackFrom(NetPacket* pkNetPacket, int iConnectionID)
 	//get radius
 	if(GetNetUpdateFlag(0,NETUPDATEFLAG_RADIUS))	
 	{
-		cout<<"got radius"<<endl;	
+		//cout<<"got radius"<<endl;	
 		pkNetPacket->Read(m_fRadius);
 	}
 	
@@ -790,7 +808,7 @@ void Entity::PackFrom(NetPacket* pkNetPacket, int iConnectionID)
 		pkNetPacket->Read_Str(szStr);
 		m_strName = szStr;		
 	
-		cout<<"got name "<<m_strName<<endl;		
+		//cout<<"got name "<<m_strName<<endl;		
 	}	
 	
 	//get type
@@ -800,8 +818,40 @@ void Entity::PackFrom(NetPacket* pkNetPacket, int iConnectionID)
 		pkNetPacket->Read_Str(szStr);
 		m_strType = szStr;		
 	
-		cout<<"got type "<<m_strType<<endl;		
+		//cout<<"got type "<<m_strType<<endl;		
 	}		
+	
+	
+	//get propertys
+	char szProperty[256];
+	
+	//read first property name
+	pkNetPacket->Read_NetStr(szProperty);
+
+	while(strcmp(szProperty,"") != 0) 
+	{
+		//create proxy property
+		Property* pProp  = AddProxyProperty(szProperty);
+		if(pProp) 
+			pProp->PackFrom(pkNetPacket, ZF_NET_NOCLIENT);		//load property
+		else 
+		{
+			cout << "Error in netpacket" << endl;
+			pkNetPacket->SetError(true);
+			return;
+		}
+
+		//get next property name
+		pkNetPacket->Read_NetStr(szProperty);
+	}	
+
+	int iEnd = pkNetPacket->m_iPos;
+	
+	m_pkObjectMan->m_iTotalNetObjectData += (iEnd - iStart);
+	m_pkObjectMan->m_iNumOfNetObjects ++;
+	
+	
+	
 /*
 	int iDelObjectID;
 
@@ -876,7 +926,7 @@ void Entity::PackFrom(NetPacket* pkNetPacket, int iConnectionID)
 	//g_ZFObjSys.Logf("net", " .Name '%s'\n", m_strName.c_str() );
 	//g_ZFObjSys.Logf("net", " -Head Size = %d\n",  pkNetPacket->m_iPos - iStart );	
 */
-	char szProperty[256];
+/*	char szProperty[256];
 	pkNetPacket->Read_NetStr(szProperty);
 
 	while(strcmp(szProperty,"") != 0) {
@@ -904,6 +954,7 @@ void Entity::PackFrom(NetPacket* pkNetPacket, int iConnectionID)
 	m_pkObjectMan->m_iTotalNetObjectData += (iEnd - iStart);
 	m_pkObjectMan->m_iNumOfNetObjects ++;
 	//g_ZFObjSys.Logf("net", "\n");
+*/	
 }
 
 /**	\brief	Load Entity.
@@ -1541,12 +1592,26 @@ void	Entity::ResetAllNetUpdateFlags()
 		m_kNetUpdateFlags[i].reset();	//reset all bits to false
 		m_kNetUpdateFlags[i].flip();  //flip all bits to true
 	}
+
+	//reset all propertys
+	for(int j = 0;j<m_akPropertys.size();j++)
+	{
+		m_akPropertys[j]->ResetAllNetUpdateFlags();
+	}
 }
 
 void	Entity::ResetAllNetUpdateFlags(int iConID)
 {
 	m_kNetUpdateFlags[iConID].reset();	//reset all bits to false
 	m_kNetUpdateFlags[iConID].flip();  //flip all bits to true
+	
+	
+
+	//reset all propertys
+	for(int j = 0;j<m_akPropertys.size();j++)
+	{
+		m_akPropertys[j]->SetNetUpdateFlag(iConID,true);
+	}	
 }
 
 bool	Entity::GetNetUpdateFlag(int iConID,int iFlagID)
