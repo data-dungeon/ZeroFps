@@ -7,10 +7,10 @@ Tcs::Tcs(): ZFSubSystem("Tcs")
 	Logf("zerofps","Tiny Collission system created");
 
  	m_fMaxDelay = 		0.04;
-	m_fMinForce = 		0.02;
+	m_fMinForce = 		0.04;
 	m_fAlmostZero = 	0.001;
 	m_fSleepVel = 		0.15;
-	m_fMaxVel = 		4.0;
+	m_fMaxVel = 		10.0;
 	
 	m_iHandleCollission = 1;
 	m_iDebugGraph = 0;
@@ -150,13 +150,7 @@ void Tcs::Update(float fAlphaTime)
 	SyncEntitys();
 	
 	//clear all forces
-	ResetForces();
-	
-	//check for sleepoing bodys
-	//CheckForSleepingBodys();
-	
-	//if(m_iNrOfCollissions > 0 )
-	//	cout<<"collissions:"<<m_iNrOfCollissions<<endl;
+//	ResetForces();
 	
 }
 
@@ -281,12 +275,6 @@ void Tcs::HandleCollission(Tcs_collission* pkCol)
 	}
 	
 	//cout<<"totalj:"<<fTotalj<<endl;
-	/*
-	if(!pkCol->pkBody1->m_bStatic)
-		TryToSleep(pkCol->pkBody1);
-	if(!pkCol->pkBody2->m_bStatic)
-		TryToSleep(pkCol->pkBody2);
-	*/
 		
 	TryToSleep(pkCol->pkBody1,pkCol->pkBody2);		
 				
@@ -347,7 +335,7 @@ void Tcs::UpdateForces()
 			//apply gravity if enabled
 			if(m_kBodys[i]->m_bGravity)
 			{
-				m_kBodys[i]->m_kLinearForce.y -= 2;
+				m_kBodys[i]->m_kLinearForce.y -= 4;
 			}
 			
 			//apply some air friction		

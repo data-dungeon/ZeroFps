@@ -105,8 +105,7 @@ bool ZShadow::StartUp()
 
 	
 	//EnableShadowGroup(0); 
-	//EnableShadowGroup(1); 
-	
+	EnableShadowGroup(1); 	
 	EnableShadowGroup(2);
 
 	return true;

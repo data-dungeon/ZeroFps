@@ -463,7 +463,7 @@ void ZeroFps::Update_System(bool bServer)
 				
 	
 				//update Tiny Collission system
-			//	m_pkTcs->Update(m_pkObjectMan->GetSimDelta());	
+				//m_pkTcs->Update(m_pkObjectMan->GetSimDelta());	
 				
 			}	
 		}

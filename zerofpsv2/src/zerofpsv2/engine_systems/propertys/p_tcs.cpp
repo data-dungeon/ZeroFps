@@ -522,7 +522,7 @@ Matrix4 P_Tcs::GetModelMatrix()
 
 void P_Tcs::ApplyForce(Vector3 kAttachPos,const Vector3& kForce,bool bLocal)
 {
-	//Wakeup();
+	Wakeup();
 
 	//add motion force
 	m_kExternalLinearForce += kForce;
@@ -538,6 +538,12 @@ void P_Tcs::ApplyForce(Vector3 kAttachPos,const Vector3& kForce,bool bLocal)
 		//calculate and add momental force		
 		m_kExternalRotForce += kForce.Cross(kAttachPos);
 	}	
+}
+
+void P_Tcs::ClearExternalForces()
+{
+	m_kExternalLinearForce.Set(0,0,0);
+	m_kExternalRotForce.Set(0,0,0);
 }
 
 void P_Tcs::ApplyImpulsForce(Vector3 kAttachPos,const Vector3& kForce,bool bLocal)

@@ -123,6 +123,7 @@ class ENGINE_SYSTEMS_API P_Tcs : public Property
 		void SetWalkGroupFlag(int iFlag,bool bValue) {m_akWalkableGroups[iFlag] = bValue;};			
 		
 		//forces
+		void ClearExternalForces();
 		void ApplyForce(Vector3 kAttachPos,const Vector3& kForce,bool bLocal =true);
 		void ApplyImpulsForce(Vector3 kAttachPos,const Vector3& kForce,bool bLocal=true);
 		void ApplyImpulsForce(const Vector3& kForce);		

@@ -17,11 +17,7 @@ class MCOMMON_API P_Car : public Property
 
 		bitset<6>		m_kControls;
 
-		Vector3			m_kCurrentVel;
-		Vector3			m_kAcceleration;
-
-
-		void UpdateDistance();
+		void Trust(Vector3 kPos,Vector3 kForce);
 		Vector3 LineTest(Vector3 kStart,Vector3 kStop);
 
 	public:
