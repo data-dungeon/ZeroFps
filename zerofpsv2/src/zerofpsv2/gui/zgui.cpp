@@ -344,8 +344,15 @@ ZGui::MAIN_WINDOW* ZGui::FindMainWnd(int x,int y)
 }
 
 bool ZGui::OnMouseUpdate(int x, int y, bool bLBnPressed, 
-								 bool bRBnPressed, float fGameTime)
+								 bool bRBnPressed, bool bMBnPressed, 
+								 float fGameTime)
 {
+
+	if(bMBnPressed) // ignorera mitten knappen och ge spelet fokus
+	{
+		m_bHaveInputFocus = false;
+		return true;
+	}
 
 	// Register public variables needed by the editbox.
 	m_iMouseX = x; m_iMouseY = y;
@@ -699,11 +706,12 @@ bool ZGui::IsActive()
 }
 
 bool ZGui::Update(float fGameTime, int iKeyPressed, bool bLastKeyStillPressed,
-				  bool bShiftIsPressed, int x, int y, bool bLBnPressed, bool bRBnPressed)
+				  bool bShiftIsPressed, int x, int y, bool bLBnPressed, 
+				  bool bRBnPressed, bool bMBnPressed)
 {
 	if(m_bActive == true)
 	{
-		OnMouseUpdate(x, y, bLBnPressed, bRBnPressed, fGameTime);
+		OnMouseUpdate(x, y, bLBnPressed, bRBnPressed, bMBnPressed, fGameTime);
 		//OnKeyUpdate(iKeyPressed, bLastKeyStillPressed, bShiftIsPressed, m_fGameTime);
 		KeyboardInput(iKeyPressed, bShiftIsPressed, fGameTime);
 	}

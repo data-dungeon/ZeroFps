@@ -104,7 +104,9 @@ public:
 	~ZGui();
 
 	bool Update(float m_fGameTime, int iKeyPressed, bool bLastKeyStillPressed,
-		bool bShiftIsPressed, int x, int y, bool bLBnPressed, bool bRBnPressed);
+		bool bShiftIsPressed, int x, int y, bool bLBnPressed, bool bRBnPressed, 
+		bool bMBnPressed);
+
 	bool IsActive();
 
 	bool Render(); // Render the active main window
@@ -169,7 +171,8 @@ private:
 	long m_iHighestZWndValue;
 	
 	void OnKeyPress(int iKey);
-	bool OnMouseUpdate(int x, int y, bool bLBnPressed, bool bRBnPressed, float fGameTime);
+	bool OnMouseUpdate(int x, int y, bool bLBnPressed, 
+		bool bRBnPressed, bool bMBnPressed, float fGameTime);
 	
 	ZGuiRender* m_pkRenderer;		// Pointer to the gui render object
 	ZGuiCursor* m_pkCursor;

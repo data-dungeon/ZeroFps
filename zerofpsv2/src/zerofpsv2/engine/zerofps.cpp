@@ -290,7 +290,8 @@ void ZeroFps::Run_EngineShell()
 
 	m_pkGui->Update(GetGameTime(),iInputKey,false,
 		(m_pkInput->Pressed(KEY_RSHIFT) || m_pkInput->Pressed(KEY_LSHIFT)),
-		mx,my,m_pkInput->Pressed(MOUSELEFT),m_pkInput->Pressed(MOUSERIGHT));
+		mx,my,m_pkInput->Pressed(MOUSELEFT),m_pkInput->Pressed(MOUSERIGHT),
+		m_pkInput->Pressed(MOUSEMIDDLE));
 
 	if(m_pkInput->Pressed(KEY_F8))	GetSystem().RunCommand("shot",CSYS_SRC_SUBSYS);	
 
