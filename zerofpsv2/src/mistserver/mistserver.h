@@ -75,7 +75,8 @@ class MistServer :public Application , public ZGuiApp
 		//network sends
 		void SendPlayerListToClient(int iClient);
 		void SendContainer(int iContainerID,int iClientID,bool bOpen);
-						
+		void SendCharacterEqipment(int iCharacter,int iClientID);				
+		
 		//player creation
 		Vector3 GetPlayerStartPos();
 		int CreatePlayer(const char* csPlayer,const char* csCharacter,const char* csLocation,int iConID);		

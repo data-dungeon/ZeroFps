@@ -13,7 +13,7 @@ enum MLNM_ClientToServer
 	MLNM_CS_ACTION,
 	MLNM_CS_REQ_CONTAINER,
 	MLNM_CS_MOVE_ITEM,
-	
+	MLNM_CS_REQ_EQIPMENT,	
 };
 
 //	A network message from the server to the client.

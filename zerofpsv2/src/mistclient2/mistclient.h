@@ -66,10 +66,6 @@ class MistClient :public Application, public ZGuiApp {
 		
 		//chat system
 		void Say(string strMsg);
-		void SendMessage(string strMsg,int iChannel,string strToWho);
-		void RequestPlayerList();
-		void RequestKillMe();
-
 		
 		//specifik network requests
 		void RequestOpenInventory();
@@ -79,6 +75,11 @@ class MistClient :public Application, public ZGuiApp {
 		void SendAction(int iEntityID,const string& strAction);
 		void SendRequestContainer(int iContainerID);		
 		void SendMoveItem(int iItemID,int iTarget,int iPosX,int iPosY,int iCount = -1);	
+		void SendRequestPlayerList();
+		void SendMessage(string strMsg,int iChannel,string strToWho);
+		void SendRequestKillMe();
+		void SendRequestOpenEqipment();			
+			
 			/*SendMoveItem hjälp.
 				iItemID : alltid entity id't för itemet i fråga
 				iTraget : target container entity ID , om -1 så antas i spelarens inventory

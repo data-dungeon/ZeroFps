@@ -174,13 +174,13 @@ void MistClient::RunCommand(int cmdid, const CmdArgument* kCommand)
 		
 		case FID_PLAYERLIST:
 		{
-			RequestPlayerList();			
+			SendRequestPlayerList();			
 			break;
 		}
 	
 		case FID_KILLME:
 		{
-			RequestKillMe();
+			SendRequestKillMe();
 			break;
 		}	
 	}
@@ -198,9 +198,8 @@ void MistClient::Say(string strMsg)
 		{
 			if(strMsg.substr(1) == "users")
 			{
-				RequestPlayerList();
-			}
-		
+				SendRequestPlayerList();
+			}		
 		}
 	}
 	else
@@ -370,7 +369,7 @@ void MistClient::Input()
 			m_pkEquipmentDlg->Close(); 
 		else
 		{
-			m_pkEquipmentDlg->Open(); 
+			SendRequestOpenEqipment();
 		}
 	}
 			
@@ -701,9 +700,7 @@ void MistClient::OnNetworkMessage(NetPacket *pkNetMessage)
 		}
 		
 		case MLNM_SC_CONTAINER:
-		{
-			cout<<"got container"<<endl;
-		
+		{		
 			int iContainerID;
 			int iContainerType;
 			char cSizeX;
@@ -739,6 +736,7 @@ void MistClient::OnNetworkMessage(NetPacket *pkNetMessage)
 				kItemList.push_back(kTemp);
 			}
 			
+			/*
 			cout<<"type:"<<iContainerType<<endl;
 			cout<<"size:"<<int(cSizeX)<<" x "<<int(cSizeY)<<endl;
 			cout<<"number of items:"<<iItems<<endl;						
@@ -747,7 +745,7 @@ void MistClient::OnNetworkMessage(NetPacket *pkNetMessage)
 			{
 				cout<<i<<" id:"<<kItemList[i].m_iItemID<<" name:"<<kItemList[i].m_strName<<" icon:"<<kItemList[i].m_strIcon<<" pos:"<<int(kItemList[i].m_cItemX)<<" x "<<int(kItemList[i].m_cItemY)<<" stack:"<<kItemList[i].m_iStackSize<<endl;			
 			}
-			
+			*/
 			
 			//is this and inventory?
 			if(iContainerType == eInventory)
@@ -773,6 +771,15 @@ void MistClient::OnNetworkMessage(NetPacket *pkNetMessage)
 					m_pkInventoryDlg->OpenContainerWnd(iContainerID, cSizeX, cSizeY);
 
 				m_pkInventoryDlg->UpdateContainer(kItemList);
+			}
+			else
+			if(iContainerType == eHead)  //head 
+			{
+				if(bOpen)
+				{
+					// this is the first container in the eqipment screen, lets open eqipment
+					m_pkEquipmentDlg->Open(); 			
+				}
 			}
 				
 			break;
@@ -909,7 +916,7 @@ bool MistClient::ReadWriteServerList(bool bRead)
    return true;
 }
 
-void MistClient::RequestKillMe()
+void MistClient::SendRequestKillMe()
 {
 	NetPacket kNp;			
 	kNp.Write((char) MLNM_CS_REQ_KILLME);
@@ -917,7 +924,7 @@ void MistClient::RequestKillMe()
 	SendAppMessage(&kNp);		
 }
 
-void MistClient::RequestPlayerList()
+void MistClient::SendRequestPlayerList()
 {
 	NetPacket kNp;			
 	kNp.Write((char) MLNM_CS_REQ_PLAYERLIST);
@@ -1079,6 +1086,14 @@ void MistClient::SendAction(int iEntityID,const string& strAction)
 	
 	kNp.TargetSetClient(0);
 	SendAppMessage(&kNp);			
+}
+
+void MistClient::SendRequestOpenEqipment()
+{
+	NetPacket kNp;			
+	kNp.Write((char) MLNM_CS_REQ_EQIPMENT);
+	kNp.TargetSetClient(0);
+	SendAppMessage(&kNp);				
 }
 
 void MistClient::RequestOpenInventory()

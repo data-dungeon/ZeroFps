@@ -915,6 +915,18 @@ void MistServer::OnNetworkMessage(NetPacket *PkNetMessage)
 			break;
 		}
 		
+		case MLNM_CS_REQ_EQIPMENT:
+		{
+			if(PlayerData* pkData = m_pkPlayerDB->GetPlayerData(PkNetMessage->m_iClientID))
+			{				
+				SendCharacterEqipment(pkData->m_iCharacterID, PkNetMessage->m_iClientID);
+				
+			}
+						
+			break;
+		}
+		
+		
 		case MLNM_CS_ACTION:
 		{
 			int iEntity;
@@ -1256,6 +1268,31 @@ void MistServer::SendContainer(int iContainerID,int iClientID,bool bOpen)
 		cout<<"container not found"<<endl;
 
 }
+
+void MistServer::SendCharacterEqipment(int iCharacter,int iClientID)
+{
+	cout<<"sending eqipment for character "<<iCharacter<<" to client "<<iClientID<<endl;
+
+	if(P_CharacterProperty* pkCharacter = (P_CharacterProperty*)m_pkEntityManager->GetPropertyFromEntityID(iCharacter,"P_CharacterProperty"))
+	{
+		//send all containers to client
+		SendContainer(pkCharacter->m_iHead,			iClientID,true);
+		SendContainer(pkCharacter->m_iGloves,		iClientID,true);
+		SendContainer(pkCharacter->m_iCape,			iClientID,true);
+		SendContainer(pkCharacter->m_iNecklace,	iClientID,true);
+		SendContainer(pkCharacter->m_iBody,			iClientID,true);
+		SendContainer(pkCharacter->m_iLeftHand,	iClientID,true);
+		SendContainer(pkCharacter->m_iRightHand,	iClientID,true);
+		SendContainer(pkCharacter->m_iBracers,		iClientID,true);
+		SendContainer(pkCharacter->m_iRing1,		iClientID,true);
+		SendContainer(pkCharacter->m_iRing2,		iClientID,true);
+		SendContainer(pkCharacter->m_iRing3,		iClientID,true);
+		SendContainer(pkCharacter->m_iRing4,		iClientID,true);
+		SendContainer(pkCharacter->m_iBelt,			iClientID,true);
+		SendContainer(pkCharacter->m_iFeets,		iClientID,true);
+	}
+}
+
 
 void MistServer::SayToClients(const string& strMsg,int iClientID)
 {

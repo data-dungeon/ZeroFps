@@ -35,7 +35,8 @@ void GuiMsgIngameScreen( string strMainWnd, string	strController,
 			else
 			if(strController == "OpenEquipWndBn")
 			{
-				g_kMistClient.m_pkEquipmentDlg->Open(); 
+				g_kMistClient.SendRequestOpenEqipment();
+				//g_kMistClient.m_pkEquipmentDlg->Open(); 
 				g_kMistClient.PositionActionButtons();
 			}
 		}

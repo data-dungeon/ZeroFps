@@ -14,6 +14,7 @@ enum MCOMMON_API ContainerTypes
 	eNormal,
 	
 	eInventory,
+	
 	eLeftHand,
 	eRightHand,
 	eHead,
