@@ -19,6 +19,8 @@ public:
 
 	virtual bool Render( ZGuiRender* renderer );
 	bool Notify(ZGuiWnd* pkWnd, int iCode);
+
+	bool m_bCenterTextHorz;
 };
 
 #endif

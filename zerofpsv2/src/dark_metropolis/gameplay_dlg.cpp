@@ -1,6 +1,7 @@
 #include "dark_metropolis.h"
 #include "gameplay_dlg.h"
 #include "members_dlg.h"
+#include "newgame_dlg.h"
 
 CGamePlayDlg::CGamePlayDlg() : CGameDlg("GamePlayScreen", &g_kDM)
 {
@@ -22,6 +23,7 @@ void CGamePlayDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName,
 	{
 		ShowWnd("GamePlayScreen", false);
 		LoadDlg("data/script/gui/dm_start.lua");
+		((CNewGameDlg*)GetGameDlg(NEWGAME_DLG))->SetFade(1.0f);
 		pkMainWnd->Hide();
 		m_pkGui->SetCaptureToWnd(GetWnd("DMStartWnd"));
 

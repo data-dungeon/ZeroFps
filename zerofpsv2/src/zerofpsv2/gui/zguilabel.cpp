@@ -14,6 +14,7 @@
 ZGuiLabel::ZGuiLabel(Rect kRectangle, ZGuiWnd* pkParent, bool bVisible, int iID) :
 	ZGuiWnd(kRectangle, pkParent, bVisible, iID)
 {
+	m_bCenterTextHorz = false;
 	m_bEnabled = false; // labels are static by default
 	RemoveWindowFlag(WF_CANHAVEFOCUS); // fönster har focus by default
 	RemoveWindowFlag(WF_TOPWINDOW); // kan inte användas som mainwindow
@@ -39,11 +40,21 @@ bool ZGuiLabel::Render( ZGuiRender* pkRenderer )
 
 	if(m_strText != NULL)
 	{
+		Rect r = GetScreenRect();
+
 		if(m_pkFont)
+		{
 			pkRenderer->SetFont(m_pkFont);
 
+			if(m_bCenterTextHorz)
+			{
+				int tw = m_pkFont->GetLength(m_strText);
+				r.Left = r.Left + r.Width()/2 - tw/2;
+			}
+		}
+
 		int iLetters, iRows;
-		pkRenderer->RenderText(m_strText, GetScreenRect(), -1, 0, false, iLetters, iRows);
+		pkRenderer->RenderText(m_strText, r, -1, 0, false, iLetters, iRows);
 	}
 	return true;
 } 

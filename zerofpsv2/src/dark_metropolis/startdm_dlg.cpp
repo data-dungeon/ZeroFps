@@ -107,6 +107,9 @@ void CStartDMDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName,
 		m_pkAudioSys->StartSound("data/sound/computer beep 5.wav", 
 			m_pkAudioSys->GetListnerPos()); 
 		m_pkDM->GUI_LoadSave(false);
+		
+		m_pkGui->PlaceWndFrontBack(GetWnd("DMStartWnd"), true); 
+		m_pkGui->PlaceWndFrontBack(GetWnd("LoadListWnd"), true); 
 	}
 	else
 	if(strClickName == "SaveNewGameBn")
@@ -114,6 +117,9 @@ void CStartDMDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName,
 		m_pkAudioSys->StartSound("data/sound/computer beep 5.wav", 
 			m_pkAudioSys->GetListnerPos()); 
 		m_pkDM->GUI_LoadSave(true);
+		
+		m_pkGui->PlaceWndFrontBack(GetWnd("DMStartWnd"), true); 
+		m_pkGui->PlaceWndFrontBack(GetWnd("LoadListWnd"), true); 
 	}
 	else
 	if(strClickName == "QuitBn")
@@ -256,8 +262,10 @@ void CStartDMDlg::CancelIntro()
 	GetWnd("DMIntroWnd")->Hide();
 	m_bPlayIntro = false;	
 
-	m_pkGui->SetCaptureToWnd(GetWnd("StartNewGameWnd")); 
 	m_pkGui->KillWndCapture();
+	m_pkGui->SetCaptureToWnd(GetWnd("DMStartWnd")); 
+	
+	m_pkGui->PlaceWndFrontBack(GetWnd("DMStartWnd"), true); 
 	
 }
 

@@ -14,6 +14,8 @@ public:
 	void UpdateFade(float fGameTime);
 	bool InitDlg();
 
+	void SetFade(float fColor);
+
 private:
 	void AddContinueButton();
 	float m_fFadeOffset;
