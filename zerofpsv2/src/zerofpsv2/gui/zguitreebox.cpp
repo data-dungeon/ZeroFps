@@ -491,7 +491,9 @@ void ZGuiTreebox::ChangeScrollbarRange(int width, int height, bool bVerticalScro
 		if(fPageSize > 1.0f)
 			fPageSize = 1.0f;
 
-		m_pkVertScrollbar->SetScrollInfo(0,iRows,fPageSize,0);
+		int prev_pos = m_pkVertScrollbar->GetPos(); 
+
+		m_pkVertScrollbar->SetScrollInfo(0,iRows,fPageSize,prev_pos);
 	}
 	else
 	{
