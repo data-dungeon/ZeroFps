@@ -81,7 +81,10 @@ MistServer::MistServer(char* aName,int iWidth,int iHeight,int iDepth)
 	Register_Cmd("load",FID_LOAD);		
 	Register_Cmd("save",FID_SAVE);		
 	Register_Cmd("users",FID_USERS);		
-	Register_Cmd("localorder",FID_LOCALORDER);		
+	Register_Cmd("lo",FID_LOCALORDER);		
+	Register_Cmd("lightmode", FID_LIGHTMODE);		
+
+	
 } 
 
 void MistServer::OnInit() 
@@ -470,6 +473,8 @@ void MistServer::Input()
 					m_fClickDelay = m_pkFps->GetTicks();		
 					m_pkObjectMan->CreateObjectFromScriptInZone(
 						m_strActiveObjectName.c_str(), m_kObjectMarkerPos);
+
+					cout << "Spawning " << m_strActiveObjectName.c_str() << endl;
 				}
 			}
 			
@@ -583,6 +588,7 @@ void MistServer::RunCommand(int cmdid, const CmdArgument* kCommand)
 
 	unsigned int i;
 	vector<string>	kUsers;
+	int iMode;
 
 	switch(cmdid) {
 		case FID_NEW:
@@ -635,16 +641,34 @@ void MistServer::RunCommand(int cmdid, const CmdArgument* kCommand)
 				cout << "User: " << kUsers[i] << endl;
 				}
 			break;		
-			
+
+		
+		case FID_LIGHTMODE:
+			if(kCommand->m_kSplitCommand.size() <= 1)
+				break;
+
+			iMode = atoi(kCommand->m_kSplitCommand[1].c_str());
+			if(iMode == 0)	m_pkZShader->SetForceLighting(LIGHT_ALWAYS_ON);		
+			if(iMode == 1)	m_pkZShader->SetForceLighting(LIGHT_ALWAYS_OFF);		
+			if(iMode == 2)	m_pkZShader->SetForceLighting(LIGHT_MATERIAL);		
+			break;
+
+
 		case FID_LOCALORDER:
-			char szFullCmd[1024];
-			sprintf(szFullCmd, "addzone %f %f %f %f %f %f %s",m_kZoneMarkerPos.x,m_kZoneMarkerPos.y,m_kZoneMarkerPos.z,
-				m_kZoneSize.x,m_kZoneSize.y,m_kZoneSize.z, m_strActiveZoneName.c_str());
-			cout << "FullCmd " << szFullCmd << endl;
+			string strSo;
+			strSo = kCommand->m_strFullCommand;
+			strSo.erase(0, kCommand->m_kSplitCommand[0].length() + 1);
+			//SendOrder( strSo );	
+			//m_pkConsole->Printf("SO is = %s", strSo.c_str());
+
+			//char szFullCmd[1024];
+			//sprintf(szFullCmd, "addzone %f %f %f %f %f %f %s",m_kZoneMarkerPos.x,m_kZoneMarkerPos.y,m_kZoneMarkerPos.z,
+			//	m_kZoneSize.x,m_kZoneSize.y,m_kZoneSize.z, m_strActiveZoneName.c_str());
+			//cout << "FullCmd " << szFullCmd << endl;
 			
 			P_ClientControl pkClient;
 			string strOrder;
-			kOrder.m_sOrderName = string("(ED) ") + string(szFullCmd);
+			kOrder.m_sOrderName = strSo;
 			kOrder.m_iCharacter = -1;
 			cout << "Sending LocalOrder: " << kOrder.m_sOrderName << "\n";
 			pkClient.AddServerOrder(kOrder);
@@ -722,7 +746,7 @@ void MistServer::OnServerClientJoin(ZFClient* pkClient,int iConID, char* szLogin
 	if(pcc)	
 		pcc->m_iClientID = iConID;
 	
-	bool bEditorConnect = false;
+	bool bEditorConnect = true;
 	if(bEditorConnect) {
 		P_Track* pkTrack = dynamic_cast<P_Track*>((P_ClientControl*)pkClient->m_pkObject->AddProperty("P_Track"));
 		pkTrack->SetClient(iConID);
@@ -1387,11 +1411,12 @@ void MistServer::PathTest()
 		}
 }
 
-void MistServer::HandleEditOrder(ClientOrder* pkOrder)
+void MistServer::HSO_Edit(ClientOrder* pkOrder)
 {
 	CmdArgument kcmdargs;
 	kcmdargs.Set(pkOrder->m_sOrderName.c_str());
 
+	char szCmdNone[256];
 	char szCmd1[256];
 	char szCmd2[256];
 	Vector3 kPos;
@@ -1411,9 +1436,55 @@ void MistServer::HandleEditOrder(ClientOrder* pkOrder)
 	{
 		cout << "Player: " << int(pkOrder->m_iConnectID) << " wish to remove a zone." << endl;
 	}
+	else if ( kcmdargs.m_kSplitCommand[1] == string("spawn") )
+	{
+		cout << "Player: " << int(pkOrder->m_iConnectID) << " wish to create something" << endl;
+		if(sscanf(pkOrder->m_sOrderName.c_str(), "%s %s %s", szCmdNone,szCmdNone, szCmd1) == 3) {
+			string strObjName = string("data/script/objects/") + string(szCmd1);
+			m_pkObjectMan->CreateObjectFromScriptInZone( strObjName.c_str(), m_kObjectMarkerPos);
+			}
+
+	}
+
+	// ROTATE:	Rotera en zon.
+	// DELETE:	Radera en zon.	By Index, By Pos, By NetWorkID
+	// Spawn:   Skapa ett object
 }
 
-			
+void MistServer::HSO_Character(ClientOrder* pkOrder)
+{
+	CmdArgument kcmdargs;
+	kcmdargs.Set(pkOrder->m_sOrderName.c_str());
+	
+	cout << "kcmdargs.m_kSplitCommand[1] " << kcmdargs.m_kSplitCommand[1].c_str(); 
+
+	if ( kcmdargs.m_kSplitCommand[1] == string("Play") )
+	{
+		cout << "Player: " << pkOrder->m_iConnectID << " wish to start play" << endl;
+		SpawnPlayer(pkOrder->m_iConnectID);
+	}
+	else if ( kcmdargs.m_kSplitCommand[1] == string("CharList") )
+	{
+		cout << "Player: " << int(pkOrder->m_iConnectID) << " wish to know what char he have." << endl;
+		vector<string> kChars;
+		kChars = m_pkPlayerDB->GetLoginCharacters( m_pkFps->m_kClient[pkOrder->m_iConnectID].m_strLogin.c_str() );
+		for(unsigned int i=0; i<kChars.size(); i++)
+			m_pkFps->PrintToClient(pkOrder->m_iConnectID, kChars[i].c_str());
+	}
+	else if ( kcmdargs.m_kSplitCommand[1] == string("Select") )
+	{
+		cout << "Player: " << int(pkOrder->m_iConnectID) << " wish to use char '" << kcmdargs.m_kSplitCommand[2].c_str()  << "'" << endl;
+		m_pkFps->m_kClient[pkOrder->m_iConnectID].m_strCharacter = kcmdargs.m_kSplitCommand[2].c_str();
+	}
+
+	// WHO:		Kolla vilken karaktär man är.
+	// LWHO:	Kolla vilket login man är.
+}
+
+
+/*
+	Handle Server Orders, that is commands sent from clients to the server.
+*/			
 void MistServer::HandleOrders()
 {
 	//cout<<"nr of orders: "<<P_ClientControl::NrOfOrders()<<endl;	
@@ -1428,10 +1499,24 @@ void MistServer::HandleOrders()
 			P_ClientControl::PopOrder();
 			continue;
 		}
-		cout<<"handling order "<<order->m_sOrderName<<" from client:"<<order->m_iClientID<<endl;
 		
+		cout << "handling order "<<order->m_sOrderName<<" from client:" << order->m_iClientID << endl;
+		
+		// Edit Order
+		cout << order->m_sOrderName.c_str() << endl;
+
+		if(strncmp(order->m_sOrderName.c_str(),"ED",2) == 0) {
+			HSO_Edit(order);
+			}
+		
+		// Character Command
+		else if(strncmp(order->m_sOrderName.c_str(),"CC",2) == 0) {
+			HSO_Character(order);
+			}
+		
+		// OLD UNFIXED ORDERS BELOW.
 		//handle input messages from client
-		if(strncmp(order->m_sOrderName.c_str(),"(IM)",4) == 0) 
+		else if(strncmp(order->m_sOrderName.c_str(),"(IM)",4) == 0) 
 		{
 			order->m_sOrderName.erase(0,4);
 			string playername=""; 
@@ -1486,42 +1571,6 @@ void MistServer::HandleOrders()
 			}					
 		}
       
-		// Edit Order
-		else if(strncmp(order->m_sOrderName.c_str(),"(ED)",4) == 0) {
-			HandleEditOrder(order);
-			}
-
-		// Character Command
-		else if(strncmp(order->m_sOrderName.c_str(),"(CC)",4) == 0) {
-				CmdArgument kcmdargs;
-				kcmdargs.Set(order->m_sOrderName.c_str());
-				
-				cout << "kcmdargs.m_kSplitCommand[1] " << kcmdargs.m_kSplitCommand[1].c_str(); 
-
-				if ( kcmdargs.m_kSplitCommand[1] == string("Play") )
-				{
-					cout << "Player: " << order->m_iConnectID << " wish to start play" << endl;
-					SpawnPlayer(order->m_iConnectID);
-				}
-				else if ( kcmdargs.m_kSplitCommand[1] == string("CharList") )
-				{
-					cout << "Player: " << int(order->m_iConnectID) << " wish to know what char he have." << endl;
-					vector<string> kChars;
-					kChars = m_pkPlayerDB->GetLoginCharacters( m_pkFps->m_kClient[order->m_iConnectID].m_strLogin.c_str() );
-					for(unsigned int i=0; i<kChars.size(); i++)
-						m_pkFps->PrintToClient(order->m_iConnectID, kChars[i].c_str());
-				}
-				else if ( kcmdargs.m_kSplitCommand[1] == string("Select") )
-				{
-					cout << "Player: " << int(order->m_iConnectID) << " wish to use char '" << kcmdargs.m_kSplitCommand[2].c_str()  << "'" << endl;
-					m_pkFps->m_kClient[order->m_iConnectID].m_strCharacter = kcmdargs.m_kSplitCommand[2].c_str();
-				}
-			}
-
-		
-		
-
-
       // equip
       else if ( order->m_sOrderName == "equip" )
       {

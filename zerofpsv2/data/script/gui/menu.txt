@@ -54,6 +54,27 @@ Title=Delete
 Parent=Menu_Edit
 Cmd=delete
 
+; ------------- VIEW MENU -------------
+[Menu_View]
+Title=View
+Parent=NULL
+Cmd=NULL
+
+[Menu_ViewLightOn]
+Title=Light On
+Parent=Menu_View
+Cmd=lightmode 0
+
+[Menu_ViewLightOff]
+Title=Light Off
+Parent=Menu_View
+Cmd=lightmode 1
+
+[Menu_ViewLightMat]
+Title=Light Mat
+Parent=Menu_View
+Cmd=lightmode 2
+
 ; ------------- SYSTEM MENU -------------
 
 [Menu_Sys]
