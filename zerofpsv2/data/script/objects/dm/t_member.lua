@@ -51,5 +51,6 @@ function Dead()
 	PlayAnim(SIGetSelfID(), "die");
 	SetNextAnim(SIGetSelfID(), "dead");
 	ClearPathFind(SIGetSelfID());
+	SetEntityVar (SIGetSelfID(), "deadtime", 0);
 end
 
