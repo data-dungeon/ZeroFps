@@ -6,8 +6,6 @@ using namespace std;
 
 ZFObjectManger* ZFObjectManger::pkInstance;
 
-
-
 /*
 Manger:
 	Register:		Registrerar object i object name sys.
@@ -78,6 +76,10 @@ ZFObjectManger::ZFObjectManger()
 #ifdef _DEBUG
 	cout << "Starting Object System" << endl;
 #endif
+
+	m_pkLogFile = fopen("zerofps.txt", "wt");	// Open Master Log File.
+	setvbuf(m_pkLogFile, NULL, _IONBF, 0);		// Set Non buffer mode.
+
 }
 
 ZFObjectManger::~ZFObjectManger()
@@ -85,7 +87,11 @@ ZFObjectManger::~ZFObjectManger()
 #ifdef _DEBUG
 	cout << "Closing Object System" << endl;
 #endif
+
+	Log_DestroyAll();
+	fclose(m_pkLogFile);						// Close Log Fil
 }
+
 
 ZFObjectManger* ZFObjectManger::GetInstance()
 {
@@ -256,3 +262,61 @@ bool ZFObjectManger::RunCommand(const char* szCmdArg)
 
 	return true;
 }
+
+bool ZFObjectManger::Log_Create(const char* szName)
+{
+	ZFLogFile NewLogFile;
+	NewLogFile.m_strName = szName;
+	NewLogFile.m_strFileName = string(szName) + ".txt";
+	
+	NewLogFile.m_pkFilePointer = fopen(NewLogFile.m_strFileName.c_str(), "wt");
+	setvbuf(NewLogFile.m_pkFilePointer , NULL, _IONBF, 0);		// Set Non buffer mode.
+	
+	m_kLogFiles.push_back( NewLogFile );
+
+	return true;
+}
+
+void ZFObjectManger::Log_Destory(const char* szName)
+{
+	vector<ZFLogFile>::iterator it;
+
+	for(it = m_kLogFiles.begin(); it != m_kLogFiles.end(); it++ ) {
+		if(it->m_strName == string(szName)) {
+			fclose(it->m_pkFilePointer);
+			it = m_kLogFiles.erase(it);
+			}
+		}
+}
+
+ZFLogFile*	ZFObjectManger::Log_Find(const char* szName)
+{
+	for(int i=0; i<m_kLogFiles.size(); i++) {
+		if(m_kLogFiles[i].m_strName == string(szName)) 
+			return &m_kLogFiles[i];
+		}
+
+	return NULL;
+}
+
+void ZFObjectManger::Log_DestroyAll()
+{
+	for(int i=0; i<m_kLogFiles.size(); i++) {
+		fclose(m_kLogFiles[i].m_pkFilePointer);
+		}
+}
+
+void ZFObjectManger::Log(const char* szMessage)
+{
+	fprintf(m_pkLogFile, szMessage);
+}
+
+void ZFObjectManger::Log(const char* szName, const char* szMessage)
+{
+	ZFLogFile* pkLog = Log_Find( szName );
+	if(!pkLog)
+		return;
+
+	fprintf(pkLog->m_pkFilePointer, szMessage);
+}
+

@@ -13,6 +13,8 @@ Console::Console()
 	m_pkCmd		= m_pkEngine->m_pkCmd;
 	m_pkRender	= m_pkEngine->m_pkRender;
 	m_pkTexMan  = m_pkEngine->m_pkTexMan;
+
+	g_ZFObjSys.Log_Create("console");
 	
 	m_iBufferSize=100;
 	m_kText.resize(m_iBufferSize);

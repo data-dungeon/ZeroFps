@@ -5,9 +5,16 @@
 */
 
 #include "globals.h"
+#include "zfobjectmanger.h"
+#include <cstdio>
+#include <cstdarg>
+using namespace std;
+
 
 #define NRDEG_IN_ONE_RAD	57.29577951
 #define NRRAD_IN_ONE_DEG	0.0174532952
+
+extern ZFObjectManger g_ZFObjSys;
 
 void Gemens(char* aText) 
 {
@@ -96,11 +103,20 @@ float GetYawAngle(Vector3 kDir)
 	return RadToDeg(fAngle);
 }
 
+char LogFormatTxt[4096];	
 
+void Logf(const char *fmt, ...)
+{
+	va_list		ap;							// Pointer To List Of Arguments
 
+	// Make sure we got something to work with.
+	if (fmt == NULL)	return;					
 
+	va_start(ap, fmt);						// Parses The String For Variables
+		vsprintf(LogFormatTxt, fmt, ap);		// And Convert Symbols
+	va_end(ap);								// 
 
-
-
-
+	// Now call our print function.
+	g_ZFObjSys.Log(LogFormatTxt);
+}
 

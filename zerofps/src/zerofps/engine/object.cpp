@@ -264,7 +264,6 @@ Object::Object() {
 	m_pkLevelMan		= static_cast<LevelManager*>(g_ZFObjSys.GetObjectPtr("LevelManager"));	
 	m_pkPropertyFactory = static_cast<PropertyFactory*>(g_ZFObjSys.GetObjectPtr("PropertyFactory"));	
 	
-	
 	ZFAssert(m_pkObjectMan, "Object::Object(): Failed to find ObjectManger");
 	ZFAssert(m_pkPropertyFactory, "Object::Object(): Failed to find PropertyFactory");
 
@@ -278,8 +277,8 @@ Object::Object() {
 	m_kName = "Object";			
 
 	m_iObjectType			=	OBJECT_TYPE_DYNAMIC;	
-	m_iUpdateStatus		=	UPDATE_ALL;
-	m_piDecorationStep 	=	m_pkLevelMan->GetDecorationStepPointer();
+	m_iUpdateStatus			=	UPDATE_ALL;
+	m_piDecorationStep 		=	m_pkLevelMan->GetDecorationStepPointer();
 	m_bSave					=	true;
 	m_pkParent				=	NULL;
 	m_akChilds.clear();	

@@ -11,6 +11,15 @@ using namespace std;
 
 class ZFObject;
 
+class ZFLogFile
+{
+public:
+	string	m_strName;
+	string	m_strFileName;
+
+	FILE*	m_pkFilePointer;
+};
+
 /// Links Names to ZFObjects
 struct NameObject
 {
@@ -62,6 +71,9 @@ private:
 	vector<NameObject>		kObjectNames;		///< List of all object names/ptrs.
 	vector<ZFCmdData>		m_kCmdDataList;		///< List of all cmd functions/variables.
 
+	vector<ZFLogFile>		m_kLogFiles;
+	FILE*					m_pkLogFile;
+
 public:
 	public:
 
@@ -89,6 +101,13 @@ public:
 	bool UnRegister_Cmd(ZFObject* kObject);									///< UnRegister all cmd's bound to a object.
 	bool RunCommand(const char* szCmdArg);									///< Run a cmd by passing it along to the correct object
 
+	void Log(const char* szMessage);
+
+	bool Log_Create(const char* szName);
+	void Log_Destory(const char* szName);
+	ZFLogFile*	Log_Find(const char* szName);
+	void Log_DestroyAll();
+	void Log(const char* szName, const char* szMessage);
 };
 
 extern BASIC_API ZFObjectManger g_ZFObjSys;

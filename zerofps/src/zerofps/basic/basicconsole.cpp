@@ -1,6 +1,9 @@
-#include "basicconsole.h"
 #include <cstdio>
 #include <cstdarg>
+#include "basicconsole.h"
+#include "zfobjectmanger.h"
+
+extern ZFObjectManger g_ZFObjSys;
 
 using namespace std;
 
@@ -13,7 +16,11 @@ BasicConsole::BasicConsole(char* szName)
 
 }
 
-void BasicConsole::Print(const char* aText) {
+void BasicConsole::Print(const char* aText) 
+{
+	string strEndLined = string(aText) + "\n";
+	g_ZFObjSys.Log("console", strEndLined.c_str());
+
 	delete[] m_kText[m_kText.size()-1];
 	
 	for(int i=m_kText.size()-1;i>0;i--){
@@ -40,10 +47,6 @@ void BasicConsole::Printf(const char *fmt, ...)
 	// Now call our print function.
 	Print(format_text);
 }
-
-
- 
-
 
 void BasicConsole::RunCommand(int cmdid, const CmdArgument* kCommand)
 {
