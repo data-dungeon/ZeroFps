@@ -778,7 +778,7 @@ void MistServer::OnCommand(int iID, ZGuiWnd *pkMainWnd)
 			if(!bExist)
 			{
 				BuildFileTree("ZoneModelTree", "data/mad/zones");
-				BuildFileTree("ObjectTree", "data/script/objects2");
+				BuildFileTree("ObjectTree", "data/script/objects");
 				GetWnd("WorkTabWnd")->SetMoveArea(Rect(0,0,800,600), true);
 			}
 		}

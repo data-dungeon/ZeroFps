@@ -30,9 +30,7 @@
 
 class MistServer :public Application , public ZGuiApp {
 	private:
-		void BuildZoneTree();
-		void ToogleLight(bool bEnabled);
-		void RotateActiveZoneObject();
+
 		//console funktions
 		enum FuncId_e
 		{
@@ -81,6 +79,16 @@ class MistServer :public Application , public ZGuiApp {
 
 		void HandleOrders();
 		bool CheckValidOrder(ClientOrder* pkOrder);
+
+		struct SORT_FILES : public binary_function<string, string, bool> {
+			bool operator()(string x, string y) { 
+				return (x.find(".") == string::npos);
+			};
+		} SortFiles;
+
+		bool BuildFileTree(char* szTreeBoxName, char* szRootPath);
+		void ToogleLight(bool bEnabled);
+		void RotateActiveZoneObject();
 
 		/* Owner by Vim, Master Of Ugly Code, King of the armys of bugs. LOL*/
 			AStar*	m_pkAStar;
