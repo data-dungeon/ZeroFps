@@ -79,6 +79,8 @@ void ZGuiSlider::CreateInternalControls()
 	m_pkLabel = new ZGuiLabel(rcBkArea,this,true,0);
 	
 	m_pkButton->SetMoveArea(rcSliderMoveArea);
+
+	m_pkButton->m_bUseAlhpaTest = false; // låt inte markören få alpha test...
 }
 
 void ZGuiSlider::SetPos(int iPos, bool bRedraw, bool bUpdateBuddy)
@@ -221,5 +223,11 @@ void ZGuiSlider::RemoveAllBuddys()
 	m_akBuddys.clear(); 
 }
 
+bool ZGuiSlider::Rescale(int iOldWidth, int iOldHeight, int iNewWidth, int iNewHeight)
+{
+	ZGuiWnd::Rescale(iOldWidth, iOldHeight, iNewWidth, iNewHeight);
 
-
+	m_pkButton->Rescale(iOldWidth, iOldHeight, iNewWidth, iNewHeight);	
+	m_pkLabel->Rescale(iOldWidth, iOldHeight, iNewWidth, iNewHeight);	
+	return true;
+}

@@ -71,13 +71,6 @@ bool ZGuiListbox::Render( ZGuiRender* pkRenderer )
 	if(!IsVisible())
 		return true;
 
-	if(m_pkGUI)
-	{
-		int curr_res_x, curr_res_y;
-		m_pkGUI->GetResolution(curr_res_x, curr_res_y);
-//		Rescale(m_iResolutionX, m_iResolutionY, curr_res_x, curr_res_y);
-	}
-
 	pkRenderer->SetSkin(m_pkSkin);
 	pkRenderer->RenderQuad(GetScreenRect()); 
 	pkRenderer->RenderBorder(GetScreenRect()); 
@@ -326,10 +319,12 @@ bool ZGuiListbox::Notify(ZGuiWnd* pkWnd, int iCode)
 	return true;
 }
 
-void ZGuiListbox::ScrollItems(ZGuiScrollbar* pkScrollbar)
+/*void ZGuiListbox::ScrollItems(ZGuiScrollbar* pkScrollbar)
 {
 	if(!m_pkItemList.empty())
 		m_unItemHeight = (*m_pkItemList.begin())->GetButton()->GetScreenRect().Height();  
+
+	int change = pkScrollbar->m_iScrollChange*(int)m_unItemHeight;
 
 	// Move all items
 	list<ZGuiListitem*>::iterator it;
@@ -338,9 +333,9 @@ void ZGuiListbox::ScrollItems(ZGuiScrollbar* pkScrollbar)
 			ZGuiListitem* pkItem = (*it);
 
 			if(g_bInv) // fulhack för att unvika att scrollbaren flytar items fel
-				pkItem->Move(0,-pkScrollbar->m_iScrollChange*(int)m_unItemHeight);
+				pkItem->Move(0,-change);
 			else
-				pkItem->Move(0,pkScrollbar->m_iScrollChange*(int)m_unItemHeight);
+				pkItem->Move(0,change);
 
 			Rect rc = pkItem->GetButton()->GetScreenRect();
 
@@ -349,6 +344,35 @@ void ZGuiListbox::ScrollItems(ZGuiScrollbar* pkScrollbar)
 			else
 				pkItem->GetButton()->Hide();
 		 }	
+
+	// Reset parameter
+	pkScrollbar->m_iScrollChange = 0;
+}*/
+
+void ZGuiListbox::ScrollItems(ZGuiScrollbar* pkScrollbar)
+{
+	if(!m_pkItemList.empty())
+		m_unItemHeight = (*m_pkItemList.begin())->GetButton()->GetScreenRect().Height();  
+
+	int change = pkScrollbar->m_iScrollChange*(int)m_unItemHeight;
+	int scroll_pos = pkScrollbar->GetPos(); 
+
+	// Move all items
+	list<ZGuiListitem*>::iterator it;
+	for( it = m_pkItemList.begin(); it != m_pkItemList.end(); it++)
+	 {
+		ZGuiListitem* pkItem = (*it);
+
+		Rect rc = pkItem->GetButton()->GetWndRect();
+		rc.Top = (pkItem->GetIndex() * m_unItemHeight) - (scroll_pos * m_unItemHeight);
+		pkItem->SetPos(rc.Left, rc.Top); 
+
+		rc = pkItem->GetButton()->GetScreenRect();
+		if( rc.Top >= GetScreenRect().Top && rc.Bottom <= GetScreenRect().Bottom)  
+			pkItem->GetButton()->Show();
+		else
+			pkItem->GetButton()->Hide();
+	 }	
 
 	// Reset parameter
 	pkScrollbar->m_iScrollChange = 0;
@@ -393,6 +417,8 @@ void ZGuiListbox::UpdateList()
 
 	if(iElements > 0)
 		m_unItemHeight = (*m_pkItemList.begin())->GetButton()->GetScreenRect().Height();
+
+	printf("m_unItemHeight = %i\n", m_unItemHeight);
 	
 	// Får alla elementen plats? Nehe, hur många för mycket är det då?
 	int iElementSize = m_unItemHeight * iElements;
@@ -572,8 +598,6 @@ bool ZGuiListbox::Rescale(int iOldWidth, int iOldHeight, int iNewWidth, int iNew
 	m_kItemArea = m_kItemArea.Left + iWidth;
 
 	UpdateList();
-
-	printf("adasdfasdfasfasdfasd\n");
 
 	return true;
 }

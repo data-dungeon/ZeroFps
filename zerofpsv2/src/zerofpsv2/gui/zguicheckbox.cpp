@@ -208,8 +208,6 @@ void ZGuiCheckbox::CopyNonUniqueData(const ZGuiWnd* pkSrc)
 
 bool ZGuiCheckbox::Rescale(int iOldWidth, int iOldHeight, int iNewWidth, int iNewHeight)
 {
-	printf("ZGuiCheckbox::Rescale %s\n", GetName());
-
 	ZGuiWnd::Rescale(iOldWidth, iOldHeight, iNewWidth, iNewHeight);
 	m_pkLabel->Rescale(iOldWidth, iOldHeight, iNewWidth, iNewHeight);
 	

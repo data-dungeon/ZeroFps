@@ -258,13 +258,6 @@ bool ZGuiWnd::Render(ZGuiRender* pkRenderer)
 	if(m_bVisible == false)
 		return true;
 
-	if(m_pkGUI)
-	{
-		int curr_res_x, curr_res_y;
-		m_pkGUI->GetResolution(curr_res_x, curr_res_y);
-//		Rescale(m_iResolutionX, m_iResolutionY, curr_res_x, curr_res_y);
-	}
-
 	pkRenderer->SetSkin(m_pkSkin); 
 
 	pkRenderer->RenderQuad(m_kArea);

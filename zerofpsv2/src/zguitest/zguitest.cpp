@@ -66,6 +66,7 @@ void ZGuiTest::OnInit()
 	OnScreenSizeChange(Point(800,600), Point(GetWidth(),GetHeight()));
 
 	pkFps->m_bClientMode = true;
+
 }
 
 void ZGuiTest::OnIdle()
@@ -88,12 +89,8 @@ void ZGuiTest::OnHud(void)
 void ZGuiTest::CreateUI()
 {
 	CreateWnd(Wnd, "TestWnd", "", "", 800-200, 600-200, 200, 200, 0);
-	/*CreateWnd(Button, "TestLabel", "TestWnd", "Apa", 200/2-50/2, 200/2-20/2, 50, 20, 0);
-	CreateWnd(Textbox, "TestTextbox", "TestWnd", "Lulle", 0, 0, 50, 20, 0);*/
-	CreateWnd(Listbox, "TestListbox", "TestWnd", "Lulle", 8, 8, 150, 150, 0);
-
-	for(int i=0; i<20; i++)
-		AddListItem("TestListbox", "apa");
+	CreateWnd(Textbox, "Testss", "TestWnd", "Apa", 0, 0, 150, 150, EB_IS_MULTILINE);
+	//((ZGuiScrollbar*)GetWnd("Testss"))->SetScrollInfo(0,0,0.25f,0); 
 
 }
 

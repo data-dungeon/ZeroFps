@@ -74,13 +74,6 @@ bool ZGuiTextbox::Render( ZGuiRender* pkRenderer )
 		m_pkSkin->m_afBkColor[2] = 0.807f; // (1.0f / 255) * 206;
 	}
 
-	if(m_pkGUI)
-	{
-		int curr_res_x, curr_res_y;
-		m_pkGUI->GetResolution(curr_res_x, curr_res_y);
-//		Rescale(m_iResolutionX, m_iResolutionY, curr_res_x, curr_res_y);
-	}
-
 	pkRenderer->SetSkin(m_pkSkin);
 	pkRenderer->RenderQuad(GetScreenRect()); 
 	pkRenderer->RenderBorder(GetScreenRect()); 
@@ -1185,4 +1178,11 @@ void ZGuiTextbox::ScrollRowIntoView(int row)
 		row = 0;
 
 	ScrollText(row);
+}
+
+bool ZGuiTextbox::Rescale(int iOldWidth, int iOldHeight, int iNewWidth, int iNewHeight)
+{
+	ZGuiWnd::Rescale(iOldWidth, iOldHeight, iNewWidth, iNewHeight);
+	m_pkScrollbarVertical->ZGuiScrollbar::Rescale(iOldWidth, iOldHeight, iNewWidth, iNewHeight);	
+	return true;
 }

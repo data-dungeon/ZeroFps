@@ -31,6 +31,8 @@ ZGuiRadiobutton::ZGuiRadiobutton(Rect kRectangle, ZGuiWnd* pkParent, int iID,
 
 	ConnectToGroup(iGroupID, m_pkLastbutton);
 	m_pkLastbutton = this;
+
+	m_bUseAlhpaTest = false;
 }
 
 ZGuiRadiobutton::~ZGuiRadiobutton()
@@ -73,13 +75,6 @@ bool ZGuiRadiobutton::Render( ZGuiRender* pkRenderer )
 {
 	if(m_pkFont)
 		pkRenderer->SetFont(m_pkFont);
-
-	if(m_pkGUI)
-	{
-		int curr_res_x, curr_res_y;
-		m_pkGUI->GetResolution(curr_res_x, curr_res_y);
-//		Rescale(m_iResolutionX, m_iResolutionY, curr_res_x, curr_res_y);
-	}
 
 	pkRenderer->SetSkin(m_pkSkin);
 	pkRenderer->RenderQuad(GetScreenRect()); 
@@ -260,4 +255,12 @@ void ZGuiRadiobutton::ChangeGroupName(char *szNewName)
 	}
 
 	strcpy(m_szGroupName, szNewName);
+}
+
+bool ZGuiRadiobutton::Rescale(int iOldWidth, int iOldHeight, int iNewWidth, int iNewHeight)
+{
+	ZGuiWnd::Rescale(iOldWidth, iOldHeight, iNewWidth, iNewHeight);
+
+	m_pkCheckbox->ZGuiCheckbox::Rescale(iOldWidth, iOldHeight, iNewWidth, iNewHeight);	
+	return true;
 }

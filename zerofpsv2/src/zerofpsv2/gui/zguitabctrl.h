@@ -29,6 +29,8 @@ public:
 	void SetPrevButtonSkin(ZGuiSkin* pkUp, ZGuiSkin* pkDown, ZGuiSkin* pkFocus);
 	void SetFont(ZGuiFont* pkFont);
 
+	bool Rescale(int iOldWidth, int iOldHeight, int iNewWidth, int iNewHeight);
+
 protected:
 	bool Notify(ZGuiWnd* pkWnd, int iCode);
 
@@ -50,8 +52,8 @@ private:
 	static unsigned int s_uiPageIDCounter;
 	static unsigned int s_uiTabIDCounter;
 
-	const unsigned int MARG;
-	const unsigned int TAB_HEIGHT;
+	unsigned int m_uiMarg;
+	unsigned int m_uiTabHeight;
 };
 
 #endif // #ifndef _GUI_ZGUITABCTRL_H

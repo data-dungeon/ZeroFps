@@ -8,6 +8,7 @@
 #include "../basic/zguiskin.h"
 #include "zgui.h"
 #include "zguiresourcemanager.h"
+#include "../basic/globals.h"
 
 ///////////////////////////////////////////////////////////////////////////////
 // Construction/Destruction
@@ -22,8 +23,10 @@ static int ID_TABCTRL_PREV = 334;
 static ZGuiSkin* s_pkTabPageSkin = new ZGuiSkin(214,211,206, 92,92,92, 0);
 
 ZGuiTabCtrl::ZGuiTabCtrl(Rect kRect, ZGuiWnd* pkParent, bool bVisible, int iID) 
-	: ZGuiWnd(kRect, pkParent, bVisible, iID), MARG(2), TAB_HEIGHT(20)
+	: ZGuiWnd(kRect, pkParent, bVisible, iID)
 {
+	m_uiMarg = 2;
+	m_uiTabHeight = 20;
 	m_bEnabled = true;
 	m_uiCurrentPage = 0;
 	m_pkNextTabBn = NULL;
@@ -44,16 +47,16 @@ void ZGuiTabCtrl::CreateInternalControls()
 	int iParentWidth = GetScreenRect().Width();
 	const int c_iButtonSize  = 16;
 
-	int y = TAB_HEIGHT+5-c_iButtonSize;
+	int y = m_uiTabHeight+5-c_iButtonSize;
 
 	m_pkNextTabBn = new ZGuiButton( 
-		Rect(iParentWidth-c_iButtonSize-MARG, y, 
-			iParentWidth-MARG, y+c_iButtonSize), 
+		Rect(iParentWidth-c_iButtonSize-m_uiMarg, y, 
+			iParentWidth-m_uiMarg, y+c_iButtonSize), 
 		this, true, ID_TABCTRL_NEXT);
 
 	m_pkPrevTabBn = new ZGuiButton( 
-		Rect(iParentWidth-c_iButtonSize-MARG-c_iButtonSize-MARG, y, 
-			iParentWidth-MARG-c_iButtonSize-MARG, y+c_iButtonSize), 
+		Rect(iParentWidth-c_iButtonSize-m_uiMarg-c_iButtonSize-m_uiMarg, y, 
+			iParentWidth-m_uiMarg-c_iButtonSize-m_uiMarg, y+c_iButtonSize), 
 		this, true, ID_TABCTRL_PREV);	
 }
 
@@ -68,11 +71,11 @@ bool ZGuiTabCtrl::InsertPage(char* szResWndName, unsigned int uiIndex,
 		return false;
 	}
 
-	int x = MARG;
-	int y = TAB_HEIGHT+5+MARG;
+	int x = m_uiMarg;
+	int y = m_uiTabHeight+5+m_uiMarg;
 
-	Rect rcPage(x,y,x+GetScreenRect().Width()-x-MARG,
-		y+GetScreenRect().Height()-y-MARG);
+	Rect rcPage(x,y,x+GetScreenRect().Width()-x-m_uiMarg,
+		y+GetScreenRect().Height()-y-m_uiMarg);
 
 	unsigned int uiTabWidth = 40;
 	unsigned int uiTabOffset = iNumTabs * uiTabWidth;
@@ -92,8 +95,8 @@ bool ZGuiTabCtrl::InsertPage(char* szResWndName, unsigned int uiIndex,
 			}
 	}
 
-	Rect rcTab(uiTabOffset,5,uiTabOffset+uiTabWidth,5+TAB_HEIGHT);
-	rcTab = rcTab.Move(MARG,MARG);
+	Rect rcTab(uiTabOffset,5,uiTabOffset+uiTabWidth,5+m_uiTabHeight);
+	rcTab = rcTab.Move(m_uiMarg,m_uiMarg);
 
 	ZGuiWnd* pkNewPage = NULL;
 	ZGuiButton* pkNewTab = NULL;
@@ -144,8 +147,8 @@ bool ZGuiTabCtrl::InsertPage(char* szResWndName, unsigned int uiIndex,
 		pkNewTab->SetMoveArea(pkNewTab->GetScreenRect());
 		pkNewTab->SetText(szTabText);
 
-		int Min = GetScreenRect().Left+MARG;
-		int Max = m_pkPrevTabBn->GetScreenRect().Left-MARG;
+		int Min = GetScreenRect().Left+m_uiMarg;
+		int Max = m_pkPrevTabBn->GetScreenRect().Left-m_uiMarg;
 
 		if( pkNewTab->GetScreenRect().Left < Min || 
 			pkNewTab->GetScreenRect().Right > Max)
@@ -400,7 +403,8 @@ bool ZGuiTabCtrl::MoveTabs(bool bLeft)
 	for(itButton = m_kTabList.begin(); itButton != m_kTabList.end(); itButton++)
 	{
 		Rect rc = (*itButton)->GetWndRect();
-		if( (bLeft && rc.Left == (int) MARG) || (!bLeft && rc.Right == (int) MARG) )
+
+		if( (bLeft && rc.Left == (int) m_uiMarg) || (!bLeft && rc.Right == (int) m_uiMarg) )
 		{
 			pkFirst = (*itButton);
 			break;
@@ -411,8 +415,8 @@ bool ZGuiTabCtrl::MoveTabs(bool bLeft)
 	if(pkFirst == NULL || (bLeft && uiIndex == GetNumPages()-1) )
 		return false;
 
-	int Min = GetScreenRect().Left+MARG;
-	int Max = m_pkPrevTabBn->GetScreenRect().Left-MARG;
+	int Min = GetScreenRect().Left+m_uiMarg;
+	int Max = m_pkPrevTabBn->GetScreenRect().Left-m_uiMarg;
 
 	// Move all button to the left at offset pkFirst.Width()
 	int iOffset = pkFirst->GetScreenRect().Width();
@@ -456,5 +460,23 @@ bool ZGuiTabCtrl::SendNotifyMessage(int iType, int iParams, void *pMsg)
 	return false;
 }
 
+bool ZGuiTabCtrl::Rescale(int iOldWidth, int iOldHeight, int iNewWidth, int iNewHeight)
+{
+	ZGuiWnd::Rescale(iOldWidth, iOldHeight, iNewWidth, iNewHeight);
 
+/*	list<ZGuiWnd*>::iterator it = m_kPageList.begin();
+	for( ; it != m_kPageList.end(); it++)
+		(*it)->Rescale( iOldWidth, iOldHeight, iNewWidth, iNewHeight );*/
 
+	list<ZGuiButton*>::iterator it2 = m_kTabList.begin();
+	for( ; it2 != m_kTabList.end(); it2++)
+		(*it2)->Rescale( iOldWidth, iOldHeight, iNewWidth, iNewHeight );
+
+	m_pkNextTabBn->Rescale( iOldWidth, iOldHeight, iNewWidth, iNewHeight );
+	m_pkPrevTabBn->Rescale( iOldWidth, iOldHeight, iNewWidth, iNewHeight );
+
+	m_uiMarg = (unsigned int) round2((float) m_uiMarg * (float) ((float)iNewWidth/(float)iOldWidth));
+	m_uiTabHeight = (unsigned int) round2((float) m_uiTabHeight * (float) ((float)iNewHeight/(float)iOldHeight));
+
+	return true;
+}

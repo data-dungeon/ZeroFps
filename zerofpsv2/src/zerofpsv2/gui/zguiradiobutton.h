@@ -27,6 +27,7 @@ public:
 	int GetGroupID() {return m_iGroupID;}
 	char* GetGroupName() {return m_szGroupName;}
 	void CopyNonUniqueData(const ZGuiWnd* pkSrc);
+	bool Rescale(int iOldWidth, int iOldHeight, int iNewWidth, int iNewHeight);
 
 private:
 

@@ -44,7 +44,10 @@ void ZGuiListitem::SetText(char* strText)
 void ZGuiListitem::SetPos(int x, int y)
 {
 	if(m_pkButton)
+	{
 		m_pkButton->SetPos(x, y, false, true); 
+		m_pkButton->SetMoveArea(m_pkButton->GetScreenRect()); 
+	}
 }
 
 void ZGuiListitem::Resize(int w, int h)

@@ -39,6 +39,7 @@ public:
 	bool GetCtrlStyle(unsigned long ulValue);
 	
 	bool ProcessKBInput(int nKey);
+	bool Rescale(int iOldWidth, int iOldHeight, int iNewWidth, int iNewHeight);
 	
 protected:
 	bool Notify(ZGuiWnd* pkWnd, int iCode);

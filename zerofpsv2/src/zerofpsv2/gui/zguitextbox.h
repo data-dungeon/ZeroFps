@@ -40,6 +40,7 @@ public:
 
 	void SetReadOnly(bool bReadOnly);
 	int GetRowCount() { return m_iNumRows; }
+	bool Rescale(int iOldWidth, int iOldHeight, int iNewWidth, int iNewHeight);
 
 	bool m_bNumberOnly;
 
