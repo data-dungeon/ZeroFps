@@ -20,6 +20,7 @@ class RENDER_API Render {
 		TextureManager* m_pkTexMan;
 		char aCurentFont[256];
 
+	
 	public:
 		Render(TextureManager* pkTexMan);
 		void Quad(Vector3 kPos,Vector3 kHead,Vector3 kScale,int iTexture);
@@ -31,6 +32,8 @@ class RENDER_API Render {
 		void SetColor(Vector3 kColor);
 		void DrawHM(HeightMap* kmap);
 		void DrawConsole(char* m_aCommand,vector<char*>* m_kText); 
+		
+		void GiveTexCor(float &iX,float &iY,int iNr);
 };
 
 

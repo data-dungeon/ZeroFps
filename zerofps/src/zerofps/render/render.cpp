@@ -187,7 +187,7 @@ void Render::DrawHM(HeightMap *kmap) {
 	Vector3 p4;
 	
 	glTranslatef(-50,-10,-50);
-	m_pkTexMan->BindTexture("file:../data/textures/grass.bmp");
+	m_pkTexMan->BindTexture(kmap->m_acTileSet);
 	
 	GLfloat mat_specular[]={1,1,1,1};
 	GLfloat mat_shininess[]={10};
@@ -196,29 +196,31 @@ void Render::DrawHM(HeightMap *kmap) {
 
 	glTexEnvf(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE);
 
+	int step=1;
 	
 	int x;	
 //	glFrontFace(GL_CW);// jag ritar medsols så d så
-	for(int z=0;z<kmap->m_iHmSize-1;z++){
+	for(int z=0;z<kmap->m_iHmSize-step;z+=step){
 
-		x=0;		
 		glBegin(GL_TRIANGLE_STRIP);		
+		
+		x=0;				
 		p1=Vector3(x,kmap->verts[z*kmap->m_iHmSize+x].height,z);				
-	   glNormal3fv((float*)&kmap->verts[z*kmap->m_iHmSize+x].normal);
+	  glNormal3fv((float*)&kmap->verts[z*kmap->m_iHmSize+x].normal);
  		glTexCoord2f(0.0,0.0);glVertex3fv((float*)&p1);
  		
-		p2=Vector3(x,kmap->verts[(z+1)*kmap->m_iHmSize+x].height,z+1);			 		
-	   glNormal3fv((float*)&kmap->verts[(z+1)*kmap->m_iHmSize+x].normal);
- 		glTexCoord2f(0.0,1.0);glVertex3fv((float*)&p2);		 				
+		p2=Vector3(x,kmap->verts[(z+step)*kmap->m_iHmSize+x].height,z+step);			 		
+	  glNormal3fv((float*)&kmap->verts[(z+step)*kmap->m_iHmSize+x].normal);
+ 		glTexCoord2f(0.0,1);glVertex3fv((float*)&p2);		 				
  		
-		for(x=1;x<kmap->m_iHmSize-1;x++) {			
-			p3=Vector3(x+1,kmap->verts[z*kmap->m_iHmSize+x+1].height,z);							
-		   glNormal3fv((float*)&kmap->verts[z*kmap->m_iHmSize+x+1].normal);
-  			glTexCoord2f(x,0.0);glVertex3fv((float*)&p3);    			
+		for(x=1;x<kmap->m_iHmSize-step;x+=step) {			
+			p3=Vector3(x+step,kmap->verts[z*kmap->m_iHmSize+x+step].height,z);							
+		  glNormal3fv((float*)&kmap->verts[z*kmap->m_iHmSize+x+step].normal);
+  		glTexCoord2f(x/step,0.0);glVertex3fv((float*)&p3);    			
   			
-			p4=Vector3(x+1,kmap->verts[(z+1)*kmap->m_iHmSize+x+1].height,z+1);
-		   glNormal3fv((float*)&kmap->verts[(z+1)*kmap->m_iHmSize+x+1].normal);  			
-  			glTexCoord2f(x,1.0);glVertex3fv((float*)&p4);    				
+			p4=Vector3(x+step,kmap->verts[(z+step)*kmap->m_iHmSize+x+step].height,z+step);
+		  glNormal3fv((float*)&kmap->verts[(z+step)*kmap->m_iHmSize+x+step].normal);  			
+  		glTexCoord2f(x/step,1);glVertex3fv((float*)&p4);    				
 	
 		}
 		glEnd();
@@ -253,5 +255,11 @@ void Render::DrawConsole(char* m_aCommand,vector<char*>* m_kText) {
 	}
 }
 
+void Render::GiveTexCor(float &iX,float &iY,int iNr) {	
+	iX=(iNr%4);	
+	iY=(iNr-(iNr%4))/4;
+
+	cout<<"X: "<<iX<< "  Y: "<<iY<<endl;
+}
 
 

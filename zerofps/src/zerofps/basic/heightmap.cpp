@@ -5,7 +5,7 @@ HeightMap::HeightMap() {
 	m_iHmSize=100;	
 	verts=new HM_vert[m_iHmSize*m_iHmSize];
 	Zero();
-
+	strcpy(m_acTileSet,"file:../data/textures/grass.bmp");
 }
 
 void HeightMap::Zero() {
@@ -18,6 +18,12 @@ void HeightMap::Zero() {
 float HeightMap::Height(int x,int z) {
 	return verts[z*m_iHmSize+x].height;
 }
+
+void HeightMap::SetTileSet(char* acTileSet) {
+	strcpy(m_acTileSet,acTileSet);
+	
+}
+
 
 void HeightMap::GenerateNormals() {
 	Vector3 med;

@@ -15,9 +15,8 @@ void Test::OnInit(void) {
 
 	test=new HeightMap();
 	test->Random();
+//	test->SetTileSet("file:../data/textures/land.bmp");
 	test->GenerateNormals();
-
-//	Vector3 test=Vector3(0
 
 
 	GLfloat light_position[] ={0,60,0,1};

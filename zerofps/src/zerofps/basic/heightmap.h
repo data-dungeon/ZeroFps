@@ -6,6 +6,7 @@
 #include "vector3.h"
 #include <cstdlib>
 #include <ctime>
+#include <cstring>
 
 using namespace std;
 
@@ -19,6 +20,7 @@ class BASIC_API HeightMap {
 	public:
 		HM_vert* verts;		
 		int m_iHmSize;
+		char m_acTileSet[256];
 		
 		HeightMap();		
 		void Zero();
@@ -26,6 +28,7 @@ class BASIC_API HeightMap {
 		bool Load(char* acFile);
 		void GenerateNormals();
 		float Height(int x,int z);
+		void SetTileSet(char* acTileSet);
 };
 
 
