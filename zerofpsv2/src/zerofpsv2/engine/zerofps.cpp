@@ -1111,6 +1111,8 @@ void ZeroFps::RegisterPropertys()
 	m_pkPropertyFactory->Register("P_Body",				Create_BodyProperty);
 	m_pkPropertyFactory->Register("P_HeightMapRender",	Create_HeightMapRenderProperty);		
 	m_pkPropertyFactory->Register("P_HMRP2",				Create_HMRP2);			
+	
+	m_pkPropertyFactory->Register("P_ScriptInterface",	Create_P_ScriptInterface);				
 }
 
 

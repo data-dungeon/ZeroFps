@@ -133,10 +133,13 @@ void DarkMetropolis::GUI_OnCommand(int iID, bool bRMouseBnClick,
 
 			if(szClanName && strlen(szClanName) > 0)
 			{
-				pkGui->KillWndCapture();
-				ShowWnd("LoadListWnd", false);
-				ShowWnd("DMStartWnd", false);
-				GUI_NewGame(szClanName, "red");
+				if(LoadGame(szClanName))
+				{
+					pkGui->KillWndCapture();
+					ShowWnd("LoadListWnd", false);
+					ShowWnd("DMStartWnd", false);
+					//GUI_NewGame(szClanName, "red");
+				}
 			}
 		}
 	}

@@ -4,6 +4,7 @@
 #include "../../engine_systems/propertys/p_mad.h"
 #include "../../script/zfscript.h"
 #include "../propertys/p_tcs.h"
+#include "../propertys/p_scriptinterface.h"
 
 namespace ObjectManagerLua
 {
@@ -19,17 +20,20 @@ Entity*			 g_pkLastParentBak;
 Property*		 g_pkLastPropertyBak;
 Entity*			 g_pkReturnObjectBak;
 
+int				g_iCurrentObjectID;
+
 void Init(EntityManager* pkObjMan, ZFScriptSystem* pkScript)
 {
 	g_pkObjMan = pkObjMan;
 	g_pkScript = pkScript;
 	
+	g_iCurrentObjectID = -1;
 	
 	Reset();
 		
 	//create
 	pkScript->ExposeFunction("InitObject",				ObjectManagerLua::InitObjectLua);
-	pkScript->ExposeFunction("InitProperty",	  		ObjectManagerLua::InitPropertyLua);
+	pkScript->ExposeFunction("InitProperty",	  	ObjectManagerLua::InitPropertyLua);
 	pkScript->ExposeFunction("InitParameter",			ObjectManagerLua::InitParameterLua);
 	pkScript->ExposeFunction("AttachToParent",		ObjectManagerLua::AttachToParent);			
 	pkScript->ExposeFunction("SetLocalPos",			ObjectManagerLua::SetLocalPosLua);
@@ -54,8 +58,11 @@ void Init(EntityManager* pkObjMan, ZFScriptSystem* pkScript)
 	pkScript->ExposeFunction("SetObjectPos",			ObjectManagerLua::SetObjectPosLua);
 
    // rotation functions
-   pkScript->ExposeFunction("SetRotVel",			   ObjectManagerLua::SetObjectRotVelLua);
+   pkScript->ExposeFunction("SetRotVel",			  ObjectManagerLua::SetObjectRotVelLua);
 
+	// Common used functions , used together whit P_ScriptInterface
+	pkScript->ExposeFunction("SIGetSelfID",			ObjectManagerLua::SIGetSelfIDLua);		
+	pkScript->ExposeFunction("SISetHeartRate",		ObjectManagerLua::SISetHeartRateLua);
 }
 
 void Reset()
@@ -532,5 +539,36 @@ int GetObjectPosLua(lua_State* pkLua)
 	return 1;
 }
 
+
+int SIGetSelfIDLua(lua_State* pkLua)
+{
+	g_pkScript->AddReturnValue(pkLua,g_iCurrentObjectID);
+	
+	return 1;
+}
+
+int SISetHeartRateLua(lua_State* pkLua)
+{
+	if(g_pkScript->GetNumArgs(pkLua) == 2)
+	{
+		double dId;	
+		double dHeartRate;
+		g_pkScript->GetArgNumber(pkLua, 0, &dId);
+		g_pkScript->GetArgNumber(pkLua, 1, &dHeartRate);		
+
+		Entity* pkObject = g_pkObjMan->GetObjectByNetWorkID((int)dId);
+		
+		if(pkObject)
+		{	
+			P_ScriptInterface* ep = (P_ScriptInterface*)pkObject->GetProperty("P_ScriptInterface");
+			if(ep)
+				ep->SetHeartRate((float)dHeartRate);			
+		}
+	}
+	else
+		cout<<"SetHeartRate[ObjectID, HeartRate] {HeartRate = -1}"<<endl;	
+	
+	return 0;
+}
 
 }

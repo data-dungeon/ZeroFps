@@ -212,6 +212,11 @@ void DarkMetropolis::Input()
 		{
 			cout<<"you clicked on a:"<<pkEnt->GetName()<<endl;
 		
+		
+//			m_pkObjectMan->CreateObjectFromScriptInZone("data/script/objects/psystems/t_blood.lua",m_kPickPos);
+			if(!m_pkObjectMan->CreateObjectFromScriptInZone("data/script/objects/plants/vaxt1.lua",m_kPickPos))
+				cout<<"error creating bla"<<endl;
+			
 		}
 	}
 
@@ -377,6 +382,7 @@ Entity* DarkMetropolis::GetTargetObject()
 				{
 					closest = d;
 					pkClosest = kObjects[i];
+					m_kPickPos = mp->GetLastColPos();
 				}				
 			}
 		}		

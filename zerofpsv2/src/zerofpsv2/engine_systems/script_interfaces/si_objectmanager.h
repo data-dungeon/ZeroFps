@@ -31,6 +31,8 @@ namespace ObjectManagerLua
 	extern Property*		g_pkLastPropertyBak;
 	extern Entity*			g_pkReturnObjectBak;
 
+	extern int						g_iCurrentObjectID;
+
 	//create funktions
 	int ENGINE_SYSTEMS_API InitObjectLua(lua_State* pkLua);	
 	int ENGINE_SYSTEMS_API InitPropertyLua(lua_State* pkLua);
@@ -64,6 +66,12 @@ namespace ObjectManagerLua
    // Rotation
    int ENGINE_SYSTEMS_API SetObjectRotVelLua(lua_State* pkLua);
 	
+	
+	// Common used functions , used together whit P_ScriptInterface
+	int ENGINE_SYSTEMS_API SIGetSelfIDLua(lua_State* pkLua);					//() return the callers object id	
+	int ENGINE_SYSTEMS_API SISetHeartRateLua(lua_State* pkLua);				//(int objectid,float delay) will enable the 1s update function on this object	
 };
 
 #endif // #ifndef _OBJECTMANAGER_SCRIPTINTERFACE_H_
+
+

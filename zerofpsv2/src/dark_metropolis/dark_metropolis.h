@@ -53,6 +53,8 @@ class DarkMetropolis : public Application, public ZGuiApp
 		float		m_fMinCamDistance;
 		float		m_fMaxCamDistance;
 		
+		Vector3	m_kPickPos;
+		
 		string	m_strSaveDirectory;
 
 		int m_iEnableMusic; // if the music should be played or not
