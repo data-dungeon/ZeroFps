@@ -170,8 +170,8 @@ bool PSystemManager::LoadNewPSystem ( string kName )
 
 	// Calculate max number of particles the PSystem can emitt
 	kNewType.m_kPSystemBehaviour.m_iMaxParticles = 
-		kNewType.m_kParticleBehaviour.m_fLifeTime /
-		kNewType.m_kPSystemBehaviour.m_fParticlesPerSec;
+		int (kNewType.m_kParticleBehaviour.m_fLifeTime /
+		kNewType.m_kPSystemBehaviour.m_fParticlesPerSec );
 
    kNewType.m_kName = kName;
 
@@ -212,7 +212,7 @@ bool PSystemManager::LoadData ( PSystemType *pkPSType )
 
 	// Random startsize value
 	if( m_kIniLoader.KeyExist("start_size", "random") )
-		pkPSType->m_kParticleBehaviour.m_iStartSizeRandom = m_kIniLoader.GetFloatValue("start_size", "random");
+		pkPSType->m_kParticleBehaviour.m_iStartSizeRandom = m_kIniLoader.GetIntValue("start_size", "random");
 	else
 		pkPSType->m_kParticleBehaviour.m_iStartSizeRandom = 0;
 
@@ -231,7 +231,7 @@ bool PSystemManager::LoadData ( PSystemType *pkPSType )
 
 	// Random endsize value
 	if( m_kIniLoader.KeyExist("end_size", "random") )
-		pkPSType->m_kParticleBehaviour.m_iEndSizeRandom = m_kIniLoader.GetFloatValue("end_size", "random");
+		pkPSType->m_kParticleBehaviour.m_iEndSizeRandom = m_kIniLoader.GetIntValue("end_size", "random");
 	else
 		pkPSType->m_kParticleBehaviour.m_iEndSizeRandom = 0;
 
@@ -669,122 +669,122 @@ void PSystemManager::CalculateMaxSize ( PSystemType *pkPSType )
 
 
 	
-	kRandomDir.y *= cos(kRandomDir.x / degtorad) * cos(kRandomDir.z / degtorad);
-	kRandomDir.x = sin(kRandomDir.x / degtorad) + 
-						pkPSType->m_kParticleBehaviour.m_kDirection.x;
-	kRandomDir.z = sin(kRandomDir.z / degtorad) + 
-						pkPSType->m_kParticleBehaviour.m_kDirection.z;
+	kRandomDir.y *= float( cos(kRandomDir.x / degtorad) * cos(kRandomDir.z / degtorad) );
+	kRandomDir.x = float( sin(kRandomDir.x / degtorad) + 
+						pkPSType->m_kParticleBehaviour.m_kDirection.x );
+	kRandomDir.z = float( sin(kRandomDir.z / degtorad) + 
+						pkPSType->m_kParticleBehaviour.m_kDirection.z );
 
-	kRandomDir2.y *= cos(kRandomDir2.x / degtorad) * cos(kRandomDir2.z / degtorad);
-	kRandomDir2.x = sin(kRandomDir2.x / degtorad) + 
-						pkPSType->m_kParticleBehaviour.m_kDirection.x;
-	kRandomDir2.z = sin(kRandomDir2.z / degtorad) + 
-						pkPSType->m_kParticleBehaviour.m_kDirection.z;
+	kRandomDir2.y *= float( cos(kRandomDir2.x / degtorad) * cos(kRandomDir2.z / degtorad) );
+	kRandomDir2.x = float( sin(kRandomDir2.x / degtorad) + 
+						pkPSType->m_kParticleBehaviour.m_kDirection.x );
+	kRandomDir2.z = float( sin(kRandomDir2.z / degtorad) + 
+						pkPSType->m_kParticleBehaviour.m_kDirection.z );
 
-	kRandomDir3.y *= -cos(kRandomDir3.x / degtorad) * cos(kRandomDir3.z / degtorad);
-	kRandomDir3.x = sin(kRandomDir3.x / degtorad) + 
-						pkPSType->m_kParticleBehaviour.m_kDirection.x;
-	kRandomDir3.z = sin(kRandomDir3.z / degtorad) + 
-						pkPSType->m_kParticleBehaviour.m_kDirection.z;
+	kRandomDir3.y *= float( -cos(kRandomDir3.x / degtorad) * cos(kRandomDir3.z / degtorad) );
+	kRandomDir3.x = float( sin(kRandomDir3.x / degtorad) + 
+						pkPSType->m_kParticleBehaviour.m_kDirection.x );
+	kRandomDir3.z = float( sin(kRandomDir3.z / degtorad) + 
+						pkPSType->m_kParticleBehaviour.m_kDirection.z );
 
-	kRandomDir4.y *= -cos(kRandomDir4.x / degtorad) * cos(kRandomDir4.z / degtorad);
-	kRandomDir4.x = sin(kRandomDir4.x / degtorad) + 
-						pkPSType->m_kParticleBehaviour.m_kDirection.x;
-	kRandomDir4.z = sin(kRandomDir4.z / degtorad) + 
-						pkPSType->m_kParticleBehaviour.m_kDirection.z;
+	kRandomDir4.y *= float( -cos(kRandomDir4.x / degtorad) * cos(kRandomDir4.z / degtorad) );
+	kRandomDir4.x = float( sin(kRandomDir4.x / degtorad) + 
+						pkPSType->m_kParticleBehaviour.m_kDirection.x );
+	kRandomDir4.z = float( sin(kRandomDir4.z / degtorad) + 
+						pkPSType->m_kParticleBehaviour.m_kDirection.z );
 
 
 	Vector3 kSize1, kSize2, kSize3, kSize4, kSize5;
 
 	// x
-	kSize1.x = ((pkPSType->m_kParticleBehaviour.m_kDirection.x * 
+	kSize1.x = float( ((pkPSType->m_kParticleBehaviour.m_kDirection.x * 
 				  pkPSType->m_kParticleBehaviour.m_fStartSpeed ) +
 				  pkPSType->m_kParticleBehaviour.m_kForce.x * 
 				  pow(fLifeTime, 2) / 2.f + kOuterCircle.x) * 
-				  fLifeTime + fWidth;
+				  fLifeTime + fWidth );
 
-	kSize2.x = ((kRandomDir.x * 
+	kSize2.x = float( ((kRandomDir.x * 
 				  pkPSType->m_kParticleBehaviour.m_fStartSpeed ) +
 				  pkPSType->m_kParticleBehaviour.m_kForce.x * 
 				  pow(fLifeTime, 2) / 2.f + kOuterCircle.x) * 
-				  fLifeTime + fWidth;
+				  fLifeTime + fWidth );
 
-	kSize3.x = ((kRandomDir2.x * 
+	kSize3.x = float( ((kRandomDir2.x * 
 				  pkPSType->m_kParticleBehaviour.m_fStartSpeed ) +
 				  pkPSType->m_kParticleBehaviour.m_kForce.x * 
 				  pow(fLifeTime, 2) / 2.f + kOuterCircle.x) * 
-				  fLifeTime + fWidth;
+				  fLifeTime + fWidth );
 
-	kSize4.x = ((kRandomDir3.x * 
+	kSize4.x = float( ((kRandomDir3.x * 
 				  pkPSType->m_kParticleBehaviour.m_fStartSpeed ) +
 				  pkPSType->m_kParticleBehaviour.m_kForce.x * 
 				  pow(fLifeTime, 2) / 2.f - kOuterCircle.x) * 
-				  fLifeTime - fWidth;
+				  fLifeTime - fWidth );
 
-	kSize5.x = ((kRandomDir4.x * 
+	kSize5.x = float( ((kRandomDir4.x * 
 				  pkPSType->m_kParticleBehaviour.m_fStartSpeed ) +
 				  pkPSType->m_kParticleBehaviour.m_kForce.x * 
 				  pow(fLifeTime, 2) / 2.f - kOuterCircle.x) * 
-				  fLifeTime - fWidth;
+				  fLifeTime - fWidth );
 	// y
-	kSize1.y = (pkPSType->m_kParticleBehaviour.m_kDirection.y *
+	kSize1.y = float( (pkPSType->m_kParticleBehaviour.m_kDirection.y *
 				  pkPSType->m_kParticleBehaviour.m_fStartSpeed) * fLifeTime + 
 				  pkPSType->m_kParticleBehaviour.m_kForce.y * 
 				  pow(fLifeTime, 2) / 2.f + kOuterCircle.y
-				  + (fHeight/2.f);
+				  + (fHeight/2.f) );
  
-	kSize2.y = (kRandomDir.y *
+	kSize2.y = float( (kRandomDir.y *
 				  pkPSType->m_kParticleBehaviour.m_fStartSpeed) * fLifeTime + 
 				  pkPSType->m_kParticleBehaviour.m_kForce.y * 
 				  pow(fLifeTime, 2) / 2.f + kOuterCircle.y
-				  + (fHeight/2.f);
+				  + (fHeight/2.f) );
 
-	kSize3.y = (kRandomDir2.y *
+	kSize3.y = float( (kRandomDir2.y *
 				  pkPSType->m_kParticleBehaviour.m_fStartSpeed) * fLifeTime + 
 				  pkPSType->m_kParticleBehaviour.m_kForce.y * 
 				  pow(fLifeTime, 2) / 2.f + kOuterCircle.y
-				  + (fHeight/2.f);
+				  + (fHeight/2.f) );
 
-	kSize4.y = (kRandomDir3.y *
+	kSize4.y = float( (kRandomDir3.y *
 				  pkPSType->m_kParticleBehaviour.m_fStartSpeed) * fLifeTime + 
 				  pkPSType->m_kParticleBehaviour.m_kForce.y * 
 				  pow(fLifeTime, 2) / 2.f + kOuterCircle.y
-				  + (fHeight/2.f);
+				  + (fHeight/2.f) );
 
-	kSize5.y = (kRandomDir4.y *
+	kSize5.y = float( (kRandomDir4.y *
 				  pkPSType->m_kParticleBehaviour.m_fStartSpeed) * fLifeTime + 
 				  pkPSType->m_kParticleBehaviour.m_kForce.y * 
 				  pow(fLifeTime, 2) / 2.f + kOuterCircle.y
-				  + (fHeight/2.f);
+				  + (fHeight/2.f) );
 	// z
-	kSize1.z = ((pkPSType->m_kParticleBehaviour.m_kDirection.z * 
+	kSize1.z = float( ((pkPSType->m_kParticleBehaviour.m_kDirection.z * 
 				  pkPSType->m_kParticleBehaviour.m_fStartSpeed ) +
 				  pkPSType->m_kParticleBehaviour.m_kForce.z * 
 				  pow(fLifeTime, 2) / 2.f + kOuterCircle.z) * 
-				  fLifeTime + (fHeight/2.f);
+				  fLifeTime + (fHeight/2.f) );
 
-	kSize2.z = ((kRandomDir.z * 
+	kSize2.z = float( ((kRandomDir.z * 
 				  pkPSType->m_kParticleBehaviour.m_fStartSpeed ) +
 				  pkPSType->m_kParticleBehaviour.m_kForce.z * 
 				  pow(fLifeTime, 2) / 2.f + kOuterCircle.z) * 
-				  fLifeTime + (fHeight/2.f);
+				  fLifeTime + (fHeight/2.f) );
 
-	kSize3.z = ((kRandomDir2.z * 
+	kSize3.z = float( ((kRandomDir2.z * 
 				  pkPSType->m_kParticleBehaviour.m_fStartSpeed ) +
 				  pkPSType->m_kParticleBehaviour.m_kForce.z * 
 				  pow(fLifeTime, 2) / 2.f + kOuterCircle.z) * 
-				  fLifeTime + (fHeight/2.f);
-	kSize4.z = ((kRandomDir3.z * 
+				  fLifeTime + (fHeight/2.f) );
+	kSize4.z = float( ((kRandomDir3.z * 
 				  pkPSType->m_kParticleBehaviour.m_fStartSpeed ) +
 				  pkPSType->m_kParticleBehaviour.m_kForce.z * 
 				  pow(fLifeTime, 2) / 2.f - kOuterCircle.z) * 
-				  fLifeTime - (fHeight/2.f);
+				  fLifeTime - (fHeight/2.f) );
 
-	kSize5.z = ((kRandomDir4.z * 
+	kSize5.z = float( ((kRandomDir4.z * 
 				  pkPSType->m_kParticleBehaviour.m_fStartSpeed ) +
 				  pkPSType->m_kParticleBehaviour.m_kForce.z * 
 				  pow(fLifeTime, 2) / 2.f - kOuterCircle.z) * 
-				  fLifeTime - (fHeight/2.f);
+				  fLifeTime - (fHeight/2.f) );
 	//
 
 	pkPSType->m_kPSystemBehaviour.m_kCullPosOffset = Vector3(0,0,0);

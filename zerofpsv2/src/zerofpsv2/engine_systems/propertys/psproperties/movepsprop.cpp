@@ -29,7 +29,7 @@ void MovePSProp::Update()
 	// Update position
 	for ( i = m_pkParent->Start(); i < m_pkParent->End(); i++ )
 		m_pkParent->m_kParticles[i].m_kCenter += m_pkParent->m_kParticles[i].m_kVelocity * fFrameTime + 
-															  m_pkParent->m_kParticles[i].m_kForce * pow(fFrameTime,2)/2.f;
+															  m_pkParent->m_kParticles[i].m_kForce * float(pow(fFrameTime,2)/2.f);
  
 	// get modelviewmatrix
 	float *afM = new float[16];

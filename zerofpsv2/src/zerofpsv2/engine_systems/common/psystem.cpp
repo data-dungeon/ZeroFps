@@ -75,7 +75,7 @@ bool PSystem::Update( Vector3 kNewPosition, Matrix4 kNewRotation )
 		if ( m_fTimeSinceLastCreatedParticle >= m_pkPSystemType->m_kPSystemBehaviour.m_fParticlesPerSec )
 		{
 
-			int iCreate = m_fTimeSinceLastCreatedParticle / m_pkPSystemType->m_kPSystemBehaviour.m_fParticlesPerSec;
+			int iCreate = int(m_fTimeSinceLastCreatedParticle / m_pkPSystemType->m_kPSystemBehaviour.m_fParticlesPerSec);
 			float fTempTime = m_fTimeSinceLastCreatedParticle / iCreate;
 
 
@@ -98,7 +98,7 @@ bool PSystem::Update( Vector3 kNewPosition, Matrix4 kNewRotation )
 	}
 
 	// Update lifetime for particles
-	unsigned int i;
+	int i;
 	
 	for ( i = m_uiFirstParticle; i < m_uiLastParticle + 1; i++ )
 	{
@@ -247,17 +247,17 @@ void PSystem::ResetParticle (int iParticleIndex, float fTimeOffset)
 
 	// Reset position
 	if ( fXOuterRadius != 0 )
-		m_kParticles[iParticleIndex].m_kCenter.x = (cos(dRADx) * fXOuterRadius * dRadiusX) + (cos(dRADx) * fXInnerRadius * (1-dRadiusX));
+		m_kParticles[iParticleIndex].m_kCenter.x = float( float(cos(dRADx) * fXOuterRadius * dRadiusX) + (cos(dRADx) * fXInnerRadius * (1-dRadiusX)) );
 	else
 		m_kParticles[iParticleIndex].m_kCenter.x = 0;
 
 	if ( fYOuterRadius != 0 )
-		m_kParticles[iParticleIndex].m_kCenter.y = (cos(dRADy) * fYOuterRadius * dRadiusY) + (cos(dRADy) * fYInnerRadius * (1-dRadiusY));
+		m_kParticles[iParticleIndex].m_kCenter.y = float( (cos(dRADy) * fYOuterRadius * dRadiusY) + (cos(dRADy) * fYInnerRadius * (1-dRadiusY)) );
 	else
 		m_kParticles[iParticleIndex].m_kCenter.y = 0;
 
 	if ( fZOuterRadius != 0 )
-		m_kParticles[iParticleIndex].m_kCenter.z = (sin(dRADz) * fZOuterRadius * dRadiusZ) + (sin(dRADz) * fZInnerRadius * (1 - dRadiusZ));
+		m_kParticles[iParticleIndex].m_kCenter.z = float( (sin(dRADz) * fZOuterRadius * dRadiusZ) + (sin(dRADz) * fZInnerRadius * (1 - dRadiusZ)) );
 	else
 		m_kParticles[iParticleIndex].m_kCenter.z = 0;
 
@@ -308,15 +308,15 @@ void PSystem::ResetParticle (int iParticleIndex, float fTimeOffset)
 	
 	Vector3 kRandomDir = m_pkPSystemType->m_kParticleBehaviour.m_kDirection;
 
-	kRandomDir.x = rand()%int(m_pkPSystemType->m_kParticleBehaviour.m_kWideness.x);
-	kRandomDir.z = rand()%int(m_pkPSystemType->m_kParticleBehaviour.m_kWideness.z);
+	kRandomDir.x = float( rand()%int(m_pkPSystemType->m_kParticleBehaviour.m_kWideness.x) );
+	kRandomDir.z = float( rand()%int(m_pkPSystemType->m_kParticleBehaviour.m_kWideness.z) );
 	
-	kRandomDir.y *= cos(kRandomDir.x / degtorad) * cos(kRandomDir.z / degtorad);
+	kRandomDir.y *= float( cos(kRandomDir.x / degtorad) * cos(kRandomDir.z / degtorad) );
 
-	kRandomDir.x = ((rand()%2 * 2) - 1) * sin(kRandomDir.x / degtorad) + 
-						m_pkPSystemType->m_kParticleBehaviour.m_kDirection.x;
-	kRandomDir.z = ((rand()%2 * 2) - 1) * sin(kRandomDir.z / degtorad) + 
-						m_pkPSystemType->m_kParticleBehaviour.m_kDirection.z;
+	kRandomDir.x = float( ((rand()%2 * 2) - 1) * sin(kRandomDir.x / degtorad) + 
+						m_pkPSystemType->m_kParticleBehaviour.m_kDirection.x );
+	kRandomDir.z = float( ((rand()%2 * 2.f) - 1.f) * sin(kRandomDir.z / (degtorad)) + 
+						m_pkPSystemType->m_kParticleBehaviour.m_kDirection.z );
 
 	// Startspeed
 	float fStartSpeedRand = ((rand()%100) / 100.f) * ((rand()%2) * 2 - 1);
@@ -358,7 +358,7 @@ void PSystem::ResetParticle (int iParticleIndex, float fTimeOffset)
 
 	// Update startposition
 	m_kParticles[iParticleIndex].m_kCenter += m_kParticles[iParticleIndex].m_kVelocity * fTimeOffset + 
-															m_kParticles[iParticleIndex].m_kForce * pow(fTimeOffset,2)/2.f;
+															m_kParticles[iParticleIndex].m_kForce * float(pow(fTimeOffset,2)/2.f);
 
 	m_kParticles[iParticleIndex].m_kVelocity += m_kParticles[iParticleIndex].m_kForce * fTimeOffset;
 

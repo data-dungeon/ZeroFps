@@ -544,7 +544,7 @@ bool CharacterStats::Equip ( Entity *pkObject, int iSlot )
       case Shield:
          return Equip ( pkObject, "lefthand" );
       case Weapon:
-         return Equip ( pkObject, "righthand" );         
+         return Equip ( pkObject, "righthand" );
    };
 
    return false;

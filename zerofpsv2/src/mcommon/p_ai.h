@@ -8,6 +8,7 @@
 #include <deque>
 #include <vector>
 #include <string>
+#include <map>
 #include "../zerofpsv2/engine_systems/propertys/p_ambientsound.h"
 
    using namespace std;
@@ -50,12 +51,18 @@ class MCOMMON_API P_AI: public Property
       CharacterProperty* m_pkCharProp;
 		P_Sound* m_pkSound;
 
+		map<int, bool> m_kEnemies; // objectID of enemies
 
       bool m_bAIPlayer;
+
+		// if enemy lists gets to big, clean up all non existing or active objects in it
+		void CleanEnemies ();
 
    public:
 
       void NextOrder();
+
+		void AddEnemy ( int iEnemyID );
 
       void AddStaticOrder ( string kOrderType, int iTargetID1, int iTargetID2, Vector3 kPosition, string kType );
       void AddDynamicOrder ( string kOrderType, int iTargetID1, int iTargetID2, Vector3 kPosition, string kType );

@@ -52,32 +52,37 @@ void P_AI::Update()
          return;
       }
 
-      // if character is to far away, move closer
-      Vector3 kPos = m_pkObject->GetWorldPosV();
+      // if character is to far away, move closer (not player, only enemies)
+		Vector3 kPos = m_pkObject->GetWorldPosV();
       if ( pkEnemy->GetWorldPosV().DistanceXZTo(kPos) > 2 )
       {
-         Order* pkMoveOrder = new Order;
-         pkMoveOrder->m_kOrderType = "MoveTo";
+			// Players can't have moveorders, don't have any p_path
+			if ( !m_bAIPlayer )
+			{
+				Order* pkMoveOrder = new Order;
+				pkMoveOrder->m_kOrderType = "MoveTo";
          
-         //dvoids fulhack deluxe
-         Vector3 kSlot = Vector3(sin(DegToRad(rand()%360))*1.5,0,sin(DegToRad(rand()%360))*1.5);
+				//dvoids fulhack deluxe
+				Vector3 kSlot = Vector3(sin(DegToRad(rand()%360))*1.5,0,sin(DegToRad(rand()%360))*1.5);
          
-         pkMoveOrder->m_kPosition = pkEnemy->GetWorldPosV() + kSlot;
+				pkMoveOrder->m_kPosition = pkEnemy->GetWorldPosV() + kSlot;
 
-         pkMoveOrder->m_bDynamic = true;
-         m_kDynamicOrders.push_front ( pkMoveOrder );
-         m_pkCurrentOrder = m_kDynamicOrders.front();         
+				pkMoveOrder->m_bDynamic = true;
+				m_kDynamicOrders.push_front ( pkMoveOrder );
+				m_pkCurrentOrder = m_kDynamicOrders.front();         
+			}
       }
       else
       {
-         // stop the character
-         ((P_PfPath*)m_pkObject->GetProperty ("P_PfPath"))->ClearPath();
+         // stop the character, if character has p_path
+			P_PfPath* pkPath = ((P_PfPath*)m_pkObject->GetProperty ("P_PfPath"));
+
+			if ( pkPath )
+				pkPath->ClearPath();
 
          // if character has "reloaded", make attack move
          if ( m_pkCharProp->GetCharStats()->ReadyForAction() )
          {
-            string kWhenHit = ((CharacterProperty*)pkEnemy->GetProperty("P_CharStats"))->GetCharStats()->m_strScriptWhenHit;
-
 				//rotate to target
 				Vector3 kdiff = pkEnemy->GetWorldPosV() - kPos;
 				kdiff.y = 0;
@@ -93,9 +98,9 @@ void P_AI::Update()
 			
 				//play a nice sound
 				if(m_pkSound)
-				{
 					m_pkSound->Play("data/sound/hit.wav");
-				}
+
+            string kWhenHit = ((CharacterProperty*)pkEnemy->GetProperty("P_CharStats"))->GetCharStats()->m_strScriptWhenHit;
 
             // create splattblood PSystem
             if ( kWhenHit.size() )
@@ -189,7 +194,7 @@ void P_AI::Update()
 	
 		Vector3 kPos = m_pkObject->GetWorldPosV();
 
-      // if character has reacher object position
+      // if character has reached object position
       if ( m_pkCurrentOrder->m_kPosition.DistanceXZTo(kPos) <= 0.8f )
       {
          // stop the character
@@ -383,6 +388,13 @@ void P_AI::ClearDynamicOrders()
    }
 
 	m_pkCurrentOrder = NULL;
+}
+
+// ------------------------------------------------------------------------------------------
+
+void P_AI::AddEnemy ( int iEnemyID )
+{
+	
 }
 
 // ------------------------------------------------------------------------------------------
