@@ -352,7 +352,6 @@ void InventoryDlg::PickUpFromGrid(int iSlotIndex, bool bInventory, int mx, int m
 
 	int x = mx - m_kCursorRangeDiff.x, y = my - m_kCursorRangeDiff.y;
 	g_kMistClient.m_pkGui->SetCursor( x, y, id, -1, size.x*32, size.y*32);	
-	(*m_ppCursorSkin)->m_unBorderSize = 2;
 	g_kMistClient.m_pkInputHandle->SetCursorInputPos(x,y);  
 }
 
@@ -553,7 +552,8 @@ void InventoryDlg::UpdateInventory(vector<MLContainerInfo>& vkItemList)
 		kNewSlot.bIsContainer = vkItemList[i].m_bIsContainer;
 		m_vkInventoryItemList.push_back(kNewSlot);
 
-		SetSelectionBorder(i, true, (m_iSelItemID != vkItemList[i].m_iItemID));
+		SetSelectionBorder(i, true, !(kNewSlot.iItemID == m_iActiveContainerID && 
+			m_pkContainerWnd->IsVisible()));
 	}	
 }
 
@@ -605,7 +605,8 @@ void InventoryDlg::UpdateContainer(vector<MLContainerInfo>& vkItemList)
 		kNewSlot.bIsContainer = vkItemList[i].m_bIsContainer;
 		m_vkContainerItemList.push_back(kNewSlot);
 
-		SetSelectionBorder(i, false, (m_iSelItemID != vkItemList[i].m_iItemID));
+		SetSelectionBorder(i, false, !(kNewSlot.iItemID == m_iActiveContainerID && 
+			m_pkContainerWnd->IsVisible()));
 	}
 
 	m_pkContainerWnd->SortChilds();
@@ -674,7 +675,7 @@ void InventoryDlg::OnDropItem(int mx, int my)
 		}
 	}
 
-	g_kMistClient.SendMoveItem(iItemID, iTarget, iSlotX, iSlotY, 2);
+	g_kMistClient.SendMoveItem(iItemID, iTarget, iSlotX, iSlotY);
 	
 	g_kMistClient.RequestOpenInventory();
 	if(m_iActiveContainerID)
@@ -683,7 +684,6 @@ void InventoryDlg::OnDropItem(int mx, int my)
 	g_kMistClient.m_pkGui->SetCursor((int)mx+m_kCursorRangeDiff.x, (int)my+m_kCursorRangeDiff.y, 
 			m_pkTexMan->Load("data/textures/gui/cursor.bmp", 0),
 			m_pkTexMan->Load("data/textures/gui/cursor_a.bmp", 0), 32, 32);
-	(*m_ppCursorSkin)->m_unBorderSize = 2;
 
 	g_kMistClient.m_pkInputHandle->SetCursorInputPos(mx+m_kCursorRangeDiff.x,my+m_kCursorRangeDiff.y);	
 }
@@ -865,4 +865,3 @@ void InventoryDlg::SetSelectionBorder(int iIndex, bool bInventory, bool bRemove)
 		(*pkVector)[iIndex].pkWnd->GetSkin()->m_afBorderColor[2] = 1;
 	}
 }
-
