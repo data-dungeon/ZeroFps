@@ -111,12 +111,12 @@ AIBase* P_UnitMoveAI::RunUnitCommand(int iCommandID, int iXDestinaton, int iYDes
 	case UNIT_STOP:
 		{
 			m_pkPathFind->Reset();
-			Vector3 kTempVect = m_pkObject->GetPos();
-			m_pkObject->SetPos(kTempVect);					
-			m_pkObject->SetPos(kTempVect);	
-			m_iCurrentState = -1;
-			m_fSpeedMod = 1;
-			return NULL;
+			//Vector3 kTempVect = m_pkObject->GetPos();
+			//m_pkObject->SetPos(kTempVect);					
+			//m_pkObject->SetPos(kTempVect);	
+			m_iCurrentState = UNIT_MOVE;
+			//m_fSpeedMod = 1;
+			return this;
 		}
 
 	}
