@@ -411,7 +411,7 @@ void ZeroFps::Run_EngineShell()
 void ZeroFps::Run_Server()
 {
 	//update system
-	Update_System(true);
+	Update_System();
 
 	
 }
@@ -423,7 +423,7 @@ void ZeroFps::Run_Client()
 	m_pkApp->OnIdle();
 		
 	if(!m_bServerMode)
-		Update_System(false);	
+		Update_System();	
 
 		
 		
@@ -455,7 +455,7 @@ void ZeroFps::Run_Client()
 
 }
 
-void ZeroFps::Update_System(bool bServer)
+void ZeroFps::Update_System()
 {
 	int iLoops;
 
@@ -504,14 +504,9 @@ void ZeroFps::Update_System(bool bServer)
 			m_pkEntityManager->UpdateZoneSystem();
 		
 			if(m_bRunWorldSim)
-			{			
-			
+			{						
 				//update all normal propertys
-				if(bServer)					
-					m_pkEntityManager->Update(PROPERTY_TYPE_NORMAL,PROPERTY_SIDE_SERVER,false);
-				else
-					m_pkEntityManager->Update(PROPERTY_TYPE_NORMAL,PROPERTY_SIDE_CLIENT,false);
-				
+				m_pkEntityManager->Update(PROPERTY_TYPE_NORMAL,PROPERTY_SIDE_SERVER,false);
 				
 				//update game message system
 				m_pkEntityManager->UpdateGameMessages();
@@ -525,7 +520,12 @@ void ZeroFps::Update_System(bool bServer)
 		
 		//client only code
 		if(m_bClientMode)
-		{
+		{			
+			//update normal propertys
+			m_pkEntityManager->Update(PROPERTY_TYPE_NORMAL,PROPERTY_SIDE_CLIENT,false);
+			
+			//update game message system
+			m_pkEntityManager->UpdateGameMessages();
 		
 		}
 

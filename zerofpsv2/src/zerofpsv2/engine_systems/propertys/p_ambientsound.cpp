@@ -204,6 +204,7 @@ P_Sound::P_Sound()
 	m_pkAudioSystem = static_cast<ZFAudioSystem*>(g_ZFObjSys.GetObjectPtr("ZFAudioSystem"));
 	m_pkFps = static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
 	m_strFileName = "";
+
 }
 
 P_Sound::~P_Sound()
@@ -213,6 +214,7 @@ P_Sound::~P_Sound()
 
 void P_Sound::Update()
 {
+
 /*	if(!m_pkFps->m_bServerMode)
 	{*/
 		if(!m_strFileName.empty())
@@ -242,6 +244,8 @@ void P_Sound::PackTo(NetPacket* pkNetPacket, int iConnectionID )
 
 void P_Sound::PackFrom(NetPacket* pkNetPacket, int iConnectionID )
 {
+	cout<<"packa upp"<<endl;
+
 	char file_name[128];
 	pkNetPacket->Read_Str(file_name); // read filename
 	m_strFileName = file_name;
