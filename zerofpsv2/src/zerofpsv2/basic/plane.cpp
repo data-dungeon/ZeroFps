@@ -109,3 +109,17 @@ float Plane::SolveY(const float& X, const float& Z)
 
 	return (0.0f);
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,9 +1,10 @@
 #include "entity.h"
 
-#include "../engine_systems/physicsengine/physicsengine.h"
+//#include "../engine_systems/physicsengine/physicsengine.h"
 #include "../basic/zfsystem.h"
 #include "entitymanager.h"
-#include "../engine_systems/propertys/p_physic.h"
+#include "zerofps.h"
+//#include "../engine_systems/propertys/p_physic.h"
  
 typedef list<Entity*>::iterator		itListObject;
 typedef list<Property*>::iterator	itListProperty;
@@ -1060,17 +1061,6 @@ void Entity::Save(ZFIoInterface* pkFile)
 		if(m_akChilds[i]->GetSave())
 			m_akChilds[i]->Save(pkFile);
 	}
-}
-
-
-// Collision / Shape.
-float Entity::GetBoundingRadius()
-{
-	Property* pr=GetProperty("P_Physic");
-	if(pr==NULL)
-		return 1;
-
-	return (static_cast<P_Physic*>(pr))->GetBoundingRadius();
 }
 
 void Entity::Touch(Collision* pkCol)

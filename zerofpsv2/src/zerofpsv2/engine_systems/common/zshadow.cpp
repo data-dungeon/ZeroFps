@@ -103,9 +103,10 @@ bool ZShadow::StartUp()
 	m_pkRender		= static_cast<Render*>(GetSystem().GetObjectPtr("Render"));
 	m_pkEntityMan	= static_cast<EntityManager*>(GetSystem().GetObjectPtr("EntityManager"));
 
-
-	//EnableShadowGroup(0);
-	//EnableShadowGroup(1);
+	
+	//EnableShadowGroup(0); 
+	//EnableShadowGroup(1); 
+	
 	EnableShadowGroup(2);
 
 	return true;

@@ -9,7 +9,7 @@
 #include "p_lightupdate.h"
 #include "p_worldinfo.h"
 #include "p_hmrp2.h"
-#include "p_physic.h"
+//#include "p_physic.h"
 #include "p_crossrender.h"
 #include "p_billboardrender.h"
 #include "p_vegitation.h"

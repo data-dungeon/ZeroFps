@@ -216,7 +216,7 @@ void DarkMetropolis::RenderInterface(void)
 		Entity* pkEnt = m_pkObjectMan->GetObjectByNetWorkID(m_iHQID);
 		if(pkEnt)
 		{
-			float r = pkEnt->GetBoundingRadius();
+			float r = 1;//pkEnt->GetBoundingRadius();
 			m_pkRender->DrawAABB(pkEnt->GetWorldPosV()-Vector3(r,r,r),pkEnt->GetWorldPosV()+Vector3(r,r,r),Vector3(1,1,0));
 		}
 	}

@@ -1,7 +1,7 @@
 #include "p_spell.h"
 #include "../zerofpsv2/engine/zerofps.h"
 #include "../zerofpsv2/engine_systems/propertys/p_psystem.h"
-#include "../zerofpsv2/engine_systems/propertys/p_physic.h"
+//#include "../zerofpsv2/engine_systems/propertys/p_physic.h"
 #include "rulesystem/rulesystem.h"
 #include "p_charstats.h"
 #include "p_item.h"

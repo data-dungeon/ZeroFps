@@ -44,7 +44,6 @@ ZeroFps::ZeroFps(void) : I_ZeroFps("ZeroFps")
 	m_pkPhysics_Engine		= new Physics_Engine;
 	m_pkObjectMan				= new EntityManager;
 	m_pkResourceDB				= new ZFResourceDB;
-	m_pkPhysEngine				= new PhysicsEngine;
 	m_pkIni						= new ZFIni;
 	m_pkGui						= new ZGui(Application::m_pkApp->m_iWidth, Application::m_pkApp->m_iHeight);
 	m_pkGuiMan					= new ZGuiResourceManager;
@@ -137,7 +136,6 @@ ZeroFps::~ZeroFps()
 
 	delete m_pkZShadow;
 	delete m_pkTcs;
-	delete m_pkPhysEngine;
 	delete m_pkIni;
 	delete m_pkGui;
 	delete m_pkGuiMan;
@@ -463,9 +461,7 @@ void ZeroFps::Update_System(bool bServer)
 				//update new super duper rigid body physics engine deluxe
 				//m_pkPhysics_Engine->Update(m_pkObjectMan->GetSimDelta());	
 				
-				//update physicsengine
-				//m_pkPhysEngine->Update();	
-				
+	
 				//update Tiny Collission system
 			//	m_pkTcs->Update(m_pkObjectMan->GetSimDelta());	
 				
@@ -1202,7 +1198,6 @@ void ZeroFps::RegisterPropertys()
 	m_pkPropertyFactory->Register("P_BillBoardRender", Create_BillBoardRenderProperty);
 	m_pkPropertyFactory->Register("P_CrossRender",		Create_CrossRenderProperty);
 	m_pkPropertyFactory->Register("P_SkyBoxRender",		Create_SkyBoxRenderProperty);		
-	m_pkPropertyFactory->Register("P_Physic",				Create_PhysicProperty);								
 	m_pkPropertyFactory->Register("P_Body",				Create_BodyProperty);
 	m_pkPropertyFactory->Register("P_HeightMapRender",	Create_HeightMapRenderProperty);		
 	m_pkPropertyFactory->Register("P_HMRP2",				Create_HMRP2);			

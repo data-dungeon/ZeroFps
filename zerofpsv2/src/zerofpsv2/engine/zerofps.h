@@ -17,7 +17,6 @@
 #include "camera.h"
 #include "../engine_systems/audio/zfaudiosystem.h"
 #include "../basic/zfini.h"
-#include "../engine_systems/physicsengine/physicsengine.h"
 #include "../engine_systems/tcs/tcs.h"
 #include "../engine_systems/common/zshadow.h"
 #include "../render/zshader.h"
@@ -36,7 +35,6 @@
 using namespace std;
 
 
-class PhysicsEngine;
 class Basic;
 class Render;
 class ZGui;
@@ -194,7 +192,6 @@ class ENGINE_API ZeroFps : public I_ZeroFps {
 		ZGuiResourceManager*	m_pkGuiMan;					///< Gui - Zeb
 		ZGui*						m_pkGui;						///< Gui - Zeb
 		ZFIni*					m_pkIni;						///< Ini Files - Zeb
-		PhysicsEngine*			m_pkPhysEngine;			///< 
 		ZFResourceDB*			m_pkResourceDB;			///< Resouce Handler.
 		ZFScriptSystem*		m_pkScript;					///< script
 		Physics_Engine*		m_pkPhysics_Engine;		///< PhysicsEngine
