@@ -367,6 +367,7 @@ void MistServer::RegisterPropertys()
 	m_pkPropertyFactory->Register("P_DMGun", Create_P_DMGun);
 	m_pkPropertyFactory->Register("P_ShadowBlob", Create_P_ShadowBlob);
 	m_pkPropertyFactory->Register("P_DMCharacter", Create_P_DMCharacter);
+	m_pkPropertyFactory->Register("P_DMShop", Create_P_DMShop);
 	m_pkPropertyFactory->Register("P_DMHQ", Create_P_DMHQ);
 	m_pkPropertyFactory->Register("P_Spawn", Create_P_Spawn);
 	m_pkPropertyFactory->Register("P_Enviroment", Create_P_Enviroment);

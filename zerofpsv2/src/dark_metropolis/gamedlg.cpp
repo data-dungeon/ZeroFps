@@ -1,6 +1,7 @@
 
 #include "dark_metropolis.h"
 #include "gamedlg.h"
+#include <typeinfo>
 
 CGameDlg::CGameDlg(string strMainWndName, DarkMetropolis* pkDM)
 {
@@ -154,9 +155,15 @@ void CGameDlg::SetNumber(char* szWndName, int iNumber)
 	m_pkDM->SetText(szWndName, szText);
 }
 
-void CGameDlg::SetButtonIcon(ZGuiButton* pkButton, string strIconNameUp, 
+void CGameDlg::SetButtonIcon(ZGuiWnd* pkButton, string strIconNameUp, 
 									  bool bSetAlphaTex, bool bUseBorder)
 {
+	bool bIsCheckbox = false;
+
+	const type_info& t = typeid(*pkButton);
+	if(t==typeid(ZGuiCheckbox))
+		bIsCheckbox = true;
+
 	string strIconNameDown="data/textures/notex.bmp";
 	string strIconNameA   ="data/textures/notex.bmp";
 
@@ -185,32 +192,82 @@ void CGameDlg::SetButtonIcon(ZGuiButton* pkButton, string strIconNameUp,
 		}
 	}
 
-	pkButton->GetSkin()->m_iBkTexID = 
-		GetTexID((char*)strIconNameUp.c_str());
-	pkButton->GetSkin()->m_iBkTexAlphaID = alpha_tex;
-
-	pkButton->GetButtonUpSkin()->m_iBkTexID = 
-		GetTexID((char*)strIconNameUp.c_str());
-	pkButton->GetButtonUpSkin()->m_iBkTexAlphaID = alpha_tex;
-
-	pkButton->GetButtonHighLightSkin()->m_iBkTexID = 
-		GetTexID((char*)strIconNameUp.c_str());
-	pkButton->GetButtonHighLightSkin()->m_iBkTexAlphaID = alpha_tex;
-
-	if(!bUseBorder)
+	if(bIsCheckbox == false)
 	{
-		pkButton->GetButtonDownSkin()->m_iBkTexID = 
-			GetTexID((char*)strIconNameDown.c_str());
-		pkButton->GetButtonDownSkin()->m_iBkTexAlphaID = alpha_tex;
+		((ZGuiButton*)pkButton)->GetSkin()->m_iBkTexID = 
+			GetTexID((char*)strIconNameUp.c_str());
+		((ZGuiButton*)pkButton)->GetSkin()->m_iBkTexAlphaID = alpha_tex;
+
+		((ZGuiButton*)pkButton)->GetButtonUpSkin()->m_iBkTexID = 
+			GetTexID((char*)strIconNameUp.c_str());
+		((ZGuiButton*)pkButton)->GetButtonUpSkin()->m_iBkTexAlphaID = alpha_tex;
+
+		((ZGuiButton*)pkButton)->GetButtonHighLightSkin()->m_iBkTexID = 
+			GetTexID((char*)strIconNameUp.c_str());
+		((ZGuiButton*)pkButton)->GetButtonHighLightSkin()->m_iBkTexAlphaID = alpha_tex;
 	}
 	else
 	{
-		pkButton->GetButtonDownSkin()->m_iBkTexID = 
+		((ZGuiCheckbox*)pkButton)->GetSkin()->m_iBkTexID = 
 			GetTexID((char*)strIconNameUp.c_str());
-		pkButton->GetButtonDownSkin()->m_iBkTexAlphaID = alpha_tex;
-		pkButton->GetButtonDownSkin()->m_afBorderColor[0] = 0;
-		pkButton->GetButtonDownSkin()->m_afBorderColor[1] = 0;
-		pkButton->GetButtonDownSkin()->m_afBorderColor[2] = 0;
-		pkButton->GetButtonDownSkin()->m_unBorderSize = 2;
+		((ZGuiCheckbox*)pkButton)->GetSkin()->m_iBkTexAlphaID = alpha_tex;
+
+		((ZGuiCheckbox*)pkButton)->GetUncheckedSkin()->m_iBkTexID = 
+			GetTexID((char*)strIconNameUp.c_str());
+		((ZGuiCheckbox*)pkButton)->GetUncheckedSkin()->m_iBkTexAlphaID = alpha_tex;
+
+		((ZGuiCheckbox*)pkButton)->GetCheckedSkin()->m_iBkTexID = 
+			GetTexID((char*)strIconNameUp.c_str());
+		((ZGuiCheckbox*)pkButton)->GetCheckedSkin()->m_iBkTexAlphaID = alpha_tex;		
+	}
+
+	if(!bUseBorder)
+	{
+		if(bIsCheckbox == false)
+		{
+			((ZGuiButton*)pkButton)->GetButtonDownSkin()->m_iBkTexID = 
+				GetTexID((char*)strIconNameDown.c_str());
+			((ZGuiButton*)pkButton)->GetButtonDownSkin()->m_iBkTexAlphaID = alpha_tex;
+		}
+		else
+		{
+			((ZGuiCheckbox*)pkButton)->GetUncheckedSkin()->m_iBkTexID = 
+				GetTexID((char*)strIconNameDown.c_str());
+			((ZGuiCheckbox*)pkButton)->GetCheckedSkin()->m_iBkTexAlphaID = alpha_tex;
+
+			((ZGuiCheckbox*)pkButton)->SetButtonCheckedSkin(
+				((ZGuiCheckbox*)pkButton)->GetCheckedSkin());
+			((ZGuiCheckbox*)pkButton)->SetButtonUncheckedSkin(
+				((ZGuiCheckbox*)pkButton)->GetUncheckedSkin());
+		}
+	}
+	else
+	{
+		if(bIsCheckbox == false)
+		{
+			((ZGuiButton*)pkButton)->GetButtonDownSkin()->m_iBkTexID = 
+				GetTexID((char*)strIconNameUp.c_str());
+			((ZGuiButton*)pkButton)->GetButtonDownSkin()->m_iBkTexAlphaID = alpha_tex;
+			((ZGuiButton*)pkButton)->GetButtonDownSkin()->m_afBorderColor[0] = 0;
+			((ZGuiButton*)pkButton)->GetButtonDownSkin()->m_afBorderColor[1] = 0;
+			((ZGuiButton*)pkButton)->GetButtonDownSkin()->m_afBorderColor[2] = 0;
+			((ZGuiButton*)pkButton)->GetButtonDownSkin()->m_unBorderSize = 2;
+		}
+		else
+		{
+			((ZGuiCheckbox*)pkButton)->GetCheckedSkin()->m_iBkTexID = 
+				GetTexID((char*)strIconNameUp.c_str());
+			((ZGuiCheckbox*)pkButton)->GetCheckedSkin()->m_iBkTexAlphaID = alpha_tex;
+			((ZGuiCheckbox*)pkButton)->GetCheckedSkin()->m_afBorderColor[0] = 0;
+			((ZGuiCheckbox*)pkButton)->GetCheckedSkin()->m_afBorderColor[1] = 0;
+			((ZGuiCheckbox*)pkButton)->GetCheckedSkin()->m_afBorderColor[2] = 0;
+			((ZGuiCheckbox*)pkButton)->GetCheckedSkin()->m_unBorderSize = 2;
+
+			((ZGuiCheckbox*)pkButton)->SetButtonCheckedSkin(
+				((ZGuiCheckbox*)pkButton)->GetCheckedSkin());
+			((ZGuiCheckbox*)pkButton)->SetButtonUncheckedSkin(
+				((ZGuiCheckbox*)pkButton)->GetUncheckedSkin());
+		}
+
 	}
 }

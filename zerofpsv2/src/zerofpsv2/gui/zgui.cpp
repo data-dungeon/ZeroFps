@@ -1031,6 +1031,9 @@ bool ZGui::ClickedWndAlphaTex(int mx, int my, ZGuiWnd *pkWndClicked)
 	if(pkWndClicked == NULL)
 		return false;
 
+	if(pkWndClicked->m_bUseAlhpaTest == false)
+		return true;
+
 	// Ignore some controlls...
 	ZGuiWnd* pkParent = pkWndClicked->GetParent();
 	if(pkParent)

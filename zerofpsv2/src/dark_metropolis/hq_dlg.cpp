@@ -1,7 +1,7 @@
 #include "dark_metropolis.h"
 #include "hq_dlg.h"
 #include "members_dlg.h"
-
+#include "itemtransaction_dlg.h"
 
 CHQDlg::CHQDlg() : CGameDlg("HQWnd", &g_kDM)
 {
@@ -72,10 +72,17 @@ void CHQDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName)
 	{
 		
 		LoadDlg("data/script/gui/dm_itemtransaction.lua");
+		
+		((CItemTransactionDlg*)GetGameDlg(ITEMTRANSACTION_DLG))->m_eViewMode = 
+			CItemTransactionDlg::shop;
+		GetGameDlg(ITEMTRANSACTION_DLG)->InitDlg();
+		
 		m_pkGui->SetCaptureToWnd(GetWnd("ItemTransactionWnd"));
 
 		SetText("RemoveItemBn", "Sell");
 		SetText("AddItemBn", "Buy");
+
+		
 
 		m_pkAudioSys->StartSound("data/sound/computer beep 5.wav", 
 			m_pkAudioSys->GetListnerPos()); 

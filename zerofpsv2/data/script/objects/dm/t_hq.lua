@@ -10,11 +10,16 @@ function Create()
 			InitParameter("active","true");					
 		InitProperty("P_ScriptInterface");
 		InitProperty("P_DMShop");
+			InitParameter("shopname","ZGP Agent Toy Land");
+			InitParameter("traderate",1.0);					
+		
 
 end
 
 function Init()
 	AddItemToShop(SIGetSelfID(), "/data/script/objects/dm/t_gun.lua", 400);
+	AddItemToShop(SIGetSelfID(), "/data/script/objects/dm/t_gun.lua", 400);
+	AddItemToShop(SIGetSelfID(), "/data/script/objects/dm/t_shotgun_clip.lua", 50);
 end
 
 function FirstRun()

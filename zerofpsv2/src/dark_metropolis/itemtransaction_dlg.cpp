@@ -1,13 +1,15 @@
 #include "dark_metropolis.h"
 #include "itemtransaction_dlg.h"
 #include "handleagents_dlg.h"
+#include "../mcommon/p_dmshop.h"
 
 CItemTransactionDlg::CItemTransactionDlg() : CGameDlg(
 	"ItemTransactionWnd", &g_kDM)
 {
 	m_iActiveContainer = 0;
 	m_iSelFocusCharItemIndex = -1;
-	m_iSelStockroomItemIndex = -1;
+	m_iSelInventoryItemIndex = -1;
+	m_eViewMode = shop;
 }
 
 CItemTransactionDlg::~CItemTransactionDlg() 
@@ -16,6 +18,28 @@ CItemTransactionDlg::~CItemTransactionDlg()
 
 void CItemTransactionDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName)
 {
+	if(strClickName == "ItemRemoveTransactionPrevPageBn")
+	{
+		if(m_iActiveContainer > 0)
+		{
+			m_iActiveContainer--;
+			InitDlg();
+		}
+
+		SetText("ItemInfoLabel", GetGetContainerName(m_iActiveContainer));
+	}
+	else
+	if(strClickName == "ItemRemoveTransactionNextPageBn")
+	{
+		if(m_iActiveContainer < 4)
+		{
+			m_iActiveContainer++;
+			InitDlg();
+		}
+
+		SetText("ItemInfoLabel", GetGetContainerName(m_iActiveContainer));
+	}
+	else
 	if(strClickName == "ItemTransactionCloseBn")
 	{
 	//	m_pkGui->KillWndCapture(); 
@@ -45,16 +69,31 @@ void CItemTransactionDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName)
 	{
 		if(m_iSelFocusCharItemIndex != -1)
 		{
-			MoveItemToStockroom(m_vkFocusCharItems[m_iSelFocusCharItemIndex]);
+			if(m_eViewMode == store_room)
+				MoveItemToStockroom(m_vkFocusCharItems[m_iSelFocusCharItemIndex]);
+			else
+			{
+				// Sälja något till affären
+				if(Sell(m_iSelFocusCharItemIndex) == true)
+					MoveItemToShop(m_vkFocusCharItems[m_iSelFocusCharItemIndex]);
+			}
+
 			InitDlg();
 		}
 	}
 	else
 	if(strClickName == "AddItemBn")
 	{
-		if(m_iSelStockroomItemIndex != -1)
+		if(m_iSelInventoryItemIndex != -1)
 		{
-			MoveItemFromStockroom(m_vkStockroomItems[m_iSelStockroomItemIndex]);
+			// Köpa något från affären
+			if(m_eViewMode == shop)
+			{
+				if(Buy(m_iSelInventoryItemIndex) == false)
+					return;
+			}
+
+			MoveItemFromInventory(m_vkInventoryItems[m_iSelInventoryItemIndex]);
 			InitDlg();
 		}
 	}
@@ -70,6 +109,7 @@ void CItemTransactionDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName)
 				m_vkFocusCharItems[i].m_pkMoveButton->UncheckButton();
 			else
 			{
+				PrintItemInfo(&m_vkFocusCharItems[i], true);
 				m_iSelFocusCharItemIndex = i;
 				m_vkFocusCharItems[i].m_pkMoveButton->CheckButton();
 			}
@@ -81,17 +121,20 @@ void CItemTransactionDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName)
 	else
 	if(strClickName.find("StockRoomItemBn") != string::npos)
 	{
-		m_iSelStockroomItemIndex = -1;
+		m_iSelInventoryItemIndex = -1;
 		ZGuiCheckbox* pkButton = ((ZGuiCheckbox*)GetWnd((char*)strClickName.c_str()));
 
-		for(int i=0; i<m_vkStockroomItems.size(); i++)
+		for(int i=0; i<m_vkInventoryItems.size(); i++)
 		{
-			if(m_vkStockroomItems[i].m_pkMoveButton != pkButton)
-				m_vkStockroomItems[i].m_pkMoveButton->UncheckButton();
+			if(m_vkInventoryItems[i].m_pkMoveButton != pkButton)
+			{
+				m_vkInventoryItems[i].m_pkMoveButton->UncheckButton();
+			}
 			else
 			{
-				m_iSelStockroomItemIndex = i;
-				m_vkStockroomItems[i].m_pkMoveButton->CheckButton();
+				PrintItemInfo(&m_vkInventoryItems[i], false);
+				m_iSelInventoryItemIndex = i;
+				m_vkInventoryItems[i].m_pkMoveButton->CheckButton();
 			}
 		}
 
@@ -100,56 +143,10 @@ void CItemTransactionDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName)
 	}
 }
 
-void CItemTransactionDlg::OnSelectCB(ZGuiCombobox* pkCombobox, int iItemIndex)
-{
-	if(pkCombobox == NULL)
-		return;
-
-	string strListbox = pkCombobox->GetName();
-	
-	if(strListbox == "ActiveContatinerList")
-	{
-		string strListItem;
-		strListItem = pkCombobox->GetListbox()->GetItem(iItemIndex)->GetText();
-
-		if(strListItem == "Backpack")
-		{
-			m_iActiveContainer = BACKPACK;
-			printf("switching to BACKPACK container\n");
-		}
-		else
-		if(strListItem == "Armor")
-		{
-			m_iActiveContainer = ARMOR;
-			printf("switching to ARMOR container\n");
-		}
-		else
-		if(strListItem == "Cybernetics")
-		{
-			m_iActiveContainer = CYBERNETICS;
-			printf("switching to CYBERNETICS container\n");
-		}
-		else
-		if(strListItem == "Quickitem")
-		{
-			m_iActiveContainer = QUICKITEM;
-			printf("switching to QUICKITEM container\n");
-		}
-		else
-		if(strListItem == "Weapon")
-		{
-			m_iActiveContainer = WEAPON;
-			printf("switching to WEAPON container\n");
-		}
-		else
-			return;
-
-		InitDlg();
-	}
-}
-
 bool CItemTransactionDlg::InitDlg()
 {
+	PrintItemInfo(NULL, false);
+
 	int x, y, w, h;
 	unsigned int i, c;
 	const int CELL_SIZE = 31;
@@ -160,8 +157,12 @@ bool CItemTransactionDlg::InitDlg()
 	if(pkHQ == NULL)
 		return false;
 	
-	DMContainer* pkStookroom = 
-		((P_DMHQ*)pkHQ->GetProperty("P_DMHQ"))->m_pkStockroom;
+	DMContainer* pkStockroomOrShop;
+	
+	if(m_eViewMode == shop)
+		pkStockroomOrShop = ((P_DMShop*)pkHQ->GetProperty("P_DMShop"))->m_pkItems;
+	else
+		pkStockroomOrShop = ((P_DMHQ*)pkHQ->GetProperty("P_DMHQ"))->m_pkStockroom;
 
 	int iAgentID = ((CHandleAgents*)GetGameDlg(HANDLE_AGENTS_DLG))->GetSelAgent();
 	
@@ -177,11 +178,11 @@ bool CItemTransactionDlg::InitDlg()
 	for(i=0; i<m_vkFocusCharItems.size(); i++)
 		m_vkFocusCharItems[i].m_pkMoveButton->Hide();
 
-	for(i=0; i<m_vkStockroomItems.size(); i++)
-		m_vkStockroomItems[i].m_pkMoveButton->Hide();
+	for(i=0; i<m_vkInventoryItems.size(); i++)
+		m_vkInventoryItems[i].m_pkMoveButton->Hide();
 	
 	m_vkFocusCharItems.clear();
-	m_vkStockroomItems.clear();
+	m_vkInventoryItems.clear();
 
 	int item_counter1=0;
 	int item_counter2=0;
@@ -194,7 +195,7 @@ bool CItemTransactionDlg::InitDlg()
 		pkCharProperty->m_pkBelt,			// 3) Quickitem
 		pkCharProperty->m_pkHand,			// 4) Weapon
 
-		pkStookroom								// 5) Stockroom
+		pkStockroomOrShop								// 5) Stockroom / shop
 
 	};
 
@@ -207,7 +208,6 @@ bool CItemTransactionDlg::InitDlg()
 		if(c == 5)
 		{
 			kRect = Rect(43,43,0,0);
-			pkContainer->Print();
 		}
 
 		if(pkContainer && (m_iActiveContainer == c || c == 5))
@@ -252,15 +252,17 @@ bool CItemTransactionDlg::InitDlg()
 
 				string strIcon = "data/textures/gui/dm/items/" + kItemList[i].m_strIcon;
 
-				pkSkinUp->m_iBkTexID = GetTexID((char*)strIcon.c_str());
-				pkSkinDown->m_iBkTexID = GetTexID((char*)strIcon.c_str());
-				pkSkinDown->m_unBorderSize = 2;
-				pkSkinDown->m_afBorderColor[0] = 
-				pkSkinDown->m_afBorderColor[1] = 
-				pkSkinDown->m_afBorderColor[2] = 0;
+				SetButtonIcon(pkButton, strIcon, true, true);
 
-				pkButton->SetButtonCheckedSkin(pkSkinDown);
-				pkButton->SetButtonUncheckedSkin(pkSkinUp);
+				//pkSkinUp->m_iBkTexID = GetTexID((char*)strIcon.c_str());
+				//pkSkinDown->m_iBkTexID = GetTexID((char*)strIcon.c_str());
+				//pkSkinDown->m_unBorderSize = 2;
+				//pkSkinDown->m_afBorderColor[0] = 
+				//pkSkinDown->m_afBorderColor[1] = 
+				//pkSkinDown->m_afBorderColor[2] = 0;
+
+				//pkButton->SetButtonCheckedSkin(pkSkinDown);
+				//pkButton->SetButtonUncheckedSkin(pkSkinUp);
 
 				pkButton->m_bUseAlhpaTest = false;
 				pkButton->Show();
@@ -268,8 +270,15 @@ bool CItemTransactionDlg::InitDlg()
 				// Move icon to top and set movearea to parent window
 				static int s_okaZ = 10000;
 				pkButton->m_iZValue = s_okaZ++;
+				GetWnd("ItemInfoLabel")->m_iZValue = s_okaZ++;
 
-				GetWnd("ActiveContatinerList")->m_iZValue = s_okaZ++;
+
+				GetWnd("ItemAddTransactionNextPageBn")->m_iZValue = s_okaZ++;
+				GetWnd("ItemAddTransactionPrevPageBn")->m_iZValue = s_okaZ++;
+				GetWnd("ItemRemoveTransactionNextPageBn")->m_iZValue = s_okaZ++;
+				GetWnd("ItemRemoveTransactionPrevPageBn")->m_iZValue = s_okaZ++;
+
+				
 
 				GetWnd("ItemTransactionWnd")->SortChilds(); 
 
@@ -281,23 +290,9 @@ bool CItemTransactionDlg::InitDlg()
 				if(c != 5)
 					m_vkFocusCharItems.push_back(kMoveInfo);
 				else
-					m_vkStockroomItems.push_back(kMoveInfo);
+					m_vkInventoryItems.push_back(kMoveInfo);
 			}
 		}
-	}
-
-	if(GetWnd("ActiveContatinerList") != NULL)
-	{
-		((ZGuiCombobox*)
-			GetWnd("ActiveContatinerList"))->GetListbox()->SelItem(
-				m_iActiveContainer);
-
-		char* szText =
-			((ZGuiCombobox*)
-			GetWnd("ActiveContatinerList"))->GetListbox()->GetSelItem()->GetText(); 
-
-		((ZGuiCombobox*)
-			GetWnd("ActiveContatinerList"))->SetLabelText( szText);
 	}
 
 	return true;
@@ -325,7 +320,7 @@ void CItemTransactionDlg::MoveItemToStockroom(ITEM_MOVE_INFO kItem)
 	}
 }
 
-void CItemTransactionDlg::MoveItemFromStockroom(ITEM_MOVE_INFO kItem)
+void CItemTransactionDlg::MoveItemFromInventory(ITEM_MOVE_INFO kItem)
 {
 	if(m_iActiveContainer == -1)
 		return;
@@ -372,3 +367,186 @@ void CItemTransactionDlg::MoveItemFromStockroom(ITEM_MOVE_INFO kItem)
 }
 
 
+void CItemTransactionDlg::MoveItemToShop(ITEM_MOVE_INFO kItem) // ie.Sell item
+{
+	Entity* pkHQ = GetDMObject(HQ);
+
+	DMContainer* pkShop = 
+		((P_DMShop*)pkHQ->GetProperty("P_DMShop"))->m_pkItems;
+
+	if(kItem.m_kFromContainer.pkContainer->MoveItem(
+		*kItem.m_pMoveObject, pkShop))
+	{
+		printf("Moving item id %i from container id % to container id %i\n",
+			*kItem.m_pMoveObject, kItem.m_kFromContainer.pkContainer->GetOwnerID(), 
+			pkShop->GetOwnerID());
+	}
+	else
+	{
+		printf("Failed to move item id %i from container id % to container id %i\n",
+			*kItem.m_pMoveObject, kItem.m_kFromContainer.pkContainer->GetOwnerID(), 
+			pkShop->GetOwnerID());
+	}
+}
+
+
+bool CItemTransactionDlg::Buy(int iItemIndex)
+{
+	int iPrice=0;
+	bool bCanAfford = false;
+
+	P_DMGameInfo* pkGameInfo = (P_DMGameInfo*)
+		GetDMObject(GAME_INFO)->GetProperty("P_DMGameInfo");
+
+	P_DMShop* pkShop = (P_DMShop*) GetDMObject(HQ)->GetProperty("P_DMShop");
+
+	int item = *m_vkInventoryItems[iItemIndex].m_pMoveObject;
+
+	DMContainer* pkContainer = 
+		m_vkInventoryItems[iItemIndex].m_kFromContainer.pkContainer;
+
+	vector<ContainerInfo> kItemList;
+	pkContainer->GetItemList(&kItemList);
+
+	for(unsigned int i=0; i<kItemList.size(); i++)
+	{
+		int x = kItemList[i].m_iItemX;
+		int y = kItemList[i].m_iItemY;
+
+		int id = *pkContainer->GetItem(x, y); 
+		if(id)
+		{
+			if(id == item)
+			{
+				iPrice = pkShop->GetSellPrice(id);
+				if(iPrice < pkGameInfo->m_iMoney)
+				{
+					pkGameInfo->m_iMoney -= iPrice;
+					bCanAfford = true;
+				}
+				break;
+			}
+		}
+	}
+
+	if(bCanAfford == false)
+	{
+		printf("Can't afford to buy that! (price: %i, you have: %i)\n",
+			iPrice, pkGameInfo->m_iMoney);
+
+		return false;
+	}
+
+	return true;
+}
+
+bool CItemTransactionDlg::Sell(int iItemIndex)
+{
+	// Fråga affären vad den vill ge för ett föremål av den typen.
+	// Affären tittar bland alla sina föremål och kollar om det finns
+	// ett liknande föremål, ser på värdet på föremålet som skickas in
+	// och kommer fram till ett pris.
+
+	P_DMShop* pkShop = (P_DMShop*) GetDMObject(HQ)->GetProperty("P_DMShop");
+
+	int iPrice = pkShop->GetBuyPrice(*m_vkFocusCharItems[iItemIndex].m_pMoveObject);
+
+	P_DMGameInfo* pkGameInfo = (P_DMGameInfo*)
+		GetDMObject(GAME_INFO)->GetProperty("P_DMGameInfo");
+
+	pkGameInfo->m_iMoney += iPrice;
+
+	if(iPrice != -1)
+	{
+		printf("The shop buy the item! (price: %i, you have: %i)\n",
+			iPrice, pkGameInfo->m_iMoney);
+
+		return true;
+	}
+	else
+	{
+		printf("The shop will not buy that item! (id: %i)\n", iItemIndex);
+	}
+
+	return false;
+}
+
+void CItemTransactionDlg::PrintItemInfo(ITEM_MOVE_INFO* pkMoveItem, bool bCharacterItem)
+{
+	P_DMItem* pkItem = NULL;
+	P_DMShop* pkShop = NULL;
+	P_DMCharacter* pkChar = NULL;
+
+	char szText[150];
+	strcpy(szText, "");
+
+	if(pkMoveItem != NULL)
+	{
+		if(pkMoveItem->m_pMoveObject)
+		{
+			int iAgentID = ((CHandleAgents*)GetGameDlg(HANDLE_AGENTS_DLG))->GetSelAgent();
+			int iObjectID = *pkMoveItem->m_pMoveObject;
+
+			pkItem = (P_DMItem*) GetObject(iObjectID)->GetProperty("P_DMItem");
+			pkChar = (P_DMCharacter*) GetObject(iAgentID)->GetProperty("P_DMCharacter");
+			pkShop = (P_DMShop*) GetDMObject(HQ)->GetProperty("P_DMShop");
+			
+			P_DMGameInfo* pkGameInfo = (P_DMGameInfo*)
+				GetDMObject(GAME_INFO)->GetProperty("P_DMGameInfo");
+
+			if(pkItem)
+			{
+				int iValue = -1;
+				
+				if(bCharacterItem == false) // klickat i stockroom/shop
+				{
+					if(m_eViewMode == shop)
+					{
+						iValue = pkShop->GetSellPrice(iObjectID);
+						sprintf(szText, "Buy %s, price: %i (%i money left)", 
+							pkItem->GetName().c_str(), iValue, pkGameInfo->m_iMoney );
+					}
+					else
+					{
+						sprintf(szText, "Move %s to character %s", 
+							pkItem->GetName().c_str(),
+							pkChar->GetStats()->m_strName.c_str());
+					}
+				}
+				else // klickat i current character inventory
+				{
+					if(m_eViewMode == shop)
+					{
+						iValue = pkShop->GetBuyPrice(iObjectID);
+						sprintf(szText, "Sell %s in %s, price: %i (%i money left)", 
+							pkItem->GetName().c_str(), 
+							GetGetContainerName(m_iActiveContainer), iValue,
+							pkGameInfo->m_iMoney);
+					}
+					else
+					{
+						sprintf(szText, "Move %s from % s to stockroom", 
+							pkItem->GetName().c_str(), 
+							GetGetContainerName(m_iActiveContainer) );
+					}
+				}
+			}
+		}
+	}
+
+	SetText("ItemInfoLabel", szText);
+}
+
+char* CItemTransactionDlg::GetGetContainerName(int iContainer)
+{
+	switch(iContainer)
+	{
+	case BACKPACK: return "backpack";
+	case ARMOR: return "armor";
+	case CYBERNETICS: return "cybernetics";
+	case QUICKITEM: return "belt";
+	case WEAPON: return "weapon";
+	default:
+		return NULL;
+	}
+}

@@ -51,13 +51,15 @@ class MCOMMON_API P_DMItem: public Property {
 		int		m_iSizeX;	
 		int		m_iSizeY;
 		int		m_iType;
-
+	
 	public:
 		
 		P_DMItem();
 		~P_DMItem();
 
 		DMItemStats m_kItemStats;
+
+		int m_iValue; // vad föremålet kostar att köpa / sälja
 
 		void CloneOf(Property* pkProperty) { }
 		
@@ -69,6 +71,7 @@ class MCOMMON_API P_DMItem: public Property {
 		string GetIcon() { return m_strIcon; }
 		int GetType() { return m_iType; }
 		string GetName() { return m_strName; }
+		
 
 		
 	friend class DMContainer;

@@ -15,6 +15,8 @@ P_DMItem::P_DMItem()
 	m_iSizeY = 1;	
 	m_iType = 0;
 
+	m_iValue = 0;
+
 }
 
 P_DMItem::~P_DMItem()
@@ -32,7 +34,7 @@ void P_DMItem::Init()
 
 vector<PropertyValues> P_DMItem::GetPropertyValues()
 {
-	vector<PropertyValues> kReturn(5);
+	vector<PropertyValues> kReturn(6);
 		
 	kReturn[0].kValueName = "name";
 	kReturn[0].iValueType = VALUETYPE_STRING;
@@ -55,6 +57,10 @@ vector<PropertyValues> P_DMItem::GetPropertyValues()
 	kReturn[4].iValueType = VALUETYPE_INT;
 	kReturn[4].pkValue    = &m_iType;		
 
+	kReturn[5].kValueName = "value";
+	kReturn[5].iValueType = VALUETYPE_INT;
+	kReturn[5].pkValue    = &m_iValue;		
+
 	return kReturn;
 }
 
@@ -73,6 +79,10 @@ void P_DMItem::Save(ZFIoInterface* pkPackage)
 	pkPackage->Write(&m_iSizeY,sizeof(m_iSizeY),1);	
 	
 	pkPackage->Write(&m_iType,sizeof(m_iType),1);	
+
+	pkPackage->Write(&m_iValue,sizeof(m_iValue),1);	
+
+	
 	
 }
 
@@ -90,6 +100,8 @@ void P_DMItem::Load(ZFIoInterface* pkPackage)
 	pkPackage->Read(&m_iSizeY,sizeof(m_iSizeY),1);	
 
 	pkPackage->Read(&m_iType,sizeof(m_iType),1);	
+
+	pkPackage->Read(&m_iValue,sizeof(m_iValue),1);	
 
 }
 

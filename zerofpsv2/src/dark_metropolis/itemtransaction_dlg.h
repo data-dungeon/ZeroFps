@@ -10,7 +10,8 @@ public:
 	void OnCommand(ZGuiWnd *pkMainWnd, string strClickName);
 	bool InitDlg();
 
-	void OnSelectCB(ZGuiCombobox* pkCombobox, int iItemIndex);
+	enum VIEW_MODE { store_room, shop };
+	VIEW_MODE m_eViewMode; 
 	
 private:
 
@@ -38,13 +39,22 @@ private:
 	};
 
 	void MoveItemToStockroom(ITEM_MOVE_INFO kItem);
-	void MoveItemFromStockroom(ITEM_MOVE_INFO kItem);
+	void MoveItemToShop(ITEM_MOVE_INFO kItem);
+
+	void MoveItemFromInventory(ITEM_MOVE_INFO kItem);
+
+	char* GetGetContainerName(int iContainer);
+
+	void PrintItemInfo(ITEM_MOVE_INFO* pkItem, bool bCharacterItem);
+
+	bool Buy(int iItemIndex);
+	bool Sell(int iItemIndex);
 	
 	int m_iActiveContainer;
 	int m_iSelFocusCharItemIndex;
-	int m_iSelStockroomItemIndex;
+	int m_iSelInventoryItemIndex;
 	
 	vector<ITEM_MOVE_INFO> m_vkFocusCharItems;
-	vector<ITEM_MOVE_INFO> m_vkStockroomItems;
+	vector<ITEM_MOVE_INFO> m_vkInventoryItems;
 
 };

@@ -1,6 +1,7 @@
 #include "dark_metropolis.h"
 #include "handleagents_dlg.h"
 #include "members_dlg.h"
+#include "itemtransaction_dlg.h"
 
 CHandleAgents::CHandleAgents() : CGameDlg("AgentsWnd", &g_kDM)
 {
@@ -156,6 +157,9 @@ void CHandleAgents::OnCommand(ZGuiWnd *pkMainWnd, string strClickName)
 	if(strClickName == "AgentsEquip" && m_iSelAgent != -1) 
 	{
 		LoadDlg("data/script/gui/dm_itemtransaction.lua");
+		((CItemTransactionDlg*)GetGameDlg(ITEMTRANSACTION_DLG))->m_eViewMode = 
+			CItemTransactionDlg::store_room;
+
 		GetGameDlg(ITEMTRANSACTION_DLG)->InitDlg();
 
 		m_pkGui->KillWndCapture(); 
@@ -163,6 +167,24 @@ void CHandleAgents::OnCommand(ZGuiWnd *pkMainWnd, string strClickName)
 
 		SetText("RemoveItemBn", "Unequip");
 		SetText("AddItemBn", "Equip");
+
+		m_pkAudioSys->StartSound("data/sound/computer beep 5.wav", 
+			m_pkAudioSys->GetListnerPos()); 
+	}
+	else
+	if(strClickName == "AgentsShop" && m_iSelAgent != -1) 
+	{
+		LoadDlg("data/script/gui/dm_itemtransaction.lua");
+		((CItemTransactionDlg*)GetGameDlg(ITEMTRANSACTION_DLG))->m_eViewMode = 
+			CItemTransactionDlg::shop;
+
+		GetGameDlg(ITEMTRANSACTION_DLG)->InitDlg();
+
+		m_pkGui->KillWndCapture(); 
+		m_pkGui->SetCaptureToWnd(GetWnd("ItemTransactionWnd"));
+
+		SetText("RemoveItemBn", "Sell");
+		SetText("AddItemBn", "Buy");
 
 		m_pkAudioSys->StartSound("data/sound/computer beep 5.wav", 
 			m_pkAudioSys->GetListnerPos()); 

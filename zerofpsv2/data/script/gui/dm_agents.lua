@@ -160,7 +160,12 @@ function GUICreate()
 	ChangeSkin("AgentsEquip","Skin2","Button down")
 	ChangeSkin("AgentsEquip","Skin3","Button focus")
 
-	CreateWnd(1,"AgentsClose","AgentsWnd","Close",300,216,64,33,0)
+	CreateWnd(1,"AgentsShop","AgentsWnd","Shop",300,216,64,33,0)
+	ChangeSkin("AgentsShop","Skin1","Button up")
+	ChangeSkin("AgentsShop","Skin2","Button down")
+	ChangeSkin("AgentsShop","Skin3","Button focus")
+
+	CreateWnd(1,"AgentsClose","AgentsWnd","Close",372,216,64,33,0)
 	ChangeSkin("AgentsClose","Skin1","Button up")
 	ChangeSkin("AgentsClose","Skin2","Button down")
 	ChangeSkin("AgentsClose","Skin3","Button focus")
@@ -234,6 +239,8 @@ function GUICreate()
 	ChangeSkin("AgentsToHireBn7","Skin42","Checkbox: Button up")
 	ChangeSkin("AgentsToHireBn7","Skin43","Checkbox: Button down")
 	ChangeSkin("AgentsToHireBn7","Skin6","Checkbox: Label")
+
+
 
 
 

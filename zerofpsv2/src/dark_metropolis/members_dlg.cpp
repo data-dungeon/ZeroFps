@@ -891,7 +891,7 @@ void CMembersDlg::UpdateInventory(Entity* pkCharacterObject)
 
 				string strIcon = "data/textures/gui/dm/items/" + kItemList[i].m_strIcon;
 
-				SetButtonIcon(pkButton, strIcon, false);
+				SetButtonIcon(pkButton, strIcon, true, false);
 				pkButton->m_bUseAlhpaTest = false;
 				pkButton->Show();
 				pkButton->Disable();

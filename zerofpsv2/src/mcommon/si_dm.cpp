@@ -1470,7 +1470,7 @@ int DMLua::AddItemToShopLua(lua_State* pkLua)
 {
 	Entity* pkShop = TestScriptInput (3, pkLua);
 
-	if ( pkShop == 0 )
+	if ( pkShop == NULL )
 	{
 		cout << "Warning! DMLua::AddItemToShopLua: Wrong number of arguments" << endl;
 		return 0;
@@ -1499,6 +1499,14 @@ int DMLua::AddItemToShopLua(lua_State* pkLua)
 		return 0;
 	}
 
+	P_DMItem* pkItemProperty = (P_DMItem*)pkNewObj->GetProperty("P_DMItem");
+
+	if(pkItemProperty == NULL)
+	{
+		cout << "Error! DMLua::AddItemToShopLua: Object have no P_DMItem!" << endl;
+		return 0;
+	}
+	
 	int iNewItemID = pkNewObj->GetEntityID();
 
 	if(pkProperty->m_pkItems == NULL)
@@ -1513,24 +1521,29 @@ int DMLua::AddItemToShopLua(lua_State* pkLua)
 		return 0;
 	}
 
-	vector<ContainerInfo> kItemList;
-	pkProperty->m_pkItems->GetItemList(&kItemList);
-
-	for(int i=0; i<kItemList.size(); i++)
+	if( pkProperty->SetPrice( pkItemProperty->GetName(), dPrice) == false)
 	{
-		int id = *pkProperty->m_pkItems->GetItem(
-			kItemList[i].m_iItemX, kItemList[i].m_iItemY);
-
-		if(id == iNewItemID)
-		{
-			printf("Creating new item (%i) and adding to shop at pos (%i,%i)\n",
-				iNewItemID, kItemList[i].m_iItemX, kItemList[i].m_iItemY);
-
-			pkProperty->SetPrice( kItemList[i].m_iItemX, 
-				kItemList[i].m_iItemY, dPrice);
-			break;
-		}
+		printf("DMLua::AddItemToShopLua failed! P_DMShop::SetPrice failed.\n");
+		return 0;
 	}
+
+	//vector<ContainerInfo> kItemList;
+	//pkProperty->m_pkItems->GetItemList(&kItemList);
+
+	//for(int i=0; i<kItemList.size(); i++)
+	//{
+	//	int id = *pkProperty->m_pkItems->GetItem(
+	//		kItemList[i].m_iItemX, kItemList[i].m_iItemY);
+
+	//	if(id == iNewItemID)
+	//	{
+	//		printf("Creating new item (%i), price: %i, and adding to shop at slot (%i,%i)\n",
+	//			iNewItemID, (int) dPrice, kItemList[i].m_iItemX, kItemList[i].m_iItemY);
+
+	//		pkProperty->SetPrice( pkItemProperty->GetName(), dPrice);
+	//		break;
+	//	}
+	//}
 
 	return 0;
 }

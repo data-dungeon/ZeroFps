@@ -14,7 +14,7 @@ P_DMGameInfo::P_DMGameInfo()
 	m_strClanColor = "blue";
 	m_strClanLogo = "";
 	
-	m_iMoney = 0;
+	m_iMoney = 1000;
 	m_kCameraPos.Set(0,0,0);
 	m_fReputation = 1.0f;
 

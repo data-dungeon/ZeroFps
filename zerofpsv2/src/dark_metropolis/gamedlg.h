@@ -25,7 +25,8 @@ public:
 
 protected:
 
-	void SetButtonIcon(ZGuiButton* pkButton, string strIconName, bool bSetAlphaTex, bool bUseBorder=false);
+	void SetButtonIcon(ZGuiWnd* pkButton, string strIconName, bool bSetAlphaTex, 
+		bool bUseBorder=false);
 	void ShowWnd(char* szWndResName, bool bShow, bool bToogleCapture=false);
 	bool IsWndVisible(char* szWndResName) { return m_pkDM->IsWndVisible(szWndResName); } 
 	bool LoadDlg(char* szScriptName);

@@ -32,6 +32,9 @@ function GUICreate()
 	Skin12 = { tex1="dm/prev_f.bmp", tex2="0", tex3="0", tex4="0", tex1a="0", tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=255,
 	 bkB=255, borderR=255, borderG=255, borderB=255, bd_size=0, tile=0, trans=0 }
 
+	Skin13 = { tex1="0", tex2="0", tex3="0", tex4="0", tex1a=0, tex2a="0", tex3a="0", tex4a="0",bkR=255, bkG=255,
+	 bkB=255, borderR=255, borderG=255, borderB=255, bd_size=1, tile=0, trans=0 }
+
 	-------------------------------------------------------------------------
 	-- Create all windows in correct order (parents before childrens etc.)
 	-- 0 = Wnd, 1 = Button, 2 = Checkbox, 3 = Combobox, 4 = Label, 5 = Listbox, 6 = Radiobutton,
@@ -45,6 +48,15 @@ function GUICreate()
 
 	CreateWnd(4,"ItemRemoveWnd","ItemTransactionWnd","",380,40,256,348,0)
 	ChangeSkin("ItemRemoveWnd","Skin5","Label")
+
+
+	CreateWnd(4,"ItemInfoLabel","ItemTransactionWnd","",40,440,600,20,0)  
+	ChangeSkin("ItemInfoLabel","Skin13","Label")
+
+
+
+
+
 
 	CreateWnd(1,"RemoveItemBn","ItemTransactionWnd","Sell",380+256/2-70/2,400,70,20,0)
 	ChangeSkin("RemoveItemBn","Skin1","Button up")
@@ -80,15 +92,6 @@ function GUICreate()
 	ChangeSkin("ItemRemoveTransactionPrevPageBn","Skin10","Button up")
 	ChangeSkin("ItemRemoveTransactionPrevPageBn","Skin11","Button down")
 	ChangeSkin("ItemRemoveTransactionPrevPageBn","Skin12","Button focus")
-
-	CreateWnd(3,"ActiveContatinerList","ItemTransactionWnd","",320-70,440,140,25,0)
-	ClearListbox("ActiveContatinerList")
-	AddListItem("ActiveContatinerList", "Backpack")
-	AddListItem("ActiveContatinerList", "Armor")
-	AddListItem("ActiveContatinerList", "Cybernetics")
-	AddListItem("ActiveContatinerList", "Quickitem")
-	AddListItem("ActiveContatinerList", "Weapon")
-
 
 
 end

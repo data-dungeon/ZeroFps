@@ -40,6 +40,7 @@
 #include "../mcommon/p_dmitem.h"
 #include "../mcommon/p_dmmission.h"
 #include "../mcommon/p_dmclickme.h"
+#include "../mcommon/p_dmshop.h"
 
 #include "playerdatabase.h"
 

@@ -2,8 +2,6 @@
 #define _P_DMSHOP_H_
 
 #include "../zerofpsv2/engine/property.h"
-#include "../zerofpsv2/engine/zerofps.h"
-#include "../zerofpsv2/script/zfscript.h"
 #include <iostream>
 #include <string.h>
 #include "mcommon_x.h"
@@ -17,7 +15,12 @@ using namespace std;
 class MCOMMON_API P_DMShop: public Property {
 	private:
 		vector<PropertyValues> GetPropertyValues();
-		map<int, int> m_kPricemap; // itemID, price
+		map<string, int> m_kPricemap; // name, price
+
+		EntityManager* m_pkObjectMan;
+
+		float m_fTradeRate; // 1.0f = samma pris som varan kostar, <1 = billigare, >1 = dyrare
+		string m_strShopName;
 		
 	public:
 		
@@ -32,8 +35,10 @@ class MCOMMON_API P_DMShop: public Property {
 
 		DMContainer* m_pkItems;		
 
-		int GetPrice(int x, int y);
-		bool SetPrice(int x, int y, int iPrice);
+		int GetSellPrice(int iObjectID); // fråga affären vad ett föremål i dess "m_pkItems" container kostar.
+		bool SetPrice(string strName, int iPrice); // bestäm vad ett föremål i affären skall kosta.
+
+		int GetBuyPrice(int iObjectID); // fråga affären den köper ett speciellt föremål för.
 };
 
 MCOMMON_API Property* Create_P_DMShop();

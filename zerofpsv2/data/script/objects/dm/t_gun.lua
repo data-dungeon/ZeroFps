@@ -6,8 +6,8 @@ function Create()
 			InitParameter("m_fScale","1");		
 		InitProperty("P_DMItem");	
 			InitParameter("name","gun");
-			InitParameter("sizex",1);
-			InitParameter("sizey",2);
+			InitParameter("sizex",2);
+			InitParameter("sizey",1);
 			InitParameter("icon","handgun.bmp");
 			InitParameter("type","5");
 		InitProperty("P_DMGun");

@@ -317,6 +317,9 @@ ZGuiWnd* ZGuiWnd::Find(int x, int y)
 		if(m_pkGUI == NULL || m_pkGUI->m_bDisableAlphatest)
 			return this;
 
+		if(m_bUseAlhpaTest==false)
+			return this;
+
 		if(m_pkGUI->ClickedWndAlphaTex(x,y,this) == true)
 			return this;
 	}
@@ -329,6 +332,9 @@ ZGuiWnd* ZGuiWnd::Find(int x, int y)
 				if(!m_bUseClipper || pkFind->m_kClipperArea.Inside(x,y))
 				{
 					if(m_pkGUI == NULL || m_pkGUI->m_bDisableAlphatest)
+						return pkFind;
+
+					if(m_bUseAlhpaTest==false)
 						return pkFind;
 
 					if(m_pkGUI->ClickedWndAlphaTex(x,y,pkFind) == true)
