@@ -4,8 +4,6 @@
 #include "../../../zerofpsv2/engine/entitymanager.h"
    using namespace std;
 
-int ItemStats::s_iContainerCounter = 0;
-
 // ---------------------------------------------------------------------------------------------
 
 bool ItemStats::EquipOn ( CharacterStats *pkCharStat )
@@ -321,15 +319,11 @@ ItemStats::ItemStats(P_Item* pkProperty)
    m_fQuality = 1;
    m_iQuantity = 1;
    m_eEquipmentCategory = Item;
-   m_iContainerID = -1;
 	strcpy(m_szPic, "dummy.bmp");
    m_uiVersion = 0;
    
    m_fUseSpeed = 0;
 
-   m_pkContainer = 0;//new Container (this);
-   m_pkIsInContainer = 0;
-   m_iContainerID = -1;
    m_iCurrentContainer = -1;
 }
 
@@ -492,25 +486,6 @@ void ItemStats::AddBeforeName ( string kAddName )
    m_uiVersion++;
 
    m_kItemName = kAddName + " " + m_kItemName;
-}
-
-// ---------------------------------------------------------------------------------------------
-
-// returns false if object already is a container
-bool ItemStats::MakeContainer ()
-{
-   if ( m_pkContainer )
-      return false;
-   else
-   {
-      m_uiVersion++;
-         
-      m_iContainerID = s_iContainerCounter++;
-
-      m_pkContainer = new Container ( (Property*)m_pkProperty );
-
-      return true;
-   }
 }
 
 // ---------------------------------------------------------------------------------------------

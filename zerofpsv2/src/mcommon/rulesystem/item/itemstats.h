@@ -5,7 +5,6 @@
 
 #include "../../mcommon_x.h"
 #include "../character/characterstats.h"
-#include "../container.h"
 #include "inventory_info.h"
 
 #include <map>
@@ -18,8 +17,6 @@ class P_Item;
 class MCOMMON_API ItemStats
 {
 private:
-
-   static int s_iContainerCounter;
 
    int 
       m_iQuantity,
@@ -45,11 +42,7 @@ public:
    string m_kItemName;
    string m_kUsesSkill;
 
-   int m_iContainerID; // id of this container
 	int m_iCurrentContainer; // id to the container where this item is.
-
-   Container* m_pkContainer; // items can contain objects :)
-   Container* m_pkIsInContainer; // which container the item (if any) is in
 
    P_Item* m_pkProperty;
 
@@ -76,10 +69,6 @@ public:
 
    void SetIcon ( char* kIcon );
 
-	//	returns -1 if item isn't a container 
-	// OBS! Blanda inte ihop denna funktion och GetCurrentContainer
-   int GetContainerID() { return m_iContainerID; }  
-		
 	// hämta ID't till den container där detta föremål ligger
 	int GetCurrentContainer() { return m_iCurrentContainer; } 
 
@@ -116,9 +105,6 @@ public:
    void AddBeforeName ( string kAddName );
 
    void Print();
-
-   // returns false if object already is a container
-   bool MakeContainer ();
 
    bool operator== ( ItemStats &kItemStats );
    ItemStats& operator= ( ItemStats &kItemStats );

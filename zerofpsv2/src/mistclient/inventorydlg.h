@@ -61,6 +61,8 @@ public:
 		~Slot() {};
 
 		ItemStats* m_pkItemStats;
+      int m_iContainerID; // ID of the container, if it have any..else ID = -1 // Zerom
+
       int m_iNetWorkID;
 		ZGuiLabel* m_pkLabel;
 		
@@ -91,7 +93,7 @@ private:
 	void DropItems();
 	void SwitchContainer(int iNewContainer);
 	void AddSlot(const char *szPic, Point sqr, SlotType eType, 
-		ItemStats* pkItemStats, int iNetworkID, int iContainer);
+		ItemStats* pkItemStats, int iContID, int iNetworkID, int iContainer);
 	bool RemoveSlot(Slot* pkSlot);
 	bool GetFreeSlotPos(Point& refSqr, int iContainer);
 	bool SlotExist(int sx, int sy);

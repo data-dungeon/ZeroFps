@@ -200,6 +200,7 @@ void MistClient::RegisterPropertys()
 	pkPropertyFactory->Register("P_Event", Create_P_Event);
 	pkPropertyFactory->Register("P_CharStats", Create_P_CharStats);
    pkPropertyFactory->Register("P_Item", Create_P_Item);
+   pkPropertyFactory->Register("P_Container", Create_P_Container);
 }
 
 
@@ -696,9 +697,20 @@ void MistClient::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 					// Set current container and main container
 					if(m_pkActiveCharacter)
 					{
-						P_Item* pkItem = (P_Item*) m_pkActiveCharacter->GetProperty("P_Item");
-						m_pkInventDlg->SetCurrentContainer( pkItem->m_pkItemStats->m_iContainerID );
-						m_pkInventDlg->SetMainContainer( pkItem->m_pkItemStats->m_iContainerID );
+                  P_Container* pkC = (P_Container*) m_pkActiveCharacter->GetProperty("P_Container");
+						
+                  if ( pkC )
+                  {                  
+						   m_pkInventDlg->SetCurrentContainer( pkC->m_iContainerID );
+                     m_pkInventDlg->SetMainContainer( pkC->m_iContainerID );
+                  }
+                  else
+                  {
+                     cout << "Error! PlayerCharacter doesn't have any P_Container!! (MistClient::OnCommand)" << endl;
+                     m_pkInventDlg->SetCurrentContainer( -1 );
+                     m_pkInventDlg->SetMainContainer( -1 );
+                  }
+
 					}
 				}
 
@@ -708,7 +720,7 @@ void MistClient::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 					pkGui->SetFocus(GetWnd("BackPackWnd"));
 
 					if(m_pkActiveCharacter)
-						((P_Item*)m_pkActiveCharacter->GetProperty("P_Item"))->
+						((P_Container*)m_pkActiveCharacter->GetProperty("P_Container"))->
 							GetAllItemsInContainer(m_pkInventDlg->m_pkAddItemList);  
 
 				}
@@ -1392,7 +1404,7 @@ void MistClient::OpenActionMenu(int mx, int my)
 	const float fOffset = 35;
 	int x_diff = -8, y_diff = 20;
 
-	for(int i=0; i<MAX_NUM_ACTION_BUTTONS; i++)
+	for(unsigned int i=0; i<MAX_NUM_ACTION_BUTTONS; i++)
 	{
 		sprintf(name, "%s%i", "ActionButton", i);
 		bWndExist = GetWnd(name) != NULL;

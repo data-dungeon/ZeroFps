@@ -25,6 +25,7 @@
 #include "../mcommon/p_ml.h"
 #include "../mcommon/p_charstats.h"
 #include "../mcommon/p_item.h"
+#include "../mcommon/p_container.h"
 #include "../mcommon/p_spell.h"
 #include "../mcommon/p_serverinfo.h"
 #include "../mcommon/p_clientcontrol.h"

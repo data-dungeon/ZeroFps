@@ -38,7 +38,7 @@ P_Item::P_Item()
 
 	strcpy(m_acName,"P_Item");
 
-   m_pkItemStats->MakeContainer();
+//   m_pkItemStats->MakeContainer();
 }
 
 // ------------------------------------------------------------------------------------------
@@ -251,6 +251,9 @@ void P_Item::PackTo(NetPacket* pkNetPacket, int iConnectionID )
             // item name
             pkNetPacket->Write_NetStr( m_pkItemStats->m_kItemName.c_str() );
 
+            // which container the object is in
+            pkNetPacket->Write( &m_pkItemStats->m_iCurrentContainer, sizeof(int) );
+
             // to add: tooltip
 
             // send version
@@ -259,50 +262,12 @@ void P_Item::PackTo(NetPacket* pkNetPacket, int iConnectionID )
 
             m_kSends.erase ( kIte++ );
 
-         }
-         else if ( (*kIte).m_iClientID == iConnectionID && (*kIte).m_kSendType == "container" )
-         {
-            // if object isn't a container, don't send anything
-            if ( m_pkItemStats->m_pkContainer )
-            {
-               pkNetPacket->Write_NetStr( "cont" );
-
-               // get container vector
-               vector<int>* pkItems = m_pkItemStats->m_pkContainer->GetItemsInContainer();
-
-               // container ID
-               pkNetPacket->Write( &m_pkItemStats->m_iContainerID, sizeof(int) );
-
-               int iSize = pkItems->size();
-
-               // size of container
-               pkNetPacket->Write( &iSize, sizeof(int) );
-
-               // send itemIDs in container
-               for ( int i = 0; i < pkItems->size(); i++ )
-                  pkNetPacket->Write( &pkItems->at(i), sizeof(int) );
-
-               // version
-               pkNetPacket->Write( &m_pkItemStats->m_pkContainer->m_uiVersion, sizeof(unsigned int) );
-
-            }
-
-            m_kSends.erase ( kIte++ );
-
-         }
+         }           
       }
    }
    else
-   {
-      pkNetPacket->Write_NetStr( "foo" );
+       pkNetPacket->Write_NetStr( "foo" );
 
-      // container id (if it's a container)
-      pkNetPacket->Write( &m_pkItemStats->m_iContainerID, sizeof(int) );
-
-      // which container the object is in
-      pkNetPacket->Write( &m_pkItemStats->m_iCurrentContainer, sizeof(int) );
-
-   }
 
    
    SetNetUpdateFlag(iConnectionID, false);
@@ -334,6 +299,10 @@ void P_Item::PackFrom(NetPacket* pkNetPacket, int iConnectionID )
       // item name
       pkNetPacket->Read_NetStr( (char*)m_pkItemStats->m_kItemName.c_str() );
 
+      // which container the object is in
+      pkNetPacket->Read( &m_pkItemStats->m_iCurrentContainer, sizeof(int) );
+
+
       // to add: tooltip
 
       // get version
@@ -342,53 +311,8 @@ void P_Item::PackFrom(NetPacket* pkNetPacket, int iConnectionID )
       if ( m_pkInventoryList )
          m_pkInventoryList->push_back ( m_pkObject );
 
+
    }
-   else if ( kDataType == "cont" )
-   {
-      // if object isn't a container, better make it one, or it crashes!
-      if ( !m_pkItemStats->m_pkContainer )
-         m_pkItemStats->MakeContainer();
-
-      // container ID
-      pkNetPacket->Read( &m_pkItemStats->m_iContainerID, sizeof(int) );
-
-      int iContSize, iObjID;
-
-      // size of container
-      pkNetPacket->Read( &iContSize, sizeof(int) );
-
-      // clear container first, so we don't get double versions of the items
-      m_pkItemStats->m_pkContainer->Clear();
-
-      // read itemIDs in container
-      for ( int i = 0; i < iContSize; i++ )
-      {
-         pkNetPacket->Read( &iObjID, sizeof(int) );
-         m_pkItemStats->m_pkContainer->AddObject ( iObjID );
-
-         // request for a update of the item at the same time
-         ((P_Item*)m_pkObjMan->GetObjectByNetWorkID( iObjID )->GetProperty("P_Item"))->RequestUpdateFromServer ("data");
-      }
-
-      // version
-      pkNetPacket->Read( &m_pkItemStats->m_pkContainer->m_uiVersion, sizeof(unsigned int) );
-
-      if ( m_pkInventoryList )
-         m_pkItemStats->m_pkContainer->GetAllItemsInContainer( m_pkInventoryList );
-   }
-   else
-   {
-      // contatiner id (if it's a container)
-      pkNetPacket->Read( &m_pkItemStats->m_iContainerID, sizeof(int) );
-
-      // which container the object is in
-      pkNetPacket->Read( &m_pkItemStats->m_iCurrentContainer, sizeof(int) );
-
-      // tjoff
-      if ( m_pkItemStats->m_iContainerID != -1 )
-         m_pkItemStats->MakeContainer();
-   }
-	
 
 }
 
@@ -452,22 +376,7 @@ void P_Item::RequestUpdateFromServer (string kType)
 
       ClientOrder kOrder;
 
-      if ( kType == "container" && m_pkItemStats->m_pkContainer )
-      {
-         // get client object
-         kOrder.m_sOrderName = "(rq)cont";
-         kOrder.m_iObjectID = m_pkObject->iNetWorkID;
-         kOrder.m_iClientID = m_pkZeroFps->GetConnectionID();
-         kOrder.m_iCharacter = pkCC->m_iActiveCaracterObjectID;
-
-         // use this useless variabel to send which version of the item this prop. has
-         kOrder.m_iUseLess = m_pkItemStats->m_pkContainer->m_uiVersion; 
-         
-         pkCC->AddOrder (kOrder);
-
-      }
-      // for now, the only data the client need is icon, item name and tooltip
-      else if ( kType == "data" )
+      if ( kType == "data" )
       {
          // hmm...will this work? Problem if object changes name..ok otherwise..i think
          //if object already has a name and such, already got his info from the server...
@@ -491,22 +400,6 @@ void P_Item::RequestUpdateFromServer (string kType)
    else
       cout << "P_Item::RequestUpdateFromServer(): no client object found!" << endl;
    
-}
-
-// ---------------------------------------------------------------------------------------------
-
-void P_Item::GetAllItemsInContainer( vector<Entity*>* pkContainerList )
-{
-   if ( !pkContainerList )
-   {
-      cout << "error! Null pointer in P_Item::GetAllItemsInContainer!" << endl;
-      return;
-   }
-
-   m_pkInventoryList = pkContainerList;
-
-   RequestUpdateFromServer ( "container" );
-
 }
 
 // ---------------------------------------------------------------------------------------------

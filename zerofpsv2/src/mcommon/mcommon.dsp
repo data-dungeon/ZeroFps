@@ -114,6 +114,10 @@ SOURCE=.\p_clientcontrol.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\p_container.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\p_enviroment.cpp
 # End Source File
 # Begin Source File
@@ -163,6 +167,10 @@ SOURCE=.\p_charstats.h
 # Begin Source File
 
 SOURCE=.\p_clientcontrol.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\p_container.h
 # End Source File
 # Begin Source File
 
@@ -248,14 +256,6 @@ SOURCE=.\rulesystem\item\itemstats.h
 SOURCE=.\rulesystem\spell\spellstats.h
 # End Source File
 # End Group
-# Begin Source File
-
-SOURCE=.\rulesystem\container.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\rulesystem\container.h
-# End Source File
 # Begin Source File
 
 SOURCE=.\rulesystem\fightstats.h

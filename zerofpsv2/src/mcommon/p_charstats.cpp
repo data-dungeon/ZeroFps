@@ -1,6 +1,7 @@
 #include "rulesystem/character/characterfactory.h"
 #include "p_charstats.h"
 #include "p_clientcontrol.h"
+#include "p_item.h"
 #include "../zerofpsv2/engine/entity.h"
 #include "../zerofpsv2/engine/zerofps.h"
 
@@ -30,8 +31,6 @@ vector<PropertyValues> CharacterProperty::GetPropertyValues()
 void CharacterProperty::Init()
 {
    m_pkCharStats = new CharacterStats( m_pkObject );
-
-   m_pkCharStats->MakeContainer();
 
    m_pkCharStats->m_fReloadTime = 5;
    m_pkCharStats->m_fReloadTimer = 0;
@@ -191,6 +190,11 @@ void CharacterProperty::Save(ZFIoInterface* pkPackage)
    
    // save recal position
    pkPackage->Write ( (void*)&m_pkCharStats->m_kRecalPos, sizeof(m_pkCharStats->m_kRecalPos), 1 );   
+
+
+   // save container
+   int iContSize = 0;
+
 }
 
 // ------------------------------------------------------------------------------------------
@@ -226,9 +230,6 @@ void CharacterProperty::Load(ZFIoInterface* pkPackage)
 	   pkPackage->Read((void*)&fValue,sizeof(float),1); // value
 
       m_pkCharStats->m_kPointStats[temp] = fValue;
-
-      cout << "LoadCounter:" << temp << " val:" << fValue << endl;
-
    }
    
    // load data
@@ -295,6 +296,7 @@ void CharacterProperty::Load(ZFIoInterface* pkPackage)
 
 	//load reacal position
    pkPackage->Read ( (void*)&m_pkCharStats->m_kRecalPos, sizeof(m_pkCharStats->m_kRecalPos), 1 );   
+
 }
 
 // ------------------------------------------------------------------------------------------
@@ -304,7 +306,10 @@ void CharacterProperty::PackTo(NetPacket* pkNetPacket, int iConnectionID )
    int iStuff = -1;
 
    if ( !m_kSends.size() )
+   {
+      iStuff = eCONTID;
       pkNetPacket->Write( &iStuff, sizeof(int) );
+   }
    else
    {
       // send character skills
@@ -394,11 +399,7 @@ void CharacterProperty::PackTo(NetPacket* pkNetPacket, int iConnectionID )
          pkNetPacket->Write( &iMaxHP, sizeof(int) );
       }
       else
-      {
-         pkNetPacket->Write( &iStuff, sizeof(int) );
-
          cout << "P_CharStats::PackTo SendOrder:" << m_kSends.front().m_kSendType << " ConnID:" << iConnectionID << " invalid!" << endl;
-      }
 
       m_kSends.erase ( m_kSends.begin() );
 
@@ -476,8 +477,6 @@ void CharacterProperty::PackFrom(NetPacket* pkNetPacket, int iConnectionID )
          pkNetPacket->Read_Str( caAttrValue );
 
          m_pkCharStats->m_kData[string(caAttrName)] = caAttrValue;
-
-         cout << "Data from server:" << m_pkCharStats->m_kData[string(caAttrName)] << endl;
       }
    }
    else if ( iType == eHP )
@@ -491,7 +490,7 @@ void CharacterProperty::PackFrom(NetPacket* pkNetPacket, int iConnectionID )
       m_pkCharStats->m_kPointStats["hp"] = iHP;
    }
    else
-      cout << "Got unknown data in p_charstats::packfrom, type:" << iType << endl;
+      cout << "Warning! Got unknown stuff from P_CharStats::PackTo!" << endl;
 }
 
 // ------------------------------------------------------------------------------------------
@@ -510,20 +509,7 @@ void CharacterProperty::RequestUpdateFromServer( string kData )
       ClientOrder kOrder;
 
       // order type
-      if ( kData == "container" )
-      {
-         // get client object
-         kOrder.m_sOrderName = "(rq)cont";
-         kOrder.m_iObjectID = m_pkObject->iNetWorkID;
-         kOrder.m_iClientID = m_pkZeroFps->GetConnectionID();
-         kOrder.m_iCharacter = pkCP->m_iActiveCaracterObjectID;
-
-         // use this useless variabel to send which version of the item this prop. has
-         kOrder.m_iUseLess = m_pkCharStats->m_pkContainer->m_uiVersion;
-
-         pkCP->AddOrder (kOrder);
-      }
-      else if ( kData == "attributes" )
+      if ( kData == "attributes" )
       {
          // get client object
          kOrder.m_sOrderName = "(rq)attr";
@@ -532,7 +518,7 @@ void CharacterProperty::RequestUpdateFromServer( string kData )
          kOrder.m_iCharacter = pkCP->m_iActiveCaracterObjectID;
 
          // use this useless variabel to send which version of the item this prop. has
-         kOrder.m_iUseLess = m_pkCharStats->m_pkContainer->m_uiVersion;
+         kOrder.m_iUseLess = m_pkCharStats->m_uiVersion;
 
          pkCP->AddOrder (kOrder);
       }
@@ -545,7 +531,7 @@ void CharacterProperty::RequestUpdateFromServer( string kData )
          kOrder.m_iCharacter = pkCP->m_iActiveCaracterObjectID;
 
          // use this useless variabel to send which version of the item this prop. has
-         kOrder.m_iUseLess = m_pkCharStats->m_pkContainer->m_uiVersion;
+         kOrder.m_iUseLess = m_pkCharStats->m_uiVersion;
 
          pkCP->AddOrder (kOrder);
       }
@@ -558,7 +544,7 @@ void CharacterProperty::RequestUpdateFromServer( string kData )
          kOrder.m_iCharacter = pkCP->m_iActiveCaracterObjectID;
 
          // use this useless variabel to send which version of the item this prop. has
-         kOrder.m_iUseLess = m_pkCharStats->m_pkContainer->m_uiVersion;
+         kOrder.m_iUseLess = m_pkCharStats->m_uiVersion;
 
          pkCP->AddOrder (kOrder);
       }
@@ -607,7 +593,7 @@ void CharacterProperty::AddSendsData(SendType kNewSendData)
 	m_kSends.push_back(kNewSendData);
 }
 
-// ------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------
 
 Property* Create_P_CharStats()
 {

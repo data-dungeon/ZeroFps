@@ -17,7 +17,6 @@ CharacterStats::CharacterStats( Entity *pkParent )
 	m_kRecalPos.Set(0,0,0);
 	
    m_uiVersion = 0;
-   m_pkContainer = 0;
 
    m_fHearing = 3;
    m_fVision = 3;
@@ -620,16 +619,6 @@ Entity* CharacterStats::UnEquip (string kSlot)
    }
 
    return 0;
-}
-
-// ---------------------------------------------------------------------------------------------
-
-void CharacterStats::MakeContainer()
-{
-   // if object already isn't a container
-   if ( !m_pkContainer )
-      m_pkContainer = new Container ( m_pkParent->GetProperty("P_CharStats") );
-
 }
 
 // ------------------------------------------------------------------------------------------

@@ -41,9 +41,7 @@ class MCOMMON_API P_Item: public Property
 
       void RequestUpdateFromServer (string kType);
 
-      void GetAllItemsInContainer( vector<Entity*>* pkContainerList );
-
-		void AddSendsData(SendType);
+ 		void AddSendsData(SendType);
 
       bool UseOn ( Entity *pkCharacterObject );
 

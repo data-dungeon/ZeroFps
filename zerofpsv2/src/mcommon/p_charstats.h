@@ -7,13 +7,13 @@
 #include "../zerofpsv2/basic/zfini.h"
 #include "rulesystem/sendtype.h"
 
-enum { eATTRIBUTES, eSKILLS, eDATA, eHP };
+enum { eATTRIBUTES, eSKILLS, eDATA, eHP, eCONT, eCONTID };
 
 class MCOMMON_API CharacterProperty: public Property 
 {
 	private:
 		CharacterStats *m_pkCharStats;
-
+      vector<Entity*>* m_pkInventoryList;
 
    public:
       list<SendType> m_kSends;       // the clients to recieve data from this property
@@ -47,8 +47,3 @@ class MCOMMON_API CharacterProperty: public Property
 MCOMMON_API Property* Create_P_CharStats();
 
 #endif
-
-
-
-
-

@@ -177,6 +177,7 @@ void MistServer::RegisterPropertys()
    pkPropertyFactory->Register("P_Item", Create_P_Item);
    pkPropertyFactory->Register("P_Spell", Create_P_Spell);
    pkPropertyFactory->Register("P_AI", Create_P_AI);
+   pkPropertyFactory->Register("P_Container", Create_P_Container);
 }
 
 
@@ -1390,40 +1391,24 @@ void MistServer::HandleOrders()
       {
    		Entity* pkObject = pkObjectMan->GetObjectByNetWorkID(order->m_iObjectID);
          
-         
          if ( pkObject )
          {
 
-            P_Item *pkItProp = (P_Item*) pkObject->GetProperty("P_Item");
-            CharacterProperty *pkChar = (CharacterProperty*) pkObject->GetProperty("P_CharStats");
+            P_Container* pkC = (P_Container*) pkObject->GetProperty("P_Container");
 
-            // if item wanted updated container
-            if ( pkItProp )
+            if ( pkC )
             {
                // check versions...
-               if ( pkItProp->m_pkItemStats->m_pkContainer->m_uiVersion != order->m_iUseLess )	//dvoid was here to
+               if ( pkC->m_uiVersion != order->m_iUseLess )
                {
                   SendType kSend;
                   kSend.m_iClientID = order->m_iClientID;
-                  kSend.m_kSendType = "container";
-                  pkItProp->AddSendsData ( kSend );
+                  kSend.m_kSendType = "all";
+                  pkC->AddSendsData ( kSend );
                }
-            }
-            /*
-            // if characters wanter updated container
-            else if ( pkChar )
-            {
-               // check versions...
-               if ( pkChar->GetCharStats()->m_pkContainer->m_uiVersion != order->m_iUseLess )  //and here =D
-               {
-                  SendType kSend;
-                  kSend.m_iClientID = order->m_iClientID;
-                  kSend.m_kSendType = "container";
-                  pkItProp->AddSendsData ( kSend );
-               }
-            }*/
+            }            
             else
-               cout << "Error! Non-P_Item_Object requested for updated containerinfo!" << endl;
+               cout << "Error! Non-P_Container requested for updated containerinfo!" << endl;
          }
 
       }
@@ -1521,8 +1506,8 @@ void MistServer::HandleOrders()
 
          pkEntity->SetWorldPosV ( pkPlayer->GetWorldPosV() );
 
-         ((P_Item*)pkEntity->GetProperty("P_Item"))->m_pkItemStats->
-            m_pkIsInContainer->RemoveObject( order->m_iObjectID );
+         //((P_Item*)pkEntity->GetProperty("P_Item"))->m_pkItemStats->
+         //   m_pkIsInContainer->RemoveObject( order->m_iObjectID );
       }  
 		
 		//normal orders

@@ -4,6 +4,7 @@
 #include "rulesystem/item/itemstats.h"
 #include "p_ai.h"
 #include "p_charstats.h"
+#include "p_container.h"
 #include "p_item.h"
 #include "p_spell.h"
 #include "../zerofpsv2/engine_systems/propertys/p_mad.h"
@@ -116,7 +117,6 @@ void MistLandLua::Init(EntityManager* pkObjMan,ZFScriptSystem* pkScript)
    pkScript->ExposeFunction("SetIcon",			         MistLandLua::SetIconLua);
    pkScript->ExposeFunction("UsesSkill",			      MistLandLua::UsesSkillLua);
 	pkScript->ExposeFunction("SetEquipmentCategory",	MistLandLua::SetEquipmentCategoryLua);
-	pkScript->ExposeFunction("RegisterAsContainer",		MistLandLua::RegisterAsContainerLua);
 
    pkScript->ExposeFunction("AddBeforeItemName",		MistLandLua::AddBeforeItemNameLua);
    pkScript->ExposeFunction("AddAfterItemName",	      MistLandLua::AddAfterItemNameLua);
@@ -610,6 +610,7 @@ int MistLandLua::SetVelToLua(lua_State* pkLua)
 		return 0;
 	}
 */	
+   return 0;
 }
 
 int MistLandLua::MakePathFindLua(lua_State* pkLua)
@@ -1660,32 +1661,6 @@ int MistLandLua::SetEquipmentCategoryLua (lua_State* pkLua)
  
       }
 
-   }
-
-   return 0;
-}
-
-
-// ----------------------------------------------------------------------------------------------
-
-int MistLandLua::RegisterAsContainerLua (lua_State* pkLua)
-{
-	if( g_pkScript->GetNumArgs(pkLua) == 0 ) 
-   {
-		Entity* pkObject = g_pkObjMan->GetObjectByNetWorkID(g_iCurrentObjectID);
-
-	   if (pkObject)
-		{
-     		char	acCategory[75];
-			g_pkScript->GetArgString(pkLua, 0, acCategory);
-
-  			P_Item* pkIP = (P_Item*)pkObject->GetProperty("P_Item");
-
-         if ( pkIP )
-				pkIP->m_pkItemStats->MakeContainer();
-         else
-            cout << "Warning! Tried to use a item function on a non-item object!" << endl;
-      }
    }
 
    return 0;
@@ -2849,26 +2824,12 @@ int MistLandLua::SetContainerSizeLua (lua_State* pkLua)
 
       Entity* pkEntity = g_pkObjMan->GetObjectByNetWorkID(g_iCurrentObjectID);
 
-  		CharacterProperty* pkCP = (CharacterProperty*)pkEntity->GetProperty("P_CharStats");
-      P_Item* pkIP = (P_Item*)pkEntity->GetProperty("P_Item");
+  		P_Container* pkC = (P_Container*)pkEntity->GetProperty("P_Container");
 
-     /* if ( pkCP )
-      {
-         pkCP->GetCharStats()->MakeContainer();
-
-         pkCP->GetCharStats()->m_pkContainer->m_iCapacity = dSize;
-      }*/
-      if ( pkIP )
-      {
-         pkIP->m_pkItemStats->MakeContainer();
-
-         pkIP->m_pkItemStats->m_pkContainer->m_iCapacity = dSize;
-
-         cout << "Changed size to:" << pkIP->m_pkItemStats->m_pkContainer->m_iCapacity << endl;
-      }
-      
-      if ( !pkCP && !pkIP )
-         cout << "Warning! Tried to set container capacity on a non char. or item object!" << endl;
+      if ( pkC )
+         pkC->m_iCapacity = dSize;
+      else      
+         cout << "Warning! Tried to set container capacity on a non-container object!" << endl;
  }
 
    return 0;
@@ -2896,15 +2857,15 @@ int MistLandLua::PutInContainerLua (lua_State* pkLua)
       Entity* pkItem = g_pkObjMan->GetObjectByNetWorkID(dObject);
       Entity* pkContObj = g_pkObjMan->GetObjectByNetWorkID(dContainer);
       
-      // check if the object is a item, and the other object really is (has) a container
+      // check if the object is a item, and the other object is a container
       P_Item* pkItemIP = (P_Item*)pkItem->GetProperty("P_Item");
-      P_Item* pkContIP = (P_Item*)pkContObj->GetProperty("P_Item");
+      P_Container* pkCont = (P_Container*)pkContObj->GetProperty("P_Container");
 
-      if ( pkItemIP && pkContIP )
+      if ( pkItemIP && pkCont )
       {
          // check if the container object has a container
-         if ( pkContIP->m_pkItemStats->m_pkContainer )
-            pkContIP->m_pkItemStats->m_pkContainer->AddObject ( dObject );
+         if ( pkCont )
+            pkCont->AddObject ( dObject );
          else
             cout << "Warning! Tried to put a item into a non-container object!" << endl;
       }
@@ -2935,29 +2896,13 @@ int MistLandLua::GetPickedUpByLua (lua_State* pkLua)
       if(!pkCharObj)
       	return 0;
       
-      /*
+      // check if the object is a container
+      P_Container* pkC = (P_Container*)pkCharObj->GetProperty("P_Container");
 
-      // check if the object is a character
-      CharacterProperty* pkCP = (CharacterProperty*)pkCharObj->GetProperty("P_CharStats");
-
-      if ( pkCP )
-         // check if the container object has a container
-         if ( pkCP->GetCharStats()->m_pkContainer )
-            pkCP->GetCharStats()->m_pkContainer->AddObject ( g_iCurrentObjectID );
-         else
-            cout << "Warning! Tried to put a item into a non-container object!" << endl;
-      */
-      
-      P_Item* pkIP = (P_Item*)pkCharObj->GetProperty("P_Item");
-
-      if ( pkIP )
-      {
-         // check if the container object has a container
-         if ( pkIP->m_pkItemStats->m_pkContainer )
-            pkIP->m_pkItemStats->m_pkContainer->AddObject ( g_iCurrentObjectID );
-         else
-            cout << "Warning! Tried to put a item into a non-container object!" << endl;
-      }
+      if ( pkC )
+            pkC->AddObject ( g_iCurrentObjectID );
+      else
+         cout << "Warning! Tried to add a object to a non-container object!! (GetPickedUpByLua)" << endl;
    }
 
    return 0;
@@ -3487,6 +3432,8 @@ int MistLandLua::SetAIIsPlayerLua(lua_State* pkLua)
       pkAI->SetAIIsPlayer ( bool(dTemp) );
 
    }
+
+   return 0;
 }
 
 // -----------------------------------------------------------------------------------------------

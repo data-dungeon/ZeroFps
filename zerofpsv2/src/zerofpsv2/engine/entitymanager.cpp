@@ -790,7 +790,7 @@ void EntityManager::UpdateZoneList(NetPacket* pkNetPacket)
 			//if no staticentity was found, complain
 			if(!pkStaticEntity) {
 				GetStaticData(pkZone->iNetWorkID);
-				//printf("Need Static Ents for Zone - %d\n", pkZone->iNetWorkID);
+//				printf("Need Static Ents for Zone - %d\n", pkZone->iNetWorkID);
 				return;
 				}
 		}

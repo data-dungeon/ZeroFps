@@ -5,6 +5,7 @@
 #include "inventorydlg.h"
 #include "../mcommon/p_clientcontrol.h"
 #include "../mcommon/p_item.h"
+#include "../mcommon/p_container.h"
 #include "../zerofpsv2/basic/zfsystem.h"
 #include "../zerofpsv2/engine/entitymanager.h"
 
@@ -60,9 +61,17 @@ bool InventoryDlg::AddItem(Entity* pkEntity)
 	}
 
    P_Item* pkItemProp = (P_Item*)pkEntity->GetProperty ("P_Item"); 
+   P_Container* pkC= (P_Container*)pkEntity->GetProperty ("P_Container"); 
+
+   int iContID;
+
+   if ( pkC )
+      iContID = pkC->m_iContainerID;
+   else
+      iContID = -1;
    			
 	AddSlot(pkItemProp->m_pkItemStats->m_szPic, sqr, CONTAINTER_SLOTS, 
-		pkItemProp->m_pkItemStats, pkEntity->iNetWorkID, m_iCurrentContainer);
+		pkItemProp->m_pkItemStats, iContID, pkEntity->iNetWorkID, m_iCurrentContainer);
 
 	ScrollItems(m_iCurrentScrollPos+1);
 	ScrollItems(m_iCurrentScrollPos-1);
@@ -95,7 +104,7 @@ bool InventoryDlg::AddItems(vector<Entity*> &vkItems)
 			if(pkItemStats)
 			{
 				printf("\tpkItemStats->m_iCurrentContainer = %i\n", pkItemStats->m_iCurrentContainer);
-				printf("\tpkItemStats->m_iContainerID = %i\n", pkItemStats->m_iContainerID);
+				//printf("\tpkItemStats->m_iContainerID = %i\n", pkItemStats->m_iContainerID); ZEROM
 				printf("\tpkItemStats->m_szPic = %s\n", pkItemStats->m_szPic);
 				bHavePointer=true;
 			}
@@ -122,6 +131,14 @@ bool InventoryDlg::AddItems(vector<Entity*> &vkItems)
 		}
 
 		P_Item* pkItemProp = (P_Item*)(*itNewItem)->GetProperty ("P_Item");
+      P_Container* pkC = (P_Container*)(*itNewItem)->GetProperty("P_Container");
+
+      int iContID;
+
+      if ( pkC )
+         iContID = pkC->m_iContainerID;
+      else
+         iContID = -1;
 
 		bool bAlreadyExist = false;
 
@@ -143,7 +160,7 @@ bool InventoryDlg::AddItems(vector<Entity*> &vkItems)
 		if(bAlreadyExist == false)
 		{
 			AddSlot(pkItemProp->m_pkItemStats->m_szPic, sqr, CONTAINTER_SLOTS, 
-				pkItemProp->m_pkItemStats, (*itNewItem)->iNetWorkID, m_iCurrentContainer);
+				pkItemProp->m_pkItemStats, iContID, (*itNewItem)->iNetWorkID, m_iCurrentContainer);
 		}
 		else
 		{
@@ -181,6 +198,7 @@ void InventoryDlg::OnClick(int x, int y, bool bMouseDown, bool bLeftButton)
 				ItemStats* pkStats = pkSlot->m_pkItemStats;
 				SlotType prev_type = pkSlot->m_eType;
             int iNetworkID = pkSlot->m_iNetWorkID;
+            int iContID = pkSlot->m_iContainerID;
 				
 				if(RemoveSlot(pkSlot))
 				{
@@ -190,7 +208,7 @@ void InventoryDlg::OnClick(int x, int y, bool bMouseDown, bool bLeftButton)
 						sqr.y = -y;					
 					}
 
-					AddSlot(szPic, sqr, UNDER_MOUSE, pkStats, iNetworkID, m_iCurrentContainer);
+					AddSlot(szPic, sqr, UNDER_MOUSE, pkStats, iContID, iNetworkID, m_iCurrentContainer);
 
 					m_pkAudioSys->StartSound("/data/sound/open_window.wav",
 						m_pkAudioSys->GetListnerPos(),m_pkAudioSys->GetListnerDir(),false);
@@ -206,7 +224,7 @@ void InventoryDlg::OnClick(int x, int y, bool bMouseDown, bool bLeftButton)
 			{
 				if(!m_kDragSlots.empty())
 				{
-					int iContainerUnderCursor = pkSlot->m_pkItemStats->GetContainerID();
+					int iContainerUnderCursor = pkSlot->m_iContainerID;
 
 					// Släppa föremål i en annan container.
 					if(iContainerUnderCursor != -1)
@@ -230,7 +248,7 @@ void InventoryDlg::OnClick(int x, int y, bool bMouseDown, bool bLeftButton)
 			Slot kSlotToAdd = m_kDragSlots.back();
 
 			// det går inte att placera en container i sig själv
-			if(kSlotToAdd.m_pkItemStats->GetContainerID() == m_iCurrentContainer)
+			if(kSlotToAdd.m_iContainerID == m_iCurrentContainer)
 				sqr = Point(-1,-1);
 
 			if(sqr == Point(-1,-1))
@@ -279,7 +297,7 @@ void InventoryDlg::OnClick(int x, int y, bool bMouseDown, bool bLeftButton)
 					type = CONTAINTER_SLOTS;					
 				}
 		
-				AddSlot(szPic, sqr, type, pkStats, kSlotToAdd.m_iNetWorkID, m_iCurrentContainer);
+				AddSlot(szPic, sqr, type, pkStats, kSlotToAdd.m_iNetWorkID, kSlotToAdd.m_iContainerID, m_iCurrentContainer);
 
 				if(m_kDragSlots.empty())
 					m_pkGui->KillWndCapture(); // remove capture
@@ -312,7 +330,7 @@ void InventoryDlg::OnDClick(int x, int y, bool bLeftButton)
 
 		if(pkSlot)
 		{
-			int new_container = pkSlot->m_pkItemStats->GetContainerID();
+			int new_container = pkSlot->m_iContainerID;
 
 			if(new_container != -1 && m_kContainerStack.top() != new_container)
 			{
@@ -633,7 +651,7 @@ bool InventoryDlg::GetFreeSlotPos(Point& refSqr, int iContainer)
 }
 
 void InventoryDlg::AddSlot(const char *szPic, Point sqr, 
-									SlotType eType, ItemStats* pkItemStats, 
+									SlotType eType, ItemStats* pkItemStats, int iContainerID,
 									int iNetworkID, int iContainer)
 {   
 	int sx, sy;
@@ -819,7 +837,7 @@ void InventoryDlg::DropItems()
 				Slot s = (*it);
 
 				AddSlot( s.m_szPic, sqr, CONTAINTER_SLOTS, 
-					s.m_pkItemStats, s.m_iNetWorkID, iNewContainer);
+					s.m_pkItemStats, s.m_iNetWorkID, s.m_iContainerID, iNewContainer);
 			}
 		}
 		else
@@ -866,7 +884,7 @@ void InventoryDlg::DropItemsToContainer(int iContainer)
 			Slot s = (*it);
 
 			AddSlot( s.m_szPic, sqr, CONTAINTER_SLOTS, 
-				s.m_pkItemStats, s.m_iNetWorkID, iNewContainer);
+				s.m_pkItemStats, s.m_iContainerID, s.m_iNetWorkID, iNewContainer);
 
 			m_pkGui->UnregisterWindow((*it).m_pkLabel);
 			kRemoveList.push_back(it);

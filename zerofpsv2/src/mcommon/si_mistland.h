@@ -126,7 +126,6 @@ namespace MistLandLua
 
    int MCOMMON_API SetIconLua (lua_State* pkLua);
 	int MCOMMON_API SetEquipmentCategoryLua(lua_State* pkLua);
-	int MCOMMON_API RegisterAsContainerLua(lua_State* pkLua);
 
    int MCOMMON_API AddBeforeItemNameLua (lua_State* pkLua);
    int MCOMMON_API AddAfterItemNameLua (lua_State* pkLua);

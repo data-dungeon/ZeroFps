@@ -8,7 +8,6 @@
 #include "../rulesystem.h"
 #include "statcounter.h"
 #include "../fightstats.h"
-#include "../container.h"
 #include "../../p_serverinfo.h"
 
 #include <string>
@@ -74,8 +73,6 @@ private:
       m_fReloadTimer; // how long time has passed before last used action
 
 public:
-   Container* m_pkContainer;
-
    float
       m_fHearing,     // How good the character can hear
       m_fVision,      // How good the character can see
@@ -170,8 +167,6 @@ public:
    bool Equip ( Entity *pkObject, string kSlot );
    bool Equip ( Entity *pkObject, int iSlot );
    Entity* UnEquip ( string kSlot );
-
-   void MakeContainer();
 
    void GetSkills (map<string, StatDescriber>& pkSkillList)      { pkSkillList = m_kSkills; }
    void GetAttributes (map<string, StatDescriber>& pkAttrList)   { pkAttrList = m_kAttributes; }
