@@ -16,7 +16,7 @@ P_CharacterControl::P_CharacterControl()
 	m_fSoundRunDelay = 	0;
 	
 	m_fSpeed = 				40.0;
-	m_fJumpForce = 		7.0; 	
+	m_fJumpForce = 		5.0; 	
 	m_bHaveJumped = 		false;	
 	m_iDirection = 		eMOVE_NONE;
 		
