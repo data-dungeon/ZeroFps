@@ -603,7 +603,16 @@ void Entity::PackTo(NetPacket* pkNetPacket, int iConnectionID)
 		}
 	}
 	
+	if(GetNetUpdateFlag(iConnectionID,NETUPDATEFLAG_RELPOS) || GetNetUpdateFlag(iConnectionID,NETUPDATEFLAG_INTERPOLATE))
+	{
+		unsigned char ucEntityFlags = 0;
+      if(m_bRelativeOri)	ucEntityFlags |= 1;
+      if(m_bInterpolate)	ucEntityFlags |= 2;
+		pkNetPacket->Write((unsigned char) ucEntityFlags );
+	}
+
 	//send rel position flag
+	/*
 	if(GetNetUpdateFlag(iConnectionID,NETUPDATEFLAG_RELPOS))
 	{
 		SetNetUpdateFlag(iConnectionID,NETUPDATEFLAG_RELPOS,false);
@@ -615,7 +624,7 @@ void Entity::PackTo(NetPacket* pkNetPacket, int iConnectionID)
 	{
 		SetNetUpdateFlag(iConnectionID,NETUPDATEFLAG_INTERPOLATE,false);
 		pkNetPacket->Write((int) m_bInterpolate );
-	}
+	}*/
 
 
 	//send position
@@ -640,11 +649,11 @@ void Entity::PackTo(NetPacket* pkNetPacket, int iConnectionID)
 	}
 	
 	//send acceleration
-	if(GetNetUpdateFlag(iConnectionID,NETUPDATEFLAG_ACC))	
+	/*if(GetNetUpdateFlag(iConnectionID,NETUPDATEFLAG_ACC))	
 	{
 		SetNetUpdateFlag(iConnectionID,NETUPDATEFLAG_ACC,false);	
 		pkNetPacket->Write(m_kAcc);
-	}
+	}*/
 
 	
 	//send radius
@@ -747,7 +756,16 @@ void Entity::PackFrom(NetPacket* pkNetPacket, int iConnectionID)
 		}
 	}	
 	
-	//get rel position flag
+	if(GetNetUpdateFlag(0,NETUPDATEFLAG_RELPOS) || GetNetUpdateFlag(0,NETUPDATEFLAG_INTERPOLATE))
+	{
+		unsigned char ucEntityFlags = 0;
+		pkNetPacket->Read((unsigned char&) ucEntityFlags );
+		if(GetNetUpdateFlag(0,NETUPDATEFLAG_RELPOS))			m_bRelativeOri = ucEntityFlags & 1;
+		if(GetNetUpdateFlag(0,NETUPDATEFLAG_INTERPOLATE))	m_bInterpolate = ucEntityFlags & 2;
+
+	}
+	
+/*	//get rel position flag
 	if(GetNetUpdateFlag(0, NETUPDATEFLAG_RELPOS))
 	{
 		pkNetPacket->Read((int&) m_bRelativeOri );
@@ -759,7 +777,7 @@ void Entity::PackFrom(NetPacket* pkNetPacket, int iConnectionID)
 	{
 		pkNetPacket->Read((int&) m_bInterpolate );
 		LOGSIZE("Entity::Interpolate", 4);
-	}
+	}*/
 
 	//get position
 	if(GetNetUpdateFlag(0,NETUPDATEFLAG_POS))
@@ -789,13 +807,13 @@ void Entity::PackFrom(NetPacket* pkNetPacket, int iConnectionID)
 	}
 	
 	//get acceleration	
-	if(GetNetUpdateFlag(0,NETUPDATEFLAG_ACC))
+	/*if(GetNetUpdateFlag(0,NETUPDATEFLAG_ACC))
 	{
 		Vector3 kAcc;
 		pkNetPacket->Read(kAcc);
 		SetAcc(kAcc);
 		LOGSIZE("Entity::Acceleration", sizeof(kAcc));
-	}	
+	}*/	
 	
 	//get radius
 	if(GetNetUpdateFlag(0,NETUPDATEFLAG_RADIUS))	
