@@ -33,8 +33,8 @@ Headerfiler
 		klassen ska placeras i källkodsfilen.
 
 	Headerfiler utanför den lokala katalogen refererar man till med
-	sökvägar relativt källkodsroten, dvs <code>#include "res/res.h"</code>.
-	<code>/</code> används som sökvägsseparatortecken.
+	sökvägar relativt källkodsroten, dvs #include "res/res.h".
+	/ används som sökvägsseparatortecken.
 
 	Layout är samma som källkodsfiler.
 
