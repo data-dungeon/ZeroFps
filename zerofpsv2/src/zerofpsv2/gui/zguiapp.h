@@ -73,6 +73,7 @@ public:
 	void CloseWindow(char* szResName);
 	ZGuiWnd* GetWnd(int iID);
 	ZGuiWnd* GetWnd(string strName);
+	ZGuiSkin* GetSkin(string strName);
 
 	typedef bool (*callback)(ZGuiWnd* pkWnd, unsigned int uiMessage, int iNumParams, void *pParams);
 
@@ -93,7 +94,7 @@ private:
 	GuiType GetType(ZGuiWnd* pkWnd);
 	int GetTexID(char* szFile);
 	void InitTextures(ZFScriptSystem* pkScript);
-	ZGuiSkin* GetSkin(string strName);
+	
 
 	ZGui* m_pkGui;
 	ZGuiResourceManager* m_pkResMan;

@@ -623,6 +623,14 @@ void MistClient::OnCommand(int iID, ZGuiWnd *pkMainWnd)
 
 			// Add server names
 			ClearListbox("IPNumbersComboBox");
+
+			int iNumRows = MistLandLua::g_kServerList.size();
+			
+			if(iNumRows > 10) 
+				iNumRows = 10;
+
+			static_cast<ZGuiCombobox*>(GetWnd("IPNumbersComboBox"))->SetNumVisibleRows(iNumRows);
+			
 			map<string,string>::iterator itIPs = MistLandLua::g_kServerList.begin();
 			for( ; itIPs != MistLandLua::g_kServerList.end(); itIPs++)
 			{
@@ -637,9 +645,9 @@ void MistClient::OnCommand(int iID, ZGuiWnd *pkMainWnd)
 					MistLandLua::g_kServerList.find(MistLandLua::g_kDefServer);
 				if(itDef != MistLandLua::g_kServerList.end())
 				{
+					ZGuiCombobox* pkCBox = static_cast<ZGuiCombobox*>(GetWnd("IPNumbersComboBox"));
 					GetWnd("IPNumberEditbox")->SetText((char*) itDef->second.c_str());
-					static_cast<ZGuiCombobox*>(GetWnd("IPNumbersComboBox"))->SetLabelText(
-						(char*) itDef->first.c_str());
+					pkCBox->SetLabelText((char*) itDef->first.c_str());
 				}
 			}
 
@@ -968,25 +976,6 @@ void MistClient::CreateGuiInterface()
 	GetWnd("ScrollPortraitsDown")->Hide();
 
 	static_cast<ZGuiTextbox*>(GetWnd("InfoBox"))->SetReadOnly(true); 
-
-	string szText = string("The Alchemist\n\nIt was in one of the vast and gloomy chambers of this remaining tower that I, ") + 
-		string("Antoine, last of the unhappy and accursed Counts de C-, first saw the light of day, ninety long ") +
-		string("years ago. Within these walls and amongst the dark and shadowy forests, the wild ravines and grottos ") +
-		string("of the hillside below, were spent the first years of my troubled life. My parents I never knew. My ") +
-		string("father had been killed at the age of thirty-two, a month before I was born, by the fall of a stone ") +
-		string("somehow dislodged from one of the deserted parapets of the castle. And my mother having died at my ") +
-		string("birth, my care and education devolved solely upon one remaining servitor, an old and trusted man of ") +
-		string("considerable intelligence, whose name I remember as Pierre. I was an only child and the lack of ") +
-		string("companionship which this fact entailed upon me was augmented by the strange care exercised by my ") +
-		string("aged guardian, in excluding me from the society of the peasant children whose abodes were scattered ") +
-		string("here and there upon the plains that surround the base of the hill. At that time, Pierre said that ") +
-		string("this restriction was imposed upon me because my noble birth placed me above association with such ") +
-		string("plebeian company. Now I know tht its real object was to keep from my ears the idle tales of the dread ") +
-		string("curse upon our line that were nightly told and magnified by the simple tenantry as they conversed in ") +
-		string("hushed accents in the glow of their cottage hearths. ");
-
-	PrintInfoBox(szText.c_str());
-
 	GetWnd("InfoBox")->GetSkin()->m_bTileBkSkin = true; 
 
 	ZGuiFont* pkFont = new ZGuiFont(16,16,0,0);

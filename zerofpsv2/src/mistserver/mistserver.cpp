@@ -13,7 +13,7 @@
 #include "../zerofpsv2/engine/p_pfmesh.h"
 #include "../zerofpsv2/gui/zgui.h"
 #include "../zerofpsv2/engine_systems/script_interfaces/si_gui.h"
-
+#include "../zerofpsv2/basic/zguifont.h"
 #include <set> 
 #include <algorithm>
 
@@ -24,14 +24,14 @@ static bool GUIPROC( ZGuiWnd* win, unsigned int msg, int numparms, void *params 
 	switch(msg)
 	{
 	case ZGM_COMMAND:
-		printf("ZGui::OnCommand()\n");
 		g_kMistServer.OnCommand(((int*)params)[0], win);
 		break;
 
 	case ZGM_SELECTLISTITEM:
 		g_kMistServer.OnClickListbox(
-			g_kMistServer.GetWnd(((int*)params)[0]), 
-			((int*)params)[1]);
+			//g_kMistServer.GetWnd(((int*)params)[0]), 
+			((int*)params)[0],
+			((int*)params)[1],win);
 		break;
 
 	case ZGM_SELECTTREEITEM:
@@ -134,6 +134,8 @@ void MistServer::Init()
 	SDL_ShowCursor(SDL_DISABLE);
 
 	SDL_WM_SetCaption("MistServer", NULL);
+
+	CreateMenu("../data/script/gui/menu.txt");
 }
 
 void MistServer::RegisterResources()
@@ -164,8 +166,6 @@ void MistServer::OnIdle()
 	{
 		Input();	
 	}
-
-
 
  	pkFps->UpdateCamera(); 		
 
@@ -794,64 +794,78 @@ void MistServer::OnCommand(int iID, ZGuiWnd *pkMainWnd)
 
 	if(pkWndClicked)
 	{
-		string strName = pkWndClicked->GetName();
+		string strMainWnd = pkMainWnd->GetName();
+
+		string strWndClicked = pkWndClicked->GetName();
 
 		string strParent = "null";
 
 		if(pkWndClicked->GetParent())
 			strParent = pkWndClicked->GetParent()->GetName();
 
-		printf("strName=%s, strName->parent=%s\n", strName.c_str(), strParent.c_str());
-
-		if(strName == "OpenWorkTabButton")
+		if(strMainWnd == "MainWnd")
 		{
-			bool bExist = true;
-
-			if(GetWnd("ZonePage") == NULL)
-				bExist = false;
-
-			pkScript->Call(m_pkScriptResHandle, "OpenWorkPad", 0, 0);
-			
-			if(!bExist)
+			if(strWndClicked == "OpenWorkTabButton")
 			{
-				BuildFileTree("ZoneModelTree", "data/mad/zones");
-				BuildFileTree("ObjectTree", "data/script/objects");
-				//GetWnd("WorkTabWnd")->SetMoveArea(Rect(0,0,800,600), true);
+				bool bExist = true;
+
+				if(GetWnd("ZonePage") == NULL)
+					bExist = false;
+
+				pkScript->Call(m_pkScriptResHandle, "OpenWorkPad", 0, 0);
+				
+				if(!bExist)
+				{
+					BuildFileTree("ZoneModelTree", "data/mad/zones");
+					BuildFileTree("ObjectTree", "data/script/objects");
+					//GetWnd("WorkTabWnd")->SetMoveArea(Rect(0,0,800,600), true);
+				}
+			}
+			else
+			if(strWndClicked == "ToogleLight")
+			{
+				ToogleLight( static_cast<ZGuiCheckbox*>(pkWndClicked)->IsChecked() );
+			}
+			else
+			if(strWndClicked == "MainMenu")
+			{
+				printf("oooooo\n");
 			}
 		}
 		else
-		if(strName == "RotateZoneModellButton")
+		if(strMainWnd == "ZonePage")
 		{
-			RotateActiveZoneObject();
-		}
-		else
-		if(strName == "ToogleLight")
-		{
-			ToogleLight( static_cast<ZGuiCheckbox*>(pkWndClicked)->IsChecked() );
-		}
-		else
-		if(strName == "DeleteZoneButton")
-		{
-			int id = pkObjectMan->GetZoneIndex(m_kZoneMarkerPos,-1,false);
-			pkObjectMan->DeleteZone(id);
-		}
-		else
-		if(strName == "DeleteObjectButton")
-		{		
-			Entity* pkObj = pkObjectMan->GetObjectByNetWorkID(m_iCurrentObject);		
-			if(pkObj) {
-				pkObjectMan->Delete(pkObj);
-				m_iCurrentObject = -1;
+			if(strWndClicked == "RotateZoneModellButton")
+			{
+				RotateActiveZoneObject();
+			}
+			else
+			if(strWndClicked == "DeleteZoneButton")
+			{
+				int id = pkObjectMan->GetZoneIndex(m_kZoneMarkerPos,-1,false);
+				pkObjectMan->DeleteZone(id);
 			}
 		}
 		else
-		if(strName == "PlaceongroundButton")
+		if(strMainWnd == "ObjectPage")
 		{
-			Entity* pkObj = pkObjectMan->GetObjectByNetWorkID(m_iCurrentObject);		
-			if(pkObj) {
-				Vector3 pos = pkObj->GetLocalPosV(); pos.y = 0.0;
-				pkObj->SetLocalPosV(pos); 
-				m_iCurrentObject = -1;
+			if(strWndClicked == "DeleteObjectButton")
+			{		
+				Entity* pkObj = pkObjectMan->GetObjectByNetWorkID(m_iCurrentObject);		
+				if(pkObj) {
+					pkObjectMan->Delete(pkObj);
+					m_iCurrentObject = -1;
+				}
+			}
+			else
+			if(strWndClicked == "PlaceongroundButton")
+			{
+				Entity* pkObj = pkObjectMan->GetObjectByNetWorkID(m_iCurrentObject);		
+				if(pkObj) {
+					Vector3 pos = pkObj->GetLocalPosV(); pos.y = 0.0;
+					pkObj->SetLocalPosV(pos); 
+					m_iCurrentObject = -1;
+				}
 			}
 		}
 
@@ -859,21 +873,62 @@ void MistServer::OnCommand(int iID, ZGuiWnd *pkMainWnd)
 
 }
 
-void MistServer::OnClickListbox(ZGuiWnd *pkListBox, int iListboxIndex)
+void MistServer::OnClickListbox(int iListBoxID, int iListboxIndex, ZGuiWnd* pkMain)
 {
-	if(pkListBox == GetWnd("EnviromentPresetList"))
-	{
-		char *szPreset = static_cast<ZGuiListbox*>(pkListBox)->GetSelItem()->GetText();
+	if(pkMain == NULL)
+		return;
 
-		if(szPreset)
+	string strMainWndName, strListBox;
+
+	ZGuiWnd* pkListBox = NULL;
+
+	list<ZGuiWnd*> kChilds;
+	pkMain->GetChildrens(kChilds); 
+
+	list<ZGuiWnd*>::iterator it = kChilds.begin();
+	for( ; it != kChilds.end(); it++)
+	{
+		if((*it)->GetID() == (unsigned int) iListBoxID)
 		{
-			string szFull = "data/enviroments/" + string(szPreset);
-			printf("setting enviroment %s\n", szFull.c_str());
-			SetZoneEnviroment( szFull.c_str()  );  
+			pkListBox = (*it);
+			break;
+		}	 
+	}
+
+	strMainWndName = pkMain->GetName();
+
+	if(pkListBox != NULL)
+		strListBox = pkListBox->GetName();
+
+	if(strMainWndName == "EnviromentPage")
+	{
+		if(strListBox == "EnviromentPresetList")
+		{
+			char *szPreset = static_cast<ZGuiListbox*>(pkListBox)->GetSelItem()->GetText();
+
+			if(szPreset)
+			{
+				string szFull = "data/enviroments/" + string(szPreset);
+				printf("setting enviroment %s\n", szFull.c_str());
+				SetZoneEnviroment( szFull.c_str()  );  
+			}
+		}
+	}
+	else
+	if(strMainWndName == "MainMenu")
+	{
+		// Run Menu command
+		for(int i=0; i<m_uiNumMenuItems; i++)
+		{
+			if( m_pkMenuInfo[i].iIndex == iListboxIndex)
+			{
+				char* cmd = m_pkMenuInfo[i].szCommando;
+				pkFps->m_pkConsole->Execute(cmd);
+				break;
+			}
 		}
 	}
 }
-
 
 void MistServer::OnClickTreeItem(char *szTreeBox, char *szParentNodeText, 
 											char *szClickNodeText, bool bHaveChilds)
@@ -1260,4 +1315,122 @@ char* MistServer::GetSelEnviromentString()
 	}
 
 	return NULL;
+}
+
+bool MistServer::CreateMenu(char* szFileName)
+{
+	ZGuiFont* pkFont = pkGui->GetBitmapFont(ZG_DEFAULT_GUI_FONT);
+	if(pkFont == NULL)
+	{
+		printf("Failed to find font for menu!\n");
+		return false;
+	}
+
+	CreateWnd(Wnd, "MainMenu", "MainWnd", "", 0,0, 1024, 20, 0);
+
+	ZGuiWnd* pkMenu = GetWnd("MainMenu");
+	pkMenu->SetSkin(GetSkin("NullSkin"));
+
+	if(!pkIni->Open(szFileName, false))
+	{
+		cout << "Failed to load ini file for menu!\n" << endl;
+		return false;
+	}
+
+	vector<string> akSections;
+	pkIni->GetSectionNames(akSections);
+
+	unsigned int uiNumSections = akSections.size();
+	
+	// No items in file.
+	if(uiNumSections < 1)
+		return true;
+
+	Rect rcMenu;
+	unsigned int i=0, iMenuOffset=0, iMenuWidth=0, iMenuIDCounter=45781;
+	char szParentName[50];
+
+	// Skapa alla parents
+	for(i=0; i<uiNumSections; i++)
+	{
+		char* parent = pkIni->GetValue(akSections[i].c_str(), "Parent");
+		if(parent == NULL)
+			continue;
+
+		if(strcmp(parent, "NULL") == 0)
+		{
+			char szTitle[50];
+			sprintf(szTitle, " %s", pkIni->GetValue(akSections[i].c_str(), "Title"));
+			iMenuWidth = pkFont->GetLength(szTitle) + 6; // move rc right
+
+			rcMenu = Rect(iMenuOffset,0,iMenuOffset+iMenuWidth,20);
+
+			CreateWnd(Combobox, (char*)akSections[i].c_str(), "MainMenu", szTitle,
+				rcMenu.Left, rcMenu.Top, rcMenu.Width(), rcMenu.Height(), 0);
+
+			ZGuiCombobox* pkMenuCBox = static_cast<ZGuiCombobox*>(GetWnd(
+				(char*)akSections[i].c_str()));
+
+			pkMenuCBox->SetGUI(pkGui);
+			pkMenuCBox->SetLabelText(szTitle);
+			pkMenuCBox->SetNumVisibleRows(1);
+			pkMenuCBox->IsMenu(true);
+			
+			iMenuOffset += iMenuWidth;
+			rcMenu = rcMenu.Move(iMenuOffset,0);
+		}
+	}
+
+	ZGuiWnd* pkParent;
+	vector<MENU_INFO> kTempVector;
+
+	// Skapa alla childrens.
+	char szCommando[512];
+	int item_counter = 0;
+	for(i=0; i<uiNumSections; i++)
+	{
+		char* parent = pkIni->GetValue(akSections[i].c_str(), "Parent");
+		if(parent == NULL)
+			continue;
+
+		strcpy(szParentName, parent);
+		if(strcmp(szParentName, "NULL") != 0)
+		{
+			pkParent = GetWnd(szParentName);
+
+			if(pkParent != NULL)
+			{
+				char szTitle[50];
+				sprintf(szTitle, " %s", pkIni->GetValue(akSections[i].c_str(), "Title"));
+				((ZGuiCombobox*) pkParent)->AddItem(szTitle, item_counter++);
+
+				MENU_INFO mi;
+				mi.cb = (ZGuiCombobox*) pkParent;
+				mi.iIndex = item_counter-1;
+				char* szCmd = pkIni->GetValue(akSections[i].c_str(), "Cmd");
+				if(szCmd != NULL)
+					strcpy(szCommando, szCmd);
+				else
+					strcpy(szCommando, "No commando!");
+
+				mi.szCommando = new char[strlen(szCommando)+1];
+				strcpy(mi.szCommando, szCommando);
+				kTempVector.push_back(mi);
+			}
+		}
+	}
+
+	// Copy from tempvektor.
+	m_uiNumMenuItems = kTempVector.size();
+	m_pkMenuInfo = new MENU_INFO[m_uiNumMenuItems];
+	for(i=0; i<(unsigned int) m_uiNumMenuItems; i++)
+	{
+		m_pkMenuInfo[i].cb = kTempVector[i].cb;
+		m_pkMenuInfo[i].iIndex = kTempVector[i].iIndex;
+		m_pkMenuInfo[i].szCommando = new char[strlen(kTempVector[i].szCommando)+1];
+		strcpy(m_pkMenuInfo[i].szCommando, kTempVector[i].szCommando);
+		delete[] kTempVector[i].szCommando;
+	}
+
+	return true;
 }

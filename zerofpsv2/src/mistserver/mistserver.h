@@ -32,6 +32,17 @@
 
 class MistServer :public Application , public ZGuiApp {
 	private:
+
+		struct MENU_INFO
+		{
+			ZGuiCombobox* cb;
+			int iIndex;
+			char* szCommando;
+		};
+
+		int m_uiNumMenuItems;
+		MENU_INFO* m_pkMenuInfo;
+
 		char* GetSelEnviromentString();
 
 		//console funktions
@@ -105,9 +116,11 @@ class MistServer :public Application , public ZGuiApp {
 
 			void PathTest();
 
+		bool CreateMenu(char* szFileName);
+
 	public:
 		void OnClickTabPage(ZGuiTabCtrl *pkTabCtrl, int iNewPage, int iPrevPage);
-		void OnClickListbox( ZGuiWnd* pkListBox, int iListboxIndex);
+		void OnClickListbox( int iListBoxID/*ZGuiWnd* pkListBox*/, int iListboxIndex, ZGuiWnd* pkMain);
 		void OnCommand(int iID, ZGuiWnd* pkMainWnd);
 		void OnClickTreeItem(char *szTreeBox, char *szParentNodeText, 
 			char *szClickNodeText, bool bHaveChilds);

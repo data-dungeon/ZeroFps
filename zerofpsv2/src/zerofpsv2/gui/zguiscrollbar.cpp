@@ -382,6 +382,11 @@ void ZGuiScrollbar::Resize(int iWidth, int iHeight, bool bChangeMoveArea)
 
 	ZGuiWnd::Resize(iWidth, iHeight, bChangeMoveArea);
 	m_pkThumbButton->SetMoveArea(GetScreenRect());
+
+	Rect rc = m_pkScrollDown->GetScreenRect();
+	rc.Top = GetScreenRect().Bottom - SCROLL_BUTTON_HEIGHT;
+
+	m_pkScrollDown->SetPos(rc.Left, rc.Top, true, true); 	
 }
 
 void ZGuiScrollbar::SetAutoHide(bool bActivate)

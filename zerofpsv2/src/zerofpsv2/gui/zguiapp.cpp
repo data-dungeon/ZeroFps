@@ -88,7 +88,7 @@ bool ZGuiApp::CreateWnd(GuiType eType, char* szResourceName, char* szText, ZGuiW
 
 	if(m_pkResMan->Wnd(szResourceName))
 	{
-		printf("ZGuiApp::CreateWnd: WindowID already exist\n");
+		//printf("ZGuiApp::CreateWnd: WindowID already exist\n");
 
 		ZGuiWnd* pkWnd = m_pkResMan->Wnd(szResourceName);
 

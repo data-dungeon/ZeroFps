@@ -285,8 +285,9 @@ void ZGuiCombobox::SetNumVisibleRows(unsigned short iNumVisibleRows)
 
 	ZGuiScrollbar* pkScrollbar = m_pkListbox->GetScrollbar();
 	if(pkScrollbar)
-		pkScrollbar->Resize(pkScrollbar->GetScreenRect().Width(),
-			iNewHeight);
+	{
+		pkScrollbar->Resize(pkScrollbar->GetScreenRect().Width(), iNewHeight);
+	}
 }
 
 ///////////////////////////////////////////////////////////////////////////////
