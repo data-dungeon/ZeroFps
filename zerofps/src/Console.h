@@ -22,6 +22,7 @@ class Console {
 //		Console(CmdSystem* pkCmd,Primitives* pkPrims);
 		Console(ZeroFps* pkEngine);
 		
+		void Print(char* aText);
 		
 		void Update(void);
 		void Draw(void);
