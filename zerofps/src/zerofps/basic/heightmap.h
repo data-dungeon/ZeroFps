@@ -54,6 +54,7 @@ class BASIC_API HeightMap {
 		void GenerateNormals();
 		void GenerateTextures();
 		float Height(float x,float z);
+		Vector3 Tilt(float x,float z);		
 		void SetTileSet(char* acTileSet);
 		void SetPosition(Vector3 kNewPos);
 

@@ -3,6 +3,7 @@
 
 #include "objects.pkg"
 #include "../basic/basic.pkg"
+#include "../render/render.pkg"
 #include <iostream>
 
 using namespace std;
@@ -10,10 +11,10 @@ using namespace std;
 class PlayerControlProperty: public Property {
 	private:
 		HeightMap *m_pkMap;
-		
+		Render *m_pkRender;
 
 	public:
-		PlayerControlProperty(HeightMap* pkHeightMap);
+		PlayerControlProperty(HeightMap* pkHeightMap,Render *pkRender);
 
 		void Update();
 

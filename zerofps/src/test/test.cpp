@@ -99,10 +99,9 @@ void Test::OnInit(void) {
 	
 	Object *kul=new Object;
 //	PlayerControlProperty *fuck=new PlayerControl;
-	kul->AddProperty(new PlayerControlProperty(test));
-	ModelProperty *model=new ModelProperty();
+	kul->AddProperty(new PlayerControlProperty(test,pkRender));	
+//	kul->AddProperty(new ModelProperty());
 	
-	kul->AddProperty(model);	
 	pkObjectMan->Add(kul);
 	
 }

@@ -64,6 +64,40 @@ float HeightMap::Height(float x,float z) {
 	
 }
 
+Vector3 HeightMap::Tilt(float x,float z) {
+	
+	x-=m_kPosition.x;
+	z-=m_kPosition.z;
+
+	if(x<0 || x>m_iHmSize || z<0 || z>m_iHmSize) 
+		return Vector3(1,1,1);
+		
+	int lx=int(x);
+	int lz=int(z);
+	float ox=x-float(lx);
+	float oz=z-float(lz);
+	float bp,xp,zp;
+	
+	return verts[lz*m_iHmSize+lx].normal;
+	
+	/*
+	float ry=(1.0+ox*-1.0);
+	if(oz>ry){
+		v1=Vector3(0,(verts[(z+q)*m_iHmSize+(x+1+w)].height)-(verts[(z+q)*m_iHmSize+(x+w)].height) ,1);
+		v2=Vector3(0,(verts[(z+1+q)*m_iHmSize+(x+1+w)].height)- (verts[(z+q)*m_iHmSize+(x+w)].height),0);		
+		v3=Vector3(1,(verts[(z+q+1)*m_iHmSize+(x+w)].height)-(verts[(z+q)*m_iHmSize+(x+w)].height) ,0);	
+
+		n1=v2.Cross(v1);			
+		n2=v3.Cross(v2);				
+
+	}else {
+	
+	
+	}*/
+	
+}
+
+
 void HeightMap::SetTileSet(char* acTileSet) {
 	strcpy(m_acTileSet,acTileSet);
 	
