@@ -61,7 +61,7 @@ ZMaterial::~ZMaterial()
 
 ZMaterialSettings* ZMaterial::GetPass(int iPass)
 {
-	if(iPass >= m_kPasses.size())
+	if(iPass >= (int) m_kPasses.size())
 		return NULL;
 	
 	return m_kPasses[iPass];

@@ -68,8 +68,8 @@ float P_Physic::GetBoundingRadius()
 	P_HMRP2* hp = static_cast<P_HMRP2*>(m_pkObject->GetProperty("P_HMRP2"));
 	if(hp!=NULL)
 	{
-		float k=hp->GetHeightMap()->GetSize()/2;		
-		return sqrt((k*k)+(k*k));
+		float k=(float)(hp->GetHeightMap()->GetSize()/2);		
+		return (float) (sqrt((k*k)+(k*k)));
 	}
 	
 	return 1;
@@ -166,7 +166,7 @@ void P_Physic::SetColShape(int iType)
 		}
 		
 		//set new type		
-		m_fColShape= iType;
+		m_fColShape= (float)iType;
 		
 		switch(iType)
 		{

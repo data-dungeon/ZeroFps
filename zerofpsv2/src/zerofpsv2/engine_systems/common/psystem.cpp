@@ -67,7 +67,7 @@ bool PSystem::Update( Vector3 kNewPosition, Matrix4 kNewRotation )
 	m_fAgePercent = m_fAge / m_pkPSystemType->m_kPSystemBehaviour.m_fLifeTime;
 
 	// If all particles hasn't been created...
-	if ( m_kParticles.size() < m_uiParticles )
+	if ( (int) m_kParticles.size() < m_uiParticles )
 	{
 		m_fTimeSinceLastCreatedParticle += m_fFrameTime;
 
@@ -118,7 +118,7 @@ bool PSystem::Update( Vector3 kNewPosition, Matrix4 kNewRotation )
 	}
 
 	// Update properties
-	for ( i = 0; i < m_kPSProperties.size(); i++ )
+	for ( i = 0; i < (int) m_kPSProperties.size(); i++ )
 		m_kPSProperties[i]->Update();
 
 	// Has PSystem reachet its age and has no active particles, return true (PS finished)

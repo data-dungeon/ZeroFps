@@ -1030,10 +1030,10 @@ void Entity::Save(ZFIoInterface* pkFile)
 	pkFile->Write(&m_eRemoteRole,sizeof(m_eRemoteRole),1);				
 
 	char acTemp[128];
-	int i;
+	unsigned int i;
 
 	// Write Ent Vars
-	int iNumOfEntVars = m_kVariables.size();
+	unsigned int iNumOfEntVars = m_kVariables.size();
 	pkFile->Write(&iNumOfEntVars,sizeof(iNumOfEntVars), 1);		
 	
 	for(i=0; i<iNumOfEntVars; i++) {
@@ -1062,7 +1062,7 @@ void Entity::Save(ZFIoInterface* pkFile)
 		
 		
 	//nr of propertys
-	int iProps = m_akPropertys.size();		
+	unsigned int iProps = m_akPropertys.size();		
 	pkFile->Write(&iProps,sizeof(iProps),1);	
 	//save all propertys
 	for( i = 0;i<iProps;i++)
@@ -1073,7 +1073,7 @@ void Entity::Save(ZFIoInterface* pkFile)
 		
 		
 	//count number of childs to save
-	int iChilds = 0;
+	unsigned int iChilds = 0;
 	
 	for( i = 0;i<m_akChilds.size();i++)
 	{

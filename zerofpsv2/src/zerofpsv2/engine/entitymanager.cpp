@@ -577,7 +577,7 @@ void EntityManager::GetAllObjectsInArea(vector<Entity*> *pkEntitys,Vector3 kPos,
 	
 	kZones.insert(pkZone->m_iZoneID);
 	
-	for(int i =0;i<pkZone->m_iZoneLinks.size();i++)
+	for(unsigned int i =0;i<pkZone->m_iZoneLinks.size();i++)
 	{
 		GetZones(&kZones,pkZone->m_iZoneLinks[i],kPos,fRadius);
 	}
@@ -608,7 +608,7 @@ void EntityManager::GetZones(set<int>* pkZones,int iZone,Vector3 kPos,float fRad
 		{	
 			pkZones->insert(iZone);
 			
-			for(int i =0;i<pkTemp->m_iZoneLinks.size();i++)
+			for(unsigned int i =0;i<pkTemp->m_iZoneLinks.size();i++)
 			{
 				GetZones(pkZones,pkTemp->m_iZoneLinks[i],kPos,fRadius);
 			}			
@@ -1288,7 +1288,7 @@ bool EntityManager::TestLine(vector<Entity*>* pkPPList,Vector3 kPos,Vector3 kVec
 		Vector3 k=kVec.Proj(c);		
 		float cdis=c.Length();
 		float kdis=k.Length();
-		float Distance = sqrt((cdis*cdis)-(kdis*kdis));
+		float Distance = (float) sqrt((cdis*cdis)-(kdis*kdis));
 		
 		
 		float fRadius=(*it).second->GetRadius();
@@ -1920,7 +1920,7 @@ int EntityManager::CreateZone(Vector3 kPos,Vector3 kSize)
 
 void EntityManager::DeleteZone(int iId)
 {
-	if(iId >= m_kZones.size())
+	if(iId >= (int) m_kZones.size())
 	{
 		//cout<<"that zone is invalid"<<endl;
 		return;
@@ -2061,7 +2061,7 @@ bool EntityManager::SaveZones()
 
 ZoneData* EntityManager::GetZoneData(int iID)
 {
-	if(iID < 0 || iID >= m_kZones.size())
+	if(iID < 0 || iID >= (int) m_kZones.size())
 		return NULL;
 
 	return &m_kZones[iID];

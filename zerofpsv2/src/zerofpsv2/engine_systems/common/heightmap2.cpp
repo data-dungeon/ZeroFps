@@ -245,7 +245,7 @@ void Heightmap2::GeneratePatch(HM2_patch* pkPatch,int iStartX,int iStartY,int iS
 				kTexCor.x = (float) x;
 				kTexCor.y = (float) y+1.0f;				
 				kMaskTexCor.x = float(x) / float(m_iWidth);
-				kMaskTexCor.y = (float(y) / float(m_iHeight)) + 1.0/float(m_iHeight);
+				kMaskTexCor.y = (float(y) / float(m_iHeight)) + 1.0f/float(m_iHeight);
 				
 				
 				temp.kVertex.push_back(Vector3((float) x,fHeight,(float) y+1.0f));
@@ -265,7 +265,7 @@ void Heightmap2::GeneratePatch(HM2_patch* pkPatch,int iStartX,int iStartY,int iS
 				kTexCor.x = (float) x;
 				kTexCor.y = (float) y+1.0f;				
 				kMaskTexCor.x = float(x) / float(m_iWidth);
-				kMaskTexCor.y = (float(y) / float(m_iHeight)) + 1.0/float(m_iHeight);
+				kMaskTexCor.y = (float(y) / float(m_iHeight)) + 1.0f/float(m_iHeight);
 				
 				temp.kVertex.push_back(Vector3((float) x,fHeight,(float) y+1.0f));
 				temp.kNormal.push_back(kNormal);	

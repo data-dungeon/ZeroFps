@@ -741,7 +741,7 @@ void Render::DrawHMLodSplat(HeightMap* kMap,Vector3 CamPos,int iFps)
 
 
   if(m_iAutoLod>0){
-		if(SDL_GetTicks()>(m_iLodUpdate+500)){
+		if((int)SDL_GetTicks()>(m_iLodUpdate+500)){
 			m_iLodUpdate=SDL_GetTicks();
 			
 			if(iFps<(m_iFpsLock-5) && m_iDetail>20){
@@ -938,7 +938,7 @@ void Render::DrawPatch(HeightMap* kMap,Vector3 CamPos,int xp,int zp,int iSize,bo
 	
 	// See if we can Cull away this patch...this is optimized for zeroRTS at the moment..Dvoid  assuming max height of 30
 	Vector3 PatchCenter(kMap->m_kCornerPos.x + (xp + iSize/2)*HEIGHTMAP_SCALE,
-							  kMap->m_kCornerPos.y + 7.5*HEIGHTMAP_SCALE,
+							  kMap->m_kCornerPos.y + 7.5f*HEIGHTMAP_SCALE,
 							  kMap->m_kCornerPos.z + (zp + iSize/2)*HEIGHTMAP_SCALE);
 		
 	fDistance=(CamPos-PatchCenter).Length() ;
@@ -971,7 +971,7 @@ void Render::DrawPatch(HeightMap* kMap,Vector3 CamPos,int xp,int zp,int iSize,bo
 	float fScaleX, fScaleZ;
 
 	HM_vert* pkHmVertex = kMap->verts;
-	int z,x;
+	int z;
 	
 	for(z = zp ; z < zp+iSize; z+=iStep){
 		//if(z >= kMap->m_iHmSize-iStep)

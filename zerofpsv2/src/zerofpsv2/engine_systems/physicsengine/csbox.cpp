@@ -388,7 +388,7 @@ bool CSBox::TestInside(Vector3 kPos1,Vector3 kPos2,float fR)
 	
 	if(inside)
 	{
-		fDist = fabs(fDist);	// CHECK-ME: Dvoid - Ska det vara fabs här?
+		fDist = (float) fabs(fDist);	// CHECK-ME: Dvoid - Ska det vara fabs här?
 //		cout<<"dist:"<<fDist<<" Plane:"<<iPlane<<endl;
 //		cout<<"moving "<<fDist<<" along "<<side[iPlane].m_kNormal.x<<" "<<side[iPlane].m_kNormal.y<<" "<<side[iPlane].m_kNormal.z<<endl;
 		

@@ -167,7 +167,7 @@ bool CSMech::TestPolygon(Vector3* kVerts,Vector3 kPos1,Vector3 kPos2,float fR)
 	
 	
 	
-	if(P.LineTest(kPos1 - (Normal * (fR*0.95)), kPos2 - (Normal * fR),&m_kColPos)){
+	if(P.LineTest(kPos1 - (Normal * (fR*0.95f)), kPos2 - (Normal * fR),&m_kColPos)){
 //	if(P.LineTest(kPos1 , kPos2 ,&m_kColPos)){	
 		if(TestSides(kNLVerts,&Normal,m_kColPos,fR))
 		{

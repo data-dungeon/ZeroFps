@@ -388,7 +388,7 @@ bool PhysicsEngine::TestLine(list<P_Physic*>* pkPPList,Vector3 kPos,Vector3 kVec
 		Vector3 k=kVec.Proj(c);		
 		float cdis=c.Length();
 		float kdis=k.Length();
-		float Distance = sqrt((cdis*cdis)-(kdis*kdis));
+		float Distance = (float) sqrt((cdis*cdis)-(kdis*kdis));
 		
 		float fRadius=static_cast<CSSphere*>(static_cast<P_Physic*>(*it)->GetColSphere())->m_fRadius;
 		

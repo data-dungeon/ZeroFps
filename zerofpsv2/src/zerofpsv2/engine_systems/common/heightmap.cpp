@@ -612,7 +612,7 @@ bool HeightMap::LoadImageHmap(const char* acFile)
 			kImage.get_pixel(x,y,color); 
 		
 			data = color.r;
-			verts[y*m_iHmSize+x].height = data/3;		
+			verts[y*m_iHmSize+x].height = (float) (data/3);		
 		}
 			
 	float med;
@@ -810,8 +810,8 @@ void HeightMap::DrawMask(int iPosX,int iPosy,int iMask,int iSize,int r,int g,int
 		return;
 	
 	//get texture pos
-	float xpos =(iPosX * HEIGHTMAP_SCALE) * (GetSize() / m_pkTexMan->GetImage()->w)  ;
-	float ypos =(iPosy * HEIGHTMAP_SCALE) * (GetSize() / m_pkTexMan->GetImage()->h)  ;
+	float xpos = (float) ((iPosX * HEIGHTMAP_SCALE) * (GetSize() / m_pkTexMan->GetImage()->w))  ;
+	float ypos = (float) ((iPosy * HEIGHTMAP_SCALE) * (GetSize() / m_pkTexMan->GetImage()->h))  ;
 		
 	int size=iSize;
 
@@ -896,10 +896,10 @@ HM_vert* HeightMap::LinePick(Vector3 kPos,Vector3 kDir,Vector3 kCenterPos,int iW
 		minz = 0;
 		
 	if(maxx > m_iHmSize)
-		maxx = m_iHmSize;
+		maxx = (float) m_iHmSize;
 		
 	if(maxz > m_iHmSize)
-		maxz = m_iHmSize;
+		maxz = (float) m_iHmSize;
 	
 		
 	float cdist=99999999;	
@@ -955,7 +955,7 @@ HM_vert* HeightMap::LinePick(Vector3 kPos,Vector3 kDir,Vector3 kCenterPos,int iW
 	
 	if(closest != NULL)
 	{
-		kHitPos = (kHitPos - Vector3(m_iHmSize/2,0,m_iHmSize/2)); 
+		kHitPos = (kHitPos - Vector3((float)(m_iHmSize/2),0,(float)(m_iHmSize/2))); 
 		kHitPos.x *= HEIGHTMAP_SCALE;
 		kHitPos.z *= HEIGHTMAP_SCALE;		
 		kHitPos-=Vector3(1,0,1)*HEIGHTMAP_SCALE;
@@ -1062,8 +1062,8 @@ float HeightMap::GetAlpha(float x,float y,int iTexture)
 	m_pkTexMan->BindTexture(pkTexture->m_iTextureID);
 		
 		
-	float dw = m_pkTexMan->GetImage()->w / m_iHmSize;
-	float dh = m_pkTexMan->GetImage()->h / m_iHmSize;	
+	float dw = (float) (m_pkTexMan->GetImage()->w / m_iHmSize);
+	float dh = (float) (m_pkTexMan->GetImage()->h / m_iHmSize);	
 	
 	//convert to texture cordinats
 	x*=dw;
@@ -1077,7 +1077,7 @@ float HeightMap::GetAlpha(float x,float y,int iTexture)
 	//get alpha value
 	SDL_GetRGBA(color,  m_pkTexMan->GetImage()->format ,&r,&g,&b,&a);
 	
-	return (a/255.0);
+	return (a/255.0f);
 }
 
 int HeightMap::GetMostVisibleTexture(float x,float y)
@@ -1172,8 +1172,8 @@ Point HeightMap::GetSqrFromPos(Vector3 pos)
 
 Vector3 HeightMap::GetPosFromSqr(Point square)
 {
-	float x = -(m_iHmSize/2)*HEIGHTMAP_SCALE + square.x*HEIGHTMAP_SCALE;
-	float z = -(m_iHmSize/2)*HEIGHTMAP_SCALE + square.y*HEIGHTMAP_SCALE;
+	float x = (float) (-(m_iHmSize/2)*HEIGHTMAP_SCALE + square.x*HEIGHTMAP_SCALE);
+	float z = (float) (-(m_iHmSize/2)*HEIGHTMAP_SCALE + square.y*HEIGHTMAP_SCALE);
 
 	x -= HEIGHTMAP_SCALE/2;	// Translate to center 
 	z -= HEIGHTMAP_SCALE/2;	// of square.*/
@@ -1190,14 +1190,14 @@ void HeightMap::GetCollData(vector<Mad_Face>* pkFace,vector<Vector3>* pkVertex ,
 
 	for(int z=0; z<m_iHmSize; z++) {
 		for(int x=0; x<m_iHmSize; x++) {
-			pkVertex->push_back( Vector3(x, verts[z*m_iHmSize+x].height, z) );				kFace.iIndex[0] = iIndex++;		
-			pkVertex->push_back( Vector3(x + 1, verts[(z+1)*m_iHmSize+(x+1)].height, z + 1) );		kFace.iIndex[1] = iIndex++;		
-			pkVertex->push_back( Vector3(x + 1, verts[(z)*m_iHmSize+(x+1)].height, z) );			kFace.iIndex[2] = iIndex++;	
+			pkVertex->push_back( Vector3((float)x, verts[z*m_iHmSize+x].height, (float)z) );				kFace.iIndex[0] = iIndex++;		
+			pkVertex->push_back( Vector3((float)x + 1, verts[(z+1)*m_iHmSize+(x+1)].height, (float)z + 1.0f) );		kFace.iIndex[1] = iIndex++;		
+			pkVertex->push_back( Vector3((float)x + 1, verts[(z)*m_iHmSize+(x+1)].height, (float)z) );			kFace.iIndex[2] = iIndex++;	
 			pkFace->push_back(kFace);
 
-			pkVertex->push_back( Vector3(x, verts[z*m_iHmSize+x].height, z) );				kFace.iIndex[0] = iIndex++;		
-			pkVertex->push_back( Vector3(x , verts[(z+1)*m_iHmSize+x].height, z + 1) );			kFace.iIndex[1] = iIndex++;		
-			pkVertex->push_back( Vector3(x + 1, verts[(z+1)*m_iHmSize+(x+1)].height, z + 1) );			kFace.iIndex[2] = iIndex++;	
+			pkVertex->push_back( Vector3((float)x, verts[z*m_iHmSize+x].height, (float)z) );				kFace.iIndex[0] = iIndex++;		
+			pkVertex->push_back( Vector3((float)x , verts[(z+1)*m_iHmSize+x].height, (float)z + 1.0f) );			kFace.iIndex[1] = iIndex++;		
+			pkVertex->push_back( Vector3((float)x + 1, verts[(z+1)*m_iHmSize+(x+1)].height, (float)z + 1.0f) );			kFace.iIndex[2] = iIndex++;	
 			pkFace->push_back(kFace);
 			}
 		}

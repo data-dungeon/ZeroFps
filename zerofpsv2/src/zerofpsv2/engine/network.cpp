@@ -704,7 +704,7 @@ void NetWork::Run()
 			if(NetP.m_kData.m_kHeader.m_iOrder != (m_RemoteNodes[iClientID].m_iLastRecvPacket + 1))
 				m_RemoteNodes[iClientID].m_iOutOfOrderNetFrame ++;
 			m_RemoteNodes[iClientID].m_iLastRecvPacket = NetP.m_kData.m_kHeader.m_iOrder;
-			m_RemoteNodes[iClientID].m_kRecvSizeGraph.PushValue(NetP.m_iLength);
+			m_RemoteNodes[iClientID].m_kRecvSizeGraph.PushValue((float)(NetP.m_iLength));
 			}
 		
 		Logf("netpac", " Order: %d, Size: %d\n", NetP.m_kData.m_kHeader.m_iOrder, NetP.m_iLength);
@@ -833,7 +833,7 @@ void NetWork::RunCommand(int cmdid, const CmdArgument* kCommand)
 			if(kCommand->m_kSplitCommand.size() <= 1)
 				return;
 			
-			float fMax = atoi(kCommand->m_kSplitCommand[1].c_str());
+			float fMax = (float) (atoi(kCommand->m_kSplitCommand[1].c_str()));
 
 			for(unsigned int i=0;i<m_RemoteNodes.size(); i++)
 				m_RemoteNodes[i].m_kRecvGraph.SetMinMax(0, fMax);

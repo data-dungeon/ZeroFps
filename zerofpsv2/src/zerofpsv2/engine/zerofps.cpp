@@ -526,7 +526,7 @@ void ZeroFps::MainLoop(void) {
 			if(fDelay < 0)
 				fDelay = 0;
 	
-			SDL_Delay(fDelay*1000.0);	
+			SDL_Delay((int)(fDelay*1000.0f));	
 			
 			m_fLockFrameTime = GetTicks();
 	
@@ -573,14 +573,14 @@ void ZeroFps::Swap(void) {
 
 	//count FPS
 	m_fFrameTime=SDL_GetTicks()-m_fLastFrameTime;
-	m_fLastFrameTime=SDL_GetTicks();
-	m_fFps=1000.0/m_fFrameTime;	
+	m_fLastFrameTime=(float)SDL_GetTicks();
+	m_fFps=1000.0f/m_fFrameTime;	
 
 	m_iAvrageFrameCount++;
 	
 	if( (GetTicks() - m_fAvrageFpsTime) >1)
 	{
-		m_fAvrageFps = m_iAvrageFrameCount;
+		m_fAvrageFps = (float) m_iAvrageFrameCount;
 		m_iAvrageFrameCount = 0;
 		m_fAvrageFpsTime = GetTicks();
 	}
@@ -1165,7 +1165,7 @@ int ZeroFps::Connect(int iConnectionID, char* szLogin, char* szPass)
 
 	m_pkApp->OnServerClientJoin(&m_kClient[iConnectionID],iConnectionID, szLogin, szPass);
 
-	m_pkObjectMan->m_fEndTimeForceNet = GetEngineTime() + 5.0;
+	m_pkObjectMan->m_fEndTimeForceNet = GetEngineTime() + 5.0f;
 
 	return m_kClient[iConnectionID].m_pkObject->iNetWorkID;
 }
@@ -1235,7 +1235,7 @@ void ZeroFps::AddHMProperty(ZoneData* pkZd, int iNetWorkId, Vector3 kZoneSize)
 
 	HeightMap* pkMap = new HeightMap;
 	pkMap->StartUp();
-	pkMap->Create(kZoneSize.x);
+	pkMap->Create((int)kZoneSize.x);
 	pkMap->Random();
 
 	P_HMRP2* pkhmrp2 = new P_HMRP2(pkMap, "Spya");
@@ -1262,7 +1262,7 @@ void ZeroFps::AddHMProperty(ZoneData* pkZd, int iNetWorkId, Vector3 kZoneSize)
 		aFace.iIndex[0] = 0;	aFace.iIndex[1] = 3;	aFace.iIndex[2] = 2;
 		kFace.push_back(aFace);*/
 	
-	for(int i=0; i<kVertex.size(); i++) 
+	for(unsigned int i=0; i<kVertex.size(); i++) 
 		kVertex[i] += pkEntity->GetWorldPosV() + pkMap->m_kCornerPos;
 
 

@@ -279,9 +279,9 @@ void Tcs::UpdateBodyVelnPos(P_Tcs* pkBody,float fAtime)
 
 void Tcs::UpdateCollissions(float fAtime)
 {
-	for(int B1=0;B1<m_kBodys.size();B1++)
+	for(unsigned int B1=0;B1<m_kBodys.size();B1++)
 	{
-		for(int B2=B1+1;B2<m_kBodys.size();B2++)
+		for(unsigned int B2=B1+1;B2<m_kBodys.size();B2++)
 		{
 /*			bool bDoTest = false;
 		
@@ -537,7 +537,7 @@ bool Tcs::TestLineVSSphere(Vector3 kP1,Vector3 kP2,P_Tcs* pkB)
 	Vector3 k=kDir.Proj(c);		
 	float cdis=c.Length();
 	float kdis=k.Length();
-	float Distance = sqrt((cdis*cdis)-(kdis*kdis));
+	float Distance = (float) sqrt((cdis*cdis)-(kdis*kdis));
 	
 
 	if(Distance < pkB->m_fRadius)
@@ -754,7 +754,7 @@ bool Tcs::CollideSphereVSMesh(P_Tcs* pkSphere,P_Tcs* pkMesh)
 	float d;
 
 
-	for(int f=0;f<pkMesh->m_pkFaces->size();f++)
+	for(unsigned int f=0;f<pkMesh->m_pkFaces->size();f++)
 	{
 		
 		verts[0] = m_kModelMatrix.VectorTransform((*pkMesh->m_pkVertex)[(*pkMesh->m_pkFaces)[f].iIndex[0]]);

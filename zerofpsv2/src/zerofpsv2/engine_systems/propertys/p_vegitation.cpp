@@ -46,7 +46,7 @@ void P_Vegitation::Random()
 	Clear();
 	for(int i=0;i<m_iAmount;i++)
 	{
-		AddPos(Vector3( (rand()%size -(size/2)) /100.0,0, (rand()%size -(size/2)) /100.0));
+		AddPos(Vector3( (rand()%size -(size/2)) /100.0f,0, (rand()%size -(size/2)) /100.0f));
 	}
 	
 	SetNetUpdateFlag(true);	

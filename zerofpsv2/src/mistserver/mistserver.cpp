@@ -1519,7 +1519,7 @@ void MistServer::HandleOrders()
 			string playername=""; 
 			string message="";
 					
-			int pos=0;
+			unsigned int pos=0;
 			
 			if(strncmp(order->m_sOrderName.c_str(),"/w",2)==0)
 			{

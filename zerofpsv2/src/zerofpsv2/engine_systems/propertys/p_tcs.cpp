@@ -416,7 +416,7 @@ void P_Tcs::Draw()
 
 	GenerateModelMatrix();
 
-	for(int i=0; i<m_pkFaces->size(); i++) {
+	for(unsigned int i=0; i<m_pkFaces->size(); i++) {
 		for(int j=0;j<3;j++) {
 			if(m_pkMad)
 				data[j] = m_kModelMatrix.VectorTransform((*m_pkVertex)[ (*m_pkFaces)[i].iIndex[j]]);

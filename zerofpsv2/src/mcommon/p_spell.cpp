@@ -67,7 +67,7 @@ void P_Spell::Update()
 
 
       // create new PSystems
-      if ( m_pkSpellType->m_kGraphicEffects.size() > m_iPSIndex )
+      if ( (int) m_pkSpellType->m_kGraphicEffects.size() > m_iPSIndex )
       {
          if ( m_fAge >= m_pkSpellType->m_kGraphicEffects[m_iPSIndex].m_fStartTime )
          {

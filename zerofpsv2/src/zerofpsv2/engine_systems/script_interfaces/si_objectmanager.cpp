@@ -220,7 +220,7 @@ int SetLocalPosLua(lua_State* pkLua)
 	g_pkScript->GetArg(pkLua, 1, &y);
 	g_pkScript->GetArg(pkLua, 2, &z);
 	
-	g_pkLastObject->SetLocalPosV(Vector3(x,y,z));
+	g_pkLastObject->SetLocalPosV(Vector3((float)x,(float)y,(float)z));
 	
 	return 0;
 }
@@ -415,7 +415,7 @@ int SetLocalDouble(lua_State* pkLua)
 	g_pkScript->GetArg(pkLua, 1, acName);
 
 	g_pkScript->GetArgNumber(pkLua, 2, &dTemp);		
-	float fValue = dTemp;
+	float fValue = (float) dTemp;
 
 	Entity* o1 = g_pkObjMan->GetObjectByNetWorkID(iId1);
 	//printf("SetLocalDouble Entity[%d] = %s is set to %f \n", iId1, acName,fValue);

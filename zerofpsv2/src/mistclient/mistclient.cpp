@@ -925,7 +925,11 @@ void MistClient::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 			if(IsClicked)
 			{
 				m_pkSelHenchmanIcon = m_vkHenchmanIcons[i];
-				SetActiveCaracter(i);
+
+				if( i== 0)
+					SetActiveCaracter(false); // <- was is that???
+				else
+					SetActiveCaracter(true); // <- was is that???
 			}
 		}
 
@@ -1654,7 +1658,7 @@ bool MistClient::OpenActionMenu(int mx, int my)
 		{
 			ZGuiWnd* pkWnd = GetWnd(name);
 			pkWnd->Show();
-			pkWnd->SetPos(mx+x-fOffset-x_diff, my+y-(int)fOffset-y_diff, true, true);
+			pkWnd->SetPos(mx+x-(int)fOffset-x_diff, my+y-(int)fOffset-y_diff, true, true);
 		}
 
 		if(i < vkActions.size())
