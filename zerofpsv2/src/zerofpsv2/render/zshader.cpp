@@ -250,8 +250,8 @@ void ZShader::Waves()
 {	
 	for(int i=0;i<m_iNrOfVertexs;i++)
 	{
-		float offset = m_pkVertexPointer[i].x + m_pkVertexPointer[i].y + m_pkVertexPointer[i].z;
-		float bla = cos(SDL_GetTicks()/500.0 + offset)*0.03;
+		float offset = Clamp(m_pkVertexPointer[i].x + m_pkVertexPointer[i].y + m_pkVertexPointer[i].z,0,4);
+		float bla = cos(SDL_GetTicks()/500.0 + offset)*0.1;
 		m_pkVertexPointer[i] += Vector3(bla,bla,bla);
 
 	}
@@ -410,9 +410,15 @@ void ZShader::SetupRenderStates(ZMaterialSettings* pkSettings)
 	
 	//enable /disable blending
 	if(pkSettings->m_bBlend)
+	{
 		glEnable(GL_BLEND);
+		//glDepthMask(GL_FALSE);
+	}
 	else
+	{
 		glDisable(GL_BLEND);
+		//glDepthMask(GL_TRUE);
+	}
 		
 	//setup blending factors
 	int blendsrc;
