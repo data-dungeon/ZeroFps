@@ -39,6 +39,32 @@ ZeroFps::ZeroFps(void)
 	RegisterPropertys(this);
 }
 
+ZeroFps::~ZeroFps()
+{
+	delete m_pkFile;
+	delete m_pkCmd;
+	delete m_pkTexMan;
+	delete m_pkRender;
+	delete m_pkConsole;
+	delete m_pkInput;
+	delete m_pkAudioMan;
+	delete m_pkLight;
+	delete m_pkObjectMan;
+	delete m_pkCollisionMan;
+
+/*	m_pkFile=new FileIo;
+	m_pkCmd=new CmdSystem;
+	m_pkTexMan=new TextureManager(m_pkFile);
+	m_pkRender=new Render(m_pkTexMan);
+	m_pkConsole=new Console(this);	
+	m_pkInput=new Input();
+	m_pkAudioMan=new AudioManager(this);
+	m_pkLight=new Light();
+	m_pkObjectMan=new ObjectManager();
+	m_pkCollisionMan=new CollisionManager();*/	
+
+
+}
 
 void ZeroFps::SetApp() {
 	m_pkApp=Application::pkApp;
@@ -276,8 +302,8 @@ int ZeroFps::LoadMAD(char* filename)
 	Core CoreAdd;
 	akCoreModells.push_back(CoreAdd);
 	Core* pCoreMdl = &akCoreModells.back();
-	pCoreMdl->Load(filename);
 	pCoreMdl->SetTextureManger(m_pkTexMan);
+	pCoreMdl->Load(filename);
 	return (akCoreModells.size() - 1);
 }
 

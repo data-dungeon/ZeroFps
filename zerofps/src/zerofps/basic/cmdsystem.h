@@ -16,15 +16,15 @@ enum data_types {
 };
 
 struct variable {
-	char* aName;											//ingame variable name 
-	int iType;												//what type see enum data_types
-	void* pAddress;										//pointer to variable
+	char* aName;				// In Game variable name 
+	int iType;					// What type see enum data_types
+	void* pAddress;				// Pointer to variable
 };
 
-struct funktion {
-	char* aName;
-	void (*pAddress) (void);
-//	void* pAddress;
+struct funktion 
+{
+	char* aName;				// Name of function.
+	void (*pAddress) (void);	// Address to function.
 };
 
 class BASIC_API CmdSystem {
@@ -45,6 +45,7 @@ class BASIC_API CmdSystem {
 		inline vector<funktion*> &GetCmdList(void) {return kFunks;};		
 		double GetVar(int i);
 };
+
 
 #endif
 

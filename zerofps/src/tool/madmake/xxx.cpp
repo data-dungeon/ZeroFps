@@ -217,12 +217,6 @@ void ModellXXX::Read( char* filename )
 
 		ucpToken = kMMScipt.GetToken();
 	}
-
-
-/*	ReadBaseFrame("gordo.mx");
-	ReadAnimation("walk.fx");
-	ReadAnimation("run.fx");
-	ReadAnimation("idle.fx");*/
 }
 
 bool ModellXXX::Export(MadExporter* mad)
@@ -252,10 +246,7 @@ bool ModellXXX::Export(MadExporter* mad)
 	mad->akSubMeshes.resize(mad->kHead.iNumOfSubMeshes);
 	
 	// Copy Submeshes.
-	mad->akSubMeshes = this->m_akSubMesh;
-/*	mad->akSubMeshes[0].iFirstTriangle	= 0;
-	mad->akSubMeshes[0].iTextureIndex	= 0;
-	mad->akSubMeshes[0].iNumOfTriangles	= mad->kHead.iNumOfFaces;*/
+	mad->akSubMeshes = m_akSubMesh;
 
 	// Copy Faces
 	for(i=0; i<mad->kHead.iNumOfFaces; i++) 
@@ -265,19 +256,9 @@ bool ModellXXX::Export(MadExporter* mad)
 		mad->akFaces[i].iIndex[2] = m_akFace[i].iIndex[2];
 	}
 
-	mad->akFrames = m_akFrames;
-	mad->akTextureCoo = m_akTextureCoo;
-
-/*	Mad_Animation kNyAnimation;
-	Mad_KeyFrame kNyKeyF;
-	for(i = 0; i<iAntalFrames; i++) {
-		kNyKeyF.Clear();
-		kNyKeyF.iVertexFrame = i;
-		kNyAnimation.KeyFrame.push_back(kNyKeyF);
-		}
-
-	mad->akAnimation.push_back(kNyAnimation);*/
-	mad->akAnimation = akAnimation;
+	mad->akFrames		= m_akFrames;
+	mad->akTextureCoo	= m_akTextureCoo;
+	mad->akAnimation	= akAnimation;
 
 
 	return true;

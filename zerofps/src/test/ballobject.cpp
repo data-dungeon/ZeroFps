@@ -1,20 +1,17 @@
 #include "ballobject.h"
 
-BallObject::BallObject(HeightMap *pkMap,ZeroFps *pkFps) {
-	SetPropertyFactory(&pkFps->m_kPropertyFactory);
+BallObject::BallObject() {
+	m_pkFps = static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
 
 	AddProperty(new CollisionProperty(&m_kPos,new float(.5)));
 	AddProperty(new GravityProperty());
 
 	AddProperty("MadProperty");
 	MadProperty* madp = dynamic_cast<MadProperty*>(GetProperty("MadProperty"));
-	madp->SetBase(pkFps->GetMADPtr("sphere.mad"));
+	madp->SetBase(m_pkFps->GetMADPtr("../data/mad/cyl.mad"));
 //	madp->SetScale(0.02);
 
-//	AddProperty("ModelProperty");
-
-	m_pkFps=pkFps;
-	onGround=false;
+	onGround = false;
 }
 
 void BallObject::HandleCollision(Object* pkOther,Vector3 kPos,bool bContinue){

@@ -94,21 +94,19 @@ void Test::OnInit(void) {
 	
 	
 	
+	int i;
 	
-/*	
-	for(int i=0;i<50;i++) {
-		Object *ball=new BallObject(test,pkFps);
+	for( i=0;i<50;i++) {
+		Object *ball=new BallObject();
 		float x=300 + rand()%100;
 		float y=720 + rand()%100;
-//		float x=340;
-//		float y=770;
-		ball->GetPos()=Vector3(x,test->Height(x,y)+10,y);
+		ball->GetPos()=Vector3(x,test->Height(x,y)+5,y);
 		pkObjectMan->Add(ball);
 		pkCollisionMan->Add(ball);
-	}*/
+	}
 
-	for(int i=0;i<20;i++) {
-		Object *sussi=new BunnyObject(test,pkFps);
+	for(i=0;i<20;i++) {
+		Object *sussi=new BunnyObject(test);
 		float x=300 + rand()%100;
 		float y=720 + rand()%100;
 		sussi->GetPos()=Vector3(x,test->Height(x,y),y);
@@ -120,7 +118,7 @@ void Test::OnInit(void) {
 	
 	cam1=new Camera(Vector3(50,50,50),Vector3(0,0,0),90,1.333,0.25,400);	
 	
-	m_pkPlayer=new PlayerObject(test,pkInput,pkFps);
+	m_pkPlayer=new PlayerObject(test,pkInput);
 	m_pkPlayer->GetPos()=Vector3(340,50,780);		
 	m_pkPlayer->AddProperty(new CameraProperty(cam1));
 	pkObjectMan->Add(m_pkPlayer);

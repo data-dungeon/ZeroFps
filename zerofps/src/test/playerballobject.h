@@ -12,7 +12,7 @@ class PlayerBallObject: public Object {
 
 
 	public:
-		PlayerBallObject(HeightMap *pkMap,Input *pkInput,ZeroFps *pkFps);
+		PlayerBallObject(HeightMap *pkMap,Input *pkInput);
 		
 		void HandleCollision(Object* pkObject,Vector3 kPos,bool bContinue);
 

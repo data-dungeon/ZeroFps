@@ -1,10 +1,15 @@
 #include "texturemanager.h"
 #include "../ogl/zfpsgl.h"
 
+#define ERROR_TEXTURE	"../data/textures/notex.bmp"
+
 
 TextureManager::TextureManager(FileIo* pkFile)
  : ZFObject("TextureManager") {
 	m_pkFile=pkFile;
+
+	m_iCurrentTexture = NO_TEXTURE;
+
 }	
 
 
@@ -55,7 +60,7 @@ bool TextureManager::LoadTexture(GLuint &iNr,char *acFilename,int iOption) {
 	}
   
   glBindTexture(GL_TEXTURE_2D,0);
-  m_iCurrentTexture = -1;
+  m_iCurrentTexture = NO_TEXTURE;
 
   return true;
 }
@@ -102,24 +107,26 @@ SDL_Surface *TextureManager::LoadImage(char *acFilename) {
   return(image);
 };
 
-int TextureManager::Load(char* acFileName,int iOption) {
-	
-	//first check if the texture has already been loaded,and return its index
-	for(int i=0;i<m_iTextures.size();i++){
-		if(m_iTextures[i]->file==acFileName){
-			//return the texure index
-			return (int)m_iTextures[i]->index;		
-		}		
-	}
+int TextureManager::Load(char* acFileName,int iOption)
+{
+	int iTexture;
+	iTexture = GetIndex(acFileName);
+	if(iTexture != NO_TEXTURE)
+		return iTexture;
 	
 	//else load it
-	texture *temp=new texture;
+	texture *temp = new texture;
 	temp->file=acFileName;
 	
-	//if the texture cant be loaded then complain and return 0 
-	if(!LoadTexture(temp->index,acFileName,iOption)){
-		cout<<"Error Loading texture: "<<temp->file<<endl;
-		return 0;
+	// If texture can't be loaded, Load error texture.
+	if(!LoadTexture(temp->index,acFileName,iOption)) {
+		// If error texture fails to load cry a little and return NO_TEXTURE.
+		cout << "Failed to find texture '" << acFileName << "'" << endl;
+
+		if(!LoadTexture(temp->index,ERROR_TEXTURE,iOption)) {
+			cout<<"Error Loading texture: "<<temp->file<<endl;
+			return NO_TEXTURE;
+		}
 	}
 	//add the texture to the loaded textures vector
 	m_iTextures.push_back(temp);
@@ -127,36 +134,45 @@ int TextureManager::Load(char* acFileName,int iOption) {
 	cout<<"Loaded texture: "<<m_iTextures.back()->file<<" index:"<<m_iTextures.back()->index<<endl;
 	
 	//return our new texture index
-	return m_iTextures.back()->index;
+//	return m_iTextures.back()->index;
+	return m_iTextures.size() - 1;
 }
 
 void TextureManager::BindTexture(int iTexture) {
-	if(iTexture!=m_iCurrentTexture){
+	m_iCurrentTexture = NO_TEXTURE;
+
+	if(iTexture != m_iCurrentTexture){
 		m_iCurrentTexture=iTexture;
-		glBindTexture(GL_TEXTURE_2D,iTexture);
+		glBindTexture(GL_TEXTURE_2D,m_iTextures[iTexture]->index);
 	}
 }
 
 void TextureManager::BindTexture(char* acFileName,int iOption) {
 	int iTexture=Load(acFileName,iOption);
-
-	m_iCurrentTexture = -1;
-
-	if(iTexture!=m_iCurrentTexture){
-		m_iCurrentTexture=iTexture;
-		glBindTexture(GL_TEXTURE_2D,iTexture);
-	}
+	m_iCurrentTexture = NO_TEXTURE;
+	BindTexture(iTexture);
 }
 
 
-void TextureManager::ClearAll() {
+void TextureManager::ClearAll()
+{
 	for(int i=0;i<m_iTextures.size();i++){
 		glDeleteTextures(1,&m_iTextures[i]->index);
 	}
-	m_iTextures.clear();
 
+	m_iTextures.clear();
 }
 
+int TextureManager::GetIndex(char* szFileName)
+{
+	for(int i=0; i<m_iTextures.size(); i++){
+		if(m_iTextures[i]->file == szFileName) {
+			return i;		
+		}		
+	}
+
+	return NO_TEXTURE;
+}
 
 
 

@@ -1,10 +1,10 @@
 #include "playerballobject.h"
 
 
-PlayerBallObject::PlayerBallObject(HeightMap *pkMap,Input *pkInput,ZeroFps *pkFps) {
+PlayerBallObject::PlayerBallObject(HeightMap *pkMap,Input *pkInput) {
 
 	AddProperty(new CollisionProperty(&m_kPos,new float(1)));
-	AddProperty(new PlayerControlProperty(pkInput,pkFps,pkMap));
+	AddProperty(new PlayerControlProperty(pkInput,pkMap));
 }
 
 

@@ -17,7 +17,7 @@ class PlayerControlProperty: public Property {
 				
 	public:
 		
-		PlayerControlProperty(Input *pkInput,ZeroFps *pkFps,HeightMap *pkMap);
+		PlayerControlProperty(Input *pkInput,HeightMap *pkMap);
 
 		void Update();
 		void Bounce(Vector3 kPos);

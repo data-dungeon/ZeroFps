@@ -1,8 +1,9 @@
 #include "playercontrolproperty.h"
 
-PlayerControlProperty::PlayerControlProperty(Input *pkInput,ZeroFps *pkFps,HeightMap *pkMap) {
+PlayerControlProperty::PlayerControlProperty(Input *pkInput,HeightMap *pkMap) {
 	m_pkMap=pkMap;
-	m_pkFps=pkFps;
+	m_pkFps = static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
+	//m_pkFps=pkFps;
 	m_pkInput=pkInput;	
 	strcpy(m_acName,"PlayerControlProperty");
 };

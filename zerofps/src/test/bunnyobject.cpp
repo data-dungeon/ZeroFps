@@ -1,11 +1,13 @@
 #include "bunnyobject.h"
 
-BunnyObject::BunnyObject(HeightMap *pkMap,ZeroFps *pkFps)
+BunnyObject::BunnyObject(HeightMap *pkMap)
 {
+	m_pkFps = static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
+
 	AddProperty(new GravityProperty());
 	//AddProperty("GravityProperty");
 	AddProperty("ModelProperty");
-	AddProperty(new BunnyAIProperty(pkFps,pkMap));
+	AddProperty(new BunnyAIProperty(pkMap));
 	
 	ModelProperty* mod = dynamic_cast<ModelProperty*>(GetProperty("ModelProperty"));
 	if(mod) {
@@ -19,7 +21,6 @@ BunnyObject::BunnyObject(HeightMap *pkMap,ZeroFps *pkFps)
 //	AddProperty(new CollisionProperty(&m_kPos));
 	
 	onGround=false;
-	m_pkFps=pkFps;
 }
 
 

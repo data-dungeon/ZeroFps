@@ -2,16 +2,16 @@
 
 
 
-PlayerObject::PlayerObject(HeightMap *pkMap,Input *pkInput,ZeroFps *pkFps)
+PlayerObject::PlayerObject(HeightMap *pkMap,Input *pkInput)
 {
+	m_pkFps = static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
 	AddProperty(new CollisionProperty(&m_kPos,new float(1.0)));
-	AddProperty(new PlayerControlProperty(pkInput,pkFps,pkMap));
+	AddProperty(new PlayerControlProperty(pkInput,pkMap));
 	AddProperty(new GravityProperty());
-	AddProperty(new FloatProperty(pkFps));	
+	AddProperty(new FloatProperty());	
 //	AddProperty(new ModelProperty());
 	
 	onGround=false;
-	m_pkFps=pkFps;
 }
 
 void PlayerObject::HandleCollision(Object* pkObject,Vector3 kPos,bool bContinue)

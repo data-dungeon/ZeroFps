@@ -3,10 +3,9 @@
 
 Core::Core()
 {
-	pakTextureCoo = NULL;
-	pakFrames = NULL;
-	pakFaces = NULL;
-
+	pakTextureCoo	= NULL;
+	pakFrames		= NULL;
+	pakFaces		= NULL;
 	pkTextureManger = NULL;
 	
 	iActiveFrame = 0;
@@ -25,6 +24,8 @@ Core::~Core()
 
 void Core::Load(char* MadFileName)
 {
+	int i;
+
 	strcpy(Name, MadFileName);
 
 	FILE* fp = fopen(MadFileName, "rb");
@@ -45,7 +46,7 @@ void Core::Load(char* MadFileName)
 
 	// Write Alla vertex Frames.
 	pakFrames = new Mad_VertexFrame [kHead.iNumOfFrames];
-	for(int i=0; i<kHead.iNumOfFrames; i++)
+	for(i=0; i<kHead.iNumOfFrames; i++)
 	{
 		pakFrames[i].pVertex = new MadVertex [kHead.iNumOfVertex];
 		fread(pakFrames[i].pVertex,sizeof(MadVertex),kHead.iNumOfVertex,fp);
@@ -80,7 +81,12 @@ void Core::Load(char* MadFileName)
 		akAnimation.push_back(kNyAnim);
 	}
 
-
+	// Load Textures
+	char nisse[256];
+	for(i = 0; i< kHead.iNumOfTextures; i++) {
+		sprintf(nisse, "../data/textures/%s.bmp", akTextures[i].ucTextureName);
+		aiTextureIndex[i] = pkTextureManger->Load(nisse,0);
+	}
 
 	fclose(fp);
 }
@@ -97,10 +103,7 @@ void Core::LoopPlayAnim(int iAnim)
 	if(iActiveKeyFrame >= akAnimation[iAnim].KeyFrame.size())
 		iActiveKeyFrame = 0;
 
-//	cout << akAnimation[iAnim].KeyFrame[iActiveKeyFrame].iVertexFrame;
 	iActiveFrame = akAnimation[iAnim].KeyFrame[iActiveKeyFrame].iVertexFrame;
-
-	cout << iActiveKeyFrame << "/" << iActiveFrame << endl;
 }
 
 
@@ -123,37 +126,38 @@ void Core::draw()
 {
 	glColor3f(1,1,1);
 	
-	glPushMatrix();
 	glPushAttrib(GL_FOG_BIT|GL_LIGHTING_BIT | GL_TEXTURE_BIT | GL_COLOR_BUFFER_BIT );
 
 	glDisable(GL_LIGHTING);
 
-	char nisse[256];
-	//sprintf(nisse, "%s.bmp", akTextures[0].ucTextureName);
-	//pkTextureManger->BindTexture(nisse,0);
-	//glCullFace(GL_FRONT);
-
 	glVertexPointer(3,GL_FLOAT,0,pakFrames[iActiveFrame].pVertex);
 	glTexCoordPointer(2,GL_FLOAT,0,pakTextureCoo);
 	
-	sprintf(nisse, "%s.bmp", akTextures[pkSubMesh[0].iTextureIndex].ucTextureName);
-	pkTextureManger->BindTexture(nisse,0);
+	int iMADTextureNum;
+	int iTextureId = aiTextureIndex[0];
 
-/*	for(int i=0; i<this->kHead.iNumOfSubMeshes; i++)
+	for(int i=0; i<this->kHead.iNumOfSubMeshes; i++)
 	{
-		sprintf(nisse, "%s.bmp", akTextures[pkSubMesh[i].iTextureIndex].ucTextureName);
-		pkTextureManger->BindTexture(nisse,0);
+		iMADTextureNum = pkSubMesh[i].iTextureIndex;
+		iTextureId = aiTextureIndex[ iMADTextureNum ];
+		if(aiReplaceTextureIndex[ iMADTextureNum ] != NO_TEXTURE)
+			iTextureId = aiReplaceTextureIndex[ iMADTextureNum ];
+
+		pkTextureManger->BindTexture(iTextureId);
 		glDrawElements(GL_TRIANGLES,
 			pkSubMesh[i].iNumOfTriangles * 3,
 			GL_UNSIGNED_INT,
 			pakFaces[ pkSubMesh[i].iFirstTriangle ].iIndex);
-	}*/
+	}
 
+	/*	
+	if(aiReplaceTextureIndex[0] != NO_TEXTURE)
+		iTextureId = aiReplaceTextureIndex[0];
+	pkTextureManger->BindTexture(iTextureId);
 	glDrawElements(GL_TRIANGLES,kHead.iNumOfFaces*3,GL_UNSIGNED_INT,pakFaces[0].iIndex);
-//	glCullFace(GL_BACK);
+	*/
 
 	glPopAttrib();
-	glPopMatrix();
 }
 
 float Core::GetAnimationLengthInS(int iAnim)
@@ -167,6 +171,21 @@ int Core::GetAnimationTimeInFrames(int iAnim)
 	return akAnimation[iAnim].KeyFrame.size();
 }
 
+void Core::SetReplaceTexture(char* szFileName)
+{
+	char nisse[256];
+	for(int i = 0; i< kHead.iNumOfTextures; i++) {
+		sprintf(nisse, "../data/textures/%s.bmp", szFileName);
+		aiReplaceTextureIndex[i] = pkTextureManger->Load(nisse,0);
+	}
+
+}
+
+void Core::ClearReplaceTexture(void)
+{
+	for(int i = 0; i< kHead.iNumOfTextures; i++)
+		aiReplaceTextureIndex[i] = NO_TEXTURE;
+}
 
 
 void Mad_KeyFrame::Clear(void)

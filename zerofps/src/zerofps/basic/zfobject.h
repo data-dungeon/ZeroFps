@@ -26,6 +26,8 @@ protected:
 	ZFObject(char *szName);					
 
 public:
+	virtual void RunCommand(int cmdid, char* szCommand) { }
+
 	ZFObject*	GetParent() const;			// Get ptr to object parent.
 
 	int GetNumChildren() const;				// Get num of children we have.

@@ -65,6 +65,7 @@ class ENGINE_API ZeroFps : public ZFObject {
 		float m_fFrameTime;							//frametime in MS
 		
 		ZeroFps(void);		
+		~ZeroFps();		
 		void SetApp(void);
 		void Init(int iNrOfArgs, char** paArgs);	
 		void MainLoop(void);		

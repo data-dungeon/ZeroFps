@@ -1,7 +1,8 @@
 #include "floatproperty.h"
 
-FloatProperty::FloatProperty(ZeroFps *pkFps) {
-	m_pkFps=pkFps;
+FloatProperty::FloatProperty() {
+	m_pkFps = static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
+//	m_pkFps=pkFps;
 	
 	m_fGravity=-0.00002;
 	strcpy(m_acName,"GravityProperty");	

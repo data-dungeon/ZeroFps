@@ -25,6 +25,12 @@ struct texture{
 	GLuint index;
 };
 
+/*
+	Handles all textures in the game. Texture can be refered to by name
+	or id (not same thing as opengl handle).
+*/
+#define	NO_TEXTURE	-1
+
 class RENDER_API TextureManager : public ZFObject {
 	private:
 
@@ -41,6 +47,8 @@ class RENDER_API TextureManager : public ZFObject {
 		void BindTexture(int iTexture);
 		void BindTexture(char* acFileName,int iOption);
 		void ClearAll();
+
+		int GetIndex(char* szFileName);
 };
 
 

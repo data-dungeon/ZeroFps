@@ -124,6 +124,10 @@ public:
 		pkTextureManger = ptex;
 	}
 
+	int		aiTextureIndex[MAX_MAD_TEXTURES];
+	int		aiReplaceTextureIndex[MAX_MAD_TEXTURES];
+	void	ClearReplaceTexture(void);
+	void	SetReplaceTexture(char* szFileName);
 	
 	void Load(char* MadFileName);
 

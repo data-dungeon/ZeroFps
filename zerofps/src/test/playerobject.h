@@ -16,7 +16,7 @@ class PlayerObject: public Object {
 	public:
 		bool onGround;
 	
-		PlayerObject(HeightMap *pkMap,Input *pkInput,ZeroFps *pkFps);
+		PlayerObject(HeightMap *pkMap,Input *pkInput);
 		
 		void HandleCollision(Object* pkObject,Vector3 kPos,bool bContinue);
 

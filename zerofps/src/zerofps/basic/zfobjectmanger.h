@@ -9,6 +9,18 @@ using namespace std;
 
 class ZFObject;
 
+
+
+
+
+
+
+
+
+
+
+
+
 struct NameObject
 {
 	string		m_strName;			// Name of object.
@@ -34,6 +46,10 @@ public:
 
 	void PrintObjects(void);
 	void PrintObjectsHer(void);
+
+
+
+
 
 };
 
