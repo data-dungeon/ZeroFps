@@ -1065,6 +1065,22 @@ void Tcs::UpdateAABBs()
 					break;
 				}				
 				
+				//try to setup AABB tree on static objects
+				if(pkBody->m_bStatic)
+				{
+					pkBody->m_kAABBTree.Create(pkBody->m_pkFaces,
+														pkBody->m_pkVertex,
+														pkBody->m_pkNormal,
+														pkBody->m_kNewRotation,
+														pkBody->m_fScale,
+														pkBody->m_kNewPos
+														);
+				}
+				else
+					pkBody->m_kAABBTree.Clear();
+				
+				
+				
 				pkBody->m_kAABBMax.Set(-9999999,-9999999,-9999999);	
 				pkBody->m_kAABBMin.Set(9999999,9999999,9999999);	
 				
@@ -1260,6 +1276,7 @@ P_Tcs* Tcs::CharacterLineTest(Vector3 kStart,Vector3 kDir,P_Tcs* pkTester)
 			
 		switch(pkBody->m_iTestType)
 		{
+			case E_HMAP:
 			case E_MESH:
 				if(CharacterTestLineVSSphere(kStart,kPos2,pkBody))
 					if(CharacterTestLineVSMesh(kStart,kDir,pkBody))
@@ -1273,7 +1290,7 @@ P_Tcs* Tcs::CharacterLineTest(Vector3 kStart,Vector3 kDir,P_Tcs* pkTester)
 						}													
 					}					
 				break;
-				
+/*				
 			case E_HMAP:
 				if(CharacterTestLineVSSphere(kStart,kPos2,pkBody))
 					if(CharacterTestLineVSMesh(kStart,kDir,pkBody))
@@ -1286,7 +1303,7 @@ P_Tcs* Tcs::CharacterLineTest(Vector3 kStart,Vector3 kDir,P_Tcs* pkTester)
 							pkClosest = pkBody;
 						}													
 					}					
-				break;
+				break;*/
 		}
 	}
 
@@ -1327,63 +1344,62 @@ P_Tcs* Tcs::TestLine(Vector3 kStart,Vector3 kDir,P_Tcs* pkTester)
 
 bool Tcs::CharacterTestLineVSMesh(const Vector3& kStart,const Vector3& kDir,P_Tcs* pkMesh)
 {
-	//if(!pkMesh->m_bHavePolygonData)
-	//	return false;	
-		
-	static Matrix4 kModelMatrix;
-	static float closest;
-	static bool bHaveColided;
-	static Vector3 kClosestNormal;
-	static Vector3 kClosestPos;
-	static Vector3 verts[3];	
 	static Vector3 kPoint2;
-	static int iFaces;
-	static float d;
 	
-	kModelMatrix 	= pkMesh->GetModelMatrix();	
-	closest 			= 99999999;
-	bHaveColided 	= false;		
-	kPoint2 			= kStart + kDir * 1000;
+	kPoint2 	= kStart + kDir * 1000;
+	
 
-		
-	iFaces = pkMesh->m_pkFaces->size();
-	for(unsigned int f=0;f<iFaces;f++)
-	{		 
-		verts[0] = kModelMatrix.VectorTransform((*pkMesh->m_pkVertex)[(*pkMesh->m_pkFaces)[f].iIndex[0]]);
-		verts[1] = kModelMatrix.VectorTransform((*pkMesh->m_pkVertex)[(*pkMesh->m_pkFaces)[f].iIndex[1]]);		
-		verts[2] = kModelMatrix.VectorTransform((*pkMesh->m_pkVertex)[(*pkMesh->m_pkFaces)[f].iIndex[2]]);		
-		
-		/*
-		if(m_iDebugGraph == 2)
-		{
-			//debug stuff
-			m_pkRender->Line(verts[0],verts[1]);
-			m_pkRender->Line(verts[1],verts[2]);		
-			m_pkRender->Line(verts[2],verts[0]);				
-		}	*/	
-		
-		if(TestLineVSPolygon(verts,&kStart,&kPoint2))
-		{	
-			d = kStart.DistanceTo(m_kLastTestPos);
-		
-			if( d < closest)
-			{
-				closest = d;
-				bHaveColided = true;
-				kClosestPos = m_kLastTestPos;
-				kClosestNormal = m_kLastTestNormal;
-			}		
-		}		
-	}
-	
-	if(bHaveColided)
+	if(pkMesh->m_kAABBTree.IsValid())
 	{
-		m_kLastTestPos = kClosestPos;		
-		m_kLastTestNormal = kClosestNormal;	
-		return true;
+		return pkMesh->m_kAABBTree.m_pkRootNode->TestLine(kStart,kPoint2,&m_kLastTestPos);
 	}
+	else
+	{
+		
+		static Matrix4 kModelMatrix;
+		static float closest;
+		static bool bHaveColided;
+		static Vector3 kClosestNormal;
+		static Vector3 kClosestPos;
+		static Vector3 verts[3];	
+		static int iFaces;
+		static float d;
+		
+		kModelMatrix 	= pkMesh->GetModelMatrix();	
+		closest 			= 99999999;
+		bHaveColided 	= false;		
 	
-	return false;	
+			
+		iFaces = pkMesh->m_pkFaces->size();
+		for(unsigned int f=0;f<iFaces;f++)
+		{		 
+			verts[0] = kModelMatrix.VectorTransform((*pkMesh->m_pkVertex)[(*pkMesh->m_pkFaces)[f].iIndex[0]]);
+			verts[1] = kModelMatrix.VectorTransform((*pkMesh->m_pkVertex)[(*pkMesh->m_pkFaces)[f].iIndex[1]]);		
+			verts[2] = kModelMatrix.VectorTransform((*pkMesh->m_pkVertex)[(*pkMesh->m_pkFaces)[f].iIndex[2]]);		
+			
+			if(TestLineVSPolygon(verts,&kStart,&kPoint2))
+			{	
+				d = kStart.DistanceTo(m_kLastTestPos);
+			
+				if( d < closest)
+				{
+					closest = d;
+					bHaveColided = true;
+					kClosestPos = m_kLastTestPos;
+					kClosestNormal = m_kLastTestNormal;
+				}		
+			}		
+		}
+		
+		if(bHaveColided)
+		{
+			m_kLastTestPos = kClosestPos;		
+			m_kLastTestNormal = kClosestNormal;	
+			return true;
+		}
+		
+		return false;			
+	}
 }
 
 bool Tcs::TestLineVSPolygon(const Vector3* pkVerts,const Vector3* pkPos1,const Vector3* pkPos2)
@@ -1527,10 +1543,6 @@ bool Tcs::CollideSphereVSSphere(P_Tcs* pkBody1,P_Tcs* pkBody2)
 
 void Tcs::TestSphereVsMesh(P_Tcs* pkBody1,P_Tcs* pkBody2,vector<Tcs_collission*>*	pkCollissions)
 {
-	bool retry = true;
-	bool didpen = false;
-	int nroftests = 0;
-	
 	//if body1 is the mesh just flip them,body2 shuld always be the mesh
 	if( (pkBody1->m_iTestType==E_MESH) || pkBody1->m_iTestType==E_HMAP )
 	{
@@ -1540,32 +1552,53 @@ void Tcs::TestSphereVsMesh(P_Tcs* pkBody1,P_Tcs* pkBody2,vector<Tcs_collission*>
 	}
 	
 	//make sure body2 have all the pointers else get angry and cry
-	if(!pkBody2->m_pkVertex)
-		return;		
-	if(!pkBody2->m_pkFaces)
+	if(!pkBody2->m_bHavePolygonData)
 		return;
 	
-	if(CollideSphereVSMesh(pkBody1,pkBody2))
+	if(pkBody2->m_kAABBTree.IsValid())
 	{
-		Tcs_collission* temp = new Tcs_collission;
-		
-		temp->Clear();
-		
-		temp->pkBody1 = pkBody1;
-		temp->pkBody2 = pkBody2;	
-		temp->kNormals.push_back((pkBody1->m_kNewPos - m_kLastTestPos).Unit());
-		temp->kPositions.push_back(m_kLastTestPos);
-					
-		pkCollissions->push_back(temp);				
+		if(CollideSphereVSAABBTree(pkBody1,pkBody2))
+		{
+			Tcs_collission* temp = new Tcs_collission;
+			
+			temp->pkBody1 = pkBody1;
+			temp->pkBody2 = pkBody2;	
+			temp->kNormals.push_back((pkBody1->m_kNewPos - m_kLastTestPos).Unit());
+			temp->kPositions.push_back(m_kLastTestPos);
+						
+			pkCollissions->push_back(temp);		
+		}
 	}
+	else
+	{	
+		if(CollideSphereVSMesh(pkBody1,pkBody2))
+		{
+			Tcs_collission* temp = new Tcs_collission;
+			
+			temp->pkBody1 = pkBody1;
+			temp->pkBody2 = pkBody2;	
+			temp->kNormals.push_back((pkBody1->m_kNewPos - m_kLastTestPos).Unit());
+			temp->kPositions.push_back(m_kLastTestPos);
+						
+			pkCollissions->push_back(temp);				
+		}
+	}
+}
 
+bool Tcs::CollideSphereVSAABBTree(P_Tcs* pkSphere,P_Tcs* pkMesh)
+{
+
+	if(pkMesh->m_kAABBTree.m_pkRootNode->TestSphere(pkSphere->m_kNewPos ,pkSphere->m_fRadius,&m_kLastTestPos))
+	{
+//  		m_kLastTestPos += pkMesh->m_kNewPos;
+		return true;
+	}
+	
+	return false;
 }
 
 bool Tcs::CollideSphereVSMesh(P_Tcs* pkSphere,P_Tcs* pkMesh)
 {
-// 	if(!CollideSphereVSSphere(pkSphere,pkMesh))
-// 		return false;
-	
 	static Matrix4 kModelMatrix;
 	static Vector3 kClosestNormal;
 	static Vector3 kClosestPos;

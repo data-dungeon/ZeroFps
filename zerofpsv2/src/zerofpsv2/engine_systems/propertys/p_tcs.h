@@ -6,7 +6,7 @@
 #include "../engine_systems_x.h"
 #include "p_mad.h"
  
-//#include "../tcs/tcs.h"
+#include "../tcs/aabbtree.h"
 
 #define TCS_GROUPS 10
 
@@ -88,6 +88,8 @@ class ENGINE_SYSTEMS_API P_Tcs : public Property
 		vector<Vector3>*		m_pkNormal;
 	
 		
+		AABBTree					m_kAABBTree;
+		
 		//temp data
 		Vector3	m_kAABBMax;
 		Vector3	m_kAABBMin;
@@ -118,7 +120,7 @@ class ENGINE_SYSTEMS_API P_Tcs : public Property
 		float GetBoundingRadius();
 		bool SetupMeshData();
 	
-
+		void DrawAABBTree();
 		
 	public:
 		

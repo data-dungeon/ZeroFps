@@ -117,7 +117,9 @@ class ENGINE_SYSTEMS_API Tcs : public ZFSubSystem
 		
 		void TestSphereVsMesh(P_Tcs* pkBody1,P_Tcs* pkBody2,vector<Tcs_collission*>*	pkCollissions);
 		bool CollideSphereVSMesh(P_Tcs* pkSphere,P_Tcs* pkMesh);			
-
+		bool CollideSphereVSAABBTree(P_Tcs* pkSphere,P_Tcs* pkMesh);
+		
+		
 		void TestMeshVsMesh(P_Tcs* pkBody1,P_Tcs* pkBody2,vector<Tcs_collission*>*	pkCollissions);
 		bool CollideMeshVSMesh(P_Tcs* pkSphere,P_Tcs* pkMesh,Tcs_collission* pkTempCol);			
 		bool CollideMeshVSMesh2(P_Tcs* pkSphere,P_Tcs* pkMesh);			

@@ -114,25 +114,26 @@ class ENGINE_SYSTEMS_API HeightMap
 		bool Save(const char* acFile);
 
 		// Set/Get Function
-		void SetPosition(Vector3 kNewPos);
-		Vector3 &GetPos(){return m_kPosition;};
-		void SetID(int iId) { m_iID = iId; }
+		void 		SetPosition(Vector3 kNewPos);
+		Vector3&	GetPos(){return m_kPosition;};
+		void 		SetID(int iId) { m_iID = iId; }
 		void		Invert() { m_bInverted = !m_bInverted; }
-		int GetTopLowTriangle(Vector3 kPos);
-		float GetTileSize() { return m_fTileSize; }
-		int	GetSize() {return int(m_iTilesSide * m_fTileSize); };				// Return the size of one side of the Hm.
+		int 		GetTopLowTriangle(Vector3 kPos);
+		float 	GetTileSize() { return m_fTileSize; }
+		int		GetSize() {return int(m_iTilesSide * m_fTileSize); };				// Return the size of one side of the Hm.
 		HM_vert* GetHMVertex()	{	return verts;	}
 		HM_vert* GetVert(int x,int z);		
-		void GetMapXZ(float& x,float& z);
-		Point GetSqrFromPos(Vector3 pos);
-		Vector3 GetPosFromSqr(Point square);
- 		float GetBrushSizeInAlphaUVSpace(float fSize);
-		Vector3 WorldToMap(Vector3 kVec);
-		Vector3 MapToLocal(Vector3 kVec);
+		void 		GetMapXZ(float& x,float& z);
+		Point 	GetSqrFromPos(Vector3 pos);
+		Vector3 	GetPosFromSqr(Point square);
+ 		float 	GetBrushSizeInAlphaUVSpace(float fSize);
+		Vector3 	WorldToMap(Vector3 kVec);
+		Vector3 	MapToLocal(Vector3 kVec);
 
 		// Sample
-		float Height(float x,float z);
-		Vector3 Tilt(float x,float z);		
+		float 	Height(float x,float z);
+		Vector3 	Tilt(float x,float z);	
+		bool		Inside(float x,float z);	
 
 		// Edit Commands / Selection
 		

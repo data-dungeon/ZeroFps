@@ -243,7 +243,7 @@ class ZeroEd :public Application , public ZGuiApp {
 
 		//heightmap
 		HeightMap*	SetPointer();
-		void			DrawHMEditMarker(HeightMap* pkHmap, Vector3 kCenterPos, float fInRadius, float fOutRadius );
+		void			DrawHMEditMarker(Vector3 kCenterPos, float fInRadius, float fOutRadius );
 		void			HMModifyCommand(float fSize);
 
 		//input

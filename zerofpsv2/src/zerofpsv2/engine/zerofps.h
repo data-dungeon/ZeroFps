@@ -285,7 +285,7 @@ class ENGINE_API ZeroFps : public I_ZeroFps {
 
 		//dont know what these are doing here anyway =P
 		void PrintToClient(int iConnectionID, const char* szMsg);
-		void AddHMProperty(Entity* pkEntity,int iNetWorkId, Vector3 kZoneSize);
+		void AddHMProperty(Entity* pkEntity,Vector3 kZoneSize);
 		
 		
 		// gets

@@ -207,6 +207,25 @@ Vector3 HeightMap::MapToLocal(Vector3 kVec)
 }
 
 
+bool HeightMap::Inside(float x,float z)
+{
+	x -= m_kPosition.x;	//m_iTilesSide/2;
+	z -= m_kPosition.z;	//m_iTilesSide/2;
+
+	x -= m_kCornerOffset.x;
+	z -= m_kCornerOffset.z;
+
+	x /= m_fTileSize;
+	z /= m_fTileSize;
+
+	if(x<0 || x>m_iTilesSide || z<0 || z>m_iTilesSide) 
+	{
+		return false;
+	}
+	
+	return true;
+}
+
 /**	\brief	Returns height at one position in Hmap.
 
 	Takes the x,z world coo and returns the world y position of the hmap or as if had a height of 0.0 if the position
@@ -468,8 +487,8 @@ bool HeightMap::Save(const char* acFile)
 	HM_fileheader k_Fh;
 	k_Fh.m_iHmSize			= m_iVertexSide;
 	k_Fh.m_iNumOfLayers	= m_kLayer.size();
-	k_Fh.m_fTileSize = m_fTileSize;
-	k_Fh.m_bInverted = m_bInverted;
+	k_Fh.m_fTileSize 		= m_fTileSize;
+	k_Fh.m_bInverted 		= m_bInverted;
 
 	ZFVFile savefile;
 	if(!savefile.Open(hmfile.c_str(),0,true))

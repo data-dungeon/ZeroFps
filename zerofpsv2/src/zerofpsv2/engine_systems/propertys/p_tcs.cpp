@@ -472,8 +472,8 @@ bool P_Tcs::SetupMeshData()
 {
 	// cout << "Setting up TCS Mesh: ";
 
-	P_Mad* pkMP = static_cast<P_Mad*>(m_pkEntity->GetProperty("P_Mad"));	
-	if(pkMP != NULL)
+	
+	if(P_Mad* pkMP = static_cast<P_Mad*>(m_pkEntity->GetProperty("P_Mad")))
 	{
 		// cout << "Found MAD" <<endl;
 		//look for core pointer in mad property
@@ -502,8 +502,7 @@ bool P_Tcs::SetupMeshData()
 		}	
 	}
 	
-	P_HMRP2* pkHm = static_cast<P_HMRP2*>(m_pkEntity->GetProperty("P_HMRP2"));	
-	if(pkHm)
+	if(P_HMRP2* pkHm = static_cast<P_HMRP2*>(m_pkEntity->GetProperty("P_HMRP2")))	
 	{
 		// cout << "found Hmap" << endl;
 		// Setup Collision Data
@@ -665,89 +664,59 @@ bool P_Tcs::TestSides(Vector3* kVerts,Vector3* pkNormal,Vector3 kPos)
 
 void P_Tcs::Draw()
 {
+	if(!m_pkZeroFps->GetCam()->GetFrustum()->SphereInFrustum(m_pkEntity->GetWorldPosV(),m_fRadius))
+		return;
+	
+
+	if(m_kAABBTree.IsValid())
+		DrawAABBTree();
+	else
+	{	
+	
 	// Draw TCS bound sphere.
 //	m_pkRender->Sphere(GetEntity()->GetIWorldPosV(),m_fRadius,2,Vector3(1,0,1),false);
-	if(!m_bActive)
-		m_pkRender->DrawAABB(GetEntity()->GetIWorldPosV() + m_kAABBMin,GetEntity()->GetIWorldPosV() + m_kAABBMax,Vector3(1,0,1) );	
-	else if(m_bStatic)
-		m_pkRender->DrawAABB(GetEntity()->GetIWorldPosV() + m_kAABBMin,GetEntity()->GetIWorldPosV() + m_kAABBMax,Vector3(1,1,1) );
-	else if(m_bSleeping)
-		m_pkRender->DrawAABB(GetEntity()->GetIWorldPosV() + m_kAABBMin,GetEntity()->GetIWorldPosV() + m_kAABBMax,Vector3(0,0,1) );
-	else
-		m_pkRender->DrawAABB(GetEntity()->GetIWorldPosV() + m_kAABBMin,GetEntity()->GetIWorldPosV() + m_kAABBMax,Vector3(0,1,0) );
-				
-	/*
-	
-	if(!m_pkVertex)
-		return;
-
-	glPushAttrib(GL_DEPTH_BUFFER_BIT|GL_LIGHTING_BIT|GL_FOG_BIT);
-	glDisable(GL_LIGHTING);
-	glDisable(GL_TEXTURE_2D);
-	glEnable(GL_DEPTH_TEST);
-
-	GenerateModelMatrix();
-
-	Vector3 data[3];
-	float fColor = 0.4;
-
-	for(unsigned int i=0; i<m_pkFaces->size(); i++)
-	{
-		for(int j=0;j<3;j++)
-         data[j] = m_kModelMatrix.VectorTransform((*m_pkVertex)[ (*m_pkFaces)[i].iIndex[j]]);
-
-		// Update Color
-		glColor3f(fColor,fColor,fColor);
-		fColor+= 0.05;
-		if(fColor >= 1.0)
-			fColor = 0.4;
-
-		// Draw Triangle
-		glEnable(GL_POLYGON_OFFSET_FILL);	glPolygonOffset(-1,-5);
-		glBegin(GL_TRIANGLES );	
-			glVertex3fv( (float*) &data[0] );		
-			glVertex3fv( (float*) &data[1] );		
-			glVertex3fv( (float*) &data[2] );		
-		glEnd();
-		glDisable(GL_POLYGON_OFFSET_FILL);	glPolygonOffset(0,0);	
-
-		// Calculate Center of Triangle
-		Vector3 kCenter(0,0,0);
-		for(int iIndex=0; iIndex<3; iIndex++)
-			kCenter += data[ iIndex ];
-		kCenter *= 0.333;
-
-		// Draw Normal of triangle
-		Vector3 kNormEnd = kCenter + (*m_pkNormal)[i];
-		glColor3f(1,0,0);
-		glBegin( GL_LINES  );	
-			glVertex3fv( (float*) &kCenter );		
-			glVertex3fv( (float*) &kNormEnd );		
-		glEnd();
+		static Vector3 kColor;		
+		
+		if(!m_bActive)
+			kColor.Set(1,0,1);
+		else if(m_bStatic)
+			kColor.Set(1,1,1);
+		else if(m_bSleeping)
+			kColor.Set(0,0,1);
+		else
+			kColor.Set(0,1,0);
+			
+			
+		m_pkRender->DrawAABB(GetEntity()->GetIWorldPosV() + m_kAABBMin,GetEntity()->GetIWorldPosV() + m_kAABBMax,kColor);									
 	}
-
-	glPopAttrib();
-	
-	*/
 }
 
-// void P_Tcs::GenerateModelMatrix() 
-// {
-// 	static kModelMatrix;
-// //	m_kModelMatrix.Identity();
-// //	m_kModelMatrix.Scale(m_fScale,m_fScale,m_fScale);
-// //	m_kModelMatrix *= GetObject()->GetWorldOriM();
-// 
-// 
-// 	m_kModelMatrix.Identity();
-// 	m_kModelMatrix.Scale(m_fScale,m_fScale,m_fScale);
-// 	
-// 	Matrix4 kMat;
-// 	kMat = m_pkEntity->GetWorldRotM();
-// 	m_kModelMatrix *= kMat;	
-// 	m_kModelMatrix.Translate(m_pkEntity->GetWorldPosV());		
-// 
-// }
+void P_Tcs::DrawAABBTree()
+{
+	static Vector3 kColor;		
+	
+	if(!m_bActive)
+		kColor.Set(1,0,1);
+	else if(m_bStatic)
+		kColor.Set(1,1,1);
+	else if(m_bSleeping)
+		kColor.Set(0,0,1);
+	else
+		kColor.Set(0,1,0);
+
+
+	vector<AABB>	kAABBList;
+	
+	m_kAABBTree.GetAABBList(&kAABBList);
+
+	int iSize = kAABBList.size();
+	for(int i =iSize-1;i>=0;i--)
+	{
+			m_pkRender->DrawAABB(kAABBList[i].m_kMin,
+										kAABBList[i].m_kMax,kColor );
+	}
+}
+
 
 const Matrix4& P_Tcs::GetModelMatrix() const
 {

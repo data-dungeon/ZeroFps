@@ -92,11 +92,14 @@ bool Plane::LineTest(const Vector3& kP1,const Vector3& kP2,Vector3* kColPos)
 
 void Plane::Set(const Vector3& kPoint0, const Vector3& kPoint1, const Vector3& kPoint2)
 {
-	Vector3 kDiff1 = kPoint1 - kPoint0;
-	Vector3 kDiff2 = kPoint2 - kPoint0;
+	static Vector3 kDiff1;
+	static Vector3 kDiff2;
 
-    m_kNormal = kDiff1.Cross(kDiff2);
-    m_kNormal.Normalize();
+	kDiff1 = kPoint1 - kPoint0;
+	kDiff2 = kPoint2 - kPoint0;
+
+	m_kNormal = kDiff1.Cross(kDiff2);
+	m_kNormal.Normalize();
 
     m_fD = - kPoint0.Dot( m_kNormal );
 }

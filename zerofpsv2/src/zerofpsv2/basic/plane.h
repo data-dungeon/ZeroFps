@@ -12,7 +12,7 @@ class BASIC_API Plane
 {
 	public:
 // Data
-		Vector3		m_kNormal;								///< Normal of plane ( A,B,C in plane equation).
+		Vector3	m_kNormal;								///< Normal of plane ( A,B,C in plane equation).
 		float		m_fD;									///< Distance ( D in plane equation).
 
 // Constructors

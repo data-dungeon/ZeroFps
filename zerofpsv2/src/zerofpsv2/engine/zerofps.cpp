@@ -1877,7 +1877,7 @@ int ZeroFps::GetClientObjectID()
 
 
 //vad g� denna h� igentligen?
-void ZeroFps::AddHMProperty(Entity* pkEntity, int iNetWorkId, Vector3 kZoneSize)
+void ZeroFps::AddHMProperty(Entity* pkEntity, Vector3 kZoneSize)
 {
 	// Get Entity, Check For Valid and Check if its already have a hmap.
 	//Entity* pkEntity = this->m_pkEntityManager->GetObjectByNetWorkID(iNetWorkId);
@@ -1887,7 +1887,7 @@ void ZeroFps::AddHMProperty(Entity* pkEntity, int iNetWorkId, Vector3 kZoneSize)
 	
 	// Create a new Hmap and add it.
 	HeightMap* pkMap = new HeightMap;
-	pkMap->SetID(iNetWorkId);
+	pkMap->SetID(pkEntity->GetEntityID());
 	pkMap->Create( int(kZoneSize.x) );
 	//pkMap->Random();
 

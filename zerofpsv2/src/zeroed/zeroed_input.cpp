@@ -30,6 +30,7 @@ vector<HMSelectVertex> ZeroEd::GetAllSelectedHMVertex()
 // Handles input for EditMode Terrain.
 void ZeroEd::Input_EditTerrain()
 {
+	
 	if(m_pkInputHandle->VKIsDown("inrad+"))		m_fHMInRadius += 1 * m_pkZeroFps->m_pkEntityManager->GetSimDelta();
 	if(m_pkInputHandle->VKIsDown("inrad-"))		m_fHMInRadius -= 1 * m_pkZeroFps->m_pkEntityManager->GetSimDelta();
 	if(m_pkInputHandle->VKIsDown("outrad+"))		m_fHMOutRadius += 1 * m_pkZeroFps->m_pkEntityManager->GetSimDelta();
@@ -114,24 +115,29 @@ void ZeroEd::Input_EditZone()
 		SendAddZone(m_kZoneMarkerPos,m_kZoneSize,m_kZoneModelRotation,m_strActiveZoneName);
 		m_kLastZonePos=m_kZoneMarkerPos; 
 		m_kLastZoneSize=m_kZoneSize;
-		
-		//request a new zone list
-		//SendZoneListRequest();	
 	}
 	
 	if(m_pkInputHandle->Pressed(MOUSEMIDDLE) && !DelayCommand())
 	{
 		SendAddZone(m_kZoneMarkerPos,m_kZoneSize,m_kZoneModelRotation,string(""));
 
-		//request a new zone list
-		//SendZoneListRequest();
 	}	
+	
+	if(m_pkInputHandle->VKIsDown("createhmapzone") && !DelayCommand())
+	{
+		SendAddZone(m_kZoneMarkerPos,m_kZoneSize,m_kZoneModelRotation,string(""));
+
+		m_iCurrentMarkedZone = GetZoneID(m_kZoneMarkerPos);
+		if(ZoneData* pkData = GetZoneData(m_iCurrentMarkedZone))
+		{
+			m_pkZeroFps->AddHMProperty(pkData->m_pkZone, m_kZoneSize);
+		}
+	}		
 	
 	if(m_pkInputHandle->VKIsDown("remove"))	
 	{	
 		//delete selected entity ( the server cheks if its a zone or an normal entity)
 		SendDeleteSelected();
-		//SendZoneListRequest();
 	}
 		
 	if(m_pkInputHandle->VKIsDown("rotate") && !DelayCommand())
@@ -160,10 +166,10 @@ void ZeroEd::Input_EditZone()
 	}
 	
 	//some default zone sizes, a hack kind of =D
-	if(m_pkInputHandle->Pressed(KEY_1)) m_kZoneSize.Set(3,3,3);
+	if(m_pkInputHandle->Pressed(KEY_1)) m_kZoneSize.Set(4,4,4);
 	if(m_pkInputHandle->Pressed(KEY_2)) m_kZoneSize.Set(8,8,8);
 	if(m_pkInputHandle->Pressed(KEY_3)) m_kZoneSize.Set(16,16,16);	
-	if(m_pkInputHandle->Pressed(KEY_4)) m_kZoneSize.Set(32,16,32);	
+	if(m_pkInputHandle->Pressed(KEY_4)) m_kZoneSize.Set(16,32,16);	
 	if(m_pkInputHandle->Pressed(KEY_5)) m_kZoneSize.Set(64,16,64);		
 	if(m_pkInputHandle->Pressed(KEY_6)) m_kZoneSize.Set(1024,32,1024);	
 
@@ -561,7 +567,7 @@ void ZeroEd::Input()
 		
 		if(Entity* pkObj = m_pkEntityManager->GetEntityByID(m_iCurrentObject))
 		{
-			m_pkZeroFps->AddHMProperty(pkObj, pkObj->GetEntityID(),m_kZoneSize);
+			m_pkZeroFps->AddHMProperty(pkObj,m_kZoneSize);
 		}
 		//int id = m_pkEntityManager->GetZoneIndex(m_kZoneMarkerPos,-1,false);
 		//ZoneData* z = m_pkEntityManager->GetZoneData(id);
@@ -601,7 +607,7 @@ void ZeroEd::Input()
 	
 		if(m_pkInputHandle->VKIsDown("modezone"))			m_iEditMode = EDIT_ZONES;
 		if(m_pkInputHandle->VKIsDown("modeobj"))			m_iEditMode = EDIT_OBJECTS;		
-		if(m_pkInputHandle->VKIsDown("modehmvertex"))		m_iEditMode = EDIT_HMAP;		
+		if(m_pkInputHandle->VKIsDown("modehmvertex"))	m_iEditMode = EDIT_HMAP;		
 
 /*		if(m_pkInputHandle->VKIsDown("lighton"))			m_pkZShader->SetForceLighting(LIGHT_ALWAYS_ON);	
 		if(m_pkInputHandle->VKIsDown("lightoff"))			m_pkZShader->SetForceLighting(LIGHT_ALWAYS_OFF);
