@@ -46,6 +46,8 @@ class PlayerControlProperty: public Property {
 		bool walking;
 		bool onGround;		
 		Vector3 GroundNormal;
+		
+		float m_fGroundAngle;
 		//Vector3 OldWalkVel;
 		
 		Sound *walksound;		

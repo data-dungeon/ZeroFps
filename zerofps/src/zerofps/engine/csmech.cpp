@@ -89,11 +89,12 @@ Collision* CSMech::Collide_CSSphere(CSSphere* kOther,float fTime)
 				kPos1=kPos2;			
 				kPos2=kGlidePos;					
 				
+				/*
 				if(c>1){
 					newhit=false;
 					kPos2=kPos1;
 				}
-				
+				*/
 			}
 		}
 		
@@ -199,7 +200,7 @@ bool CSMech::TestPolygon(Vector3* kVerts,Vector3 kPos1,Vector3 kPos2,float fR)
 
 bool CSMech::TestSides(Vector3* kVerts,Vector3* pkNormal,Vector3 kPos,float fR)
 {
-//	fR+=0.05;
+//	fR-=0.05;
 
 	Plane side[3];
 	
