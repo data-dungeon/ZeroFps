@@ -461,6 +461,14 @@ bool NetWork::SendRaw(NetPacket* pkNetPacket)
 	kPacket.maxlen		= MAX_PACKET_SIZE;
 	kPacket.address	= pkNetPacket->m_kAddress;
 
+	// Validate Data
+	//ZFAssert(kPacket.len > 0 && kPacket.len < MAX_PACKET_SIZE, "NetWork::SendRaw - Size Errors");
+	if(kPacket.len < 0 && kPacket.len > MAX_PACKET_SIZE)
+	{
+		assert(0);
+	}
+
+
 	int iRes = SDLNet_UDP_Send(m_pkSocket, -1, &kPacket);
 
 	return true;
@@ -474,6 +482,12 @@ void NetWork::SendUDP(ZFNetPacketData* pkData, int iSize, IPaddress* pkIp)
 	kPacket.len			= iSize + sizeof(ZFNetHeader);
 	kPacket.maxlen		= MAX_PACKET_SIZE;
 	kPacket.address	= *pkIp;
+
+	//ZFAssert(kPacket.len > 0 && kPacket.len < MAX_PACKET_SIZE, "NetWork::SendRaw - Size Errors");
+	if(kPacket.len < 0 && kPacket.len > MAX_PACKET_SIZE)
+	{
+		assert(0);
+	}
 
 	int iRes = SDLNet_UDP_Send(m_pkSocket, -1, &kPacket);
 }
