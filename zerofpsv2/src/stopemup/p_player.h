@@ -11,16 +11,20 @@ class P_Player : public Property
 		StopEmUp*	m_pkStopEmUp;
 	
 		float		m_fInv;
-			
+		float		m_fSecondaryTime;	
 		
 	public:
 		int		m_iEnergy;
 		int		m_iMaxEnergy;
 		int		m_iScore;
 		string	m_strGunName;
+		bool		m_bSecondary;
+		int		m_iStopers;
 					
 		P_Player();
 
+		void Update();
+		
 		void Touch(int iID);
 		
 		void PackTo(NetPacket* pkNetPacket, int iConnectionID );

@@ -54,6 +54,13 @@ P_Powerup::P_Powerup()
 				m_strPowerupName = "Health";
 				break;			
 			
+			case 6:
+			case 5:
+			case 4:
+				m_iPowerupType = 4;
+				m_strPowerupName = "Stoper";
+				break;	
+							
 			case 1:
 				if(iLevel >= 6)
 				{
@@ -169,6 +176,17 @@ void P_Powerup::Touch(int iID)
 							pkPlayer->SetNetUpdateFlag(true);						
 							break;
 						}					
+
+						//stoper						
+						case 4:
+						{
+							if(pkPlayer->m_iStopers < 5)
+								pkPlayer->m_iStopers++;
+							
+							pkPlayer->SetNetUpdateFlag(true);						
+							break;
+						}					
+						
 					}						
 						
 				}

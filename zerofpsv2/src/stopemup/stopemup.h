@@ -40,6 +40,7 @@ class StopEmUp :public Application , public ZGuiApp
 		//client stuff
 		int			m_iPlayerID;
 		bool			m_bFire;
+		bool			m_bSFire;
 		bitset<6>	m_kCharacterControls;
 		
 		int			m_iEnergy;
@@ -47,6 +48,7 @@ class StopEmUp :public Application , public ZGuiApp
 		int			m_iScore;
 		int			m_iCurrentLevel;
 		int			m_iCurrentLives;
+		int			m_iStopers;
 		string		m_strGunName;
 		
 		

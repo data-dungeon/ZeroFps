@@ -15,18 +15,41 @@ P_Player::P_Player()
 	m_iVersion = 1;
 
 	
+	m_bSecondary	= false;
+	m_fSecondaryTime = 0;
+	
 	m_iEnergy		= 100;
 	m_iMaxEnergy	= 100;
 	m_iScore			= 0;	
 	m_fInv			= -1;
 	m_strGunName	= "Machine Gun";
+	m_iStopers		= 0;
+	
 }
 
+void P_Player::Update()
+{
+	if(m_bSecondary)
+	{
+		//add box
+		if(m_iStopers > 0)
+		{			
+			if(m_pkZeroFps->GetTicks() > m_fSecondaryTime + 1)
+			{			 
+				m_fSecondaryTime = m_pkZeroFps->GetTicks();
+					
+				m_iStopers--;
+				m_pkEntityManager->CreateEntityFromScriptInZone("data/script/objects/stop.lua",GetEntity()->GetWorldPosV()+Vector3(0,-0.6,0),-1);
+			}
+		}
+	}
+}
 
 void P_Player::Touch(int iID)
 {
 	if(Entity* pkEnt = m_pkEntityManager->GetEntityByID(iID))
 	{
+	
 		//check if invunrable
 		if(m_fInv != -1)
 		{
@@ -84,6 +107,7 @@ void P_Player::PackTo( NetPacket* pkNetPacket, int iConnectionID  )
 	pkNetPacket->Write(m_iEnergy);
 	pkNetPacket->Write(m_iMaxEnergy);
 	pkNetPacket->Write(m_iScore);
+	pkNetPacket->Write(m_iStopers);
 	pkNetPacket->Write_Str(m_strGunName);
 	
 
@@ -95,6 +119,7 @@ void P_Player::PackFrom( NetPacket* pkNetPacket, int iConnectionID  )
 	pkNetPacket->Read(m_iEnergy);
 	pkNetPacket->Read(m_iMaxEnergy);
 	pkNetPacket->Read(m_iScore);
+	pkNetPacket->Read(m_iStopers);
 	pkNetPacket->Read_Str(m_strGunName);
 }
 

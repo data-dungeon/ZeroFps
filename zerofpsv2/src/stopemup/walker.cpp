@@ -101,7 +101,9 @@ void P_Walker::Update()
 							//if player is farther away than 4 go for the goal
 							if(pkEnt->GetWorldPosV().DistanceTo(GetEntity()->GetWorldPosV()) > 6)
 								m_iTarget = m_iGoalID;						
-						}				
+						}
+						else
+							m_iTarget = m_iGoalID;																
 					}
 				}
 				

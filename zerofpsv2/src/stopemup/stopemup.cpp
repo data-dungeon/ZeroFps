@@ -49,6 +49,7 @@ StopEmUp::StopEmUp(char* aName,int iWidth,int iHeight,int iDepth)
 	m_iLives 			=0;
 	m_iGoalEnt			=-1;
 	m_iCurrentLives	=-1;
+	m_iStopers			=0;
 	
 	m_strMap				="../datafiles/stopemup/maps/woods";
 }
@@ -183,6 +184,7 @@ void StopEmUp::OnSystem(void)
 					m_iMaxEnergy = pkPlayer->m_iMaxEnergy;
 					m_iScore = 		pkPlayer->m_iScore;
 					m_strGunName = pkPlayer->m_strGunName;
+					m_iStopers	=	pkPlayer->m_iStopers;
 				}					
 			}	
 		}
@@ -209,7 +211,7 @@ void StopEmUp::OnIdle()
 		m_pkZeroFps->DevPrintf("StopEmUp-Client", "ENERGY:  %d /  %d",m_iEnergy,m_iMaxEnergy);
 		m_pkZeroFps->DevPrintf("StopEmUp-Client", temp);
 		m_pkZeroFps->DevPrintf("StopEmUp-Client", "GUN: %s",m_strGunName.c_str());
-		
+		m_pkZeroFps->DevPrintf("StopEmUp-Client", "STOPERS: %d",m_iStopers);
 	}
 }
 
@@ -226,7 +228,8 @@ void StopEmUp::Input()
 				m_kCharacterControls[eUP] = 	m_pkInputHandle->Pressed(KEY_UP);
 				m_kCharacterControls[eDOWN] =	m_pkInputHandle->Pressed(KEY_DOWN);			
 				m_bFire							=	m_pkInputHandle->Pressed(KEY_LCTRL);			
-	
+				m_bSFire							=	m_pkInputHandle->Pressed(KEY_LSHIFT);			
+				
 				float fYAngle = pkCam->Get3PYAngle();
 				
 				//reset straf keys
@@ -270,6 +273,7 @@ void StopEmUp::SendControlInfo()
 			kNp.Write(pkCam->Get3PYAngle() );
 			kNp.Write(pkCam->Get3PPAngle() );
 			kNp.Write(m_bFire);
+			kNp.Write(m_bSFire);
 			
 			kNp.TargetSetClient(0);
 			SendAppMessage(&kNp);		
@@ -467,11 +471,13 @@ void StopEmUp::OnNetworkMessage(NetPacket *pkNetMessage)
 			float	fYAngle;
 			float fPAngle;
 			bool bFire;
+			bool bSFire;
 							
 			pkNetMessage->Read(kControls);
 			pkNetMessage->Read(fYAngle);
 			pkNetMessage->Read(fPAngle);
 			pkNetMessage->Read(bFire);
+			pkNetMessage->Read(bSFire);
 				
 			if(Entity* pkCharacter = m_pkEntityManager->GetEntityByID(iEntityID))
 			{
@@ -488,6 +494,11 @@ void StopEmUp::OnNetworkMessage(NetPacket *pkNetMessage)
 				else
 					cout<<"WARNING:player missing P_GUN"<<endl;
 					
+				if(P_Player* pkPlayer = (P_Player*)pkCharacter->GetProperty("P_Player"))
+					pkPlayer->m_bSecondary = bSFire;
+				else
+					cout<<"WARNING:player missing P_Player"<<endl;
+
 			}
 
 		

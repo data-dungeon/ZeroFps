@@ -799,6 +799,7 @@ void Tcs::UpdateAABBs()
 			pkBody->m_kAABBRotation = pkBody->m_kNewRotation;				
 		}
 		
+		
 		switch(pkBody->m_iTestType)
 		{
 			case E_BOX:				
@@ -857,6 +858,9 @@ void Tcs::UpdateAABBs()
 				{
 					pkBody->m_kAABBMax.Set(pkBody->m_fRadius,pkBody->m_fRadius,pkBody->m_fRadius);
 					pkBody->m_kAABBMin.Set(-pkBody->m_fRadius,-pkBody->m_fRadius,-pkBody->m_fRadius);		
+					
+					//want to test nexttime to
+					pkBody->m_kAABBRotation.Zero();
 					break;
 				}				
 				
