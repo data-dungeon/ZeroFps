@@ -184,6 +184,16 @@ void MistClient::OnIdle()
 	Input();
 }
 
+bool MistClient::DelayCommand()
+{
+	if(m_pkZeroFps->GetEngineTime() < m_fDelayTime)
+		return true;
+
+	m_fDelayTime = m_pkZeroFps->GetEngineTime() + float(0.3);
+	return false;
+}
+
+
 void MistClient::Input()
 {
 	//get mouse
@@ -197,6 +207,12 @@ void MistClient::Input()
 	m_kCharacterControls[eRIGHT]= m_pkInputHandle->VKIsDown("move_right");
 	m_kCharacterControls[eJUMP] = m_pkInputHandle->VKIsDown("jump");
 	m_kCharacterControls[eCRAWL] =m_pkInputHandle->VKIsDown("crawl");
+
+	if(m_pkInputHandle->Pressed(KEY_F1) && !DelayCommand())
+	{
+		if(IsWndVisible("ChatDlgMainWnd"))
+			LoadStartScreenGui(false);
+	}
 	
 	//update camera
 	if(Entity* pkCharacter = m_pkEntityManager->GetEntityByID(m_iCharacterID))

@@ -30,6 +30,9 @@ class MistClient :public Application, public ZGuiApp {
 			FID_KILLME,
 		};
 
+		//delay
+		float	m_fDelayTime;
+
 		Camera*		m_pkCamera;				//main camera
 		int			m_iCharacterID;		//current active character ID
       		
@@ -47,6 +50,7 @@ class MistClient :public Application, public ZGuiApp {
 		void UpdateCharacter();
 		void SendControlInfo();
 		void Input();
+		bool DelayCommand();
 		
 		//chat system
 		void Say(string strMsg);
