@@ -1036,27 +1036,29 @@ void CMembersDlg::OnEquip(int iItemID, DMContainer* pkDestContainer)
 
 	Entity* pkEntity = m_pkFps->m_pkObjectMan->GetObjectByNetWorkID ( iItemID );
 
+	if ( !pkEntity )
+		return;
+
+	vector<int>* pkItemTypes = pkDestContainer->GetItemTypes();
+
 	// check type of item equipped
-
-	// equip weapon
-	if ( pkEntity  )
+	for ( int i = 0; i < pkItemTypes->size(); i++ )
 	{
-		// Get owner object
-		Entity* pkOwner = m_pkFps->m_pkObjectMan->GetObjectByNetWorkID ( pkDestContainer->GetOwnerID() ); 
+			
+		// equip weapon
+		if ( pkItemTypes->at(i) == DMITEM_WEAPON )
+		{
+			// Get owner object
+			Entity* pkOwner = m_pkFps->m_pkObjectMan->GetObjectByNetWorkID ( pkDestContainer->GetOwnerID() ); 
+			pkEntity->SetLocalPosV ( Vector3(0,0,0) );
 
+			P_LinkToJoint* pkLink = (P_LinkToJoint*)pkEntity->AddProperty ("P_LinkToJoint");      
+			pkLink->SetJoint( "righthand" );
+		}
 
-		// this code is hellspawn
-		//pkEntity->SetUpdateStatus ( UPDATE_ALL );
-		//pkOwner->SetUpdateStatus( UPDATE_ALL );
-		//pkEntity->SetUseZones(false);
-		//pkEntity->SetWorldPosV ( Vector3(0,1.4,0.7) );
+		if ( pkItemTypes->at(i) == DMITEM_ARMOUR )
+		{
 
-		//pkEntity->SetLocalPosV ( Vector3(0,1.4,0.7) );
-		pkEntity->SetLocalPosV ( Vector3(0,0,0) );
-		//pkEntity->SetRelativeOri (true);
-
-		P_LinkToJoint* pkLink = (P_LinkToJoint*)pkEntity->AddProperty ("P_LinkToJoint");      
-		pkLink->SetJoint( "righthand" );
-
+		}
 	}
 }

@@ -15,40 +15,40 @@
 class MCOMMON_API P_Item: public Property 
 {
 	private:
-      string m_kObjectScriptname; // which script the object is created from
+		string m_kObjectScriptname; // which script the object is created from
                                   // needed when splitting items
-   public:
+	public:
 
-      list<SendType> m_kSends;       // the clients to recieve data from this property
+		list<SendType> m_kSends;       // the clients to recieve data from this property
 
 		ItemStats *m_pkItemStats;
-      vector<Entity*>* m_pkInventoryList;
+		vector<Entity*>* m_pkInventoryList;
 
-	   void Update();
+		void Update();
 		void CloneOf(Property* pkProperty) {}
 		vector<PropertyValues> GetPropertyValues(); 
 
 		P_Item( string kName );
 		P_Item();
 
-      void Save(ZFIoInterface* pkPackage);
-      void Load(ZFIoInterface* pkPackage);
+		void Save(ZFIoInterface* pkPackage);
+		void Load(ZFIoInterface* pkPackage);
 
-      void PackTo(NetPacket* pkNetPacket, int iConnectionID );
+		void PackTo(NetPacket* pkNetPacket, int iConnectionID );
 		void PackFrom(NetPacket* pkNetPacket, int iConnectionID );
 
 		bool HandleSetValue( string kValueName, string kValue );
 
-      Entity* Split ( int iTookens );
-      bool Stock ( Entity *pkObject );
+		Entity* Split ( int iTookens );
+		bool Stock ( Entity *pkObject );
 
-      void RequestUpdateFromServer (string kType);
+		void RequestUpdateFromServer (string kType);
 
- 		void AddSendsData(SendType);
+		void AddSendsData(SendType);
 
-      bool UseOn ( Entity *pkCharacterObject );
+		bool UseOn ( Entity *pkCharacterObject );
 
-      friend class Container;
+		friend class Container;
 };
 
 MCOMMON_API Property* Create_P_Item();

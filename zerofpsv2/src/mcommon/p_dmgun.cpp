@@ -57,8 +57,6 @@ bool P_DMGun::Fire(Vector3 kTarget)
 	m_fTimeFired = t;
 	m_bFireing = true;
 	m_kDir = kTarget - (m_pkObject->GetWorldPosV() + m_kGunOffset);
-
-
 	
 	return true;
 }
@@ -209,9 +207,23 @@ bool P_DMGun::FireBullets(int iAmount)
 	
 					if(d < closest)
 					{
-						closest = d;
-						pkClosest = kObjects[i];
-						kPickPos = cp;
+						// annoying test, hittest checks with bindpose,
+						// so dead models are hit as if they are standing :(
+						if( P_DMCharacter* pkChar = (P_DMCharacter*)kObjects[i]->GetProperty("P_DMCharacter") )
+						{
+							if ( pkChar->GetStats()->m_iLife > 0 )
+							{
+								closest = d;
+								pkClosest = kObjects[i];
+								kPickPos = cp;
+							}
+						}
+						else
+						{
+							closest = d;
+							pkClosest = kObjects[i];
+							kPickPos = cp;
+						}
 					}				
 				}
 			}				
@@ -223,9 +235,7 @@ bool P_DMGun::FireBullets(int iAmount)
 			
 			
 			if(P_DMCharacter* pkChar = (P_DMCharacter*)pkClosest->GetProperty("P_DMCharacter"))
-			{			
-				pkChar->Damage(0,m_fDamage);
-			}
+					pkChar->Damage(0,m_fDamage);
 		}
 		else
 			m_kHitPos.push_back(pair<Vector3,float>(kStart+kDir*100,t));			

@@ -13,7 +13,7 @@ P_DMItem::P_DMItem()
 	m_strIcon = "default.bmp";
 	m_iSizeX = 1;	
 	m_iSizeY = 1;	
-	m_iType = DMItemDefault;
+	m_iType = 0;
 
 }
 

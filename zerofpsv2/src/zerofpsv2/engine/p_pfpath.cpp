@@ -25,6 +25,9 @@ P_PfPath::P_PfPath()
 	
 	m_kOffset.Set(0,0.1,0);
 	m_bHaveOffset	= false;
+
+	m_kRunAnim = "run";
+	m_kIdleAnim = "idle";
 }
 
 
@@ -127,7 +130,7 @@ void P_PfPath::Update()
 			//play idle
 			P_Mad* pm = (P_Mad*)m_pkObject->GetProperty("P_Mad");
 			if(pm)
-				pm->SetAnimation("idle",0);
+				pm->SetAnimation((char*)m_kIdleAnim.c_str(),0);
 		}
 		else
 		{
@@ -235,7 +238,7 @@ bool P_PfPath::MakePathFind(Vector3 kDestination)
 		//play run animation
 		P_Mad* pm = (P_Mad*)m_pkObject->GetProperty("P_Mad");
 		if(pm)
-			pm->SetAnimation("run",0);
+			pm->SetAnimation((char*)m_kRunAnim.c_str(),0);
 
 		return true;
 	}

@@ -415,8 +415,12 @@ void DarkMetropolis::Input()
 				if(pkEnt)
 					if(pkEnt->GetProperty("P_DMCharacter"))   //selected a character
 					{
-						((CGamePlayDlg*)m_pkGamePlayDlg)->SelectAgent(pkEnt->GetEntityID(), false);
-						SelectAgent(pkEnt->GetEntityID(), false,false, false);
+						// check if character is on your team
+						if ( ((P_DMCharacter*)pkEnt->GetProperty("P_DMCharacter"))->m_iTeam == 0 )
+						{
+							((CGamePlayDlg*)m_pkGamePlayDlg)->SelectAgent(pkEnt->GetEntityID(), false);
+							SelectAgent(pkEnt->GetEntityID(), false,false, false);
+						}
 					}
 					else if(pkEnt->GetProperty("P_DMHQ"))		//selected a HQ , 
 					{
@@ -469,9 +473,12 @@ void DarkMetropolis::Input()
 						if(pos.z > tl.z && pos.z < br.z)
 							if(kObjects[i]->GetProperty("P_DMCharacter"))
 							{
-								last_object_selected = kObjects[i]->GetEntityID();
-								
-								SelectAgent(kObjects[i]->GetEntityID(), false,false, false);
+								// only select characters on your team
+								if ( ((P_DMCharacter*)kObjects[i]->GetProperty("P_DMCharacter"))->m_iTeam == 0 )
+								{
+									last_object_selected = kObjects[i]->GetEntityID();								
+									SelectAgent(kObjects[i]->GetEntityID(), false,false, false);
+								}
 							}
 				}
 

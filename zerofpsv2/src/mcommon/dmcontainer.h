@@ -73,6 +73,7 @@ class MCOMMON_API DMContainer
 		void DropAll();		
 		
 		void GetItemList(vector<ContainerInfo>* pkItemList);
+		vector<int>* GetItemTypes ()		{ return &m_kItemTypes; }
 		void Print();
 
 

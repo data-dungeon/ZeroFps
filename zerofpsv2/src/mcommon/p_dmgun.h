@@ -68,6 +68,8 @@ class MCOMMON_API P_DMGun: public Property {
 		void SetSound		 (string strSound)	{ m_strSound = strSound; }
 		void SetAmmo		 (int iAmmo);
 
+		bool HasAmmo		 ()					{ return m_iAmmo; }
+		bool ReadyToFire	 ()					{ return m_bFireing; }
 		
 //		void Save(ZFIoInterface* pkPackage);
 //		void Load(ZFIoInterface* pkPackage);

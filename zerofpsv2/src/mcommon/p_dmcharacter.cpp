@@ -139,18 +139,17 @@ void P_DMCharacter::Init()
 
 	m_pkBackPack = new DMContainer(m_pkObjMan,m_pkObject->GetEntityID(),6,5);
 	m_pkBody = 		new DMContainer(m_pkObjMan,m_pkObject->GetEntityID(),3,4);
-		m_pkBody->AddItemType(DMItemAmor);				
-		m_pkBody->SetMaxItems(1);
+	m_pkBody->SetMaxItems(1);
 	m_pkBelt = 		new DMContainer(m_pkObjMan,m_pkObject->GetEntityID(),4,1);
-		m_pkBelt->AddItemType(DMItemGrenade);				
-		m_pkBelt->AddItemType(DMItemClip);						
+	m_pkHand = 		new DMContainer(m_pkObjMan,m_pkObject->GetEntityID(),2,3,false);
+	m_pkBelt->AddItemType(DMITEM_GRENADE);				
+	m_pkBelt->AddItemType(DMITEM_CLIP);						
 	m_pkHand = 		new DMContainer(m_pkObjMan,m_pkObject->GetEntityID(),3,2,false);
-		m_pkHand->AddItemType(DMItemGrenade);	
-		m_pkHand->AddItemType(DMItemWeapon);	
-		m_pkHand->SetMaxItems(1);	
+	m_pkHand->AddItemType(DMITEM_GRENADE);	
+	m_pkHand->AddItemType(DMITEM_WEAPON);	
+	m_pkHand->SetMaxItems(1);	
 	m_pkImplants = new DMContainer(m_pkObjMan,m_pkObject->GetEntityID(),3,3);
-		m_pkImplants->AddItemType(DMItemImplant);		
-	
+
 	
 	//cout<< "New character created"<<endl;
 
@@ -226,8 +225,8 @@ void P_DMCharacter::Shoot (Vector3 kLocation)
 
 	for ( int y = 0; y < 2; y++ )
 		for ( int x = 0; x < 3; x++ )
-			if ( m_pkHand->GetItem(0,0) )
-				iWeapID = *m_pkHand->GetItem(0,0);
+			if ( m_pkHand->GetItem(x,y) )
+				iWeapID = *m_pkHand->GetItem(x,y);
 
 	pkWeapon = m_pkObjMan->GetObjectByNetWorkID ( iWeapID );
 
@@ -259,11 +258,14 @@ void P_DMCharacter::Shoot (Vector3 kLocation)
 	m_pkObject->SetLocalRotM(kRotM);
 
 
-	// Start shoot animation
+	// Start shoot animation, if gun isn't empty
 	if(P_Mad* pkMad = (P_Mad*)m_pkObject->GetProperty("P_Mad"))
 	{
-		pkMad->SetAnimation ("shoot", 0);
-		pkMad->SetNextAnimation ("idle");
+		if ( pkP_Gun->HasAmmo() && pkP_Gun->ReadyToFire() )
+		{
+			pkMad->SetAnimation ("shoot", 0);
+			pkMad->SetNextAnimation ("idle");
+		}
 	}
 
 }

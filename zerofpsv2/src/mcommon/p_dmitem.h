@@ -12,15 +12,30 @@
 
 using namespace std;
 
-enum MCOMMON_API DMItemTypes
+enum MCOMMON_API eDMItemTypes
 {
-	DMItemDefault = 0,
-	DMItemHelmet = 1,
-	DMItemGrenade = 2,
-	DMItemAmor = 3,
-	DMItemClip = 4,
-	DMItemWeapon = 5,
-	DMItemImplant = 6,	
+	DMITEM_DEFAULT = 0,
+	DMITEM_HELMET = 1,
+	DMITEM_GRENADE = 2,
+	DMITEM_ARMOUR = 3,
+	DMITEM_CLIP = 4,
+	DMITEM_WEAPON = 5,
+	DMITEM_IMPLANT = 6,	
+};
+
+class MCOMMON_API DMItemStats
+{
+	float	m_fArmourVal;
+	float	m_fSpeedVal;
+	float	m_iMaxLifeVal;
+
+public:
+	DMItemStats()
+	{
+		m_fArmourVal = 0;
+		m_fSpeedVal = 0;
+		m_iMaxLifeVal = 0;
+	}
 };
 
 
@@ -33,6 +48,8 @@ class MCOMMON_API P_DMItem: public Property {
 		int		m_iSizeX;	
 		int		m_iSizeY;
 		int		m_iType;
+
+		DMItemStats m_kItemStats;
 	
 	public:
 		
@@ -53,11 +70,3 @@ class MCOMMON_API P_DMItem: public Property {
 MCOMMON_API Property* Create_P_DMItem();
 
 #endif
-
-
-
-
-
-
-
-
