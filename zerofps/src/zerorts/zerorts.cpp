@@ -327,7 +327,6 @@ void ZeroRTS::Input()
 			PickInfo info = Pick();
 			UnitCommand cmd;
 
-
 			// Try to get last command from user panel
 			// (the commando generated when the user clicks on a button)
 			if(!m_pkUserPanel->PopLastButtonCommand(cmd.m_acCommandName))
@@ -343,8 +342,7 @@ void ZeroRTS::Input()
 				cmd.m_iTarget = info.iObject;
 				cmd.m_iUnitID = (*it);						
 				
-				m_pkClientInput->AddOrder(cmd);
-				
+				m_pkClientInput->AddOrder(cmd);	
 			}	
 		}	
 	}

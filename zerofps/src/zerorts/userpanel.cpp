@@ -319,7 +319,25 @@ void UserPanel::OnClickCmdButton(int iCtrlID)
 	if(r != m_kClickInfoMap.end())	
 	{
 		m_pkLastCmd = r->second;
+
+		if(r->second->m_bNeedArgument == false)
+		{
+			printf("APAN LETAR FISK!\n");
+
+			UnitCommand cmd;
+			for(list<int>::iterator it = m_pkZeroRts->m_kSelectedObjects.begin(); 
+				it != m_pkZeroRts->m_kSelectedObjects.end(); it++)
+			{
+				strcpy(cmd.m_acCommandName, m_pkLastCmd->m_acCommandName);
+				cmd.m_iXDestinaton = 0;
+				cmd.m_iYDestinaton = 0;	
+				cmd.m_iTarget = 0;
+				cmd.m_iUnitID = (*it);			
+				m_pkZeroRts->m_pkClientInput->AddOrder(cmd);
+			}
+		}
 	}
+	
 }
 
 int UserPanel::GetNumVisibleCmdButtons()

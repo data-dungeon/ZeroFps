@@ -164,13 +164,15 @@ AIBase* P_UnitMoveAI::UpdateAI()
 				//cout<<"New destination is "<<iX<<" "<<iY<<endl;
 			
 				//remove old marker
-				TileEngine::m_pkInstance->RemoveUnit(m_pkObject->GetPos(),(P_ServerUnit*)m_pkObject->GetProperty("P_ServerUnit"));										
+				TileEngine::m_pkInstance->RemoveUnit(m_pkObject->GetPos(),
+					(P_ServerUnit*)m_pkObject->GetProperty("P_ServerUnit"));										
 						
 				if(!TileEngine::m_pkInstance->GetTile(iX-1,iY-1)->kUnits.empty())
 				{
 
 					//cout<<"Hit something trying to find a new way"<<endl;
-					TileEngine::m_pkInstance->AddUnit(m_pkObject->GetPos(),(P_ServerUnit*)m_pkObject->GetProperty("P_ServerUnit"));						
+					TileEngine::m_pkInstance->AddUnit(m_pkObject->GetPos(),
+						(P_ServerUnit*)m_pkObject->GetProperty("P_ServerUnit"));						
 					
 					//set pos one finale time to prevent ugly interpolation										
 					m_pkObject->SetPos(m_pkObject->GetPos());										
@@ -184,10 +186,10 @@ AIBase* P_UnitMoveAI::UpdateAI()
 					return this;
 				}
 					
-				m_fSpeedMod = 1.0f - (m_pkPathFind->GetTerrainCost(iX,iY) / 20.0);
+				m_fSpeedMod = 1.0f - (float)(m_pkPathFind->GetTerrainCost(iX,iY) / 20.0);
 
 				//make sure nothing is wrong
-				if(m_fSpeedMod <0)
+				if(m_fSpeedMod < 0)
 					m_fSpeedMod = 1;
 
 
@@ -204,7 +206,8 @@ AIBase* P_UnitMoveAI::UpdateAI()
 				
 				
 				//tell tile engine that im standing on kCurretDestination now
-				TileEngine::m_pkInstance->AddUnit(m_kCurretDestination,(P_ServerUnit*)m_pkObject->GetProperty("P_ServerUnit"));
+				TileEngine::m_pkInstance->AddUnit(m_kCurretDestination,
+					(P_ServerUnit*)m_pkObject->GetProperty("P_ServerUnit"));
 				
 				//now we can move 
 				MoveTo(m_kCurretDestination);
@@ -302,17 +305,18 @@ bool P_UnitMoveAI::DoPathFind(Vector3 kStart,Vector3 kStop,bool exact)
 	if(!m_pkPathFind->Rebuild(m_kStartPoint.x, m_kStartPoint.y, m_kEndPoint.x, m_kEndPoint.y,exact))
 	{
 		//put this unit back
-		TileEngine::m_pkInstance->AddUnit(m_pkObject->GetPos(),(P_ServerUnit*)m_pkObject->GetProperty("P_ServerUnit"));								
+		TileEngine::m_pkInstance->AddUnit(m_pkObject->GetPos(),
+			(P_ServerUnit*)m_pkObject->GetProperty("P_ServerUnit"));								
 		
 		m_kEndPoint = m_kStartPoint;
 		//printf("Pathfinding Failed\n");
-		
 		return true;
 	} 
 	else
 	{
 		//put this unit back
-		TileEngine::m_pkInstance->AddUnit(m_pkObject->GetPos(),(P_ServerUnit*)m_pkObject->GetProperty("P_ServerUnit"));								
+		TileEngine::m_pkInstance->AddUnit(m_pkObject->GetPos(),
+			(P_ServerUnit*)m_pkObject->GetProperty("P_ServerUnit"));								
 		
 		m_kCurretDestination = m_pkObject->GetPos();
 		m_fSpeedMod = 1;
