@@ -463,7 +463,7 @@ void P_Item::RequestUpdateFromServer (string kType)
 
       ClientOrder kOrder;
 
-      if ( kType == "container" )
+      if ( kType == "container" && m_pkItemStats->m_pkContainer )
       {
          // get client object
          kOrder.m_sOrderName = "(rq)cont";
@@ -496,6 +496,8 @@ void P_Item::RequestUpdateFromServer (string kType)
 
          pkCC->AddOrder (kOrder);        
       }
+      else
+         cout << "The request:" << kOrder.m_sOrderName << " in P_Item::RequestUpdateFromServer was illegal" << endl;
    }
    else
       cout << "P_Item::RequestUpdateFromServer(): no client object found!" << endl;

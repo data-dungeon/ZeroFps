@@ -41,18 +41,15 @@ CharacterProperty::CharacterProperty()
 
 	bNetwork = false;
 
-   cout << "TJOFF!" << endl;
-
 }
 
 // ------------------------------------------------------------------------------------------
 
 CharacterProperty::CharacterProperty( string kName )
 {
-	bNetwork = true;   //
+	bNetwork = true;
 
 	strcpy(m_acName,"P_CharStats");
-
 }
 
 // ------------------------------------------------------------------------------------------
