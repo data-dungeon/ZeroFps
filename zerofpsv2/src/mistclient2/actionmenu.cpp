@@ -86,18 +86,21 @@ void ActionMenu::Open()
 	if(P_Ml* pkMl = (P_Ml*)pkEnt->GetProperty("P_Ml"))
 		pkMl->GetActions(m_kActions);
 
-	if(m_kActions.empty())
+	if(m_kActions.size() < 2)
 		return;
 
 	m_bGuiCaptureBeforOpen = g_kMistClient.m_bGuiCapture; // rembember privius gui capture mode
 
 	printf("Open action menu\n");
 
-	g_kMistClient.SetGuiCapture(true); // change to gui capture (mouse cursor)
-
 	ResetIconSkins();
 
-	float mx=g_kMistClient.GetWidth()/2, my=g_kMistClient.GetHeight()/2;
+	float mx = g_kMistClient.GetWidth()/2, my = g_kMistClient.GetHeight()/2;
+
+	if(m_bGuiCaptureBeforOpen == true)
+	{
+		g_kMistClient.m_pkInputHandle->MouseXY(mx,my);
+	}
 
 	m_pkMainWnd->SetPos(mx-m_kWidth/2, my-m_kHeight/2, true, true);
 	m_pkMainWnd->Show();
@@ -114,6 +117,13 @@ void ActionMenu::Open()
 	const float icon_angle_vert_offset = 50;
 
 	int iHeighestZValue = 0;
+
+	g_kMistClient.SetGuiCapture(true); // change to gui capture (mouse cursor)
+
+	if(m_bGuiCaptureBeforOpen == true)
+	{
+		g_kMistClient.m_pkInputHandle->SetCursorInputPos(mx-m_kWidth/2 + cx + 32, my-m_kHeight/2 + cy + 32);
+	}
 
 	for(int i=0; i<NUM_BUTTONS; i++)
 	{
@@ -193,6 +203,8 @@ void ActionMenu::Open()
 	m_pkIconSelection->SetZValue(iHeighestZValue+1);
 
 	ZGuiWnd::m_pkFocusWnd = m_pkMainWnd;
+
+	
 }
 
 void ActionMenu::Close()
