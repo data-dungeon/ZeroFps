@@ -187,12 +187,29 @@ void Vector4::Normalize(void)
 	w *= invlen;
 }
 
+void Vector4::PlainNormalize(void)						
+{
+	float invlen = PlainLength();
+	assert(invlen != 0.0);
+	invlen = 1 / invlen;
+	x *= invlen;
+	y *= invlen;
+	z *= invlen;
+	w *= invlen;
+}
+
 
 
 // Vector operations.
 float Vector4::Length(void) const
 {
 	return (float)sqrt( x*x + y*y + z*z +w*w );  
+
+}
+
+float Vector4::PlainLength(void) const
+{
+	return (float)sqrt( x*x + y*y + z*z );  
 
 }
 

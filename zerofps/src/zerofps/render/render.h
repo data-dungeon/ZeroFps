@@ -24,6 +24,7 @@ class RENDER_API Render {
 
 		int m_iSlicesize;	  //height meens greater detail att longer range
 		int m_iLodUpdate;
+		Vector3 m_kOldCamPos;
 		
 		Vector4 m_akFrustum[6];
 		
@@ -37,8 +38,8 @@ class RENDER_API Render {
 		
 		void GetFrustum();
 		bool PointInFrustum(Vector3 kPoint);
-		float SphereInFrustum(Vector3 CamPos,Vector4 kPoint);
-		bool CubeInFrustum( float x, float y, float z, float size );
+		bool SphereInFrustum(Vector3 CamPos,Vector4 kPoint);
+		bool CubeInFrustum( float x, float y, float z, float sizex,float sizey,float sizez );
 		
 		void Quad(Vector3 kPos,Vector3 kHead,Vector3 kScale,int iTexture);
 		void Pyra(float x,float y,float z);

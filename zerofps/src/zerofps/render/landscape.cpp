@@ -141,11 +141,16 @@ void Render::DrawHMlod(HeightMap* kmap,Vector3 CamPos,int iFps){
 //		cout<<"BLA:"<<m_iLodUpdate<<endl;
 		if(SDL_GetTicks()>(m_iLodUpdate+500)){
 			m_iLodUpdate=SDL_GetTicks();
-			if(iFps<(m_iFpsLock-5) && m_iDetail>5){
-				m_iDetail--;	
-			} else if(iFps>(m_iFpsLock+5) && m_iDetail<100){
-				m_iDetail++;		
-			}
+			
+			//dont update lod if the camera has't moved
+//			if(CamPos!=m_kOldCamPos){
+//				m_kOldCamPos=CamPos;
+				if(iFps<(m_iFpsLock-5) && m_iDetail>5){
+					m_iDetail--;	
+				} else if(iFps>(m_iFpsLock+5) && m_iDetail<80){
+					m_iDetail++;		
+				}
+//			}
 		}
 	}
 	
@@ -178,8 +183,8 @@ void Render::DrawHMlod(HeightMap* kmap,Vector3 CamPos,int iFps){
 	for(int sz=0;sz<slices;sz++) {
 		for(int sx=0;sx<slices;sx++) {
 			if(!CubeInFrustum(kmap->m_kPosition.x+sx*m_iSlicesize+m_iSlicesize/2,
-									kmap->m_kPosition.y,
-									kmap->m_kPosition.z+sz*m_iSlicesize+m_iSlicesize/2,m_iSlicesize/2))
+									kmap->m_kPosition.y+42,
+									kmap->m_kPosition.z+sz*m_iSlicesize+m_iSlicesize/2,m_iSlicesize/2,42,m_iSlicesize/2))
 				continue;
 		
 			//set lop steps depending on the distance to the center of the lod tile

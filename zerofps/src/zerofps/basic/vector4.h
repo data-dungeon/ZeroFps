@@ -44,7 +44,9 @@ class Vector4 {
 		float Dot( const Vector4& v  )		const; 	
 
 		void Normalize(void);		
+		void PlainNormalize(void);				
 		float Length(void)const;		
+		float PlainLength(void)const;				
 /*		
 		// Vector operations.
 				

@@ -172,7 +172,7 @@ void HeightMap::GenerateNormals() {
 					med=med+n1+n2;
 				}	
 			}
-			med=med*0.125;
+			med=med*0.125;	//insted of  division by 8 
 			med.Normalize();
 			verts[z*m_iHmSize+x].normal=med;
 		}

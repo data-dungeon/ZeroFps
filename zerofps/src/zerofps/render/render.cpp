@@ -3,13 +3,13 @@
 Render::Render(TextureManager* pkTexMan) {
 	m_pkTexMan=pkTexMan;
 	
-	m_iSlicesize=32;	//grid size of lod tiles
-	m_iDetail=30;//height meens greater detail att longer range	
+	m_iSlicesize=32;		//grid size of lod tiles
+	m_iDetail=30;				//height meens greater detail att longer range	
 	m_iViewDistance=400;
 	m_iFpsLock=60;
 	m_iAutoLod=1;
-	m_iLodUpdate=0;
-	
+	m_iLodUpdate=0;	
+	m_kOldCamPos=Vector3(0,0,0);
 }
 
 void Render::Quad(Vector3 kPos,Vector3 kHead,Vector3 kScale,int iTexture){
@@ -345,8 +345,8 @@ void Render::GetFrustum() {
    m_akFrustum[5][3] = clip[15] + clip[14];   
    
    for(int i=0;i<6;i++)
-   	if(m_akFrustum[i].Length()>0)
-	   	m_akFrustum[i].Normalize();
+   	if(m_akFrustum[i].PlainLength()>0)
+	   	m_akFrustum[i].PlainNormalize();
 	   
    
 }
@@ -366,7 +366,7 @@ bool Render::PointInFrustum( Vector3 kPoint)
    return true;
 }
 
-float Render::SphereInFrustum(Vector3 CamPos, Vector4 kPoint)
+bool Render::SphereInFrustum(Vector3 CamPos, Vector4 kPoint)
 {
 //	kPoint.x+=CamPos.x;
 //	kPoint.z+=CamPos.z;
@@ -377,35 +377,37 @@ float Render::SphereInFrustum(Vector3 CamPos, Vector4 kPoint)
    for( p = 0; p < 6; p++ )
    {
       d = m_akFrustum[p][0] * kPoint.x + m_akFrustum[p][1] * kPoint.y + m_akFrustum[p][2] * kPoint.z + m_akFrustum[p][3];
-      if( d <= -kPoint.w )
-         return d ;//+ kPoint.w;
+      if( d <= -kPoint.w ){
+//      	cout<<"FUCK"<<endl;
+         return false ;//+ kPoint.w;
+      }
    }
 ///   cout<<d<<endl;
-   return d ;//+ kPoint.w;
+   return true ;//+ kPoint.w;
 }
 
 
-bool Render::CubeInFrustum( float x, float y, float z, float size )
+bool Render::CubeInFrustum( float x, float y, float z, float sizex,float sizey,float sizez )
 {
 	int p;
 
 	for( p = 0; p < 6; p++ )
 	{
-		if( m_akFrustum[p][0] * (x - size) + m_akFrustum[p][1] * (y - size) + m_akFrustum[p][2] * (z - size) + m_akFrustum[p][3] > 0 )
+		if( m_akFrustum[p][0] * (x - sizex) + m_akFrustum[p][1] * (y - sizey) + m_akFrustum[p][2] * (z - sizez) + m_akFrustum[p][3] > 0 )
 			continue;
-		if( m_akFrustum[p][0] * (x + size) + m_akFrustum[p][1] * (y - size) + m_akFrustum[p][2] * (z - size) + m_akFrustum[p][3] > 0 )
+		if( m_akFrustum[p][0] * (x + sizex) + m_akFrustum[p][1] * (y - sizey) + m_akFrustum[p][2] * (z - sizez) + m_akFrustum[p][3] > 0 )
 			continue;
-		if( m_akFrustum[p][0] * (x - size) + m_akFrustum[p][1] * (y + size) + m_akFrustum[p][2] * (z - size) + m_akFrustum[p][3] > 0 )
+		if( m_akFrustum[p][0] * (x - sizex) + m_akFrustum[p][1] * (y + sizey) + m_akFrustum[p][2] * (z - sizez) + m_akFrustum[p][3] > 0 )
 			continue;
-		if( m_akFrustum[p][0] * (x + size) + m_akFrustum[p][1] * (y + size) + m_akFrustum[p][2] * (z - size) + m_akFrustum[p][3] > 0 )
+		if( m_akFrustum[p][0] * (x + sizex) + m_akFrustum[p][1] * (y + sizey) + m_akFrustum[p][2] * (z - sizez) + m_akFrustum[p][3] > 0 )
 			continue;
-		if( m_akFrustum[p][0] * (x - size) + m_akFrustum[p][1] * (y - size) + m_akFrustum[p][2] * (z + size) + m_akFrustum[p][3] > 0 )
+		if( m_akFrustum[p][0] * (x - sizex) + m_akFrustum[p][1] * (y - sizey) + m_akFrustum[p][2] * (z + sizez) + m_akFrustum[p][3] > 0 )
 			continue;
-		if( m_akFrustum[p][0] * (x + size) + m_akFrustum[p][1] * (y - size) + m_akFrustum[p][2] * (z + size) + m_akFrustum[p][3] > 0 )
+		if( m_akFrustum[p][0] * (x + sizex) + m_akFrustum[p][1] * (y - sizey) + m_akFrustum[p][2] * (z + sizez) + m_akFrustum[p][3] > 0 )
 			continue;
-		if( m_akFrustum[p][0] * (x - size) + m_akFrustum[p][1] * (y + size) + m_akFrustum[p][2] * (z + size) + m_akFrustum[p][3] > 0 )
+		if( m_akFrustum[p][0] * (x - sizex) + m_akFrustum[p][1] * (y + sizey) + m_akFrustum[p][2] * (z + sizez) + m_akFrustum[p][3] > 0 )
 			continue;
-		if( m_akFrustum[p][0] * (x + size) + m_akFrustum[p][1] * (y + size) + m_akFrustum[p][2] * (z + size) + m_akFrustum[p][3] > 0 )
+		if( m_akFrustum[p][0] * (x + sizex) + m_akFrustum[p][1] * (y + sizey) + m_akFrustum[p][2] * (z + sizez) + m_akFrustum[p][3] > 0 )
 			continue;
 		return false;
 	}

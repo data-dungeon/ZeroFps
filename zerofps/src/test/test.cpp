@@ -71,10 +71,10 @@ void Test::OnIdle(void) {
 	if(pkFps->m_kCamPos->y<test->Height(x,z)+2.4)
 		pkFps->m_kCamPos->y=test->Height(x,z)+2.5;	
 //	pkFps->m_kCamPos->y=test->Height(x,z)+4;	
-//	if(pkRender->SphereInFrustum(*pkFps->m_kCamPos,Vector4(x+50,0,200,0.1)))
+//	if(pkRender->SphereInFrustum(*pkFps->m_kCamPos,Vector4(100,0,100,10)))
 //		cout<<"HORA"<<endl;
 	
-//	if(pkRender->CubeInFrustum(100,0,100,5))
+//	if(pkRender->CubeInFrustum(100,0,100,10))
 //		cout<<"HORA"<<endl;
 	
 //	cout<<">>>> "<<pkRender->SphereInFrustum(*pkFps->m_kCamPos,Vector4(100,0,100,0))<<endl;	
@@ -88,7 +88,7 @@ void Test::OnIdle(void) {
 
 	pkRender->DrawWater(*pkFps->m_kCamPos,Vector3(512,0,512),Vector3(0,0,0),1200,30);
 	
-	cout<<pkFps->m_iFps<<endl;
+//	cout<<pkFps->m_iFps<<endl;
 }
 
 void Test::OnHud(void) {	
