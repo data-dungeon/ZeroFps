@@ -22,6 +22,8 @@ class PathFind;
 class ENGINE_API PathBuilder : public ZFObject
 {
 public:
+	Point GetSqrFromPos(Vector3 pos);
+	Vector3 GetPosFromSqr(Point square);
 	void Build(int pkObjectTypeCost[5]);
 	PathBuilder(HeightMap* pkHeightMap, PathFind** m_ppkPathFind);
 	~PathBuilder();

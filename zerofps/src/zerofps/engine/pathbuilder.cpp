@@ -117,3 +117,24 @@ string PathBuilder::GenerateKey(int akCosts[])
 
 	return string(szCostMap);
 }
+
+Point PathBuilder::GetSqrFromPos(Vector3 pos)
+{
+	int iSquareX = m_pkHeightMap->m_iHmSize/2+ceil(pos.x / HEIGHTMAP_SCALE);
+	int iSquareY = m_pkHeightMap->m_iHmSize/2+ceil(pos.z / HEIGHTMAP_SCALE);
+
+	return Point(iSquareX,iSquareY);
+}
+
+Vector3 PathBuilder::GetPosFromSqr(Point square)
+{
+	float x = -(m_pkHeightMap->m_iHmSize/2)*HEIGHTMAP_SCALE + square.x*HEIGHTMAP_SCALE;
+	float z = -(m_pkHeightMap->m_iHmSize/2)*HEIGHTMAP_SCALE + square.y*HEIGHTMAP_SCALE;
+
+	x -= HEIGHTMAP_SCALE/2;	// Translate to center 
+	z -= HEIGHTMAP_SCALE/2;	// of square.*/
+
+	float y = m_pkHeightMap->Height(x,z);
+
+	return Vector3(x,y,z);
+}
