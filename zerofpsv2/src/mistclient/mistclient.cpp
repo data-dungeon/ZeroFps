@@ -247,7 +247,7 @@ void MistClient::OnIdle()
 	if(m_pkSkillDlg && m_pkSkillDlg->IsVisible())
 		m_pkSkillDlg->Update();
 
-	if(m_pkStatsDlg && m_pkStatsDlg->IsVisible())
+	if(m_pkStatsDlg != NULL && m_pkStatsDlg->IsVisible() == true)
 		m_pkStatsDlg->Update();
 
 }
@@ -705,10 +705,7 @@ void MistClient::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 			}
 			if(strClickWndName == "StatsButton")
 			{
-				bool bExist = GetWnd("StatsWnd") != NULL;
-
 				pkScript->Call(m_pkScriptResHandle, "OnClickStats", 0, 0); // create
-
 
 				if ( GetWnd("StatsWnd")->IsVisible() )
 					pkGui->SetFocus(GetWnd("StatsWnd"));
@@ -757,7 +754,8 @@ void MistClient::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 			else
 			if(strClickWndName == "SelectSkillBn")
 			{
-				m_pkSkillDlg->SetCharacterProperty((CharacterProperty*)m_pkActiveCharacter->GetProperty("P_CharStats"));
+				m_pkSkillDlg->SetCharacterProperty((CharacterProperty*)
+					m_pkActiveCharacter->GetProperty("P_CharStats"));
 				m_pkSkillDlg->ToogleOpen();
 			}
 		}

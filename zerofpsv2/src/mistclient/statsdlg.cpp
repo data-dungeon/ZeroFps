@@ -35,10 +35,12 @@ void StatsDlg::Update()
 
 		map<string,string>::iterator itData = kDataList.begin();
 
-		for( ; itData != kDataList.end(); itData++)
+		printf("kDataList size = %i\n", kDataList.size());
+
+/*		for( ; itData != kDataList.end(); itData++)
 		{
 			printf("itData %s = %s\n", itData->first, itData->second);
-		}
+		}*/
 	}
 }
 
