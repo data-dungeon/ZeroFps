@@ -135,7 +135,7 @@ void P_DMShop::Load(ZFIoInterface* pkPackage)
 bool P_DMShop::SetPrice(string strItemName, int iPrice) 
 {
 	m_kPricemap.insert( map<string, int>::value_type(strItemName, iPrice));
-	return false;
+	return true;
 }
 
 //-----------------------------------------------------------------------------
