@@ -166,7 +166,7 @@ public:
 
 	MAIN_WINDOW* FindMainWnd(int x, int y);
 	void GetResolution(int& x, int& y);
-	bool ClickedWndAlphaTex(int mx, int my, ZGuiWnd* pkWndClicked);
+	bool AlphaPixelAtPos(int iScreenCoordX, int iScreenCoordY, ZGuiWnd* pkWndClicked);
 
 	int m_iMouseX, m_iMouseY;
 	bool m_bMouseLeftPressed;

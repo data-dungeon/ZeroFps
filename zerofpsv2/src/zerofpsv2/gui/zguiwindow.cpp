@@ -370,7 +370,7 @@ ZGuiWnd* ZGuiWnd::Find(int x, int y)
 		if(m_bUseAlhpaTest==false)
 			return this;
 
-		if(m_pkGUI->ClickedWndAlphaTex(x,y,this) == true)
+		if(m_pkGUI->AlphaPixelAtPos(x,y,this) == false)
 			return this;
 	}
 	else
@@ -387,7 +387,7 @@ ZGuiWnd* ZGuiWnd::Find(int x, int y)
 					if(m_bUseAlhpaTest==false)
 						return pkFind;
 
-					if(m_pkGUI->ClickedWndAlphaTex(x,y,pkFind) == true)
+					if(m_pkGUI->AlphaPixelAtPos(x,y,pkFind) == false)
 						return pkFind;
 				}
 			}

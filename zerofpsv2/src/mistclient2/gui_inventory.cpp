@@ -239,7 +239,8 @@ void InventoryDlg::OnMouseMove(bool bLeftButtonPressed, int mx, int my)
 				SetSelectionBorder(i, true, false);
 
 				if(bLeftButtonPressed)
-				{								
+				{							
+					printf("pushing mouse\n");
 					if(m_kMoveSlot.m_iIndex == -1)
 						PickUpFromGrid(i, true, mx, my); // try to find item under cursor and set as move item.
 				}

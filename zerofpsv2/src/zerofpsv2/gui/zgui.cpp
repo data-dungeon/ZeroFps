@@ -458,7 +458,7 @@ ZGui::MAIN_WINDOW* ZGui::FindMainWnd(int x,int y)
 			 if(pkWnd->IsVisible() == false)
 				 continue;
 
-			 if(ClickedWndAlphaTex(x,y,pkWnd) == false)
+			 if(AlphaPixelAtPos(x,y,pkWnd))
 				 continue;
 
 			 candidates.push_back( (*it) );			 
@@ -973,30 +973,30 @@ void ZGui::SetRes(int iResX, int iResY)
 	m_iResX = iResX;
 	m_iResY = iResY;
 }
-bool ZGui::ClickedWndAlphaTex(int mx, int my, ZGuiWnd *pkWndClicked)
+bool ZGui::AlphaPixelAtPos(int mx, int my, ZGuiWnd *pkWndClicked)
  {
 	if(m_bDisableAlphatest)
 	{
 		printf("Disabled\n");
-		return true;
+		return false;
 	}
 
 	if(pkWndClicked == NULL)
-		return false;
+		return true;
 
 	if(pkWndClicked->m_bUseAlhpaTest == false)
-		return true;
+		return false;
 
 	// Ignore some controlls...
 	ZGuiWnd* pkParent = pkWndClicked->GetParent();
 	if(pkParent)
 	{
 		if( typeid(*pkParent)==typeid(ZGuiListbox))
-			return true;
+			return false;
 		if( typeid(*pkParent)==typeid(ZGuiTreebox) )
-			return true;
+			return false;
 		if( typeid(*pkParent)==typeid(ZGuiCheckbox) ) 
-			return true;
+			return false;
 
 	}
 
@@ -1011,29 +1011,25 @@ bool ZGui::ClickedWndAlphaTex(int mx, int my, ZGuiWnd *pkWndClicked)
 		pkWndClicked->GetChildrens(vkChildList);
 
 		for(list<ZGuiWnd*>::iterator it = vkChildList.begin(); it!=vkChildList.end(); it++)
-		{
 			 if((*it)->GetScreenRect().Inside(mx,my) && (*it)->IsVisible())
-			 {
-				 return true;
-			 }
-		}
+				 return AlphaPixelAtPos(mx,my,(*it));
 
-		return false;
+		return true;
 	}
 
-	bool bIsTGA = false;
-	int alpha_tex = pkSkin->m_iBkTexAlphaID;
+	bool bIsTGA = pkSkin->m_iBkTexAlphaID == -1 ? true : false;
+	int alpha_tex;
 
-
-	if(m_pkTexMan->TextureIsTGA(pkSkin->m_iBkTexID))
-	{
+	if(bIsTGA)
 		alpha_tex = pkSkin->m_iBkTexID;
-		bIsTGA = true;
-	}
+	else
+		alpha_tex = pkSkin->m_iBkTexAlphaID;
+
+	bool bTransparentPixelUnderCursor = false;
 	
 	if(alpha_tex > 0)
 	{
-		m_pkZShaderSystem->Push("ZGui::ClickedWndAlphaTex");
+		m_pkZShaderSystem->Push("ZGui::ClickedOnAlphaPixel");
 		
 		m_pkTexMan->BindTexture( alpha_tex );
 
@@ -1057,15 +1053,18 @@ bool ZGui::ClickedWndAlphaTex(int mx, int my, ZGuiWnd *pkWndClicked)
 		float tex_w = (float) pkSurface->m_iWidth;
 		float tex_h = (float) pkSurface->m_iHeight;
 
-		int mod = 0;
-	/*	if(bIsTGA)
-			mod = (int) -tex_h;*/ // 10 okt 2004 - tog bort, funkade inte att klicka på knappar med TGA textur annars.
-
 		float dx = (int)(tex_w*x_offset);
-		float dy = mod+(int)(tex_h*y_offset);
+		float dy = (int)(tex_h*y_offset);
+
+		if(bIsTGA)
+			dy = tex_h - dy;
 
 		if(dx < 0) dx = 0;
 		if(dy < 0) dy = 0;
+
+		printf("texture is tga = %i\n", (int) bIsTGA);
+		printf("tex_w = %0.2f, tex_h = %0.2f\n", tex_w, tex_h);
+		printf("dx = %0.2f, dy = %0.2f\n", dx, dy);
 
 		//unsigned long pixel;
 		color_rgba kColor;
@@ -1076,31 +1075,31 @@ bool ZGui::ClickedWndAlphaTex(int mx, int my, ZGuiWnd *pkWndClicked)
 		m_pkTexMan->EditEnd( alpha_tex );
 
 		m_pkZShaderSystem->Pop();
-		
+
+		printf("pixel = %i, %i, %i, %i\n", kColor.r, kColor.g, kColor.b, kColor.a);
+
 		if(bIsTGA) 
 		{
-			if(kColor.a == 0) // En alpha pixel. Vi har INTE klickat på fönstret.
-				return false;
+			if( kColor.a == 0 ) 
+				bTransparentPixelUnderCursor = true;
 			else
-				return true; // Ej alpha pixel. Vi har klickat på fönstret.
+				bTransparentPixelUnderCursor = false;
 		}
-
-		if(kColor.r == 0 && kColor.g == 0 && kColor.b == 0 /*&& kColor.a == 0*/)
+		else
 		{
-			return true;
-		}
-		else 
-		{
-			//printf("Mouse click passing true\n");
-			return false;
+			if(kColor.r == 0 && kColor.g == 0 && kColor.b == 0)
+				bTransparentPixelUnderCursor = false;		
+			else 
+				bTransparentPixelUnderCursor = true;
 		}
 	}
+
+	if(bTransparentPixelUnderCursor)
+		printf("Transparent pixel (%i,%i)\n", mx, my);
 	else
-	{
-		return true;
-	}
+		printf("Opaque pixel (%i,%i)\n", mx, my);
 
-//	return false;
+	return bTransparentPixelUnderCursor;
 }
 
 void ZGui::SetWndForeground(ZGuiWnd *pkWnd)
@@ -1441,7 +1440,7 @@ bool ZGui::OnMouseUpdate(int x, int y, bool bLBnPressed,
 		{			
 			if(pkFocusWindow->m_bUseAlhpaTest)
 			{
-				if(ClickedWndAlphaTex(x,y,pkFocusWindow) == false)
+				if(AlphaPixelAtPos(x,y,pkFocusWindow))
 				{
 					m_bHandledMouse = false;
 
@@ -1494,7 +1493,7 @@ bool ZGui::OnMouseUpdate(int x, int y, bool bLBnPressed,
 //				if( (test=m_pkActiveMainWin->pkWnd->Find(x,y))) //!ClickedWndAlphaTex(x,y, ZGuiWnd::m_pkWndClicked))
 				if( (test=m_pkActiveMainWin->pkWnd->Find(x,y)) != NULL) // 040701
 				{
-					if(ClickedWndAlphaTex(x,y,test)==true)
+					if(AlphaPixelAtPos(x,y,test)==false)
 					{
 						if(test->GetSkin() && test->GetSkin()->m_bTransparent == false)
 						{

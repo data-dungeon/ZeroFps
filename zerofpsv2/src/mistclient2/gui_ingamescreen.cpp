@@ -251,7 +251,7 @@ void MistClient::LoadInGameGui()
 	GetWnd("SayTextbox")->SetFont(m_pkGui->GetResMan()->Font("defguifont") );
 	GetWnd("ChatTextbox")->SetFont(m_pkGui->GetResMan()->Font("chatboxfont") );
 
-	GetWnd("ChatDlgMainWnd")->m_bUseAlhpaTest = false; // eftersom tex1a är helvit	(för att	kunna	ändra	trasparens med	färgvärdet)
+	//GetWnd("ChatDlgMainWnd")->m_bUseAlhpaTest = false; // eftersom tex1a är helvit	(för att	kunna	ändra	trasparens med	färgvärdet)
 	GetWnd("SayTextbox")->m_bUseAlhpaTest =	false;
 
 	ShowWnd("OpenChatButton", false);
