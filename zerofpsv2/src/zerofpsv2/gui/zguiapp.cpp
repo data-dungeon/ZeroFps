@@ -1172,14 +1172,14 @@ void ZGuiApp::ClearListbox(char *szResName)
 
 	if(eType == Combobox)
 	{
-		ZGuiListbox* pkListBox = static_cast<ZGuiListbox*>(pkWnd);
-		pkListBox->RemoveAllItems();
+		ZGuiCombobox* pkComboBox = static_cast<ZGuiCombobox*>(pkWnd);
+		pkComboBox->RemoveAllItems();
 	}
 	else
 	if(eType == Listbox)
 	{
-		ZGuiCombobox* pkComboBox = static_cast<ZGuiCombobox*>(pkWnd);
-		pkComboBox->RemoveAllItems();
+		ZGuiListbox* pkListBox = static_cast<ZGuiListbox*>(pkWnd);
+		pkListBox->RemoveAllItems();
 	}
 	else
 	if(eType == Treebox)
