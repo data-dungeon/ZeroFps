@@ -160,7 +160,11 @@ bool ZMaterial::LoadGlobalSection()
 	else
 		m_faTextureOffset[1] = 0;
 
-	m_bTextureOffset = m_faTextureOffset[0] + m_faTextureOffset[1]; // <- Zeblar: Vad i %#%"!!e gör du här? :)
+	// m_bTextureOffset = m_faTextureOffset[0] + m_faTextureOffset[1]; // <- Zeblar: Vad i %#%"!!e gör du här? :)
+	// Edit by zeblar 040121 start
+		if(m_faTextureOffset[0] + m_faTextureOffset[1] >= 1.0f) m_bTextureOffset = true;
+		else m_bTextureOffset = false;
+	// Edit by zeblar 040121 end
 
 	if(m_kIni.KeyExist("global","randommovements"))
 		if(m_kIni.GetBoolValue("global","randommovements"))
