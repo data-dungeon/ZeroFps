@@ -152,7 +152,9 @@ void ZeroEd::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 		{
 			if(strWndClicked == "RotateZoneModellButton")
 			{
-				RotateActive();
+				//RotateActive();
+				m_iCurrentMarkedZone = GetZoneID(m_kZoneMarkerPos);
+				SendRotateZoneModel(m_iCurrentMarkedZone);
 			}
 			else
 			if(strWndClicked == "DeleteZoneButton")
@@ -172,7 +174,7 @@ void ZeroEd::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 		{
 			if(strWndClicked == "RotateObjectButton")
 			{
-				RotateActive();
+				SendRotateEntity(m_iCurrentObject,Vector3(0,90,0));				
 			}
 			else
 			if(strWndClicked == "DeleteObjectButton")
@@ -379,9 +381,19 @@ void ZeroEd::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 				SendDeleteSelected();
 			}
 			else
+			if(strWndClicked == "Rotate_180_degree")
+			{
+				SendRotateEntity(m_iCurrentObject,Vector3(0,180,0));
+			}			
+			else
 			if(strWndClicked == "Rotate_90_degree")
 			{
-				RotateActive();
+				SendRotateEntity(m_iCurrentObject,Vector3(0,90,0));
+			}
+			else
+			if(strWndClicked == "Rotate_45_degree")
+			{
+				SendRotateEntity(m_iCurrentObject,Vector3(0,45,0));
 			}
 		}
 

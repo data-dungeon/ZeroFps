@@ -1419,39 +1419,18 @@ void ZeroEd::AutoSetZoneSize(string strName)
 	//cout << "Setting Size " << x << ", " << y << ", "<< z << endl;
 }
 
-void ZeroEd::RotateActive()
+void ZeroEd::SendRotateEntity(int iEntityID,const Vector3& kRot)
 {
-	if(m_iCurrentObject != -1 && m_iEditMode == EDIT_OBJECTS)
-	{
-		Entity* pkEnt = m_pkEntityManager->GetEntityByID(m_iCurrentObject);
-		if(pkEnt) 
-		{
-			pkEnt->RotateLocalRotV( Vector3(0,90.0f,0) ); 
-	
-			// Update PFind Mesh
-			P_PfMesh* pkMesh = (P_PfMesh*)pkEnt->GetProperty("P_PfMesh");
-			if(pkMesh)
-				pkMesh->CalcNaviMesh();
-		}
-	}
-	else
-	if(m_iCurrentMarkedZone != -1 && m_iEditMode == EDIT_ZONES)
-	{
-		ZoneData* pkData = m_pkEntityManager->GetZoneData(m_iCurrentMarkedZone);
-		if(pkData) 
-		{
-			if(pkData->m_pkZone)
-			{
-				pkData->m_pkZone->RotateLocalRotV( Vector3(0,90.0f,0) ); 
-		
-				// Update PFind Mesh
-				P_PfMesh* pkMesh = (P_PfMesh*)pkData->m_pkZone->GetProperty("P_PfMesh");
-				if(pkMesh)
-					pkMesh->CalcNaviMesh();
-			}		
-		}
-	}
+	NetPacket kNp;
+
+	kNp.Clear();
+	kNp.Write((char) ZFGP_EDIT);
+	kNp.Write_Str("rot");
+	kNp.Write(iEntityID);
+	kNp.Write(kRot);
+	m_pkZeroFps->RouteEditCommand(&kNp);	
 }
+
 
 void ZeroEd::ToogleLight(bool bEnabled)
 {

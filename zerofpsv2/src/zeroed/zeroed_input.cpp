@@ -268,12 +268,7 @@ void ZeroEd::Input_EditObject(float fMouseX, float fMouseY)
 
 	if(kRot != Vector3::ZERO)
 	{
-		kNp.Clear();
-		kNp.Write((char) ZFGP_EDIT);
-		kNp.Write_Str("rot");
-		kNp.Write(m_iCurrentObject);
-		kNp.Write(kRot);
-		m_pkZeroFps->RouteEditCommand(&kNp);
+		SendRotateEntity(m_iCurrentObject,kRot);	
 	}
 
 

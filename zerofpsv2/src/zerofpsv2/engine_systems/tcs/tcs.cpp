@@ -35,10 +35,10 @@ Tcs::Tcs(): ZFSubSystem("Tcs")
 
 Tcs::~Tcs()
 {
-	if(m_pkBodyCopy1)
-		delete m_pkBodyCopy1;	
-	if(m_pkBodyCopy2)
-		delete m_pkBodyCopy2;
+	/*	 blir ju massa evil krasher här så...wtf får la va lite minnes lekage så länge =D
+	delete m_pkBodyCopy1;	
+	delete m_pkBodyCopy2;
+	*/
 }
 
 
