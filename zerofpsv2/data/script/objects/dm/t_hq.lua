@@ -46,6 +46,8 @@ function Init()
 	AddItemToShop(SIGetSelfID(), "/data/script/objects/dm/t_medkit.lua", 300);
 	AddItemToShop(SIGetSelfID(), "/data/script/objects/dm/t_medkit.lua", 300);
 
+	AddItemToShop(SIGetSelfID(), "/data/script/objects/dm/t_armour.lua", 1700);
+	AddItemToShop(SIGetSelfID(), "/data/script/objects/dm/t_armour.lua", 1700);
 	
 end
 
