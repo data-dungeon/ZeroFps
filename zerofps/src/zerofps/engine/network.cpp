@@ -1,5 +1,6 @@
 #include "network.h"
 
+#include "zerofps.h"
 
 
 NetPacket::NetPacket()
@@ -19,7 +20,7 @@ void NetPacket::Clear()
 	m_iPos = 0;
 }
 
-void NetPacket::SetTarget(char* szIp)
+void NetPacket::SetTarget(const char* szIp)
 {
 	int ha1, ha2, ha3, ha4, hp;
 	int ip_addr;
@@ -71,63 +72,71 @@ NetWork::NetWork()
 	strcpy(szServerName,"No Name");
 	bAcceptClientConnections = false;
 
+	m_pkSocket = NULL;
+
 	m_pkConsole = static_cast<Console*>(g_ZFObjSys.GetObjectPtr("Console"));
-	m_bIsServer = false;
-	m_bIsConnectedToServer = false;
+	m_pkZeroFps  = static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));;
+
+	m_eNetStatus = NET_NONE;
 }
 
 NetWork::~NetWork()
 {
-	ServerEnd();
+	CloseSocket();
 	SDLNet_Quit();
 	cout << "SDLNet_Quit()" << endl;
 }
 
-void NetWork::ServerStart(void)
+void NetWork::StartSocket(bool bStartServer)
 {
-	m_pkServerSocket = SDLNet_UDP_Open(4242);
-	if(!m_pkServerSocket) {
+	if(m_pkSocket) {
+		cout << "StartSocket: Socket is already open" << endl;
+		return;
+		}
+
+	int iSocketNum = 4242;
+	if(bStartServer)	iSocketNum = 4242;
+	m_pkSocket = SDLNet_UDP_Open(4242);
+	if(!m_pkSocket) {
 		cout << "SDLNet_UDP_Open: " <<  SDLNet_GetError() << endl;
 		return;
 		}
 	
-	m_bIsServer = true;
+}
 
-	// Get ip our port.
-	IPaddress *address;
-	address=SDLNet_UDP_GetPeerAddress(m_pkServerSocket, -1);
-	if(!address) {
-		cout << "SDLNet_UDP_GetPeerAddress: " <<  SDLNet_GetError() << endl;
-		return;
-	}
-	else {
-		// perhaps print out address->host and address->port
-		char MyIp[256];
-		AddressToStr(address,MyIp);
-		cout << "IP: " << MyIp << endl;
-	}
+void NetWork::CloseSocket()
+{
+	if(!m_pkSocket)	return;
+	SDLNet_UDP_Close(m_pkSocket);
+	m_pkSocket = NULL;
+}
 
+void NetWork::ServerStart(void)
+{
+	StartSocket(true);
+	m_eNetStatus = NET_SERVER;
 }
 
 void NetWork::ServerEnd(void)
 {
-	if(!m_pkServerSocket)	return;
-	SDLNet_UDP_Close(m_pkServerSocket);
-	m_pkServerSocket = NULL;
+	CloseSocket();
+	m_eNetStatus = NET_NONE;
 }
 
 
 bool NetWork::Recv(NetPacket* pkNetPacket)
 {
+	pkNetPacket->Clear();
+
 	UDPpacket kPacket;
 	kPacket.channel = -1;
 	kPacket.data = &pkNetPacket->m_acData[0];
 	kPacket.len = 0;
 	kPacket.maxlen = MAX_PACKET_SIZE;
 
-	if(SDLNet_UDP_Recv(m_pkServerSocket, &kPacket)) {
+	if(SDLNet_UDP_Recv(m_pkSocket, &kPacket)) {
 		pkNetPacket->m_kAddress = kPacket.address;
-		cout << "SDLNet_UDP_Recv()" << "true" << endl;
+		pkNetPacket->m_iLength = kPacket.len;
 		return true;
 		}
 
@@ -143,8 +152,7 @@ bool NetWork::Send(NetPacket* pkNetPacket)
 	kPacket.maxlen = MAX_PACKET_SIZE;
 	kPacket.address = pkNetPacket->m_kAddress;
 
-	int iRes = SDLNet_UDP_Send(m_pkServerSocket, -1, &kPacket);
-	cout << "SDLNet_UDP_Send()" << iRes << endl;
+	int iRes = SDLNet_UDP_Send(m_pkSocket, -1, &kPacket);
 
 	return true;
 }
@@ -177,12 +185,15 @@ void NetWork::HandleControlMessage(NetPacket* pkNetPacket)
 			else {
 				// Create New Connection client.
 				kNewNode.m_kAddress = pkNetPacket->m_kAddress;
-				kNewNode.m_eConnectStatus = NETSTATUS_CONNECTING;
+				kNewNode.m_eConnectStatus = NETSTATUS_CONNECTED;
+				RemoteNodes.push_back(kNewNode);
+				m_pkConsole->Printf("Client Connected: %s", m_szAddressBuffer);
 
 				// Send Connect Yes.
 				kNetPRespons.Clear();
-				kNetPRespons.Write((char) ZF_NETTYPE_CONTROL);
-				kNetPRespons.Write((char) ZF_NETCONTROL_JOINYES);
+				//kNetPRespons.SetTarget("192.168.0.111:4242");
+				kNetPRespons.Write((unsigned char) ZF_NETTYPE_CONTROL);
+				kNetPRespons.Write((unsigned char) ZF_NETCONTROL_JOINYES);
 				kNetPRespons.m_kAddress = pkNetPacket->m_kAddress;
 				Send(&kNetPRespons);
 				}
@@ -190,7 +201,6 @@ void NetWork::HandleControlMessage(NetPacket* pkNetPacket)
 			break;
 
 		case ZF_NETCONTROL_JOINYES:
-			m_pkConsole->Printf("NetWork::HandleControlMessage(ZF_NETCONTROL_JOINYES)");
 			// Client can join.
 			m_kServerAddress = pkNetPacket->m_kAddress;
 			m_pkConsole->Printf("NetWork::HandleControlMessage(ZF_NETCONTROL_JOINYES)");
@@ -214,9 +224,8 @@ void NetWork::HandleControlMessage(NetPacket* pkNetPacket)
 
 void NetWork::Run()
 {
-	if(!m_bIsServer && !m_bIsConnectedToServer)	return;
+	if(	m_eNetStatus == NET_NONE)	return;
 	NetPacket NetP;
-	cout << ".";
 
 	unsigned char ucPacketType;
 	unsigned char ucPacketLength;
@@ -233,7 +242,7 @@ void NetWork::Run()
 	
 			// Else give it to zerofps.
 			case ZF_NETTYPE_UNREL:
-				cout << "/" << endl;
+				m_pkZeroFps->HandleNetworkPacket(&NetP);
 				break;
 
 			default:
@@ -245,20 +254,38 @@ void NetWork::Run()
 
 bool NetWork::AddressToStr(IPaddress* pkAddress, char* szString)
 {
-	sprintf(szString, "%d.%d.%d.%d:%d", (pkAddress->host >> 24) & 0xff, (pkAddress->host >> 16) & 0xff,
-				(pkAddress->host >> 8) & 0xff, (pkAddress->host) & 0xff, pkAddress->port);
+	int iPort = 0;
+	iPort = iPort | ((pkAddress->port >> 8) & 0xff);  
+	iPort = iPort | ((pkAddress->port << 8) & 0xff00);  
+
+	sprintf(szString, "%d.%d.%d.%d:%d", (pkAddress->host) & 0xff, (pkAddress->host >> 8) & 0xff,
+				(pkAddress->host >> 16) & 0xff, (pkAddress->host >> 24) & 0xff, iPort);
+//	sprintf(szString, "%d.%d.%d.%d:%d", (pkAddress->host >> 24) & 0xff, (pkAddress->host >> 16) & 0xff,
+//				(pkAddress->host >> 8) & 0xff, (pkAddress->host) & 0xff, iPort);
 	return true;
 }
 
 void NetWork::SendToAllClients(NetPacket* pkNetPacket)
 {
+	if(RemoteNodes.size() <= 0)
+		return;
 
+	cout << "Update Clients: ";
+	for(int i=0; i<RemoteNodes.size(); i++) {
+		pkNetPacket->m_kAddress = RemoteNodes[i].m_kAddress;
+		Send(pkNetPacket);
+		cout << ".";		
+		}
+	cout << endl;
 }
 
-void NetWork::ClientStart(char* szIp)
+void NetWork::ClientStart(const char* szIp)
 {
-	if(m_bIsServer)
+	if(m_eNetStatus == NET_SERVER)
 		return;
+
+	StartSocket(false);
+	m_eNetStatus = NET_CLIENT;
 
 	NetPacket NetP;
 
@@ -266,11 +293,8 @@ void NetWork::ClientStart(char* szIp)
 	NetP.SetTarget(szIp);
 	NetP.Write((char) ZF_NETTYPE_CONTROL);
 	NetP.Write((char) ZF_NETCONTROL_JOIN);
-	m_pkConsole->Printf("NetWork::ClientStart(%s)",szIp);
 	Send(&NetP);
-
 }
-
 
 void NetWork::ServerList(void)
 {
@@ -278,28 +302,34 @@ void NetWork::ServerList(void)
 	char cTest = 12;
 	unsigned char ucTest = 168;
 	string strTest("Gaaaa liksom :)");
+	Vector3 vTest(1,1.5,3);
 
 	NetPacket NetP;
 	NetP.Write(iTest);
 	NetP.Write_Str(strTest.c_str());
 	NetP.Write(ucTest);
 	NetP.Write(cTest);
+	NetP.Write(vTest);
  	
 	int iTest2;
 	char cTest2;
 	unsigned char ucTest2;
 	char szTest2[256];
+	Vector3 vTest2;
 
 	NetP.m_iPos = 0;
 	NetP.Read(iTest2);
 	NetP.Read_Str(szTest2);
 	NetP.Read(ucTest2);
 	NetP.Read(cTest2);
+	NetP.Read(vTest2);
 
 	cout << "iTest2 : " << iTest2 << endl;
 	cout << "szTest2 : " << szTest2 << endl;
 	cout << "ucTest2 : " << (int) ucTest2 << endl;
 	cout << "cTest2 : " << (int) cTest2 << endl;
+	cout << "vTest2 : ";
+	vTest2.Print();
 
 
 	// Create BroadCast LIST packet.

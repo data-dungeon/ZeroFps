@@ -21,7 +21,7 @@ ZeroFps::ZeroFps(void)
 	m_pkOpenAlSystem= new OpenAlSystem();
 	m_pkNetWork = new NetWork;
 
-	m_pkNetWork->ServerStart();
+//	m_pkNetWork->ServerStart();
 
 	m_iFullScreen=0;
 	m_fFrameTime=0;
@@ -393,9 +393,13 @@ void ZeroFps::RunCommand(int cmdid, const CmdArgument* kCommand)
 			break;
 
 		case FID_CONNECT:
-			if(kCommand->m_kSplitCommand.size() <= 1)
+/*			if(kCommand->m_kSplitCommand.size() <= 1)
 				return;
 			m_pkConsole->Printf("Connect to %s", kCommand->m_kSplitCommand[1].c_str());
+			m_pkNetWork->ClientStart(kCommand->m_kSplitCommand[1].c_str());*/
+			m_pkNetWork->ClientStart("192.168.0.145:4242"); // hugo
+			//m_pkNetWork->ClientStart("192.168.0.111:4242");	// me
+			m_pkConsole->Printf("FID_CONNECT");
 			break;
 
 		case FID_SERVER:
@@ -405,6 +409,7 @@ void ZeroFps::RunCommand(int cmdid, const CmdArgument* kCommand)
 				}
 
 			m_pkConsole->Printf("Start a server with name %s", kCommand->m_kSplitCommand[1].c_str());
+			m_pkNetWork->ServerStart();
 			break;
 	}	
 }
@@ -454,5 +459,33 @@ Core* ZeroFps::GetMADPtr(const char* filename)
 
 void ZeroFps::HandleNetworkPacket(NetPacket* pkNetPacket)
 {
+	unsigned char ucGamePacketType;
+	
+	pkNetPacket->Read(ucGamePacketType);
+	while(ucGamePacketType != ZFGP_ENDOFPACKET) {
+		switch(ucGamePacketType) {
+			case ZFGP_OBJECTSTATE: 
+				cout << "Recv: ZFGP_OBJECTSTATE" << endl;
+				m_pkObjectMan->UpdateState(pkNetPacket);
+				break;
 
+			case ZFGP_CLIENTSTATE: 
+				cout << "Recv: ZFGP_CLIENTSTATE" << endl;
+				break;
+		
+			case ZFGP_CLIENTCMD: 
+				cout << "Recv: ZFGP_CLIENTCMD" << endl;
+				break;
+			
+			case ZFGP_PRINT: 
+				cout << "Recv: ZFGP_PRINT" << endl;
+				break;
+
+			default:
+				cout << "Error in game packet : " << (int) ucGamePacketType << endl;
+				return;
+		}
+
+		pkNetPacket->Read(ucGamePacketType);
+		}
 }

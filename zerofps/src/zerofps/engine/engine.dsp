@@ -60,7 +60,7 @@ LINK32=link.exe
 # Begin Special Build Tool
 ProjDir=.
 SOURCE="$(InputPath)"
-PostBuild_Cmds=copy                                    $(ProjDir)\debug\*.lib                                    ..\..\..\bin\ 
+PostBuild_Cmds=copy                                     $(ProjDir)\debug\*.lib                                     ..\..\..\bin\ 
 # End Special Build Tool
 
 !ELSEIF  "$(CFG)" == "engine - Win32 Debug"
@@ -91,7 +91,7 @@ LINK32=link.exe
 # Begin Special Build Tool
 ProjDir=.
 SOURCE="$(InputPath)"
-PostBuild_Cmds=copy                                    $(ProjDir)\debug\*.lib                                    ..\..\..\bin\ 
+PostBuild_Cmds=copy                                     $(ProjDir)\debug\*.lib                                     ..\..\..\bin\ 
 # End Special Build Tool
 
 !ELSEIF  "$(CFG)" == "engine - Win32 Release Profile"
@@ -126,7 +126,7 @@ LINK32=link.exe
 # Begin Special Build Tool
 ProjDir=.
 SOURCE="$(InputPath)"
-PostBuild_Cmds=copy                                    $(ProjDir)\debug\*.lib                                    ..\..\..\bin\ 
+PostBuild_Cmds=copy                                     $(ProjDir)\debug\*.lib                                     ..\..\..\bin\ 
 # End Special Build Tool
 
 !ENDIF 
@@ -451,6 +451,10 @@ SOURCE=.\music.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\netslaveobject.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\network.cpp
 # End Source File
 # Begin Source File
@@ -638,6 +642,10 @@ SOURCE=.\modelproperty.h
 # Begin Source File
 
 SOURCE=.\music.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\netslaveobject.h
 # End Source File
 # Begin Source File
 

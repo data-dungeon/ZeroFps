@@ -31,6 +31,12 @@ enum enginestates
 		
 //	extern PFNGLFOGCOORDFEXTPROC glFogCoordfEXT;		
 
+#define	ZFGP_OBJECTSTATE	1
+#define	ZFGP_CLIENTSTATE	2
+#define	ZFGP_CLIENTCMD		3
+#define	ZFGP_PRINT			4
+#define	ZFGP_ENDOFPACKET	128
+
 class ENGINE_API ZeroFps : public ZFObject {
 	private:		
 		SDL_Surface* m_pkScreen;		

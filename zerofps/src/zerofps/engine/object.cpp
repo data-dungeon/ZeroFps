@@ -160,22 +160,25 @@ void Object::PackTo(NetPacket* pkNetPacket)
 	pkNetPacket->Write(m_kRot);
 
 	// Loop all properys med Propery::bNetwork = true
-	for(list<Property*>::iterator it=m_akPropertys.begin();it!=m_akPropertys.end();it++) {
+/*	for(list<Property*>::iterator it=m_akPropertys.begin();it!=m_akPropertys.end();it++) {
 		if((*it)->bNetwork) {
 			pkNetPacket->Write_Str((*it)->m_acName);
 			(*it)->PackTo(pkNetPacket);
 			}
-	}
+	}*/
 }
 
 void Object::PackFrom(NetPacket* pkNetPacket)
 {
+	pkNetPacket->Read(m_kPos);
+	pkNetPacket->Read(m_kRot);
+
 /*
 	Read Pos, Rotation.
 	Så länge Read Propery Str.
 		Get Prop Ptr eller skapa om inte finns.
-		property->PackFrom(pacData)
-*/
+		property->PackFrom(pacData)*/
+
 }
 
 bool Object::NeedToPack()

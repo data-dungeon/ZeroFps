@@ -1,5 +1,7 @@
 #include "objectmanager.h"
 #include "network.h"
+#include "zerofps.h"
+#include "netslaveobject.h"
 
 ObjectManager::ObjectManager() 
 : ZFObject("ObjectManager") 
@@ -61,17 +63,35 @@ void ObjectManager::UpdateDelete(){
 	m_akDeleteList.clear();
 }
 
-void ObjectManager::UpdateState(char* pacData)
+void ObjectManager::UpdateState(NetPacket* pkNetPacket)
 {
-/*
-	While Read ObjectID.
-		
-*/
+	cout << "ObjectManager::UpdateState" << endl;
+
+	Object* pkNetSlave;
+	int iObjectID;
+	pkNetPacket->Read(iObjectID);
+	while(iObjectID != -1) {
+		pkNetSlave = GetObjectByNetWorkID(iObjectID);
+		if(pkNetSlave == NULL)
+			pkNetSlave = CreateObjectByNetWorkID(iObjectID);
+
+		if(pkNetSlave == NULL) {
+			cout << "GAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" << endl; 
+			}
+
+		pkNetSlave->PackFrom(pkNetPacket);
+		pkNetPacket->Read(iObjectID);
+		}	
 }
 
 void ObjectManager::PackToClients()
 {
  	NetPacket NP;
+	NP.Clear();
+	NP.Write((char) ZF_NETTYPE_UNREL);
+	NP.Write((char) ZFGP_OBJECTSTATE);
+
+	int iNumOfObjects = m_akObjects.size();
 
 	for(list<Object*>::iterator it=m_akObjects.begin();it!=m_akObjects.end();it++) {
 		if((*it)->NeedToPack()) {
@@ -82,10 +102,31 @@ void ObjectManager::PackToClients()
 
 	int iEndOfObject = -1;
 	NP.Write(iEndOfObject);
-
+	NP.Write(ZFGP_ENDOFPACKET);
+	
 
 	NetWork* net = static_cast<NetWork*>(g_ZFObjSys.GetObjectPtr("NetWork"));
-//	net->SendToAllClients(&NP);
+	if(net->m_eNetStatus != NET_SERVER)	return;
+	net->SendToAllClients(&NP);
+}
+
+Object*	ObjectManager::GetObjectByNetWorkID(int iNetID)
+{
+	for(list<Object*>::iterator it=m_akObjects.begin();it!=m_akObjects.end();it++) {
+		if((*it)->iNetWorkID == iNetID)
+			return (*it);
+	}
+
+	return NULL;
+}
+
+Object* ObjectManager::CreateObjectByNetWorkID(int iNetID)
+{
+	Object *pkNew;
+	pkNew = new NetSlaveObject;
+	Add(pkNew);
+	pkNew->iNetWorkID = iNetID;
+	return pkNew;
 }
 
 

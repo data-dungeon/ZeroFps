@@ -181,7 +181,9 @@ void Render::DrawConsole(char* m_aCommand,vector<char*>* m_kText) {
 	
 	for(int i=0;i<21;i++) {
 		if((*m_kText)[i]!=NULL){
-			Print(Vector3(-1.1,-0.70+i/(float)13,-1),Vector3(0,0,0),Vector3(.06,.06,.06),(*m_kText)[i]);		
+			//Print(Vector3(-1.1,-0.70+i/(float)13,-1),Vector3(0,0,0),Vector3(.06,.06,.06),(*m_kText)[i]);		
+			Print(Vector3(-1.1,-0.70+i/(float)13,-1),Vector3(0,0,0),Vector3(0.04,0.04,0.04),(*m_kText)[i]);		
+		
 		}
 	}
 }

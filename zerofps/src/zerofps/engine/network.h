@@ -45,10 +45,9 @@ class ENGINE_API NetPacket
 public:
 	NetPacket();
 	~NetPacket();
-	
 	void Clear();
-
-	void SetTarget(char* szIp);
+	
+	void SetTarget(const char* szIp);
 
 	unsigned char m_acData[MAX_PACKET_SIZE];
 	int  m_iLength;
@@ -75,28 +74,39 @@ public:
 
 };
 
+enum NetWorkStatus
+{
+	NET_NONE,
+	NET_SERVER,
+	NET_CLIENT,
+};
+
 class ENGINE_API NetWork : public ZFObject 
 {
 private:
-	UDPsocket	m_pkServerSocket;
-	UDPsocket	m_pkClientSocket;
+//	UDPsocket	m_pkServerSocket;
+//	UDPsocket	m_pkClientSocket;
+	UDPsocket	m_pkSocket;
 
 	char		szServerName[MAX_NETWORKNAME];
 	bool		bAcceptClientConnections;
 	Console*	m_pkConsole;
+	ZeroFps*	m_pkZeroFps;
 
 	vector<RemoteNode>	RemoteNodes;
 
 	IPaddress	m_kServerAddress;
 
-	bool		m_bIsConnectedToServer;
-	bool		m_bIsServer;
+//	bool		m_bIsConnectedToServer;
+//	bool		m_bIsServer;
 	
 	char		m_szAddressBuffer[256];		// Used to convert/print address.
 
 public:
 	NetWork();
 	~NetWork();
+
+	NetWorkStatus	m_eNetStatus;
 
 	bool Init();
 	bool Close();
@@ -112,10 +122,13 @@ public:
 
 	vector<RemoteNode>	m_akClients;
 
+	void StartSocket(bool bStartServer);
+	void CloseSocket();
+
 	void ServerStart(void);
 	void ServerEnd(void);
 
-	void ClientStart(char* szIp);
+	void ClientStart(const char* szIp);
 	void ClientEnd(void);
 	void HandleControlMessage(NetPacket* pkNetPacket);
 
