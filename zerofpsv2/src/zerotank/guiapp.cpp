@@ -174,6 +174,9 @@ bool GuiApp::CreateWnd(GuiType eType, char* szResourceName, char* szText, int iI
 	}
 
 	m_kWindows.insert(map<int, ZGuiWnd*>::value_type(iID, pkWnd));
+
+	pkWnd->SetGUI(m_pkGui);
+	pkWnd->SetFont(m_pkGui->GetBitmapFont(ZG_DEFAULT_GUI_FONT));  
 	
 	return true;
 }

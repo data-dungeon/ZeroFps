@@ -932,6 +932,7 @@ ZGuiWnd* ZGui::FindNextTabWnd(ZGuiWnd *pkCurrentWnd, bool bNext)
 
 void ZGui::CreateDefaultSkins()
 {
+/* COMMENT OUT BY Zeb
 	TextureManager* pkTexMan = static_cast<TextureManager*>
 		(g_ZFObjSys.GetObjectPtr("TextureManager"));
 	
@@ -956,7 +957,7 @@ void ZGui::CreateDefaultSkins()
 	m_pkResManager->Add(string("DEF_RBN_UP_SKIN"),(ZGuiSkin*)new ZGuiSkin(rbn_up,rbn_a,false));
 	m_pkResManager->Add(string("DEF_RBN_DOWN_SKIN"),(ZGuiSkin*)new ZGuiSkin(rbn_down,rbn_a,false));
 	m_pkResManager->Add(string("DEF_CBN_UP_SKIN"),(ZGuiSkin*)new ZGuiSkin(cbn_up,false));
-	m_pkResManager->Add(string("DEF_CBN_DOWN_SKIN"),(ZGuiSkin*)new ZGuiSkin(cbn_down,false));
+	m_pkResManager->Add(string("DEF_CBN_DOWN_SKIN"),(ZGuiSkin*)new ZGuiSkin(cbn_down,false));*/
 }
 
 bool ZGui::RunKeyCommand(int iKey)
