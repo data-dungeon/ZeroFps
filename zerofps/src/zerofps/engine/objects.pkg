@@ -16,7 +16,7 @@ class AutoParentProperty;
 class PhysicProperty;
 
 class Object;
-class HeightMapObject;
+//class HeightMapObject;
 class ZoneObject;
 
 #include "object.h"
@@ -24,7 +24,7 @@ class ZoneObject;
 #include "modelproperty.h"
 #include "cameraproperty.h"
 #include "madproperty.h"
-#include "heightmapobject.h"
+//#include "heightmapobject.h"
 #include "heightmaprenderproperty.h"
 #include "skyboxrenderproperty.h"
 #include "waterrenderproperty.h"

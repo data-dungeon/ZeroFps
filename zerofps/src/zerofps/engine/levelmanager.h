@@ -9,7 +9,7 @@
 #include "zerofps.h"
 #include <string>
 #include "../render/render.pkg"
-#include "heightmapobject.h"
+//#include "heightmapobject.h"
 
 //#include "worldinfoproperty.h"
 
@@ -29,7 +29,8 @@ class ENGINE_API LevelManager : public ZFObject {
 		Light*				m_pkLight;
 		
 		HeightMap* 			m_pkMap;
-		HeightMapObject*	m_pkHeightMapObject;
+		Object*				m_pkHeightMapObject;
+//		HeightMapObject*	m_pkHeightMapObject;
 		
 		LightSource*		m_bSun;
 		LightSource*		m_bMoon;	
@@ -47,6 +48,8 @@ class ENGINE_API LevelManager : public ZFObject {
 
 		list<Object*> 		m_kTrackedObjects;		
 		vector<Object*> 	m_kZones;
+
+		Object*				CreateHeightMapObject(HeightMap* m_pkMap);
 
 	public:
 		LevelManager();

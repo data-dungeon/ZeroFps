@@ -225,9 +225,6 @@ void ZeroFps::Run_Server()
 	
 	Update_System();
 
-	//delete objects
-	m_pkObjectMan->UpdateDelete();
-	m_pkResourceDB->Refresh();
 }
 
 void ZeroFps::Run_Client()
@@ -283,6 +280,11 @@ void ZeroFps::Update_System()
 		//update physicsengine
 		m_pkPhysEngine->Update();	
 
+		//delete objects
+		m_pkObjectMan->UpdateDelete();
+		
+		//update the resource manager
+		m_pkResourceDB->Refresh();
 
 		m_fSystemUpdateTime = GetTicks();
 	}

@@ -34,10 +34,8 @@ OpenAlSystem::~OpenAlSystem()
 		delete m_kSources[i];
 	}
 	
-	cout<<"fuck"<<endl;
 	//Gubb was here
 	delete m_pkMusic;
-	cout<<"nofucK"<<endl;
 }
 
 

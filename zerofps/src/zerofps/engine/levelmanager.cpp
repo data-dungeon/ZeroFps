@@ -1,4 +1,7 @@
 #include "levelmanager.h"
+#include "heightmapcs.h"
+
+//#include "heightmapobject.h"
 
 LevelManager::LevelManager(): ZFObject("LevelManager")
 {
@@ -75,7 +78,9 @@ void LevelManager::ClearObjects()
 	m_pkObjectMan->Clear();
 	m_kZones.clear();
 
-	m_pkHeightMapObject=new HeightMapObject(m_pkMap);		
+//	m_pkHeightMapObject=new HeightMapObject(m_pkMap);		
+	m_pkHeightMapObject=CreateHeightMapObject(m_pkMap);
+	
 	m_pkHeightMapObject->SetParent(m_pkObjectMan->GetWorldObject());
 	m_pkHeightMapObject->GetPos().Set(0,-4,0);
 	m_pkMap->SetPosition(Vector3(0,-4,0));
@@ -391,6 +396,7 @@ void LevelManager::Water(bool bWater)
 		{	
 			//water
 			Object* water = new Object();
+			water->GetSave()=false;			
 			water->AddProperty("WaterRenderProperty");
 			WaterRenderProperty* wrp= static_cast<WaterRenderProperty*>(water->GetProperty("WaterRenderProperty"));
 			wrp->SetProperty(m_pkMap->GetSize()+300,100,"file:../data/textures/water2.bmp");
@@ -417,6 +423,7 @@ void LevelManager::SkyBox(const char* acHor,const char* acTop,Vector3 kRotate)
 	if(m_pkObjectMan->GetObject("SkyBoxObject") == NULL)
 	{	
 		pkSkybox=new Object();//SkyBoxObject(acHor,acTop);
+		pkSkybox->GetSave()=false;
 		pkSkybox->SetParent(m_pkObjectMan->GetWorldObject());	
 		pkSkybox->AddProperty("SkyBoxRenderProperty");
 		pkSkybox->GetName()="SkyBoxObject";
@@ -559,7 +566,25 @@ Object* LevelManager::GetClosestZone(Vector3 &kPos)
 }
 
 
+Object* LevelManager::CreateHeightMapObject(HeightMap* pkMap)
+{
+	Object* ob= new Object;
+	
+	ob->GetName()="HeightMapObject";
+	ob->GetSave()=false;	
+	ob->GetObjectType()=OBJECT_TYPE_STATIC;
+	
+	ob->AddProperty("PhysicProperty");
+	PhysicProperty* PP =static_cast<PhysicProperty*>(ob->GetProperty("PhysicProperty"));
+	PP->SetColShape(new HeightMapCS(pkMap));	
+	PP->m_bFloat=false;		
+	PP->m_bGravity=false;		
 
+	ob->AddProperty("HMRP2");
+	(static_cast<HMRP2*>(ob->GetProperty("HMRP2")))->SetHeightMap(pkMap);	
+
+	return ob;
+};
 
 
 

@@ -58,6 +58,7 @@ void MachineGunProjectile::Touch(Collision* pkCol)
 	
 
 		m_fCreateTime=m_pkFps->GetTicks();
+		
 	}
 }
 
