@@ -27,7 +27,6 @@ const int MAIN_CONTAINER = 0;
 class InventoryDlg// : public ZFSubSystem  
 {
 public:
-	
 	typedef pair<pair<string, string>,ItemStats*> itItem;
 
 	bool AddItems(vector<pair<pair<string,string>,ItemStats*> >&vkItems);
@@ -71,11 +70,12 @@ public:
 	
 
 private:
+	void DropItems();
 	void SwitchContainer(int iNewContainer);
 	void AddSlot(const char *szPic, const char *szPicA, Point sqr, 
 		SlotType eType, ItemStats* pkItemStats, int iContainer);
 	bool RemoveSlot(/*Point sqr,*/ Slot* pkSlot); //bool bDragItem=false);
-	bool GetFreeSlotPos(Point& refSqr);
+	bool GetFreeSlotPos(Point& refSqr, int iContainer);
 	bool SlotExist(int sx, int sy);
 	static int GenerateID(Point sqr);
 

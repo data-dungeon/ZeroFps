@@ -42,7 +42,7 @@ bool InventoryDlg::AddItem(const char *szPic, const char *szPicA, ItemStats* pkI
 {
 	Point sqr;
 
-	if(!GetFreeSlotPos(sqr))
+	if(!GetFreeSlotPos(sqr, MAIN_CONTAINER))
 	{
 		printf("Failed to find free slot!\n");
 		return false;
@@ -64,7 +64,7 @@ bool InventoryDlg::AddItems(vector<pair<pair<string, string>,ItemStats*> >&vkIte
 	{
 		Point sqr;
 
-		if(!GetFreeSlotPos(sqr))
+		if(!GetFreeSlotPos(sqr, MAIN_CONTAINER))
 		{
 			printf("Failed to find free slot!\n");
 			return false;
@@ -127,6 +127,13 @@ void InventoryDlg::OnClick(int x, int y, bool bMouseDown, bool bLeftButton)
 		else // släppa tillbaks ett föremål
 		if(!m_kDragSlots.empty() && bMouseDown == false)
 		{
+			if(Rect(448,200,448+48,200+48).Inside(x,y))
+			{
+				DropItems();
+				m_pkGui->KillWndCapture(); // remove capture
+				return;
+			}
+
 			Slot kSlotToAdd = m_kDragSlots.back();
 
 			// det går inte att placera en container i sig själv
@@ -176,7 +183,7 @@ void InventoryDlg::OnClick(int x, int y, bool bMouseDown, bool bLeftButton)
 
 				if(SlotExist(sx, sy))
 				{
-					GetFreeSlotPos(sqr);
+					GetFreeSlotPos(sqr, m_iCurrentContainer);
 					type = CONTAINTER_SLOTS;					
 				}
 		
@@ -485,7 +492,7 @@ void InventoryDlg::ScrollItems(int iPos)
 	}
 }
 
-bool InventoryDlg::GetFreeSlotPos(Point& refSqr)
+bool InventoryDlg::GetFreeSlotPos(Point& refSqr, int iContainer)
 {
 	for(int y=0; y<100; y++)
 		for(int x=0; x<5; x++)
@@ -495,7 +502,7 @@ bool InventoryDlg::GetFreeSlotPos(Point& refSqr)
 
 			itSlot it;
 			for( it = m_kItemSlots.begin(); it != m_kItemSlots.end(); it++)
-				if((*it).m_kSqr == t)
+				if((*it).m_kSqr == t && (*it).m_iContainer == iContainer)
 				{
 					bTaken = true;
 					break;
@@ -538,7 +545,7 @@ void InventoryDlg::AddSlot(const char *szPic, const char *szPicA, Point sqr,
 	int id = GenerateID(sqr);
 
 	ZGuiLabel* pkNewLabel = new ZGuiLabel(Rect(sx,sy,sx+size,sy+size), 
-		m_pkResMan->Wnd("BackPackWnd"), true, id);
+		m_pkResMan->Wnd("BackPackWnd"), iContainer == m_iCurrentContainer, id);
 
 	string strPath = "data/textures/gui/items/";
 
@@ -665,4 +672,39 @@ string InventoryDlg::GetWndByID(int iID)
 	}
 
 	return string("");
+}
+
+void InventoryDlg::DropItems()
+{
+	vector<itSlot> kRemoveList;
+
+	itSlot it;
+	for( it = m_kDragSlots.begin(); it != m_kDragSlots.end(); it++)
+	{
+		if((*it).m_iContainer != MAIN_CONTAINER)
+		{
+			int iNewContainer = (*it).m_iContainer - 1;
+
+			Point sqr;
+			if(GetFreeSlotPos(sqr, iNewContainer))
+			{
+				Slot s = (*it);
+
+				AddSlot( s.m_szPic[0], s.m_szPic[1], sqr, CONTAINTER_SLOTS, 
+					s.m_pkItemStats, iNewContainer);
+			}
+		}
+		else
+		{
+			// TODO:
+			// Meddela något system att föremålet har släppts på marken.
+		}
+
+		m_pkGui->UnregisterWindow((*it).m_pkLabel);
+
+		kRemoveList.push_back(it);
+	}
+
+	for(unsigned int i=0; i<kRemoveList.size(); i++)
+		m_kDragSlots.erase(kRemoveList[i]);
 }
