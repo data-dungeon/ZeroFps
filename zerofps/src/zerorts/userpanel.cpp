@@ -43,7 +43,7 @@ bool UserPanel::Create(int x, int y, char* szResourceFile, char* szDlgName)
 	Rect rc(m_pkZeroRts->m_iWidth-300-10,10,0,0);
 	rc.Right = rc.Left + CMD_BN_SIZE; rc.Bottom = rc.Top + CMD_BN_SIZE;
 
-	for(int i=0; i<18; i++)
+	for(int i=0; i<MAX_NUM_CMD_BNS; i++)
 	{
 		if(i%6==0 && i!=0)
 		{
@@ -87,8 +87,6 @@ bool UserPanel::DlgProc( ZGuiWnd* pkWnd,unsigned int uiMessage,
 	{
 	case ZGM_LBUTTONDOWN:
 	case ZGM_RBUTTONDOWN:
-
-		// SetCmdButtonIcon(oka++, m_kCmdIconIDMap.find("stop")->second, true);
 
 		x = ((int*)pkParams)[0];
 		y = ((int*)pkParams)[1];
@@ -202,6 +200,8 @@ void UserPanel::UpdateCmdButtons()
 
 	set<int> kSetMap;
 
+	HideAllCmdButtons();
+
 	for(list<int>::iterator it = m_pkZeroRts->m_kSelectedObjects.begin();
 		it != m_pkZeroRts->m_kSelectedObjects.end();it++)		
 	{
@@ -210,14 +210,12 @@ void UserPanel::UpdateCmdButtons()
 
 		if(pkClientUnit)
 		{
-			printf("Antal commandon%i\n", pkClientUnit->m_kUnitCommands.size());
-
 			int iIndex = 0;
 			for(unsigned int i=0; i<pkClientUnit->m_kUnitCommands.size(); i++)
 			{
 				int iIconIndex = pkClientUnit->m_kUnitCommands[i].m_iIconIndex;
 				set<int>::iterator r = kSetMap.find(iIconIndex);
-				if(r != kSetMap.end() )
+				if(r == kSetMap.end())
 				{
 					SetCmdButtonIcon(iIndex, iIconIndex, true);
 					kSetMap.insert(set<int>::value_type(iIconIndex));
@@ -230,7 +228,7 @@ void UserPanel::UpdateCmdButtons()
 
 void UserPanel::SetCmdButtonIcon(int iButtonIndex, int iIconIndex, bool bShow)
 {
-	if(iButtonIndex < 0 || iButtonIndex > 18)
+	if(iButtonIndex < 0 || iButtonIndex > MAX_NUM_CMD_BNS)
 	{
 		printf("SetCmdButtonIcon = ERROR\n");
 		return;
@@ -247,7 +245,6 @@ void UserPanel::SetCmdButtonIcon(int iButtonIndex, int iIconIndex, bool bShow)
 
 	int iNumVisibleButtons = GetNumVisibleCmdButtons();
 
-	
 	int x = m_pkZeroRts->m_iWidth-300-10, y = 10;
 	x += (CMD_BN_SIZE+2) * (iNumVisibleButtons % 6);
 	y += (CMD_BN_SIZE+2) * (iNumVisibleButtons / 6);
@@ -291,10 +288,19 @@ void UserPanel::SetCmdButtonIcon(int iButtonIndex, int iIconIndex, bool bShow)
 
 void UserPanel::OnClickCmdButton(int iCtrlID)
 {
-	if(iCtrlID >= ID_CMD_BUTTONS_START && iCtrlID < ID_CMD_BUTTONS_START+18)
+	if(iCtrlID >= ID_CMD_BUTTONS_START && iCtrlID < 
+		ID_CMD_BUTTONS_START+MAX_NUM_CMD_BNS)
 		return;
 
-	//m_kCmdIconNameMap.find(ID_CMD_BUTTONS_START
+	ZGuiButton* pkButton = (ZGuiButton*) 
+		m_pkGuiBuilder->GetChild(m_pkDlgBox, iCtrlID);
+
+	if(pkButton == NULL)
+		return;
+
+/*	UnitCommand kOrder;
+	strcpy(kOrder.m_acCommandName, "Move");
+	m_pkZeroRts->m_pkClientInput->AddOrder(kOrder);*/
 }
 
 int UserPanel::GetNumVisibleCmdButtons()
@@ -302,7 +308,7 @@ int UserPanel::GetNumVisibleCmdButtons()
 	int iCounter = 0;
 
 	ZGuiButton* pkButton;
-	for(int i=0; i<18; i++)
+	for(int i=0; i<MAX_NUM_CMD_BNS; i++)
 	{
 		pkButton = (ZGuiButton*) m_pkGuiBuilder->GetChild(m_pkDlgBox, 
 			ID_CMD_BUTTONS_START+i);
@@ -312,4 +318,15 @@ int UserPanel::GetNumVisibleCmdButtons()
 	}
 
 	return iCounter;
+}
+
+void UserPanel::HideAllCmdButtons()
+{
+	ZGuiButton* pkButton;
+	for(int i=0; i<MAX_NUM_CMD_BNS; i++)
+	{
+		pkButton = (ZGuiButton*) m_pkGuiBuilder->GetChild(m_pkDlgBox, 
+			ID_CMD_BUTTONS_START+i);
+		pkButton->Hide();
+	}
 }

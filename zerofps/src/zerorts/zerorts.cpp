@@ -497,12 +497,12 @@ void ZeroRTS::RunCommand(int cmdid, const CmdArgument* kCommand)
 			break;
 
 		case FID_MASSSPAWN:
-			pkConsole->Printf("Die FPS, DIE.");				
+			pkConsole->Printf("Nu tar vi det lite lungt va.");				
 			int x,y;
 			x = y = 0;
 			int iAntal = 0;
-			for( x=-200; x < 200; x+=10) {
-				for(y=-200; y < 200; y+=10) {
+			for( x=-200; x < 200; x+=100) {
+				for(y=-200; y < 200; y+=100) {
 					pkmad = pkObjectMan->CreateObjectByArchType("ZeroRTSTestBox");
 					if(pkmad) {
 						Vector3 kPos = Vector3(x,0,y);
@@ -848,10 +848,3 @@ void ZeroRTS::OnServerClientPart(ZFClient* pkClient,int iConID)
 {
 	cout<<"Client "<<iConID<<" Parted"<<endl;	
 }
-
-
-
-
-
-
-

@@ -43,8 +43,13 @@ void P_UnitMoveAI::Init()
 		aiCost[3] = 10; // öken (röd nyans)
 		aiCost[4] = 999; // vatten
 
+		static bool s_bOnes = false;
+		//if(!s_bOnes)
+		{
+			s_bOnes = true;
 		PathBuilder kPathBuilder(m_pkMap, &m_pkPathFind);
 		kPathBuilder.Build(aiCost);
+		}
 	
 	///////Register commands
 		
@@ -61,6 +66,7 @@ bool P_UnitMoveAI::RegisterExternalCommands()
 		m_pkMoveUnitCommand->m_kUnitCommandInfo.m_bNeedTarget = true;
 		strcpy(m_pkMoveUnitCommand->m_kUnitCommandInfo.m_acCommandName, "Move");
 		strcpy(m_pkMoveUnitCommand->m_kUnitCommandInfo.m_acComments, "kommentar");
+		m_pkMoveUnitCommand->m_kUnitCommandInfo.m_iIconIndex = 1;
 		m_pkUnit->RegisterExternalCommand(m_pkMoveUnitCommand);
 		return true;
 	}
