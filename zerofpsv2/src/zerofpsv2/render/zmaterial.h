@@ -5,6 +5,8 @@
 #include "render_x.h"
 #include <vector>
 #include "../ogl/zfpsgl.h"
+#include "../basic/zfini.h"
+
 
 
 using namespace std;
@@ -35,6 +37,7 @@ class RENDER_API ZMaterial
 {
 	private:
 		vector<ZMaterialSettings> m_kPasses;
+		ZFIni		m_kIni;
 		
 	public:		
 		bool	m_bCopyData;
@@ -48,6 +51,9 @@ class RENDER_API ZMaterial
 		ZMaterialSettings* GetPass(int iPass);
 		ZMaterialSettings* AddPass();
 		
+		
+		bool LoadShader(const char* acFile);
+		void Clear();
 	
 	friend class ZShader;
 };

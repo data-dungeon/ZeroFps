@@ -27,6 +27,7 @@ public:
 	void GetCommandStrings(vector<string>* pkCommands);
 	char* GetValue(const char* strSection, char* strKey);
 	void GetSectionNames(vector<string>& kSectionList);
+	bool SectionExist(const char* acSection);
 	bool Open(const char* strFileName, bool bCommandFile);
 	bool ExecuteCommands(const char* strName);
 	ZFIni();

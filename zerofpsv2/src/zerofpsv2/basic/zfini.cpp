@@ -450,7 +450,16 @@ void ZFIni::GetSectionNames(vector<string>& kSectionList)
 		kSectionList.push_back(m_pstrSections[i]);
 }
 
-
+bool ZFIni::SectionExist(const char* acSection)
+{
+	for(int i=0; i<m_iNumSections; i++)
+	{
+		if( strcmp(m_pstrSections[i],acSection) == 0)
+			return true;
+	}
+	
+	return false;
+}
 
 
 

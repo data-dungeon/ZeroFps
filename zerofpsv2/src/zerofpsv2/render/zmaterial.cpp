@@ -24,13 +24,12 @@ ZMaterialSettings::ZMaterialSettings()
 
 ZMaterial::ZMaterial()
 {
-	ZMaterialSettings* first = AddPass();
-	
+	Clear();
+
+	ZMaterialSettings* first = AddPass();	
 	first->m_iTUs[0] = 1; 
 
-	m_bCopyData = false;
-	m_bRandomMovements = false;
-	m_bWaves = false;	
+
 }
 
 ZMaterialSettings* ZMaterial::GetPass(int iPass)
@@ -48,3 +47,38 @@ ZMaterialSettings* ZMaterial::AddPass()
 
 	return &m_kPasses.back();
 }
+
+void ZMaterial::Clear()
+{
+	m_kPasses.clear();
+
+	m_bCopyData = false;
+	m_bRandomMovements = false;
+	m_bWaves = false;	
+}
+
+bool ZMaterial::LoadShader(const char* acFile)
+{
+//	Clear();
+	
+	if(m_kIni.Open(acFile,0))
+	{
+		if(!m_kIni.SectionExist("global"))
+		{
+			cout<<"global section is missing"<<endl;
+			return false;
+		}
+	
+	
+	
+	
+		return true;
+	}
+	else
+	{
+		cout<<"error loading shader:"<<acFile<<endl;
+		return false;
+	}
+}
+
+

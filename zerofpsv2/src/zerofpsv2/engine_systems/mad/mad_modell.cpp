@@ -473,6 +473,8 @@ void Mad_Modell::Draw_All(int iDrawFlags)
 		m_pkShader->SetDrawMode(TRIANGLES_MODE);
 		m_pkShader->SetNrOfVertexs(GetNumVertices());
 		
+		m_kDefaultMat.LoadShader("testshader.shd");
+		
 /*		glTexCoordPointer(2,GL_FLOAT,0,GetTextureCooPtr());
 		glVertexPointer(3,GL_FLOAT,0,GetVerticesPtr());
 		glNormalPointer(GL_FLOAT,0,GetNormalsPtr());
