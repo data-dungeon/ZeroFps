@@ -19,8 +19,8 @@ private:
 	
 	string m_strStopFileName;
 
-	bool started;
-	Vector3 prevpos;
+	bool m_bStarted;
+	Vector3 m_kPrevpos;
 
 public:
 	P_Sound();

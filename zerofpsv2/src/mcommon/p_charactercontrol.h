@@ -16,6 +16,7 @@ enum ControlKeys
 	eJUMP = 4,
 };
 
+enum MOVE_STATE { idle, moving };
 
 class MCOMMON_API P_CharacterControl: public Property
 {
@@ -29,6 +30,10 @@ class MCOMMON_API P_CharacterControl: public Property
 		
 		
 		float			m_fJumpDelay;
+
+		MOVE_STATE m_eMoveState;
+		Vector3 m_kPrevPos;
+
 	public:
 	
 		P_CharacterControl();

@@ -15,8 +15,8 @@ P_Sound::P_Sound()
 	m_strStopFileName = "";
 	m_bLoop=false;
 
-	started = false;
-	prevpos = Vector3(-9999,-9999,-9999);
+	m_bStarted = false;
+	m_kPrevpos = Vector3(-9999,-9999,-9999);
 }
 
 P_Sound::~P_Sound()
@@ -28,8 +28,8 @@ P_Sound::~P_Sound()
 		m_strStopFileName = "";
 		m_strFileName = "";
 
-		started = false;
-		prevpos = Vector3(-9999,-9999,-9999);
+		m_bStarted = false;
+		m_kPrevpos = Vector3(-9999,-9999,-9999);
 	}
 }
 
@@ -51,19 +51,19 @@ void P_Sound::Update()
 			{
 				Vector3 currpos = pkEnt->GetWorldPosV();
 
-				if(started == false)
+				if(m_bStarted == false)
 				{
 					m_pkAudioSystem->StartSound(m_strFileName, 
 						pkEnt->GetIWorldPosV(), pkEnt->GetVel(), true);
-					started = true;
+					m_bStarted = true;
 				}
 				else
 				{
-					if(!prevpos.NearlyEquals(currpos,0.1f))
+					if(!m_kPrevpos.NearlyEquals(currpos,0.1f))
 					{
 						m_pkAudioSystem->MoveSound(m_strFileName.c_str(), 
 							pkEnt->GetIWorldPosV(), pkEnt->GetIWorldPosV(), pkEnt->GetVel());
-						prevpos = pkEnt->GetIWorldPosV();
+						m_kPrevpos = pkEnt->GetIWorldPosV();
 					}
 				}
 			}
@@ -76,15 +76,21 @@ void P_Sound::Update()
 			m_strStopFileName = "";
 			m_strFileName = "";
 
-			started = false;
-			prevpos = Vector3(-9999,-9999,-9999);
+			m_bStarted = false;
+			m_kPrevpos = Vector3(-9999,-9999,-9999);
 		}
 	}
 }
 
 void P_Sound::StartSound(string strName, bool bLoop) 
 {
-	m_strStopFileName = "";
+	if(m_strFileName != strName)
+	{
+		m_strStopFileName = m_strFileName;
+	}
+	else
+		m_strStopFileName = "";
+
 	m_strFileName = strName;
 	m_bLoop = bLoop;
 	SetNetUpdateFlag(true);

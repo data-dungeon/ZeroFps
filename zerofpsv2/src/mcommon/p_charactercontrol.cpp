@@ -19,6 +19,8 @@ P_CharacterControl::P_CharacterControl()
 	m_fSpeed = 75.0;
 	m_fJumpForce = 4.0; 
 	
+	m_eMoveState = idle;
+	m_kPrevPos = Vector3(-9999,-9999,-9999);
 }
 
 P_CharacterControl::~P_CharacterControl()
@@ -89,32 +91,24 @@ void P_CharacterControl::Update()
 			pkSound->StartSound("data/sound/jump.wav", false);
 		}
 
-		enum MOVE_STATE { idle, moving };
-		static MOVE_STATE move_state = idle;
-
-		static Vector3 prevpos = Vector3(-9999,-9999,-9999);
 		Vector3 currpos = pkEnt->GetWorldPosV();
 
-		if(prevpos.NearlyEquals(currpos,0.1f)) // står stilla
+		if(m_kPrevPos.NearlyEquals(currpos,0.1f)) // står stilla
 		{
-			if(move_state == moving)
+			if(m_eMoveState == moving)
 			{
-				move_state = idle;
+				m_eMoveState = idle;
 				pkSound->StopSound("data/sound/footstep_forest.wav");
 			}
 		}
 		else
-		if(move_state == idle && !kVel.NearlyZero(0.1f) )
+		if(m_eMoveState == idle && !kVel.NearlyZero(0.1f) )
 		{
-			move_state = moving;
-
-			if(!bHoppa)
-			{
-				pkSound->StartSound("data/sound/footstep_forest.wav", true);
-			}
+			m_eMoveState = moving;
+			pkSound->StartSound("data/sound/footstep_forest.wav", true);
 		}
 
-		prevpos = currpos;
+		m_kPrevPos = currpos;
 
 	}
 	

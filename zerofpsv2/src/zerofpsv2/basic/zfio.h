@@ -19,7 +19,7 @@ class BASIC_API ZFIoInterface
 		{
 			Write(strString.size()+1);
 			Write((void*)strString.c_str(),strString.size()+1,1);					
-		
+			return true;
 		}
 		
 		bool Read_Str(string& strString)
@@ -30,7 +30,8 @@ class BASIC_API ZFIoInterface
 			
 			Read(czStr,iSize,1);	
 			strString = czStr;
-			delete czStr;							
+			delete czStr;					
+			return true;
 		}
 		
 
