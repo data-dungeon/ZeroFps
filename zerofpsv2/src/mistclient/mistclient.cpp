@@ -197,6 +197,7 @@ void MistClient::RegisterResources()
 
 void MistClient::RegisterPropertys()
 {
+	m_pkPropertyFactory->Register("P_ShadowBlob",		Create_P_ShadowBlob);	
 	m_pkPropertyFactory->Register("P_Enviroment", Create_P_Enviroment);
 	m_pkPropertyFactory->Register("P_ClientControl", Create_P_ClientControl);
 	m_pkPropertyFactory->Register("P_ServerInfo", Create_P_ServerInfo);

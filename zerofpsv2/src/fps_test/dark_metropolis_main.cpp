@@ -16,6 +16,9 @@
 #include "../zerofpsv2/render/glguirender.h"
 
 #include "../mcommon/p_charactercontrol.h"
+#include "../mcommon/p_charstats.h"
+#include "../mcommon/p_item.h"
+#include "../mcommon/p_container.h"
 
 DarkMetropolis g_kDM("DM_arcad",0,0,0);
 
@@ -406,6 +409,10 @@ void DarkMetropolis::RegisterPropertys()
 	m_pkPropertyFactory->Register("P_DMCharacter",		Create_P_DMCharacter);
 	m_pkPropertyFactory->Register("P_ShadowBlob",		Create_P_ShadowBlob);	
 	m_pkPropertyFactory->Register("P_DMClickMe",			Create_P_DMClickMe);	
+	
+	m_pkPropertyFactory->Register("P_CharStats", Create_P_CharStats);
+   m_pkPropertyFactory->Register("P_Item", Create_P_Item);
+   m_pkPropertyFactory->Register("P_Container", Create_P_Container);	
 	
 }
 

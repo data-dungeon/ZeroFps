@@ -1386,10 +1386,6 @@ void ZeroFps::Disconnect(int iConnectionID)
 	m_pkConsole->Printf("ZeroFps::Disconnect(%d)", iConnectionID);
 	assert( m_kClient[iConnectionID].m_pkObject );
 	
-	cout<<"discconnect:"<<iConnectionID<<endl;
-	
-	cout<<"blah:"<<m_kClient.size()<<endl;
-	
 	m_pkApp->OnServerClientPart(&m_kClient[iConnectionID],iConnectionID);	
 	
 	m_pkObjectMan->Delete( m_kClient[iConnectionID].m_pkObject );

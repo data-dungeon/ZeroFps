@@ -37,7 +37,7 @@ ZeroEd g_kZeroEd("ZeroEd", 0, 0, 0);
 static bool GUIPROC( ZGuiWnd* win, unsigned int msg, int numparms, void *params ) 
 {static int oka = 0;
 
-printf("message = %i, %i\n", msg, ZGM_COMMAND);
+
 	switch(msg)
 	{
 	case ZGM_COMMAND:

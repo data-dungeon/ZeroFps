@@ -33,7 +33,7 @@ function Create()
 			InitParameter("groupflag",0);
 			InitParameter("groupflag",1);
 			
-			InitParameter("leglength",0.8);
+			InitParameter("leglength",1.8);
 			
 			InitParameter("walkablegroupflag",0);
 

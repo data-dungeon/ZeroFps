@@ -196,6 +196,8 @@ void MistClient::UpdateCharacter()
 				pkCam->Set3PYAngle(0);
 				pkCam->Set3PDistance(4);									
 			}
+			
+			pkEnt->SetInterpolate(true);
 		}
 		
 		//setup enviroment
