@@ -100,6 +100,7 @@ class ENGINE_API Input : public ZFSubSystem {
 
 		int				m_iSDLMouseX, m_iSDLMouseY;
 
+		bool				m_bHaveReleasedMWUP,m_bHaveReleasedMWDOWN;
 	
 		void SetupMapToKeyState();
 		int  SDLToZeroFpsKey(int iSdlSym);		

@@ -889,7 +889,11 @@ void MistServer::Input_Camera(float fMouseX, float fMouseY)
 		if(m_pkInputHandle->VKIsDown("down"))		newpos.y += fSpeedScale;
 		if(m_pkInputHandle->VKIsDown("up"))			newpos.y -= fSpeedScale;
 				
-
+		//mouse wheel test
+		if(m_pkInputHandle->Pressed(MOUSEWUP)) 	newpos.y += 1.0;
+		if(m_pkInputHandle->Pressed(MOUSEWDOWN))	newpos.y -= 1.0;
+		
+		
 		Vector3 rot;
 		rot.Set(float(-fMouseY / 5.0),float(-fMouseX / 5.0),0);
 
@@ -924,6 +928,8 @@ void MistServer::Input_Camera(float fMouseX, float fMouseY)
 		if(m_pkInputHandle->VKIsDown("down"))		m_pkActiveCamera->OrthoZoom(0.9);
 		if(m_pkInputHandle->VKIsDown("up"))			m_pkActiveCamera->OrthoZoom(1.1);
 
+		
+		
 		if(m_pkInputHandle->VKIsDown("pancam"))
 		{
 			kMove += Vector3(-fMouseX * fSpeedScale,fMouseY * fSpeedScale,0);

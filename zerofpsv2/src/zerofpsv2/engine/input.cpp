@@ -51,6 +51,9 @@ bool Input::StartUp()
 	m_iAbsMouseX = 0;
 	m_iAbsMouseY = 0;
 	
+	m_bHaveReleasedMWUP = false;
+	m_bHaveReleasedMWDOWN = false;
+	
 	for(int i =0;i<400;i++) 
 	{
 		m_akKeyState[i].m_bDown = false;
@@ -210,11 +213,20 @@ void Input::Update(void)
 	m_iMouseX=-1;	
 	m_iMouseY=-1;
 	
+	static int bah = 0;
+	bah++;
+	
 	UpdateInputHandles();
 	UpdateMousePos();
 	
+	//release mousewheel buttons (to make sure mousewheels are pressed atleast one frame
+	if(m_bHaveReleasedMWUP)
+		m_akKeyState[MOUSEWUP].m_bDown=false;
+	if(m_bHaveReleasedMWDOWN)
+		m_akKeyState[MOUSEWDOWN].m_bDown=false;
+		
+	
 	Buttons iZfKey;
-
 	while(SDL_PollEvent(&m_kEvent)) {
 		switch(m_kEvent.type) {
 			//keyboard
@@ -237,27 +249,41 @@ void Input::Update(void)
 	    	//mouse    		
    	 	case SDL_MOUSEBUTTONDOWN:
 				//cout << "SDL_MOUSEBUTTONDOWN: " << (int) m_kEvent.button.button << endl;
-
-    			switch(m_kEvent.button.button){
+    			switch(m_kEvent.button.button)
+				{
     				case SDL_BUTTON_LEFT:		m_akKeyState[MOUSELEFT].m_bDown = true;	break;
    	 			case SDL_BUTTON_MIDDLE:		m_akKeyState[MOUSEMIDDLE].m_bDown=true;	break;
     				case SDL_BUTTON_RIGHT:		m_akKeyState[MOUSERIGHT].m_bDown=true;		break;	
-    				case SDL_BUTTON_WHEELUP:	m_akKeyState[MOUSEWUP].m_bDown=true;		break;	
-    				case SDL_BUTTON_WHEELDOWN:	m_akKeyState[MOUSEWDOWN].m_bDown=true;		break;	
+    				case SDL_BUTTON_WHEELUP:	
+						m_akKeyState[MOUSEWUP].m_bDown=true;		
+						m_bHaveReleasedMWUP = false;
+						break;	
+    				case SDL_BUTTON_WHEELDOWN:	
+						m_akKeyState[MOUSEWDOWN].m_bDown=true;
+						m_bHaveReleasedMWDOWN = false;
+						break;	
 				}
+				
 				break;
 
 	    	case SDL_MOUSEBUTTONUP:
  				//cout << "SDL_MOUSEBUTTONUP: " << (int) m_kEvent.button.button << endl;
 
-				switch(m_kEvent.button.button){
+				switch(m_kEvent.button.button)
+				{
     				case SDL_BUTTON_LEFT:		m_akKeyState[MOUSELEFT].m_bDown=false;		break;
 	    			case SDL_BUTTON_MIDDLE:		m_akKeyState[MOUSEMIDDLE].m_bDown=false;	break;
     				case SDL_BUTTON_RIGHT:		m_akKeyState[MOUSERIGHT].m_bDown=false;	break;	
-    				case SDL_BUTTON_WHEELUP:	m_akKeyState[MOUSEWUP].m_bDown=false;		break;	
-    				case SDL_BUTTON_WHEELDOWN:	m_akKeyState[MOUSEWDOWN].m_bDown=false;	break;	
+    				case SDL_BUTTON_WHEELUP:	
+						m_bHaveReleasedMWUP = true;
+						//m_akKeyState[MOUSEWUP].m_bDown=false;		
+						break;	
+    				case SDL_BUTTON_WHEELDOWN:	
+						m_bHaveReleasedMWDOWN = true;
+						//m_akKeyState[MOUSEWDOWN].m_bDown=false;	
+						break;	
    	 		}    	
-    			 break;
+    			break;
 		}	
 	}
 }
