@@ -21,8 +21,6 @@ using namespace std;
 // Light Source used by render.
 class RENDER_API LightSource {
 	public:
-		LightSource();
-	
 		//position and rotation
 		Vector3 *kPos;					///< Position of light source.
 		Vector3 *kRot;					
@@ -48,6 +46,13 @@ class RENDER_API LightSource {
 		
 		float fIntensity;
 		
+		LightSource();
+		bool operator<(const LightSource& kOther)
+		{
+			return fIntensity < kOther.fIntensity;		
+		};
+	
+
 };
 
 /// A Light in ZeroFPS.
@@ -56,7 +61,7 @@ class RENDER_API Light : public ZFObject {
 		Vector3 m_kCamPos;
 
 		list<LightSource*> m_kLights;		
-		list<LightSource*> m_kSorted;
+		vector<LightSource*> m_kSorted;
 		vector<LightSource*> m_kActiveLights;
 
 		void TurnOffAll();
@@ -64,17 +69,20 @@ class RENDER_API Light : public ZFObject {
 	public:
 		int m_iNrOfLights;
 		
+		/*
 		struct Less_LightSource : public binary_function<LightSource*, LightSource*, bool> {
 			bool operator()(LightSource* x, LightSource* y) { return x->fIntensity < y->fIntensity; };
 		} Less_Light;
+		*/
 
 		struct More_LightSource : public binary_function<LightSource*, LightSource*, bool> {
-			bool operator()(LightSource* x, LightSource* y) { return x->fIntensity > y->fIntensity; };
+			inline bool operator()(LightSource* x, LightSource* y) { return x->fIntensity > y->fIntensity; };
 		} More_Light;
 
 		Light();
 		
 		void Add(LightSource* kNewLight);
+		void EnableLight(LightSource* pkLight,int iGlLight);
 		void Remove(LightSource *kLight);
 		void SetCamera(Vector3 kCamPos);
 		void Update();
