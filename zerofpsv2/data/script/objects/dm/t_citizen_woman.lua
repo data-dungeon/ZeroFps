@@ -39,8 +39,8 @@ function HeartBeat()
 	end
 
 	local pos = GetObjectPos(SIGetSelfID());
-	pos[1] = pos[1] + Random(30)-15;
-	pos[3] = pos[3] + Random(30)-15;
+	pos[1] = pos[1] + Random(20)-10;
+	pos[3] = pos[3] + Random(20)-10;
 
 	MakePathFind(SIGetSelfID(),pos);
 
@@ -53,7 +53,7 @@ function Dead()
 	PlaySound (SIGetSelfID(), "death/DEATH7.WAV");
 	SetEntityVar(SIGetSelfID, "deadtime", 0);
 
-	PanicArea(SIGetSelfID, 10);
+	PanicArea(SIGetSelfID, 5);
 
 	if Random(10) < 6 then
 		RunScript ("data/script/objects/dm/t_money.lua", SIGetSelfID());

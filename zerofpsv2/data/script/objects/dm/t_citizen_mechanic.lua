@@ -71,7 +71,7 @@ function Dead()
 
 	SetEntityVar(SIGetSelfID, "deadtime", 0);
 
-	PanicArea(SIGetSelfID, 10);
+	PanicArea(SIGetSelfID, 5);
 
 	if Random(10) < 3 then
 		RunScript ("data/script/objects/dm/t_money.lua", SIGetSelfID());

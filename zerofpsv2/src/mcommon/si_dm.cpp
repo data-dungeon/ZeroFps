@@ -1649,7 +1649,7 @@ int DMLua::PanicAreaLua(lua_State* pkLua)
 			// check distance
 			double dDist = kObj[i]->GetWorldPosV().DistanceTo(kObjPos);
 
-			if ( dDist <= dRadie && pkChar->m_iState != PANIC && pkChar->m_iState != DEAD )
+			if ( dDist <= dRadie && pkChar->m_iState != PANIC && pkChar->m_iState != DEAD && pkChar->m_iTeam == 1)
 				pkChar->ChangeState(PANIC);
 
 		}
