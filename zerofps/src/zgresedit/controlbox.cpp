@@ -306,7 +306,7 @@ bool ControlBox::RaiseNumberAtEnd(char *szName)
 		return false;
 
 	szNumber[l] = '\0';
-//	strrev(szNumber);
+	strrev(szNumber);
 
 	int number = atoi(szNumber);
 	sprintf(szNumber, "%i", number+1);

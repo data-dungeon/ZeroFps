@@ -58,11 +58,12 @@ class ZGuiResourceManager;
 
 #define ZG_DEFAULT_GUI_FONT				 1
 
-enum GUI_API ZndInfo {WNDPROC};
+
 
 class GUI_API ZGui : public ZFObject 
 {
 public:	
+	enum ZndInfo {WNDPROC};
 
 	void DrawLine(Point p1, Point p2);
 	void DrawPoint(Point pos, unsigned char r, unsigned char g, unsigned char b);
