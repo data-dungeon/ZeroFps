@@ -1356,6 +1356,7 @@ void ZeroEdit::RegisterPropertys()
 	pkPropertyFactory->Register("TeleportProperty", Create_TeleportProperty);
 	pkPropertyFactory->Register("MassDriverProperty", Create_MassDriverProperty);	
 	pkPropertyFactory->Register("MassDriverProjectile", Create_MassDriverProjectile);			
+	pkPropertyFactory->Register("P_ClientInput", Create_P_ClientInput);	
 }
 
 void ZeroEdit::ListTemplates()

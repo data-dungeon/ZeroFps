@@ -29,6 +29,7 @@
 #include "p_renderselection.h"
 #include "p_fogrender.h"
 #include "p_unitmoveai.h"
+#include "p_clientinput.h"
 
 
 

@@ -10,3 +10,9 @@ void P_ClientInput::Update()
 {
 
 }
+
+COMMON_API Property* Create_P_ClientInput()
+{
+	return new P_ClientInput();
+
+}

@@ -1,5 +1,5 @@
-#ifndef _P_CLIENTUNIT_H_
-#define _P_CLIENTUNIT_H_
+#ifndef _P_CLIENTINPUT_H_
+#define _P_CLIENTINPUT_H_
 
 #include "../zerofps/engine/objects.pkg"
 #include "../zerofps/engine/engine.pkg"

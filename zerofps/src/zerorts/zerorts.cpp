@@ -107,7 +107,9 @@ void ZeroRTS::RegisterPropertys()
 	pkPropertyFactory->Register("P_ClientUnit", Create_P_ClientUnit);
 	pkPropertyFactory->Register("P_ServerInfo", Create_P_ServerInfo);		
 	pkPropertyFactory->Register("P_ServerUnit", Create_P_ServerUnit);	
+	pkPropertyFactory->Register("P_ClientInput", Create_P_ClientInput);	
 }
+
 
 void ZeroRTS::OnIdle() 
 {
