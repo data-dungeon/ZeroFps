@@ -119,6 +119,12 @@ void OptionsDlg::Open()
 
 	m_pkMC->CheckButton("EnableShadowGroup", m_kOptionsValues.m_abEnabledShadowGroups[
 		m_kOptionsValues.m_iCurrentShadowGroup]);	
+
+	m_kOptionsValues.m_iPrevNetSpeed = m_pkMC->m_pkZeroFps->GetConnectionSpeed(); 
+
+	m_pkMC->CheckButton("NetSpeed1Rb", (m_kOptionsValues.m_iPrevNetSpeed == 3000)  );
+	m_pkMC->CheckButton("NetSpeed2Rb", (m_kOptionsValues.m_iPrevNetSpeed == 6000)  );
+	m_pkMC->CheckButton("NetSpeed3Rb", (m_kOptionsValues.m_iPrevNetSpeed == 20000) );
 	
 	for(int i=0; i<pkTabCtrl->GetNumPages(); i++)
 	{
@@ -170,13 +176,17 @@ void OptionsDlg::Close(bool bSave)
 		m_pkAudioSys->SetSoundVolume(m_kOptionsValues.m_fPrevSoundVolume);
 //		m_pkAudioSys->SetMusicVolume(m_kOptionsValues.m_fPrevMusicVolume);
 		
-		char szCmd[25];
-		sprintf(szCmd, "i_mousesens %.3f", m_kOptionsValues.m_fPrevMouseSens);
-		m_pkZeroFps->m_pkConsole->Execute(szCmd);
+		char cmd[25];
+		sprintf(cmd, "i_mousesens %.3f", m_kOptionsValues.m_fPrevMouseSens);
+		m_pkZeroFps->m_pkConsole->Execute(cmd);
 
-		char cmd[50];
 		sprintf(cmd, "r_shadowmap %i", m_kOptionsValues.m_bPrevShadowMapState);
 		g_kMistClient.m_pkZeroFps->m_pkConsole->Execute(cmd);		
+
+		sprintf(cmd, "n_netspeed %i", m_kOptionsValues.m_iPrevNetSpeed);
+		g_kMistClient.m_pkZeroFps->m_pkConsole->Execute(cmd);		
+
+		
 	}
 	else // change options
 	{		
@@ -289,6 +299,30 @@ void GuiMsgOptionsDlg( string strMainWnd, string strController,
 				float fPos = (1.0f / 5.0f) * 100.0f ;
 				((ZGuiSlider*)g_kMistClient.GetWnd("MouseSensSlider"))->SetPos(fPos, true);
 			}
+		}
+		else 
+		if(strMainWnd == "OptionsPageGame")
+		{
+			char cmd[25];
+
+			if(strController == "NetSpeed1Rb")
+			{
+				sprintf(cmd, "n_netspeed %i", 3000);
+				g_kMistClient.m_pkZeroFps->m_pkConsole->Execute(cmd);		
+			}
+			else
+			if(strController == "NetSpeed2Rb")
+			{
+				sprintf(cmd, "n_netspeed %i", 6000);
+				g_kMistClient.m_pkZeroFps->m_pkConsole->Execute(cmd);		
+			}
+			else
+			if(strController == "NetSpeed3Rb")
+			{
+				sprintf(cmd, "n_netspeed %i", 20000);
+				g_kMistClient.m_pkZeroFps->m_pkConsole->Execute(cmd);		
+			}
+
 		}
 		else
 		if(strMainWnd == "RestartMsgBox")

@@ -302,6 +302,7 @@ class ENGINE_API ZeroFps : public I_ZeroFps {
 		float GetEngineTime()				{	return m_fEngineTime;							}
 		float GetSystemUpdateFpsDelta() 	{	return m_fSystemUpdateFpsDelta;				}		
 		unsigned int	GetCurrentFrame()	{	return m_iCurrentFrame;							}
+		const int GetConnectionSpeed()	{  return m_iConnectionSpeed;						}
 		
 		//sets
 		void  SetSyncNetwork(bool bSync)	{	m_bSyncNetwork = bSync;							}

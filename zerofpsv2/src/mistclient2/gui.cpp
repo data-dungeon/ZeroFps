@@ -216,6 +216,7 @@ void MistClient::SetupGUI()
 	g_kMistClient.m_kGuiMsgProcs.insert( map<string, msgScreenProg>::value_type("OptionsPageGraphic", GuiMsgOptionsDlg));
 	g_kMistClient.m_kGuiMsgProcs.insert( map<string, msgScreenProg>::value_type("OptionsPageAudio", GuiMsgOptionsDlg));
 	g_kMistClient.m_kGuiMsgProcs.insert( map<string, msgScreenProg>::value_type("OptionsPageController", GuiMsgOptionsDlg));
+	g_kMistClient.m_kGuiMsgProcs.insert( map<string, msgScreenProg>::value_type("OptionsPageGame", GuiMsgOptionsDlg));
 	g_kMistClient.m_kGuiMsgProcs.insert( map<string, msgScreenProg>::value_type("RestartMsgBox", GuiMsgOptionsDlg));
 	
 	g_kMistClient.m_kGuiMsgProcs.insert( map<string, msgScreenProg>::value_type("ActionBar", GuiMsgIngameScreen));
@@ -243,16 +244,21 @@ void MistClient::SetupGUI()
 
 void MistClient::CloseActiveWindow()
 {
+	if(GetWnd("ChatDlgMainWnd")==NULL) // we have not loaded Ingame gui yet.
+		return;
+
 	printf("PRESSED ESC!\n");
 
 	if(IsWndVisible("OptionsWnd"))
+	{
 		ShowWnd("OptionsWnd", 0,0,0);
+	}
 	else
 	{
 		LoadStartScreenGui(false);
 		return;
 	}
-	
+
 	if(IsWndVisible("MLStartWnd"))
 		LoadInGameGui();
 	
