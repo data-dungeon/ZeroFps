@@ -13,9 +13,12 @@ using namespace std;
 
 class COMMON_API P_ClientInput: public Property {
 	private:
-		vector<UnitCommand>		m_kCommands;
-		static vector<UnitCommand>	m_kServerCommands;		//all orders
-		ZeroFps*					 m_pkFps;
+		vector<UnitCommand>			m_kCommands;
+		static vector<UnitCommand>	 m_kServerCommands;		//all orders
+		static int						 m_iNextPlayerID;
+		int								 m_iPlayerID;
+		ZeroFps*					 		m_pkFps;
+		int								 m_iMaxOrders;
 
 	public:
 		P_ClientInput();

@@ -36,8 +36,6 @@ void ZeroRTS::OnInit()
 	pkObjectMan->GetWorldObject()->AddProperty("P_FogRender");
 	m_pkFogRender = (P_FogRender*)pkObjectMan->GetWorldObject()->GetProperty("P_FogRender");
 	
-	//FULHACK..
-	m_pkFogRender->SetScale(512);
 }
 
 void ZeroRTS::Init()
@@ -160,6 +158,7 @@ void ZeroRTS::OnSystem()
 		m_fFogTimer = pkFps->GetTicks();
 	}
 	
+	//setup client
 	if(pkFps->m_bClientMode)
 	{
 		if(m_pkClientInput == NULL)		
@@ -169,28 +168,20 @@ void ZeroRTS::OnSystem()
 				m_pkClientInput = (P_ClientInput*)pkObjectMan->GetObjectByNetWorkID(m_iSelfObjectID)->GetProperty("P_ClientInput");
 				
 				if(m_pkClientInput != NULL)
-					cout<<"Found client input property"<<endl;
+				{
+					cout<<"Found client input property"<<endl;					
+					cout<<"Assuming that server has started,executing client init"<<endl;
+					
+					//run client init
+					ClientInit();
+				}
 			}
 		}
 	};
 	
-	
 	//if server is running
-	if(pkFps->m_bServerMode)
-	{
-		
-		if(P_ClientInput::m_kServerCommands.size() > 0)
-		{
-			cout<<"GOT "<<P_ClientInput::m_kServerCommands.size()<<" Commands"<<endl;
-			
-			for(int i=0;i<P_ClientInput::m_kServerCommands.size();i++)
-			{
-				cout<<"executing "<<P_ClientInput::m_kServerCommands[i].m_acCommandName<<endl;		
-			}
-		
-			P_ClientInput::m_kServerCommands.clear();
-		}
-	}
+	if(pkFps->m_bServerMode)	
+		HandleOrders();
 }
 
 void ZeroRTS::Input()
@@ -337,7 +328,7 @@ void ZeroRTS::Input()
 
 	if(pkInput->Action(m_iActionPrintServerInfo))
 	{
-		Object* sio = pkObjectMan->GetObject("ServerInfoObject");
+		Object* sio = pkObjectMan->GetObject("A ServerInfoObject");
 		
 		if(sio != NULL)
 		{		
@@ -390,7 +381,8 @@ void ZeroRTS::OnServerStart(void)
 	//add server info property
 	if(!pkObjectMan->GetObject("A ServerInfoObject"))
 	{
-		pkObjectMan->CreateObjectByArchType("ServerInfoObject");
+		if(!pkObjectMan->CreateObjectByArchType("ServerInfoObject"))
+			cout<<"Faild to create serverinfoobject"<<endl;
 	}
 	
 }
@@ -506,11 +498,6 @@ PickInfo ZeroRTS::Pick()
 	else		
 		temp.iObject = -1;
 
-/*
-	Vector3 pos = Get3DMousePos();
-	m_pkMap->GetMapXZ(pos.x,pos.z);
-	cout<<"Ground: "<<m_pkMap->GetMostVisibleTexture(pos.x,pos.z)<<endl;
-*/
 	return temp;
 }
 
@@ -518,7 +505,7 @@ void ZeroRTS::SetCamPos(Vector3 kPos)
 {
 	float wb = 75;	//width border
 	float tb = 74;	//top border
-	float bb = 20;	//bothom border
+	float bb = 10;	//bothom border
 
 	if(kPos.x < (-m_pkMap->GetSize()/2 + wb))
 		kPos.x = (-m_pkMap->GetSize()/2 + wb);
@@ -685,3 +672,40 @@ void ZeroRTS::Explore()
 		m_pkFogRender->Explore(kObject[i]->GetPos().x,kObject[i]->GetPos().z,vd);		
 	}
 }
+
+void ZeroRTS::HandleOrders()
+{
+	
+	if(P_ClientInput::m_kServerCommands.size() > 0)
+	{
+		cout<<"GOT "<<P_ClientInput::m_kServerCommands.size()<<" Commands"<<endl;
+		
+		for(int i=0;i<P_ClientInput::m_kServerCommands.size();i++)
+		{
+			cout<<"Player:"<< int(P_ClientInput::m_kServerCommands[i].m_cPlayerID)<<endl;
+			cout<<"executing "<<P_ClientInput::m_kServerCommands[i].m_acCommandName<<endl;		
+			
+			
+		}
+	
+		P_ClientInput::m_kServerCommands.clear();
+	}
+}
+
+void ZeroRTS::ClientInit()
+{
+	cout<<"Client Join granted"<<endl;
+
+	int mapwidth = pkLevelMan->GetHeightMap()->GetSize();
+
+	cout<<"Mapsize is :"<<mapwidth<<endl;
+	
+	//Set fog size
+	m_pkFogRender->SetScale(mapwidth);
+	
+	
+	
+	
+	cout<<"Join Complete"<<endl;
+}
+

@@ -2,6 +2,7 @@
 
 
 vector<UnitCommand>	P_ClientInput::m_kServerCommands;		//all orders
+int 						P_ClientInput::m_iNextPlayerID = 0;
 		
 P_ClientInput::P_ClientInput()
 {
@@ -10,10 +11,16 @@ P_ClientInput::P_ClientInput()
 	m_iType=PROPERTY_TYPE_NORMAL;
 	m_iSide=PROPERTY_SIDE_CLIENT|PROPERTY_SIDE_SERVER;
 
-	bNetwork = true;
+
+	m_pkFps = 		static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));			
+	bNetwork =		true;
+	m_iMaxOrders = 200;	
 	
-//	m_kZeroRts = static_cast<ZeroRTS*>(g_ZFObjSys.GetObjectPtr("Application"));		
-	m_pkFps = static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));			
+	m_iPlayerID =	m_iNextPlayerID;
+	m_iNextPlayerID++;
+
+
+	cout<<"PLAYER "<<m_iPlayerID<<" Created"<<endl;
 }
 
 void P_ClientInput::Update()
@@ -23,7 +30,8 @@ void P_ClientInput::Update()
 
 void P_ClientInput::AddOrder(UnitCommand kCommand)
 {
-	m_kCommands.push_back(kCommand);
+	if(m_kCommands.size() < m_iMaxOrders)
+		m_kCommands.push_back(kCommand);
 
 }
 
@@ -33,10 +41,6 @@ void P_ClientInput::PackTo(NetPacket* pkNetPacket)
 	int nrofcommands = m_kCommands.size();
 
 	pkNetPacket->Write(&nrofcommands,sizeof(nrofcommands));
-	
-	if(nrofcommands>0)	
-		cout<<"Sending: "<<nrofcommands<<" to server"<<endl;		
-
 	
 	for(int i=0;i<nrofcommands;i++)
 		pkNetPacket->Write(&m_kCommands[i],sizeof(UnitCommand));
@@ -51,18 +55,17 @@ void P_ClientInput::PackFrom(NetPacket* pkNetPacket)
 		
 	pkNetPacket->Read(&nrofcommands,sizeof(nrofcommands));
 	
-	if(nrofcommands >0)
-		cout<<"GOT:"<<nrofcommands<<" from client"<<endl;	
 	
 	for(int i=0;i<nrofcommands;i++)
 	{
 		pkNetPacket->Read(&tempcommand,sizeof(UnitCommand));
 		
 		//only add commands if its a server
-		if(m_pkFps->m_bServerMode) {
-			cout << "Inserting command" << endl;
+		if(m_pkFps->m_bServerMode){		
+			//set player id to this client
+			tempcommand.m_cPlayerID = (char)m_iPlayerID;		
 			m_kServerCommands.push_back(tempcommand);
-			}
+		}
 	}
 	
 }

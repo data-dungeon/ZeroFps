@@ -125,9 +125,14 @@ class ZeroRTS :public Application {
 		
 		P_ClientUnit* GetClientUnit(int iID);
 		
+		//init client
+		void ClientInit();
+		
 		//fog stuff
 		void Explore();
-		
+				
+		//order handler
+		void HandleOrders();
 
 	//Palls (friends) =)
 	friend class UserPanel;
