@@ -114,11 +114,6 @@ bool Gui::WndProc( ZGuiWnd* pkWindow, unsigned int uiMessage,
 		}
 		break;
 
-	case ZGM_KEYDOWN:
-/*		if( ((int*)pkParams)[0] == KEY_SPACE)
-			m_pkEdit->pkGuiMan->Wnd("TestWnd")->Show();*/
-		break;
-
 /*	case ZGM_CBN_SELENDOK:
 		{
 			int iID = ((int*)pkParams)[0];
@@ -307,6 +302,9 @@ bool Gui::MenuProc( ZGuiWnd* pkWindow, unsigned int uiMessage,
 			}
 		}
 		break;
+
+
+
 	}
 	return true;
 }
@@ -688,6 +686,13 @@ void Gui::CreateTestWnd()
 
 bool Gui::CreateMenu(ZFIni* pkIni, char* szFileName)
 {
+	ZGuiFont* pkFont = m_pkEdit->pkGui->GetBitmapFont(ZG_DEFAULT_GUI_FONT);
+	if(pkFont == NULL)
+	{
+		printf("Failed to find font for menu!\n");
+		return false;
+	}
+
 	ZGuiWnd* pkMenu = new ZGuiWnd(Rect(0,0,1024,20),NULL,
 		true,ID_MAINWND_MENU);
 	pkMenu->SetSkin(GetSkin("menu"));
@@ -697,8 +702,10 @@ bool Gui::CreateMenu(ZFIni* pkIni, char* szFileName)
 
 	Rect rc = Rect(0,0,128,32);
 
-	rc = Rect(0,0,50,20);
-	ZGuiCombobox* pkMenuCBox = new ZGuiCombobox(rc,pkMenu,true,ID_MAINWND_MENU_CB,20,
+	int iMenuWidth = pkFont->GetLength("File")+5;
+	Rect rcMenu(0,0,iMenuWidth,20);
+
+	ZGuiCombobox* pkMenuCBox = new ZGuiCombobox(rcMenu,pkMenu,true,ID_MAINWND_MENU_CB,20,
 		GetSkin("menu"), GetSkin("dark_blue"), GetSkin("dark_blue"), GetSkin("menu"));
 	pkMenuCBox->SetGUI(m_pkEdit->pkGui);
 	pkMenuCBox->SetLabelText("File");
@@ -725,9 +732,7 @@ bool Gui::CreateMenu(ZFIni* pkIni, char* szFileName)
 	// No items in file.
 	if(uiNumSections < 1)
 		return true;
-
-	int iWidth = 50;
-	Rect rcMenu(50,0,50+iWidth,20);
+	
 	int iMenuIDCounter = 4578521;
 	char szParentName[50];
 
@@ -742,6 +747,8 @@ bool Gui::CreateMenu(ZFIni* pkIni, char* szFileName)
 
 		if(strcmp(parent, "NULL") == 0)
 		{
+			rcMenu = rcMenu.Move(iMenuWidth,0);
+
 			ZGuiCombobox* pkMenuCBox = new ZGuiCombobox(rcMenu,pkMenu,
 				true,iMenuIDCounter++,20,GetSkin("menu"),GetSkin("dark_blue"),
 				GetSkin("dark_blue"), GetSkin("menu"));
@@ -754,8 +761,10 @@ bool Gui::CreateMenu(ZFIni* pkIni, char* szFileName)
 			pkMenuCBox->SetNumVisibleRows(5);
 			pkMenuCBox->IsMenu(true);
 
+			iMenuWidth = pkFont->GetLength(szTitle) + 5; // move rc right
+
 			m_pkEdit->pkGui->RegisterWindow(pkMenuCBox, (char*)akSections[i].c_str());
-			rcMenu = rcMenu.Move(iWidth,0);
+			
 		}
 		else
 		{

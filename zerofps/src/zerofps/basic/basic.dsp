@@ -60,7 +60,7 @@ LINK32=link.exe
 # Begin Special Build Tool
 ProjDir=.
 SOURCE="$(InputPath)"
-PostBuild_Cmds=copy                         $(ProjDir)\release\*.lib                                          ..\..\..\bin\ 
+PostBuild_Cmds=copy                          $(ProjDir)\release\*.lib                                           ..\..\..\bin\ 
 # End Special Build Tool
 
 !ELSEIF  "$(CFG)" == "basic - Win32 Debug"
@@ -303,10 +303,6 @@ SOURCE=.\globals.h
 # Begin Source File
 
 SOURCE=.\halfedge.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\heightmap.h
 # End Source File
 # Begin Source File
 

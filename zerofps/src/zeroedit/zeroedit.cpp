@@ -615,7 +615,6 @@ void ZeroEdit::Input()
 	if(m_pkGui->HaveFocus()) 
 	{
 		pkInput->SetInputEnabled(false);
-		
 	}
 
 	float childmovespeed=2;
