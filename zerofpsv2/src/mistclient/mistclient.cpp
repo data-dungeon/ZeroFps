@@ -260,7 +260,7 @@ void MistClient::Input()
 
 			static int COUNTER = 0;
 
-			kSound.m_bLoop = false;
+			kSound.m_bLoop = true;
 			kSound.m_kDir = Vector3(0,0,-1);
 			kSound.m_kPos = Vector3(0,0,0);
 			

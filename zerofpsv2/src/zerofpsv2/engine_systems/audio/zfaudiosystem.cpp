@@ -432,8 +432,10 @@ void ZFAudioSystem::SetListnerPosition(Vector3 kPos,Vector3 kHead,Vector3 kUp)
 	alListenerfv(AL_ORIENTATION, orientation);
 }
 
+//
 // Det är OK att skapa ett lokalt SoundInfo objekt och skicka in till funktionen.
 // Funktioner skapar alltid en egen kopia på objektet som den tar hand om själv.
+//
 bool ZFAudioSystem::StartSound(SoundInfo kSound)
 {
 	SoundInfo *pkSound = new SoundInfo;
