@@ -408,6 +408,10 @@ void LevelManager::Water(bool bWater)
 			water->GetPos().Set(0,0,0);
 			water->SetParent(m_pkObjectMan->GetWorldObject());		
 		}
+		else {
+			// Force Parent to be WorldObject
+			m_pkObjectMan->GetObject("WorldWaterObject")->SetParent(m_pkObjectMan->GetWorldObject());		
+		}
 	} else
 	{
 		delete m_pkObjectMan->GetObject("WorldWaterObject");
@@ -434,6 +438,9 @@ void LevelManager::SkyBox(const char* acHor,const char* acTop,Vector3 kRotate)
 		pkSkybox=m_pkObjectMan->GetObject("SkyBoxObject");
 	}
 	
+		// Force Parent to be WorldObject
+	pkSkybox->SetParent(m_pkObjectMan->GetWorldObject());	
+
 	SkyBoxRenderProperty* pkSBRP = static_cast<SkyBoxRenderProperty*>(pkSkybox->GetProperty("SkyBoxRenderProperty"));
 	
 	pkSBRP->SetTexture(acHor,acTop);
@@ -500,7 +507,7 @@ void LevelManager::UpdateZones()
 		return;
 
 	for(unsigned int i=0;i<m_kZones.size();i++)
-		m_kZones[i]->GetUpdateStatus() = UPDATE_DYNAMIC | UPDATE_PLAYERS;	
+		m_kZones[i]->GetUpdateStatus() = UPDATE_NONE;	//UPDATE_DYNAMIC | UPDATE_PLAYERS;	
 
 
 

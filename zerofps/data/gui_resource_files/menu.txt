@@ -77,6 +77,11 @@ Title=Hide Zones
 Parent=Menu_Debug
 Cmd=set l_showzones 0
 
+[Menu_DebugLogRP]
+Title=Log RenderP
+Parent=Menu_Debug
+Cmd=set r_logrp 1
+
 ;				LOAD MENU
 [Menu_Load]
 Title=Load

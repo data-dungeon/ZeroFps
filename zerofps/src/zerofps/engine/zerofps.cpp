@@ -3,8 +3,9 @@
 
 int		g_iNumOfFrames;
 int		g_iNumOfMadSurfaces;
-float	g_fMadLODScale;
+float		g_fMadLODScale;
 int		g_iMadLODLock;
+int		g_iLogRenderPropertys;
 
 static char Devformat_text[4096];	//
 
@@ -51,6 +52,8 @@ ZeroFps::ZeroFps(void)
 	m_pkCamera = 			NULL;
 	m_bRunWorldSim	=		true;
 
+	g_iLogRenderPropertys = 0;
+
 	g_ZFObjSys.RegisterVariable("m_sens", &m_pkInput->m_fMouseSensitivity,CSYS_FLOAT);
 	g_ZFObjSys.RegisterVariable("r_landlod", &m_pkRender->m_iDetail,CSYS_INT);
 	g_ZFObjSys.RegisterVariable("r_viewdistance", &m_pkRender->m_iViewDistance,CSYS_INT);
@@ -66,6 +69,7 @@ ZeroFps::ZeroFps(void)
 	g_ZFObjSys.RegisterVariable("r_madlodlock", &g_iMadLODLock,CSYS_FLOAT);
 	g_ZFObjSys.RegisterVariable("e_systemfps", &m_fSystemUpdateFps,CSYS_FLOAT);	
 	g_ZFObjSys.RegisterVariable("e_runsim", &m_bRunWorldSim,CSYS_INT);	
+	g_ZFObjSys.RegisterVariable("r_logrp", &g_iLogRenderPropertys,CSYS_INT);	
 
 	g_ZFObjSys.Register_Cmd("setdisplay",FID_SETDISPLAY,this);
 	g_ZFObjSys.Register_Cmd("quit",FID_QUIT,this);
@@ -247,6 +251,10 @@ void ZeroFps::Run_Client()
 	//   _---------------------------------- fulhack deluxe 
 	UpdateCamera();	
 	m_pkObjectMan->Update(PROPERTY_TYPE_RENDER,PROPERTY_SIDE_CLIENT,true);
+	if(g_iLogRenderPropertys) {
+		m_pkObjectMan->DumpActiverPropertysToLog("PROPERTY_TYPE_RENDER,PROPERTY_SIDE_CLIENT,true");
+		g_iLogRenderPropertys = 0;
+		}
 	m_pkLevelMan->DrawZones();
 
 	//update openal sound system			

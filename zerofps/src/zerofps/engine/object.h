@@ -7,7 +7,6 @@
 #include <string.h>
 #include "engine_x.h"
 #include "property.h"
-//#include "objectmanager.h"
 #include "propertyfactory.h"
 #include "network.h"
 
@@ -18,20 +17,20 @@ struct	CollisionData;
 class		LevelManager;
 
 enum UpdateStatus {
-	UPDATE_NONE			= 1,
-	UPDATE_ALL			= 2,
-	UPDATE_STATIC		= 4,
+	UPDATE_NONE				= 1,	
+	UPDATE_ALL				= 2,
+	UPDATE_STATIC			= 4,
 	UPDATE_DYNAMIC 		= 8,
 	UPDATE_PLAYERS 		= 16,
 	UPDATE_STATDYN 		= 32,
-	UPDATE_DECORATION	= 64,
-	UPDATE_LIGHT		= 128,
+	UPDATE_DECORATION		= 64,
+	UPDATE_LIGHT			= 128,
 };
 
 enum ObjectType {
-	OBJECT_TYPE_DYNAMIC,	// Full update, Full Collision
+	OBJECT_TYPE_DYNAMIC,			// Full update, Full Collision
 	OBJECT_TYPE_STATIC,	
-	OBJECT_TYPE_PLAYER,
+	OBJECT_TYPE_PLAYER,			// Unused
 	OBJECT_TYPE_STATDYN,	
 	OBJECT_TYPE_DECORATION,
 };

@@ -50,7 +50,8 @@ class ENGINE_API ObjectManager : public ZFObject{
 	public:
 		ObjectManager();
 		~ObjectManager() { }
-
+	
+		void DumpActiverPropertysToLog(char* szMsg);
 
 		// Add/Remove Objects
 		void Add(Object* pkNewObject);				// Add object to the manager

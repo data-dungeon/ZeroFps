@@ -16,6 +16,22 @@ void ObjectManager::GetPropertys(int iType,int iSide)
 //	cout<<"TOTAL propertys: "<<m_akPropertys.size()<<endl;
 }
 
+void ObjectManager::DumpActiverPropertysToLog(char* szMsg)
+{
+	g_ZFObjSys.Logf("net", "%s : %d\n", szMsg, m_akPropertys.size() );
+
+	for(list<Property*>::iterator it=m_akPropertys.begin();it!=m_akPropertys.end();it++) 
+	{
+		g_ZFObjSys.Logf("net", "%s", (*it)->m_acName );
+		if((*it)->GetObject()->m_pkParent)
+			g_ZFObjSys.Logf("net", " Parent Obj: %s\n", (*it)->GetObject()->m_pkParent->m_kName.c_str() );
+
+
+		//cout << (*it)->m_acName << endl;
+	}
+	
+}
+
 
 
 

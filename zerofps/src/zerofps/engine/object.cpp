@@ -407,6 +407,9 @@ void  Object::GetPropertys(list<Property*> *akPropertys,int iType,int iSide)
 
 void Object::GetAllPropertys(list<Property*> *akPropertys,int iType,int iSide)
 {
+	if(m_iUpdateStatus & UPDATE_NONE)
+		return;
+
 //	int iDecStep=m_pkLevelMan->GetDecorationStep();
 	int iCurDec=0;
 

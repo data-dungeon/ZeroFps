@@ -26,6 +26,26 @@ class object
 				set MadProperty m_kMadFile /data/mad/az3.mad
 				set PhysicProperty ColShape 	3
 	
+		
+		class ball
+			parent physics
+			set ModelProperty Radius	1
+				
+			class ball1
+				parent ball
+				set ModelProperty Radius	1
+
+			class ball2
+				parent ball
+				set ModelProperty Radius	2
+				set ModelProperty co-sphere-radius 2
+
+			class ball3
+				parent ball
+				set ModelProperty Radius	3
+				set ModelProperty co-sphere-radius 3
+
+				
 
 	class weapons
 		parent	physics

@@ -121,6 +121,7 @@ void Render::DrawSkyBox_SixSided(Vector3 CamPos,Vector3 kHead,int* aiSideTexture
 void Render::DrawSkyBox(Vector3 CamPos,Vector3 kHead,int iHor,int iTop) {
 	float fYpos;
 	
+
 	if(kHead.x==0 && kHead.y==0 && kHead.z==0)
 		fYpos=90;
 	else
@@ -714,8 +715,6 @@ void Render::DrawCross(Vector3 kPos,Vector3 kHead,Vector3 kScale,int iTexture1) 
 
 void Render::DrawHMLodSplat(HeightMap* kMap,Vector3 CamPos,int iFps)
 {
-//	return;
-
 	if(m_iAutoLod>0){
 		if(SDL_GetTicks()>(m_iLodUpdate+500)){
 			m_iLodUpdate=SDL_GetTicks();
@@ -753,7 +752,6 @@ void Render::DrawHMLodSplat(HeightMap* kMap,Vector3 CamPos,int iFps)
 	
 	
 	DrawAllHM(kMap,CamPos);
-
 		
 	//set blending
 	glDepthFunc(GL_EQUAL);

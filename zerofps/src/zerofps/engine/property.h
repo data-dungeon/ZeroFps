@@ -11,8 +11,6 @@
 #include "network.h"
 #include <cfloat>
 
-//#include "engine.pkg"
-
 using namespace std;
 
 struct Collision;
@@ -20,17 +18,21 @@ class Object;
 class PropertyFactory;
 class GameMessage;
 
-enum PROPERTY_TYPES{
-	PROPERTY_TYPE_ALL,
-	PROPERTY_TYPE_NORMAL,
-	PROPERTY_TYPE_RENDER,
-	PROPERTY_TYPE_PHYSIC,
+/*	When property should be updated. 
+*/enum PROPERTY_TYPES
+{
+	PROPERTY_TYPE_ALL,			// Run on all.
+	PROPERTY_TYPE_NORMAL,		// Run at normal update.
+	PROPERTY_TYPE_RENDER,		// Run at render update.
+	PROPERTY_TYPE_PHYSIC,		// Run at physics update.
 };
 
-enum PROPERTY_SIDE{
-	PROPERTY_SIDE_ALL,
-	PROPERTY_SIDE_CLIENT,
-	PROPERTY_SIDE_SERVER
+/* On wich side the propertys should update. */
+enum PROPERTY_SIDE
+{	
+	PROPERTY_SIDE_ALL,			// Run on both client/server
+	PROPERTY_SIDE_CLIENT,		// Run on client
+	PROPERTY_SIDE_SERVER			// Run on server
 };
 
 class ENGINE_API PropertyValues
