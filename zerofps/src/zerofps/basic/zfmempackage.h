@@ -3,6 +3,7 @@
 
 #include <vector>
 #include "basic_x.h"
+#include "zffile.h"
 
 using namespace std;
 
@@ -19,6 +20,9 @@ class BASIC_API ZFMemPackage{
 		int GetPos();
 		void SetPos(int iPos);
 		void Clear();
+	
+		bool SaveToFile(ZFFile* pkFile);
+		bool LoadFromFile(ZFFile* pkFile);
 	
 		bool Read(void* pData,int iSize);
 		bool Write(void* pData,int iSize);		

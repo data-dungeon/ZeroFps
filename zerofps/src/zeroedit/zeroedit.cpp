@@ -196,7 +196,7 @@ void ZeroEdit::RunCommand(int cmdid, const CmdArgument* kCommand)
 			
 		case FID_MAKETEMPLATE:
 			if(kCommand->m_kSplitCommand.size() <= 1) {
-				pkConsole->Printf("Please type a template name");
+				pkConsole->Printf("maketemplate [template]");
 				break;
 			}
 			
@@ -213,7 +213,7 @@ void ZeroEdit::RunCommand(int cmdid, const CmdArgument* kCommand)
 			}
 			
 			
-			pkConsole->Printf("Template %s Saved",kCommand->m_kSplitCommand[1].c_str());
+			pkConsole->Printf("Template %s Created",kCommand->m_kSplitCommand[1].c_str());
 			
 			break;
 			
@@ -223,18 +223,19 @@ void ZeroEdit::RunCommand(int cmdid, const CmdArgument* kCommand)
 
 		case FID_LOADTEMPLATE:
 			if(kCommand->m_kSplitCommand.size() <= 1) {
-				pkConsole->Printf("Please type a template name");
+				pkConsole->Printf("loadtemplate [filename]");
 				break;
 			}
 		
 			if(!pkObjectMan->LoadTemplate(kCommand->m_kSplitCommand[1].c_str()))
 				pkConsole->Printf("Error loading template");
 			
+			pkConsole->Printf("Template %s Loaded",kCommand->m_kSplitCommand[1].c_str());
 			break;
 
 		case FID_SAVETEMPLATE:
-			if(kCommand->m_kSplitCommand.size() <= 1) {
-				pkConsole->Printf("Please type a template name");
+			if(kCommand->m_kSplitCommand.size() <= 2) {
+				pkConsole->Printf("savetemplate [template] [file]");
 				break;
 			}
 			
@@ -246,14 +247,14 @@ void ZeroEdit::RunCommand(int cmdid, const CmdArgument* kCommand)
 			}
 
 			ZFFile tempfile;
-			tempfile.Open("test.zob",true);
+			tempfile.Open(kCommand->m_kSplitCommand[2].c_str(),true);
 			
 			objtemplate->SaveToFile(&tempfile);
 			
 			tempfile.Close();				
-			break;
 			
-		
+			pkConsole->Printf("Template %s Saved",kCommand->m_kSplitCommand[1].c_str());
+			break;
 	}
 }
 
@@ -414,7 +415,11 @@ void ZeroEdit::Input()
 					break;			
 				m_fTimer=pkFps->GetTicks();
 			
-				Object *object = new BallObject();
+//				Object *object = new BallObject();
+				Object *object=pkObjectMan->CreateObject(m_kCurentTemplate.c_str());
+				if(object==NULL)
+					break;
+				
 				object->GetPos()=m_kDrawPos-Vector3(0,1,0);
 				
 				if(m_iRandom){
@@ -464,9 +469,10 @@ void ZeroEdit::Input()
 			}
 			if(pkInput->Pressed(KEY_Z))
 			{
-				Object *object=pkObjectMan->CreateObject(m_kCurentTemplate.c_str());
-				if(object==NULL)
-					break;
+//				Object *object=pkObjectMan->CreateObject(m_kCurentTemplate.c_str());
+//				if(object==NULL)
+//					break;
+				Object *object = new BallObject();					
 				object->GetPos()=m_kDrawPos;	
 				
 				object->AttachToClosestZone();

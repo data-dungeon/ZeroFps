@@ -34,102 +34,9 @@ class ENGINE_API ObjectDescriptor{
 		~ObjectDescriptor();
 		void Clear();
 		void SaveToFile(ZFFile* pkFile);
-		void LoadFromFile(ZFFile* pkFile);
-		
-		/*
-		~ObjectDescriptor()
-		{
-			for(list<PropertyDescriptor*>::iterator it=m_acPropertyList.begin();it!=m_acPropertyList.end();it++)
-			{
-				delete (*it);
-			}
-		}
-		
-		void Clear()
-		{
-			m_kName="";
-			m_kPos.Set(0,0,0);
-			m_kRot.Set(0,0,0);
-			m_kVel.Set(0,0,0);			
-			
-			for(list<PropertyDescriptor*>::iterator it=m_acPropertyList.begin();it!=m_acPropertyList.end();it++)
-			{
-				delete (*it);
-			}
-			
-			m_acPropertyList.clear();
-		}
-		
-		void SaveToFile(ZFFile* pkFile)
-		{
-			cout<<"saving"<<endl;
-			char namn[50];
-			strcpy(namn,m_kName.c_str());
-			
-			pkFile->Write((void*)&namn,50);	
-				
-			pkFile->Write(m_kPos);	
-			pkFile->Write(m_kRot);	
-			pkFile->Write(m_kVel);
-			
-			int iNrOfPropertys=m_acPropertyList.size();
-			pkFile->Write(iNrOfPropertys);
-			
-			for(list<PropertyDescriptor*>::iterator it=m_acPropertyList.begin();it!=m_acPropertyList.end();it++)
-			{
-				cout<<"name "<<(*it)->m_kName<<endl;
-				
-				char propertyname[50];
-				strcpy(namn,(*it)->m_kName.c_str());
-				pkFile->Write((void*)&propertyname,50);
-				
-				int iSize=(*it)->m_kData.GetSize();
-				pkFile->Write((*it)->m_kData.GetDataPointer(),(*it)->m_kData.GetSize());
-			}
-			
-		}
-		
-		void LoadFromFile(ZFFile* pkFile)
-		{
-			cout<<"loading"<<endl;
-			char namn[50];
-			
-			pkFile->Read((void*)&namn,50);
-						
-			m_kName=namn;
-			
-			pkFile->Read(m_kPos);	
-			pkFile->Read(m_kRot);	
-			pkFile->Read(m_kVel);
-			
-			int iNrOfPropertys;
-			pkFile->Read(iNrOfPropertys);
-			
-			cout<<"propertys "<<iNrOfPropertys<<endl;
-			
-			for(int i=0;i<iNrOfPropertys;i++)
-			{
-				PropertyDescriptor* newpropdesc=new PropertyDescriptor;
-				
-				char propertyname[50];
-				pkFile->Read((void*)propertyname,50);
-				
-				cout<<"property name "<<propertyname<<endl;
-				newpropdesc->m_kName=propertyname;
-				
-				int iSize;
-				pkFile->Read(iSize);
-				cout<<"data size "<<iSize<<endl;
-				
-				for(int j=0;j<iSize;j++)
-				{
-					char data;
-					pkFile->Read(data);
-					newpropdesc->m_kData.Write(data);					
-				}
-			}
-		}
-		*/
+		void LoadFromFile(ZFFile* pkFile);		
+		void SaveToMem(ZFMemPackage* pkPackage);
+		void LoadFromMem(ZFMemPackage* pkPackage);		
 };
 
 
@@ -192,8 +99,6 @@ class ENGINE_API Object {
 		void GetAllObjects(list<Object*> *pakObjects);
 		void AttachToClosestZone();
 		void PrintTree(int pos);
-		
-		
 		
 		bool NeedToPack();				// Returns true if there is any netactive properys in object
 		void PackTo(NetPacket* pkNetPacket);

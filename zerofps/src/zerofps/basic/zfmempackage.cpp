@@ -65,3 +65,46 @@ bool ZFMemPackage::Write(void* pData,int iSize)
 	
 	return true;
 }
+
+bool ZFMemPackage::SaveToFile(ZFFile* pkFile)
+{
+	int iSize=GetSize();
+	if(!pkFile->Write(iSize))
+		return false;
+	
+	if(!pkFile->Write(GetDataPointer(),GetSize()))
+		return false;
+			
+	return true;
+}
+
+bool ZFMemPackage::LoadFromFile(ZFFile* pkFile)
+{
+
+	int iSize;
+	char data;	
+	if(!pkFile->Read(iSize))
+		return false;
+	
+	//read data
+	SetPos(0);
+	for(int j=0;j<iSize;j++)
+	{
+		if(!pkFile->Read(data))
+			return false;
+		Write(data);
+	}
+/*	
+	SetPos(0);
+	cout<<"data in mem"<<endl;
+	for(int i=0;i<50;i++){
+		Read(data);
+		cout<<data;
+	}
+	cout<<endl;	
+*/	
+	SetPos(0);
+	return true;
+}
+
+

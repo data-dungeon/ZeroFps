@@ -27,6 +27,14 @@ void ObjectDescriptor::Clear()
 
 void ObjectDescriptor::SaveToFile(ZFFile* pkFile)
 {
+	ZFMemPackage temp;
+	
+	SaveToMem(&temp);
+	
+	temp.SaveToFile(pkFile);
+	
+	temp.Clear();
+/*
 	cout<<"saving"<<endl;
 	char namn[50];
 	strcpy(namn,m_kName.c_str());
@@ -47,17 +55,22 @@ void ObjectDescriptor::SaveToFile(ZFFile* pkFile)
 		strcpy(propertyname,(*it)->m_kName.c_str());
 		pkFile->Write((void*)&propertyname,50);
 		
-		//write property data size
-		int iSize=(*it)->m_kData.GetSize();
-		pkFile->Write(iSize);
-		
-		//write data
-		pkFile->Write((*it)->m_kData.GetDataPointer(),(*it)->m_kData.GetSize());
-	}
+		(*it)->m_kData.SaveToFile(pkFile);		
+	}*/
 }
 
 void ObjectDescriptor::LoadFromFile(ZFFile* pkFile)
 {
+	ZFMemPackage temp;
+	
+	if(!temp.LoadFromFile(pkFile))
+		cout<<"Error Loading"<<endl;
+		
+	LoadFromMem(&temp);
+
+	temp.Clear();
+
+/*
 	cout<<"loading"<<endl;
 	char namn[50];
 			
@@ -84,23 +97,96 @@ void ObjectDescriptor::LoadFromFile(ZFFile* pkFile)
 		pkFile->Read((void*)propertyname,50);				
 		cout<<"property name "<<propertyname<<endl;
 		newpropdesc->m_kName=propertyname;
+		
+		
+		newpropdesc->m_kData.LoadFromFile(pkFile);
+		
+		m_acPropertyList.push_back(newpropdesc);
+	}*/
+}
+
+
+void ObjectDescriptor::SaveToMem(ZFMemPackage* pkPackage)
+{
+	cout<<"saving"<<endl;
+	char namn[50];
+	strcpy(namn,m_kName.c_str());
+	pkPackage->Write((void*)namn,50);	
+		
+	pkPackage->Write(m_kPos);	
+	pkPackage->Write(m_kRot);	
+	pkPackage->Write(m_kVel);
+	
+	int iNrOfPropertys=m_acPropertyList.size();
+	pkPackage->Write(iNrOfPropertys);
+	
+	
+	for(list<PropertyDescriptor*>::iterator it=m_acPropertyList.begin();it!=m_acPropertyList.end();it++)
+	{
+		//write property name
+		char propertyname[50];
+		strcpy(propertyname,(*it)->m_kName.c_str());
+		pkPackage->Write((void*)propertyname,50);
+		
+		//write size
+		int iSize=(*it)->m_kData.GetSize();
+		pkPackage->Write(iSize);
+		
+		//write data
+		pkPackage->Write((*it)->m_kData.GetDataPointer(),(*it)->m_kData.GetSize());
+	}
+}
+
+void ObjectDescriptor::LoadFromMem(ZFMemPackage* pkPackage)
+{
+	cout<<"loading"<<endl;
+	char namn[50];
 			
-		//read property data size
+	pkPackage->Read((void*)namn,50);
+						
+	m_kName=namn;
+	cout<<"NAMN:"<<namn<<endl;
+			
+	pkPackage->Read(m_kPos);	
+	pkPackage->Read(m_kRot);	
+	pkPackage->Read(m_kVel);
+			
+	int iNrOfPropertys;
+	pkPackage->Read(iNrOfPropertys);
+			
+	cout<<"propertys "<<iNrOfPropertys<<endl;
+		
+	for(int i=0;i<iNrOfPropertys;i++)
+	{
+		//create a new propertydescription
+		PropertyDescriptor* newpropdesc=new PropertyDescriptor;
+				
+		//read property name
+		char propertyname[50];
+		pkPackage->Read((void*)propertyname,50);				
+		cout<<"property name "<<propertyname<<endl;
+		newpropdesc->m_kName=propertyname;
+		
+		//read size
 		int iSize;
-		pkFile->Read(iSize);
-		cout<<"data size "<<iSize<<endl;
+		pkPackage->Read(iSize);
+		
+		cout<<iSize<<endl;
 		
 		//read data
-		for(int j=0;j<iSize;j++)
+		char data;
+		for(int i=0;i<iSize;i++)
 		{
-			char data;
-			pkFile->Read(data);
+			pkPackage->Read(data);
 			newpropdesc->m_kData.Write(data);
 		}
 		
+//		newpropdesc->m_kData.Write((void*)((char*)pkPackage->GetDataPointer())[pkPackage->GetPos()],iSize);
+		
+		//add property to list
 		m_acPropertyList.push_back(newpropdesc);
 	}
-}		
+}
 
 
 
