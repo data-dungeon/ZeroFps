@@ -49,29 +49,31 @@ void MistClient::OnInit()
 	//init mistland script intreface
 	MistLandLua::Init(m_pkObjectMan,m_pkScript);
 
-	//set window title		
- 	SetTitle("MistClient");
-
-   // create gui script funktions
+   // init gui script intreface
 	GuiAppLua::Init(&g_kMistClient, m_pkScript);
 
-	InitGui(m_pkScript, 
-		"data/textures/text/ms_sans_serif8.tga", 
-		"data/script/gui/defskins.lua", NULL, false); 
-
-   LoadGuiFromScript("data/script/gui/ml_start.lua");
-
-	m_pkGui->SetCursor( 0,0, m_pkTexMan->Load("data/textures/gui/cursor.bmp", 0),
-		m_pkTexMan->Load("data/textures/gui/cursor_a.bmp", 0), 32, 32);
-   m_pkInput->ShowCursor(false);
+	//set window title		
+ 	SetTitle("MistClient");
 	
 	//run autoexec script
 	if(!m_pkIni->ExecuteCommands("mistclient_autoexec.ini"))
 		m_pkConsole->Printf("No game_autoexec.ini.ini found");
 		
-		
 	//set client in server mode to show gui etc
 	m_pkFps->StartServer(true,false);
+
+   // initialize gui system with default skins, font etc
+	InitGui(m_pkScript, 
+		"data/textures/text/ms_sans_serif8.tga", 
+		"data/script/gui/defskins.lua", NULL, false, true); 
+
+   // load gui startup screen 
+   LoadGuiFromScript("data/script/gui/ml_start.lua");
+
+   // load software cursor
+	m_pkGui->SetCursor( 0,0, m_pkTexMan->Load("data/textures/gui/cursor.bmp", 0),
+		m_pkTexMan->Load("data/textures/gui/cursor_a.bmp", 0), 32, 32);
+   m_pkInput->ShowCursor(false);
 }
 
 	
