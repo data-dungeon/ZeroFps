@@ -40,7 +40,7 @@ void DarkMetropolis::OnInit()
 	SetTitle("Dark Metropolis");
 	
 	//initiate variables
-	m_pkCameraProp	= 			NULL;	
+	m_pkCameraProp	= 				NULL;
 	m_pkCameraEntity = 			NULL;
 	m_pkFps->m_bClientMode =	true;
 	m_fMinCamDistance =			4;
@@ -71,7 +71,7 @@ void DarkMetropolis::OnInit()
 	m_pkObjectMan->m_fSimTimeScale = 0.33;
 	
 	//set tracker los
-	m_pkObjectMan->SetTrackerLos(3);
+	m_pkObjectMan->SetTrackerLos(4);
 	
 	//enable light
 	m_pkLight->SetLighting(true);
