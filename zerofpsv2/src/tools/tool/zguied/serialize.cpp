@@ -1,0 +1,341 @@
+#include "zguied.h"
+#include "resource.h"
+
+bool ZGuiEd::CreateBackup(const char* szFileName)
+{
+	string strBackupName = szFileName;
+
+	char *ext = strrchr( strBackupName.c_str(), '.');
+	if(ext != NULL && strcmp(ext, ".lua")==0)
+	{			
+		strBackupName.erase(strBackupName.find(".lua"), 4);
+		strBackupName = strBackupName + ".bak";
+
+		int bk_number = 1;
+
+		while(1)
+		{
+			char number[10];
+			sprintf(number, "%i", bk_number++);
+			string test = strBackupName + number;					
+			if(!m_pkBasicFS->FileExist(test.c_str()))
+			{
+				strBackupName = test;
+				break;
+			}
+		}
+
+		if(!CopyFile(szFileName, strBackupName.c_str(), TRUE))
+			return false;
+	}
+	else
+	{
+		return false;
+	}
+
+	return true;
+}
+
+bool ZGuiEd::SaveScript(const char* szFileName, bool bCreateBackUp)
+{
+	if(m_pkBasicFS->FileExist(szFileName))
+		if(MessageBox(GetParent(g_kDlgBoxRight), "This file exist. Overwrite?", "Save script?", MB_YESNO) == IDNO)
+			return false;
+
+	if(bCreateBackUp && m_pkBasicFS->FileExist(szFileName))
+	{
+		if(!CreateBackup(szFileName))
+			printf("Failed to create backup file!\n");
+	}
+
+	m_pkSaveFile = fopen(szFileName, "wt");
+	if(m_pkSaveFile == NULL)
+	{
+		printf("Failed to save script =\n%s\n", szFileName);
+		return false;
+	}
+
+	m_kSkinTable.clear();
+
+	fprintf(m_pkSaveFile, "function GUICreate()\n");
+
+	if(!WriteSkins())
+		return false;
+
+	if(!WriteWindows())
+		return false;
+
+	fprintf(m_pkSaveFile, "end\n");
+
+	fclose(m_pkSaveFile);
+
+	return true;
+}
+
+bool ZGuiEd::WriteSkins()
+{
+	fprintf(m_pkSaveFile, "\n\t-- Skinlist ---------------------------------------------------------" \
+		"--------------------------------------------------------------\n\n");
+
+	ZGuiWnd* pkMainWnd = GetWnd("GuiMainWnd");
+
+	vector<ZGuiSkin*> kAddVector;
+	int iCounter = 1;
+	map<string, ZGuiWnd*> kWindows;
+	m_pkGuiMan->GetWindows(kWindows);
+	for( map<string, ZGuiWnd*>::iterator it = kWindows.begin(); it != kWindows.end(); it++)
+	{
+		ZGuiWnd* pkWnd = it->second;
+
+		if(pkWnd == pkMainWnd)
+			continue;
+
+		vector<ZGuiWnd::SKIN_DESC> vkSkinDesc;
+		pkWnd->GetWndSkinsDesc(vkSkinDesc);
+
+		for(int i=0; i<vkSkinDesc.size(); i++)
+		{
+			bool bExist = false;
+			ZGuiSkin* pkSkin = (*vkSkinDesc[i].first);		
+						
+			for(int j=0; j<kAddVector.size(); j++)
+			{			
+				if((*kAddVector[j]) == (*pkSkin))
+				{
+					bExist = true;
+					break;
+				}
+			}
+
+			if(!bExist)
+			{
+				bool bWriteColon = false;
+				fprintf(m_pkSaveFile, "\tSkin%i\t= { ", iCounter);
+				if(pkSkin->m_iBkTexID != -1)
+				{
+					if(bWriteColon) fprintf(m_pkSaveFile, ", "); bWriteColon = true;
+					fprintf(m_pkSaveFile, "tex1=\"%s\"", GetTexNameFromID(pkSkin->m_iBkTexID, false).c_str());
+				}
+				if(pkSkin->m_iHorzBorderTexID != -1)
+				{
+					if(bWriteColon) fprintf(m_pkSaveFile, ", "); bWriteColon = true;
+					fprintf(m_pkSaveFile, "tex2=\"%s\"", GetTexNameFromID(pkSkin->m_iHorzBorderTexID, false).c_str());
+				}
+				if(pkSkin->m_iVertBorderTexID != -1)
+				{
+					if(bWriteColon) fprintf(m_pkSaveFile, ", "); bWriteColon = true;
+					fprintf(m_pkSaveFile, "tex3=\"%s\"", GetTexNameFromID(pkSkin->m_iVertBorderTexID, false).c_str());
+				}
+				if(pkSkin->m_iBorderCornerTexID != -1)
+				{
+					if(bWriteColon) fprintf(m_pkSaveFile, ", "); bWriteColon = true;
+					fprintf(m_pkSaveFile, "tex4=\"%s\"", GetTexNameFromID(pkSkin->m_iBorderCornerTexID, false).c_str());
+				}
+				if(pkSkin->m_afBkColor[0] != 1.0f || pkSkin->m_afBkColor[1] != 1.0f || pkSkin->m_afBkColor[2] != 1.0f )
+				{
+					if(bWriteColon) fprintf(m_pkSaveFile, ", "); bWriteColon = true;
+					fprintf(m_pkSaveFile, "bkR=%i", (int)(pkSkin->m_afBkColor[0] * 255.0f));					
+
+					if(bWriteColon) fprintf(m_pkSaveFile, ", "); bWriteColon = true;
+					fprintf(m_pkSaveFile, "bkG=%i", (int)(pkSkin->m_afBkColor[1] * 255.0f));					
+
+					if(bWriteColon) fprintf(m_pkSaveFile, ", "); bWriteColon = true;
+					fprintf(m_pkSaveFile, "bkB=%i", (int)(pkSkin->m_afBkColor[2] * 255.0f));					
+				}
+				if( pkSkin->m_afBorderColor[0] != 1.0f || pkSkin->m_afBorderColor[1] != 1.0f || pkSkin->m_afBorderColor[2] != 1.0f )
+				{
+					if(bWriteColon) fprintf(m_pkSaveFile, ", "); bWriteColon = true;
+					fprintf(m_pkSaveFile, "borderR=%i", (int)(pkSkin->m_afBorderColor[0] * 255.0f));					
+
+					if(bWriteColon) fprintf(m_pkSaveFile, ", "); bWriteColon = true;
+					fprintf(m_pkSaveFile, "borderG=%i", (int)(pkSkin->m_afBorderColor[1] * 255.0f));					
+
+					if(bWriteColon) fprintf(m_pkSaveFile, ", "); bWriteColon = true;
+					fprintf(m_pkSaveFile, "borderB=%i", (int)(pkSkin->m_afBorderColor[2] * 255.0f));					
+				}
+				if( pkSkin->m_unBorderSize > 0)
+				{
+					if(bWriteColon) fprintf(m_pkSaveFile, ", "); bWriteColon = true;
+					fprintf(m_pkSaveFile, "bd_size=%i", (int)(pkSkin->m_unBorderSize));					
+				}
+				if( pkSkin->m_bTileBkSkin == true)
+				{
+					if(bWriteColon) fprintf(m_pkSaveFile, ", "); bWriteColon = true;
+					fprintf(m_pkSaveFile, "tile=%i", 1);					
+				}
+				if( pkSkin->m_bTransparent == true)
+				{
+					if(bWriteColon) fprintf(m_pkSaveFile, ", "); bWriteColon = true;
+					fprintf(m_pkSaveFile, "trans=%i", 1);					
+				}
+				if( pkSkin->m_fRotDegree > 0)
+				{
+					if(bWriteColon) fprintf(m_pkSaveFile, ", "); bWriteColon = true;
+					float procent_av_max = pkSkin->m_fRotDegree / (PI+PI);
+					procent_av_max *= 360.0f;
+					fprintf(m_pkSaveFile, "degree=%i", (int) procent_av_max);					
+				}
+
+				if(bWriteColon == false) // should never happen... but just in case.
+				{					
+					fprintf(m_pkSaveFile, "bkR=255,bkG=255,bkB=255");					
+				}
+
+				fprintf(m_pkSaveFile, " }\n");
+
+				kAddVector.push_back(pkSkin);
+
+				char name[50];
+				sprintf(name, "Skin%i", iCounter++);
+				m_kSkinTable.push_back( pair<ZGuiSkin, string>( *pkSkin, string(name) ));
+			}
+		}		
+	}	
+
+	return true;
+}
+
+bool ZGuiEd::WriteWindows()
+{
+	fprintf(m_pkSaveFile, "\n\t-- Windowlist ---------------------------------------------------------" \
+		"--------------------------------------------------------------\n\n");
+
+	fprintf(m_pkSaveFile, "\tlocal Wnd		= 0\n");	
+	fprintf(m_pkSaveFile, "\tlocal Button		= 1\n");	
+	fprintf(m_pkSaveFile, "\tlocal Checkbox		= 2\n");
+	fprintf(m_pkSaveFile, "\tlocal Combobox		= 3\n");
+	fprintf(m_pkSaveFile, "\tlocal Label		= 4\n");
+	fprintf(m_pkSaveFile, "\tlocal Listbox		= 5\n");
+	fprintf(m_pkSaveFile, "\tlocal Radiobutton	= 6\n");
+	fprintf(m_pkSaveFile, "\tlocal Scrollbar		= 7\n");
+	fprintf(m_pkSaveFile, "\tlocal Slider		= 8\n");
+	fprintf(m_pkSaveFile, "\tlocal TabControl	= 9\n");
+	fprintf(m_pkSaveFile, "\tlocal Textbox		= 10\n");
+	fprintf(m_pkSaveFile, "\tlocal Treebox		= 11\n");
+	fprintf(m_pkSaveFile, "\tlocal Menu		= 12\n");
+	fprintf(m_pkSaveFile, "\tlocal Progressbar	= 13\n\n");
+
+	ZGuiWnd* pkMainWnd = GetWnd("GuiMainWnd");
+
+	vector<ZGuiWnd*> vkCandidates;
+	vector<ZGuiWnd*> sortlist;
+
+	map<string, ZGuiWnd*> kWindows;
+	m_pkGuiMan->GetWindows(kWindows);
+	for( map<string, ZGuiWnd*>::iterator it = kWindows.begin(); it != kWindows.end(); it++)
+	{
+		vkCandidates.push_back(it->second);
+	}
+	
+	//sortlist.push_back(pkMainWnd);
+	//vkCandidates.push_back(pkMainWnd);
+
+	while(1)
+	{
+		for(int i=0; i<vkCandidates.size(); i++)
+		{
+			ZGuiWnd* pkParent = vkCandidates[i]->GetParent();
+
+			if(pkParent == NULL)
+			{
+				bool already_in_list = false;
+				for(int k=0; k<sortlist.size(); k++)
+					if(sortlist[k] == vkCandidates[i])
+					{
+						already_in_list = true;
+						break;
+					}
+
+					if(!already_in_list)
+						sortlist.push_back(vkCandidates[i]);
+			}
+			else
+			{
+				for(int j=0; j<sortlist.size(); j++)
+					if(pkParent == sortlist[j]) 
+					{
+						bool already_in_list = false;
+						for(int k=0; k<sortlist.size(); k++)
+							if(sortlist[k] == vkCandidates[i])
+							{
+								already_in_list = true;
+								break;
+							}
+
+							if(!already_in_list)
+								sortlist.push_back(vkCandidates[i]);
+
+							break;
+					}
+			}
+		}
+
+		if(sortlist.size() == vkCandidates.size())
+			break;
+	}
+
+	int iType = 0, iAlignment = 0, iResizeType = 0;
+	char szName[150],szParent[150],szLabel[500];
+	Rect rc;
+
+	for(int k=0; k<sortlist.size(); k++)
+	{
+		if(sortlist[k] != pkMainWnd)
+		{
+			ZGuiWnd* pkParent = sortlist[k]->GetParent();
+
+			strcpy(szName, sortlist[k]->GetName());
+			if(pkParent)
+				strcpy(szParent, pkParent->GetName());
+			else
+				strcpy(szParent, "");
+
+			if(pkParent)
+				rc = sortlist[k]->GetWndRect();
+			else
+				rc = sortlist[k]->GetScreenRect();
+
+			strcpy(szLabel, sortlist[k]->GetText());
+
+			iType = (int) GetWndType(sortlist[k]);
+
+			fprintf(m_pkSaveFile, "\tCreateWnd(%s, \"%s\", \"%s\", \"%s\", %i, %i, %i, %i, 0, %i, %i)\n", 
+				FormatWndType(GetWndType(sortlist[k])).c_str(), szName, szParent, szLabel, rc.Left, rc.Top, 
+				rc.Width(), rc.Height(), iAlignment, iResizeType);			
+
+			PrintSkins(sortlist[k]);
+
+			fprintf(m_pkSaveFile, "\n");
+		}
+	}
+
+	return true;
+}
+
+void ZGuiEd::PrintSkins(ZGuiWnd* pkWnd)
+{
+	const char* szName = pkWnd->GetName();
+
+	vector< pair<ZGuiSkin**, string> >kSkins;
+	pkWnd->GetWndSkinsDesc(kSkins);
+
+	vector< pair<ZGuiSkin**, string> >::iterator itSkin = kSkins.begin(); 
+	for( ; itSkin != kSkins.end(); itSkin++)
+	{
+		if(*itSkin->first)
+		{
+			ZGuiSkin kSkin = *(*itSkin->first);
+
+			// leta rätt på namnet på skin'en och printa
+			for(unsigned int k=0; k<m_kSkinTable.size(); k++)
+				if(kSkin == m_kSkinTable[k].first)
+				{
+					fprintf(m_pkSaveFile, "\tChangeSkin(\"%s\",\"%s\",\"%s\")\n", 
+						szName, m_kSkinTable[k].second.c_str(), itSkin->second.c_str());
+					break;
+				}
+		}
+	}
+
+	kSkins.clear(); 
+}

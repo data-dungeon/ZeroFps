@@ -1,0 +1,280 @@
+// Microsoft Visual C++ generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "afxres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// English (U.S.) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+#ifdef _WIN32
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#pragma code_page(1252)
+#endif //_WIN32
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE 
+BEGIN
+    "#include ""afxres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE 
+BEGIN
+    "\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO 
+BEGIN
+    IDD_SELECTFONT_DLGBOX, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 157
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 132
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_SELECTFONT_DLGBOX DIALOGEX 0, 0, 164, 139
+STYLE DS_SETFONT | DS_3DLOOK | DS_FIXEDSYS | WS_CHILD | WS_BORDER
+FONT 8, "MS Shell Dlg", 0, 0, 0x0
+BEGIN
+    LISTBOX         IDC_FONT_LIST,7,7,150,83,LBS_SORT | LBS_NOINTEGRALHEIGHT | 
+                    WS_VSCROLL | WS_TABSTOP
+    PUSHBUTTON      "OK",IDC_SELECTFONT_OK_BN,7,118,70,14
+    PUSHBUTTON      "Cancel",IDC_SELECTFONT_CANCEL_BN,84,118,73,14
+    LTEXT           "Red",IDC_STATIC,7,100,14,8
+    EDITTEXT        IDC_FONT_COLOR_R_EB,23,98,28,14,ES_AUTOHSCROLL | 
+                    ES_NUMBER
+    EDITTEXT        IDC_FONT_COLOR_G_EB,78,97,28,14,ES_AUTOHSCROLL | 
+                    ES_NUMBER
+    EDITTEXT        IDC_FONT_COLOR_B_EB,129,97,28,14,ES_AUTOHSCROLL | 
+                    ES_NUMBER
+    LTEXT           "Green",IDC_STATIC,55,100,20,8
+    LTEXT           "Blue",IDC_STATIC,111,100,14,8
+END
+
+#endif    // English (U.S.) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+/////////////////////////////////////////////////////////////////////////////
+// Swedish resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_SVE)
+#ifdef _WIN32
+LANGUAGE LANG_SWEDISH, SUBLANG_DEFAULT
+#pragma code_page(1252)
+#endif //_WIN32
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO 
+BEGIN
+    IDD_DIALOGLEFT, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 141
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 455
+    END
+
+    IDD_DIALOGBOTTOM, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 526
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 103
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_DIALOGLEFT DIALOGEX 0, 0, 148, 462
+STYLE DS_SETFONT | DS_3DLOOK | DS_FIXEDSYS | WS_CHILD | WS_VISIBLE | 
+    WS_BORDER
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    COMBOBOX        IDC_NEWCNTRL_CB,7,71,134,213,CBS_DROPDOWNLIST | CBS_SORT | 
+                    WS_VSCROLL | WS_TABSTOP
+    PUSHBUTTON      "Create",IDC_CREATE_WND_BN,7,92,30,14
+    LTEXT           "Window Type",IDC_STATIC,8,58,44,8
+    CONTROL         "Resize mode",IDC_RESIZE_WND,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,7,244,61,10
+    PUSHBUTTON      "Open",IDC_LOADGUI,7,39,30,14
+    PUSHBUTTON      "Save",IDC_SAVE_SCRIPT,41,39,30,14
+    PUSHBUTTON      "Delete",IDC_DELETE_WND_BN,41,92,30,14
+    COMBOBOX        IDC_FILELIST_CB,7,21,134,97,CBS_DROPDOWN | CBS_SORT | 
+                    WS_VSCROLL | WS_TABSTOP
+    LTEXT           "Gui Script",IDC_STATIC,7,8,31,8
+    PUSHBUTTON      "New",IDC_NEWGUI_BN,76,39,30,14
+    LISTBOX         IDC_WINDOW_LIST,7,129,134,95,LBS_SORT | 
+                    LBS_NOINTEGRALHEIGHT | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "Window  List:",IDC_STATIC,7,114,44,8
+    CONTROL         "Force capture to selected window",
+                    IDC_FORCE_CAPTURE_TO_SEL_CB,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,7,230,123,10
+    CONTROL         "Filter to Wnd Type",IDC_ONLY_OF_WND_TYPE_CB,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,62,113,75,10
+    PUSHBUTTON      "Bring to front",IDC_BRING_TO_FRONT,7,259,63,14
+    CONTROL         "Toggle show",IDC_VISIBLE_CHECK,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,77,262,56,10
+    LISTBOX         IDC_TEXTURE_LIST,7,291,134,93,LBS_SORT | 
+                    LBS_NOINTEGRALHEIGHT | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "Texture List:",IDC_STATIC,7,279,42,8
+    PUSHBUTTON      "Set texture",IDC_SET_TEXTURE_BN,94,388,47,14
+    PUSHBUTTON      "No texture",IDC_REMOVE_TEXTURE_BN,94,407,47,14
+    PUSHBUTTON      "Resize to img",IDC_RESIZE_TO_IMAGE,94,424,47,14
+    CONTROL         "Test",IDC_TESTGUI_BN,"Button",BS_AUTOCHECKBOX | 
+                    BS_PUSHLIKE | WS_TABSTOP,111,39,30,14
+    LISTBOX         IDC_SELECT_SCRIPT_FOLDER_LIST,7,57,134,67,LBS_SORT | 
+                    LBS_NOINTEGRALHEIGHT | NOT WS_VISIBLE | WS_VSCROLL | 
+                    WS_TABSTOP
+    PUSHBUTTON      "Copy",IDC_COPY_WND_BN,76,92,30,14
+    PUSHBUTTON      "Paste",IDC_PASTE_WND_BN,111,92,30,14
+END
+
+IDD_DIALOGBOTTOM DIALOGEX 0, 0, 533, 110
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD | WS_VISIBLE | WS_BORDER
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    EDITTEXT        IDC_WINDOW_NAMEID_EB,45,7,130,14,ES_AUTOHSCROLL
+    LTEXT           "ID Name",IDC_STATIC,8,9,28,8
+    EDITTEXT        IDC_TEXTLABEL_EB,45,25,130,14,ES_AUTOHSCROLL
+    LTEXT           "Caption",IDC_STATIC,7,30,26,8
+    EDITTEXT        IDC_POSX_EB,208,7,40,14,ES_AUTOHSCROLL | ES_NUMBER
+    LTEXT           "Pos X",IDC_STATIC,182,10,18,8
+    LTEXT           "Pos Y",IDC_STATIC,182,30,18,8
+    EDITTEXT        IDC_WIDTH_EB,208,45,40,14,ES_AUTOHSCROLL | ES_NUMBER
+    LTEXT           "Width",IDC_STATIC,182,48,20,8
+    EDITTEXT        IDC_POSY_EB,208,26,40,14,ES_AUTOHSCROLL | ES_NUMBER
+    LTEXT           "Height",IDC_STATIC,181,67,22,8
+    EDITTEXT        IDC_HEIGHT_EB,208,64,40,14,ES_AUTOHSCROLL | ES_NUMBER
+    EDITTEXT        IDC_PARENT_WINDOW_NAMEID,45,45,130,14,ES_AUTOHSCROLL | 
+                    ES_READONLY
+    LTEXT           "Parent",IDC_STATIC,7,49,22,8
+    EDITTEXT        IDC_WINDOWTYPE_EB,45,65,50,14,ES_AUTOHSCROLL | 
+                    ES_READONLY
+    LTEXT           "Wnd Type",IDC_STATIC,7,67,34,8
+    LISTBOX         IDC_SKINELEMENTS_LIST,253,25,189,53,LBS_SORT | 
+                    LBS_NOINTEGRALHEIGHT | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "Skin Element List:",IDC_STATIC,255,10,56,8
+    CONTROL         "Background",IDC_SKINTYPE_BACKGROUND_RB,"Button",
+                    BS_AUTORADIOBUTTON,451,26,53,10
+    CONTROL         "Horizont border",IDC_SKINTYPE_HORZBORDER_RB,"Button",
+                    BS_AUTORADIOBUTTON,451,39,65,10
+    CONTROL         "Vertical border",IDC_SKINTYPE_VERTBORDER_RB,"Button",
+                    BS_AUTORADIOBUTTON,451,52,65,10
+    CONTROL         "Corner border",IDC_SKINTYPE_CORNERBORDER_RB,"Button",
+                    BS_AUTORADIOBUTTON,451,65,65,10
+    CONTROL         "Tile",IDC_TILE_CB,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,
+                    380,86,27,10
+    CONTROL         "Transparent",IDC_TRANSPARENT_CB,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,322,85,55,10
+    EDITTEXT        IDC_BORDER_EB,208,83,40,14,ES_AUTOHSCROLL | ES_NUMBER
+    LTEXT           "Border",IDC_STATIC,181,86,22,8
+    LTEXT           "Rotation",IDC_STATIC,254,86,28,8
+    EDITTEXT        IDC_ROTATION_EB,285,83,32,14,ES_AUTOHSCROLL | ES_NUMBER
+    CONTROL         "Free movement",IDC_FREE_MOVEMENT_CB,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,7,86,62,10
+    CONTROL         "Visible from start",IDC_VISIBLE_FROM_START_CB,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,73,86,68,10
+    PUSHBUTTON      "Font...",IDC_SELECTFONT_BN,143,83,32,14
+    EDITTEXT        IDC_RGB_COLOR_R_EB,451,83,24,14,ES_AUTOHSCROLL | 
+                    ES_NUMBER
+    LTEXT           "RGB Color",IDC_STATIC,415,86,33,8
+    EDITTEXT        IDC_RGB_COLOR_G_EB,477,83,24,14,ES_AUTOHSCROLL | 
+                    ES_NUMBER
+    EDITTEXT        IDC_RGB_COLOR_B_EB,502,83,24,14,ES_AUTOHSCROLL | 
+                    ES_NUMBER
+    PUSHBUTTON      "Save...",IDC_SAVE_SKINS_BN,392,7,50,14
+    PUSHBUTTON      "Open...",IDC_LOAD_SKINS_BN,338,7,50,14
+    PUSHBUTTON      "Special Attributes...",IDC_OPEN_SPECIAL_ATTIBUTES_BN,
+                    451,7,75,14
+    LTEXT           "Z Value",IDC_STATIC,106,67,24,8
+    EDITTEXT        IDC_ZVALUE_EB,135,64,40,14,ES_AUTOHSCROLL | ES_READONLY
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog Info
+//
+
+IDD_DIALOGLEFT DLGINIT
+BEGIN
+    IDC_NEWCNTRL_CB, 0x403, 7, 0
+0x6957, 0x646e, 0x776f, "\000" 
+    IDC_NEWCNTRL_CB, 0x403, 8, 0
+0x4220, 0x7475, 0x6f74, 0x006e, 
+    IDC_NEWCNTRL_CB, 0x403, 12, 0
+0x5220, 0x6461, 0x6269, 0x7475, 0x6f74, 0x006e, 
+    IDC_NEWCNTRL_CB, 0x403, 9, 0
+0x5420, 0x7865, 0x6274, 0x786f, "\000" 
+    IDC_NEWCNTRL_CB, 0x403, 10, 0
+0x4320, 0x6d6f, 0x6f62, 0x6f62, 0x0078, 
+    IDC_NEWCNTRL_CB, 0x403, 9, 0
+0x4c20, 0x7369, 0x6274, 0x786f, "\000" 
+    0
+END
+
+#endif    // Swedish resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+
