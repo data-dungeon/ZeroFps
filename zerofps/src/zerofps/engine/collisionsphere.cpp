@@ -32,14 +32,16 @@ bool CollisionSphere::Collide(CollisionObject *kOther,Vector3 *pkPos,bool bConti
 }
 
 bool CollisionSphere::CollideSphere(CollisionSphere *kCs,Vector3 *pkPos) {
-	Vector3 kDistance=((*m_kPos)-(*kCs->m_kPos));
+	Vector3 kDistance=((*kCs->m_kPos)-(*m_kPos));
 	
-	if( kDistance.Length() < (*m_fRadius + (*kCs->m_fRadius)) ){
-		if(kDistance.Length()==0)
-			*pkPos = *m_kPos;
-		else
-			*pkPos= *m_kPos + (kDistance.Unit()* (*m_fRadius));
 
+	if( kDistance.Length() < (*m_fRadius + *kCs->m_fRadius) ){
+		kDistance.Normalize();
+		
+//		kDistance.Print();
+//		cout<<endl;
+		
+		*pkPos= *m_kPos + (kDistance * (*m_fRadius));
 		return true;
 	}
 	
@@ -48,11 +50,13 @@ bool CollisionSphere::CollideSphere(CollisionSphere *kCs,Vector3 *pkPos) {
 
 bool CollisionSphere::CollidePoint(CollisionPoint *kCp,Vector3 *pkPos) {
 //	float fDistance=((*m_kPos)-(*kCp->m_kPos)).Length();
-	Vector3 kDistance=((*m_kPos)-(*kCp->m_kPos));
+
+	Vector3 kDistance=((*kCp->m_kPos)-(*m_kPos));
 	
 	if( kDistance.Length() < (*m_fRadius) ){
-		*pkPos= *m_kPos + kDistance;
-	
+//		*pkPos= *m_kPos + kDistance;
+		kDistance.Normalize();
+		*pkPos= *m_kPos + (kDistance * (*m_fRadius));
 		return true;
 	}
 	

@@ -112,6 +112,11 @@ void Object::HandleCollision(Object* pkObject,Vector3 kPos,bool bContinue){
 }
 
 
-
+bool Object::Save(void *pkData,int iSize) {
+	iSize=0;
+	pkData=NULL;
+	
+	return false;
+}
 
 

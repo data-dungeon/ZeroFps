@@ -230,7 +230,7 @@ void Vector3::Lerp(Vector3& from, Vector3& to, float flerp)
 	*this += from;
 }
 
-void Vector3::print(void)
+void Vector3::Print(void)
 {
 	cout << "<" << x << "," << y << "," << z << ">";
 }

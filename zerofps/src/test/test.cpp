@@ -92,10 +92,16 @@ void Test::OnInit(void) {
 	pkLight->Add(spot);	
 	pkLight->Add(sol);
 	
+	
+	
+	
+	
 	for(int i=0;i<50;i++) {
 		Object *ball=new BallObject(test,pkFps);
 		float x=300 + rand()%100;
 		float y=720 + rand()%100;
+//		float x=340;
+//		float y=770;
 		ball->GetPos()=Vector3(x,test->Height(x,y)+10,y);
 		pkObjectMan->Add(ball);
 		pkCollisionMan->Add(ball);
@@ -104,13 +110,10 @@ void Test::OnInit(void) {
 
 	glEnable(GL_LIGHTING );
 	
-	//main camera
-	cam1=new Camera(Vector3(50,50,50),Vector3(0,0,0),90,1.333,0.25,400);
-//	cam1->SetViewPort(0,.4,.6,.6);
+	cam1=new Camera(Vector3(50,50,50),Vector3(0,0,0),90,1.333,0.25,400);	
 	
 	m_pkPlayer=new PlayerObject(test,pkInput,pkFps);
 	m_pkPlayer->AddProperty(new CameraProperty(cam1));
-//	player->AddProperty(new MadProperty(&akCoreModells[0]));	
 	m_pkPlayer->GetPos()=Vector3(340,50,780);		
 	pkObjectMan->Add(m_pkPlayer);
 	pkCollisionMan->Add(m_pkPlayer);

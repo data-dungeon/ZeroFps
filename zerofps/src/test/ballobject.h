@@ -17,8 +17,8 @@ class BallObject: public Object {
 		BallObject(HeightMap *pkMap,ZeroFps *pkFps);
 		
 		void HandleCollision(Object* pkObject,Vector3 kPos,bool bContinue);
-
-
+		
+		bool Save(void *pkData,int iSize);
 };
 
 

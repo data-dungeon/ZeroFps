@@ -5,6 +5,7 @@
 #include "../zerofps/basic/basic.pkg"
 #include "playercontrolproperty.h"
 #include "gravityproperty.h"
+#include "ballobject.h"
 //#include "heightmapobject.h"
 
 class PlayerObject: public Object {

@@ -71,7 +71,7 @@ class BASIC_API Vector3 {
 
 //		friend void operator<<(ostream& os, const Vector3 &v);
 //		friend Vector3 operator * ( const float& s, const Vector3& v );
-		void print(void);
+		void Print(void);
 
 		float& Vector3::operator[] (int i);
 };

@@ -34,7 +34,8 @@ bool CollisionHeightMap::CollideSphere(CollisionSphere *pkCs,Vector3 *pkPos){
 			//then check if we are under the hegihtmap			
 			if( pkCs->m_kPos->y - *pkCs->m_fRadius <= m_pkHM->Height( pkCs->m_kPos->x , pkCs->m_kPos->z ))
 			{
-				*pkPos = Vector3(pkCs->m_kPos->x,*pkCs->m_fRadius+m_pkHM->Height( pkCs->m_kPos->x , pkCs->m_kPos->z ),pkCs->m_kPos->z);				
+//				*pkPos = Vector3(pkCs->m_kPos->x,*pkCs->m_fRadius+m_pkHM->Height( pkCs->m_kPos->x , pkCs->m_kPos->z ),pkCs->m_kPos->z);				
+				*pkPos = Vector3(pkCs->m_kPos->x,m_pkHM->Height( pkCs->m_kPos->x , pkCs->m_kPos->z ),pkCs->m_kPos->z);								
 				return true;			
 			}
 		}

@@ -23,7 +23,7 @@ void BallObject::HandleCollision(Object* pkOther,Vector3 kPos,bool bContinue){
 	if(typeid(*pkOther)==typeid(HeightMapObject)){
 		HeightMapObject *kO=dynamic_cast<HeightMapObject*>(pkOther);
 	
-	GetPos()=kPos;
+	GetPos()=kPos+Vector3(0,1,0);
 	m_kVel.y=0;
 	onGround=true;
 		
@@ -37,5 +37,16 @@ void BallObject::HandleCollision(Object* pkOther,Vector3 kPos,bool bContinue){
 
 }
 
+bool BallObject::Save(void *pkData,int iSize) {
+	struct data{
+		Vector3 kPos;
+		Vector3 kRot;
+	};
 
+//	pkData=new data;
+	
+//	pkData->kPos=m_kPos
+
+
+}
 
