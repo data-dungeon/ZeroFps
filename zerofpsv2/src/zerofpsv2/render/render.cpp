@@ -56,11 +56,13 @@ Render::Render()
 	Register_Cmd("r_gldump",	FID_GLDUMP);	
 	Register_Cmd("ccolor",		FID_CONSOLECOLOR);
 	Register_Cmd("shot",			FID_SHOT);
-
+	
+	Register_Cmd("ec_set",		FID_ECSET);
+	Register_Cmd("ec_clear",	FID_ECCLEAR);
+	Register_Cmd("ec_std",		FID_ECSETSTD);
 
 //	SetFont("data/textures/text/devstr.bmp");
-
-	Setup_EditColors();
+// Setup_EditColors();
 }
 
 bool Render::StartUp()
@@ -2138,15 +2140,45 @@ void Render::GlInfo()
 
 void Render::RunCommand(int cmdid, const CmdArgument* kCommand)
 {
+	float r,g,b;
+
 	switch(cmdid) {
 		case FID_GLINFO:			GlInfo();							break;
 		case FID_CONSOLECOLOR:	m_kConsoleColor.Set(1,0,0);	break;
 		case FID_SHOT:				m_bCapture = true;				break;
 		case FID_GLDUMP:			DumpGLState("gldump.txt");		break;
+		case FID_ECSET:	
+			if(kCommand->m_kSplitCommand.size() < 4)
+				break;
 
+			r = atof(kCommand->m_kSplitCommand[2].c_str());
+			g = atof(kCommand->m_kSplitCommand[3].c_str());
+			b = atof(kCommand->m_kSplitCommand[4].c_str());
+			EditColor_Set(kCommand->m_kSplitCommand[1], r,g,b);
+			//m_kEditColor.push_back( EditColor(kCommand->m_kSplitCommand[2]),		Vector3( r,g,b) ));	
+			break;
+		case FID_ECCLEAR:			m_kEditColor.clear();		   break;
+		case FID_ECSETSTD:		
+			// Add Std colors.
+			m_kEditColor.push_back( EditColor(string("black"),		Vector3( 0,0,0) ));	
+			m_kEditColor.push_back( EditColor(string("gray"),		Vector3( 0.5,0.5,0.5) ));
+			m_kEditColor.push_back( EditColor(string("silver"),	Vector3( 0.753,0.753,0.753) ));	
+			m_kEditColor.push_back( EditColor(string("white"),		Vector3(1,1,1) ));	
+			m_kEditColor.push_back( EditColor(string("maroon"),	Vector3(0.5,0,0) ));	
+			m_kEditColor.push_back( EditColor(string("red"),		Vector3(1,0,0) ));	
+			m_kEditColor.push_back( EditColor(string("purple"),	Vector3(0.5,0,0.5) ));	
+			m_kEditColor.push_back( EditColor(string("fuchsia"),	Vector3(1,0,1) ));	
+			m_kEditColor.push_back( EditColor(string("green"),		Vector3(0,0.5,0) ));	
+			m_kEditColor.push_back( EditColor(string("lime"),		Vector3(0,1,0) ));	
+			m_kEditColor.push_back( EditColor(string("olive"),		Vector3(0.5,0.5,0) ));	
+			m_kEditColor.push_back( EditColor(string("yellow"),	Vector3(1,1,0) ));	
+			m_kEditColor.push_back( EditColor(string("navy"),		Vector3(1,0,0.5) ));	
+			m_kEditColor.push_back( EditColor(string("blue"),		Vector3(0,0,1) ));	
+			m_kEditColor.push_back( EditColor(string("teal"),		Vector3(0,0.5,0.5) ));	
+			m_kEditColor.push_back( EditColor(string("aqua"),		Vector3(0,1,1) ));	
+			break;
 		}
 }
-
 
 void Render::DrawPSystem( PSystem *pkPSystem )
 {
@@ -2211,7 +2243,7 @@ void Render::DrawPSystem( PSystem *pkPSystem )
 }
 
 /*	Set the colors that are used in the editor to display information.	*/
-void Render::Setup_EditColors()
+/*void Render::Setup_EditColors()
 {
 	m_kEditColor.push_back( EditColor(string("3dview/background"),		Vector3(0.631, 0.631, 0.631)));	
 	m_kEditColor.push_back( EditColor(string("3dview/selbackground"),	Vector3(0.731, 0.731, 0.731)));	
@@ -2257,6 +2289,22 @@ void Render::Setup_EditColors()
 	m_kEditColor.push_back( EditColor(string("ai/rawpath"),	Vector3(1,0,0) ));	
 	m_kEditColor.push_back( EditColor(string("ai/path"),		Vector3(0,1,0) ));	
 
+}*/
+
+void Render::EditColor_Set(string strName, float r, float g, float b)
+{
+	cout << "Name: " <<  strName << endl;
+
+	for(unsigned int i=0; i<m_kEditColor.size(); i++) 
+	{
+		if(m_kEditColor[i].m_strName == strName)
+		{
+			m_kEditColor[i].m_kColor.Set(r,g,b);
+			return;
+		}
+	}	
+
+	m_kEditColor.push_back( EditColor(strName,	Vector3(r,g,b) ));	
 }
 
 Vector3 Render::GetEditColor(string strName)
@@ -2269,7 +2317,7 @@ Vector3 Render::GetEditColor(string strName)
 			return m_kEditColor[i].m_kColor;
 	}
 
-
+	cout << "WARNING: Request for a unknown EditColor '" << strName << "'. Add it to the config file to fix" << endl;
 	return kColor;
 }
 

@@ -63,7 +63,10 @@ class RENDER_API Render : public ZFSubSystem {
 			FID_GLINFO,				// Display basic info about OpenGL to console.		
 			FID_GLDUMP,				// Dump current glstate to file.
 			FID_CONSOLECOLOR,		
-			FID_SHOT,				
+			FID_SHOT,			
+			FID_ECSET,				// Set a editor color.
+			FID_ECCLEAR,			// Clear all editor colors.
+			FID_ECSETSTD,			// Set Std colors.
 		};
 
 		TextureManager*	m_pkTexMan;
@@ -199,8 +202,9 @@ class RENDER_API Render : public ZFSubSystem {
 
 		void DrawPSystem( PSystem *pkPSystem );
 
-		void 		Setup_EditColors();
+		void     EditColor_Set(string strName, float f, float g, float b);
 		Vector3	GetEditColor(string strName);
+		//void 		Setup_EditColors();
 
 		
 		

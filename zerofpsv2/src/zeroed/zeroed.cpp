@@ -267,6 +267,10 @@ void ZeroEd::OnInit()
 	//init dm script interface (register script functions for gameplay)
 	//DMLua::Init(m_pkEntityManager,m_pkScript,m_pkGuiMan);
 
+	// Run Config script for editor colors.
+	if(!m_pkIni->ExecuteCommands("/data/colors.cfg"))
+		m_pkConsole->Printf("No colors.cfg");
+
 	//run autoexec script
 	if(!m_pkIni->ExecuteCommands("/zeroed_autoexec.ini"))
 		m_pkConsole->Printf("No zeroed_autoexec.ini found");
