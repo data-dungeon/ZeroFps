@@ -17,12 +17,11 @@ function Create()
 end
 
 function Init()
-	SISetHeartRate(SIGetSelfID(), 2); --same as spawndelay...
 end
 
-function HeartBeat()
+function OnSpawn()
 	PlayAnim(SIGetSelfID(), "open");
 	SetNextAnim(SIGetSelfID(), "idle");
-	PlaySound (SIGetSelfID(), "dooropen.wav");
+	PlaySound (SIGetSelfID(), "dooropen.wav");	
 end
 
