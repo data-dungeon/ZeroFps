@@ -603,7 +603,7 @@ bool ZGuiTextbox::IgnoreKey(int iKey)
 	return bIgnore;
 }
 
-int ZGuiTextbox::GetNumRows(char* szText)
+int ZGuiTextbox::GetNumRows(char* text)
 {
 	if(!m_pkFont)
 	{
@@ -611,46 +611,85 @@ int ZGuiTextbox::GetNumRows(char* szText)
 		return -1;
 	}
 
-	if(szText == NULL || strlen(szText) < 1)
+	if(text == NULL || strlen(text) < 1)
 	{
 		printf("Can't get num rows because string is bad!\n");
 		return -1;
 	}
 
-	int characters_totalt = strlen(szText);
+	int characters_totalt = strlen(text);
 	int width = GetScreenRect().Width();
 	int xpos=0, ypos=0, row_height = m_pkFont->m_cCharCellSize;
 	int rows = 0, offset = 0, max_width = width;
 
 	pair<int,int> kLength; // first = character, second = pixels.
 
-	while(offset < characters_totalt) // antal ord
-	{
-		kLength = GetWordLength(szText, offset, max_width);
-
-		offset += kLength.first;
-		xpos += kLength.second;
-
-		bool bRowBreak = false, bCarriageReturn = false;
-
-		if(xpos >= max_width)
-			bRowBreak = true;
-		if(szText[offset-1] == '\n')
-			bCarriageReturn = true;
-
-		if(bRowBreak || bCarriageReturn)
+		while(offset < characters_totalt) // antal ord
 		{
-			if(bCarriageReturn)
-				xpos = 0;
-			if(bRowBreak)
-				xpos = kLength.second;
+			int prev_row = rows;
 
-			ypos += row_height;
-			rows++;
-			m_kRowOffsets[rows] = offset;
-		}
+			kLength = GetWordLength(text, offset, max_width);
+
+			if(xpos+kLength.second >= width)
+			{
+				// Räkna inte in sista tecknets längd om det är ett space.
+				// och om längden på ordet överskrider den tillåtna längden.
+				if(text[offset+kLength.first-1] == ' ')
+				{
+					int index = ' ' - 32;
+					kLength.second -= m_pkFont->m_aChars[index].iSizeX;
+				}
+
+				if(xpos+kLength.second >= width)
+				{
+					if(text[offset+kLength.first-1] == ' ')
+					{
+						int index = ' ' - 32;
+						kLength.second += m_pkFont->m_aChars[index].iSizeX;
+					}
+
+					rows++;
+					ypos += row_height;
+					xpos = 0;
+				}
+			}
+
+			if(prev_row != rows)
+			{
+				m_kRowOffsets[rows] = offset;
+
+				if(m_iCursorPos < m_kRowOffsets[rows] &&
+				   m_iCursorPos >= m_kRowOffsets[rows-1])
+				   m_iCursorRow = rows-1;
+
+				prev_row = rows;
+			}
+
+			bool bRowBreak = false;
 			
-	}
+			if(text[offset+kLength.first-1] == '\n')
+			{	
+				rows++;
+				ypos += row_height;	
+				xpos = 0;
+
+				bRowBreak = true;
+			}
+
+			if(bRowBreak == false)
+				xpos += kLength.second;
+
+			offset += kLength.first;
+
+			if(prev_row != rows)
+			{
+				m_kRowOffsets[rows] = offset;
+
+				if(m_iCursorPos < m_kRowOffsets[rows] &&
+				   m_iCursorPos >= m_kRowOffsets[rows-1])
+				   m_iCursorRow = rows-1;
+			}
+		}
 
 	return rows;
 }
@@ -777,7 +816,7 @@ pair<int,int> ZGuiTextbox::GetWordLength(char *text, int offset, int max_width)
 
 		// Break words bigger then then the length
 		// of one row in the textbox.
-		if(length_counter > max_width)
+		if(length_counter >= max_width)
 			break;
 
 		char_counter++;

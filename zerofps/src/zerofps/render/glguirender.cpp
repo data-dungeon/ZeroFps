@@ -507,13 +507,13 @@ bool GLGuiRender::PrintRows(char* text, Rect rc, int iCursorPos, int iRenderDist
 		int characters_totalt = strlen(text);
 		int width = rc.Width();
 		int xpos=0, ypos=0, row_height = m_pkFont->m_cCharCellSize;
-		int rows = 0, offset = 0, max_widht = rc.Width();
+		int rows = 0, offset = 0, max_width = rc.Width();
 
 		pair<int,int> kLength; // first = character, second = pixels.
 
 		while(offset < characters_totalt) // antal ord
 		{
-			kLength = GetWordLength(text, offset, max_widht);
+			kLength = GetWordLength(text, offset, max_width);
 
 			if(xpos+kLength.second >= width)
 			{
