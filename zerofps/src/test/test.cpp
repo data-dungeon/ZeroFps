@@ -1,6 +1,5 @@
 #include "test.h"
 
-
 Test olle("MegaGame",1024,768,16);
 
 Test::Test(char* aName,int iWidth,int iHeight,int iDepth): Application(aName,iWidth,iHeight,iDepth) {
@@ -91,15 +90,15 @@ void Test::OnInit(void) {
 
 /*	pkLight->Add(spot2);			
 	pkLight->Add(spot);	*/
-//	pkLight->Add(sol);
+	pkLight->Add(sol);
 	
 	
 	
 	int i;
 	
-	for( i=0;i<100;i++) {
+	for( i=0;i<40;i++) {
 		Object *ball=new BallObject();
-		float x=290 + rand()%100;
+		float x=290 + rand()%200;
 		float y=730 + rand()%100;
 		ball->GetPos()=Vector3(x,test->Height(x,y)+5,y);
 		pkObjectMan->Add(ball);
@@ -107,7 +106,7 @@ void Test::OnInit(void) {
 	}
 
 	Object *sussi;
-	for(i=0;i<20;i++) {
+	for(i=0;i<30;i++) {
 		sussi=new BunnyObject();
 		float x=340 + rand()%10;
 		float y=780 + rand()%10;

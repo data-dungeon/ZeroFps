@@ -3,12 +3,13 @@
 
 #ifdef _WIN32
 // Bloody Windows
-#include <GL/extgl.h>
+	#include <GL/extgl.h>
 
 #else
 // Sweet Linux.
-#include <GL/gl.h>
-#include <GL/glx.h>
+	#include <GL/gl.h>
+	#include <GL/glx.h>
+	
 #endif
 
 #include "GL/glu.h"

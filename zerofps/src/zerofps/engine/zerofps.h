@@ -25,7 +25,8 @@ enum enginestates
 	state_pause
 };
 
-
+		
+	extern PFNGLFOGCOORDFEXTPROC glFogCoordfEXT;		
 
 class ENGINE_API ZeroFps : public ZFObject {
 	private:		
@@ -40,12 +41,11 @@ class ENGINE_API ZeroFps : public ZFObject {
 		Camera *m_pkTempCamera;
 		Camera *m_pkCamera;
 		Camera *m_pkConsoleCamera;
-		Camera *m_pkGameCamera;		
 		Camera *m_pkDefaultCamera;
 	
 		vector<string>	AppArguments;
 
-//		PFNGLFOGCOORDFEXTPROC glFogCoordfEXT;		//glFogCoordsEXT
+
 
 	public:
 		Application* m_pkApp;						//application
@@ -87,24 +87,12 @@ class ENGINE_API ZeroFps : public ZFObject {
 		inline unsigned int GetTicks(void) {return SDL_GetTicks();};
 		inline float GetFrameTime() {return m_fFrameTime;};
 		
-		
-//		inline Vector3& CamPos(Vector3 kCamPos){*m_kCamPos=kCamPos;return *m_kCamPos;};
-//		inline Vector3& CamPos(void){return *m_kCamPos;};
-//		inline void SetCamPosPointer(Vector3* pkNewCamPos) {m_kCamPos=pkNewCamPos;};
-		
-//		inline Vector3& CamRot(Vector3 kCamRot){*m_kCamPos=kCamRot;return *m_kCamRot;};
-//		inline Vector3& CamRot(void){return *m_kCamRot;};		
-//		inline void SetCamRotPointer(Vector3* pkNewCamRot) {m_kCamRot=pkNewCamRot;};
 	
 		void SetCamera(Camera* pkCamera);
 	
-//		inline void SetCam(Camera* pkCamera) {m_pkCamera=pkCamera;};
-//		inline void SetGameCam(Camera* pkCamera) {m_pkGameCamera=pkCamera;};
-		
 		inline Camera *GetCam() {return m_pkCamera;};		
-		inline Camera *GetGameCam() {return m_pkGameCamera;};				
 		inline Camera *GetDefaultCam() {return m_pkDefaultCamera;};		
-//		inline void SetConsoleCam(Camera* pkCamera) {m_pkConsoleCamera=pkCamera;};
+		inline Camera *GetConsoleCam() {return m_pkConsoleCamera;};				
 
 		PropertyFactory	m_kPropertyFactory;
 

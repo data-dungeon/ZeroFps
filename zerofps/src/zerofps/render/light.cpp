@@ -41,7 +41,7 @@ bool LightSource::operator<(const LightSource& l) const
 
 Light::Light() 
 : ZFObject("Light") {
-	m_iNrOfLights=8;
+	m_iNrOfLights=8;				//this shuld never be greater than 8
 	glLightModelf(GL_LIGHT_MODEL_TWO_SIDE,0);
 	glEnable(GL_LIGHTING);
 }
@@ -97,7 +97,7 @@ void Light::Update() {
 	
 	//Put the first 8 in m_kActiveLights
 	int i=0;
-//	m_kSorted.sort(&More_Light);
+	m_kSorted.sort(More_Light);
 	for( it=m_kSorted.begin();it!=m_kSorted.end();it++) {
 		if(i >= m_iNrOfLights)
 			break;
@@ -147,7 +147,7 @@ void Light::Update() {
 				break; 		
   			case 7:
 				light=GL_LIGHT7;
-				break; 						
+				break; 												
   		}
 		glEnable(light);		
 			

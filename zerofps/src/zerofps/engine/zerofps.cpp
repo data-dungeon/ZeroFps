@@ -1,5 +1,8 @@
 #include "zerofps.h"
 
+	extern PFNGLFOGCOORDFEXTPROC glFogCoordfEXT;		//glFogCoordsEXT
+
+
 ZeroFps::ZeroFps(void) 
  : ZFObject("ZeroFps") {
 	m_pkFile=new FileIo;
@@ -23,8 +26,6 @@ ZeroFps::ZeroFps(void)
 
 	//add some nice variables =)
 	m_pkCmd->Add(&m_iState,"G_State",type_int);
-//	m_pkCmd->Add(&m_iFps,"G_Fps",type_int);
-//	m_pkCmd->Add(&m_fFrameTime,"m_fFrameTime",type_float);	
 	m_pkCmd->Add(&m_pkInput->m_fMouseSensitivity,"m_Sens",type_float);
 	m_pkCmd->Add(&m_pkRender->m_iDetail,"r_LandLod",type_int);
 	m_pkCmd->Add(&m_pkRender->m_iViewDistance,"r_ViewDistance",type_int);	

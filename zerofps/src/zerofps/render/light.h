@@ -58,10 +58,12 @@ class RENDER_API Light : public ZFObject {
 		struct Less_LightSource : public binary_function<LightSource*, LightSource*, bool> {
 			bool operator()(LightSource* x, LightSource* y) { return x->fIntensity < y->fIntensity; };
 		} Less_Light;
-		
-		struct More_LightSource : public binary_function<LightSource*, LightSource*, bool> {
+
+      struct More_LightSource : public binary_function<LightSource*, LightSource*, bool> {
 			bool operator()(LightSource* x, LightSource* y) { return x->fIntensity > y->fIntensity; };
-		} More_Light;
+      } More_Light;
+
+
 		
 		
 		Vector3 m_kCamPos;
