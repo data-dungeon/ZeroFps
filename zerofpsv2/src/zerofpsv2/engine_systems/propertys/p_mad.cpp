@@ -589,6 +589,12 @@ bool P_Mad::LineVSMesh(const Vector3& kPos,const Vector3& kDir)
 	pkVertex = (*pkCoreMesh->GetLODMesh(0)->GetVertexFramePointer())[0].GetVertexPointer();
 	pkNormal = (*pkCoreMesh->GetLODMesh(0)->GetVertexFramePointer())[0].GetNormalPointer();
 	
+	
+	//ful hack  , skips models that are to large
+	if(pkFaces->size() > 500)
+		return false;
+	
+	
 	GenerateModelMatrix();
 	
 	
