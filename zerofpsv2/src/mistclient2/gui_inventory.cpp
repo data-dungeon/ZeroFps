@@ -191,10 +191,8 @@ void InventoryDlg::OnMouseMove(bool bLeftButtonPressed, int mx, int my)
 
 			if(g_kMistClient.m_pkGui->m_bMouseRightPressed)
 			{	
-			//	m_iSelItemID = m_vkInventoryItemList[i].iItemID;
 				g_kMistClient.SendRequestContainer(m_vkInventoryItemList[i].iItemID);
 				return;
-			//	OpenContainerWnd(m_iSelItemID, 
 			}
 		}
 		else
@@ -281,7 +279,7 @@ void InventoryDlg::CreateContainerGrid(char slots_horz, char slots_vert)
 	const int MAX_WIDTH = slots_horz*33+1;
 	const int MAX_HEIGHT = slots_vert*33+1;
 
-	m_pkContainerWnd->Resize(33*slots_horz+1, 33*slots_vert+1);
+	m_pkContainerWnd->Resize(MAX_WIDTH, MAX_HEIGHT);
 
 	int bdsize = m_pkContainerWnd->GetSkin()->m_unBorderSize; 
 	
@@ -302,13 +300,14 @@ void InventoryDlg::CreateContainerGrid(char slots_horz, char slots_vert)
 		if(strName.find("CSlotBkLabel_") != string::npos)
 		{	
 			(*it)->SetPos(dx, dy, false, true);
+			(*it)->Resize(99, 99);
 
 			current_slot_x += 3;
 			dx += 99;
 
 			if(current_slot_y > slots_vert)
 			{
-				(*it)->Hide();
+				(*it)->Hide();				
 			}
 			else
 			{
