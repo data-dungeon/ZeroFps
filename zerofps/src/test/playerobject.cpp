@@ -10,7 +10,7 @@ PlayerObject::PlayerObject(HeightMap *pkMap,Input *pkInput,ZeroFps *pkFps)
 	AddProperty(new PlayerControlProperty(pkInput,pkFps,pkMap));
 	AddProperty(new GravityProperty(pkFps));
 	
-	onGround==false;
+	onGround=false;
 
 }
 

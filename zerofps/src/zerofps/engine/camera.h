@@ -5,7 +5,7 @@
 #include "../basic/basic.pkg"
 #include "engine.pkg"
 
-class Camera {
+class ENGINE_API Camera {
 	private:		
 		Matrix4 m_kCamMatrix;
 		Vector3 m_kPos;

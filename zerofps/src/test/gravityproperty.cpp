@@ -8,7 +8,7 @@ GravityProperty::GravityProperty(ZeroFps *pkFps) {
 }
 
 void GravityProperty::Update() {
-	m_pkObject->GetVel().y-=m_fGravity *m_pkFps->GetFrameTime();	
+	m_pkObject->GetVel().y-=m_fGravity;	/* *m_pkFps->GetFrameTime();*/
 
 }
 

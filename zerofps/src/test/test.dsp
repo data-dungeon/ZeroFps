@@ -90,6 +90,10 @@ SOURCE=.\ballobject.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\gravityproperty.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\normaldrawproperty.cpp
 # End Source File
 # Begin Source File
@@ -99,6 +103,10 @@ SOURCE=.\playerballobject.cpp
 # Begin Source File
 
 SOURCE=.\playercontrolproperty.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\playerobject.cpp
 # End Source File
 # Begin Source File
 

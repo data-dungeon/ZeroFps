@@ -83,7 +83,7 @@ LINK32=link.exe
 # Begin Special Build Tool
 ProjDir=.
 SOURCE="$(InputPath)"
-PostBuild_Cmds=copy                     $(ProjDir)\debug\*.lib                     ..\..\..\bin\ 
+PostBuild_Cmds=copy                      $(ProjDir)\debug\*.lib                      ..\..\..\bin\ 
 # End Special Build Tool
 
 !ENDIF 
@@ -102,6 +102,18 @@ SOURCE=.\application.cpp
 # Begin Source File
 
 SOURCE=.\audiomanager.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\camera.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\cameraproperty.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\collisionheightmap.cpp
 # End Source File
 # Begin Source File
 
@@ -126,6 +138,10 @@ SOURCE=.\console.cpp
 # Begin Source File
 
 SOURCE=..\ogl\extgl.c
+# End Source File
+# Begin Source File
+
+SOURCE=.\heightmapobject.cpp
 # End Source File
 # Begin Source File
 
@@ -177,6 +193,18 @@ SOURCE=.\audiomanager.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\camera.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\cameraproperty.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\collisionheightmap.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\collisionmanager.h
 # End Source File
 # Begin Source File
@@ -209,6 +237,10 @@ SOURCE=.\engine_x.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\heightmapobject.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\input.h
 # End Source File
 # Begin Source File
@@ -230,6 +262,10 @@ SOURCE=.\music.h
 # Begin Source File
 
 SOURCE=.\object.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\objectmanager.h
 # End Source File
 # Begin Source File
 

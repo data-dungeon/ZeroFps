@@ -135,6 +135,8 @@ void Test::OnInit(void) {
 
 
 void Test::OnIdle(void) {
+	m_pkPlayer->GetPos().print();
+
 	m_kSpotpos->x=sin(SDL_GetTicks()/1000.0)*50.0+80;
 	m_kSpotpos->z=cos(SDL_GetTicks()/1000.0)*50.0+80;
 	m_kSpotpos->y=50;
@@ -154,7 +156,7 @@ void Test::OnIdle(void) {
 			}
 	}
 
-	pkRender->DrawBillboard(pkFps->GetCam()->GetPos(),Vector3(0,70,0),Vector3(2,2,2),pkTexMan->Load("file:../data/textures/ball.tga",T_NOMIPMAPPING));
+	//pkRender->DrawBillboard(pkFps->GetCam()->GetPos(),Vector3(0,70,0),Vector3(2,2,2),pkTexMan->Load("file:../data/textures/ball.tga",T_NOMIPMAPPING));
 	pkRender->DrawWater(pkFps->GetCam()->GetPos(),Vector3(512,0,512),Vector3(0,0,0),1200,30);	
 
 	

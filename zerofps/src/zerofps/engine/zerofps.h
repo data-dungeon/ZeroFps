@@ -22,7 +22,7 @@ enum enginestates
 	state_pause
 };
 
-class ZeroFps {
+class ENGINE_API ZeroFps {
 	private:		
 		SDL_Surface* m_pkScreen;		
 		void HandleArgs(int iNrOfArgs, char** paArgs);
