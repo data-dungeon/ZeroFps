@@ -1,0 +1,13 @@
+'---------------------------------------------------------
+' Commmand icons INI file
+' Till varje bild adderas postfixet _bnd/_bnu/bnf
+' som står för "button down", "button up", "button focus".
+'---------------------------------------------------------
+
+attack=1
+build=2
+move=3
+stop=4
+guard=5
+reparir=6
+
