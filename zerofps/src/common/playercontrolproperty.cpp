@@ -85,10 +85,6 @@ void PlayerControlProperty::Update() {
 	walking=false;
 	Vector3 vel(0,m_pkObject->GetVel().y,0);	
 	
-	if(onGround && m_fGroundAngle >= 60)	{
-		Vector3  res(GroundNormal.x,-1,GroundNormal.z);		
-		m_pkObject->GetAcc()+=res*25;
-	}	
 
 	if(m_pkInput->Action(m_iActionStrafeRight)){
 		walking=true;				
@@ -134,9 +130,15 @@ void PlayerControlProperty::Update() {
 	}
 	
 	
-	if( (onGround || m_pkObject->GetPos().y < 0.5) && m_fGroundAngle < 60)
+	if( (onGround || m_pkObject->GetPos().y < 0.5) )// && m_fGroundAngle < 65)
 		m_pkObject->GetVel()=vel;	
 	
+
+	if(onGround && m_fGroundAngle >= 60)	{
+		Vector3  res(GroundNormal.x,-1,GroundNormal.z);		
+		m_pkObject->GetVel()=res * 4;
+	}	
+
 
 	if(m_pkInput->Action(m_iActionJump))
 	{

@@ -401,6 +401,7 @@ bool PhysicsEngine::Stride(PhysicProperty* pkPP)
 		kOldNewPos.z == kOldPos.z)
 		return false;
 		
+	Vector3 kForward = (kOldNewPos - kOldPos).Unit();		
 	Vector3 kBlub = (kOldNewPos - kOldPos).Unit() * fStep;
 	Vector3 kBack = -(kOldNewPos - kOldPos).Unit() * 0.05;	
 	kBlub.y =0;
@@ -413,7 +414,7 @@ bool PhysicsEngine::Stride(PhysicProperty* pkPP)
 		pkPP->m_kNewPos = kOldNewPos;
 		pkPP->GetObject()->GetPos() = kOldPos;
 		
-		cout<<"blocked up"<<endl;
+		//cout<<"blocked up"<<endl;
 		delete pkCD;
 		return false;
 	}
@@ -427,7 +428,7 @@ bool PhysicsEngine::Stride(PhysicProperty* pkPP)
 		pkPP->m_kNewPos = kOldNewPos;
 		pkPP->GetObject()->GetPos() = kOldPos;
 		
-		cout<<"blocked forward"<<endl;
+		//cout<<"blocked forward"<<endl;
 		delete pkCD;
 		return false;		
 	}
@@ -439,7 +440,23 @@ bool PhysicsEngine::Stride(PhysicProperty* pkPP)
 	pkCD = NULL;
 	if(pkCD = CheckIfColliding(pkPP))
 	{
-
+		
+	
+		float m_fGroundAngle = RadToDeg(Vector3(0,1,0).Angle(pkCD->m_kNormal1));
+		cout<<"ground"<<m_fGroundAngle<<endl;
+		
+		if(m_fGroundAngle>65){		
+			pkPP->m_kNewPos = kOldNewPos;
+			pkPP->GetObject()->GetPos() = kOldPos;
+			delete pkCD;
+			return false;
+			
+			
+			pkPP->m_kNewPos += kForward* 0.1;
+			//cout<<"taking a longer step"<<endl;
+		}
+	
+	}
 //		cout<<"old    pos:"<<kOldPos.x<<" "<<kOldPos.y<<" "<<kOldPos.z<<endl;
 //		cout<<"curent pos:"<<pkPP->GetObject()->GetPos().x<<" "<<pkPP->GetObject()->GetPos().y<<" "<<pkPP->GetObject()->GetPos().z<<endl;			
 //		cout<<"next   pos:"<<pkPP->m_kNewPos.x<<" "<<pkPP->m_kNewPos.y<<" "<<pkPP->m_kNewPos.z<<endl;						
@@ -447,10 +464,11 @@ bool PhysicsEngine::Stride(PhysicProperty* pkPP)
 //		cout<<"newpos : "<<pkCD->m_kPos2.y<<endl;
 //		cout<<"kOldPos: "<<kOldPos.y<<endl;
 		
-		cout<<"Step height: "<<(pkCD->m_kPos2.y - pkPP->m_kNewPos.y)<<endl;		
+//		cout<<"Step height: "<<(pkCD->m_kPos2.y - pkPP->m_kNewPos.y)<<endl;		
 			
-		if((pkCD->m_kPos2.y - pkPP->m_kNewPos.y)!=0)
-		{	
+//		if((pkCD->m_kPos2.y - pkPP->m_kNewPos.y)!=0)
+
+//		{	
 //			cout<<"Step height: "<<(pkCD->m_kPos2.y - pkPP->m_kNewPos.y)<<endl;
 //			pkPP->GetObject()->GetPos() = pkCD->m_kPos2;
 //			pkPP->m_kNewPos = pkCD->m_kPos2;
@@ -461,19 +479,19 @@ bool PhysicsEngine::Stride(PhysicProperty* pkPP)
 //				pkPP->m_kNewPos += diff.Unit() * fStep;
 //			}
 			
-			cout<<"upp uppp"<<endl;
-			delete pkCD;			
-			return true;		
-		}
-	}	
+//			cout<<"upp uppp"<<endl;
+//			delete pkCD;			
+//			return true;		
+//		}
+//	}	
 
 //	cout<<"walking"<<endl;
 
-	pkPP->m_kNewPos = kOldNewPos;
-	pkPP->GetObject()->GetPos() = kOldPos;
-*/		
+//	pkPP->m_kNewPos = kOldNewPos;
+//	pkPP->GetObject()->GetPos() = kOldPos;
+*/
 	delete pkCD;
-	return false;
+	return true;
 }
 
 Collision* PhysicsEngine::CheckIfColliding(PhysicProperty* pkPP)
