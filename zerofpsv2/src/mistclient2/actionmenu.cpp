@@ -318,7 +318,7 @@ void ActionMenu::OnMouseMove(bool bLeftButtonPressed, int mx, int my)
 					int iAction = atoi(strController.c_str());
 					
 					if(m_kActions[iAction] == "Pickup")
-						g_kMistClient.RequestPickup(m_iEntityID);
+						g_kMistClient.RequestPickup(m_iEntityID, -1, -1);
 					else
 						g_kMistClient.SendAction(m_iEntityID, m_kActions[iAction]);
 				}
