@@ -108,6 +108,18 @@ AIBase* P_UnitAttackAI::UpdateAI()
 				if(TempDist<m_fRange)
 				{
 					cout<<"P_UnitAttackAI : Target in Range : "<<TempDist <<"<" <<m_fRange <<endl;
+					
+					
+					//set rotation   this rotation sux
+					Vector3 rot = kDistVec.Angels();
+					rot.x =0;
+					rot.z =0;
+					rot.y = -rot.y;
+	
+					m_pkObject->SetRot(rot);		
+					m_pkObject->SetRot(rot);			
+
+					
 					if(m_pkAi)
 					{
 						UnitCommand TempCommand;
