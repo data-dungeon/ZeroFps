@@ -70,8 +70,9 @@ class ENGINE_API LevelManager : public ZFObject {
 		void Water(bool bWater);
 		void SkyBox(const char* acHor,const char* acTop,Vector3 kRotate);
 		
-		void SetMoonColor(Vector3 kColor);
+		void SetMoonColor(Vector3 kColor);		
 		void SetSunColor(Vector3 kColor);		
+		void SetAmbientColor(Vector3 kColor);
 		
 		void AddTracker(Object* kObject);
 		void RemoveTracker(Object* kObject);

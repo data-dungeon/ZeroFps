@@ -1,0 +1,3 @@
+g++ -c *.cpp -O3
+./relink
+#g++ *.cpp -o ../../bin/game -L../../bin/ -lbasic -lengine -lrender -lglut -L/usr/X11R6/lib

@@ -52,6 +52,49 @@ bool ZFBasicFS::ListDir(vector<string>* pkFiles,const char* acName,bool bOnlyMap
 	return true;
 }
 
+bool ZFBasicFS::ListDirFilter(vector<string>* pkFiles, vector<string>& pkFilters, 
+							  const char* acName, bool bIgnoreMaps)
+{  
+	DIR* kDir;
+	
+	kDir=opendir(acName);
+	if(kDir==NULL)
+		return false;
+	
+	
+	dirent* kDirEnt;
+	while( (kDirEnt=readdir(kDir)) != NULL)
+	{
+		string kNamn;
+		kNamn=kDirEnt->d_name;
+		
+		//if ignore maps is aktive..check for map and continue if its a map
+		if(bIgnoreMaps)
+		{
+			string temp= acName;
+			temp+="/";
+			temp+=kNamn;
+		
+			if(DirExist(temp.c_str()))
+				continue;
+				//pkFiles->push_back(kNamn);			
+		}
+			
+		for(unsigned int i=0; i<pkFilters.size(); i++)
+		{
+			if(strstr(kNamn.c_str(), (char*) pkFilters[i].c_str()) != NULL)
+			{
+				pkFiles->push_back(kNamn);
+				break;
+			}
+		}			
+	}
+	
+	return true;
+}
+
+
+
 bool ZFBasicFS::CreateDir(const char* acName)
 {
 	if(mkdir(acName,S_IRWXU)==-1)

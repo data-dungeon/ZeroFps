@@ -25,6 +25,7 @@ class WorldInfoProperty: public Property {
 		
 		Vector3 m_kSunColor;
 		Vector3 m_kMoonColor;
+		Vector3 m_kAmbientColor;
 		
 		WorldInfoProperty();
 		void Update();

@@ -42,6 +42,7 @@ void ZeroEdit::OnInit(void)
 	g_ZFObjSys.Register_Cmd("madview",FID_VIEWMAD,this);		
 	g_ZFObjSys.Register_Cmd("moon",FID_MOON,this);			
 	g_ZFObjSys.Register_Cmd("sun",FID_SUN,this);
+	g_ZFObjSys.Register_Cmd("ambient",FID_AMBIENT,this);	
 	
 	g_ZFObjSys.Register_Cmd("findobj",FID_FINDOBJECT,this);			
 	g_ZFObjSys.Register_Cmd("nextobj",FID_FINDOBJECT,this);			
@@ -184,6 +185,19 @@ void ZeroEdit::RunCommand(int cmdid, const CmdArgument* kCommand)
 	int iObjectID;
 
 	switch(cmdid) {
+		case FID_AMBIENT:{
+			if(kCommand->m_kSplitCommand.size() < 4) {
+				pkConsole->Printf("ambient [r][g][b]");
+				break;
+			}
+			
+			Vector3 kColor(atof(kCommand->m_kSplitCommand[1].c_str()),
+							 	atof(kCommand->m_kSplitCommand[2].c_str()),
+							 	atof(kCommand->m_kSplitCommand[3].c_str()));
+							 
+			pkLevelMan->SetAmbientColor(kColor);			
+			break;	
+		}				
 		case FID_SUN:{
 			if(kCommand->m_kSplitCommand.size() < 4) {
 				pkConsole->Printf("sun [r][g][b]");

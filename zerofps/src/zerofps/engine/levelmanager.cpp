@@ -28,6 +28,7 @@ LevelManager::LevelManager(): ZFObject("LevelManager")
 	//default light
 	m_bSun=new LightSource;	
 		m_bSun->kRot=new Vector3(1,2,1);
+		m_bSun->kDiffuse=Vector4(1,1,1,1);
 		m_bSun->kAmbient=Vector4(0.05,0.05,0.05,1);
 		m_bSun->iType=DIRECTIONAL_LIGHT;			
 		m_bSun->iPriority=10;
@@ -37,6 +38,7 @@ LevelManager::LevelManager(): ZFObject("LevelManager")
 
 	m_bMoon=new LightSource;	
 		m_bMoon->kRot=new Vector3(-1,-2,-1);	
+		m_bMoon->kDiffuse=Vector4(1,1,1,1);		
 		m_bMoon->kAmbient=Vector4(0,0,0,1);
 		m_bMoon->iType=DIRECTIONAL_LIGHT;			
 		m_bMoon->iPriority=10;
@@ -356,6 +358,7 @@ void LevelManager::SetupWorld()
 	
 	SetSunColor(m_kWIP.m_kSunColor);
 	SetMoonColor(m_kWIP.m_kMoonColor);	
+	SetAmbientColor(m_kWIP.m_kAmbientColor);		
 }
 
 void LevelManager::Fog(Vector3 kColor,float fStart,float fStop)
@@ -449,6 +452,12 @@ void LevelManager::SetSunColor(Vector3 kColor)
 {
 	m_bSun->kDiffuse=kColor;
 	m_kWIP.m_kSunColor=kColor;	
+}
+
+void LevelManager::SetAmbientColor(Vector3 kColor)
+{
+	m_bMoon->kAmbient=kColor;
+	m_kWIP.m_kAmbientColor=kColor;	
 }
 
 

@@ -40,7 +40,8 @@ void WorldInfoProperty::Save(ZFMemPackage* pkPackage)
 	pkPackage->Write((void*)&m_kSunColor,12);			
 	//mooncolor
 	pkPackage->Write((void*)&m_kMoonColor,12);			
-	
+	//sun ambient color
+	pkPackage->Write((void*)&m_kAmbientColor,12);				
 }
 
 void WorldInfoProperty::Load(ZFMemPackage* pkPackage)
@@ -68,6 +69,8 @@ void WorldInfoProperty::Load(ZFMemPackage* pkPackage)
 	pkPackage->Read((void*)&m_kSunColor,12);			
 	//mooncolor
 	pkPackage->Read((void*)&m_kMoonColor,12);			
+	//sun ambient color
+	pkPackage->Read((void*)&m_kAmbientColor,12);				
 
 }
 

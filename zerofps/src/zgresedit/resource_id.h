@@ -50,8 +50,3 @@ const int LAST_ID						= 35;		// får int vara lika med
 
 
 
-
-
-
-
-
