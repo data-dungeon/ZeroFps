@@ -82,9 +82,15 @@ class ENGINE_API ZeroFps : public ZFObject {
 		
 		SDL_Surface* m_pkScreen;		
 
+		
 		float m_fLastFrameTime;
 		int m_iWidth,m_iHeight,m_iDepth;
 		int m_iFullScreen;
+		
+		float m_fSystemUpdateFps;
+		float m_fSystemUpdateTime;
+		float m_fGameTime;
+		float m_fGameFrameTime;
 		
 		vector<string>	AppArguments;		
 		
@@ -99,6 +105,8 @@ class ENGINE_API ZeroFps : public ZFObject {
 		void Run_Server();
 		void Run_Client();
 		void Draw_EngineShell();
+		
+		void Update_System();
 
 	public:
 		/*
@@ -158,9 +166,11 @@ class ENGINE_API ZeroFps : public ZFObject {
 		void ToggleFullScreen(void);
 		void ToggleGui(void);
 		
-		inline float GetTicks(void) {return float((SDL_GetTicks()/1000.0));};
+		inline float GetTicks() {return float((SDL_GetTicks()/1000.0));};
 		inline float GetFrameTime() {return float((m_fFrameTime/1000.0));};
-		inline float GetGameTime(void) {return float((SDL_GetTicks()/1000.0));};
+		inline float GetGameTime() {return m_fGameTime;};
+		inline float GetGameFrameTime() {return m_fGameFrameTime;};
+		inline float GetLastGameUpdateTime(){return m_fSystemUpdateTime;};
 		
 		void SetCamera(Camera* pkCamera);	
 		void UpdateCamera();

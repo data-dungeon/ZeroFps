@@ -250,16 +250,13 @@ void ObjectDescriptor::LoadFromMem(ZFMemPackage* pkPackage)
 
 
 
-
-
-
-
 Object::Object() {
 	// Get Ptrs to some usefull objects.
-	m_pkObjectMan		= static_cast<ObjectManager*>(g_ZFObjSys.GetObjectPtr("ObjectManager"));
-	m_pkLevelMan		= static_cast<LevelManager*>(g_ZFObjSys.GetObjectPtr("LevelManager"));	
-	m_pkPropertyFactory = static_cast<PropertyFactory*>(g_ZFObjSys.GetObjectPtr("PropertyFactory"));	
-	
+	m_pkObjectMan			= static_cast<ObjectManager*>(g_ZFObjSys.GetObjectPtr("ObjectManager"));
+	m_pkLevelMan			= static_cast<LevelManager*>(g_ZFObjSys.GetObjectPtr("LevelManager"));	
+	m_pkPropertyFactory	= static_cast<PropertyFactory*>(g_ZFObjSys.GetObjectPtr("PropertyFactory"));	
+	m_pkFps					= static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
+		
 	ZFAssert(m_pkObjectMan, "Object::Object(): Failed to find ObjectManger");
 	ZFAssert(m_pkPropertyFactory, "Object::Object(): Failed to find PropertyFactory");
 
@@ -270,6 +267,10 @@ Object::Object() {
 	m_kRot  = Vector3::ZERO;
 	m_kVel  = Vector3::ZERO;
 	m_kAcc  = Vector3::ZERO;
+	
+	m_kOldPos  = Vector3::ZERO;
+	m_kOldRot  = Vector3::ZERO;	
+	
 	m_kName = "Object";			
 
 	m_iObjectType			=	OBJECT_TYPE_DYNAMIC;	
@@ -501,8 +502,52 @@ bool Object::Update(const char* acName){
 }
 
 
+float Object::GetI()
+{
+	float t = m_pkFps->GetGameFrameTime(); 
+	float at = m_pkFps->GetTicks() - m_pkFps->GetLastGameUpdateTime();
+	float i = at/t;				
+	if(i>1)
+		i=1;
+		
+//	cout<<"I"<<i<<endl;
+		
+	return i;	
+}
 
+Vector3 Object::GetIRot()
+{
+	float i = GetI();					
 
+	Vector3 res;	
+	
+	res.x = (m_kOldRot.x * (1-i)) + (m_kRot.x * i);
+	res.y = (m_kOldRot.y * (1-i)) + (m_kRot.y * i);	
+	res.z = (m_kOldRot.z * (1-i)) + (m_kRot.z * i);	
+		
+	return res;
+}
+
+Vector3 Object::GetIPos()
+{
+	float i = GetI();
+
+	Vector3 res;
+	res.Lerp(m_kOldPos,m_kPos,i);
+	return res;
+}
+
+void Object::SetRot(Vector3 kRot)
+{
+	m_kOldRot = m_kRot;
+	m_kRot = kRot;
+}
+
+void Object::SetPos(Vector3 kPos)
+{
+	m_kOldPos = m_kPos;
+	m_kPos = kPos;
+}
 
 
 void Object::AddChild(Object* pkObject) 

@@ -91,6 +91,10 @@ class ENGINE_API Object
 		Vector3				m_kVel;								///< Velocity of object.
 		Vector3				m_kAcc;								///< Acc of object.
 		
+		Vector3				m_kOldPos;
+		Vector3				m_kOldRot;
+		
+		
 		string				m_kName;							///< Object type name
 
 		ObjectType			m_iObjectType;						
@@ -101,6 +105,7 @@ class ENGINE_API Object
 		ObjectManager*		m_pkObjectMan;						///< Ptr to object manger.
 		LevelManager* 		m_pkLevelMan;		
 		PropertyFactory*	m_pkPropertyFactory;	
+		ZeroFps*				m_pkFps;
 
 		list<Object*>		m_akChilds;							///< List of child objects.
 		list<Property*>	m_akPropertys;							///< List of propertys of object.
@@ -155,6 +160,13 @@ class ENGINE_API Object
 		inline Vector3& GetRot(){return m_kRot;};
 		inline Vector3& GetVel(){return m_kVel;};		
 		inline Vector3& GetAcc(){return m_kAcc;};
+		
+		
+		float GetI();
+		Vector3 GetIPos();
+		Vector3 GetIRot();
+		void SetRot(Vector3 kRot);
+		void SetPos(Vector3 kPos);
 		
 		inline Vector3* GetPosPointer(){return &m_kPos;};
 		inline Vector3* GetRotPointer(){return &m_kRot;};

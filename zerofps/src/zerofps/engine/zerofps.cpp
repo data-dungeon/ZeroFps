@@ -35,9 +35,12 @@ ZeroFps::ZeroFps(void)
 	m_pkPhysEngine				= new PhysicsEngine();
 	m_pkResourceDB				= new ZFResourceDB();
 
+
 	m_iFullScreen=			0;
 	m_fFrameTime=			0;
-	m_fLastFrameTime=		SDL_GetTicks();
+	m_fLastFrameTime=		0;
+	m_fSystemUpdateFps=	25;
+	m_fSystemUpdateTime= 0;
 	m_bServerMode = 		true;
 	m_bClientMode = 		true;
 	m_bDrawDevList=		true;
@@ -219,12 +222,7 @@ void ZeroFps::Run_Server()
 	//update zones
 	//m_pkLevelMan->UpdateZones();			
 	
-	//update all normal propertys
-	m_pkObjectMan->Update(PROPERTY_TYPE_NORMAL,PROPERTY_SIDE_ALL,false);
-	m_pkObjectMan->UpdateGameMessages();
-
-	//update physicsengine
-	m_pkPhysEngine->Update();
+	Update_System();
 
 	//delete objects
 	m_pkObjectMan->UpdateDelete();
@@ -259,6 +257,34 @@ void ZeroFps::Run_Client()
 	m_pkApp->OnHud();
 }
 
+void ZeroFps::Update_System()
+{
+
+	float fATime = GetTicks() - m_fSystemUpdateTime; 	
+	int iLoops = int(m_fSystemUpdateFps * fATime);
+
+	if(iLoops<=0)
+		return;
+
+	m_fGameFrameTime = (fATime / iLoops);	
+	
+	for(int i=0;i<iLoops;i++)
+	{
+		m_fGameTime = m_fSystemUpdateTime + (i * m_fGameFrameTime);
+		
+		//update all normal propertys
+		m_pkObjectMan->Update(PROPERTY_TYPE_NORMAL,PROPERTY_SIDE_ALL,false);
+		m_pkObjectMan->UpdateGameMessages();
+
+		//update physicsengine
+		m_pkPhysEngine->Update();	
+
+		m_fSystemUpdateTime = GetTicks();
+	}
+	
+
+}
+
 void ZeroFps::Draw_EngineShell()
 {
 	// Describe Active Cam.
@@ -284,17 +310,11 @@ void ZeroFps::Draw_EngineShell()
 }
 
 void ZeroFps::MainLoop(void) {
-	int fGuldFisk;
 
 	while(m_iState!=state_exit) {
 
 		Swap();											//swap buffers n calculate fps
 		 
-		if(m_pkInput->Pressed(KEY_F11)) {
-			fGuldFisk = 0.0;
-			}
-
-
 		Run_EngineShell();
 
 		if(m_bServerMode)	Run_Server();

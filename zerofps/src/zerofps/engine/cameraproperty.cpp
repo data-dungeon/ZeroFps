@@ -12,6 +12,8 @@ CameraProperty::CameraProperty()
 	m_iType=PROPERTY_TYPE_RENDER;
 	m_iSide=PROPERTY_SIDE_CLIENT;
 
+	m_pkFps = static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
+
 	m_fFov = 90;
 	m_kDynamicIso.Set(0,0,0);
 }
@@ -22,6 +24,9 @@ void CameraProperty::Update()
 	if(!m_pkCamera)
 		return;
 
+
+	float t,at,i;
+
 	Vector3		kYawVector;
 	string		strCamName;
 
@@ -30,8 +35,11 @@ void CameraProperty::Update()
 	if(m_pkCamera!=NULL) {
 		switch(m_eCameraType) {
 			case CAM_TYPEFIRSTPERSON:
-				m_pkCamera->SetPos(m_pkObject->GetPos() + Vector3(0,0.95,0));
-				m_pkCamera->SetRot(m_pkObject->GetRot() + Vector3(0,90,0));
+//				m_pkCamera->SetPos(m_pkObject->GetPos() + Vector3(0,0.95,0));
+//				m_pkCamera->SetRot(m_pkObject->GetRot() + Vector3(0,90,0));
+				m_pkCamera->SetPos(m_pkObject->GetIPos() + Vector3(0,0.95,0));
+				m_pkCamera->SetRot(m_pkObject->GetIRot() + Vector3(0,90,0));
+				
 				strCamName = " 1P ";
 				if(madp)
 					madp->m_bIsVisible = false;

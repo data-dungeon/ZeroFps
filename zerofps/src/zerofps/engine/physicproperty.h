@@ -9,7 +9,6 @@
 using namespace std;
 
 class CollisionShape;
-//struct Collide; 
 
 class ENGINE_API PhysicProperty :public Property
 {
@@ -31,7 +30,7 @@ class ENGINE_API PhysicProperty :public Property
 		float m_fColShape;
 		bool m_bDummyValue;
 		
-//		vector<Collide> m_kCollisions;
+		Vector3 m_kOldPos;
 		Vector3 m_kNewPos;	//for the physicengine
 		Vector3 m_kNewVel;	//for the physicengine
 		Vector3 m_kNewAcc;	//for the physicengine

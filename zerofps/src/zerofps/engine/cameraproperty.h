@@ -6,7 +6,7 @@
 
 #include "objects.pkg"
 #include "camera.h"
-
+#include "zerofps.h"
 
 using namespace std;
 
@@ -27,6 +27,8 @@ class ENGINE_API CameraProperty:public Property
 	private:
 		Camera*		m_pkCamera;			// Camera to refresh.
 		CamType_e	m_eCameraType;		// How the camera will behave.
+		ZeroFps*		m_pkFps;
+		
 
 		float		m_fFov;
 		Vector3		m_kDynamicIso;

@@ -185,15 +185,19 @@ void PlayerControlProperty::Update() {
 	m_pkCameraProperty	=	static_cast<CameraProperty*>(m_pkObject->GetProperty("CameraProperty"));
 	
 	if(m_pkInput->Pressed(KEY_X) == false && !m_bLockCamera){
-		// Rotate the camera and scale with fov.		
-		m_pkObject->GetRot().x += z / (180 / m_fFov);
-		m_pkObject->GetRot().y += x / (180 / m_fFov);
-
-		if(m_pkObject->GetRot().x>90)
-			m_pkObject->GetRot().x=90;
+		// Rrotate the camera and scale with fov.		
+		Vector3 newrot = m_pkObject->GetRot();
 		
-		if(m_pkObject->GetRot().x<-90)
-			m_pkObject->GetRot().x=-90;
+		newrot.x += z / (180 / m_fFov);
+		newrot.y += x / (180 / m_fFov);
+
+		if(newrot.x>90)
+			newrot.x=90;
+		
+		if(newrot.x<-90)
+			newrot.x=-90;
+			
+		m_pkObject->SetRot(newrot);
 	}
 	else {
 		if(m_pkCameraProperty) {

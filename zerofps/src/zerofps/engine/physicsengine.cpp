@@ -22,7 +22,7 @@ void PhysicsEngine::Update()
 	m_kPropertys.clear();
 	
 	//get frame time
-	m_fFrameTime=m_pkZeroFps->GetFrameTime();
+	m_fFrameTime=m_pkZeroFps->GetGameFrameTime();
 	
 	//get all physicpropertys
 	m_pkObjectMan->GetWorldObject()->GetAllPropertys(&m_kPropertys,PROPERTY_TYPE_PHYSIC,PROPERTY_SIDE_SERVER);
@@ -101,6 +101,7 @@ void PhysicsEngine::CalcNewPos()
 	{	
 		PhysicProperty* PP = static_cast<PhysicProperty*>(*it);
 		
+		PP->m_kOldPos = PP->GetObject()->GetPos();
 		PP->m_kNewPos=GetNewPos(PP);
 		PP->m_kNewVel=GetNewVel(PP);		
 		PP->m_kNewAcc=PP->GetObject()->GetAcc();				
@@ -303,7 +304,9 @@ void PhysicsEngine::HandleCollisions()
 
 	for(list<Property*>::iterator it=m_kPropertys.begin();it!=m_kPropertys.end();it++) 
 	{	
-		(*it)->GetObject()->GetPos()=static_cast<PhysicProperty*>(*it)->m_kNewPos;
+		(*it)->GetObject()->GetPos() = static_cast<PhysicProperty*>(*it)->m_kOldPos;
+		(*it)->GetObject()->SetPos(static_cast<PhysicProperty*>(*it)->m_kNewPos);	
+//		(*it)->GetObject()->GetPos()=static_cast<PhysicProperty*>(*it)->m_kNewPos;
 		(*it)->GetObject()->GetVel()=static_cast<PhysicProperty*>(*it)->m_kNewVel;
 		(*it)->GetObject()->GetAcc().Set(0,0,0);		
 	}
