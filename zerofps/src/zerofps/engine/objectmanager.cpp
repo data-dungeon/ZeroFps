@@ -731,6 +731,24 @@ void ObjectManager::TESTVIM_LoadArcheTypes(char* szFileName)
 		}
 }
 
+void ObjectManager::GetArchObjects(vector<string>* pkFiles, string strParentName)
+{
+	list<ObjectArcheType*>::iterator it;
+
+	if(strParentName == "") {
+		for(it=m_akArcheTypes.begin();it!=m_akArcheTypes.end();it++) {
+			pkFiles->push_back((*it)->m_strName);
+			}
+		}
+	else {
+		for(it=m_akArcheTypes.begin();it!=m_akArcheTypes.end();it++) {
+			if((*it)->m_strParentName == strParentName)
+				pkFiles->push_back((*it)->m_strName);
+			}
+		}
+}
+
+
 void ObjectManager::GetPropertys(int iType,int iSide)
 {
 	m_akPropertys.clear();
@@ -743,6 +761,7 @@ void ObjectManager::GetPropertys(int iType,int iSide)
 */
 //	cout<<"TOTAL propertys: "<<m_akPropertys.size()<<endl;
 }
+
 
 
 

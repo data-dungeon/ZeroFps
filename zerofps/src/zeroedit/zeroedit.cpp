@@ -141,12 +141,19 @@ void ZeroEdit::OnInit(void)
 
 /*
 	pkTexMan->BindTexture("grass2.tga",0);			
+<<<<<<< zeroedit.cpp
+	for(int x=0;x<100;x++)
+		for(int y=0;y<100;y++)
+			pkTexMan->PsetRGBA(x,y,255,255,255,255);
+	pkTexMan->SwapTexture();				
+=======
 	
 	for(int x=0;x<100;x++)
 		for(int y=0;y<100;y++)
 			pkTexMan->PsetRGB(x,y,255,255,255);
 			
 	pkTexMan->SwapTexture();					
+>>>>>>> 1.150
 	pkTexMan->SaveTexture("nisse.tga",0);
 */
 }

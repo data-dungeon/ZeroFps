@@ -395,7 +395,8 @@ void Mad_Modell::Draw_All(int iDrawFlags)
 	glPushAttrib(GL_FOG_BIT|GL_LIGHTING_BIT | GL_TEXTURE_BIT | GL_COLOR_BUFFER_BIT );
 
 	glColor3f(1,1,1);
-//	glEnable(GL_LIGHTING);
+	if(iDrawFlags & MAD_DRAW_NOLIGHT)
+		glDisable(GL_LIGHTING);
 	glEnable(GL_TEXTURE_2D );
 
 	int iNumOfMesh = m_kActiveMesh.size();	//GetNumOfMesh();

@@ -45,6 +45,11 @@ class object
 				set ModelProperty Radius	3
 				set ModelProperty co-sphere-radius 3
 
+		class tree
+			parenty	physics
+			set MadProperty m_kMadFile /data/mad/tree.mad
+			set MadProperty m_fScale 1.8
+			
 				
 
 	class weapons

@@ -103,6 +103,7 @@ class ENGINE_API ObjectManager : public ZFObject{
 		void GetAllObjects(list<Object*> *pakObjects);
 		Object* GetObject(const char* acName);							///< Get a ptr to object by name
 		Object*	GetObjectByNetWorkID(int iNetID);					///< Get a ptr to object by networkID
+		void	GetArchObjects(vector<string>* pkFiles, string strParentName);
 
 		// NetWork
 		void UpdateState(NetPacket* pkNetPacket);						//Updates objects.

@@ -2,6 +2,9 @@
 #include "mdl.h"
 #include "qpack.h"
 
+#define	MD1TOMAD_SCALE 0.02
+float		g_fMd1ToMadScale;
+
 float MdlNormals[] = {
 	-0.525731, 0.000000, 0.850651,
 	 -0.442863, 0.238856, 0.864188 , 
@@ -340,6 +343,8 @@ extern void SplitAnimNumAndFrameNum(int AnimAndFrame, int& Anim, int& Frame);
 
 bool ModellMD1::Export(MadExporter* mad, const char* filename)
 {
+	g_fMd1ToMadScale = MD1TOMAD_SCALE;
+
 	unsigned int i;
 	Mad_CoreMesh* pkMesh = mad->GetMesh("mesh");
 
@@ -352,15 +357,18 @@ bool ModellMD1::Export(MadExporter* mad, const char* filename)
 	pkMesh->kHead.iNumOfSubMeshes	= 1;
 	pkMesh->kHead.iNumOfAnimation	= 1;
 
-	strcpy(pkMesh->akTextures[0].ucTextureName, "mdlskin");
+	pkMesh->ResizeTextures(pkMesh->kHead.iNumOfTextures);
+
+	strcpy(pkMesh->GetTexture2()[0].ucTextureName, "mdlskin");
 	if(strcmp(filename, "none") != 0)
-		strcpy(pkMesh->akTextures[0].ucTextureName, filename);
+		strcpy(pkMesh->GetTexture2()[0].ucTextureName, filename);
 
 	// Save all textures
 	char FullTextureName[256];
 
 	for(i=0; i<Skins.size(); i++) {
-		sprintf(FullTextureName, "%s.tga",pkMesh->akTextures[i].ucTextureName);
+		sprintf(FullTextureName, "%s.tga",pkMesh->GetTexture2()[i].ucTextureName);
+		Skins[i].flip(false, true);	
 		Skins[i].save(FullTextureName,false);
 		}
 
@@ -426,11 +434,13 @@ bool ModellMD1::Export(MadExporter* mad, const char* filename)
 		kKeyFrame.Clear();
 		kKeyFrame.fFrameTime = 0.1;
 		kKeyFrame.iVertexFrame = f;
-		pkAnim->KeyFrame.push_back(kKeyFrame);
+		pkAnim->PushBack(kKeyFrame);
+//		pkAnim->KeyFrame.push_back(kKeyFrame);
 
 
-		akVertexFrames[f].akVertex.resize(pkMesh->kHead.iNumOfVertex);
-		akVertexFrames[f].akNormal.resize(pkMesh->kHead.iNumOfVertex);
+//		akVertexFrames[f].akVertex.resize(pkMesh->kHead.iNumOfVertex);
+//		akVertexFrames[f].akNormal.resize(pkMesh->kHead.iNumOfVertex);
+		akVertexFrames[f].Resize(pkMesh->kHead.iNumOfVertex);
 
 		for(int v=0; v < pkMesh->kHead.iNumOfVertex; v++) {
 			vert = &frames[f].vertex[v];
@@ -439,32 +449,35 @@ bool ModellMD1::Export(MadExporter* mad, const char* filename)
 			y = (float) (head.scale.y * vert->packedposition[1]) + head.scale_origin.y;
 			z = (float) (head.scale.z * vert->packedposition[2]) + head.scale_origin.z;
 
-			akVertexFrames[f].akVertex[v].x = y;
-			akVertexFrames[f].akVertex[v].y = z;
-			akVertexFrames[f].akVertex[v].z = x;
+			akVertexFrames[f].GetVertexPointer2()[v].x = y;
+			akVertexFrames[f].GetVertexPointer2()[v].y = z;
+			akVertexFrames[f].GetVertexPointer2()[v].z = x;
 	
 			Vector3* pkNormals = (Vector3*) MdlNormals;
-			akVertexFrames[f].akNormal[v] = pkNormals[vert->lightnormalindex];
+			akVertexFrames[f].GetNormalPointer2()[v] = pkNormals[vert->lightnormalindex];
 			//akVertexFrames[f].akNormal[v] = akVertexFrames[f].akVertex[v];
 			//akVertexFrames[f].akNormal[v].Normalize();
 			}
 	}
 
-	pkMesh->akFrames.resize(pkMesh->kHead.iNumOfFrames);
+/*	pkMesh->akFrames.resize(pkMesh->kHead.iNumOfFrames);
 	pkMesh->akFaces.resize(pkMesh->kHead.iNumOfFaces);
-	pkMesh->akSubMeshes.resize(pkMesh->kHead.iNumOfSubMeshes);
+	pkMesh->akSubMeshes.resize(pkMesh->kHead.iNumOfSubMeshes);*/
+	pkMesh->ResizeFrames(pkMesh->kHead.iNumOfFrames);
+	pkMesh->ResizeFaces(pkMesh->kHead.iNumOfFaces);
+	pkMesh->ResizeSubMesh(pkMesh->kHead.iNumOfSubMeshes);
 	
 	// Copy Submeshes.
-	pkMesh->akSubMeshes[0].iFirstTriangle	= 0;
-	pkMesh->akSubMeshes[0].iTextureIndex	= 0;
-	pkMesh->akSubMeshes[0].iNumOfTriangles	= pkMesh->kHead.iNumOfFaces;
+	pkMesh->GetSubMeshPointer()[0].iFirstTriangle	= 0;
+	pkMesh->GetSubMeshPointer()[0].iTextureIndex	= 0;
+	pkMesh->GetSubMeshPointer()[0].iNumOfTriangles	= pkMesh->kHead.iNumOfFaces;
 
 	// Copy Faces
 	for(i=0; i<pkMesh->kHead.iNumOfFaces; i++) 
 	{
-		pkMesh->akFaces[i].iIndex[0] = akPmdTriangles[i].vertex_index[0];
-		pkMesh->akFaces[i].iIndex[1] = akPmdTriangles[i].vertex_index[1];
-		pkMesh->akFaces[i].iIndex[2] = akPmdTriangles[i].vertex_index[2];
+		pkMesh->GetFacesPointer2()[i].iIndex[0] = akPmdTriangles[i].vertex_index[0];
+		pkMesh->GetFacesPointer2()[i].iIndex[1] = akPmdTriangles[i].vertex_index[1];
+		pkMesh->GetFacesPointer2()[i].iIndex[2] = akPmdTriangles[i].vertex_index[2];
 	}
 
 
@@ -483,7 +496,7 @@ bool ModellMD1::Export(MadExporter* mad, const char* filename)
 	{
 		for(int v = 0; v<3; v++)
 		{
-			int iActiveIndex = pkMesh->akFaces[i].iIndex[v];
+			int iActiveIndex = pkMesh->GetFacesPointer2()[i].iIndex[v];
 			kNyTextureCoo.s = akTextureCoo[akPmdTriangles[i].texcoo_index[v]].s;
 			kNyTextureCoo.t = akTextureCoo[akPmdTriangles[i].texcoo_index[v]].t;
 
@@ -508,7 +521,7 @@ bool ModellMD1::Export(MadExporter* mad, const char* filename)
 					kTextureCoo.push_back(kNyTextureCoo);
 					// Insert ny vertex vid slutet av listan. Sätt index till orginal vertex index.
 					kVertexBufferIndex.push_back(iActiveIndex);
-					pkMesh->akFaces[i].iIndex[v] = kVertexBufferIndex.size() - 1;
+					pkMesh->GetFacesPointer2()[i].iIndex[v] = kVertexBufferIndex.size() - 1;
 				}
 			}
 		}
@@ -526,29 +539,63 @@ bool ModellMD1::Export(MadExporter* mad, const char* filename)
 	// Cope Vertex Frame Data.
 	for(f=0; f<pkMesh->kHead.iNumOfFrames; f++) {
 		// Create memory
-		pkMesh->akFrames[f].akVertex.resize(iNewNumOfVertex);
-		pkMesh->akFrames[f].akNormal.resize(iNewNumOfVertex);
+		pkMesh->GetFramesPointer2()[f].Resize(iNewNumOfVertex);
+		//pkMesh->GetFramesPointer2()[f].akNormal.resize(iNewNumOfVertex);
 
 		for(int v=0; v < iNewNumOfVertex; v++) {
 
-			pkMesh->akFrames[f].akVertex[v] = akVertexFrames[f].akVertex[kVertexBufferIndex[v]];
+			pkMesh->GetFramesPointer2()[f].GetVertexPointer2()[v] = akVertexFrames[f].GetVertexPointer2()[kVertexBufferIndex[v]] * g_fMd1ToMadScale;
 			/*pkMesh->akFrames[f].akVertex[v].x = akVertexFrames[f].akVertex[kVertexBufferIndex[v]].x;
 			pkMesh->akFrames[f].akVertex[v].y = akVertexFrames[f].akVertex[kVertexBufferIndex[v]].y;
 			pkMesh->akFrames[f].akVertex[v].z = akVertexFrames[f].akVertex[kVertexBufferIndex[v]].z;*/
-			pkMesh->akFrames[f].akNormal[v] = akVertexFrames[f].akNormal[kVertexBufferIndex[v]];
+			pkMesh->GetFramesPointer2()[f].GetNormalPointer2()[v] = akVertexFrames[f].GetNormalPointer2()[kVertexBufferIndex[v]];
 			}
 	}
 
 
 //	mad->akTextureCoo = akTextureCoo;
-	pkMesh->akTextureCoo.resize(pkMesh->kHead.iNumOfVertex);
+	pkMesh->ResizeTexturesCoo(pkMesh->kHead.iNumOfVertex);
 	for(i = 0; i<iNewNumOfVertex;i++)
 	{
-		pkMesh->akTextureCoo[i].s = kTextureCoo[i].s;
-		pkMesh->akTextureCoo[i].t = kTextureCoo[i].t;
+		pkMesh->GetTexCooPointer2()[i].s = kTextureCoo[i].s;
+		pkMesh->GetTexCooPointer2()[i].t = kTextureCoo[i].t;
 	}
 
 	pkMesh->CreateRigidBoneConnections();
+	pkMesh->FlipFaces();
+	pkMesh->CreateVertexNormals();
+
+	// Add Bone
+	vector<Mad_CoreBone>	kSkelleton;
+	Mad_CoreBone NewBone;
+	strcpy(NewBone.m_acName,"Base");
+	NewBone.m_iParent =	-1;
+	NewBone.m_kPosition.x = 0;
+	NewBone.m_kPosition.y = 0;
+	NewBone.m_kPosition.z = 0;
+	NewBone.m_kRotation.x = 0;
+	NewBone.m_kRotation.y = 0;
+	NewBone.m_kRotation.z = 0;
+	kSkelleton.push_back(NewBone);
+	mad->SetSkelleton(kSkelleton);
+
+	// Add Static Anim
+	vector<Mad_CoreBoneAnimation>		kAnim;
+
+	Mad_CoreBoneKey						kNewBoneKey;
+	Mad_CoreBoneKeyFrame					kNewBoneKeyFrame;
+	Mad_CoreBoneAnimation				kNewBoneAnim;
+
+	kNewBoneKey.Clear();
+	kNewBoneKeyFrame.Clear();
+	kNewBoneAnim.Clear();
+
+	kNewBoneKey.m_kPosition.Set(0,0,0);
+	kNewBoneKey.m_kRotation.Set(0,0,0);
+	kNewBoneKeyFrame.PushBack(kNewBoneKey);
+	kNewBoneAnim.PushBack(kNewBoneKeyFrame);
+	kAnim.push_back(kNewBoneAnim);
+	mad->SetAnimation(kAnim);
 
 /*	Mad_Animation* pkAnim;
 	Mad_KeyFrame kKeyFrame;

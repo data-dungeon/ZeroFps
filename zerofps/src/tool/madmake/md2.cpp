@@ -2,7 +2,9 @@
 #include "mdl.h"
 #include "qpack.h"
 
-int g_fMd2ToMadScale;
+#define MD2TOMAD_SCALE 0.02
+
+float g_fMd2ToMadScale;
 
 
 float Md2Normals[] = {
@@ -382,7 +384,7 @@ bool ModellMD2::Export(pmd_c* pmd)
 
 bool ModellMD2::Export(MadExporter* mad, const char* filename)
 {
-	g_fMd2ToMadScale = 0.1;
+	g_fMd2ToMadScale = MD2TOMAD_SCALE;
 	
 	int i,f;
 
@@ -408,6 +410,7 @@ bool ModellMD2::Export(MadExporter* mad, const char* filename)
 
 	for(i=0; i<pkMesh->kHead.iNumOfTextures; i++) {
 		sprintf(NewSkinName,"%s%d", ucSkinName, i);
+		cout << "NewSkinName: " << NewSkinName << endl;
 		strcpy(pkMesh->GetTexture2()[i].ucTextureName, NewSkinName);
 		if(i < m_kHead.num_skins)
 			g_PakFileSystem.Unpack(g_skins[i], NewSkinName);
@@ -588,10 +591,11 @@ bool ModellMD2::Export(MadExporter* mad, const char* filename)
 //		pkMesh->akFrames[f].akVertex.resize(iNewNumOfVertex);
 //		pkMesh->akFrames[f].akNormal.resize(iNewNumOfVertex);
 
+		cout << "Md2Scale: " <<  g_fMd2ToMadScale << endl;
 		for(int v=0; v < iNewNumOfVertex; v++) {
-			pkMesh->GetFramesPointer2()[f].GetVertexPointer2()[v].x = akVertexFrames[f].GetVertexPointer2()[kVertexBufferIndex[v]].x * 0.1;
-			pkMesh->GetFramesPointer2()[f].GetVertexPointer2()[v].y = akVertexFrames[f].GetVertexPointer2()[kVertexBufferIndex[v]].y * 0.1;
-			pkMesh->GetFramesPointer2()[f].GetVertexPointer2()[v].z = akVertexFrames[f].GetVertexPointer2()[kVertexBufferIndex[v]].z * 0.1;
+			pkMesh->GetFramesPointer2()[f].GetVertexPointer2()[v].x = akVertexFrames[f].GetVertexPointer2()[kVertexBufferIndex[v]].x * g_fMd2ToMadScale;
+			pkMesh->GetFramesPointer2()[f].GetVertexPointer2()[v].y = akVertexFrames[f].GetVertexPointer2()[kVertexBufferIndex[v]].y * g_fMd2ToMadScale;
+			pkMesh->GetFramesPointer2()[f].GetVertexPointer2()[v].z = akVertexFrames[f].GetVertexPointer2()[kVertexBufferIndex[v]].z * g_fMd2ToMadScale;
 			pkMesh->GetFramesPointer2()[f].GetNormalPointer2()[v] = akVertexFrames[f].GetNormalPointer2()[kVertexBufferIndex[v]];
 			}
 	}
