@@ -85,29 +85,29 @@ ZeroEd::ZeroEd(char* aName,int iWidth,int iHeight,int iDepth)
 	// Register Variables
 	
 	// Register Commands
-	Register_Cmd("new",FID_NEW);		
-	Register_Cmd("load",FID_LOAD);		
-	Register_Cmd("save",FID_SAVE);
-	Register_Cmd("saveas",FID_SAVEAS);
-	Register_Cmd("users",FID_USERS);		
-	Register_Cmd("lo",FID_LOCALORDER);		
-	Register_Cmd("lightmode", FID_LIGHTMODE);		
-	Register_Cmd("editsun", FID_EDITSUN);		
-	Register_Cmd("setcam", FID_SETCAM);		
-	Register_Cmd("camlink", FID_CAMLINK);
-	Register_Cmd("camsolo", FID_CAMSOLO);
-	Register_Cmd("camgrid", FID_CAMGRID);
-	Register_Cmd("selnone", FID_SELNONE);
-	Register_Cmd("gridsize", FID_GRIDSIZE);
-	Register_Cmd("gridsnap", FID_GRIDSNAP);
-	Register_Cmd("camfollow", FID_CAMFOLLOW);
-	Register_Cmd("camnofollow", FID_CAMNOFOLLOW);
-	Register_Cmd("delsel", FID_DELETE);
-	Register_Cmd("clone",	FID_CLONE);
-	Register_Cmd("cut",		FID_CUT);
-	Register_Cmd("copy",		FID_COPY);
-	Register_Cmd("paste",	FID_PASTE);
-	Register_Cmd("jiddra",	FID_TEST_JIDDRA);
+	Register_Cmd("new",			FID_NEW);		
+	Register_Cmd("load",			FID_LOAD);		
+	Register_Cmd("save",			FID_SAVE);
+	Register_Cmd("saveas",		FID_SAVEAS);
+	Register_Cmd("users",		FID_USERS);		
+	Register_Cmd("lo",			FID_LOCALORDER);		
+	Register_Cmd("lightmode", 	FID_LIGHTMODE);		
+	Register_Cmd("editsun", 	FID_EDITSUN);		
+	Register_Cmd("setcam", 		FID_SETCAM);		
+	Register_Cmd("camlink", 	FID_CAMLINK);
+	Register_Cmd("camsolo", 	FID_CAMSOLO);
+	Register_Cmd("camgrid", 	FID_CAMGRID);
+	Register_Cmd("selnone", 	FID_SELNONE);
+	Register_Cmd("gridsize", 	FID_GRIDSIZE);
+	Register_Cmd("gridsnap", 	FID_GRIDSNAP);
+	Register_Cmd("camfollow",	FID_CAMFOLLOW);
+	Register_Cmd("camnofollow",FID_CAMNOFOLLOW);
+	Register_Cmd("delsel", 		FID_DELETE);
+	Register_Cmd("clone",		FID_CLONE);
+	Register_Cmd("cut",			FID_CUT);
+	Register_Cmd("copy",			FID_COPY);
+	Register_Cmd("paste",		FID_PASTE);
+	Register_Cmd("jiddra",		FID_TEST_JIDDRA);
 
 	Register_Cmd("snapsave",	FID_SNAPSAVE);
 	Register_Cmd("snapload",	FID_SNAPLOAD);
