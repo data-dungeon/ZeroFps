@@ -7,6 +7,8 @@
 #include <cmath>
 #include <list>
 
+bool GUIPROC(ZGuiWnd* win, unsigned int msg, int numparms, void *params );
+
 /**	\brief	Daz DaaaaarkMetropolis
 		\ingroup DarkMetropolis
 */
@@ -47,5 +49,7 @@ class DarkMetropolis : public Application, public ZGuiApp
 		void OnSelectCB(int ListBoxID, int iItemIndex, ZGuiWnd *pkMain);
 		void OnKeyPress(int iKey, ZGuiWnd *pkWnd);
 };
+
+extern DarkMetropolis g_kDM;
 
 #endif

@@ -124,7 +124,10 @@
 			Filter="cpp;c;cxx;def;odl;idl;hpj;bat;asm;asmx"
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}">
 			<File
-				RelativePath=".\dark_metropolis.cpp">
+				RelativePath=".\dark_metropolis_gui.cpp">
+			</File>
+			<File
+				RelativePath=".\dark_metropolis_main.cpp">
 			</File>
 		</Filter>
 		<Filter
