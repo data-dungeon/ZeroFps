@@ -924,16 +924,16 @@ void MistServer::OnNetworkMessage(NetPacket *PkNetMessage)
 
 		case MLNM_CS_ANIM:
 		{
-			int iTauntID;
-			PkNetMessage->Read(iTauntID);
+			int iEmoteID;
+			PkNetMessage->Read(iEmoteID);
 
 			if(PlayerData* pkData = m_pkPlayerDB->GetPlayerData(PkNetMessage->m_iClientID))
 			{
 				if(Entity* pkCharacter = m_pkEntityManager->GetEntityByID(pkData->m_iCharacterID))
 				{
-					if(P_CharacterProperty* pkCC = (P_CharacterProperty*)pkCharacter->GetProperty("P_CharacterProperty"))
+					if(P_CharacterControl* pkCC = (P_CharacterControl*)pkCharacter->GetProperty("P_CharacterControl"))
 					{
-						pkCC->DoTaunt(iTauntID);
+						pkCC->DoEmote(iEmoteID);
 					}
 				}
 			}

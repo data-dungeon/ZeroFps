@@ -39,7 +39,7 @@ clean_apps:
 	cd mistserver/; $(MAKE) clean
 	cd mistclient2/; $(MAKE) clean
 	cd tools/tool/madview/; $(MAKE) clean	
-	cd stopemup/; $(MAKE) $@
+	cd stopemup/; $(MAKE) clean
 
 		
 	

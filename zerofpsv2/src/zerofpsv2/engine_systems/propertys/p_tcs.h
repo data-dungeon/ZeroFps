@@ -93,6 +93,7 @@ class ENGINE_SYSTEMS_API P_Tcs : public Property
       bool		m_bOnGround;		
 		bool		m_bTempStatic;				
 		Vector3	m_kLastPos;				//used to determin if a body is resting
+		float		m_fMoveDistance;		//total movement since last rest find call
 		
 		Vector3	m_kLinearVelocity;
 		Vector3	m_kRotVelocity;

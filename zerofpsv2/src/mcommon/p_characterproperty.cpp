@@ -55,24 +55,6 @@ P_CharacterProperty::P_CharacterProperty()
 	m_iRunSoundID 			= 	-1;
 	m_iSwimSoundID 		= 	-1;
 	
-	//animations
-	m_strWalkForward		=	"walk_foward";
-	m_strWalkBackward		=	"walk_backward";
-	m_strWalkLeft			=	"run_left";
-	m_strWalkRight			=	"run_right";
-	m_strRunForward		=	"run_foward";
-	m_strRunBackward		=	"run_backward";
-	m_strRunLeft			=	"run_left";
-	m_strRunRight			=	"run_right";
-	m_strSwimForward		=	"swim_f";
-	m_strSwimBackward		=	"swim_b";
-	m_strSwimLeft			=	"swim_l";
-	m_strSwimRight			=	"swim_r";
-	m_strJump				=	"jump";
-	m_strIdleStanding		=	"idle";
-	m_strIdleSitting		=	"riding";
-	m_strIdleSwimming		=	"idle";
-	m_strTaunt				=	"taunt";	
 	
 	//setup material
 	m_pkTextMaterial = new ZMaterial;
@@ -98,11 +80,8 @@ void P_CharacterProperty::Init()
 
 vector<PropertyValues> P_CharacterProperty::GetPropertyValues()
 {
-	vector<PropertyValues> kReturn(1);
-		
-	kReturn[0].kValueName = "RunForwardAnim";
-	kReturn[0].iValueType = VALUETYPE_STRING;
-	kReturn[0].pkValue    = (void*)&m_strRunForward;
+	vector<PropertyValues> kReturn(0);
+
 
 	return kReturn;	
 }
@@ -411,7 +390,7 @@ void P_CharacterProperty::Update()
 				SetupContainers();
 			}
 		
-			UpdateAnimation();
+			//UpdateAnimation();
 		}
 			
 		//CLIENT
@@ -450,108 +429,6 @@ void P_CharacterProperty::AddChatMsg(const string& strChatMsg)
 	m_fChatTime = m_pkZeroFps->GetTicks();	
 }
 
-void P_CharacterProperty::DoTaunt(int iTauntID)
-{
-	if(iTauntID <0 || iTauntID > 99)
-		return;
-	
-	char nr[4];
-	IntToChar(nr,iTauntID);	
-	
-	if(P_Mad* pkMad = (P_Mad*)GetEntity()->GetProperty("P_Mad"))
-	{
-		if(pkMad->GetCurrentAnimationName() == m_strIdleStanding)
-		{
-			pkMad->SetAnimation((m_strTaunt + nr).c_str(), 0);
-			pkMad->SetNextAnimation(m_strIdleStanding.c_str());	
-		}
-	}
-}
-
-void P_CharacterProperty::UpdateAnimation()
-{
-	if(P_Mad* pkMad = (P_Mad*)GetEntity()->GetProperty("P_Mad"))
-	{
-		if(P_CharacterControl* pkCC = (P_CharacterControl*)GetEntity()->GetProperty("P_CharacterControl"))
-		{		
-			//jumping
-			if(pkCC->GetCharacterState(eJUMPING))
-			{							
-				if(pkMad->GetCurrentAnimationName() != m_strJump)
-				{
-					pkMad->SetAnimation(m_strJump.c_str(), 0);
-					pkMad->SetNextAnimation(MAD_NOLOOP);
-				}			
-			}
-			//RUNNING
-			else if(pkCC->GetCharacterState(eRUNNING))
-			{
-				switch(pkCC->GetMovedirection())
-				{
-					case eMOVE_FORWARD:
-						if(pkMad->GetCurrentAnimationName() != m_strRunForward)
-							pkMad->SetAnimation(m_strRunForward.c_str(), 0);
-						break;
-					case eMOVE_BACKWARD:
-						if(pkMad->GetCurrentAnimationName() != m_strRunBackward)
-							pkMad->SetAnimation(m_strRunBackward.c_str(), 0);
-						break;
-					case eMOVE_LEFT:
-						if(pkMad->GetCurrentAnimationName() != m_strRunLeft)
-							pkMad->SetAnimation(m_strRunLeft.c_str(), 0);
-						break;
-					case eMOVE_RIGHT:
-						if(pkMad->GetCurrentAnimationName() != m_strRunRight)
-							pkMad->SetAnimation(m_strRunRight.c_str(), 0);
-						break;										
-				}			
-			}
-			//WALKING
-			else if(pkCC->GetCharacterState(eWALKING))
-			{
-				switch(pkCC->GetMovedirection())
-				{
-					case eMOVE_FORWARD:
-						if(pkMad->GetCurrentAnimationName() != m_strWalkForward)
-							pkMad->SetAnimation(m_strWalkForward.c_str(), 0);
-						break;
-					case eMOVE_BACKWARD:
-						if(pkMad->GetCurrentAnimationName() != m_strWalkBackward)
-							pkMad->SetAnimation(m_strWalkBackward.c_str(), 0);
-						break;
-					case eMOVE_LEFT:
-						if(pkMad->GetCurrentAnimationName() != m_strWalkLeft)
-							pkMad->SetAnimation(m_strWalkLeft.c_str(), 0);
-						break;
-					case eMOVE_RIGHT:
-						if(pkMad->GetCurrentAnimationName() != m_strWalkRight)
-							pkMad->SetAnimation(m_strWalkRight.c_str(), 0);
-						break;										
-				}						
-			}
-			//swiming
-			else if(pkCC->GetCharacterState(eSWIMMING))
-			{
-				if(pkMad->GetCurrentAnimationName() != m_strIdleSwimming)
-					pkMad->SetAnimation(m_strIdleSwimming.c_str(), 0);
-				
-			}
-			//sitting
-			else if(pkCC->GetCharacterState(eSITTING))
-			{
-				if(pkMad->GetCurrentAnimationName() != m_strIdleSitting)
-					pkMad->SetAnimation(m_strIdleSitting.c_str(), 0);			
-			}
-			//idle standing
-			else
-			{
-				if( pkMad->GetCurrentAnimationName() != m_strIdleStanding
-				 && pkMad->GetCurrentAnimationName().compare(0,5,m_strTaunt) )
-					pkMad->SetAnimation(m_strIdleStanding.c_str(), 0);				
-			}		
-		}
-	}
-}
 
 void P_CharacterProperty::PlayCharacterMovementSounds()
 {

@@ -53,6 +53,8 @@ P_Tcs::P_Tcs()
 	m_bRemoveOnSleep =	false;
 	m_bNoColRespons =		false;
 	
+	m_fMoveDistance = 	0;
+	
 	ResetGroupFlags();
 	ResetWalkGroupFlags();
 

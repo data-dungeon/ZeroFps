@@ -205,12 +205,13 @@ void Tcs::Update(float fAlphaTime)
 
 	
 	//check for resting bodys
-	static float fLastRestFind = 0;	
-	if(m_pkZeroFps->GetTicks() - fLastRestFind > m_fSleepTime)
-	{
-		fLastRestFind = m_pkZeroFps->GetTicks();
-		FindRestingBodys();
-	}
+// 	static float fLastRestFind = 0;	
+// 	if(m_pkZeroFps->GetTicks() - fLastRestFind > m_fSleepTime)
+// 	{
+// 		fLastRestFind = m_pkZeroFps->GetTicks();
+// 		FindRestingBodys();
+// 	}
+	FindRestingBodys();
 		
 	//synd all entitys to bodys
 	SyncEntitys();
@@ -514,7 +515,37 @@ void Tcs::FindRestingBodys()
 		if(m_kBodys[i]->m_bStatic ||  m_kBodys[i]->m_bSleeping)
 			continue;
 	
-		if(m_kBodys[i]->m_kNewPos.DistanceTo(m_kBodys[i]->m_kLastPos) <= fRestMaxDist)
+		//update bodys total movement
+		m_kBodys[i]->m_fMoveDistance += m_kBodys[i]->m_kNewPos.DistanceTo(m_kBodys[i]->m_kLastPos);
+		m_kBodys[i]->m_kLastPos = m_kBodys[i]->m_kNewPos;
+			
+		
+		static float fLastRestFind = 0;	
+		if(m_pkZeroFps->GetTicks() - fLastRestFind > m_fSleepTime)
+		{
+			fLastRestFind = m_pkZeroFps->GetTicks();
+			
+			
+			//check if object shuld sleep
+			if(m_kBodys[i]->m_fMoveDistance <= fRestMaxDist)
+			{			
+			
+				m_kBodys[i]->m_fMoveDistance = 0;
+				m_kBodys[i]->Sleep();
+			
+				if(m_kBodys[i]->m_bDisableOnSleep)
+				{
+					m_kBodys[i]->Disable();
+					m_kBodys[i]->GetEntity()->DeleteProperty("P_Tcs");;
+				}
+			
+			}	
+		}
+		
+				
+		
+			
+/*		if(m_kBodys[i]->m_kNewPos.DistanceTo(m_kBodys[i]->m_kLastPos) <= fRestMaxDist)
 		{
 			m_kBodys[i]->m_kLastPos = m_kBodys[i]->m_kNewPos;
 		
@@ -528,7 +559,8 @@ void Tcs::FindRestingBodys()
 		}
 			
 		//update last pos			
-		m_kBodys[i]->m_kLastPos = m_kBodys[i]->m_kNewPos;
+		m_kBodys[i]->m_kLastPos = m_kBodys[i]->m_kNewPos;*/
+		
 	}
 }
 

@@ -41,6 +41,8 @@ enum CharacterMoveDirection
 class MCOMMON_API P_CharacterControl: public Property
 {
 	private:
+	
+		//control stuff
 		bitset<6>	m_kControls;
 		bitset<CHARACTER_STATES>	m_kCharacterStates;			//sent to client
 		int								m_iDirection;
@@ -56,6 +58,31 @@ class MCOMMON_API P_CharacterControl: public Property
 		float			m_fSoundWalkDelay;
 		float			m_fSoundRunDelay;
 
+		
+		//animation
+		
+		//basic animations
+		string	m_strWalkForward;
+		string	m_strWalkBackward;
+		string	m_strWalkLeft;
+		string	m_strWalkRight;
+		string	m_strRunForward;
+		string	m_strRunBackward;
+		string	m_strRunLeft;		
+		string	m_strRunRight;
+		string	m_strSwimForward;
+		string	m_strSwimBackward;
+		string	m_strSwimLeft;				
+		string	m_strSwimRight;						
+		string	m_strJump;
+		string	m_strIdleStanding;
+		string	m_strIdleSitting;
+		string	m_strIdleSwimming;
+		string	m_strEmote;				
+		
+		
+		
+		void UpdateAnimation();			
 		vector<PropertyValues> GetPropertyValues();
 		
 	public:
@@ -82,6 +109,10 @@ class MCOMMON_API P_CharacterControl: public Property
 																												
 		void SetSpeed(float fSpeed)							{	m_fSpeed = fSpeed;			}
 		void SetJumpForce(float fJump)						{	m_fJumpForce = fJump;		}
+
+		
+			
+		void DoEmote(int iEmoteID);	
 		
 };
 

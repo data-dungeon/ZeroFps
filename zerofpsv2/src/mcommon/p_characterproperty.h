@@ -45,27 +45,8 @@ class MCOMMON_API P_CharacterProperty: public Property
 		int		m_iRunSoundID;
 		int		m_iSwimSoundID;
 		
-		//basic animations
-		string	m_strWalkForward;
-		string	m_strWalkBackward;
-		string	m_strWalkLeft;
-		string	m_strWalkRight;
-		string	m_strRunForward;
-		string	m_strRunBackward;
-		string	m_strRunLeft;		
-		string	m_strRunRight;
-		string	m_strSwimForward;
-		string	m_strSwimBackward;
-		string	m_strSwimLeft;				
-		string	m_strSwimRight;						
-		string	m_strJump;
-		string	m_strIdleStanding;
-		string	m_strIdleSitting;
-		string	m_strIdleSwimming;
-		string	m_strTaunt;
-		
+	
 		void PlayCharacterMovementSounds();
-		void UpdateAnimation();
 		void SetupContainers();
 		
 		vector<PropertyValues> GetPropertyValues();
@@ -105,8 +86,6 @@ class MCOMMON_API P_CharacterProperty: public Property
 		void SetRunSound(const string& strFile)				{	m_strRunSound = strFile;				ResetAllNetUpdateFlags();}
 		void SetJumpSound(const string& strFile)				{	m_strJumpSound = strFile;				ResetAllNetUpdateFlags();}
 		void SetSwimSound(const string& strFile)				{	m_strSwimSound = strFile;				ResetAllNetUpdateFlags();}
-		
-		void DoTaunt(int iTountID);
 		
 		string GetName()												{	return m_strName;					}
 		string GetOwnedByPlayer()									{	return m_strOwnedByPlayer;		}
