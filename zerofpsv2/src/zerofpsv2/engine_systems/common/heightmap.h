@@ -65,6 +65,10 @@ public:
 	float		m_fValue;
 };
 
+#define HM_FLAGVISIBLE1	1
+#define HM_FLAGVISIBLE2	2
+
+
 class ENGINE_SYSTEMS_API HeightMap
 {
 	private:			
@@ -80,6 +84,7 @@ class ENGINE_SYSTEMS_API HeightMap
 
 		HM_vert*				verts;						// Ptr to array of HMVertex. 
 		vector<HM_Layer>	m_kLayer;					// All layers in the HM.
+		unsigned char*		m_pkTileFlags;
 
 		int					m_iHmScaleSize;
 		Vector3				m_kPosition;				// Position of Center of HMAP
@@ -128,7 +133,10 @@ class ENGINE_SYSTEMS_API HeightMap
 		void Raise(vector<HMSelectVertex> kSelected, float fSize);		// Raise or lower a selection.
 		
 		void DrawMask(Vector3 kPos,int iMode,float fSize,int r,int g,int b,int a);
-		
+		void DrawVisible(Vector3 kPos, bool bVisible);
+
+		int GetTopLowTriangle(Vector3 kPos);
+
 		float GetTileSize() { return m_fTileSize; }
 		int	GetSize() {return m_iTilesSide * m_fTileSize; };				// Return the size of one side of the Hm.
 

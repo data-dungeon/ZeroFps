@@ -963,6 +963,20 @@ void Render::GetMinMax(HeightMap* kMap, float& fMin, float& fMax, int xp,int zp,
 	}
 }
 
+void Render::GetData(HeightMap* kMap, float x, float z, Vector3& kPos, Vector3& kNormal, Vector3& kTex1, Vector3& kTex2 )
+{
+	int iTestX = kMap->m_iVertexSide;
+	int iVertexIndex = z*iTestX +x;
+	kPos.x = float(x * kMap->m_fTileSize);
+	kPos.y = kMap->verts[iVertexIndex].height*kMap->m_fTileSize;
+	kPos.z = float(z * kMap->m_fTileSize);
+
+	kNormal = kMap->verts[ iVertexIndex ].normal;
+
+	kTex1.Set(x / kMap->m_iVertexSide,z / kMap->m_iVertexSide,0);
+	kTex2.Set(x / TEX_SCALE, z/TEX_SCALE,0);
+}
+
 void Render::DrawPatch(HeightMap* kMap,Vector3 CamPos,int xp,int zp,int iSize,bool bBorders)
 {
 	int	iStep;
@@ -982,6 +996,128 @@ void Render::DrawPatch(HeightMap* kMap,Vector3 CamPos,int xp,int zp,int iSize,bo
 		(iSize/2)*HEIGHTMAP_SCALE,15*HEIGHTMAP_SCALE,(iSize/2)*HEIGHTMAP_SCALE))
 		return; */
 	
+	iStep=PowerOf2(int(fDistance / m_iDetail));
+	iStep = 1;
+
+	// Draw the Terrain Patch.
+	float fXDivTexScale;
+	float fZDivTexScale;
+	float fXDivHmSize;
+	float fZDivHmSize;
+	int	iVertexIndex;
+	float fScaleX, fScaleZ;
+
+	HM_vert* pkHmVertex = kMap->verts;
+	int z;
+	//int iTestX = kMap->m_iTilesSide;
+	int iTestX = kMap->m_iVertexSide;
+
+	Vector3 kPos, kNormal, kTex1, kTex2;
+
+	int iTileIndex;
+
+	for(z = zp ; z < zp+iSize; z+=iStep){
+		//if(z >= kMap->m_iHmSize-iStep)
+		//	break;			
+			
+		fZDivTexScale	= (float) z / TEX_SCALE;
+		fZDivHmSize		= (float) z / iTestX;
+
+		glBegin( GL_TRIANGLES );	//GL_TRIANGLES GL_TRIANGLE_STRIP
+		for(int x = xp ; x < xp+iSize ; x+=iStep){	
+			fXDivTexScale	= (float) x / TEX_SCALE;
+			fXDivHmSize		= (float) x / iTestX;
+
+			fScaleX = float(x * kMap->m_fTileSize);
+			fScaleZ = float(z * kMap->m_fTileSize);
+
+			float fZStepDivHmSize = ((float)z+iStep) / iTestX;
+			float fZStepDivTexScale = ((float)z+iStep) / TEX_SCALE;
+
+			// Triangle 1
+			iTileIndex = z * kMap->m_iTilesSide + x;
+			if(kMap->m_pkTileFlags[iTileIndex] & HM_FLAGVISIBLE2) 
+			{
+				GetData(kMap,x,z,kPos,kNormal, kTex1,kTex2);
+					glMultiTexCoord2fARB(GL_TEXTURE0_ARB, kTex1.x , kTex1.y);		 		 			 		
+					glMultiTexCoord2fARB(GL_TEXTURE1_ARB, kTex2.x , kTex2.y);
+					glNormal3fv((float*)&kNormal);			
+					glVertex3f(kPos.x, kPos.y, kPos.z);					
+				
+				GetData(kMap,x,z+1,kPos,kNormal, kTex1,kTex2);
+					glMultiTexCoord2fARB(GL_TEXTURE0_ARB, kTex1.x , kTex1.y);		 		 			 		
+					glMultiTexCoord2fARB(GL_TEXTURE1_ARB, kTex2.x , kTex2.y);
+					glNormal3fv((float*)&kNormal);			
+					glVertex3f(kPos.x, kPos.y, kPos.z);					
+
+				GetData(kMap,x+1,z,kPos,kNormal, kTex1,kTex2);
+					glMultiTexCoord2fARB(GL_TEXTURE0_ARB, kTex1.x , kTex1.y);		 		 			 		
+					glMultiTexCoord2fARB(GL_TEXTURE1_ARB, kTex2.x , kTex2.y);
+					glNormal3fv((float*)&kNormal);			
+					glVertex3f(kPos.x, kPos.y, kPos.z);					
+			}
+
+			// Triangle 2
+			if(kMap->m_pkTileFlags[iTileIndex] & HM_FLAGVISIBLE1) 
+			{
+				GetData(kMap,x+1,z,kPos,kNormal, kTex1,kTex2);
+					glMultiTexCoord2fARB(GL_TEXTURE0_ARB, kTex1.x , kTex1.y);		 		 			 		
+					glMultiTexCoord2fARB(GL_TEXTURE1_ARB, kTex2.x , kTex2.y);
+					glNormal3fv((float*)&kNormal);			
+					glVertex3f(kPos.x, kPos.y, kPos.z);					
+
+				GetData(kMap,x,z+1,kPos,kNormal, kTex1,kTex2);
+					glMultiTexCoord2fARB(GL_TEXTURE0_ARB, kTex1.x , kTex1.y);		 		 			 		
+					glMultiTexCoord2fARB(GL_TEXTURE1_ARB, kTex2.x , kTex2.y);
+					glNormal3fv((float*)&kNormal);			
+					glVertex3f(kPos.x, kPos.y, kPos.z);					
+
+				GetData(kMap,x+1,z+1,kPos,kNormal, kTex1,kTex2);
+					glMultiTexCoord2fARB(GL_TEXTURE0_ARB, kTex1.x , kTex1.y);		 		 			 		
+					glMultiTexCoord2fARB(GL_TEXTURE1_ARB, kTex2.x , kTex2.y);
+					glNormal3fv((float*)&kNormal);			
+					glVertex3f(kPos.x, kPos.y, kPos.z);					
+			}
+
+/*			glMultiTexCoord2fARB(GL_TEXTURE0_ARB, fXDivHmSize, fZStepDivHmSize);		 		 			 			 		
+			glMultiTexCoord2fARB(GL_TEXTURE1_ARB, fXDivTexScale ,fZStepDivTexScale);		
+			iVertexIndex = (z+iStep)*iTestX + x;
+			glNormal3fv((float*)&pkHmVertex[iVertexIndex].normal);			
+			glVertex3f( fScaleX ,float(pkHmVertex[iVertexIndex].height*kMap->m_fTileSize) , float((z+iStep)*kMap->m_fTileSize));			
+
+			glMultiTexCoord2fARB(GL_TEXTURE0_ARB, fXDivHmSize , fZDivHmSize);		 		 			 		
+			glMultiTexCoord2fARB(GL_TEXTURE1_ARB, fXDivTexScale , fZDivTexScale);
+			iVertexIndex = z*iTestX +x;
+			glNormal3fv((float*)&pkHmVertex[ iVertexIndex ].normal);			
+			glVertex3f(float((x+iStep)*kMap->m_fTileSize) ,pkHmVertex[iVertexIndex].height*kMap->m_fTileSize, fScaleZ);					
+			// Triangle 2*/
+
+
+		}		
+		glEnd();		
+	}
+
+
+
+
+}
+
+/*
+void Render::DrawPatch(HeightMap* kMap,Vector3 CamPos,int xp,int zp,int iSize,bool bBorders)
+{
+	int	iStep;
+	float fDistance;
+	
+	// See if we can Cull away this patch...this is optimized for zeroRTS at the moment..Dvoid  assuming max height of 30
+	Vector3 PatchCenter(kMap->m_kCornerPos.x + (xp + iSize/2)*kMap->m_fTileSize,
+							  kMap->m_kCornerPos.y + 7.5f*kMap->m_fTileSize,
+							  kMap->m_kCornerPos.z + (zp + iSize/2)*kMap->m_fTileSize);
+		
+	fDistance = (CamPos-PatchCenter).Length() ;
+	if(fDistance > m_iViewDistance)
+		return;
+//	glDisable(GL_TEXTURE_2D);
+		
 	iStep=PowerOf2(int(fDistance / m_iDetail));
 	iStep = 1;
 
@@ -1033,78 +1169,9 @@ void Render::DrawPatch(HeightMap* kMap,Vector3 CamPos,int xp,int zp,int iSize,bo
 		}		
 		glEnd();		
 	}
-
-	//damn ulgly lod fix
-/*	if(bBorders)
-	{
-		z=zp;	
-	
-		glBegin(GL_TRIANGLE_STRIP);
-		for( x=xp;x <=xp+iSize ; x+=iStep)	{
-			glMultiTexCoord2fARB(GL_TEXTURE0_ARB,(float)x/kMap->m_iHmSize,(float)z/kMap->m_iHmSize);		 		 			 		
-			glMultiTexCoord2fARB(GL_TEXTURE1_ARB,(float)x/TEX_SCALE,(float)z/TEX_SCALE);						
-			glNormal3fv((float*)&kMap->verts[z*kMap->m_iHmSize+x].normal);			
-	
-//			glVertex3f(x*HEIGHTMAP_SCALE,-100*HEIGHTMAP_SCALE,z*HEIGHTMAP_SCALE);								
-			glVertex3f(x*HEIGHTMAP_SCALE,(pkHmVertex[z*kMap->m_iHmSize+x].height - 10 )*HEIGHTMAP_SCALE,z*HEIGHTMAP_SCALE);								
-			glVertex3f(x*HEIGHTMAP_SCALE,(pkHmVertex[z*kMap->m_iHmSize+x].height)*HEIGHTMAP_SCALE,z*HEIGHTMAP_SCALE);
-		}
-		glEnd();	
-	
-		z=zp+iSize;
-	
-		if(z==kMap->m_iHmSize-iStep)
-			z-=iStep;	
-	
-		glBegin(GL_TRIANGLE_STRIP);	
-		for(x=xp;x <=xp+iSize ; x+=iStep)
-		{
-			glMultiTexCoord2fARB(GL_TEXTURE0_ARB,(float)x/kMap->m_iHmSize,(float)z/kMap->m_iHmSize);		 		 			 		
-			glMultiTexCoord2fARB(GL_TEXTURE1_ARB,(float)x/TEX_SCALE,(float)z/TEX_SCALE);						
-			glNormal3fv((float*)&kMap->verts[z*kMap->m_iHmSize+x].normal);			
-	
-			glVertex3f(x*HEIGHTMAP_SCALE,(pkHmVertex[z*kMap->m_iHmSize+x].height)*HEIGHTMAP_SCALE,z*HEIGHTMAP_SCALE);
-			glVertex3f(x*HEIGHTMAP_SCALE,(pkHmVertex[z*kMap->m_iHmSize+x].height - 10 )*HEIGHTMAP_SCALE,z*HEIGHTMAP_SCALE);											
-		}
-		glEnd();	
-
-		x=xp;	
-		glBegin(GL_TRIANGLE_STRIP);
-		for(z=zp;z <=zp+iSize ; z+=iStep)
-		{
-			if(z==kMap->m_iHmSize-iStep)
-				break;
-		
-		
-			glMultiTexCoord2fARB(GL_TEXTURE0_ARB,(float)x/kMap->m_iHmSize,(float)z/kMap->m_iHmSize);		 		 			 		
-			glMultiTexCoord2fARB(GL_TEXTURE1_ARB,(float)x/TEX_SCALE,(float)z/TEX_SCALE);						
-			glNormal3fv((float*)&kMap->verts[z*kMap->m_iHmSize+x].normal);			
-		
-			glVertex3f(x*HEIGHTMAP_SCALE,kMap->verts[z*kMap->m_iHmSize+x].height*HEIGHTMAP_SCALE,z*HEIGHTMAP_SCALE);
-			glVertex3f(x*HEIGHTMAP_SCALE,(pkHmVertex[z*kMap->m_iHmSize+x].height - 10 )*HEIGHTMAP_SCALE,z*HEIGHTMAP_SCALE);										
-		}
-		glEnd();	
-	
-		x=xp+iSize;	
-		glBegin(GL_TRIANGLE_STRIP);
-		for( z=zp;z <=zp+iSize ; z+=iStep)
-		{
-			if(z==kMap->m_iHmSize-iStep)
-				break;
-		
-		
-			glMultiTexCoord2fARB(GL_TEXTURE0_ARB,(float)x/kMap->m_iHmSize,(float)z/kMap->m_iHmSize);		 		 			 		
-			glMultiTexCoord2fARB(GL_TEXTURE1_ARB,(float)x/TEX_SCALE,(float)z/TEX_SCALE);						
-			glNormal3fv((float*)&kMap->verts[z*kMap->m_iHmSize+x].normal);			
-		
-			glVertex3f(x*HEIGHTMAP_SCALE,(pkHmVertex[z*kMap->m_iHmSize+x].height - 10 )*HEIGHTMAP_SCALE,z*HEIGHTMAP_SCALE);			
-			glVertex3f(x*HEIGHTMAP_SCALE,(pkHmVertex[z*kMap->m_iHmSize+x].height)*HEIGHTMAP_SCALE,z*HEIGHTMAP_SCALE);					
-		}
-		glEnd();	
-	};*/
-
-
 }
+*/
+
 
 int iPatchIndex[4096];
 
@@ -1316,3 +1383,75 @@ void Render::DrawHM2(Heightmap2* pkMap,Vector3 kCamPos)
 	
 	glPopMatrix();
 }
+
+
+
+
+	//damn ulgly lod fix
+/*	if(bBorders)
+	{
+		z=zp;	
+	
+		glBegin(GL_TRIANGLE_STRIP);
+		for( x=xp;x <=xp+iSize ; x+=iStep)	{
+			glMultiTexCoord2fARB(GL_TEXTURE0_ARB,(float)x/kMap->m_iHmSize,(float)z/kMap->m_iHmSize);		 		 			 		
+			glMultiTexCoord2fARB(GL_TEXTURE1_ARB,(float)x/TEX_SCALE,(float)z/TEX_SCALE);						
+			glNormal3fv((float*)&kMap->verts[z*kMap->m_iHmSize+x].normal);			
+	
+//			glVertex3f(x*HEIGHTMAP_SCALE,-100*HEIGHTMAP_SCALE,z*HEIGHTMAP_SCALE);								
+			glVertex3f(x*HEIGHTMAP_SCALE,(pkHmVertex[z*kMap->m_iHmSize+x].height - 10 )*HEIGHTMAP_SCALE,z*HEIGHTMAP_SCALE);								
+			glVertex3f(x*HEIGHTMAP_SCALE,(pkHmVertex[z*kMap->m_iHmSize+x].height)*HEIGHTMAP_SCALE,z*HEIGHTMAP_SCALE);
+		}
+		glEnd();	
+	
+		z=zp+iSize;
+	
+		if(z==kMap->m_iHmSize-iStep)
+			z-=iStep;	
+	
+		glBegin(GL_TRIANGLE_STRIP);	
+		for(x=xp;x <=xp+iSize ; x+=iStep)
+		{
+			glMultiTexCoord2fARB(GL_TEXTURE0_ARB,(float)x/kMap->m_iHmSize,(float)z/kMap->m_iHmSize);		 		 			 		
+			glMultiTexCoord2fARB(GL_TEXTURE1_ARB,(float)x/TEX_SCALE,(float)z/TEX_SCALE);						
+			glNormal3fv((float*)&kMap->verts[z*kMap->m_iHmSize+x].normal);			
+	
+			glVertex3f(x*HEIGHTMAP_SCALE,(pkHmVertex[z*kMap->m_iHmSize+x].height)*HEIGHTMAP_SCALE,z*HEIGHTMAP_SCALE);
+			glVertex3f(x*HEIGHTMAP_SCALE,(pkHmVertex[z*kMap->m_iHmSize+x].height - 10 )*HEIGHTMAP_SCALE,z*HEIGHTMAP_SCALE);											
+		}
+		glEnd();	
+
+		x=xp;	
+		glBegin(GL_TRIANGLE_STRIP);
+		for(z=zp;z <=zp+iSize ; z+=iStep)
+		{
+			if(z==kMap->m_iHmSize-iStep)
+				break;
+		
+		
+			glMultiTexCoord2fARB(GL_TEXTURE0_ARB,(float)x/kMap->m_iHmSize,(float)z/kMap->m_iHmSize);		 		 			 		
+			glMultiTexCoord2fARB(GL_TEXTURE1_ARB,(float)x/TEX_SCALE,(float)z/TEX_SCALE);						
+			glNormal3fv((float*)&kMap->verts[z*kMap->m_iHmSize+x].normal);			
+		
+			glVertex3f(x*HEIGHTMAP_SCALE,kMap->verts[z*kMap->m_iHmSize+x].height*HEIGHTMAP_SCALE,z*HEIGHTMAP_SCALE);
+			glVertex3f(x*HEIGHTMAP_SCALE,(pkHmVertex[z*kMap->m_iHmSize+x].height - 10 )*HEIGHTMAP_SCALE,z*HEIGHTMAP_SCALE);										
+		}
+		glEnd();	
+	
+		x=xp+iSize;	
+		glBegin(GL_TRIANGLE_STRIP);
+		for( z=zp;z <=zp+iSize ; z+=iStep)
+		{
+			if(z==kMap->m_iHmSize-iStep)
+				break;
+		
+		
+			glMultiTexCoord2fARB(GL_TEXTURE0_ARB,(float)x/kMap->m_iHmSize,(float)z/kMap->m_iHmSize);		 		 			 		
+			glMultiTexCoord2fARB(GL_TEXTURE1_ARB,(float)x/TEX_SCALE,(float)z/TEX_SCALE);						
+			glNormal3fv((float*)&kMap->verts[z*kMap->m_iHmSize+x].normal);			
+		
+			glVertex3f(x*HEIGHTMAP_SCALE,(pkHmVertex[z*kMap->m_iHmSize+x].height - 10 )*HEIGHTMAP_SCALE,z*HEIGHTMAP_SCALE);			
+			glVertex3f(x*HEIGHTMAP_SCALE,(pkHmVertex[z*kMap->m_iHmSize+x].height)*HEIGHTMAP_SCALE,z*HEIGHTMAP_SCALE);					
+		}
+		glEnd();	
+	};*/

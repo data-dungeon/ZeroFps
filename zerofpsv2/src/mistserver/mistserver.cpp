@@ -477,7 +477,11 @@ void MistServer::Input_EditTerrain()
 			P_HMRP2* hmrp = dynamic_cast<P_HMRP2*>(pkEntity->GetProperty("P_HMRP2"));
 			if(hmrp == NULL)		continue;
 			Vector3 kLocalOffset = m_kDrawPos - hmrp->m_pkHeightMap->m_kCornerPos;
-			hmrp->m_pkHeightMap->DrawMask(m_kDrawPos, m_iEditLayer,m_fHMInRadius,255,255,255,1);
+			//hmrp->m_pkHeightMap->DrawMask(m_kDrawPos, m_iEditLayer,m_fHMInRadius,255,255,255,1);
+			if(m_iEditLayer == 1)
+				hmrp->m_pkHeightMap->DrawVisible(kLocalOffset, false);
+			else
+				hmrp->m_pkHeightMap->DrawVisible(kLocalOffset, true);
 			}
 		}
 
@@ -485,7 +489,16 @@ void MistServer::Input_EditTerrain()
 	if(m_pkInputHandle->Pressed(KEY_2)) m_iEditLayer = 2;			
 	if(m_pkInputHandle->Pressed(KEY_3)) m_iEditLayer = 3;			
 
-//	if(m_pkInputHandle->Pressed(KEY_4) && hmrp) hmrp->m_pkHeightMap->Invert();			
+	if(m_pkInputHandle->Pressed(KEY_4))
+	{
+		Entity* pkEntity = m_pkObjectMan->GetObjectByNetWorkID(m_iCurrentObject);
+		if(pkEntity)
+		{
+			P_HMRP2* hmrp = dynamic_cast<P_HMRP2*>(pkEntity->GetProperty("P_HMRP2"));
+			if(hmrp)
+            hmrp->m_pkHeightMap->Invert();			
+		}
+	}
 }
 
 // Handles input for EditMode Zones.

@@ -50,6 +50,7 @@ void HM_Layer::Save(ZFVFile* pkFile)
 HeightMap::HeightMap() 
 {
 	verts					= NULL;
+	m_pkTileFlags		= NULL;
 	m_iNumOfHMVertex	= 0;
 	m_iID					= -1;
 	m_bInverted			= false;
@@ -63,15 +64,20 @@ HeightMap::~HeightMap()
 {
 	if(verts)
 		delete[] verts;
+	if(m_pkTileFlags)
+		delete[] m_pkTileFlags;
 }
 
 bool HeightMap::AllocHMMemory(int iSize)
 {
 	if(verts)
 		delete[] verts;
+	if(m_pkTileFlags)
+		delete[] m_pkTileFlags;
 
 	m_iNumOfHMVertex = iSize * iSize;
 	verts = new HM_vert[m_iNumOfHMVertex];	
+	m_pkTileFlags = new unsigned char [m_iTilesSide*m_iTilesSide];
 	return true;
 }
 
@@ -98,6 +104,8 @@ void HeightMap::Zero()
 		verts[i].height	=	0;
 		verts[i].normal.Set(0,1,0);
 	}
+
+	memset(m_pkTileFlags,0xFF, m_iTilesSide*m_iTilesSide);
 }
 
 bool HeightMap::IsAllZero()
@@ -122,6 +130,34 @@ void HeightMap::SetPosition(Vector3 kNewPos)
 	m_kCornerPos.Set(m_kPosition.x	-	m_iHmScaleSize/2, 
 		m_kPosition.y,
 		m_kPosition.z	-	m_iHmScaleSize/2);
+}
+
+int HeightMap::GetTopLowTriangle(Vector3 kPos)
+{
+	kPos.x /= m_fTileSize;
+	kPos.z /= m_fTileSize;
+	
+//	kPos.x -= m_kPosition.x - m_iTilesSide/2;
+//	kPos.z -= m_kPosition.z - m_iTilesSide/2;
+
+	if(kPos.x<0 || kPos.x>m_iTilesSide || kPos.z<0 || kPos.z>m_iTilesSide) 
+		return m_kPosition.y;
+
+	int lx = int(kPos.x);
+	int lz = int(kPos.z);
+	float ox = kPos.x - float(lx);
+	float oz = kPos.z - float(lz);
+//	float bp, xp, zp;
+
+	// are we on the over or under polygon in the tile gillar min fina engelska =)
+	float ry = float((1.0 + ox*-1.0));
+
+	if(oz>ry)	// over left 
+		return HM_FLAGVISIBLE1;
+	else 
+		return HM_FLAGVISIBLE2;
+
+	return 0;
 }
 
 /**	\brief	Returns height at one position in Hmap.
@@ -724,6 +760,22 @@ void HeightMap::DrawMask(Vector3 kPos,int iMask,float fSize,int r,int g,int b,in
 	m_pkTexMan->EditEnd(m_kLayer[iMask].m_strMask.c_str());
 }
 
+void HeightMap::DrawVisible(Vector3 kPos, bool bVisible)
+{
+	int iX = kPos.x / m_fTileSize;	
+	int iZ = kPos.z / m_fTileSize;	
+	
+	int iIndex = iZ * m_iTilesSide + iX;
+	int iTri = GetTopLowTriangle( kPos );
+
+	if(bVisible)
+		m_pkTileFlags[iIndex] |= iTri;	
+	else
+		m_pkTileFlags[iIndex] &= ~iTri;	
+
+	cout << "Index: " <<iTri << endl;
+}
+
 
 HM_vert* HeightMap::LinePick(Vector3 kPos,Vector3 kDir,Vector3 kCenterPos,int iWidth,Vector3& kHitPos)
 {
@@ -915,18 +967,28 @@ void HeightMap::GetCollData(vector<Mad_Face>* pkFace,vector<Vector3>* pkVertex ,
 {
 	int iIndex = 0;
 	Mad_Face kFace;
+	
+	int iTileIndex;
 
 	for(int z=0; z<m_iTilesSide; z++) {
 		for(int x=0; x<m_iTilesSide; x++) {
-			pkVertex->push_back( Vector3((float)x, verts[z*m_iVertexSide+x].height, (float)z) );								kFace.iIndex[0] = iIndex++;		
-			pkVertex->push_back( Vector3((float)x + 1, verts[(z+1)*m_iVertexSide+(x+1)].height, (float)z + 1.0f) );	kFace.iIndex[1] = iIndex++;		
-			pkVertex->push_back( Vector3((float)x + 1, verts[(z)*m_iVertexSide+(x+1)].height, (float)z) );				kFace.iIndex[2] = iIndex++;	
-			pkFace->push_back(kFace);
+			iTileIndex = z * m_iTilesSide + x;
 
-			pkVertex->push_back( Vector3((float)x, verts[z*m_iVertexSide+x].height, (float)z) );								kFace.iIndex[0] = iIndex++;		
-			pkVertex->push_back( Vector3((float)x , verts[(z+1)*m_iVertexSide+x].height, (float)z + 1.0f) );				kFace.iIndex[1] = iIndex++;		
-			pkVertex->push_back( Vector3((float)x + 1, verts[(z+1)*m_iVertexSide+(x+1)].height, (float)z + 1.0f) );	kFace.iIndex[2] = iIndex++;	
-			pkFace->push_back(kFace);
+			if(m_pkTileFlags[iTileIndex] & HM_FLAGVISIBLE2)
+			{
+				pkVertex->push_back( Vector3((float)x, verts[z*m_iVertexSide+x].height, (float)z) );								kFace.iIndex[0] = iIndex++;		
+				pkVertex->push_back( Vector3((float)x + 1, verts[(z+1)*m_iVertexSide+(x+1)].height, (float)z + 1.0f) );	kFace.iIndex[1] = iIndex++;		
+				pkVertex->push_back( Vector3((float)x + 1, verts[(z)*m_iVertexSide+(x+1)].height, (float)z) );				kFace.iIndex[2] = iIndex++;	
+				pkFace->push_back(kFace);
+			}
+
+			if(m_pkTileFlags[iTileIndex] & HM_FLAGVISIBLE1)
+			{
+				pkVertex->push_back( Vector3((float)x, verts[z*m_iVertexSide+x].height, (float)z) );								kFace.iIndex[0] = iIndex++;		
+				pkVertex->push_back( Vector3((float)x , verts[(z+1)*m_iVertexSide+x].height, (float)z + 1.0f) );				kFace.iIndex[1] = iIndex++;		
+				pkVertex->push_back( Vector3((float)x + 1, verts[(z+1)*m_iVertexSide+(x+1)].height, (float)z + 1.0f) );	kFace.iIndex[2] = iIndex++;	
+				pkFace->push_back(kFace);
+			}
 			}
 		}
 

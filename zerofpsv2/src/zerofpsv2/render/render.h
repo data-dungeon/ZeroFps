@@ -160,6 +160,7 @@ class RENDER_API Render : public ZFSubSystem {
 		void DrawHMVertex(HeightMap* kMap);
 		void DrawBlocks(HeightMap* kmap);
 		void DrawHM2(Heightmap2* pkMap,Vector3 kCamPos);
+		void GetData(HeightMap* kMap, float x, float z, Vector3& kPos, Vector3& kNormal, Vector3& kTex1, Vector3& kTex2 );
 
 		// SkyBox
 		void DrawSkyBox(Vector3 CamPos,Vector3 kHead,int iHor,int iTop);
