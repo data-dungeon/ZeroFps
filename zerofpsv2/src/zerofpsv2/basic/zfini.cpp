@@ -70,7 +70,7 @@ bool ZFIni::Open(const char *strFileName, bool bCommandFile)
 	}
 
 	// Kopiera datat till en buffert.
-	m_pstrLines = new char*[m_iLines+1];
+	m_pstrLines = new char*[m_iLines+1];				// LEAK - MistServer, Nothing loaded.	
 	int iLineLength, i;
 	fseek(pkFile, 0, SEEK_SET);
 	for ( i=0; i<m_iLines; i++)
@@ -78,7 +78,7 @@ bool ZFIni::Open(const char *strFileName, bool bCommandFile)
 		memset(strLine, 0, MAX_LINE_LENGTH);
 		fgets(strLine, MAX_LINE_LENGTH, pkFile);
 		iLineLength = strlen(strLine)+1;
-		m_pstrLines[i] = new char[iLineLength+1];
+		m_pstrLines[i] = new char[iLineLength+1];		// LEAK - MistServer, Nothing loaded.	
 		memset(m_pstrLines[i], 0, iLineLength);
 		strcpy(m_pstrLines[i], strLine);
 	}
@@ -184,6 +184,7 @@ char* ZFIni::GetValue(const char *szSearchSection, const char *szSearchKey)
 
 bool ZFIni::ProcessINIFile()
 {
+	// LEAK More or less ALLA news i denna funktion. - MistServer, Nothing loaded.	
 	m_iNumSections=0;
 	
 	// Kolla hur många sektioner som finns i filen.
@@ -227,7 +228,7 @@ bool ZFIni::ProcessINIFile()
 					int length = b2-b1;
 					if(length < 0)
 						length = 0;
-					m_pstrSections[iCurrSection] = new char[length+1];
+					m_pstrSections[iCurrSection] = new char[length+1];			
 					memset(m_pstrSections[iCurrSection], 0, length);
 					strncpy(m_pstrSections[iCurrSection], m_pstrLines[line]+b1, length);
 					m_pstrSections[iCurrSection][length] = '\0'; // null-terminate string
@@ -239,7 +240,7 @@ bool ZFIni::ProcessINIFile()
 		if(state==0)
 		{
 			if(m_iNumSections>0)
-				m_pstrSections = new char*[m_iNumSections+1];
+				m_pstrSections = new char*[m_iNumSections+1];			
 			else
 			{
 				printf("No sections in file!\n");
@@ -249,7 +250,7 @@ bool ZFIni::ProcessINIFile()
 	}
 
 	// Kopiera in datat från texten till en struktur.
-	m_pkSectionData = new SectionData[m_iNumSections+1];
+	m_pkSectionData = new SectionData[m_iNumSections+1];				
 
 	for(int sec=0; sec<m_iNumSections; sec++)
 	{

@@ -4,12 +4,12 @@
 
 ZMaterialSettings::ZMaterialSettings()
 {
-	m_kTUs[0] = new ZFResourceHandle();
+	m_kTUs[0] = new ZFResourceHandle();				// LEAK - MistClient, Level loaded.
 	m_kTUs[1] = new ZFResourceHandle();
-	m_kTUs[2] = new ZFResourceHandle();
-	m_kTUs[3] = new ZFResourceHandle();
+	m_kTUs[2] = new ZFResourceHandle();				// LEAK - MistClient, Level loaded.
+	m_kTUs[3] = new ZFResourceHandle();				// LEAK - MistClient, Level loaded.
 	
-	m_pkVP = new ZFResourceHandle();
+	m_pkVP = new ZFResourceHandle();					// LEAK - MistClient, Level loaded.
 	
 	m_iTUTexCords[0] = CORDS_FROM_ARRAY_0;
 	m_iTUTexCords[1] = CORDS_FROM_ARRAY_1;	
@@ -68,7 +68,7 @@ ZMaterialSettings* ZMaterial::GetPass(int iPass)
 
 ZMaterialSettings* ZMaterial::AddPass()
 {
-	m_kPasses.push_back(new ZMaterialSettings());
+	m_kPasses.push_back(new ZMaterialSettings());		// LEAK - MistClient, Level loaded.
 	return m_kPasses.back();
 }
 
@@ -240,7 +240,7 @@ int ZMaterial::CalculateSize()
 
 ZFResource* Create__Material()
 {
-	return new ZMaterial;
+	return new ZMaterial;						// LEAK - MistClient, Level loaded.
 }
 
 
