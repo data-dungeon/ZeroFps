@@ -9,7 +9,7 @@ function Create()
 			InitParameter("name","police_bomb");
 			InitParameter("sizex",4);
 			InitParameter("sizey",4);
---			InitParameter("icon","shotgun.bmp");
+			InitParameter("icon","grenade_disk.bmp");
 			InitParameter("type","5"); -- default, only backpack
 		InitProperty("P_ScriptInterface");
 
