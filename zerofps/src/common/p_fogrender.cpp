@@ -59,8 +59,8 @@ void P_FogRender::Explore(float x,float y,float r)
 	{
 		for(int j=0;j<360;j+=5)
 		{
-			float xx=sin(j)*i;
-			float yy=cos(j)*i;
+			float xx=sin((float)j)*i;
+			float yy=cos((float)j)*i;
 			
 			xx+=x;
 			yy+=y;
@@ -92,8 +92,8 @@ void P_FogRender::UnExplore(float x,float y,float r)
 	{
 		for(int j=0;j<360;j+=5)
 		{
-			float xx=sin(j)*i;
-			float yy=cos(j)*i;
+			float xx=sin((float)j)*i;
+			float yy=cos((float)j)*i;
 			
 			xx+=x;
 			yy+=y;
