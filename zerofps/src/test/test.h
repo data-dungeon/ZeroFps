@@ -7,7 +7,7 @@
 #include <cmath>
 #include <GL/glut.h>
 #include "../zerofps/engine/application.h"
-
+#include "../zerofps/render/pmddraw.h"
 
 class Test :public Application {
 	HeightMap *test;
@@ -23,6 +23,8 @@ class Test :public Application {
 	int m_iGrass;
 	int m_iGrassVolyme;
 
+	PmdDraw testa;
+
 	public:
 		Test(char* aName,int iWidth,int iHeight,int iDepth);
 	 	void OnInit(void);
@@ -32,6 +34,7 @@ class Test :public Application {
 
 		void input();
 };
+
 
 
 #endif

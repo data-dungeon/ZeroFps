@@ -57,6 +57,8 @@ void Test::OnInit(void) {
   
   pkRender->SetFog(Vector4(.50,.55,.88,1),2,225,350,true);
 
+
+	testa.Load("babe.pmd");
 }
 
 
@@ -76,7 +78,11 @@ void Test::OnIdle(void) {
 				pkRender->DrawGrassPatch(*pkFps->m_kCamPos,Vector3(ix,0,iy),Vector3(3.5,.8,3.5),50,m_iGrassVolyme,test,pkTexMan->Load("file:../data/textures/grass2.tga",T_NOMIPMAPPING),pkFps->m_iFps);
 
 
-
+	glPushMatrix();
+		glTranslatef(200,test->Height(200,300),300);
+		glScalef(.05,.05,.05);
+		testa.draw();
+	glPopMatrix();
 //	cout<<pkFps->m_kCamPos->x<<" "<<pkFps->m_kCamPos->y<<" "<<pkFps->m_kCamPos->z<<endl;
 /*	srand(10);
 	for(int i=0;i<5000;i++) {
@@ -88,7 +94,8 @@ void Test::OnIdle(void) {
 //		pkRender->DrawCross(Vector3(x,y,z),Vector3(rand()%30-15,rand()%320,rand()%30-15),Vector3(8,13,8),pkTexMan->Load("file:../data/textures/tree.tga"),pkTexMan->Load("file:../data/textures/tree-top.tga"));			
 	}*/
 	
-	pkRender->DrawWater(*pkFps->m_kCamPos,Vector3(512,0,512),Vector3(0,0,0),1200,30);	
+		pkRender->DrawWater(*pkFps->m_kCamPos,Vector3(512,0,512),Vector3(0,0,0),1200,30);	
+
 	
 //	cout<<pkFps->m_iFps<<endl;
 	input();

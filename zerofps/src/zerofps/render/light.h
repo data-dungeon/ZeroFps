@@ -6,8 +6,8 @@
 
 struct LightSource {
 	//position and rotation
-	Vector3 kPos;	
-	Vector3 kRot;
+	Vector3 *kPos;	
+	Vector3 *kRot;
 	
 	//light color
 	Vector4 kDiffuse;
@@ -35,6 +35,8 @@ class Light {
 		Light(Vector3 *kCamPos);
 		
 		void Add(LightSource* kNewLight);
+		void Remove(LightSource *kLight);
+		
 		void Update();
 
 
