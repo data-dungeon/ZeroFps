@@ -1001,6 +1001,7 @@ void NetWork::Run()
 		if(m_RemoteNodes[i].m_bIsFlood)
 		{
 			m_pkZeroFps->Disconnect(i);
+			cout << "Connection to client " << i << " was flooded." << endl;
 			m_pkConsole->Printf("Connection to %d was flooded.", i);
 			m_RemoteNodes[i].m_eConnectStatus = NETSTATUS_DISCONNECT;
 			m_RemoteNodes[i].Clear();
@@ -1010,6 +1011,7 @@ void NetWork::Run()
 		{
 			// Time out this connection.
 			m_pkZeroFps->Disconnect(i);
+			cout << "Connection to client " << i << " timed out." << endl;
 			m_pkConsole->Printf("Connection to %d timed out.", i);
 			m_RemoteNodes[i].m_eConnectStatus = NETSTATUS_DISCONNECT;
 			m_RemoteNodes[i].Clear();
