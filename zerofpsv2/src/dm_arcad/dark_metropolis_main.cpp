@@ -309,7 +309,8 @@ void DarkMetropolis::OnServerStart()
 			pkEnv->SetEnable(true);
 			pkEnv->SetEnviroment("data/enviroments/dm.env");			
 		}
-		
+
+				
 		//add tracker to camera
 		m_pkCameraEntity->AddProperty("P_Track");
 	}
@@ -479,7 +480,7 @@ void DarkMetropolis::Input()
 			pkChar->m_kDir.Set(x,0,y);
 		}
 		
-		
+				
 		if(m_pkInputHandle->VKIsDown("action"))
 		{
 			if( (m_pkFps->GetTicks() - m_fDelayTimer) > 0.15)
