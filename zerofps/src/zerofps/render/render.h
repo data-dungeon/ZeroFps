@@ -20,7 +20,7 @@ class RENDER_API Render {
 	private:
 		TextureManager* m_pkTexMan;
 		char aCurentFont[256];
-		
+		bool m_FogEnable;		
 
 		int m_iSlicesize;	  //height meens greater detail att longer range
 	

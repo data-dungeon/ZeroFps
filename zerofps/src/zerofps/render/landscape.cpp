@@ -2,19 +2,25 @@
 
 void Render::DrawSkyBox(Vector3 CamPos) {
 	glPushMatrix();
-	glDepthMask(GL_FALSE);
+	glDepthMask(GL_FALSE);//want the skybox to be faaaaaar away =)
 	glTranslatef(CamPos.x,CamPos.y,CamPos.z);
+	if(m_FogEnable)//Disable the fog while drawing the sky box
+		glDisable(GL_FOG);
+	glDisable(GL_LIGHTING);//dont want lighting on the skybox	
 	
-	int iSize=801;
-	
-	glDisable(GL_LIGHTING);
+	int iSize=801;	
+
 	Quad(Vector3(0,0,-iSize/2),Vector3(0,0,0),Vector3(iSize,iSize,iSize),m_pkTexMan->Load("file:../data/textures/front.bmp"));
 	Quad(Vector3(0,iSize/2,0),Vector3(90,0,0),Vector3(iSize,iSize,iSize),m_pkTexMan->Load("file:../data/textures/top.bmp"));
 	Quad(Vector3(0,0,iSize/2),Vector3(180,0,180),Vector3(iSize,iSize,iSize),m_pkTexMan->Load("file:../data/textures/back.bmp"));
 	
 	Quad(Vector3(iSize/2,0,0),Vector3(0,-90,0),Vector3(iSize,iSize,iSize),m_pkTexMan->Load("file:../data/textures/left.bmp"));
 	Quad(Vector3(-iSize/2,0,0),Vector3(0,90,0),Vector3(iSize,iSize,iSize),m_pkTexMan->Load("file:../data/textures/right.bmp"));
-	glEnable(GL_LIGHTING);
+	
+	if(m_FogEnable)//enable the fog again
+		glEnable(GL_FOG);
+
+	glEnable(GL_LIGHTING);//turn the lighting back on =)
 	glDepthMask(GL_TRUE);	
 	glPopMatrix();
 }
@@ -350,11 +356,14 @@ void Render::DrawHM(HeightMap *kmap) {
 }
 
 void Render::SetFog(Vector4 kFogColor,float FogDensity,float FogStart,float FogStop,bool FogEnabled){
-	if(FogEnabled)
+	if(FogEnabled){
 		glEnable(GL_FOG);
-	else
+		m_FogEnable=true;
+	} else {
 		glDisable(GL_FOG);
-		
+		m_FogEnable=false;
+	}	
+	
 	glFogi(GL_FOG_MODE,GL_LINEAR);
 	glHint(GL_FOG_HINT,GL_NICEST);	
 	
