@@ -139,7 +139,7 @@ AIBase* P_UnitMoveAI::UpdateAI()
 				fX -= HEIGHTMAP_SCALE/2;	// Translate to center 
 				fZ -= HEIGHTMAP_SCALE/2;	// of square.*/
 
-				float fY = m_pkMap->Height(fX,fY);
+				float fY = m_pkMap->Height(fX,fZ);
 
 				m_pkObject->SetPos(Vector3(fX,fY,fZ));
 				return this;
