@@ -4,6 +4,7 @@
 
 #include <AL/al.h>
 #include <AL/alut.h>
+//#include <AL/altypes.h>
 #include "../../basic/zfvfs.h"
 #include "../script_interfaces/si_audio.h"
 #include "zfaudiosystem.h"
@@ -45,15 +46,15 @@ ZFSoundRes::~ZFSoundRes()
 			case AL_INVALID_NAME:
 				printf(" AL_INVALID_NAME\n");
 				break;
-			case AL_INVALID_ENUM:
-				printf(" AL_INVALID_ENUM\n");
-				break;
+//			case AL_INVALID_ENUM:
+//				printf(" AL_INVALID_ENUM\n");
+//				break;
 			case AL_INVALID_VALUE:
 				printf(" AL_INVALID_VALUE\n");
 				break;
-			case AL_INVALID_OPERATION:
-				printf(" AL_INVALID_OPERATION\n");
-				break;
+//			case AL_INVALID_OPERATION:
+//				printf(" AL_INVALID_OPERATION\n");
+//				break;
 			case AL_OUT_OF_MEMORY:
 				printf(" AL_OUT_OF_MEMORY\n");
 				break;
@@ -719,15 +720,15 @@ void ZFAudioSystem::Update()
 				case AL_INVALID_NAME:
 					printf(" AL_INVALID_NAME\n");
 					break;
-				case AL_INVALID_ENUM:
-					printf(" AL_INVALID_ENUM\n");
-					break;
+//				case AL_INVALID_ENUM:
+//					printf(" AL_INVALID_ENUM\n");
+//					break;
 				case AL_INVALID_VALUE:
 					printf(" AL_INVALID_VALUE\n");
 					break;
-				case AL_INVALID_OPERATION:
-					printf(" AL_INVALID_OPERATION\n");
-					break;
+//				case AL_INVALID_OPERATION:
+//					printf(" AL_INVALID_OPERATION\n");
+//					break;
 				case AL_OUT_OF_MEMORY:
 					printf(" AL_OUT_OF_MEMORY\n");
 					break;

@@ -34,6 +34,7 @@ ZeroTank::ZeroTank(char* aName,int iWidth,int iHeight,int iDepth)
 	m_pkZeroTank_Modify	= NULL;
 	m_pkZeroTankClientObject = NULL;
 
+	assert(0);
 } 
 
 void ZeroTank::OnInit() 

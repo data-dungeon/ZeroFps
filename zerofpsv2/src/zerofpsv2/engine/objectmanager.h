@@ -223,6 +223,7 @@ class ENGINE_API ObjectManager : public ZFSubSystem{
 		void LinkZones(int iFromId, int iToId);
 		ZoneData*	GetZoneData(int iID);
 		int CreateZone();
+		int CreateZone(Vector3 kPos,Vector3 kSize);
 		void DeleteZone(int iId);
 		int GetUnusedZoneID();		
 		bool NewWorld();		

@@ -47,8 +47,14 @@ void MistServer::Init()
 	//register property bös
 	RegisterPropertys();
 
+	//initiate our camera
+	m_pkCamera=new Camera(Vector3(0,0,0),Vector3(0,0,0),90,1.333,0.25,250);	
+
+	
 	//init mistland script intreface
 	MistLandLua::Init(pkObjectMan,pkScript);
+
+
 
 	SDL_WM_SetCaption("Mistland, the land of mist", NULL);
 }
@@ -60,7 +66,13 @@ void MistServer::RegisterPropertys()
 
 void MistServer::OnIdle() 
 {
+	pkFps->SetCamera(m_pkCamera);		
+	pkFps->GetCam()->ClearViewPort();	
+
+
 	Input();
+	
+ 	pkFps->UpdateCamera(); 		
 }
 
 void MistServer::OnSystem() 
@@ -70,6 +82,44 @@ void MistServer::OnSystem()
 
 void MistServer::Input()
 {
+	float speed = 20;
+
+	int x,z;		
+	pkInput->RelMouseXY(x,z);	
+
+	if(m_pkCameraObject)	
+	{	
+		if(pkInput->Pressed(KEY_X)){
+			speed*=0.25;
+		}
+	
+		float fSpeedScale = pkFps->GetFrameTime()*speed;
+
+		Vector3 newpos = m_pkCameraObject->GetLocalPosV();
+		Vector3 rot;
+		rot.Set(0,0,0);
+		
+		Matrix4 kRm = m_pkCameraObject->GetLocalRotM();
+
+		kRm.Transponse();
+	
+		if(pkInput->Pressed(KEY_D))	newpos += kRm.GetAxis(0) * fSpeedScale;		
+		if(pkInput->Pressed(KEY_A))	newpos += kRm.GetAxis(0) * -fSpeedScale;		
+		if(pkInput->Pressed(KEY_W))	newpos += kRm.GetAxis(2) * -fSpeedScale;
+		if(pkInput->Pressed(KEY_S))	newpos += kRm.GetAxis(2) * fSpeedScale;	
+	
+		if(pkInput->Pressed(KEY_Q))	rot.z += 5 * fSpeedScale;
+		if(pkInput->Pressed(KEY_E))	rot.z -= 5 * fSpeedScale;
+		
+		rot.x += z / 5.0;
+		rot.y -= x / 5.0;	
+
+		m_pkCameraObject->SetLocalPosV(newpos);
+		m_pkCameraObject->RotateLocalRotV(rot);	
+	
+	}
+
+
 
 };
 
@@ -138,6 +188,16 @@ void MistServer::OnServerClientPart(ZFClient* pkClient,int iConID)
 
 void MistServer::OnServerStart(void)
 {		
+	//create a camera for the server
+	m_pkCameraObject = pkObjectMan->CreateObjectFromScript("data/script/objects/t_camera.lua");
+	
+	if(m_pkCameraObject)
+	{	
+		CameraProperty* m_pkCamProp = (CameraProperty*)m_pkCameraObject->GetProperty("CameraProperty");
+		m_pkCamProp->SetCamera(m_pkCamera);
+		//m_pkCamProp->SetType(CAM_TYPE3PERSON);
+	}
+	
 	
 	
 	if(pkObjectMan->GetNumOfZones() != 0) {
@@ -167,3 +227,60 @@ void MistServer::OnCommand(int iID, ZGuiWnd *pkMainWnd)
 		pkScript->Call(m_pkScriptResHandle, "OnClickMap", 0, 0);
 */
 }
+
+Vector3 MistServer::Get3DMousePos()
+{
+	Vector3 dir;
+	float x,y;		
+	
+	//screen propotions
+	float xp=4;
+	float yp=3;
+	
+	pkInput->UnitMouseXY(x,y);	
+	dir.Set(x*xp,-y*yp,-1.5);
+	dir.Normalize();
+	
+	Matrix4 rm = m_pkCamera->GetRotM();
+	rm.Transponse();
+	dir = rm.VectorTransform(dir);
+	
+	return dir;
+}
+
+Object* MistServer::GetTargetObject()
+{
+	Vector3 start = pkFps->GetCam()->GetPos();
+	Vector3 dir = Get3DMousePos();
+
+	vector<Object*> kObjects;
+	kObjects.clear();
+	
+	pkObjectMan->TestLine(&kObjects,start,dir);
+	
+	
+	float closest = 9999999999;
+	Object* pkClosest = NULL;	
+	for(int i=0;i<kObjects.size();i++)
+	{
+		
+		float d = (start - kObjects[i]->GetWorldPosV()).Length();
+	
+		if(d < closest)
+		{
+			closest = d;
+			pkClosest = kObjects[i];
+		}
+	}
+	
+	return pkClosest;
+}
+
+
+
+
+
+
+
+
+

@@ -624,14 +624,16 @@ bool ZFScriptSystem::Run(ZFResourceHandle* pkResHandle)
 	{
 		sprintf(szError, "Failed to run scrip: \"%s\"! Bad path.\n", strPath.c_str());
 		printf(szError);
-		ZFAssert(0, szError);
+		//ZFAssert(0, szError);
+		return false;
 	}
 
 	if( lua_dofile(pkScript->m_pkLuaState, strPath.c_str()) != 0 )
 	{
 		sprintf(szError, "Failed to run scrip! \"%s\" does not exist.\n", strPath.c_str());
 		printf(szError);
-		ZFAssert(0, szError);	
+		//ZFAssert(0, szError);	
+		return false;
 	}	
 
 	return true;

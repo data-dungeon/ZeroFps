@@ -74,7 +74,7 @@ bool ObjectManager::StartUp()
 
 	m_fEndTimeForceNet		= m_pkZeroFps->GetEngineTime();
 
-	m_kWorldDirectory = "../data/testmap/";
+	m_kWorldDirectory = "../data/testmap";
 
 	m_pkWorldObject						=	new Object();	
 	m_pkWorldObject->GetName()			= "WorldObject";
@@ -1171,7 +1171,7 @@ void ObjectManager::Test_CreateZones()
 	Vector3 kRandOffset;
 
 	MazeGen GaaMaze;
-	GaaMaze.Load("../data/maze.bmp");
+	GaaMaze.Load("./maze.bmp");
 
 //	ZoneData kZData;
 
@@ -1188,13 +1188,13 @@ void ObjectManager::Test_CreateZones()
 				object->SetParent(GetWorldObject());				
 				object->GetUpdateStatus()=UPDATE_DYNAMIC;
 */				
-
 				kPos = Vector3(x*iZonesSize,y,z*iZonesSize);
 				
+				m_kZones[id].m_bUsed = true;
 				m_kZones[id].m_bActive = false;
 				m_kZones[id].m_pkZone = NULL;
-				m_kZones[id].m_kMin = -Vector3(iZonesSize/2,iZonesSize/2,iZonesSize/2);
-				m_kZones[id].m_kMax =  Vector3(iZonesSize/2,iZonesSize/2,iZonesSize/2);
+				m_kZones[id].m_kMin = Vector3(-iZonesSize/2,-iZonesSize/2,-iZonesSize/2);
+				m_kZones[id].m_kMax = Vector3(iZonesSize/2,iZonesSize/2,iZonesSize/2);
 				m_kZones[id].m_kPos   = kPos; 
 				
 /*				m_kZones[id].m_bActive = true;	
@@ -1245,7 +1245,14 @@ void ObjectManager::Test_DrawZones()
 			m_pkRender->DrawAABB( kMin,kMax, Vector3(1,0,0) );
 		else 
 			m_pkRender->DrawAABB( kMin,kMax, Vector3(0,1,0) );
+	
+		for(int j = 0 ;j< m_kZones[i].m_iZoneLinks.size();j++)
+		{	
+			glColor4f(0,0,1,0);
+			m_pkRender->Line(m_kZones[i].m_kPos,m_kZones[m_kZones[i].m_iZoneLinks[j]].m_kPos);
 		}
+	
+	}
 }
 
 void ObjectManager::AutoConnectZones()
@@ -1510,25 +1517,32 @@ vector<int>	ObjectManager::GetActiveZoneIDs(int iTracker)
 
 int ObjectManager::CreateZone()
 {
+	return CreateZone(Vector3(0,0,0),Vector3(8,8,8));
+}
+
+int ObjectManager::CreateZone(Vector3 kPos,Vector3 kSize)
+{
+	Vector3 maxmin;
+	maxmin.Set(kSize.x/2,kSize.y/2,kSize.z/2);
+	
 	int id = GetUnusedZoneID();
 
 	m_kZones[id].m_bUsed = true;
 	m_kZones[id].m_bActive = false;	
 	m_kZones[id].m_iZoneID = id;
 	m_kZones[id].m_pkZone = NULL;
-	m_kZones[id].m_kMax = Vector3(10,10,10);
-	m_kZones[id].m_kMin = Vector3(-10,-10,-10);	
-	m_kZones[id].m_kPos = Vector3(0,0,0);
+	m_kZones[id].m_kMax = maxmin;
+	m_kZones[id].m_kMin = -maxmin;	
+	m_kZones[id].m_kPos = kPos;
 
 	m_kZones[id].m_iZoneLinks.clear();
 
 	m_kZones[id].m_fInactiveTime = 0;
 	m_kZones[id].m_iRange = 0;
 	
-	cout<<"created zone"<<endl;
-	
 	return id;
 }
+
 
 void ObjectManager::DeleteZone(int iId)
 {
@@ -1781,6 +1795,8 @@ int ObjectManager::GetUnusedZoneID()
 	
 	ZoneData newzone;
 	newzone.m_bUsed = false;
+	newzone.m_iZoneID = m_kZones.size() - 1;
+	
 	m_kZones.push_back(newzone);
 	
 	return m_kZones.size() - 1;

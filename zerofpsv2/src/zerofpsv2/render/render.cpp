@@ -348,12 +348,17 @@ void Render::SetFont(char* aFont) {
 
 void Render::Line(Vector3 kPos1,Vector3 kPos2)
 {
+	glDisable(GL_LIGHTING );
 	glDisable(GL_TEXTURE_2D);
+	
 	glBegin(GL_LINES);
 		glVertex3f(kPos1.x,kPos1.y,kPos1.z);
 		glVertex3f(kPos2.x,kPos2.y,kPos2.z);		
 	glEnd();
+	
 	glEnable(GL_TEXTURE_2D);
+	glEnable(GL_LIGHTING);
+
 }
 
 void Render::SetColor(Vector3 kColor)

@@ -109,7 +109,7 @@ void MadProperty::Update()
 		glRotatef(- rot.z ,0,0,1);		
 		glRotatef(- rot.x ,1,0,0);*/
 
-		pkRender->Draw_AxisIcon(5);
+//		pkRender->Draw_AxisIcon(5);
 
 		Draw_All(m_pkZeroFps->m_iMadDraw);
 	glPopMatrix();
