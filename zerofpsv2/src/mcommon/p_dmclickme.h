@@ -28,6 +28,9 @@ class MCOMMON_API P_DMClickMe: public Property {
 		void *m_pkScript;
 	
 	public:
+		// lite fulhackigt
+		bool m_bIsHouse;
+
 		void Click();
 		void Click(int iObjID);
 

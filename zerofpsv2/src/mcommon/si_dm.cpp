@@ -3,6 +3,7 @@
 #include "p_dmhq.h"
 #include "p_dmgun.h"
 #include "p_dmmission.h"
+#include "p_dmclickme.h"
 #include "p_dmcharacter.h"
 #include "../zerofpsv2/engine/p_pfpath.h" 
 
@@ -81,6 +82,7 @@ void DMLua::Init(EntityManager* pkObjMan,ZFScriptSystem* pkScript)
 
 	// SI for houses
 	pkScript->ExposeFunction("SwallowPlayer", DMLua::SwallowPlayerLua);
+	pkScript->ExposeFunction("SetIsHouse", DMLua::IsHouseLua);
 
 	cout << "DM LUA Scripts Loaded" << endl;
 
@@ -511,7 +513,7 @@ int DMLua::SetMoveSpeedLua(lua_State* pkLua)
 
 	if (pkChar)
 	{
-		pkChar->SetMoveSpeed(dSpeed);
+		pkChar->SetMoveSpeed(float(dSpeed));
 		return 0;
 	}
 
@@ -1066,8 +1068,8 @@ int DMLua::GetVarLua (lua_State* pkLua)
 
 	if ( kIte == m_kVars.end() )
 	{
-		cout << "Warning! DMLua::GetVarLua: Coulnd't find key:" << cKey << ". Setting value to -1." << endl;
-		m_kVars[cKey] = -1;
+		cout << "Warning! DMLua::GetVarLua: Coulnd't find key:" << cKey << ". Setting value to 0." << endl;
+		m_kVars[cKey] = 0;
 	}
 
 	double dValue;
@@ -1346,7 +1348,7 @@ int DMLua::SwallowPlayerLua(lua_State* pkLua)
 {
 	Entity* pkHouse = TestScriptInput (3, pkLua);
 
-	double dTime, dInhabID;
+	double dTime, dVisiter;
 
 	if ( pkHouse == 0 )
 	{
@@ -1354,10 +1356,10 @@ int DMLua::SwallowPlayerLua(lua_State* pkLua)
 		return 0;
 	}
 
-	g_pkScript->GetArgNumber(pkLua, 1, &dInhabID);
+	g_pkScript->GetArgNumber(pkLua, 1, &dVisiter);
 	g_pkScript->GetArgNumber(pkLua, 2, &dTime);
 
-	Entity* pkInhabit = g_pkObjMan->GetObjectByNetWorkID( int(dInhabID) );
+	Entity* pkInhabit = g_pkObjMan->GetObjectByNetWorkID( int(dVisiter) );
 
 	if ( pkInhabit == 0 )
 	{
@@ -1365,12 +1367,47 @@ int DMLua::SwallowPlayerLua(lua_State* pkLua)
 		return 0;
 	}
 
-	cout << "InhabID:" << dInhabID << " entered house." << endl;
+	P_DMClickMe* pkClick = (P_DMClickMe*)pkHouse->GetProperty("P_DMClickMe");
+	
+	if ( pkClick == 0 )
+	{
+		cout << "Warning! DMLua::SwallowPlayerLua: House doesn't have a P_DMClickMe!" << endl;
+		return 0;
+	}
+
+	pkClick->AddVisiter ( int(dVisiter), float(dTime) );
 
 	// turn off inhabitant
 	pkInhabit->SetUpdateStatus (UPDATE_NONE);
-	pkInhabit->SetParent ( pkHouse );
-	pkInhabit->SetUseZones (false);
+
+	return 0;
+}
+
+// ------------------------------------------------------------------------------------------------
+// Takes entID, bool
+int DMLua::IsHouseLua(lua_State* pkLua)
+{
+	Entity* pkHouse = TestScriptInput (2, pkLua);
+
+	double dBool;
+
+	if ( pkHouse == 0 )
+	{
+		cout << "Warning! DMLua::IsHouseLua: Wrong number of arg (HouseID, IsHouse(bool)) or entityID not found." << endl;
+		return 0;
+	}
+
+	P_DMClickMe* pkClick = (P_DMClickMe*)pkHouse->GetProperty("P_DMClickMe");
+	
+	if ( pkClick == 0 )
+	{
+		cout << "Warning! DMLua::IsHouseLua: House doesn't have a P_DMClickMe!" << endl;
+		return 0;
+	}
+
+	g_pkScript->GetArgNumber(pkLua, 1, &dBool);
+
+	pkClick->m_bIsHouse = dBool;
 
 	return 0;
 }

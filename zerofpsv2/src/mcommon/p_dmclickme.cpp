@@ -41,13 +41,10 @@ void P_DMClickMe::Update()
 				return;
 			}
 			else
-			{
-				pkVisiter->GetParent()->RemoveChild (pkVisiter);
 				pkVisiter->SetUpdateStatus(UPDATE_ALL);
-			}
 
 			// remove from list
-			//m_kVisiters.remove ( kIte );
+			m_kVisiters.erase ( kIte++ );
 
 		}
 	}
@@ -104,16 +101,16 @@ void P_DMClickMe::Click(int iObjID)
 	}
 
 	vector<ARG_DATA> kParams;
-	
+
 	int iValue = iObjID;
 	
 	ARG_DATA kData;
 	kData.eType = tINT;
-	kData.pData = &iValue;
+	kData.pData = &iObjID;
 
 	kParams.push_back (kData);
 
-	((P_ScriptInterface*)m_pkScript)->CallFunction ( "Click", &kParams );
+	((P_ScriptInterface*)m_pkScript)->CallFunction ( "Click", &kParams );	
 }
 
 // ------------------------------------------------------------------------------------------
@@ -121,7 +118,6 @@ void P_DMClickMe::Click(int iObjID)
 void P_DMClickMe::AddVisiter( int iObjID, float fVisitTime )
 {
 	Visiter kNewVisit = { iObjID, fVisitTime };
-
 	m_kVisiters.push_back ( kNewVisit );
 }
 

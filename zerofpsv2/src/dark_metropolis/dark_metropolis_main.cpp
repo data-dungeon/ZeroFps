@@ -623,7 +623,33 @@ void DarkMetropolis::Input()
 			// Clicked a ClickMe object :)
 			if(P_DMClickMe* pkClick = (P_DMClickMe*)pkPickEnt->GetProperty("P_DMClickMe"))
 			{
-				pkClick->Click( m_kSelectedEntitys.at(0) );
+				// loop through all selected characters.. hmm :/
+				for ( int i = 0; i < m_kSelectedEntitys.size(); i++ )
+				{
+					if(Entity* pkEnt = m_pkObjectMan->GetObjectByNetWorkID(m_kSelectedEntitys[i]))				
+					{
+						// is the character close enough?
+						if( (pkPickEnt->GetWorldPosV() - pkEnt->GetWorldPosV()).Length() < 4) 
+						{
+							pkClick->Click( m_kSelectedEntitys[i] );
+
+							// if is house, deselect
+							if ( pkClick->m_bIsHouse )
+								SelectAgent (m_kSelectedEntitys[i], false, false, false);
+						}
+						else
+						if(P_PfPath* pkPF = (P_PfPath*)pkEnt->GetProperty("P_PfPath"))
+						{				
+							//randomize position a bit if theres many characters selected
+							if(m_kSelectedEntitys.size() > 1)
+								pkPF->MakePathFind(m_kPickPos + GetFormationPos(m_iCurrentFormation,m_kSelectedEntitys.size(),i));								
+							else
+								pkPF->MakePathFind(m_kPickPos);
+						}
+					}
+				}
+				
+				//m_kSelectedEntitys.clear();
 			}
 			
 			//pick item
