@@ -126,26 +126,43 @@ int Skill::Use(int iTargetID,const Vector3& kPos,const Vector3& kDir)
 	if(!m_pkScriptFileHandle->IsValid())
 	{
 		cout<<"WARNING: skill script "<<m_pkScriptFileHandle->GetRes()<<" not loaded"<<endl;
-		return 1;	
+		return -1;	
 	}
 	
 	//check reload
 	if(m_fTimeLeft != 0)
 	{
 		cout<<"skill not reloaded yet"<<endl;
-		return 2;	
+		return 1;	
 	}
 	
 	if(m_iLevel < 1)
 	{
 		cout<<"got to have at least level 1 of a skill to use it"<<endl;
-		return 3;	
+		return 2;	
 	}
 	
 	
 	//character target  check if a character is targeted
-	if(m_iType == eCHARACTER_TARGET && !m_pkEntityManager->GetPropertyFromEntityID(iTargetID,"P_CharacterProperty")) 
-		return 4;
+	if(m_iType == eCHARACTER_TARGET)
+	{
+		if(!m_pkEntityManager->GetPropertyFromEntityID(iTargetID,"P_CharacterProperty"))
+			return 3;
+	 
+		if(Entity* pkOwner = m_pkEntityManager->GetEntityByID(m_iOwnerID))
+		{
+			if(Entity* pkTarget = m_pkEntityManager->GetEntityByID(iTargetID))
+			{
+				Vector3 kOwnerDir = pkOwner->GetWorldRotM().VectorTransform(Vector3(0,0,1));
+				Vector3 kDir = (pkTarget->GetWorldPosV() - pkOwner->GetWorldPosV()).Unit();
+		
+				if(RadToDeg(kOwnerDir.Angle(kDir)) > 30)
+					return 4;
+				
+				//cout<<"angle "<<RadToDeg(kOwnerDir.Angle(kDir))<<endl;
+			}
+		}
+	}
 	
 	//item target  check that an item is targeted
 	if(m_iType == eITEM_TARGET && !m_pkEntityManager->GetPropertyFromEntityID(iTargetID,"P_Item")) 
@@ -185,7 +202,7 @@ int Skill::Use(int iTargetID,const Vector3& kPos,const Vector3& kDir)
 	if(!m_pkScript->Call(m_pkScriptFileHandle, "Use",args))
 	{
 		cout<<"WARNING: could not call update function for skill script "<<m_pkScriptFileHandle->GetRes()<<" level "<<m_iLevel<<endl;
-		return 6;
+		return -1;
 	}			
 	
 	//reset reload timer
