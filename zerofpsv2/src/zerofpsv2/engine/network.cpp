@@ -357,29 +357,40 @@ void NetWork::ClientStart(const char* szIp, const char* szLogin, const char* szP
 
 
 	// DNS LookUp.
-/*	IPaddress kTargetIP;
-	strFinalTarget = szIp;
-
-	if( !IsValidIPAddress( szIp ))
+	IPaddress kTargetIP;
+	
+	//if not a valis IP, try dns resolve
+	if(!IsValidIPAddress( szIp ))
 	{
-		if( DnsLookUp( szIp, kTargetIP ))
+		if(DnsLookUp( szIp, kTargetIP ))
 		{
-			kTargetIP.port = m_iDefPort;
-			AddressToStr(&kTargetIP, szFinalTarget);
+			//setup port
+			if(kTargetIP.port == 0)
+			{
+				kTargetIP.port = 0;
+				kTargetIP.port = kTargetIP.port | ((m_iDefPort >> 8) & 0xff);  
+				kTargetIP.port = kTargetIP.port | ((m_iDefPort << 8) & 0xff00);  							
+			}
+		
+			char res[256];
+			AddressToStr(&kTargetIP, res);
+			cout<<"resolved "<<szIp<<" to "<<res<<endl;			
+		}
+		else
+		{
+			cout << "Failed dns lookup for "<<szIp<<endl;
+			return;
 		}
 	}
-	else 
-	{*/
-//		kTargetIP.port = m_iDefPort;
-//	}
+	else //else asume normal ip
+	{
+		char szFinalTarget[256];
+		sprintf(szFinalTarget, "%s:%d", szIp, m_iDefPort);
+		StrToAddress(szFinalTarget,&kTargetIP); 		
+	}
 
-	IPaddress kTargetIP;
-	char szFinalTarget[256];
-	sprintf(szFinalTarget, "%s:%d", szIp, m_iDefPort);
-	StrToAddress(szFinalTarget,&kTargetIP); 
-
-	cout << "FinalTarget IP = " << szFinalTarget << endl;
-
+	
+	
 	NetPacket NetP;
 
 	NetP.Clear();
@@ -1133,9 +1144,9 @@ void NetWork::RunCommand(int cmdid, const CmdArgument* kCommand)
 			break;
 
 		case FID_DNS:
-			DisconnectAll();
+			//DisconnectAll();
 
-			/*
+			
 			if(kCommand->m_kSplitCommand.size() <= 1)
 				return;
 
@@ -1149,7 +1160,7 @@ void NetWork::RunCommand(int cmdid, const CmdArgument* kCommand)
 			}
 			else
 				m_pkConsole->Printf("Failed to find ip for: %s.", kCommand->m_kSplitCommand[1].c_str());
-			*/
+			
 			break;
 		}	
 
