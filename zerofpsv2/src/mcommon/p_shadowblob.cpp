@@ -41,9 +41,11 @@ void P_ShadowBlob::Update()
 	m_pkZShaderSystem->MatrixPush();
 	m_pkZShaderSystem->MatrixTranslate(m_pkObject->GetIWorldPosV()+m_kOffset);
 	
+	float x = m_kScale.x/2.0;
+	float z = m_kScale.z/2.0;
 	
-	m_pkZShaderSystem->AddQuadV(	Vector3(-m_kScale.x,0,m_kScale.z),Vector3(m_kScale.x,0,m_kScale.z),
-											Vector3(m_kScale.x,0,-m_kScale.z),Vector3(-m_kScale.x,0,-m_kScale.z));												
+	m_pkZShaderSystem->AddQuadV(	Vector3(-x,0, z),Vector3( x,0, z),
+											Vector3( x,0,-z),Vector3(-x,0,-z));												
 
 	m_pkZShaderSystem->AddQuadUV(	Vector2(0,0),Vector2(1,0),Vector2(1,1),Vector2(0,1));
 												
@@ -58,10 +60,10 @@ void P_ShadowBlob::Init()
 	m_pkMaterial = new ZMaterial;
 	m_pkMaterial->GetPass(0)->m_kTUs[0]->SetRes("data/textures/shadowblob.bmp");
 	m_pkMaterial->GetPass(0)->m_iPolygonModeFront = FILL_POLYGON;
-	m_pkMaterial->GetPass(0)->m_bLighting = true;		
-	m_pkMaterial->GetPass(0)->m_bBlend = true;
-	m_pkMaterial->GetPass(0)->m_iBlendDst = ZERO_BLEND_DST;
-	m_pkMaterial->GetPass(0)->m_iBlendSrc = SRC_COLOR_BLEND_DST;
+	m_pkMaterial->GetPass(0)->m_bLighting = 			false;		
+	m_pkMaterial->GetPass(0)->m_bBlend = 				true;
+	m_pkMaterial->GetPass(0)->m_iBlendDst = 			ZERO_BLEND_DST;
+	m_pkMaterial->GetPass(0)->m_iBlendSrc = 			SRC_COLOR_BLEND_DST;
 }
 
 void P_ShadowBlob::Save(ZFIoInterface* pkPackage)
