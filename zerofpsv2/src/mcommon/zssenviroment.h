@@ -27,8 +27,11 @@ class MCOMMON_API EnvSetting
 	
 		string	m_strMusic;
 		string	m_strParticles;
-		string	m_strSkybox1;		
-		string	m_strSkybox2;				
+		
+		string	m_strSpace;		
+		string	m_strSky;		
+		string	m_strCloudLow;				
+		string	m_strCloudHi;				
 		
 		Vector4	m_kSunDiffuseColor;
 		Vector4	m_kSunAmbientColor;		

@@ -41,6 +41,8 @@ class MCOMMON_API P_Enviroment: public Property {
 		
 		
 		void UpdateEnviroment();
+		
+		void DrawSky();
 						
 	public:
 

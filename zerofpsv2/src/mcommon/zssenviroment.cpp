@@ -106,10 +106,14 @@ bool EnvSetting::LoadEnviroment(const char* czName)
 			m_strParticles = m_kIni.GetValue("enviroment","particles");
 	
 		//--------------Skybox
-		if(m_kIni.KeyExist("enviroment","skybox1"))
-			m_strSkybox1 = m_kIni.GetValue("enviroment","skybox1");	
-		if(m_kIni.KeyExist("enviroment","skybox2"))
-			m_strSkybox2 = m_kIni.GetValue("enviroment","skybox2");	
+		if(m_kIni.KeyExist("enviroment","space"))
+			m_strSpace = m_kIni.GetValue("enviroment","space");	
+		if(m_kIni.KeyExist("enviroment","sky"))
+			m_strSky = m_kIni.GetValue("enviroment","sky");	
+		if(m_kIni.KeyExist("enviroment","cloudhi"))
+			m_strCloudHi = m_kIni.GetValue("enviroment","cloudhi");	
+		if(m_kIni.KeyExist("enviroment","cloudlow"))
+			m_strCloudLow = m_kIni.GetValue("enviroment","cloudlow");	
 	
 		//---------------FOG
 		//fog start/stop
@@ -176,9 +180,13 @@ void EnvSetting::Clear()
 	
 	m_strMusic		= "";
 	m_strParticles = "";
-	m_strSkybox1	= "";
-	m_strSkybox2	= "";
 	
+	m_strSpace		= "";
+	m_strSky			= "";		
+	m_strCloudLow	= "";				
+	m_strCloudHi	= "";			
+	
+		
 	m_kSunDiffuseColor.Set(1.6,1.6,1.6,1.0);					
 	m_kSunAmbientColor.Set(0.8,0.8,0.8,1.0);		
 	m_kSunPos.Set(0.5,0.5,0.0);		
