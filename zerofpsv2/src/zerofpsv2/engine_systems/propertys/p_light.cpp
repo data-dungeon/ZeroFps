@@ -76,7 +76,7 @@ void P_Light::DrawFlare()
 	if(!m_pkZeroFps->GetCam()->GetFrustum()->PointInFrustum(m_pkLightSource->kPos))
 		return;
 
-/*
+
 	static ZMaterial* pkTestMat=NULL;
 	
 	if(!pkTestMat)
@@ -90,7 +90,7 @@ void P_Light::DrawFlare()
 		pkTestMat->GetPass(0)->m_bBlend = 					true;	
 		pkTestMat->GetPass(0)->m_iBlendSrc = 				SRC_ALPHA_BLEND_SRC;
 		pkTestMat->GetPass(0)->m_iBlendDst = 				ONE_MINUS_SRC_ALPHA_BLEND_DST;	
-	}*/
+	}
 
 
 		
@@ -99,7 +99,7 @@ void P_Light::DrawFlare()
 		//do occulusion test	
 		m_pkZShaderSystem->OcculusionBegin();
 		
-		m_pkRender->DrawBillboardQuad(m_pkZeroFps->GetCam()->GetRotM(),m_pkLightSource->kPos,0.1,(ZMaterial*)m_pkMaterial->GetResourcePtr());		
+		m_pkRender->DrawBillboardQuad(m_pkZeroFps->GetCam()->GetRotM(),m_pkLightSource->kPos,0.1,pkTestMat);		
 		//m_pkRender->Line(m_pkLightSource->kPos-0.02,m_pkLightSource->kPos+0.02,Vector3(1,1,1));		
 		int iSamples = m_pkZShaderSystem->OcculusionEnd();
 		
