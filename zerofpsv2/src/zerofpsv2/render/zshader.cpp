@@ -716,6 +716,7 @@ void ZShader::Draw()
 
 	//strange reason this has to be here, push_attrib does not take it =(
 	glDisable(GL_VERTEX_PROGRAM_ARB);
+	glDisable(GL_FRAGMENT_PROGRAM_ARB);
 }
 
 
