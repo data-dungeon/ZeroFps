@@ -12,8 +12,10 @@ class LevelManager;
 class PhysicsEngine;
 class HeightMap;
 class PathFind;
+class PathFindBuilder;
 
 #include "pathfind.h"
+#include "pathfindbuilder.h"
 #include "soundbuffermanager.h"
 #include "openalsystem.h"
 #include "camera.h"

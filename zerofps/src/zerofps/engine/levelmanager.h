@@ -28,7 +28,6 @@ class ENGINE_API LevelManager : public ZFObject {
 		ZFIni* 				m_pkIni;
 		Light*				m_pkLight;
 		
-		PathFind*			m_pkPathFind;
 		HeightMap* 			m_pkMap;
 		Object*				m_pkHeightMapObject;
 		

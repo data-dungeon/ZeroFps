@@ -4,6 +4,8 @@
 
 #include "pathfind.h"
 
+int PathFind::s_iMapWidth = 256;
+
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
@@ -12,7 +14,7 @@ PathFind::PathFind(int* piMapTerrain, int iMapWidth, unsigned int uiBlockedValue
 	: ZFObject("PathFind") , m_pkSearchNode( NULL ), BLOCKED_VALUE(uiBlockedValue)
 {
 	m_piMapTerrain = piMapTerrain;
-	m_iMapWidth = iMapWidth;
+	s_iMapWidth = iMapWidth;
 }
 
 PathFind::~PathFind()
@@ -20,271 +22,47 @@ PathFind::~PathFind()
 
 }
 
-///////////////////////////////////////////////////////////////////////
-// Name:		Reset
-// Description:	Public function that the user can call to abort and destroy the path.
-//
-void PathFind::Reset()
+bool PathFind::Rebuild( int iStartPosX, int iStartPosY, int iDestPosX, int iDestPosY )
 {
-	DeleteAllNodes();
-	while(m_kqPath.size())
-		m_kqPath.pop();
-}
+	m_pkStartNode = new Node(iStartPosX, iStartPosY);
+	m_pkDestNode = new Node(iDestPosX, iDestPosY);
 
-///////////////////////////////////////////////////////////////////////
-// Name:		FillQueue
-// Description:	Fills a queue with Point´s that forms a grid path
-//				of leagal moves between Start and Dest node.
-//				Return false if the destintion was not found.
-//
-bool PathFind::FillQueue()
-{
-	// Börja med att tömma kön.
-	while(m_kqPath.size())
-		m_kqPath.pop();
-
-	SEARCH_STATE uiSearchState = m_eState;
+	m_eState = ACTIVE;
 	
-	do
-	{
-		uiSearchState = FindNext();
-	} while(uiSearchState == ACTIVE); // Fortsätt så länge uiSearchState är Aktiv
+	// Initialise the AStar specific parts of the Start Node
+	// The user only needs fill out the state information
+	m_pkStartNode->m_fGValue = 0; 
 
-	if(uiSearchState == FOUND_DESTINATION)
-	{
-		// Set search node to start node
-		m_pkSearchNode = m_pkStartNode;
-		
-		Point kSqr(m_pkStartNode->m_kSqrPos.x, m_pkStartNode->m_kSqrPos.y);
-		m_kqPath.push(kSqr);
-	
-		// Hämta alla path noder, en efter en
-		// och pusha dem till en kö.
-		NodePtr pkNode = m_pkStartNode;
-		while(1)
-		{
-			pkNode = GetNextNode();
-			if(!pkNode)
-				break;
+	// Beräkna den heuristiska kostnaden
+	m_pkStartNode->m_fHValue = m_pkStartNode->GetHeuristicCost(m_pkDestNode->m_kSqrPos);
+	m_pkStartNode->m_fFValue = m_pkStartNode->m_fGValue + m_pkStartNode->m_fHValue;
+	m_pkStartNode->m_pkParent = 0;
 
-			kSqr.x = pkNode->m_kSqrPos.x;
-			kSqr.y = pkNode->m_kSqrPos.y;
-			m_kqPath.push(kSqr);
-		};
+	// Push the start node on the Open list
+	m_kvOpenList.push_back( m_pkStartNode ); // heap now unsorted
 
-		DeleteNodes();
-	}
-	else
-	{
-		// Hittade ingen lösning på problemet.
-		return false;
-	}
+	// Sort back element into heap
+	push_heap( m_kvOpenList.begin(), m_kvOpenList.end(), HeapComp() );
 
-	return false;
+	// Fill a queue with all (x,y) positions 
+	// from the steps from start to end
+	return FillQueue();
 }
 
-///////////////////////////////////////////////////////////////////////
-// Name:		GetTerrainCost
-// Description:	Gets a cost value from a square in the map terrain array.
-//
-int PathFind::GetTerrainCost(int x, int y)
+bool PathFind::GetNextStep(int &riSquareX, int &riSquareY)
 {
-	if( x < 0 || x >= m_iMapWidth ||
-		y < 0 || y >= m_iMapWidth)
+	if(m_kqPath.size() > 0)
 	{
-		return BLOCKED_VALUE;	 
-	}
-
-	return m_piMapTerrain[(y*m_iMapWidth)+x];
-}
-
-///////////////////////////////////////////////////////////////////////
-// Name:		GetHeuristicCost
-// Description:	Get´s a value that is a estimate of how far we 
-//				are from the destination.
-//
-float PathFind::Node::GetHeuristicCost( Point nodeGoal )
-{
-	float fDistanceX = float( ( (float)m_kSqrPos.x - (float)nodeGoal.x) );
-	float fDistanceY = float( ( (float)m_kSqrPos.y - (float)nodeGoal.y) );
-	return ((fDistanceX*fDistanceX) + (fDistanceY*fDistanceY));
-}
-
-///////////////////////////////////////////////////////////////////////
-// Name:		DeleteUnusedNodes
-// Description:	Delete nodes in the open and closed list 
-//				that aren't needed for the solution.
-//
-void PathFind::DeleteUnusedNodes()
-{
-	NODLISTITER itOpen = m_kvOpenList.begin();
-	while(itOpen != m_kvOpenList.end())
-	{
-		NodePtr pkNode = (*itOpen);
-
-		if(!pkNode->m_pkChild)
-		{
-			delete pkNode;
-			pkNode = NULL;
-		}
-
-		itOpen ++;
-	}
-
-	m_kvOpenList.clear();
-
-	NODLISTITER itClosed;
-	for(itClosed = m_kvClosedList.begin(); 
-	    itClosed != m_kvClosedList.end(); 
-		itClosed ++ )
-	{
-		NodePtr pkNode = (*itClosed);
-
-		if(!pkNode->m_pkChild)
-		{
-			delete pkNode;
-			pkNode = NULL;
-		}
-	}
-
-	m_kvClosedList.clear();
-}
-
-///////////////////////////////////////////////////////////////////////
-// Name:		DeleteAllNodes
-// Description:	Frigör minne för alla noder som finns i bägge listorna. 
-//
-void PathFind::DeleteAllNodes()
-{
-	NODLISTITER itOpen = m_kvOpenList.begin();
-	while( itOpen != m_kvOpenList.end() )
-	{
-		NodePtr pkNode = (*itOpen);
-		delete pkNode;
-		itOpen++;
-	}
-
-	m_kvOpenList.clear();
-
-	NODLISTITER itClosed;
-	for( itClosed = m_kvClosedList.begin(); 
-	     itClosed != m_kvClosedList.end(); 
-		 itClosed ++ )
-	{
-		NodePtr pkNode = (*itClosed);
-		delete pkNode;
-	}
-
-	m_kvClosedList.clear();
-}
-
-///////////////////////////////////////////////////////////////////////
-// Name:		DeleteNodes
-// Description:	Frigör minne för alla söknoder.  
-//				Skall anropas efter varje fullständig sökning.
-//
-void PathFind::DeleteNodes()
-{
-	NodePtr pkNode = m_pkStartNode;
-
-	if( m_pkStartNode->m_pkChild )
-	{
-		do
-		{
-			NodePtr pkNodeToDelete = pkNode;
-			pkNode = pkNode->m_pkChild;
-			delete pkNodeToDelete;
-			pkNodeToDelete = NULL;
-
-		} while( pkNode != m_pkDestNode );
-
-		delete pkNode;
-	}
-	else
-	{
-		// Startnod och slutnod är lika och därför
-		// de enda noderna som finns.
-		delete m_pkStartNode;
-		delete m_pkDestNode;
-	}
-}
-
-///////////////////////////////////////////////////////////////////////
-// Name:		GetNextNextDiagonalStep
-// Description: Tests if the next-next step is a square that is in a diagonal
-//				location according to pkNode, and if so return that node.
-//
-PathFind::NodePtr PathFind::GetNextNextDiagonalStep(PathFind::NodePtr pkNode)
-{
-	int iXPos = pkNode->m_kSqrPos.x;
-	int iYPos = pkNode->m_kSqrPos.y;
-
-	if(pkNode->m_pkChild == NULL)
-		return NULL;
-	if(pkNode->m_pkChild->m_pkChild == NULL)
-		return NULL;
-
-	NodePtr pkNextNext = pkNode->m_pkChild->m_pkChild;
-	if(pkNextNext->m_kSqrPos.x == iXPos+1 && pkNextNext->m_kSqrPos.y == iYPos+1)
-		return pkNextNext;
-	if(pkNextNext->m_kSqrPos.x == iXPos-1 && pkNextNext->m_kSqrPos.y == iYPos+1)
-		return pkNextNext;
-	if(pkNextNext->m_kSqrPos.x == iXPos-1 && pkNextNext->m_kSqrPos.y == iYPos-1)
-		return pkNextNext;
-	if(pkNextNext->m_kSqrPos.x == iXPos+1 && pkNextNext->m_kSqrPos.y == iYPos-1)
-		return pkNextNext;
-
-	return NULL;
-}
-
-///////////////////////////////////////////////////////////////////////
-// Name:		GetNextNode
-// Description: Get next node from the search tree.
-//
-PathFind::NodePtr PathFind::GetNextNode()
-{
-	if( m_pkSearchNode )
-	{
-		if( m_pkSearchNode->m_pkChild )
-		{
-			NodePtr pkChild, pkNextNext;
-
-			if((pkNextNext=GetNextNextDiagonalStep(m_pkSearchNode)))
-				pkChild = pkNextNext;
-			else
-				pkChild = m_pkSearchNode->m_pkChild;
-
-			m_pkSearchNode = pkChild;
-			return pkChild;
-		}
-	}
-
-	return NULL;
-}
-
-///////////////////////////////////////////////////////////////////////
-// Name:		AddNeighbour
-// Description: Skapa en ny granne och initiera den med (x,y) data.
-//
-bool PathFind::AddNeighbour( Point &kNewSquare )
-{
-	NodePtr pkNode = new Node;
-
-	if( pkNode )
-	{
-		pkNode->m_kSqrPos = kNewSquare;
-		m_kvNeighbours.push_back( pkNode );
+		Point sqr = m_kqPath.front();
+		riSquareX = sqr.x; 
+		riSquareY = sqr.y;
+		m_kqPath.pop();
 		return true;
 	}
-
 	return false;
 }
 
-///////////////////////////////////////////////////////////////////////
-// Name:		FindNext
-// Description:  
-//
-PathFind::SEARCH_STATE PathFind::FindNext()
+PathFind::SEARCH_STATE PathFind::SearchStep()
 {
 	// Avbryt om sökningen är avklarad.
 	if( m_eState == FOUND_DESTINATION )
@@ -295,16 +73,14 @@ PathFind::SEARCH_STATE PathFind::FindNext()
 	// slut position.
 	if( m_kvOpenList.empty() )
 	{
-		DeleteAllNodes();
+		FreeAllNodes();
 		m_eState = CANT_REACH_DESTINATION;
 		return m_eState;
 	}
 	
-	NodePtr pkNode;
-	
-	// Välj ut och hämta ut den bästa noden (som har lägst f) 
-	// ur den öppna listan och minska listans storlek.
-	pkNode = m_kvOpenList.front();
+	// Hämta den nod som är bäst, som har lägst f, 
+	// och ta bort den ur den öppna listan. 
+	NodePtr pkNode = m_kvOpenList.front();
 	pop_heap( m_kvOpenList.begin(), m_kvOpenList.end(), HeapComp() );
 	m_kvOpenList.pop_back();
 
@@ -320,9 +96,7 @@ PathFind::SEARCH_STATE PathFind::FindNext()
 		{
 			delete pkNode;
 
-			// Börja bakifrån (från destinations rutan) och tilldela
-			// en child pekare till varje nod som har ett barn.
-			// Avbryt när vi har nått start rutan.
+			// Tilldela en child pekare till varje nod som har ett barn
 			NodePtr pkChildNode = m_pkDestNode;
 			NodePtr pkParentNode = m_pkDestNode->m_pkParent;
 
@@ -332,14 +106,10 @@ PathFind::SEARCH_STATE PathFind::FindNext()
 				pkChildNode = pkParentNode;
 				pkParentNode = pkParentNode->m_pkParent;
 			} 
-			while( pkChildNode != m_pkStartNode );
+			while( pkChildNode != m_pkStartNode ); // Start is always the first node by definition
 		}
 
-		// Ta bort alla oanvända noder.
 		DeleteUnusedNodes();
-
-		// Returnera att vi har lyckats finna
-		// en lösning på problemet.
 		m_eState = FOUND_DESTINATION;
 		return m_eState;
 	}
@@ -372,53 +142,44 @@ PathFind::SEARCH_STATE PathFind::FindNext()
 		Point kNewSquare;
 
 		// Lägg till alla grannar som är OK
-
-		// Vänster granne,
-		if((GetTerrainCost( x-1, y ) < BLOCKED_VALUE) && 
-			!( (iParentX == x-1) && (iParentY == y))) 
+		if((GetTerrainCost( x-1, y ) < BLOCKED_VALUE) && !( (iParentX == x-1) && (iParentY == y))) 
 		{
 			kNewSquare = Point(x-1, y);
 			AddNeighbour( kNewSquare );
-		}
-		// Övre grannen.
-		if((GetTerrainCost( x, y-1 ) < BLOCKED_VALUE) && 
-			!( (iParentX == x) && (iParentY == y-1))) 
+		}	
+		if((GetTerrainCost( x, y-1 ) < BLOCKED_VALUE) && !( (iParentX == x) && (iParentY == y-1))) 
 		{
 			kNewSquare = Point(x, y-1);
 			AddNeighbour( kNewSquare );
 		}	
-		// Högra grannen.
-		if((GetTerrainCost( x+1, y ) < BLOCKED_VALUE) && 
-			!( (iParentX == x+1) && (iParentY == y))) 
+		if((GetTerrainCost( x+1, y ) < BLOCKED_VALUE) && !( (iParentX == x+1) && (iParentY == y))) 
 		{
 			kNewSquare = Point(x+1, y);
 			AddNeighbour( kNewSquare );
 		}	
-		// Undre grannen.
-		if((GetTerrainCost( x, y+1 ) < BLOCKED_VALUE) && 
-			!( (iParentX == x) && (iParentY == y+1)))
+		if((GetTerrainCost( x, y+1 ) < BLOCKED_VALUE) && !( (iParentX == x) && (iParentY == y+1)))
 		{
 			kNewSquare = Point(x, y+1);
 			AddNeighbour( kNewSquare );
 		}	
 
 		// Nu undersöker vi varje granne...
-		NODLISTITER itNeighbour; // iterator till en vektor med nod-pekare
+		vector<NodePtr>::iterator itNeighbour;
+
 		for( itNeighbour = m_kvNeighbours.begin(); 
 		     itNeighbour != m_kvNeighbours.end(); 
 			 itNeighbour ++ )
 		{
-			// Skapa ett g-värde för noden, som är kostnaden för hur långt
-			// tid det skulle ta att vandra från denna nod från startnoden.
+			// Hämta g-värdet från noden, som är kostnaden för hur långt
+			// tid det tog att ta sig till denna nod från startnoden.
 			float fNewGValue = pkNode->m_fGValue + (float)
 				GetTerrainCost(pkNode->m_kSqrPos.x, pkNode->m_kSqrPos.y);
 
-			//
 			// Kolla om vi redan har undersökt denna granne, dvs. om den redan
 			// finns i någon av de 2 listorna. Gör den det och har lägre g värde
-			// så så tar vi bort grannen och hoppar till nästa loop varv.
-			//
-			NODLISTITER itOpenListResultat; 
+			// så skippar vi denna granne.
+
+			vector<NodePtr>::iterator itOpenListResultat;
 			for( itOpenListResultat = m_kvOpenList.begin(); 
 			     itOpenListResultat != m_kvOpenList.end(); 
 				 itOpenListResultat ++ )
@@ -427,18 +188,20 @@ PathFind::SEARCH_STATE PathFind::FindNext()
 					(*itOpenListResultat)->m_kSqrPos.y == (*itNeighbour)->m_kSqrPos.y)
 					break;				
 			}
+
+			// Om loopen har avbrytits så har vi hittat elementet i den öppna listan.
 			if( itOpenListResultat != m_kvOpenList.end() )
 			{
-				if( (*itOpenListResultat)->m_fGValue <= fNewGValue ) 
+				// Om elementets g-värde är lägre så tar vi
+				// bort grannen och hoppar till nästa loop varv.
+				if( (*itOpenListResultat)->m_fGValue <= fNewGValue )
 				{
-					// Elementet fanns i den stängda listan
-					// men eftersom det var lägre så behåller vi 
-					// detta, tar bort grannen och fortsätter leta.
 					delete (*itNeighbour);
 					continue;
 				}
 			}
-			NODLISTITER itClosedListResult; // iterator till en vektor med nod-pekare
+
+			vector< NodePtr >::iterator itClosedListResult;
 			for( itClosedListResult = m_kvClosedList.begin(); 
 			     itClosedListResult != m_kvClosedList.end(); 
 				 itClosedListResult ++ )
@@ -447,101 +210,313 @@ PathFind::SEARCH_STATE PathFind::FindNext()
 					(*itClosedListResult)->m_kSqrPos.y == (*itNeighbour)->m_kSqrPos.y)
 					break;			
 			}
+
 			if( itClosedListResult != m_kvClosedList.end() )
 			{
-				if( (*itClosedListResult)->m_fGValue <= fNewGValue ) 
-				{ 
-					// Elementet fanns i den stängda listan
-					// men eftersom det var lägre så behåller vi 
-					// detta, tar bort grannen och fortsätter leta.
+				// we found this state on closed
+				if( (*itClosedListResult)->m_fGValue <= fNewGValue )
+				{
+					// the one on Closed is cheaper than this one
 					delete (*itNeighbour);
 					continue;
 				}
 			}
 
-			// Vi har hittat den bästa noden hittils och initierar därför 
-			// dess värden och behåller denna noden.
+			// This node is the best node so far with this particular state
+			// so lets keep it and set up its AStar specific data ...
 			(*itNeighbour)->m_pkParent = pkNode;
 			(*itNeighbour)->m_fGValue = fNewGValue;
-			(*itNeighbour)->m_fHValue = 
-				(*itNeighbour)->GetHeuristicCost( m_pkDestNode->m_kSqrPos );
-			(*itNeighbour)->m_fFValue = 
-				(*itNeighbour)->m_fGValue + (*itNeighbour)->m_fHValue;
+			(*itNeighbour)->m_fHValue = (*itNeighbour)->GetHeuristicCost( m_pkDestNode->m_kSqrPos );
+			(*itNeighbour)->m_fFValue = (*itNeighbour)->m_fGValue + (*itNeighbour)->m_fHValue;
 
-			// Elementet fanns inte i den stängda listan
-			// så ta bort det.
+			// Remove successor from closed if it was on it
 			if( itClosedListResult != m_kvClosedList.end() )
 			{
+				// remove it from Closed
 				delete (*itClosedListResult);
 				m_kvClosedList.erase( itClosedListResult );
 			}
-			// Elementet fanns inte i den öppna listan
-			// så ta bort det och bygg om heapen.
+
+			// Update old version of this node
 			if( itOpenListResultat != m_kvOpenList.end() )
 			{	   
 				delete (*itOpenListResultat);
 			   	m_kvOpenList.erase( itOpenListResultat );
+
+				// Bygg om hela heapen
 				make_heap( m_kvOpenList.begin(), m_kvOpenList.end(), HeapComp() );
 			}
 
-			// Vi har nu inte hittat någon bättre ersättare därför
-			// lägger vi till grannen till den öppna listan
-			// och sorterar den i heap-ordning.
+			// Lägg till ersättaren
 			m_kvOpenList.push_back( (*itNeighbour) );
+
+			// Sortera listan i heap-ordning
 			push_heap( m_kvOpenList.begin(), m_kvOpenList.end(), HeapComp() );
+		}
 
-		} // Fortsätt undersöka nästa granne...
-
-		// Lägg till noden till den stängda listan
-		// eftersom vi nu är färdig med den.
+		// push pkNode onto Closed, as we have expanded it now
 		m_kvClosedList.push_back( pkNode );
-	}
 
-	// Har funktionen inte avbrutits här så kommer vi anropa funktionen pånytt...
+	} // end else (not goal so expand)
+
  	return m_eState; 
 }
 
-///////////////////////////////////////////////////////////////////////
-// Name:		GetNextSquare
-// Description: Pop the next best step from the path queue.
-//
-bool PathFind::GetNextSquare(int &riSquareX, int &riSquareY)
+bool PathFind::AddNeighbour( Point &kNewSquare )
 {
-	if(m_kqPath.size() > 0)
+	NodePtr pkNode = new Node;
+
+	if( pkNode )
 	{
-		Point sqr = m_kqPath.front();
-		riSquareX = sqr.x; 
-		riSquareY = sqr.y;
-		m_kqPath.pop();
+		pkNode->m_kSqrPos = kNewSquare;
+		m_kvNeighbours.push_back( pkNode );
 		return true;
 	}
+
 	return false;
 }
 
-///////////////////////////////////////////////////////////////////////
-// Name:		Rebuild
-// Description: Bygg upp en sökväg mellan två rutor på kartan.
-//				Sökvägen sparas i en kö, med startpositionen först.
-//
-bool PathFind::Rebuild( int iStartPosX, int iStartPosY, int iDestPosX, int iDestPosY )
+void PathFind::FreeSolutionNodes()
 {
-	m_pkStartNode = new Node(iStartPosX, iStartPosY);
-	m_pkDestNode = new Node(iDestPosX, iDestPosY);
+	NodePtr pkNode = m_pkStartNode;
 
-	m_eState = ACTIVE;
+	if( m_pkStartNode->m_pkChild )
+	{
+		do
+		{
+			NodePtr pkNodeToDelete = pkNode;
+			pkNode = pkNode->m_pkChild;
+			delete pkNodeToDelete;
+			pkNodeToDelete = NULL;
+
+		} while( pkNode != m_pkDestNode );
+
+		delete pkNode;
+	}
+	else
+	{
+		// if the start node is the solution we 
+		// need to just delete the start and goal
+		// nodes
+		delete m_pkStartNode;
+		delete m_pkDestNode;
+	}
+}
+
+PathFind::NodePtr PathFind::GetSolutionStart()
+{
+	m_pkSearchNode = m_pkStartNode;
+
+	if(m_pkStartNode)
+		return m_pkStartNode;
+	else
+		return NULL;
+}
+
+PathFind::NodePtr PathFind::GetSolutionNext()
+{
+	if( m_pkSearchNode )
+	{
+		if( m_pkSearchNode->m_pkChild )
+		{
+			NodePtr pkChild, pkNextNext;
+
+			if((pkNextNext=GetNextNextDiagonalStep(m_pkSearchNode)))
+				pkChild = pkNextNext;
+			else
+				pkChild = m_pkSearchNode->m_pkChild;
+
+			m_pkSearchNode = pkChild;
+			return pkChild;
+		}
+	}
+
+	return NULL;
+}
+
+void PathFind::FreeAllNodes()
+{
+	// iterate open list and delete all nodes
+	vector<NodePtr>::iterator itOpen = m_kvOpenList.begin();
+	while( itOpen != m_kvOpenList.end() )
+	{
+		NodePtr pkNode = (*itOpen);
+		delete pkNode;
+		itOpen++;
+	}
+
+	m_kvOpenList.clear();
+
+	// iterate closed list and delete unused nodes
+	vector<NodePtr>::iterator itClosed;
+	for( itClosed = m_kvClosedList.begin(); 
+	     itClosed != m_kvClosedList.end(); 
+		 itClosed ++ )
+	{
+		NodePtr pkNode = (*itClosed);
+		delete pkNode;
+	}
+
+	m_kvClosedList.clear();
+}
+
+
+
+// Name:		DeleteUnusedNodes
+// Description:	Delete nodes in the open and closed list 
+//				that aren't needed for the solution.
+//
+void PathFind::DeleteUnusedNodes()
+{
+
+	vector<NodePtr>::iterator itOpen = m_kvOpenList.begin();
+	while(itOpen != m_kvOpenList.end())
+	{
+		NodePtr pkNode = (*itOpen);
+
+		if(!pkNode->m_pkChild )
+		{
+			delete pkNode;
+			pkNode = NULL;
+		}
+
+		itOpen ++;
+	}
+
+	m_kvOpenList.clear();
+
+	vector<NodePtr>::iterator itClosed;
+	for(itClosed = m_kvClosedList.begin(); 
+	    itClosed != m_kvClosedList.end(); 
+		itClosed ++ )
+	{
+		NodePtr pkNode = (*itClosed);
+
+		if(!pkNode->m_pkChild)
+		{
+			delete pkNode;
+			pkNode = NULL;
+		}
+	}
+
+	m_kvClosedList.clear();
+}
+
+
+
+// Name:		GetHeuristicCost
+// Description:	Get´s a value that is a estimate of how far we 
+//				are from the destination.
+//
+float PathFind::Node::GetHeuristicCost( Point nodeGoal )
+{
+	float fDistanceX = float( ( (float)m_kSqrPos.x - (float)nodeGoal.x) );
+	float fDistanceY = float( ( (float)m_kSqrPos.y - (float)nodeGoal.y) );
+	return ((fDistanceX*fDistanceX) + (fDistanceY*fDistanceY));
+}
+
+
+
+// Name:		GetTerrainCost
+// Description:	Gets a cost value from a square in the map terrain array.
+//
+int PathFind::GetTerrainCost(int x, int y)
+{
+	if( x < 0 || x >= s_iMapWidth ||
+		y < 0 || y >= s_iMapWidth)
+	{
+		return BLOCKED_VALUE;	 
+	}
+
+	return m_piMapTerrain[(y*s_iMapWidth)+x];
+}
+
+
+
+// Name:		FillQueue
+// Description:	Fills a queue with Point´s that forms a grid path
+//				of leagal moves between Start and Dest node.
+//				Return false if the destintion was not found.
+//
+bool PathFind::FillQueue()
+{
+	// Börja med att tömma kön.
+	while(m_kqPath.size())
+		m_kqPath.pop();
+
+	SEARCH_STATE uiSearchState;
+
+	do
+	{
+		uiSearchState = SearchStep();
+	} while(uiSearchState == ACTIVE);
+
+	if(uiSearchState == FOUND_DESTINATION)
+	{
+		NodePtr pkNode = GetSolutionStart();
+
+		Point kSqr(pkNode->m_kSqrPos.x, pkNode->m_kSqrPos.y);
+		m_kqPath.push(kSqr);
 	
-	// Registrera startnoden
-	m_pkStartNode->m_fGValue = 0; 
-	m_pkStartNode->m_fHValue = m_pkStartNode->GetHeuristicCost(m_pkDestNode->m_kSqrPos);
-	m_pkStartNode->m_fFValue = m_pkStartNode->m_fGValue + m_pkStartNode->m_fHValue;
-	m_pkStartNode->m_pkParent = 0;
+		while(1)
+		{
+			pkNode = GetSolutionNext();
+			if( !pkNode )
+				break;
 
-	// Lägg till startnoden till den öppna listan och 
-	// sortera in elementet i heap ordning.
-	m_kvOpenList.push_back( m_pkStartNode );
-	push_heap( m_kvOpenList.begin(), m_kvOpenList.end(), HeapComp() );
+			kSqr.x = pkNode->m_kSqrPos.x;
+			kSqr.y = pkNode->m_kSqrPos.y;
+			m_kqPath.push(kSqr);
+		};
 
-	// Fill a queue with all (x,y) positions 
-	// from start to end
-	return FillQueue();
+		FreeSolutionNodes();
+	}
+	else
+	{
+		return false;
+	}
+
+	return false;
+}
+
+
+
+// Name:		Reset
+// Description:	Public function that the user can call to abort and destroy a path.
+//
+void PathFind::Reset()
+{
+	FreeAllNodes();
+
+	while(m_kqPath.size())
+		m_kqPath.pop();
+}
+
+
+
+// Name:		GetNextNextDiagonalStep
+// Description: Tests if the next-next step is a square that is in a diagonal
+//				location according to pkNode, and if so return that node.
+//
+PathFind::NodePtr PathFind::GetNextNextDiagonalStep(PathFind::NodePtr pkNode)
+{
+	int iXPos = pkNode->m_kSqrPos.x;
+	int iYPos = pkNode->m_kSqrPos.y;
+
+	if(pkNode->m_pkChild == NULL)
+		return NULL;
+	if(pkNode->m_pkChild->m_pkChild == NULL)
+		return NULL;
+
+	NodePtr pkNextNext = pkNode->m_pkChild->m_pkChild;
+	if(pkNextNext->m_kSqrPos.x == iXPos+1 && pkNextNext->m_kSqrPos.y == iYPos+1)
+		return pkNextNext;
+	if(pkNextNext->m_kSqrPos.x == iXPos-1 && pkNextNext->m_kSqrPos.y == iYPos+1)
+		return pkNextNext;
+	if(pkNextNext->m_kSqrPos.x == iXPos-1 && pkNextNext->m_kSqrPos.y == iYPos-1)
+		return pkNextNext;
+	if(pkNextNext->m_kSqrPos.x == iXPos+1 && pkNextNext->m_kSqrPos.y == iYPos-1)
+		return pkNextNext;
+
+	return NULL;
 }

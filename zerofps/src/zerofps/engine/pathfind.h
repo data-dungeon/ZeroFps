@@ -21,19 +21,17 @@ class PathFindBuilder;
 enum TerrainType
 {
 	GRASS=0,
-	WOOD,
+	ROAD,
 	SWAMP,
+	WOOD,
 	WATER,
-	SANDMOORE
 };
 
 const int BLOCKED = 999;	// Unpassable square
 
 class PathFind : public ZFObject 
 {
-public:
-	PathFind(int* piMapTerrain, int iMapWidth, unsigned int uiBlockedValue);
-	virtual ~PathFind();
+private:
 
 	// A node represents a possible state in the search
 	// The user provided state type is included inside this type
@@ -47,7 +45,7 @@ public:
 			float m_fHValue; // heuristic estimate of distance to goal
 			float m_fFValue; // sum of cumulative cost of predecessors and self and heuristic
 
-			Node(int x=0, int y=0) : m_pkParent( NULL ), m_pkChild( NULL ), 
+			Node(int x=0, int y=0) : m_pkParent( 0 ), m_pkChild( 0 ), 
 				m_fGValue( 0.0f ), m_fHValue( 0.0f ), m_fFValue( 0.0f )
 			{		
 				m_kSqrPos.x = x;
@@ -82,36 +80,53 @@ public:
 			}
 	};
 
-	void Reset();
-	bool GetNextSquare(int &riSquareX, int &riSquareY);
-	bool Rebuild(int startx, int starty, int endx, int endy);
-
-private:
 	vector<NodePtr> m_kvOpenList;
 	vector<NodePtr> m_kvClosedList; 
 	vector<NodePtr> m_kvNeighbours;
-	
-	typedef vector<NodePtr>::iterator NODLISTITER;
-
 	queue<Point> m_kqPath;
 
+	// State
 	SEARCH_STATE m_eState;
+
 	NodePtr m_pkStartNode;
 	NodePtr m_pkDestNode;
 	NodePtr m_pkSearchNode;
+	
 	int* m_piMapTerrain;
-	int m_iMapWidth;
+	static int m_siMapWidth;
 	const unsigned int BLOCKED_VALUE;
 
-	SEARCH_STATE FindNext();
+	// Advances search one step 
+	SEARCH_STATE SearchStep();
+
 	int GetTerrainCost(int x, int y);
 	bool FillQueue();
-	void DeleteAllNodes();
+	void FreeAllNodes();
 	void DeleteUnusedNodes();
+
+	// User calls this to add a successor to a list of successors
+	// when expanding the search frontier
 	bool AddNeighbour( Point &kNewSquare );
-	void DeleteNodes();
-	NodePtr GetNextNode();
+
+	// Free the solution nodes
+	// This is done to clean up all used Node memory when you are done with the
+	// search
+	void FreeSolutionNodes();
+
+	NodePtr GetSolutionStart();
+	NodePtr GetSolutionNext();
 	NodePtr GetNextNextDiagonalStep(NodePtr pkNode);
+
+public: 
+	
+	PathFind(int* piMapTerrain, int m_iMapWidth, unsigned int uiBlockedValue);
+	~PathFind();
+
+	void Reset();
+	bool GetNextStep(int &riSquareX, int &riSquareY);
+	bool Rebuild(int startx, int starty, int endx, int endy);
+
+	static int s_iMapWidth;
 
 	friend class PathFindBuilder;
 };

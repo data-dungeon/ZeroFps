@@ -10,11 +10,11 @@
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 
-PathFindBuilder::PathFindBuilder(HeightMap* pkHeightMap) 
-	: ZFObject("PathFind")
+PathFindBuilder::PathFindBuilder(HeightMap* pkHeightMap, PathFind** m_ppkPathFind) 
+	: ZFObject("PathFindBuilder")
 {
 	m_pkHeightMap = pkHeightMap;
-	m_pkPathFind = NULL;
+	m_pkPathFind = *m_ppkPathFind;
 	m_piCostMap = NULL;
 }
 
@@ -31,7 +31,7 @@ void PathFindBuilder::Build()
 	m_pkPathFind = new PathFind(m_piCostMap, iMapSize, BLOCKED);
 }
 
-PathFind* PathFindBuilder::GetPathFind()
+Point PathFindBuilder::GetMapTile(Vector3 pos)
 {
-	return m_pkPathFind;
+	return Point((int)pos.x, (int)pos.y);
 }

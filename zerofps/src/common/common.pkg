@@ -20,6 +20,7 @@
 #include "doorproperty.h"
 #include "logproperty.h"
 #include "dialogbox.h"
+#include "pathfindproperty.h"
 
 
 

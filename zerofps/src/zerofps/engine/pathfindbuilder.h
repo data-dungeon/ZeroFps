@@ -18,10 +18,10 @@ class PathFind;
 class PathFindBuilder : public ZFObject
 {
 public:
-	PathFind* GetPathFind();
+	Point GetMapTile(Vector3 pos);
 	void Build();
-	PathFindBuilder(HeightMap* pkHeightMap);
-	virtual ~PathFindBuilder();
+	PathFindBuilder(HeightMap* pkHeightMap, PathFind** m_ppkPathFind);
+	~PathFindBuilder();
 
 private:
 	HeightMap* m_pkHeightMap;
