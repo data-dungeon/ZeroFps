@@ -163,6 +163,11 @@ void ZShaderSystem::SetupArrayClientStates()
 	glDisableClientState(GL_COLOR_ARRAY);
 	glDisableClientState(GL_EDGE_FLAG_ARRAY);	
 	
+	if(m_pk2DVertexPointer)
+	{
+		glEnableClientState(GL_VERTEX_ARRAY);
+		glVertexPointer(2,GL_FLOAT,0,m_pk2DVertexPointer);
+	}	
 	if(m_pkVertexPointer)
 	{
 		glEnableClientState(GL_VERTEX_ARRAY);
@@ -712,6 +717,7 @@ void ZShaderSystem::ResetPointers()
 	m_iNrOfVertexs = 				0;
 	m_iNrOfIndexes = 				0;
 
+	m_pk2DVertexPointer =		NULL;
 	m_pkVertexPointer =			NULL;
 	m_pkNormalPointer =			NULL;
 	m_pkTexturePointer0 = 		NULL;
@@ -726,6 +732,9 @@ void ZShaderSystem::SetPointer(int iType,void* pkPointer)
 {
 	switch(iType)
 	{
+		case VERTEX2D_POINTER:
+			m_pk2DVertexPointer = (Vector3*)pkPointer;
+			break;		
 		case VERTEX_POINTER:
 			m_pkVertexPointer = (Vector3*)pkPointer;
 			break;
@@ -827,7 +836,7 @@ void ZShaderSystem::DrawArray()
 			glDrawElements(m_iDrawMode,m_iNrOfIndexes,GL_UNSIGNED_INT,m_pkIndexPointer);
 		}
 		else
-		{
+		{			
 			m_iTotalVertises += m_iNrOfVertexs;
 			glDrawArrays(m_iDrawMode,0,m_iNrOfVertexs);
 		}
@@ -870,7 +879,21 @@ void ZShaderSystem::DrawGeometry()
 
 	
 	//always set vertex pointer
-	SetPointer(VERTEX_POINTER,&m_kVerties[0]);
+	if(!m_kVerties.empty())
+	{
+		SetPointer(VERTEX_POINTER,&m_kVerties[0]);
+		SetNrOfVertexs(m_kVerties.size());
+	}
+	else if(!m_kVerties2D.empty())
+	{
+		SetPointer(VERTEX2D_POINTER,&m_kVerties2D[0]);
+		SetNrOfVertexs(m_kVerties2D.size());
+	}
+	else
+	{
+		cout<<"WARNING: ZShaderSystem::DrawGeometry() called whiout any geometry"<<endl;
+		return;
+	}
 	
 	//normals
 	if(!m_kNormals.empty())
@@ -878,12 +901,7 @@ void ZShaderSystem::DrawGeometry()
 		
 	//setup texture cordinats
 	if(!m_kTexture[0].empty())
-	{
-		if(m_kVerties.size() != m_kTexture[0].size())
-			cout<<"error: tus and vertises size mismatch "<<m_kTexture[0].size()<< " "<<m_kVerties.size()<<endl;
-		
 		SetPointer(TEXTURE_POINTER0,&(m_kTexture[0])[0]);
-	}
 	
 	if(!m_kTexture[1].empty())
 		SetPointer(TEXTURE_POINTER1,&(m_kTexture[1])[0]);
@@ -895,8 +913,6 @@ void ZShaderSystem::DrawGeometry()
 		SetPointer(TEXTURE_POINTER3,&(m_kTexture[3])[0]);
 		
 		
-	//set number of vertises
-	SetNrOfVertexs(m_kVerties.size());
 	
 	//do the final drawing
 	DrawArray();
@@ -915,6 +931,7 @@ void ZShaderSystem::CopyVertexData()
 {
 	m_bCopyedData = true;	
 	
+	m_pkBakup2DVertexPointer = m_pk2DVertexPointer;
 	m_pkBakupVertexPointer = m_pkVertexPointer;
 	m_pkBakupNormalPointer = m_pkNormalPointer;	
 	m_pkBakupTexturePointer0 = m_pkTexturePointer0;
@@ -923,6 +940,9 @@ void ZShaderSystem::CopyVertexData()
 	m_pkBakupTexturePointer3 = m_pkTexturePointer3;		
 	m_pkBakupIndexPointer = m_pkIndexPointer;
 	m_pkBakupColorPointer = m_pkColorPointer;
+	
+	if(m_pk2DVertexPointer)
+		CopyData((void**)&m_pk2DVertexPointer,sizeof(Vector2)*m_iNrOfVertexs);	
 	
 	if(m_pkVertexPointer)
 		CopyData((void**)&m_pkVertexPointer,sizeof(Vector3)*m_iNrOfVertexs);
@@ -985,6 +1005,7 @@ void ZShaderSystem::CleanCopyedData()
 
 void ZShaderSystem::ClearGeometry()
 {
+	m_kVerties2D.clear();
 	m_kVerties.clear();
 	m_kNormals.clear();
 	m_kTexture[0].clear();
@@ -999,6 +1020,13 @@ void ZShaderSystem::AddLineV(const Vector3& kPos1,const Vector3& kPos2)
 	m_kVerties.push_back(kPos1);
 	m_kVerties.push_back(kPos2);
 }
+
+void ZShaderSystem::AddLineV(const Vector2& kPos1,const Vector2& kPos2)
+{
+	m_kVerties2D.push_back(kPos1);
+	m_kVerties2D.push_back(kPos2);
+}
+
 
 void ZShaderSystem::AddLineN(const Vector3& kNormal1,const Vector3& kNormal2)
 {
@@ -1018,6 +1046,13 @@ void ZShaderSystem::AddTriangleV(const Vector3& kPos1,const Vector3& kPos2,const
 	m_kVerties.push_back(kPos1);
 	m_kVerties.push_back(kPos2);
 	m_kVerties.push_back(kPos3);
+}
+
+void ZShaderSystem::AddTriangleV(const Vector2& kPos1,const Vector2& kPos2,const Vector2& kPos3)
+{
+	m_kVerties2D.push_back(kPos1);
+	m_kVerties2D.push_back(kPos2);
+	m_kVerties2D.push_back(kPos3);
 }
 
 void ZShaderSystem::AddTriangleN(const Vector3& kNormal1,const Vector3& kNormal2,const Vector3& kNormal3)
@@ -1040,6 +1075,14 @@ void ZShaderSystem::AddQuadV(const Vector3& kPos1,const Vector3& kPos2,const Vec
 	m_kVerties.push_back(kPos2);
 	m_kVerties.push_back(kPos3);
 	m_kVerties.push_back(kPos4);
+}
+
+void ZShaderSystem::AddQuadV(const Vector2& kPos1,const Vector2& kPos2,const Vector2& kPos3,const Vector2& kPos4)
+{
+	m_kVerties2D.push_back(kPos1);
+	m_kVerties2D.push_back(kPos2);
+	m_kVerties2D.push_back(kPos3);
+	m_kVerties2D.push_back(kPos4);
 }
 
 void ZShaderSystem::AddQuadN(const Vector3& kNormal1,const Vector3& kNormal2,const Vector3& kNormal3,const Vector3& kNormal4)

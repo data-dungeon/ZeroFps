@@ -145,7 +145,7 @@ enum RENDER_API POINTER_TYPE
 	TEXTURE_POINTER3,		
 	INDEX_POINTER,	
 	COLOR_POINTER,
-	
+	VERTEX2D_POINTER,	
 };
 
 enum RENDER_API DRAW_MODE
@@ -180,11 +180,13 @@ class RENDER_API ZShaderSystem : public ZFSubSystem
 		
 		
 		//temporary geometry data		
+		vector<Vector2>	m_kVerties2D;
 		vector<Vector3>	m_kVerties;
 		vector<Vector3>	m_kNormals;
 		vector<Vector2>	m_kTexture[4];
 		
 		//pointer to geometry data
+		Vector3*			m_pk2DVertexPointer;
 		Vector3*			m_pkVertexPointer;
 		Vector3*			m_pkNormalPointer;	
 		Vector2*			m_pkTexturePointer0;
@@ -195,6 +197,7 @@ class RENDER_API ZShaderSystem : public ZFSubSystem
 		Vector4*			m_pkColorPointer;		
 		
 		//bakup pointes, used when copying data
+		Vector3*			m_pkBakup2DVertexPointer;
 		Vector3*			m_pkBakupVertexPointer;
 		Vector3*			m_pkBakupNormalPointer;
 		Vector2*			m_pkBakupTexturePointer0;
@@ -301,21 +304,26 @@ class RENDER_API ZShaderSystem : public ZFSubSystem
 		void DrawGeometry();
 		void DrawGeometry(const int& iDrawMode);
 		
+		//VERTEX 3 STUFF
 		//line 2V
 		void AddLineV(const Vector3& kPos1,const Vector3& kPos2);
 		void AddLineN(const Vector3& kNormal1,const Vector3& kNormal2);
-		void AddLineUV(const Vector2& kPos1,const Vector2& kPos2,const int& iTU=0);
-		
+		void AddLineUV(const Vector2& kPos1,const Vector2& kPos2,const int& iTU=0);		
 		//triangle 3V
 		void AddTriangleV(const Vector3& kPos1,const Vector3& kPos2,const Vector3& kPos3);
 		void AddTriangleN(const Vector3& kNormal1,const Vector3& kNormal2,const Vector3& kNormal3);
-		void AddTriangleUV(const Vector2& kPos1,const Vector2& kPos2,const Vector2& kPos3,const int& iTU=0);	
-		
+		void AddTriangleUV(const Vector2& kPos1,const Vector2& kPos2,const Vector2& kPos3,const int& iTU=0);			
 		//quad 4V
 		void AddQuadV(const Vector3& kPos1,const Vector3& kPos2,const Vector3& kPos3,const Vector3& kPos4);
 		void AddQuadN(const Vector3& kNormal1,const Vector3& kNormal2,const Vector3& kNormal3,const Vector3& kNormal4);
 		void AddQuadUV(const Vector2& kPos1,const Vector2& kPos2,const Vector2& kPos3,const Vector2& kPos4,const int& iTU=0);	
 
+		//VERTEX 2 STUFF
+		void AddQuadV(const Vector2& kPos1,const Vector2& kPos2,const Vector2& kPos3,const Vector2& kPos4);
+		void AddTriangleV(const Vector2& kPos1,const Vector2& kPos2,const Vector2& kPos3);
+		void AddLineV(const Vector2& kPos1,const Vector2& kPos2);
+
+		
 				
 		//matrix manipulation
 		void MatrixMode(const int& iMode);

@@ -360,9 +360,11 @@ void Render::PrintChar(char cChar,float fPos,float fScale)
 
 	float iFontSize = 8;
 
+	m_pkZShaderSystem->AddQuadV(	Vector2(fPos    ,0),		Vector2(fPos + 1,0),
+											Vector2(fPos + 1,1),	   Vector2(fPos    ,1));
 	
-	m_pkZShaderSystem->AddQuadV(	Vector3(fPos,0,0),						Vector3(fPos + 1,0,0),
-											Vector3(fPos + 1,1,0),	Vector3(fPos,1,0));
+//	m_pkZShaderSystem->AddQuadV(	Vector3(fPos,0,0),						Vector3(fPos + 1,0,0),
+//											Vector3(fPos + 1,1,0),	Vector3(fPos,1,0));
 												
 	m_pkZShaderSystem->AddQuadUV(	Vector2(x,y),							Vector2(x+width,y),
 											Vector2(x+width,y-width),			Vector2(x,y-width));
@@ -371,6 +373,9 @@ void Render::PrintChar(char cChar,float fPos,float fScale)
 
 void Render::Print(Vector3 kPos,const char* aText,float fScale) 
 {
+	if(strlen(aText) == 0)
+		return;
+
 	float fSize = 1;
 	
 	char paText[TEXT_MAX_LENGHT];	
