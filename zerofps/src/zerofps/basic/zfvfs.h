@@ -36,6 +36,7 @@ class BASIC_API ZFVFileSystem : public ZFObject
 	private:
 		vector<string>	m_kstrRootPath;				// Active root paths.
 	
+
 	public:
 		ZFVFileSystem();
 		~ZFVFileSystem();
@@ -52,12 +53,12 @@ class BASIC_API ZFVFileSystem : public ZFObject
 		
 
 		// Open / Close
-		ArchiveOpen();
-		ArchiveClose();
+		void ArchiveOpen() { }
+		void ArchiveClose()  { }
 
 		// Create / Manage
-		ArchiveUnpack();
-		ArchivePack();
+		void ArchiveUnpack()  { }
+		void ArchivePack()  { }
 	
 		FILE* Open(string strFileName, int iOptions);	
 };	
