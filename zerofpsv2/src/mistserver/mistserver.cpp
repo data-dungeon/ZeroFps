@@ -382,6 +382,17 @@ void MistServer::Input()
 				
 		}		
 	}
+
+	int key = pkInput->GetQueuedKey();
+
+	if(key == KEY_F1)
+	{
+		float a = 33.99f;
+
+		float s = round2(a);
+
+		printf("%mamma = %f\n", s);
+	}
 };
 
 void MistServer::OnHud(void)
@@ -674,26 +685,7 @@ void MistServer::OnCommand(int iID, ZGuiWnd *pkMainWnd)
 
 void MistServer::OnClickListbox(ZGuiWnd *pkListBox, int iListboxIndex)
 {
-	if(pkListBox)
-	{
-		string strName = pkListBox->GetName();
 
-		if(strName == "ZoneModelListbox")
-		{
-			m_strActiveZoneName = 
-				((ZGuiListbox*) pkListBox)->GetItem(iListboxIndex)->GetText();
-
-			string strFullPath = "data/mad/zones/";
-			int pos = strFullPath.size();
-			strFullPath.insert(pos, m_strActiveZoneName);
-
-			//int id = pkObjectMan->GetZoneIndex(m_kZoneMarkerPos,-1,false);
-			if(m_iCurrentMarkedZone != -1)
-			{
-				pkObjectMan->SetZoneModel(strFullPath.c_str(),m_iCurrentMarkedZone);
-			}
-		}
-	}
 }
 
 
@@ -714,13 +706,11 @@ void MistServer::OnClickTreeItem(char *szTreeBox, char *szParentNodeText,
 
 			m_strActiveZoneName = strFullpath;
 			
-			if(m_iCurrentMarkedZone != -1)
+			// Setting new zone modell
+			if(m_iCurrentMarkedZone != -1)	// ÄR någon zon markerad?
 			{
-				//force loading of this zone
-				pkObjectMan->LoadZone(m_iCurrentMarkedZone);
-
+				//pkObjectMan->LoadZone(m_iCurrentMarkedZone);
 				pkObjectMan->SetZoneModel(strFullpath.c_str(),m_iCurrentMarkedZone);
-
 				printf("Setting new zone modell to %s\n", strFullpath.c_str());
 			}
 		}
