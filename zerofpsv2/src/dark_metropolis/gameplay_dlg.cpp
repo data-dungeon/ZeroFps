@@ -236,7 +236,7 @@ bool CGamePlayDlg::InitDlg()
 
 			float curr = pkStats->m_iLife <= pkStats->m_iMaxLife ? 
 				pkStats->m_iLife : pkStats->m_iMaxLife;
-			float max = pkStats->m_iMaxLife;
+			float max = float(pkStats->m_iMaxLife);
 
 			if(curr < 0)
 				curr = 0;

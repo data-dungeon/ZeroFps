@@ -75,6 +75,11 @@ void DMLua::Init(EntityManager* pkObjMan,ZFScriptSystem* pkScript)
 	pkScript->ExposeFunction("GetEntityVar", DMLua::GetEntityVarLua);
 	pkScript->ExposeFunction("AddToEntityVar", DMLua::AddToEntityVarLua);
 
+	// Item bonuses
+	pkScript->ExposeFunction("SetItemArmourBonus", DMLua::SetItemArmourLua);
+	pkScript->ExposeFunction("SetItemMaxLifeBonus", DMLua::SetItemMaxLifeLua);
+	pkScript->ExposeFunction("SetItemSpeedBonus", DMLua::SetItemSpeedLua);
+
 	cout << "DM LUA Scripts Loaded" << endl;
 
 }
@@ -1161,6 +1166,81 @@ int DMLua::SetTeamLua(lua_State* pkLua)
 
 	g_pkScript->GetArgNumber(pkLua, 1, &dTeam);
 	pkChar->m_iTeam = int(dTeam);
+
+	return 0;
+}
+
+// ------------------------------------------------------------------------------------------------
+
+int DMLua::SetItemArmourLua(lua_State* pkLua)
+{
+	Entity* pkEntity = TestScriptInput (2, pkLua);
+
+	if ( pkEntity == 0 )
+	{
+		cout << "Warning! DMLua::SetItemArmourLua: Wrong number of arg (ID, value) or entityID not found." << endl;
+		return 0;
+	}
+
+	P_DMItem* pkItem = (P_DMItem*)pkEntity->GetProperty("P_DMItem");
+	if ( pkItem )
+	{
+		double dValue;		
+		g_pkScript->GetArgNumber(pkLua, 1, &dValue);
+        pkItem->m_kItemStats.m_fArmourVal = float(dValue);
+	}
+	else
+		cout << "Warning! DMLua::SetItemArmourLua: Tried to set Item value on a non-item entity." << endl;
+
+	return 0;
+}
+
+// ------------------------------------------------------------------------------------------------
+
+int DMLua::SetItemMaxLifeLua(lua_State* pkLua)
+{
+	Entity* pkEntity = TestScriptInput (2, pkLua);
+
+	if ( pkEntity == 0 )
+	{
+		cout << "Warning! DMLua::SetItemMaxLifeLua: Wrong number of arg (ID, value) or entityID not found." << endl;
+		return 0;
+	}
+
+	P_DMItem* pkItem = (P_DMItem*)pkEntity->GetProperty("P_DMItem");
+	if ( pkItem )
+	{
+		double dValue;		
+		g_pkScript->GetArgNumber(pkLua, 1, &dValue);
+        pkItem->m_kItemStats.m_iMaxLifeVal = float(dValue);
+	}
+	else
+		cout << "Warning! DMLua::SetItemMaxLifeLua: Tried to set Item value on a non-item entity." << endl;
+
+	return 0;
+}
+
+// ------------------------------------------------------------------------------------------------
+
+int DMLua::SetItemSpeedLua(lua_State* pkLua)
+{
+	Entity* pkEntity = TestScriptInput (2, pkLua);
+
+	if ( pkEntity == 0 )
+	{
+		cout << "Warning! DMLua::SetItemSpeedLua: Wrong number of arg (ID, value) or entityID not found." << endl;
+		return 0;
+	}
+
+	P_DMItem* pkItem = (P_DMItem*)pkEntity->GetProperty("P_DMItem");
+	if ( pkItem )
+	{
+		double dValue;		
+		g_pkScript->GetArgNumber(pkLua, 1, &dValue);
+        pkItem->m_kItemStats.m_fSpeedVal = float(dValue);
+	}
+	else
+		cout << "Warning! DMLua::SetItemSpeedLua: Tried to set Item value on a non-item entity." << endl;
 
 	return 0;
 }

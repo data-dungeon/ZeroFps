@@ -59,6 +59,11 @@ namespace DMLua
 	int MCOMMON_API SetGunBulletsPerAmmoLua(lua_State* pkLua);
 	int MCOMMON_API SetGunSoundLua(lua_State* pkLua);
 
+	// SI for items with bonuses (+ AV and such)
+	int MCOMMON_API SetItemArmourLua(lua_State* pkLua);
+	int MCOMMON_API SetItemMaxLifeLua(lua_State* pkLua);
+	int MCOMMON_API SetItemSpeedLua(lua_State* pkLua);
+
 	// lualua functions
 	int MCOMMON_API RunScriptLua(lua_State* pkLua);
 

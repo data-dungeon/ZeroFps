@@ -149,7 +149,7 @@ void DarkMetropolis::RenderInterface(void)
 	//draw select square
 	if(m_bSelectSquare)
 	{				
-		m_pkRender->DrawAABB(m_kSelectSquareStart,Vector3(m_kSelectSquareStop.x,m_kSelectSquareStart.y+1,m_kSelectSquareStop.z),Vector3(0,1,0));								
+		m_pkRender->DrawAABB(m_kSelectSquareStart,Vector3(m_kSelectSquareStop.x,m_kSelectSquareStart.y+0.02,m_kSelectSquareStop.z),Vector3(0,1,0));								
 	}
 }
 

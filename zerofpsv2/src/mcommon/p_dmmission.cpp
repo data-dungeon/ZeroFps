@@ -40,7 +40,7 @@ void P_DMMission::Init()
 		if(t[i].find(".lua") != string::npos)
 		{
 			bool bDubble = false;
-			for(int j=0; j<final.size(); j++)
+			for(unsigned int j=0; j<final.size(); j++)
 			{
 				if(final[j] == t[i] && j != i)
 				{
@@ -54,7 +54,7 @@ void P_DMMission::Init()
 		}
 	}
 
-	for(int i=0; i<final.size(); i++)
+	for(unsigned int i=0; i<final.size(); i++)
 	{
 		DMMissionInfo* pkMission = new DMMissionInfo;
 		pkMission->m_pkScriptResHandle = new ZFResourceHandle;
@@ -191,7 +191,7 @@ bool P_DMMission::SetCurrentMission(string strMissionScript)
 {
 	bool bSuccess = false;
 
-	for(int i=0; i<m_vkMissions.size(); i++)
+	for(unsigned int i=0; i<m_vkMissions.size(); i++)
 	{
 		if(m_vkMissions[i]->m_strScript == strMissionScript)
 		{
@@ -260,7 +260,7 @@ Property* Create_P_DMMission()
 
 void P_DMMission::GetPossibleMissions(int iLevel, vector<DMMissionInfo>& vkInfo)
 {
-	for(int i=0; i<m_vkMissions.size(); i++)
+	for(unsigned int i=0; i<m_vkMissions.size(); i++)
 	{
 		if(m_vkMissions[i]->m_iLevel == iLevel)
 		{
