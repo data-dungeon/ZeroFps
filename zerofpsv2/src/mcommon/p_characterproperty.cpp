@@ -211,7 +211,7 @@ P_CharacterProperty::P_CharacterProperty()
 	m_iSide=PROPERTY_SIDE_SERVER|PROPERTY_SIDE_CLIENT;
 
 	m_bNetwork = 	true;
-	m_iVersion = 	4;
+	m_iVersion = 	5;
 	
 	
 	
@@ -229,6 +229,7 @@ P_CharacterProperty::P_CharacterProperty()
 	m_iFaction				=	0;
 	m_bWalkSound			=	true;
 	m_fLegLength			=	0;
+	m_fMarkerSize			=	1;
 	
 	//container id's
 	m_iInventory	= -1;		
@@ -282,12 +283,16 @@ void P_CharacterProperty::Init()
 
 vector<PropertyValues> P_CharacterProperty::GetPropertyValues()
 {
-	vector<PropertyValues> kReturn(1);
+	vector<PropertyValues> kReturn(2);
 
 	kReturn[0].kValueName = "walksound";
 	kReturn[0].iValueType = VALUETYPE_BOOL; 
 	kReturn[0].pkValue    = (void*)&m_bWalkSound;	
 
+	kReturn[1].kValueName = "markersize";
+	kReturn[1].iValueType = VALUETYPE_FLOAT; 
+	kReturn[1].pkValue    = (void*)&m_fMarkerSize;	
+		
 	return kReturn;	
 }
 
@@ -932,6 +937,7 @@ void P_CharacterProperty::Save(ZFIoInterface* pkPackage)
 	pkPackage->Write(m_bIsPlayerCharacter);
 	pkPackage->Write(m_iFaction);
 	pkPackage->Write(m_bWalkSound);
+	pkPackage->Write(m_fMarkerSize);
 		
 	
 	m_kCharacterStats.Save(pkPackage);
@@ -991,7 +997,18 @@ void P_CharacterProperty::Load(ZFIoInterface* pkPackage,int iVersion)
 			break;
 		}		
 		
-		
+		case 5:
+		{
+			pkPackage->Read_Str(m_strName);	
+			pkPackage->Read_Str(m_strOwnedByPlayer);	
+			pkPackage->Read(m_bIsPlayerCharacter); 		
+			pkPackage->Read(m_iFaction); 		
+			pkPackage->Read(m_bWalkSound); 		
+			pkPackage->Read(m_fMarkerSize); 
+			
+			m_kCharacterStats.Load(pkPackage);
+			break;
+		}			
 	}
 	
 	
@@ -1029,6 +1046,7 @@ void P_CharacterProperty::PackTo( NetPacket* pkNetPacket, int iConnectionID )
 	pkNetPacket->Write(m_bIsPlayerCharacter);
 	pkNetPacket->Write(m_fLegLength);
 	pkNetPacket->Write(m_iFaction);
+	pkNetPacket->Write(m_fMarkerSize);
 
 	pkNetPacket->Write(m_bWalkSound);
 	
@@ -1066,6 +1084,7 @@ void P_CharacterProperty::PackFrom( NetPacket* pkNetPacket, int iConnectionID  )
 	pkNetPacket->Read(m_bIsPlayerCharacter);
 	pkNetPacket->Read(m_fLegLength);
 	pkNetPacket->Read(m_iFaction);
+	pkNetPacket->Read(m_fMarkerSize);
 	
 	pkNetPacket->Read(m_bWalkSound);
 	

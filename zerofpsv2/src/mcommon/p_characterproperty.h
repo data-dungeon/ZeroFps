@@ -68,6 +68,7 @@ class MCOMMON_API P_CharacterProperty: public Property
 		float			m_fStatTimer;
 		
 		float			m_fLegLength;
+		float			m_fMarkerSize;
 			
 		//over head text
 		ZMaterial*	m_pkTextMaterial;
@@ -154,6 +155,7 @@ class MCOMMON_API P_CharacterProperty: public Property
 		bool	 GetIsPlayerCharacter()								{	return m_bIsPlayerCharacter;	}
 		int	 GetFaction()											{	return m_iFaction;				}
 		float  GetLegLength()										{	return m_fLegLength;				}
+		float  GetMarkerSize()										{	return m_fMarkerSize;			}
 		
 		P_Buff* AddBuff(const string& strBuffName);			//creates and adds buff to character 
 		void RemoveBuff(P_Buff* pkBuff);							//removes buffs
