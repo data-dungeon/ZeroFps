@@ -39,6 +39,7 @@ static bool GUIPROC( ZGuiWnd* win, unsigned int msg, int numparms, void *params 
 MistServer::MistServer(char* aName,int iWidth,int iHeight,int iDepth) 
 	: Application(aName,iWidth,iHeight,iDepth), ZGuiApp(GUIPROC)
 { 
+	g_ZFObjSys.SetPreLogName("mistserver");
 	g_ZFObjSys.Log_Create("mistserver");
 	m_pkServerInfoP = NULL;
 

@@ -790,8 +790,10 @@ void NetWork::DevShow_ClientConnections()
 
 	char* pkName = "Die Vim";
 	char szAdress[256];
-	char szRelSendWait[256];
-	char szRelRecvWait[256];
+	char szRelSendWait[512];
+	char szRelRecvWait[512];
+	szRelSendWait[0] = szRelRecvWait[0] = 0;
+
 	int iRelIndex;
 
 	for(unsigned int i=0; i < m_RemoteNodes.size(); i++) {
@@ -806,7 +808,7 @@ void NetWork::DevShow_ClientConnections()
 
 		AddressToStr(&m_RemoteNodes[i].m_kAddress,szAdress);
 
-		szRelSendWait[0]='[';
+/*		szRelSendWait[0]='[';
 		iRelIndex = 1;
 		for(int iRel=0; iRel<ZF_NET_MAXREL; iRel++)
 		{
@@ -832,7 +834,7 @@ void NetWork::DevShow_ClientConnections()
 			}
 		}
 		szRelRecvWait[iRelIndex++]=']';
-		szRelRecvWait[iRelIndex++] = 0;
+		szRelRecvWait[iRelIndex++] = 0;*/
 
 		int iPing = m_RemoteNodes[i].m_fPing * 1000;
 
@@ -978,7 +980,7 @@ void NetWork::Run()
 							{
 								ZFNetPacketData* pkRelPak = &m_RemoteNodes[ iClientID ].m_akRelPackRecv[iRecvIndex];
 								memcpy(pkRelPak, &NetP.m_kData, sizeof( ZFNetPacketData ));
-								m_RemoteNodes[i].m_aiRelPackRecvSize[iRecvIndex] = NetP.m_iLength;
+								m_RemoteNodes[iClientID].m_aiRelPackRecvSize[iRecvIndex] = NetP.m_iLength;
 							}
 
 							break;

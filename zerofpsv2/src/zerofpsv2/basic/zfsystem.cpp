@@ -596,7 +596,7 @@ bool ZFSystem::Log_Create(const char* szName)
 {
 	ZFLogFile NewLogFile;
 	NewLogFile.m_strName = szName;
-	NewLogFile.m_strFileName = string(szName) + ".txt";
+	NewLogFile.m_strFileName = m_strPreLogName + "-" + string(szName) + ".txt";
 	
 	NewLogFile.m_pkFilePointer = fopen(NewLogFile.m_strFileName.c_str(), "wt");
 	setvbuf(NewLogFile.m_pkFilePointer , NULL, _IONBF, 0);		// Set Non buffer mode.
@@ -771,6 +771,11 @@ void ZFSystem::Printf(const char* szMessageFmt,...)
 
 	// Now call our print function.
 	m_pkConsole->Printf(g_LogFormatTxt2);
+}
+
+void ZFSystem::SetPreLogName(string strPreLogName)
+{
+	m_strPreLogName = strPreLogName;
 }
 
 

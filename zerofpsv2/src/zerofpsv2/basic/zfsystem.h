@@ -76,6 +76,7 @@ private:
 	vector<ZFCmdData>		m_kCmdDataList;		///< List of all cmd functions/variables.
 	vector<ZFLogFile>		m_kLogFiles;			///< List of all Log files.
 	FILE*						m_pkLogFile;			///< Master Log File (zerofps.txt).
+	string					m_strPreLogName;
 
 	void PrintVariables();
 	void PrintCommands();
@@ -87,7 +88,6 @@ private:
 	void SetString(ZFCmdData* pkArea, const char* szValue);
 	void* GetVar(ZFCmdData* pkArea);
 	string GetVarValue(ZFCmdData* pkArea);
-
 	
 protected:
 	vector<string>			AppArguments;			///< Arguments sent to app at startup.
@@ -145,6 +145,8 @@ public:
 	void Config_Load(string strFileName);
 
 	void Printf(const char* szMessageFmt,...);			// Print to console if created.
+
+	void SetPreLogName(string strPreLogName);
 
 	friend class CmdSystem;
 };

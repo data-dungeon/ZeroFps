@@ -30,6 +30,7 @@ void GuiMsgIngameScreen( string strMainWnd, string	strController,	unsigned int m
 MistClient::MistClient(char* aName,int iWidth,int iHeight,int iDepth) 
 	: Application(aName,iWidth,iHeight,iDepth), ZGuiApp(GUIPROC)
 { 
+	g_ZFObjSys.SetPreLogName("mistclient2");
 	g_ZFObjSys.Log_Create("mistclient2");
 	
 
