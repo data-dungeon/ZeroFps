@@ -460,6 +460,7 @@ void Entity::ZoneChange(int iCurrent,int iNew)
 					cout<<"Entity "<<m_iEntityID<< " has moved to an untracked zone for client "<<(*it)->m_iConnectID<<endl;
 					
 					// send delete request to client here =)
+					m_pkEntityMan->SendDeleteEntity((*it)->m_iConnectID,m_iEntityID);
 				}		
 			}
 		}

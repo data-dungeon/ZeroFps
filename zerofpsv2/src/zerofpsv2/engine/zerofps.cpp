@@ -1111,11 +1111,17 @@ void ZeroFps::HandleNetworkPacket(NetPacket* pkNetPacket)
 
 		switch(ucGamePacketType) 
 		{
-/*			case ZFGP_DELETEOBJECT:
+			case ZFGP_DELETEOBJECT:
+			{
 				Logf("net", "HandleNetworkPacket(ZFGP_DELETEOBJECT)\n");
-				m_pkObjectMan->UpdateDeleteList(pkNetPacket);
-				break;*/
-
+				int iID=-1;
+				pkNetPacket->Read(iID);
+				m_pkObjectMan->Delete(iID);
+				cout<<"Got delete packate from server , deleting entity:"<<iID<<endl;
+				//m_pkObjectMan->UpdateDeleteList(pkNetPacket);
+				break;
+			}
+				
 			case ZFGP_OBJECTSTATE: 
 				//Logf("netpac", "  HandleNetworkPacket(ZFGP_OBJECTSTATE)\n");
 				m_pkObjectMan->UpdateState(pkNetPacket);

@@ -79,6 +79,7 @@ class ENGINE_API EntityManager : public ZFSubSystem{
 			bool operator()(Property* x, Property* y) { return *x < *y; };
 		} Less_Property;
 	
+		
 		//some system pointers
 		ZeroFps*						m_pkZeroFps;
 		ZFScriptSystem* 			m_pkScript;
@@ -226,7 +227,8 @@ class ENGINE_API EntityManager : public ZFSubSystem{
 		void UpdateState(NetPacket* pkNetPacket);						//Updates objects.
 		void PackToClient(int iClient, vector<Entity*> kObjects,bool bZoneObject);
 		void PackToClients();												//Packs and Sends to ALL clients.
-
+		void SendDeleteEntity(int iClient,int iEntityID);
+		
 		void StaticData(int iClient, NetPacket* pkNetPacket);
 		void GetStaticData(int iEntityID);
 
