@@ -367,6 +367,12 @@ void ZeroEd::Input_Camera(float fMouseX, float fMouseY)
 
 void ZeroEd::Input()
 {
+	if(m_pkInputHandle->VKIsDown("mus"))
+	{
+		m_pkInput->StartBindMode("forward", 1);
+	}
+
+
 	//set speed depending on edit mode
 	if(m_iEditMode == EDIT_HMAP)		m_CamMoveSpeed = 20;
 	if(m_iEditMode == EDIT_ZONES)		m_CamMoveSpeed = 20;

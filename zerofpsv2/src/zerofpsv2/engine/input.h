@@ -13,30 +13,35 @@
 #include <string>
 #include "engine_x.h"
 
+using namespace std;
 
 class ZeroFps;
 class InputHandle;
+class Console;
 
-using namespace std;
 
 #define MAX_KEYS		1000
 #define MAX_SDLKEYS	SDLK_LAST
+#define VKMAPS			3					// Max number of real input devices map to a Vkey.
+#define MAX_KEYNAME	64					// Max length of key names.					
 
+/*	This is the data of one real (something that exist on a input device such as keyb/mouse) key that the engine
+	nows about. */
 struct InputKey 
 {	
-	bool		m_bDown;
-	string	m_strName;
+	bool		m_bDown;						// True if this key is/was down at the last input update.
+	string	m_strName;					// Name of this key.
 };
 
-#define VKMAPS	3		// Max number of real input devices map to a Vkey.
-
+/*	This is the data that the engine keeps about each virtual keys it uses. */
 class VKData
 {
 public:
 
-	string	m_strName;
-	int		m_iInputKey[VKMAPS];
+	string	m_strName;					// Name of this virtual key.
+	int		m_iInputKey[VKMAPS];		// The real keys that are mapped to this virtual key.
 };
+
 
 class QueuedKeyInfo
 {
@@ -57,39 +62,32 @@ class QueuedKeyInfo
 		};
 };
 
-class Console;
-
-
 
 /** \brief	Engine Systems that handles input (keyb, mouse, joystick).
 	 \ingroup Engine
 */
 class ENGINE_API Input : public ZFSubSystem {
 	private:
+		enum FuncId_e
+		{
+			FID_TOGGLEGRAB,			
+			FID_BINDVK,					// Bind VK to a key.
+			FID_MOUSESENS,				// Set sensitivity of mouse.
+			FID_VKBINDLIST,			// List all VK and keys they are bind to.
+			FID_LOAD,					// Load current key config.
+			FID_SAVE,					// Save current key config.
+		};		
+
 		BasicConsole*			m_pkConsole;
 		ZeroFps*					m_pkZeroFps;	
 		
-		vector<VKData>			m_VirtualKeys;
+		vector<VKData>			m_VirtualKeys;								// Virtual keys.
 		vector<InputHandle*>	m_kInputHandles;
 		
-		InputKey					m_akKeyState[MAX_KEYS];
-		int						m_akMapToKeyState[MAX_SDLKEYS];
+		InputKey					m_akKeyState[MAX_KEYS];					// State of all keys.	
+		int						m_akMapToKeyState[MAX_SDLKEYS];		// Table that maps from SDL's keys to the ones used by ZeroFps.
 
 		queue<QueuedKeyInfo>	m_aPressedKeys;
-
-		enum FuncId_e
-		{
-			FID_TOGGLEGRAB,
-			FID_BINDVK,			// Bind VK to a key.
-			FID_MOUSESENS,
-			FID_VKBINDLIST,		// List all VK and keys they are bind to.
-			FID_LOAD,
-			FID_SAVE,
-			//FID_UNBINDALL,
-			//FID_BIND,
-			//FID_LISTACTIONS,
-		};		
-		
 			
 		SDL_Event		m_kEvent;
 		unsigned int	m_iGrabtime;			
@@ -99,9 +97,16 @@ class ENGINE_API Input : public ZFSubSystem {
 		bool 				m_bKeyRepeat;
 
 		int				m_iSDLMouseX, m_iSDLMouseY;
+		float				m_fMouseSensitivity;
 
 		bool				m_bHaveReleasedMWUP,m_bHaveReleasedMWDOWN;
 	
+		bool				m_bBindMode;
+		string			m_strBindKey;
+		int				m_iBindKeyIndex;
+
+
+
 		void SetupMapToKeyState();
 		int  SDLToZeroFpsKey(int iSdlSym);		
 		void RunCommand(int cmdid, const CmdArgument* kCommand);
@@ -114,14 +119,6 @@ class ENGINE_API Input : public ZFSubSystem {
 		
 		void UpdateInputHandles();
 	
-		//int m_iNrActions;		
-		//map<const string, pair<const string, int>**>		m_kActions;
-		//map<const string, pair<const string, int>*>		m_kPendingActions;
-		//map<const string, int>									m_kButtons;
-		//pair<const string, int>*									m_aiActionToButton[400];
-		//void ListActions();
-		//bool Bind(const string kKey, const string kAction);
-		//void SetupButtons();
 
 
 		//input fuctions , called by inputhandles 
@@ -138,19 +135,19 @@ class ENGINE_API Input : public ZFSubSystem {
 		
 		bool VKIsDown(string strName);		
 		void Reset(void);		
-		
+
+		void BindBindMode(int iKey);
+
 public:
 
-		float		m_fMouseSensitivity;
-		
 		Input();
 		bool StartUp();
 		bool ShutDown();
 		bool IsValid();
-	
+			
 		void Update(void);
 
-		
+		void StartBindMode(string strBindKey, int iBindIndex);
 		
 		VKData*	GetVKByName(string strName);
 		bool VKBind(string strName, Buttons kKey, int iIndex );
@@ -158,7 +155,7 @@ public:
 		
 		void VKList();
 		void Save(string strCfgName);
-				
+		void Load(string strCfgName);
 				
 		void ShowCursor(bool bShow);
 				
@@ -181,10 +178,6 @@ public:
 		void ClearActiveInputHandles();
 
 		void PrintInputHandlers();
-
-		//map<int,int> m_kGlobalKeyTranslator;
-		//bool Action(int iAction);
-		//int RegisterAction(const char* pcAction);
 
 		friend class InputHandle;
 };

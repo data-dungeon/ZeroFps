@@ -3,14 +3,11 @@
 #include "zerofps.h"
 #include "inputhandle.h"
 
- 
-/*        START OF INPUT CLASS
-*/ 
-
- 
 Input::Input() 
  : ZFSubSystem("Input") {
 	
+	m_bBindMode = 0;
+
 	// Set Default values
 	m_fMouseSensitivity = 1;	
 
@@ -23,22 +20,11 @@ Input::Input()
 	Register_Cmd("i_bindvk",			FID_BINDVK);
 	Register_Cmd("i_listvk",			FID_VKBINDLIST);
 	Register_Cmd("i_save",				FID_SAVE);
-
-
-//	Register_Cmd("i_bind",				FID_BIND);
-//	Register_Cmd("i_unbindall",		FID_UNBINDALL);
-//	Register_Cmd("i_listactions",		FID_LISTACTIONS);		
+	Register_Cmd("i_load",				FID_LOAD);
 };
 
 bool Input::StartUp()	
 { 
-	/*
-	//init sdl to read events
-	if(SDL_Init(SDL_INIT_EVENTTHREAD)<0){
-		cout<<"Sdl_Input dont want to work =("<<endl;
-		exit(1);
-	}*/
-
 	m_pkZeroFps	=	static_cast<ZeroFps*>(GetSystem().GetObjectPtr("ZeroFps"));
 	GetConsole();	
 
@@ -54,10 +40,9 @@ bool Input::StartUp()
 	m_bHaveReleasedMWUP = false;
 	m_bHaveReleasedMWDOWN = false;
 	
-	for(int i =0;i<400;i++) 
+	for(int i =0; i<MAX_KEYS; i++) 
 	{
 		m_akKeyState[i].m_bDown = false;
-//		m_aiActionToButton[i]=NULL;
 	};
 	
 	SetupMapToKeyState();	
@@ -65,13 +50,8 @@ bool Input::StartUp()
 	return true;
 }
 
-bool Input::ShutDown()
-{
-	return true;	
-}
-
-bool Input::IsValid()	{ return true;	}
-
+bool Input::ShutDown()	{	return true;	}
+bool Input::IsValid()	{	return true;	}
 
 void Input::UpdateInputHandles()
 {
@@ -208,6 +188,19 @@ void Input::PrintInputHandlers()
 	}
 }
 
+void Input::StartBindMode(string strBindKey, int iBindIndex)
+{
+	m_bBindMode		= true;
+	m_strBindKey	= strBindKey;
+	m_iBindKeyIndex = iBindIndex;
+}
+
+void Input::BindBindMode(int iKey)
+{
+	m_bBindMode = false;
+	VKBind(m_strBindKey, (Buttons)iKey, m_iBindKeyIndex);
+}
+
 void Input::Update(void) 
 {
 	m_iMouseX=-1;	
@@ -239,13 +232,16 @@ void Input::Update(void)
 
 				//cout << "Key Pressed: " << iZfKey << " - " << GetKeyName(iZfKey) << endl;
 				m_akKeyState[iZfKey].m_bDown = true;	
-    			break;			
+
+				if(m_bBindMode)
+					BindBindMode( SDLToZeroFpsKey(m_kEvent.key.keysym.sym) );
+				break;			
 
 			case SDL_KEYUP:
 				//set  button as unpressed
-				m_akKeyState[SDLToZeroFpsKey(m_kEvent.key.keysym.sym) ].m_bDown = false;					    	
+				m_akKeyState[SDLToZeroFpsKey(m_kEvent.key.keysym.sym) ].m_bDown = false;	
     		break;    		
-    		
+ 
 	    	//mouse    		
    	 	case SDL_MOUSEBUTTONDOWN:
 				//cout << "SDL_MOUSEBUTTONDOWN: " << (int) m_kEvent.button.button << endl;
@@ -264,6 +260,8 @@ void Input::Update(void)
 						break;	
 				}
 				
+				if(m_bBindMode)
+					BindBindMode( SDLToZeroFpsKey(m_kEvent.button.button) );
 				break;
 
 	    	case SDL_MOUSEBUTTONUP:
@@ -326,6 +324,9 @@ VKData* Input::GetVKByName(string strName)
 
 bool Input::VKBind(string strName, Buttons kKey, int iIndex)
 {
+	// Make sure name is not to long and that the key is not outside the valid range.
+	if( (strName.length() + 1) >= MAX_KEYNAME)
+		return false;
 	if(iIndex < 0 || iIndex >= VKMAPS) 
 		return false;
 
@@ -338,9 +339,10 @@ bool Input::VKBind(string strName, Buttons kKey, int iIndex)
 	{
 	   VKData	kVk;
 		kVk.m_strName = strName;
-		kVk.m_iInputKey[0] = kKey;
-		kVk.m_iInputKey[1] = 0;
-		kVk.m_iInputKey[2] = 0;
+		kVk.m_iInputKey[0] = kVk.m_iInputKey[1] = kVk.m_iInputKey[2] = 0;
+		kVk.m_iInputKey[iIndex] = kKey;
+		//kVk.m_iInputKey[1] = 0;
+		//kVk.m_iInputKey[2] = 0;
 		m_VirtualKeys.push_back(kVk);
 	}
 	
@@ -529,26 +531,12 @@ void Input::Reset(void) {
 
 void Input::RunCommand(int cmdid, const CmdArgument* kCommand)
 {
-//	int i;
 	switch(cmdid) 
 	{
 		case FID_TOGGLEGRAB:
 			ToggleGrab();
 			break;
 		
-/*		case FID_BIND:
-			if(kCommand->m_kSplitCommand.size()==3)
-			{
-				if(Bind(kCommand->m_kSplitCommand[1],kCommand->m_kSplitCommand[2]))
-					cout<<"bind succes!" <<endl;
-				else 
-					cout<<"bind failed.." <<endl;
-				
-			} else
-				if(GetConsole())
-					m_pkConsole->Printf("bind <key> <action>");	
-			break;*/
-
 		case FID_BINDVK:
 			if(kCommand->m_kSplitCommand.size() >= 3)
 			{
@@ -578,36 +566,10 @@ void Input::RunCommand(int cmdid, const CmdArgument* kCommand)
 					m_pkConsole->Printf("bind <vkey> <key> (<key> <key>  optional)");	
 					
 			break;
-			
-/*			
-			if(kCommand->m_kSplitCommand.size()==3)
-			{
-				if(VKBind(kCommand->m_kSplitCommand[1],kCommand->m_kSplitCommand[2]))
-					cout<<"bind succes!" <<endl;
-				else 
-					cout<<"bind failed.." <<endl;
-				
-			} else
-				if(GetConsole())
-					m_pkConsole->Printf("bind <vkey> <key>");	
-			break;*/
-			
-		
-/*		case FID_UNBINDALL:
-			for(i=0; i<400; i++)
-				m_aiActionToButton[i]=NULL;
-			break;
-		case FID_LISTACTIONS:
-			ListActions();
-			break;*/
-		case FID_VKBINDLIST:
-			VKList();
-			break;
 
-		case FID_SAVE:
-			Save(string("vim.cfg"));
-			break;
-			
+		case FID_VKBINDLIST:		VKList();											break;
+		case FID_SAVE:				Save(kCommand->m_kSplitCommand[1]);		break;
+		case FID_LOAD:				Load(kCommand->m_kSplitCommand[1]);		break;
 
 		case FID_MOUSESENS:
 			if(kCommand->m_kSplitCommand.size()!=2)
@@ -621,9 +583,69 @@ void Input::RunCommand(int cmdid, const CmdArgument* kCommand)
 
 void Input::Save(string strCfgName)
 {
+	char szVkName[MAX_KEYNAME];
 
+	ZFVFile kFile;
+	kFile.Open(strCfgName,0,true);
+	
+	string Key1, Key2, Key3;
+	
+
+	// Write total number of key configs.
+	int iNumOfVkeys = m_VirtualKeys.size();
+	kFile.Write(&iNumOfVkeys , sizeof(int),1);
+
+	for(unsigned int i=0; i<m_VirtualKeys.size(); i++) 
+	{
+		Key1 = GetKeyName((Buttons) m_VirtualKeys[i].m_iInputKey[0]);
+		Key2 = GetKeyName((Buttons) m_VirtualKeys[i].m_iInputKey[1]);
+		Key3 = GetKeyName((Buttons) m_VirtualKeys[i].m_iInputKey[2]);
+
+		// Write Name.
+		strcpy(szVkName, m_VirtualKeys[i].m_strName.c_str());
+		kFile.Write(szVkName, sizeof(char), MAX_KEYNAME);
+
+		// Write Keys
+		strcpy(szVkName, Key1.c_str());
+		kFile.Write(szVkName, sizeof(char), MAX_KEYNAME);
+		strcpy(szVkName, Key2.c_str());
+		kFile.Write(szVkName, sizeof(char), MAX_KEYNAME);
+		strcpy(szVkName, Key3.c_str());
+		kFile.Write(szVkName, sizeof(char), MAX_KEYNAME);
+	}
+
+	kFile.Close();
 }
 
+void Input::Load(string strCfgName)
+{
+	ZFVFile kFile;
+	kFile.Open(strCfgName,0,false);
+
+	int iNumOfVkeys = m_VirtualKeys.size();
+	kFile.Read(&iNumOfVkeys , sizeof(int),1);
+
+	char szVkName[MAX_KEYNAME];
+	char szKey1[MAX_KEYNAME];
+	char szKey2[MAX_KEYNAME];
+	char szKey3[MAX_KEYNAME];
+
+	for(unsigned int i=0; i<iNumOfVkeys; i++) 
+	{
+		kFile.Read(szVkName, sizeof(char), MAX_KEYNAME);
+
+		// Write Keys
+		kFile.Read(szKey1, sizeof(char), MAX_KEYNAME);
+		kFile.Read(szKey2, sizeof(char), MAX_KEYNAME);
+		kFile.Read(szKey3, sizeof(char), MAX_KEYNAME);
+
+		VKBind(szVkName, szKey1, 0);
+		VKBind(szVkName, szKey1, 1);
+		VKBind(szVkName, szKey1, 2);
+	}
+
+	kFile.Close();
+}
 
 
 QueuedKeyInfo Input::GetQueuedKey()
@@ -840,6 +862,14 @@ void Input::SetupMapToKeyState()
 
 	m_akMapToKeyState[ SDLK_NUMLOCK ]	= KEY_NUMLOCK;
 
+
+	m_akMapToKeyState[ SDL_BUTTON_LEFT ]	= MOUSELEFT;
+	m_akMapToKeyState[ SDL_BUTTON_MIDDLE ]	= MOUSEMIDDLE;
+	m_akMapToKeyState[ SDL_BUTTON_RIGHT ]	= MOUSERIGHT;
+
+	m_akMapToKeyState[ SDL_BUTTON_WHEELUP ]	= MOUSEWUP;
+	m_akMapToKeyState[ SDL_BUTTON_WHEELDOWN ]	= MOUSEWDOWN;
+
 	m_akKeyState[KEY_ESCAPE].m_strName = "esc";
 
 	m_akKeyState[KEY_F1].m_strName = "f1";
@@ -982,367 +1012,3 @@ void Input::SetupMapToKeyState()
 //	m_akKeyState[KEY_].m_strName = "";
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/*
-bool Input::Bind(const string kKey, const string kAction)
-{
-	unsigned int iAcSize = m_kActions.size();
-	unsigned int iKeySize = m_kButtons.size();
-	map<string, int>::iterator kIt = m_kButtons.find(kKey);
-	if(kIt!= m_kButtons.end())
-	{
-		m_kActions[kAction];
-		if(m_kActions.size()!=iAcSize)
-		{
-			m_kActions.erase(kAction);
-			if(GetConsole())
-			m_pkConsole->Printf("putting'%s'in pending actions list",kAction.c_str());	
-			//cout<<"putting'" <<kAction<<"'in pending actions list" <<endl;
-			m_kPendingActions[kAction]=&(*kIt);
-		}
-		else 
-		{
-		
-			(*m_kActions[kAction])=&(*kIt);
-		}
-		return true;
-	}
-	else
-	{
-	if(GetConsole())
-		m_pkConsole->Printf("bind <key> <action>");	
-		
-		return false;
-	}
-};*/
-
-/*
-void Input::ListActions()
-{
-	if(GetConsole())
-	{
-		if(m_kActions.empty())
-			//if(GetConsole())
-			m_pkConsole->Printf("No actions defined!");	
-		else
-		{
-			map<const string, pair<const string, int>**>::iterator kItor = m_kActions.begin();
-			while (kItor != m_kActions.end())
-			{
-				
-			
-				if((*kItor->second) !=NULL)
-					m_pkConsole->Printf("%s : %s",kItor->first.c_str(),((*kItor->second)->first).c_str());
-				else 
-					m_pkConsole->Printf("%s : no key defined",(kItor->first).c_str());
-				kItor++;
-				
-			}
-		}
-	}
-}*/
-
-
-/*
-int Input::RegisterAction(const char *pcAction)
-{
-	string kAction=string(pcAction);
-	if(!m_kPendingActions.empty())
-	{
-		map<const string, pair<const string, int>*>::iterator kIt = m_kPendingActions.find(kAction);
-		
-		if(kIt != m_kPendingActions.end())
-		{
-			m_aiActionToButton[m_iNrActions]=&(*kIt->second);
-			m_kPendingActions.erase(kIt);
-		}
-		else m_aiActionToButton[m_iNrActions]=NULL;
-		
-	}
-	else m_aiActionToButton[m_iNrActions]=NULL;
-	unsigned int iAcSize = m_kActions.size();
-	m_kActions[kAction];
-	if( iAcSize == m_kActions.size())
-	{
-	
-
-		for(int i=0; i<m_iNrActions;i++)
-		{
-		
-			if(m_kActions[kAction]==&m_aiActionToButton[i])
-				return i;
-		}
-	}
-	else
-		m_kActions[kAction]=&m_aiActionToButton[m_iNrActions];
-
-	m_iNrActions++;
-	return (m_iNrActions-1);
-}*/
-
-/*
-bool Input::Action(int iAction)
-{
-	if(m_bInputEnabled) 
-	{	
-		if(m_aiActionToButton[iAction]!=NULL)
-			return m_akKeyState[m_aiActionToButton[iAction]->second].m_bDown;
-		else return false;
-	} 
-	else 
-	{
-		return false;
-	}
-}*/
-
-/*
-void Input::SetupButtons()
-{
-	SetupMapToKeyState();
-
-	m_kButtons.insert(map<char*, int>::value_type("escape",SDLK_ESCAPE));
-	m_kButtons.insert(map<char*, int>::value_type("left",SDLK_LEFT));
-	m_kButtons.insert(map<char*, int>::value_type("right",SDLK_RIGHT));
-	m_kButtons.insert(map<char*, int>::value_type("up",SDLK_UP));
-	m_kButtons.insert(map<char*, int>::value_type("down",SDLK_DOWN));
-	m_kButtons.insert(map<char*, int>::value_type("space",SDLK_SPACE));
-	m_kButtons.insert(map<char*, int>::value_type("backspace",SDLK_BACKSPACE));
-	m_kButtons.insert(map<char*, int>::value_type("return",SDLK_RETURN));
-	
-	m_kButtons.insert(map<char*, int>::value_type("rshift",SDLK_RSHIFT));
-	m_kButtons.insert(map<char*, int>::value_type("rctrl",SDLK_RCTRL));
-	m_kButtons.insert(map<char*, int>::value_type("lshift",SDLK_LSHIFT));
-	m_kButtons.insert(map<char*, int>::value_type("lctrl",SDLK_LCTRL));
-	
-	m_kButtons.insert(map<char*, int>::value_type("f12",SDLK_F12));
-	m_kButtons.insert(map<char*, int>::value_type("f11",SDLK_F11));
-	m_kButtons.insert(map<char*, int>::value_type("f10",SDLK_F10));
-	m_kButtons.insert(map<char*, int>::value_type("f9",SDLK_F9));	
-	m_kButtons.insert(map<char*, int>::value_type("f8",SDLK_F8));	
-	m_kButtons.insert(map<char*, int>::value_type("f7",SDLK_F7));	
-	m_kButtons.insert(map<char*, int>::value_type("f6",SDLK_F6));
-	m_kButtons.insert(map<char*, int>::value_type("f5",SDLK_F5));	
-	m_kButtons.insert(map<char*, int>::value_type("f4",SDLK_F4));	
-	m_kButtons.insert(map<char*, int>::value_type("f3",SDLK_F3));	
-	m_kButtons.insert(map<char*, int>::value_type("f2",SDLK_F2));
-	m_kButtons.insert(map<char*, int>::value_type("f1",SDLK_F1));
-	
-	m_kButtons.insert(map<char*, int>::value_type("pageup",SDLK_PAGEUP));
-	m_kButtons.insert(map<char*, int>::value_type("pagedown",SDLK_PAGEDOWN));
-	m_kButtons.insert(map<char*, int>::value_type("home",SDLK_HOME));
-	m_kButtons.insert(map<char*, int>::value_type("end",SDLK_END));
-	m_kButtons.insert(map<char*, int>::value_type("tab",SDLK_TAB));
-	m_kButtons.insert(map<char*, int>::value_type("key_delete",SDLK_DELETE));
-	m_kButtons.insert(map<char*, int>::value_type("insert",SDLK_INSERT));	
-	
-	m_kButtons.insert(map<char*, int>::value_type("1",SDLK_1));
-	m_kButtons.insert(map<char*, int>::value_type("2",SDLK_2));
-	m_kButtons.insert(map<char*, int>::value_type("3",SDLK_3));
-	m_kButtons.insert(map<char*, int>::value_type("4",SDLK_4));
-	m_kButtons.insert(map<char*, int>::value_type("5",SDLK_5));
-	m_kButtons.insert(map<char*, int>::value_type("6",SDLK_6));
-	m_kButtons.insert(map<char*, int>::value_type("7",SDLK_7));
-	m_kButtons.insert(map<char*, int>::value_type("8",SDLK_8));
-	m_kButtons.insert(map<char*, int>::value_type("9",SDLK_9));
-	m_kButtons.insert(map<char*, int>::value_type("0",SDLK_0));
-	
-	m_kButtons.insert(map<char*, int>::value_type("q",SDLK_q));
-	m_kButtons.insert(map<char*, int>::value_type("w",SDLK_w));	
-	m_kButtons.insert(map<char*, int>::value_type("e",SDLK_e));	
-	
-	m_kButtons.insert(map<char*, int>::value_type("r",SDLK_r));	
-	m_kButtons.insert(map<char*, int>::value_type("t",SDLK_t));	
-	m_kButtons.insert(map<char*, int>::value_type("y",SDLK_y));	
-	m_kButtons.insert(map<char*, int>::value_type("u",SDLK_u));	
-	m_kButtons.insert(map<char*, int>::value_type("i",SDLK_i));	
-	m_kButtons.insert(map<char*, int>::value_type("o",SDLK_o));	
-	m_kButtons.insert(map<char*, int>::value_type("p",SDLK_p));	
-
-	m_kButtons.insert(map<char*, int>::value_type("a",SDLK_a));	
-	m_kButtons.insert(map<char*, int>::value_type("s",SDLK_s));	
-	m_kButtons.insert(map<char*, int>::value_type("d",SDLK_d));	
-	m_kButtons.insert(map<char*, int>::value_type("f",SDLK_f));	
-	m_kButtons.insert(map<char*, int>::value_type("g",SDLK_g));	
-	m_kButtons.insert(map<char*, int>::value_type("h",SDLK_h));	
-	m_kButtons.insert(map<char*, int>::value_type("j",SDLK_j));	
-	m_kButtons.insert(map<char*, int>::value_type("k",SDLK_k));	
-	m_kButtons.insert(map<char*, int>::value_type("l",SDLK_l));
-	m_kButtons.insert(map<char*, int>::value_type("z",SDLK_z));	
-	m_kButtons.insert(map<char*, int>::value_type("x",SDLK_x));	
-	m_kButtons.insert(map<char*, int>::value_type("c",SDLK_c));	
-	m_kButtons.insert(map<char*, int>::value_type("v",SDLK_v));	
-	m_kButtons.insert(map<char*, int>::value_type("b",SDLK_b));	
-	m_kButtons.insert(map<char*, int>::value_type("n",SDLK_n));	
-	m_kButtons.insert(map<char*, int>::value_type("m",SDLK_m));
-	
-	m_kButtons.insert(map<char*,int>::value_type("exclaim",SDLK_EXCLAIM));
-	m_kButtons.insert(map<char*,int>::value_type("quotedbl",SDLK_QUOTEDBL));
-	m_kButtons.insert(map<char*,int>::value_type("hash",SDLK_HASH));
-	m_kButtons.insert(map<char*,int>::value_type("dollar",SDLK_DOLLAR));
-	m_kButtons.insert(map<char*,int>::value_type("ampersand",SDLK_AMPERSAND));
-	m_kButtons.insert(map<char*,int>::value_type("quote",SDLK_QUOTE));
-	m_kButtons.insert(map<char*,int>::value_type("left_parenthesis",SDLK_LEFTPAREN));
-	m_kButtons.insert(map<char*,int>::value_type("right_parenthesis",SDLK_RIGHTPAREN));
-	m_kButtons.insert(map<char*,int>::value_type("asterisk",SDLK_ASTERISK));
-	m_kButtons.insert(map<char*,int>::value_type("plus_sign",SDLK_PLUS));
-	m_kButtons.insert(map<char*,int>::value_type("comma",SDLK_COMMA));
-	m_kButtons.insert(map<char*,int>::value_type("minus_sign",SDLK_MINUS));
-	m_kButtons.insert(map<char*,int>::value_type("period",SDLK_PERIOD));
-	m_kButtons.insert(map<char*,int>::value_type("forward_slash",SDLK_SLASH));
-
-	m_kButtons.insert(map<char*,int>::value_type("colon",SDLK_COLON));
-	m_kButtons.insert(map<char*,int>::value_type("semicolon",SDLK_SEMICOLON));
-	m_kButtons.insert(map<char*,int>::value_type("less_than_sign",SDLK_LESS));
-	m_kButtons.insert(map<char*,int>::value_type("equals_sign",SDLK_EQUALS));
-	m_kButtons.insert(map<char*,int>::value_type("greater_than_sign",SDLK_GREATER));
-	m_kButtons.insert(map<char*,int>::value_type("question_mark",SDLK_QUESTION));
-	m_kButtons.insert(map<char*,int>::value_type("at",SDLK_AT));
-	m_kButtons.insert(map<char*,int>::value_type("left_bracket",SDLK_LEFTBRACKET));
-	m_kButtons.insert(map<char*,int>::value_type("backslash",SDLK_BACKSLASH));
-	m_kButtons.insert(map<char*,int>::value_type("right_bracket",SDLK_RIGHTBRACKET));
-	m_kButtons.insert(map<char*,int>::value_type("caret",SDLK_CARET));
-	m_kButtons.insert(map<char*,int>::value_type("underscore",SDLK_UNDERSCORE));
-	m_kButtons.insert(map<char*,int>::value_type("grave",SDLK_BACKQUOTE));
-
-	m_kButtons.insert(map<char*,int>::value_type("keypad_period",SDLK_KP_PERIOD));
-	m_kButtons.insert(map<char*,int>::value_type("keypad_divide",SDLK_KP_DIVIDE));
-	m_kButtons.insert(map<char*,int>::value_type("keypad_multiply",SDLK_KP_MULTIPLY));
-	m_kButtons.insert(map<char*,int>::value_type("keypad_minus",SDLK_KP_MINUS));
-	m_kButtons.insert(map<char*,int>::value_type("keypad_plus",SDLK_KP_PLUS));
-	m_kButtons.insert(map<char*,int>::value_type("keypad_enter",SDLK_KP_ENTER));
-	m_kButtons.insert(map<char*,int>::value_type("keypad_equals",SDLK_KP_EQUALS));
-	
-	m_kButtons.insert(map<char*,int>::value_type("numlock",SDLK_NUMLOCK));
-	m_kButtons.insert(map<char*,int>::value_type("capslock",SDLK_CAPSLOCK));
-	m_kButtons.insert(map<char*,int>::value_type("scrollock",SDLK_SCROLLOCK));
-
-	
-	m_kButtons.insert(map<char*,int>::value_type("mouseleft",MOUSELEFT));
-	m_kButtons.insert(map<char*,int>::value_type("mousemiddle",MOUSEMIDDLE));
-	m_kButtons.insert(map<char*,int>::value_type("mouseright",MOUSERIGHT));
-
-	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_LEFT,gKEY_LEFT));
-	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_RIGHT,gKEY_RIGHT));
-	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_UP,gKEY_UP));
-	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_DOWN,gKEY_DOWN));
-	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_SPACE,gKEY_SPACE));
-	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_BACKSPACE,gKEY_BACKSPACE));
-	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_RETURN,gKEY_RETURN));
-	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_RSHIFT,gKEY_RSHIFT));
-	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_RCTRL,gKEY_RCTRL));
-	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_LSHIFT,gKEY_LSHIFT));
-	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_LCTRL,gKEY_LCTRL));
-	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_F12,gKEY_F12));
-	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_F11,gKEY_F11));
-	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_F10,gKEY_F10));
-	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_F9,gKEY_F9));	
-	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_F8,gKEY_F8));	
-	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_F7,gKEY_F7));	
-	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_F6,gKEY_F6));
-	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_F5,gKEY_F5));	
-	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_F4,gKEY_F4));	
-	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_F3,gKEY_F3));	
-	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_F2,gKEY_F2));
-	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_F1,gKEY_F1));
-	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_PAGEUP,gKEY_PAGEUP));
-	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_PAGEDOWN,gKEY_PAGEDOWN));
-	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_HOME,gKEY_HOME));
-	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_END,gKEY_END));
-	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_TAB,gKEY_TAB));
-	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_DELETE,gKEY_DELETE));
-	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_INSERT,gKEY_INSERT));	
-	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_1,gKEY_1));
-	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_2,gKEY_2));
-	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_3,gKEY_3));
-	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_4,gKEY_4));
-	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_5,gKEY_5));
-	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_6,gKEY_6));
-	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_7,gKEY_7));
-	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_8,gKEY_8));
-	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_9,gKEY_9));
-	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_0,gKEY_0));
-	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_Q,gKEY_Q));
-	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_Q,gKEY_Q));	
-	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_E,gKEY_E));	
-	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_R,gKEY_R));	
-	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_T,gKEY_T));	
-	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_Y,gKEY_Y));	
-	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_U,gKEY_U));	
-	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_I,gKEY_I));	
-	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_O,gKEY_O));	
-	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_P,gKEY_P));	
-	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_A,gKEY_A));	
-	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_S,gKEY_S));	
-	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_D,gKEY_D));	
-	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_F,gKEY_F));	
-	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_G,gKEY_G));	
-	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_H,gKEY_H));	
-	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_J,gKEY_J));	
-	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_K,gKEY_K));	
-	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_L,gKEY_L));	
-	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_Z,gKEY_Z));	
-	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_X,gKEY_X));	
-	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_C,gKEY_C));	
-	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_V,gKEY_V));	
-	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_B,gKEY_B));	
-	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_N,gKEY_N));	
-	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_M,gKEY_M));
-	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_EXCLAIM,gKEY_EXCLAIM));
-	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_QUOTEDBL,gKEY_QUOTEDBL));
-	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_HASH,gKEY_HASH));
-	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_DOLLAR,gKEY_DOLLAR));
-	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_AMPERSAND,gKEY_AMPERSAND));
-	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_QUOTE,gKEY_QUOTE));
-	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_LEFTPAREN,gKEY_LEFTPAREN));
-	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_RIGHTPAREN,gKEY_RIGHTPAREN));
-	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_ASTERISK,gKEY_ASTERISK));
-	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_PLUS,gKEY_PLUS));
-	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_COMMA,gKEY_COMMA));
-	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_MINUS,gKEY_MINUS));
-	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_PERIOD,gKEY_PERIOD));
-	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_SLASH,gKEY_SLASH));
-	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_COLON,gKEY_COLON));
-	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_SEMICOLON,gKEY_SEMICOLON));
-	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_LESS,gKEY_LESS));
-	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_EQUALS,gKEY_EQUALS));
-	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_GREATER,gKEY_GREATER));
-	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_QUESTION,gKEY_QUESTION));
-	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_AT,gKEY_AT));
-	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_LEFTBRACKET,gKEY_LEFTBRACKET));
-	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_BACKSLASH,gKEY_BACKSLASH));
-	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_RIGHTBRACKET,gKEY_RIGHTBRACKET));
-	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_CARET,gKEY_CARET));
-	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_UNDERSCORE,gKEY_UNDERSCORE));
-	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_BACKQUOTE,gKEY_BACKQUOTE));
-	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_KP_PERIOD,gKEY_KP_PERIOD));
-	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_KP_DIVIDE,gKEY_KP_DIVIDE));
-	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_KP_MULTIPLY,gKEY_KP_MULTIPLY));
-	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_KP_MINUS,gKEY_KP_MINUS));
-	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_KP_PLUS,gKEY_KP_PLUS));
-	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_KP_ENTER,gKEY_KP_ENTER));
-	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_KP_EQUALS,gKEY_KP_EQUALS));
-	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_NUMLOCK,gKEY_NUMLOCK));
-	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_CAPSLOCK,gKEY_CAPSLOCK));
-	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(KEY_SCROLLOCK,gKEY_SCROLLOCK));
-	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(MOUSELEFT,gMOUSELEFT));
-	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(MOUSEMIDDLE,gMOUSEMIDDLE));
-	m_kGlobalKeyTranslator.insert(map<int,int>::value_type(MOUSERIGHT,gMOUSERIGHT));
-
-}
-*/
