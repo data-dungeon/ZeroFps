@@ -215,6 +215,7 @@ void ZeroFps::InitDisplay(int iWidth,int iHeight,int iDepth) {
 	
 	atexit(SDL_Quit);
 
+
 	SetDisplay();
 
 #ifdef _WIN32

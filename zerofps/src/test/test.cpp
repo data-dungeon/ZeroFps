@@ -99,24 +99,24 @@ void Test::OnInit(void) {
 	
 	int i;
 	
-	/*for( i=0;i<40;i++) {
+/*	for( i=0;i<40;i++) {
 		Object *ball=new BallObject();
 		float x=290 + rand()%200;
 		float y=730 + rand()%100;
 		ball->GetPos()=Vector3(x,test->Height(x,y)+5,y);
 		pkObjectMan->Add(ball);
 		pkCollisionMan->Add(ball);
-	}*/
+	}
 
 	Object *sussi;
-	for(i=0;i<30;i++) {
+	for(i=0;i<5;i++) {
 		sussi=new BunnyObject();
 		float x=340 + rand()%10;
 		float y=780 + rand()%10;
 		sussi->GetPos()=Vector3(x,test->Height(x,y),y);
 		pkObjectMan->Add(sussi);
 		pkCollisionMan->Add(sussi);
-	}
+	}*/
 
 
 
