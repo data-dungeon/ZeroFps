@@ -13,7 +13,6 @@ public:
 	
 	bool InitDlg();
 	void UpdateAgentList();
-	void UpdateSelAgent(int iID);
 
 protected:
 	

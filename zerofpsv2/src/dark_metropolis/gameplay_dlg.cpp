@@ -493,31 +493,3 @@ void CGamePlayDlg::UpdateAgentList()
 	}
 }
 
-void CGamePlayDlg::UpdateSelAgent(int iID)
-{
-	//printf("CGamePlayDlg::UpdateSelAgent\n");
-
-	//ZGuiButton* pkActiveCharBn = (ZGuiButton*) GetWnd("ActiveCharacterPortraitBn");
-	//pkActiveCharBn->Hide();
-	//m_iSelectedAgent = iID;
-
-	//for(int i=0; i<5; i++)
-	//{
-	//	m_akAgetIcons[i].pkButton->GetButtonHighLightSkin()->m_unBorderSize = 0; 
-	//	m_akAgetIcons[i].pkButton->GetButtonDownSkin()->m_unBorderSize = 0; 				
-	//	m_akAgetIcons[i].pkButton->GetButtonUpSkin()->m_unBorderSize = 0; 
-	//}
-
-	//for(int i=0; i<5; i++)
-	//{
-	//	if(m_akAgetIcons[i].iAgentObjectID == iID)
-	//	{
-	//		m_akAgetIcons[i].pkButton->GetButtonHighLightSkin()->m_unBorderSize = 2; 
-	//		m_akAgetIcons[i].pkButton->GetButtonDownSkin()->m_unBorderSize = 2; 				
-	//		m_akAgetIcons[i].pkButton->GetButtonUpSkin()->m_unBorderSize = 2; 
-	//		//pkActiveCharBn->Show();
-	//		break;
-	//	}
-	//}
-			
-}

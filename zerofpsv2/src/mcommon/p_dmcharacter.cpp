@@ -278,6 +278,7 @@ void P_DMCharacter::Shoot (Vector3 kLocation)
 		kLocation.z += (rand()%int(fRand*1000)) / 1000.f - (fRand / 2.f);
 
 		pkP_Gun->Fire (kLocation);
+
 	}
 
 	// Start shoot animation, if gun isn't empty

@@ -106,8 +106,6 @@ void DarkMetropolis::GUI_OnIdle()
 	}
 }
 
-// testa kommentera bort m_pkGamePlayInfoLabel från rad 74 till rad 93 i dark_metropolis_gui.cpp
-
 void DarkMetropolis::GUI_Init()
 {
 	// Jaja... får väll ge mig dvoid :( Men efter crunchen vill jag ha detta _fixat_
@@ -304,14 +302,6 @@ void DarkMetropolis::GUI_OnMouseMove(int x, int y, bool bMouseDown,
 	{
 		m_pkMembersDlg->OnMouseMove(x, y, bMouseDown, pkMain);
 	}
-
-	//if(x >= 142 && x < 397 && y > 397 && y <= 600)
-	//{
-	//	if(GetWnd("skill_bar"))
-	//	{
-	//		pkGui->SetFocus(GetWnd("skill_bar"));
-	//	}
-	//}
 }
 
 void DarkMetropolis::GUI_OnScroll(int iID, int iPos, ZGuiWnd *pkMain)
@@ -521,19 +511,6 @@ bool DarkMetropolis::GUI_NewGame(ZGuiWnd *pkMainWnd)
 	
 	LoadGuiFromScript(m_pkScript,"data/script/gui/dm_gameplay_2.lua");
 	
-	//char* szWndToHide[] =
-	//{
-	//	"GamePlayChar1Wnd", "GamePlayChar2Wnd", 
-	//	"GamePlayChar3Wnd", "GamePlayChar4Wnd", 
-	//	"GamePlayChar5Wnd", "GamePlayPanelWnd",
-	//	"GamePlayInfoWnd", "MembersWnd",
-	//	"MissionWnd", "BriefingWnd",
-	//	"ItemAddWnd", "ItemRemoveWnd", 
-	//};
-
-	//for(int i=0; i<sizeof(szWndToHide)/sizeof(szWndToHide[1]); i++)
-	//	ShowWnd(szWndToHide[i], false);	
-
 	StartSong("data/music/dm ingame.ogg");	
 
 	return true;

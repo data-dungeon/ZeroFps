@@ -44,7 +44,7 @@ function HeartBeat()
 
 	local Life = GetCharStats(SIGetSelfID(), 0)
 
-	-- Ropa på hjälp om han har blivit skadad.
+	-- Ropa på hjälp om han har blivit skadad igen.
 	if Life < g_MechLife then
 		CallForHelp(SIGetSelfID(), 1)
 		Print( "Mechanic call the cops!" )

@@ -28,17 +28,15 @@ function Init()
 	AddDefenciveActionQuot(SIGetSelfID(), "data/sound/cyborg/well done, junior.wav");
 	AddDefenciveActionQuot(SIGetSelfID(), "data/sound/cyborg/what.wav");
 	AddDeathSound(SIGetSelfID(), "data/sound/cyborg/death1.wav");
-	AddMoveCharSound(SIGetSelfID(), "data/sound/cyborg/slaving for you.wav");
-	AddMoveCharSound(SIGetSelfID(), "data/sound/cyborg/my bags are packed.wav");
-	AddSelectCharSound(SIGetSelfID(), "data/sound/cyborg/yes my lord.wav");
 --	SISetHeartRate(SIGetSelfID(),4);
-	Equip(SIGetSelfID(), "data/script/objects/dm/t_gun.lua", 1); -- snuten skall naturligvis ha en picka i början... (tråkigt spel annars)
 	SetTeam (SIGetSelfID(), 2);
+	Equip(SIGetSelfID(), "data/script/objects/dm/t_rifle.lua", 1); -- snuten skall naturligvis ha en picka i början... (tråkigt spel annars)
+	
 end
 
 function FirstRun()
 
-	SISetHeartRate(SIGetSelfID(),4);
+	SISetHeartRate(SIGetSelfID(),1);
 end
 
 function HeartBeat()
@@ -53,12 +51,20 @@ function HeartBeat()
 	end
 
 	-- Lyssna om någon ropar på hjälp
-	-- TODO: lägg in en avståndscheck
 	person_calling = GetClosestCaller(SIGetSelfID())
 
-	if person_calling > 0 then
-		g_HelpingCharacterID = person_calling
-		Print( "Hearing person calling : ", g_HelpingCharacterID)
+	if person_calling > 0 and g_HelpingCharacterID == -1 then
+
+		civilian_pos = GetEntityPos(person_calling)
+		police_pos = GetEntityPos(SIGetSelfID())
+		range = GetRangeBetween(civilian_pos, police_pos)
+
+		if range < 30 then
+			g_HelpingCharacterID = person_calling
+			Print( "Hearing person calling : ", g_HelpingCharacterID)
+		else
+			--Print( "A person is calling for help, but thed istance to far, police dont hear call from person, range is: ", range)
+		end
 	end
 
 	-- Sök reda på personen i nöd.
@@ -66,7 +72,6 @@ function HeartBeat()
 
 		civilian_pos = GetEntityPos(g_HelpingCharacterID)
 		police_pos = GetEntityPos(SIGetSelfID())
-
 		range = GetRangeBetween(civilian_pos, police_pos)
 
 		if range > 10 then -- Inte framme hos den som ropar?
@@ -81,7 +86,7 @@ function HeartBeat()
 
 		else -- Är framme hos den som ropar?
 
-			CallForHelp(g_HelpingCharacterID, -1) -- Säg till personen att sluta skrika (annars springer han till personen i nöd hela tiden)
+			CallForHelp(g_HelpingCharacterID, -1) -- Säg till personen att sluta skrika (annars springer polisen till personen i nöd hela tiden)
 
 			SetState(SIGetSelfID(),4) -- Get Aggro
 			g_HelpingCharacterID = -1 -- Don't run to that person anymore
@@ -138,4 +143,11 @@ function GetRangeBetween(a, b) -- tar 2 tabeller med 3 double vardera
 	range = xdif + zdif
 
 	return range
+end
+
+function OnTakingDmgFrom(EnemyShooting)
+
+	Print("Enemy is: ", EnemyShooting)
+	SetState(SIGetSelfID(),4) -- Get Aggro
+
 end
