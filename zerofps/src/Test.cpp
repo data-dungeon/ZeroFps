@@ -12,7 +12,7 @@ Test::Test(char* aName): Application(aName) {
 
 void Test::OnInit(void) {
 	cout<<"Ollespelet e har =)"<<endl;
-	
+	cout<<"balle"<<endl;
 }
 
 
