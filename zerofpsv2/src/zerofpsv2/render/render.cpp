@@ -1172,6 +1172,7 @@ void Render::DrawAABB( Vector3 kMin,Vector3 kMax, Vector3 kColor, float fLineSiz
 
 	glDisable(GL_TEXTURE_2D);
 	glDisable(GL_LIGHTING );
+	glEnable( GL_DEPTH_TEST );
 
 	glLineWidth( fLineSize );
 

@@ -1089,8 +1089,8 @@ Vector3 MistClient::Get3DMousePos(bool m_bMouse=true)
 		
 		m_pkInputHandle->SDLMouseXY(x,y);
 		
-		x = -0.5f + (float) x / (float) m_pkApp->m_iWidth;
-		y = -0.5f + (float) y / (float) m_pkApp->m_iHeight;
+		x = int( -0.5f + (float) x / (float) m_pkApp->m_iWidth );
+		y = int( -0.5f + (float) y / (float) m_pkApp->m_iHeight );
 		
 		dir.Set(x*xp,-y*yp,fovshit);
 		dir.Normalize();

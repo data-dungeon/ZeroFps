@@ -82,7 +82,7 @@ void P_Car::Trust(Vector3 kPos,Vector3 kForce)
 
 	Vector3 kGround = LineTest(kWPos,kWPos + (kForce.Unit() * 50));		
 	
-	float fFd = kGround.DistanceTo(kWPos); 
+	float fFd = float(kGround.DistanceTo(kWPos)); 
 	if(fFd > 3)
 		return;
 	
@@ -132,7 +132,7 @@ Vector3 P_Car::LineTest(Vector3 kStart,Vector3 kStop)
 			if(mp->TestLine(start,dir))
 			{
 				cp = mp->GetLastColPos();
-				d = start.DistanceTo(cp);
+				d = float(start.DistanceTo(cp));
 
 				if(d < closest)
 				{

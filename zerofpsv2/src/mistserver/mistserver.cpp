@@ -414,7 +414,7 @@ void MistServer::DrawHMEditMarker(HeightMap* pkHmap, Vector3 kCenterPos, float f
 	{
 		kVertex.x = float( cos(DegToRad( float(i) )) * fInRadius );
 		kVertex.z = float( sin(DegToRad( float(i) )) * fInRadius );
-		kVertex.y = pkHmap->Height(kCenterPos.x+kVertex.x,kCenterPos.z + kVertex.z) + 0.01;
+		kVertex.y = float( pkHmap->Height(kCenterPos.x+kVertex.x,kCenterPos.z + kVertex.z) + 0.01 );
 		kVertex += kCenterPos;
 		kVertexList.push_back(kVertex);
 	}
@@ -426,7 +426,7 @@ void MistServer::DrawHMEditMarker(HeightMap* pkHmap, Vector3 kCenterPos, float f
 	{
 		kVertex.x = float( cos(DegToRad( float(i) )) * fOutRadius );
 		kVertex.z = float( sin(DegToRad( float(i) )) * fOutRadius );
-		kVertex.y = pkHmap->Height(kCenterPos.x+kVertex.x,kCenterPos.z + kVertex.z) + 0.01;
+		kVertex.y = float(pkHmap->Height(kCenterPos.x+kVertex.x,kCenterPos.z + kVertex.z) + 0.01 );
 		kVertex += kCenterPos;
 		kVertexList.push_back(kVertex);
 	}
@@ -974,7 +974,7 @@ void MistServer::Input()
 		my = m_iHeight - my; 
 		int iClickedViewPort = GetView(float(mx), float(my));
 		if(SetCamera(iClickedViewPort))
-			m_fDelayTime = m_pkFps->GetEngineTime() + 0.5;
+			m_fDelayTime = m_pkFps->GetEngineTime() + float(0.5);
 	}
 
 	if(m_pkInputHandle->VKIsDown("makeland")) {
@@ -1059,7 +1059,7 @@ bool MistServer::DelayCommand()
 	if(m_pkFps->GetEngineTime() < m_fDelayTime)
 		return true;
 
-	m_fDelayTime = m_pkFps->GetEngineTime() + 0.3;
+	m_fDelayTime = m_pkFps->GetEngineTime() + float(0.3);
 	return false;
 }
 
@@ -1246,7 +1246,7 @@ void MistServer::RunCommand(int cmdid, const CmdArgument* kCommand)
 			if(kCommand->m_kSplitCommand.size() <= 1)
 				break;
 			
-			fTest =  atof( kCommand->m_kSplitCommand[1].c_str());
+			fTest = float( atof( kCommand->m_kSplitCommand[1].c_str()) );
 			Camera::m_fGridSpace = fTest;
 			break;
 

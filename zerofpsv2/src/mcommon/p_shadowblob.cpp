@@ -99,7 +99,7 @@ bool P_ShadowBlob::HandleSetValue( string kValueName ,string kValue )
 {
 	if(strcmp(kValueName.c_str(), "scale") == 0) 
 	{
-		float fScale = atof(kValue.c_str());	
+		float fScale = float(atof(kValue.c_str()));	
 		m_kScale.Set(fScale,fScale,fScale);
 		
 		m_bHaveSet = true;

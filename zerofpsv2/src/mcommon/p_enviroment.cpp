@@ -415,7 +415,7 @@ void P_Enviroment::MakeRainSplashes()
 		
 			if(pkZD->m_pkZone->GetZoneNeighbours(&m_kZones))
 			{
-				for(int i = 0;i<m_kZones.size();i++)
+				for(unsigned int i = 0;i<m_kZones.size();i++)
 				{
 					m_kZones[i]->GetAllEntitys(&kObjects);
 				}
@@ -437,7 +437,7 @@ void P_Enviroment::MakeRainSplashes()
 		
 		float fTop = -999999;
 		Vector3 kPos;
-		for(int i = 0;i < kObjects.size() ;i++)
+		for(unsigned int i = 0;i < kObjects.size() ;i++)
 		{
 			if(P_Mad* pkMad = (P_Mad*)kObjects[i]->GetProperty("P_Mad"))
 			{	
@@ -470,7 +470,7 @@ void P_Enviroment::DrawRainSplashes()
 	static Vector3 v3( 0.1,0,-0.1);
 	static Vector3 v4(-0.1,0,-0.1);
 
-	for(int i = 0 ;i<m_kDrops.size();i++)
+	for(unsigned int i = 0 ;i<m_kDrops.size();i++)
 	{
 		m_pkRender->Polygon4(m_kDrops[i] + v1,
 									m_kDrops[i] + v2,
