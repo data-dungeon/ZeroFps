@@ -7,6 +7,7 @@
 #include "p_container.h"
 #include "p_item.h"
 #include "p_spell.h"
+#include "../zerofpsv2/engine_systems/propertys/p_scriptinterface.h"
 #include "../zerofpsv2/engine_systems/propertys/p_mad.h"
 #include "../zerofpsv2/engine/p_pfpath.h"
 #include "../zerofpsv2/script/zfscript.h"
@@ -328,7 +329,7 @@ int MistLandLua::SendEventLua(lua_State* pkLua)
 	Entity* pkObject = g_pkObjMan->GetObjectByNetWorkID(id);
 	if(pkObject)
 	{
-		P_Event* pe = (P_Event*)pkObject->GetProperty("P_Event");	
+		P_ScriptInterface* pe = (P_ScriptInterface*)pkObject->GetProperty("P_ScriptInterface");	
 		
 		if(pe)
 		{
@@ -402,6 +403,7 @@ int MistLandLua::MessageCaracterLua(lua_State* pkLua)
 	return 0;
 }
 
+/*
 int MistLandLua::SetHeartRateLua(lua_State* pkLua)
 {
 	if(g_pkScript->GetNumArgs(pkLua) == 2)
@@ -424,7 +426,7 @@ int MistLandLua::SetHeartRateLua(lua_State* pkLua)
 		cout<<"SetHeartRate[ObjectID, HeartRate] {HeartRate = -1}"<<endl;	
 	
 	return 0;
-}
+}*/
 
 // Arg 1. ID på spelar objektet som lyssnar
 // Arg 2. ID på objektet som genererar ljudet.

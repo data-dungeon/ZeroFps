@@ -358,7 +358,7 @@ void DarkMetropolis::RegisterPropertys()
 	m_pkPropertyFactory->Register("P_DMMission",			Create_P_DMMission);
 	m_pkPropertyFactory->Register("P_DMItem", 			Create_P_DMItem);
 	m_pkPropertyFactory->Register("P_DMGun", 				Create_P_DMGun);
-	m_pkPropertyFactory->Register("P_Event",				Create_P_Event);
+//	m_pkPropertyFactory->Register("P_Event",				Create_P_Event);
 	m_pkPropertyFactory->Register("P_Enviroment",		Create_P_Enviroment);
 	m_pkPropertyFactory->Register("P_DMShop",				Create_P_DMShop);	
 	m_pkPropertyFactory->Register("P_DMHQ", 				Create_P_DMHQ);

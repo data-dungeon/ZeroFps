@@ -1,6 +1,7 @@
 #ifndef _P_EVENT_H_
 #define _P_EVENT_H_
 
+/*
 #include "../zerofpsv2/engine/property.h"
 #include "../zerofpsv2/engine/zerofps.h"
 //#include "../zerofpsv2/engine_systems/propertys/p_physic.h"
@@ -15,7 +16,7 @@ using namespace std;
 
 /**	\brief	Da P_Event
 		\ingroup Common
-*/
+
 class MCOMMON_API P_Event: public Property {
 	private:
 		ZeroFps* m_pkFps;
@@ -45,5 +46,5 @@ class MCOMMON_API P_Event: public Property {
 };
 
 MCOMMON_API Property* Create_P_Event();
-
+*/
 #endif

@@ -1,5 +1,6 @@
 #include "../../p_item.h"
-#include "../../p_event.h"
+//#include "../../p_event.h"
+#include "../../../zerofpsv2/engine_systems/propertys/p_scriptinterface.h"
 #include "../../../zerofpsv2/engine_systems/propertys/p_mad.h"
 #include "../../../zerofpsv2/engine_systems/propertys/p_linktojoint.h"
 #include "../../../zerofpsv2/engine/p_pfpath.h"
@@ -418,7 +419,7 @@ void CharacterStats::SetHP( string kValue )
    
    if(m_kPointStats["hp"].Value() <= 0)
    {
-   	P_Event* pe = (P_Event*)m_pkParent->GetProperty("P_Event");
+   	P_ScriptInterface* pe = (P_ScriptInterface*)m_pkParent->GetProperty("P_ScriptInterface");
    
    	if(pe)
    	{
@@ -460,7 +461,7 @@ void CharacterStats::AddHP( int iValue )
    
    if(m_kPointStats["hp"].Value() <= 0)
    {
-   	P_Event* pe = (P_Event*)m_pkParent->GetProperty("P_Event");
+   	P_ScriptInterface* pe = (P_ScriptInterface*)m_pkParent->GetProperty("P_ScriptInterface");
    
    	if(pe)
    	{

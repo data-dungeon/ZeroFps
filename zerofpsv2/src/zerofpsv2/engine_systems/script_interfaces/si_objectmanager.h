@@ -29,6 +29,8 @@ namespace ObjectManagerLua
 	extern ENGINE_SYSTEMS_API	Entity*		g_pkLastParentBak;
 	extern ENGINE_SYSTEMS_API	Property*	g_pkLastPropertyBak;
 	extern ENGINE_SYSTEMS_API	Entity*		g_pkReturnObjectBak;
+	extern ENGINE_SYSTEMS_API	Entity*		g_pkLastObjectBak;
+	extern ENGINE_SYSTEMS_API	int			g_iCurrentObjectBak;
 
 	extern ENGINE_SYSTEMS_API	int			g_iCurrentObjectID;
 	extern ENGINE_SYSTEMS_API 	int			g_iCurrentPCID;

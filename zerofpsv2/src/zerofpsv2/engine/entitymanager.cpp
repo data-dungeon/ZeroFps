@@ -487,13 +487,13 @@ Entity* EntityManager::CreateObjectFromScript(const char* acName)
 	
 	Entity* pkReturnObj = ObjectManagerLua::g_pkReturnObject;
 	
-	//pop pointers
-	ObjectManagerLua::Pop();
 
    pkReturnObj->m_strCreatedFromScript = acName;
 	
 	CallFunction(pkReturnObj, "FirstRun");
 
+	//pop pointers
+	ObjectManagerLua::Pop();
 
 	return pkReturnObj;
 }

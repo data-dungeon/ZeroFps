@@ -19,9 +19,11 @@ Entity*			 g_pkReturnObject;
 Entity*			 g_pkLastParentBak;
 Property*		 g_pkLastPropertyBak;
 Entity*			 g_pkReturnObjectBak;
+Entity*			 g_pkLastObjectBak;
 
 int				g_iCurrentObjectID;
 int				g_iCurrentPCID;
+int				g_iCurrentObjectBak;
 
 void Init(EntityManager* pkObjMan, ZFScriptSystem* pkScript)
 {
@@ -94,20 +96,22 @@ void Reset()
 
 void Push()
 {
-	//g_pkLastObjectBak   = g_pkLastObject;
-	g_pkLastPropertyBak = g_pkLastProperty;
-	g_pkLastParentBak   = g_pkLastParent;
-	g_pkReturnObjectBak = g_pkReturnObject;
-	
+	g_iCurrentObjectBak  = g_iCurrentObjectID;
+	g_pkLastPropertyBak	= g_pkLastProperty;
+	g_pkLastParentBak		= g_pkLastParent;
+	g_pkReturnObjectBak	= g_pkReturnObject;
+	g_pkLastObjectBak    = g_pkLastObject;
+
 	Reset();
 }
 
 void Pop()
 {
-	//g_pkLastObject   = g_pkLastObjectBak;
-	g_pkLastProperty = g_pkLastPropertyBak;
-	g_pkLastParent   = g_pkLastParentBak;
-	g_pkReturnObject = g_pkReturnObjectBak;
+	g_iCurrentObjectID   = g_iCurrentObjectBak;
+	g_pkLastProperty		= g_pkLastPropertyBak;
+	g_pkLastParent			= g_pkLastParentBak;
+	g_pkReturnObject		= g_pkReturnObjectBak;
+	g_pkLastObject			= g_pkLastObjectBak;
 }
 
 
@@ -298,6 +302,7 @@ int DeleteLua(lua_State* pkLua)
 	if(pkObject)
 		g_pkObjMan->Delete(pkObject);
 	
+	//cout << "Delet Entity: "<< dTemp << "," << pkObject << endl;
 	
 	return 0;
 }
@@ -590,6 +595,7 @@ int GetObjectRotLua(lua_State* pkLua)
 
 int SIGetSelfIDLua(lua_State* pkLua)
 {
+	cout << "SIGetSelfIDLua: " << g_iCurrentObjectID;
 	g_pkScript->AddReturnValue(pkLua,g_iCurrentObjectID);
 	
 	return 1;

@@ -391,7 +391,7 @@ void MistServer::RegisterPropertys()
 	m_pkPropertyFactory->Register("P_ClientControl", Create_P_ClientControl);
 	m_pkPropertyFactory->Register("P_ServerInfo", Create_P_ServerInfo);
 	m_pkPropertyFactory->Register("P_Ml", Create_P_Ml);
-	m_pkPropertyFactory->Register("P_Event", Create_P_Event);
+//	m_pkPropertyFactory->Register("P_Event", Create_P_Event);
 	m_pkPropertyFactory->Register("P_CharStats", Create_P_CharStats);
 	m_pkPropertyFactory->Register("P_Item", Create_P_Item);
 	m_pkPropertyFactory->Register("P_Spell", Create_P_Spell);

@@ -170,6 +170,21 @@ void P_ScriptInterface::Load(ZFIoInterface* pkPackage)
 	SetHeartRate(m_fHeartRate);
 }
 
+bool P_ScriptInterface::SendEvent(const char* acEvent)
+{
+	if(m_pkObject->GetEntityScript() != NULL)
+	{
+		//set self id before calling the funktion
+		ObjectManagerLua::g_iCurrentObjectID = m_pkObject->GetEntityID();
+		
+		bool bSuccess = m_pkScriptSys->Call(m_pkObject->GetEntityScript(), (char*)acEvent,0,0);
+		//cout << "Calling Event: " << acEvent << " = " << bSuccess << endl;
+
+		return bSuccess;
+	}
+
+	return false;
+}
 
 Property* Create_P_ScriptInterface()
 {

@@ -1,4 +1,4 @@
-#include "p_event.h" 
+/*#include "p_event.h" 
 
 P_Event::P_Event()
 {
@@ -32,7 +32,7 @@ void P_Event::Update()
 		
 		SendEvent("FirstRun");
 	}
-*/
+
 
 	if(!m_bHaveRunInit)
 	{
@@ -125,7 +125,7 @@ bool P_Event::SendGroudClickEvent(const char* acType,Vector3 kPos,int iCallerObj
 	}
 
 	return false;
-}*/
+}
 
 void P_Event::Touch(int iId)
 {
@@ -136,7 +136,7 @@ void P_Event::Touch(int iId)
 		MistLandLua::g_iLastCollidedID = pkCol->m_pkPP2->GetObject()->GetEntityID();
 	else
 		MistLandLua::g_iLastCollidedID = pkCol->m_pkPP1->GetObject()->GetEntityID();
-*/		
+	
 
 }
 
@@ -167,3 +167,4 @@ Property* Create_P_Event()
 {
 	return new P_Event;
 }
+*/
