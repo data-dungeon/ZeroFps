@@ -6,6 +6,9 @@
 #include "gui_x.h"
 #include "zguicheckbox.h"
 
+/** \brief	A radiobutton in the gui.
+	 \ingroup Gui
+*/
 class GUI_API ZGuiRadiobutton : public ZGuiWnd
 {
 public:

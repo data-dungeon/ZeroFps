@@ -11,7 +11,9 @@
 
 using namespace std;
 
-/// Settings for one pass in a Material.
+/**	\brief	Settings for one pass in a Material.
+		\ingroup Render
+*/
 class RENDER_API ZMaterialSettings
 {
 	public:

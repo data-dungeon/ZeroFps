@@ -8,6 +8,9 @@
 
 class ZGuiRender;
 
+/** \brief	A label in the gui.
+	 \ingroup Gui
+*/
 class GUI_API ZGuiLabel : public ZGuiWnd 
 {
 public:

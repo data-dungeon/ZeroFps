@@ -34,6 +34,9 @@ const int NCODE_MOVE		= 83;
 #define WF_CANHAVEFOCUS		0x0003
 #define WF_TOPWINDOW		0x0004	// Kan detta fönster användas som mainwindow?
 
+/** \brief	???
+	 \ingroup Gui
+*/
 class GUI_API ZGuiWnd  
 {
 

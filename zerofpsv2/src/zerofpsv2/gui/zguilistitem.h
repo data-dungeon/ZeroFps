@@ -9,6 +9,9 @@ class ZGuiButton;
 class ZGuiSkin;
 class ZGuiWnd;
 
+/** \brief	???.
+	 \ingroup Gui
+*/
 class GUI_API ZGuiListitem  
 {
 public:

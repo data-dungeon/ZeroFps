@@ -12,6 +12,9 @@ class ZGuiLabel;
 class ZGuiListbox;
 class ZGuiListitem;
 
+/** \brief	A combobox in the gui.
+	 \ingroup Gui
+*/
 class GUI_API ZGuiCombobox : public ZGuiWnd
 {
 public:

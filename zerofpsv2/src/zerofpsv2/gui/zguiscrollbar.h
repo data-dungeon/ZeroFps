@@ -12,6 +12,9 @@ class ZGuiButton;
 const int SCROLLUP_ID = 521;
 const int SCROLLDOWN_ID = 522;
 
+/** \brief	A Gui Scrollbar
+	 \ingroup Gui
+*/
 class GUI_API ZGuiScrollbar : public ZGuiWnd
 {
 public:

@@ -1,3 +1,5 @@
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
+
 #include <iostream>
 #include "mdl.h"
 #include "qpack.h"
@@ -611,3 +613,5 @@ bool ModellMD1::Export(MadExporter* mad, const char* filename)
 
 	return true;
 }
+
+#endif /* DOXYGEN_SHOULD_SKIP_THIS */

@@ -66,6 +66,9 @@ class TextureManager;
 
 #define ZG_DEFAULT_GUI_FONT				 1
 
+/** \brief	Gui SubSystem
+	 \ingroup Gui
+*/
 class GUI_API ZGui : public ZFSubSystem 
 {
 public:	

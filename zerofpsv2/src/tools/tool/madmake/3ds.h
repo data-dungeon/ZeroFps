@@ -1,3 +1,5 @@
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
+
 #ifndef FILE__3DS_H
 #define FILE__3DS_H
 
@@ -138,3 +140,5 @@ public:
 
 
 #endif
+
+#endif /* DOXYGEN_SHOULD_SKIP_THIS */

@@ -157,6 +157,10 @@ WGL_EXT_swap_control
 WGL_NV_render_depth_texture
 WGL_NV_render_texture_rectangle
 */
+
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
+
+
 #ifndef __EXTGL_H__
 #define __EXTGL_H__
 
@@ -3810,3 +3814,5 @@ int glInitialize(); /* deprecated, please do not use */
 #endif
 
 #endif /* __EXTGL_H__ */
+
+#endif /* DOXYGEN_SHOULD_SKIP_THIS */

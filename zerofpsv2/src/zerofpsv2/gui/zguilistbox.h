@@ -11,6 +11,9 @@
 class ZGuiRender;
 class ZGuiScrollbar;
 
+/** \brief	A listbox in the gui.
+	 \ingroup Gui
+*/
 class GUI_API ZGuiListbox : public ZGuiWnd
 {
 public:

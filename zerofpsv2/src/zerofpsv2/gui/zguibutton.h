@@ -9,6 +9,9 @@
 
 class ZGuiRender;
 
+/** \brief	A Button in the gui.
+	 \ingroup Gui
+*/
 class GUI_API ZGuiButton : public ZGuiWnd 
 {
 public:

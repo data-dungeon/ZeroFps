@@ -31,7 +31,9 @@ THE POSSIBILITY OF SUCH DAMAGE.
   
     http://www.uni-karlsruhe.de/~uli2/
 
-*/                         
+*/ 
+
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
       
 #include "extgl.h"
 #include <stdio.h>
@@ -2176,3 +2178,5 @@ int glInitialize()
 {
     return extgl_Initialize();
 }
+
+#endif /* DOXYGEN_SHOULD_SKIP_THIS */

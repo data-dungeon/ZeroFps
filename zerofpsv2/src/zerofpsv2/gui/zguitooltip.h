@@ -12,6 +12,9 @@
 #include <vector>
 using namespace std;
 
+/** \brief	???
+	 \ingroup Gui
+*/
 class GUI_API ZGuiToolTip  
 {
 public:

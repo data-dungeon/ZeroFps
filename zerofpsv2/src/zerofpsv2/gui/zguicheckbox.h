@@ -10,6 +10,9 @@
 class ZGuiRender;
 class ZGuiLabel;
 
+/** \brief	A checkbox in the gui.
+	 \ingroup Gui
+*/
 class GUI_API ZGuiCheckbox : public ZGuiWnd
 {
 public:

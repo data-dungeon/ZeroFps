@@ -36,6 +36,9 @@ enum GuiType
 	GuiType_Error
 };
 
+/** \brief	ZGuiApp
+	 \ingroup Gui
+*/
 class GUI_API ZGuiApp
 {
 public:

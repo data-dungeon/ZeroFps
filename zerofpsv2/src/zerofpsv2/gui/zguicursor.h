@@ -6,6 +6,9 @@
 #include "gui_x.h"
 #include "../basic/rect.h"
 
+/** \brief	A cursor in the gui.
+	 \ingroup Gui
+*/
 class GUI_API ZGuiCursor 
 {
 public:

@@ -16,6 +16,9 @@ class ZGuiSkin;
 #define SCF_SLIDER_BOTTOM	0x0004
 #define SCF_SLIDER_TOP		0x0005
 
+/** \brief	???
+	 \ingroup Gui
+*/
 class GUI_API ZGuiSlider : public ZGuiWnd
 {
 public:

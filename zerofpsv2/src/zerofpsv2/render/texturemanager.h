@@ -25,7 +25,9 @@ enum OPTIONS {
 
 #define	NO_TEXTURE	-1
 
-/// Texture file name and all paramerers.
+/**	\brief	Texture file name and all paramerers.
+		\ingroup Render
+*/
 struct texture
 {
 	string			file;					// Path/Filename

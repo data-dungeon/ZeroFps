@@ -1,3 +1,5 @@
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
+
 #ifndef FILE__MDL_H
 #define FILE__MDL_H
 
@@ -203,3 +205,5 @@ public:
 // Quake 3:
 
 #endif
+
+#endif /* DOXYGEN_SHOULD_SKIP_THIS */

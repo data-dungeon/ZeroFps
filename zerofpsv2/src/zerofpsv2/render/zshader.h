@@ -125,11 +125,11 @@ contain the texture to use and all options for it.
 class RENDER_API ZShader : public ZFSubSystem
 {
 	private:
-		struct Vector2
+		/*struct Vector2
 		{
 			float x;
 			float y;			
-		};
+		};*/
 		
 		//systems
 		TextureManager*	m_pkTexMan;

@@ -152,6 +152,7 @@ class MistServer :public Application , public ZGuiApp {
 		vector<HMSelectVertex>	m_kSelectedHMVertex;
 		float m_fHMInRadius;
 		float m_fHMOutRadius;
+		int	m_iEditLayer;
 
 		void HMModifyCommand(float fSize);
 

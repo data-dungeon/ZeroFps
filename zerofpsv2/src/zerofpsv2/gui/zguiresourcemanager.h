@@ -15,6 +15,9 @@ class ZGuiFont;
 class ZGuiSkin;
 class ZGui;
 
+/** \brief	???
+	 \ingroup Gui
+*/
 class GUI_API ZGuiResourceManager : public ZFSubSystem
 {
 public:

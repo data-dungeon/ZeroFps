@@ -7,6 +7,9 @@
 #include "zguiwindow.h"
 #include "zguibutton.h"
 
+/** \brief	???
+	 \ingroup Gui
+*/
 class GUI_API ZGuiTabCtrl : public ZGuiWnd 
 {
 public:

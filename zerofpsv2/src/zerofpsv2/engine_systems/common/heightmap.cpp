@@ -54,7 +54,9 @@ void HeightMap::Create(int iTilesSide)
 	
 	ClearSet();
 	AddSet("../data/textures/nodetail1.bmp","../data/textures/detail1.bmp","FEL");
-	AddSet("../data/textures/nodetail2.bmp","../data/textures/detail2.bmp","mask.tga");
+	AddSet("../data/textures/nodetail2.bmp","../data/textures/detail2.bmp","mask1.tga");
+	AddSet("../data/textures/nodetail3.bmp","../data/textures/detail3.bmp","mask2.tga");
+	AddSet("../data/textures/nodetail4.bmp","../data/textures/detail4.bmp","mask3.tga");
 
 //	CreateBlocks();
 }
@@ -736,8 +738,8 @@ vector<HMSelectVertex> HeightMap::GetSelection(Vector3 kCenter, float fInRadius,
 			}
 	}
 
-	cout << "Num Of Vertices Selected: " << kSelection.size();
-	cout << endl;
+//	cout << "Num Of Vertices Selected: " << kSelection.size();
+//	cout << endl;
 
 	return kSelection;
 }
@@ -753,7 +755,7 @@ void HeightMap::Raise(vector<HMSelectVertex> kSelected, float fSize)
 void HeightMap::DrawMask(Vector3 kPos,int iMask,int iSize,int r,int g,int b,int a)
 {
 	kPos -= m_kCornerPos;
-	cout << "Modify: " << kPos.x << ", " << kPos.z << endl;
+//	cout << "Modify: " << kPos.x << ", " << kPos.z << endl;
 
 
 	if(iMask <= 0 || iMask >= int(m_kSets.size()))
@@ -762,7 +764,7 @@ void HeightMap::DrawMask(Vector3 kPos,int iMask,int iSize,int r,int g,int b,int 
 	
 	ZFResourceHandle m_kConsoleText;
 	m_kConsoleText.SetRes(m_kSets[iMask].m_acMask);	
-	cout << m_kSets[iMask].m_acMask << endl;	
+//	cout << m_kSets[iMask].m_acMask << endl;	
 
 	ResTexture* pkTexture = static_cast<ResTexture*>(m_kConsoleText.GetResourcePtr());
 	m_pkTexMan->BindTexture(pkTexture->m_iTextureID);
@@ -778,14 +780,14 @@ void HeightMap::DrawMask(Vector3 kPos,int iMask,int iSize,int r,int g,int b,int 
 	float xpos = (float) ((kPos.x * HEIGHTMAP_SCALE) / (float)GetSize())  ;
 	float ypos = (float) ((kPos.z * HEIGHTMAP_SCALE) / (float)GetSize())  ;
 	
-	cout << "GetSize: " << GetSize() << " : ";
-   cout << m_pkTexMan->GetImage()->w << ",";
-	cout << m_pkTexMan->GetImage()->h << endl;	
+//	cout << "GetSize: " << GetSize() << " : ";
+//   cout << m_pkTexMan->GetImage()->w << ",";
+//	cout << m_pkTexMan->GetImage()->h << endl;	
 
 
 	xpos *= (float)m_pkTexMan->GetImage()->w;
 	ypos *= (float)m_pkTexMan->GetImage()->h;
-	cout << "RealCoo: " << xpos << ", " << ypos << endl;
+//	cout << "RealCoo: " << xpos << ", " << ypos << endl;
 	int size=iSize;
 
 	for(float i=0;i<size;i+=0.5)

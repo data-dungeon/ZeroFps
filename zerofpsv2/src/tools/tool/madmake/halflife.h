@@ -1,3 +1,5 @@
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
+
 #ifndef FILE__HALFLIFE_H
 #define FILE__HALFLIFE_H
 
@@ -224,3 +226,5 @@ public:
 };
 
 #endif
+
+#endif /* DOXYGEN_SHOULD_SKIP_THIS */

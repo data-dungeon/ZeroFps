@@ -49,7 +49,9 @@ struct SCRIPT_API ARG_DATA
 	ScripVarType eType;
 };
 
-/// A Script in the Resource SubSystem
+/**	\brief	Script in the Resource SubSystem
+		\ingroup Script
+*/
 class SCRIPT_API ZFScript : public ZFResource
 {
 	public:

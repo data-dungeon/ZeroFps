@@ -11,6 +11,9 @@ class ZGuiCheckbox;
 class ZGuiScrollbar;
 class ZGuiRender;
 
+/** \brief	???
+	 \ingroup Gui
+*/
 struct GUI_API ZGuiTreeboxNode
 {
 	ZGuiCheckbox* pkButton;
@@ -28,6 +31,9 @@ struct GUI_API ZGuiTreeboxNode
 	ZGuiTreeboxNode* RemoveNode(ZGuiTreeboxNode* pkNode);
 };
 
+/** \brief	???
+	 \ingroup Gui
+*/
 class GUI_API ZGuiTreebox : public ZGuiWnd
 {
 public:

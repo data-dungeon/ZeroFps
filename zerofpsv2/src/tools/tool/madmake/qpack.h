@@ -1,3 +1,5 @@
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
+
 #ifndef FILE__QPACK_H
 #define FILE__QPACK_H
 
@@ -93,3 +95,5 @@ public:
 extern PAKFile_Manger g_PakFileSystem;
 
 #endif
+
+#endif /* DOXYGEN_SHOULD_SKIP_THIS */

@@ -81,6 +81,7 @@ MistServer::MistServer(char* aName,int iWidth,int iHeight,int iDepth)
 
 	m_fHMInRadius  = 1;
 	m_fHMOutRadius = 2;
+	m_iEditLayer	= 1;
 } 
 
 void MistServer::OnInit() 
@@ -376,6 +377,7 @@ void MistServer::HMModifyCommand(float fSize)
 			m_kSelectedHMVertex.clear();
 			}
 		}
+
 }
 
 // Handles input for EditMode Terrain.
@@ -398,8 +400,13 @@ void MistServer::Input_EditTerrain()
 			ZoneData* kZData = m_pkObjectMan->GetZoneData(id);
 			P_HMRP2* hmrp = dynamic_cast<P_HMRP2*>(kZData->m_pkZone->GetProperty("P_HMRP2"));
 			Vector3 kLocalOffset = m_kDrawPos - hmrp->m_pkHeightMap->m_kCornerPos;
-			hmrp->m_pkHeightMap->DrawMask(m_kDrawPos, 1,m_fHMInRadius,255,255,255,255);
+			hmrp->m_pkHeightMap->DrawMask(m_kDrawPos, m_iEditLayer,m_fHMInRadius,255,255,255,255);
 			}
+
+	if(m_pkInput->Pressed(KEY_1)) m_iEditLayer = 1;		
+	if(m_pkInput->Pressed(KEY_2)) m_iEditLayer = 2;			
+	if(m_pkInput->Pressed(KEY_3)) m_iEditLayer = 3;			
+
 }
 
 // Handles input for EditMode Zones.
@@ -468,6 +475,8 @@ void MistServer::Input_EditZone()
 	if(m_pkInput->Pressed(KEY_3)) m_kZoneSize.Set(16,16,16);	
 	if(m_pkInput->Pressed(KEY_4)) m_kZoneSize.Set(32,16,32);	
 	if(m_pkInput->Pressed(KEY_5)) m_kZoneSize.Set(64,16,64);		
+
+
 	if(m_pkInput->Pressed(KEY_9)) m_bUpdateMarker = true;				
    if(m_pkInput->Pressed(KEY_0)) m_bUpdateMarker = false;
 

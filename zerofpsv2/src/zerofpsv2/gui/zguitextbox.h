@@ -9,6 +9,9 @@
 class ZGuiRender;
 class ZGuiScrollbar;
 
+/** \brief	???
+	 \ingroup Gui
+*/
 class GUI_API ZGuiTextbox : public ZGuiWnd
 {
 public:
