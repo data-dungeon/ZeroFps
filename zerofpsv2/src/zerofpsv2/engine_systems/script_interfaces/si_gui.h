@@ -14,8 +14,8 @@ namespace GuiAppLua
 {
 	void ENGINE_SYSTEMS_API Init(ZGuiApp* pkGuiApp, ZFScriptSystem* pkScript);
 
-	ZGuiApp* g_pkGuiApp;
-	ZFScriptSystem* g_pkScript;
+	 ZGuiApp* g_pkGuiApp;
+	 ZFScriptSystem* g_pkScript;
 
 	int ENGINE_SYSTEMS_API CreateWndLua(lua_State* pkLua);
 	int ENGINE_SYSTEMS_API AddTabPageLua(lua_State* pkLua);

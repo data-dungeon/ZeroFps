@@ -2006,6 +2006,7 @@ void Render::DrawPSystem( PSystem *pkPSystem )
 			  pkPSystem->GetRotation(), kScale, 1);
 	*/
 
+
 	glPopMatrix();
 }
 

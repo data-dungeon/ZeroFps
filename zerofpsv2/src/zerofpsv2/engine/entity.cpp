@@ -142,6 +142,11 @@ Property* Entity::AddProperty(const char* acName)
 		return false;
 	}
 
+	if(strcmp(acName,pProp->m_acName) != 0)
+	{
+		cout<<"WARNING: Internal property name "<<pProp->m_acName<<" does not match whit registered property name "<<acName<<endl;
+	}
+
 	AddProperty(pProp);
 	return pProp;
 }

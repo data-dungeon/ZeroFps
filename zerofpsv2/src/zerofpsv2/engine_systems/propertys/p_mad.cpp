@@ -265,9 +265,10 @@ bool P_Mad::TestLine(Vector3 kPos,Vector3 kDir)
 
 bool P_Mad::LineVSSphere(Vector3 &kPos,Vector3 &kDir)
 {
-	Vector3 c=m_pkObject->GetWorldPosV() - kPos;		
 	kDir.Normalize();		
-	Vector3 k=kDir.Proj(c);		
+	
+	Vector3 c = m_pkObject->GetWorldPosV() - kPos;		
+	Vector3 k = kDir.Proj(c);		
 	
 	float cdis=c.Length();
 	float kdis=k.Length();
@@ -348,81 +349,61 @@ bool P_Mad::LineVSMesh(Vector3 &kPos,Vector3 &kDir)
 
 bool P_Mad::TestPolygon(Vector3* kVerts,Vector3 kPos1,Vector3 kPos2)
 {		
-	Plane P;
-	
+	static Plane P;
+	static Vector3 V1,V2,Normal;
 
-
-	Vector3 V1 = kVerts[1] - kVerts[0];
-	Vector3 V2 = kVerts[2] - kVerts[0];		
-	Vector3 Normal= V1.Cross(V2);
-	
+	V1 = kVerts[1] - kVerts[0];
+	V2 = kVerts[2] - kVerts[0];		
+	Normal= V1.Cross(V2);
 	
 	if(Normal.Length() == 0)
-	{
 		return false;
-	}
 	
 	Normal.Normalize();
 	P.m_fD = -Normal.Dot(kVerts[0]);	
 	P.m_kNormal = Normal;
 
-	if(P.LineTest(kPos1 , kPos2 ,&m_kColPos)){
+	if(P.LineTest(kPos1 , kPos2 ,&m_kColPos))
 		if(TestSides(kVerts,&Normal,m_kColPos))
-		{
-			
 			return true;
-		}
-	}
-	
 	
 	return false;
 }
 
 bool P_Mad::TestSides(Vector3* kVerts,Vector3* pkNormal,Vector3 kPos)
 {
-	Plane side[6];
+//	Plane side[6];
+	static Plane side[3]; 
+	static Vector3 V1,V2,V3;
 	
-	
-/*	if(kVerts[0] == kVerts[1] || 
-		kVerts[2] == kVerts[1] ||
-		kVerts[0] == kVerts[2])
-		return false;*/
-	
-	
-	Vector3 V1 = kVerts[1] - kVerts[0];
-	Vector3 V2 = kVerts[2] - kVerts[1];	
-	Vector3 V3 = kVerts[0] - kVerts[2];	
+	V1 = kVerts[1] - kVerts[0];
+	V2 = kVerts[2] - kVerts[1];	
+	V3 = kVerts[0] - kVerts[2];	
 	
 	side[0].m_kNormal = pkNormal->Cross(V1).Unit();
 	side[1].m_kNormal = pkNormal->Cross(V2).Unit();	
 	side[2].m_kNormal = pkNormal->Cross(V3).Unit();
 
-	side[3].m_kNormal = (side[0].m_kNormal + side[2].m_kNormal).Unit();
-	side[4].m_kNormal = (side[0].m_kNormal + side[1].m_kNormal).Unit();
-	side[5].m_kNormal = (side[1].m_kNormal + side[2].m_kNormal).Unit();
-
+//	side[3].m_kNormal = (side[0].m_kNormal + side[2].m_kNormal).Unit();
+//	side[4].m_kNormal = (side[0].m_kNormal + side[1].m_kNormal).Unit();
+//	side[5].m_kNormal = (side[1].m_kNormal + side[2].m_kNormal).Unit();
 
 	side[0].m_fD = -side[0].m_kNormal.Dot(kVerts[0]);
 	side[1].m_fD = -side[1].m_kNormal.Dot(kVerts[1]);	
 	side[2].m_fD = -side[2].m_kNormal.Dot(kVerts[2]);	
 
-	side[3].m_fD = -side[3].m_kNormal.Dot(kVerts[0]);
-	side[4].m_fD = -side[4].m_kNormal.Dot(kVerts[1]);	
-	side[5].m_fD = -side[5].m_kNormal.Dot(kVerts[2]);	
+//	side[3].m_fD = -side[3].m_kNormal.Dot(kVerts[0]);
+//	side[4].m_fD = -side[4].m_kNormal.Dot(kVerts[1]);	
+//	side[5].m_fD = -side[5].m_kNormal.Dot(kVerts[2]);	
 	
 	
-	bool inside = true;
-	
-	for(int i=0;i<6;i++)
-	{
-		if(!side[i].SphereInside(kPos,0.01)){
-			inside=false;
-		}
-	
-	}
+	//check that the point is inside all planes	
+	for(int i=0;i<3;i++)
+		if(!side[i].PointInside(kPos))
+			return false;
 	
 	
-	return inside;	
+	return true;	
 }
 
 

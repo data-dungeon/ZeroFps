@@ -5,6 +5,7 @@ function Create()
 			InitParameter("m_kMadFile","/data/mad/fwarrior.mad");			
 			InitParameter("m_fScale","0.165");		
 
+		InitProperty("P_DMGun");
 		InitProperty("P_PfPath");
 		InitProperty("P_Track");
 		InitProperty("P_DMCharacter");

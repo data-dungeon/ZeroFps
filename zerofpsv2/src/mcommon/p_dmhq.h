@@ -17,7 +17,9 @@ class MCOMMON_API P_DMHQ: public Property {
 		vector<PropertyValues> GetPropertyValues();
 	
 		string	m_strName;
+		Vector3	m_kExitOffset;
 	
+		void Eject(Entity* pkEnt);
 	
 	public:
 		
@@ -31,6 +33,8 @@ class MCOMMON_API P_DMHQ: public Property {
 		
 		bool InsertCharacter(int iID);
 		void GetCharacters(vector<int>* m_pkEntitys);
+		bool EjectCharacter(int iID);
+		void EjectAllCharacters();
 		
 //		void Save(ZFIoInterface* pkPackage);
 //		void Load(ZFIoInterface* pkPackage);
@@ -40,3 +44,8 @@ class MCOMMON_API P_DMHQ: public Property {
 MCOMMON_API Property* Create_P_DMHQ();
 
 #endif
+
+
+
+
+

@@ -237,7 +237,7 @@ void P_Enviroment::SetEnviroment(const char* csEnviroment )
 	//load enviroment settings
 	if(!pkTempenv->SetRes(string(csEnviroment)))
 	{	
-		cout<<"FAILED TO LOAD"<<csEnviroment<<endl;
+		cout<<"FAILED TO LOAD "<<csEnviroment<<endl;
 		delete pkTempenv;
 		return;
 	}

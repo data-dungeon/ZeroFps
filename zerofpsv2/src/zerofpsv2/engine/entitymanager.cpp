@@ -1348,12 +1348,6 @@ void EntityManager::RunCommand(int cmdid, const CmdArgument* kCommand)
 					GetSystem().Printf("Error loading , savegame does not exist?");
 				}				
 			}			
-		
-		/*
-			if(kCommand->m_kSplitCommand.size() > 2)  //is there a temporary directory argument?
-				LoadWorld(kCommand->m_kSplitCommand[1],kCommand->m_kSplitCommand[2]);
-			else
-				LoadWorld(kCommand->m_kSplitCommand[1]);*/
 			break;
 
 		case FID_SAVEWORLD:
@@ -2700,7 +2694,6 @@ bool EntityManager::LoadWorld(string strLoadDir)
 		//setup a filter, so we dont delete files that shuld not be deleted =)
 		vector<string> kFilter;
 		kFilter.push_back("dynamic.zone");
-		kFilter.push_back("zones.dat");		
 		
 		vector<string> kFiles;
 		m_pkBasicFS->ListDirFilter(&kFiles,kFilter,m_kWorldDirectory.c_str());
@@ -2735,13 +2728,6 @@ bool EntityManager::LoadWorld(string strLoadDir)
 	if(!LoadZones(strLoadDir))
 	{
 		cout<<"ERROR: error loading zonelist"<<endl;
-		return false;
-	}
-	
-	//then save it in the temp directory
-	if(!SaveZones())
-	{
-		cout<<"ERROR: could not save zonelist in temp direcotry"<<endl;
 		return false;
 	}
 

@@ -16,7 +16,7 @@ class BASIC_API Plane
 		float		m_fD;									///< Distance ( D in plane equation).
 
 // Constructors
-	Plane() { }
+	Plane() { };
     Plane(const Plane& kPlane);
     Plane(Vector3& kPoint0, Vector3& kPoint1, Vector3& kPoint2);
 

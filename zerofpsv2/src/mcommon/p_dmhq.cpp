@@ -1,4 +1,5 @@
 #include "p_dmhq.h" 
+#include "../zerofpsv2/engine/p_pfpath.h"
 
 P_DMHQ::P_DMHQ()
 {
@@ -14,6 +15,7 @@ P_DMHQ::P_DMHQ()
 	
 
 	m_strName = "Unnamed HQ";
+	m_kExitOffset.Set(0,0,2);
 }
 
 P_DMHQ::~P_DMHQ()
@@ -63,6 +65,50 @@ void P_DMHQ::GetCharacters(vector<int>* m_pkEntitys)
 	}
 }
 
+bool P_DMHQ::EjectCharacter(int iID)
+{
+	vector<int> m_kEntitys;
+	GetCharacters(&m_kEntitys);
+	
+	
+	for(int i = 0;i<m_kEntitys.size();i++)
+	{
+		if(m_kEntitys[i] == iID)	
+		{
+			if(Entity* pkEnt = m_pkObjMan->GetObjectByNetWorkID(m_kEntitys[i]))
+			{				
+				Eject(pkEnt);
+				return true;
+			}
+		}
+	}
+	
+	return false;
+}
+
+void P_DMHQ::EjectAllCharacters()
+{
+	vector<int> m_kEntitys;
+	GetCharacters(&m_kEntitys);
+	
+	for(int i = 0;i<m_kEntitys.size();i++)
+	{
+		if(Entity* pkEnt = m_pkObjMan->GetObjectByNetWorkID(m_kEntitys[i]))
+		{
+			Eject(pkEnt);
+		}
+	}
+}
+
+void P_DMHQ::Eject(Entity* pkEnt)
+{
+	pkEnt->SetParent(m_pkObject->GetParent());
+	pkEnt->SetWorldPosV(m_pkObject->GetWorldPosV());
+				
+	if(P_PfPath* pkPath = (P_PfPath*)pkEnt->GetProperty("P_PfPath"))
+		pkPath->MakePathFind(m_pkObject->GetWorldPosV()+m_kExitOffset+Vector3( (rand()%20)/10.0,0,(rand()%20)/10.0));
+}
+
 vector<PropertyValues> P_DMHQ::GetPropertyValues()
 {
 	vector<PropertyValues> kReturn(0);
@@ -76,3 +122,10 @@ Property* Create_P_DMHQ()
 {
 	return new P_DMHQ;
 }
+
+
+
+
+
+
+

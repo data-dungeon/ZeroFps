@@ -39,7 +39,7 @@ void P_Light::Init()
 void P_Light::Update() 
 {
 	//draw ball on the server
-	if(m_pkZeroFps->m_bServerMode)
+	if(m_pkZeroFps->GetDebugGraph())
 		m_pkRender->Sphere(m_pkObject->GetWorldPosV(),0.1,1,Vector3(1,0,1),true);
 
 

@@ -14,7 +14,6 @@ void PSystem::Draw()
 		glDepthFunc ( m_pkPSystemType->m_kPSystemBehaviour.m_uiDepthMask );
 
 		m_pkRender->DrawPSystem (this);
-
 	}
 
 	glPopAttrib();
@@ -53,8 +52,8 @@ bool PSystem::Update( Vector3 kNewPosition, Matrix4 kNewRotation )
 
 
 	// Get Frametime
-	m_fFrameTime = m_pkFps->GetTicks() - m_fLastTime;
-	m_fLastTime =  m_pkFps->GetTicks();
+	m_fFrameTime = m_pkFps->m_pkObjectMan->GetSimTime() - m_fLastTime;//GetTicks() - m_fLastTime;
+	m_fLastTime =   m_pkFps->m_pkObjectMan->GetSimTime();
 
 
 	// Update particlesystem lifetime

@@ -6,6 +6,9 @@
 #include "../../gui/zgui.h"
 #include "si_gui.h"
 
+//ZFScriptSystem*	GuiAppLua::g_pkScript;
+//ZGuiApp* 			GuiAppLua::g_pkGuiApp;
+
 void GuiAppLua::Init(ZGuiApp* pkGuiApp, ZFScriptSystem* pkScript)
 {
 	g_pkGuiApp = pkGuiApp;
@@ -29,7 +32,7 @@ void GuiAppLua::Init(ZGuiApp* pkGuiApp, ZFScriptSystem* pkScript)
 
 	pkScript->ExposeFunction("TestTableSet", GuiAppLua::TestTableSetLua);
 	pkScript->ExposeFunction("TestTableGet", GuiAppLua::TestTableGetLua);
-
+		
 }
 
 // Name: CreateWndLua

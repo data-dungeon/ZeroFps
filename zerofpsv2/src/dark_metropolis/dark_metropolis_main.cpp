@@ -72,31 +72,27 @@ void DarkMetropolis::OnInit()
 	//register propertys
 	RegisterPropertys();
 
+	//registering resources
+	m_pkResourceDB->RegisterResource( string(".env"), Create__EnvSetting	);
+
+	// create gui script
+/*	GuiAppLua::Init(&g_kDM, m_pkScript);
+	InitGui(m_pkScript,
+		"data/textures/text/ms_sans_serif8.bmp",
+		"data/script/gui/defskins.lua",
+		NULL);
+
+	LoadGuiFromScript(m_pkScript, "data/script/gui/dm_start.lua");
+
+	StartSong("data/music/dm menu.ogg");
+*/
 	GUI_Init();
-
 	m_pkInput->ShowCursor(true);
-	
-	
-	//setup default lightsource
-	m_kSun.kRot = Vector3(0.5,0.5,0);
-	m_kSun.kDiffuse=Vector4(0.9,0.9,0.7,0);
-	m_kSun.kAmbient=Vector4(2.4,2.0,2.0,0);
-	m_kSun.iType=DIRECTIONAL_LIGHT;			
-	m_kSun.iPriority=10;
-	m_kSun.fConst_Atten=1;
-	m_kSun.fLinear_Atten=0;
-	m_kSun.fQuadratic_Atten=0;	
-	
-	
-	m_pkLight->Add(&m_kSun);
-
 	
 	
 	if(!m_pkIni->ExecuteCommands("dark_metropolis_autoexec.ini"))
 		m_pkConsole->Printf("No dark_metropolis_autoexec.ini found");
 
-	m_pkBasicFS->RemoveDir("Apa"); 
-	
 }
 
 void DarkMetropolis::OnIdle() 
@@ -170,12 +166,10 @@ void DarkMetropolis::OnServerClientPart(ZFClient* pkClient,int iConID)
 
 void DarkMetropolis::OnServerStart()
 {
-//	m_pkCameraEntity = m_pkObjectMan->CreateObjectFromScript("data/script/objects/t_camedit.lua");	
 	m_pkCameraEntity = m_pkObjectMan->CreateObject();
 
 	if(m_pkCameraEntity)
 	{
-		//m_pkCameraEntity->AddProperty("P_Track");		
 		m_pkCameraEntity->AddProperty("P_Camera");	
 	
 		m_pkCameraEntity->SetParent( m_pkObjectMan->GetWorldObject() );
@@ -188,6 +182,16 @@ void DarkMetropolis::OnServerStart()
 			m_pkCameraProp->SetType(CAM_TYPEBIRDSEYE);
 			m_pkCameraEntity->GetSave() = false;
 		}
+		
+		
+		//add enviroment to camera
+		if(P_Enviroment* pkEnv = (P_Enviroment*)m_pkCameraEntity->AddProperty("P_Enviroment"))
+		{
+			pkEnv->SetEnable(true);
+			pkEnv->SetEnviroment("data/enviroments/sun.env");
+			
+		}
+
 	}
 			
 	m_kSelectedEntitys.clear();
@@ -219,7 +223,8 @@ bool DarkMetropolis::IsValid()
 
 void DarkMetropolis::RegisterPropertys()
 {
-//	m_pkPropertyFactory->Register("P_Event", Create_P_Event);
+	m_pkPropertyFactory->Register("P_DMGun", Create_P_DMGun);
+	m_pkPropertyFactory->Register("P_Enviroment", Create_P_Enviroment);
 	m_pkPropertyFactory->Register("P_DMHQ", Create_P_DMHQ);
 	m_pkPropertyFactory->Register("P_DMGameInfo", Create_P_DMGameInfo);	
 	m_pkPropertyFactory->Register("P_DMCharacter", Create_P_DMCharacter);
@@ -241,13 +246,14 @@ void DarkMetropolis::Input()
 				pkHQ->GetCharacters(&kChars);
 				
 				cout<<"There is "<<kChars.size()<< " characters in this hq"<<endl;
-				/*
-				for(int i = 0;i<kChars.size();i++)
-				{
-					cout<<T					
-				}*/
 			}
 	
+	if(m_pkInputHandle->Pressed(KEY_O))
+		if(Entity* pkEnt = m_pkObjectMan->GetObjectByNetWorkID(m_iHQID))
+			if(P_DMHQ* pkHQ = (P_DMHQ*)pkEnt->GetProperty("P_DMHQ"))
+			{
+				pkHQ->EjectAllCharacters();
+			}
 
 
 	//setup player controls
@@ -366,7 +372,34 @@ void DarkMetropolis::Input()
 
 	//check if we want do do any action
 	if(m_pkInputHandle->VKIsDown("action"))
-		m_bActionPressed = true;
+	{
+		//FIRE GUN
+		if(m_pkInputHandle->VKIsDown("multiselect"))			
+		{
+			if(m_pkFps->GetTicks()-m_fDelayTimer > 0.2)
+			{
+				m_fDelayTimer = m_pkFps->GetTicks();
+		
+				if(Entity* pkPickEnt = GetTargetObject())
+				{	
+					for(int i = 0;i < m_kSelectedEntitys.size();i++)
+					{
+						if(Entity* pkEnt = m_pkObjectMan->GetObjectByNetWorkID(m_kSelectedEntitys[i]))
+						{
+							if(P_DMGun* pkGun = (P_DMGun*)pkEnt->GetProperty("P_DMGun"))
+							{
+								pkGun->Fire( m_kPickPos);									
+							}
+						}
+					}
+				}
+			}	
+		}
+		else //WALK
+		{
+			m_bActionPressed = true;
+		}
+	}
 	else if(m_bActionPressed)
 	{
 		m_bActionPressed = false;
@@ -383,7 +416,7 @@ void DarkMetropolis::Input()
 						P_PfPath* pkPF = (P_PfPath*)pkEnt->GetProperty("P_PfPath");
 						if(pkPF)//we have selected an entity whit a pathfind property, lets take a walk =)
 						{					
-						
+					
 							//randomize position a bit if theres many characters selected
 							if(m_kSelectedEntitys.size() > 1)
 								pkPF->MakePathFind(m_kPickPos + GetFormationPos(m_iCurrentFormation,m_kSelectedEntitys.size(),i));								

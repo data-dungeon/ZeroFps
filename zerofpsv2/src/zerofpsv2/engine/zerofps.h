@@ -150,7 +150,7 @@ class ENGINE_API ZeroFps : public I_ZeroFps {
 		int		m_iRTSClientObject;
 		
 		int		m_iMaxPlayers;
-
+		bool		m_bDebugGraph;							//shuld we show debug graphics, like spheres where theres lights etc
 
 		Camera *m_pkCamera;
 		Camera *m_pkConsoleCamera;
@@ -212,6 +212,8 @@ class ENGINE_API ZeroFps : public I_ZeroFps {
 		bool		m_bGuiMode, m_bGuiTakeControl;
 		bool		m_bRunWorldSim;
 		
+
+		
 		int		m_iMadDraw;									//	Flags for what part's of mad's that should be draw.
 		float		m_fMadLod;									//	If not 0 then force this LOD % on every mad.
 
@@ -256,6 +258,9 @@ class ENGINE_API ZeroFps : public I_ZeroFps {
 		void QuitEngine();
 
 		void SetSystemFps(int iFps) {m_fSystemUpdateFps = iFps;};
+
+		bool GetDebugGraph() {return m_bDebugGraph;};
+		void SetDebugGraph(bool bDebug) {m_bDebugGraph = bDebug;};
 
 		// Statistik Data
 		int	m_iNumOfMadRender;

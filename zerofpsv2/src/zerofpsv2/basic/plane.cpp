@@ -6,6 +6,7 @@ Plane::Plane(const Plane& kPlane)
 {
 	m_kNormal	= kPlane.m_kNormal;
 	m_fD		= kPlane.m_fD;
+	
 }
 
 Plane::Plane(Vector3& kPoint0, Vector3& kPoint1, Vector3& kPoint2)

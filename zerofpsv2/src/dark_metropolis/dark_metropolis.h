@@ -11,14 +11,16 @@ using namespace std;
 
 #include "../zerofpsv2/engine/application.h"
 #include "../zerofpsv2/gui/zgui.h"
+//#include "../zerofpsv2/engine_systems/script_interfaces/si_gui.h"
 #include "../zerofpsv2/engine_systems/propertys/p_camera.h"
 
-//#include "../mcommon/p_clientcontrol.h"
+#include "../mcommon/p_enviroment.h"
 #include "../mcommon/p_event.h"
 #include "../zerofpsv2/engine_systems/propertys/p_mad.h"
 #include "../mcommon/p_dmhq.h"
 #include "../mcommon/p_dmcharacter.h"
 #include "../mcommon/p_shadowblob.h"
+#include "../mcommon/p_dmgun.h"
 #include "../zerofpsv2/engine/p_pfpath.h"
 #include "p_dmgameinfo.h"
 

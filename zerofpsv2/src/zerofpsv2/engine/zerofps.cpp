@@ -88,6 +88,7 @@ ZeroFps::ZeroFps(void) : I_ZeroFps("ZeroFps")
 	m_bLockFps					= false;
 	m_bDrawAxisIcon			= true;
 	m_fEngineTime				= 0;
+	m_bDebugGraph				= false;
 //	m_fGameTime					= 0;
 //	m_fGameFrameTime			= 0;
 
