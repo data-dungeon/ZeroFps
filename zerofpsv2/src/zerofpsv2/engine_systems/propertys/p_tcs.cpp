@@ -558,8 +558,9 @@ void P_Tcs::ApplyImpulsForce(Vector3 kAttachPos,const Vector3& kForce,bool bLoca
 		else
 			kAttachPos = kAttachPos - GetObject()->GetWorldPosV();
 				
-		m_kRotVelocity += kForce.Cross(kAttachPos) / m_fInertia;
-		
+			
+		m_kRotVelocity += kForce.Cross(kAttachPos) * m_fInertia; 
+		//m_kRotVelocity += kAttachPos.Cross(kForce) / m_fInertia;
 	}
 }
 
@@ -590,6 +591,58 @@ Vector3 P_Tcs::GetVel(Vector3 kPos,bool bLocal)
 	else
 		return m_kLinearVelocity; 
 
+}
+
+void P_Tcs::Sleep()
+{
+	if(m_bStatic)
+		return;
+//	if(m_bSleeping)
+//		return;
+		
+	m_kLinearVelocity.Set(0,0,0);
+	m_kRotVelocity.Set(0,0,0);		
+	m_kLinearForce.Set(0,0,0);
+	m_kRotForce.Set(0,0,0);
+	m_bSleeping = true;
+	
+//	cout<<"sleep"<<endl;
+	
+}
+
+void P_Tcs::AddRestingBody(P_Tcs* pkBody)
+{
+	if(!m_bSleeping)
+		return;
+
+				
+	cout<<"adding resting body"<<endl;
+		
+	m_kSleepingFriends.push_back(pkBody);	
+}
+
+
+void P_Tcs::Wakeup(bool bWakeChilds)
+{
+	if( !m_bSleeping)
+		return;
+		
+//	cout<<"wakup"<<endl;
+		
+	m_bSleeping = false;
+
+	/*
+	//wakeup all sleeping friends
+	if(bWakeChilds)
+	{
+		for(int i = 0 ;i<m_kSleepingFriends.size();i++)
+		{
+			m_kSleepingFriends[i]->Wakeup();
+		}
+	}
+		
+	m_kSleepingFriends.clear();
+	*/
 }
 
 Property* Create_P_Tcs()

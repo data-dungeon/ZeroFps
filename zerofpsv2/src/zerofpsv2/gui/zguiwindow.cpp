@@ -745,3 +745,11 @@ const bool ZGuiWnd::IsVisible()
 	
 	return m_bVisible; 
 }
+
+
+
+
+
+
+
+

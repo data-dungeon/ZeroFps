@@ -14,8 +14,13 @@ MAKE = make		#make to use
 ### normal compilation
 CXX = g++              #compiler to use
 CC = g++               #linker to use
-CXXFLAGS= -O3 -g -DNDEBUG #-pg -g						#compiler flags
-C_ARGS = -O3 -g #-pg -g				  					#linker flags
+CXXFLAGS= -O3 -g -DNDEBUG# -pg 						#compiler flags
+C_ARGS = -O3 -g# -pg 				  					#linker flags
+
+## whit profiling
+#CXXFLAGS= -O3 -g -DNDEBUG -pg                                                 #compiler flags
+#C_ARGS = -O3 -g -pg                                                                   #linker flags
+
 
 ### whit memman
 #CXXFLAGS= -O3 -g -DNDEBUG -include memman.h

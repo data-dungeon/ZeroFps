@@ -21,10 +21,10 @@ class ENGINE_SYSTEMS_API Tcs_collission
 		vector<Vector3> kTangents;
 		vector<Vector3> kRelVels;
 		
-		Vector3	kPos;					//collission point
-		Vector3	kNormal;				//pkBody2's normal
-		Vector3	kRelVel;				//pkBody2's normal
-		Vector3	kTangent;		
+		//Vector3	kPos;					//collission point
+		//Vector3	kNormal;				//pkBody2's normal
+		//Vector3	kRelVel;				//pkBody2's normal
+		//Vector3	kTangent;		
 	
 		float		fAtime;					//alpha time when collission occured	
 		
@@ -60,12 +60,14 @@ class ENGINE_SYSTEMS_API Tcs : public ZFSubSystem
 		float					m_fMaxDelay;
 		float					m_fMinTime;
 		float					m_fMinForce;
+		float					m_fMaxVel;
 		float					m_fAlmostZero;
 		
 		P_Tcs*				m_pkBodyCopy1;
 		P_Tcs*				m_pkBodyCopy2;		
 				
 		int					m_iNrOfCollissions;
+		int					m_iNrOfTests;
 		
 		//settings
 		int 				m_iHandleCollission;
@@ -107,7 +109,7 @@ class ENGINE_SYSTEMS_API Tcs : public ZFSubSystem
 		bool TestLineVSSphere(Vector3 kP1,Vector3 kP2,P_Tcs* pkB);
 
 		bool TestSphereVSPolygon(Vector3* kVerts,P_Tcs* pkSphere);
-		bool TestSides(Vector3* kVerts,Vector3* pkNormal,Vector3 kPos,float fR);
+		bool TestSides(Vector3* kVerts,Vector3* pkNormal,const Vector3&);
 		bool TestLineVSPolygon(Vector3* pkPolygon,Vector3* pkPos1,Vector3* pkPos2,Plane* pkPlane);
 		
 		bool TestPolygonVSPolygon(Vector3* pkPolgyon1,Vector3* pkPolygon2);
@@ -129,7 +131,8 @@ class ENGINE_SYSTEMS_API Tcs : public ZFSubSystem
 		void RemoveBody(P_Tcs* pkPTcs);		
 
 		int GetNrOfCollissions() {return m_iNrOfCollissions;};
-
+		int GetNrOfTests() { return m_iNrOfTests;};
+		
 		bool StartUp();
 		bool ShutDown();
 		bool IsValid();

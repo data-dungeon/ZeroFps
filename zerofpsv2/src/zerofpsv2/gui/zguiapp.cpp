@@ -1396,3 +1396,12 @@ bool ZGuiApp::ShowWnd(char* szWndResName, bool bShow)
 
 	return false;
 }
+
+
+
+
+
+
+
+
+

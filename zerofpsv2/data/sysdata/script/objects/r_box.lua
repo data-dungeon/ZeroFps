@@ -3,6 +3,9 @@ function Create()
 	InitObject();
 		InitProperty("P_Mad");
 			InitParameter("m_kMadFile","/data/mad/cube.mad");
+			--InitParameter("m_kMadFile","/data/mad/p_barrel.mad");
+			--InitParameter("m_kMadFile","/data/mad/physicsball.mad");
+			--InitParameter("m_kMadFile","/data/mad/dm/dm_barrel.mad");
 			InitParameter("m_fScale",1);
 			InitParameter("m_iShadowGroup","2");
 
@@ -13,12 +16,12 @@ function Create()
 			InitParameter("group",1);
 			InitParameter("groupflag",0);
 			InitParameter("groupflag",1);			
-			InitParameter("airfriction",0.01);
+			InitParameter("airfriction",0.1);
 			InitParameter("mass",1);
 			InitParameter("inertia",1);
 			InitParameter("bounce",0.0);
-			InitParameter("friction",0.9);
-			InitParameter("activemoment","true");
+			InitParameter("friction",1);
+--			InitParameter("activemoment","false");
 			
 		SetParentObject();
 		SetReturnObject();

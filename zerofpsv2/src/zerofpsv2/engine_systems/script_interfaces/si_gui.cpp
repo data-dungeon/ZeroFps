@@ -461,3 +461,21 @@ int GuiAppLua:: SetMoveAreaLua(lua_State* pkLua)
 
 	return 1;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -464,3 +464,10 @@ void PSystem::TestInsideFrustum()
 	else
 		m_bInsideFrustum = true;
 }
+
+
+
+
+
+
+

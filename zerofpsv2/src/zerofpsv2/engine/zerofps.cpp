@@ -93,7 +93,7 @@ ZeroFps::ZeroFps(void) : I_ZeroFps("ZeroFps")
 //	m_fGameTime					= 0;
 //	m_fGameFrameTime			= 0;
 
-	m_bAlwaysWork				= false;
+	m_bAlwaysWork				= true;
 
 	// Register Variables
 	RegisterVariable("r_maddraw",			&m_iMadDraw,				CSYS_INT);
@@ -302,6 +302,7 @@ void ZeroFps::Run_EngineShell()
 	DevPrintf("common","shadow buffert: %d", m_pkZShadow->GetBuffertSize());
 
 	DevPrintf("common","Collissions: %d", m_pkTcs->GetNrOfCollissions());
+	DevPrintf("common","Tests: %d", m_pkTcs->GetNrOfTests());
 	
 	
 	// Update Local Input.
@@ -426,7 +427,7 @@ void ZeroFps::Update_System(bool bServer)
 	if(iLoops<=0)
 		return;
 
-//	m_pkObjectMan->m_fGameFrameTime = m_fSystemUpdateFpsDelta;	// 1/m_fSystemUpdateFps;//(fATime / iLoops);		
+	//m_pkObjectMan->m_fGameFrameTime = m_fSystemUpdateFpsDelta;	// 1/m_fSystemUpdateFps;//(fATime / iLoops);		
 	float m_fLU = m_fSystemUpdateTime;
 
 	m_pkObjectMan->m_fSimTimeDelta = m_pkObjectMan->m_fSimTimeScale * m_fSystemUpdateFpsDelta;  
@@ -438,16 +439,11 @@ void ZeroFps::Update_System(bool bServer)
 	
 		//client & server code
 		
-		//update new super duper rigid body physics engine deluxe
-		m_pkPhysics_Engine->Update(m_pkObjectMan->GetSimDelta());	
-		//m_pkTcs->Update(m_pkObjectMan->GetSimDelta());			
-		
 		//update network for client & server
 		m_pkNetWork->Run();				
 		
 		//update application systems
 		m_pkApp->OnSystem();
-		
 		
 		//server only code
 		if(m_bServerMode)
@@ -463,12 +459,15 @@ void ZeroFps::Update_System(bool bServer)
 				m_pkObjectMan->UpdateGameMessages();
 
 
+				
+				//update new super duper rigid body physics engine deluxe
+				//m_pkPhysics_Engine->Update(m_pkObjectMan->GetSimDelta());	
+				
 				//update physicsengine
-				m_pkPhysEngine->Update();	
-			
-	
+				//m_pkPhysEngine->Update();	
+				
 				//update Tiny Collission system
-				//m_pkTcs->Update(m_fGameFrameTime);	
+			//	m_pkTcs->Update(m_pkObjectMan->GetSimDelta());	
 				
 			}	
 		}
@@ -532,7 +531,8 @@ void ZeroFps::Draw_EngineShell()
 void ZeroFps::MainLoop(void) 
 {
 
-	while(m_iState!=state_exit) {
+	while(m_iState!=state_exit) 
+	{
 
 		// check if app is iconized
 		if(m_bAlwaysWork == false && !(SDL_GetAppState() & SDL_APPACTIVE))
@@ -541,16 +541,14 @@ void ZeroFps::MainLoop(void)
 		}
 		else
 		{
-
 			m_fEngineTime = GetTicks();
-
 			Swap();											//swap buffers n calculate fps
 			 
 			 
 			//handle locked fps delay
-	/*		if(m_bLockFps)
+			if(m_bLockFps || (!(SDL_GetAppState() & SDL_APPACTIVE) ) )
 			{
-				float fDelay = m_pkObjectMan->GetGameFrameTime() - (GetTicks() - m_fLockFrameTime);
+				float fDelay = m_pkObjectMan->GetSimDelta() - (GetTicks() - m_fLockFrameTime);
 			
 				if(fDelay < 0)
 					fDelay = 0;
@@ -563,7 +561,7 @@ void ZeroFps::MainLoop(void)
 				//	cout<<"Frametime shuld be:"<<pkFps->GetGameFrameTime()<<endl;
 				//	cout<<"Delaying:"<<fDelay<<endl;		
 				//end of delay code ---				
-			}*/
+			}
 			 
 			Run_EngineShell();
 

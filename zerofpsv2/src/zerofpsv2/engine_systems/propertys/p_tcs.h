@@ -54,6 +54,9 @@ class ENGINE_SYSTEMS_API P_Tcs : public Property
 		
 		bool		m_bLocalStoredData;
 		
+		//friends
+		vector<P_Tcs*>		m_kSleepingFriends;
+		
 		//test flags
 		bitset<TCS_GROUPS>	m_akTestGroups;
 		bitset<TCS_GROUPS>	m_akWalkableGroups;		
@@ -67,7 +70,7 @@ class ENGINE_SYSTEMS_API P_Tcs : public Property
 		vector<Mad_Face>*		m_pkFaces;			// Faces in mesh.
 		vector<Vector3>*		m_pkVertex;			// Vertex frames for mesh.
 		vector<Vector3>*		m_pkNormal;
-
+		
 		//temp data
 		Vector3	m_kLinearVelocity;
 		Vector3	m_kRotVelocity;
@@ -104,8 +107,10 @@ class ENGINE_SYSTEMS_API P_Tcs : public Property
 		void Load(ZFIoInterface* pkPackage);
 		
 		//resting
-		void Wakeup() {m_bSleeping = false;};
-
+		void Wakeup(bool bWakeChilds = true);
+		void Sleep();
+		void AddRestingBody(P_Tcs* pkBody);
+		
 		
 		//collission groups
 		bool CheckFlag(int iFlag) {return m_akTestGroups[iFlag];};
