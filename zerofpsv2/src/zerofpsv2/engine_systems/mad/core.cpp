@@ -3,12 +3,16 @@
 #include "../../basic/zfassert.h"
 #include "../../basic/zfsystem.h"
 
+
+
 Matrix4		g_Madkbonetransform[MAX_BONES];		// Bone transformation matrix
 Matrix4		g_FullBoneTransform[MAX_BONES];		// Bone transformation matrix.
-Quaternion	g_Madq[MAX_BONES];					// Quat angle for bone.
-Vector3		g_Madpos[MAX_BONES];				// Position for bone.
+//Quaternion	g_Madq[MAX_BONES];						// Quat angle for bone.
+//Vector3		g_Madpos[MAX_BONES];						// Position for bone.
 Vector3		g_TransformedVertex[10000];			// Transformed Skinvertex Position.
 Vector3		g_TransformedNormal[10000];			// Transformed Skinvertex Normals.
+BoneTransform	g_kBoneTransform[MAX_BONES];
+
 
 #define		MAD_FPS		15						// Def FPS for Mad's.
 float const g_fMadFrameTime = 1.0 / MAD_FPS;	// Def time between frames in Mad.
@@ -213,15 +217,15 @@ void Mad_Core::SetUpBindPose()
 
 	for(i=0; i<m_kSkelleton.size(); i++) {
 		Angles = m_kSkelleton[i].m_kRotation;
-		g_Madq[i].AngleQuaternion(Angles);
-		g_Madpos[i] = m_kSkelleton[i].m_kPosition;
+		g_kBoneTransform[i].m_kRot.AngleQuaternion(Angles);
+		g_kBoneTransform[i].m_kPos = m_kSkelleton[i].m_kPosition;
 		}
 
 	Quaternion kTestQ;
 	for (i = 0; i < m_kSkelleton.size(); i++) {
 		kMadkBoneMatrix.Identity();
-		kMadkBoneMatrix = g_Madq[i].Inverse();
-		kMadkBoneMatrix.SetPos(g_Madpos[i]);
+		kMadkBoneMatrix = g_kBoneTransform[i].m_kRot.Inverse();
+		kMadkBoneMatrix.SetPos(g_kBoneTransform[i].m_kPos);
 
 		if (m_kSkelleton[i].m_iParent == -1) {
 			g_Madkbonetransform[i] = kMadkBoneMatrix;
@@ -236,7 +240,7 @@ void Mad_Core::SetUpBindPose()
 		}	
 }
 
-void Mad_Core::SetupBonePose()
+void Mad_Core::SetupBonePose(BoneTransform* pkBones)
 {
 	unsigned int i;
 
@@ -281,16 +285,29 @@ void Mad_Core::SetupBonePose()
 		kEnd.AngleQuaternion(pkEndKey[i].m_kRotation); 
 
 		// Interp Keys
-		g_Madq[i].QuaternionSlerp(&kStart, &kEnd, fFrameOffs);
-
-			g_Madpos[i] = pkStartKey[i].m_kPosition * OneMinusFrameOffs + pkEndKey[i].m_kPosition * fFrameOffs;
+		pkBones[i].m_kRot.QuaternionSlerp(&kStart, &kEnd, fFrameOffs);
+		pkBones[i].m_kPos = pkStartKey[i].m_kPosition * OneMinusFrameOffs + pkEndKey[i].m_kPosition * fFrameOffs;
 		}
-
-	GenerateBoneMatris();
 }
 
+void Mad_Core::InterPolTransforms(BoneTransform* pkResultat, BoneTransform* pkFrom, BoneTransform* pkTo, float fDelta)
+{
+	Quaternion kStart, kEnd;
+	float OneMinusFrameOffs = float(1.0) - fDelta;
 
-void Mad_Core::GenerateBoneMatris()
+	for(int i=0; i<m_kSkelleton.size(); i++) 
+	{
+		// Get Start/End Keys
+		kStart = pkFrom[i].m_kRot;
+		kEnd = pkTo[i].m_kRot;
+
+		// Interp Keys
+		pkResultat[i].m_kRot.QuaternionSlerp(&kStart, &kEnd, fDelta);
+		pkResultat[i].m_kPos = pkFrom[i].m_kPos * OneMinusFrameOffs + pkTo[i].m_kPos * fDelta;
+	}	
+}
+
+void Mad_Core::GenerateBoneMatris(BoneTransform* pkBones)
 {
 	Matrix4		kMadkBoneMatrix;					
 
@@ -302,8 +319,8 @@ void Mad_Core::GenerateBoneMatris()
 		int iId = kJointId[i];
 
 		kMadkBoneMatrix.Identity();
-		kMadkBoneMatrix = g_Madq[ iId ].Inverse();
-		kMadkBoneMatrix.SetPos(g_Madpos[ iId ]);
+		kMadkBoneMatrix = pkBones[ iId ].m_kRot.Inverse();
+		kMadkBoneMatrix.SetPos(pkBones[ iId ].m_kPos);
 
 		if (m_kSkelleton[ iId ].m_iParent == -1) {
 			g_Madkbonetransform[ iId ] = kMadkBoneMatrix;

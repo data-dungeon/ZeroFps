@@ -6,6 +6,7 @@
 char szFullTexName[256];
 extern int g_iNumOfMadSurfaces;
 extern float g_fMadLODScale;
+extern bool g_fMadTrans;
 
 Mad_Modell::Mad_Modell()
 {
@@ -15,6 +16,7 @@ Mad_Modell::Mad_Modell()
 	fCurrentTime		= 0;
 	iActiveAnimation	= MAD_NOANIMINDEX;
 	m_iNextAnimation	= MAD_NOANIMINDEX;
+	m_kLastAnim.m_iAnimationIndex = MAD_NOANIMINDEX;
 
 	m_bLoop				= true;
 	m_bActive			= true;
@@ -63,6 +65,12 @@ void Mad_Modell::PlayAnimation(int iAnimNum, float fStartTime)
 			iAnimNum = MAD_NOANIMINDEX;
 		}
 
+	// Save data for old animation.
+	m_kLastAnim.m_iAnimationIndex   = iActiveAnimation;
+	m_kLastAnim.m_fAnimationTime    = fCurrentTime;
+	m_kLastAnim.m_fAnimationLength  = fCurrentTime + pkCore->GetAnimationLengthInS(iActiveAnimation);
+	m_fAnimTrans = 0.0;
+
 	iActiveAnimation	=	iAnimNum;
 	fCurrentTime		=	fStartTime;
 	m_bActive = true;
@@ -81,6 +89,12 @@ void Mad_Modell::PlayAnimation(const char* szName, float fStartTime)
 
 //	if(iAnimNum == -1)
 //		return;
+
+	// Save data for old animation.
+	m_kLastAnim.m_iAnimationIndex   = iActiveAnimation;
+	m_kLastAnim.m_fAnimationTime    = fCurrentTime;
+	m_kLastAnim.m_fAnimationLength  = fCurrentTime + pkCore->GetAnimationLengthInS(iActiveAnimation);
+	m_fAnimTrans = 0.0;
 
 	iActiveAnimation	=	iAnimNum;
 	fCurrentTime		=	fStartTime;
@@ -102,6 +116,14 @@ void Mad_Modell::UpdateAnimation(float fDelta)
 	Mad_Core* pkCore = (Mad_Core*)kMadHandle.GetResourcePtr(); 
 	if(!pkCore)
 		return;
+
+	if(m_kLastAnim.m_iAnimationIndex != MAD_NOANIMINDEX)
+	{
+		m_kLastAnim.m_fAnimationTime += fDelta;
+		if(m_kLastAnim.m_fAnimationTime >= m_kLastAnim.m_fAnimationLength) 
+			m_kLastAnim.m_fAnimationTime = m_kLastAnim.m_fAnimationLength;
+		m_fAnimTrans += (fDelta * 10);
+	}
 
 	// Move Anim forward.
 	fCurrentTime += fDelta;
@@ -417,13 +439,49 @@ void Mad_Modell::SetReplaceTexture(char* szOrgName, char* szNew)
 	}
 }
 
+BoneTransform	kAnim1[MAX_BONES];
+BoneTransform	kAnim2[MAX_BONES];
+BoneTransform	kFinalBoneTransform[MAX_BONES];
+
 void Mad_Modell::UpdateBones()
 {
 	Mad_Core* pkCore = (Mad_Core*)(kMadHandle.GetResourcePtr()); 
 
+
+	// Refresh Skelleton Pose.
+	/*
+	pkCore->SetBoneAnimationTime(iActiveAnimation, fCurrentTime, m_bLoop);
+	pkCore->SetupBonePose(kBoneTransform);*/
+
+
+	// Check if there is a prev anim to blend from
+	if(m_kLastAnim.m_iAnimationIndex != MAD_NOANIMINDEX)
+	{
+		if(g_fMadTrans == false)
+			m_kLastAnim.m_iAnimationIndex = MAD_NOANIMINDEX;
+
+		if(m_fAnimTrans >= 1.0)
+			m_kLastAnim.m_iAnimationIndex = MAD_NOANIMINDEX;
+		else
+		{
+			pkCore->SetBoneAnimationTime(m_kLastAnim.m_iAnimationIndex, m_kLastAnim.m_fAnimationTime, m_bLoop);
+			pkCore->SetupBonePose(kAnim1);
+		}
+	}
+
 	// Refresh Skelleton Pose.
  	pkCore->SetBoneAnimationTime(iActiveAnimation, fCurrentTime, m_bLoop);
-	pkCore->SetupBonePose();
+	pkCore->SetupBonePose(kAnim2);
+
+	if(m_kLastAnim.m_iAnimationIndex == MAD_NOANIMINDEX)
+	{
+		pkCore->GenerateBoneMatris(kAnim2);
+	}
+	else
+	{
+		pkCore->InterPolTransforms(kFinalBoneTransform,kAnim1,kAnim2, m_fAnimTrans);
+		pkCore->GenerateBoneMatris(kFinalBoneTransform);
+	}
 }
 
 void Mad_Modell::Draw_All(int iDrawFlags)

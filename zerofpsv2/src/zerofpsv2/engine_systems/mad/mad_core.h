@@ -9,6 +9,7 @@
 #include "../../engine/fh.h"
 #include "../../basic/matrix4.h"
 #include "../../basic/zfvfs.h"
+#include "../../basic/quaternion.h"
 
 using namespace std;
 
@@ -27,6 +28,12 @@ using namespace std;
 
 #define MAD_NOANIMINDEX				-1
 #define MAD_NOLOOP					-2
+
+struct BoneTransform
+{
+	Quaternion	m_kRot;
+	Vector3		m_kPos;
+};
 
 // MAD - MD (Mesh Data)
 
@@ -568,8 +575,10 @@ public:
 //	int	  GetAnimationTimeInFrames(int iAnim);
 	int	GetAnimIndex(const char* szName);
 	string GetAnimationName(int iIndex);
-	void  SetupBonePose();
-	void  GenerateBoneMatris();
+	void  SetupBonePose(BoneTransform* pkBones);
+	void  GenerateBoneMatris(BoneTransform* pkBones);
+	void InterPolTransforms(BoneTransform* pkResultat, BoneTransform* pkFrom, BoneTransform* pkTo, float fDelta);
+
 	void  SetUpBindPose();
 	int	  GetNumOfAnimations();
 

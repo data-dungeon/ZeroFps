@@ -15,6 +15,13 @@
 #define MAD_DRAW_LINES		16
 #define MAD_DRAW_NOLIGHT	32
 
+struct AnimInfo
+{
+	int	m_iAnimationIndex;
+	float	m_fAnimationTime;
+	float m_fAnimationLength;
+};
+
 /// A MAD that can play anims.
 class ENGINE_SYSTEMS_API Mad_Modell
 {
@@ -66,6 +73,9 @@ public:
 	bool		m_bActive;			// True if animation system is active.
 	int		m_iFirstMaterialID;
 	
+	AnimInfo	m_kLastAnim;
+	float		m_fAnimTrans;		// 0.0 - 1.0
+
 	//	Mad_Core*	pkCore;
 	ZFResourceHandle	kMadHandle;
 	
