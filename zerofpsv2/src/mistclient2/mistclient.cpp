@@ -65,6 +65,9 @@ void MistClient::OnInit()
 
 	//register resources
 	RegisterResources();
+	
+	//setup referense sound distance
+	m_pkAudioSys->SetReferensDistance(0.5);
 
 	//init mistland script intreface
 	MistLandLua::Init(m_pkEntityManager,m_pkScript);

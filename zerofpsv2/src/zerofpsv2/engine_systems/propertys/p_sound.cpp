@@ -106,6 +106,7 @@ void P_Sound::PackTo(NetPacket* pkNetPacket, int iConnectionID )
 // Starta dom ljud som skall spelas upp.
 void P_Sound::PackFrom(NetPacket* pkNetPacket, int iConnectionID )
 {
+
 	vector<sound_info> kSoundsOnServer;
 	
 	int iNumSounds;
