@@ -244,8 +244,8 @@ bool ZFVFileSystem::ListDir(vector<string>* pkFiles, string strName, bool bOnlyM
 	// Try to open from all active RootPaths.
 	for(unsigned int i=0; i <m_kstrRootPath.size(); i++) {
 		strRootMerge = m_kstrRootPath[i] + strName;
-		cout << "ListDir: " << strRootMerge.c_str();
-		cout << endl;
+		//cout << "ListDir: " << strRootMerge.c_str();
+		//cout << endl;
 		m_pkBasicFS->ListDir(pkFiles, strRootMerge.c_str(), bOnlyMaps);
 		}
 

@@ -1197,7 +1197,7 @@ bool ZGui::ClickedWndAlphaTex(int mx, int my, ZGuiWnd *pkWndClicked)
 	ZGuiWnd* pkParent = pkWndClicked->GetParent();
 	if(pkParent)
 	{
-		if( typeid(*pkParent)==typeid(ZGuiListbox) )
+		if( typeid(*pkParent)==typeid(ZGuiListbox))
 			return true;
 		if( typeid(*pkParent)==typeid(ZGuiTreebox) )
 			return true;

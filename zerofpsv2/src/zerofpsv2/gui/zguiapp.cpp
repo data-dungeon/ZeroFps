@@ -204,6 +204,7 @@ bool ZGuiApp::CreateWnd(GuiType eType, char* szResourceName, char* szText, ZGuiW
 			GetSkin("DefSBrNSkin"), GetSkin("DefSBrFSkin") );
 		break;
 	case Combobox:
+		static_cast<ZGuiCombobox*>(pkWnd)->SetSkin( GetSkin("DefCBBkSkin") );
 		static_cast<ZGuiCombobox*>(pkWnd)->GetListbox()->SetSkin( GetSkin("DefCBBkSkin") );
 		static_cast<ZGuiCombobox*>(pkWnd)->GetListbox()->SetItemNormalSkin(   GetSkin("DefCBitemUSkin"));
 		static_cast<ZGuiCombobox*>(pkWnd)->GetListbox()->SetItemSelectedSkin( GetSkin("DefCBitemDSkin"));

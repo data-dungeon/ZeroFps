@@ -444,8 +444,6 @@ void ZGuiTextbox::SetFocus()
 	else
 		m_iCursorPos = 0;
 
-	printf("OLLLLLEEEE\n");
-
 	return; //
 
 //	Input* pkInput = static_cast<Input*>(g_ZFObjSys.GetObjectPtr("Input"));
