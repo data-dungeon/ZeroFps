@@ -319,6 +319,10 @@ SOURCE=..\engine_systems\propertys\skyboxrenderproperty.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\engine_systems\script_interfaces\std_scriptinterface.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\engine_systems\propertys\vegitationproperty.cpp
 # End Source File
 # Begin Source File
@@ -552,6 +556,10 @@ SOURCE=.\res_texture.h
 # Begin Source File
 
 SOURCE=..\engine_systems\propertys\skyboxrenderproperty.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\engine_systems\script_interfaces\std_scriptinterface.h
 # End Source File
 # Begin Source File
 

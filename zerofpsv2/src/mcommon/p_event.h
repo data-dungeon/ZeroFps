@@ -25,6 +25,6 @@ class MCOMMON_API P_Event: public Property {
 		bool SendEvent(const char* acEvent);
 };
 
-Property* Create_P_Event();
+MCOMMON_API Property* Create_P_Event();
 
 #endif
