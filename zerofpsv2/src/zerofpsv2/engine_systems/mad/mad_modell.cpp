@@ -5,6 +5,8 @@
 #include "../../basic/zfassert.h"
 
 char szFullTexName[256];
+
+extern int g_iNumOfVBOs;
 extern int g_iNumOfMadSurfaces;
 extern float g_fMadLODScale;
 extern bool g_fMadTrans;
@@ -579,7 +581,10 @@ void Mad_Modell::Draw_All(int iDrawFlags)
 					
 				//VBO or normal rendering
 				if(m_pkVBO)
+				{
 					m_pkShader->DrawVertexBuffer(m_pkVBO);
+					g_iNumOfVBOs++;
+				}
 				else
 					m_pkShader->DrawArray();
 				

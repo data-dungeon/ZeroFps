@@ -32,6 +32,7 @@
 
 int		g_iNumOfFrames;
 int		g_iNumOfMadSurfaces;
+int		g_iNumOfVBOs;
 float		g_fMadLODScale;
 int		g_iMadLODLock;
 int		g_iLogRenderPropertys;
@@ -386,6 +387,12 @@ void ZeroFps::UpdateDevPages()
 	DevPrintf("common","  shadow verts  : %d", m_pkZShadow->GetCurrentVerts());
 	DevPrintf("common","  shadow buffert: %d", m_pkZShadow->GetBuffertSize());
 
+	DevPrintf("common",  "MAD:");	
+	DevPrintf("common" , "  Mad VBOs: %d", g_iNumOfVBOs);
+	DevPrintf("common" , "  NumMads/NumMadSurfaces: %d / %d", m_iNumOfMadRender , g_iNumOfMadSurfaces);
+	DevPrintf("common" , "  Zone: %d", this->m_pkEntityManager->m_kZones.size());
+	
+	
 	DevPrintf("common","TCS:");
 	DevPrintf("common","  Collissions : %d", m_pkTcs->GetNrOfCollissions());
 	DevPrintf("common","  Contacts    : %d", m_pkTcs->GetNrOfContacts());
@@ -413,11 +420,8 @@ void ZeroFps::UpdateDevPages()
 		DevPrintf("common",strCamDesc.c_str());
 	}
 
-	DevPrintf("common" , "NumMads/NumMadSurfaces: %d / %d", m_iNumOfMadRender , g_iNumOfMadSurfaces);
-	DevPrintf("common" , "Zone: %d", this->m_pkEntityManager->m_kZones.size());
-
+	
 	// TIME
-// 	DevPrintf("time","Ticks: %f",							GetEngineTime());
 	DevPrintf("time","FrameTime: %f",					GetFrameTime());
 	DevPrintf("time","SimTime: %f",						m_pkEntityManager->GetSimTime());
 	DevPrintf("time","SimDelta: %f",						m_pkEntityManager->GetSimDelta());
@@ -427,7 +431,7 @@ void ZeroFps::UpdateDevPages()
 
 	m_iNumOfMadRender = 0;
 	g_iNumOfMadSurfaces = 0;
-		
+	g_iNumOfVBOs = 0;
 		
 
 		
