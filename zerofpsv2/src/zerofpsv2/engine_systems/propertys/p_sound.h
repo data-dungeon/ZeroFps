@@ -10,6 +10,7 @@ using namespace std;
 
 Property* Create_SoundProperty();
 
+/*
 class ENGINE_SYSTEMS_API P_Sound : public Property
 {
 private:
@@ -44,6 +45,7 @@ public:
 };
 
 
+*/
 
 
 
@@ -51,8 +53,7 @@ public:
 
 
 
-
-/*/////////////// OLD Code (do not remove jet)
+/////////////// OLD Code (do not remove jet)
 
 class ENGINE_SYSTEMS_API P_Sound : public Property
 {
@@ -84,6 +85,6 @@ public:
 
 	vector<PropertyValues> GetPropertyValues();
 };
-*/
+
 
 #endif // #ifndef _ENGINE_P_SOUND_H_

@@ -1,6 +1,7 @@
 #include "p_sound.h"
 #include "../../engine/entity.h"
 
+/*
 P_Sound::P_Sound()
 {
 	bNetwork = true;
@@ -194,6 +195,7 @@ Property* Create_SoundProperty()
 }
 
 
+*/
 
 
 
@@ -202,8 +204,7 @@ Property* Create_SoundProperty()
 
 
 
-/////////////// OLD Code (do not remove jet)
-/*
+
 P_Sound::P_Sound()
 {
 	bNetwork = true;
@@ -322,23 +323,35 @@ void P_Sound::PackFrom(NetPacket* pkNetPacket, int iConnectionID )
 
 vector<PropertyValues> P_Sound::GetPropertyValues()
 {
-	vector<PropertyValues> kReturn(1);
+	vector<PropertyValues> kReturn(2);
+
+	kReturn[0].kValueName = "FileName";
+	kReturn[0].iValueType = VALUETYPE_STRING; 
+	kReturn[0].pkValue    = (void*)&m_strFileName;
+	
+	kReturn[1].kValueName = "Loop";
+	kReturn[1].iValueType = VALUETYPE_BOOL;
+	kReturn[1].pkValue    = (void*)&m_bLoop;
+
 	SetNetUpdateFlag(true);
 	return kReturn;
 }
 
 void P_Sound::Save(ZFIoInterface* pkFile)
 {
-
+	pkFile->Write_Str( m_strFileName );
+	pkFile->Write( &m_bLoop, sizeof(m_bLoop), 1 ); 
 }
 
 void P_Sound::Load(ZFIoInterface* pkFile,int iVersion)
 {
-
+	pkFile->Read_Str( m_strFileName ); 
+	pkFile->Read( m_bLoop );
+	SetNetUpdateFlag(true);
 }
 
 Property* Create_SoundProperty()
 {
 	return new P_Sound();
 }
-*///////////////////////////////////////
+
