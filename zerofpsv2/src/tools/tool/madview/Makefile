@@ -1,7 +1,7 @@
 SRC=../../../
 BINARY=madview
 BINDIR=$(SRC)../bin/
-LIBS=-L$(BINDIR) -L/usr/X11R6/lib -lengine_systems -lbasic -lengine -lrender -lscript -lgui
+LIBS=-L$(BINDIR) -L/usr/X11R6/lib -lengine_systems -lbasic -lengine -lrender -lscript -lgui -lmcommon
 
 OBJS=$(patsubst %.cpp,%.o,$(wildcard *.cpp))
 

@@ -198,6 +198,7 @@ void P_Enviroment::Init()
 
 void P_Enviroment::Update()
 {
+
 	DrawSun();
 
 	if(m_bEnabled)

@@ -108,12 +108,13 @@ void MadView::Init()
 	
 	/*
 	P_Enviroment* pe = (P_Enviroment*)m_pkCameraObject->AddProperty("P_Enviroment");
-	pe->SetEnviroment("data/enviroments/madview.env");
 	pe->SetEnable(true);		
+	pe->SetEnviroment("data/enviroments/sun.env");
 	*/
 	
 	m_fDelayTime = m_pkZeroFps->GetEngineTime();
 	
+
 	ToogleLight(true);
 
 	m_fRotTimer = (float) SDL_GetTicks() / 1000.0f;
