@@ -524,9 +524,9 @@ void MistServer::OnServerClientJoin(ZFClient* pkClient,int iConID)
 	cout<<"Client "<<iConID<<" Joined"<<endl;
 	
 	pkClient->m_pkObject->AddProperty("P_Primitives3D");	
-	pkClient->m_pkObject->AddProperty("TrackProperty");	
-	TrackProperty* pkTrack = dynamic_cast<TrackProperty*>(pkClient->m_pkObject->GetProperty("TrackProperty"));
-	pkTrack->SetClient(iConID);
+	//pkClient->m_pkObject->AddProperty("TrackProperty");	
+	//TrackProperty* pkTrack = dynamic_cast<TrackProperty*>(pkClient->m_pkObject->GetProperty("TrackProperty"));
+	//pkTrack->SetClient(iConID);
 
 	pkClient->m_pkObject->AddProperty("P_ClientControl");
 		
@@ -867,6 +867,12 @@ int MistServer::CreatePlayer(const char* csName,const char* csLocation,int iConI
 	Vector3 kStartPos = GetPlayerStartLocation(csLocation);
 	
 	Object* pkObject = pkObjectMan->CreateObjectFromScriptInZone("data/script/objects/t_player.lua",kStartPos);
+	
+	pkObject->AddProperty("TrackProperty");	
+	TrackProperty* pkTrack = dynamic_cast<TrackProperty*>(pkObject->GetProperty("TrackProperty"));
+	
+	if(pkTrack)
+		pkTrack->SetClient(iConID);	
 	
 	if(!pkObject)
 	{	
