@@ -42,15 +42,15 @@ void MistClient::OnInit()
 		pkConsole->Printf("No game_autoexec.ini.ini found");
 
 
-	for(int x=0;x<5;x++)
+/*	for(int x=0;x<5;x++)
 	{
 		for(int y=0;y<5;y++)
-		{
+		{*/
 			Object* test = pkObjectMan->CreateObjectFromScript("h:/data/script/objects/test.lua");
-			if(test)
-				test->SetLocalPosV(Vector3(x*4,0,y*4));
-		}
-	}
+//			if(test)
+//				test->SetLocalPosV(Vector3(x*4,0,y*4));
+//		}
+//	}
 }
 
 void MistClient::Init()
@@ -105,7 +105,7 @@ void MistClient::RegisterActions()
 
 void MistClient::RegisterPropertys()
 {
-
+	pkPropertyFactory->Register("P_Event", Create_P_Event);
 }
 
 

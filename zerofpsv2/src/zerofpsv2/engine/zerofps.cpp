@@ -137,6 +137,9 @@ ZeroFps::~ZeroFps()
 
 bool ZeroFps::StartUp()	
 {
+	//std lua lib
+	StdLua::Init(m_pkScript);
+	
 	m_kCurentDir = m_pkBasicFS->GetCWD();
 	 
 	cout << "m_kCurentDir: " << m_kCurentDir.c_str() << endl;

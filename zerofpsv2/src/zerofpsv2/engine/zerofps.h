@@ -25,6 +25,7 @@
 #include "../engine_systems/mad/mad_core.h"
 #include "res_texture.h"
 #include "../script/zfscript.h"
+#include "../engine_systems/script_interfaces/std_scriptinterface.h"
 
 #define ZF_VERSION_NUM		"ZF 0.0"
 
