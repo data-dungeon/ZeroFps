@@ -26,7 +26,7 @@ LightProperty::LightProperty()
 
 LightProperty::~LightProperty()
 {
-	m_pkLight->Remove(m_pkLightSource);
+	TurnOff();
 	delete m_pkLightSource;
 }
 

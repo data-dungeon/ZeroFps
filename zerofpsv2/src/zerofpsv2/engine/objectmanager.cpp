@@ -250,7 +250,7 @@ void ObjectManager::Update(int iType,int iSide,bool bSort)
 		GetPropertyTypeName(iType),GetPropertySideName(iSide),bSort,m_iNrOfActivePropertys);
 
 	if(bSort){
-		sort(m_akPropertys.begin(),m_akPropertys.end(),Less_Property);
+		stable_sort(m_akPropertys.begin(),m_akPropertys.end(),Less_Property);
 	}
 	
 	for(vector<Property*>::iterator it=m_akPropertys.begin();it!=m_akPropertys.end();it++) 

@@ -47,11 +47,11 @@ class RENDER_API LightSource {
 		float fIntensity;
 		
 		LightSource();
-		bool operator<(const LightSource& kOther)
+/*		bool operator<(const LightSource& kOther)
 		{
 			return fIntensity < kOther.fIntensity;		
 		};
-	
+*/	
 
 };
 
@@ -85,9 +85,8 @@ class RENDER_API Light : public ZFSubSystem {
 		void EnableLight(LightSource* pkLight,int iGlLight);
 		void Remove(LightSource *kLight);
 		void SetCamera(Vector3 kCamPos);
-		void Update();
 		void Update(Vector3 kPos);
-		void RunCommand(int cmdid, const CmdArgument* kCommand) { }
+		void RunCommand(int cmdid, const CmdArgument* kCommand) { } 
 
 		void SetLighting(bool bOn);
 		

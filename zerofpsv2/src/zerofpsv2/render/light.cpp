@@ -82,10 +82,7 @@ bool comp(LightSource* x, LightSource* y)
 	return x->fIntensity > y->fIntensity; 
 }
 
-void Light::Update() {
-	Update(m_kCamPos);	
-}
-
+ 
 void Light::Update(Vector3 kRefPos)
 {
 	m_kActiveLights.clear();
@@ -111,23 +108,19 @@ void Light::Update(Vector3 kRefPos)
 		//else add the light if it is bright enough
 		} else {
 			//		opengl LightIntesity equation	min(1, 1 / ((*it)-> + l*d + q*d*d))
-			
+			 
 			Vector3 kPos = (*it)->kPos;		
 			float fDistance = (kRefPos-kPos).Length();		
 			float fIntensity = min(1 , 1 / ( (*it)->fConst_Atten + ((*it)->fLinear_Atten*fDistance) + ((*it)->fQuadratic_Atten*(fDistance*fDistance)) ));
-		
-			//only add lights whos intensity is height than 5%
-			if(fIntensity>0.01){
-				(*it)->fIntensity=fIntensity;
-				m_kSorted.push_back(*it);					
-			}
-		}
-	}
+			//float fIntensity = 1 / ( (*it)->fConst_Atten + ((*it)->fLinear_Atten*fDistance) + ((*it)->fQuadratic_Atten*(fDistance*fDistance)) );
+			
+			(*it)->fIntensity=fIntensity; 
+			m_kSorted.push_back(*it);					
+		}  
+	} 
 	
 		
 	sort(m_kSorted.begin(),m_kSorted.end(),More_Light);
-
-//	cout<<"LIGHTS:"<<m_kSorted.size()<<endl;
 
 	int max = m_kSorted.size();
 	if(max>m_iNrOfLights)
@@ -136,15 +129,15 @@ void Light::Update(Vector3 kRefPos)
 	for(int i=0;i<max;i++)
 	{
 		EnableLight(m_kSorted[i],i);							
-	
+		//cout<<"inte: "<<m_kSorted[i]->fIntensity<<endl;
 	}
 
-}
+} 
 
 void Light::TurnOffAll() {
 	glDisable(GL_LIGHT0);	
 	glDisable(GL_LIGHT1);	
-	glDisable(GL_LIGHT2);	
+	glDisable(GL_LIGHT2);	 
 	glDisable(GL_LIGHT3);	
 	glDisable(GL_LIGHT4);	
 	glDisable(GL_LIGHT5);	
