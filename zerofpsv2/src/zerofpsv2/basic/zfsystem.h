@@ -115,6 +115,10 @@ public:
 	bool UnRegister_Cmd(ZFSubSystem* kObject);												///< UnRegister all cmd's bound to a object.
 	bool RunCommand(const char* szCmdArg, ZFCmdSource iCmdSource);						///< Run a cmd by passing it along to the correct object
 
+	bool AutoComplete(const char* szCmdArg, vector<string>* pkCmds, int iMaxFinds);
+
+
+
 // Variables
 	bool RegisterVariable(const char* szName, void* pvAddress, ZFCmdDataType eType, ZFSubSystem* kObject, int iFlags);
 

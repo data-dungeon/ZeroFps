@@ -366,6 +366,27 @@ bool ZFSystem::UnRegister_Cmd(ZFSubSystem* kObject)
 	return true;
 }
 
+bool ZFSystem::AutoComplete(const char* szCmdArg, vector<string>* pkCmds, int iMaxFinds)
+{
+	ZFCmdData* kCmdData = FindArea( szCmdArg );
+	if(kCmdData)
+	{
+		// This is already a complete command. Simply return.
+		return false;
+	}
+
+	for(unsigned int i=0; i<m_kCmdDataList.size(); i++) 
+	{
+		// If this command fits so far add it.
+		if(strncmp(szCmdArg, m_kCmdDataList[i].m_strName.c_str() ,strlen(szCmdArg)) == 0)
+		{
+			pkCmds->push_back(m_kCmdDataList[i].m_strName);
+		}
+	}
+
+	return true;
+}
+
 /**	\brief	Runs a Cmd into the ZFSystem.
 	
 	
@@ -709,6 +730,7 @@ void ZFSystem::Printf(const char* szMessageFmt,...)
 	// Now call our print function.
 	m_pkConsole->Printf(g_LogFormatTxt2);
 }
+
 
 
 

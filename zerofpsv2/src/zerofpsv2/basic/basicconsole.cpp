@@ -14,6 +14,7 @@ BasicConsole::BasicConsole(char* szName)
 : ZFSubSystem(szName)
 {
 	m_iMaxWidth = 50;	//TEXT_MAX_LENGHT;
+	m_bLog      = false;
 }
 
 
@@ -58,7 +59,8 @@ void BasicConsole::PrintWordWrap(const char* aText)
 	ZFAssert(aText, "NULL Pointer argument");
 
 	string strEndLined = string(aText) + "\n";
-	GetSystem().Log("console", strEndLined.c_str());
+	if(m_bLog)
+		GetSystem().Log("console", strEndLined.c_str());
 
 	int iNumOfChars = strlen( aText );
 

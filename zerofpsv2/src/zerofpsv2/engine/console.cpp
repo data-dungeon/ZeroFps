@@ -12,6 +12,9 @@ Console::Console()
    	
 
 	GetSystem().Log_Create("console"); 
+	
+	// Register Variables
+	RegisterVariable("conlog",			&m_bLog,			CSYS_BOOL);	
 }
 
 bool Console::StartUp()	
@@ -52,6 +55,27 @@ bool Console::ShutDown()
 
 bool Console::IsValid()	{ return true; }
 
+
+void Console::AutoComplete()
+{
+	vector<string> kFoundCommands;
+
+	if( m_pkSystem->AutoComplete(m_aCommand,&kFoundCommands ,0) ) 
+	{
+		if(kFoundCommands.size() == 1) 
+		{
+			strcpy(m_aCommand, kFoundCommands[0].c_str());
+			m_iInputPos = strlen(m_aCommand);
+			m_aCommand[m_iInputPos++] = 32;
+			m_aCommand[m_iInputPos] = 0;
+		}
+		else 
+		{
+			for(int i=0; i<kFoundCommands.size(); i++)
+				Printf(" %s", kFoundCommands[i].c_str());
+		}
+	}
+}
 
 
 void Console::InsertKey(unsigned char ucKey)
@@ -256,6 +280,12 @@ void Console::Update(void)
 		if(kKey.m_iKey == KEY_INSERT)		eCmd = CONCMD_TOGGLEINSERT;
 		if(kKey.m_iKey == KEY_TAB)			eCmd = CONCMD_TOGGLE;
 		if(kKey.m_iKey == KEY_RETURN)		eCmd = CONCMD_RUN;
+		if(kKey.m_iKey == KEY_F1)			
+		{
+			AutoComplete();
+			kKey.m_iKey = 0;
+		}
+
 		
 	/*
 	if(m_pkInput->Pressed(KEY_PAGEUP))		eCmd = CONCMD_SCROLLUP;

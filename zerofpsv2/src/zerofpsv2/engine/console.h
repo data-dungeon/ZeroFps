@@ -71,6 +71,8 @@ class ENGINE_API Console : public BasicConsole
 
 		void ConsoleCmd(CON_CMD eCmd);
 
+		void AutoComplete();
+
 public:
 		Console();
 		~Console(){};

@@ -23,8 +23,8 @@ private:
 
 protected:
 		vector<char*>	m_kText;													///< Text that the console have.
-		
 		int				m_iMaxWidth;											// Max number of char this console can show in width before word wrap will kick in.
+		bool				m_bLog;													// True if console printouts logs to file.
 
 public:
 		BasicConsole(char* szName);
