@@ -11,6 +11,7 @@ Tcs::Tcs(): ZFSubSystem("Tcs")
 	m_fMinForce = 		0.2;	
 	m_fSleepVel = 		0.3;
 	m_fMaxVel = 		10.0;
+	m_fTimeSlice = 	1.5;
 	
 	m_iHandleCollission = 1;
 	m_iDebugGraph = 0;
@@ -750,7 +751,7 @@ void Tcs::TestSphereVsSphere(P_Tcs* pkBody1,P_Tcs* pkBody2,float fAtime)
 			
 			didpen = true;			
 			retry = true;
-			fAtime /=1.5;
+			fAtime /= m_fTimeSlice;
 		
 			continue;
 		}
@@ -895,7 +896,7 @@ void Tcs::TestSphereVsMesh(P_Tcs* pkBody1,P_Tcs* pkBody2,float fAtime)
 							
 			didpen = true;			
 			retry = true;
-			fAtime /=1.5;
+			fAtime /=m_fTimeSlice;
 			//fAtime -= fTD;
 		
 		}
@@ -1128,29 +1129,33 @@ void Tcs::TestMeshVsMesh(P_Tcs* pkBody1,P_Tcs* pkBody2,float fAtime)
 		UpdateBodyVelnPos(m_pkBodyCopy1,fAtime);
 		UpdateBodyVelnPos(m_pkBodyCopy2,fAtime);	
 	
-		if(CollideMeshVSMesh(m_pkBodyCopy1,m_pkBodyCopy2,NULL))
+		if(CollideMeshVSMesh3(m_pkBodyCopy1,m_pkBodyCopy2,NULL))
 		{
-/*			//if first penetration do a check at time 0
+			//if first penetration do a check at time 0
 			if(!didpen)
 			{
-				if(CollideMeshVSMesh(pkBody1,pkBody2,pkTempCol))
+				memcpy(m_pkBodyCopy1,pkBody1,sizeof(P_Tcs));
+				memcpy(m_pkBodyCopy2,pkBody2,sizeof(P_Tcs));		
+		
+				UpdateBodyVelnPos(m_pkBodyCopy1,0);
+				UpdateBodyVelnPos(m_pkBodyCopy2,0);	
+						
+				if(CollideMeshVSMesh3(pkBody1,pkBody2,NULL))
 				{
-					cout<<"Stuck mesh VS mesh detected"<<endl;
-					//fAtime = 1;
-					didpen = true;
-					
+					//cout<<"Stuck Object detected"<<endl;
+					didpen = true;			
+					fAtime = 0;
 					break;
-					
 					//return;
 				}
 			}	 
-*/			
+			
 
 			
 			didpen = true;			
 			retry = true;
 			fLastColTime  = fAtime;
-			fAtime /= 1.5;
+			fAtime /= m_fTimeSlice;
 		}
 		else if(didpen)
 			break;
@@ -1173,7 +1178,7 @@ void Tcs::TestMeshVsMesh(P_Tcs* pkBody1,P_Tcs* pkBody2,float fAtime)
 		memcpy(m_pkBodyCopy2,pkBody2,sizeof(P_Tcs));						
 		UpdateBodyVelnPos(m_pkBodyCopy1,fLastColTime);
 		UpdateBodyVelnPos(m_pkBodyCopy2,fLastColTime);		
-		if(!CollideMeshVSMesh(m_pkBodyCopy1,m_pkBodyCopy2,pkTempCol))
+		if(!CollideMeshVSMesh3(m_pkBodyCopy1,m_pkBodyCopy2,pkTempCol))
 			cout<<"FUCKING DAM SHIT SOMEHING IS DAAAMN WRONG HERE"<<endl;
 	
 	
@@ -1294,8 +1299,7 @@ bool Tcs::CollideMeshVSMesh(P_Tcs* pkBody1,P_Tcs* pkBody2,Tcs_collission* pkTemp
 					else
 						return true;
 				}
-			}
-			
+			}			
 		}
 	}
 	
@@ -1305,6 +1309,174 @@ bool Tcs::CollideMeshVSMesh(P_Tcs* pkBody1,P_Tcs* pkBody2,Tcs_collission* pkTemp
 	return false;
 }
 
+bool Tcs::CollideMeshVSMesh3(P_Tcs* pkBody1,P_Tcs* pkBody2,Tcs_collission* pkTempCol) 
+{
+	Matrix4 kModelMatrix1 = pkBody1->GetModelMatrix();
+	Matrix4 kModelMatrix2 = pkBody2->GetModelMatrix();
+
+	bool bHaveCleared = false;		
+	bool bHaveColided = false;	
+	static Vector3 verts1[3];	
+	static Vector3 verts2[3];	
+	static Plane P1;
+	static Plane P2;
+	static Vector3 Normal1;
+	static Vector3 Normal2;
+	static int i1,i2;
+
+	for(unsigned int f=0;f<pkBody1->m_pkFaces->size();f++)
+	{
+		verts1[0] = kModelMatrix1.VectorTransform((*pkBody1->m_pkVertex)[(*pkBody1->m_pkFaces)[f].iIndex[0]]);
+		verts1[1] = kModelMatrix1.VectorTransform((*pkBody1->m_pkVertex)[(*pkBody1->m_pkFaces)[f].iIndex[1]]);		
+		verts1[2] = kModelMatrix1.VectorTransform((*pkBody1->m_pkVertex)[(*pkBody1->m_pkFaces)[f].iIndex[2]]);		
+	
+		if(verts1[0] == verts1[1])
+			continue;		
+		if(verts1[0] == verts1[2])
+			continue;
+		if(verts1[1] == verts1[2])
+			continue;
+			
+										
+		Normal1= ((verts1[1] - verts1[0]).Cross(verts1[2] - verts1[0])).Unit();				
+		P1.Set(Normal1,verts1[0]);
+		
+		for(unsigned int g=0;g<pkBody2->m_pkFaces->size();g++)
+		{
+			verts2[0] = kModelMatrix2.VectorTransform((*pkBody2->m_pkVertex)[(*pkBody2->m_pkFaces)[g].iIndex[0]]);
+			verts2[1] = kModelMatrix2.VectorTransform((*pkBody2->m_pkVertex)[(*pkBody2->m_pkFaces)[g].iIndex[1]]);		
+			verts2[2] = kModelMatrix2.VectorTransform((*pkBody2->m_pkVertex)[(*pkBody2->m_pkFaces)[g].iIndex[2]]);		
+			
+			if(verts2[0] == verts2[1])
+				continue;		
+			if(verts2[0] == verts2[2])
+				continue;
+			if(verts2[1] == verts2[2])
+				continue;					
+
+			Normal2= ((verts2[1] - verts2[0]).Cross(verts2[2] - verts2[0])).Unit();				
+			P2.Set(Normal2,verts2[0]);
+
+			//body1 vs body2			
+			for(int i = 0;i<3;i++)
+			{
+				switch(i)
+				{
+					case 0:
+						i1 = 0;
+						i2 = 1; 
+						break;
+		
+					case 1:
+						i1 = 1;
+						i2 = 2; 
+						break;
+		
+					case 2:
+						i1 = 2;
+						i2 = 0; 
+						break;
+				}			
+				
+				if(pkTempCol)				
+				{
+					if(TestLineVSPolygon(verts1,&verts2[i1],&verts2[i2],&P1))
+					{
+						if(!bHaveCleared)
+						{
+							bHaveCleared = true;
+							pkTempCol->kNormals.clear();
+							pkTempCol->kPositions.clear();
+						}					
+							
+						pkTempCol->kPositions.push_back(m_kLastTestPos);
+						pkTempCol->kNormals.push_back(m_kLastTestNormal);
+							
+						bHaveColided = true;	
+					}
+					
+					if(TestLineVSPolygon(verts2,&verts1[i1],&verts1[i2],&P2))
+					{
+						if(!bHaveCleared)
+						{
+							bHaveCleared = true;
+							pkTempCol->kNormals.clear();
+							pkTempCol->kPositions.clear();
+						}					
+							
+						pkTempCol->kPositions.push_back(m_kLastTestPos);
+						pkTempCol->kNormals.push_back(-m_kLastTestNormal);
+							
+						bHaveColided = true;	
+					}
+					
+				}
+				else
+				{
+					if(TestLineVSPolygonNoNormal(verts1,&verts2[i1],&verts2[i2],&P1))
+						return true;
+					
+					if(TestLineVSPolygonNoNormal(verts2,&verts1[i1],&verts1[i2],&P2))
+						return true;
+						
+				}
+			}			
+			
+			/*
+			//body2 vs body1			
+			for(int i = 0;i<3;i++)
+			{
+				switch(i)
+				{
+					case 0:
+						i1 = 0;
+						i2 = 1; 
+						break;
+		
+					case 1:
+						i1 = 1;
+						i2 = 2; 
+						break;
+		
+					case 2:
+						i1 = 2;
+						i2 = 0; 
+						break;
+				}			
+				
+				if(pkTempCol)				
+				{
+					if(TestLineVSPolygon(verts2,&verts1[i1],&verts1[i2],&P2))
+					{
+						if(!bHaveCleared)
+						{
+							bHaveCleared = true;
+							pkTempCol->kNormals.clear();
+							pkTempCol->kPositions.clear();
+						}					
+							
+						pkTempCol->kPositions.push_back(m_kLastTestPos);
+						pkTempCol->kNormals.push_back(-m_kLastTestNormal);
+							
+						bHaveColided = true;	
+					}
+				}
+				else
+				{
+					if(TestLineVSPolygonNoNormal(verts2,&verts1[i1],&verts1[i2],&P2))
+						return true;
+				}
+				*/
+		}
+	}
+	
+	if(bHaveColided)
+		return true;
+	
+	return false;
+}
+
+
 bool Tcs::TestLineVSPolygon(Vector3* pkPolygon,Vector3* pkPos1,Vector3* pkPos2,Plane* pkPlane)
 {
 	static float fMinDist = 0.05;
@@ -1313,19 +1485,17 @@ bool Tcs::TestLineVSPolygon(Vector3* pkPolygon,Vector3* pkPos1,Vector3* pkPos2,P
 	{
 		if(TestSides(pkPolygon,&(pkPlane->m_kNormal),m_kLastTestPos))
 		{
-//			m_kLastTestNormal = -pkPlane->m_kNormal;		
-//			return true;
+			//m_kLastTestNormal = -pkPlane->m_kNormal;		
+			//return true;
 			
 			if( m_kLastTestPos.DistanceTo(*pkPos1) < fMinDist ||
 				 m_kLastTestPos.DistanceTo(*pkPos2) < fMinDist ||
 				 m_kLastTestPos.DistanceTo(pkPolygon[0]) < fMinDist ||
 				 m_kLastTestPos.DistanceTo(pkPolygon[1]) < fMinDist ||
 				 m_kLastTestPos.DistanceTo(pkPolygon[2]) < fMinDist)
-			{
-				
+			{			
 				//vertex VS face
 				m_kLastTestNormal = -pkPlane->m_kNormal;
-
 				return true;
 			}
 			else
@@ -1363,7 +1533,8 @@ bool Tcs::TestLineVSPolygon(Vector3* pkPolygon,Vector3* pkPos1,Vector3* pkPos2,P
 				{
 					m_kLastTestNormal = n3;
 					v2 = (pkPolygon[2] + pkPolygon[0]) *0.5;
-				};
+				};			
+				
 				
 				//compare to face normal to chose wich direction the normal shuld have
 				if( m_kLastTestNormal.Angle(-pkPlane->m_kNormal) < 1.5707)
@@ -1373,11 +1544,11 @@ bool Tcs::TestLineVSPolygon(Vector3* pkPolygon,Vector3* pkPos1,Vector3* pkPos2,P
 				if( m_kLastTestNormal.Angle(-pkPlane->m_kNormal) < 1.5707)
 					return true;
 					
-				//generate reference normal , in case of 90degredes angle, use a fuzzy calculated normal
+/*				//generate reference normal , in case of 90degredes angle, use a fuzzy calculated normal
 				Vector3 v1 = (*pkPos2 + *pkPos1) *0.5;
 				Vector3 refn = (v1 - v2).Unit();
 				
-					
+				
 				if(m_kLastTestNormal.Angle(refn) < 1.5707)
 					return true;
 				
@@ -1385,13 +1556,25 @@ bool Tcs::TestLineVSPolygon(Vector3* pkPolygon,Vector3* pkPos1,Vector3* pkPos2,P
 				if(m_kLastTestNormal.Angle(refn) < 1.5707)
 					return true;
 				
-					
+	*/				
 				return false;		
 
 			}			
 		}
 	}
 	
+	return false;
+}
+
+bool Tcs::TestLineVSPolygonNoNormal(Vector3* pkPolygon,Vector3* pkPos1,Vector3* pkPos2,Plane* pkPlane)
+{
+	static Vector3 kTestPos;
+	
+	if(pkPlane->LineTest(*pkPos1,*pkPos2,&kTestPos))
+		if(TestSides(pkPolygon,&(pkPlane->m_kNormal),kTestPos))
+			return true;
+		
+		
 	return false;
 }
 

@@ -62,6 +62,7 @@ class ENGINE_SYSTEMS_API Tcs : public ZFSubSystem
 		float					m_fMinForce;
 		float					m_fMaxVel;
 		float					m_fAlmostZero;
+		float					m_fTimeSlice;
 		
 		P_Tcs*				m_pkBodyCopy1;
 		P_Tcs*				m_pkBodyCopy2;		
@@ -99,6 +100,7 @@ class ENGINE_SYSTEMS_API Tcs : public ZFSubSystem
 		void TestMeshVsMesh(P_Tcs* pkBody1,P_Tcs* pkBody2,float fAtime);
 		bool CollideMeshVSMesh(P_Tcs* pkSphere,P_Tcs* pkMesh,Tcs_collission* pkTempCol);			
 		bool CollideMeshVSMesh2(P_Tcs* pkSphere,P_Tcs* pkMesh);			
+		bool CollideMeshVSMesh3(P_Tcs* pkSphere,P_Tcs* pkMesh,Tcs_collission* pkTempCol);			
 		
 		//line tests
 		void UpdateLineTests(float fAlphaTime);		
@@ -111,6 +113,7 @@ class ENGINE_SYSTEMS_API Tcs : public ZFSubSystem
 		bool TestSphereVSPolygon(Vector3* kVerts,P_Tcs* pkSphere);
 		bool TestSides(Vector3* kVerts,Vector3* pkNormal,const Vector3&);
 		bool TestLineVSPolygon(Vector3* pkPolygon,Vector3* pkPos1,Vector3* pkPos2,Plane* pkPlane);
+		bool TestLineVSPolygonNoNormal(Vector3* pkPolygon,Vector3* pkPos1,Vector3* pkPos2,Plane* pkPlane);
 		
 		bool TestPolygonVSPolygon(Vector3* pkPolgyon1,Vector3* pkPolygon2);
 		float LineInsidePolygon(Vector3* pkPolgyon,Plane* pkPlane,Vector3* pkLinePos1,Vector3* pkLinePos2,Vector3* pkColPos);
