@@ -63,9 +63,7 @@ function OnMissionStart()
 	HospitalObject = GetDMObject(1)
 
 	Print("Hospital object = ", HospitalObject)
-
---	CreateWnd(4,"HQIcon","MapWnd","",303,96,16,16,0)
---	ChangeSkin("HQIcon","Skin1","Label")
+	Print("Num civilian = ", NumCivilians)
 
 end
 
@@ -155,7 +153,11 @@ function IsMissionDone()
 			local curr_life = GetCharStats( obj, 0 ) -- 0 = Life
 			local dmg = prev_life - curr_life
 
-			if dmg > 0 and IsDead(obj_wounded) == 0 then
+			Print("prev_life = ", prev_life)
+			Print("curr_life = ", curr_life)
+			Print("dmg = ", dmg)
+
+			if dmg > 0 and IsDead(obj) == 0 then
 				
 				CivWoundedList[x*2] = -1 -- markera att denna inte skall räknas mer
 
@@ -163,6 +165,8 @@ function IsMissionDone()
 				RuningToHospitleList[NumCiviliansWounded] = obj
 
 				NumCiviliansWounded = NumCiviliansWounded + 1 -- öka antalet skadade personer
+
+				Print("NumCiviliansWounded = ", NumCiviliansWounded)
 			end
 
 		end
