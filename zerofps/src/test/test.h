@@ -3,8 +3,7 @@
 
 
 #include <iostream>
-#include "Application.h"
-#include "ZeroFps.h"
+#include "../zerofps/core/application.h"
 
 class Test :public Application {
 	

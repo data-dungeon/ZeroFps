@@ -1,4 +1,4 @@
-#include "Test.h"
+#include "test.h"
 
 
 Test olle("MegaGame",640,480,16);
@@ -11,8 +11,7 @@ Test::Test(char* aName,int iWidth,int iHeight,int iDepth): Application(aName,iWi
 
 
 void Test::OnInit(void) {
-	cout<<"HEllo =)"<<endl;
-	
+	pkConsole->Print("MegaUltraSuper Duper Game");
 }
 
 

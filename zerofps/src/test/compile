@@ -1,0 +1,1 @@
+g++ test.cpp -o ../../bin/test -L../../bin/ -lcore -lengine -lrender
