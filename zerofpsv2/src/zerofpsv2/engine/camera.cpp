@@ -33,17 +33,16 @@ Camera::Camera(Vector3 kPos,Vector3 kRot,float fFov,float fAspect,float fNear,fl
 	m_iRenderTarget= 		RENDERTARGET_SCREEN;
 	m_bClearViewPort=		true;	
 	m_bForceFullScreen = false;
+	
+	m_kClearColor	=		Vector4(0.5,0.5,0.5,0);
+	m_kFogColor		=		Vector4(0.5,0.5,0.5,0);
+	m_fFogNear		=		10;
+	m_fFogFar		=		10;
+	m_bFogEnabled	=		true;
 }
 
-/*
-void Camera::UpdateAll(int iWidth,int iHeight) 
-{
-	m_bViewChange		=	true;
-	m_bViewPortChange	=	true;
-}
-*/
 
-void Camera::Update()//int iWidth,int iHeight) 
+void Camera::InitView()//int iWidth,int iHeight) 
 {
 	m_fAppWidth  = m_pkRender->GetWidth();//;float(iWidth);
 	m_fAppHeight = m_pkRender->GetHeight();//float(iHeight);
@@ -92,6 +91,18 @@ void Camera::Update()//int iWidth,int iHeight)
 	
 	//update the frustum
 	m_kFrustum.GetFrustum(m_kCamProjectionMatrix,m_kCamModelViewMatrix);
+	
+	
+	//last but not least setup fog and clear color
+	m_pkZShaderSystem->SetClearColor(m_kClearColor);
+	m_pkZShaderSystem->SetFog(m_kFogColor,m_fFogNear,m_fFogFar,m_bFogEnabled);
+
+
+	//clear viewport
+	if(m_bClearViewPort)
+		ClearViewPort(true);	
+	else
+		ClearViewPort(false);	
 }
 
 
@@ -424,13 +435,8 @@ void Camera::RenderView()
 		
 		
 	//first make this camera matrises the current ones
-	Update();
+	InitView();
 	
-	//clear viewport
-	if(m_bClearViewPort)
-		ClearViewPort(true);	
-	else
-		ClearViewPort(false);	
 	
 	//get root entity
 	Entity* pkRootEntity = m_pkEntityMan->GetObjectByNetWorkID(m_iRootEntity);
@@ -457,4 +463,13 @@ void Camera::RenderView()
 	//reset camera
 	m_pkZeroFps->m_pkCamera=NULL;
 }
+
+void Camera::SetFog(const Vector4& kColor,float fStart,float fStop,bool bEnabled)
+{
+	m_kFogColor = 		kColor;
+	m_fFogNear = 		fStart;
+	m_fFogFar = 		fStop;	
+	m_bFogEnabled =	bEnabled;
+}
+
 

@@ -295,6 +295,8 @@ class RENDER_API ZShaderSystem : public ZFSubSystem
 		
 		//other stuff
 		void ClearBuffer(const int& iBuffert);
+		void SetClearColor(const Vector4& kColor);
+		void SetFog(const Vector4& kColor,float fStart,float fStop,bool bEnabled);
 		
 		//information
 		bool HaveExtension(const string& strExt);

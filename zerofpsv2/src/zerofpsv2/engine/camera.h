@@ -49,15 +49,19 @@ class ENGINE_API Camera
 		ZeroFps*			m_pkZeroFps;
 		ZShadow*			m_pkZShadow;
 		
-
+		//matrises and position
 		Matrix4	m_kCamProjectionMatrix;
 		Matrix4	m_kCamModelViewMatrix;
 		Vector3	m_kPos;
 		Matrix4	m_kRotM;
 				
-		//update view change
-//		bool		m_bViewChange;
-//		bool		m_bViewPortChange;				
+		
+		//gl stuff  , clear color and fog
+		Vector4	m_kClearColor;
+		Vector4	m_kFogColor;
+		float		m_fFogNear;
+		float		m_fFogFar;
+		bool		m_bFogEnabled;
 		
 		//viewport
 		Vector3	m_kViewPortCorner;
@@ -98,6 +102,8 @@ class ENGINE_API Camera
 		int		m_iRootEntity;		
 		bool		m_bRootOnly;
 		
+		
+		
 		void		DrawGrid();
 		
 	public:
@@ -109,7 +115,7 @@ class ENGINE_API Camera
 				
 		Camera(Vector3 kPos,Vector3 kRot,float fFov,float fAspect,float fNear,float fFar);
 	
-		void 	Update();	
+		void 	InitView();	
 		void	RenderView();	
 		void 	SetView(float fFov,float fAspect,float fNear,float fFar);
 	
@@ -126,6 +132,10 @@ class ENGINE_API Camera
 		Vector3 	GetOrthoMove(Vector3 kMove);
 		Vector3 	SnapToGrid(Vector3 kPos);
 
+		
+		void		SetFog(const Vector4& kColor,float fStart,float fStop,bool bEnabled);
+		void		SetClearColor(const Vector4& kColor)	{	m_kClearColor = kColor;	}
+		
 		void 		SetRotM(const Matrix4& kRotM);
 		void 		RotateV(const Vector3& kRot);
 		void 		MultRotM(const Matrix4& kRotM);

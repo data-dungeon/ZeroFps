@@ -642,7 +642,7 @@ void EntityManager::UpdateState(NetPacket* pkNetPacket)
 		if(!pkNetSlave) 
 		{
 			pkNetSlave = CreateObjectByNetWorkID(iObjectID);
-			cout << "Creating Entity: " << iObjectID << endl;
+			//cout << "Creating Entity: " << iObjectID << endl;
 		}
 				
 		//if entity now exist, pack it up
@@ -662,6 +662,7 @@ void EntityManager::UpdateState(NetPacket* pkNetPacket)
 		else
 		{
 			//if the entity was not created , we cant continue
+			cout << "Faild to create Entity: " << iObjectID << endl;
 			return;
 		}
 	}	

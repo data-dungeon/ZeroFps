@@ -21,7 +21,7 @@ P_Light::P_Light()
  
 	m_iMode  = LMODE_DEFAULT;
 	m_fTimer = m_pkZeroFps->GetTicks();
-	
+
 }
 
 P_Light::~P_Light()

@@ -10,6 +10,7 @@ P_LightUpdate::P_LightUpdate()
 
 	m_iType = PROPERTY_TYPE_RENDER;
 	m_iSide = PROPERTY_SIDE_CLIENT;
+
 }
 
 void P_LightUpdate::Update()

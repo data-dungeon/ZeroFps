@@ -62,6 +62,10 @@ void ZShaderSystem::SetupOpenGL()
 	glShadeModel(GL_SMOOTH);
 	glClearColor(0,0,0,0);
 	glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
+	
+	
+	SetFog(Vector4(1,1,1,0),10,100,true);
+	SetClearColor(Vector4(1,1,1,0));
 }
 
 
@@ -1418,9 +1422,26 @@ ZVertexBuffer* ZShaderSystem::CreateVertexBuffer()
 	return pkNewBuffer;
 }
 
+void ZShaderSystem::SetFog(const Vector4& kColor,float fStart,float fStop,bool bEnabled)
+{
+	if(bEnabled)
+	{
+		glEnable(GL_FOG);
+		glFogfv(GL_FOG_COLOR,&kColor.x);
+		glFogf(GL_FOG_START,fStart);
+		glFogf(GL_FOG_END,fStop);	
+	} 
+	else 
+	{
+		glDisable(GL_FOG);
+	}	
+}
 
 
-
+void ZShaderSystem::SetClearColor(const Vector4& kColor)
+{
+	glClearColor(kColor.x, kColor.y,kColor.z, kColor.w);
+}
 
 
 

@@ -465,8 +465,9 @@ void Render::SetColor(Vector3 kColor)
 */
 void Render::SetClearColor(Vector4 kColor)
 {
-	glClearColor(kColor.x, kColor.y,kColor.z, kColor.w);
-
+	//glClearColor(kColor.x, kColor.y,kColor.z, kColor.w);
+	cout<<"call to Render::SetClearColor is obsolete"<<endl;
+	m_pkZShaderSystem->SetClearColor(kColor);
 }
 
 

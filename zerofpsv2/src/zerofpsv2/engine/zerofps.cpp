@@ -203,6 +203,7 @@ bool ZeroFps::StartUp()
 
 	//setup default console camera
 	m_pkConsoleCamera=new Camera(Vector3(0,0,0),Vector3(0,0,0),84,1.333,0.3,250);	
+	m_pkConsoleCamera->SetClearViewPort(false);
 	
 	//setup gui stuff
 	m_pkGui->SetRes(m_pkRender->GetWidth(), m_pkRender->GetHeight());
@@ -555,8 +556,8 @@ void ZeroFps::Draw_EngineShell()
 	m_pkGui->Render((int)m_fAvrageFps);
 	
 	//set console kamera matrisses, and clear depthbuffer
-	m_pkConsoleCamera->Update();
-	m_pkConsoleCamera->ClearViewPort(false);	
+	m_pkConsoleCamera->InitView();
+	//m_pkConsoleCamera->ClearViewPort(false);	
 	
 	//draw devstrings
 	DrawDevStrings();
@@ -674,8 +675,7 @@ void ZeroFps::Draw_RenderCamera(Camera* pkCamera)
 	//if render is disable just clear the viewport (looks better)
 	if(!m_bRenderOn)
 	{
-		pkCamera->Update();
-		pkCamera->ClearViewPort(true);
+		pkCamera->InitView();		
 		return;
 	}
 
