@@ -3,6 +3,7 @@
 
 #include <cstring>
 #include <iostream>
+#include <conio.h>
 #include <string>
 #include "mad.h"
 #include "mdl.h"
@@ -155,8 +156,12 @@ bool MadMake::Parse_CmdLine(int argc, char* argv[])
 		ucaInFile = argv[iCurArg];
 	if((iCurArg + 1) < argc)
 		ucaOutFile = argv[iCurArg + 1];
+	else
+		ucaOutFile = "test.mad";
 	if((iCurArg + 2) < argc)
 		ucaTextureNames = argv[iCurArg + 2];
+	else
+		ucaTextureNames = "test";
 	
 //	strcpy(ucaInFile, "progs/player.mdl");
 //	strcpy(ucaOutFile, "player.mad");
@@ -179,7 +184,7 @@ void MadMake::Run(int argc, char* argv[])
 	if(argc < 3) 
 	{
 		cout << "To few argument" << endl;
-		return;
+//		return;
 	}
 	
 	IMadImport* pkImport = GetImportObject(ucaInFile.c_str());
@@ -192,9 +197,9 @@ void MadMake::Run(int argc, char* argv[])
 	pkImport->Read(ucaInFile.c_str());
 	pkImport->Export(&madexp,ucaTextureNames.c_str());
 	madexp.Save_MAD(ucaOutFile.c_str());
-	madexp.Save_SD("test.sd");
-	madexp.Save_MD(0, "test.md");
-	madexp.Save_AD(0, "test.ad");
+//	madexp.Save_SD("test.sd");
+//	madexp.Save_MD(0, "test.md");
+//	madexp.Save_AD(0, "test.ad");
 }
 
 
@@ -202,5 +207,6 @@ int main(int argc, char* argv[])
 {
 	MadMake	mad;
 	mad.Run(argc, argv);
+	_getch();
 	return 0;
 }

@@ -32,6 +32,7 @@ Image::Image( const Image& v )
 
 	width = v.width;
 	height = v.height;
+	bHasAlpha = v.bHasAlpha;
 	pixels = new color_rgba [width * height]; 
 	memcpy(pixels,v.pixels,(width * height) * sizeof(color_rgba));
 }
@@ -48,6 +49,7 @@ void Image::free(void)
 	if(pixels)	delete [] pixels;
 	pixels = NULL;
 	width = height = 0;
+	bHasAlpha = false;
 }
 
 void Image::create_empty(int setwidth, int setheight)
@@ -55,6 +57,7 @@ void Image::create_empty(int setwidth, int setheight)
 	free();
 	width = setwidth;
 	height = setheight;
+	bHasAlpha = false;
 	pixels = new color_rgba [width * height];
 }
 
@@ -244,13 +247,17 @@ bool Image::load_tga(FILE *fp)
 	if(head.image_type != TGA_IMAGETYPE_URGB)	return false;
 	
 	// Set basic image prop.
+	bHasAlpha = false;
 	width  = head.width;
 	height = head.height;
 
 	if(head.pixel_depth == 8)	pixelsize = 1;
 	if(head.pixel_depth == 16)	pixelsize = 2;
 	if(head.pixel_depth == 24)	pixelsize = 3;
-	if(head.pixel_depth == 32)	pixelsize = 4;
+	if(head.pixel_depth == 32)	{
+		pixelsize = 4;
+		bHasAlpha = true;
+		}
 
 	// Read color map if there is one.
 	if(head.colormap_type != 0) {
@@ -295,6 +302,7 @@ bool Image::load_pcx(FILE *fp, color_rgb* pal)
 	pcx_header_s head;
 	fread(&head,sizeof(pcx_header_s),1,fp);
 
+	bHasAlpha = false;
 	// Alloc image mem.
 	width  = head.xmax + 1;
 	height = head.ymax + 1;

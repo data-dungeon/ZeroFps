@@ -3,7 +3,7 @@
 #include "script.h"
 
 
-int	ModellXXX::AddTexture(char* ucpTextureName)
+/*int	ModellXXX::AddTexture(char* ucpTextureName)
 {
 	vector<Mad_Texture>::iterator itTexture;
 	int iTextureIndex = 0;
@@ -25,11 +25,11 @@ int	ModellXXX::AddTexture(char* ucpTextureName)
 	m_akTextureNames.push_back(madtex);
 
 	return iTextureIndex; 
-}
+}*/
 
 void ModellXXX::ReadAnimationFrame(FILE* fp, int iNumTriangles)
 {
-	Vector3		kVertex;
+/*	Vector3		kVertex;
 	Vector3		kNormal;
 	MadFace		kFace;
 
@@ -49,12 +49,12 @@ void ModellXXX::ReadAnimationFrame(FILE* fp, int iNumTriangles)
 		}
 	}
 
-	m_akFrames.push_back(kFrame);
+	m_akFrames.push_back(kFrame);*/
 }
 
 void ModellXXX::ReadVertexFrame(FILE* fp, int iNumTriangles)
 {
-	Vector3		kVertex;
+/*	Vector3		kVertex;
 	Vector3		kNormal;
 	MadFace		kFace;
 
@@ -112,12 +112,12 @@ void ModellXXX::ReadVertexFrame(FILE* fp, int iNumTriangles)
 			}
 	}
 
-	m_akFrames.push_back(kFrame);
+	m_akFrames.push_back(kFrame);*/
 }
 
-void ModellXXX::ReadBaseFrame(char* filename)
+void ModellXXX::ReadBaseFrame(const char* filename)
 {
-	cout << "Base: " << filename << " ";
+/*	cout << "Base: " << filename << " ";
 
 	char tmpstr[256];
 
@@ -149,22 +149,25 @@ void ModellXXX::ReadBaseFrame(char* filename)
 	cout << endl;
 
 	fclose(fp);
-	m_akFrames.clear();	
+	m_akFrames.clear();	*/
 }
 
-void ModellXXX::ReadCoreMesh(char* filename)
+void ModellXXX::ReadCoreMesh(const char* filename, const char* szName)
 {
-	Vector3		kVertex;
-	Vector3		kNormal;
-	MadFace		kFace;
-	Mad_VertexFrame kFrame;
-	MadTextureCoo	kTextureCoo;
+	Vector3				kVertex;
+	Vector3				kNormal;
+	MadFace				kFace;
+	Mad_VertexFrame		kFrame;
+	MadTextureCoo		kTextureCoo;
+
+	Mad_CoreMesh* pkMesh = GetMesh(szName);
+
 
 	bool bMakeTextureCoo = true;
 	bool bMakeTriangles = true;
-	if(m_akTextureCoo.size() > 0)
+	if(pkMesh->akTextureCoo.size() > 0)
 		bMakeTextureCoo = false;
-	if(m_akFace.size() > 0)
+	if(pkMesh->akFaces.size() > 0)
 		bMakeTriangles = false;
 
 	char TextureName[256];
@@ -191,7 +194,7 @@ void ModellXXX::ReadCoreMesh(char* filename)
 	for(int i=0; i < iNumTris; i++)
 	{
 		fscanf(fp, "%s", TextureName);
-		iTexture = AddTexture(TextureName);
+		iTexture = pkMesh->AddTexture(TextureName);
 
 		for(int v = 0; v < 3; v++)
 		{
@@ -203,13 +206,13 @@ void ModellXXX::ReadCoreMesh(char* filename)
 			kFrame.akNormal.push_back(kNormal);			
 
 			
-			m_iBoneLinks.push_back(iBoneLink);
+			pkMesh->akBoneConnections.push_back(iBoneLink);
 			
 			if(bMakeTextureCoo)
-				m_akTextureCoo.push_back(kTextureCoo);
+				pkMesh->akTextureCoo.push_back(kTextureCoo);
 			else {
-				diff_s = m_akTextureCoo[(i*3) + v].s - kTextureCoo.s;
-				diff_t = m_akTextureCoo[(i*3) + v].t - kTextureCoo.t;
+				diff_s = pkMesh->akTextureCoo[(i*3) + v].s - kTextureCoo.s;
+				diff_t = pkMesh->akTextureCoo[(i*3) + v].t - kTextureCoo.t;
 				if(diff_s != 0.0 || diff_t != 0.0 ) {
 					cout << "Err: " << i << ", " << v << "  ";
 					cout << "<" << diff_s << ","<< diff_t << ">" << endl;
@@ -218,19 +221,19 @@ void ModellXXX::ReadCoreMesh(char* filename)
 		}
 
 		if(bMakeTriangles) {
-			m_akFace.push_back(kFace);
+			pkMesh->akFaces.push_back(kFace);
 			
 			// Skapa en submesh för varje polygon
 			Mad_CoreSubMesh newsub;
 			newsub.iFirstTriangle = i;
 			newsub.iNumOfTriangles = 1;
 			newsub.iTextureIndex = iTexture;
-			m_akSubMesh.push_back(newsub);
-			int smsize = m_akSubMesh.size();
+			pkMesh->akSubMeshes.push_back(newsub);
+			int smsize = pkMesh->akSubMeshes.size();
 			}
 	}
 
-	m_akFrames.push_back(kFrame);
+	pkMesh->akFrames.push_back(kFrame);
 
 	cout << endl;
 
@@ -240,9 +243,9 @@ void ModellXXX::ReadCoreMesh(char* filename)
 
 
 
-void ModellXXX::ReadAnimation(char* filename)
+void ModellXXX::ReadAnimation(const char* filename)
 {
-	cout << "Base: " << filename << " ";
+/*	cout << "Base: " << filename << " ";
 
 	char tmpstr[256];
 
@@ -290,24 +293,10 @@ void ModellXXX::ReadAnimation(char* filename)
 
 	akAnimation.push_back(newanim);
 
-	fclose(fp);
+	fclose(fp);*/
 }
 
-
-/*struct BoneData
-{
-	int			m_iParent;
-	char		m_szName[64];
-	Vector3		m_kPosition;
-	Vector3		m_kRotation;
-};*/
-
-/*
- 0 left_ankle -1  3.663815 -46.230229 -2.260499  -0.000000 0.000000 -0.000000 
- 1 left_ball 0  0.000000 -1.410943 6.541643  0.000000 0.000000 0.000000 
-
-*/
-void ModellXXX::ReadExportSD(char* filename)
+void ModellXXX::ReadExportSD(const char* filename)
 {
 	cout << "Skelleton: " << filename << " ";
 	char tmpstr[256];
@@ -412,7 +401,7 @@ void Mad_CoreAnimation::PrintAnimation(void)
 }
 */
 
-void ModellXXX::ReadExportAD(char* filename)
+void ModellXXX::ReadExportAD(const char* filename,	const char* szName)
 {
 	cout << "Animation: " << filename << " ";
 	char tmpstr[256];
@@ -501,6 +490,8 @@ void ModellXXX::Read( const char* filename )
 
 	char* ucpToken;
 	ucpToken = kMMScipt.GetToken();
+	string strFileName;
+	string strName;
 
 	while(ucpToken)
 	{
@@ -516,10 +507,11 @@ void ModellXXX::Read( const char* filename )
 
 		if (!strcmp (ucpToken, "!add-md"))
 		{
-			ucpToken = kMMScipt.GetToken();
-			cout << "Command add-md: " << ucpToken << endl;
-			ReadCoreMesh(ucpToken);
-			//ReadBaseFrame(ucpToken);
+			strFileName = kMMScipt.GetToken();
+			strName = kMMScipt.GetToken();
+			cout << "Command add-md: " << strFileName.c_str() << endl;
+			cout << "Mesh Name: " << strName.c_str() << endl;
+			ReadCoreMesh(strFileName.c_str(),strName.c_str());
 		}
 
 		if (!strcmp (ucpToken, "!add-meshanim"))
@@ -538,9 +530,11 @@ void ModellXXX::Read( const char* filename )
 
 		if (!strcmp (ucpToken, "!ad-export"))
 		{
-			ucpToken = kMMScipt.GetToken();
-			cout << "Command ad-export: " << ucpToken << endl;
-			ReadExportAD(ucpToken);
+			strFileName = kMMScipt.GetToken();
+			strName = kMMScipt.GetToken();
+			cout << "Command ad-export: " << strFileName.c_str() << endl;
+			cout << "Animation Name: " << strName.c_str() << endl;
+			ReadExportAD(strFileName.c_str(),strName.c_str());
 		}
 
 		ucpToken = kMMScipt.GetToken();
@@ -553,14 +547,33 @@ bool ModellXXX::Export(MadExporter* mad, const char* filename)
 	mad->m_akSkelleton = m_akSkelleton;
 	mad->m_kBoneAnim = m_kBoneAnim;
 
-	OptimizeSubMeshes();
+//	OptimizeSubMeshes();
+	int imeshSize = m_kMesh.size();
 
-	int iTotalNumOfVertex = m_akFrames[0].akVertex.size();
-	int iTotalTriangles = m_akFace.size();
-	int iAntalFrames = m_akFrames.size();
+	vector<Mad_CoreMesh>::iterator it;
+	for(it = m_kMesh.begin(); it != m_kMesh.end(); it++)
+		it->OptimizeSubMeshes();
+
+	for(it = m_kMesh.begin(); it != m_kMesh.end(); it++)
+	{
+		int iTotalNumOfVertex = it->akFrames[0].akVertex.size();
+		int iTotalTriangles = it->akFaces.size();
+		int iAntalFrames = it->akFrames.size();
+		
+		it->kHead.iVersionNum		= 1;
+		it->kHead.iNumOfTextures	= it->akTextures.size();
+		it->kHead.iNumOfVertex		= iTotalNumOfVertex;
+		it->kHead.iNumOfFaces		= iTotalTriangles;
+		it->kHead.iNumOfFrames		= iAntalFrames;
+		it->kHead.iNumOfSubMeshes	= it->akSubMeshes.size();
+		it->kHead.iNumOfAnimation	= it->akAnimation.size();
+
+	}
+
+	mad->m_kMesh = m_kMesh;		
 
 
-	Mad_CoreMesh* pkMesh = mad->GetMesh("mesh");
+/*	Mad_CoreMesh* pkMesh = mad->GetMesh("mesh");
 	pkMesh->kHead.iVersionNum		= 1;
 	pkMesh->kHead.iNumOfTextures	= m_akTextureNames.size();
 	pkMesh->kHead.iNumOfVertex		= iTotalNumOfVertex;
@@ -595,14 +608,14 @@ bool ModellXXX::Export(MadExporter* mad, const char* filename)
 	pkMesh->akTextureCoo	= m_akTextureCoo;
 	pkMesh->akAnimation		= akAnimation;
 	pkMesh->akBoneConnections = m_iBoneLinks;
-
+	*/
 
 	return true;
 }
 
 void ModellXXX::OptimizeSubMeshes(void)
 {
-	if(m_akSubMesh.size() < 2)	return;
+/*	if(m_akSubMesh.size() < 2)	return;
 	
 	cout << "Start OptimizeSubMeshes: " << m_akSubMesh.size() << endl;
 
@@ -640,5 +653,24 @@ void ModellXXX::OptimizeSubMeshes(void)
 		cout << " / " << m_akSubMesh[i].iTextureIndex << endl;
 
 		}
+*/
+}
 
+
+Mad_CoreMesh* ModellXXX::GetMesh(const char* ucaName)
+{
+	vector<Mad_CoreMesh>::iterator it;
+
+	for(it = m_kMesh.begin(); it != m_kMesh.end(); it++)
+	{
+		if(strcmp(it->m_acName, ucaName) == 0)
+			return it;
+	}
+
+	// Finns ingen mesh med det namnet så skapa den och returnera den.
+	Mad_CoreMesh kNewMesh;
+	kNewMesh.Clear();
+	strcpy(kNewMesh.m_acName, ucaName);
+	m_kMesh.push_back(kNewMesh);
+	return &m_kMesh.back();
 }

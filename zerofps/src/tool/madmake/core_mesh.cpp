@@ -89,7 +89,7 @@ void Mad_CoreMesh::Save(FILE* fp)
 
 
 	// Write Textures
-	fwrite((void *)akTextures,sizeof(Mad_Texture),kHead.iNumOfTextures,fp);
+	fwrite((void *)&akTextures[0],sizeof(Mad_Texture),kHead.iNumOfTextures,fp);
 
 	// Write Texture Coo
 	fwrite((void *)&akTextureCoo[0],sizeof(MadTextureCoo),kHead.iNumOfVertex,fp);
@@ -145,7 +145,12 @@ void Mad_CoreMesh::Load(FILE* fp)
 		}
 
 	// Read textures
-	fread((void *)akTextures,sizeof(Mad_Texture),kHead.iNumOfTextures,fp);
+	for(i = 0; i<kHead.iNumOfTextures; i++) {
+		Mad_Texture	kTexture;
+		fread(&kTexture,sizeof(Mad_Texture),1,fp);
+		akTextures.push_back(kTexture);
+		}
+//	fread((void *)akTextures,sizeof(Mad_Texture),kHead.iNumOfTextures,fp);
 
 	// Read Texture Coo
 	for(i = 0; i<kHead.iNumOfVertex; i++) {
@@ -277,4 +282,73 @@ void Mad_CoreMesh::CreateVertexNormals()
 			if(akFrames[i].akNormal[v].Length() > 0)
 				akFrames[i].akNormal[v].Normalize();
 		}
+}
+
+void Mad_CoreMesh::OptimizeSubMeshes()
+{
+	if(akSubMeshes.size() < 2)	return;
+
+	cout << "OptimizeSubMeshes '" << m_acName  << "' " << akSubMeshes.size() << endl;
+
+	vector<Mad_CoreSubMesh>	akOldSubMesh;
+	akOldSubMesh = akSubMeshes;
+	akSubMeshes.clear();
+
+	Mad_CoreSubMesh newsub;
+	newsub.iFirstTriangle	= 0;
+	newsub.iNumOfTriangles	= 1;
+	newsub.iTextureIndex	= akOldSubMesh[0].iTextureIndex;
+
+	int i;
+
+	for(i=1; i<akOldSubMesh.size(); i++) {
+		if(newsub.iTextureIndex != akOldSubMesh[i].iTextureIndex) {
+			cout << "/" << endl;
+			akSubMeshes.push_back(newsub);
+			newsub.iFirstTriangle	= i;
+			newsub.iNumOfTriangles	= 1;
+			newsub.iTextureIndex	= akOldSubMesh[i].iTextureIndex;
+			}
+		else {
+			cout << ".";
+			newsub.iNumOfTriangles++;
+			}
+		}
+
+	akSubMeshes.push_back(newsub);
+	cout << "End OptimizeSubMeshes: " << akSubMeshes.size() << endl;
+
+	for(i=0; i<akSubMeshes.size(); i++) {
+		cout << "SubMesh[" << i << "]:" << akSubMeshes[i].iFirstTriangle;
+		cout << " / " << akSubMeshes[i].iNumOfTriangles;
+		cout << " / " << akSubMeshes[i].iTextureIndex << endl;
+
+		}
+}
+
+
+
+
+int	Mad_CoreMesh::AddTexture(char* ucpTextureName)
+{
+	vector<Mad_Texture>::iterator itTexture;
+	int iTextureIndex = 0;
+
+	char* ext = strstr(ucpTextureName, ".");
+	ext[0] = 0;
+
+
+	for(itTexture = akTextures.begin(); itTexture != akTextures.end(); itTexture++)
+	{
+		if(strcmp(itTexture->ucTextureName, ucpTextureName) == 0)
+			return iTextureIndex; 
+
+		iTextureIndex++;
+	}
+
+	Mad_Texture madtex;
+	strcpy(madtex.ucTextureName, ucpTextureName);
+	akTextures.push_back(madtex);
+
+	return iTextureIndex; 
 }

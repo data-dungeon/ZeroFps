@@ -57,6 +57,9 @@ struct Mad_CoreMeshHeader
 
 struct Mad_Texture
 {
+	bool	bIsAlphaTest;				// True if needs alpha test.
+	bool	bTwoSided;					// True if two sided.
+	bool	bClampTexture;
 	char	ucTextureName[64];			// path/name of texture.
 };
 
@@ -112,7 +115,8 @@ public:
 	char							m_acName[64];
 	Mad_CoreMeshHeader				kHead;
 
-	Mad_Texture						akTextures[MAD_MAX_TEXTURES];
+//	Mad_Texture						akTextures[MAD_MAX_TEXTURES];
+	vector<Mad_Texture>				akTextures;
 	vector<MadTextureCoo>			akTextureCoo;
 	vector<MadFace>					akFaces;
 	vector<Mad_VertexFrame>			akFrames;
@@ -126,6 +130,9 @@ public:
 	void ShowInfo(void);
 	Mad_CoreMeshAnimation*	Mad_CoreMesh::GetAnimation(char* ucaName);
 	void CreateVertexNormals();
+	void OptimizeSubMeshes();
+
+	int	AddTexture(char* ucpTextureName);
 };
 
 // MAD - SD

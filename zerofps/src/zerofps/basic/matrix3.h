@@ -17,8 +17,8 @@ class BASIC_API Matrix3 {
 	public:
 		union 
 		{
-			float m_aafRowCol[4][4];
-			float m_afData[16];	
+			float m_aafRowCol[3][3];
+			float m_afData[9];	
 		};
 
 	    static const Matrix3 ZERO;
@@ -49,6 +49,11 @@ class BASIC_API Matrix3 {
 		Matrix3 Matrix3::operator-= (const Matrix3& rkMatrix);
 		Matrix3 Matrix3::operator* (const Matrix3& rkMatrix) const;
 		Matrix3 Matrix3::operator*= (const Matrix3& rkMatrix);
+		
+		bool inverse (Matrix3& inv, float tolerance) const;
+		float determinant(void)	 const;
+
+		void Print();
 
 };
 

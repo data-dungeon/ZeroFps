@@ -3,6 +3,7 @@
 #include "matrix4.h"
 #include "quaternion.h"
 #include "zfassert.h"
+#include <math.h>
 
 using namespace std;
 
@@ -167,6 +168,42 @@ void Matrix3::operator= (const Quaternion& rkQuaternion)
 	rkQuaternion.ToRotationMatrix(*this);
 }
 
+float Matrix3::determinant(void)	 const					
+{
+	float det;
+
+	det = m_aafRowCol[0][0] * (m_aafRowCol[1][1] * m_aafRowCol[2][2] - m_aafRowCol[1][2] * m_aafRowCol[2][1])
+		- m_aafRowCol[1][0] * (m_aafRowCol[0][1] * m_aafRowCol[2][2] - m_aafRowCol[0][2] * m_aafRowCol[2][1])
+		+ m_aafRowCol[2][0] * (m_aafRowCol[0][1] * m_aafRowCol[1][2] - m_aafRowCol[0][2] * m_aafRowCol[1][1]);
+
+	return det;
+}
+
+
+bool Matrix3::inverse (Matrix3& inv, float tolerance) const
+{
+	float det = determinant();
+	
+	if(fabs(det) <= tolerance)	return false;
+
+	inv.m_aafRowCol[0][0] =   m_aafRowCol[1][1] * m_aafRowCol[2][2] - m_aafRowCol[1][2] * m_aafRowCol[2][1];
+	inv.m_aafRowCol[0][1] = -(m_aafRowCol[0][1] * m_aafRowCol[2][2] - m_aafRowCol[2][1] * m_aafRowCol[0][2]);
+	inv.m_aafRowCol[0][2] =   m_aafRowCol[0][1] * m_aafRowCol[1][2] - m_aafRowCol[1][1] * m_aafRowCol[0][2];
+
+	inv.m_aafRowCol[1][0] = -(m_aafRowCol[1][0] * m_aafRowCol[2][2] - m_aafRowCol[1][2] * m_aafRowCol[2][0]);
+	inv.m_aafRowCol[1][1] =   m_aafRowCol[0][0] * m_aafRowCol[2][2] - m_aafRowCol[2][0] * m_aafRowCol[0][2];
+	inv.m_aafRowCol[1][2] = -(m_aafRowCol[0][0] * m_aafRowCol[1][2] - m_aafRowCol[1][0] * m_aafRowCol[0][2]);
+	 
+	inv.m_aafRowCol[2][0] =   m_aafRowCol[1][0] * m_aafRowCol[2][1] - m_aafRowCol[2][0] * m_aafRowCol[1][1];
+	inv.m_aafRowCol[2][1] = -(m_aafRowCol[0][0] * m_aafRowCol[2][1] - m_aafRowCol[2][0] * m_aafRowCol[0][1]);
+	inv.m_aafRowCol[2][2] =   m_aafRowCol[0][0] * m_aafRowCol[1][1] - m_aafRowCol[0][1] * m_aafRowCol[1][0];
+
+	float invd = 1.0 / det;
+	for(int i=0; i<9; i++)	inv.m_afData[i] *= invd;
+	return true;
+}
+
+
 /*
 Matrix4 Matrix4::operator*(const float &f) const
 {
@@ -270,6 +307,19 @@ float &Matrix4::operator[](const int i)
 
 
 
+
+void Matrix3::Print()
+{
+	cout <<" -= The Matrix =-"<<endl;
+	for(int y=0;y<3;y++){
+		for(int x=0;x<3;x++){
+			cout<< m_afData[y*3+x]<<"\t";			
+		}
+		cout<<endl;
+	}
+
+
+}
 
 
 

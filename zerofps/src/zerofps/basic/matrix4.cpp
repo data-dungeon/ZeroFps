@@ -1,6 +1,6 @@
 #include "matrix4.h"
 #include "matrix3.h"
-
+#include <math.h>
 
 
 Matrix4::Matrix4(float v1,float v2,float v3 ,float v4,
@@ -46,6 +46,39 @@ Matrix4 Matrix4::operator=(const Matrix4 &kOther)
 
 }
 
+bool Matrix4::operator== (const Matrix4& rkMatrix) const
+{
+    for (int iRow = 0; iRow < 4; iRow++)
+    {
+        for (int iCol = 0; iCol < 4; iCol++)
+        {
+            if ( RowCol[iRow][iCol] != rkMatrix.RowCol[iRow][iCol] )
+                return false;
+        }
+    }
+
+    return true;
+
+}
+
+void Matrix4::SetZeroDelta(float delta)
+{
+    for (int iRow = 0; iRow < 4; iRow++)
+    {
+        for (int iCol = 0; iCol < 4; iCol++)
+        {
+            if ( fabs(RowCol[iRow][iCol]) < delta )
+				RowCol[iRow][iCol] = 0.0;
+        }
+    }
+}
+
+
+bool Matrix4::operator!= (const Matrix4& rkMatrix) const
+{
+    return !operator==(rkMatrix);
+}
+
 
 Vector4 Matrix4::operator*(const Vector4 &f)
 {
@@ -62,23 +95,6 @@ Vector4 Matrix4::operator*(const Vector4 &f)
 
 Matrix4 Matrix4::operator*(const Matrix4 &kOther) const 
 {
-/*	int i,j,k;
-	double ab;
-	Matrix4 temp;
-
-	for(i=0; i<4; i++)
-	{
-		for(j=0; j<4; j++)
-		{
-			ab=0;
-			for(k=0; k<4; k++)	ab += RowCol[k][i] * kOther.RowCol[j][k];
-			temp.RowCol[j][i]=ab;
-		}
-	}
-
-	return temp;*/
-
-
     Matrix4 kProd;
     for (int iRow = 0; iRow < 4; iRow++)
     {
@@ -208,4 +224,259 @@ Vector3 Matrix4::VectorTransform (const Vector3 kVec)
 	res.z = kVec.x * RowCol[0][2] + kVec.y * RowCol[1][2] + kVec.z * RowCol[2][2] + RowCol[3][2];
 	
 	return res;
+}
+
+Matrix4 Matrix4::operator+ (const Matrix4& rkMatrix) const
+{
+    Matrix4 kSum;
+    for (int iRow = 0; iRow < 4; iRow++)
+    {
+        for (int iCol = 0; iCol < 4; iCol++)
+        {
+            kSum.RowCol[iRow][iCol] = RowCol[iRow][iCol] +
+                rkMatrix.RowCol[iRow][iCol];
+        }
+    }
+    return kSum;
+
+}
+
+Matrix4 Matrix4::operator+= (const Matrix4& rkMatrix)
+{
+    for (int iRow = 0; iRow < 4; iRow++)
+    {
+        for (int iCol = 0; iCol < 4; iCol++)
+        {
+            RowCol[iRow][iCol] += rkMatrix.RowCol[iRow][iCol];
+        }
+    }
+    return *this;
+}
+
+Matrix4 Matrix4::operator- (const Matrix4& rkMatrix) const
+{
+    Matrix4 kDiff;
+    for (int iRow = 0; iRow < 4; iRow++)
+    {
+        for (int iCol = 0; iCol < 4; iCol++)
+        {
+            kDiff.RowCol[iRow][iCol] = RowCol[iRow][iCol] -
+                rkMatrix.RowCol[iRow][iCol];
+        }
+    }
+    return kDiff;
+
+}
+
+Matrix4 Matrix4::operator-= (const Matrix4& rkMatrix)
+{
+    for (int iRow = 0; iRow < 4; iRow++)
+    {
+        for (int iCol = 0; iCol < 4; iCol++)
+        {
+            RowCol[iRow][iCol] -= rkMatrix.RowCol[iRow][iCol];
+        }
+    }
+    return *this;
+}
+
+
+Matrix4 Matrix4::operator*= (const Matrix4& rkMatrix)
+{
+    Matrix4 kProd;
+    for (int iRow = 0; iRow < 4; iRow++)
+    {
+        for (int iCol = 0; iCol < 4; iCol++)
+        {
+            kProd.RowCol[iRow][iCol] =
+                RowCol[iRow][0]*rkMatrix.RowCol[0][iCol] +
+                RowCol[iRow][1]*rkMatrix.RowCol[1][iCol] +
+                RowCol[iRow][2]*rkMatrix.RowCol[2][iCol] +
+                RowCol[iRow][3]*rkMatrix.RowCol[3][iCol];
+        }
+    }
+
+	*this = kProd;
+    return kProd;
+
+}
+
+void Matrix4::Transponse()
+{
+	swap(RowCol[0][1], RowCol[1][0]);
+	swap(RowCol[0][2], RowCol[2][0]);
+	swap(RowCol[0][3], RowCol[3][0]);
+	
+	swap(RowCol[1][2], RowCol[2][1]);
+	swap(RowCol[1][3], RowCol[3][1]);
+
+	swap(RowCol[2][3], RowCol[3][2]);
+
+/*    Matrix4 trans;
+    for (int iRow = 0; iRow < 4; iRow++)
+    {
+        for (int iCol = 0; iCol < 4; iCol++)
+            trans.RowCol[iRow][iCol] = RowCol[iCol][iRow];
+    }
+    *this = trans;*/
+//	return trans;
+
+}
+
+void Matrix4::Translate(float x, float y, float z)
+{
+	Identity();
+	SetPos(Vector3(x,y,z));
+}
+
+
+
+
+
+Matrix3 Matrix4::submat(int i, int j)
+{
+	Matrix3 b;
+	
+	int ti, tj, idst, jdst;
+	
+	for(ti = 0; ti < 4; ti++) {
+		if( ti < i)	idst = ti;
+		 
+		else if (ti > i)	idst = ti-1;
+
+		for(tj = 0; tj < 4; tj++) {
+			if(tj < j)	jdst = tj;
+			else if (tj > j)	jdst = tj - 1;
+
+			if(ti != i && tj != j)
+				b.m_aafRowCol[idst][jdst] = RowCol[ti][tj];
+			}
+		}
+
+	return b;
+}
+
+float Matrix4::det(void)
+{
+	float det, result = 0, i = 1;
+	Matrix3 msub;
+	int n;
+
+	for(n=0; n<4; n++, i*= -1) {
+		msub = submat(0,n);
+		det = msub.determinant();
+		result += RowCol[0][n] * det * i;
+		}
+
+	return result;
+}
+
+bool Matrix4::inv(void)
+{
+	float d = det();
+	Matrix3 mtmp;
+	Matrix4	calc;
+
+	int i,j,sign;
+
+	if(fabs(d) < 0.0005)	return 0;
+
+	for(i=0; i<4; i++) {
+		for(j=0; j<4; j++) {
+			sign = 1 - ((i+j) % 2) * 2;
+			mtmp = submat(i,j);
+		    calc.RowCol[i][j] = (mtmp.determinant() * sign) / d;
+			}
+		}
+
+	return true;
+}
+
+//float *mat, float *dst
+Matrix4 Matrix4::Invert2( )
+{
+	Matrix4	inverse;
+
+	float *mat = data;
+	float *dst = inverse.data;
+	
+
+	float tmp[12]; /* temp array for pairs */
+	float src[16]; /* array of transpose source matrix */
+	float det; /* determinant */
+	/* transpose matrix */
+	for ( int i = 0; i < 4; i++) {
+	src[i] = mat[i*4];
+	src[i + 4] = mat[i*4 + 1];
+	src[i + 8] = mat[i*4 + 2];
+	src[i + 12] = mat[i*4 + 3];
+	}
+	/* calculate pairs for first 8 elements (cofactors) */
+	tmp[0] = src[10] * src[15];
+	tmp[1] = src[11] * src[14];
+	tmp[2] = src[9] * src[15];
+	tmp[3] = src[11] * src[13];
+	tmp[4] = src[9] * src[14];
+	tmp[5] = src[10] * src[13];
+	tmp[6] = src[8] * src[15];
+	tmp[7] = src[11] * src[12];
+	tmp[8] = src[8] * src[14];
+	tmp[9] = src[10] * src[12];
+	tmp[10] = src[8] * src[13];
+	tmp[11] = src[9] * src[12];
+	/* calculate first 8 elements (cofactors) */
+	dst[0] = tmp[0]*src[5] + tmp[3]*src[6] + tmp[4]*src[7];
+	dst[0] -= tmp[1]*src[5] + tmp[2]*src[6] + tmp[5]*src[7];
+	dst[1] = tmp[1]*src[4] + tmp[6]*src[6] + tmp[9]*src[7];
+	dst[1] -= tmp[0]*src[4] + tmp[7]*src[6] + tmp[8]*src[7];
+	dst[2] = tmp[2]*src[4] + tmp[7]*src[5] + tmp[10]*src[7];
+	dst[2] -= tmp[3]*src[4] + tmp[6]*src[5] + tmp[11]*src[7];
+	dst[3] = tmp[5]*src[4] + tmp[8]*src[5] + tmp[11]*src[6];
+	dst[3] -= tmp[4]*src[4] + tmp[9]*src[5] + tmp[10]*src[6];
+	dst[4] = tmp[1]*src[1] + tmp[2]*src[2] + tmp[5]*src[3];
+	dst[4] -= tmp[0]*src[1] + tmp[3]*src[2] + tmp[4]*src[3];
+	dst[5] = tmp[0]*src[0] + tmp[7]*src[2] + tmp[8]*src[3];
+	dst[5] -= tmp[1]*src[0] + tmp[6]*src[2] + tmp[9]*src[3];
+	dst[6] = tmp[3]*src[0] + tmp[6]*src[1] + tmp[11]*src[3];
+	dst[6] -= tmp[2]*src[0] + tmp[7]*src[1] + tmp[10]*src[3];
+	dst[7] = tmp[4]*src[0] + tmp[9]*src[1] + tmp[10]*src[2];
+	dst[7] -= tmp[5]*src[0] + tmp[8]*src[1] + tmp[11]*src[2];
+	/* calculate pairs for second 8 elements (cofactors) */
+	tmp[0] = src[2]*src[7];
+	tmp[1] = src[3]*src[6];
+	tmp[2] = src[1]*src[7];
+	tmp[3] = src[3]*src[5];
+	tmp[4] = src[1]*src[6];
+	tmp[5] = src[2]*src[5];
+	tmp[6] = src[0]*src[7];
+	tmp[7] = src[3]*src[4];
+	tmp[8] = src[0]*src[6];
+	tmp[9] = src[2]*src[4];
+	tmp[10] = src[0]*src[5];
+	tmp[11] = src[1]*src[4];
+	/* calculate second 8 elements (cofactors) */
+	dst[8] = tmp[0]*src[13] + tmp[3]*src[14] + tmp[4]*src[15];
+	dst[8] -= tmp[1]*src[13] + tmp[2]*src[14] + tmp[5]*src[15];
+	dst[9] = tmp[1]*src[12] + tmp[6]*src[14] + tmp[9]*src[15];
+	dst[9] -= tmp[0]*src[12] + tmp[7]*src[14] + tmp[8]*src[15];
+	dst[10] = tmp[2]*src[12] + tmp[7]*src[13] + tmp[10]*src[15];
+	dst[10]-= tmp[3]*src[12] + tmp[6]*src[13] + tmp[11]*src[15];
+	dst[11] = tmp[5]*src[12] + tmp[8]*src[13] + tmp[11]*src[14];
+	dst[11]-= tmp[4]*src[12] + tmp[9]*src[13] + tmp[10]*src[14];
+	dst[12] = tmp[2]*src[10] + tmp[5]*src[11] + tmp[1]*src[9];
+	dst[12]-= tmp[4]*src[11] + tmp[0]*src[9] + tmp[3]*src[10];
+	dst[13] = tmp[8]*src[11] + tmp[0]*src[8] + tmp[7]*src[10];
+	dst[13]-= tmp[6]*src[10] + tmp[9]*src[11] + tmp[1]*src[8];
+	dst[14] = tmp[6]*src[9] + tmp[11]*src[11] + tmp[3]*src[8];
+	dst[14]-= tmp[10]*src[11] + tmp[2]*src[8] + tmp[7]*src[9];
+	dst[15] = tmp[10]*src[10] + tmp[4]*src[8] + tmp[9]*src[9];
+	dst[15]-= tmp[8]*src[9] + tmp[11]*src[10] + tmp[5]*src[8];
+	/* calculate determinant */
+	det=src[0]*dst[0]+src[1]*dst[1]+src[2]*dst[2]+src[3]*dst[3];
+	/* calculate matrix inverse */
+	det = 1/det;
+	for ( int j = 0; j < 16; j++)
+		dst[j] *= det;
+
+	return inverse;
 }

@@ -9,6 +9,30 @@
 #define NRDEG_IN_ONE_RAD	57.29577951
 #define NRRAD_IN_ONE_DEG	0.0174532952
 
+bool	bDeveloperInfo;
+#define LOGF_DEVELOPER	1
+
+char	format_text[4096];
+
+void LogF(const char *fmt, ...)
+{
+	if(bDeveloperInfo == false)
+		return;	
+
+	va_list		ap;							// Pointer To List Of Arguments
+
+	// Make sure we got something to work with.
+	if (fmt == NULL)	return;					
+
+	va_start(ap, fmt);						// Parses The String For Variables
+		vsprintf(format_text, fmt, ap);		// And Convert Symbols
+	va_end(ap);								// 
+
+	// Now call our print function.
+	cout << format_text << endl;
+}
+
+
 float DegToRad(float fAngle)
 {
 	return fAngle;
@@ -41,7 +65,8 @@ MObject findShader( MObject& setNode )
 			return connectedPlugs[0].node();
 	}
 
-	cout << "Error finding surface shader for node " << fnNode.name().asChar() << "\n";
+	LogF("Error finding surface shader for node %s\n", fnNode.name().asChar());
+//	cout << "Error finding surface shader for node " << fnNode.name().asChar() << "\n";
 	return MObject::kNullObj;
 }
 
@@ -269,6 +294,8 @@ MStatus MadExport::GetSkinClusterWeights(void)
 MStatus	MadExport::getMesh(void)
 {
 	MStatus	status;
+
+	cout << "Get MESH:" << endl;
 
 	MItDependencyNodes iter( MFn::kMesh  );
 	for ( ; !iter.isDone(); iter.next() ) {
@@ -927,10 +954,10 @@ MStatus	MadExport::Export_FX(char* filename)
 MStatus MadExport::ShowHelp(void)
 {
 	cout << "madexport for ZeroFps." << endl;
-	cout << "'madexport m' to export a base file" << endl;
-	cout << "'madexport f' to export a frame file" << endl;
 	cout << "'madexport s' to export a skelleton file" << endl;
 	cout << "'madexport a' to export a animation file" << endl;
+	cout << "'madexport m' to export a base file" << endl;
+	cout << "'madexport f' to export a frame file" << endl;
 	return MStatus::kSuccess;
 }
 

@@ -85,6 +85,7 @@ private:
 public:
 	int width, height;					// Size of image.
 	color_rgba* pixels;					// Ptr to pixels in image.
+	bool	bHasAlpha;					// True if image was loaded with alpha.
 
 	Image();
 	Image( const Image& v );
