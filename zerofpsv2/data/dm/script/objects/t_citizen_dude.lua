@@ -1,30 +1,25 @@
-
-
 function Create()
 	
 	InitObject();
 		InitProperty("P_Mad");	
-			InitParameter("m_kMadFile","/data/mad/dm/baldie.mad");			
-			InitParameter("m_fScale","1.1");
+			InitParameter("m_kMadFile","/data/mad/citizen_dude.mad");			
+			InitParameter("m_fScale","1");
 			InitParameter("m_iShadowGroup","2");
 
 		InitProperty("P_PfPath");
 		InitProperty("P_Sound");
 		InitProperty("P_DMCharacter");
-			InitParameter("team",1)
 		InitProperty("P_ScriptInterface");
+
 
 end
 
 function FirstRun()
 	SISetHeartRate(SIGetSelfID(),4);
-	local life = GetCharStats(SIGetSelfID(), 0)
-	SetEntityVar(SIGetSelfID(), "g_BaldieLife", life)
 end
 
 function Init()
-	SetState(SIGetSelfID(), 0);
-	SetMoveSpeed (SIGetSelfID(), 3.3);
+	SetMoveSpeed (SIGetSelfID(), 1.9);
 	AddDefenciveActionQuot(SIGetSelfID(), "data/sound/mechanic/defensive/daq_ahh_that_fuckin_hurt.wav")
 	AddDefenciveActionQuot(SIGetSelfID(), "data/sound/mechanic/defensive/daq_careful.wav")
 	AddDefenciveActionQuot(SIGetSelfID(), "data/sound/mechanic/defensive/daq_damn.wav")
@@ -37,12 +32,14 @@ function Init()
 	AddDeathSound(SIGetSelfID(), "data/sound/mechanic/death/death1.wav")
 	AddDeathSound(SIGetSelfID(), "data/sound/mechanic/death/death2.wav")
 
-	AddItem(SIGetSelfID(), "data/script/objects/dm/t_iron_bar.lua", 1);
-	SetTeam (SIGetSelfID(), 4);
-
-	SISetHeartRate(SIGetSelfID(),2);
+	--set life
+	SetCharStats(SIGetSelfID(), 0, 20);
+	SetCharStats(SIGetSelfID(), 1, 20);
 
 	PlayAnim(SIGetSelfID(), "idle");
+	SetTeam (SIGetSelfID(), 1);
+
+	SetEntityVar(SIGetSelfID(), "g_MechLife", Life)
 end
 
 function HeartBeat()
@@ -62,32 +59,21 @@ function HeartBeat()
 	end
 
 	local Life = GetCharStats(SIGetSelfID(), 0)
-	local prev_life = GetEntityVar(SIGetSelfID(), "g_BaldieLife")
+	local prev_life = GetEntityVar(SIGetSelfID(), "g_MechLife")
 
-	-- om skadad, bli aggro
+	-- Ropa på hjälp om han har blivit skadad igen.
 	if Life < prev_life and IsDead(SIGetSelfID()) == 0 then
-		SetState(SIGetSelfID(), 4) -- aggro
-		SetVar("HarryWounded", 1);
+		CallForHelp(SIGetSelfID(), 1)
+		Panic();
 	end
 
-	SetEntityVar(SIGetSelfID(), "g_BaldieLife", Life)
+	SetEntityVar(SIGetSelfID(), "g_MechLife", Life)
 
+	local pos = GetObjectPos(SIGetSelfID());
+	pos[1] = pos[1] + Random(12)-6;
+	pos[3] = pos[3] + Random(12)-6;
 
-	-- check if harry is wounded, if so, get aggro
-	if GetVar("HarryWounded") == 1 then
-		SetState (SIGetSelfID(), 4);
-	end
-
-	local State = GetState(SIGetSelfID());
-
-	if State == 4 then
-		Aggro();
-	end
-
-	if State == 0 then
-		SellDrugs();
-	end
-	
+	MakePathFind(SIGetSelfID(),pos);
 
 end
 
@@ -107,49 +93,16 @@ function Dead()
 	PanicArea(SIGetSelfID(), 12);
 
 	if Random(10) < 3 then
-		RunScript ("data/script/objects/dm/t_money.lua", SIGetSelfID());
+		RunScript ("data/script/objects/t_money.lua", SIGetSelfID());
 	end
 
 end
 
-function Aggro() -- attacks player
-	local closest_agent = GetDMCharacterClosest(SIGetSelfID())
-
-	if closest_agent == -1 then
-		SetState(SIGetSelfID(),0) -- set Idle
-		return
-	end
-
-	-- Close enough?
-	range = DistanceTo(closest_agent, SIGetSelfID());
-
-	if range < GetWeaponRange(SIGetSelfID()) then
-		FireAtObject(SIGetSelfID(), closest_agent)
-	else
-		agent_pos = GetEntityPos(closest_agent);
-		agent_pos[1] = agent_pos[1] + Random(3)-1.5;
-		agent_pos[3] = agent_pos[3] + Random(3)-1.5;
-		MakePathFind(SIGetSelfID(),agent_pos);
-	end
-
-end
-
-function SellDrugs() --walk around some
-
-	-- never wander to far away from harry
-	if DistanceTo(SIGetSelfID(), GetVar("HarryID")) > 5 then
-		local pos = GetObjectPos(GetVar("HarryID"));
-		pos[1] = pos[1] + Random(6)-3;
-		pos[3] = pos[3] + Random(6)-3;
-
-		MakePathFind(SIGetSelfID(),pos);		
-	else
-		local pos = GetObjectPos(SIGetSelfID());
-		pos[1] = pos[1] + Random(8)-4;
-		pos[3] = pos[3] + Random(8)-4;
-
-		MakePathFind(SIGetSelfID(),pos);
-	end
-
-
+function Panic()
+	SetMoveSpeed (SIGetSelfID(), 5);
+	SetRunAnim (SIGetSelfID(), "panic");
+	SetIdleAnim (SIGetSelfID(), "panic_idle");
+	PlayAnim(SIGetSelfID(), "panic_idle");	
+	ClearPathFind(SIGetSelfID());
+	SISetHeartRate(SIGetSelfID(),2);
 end

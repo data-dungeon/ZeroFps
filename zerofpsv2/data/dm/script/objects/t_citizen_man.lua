@@ -103,7 +103,7 @@ function Dead()
 	PanicArea (SIGetSelfID(), 13);
 
 	if Random(10) < 4 then
-		RunScript ("data/script/objects/dm/t_money.lua", SIGetSelfID());
+		RunScript ("data/script/objects/t_money.lua", SIGetSelfID());
 	end
 end
 
