@@ -525,7 +525,7 @@ Entity* EntityManager::CreateEntityFromScript(const char* acName)
 	pkReturnObj->m_pScriptFileHandle->SetRes(acName);
    pkReturnObj->m_strCreatedFromScript = acName;
 	
-//	CallFunction(pkReturnObj, "FirstRun");
+	CallFunction(pkReturnObj, "FirstRun");
 
 	//pop pointers
 	ObjectManagerLua::Pop();	

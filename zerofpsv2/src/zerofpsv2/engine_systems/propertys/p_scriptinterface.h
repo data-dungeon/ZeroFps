@@ -15,32 +15,27 @@ class ENGINE_SYSTEMS_API P_ScriptInterface: public Property {
 		ZeroFps* 			m_pkFps;
 		ZFScriptSystem* 	m_pkScriptSys;
 
-		bool		m_bFirstRun;
-		bool		m_bHaveRunInit;
 		float 	m_fHeartRate;
 		float 	m_fTimer;
+		bool		m_bFirstRun;
+		//bool	m_bHaveRunInit;
 
 	public:
 		P_ScriptInterface();
 		~P_ScriptInterface();
 		
 		void Update();				
-		//bool CallFunction(const char* acFunction,vector<ScriptFuncArg>* pkParams = NULL);
-		//bool SendObjectClickEvent(const char* acType,int iCallerObject );		
-		//bool SendGroudClickEvent(const char* acType,Vector3 kPos,int iCallerObject);
-		//bool SendEvent(const char* acEvent);
-
 		void OnEvent(GameMessage& Msg);
 
       void Save(ZFIoInterface* pkPackage);
       void Load(ZFIoInterface* pkPackage,int iVersion);
 
 		void SetHeartRate(float blub);
-		
 		void Touch(int iId);
 };
 
 Property* Create_P_ScriptInterface();
+void ENGINE_SYSTEMS_API Register_PScriptInterface(ZeroFps* pkZeroFps);
 
 #endif
 

@@ -85,8 +85,8 @@ void Init(EntityManager* pkObjMan, ZFScriptSystem* pkScript)
 	// Common used functions , used together whit P_ScriptInterface
 	pkScript->ExposeFunction("SIGetSelfID",			ObjectManagerLua::SIGetSelfIDLua);		
 	pkScript->ExposeFunction("GetSelfID",				ObjectManagerLua::SIGetSelfIDLua);		
-	pkScript->ExposeFunction("SISetHeartRate",		ObjectManagerLua::SISetHeartRateLua);
-//	pkScript->ExposeFunction("SendEvent",				ObjectManagerLua::SendEventLua);			
+//	pkScript->ExposeFunction("SISetHeartRate",		ObjectManagerLua::SISetHeartRateLua);
+//	pkScript->ExposeFunction("SendEvent",				ObjectManagerLua::SendEventLua);		
 }
 
 void Reset()
@@ -351,29 +351,7 @@ int SIGetSelfIDLua(lua_State* pkLua)
 	return 1;
 }
 
-int SISetHeartRateLua(lua_State* pkLua)
-{
-	if(g_pkScript->GetNumArgs(pkLua) == 2)
-	{
-		double dId;	
-		double dHeartRate;
-		g_pkScript->GetArgNumber(pkLua, 0, &dId);
-		g_pkScript->GetArgNumber(pkLua, 1, &dHeartRate);		
 
-		Entity* pkObject = g_pkObjMan->GetEntityByID((int)dId);
-		
-		if(pkObject)
-		{	
-			P_ScriptInterface* ep = (P_ScriptInterface*)pkObject->GetProperty("P_ScriptInterface");
-			if(ep)
-				ep->SetHeartRate((float)dHeartRate);			
-		}
-	}
-	else
-		cout<<"SetHeartRate[ObjectID, HeartRate] {HeartRate = -1}"<<endl;
-	
-	return 0;
-}
 
 // takes objectID, objectID
 int DistanceToLua(lua_State* pkLua)
