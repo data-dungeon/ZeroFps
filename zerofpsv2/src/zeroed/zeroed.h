@@ -133,7 +133,8 @@ class ZeroEd :public Application , public ZGuiApp {
 		float	m_fDelayTime;
 
 		// snapsize
-		float	m_fSnapSize;
+		Vector3	m_kSnapSize;
+		Vector3 m_kSnapOffset;
 
 		// camera->marker distance
 		float	m_fZoneMarkerDistance;

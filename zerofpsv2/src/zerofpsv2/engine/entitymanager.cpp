@@ -1720,8 +1720,6 @@ bool EntityManager::LoadZones(string strSaveDir )
 		kFile.Read(&kZData.m_kSize, 	sizeof(kZData.m_kSize), 1);
 		kFile.Read(&kZData.m_kPos, 		sizeof(kZData.m_kPos), 1);
 		
-		cout << "version:" << kZData.m_iVersion << endl;
-
 		if ( kZData.m_iVersion > 0 )
 			kFile.Read(&kZData.m_kTestPos, 		sizeof(kZData.m_kTestPos), 1);
 		else

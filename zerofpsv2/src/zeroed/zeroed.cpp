@@ -149,7 +149,8 @@ ZeroEd::ZeroEd(char* aName,int iWidth,int iHeight,int iDepth)
 	m_fZoneMarkerDistance = 15;
 	m_fObjectMarkerDistance = 2;
 
-	m_fSnapSize = 2;
+	m_kSnapSize.Set(2,2,2);
+	m_kSnapOffset.Set(0,0,0);
 	m_kLastZonePos = Vector3(0,0,0);
 
 	m_kTestGraph.SetSize(60,60,100);
@@ -1066,9 +1067,30 @@ void ZeroEd::RunCommand(int cmdid, const CmdArgument* kCommand)
 		case FID_SNAPSIZE:
 			if(kCommand->m_kSplitCommand.size() <= 1)
 				break;
+			if ( kCommand->m_kSplitCommand[1] == "zonesize" )
+				m_kSnapSize = m_kZoneSize;
+			else
+			{
+				fTest = float( atof( kCommand->m_kSplitCommand[1].c_str()) );
+				m_kSnapSize.Set(fTest, fTest, fTest);
+			}
 
-			fTest = float( atof( kCommand->m_kSplitCommand[1].c_str()) );
-			m_fSnapSize = fTest;
+			/*m_kSnapOffset.x = (1 - ( int(m_kZoneMarkerPos.x / m_kSnapSize.x) - (m_kZoneMarkerPos.x / m_kSnapSize.x) ) * m_kSnapSize.x)
+							  ((m_kZoneMarkerPos.x/m_kSnapSize.x) - int(m_kZoneMarkerPos.x/m_kSnapSize.x));
+
+			m_kSnapOffset.y = (1 - ( int(m_kZoneMarkerPos.y / m_kSnapSize.y) - (m_kZoneMarkerPos.y / m_kSnapSize.y) ) * m_kSnapSize.y)
+							  ((m_kZoneMarkerPos.y/m_kSnapSize.y) - int(m_kZoneMarkerPos.y/m_kSnapSize.y));
+
+			m_kSnapOffset.z = (1 - ( int(m_kZoneMarkerPos.z / m_kSnapSize.z) - (m_kZoneMarkerPos.z / m_kSnapSize.z) ) * m_kSnapSize.z)
+							  ((m_kZoneMarkerPos.z/m_kSnapSize.z) - int(m_kZoneMarkerPos.z/m_kSnapSize.z));
+*/
+			//m_kSnapOffset.x = -round2(m_kSnapOffset.x);
+			//m_kSnapOffset.y = -round2(m_kSnapOffset.y);
+			//m_kSnapOffset.z = -round2(m_kSnapOffset.z);
+/*
+			cout << "RealPos:" << m_kZoneMarkerPos.x << endl;
+			cout << "OffsetX:" << m_kSnapOffset.x << endl;
+			cout << "SnapX:" << ((m_kZoneMarkerPos.x/m_kSnapSize.x) - round2(m_kZoneMarkerPos.x/m_kSnapSize.x)) << endl;*/
 			break;
 	
 		case FID_GRIDSIZE:
@@ -1463,9 +1485,9 @@ void ZeroEd::UpdateZoneMarkerPos()
 		
 		if(m_iAutoSnapZoneCorner == -1)
 		{
-			m_kZoneMarkerPos.x = round2(temp.x/m_fSnapSize) * m_fSnapSize;
-			m_kZoneMarkerPos.y = round2(temp.y/m_fSnapSize) * m_fSnapSize;
-			m_kZoneMarkerPos.z = round2(temp.z/m_fSnapSize) * m_fSnapSize;
+			m_kZoneMarkerPos.x = round2(temp.x/m_kSnapSize.x) * m_kSnapSize.x + m_kSnapOffset.x;
+			m_kZoneMarkerPos.y = round2(temp.y/m_kSnapSize.y) * m_kSnapSize.y + m_kSnapOffset.y;
+			m_kZoneMarkerPos.z = round2(temp.z/m_kSnapSize.z) * m_kSnapSize.z + m_kSnapOffset.z;
 		}
 		else
 		{
@@ -1512,9 +1534,9 @@ void ZeroEd::UpdateObjectMakerPos()
 	{
 		Vector3 temp = m_pkActiveCamera->GetPos() + Get3DMousePos(false) * 15;
 	
-		m_kObjectMarkerPos.x = round2(temp.x/m_fSnapSize) * m_fSnapSize;
+		m_kObjectMarkerPos.x = round2(temp.x/m_kSnapSize.x) * m_kSnapSize.x;
 		m_kObjectMarkerPos.y = 0;
-		m_kObjectMarkerPos.z = round2(temp.z/m_fSnapSize) * m_fSnapSize;
+		m_kObjectMarkerPos.z = round2(temp.z/m_kSnapSize.z) * m_kSnapSize.z;
 	}	
 }
 
@@ -1527,10 +1549,10 @@ void ZeroEd::AutoSetZoneSize(string strName)
 		return;
 	}
 
-	int x,y,z;
+	float x,y,z;
 	char szString[256];
 	strcpy(szString, &strName.c_str()[iPos + 1]);
-	sscanf(szString,"%dx%dx%d", &x,&y,&z);
+	sscanf(szString,"%fx%fx%f", &x,&y,&z);
 	m_kZoneSize.Set(float(x),float(y),float(z));
 	//cout << "Setting Size " << x << ", " << y << ", "<< z << endl;
 	
