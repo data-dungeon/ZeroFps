@@ -643,10 +643,17 @@ void P_Container::FindMyItems()
 		{
 			if(!HaveItem(kEntitys[i]->GetEntityID()))
 			{		
+				//check if item is a container if so run update on it
+				if(P_Container* pkContainer = (P_Container*)kEntitys[i]->GetProperty("P_Container"))
+				{
+					pkContainer->Update();
+				}
+			
+			
 				if(!AddItem(kEntitys[i]->GetEntityID(),pkItem->m_iInContainerPosX,pkItem->m_iInContainerPosY))
 				{
 					cout<<"item did not find on its last known container position, adding it anywhere"<<endl;
-					AddItem(kEntitys[i]->GetEntityID());
+					AddItem(kEntitys[i]->GetEntityID());					
 				}
 			}			
 		}

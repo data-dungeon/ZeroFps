@@ -1186,16 +1186,12 @@ void MistServer::OpenContainer(int iContainerID,int iClientID)
 					//check owner
 					if(pkContainerP->GetOwnerID() != -1)
 					{
-						cout<<"this container is owned by someone"<<endl;
-						
 						if(pkContainerP->GetOwnerID() != pkData->m_iCharacterID)
 						{
-							cout<<"and its not me =("<<endl;
+							//cout<<"and its not me =("<<endl;
 							SayToClients("Someone else is using this container",iClientID);
 							return;
 						}
-						else
-							cout<<"and its ME! =)"<<endl;
 					}
 				
 				
