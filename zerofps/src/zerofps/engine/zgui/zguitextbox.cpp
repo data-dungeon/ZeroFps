@@ -101,8 +101,10 @@ bool ZGuiTextbox::Render( ZGuiRender* pkRenderer )
 }
 
 
-bool ZGuiTextbox::ProcessKBInput(unsigned long nKey)
+bool ZGuiTextbox::ProcessKBInput(int nKey)
 {
+	printf("%i\n", nKey);
+
 	if(m_iCursorPos >= m_iCurrMaxText-2 || m_iCursorPos == 0)
 		ResizeTextBuffer(10);
 

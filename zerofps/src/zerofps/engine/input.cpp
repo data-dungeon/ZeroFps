@@ -345,6 +345,11 @@ int Input::GetQueuedKey()
 		if(!m_aPressedKeys.empty()){
 			value = m_aPressedKeys.front();
 			m_aPressedKeys.pop();
+
+			if(value < 0)
+			{
+				printf("GetQueuedKey: value < 0");
+			}
 			return value;
 		}
 	}

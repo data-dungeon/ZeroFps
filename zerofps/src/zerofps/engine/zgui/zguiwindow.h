@@ -62,7 +62,7 @@ public:
 
 	virtual void SetFocus()	 { m_bHaveFocus = true;  }
 	virtual void KillFocus() { m_bHaveFocus = false; }
-	virtual bool ProcessKBInput(unsigned long nKey) { return false; }
+	virtual bool ProcessKBInput(int nKey) { return false; }
 	virtual bool IsInternalControl() { return m_bInternalControl; } // tex knappen på en scrollbar.
 	virtual void CreateInternalControls() { /* do nothing */ }
 

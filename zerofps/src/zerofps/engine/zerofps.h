@@ -107,6 +107,7 @@ class ENGINE_API ZeroFps : public ZFObject {
 		bool m_bClientMode;
 		bool m_bConsoleMode;
 		bool m_bDrawDevList;
+		bool m_bGuiMode;
 		
 		
 		ZeroFps(void);		
@@ -120,6 +121,7 @@ class ENGINE_API ZeroFps : public ZFObject {
 		void Swap(void);								//swap gl buffers
 		
 		void ToggleFullScreen(void);
+		void ToggleGui(void);
 		
 		inline float GetTicks(void) {return float((SDL_GetTicks()/1000.0));};
 		inline float GetFrameTime() {return float((m_fFrameTime/1000.0));};

@@ -7,6 +7,8 @@
 #include "zguiwindow.h"
 #include "../../render/zguirenderer.h"
 #include "../input.h"
+#include "../../basic/zfassert.h"
+#include "../zerofps.h"
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
@@ -14,9 +16,10 @@
 
 ZGui::ZGui()
 {
-	m_bActive = true;
+	m_bActive = false;
 	m_pkInput = static_cast<Input*>(g_ZFObjSys.GetObjectPtr("Input"));
 	m_pkRenderer = static_cast<ZGuiRender*>(g_ZFObjSys.GetObjectPtr("ZGuiRender"));
+	m_pkZeroFps = static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
 	m_pkActiveMainWin = NULL;
 	m_pkPrevMainWnd = NULL;
 //	m_pkFocusWnd = NULL;
@@ -43,9 +46,7 @@ bool ZGui::RegisterWindow(ZGuiWnd* pkNewWindow)
 
 	if(GetWindow(pkNewWindow->GetID()))
 	{
-		// Ful hack...
-		while(1)
-			printf("Dubbel trubbel!");
+		ZFAssert(0, "Tried to register a window with a ID that already exist.");
 	}
 
 	pkNewWindow->SetGUI(this);
@@ -348,9 +349,7 @@ bool ZGui::OnMouseUpdate()
 
 	// Är vänster musknapp nertryckt?
 	if(bLeftButtonDown == true && ZGuiWnd::m_pkWndClicked != NULL)
-	{
-		printf("%i\n", m_pkActiveMainWin->iID);
-		
+	{	
 		// Skall fönstret flyttas?
 		if(!(ZGuiWnd::m_pkWndClicked->GetMoveArea() == ZGuiWnd::m_pkWndClicked->GetScreenRect()))
 		{
@@ -439,12 +438,19 @@ bool ZGui::OnMouseUpdate()
 
 bool ZGui::OnKeyUpdate()
 {
-	unsigned long nKey = m_pkInput->GetQueuedKey();
+	int iKey = m_pkInput->GetQueuedKey();
 
-	if(ZGuiWnd::m_pkFocusWnd != NULL)
+	if(iKey >= 0)
 	{
-		ZGuiWnd::m_pkFocusWnd->ProcessKBInput(nKey);
-		return true;
+		if(iKey == KEY_F10)
+		{
+			m_pkZeroFps->ToggleGui();
+		}
+		else
+		if(ZGuiWnd::m_pkFocusWnd != NULL)
+		{
+			ZGuiWnd::m_pkFocusWnd->ProcessKBInput(iKey);
+		}
 	}
 
 	return true;
@@ -459,6 +465,8 @@ void ZGui::SetFocus(ZGuiWnd* pkWnd)
 		if(ZGuiWnd::m_pkFocusWnd)
 			ZGuiWnd::m_pkFocusWnd->KillFocus();
 	}
+
+	m_pkInput->SetInputEnabled(true);
 
 	ZGuiWnd::m_pkFocusWnd = pkWnd;
 	ZGuiWnd::m_pkFocusWnd->SetFocus();
@@ -475,14 +483,21 @@ void ZGui::SetCursor(int TextureID, int MaskTextureID, int Width, int Height)
 	m_pkCursor->SetPos(x,y);
 }
 
+bool ZGui::IsActive()
+{
+	return m_bActive;
+}
+
 bool ZGui::Update()
 {
-	if(m_bActive)
+	if(m_bActive == true)
 	{
-		if(!OnMouseUpdate())
-			return false;
-		if(!OnKeyUpdate())
-			return false;
+		m_pkInput->SetInputEnabled(true);
+
+		OnMouseUpdate();
+		OnKeyUpdate();
+
+		m_pkInput->SetInputEnabled(false);
 
 		Render();
 	}
@@ -490,16 +505,10 @@ bool ZGui::Update()
 	return true;
 }
 
-bool ZGui::ToogleGui()
+bool ZGui::Activate(bool bActive)
 {
-	m_bActive = !m_bActive;
+	m_bActive = bActive;
 	ShowCursor(m_bActive);
-
-	if(m_bActive == false)
-		SDL_ShowCursor(SDL_ENABLE);
-	else
-		SDL_ShowCursor(SDL_DISABLE);
-
 	return m_bActive;
 }
 

@@ -285,7 +285,6 @@ ZGuiWnd* ZGuiWnd::Find(int x, int y)
 
 	if( (pkFind==NULL) && m_kArea.Inside(x,y))
 	{
-//		printf("find id: %i\n", this->GetID());
 		return this;
 	}
 	else

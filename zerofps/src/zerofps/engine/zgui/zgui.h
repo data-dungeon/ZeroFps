@@ -30,6 +30,7 @@ using namespace std;
 class ZGuiControl;
 class ZGuiRender;
 class Input;
+class ZeroFps;
 
 /*
  * Window Messages
@@ -47,7 +48,7 @@ class ENGINE_API ZGui
 {
 public:
 	void ShowMainWindow(int iID, bool bShow);
-	bool ToogleGui();
+	bool Activate(bool bActive);
 	void SetCursor(int TextureID, int MaskTextureID=-1, int Width=16, int Height=16);
 	void ShowCursor(bool bShow) { m_pkCursor->Show(bShow); }
 
@@ -59,6 +60,7 @@ public:
 
 	//bool Initialize(int uiScreenWidth, int uiScreenHeight, Input* pkInput);
 	bool Update();
+	bool IsActive();
 
 	ZGuiWnd* GetWindow(unsigned int iID);
 
@@ -114,6 +116,8 @@ private:
 	int m_pnCursorRangeDiffX, m_pnCursorRangeDiffY;
 	ZGuiSkin* m_pkCursorSkin;
 	bool m_bActive;
+
+	ZeroFps* m_pkZeroFps;
 };
 
 #endif // !defined(AFX_GUI_H__9DDC0983_F616_469F_BDE9_BCC084BEB4BE__INCLUDED_)

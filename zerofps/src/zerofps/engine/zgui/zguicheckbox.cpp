@@ -68,8 +68,6 @@ bool ZGuiCheckbox::Notify(ZGuiWnd* pkWnd, int iCode)
 		}
 	}
 
-	printf("Hej från ZGuiCheckbox::Notify\n");
-
 	m_pkParent->Notify(this, iCode); 
 
 	return false;

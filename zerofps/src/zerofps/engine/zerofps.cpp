@@ -36,6 +36,7 @@ ZeroFps::ZeroFps(void)
 	m_bClientMode=true;
 	m_bConsoleMode=false;
 	m_bDrawDevList=true;
+	m_bGuiMode=false;
 	
 	akCoreModells.reserve(25);
 
@@ -168,18 +169,24 @@ void ZeroFps::MainLoop(void) {
 				m_pkInput->SetInputEnabled(false);
 			else
 				m_pkInput->SetInputEnabled(true);
+
+			if(m_bConsoleMode == false)
+			{
+				if(m_bGuiMode)
+					m_pkInput->SetInputEnabled(false);
+				else
+					m_pkInput->SetInputEnabled(true);
+			}
 			
 			//run application main loop
 			m_pkApp->OnIdle();				
-			
 			
 			if(m_pkInput->Pressed(KEY_TAB))
 			{			
 				m_bConsoleMode=true;		
 				m_pkInput->Reset();
 			}
-			
-			
+						
 /*			
 			//this changes mode to console
 			if(m_pkInput->Pressed(TAB)){
@@ -205,17 +212,12 @@ void ZeroFps::MainLoop(void) {
 			if(m_pkInput->Pressed(KEY_F11))
 				ToggleFullScreen();		
 			
-/*			if(m_pkInput->GetQueuedKey() == F10)
-				m_pkGui->ToogleGui();*/
-
-						
 			//update all normal propertys
 //				m_pkObjectMan->Update(PROPERTY_TYPE_ALL,PROPERTY_SIDE_ALL,false);
 			m_pkObjectMan->Update(PROPERTY_TYPE_NORMAL,PROPERTY_SIDE_ALL,false);
 //				m_pkObjectMan->Update(PROPERTY_TYPE_RENDER,PROPERTY_SIDE_ALL,false);				
 			DevPrintf("Num Objects: %d", m_pkObjectMan->GetNumOfObjects());
 
-	
 			m_pkPhysEngine->Update();
 
 			//update all collisions
@@ -330,6 +332,24 @@ void ZeroFps::Swap(void) {
 void ZeroFps::ToggleFullScreen(void)
 {
 	SDL_WM_ToggleFullScreen(m_pkScreen);
+}
+
+void ZeroFps::ToggleGui(void)
+{
+	m_bGuiMode = !m_bGuiMode;
+	
+	if(m_bGuiMode == true)
+	{
+		SDL_ShowCursor(SDL_DISABLE);
+		m_bDrawDevList = false;
+		m_pkGui->Activate(true);
+	}
+	else
+	{
+		SDL_ShowCursor(SDL_ENABLE);
+		m_bDrawDevList = true;
+		m_pkGui->Activate(false);
+	}
 }
 
 

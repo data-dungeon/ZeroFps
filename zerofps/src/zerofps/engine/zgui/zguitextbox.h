@@ -24,7 +24,7 @@ public:
 	bool Notify(ZGuiWnd* pkWnd, int iCode);
 	void CreateInternalControls();
 	virtual bool Render( ZGuiRender* renderer );
-	bool ProcessKBInput(unsigned long nKey);
+	bool ProcessKBInput(int nKey);
 	void SetFocus();
 	void KillFocus();
 	void SetText(char* strText);
