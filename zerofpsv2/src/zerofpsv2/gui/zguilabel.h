@@ -21,6 +21,7 @@ public:
 	bool Notify(ZGuiWnd* pkWnd, int iCode);
 
 	bool m_bCenterTextHorz;
+   bool m_bMultiLine;
 };
 
 #endif

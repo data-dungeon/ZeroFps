@@ -179,6 +179,9 @@
 				RelativePath=".\zshader.cpp">
 			</File>
 			<File
+				RelativePath=".\zshadersystem.cpp">
+			</File>
+			<File
 				RelativePath=".\zvprogram.cpp">
 			</File>
 		</Filter>
@@ -214,6 +217,9 @@
 			</File>
 			<File
 				RelativePath=".\zshader.h">
+			</File>
+			<File
+				RelativePath=".\zshadersystem.h">
 			</File>
 			<File
 				RelativePath=".\zvprogram.h">

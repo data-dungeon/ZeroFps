@@ -23,11 +23,11 @@ void ZeroEd::SetupGuiEnviroment()
 	m_pkGui->GetToolTip()->AddToolTip(GetWnd("OpenWorkTabButton"),"Worktab");
 	m_pkGui->GetToolTip()->AddToolTip(GetWnd("RotateZoneModellButton"),"Rotate Zone");
    m_pkGui->GetToolTip()->AddToolTip(GetWnd("DeleteZoneButton"),"Delete Zone");
-   m_pkGui->GetToolTip()->AddToolTip(GetWnd("AddToScriptBn"),"Create Script From Curent");
+   m_pkGui->GetToolTip()->AddToolTip(GetWnd("AddToScriptBn"),"Create Script From Current");
    m_pkGui->GetToolTip()->AddToolTip(GetWnd("PlaceongroundButton"),"Place object on ground");
    m_pkGui->GetToolTip()->AddToolTip(GetWnd("DeleteObjectButton"),"Delete object");
    m_pkGui->GetToolTip()->AddToolTip(GetWnd("RotateObjectButton"),"Rotate object");
-   m_pkGui->GetToolTip()->AddToolTip(GetWnd("DisableFreeZoneBuildBn"),"Toogle Free Zone Build");
+   m_pkGui->GetToolTip()->AddToolTip(GetWnd("DisableFreeZoneBuildBn"),"Free Zone Build");
    m_pkGui->GetToolTip()->AddToolTip(GetWnd("RemovePropertyBn"),"Remove Selected Property");
    m_pkGui->GetToolTip()->AddToolTip(GetWnd("OpenAllPropertyWnd"),"Add New Property");
    m_pkGui->GetToolTip()->AddToolTip(GetWnd("OpenEditPropertyWnd"),"Edit Selected Property");

@@ -16,6 +16,7 @@ ZGuiLabel::ZGuiLabel(Rect kRectangle, ZGuiWnd* pkParent, bool bVisible, int iID)
 {
 	m_bCenterTextHorz = false;
 	m_bEnabled = false; // labels are static by default
+   m_bMultiLine = false;
 	RemoveWindowFlag(WF_CANHAVEFOCUS); // fönster har focus by default
 	RemoveWindowFlag(WF_TOPWINDOW); // kan inte användas som mainwindow
 }
@@ -57,7 +58,7 @@ bool ZGuiLabel::Render( ZGuiRender* pkRenderer )
 		{
 			pkRenderer->SetFont(m_pkFont);
 
-			if(m_bCenterTextHorz)
+			if(!m_bMultiLine && m_bCenterTextHorz)
 			{
 				int tw = m_pkFont->GetLength(m_strText);
 				r.Left = r.Left + r.Width()/2 - tw/2;
@@ -65,7 +66,39 @@ bool ZGuiLabel::Render( ZGuiRender* pkRenderer )
 		}
 
 		//pkRenderer->RenderText(m_strText, r, -1, 0, false, iLetters, iRows, m_afTextColor);
-		pkRenderer->RenderText(m_strText, r, -1, m_afTextColor);
+		if(m_pkFont && m_bMultiLine)
+      {
+         int oka=0;
+         int iNumRows = 0;
+         int iCurrentLength=0;
+         int iTextLength = strlen(m_strText);
+         char* temp = new char[iTextLength+1];
+
+         r.Bottom = r.Top + m_pkFont->m_iRowHeight;
+
+         for(int i=0; i<iTextLength; i++)
+         {
+            temp[oka] = m_strText[i];
+            iCurrentLength += m_pkFont->m_aChars[temp[oka]].iSizeX;
+            oka++;
+
+            if(iCurrentLength >= r.Width() || m_strText[i] == '\n' || i == iTextLength-1)
+            {
+               temp[oka] = 0;
+               pkRenderer->RenderText(temp, r, -1, m_afTextColor);      
+               
+               r.Top += m_pkFont->m_iRowHeight;
+               r.Bottom = r.Top + m_pkFont->m_iRowHeight;
+
+               iCurrentLength=0;
+               oka=0;
+            }
+         }
+
+         delete[] temp;
+      }
+      else
+         pkRenderer->RenderText(m_strText, r, -1, m_afTextColor);
 	}
 	return true;
 } 

@@ -20,7 +20,7 @@ using namespace std;
 
 
 
-class ZShaderSystem : public ZFSubSystem
+class RENDER_API ZShaderSystem : public ZFSubSystem
 {
 	private:
 		TextureManager*	m_pkTexMan;

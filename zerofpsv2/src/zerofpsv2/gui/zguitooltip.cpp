@@ -5,6 +5,7 @@
 #include "zguitooltip.h"
 #include "zgui.h"
 #include "zguiresourcemanager.h"
+#include "../basic/zguifont.h"
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
@@ -22,6 +23,7 @@ ZGuiToolTip::ZGuiToolTip(float fDisplayTime) : m_fDisplayTime(fDisplayTime)
 
 	m_pkToolTipWnd = new ZGuiLabel(Rect(300,300,400,400),  NULL, false, 432342);
 	m_pkToolTipWnd->SetSkin(new ZGuiSkin( 255, 0, 0, 255, 0, 0,  2));
+   ((ZGuiLabel*)m_pkToolTipWnd)->m_bMultiLine = true;
 }
 
 ZGuiToolTip::~ZGuiToolTip()
@@ -58,9 +60,50 @@ void ZGuiToolTip::Update(int mouse_x, int mouse_y, bool bMouseClick, float fGame
 			if(pkWnd->GetScreenRect().Inside(mouse_x,mouse_y))
 			{
 				m_pkToolTipWnd->Show(); 
-				m_pkToolTipWnd->SetText((char*)m_vkWindowList[i].strText.c_str(), true);
+				m_pkToolTipWnd->SetText((char*)m_vkWindowList[i].strText.c_str(), false);
 
 				Rect rc = pkWnd->GetScreenRect();
+
+
+
+
+               int iHeight=0;
+
+               // Change height...
+               int iFontHeight = 16;
+               if(m_pkToolTipWnd->GetFont())
+                  iFontHeight = m_pkToolTipWnd->GetFont()->m_iRowHeight;
+
+               int oka = 0;
+               int iNumRows = 0;
+               int iCurrentLength=0, max_length=0;
+               int iTextLength = strlen(m_pkToolTipWnd->GetText());
+               char* temp = new char[iTextLength+1];
+
+               for(int i=0; i<iTextLength; i++)
+               {
+                  temp[oka] = m_pkToolTipWnd->GetText()[i];
+                  iCurrentLength += m_pkToolTipWnd->GetFont()->m_aChars[temp[oka]].iSizeX;
+                  oka++;
+
+                  if(m_pkToolTipWnd->GetText()[i] == '\n' || i == iTextLength-1)
+                  {
+                     if(max_length < iCurrentLength)
+                        max_length = iCurrentLength;
+
+                     iHeight += iFontHeight;
+                     iCurrentLength=0;
+                     oka=0;
+                  }
+               }
+
+               delete[] temp;
+
+               m_pkToolTipWnd->Resize(max_length, iHeight); 
+
+
+
+
 
 				int w = m_pkToolTipWnd->GetScreenRect().Width();
 				int h = m_pkToolTipWnd->GetScreenRect().Height();
@@ -75,6 +118,9 @@ void ZGuiToolTip::Update(int mouse_x, int mouse_y, bool bMouseClick, float fGame
 					y = screen_h-h-2;
 
 				m_pkToolTipWnd->SetPos( x, y, true, true);
+
+
+
 
 				if(m_pkLastToolTipWnd != pkWnd)
 				{
