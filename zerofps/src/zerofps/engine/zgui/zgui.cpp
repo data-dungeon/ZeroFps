@@ -2,8 +2,6 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-// test
-
 #include "../../basic/rect.h"
 #include "zgui.h"
 #include "zguiwindow.h"
@@ -11,6 +9,7 @@
 #include "../input.h"
 #include "../../basic/zfassert.h"
 #include "../zerofps.h"
+#include <typeinfo>
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
@@ -76,39 +75,54 @@ bool ZGui::UnregisterWindow(ZGuiWnd* pkWindow)
 	if(pkWindow == NULL)
 		return false;
 
+	// Ta fösrt bort eventuellt main window
+	for( list<MAIN_WINDOW*>::iterator itMain = m_pkMainWindows.begin();
+		 itMain != m_pkMainWindows.end(); itMain++ )
+		 {
+			if( (*itMain)->pkWnd == pkWindow)
+			{
+				if(m_pkActiveMainWin == (*itMain))
+					m_pkActiveMainWin = NULL;
+
+				delete (*itMain);
+				m_pkMainWindows.erase(itMain);	
+				
+				MAIN_WINDOW* best = NULL;
+				int heighest = -1;
+				for( list<MAIN_WINDOW*>::iterator itMain2 = m_pkMainWindows.begin();
+					 itMain2 != m_pkMainWindows.end(); itMain2++ )
+					 {
+						if((*itMain2)->iZValue > heighest && 
+							(*itMain2)->pkWnd->IsVisible())
+						{
+							best = (*itMain2);
+							heighest = best->iZValue;
+						}
+					 }
+
+				if(best)
+					SetFocus(best->pkWnd);
+
+				break;
+			}
+		 }
+
 	map<int, ZGuiWnd*>::iterator itWnd;
 	itWnd = m_pkWindows.find(pkWindow->GetID());
-
-	printf("%i\n", m_pkWindows.size());
 
 	if(itWnd != m_pkWindows.end())
 	{
 		m_pkWindows.erase(itWnd);
 
-		cout << "Removing window!" << endl;
-
 		ZGuiWnd::ResetStaticClickWnds(pkWindow);
 
 		delete pkWindow;
+		pkWindow = NULL;
 	}
 	else
 	{
 		cout << "Failed to remove window!" << endl;
 	}
-
-	// Ta oxå bort eventuellt main window
-	for( list<MAIN_WINDOW*>::iterator itMain = m_pkMainWindows.begin();
-		 itMain != m_pkMainWindows.end(); itMain++ )
-		 {
-			if( (*itMain)->pkWin == pkWindow)
-			{
-				cout << "Removing main window!" << endl;
-
-				delete (*itMain);
-				m_pkMainWindows.erase(itMain);				
-				break;
-			}
-		 }
 
 	return true;
 }
@@ -122,10 +136,8 @@ bool ZGui::AddMainWindow(int iMainWindowID, ZGuiWnd* pkWindow, callback cb, bool
 	MAIN_WINDOW* pkNewMainWindow = new MAIN_WINDOW;
 	pkNewMainWindow->iID = iMainWindowID;
 	pkNewMainWindow->pkCallback = cb;
-	pkNewMainWindow->pkWin = pkWindow;
-
-	static int iZValueCounter;
-	pkNewMainWindow->iZValue = iZValueCounter++;
+	pkNewMainWindow->pkWnd = pkWindow;
+	pkNewMainWindow->iZValue = 0;
 
 	m_pkMainWindows.push_back(pkNewMainWindow);
 
@@ -138,54 +150,10 @@ bool ZGui::AddMainWindow(int iMainWindowID, ZGuiWnd* pkWindow, callback cb, bool
 	
 	for(WIN w=kChildList.begin(); 
 		w != kChildList.end(); w++)
-	{ 
 		RegisterWindow((*w));
-	}
 
 	if(bSetAsActive)
-	{
-		m_pkActiveMainWin = pkNewMainWindow;
-		//ZGuiWnd::m_pkFocusWnd = m_pkActiveMainWin->pkWin;
-		SetFocus(m_pkActiveMainWin->pkWin);
-	}
-
-	return true;
-}
-
-bool ZGui::RemoveMainWindow(int iMainWindowID)
-{
-
-
-
-	return 1;
-
-
-
-
-	for( list<MAIN_WINDOW*>::iterator itMain = m_pkMainWindows.begin();
-		 itMain != m_pkMainWindows.end(); itMain++ )
-		 {
-			if( (*itMain)->iID == iMainWindowID)
-			{
-				UnregisterWindow( (*itMain)->pkWin );
-				delete (*itMain)->pkWin;
-				(*itMain)->pkWin = NULL;
-
-				delete (*itMain);
-				m_pkMainWindows.erase(itMain);				
-				break;
-			}
-		 }
-
-	m_pkActiveMainWin = NULL;
-	ZGuiWnd::m_pkPrevWndUnderCursor = NULL;
-	ZGuiWnd::m_pkPrevWndClicked = NULL;
-	ZGuiWnd::m_pkFocusWnd = NULL;
-	ZGuiWnd::m_pkWndClicked = NULL;
-	ZGuiWnd::m_pkWndUnderCursor = NULL;
-
-	printf("hej");
-
+		SetFocus(pkNewMainWindow->pkWnd);
 
 	return true;
 }
@@ -212,7 +180,7 @@ ZGuiWnd* ZGui::GetMainWindow(int iID)
 		 it != m_pkMainWindows.end(); it++ )
 		 {
 			if( (*it)->iID == iID)
-				return (*it)->pkWin;
+				return (*it)->pkWnd;
 		 }
 
 	return NULL;
@@ -226,23 +194,9 @@ bool ZGui::Render()
 	m_pkRenderer->SetFont(GetBitmapFont(ZG_DEFAULT_GUI_FONT));
 	
 	// Blit windows	with lowest z order first.
-	int l_iNumWindows = m_pkMainWindows.size();
-	int l_iCurrZOrder = 0;
-
-	while(1)
-	{
-		for( list<MAIN_WINDOW*>::iterator it = m_pkMainWindows.begin();
-		 it != m_pkMainWindows.end(); it++ )
-			if((*it)->iZValue == l_iCurrZOrder)
-			{
-				(*it)->pkWin->Render(m_pkRenderer);
-				l_iCurrZOrder++;
-				break;
-			}
-
-			if(l_iCurrZOrder > l_iNumWindows-1 )
-				break;
-	}
+	for( list<MAIN_WINDOW*>::reverse_iterator it = m_pkMainWindows.rbegin();
+	 it != m_pkMainWindows.rend(); it++ )
+			(*it)->pkWnd->Render(m_pkRenderer);
 
 	// Render a yellow frame around the window that have focus.
 	if(ZGuiWnd::m_pkFocusWnd)
@@ -274,7 +228,7 @@ bool ZGui::SetMainWindowCallback( int iMainWindowID, callback cb )
 	return true;	
 }
 
-ZGui::MAIN_WINDOW* ZGui::ChangeMainWindow(int x, int y)
+ZGui::MAIN_WINDOW* ZGui::FindMainWnd(int x, int y)
 {
 	MAIN_WINDOW* best = m_pkActiveMainWin;
 
@@ -282,9 +236,9 @@ ZGui::MAIN_WINDOW* ZGui::ChangeMainWindow(int x, int y)
 	for( list<MAIN_WINDOW*>::iterator it = m_pkMainWindows.begin();
 		 it != m_pkMainWindows.end(); it++ )
 		 {
-			if( (*it)->pkWin->IsVisible() && (*it)->pkWin->GetScreenRect().Inside(x,y) )
+			if( (*it)->pkWnd->IsVisible() && (*it)->pkWnd->GetScreenRect().Inside(x,y) )
 			{
-				if( best->pkWin->GetScreenRect().Inside(x,y) )
+				if( best->pkWnd->GetScreenRect().Inside(x,y) )
 				{
 					if( (*it)->iZValue > best->iZValue )
 						best = (*it);
@@ -297,32 +251,6 @@ ZGui::MAIN_WINDOW* ZGui::ChangeMainWindow(int x, int y)
 		 }	
 
 	return best;
-}
-
-void ZGui::RearrangeWnds(MAIN_WINDOW* p_iIDWndToSelect)
-{
-	// Har samma fönster valts är det bara att returnera.
-	if(m_pkActiveMainWin->iID == p_iIDWndToSelect->iID)
-		return;
-
-	MAIN_WINDOW* pActiveWnd = m_pkActiveMainWin;
-	MAIN_WINDOW* pWndToBeActivated = p_iIDWndToSelect;
-
-	// Minska Z-order på alla fönster som har högre z-order än pWndToBeActivated
-	int Min = pWndToBeActivated->iZValue;	
-
-	for( list<MAIN_WINDOW*>::iterator it = m_pkMainWindows.begin();
-		 it != m_pkMainWindows.end(); it++ )
-		 {
-			if((*it)->iZValue > Min)
-				(*it)->iZValue = (*it)->iZValue-1;
-		 }
-
-	m_pkPrevMainWnd = m_pkActiveMainWin;
-	m_pkActiveMainWin = p_iIDWndToSelect;
-
-	// Sätt z-order till max på det fönster som har valts.
-	m_pkActiveMainWin->iZValue = m_pkMainWindows.size()-1;
 }
 
 bool ZGui::OnMouseUpdate()
@@ -339,15 +267,16 @@ bool ZGui::OnMouseUpdate()
 
 	// Skall vi byta main window?
 	MAIN_WINDOW* wnd;
-	if((bLeftButtonDown && m_bLeftButtonDown==false) && (wnd = ChangeMainWindow(x,y)))
+	if((bLeftButtonDown && m_bLeftButtonDown==false) && (wnd = FindMainWnd(x,y)))
 	{
-		RearrangeWnds(wnd);
+		if(wnd != m_pkActiveMainWin)
+		{
+			cout << "apa" << endl;
+			SetFocus(wnd->pkWnd);
+		}
 	}
 
-	ZGuiWnd* pkFocusWindow = m_pkActiveMainWin->pkWin->Find(x, y);
-
-	/*if(pkFocusWindow == NULL)
-		pkFocusWindow = m_pkActiveMainWin->pkWin;*/
+	ZGuiWnd* pkFocusWindow = m_pkActiveMainWin->pkWnd->Find(x, y);
 
 	ZGuiWnd::m_pkWndUnderCursor = pkFocusWindow;
 
@@ -362,8 +291,9 @@ bool ZGui::OnMouseUpdate()
 			
 			if(ZGuiWnd::m_pkWndClicked->GetMoveArea() == rc)
 			{
-				m_iHighestZWndValue++;
-				ZGuiWnd::m_pkWndClicked->SetZValue(m_iHighestZWndValue);
+				static long iHighestZWndValue=10;
+				iHighestZWndValue++;
+				ZGuiWnd::m_pkWndClicked->SetZValue(iHighestZWndValue);
 				ZGuiWnd* pkParent = ZGuiWnd::m_pkWndClicked->GetParent();
 				
 				if(pkParent) 
@@ -434,7 +364,7 @@ bool ZGui::OnMouseUpdate()
 				// Notify the main window that the window have been clicked
 				int* pkParams = new int[1];
 				pkParams[0] = ZGuiWnd::m_pkWndClicked->GetID(); // control id
-				m_pkActiveMainWin->pkCallback(m_pkActiveMainWin->pkWin, ZGM_COMMAND, 1, pkParams);
+				m_pkActiveMainWin->pkCallback(m_pkActiveMainWin->pkWnd, ZGM_COMMAND, 1, pkParams);
 				delete[] pkParams;
 
 				ZGuiWnd::m_pkWndClicked = NULL;
@@ -487,7 +417,7 @@ bool ZGui::OnKeyUpdate()
 		int* pkParams = new int[1];
 		int id = itKey->second->GetID(); // control id
 		pkParams[0] = id;
-		m_pkActiveMainWin->pkCallback(m_pkActiveMainWin->pkWin, ZGM_COMMAND, 1, pkParams);
+		m_pkActiveMainWin->pkCallback(m_pkActiveMainWin->pkWnd, ZGM_COMMAND, 1, pkParams);
 		delete[] pkParams;
 	}
 
@@ -538,18 +468,53 @@ bool ZGui::OnKeyUpdate()
 void ZGui::SetFocus(ZGuiWnd* pkWnd)
 {
 	// Kolla först om detta fönster kan ha keyboard fokus.
-	if( pkWnd->GetWindowFlag( WF_CANHAVEFOCUS ) )
-	{
-		// Hitta det fönster som tidigare hade fokus och 
-		// ta bort fokuset från denna.
+	if( !pkWnd->GetWindowFlag( WF_CANHAVEFOCUS ) || pkWnd == NULL)
+		return;
+	
+	// Hitta det fönster som tidigare hade fokus och 
+	// ta bort fokuset från denna.
+	if(ZGuiWnd::m_pkFocusWnd)
+	{		
 		if(ZGuiWnd::m_pkFocusWnd)
-		{		
-			if(ZGuiWnd::m_pkFocusWnd)
-				ZGuiWnd::m_pkFocusWnd->KillFocus();
-		}
+			ZGuiWnd::m_pkFocusWnd->KillFocus();
+	}
 
-		ZGuiWnd::m_pkFocusWnd = pkWnd;
-		ZGuiWnd::m_pkFocusWnd->SetFocus();
+	ZGuiWnd::m_pkFocusWnd = pkWnd;
+	ZGuiWnd::m_pkFocusWnd->SetFocus();
+	
+	if(typeid(*pkWnd)==typeid(ZGuiWnd))
+	{
+		for( list<MAIN_WINDOW*>::iterator it = m_pkMainWindows.begin();
+			 it != m_pkMainWindows.end(); it++ )
+			 if((*it)->pkWnd == pkWnd)
+			 {
+				 int iPreviusActiveMainWndID = -1;
+				 bool bActiveMainWndHaveChanged = false;
+
+				 if( m_pkActiveMainWin == NULL || 
+					 m_pkActiveMainWin->pkWnd != pkWnd)
+					 bActiveMainWndHaveChanged = true;
+
+				 if(m_pkActiveMainWin)
+					 iPreviusActiveMainWndID = m_pkActiveMainWin->iID;
+
+				 m_pkActiveMainWin = (*it);
+
+				 if(bActiveMainWndHaveChanged)
+				 {						 
+					 m_iHighestZWndValue++; printf("%i\n", m_iHighestZWndValue);
+					 m_pkActiveMainWin->iZValue = m_iHighestZWndValue;
+					 m_pkMainWindows.sort(SortZCmp);
+
+					 // Notify the a new window have focus
+					int* pkParams = new int[1];
+					pkParams[0] = iPreviusActiveMainWndID;
+					m_pkActiveMainWin->pkCallback(pkWnd,ZGM_SETFOCUS,1,pkParams);
+					delete[] pkParams;
+				 }
+
+				 break;
+			 }
 	}
 }
 
@@ -592,7 +557,6 @@ bool ZGui::Activate(bool bActive)
 	return m_bActive;
 }
 
-
 void ZGui::ShowMainWindow(int iID, bool bShow)
 {
 	for( list<MAIN_WINDOW*>::iterator it = m_pkMainWindows.begin();
@@ -602,30 +566,33 @@ void ZGui::ShowMainWindow(int iID, bool bShow)
 			{
 				if(bShow == true)
 				{
-					(*it)->pkWin->Show();
-					RearrangeWnds((*it));
+					(*it)->pkWnd->Show();
+					SetFocus((*it)->pkWnd);
 				}
 				else
 				{
-					if(m_pkPrevMainWnd)
-					{
-						if(m_pkPrevMainWnd->pkWin->IsVisible())
-							RearrangeWnds(m_pkPrevMainWnd);
-					}
-					else
-					{
-						if(m_pkMainWindows.size() > 0)
-							m_pkActiveMainWin = m_pkMainWindows.front();
-					}
+					(*it)->pkWnd->Hide();
 
-					(*it)->pkWin->Hide();
+					m_pkMainWindows.sort(SortZCmp);
+
+					MAIN_WINDOW* best = NULL;
+					int heighest = -1;
+					for( list<MAIN_WINDOW*>::iterator itMain2 = m_pkMainWindows.begin();
+						 itMain2 != m_pkMainWindows.end(); itMain2++ )
+							if((*itMain2)->iZValue > heighest && 
+								(*itMain2)->pkWnd->IsVisible())
+							{
+								best = (*itMain2);
+								heighest = best->iID;
+							}
+
+					if(best)
+						SetFocus(best->pkWnd);
 				}
 
 				break;
 			}
 		 }
-
-	SetFocus(m_pkActiveMainWin->pkWin);
 }
 
 bool ZGui::IgnoreKey(int Key)

@@ -6,6 +6,7 @@
 #include "../../render/zguirenderer.h"
 #include "zguilabel.h"
 #include "../../basic/zguifont.h"
+#include "zguiradiobutton.h"
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
@@ -29,6 +30,7 @@ ZGuiCheckbox::~ZGuiCheckbox()
 {
 	ResetStaticClickWnds(m_pkLabel);
 	delete m_pkLabel;
+	m_pkLabel = NULL;
 }
 
 bool ZGuiCheckbox::Render( ZGuiRender* pkRenderer )

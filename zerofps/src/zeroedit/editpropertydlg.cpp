@@ -41,7 +41,7 @@ EditPropertyDlg::EditPropertyDlg(Gui* pkGui, PropertyFactory* pf, ObjectManager*
 
 EditPropertyDlg::~EditPropertyDlg()
 {
-	m_pkZGui->RemoveMainWindow(ID_PROPERTY_WND_MAIN);
+
 }
 
 ZGuiWnd* EditPropertyDlg::Create(int x, int y, int w, int h)

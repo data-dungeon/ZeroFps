@@ -73,6 +73,8 @@ ZGuiWnd::ZGuiWnd(Rect kRectangle, ZGuiWnd* pkParent, bool bVisible, int iID)
 
 ZGuiWnd::~ZGuiWnd()
 {
+	ResetStaticClickWnds(this);
+
 	ZGuiWnd* pkParent = GetParent();
 	if(pkParent)
 	{
@@ -91,10 +93,6 @@ ZGuiWnd::~ZGuiWnd()
 				(*w) = NULL;
 			}
 		 }
-
-	ResetStaticClickWnds(this);
-
-
 
 	m_kChildList.clear();
 }

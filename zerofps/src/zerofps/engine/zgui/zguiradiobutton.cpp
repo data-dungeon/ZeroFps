@@ -20,19 +20,36 @@ ZGuiRadiobutton::ZGuiRadiobutton(Rect kRectangle, ZGuiWnd* pkParent, int iID, in
 	m_iGroupID = -1;
 	m_pkCheckbox = new ZGuiCheckbox(Rect(0,0,kRectangle.Width(),
 		kRectangle.Height()), this, true, iID);
-	m_pkCheckbox->RemoveWindowFlag(WF_CANHAVEFOCUS);
-	SetWindowFlag(WF_CANHAVEFOCUS);
+	m_pkCheckbox->Disable();
+
 	ConnectToGroup(iGroupID, m_pkLastbutton);
 	m_pkLastbutton = this;
-
-	list<ZGuiWnd*> pkChilds;
-	m_pkCheckbox->GetChildrens(pkChilds); 
-
-	(*pkChilds.begin())->SetZValue(m_iZValue+1);
 }
 
 ZGuiRadiobutton::~ZGuiRadiobutton()
 {
+	// Reconnect previus.
+	if(m_pkPrev)
+	{
+		if(m_pkNext)
+			m_pkPrev->SetNext(m_pkNext);
+		else
+			m_pkPrev->SetNext(NULL);
+	}
+	
+	// Reconect next.
+	if(m_pkNext)
+	{
+		if(m_pkPrev)
+			m_pkNext->SetPrev(m_pkPrev);
+		else
+			m_pkNext->SetPrev(NULL);
+	}
+
+	// Reset static window.
+	if(m_pkLastbutton == this)
+		m_pkLastbutton = NULL;
+
 	if(m_pkCheckbox)
 	{
 		ResetStaticClickWnds(m_pkCheckbox);

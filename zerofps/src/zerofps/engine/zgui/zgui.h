@@ -41,6 +41,7 @@ class ZGuiResourceManager;
 
 #define ZGM_NULL                         0x0000
 #define ZGM_DESTROY                      0x0002
+#define ZGM_SETFOCUS					 0x0007
 #define ZGM_SHOWWINDOW					 0x0018
 #define ZGM_MOVING						 0x0216
 #define ZGM_COMMAND						 0x0111
@@ -74,15 +75,13 @@ public:
 
 	ZGuiWnd* GetWindow(unsigned int iID);
 
-	bool RemoveMainWindow(int iMainWindowID);
 	bool AddMainWindow( int iID, ZGuiWnd* pkWindow, callback cb = NULL, bool bSetAsActive = false);		// Add a new main window
-
 	bool SetMainWindowCallback( int iID, callback cb = NULL );					// Set a callback function for a specific window
 
 	bool UnregisterWindow(ZGuiWnd* pkWindow);
 	bool RegisterWindow(ZGuiWnd* pkNewWindow); // must be called if the window are created after the parent are created...
 	ZGuiWnd* GetMainWindow(int iID);
-	ZGuiWnd* GetActiveMainWnd() { if(m_pkActiveMainWin) return m_pkActiveMainWin->pkWin; return NULL; }
+	ZGuiWnd* GetActiveMainWnd() { if(m_pkActiveMainWin) return m_pkActiveMainWin->pkWnd; return NULL; }
 	callback GetActiveCallBackFunc() 
 	{ 
 		if(m_pkActiveMainWin) 
@@ -94,11 +93,24 @@ public:
 
 	struct MAIN_WINDOW
 	{
-		ZGuiWnd* pkWin;
+		ZGuiWnd* pkWnd;
 		callback pkCallback;
 		int iID;
 		int iZValue;
+
+	/*	bool operator<(const MAIN_WINDOW* x)
+		{
+			return this->iZValue < x->iZValue;
+		}*/
 	};
+
+	struct SORTZ_CMP : public binary_function<MAIN_WINDOW*, MAIN_WINDOW*, bool> 
+	{
+		bool operator()(MAIN_WINDOW* x, MAIN_WINDOW* y) 
+		{ 
+			return x->iZValue > y->iZValue; 
+		};
+	} SortZCmp;
 
 private:
 	long m_iHighestZWndValue;
@@ -106,8 +118,7 @@ private:
 	bool Render(); // Render the active main window
 	bool OnKeyUpdate();
 	bool OnMouseUpdate();
-	void RearrangeWnds(MAIN_WINDOW* p_iIDWndToSelect);
-	MAIN_WINDOW* ChangeMainWindow(int x, int y);
+	MAIN_WINDOW* FindMainWnd(int x, int y);
 	ZGuiRender* m_pkRenderer;		// Pointer to the gui render object
 	ZGuiCursor* m_pkCursor;
 	ZGuiResourceManager* m_pkResManager;
@@ -129,8 +140,6 @@ private:
 	ZeroFps* m_pkZeroFps;
 
 	map<int, ZGuiFont*> m_pkFonts;
-	//map<int, pair<ZGuiWnd*, ZGuiWnd*>*> m_KeyCommandTable;
-
 	map<pair<ZGuiWnd*, int>, ZGuiWnd*> m_KeyCommandTable;
 
 };

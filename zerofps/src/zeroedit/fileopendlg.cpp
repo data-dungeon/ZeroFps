@@ -55,7 +55,7 @@ FileOpenDlg::FileOpenDlg(Gui* pkGui, ZFBasicFS* pkBasicFS, callback cb,
 
 FileOpenDlg::~FileOpenDlg()
 {
-	m_pkZGui->RemoveMainWindow(ID_FILEPATH_WND_MAIN);
+
 }
 
 bool FileOpenDlg::DlgProc( ZGuiWnd* pkWindow, unsigned int uiMessage, int iNumberOfParams, void *pkParams )
