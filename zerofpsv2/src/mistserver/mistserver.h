@@ -43,6 +43,8 @@ class MistServer :public Application , public ZGuiApp {
 
 		Vector3	m_kZoneSize;
 		Vector3	m_kZoneMarkerPos;
+		
+		int 		m_iCurrentMarkedZone;
 
 		Vector3	Get3DMousePos(bool m_bMouse);
 		Object*	GetTargetObject();		

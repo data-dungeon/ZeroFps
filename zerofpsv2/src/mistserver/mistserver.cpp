@@ -58,6 +58,7 @@ void MistServer::OnInit()
 void MistServer::Init()
 {	
 	m_kZoneSize.Set(8,8,8);
+	m_iCurrentMarkedZone = -1;
 	
 	//register commmands bös
 	Register_Cmd("new",FID_NEW);		
@@ -116,6 +117,19 @@ void MistServer::OnIdle()
 		pkFps->DevPrintf("server","ServerName: %s", m_pkServerInfoP->m_sServerName.c_str());
 		pkFps->DevPrintf("server","Players: %d", m_pkServerInfoP->GetNrOfPlayers());
 	
+	}
+	
+	if(m_iCurrentMarkedZone != -1)
+	{
+		ZoneData* z = pkObjectMan->GetZoneData(m_iCurrentMarkedZone);
+		
+		if(z)
+		{
+			Vector3 kMin = z->m_kPos - z->m_kSize/2;
+			Vector3 kMax = z->m_kPos + z->m_kSize/2;
+		
+			pkRender->DrawAABB( kMin,kMax, Vector3(1,1,0) );
+		}
 	}
 }
 
@@ -191,6 +205,10 @@ void MistServer::Input()
 			pkObjectMan->DeleteZone(id);
 	
 		}
+		if(pkInput->Pressed(MOUSEMIDDLE))
+		{		
+			m_iCurrentMarkedZone =  pkObjectMan->GetZoneIndex(m_kZoneMarkerPos,-1,false);
+		}
 	
 		if(pkInput->Pressed(KEY_SPACE))
 		{
@@ -207,25 +225,6 @@ void MistServer::Input()
 		if(pkInput->Pressed(KEY_8)) m_kZoneSize.Set(4,8,16);				
 		if(pkInput->Pressed(KEY_9)) m_kZoneSize.Set(16,8,4);						
 		
-/*		if(pkInput->Pressed(KEY_Z))
-		{
-			int id = pkObjectMan->GetZoneIndex(m_kZoneMarkerPos,-1,false);
-			pkObjectMan->SetZoneModel("data/mad/zones/tcross.mad",id);		
-		}
-		
-		if(pkInput->Pressed(KEY_X))
-		{
-			int id = pkObjectMan->GetZoneIndex(m_kZoneMarkerPos,-1,false);
-			pkObjectMan->SetZoneModel("data/mad/zones/largeroom.mad",id);		
-		}
-		
-		if(pkInput->Pressed(KEY_C))
-		{
-			int id = pkObjectMan->GetZoneIndex(m_kZoneMarkerPos,-1,false);
-			pkObjectMan->SetZoneModel("data/mad/zones/large_room_een.mad",id);		
-		}
-	*/
-	
 	}
 };
 
@@ -514,8 +513,11 @@ void MistServer::OnClickListbox(ZGuiWnd *pkListBox, int iListboxIndex)
 			int pos = strFullPath.size();
 			strFullPath.insert(pos, m_strActiveZoneName);
 
-			int id = pkObjectMan->GetZoneIndex(m_kZoneMarkerPos,-1,false);
-			pkObjectMan->SetZoneModel(strFullPath.c_str(),id);
+			//int id = pkObjectMan->GetZoneIndex(m_kZoneMarkerPos,-1,false);
+			if(m_iCurrentMarkedZone != -1)
+			{
+				pkObjectMan->SetZoneModel(strFullPath.c_str(),m_iCurrentMarkedZone);
+			}
 		}
 	}
 }
