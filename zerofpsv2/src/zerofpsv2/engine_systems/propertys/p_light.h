@@ -34,6 +34,8 @@ class ENGINE_SYSTEMS_API P_Light : public Property {
 		void TurnOn();
 		void TurnOff();
 
+		void UpdateLightMode();
+		
 	public:
 		P_Light();
 		~P_Light();

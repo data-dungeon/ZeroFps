@@ -20,7 +20,7 @@ P_Light::P_Light()
 	m_iSide = PROPERTY_SIDE_CLIENT|PROPERTY_SIDE_SERVER;
  
 	m_iMode  = LMODE_DEFAULT;
-	m_fTimer = m_pkZeroFps->GetTicks();
+	m_fTimer = 0;
 
 }
 
@@ -49,8 +49,15 @@ void P_Light::Update()
 		m_pkLightSource->kRot = m_pkEntity->GetWorldRotM().VectorTransform(Vector3(0,0,1));
 
 		
+
+	UpdateLightMode();		
+}
+
+void P_Light::UpdateLightMode()
+{
 	switch(m_iMode)
 	{
+		
 		case LMODE_TORCH:
 		{
 			if(m_pkZeroFps->GetTicks() - m_fTimer > 0.05)
@@ -62,7 +69,8 @@ void P_Light::Update()
 			}
 			break;		
 		}
-	}
+		
+	}	
 }
 
 void P_Light::PackTo( NetPacket* pkNetPacket, int iConnectionID ) 
@@ -94,6 +102,8 @@ void P_Light::PackFrom( NetPacket* pkNetPacket, int iConnectionID  )
 	pkNetPacket->Read( m_pkLightSource->fLinear_Atten);		
 	pkNetPacket->Read( m_pkLightSource->fQuadratic_Atten);			
 	pkNetPacket->Read( m_iMode);
+	
+	
 }
 
 vector<PropertyValues> P_Light::GetPropertyValues()
