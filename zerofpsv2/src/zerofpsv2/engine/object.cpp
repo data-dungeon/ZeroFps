@@ -65,10 +65,16 @@ Object::~Object()
 		m_pkParent->RemoveChild(this);
 	
 	// Remove All our propertys.
-	for(itListProperty it = m_akPropertys.begin(); it != m_akPropertys.end(); it++)
+	/*for(itListProperty it = m_akPropertys.begin(); it != m_akPropertys.end(); it++)
 	{
 		(*it)->SetObject(0);
 		delete (*it);
+	}*/
+	while(!m_akPropertys.empty())
+	{
+		Property* TempProperty = m_akPropertys.back();
+		m_akPropertys.pop_back();
+		delete TempProperty;
 	}
 	// Tell object manger that we are no more.
 	m_pkObjectMan->Remove(this);
