@@ -7,8 +7,10 @@
 
 //linux code
 #ifndef WIN32
-#include <sys/types.h>
-#include <dirent.h>
+	#include <sys/types.h>
+	#include <dirent.h>
+	#include <sys/stat.h>
+	#include <fcntl.h>
 #endif
 
 

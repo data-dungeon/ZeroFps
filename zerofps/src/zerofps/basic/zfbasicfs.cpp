@@ -27,8 +27,16 @@ bool ZFBasicFS::ListDirectory(vector<string>* pkFiles,const char* acName)
 
 bool ZFBasicFS::CreateDirectory(const char* acName)
 {
-	
 
+//linux code
+#ifndef  WIN32	
+	
+	cout<<"FILE:"<< creat(acName,0);
+
+
+
+	return true;
+#endif
 
 }
 
