@@ -130,7 +130,7 @@ bool P_UnitSystem::FireWeapon(P_ServerUnit* pkSu,Point kTarget,int iWeapon)
 		return false;
 	}
 	
-	cout<<"Fireing weapon "<<pkWeapon->sName<<endl;
+	//cout<<"Fireing weapon "<<pkWeapon->sName<<endl;
 	
 	
 	Tile* tg = TileEngine::m_pkInstance->GetTile(kTarget.x,kTarget.y);

@@ -36,15 +36,18 @@ public:
 	P_UnitAttackAI();
 	virtual ~P_UnitAttackAI();
 private:
-	HeightMap* m_pkMap;
-	P_ServerUnit* m_pkUnit;
-	P_UnitSystem* m_pkUnitSystem;
-	ExternalCommand* m_pkAttackCommand;
+	HeightMap*			m_pkMap;
+	P_ServerUnit*		m_pkUnit;
+	P_UnitSystem*		m_pkUnitSystem;
+	ZeroFps*				m_pkFps;	
+	ExternalCommand*	m_pkAttackCommand;
+	
 	int m_iCurrentState;
 	Object* m_pkTargetObject;
 	int m_iTargetID;
 	float m_fRange;
 	float m_fDistance;
+	float m_fLastFireTime;
 	AIBase* m_pkAi;
 	enum 
 	{ UNIT_ATTACK, TEMP };

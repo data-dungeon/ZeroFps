@@ -14,9 +14,16 @@ P_UnitAttackAI::P_UnitAttackAI()
 m_fRange(20),m_pkAi(NULL), m_pkUnitSystem(NULL), m_iTargetID(-1)
 {
 	strcpy(m_acName,"P_UnitAttackAI");
+	
 	m_iType=PROPERTY_TYPE_NORMAL;
 	m_iSide=PROPERTY_SIDE_SERVER;	
+	
+	m_pkFps = static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));			
+	
 	m_fRange *= m_fRange; 
+	m_fLastFireTime = m_pkFps->GetGameTime();
+	
+
 }
 
 P_UnitAttackAI::~P_UnitAttackAI()
@@ -123,13 +130,13 @@ AIBase* P_UnitAttackAI::UpdateAI()
 					cout<<"Error while getting weapon"<<endl;
 					return NULL;
 				}
-			
+						
 			
 				Vector3 kDistVec = m_pkTargetObject->GetPos() - m_pkObject->GetPos();
 				float TempDist = (kDistVec.x * kDistVec.x) + (kDistVec.y * kDistVec.y) + (kDistVec.z * kDistVec.z);
 				if(TempDist<m_fRange)
 				{
-					cout<<"P_UnitAttackAI : Target in Range : "<<TempDist <<"<" <<m_fRange <<endl;
+					//cout<<"P_UnitAttackAI : Target in Range : "<<TempDist <<"<" <<m_fRange <<endl;
 					
 					
 					//set rotation   this rotation sux
@@ -141,6 +148,11 @@ AIBase* P_UnitAttackAI::UpdateAI()
 					m_pkObject->SetRot(rot);		
 					m_pkObject->SetRot(rot);			
 
+					if(m_pkFps->GetGameTime() - m_fLastFireTime >= (1.0/pkWep->fFireRate))
+						m_fLastFireTime =m_pkFps->GetGameTime(); 
+					else
+						return this;
+					
 					
 					if(m_pkAi)
 					{
