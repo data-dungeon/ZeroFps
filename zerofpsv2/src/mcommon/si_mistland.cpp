@@ -288,7 +288,7 @@ int MistLandLua::GetClosestObjectLua(lua_State* pkLua)
 	float closest = 99999999;
 	Entity* pkClosest = NULL;
 	
-	for(int i=0;i<kObjects.size();i++)
+	for(unsigned int i=0;i<kObjects.size();i++)
 	{
 		//dont compare to ur self or object 0
 		if(kObjects[i]->iNetWorkID == iThisId || kObjects[i]->iNetWorkID == 0)
@@ -418,7 +418,7 @@ int MistLandLua::SetHeartRateLua(lua_State* pkLua)
 		{	
 			P_Event* ep = (P_Event*)pkObject->GetProperty("P_Event");
 			if(ep)
-				ep->SetHeartRate(dHeartRate);			
+				ep->SetHeartRate((float)dHeartRate);			
 		}
 	}
 	else
@@ -575,7 +575,7 @@ int MistLandLua::SetVelToLua(lua_State* pkLua)
 		{
 			Vector3 dir = (kPos - pkEnt->GetWorldPosV()).Unit();
 			
-			pkEnt->SetVel(dir*dVel);
+			pkEnt->SetVel(dir*(float) dVel);
 		}
 		return 0;
 	}
@@ -636,7 +636,7 @@ int MistLandLua::MakePathFindLua(lua_State* pkLua)
 			(float) (*(double*) vkData[1].pData),
 			(float) (*(double*) vkData[2].pData)); 
 		
-		Entity* pkEnt = g_pkObjMan->GetObjectByNetWorkID(dId);
+		Entity* pkEnt = g_pkObjMan->GetObjectByNetWorkID((int)dId);
 		if(pkEnt)
 		{
 			P_PfPath* pf = (P_PfPath*)pkEnt->GetProperty("P_PfPath");
@@ -656,7 +656,7 @@ int MistLandLua::HavePathLua(lua_State* pkLua)
 		
 		g_pkScript->GetArgNumber(pkLua, 0, &dId);				
 		
-		Entity* pkEnt = g_pkObjMan->GetObjectByNetWorkID(dId);
+		Entity* pkEnt = g_pkObjMan->GetObjectByNetWorkID((int)dId);
 		if(pkEnt)
 		{
 			P_PfPath* pf = (P_PfPath*)pkEnt->GetProperty("P_PfPath");
@@ -724,7 +724,7 @@ int MistLandLua::BounceLua(lua_State* pkLua)
 		if(vel.y > 0)
 			return 0;
 		
-		if(abs(vel.y) < 1)
+		if(abs((int)vel.y) < 1)
 		{
 			ent->SetVel(Vector3(0,0,0));
 			P_Tcs* ts = (P_Tcs*)ent->GetProperty("P_Tcs");			
@@ -734,7 +734,7 @@ int MistLandLua::BounceLua(lua_State* pkLua)
 			return 0;
 		}
 		
-		vel.y = abs(vel.y);
+		vel.y = (float) abs((int)vel.y);
 	
 		vel*=0.9;			//dämpnings faktor
 		
@@ -770,7 +770,7 @@ int MistLandLua::RollSkillDiceLua (lua_State* pkLua)
 
          if ( pkCS )
          {
-            double dRoll = pkCS->RollSkillDice ( (string)acType, iDiffuculty );
+            double dRoll = pkCS->RollSkillDice ( (string)acType, (float) iDiffuculty );
             g_pkScript->AddReturnValue(pkLua, dRoll);
             return 1;
          }
@@ -810,7 +810,7 @@ int MistLandLua::RollAttributeDiceLua (lua_State* pkLua)
 			CharacterProperty* pkCP = (CharacterProperty*)pkObject->GetProperty("P_CharStats");
          CharacterStats *pkCS = pkCP->GetCharStats();
 
-         g_pkScript->AddReturnValue(pkLua, pkCS->RollAttributeDice ( (string)acType, iDiffuculty ) );
+         g_pkScript->AddReturnValue(pkLua, pkCS->RollAttributeDice ( (string)acType, (float) iDiffuculty ) );
 
          return 1;
 		}
@@ -1248,7 +1248,7 @@ int MistLandLua::AddHpLua (lua_State* pkLua)
   			CharacterProperty* pkCP = (CharacterProperty*)pkObject->GetProperty("P_CharStats");
          CharacterStats *pkCS = pkCP->GetCharStats();
 
-         pkCS->AddHP ( dTemp );
+         pkCS->AddHP ( (int) dTemp );
       }
 
    }
@@ -1272,7 +1272,7 @@ int MistLandLua::AddMpLua (lua_State* pkLua)
   			CharacterProperty* pkCP = (CharacterProperty*)pkObject->GetProperty("P_CharStats");
          CharacterStats *pkCS = pkCP->GetCharStats();
 
-         pkCS->AddMP ( dTemp );
+         pkCS->AddMP ( (int) dTemp );
       }
 
    }
@@ -1330,7 +1330,7 @@ int MistLandLua::SetReloadTimeLua (lua_State* pkLua)
      		   double dSpeed;
             g_pkScript->GetArgNumber(pkLua, 0, &dSpeed);
 
-            pkCP->GetCharStats()->SetReloadTime (dSpeed);
+            pkCP->GetCharStats()->SetReloadTime ( (float) dSpeed);
          }
          else
             cout << "Warning! Tried to use SetReloadTime on a non-character object!" << endl; 
@@ -1358,7 +1358,7 @@ int MistLandLua::AddReloadTimeLua (lua_State* pkLua)
      		   double dSpeed;
             g_pkScript->GetArgNumber(pkLua, 0, &dSpeed);
 
-            pkCP->GetCharStats()->AddReloadTime (dSpeed);
+            pkCP->GetCharStats()->AddReloadTime ( (float) dSpeed);
          }
          else
             cout << "Warning! Tried to use SetReloadTime on a non-character object!" << endl; 
@@ -1385,7 +1385,7 @@ int MistLandLua::SetMoveSpeedLua (lua_State* pkLua)
      		   double dSpeed;
             g_pkScript->GetArgNumber(pkLua, 0, &dSpeed);
 
-            pkCP->GetCharStats()->SetMoveSpeed (dSpeed);
+            pkCP->GetCharStats()->SetMoveSpeed ((float) dSpeed);
          }
          else
             cout << "Warning! Tried to use SetReloadTime on a non-character object!" << endl; 
@@ -1414,7 +1414,7 @@ int MistLandLua::AddMoveSpeedLua (lua_State* pkLua)
      		   double dSpeed;
             g_pkScript->GetArgNumber(pkLua, 0, &dSpeed);
 
-            pkCP->GetCharStats()->AddMoveSpeed (dSpeed);
+            pkCP->GetCharStats()->AddMoveSpeed ((float) dSpeed);
          }
          else
             cout << "Warning! Tried to use SetReloadTime on a non-character object!" << endl; 
@@ -1587,7 +1587,7 @@ int MistLandLua::SetQualityLua (lua_State* pkLua)
   			P_Item* pkCP = (P_Item*)pkObject->GetProperty("P_Item");
 
          if ( pkCP )
-            pkCP->m_pkItemStats->SetQuality ( dTemp );
+            pkCP->m_pkItemStats->SetQuality ( (float) dTemp );
          else
             cout << "Warning! Tried to use a item function on a non-item object!" << endl;
       }
@@ -1684,7 +1684,7 @@ int MistLandLua::UseItemOnLua (lua_State* pkLua)
          double dCharacterID;
          g_pkScript->GetArgNumber(pkLua, 0, &dCharacterID);
 
-         Entity* pkChar = g_pkObjMan->GetObjectByNetWorkID(dCharacterID);
+         Entity* pkChar = g_pkObjMan->GetObjectByNetWorkID( (int) dCharacterID);
 
   			P_Item* pkIP = (P_Item*)pkObject->GetProperty("P_Item");
 
@@ -2218,7 +2218,7 @@ int MistLandLua::SetItemWeightLua (lua_State* pkLua)
          if ( pkCP )
          {      
             ItemStats *pkIS = pkCP->m_pkItemStats;
-            pkIS->SetItemWeight ( dTemp );
+            pkIS->SetItemWeight ( (float) dTemp );
          }
          else
             cout << "Warning! Tried to use a item function on a non-item object!" << endl;
@@ -2620,7 +2620,7 @@ int MistLandLua::RunScriptLua (lua_State* pkLua)
 
       double temp;
 		g_pkScript->GetArgNumber(pkLua, 1, &temp);
- 		int objectid = temp;
+ 		int objectid = (int) temp;
 
 
       ZFScriptSystem* pkZFScriptSys = g_pkScript;
@@ -2704,7 +2704,7 @@ int MistLandLua::CastSpellLua (lua_State* pkLua)
          double dTarget;
          g_pkScript->GetArgNumber(pkLua, 2, &dTarget);
 
-			Entity* me = g_pkObjMan->GetObjectByNetWorkID(dCaster);
+			Entity* me = g_pkObjMan->GetObjectByNetWorkID((int) dCaster);
 			if(!me)
 				return 0;
 
@@ -2714,7 +2714,7 @@ int MistLandLua::CastSpellLua (lua_State* pkLua)
                  g_pkObjMan->CreateObjectFromScriptInZone(acValue,me->GetWorldPosV());
 
          P_Spell* pkSpellProp = (P_Spell*)pkSpell->GetProperty("P_Spell");
-         pkSpellProp->SetCaster ( dCaster );
+         pkSpellProp->SetCaster ( (int) dCaster );
 
          g_pkScript->AddReturnValue( pkLua, pkSpell->iNetWorkID );
                 
@@ -2806,7 +2806,7 @@ int MistLandLua::SetDrawingOrderLua(lua_State* pkLua)
   		P_Mad* pkMAD = (P_Mad*)pkEntity->GetProperty("P_Mad");
 
       if ( pkMAD )
-         pkMAD->m_iSortPlace = dOrder;
+         pkMAD->m_iSortPlace = (int) dOrder;
       else
          cout << "Warning! Tried to set drawing order on a non-MAD object." << endl;
  }
@@ -2830,7 +2830,7 @@ int MistLandLua::SetContainerSizeLua (lua_State* pkLua)
   		P_Container* pkC = (P_Container*)pkEntity->GetProperty("P_Container");
 
       if ( pkC )
-         pkC->m_iCapacity = dSize;
+         pkC->m_iCapacity = (int) dSize;
       else      
          cout << "Warning! Tried to set container capacity on a non-container object!" << endl;
  }
@@ -2857,8 +2857,8 @@ int MistLandLua::PutInContainerLua (lua_State* pkLua)
       else
          dObject = g_iCurrentObjectID;
 
-      Entity* pkItem = g_pkObjMan->GetObjectByNetWorkID(dObject);
-      Entity* pkContObj = g_pkObjMan->GetObjectByNetWorkID(dContainer);
+      Entity* pkItem = g_pkObjMan->GetObjectByNetWorkID((int)dObject);
+      Entity* pkContObj = g_pkObjMan->GetObjectByNetWorkID((int)dContainer);
 
       if ( !pkItem )
       {
@@ -2880,7 +2880,7 @@ int MistLandLua::PutInContainerLua (lua_State* pkLua)
       {
          // check if the container object has a container
          if ( pkCont != 0 )
-            pkCont->AddObject ( dObject );
+            pkCont->AddObject ( (int)dObject );
          else
             cout << "Warning! Tried to put a item into a non-container object!" << endl;
       }
@@ -2943,12 +2943,12 @@ int MistLandLua::AIUseActionOnLua(lua_State* pkLua)
       else
          dUser = g_iCurrentObjectID;
 
-      Entity* pkObj = g_pkObjMan->GetObjectByNetWorkID(dUser);
+      Entity* pkObj = g_pkObjMan->GetObjectByNetWorkID((int)dUser);
 
       if ( !pkObj )
          return 0;
 
-      Entity* pkTarget = g_pkObjMan->GetObjectByNetWorkID(dTarget);
+      Entity* pkTarget = g_pkObjMan->GetObjectByNetWorkID((int)dTarget);
 
       if ( !pkTarget )
          return 0;
@@ -2963,7 +2963,7 @@ int MistLandLua::AIUseActionOnLua(lua_State* pkLua)
          if ( pkAI->PlayerAI() )
             pkAI->ClearDynamicOrders();
 
-         pkAI->AddDynamicOrder ("Action", dTarget, 0, pkTarget->GetWorldPosV(), acAction );
+         pkAI->AddDynamicOrder ("Action", (int) dTarget, 0, pkTarget->GetWorldPosV(), acAction );
       }
 
 
@@ -2988,12 +2988,12 @@ int MistLandLua::AIAttackLua(lua_State* pkLua)
       else
          dAttacker = g_iCurrentObjectID;
 
-      Entity* pkObj = g_pkObjMan->GetObjectByNetWorkID(dAttacker);
+      Entity* pkObj = g_pkObjMan->GetObjectByNetWorkID((int)dAttacker);
 
       if ( !pkObj )
          return 0;
 
-      Entity* pkTarget = g_pkObjMan->GetObjectByNetWorkID(dTarget);
+      Entity* pkTarget = g_pkObjMan->GetObjectByNetWorkID((int)dTarget);
 
       if ( !pkTarget )
          return 0;
@@ -3007,7 +3007,7 @@ int MistLandLua::AIAttackLua(lua_State* pkLua)
          if ( pkAI->PlayerAI() )
             pkAI->ClearDynamicOrders();
 
-         pkAI->AddDynamicOrder ("Attack", dTarget, 0, pkTarget->GetWorldPosV(), "tjoff" );
+         pkAI->AddDynamicOrder ("Attack", (int) dTarget, 0, pkTarget->GetWorldPosV(), "tjoff" );
       }
    }
 
@@ -3027,7 +3027,7 @@ int MistLandLua::AIIdleLua(lua_State* pkLua)
 		g_pkScript->GetArgNumber(pkLua, 1, &dWaitTime);
 		
 		
-		Entity* pkEnt = g_pkObjMan->GetObjectByNetWorkID(dId);
+		Entity* pkEnt = g_pkObjMan->GetObjectByNetWorkID((int)dId);
 
       if(pkEnt)
 		{
@@ -3044,7 +3044,7 @@ int MistLandLua::AIIdleLua(lua_State* pkLua)
          }
 
          if ( pkAI )
-            pkAI->AddStaticOrder ("Idle", dWaitTime*10000, dWaitTime*10000, Vector3::ZERO, ".");
+            pkAI->AddStaticOrder ("Idle", (int) (dWaitTime*10000), (int) (dWaitTime*10000), Vector3::ZERO, ".");
 		}
       else
          cout << "Tried to us AIMoveTo on a object without P_AI" << endl;
@@ -3062,7 +3062,7 @@ int MistLandLua::AIFaceDirectionLua(lua_State* pkLua)
 		g_pkScript->GetArgNumber(pkLua, 0, &dId);
 		g_pkScript->GetArgNumber(pkLua, 1, &dDirection);
 		
-		Entity* pkObj = g_pkObjMan->GetObjectByNetWorkID(dId);
+		Entity* pkObj = g_pkObjMan->GetObjectByNetWorkID((int)dId);
 
       if(pkObj)
 		{
@@ -3072,9 +3072,9 @@ int MistLandLua::AIFaceDirectionLua(lua_State* pkLua)
          if ( pkAI )
          {
             Vector3 kDir;
-            kDir.x = cos ( dDirection / degtorad );
+            kDir.x = (float) cos ( dDirection / degtorad );
             kDir.y = 0;
-            kDir.z = sin ( dDirection / degtorad );
+            kDir.z = (float) sin ( dDirection / degtorad );
             pkAI->AddStaticOrder ("Face", 0, 0, kDir, ".");
          }
          else
@@ -3095,8 +3095,8 @@ int MistLandLua::AIFaceObjectLua(lua_State* pkLua)
 		g_pkScript->GetArgNumber(pkLua, 0, &dId);
 		g_pkScript->GetArgNumber(pkLua, 1, &dObjectFaceID);
 		
-		Entity* pkObj = g_pkObjMan->GetObjectByNetWorkID(dId);
-      Entity* pkFaceObj = g_pkObjMan->GetObjectByNetWorkID(dObjectFaceID);
+		Entity* pkObj = g_pkObjMan->GetObjectByNetWorkID((int)dId);
+      Entity* pkFaceObj = g_pkObjMan->GetObjectByNetWorkID((int)dObjectFaceID);
 
       if(pkObj && pkFaceObj)
 		{
@@ -3104,7 +3104,7 @@ int MistLandLua::AIFaceObjectLua(lua_State* pkLua)
          P_AI* pkAI = (P_AI*)pkObj->GetProperty("P_AI");
 
          if ( pkAI )
-            pkAI->AddDynamicOrder ("Face", dObjectFaceID, 0, Vector3::ZERO, ".");
+            pkAI->AddDynamicOrder ("Face", (int)dObjectFaceID, 0, Vector3::ZERO, ".");
          else
             cout << "Error! Tried to add AIOrder AIFaceObjectLua on a object without P_AI" << endl;
 		}
@@ -3141,7 +3141,7 @@ int MistLandLua::AIMoveToLua(lua_State* pkLua)
 			(float) (*(double*) vkData[1].pData),
 			(float) (*(double*) vkData[2].pData)); 
 		
-		Entity* pkEnt = g_pkObjMan->GetObjectByNetWorkID(dId);
+		Entity* pkEnt = g_pkObjMan->GetObjectByNetWorkID((int)dId);
 		if(pkEnt)
 		{
          // check if object has AI
@@ -3211,7 +3211,7 @@ int MistLandLua::GetClosestItemOfTypeLua(lua_State* pkLua)
       
       pkZone->m_pkZone->GetAllDynamicEntitys( pkList );
 
-      for ( int i = 0; i < pkList->size(); i++ )
+      for ( unsigned int i = 0; i < pkList->size(); i++ )
       {
          // check if object has item property
          if ( pkItemProp = (P_Item*)pkList->at(i)->GetProperty ("P_Item") )
@@ -3223,7 +3223,7 @@ int MistLandLua::GetClosestItemOfTypeLua(lua_State* pkLua)
                // check if distance is smaller that the previos (if any) found
                if ( pkObj->GetWorldPosV().DistanceTo(kPos) < fDistance )
                {
-                  fDistance = pkObj->GetWorldPosV().DistanceTo(kPos);
+                  fDistance = (float) pkObj->GetWorldPosV().DistanceTo(kPos);
                   pkClosestItem = pkList->at(i);
                }
             }
@@ -3275,7 +3275,7 @@ int MistLandLua::GetClosestPlayerLua(lua_State* pkLua)
 
       g_pkObjMan->GetAllObjectsInArea(pkList,pkObj->GetWorldPosV(),(float)dRadius);
 
-      for ( int i = 0; i < pkList->size(); i++ )
+      for ( unsigned int i = 0; i < pkList->size(); i++ )
       {
          // check if object has item property
          if ( pkList->at(i)->GetType() == "t_player.lua" )
@@ -3284,7 +3284,7 @@ int MistLandLua::GetClosestPlayerLua(lua_State* pkLua)
             // check if distance is smaller that the previos (if any) found
             if ( pkObj->GetWorldPosV().DistanceTo(kPos) < fDistance )
             {
-               fDistance = pkObj->GetWorldPosV().DistanceTo(kPos);
+               fDistance = (float) pkObj->GetWorldPosV().DistanceTo(kPos);
                pkClosestPlayer = pkList->at(i);
             }
          }
@@ -3328,7 +3328,7 @@ int MistLandLua::GetClosestObjectOfTypeLua(lua_State* pkLua)
 
       g_pkObjMan->GetAllObjectsInArea(&kList,pkObj->GetWorldPosV(),(float)dRadius);
 
-      for ( int i = 0; i <kList.size(); i++ )
+      for ( unsigned int i = 0; i <kList.size(); i++ )
       {
          // check if object has item property
          if ( kList[i]->GetType() == acType )
@@ -3337,7 +3337,7 @@ int MistLandLua::GetClosestObjectOfTypeLua(lua_State* pkLua)
             // check if distance is smaller that the previos (if any) found
             if ( pkObj->GetWorldPosV().DistanceTo(kPos) < fDistance )
             {
-               fDistance = pkObj->GetWorldPosV().DistanceTo(kPos);
+               fDistance = (float) pkObj->GetWorldPosV().DistanceTo(kPos);
                pkClosestObject = kList[i];
             }
          }
@@ -3379,14 +3379,14 @@ int MistLandLua::GetSeenPlayerLua(lua_State* pkLua)
 
       pkZone->m_pkZone->GetAllDynamicEntitys ( pkList );
 
-      for ( int i = 0; i < pkList->size(); i++ )
+      for ( unsigned int i = 0; i < pkList->size(); i++ )
       {
          // check if object is character
          if ( pkList->at(i)->GetType() == "t_player.lua" )
          {
             Vector3 kPos = pkList->at(i)->GetWorldPosV();
 
-            float fDist = pkObj->GetWorldPosV().DistanceXZTo(kPos);
+            float fDist = (float) pkObj->GetWorldPosV().DistanceXZTo(kPos);
 
             // check if player is seen
             float fVisionRange = pkCP->GetCharStats()->m_fVision *
@@ -3444,7 +3444,10 @@ int MistLandLua::SetAIIsPlayerLua(lua_State* pkLua)
       double dTemp;
       g_pkScript->GetArgNumber(pkLua, 0, &dTemp);	
       
-      pkAI->SetAIIsPlayer ( bool(dTemp) );
+	  if(dTemp > 0)
+	      pkAI->SetAIIsPlayer ( true );
+	  else
+		  pkAI->SetAIIsPlayer ( false );
 
    }
 
