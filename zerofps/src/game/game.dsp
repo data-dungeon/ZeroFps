@@ -123,6 +123,14 @@ PostBuild_Cmds=copy $(ProjDir)\releaseprofile\*.map ..\..\bin
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 # Begin Source File
 
+SOURCE=.\adaptorsniper.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\adaptorsniper.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\ballobject.cpp
 
 !IF  "$(CFG)" == "game - Win32 Release"

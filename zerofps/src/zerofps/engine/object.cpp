@@ -302,17 +302,17 @@ Object::~Object()
 }
 
 
-bool Object::AddProperty(Property* pkNewProperty) 
+Property* Object::AddProperty(Property* pkNewProperty) 
 {
 	if(pkNewProperty == NULL)
-		return false;
+		return NULL;
 
 	pkNewProperty->SetObject(this);
 	m_akPropertys.push_back(pkNewProperty);
-	return true;
+	return pkNewProperty;
 }
 
-bool Object::AddProperty(const char* acName)
+Property* Object::AddProperty(const char* acName)
 {
 	ZFAssert(acName, "Object::AddProperty(): acName is NULL");
 	Property* pProp = m_pkPropertyFactory->CreateProperty(acName);
@@ -324,7 +324,7 @@ bool Object::AddProperty(const char* acName)
 	}
 
 	AddProperty(pProp);
-	return true;
+	return pProp;
 }
 
 void Object::RemoveProperty(Property* pkProp) 

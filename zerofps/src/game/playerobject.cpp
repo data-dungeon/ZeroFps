@@ -12,7 +12,8 @@ PlayerObject::PlayerObject(HeightMap *pkMap,Input *pkInput)
 	AddProperty("StatusProperty");	
 	AddProperty("MassDriverProperty");	
 	AddProperty("AutoParentProperty");	
-	
+	AddProperty("CameraProperty");	
+
 	AddProperty("PhysicProperty");
 	PhysicProperty* pp=static_cast<PhysicProperty*>(GetProperty("PhysicProperty"));
 //	static_cast<CSSphere*>(pp->GetColSphere())->m_fRadius=1;

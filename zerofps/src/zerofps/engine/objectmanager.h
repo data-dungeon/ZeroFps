@@ -29,6 +29,7 @@ class ENGINE_API ObjectManager : public ZFObject{
 
 		list<ObjectDescriptor*> m_akTemplates;		// List of templates.
 
+
 		int	iNextObjectID;							// Next avil object ID.
 		bool m_bNoUpdate;							// Disable all updates except RENDER.
 	
@@ -66,6 +67,12 @@ class ENGINE_API ObjectManager : public ZFObject{
 		ObjectDescriptor* GetTemplate(const char* acName);
 		bool LoadTemplate(const char* acFile);
 		bool SaveTemplate(const char* acName,const char* acFile);
+
+//		vector<ObjectTemplate*>	m_ObjectTemplates;
+		void Create_OT(int iID);
+		void Destory_OT(int iID);
+		void LoadGameObjects(const char* szFileName);
+		void SaveGameObjects(const char* szFileName);
 
 		// Load/Save Objects
 		bool SaveAllObjects(const char* acFile);

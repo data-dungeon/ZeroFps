@@ -473,6 +473,53 @@ void ObjectManager::DisplayTree()
 
 
 
+
+
+
+
+
+
+
+//vector<ObjectTemplate*>	m_ObjectTemplates;
+void ObjectManager::Create_OT(int iID)
+{
+	Console* pkConsole;
+	pkConsole = dynamic_cast<Console*>(g_ZFObjSys.GetObjectPtr("Console"));
+
+	if(iID >= 0) {
+		pkConsole->Printf("Object template ID must be below zero.");
+		return;
+		}
+
+	// Check if ID already create.
+	ObjectTemplate* pkOT = new ObjectTemplate;
+//	pkOT->m_iArvFrom = 0;
+
+//	m_ObjectTemplates.push_back( pkOT );
+//	pkConsole->Printf("Object template (%d) created.", iID);
+
+}
+
+void ObjectManager::Destory_OT(int iID)
+{
+
+}
+
+void ObjectManager::LoadGameObjects(const char* szFileName)
+{
+
+}
+
+void ObjectManager::SaveGameObjects(const char* szFileName)
+{
+
+}
+
+
+
+
+
+
 /*
 void ObjectManager::Update(){
 	if(m_bNoUpdate)

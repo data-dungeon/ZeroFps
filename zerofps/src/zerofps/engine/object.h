@@ -60,7 +60,7 @@ class ENGINE_API ObjectDescriptor{
 		void SaveToMem(ZFMemPackage* pkPackage);
 		void LoadFromMem(ZFMemPackage* pkPackage);		
 };
-
+	
 
 
 class ENGINE_API Object {
@@ -95,8 +95,8 @@ class ENGINE_API Object {
 		
 		// Property Mangement Code.
 
-		bool AddProperty(Property* pkNewProperty);				// Add a propyrty by ptr.
-		bool AddProperty(const char* acName);					// Create/Add a property by name.
+		Property* AddProperty(Property* pkNewProperty);				// Add a propyrty by ptr.
+		Property* AddProperty(const char* acName);					// Create/Add a property by name.
 		void RemoveProperty(Property* pkProp);					// Remove property by pointer.
 		bool DeleteProperty(const char* acName);				// Remove property by name.
 
@@ -142,6 +142,13 @@ class ENGINE_API Object {
 		bool CheckLinks(bool bCheckChilds, int iPos);		// Checks that parent/child links are ok. 
 		// Force class to be polymorfic.
 		virtual void DoNothing() {}
+};
+
+class ENGINE_API ObjectTemplate : public Object
+{
+	int		m_iArvFrom;		// 0: Object is a top level object.
+//	int		m_iNet
+	
 };
 
 #endif

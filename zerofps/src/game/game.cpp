@@ -207,8 +207,10 @@ void Game::SetupLevel()
 			//player
 			m_pkPlayer=new PlayerObject(pkLevelMan->GetHeightMap(),pkInput);
 			m_pkPlayer->GetPos() = (*it)->GetPos();
-			m_pkPlayer->GetRot() = (*it)->GetRot();			
-			m_pkPlayer->AddProperty(new CameraProperty(m_pkCamera));
+			m_pkPlayer->GetRot() = (*it)->GetRot();	
+			//CameraProperty* pkCam = static_cast(m_pkPlayer->AddProperty(new CameraProperty()));
+			CameraProperty* pkCam = dynamic_cast<CameraProperty*>(m_pkPlayer->GetProperty("CameraProperty"));
+			pkCam->SetCamera(m_pkCamera);
 			m_pkPlayer->AttachToClosestZone();
 //			pkCollisionMan->Add(m_pkPlayer);			
 			pkLevelMan->AddTracker(m_pkPlayer);

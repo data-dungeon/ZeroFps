@@ -1,8 +1,19 @@
 #include "cameraproperty.h"
 
+/*
 CameraProperty::CameraProperty(Camera *pkCamera) 
 {
 	m_pkCamera = pkCamera;
+	m_eCameraType = CAM_TYPEFIRSTPERSON;
+	strcpy(m_acName,"CameraProperty");	
+
+	m_iType=PROPERTY_TYPE_RENDER;
+	m_iSide=PROPERTY_SIDE_CLIENT;
+}*/
+
+CameraProperty::CameraProperty() 
+{
+	m_pkCamera = NULL;
 	m_eCameraType = CAM_TYPEFIRSTPERSON;
 	strcpy(m_acName,"CameraProperty");	
 
@@ -13,6 +24,9 @@ CameraProperty::CameraProperty(Camera *pkCamera)
 
 void CameraProperty::Update() 
 {
+	if(!m_pkCamera)
+		return;
+
 //	float fYawAngle;
 	Vector3 kYawVector;
 	string strCamName;
@@ -78,7 +92,7 @@ void CameraProperty::NextType(CamType_e kType)
 
 Property* Create_CameraProperty()
 {
-	return new CameraProperty(NULL);
+	return new CameraProperty();
 }
 
 

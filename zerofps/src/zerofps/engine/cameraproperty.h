@@ -26,11 +26,12 @@ class ENGINE_API CameraProperty:public Property{
 		CamType_e	m_eCameraType;
 		
 	public:
-		CameraProperty(Camera * pkCamera);
+		CameraProperty();
+		//CameraProperty(Camera * pkCamera);
 		
 		void Update();
 
-		void SetCamera(Camera *pkCamera){m_pkCamera=pkCamera;};
+		void SetCamera(Camera *pkCamera) { m_pkCamera = pkCamera; };
 		void SetType(CamType_e kType);
 		void NextType(CamType_e kType);
 				
