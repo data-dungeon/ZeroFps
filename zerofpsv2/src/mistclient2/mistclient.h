@@ -41,6 +41,7 @@ class MistClient :public Application, public ZGuiApp {
 		
 		bitset<6>	m_kCharacterControls;
 		
+		bool			m_bShowMenulevel;
 		bool			m_bGuiCapture;
 		string		m_strLoginName, m_strLoginPW;
 		

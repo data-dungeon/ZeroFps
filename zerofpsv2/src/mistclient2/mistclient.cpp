@@ -40,12 +40,14 @@ MistClient::MistClient(char* aName,int iWidth,int iHeight,int iDepth)
 	m_fDelayTime  = 0;
 
 	m_iCharacterID = -1;
+	m_bShowMenulevel = true;
 
 	m_strLoginName = "Psykosmurfan";
    m_strLoginPW = "topsecret";
 
-   RegisterVariable("r_loginname", 	&m_strLoginName, CSYS_STRING);
-   RegisterVariable("r_loginpw", 	&m_strLoginPW, CSYS_STRING);
+   RegisterVariable("ap_loginname", 			&m_strLoginName, CSYS_STRING);
+   RegisterVariable("ap_loginpw", 			&m_strLoginPW, CSYS_STRING);
+	RegisterVariable("ap_showmenulevel", 	&m_bShowMenulevel, CSYS_BOOL);
 
 	m_bGuiCapture = false;
 } 
@@ -95,8 +97,7 @@ void MistClient::OnInit()
 		m_pkConsole->Printf("No game_autoexec.ini.ini found");	
 	
 	//test
-	bool test = 0;
-	if(test)
+	if(m_bShowMenulevel)
 	{
 		m_pkEntityManager->SetWorldDir("clienttemp");
 		if(m_pkEntityManager->LoadWorld("../datafiles/mistlands/menulevel"))
@@ -108,18 +109,22 @@ void MistClient::OnInit()
 			
 			pkEnt->AddProperty("P_Track");
 			P_Enviroment* pkEnv = (P_Enviroment*)pkEnt->AddProperty("P_Enviroment");	
-			pkEnv->LoadEnviroment("data/enviroments/snow.env");
+			pkEnv->LoadEnviroment("data/enviroments/rain.env");
 			pkEnv->SetEnable(true);	
 		}
 		else
 			cout<<"WARNING: could not find menulevel"<<endl;	
 	}
 
-	//Entity* pkEnt = m_pkEntityManager->CreateEntity();
-	//pkEnt->SetParent(m_pkEntityManager->GetWorldEntity());
-	//P_Enviroment* pkEnv = (P_Enviroment*)pkEnt->AddProperty("P_Enviroment");	
-	//pkEnv->LoadEnviroment("data/enviroments/rain.env");
-
+	/*
+	if(m_bShowMenulevel)
+	{
+		Entity* pkEnt = m_pkEntityManager->CreateEntity();
+		pkEnt->SetParent(m_pkEntityManager->GetWorldEntity());
+		P_Enviroment* pkEnv = (P_Enviroment*)pkEnt->AddProperty("P_Enviroment");	
+		pkEnv->LoadEnviroment("data/enviroments/rain.env");
+	}
+	*/
 }
 
 void MistClient::RunCommand(int cmdid, const CmdArgument* kCommand)

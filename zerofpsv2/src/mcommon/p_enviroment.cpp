@@ -54,9 +54,11 @@ P_Enviroment::~P_Enviroment()
 {
 	if(m_pkEnviroment)
 	{
-		m_pkEnviroment->UnRegister(this);
+		m_pkEnviroment->UnRegister(this);	
 	}
 	
+	if(m_iMusicID != -1)
+		m_pkAudioSystem->StopAudio(m_iMusicID,true);	
 }
 
 
