@@ -44,7 +44,7 @@ RSC=rc.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MT /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "BASIC_EXPORTS" /YX /FD /c
-# ADD CPP /nologo /MD /Za /W3 /GR /GX /O2 /Ob2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "BASIC_EXPORTS" /FD /c
+# ADD CPP /nologo /MD /Ze /W3 /GR /GX /O2 /Ob2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "BASIC_EXPORTS" /FD /c
 # SUBTRACT CPP /YX
 # ADD BASE MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "NDEBUG" /mktyplib203 /win32
@@ -55,12 +55,12 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /machine:I386
-# ADD LINK32 sdl.lib sdl_image.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /machine:I386 /out:"../../../bin/basic.dll" /libpath:"..\..\..\bin"
+# ADD LINK32 lua.lib tolua.lib sdl.lib sdl_image.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /machine:I386 /out:"../../../bin/basic.dll"
 # SUBTRACT LINK32 /profile
 # Begin Special Build Tool
 ProjDir=.
 SOURCE="$(InputPath)"
-PostBuild_Cmds=copy             $(ProjDir)\release\*.lib                              ..\..\..\bin\ 
+PostBuild_Cmds=copy              $(ProjDir)\release\*.lib                               ..\..\..\bin\ 
 # End Special Build Tool
 
 !ELSEIF  "$(CFG)" == "basic - Win32 Debug"
