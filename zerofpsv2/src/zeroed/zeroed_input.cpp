@@ -122,9 +122,6 @@ void ZeroEd::Input_EditObject(float fMouseX, float fMouseY)
 	NetPacket kNp;
 	if(m_pkInputHandle->Pressed(MOUSELEFT) && !DelayCommand() )
 	{
-
-		OpenObjectMenu(false);
-
 		/*
 		Entity* pkObj = m_pkEntityManager->CreateObjectFromScript(m_strActiveObjectName.c_str());
 		pkObj->SetWorldPosV(m_kObjectMarkerPos);
@@ -155,19 +152,13 @@ void ZeroEd::Input_EditObject(float fMouseX, float fMouseY)
 
 			Select_Toggle(pkObj->GetEntityID(), m_pkInputHandle->Pressed(KEY_LSHIFT));  
 
-			if(m_iCurrentObject == -1 && !GetWnd("ObjectMenu")->IsVisible() )
+			if(m_iCurrentObject == -1)
 			{
 				Select_Toggle(sel_object, false);  
-				OpenObjectMenu(true);
+				OpenObjectMenu();
 			}
-			else
-				OpenObjectMenu(false);
-			
       }
-		else
-			OpenObjectMenu(false);
 	}
-
 
 	if(m_pkInputHandle->VKIsDown("applyforce") )
 	{	

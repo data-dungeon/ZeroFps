@@ -48,6 +48,7 @@ public:
 	void ClearAll();
 
 	void ResizeMenu();
+	void OpenPopUp();
 
 	bool IsOpen();
 	bool IsMenuItem(ZGuiWnd* pkButton);

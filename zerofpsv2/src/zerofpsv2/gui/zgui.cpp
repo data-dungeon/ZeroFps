@@ -556,6 +556,8 @@ bool ZGui::UpdateMouse(int x, int y, bool bLBnPressed, bool bRBnPressed, bool bM
 	{
 		m_fTime = fTime;
 
+		bool bMenuOpen = m_pkActiveMenu && m_pkActiveMenu->IsOpen();
+
 		//if(m_pkCursor && m_pkCursor->IsVisible())	
 			OnMouseUpdate(x, y, bLBnPressed, bRBnPressed, bMBnPressed, fTime);
 
@@ -564,6 +566,12 @@ bool ZGui::UpdateMouse(int x, int y, bool bLBnPressed, bool bRBnPressed, bool bM
 
 		if(m_bForceGUICapture)
 			m_bHandledMouse = true;
+
+		if(bMenuOpen && (m_pkActiveMenu && m_pkActiveMenu->IsOpen() == false))
+		{
+			m_pkActiveMenu = NULL;
+			m_bHandledMouse = true;
+		}
 		
 		m_pkToolTip->Update(x,y,(bLBnPressed|bRBnPressed|bMBnPressed),fTime);
 	}
@@ -647,6 +655,11 @@ bool ZGui::Activate(bool bActive)
 {
 	m_bActive = bActive;
 	return m_bActive;
+}
+
+void ZGui::SetActiveMenu(ZGuiMenu* pkMenu)
+{
+	m_pkActiveMenu = pkMenu;
 }
 
 void ZGui::ShowMainWindow(ZGuiWnd* pkMainWnd, bool bShow)

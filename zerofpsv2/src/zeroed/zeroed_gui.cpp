@@ -57,7 +57,8 @@ void ZeroEd::SetupGuiEnviroment()
 
 	
 	
-
+	CreateMenu("data/script/gui/objectmenu.txt", "ObjectMenu", true);
+	GetWnd("ObjectMenu")->Hide();
 	
 
 	

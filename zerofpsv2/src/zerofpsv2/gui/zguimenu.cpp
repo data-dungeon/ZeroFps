@@ -136,7 +136,7 @@ bool ZGuiMenu::Notify(ZGuiWnd* pkWindow, int iCode)
 				else
 				{
 					OpenSubMenu(pkSubMenu, res->second);
-					Resize(GetScreenRect().Width(), 500);
+					//Resize(GetScreenRect().Width(), 500);
 				}
 				
 				break;
@@ -171,10 +171,10 @@ bool ZGuiMenu::Render( ZGuiRender* pkRenderer )
 	if(m_pkLabel && m_bPopup == false)
 		m_pkLabel->Render(pkRenderer); 
 
-	if(m_bPopup)
-	{
- 		m_vkItems[0]->pkButton->Hide();
-	}
+	//if(m_bPopup)
+	//{
+ //		m_vkItems[0]->pkButton->Hide();
+	//}
 
 	static ZGuiLabel* pkArrow = pkArrow;
 	if(pkArrow == NULL)
@@ -300,7 +300,7 @@ bool ZGuiMenu::AddItem(const char* szText, const char* szNameID,
 		pkRootItem->pkParent = NULL;
 		pkRootItem->szNameID = new char[strlen("PopupRootMain")+1];
 		strcpy(pkRootItem->szNameID, "PopupRootMain");
-		pkRootItem->pkButton = new ZGuiButton(Rect(0,0,10,10),this,1,0);
+		pkRootItem->pkButton = new ZGuiButton(Rect(0,0,10,10),this,0,0);
 		m_vkItems.push_back(pkRootItem); 
 
 		s_iMenuIDCounter++;
@@ -523,6 +523,14 @@ void ZGuiMenu::HideAll()
 			it->second = false;
 	}	
 
+	//if(m_bPopup && !m_vkItems.empty())
+	//{
+	//	OpenSubMenu(m_vkItems[0], true);
+	//}
+}
+
+void ZGuiMenu::OpenPopUp()
+{
 	if(m_bPopup && !m_vkItems.empty())
 	{
 		OpenSubMenu(m_vkItems[0], true);
@@ -762,6 +770,9 @@ bool ZGuiMenu::IsOpen()
 {
 	for(int i=0; i<m_vkItems.size(); i++)
 	{
+		if(i==0 && m_bPopup)
+			continue;
+
 		if(m_vkItems[i]->pkButton->IsVisible() &&
 			m_vkItems[i]->pkParent != NULL)
 			return true;
@@ -785,6 +796,9 @@ bool ZGuiMenu::HooverItem(int x, int y)
 {
 	for(int i=0; i<m_vkItems.size(); i++)
 	{
+		if(i==0 && m_bPopup)
+			continue;
+
 		if(m_vkItems[i]->pkButton->IsVisible() &&
 			m_vkItems[i]->pkButton->GetScreenRect().Inside(x,y))
 			return true;

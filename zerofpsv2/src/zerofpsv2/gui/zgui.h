@@ -97,6 +97,7 @@ public:
 	void AddKeyCommand(int Key, ZGuiWnd* pkFocusWnd, ZGuiWnd* pkTriggerWnd);
 	
 	void ShowMainWindow(ZGuiWnd* pkMainWnd, bool bShow);
+	void SetActiveMenu(ZGuiMenu* pkMenu);
 	bool Activate(bool bActive);
 	void SetCursor(int x, int y, int TextureID, int MaskTextureID=-1, int Width=16, int Height=16);
 	void ShowCursor(bool bShow);
