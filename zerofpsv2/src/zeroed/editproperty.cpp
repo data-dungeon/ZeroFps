@@ -268,7 +268,7 @@ void ZeroEd::OpenObjectMenu(bool bOpen)
 		int x,y;
 		m_pkInputHandle->SDLMouseXY(x,y); 
 		pkMenu->SetPos(x,y,true,true); 
-		pkMenu->Show();
+		ShowWnd("ObjectMenu", true, true);
 	}
 	else
 	{
