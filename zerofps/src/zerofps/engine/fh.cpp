@@ -11,59 +11,36 @@
 /*** End: Your Name ***/
 
 #include "fh.h"
+#include "zerofps.h"
 
 /*** Start: Vim ***/
-/*
-class BoneAnim
+
+
+ResTexture::ResTexture()
 {
-public:
-	Vector3 m_kPos;
-	Vector3 m_kRot;
-	
-	void Set(float x, float y, float z, float rx, float ry, float rz) {
-		m_kPos.Set(x,y,z);
-		m_kRot.Set(rx,ry,rz);
-		}		
-};
 
-class BoneAnimFrame
+}
+
+ResTexture::~ResTexture()
 {
-public:
-	vector<BoneAnim>	BonePositions;
-};
-*/
-/*
-void CreateAnim()
+
+}
+
+
+bool ResTexture::Create(string strName)
 {
-	BoneAnim	NewBone;
+	strTextureName = strName;
 
-	BoneAnimFrame	BoneFrames;
+	TextureManager*	pkTex = static_cast<TextureManager*>(g_ZFObjSys.GetObjectPtr("TextureManager"));
+	m_iTextureID = pkTex->Load(strName.c_str(), 0);
+		
+	return true;
+}
 
-	BoneFrames.BonePositions.push_back(NewBone);
-}*/
-/*
-void DrawTest(float x, float y, float z)
+ZFResource* Create__ResTexture()
 {
-	glPushAttrib(GL_FOG_BIT|GL_LIGHTING_BIT | GL_TEXTURE_BIT | GL_COLOR_BUFFER_BIT );
-	glDisable(GL_LIGHTING);
-	glDisable(GL_COLOR_MATERIAL);	
-	glDisable(GL_TEXTURE_2D);
-	
-	glPushMatrix();
-	glColor3f(1,1,1);
-	glTranslatef(x,y,z);
-
-	glTranslatef(-0.023717, 0.008030, 0.000000);
-	glRotatef(1,0,0, 3.141593 );
-	glRotatef(0,1,0, 0.000000 );
-	glRotatef(0,0,1, 1.541102 );
-
-
- 
-	glutSolidSphere(0.1, 8, 8);
-	glPopMatrix();
-	glPopAttrib();
-}*/
+	return new ResTexture;
+}
 
 /*** End: Vim ***/
 

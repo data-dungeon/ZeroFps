@@ -7,6 +7,7 @@ using namespace std;
 #include "../basic/basic.pkg"
 #include "engine_x.h"
 #include "zfresource.h"
+#include "fh.h"
 
 #define MAD_MAX_ANIMATIONNAME	256		 
 #define MAD_MAX_NAME			64		
@@ -147,7 +148,8 @@ private:
 	vector<Mad_CoreMeshAnimation>	akAnimation;			///< Animations.
 	vector<int>							akBoneConnections;	///< Vertex -> Bone index.
 
-	int								iTextureID[256];	///< Texture ID's Assigned by rendering sys.
+	int									iTextureID[256];				///< Texture ID's Assigned by rendering sys.
+	ZFResourceHandle					akTexturesHandles[256];		// Texture resurs handles
 
 public:
 	bool							bNotAnimated;		///< True if this is a static mesh that we could put in a display list.
@@ -204,6 +206,9 @@ public:
 	void SetTextureID(int iTextureIndex, int iID);
 	int GetTextureID(int iTextureIndex);
 	
+	void					SetTextureHandle(int iTextureIndex, string strName);
+	ZFResourceHandle*	GetTextureHandle(int iTextureIndex);
+
 	vector<Mad_Face>* GetFacesPointer() {return &akFaces;};
 	vector<Mad_CoreVertexFrame>* GetVertexFramePointer() {return &akFrames;};	
 

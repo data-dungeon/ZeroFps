@@ -12,10 +12,25 @@
 
 #ifndef _ENGINE_FH_H_
 #define _ENGINE_FH_H_
-#include "zerofps.h"
+#include "zfresource.h"
 
 /*** Start: Vim ***/
 void ENGINE_API DrawTest(float x, float y, float z);
+
+class ResTexture : public ZFResource
+{
+private:
+
+public:
+	int		m_iTextureID;
+	string	strTextureName;
+
+	ResTexture();
+	~ResTexture();
+
+	bool Create(string strName);
+};
+
 /*** End: Vim ***/
 
 

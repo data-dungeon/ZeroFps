@@ -324,7 +324,7 @@ void Mad_Modell::LoadTextures()
 
 	int iNumOfMesh = GetNumOfMesh();
 	int iNumOfSubMesh;
-	int iTexID;
+//	int iTexID;
 
 	Mad_Core* pkCore = dynamic_cast<Mad_Core*>(kMadHandle.GetResourcePtr()); 
 
@@ -338,11 +338,11 @@ void Mad_Modell::LoadTextures()
 			SelectSubMesh(iSubM);
 
 			Mad_CoreTexture* pkTexInfo = GetTextureInfo();
-			sprintf(szFullTexName, "../data/textures/%s.tga", pkTexInfo->ucTextureName);
+			sprintf(szFullTexName, "data/textures/%s.tga", pkTexInfo->ucTextureName);
 			if(pkTexInfo->bIsAlphaTest)
-				sprintf(szFullTexName, "../data/textures/%s.tga", pkTexInfo->ucTextureName);
+				sprintf(szFullTexName, "data/textures/%s.tga", pkTexInfo->ucTextureName);
 			else 
-				sprintf(szFullTexName, "../data/textures/%s.bmp", pkTexInfo->ucTextureName);
+				sprintf(szFullTexName, "data/textures/%s.bmp", pkTexInfo->ucTextureName);
 
 
 			/*pkTexInfo->bClampTexture	= false;
@@ -360,12 +360,14 @@ void Mad_Modell::LoadTextures()
 				pkTexInfo->bTwoSided		= true;
 				}*/
 
-			if(pkTexInfo->bClampTexture)
+			/*if(pkTexInfo->bClampTexture)
 				iTexID = pkTex->Load(szFullTexName,T_CLAMP);
 			else
 				iTexID = pkTex->Load(szFullTexName,0);
-			
-			m_pkMesh->SetTextureID(m_pkSubMesh->iTextureIndex, iTexID);
+			*/
+
+			//m_pkMesh->SetTextureID(m_pkSubMesh->iTextureIndex, iTexID);
+			m_pkMesh->SetTextureHandle(m_pkSubMesh->iTextureIndex, szFullTexName);
 			}
 		}
 }
@@ -430,7 +432,16 @@ void Mad_Modell::Draw_All(int iDrawFlags)
 				//iNumOfFaces = 1;
 
 				Mad_CoreTexture* pkTexInfo = GetTextureInfo();
-				m_pkTex->BindTexture( m_pkMesh->GetTextureID(m_pkSubMesh->iTextureIndex));
+				
+				
+				ZFResourceHandle* pkRes = m_pkMesh->GetTextureHandle(m_pkSubMesh->iTextureIndex);
+				
+				ResTexture* pkTexture = static_cast<ResTexture*>(pkRes->GetResourcePtr());
+				m_pkTex->BindTexture( pkTexture->m_iTextureID );
+				
+				//m_pkTex->BindTexture( m_pkMesh->GetTextureID(m_pkSubMesh->iTextureIndex));
+
+
 				//m_pkTex->BindTexture("../data/textures/c_red.tga",0);
 				if(pkTexInfo->bIsAlphaTest) {
 					glEnable(GL_ALPHA_TEST);

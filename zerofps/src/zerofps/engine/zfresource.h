@@ -26,6 +26,27 @@ public:
 };
 
 
+class ZFResourceHandle
+{
+private:
+	int		m_iHandleID;
+	string	m_strName;
+	int		m_iID;
+
+public:
+	ZFResourceHandle();
+	~ZFResourceHandle();
+
+	bool SetRes(string strName);
+	void FreeRes();
+	bool IsValid();
+
+	ZFResource*	GetResourcePtr();
+
+	friend class ZFResourceDB;
+
+
+};
 
 
 #endif

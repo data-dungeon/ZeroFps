@@ -254,7 +254,7 @@ bool WorkPanelDlg::DlgProc( ZGuiWnd* pkWnd, unsigned int uiMessage,
 						break;
 				string szMadFile = ((ZGuiListbox*)m_pkGuiMan->Wnd(
 					"MadFileList"))->GetSelItem()->GetText();
-				pkMadProp->SetValue("m_kMadFile", "../data/mad/" + szMadFile);
+				pkMadProp->SetValue("m_kMadFile", "data/mad/" + szMadFile);
 
 				// Plocka bort bollen.
 				Property* pkModelProp;

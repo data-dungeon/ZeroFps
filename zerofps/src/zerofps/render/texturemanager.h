@@ -70,6 +70,7 @@ class RENDER_API TextureManager : public ZFObject {
 	public:
 		TextureManager(FileIo* pkFile);
 		int Load(const char* acFileName,int iOption);		
+		bool UnLoad(const char* acFileName);		
 		bool AddMipMapLevel(int iLevel,const char* acNewFile);
 		void BindTexture(int iTexture);
 		void BindTexture(const char* acFileName,int iOption);

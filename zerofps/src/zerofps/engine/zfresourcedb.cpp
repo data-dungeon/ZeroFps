@@ -1,6 +1,7 @@
 #include "zerofps.h"
 
 ZFResource* Create__Mad_Core();
+ZFResource* Create__ResTexture();
 
 int	g_iResourceHandleID;
 
@@ -37,13 +38,11 @@ ZFResourceHandle::~ZFResourceHandle()
 bool ZFResourceHandle::SetRes(string strName)
 {
 	FreeRes();
-
-	
-//	cout << "ZFResourceHandle::SetRes: " << m_iHandleID << " to " << strName << endl;
+	cout << "ZFResourceHandle::SetRes: " << m_iHandleID << " to " << strName << endl;
 
 	m_strName = strName;
 	ZFResourceDB* pkResDB = static_cast<ZFResourceDB*>(g_ZFObjSys.GetObjectPtr("ZFResourceDB"));
-    pkResDB->GetResource(*this,strName);
+   pkResDB->GetResource(*this,strName);
 
 	if(m_iID == -1)
 		return false;
@@ -84,7 +83,13 @@ ZFResourceDB::ZFResourceDB()
 {
 	m_iNextID = 0;
 
-	RegisterResource( string(".mad"), Create__Mad_Core );
+	RegisterResource( string(".mad"), Create__Mad_Core		);
+	RegisterResource( string(".tga"), Create__ResTexture	);
+	RegisterResource( string(".bmp"), Create__ResTexture	);
+
+	g_ZFObjSys.Register_Cmd("res_list",FID_LISTRES,this);
+	
+
 }
 
 ZFResourceDB::~ZFResourceDB()
@@ -98,7 +103,7 @@ void ZFResourceDB::Refresh()
 
 	for(it = m_kResources.begin(); it != m_kResources.end(); it++ ) {
 		if((*it)->m_iNumOfUsers == 0) {
-			//cout << "ResDB: Remove '" << (*it)->m_strName << "'" << endl;
+			cout << "ResDB: Remove '" << (*it)->m_strName << "'" << endl;
 			delete (*it);
 			it = m_kResources.erase(it);
 			}
@@ -107,7 +112,7 @@ void ZFResourceDB::Refresh()
 	ZeroFps* pkZeofps = dynamic_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
 
 	for(it = m_kResources.begin(); it != m_kResources.end(); it++ ) {
-		pkZeofps->DevPrintf("%s - %d", (*it)->m_strName.c_str(), (*it)->m_iNumOfUsers);
+		pkZeofps->DevPrintf("res", "%s - %d", (*it)->m_strName.c_str(), (*it)->m_iNumOfUsers);
 		}
 }
 
@@ -256,6 +261,22 @@ ResourceCreateLink*	ZFResourceDB::FindResourceTypeFromFullName(string strResName
 	return FindResourceType(string(pcExt));
 }
 
+void ZFResourceDB::RunCommand(int cmdid, const CmdArgument* kCommand)
+{
+	ZeroFps* pkZeroFps = static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
+
+	list<ZFResourceInfo*>::iterator it;
+
+	switch (cmdid) {
+		case FID_LISTRES:
+
+		for(it = m_kResources.begin(); it != m_kResources.end(); it++ ) {
+			pkZeroFps->DevPrintf("res", "- %s - %d",(*it)->m_strName.c_str(),(*it)->m_iNumOfUsers);
+			}
+			break;
+
+		};
+}
 
 
 

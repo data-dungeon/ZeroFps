@@ -244,13 +244,13 @@ void Mad_CoreMesh::Load(ZFVFile* pkZFile)
 		akAnimation.push_back(kNyAnim);
 	}
 
-	// Load Textures
+/*	// Load Textures
 	char nisse[256];
 	for(i = 0; i< kHead.iNumOfTextures; i++) {
 		sprintf(nisse, "../data/textures/%s.bmp", akTextures[i].ucTextureName);
 //		cout << "Should Load: " << nisse << endl;
 //		aiTextureIndex[i] = pkTextureManger->Load(nisse,0);
-	}
+	}*/
 
 }
 
@@ -549,6 +549,16 @@ void Mad_CoreMesh::SetTextureID(int iTextureIndex, int iID)
 int Mad_CoreMesh::GetTextureID(int iTextureIndex)
 {
 	return iTextureID[iTextureIndex];
+}
+
+void Mad_CoreMesh::SetTextureHandle(int iTextureIndex, string strName)
+{
+	akTexturesHandles[iTextureIndex].SetRes(strName);
+}
+
+ZFResourceHandle*	Mad_CoreMesh::GetTextureHandle(int iTextureIndex)
+{
+	return &	akTexturesHandles[iTextureIndex];
 }
 
 void Mad_CoreMesh::FlipFaces()

@@ -47,38 +47,25 @@ public:
 
 };
 
-class ZFResourceHandle
-{
-private:
-	int		m_iHandleID;
-	string	m_strName;
-	int		m_iID;
-
-public:
-	ZFResourceHandle();
-	~ZFResourceHandle();
-
-	bool SetRes(string strName);
-	void FreeRes();
-	bool IsValid();
-
-	ZFResource*	GetResourcePtr();
-
-	friend class ZFResourceDB;
-
-
-};
 
 
 
 class ENGINE_API ZFResourceDB : public ZFObject {
 	private:
+		enum FuncId_e
+		{
+			FID_LISTRES,
+		};
+
+
 		int						m_iNextID;
 
 		list<ZFResourceInfo*>		m_kResources;
 		vector<ResourceCreateLink>	m_kResourceFactory;
 
 		ResourceCreateLink*	FindResourceTypeFromFullName(string strResName);
+
+		void RunCommand(int cmdid, const CmdArgument* kCommand);
 
 
 	public:

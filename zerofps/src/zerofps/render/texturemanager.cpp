@@ -233,6 +233,17 @@ SDL_Surface *TextureManager::LoadImage(const char *acFilename)
    return(image);
 };
 
+bool TextureManager::UnLoad(const char* acFileName)
+{
+	int iTexture;
+	iTexture = GetIndex(acFileName);
+	if(iTexture != NO_TEXTURE)
+		return false;
+
+	return true;
+	
+}
+
 int TextureManager::Load(const char* acFileName,int iOption)
 {
 	int iTexture;
