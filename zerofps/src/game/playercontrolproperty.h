@@ -32,7 +32,7 @@ class PlayerControlProperty: public Property {
 		PlayerControlProperty(Input *pkInput,HeightMap *pkMap);
 
 		void Update();
-		void Touch(CollisionData* Data);		
+		void Touch(Object* pkObject);		
 };
 
 

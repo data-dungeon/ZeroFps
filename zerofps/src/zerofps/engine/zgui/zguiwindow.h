@@ -11,6 +11,7 @@
 
 #include "../engine_x.h"
 #include "../../basic/rect.h"
+#include <functional>
 
 #pragma warning( disable : 4786) // truncate long names, who gives a shit...
 #include <list>

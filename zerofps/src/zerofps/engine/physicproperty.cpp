@@ -11,6 +11,8 @@ PhysicProperty::PhysicProperty()
 	
 	m_bGravity=true;
 	m_bFloat=true;	
+	m_bSolid=true;	
+
 
 	m_pkColSphere=NULL;
 	m_pkColObject=NULL;
@@ -72,6 +74,13 @@ void PhysicProperty::Load(ZFMemPackage* pkPackage)
 {
 	pkPackage->Read((void*)&m_bGravity,4);
 	pkPackage->Read((void*)&m_bFloat,4);
+}
+
+
+void PhysicProperty::SetColShape(CollisionShape* pkCs)
+{
+	m_pkColObject = pkCs;
+	m_pkColObject->SetPPPointer(this);	
 }
 
 

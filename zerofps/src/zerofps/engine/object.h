@@ -137,7 +137,7 @@ class ENGINE_API Object {
 		
 		virtual void HandleCollision(Object* pkObject,Vector3 kPos,bool bContinue);
 
-		void Touch(CollisionData *pkData);
+		void Touch(Object* pkObject);
 
 
 //		void Update();

@@ -18,7 +18,14 @@ class ENGINE_API PhysicProperty :public Property
 	public:
 		bool m_bGravity;
 		bool m_bFloat;
+		bool m_bSolid;
 	
+		
+		Vector3 m_kNewPos;	//for the physicengine
+		Vector3 m_kNewVel;	//for the physicengine
+		Vector3 m_kNewAcc;	//for the physicengine
+		
+		
 		PhysicProperty();
 		~PhysicProperty();		
 		
@@ -29,7 +36,7 @@ class ENGINE_API PhysicProperty :public Property
 		CollisionShape* GetColSphere(){return m_pkColSphere;};
 		CollisionShape* GetColShape(){return m_pkColObject;};
 
-		void SetColShape(CollisionShape* pkCs){m_pkColObject = pkCs;};
+		void SetColShape(CollisionShape* pkCs);
 
 
 		void Save(ZFMemPackage* pkPackage);

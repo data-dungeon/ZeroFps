@@ -185,3 +185,9 @@ void ZGuiScrollbar::SetZValue(int iValue)
 	ZGuiWnd::SetZValue(iValue);
 	m_pkThumbButton->SetZValue(iValue-1);
 }
+
+
+
+
+
+

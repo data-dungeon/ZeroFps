@@ -34,8 +34,6 @@ public:
 void PlayerControlProperty::Update() {
 	m_pkObject->GetObjectType()=OBJECT_TYPE_PLAYER;
 	
-	cout<<"POS :"<<m_pkObject->GetPos().y<<endl;
-	
 	
 	float speed=2;
 	walking=false;
@@ -125,22 +123,12 @@ void PlayerControlProperty::Update() {
 	onGround=false;
 };
 
-void PlayerControlProperty::Touch(CollisionData* Data)
+void PlayerControlProperty::Touch(Object* pkObject)
 {
-	if(Data->m_pkOther->GetName() == "HeightMapObject")
+	if(pkObject->GetName() == "HeightMapObject")
 	{
-		m_pkObject->GetPos()=Data->m_kPos;
-		m_pkObject->GetVel().y=0;
 		onGround=true;
 	}
-	else
-	{
-		m_pkObject->GetPos()=Data->m_kPos;
-//		m_pkObject->GetVel()=Data->m_kVel;
-		onGround=true;	
-	}
-//	m_pkObject->GetAcc()=Data->m_kAcc;
-
 }
 
 

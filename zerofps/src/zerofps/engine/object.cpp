@@ -662,11 +662,11 @@ void Object::Save(ObjectDescriptor* ObjDesc)
 }
 
 
-void Object::Touch(CollisionData *pkData)
+void Object::Touch(Object* pkObject)
 {
 	for(list<Property*>::iterator it=m_akPropertys.begin();it!=m_akPropertys.end();it++) 
 	{
-		(*it)->Touch(pkData);
+		(*it)->Touch(pkObject);
 	}
 }
 

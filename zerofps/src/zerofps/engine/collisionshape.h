@@ -21,7 +21,7 @@ class ENGINE_API CollisionShape
 		
 		void SetPPPointer(PhysicProperty* pkPP);
 		
-		virtual CollisionData* Test(CollisionShape* kOther,Sphere* pkSThis,Sphere* pkSOther,float fTime,bool bContinue)=0;
+		virtual CollisionData* Test(CollisionShape* kOther,float fTime,bool bContinue)=0;
 };
 
 #endif

@@ -23,20 +23,30 @@ class PhysicProperty;
 
 struct ENGINE_API CollisionData
 {
-	Object* m_pkOther;	
-	Vector3 m_kOtherPos;		
-	Vector3 m_kOtherVel;	
-	Vector3 m_kOtherAcc;		
-	Vector3 m_kOtherRot;		
+	PhysicProperty* m_pkPP2;
+	Vector3 m_kPos2;
+	Vector3 m_kVel2;
+	Vector3 m_kAcc2;
+	Vector3 m_kRot2;	
 	
-	Vector3 m_kPos;
-	Vector3 m_kVel;
-	Vector3 m_kAcc;
-	Vector3 m_kRot;	
+	PhysicProperty* m_pkPP1;
+	Vector3 m_kPos1;
+	Vector3 m_kVel1;
+	Vector3 m_kAcc1;
+	Vector3 m_kRot1;	
 
 	Vector3 m_kNormal;
 	
 
+};
+
+struct ENGINE_API Collision
+{
+	PhysicProperty* m_pkPP1;
+	PhysicProperty* m_pkPP2;
+
+	Vector3 m_kPos1;
+	Vector3 m_kPos2;
 };
 
 struct Sphere{
@@ -54,8 +64,13 @@ class ENGINE_API PhysicsEngine : public ZFObject
 		float m_fFrameTime;
 		bool m_bUpdate;
 	
+		bool m_bChanged;
+	
 		//curent physicpropertys
 		list<Property*> m_kPropertys;		
+		
+		//collisions
+		vector<Collision> m_kCollisions;
 		
 		//curent motionspheres
 		vector<Sphere> m_kMotionSpheres;
@@ -68,12 +83,26 @@ class ENGINE_API PhysicsEngine : public ZFObject
 		Vector3 GetNewPos(PhysicProperty* pkPP);
 		Vector3 GetNewVel(PhysicProperty* pkPP);
 		
+		
+		void CalcNewPos();
+		void CheckCollisions();
+		void GenerateMotionSpheres();
+		bool TestMotionSpheres(PhysicProperty* pkPP1,PhysicProperty* pkPP2);
+		CollisionData* DeepTest(PhysicProperty* pkPP1,PhysicProperty* pkPP2);		
+		void HandleCollisions();
+		
+		
+		
+		
+		/*
 		void CalcMotionSpheres();
 		void TestCollisions();
 		bool TestSphere(Sphere* S1,Sphere* S2);
-		void DeepTest(Sphere* S1,Sphere* S2);
+
 		
 		void MoveObject(PhysicProperty* pkPP);
+		*/
+
 
 		void SetUpdate(bool bUpdate) { m_bUpdate=bUpdate;};
 		bool GetUpdate() {return m_bUpdate;};

@@ -24,8 +24,8 @@ BallObject::BallObject() {
 	AddProperty("PhysicProperty");
 	
 	PhysicProperty* pp = dynamic_cast<PhysicProperty*>(GetProperty("PhysicProperty"));
-	pp->m_bGravity=false;
-	pp->m_bFloat=false;
+//	pp->m_bGravity=false;
+//	pp->m_bFloat=false;
 
 //	m_kAcc.Set(0,-9.82,0);
 

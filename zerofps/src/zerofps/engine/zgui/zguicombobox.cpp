@@ -7,6 +7,7 @@
 #include "zguilistbox.h"
 #include "zgui.h"
 #include <iostream.h>
+#include <cstdio>
 
 const int COMBOBOX_LABEL_ID = 800;
 const int LISTBOX_ID = 801;
@@ -192,3 +193,10 @@ bool ZGuiCombobox::RemoveAllItems()
 	m_pkLabel->SetText(" ");
 	return true;
 }
+
+
+
+
+
+
+

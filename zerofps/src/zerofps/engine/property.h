@@ -53,7 +53,7 @@ class ENGINE_API Property
 		
 		Property();
 		virtual ~Property(){};
-		virtual void Touch(CollisionData *pkData){};
+		virtual void Touch(Object* pkObject){};
 		virtual void Update(){};			
 		virtual void PackTo(NetPacket* pkNetPacket){} ;
 		virtual void PackFrom(NetPacket* pkNetPacket){} ;
