@@ -493,20 +493,16 @@ void ObjectManager::UpdateDeleteList(NetPacket* pkNetPacket)
 			}
 		pkNetPacket->Read(iObjectID);
 		}	
-
-//	m_aiNetDeleteList.clear();
 }
 
 void ObjectManager::UpdateState(NetPacket* pkNetPacket)
 {
 	Object* pkNetSlave;
 	int iObjectID;
-//	int iParentObjectID;
 	pkNetPacket->Read(iObjectID);
 
 	while(iObjectID != -1) {
 		g_ZFObjSys.Logf("net", "UpdateState: Object %d\n", iObjectID);
-//		pkNetPacket->Read(iParentObjectID);
 
 		pkNetSlave = GetObjectByNetWorkID(iObjectID);
 		if(pkNetSlave == NULL) {
@@ -546,24 +542,14 @@ void ObjectManager::PackToClients()
 		m_iForceNetUpdate  = 0x0;					
 		}
 
-//	m_iForceNetUpdate  = 0x0;					
-
-	/*
-	if(net->m_eNetStatus != NET_SERVER) {
-		m_aiNetDeleteList.clear();
-		return;
-		}*/
-
 	NetPacket NP;
 	NP.Clear();
 	NP.m_kData.m_kHeader.m_iPacketType = ZF_NETTYPE_UNREL;
-//	NP.Write((char) ZF_NETTYPE_UNREL);
 	NP.Write((char) ZFGP_OBJECTSTATE);
 
 	int iNumOfObjects = m_akObjects.size();
 	int iPacketSize = 0;
 	int iEndOfObject = -1;
-
 
 	for(list<Object*>::iterator it=m_akObjects.begin();it!=m_akObjects.end();it++) {
 		(*it)->m_iNetUpdateFlags |= m_iForceNetUpdate;
@@ -585,7 +571,6 @@ void ObjectManager::PackToClients()
 
 			NP.Clear();
 			NP.m_kData.m_kHeader.m_iPacketType = ZF_NETTYPE_UNREL;
-			//NP.Write((char) ZF_NETTYPE_UNREL);
 			NP.Write((char) ZFGP_OBJECTSTATE);
 
 			iPacketSize = 0;
@@ -602,7 +587,6 @@ void ObjectManager::PackToClients()
 	// Pack delete data.
 	NP.Clear();
 	NP.m_kData.m_kHeader.m_iPacketType = ZF_NETTYPE_UNREL;
-	//NP.Write((char) ZF_NETTYPE_UNREL);
 	NP.Write((char) ZFGP_DELETEOBJECT);
 
 	for(int i=0; i<m_aiNetDeleteList.size(); i++) {
@@ -617,7 +601,6 @@ void ObjectManager::PackToClients()
 }
 
 // Debug / Help Functions		
-
 void ObjectManager::DisplayTree()
 {
 	g_ZFObjSys.Log_Create("fisklins");
@@ -634,8 +617,6 @@ void ObjectManager::DumpActiverPropertysToLog(char* szMsg)
 		g_ZFObjSys.Logf("net", "%s (%d)", (*it)->m_acName, (*it)->GetObject()->iNetWorkID );
 		if((*it)->GetObject()->m_pkParent)
 			g_ZFObjSys.Logf("net", " Parent Obj: %s\n", (*it)->GetObject()->m_pkParent->m_kName.c_str() );
-
-		//cout << (*it)->m_acName << endl;
 	}
 	
 }
@@ -852,13 +833,6 @@ void ObjectManager::GetPropertys(int iType,int iSide)
 {
 	m_akPropertys.clear();
 	m_pkWorldObject->GetAllPropertys(&m_akPropertys,iType,iSide);
-
-/*
-	for(list<Object*>::iterator it=m_akObjects.begin();it!=m_akObjects.end();it++) {
-		(*it)->GetPropertys(&m_akPropertys,iType,iSide);		
-	}
-*/
-//	cout<<"TOTAL propertys: "<<m_akPropertys.size()<<endl;
 }
 
 bool ObjectManager::TestLine(vector<Object*>* pkPPList,Vector3 kPos,Vector3 kVec)
@@ -926,212 +900,12 @@ void ObjectManager::OwnerShip_Give(Object* pkObj)
 
 }
 
-
-
-
-
-
-
-
-
-//vector<ObjectTemplate*>	m_ObjectTemplates;
-/*void ObjectManager::Create_OT(int iID)
-{
-	Console* pkConsole;
-	pkConsole = dynamic_cast<Console*>(g_ZFObjSys.GetObjectPtr("Console"));
-
-	if(iID >= 0) {
-		pkConsole->Printf("Object template ID must be below zero.");
-		return;
-		}
-
-	// Check if ID already create.
-	ObjectTemplate* pkOT = new ObjectTemplate;
-//	pkOT->m_iArvFrom = 0;
-
-//	m_ObjectTemplates.push_back( pkOT );
-//	pkConsole->Printf("Object template (%d) created.", iID);
-
-}
-
-void ObjectManager::Destory_OT(int iID)
-{
-
-}
-
-void ObjectManager::LoadGameObjects(const char* szFileName)
-{
-
-}
-
-void ObjectManager::SaveGameObjects(const char* szFileName)
-{
-
-}
-*/
-
-
 /*
-Object*	ObjectManager::GetObjectByNetWorkID(int iNetID)
-{
-	for(list<Object*>::iterator it=m_akObjects.begin();it!=m_akObjects.end();it++) {
-		if((*it)->iNetWorkID == iNetID)
-			return (*it);
-	}
-
-	return NULL;
-}*/
-
-
-
-/*
-void ObjectManager::Update(){
-	if(m_bNoUpdate)
-		return;
-	
-	UpdateDelete();
-
-	for(list<Object*>::iterator it=m_akObjects.begin();it!=m_akObjects.end();it++) {
-//		(*it)->ObjectUpdate();	
-		(*it)->Update();		 
-	}
-}
-
-void ObjectManager::Update(int iType){
-	UpdateDelete();
-
-	for(list<Object*>::iterator it=m_akObjects.begin();it!=m_akObjects.end();it++) {
-		//if the object is of specified type, then update it
-		if((*it)->GetType()==iType){
-//			(*it)->ObjectUpdate();				
-			(*it)->Update();
-		}
-	}
-}
-*/
-
-
-
- 
-
-
-
-
-/*	string strFileName;
-	string strName;
-
-	while(ucpToken)
-	{
-		if (!strcmp (ucpToken, "!scale"))
-		{
-			ucpToken = kMMScipt.GetToken();
-			g_fExportScale = atof(ucpToken);
-			cout << "Setting Scale to: " << g_fExportScale << endl;
-			g_fTotalScale	= (1.0 / g_fUnitsMeter) * g_fExportScale;
-		}
-
-		if (!strcmp (ucpToken, "!filetype")) {
-			cout << "Command filetype" << endl;
-			}
-		
-		if (!strcmp (ucpToken, "!target"))
-		{
-			ucpToken = kMMScipt.GetToken();
-			cout << "Target file is: " << ucpToken << endl;
-			ucaOutFile = ucpToken;
-		}
-
-		if (!strcmp (ucpToken, "!sd-export"))
-		{
-			ucpToken = kMMScipt.GetToken();
-			cout << "Setting Bones" << ucpToken << endl;
-			ReadExportSD(ucpToken);
-		}
-
-		if (!strcmp (ucpToken, "!ad-export"))
-		{
-			strFileName = kMMScipt.GetToken();
-			strName = kMMScipt.GetToken();
-			cout << "Add Animation '" << strName.c_str() << "' from " << strFileName.c_str() << endl;
-			ReadExportAD(strFileName.c_str(),strName.c_str());
-		}
-
-		if (!strcmp (ucpToken, "!add-md"))
-		{
-			strFileName = kMMScipt.GetToken();
-			strName = kMMScipt.GetToken();
-			cout << "Add Mesh '" << strName.c_str() << "' from " << strFileName.c_str() << endl;
-			ReadCoreMesh(strFileName.c_str(),strName.c_str());
-		}
-
-		if (!strcmp (ucpToken, "!add-fd"))
-		{
-			ucpToken = kMMScipt.GetToken();
-			cout << "Command add-fd: " << ucpToken << endl;
-			ReadBaseFrame(ucpToken);
-		}
-
-		if (!strcmp (ucpToken, "!add-meshanim"))
-		{
-			ucpToken = kMMScipt.GetToken();
-			cout << "Command add-meshanim: " << ucpToken << endl;
-			ReadAnimation(ucpToken);
-		}
-		
-		ucpToken = kMMScipt.GetToken();
-	}
-*/
 void ObjectManager::TESTVIM_SpawnArcheTypes()
 {
-/*	ObjectArcheType* pkAt;
 
-	// Create Object
-	pkAt = new ObjectArcheType;
-	
-	pkAt->m_strName = "Object";
-	pkAt->m_strParentName = "";
-
-	// Create Physics
-		pkAt = new ObjectArcheType;
-		pkAt->m_strName = "Physic";
-		pkAt->m_strParentName = "";
-		pkAt->SetValue("PhysicProperty", "ColShape",	"3");
-		pkAt->SetValue("PhysicProperty", "m_bGravity",	"false");
-
-		m_akArcheTypes.push_back(pkAt);
-
-	// Create Tree
-		pkAt = new ObjectArcheType;
-		pkAt->m_strName = "Tree";
-		pkAt->m_strParentName = "";
-		pkAt->SetValue("MadProperty", "m_kMadFile","../data/mad/tree.mad");
-		pkAt->SetValue("MadProperty", "m_fScale","1");
-		m_akArcheTypes.push_back(pkAt);
-
-	// Create Avsats
-		pkAt = new ObjectArcheType;
-		pkAt->m_strName = "Avsats";
-		pkAt->m_strParentName = "Physic";
-		pkAt->SetValue("MadProperty", "m_kMadFile",	"../data/mad/avsats.mad");
-		pkAt->SetValue("MadProperty", "m_fScale",		"1");
-	
-
-		pkAt->SetValue("PhysicsProperty", "Gravity",	"0");
-		pkAt->SetValue("PhysicsProperty", "Float",	"0");
-		pkAt->SetValue("PhysicsProperty", "Solid",	"1");
-		pkAt->SetValue("PhysicsProperty", "Glide",	"1");
-		pkAt->SetValue("PhysicsProperty", "Stride",	"0");
-		
-		pkAt->SetValue("PhysicsProperty", "StrideHieght",	"0.7");
-		pkAt->SetValue("PhysicsProperty", "Radius",	"4.6");
-		pkAt->SetValue("PhysicsProperty", "ColShape",	"3");
-		
-		m_akArcheTypes.push_back(pkAt);*/
 }
-
-
-
-
+*/
 
 Object* ObjectManager::CloneObject(int iNetID)
 {
@@ -1139,7 +913,6 @@ Object* ObjectManager::CloneObject(int iNetID)
 	if(pkObjOrginal == NULL)
 		return NULL;
 
-//	Object* pkObjClone = new Object;
 	Object* pkObjClone =	CreateObject();
 	pkObjClone->MakeCloneOf(pkObjOrginal);
 	return pkObjClone;

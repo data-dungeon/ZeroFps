@@ -172,23 +172,20 @@ void NetPacket::SetType(int iType)
 NetWork::NetWork()
 : ZFObject("NetWork"){
 
+	// Create Log Files.
 	g_ZFObjSys.Log_Create("net");
 	g_ZFObjSys.Log_Create("netpac");
+
 	g_ZFObjSys.Log("net", "NetWork SubSystem Startup:\n");
 	g_ZFObjSys.Log("netpac", "NetWork Packet Log:\n");
 
-	int iInitRes = SDLNet_Init();
-	cout << "SDLNet_Init(): " << iInitRes<< endl;
-	strcpy(szServerName,"No Name");
-	bAcceptClientConnections = false;
+	m_pkConsole	= static_cast<Console*>(g_ZFObjSys.GetObjectPtr("Console"));
+	m_pkZeroFps	= static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
 
+	strcpy(m_szServerName,"No Name");
+	m_bAcceptClientConnections = false;
 	m_pkSocket = NULL;
-
-	m_pkConsole = static_cast<Console*>(g_ZFObjSys.GetObjectPtr("Console"));
-	m_pkZeroFps  = static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));;
-
 	m_eNetStatus = NET_NONE;
-
 	SetMaxNodes( 4 );				// Vim - Hard coded for now. Must be same as ZeroFps.m_kClient
 	m_iMaxNumberOfNodes = 4;	
 
@@ -200,8 +197,25 @@ NetWork::NetWork()
 		}
 
 	g_pkNetWork = this;
+
+	int iInitRes = SDLNet_Init();
+	g_ZFObjSys.Logf("net", "SDLNet_Init(): %d\n", iInitRes);
 }
 
+NetWork::~NetWork()
+{
+	for(int i=0; i < ZF_NET_MAXSTRINGS; i++) {
+		if(m_kStringTable[i].m_bInUse)
+			g_ZFObjSys.Logf("net", "NetString[%d]: = %s\n", i, m_kStringTable[i].m_NetString.c_str());
+		}
+
+	DisconnectAll();
+	CloseSocket();
+	SDLNet_Quit();
+	g_ZFObjSys.Log("net", "NetWork SubSystem ShutDown:\n");
+}
+
+// NetStrings are strings that are sent as int's over network. 
 int NetWork::NetString_GetFree()
 {
 	for(int i=0; i < ZF_NET_MAXSTRINGS; i++) {
@@ -260,9 +274,7 @@ void NetWork::NetString_ReSendAll()
 		m_kStringTable[i].m_bUpdated = true;
 }
 
-/*
-	Check all netstrings for updates and send them to the other side.
-*/
+// Check all netstrings for updates and send them to the other side.
 void NetWork::Send_NetStrings()
 {
 	if( m_eNetStatus == NET_NONE )	return;
@@ -288,7 +300,7 @@ void NetWork::Send_NetStrings()
 		// Send if packet to large.
 		if(NP.m_iPos >= 512) {
 			NP.Write( ZF_NET_NONETSTRING );
-			g_ZFObjSys.Logf("net", "Write NetStrings: Order Client 0 : %d", this->RemoteNodes[0].m_iNumOfPacketsSent );
+			g_ZFObjSys.Logf("net", "Write NetStrings: Order Client 0 : %d", m_RemoteNodes[0].m_iNumOfPacketsSent );
 			SendToAllClients(&NP);
 
 			NP.Clear();
@@ -298,7 +310,7 @@ void NetWork::Send_NetStrings()
 		}
 
 	NP.Write( ZF_NET_NONETSTRING );
-	g_ZFObjSys.Logf("net", "Write NetStrings: Order Client 0 : %d", this->RemoteNodes[0].m_iNumOfPacketsSent );
+	g_ZFObjSys.Logf("net", "Write NetStrings: Order Client 0 : %d", m_RemoteNodes[0].m_iNumOfPacketsSent );
 	SendToAllClients(&NP);
 }
 
@@ -322,26 +334,11 @@ void NetWork::NetString_Request(int iIndex)
 	SendToAllClients(&kNetPRespons);
 }
 
-
-NetWork::~NetWork()
-{
-	for(int i=0; i < ZF_NET_MAXSTRINGS; i++) {
-		if(m_kStringTable[i].m_bInUse)
-			g_ZFObjSys.Logf("net", "NetString[%d]: = %s\n", i, m_kStringTable[i].m_NetString.c_str());
-		}
-
-	g_ZFObjSys.Log("net", "NetWork SubSystem ShutDown:\n");
-	DisconnectAll();
-	CloseSocket();
-	SDLNet_Quit();
-}
-
-
 int NetWork::GetNumOfClients(void)
 {
 	int iNumOfClients = 0;
-	for(int i=0; i < RemoteNodes.size(); i++) {
-		if(RemoteNodes[i].m_eConnectStatus != NETSTATUS_DISCONNECT)
+	for(int i=0; i < m_RemoteNodes.size(); i++) {
+		if(m_RemoteNodes[i].m_eConnectStatus != NETSTATUS_DISCONNECT)
 			iNumOfClients++;
 		}
 
@@ -358,8 +355,8 @@ bool NetWork::IsAddressEquals(IPaddress* pkAdr1, IPaddress* pkAdr2)
 
 int NetWork::GetClientNumber(IPaddress* pkAddress)
 {
-	for(int i=0; i < RemoteNodes.size(); i++) {
-		if(IsAddressEquals(pkAddress, &RemoteNodes[i].m_kAddress))
+	for(int i=0; i < m_RemoteNodes.size(); i++) {
+		if(IsAddressEquals(pkAddress, &m_RemoteNodes[i].m_kAddress))
 			return i;
 		}
 
@@ -368,13 +365,13 @@ int NetWork::GetClientNumber(IPaddress* pkAddress)
 
 void NetWork::SetMaxNodes(int iMaxNode)
 {
-	RemoteNodes.resize(iMaxNode);
+	m_RemoteNodes.resize(iMaxNode);
 }
 
 int NetWork::GetFreeClientNum()
 {
-	for(int i=0; RemoteNodes.size(); i++) {
-		if(RemoteNodes[i].m_eConnectStatus == NETSTATUS_DISCONNECT)
+	for(int i=0; m_RemoteNodes.size(); i++) {
+		if(m_RemoteNodes[i].m_eConnectStatus == NETSTATUS_DISCONNECT)
 			return i;
 		}
 
@@ -470,8 +467,8 @@ bool NetWork::Send(NetPacket* pkNetPacket)
 	int iClientID;
 	iClientID = GetClientNumber(&pkNetPacket->m_kAddress);
 	if(iClientID != ZF_NET_NOCLIENT) {
-		RemoteNodes[iClientID].m_iNumOfPacketsSent ++;
-		RemoteNodes[iClientID].m_iNumOfBytesSent += pkNetPacket->m_iLength;
+		m_RemoteNodes[iClientID].m_iNumOfPacketsSent ++;
+		m_RemoteNodes[iClientID].m_iNumOfBytesSent += pkNetPacket->m_iLength;
 		}
 
 	return true;
@@ -533,9 +530,9 @@ void NetWork::HandleControlMessage(NetPacket* pkNetPacket)
 				assert(iClientID != ZF_NET_NOCLIENT);
 
 				// Create New Connection client.
-				RemoteNodes[iClientID].SetAddress(&pkNetPacket->m_kAddress);
-				RemoteNodes[iClientID].m_eConnectStatus = NETSTATUS_CONNECTED;
-				RemoteNodes[iClientID].m_fLastMessageTime = fEngineTime;
+				m_RemoteNodes[iClientID].SetAddress(&pkNetPacket->m_kAddress);
+				m_RemoteNodes[iClientID].m_eConnectStatus = NETSTATUS_CONNECTED;
+				m_RemoteNodes[iClientID].m_fLastMessageTime = fEngineTime;
 
 				//kNewNode.m_kAddress = pkNetPacket->m_kAddress;
 				//kNewNode.m_eConnectStatus = NETSTATUS_CONNECTED;
@@ -560,9 +557,9 @@ void NetWork::HandleControlMessage(NetPacket* pkNetPacket)
 			assert(iClientID != ZF_NET_NOCLIENT);
 
 			// Create New Connection client.
-			RemoteNodes[iClientID].SetAddress(&pkNetPacket->m_kAddress);
-			RemoteNodes[iClientID].m_eConnectStatus = NETSTATUS_CONNECTED;
-			RemoteNodes[iClientID].m_fLastMessageTime = fEngineTime;
+			m_RemoteNodes[iClientID].SetAddress(&pkNetPacket->m_kAddress);
+			m_RemoteNodes[iClientID].m_eConnectStatus = NETSTATUS_CONNECTED;
+			m_RemoteNodes[iClientID].m_fLastMessageTime = fEngineTime;
 			
 			m_kServerAddress = pkNetPacket->m_kAddress;
 			m_pkConsole->Printf("NetWork::HandleControlMessage(ZF_NETCONTROL_JOINYES)");
@@ -604,7 +601,7 @@ void NetWork::HandleControlMessage(NetPacket* pkNetPacket)
 			if(iClientID != ZF_NET_NOCLIENT) {
 				m_pkConsole->Printf("NetWork::HandleControlMessage(ZF_NETCONTROL_DISCONNECT)");
 				m_pkZeroFps->Disconnect(iClientID);
-				RemoteNodes[iClientID].m_eConnectStatus = NETSTATUS_DISCONNECT;
+				m_RemoteNodes[iClientID].m_eConnectStatus = NETSTATUS_DISCONNECT;
 				}
 
 			// Outer side disconnect.
@@ -630,7 +627,7 @@ void NetWork::HandleControlMessage(NetPacket* pkNetPacket)
 				m_kStringTable[iStringID].m_NetString	= szText;
 
 				g_ZFObjSys.Logf("net", " NetString[%d] = %s\n",iStringID, m_kStringTable[iStringID].m_NetString.c_str());
-				cout << "Recv NetString:" << szText << endl;
+				cout << "Recv NetString[" << iStringID <<    "] = " << szText << endl;
 
 				pkNetPacket->Read(iStringID);
 				}
@@ -674,19 +671,19 @@ void NetWork::DevShow_ClientConnections()
 	char* pkName = "Die Vim";
 	char szAdress[256];
 
-	for(int i=0; i < RemoteNodes.size(); i++) {
-		switch(RemoteNodes[i].m_eConnectStatus) {
+	for(int i=0; i < m_RemoteNodes.size(); i++) {
+		switch(m_RemoteNodes[i].m_eConnectStatus) {
 			case NETSTATUS_CONNECTING:	pkName = "CONNECTING";	break;
 			case NETSTATUS_CONNECTED:	pkName = "CONNECTED";	break;
 			case NETSTATUS_DISCONNECT:	pkName = "DISCONNECT";	break;
 			}
 
-		AddressToStr(&RemoteNodes[i].m_kAddress,szAdress);
+		AddressToStr(&m_RemoteNodes[i].m_kAddress,szAdress);
 
 		m_pkZeroFps->DevPrintf("conn", " Node[%d] %s %s %d/%d %d/%d - %f", i, pkName, szAdress,
-			RemoteNodes[i].m_iNumOfPacketsSent, RemoteNodes[i].m_iNumOfBytesSent,
-			RemoteNodes[i].m_iNumOfPacketsRecv, RemoteNodes[i].m_iNumOfBytesRecv,
-			( RemoteNodes[i].m_fLastMessageTime + ZF_NET_CONNECTION_TIMEOUT ) - fEngineTime);
+			m_RemoteNodes[i].m_iNumOfPacketsSent, m_RemoteNodes[i].m_iNumOfBytesSent,
+			m_RemoteNodes[i].m_iNumOfPacketsRecv, m_RemoteNodes[i].m_iNumOfBytesRecv,
+			( m_RemoteNodes[i].m_fLastMessageTime + ZF_NET_CONNECTION_TIMEOUT ) - fEngineTime);
 
 //		RemoteNodes[i].m_kRecvGraph.DrawGraph(0, 50 * i + 100);
 	}
@@ -694,8 +691,8 @@ void NetWork::DevShow_ClientConnections()
 	
 void NetWork::DrawConnectionGraphs()
 {
-	for(int i=0; i < RemoteNodes.size(); i++) {
-		RemoteNodes[i].m_kRecvGraph.DrawGraph(0, 55 * i + 100);
+	for(int i=0; i < m_RemoteNodes.size(); i++) {
+		m_RemoteNodes[i].m_kRecvGraph.DrawGraph(0, 55 * i + 100);
 	}
 }
 
@@ -711,14 +708,12 @@ void NetWork::Run()
 
 	g_ZFObjSys.Logf("netpac", "Engine Time: %f\n", fEngineTime );
 
-//	TEST_KeepAliveALL();
 	int i;
-	for(i=0; i<RemoteNodes.size(); i++) {
-		RemoteNodes[i].m_iNumOfBytesRecvNetFrame = 0;
+	for(i=0; i<m_RemoteNodes.size(); i++) {
+		m_RemoteNodes[i].m_iNumOfBytesRecvNetFrame = 0;
 		}
 	
 	NetPacket NetP;
-//	unsigned char ucPacketType;
 	int iClientID;
 
 	// Recv all packets.
@@ -728,14 +723,13 @@ void NetWork::Run()
 		iRecvBytes += NetP.m_iLength;
 
 		if(iClientID != ZF_NET_NOCLIENT) {
-			RemoteNodes[iClientID].m_iNumOfPacketsRecv ++;
-//			RemoteNodes[iClientID].m_iNumOfBytesRecv += NetP.m_iLength;
-			RemoteNodes[iClientID].m_iNumOfBytesRecvNetFrame += NetP.m_iLength;
-			RemoteNodes[iClientID].m_fLastMessageTime = fEngineTime;
+			m_RemoteNodes[iClientID].m_iNumOfPacketsRecv ++;
+			m_RemoteNodes[iClientID].m_iNumOfBytesRecvNetFrame += NetP.m_iLength;
+			m_RemoteNodes[iClientID].m_fLastMessageTime = fEngineTime;
 
-			if(NetP.m_kData.m_kHeader.m_iOrder != (RemoteNodes[iClientID].m_iLastRecvPacket + 1))
-				RemoteNodes[iClientID].m_iOutOfOrderNetFrame ++;
-			RemoteNodes[iClientID].m_iLastRecvPacket = NetP.m_kData.m_kHeader.m_iOrder;
+			if(NetP.m_kData.m_kHeader.m_iOrder != (m_RemoteNodes[iClientID].m_iLastRecvPacket + 1))
+				m_RemoteNodes[iClientID].m_iOutOfOrderNetFrame ++;
+			m_RemoteNodes[iClientID].m_iLastRecvPacket = NetP.m_kData.m_kHeader.m_iOrder;
 			}
 		g_ZFObjSys.Logf("netpac", " From: %d Order: %d: Type: %d Size: %d\n",
 			iClientID, 
@@ -743,11 +737,6 @@ void NetWork::Run()
 			NetP.m_kData.m_kHeader.m_iPacketType,
 			NetP.m_iLength);
 		
-		// Read packet Type & Size
-		// NetP.Read(ucPacketType);
-
-
-	//	switch(ucPacketType) {
 		switch(NetP.m_kData.m_kHeader.m_iPacketType) {
 			// If controll handle_controllpacket.
 			case ZF_NETTYPE_CONTROL:
@@ -757,7 +746,6 @@ void NetWork::Run()
 			// Else give it to zerofps.
 			case ZF_NETTYPE_UNREL:
 				g_ZFObjSys.Logf("net", "Recv: ZF_NETTYPE_UNREL: Order = %d\n", NetP.m_kData.m_kHeader.m_iOrder);
-
 				m_pkZeroFps->HandleNetworkPacket(&NetP);
 				break;
 
@@ -767,25 +755,22 @@ void NetWork::Run()
 		}
 
 	// Check for any lost connections
-	for(i=0; i<RemoteNodes.size(); i++) {
-		if(RemoteNodes[i].m_eConnectStatus == NETSTATUS_DISCONNECT)
+	for(i=0; i<m_RemoteNodes.size(); i++) {
+		if(m_RemoteNodes[i].m_eConnectStatus == NETSTATUS_DISCONNECT)
 			continue;
 
 		// Refresh num of recd bytes graphs.
-		RemoteNodes[i].m_iNumOfBytesRecv += RemoteNodes[i].m_iNumOfBytesRecvNetFrame;
+		m_RemoteNodes[i].m_iNumOfBytesRecv += m_RemoteNodes[i].m_iNumOfBytesRecvNetFrame;
 		if(fEngineTime > m_fStatsUpdate) {
-			RemoteNodes[i].m_kRecvGraph.PushValue(RemoteNodes[i].m_iNumOfBytesRecvNetFrame);
-			RemoteNodes[i].m_iNumOfBytesRecvNetFrame = 0;
+			m_RemoteNodes[i].m_kRecvGraph.PushValue(m_RemoteNodes[i].m_iNumOfBytesRecvNetFrame);
+			m_RemoteNodes[i].m_iNumOfBytesRecvNetFrame = 0;
 			}
 
-		//RemoteNodes[i].m_kRecvGraph.PushValue(RemoteNodes[i].m_iOutOfOrderNetFrame);
-		//RemoteNodes[i].m_iOutOfOrderNetFrame = 0;
-
-		if(fEngineTime > ( RemoteNodes[i].m_fLastMessageTime + ZF_NET_CONNECTION_TIMEOUT )) {
+		if(fEngineTime > ( m_RemoteNodes[i].m_fLastMessageTime + ZF_NET_CONNECTION_TIMEOUT )) {
 			// Time out this connection.
 			m_pkZeroFps->Disconnect(i);
 			m_pkConsole->Printf("Connection to %d timed out.", i);
-			RemoteNodes[i].m_eConnectStatus = NETSTATUS_DISCONNECT;
+			m_RemoteNodes[i].m_eConnectStatus = NETSTATUS_DISCONNECT;
 			}
 		}
 
@@ -805,45 +790,23 @@ bool NetWork::AddressToStr(IPaddress* pkAddress, char* szString)
 
 	sprintf(szString, "%d.%d.%d.%d:%d", (pkAddress->host) & 0xff, (pkAddress->host >> 8) & 0xff,
 				(pkAddress->host >> 16) & 0xff, (pkAddress->host >> 24) & 0xff, iPort);
-//	sprintf(szString, "%d.%d.%d.%d:%d", (pkAddress->host >> 24) & 0xff, (pkAddress->host >> 16) & 0xff,
-//				(pkAddress->host >> 8) & 0xff, (pkAddress->host) & 0xff, iPort);
 	return true;
 }
 
 void NetWork::SendToAllClients(NetPacket* pkNetPacket)
 {
-	if(RemoteNodes.size() <= 0)
+	if(m_RemoteNodes.size() <= 0)
 		return;
 
-	for(unsigned int i=0; i<RemoteNodes.size(); i++) {
-		if(RemoteNodes[i].m_eConnectStatus != NETSTATUS_CONNECTED)
+	for(unsigned int i=0; i<m_RemoteNodes.size(); i++) {
+		if(m_RemoteNodes[i].m_eConnectStatus != NETSTATUS_CONNECTED)
 			continue;
 
-		pkNetPacket->m_kAddress = RemoteNodes[i].m_kAddress;
-		pkNetPacket->m_kData.m_kHeader.m_iOrder = RemoteNodes[i].m_iNumOfPacketsSent;
-		g_ZFObjSys.Logf("net", "SendToAllClients[%d] : Order = %d", i, RemoteNodes[i].m_iNumOfPacketsSent );
+		pkNetPacket->m_kAddress = m_RemoteNodes[i].m_kAddress;
+		pkNetPacket->m_kData.m_kHeader.m_iOrder = m_RemoteNodes[i].m_iNumOfPacketsSent;
+		g_ZFObjSys.Logf("net", "SendToAllClients[%d] : Order = %d", i, m_RemoteNodes[i].m_iNumOfPacketsSent );
 		
 		Send(pkNetPacket);
-		}
-}
-
-void NetWork::TEST_KeepAliveALL()
-{
-	if(RemoteNodes.size() <= 0)
-		return;
-
-	NetPacket NetPacket;
-	NetPacket.Clear();
-	NetPacket.m_kData.m_kHeader.m_iPacketType = ZF_NETTYPE_CONTROL;
-	//NetPacket.Write((unsigned char) ZF_NETTYPE_CONTROL);
-	NetPacket.Write((unsigned char) ZF_NETCONTROL_NOP);
-	
-	for(unsigned int i=0; i<RemoteNodes.size(); i++) {
-		if(RemoteNodes[i].m_eConnectStatus != NETSTATUS_CONNECTED)
-			continue;
-
-		NetPacket.m_kAddress = RemoteNodes[i].m_kAddress;
-		Send(&NetPacket);
 		}
 }
 
@@ -854,30 +817,48 @@ void NetWork::RTS_RequestClientObjectID()
 	NetPacket NPacket;
 	NPacket.Clear();
 	NPacket.m_kData.m_kHeader.m_iPacketType = ZF_NETTYPE_CONTROL;
-	//NPacket.Write((unsigned char) ZF_NETTYPE_CONTROL);
 	NPacket.Write((unsigned char) ZF_NETCONTROL_REQCLIENTID);
 
 	SendToAllClients(&NPacket);
 }
 
-
+// Force Disconnect on all nodes.
 void NetWork::DisconnectAll()
 {
 	if(!m_pkSocket)	return;
 
+	// Create a disconnect packet and sent it to all connects.
 	NetPacket kNetPRespons;
 	kNetPRespons.Clear();
 	kNetPRespons.m_kData.m_kHeader.m_iPacketType = ZF_NETTYPE_CONTROL;
-	//kNetPRespons.Write((unsigned char) ZF_NETTYPE_CONTROL);
 	kNetPRespons.Write((unsigned char) ZF_NETCONTROL_DISCONNECT);
 	SendToAllClients(&kNetPRespons);
 
-	for(unsigned int i=0; i<RemoteNodes.size(); i++) {
-		RemoteNodes[i].m_eConnectStatus = NETSTATUS_DISCONNECT;	//NETSTATUS_CONNECTED;
+	for(unsigned int i=0; i<m_RemoteNodes.size(); i++) {
+		m_RemoteNodes[i].m_eConnectStatus = NETSTATUS_DISCONNECT;
 	}
 }
 
+void NetWork::TEST_KeepAliveALL()
+{
+	if(m_RemoteNodes.size() <= 0)
+		return;
 
+	NetPacket NetPacket;
+	NetPacket.Clear();
+	NetPacket.m_kData.m_kHeader.m_iPacketType = ZF_NETTYPE_CONTROL;
+	NetPacket.Write((unsigned char) ZF_NETCONTROL_NOP);
+	
+	for(unsigned int i=0; i<m_RemoteNodes.size(); i++) {
+		if(m_RemoteNodes[i].m_eConnectStatus != NETSTATUS_CONNECTED)
+			continue;
+
+		NetPacket.m_kAddress = m_RemoteNodes[i].m_kAddress;
+		Send(&NetPacket);
+		}
+}
+
+/*
 void NetWork::ServerList(void)
 {
 	int iTest = 5433;
@@ -912,17 +893,7 @@ void NetWork::ServerList(void)
 	cout << "cTest2 : " << (int) cTest2 << endl;
 	cout << "vTest2 : ";
 	vTest2.Print();
-
-
-	// Create BroadCast LIST packet.
-/*	NetPacket NetP;
-	NetP.Write((char) ZF_NETTYPE_CONTROL);
-	NetP.Write((char) ZF_NETCONTROL_LIST);
-	
-	NetP.SetTarget("255.255.255.255:4242");
-	Send(&NetP);
-	m_pkConsole->Printf("Hello... Hello... Anyone...?");*/
-}
+}*/
 
 
 

@@ -743,7 +743,7 @@ void ZeroFps::RunCommand(int cmdid, const CmdArgument* kCommand)
 
 		case FID_SLIST:
 			m_pkConsole->Printf("List of servers");
-			m_pkNetWork->ServerList();
+//			m_pkNetWork->ServerList();
 			break;
 
 		case FID_CONNECT:

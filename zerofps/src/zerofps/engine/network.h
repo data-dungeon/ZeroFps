@@ -7,36 +7,38 @@
 #include <SDL/SDL_net.h>
 #include "fh.h"
 
-#define MAX_PACKET_SIZE	1024
-#define MAX_NETWORKNAME	16
+#define MAX_PACKET_SIZE	1024				// Max Bytes in each packet.
+#define MAX_NETWORKNAME	16					
 
-#define ZF_NETTYPE_CONTROL			1
-#define ZF_NETTYPE_UNREL			2
+// Diffrent types of messages the network sends.
+#define ZF_NETTYPE_CONTROL				1	// A Connection controll message
+#define ZF_NETTYPE_UNREL				2	// Unrel message that ZeroFps handles.
 
-
-#define ZF_NETCONTROL_LIST				1
-#define ZF_NETCONTROL_JOIN				2
-#define ZF_NETCONTROL_JOINYES			3
-#define ZF_NETCONTROL_JOINNO			4
-#define ZF_NETCONTROL_DISCONNECT		5
+#define ZF_NETCONTROL_LIST				1	// Req server info. 
+#define ZF_NETCONTROL_JOIN				2	//	Req Join.
+#define ZF_NETCONTROL_JOINYES			3	// Join OK.
+#define ZF_NETCONTROL_JOINNO			4	//	No Join - : string 
+#define ZF_NETCONTROL_DISCONNECT		5	//	Disconnect message. Close connection.
 #define ZF_NETCONTROL_NOP				6	// Ohh, nothing but i'm still here.
-#define ZF_NETCONTROL_REQCLIENTID	7
-#define ZF_NETCONTROL_CLIENTID		8
-#define ZF_NETCONTROL_NETSTRINGS		9
-#define ZF_NETCONTROL_REQNETSTRING	10	
+#define ZF_NETCONTROL_REQCLIENTID	7	//	
+#define ZF_NETCONTROL_CLIENTID		8	//
+#define ZF_NETCONTROL_NETSTRINGS		9	//
+#define ZF_NETCONTROL_REQNETSTRING	10	//
 
-#define MAX_NET_CLIENTS				4
-#define ZF_NET_NOCLIENT				-1
+#define MAX_NET_CLIENTS					4	// Max number of clients (nodes).
+#define ZF_NET_NOCLIENT					-1	// ID for a non client.
 
-#define ZF_NET_CONNECTION_TIMEOUT	15
+#define ZF_NET_CONNECTION_TIMEOUT	15	// Timeout connection if no message from a client after this time (sec).
 
+// Status of a remote node.
 enum ClientConnectStatus
 {
-	NETSTATUS_CONNECTING,
-	NETSTATUS_CONNECTED,
-	NETSTATUS_DISCONNECT
+	NETSTATUS_CONNECTING,				// Trying to connect.
+	NETSTATUS_CONNECTED,					// A Connected client
+	NETSTATUS_DISCONNECT					// Unconnected (free).
 };
 
+/* Information about a remote node and the connection to it. */
 class RemoteNode
 {
 public:
@@ -70,25 +72,24 @@ public:
 	int				m_iLastRecvPacket;				// Order num of last recv packet.
 };
 
-/*
-	The ZeroFps packet header. Is added to the start of all network packets sent in zerofps.
-*/
+//	The ZeroFps packet header. Is added to the start of all network packets sent in zerofps.
 #pragma pack( 1 )
 
 struct ZFNetHeader
 {
-	int				m_iOrder;			//  Order packet 
-	unsigned char	m_iPacketType;		//  Type of packet.
+	int				m_iOrder;							//  Order of packet 
+	unsigned char	m_iPacketType;						//  Type of packet.
 };
 
 struct ZFNetPacketData
 {
-	ZFNetHeader		m_kHeader;
-	unsigned char	m_acData[MAX_PACKET_SIZE];
+	ZFNetHeader		m_kHeader;							
+	unsigned char	m_acData[MAX_PACKET_SIZE];		
 };
 
 #pragma pack(  )
 
+// A Packet that is sent over network.
 class ENGINE_API NetPacket
 {
 public:
@@ -102,7 +103,6 @@ public:
 	int					m_iLength;
 	int					m_iPos;
 	IPaddress			m_kAddress;
-//	ZFNetHeader			m_kPacketHeader;
 	bool					m_bReadError;
 
 	void SetError(bool bError) { m_bReadError = bError;	}
@@ -137,16 +137,22 @@ public:
 	void SetType(int iType);
 };
 
+// Status of network layer.
 enum NetWorkStatus
 {
-	NET_NONE,
-	NET_SERVER,
-	NET_CLIENT,
+	NET_NONE,		// Network is not active
+	NET_SERVER,		// The network is in server mode and accepts connections.
+	NET_CLIENT,		// The network is in client mode.
 };
 
 #define ZF_NET_MAXSTRINGS	1024
 #define ZF_NET_NONETSTRING	-1
 
+/*
+	Strings can be sent as integer over the network. Each client have a lookup table with all
+	strings and if a string is missing it ask the server for it. NS can only be updated on server
+	so client must always send the full strings,
+*/
 struct ZFNet_String
 {
 	bool		m_bInUse;		// True if this net string is in use.
@@ -157,22 +163,17 @@ struct ZFNet_String
 class ENGINE_API NetWork : public ZFObject 
 {
 private:
-//	UDPsocket	m_pkServerSocket;
-//	UDPsocket	m_pkClientSocket;
-//	bool		m_bIsConnectedToServer;
-//	bool		m_bIsServer;
-
 	UDPsocket				m_pkSocket;								// Socket we use for all our messages.
 
-	char						szServerName[MAX_NETWORKNAME];	// Well ... VIM... ***
-	bool						bAcceptClientConnections;			// If false all connect attemts are ignored.
+	char						m_szServerName[MAX_NETWORKNAME];	// Well ... VIM... ***
+	bool						m_bAcceptClientConnections;			// If false all connect attemts are ignored.
 	Console*					m_pkConsole;							// Ptr to console.
 	ZeroFps*					m_pkZeroFps;							// Ptr to zerofps engine.
 
 	IPaddress				m_kLocalIP;								// Our Own Local IP.	***
 	int						m_iMaxNumberOfNodes;					// Max Number of remote Nodes we can keep track of.	***
 
-	vector<RemoteNode>	RemoteNodes;							// Data About all our remote connections.
+	vector<RemoteNode>	m_RemoteNodes;							// Data About all our remote connections.
 	IPaddress				m_kServerAddress;						// Ip of the server we are conencted to.
 	char						m_szAddressBuffer[256];				// Used to convert/print address.
 
@@ -186,10 +187,6 @@ private:
 	void DisconnectAll();											// Send disconenct message to all nodes.
 
 	float						m_fStatsUpdate;
-	/*
-		Strings are sent over network as a number or in full. This table maps a index to a string and it 
-		can only be updated on the server so clients will always send full strings. 
-	*/
 
 public:
 	NetWorkStatus			m_eNetStatus;
@@ -239,7 +236,7 @@ public:
 	bool StrToAddress();
 	bool AddressToStr(IPaddress* pkAddress, char* szString);
 
-	void ServerList(void);
+//	void ServerList(void);
 	void DrawConnectionGraphs();
 
 };

@@ -396,8 +396,10 @@ bool Object::NeedToPack()
 
 void Object::PackTo(NetPacket* pkNetPacket)
 {
-	//	Write Pos, Rotation.	
+	// Write Object Update Flags.
 	pkNetPacket->Write( m_iNetUpdateFlags );
+
+	//	Write Pos, Rotation, radius and name.
 	if(m_iNetUpdateFlags & OBJ_NETFLAG_POS)
 		pkNetPacket->Write(m_kPos);
 	
@@ -405,29 +407,27 @@ void Object::PackTo(NetPacket* pkNetPacket)
 		pkNetPacket->Write(m_kRot);
 
 	pkNetPacket->Write(m_fRadius);
-
-//	pkNetPacket->Write_Str(m_kName.c_str());
 	pkNetPacket->Write_NetStr(m_kName.c_str());
+
 	g_ZFObjSys.Logf("net", " Object Name '%s':", m_kName.c_str() );
 	
 	char szPropertyName[256];
 
-	// Loop all properys med Propery::bNetwork = true
+	// Write propertys med Propery::bNetwork = true
 	for(list<Property*>::iterator it=m_akPropertys.begin();it!=m_akPropertys.end();it++) {
 		g_ZFObjSys.Logf("net", "Check '%s':",(*it)->m_acName );
 		if((*it)->bNetwork) {
 			g_ZFObjSys.Logf("net", "Add\n");
+
 			strcpy(szPropertyName, (*it)->m_acName);
-			//pkNetPacket->Write_Str((*it)->m_acName);
 			pkNetPacket->Write_NetStr((*it)->m_acName);
-			Property* hora = (*it);
+			//Property* hora = (*it);
 			(*it)->PackTo(pkNetPacket);
 			}
 		else 
 			g_ZFObjSys.Logf("net", "Dont Add\n");
 	}
 
-//	pkNetPacket->Write_Str("");
 	pkNetPacket->Write_NetStr("");
 
 	m_iNetUpdateFlags = 0;
@@ -444,7 +444,7 @@ void Object::PackFrom(NetPacket* pkNetPacket)
 	if(m_iNetUpdateFlags & OBJ_NETFLAG_POS) {
 		pkNetPacket->Read(kVec);
 		SetPos(kVec);
-		SetPos(kVec);
+		//SetPos(kVec);
 		g_ZFObjSys.Logf("net", "Pos: <%f,%f,%f>", kVec.x,kVec.y,kVec.z);
 		}
 
@@ -459,16 +459,13 @@ void Object::PackFrom(NetPacket* pkNetPacket)
 	GetRadius() = fFloat;
 
 	char szStr[256];
-	//pkNetPacket->Read_Str(szStr);
 	pkNetPacket->Read_NetStr(szStr);
 	m_kName = szStr;
 	g_ZFObjSys.Logf("net", " Object Name '%s':", m_kName.c_str() );
 	g_ZFObjSys.Logf("net", " ObjHead Size = %d\n",  pkNetPacket->m_iPos - iStart );	
 
 	char szProperty[256];
-//	pkNetPacket->Read_Str(szProperty);
 	pkNetPacket->Read_NetStr(szProperty);
-
 
 	while(strcmp(szProperty,"") != 0) {
 		int iPStart = pkNetPacket->m_iPos;
@@ -773,21 +770,6 @@ void Object::SetPos(Vector3 kPos)
 	m_fLastPosSetTime = m_pkObjectMan->m_pkZeroFps->GetEngineTime();
 }
 
-
-/*
- PackTo och PackFrom används för att spara ned / upp object till/från
- network. 
-
- Format:
-	Vector3 m_kPos;
-	Vector3 m_kRot;
-	Properys[]
-	 "name"
-	 propery_data
-
-  För närvarande sparas allt ned hela tiden. Vilka propertys som tas med
-  anges genom Propery::bNetwork;
-*/
 ObjectDescriptor::~ObjectDescriptor()
 {
 	for(list<PropertyDescriptor*>::iterator it=m_acPropertyList.begin();it!=m_acPropertyList.end();it++)

@@ -53,7 +53,6 @@ class ENGINE_API ObjectManager : public ZFObject{
 
 		void GetPropertys(int iType,int iSide);						///< Fill propery list.
 
-		void TESTVIM_SpawnArcheTypes();
 		void TESTVIM_LoadArcheTypes(char* szFileName);
 
 	public:
