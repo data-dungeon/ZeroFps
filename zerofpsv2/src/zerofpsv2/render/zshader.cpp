@@ -222,7 +222,7 @@ void ZShader::RandomVertexMovements()
 {
 	for(int i=0;i<m_iNrOfVertexs;i++)
 	{
-		m_pkVertexPointer[i] += Vector3( (rand()%1000 /1000.0) -0.5,(rand()%1000 /1000.0) -0.5,(rand()%1000 /1000.0) -0.5);
+		m_pkVertexPointer[i] += Vector3( (rand()%500 /1000.0) -0.25,(rand()%500 /1000.0) -0.25,(rand()%500 /1000.0) -0.25);
 
 	}
 	
