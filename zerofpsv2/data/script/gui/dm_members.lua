@@ -7,21 +7,21 @@ function GUICreate()
 	-------------------------------------------------------------------------
 	Skin1 = { tex1="0", tex2="0", tex3="0", tex4="0", tex1a="0", tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=255,
 	 bkB=255, borderR=255, borderG=255, borderB=255, bd_size=0, tile=0, trans=1 }
-	Skin2 = { tex1="magicbutton_u.bmp", tex2="0", tex3="0", tex4="0", tex1a="0", tex2a="0", tex3a="0", tex4a="0", bkR=255,
+	Skin2 = { tex1="dm/prev_u.bmp", tex2="0", tex3="0", tex4="0", tex1a="0", tex2a="0", tex3a="0", tex4a="0", bkR=255,
 	 bkG=255, bkB=255, borderR=255, borderG=255, borderB=255, bd_size=0, tile=0, trans=0 }
-	Skin3 = { tex1="bn_d.bmp", tex2="0", tex3="0", tex4="0", tex1a="0", tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=255,
+	Skin3 = { tex1="dm/prev_d.bmp", tex2="0", tex3="0", tex4="0", tex1a="0", tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=255,
 	 bkB=255, borderR=255, borderG=255, borderB=255, bd_size=0, tile=0, trans=0 }
-	Skin4 = { tex1="bn_f.bmp", tex2="0", tex3="0", tex4="0", tex1a="0", tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=255,
+	Skin4 = { tex1="dm/prev_f.bmp", tex2="0", tex3="0", tex4="0", tex1a="0", tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=255,
 	 bkB=255, borderR=255, borderG=255, borderB=255, bd_size=0, tile=0, trans=0 }
-	Skin5 = { tex1="lb_d.bmp", tex2="0", tex3="0", tex4="0", tex1a="0", tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=255,
+	Skin5 = { tex1="dm/portrait1.bmp", tex2="0", tex3="0", tex4="0", tex1a="0", tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=255,
 	 bkB=255, borderR=255, borderG=255, borderB=255, bd_size=0, tile=0, trans=0 }
-	Skin6 = { tex1="black.bmp", tex2="0", tex3="0", tex4="0", tex1a="0", tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=255,
-	 bkB=255, borderR=255, borderG=255, borderB=255, bd_size=0, tile=0, trans=0 }
+	Skin6 = { tex1="0", tex2="0", tex3="0", tex4="0", tex1a="0", tex2a="0", tex3a="0", tex4a="0", bkR=199, bkG=178,
+	 bkB=153, borderR=0, borderG=0, borderB=0, bd_size=1, tile=0, trans=0 }
 	Skin7 = { tex1="lb_u.bmp", tex2="0", tex3="0", tex4="0", tex1a="0", tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=255,
 	 bkB=255, borderR=255, borderG=255, borderB=255, bd_size=0, tile=0, trans=0 }
-	Skin8 = { tex1="lb_bk.bmp", tex2="wndborder_left.bmp", tex3="wndborder_top.bmp", tex4="wndborder_corner.bmp",
-	 tex1a="0", tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=255, bkB=255, borderR=255, borderG=255, borderB=255, bd_size=8,
-	 tile=1, trans=0 }
+	Skin8 = { tex1="lb_bk.bmp", tex2="dm/bd_horz.bmp", tex3="dm/bd_vert.bmp", tex4="dm/bd_corner.bmp",
+	 tex1a="0", tex2a="dm/bd_horz_a.bmp", tex3a="dm/bd_vert_a.bmp", tex4a="dm/bd_corner_a.bmp", bkR=255, bkG=255, bkB=255, 
+	 borderR=255, borderG=255, borderB=255, bd_size=8, tile=0, trans=0 }
 	Skin9 = { tex1="lb_u.bmp", tex2="0", tex3="0", tex4="0", tex1a="0", tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=255,
 	 bkB=255, borderR=255, borderG=255, borderB=255, bd_size=0, tile=0, trans=0 }
 	Skin10 = { tex1="lb_d.bmp", tex2="0", tex3="0", tex4="0", tex1a="0", tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=255,
@@ -34,9 +34,15 @@ function GUICreate()
 	 bkB=255, borderR=255, borderG=255, borderB=255, bd_size=0, tile=0, trans=0 }
 	Skin14 = { tex1="sb_f.bmp", tex2="0", tex3="0", tex4="0", tex1a="0", tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=255,
 	 bkB=255, borderR=255, borderG=255, borderB=255, bd_size=0, tile=0, trans=0 }
-	Skin15 = { tex1="textbox.bmp", tex2="wndborder_left.bmp", tex3="wndborder_top.bmp", tex4="wndborder_corner.bmp",
-	 tex1a="0", tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=255, bkB=255, borderR=255, borderG=255, borderB=255, bd_size=8,
-	 tile=1, trans=0 }
+	Skin15 = { tex1="dm/member.bmp", tex2="dm/bd_horz.bmp", tex3="dm/bd_vert.bmp", tex4="dm/bd_corner.bmp",
+	 tex1a="0", tex2a="dm/bd_horz_a.bmp", tex3a="dm/bd_vert_a.bmp", tex4a="dm/bd_corner_a.bmp", bkR=255, bkG=255, bkB=255, 
+	 borderR=255, borderG=255, borderB=255, bd_size=8, tile=0, trans=0 }
+	Skin16 = { tex1="dm/next_u.bmp", tex2="0", tex3="0", tex4="0", tex1a="0", tex2a="0", tex3a="0", tex4a="0", bkR=255,
+	 bkG=255, bkB=255, borderR=255, borderG=255, borderB=255, bd_size=0, tile=0, trans=0 }
+	Skin17 = { tex1="dm/next_d.bmp", tex2="0", tex3="0", tex4="0", tex1a="0", tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=255,
+	 bkB=255, borderR=255, borderG=255, borderB=255, bd_size=0, tile=0, trans=0 }
+	Skin18 = { tex1="dm/next_f.bmp", tex2="0", tex3="0", tex4="0", tex1a="0", tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=255,
+	 bkB=255, borderR=255, borderG=255, borderB=255, bd_size=0, tile=0, trans=0 }
 	-------------------------------------------------------------------------
 	-- Create all windows in correct order (parents before childrens etc.)
 	-- 0 = Wnd, 1 = Button, 2 = Checkbox, 3 = Combobox, 4 = Label, 5 = Listbox, 6 = Radiobutton,
@@ -45,21 +51,24 @@ function GUICreate()
 	CreateWnd(0,"GuiMainWnd","","",0,0,800,600,0)
 	ChangeSkin("GuiMainWnd","Skin1","Window")
 
-	CreateWnd(0,"MembersWnd","","",65,75,687,434,0)
+	CreateWnd(0,"MembersWnd","","",65,75,688,432,0)
 	ChangeSkin("MembersWnd","Skin15","Window")
 
-	CreateWnd(4,"LevelbarTopic","MembersWnd","Level : 3",203,358,100,20,0)
+	CreateWnd(4,"LevelbarTopic","MembersWnd","Level : 3",137,364,100,20,0)
 	ChangeSkin("LevelbarTopic","Skin1","Label")
 
-	CreateWnd(1,"NextMemberBn","MembersWnd","",667,414,20,20,0)
-	ChangeSkin("NextMemberBn","Skin2","Button up")
-	ChangeSkin("NextMemberBn","Skin3","Button down")
-	ChangeSkin("NextMemberBn","Skin4","Button focus")
+	CreateWnd(1,"NextMemberBn","MembersWnd","",668,412,20,20,0)
+	ChangeSkin("NextMemberBn","Skin16","Button up")
+	ChangeSkin("NextMemberBn","Skin17","Button down")
+	ChangeSkin("NextMemberBn","Skin18","Button focus")
 
-	CreateWnd(1,"PrevMemberBn","MembersWnd","",0,414,20,20,0)
+	CreateWnd(1,"PrevMemberBn","MembersWnd","",0,412,20,20,0)
 	ChangeSkin("PrevMemberBn","Skin2","Button up")
 	ChangeSkin("PrevMemberBn","Skin3","Button down")
 	ChangeSkin("PrevMemberBn","Skin4","Button focus")
+
+	CreateWnd(4,"CurrentMemberNumberLabel","MembersWnd","Member 2 / 8",688/2-100/2,412,100,20,0)
+	ChangeSkin("CurrentMemberNumberLabel","Skin1","Label")
 
 	CreateWnd(4,"Label169","MembersWnd","Name:",135,310,40,20,0)
 	ChangeSkin("Label169","Skin1","Label")

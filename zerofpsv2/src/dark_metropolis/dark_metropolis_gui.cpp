@@ -110,7 +110,7 @@ void DarkMetropolis::GUI_OnCommand(int iID, bool bRMouseBnClick,
 		else
 		if(strClickName == "LoadNewGameBn")
 		{
-			GUI_CreateLoadInterface();
+			GUI_CreateLoadMenu();
 		}
 		else
 		if(strClickName == "QuitBn")
@@ -192,7 +192,9 @@ void DarkMetropolis::GUI_OnCommand(int iID, bool bRMouseBnClick,
 		{
 			LoadGuiFromScript(m_pkScript, 
 				"data/script/gui/dm_start.lua");
-			pkMainWnd->Hide();			
+			pkMainWnd->Hide();		
+
+			StartSong("data/music/dm_menu.ogg");
 		}
 		else
 		if(strClickName == "MissionsBn")
@@ -226,6 +228,12 @@ void DarkMetropolis::GUI_OnCommand(int iID, bool bRMouseBnClick,
 			{
 				LoadGuiFromScript(m_pkScript, 
 					"data/script/gui/dm_members.lua");	
+
+				ClearListbox("MemberSkillsLB");
+				AddListItem("MemberSkillsLB", "Heavy Guns : 5");
+				AddListItem("MemberSkillsLB", "Rockets : 3");
+				AddListItem("MemberSkillsLB", "Lock Pick : 1");
+				AddListItem("MemberSkillsLB", "Knife : 1");
 			}
 		}
 		else
@@ -325,39 +333,55 @@ void DarkMetropolis::GUI_OnKeyPress(int iKey, ZGuiWnd *pkWnd)
 {
 }
 
-void DarkMetropolis::GUI_CreateLoadInterface()
+void DarkMetropolis::GUI_CreateLoadMenu()
 {
+	bool init = GetWnd("LoadListWnd") == NULL;
+
 	ZGuiWnd* pkLoadListWnd = CreateWnd(Wnd, "LoadListWnd", "GuiMainWnd", 
 		"", 800/2-150, 50, 300, 400, 0);
-
 	ZGuiWnd* pkTitle = CreateWnd(Label, "LoadListTitle", "LoadListWnd", 
 		"Select your clan", 0, 0, 300, 20, 0);
-
-	pkTitle->SetSkin(new ZGuiSkin());
-	pkTitle->GetSkin()->m_afBkColor[0] = 0.63;
-	pkTitle->GetSkin()->m_afBkColor[1] = 0.5f;
-	pkTitle->GetSkin()->m_afBkColor[2] = 1;
-
 	ZGuiWnd* pkLoadList = CreateWnd(Listbox, "LoadListLB", "LoadListWnd", 
 		"", 8, 28, 300-16, 400-60-28, 0);
-
 	ZGuiWnd* pkOK = CreateWnd(Button, "LoadListOKBn", "LoadListWnd", 
 		"OK", 50, 400-60+20, 60, 20, 0);
-
 	ZGuiWnd* pkCancel = CreateWnd(Button, "LoadListCancelBn", "LoadListWnd", 
 		"Cacel", 200, 400-60+20, 60, 20, 0);
-	
+
 	pkGui->SetCaptureToWnd(pkLoadListWnd);
 
-	ClearListbox("LoadListLB");
-
-	vector<string> files;
-	if(m_pkBasicFS->ListDir(&files, m_strSaveDirectory.c_str(), true))
+	if(init) // only ones
 	{
-		for(int i=0; i<files.size(); i++)
+		pkLoadListWnd->SetSkin(new ZGuiSkin());
+		pkLoadListWnd->GetSkin()->m_bTransparent = true;
+
+		pkTitle->SetSkin(new ZGuiSkin());
+		pkTitle->GetSkin()->m_afBkColor[0] = 0.63;
+		pkTitle->GetSkin()->m_afBkColor[1] = 0.5f;
+		pkTitle->GetSkin()->m_afBkColor[2] = 1;
+
+		ZGuiSkin* BnSkins[3] = {
+			new ZGuiSkin(), new ZGuiSkin(), new ZGuiSkin()
+		};
+
+		BnSkins[0]->m_iBkTexID = pkTexMan->Load("data/textures/gui/dm/bn1u.bmp", 0);
+		BnSkins[1]->m_iBkTexID = pkTexMan->Load("data/textures/gui/dm/bn1d.bmp", 0);
+		BnSkins[2]->m_iBkTexID = pkTexMan->Load("data/textures/gui/dm/bn1f.bmp", 0);
+		((ZGuiButton*)pkOK)->SetButtonUpSkin(BnSkins[0]);
+		((ZGuiButton*)pkOK)->SetButtonDownSkin(BnSkins[1]);
+		((ZGuiButton*)pkOK)->SetButtonHighLightSkin(BnSkins[2]);
+		((ZGuiButton*)pkCancel)->SetButtonUpSkin(BnSkins[0]);
+		((ZGuiButton*)pkCancel)->SetButtonDownSkin(BnSkins[1]);
+		((ZGuiButton*)pkCancel)->SetButtonHighLightSkin(BnSkins[2]);
+
+		ClearListbox("LoadListLB");
+
+		vector<string> files;
+		if(m_pkBasicFS->ListDir(&files, m_strSaveDirectory.c_str(), true))
 		{
-			if(files[i] != string(".."))
-				AddListItem("LoadListLB", (char*)files[i].c_str());
+			for(int i=0; i<files.size(); i++)
+				if(files[i] != string(".."))
+					AddListItem("LoadListLB", (char*)files[i].c_str());
 		}
 	}
 }
@@ -376,11 +400,14 @@ void DarkMetropolis::GUI_NewGame(char* szClanName, char* szTeamColor)
 			"GamePlayChar5Wnd", "GamePlayPanelWnd",
 			"GamePlayInfoWnd", "MembersWnd",
 			"MissionWnd", "BriefingWnd",
-			"BuyWnd", "SellWnd",
+			"BuyWnd", "SellWnd", 
+			"GamePlayInfoWnd",
 		};
 
 		for(int i=0; i<sizeof(szWndToHide)/sizeof(szWndToHide[1]); i++)
-			ShowWnd(szWndToHide[i], false);					
+			ShowWnd(szWndToHide[i], false);	
+
+		StartSong("data/music/dm_ingame.ogg");
 	}
 	else
 	{

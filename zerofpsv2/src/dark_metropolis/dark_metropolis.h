@@ -54,6 +54,8 @@ class DarkMetropolis : public Application, public ZGuiApp
 		float		m_fMaxCamDistance;
 		
 		string	m_strSaveDirectory;
+
+		int m_iEnableMusic; // if the music should be played or not
 		
 		//picking
 		Vector3	Get3DMousePos(bool m_bMouse);		
@@ -66,8 +68,10 @@ class DarkMetropolis : public Application, public ZGuiApp
 		bool LoadGame(string strClanName);
 		void SaveGame();
 
-		void GUI_CreateLoadInterface();
+		void GUI_CreateLoadMenu();
 		void GUI_NewGame(char* szClanName, char* szTeamColor);
+		
+		void StartSong(char* szName);
 	
 	public:
 		DarkMetropolis(char* aName,int iWidth,int iHeight,int iDepth);

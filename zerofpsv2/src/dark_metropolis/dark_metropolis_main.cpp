@@ -14,6 +14,8 @@ DarkMetropolis::DarkMetropolis(char* aName,int iWidth,int iHeight,int iDepth)
 	: Application(aName,iWidth,iHeight,iDepth), ZGuiApp(GUIPROC)
 { 
 	g_ZFObjSys.Log_Create("DarkMetropolis");	
+
+	RegisterVariable("r_enablemusic",&m_iEnableMusic,CSYS_INT);
 } 
 
 void DarkMetropolis::OnHud() 
@@ -58,6 +60,8 @@ void DarkMetropolis::OnInit()
 		NULL);
 
 	LoadGuiFromScript(m_pkScript, "data/script/gui/dm_start.lua");
+	
+	StartSong("data/music/dm_menu.ogg");
 
 	m_pkInput->ShowCursor(true);
 	m_pkLight->SetLighting(true);
@@ -380,4 +384,15 @@ Entity* DarkMetropolis::GetTargetObject()
 	}
 	
 	return pkClosest;
+}
+
+void DarkMetropolis::StartSong(char* szName)
+{
+	if(m_iEnableMusic == 1)
+	{
+		OggMusic* pkMusic = static_cast<OggMusic*>(
+			g_ZFObjSys.GetObjectPtr("OggMusic")); 
+		pkMusic->LoadFile(szName);
+		pkMusic->Play();
+	}
 }
