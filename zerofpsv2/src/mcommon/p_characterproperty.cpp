@@ -21,7 +21,7 @@ P_CharacterProperty::P_CharacterProperty()
 	m_bIsPlayerCharacter =	false;
 	
 	m_strWalkSound			=	"data/sound/footstep_forest.wav";
-	m_strRunSound			=	"data/sound/footstep_forest.wav";
+	m_strRunSound			=	"data/sound/footstep_cave.wav";
 	m_strJumpSound			=	"data/sound/jump.wav";
 	m_strSwimSound			=	"swim.wav";
 	
