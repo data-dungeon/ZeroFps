@@ -648,7 +648,7 @@ void Tcs::TestSphereVsMesh(P_Tcs* pkBody1,P_Tcs* pkBody2,float fAtime)
 	int nroftests = 0;
 	
 	
-	//if body1 is the mesh just flip them
+	//if body1 is the mesh just flip them,body2 shuld always be the mesh
 	if(pkBody1->m_bPolygonTest)
 	{
 		P_Tcs* b2c = pkBody2;
@@ -656,6 +656,15 @@ void Tcs::TestSphereVsMesh(P_Tcs* pkBody1,P_Tcs* pkBody2,float fAtime)
 		pkBody2 = pkBody1;
 		pkBody1 = b2c;
 	}
+	
+	//make sure body2 have all the pointers else get angry and cry
+	if(!pkBody2->m_pkVertex)
+		return;
+		
+	if(!pkBody2->m_pkFaces)
+		return;
+		
+		
 	
 	while(retry && nroftests < m_iMaxTests)
 	{
@@ -733,6 +742,7 @@ bool Tcs::CollideSphereVSMesh(P_Tcs* pkSphere,P_Tcs* pkMesh)
 	Vector3 verts[3];	
 	float d;
 
+
 	for(int f=0;f<pkMesh->m_pkFaces->size();f++)
 	{
 		
@@ -752,6 +762,7 @@ bool Tcs::CollideSphereVSMesh(P_Tcs* pkSphere,P_Tcs* pkMesh)
 				kClosestNormal = m_kLastTestNormal;
 			}
 		}
+	
 	}
 	
 	if(bHaveColided)

@@ -165,7 +165,7 @@ void P_ClientControl::UpdateCharacter()
 			if(kVel.Length() > 0)
 				kVel.Normalize();
 			
-			float fSpeed = 10;
+			float fSpeed = 20;
 			
 			if(!tcs->GetOnGround())
 				fSpeed /= 4;

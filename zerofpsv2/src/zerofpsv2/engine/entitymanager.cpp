@@ -1674,6 +1674,7 @@ int EntityManager::GetZoneIndex(Vector3 kMyPos,int iCurrentZone,bool bClosestZon
 
 void EntityManager::UpdateZones()
 {
+
 	float fTime = m_pkZeroFps->GetGameTime();
 	ZoneData* pkZone;
 	ZoneData* pkStartZone;
