@@ -153,6 +153,7 @@ public:
 
 };
 
+/*
 class MadManger
 {
 	public:	
@@ -160,8 +161,9 @@ class MadManger
 	
 	Core* GetCore(char* MadFileName);
 	bool UnLoad(char* MadFileName);
-};
+};*/
 
+/*
 class RENDER_API MadInstans
 {
 private:
@@ -172,20 +174,14 @@ private:
 	float	fLastUpdate;
 
 public:
-//	void operator=(const Core& MadInstans);
-
 	void SetBase(Core* pkModell);	// Väljer vilken bas modell denna instans är.
 
 	void PlayAnimation(int iAnimNum, float fStartTime);
-	/*	Börjar spela vald animation. fStartTime kan väljas för att börja en bit in i
-		vald animation.*/
-
 	void UpdateAnimation(void);
 	void Draw(void);
 
 	
 	void SetNextAnimation(int iAnimNum);
-	/* Väljer nästa animation som ska spelas upp efter att den nuvarande är slut. */
 	
 	void EnableLoopedAnimation(void);
 	void DisableLoopedAnimation(void);
@@ -193,7 +189,6 @@ public:
 
 
 	void PlayNextAnimations(void);
-	/* Force start of next animation. */
 
 	void StopAnimation(void);
 	void StartAnimation(void);
@@ -202,22 +197,18 @@ public:
 	int GetNextAnimation();
 
 	float GetAnimationTimeInS(void);
-	/* Returns time in s from start of animation */
 
 	float GetAnimationTimeInFrames(void);
-	/* Returns time i Frame since start of animation.*/
 
 	float GetAnimationLengthInS(void);
 
 	MadRender* BeginRendering(void);
-	/* Gets a rendering object so its possible to render Modell. */
 	void EndRendering(void);
-	/* Tell system that we are done rendering this object. */
 
 	void SetPlayBackSpeedScale(float fScale);
 
 	Vector3	FH_Pos;
-};
+};*/
 
 
 
