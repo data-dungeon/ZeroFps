@@ -747,12 +747,8 @@ void DarkMetropolis::Input()
 							}
 							else
 							{
-								// TODO: fix textbox, ask Zeb
 								if ( m_iSelectedEntity == m_iMainAgent )
-								{
-									m_kInfoTextBox.append("Not close enough");
-									//SetText("infotext", (char*)m_kInfoTextBox.c_str());
-								}																		
+									AddInfoMsg ("Not close enough");
 
 								pkCh->ClearOrders();
 								
@@ -1273,3 +1269,20 @@ void DarkMetropolis::CheckCameraPos()
 	
 	m_pkCameraEntity->SetWorldPosV(kNewPos);
 }
+
+// -------------------------------------------------------------------------------------------
+void DarkMetropolis::AddInfoMsg (string strMsg)
+{
+	static float fTimeSinceLastMsg = m_pkFps->GetTicks();
+	static string strLastMsg;
+	
+	// if less than a second has passed since last msg, and the msg is the same, ignore
+	if ( !(strLastMsg == strMsg && m_pkFps->GetTicks() - fTimeSinceLastMsg < 1) )
+	{
+		fTimeSinceLastMsg = m_pkFps->GetTicks();
+		AddListItem("infotext", (char*)strMsg.c_str());
+		strLastMsg = strMsg;
+	}
+}
+
+// -------------------------------------------------------------------------------------------

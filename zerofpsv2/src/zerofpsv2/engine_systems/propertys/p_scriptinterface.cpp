@@ -131,7 +131,10 @@ void P_ScriptInterface::SetHeartRate(float blub)
 {
 	m_fHeartRate = blub;
 	
-	m_fTimer += rand() % (int)m_fHeartRate;
+	if ( int(m_fHeartRate) <= 0 )
+		m_fTimer = 0;
+	else
+		m_fTimer += rand() % (int)m_fHeartRate;
 }
 
 void P_ScriptInterface::Touch(int iId)
