@@ -32,6 +32,7 @@ Gui::Gui(ZeroEdit* pkEdit)
 	int cursor_tex = pkEdit->pkTexMan->Load("file:../data/textures/cursor.bmp", 0);
 	int cursor_tex_a = pkEdit->pkTexMan->Load("file:../data/textures/cursor_a.bmp", 0);
 	pkEdit->pkGui->SetCursor(cursor_tex, cursor_tex_a, 32, 32);
+	pkEdit->pkFps->m_bGuiTakeControl = true;
 }
 
 Gui::~Gui()

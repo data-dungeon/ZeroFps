@@ -346,19 +346,31 @@ void ZeroFps::ToggleGui(void)
 		if(m_bGuiTakeControl)
 		{
 			SDL_ShowCursor(SDL_DISABLE);
-			m_bDrawDevList = false;
+			m_bDrawDevList = !m_bGuiMode;
 		}
-		m_pkGui->Activate(true);
+		m_pkGui->Activate(m_bGuiMode);
 	}
 	else
 	{
 		if(m_bGuiTakeControl)
 		{
 			SDL_ShowCursor(SDL_ENABLE);
-			m_bDrawDevList = true;
+			m_bDrawDevList = !m_bGuiMode;
 		}
-		m_pkGui->Activate(false);
+		m_pkGui->Activate(m_bGuiMode);
 	}
+
+	bool bShowCursor;
+	
+	if(m_bGuiMode == true)
+		bShowCursor = true;
+	else
+		bShowCursor = false;
+
+	if(m_bGuiTakeControl == false)
+		bShowCursor = false;
+
+	m_pkGui->ShowCursor(bShowCursor);
 }
 
 
