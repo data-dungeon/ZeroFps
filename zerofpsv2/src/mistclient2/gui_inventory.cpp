@@ -7,8 +7,6 @@
 #include "../zerofpsv2/gui/zguiresourcemanager.h"
 #include "gui_equipwnd.h"
 
-bool g_bDoubleClicked = false;
-
 extern MistClient	g_kMistClient;
 
 void GuiMsgInventoryDlg( string strMainWnd, string strController, 
@@ -93,10 +91,8 @@ void GuiMsgInventoryDlg( string strMainWnd, string strController,
 	else
 	if(msg == ZGM_LBUTTONDBLCLK)
 	{	
-		g_bDoubleClicked = true;
 		int x = ((int*)params)[0], y = ((int*)params)[1];
-		g_kMistClient.m_pkInventoryDlg->OpenContainer(x,y);		
-		printf("bOOOOLLLLLEEEE\n");
+		g_kMistClient.m_pkInventoryDlg->OnDoubleClick(x,y);		
 	}
 
 }
@@ -109,6 +105,7 @@ InventoryDlg::InventoryDlg() : SLOTTS_HORZ_INVENTORY(6),
 										 UPPERLEFT_INVENTORY(39,193), // in pixels
 										 UPPERLEFT_CONTAINER( 0,  0) // in pixels
 {
+	m_bDoubleClicked = false;
 	m_pkInventoryWnd = NULL;
 	m_pkContainerWnd = NULL;
 	m_pkSplitStockWnd = NULL;
@@ -254,7 +251,7 @@ void InventoryDlg::OnMouseMove(bool bLeftButtonPressed, int mx, int my)
 				}
 				else
 				{
-					if(g_bDoubleClicked == false)
+					if(m_bDoubleClicked == false)
 					{
 						if(m_kMoveSlot.m_iIndex != -1) // if we have a move slot...
 							OnDropItem(mx, my); // place it somewhere.
@@ -389,8 +386,8 @@ void InventoryDlg::OnMouseMove(bool bLeftButtonPressed, int mx, int my)
 		    (m_pkContainerWnd->IsVisible() && m_pkContainerWnd->GetScreenRect().Inside(mx,my) )) ) 
 			(*m_ppCursorSkin)->m_unBorderSize = 1;
 
-	if(g_bDoubleClicked == true)
-		g_bDoubleClicked = false;
+	if(m_bDoubleClicked == true)
+		m_bDoubleClicked = false;
 	
 }
 
@@ -495,9 +492,10 @@ void InventoryDlg::OpenContainerItem(bool bOpen, int iSlotIndex, bool bInventory
 	}
 }
 
-void InventoryDlg::OpenContainer(int iMouseX, int iMouseY)
+void InventoryDlg::OnDoubleClick(int iMouseX, int iMouseY)
 {
-	printf("DOUBLE CLICK\n");
+	m_bDoubleClicked = true;
+
 	int temp = m_kMoveSlot.m_iIndex;
 	m_kMoveSlot.m_iIndex = -1;
 
@@ -539,8 +537,8 @@ void InventoryDlg::OpenContainer(int iMouseX, int iMouseY)
 
 		// Show normal cursor again.
 		float w = g_kMistClient.GetScaleX()*64.0f, h = g_kMistClient.GetScaleY()*64.0f ;
-		g_kMistClient.m_pkGui->SetCursor( (int)iMouseX+m_kCursorRangeDiff.x, 
-			(int)iMouseY+m_kCursorRangeDiff.y, 
+		g_kMistClient.m_pkGui->SetCursor( (int)iMouseX, 
+			(int)iMouseY, 
 			g_kMistClient.LoadGuiTextureByRes("cursor_sword.tga"), -1, w, h);
 
 		m_kMoveSlot.m_iIndex = -1;

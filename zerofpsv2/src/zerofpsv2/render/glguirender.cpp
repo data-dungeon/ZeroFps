@@ -352,6 +352,12 @@ bool GLGuiRender::RenderQuad(Rect rc)
 //		glEnable(GL_ALPHA_TEST);
 	}
 
+	if(bDrawMasked == false)
+	{
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		glEnable(GL_BLEND);
+	}
+
 	glBegin(GL_QUADS);	 
 
 		//if(bDrawMasked)
@@ -374,6 +380,9 @@ bool GLGuiRender::RenderQuad(Rect rc)
 			glTexCoord2f(txs[2],tys[0]);	glVertex2i(akVertices[2].x,m_iScreenHeight-akVertices[2].y);    
 			glTexCoord2f(txs[3],tys[1]);	glVertex2i(akVertices[3].x,m_iScreenHeight-akVertices[3].y);  	
 		}
+
+		if(bDrawMasked == false)
+			glDisable(GL_BLEND);
 
 		//if(bIsTGA)
 		//{

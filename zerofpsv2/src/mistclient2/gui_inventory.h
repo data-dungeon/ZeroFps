@@ -37,7 +37,7 @@ public:
 	InventoryDlg();
 	~InventoryDlg();
 
-	void OpenContainer(int iMouseX, int iMouseY);
+	void OnDoubleClick(int iMouseX, int iMouseY);
 
 	void UpdateInventory(vector<MLContainerInfo>& vkItemList);
 	void UpdateContainer(vector<MLContainerInfo>& vkItemList);
@@ -69,7 +69,6 @@ public:
 
 	ZGuiWnd* m_pkSplitStockWnd;
 	int m_iSplitShareMax;
-	
 private:
 
 
@@ -122,6 +121,8 @@ private:
 
 	int m_iSelItemID; // ITEM_SLOT::iItemID (aka MLContainerInfo::m_iItemID)
 	int m_iHighestZ;
+
+	bool m_bDoubleClicked;
 
 	float m_fPickUpTimer;
 
