@@ -698,7 +698,6 @@ void ZGuiApp::ResizeWnd(char *szResName, int w, int h)
 
 bool ZGuiApp::IsWndVisible(char* szResName)
 {
-	int apa = 0;
 
 	ZGuiWnd* pkWnd = m_pkResMan->Wnd(szResName);
 	if(pkWnd != NULL)

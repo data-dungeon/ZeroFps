@@ -56,8 +56,8 @@ bool ZFSoundRes::Load()
 		return false;
 
 	ALsizei size=0, freq;
-   ALenum format;
-   ALvoid *data;
+    ALenum format;
+    ALvoid *data;
 	ALboolean loop;   //we dont use this
 
 	alGetError(); // Clear Error Code
@@ -72,12 +72,16 @@ bool ZFSoundRes::Load()
 	}
 
 	// Load file
-   alutLoadWAVFile((ALbyte*)m_szFileName, &format, &data, &size, &freq, &loop);   
+    alutLoadWAVFile((ALbyte*)m_szFileName, &format, &data, &size, &freq, &loop);   
 	if(size==0)
 	{
 	   cout<<"cold not load file " << m_szFileName << ", Loading Dummy" << endl;	
 	   alutLoadWAVFile((ALbyte*)DUMMY_SOUND,&format,&data, &size, &freq,&loop);
-   }
+    }
+	else
+	{
+		printf("Loading sound %s\n", m_szFileName);
+	}
 
 	// Fill buffer
 	alBufferData(m_uiBufferIndexName, format, data, size, freq);
@@ -213,6 +217,9 @@ bool ZFAudioSystem::ShutDown()
 	list<SoundInfo*>::iterator itSound = m_kActiveSounds.begin();
 	for( ; itSound != m_kActiveSounds.end(); itSound++)
 		delete (*itSound);
+
+	// Destroy OpenAL (very, very, very, very, fuckig importent!)
+	alutExit();
 
 	return true;
 }

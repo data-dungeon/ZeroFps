@@ -107,8 +107,6 @@ ZeroFps::~ZeroFps()
 	g_ZFObjSys.ShutDown();
 	ConfigFileSave();
 
-
-
 	delete m_pkPhysEngine;
 //	delete m_pkLevelMan;
 	delete m_pkIni;
@@ -134,8 +132,6 @@ ZeroFps::~ZeroFps()
 	delete m_pkResourceDB;		//d krashar om denna ligger där uppe =(, Dvoid
 	delete m_pkPSystemManager;
 	delete m_pkZShader;
-
-	printf("apa\n");
 }
 
 bool ZeroFps::StartUp()	
