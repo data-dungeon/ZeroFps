@@ -193,9 +193,7 @@ void MistServer::RegisterPropertys()
 
 
 void MistServer::OnIdle()
-{
-
-	
+{	
 	m_pkFps->SetCamera(m_pkCamera);		
 	m_pkFps->GetCam()->ClearViewPort();	
 
@@ -270,7 +268,6 @@ void MistServer::OnSystem()
 
 void MistServer::Input()
 {
-
 	int iPressedKey = m_pkInput->GetQueuedKey();
 
 	switch(iPressedKey)
@@ -476,7 +473,7 @@ void MistServer::Input()
 				}
 			}
 			
-			if(m_pkInput->Pressed(MOUSEMIDDLE))
+			if(m_pkInput->Pressed(MOUSEMIDDLE) || (m_pkInput->Pressed(MOUSERIGHT) && m_pkInput->Pressed(KEY_LSHIFT)))
 			{		
 				if(m_pkFps->GetTicks() - m_fClickDelay > 0.2)
 				{	
@@ -840,7 +837,12 @@ Vector3 MistServer::Get3DMousePos(bool m_bMouse=true)
 	
 	if(m_bMouse)
 	{
-		m_pkInput->UnitMouseXY(x,y);	
+		// Zeb was here! Nu kör vi med operativsystemets egna snabba musmarkör
+		// alltså måste vi använda det inputsystemet.
+		//	m_pkInput->UnitMouseXY(x,y);
+		x = -0.5f + (float) m_pkInput->m_iSDLMouseX / 800.0f;
+		y = -0.5f + (float) m_pkInput->m_iSDLMouseY / 600.0f;
+
 		dir.Set(x*xp,-y*yp,-1.5);
 		dir.Normalize();
 	}

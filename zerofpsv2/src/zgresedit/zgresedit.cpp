@@ -66,7 +66,7 @@ void ZGResEdit::OnInit()
 		"data/textures/text/small.bmp",
 		"data/script/gui/gui_res_edit.lua");
 
-	SetTitle("The Migthy GUI Editor!");
+	SetTitle("GUI Editor Mistlands");
 	m_pkInput->ShowCursor(true);
 
 //	pkGui->SetCursor(0,0, pkTexMan->Load("data/textures/gui/cursor.bmp", 0),
@@ -92,7 +92,9 @@ void ZGResEdit::OnIdle()
 		return;
 
 	int x,y;
-	m_pkInput->MouseXY(x,y);
+	//m_pkInput->MouseXY(x,y);
+	x = m_pkInput->m_iSDLMouseX;
+	y = m_pkInput->m_iSDLMouseY;
 
 	pkGui->SetLineColor(255,0,0);
 
@@ -1309,8 +1311,6 @@ void ZGResEdit::OnSelectWnd(ZGuiWnd *pkWnd)
 
 		m_pkFocusWnd = pkCopy;
 		m_pkMoveWnd = m_pkFocusWnd;
-
-		// --- olle
 	}
 }
 
