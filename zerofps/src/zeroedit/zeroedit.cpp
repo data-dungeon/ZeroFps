@@ -40,6 +40,9 @@ void ZeroEdit::OnInit(void)
 	g_ZFObjSys.Register_Cmd("fog",FID_FOG,this);		
 	g_ZFObjSys.Register_Cmd("water",FID_WATER,this);		
 	g_ZFObjSys.Register_Cmd("skybox",FID_SKYBOX,this);		
+	g_ZFObjSys.Register_Cmd("addland",FID_ADDLAND,this);		
+	g_ZFObjSys.Register_Cmd("removeland",FID_REMOVELAND,this);		
+	g_ZFObjSys.Register_Cmd("listland",FID_LISTLAND,this);		
 
 
 	//start text =)
@@ -61,8 +64,13 @@ void ZeroEdit::OnInit(void)
 	
 	m_fPointerHeight=1;
 		
+		
+		
 	m_kCurentTemplate="null";
 	pkFps->m_pkCmd->Add(&m_kCurentTemplate,"g_template",type_string);			
+	
+	m_iLandType=1;
+	pkFps->m_pkCmd->Add(&m_iLandType,"g_landtype",type_int);		
 	
 	m_iRandom=1;
 	pkFps->m_pkCmd->Add(&m_iRandom,"g_Random",type_int);		
@@ -72,10 +80,7 @@ void ZeroEdit::OnInit(void)
 	
 	m_iMode=ADDOBJECT;		
 	pkFps->m_pkCmd->Add(&m_iMode,"g_mode",type_int);		
-	
-	m_iTexture=1;	
-	pkFps->m_pkCmd->Add(&m_iTexture,"g_texture",type_int);		
-	
+		
 	m_fPointDistance=10;
 	pkFps->m_pkCmd->Add(&m_fPointDistance,"g_PointDistance",type_float);	
 	
@@ -157,6 +162,38 @@ void ZeroEdit::OnHud(void)
 void ZeroEdit::RunCommand(int cmdid, const CmdArgument* kCommand)
 {
 	switch(cmdid) {
+		case FID_ADDLAND:{
+			if(kCommand->m_kSplitCommand.size() < 5) {
+				pkConsole->Printf("addland [texture-nr] color[r][g][b]");
+				break;
+			}
+			
+			Vector3 kColor(atof(kCommand->m_kSplitCommand[2].c_str()),
+								atof(kCommand->m_kSplitCommand[3].c_str()),
+								atof(kCommand->m_kSplitCommand[4].c_str()));
+			
+			AddLandtype(atoi(kCommand->m_kSplitCommand[1].c_str()),kColor);			  
+					  
+			break;
+			}
+			
+		case FID_REMOVELAND:{
+			if(kCommand->m_kSplitCommand.size() < 2) {
+				pkConsole->Printf("addland [texture-nr] color[r][g][b]");
+				break;
+			}
+			
+			if(!RemoveLandtype(atoi(kCommand->m_kSplitCommand[1].c_str())));
+				pkConsole->Printf("Landtype not found");				
+					  
+			break;
+			}
+		
+		case FID_LISTLAND:
+			ListLandTypes();
+			
+			break;
+	
 		case FID_SKYBOX:{
 			if(kCommand->m_kSplitCommand.size() < 3) {
 				pkConsole->Printf("skybox [Horizontal texture] [top,botom texture] (rot[x][y][z])");
@@ -531,12 +568,7 @@ void ZeroEdit::Input()
 		case TEXTURE:
 			if(pkInput->Pressed(MOUSELEFT))
 			{
-				for(int xp=-2;xp<3;xp++){
-					for(int yp=-2;yp<3;yp++){
-						m_pkMap->GetVert(int(m_kDrawPos.x+xp),int(m_kDrawPos.z+yp))->texture=m_iTexture;
-						m_pkMap->GetVert(int(m_kDrawPos.x+xp),int(m_kDrawPos.z+yp))->color=Vector3(.6,.45,0.3);		
-					}
-				}
+				HeightMapDraw(m_kDrawPos);			
 			}
 			break;
 		case ADDOBJECT:
@@ -828,3 +860,90 @@ void ZeroEdit::ToogleMenu()
 		pkGui->ShowCursor(false);
 	}
 }
+
+
+void ZeroEdit::HeightMapDraw(Vector3 kPencilPos)
+{
+	LandType kTemp=GetLandType(m_iLandType);
+	
+	cout<<"color "<<kTemp.m_kColor.x<<endl;
+	
+	for(int xp=-2;xp<3;xp++){
+		for(int yp=-2;yp<3;yp++){
+			m_pkMap->GetVert(int(kPencilPos.x+xp),int(kPencilPos.z+yp))->texture=kTemp.m_iTexture;
+			m_pkMap->GetVert(int(kPencilPos.x+xp),int(kPencilPos.z+yp))->color=kTemp.m_kColor;
+		}
+	}
+}
+
+
+void ZeroEdit::AddLandtype(int iTexture,Vector3 kColor)
+{
+	LandType temp;
+	temp.m_iTexture=iTexture;
+	temp.m_kColor=kColor;
+	
+	m_kLandTypes.push_back(temp);
+}
+
+bool ZeroEdit::RemoveLandtype(int iTexture,Vector3 kColor)
+{
+	for(list<LandType>::iterator it=m_kLandTypes.begin();it!=m_kLandTypes.end();it++)
+	{
+		if((*it).m_iTexture==iTexture && (*it).m_kColor==kColor){
+			m_kLandTypes.erase(it);
+			return true;
+		}
+	}
+
+	return false;
+}
+
+bool ZeroEdit::RemoveLandtype(int iNr)
+{
+	int i=0;
+	
+	for(list<LandType>::iterator it=m_kLandTypes.begin();it!=m_kLandTypes.end();it++)
+	{	
+		if(i == iNr){
+			m_kLandTypes.erase(it);
+			return true;
+		}
+	}
+
+	return false;
+}
+
+void ZeroEdit::ListLandTypes()
+{
+	pkConsole->Printf("--Land Types--");
+	pkConsole->Printf("NR     Texture     Color");	
+	
+	int i=0;
+	for(list<LandType>::iterator it=m_kLandTypes.begin();it!=m_kLandTypes.end();it++)
+	{
+		i++;
+		pkConsole->Printf("%i    %i    %.3f %.3f %.3f",i,(*it).m_iTexture,(*it).m_kColor.x,(*it).m_kColor.y,(*it).m_kColor.z);
+	}
+
+}
+
+LandType ZeroEdit::GetLandType(int iNr)
+{
+	int i=0;
+	
+	for(list<LandType>::iterator it=m_kLandTypes.begin();it!=m_kLandTypes.end();it++)
+	{	
+		if(i == iNr){
+			return (*it);
+		}
+	}
+
+	LandType temp;
+	temp.m_iTexture=0;
+	temp.m_kColor.Set(0,0,0);
+	
+	return temp;
+}
+
+

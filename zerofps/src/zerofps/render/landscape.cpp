@@ -1,12 +1,12 @@
 #include "render.h"
 
 void Render::DrawSkyBox(Vector3 CamPos,Vector3 kHead,int iHor,int iTop) {
-/*	
-	glMatrixMode(GL_PROJECTION);
-	glPushMatrix();
-	glOrtho(-4,4,-4,4,500,1);
-	glMatrixMode(GL_MODELVIEW);		
-*/	
+	float fYpos;
+	
+	if(kHead.x==0 && kHead.y==0 && kHead.z==0)
+		fYpos=90;
+	else
+		fYpos=0;
 	
 	glPushMatrix();
 	glPushAttrib(GL_LIGHTING_BIT|GL_FOG_BIT);
@@ -15,7 +15,7 @@ void Render::DrawSkyBox(Vector3 CamPos,Vector3 kHead,int iHor,int iTop) {
 	glDisable(GL_LIGHTING);//dont want lighting on the skybox		
 	glDepthMask(GL_FALSE);//want the skybox to be faaaaaar away =)
 	
-	glTranslatef(CamPos.x,CamPos.y,CamPos.z);
+	glTranslatef(CamPos.x,CamPos.y+fYpos,CamPos.z);
 	glRotatef(kHead.x, 1, 0, 0);
 	glRotatef(kHead.y, 0, 1, 0);	
 	glRotatef(kHead.z, 0, 0, 1);
@@ -66,33 +66,11 @@ void Render::DrawSkyBox(Vector3 CamPos,Vector3 kHead,int iHor,int iTop) {
 		glTexCoord2f(1	,1);		 glVertex3f(.5 ,-.5	,.5);		
 		glTexCoord2f(1	,.51);	glVertex3f(.5 ,-.5	,-.5);		
 	glEnd();
-
-/*
-	Quad(Vector3(0,0,-iSize/2),Vector3(0,0,0),Vector3(iSize,iSize,iSize),m_pkTexMan->Load("file:../data/textures/front.bmp",0));
-	Quad(Vector3(0,iSize/2,0),Vector3(90,0,0),Vector3(iSize,iSize,iSize),m_pkTexMan->Load("file:../data/textures/top.bmp",0));
-	Quad(Vector3(0,0,iSize/2),Vector3(180,0,180),Vector3(iSize,iSize,iSize),m_pkTexMan->Load("file:../data/textures/front.bmp",0));	
-	Quad(Vector3(iSize/2,0,0),Vector3(0,-90,0),Vector3(iSize,iSize,iSize),m_pkTexMan->Load("file:../data/textures/front.bmp",0));
-	Quad(Vector3(-iSize/2,0,0),Vector3(0,90,0),Vector3(iSize,iSize,iSize),m_pkTexMan->Load("file:../data/textures/front.bmp",0));
-*/
-
-/*
-	Quad(Vector3(0,0,-iSize/2),Vector3(0,0,0),Vector3(iSize,iSize,iSize),m_pkTexMan->Load("file:../data/textures/front.bmp"));
-	Quad(Vector3(0,iSize/2,0),Vector3(90,0,0),Vector3(iSize,iSize,iSize),m_pkTexMan->Load("file:../data/textures/top.bmp"));
-	Quad(Vector3(0,0,iSize/2),Vector3(180,0,180),Vector3(iSize,iSize,iSize),m_pkTexMan->Load("file:../data/textures/back.bmp"));	
-	Quad(Vector3(iSize/2,0,0),Vector3(0,-90,0),Vector3(iSize,iSize,iSize),m_pkTexMan->Load("file:../data/textures/left.bmp"));
-	Quad(Vector3(-iSize/2,0,0),Vector3(0,90,0),Vector3(iSize,iSize,iSize),m_pkTexMan->Load("file:../data/textures/right.bmp"));
-*/	
 	
 	glPopAttrib();
 	glDepthMask(GL_TRUE);	
 	glPopMatrix();
 
-
-/*
-	glMatrixMode(GL_PROJECTION);
-	glPopMatrix();
-	glMatrixMode(GL_MODELVIEW);
-*/	
 }
 
 

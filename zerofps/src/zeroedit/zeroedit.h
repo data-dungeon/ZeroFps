@@ -10,14 +10,7 @@
 #include <cstdlib>
 
 #include "ballobject.h"
-//#include "worldinfoproperty.h"
 
-//#include "normaldrawproperty.h"
-//#include "playercontrolproperty.h"
-//#include "ballobject.h"
-//#include "playerballobject.h"
-//#include "playerobject.h"
-//#include "../test/bunnyobject.h"
 
 enum EDIT_MODES{
 	TEXTURE=1,
@@ -27,10 +20,15 @@ enum EDIT_MODES{
 	ADDOBJECT=5
 };
 
+class LandType
+{
+	public:
+		int 		m_iTexture;
+		Vector3	m_kColor;
+};
+
 class ZeroEdit :public Application {
 	private:
-		void ToogleMenu();
-		bool InitGUI();
 		enum FuncId_e
 		{
 			FID_LOADMAP,
@@ -49,15 +47,19 @@ class ZeroEdit :public Application {
 			FID_FOG,
 			FID_WATER,
 			FID_SKYBOX,
+			FID_ADDLAND,
+			FID_REMOVELAND,
+			FID_LISTLAND,
 		};	
 	
 		Camera* m_pkCamera;
 		HeightMap* m_pkMap;
-
-
+		
+		list<LandType> m_kLandTypes;
+		
 		int m_iMode;
 		
-		int m_iTexture;
+//		int m_iTexture;
 		Vector3 m_kDrawPos;
 		float m_fPointDistance;
 		float m_fPointerHeight;
@@ -66,11 +68,14 @@ class ZeroEdit :public Application {
 		Object* m_pkCurentChild;
 		
 		string m_kCurentTemplate;
+		
 		float m_fTimer;
 		float m_fDrawRate;
+		int m_iLandType;
 		bool m_bDrawing;
 		bool m_iRandom;
 		bool m_bMenuActive;
+	
 	
 		void Input();				
 		void CreateNew(int iSize);
@@ -82,6 +87,19 @@ class ZeroEdit :public Application {
 		void SelectParent();		
 		void ListTemplates();		
 		void RegisterPropertys();
+		
+		void AddLandtype(int iTexture,Vector3 kColor);
+		bool RemoveLandtype(int iTexture,Vector3 kColor);		
+		bool RemoveLandtype(int iNr);
+		LandType GetLandType(int iNr);
+		void ListLandTypes();
+		
+		void HeightMapDraw(Vector3 kPencilPos);
+		
+		void ToogleMenu();
+		bool InitGUI();
+		
+		
 		
 	public:
 		bool ZGWinProc( ZGuiWnd* pkWindow, unsigned int uiMessage, int iNumberOfParams, void *pkParams );
