@@ -148,7 +148,9 @@ FILE* ZFVFileSystem::Open(string strFileName, int iOptions, bool bWrite)
 	//dvoid hack
 	//if file still not open and it was opened for writing create directory
 	string dir  = "";
-	for(int i = strFileName.size();i > 0 ;i--)
+	
+{
+		for(int i = strFileName.size();i > 0 ;i--)
 	{
 		if( strFileName[i] == '/')
 		{
@@ -165,7 +167,7 @@ FILE* ZFVFileSystem::Open(string strFileName, int iOptions, bool bWrite)
 				return NULL;
 		}
 	}
-	
+}	
 
 	// Failed to open file.
 	return NULL;

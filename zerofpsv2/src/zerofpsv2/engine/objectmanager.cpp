@@ -744,8 +744,23 @@ void ObjectManager::PackToClients()
 	NP.m_kData.m_kHeader.m_iPacketType = ZF_NETTYPE_UNREL;
 	NP.Write((char) ZFGP_DELETEOBJECT);
 
+	cout << "Delete List Size:"  << m_aiNetDeleteList.size() << endl;
+
 	for(unsigned int i=0; i<m_aiNetDeleteList.size(); i++) {
 		NP.Write((int) m_aiNetDeleteList[i] );
+
+		if(NP.m_iPos >= 512) {
+			NP.Write(iEndOfObject);
+			NP.Write(ZFGP_ENDOFPACKET);
+			m_pkNetWork->SendToAllClients(&NP);
+
+			NP.Clear();
+			NP.m_kData.m_kHeader.m_iPacketType = ZF_NETTYPE_UNREL;
+			NP.Write((char) ZFGP_DELETEOBJECT);
+
+			iPacketSize = 0;
+			}
+	
 		}
 	
 	NP.Write(iEndOfObject);

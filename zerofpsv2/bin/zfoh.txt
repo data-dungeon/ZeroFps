@@ -88,7 +88,8 @@ class object
 
 	class Node4x
 		parent object
-		set MadProperty m_kMadFile /data/mad/base4x.mad
+		set MadProperty m_kMadFile /data/mad/largeroom.mad
+		set MadProperty m_fScale 1.3
 
 	class Nodecx
 		parent object
