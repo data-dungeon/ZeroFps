@@ -1086,6 +1086,9 @@ int DarkMetropolis::FindActiveHQ()
 void DarkMetropolis::SelectAgent(int id, bool bToggleSelect, bool bResetFirst, 
 											bool bMoveCamera) 
 { 
+
+	((CGamePlayDlg*)m_pkGamePlayDlg)->UpdateSelAgent(id);
+
 	if(bResetFirst)
 		m_kSelectedEntitys.clear(); 
  
@@ -1134,6 +1137,8 @@ void DarkMetropolis::SelectAgent(int id, bool bToggleSelect, bool bResetFirst,
 			}
 		}
 	}
+
+	
 
 	//
 	// TODO: Flytta kameran till samma plats.
