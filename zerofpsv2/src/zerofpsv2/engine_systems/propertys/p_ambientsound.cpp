@@ -5,9 +5,12 @@
 
 P_AmbientSound::P_AmbientSound()
 {
+	strcpy(m_acName,"P_AmbientSound");
+
 	m_pkAudioSystem = static_cast<ZFAudioSystem*>(g_ZFObjSys.GetObjectPtr("ZFAudioSystem"));
 	//m_szFileName = NULL;
 	m_bStarted = false;
+	m_bSoundHaveBeenSaved = false;
 	SetSound("/data/sound/dummy.wav");
 }
 
@@ -116,4 +119,56 @@ vector<PropertyValues> P_AmbientSound::GetPropertyValues()
 	kReturn[2].pkValue    = (void*)&m_bLoop;
 	
 	return kReturn;
+}
+
+void P_AmbientSound::Save(ZFIoInterface* pkFile)
+{
+	printf("P_AmbientSound::Save!\n");
+	m_bSoundHaveBeenSaved = true;
+
+	pkFile->Write( &m_bSoundHaveBeenSaved,sizeof(bool),1); // have been saved or not
+	
+	unsigned int uiSize = m_strFileName.length();
+	char* szFileName = (char*) m_strFileName.c_str();
+
+	pkFile->Write( &uiSize, sizeof(unsigned int), 1); // number of characters in filename
+	pkFile->Write( szFileName, sizeof(char), m_strFileName.size()); // filename
+	pkFile->Write( &m_fHearableDistance, sizeof(float), 1); // hearable distance
+	pkFile->Write( &m_bLoop, sizeof(bool), 1); // loop
+	pkFile->Write( &m_bStarted, sizeof(bool), 1); // started or not
+	pkFile->Write( m_pkAudioSystem, sizeof(ZFAudioSystem), 1); // ZFAudioSystem object
+}
+
+void P_AmbientSound::Load(ZFIoInterface* pkFile)
+{
+	printf("P_AmbientSound::Load!\n");
+
+	char* szFileName = NULL;
+	unsigned int uiFileNameSize;
+	
+	pkFile->Read( &m_bSoundHaveBeenSaved,sizeof(bool),1); // have been saved or not
+	pkFile->Read( &uiFileNameSize, sizeof(int), 1); // nummber of characters in filename
+
+	szFileName = new char[uiFileNameSize+1];
+
+	pkFile->Read( szFileName, sizeof(char), uiFileNameSize); // filename
+	szFileName[uiFileNameSize] = '\0';
+	
+	m_strFileName = szFileName;
+	
+	pkFile->Read( &m_fHearableDistance, sizeof(float), 1); // hearable distance
+	pkFile->Read( &m_bLoop, sizeof(bool), 1); // loop
+	pkFile->Read( &m_bStarted, sizeof(bool), 1); // started or not
+	pkFile->Read( m_pkAudioSystem, sizeof(ZFAudioSystem), 1); // ZFAudioSystem object
+
+	if(m_bSoundHaveBeenSaved)
+	{
+		Object* pkObject = GetObject();
+		m_pkAudioSystem->StopSound(m_strFileName, pkObject->GetWorldPosV());
+		m_bSoundHaveBeenSaved = false;
+		m_bStarted = false;
+	}	
+
+	if(szFileName)
+		delete[] szFileName;
 }

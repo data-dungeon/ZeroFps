@@ -16,6 +16,7 @@ class ENGINE_SYSTEMS_API P_AmbientSound : public Property
 		string m_strFileName;
 		bool m_bLoop;
 		bool m_bStarted;
+		bool m_bSoundHaveBeenSaved; ///< when the sound loads
 
 		ZFAudioSystem* m_pkAudioSystem;
 
@@ -28,9 +29,14 @@ class ENGINE_SYSTEMS_API P_AmbientSound : public Property
 		void CloneOf(Property* pkProperty);
 		void Update();
 
+		void Save(ZFIoInterface* pkFile);
+		void Load(ZFIoInterface* pkFile);
+
 	protected:
 
 		vector<PropertyValues> GetPropertyValues();
+
+		
 
 };
 

@@ -205,6 +205,17 @@ void MistServer::OnSystem()
 
 void MistServer::Input()
 {
+
+	int iPressedKey = pkInput->GetQueuedKey();
+
+	switch(iPressedKey)
+	{
+	case KEY_F9:
+		printf("Num sounds in system = %i\nNum active channels = %i\n",
+			pkAudioSys->GetNumSounds(), pkAudioSys->GetNumActiveChannels());
+		break;
+	}
+
 	float speed = 20;
 	
 	//set speed depending on edit mode
@@ -383,6 +394,7 @@ void MistServer::Input()
 				
 		}		
 	}
+
 };
 
 void MistServer::OnHud(void)
