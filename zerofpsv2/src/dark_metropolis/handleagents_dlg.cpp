@@ -8,6 +8,7 @@ CHandleAgents::CHandleAgents() : CGameDlg("AgentsWnd", &g_kDM)
 	m_iSelAgent = -1;
 	m_iStartAgent = 0;
 	m_iStartHireAgent = 0;
+	m_iAgentToHire = -1;
 }
 
 CHandleAgents::~CHandleAgents()
@@ -31,6 +32,11 @@ void CHandleAgents::OnCommand(ZGuiWnd *pkMainWnd, string strClickName)
 	else
 	if(strClickName == "AgentsInfoBn")
 	{
+		DMCharacterStats empty;
+		empty.m_strName = "";
+
+		m_kViewAgentInfo = empty;
+
 		int sel_agent;
 		bool bAButtonIsSelected=false;
 		for(int i=0; i<m_vkCharsInBaseBns.size(); i++)
@@ -38,6 +44,20 @@ void CHandleAgents::OnCommand(ZGuiWnd *pkMainWnd, string strClickName)
 			if(m_vkCharsInBaseBns[i].first->IsChecked())
 			{
 				sel_agent = i;
+				m_iSelAgent = m_vkCharsInBaseBns[sel_agent].second;
+				bAButtonIsSelected=true;
+
+				m_kViewAgentInfo = *((P_DMCharacter*)
+					GetObject(m_iSelAgent)->GetProperty("P_DMCharacter"))->GetStats(); 
+				break;
+			}
+		}
+
+		for(int i=0; i<m_vkAgentsToHireBns.size(); i++)
+		{
+			if(m_vkAgentsToHireBns[i].first->IsChecked())
+			{
+				m_kViewAgentInfo = m_vkAgentsToHireBns[i].second;
 				bAButtonIsSelected=true;
 				break;
 			}
@@ -45,8 +65,6 @@ void CHandleAgents::OnCommand(ZGuiWnd *pkMainWnd, string strClickName)
 
 		if(bAButtonIsSelected)
 		{
-			m_iSelAgent = m_vkCharsInBaseBns[sel_agent].second;
-
 			m_pkGui->KillWndCapture();
 			LoadDlg("data/script/gui/dm_members.lua");
 			ShowWnd("MembersWnd", true/*, true*/);
@@ -103,12 +121,6 @@ void CHandleAgents::OnCommand(ZGuiWnd *pkMainWnd, string strClickName)
 				m_pkAudioSys->GetListnerPos()); 
 		}
 	}
-
-
-
-
-
-
 	else
 	if(strClickName == "PrevAgentToHireBn")
 	{
@@ -133,14 +145,13 @@ void CHandleAgents::OnCommand(ZGuiWnd *pkMainWnd, string strClickName)
 				m_pkAudioSys->GetListnerPos()); 
 		}
 	}
-
-
-
-
-
-
-
-
+	else
+	if(strClickName == "HireAgentBn")
+	{
+		((P_DMHQ*)GetDMObject(HQ)->GetProperty("P_DMHQ"))->SpawnNewCharacter(m_iAgentToHire);
+		UpdateAgentToHireList(m_iStartHireAgent);
+		UpdateAgentInBaseList(m_iStartAgent);
+	}
 
 
 	int pos;
@@ -198,6 +209,8 @@ void CHandleAgents::OnCommand(ZGuiWnd *pkMainWnd, string strClickName)
 					GetNumAgentsToHire(), kStats.m_strName.c_str() );
 				SetText("CurrentAgentToHireLabel", szText);
 
+				m_iAgentToHire = i+m_iStartHireAgent;
+
 				m_pkAudioSys->StartSound("data/sound/computer beep 5.wav", 
 					m_pkAudioSys->GetListnerPos()); 
 			}
@@ -209,6 +222,7 @@ bool CHandleAgents::InitDlg()
 {
 	m_iStartAgent = 0;
 	m_iStartHireAgent = 0;
+	m_iAgentToHire = -1;
 
 	if(!m_bInitialized)
 	{

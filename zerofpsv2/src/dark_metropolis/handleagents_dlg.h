@@ -11,6 +11,8 @@ public:
 	bool InitDlg();
 	int GetSelAgent() { return m_iSelAgent; }
 
+	DMCharacterStats m_kViewAgentInfo;
+
 private:
 
 	vector<pair<ZGuiCheckbox*, int> > m_vkCharsInBaseBns; // button, agent object id
@@ -18,6 +20,7 @@ private:
 	int m_iSelAgent;
 	int m_iStartAgent;
 	int m_iStartHireAgent;
+	int m_iAgentToHire;
 
 	bool SendOutAgent(int iID);
 	void UpdateAgentInBaseList(int iStartAgent);

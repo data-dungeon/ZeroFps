@@ -40,6 +40,7 @@ private:
 
 	void SwitchCharacter(bool bNext);
 	void SetCharacterStats(Entity* pkCharacterObject);
+	void SetStats(DMCharacterStats* pkCharacterStats);
 	void OnEquip(int iItemID, DMContainer* pkDestContainer);
 
 	int m_iCurrentCharacterPage;
@@ -81,6 +82,6 @@ private:
 		int& itempos_y, int& slotpos_x, int& slotpos_y);
 	void DropItem(ITEM_MOVE_INFO* pkObject);
 	void UpdateInventory(Entity* pkCharacterObject);
-	void UpdateLevelbar(Entity* pkCharacterObject);
+	void UpdateLevelbar(DMCharacterStats* pkStats);
 	void CreateCamera();
 };

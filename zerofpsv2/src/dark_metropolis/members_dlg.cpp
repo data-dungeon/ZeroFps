@@ -175,7 +175,12 @@ void CMembersDlg::SetWindowMode(WINDOW_MODE eType)
 
 			int iAgentObject;
 			iAgentObject = ((CHandleAgents*)GetGameDlg(HANDLE_AGENTS_DLG))->GetSelAgent();
-			SetCharacterStats(GetObject(iAgentObject));
+
+			for(int i=0; i<m_vkItemButtons.size(); i++)
+				m_vkItemButtons[i]->Hide();
+
+			SetStats(&(((CHandleAgents*)GetGameDlg(HANDLE_AGENTS_DLG))->m_kViewAgentInfo));
+
 			break;
 
 		case IN_GAME:
@@ -305,11 +310,34 @@ void CMembersDlg::SwitchCharacter(bool bNext)
 	}
 }
 
+void CMembersDlg::SetStats(DMCharacterStats* pkCharacterStats)
+{
+	char szText[50];
+
+	sprintf(szText, "Agent %i", pkCharacterStats->m_strName);
+	SetText("CurrentMemberNumberLabel", szText);
+	SetText("MemberNameField", (char*) pkCharacterStats->m_strName.c_str());
+	SetNumber("MembersArmourField", (int) pkCharacterStats->m_fArmour);
+	SetNumber("MemberSpeedField", (int) pkCharacterStats->m_fSpeed);
+	SetNumber("MemberWageField", (int) pkCharacterStats->m_fWage);
+
+	sprintf(szText, "%i/%i", pkCharacterStats->m_iLife, 
+		pkCharacterStats->m_iMaxLife);
+	SetText("MemberLifeField", szText);
+
+	UpdateLevelbar(pkCharacterStats);
+
+	string szTexName = string("data/textures/gui/dm/portraits/") +
+		pkCharacterStats->m_strIcon;
+
+	GetWnd("MemberIcon")->GetSkin()->m_iBkTexID = 
+		GetTexID((char*)szTexName.c_str());
+}
+
 void CMembersDlg::SetCharacterStats(Entity* pkCharacterObject)
 {
 	const int CELL_SIZE = 32;
 
-	char szText[50];
 	P_DMCharacter* pkCharProperty=NULL;
 	DMCharacterStats* pkCharacterStats=NULL;
 	DMContainer* pkBackPack=NULL, *pkArmor=NULL;
@@ -332,26 +360,28 @@ void CMembersDlg::SetCharacterStats(Entity* pkCharacterObject)
 	ZFAssert(pkCharProperty, 
 		"CMembersDlg::SetCharacterStats - No character property\n");
 
-	pkCharacterStats = pkCharProperty->GetStats();
+	SetStats(pkCharProperty->GetStats());
 
-	sprintf(szText, "Agent %i", pkCharacterObject->GetEntityID());
-	SetText("CurrentMemberNumberLabel", szText);
-	SetText("MemberNameField", (char*) pkCharacterStats->m_strName.c_str());
-	SetNumber("MembersArmourField", (int) pkCharacterStats->m_fArmour);
-	SetNumber("MemberSpeedField", (int) pkCharacterStats->m_fSpeed);
-	SetNumber("MemberWageField", (int) pkCharacterStats->m_fWage);
+	//pkCharacterStats = pkCharProperty->GetStats();
 
-	sprintf(szText, "%i/%i", pkCharacterStats->m_iLife, 
-		pkCharacterStats->m_iMaxLife);
-	SetText("MemberLifeField", szText);
+	//sprintf(szText, "Agent %i", pkCharacterObject->GetEntityID());
+	//SetText("CurrentMemberNumberLabel", szText);
+	//SetText("MemberNameField", (char*) pkCharacterStats->m_strName.c_str());
+	//SetNumber("MembersArmourField", (int) pkCharacterStats->m_fArmour);
+	//SetNumber("MemberSpeedField", (int) pkCharacterStats->m_fSpeed);
+	//SetNumber("MemberWageField", (int) pkCharacterStats->m_fWage);
 
-	UpdateLevelbar(pkCharacterObject);
+	//sprintf(szText, "%i/%i", pkCharacterStats->m_iLife, 
+	//	pkCharacterStats->m_iMaxLife);
+	//SetText("MemberLifeField", szText);
 
-	string szTexName = string("data/textures/gui/dm/portraits/") +
-		pkCharacterStats->m_strIcon;
+	//UpdateLevelbar(pkCharacterObject);
 
-	GetWnd("MemberIcon")->GetSkin()->m_iBkTexID = 
-		GetTexID((char*)szTexName.c_str());
+	//string szTexName = string("data/textures/gui/dm/portraits/") +
+	//	pkCharacterStats->m_strIcon;
+
+	//GetWnd("MemberIcon")->GetSkin()->m_iBkTexID = 
+	//	GetTexID((char*)szTexName.c_str());
 
 	UpdateInventory(pkCharacterObject);
 }
@@ -830,22 +860,22 @@ void CMembersDlg::UpdateInventory(Entity* pkCharacterObject)
 		}
 	}
 }
-void CMembersDlg::UpdateLevelbar(Entity* pkCharacterObject)
+void CMembersDlg::UpdateLevelbar(DMCharacterStats* pkCharacterStats)
 {
 	bool bFailed = false;
 
-	if(pkCharacterObject == NULL)
+	if(pkCharacterStats == NULL)
 	{
 		bFailed = true;
 	}
 	else
 	{
-		P_DMCharacter* pkCharProperty = (P_DMCharacter*) 
-			pkCharacterObject->GetProperty("P_DMCharacter");
+		//P_DMCharacter* pkCharProperty = (P_DMCharacter*) 
+		//	pkCharacterObject->GetProperty("P_DMCharacter");
 
-		if(pkCharProperty)
-		{
-			DMCharacterStats* pkCharacterStats = pkCharProperty->GetStats();
+		//if(pkCharProperty)
+		//{
+		//	DMCharacterStats* pkCharacterStats = pkCharProperty->GetStats();
 			if(pkCharacterStats)
 			{
 				int Level = pkCharacterStats->m_iLevel;
@@ -866,7 +896,7 @@ void CMembersDlg::UpdateLevelbar(Entity* pkCharacterObject)
 				GetWnd("LevelbarFront")->Resize(
 					(int)(procent_av_next_level*MAX_SIZE_LEVELBAR),20,true); 
 			}
-		}
+		//}
 	}
 
 	if(bFailed)
