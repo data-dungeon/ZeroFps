@@ -105,6 +105,7 @@ void ZeroEdit::OnHud(void)
 	glPushAttrib(GL_LIGHTING_BIT);
 	
 	glDisable(GL_LIGHTING);
+	glDisable(GL_DEPTH_TEST);
 
 	pkRender->SetFont("file:../data/textures/text/console.tga");
 	//pkRender->Print(Vector3(-1.1,.85,-1),Vector3(0,0,0),Vector3(0.06,0.06,0.06),"FPS:");	
@@ -124,7 +125,7 @@ void ZeroEdit::OnHud(void)
 	
 	glPopAttrib();
 
-
+	glEnable(GL_DEPTH_TEST);
 }
 
 

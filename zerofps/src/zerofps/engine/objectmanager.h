@@ -2,9 +2,11 @@
 #define _OBJECTMANAGER_H_
 
 #include "object.h"
-
+#include <vector>
 
 using namespace std;
+
+
 
 
 class ENGINE_API ObjectManager : public ZFObject{

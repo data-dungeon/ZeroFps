@@ -13,6 +13,8 @@ class ZFIo;
 class ZFIoFile;
 class ZFFile;
 
+class ZFMemPackage;
+
 #include "zfassert.h"
 
 #include "os.h"
@@ -36,3 +38,8 @@ class ZFFile;
 #include "zfio.h"
 #include "zfiofile.h"
 #include "zffile.h"
+
+#include "zfmempackage.h"
+
+
+

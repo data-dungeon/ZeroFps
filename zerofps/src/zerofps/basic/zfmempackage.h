@@ -26,7 +26,7 @@ class BASIC_API ZFMemPackage{
 		template <class Any>
 		bool Read(Any &data)
 		{
-			return Read((void*)&data,sizeof(Any));
+			return Read((void*)&data,sizeof(data));
 /*		
 			int iSize=sizeof(Any);
 			char* datapointer=(char*)&data;
@@ -47,7 +47,7 @@ class BASIC_API ZFMemPackage{
 		template <class Any>		
 		bool Write(Any &data)
 		{
-			return Write((void*)&data,sizeof(Any));
+			return Write((void*)&data,sizeof(data));
 /*			
 			int iSize=sizeof(Any);			
 			char* datapointer=(char*)&data;			

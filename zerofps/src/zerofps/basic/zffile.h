@@ -29,13 +29,13 @@ class ZFFile {
 		template <class Any> 
 		bool Read(Any &data)
 		{
-			return m_kIo->Read((void*)&data,sizeof(Any));
+			return m_kIo->Read((void*)&data,sizeof(data));
 		};
 		
 		template <class Any> 
 		bool Write(Any &data)
 		{
-			return m_kIo->Write((void*)&data,sizeof(Any));
+			return m_kIo->Write((void*)&data,sizeof(data));
 		};
 
 		int GetPos();

@@ -159,12 +159,14 @@ void Input::RunCommand(int cmdid, const CmdArgument* kCommand)
 
 int Input::GetQueuedKey()
 {
-	int value;
+	int value;	
 	
-	if(!m_aPressedKeys.empty()){
-		value = m_aPressedKeys.front();
-		m_aPressedKeys.pop();
-		return value;
+	if(m_bInputEnabled){
+		if(!m_aPressedKeys.empty()){
+			value = m_aPressedKeys.front();
+			m_aPressedKeys.pop();
+			return value;
+		}
 	}
 	
 	return -1;

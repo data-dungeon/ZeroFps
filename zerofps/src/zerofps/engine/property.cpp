@@ -23,7 +23,17 @@ void Property::PackTo(NetPacket* pkNetPacket)
 }
 
 void Property::PackFrom(NetPacket* pkNetPacket) 
-{ 
+{  
+
+}
+
+void Property::Save(ZFMemPackage* pkPackage)
+{
+
+}
+
+void Property::Load(ZFMemPackage* pkPackage)
+{  
 
 }
 

@@ -140,9 +140,7 @@ void ZeroFps::MainLoop(void) {
 		m_pkObjectMan->PackToClients();
 		DevPrintf("Num of Clients: %d", m_pkNetWork->GetNumOfClients());
 
-
 		//handle input
-//		if(!m_bConsoleMode)
 		m_pkInput->Update();
 
 
@@ -224,6 +222,7 @@ void ZeroFps::MainLoop(void) {
 			SetCamera(m_pkCamera);			
 //			m_pkCamera->ClearViewPort();
 			
+			m_pkInput->SetInputEnabled(true);			
 			m_pkConsole->Update();
 
 		}

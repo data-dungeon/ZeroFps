@@ -26,24 +26,6 @@ enum PROPERTY_SIDE{
 	PROPERTY_SIDE_SERVER
 };
 
-/*
-class ENGINE_API Property_Sort
-{
-	private:
-	
-	public:
-		int m_iPlace;
-		
-		bool m_bDistance_Sort;
-		
-		bool operator<(Property_Sort kOther&){
-			if(!m_bDistance_Sort)
-			return m_iPlace < kOther.m_iPlace;
-		}
-	
-};
-*/
-
 
 class ENGINE_API Property 
 {
@@ -71,6 +53,8 @@ class ENGINE_API Property
 		virtual void Update()=0;			
 		virtual void PackTo(NetPacket* pkNetPacket) ;
 		virtual void PackFrom(NetPacket* pkNetPacket) ;
+		virtual void Save(ZFMemPackage* pkPackage);
+		virtual void Load(ZFMemPackage* pkPackage);
 		inline void SetObject(Object* pkObject){m_pkObject=pkObject;};
 		inline Object *GetObject() {return m_pkObject;};
 

@@ -65,8 +65,8 @@ void Console::Update(void) {
 			m_bShift=false;
 		}
 		
-		if(iKey==RSHIFT || iKey==LSHIFT)
-			continue;
+//		if(iKey==RSHIFT || iKey==LSHIFT)
+//			continue;
 		
 		
 		//type text
