@@ -72,9 +72,12 @@ function GUICreate()
 	Skin32 = { tex1="wnd_bk.bmp", tex2="wndborder_left.bmp", tex3="wndborder_top.bmp", tex4="wndborder_corner.bmp",
 	 tex1a="0", tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=255, bkB=255, borderR=255, borderG=255, borderB=255, bd_size=2,
 	 tile=1, trans=1 }
-	Skin33 = { tex1="wnd_bk.bmp", tex2="wndborder_left.bmp", tex3="wndborder_top.bmp", tex4="wndborder_corner.bmp",
-	 tex1a="0", tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=255, bkB=255, borderR=255, borderG=255, borderB=255, bd_size=8,
+	Skin33 = { tex1="0", tex2="wndborder_left.bmp", tex3="wndborder_top.bmp", tex4="wndborder_corner.bmp",
+	 tex1a="0", tex2a="0", tex3a="0", tex4a="0", bkR=164, bkG=164, bkB=164, borderR=255, borderG=255, borderB=255, bd_size=8,
 	 tile=1, trans=0 }
+	Skin34 = { tex1="sb_f.bmp", tex2="0", tex3="0", tex4="0", tex1a="0", tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=255,
+	 bkB=255, borderR=255, borderG=255, borderB=255, bd_size=0, tile=0, trans=0, rots90deg=2 }
+
 	-------------------------------------------------------------------------
 	-- Create all windows in correct order (parents before childrens etc.)
 	-- 0 = Wnd, 1 = Button, 2 = Checkbox, 3 = Combobox, 4 = Label, 5 = Listbox, 6 = Radiobutton,
@@ -184,19 +187,19 @@ function GUICreate()
 
 	CreateWnd(5,"PropertyList","PropertyPage","",10,20,200,200,0,0,0)
 
-	CreateWnd(1,"RemovePropertyBn","PropertyPage","",224,12,16,16,0,0,0)
-	ChangeSkin("RemovePropertyBn","Skin1","Button up")
-	ChangeSkin("RemovePropertyBn","Skin2","Button down")
-	ChangeSkin("RemovePropertyBn","Skin3","Button focus")
+	CreateWnd(1,"RemovePropertyBn","PropertyPage","-",224,12,16,16,0,0,0)
+	ChangeSkin("RemovePropertyBn","Skin11","Button up")
+	ChangeSkin("RemovePropertyBn","Skin34","Button down")
+	ChangeSkin("RemovePropertyBn","Skin11","Button focus")
 
 	CreateWnd(1,"OpenAllPropertyWnd","PropertyPage","+",224,38,16,16,0,0,0)
 	ChangeSkin("OpenAllPropertyWnd","Skin11","Button up")
-	ChangeSkin("OpenAllPropertyWnd","Skin2","Button down")
+	ChangeSkin("OpenAllPropertyWnd","Skin34","Button down")
 	ChangeSkin("OpenAllPropertyWnd","Skin11","Button focus")
 
 	CreateWnd(1,"OpenEditPropertyWnd","PropertyPage","?",224,64,16,16,0,0,0)
 	ChangeSkin("OpenEditPropertyWnd","Skin11","Button up")
-	ChangeSkin("OpenEditPropertyWnd","Skin2","Button down")
+	ChangeSkin("OpenEditPropertyWnd","Skin34","Button down")
 	ChangeSkin("OpenEditPropertyWnd","Skin11","Button focus")
 
 	CreateWnd(0,"EnviromentPage","WorkTabWnd","Enviroment",2,27,252,227,0,0,0)
@@ -214,16 +217,18 @@ function GUICreate()
 
 	CreateWnd(0,"AddNewProperyWnd","GuiMainWnd","",527,288-257+16,256,227,0,3,0)
 	ShowWnd("AddNewProperyWnd",0,0)
+	ChangeSkin("AddNewProperyWnd","Skin33","Window")
 
 	CreateWnd(5,"AllPropertyList","AddNewProperyWnd","",10,8,200,200,0,0,0)
 
 	CreateWnd(1,"AddPropertyBn","AddNewProperyWnd","+",224,12,16,16,0,0,0)
 	ChangeSkin("AddPropertyBn","Skin11","Button up")
-	ChangeSkin("AddPropertyBn","Skin2","Button down")
+	ChangeSkin("AddPropertyBn","Skin34","Button down")
 	ChangeSkin("AddPropertyBn","Skin11","Button focus")
 
 	CreateWnd(0,"EditPropertyWnd","GuiMainWnd","",527,288-257+16,256,227,0,3,0)
 	ShowWnd("EditPropertyWnd",0,0)
+	ChangeSkin("EditPropertyWnd","Skin33","Window")
 
 	CreateWnd(5,"PropertyValList","EditPropertyWnd","",10,10,236,200-22,0,0,0)
 	CreateWnd(10,"PropertyValEb","EditPropertyWnd","",10,198+4,236,20,0,0,0)

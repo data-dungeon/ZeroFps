@@ -1855,6 +1855,7 @@ void ZeroEd::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 				{
 					char* cmd = m_pkIni->GetValue(akSections[i].c_str(), "Cmd");
 					m_pkFps->m_pkConsole->Execute(cmd);
+
 					break;
 				}
 			}

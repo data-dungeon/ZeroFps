@@ -87,7 +87,7 @@ bool ZGuiButton::Render( ZGuiRender* pkRenderer )
 		if(m_bCenterTextHorz)
 		{
 			int text_w = m_pkFont->GetLength(m_strText);
-			int x = rcTextRect.Left + rcTextRect.Width() / 2 - text_w / 2;
+			int x = rcTextRect.Left + (int)((float)rcTextRect.Width() / 2.0f - (float)(text_w) / 2.0f);
 			rcTextRect.Left = x;
 			rcTextRect.Right = x + text_w;
 		}
