@@ -39,7 +39,7 @@ class ENGINE_API Application : public ZFObject {
 		
 		void SetEnginePointer(ZeroFps* pkZeroFps);
 		Application(char* pName,int iWidth,int iHeight,int iDepth);
-		
+
 		virtual void OnInit(void)=0;
 		virtual void OnIdle(void)=0;
 		virtual void OnHud(void)=0;
