@@ -86,7 +86,7 @@ void Init(EntityManager* pkObjMan, ZFScriptSystem* pkScript)
 	pkScript->ExposeFunction("SIGetSelfID",			ObjectManagerLua::SIGetSelfIDLua);		
 	pkScript->ExposeFunction("GetSelfID",				ObjectManagerLua::SIGetSelfIDLua);		
 	pkScript->ExposeFunction("SISetHeartRate",		ObjectManagerLua::SISetHeartRateLua);
-	pkScript->ExposeFunction("SendEvent",				ObjectManagerLua::SendEventLua);			
+//	pkScript->ExposeFunction("SendEvent",				ObjectManagerLua::SendEventLua);			
 }
 
 void Reset()
@@ -296,6 +296,7 @@ int SetReturnObjectLua(lua_State* pkLua)
 		return 0;
 	
 	g_pkReturnObject = g_pkLastObject;
+	g_iCurrentObjectID = g_pkReturnObject->GetEntityID();
 
 	return 0;
 }
@@ -481,7 +482,7 @@ int SetZoneModelLua(lua_State* pkLua)
 }
 
 
-
+/*
 int SendEventLua(lua_State* pkLua)
 {
 	if(g_pkScript->GetNumArgs(pkLua) != 2)
@@ -502,12 +503,12 @@ int SendEventLua(lua_State* pkLua)
 			char	acEvent[128];
 			g_pkScript->GetArgString(pkLua, 1, acEvent);
 		
-			pe->SendEvent(acEvent);
+			pe->SendEvent("useit");
 			return 0;
 		}
 	}
 	
 	return 0;
-}
+}*/
 
 }

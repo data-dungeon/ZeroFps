@@ -422,12 +422,13 @@ void CharacterStats::SetHP( string kValue )
    
    if(m_kPointStats["hp"].Value() <= 0)
    {
-   	P_ScriptInterface* pe = (P_ScriptInterface*)m_pkParent->GetProperty("P_ScriptInterface");
+		m_pkParent->m_pkEntityManager->CallFunction(m_pkParent,"OnDeath",NULL);
+   	/*P_ScriptInterface* pe = (P_ScriptInterface*)m_pkParent->GetProperty("P_ScriptInterface");
    
    	if(pe)
    	{
    		pe->SendEvent("OnDeath");
-   	}
+   	}*/
    }   
 }
 
@@ -464,12 +465,13 @@ void CharacterStats::AddHP( int iValue )
    
    if(m_kPointStats["hp"].Value() <= 0)
    {
-   	P_ScriptInterface* pe = (P_ScriptInterface*)m_pkParent->GetProperty("P_ScriptInterface");
+		m_pkParent->m_pkEntityManager->CallFunction(m_pkParent,"OnDeath",NULL);
+   	/*P_ScriptInterface* pe = (P_ScriptInterface*)m_pkParent->GetProperty("P_ScriptInterface");
    
    	if(pe)
    	{
    		pe->SendEvent("OnDeath");
-   	}
+   	}*/
    }
 }
 

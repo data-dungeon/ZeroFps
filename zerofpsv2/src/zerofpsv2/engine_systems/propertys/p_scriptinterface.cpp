@@ -24,7 +24,7 @@ P_ScriptInterface::P_ScriptInterface()
 
 P_ScriptInterface::~P_ScriptInterface()
 {
-	m_pkEntityManager->CallFunction(m_pkEntity, "Destroy");	
+//	m_pkEntityManager->CallFunction(m_pkEntity, "Destroy");	
 }
 
 void P_ScriptInterface::Update()
@@ -66,6 +66,7 @@ bool P_ScriptInterface::CallFunction(const char* acFunction,vector<ScriptFuncArg
 		return m_pkScriptSys->Call(m_pkObject->GetEntityScript(), (char*)acFunction,0,0);	
 }*/
 
+/*
 bool P_ScriptInterface::SendObjectClickEvent(const char* acType,int iCallerObject )	
 {
 	if(m_pkEntity->GetEntityScript() && acType != NULL)
@@ -128,6 +129,7 @@ bool P_ScriptInterface::SendGroudClickEvent(const char* acType,Vector3 kPos,int 
 
 
 }
+*/
 
 void P_ScriptInterface::SetHeartRate(float blub) 
 {
@@ -141,11 +143,13 @@ void P_ScriptInterface::SetHeartRate(float blub)
 
 void P_ScriptInterface::Touch(int iId)
 {
-	vector<ScriptFuncArg> args(1);
+	/*
+   vector<ScriptFuncArg> args(1);
 	args[0].m_kType.m_eType = tINT;
 	args[0].m_pData = &iId;
 	
 	m_pkEntityManager->CallFunction(m_pkEntity, "Collission",&args);	
+	*/
 }
 
 void P_ScriptInterface::OnEvent(GameMessage& Msg)
@@ -175,6 +179,7 @@ void P_ScriptInterface::Load(ZFIoInterface* pkPackage,int iVersion)
 	SetHeartRate(m_fHeartRate);
 }
 
+/*
 bool P_ScriptInterface::SendEvent(const char* acEvent)
 {
 	if(m_pkEntity->GetEntityScript() != NULL)
@@ -189,7 +194,7 @@ bool P_ScriptInterface::SendEvent(const char* acEvent)
 	}
 
 	return false;
-}
+}*/
 
 Property* Create_P_ScriptInterface()
 {

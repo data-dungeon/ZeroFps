@@ -133,6 +133,26 @@ void ZeroEd::Input_EditZone()
 // Handles input for EditMode Object.
 void ZeroEd::Input_EditObject(float fMouseX, float fMouseY)
 {
+   if(m_pkInputHandle->VKIsDown("eventuse"))	
+	{
+		Entity* pkObject = m_pkEntityManager->GetEntityByID(m_iCurrentObject);
+		bool bSuccess = m_pkEntityManager->CallFunction(pkObject, "Useit",NULL);
+
+
+/*		Entity* pkObject = m_pkEntityManager->GetEntityByID(m_iCurrentObject);
+		if(pkObject)
+		{
+			P_ScriptInterface* pe = (P_ScriptInterface*)pkObject->GetProperty("P_ScriptInterface");	
+			
+			if(pe)
+			{
+				pe->SendEvent("Useit");
+				return;
+			}
+		}*/
+	}
+
+	
 	if(m_pkInputHandle->VKIsDown("copy"))	EditRunCommand(FID_COPY);
 	if(m_pkInputHandle->VKIsDown("paste"))	EditRunCommand(FID_PASTE);
 	

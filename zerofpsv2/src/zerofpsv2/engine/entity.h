@@ -370,6 +370,9 @@ class ENGINE_API Entity
 		void	 SetVarString(const string& strName, string strValue);		
 		void	 AddVarDouble(const string& strName, double fValueToAdd);
 
+		// Temporary Place For this Functions - Vim
+		bool SendObjectClickEvent(const char* acType,int iCallerObject );		
+		bool SendGroudClickEvent(const char* acType,Vector3 kPos,int iCallerObject);
 		
 		//friends
 		friend class NetWork;

@@ -1064,6 +1064,18 @@ void Entity::Save(ZFIoInterface* pkFile)
 
 void Entity::Touch(int iId)
 {
+	// First we call the entity script collision function.
+	if(!m_bZone)
+	{
+		vector<ScriptFuncArg> args(1);
+		args[0].m_kType.m_eType = tINT;
+		args[0].m_pData = &iId;
+		
+//		m_pkEntityManager->CallFunction(this, "Collission",&args);	
+		m_pkEntityManager->CallFunction(this, "Collission",NULL);	
+	}
+
+	// Then we call all property collision functions.
 	for(vector<Property*>::iterator it=m_akPropertys.begin();it!=m_akPropertys.end();it++) 
 	{
 		(*it)->Touch(iId);
@@ -1858,6 +1870,69 @@ void Entity::UpdateDeleteList()
 
 */
 
+
+bool Entity::SendObjectClickEvent(const char* acType,int iCallerObject )	
+{
+	if(GetEntityScript() && acType != NULL)
+	{
+		//set self id before calling the funktion
+		ObjectManagerLua::g_iCurrentObjectID = GetEntityID();
+		
+		//set caller id
+		ObjectManagerLua::g_iCurrentPCID = iCallerObject;
+
+
+		vector<ScriptFuncArg> args(1);
+		args[0].m_kType.m_eType = tCSTRING;
+		args[0].m_pData = new char[strlen(acType)+1];
+		strcpy((char*)args[0].m_pData, acType);
+		
+		bool bSuccess = m_pkEntityManager->m_pkScript->Call(GetEntityScript(), "Use", args);
+
+		delete[] args[0].m_pData;
+		
+		return bSuccess;
+	}
+
+   return false;
+
+}
+
+
+bool Entity::SendGroudClickEvent(const char* acType,Vector3 kPos,int iCallerObject)
+{
+	if(GetEntityScript() && acType != NULL)
+	{
+		//set self id before calling the funktion
+		ObjectManagerLua::g_iCurrentObjectID = GetEntityID();
+		
+		//set caller id
+		ObjectManagerLua::g_iCurrentPCID = iCallerObject;
+
+		vector<ScriptFuncArg> args(4);
+		args[0].m_kType.m_eType = tCSTRING;
+		args[0].m_pData = new char[strlen(acType)+1];
+		strcpy((char*)args[0].m_pData, acType);
+		
+		args[1].m_kType.m_eType = tFLOAT;
+		args[1].m_pData = &kPos.x;
+		args[2].m_kType.m_eType = tFLOAT;
+		args[2].m_pData = &kPos.y;
+		args[3].m_kType.m_eType = tFLOAT;
+		args[3].m_pData = &kPos.z;
+		
+		
+		bool bSuccess = m_pkEntityManager->m_pkScript->Call( GetEntityScript(), "GroundClick", args);
+
+		delete[] args[0].m_pData;
+		
+		return bSuccess;
+	}
+
+	return false;
+
+
+}
 
 
 

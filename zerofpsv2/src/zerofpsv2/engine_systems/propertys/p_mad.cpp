@@ -710,14 +710,17 @@ int PlayAnim(lua_State* pkLua)
 {
 	double dTemp;
 	g_pkScript->GetArgNumber(pkLua, 0, &dTemp);		
-	int iId1 = (int)dTemp;
+	int iEntityId = (int)dTemp;
 
-	char acName[100];
-	g_pkScript->GetArg(pkLua, 1, acName);
+	Entity* pkEntity = g_pkObjMan->GetEntityByID(iEntityId);
+	if(!pkEntity)
+		return 0;
 
-	Entity* o1 = g_pkObjMan->GetEntityByID(iId1);
-	P_Mad* mp = dynamic_cast<P_Mad*>(o1->GetProperty("P_Mad"));
-	mp->SetAnimation(acName,0);
+	char acAnimationName[100];
+	g_pkScript->GetArg(pkLua, 1, acAnimationName);
+
+	P_Mad* pkMad = dynamic_cast<P_Mad*>(pkEntity->GetProperty("P_Mad"));
+	pkMad->SetAnimation(acAnimationName,0);
 	
 	return 1;
 }

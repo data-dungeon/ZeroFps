@@ -82,7 +82,6 @@ class ENGINE_API EntityManager : public ZFSubSystem{
 		
 		//some system pointers
 		ZeroFps*					m_pkZeroFps;
-		ZFScriptSystem* 		m_pkScript;
 		NetWork*					m_pkNetWork;
 		ZFBasicFS*				m_pkBasicFS;
 		ZShaderSystem*			m_pkZShaderSystem;
@@ -176,6 +175,7 @@ class ENGINE_API EntityManager : public ZFSubSystem{
 		int	m_iSendType;												// Packet used to send entitymanger data.
 
 	public:
+		ZFScriptSystem* 		m_pkScript;
 		
 
 		EntityManager();

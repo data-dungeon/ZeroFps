@@ -71,7 +71,7 @@ namespace ObjectManagerLua
 	int ENGINE_SYSTEMS_API GetObjectNameLua(lua_State* pkLua);				//(int objectid) return the object name
 
 	// Event
-	int ENGINE_SYSTEMS_API SendEventLua(lua_State* pkLua);						//(int objectid,string event) send event to target object
+	//int ENGINE_SYSTEMS_API SendEventLua(lua_State* pkLua);						//(int objectid,string event) send event to target object
 
 	// Physics
 	int ENGINE_SYSTEMS_API SetVelToLua(lua_State* pkLua);

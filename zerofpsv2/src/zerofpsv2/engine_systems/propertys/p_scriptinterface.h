@@ -26,9 +26,9 @@ class ENGINE_SYSTEMS_API P_ScriptInterface: public Property {
 		
 		void Update();				
 		//bool CallFunction(const char* acFunction,vector<ScriptFuncArg>* pkParams = NULL);
-		bool SendObjectClickEvent(const char* acType,int iCallerObject );		
-		bool SendGroudClickEvent(const char* acType,Vector3 kPos,int iCallerObject);
-		bool SendEvent(const char* acEvent);
+		//bool SendObjectClickEvent(const char* acType,int iCallerObject );		
+		//bool SendGroudClickEvent(const char* acType,Vector3 kPos,int iCallerObject);
+		//bool SendEvent(const char* acEvent);
 
 		void OnEvent(GameMessage& Msg);
 

@@ -203,7 +203,10 @@ void P_AI::Update()
 
          // check if object still exists!!
          if ( pkEnt )
-            ((P_ScriptInterface*)pkEnt->GetProperty("P_ScriptInterface"))->SendObjectClickEvent( "PickUp", m_pkEntity->GetEntityID() );
+			{
+            //((P_ScriptInterface*)pkEnt->GetProperty("P_ScriptInterface"))->SendObjectClickEvent( "PickUp", m_pkEntity->GetEntityID() );
+            pkEnt->SendObjectClickEvent( "PickUp", m_pkEntity->GetEntityID() );
+			}
          
          NextOrder();
       }
