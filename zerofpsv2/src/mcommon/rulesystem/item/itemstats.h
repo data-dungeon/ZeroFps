@@ -15,9 +15,6 @@ class MCOMMON_API ItemStats
 {
 private:
 
-   // TODO! 
-   //string m_kIcon
-   
    string m_kItemName;
    
    int 
@@ -46,6 +43,8 @@ private:
 
 public:
 	char m_szPic[2][50]; ///< namnet på inventory slotsen, vanlig bild och alpha blend bild (ej full väg, bara namnet på filen)
+   int m_iIconID[2];
+
 
    ItemStats();
 
@@ -104,10 +103,10 @@ public:
 
    void Print();
 
-   bool Stock ( ItemStats *pkItemStats );
-
    bool operator== ( ItemStats &kItemStats );
    ItemStats& operator= ( ItemStats &kItemStats );
+
+   bool LoadIcons ( char *cpIcon, char *cpIconMask );
 
    friend class P_Item;
 

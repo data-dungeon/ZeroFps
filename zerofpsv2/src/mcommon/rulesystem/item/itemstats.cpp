@@ -286,6 +286,8 @@ ItemStats::ItemStats()
    m_iContainerID = -1;
 	strcpy(m_szPic[0], "dummy.bmp");
 	strcpy(m_szPic[1], "dummy_a.bmp");
+   m_iIconID[0] = 0;
+   m_iIconID[1] = 0;
 
 }
 
@@ -297,23 +299,6 @@ void ItemStats::AddItemValue ( int iValue )
 
    if ( m_iValue < 0 )
       m_iValue = 0;
-}
-
-// ---------------------------------------------------------------------------------------------
-
-bool ItemStats::Stock ( ItemStats *pkItemStats )
-{
-   if ( pkItemStats == this )
-   {
-      m_iQuantity += pkItemStats->m_iQuantity;
-
-      // remove the stacked object
-
-
-      return true;
-   }
-   else
-      return false;
 }
 
 // ---------------------------------------------------------------------------------------------
@@ -442,6 +427,24 @@ ItemStats& ItemStats::operator= ( ItemStats &kItemStats )
 	m_iCurrentContainer = kItemStats.m_iCurrentContainer;
 	
 	return *this;
+}
+
+// ---------------------------------------------------------------------------------------------
+
+bool ItemStats::LoadIcons ( char *cpIcon, char *cpIconMask )
+{
+   // load icon
+	TextureManager* m_pkTexMan = static_cast<TextureManager*>(g_ZFObjSys.GetObjectPtr("TextureManager"));	
+
+	m_iIconID[0] = m_pkTexMan->Load( cpIcon, 0 );
+   m_iIconID[0] = m_pkTexMan->GetTextureID (m_iIconID[0]);
+   
+   // load iconmask   
+	m_iIconID[1] = m_pkTexMan->Load( cpIconMask, 0 );
+   m_iIconID[1] = m_pkTexMan->GetTextureID (m_iIconID[1]);
+
+
+   return true;
 }
 
 // ---------------------------------------------------------------------------------------------

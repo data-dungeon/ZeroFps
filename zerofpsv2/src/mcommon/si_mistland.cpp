@@ -82,13 +82,15 @@ void MistLandLua::Init(ObjectManager* pkObjMan,ZFScriptSystem* pkScript)
    pkScript->ExposeFunction("SetItemValue",			   MistLandLua::SetItemValueLua);			
    pkScript->ExposeFunction("GetItemValue",			   MistLandLua::GetItemValueLua);			
    pkScript->ExposeFunction("AddItemValue",			   MistLandLua::AddItemValueLua);			
-   pkScript->ExposeFunction("SetItemWeight",			   MistLandLua::SetItemWeightLua);		
+   pkScript->ExposeFunction("SetItemWeight",			   MistLandLua::SetItemWeightLua);
+   pkScript->ExposeFunction("SetIcon",			         MistLandLua::SetIconLua);
 
    // Lua Lua commands
    pkScript->ExposeFunction("RunScript",			      MistLandLua::RunScriptLua);		
 
    // equip / unequip
    pkScript->ExposeFunction("EquipFromScript",   		MistLandLua::EquipFromScriptLua);			
+   pkScript->ExposeFunction("Equip",   		         MistLandLua::EquipLua);			
    pkScript->ExposeFunction("UnEquip",	      		   MistLandLua::UnEquipLua);			
 	pkScript->ExposeFunction("Equip",	      		   MistLandLua::EquipLua);			
 
@@ -928,6 +930,28 @@ int MistLandLua::PrintStatsLua (lua_State* pkLua)
 
 int MistLandLua::GetQuantityLua (lua_State* pkLua)
 {
+	if( g_pkScript->GetNumArgs(pkLua) == 0 )
+   {
+		Object* pkObject = g_pkObjMan->GetObjectByNetWorkID(g_iCurrentObjectID);
+
+	   if (pkObject)
+		{
+		   P_Item* pkCP = (P_Item*)pkObject->GetProperty("P_Item");
+
+         if ( pkCP )
+         {      
+            ItemStats *pkIS = pkCP->m_pkItemStats;
+            g_pkScript->AddReturnValue(pkLua, pkIS->GetQuantity() );
+         }
+         else
+         {
+            cout << "Warning! Tried to use a item function on a non-item object!" << endl;
+            return 0;
+         }
+          
+         return 1;
+      }
+   }
 
    return 0;
 }
@@ -948,10 +972,7 @@ int MistLandLua::SetQuantityLua (lua_State* pkLua)
   			P_Item* pkCP = (P_Item*)pkObject->GetProperty("P_Item");
                   
          if ( pkCP )
-         {
-            ItemStats *pkIS = pkCP->GetItemStats();
-            pkIS->SetQuantity ( int(dTemp) );
-         }
+            pkCP->m_pkItemStats->SetQuantity ( int(dTemp) );
          else
             cout << "Warning! Tried to use a item function on a non-item object!" << endl;
 
@@ -978,10 +999,7 @@ int MistLandLua::AddQuantityLua (lua_State* pkLua)
   			P_Item* pkCP = (P_Item*)pkObject->GetProperty("P_Item");
 
          if ( pkCP )
-         {         
-            ItemStats *pkIS = pkCP->GetItemStats();
-            pkIS->AddQuantity ( int(dTemp) );
-         }
+            pkCP->m_pkItemStats->AddQuantity ( int(dTemp) );
          else
             cout << "Warning! Tried to use a item function on a non-item object!" << endl;
       }
@@ -1007,10 +1025,7 @@ int MistLandLua::SetQualityLua (lua_State* pkLua)
   			P_Item* pkCP = (P_Item*)pkObject->GetProperty("P_Item");
 
          if ( pkCP )
-         {         
-            ItemStats *pkIS = pkCP->GetItemStats();
-            pkIS->SetQuality ( dTemp );
-         }
+            pkCP->m_pkItemStats->SetQuality ( dTemp );
          else
             cout << "Warning! Tried to use a item function on a non-item object!" << endl;
       }
@@ -1020,6 +1035,36 @@ int MistLandLua::SetQualityLua (lua_State* pkLua)
    return 0;
 }
 
+
+// ----------------------------------------------------------------------------------------------
+
+int MistLandLua::SetIconLua (lua_State* pkLua)
+{
+	if( g_pkScript->GetNumArgs(pkLua) == 2 )
+   {
+		Object* pkObject = g_pkObjMan->GetObjectByNetWorkID(g_iCurrentObjectID);
+
+	   if (pkObject)
+		{
+     		char	acPic[128];
+			g_pkScript->GetArgString(pkLua, 0, acPic);
+
+     		char	acPicMask[128];
+			g_pkScript->GetArgString(pkLua, 1, acPicMask);
+
+  			P_Item* pkIP = (P_Item*)pkObject->GetProperty("P_Item");
+
+         if ( pkIP )
+            pkIP->m_pkItemStats->LoadIcons ( acPic, acPicMask );
+         else
+            cout << "Warning! Tried to use a item function on a non-item object!" << endl;
+ 
+      }
+
+   }
+
+   return 0;
+}
 
 // ----------------------------------------------------------------------------------------------
 
@@ -1041,10 +1086,7 @@ int MistLandLua::SetSkillBonusLua (lua_State* pkLua)
   			P_Item* pkCP = (P_Item*)pkObject->GetProperty("P_Item");
 
          if ( pkCP )
-         {      
-            ItemStats *pkIS = pkCP->GetItemStats();
-            pkIS->SetSkillBonus ( string(acType), iValue );
-         }
+            pkCP->m_pkItemStats->SetSkillBonus ( string(acType), iValue );
          else
             cout << "Warning! Tried to use a item function on a non-item object!" << endl;
  
@@ -1075,10 +1117,7 @@ int MistLandLua::SetAttributeBonusLua (lua_State* pkLua)
   			P_Item* pkCP = (P_Item*)pkObject->GetProperty("P_Item");
 
          if ( pkCP )
-         {      
-            ItemStats *pkIS = pkCP->GetItemStats();
-            pkIS->SetAttributeBonus ( string(acType), iValue );
-         }
+            pkCP->m_pkItemStats->SetAttributeBonus ( string(acType), iValue );
          else
             cout << "Warning! Tried to use a item function on a non-item object!" << endl;
  
@@ -1109,10 +1148,7 @@ int MistLandLua::SetAttackBonusLua (lua_State* pkLua)
   			P_Item* pkCP = (P_Item*)pkObject->GetProperty("P_Item");
 
          if ( pkCP )
-         {      
-            ItemStats *pkIS = pkCP->GetItemStats();
-            pkIS->SetAttackBonus ( string(acType), iValue );
-         }
+            pkCP->m_pkItemStats->SetAttackBonus ( string(acType), iValue );
          else
             cout << "Warning! Tried to use a item function on a non-item object!" << endl;
  
@@ -1143,10 +1179,7 @@ int MistLandLua::SetDefenceBonusLua (lua_State* pkLua)
   			P_Item* pkCP = (P_Item*)pkObject->GetProperty("P_Item");
 
          if ( pkCP )
-         {      
-            ItemStats *pkIS = pkCP->GetItemStats();
-            pkIS->SetDefenceBonus ( string(acType), iValue );
-         }
+            pkCP->m_pkItemStats->SetDefenceBonus ( string(acType), iValue );
          else
             cout << "Warning! Tried to use a item function on a non-item object!" << endl;
  
@@ -1173,10 +1206,7 @@ int MistLandLua::EquipOnLua (lua_State* pkLua)
  			P_Item* pkCP = (P_Item*)pkObject->GetProperty("P_Item");
 
          if ( pkCP )
-         {      
-            ItemStats *pkIS = pkCP->GetItemStats();
-            pkIS->AddCanEquipOn( string(acType) );
-         }
+            pkCP->m_pkItemStats->AddCanEquipOn( string(acType) );
          else
             cout << "Warning! Tried to use a item function on a non-item object!" << endl;
       }
@@ -1203,7 +1233,7 @@ int MistLandLua::GetSkillBonusLua (lua_State* pkLua)
 
          if ( pkCP )
          {      
-            ItemStats *pkIS = pkCP->GetItemStats();
+            ItemStats *pkIS = pkCP->m_pkItemStats;
             g_pkScript->AddReturnValue(pkLua, pkIS->GetSkillBonus ( string (acType) ) );
          }
          else
@@ -1236,7 +1266,7 @@ int MistLandLua::GetAttributeBonusLua (lua_State* pkLua)
 
          if ( pkCP )
          {      
-            ItemStats *pkIS = pkCP->GetItemStats();
+            ItemStats *pkIS = pkCP->m_pkItemStats;
             g_pkScript->AddReturnValue(pkLua, pkIS->GetAttributeBonus ( string (acType) ) );
          }
          else
@@ -1268,7 +1298,7 @@ int MistLandLua::GetAttackBonusLua (lua_State* pkLua)
 
          if ( pkCP )
          {      
-            ItemStats *pkIS = pkCP->GetItemStats();
+            ItemStats *pkIS = pkCP->m_pkItemStats;
             g_pkScript->AddReturnValue(pkLua, pkIS->GetAttackBonus ( string (acType) ) );
          }
          else
@@ -1300,7 +1330,7 @@ int MistLandLua::GetDefenceBonusLua (lua_State* pkLua)
 
          if ( pkCP )
          {      
-            ItemStats *pkIS = pkCP->GetItemStats();
+            ItemStats *pkIS = pkCP->m_pkItemStats;
             g_pkScript->AddReturnValue(pkLua, pkIS->GetDefenceBonus ( string (acType) ) );
          }
          else
@@ -1337,7 +1367,7 @@ int MistLandLua::AddSkillBonusLua (lua_State* pkLua)
 
          if ( pkCP )
          {      
-            ItemStats *pkIS = pkCP->GetItemStats();
+            ItemStats *pkIS = pkCP->m_pkItemStats;
             pkIS->AddToSkillBonus ( string(acType), iValue );
          }
          else
@@ -1371,7 +1401,7 @@ int MistLandLua::AddAttributeBonusLua (lua_State* pkLua)
 
          if ( pkCP )
          {      
-            ItemStats *pkIS = pkCP->GetItemStats();
+            ItemStats *pkIS = pkCP->m_pkItemStats;
             pkIS->AddToAttributeBonus ( string(acType), iValue );
          }
          else
@@ -1404,7 +1434,7 @@ int MistLandLua::AddAttackBonusLua (lua_State* pkLua)
 
          if ( pkCP )
          {      
-            ItemStats *pkIS = pkCP->GetItemStats();
+            ItemStats *pkIS = pkCP->m_pkItemStats;
             pkIS->AddToAttackBonus ( string(acType), iValue );
          }
          else
@@ -1438,7 +1468,7 @@ int MistLandLua::AddDefenceBonusLua (lua_State* pkLua)
 
          if ( pkCP )
          {      
-            ItemStats *pkIS = pkCP->GetItemStats();
+            ItemStats *pkIS = pkCP->m_pkItemStats;
             pkIS->AddToDefenceBonus ( string(acType), iValue );
          }
          else
@@ -1466,7 +1496,7 @@ int MistLandLua::PrintItemStatsLua (lua_State* pkLua)
 
          if ( pkCP )
          {      
-            ItemStats *pkIS = pkCP->GetItemStats();
+            ItemStats *pkIS = pkCP->m_pkItemStats;
             pkIS->Print();
          }
          else
@@ -1496,7 +1526,7 @@ int MistLandLua::SetItemNameLua (lua_State* pkLua)
 
          if ( pkCP )
          {      
-            ItemStats *pkIS = pkCP->GetItemStats();
+            ItemStats *pkIS = pkCP->m_pkItemStats;
             pkIS->SetItemName ( string (acType) );
          }
          else
@@ -1526,7 +1556,7 @@ int MistLandLua::SetItemWeightLua (lua_State* pkLua)
 
          if ( pkCP )
          {      
-            ItemStats *pkIS = pkCP->GetItemStats();
+            ItemStats *pkIS = pkCP->m_pkItemStats;
             pkIS->SetItemWeight ( dTemp );
          }
          else
@@ -1556,7 +1586,7 @@ int MistLandLua::SetItemValueLua (lua_State* pkLua)
 
          if ( pkCP )
          {      
-            ItemStats *pkIS = pkCP->GetItemStats();
+            ItemStats *pkIS = pkCP->m_pkItemStats;
             pkIS->SetItemValue ( int(dTemp) );
          }
          else
@@ -1583,7 +1613,7 @@ int MistLandLua::GetItemValueLua (lua_State* pkLua)
 
          if ( pkCP )
          {      
-            ItemStats *pkIS = pkCP->GetItemStats();
+            ItemStats *pkIS = pkCP->m_pkItemStats;
             g_pkScript->AddReturnValue(pkLua, pkIS->GetItemValue () );
 
          }
@@ -1620,7 +1650,7 @@ int MistLandLua::AddItemValueLua (lua_State* pkLua)
 
          if ( pkCP )
          {      
-            ItemStats *pkIS = pkCP->GetItemStats();
+            ItemStats *pkIS = pkCP->m_pkItemStats;
             pkIS->AddItemValue ( int(dTemp) );
          }
          else
@@ -1705,7 +1735,8 @@ int MistLandLua::EquipFromScriptLua (lua_State* pkLua)
             // return everything the way it was before calling the script
             g_iCurrentObjectID = iOldObject;
             g_pkScript = pkZFScriptSys;
-            
+
+           
          }
          else
             cout << "Warning! Tried to equip something on a non-character object!" << endl;
@@ -1750,6 +1781,29 @@ int MistLandLua::EquipLua (lua_State* pkLua)
        }
 
    }
+
+
+
+/* test kod
+
+   Object* pkObject = g_pkObjMan->GetObjectByNetWorkID(g_iCurrentObjectID);
+
+   Object* pkNewObj = g_pkObjMan->CreateObjectFromScriptInZone("data/script/objects/t_item.lua", pkObject->GetLocalPosV() );
+   pkNewObj->GetProperty("P_Event")->Update();
+
+   CharacterProperty* pCharProp = (CharacterProperty*)pkObject->GetProperty("P_CharStats");
+   pCharProp->GetCharStats()->Equip( pkNewObj, "lefthand" );
+
+   P_Item *pkItem = (P_Item*)pkNewObj->GetProperty("P_Item");   
+
+   Object *pkNewItObj = pkItem->Split (10);
+
+   pkItem = (P_Item*)pkNewItObj->GetProperty("P_Item");
+
+   pkItem->m_pkItemStats->Print();
+
+
+*/
 
    return 0;
 }

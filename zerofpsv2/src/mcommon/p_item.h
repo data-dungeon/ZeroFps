@@ -9,16 +9,15 @@
 class MCOMMON_API P_Item: public Property 
 {
 	private:
-		ItemStats *m_pkItemStats;
       string m_kObjectScriptname; // which script the object is created from
                                   // needed when splitting items
 		
    public:
+		ItemStats *m_pkItemStats;
+
 	   void Update();
 		void CloneOf(Property* pkProperty) {}
 		vector<PropertyValues> GetPropertyValues(); 
-
-		ItemStats* GetItemStats()                 { return m_pkItemStats; }
 
 		P_Item( string kName );
 		P_Item();
@@ -32,6 +31,7 @@ class MCOMMON_API P_Item: public Property
 		bool HandleSetValue( string kValueName, string kValue );
 
       Object* Split ( int iTookens );
+      bool Stock ( Object *pkObject );
 };
 
 MCOMMON_API Property* Create_P_Item();

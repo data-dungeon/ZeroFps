@@ -19,7 +19,8 @@ class ENGINE_SYSTEMS_API PSystemProperty: public Property {
 
 		PSystemProperty( string kPSType );
 		PSystemProperty();
-
+      ~PSystemProperty();
+		
 		bool HandleSetValue( string kValueName, string kValue );
 
 		void SetPSType ( string kName );

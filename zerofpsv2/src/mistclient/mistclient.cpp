@@ -803,7 +803,7 @@ void MistClient::PickUp()
 
 					if(pkItemProp)
 					{
-						ItemStats* pkStats = pkItemProp->GetItemStats();
+						ItemStats* pkStats = pkItemProp->m_pkItemStats;
 
 						if(pkStats)
 							m_pkInventDlg->AddItem(pkStats);

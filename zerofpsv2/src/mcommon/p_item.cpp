@@ -28,8 +28,9 @@ P_Item::P_Item()
 	m_iSide = PROPERTY_SIDE_CLIENT;
 
    m_pkItemStats = new ItemStats;
+
 	bNetwork = true;
-   
+
 	strcpy(m_acName,"P_Item");
 }
 
@@ -37,7 +38,11 @@ P_Item::P_Item()
 
 P_Item::P_Item( string kName )
 {
+	m_iSide = PROPERTY_SIDE_CLIENT;
+
    m_pkItemStats = new ItemStats;
+
+	bNetwork = true;
 
 	strcpy(m_acName,"P_Item");
 }
@@ -60,8 +65,6 @@ bool P_Item::HandleSetValue( string kValueName, string kValue )
 
 void P_Item::Save(ZFIoInterface* pkPackage)
 {
-   cout << "Saved item:" << m_pkItemStats->m_kItemName << endl;
-
    int iSkillBonuses = 0, iAttributeBonuses = 0, iAttackBonuses = 0, iDefenceBonuses = 0,
        iEquipOn = 0, iValue;
 
@@ -76,20 +79,21 @@ void P_Item::Save(ZFIoInterface* pkPackage)
    iDefenceBonuses = m_pkItemStats->m_kFightStats.m_kDefence.size();
    iEquipOn = m_pkItemStats->m_kEquippableOn.size();
    
-	pkPackage->Write((void*)m_pkItemStats->m_kItemName.c_str(),128,1); // save itemname
+   pkPackage->Write((void*)m_pkItemStats->m_kItemName.c_str(),128,1); // save itemname
+
    pkPackage->Write((void*)&m_pkItemStats->m_iQuantity,sizeof(int),1); // save quantity
    pkPackage->Write((void*)&m_pkItemStats->m_iValue,sizeof(int),1); // save value
    pkPackage->Write((void*)&m_pkItemStats->m_fQuality,sizeof(float),1); // save quality
    pkPackage->Write((void*)&m_pkItemStats->m_fWeight,sizeof(float),1); // save weight
 
-   
+
    // save counters
    pkPackage->Write((void*)&iSkillBonuses,sizeof(int),1);
    pkPackage->Write((void*)&iAttributeBonuses,sizeof(int),1);
    pkPackage->Write((void*)&iAttackBonuses,sizeof(int),1);
    pkPackage->Write((void*)&iDefenceBonuses,sizeof(int),1);
    pkPackage->Write((void*)&iEquipOn,sizeof(int),1);
-
+  
    
    // save skillbonuses
    for ( kIte = m_pkItemStats->m_kSkillBonus.begin(); kIte != m_pkItemStats->m_kSkillBonus.end(); kIte++ )
@@ -138,7 +142,7 @@ void P_Item::Save(ZFIoInterface* pkPackage)
 	   pkPackage->Write((void*)&temp,128,1);       
    }
 
-  
+
 }
 
 // ------------------------------------------------------------------------------------------
@@ -151,14 +155,19 @@ void P_Item::Load(ZFIoInterface* pkPackage)
 
    map<string, int>::iterator kIte;
 
+
    
-	pkPackage->Read((void*)m_pkItemStats->m_kItemName.c_str(),128,1); // save itemname
+   
+	pkPackage->Read((void*)temp,128,1); // save itemname
+   m_pkItemStats->m_kItemName = temp;
+
+ 
    pkPackage->Read((void*)&m_pkItemStats->m_iQuantity,sizeof(int),1); // save quantity
    pkPackage->Read((void*)&m_pkItemStats->m_iValue,sizeof(int),1); // save value
    pkPackage->Read((void*)&m_pkItemStats->m_fQuality,sizeof(float),1); // save quality
    pkPackage->Read((void*)&m_pkItemStats->m_fWeight,sizeof(float),1); // save weight
 
-   
+    
    // load counters
    pkPackage->Read((void*)&iSkillBonuses,sizeof(int),1);
    pkPackage->Read((void*)&iAttributeBonuses,sizeof(int),1);
@@ -209,7 +218,7 @@ void P_Item::Load(ZFIoInterface* pkPackage)
 	   pkPackage->Read((void*)&temp,128,1); // name
       m_pkItemStats->AddCanEquipOn (string(temp));
    }
-  
+
 }
 
 // ------------------------------------------------------------------------------------------
@@ -228,13 +237,48 @@ void P_Item::PackFrom(NetPacket* pkNetPacket)
 
 Object* P_Item::Split ( int iTookens )
 {
-   Object *pkNewObject = m_pkObjMan->CreateObjectFromScript ( m_pkObject->m_strCreatedFromScript.c_str() );
+   // only works if object was created from script 
+   if ( m_pkObject->m_strCreatedFromScript.size() && iTookens > 0 && iTookens < m_pkItemStats->GetQuantity() )
+   {
+      m_pkItemStats->AddQuantity( -iTookens );      
 
-   return pkNewObject;
+      // in zone???
+      Object *pkNewObject = m_pkObjMan->CreateObjectFromScript ( m_pkObject->m_strCreatedFromScript.c_str() );
 
+      // copy all object data
+      P_Item *pkNewItemProp = (P_Item*)pkNewObject->GetProperty("P_Item");
+
+      *pkNewItemProp->m_pkItemStats = *m_pkItemStats;
+
+      pkNewItemProp->m_pkItemStats->SetQuantity ( iTookens );
+
+      return pkNewObject;
+   }
+   else 
+      return 0;
 }
 
 // ------------------------------------------------------------------------------------------
+
+bool P_Item::Stock ( Object *pkObject )
+{
+   P_Item *pkIP = (P_Item*)pkObject->GetProperty("P_Item");
+
+   if ( pkIP != 0 )
+      if ( *pkIP->m_pkItemStats == *m_pkItemStats )
+      {
+         pkIP->m_pkItemStats->m_iQuantity += m_pkItemStats->m_iQuantity;
+
+         // remove the stacked object
+         m_pkObjMan->Delete ( pkObject );
+
+         return true;
+      }
+
+   return false;
+}
+
+// ---------------------------------------------------------------------------------------------
 
 Property* Create_P_Item()
 {

@@ -412,19 +412,16 @@ bool CharacterStats::Equip ( Object *pkObject, string kSlot )
 
 	test_var = 22;
 
-	int apa; 
-	
-	apa= 2;
-	
+
 	P_Item* pkP_Item = (P_Item*)pkObject->GetProperty("P_Item");
 
    if ( !pkP_Item )
       return false;
 
    // Test if the item is equipable at the chosen slot
-   if ( pkP_Item->GetItemStats()->CanEquipOn(kSlot) )
+   if ( pkP_Item->m_pkItemStats->CanEquipOn(kSlot) )
    {
-      pkP_Item->GetItemStats()->EquipOn ( this );
+      pkP_Item->m_pkItemStats->EquipOn ( this );
 
       // check if the slot already is taken, if so, switch objects...somehow!?
       m_kEquipment[kSlot] = pkObject;
@@ -452,7 +449,7 @@ Object* CharacterStats::UnEquip (string kSlot)
 
       P_Item* pkP_Item = (P_Item*)pkTemp->GetProperty("P_Item");
 
-      pkP_Item->GetItemStats()->UnEquip( this );
+      pkP_Item->m_pkItemStats->UnEquip( this );
       
       m_kEquipment[kSlot] = 0;
 

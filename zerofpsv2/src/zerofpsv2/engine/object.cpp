@@ -28,7 +28,7 @@ Object::Object()
 	m_kAcc		= Vector3::ZERO;
 	m_fRadius	= 1;
 	
-	m_strName	= "A Object";	
+  	m_strName	= "A Object";	
 	m_strType	= "Object";
 
 	m_pScriptFileHandle	= new ZFResourceHandle;

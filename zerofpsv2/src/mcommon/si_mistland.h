@@ -93,6 +93,8 @@ namespace MistLandLua
    int MCOMMON_API GetItemValueLua (lua_State* pkLua);
    int MCOMMON_API AddItemValueLua (lua_State* pkLua);
 
+   int MCOMMON_API SetIconLua (lua_State* pkLua);
+
    // equip / unequip character
 
    int MCOMMON_API EquipFromScriptLua (lua_State* pkLua);

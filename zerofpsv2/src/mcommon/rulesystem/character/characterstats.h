@@ -58,7 +58,7 @@ private:
    string m_kCurrentSkill;
 
 public:
-
+   
 	int test_var;
 
 	CharacterStats( Object *pkParent );

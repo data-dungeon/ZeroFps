@@ -144,6 +144,13 @@ void PSystemProperty::PackFrom( NetPacket* pkNetPacket )
 
 // ------------------------------------------------------------------------------------------
 
+PSystemProperty::~PSystemProperty()
+{
+   delete m_pkPSystem;
+}
+
+// ------------------------------------------------------------------------------------------
+
 Property* Create_PSystemProperty()
 {
 	return new PSystemProperty;
