@@ -1477,9 +1477,9 @@ void ZFAudioSystem::UpdateAmbientSound()
 		{
 			Vector2 pos(m_kPos.x, m_kPos.z);
 
-			if(m_kPos.y >= m_kAmbientAreas[i]->m_fFloor && m_kPos.y <= m_kAmbientAreas[i]->m_fRoof)
-			{
-				if(PntInPolygon(&pos, m_kAmbientAreas[i]->m_kPolygon))
+				if( (m_kPos.y >= m_kAmbientAreas[i]->m_fFloor && 
+					  m_kPos.y <= m_kAmbientAreas[i]->m_fRoof) &&
+					  PntInPolygon(&pos, m_kAmbientAreas[i]->m_kPolygon) )
 				{
 					if(m_kAmbientAreas[i]->m_bChangeSound)
 					{
@@ -1551,7 +1551,7 @@ void ZFAudioSystem::UpdateAmbientSound()
 						}
 					}
 				}
-			}
+			
 		}
 	}
 }
