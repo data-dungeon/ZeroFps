@@ -153,6 +153,7 @@ public:
    map<string, Entity*>* GetEquippedList()           { return &m_kEquipment; }
    
    bool Equip ( Entity *pkObject, string kSlot );
+   bool Equip ( Entity *pkObject, int iSlot );
    Entity* UnEquip ( string kSlot );
 
    void MakeContainer();

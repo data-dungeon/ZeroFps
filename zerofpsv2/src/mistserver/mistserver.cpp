@@ -1329,10 +1329,27 @@ void MistServer::HandleOrders()
 				pe->SendGroudClickEvent(order->m_sOrderName.c_str(), order->m_kPos,order->m_iCharacter);
 								
 		}
+      // equip
+      else if ( order->m_sOrderName == "equip" )
+      {
+   		Entity* pkChar = pkObjectMan->GetObjectByNetWorkID(order->m_iCharacter);
+
+         if ( pkChar )
+         {
+            // get item to equip
+            Entity* pkItem = pkObjectMan->GetObjectByNetWorkID(order->m_iObjectID);
+
+            CharacterProperty* pkCP = (CharacterProperty*)pkChar->GetProperty ("P_CharStats");
+            P_Item* pkIP = (P_Item*)pkItem->GetProperty("P_Item");
+
+            if ( pkIP && pkCP )
+               pkCP->GetCharStats()->Equip( pkItem, order->m_iUseLess );              
+         }
+      }
+
 	  // request orders
       else if ( order->m_sOrderName == "(rq)item" )    
       {
-         // type of request
    		Entity* pkItemObject = pkObjectMan->GetObjectByNetWorkID(order->m_iObjectID);
 
          if ( pkItemObject )

@@ -8,7 +8,7 @@ enum EquipmentCategory
 	//
 	// Items that both can be placed in a container and on a special slot.
 	//
-	Armor,	 
+	Armour,	 
 	Cloak,	 // A cloak that wizards wear to protect them self
 	Helm,	 
 	Amulett, 

@@ -522,6 +522,29 @@ void CharacterStats::SetDefenceValue (string kDefenceType, int iValue)
 
 // ------------------------------------------------------------------------------------------
 
+bool CharacterStats::Equip ( Entity *pkObject, int iSlot )
+{
+   switch (iSlot)
+   {
+      case Item:
+         break;
+      case Armour:
+         return Equip ( pkObject, "chest" );
+      case Cloak:
+         break;
+      case Amulett:
+         break;
+      case Shield:
+         return Equip ( pkObject, "lefthand" );
+      case Weapon:
+         return Equip ( pkObject, "righthand" );         
+   };
+
+   return false;
+}
+
+// ------------------------------------------------------------------------------------------
+
 bool CharacterStats::Equip ( Entity *pkObject, string kSlot )
 {
    // check if object is itemobject (has a itemproperty)
@@ -534,6 +557,9 @@ bool CharacterStats::Equip ( Entity *pkObject, string kSlot )
    // Test if the item is equipable at the chosen slot
    if ( pkP_Item->m_pkItemStats->CanEquipOn(kSlot) )
    {
+
+      pkObject->SetUseZones(false);
+
       pkP_Item->m_pkItemStats->EquipOn ( this );
 
       // check if the slot already is taken, if so, switch objects...somehow!?
@@ -542,11 +568,15 @@ bool CharacterStats::Equip ( Entity *pkObject, string kSlot )
       m_uiVersion++;
 
       // stick Object to MAD model
-     // pkObject->SetRelativeOri (false);   
       m_pkParent->AddChild ( pkObject );
 
+      pkObject->SetUpdateStatus ( UPDATE_ALL );
+
       P_LinkToJoint* pkLink = (P_LinkToJoint*)pkObject->AddProperty ("P_LinkToJoint");
-      pkLink->SetJoint(kSlot.c_str());
+      
+      pkLink->SetJoint( kSlot.c_str() );
+
+      cout << "Equipped item:" << pkP_Item->m_pkItemStats->m_kItemName << " on " << kSlot << endl;
 
       return true;
    }
@@ -567,6 +597,8 @@ Entity* CharacterStats::UnEquip (string kSlot)
       pkP_Item->m_pkItemStats->UnEquip( this );
       
       m_kEquipment[kSlot] = 0;
+
+      // TODO!!!! Remove P_LinkToJoint from item!!!
 
       m_uiVersion++;
 

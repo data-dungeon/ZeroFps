@@ -398,7 +398,7 @@ Point InventoryDlg::MousePosToSpecialSqrPos(int x, int y, EquipmentCategory eCat
 {
 	switch(eCategory) 
 	{
-	case Armor:
+	case Armour:
 		if(Rect(16,16,16+32,16+32).Inside(x,y)) return Point(16,16);
 		break;
 	case Weapon:
@@ -440,7 +440,7 @@ Point InventoryDlg::MousePosToSpecialSqrPos(int x, int y, EquipmentCategory eCat
 
 EquipmentCategory InventoryDlg::MousePosToCategory(int x, int y)
 {
-	if(Rect(16,16,16+32,16+32).Inside(x,y)) return Armor;
+	if(Rect(16,16,16+32,16+32).Inside(x,y)) return Armour;
 	if(Rect(208,64,208+32,64+32).Inside(x,y)) return Weapon;
 	if(Rect(16,64,208+32,64+32).Inside(x,y)) return Weapon;
 	if(Rect(64,16,64+32,16+32).Inside(x,y)) return Cloak;
@@ -984,6 +984,23 @@ bool InventoryDlg::EquipSpecialSlot(ItemStats* pkItemStats, int iNetworkID, Equi
 		return false;
 
 	EquipmentCategory pkCategory = pkItemStats->GetEquipmentCategory();
+
+   int iClientObjectID = m_pkZeroFps->GetClientObjectID();
+   Entity* pkClientObj = m_pkEntityMan->GetObjectByNetWorkID(iClientObjectID);
+
+   // get ClientControlProperty
+   P_ClientControl* pkCC = (P_ClientControl*)pkClientObj->GetProperty("P_ClientControl");
+
+   ClientOrder kOrder;
+
+   // get client object
+   kOrder.m_sOrderName = "equip";
+   kOrder.m_iObjectID = pkItemStats->m_pkProperty->GetObject()->iNetWorkID;
+   kOrder.m_iClientID = m_pkZeroFps->GetConnectionID();
+   kOrder.m_iCharacter = pkCC->m_iActiveCaracterObjectID;
+   kOrder.m_iUseLess = eCategory;
+
+   pkCC->AddOrder ( kOrder );
 
 	return true;
 }

@@ -1061,6 +1061,8 @@ int MistLandLua::SetHPLua (lua_State* pkLua)
 
          if ( pkCP )
             pkCP->GetCharStats()->SetHP ( string(acType) );
+         else
+            cout << "Error! Tried to set HP on a object without P_CharStats" << endl;
       }
    }
 
@@ -1107,9 +1109,11 @@ int MistLandLua::SetMaxHPLua (lua_State* pkLua)
          g_pkScript->GetArgNumber(pkLua, 0, &dTemp);
 
   			CharacterProperty* pkCP = (CharacterProperty*)pkObject->GetProperty("P_CharStats");
-         CharacterStats *pkCS = pkCP->GetCharStats();
-
-         pkCS->SetMaxHP( int(dTemp) );
+         
+         if ( pkCP )
+            pkCP->GetCharStats()->SetMaxHP( int(dTemp) );
+         else
+            cout << "Error! Tried to use luaFunc SetMaxHP on a entity without P_CharStats" << endl;
       }
    }
 
@@ -1643,7 +1647,7 @@ int MistLandLua::SetEquipmentCategoryLua (lua_State* pkLua)
 				string strCategory = acCategory;
 				EquipmentCategory eCategory = Item;
 
-				if(strCategory == "Armor") eCategory = Armor;
+				if(strCategory == "Armor") eCategory = Armour;
 				else if(strCategory == "Cloak") eCategory = Cloak;
 				else if(strCategory == "Helm") eCategory = Helm;
 				else if(strCategory == "Amulett") eCategory = Amulett;
@@ -1862,10 +1866,10 @@ int MistLandLua::EquipOnLua (lua_State* pkLua)
      		char	acType[128];
 			g_pkScript->GetArgString(pkLua, 0, acType);
 
- 			P_Item* pkCP = (P_Item*)pkObject->GetProperty("P_Item");
+ 			P_Item* pkIP = (P_Item*)pkObject->GetProperty("P_Item");
 
-         if ( pkCP )
-            pkCP->m_pkItemStats->AddCanEquipOn( string(acType) );
+         if ( pkIP )
+            pkIP->m_pkItemStats->AddCanEquipOn( string(acType) );
          else
             cout << "Warning! Tried to use function EquipOn on a non-item object!" << endl;
       }
@@ -2487,8 +2491,8 @@ int MistLandLua::EquipLua (lua_State* pkLua)
 
             if ( pkChar )
             {      
-               pkChar->GetCharStats()->Equip ( pkObject, string(acSlot) );    
-					printf("Succeeded to equip item\n");
+               if ( pkChar->GetCharStats()->Equip ( pkObject, string(acSlot) ) )
+					   printf("Succeeded to equip item\n");
             }
             else
                cout << "Warning! Tried to equip something on a non-character object!" << endl;

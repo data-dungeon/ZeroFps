@@ -75,12 +75,13 @@ void CharacterProperty::Save(ZFIoInterface* pkPackage)
 
    // counters
    int iData = 0, iSkills = 0, iAttributes = 0, 
-       iEquipment = 0, iAttacks = 0, iDefence = 0, iValue;
+       iEquipment = 0, iAttacks = 0, iDefence = 0, iCounters, iValue;
 
    map<string, string>::iterator kDataIte;
    map<string, StatDescriber>::iterator kIte;
    map<string, Entity*>::iterator kEqIte;
    map<string, int>::iterator kFightIte;
+   map<string, StatCounter>::iterator kPointIte;
 
    iData = m_pkCharStats->m_kData.size();
    iSkills = m_pkCharStats->m_kSkills.size();
@@ -88,6 +89,7 @@ void CharacterProperty::Save(ZFIoInterface* pkPackage)
    iEquipment = m_pkCharStats->m_kEquipment.size();
    iAttacks = m_pkCharStats->m_kFightStats.m_kAttack.size();
    iDefence = m_pkCharStats->m_kFightStats.m_kDefence.size();
+   iCounters = m_pkCharStats->m_kPointStats.size();
 
    // save counters, need to know how many when loading data later
    pkPackage->Write ( (void*)&iData, sizeof(int), 1 );
@@ -96,6 +98,23 @@ void CharacterProperty::Save(ZFIoInterface* pkPackage)
    pkPackage->Write ( (void*)&iEquipment, sizeof(int), 1 );
    pkPackage->Write ( (void*)&iAttacks, sizeof(int), 1 );
    pkPackage->Write ( (void*)&iDefence, sizeof(int), 1 );
+   pkPackage->Write ( (void*)&iCounters, sizeof(int), 1 );
+
+
+   // save counters
+   for ( kPointIte = m_pkCharStats->m_kPointStats.begin(); 
+         kPointIte != m_pkCharStats->m_kPointStats.end(); kPointIte++ )
+   {
+      strcpy( temp, (*kPointIte).first.c_str() ); // name
+	   pkPackage->Write((void*)&temp,128,1);        
+
+      fValue = (*kPointIte).second.Max(); // max value
+	   pkPackage->Write((void*)&fValue,sizeof(float),1);        
+
+      fValue = (*kPointIte).second.Value(); // value
+	   pkPackage->Write((void*)&fValue,sizeof(float),1);        
+
+   }
 
    // save data
    for ( kDataIte = m_pkCharStats->m_kData.begin(); kDataIte != m_pkCharStats->m_kData.end(); kDataIte++ )
@@ -184,12 +203,7 @@ void CharacterProperty::Load(ZFIoInterface* pkPackage)
 
    // counters
    int iData = 0, iSkills = 0, iAttributes = 0, 
-       iEquipment = 0, iAttacks = 0, iDefence = 0, iValue;
-
-   map<string, string>::iterator kDataIte;
-   map<string, StatDescriber>::iterator kIte;
-   map<string, Entity*>::iterator kEqIte;
-   map<string, int>::iterator kFightIte;
+       iEquipment = 0, iAttacks = 0, iDefence = 0, iCounters = 0, iValue;
 
     // load counters 
    pkPackage->Read ( (void*)&iData, sizeof(int), 1 );
@@ -198,7 +212,24 @@ void CharacterProperty::Load(ZFIoInterface* pkPackage)
    pkPackage->Read ( (void*)&iEquipment, sizeof(int), 1 );
    pkPackage->Read ( (void*)&iAttacks, sizeof(int), 1 );
    pkPackage->Read ( (void*)&iDefence, sizeof(int), 1 );
+   pkPackage->Read ( (void*)&iCounters, sizeof(int), 1 );
 
+   // load counters
+   for ( i = 0; i < iCounters; i++ )
+   {
+	   pkPackage->Read((void*)&temp,128,1);        
+
+	   pkPackage->Read((void*)&fValue,sizeof(float),1); // max value
+      
+      m_pkCharStats->m_kPointStats[temp].SetMaxValue ( fValue );
+
+	   pkPackage->Read((void*)&fValue,sizeof(float),1); // value
+
+      m_pkCharStats->m_kPointStats[temp] = fValue;
+
+      cout << "LoadCounter:" << temp << " val:" << fValue << endl;
+
+   }
    
    // load data
    for ( i = 0; i < iData; i++ )
