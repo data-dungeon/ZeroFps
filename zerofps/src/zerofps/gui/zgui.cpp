@@ -695,11 +695,11 @@ bool ZGui::Activate(bool bActive)
 	return m_bActive;
 }
 
-void ZGui::ShowMainWindow(/*int iID*/ZGuiWnd* pkMainWnd, bool bShow)
+void ZGui::ShowMainWindow(ZGuiWnd* pkMainWnd, bool bShow)
 {
 	for(list<MAIN_WINDOW*>::iterator it = m_pkMainWindows.begin();
 		it != m_pkMainWindows.end(); it++)
-		if((*it)->pkWnd == pkMainWnd)//iID == iID)
+		if((*it)->pkWnd == pkMainWnd)
 		{
 			if(bShow == true)
 			{
@@ -742,7 +742,6 @@ bool ZGui::IgnoreKey(int Key)
 		case KEY_LCTRL:
 		case KEY_F12:
 		case KEY_F11:
-		//case KEY_F10: can´t ignore this iKeyPressed,it´s used to close the menu system.
 		case KEY_F9:
 		case KEY_F8:
 		case KEY_F7:
@@ -867,8 +866,6 @@ void ZGui::CreateDefaultSkins()
 {
 	TextureManager* pkTexMan = static_cast<TextureManager*>
 		(g_ZFObjSys.GetObjectPtr("TextureManager"));
-
-	//int piss = pkTexMan->Load("file:../data/textures/piss.bmp", 0); // första misslyckas, vet inte varför...
 	
 	int bn_down = pkTexMan->Load("file:../data/textures/button_down.bmp", 0);
 	int bn_focus = pkTexMan->Load("file:../data/textures/button_focus.bmp", 0);
@@ -1277,7 +1274,7 @@ bool ZGui::LoadDialog(char* szResourceFile, char* szWndResName, callback cb)
 			{
 			case TEXTBOX:
 				{
-					bool bMultiLine = false; //pkINI->GetValue((char*)vkSections[i].c_str(), "text");
+					bool bMultiLine = false;
 					pkNewWnd = new ZGuiTextbox(rc,pkParent,bVisible,wnd_id,bMultiLine);
 				}
 				break;
@@ -1384,7 +1381,7 @@ bool ZGui::SetSkins(vector<tSkinInf>& kAllSkinsTempArray, ZGuiWnd* pkWnd)
 				kAllSkinsTempArray[j].first.second == strDesc )
 			{
 				if(pkSkin == NULL)
-					continue; //pkSkin = new ZGuiSkin();
+					continue;
 
 				*pkSkin = *kAllSkinsTempArray[j].second;
 				break;

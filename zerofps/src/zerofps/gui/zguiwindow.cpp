@@ -493,29 +493,12 @@ void ZGuiWnd::GetWndSkinsDesc(vector<SKIN_DESC>& pkSkinDesc) const
 
 void ZGuiWnd::Enable()
 {
-/*	if(m_pkSkin)
-	{
-		if(afBkColorBuffer[0] > 0)
-			memcpy(m_pkSkin->m_afBkColor,afBkColorBuffer,sizeof(float)*3);
-	}
-*/
 	m_bEnabled = true;
 }
 
 void ZGuiWnd::Disable()
 {
 	m_bEnabled = false;
-/*
-	if(m_pkSkin)
-	{
-		// Copy the current background color to a buffer.
-		memcpy(afBkColorBuffer,m_pkSkin->m_afBkColor,sizeof(float)*3);
-
-		// Set current background color to gray (disabled).
-		m_pkSkin->m_afBkColor[0] = 0.839f; // (1.0f / 255) * 214;
-		m_pkSkin->m_afBkColor[1] = 0.827f; // (1.0f / 255) * 211;
-		m_pkSkin->m_afBkColor[2] = 0.807f; // (1.0f / 255) * 206;
-	}*/
 }
 
 ///////////////////////////////////////////////////////////////////////////////

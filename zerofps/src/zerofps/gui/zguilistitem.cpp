@@ -64,11 +64,8 @@ void ZGuiListitem::Deselect()
 
 void ZGuiListitem::Select()
 {
-	//if(m_bMenuItem == false)
-	{
-		if(m_pkButton)
-			m_pkButton->SetSkin(m_pkButton->GetButtonDownSkin());
-	}
+	if(m_pkButton)
+		m_pkButton->SetSkin(m_pkButton->GetButtonDownSkin());
 }
 
 unsigned int ZGuiListitem::GetIndex()

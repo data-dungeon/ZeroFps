@@ -137,13 +137,13 @@ bk_a_tex=(null)
 horz_bd_a_tex=(null)
 vert_bd_a_tex=(null)
 corner_bd_a_tex=(null)
-bk_r=255
-bk_g=255
-bk_b=255
+bk_r=192
+bk_g=192
+bk_b=192
 bd_r=0
 bd_g=0
 bd_b=0
-bd_size=1
+bd_size=0
 tile_skin=0
 transparent=0
 
@@ -326,13 +326,13 @@ bk_a_tex=(null)
 horz_bd_a_tex=(null)
 vert_bd_a_tex=(null)
 corner_bd_a_tex=(null)
-bk_r=255
-bk_g=255
-bk_b=255
+bk_r=192
+bk_g=192
+bk_b=192
 bd_r=0
 bd_g=0
 bd_b=0
-bd_size=1
+bd_size=0
 tile_skin=0
 transparent=0
 
@@ -1992,7 +1992,7 @@ move_area_right=640
 move_area_bottom=449
 tab_order=1
 is_menu=0
-num_visible_rows=4
+num_visible_rows=7
 
 [Button6]
 type=Button

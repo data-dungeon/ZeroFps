@@ -18,7 +18,6 @@ ZGuiButton::ZGuiButton(Rect kArea, ZGuiWnd* pkParent, bool bVisible, int iID) :
 	m_pkSkinBnUp=NULL;
 	m_pkSkinBnDown=NULL;
 	m_pkSkinBnHLight=NULL;
-//	m_iMaskTextureUp = -1;
 	RemoveWindowFlag(WF_CANHAVEFOCUS); // knappar har inte focus by default
 }
 
@@ -37,7 +36,6 @@ bool ZGuiButton::Notify(ZGuiWnd* pkWindow, int iCode)
 		}
 		else
 		{
-//			m_iBkMaskTexture = m_iMaskTextureUp;
 			m_pkSkin = m_pkSkinBnUp;
 		}
 	}
@@ -65,14 +63,11 @@ bool ZGuiButton::Render( ZGuiRender* pkRenderer )
 	if(!IsVisible())
 		return true;
 
-//	if(m_iBkMaskTexture > 0)
-//		pkRenderer->SetMaskTexture(m_iBkMaskTexture);
-
 	if(m_pkFont)
 		pkRenderer->SetFont(m_pkFont);
 
 	pkRenderer->SetSkin(m_pkSkin);
-	pkRenderer->RenderQuad(GetScreenRect()/*, (m_iBkMaskTexture > 0)*/); 
+	pkRenderer->RenderQuad(GetScreenRect()); 
 
 	if(m_pkSkin)
 		pkRenderer->RenderBorder(GetScreenRect().Contract(m_pkSkin->m_unBorderSize));

@@ -72,8 +72,6 @@ ZGuiSkin* ZGuiResourceManager::Add(string strName, ZGuiSkin* pkNewSkin)
 		m_kSkins.insert( map<string, ZGuiSkin*>::value_type(strName, pkNewSkin));
 		return Skin(strName);
 	}
-
-	//return pkExisting;
 }
 
 ZGuiFont* ZGuiResourceManager::Add(string strName, ZGuiFont* pkNewFont)
