@@ -68,7 +68,7 @@ bool ZGuiFont::CreateFromFile(char* strFileName)
 	}
 
 	m_szFileName = string(strFileName);	
-	m_iBMPWidth = kImage.width;
+	m_iBMPWidth = kImage.m_iWidth;
 
 	color_rgba kBkColor, kCurrColor;
 	kImage.get_pixel(0,0,kBkColor); 

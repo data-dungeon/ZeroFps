@@ -594,7 +594,7 @@ bool HeightMap::LoadImageHmap(const char* acFile)
 		return false;
 	}
 
-	m_iHmSize=kImage.width;
+	m_iHmSize=kImage.m_iWidth;
 	cout<<"Image Size is:"<<m_iHmSize<<endl;
 	
 	if(verts)

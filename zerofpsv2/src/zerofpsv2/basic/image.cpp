@@ -162,51 +162,51 @@ Image::Image()
 
 Image::Image( const Image& v )
 {
-	pixels = NULL;
-	width = height = 0;
-	if(v.pixels == NULL)	return;
+	m_pkPixels = NULL;
+	m_iWidth = m_iHeight = 0;
+	if(v.m_pkPixels == NULL)	return;
 
-	width = v.width;
-	height = v.height;
-	bHasAlpha = v.bHasAlpha;
-	pixels = new color_rgba [width * height]; 
-	memcpy(pixels,v.pixels,(width * height) * sizeof(color_rgba));
+	m_iWidth		= v.m_iWidth;
+	m_iHeight	= v.m_iHeight;
+	m_bHasAlpha = v.m_bHasAlpha;
+	m_pkPixels = new color_rgba [m_iWidth * m_iHeight]; 
+	memcpy(m_pkPixels,v.m_pkPixels,(m_iWidth * m_iHeight) * sizeof(color_rgba));
 }
 
 Image::~Image()
 {
-	if(pixels)	delete [] pixels;
-	pixels = NULL;
-	width = height = 0;
+	if(m_pkPixels)	delete [] m_pkPixels;
+	m_pkPixels = NULL;
+	m_iWidth = m_iHeight = 0;
 }
 
-void Image::free(void)
+void Image::Free(void)
 {
-	if(pixels)	delete [] pixels;
-	pixels = NULL;
-	width = height = 0;
-	bHasAlpha = false;
+	if(m_pkPixels)	delete [] m_pkPixels;
+	m_pkPixels = NULL;
+	m_iWidth = m_iHeight = 0;
+	m_bHasAlpha = false;
 }
 
-void Image::create_empty(int setwidth, int setheight)
+void Image::CreateEmpty(int iSetWidth, int iSetHeight)
 {
-	free();
-	width = setwidth;
-	height = setheight;
-	bHasAlpha = false;
-	pixels = new color_rgba [width * height];
+	Free();
+	m_iWidth  = iSetWidth;
+	m_iHeight = iSetHeight;
+	m_bHasAlpha = false;
+	m_pkPixels = new color_rgba [m_iWidth * m_iHeight];
 }
 
 
 // TGA FORMAT
-void Image::read_pixel(color_rgba* dst, char* src, int pixsize)
+void Image::ReadPixel(color_rgba* pkDst, char* pcSrc, int iPixsize)
 {
 	char red,grn,blu,alp;
 	char j,k; 
 	red = grn = blu = alp = 0;
-	char *data = src;
+	char *data = pcSrc;
 
-	switch(pixsize) {
+	switch(iPixsize) {
 		case 8:		
 			break;
 		
@@ -232,19 +232,19 @@ void Image::read_pixel(color_rgba* dst, char* src, int pixsize)
 			break;
 		}
 
-	dst->r = red;
-	dst->g = grn;
-	dst->b = blu;
-	dst->a = alp;
+	pkDst->r = red;
+	pkDst->g = grn;
+	pkDst->b = blu;
+	pkDst->a = alp;
 }
 
-void Image::read_rgb(color_rgba* dst, FILE* fp, int pixsize)
+void Image::ReadRgb(color_rgba* pkDst, FILE* fp, int iPixsize)
 {
 	char red,grn,blu,alp;
 	char j,k; 
 	red = grn = blu = alp = 0;
 
-	switch(pixsize) {
+	switch(iPixsize) {
 		case 8:		
 			red = grn = blu = getc(fp);
 			break;
@@ -271,13 +271,13 @@ void Image::read_rgb(color_rgba* dst, FILE* fp, int pixsize)
 			break;
 		}
 
-	dst->r = red;
-	dst->g = grn;
-	dst->b = blu;
-	dst->a = alp;
+	pkDst->r = red;
+	pkDst->g = grn;
+	pkDst->b = blu;
+	pkDst->a = alp;
 }
 
-void Image::save(const char* filename, bool alpha)
+void Image::Save(const char* szFileName, bool bAlpha)
 {
 	tgahead_t head;
 	memset(&head,0,sizeof(tgahead_t));
@@ -286,23 +286,23 @@ void Image::save(const char* filename, bool alpha)
 	head.colormap_type = 0;
 	head.image_type = TGA_IMAGETYPE_URGB;
 
-	head.width = width;
-	head.height = height;
+	head.width  = m_iWidth;
+	head.height = m_iHeight;
 
-	if(alpha)	head.pixel_depth = 32;
+	if(m_bHasAlpha)	head.pixel_depth = 32;
 		else	head.pixel_depth = 24;
 
-	FILE *fp = fopen(filename,"wb");
+	FILE *fp = fopen(szFileName,"wb");
 	if(!fp)	return;
 
 	fwrite(&head, sizeof(tgahead_t),1,fp);
 
-	for(int i=0; i<width * height; i++) {
-		putc(pixels[i].b,fp);
-		putc(pixels[i].g,fp);
-		putc(pixels[i].r,fp);
-		if(alpha)
-			putc(pixels[i].a,fp);
+	for(int i=0; i<m_iWidth * m_iHeight; i++) {
+		putc(m_pkPixels[i].b,fp);
+		putc(m_pkPixels[i].g,fp);
+		putc(m_pkPixels[i].r,fp);
+		if(bAlpha)
+			putc(m_pkPixels[i].a,fp);
 		}
 
 	fclose(fp);
@@ -318,7 +318,7 @@ bool Image::load_tga(const char* filename)
 
 /*	char *data = NULL;
 	color_rgba* map = NULL;
-	int pixelsize;
+	int m_pkPixelsize;
 
 	FILE *fp = fopen(filename,"rb");
 	
@@ -334,10 +334,10 @@ bool Image::load_tga(const char* filename)
 	width  = head.width;
 	height = head.height;
 
-	if(head.pixel_depth == 8)	pixelsize = 1;
-	if(head.pixel_depth == 16)	pixelsize = 2;
-	if(head.pixel_depth == 24)	pixelsize = 3;
-	if(head.pixel_depth == 32)	pixelsize = 4;
+	if(head.pixel_depth == 8)	m_pkPixelsize = 1;
+	if(head.pixel_depth == 16)	m_pkPixelsize = 2;
+	if(head.pixel_depth == 24)	m_pkPixelsize = 3;
+	if(head.pixel_depth == 32)	m_pkPixelsize = 4;
 
 	// Read color map if there is one.
 	if(head.colormap_type != 0) {
@@ -348,15 +348,15 @@ bool Image::load_tga(const char* filename)
 		}
 
 	// Alloc pixel memory.
-	pixels = new color_rgba [width * height];
+	m_pkPixels = new color_rgba [width * height];
 	
-	data = new char [width*height*pixelsize];
-	fread(data,sizeof(char),width * height * pixelsize,fp);
+	data = new char [width*height*m_pkPixelsize];
+	fread(data,sizeof(char),width * height * m_pkPixelsize,fp);
 
 	for(int i=0; i<width * height; i++) {
-		if(head.image_type == TGA_IMAGETYPE_URGB)	read_pixel(&pixels[i], &data[i*pixelsize], head.pixel_depth);
+		if(head.image_type == TGA_IMAGETYPE_URGB)	read_pixel(&m_pkPixels[i], &data[i*m_pkPixelsize], head.pixel_depth);
 		if(head.image_type == TGA_IMAGETYPE_UMAP)	{
-			pixels[i] = map [ data[i] ];
+			m_pkPixels[i] = map [ data[i] ];
 			}
 		}
 	
@@ -382,7 +382,7 @@ bool Image::load_tga(FILE *fp)
 {
 	char *data = NULL;
 	color_rgba* map = NULL;
-	int pixelsize;
+	int m_pkPixelsize;
 
 	if(!fp)	return false;
 
@@ -393,16 +393,16 @@ bool Image::load_tga(FILE *fp)
 //	if(head.image_type != TGA_IMAGETYPE_URGB)	return false;
 	
 	// Set basic image prop.
-	bHasAlpha	= false;
-	width			= head.width;
-	height		= head.height;
+	m_bHasAlpha	   = false;
+	m_iWidth			= head.width;
+	m_iHeight		= head.height;
 
-	if(head.pixel_depth == 8)	pixelsize = 1;
-	if(head.pixel_depth == 16)	pixelsize = 2;
-	if(head.pixel_depth == 24)	pixelsize = 3;
+	if(head.pixel_depth == 8)	m_pkPixelsize = 1;
+	if(head.pixel_depth == 16)	m_pkPixelsize = 2;
+	if(head.pixel_depth == 24)	m_pkPixelsize = 3;
 	if(head.pixel_depth == 32)	{
-		pixelsize = 4;
-		bHasAlpha = true;
+		m_pkPixelsize = 4;
+		m_bHasAlpha = true;
 		}
 
 	if(head.id_length != 0) {
@@ -414,20 +414,20 @@ bool Image::load_tga(FILE *fp)
 		// Get color map memory.
 		map = new color_rgba [head.colormap_length];
 		for(int i = 0; i<head.colormap_length; i++)	
-			read_rgb(&map[i], fp, head.colormap_size);
+			ReadRgb(&map[i], fp, head.colormap_size);
 		}
 
 	// Alloc pixel memory.
-	pixels = new color_rgba [width * height];
+	m_pkPixels = new color_rgba [m_iWidth * m_iHeight];
 	
-	data = new char [width*height*pixelsize];
-	fread(data,sizeof(char),width * height * pixelsize,fp);
+	data = new char [m_iWidth*m_iHeight*m_pkPixelsize];
+	fread(data,sizeof(char),m_iWidth * m_iHeight * m_pkPixelsize,fp);
 
 	if(head.image_type == TGA_IMAGETYPE_URGB || head.image_type == TGA_IMAGETYPE_UMAP) {
-		for(int i=0; i<width * height; i++) {
-			if(head.image_type == TGA_IMAGETYPE_URGB)	read_pixel(&pixels[i], &data[i*pixelsize], head.pixel_depth);
+		for(int i=0; i<m_iWidth * m_iHeight; i++) {
+			if(head.image_type == TGA_IMAGETYPE_URGB)	ReadPixel(&m_pkPixels[i], &data[i*m_pkPixelsize], head.pixel_depth);
 			if(head.image_type == TGA_IMAGETYPE_UMAP)	{
-				pixels[i] = map [ data[i] ];
+				m_pkPixels[i] = map [ data[i] ];
 
 				}
 			}
@@ -441,24 +441,24 @@ bool Image::load_tga(FILE *fp)
 		color_rgba		kColor;
 		unsigned int i;
 
-		while(iPixelOffset < (width * height)) {
+		while(iPixelOffset < (m_iWidth * m_iHeight)) {
 			ucPacketValue =  data[iDataOffset++];
 			
 			if(ucPacketValue & BIT_7) {	// Rle
 				iNumOfRLE = ucPacketValue - BIT_7;
 				iNumOfRLE += 1;
-				read_pixel(&kColor, &data[iDataOffset], head.pixel_depth);
-				iDataOffset += pixelsize;
+				ReadPixel(&kColor, &data[iDataOffset], head.pixel_depth);
+				iDataOffset += m_pkPixelsize;
 
 				for(i=0; i<iNumOfRLE; i++)
-					pixels[iPixelOffset++] = kColor;
+					m_pkPixels[iPixelOffset++] = kColor;
 				}
 			else {	// Raw
 				iNumOfRLE = ucPacketValue + 1;
 				for(i=0; i<iNumOfRLE; i++) {
-					read_pixel(&kColor, &data[iDataOffset], head.pixel_depth);
-					pixels[iPixelOffset++] = kColor;
-					iDataOffset += pixelsize;
+					ReadPixel(&kColor, &data[iDataOffset], head.pixel_depth);
+					m_pkPixels[iPixelOffset++] = kColor;
+					iDataOffset += m_pkPixelsize;
 					}
 				}
 			}
@@ -486,13 +486,13 @@ bool Image::load_pcx(FILE *fp, color_rgb* pal)
 	pcx_header_s head;
 	fread(&head,sizeof(pcx_header_s),1,fp);
 
-	bHasAlpha = false;
+	m_bHasAlpha = false;
 	// Alloc image mem.
-	width  = head.xmax + 1;
-	height = head.ymax + 1;
-	int img_size = width * height;
+	m_iWidth  = head.xmax + 1;
+	m_iHeight = head.ymax + 1;
+	int img_size = m_iWidth * m_iHeight;
 
-	pixels = new color_rgba [img_size];
+	m_pkPixels = new color_rgba [img_size];
 	unsigned char *data1 = new unsigned char [img_size];
 
 	// Load and unpack image.
@@ -524,16 +524,16 @@ bool Image::load_pcx(FILE *fp, color_rgb* pal)
 	// Translate image to rgb-24.
 	if(pal) {
 		for(i = 0; i<img_size; i++) {
-			pixels[i].r = pal[ data1[i] ].r;
-			pixels[i].g = pal[ data1[i] ].g;
-			pixels[i].b = pal[ data1[i] ].b;
+			m_pkPixels[i].r = pal[ data1[i] ].r;
+			m_pkPixels[i].g = pal[ data1[i] ].g;
+			m_pkPixels[i].b = pal[ data1[i] ].b;
 			}
 		}
 	else {
 		for(i = 0; i<img_size; i++) {
-			pixels[i].r = kPalette[ data1[i] ].r;
-			pixels[i].g = kPalette[ data1[i] ].g;
-			pixels[i].b = kPalette[ data1[i] ].b;
+			m_pkPixels[i].r = kPalette[ data1[i] ].r;
+			m_pkPixels[i].g = kPalette[ data1[i] ].g;
+			m_pkPixels[i].b = kPalette[ data1[i] ].b;
 			}
 		}
 
@@ -577,36 +577,36 @@ bool Image::load(FILE* fp, const char* filename)
 
 void Image::set_pixel(int x, int y, unsigned char r,unsigned char g,unsigned char b)
 {
-//	assert(pixels);
+//	assert(m_pkPixels);
 
-	if (x < 0 || x >= width)	return;
-	if (y < 0 || y >= height)	return;
+	if (x < 0 || x >= m_iWidth)	return;
+	if (y < 0 || y >= m_iHeight)	return;
 
-	int offset = y * width + x;
+	int offset = y * m_iWidth + x;
 
-	pixels[offset].r = r;
-	pixels[offset].g = g;
-	pixels[offset].b = b;
+	m_pkPixels[offset].r = r;
+	m_pkPixels[offset].g = g;
+	m_pkPixels[offset].b = b;
 }
 
 bool Image::get_pixel(int x, int y, color_rgba& rkColor)
 {
-	if(x > width || y > height)
+	if(x > m_iWidth || y > m_iHeight)
 		return false;
 
-	int offset = y * width + x;
+	int offset = y * m_iWidth + x;
 
-	rkColor.r = pixels[offset].r;
-	rkColor.g = pixels[offset].g;
-	rkColor.b = pixels[offset].b;
-	rkColor.a = pixels[offset].a;
+	rkColor.r = m_pkPixels[offset].r;
+	rkColor.g = m_pkPixels[offset].g;
+	rkColor.b = m_pkPixels[offset].b;
+	rkColor.a = m_pkPixels[offset].a;
 
 	return true;
 }
 
 void Image::fill(int sx, int sy, int w, int h,unsigned char r,unsigned char g,unsigned char bl)
 {
-//	assert(pixels);
+//	assert(m_pkPixels);
 
 	for(int y = 0; y<h; y++) {	
 		for(int x = 0; x<w; x++) {
@@ -615,84 +615,84 @@ void Image::fill(int sx, int sy, int w, int h,unsigned char r,unsigned char g,un
 		}
 }
 
-void Image::downsample(void)
+void Image::DownSample(void)
 {
-//	assert(pixels);
+//	assert(m_pkPixels);
 
-	int new_w = getsize(width);
-	int new_h = getsize(height);
-	if(new_w == width && new_h == height)	return;
+	int new_w = getsize(m_iWidth);
+	int new_h = getsize(m_iHeight);
+	if(new_w == m_iWidth && new_h == m_iHeight)	return;
 
-	color_rgba* oldimg = pixels;
+	color_rgba* oldimg = m_pkPixels;
 
-	pixels = new color_rgba [new_w * new_h];
+	m_pkPixels = new color_rgba [new_w * new_h];
 
 	float src_x, src_y;
 	float stepx, stepy;
 
 	src_x = src_y = 0;
 
-	stepx = (float) width /  new_w;
-	stepy = (float) height / new_h;
+	stepx = (float) m_iWidth /  new_w;
+	stepy = (float) m_iHeight / new_h;
 
 	for(int y = 0; y < new_h; y++) {
 		src_x = 0;
 
 		for(int x = 0; x < new_w; x++) {
-			int srcindex = (int) src_y * width + (int) src_x;
-			pixels[y * new_w + x] = oldimg[srcindex];
+			int srcindex = (int) src_y * m_iWidth + (int) src_x;
+			m_pkPixels[y * new_w + x] = oldimg[srcindex];
 			src_x += stepx;
 			}
 		
 		src_y += stepy;
 		}
 
-	height = new_h;
-	width  = new_w;
+	m_iHeight = new_h;
+	m_iWidth  = new_w;
 
 	delete [] oldimg;
 }
 
 /*
-glPixelStorei(GL_UNPACK_ALIGNMENT ,1); 
+glm_pkPixelstorei(GL_UNPACK_ALIGNMENT ,1); 
 glRasterPos2d(50,50);
-glDrawPixels(bild.width,bild.height,GL_RGBA ,GL_UNSIGNED_BYTE,bild.pixels);
+glDrawm_pkPixels(bild.width,bild.height,GL_RGBA ,GL_UNSIGNED_BYTE,bild.m_pkPixels);
 */
 
 
 
 Image& Image::operator = ( Image& v ) 
 {
-	if(pixels)	delete [] pixels;
-	pixels = NULL;
-	width = height = 0;
+	if(m_pkPixels)	delete [] m_pkPixels;
+	m_pkPixels = NULL;
+	m_iWidth = m_iHeight = 0;
 
-	if(v.pixels == NULL)	return *this;
+	if(v.m_pkPixels == NULL)	return *this;
 
-	width = v.width;
-	height = v.height;
-	pixels = new color_rgba [width * height]; 
-	memcpy(pixels,v.pixels,(width * height) * sizeof(color_rgba));
+	m_iWidth = v.m_iWidth;
+	m_iHeight = v.m_iHeight;
+	m_pkPixels = new color_rgba [m_iWidth * m_iHeight]; 
+	memcpy(m_pkPixels,v.m_pkPixels,(m_iWidth * m_iHeight) * sizeof(color_rgba));
 	return *this;
 }
 
-void Image::flip(bool flipx, bool flipy)
+void Image::Flip(bool bFlipX, bool bFlipY)
 {
-//	assert(pixels);
+//	assert(m_pkPixels);
 
 	Image temp_img;
 	temp_img = *this;
 
 	int rx, ry;
 
-	for(int y = 0; y < height; y++) {
-		for(int x = 0; x < width; x++) {
-			if(flipx)	rx = width - x - 1;
+	for(int y = 0; y < m_iHeight; y++) {
+		for(int x = 0; x < m_iWidth; x++) {
+			if(bFlipX)	rx = m_iWidth - x - 1;
 				else	rx = x;
-			if(flipy)	ry = height - y - 1;
+			if(bFlipY)	ry = m_iHeight - y - 1;
 				else	ry = y;
 
-			pixels[y*width+x] = temp_img.pixels[(ry)*width+rx];
+			m_pkPixels[y*m_iWidth+x] = temp_img.m_pkPixels[(ry)*m_iWidth+rx];
 		}
 	}
 }
@@ -711,8 +711,8 @@ void Image::custom_filter(float* matrix, float div, float bias)
 
 	int py, px;
 
-	for(int y = 0; y < height; y++) {
-		for(int x = 0; x < width; x++) {
+	for(int y = 0; y < m_iHeight; y++) {
+		for(int x = 0; x < m_iWidth; x++) {
 			rsum = gsum = bsum = 0;
 
 			fd_offs = 0;
@@ -722,29 +722,29 @@ void Image::custom_filter(float* matrix, float div, float bias)
 					py = y + yo;
 					px = x + xo;
 
-					if(px < 0)	px = width - 1;
-					else if (px >= width)	px = 0;
+					if(px < 0)	px = m_iWidth - 1;
+					else if (px >= m_iWidth)	px = 0;
 
-					if(py < 0)	py = height - 1;
-					else if (py >= height)	py = 0;
+					if(py < 0)	py = m_iHeight - 1;
+					else if (py >= m_iHeight)	py = 0;
 
-					poffs = py * width + px;
+					poffs = py * m_iWidth + px;
 					
-					r = temp_img.pixels[poffs].r;
+					r = temp_img.m_pkPixels[poffs].r;
 					rsum += r * matrix[fd_offs];
 					
-					g = temp_img.pixels[poffs].g;
+					g = temp_img.m_pkPixels[poffs].g;
 					gsum += g * matrix[fd_offs];
 					
-					b = temp_img.pixels[poffs].b;
+					b = temp_img.m_pkPixels[poffs].b;
 					bsum += b * matrix[fd_offs];
 					fd_offs++;
 					}
 			}
 
-//			pixels[(y)*width + (x)].r =  abs(int (rsum / div + bias) );
-//			pixels[(y)*width + (x)].g =  abs(int (gsum / div + bias) );
-//			pixels[(y)*width + (x)].b =  abs(int (bsum / div + bias) );
+//			m_pkPixels[(y)*width + (x)].r =  abs(int (rsum / div + bias) );
+//			m_pkPixels[(y)*width + (x)].g =  abs(int (gsum / div + bias) );
+//			m_pkPixels[(y)*width + (x)].b =  abs(int (bsum / div + bias) );
 			}
 		}
 }
@@ -804,13 +804,13 @@ void Image::Test_Filter(void)
 
 void Image::MapColorToAlpha(float fR, float fG, float fB, float fAlpha)
 {
-	for(int y = 0; y < height; y++) {
-		for(int x = 0; x < width; x++) {
-			if(pixels[(y)*width + (x)].r > (fR * 255) &&
-				pixels[(y)*width + (x)].g > (fG*255) &&
-				pixels[(y)*width + (x)].b > (fB*255))
+	for(int y = 0; y < m_iHeight; y++) {
+		for(int x = 0; x < m_iWidth; x++) {
+			if(m_pkPixels[(y)*m_iWidth + (x)].r > (fR * 255) &&
+				m_pkPixels[(y)*m_iWidth + (x)].g > (fG*255) &&
+				m_pkPixels[(y)*m_iWidth + (x)].b > (fB*255))
 
-				pixels[(y)*width + (x)].a = (unsigned char)(fAlpha*255);
+				m_pkPixels[(y)*m_iWidth + (x)].a = (unsigned char)(fAlpha*255);
 		}
 	}
 
@@ -878,9 +878,9 @@ bool Image::load_bmp(FILE* pkFile)
 
 	fseek(pkFile,-(int)(kBitmap.kInfoheader.ulSizeImage),SEEK_END);
 
-	width = kBitmap.kInfoheader.lWidth;
-	height = kBitmap.kInfoheader.lHeight;
-	pixels = new color_rgba[width*height];
+	m_iWidth = kBitmap.kInfoheader.lWidth;
+	m_iHeight = kBitmap.kInfoheader.lHeight;
+	m_pkPixels = new color_rgba[m_iWidth*m_iHeight];
 
 	int i=0, j=0, x=0, y=0;
 	switch(kBitmap.kInfoheader.usBitCount)
@@ -890,23 +890,23 @@ bool Image::load_bmp(FILE* pkFile)
 		fread(kBitmap.pkData, sizeof(unsigned char), 
 			kBitmap.kInfoheader.ulSizeImage, pkFile);
 
-		for(y=0; y<height; y++)
-			for(x=0; x<width; x++)
+		for(y=0; y<m_iHeight; y++)
+			for(x=0; x<m_iWidth; x++)
 			{
 				int value = kBitmap.pkData[i];
 				if(bZeroSize)
 				{
-					pixels[i].r = kBitmap.kPalette[value].ucRed; 
-					pixels[i].b = kBitmap.kPalette[value].ucGreen;
-					pixels[i].g = kBitmap.kPalette[value].ucBlue; 
-					pixels[i].a = 0;
+					m_pkPixels[i].r = kBitmap.kPalette[value].ucRed; 
+					m_pkPixels[i].b = kBitmap.kPalette[value].ucGreen;
+					m_pkPixels[i].g = kBitmap.kPalette[value].ucBlue; 
+					m_pkPixels[i].a = 0;
 				}
 				else
 				{
-					pixels[i].b = kBitmap.kPalette[value].ucRed; 
-					pixels[i].g = kBitmap.kPalette[value].ucGreen;
-					pixels[i].r = kBitmap.kPalette[value].ucBlue; 
-					pixels[i].a = 0;
+					m_pkPixels[i].b = kBitmap.kPalette[value].ucRed; 
+					m_pkPixels[i].g = kBitmap.kPalette[value].ucGreen;
+					m_pkPixels[i].r = kBitmap.kPalette[value].ucBlue; 
+					m_pkPixels[i].a = 0;
 				}
 				i++;
 			}
@@ -923,20 +923,20 @@ bool Image::load_bmp(FILE* pkFile)
 		fread(kBitmap.pkData, sizeof(unsigned char), 
 			kBitmap.kInfoheader.ulSizeImage, pkFile);
 
-		for(y=0; y<height; y++)
-			for(x=0; x<width; x++)
+		for(y=0; y<m_iHeight; y++)
+			for(x=0; x<m_iWidth; x++)
 			{
-				pixels[i].b = kBitmap.pkData[j++]; 
-				pixels[i].g = kBitmap.pkData[j++];
-				pixels[i].r = kBitmap.pkData[j++]; 
-				pixels[i++].a = 0;
+				m_pkPixels[i].b = kBitmap.pkData[j++]; 
+				m_pkPixels[i].g = kBitmap.pkData[j++];
+				m_pkPixels[i].r = kBitmap.pkData[j++]; 
+				m_pkPixels[i++].a = 0;
 			}
 		break;
 
 	default:
 		printf("Image::load_bmp: Error loading bitmap. Bitcount %i not suported!.\n",
 			kBitmap.kInfoheader.usBitCount);
-		delete[] pixels;
+		delete[] m_pkPixels;
 		return false;
 	}
 
@@ -945,7 +945,7 @@ bool Image::load_bmp(FILE* pkFile)
 
 	// check height to see if the image is reversed or not.
 	if(kBitmap.kInfoheader.lHeight > 0)
-		flip(false, true);
+		Flip(false, true);
 
 /*	Vim: Test code to save all loaded bmp images.
 

@@ -295,9 +295,9 @@ void MazeGen::Load(char* szFileName)
 	Image kImg;
 	kImg.load(szFileName);
 
-	for(int x=0; x<kImg.width; x++) {
-		for(int y=0; y<kImg.height; y++) {
-			if(kImg.pixels[y*kImg.width+x].r > 128)
+	for(int x=0; x<kImg.m_iWidth; x++) {
+		for(int y=0; y<kImg.m_iHeight; y++) {
+			if(kImg.m_pkPixels[y*kImg.m_iWidth+x].r > 128)
 				Set(x,y,1);
 			}
 

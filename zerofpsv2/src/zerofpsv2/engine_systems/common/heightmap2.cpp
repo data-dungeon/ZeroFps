@@ -30,15 +30,15 @@ bool Heightmap2::LoadBasicDataFromImage(const char* acFile)
 	
 	m_kBasicData.clear();
 	
-	m_iWidth = kImage->width;
-	m_iHeight = kImage->height;
+	m_iWidth = kImage->m_iWidth;
+	m_iHeight = kImage->m_iHeight;
 	
 	
 	HM2_vert	tempvert;
 	
 	for(int i=0;i < (m_iWidth*m_iHeight);i++)
 	{
-		tempvert.fHeight = kImage->pixels[i].r;
+		tempvert.fHeight = kImage->m_pkPixels[i].r;
 		m_kBasicData.push_back(tempvert);
 	}
 	

@@ -158,7 +158,7 @@ bool TextureManager::LoadTexture(texture *pkTex,const char *acFilename)
 	if(!pkImage)
 		return false;
 
-	pkTex->m_iSizeInBytes = pkImage->width * pkImage->height * 4;
+	pkTex->m_iSizeInBytes = pkImage->m_iWidth * pkImage->m_iHeight * 4;
 
 
 	glGenTextures(1,&pkTex->index);
@@ -175,11 +175,11 @@ bool TextureManager::LoadTexture(texture *pkTex,const char *acFilename)
 	if(pkTex->m_bMipMapping){
 		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);	
 		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR_MIPMAP_LINEAR);
-		gluBuild2DMipmaps(GL_TEXTURE_2D,iInternalFormat,pkImage->width,pkImage->height,GL_RGBA,GL_UNSIGNED_BYTE,pkImage->pixels);  		
+		gluBuild2DMipmaps(GL_TEXTURE_2D,iInternalFormat,pkImage->m_iWidth,pkImage->m_iHeight,GL_RGBA,GL_UNSIGNED_BYTE,pkImage->m_pkPixels);  		
 	}else{
 		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);		
 		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);  
-		glTexImage2D(GL_TEXTURE_2D,0,iInternalFormat,pkImage->width,pkImage->height,0,GL_RGBA,GL_UNSIGNED_BYTE,pkImage->pixels);
+		glTexImage2D(GL_TEXTURE_2D,0,iInternalFormat,pkImage->m_iWidth,pkImage->m_iHeight,0,GL_RGBA,GL_UNSIGNED_BYTE,pkImage->m_pkPixels);
 	}
   glBindTexture(GL_TEXTURE_2D,0);
   m_iCurrentTexture = NO_TEXTURE;
@@ -992,13 +992,13 @@ bool TextureManager::SaveTexture(const char* acFile,int iLevel)
 	}
 	
 
-	temp.create_empty(iWidth,iHeight);
+	temp.CreateEmpty(iWidth,iHeight);
 
 	if(iFormat == GL_RGBA)	
 	{
-		glGetTexImage(GL_TEXTURE_2D,iLevel,iFormat,iType,temp.pixels);
+		glGetTexImage(GL_TEXTURE_2D,iLevel,iFormat,iType,temp.m_pkPixels);
 		//cout << "Arghhhhhhhhhhhhh:" << GetOpenGLErrorName(glGetError()) << "\n";		
-		temp.save(acFile,true);
+		temp.Save(acFile,true);
 	}
 
 
@@ -1028,6 +1028,6 @@ void TextureManager::Debug_TestTexturesLoader(void)
 {
 	Image kTest1;
 	kTest1.load("../data/textures/test/test.tga");
-	kTest1.save("test.tga", 0);
+	kTest1.Save("test.tga", 0);
 }
 

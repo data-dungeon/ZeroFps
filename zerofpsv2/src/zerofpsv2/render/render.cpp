@@ -1293,14 +1293,14 @@ void Render::Draw_MarkerCross(Vector3 kPos, Vector3 Color, float fScale)
 void Render::CaptureScreenShoot( int m_iWidth, int m_iHeight )
 {
 	Image kScreen;
-	kScreen.create_empty(m_iWidth, m_iHeight);
+	kScreen.CreateEmpty(m_iWidth, m_iHeight);
 
-	glReadPixels(0,0, m_iWidth,m_iHeight,GL_RGBA, GL_UNSIGNED_BYTE, kScreen.pixels); 
+	glReadPixels(0,0, m_iWidth,m_iHeight,GL_RGBA, GL_UNSIGNED_BYTE, kScreen.m_pkPixels); 
 
 	char szImageName[256];
 	sprintf(szImageName, "screen_%d.tga", m_iScreenShootNum);
 	m_iScreenShootNum++;
-	kScreen.save(szImageName ,false);
+	kScreen.Save(szImageName ,false);
 }
 
 char* BoolStr(bool bFlag)
