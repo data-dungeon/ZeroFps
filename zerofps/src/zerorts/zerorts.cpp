@@ -770,6 +770,9 @@ bool ZeroRTS::MovePath(Object* pkObject)
 
 void ZeroRTS::Explore()
 {
+	if(!m_pkClientInput)
+		return;
+		
 	vector<Object*> kObject;
 	
 	pkObjectMan->GetAllObjects(&kObject);
@@ -779,6 +782,10 @@ void ZeroRTS::Explore()
 		P_ClientUnit* cu =(P_ClientUnit*)kObject[i]->GetProperty("P_ClientUnit");
 		if(cu == NULL)
 			continue;
+		
+		if(!m_pkClientInput->m_bGod)
+			if(cu->m_kInfo.m_cTeam != m_pkClientInput->m_iPlayerID)
+				continue;
 		
 		float vd = (float)cu->m_kInfo.m_cViewDistance;
 	
