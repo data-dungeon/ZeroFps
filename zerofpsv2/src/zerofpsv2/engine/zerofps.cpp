@@ -61,6 +61,7 @@ ZeroFps::ZeroFps(void) : I_ZeroFps("ZeroFps")
 	m_pkBasicFS					= new ZFBasicFS;
 	m_pkPSystemManager		= new PSystemManager;
 	m_pkScript					= new ZFScriptSystem;
+	m_pkTcs						= new Tcs;	
 
 	// Set Default values
 	m_fFrameTime				= 0;
@@ -115,6 +116,7 @@ ZeroFps::~ZeroFps()
 	g_ZFObjSys.ShutDown();
 	ConfigFileSave();
 
+	delete m_pkTcs;	
 	delete m_pkPhysEngine;
 	delete m_pkIni;
 	delete m_pkGui;
@@ -404,6 +406,10 @@ void ZeroFps::Update_System()
 			
 				//update new super duper rigid body physics engine deluxe
 				m_pkPhysics_Engine->Update(m_fGameFrameTime);
+				
+				//update Tiny Collission system
+				m_pkTcs->Update();	
+				
 			}	
 		}
 		
@@ -947,6 +953,7 @@ void ZeroFps::RegisterPropertys()
 	m_pkPropertyFactory->Register("P_PfMesh",				Create_P_PfMesh);											
 
 	// Other Propertys.
+	m_pkPropertyFactory->Register("P_Tcs",					Create_P_Tcs);					
 	m_pkPropertyFactory->Register("P_Heightmap2",		Create_P_Heightmap2);
 	m_pkPropertyFactory->Register("P_Camera",				Create_CameraProperty);			
 	m_pkPropertyFactory->Register("P_WorldInfo",			Create_WorldInfoProperty);						

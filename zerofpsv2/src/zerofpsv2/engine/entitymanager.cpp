@@ -2046,21 +2046,19 @@ void EntityManager::SetZoneModel(const char* szName,int iId)
 
 
 
-/*	//setup physics
-	P_Physic* pp = (P_Physic*)zd->m_pkZone->GetProperty("P_Physic");
+	//setup physics
+	P_Tcs* pp = (P_Tcs*)zd->m_pkZone->GetProperty("P_Tcs");
 	
 	if(!pp)
-		pp = (P_Physic*)zd->m_pkZone->AddProperty("P_Physic");	
+		pp = (P_Tcs*)zd->m_pkZone->AddProperty("P_Tcs");	
 	
 	if(pp)
 	{
-		mp->SetBase(szName);
-		P_PfMesh* pkMesh = (P_PfMesh*)zd->m_pkZone->GetProperty("P_PfMesh");
-		if(pkMesh) {
-			pkMesh->SetMad(mp);
-			}
+		pp->SetPolygonTest(true);	
+		pp->SetRefetchPolygonData();
+		pp->SetStatic(true);
 	}
-*/	
+
 }
 
 

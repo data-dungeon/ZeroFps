@@ -19,6 +19,7 @@
 #include "../engine_systems/audio/zfaudiosystem.h"
 #include "../basic/zfini.h"
 #include "../engine_systems/physicsengine/physicsengine.h"
+#include "../engine_systems/tcs/tcs.h"
 #include "../render/zshader.h"
 #include "i_zerofps.h"
 #include "../engine_systems/mad/mad_core.h"
@@ -43,6 +44,7 @@ class ZFScriptSystem;
 class Application;
 class NetPacket;
 class PSystemManager;
+class Tcs;
 
 enum enginestates 
 {
@@ -180,6 +182,7 @@ class ENGINE_API ZeroFps : public I_ZeroFps {
 		OggMusic*				m_pkMusic;
 		PSystemManager*		m_pkPSystemManager;		///< ParticleSystemManager - Zerom
 		AStar*					m_pkAStar;
+		Tcs*						m_pkTcs;		
 
 		int		m_iState;									//	curent game state see enum enginestates
 		float		m_fFps;										//	curent FPS

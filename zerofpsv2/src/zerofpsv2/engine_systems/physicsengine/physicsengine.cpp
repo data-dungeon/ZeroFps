@@ -13,6 +13,7 @@ bool PhysicsEngine::StartUp()
 { 
 	m_pkZeroFps		= static_cast<ZeroFps*>(GetSystem().GetObjectPtr("ZeroFps"));		
 	m_pkObjectMan	= static_cast<EntityManager*>(GetSystem().GetObjectPtr("EntityManager"));		
+	m_pkRender	= static_cast<Render*>(GetSystem().GetObjectPtr("Render"));			
 
 	return true; 
 }

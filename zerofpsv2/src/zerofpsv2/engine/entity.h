@@ -237,6 +237,7 @@ class ENGINE_API Entity
 		// Collision / Shape.
 		float GetBoundingRadius();									///< Get radius of collision object or radius 1.0 if none found.
 		void Touch(Collision* pkCol);								///< Run touch on all properys of this object.
+		void Touch(int iId);
 		void ZoneChange(int iCurrent,int iNew);			//callback when object changes zone
 
 		// Game Messages

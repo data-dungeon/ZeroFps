@@ -882,6 +882,15 @@ void Entity::Touch(Collision* pkCol)
 	}
 }
 
+void Entity::Touch(int iId)
+{
+	for(vector<Property*>::iterator it=m_akPropertys.begin();it!=m_akPropertys.end();it++) 
+	{
+		(*it)->Touch(iId);
+	}
+}
+
+
 // Game Messages
 /// Adds a GameMessage to be handled later by Entity.
 void Entity::AddGameMessage(GameMessage& Msg)

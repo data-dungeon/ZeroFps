@@ -6,6 +6,7 @@
 #include "../../engine/entity.h"
 //#include "physicproperty.h"
 
+#include "../../render/render.h"
 #include <list>
 #include <vector>
 
@@ -83,7 +84,8 @@ class ENGINE_SYSTEMS_API PhysicsEngine : public ZFSubSystem
 		
 		EntityManager* m_pkObjectMan;
 		ZeroFps* m_pkZeroFps;
-
+		Render* m_pkRender;
+	
 		float m_fFrameTime;
 		bool m_bUpdate;
 	

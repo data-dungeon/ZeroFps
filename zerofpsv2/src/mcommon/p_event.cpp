@@ -111,14 +111,17 @@ bool P_Event::SendGroudClickEvent(const char* acType,Vector3 kPos,int iFace,int 
 
 }
 
-void P_Event::Touch(Collision* pkCol)
+void P_Event::Touch(int iId)
 {
-	if(pkCol->m_pkPP1->GetObject() == m_pkObject)
+	MistLandLua::g_iLastCollidedID = iId;
+	SendEvent("Collission");	
+	
+/*	if(pkCol->m_pkPP1->GetObject() == m_pkObject)
 		MistLandLua::g_iLastCollidedID = pkCol->m_pkPP2->GetObject()->iNetWorkID;
 	else
 		MistLandLua::g_iLastCollidedID = pkCol->m_pkPP1->GetObject()->iNetWorkID;
-		
-	SendEvent("Collission");	
+*/		
+
 }
 /*
 void P_Event::ZoneChange(int iCurrent,int iNew)
