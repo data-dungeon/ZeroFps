@@ -123,7 +123,7 @@ bool P_Spell::CastOn ( Object *pkObject )
 // ------------------------------------------------------------------------------------------
 
  //false = remove bonuses (on end of spell)
-P_Spell::Bonuses(bool bAddBonuses)
+void P_Spell::Bonuses(bool bAddBonuses)
 {
    CharacterProperty *pkCharStats = (CharacterProperty*)m_pkObject->GetProperty("P_CharStats");
    P_Item *pkItem = (P_Item*)m_pkObject->GetProperty("P_Item");
@@ -335,8 +335,8 @@ void P_Spell::DoCollisions()
          // if the object had right to be affacted by the spell
          if ( bOk )
          {
-
-            float fDist = kObjects[i]->GetLocalPosV().DistanceTo (m_pkObject->GetLocalPosV() );
+				Vector3 Pos = m_pkObject->GetLocalPosV();
+            float fDist = kObjects[i]->GetLocalPosV().DistanceTo (Pos );
 
             // calculate collision radius
             float fColRad = ((m_fAge / m_pkSpellType->m_fLifeTime) * m_pkSpellType->m_fEndRadius) +

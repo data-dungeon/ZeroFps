@@ -32,7 +32,7 @@ class MCOMMON_API P_Spell: public Property
 		P_Spell();
       ~P_Spell();
 
-      Bonuses(bool bAddBonuses); //false = remove bonuses (on end of spell)
+      void Bonuses(bool bAddBonuses); //false = remove bonuses (on end of spell)
 
       void Save(ZFIoInterface* pkPackage);
       void Load(ZFIoInterface* pkPackage);
