@@ -518,24 +518,27 @@ int MistLandLua::SetPSystemLua(lua_State* pkLua)
 
 int MistLandLua::SetVelToLua(lua_State* pkLua)
 {
-	if(g_pkScript->GetNumArgs(pkLua) == 5)
+	if(g_pkScript->GetNumArgs(pkLua) == 3)
 	{
 		double dId;
 			
 		double x,y,z;
 		double dVel;
 		Vector3 kPos;		
+		vector<TABLE_DATA> vkData;
 		
 		g_pkScript->GetArgNumber(pkLua, 0, &dId);				
-		g_pkScript->GetArgNumber(pkLua, 1, &x);		
-		g_pkScript->GetArgNumber(pkLua, 2, &y);		
-		g_pkScript->GetArgNumber(pkLua, 3, &z);		
-		g_pkScript->GetArgNumber(pkLua, 4, &dVel);				
+		g_pkScript->GetArgTable(pkLua, 2, vkData);
+		g_pkScript->GetArgNumber(pkLua, 2, &dVel);	
 
-		kPos.x = x;
-		kPos.y = y;
-		kPos.z = z;
-		
+		kPos = Vector3(
+			(float) (*(double*) vkData[0].pData),
+			(float) (*(double*) vkData[1].pData),
+			(float) (*(double*) vkData[2].pData)); 
+
+//		cout<<"pos is:"<<kPos.x<< " "<<kPos.y<<" "<<kPos.z<<endl;
+//		cout<<"vel is:"<<dVel<<endl;
+
 		Entity* pkEnt = g_pkObjMan->GetObjectByNetWorkID((int)dId);
 			
 		if(pkEnt)
@@ -546,7 +549,7 @@ int MistLandLua::SetVelToLua(lua_State* pkLua)
 		}
 		return 0;
 	}
-
+/*
 	if(g_pkScript->GetNumArgs(pkLua) == 3)
 	{
 		double dTemp;
@@ -580,25 +583,28 @@ int MistLandLua::SetVelToLua(lua_State* pkLua)
 		}
 		return 0;
 	}
+*/	
 }
 
 int MistLandLua::MakePathFindLua(lua_State* pkLua)
 {
-	if(g_pkScript->GetNumArgs(pkLua) == 4)
+	if(g_pkScript->GetNumArgs(pkLua) == 2)
 	{
 		double dId;
 		double x,y,z;
 		Vector3 kPos;		
+		vector<TABLE_DATA> vkData;
 		
 		g_pkScript->GetArgNumber(pkLua, 0, &dId);				
-		g_pkScript->GetArgNumber(pkLua, 1, &x);		
+		g_pkScript->GetArgTable(pkLua, 2, vkData);
+/*		g_pkScript->GetArgNumber(pkLua, 1, &x);		
 		g_pkScript->GetArgNumber(pkLua, 2, &y);		
 		g_pkScript->GetArgNumber(pkLua, 3, &z);		
-				
-		kPos.x = x;
-		kPos.y = y;
-		kPos.z = z;				
-	
+*/			
+		kPos = Vector3(
+			(float) (*(double*) vkData[0].pData),
+			(float) (*(double*) vkData[1].pData),
+			(float) (*(double*) vkData[2].pData)); 
 		
 		Entity* pkEnt = g_pkObjMan->GetObjectByNetWorkID(dId);
 		if(pkEnt)
