@@ -163,7 +163,7 @@ void PhysicProperty::SetColShape(CollisionShape* pkCs)
 
 vector<PropertyValues> PhysicProperty::GetPropertyValues()
 {
-	vector<PropertyValues> kReturn(8);
+	vector<PropertyValues> kReturn(10);
 
 	kReturn[0].kValueName="m_bGravity";
 	kReturn[0].iValueType=VALUETYPE_BOOL;
@@ -181,46 +181,54 @@ vector<PropertyValues> PhysicProperty::GetPropertyValues()
 	kReturn[3].iValueType=VALUETYPE_BOOL;
 	kReturn[3].pkValue=(void*)&m_bGlide;
 
+	kReturn[4].kValueName="m_bStride";
+	kReturn[4].iValueType=VALUETYPE_BOOL;
+	kReturn[4].pkValue=(void*)&m_bStride;
 
-	kReturn[4].kValueName="m_fRadius";
-	kReturn[4].iValueType=VALUETYPE_FLOAT;
-	kReturn[4].pkValue = (void*)&static_cast<CSSphere*>(GetColSphere())->m_fRadius;	
-
-	kReturn[5].kValueName="m_fColShape";
+	kReturn[5].kValueName="m_bStrideHeight";
 	kReturn[5].iValueType=VALUETYPE_FLOAT;
-	kReturn[5].pkValue=(void*)&m_fColShape;
+	kReturn[5].pkValue=(void*)&m_bStrideHeight;
+
+
+	kReturn[6].kValueName="m_fRadius";
+	kReturn[6].iValueType=VALUETYPE_FLOAT;
+	kReturn[6].pkValue = (void*)&static_cast<CSSphere*>(GetColSphere())->m_fRadius;	
+
+	kReturn[7].kValueName="m_fColShape";
+	kReturn[7].iValueType=VALUETYPE_FLOAT;
+	kReturn[7].pkValue=(void*)&m_fColShape;
 	
 	switch((int)m_fColShape)
 	{
 		case 0:
-			kReturn[6].kValueName="NOCOLSHAPE";
-			kReturn[6].iValueType=VALUETYPE_BOOL;
-			kReturn[6].pkValue=(void*)&m_bDummyValue;
+			kReturn[8].kValueName="NOCOLSHAPE";
+			kReturn[8].iValueType=VALUETYPE_BOOL;
+			kReturn[8].pkValue=(void*)&m_bDummyValue;
 			break;
 		
 		case 1:{
-			kReturn[6].kValueName="co-sphere-radius";
-			kReturn[6].iValueType=VALUETYPE_FLOAT;
-			kReturn[6].pkValue = (void*)&static_cast<CSSphere*>(m_pkColObject)->m_fRadius;
+			kReturn[8].kValueName="co-sphere-radius";
+			kReturn[8].iValueType=VALUETYPE_FLOAT;
+			kReturn[8].pkValue = (void*)&static_cast<CSSphere*>(m_pkColObject)->m_fRadius;
 	
 			break;
 		}
 	
 		case 2:{
-			kReturn[6].kValueName="co-box-scale";
-			kReturn[6].iValueType=VALUETYPE_VECTOR3;
-			kReturn[6].pkValue = (void*)&static_cast<CSBox*>(m_pkColObject)->m_kScale;								
+			kReturn[8].kValueName="co-box-scale";
+			kReturn[8].iValueType=VALUETYPE_VECTOR3;
+			kReturn[8].pkValue = (void*)&static_cast<CSBox*>(m_pkColObject)->m_kScale;								
 			break;
 		}
 		
 		case 3:
-			kReturn[6].kValueName="co-mech-id";
-			kReturn[6].iValueType=VALUETYPE_INT;
-			kReturn[6].pkValue=(void*)&static_cast<CSMech*>(m_pkColObject)->m_iModelID;								
+			kReturn[8].kValueName="co-mech-id";
+			kReturn[8].iValueType=VALUETYPE_INT;
+			kReturn[8].pkValue=(void*)&static_cast<CSMech*>(m_pkColObject)->m_iModelID;								
 			
-			kReturn[7].kValueName="co-mech-scale";
-			kReturn[7].iValueType=VALUETYPE_FLOAT;
-			kReturn[7].pkValue=(void*)&static_cast<CSMech*>(m_pkColObject)->m_fScale;								
+			kReturn[9].kValueName="co-mech-scale";
+			kReturn[9].iValueType=VALUETYPE_FLOAT;
+			kReturn[9].pkValue=(void*)&static_cast<CSMech*>(m_pkColObject)->m_fScale;								
 			
 			break;
 	
