@@ -155,7 +155,7 @@ void MadProperty::Load(ZFIoInterface* pkPackage)
 	m_pkObject->GetRadius() = GetRadius();
 }
 
-void MadProperty::PackTo(NetPacket* pkNetPacket)
+void MadProperty::PackTo(NetPacket* pkNetPacket, int iConnectionID )
 {
 //	pkNetPacket->Write_Str(m_kMadFile.c_str());
 	pkNetPacket->Write_NetStr(m_kMadFile.c_str());
@@ -163,7 +163,7 @@ void MadProperty::PackTo(NetPacket* pkNetPacket)
 	m_iNetUpdateFlags = 0;
 }
  
-void MadProperty::PackFrom(NetPacket* pkNetPacket)
+void MadProperty::PackFrom(NetPacket* pkNetPacket, int iConnectionID )
 {
 	char temp[50];
 	//pkNetPacket->Read_Str(temp);

@@ -38,8 +38,8 @@ class ENGINE_SYSTEMS_API P_Primitives3D : public Property {
 		void CloneOf(Property* pkProperty) { }
 		void Update();
 
-		void PackTo(NetPacket* pkNetPacket) ;
-		void PackFrom(NetPacket* pkNetPacket) ;
+		void PackTo(NetPacket* pkNetPacket, int iConnectionID ) ;
+		void PackFrom(NetPacket* pkNetPacket, int iConnectionID ) ;
 
 		void Save(ZFIoInterface* pkPackage);
 		void Load(ZFIoInterface* pkPackage);

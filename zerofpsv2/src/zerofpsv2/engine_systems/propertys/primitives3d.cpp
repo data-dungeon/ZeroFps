@@ -73,7 +73,7 @@ void P_Primitives3D::Update()
 	glPopAttrib();*/
 }
 
-void P_Primitives3D::PackTo( NetPacket* pkNetPacket ) 
+void P_Primitives3D::PackTo( NetPacket* pkNetPacket, int iConnectionID  ) 
 {
 	pkNetPacket->Write( m_iType );		
 	pkNetPacket->Write( m_fRadius );		
@@ -82,7 +82,7 @@ void P_Primitives3D::PackTo( NetPacket* pkNetPacket )
 	pkNetPacket->Write( m_kColor );		
 }
 
-void P_Primitives3D::PackFrom( NetPacket* pkNetPacket ) 
+void P_Primitives3D::PackFrom( NetPacket* pkNetPacket, int iConnectionID  ) 
 {
 	pkNetPacket->Read( m_iType );		
 	pkNetPacket->Read( m_fRadius );		

@@ -35,7 +35,7 @@ void P_Enviroment::ZoneChange(int iCurrent,int iNew)
 }
 
 
-void P_Enviroment::SetEnviroment(char* csEnviroment)
+void P_Enviroment::SetEnviroment(char* csEnviroment )
 {
 	if(m_StrCurrentEnviroment == csEnviroment)
 		return;
@@ -84,12 +84,12 @@ void P_Enviroment::ResetEnviroment()
 	
 }
 
-void P_Enviroment::PackTo(NetPacket* pkNetPacket)
+void P_Enviroment::PackTo(NetPacket* pkNetPacket, int iConnectionID )
 {
 	pkNetPacket->Write_NetStr(m_StrCurrentEnviroment.c_str());	
 }
 
-void P_Enviroment::PackFrom(NetPacket* pkNetPacket)
+void P_Enviroment::PackFrom(NetPacket* pkNetPacket, int iConnectionID)
 {
 	char temp[128];
 	

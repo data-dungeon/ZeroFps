@@ -113,9 +113,9 @@ class ENGINE_API ZeroFps : public I_ZeroFps {
 
 		bool		m_bDevPagesVisible;
 		
-		float 		m_fLastFrameTime;
-		float 		m_fAvrageFpsTime;
-		int			m_iAvrageFrameCount;
+		float 	m_fLastFrameTime;
+		float 	m_fAvrageFpsTime;
+		int		m_iAvrageFrameCount;
 		
 		float 	m_fSystemUpdateFps;
 		float 	m_fSystemUpdateTime;
@@ -124,9 +124,11 @@ class ENGINE_API ZeroFps : public I_ZeroFps {
 		float		m_fEngineTime;						// Time since engine start.
 		int		m_iRenderOn;
 		
-		int	m_iServerConnection;	// The Connection num we have on the server.		
-		int	m_iRTSClientObject;
+		int		m_iServerConnection;	// The Connection num we have on the server.		
+		int		m_iRTSClientObject;
 		
+		int		m_iMaxPlayers;
+
 		Camera *m_pkCamera;
 		Camera *m_pkConsoleCamera;
 		string m_kCurentDir;

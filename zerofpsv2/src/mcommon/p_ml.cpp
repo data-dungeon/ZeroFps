@@ -30,7 +30,7 @@ void P_Ml::AddAction(const char* csAction)
 }
 
 
-void P_Ml::PackTo( NetPacket* pkNetPacket ) 
+void P_Ml::PackTo( NetPacket* pkNetPacket, int iConnectionID  ) 
 {
 	int nr = m_kActions.size();
 	
@@ -43,7 +43,7 @@ void P_Ml::PackTo( NetPacket* pkNetPacket )
 
 } 
 
-void P_Ml::PackFrom( NetPacket* pkNetPacket ) 
+void P_Ml::PackFrom( NetPacket* pkNetPacket, int iConnectionID  ) 
 {
 	int nr;	
 	

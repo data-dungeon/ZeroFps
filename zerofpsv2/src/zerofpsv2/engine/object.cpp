@@ -518,7 +518,7 @@ bool Object::NeedToPack()
 
 /**	\brief	Pack Object.
 */
-void Object::PackTo(NetPacket* pkNetPacket)
+void Object::PackTo(NetPacket* pkNetPacket, int iConnectionID)
 {
 	int iParentID	=	-1;
 	if(m_pkParent)
@@ -570,7 +570,7 @@ void Object::PackTo(NetPacket* pkNetPacket)
 			if((*it)->m_iNetUpdateFlags) {
 //				g_ZFObjSys.Logf("net", "Add\n");
 				pkNetPacket->Write_NetStr((*it)->m_acName);
-				(*it)->PackTo(pkNetPacket);
+				(*it)->PackTo(pkNetPacket,iConnectionID);
 				}
 			//else {
 				//g_ZFObjSys.Logf("net", "Same as last year.\n");
@@ -587,7 +587,7 @@ void Object::PackTo(NetPacket* pkNetPacket)
 
 /**	\brief	Unpack Object.
 */
-void Object::PackFrom(NetPacket* pkNetPacket)
+void Object::PackFrom(NetPacket* pkNetPacket, int iConnectionID)
 {
 	int iDelObjectID;
 
@@ -650,7 +650,7 @@ void Object::PackFrom(NetPacket* pkNetPacket)
 		Property* pProp  = AddProxyProperty(szProperty);
 		if(pProp) {
 			//g_ZFObjSys.Logf("net", " /%s\n", szProperty);
-			pProp->PackFrom(pkNetPacket);
+			pProp->PackFrom(pkNetPacket, ZF_NET_NOCLIENT);
 			}
 		else {
 			cout << "Error in netpacket" << endl;

@@ -39,12 +39,12 @@ void HMRP2::Update()
 
 }
 
-void HMRP2::PackTo(NetPacket* pkNetPacket)
+void HMRP2::PackTo(NetPacket* pkNetPacket, int iConnectionID)
 {
 	pkNetPacket->Write_Str(m_strMapName.c_str());
 }
  
-void HMRP2::PackFrom(NetPacket* pkNetPacket)
+void HMRP2::PackFrom(NetPacket* pkNetPacket, int iConnectionID)
 {
 	char temp[50];
 	pkNetPacket->Read_Str(temp);

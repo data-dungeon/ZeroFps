@@ -186,7 +186,6 @@ private:
 	char						m_szAddressBuffer[256];				// Used to convert/print address.
 
 	void	ClearRemoteNode(RemoteNode* pkNode);				// Reset a node ***
-	void	SetMaxNodes(int iMaxNode);			
 
 	bool Recv(NetPacket* pkNetPacket);							// Recv a packet if any is waiting.
 
@@ -195,11 +194,16 @@ private:
 	void DisconnectAll();											// Send disconenct message to all nodes.
 
 	float						m_fStatsUpdate;
+	
+	// Console Variables
+	float						m_fConnectTimeOut;					// Num of seconds without any incoming data a connection times out.
+	int						m_iMaxClients;							// Num of max connected clients.
 
 public:
 	NetWorkStatus			m_eNetStatus;
 	vector<RemoteNode>	m_akClients;
 
+	void	SetMaxNodes(int iMaxNode);			
 	vector<ZFNet_String>		m_kStringTable;
 	int NetString_GetFree();
 	int NetString_Add(const char* szString);

@@ -173,12 +173,12 @@ void P_AmbientSound::Load(ZFIoInterface* pkFile)
 		delete[] szFileName;
 }
 
-void P_AmbientSound::PackTo(NetPacket* pkNetPacket)
+void P_AmbientSound::PackTo(NetPacket* pkNetPacket, int iConnectionID )
 {
 
 }
 
-void P_AmbientSound::PackFrom(NetPacket* pkNetPacket)
+void P_AmbientSound::PackFrom(NetPacket* pkNetPacket, int iConnectionID )
 {
 
 }

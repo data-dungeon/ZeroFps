@@ -223,13 +223,13 @@ void P_Item::Load(ZFIoInterface* pkPackage)
 
 // ------------------------------------------------------------------------------------------
 
-void P_Item::PackTo(NetPacket* pkNetPacket)
+void P_Item::PackTo(NetPacket* pkNetPacket, int iConnectionID )
 {
 }
 
 // ------------------------------------------------------------------------------------------
 
-void P_Item::PackFrom(NetPacket* pkNetPacket)
+void P_Item::PackFrom(NetPacket* pkNetPacket, int iConnectionID )
 {
 }
 

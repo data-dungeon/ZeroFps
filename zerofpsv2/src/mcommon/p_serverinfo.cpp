@@ -117,7 +117,7 @@ void P_ServerInfo::RemoveObject(int id,int iObjID)
 
 }
 
-void P_ServerInfo::PackTo( NetPacket* pkNetPacket ) 
+void P_ServerInfo::PackTo( NetPacket* pkNetPacket, int iConnectionID  ) 
 {
    pkNetPacket->Write_Str( m_sServerName.c_str());
 
@@ -138,7 +138,7 @@ void P_ServerInfo::PackTo( NetPacket* pkNetPacket )
 }
 
 
-void P_ServerInfo::PackFrom( NetPacket* pkNetPacket ) 
+void P_ServerInfo::PackFrom( NetPacket* pkNetPacket, int iConnectionID  ) 
 {   
 	char tm[120];
    pkNetPacket->Read_Str( tm );

@@ -35,8 +35,8 @@ class MCOMMON_API P_Enviroment: public Property {
 		void SetEnviroment(char* csEnviroment);
 		void ResetEnviroment();
 
-		void PackTo(NetPacket* pkNetPacket);
-		void PackFrom(NetPacket* pkNetPacket);
+		void PackTo(NetPacket* pkNetPacket, int iConnectionID );
+		void PackFrom(NetPacket* pkNetPacket, int iConnectionID );
 
 		void SetEnable(bool bNew) {m_bEnabled = bNew;};
 };

@@ -174,7 +174,6 @@ void NetPacket::SetType(int iType)
 NetWork::NetWork()
 : ZFSubSystem("NetWork")
 {
-
 	// Create Log Files.
 	GetSystem().Log_Create("net");
 	GetSystem().Log_Create("netpac");
@@ -184,9 +183,16 @@ NetWork::NetWork()
 	m_pkSocket						= NULL;
 	m_eNetStatus					= NET_NONE;
 
-	SetMaxNodes( 4 );				// Vim - Hard coded for now. Must be same as ZeroFps.m_kClient
-	m_iMaxNumberOfNodes = 4;	
+	// Set Default values
+	m_fConnectTimeOut		= ZF_NET_CONNECTION_TIMEOUT;
+	m_iMaxNumberOfNodes	= 0;
+
+	// Register Variables
+	RegisterVariable("n_connecttimeout",	&m_fConnectTimeOut,		CSYS_FLOAT);	
+//	RegisterVariable("n_maxplayers",			&m_iMaxNumberOfNodes,	CSYS_FLOAT);	
 	
+	// Register Commands
+
 	m_kStringTable.resize( ZF_NET_MAXSTRINGS );
 	for(int i=0; i < ZF_NET_MAXSTRINGS; i++) {
 		m_kStringTable[i].m_bInUse			= false;
@@ -194,6 +200,7 @@ NetWork::NetWork()
 		m_kStringTable[i].m_bNeedUpdate	= false;
 		m_kStringTable[i].m_NetString = "";
 		}
+
 }
 
 bool NetWork::StartUp()	
@@ -208,6 +215,8 @@ bool NetWork::StartUp()
 
 	int iInitRes = SDLNet_Init();
 	Logf("net", "SDLNet_Init(): %d\n", iInitRes);
+
+//	SetMaxNodes( m_iMaxNumberOfNodes );				// Vim - Hard coded for now. Must be same as ZeroFps.m_kClient
 
 	return true; 
 }
@@ -398,6 +407,7 @@ int NetWork::GetClientNumber(IPaddress* pkAddress)
 void NetWork::SetMaxNodes(int iMaxNode)
 {
 	m_RemoteNodes.resize(iMaxNode);
+	m_iMaxNumberOfNodes = iMaxNode;
 }
 
 int NetWork::GetFreeClientNum()
@@ -729,10 +739,10 @@ void NetWork::DevShow_ClientConnections()
 
 		AddressToStr(&m_RemoteNodes[i].m_kAddress,szAdress);
 
-		m_pkZeroFps->DevPrintf("conn", " Node[%d] %s %s %d/%d %d/%d - %f", i, pkName, szAdress,
+		m_pkZeroFps->DevPrintf("conn", " Node[%d] %s %s %d/%d %d/%d - %f - %d", i, pkName, szAdress,
 			m_RemoteNodes[i].m_iNumOfPacketsSent, m_RemoteNodes[i].m_iNumOfBytesSent,
 			m_RemoteNodes[i].m_iNumOfPacketsRecv, m_RemoteNodes[i].m_iNumOfBytesRecv,
-			( m_RemoteNodes[i].m_fLastMessageTime + ZF_NET_CONNECTION_TIMEOUT ) - fEngineTime);
+			( m_RemoteNodes[i].m_fLastMessageTime + ZF_NET_CONNECTION_TIMEOUT ) - fEngineTime, m_RemoteNodes[i].m_iOutOfOrderNetFrame);
 
 //		RemoteNodes[i].m_kRecvGraph.DrawGraph(0, 50 * i + 100);
 	}

@@ -378,6 +378,10 @@ bool ZFSystem::RunCommand(const char* szCmdArg, ZFCmdSource iCmdSource)
 
 	if(!kCmdData)	return false;
 
+	// Check so we have the rights to run this command.
+	if( (iCmdSource & kCmdData->m_iFlags) == 0)
+		return false;
+
 	switch(kCmdData->m_eType) {
 		case CSYS_FUNCTION:	
 			if(kcmdargs.m_kSplitCommand.size() <= (unsigned int)kCmdData->m_iMinNumOfArgs) {

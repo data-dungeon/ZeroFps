@@ -118,14 +118,14 @@ void PSystemProperty::Load(ZFIoInterface* pkPackage)
 
 // ------------------------------------------------------------------------------------------
 
-void PSystemProperty::PackTo( NetPacket* pkNetPacket ) 
+void PSystemProperty::PackTo( NetPacket* pkNetPacket, int iConnectionID  ) 
 {
    pkNetPacket->Write_NetStr( m_kPSType.c_str() );
 }
 
 // ------------------------------------------------------------------------------------------
 
-void PSystemProperty::PackFrom( NetPacket* pkNetPacket ) 
+void PSystemProperty::PackFrom( NetPacket* pkNetPacket, int iConnectionID  ) 
 {
 	char temp[128];
 	pkNetPacket->Read_NetStr(temp);

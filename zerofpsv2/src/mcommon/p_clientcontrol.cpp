@@ -24,7 +24,7 @@ void P_ClientControl::Update()
 }
 
 
-void P_ClientControl::PackTo( NetPacket* pkNetPacket ) 
+void P_ClientControl::PackTo( NetPacket* pkNetPacket, int iConnectionID  ) 
 {
 	int iNrOO = m_kClientOrders.size();
 	
@@ -44,7 +44,7 @@ void P_ClientControl::PackTo( NetPacket* pkNetPacket )
 	}
 } 
 
-void P_ClientControl::PackFrom( NetPacket* pkNetPacket ) 
+void P_ClientControl::PackFrom( NetPacket* pkNetPacket, int iConnectionID  ) 
 {
 	int iNrOO;
 	pkNetPacket->Read(&iNrOO,sizeof(iNrOO));

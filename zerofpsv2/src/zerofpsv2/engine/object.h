@@ -253,10 +253,10 @@ class ENGINE_API Object
 		void SetUseZones(bool bUz) {m_bUseZones = bUz;};		
 
 		// NetWork/Demo/Save/Load Code.
-		bool IsNetWork();												// True if this object has any netactive propertys.
-		bool NeedToPack();											// Returns true if there is any netactive properys in object
-		void PackTo(NetPacket* pkNetPacket);					// Pack Object.
-		void PackFrom(NetPacket* pkNetPacket);					// Unpack Object.
+		bool IsNetWork();															// True if this object has any netactive propertys.
+		bool NeedToPack();														// Returns true if there is any netactive properys in object
+		void PackTo(NetPacket* pkNetPacket, int iConnectionID);		// Pack Object.
+		void PackFrom(NetPacket* pkNetPacket, int iConnectionID);	// Unpack Object.
 
 		void Load(ZFIoInterface* pkFile);		
 		void Save(ZFIoInterface* pkFile);

@@ -255,7 +255,7 @@ void CharacterProperty::Load(ZFIoInterface* pkPackage)
 
 // ------------------------------------------------------------------------------------------
 
-void CharacterProperty::PackTo(NetPacket* pkNetPacket)
+void CharacterProperty::PackTo(NetPacket* pkNetPacket, int iConnectionID )
 {
    // update life
 
@@ -263,7 +263,7 @@ void CharacterProperty::PackTo(NetPacket* pkNetPacket)
 
 // ------------------------------------------------------------------------------------------
 
-void CharacterProperty::PackFrom(NetPacket* pkNetPacket)
+void CharacterProperty::PackFrom(NetPacket* pkNetPacket, int iConnectionID )
 {
    // get life
 }

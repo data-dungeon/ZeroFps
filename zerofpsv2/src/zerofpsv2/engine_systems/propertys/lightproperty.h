@@ -38,8 +38,8 @@ class ENGINE_SYSTEMS_API LightProperty: public Property {
 		void CloneOf(Property* pkProperty) { }
 
 		void Update();
-		void PackTo(NetPacket* pkNetPacket) ;
-		void PackFrom(NetPacket* pkNetPacket) ;
+		void PackTo(NetPacket* pkNetPacket, int iConnectionID ) ;
+		void PackFrom(NetPacket* pkNetPacket, int iConnectionID ) ;
 		void Init();
 		inline void SetPos(Vector3 kPos){m_pkLightSource->kPos=kPos;};	
 		inline void SetRot(Vector3 kRot){m_pkLightSource->kRot=kRot;};	

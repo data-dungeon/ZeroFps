@@ -55,7 +55,7 @@ void LightProperty::Update()
 	}
 }
 
-void LightProperty::PackTo( NetPacket* pkNetPacket ) 
+void LightProperty::PackTo( NetPacket* pkNetPacket, int iConnectionID ) 
 {
 	pkNetPacket->Write( m_pkLightSource->kDiffuse);
 	pkNetPacket->Write( m_pkLightSource->kSpecular);	
@@ -69,7 +69,7 @@ void LightProperty::PackTo( NetPacket* pkNetPacket )
 	pkNetPacket->Write( m_iMode);			
 }
 
-void LightProperty::PackFrom( NetPacket* pkNetPacket ) 
+void LightProperty::PackFrom( NetPacket* pkNetPacket, int iConnectionID  ) 
 {
 	pkNetPacket->Read( m_pkLightSource->kDiffuse );		
 	pkNetPacket->Read( m_pkLightSource->kSpecular );			

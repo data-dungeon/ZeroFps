@@ -29,8 +29,8 @@ class MCOMMON_API P_Ml: public Property {
 		
 		void AddAction(const char* csAction);
 		
-		void PackTo(NetPacket* pkNetPacket);
-		void PackFrom(NetPacket* pkNetPacket);
+		void PackTo(NetPacket* pkNetPacket, int iConnectionID );
+		void PackFrom(NetPacket* pkNetPacket, int iConnectionID );
 };
 
 MCOMMON_API Property* Create_P_Ml();

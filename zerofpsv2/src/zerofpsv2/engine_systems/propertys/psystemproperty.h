@@ -28,8 +28,8 @@ class ENGINE_SYSTEMS_API PSystemProperty: public Property {
       void Save(ZFIoInterface* pkPackage);
       void Load(ZFIoInterface* pkPackage);
 
-      void PackTo(NetPacket* pkNetPacket);
-		void PackFrom(NetPacket* pkNetPacket);
+      void PackTo(NetPacket* pkNetPacket, int iConnectionID );
+		void PackFrom(NetPacket* pkNetPacket, int iConnectionID );
 };
 
 Property* Create_PSystemProperty();

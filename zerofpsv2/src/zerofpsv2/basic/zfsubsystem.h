@@ -35,11 +35,11 @@ enum ZFCmdDataType
 */
 enum ZFCmdSource
 {
-	CSYS_SRC_CMDLINE,				///< Cmd is from the program cmd line.
-	CSYS_SRC_INITFILE,			///< Cmd is from the ini files that is run at startup
-	CSYS_SRC_CONSOLE,				///< Cmd is from the console.
-	CSYS_SRC_SUBSYS,				///< Cmd was sent from a subsystem.
-	CSYS_SRC_UNKNOWN,				///< Unknown Src. Will be ignored and written to log.
+	CSYS_SRC_CMDLINE  = 1,				///< Cmd is from the program cmd line.
+	CSYS_SRC_INITFILE = 2,				///< Cmd is from the ini files that is run at startup
+	CSYS_SRC_CONSOLE  = 4,				///< Cmd is from the console.
+	CSYS_SRC_SUBSYS   = 8,				///< Cmd was sent from a subsystem.
+	CSYS_SRC_UNKNOWN  = 16,				///< Unknown Src. Will be ignored and written to log.
 };
 
 /* Flags changes settings for variables/commands.

@@ -31,8 +31,8 @@ class ENGINE_SYSTEMS_API HMRP2: public Property {
 
 
 
-		void PackTo(NetPacket* pkNetPacket);
-		void PackFrom(NetPacket* pkNetPacket);
+		void PackTo(NetPacket* pkNetPacket, int iConnectionID);
+		void PackFrom(NetPacket* pkNetPacket, int iConnectionID);
 };
 
 Property* Create_HMRP2();

@@ -44,8 +44,8 @@ class MCOMMON_API P_ClientControl: public Property {
 		
 		void AddOrder(ClientOrder);
 		
-      void PackTo(NetPacket* pkNetPacket);
-		void PackFrom(NetPacket* pkNetPacket);
+      void PackTo(NetPacket* pkNetPacket, int iConnectionID );
+		void PackFrom(NetPacket* pkNetPacket, int iConnectionID );
 		
 		bool CheckValidOrder(ClientOrder* temporder);
 		

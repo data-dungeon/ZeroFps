@@ -34,8 +34,8 @@ class ENGINE_SYSTEMS_API MadProperty : public Property, public Mad_Modell {
 		void Load(ZFIoInterface* pkPackage);
 
 
-		void PackTo(NetPacket* pkNetPacket);
-		void PackFrom(NetPacket* pkNetPacket);
+		void PackTo(NetPacket* pkNetPacket, int iConnectionID );
+		void PackFrom(NetPacket* pkNetPacket, int iConnectionID );
 
 };
 

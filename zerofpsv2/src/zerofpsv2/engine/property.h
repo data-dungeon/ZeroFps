@@ -230,8 +230,8 @@ class ENGINE_API Property
 		virtual void ZoneChange(int iCurrent,int iNew) {};
 		virtual void Init() {};											//executet when property is added to an object
 		virtual void Update() {};										//executet once every game loop
-		virtual void PackTo(NetPacket* pkNetPacket) {} ;
-		virtual void PackFrom(NetPacket* pkNetPacket) {} ;
+		virtual void PackTo(NetPacket* pkNetPacket, int iConnectionID)		{	};
+		virtual void PackFrom(NetPacket* pkNetPacket, int iConnectionID)	{	};
 		
 		// Save / Load
 		virtual void Save(ZFIoInterface* pkFile){};

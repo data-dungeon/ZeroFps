@@ -10,6 +10,12 @@
 #include "../engine_systems/propertys/propertys.pkg"
 #include "../basic/zfini.h"
  
+#define	ZF_MIN_PLAYERS	1
+#define	ZF_DEF_PLAYERS	8
+#define	ZF_MAX_PLAYERS	64
+
+
+
 int		g_iNumOfFrames;
 int		g_iNumOfMadSurfaces;
 float	g_fMadLODScale;
@@ -42,8 +48,6 @@ ZeroFps::ZeroFps(void) : I_ZeroFps("ZeroFps")
 	m_pkMusic					= new OggMusic(24,4096);
 	m_pkAudioSystem			= new ZFAudioSystem;
 
-
-
 	m_pkCmd						= new CmdSystem;
 	m_pkConsole					= new Console;
 	m_pkRender					= new Render;
@@ -75,15 +79,17 @@ ZeroFps::ZeroFps(void) : I_ZeroFps("ZeroFps")
 	m_iAvrageFrameCount			= 0;
 	m_iRenderOn					= 1;
 	m_iServerConnection		= -1;
+	m_iMaxPlayers				= ZF_DEF_PLAYERS;
 
 	// Register Variables
-	RegisterVariable("r_maddraw",			&m_iMadDraw,CSYS_INT);
-	RegisterVariable("r_madlod",			&g_fMadLODScale,CSYS_FLOAT);
-	RegisterVariable("r_madlodlock",		&g_iMadLODLock,CSYS_FLOAT);
-	RegisterVariable("e_systemfps",		&m_fSystemUpdateFps,CSYS_FLOAT);	
-	RegisterVariable("e_runsim",			&m_bRunWorldSim,CSYS_BOOL);	
-	RegisterVariable("r_logrp",			&g_iLogRenderPropertys,CSYS_INT);	
-	RegisterVariable("r_render",			&m_iRenderOn,CSYS_INT);	
+	RegisterVariable("r_maddraw",			&m_iMadDraw,				CSYS_INT);
+	RegisterVariable("r_madlod",			&g_fMadLODScale,			CSYS_FLOAT);
+	RegisterVariable("r_madlodlock",		&g_iMadLODLock,			CSYS_FLOAT);
+	RegisterVariable("e_systemfps",		&m_fSystemUpdateFps,		CSYS_FLOAT);	
+	RegisterVariable("e_runsim",			&m_bRunWorldSim,			CSYS_BOOL);	
+	RegisterVariable("r_logrp",			&g_iLogRenderPropertys,	CSYS_INT);	
+	RegisterVariable("r_render",			&m_iRenderOn,				CSYS_INT);	
+	RegisterVariable("n_maxplayers",		&m_iMaxPlayers,			CSYS_INT,		CSYS_FLAG_SRC_CMDLINE|CSYS_FLAG_SRC_INITFILE);	
 
 	// Register Commands
 	Register_Cmd("setdisplay",FID_SETDISPLAY);
@@ -154,9 +160,15 @@ bool ZeroFps::StartUp()
 	RegisterPropertys();
 	RegisterResources();
 
-	m_kClient.resize( 4 );	// Vim - Hard coded for now. Must be same as Network.SetMaxNodes
-	for(int i=0; i<4; i++)
+	// Valid Console variables.
+	if(m_iMaxPlayers < ZF_MIN_PLAYERS)	m_iMaxPlayers =	ZF_MIN_PLAYERS;
+	if(m_iMaxPlayers > ZF_MAX_PLAYERS)	m_iMaxPlayers =	ZF_MAX_PLAYERS;
+
+	m_kClient.resize( m_iMaxPlayers );	// Vim - Hard coded for now. Must be same as Network.SetMaxNodes
+	for(int i=0; i<m_iMaxPlayers; i++)
 		m_kClient[i].m_pkObject = NULL;
+	m_pkNetWork->SetMaxNodes( m_iMaxPlayers );
+	
 
 	m_iRTSClientObject = -1;
 

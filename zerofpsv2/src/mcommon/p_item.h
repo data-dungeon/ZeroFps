@@ -25,8 +25,8 @@ class MCOMMON_API P_Item: public Property
       void Save(ZFIoInterface* pkPackage);
       void Load(ZFIoInterface* pkPackage);
 
-      void PackTo(NetPacket* pkNetPacket);
-		void PackFrom(NetPacket* pkNetPacket);
+      void PackTo(NetPacket* pkNetPacket, int iConnectionID );
+		void PackFrom(NetPacket* pkNetPacket, int iConnectionID );
 
 		bool HandleSetValue( string kValueName, string kValue );
 

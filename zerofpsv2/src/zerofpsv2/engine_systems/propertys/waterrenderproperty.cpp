@@ -65,13 +65,13 @@ void WaterRenderProperty::Update()
 		}
 }
 
-void WaterRenderProperty::PackTo(NetPacket* pkNetPacket)
+void WaterRenderProperty::PackTo(NetPacket* pkNetPacket, int iConnectionID )
 {
 	pkNetPacket->Write(m_iSize);
 	pkNetPacket->Write(m_iStep);
 }
  
-void WaterRenderProperty::PackFrom(NetPacket* pkNetPacket)
+void WaterRenderProperty::PackFrom(NetPacket* pkNetPacket, int iConnectionID )
 {
 	pkNetPacket->Read(m_iSize);
 	pkNetPacket->Read(m_iStep);

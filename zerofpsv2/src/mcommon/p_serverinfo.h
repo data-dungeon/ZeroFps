@@ -51,8 +51,8 @@ class MCOMMON_API P_ServerInfo: public Property {
 
 		int GetNrOfPlayers(){return m_kPlayers.size();};
 		
-      void PackTo(NetPacket* pkNetPacket);
-		void PackFrom(NetPacket* pkNetPacket);
+      void PackTo(NetPacket* pkNetPacket, int iConnectionID );
+		void PackFrom(NetPacket* pkNetPacket, int iConnectionID );
 		
 };
 

@@ -541,7 +541,7 @@ void ObjectManager::UpdateState(NetPacket* pkNetPacket)
 				
 		if( pkNetSlave ) {
 //			g_ZFObjSys.Logf("net", " Refreshing object %d.\n", iObjectID);
-			pkNetSlave->PackFrom(pkNetPacket);
+			pkNetSlave->PackFrom(pkNetPacket, ZF_NET_NOCLIENT);
 			if(pkNetPacket->IsReadError()) {
 				printf("pkNetPacket Read Error\n"); 
 				return;
@@ -578,7 +578,7 @@ void ObjectManager::PackToClient(int iClient, vector<Object*> kObjects)
 
 		NP.Write(pkPackObj->iNetWorkID);
 		//Logf("net", "Object [%d]\n",pkPackObj->iNetWorkID );
-		pkPackObj->PackTo(&NP);
+		pkPackObj->PackTo(&NP,iClient);
 		iPacketSize++;
 
 		//Logf("net", " Size: %d\n\n",NP.m_iPos );
@@ -595,6 +595,8 @@ void ObjectManager::PackToClient(int iClient, vector<Object*> kObjects)
 			iPacketSize = 0;
 			}
 		}
+
+
 
 	NP.Write(iEndOfObject);
 	NP.Write(ZFGP_ENDOFPACKET);
