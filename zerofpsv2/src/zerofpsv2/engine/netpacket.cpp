@@ -117,6 +117,16 @@ void RemoteNode::FreeRelRecv(ZFNetPacketData* pkRel)
 	pkRel->m_kHeader.m_iPacketType = ZF_NETTYPE_NONE;
 }
 
+void RemoteNode::FreeRelRecv(int iOrder)
+{
+	for(int i=0; i<ZF_NET_MAXREL; i++)
+	{
+		if(m_akRelPackRecv[i].m_kHeader.m_iOrder == iOrder)
+		{
+				m_akRelPackRecv[i].m_kHeader.m_iPacketType = ZF_NETTYPE_NONE;
+		}
+	}
+}
 
 
 

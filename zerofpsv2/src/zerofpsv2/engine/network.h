@@ -102,7 +102,7 @@ public:
 	ZFNetPacketData	m_akRelPackRecv[ZF_NET_MAXREL];	// Reliable packets that have been recv out of order.
 	int					m_aiRelPackRecvSize[ZF_NET_MAXREL];
 
-
+	vector<int>			m_kRelAckList;
 
 	int GetFreeRelStore();
 	void FreeRelStore(ZFNetPacketData* pkRel);
@@ -111,8 +111,7 @@ public:
 	int GetFreeRelRecv();
 	int GetRelRecv(int iID);
 	void FreeRelRecv(ZFNetPacketData* pkRel);
-	
-
+	void FreeRelRecv(int iOrder);
 };
 
 
@@ -178,6 +177,7 @@ private:
 	bool IsAddressEquals(IPaddress* pkAdr1, IPaddress* pkAdr2);
 	void DisconnectAll();											// Send disconenct message to all nodes.
 
+	void SendAckList(int iClient, vector<int>& kAckList);
 
 public:
 		enum FuncId_e
