@@ -2,7 +2,7 @@ function Create()
 	
 	InitObject();
 		InitProperty("P_Mad");	
-			InitParameter("m_kMadFile","/data/mad/citizen_female.mad");			
+			InitParameter("m_kMadFile","/data/mad/citizen_man.mad");			
 			InitParameter("m_fScale","1");		
 
 		InitProperty("P_PfPath");
@@ -104,7 +104,7 @@ function GetNextWaypoint()
 	end
 
 	pos[1] = pos[1] + Random(2) - 1;
-	pos[3] = pos[3] + Random(2) - 1;
+	pos[3] = pos[3] + Random(1) - 1;
 
 	return pos;
 end

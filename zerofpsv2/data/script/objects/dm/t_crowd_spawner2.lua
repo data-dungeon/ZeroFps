@@ -5,9 +5,9 @@ function Create()
 			InitParameter("m_fScale","1");		
 		InitProperty("P_ScriptInterface");
 		InitProperty("P_Spawn");	
-			InitParameter("SpawnDelay",2);
+			InitParameter("SpawnDelay",1.8);
 			InitParameter("SpawnMode",1);			
-			InitParameter("Template","data/script/objects/dm/t_mob_woman.lua");	
+			InitParameter("Template","data/script/objects/dm/t_mob_man.lua");	
 			InitParameter("SpawnArea",1);			
 			InitParameter("MaxSpawn",15);			
 		InitProperty("P_Track");
@@ -17,7 +17,7 @@ function Create()
 end
 
 function Init()
-	SISetHeartRate(SIGetSelfID(), 2); --same as spawndelay...
+	SISetHeartRate(SIGetSelfID(), 1.8); --same as spawndelay...
 end
 
 function HeartBeat()
