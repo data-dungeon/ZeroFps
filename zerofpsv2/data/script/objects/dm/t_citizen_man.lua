@@ -74,4 +74,3 @@ function Panic()
 	ClearPathFind(SIGetSelfID());
 	SISetHeartRate(SIGetSelfID(),2);
 end
-
