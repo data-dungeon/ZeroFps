@@ -77,12 +77,12 @@ void P_Sound::PackTo(NetPacket* pkNetPacket, int iConnectionID )
 {
 	int iNumSounds = m_kSounds.size();
 
-	pkNetPacket->Write(&iNumSounds, sizeof(iNumSounds)); 
+	pkNetPacket->Write(iNumSounds); 
 
 	for(int i=0; i<iNumSounds; i++)
 	{
-		pkNetPacket->Write_Str( m_kSounds[i].m_strFileName.c_str()); // filename
-		pkNetPacket->Write(&m_kSounds[i].m_bLoop, sizeof(m_kSounds[i].m_bLoop)); // loop or not
+		pkNetPacket->Write_Str( m_kSounds[i].m_strFileName); // filename
+		pkNetPacket->Write(m_kSounds[i].m_bLoop); // loop or not
 	}
 
 	SetNetUpdateFlag(iConnectionID,false);
@@ -111,15 +111,13 @@ void P_Sound::PackFrom(NetPacket* pkNetPacket, int iConnectionID )
 	vector<sound_info> kSoundsOnServer;
 	
 	int iNumSounds;
-	pkNetPacket->Read(&iNumSounds, sizeof(iNumSounds)); 
-
-	char file_name[128];
+	pkNetPacket->Read(iNumSounds); 
 
 	for(int i=0; i<iNumSounds; i++)
 	{
 		sound_info si;
-		pkNetPacket->Read_Str( file_name ); si.m_strFileName = file_name;
-		pkNetPacket->Read(&si.m_bLoop, sizeof(si.m_bLoop)); 
+		pkNetPacket->Read_Str( si.m_strFileName );
+		pkNetPacket->Read(si.m_bLoop); 
 		kSoundsOnServer.push_back(si); 
 	}
 
