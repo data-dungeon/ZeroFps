@@ -280,6 +280,8 @@ void PlayerControlProperty::NextInvItem()
 	else
 	{
 		m_kCurentInv++;
+		if(m_kCurentInv==m_kInventory.end())
+			m_kCurentInv=m_kInventory.begin();
 	}
 	
 	if((*m_kCurentInv) != NULL)

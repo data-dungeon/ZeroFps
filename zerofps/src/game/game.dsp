@@ -199,6 +199,14 @@ SOURCE=.\game.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\machinegunprojectile.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\machinegunproperty.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\massdriverprojectile.cpp
 # End Source File
 # Begin Source File
@@ -272,6 +280,18 @@ SOURCE=.\bunnyobject.h
 # Begin Source File
 
 SOURCE=.\game.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\inventoryproperty.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\machinegunprojectile.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\machinegunproperty.h
 # End Source File
 # Begin Source File
 
