@@ -14,12 +14,12 @@ function Create()
 			InitParameter("group",1);
 			InitParameter("groupflag",0);
 			InitParameter("groupflag",1);			
-			InitParameter("airfriction",0.2);
-			InitParameter("mass",0.2);
-			InitParameter("inertia",0.2);
+			InitParameter("airfriction",0.1);
+			InitParameter("mass",1);
+			InitParameter("inertia",0.5);
 			InitParameter("bounce",0.8);
-			InitParameter("friction",0.8);
-			InitParameter("activemoment","true");
+			InitParameter("friction",0.5);
+--			InitParameter("activemoment","false");
 			
 		SetParentObject();
 		SetReturnObject();

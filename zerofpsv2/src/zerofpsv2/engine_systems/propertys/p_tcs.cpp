@@ -522,6 +522,8 @@ Matrix4 P_Tcs::GetModelMatrix()
 
 void P_Tcs::ApplyForce(Vector3 kAttachPos,const Vector3& kForce,bool bLocal)
 {
+	//Wakeup();
+
 	//add motion force
 	m_kExternalLinearForce += kForce;
 
@@ -540,6 +542,11 @@ void P_Tcs::ApplyForce(Vector3 kAttachPos,const Vector3& kForce,bool bLocal)
 
 void P_Tcs::ApplyImpulsForce(Vector3 kAttachPos,const Vector3& kForce,bool bLocal)
 {
+	if(m_bStatic)
+		return;
+
+	Wakeup();
+
 	//add linear force
 	m_kLinearVelocity +=  kForce / m_fMass;
 	
@@ -559,6 +566,11 @@ void P_Tcs::ApplyImpulsForce(Vector3 kAttachPos,const Vector3& kForce,bool bLoca
 
 void P_Tcs::ApplyImpulsForce(const Vector3& kForce)
 {
+	if(m_bStatic)
+		return;
+	
+	Wakeup();
+	
 	m_kLinearVelocity +=  kForce / m_fMass;
 } 
 

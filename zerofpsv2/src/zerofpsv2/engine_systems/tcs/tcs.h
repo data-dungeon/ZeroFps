@@ -57,7 +57,7 @@ class ENGINE_SYSTEMS_API Tcs : public ZFSubSystem
 		float					m_fLastTestDist;
 		
 		float					m_fSleepVel;
-		int					m_iMaxTests;
+		float					m_fMaxDelay;
 		float					m_fMinTime;
 		float					m_fMinForce;
 		float					m_fAlmostZero;
@@ -82,7 +82,7 @@ class ENGINE_SYSTEMS_API Tcs : public ZFSubSystem
 		void HandleCollission(Tcs_collission* pkCol);
 		void ResetForces();
 		void ClearCollissions();
-		void TryToSleep(P_Tcs* pkBody);
+		void TryToSleep(P_Tcs* pkBody1,P_Tcs* pkBody2);
 						
 		//help funktions
 		Tcs_collission* FindNextCollission();

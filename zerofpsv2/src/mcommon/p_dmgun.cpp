@@ -219,6 +219,7 @@ bool P_DMGun::FireBullets(int iAmount)
 	
 					if(d < closest)
 					{
+						
 						// annoying test, hittest checks with bindpose,
 						// so dead models aren't hit as if they are standing :(
 						if( P_DMCharacter* pkChar = (P_DMCharacter*)kObjects[i]->GetProperty("P_DMCharacter") )
@@ -243,6 +244,12 @@ bool P_DMGun::FireBullets(int iAmount)
 		
 		if(pkClosest)
 		{
+			if( P_Tcs* pkTcs = (P_Tcs*)pkClosest->GetProperty("P_Tcs") )
+			{
+				pkTcs->ApplyImpulsForce(kPickPos,(kPickPos - kStart).Unit(),false);
+			}						
+			
+			
 			// smoke psystem
 			Entity* pkSmoke = m_pkObject->m_pkEntityMan->CreateObjectFromScript("data/script/objects/dm/t_gunsmoke.lua");
 			pkSmoke->SetWorldPosV (kPickPos);
@@ -252,6 +259,7 @@ bool P_DMGun::FireBullets(int iAmount)
 			kPickPos.y += 0.06;
 			m_kHitPos.push_back(pair<Vector3,float>(kPickPos,t));		
 			
+
 			
 			if(P_DMCharacter* pkChar = (P_DMCharacter*)pkClosest->GetProperty("P_DMCharacter"))
 			{

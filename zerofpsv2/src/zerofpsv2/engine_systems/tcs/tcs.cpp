@@ -6,11 +6,11 @@ Tcs::Tcs(): ZFSubSystem("Tcs")
 {
 	Logf("zerofps","Tiny Collission system created");
 
- 	m_iMaxTests = 5;
+ 	m_fMaxDelay = 0.025;
 	m_fMinTime = 0.000;
-	m_fMinForce = 0.05;
+	m_fMinForce = 0.02;
 	m_fAlmostZero = 0.001;
-	m_fSleepVel = 0.1;
+	m_fSleepVel = 0.15;
 	
 	m_iHandleCollission = 1;
 	m_iDebugGraph = 0;
@@ -19,7 +19,7 @@ Tcs::Tcs(): ZFSubSystem("Tcs")
 	
 	RegisterVariable("p_tcshandle",	&m_iHandleCollission,CSYS_INT);
 	RegisterVariable("p_tcsdebug",	&m_iDebugGraph,CSYS_INT);
-	RegisterVariable("p_tcstests",	&m_iMaxTests,CSYS_INT);
+	RegisterVariable("p_tcsdelay",	&m_fMaxDelay,CSYS_FLOAT);
 	RegisterVariable("p_tcsminforce",&m_fMinForce,CSYS_FLOAT);
 	RegisterVariable("p_tcssleepvel",&m_fSleepVel,CSYS_FLOAT);
 }
@@ -85,12 +85,10 @@ void Tcs::RemoveBody(P_Tcs* pkPTcs)
 
 void Tcs::Update(float fAlphaTime)
 {
-
-
-
 	if(m_kBodys.empty())
 		return;
 	
+	float fStartTime = m_pkZeroFps->GetTicks();
 	float fRTime = fAlphaTime;
 	m_iNrOfCollissions = 0;
 	
@@ -132,9 +130,9 @@ void Tcs::Update(float fAlphaTime)
 			//clear all collissions
 			ClearCollissions();
 
-			if(m_iNrOfCollissions >= m_iMaxTests)
+			if((m_pkZeroFps->GetTicks() - fStartTime) > m_fMaxDelay)
 				break;
-					
+								
 		}
 		//no collissions, just update time and continue
 		else 
@@ -196,45 +194,39 @@ void Tcs::HandleCollission(Tcs_collission* pkCol)
 	int iNrOfPos = pkCol->kPositions.size();
  	//iNrOfPos = 1;
 	
-	
-	Vector3 kNewLinearVel1(0,0,0);
-	Vector3 kNewLinearVel2(0,0,0);
-	Vector3 kNewRotVel1(0,0,0);
-	Vector3 kNewRotVel2(0,0,0);
-	
-	
-	//setup Masses, treat static bodys as having infinit mass
 	float fMass1 = pkCol->pkBody1->m_fMass;
 	float fMass2 = pkCol->pkBody2->m_fMass;
-		
-	if(pkCol->pkBody1->m_bStatic)
-		fMass1 = 999999999;	
-	if(pkCol->pkBody2->m_bStatic)
-		fMass2 = 999999999;	
-		
-	//fMass1 /= float(iNrOfPos);
-	//fMass2 /= float(iNrOfPos);
-		
 			
 	//bounce
 	float fBounce = pkCol->pkBody1->m_fBounce * pkCol->pkBody2->m_fBounce;
-	//fBounce = 0;
 	
 	//friction
 	float fFriction = pkCol->pkBody1->m_fFriction * pkCol->pkBody2->m_fFriction;
 	
-	float fTotalj = 0;
-	
-	
+	//setup vels	
 	Vector3 kLinearRelVel = pkCol->pkBody1->m_kLinearVelocity - pkCol->pkBody2->m_kLinearVelocity;
 	Vector3 kRotVel1 = pkCol->pkBody1->m_kRotVelocity;
 	Vector3 kRotVel2 = pkCol->pkBody2->m_kRotVelocity;
 
 	
-	//for(int i = 0;i<	pkCol->kPositions.size();i++)
+	//setup Masses, treat static bodys as having infinit mass	
+	if(pkCol->pkBody1->m_bStatic)
+	{
+		fMass1 = 999999999;	
+	}
+	
+	if(pkCol->pkBody2->m_bStatic)
+	{
+		fMass2 = 999999999;	
+	}
+	
+	//cout<<"v1:"<<kRotVel1.Length()<<" "<<pkCol->pkBody1->m_kLinearVelocity.Length()<<endl;
+	//cout<<"v2:"<<kRotVel2.Length()<<" "<<pkCol->pkBody2->m_kLinearVelocity.Length()<<endl;
+	
+	float fTotalj = 0;
+	
 	for(int i = 0;i<	iNrOfPos;i++)
 	{	
-	
 		if(m_iDebugGraph)
 		{
 			m_pkRender->Sphere(pkCol->kPositions[i],0.1,1,Vector3(0,1,0),false);
@@ -246,34 +238,23 @@ void Tcs::HandleCollission(Tcs_collission* pkCol)
 		if(!m_iHandleCollission)
 			continue;
 
-		
+		//Vector3 kRelVel = kLinearRelVel;		
 		Vector3 kRelVel = kLinearRelVel + (-kRotVel1.Cross(pkCol->kPositions[i] - pkCol->pkBody1->m_kNewPos) - -kRotVel2.Cross(pkCol->kPositions[i] - pkCol->pkBody2->m_kNewPos));		
 		//Vector3 kRelVel = pkCol->pkBody1->GetVel(pkCol->kPositions[i],false) - pkCol->pkBody2->GetVel(pkCol->kPositions[i],false);
 		Vector3 kTangent = (pkCol->kNormals[i].Cross(kRelVel.Unit())).Cross(pkCol->kNormals[i]);
-
 			
 		float j  = (-(1+fBounce) * (kRelVel * pkCol->kNormals[i])) /
 					  ( (pkCol->kNormals[i] * pkCol->kNormals[i]) *
 					  ( 1/fMass1 + 1/fMass2)); 	
 
-		//if(j  <0)
-		//	continue;					  					  
-		//j = fabs(j);	
-						  					  
-		//if(j < 0)
-		//	cout<<"negativ force"<<endl;
 		
-				  
 		//make sure the impact force is not to small					  
 		if(j < m_fMinForce)
 			j = m_fMinForce;  
 		
 		j /= float(iNrOfPos);
-					  
 					
   		fTotalj+=j;
-					  	
-			
 								  
 		// APPLY IMPULSES					
 		if(!pkCol->pkBody1->m_bStatic)
@@ -281,29 +262,29 @@ void Tcs::HandleCollission(Tcs_collission* pkCol)
 			//pkCol->pkBody1->ApplyImpulsForce(pkCol->kNormals[i] * j);
 			//pkCol->pkBody1->ApplyImpulsForce((-kTangent * j)*fFriction);
 			
-			
 			pkCol->pkBody1->ApplyImpulsForce(pkCol->kPositions[i],pkCol->kNormals[i] * j ,false);							
-			pkCol->pkBody1->ApplyImpulsForce(pkCol->kPositions[i],(-kTangent * j)*fFriction ,false);
+			pkCol->pkBody1->ApplyImpulsForce(pkCol->kPositions[i],-kTangent * (j * fFriction) ,false);
 		}		
 		
 		if(!pkCol->pkBody2->m_bStatic)
 		{
-			
 			//pkCol->pkBody2->ApplyImpulsForce(-pkCol->kNormals[i] * j);
 			//pkCol->pkBody2->ApplyImpulsForce((kTangent * j)*fFriction);
 			
 			pkCol->pkBody2->ApplyImpulsForce(pkCol->kPositions[i],-pkCol->kNormals[i] * j ,false);							
-			pkCol->pkBody2->ApplyImpulsForce(pkCol->kPositions[i],(kTangent * j)*fFriction ,false);
+			pkCol->pkBody2->ApplyImpulsForce(pkCol->kPositions[i],kTangent * (j * fFriction) ,false);
 		}					  
 	}
 	
 	//cout<<"totalj:"<<fTotalj<<endl;
-	
+	/*
 	if(!pkCol->pkBody1->m_bStatic)
 		TryToSleep(pkCol->pkBody1);
 	if(!pkCol->pkBody2->m_bStatic)
 		TryToSleep(pkCol->pkBody2);
-
+	*/
+		
+	TryToSleep(pkCol->pkBody1,pkCol->pkBody2);		
 				
 	
 	//touch objects
@@ -358,7 +339,7 @@ void Tcs::UpdateForces()
 			//apply gravity if enabled
 			if(m_kBodys[i]->m_bGravity)
 			{
-				m_kBodys[i]->m_kLinearForce.y -= 1;
+				m_kBodys[i]->m_kLinearForce.y -= 2;
 			}
 			
 			//apply some air friction		
@@ -910,6 +891,15 @@ bool Tcs::CollideSphereVSMesh(P_Tcs* pkSphere,P_Tcs* pkMesh)
 		verts[1] = kModelMatrix.VectorTransform((*pkMesh->m_pkVertex)[(*pkMesh->m_pkFaces)[f].iIndex[1]]);		
 		verts[2] = kModelMatrix.VectorTransform((*pkMesh->m_pkVertex)[(*pkMesh->m_pkFaces)[f].iIndex[2]]);		
 	
+		
+		if(m_iDebugGraph == 2)
+		{
+			//debug stuff
+			m_pkRender->Line(verts[0],verts[1]);
+			m_pkRender->Line(verts[1],verts[2]);		
+			m_pkRender->Line(verts[2],verts[0]);				
+		}		
+		
 		if(TestSphereVSPolygon(verts,pkSphere))
 		{	
 			d = pkSphere->m_kNewPos.DistanceTo(m_kLastTestPos);
@@ -992,7 +982,8 @@ void Tcs::TestMeshVsMesh(P_Tcs* pkBody1,P_Tcs* pkBody2,float fAtime)
 			
 			didpen = true;			
 			retry = true;
-			fAtime /= 1.5;	
+			//fAtime /= 1.5;	
+			fAtime /= 2;	
 		}
 		else if(didpen)
 			break;
@@ -1368,7 +1359,7 @@ float Tcs::LineInsidePolygon(Vector3* pkPolgyon,Plane* pkPlane,Vector3* pkLinePo
 
 bool Tcs::TestLineVSPolygon(Vector3* pkPolygon,Vector3* pkPos1,Vector3* pkPos2,Plane* pkPlane)
 {
-	float fMinDist = 0.05;
+	float fMinDist = 0.1;
 
 	if(pkPlane->LineTest(*pkPos1,*pkPos2,&m_kLastTestPos))
 	{
@@ -1376,7 +1367,7 @@ bool Tcs::TestLineVSPolygon(Vector3* pkPolygon,Vector3* pkPos1,Vector3* pkPos2,P
 		{
 			m_kLastTestNormal = -pkPlane->m_kNormal;		
 			return true;
-			
+			/*
 			if( m_kLastTestPos.DistanceTo(*pkPos1) < fMinDist ||
 				 m_kLastTestPos.DistanceTo(*pkPos2) < fMinDist ||
 				 m_kLastTestPos.DistanceTo(pkPolygon[0]) < fMinDist ||
@@ -1401,8 +1392,9 @@ bool Tcs::TestLineVSPolygon(Vector3* pkPolygon,Vector3* pkPos1,Vector3* pkPos2,P
 				//m_kLastTestNormal = -(pkPolygon[0] - pkPolygon[1]).Cross( *pkPos1 - *pkPos2).Unit();
 				//m_kLastTestNormal = -(pkPolygon[0] - pkPolygon[1]).Cross( *pkPos1 - *pkPos2).Unit();
 			
-				return true;
+				return false;
 			}
+			*/
 		}
 	}
 	
@@ -1432,17 +1424,23 @@ void Tcs::ClearCollissions()
 	m_kCollissions.clear();
 }
 
-void Tcs::TryToSleep(P_Tcs* pkBody)
+void Tcs::TryToSleep(P_Tcs* pkBody1,P_Tcs* pkBody2)
 {
-	if(pkBody->m_kLinearVelocity.Length() < m_fSleepVel)
-		if(pkBody->m_kRotVelocity.Length() <  m_fSleepVel)
-		{
-			pkBody->m_kLinearVelocity.Set(0,0,0);
-			pkBody->m_kRotVelocity.Set(0,0,0);
-		
-			pkBody->m_bSleeping = true;
-			//cout<<"body going to sleep "<<m_kLinearForce.Length()<<endl;
-		}
+	if(pkBody1->m_kLinearVelocity.Length() < m_fSleepVel)
+		if(pkBody1->m_kRotVelocity.Length() <  m_fSleepVel/2)
+			if(pkBody2->m_kLinearVelocity.Length() < m_fSleepVel)
+				if(pkBody2->m_kRotVelocity.Length() <  m_fSleepVel/2)		
+				{
+					pkBody1->m_kLinearVelocity.Set(0,0,0);
+					pkBody1->m_kRotVelocity.Set(0,0,0);		
+					pkBody1->m_bSleeping = true;
+					
+					pkBody2->m_kLinearVelocity.Set(0,0,0);
+					pkBody2->m_kRotVelocity.Set(0,0,0);		
+					pkBody2->m_bSleeping = true;
+					
+					//cout<<"body going to sleep "<<m_kLinearForce.Length()<<endl;
+				}
 }
 
 /*
