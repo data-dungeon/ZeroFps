@@ -126,15 +126,6 @@ int StdLua::GetFilesInFolderLua(lua_State* pkLua)
 
 	g_pkScript->AddReturnValueTable(pkLua, vkData);
 
-	if(vkData[0].pData)
-		delete (double*) vkData[0].pData;
-
-	for(i=1; i<vkData.size(); i++) // börja på 1
-	{
-		if(vkData[i].pData)
-			delete[] (char*) vkData[i].pData;
-	}
-
 	return 1;
 	
 }

@@ -49,7 +49,10 @@ namespace ObjectManagerLua
 	// Animations
 	int ENGINE_SYSTEMS_API PlayAnim(lua_State* pkLua);
 	int ENGINE_SYSTEMS_API SetNextAnim(lua_State* pkLua);
-	
+
+	// Orientation
+	int ENGINE_SYSTEMS_API SetObjectPosLua(lua_State* pkLua);
+	int ENGINE_SYSTEMS_API GetObjectPosLua(lua_State* pkLua);
 	
 };
 

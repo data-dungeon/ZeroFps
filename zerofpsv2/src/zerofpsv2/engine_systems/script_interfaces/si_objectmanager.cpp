@@ -43,6 +43,9 @@ void ObjectManagerLua::Init(EntityManager* pkObjMan, ZFScriptSystem* pkScript)
 	pkScript->ExposeFunction("PlayAnim",				ObjectManagerLua::PlayAnim);
 	pkScript->ExposeFunction("SetNextAnim",			ObjectManagerLua::SetNextAnim);
 
+	// object orientation
+	pkScript->ExposeFunction("GetObjectPos",			ObjectManagerLua::GetObjectPosLua);
+	pkScript->ExposeFunction("SetObjectPos",			ObjectManagerLua::SetObjectPosLua);
 }
 
 void ObjectManagerLua::Reset()
@@ -272,3 +275,52 @@ int ObjectManagerLua::SetNextAnim(lua_State* pkLua)
 	return 1;
 }
 
+int ObjectManagerLua::SetObjectPosLua(lua_State* pkLua)
+{
+	int iNrArgs = g_pkScript->GetNumArgs(pkLua);
+
+	return 1;
+}
+
+int ObjectManagerLua::GetObjectPosLua(lua_State* pkLua)
+{
+	if(g_pkScript->GetNumArgs(pkLua) != 1)
+	{
+		printf("Script funtion GetObjectPos failed! Expects 1 arguments.\n");
+		return 0;
+	}
+
+	double dTemp;
+	g_pkScript->GetArgNumber(pkLua, 0, &dTemp);		
+	int iId = (int) dTemp;
+
+	Entity* pkObject = g_pkObjMan->GetObjectByNetWorkID(iId);
+
+	if(pkObject)
+	{
+		Vector3 pos = pkObject->GetWorldPosV();
+
+		vector<TABLE_DATA> vkData;
+
+		TABLE_DATA temp;
+
+		temp.bNumber = true;
+		temp.pData = new double;
+		(*(double*) temp.pData) = pos.x;
+		vkData.push_back(temp);
+
+		temp.bNumber = true;
+		temp.pData = new double;
+		(*(double*) temp.pData) = pos.y;
+		vkData.push_back(temp);
+
+		temp.bNumber = true;
+		temp.pData = new double;
+		(*(double*) temp.pData) = pos.z;
+		vkData.push_back(temp);
+
+		g_pkScript->AddReturnValueTable(pkLua, vkData);
+	}
+
+	return 1;
+}
