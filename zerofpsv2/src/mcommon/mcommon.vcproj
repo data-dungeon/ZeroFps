@@ -182,6 +182,9 @@
 				RelativePath=".\p_ml.cpp">
 			</File>
 			<File
+				RelativePath=".\p_projectile.cpp">
+			</File>
+			<File
 				RelativePath=".\p_serverinfo.cpp">
 			</File>
 			<File
@@ -241,6 +244,9 @@
 			</File>
 			<File
 				RelativePath=".\p_ml.h">
+			</File>
+			<File
+				RelativePath=".\p_projectile.h">
 			</File>
 			<File
 				RelativePath=".\p_serverinfo.h">
