@@ -755,7 +755,7 @@ bool Gui::CreateMenu(ZFIni* pkIni, char* szFileName)
 			pkMenuCBox->IsMenu(true);
 
 			m_pkEdit->pkGui->RegisterWindow(pkMenuCBox, (char*)akSections[i].c_str());
-			rcMenu.Move(iWidth,0);
+			rcMenu = rcMenu.Move(iWidth,0);
 		}
 		else
 		{
@@ -790,7 +790,12 @@ bool Gui::CreateMenu(ZFIni* pkIni, char* szFileName)
 				MENU_INFO mi;
 				mi.cb = (ZGuiCombobox*) pkParent;
 				mi.iIndex = item_counter-1;
-				strcpy(szCommando, pkIni->GetValue(akSections[i].c_str(), "Cmd"));
+				char* szCmd = pkIni->GetValue(akSections[i].c_str(), "Cmd");
+				if(szCmd != NULL)
+					strcpy(szCommando, szCmd);
+				else
+					strcpy(szCommando, "No commando!");
+
 				mi.szCommando = new char[strlen(szCommando)+1];
 				strcpy(mi.szCommando, szCommando);
 				kTempVector.push_back(mi);
