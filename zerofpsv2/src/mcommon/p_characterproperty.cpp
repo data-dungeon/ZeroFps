@@ -42,6 +42,10 @@ CharacterStats::CharacterStats()
 
 void CharacterStats::Save(ZFIoInterface* pkPackage)
 {
+	//stat version
+	static int iVersion = 1;
+	pkPackage->Write(iVersion);	
+
 	for(int i = 0;i<m_kStats.size();i++)
 	{
 		pkPackage->Write_Str(m_kStats[i].m_strName);
@@ -61,20 +65,23 @@ void CharacterStats::Load(ZFIoInterface* pkPackage)
 	static float fValue,fMod;
 	
 	
-	m_kStats.clear();
+	int iVersion;
+	pkPackage->Read(iVersion);		
 	
-	
-	pkPackage->Read_Str(strName);
-	while(!strName.empty())
-	{
-		pkPackage->Read(fValue);
-		pkPackage->Read(fMod);
-		
-		m_kStats.push_back(CharacterStat(strName,fValue,0)); //dont load mod value
-		
+	if(iVersion == 1)
+	{	
+		m_kStats.clear();
 		pkPackage->Read_Str(strName);
+		while(!strName.empty())
+		{
+			pkPackage->Read(fValue);
+			pkPackage->Read(fMod);
+			
+			m_kStats.push_back(CharacterStat(strName,fValue,0)); //dont load mod value
+			
+			pkPackage->Read_Str(strName);
+		}
 	}
-
 	
 // 	cout<<"loaded stats"<<endl;
 }
