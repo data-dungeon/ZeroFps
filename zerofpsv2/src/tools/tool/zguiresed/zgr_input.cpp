@@ -672,7 +672,9 @@ void ZGuiResEd::OnCommand(string strCtrlID, int iCmdExtra)
 		vector<string> ext;
 		ext.push_back(".lua"); 
 
-		m_pkFileSys->ListDirRecursive(&kFiles, string("../datafiles"), ext, (strCtrlID == "GuiEd_SaveScript"));
+		bool bSave = (strCtrlID == "GuiEd_SaveScript");
+
+		m_pkFileSys->ListDirRecursive(&kFiles, string("../datafiles"), ext, bSave);
 
 		//if(SearchFiles(kFiles, "..\\datafiles", ".lua", (strCtrlID == "GuiEd_SaveScript")))
 		if(1)
@@ -690,6 +692,9 @@ void ZGuiResEd::OnCommand(string strCtrlID, int iCmdExtra)
 					if(kFiles[i].find("/script/gui") != string::npos && 
 						kFiles[i].find("/CVS") == string::npos)
 					bAdd = true;
+
+					if(bAdd && kFiles[i].find(".") != string::npos)
+						bAdd = false;
 				}
 				else
 				{
@@ -766,7 +771,7 @@ void ZGuiResEd::OnCommand(string strCtrlID, int iCmdExtra)
 				char* szFileName;
 				if((szFileName=GetText("GuiEd_ScriptFileName")))
 				{
-					strFullName = string(szText) + string("/") + string(szFileName);
+					strFullName = string("../datafiles/") + string(szText) + string("/") + string(szFileName);
 
 					char *ext = strrchr( strFullName.c_str(), '.');
 					if(strcmp(ext,".lua") != 0) 
