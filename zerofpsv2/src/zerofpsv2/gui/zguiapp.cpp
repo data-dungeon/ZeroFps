@@ -765,7 +765,6 @@ void ZGuiApp::ClearListbox(char *szResName)
 		ZGuiCombobox* pkComboBox = static_cast<ZGuiCombobox*>(pkWnd);
 		pkComboBox->RemoveAllItems();
 	}
-
 }
 
 int ZGuiApp::GetWndID(char* szResName)

@@ -612,11 +612,28 @@ void MistClient::OnCommand(int iID, ZGuiWnd *pkMainWnd)
 		{
 			pkScript->Call(m_pkScriptResHandle, "OnClickConnect",0,0);
 
+			// Add server names
 			ClearListbox("IPNumbersComboBox");
-
-			map<string,string>::iterator itIPs = MistLandLua::g_vkIpUsers.begin();
-			for( ; itIPs != MistLandLua::g_vkIpUsers.end(); itIPs++)
+			map<string,string>::iterator itIPs = MistLandLua::g_kServerList.begin();
+			for( ; itIPs != MistLandLua::g_kServerList.end(); itIPs++)
+			{
 				AddListItem("IPNumbersComboBox", (char*) itIPs->first.c_str());
+			}		
+
+			// Select the default ip name
+//			if(static_cast<ZGuiCombobox*>(GetWnd(
+//				"IPNumbersComboBox"))->GetListbox()->GetSelItem() == NULL)
+			{
+				map<string,string>::iterator itDef =
+					MistLandLua::g_kServerList.find(MistLandLua::g_kDefServer);
+				if(itDef != MistLandLua::g_kServerList.end())
+				{
+					GetWnd("IPNumberEditbox")->SetText((char*) itDef->second.c_str());
+					static_cast<ZGuiCombobox*>(GetWnd("IPNumbersComboBox"))->SetLabelText(
+						(char*) itDef->first.c_str());
+				}
+			}
+
 		}
 		else
 		if(strClickWndName == "ConnectToServerButton")
@@ -778,9 +795,9 @@ void MistClient::OnSelectCB(int ListBoxID, int iItemIndex, ZGuiWnd *pkMain)
 		char* szUser = pkComboBox->GetListbox()->GetSelItem()->GetText();
 
 		map<string, string>::iterator itIPInfo;
-		itIPInfo = MistLandLua::g_vkIpUsers.find(string(szUser));
+		itIPInfo = MistLandLua::g_kServerList.find(string(szUser));
 
-		if(itIPInfo != MistLandLua::g_vkIpUsers.end())
+		if(itIPInfo != MistLandLua::g_kServerList.end())
 		{
 			GetWnd("IPNumberEditbox")->SetText((char*)itIPInfo->second.c_str());
 		}

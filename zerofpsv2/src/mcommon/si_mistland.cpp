@@ -14,8 +14,8 @@ ObjectManager*			MistLandLua::g_pkObjMan;
 int						MistLandLua::g_iCurrentObjectID;
 int						MistLandLua::g_iLastCollidedID;
 int						MistLandLua::g_iCurrentPCID = -1;
-map<string,string>	MistLandLua::g_vkIpUsers;
-
+map<string,string>	MistLandLua::g_kServerList;
+string					MistLandLua::g_kDefServer;
 
 void MistLandLua::Init(ObjectManager* pkObjMan,ZFScriptSystem* pkScript)
 {
@@ -111,7 +111,9 @@ void MistLandLua::Init(ObjectManager* pkObjMan,ZFScriptSystem* pkScript)
    pkScript->ExposeFunction("CastSpell",	            MistLandLua::CastSpellLua);
 
 	// setup ip
-	pkScript->ExposeFunction("AddUser", MistLandLua::AddUser);
+	pkScript->ExposeFunction("AddServer", MistLandLua::AddServerLua);
+	pkScript->ExposeFunction("SetDefaultServer", MistLandLua::SetDefaultServerLua);
+	
 
 }
 
@@ -2087,9 +2089,9 @@ int MistLandLua::CastSpellLua (lua_State* pkLua)
 
 // ----------------------------------------------------------------------------------------------
 
-// 1:st arg = user name (string)
+// 1:st arg = server name (string)
 // 2:nd arg = ip name (ie."192.168.0.153:4242") (string)
-int MistLandLua::AddUser (lua_State* pkLua)
+int MistLandLua::AddServerLua(lua_State* pkLua)
 {
 	if( g_pkScript->GetNumArgs(pkLua) != 2 )
 	{
@@ -2105,15 +2107,34 @@ int MistLandLua::AddUser (lua_State* pkLua)
    //user ip
 	g_pkScript->GetArgString(pkLua, 1, acIP);
 
-	map<string,string>::iterator it = g_vkIpUsers.find(string(acName));
+	map<string,string>::iterator it = g_kServerList.find(string(acName));
 
-	if(it != g_vkIpUsers.end())
+	if(it != g_kServerList.end())
 	{
 		printf("Failed to add user to list. User already exist!\n");
 		return 0;
 	}
 
-	g_vkIpUsers.insert(map<string,string>::value_type(string(acName),string(acIP)));
+	g_kServerList.insert(map<string,string>::value_type(string(acName),string(acIP)));
+
+	return 1;
+}
+
+// 1:st arg = server name (string)
+int MistLandLua::SetDefaultServerLua(lua_State* pkLua)
+{
+	if( g_pkScript->GetNumArgs(pkLua) != 1 )
+	{
+		printf("Failed to add user to list. Bad argumetns!\n");
+		return 0;
+	}
+
+   char acName[128];
+	
+	//user name
+	g_pkScript->GetArgString(pkLua, 0, acName);
+
+	g_kDefServer = string(acName);
 
 	return 1;
 }
