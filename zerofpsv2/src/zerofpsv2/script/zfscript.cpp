@@ -546,12 +546,21 @@ bool ZFScriptSystem::Call(ZFResourceHandle* pkResHandle, char* szFuncName,
 	if(pkScript == NULL || pkScript->m_pkLuaState == NULL)
 		return false;	
 	
-
+	//cout << "Stack Index: " << lua_gettop ( pkScript->m_pkLuaState ) << endl;	
+		
 	lua_getglobal( pkScript->m_pkLuaState, szFuncName);
-
+	
 	// M�te kolla s�att den global funktion finns. 
 	// L�er sig fett om den int g� det!
-	if(lua_isnil( pkScript->m_pkLuaState, 1) )
+	
+	int iType = lua_type(pkScript->m_pkLuaState, 1);
+	
+	//cout<<"röva:"<<iType<<endl;
+	//cout<<"name:"<<lua_typename(pkScript->m_pkLuaState,iType)<<endl;	
+	//cout<<"blub:"<<lua_isnil( pkScript->m_pkLuaState, 1)<<endl;
+	
+	//if(lua_isnil( pkScript->m_pkLuaState, 1) )
+	if(lua_isfunction(pkScript->m_pkLuaState, 1) != 1)  //säkrare med is function , annars kan d finnas en variabel med rätt man o då krashar d
 	{
 		lua_pop(pkScript->m_pkLuaState, 1);
 
@@ -600,7 +609,14 @@ bool ZFScriptSystem::Call(ZFResourceHandle* pkResHandle, char* szFuncName,
 	if(!vkParams.empty())
 		lua_pop(pkScript->m_pkLuaState, vkParams.size());
 	*/
-
+	//cout << "Stack Index: " << lua_gettop ( pkScript->m_pkLuaState ) << endl;
+	
+	
+	//onda vim, dvoid fick cp buffertar om detta togs bort
+	if(!vkParams.empty())
+		lua_pop(pkScript->m_pkLuaState, vkParams.size());
+	
+	
 	return true;
 }
 

@@ -2844,7 +2844,7 @@ bool EntityManager::CallFunction(Entity* pkEntity, const char* acFunction,vector
 	ObjectManagerLua::g_kScriptState.g_iCurrentObjectID = pkEntity->m_iEntityID;	
 	bool bRes;
 
-		
+	
 	if(pkParams)
 		bRes = m_pkScript->Call(pkEntity->GetEntityScript(), (char*)acFunction,*pkParams);
 	else

@@ -1093,6 +1093,7 @@ void Entity::Touch(int iId)
 		args[0].m_kType.m_eType = tINT;
 		args[0].m_pData = &iId;
 		
+		
 		m_pkEntityManager->CallFunction(this, "Collission",&args);	
 //		m_pkEntityManager->CallFunction(this, "Collission",NULL);	
 	}
