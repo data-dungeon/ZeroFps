@@ -10,10 +10,48 @@
 #include <string>
 #include <vector>
 
+#include "../zerofpsv2/basic/zfresource.h"
+#include "../zerofpsv2/basic/zfini.h"
+
 #include "../zerofpsv2/engine_systems/propertys/psystemproperty.h"
 #include "../zerofpsv2/engine_systems/propertys/lightproperty.h"
 
 using namespace std;
+
+//---start of EnvSetting
+
+class MCOMMON_API EnvSetting : public ZFResource
+{
+	private:
+		ZFIni		m_kIni;
+	
+		
+		string	m_strParticles;
+		
+		Vector4	m_kSunDiffuseColor;
+		Vector4	m_kSunAmbientColor;		
+		Vector3	m_kSunPos;
+		
+		float		m_fFogStart;
+		float		m_fFogStop;		
+		Vector4	m_kFogColor;
+	
+	public:
+		EnvSetting();
+		~EnvSetting();	
+	
+		bool LoadEnviroment(const char* czName);
+		void Clear();
+		bool Create(string strName);	//	for resource system
+		int  CalculateSize();		
+
+	friend class P_Enviroment;
+};
+
+RENDER_API ZFResource* Create__EnvSetting();
+
+//---end of EnvSetting
+
 
 class MCOMMON_API P_Enviroment: public Property {
 	private:
@@ -24,6 +62,9 @@ class MCOMMON_API P_Enviroment: public Property {
 		bool				m_bEnabled;
 		
 		string			m_StrCurrentEnviroment;
+		
+		
+		
 		
 	public:
 

@@ -28,17 +28,17 @@ void Application::SetEnginePointer(ZeroFps* pkZeroFps)
 	pkLight				=	pkFps->m_pkLight;
 	pkObjectMan			=	pkFps->m_pkObjectMan;
 	pkAudioSys			=	pkFps->m_pkAudioSystem;
-//	pkAudioSys2			=	pkFps->m_pkAudioSystem2;
 	pkPropertyFactory =	pkFps->m_pkPropertyFactory;
 	pkGui					=	pkFps->m_pkGui;
 	pkGuiMan				=	pkFps->m_pkGuiMan;
 	pkIni					=	pkFps->m_pkIni;
-//	pkLevelMan			=	pkFps->m_pkLevelMan;
 	pkPhysEngine		=	pkFps->m_pkPhysEngine;
 	pkScript				=	pkFps->m_pkScript;
 	pkPhysics_Engine	=	pkFps->m_pkPhysics_Engine;
 	pkZFVFileSystem	=	pkFps->m_pkZFVFileSystem;
 	pkZShader			=	pkFps->m_pkZShader;
+	pkResourceDB		=	pkFps->m_pkResourceDB;
+
 }
 	
 	

@@ -107,6 +107,7 @@ class MistClient :public Application, public ZGuiApp {
 		void Init();
 		void RegisterActions();		
 		void RegisterPropertys();
+		void RegisterResources();
 		void Input();
 		void OnServerStart(void);
 		void OnClientStart(void);

@@ -534,6 +534,12 @@ void ZFIni::Close()
 		delete[] m_pkCommandData;
 	}
 
+	//null everyting
+	m_pstrLines=NULL;
+	m_pstrSections=NULL;	
+	m_pkSectionData=NULL;		
+	m_pkCommandData=NULL;
+
 	m_bFileReady = false;
 }
 

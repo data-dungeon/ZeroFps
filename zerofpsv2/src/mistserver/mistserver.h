@@ -121,6 +121,7 @@ class MistServer :public Application , public ZGuiApp {
 		void RunCommand(int cmdid, const CmdArgument* kCommand);		
 		void Init();
 		void RegisterPropertys();
+		void RegisterResources();		
 		void Input();
 		void OnServerStart(void);
 		void OnClientStart(void);

@@ -111,6 +111,9 @@ void MistClient::Init()
 	//register property bös
 	RegisterPropertys();
 
+	//register resources
+	RegisterResources();
+
 	m_pkMap2 = new Heightmap2(/*"HeightMap"*/);
 	m_pkMap2->CreateHMFromImage("/data/textures/hmap.tga");
 
@@ -142,6 +145,11 @@ void MistClient::Init()
 	pkLight->SetLighting(true);
 	//pkZShader->SetForceLighting(ALWAYS_OFF);
 	
+}
+
+void MistClient::RegisterResources()
+{
+	pkResourceDB->RegisterResource( string(".env"), Create__EnvSetting	);
 }
 
 void MistClient::RegisterActions()

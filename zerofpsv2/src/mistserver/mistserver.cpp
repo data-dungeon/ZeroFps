@@ -109,6 +109,9 @@ void MistServer::Init()
 	//register property bös
 	RegisterPropertys();
 
+	//register resources
+	RegisterResources();
+
 	//initiate our camera
 	m_pkCamera=new Camera(Vector3(0,0,0),Vector3(0,0,0),90,1.333,0.25,250);	
 
@@ -127,6 +130,11 @@ void MistServer::Init()
 	SDL_ShowCursor(SDL_DISABLE);
 
 	SDL_WM_SetCaption("MistServer", NULL);
+}
+
+void MistServer::RegisterResources()
+{
+	pkResourceDB->RegisterResource( string(".env"), Create__EnvSetting	);
 }
 
 void MistServer::RegisterPropertys()
@@ -789,9 +797,8 @@ void MistServer::OnCommand(int iID, ZGuiWnd *pkMainWnd)
 				BuildFileTree("ZoneModelTree", "data/mad/zones");
 				BuildFileTree("ObjectTree", "data/script/objects");
 				//GetWnd("WorkTabWnd")->SetMoveArea(Rect(0,0,800,600), true);
-				AddListItem("EnviromentPresetList", "Rain");
-				AddListItem("EnviromentPresetList", "Sun");
-				AddListItem("EnviromentPresetList", "Cave");				
+				AddListItem("EnviromentPresetList", "rain.env");
+				AddListItem("EnviromentPresetList", "sun.env");
 			}
 		}
 
