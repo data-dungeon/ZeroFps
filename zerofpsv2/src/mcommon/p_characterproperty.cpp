@@ -14,10 +14,16 @@
 Skill::Skill(const string& strScriptFile, int iOwnerID)
 {
 	m_pkScript = static_cast<ZFScriptSystem*>(g_ZFObjSys.GetObjectPtr("ZFScriptSystem"));
-
+	m_pkZeroFps= static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
+	
 	//create and setup script
 	m_pkScriptFileHandle = new ZFResourceHandle;
-	m_pkScriptFileHandle->SetRes(strScriptFile);
+	
+
+	
+	m_strSkillScript = 	strScriptFile;	
+	m_pkScriptFileHandle->SetRes(string("data/script/objects/game objects/skills/") + strScriptFile);
+	
 	
 	
 	m_iOwnerID = 			iOwnerID;
@@ -36,6 +42,32 @@ Skill::Skill(const string& strScriptFile, int iOwnerID)
 Skill::~Skill()
 {
 	delete m_pkScriptFileHandle;
+
+}
+
+void Skill::Update()
+{
+	if( (m_pkZeroFps->GetEngineTime() < m_fLastUpdate) || m_fLastUpdate == -1)
+	{
+		cout<<"skill time dont match"<<endl;				
+		m_fLastUpdate =m_pkZeroFps->GetEngineTime();
+		return; 
+	}
+
+	//already reloaded
+	if(m_fTimeLeft == 0)
+		return;
+		
+	//decrese timeleft
+	m_fTimeLeft -= m_pkZeroFps->GetEngineTime() - m_fLastUpdate ;			
+	if(m_fTimeLeft < 0)
+		m_fTimeLeft = 0;
+	
+	//update last update time
+	m_fLastUpdate = m_pkZeroFps->GetEngineTime();
+	
+	if(m_fTimeLeft == 0)
+		cout<<"skill reloaded:"<<GetName()<<endl;
 
 }
 
@@ -87,7 +119,7 @@ void Skill::SetLevel(int iLevel)
 
 void Skill::Use(int iTargetID,const Vector3& kPos,const Vector3& kDir)
 {
-	cout<<"using skill "<<m_pkScriptFileHandle->GetRes()<<endl;
+// 	cout<<"using skill "<<m_pkScriptFileHandle->GetRes()<<endl;
 
 	if(!m_pkScriptFileHandle->IsValid())
 	{
@@ -99,6 +131,12 @@ void Skill::Use(int iTargetID,const Vector3& kPos,const Vector3& kDir)
 	if(m_fTimeLeft != 0)
 	{
 		cout<<"skill not reloaded yet"<<endl;
+		return;	
+	}
+	
+	if(m_iLevel < 1)
+	{
+		cout<<"got to have at least level 1 of a skill to use it"<<endl;
 		return;	
 	}
 	
@@ -140,6 +178,7 @@ void Skill::Use(int iTargetID,const Vector3& kPos,const Vector3& kDir)
 	
 	//reset reload timer
 	m_fTimeLeft = m_fReloadTime;
+	m_fLastUpdate = m_pkZeroFps->GetEngineTime();
 }
 
 
@@ -347,10 +386,9 @@ P_CharacterProperty::P_CharacterProperty()
 	m_iSide=PROPERTY_SIDE_SERVER|PROPERTY_SIDE_CLIENT;
 
 	m_bNetwork = 	true;
-	m_iVersion = 	6;
+	m_iVersion = 	7;
 	
 	//initiate stuff
-	m_strSkillDir			=	"data/script/objects/game objects/skills/";
 	m_strBuffDir			=	"data/script/objects/game objects/buffs/";
 	
 	m_kCurrentCharacterStates.reset();
@@ -524,33 +562,13 @@ void P_CharacterProperty::UpdateSkills()
 	float fTime = m_pkZeroFps->GetTicks();
 	
 	//update each seccond
-	if( fTime > m_fSkillTimer + 1.0)
+	if( fTime > m_fSkillTimer + 0.1)
 	{
 		m_fSkillTimer = fTime;
 		
 		for(int i = 0;i<m_kSkills.size();i++)
 		{
-			if( (m_pkZeroFps->GetEngineTime() < m_kSkills[i]->m_fLastUpdate) || m_kSkills[i]->m_fLastUpdate == -1)
-			{
-				cout<<"skill time dont match"<<endl;				
-				m_kSkills[i]->m_fLastUpdate =m_pkZeroFps->GetEngineTime();
-				continue; 
-			}
-		
-			//already reloaded
-			if(m_kSkills[i]->m_fTimeLeft == 0)
-				continue;
-				
-			//decrese timeleft
-			m_kSkills[i]->m_fTimeLeft -= m_pkZeroFps->GetEngineTime() - m_kSkills[i]->m_fLastUpdate ;			
-			if(m_kSkills[i]->m_fTimeLeft < 0)
-				m_kSkills[i]->m_fTimeLeft = 0;
-			
-			//update last update time
-			m_kSkills[i]->m_fLastUpdate = m_pkZeroFps->GetEngineTime();
-			
-			if(m_kSkills[i]->m_fTimeLeft == 0)
-				cout<<"skill reloaded:"<<m_kSkills[i]->GetName()<<endl;
+			m_kSkills[i]->Update();
 		}
 	}
 }
@@ -1076,13 +1094,9 @@ Skill* P_CharacterProperty::GetSkillPointer(const string& strSkillName)
 {
 	static string strSkill;
 	 
-	strSkill = m_strSkillDir + strSkillName;
-
 	for(int i =0;i<m_kSkills.size();i++)
 	{
-		cout<<"skill "<<m_kSkills[i]->GetName()<<endl;
-	
-		if(m_kSkills[i]->GetName() == strSkill)
+		if(m_kSkills[i]->GetName() == strSkillName)
 			return m_kSkills[i];
 	};
 
@@ -1116,11 +1130,6 @@ void P_CharacterProperty::RemoveAllSkills()
 }
 
 bool P_CharacterProperty::AddSkill(const string& strSkillScript,const string& strParentSkill)
-{
-	return AddSkillFullPath(m_strSkillDir+strSkillScript,strParentSkill);
-}
-
-bool P_CharacterProperty::AddSkillFullPath(const string& strSkillScript,const string& strParentSkill)
 {
 	
 	//check if skill already exist
@@ -1211,6 +1220,8 @@ void P_CharacterProperty::Save(ZFIoInterface* pkPackage)
 		pkPackage->Write_Str(m_kSkills[i]->GetName());
 		pkPackage->Write_Str(m_kSkills[i]->GetParent());
 		pkPackage->Write(m_kSkills[i]->GetLevel());
+		
+		pkPackage->Write(m_kSkills[i]->m_fTimeLeft);
 	}
 	
 /*	//save container settings
@@ -1296,10 +1307,10 @@ void P_CharacterProperty::Load(ZFIoInterface* pkPackage,int iVersion)
 			//load skills
 			RemoveAllSkills();
 			
-			int iNrOfSkills;
-			string strSkill;
-			string strParent;
-			int iLevel;
+			int		iNrOfSkills;
+			string	strSkill;
+			string	strParent;
+			int 		iLevel;
 			
 			pkPackage->Read(iNrOfSkills);			
 			for(int i=0;i<iNrOfSkills;i++)
@@ -1308,22 +1319,51 @@ void P_CharacterProperty::Load(ZFIoInterface* pkPackage,int iVersion)
 				pkPackage->Read_Str(strParent);
 				pkPackage->Read(iLevel);
 				
-				AddSkillFullPath(strSkill,strParent);
+				AddSkill(strSkill,strParent);
 				SetSkill(strSkill,iLevel);
 			}
 			
 			break;
 		}			
+		
+		case 7:
+		{
+			pkPackage->Read_Str(m_strName);	
+			pkPackage->Read_Str(m_strOwnedByPlayer);	
+			pkPackage->Read(m_bIsPlayerCharacter); 		
+			pkPackage->Read(m_iFaction); 		
+			pkPackage->Read(m_bWalkSound); 		
+			pkPackage->Read(m_fMarkerSize); 
+			
+			m_kCharacterStats.Load(pkPackage);
+			
+			//load skills
+			RemoveAllSkills();
+			
+			int		iNrOfSkills;
+			string	strSkill;
+			string	strParent;
+			int 		iLevel;
+			float		fTimeLeft;
+			
+			pkPackage->Read(iNrOfSkills);			
+			for(int i=0;i<iNrOfSkills;i++)
+			{
+				pkPackage->Read_Str(strSkill);
+				pkPackage->Read_Str(strParent);
+				pkPackage->Read(iLevel);
+				pkPackage->Read(fTimeLeft);
+				
+				AddSkill(strSkill,strParent);
+				SetSkill(strSkill,iLevel);
+				
+				if(Skill* pkSkill = GetSkillPointer(strSkill))
+					pkSkill->SetTimeLeft(fTimeLeft);
+			}
+			
+			break;
+		}			
 	}
-	
-	
-/*	//load container settings
-	m_pkInventory->Load(pkPackage);
-	m_pkHead->Load(pkPackage);
-	m_pkBody->Load(pkPackage);
-	m_pkLeftHand->Load(pkPackage);
-	m_pkRightHand->Load(pkPackage);
-*/	
 }
 
 void P_CharacterProperty::PackTo( NetPacket* pkNetPacket, int iConnectionID ) 
@@ -1473,9 +1513,10 @@ namespace SI_P_CharacterProperty
 			if(Skill* pkSkill = pkCP->GetSkillPointer(strSkill))
 			{
 				pkSkill->m_strInGameName = strInGameName;
-				pkSkill->m_strSchool = strSchool;
-				pkSkill->m_strIcon = strIcon;
-				pkSkill->m_fReloadTime = float(dReloadTime);
+				pkSkill->m_strSchool = 		strSchool;
+				pkSkill->m_strIcon = 		strIcon;
+				pkSkill->m_fReloadTime = 	float(dReloadTime);
+				//pkSkill->m_fTimeLeft = 		float(dReloadTime);
 				
 				cout<<"skill setup complete"<<endl;
 			}

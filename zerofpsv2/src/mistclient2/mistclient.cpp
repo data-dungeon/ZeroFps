@@ -579,27 +579,27 @@ void MistClient::Input()
 	}
 			
 	// taunts
-	if ( m_pkInputHandle->VKIsDown("taunt1") || m_pkInputHandle->VKIsDown("taunt2")|| 
-		m_pkInputHandle->VKIsDown("taunt3") || m_pkInputHandle->VKIsDown("taunt4") || 
-		m_pkInputHandle->VKIsDown("taunt5") )
-	{					
-		if(!DelayCommand())
-		{
-			int iTauntID = 0;
-			if (m_pkInputHandle->VKIsDown("taunt1"))
-				iTauntID = 1;
-			if (m_pkInputHandle->VKIsDown("taunt2"))
-				iTauntID = 2;
-			if (m_pkInputHandle->VKIsDown("taunt3"))
-				iTauntID = 3;
-			if (m_pkInputHandle->VKIsDown("taunt4"))
-				iTauntID = 4;
-			if (m_pkInputHandle->VKIsDown("taunt5"))
-				iTauntID = 5;
-
-			SendTaunt(iTauntID);
-		}
-	}
+// 	if ( m_pkInputHandle->VKIsDown("taunt1") || m_pkInputHandle->VKIsDown("taunt2")|| 
+// 		m_pkInputHandle->VKIsDown("taunt3") || m_pkInputHandle->VKIsDown("taunt4") || 
+// 		m_pkInputHandle->VKIsDown("taunt5") )
+// 	{					
+// 		if(!DelayCommand())
+// 		{
+// 			int iTauntID = 0;
+// 			if (m_pkInputHandle->VKIsDown("taunt1"))
+// 				iTauntID = 1;
+// 			if (m_pkInputHandle->VKIsDown("taunt2"))
+// 				iTauntID = 2;
+// 			if (m_pkInputHandle->VKIsDown("taunt3"))
+// 				iTauntID = 3;
+// 			if (m_pkInputHandle->VKIsDown("taunt4"))
+// 				iTauntID = 4;
+// 			if (m_pkInputHandle->VKIsDown("taunt5"))
+// 				iTauntID = 5;
+// 
+// 			SendTaunt(iTauntID);
+// 		}
+// 	}
 
 	//update picked object	
 	if(Entity* pkPickedEnt = GetTargetObject())	
@@ -622,7 +622,7 @@ void MistClient::Input()
 	}
 
 	//fireball test
-	if(m_pkInputHandle->Pressed(KEY_G))
+	if(m_pkInputHandle->Pressed(KEY_1))
 	{
 		if(!DelayCommand() )
 		{			
@@ -630,6 +630,13 @@ void MistClient::Input()
 				SendUseSkill("skill-fireball.lua",m_iTargetID,Vector3(1,2,3),Vector3(10,20,30));		
 		}	
 	}
+	if(m_pkInputHandle->Pressed(KEY_2))
+	{
+		if(!DelayCommand() )
+		{			
+			SendUseSkill("skill-speed.lua",m_iTargetID,Vector3(1,2,3),Vector3(10,20,30));		
+		}	
+	}	
 	
 	//perform the first action in the action list or pickup
 	if( m_pkInputHandle->VKIsDown("use") )

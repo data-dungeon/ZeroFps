@@ -17,9 +17,13 @@ class MCOMMON_API Skill
 	private:
 		ZFScriptSystem*	m_pkScript;		
 		ZFResourceHandle*	m_pkScriptFileHandle;	
+		ZeroFps*				m_pkZeroFps;
+		
+		
+		string	m_strSkillScript;
 		
 		//owner character
-		int	m_iOwnerID;				
+		int		m_iOwnerID;				
 		
 		//skill data
 		int		m_iLevel;
@@ -40,13 +44,17 @@ class MCOMMON_API Skill
 		Skill(const string& strScriptFile, int iOwnerID);
 		~Skill();
 		
-		
-		void SetLevel(int iLevel);
+		void Update();
 		void Use(int iTargetID,const Vector3& kPos,const Vector3& kDir);
 		
-		string GetName()		{	return m_pkScriptFileHandle->GetRes();	};
+		//sets
+		void SetLevel(int iLevel);
+		void SetTimeLeft(float fTime)	{	m_fTimeLeft = fTime;				}
+				
+		//gets
+		string GetName()		{	return m_strSkillScript;					};
 		int	 GetLevel()		{	return m_iLevel;								};
-		string GetParent()	{	return m_strParentSkill;					};
+		string GetParent()	{	return m_strParentSkill;					};		
 };
 
 
@@ -101,7 +109,6 @@ class MCOMMON_API P_CharacterProperty: public Property
 		Application*	m_pkApp;
 		
 		//dirs
-		string	m_strSkillDir;
 		string	m_strBuffDir;
 		
 		
@@ -208,7 +215,6 @@ class MCOMMON_API P_CharacterProperty: public Property
 		
 		//skills
 		bool AddSkill(const string& strSkillScript,const string& strParentSkill);
-		bool AddSkillFullPath(const string& strSkillScript,const string& strParentSkill);
 		void ChangeSkill(const string& strSkillScript,int iValue);
 		void SetSkill(const string& strSkillScript,int iLevel);
 		Skill* GetSkillPointer(const string& strSkillName);
