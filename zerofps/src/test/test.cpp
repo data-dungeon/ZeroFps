@@ -22,7 +22,7 @@ void Test::OnIdle(void) {
 	input();
 	pkRender->DrawHM(test);		
 	
-	
+	cout<<pkFps->m_iFps<<endl;
 	
 //	for(int i=2;i<60;i++)
 //		pkRender->Pyra(sin(pkFps->GetTicks()/1000.0*i/2)*2,cos(pkFps->GetTicks()/1000.0*i/2)*2,-i/2);
@@ -49,6 +49,11 @@ void Test::input() {
 		pkFps->CamPos().x+=cos((pkFps->CamRot().y-90-180)/degtorad)*pkFps->GetFrameTime()*0.01;			
 		pkFps->CamPos().z+=sin((pkFps->CamRot().y-90-180)/degtorad)*pkFps->GetFrameTime()*0.01;
 	}		
+
+	if(pkInput->Pressed(HOME))
+		pkFps->CamPos().y+=2*pkFps->GetFrameTime()*0.01;			
+	if(pkInput->Pressed(END))
+		pkFps->CamPos().y-=2*pkFps->GetFrameTime()*0.01;
 
 
 	//Get mouse x,y		

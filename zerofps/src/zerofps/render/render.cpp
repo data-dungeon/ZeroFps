@@ -185,42 +185,31 @@ void Render::DrawHM(HeightMap *kmap) {
 	Vector3 p2;
 	Vector3 p3;
 	Vector3 p4;
-	glTranslatef(0,0,0);
+//	glTranslatef(0,0,0);
 	
-	SetColor(Vector3(255,255,255));
-	glScalef(0.1,.1,.1);
+//	SetColor(Vector3(255,255,255));
+	glScalef(0.5,.5,.5);
 	
+	m_pkTexMan->BindTexture("file:../data/textures/grass.bmp");
 	
-	glPolygonMode(GL_FRONT_AND_BACK,GL_LINE);	
 	for(int z=0;z<HM_SIZE-1;z++){
 		for(int x=0;x<HM_SIZE-1;x++) {
 			p1=Vector3(x,kmap->verts[z*HM_SIZE+x].height,-z);
 			p2=Vector3(x+1,kmap->verts[z*HM_SIZE+x+1].height,-z);
 			p3=Vector3(x,kmap->verts[(z+1)*HM_SIZE+x].height,-z-1);
 			p4=Vector3(x+1,kmap->verts[(z+1)*HM_SIZE+x+1].height,-z-1);
-			
-//			Line(p1,p2);
-//			Line(p1,p3);
-			
-
+					
 	    glBegin(GL_QUADS);			
-				glColor4f(1.0,1.0,1.0,1.0);  	  
-  		  glNormal3f(0,1,0);
-    		glTexCoord2f(0.0,0.0);glVertex3f(p1.x,p1.y,p1.z);		 
-	   		glTexCoord2f(1.0,0.0);glVertex3f(p2.x,p2.y,p2.z);		
- 			  glTexCoord2f(1.0,1.0);glVertex3f(p4.x,p4.y,p4.z);    
-	  		glTexCoord2f(0.0,1.0);glVertex3f(p3.x,p3.y,p3.z);    
-			glEnd();	
-
-//			Pyra(x,kmap->verts[z*HM_SIZE+x].height,z);
-//			Line(p1,p2);
-//			Line(Vector3(x,0,z),Vector3(x+0.1,0,z));
-			
-			
+//				glColor4f(1.0,1.0,1.0,1.0);  	  
+//  		  glNormal3f(0,1,0);
+    		glTexCoord2f(0.0,0.0);glVertex3fv((float*)&p1);		 
+	   		glTexCoord2f(1.0,0.0);glVertex3fv((float*)&p2);		
+ 			  glTexCoord2f(1.0,1.0);glVertex3fv((float*)&p4);    
+	  		glTexCoord2f(0.0,1.0);glVertex3fv((float*)&p3);    
+			glEnd();				
 		}		
 	}	
 	glPopMatrix();
-	glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
 }
 
 
