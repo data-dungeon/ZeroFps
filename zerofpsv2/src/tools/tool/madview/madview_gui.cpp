@@ -174,7 +174,9 @@ void MadView::ChangeMad(string strName)
 	}
 
 	pkMad->SetBase(m_strMadFile.c_str());
-	pkMad->SetScale(1);
+	
+	//sätter skalan så att modellerna alltid är lika stora på skärmen
+	pkMad->SetScale(1.0 / (pkMad->GetRadius()*0.2) );
 
 	char szText[100];
 

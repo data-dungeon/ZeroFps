@@ -206,7 +206,7 @@ void MadView::CreateCamera()
 	m_pkCamProp->SetCamera(m_pkCamera);
 	m_pkCameraObject->SetSave(false);	
 
-	m_pkCameraObject->SetWorldPosV(Vector3(0,-2,-2)); 
+	m_pkCameraObject->SetWorldPosV(Vector3(0,-2	,-10)); 
 }
 
 void MadView::CreateViewObject()
@@ -215,7 +215,7 @@ void MadView::CreateViewObject()
 	m_pkViewObject->SetParent( m_pkEntityManager->GetWorldEntity() ); 
 	ChangeMad(m_strMadFile.c_str());
 	m_pkViewObject->AddProperty("P_LightUpdate");
-	m_pkViewObject->SetWorldPosV(Vector3(0,0,5));
+	m_pkViewObject->SetWorldPosV(Vector3(0,0,0));
 }
 
 void MadView::RunCommand(int cmdid, const CmdArgument* kCommand)
