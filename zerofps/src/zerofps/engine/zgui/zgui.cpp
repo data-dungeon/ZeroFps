@@ -1324,6 +1324,17 @@ bool ZGui::LoadDialog(char* szResourceFile, char* szWndResName, callback cb)
 					new ZGuiSkin(),new ZGuiSkin(),new ZGuiSkin(),new ZGuiSkin());
 				((ZGuiCombobox*)pkNewWnd)->SetScrollbarSkin(
 					new ZGuiSkin(),new ZGuiSkin(),new ZGuiSkin());
+				
+				int iNumVisRows;
+				iNumVisRows = atoi(pkINI->GetValue(vkSections[i].c_str(),
+					"num_visible_rows"));
+				((ZGuiCombobox*)pkNewWnd)->SetNumVisibleRows(iNumVisRows); 
+
+				int iIsMenu;
+				iIsMenu = atoi(pkINI->GetValue(vkSections[i].c_str(),
+					"is_menu"));
+				((ZGuiCombobox*)pkNewWnd)->IsMenu(iIsMenu); 
+
 				break;
 			default:
 				continue;
@@ -1372,6 +1383,9 @@ bool ZGui::SetSkins(vector<tSkinInf>& kAllSkinsTempArray, ZGuiWnd* pkWnd)
 			if( kAllSkinsTempArray[j].first.first == strWndName &&
 				kAllSkinsTempArray[j].first.second == strDesc )
 			{
+				if(pkSkin == NULL)
+					pkSkin = new ZGuiSkin();
+
 				*pkSkin = *kAllSkinsTempArray[j].second;
 				break;
 			}

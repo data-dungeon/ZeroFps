@@ -108,8 +108,8 @@ void ZGuiCombobox::SetScrollbarSkin(ZGuiSkin* pkSkinScrollArea,
 //
 void ZGuiCombobox::SetSkin(ZGuiSkin* pkSkin)
 {
-	m_pkLabel->SetSkin(pkSkin);
-	m_pkListbox->SetSkin(pkSkin);
+	//m_pkLabel->SetSkin(pkSkin);
+	//m_pkListbox->SetSkin(pkSkin);
 	m_pkSkin = pkSkin;
 }
 

@@ -313,7 +313,7 @@ bd_g=128
 bd_b=128
 bd_size=1
 tile_skin=0
-transparent=0
+transparent=1
 
 [Skin16]
 window_name=PropertyCB
@@ -348,8 +348,8 @@ horz_bd_a_tex=(null)
 vert_bd_a_tex=(null)
 corner_bd_a_tex=(null)
 bk_r=214
-bk_g=211
-bk_b=206
+bk_g=0
+bk_b=0
 bd_r=128
 bd_g=128
 bd_b=128
@@ -1395,7 +1395,6 @@ parent_name=NULL
 text=(null)
 visible=1
 enabled=1
-<<<<<<< zgresource_rc.txt
 area_left=313
 area_top=298
 area_right=711
@@ -1404,16 +1403,6 @@ move_area_left=0
 move_area_top=0
 move_area_right=1024
 move_area_bottom=768
-=======
-area_left=313
-area_top=298
-area_right=711
-area_bottom=591
-move_area_left=313
-move_area_top=298
-move_area_right=711
-move_area_bottom=591
->>>>>>> 1.4
 tab_order=0
 mainwnd_id=68
 

@@ -413,9 +413,9 @@ void ZGuiListbox::Resize(int Width, int Height)
 
 	m_kItemArea = rc;
 
-	if(m_pkScrollbarVertical)
+/*	if(m_pkScrollbarVertical)
 		m_pkScrollbarVertical->Resize(m_iScrollbarWidth, 
-			m_kItemArea.Height()-m_unItemHeight);
+			m_kItemArea.Height()-m_unItemHeight);*/
 
 	UpdateList();
 }

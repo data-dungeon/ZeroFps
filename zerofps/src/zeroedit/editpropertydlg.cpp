@@ -61,7 +61,20 @@ ZGuiWnd* EditPropertyDlg::Create(int x, int y, int w, int h)
 
 	m_pkZGui->LoadDialog("../src/zeroedit/gui_resource_files/zgresource_rc.txt", 
 		"PropertyDlg", PROPERTYPROC);
-	return m_pkGui->Get("PropertyDlg");
+
+	// Initialize key commands to update values by pushing return while
+	// textbox have focus and closing window by pushing Return or Escape,
+	ZGuiWnd* pkDialog = m_pkGui->Get("PropertyDlg");
+	ZGuiWnd* pkPropOKBn = m_pkGui->Get("ObjectPropOK");
+	ZGuiWnd* pkPropCancelBn = m_pkGui->Get("ObjectPropertiesCancel");
+	ZGuiWnd* pkSetNewValueBN = m_pkGui->Get("ChangeValueOKBn");
+	ZGuiWnd* pkPropValSetEB = m_pkGui->Get("PropertyValueSetEB");
+
+	m_pkZGui->AddKeyCommand(KEY_RETURN, pkDialog, pkPropOKBn);
+	m_pkZGui->AddKeyCommand(KEY_ESCAPE, pkDialog, pkPropCancelBn);
+	m_pkZGui->AddKeyCommand(KEY_RETURN, pkPropValSetEB, pkSetNewValueBN); 
+
+	return pkDialog;
 
 /*
 	ZGuiWnd* pkMainWindow = new ZGuiWnd(Rect(x,y,x+w,y+h),
@@ -288,7 +301,7 @@ bool EditPropertyDlg::OnCloseEditProperty(bool bSave)
 	ZGuiWnd* pkYPosEB = m_pkGui->Get("ObjectPosYEB");
 	ZGuiWnd* pkZPosEB = m_pkGui->Get("ObjectPosZEB");
 
-	if(pkNameEB)
+	if(bSave)
 	{
 		char* strName = pkNameEB->GetText();
 		char* strXPos = pkXPosEB->GetText();
@@ -371,11 +384,14 @@ bool EditPropertyDlg::OnCloseEditProperty(bool bSave)
 			m_pkCurrentChild->GetObjectType() = OBJECT_TYPE_DECORATION;
 	}
 
-	// Send a message to the main winproc...
-	int* piParams = new int[1];
-	piParams[0] = /*ID_PROPERTY_SET_NEW_VALUE_BN*/ ChangeValueOKBn; // Listbox ID
-	DlgProc(m_pkWindow, ZGM_COMMAND, 1, piParams);
-	delete[] piParams;
+	if(bSave)
+	{
+		// Send a message to the main winproc...
+		int* piParams = new int[1];
+		piParams[0] = /*ID_PROPERTY_SET_NEW_VALUE_BN*/ ChangeValueOKBn; // Listbox ID
+		DlgProc(m_pkWindow, ZGM_COMMAND, 1, piParams);
+		delete[] piParams;
+	}
 
 	m_pkGui->CaptureInput(false);
 
