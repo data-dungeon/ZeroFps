@@ -205,13 +205,12 @@ void Tcs::Update(float fAlphaTime)
 
 	
 	//check for resting bodys
-// 	static float fLastRestFind = 0;	
-// 	if(m_pkZeroFps->GetTicks() - fLastRestFind > m_fSleepTime)
-// 	{
-// 		fLastRestFind = m_pkZeroFps->GetTicks();
-// 		FindRestingBodys();
-// 	}
-	FindRestingBodys();
+ 	static float fLastRestFind = 0;	
+ 	if(m_pkZeroFps->GetTicks() - fLastRestFind > 0.1)
+ 	{
+ 		fLastRestFind = m_pkZeroFps->GetTicks();
+ 		FindRestingBodys();
+ 	}
 		
 	//synd all entitys to bodys
 	SyncEntitys();
@@ -508,8 +507,9 @@ void Tcs::HandleCollission(Tcs_collission* pkCol,bool bNoBounce,bool bNoAngular)
 
 void Tcs::FindRestingBodys()
 {	
-	static float fRestMaxDist = 0.05;
+	static float fRestMaxDist = 0.2;
 
+	//update move distance
 	for(int i = 0;i<m_kBodys.size();i++)
 	{
 		if(m_kBodys[i]->m_bStatic ||  m_kBodys[i]->m_bSleeping)
@@ -519,18 +519,21 @@ void Tcs::FindRestingBodys()
 		m_kBodys[i]->m_fMoveDistance += m_kBodys[i]->m_kNewPos.DistanceTo(m_kBodys[i]->m_kLastPos);
 		m_kBodys[i]->m_kLastPos = m_kBodys[i]->m_kNewPos;
 			
-		
-		static float fLastRestFind = 0;	
-		if(m_pkZeroFps->GetTicks() - fLastRestFind > m_fSleepTime)
+	}
+	
+	//check for resting bodys
+	static float fLastRestFind = 0;	
+	if(m_pkZeroFps->GetTicks() - fLastRestFind > m_fSleepTime)
+	{
+		fLastRestFind = m_pkZeroFps->GetTicks();
+	
+		for(int i = 0;i<m_kBodys.size();i++)
 		{
-			fLastRestFind = m_pkZeroFps->GetTicks();
 			
-			
-			//check if object shuld sleep
+			//check if body has moved less then fRestMaxDist since last check
 			if(m_kBodys[i]->m_fMoveDistance <= fRestMaxDist)
 			{			
 			
-				m_kBodys[i]->m_fMoveDistance = 0;
 				m_kBodys[i]->Sleep();
 			
 				if(m_kBodys[i]->m_bDisableOnSleep)
@@ -538,10 +541,15 @@ void Tcs::FindRestingBodys()
 					m_kBodys[i]->Disable();
 					m_kBodys[i]->GetEntity()->DeleteProperty("P_Tcs");;
 				}
-			
+				
 			}	
+			
+			//clear move distance
+			m_kBodys[i]->m_fMoveDistance = 0;			
+			
 		}
-		
+	}
+	
 				
 		
 			
@@ -561,7 +569,7 @@ void Tcs::FindRestingBodys()
 		//update last pos			
 		m_kBodys[i]->m_kLastPos = m_kBodys[i]->m_kNewPos;*/
 		
-	}
+// 	}
 }
 
 
