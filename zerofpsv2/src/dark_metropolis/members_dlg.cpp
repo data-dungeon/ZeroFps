@@ -375,10 +375,8 @@ void CMembersDlg::OnClick(int x, int y, bool bMouseDown, bool bLeftButton,
 			CONTAINER_INFO kContainer;
 			if( GetContainer(x, y, kContainer, agent_obj_id) )
 			{
-				x = m_pkMoveInfo->m_pkMoveButton->GetScreenRect().Left + 
-					m_pkMoveInfo->m_pkMoveButton->GetScreenRect().Width()/4;
-				y = m_pkMoveInfo->m_pkMoveButton->GetScreenRect().Top + 
-					m_pkMoveInfo->m_pkMoveButton->GetScreenRect().Height()/4;
+				x = m_pkMoveInfo->m_pkMoveButton->GetScreenRect().Left;
+				y = m_pkMoveInfo->m_pkMoveButton->GetScreenRect().Top;
 
 				if(GetItemPosFromCursor(x,y, dx,dy, sx,sy))
 				{
@@ -783,7 +781,7 @@ void CMembersDlg::UpdateInventory(Entity* pkCharacterObject)
 
 				string strIcon = "data/textures/gui/dm/items/" + kItemList[i].m_strIcon;
 
-				SetButtonIcon(pkButton, strIcon, true);
+				SetButtonIcon(pkButton, strIcon, false);
 				pkButton->m_bUseAlhpaTest = false;
 				pkButton->Show();
 				pkButton->Disable();
