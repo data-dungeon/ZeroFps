@@ -710,8 +710,8 @@ void Render::DrawBillboard(const Matrix4& kModelMatrix,const Vector3& kPos,float
 	Vector3 c;	
 	Vector3 d;	
 	
-	glPushMatrix();
-	glPushAttrib(GL_LIGHTING_BIT|GL_ENABLE_BIT);
+// 	glPushMatrix();
+// 	glPushAttrib(GL_LIGHTING_BIT|GL_ENABLE_BIT);
 	glDisable(GL_CULL_FACE);	
 	glDisable(GL_LIGHTING);
 	glPolygonMode(GL_FRONT, GL_FILL);
@@ -767,8 +767,8 @@ void Render::DrawBillboard(const Matrix4& kModelMatrix,const Vector3& kPos,float
 	
 	glDisable(GL_ALPHA_TEST);
 
-	glPopMatrix();
-	glPopAttrib();
+// 	glPopMatrix();
+// 	glPopAttrib();
 	glEnable(GL_CULL_FACE);	
 	
 	m_pkZShaderSystem->Pop();

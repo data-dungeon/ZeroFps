@@ -44,6 +44,8 @@ Camera::Camera(Vector3 kPos,Vector3 kRot,float fFov,float fAspect,float fNear,fl
 	m_fFogFar		=		100;
 	m_bFogEnabled	=		false;
 	
+	m_iForceLighing=		-1;
+	
 	m_bDebugGraphs	=		true;
 	m_bShadowMap	=		true;
 	m_iCurrentRenderMode=RENDER_NONE;
@@ -152,7 +154,8 @@ void Camera::MakeShadowTexture(const Vector3& kLightPos,const Vector3& kCenter,u
 	m_pkZShaderSystem->ReloadMaterial();		
 	
 	
- 	m_pkLight->SetLighting(false);
+  	m_pkLight->SetLighting(false);
+	m_pkZShaderSystem->ForceLighting(0);
  	glShadeModel(GL_FLAT);
 	
 	//update all render propertys that shuld cast a shadow
@@ -167,7 +170,8 @@ void Camera::MakeShadowTexture(const Vector3& kLightPos,const Vector3& kCenter,u
 	
 	glDepthRange (0.0, 1.0);
 	
- 	m_pkLight->SetLighting(true);
+  	m_pkLight->SetLighting(true);
+	m_pkZShaderSystem->ForceLighting(-1);
  	glShadeModel(GL_SMOOTH);
 	m_pkZShaderSystem->ForceColorMask(-1);
 	m_pkZShaderSystem->ForceCullFace(-1);
@@ -220,7 +224,9 @@ void Camera::InitView()//int iWidth,int iHeight)
 	m_pkZShaderSystem->SetClearColor(m_kClearColor);
 	m_pkZShaderSystem->SetFog(m_kFogColor,m_fFogNear,m_fFogFar,m_bFogEnabled);
 
-
+	//lighing
+	m_pkZShaderSystem->ForceLighting(m_iForceLighing);
+	
 	//clear viewport
 	if(m_bClearViewPort)
 		ClearViewPort(true);	

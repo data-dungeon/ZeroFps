@@ -73,12 +73,12 @@ void Light::SetLighting(bool bOn)
 {
 	if(bOn)
 	{
-		glEnable(GL_LIGHTING);		
+// 		glEnable(GL_LIGHTING);		
 		m_bEnabled = true;
 	}
 	else
 	{
-		glDisable(GL_LIGHTING);
+// 		glDisable(GL_LIGHTING);
 		m_bEnabled = false;
 	}
 }
@@ -135,6 +135,14 @@ bool comp(LightSource* x, LightSource* y)
 
 void Light::Update(LightProfile* pkLightProfile,Vector3 kRefPos)
 {
+	//disable all lights
+	TurnOffAll();
+
+	//fast return if no lighting is enabled
+	if(!m_bEnabled)
+		return;
+
+
 	//static float fTimeDiff	= 1;
 	bool bUpdate 				= false;
 	float fCurrentTime		= m_pkZeroFps->GetTicks();
@@ -210,7 +218,6 @@ void Light::Update(LightProfile* pkLightProfile,Vector3 kRefPos)
 	
 	
 	//activate lights in light list
-	TurnOffAll();
 	for(int i = 0;i<8;i++)
 	{		
 		if(pkLightProfile->m_aiLights[i] != -1)

@@ -915,6 +915,20 @@ void MistServer::OnNetworkMessage(NetPacket *PkNetMessage)
 			m_pkZeroFps->m_kClient[PkNetMessage->m_iClientID].m_strCharacter = strChar;
 			SpawnPlayer( PkNetMessage->m_iClientID );
 			m_pkZeroFps->m_kClient[PkNetMessage->m_iClientID].m_bLogin = false;
+			
+			
+			//send character id to client
+			if(PlayerData* pkData = m_pkPlayerDB->GetPlayerData(PkNetMessage->m_iClientID))
+			{
+				NetPacket kNp;
+				
+				kNp.Clear();
+				kNp.Write((char) MLNM_SC_CHARACTERID);
+				kNp.Write(pkData->m_iCharacterID);
+				kNp.TargetSetClient(PkNetMessage->m_iClientID);
+				SendAppMessage(&kNp);
+			}			
+			
 			break;
 		}
 

@@ -399,7 +399,7 @@ void P_PfMesh::DrawNaviMesh()
 
 	glPushMatrix();
 
-	glPushAttrib(GL_DEPTH_BUFFER_BIT );
+	glPushAttrib(GL_DEPTH_BUFFER_BIT |GL_LIGHTING_BIT);
 	glDisable(GL_LIGHTING );
 	glDisable(GL_TEXTURE_2D);
 	glDepthFunc(GL_LEQUAL);
@@ -453,7 +453,6 @@ void P_PfMesh::DrawNaviMesh()
 		}
 
 	glEnable(GL_TEXTURE_2D);
-	glEnable(GL_LIGHTING);
 	glPopAttrib();
 	glPopMatrix();
 }

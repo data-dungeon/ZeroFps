@@ -348,14 +348,14 @@ void MistClient::OnIdle()
 		}
 	}
 
-	if(m_iCharacterID == -1) 
-	{
-		NetPacket kNp;				
-		kNp.Clear();
-		kNp.Write((char) MLNM_CS_REQ_CHARACTERID);
-		kNp.TargetSetClient(0);
-		SendAppMessage(&kNp);	
-	}
+// 	if(m_iCharacterID == -1) 
+// 	{
+// 		NetPacket kNp;				
+// 		kNp.Clear();
+// 		kNp.Write((char) MLNM_CS_REQ_CHARACTERID);
+// 		kNp.TargetSetClient(0);
+// 		SendAppMessage(&kNp);	
+// 	}
 }
 
 void MistClient::OnHud(void) 
@@ -958,11 +958,11 @@ void MistClient::OnClientConnected()
 	m_pkConsole->Printf("Successfully connected to server");
 
 	//request character entityID
-	NetPacket kNp;				
-	kNp.Clear();
-	kNp.Write((char) MLNM_CS_REQ_CHARACTERID);
-	kNp.TargetSetClient(0);
-	SendAppMessage(&kNp);	
+// 	NetPacket kNp;				
+// 	kNp.Clear();
+// 	kNp.Write((char) MLNM_CS_REQ_CHARACTERID);
+// 	kNp.TargetSetClient(0);
+// 	SendAppMessage(&kNp);	
 
 	//load ingame gui	
 	//LoadInGameGui();

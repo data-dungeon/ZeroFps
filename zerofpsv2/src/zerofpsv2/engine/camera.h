@@ -78,6 +78,8 @@ class ENGINE_API Camera : public I_Camera
 		float		m_fFogFar;
 		bool		m_bFogEnabled;
 		
+		int		m_iForceLighing;
+		
 		//viewport
 		Vector3	m_kViewPortCorner;
 		Vector3	m_kViewPortSize;
@@ -167,6 +169,9 @@ class ENGINE_API Camera : public I_Camera
 		
 		void		SetFog(const Vector4& kColor,float fStart,float fStop,bool bEnabled);
 		void		SetClearColor(const Vector4& kColor)	{	m_kClearColor = kColor;	}
+		
+		void		SetForceLighting(int iForce)				{	m_iForceLighing = iForce;}
+		int		GetForceLighting()							{	return m_iForceLighing;}
 		
 		void 		SetRotM(const Matrix4& kRotM);
 		void 		RotateV(const Vector3& kRot);

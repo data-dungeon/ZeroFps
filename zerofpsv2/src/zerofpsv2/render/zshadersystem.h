@@ -338,6 +338,7 @@ class RENDER_API ZShaderSystem : public ZFSubSystem
 		void ForceCullFace(int iCull)							{	m_iForceCullFace = iCull;				}
 		void ForceColorMask(int iMask)						{	m_iForceColorMask = iMask;				}
 		void ForceAlphaTest(int iAlphaTest)					{	m_iForceAlphaTest = iAlphaTest;		}		
+		void ForceLighting(int iLight)						{	m_iForceLighting = iLight;				}
 		
 		//information
 		bool HaveExtension(const string& strExt);
