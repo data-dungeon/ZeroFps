@@ -21,7 +21,7 @@ ZeroFps::ZeroFps(void)
 	m_pkFrustum					= new Frustum;	
 	m_pkLight					= new Light();	
 	m_pkRender					= new Render();
-	m_pkMechRenderer			= new MechRenderer();
+//	m_pkMechRenderer			= new MechRenderer();
 	m_pkConsole					= new Console();
 	m_pkCmd						= new CmdSystem;
 	m_pkAudioMan				= new AudioManager(this);

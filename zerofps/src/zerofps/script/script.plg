@@ -3,51 +3,44 @@
 <pre>
 <h1>Build Log</h1>
 <h3>
---------------------Configuration: script - Win32 Debug--------------------
+--------------------Configuration: script - Win32 Release--------------------
 </h3>
 <h3>Command Lines</h3>
-Creating temporary file "C:\DOCUME~1\jima02\LOCALS~1\Temp\RSP319.tmp" with contents
+Creating temporary file "C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\RSP3C1.tmp" with contents
 [
-/nologo /MDd /W3 /Gm /GR /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "SCRIPT_EXPORTS" /FR"Debug/" /Fp"Debug/script.pch" /YX /Fo"Debug/" /Fd"Debug/" /FD /GZ /c 
-"C:\Projects\zerofps\src\zerofps\script\zfscript.cpp"
+/nologo /MD /W3 /GR /GX /O2 /Ob2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "SCRIPT_EXPORTS" /Fo"Release/" /Fd"Release/" /FD /c 
+"C:\ZeroFPS\zerofps\src\zerofps\script\zfscript.cpp"
 ]
-Creating command line "cl.exe @C:\DOCUME~1\jima02\LOCALS~1\Temp\RSP319.tmp" 
-Creating temporary file "C:\DOCUME~1\jima02\LOCALS~1\Temp\RSP31A.tmp" with contents
+Creating command line "cl.exe @C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\RSP3C1.tmp" 
+Creating temporary file "C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\RSP3C2.tmp" with contents
 [
-tolua.lib lua.lib lualib.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /profile /debug /machine:I386 /out:"..\..\..\bin\script.dll" /implib:"Debug/script.lib" /libpath:"..\..\..\bin" 
-.\Debug\zfscript.obj
+tolua.lib lua.lib lualib.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /incremental:no /pdb:"Release/script.pdb" /machine:I386 /out:"..\..\..\bin\script.dll" /implib:"Release/script.lib" /libpath:"..\..\..\bin" 
+.\Release\zfscript.obj
 ]
-Creating command line "link.exe @C:\DOCUME~1\jima02\LOCALS~1\Temp\RSP31A.tmp"
+Creating command line "link.exe @C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\RSP3C2.tmp"
 <h3>Output Window</h3>
 Compiling...
 zfscript.cpp
-c:\projects\zerofps\src\zerofps\script\zfscript.h(76) : warning C4251: 'm_kExposedClasses' : class '_STL::set<class _STL::basic_string<char,class _STL::char_traits<char>,class _STL::allocator<char> >,struct _STL::less<class _STL::basic_string<char,class _STL::char_traits<char>,class _STL::allocator<char> > >,class _STL::allocator<class _STL::basic_string<char,class _STL::char_traits<char>,class _STL::allocator<char> > > >' needs to have dll-interface to be used by clients of class 'ZFScript'
-c:\projects\zerofps\src\zerofps\script\zfscript.h(77) : warning C4251: 'm_kClassMap' : class '_STL::map<enum ScripObjectType,class _STL::basic_string<char,class _STL::char_traits<char>,class _STL::allocator<char> >,struct _STL::less<enum ScripObjectType>,class _STL::allocator<struct _STL::pair<enum ScripObjectType const ,class _STL::basic_string<char,class _STL::char_traits<char>,class _STL::allocator<char> > > > >' needs to have dll-interface to be used by clients of class 'ZFScript'
+C:\ZeroFPS\zerofps\src\zerofps\script\zfscript.h(76) : warning C4251: 'm_kExposedClasses' : class '_STL::set<class _STL::basic_string<char,class _STL::char_traits<char>,class _STL::allocator<char> >,struct _STL::less<class _STL::basic_string<char,class _STL::char_traits<char>,class _STL::allocator<char> > >,class _STL::allocator<class _STL::basic_string<char,class _STL::char_traits<char>,class _STL::allocator<char> > > >' needs to have dll-interface to be used by clients of class 'ZFScript'
+C:\ZeroFPS\zerofps\src\zerofps\script\zfscript.h(77) : warning C4251: 'm_kClassMap' : class '_STL::map<enum ScripObjectType,class _STL::basic_string<char,class _STL::char_traits<char>,class _STL::allocator<char> >,struct _STL::less<enum ScripObjectType>,class _STL::allocator<struct _STL::pair<enum ScripObjectType const ,class _STL::basic_string<char,class _STL::char_traits<char>,class _STL::allocator<char> > > > >' needs to have dll-interface to be used by clients of class 'ZFScript'
 Linking...
-   Creating library Debug/script.lib and object Debug/script.exp
+LINK : warning LNK4075: ignoring /EDITANDCONTINUE due to /INCREMENTAL:NO specification
+   Creating library Release/script.lib and object Release/script.exp
 LINK : warning LNK4098: defaultlib "LIBCMTD" conflicts with use of other libs; use /NODEFAULTLIB:library
-LINK : warning LNK4098: defaultlib "LIBC" conflicts with use of other libs; use /NODEFAULTLIB:library
-tolua.lib(tolua_gp.obj) : warning LNK4099: PDB "vc60.pdb" was not found with "C:\PROGRAM FILES\CODETOOLS\TOLUA\LIBS\tolua.lib" or at "C:\Projects\zerofps\bin\vc60.pdb"; linking object as if no debug info
-tolua.lib(tolua_eh.obj) : warning LNK4099: PDB "vc60.pdb" was not found with "C:\PROGRAM FILES\CODETOOLS\TOLUA\LIBS\tolua.lib" or at "C:\Projects\zerofps\bin\vc60.pdb"; linking object as if no debug info
-tolua.lib(tolua_rg.obj) : warning LNK4099: PDB "vc60.pdb" was not found with "C:\PROGRAM FILES\CODETOOLS\TOLUA\LIBS\tolua.lib" or at "C:\Projects\zerofps\bin\vc60.pdb"; linking object as if no debug info
-tolua.lib(tolua_tt.obj) : warning LNK4099: PDB "vc60.pdb" was not found with "C:\PROGRAM FILES\CODETOOLS\TOLUA\LIBS\tolua.lib" or at "C:\Projects\zerofps\bin\vc60.pdb"; linking object as if no debug info
-tolua.lib(tolua_tm.obj) : warning LNK4099: PDB "vc60.pdb" was not found with "C:\PROGRAM FILES\CODETOOLS\TOLUA\LIBS\tolua.lib" or at "C:\Projects\zerofps\bin\vc60.pdb"; linking object as if no debug info
-tolua.lib(tolua_bd.obj) : warning LNK4099: PDB "vc60.pdb" was not found with "C:\PROGRAM FILES\CODETOOLS\TOLUA\LIBS\tolua.lib" or at "C:\Projects\zerofps\bin\vc60.pdb"; linking object as if no debug info
-tolua.lib(tolua_lb.obj) : warning LNK4099: PDB "vc60.pdb" was not found with "C:\PROGRAM FILES\CODETOOLS\TOLUA\LIBS\tolua.lib" or at "C:\Projects\zerofps\bin\vc60.pdb"; linking object as if no debug info
-Creating temporary file "C:\DOCUME~1\jima02\LOCALS~1\Temp\RSP31E.bat" with contents
+Creating temporary file "C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\RSP3C6.bat" with contents
 [
 @echo off
-copy  .\debug\*.lib ..\..\..\bin
+copy  .\release\*.lib ..\..\..\bin
 ]
-Creating command line "C:\DOCUME~1\jima02\LOCALS~1\Temp\RSP31E.bat"
+Creating command line "C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\RSP3C6.bat"
 
-.\debug\script.lib
+.\release\script.lib
         1 file(s) copied.
 
 
 
 <h3>Results</h3>
-script.dll - 0 error(s), 11 warning(s)
+script.dll - 0 error(s), 4 warning(s)
 </pre>
 </body>
 </html>

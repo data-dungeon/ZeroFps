@@ -1180,7 +1180,7 @@ void Render::DrawPatch_Vim1(HeightMap* kMap,Vector3 CamPos,int xp,int zp,int iSi
 
 void Render::DrawHM2(Heightmap2* pkMap,Vector3 kCamPos)
 {
-	pkMap->UpdateRecLodLevel(kCamPos); 
+//	pkMap->UpdateRecLodLevel(kCamPos); 
 
 	glPushMatrix();
 	glPushAttrib(GL_ALL_ATTRIB_BITS);  

@@ -60,7 +60,7 @@ LINK32=link.exe
 # Begin Special Build Tool
 ProjDir=.
 SOURCE="$(InputPath)"
-PostBuild_Cmds=copy               $(ProjDir)\release\*.lib               ..\..\..\bin\ 
+PostBuild_Cmds=copy                 $(ProjDir)\release\*.lib                 ..\..\..\bin\ 
 # End Special Build Tool
 
 !ELSEIF  "$(CFG)" == "engine - Win32 Debug"
@@ -92,7 +92,7 @@ LINK32=link.exe
 # Begin Special Build Tool
 ProjDir=.
 SOURCE="$(InputPath)"
-PostBuild_Cmds=copy               $(ProjDir)\debug\*.lib               ..\..\..\bin\ 
+PostBuild_Cmds=copy                 $(ProjDir)\debug\*.lib                 ..\..\..\bin\ 
 # End Special Build Tool
 
 !ELSEIF  "$(CFG)" == "engine - Win32 Release Profile"
@@ -114,7 +114,7 @@ PostBuild_Cmds=copy               $(ProjDir)\debug\*.lib               ..\..\..\
 # ADD CPP /nologo /MD /W3 /GR /GX /O2 /Ob2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "ENGINE_EXPORTS" /D "RUNPROFILE" /FD /c
 # SUBTRACT CPP /YX
 # ADD BASE MTL /nologo /D "NDEBUG" /mktyplib203 /win32
-# ADD MTL /nologo /D "NDEBUG" /mktyplib203 /win32
+# ADD MTL /nologo /I "c:\cppDev\\" /D "NDEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x41d /d "NDEBUG"
 # ADD RSC /l 0x41d /d "NDEBUG"
 BSC32=bscmake.exe
@@ -311,6 +311,10 @@ SOURCE=.\fh.cpp
 # Begin Source File
 
 SOURCE=.\heightmap.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\heightmap2.cpp
 # End Source File
 # Begin Source File
 
@@ -687,6 +691,10 @@ SOURCE=.\fh.h
 # Begin Source File
 
 SOURCE=.\heightmap.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\heightmap2.h
 # End Source File
 # Begin Source File
 

@@ -40,6 +40,7 @@ MTL=midl.exe
 # PROP Output_Dir "Release"
 # PROP Intermediate_Dir "Release"
 # PROP Target_Dir ""
+# ADD MTL /I "c:\cppDev"
 
 !ELSEIF  "$(CFG)" == "zerofps - Win32 Debug"
 
@@ -53,6 +54,7 @@ MTL=midl.exe
 # PROP Output_Dir "Debug"
 # PROP Intermediate_Dir "Debug"
 # PROP Target_Dir ""
+# ADD MTL /I "c:\cppDev"
 
 !ELSEIF  "$(CFG)" == "zerofps - Win32 Release Profile"
 
@@ -66,6 +68,7 @@ MTL=midl.exe
 # PROP Output_Dir "ReleaseProfile"
 # PROP Intermediate_Dir "ReleaseProfile"
 # PROP Target_Dir ""
+# ADD MTL /I "c:\cppDev\\"
 
 !ENDIF 
 
