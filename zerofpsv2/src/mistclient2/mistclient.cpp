@@ -120,7 +120,8 @@ void MistClient::Say(string strMsg)
 	kNp.Write((char) MLNM_CS_SAY);
 	kNp.Write_Str(strMsg);
 	kNp.TargetSetClient(0);
-	SendAppMessage(&kNp);									
+	SendAppMessage(&kNp);
+									
 }
 
 void MistClient::RegisterResources()
@@ -202,6 +203,7 @@ void MistClient::Input()
 			kRot.Rotate(0,pkCam->Get3PYAngle(),0);
 			kRot.Transponse();				
 			pkCharacter->SetLocalRotM(kRot);			
+
 		}			
 	}	
 	

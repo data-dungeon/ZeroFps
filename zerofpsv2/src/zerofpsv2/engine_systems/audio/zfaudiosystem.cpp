@@ -255,7 +255,7 @@ bool ZFAudioSystem::StopSound(string strName, Vector3 pos)
 		}
 	}
 
-//	printf("Failed to stop sound %s\n", strName.c_str());
+	printf("Failed to stop sound %s\n", strName.c_str());
 
 	return false;
 }

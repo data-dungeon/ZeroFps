@@ -35,6 +35,8 @@ void P_CharacterControl::Init()
 void P_CharacterControl::Update()
 {
 
+	bool bHoppa = false;
+
 	if(P_Tcs* pkTcs = (P_Tcs*)GetEntity()->GetProperty("P_Tcs"))
 	{
 		Vector3 kVel(0,0,0);	
@@ -63,6 +65,7 @@ void P_CharacterControl::Update()
 				{
 					m_fJumpDelay = m_pkZeroFps->GetTicks();
 					pkTcs->ApplyImpulsForce(Vector3(0,m_fJumpForce,0));
+					bHoppa = true;
 				}		
 	}
 
@@ -79,10 +82,19 @@ void P_CharacterControl::Update()
 	// OBS! Detta skall flyttas till en kommande Characterklass.
 	if(P_Sound* pkSound = (P_Sound*)pkEnt->GetProperty("P_Sound"))
 	{
+		if(bHoppa)
+		{
+			printf("hoppa\n");
+			pkSound->StartSound("data/sound/jump.wav", false);
+		}
+
 		enum MOVE_STATE { idle, moving };
 		static MOVE_STATE move_state = idle;
 
-		if(pkEnt->GetVel().NearlyZero(1))
+		static Vector3 prevpos = Vector3(-9999,-9999,-9999);
+		Vector3 currpos = pkEnt->GetWorldPosV();
+
+		if(prevpos.NearlyEquals(currpos,0.1f)) // står stilla
 		{
 			if(move_state == moving)
 			{
@@ -94,8 +106,15 @@ void P_CharacterControl::Update()
 		if(move_state == idle)
 		{
 			move_state = moving;
-			pkSound->StartSound("data/sound/footstep_forest.wav", true);
+
+			if(!bHoppa)
+			{
+				pkSound->StartSound("data/sound/footstep_forest.wav", true);
+			}
 		}
+
+		prevpos = currpos;
+
 	}
 	
 }

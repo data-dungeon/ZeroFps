@@ -25,45 +25,57 @@ P_Sound::~P_Sound()
 				pkEnt->GetIWorldPosV());
 		}
 	}
-
-	printf("P_Sound::~P_Sound\n");
 }
 
 void P_Sound::Update()
 {
-	if(m_pkFps->m_bServerMode)
-		return;
-
 	Entity* pkEnt = GetEntity();
 
 	for(int i=0; i<m_kSounds.size(); i++) // kolla av actions (starta, stoppa ljud)
 	{
 		if(m_kSounds[i].m_eAction == SA_START_SOUND)
 		{
-			m_pkAudioSystem->StartSound(m_kSounds[i].m_strFileName, 
-				pkEnt->GetIWorldPosV(), pkEnt->GetVel(), m_kSounds[i].m_bLoop);
+			if(!m_pkFps->m_bServerMode)
+				m_pkAudioSystem->StartSound(m_kSounds[i].m_strFileName, 
+					pkEnt->GetIWorldPosV(), pkEnt->GetVel(), m_kSounds[i].m_bLoop);
+
 			m_kSounds[i].m_eAction = SA_DO_NOTHING;
-			m_kSounds[i].m_bPlaying = true;
+
+			if(m_kSounds[i].m_bLoop)
+				m_kSounds[i].m_bPlaying = true;
+
+			SetNetUpdateFlag(false);
 		}
 		else
 		if(m_kSounds[i].m_eAction == SA_STOP_SOUND)
 		{
-			m_pkAudioSystem->StopSound(m_kSounds[i].m_strFileName, 
-				pkEnt->GetIWorldPosV());
+			if(!m_pkFps->m_bServerMode)
+				m_pkAudioSystem->StopSound(m_kSounds[i].m_strFileName, 
+					pkEnt->GetIWorldPosV());
+
 			m_kSounds[i].m_eAction = SA_DO_NOTHING;
 			m_kSounds[i].m_bPlaying = false;
+
+			SetNetUpdateFlag(false);
 		}
 	}
 
-	if(!pkEnt->GetVel().NearlyZero(1)) // om objektet har rört sig, flytta ljudet
+	static Vector3 prevpos = Vector3(-9999,-9999,-9999);
+	Vector3 currpos = pkEnt->GetWorldPosV();
+
+	if(!prevpos.NearlyEquals(currpos,0.1f))
+	//if(!pkEnt->GetVel().NearlyZero(1)) // om objektet har rört sig, flytta ljudet
 	{
 		for(int i=0; i<m_kSounds.size(); i++)
 			if(m_kSounds[i].m_bPlaying)
 			{
-				m_pkAudioSystem->MoveSound(m_kSounds[i].m_strFileName.c_str(), 
-					pkEnt->GetIWorldPosV(), pkEnt->GetIWorldPosV(), pkEnt->GetVel());
+				if(!m_pkFps->m_bServerMode)
+					m_pkAudioSystem->MoveSound(m_kSounds[i].m_strFileName.c_str(), 
+						pkEnt->GetIWorldPosV(), pkEnt->GetIWorldPosV(), pkEnt->GetVel());
 			}
 	}	
+
+	prevpos = currpos;
 }
 
 void P_Sound::StartSound(string strName, bool bLoop) 
@@ -74,6 +86,7 @@ void P_Sound::StartSound(string strName, bool bLoop)
 		if(m_kSounds[i].m_strFileName == strName)
 		{
 			m_kSounds[i].m_eAction = SA_START_SOUND;
+			m_kSounds[i].m_bLoop = bLoop;
 			bCreateNew = false;
 			break;
 		}
@@ -108,7 +121,7 @@ void P_Sound::PackTo(NetPacket* pkNetPacket, int iConnectionID )
 	SetNetUpdateFlag(iConnectionID,false);
 
 	int iNumElements = m_kSounds.size();
-	pkNetPacket->Write(&iNumElements, sizeof(int)); // playing or not
+	pkNetPacket->Write(&iNumElements, sizeof(int)); // number of sounds
 
 	for(int i=0; i<m_kSounds.size(); i++)
 	{
@@ -124,7 +137,7 @@ void P_Sound::PackFrom(NetPacket* pkNetPacket, int iConnectionID )
 	m_kSounds.clear(); 
 
 	int iNumElements;
-	pkNetPacket->Read(&iNumElements, sizeof(int)); // playing or not
+	pkNetPacket->Read(&iNumElements, sizeof(int)); // number of sounds
 
 	char file_name[128];
 
@@ -177,8 +190,7 @@ void P_Sound::Load(ZFIoInterface* pkFile,int iVersion)
 	{
 		sound_info sf;
 
-		pkFile->Read(temp,128,1);
-		sf.m_strFileName = temp; // filename
+		pkFile->Read(temp,128,1); sf.m_strFileName = temp; // filename
 		pkFile->Read( &sf.m_bLoop, sizeof(bool), 1); // loop
 		pkFile->Read( &sf.m_bPlaying, sizeof(bool), 1); // playing or not
 
