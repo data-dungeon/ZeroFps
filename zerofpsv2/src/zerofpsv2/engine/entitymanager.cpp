@@ -744,10 +744,10 @@ void EntityManager::PackEntityToClient(int iClient, vector<Entity*> kObjects,boo
 	//if this is the zone object, start packing att last packed object
 	if(bZoneObject)
 	{
-		if(m_pkNetWork->m_RemoteNodes[iClient].m_iCurrentObject >=  kObjects.size())
-			m_pkNetWork->m_RemoteNodes[iClient].m_iCurrentObject = 0;
+		if(m_pkNetWork->m_RemoteNodes[iClient]->m_iCurrentObject >=  kObjects.size())
+			m_pkNetWork->m_RemoteNodes[iClient]->m_iCurrentObject = 0;
 		
-		 iObj =  m_pkNetWork->m_RemoteNodes[iClient].m_iCurrentObject;	
+		 iObj =  m_pkNetWork->m_RemoteNodes[iClient]->m_iCurrentObject;	
 	}
 
 	NetPacket kEntityNp;
@@ -827,7 +827,7 @@ void EntityManager::PackEntityToClient(int iClient, vector<Entity*> kObjects,boo
 	//if zone object save this objectid, so that we can continue at this object next frame
 	if(bZoneObject)
 	{	
-		m_pkNetWork->m_RemoteNodes[iClient].m_iCurrentObject = iObj;		
+		m_pkNetWork->m_RemoteNodes[iClient]->m_iCurrentObject = iObj;		
 	}
 }
 

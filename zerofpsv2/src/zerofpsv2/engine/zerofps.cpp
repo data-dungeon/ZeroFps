@@ -234,7 +234,7 @@ bool ZeroFps::StartUp()
 	 
 	RegisterPropertys();
 	RegisterResources();
-
+ 
 	// Valid Console variables.
 	if(m_iMaxPlayers < ZF_MIN_PLAYERS)	m_iMaxPlayers =	ZF_MIN_PLAYERS;
 	if(m_iMaxPlayers > ZF_MAX_PLAYERS)	m_iMaxPlayers =	ZF_MAX_PLAYERS;

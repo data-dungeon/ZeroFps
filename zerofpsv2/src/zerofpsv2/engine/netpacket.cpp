@@ -11,12 +11,22 @@ extern NetWork* g_pkNetWork;
 
 RemoteNode::RemoteNode()
 {
+	for(int i =0;i<ZF_NET_MAXREL;i++)
+	{
+		m_akRelPack[i] = 		new ZFNetPacketData();
+		m_akRelPackRecv[i] = new ZFNetPacketData();	
+	}
+
 	Clear();
 }
 
 RemoteNode::~RemoteNode()
-{
-	
+{		
+	for(int i =0;i<ZF_NET_MAXREL;i++)
+	{
+		delete m_akRelPack[i];
+		delete m_akRelPackRecv[i];
+	}		
 }
 
 void RemoteNode::Clear()
@@ -57,10 +67,11 @@ void RemoteNode::Clear()
 	m_kRecvSizeGraph.SetBackColor(0.8, 0.8, 0.8);
 	m_kRecvGraph.SetDrawColor(0,1,0);
 
-	for(int i=0; i<ZF_NET_MAXREL; i++) {
-		m_akRelPack[i].m_kHeader.m_iPacketType = ZF_NETTYPE_NONE;
-		m_akRelPackRecv[i].m_kHeader.m_iPacketType = ZF_NETTYPE_NONE;
-		}
+	for(int i=0; i<ZF_NET_MAXREL; i++) 
+	{
+		m_akRelPack[i]->m_kHeader.m_iPacketType = ZF_NETTYPE_NONE;
+		m_akRelPackRecv[i]->m_kHeader.m_iPacketType = ZF_NETTYPE_NONE;
+	}
 
 	m_kRelAckList.clear();
 	m_kRelSend.clear();
@@ -77,7 +88,7 @@ void RemoteNode::SetAddress(IPaddress* pkAddress)
 int RemoteNode::GetFreeRelStore()
 {
 	for(int i=0; i<ZF_NET_MAXREL; i++) {
-		if(m_akRelPack[i].m_kHeader.m_iPacketType == ZF_NETTYPE_NONE)
+		if(m_akRelPack[i]->m_kHeader.m_iPacketType == ZF_NETTYPE_NONE)
 			return i;
 		}
 
@@ -93,15 +104,15 @@ void RemoteNode::FreeRelStore(int iRelID)
 {
 	for(int i=0; i<ZF_NET_MAXREL; i++) 
 	{
-		if(m_akRelPack[i].m_kHeader.m_iOrder == iRelID)
-			m_akRelPack[i].m_kHeader.m_iPacketType = ZF_NETTYPE_NONE;
+		if(m_akRelPack[i]->m_kHeader.m_iOrder == iRelID)
+			m_akRelPack[i]->m_kHeader.m_iPacketType = ZF_NETTYPE_NONE;
 	}
 }
 
 int RemoteNode::GetRel(int iID)
 {
 	for(int i=0; i<ZF_NET_MAXREL; i++) {
-		if(m_akRelPack[i].m_kHeader.m_iPacketType != ZF_NETTYPE_NONE && m_akRelPack[i].m_kHeader.m_iOrder == iID)
+		if(m_akRelPack[i]->m_kHeader.m_iPacketType != ZF_NETTYPE_NONE && m_akRelPack[i]->m_kHeader.m_iOrder == iID)
 			return i;
 		}
 
@@ -112,7 +123,7 @@ int RemoteNode::GetRel(int iID)
 int RemoteNode::GetFreeRelRecv()
 {
 	for(int i=0; i<ZF_NET_MAXREL; i++) {
-		if(m_akRelPackRecv[i].m_kHeader.m_iPacketType == ZF_NETTYPE_NONE)
+		if(m_akRelPackRecv[i]->m_kHeader.m_iPacketType == ZF_NETTYPE_NONE)
 			return i;
 		}
 
@@ -122,7 +133,7 @@ int RemoteNode::GetFreeRelRecv()
 int RemoteNode::GetRelRecv(int iID)
 {
 	for(int i=0; i<ZF_NET_MAXREL; i++) {
-		if(m_akRelPackRecv[i].m_kHeader.m_iPacketType != ZF_NETTYPE_NONE && m_akRelPackRecv[i].m_kHeader.m_iOrder == iID)
+		if(m_akRelPackRecv[i]->m_kHeader.m_iPacketType != ZF_NETTYPE_NONE && m_akRelPackRecv[i]->m_kHeader.m_iOrder == iID)
 			return i;
 		}
 
@@ -138,9 +149,9 @@ void RemoteNode::FreeRelRecv(int iOrder)
 {
 	for(int i=0; i<ZF_NET_MAXREL; i++)
 	{
-		if(m_akRelPackRecv[i].m_kHeader.m_iOrder == iOrder)
+		if(m_akRelPackRecv[i]->m_kHeader.m_iOrder == iOrder)
 		{
-				m_akRelPackRecv[i].m_kHeader.m_iPacketType = ZF_NETTYPE_NONE;
+				m_akRelPackRecv[i]->m_kHeader.m_iPacketType = ZF_NETTYPE_NONE;
 		}
 	}
 }

@@ -42,7 +42,7 @@ using namespace std;
 
 #define ZF_NET_CONNECTION_TIMEOUT	45	// Timeout connection if no message from a client after this time (sec).
 
-#define ZF_NET_MAXREL					200
+#define ZF_NET_MAXREL					1024
 
 // Status of a remote node.
 enum ClientConnectStatus
@@ -69,7 +69,7 @@ public:
 
 	int				m_iReliableSendOrder;			// Next Order num to use for next reliable packet.
 	int				m_iReliableRecvOrder;			// The Order num of next reliable packet we are waiting for.
-	bool			m_bIsFlood;
+	bool				m_bIsFlood;
 
 	// Stats
 	int				m_iNumOfPacketsSent;				// Total num of packets sent (Any type).
@@ -98,12 +98,12 @@ public:
 	unsigned int	m_iCurrentObject;					//current position in zoneobject list, for packtoclient
 	int				m_iNetSpeed;						//clients wantet netspeed in bytes/second
 	
-	ZFNetPacketData	m_akRelPack[ZF_NET_MAXREL];
+	ZFNetPacketData*	m_akRelPack[ZF_NET_MAXREL];
 	float					m_akRelPackSendTime[ZF_NET_MAXREL];
 	int					m_aiRelPackSize[ZF_NET_MAXREL];
 	set<int>				m_kRelSend;										// Sorted set with Id's for all packets that been sent but not ack.
    
-	ZFNetPacketData	m_akRelPackRecv[ZF_NET_MAXREL];			// Reliable packets that have been recv out of order.
+	ZFNetPacketData*	m_akRelPackRecv[ZF_NET_MAXREL];			// Reliable packets that have been recv out of order.
 	int					m_aiRelPackRecvSize[ZF_NET_MAXREL];
 
 	vector<int>			m_kRelAckList;
@@ -162,7 +162,7 @@ private:
 	IPaddress				m_kLocalIP;								// Our Own Local IP.	***
 	int						m_iMaxNumberOfNodes;					// Max Number of remote Nodes we can keep track of.	***
 
-	vector<RemoteNode>	m_RemoteNodes;							// Data About all our remote connections.
+	vector<RemoteNode*>	m_RemoteNodes;							// Data About all our remote connections.
 	char						m_szAddressBuffer[256];				// Used to convert/print address.
 
 	float						m_fStatsUpdate;
