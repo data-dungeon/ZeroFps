@@ -64,7 +64,7 @@
 #define IDC_BORDER_EB                   1057
 #define IDC_ROTATION_EB                 1058
 #define IDC_FREE_MOVEMENT_CB            1059
-#define IDC_VISIBLE_FROM_START_CB       1060
+#define IDC_HIDDEN_FROM_START_CB        1060
 #define IDC_SELECTFONT_BN               1061
 #define IDC_RGB_COLOR_R_EB              1062
 #define IDC_PASTE_SKIN                  1063
@@ -72,8 +72,6 @@
 #define IDC_RGB_COLOR_G_EB              1065
 #define IDC_RGB_COLOR_B_EB              1066
 #define IDC_FONT_COLOR_R_EB             1067
-#define IDC_FREE_MOVEMENT_CB2           1067
-#define IDC_MULTILINE_CB                1067
 #define IDC_ZVALUE_EB                   1068
 #define IDC_FONT_COLOR_G_EB             1069
 #define IDC_FONT_COLOR_B_EB             1070
@@ -96,11 +94,12 @@
 #define IDC_WNDALIGNMENT_CENTERHORZ     1086
 #define IDC_WNDALIGNMENT_BOTTOMRIGHT    1087
 #define IDC_RESIZETYPE_DONT             1088
-#define IDC_IMAGE_INFO_LABEL            1088
 #define IDC_RESIZETYPE_HEIGHT           1089
 #define IDC_RESIZETYPE_WIDTH            1090
 #define IDC_RESIZETYPE_BOTH             1091
 #define IDC_MINIMIZE_BUTTON             1092
+#define IDC_IMAGE_INFO_LABEL            1093
+#define IDC_MULTILINE_CB                1094
 #define ID_SDSD_DSFSD                   40001
 #define ID_SDFSDF_SDF                   40002
 #define ID_SDF_SDF                      40003
@@ -126,7 +125,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        106
 #define _APS_NEXT_COMMAND_VALUE         40022
-#define _APS_NEXT_CONTROL_VALUE         1093
+#define _APS_NEXT_CONTROL_VALUE         1094
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

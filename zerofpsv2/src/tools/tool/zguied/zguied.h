@@ -67,6 +67,13 @@ private:
 	bool m_bForceCaptureToSel;
 	float	m_fDelayTime;
 
+	struct SPECIAL_WND_INFO
+	{
+		bool bHiddenFromStart;
+	};
+
+	map<string,SPECIAL_WND_INFO> m_kSpecialWndInfo;
+
 	vector< pair<ZGuiSkin, string> > m_kSkinTable; // used while saving
 
 	string m_strNewFileToLoad;

@@ -203,20 +203,20 @@ bool ZGuiEd::WriteWindows()
 	fprintf(m_pkSaveFile, "\n\t-- Windowlist ---------------------------------------------------------" \
 		"--------------------------------------------------------------\n\n");
 
-	fprintf(m_pkSaveFile, "\tlocal Wnd		= 0\n");	
-	fprintf(m_pkSaveFile, "\tlocal Button		= 1\n");	
-	fprintf(m_pkSaveFile, "\tlocal Checkbox		= 2\n");
-	fprintf(m_pkSaveFile, "\tlocal Combobox		= 3\n");
-	fprintf(m_pkSaveFile, "\tlocal Label		= 4\n");
-	fprintf(m_pkSaveFile, "\tlocal Listbox		= 5\n");
-	fprintf(m_pkSaveFile, "\tlocal Radiobutton	= 6\n");
-	fprintf(m_pkSaveFile, "\tlocal Scrollbar		= 7\n");
-	fprintf(m_pkSaveFile, "\tlocal Slider		= 8\n");
-	fprintf(m_pkSaveFile, "\tlocal TabControl	= 9\n");
-	fprintf(m_pkSaveFile, "\tlocal Textbox		= 10\n");
-	fprintf(m_pkSaveFile, "\tlocal Treebox		= 11\n");
-	fprintf(m_pkSaveFile, "\tlocal Menu		= 12\n");
-	fprintf(m_pkSaveFile, "\tlocal Progressbar	= 13\n\n");
+	fprintf(m_pkSaveFile, "\tlocal Wnd         = 0\n");	
+	fprintf(m_pkSaveFile, "\tlocal Button      = 1\n");	
+	fprintf(m_pkSaveFile, "\tlocal Checkbox    = 2\n");
+	fprintf(m_pkSaveFile, "\tlocal Combobox    = 3\n");
+	fprintf(m_pkSaveFile, "\tlocal Label       = 4\n");
+	fprintf(m_pkSaveFile, "\tlocal Listbox     = 5\n");
+	fprintf(m_pkSaveFile, "\tlocal Radiobutton = 6\n");
+	fprintf(m_pkSaveFile, "\tlocal Scrollbar   = 7\n");
+	fprintf(m_pkSaveFile, "\tlocal Slider      = 8\n");
+	fprintf(m_pkSaveFile, "\tlocal TabControl  = 9\n");
+	fprintf(m_pkSaveFile, "\tlocal Textbox     = 10\n");
+	fprintf(m_pkSaveFile, "\tlocal Treebox     = 11\n");
+	fprintf(m_pkSaveFile, "\tlocal Menu        = 12\n");
+	fprintf(m_pkSaveFile, "\tlocal Progressbar = 13\n\n");
 
 	ZGuiWnd* pkMainWnd = GetWnd("GuiMainWnd");
 
@@ -341,6 +341,9 @@ bool ZGuiEd::WriteWindows()
 
 bool ZGuiEd::WriteSpecialProperties()
 {
+	fprintf(m_pkSaveFile, "\n\t-- Special properties -----------------------------------------------" \
+		"--------------------------------------------------------------\n\n");
+
 	map<string, ZGuiWnd*> kWindows;
 	m_pkGuiMan->GetWindows(kWindows);
 	for( map<string, ZGuiWnd*>::iterator it = kWindows.begin(); it != kWindows.end(); it++)
@@ -365,7 +368,7 @@ bool ZGuiEd::WriteSpecialProperties()
 		if((rc=pkWnd->GetMoveArea()) != pkWnd->GetScreenRect())
 		{
 			fprintf(m_pkSaveFile, "\tSetMoveArea(\"%s\",%i,%i,%i,%i)\n", 
-				pkWnd->GetName(), rc.Left, rc.Top, rc.Right, rc.Bottom);
+				pkWnd->GetName(), 0, 0, 1600, 1200);
 		}
 
 		GuiType eType = GetWndType(pkWnd);
@@ -379,6 +382,19 @@ bool ZGuiEd::WriteSpecialProperties()
 					pkWnd->GetName());			
 		}
 	}	
+
+	map<string,SPECIAL_WND_INFO>::iterator it;
+	for( map<string, SPECIAL_WND_INFO>::iterator it = 
+		 m_kSpecialWndInfo.begin(); it != m_kSpecialWndInfo.end(); it++)
+	{
+		ZGuiWnd* pkWnd = GetWnd(it->first);
+
+		if(pkWnd)
+		{
+			if(it->second.bHiddenFromStart)
+				fprintf(m_pkSaveFile, "\tShowWnd(\"%s\",0,0)\n", pkWnd->GetName());
+		}
+	}
 
 	return true;
 }

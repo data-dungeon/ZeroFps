@@ -126,7 +126,7 @@ int Win32ThreadMain(void *v)
 
 	SendMessage(cbox, CB_SELECTSTRING, -1, (LPARAM) (LPCSTR) "Wnd" );
 
-	CheckDlgButton(g_kDlgBoxBottom, IDC_SKINTYPE_BACKGROUND_RB, BST_CHECKED);
+	CheckDlgButton(g_kDlgBoxRight, IDC_SKINTYPE_BACKGROUND_RB, BST_CHECKED);
 
 	CreateTooltip(GetDlgItem(g_kDlgBoxRight, IDC_LOADGUI), 
 		"To open a GUI file, select it from the combobox and press this button\r\n");
@@ -286,7 +286,7 @@ int Win32ThreadMain(void *v)
 	CreateTooltip(GetDlgItem(g_kDlgBoxRight, IDC_VISIBLE_CHECK), 
 		"Press this button to temporary toggle visibility of a widget in the editor.");
 
-	CreateTooltip(GetDlgItem(g_kDlgBoxBottom, IDC_VISIBLE_FROM_START_CB), 
+	CreateTooltip(GetDlgItem(g_kDlgBoxBottom, IDC_HIDDEN_FROM_START_CB), 
 		"Press this button to toogle visibility of a widget.");
 
 	CreateTooltip(GetDlgItem(g_kDlgBoxRight, IDC_BRING_TO_FRONT), 

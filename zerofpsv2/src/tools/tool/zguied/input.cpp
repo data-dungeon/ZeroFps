@@ -150,8 +150,30 @@ void ZGuiEd::HandleInput()
 				else
 				if(kFocusWnd == GetCtrl(IDC_WINDOW_NAMEID_EB, 0))
 				{
+					SPECIAL_WND_INFO* pkInfo = NULL;
+					
+					// Copy special window info and remove from list
+					// because the window have changed name and have a diffrent key now.
+					map<string,SPECIAL_WND_INFO>::iterator it;
+					it = m_kSpecialWndInfo.find(m_pkFocusWnd->GetName());
+					if(it != m_kSpecialWndInfo.end())
+					{
+						pkInfo = new SPECIAL_WND_INFO;
+						memcpy(pkInfo, &it->second, sizeof(SPECIAL_WND_INFO));
+						m_kSpecialWndInfo.erase(it);
+					}
+
 					m_pkGui->ChangeWndRegName(m_pkFocusWnd, text);
 					FilterWnd();
+
+					// Insert special window information.
+					if(pkInfo != NULL)
+					{
+						m_kSpecialWndInfo.insert(
+							map<string,SPECIAL_WND_INFO>::value_type(
+								m_pkFocusWnd->GetName(), *pkInfo)); 
+						delete pkInfo;
+					}
 				}
 				else
 				if(kFocusWnd == GetCtrl(IDC_POSX_EB, 0))
@@ -409,6 +431,29 @@ void ZGuiEd::OnCommand(int iCtrlID, int iEvent)
 
 	switch(iCtrlID)
 	{	
+		case IDC_HIDDEN_FROM_START_CB:
+			if(m_pkFocusWnd)
+			{
+				bool bHidden = IsDlgButtonChecked(g_kDlgBoxBottom, 
+					IDC_HIDDEN_FROM_START_CB);
+
+				map<string,SPECIAL_WND_INFO>::iterator itWndInfo;
+				itWndInfo = m_kSpecialWndInfo.find(m_pkFocusWnd->GetName());
+				if(itWndInfo != m_kSpecialWndInfo.end())
+				{
+					itWndInfo->second.bHiddenFromStart = bHidden;
+				}
+				else
+				{
+					SPECIAL_WND_INFO info;
+					info.bHiddenFromStart = bHidden;
+					m_kSpecialWndInfo.insert(
+						map<string,SPECIAL_WND_INFO>::value_type(
+							m_pkFocusWnd->GetName(), info)); 
+				}
+			}
+			break;
+
 		case IDC_MULTILINE_CB:
 			if(m_pkFocusWnd)
 			{
@@ -427,12 +472,6 @@ void ZGuiEd::OnCommand(int iCtrlID, int iEvent)
 
 		case IDC_CLOSE_BUTTON:
 			m_pkZeroFps->QuitEngine();
-			break;
-
-		case IDC_MINIMIZE_BUTTON:
-			//ShowWindow(GetParent(GetParent(g_kDlgBoxRight)), SW_HIDE);
-			
-			SetWindowPos(GetParent(GetParent(g_kDlgBoxRight)), 0, 0, 320, 240, 0, SWP_NOZORDER);
 			break;
 
 		case IDC_ACTIVATE_HELP_CB:

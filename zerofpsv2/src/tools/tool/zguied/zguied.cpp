@@ -634,6 +634,16 @@ bool ZGuiEd::LoadGUI(const char* szFile)
 		{
 			addlist[k]->m_iZValue = m_iZValueCounter++;
 			AddSampleCtrlItem(addlist[k]);			
+
+			SPECIAL_WND_INFO info;			
+			info.bHiddenFromStart = (addlist[k]->IsVisible(false) == false);				
+			
+			m_kSpecialWndInfo.insert(
+				map<string,SPECIAL_WND_INFO>::value_type(
+					addlist[k]->GetName(), info)); 
+
+			if(addlist[k]->GetParent() && GetWndType(addlist[k]->GetParent()) != TabControl)
+				addlist[k]->Show();
 		}
 	}
 
@@ -719,6 +729,7 @@ bool ZGuiEd::NewGUI(bool bConfirm)
 	m_pkCopyWnd = NULL;
 	m_pkCopySkin = NULL;
 	m_vCopySkinDesc.clear();
+	m_kSpecialWndInfo.clear();
 
 	SetWindowText(GetCtrl(IDC_WINDOW_NAMEID_EB, 0), "");
 	SetWindowText(GetCtrl(IDC_PARENT_WINDOW_NAMEID, 0), "");
@@ -858,10 +869,7 @@ void ZGuiEd::UpdateInfo()
 		CheckDlgButton(g_kDlgBoxBottom, IDC_RESIZETYPE_WIDTH, BST_UNCHECKED);
 		CheckDlgButton(g_kDlgBoxBottom, IDC_RESIZETYPE_BOTH, BST_UNCHECKED);
 
-	/*	CheckDlgButton(g_kDlgBoxBottom, IDC_SKINTYPE_HORZBORDER_RB, BST_UNCHECKED);
-		CheckDlgButton(g_kDlgBoxBottom, IDC_SKINTYPE_VERTBORDER_RB, BST_UNCHECKED);
-		CheckDlgButton(g_kDlgBoxBottom, IDC_SKINTYPE_BACKGROUND_RB, BST_UNCHECKED);
-		CheckDlgButton(g_kDlgBoxBottom, IDC_SKINTYPE_CORNERBORDER_RB, BST_UNCHECKED);*/
+		CheckDlgButton(g_kDlgBoxBottom, IDC_HIDDEN_FROM_START_CB, BST_UNCHECKED);
 
 		UpdateSkinList();
 		return;
@@ -940,6 +948,22 @@ void ZGuiEd::UpdateInfo()
 		CheckRadioButton(g_kDlgBoxBottom, IDC_RESIZETYPE_DONT, IDC_RESIZETYPE_BOTH, IDC_RESIZETYPE_HEIGHT);
 	if(m_pkFocusWnd->m_iResizeType == Resize)
 		CheckRadioButton(g_kDlgBoxBottom, IDC_RESIZETYPE_DONT, IDC_RESIZETYPE_BOTH, IDC_RESIZETYPE_BOTH);
+
+
+	map<string,SPECIAL_WND_INFO>::iterator itWndInfo;
+	itWndInfo = m_kSpecialWndInfo.find(m_pkFocusWnd->GetName());
+	if(itWndInfo != m_kSpecialWndInfo.end())
+	{
+		CheckDlgButton(g_kDlgBoxBottom, IDC_HIDDEN_FROM_START_CB, 
+			itWndInfo->second.bHiddenFromStart ? BST_CHECKED : BST_UNCHECKED);
+	}
+	else
+	{
+		CheckDlgButton(g_kDlgBoxBottom, IDC_HIDDEN_FROM_START_CB, BST_UNCHECKED);
+	}
+
+	
+	
 
 	UpdateSkinList();
 }

@@ -88,7 +88,10 @@ bool ZGuiListbox::Render( ZGuiRender* pkRenderer )
 	}
 
 	for( itItemList it = m_pkItemList.begin(); it != m_pkItemList.end(); it++)
+	{
+
 		(*it)->GetButton()->Render( pkRenderer );
+	}
 
 	return true;
 }
@@ -654,11 +657,26 @@ void ZGuiListbox::SetFont(ZGuiFont* pkFont)
 {
 	m_pkFont = pkFont;
 
+	m_unItemHeight = m_pkFont->m_iRowHeight;
+
+	int iOffset = 0;
+
+	Rect rc = GetScreenRect();
+
 	list<ZGuiListitem*>::iterator it;
 	for(  it = m_pkItemList.begin(); it != m_pkItemList.end(); it++)
    {
 		(*it)->GetButton()->SetFont(pkFont);
+		(*it)->GetButton()->Resize(-1, m_unItemHeight);
+		(*it)->GetButton()->SetPos(0, iOffset, false, true);
+
+		iOffset += m_unItemHeight;
+
+		if( iOffset > rc.Height() )
+			(*it)->GetButton()->Hide();
 	}
+
+	ScrollItems(m_pkScrollbarVertical);
 }
 
 
@@ -703,4 +721,14 @@ bool ZGuiListbox::ProcessKBInput(int iKey)
 	}
 
 	return true;
+}
+
+void ZGuiListbox::SetTextColor(unsigned char ucR, unsigned char ucG, unsigned char ucB)
+{
+	m_afTextColor[0] = (float) ucR / 255.0f;
+	m_afTextColor[1] = (float) ucG / 255.0f;
+	m_afTextColor[2] = (float) ucB / 255.0f;
+
+	for(itItemList it = m_pkItemList.begin(); it != m_pkItemList.end(); it++)
+		(*it)->GetButton()->SetTextColor(ucR, ucG, ucB);
 }

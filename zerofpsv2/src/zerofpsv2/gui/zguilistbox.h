@@ -20,6 +20,7 @@ public:
 
 	bool ProcessKBInput(int iKey); // overloaded
    void SetFont(ZGuiFont* pkFont); // overloaded
+	void SetTextColor(unsigned char ucR, unsigned char ucG, unsigned char ucB); // overloaded
 	void SetEnable(bool bEnable);
 	bool SelItem(const char* szText);
 	bool SelItem(int iIndex);
