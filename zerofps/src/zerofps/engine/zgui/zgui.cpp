@@ -471,18 +471,27 @@ bool ZGui::OnKeyUpdate()
 	{
 		if(m_pkInput->Pressed(KEY_RSHIFT) || m_pkInput->Pressed(KEY_LSHIFT))
 		{
-			if(iKey > 96 && iKey < 123)
-				iKey -= 32;
-			if(iKey > 48 && iKey < 58)
-				iKey -= 16;
+			if(iKey == '7')
+				iKey = '/';
+			else
 			if(iKey == '0')
 				iKey = '=';
+			else
 			if(iKey == ',') 
 				iKey = ';';
+			else
 			if(iKey == '.')
 				iKey = ':';
+			else
 			if(iKey == '-')
 				iKey = '_';
+			else
+			if(iKey > 48 && iKey < 58)
+				iKey -= 16;
+			else
+			if(iKey > 96 && iKey < 123)
+				iKey -= 32;
+
 		}
 
 		if(iKey == KEY_F10)
