@@ -7,6 +7,7 @@ CHandleAgents::CHandleAgents() : CGameDlg("AgentsWnd", &g_kDM)
 	m_bInitialized = false;
 	m_iSelAgent = -1;
 	m_iStartAgent = 0;
+	m_iStartHireAgent = 0;
 }
 
 CHandleAgents::~CHandleAgents()
@@ -84,7 +85,7 @@ void CHandleAgents::OnCommand(ZGuiWnd *pkMainWnd, string strClickName)
 		if(m_iStartAgent > 0)
 		{
 			m_iStartAgent--;
-			UpdateAgentList(m_iStartAgent);
+			UpdateAgentInBaseList(m_iStartAgent);
 
 			m_pkAudioSys->StartSound("data/sound/computer beep 5.wav", 
 				m_pkAudioSys->GetListnerPos()); 
@@ -96,12 +97,51 @@ void CHandleAgents::OnCommand(ZGuiWnd *pkMainWnd, string strClickName)
 		if(GetNumAgentsInBase()-m_iStartAgent > 7)
 		{
 			m_iStartAgent++;
-			UpdateAgentList(m_iStartAgent);
+			UpdateAgentInBaseList(m_iStartAgent);
 
 			m_pkAudioSys->StartSound("data/sound/computer beep 5.wav", 
 				m_pkAudioSys->GetListnerPos()); 
 		}
 	}
+
+
+
+
+
+
+	else
+	if(strClickName == "PrevAgentToHireBn")
+	{
+		if(m_iStartHireAgent > 0)
+		{
+			m_iStartHireAgent--;
+			UpdateAgentToHireList(m_iStartHireAgent);
+
+			m_pkAudioSys->StartSound("data/sound/computer beep 5.wav", 
+				m_pkAudioSys->GetListnerPos()); 
+		}
+	}
+	else
+	if(strClickName == "NextAgentToHireBn")
+	{
+		if(GetNumAgentsToHire()-m_iStartHireAgent > 7)
+		{
+			m_iStartHireAgent++;
+			UpdateAgentToHireList(m_iStartHireAgent);
+
+			m_pkAudioSys->StartSound("data/sound/computer beep 5.wav", 
+				m_pkAudioSys->GetListnerPos()); 
+		}
+	}
+
+
+
+
+
+
+
+
+
 
 	int pos;
 	if((pos=strClickName.find("AgentsInHQBn")) != string::npos)
@@ -124,7 +164,7 @@ void CHandleAgents::OnCommand(ZGuiWnd *pkMainWnd, string strClickName)
 			else
 			{
 				m_iSelAgent = m_vkCharsInBaseBns[i].second;
-				char szText[50];
+				char szText[150];
 				sprintf(szText, "Your agent %i/%i - Mr Smith %i", i+m_iStartAgent+1, 
 					GetNumAgentsInBase(), m_iSelAgent);
 				SetText("AgentInHQLabel", szText);
@@ -138,7 +178,7 @@ void CHandleAgents::OnCommand(ZGuiWnd *pkMainWnd, string strClickName)
 	if((pos=strClickName.find("AgentsToHireBn")) != string::npos)
 	{
 		string temp(strClickName);
-		temp.erase(0,pos+strlen("AgentsInHQBn"));
+		temp.erase(0,pos+strlen("AgentsToHireBn"));
 		
 		char* szButtons[] = {
 			"AgentsToHireBn1", "AgentsToHireBn2", "AgentsToHireBn3",
@@ -150,6 +190,17 @@ void CHandleAgents::OnCommand(ZGuiWnd *pkMainWnd, string strClickName)
 		{
 			if(strClickName != szButtons[i])
 				((ZGuiCheckbox*)GetWnd(szButtons[i]))->UncheckButton();
+			else
+			{
+				DMCharacterStats kStats = m_vkAgentsToHireBns[i].second;
+				char szText[150];
+				sprintf(szText, "Your agent %i/%i - %s", i+m_iStartHireAgent+1, 
+					GetNumAgentsToHire(), kStats.m_strName.c_str() );
+				SetText("CurrentAgentToHireLabel", szText);
+
+				m_pkAudioSys->StartSound("data/sound/computer beep 5.wav", 
+					m_pkAudioSys->GetListnerPos()); 
+			}
 		}
 	}
 }
@@ -157,6 +208,7 @@ void CHandleAgents::OnCommand(ZGuiWnd *pkMainWnd, string strClickName)
 bool CHandleAgents::InitDlg()
 {
 	m_iStartAgent = 0;
+	m_iStartHireAgent = 0;
 
 	if(!m_bInitialized)
 	{
@@ -175,16 +227,41 @@ bool CHandleAgents::InitDlg()
 		m_vkCharsInBaseBns.push_back(pair<ZGuiCheckbox*, int>
 			((ZGuiCheckbox*)GetWnd("AgentsInHQBn7"),-1));
 
-
 		for(int i=0; i<7; i++)
 		{
 			m_vkCharsInBaseBns[i].first->GetCheckedSkin()->m_iBkTexID = -1; 
 			m_vkCharsInBaseBns[i].first->GetUncheckedSkin()->m_iBkTexID = -1; 
 			m_vkCharsInBaseBns[i].second = -1;
 		}
+
+		DMCharacterStats empty;
+		empty.m_strName = "";
+
+		m_vkAgentsToHireBns.push_back(pair<ZGuiCheckbox*, DMCharacterStats>
+			((ZGuiCheckbox*)GetWnd("AgentsToHireBn1"),empty));
+		m_vkAgentsToHireBns.push_back(pair<ZGuiCheckbox*, DMCharacterStats>
+			((ZGuiCheckbox*)GetWnd("AgentsToHireBn2"),empty));
+		m_vkAgentsToHireBns.push_back(pair<ZGuiCheckbox*, DMCharacterStats>
+			((ZGuiCheckbox*)GetWnd("AgentsToHireBn3"),empty));
+		m_vkAgentsToHireBns.push_back(pair<ZGuiCheckbox*, DMCharacterStats>
+			((ZGuiCheckbox*)GetWnd("AgentsToHireBn4"),empty));
+		m_vkAgentsToHireBns.push_back(pair<ZGuiCheckbox*, DMCharacterStats>
+			((ZGuiCheckbox*)GetWnd("AgentsToHireBn5"),empty));
+		m_vkAgentsToHireBns.push_back(pair<ZGuiCheckbox*, DMCharacterStats>
+			((ZGuiCheckbox*)GetWnd("AgentsToHireBn6"),empty));
+		m_vkAgentsToHireBns.push_back(pair<ZGuiCheckbox*, DMCharacterStats>
+			((ZGuiCheckbox*)GetWnd("AgentsToHireBn7"),empty));
+
+		for(int i=0; i<7; i++)
+		{
+			m_vkAgentsToHireBns[i].first->GetCheckedSkin()->m_iBkTexID = -1; 
+			m_vkAgentsToHireBns[i].first->GetUncheckedSkin()->m_iBkTexID = -1; 
+			m_vkAgentsToHireBns[i].second.m_strName = "";
+		}		
 	}
 
-	UpdateAgentList(m_iStartAgent);
+	UpdateAgentInBaseList(m_iStartAgent);
+	UpdateAgentToHireList(m_iStartHireAgent);
 
 	SetText("AgentInHQLabel", "");
 
@@ -212,7 +289,7 @@ bool CHandleAgents::SendOutAgent(int iAgentID)
 	return false;
 }
 
-void CHandleAgents::UpdateAgentList(int iStartAgent)
+void CHandleAgents::UpdateAgentInBaseList(int iStartAgent)
 {
 	Entity* pkHQObject = GetDMObject(HQ);
 
@@ -280,4 +357,67 @@ int CHandleAgents::GetNumAgentsInBase()
 	}
 
 	return -1;
+}
+
+int CHandleAgents::GetNumAgentsToHire()
+{
+	Entity* pkHQObject = GetDMObject(HQ);
+
+	if(pkHQObject)
+	{
+		P_DMHQ* pkHQ = (P_DMHQ*) pkHQObject->GetProperty("P_DMHQ");
+		return pkHQ->GetHireList()->size();
+	}
+
+	return -1;
+}
+
+
+
+void CHandleAgents::UpdateAgentToHireList(int iStartAgent)
+{
+	Entity* pkHQObject = GetDMObject(HQ);
+
+	if(pkHQObject)
+	{
+		P_DMHQ* pkHQ = (P_DMHQ*) pkHQObject->GetProperty("P_DMHQ");
+
+		vector<DMCharacterStats>* vkAgetsToHire = pkHQ->GetHireList();
+
+		printf("There are %i to hire!\n", vkAgetsToHire->size());
+
+		for(int i=0; i<7; i++)
+		{
+			m_vkAgentsToHireBns[i].first->UncheckButton();
+
+			if((i+iStartAgent)<vkAgetsToHire->size())
+			{
+				DMCharacterStats stats = (*vkAgetsToHire)[i+iStartAgent];
+
+				string szTexName = string("data/textures/gui/dm/portraits/") +
+					stats.m_strIcon;
+
+				int tex_id = GetTexID((char*) szTexName.c_str());
+				m_vkAgentsToHireBns[i].first->Show();
+				m_vkAgentsToHireBns[i].first->GetUncheckedSkin()->m_iBkTexID = tex_id; 			
+				m_vkAgentsToHireBns[i].first->GetCheckedSkin()->m_iBkTexID = tex_id; 
+				m_vkAgentsToHireBns[i].first->GetCheckedSkin()->m_afBkColor[1] = 0;
+				m_vkAgentsToHireBns[i].second = stats;	
+
+		/*		if(m_vkCharsInBaseBns[i].second == m_iSelAgent)
+				{
+					m_vkCharsInBaseBns[i].first->CheckButton();
+				}*/
+			}
+			else
+			{
+				m_vkAgentsToHireBns[i].first->Hide();
+				m_vkAgentsToHireBns[i].second.m_strName = "xx";
+			}
+		}
+	}
+	else
+	{
+		printf("Failed to get HQ entiry\n");
+	}
 }
