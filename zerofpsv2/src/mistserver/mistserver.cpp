@@ -702,7 +702,7 @@ void MistServer::OnServerClientJoin(ZFClient* pkClient,int iConID, char* szLogin
 	string strPlayer		= szLogin;
 	string strPasswd		= szPass;
 
-	pkClient->m_strCharacter = "";
+	pkClient->m_strCharacter = "MrBadq";
 	pkClient->m_strLogin = szLogin;
 
 	//add client control to client object
