@@ -19,9 +19,9 @@ LightSource::LightSource() {
 	fExp=20;
 	
 		//distance attenuation 
-	fConst_Atten=1;
+	fConst_Atten=0;
 	fLinear_Atten=0;
-	fQuadratic_Atten=0;
+	fQuadratic_Atten=0.01;
 
 	iType=POINT_LIGHT;
 	iPriority=0;
@@ -85,7 +85,7 @@ void Light::Update() {
 			
 			Vector3 kPos = (*(*it)->kPos)+(*it)->kConstPos;		
 			float fDistance = (m_kCamPos-kPos).Length();		
-			float fIntensity = min(1, 1 / ((*it)->fConst_Atten + (*it)->fLinear_Atten*fDistance + (*it)->fQuadratic_Atten*fDistance*fDistance));
+			float fIntensity = min(1 , 1 / ( (*it)->fConst_Atten + ((*it)->fLinear_Atten*fDistance) + ((*it)->fQuadratic_Atten*(fDistance*fDistance)) ));
 		
 			if(fIntensity>0.01){
 				(*it)->fIntensity=fIntensity;

@@ -84,13 +84,14 @@ void Test::OnInit(void) {
 		sol->kPos=solpos;		
 		sol->kDiffuse=Vector4(1,1,1,1);
 		sol->kAmbient=Vector4(0.01,0.01,0.01,0.01);
+//		sol->kAmbient=Vector4(0,0,0,0);		
 		sol->iType=POINT_LIGHT;			
 		sol->iPriority=10;
 
 
 /*	pkLight->Add(spot2);			
 	pkLight->Add(spot);	*/
-	pkLight->Add(sol);
+//	pkLight->Add(sol);
 	
 	
 	

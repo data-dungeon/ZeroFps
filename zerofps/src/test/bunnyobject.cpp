@@ -27,8 +27,10 @@ BunnyObject::BunnyObject()
 	// Välj den kanin som ÄR.
 	AddProperty("LightProperty");
 	LightProperty* pkJumpLight = dynamic_cast<LightProperty*>(GetProperty("LightProperty"));
-	pkJumpLight->SetColor(kColor.x,kColor.y,kColor.z);
-
+//	pkJumpLight->SetConst_Atten(0.1);
+	pkJumpLight->SetDiffuse(Vector4(kColor.x/5,kColor.y/5,kColor.z/5,0));
+//	pkJumpLight->SetQuadratic_Atten(20);
+//	pkJumpLight->SetLinear_Atten(4);
 
 	AddProperty(new CollisionProperty(&m_kPos,new float(.15)));
 //	AddProperty(new CollisionProperty(&m_kPos));
