@@ -47,7 +47,7 @@ namespace DMLua
 	int MCOMMON_API SetGunAmmoLua(lua_State* pkLua);
 	int MCOMMON_API SetGunMaxAmmoLua(lua_State* pkLua);
 	int MCOMMON_API SetGunRandomLua(lua_State* pkLua);
-	int MCOMMON_API SetGunBurstLenghtLua(lua_State* pkLua);
+	int MCOMMON_API SetGunBulletsPerAmmoLua(lua_State* pkLua);
 	int MCOMMON_API SetGunSoundLua(lua_State* pkLua);
 
 	// lualua functions

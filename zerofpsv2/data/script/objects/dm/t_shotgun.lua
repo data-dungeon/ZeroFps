@@ -20,7 +20,8 @@ function Init()
 	SetGunSound (SIGetSelfID(), "data/sound/shotgun.wav");
 	SetGunFireRate (SIGetSelfID(), 0.5);
 --	SetGunBurstLenght (SIGetSelfID(), 0.1);
-	SetGunDamage (SIGetSelfID(), 10);
+	SetGunBulletsPerAmmo(SIGetSelfID(), 10);
+	SetGunDamage (SIGetSelfID(), 5);
 	SetGunRange (SIGetSelfID(), 10);
 	SetGunRandom (SIGetSelfID(), 1.5);
 	SetGunMaxAmmo (SIGetSelfID(), 10);

@@ -314,7 +314,7 @@ void CMembersDlg::SetStats(DMCharacterStats* pkCharacterStats)
 {
 	char szText[50];
 
-	sprintf(szText, "Agent %s", pkCharacterStats->m_strName);
+	sprintf(szText, "Agent %s", pkCharacterStats->m_strName.c_str());
 	SetText("CurrentMemberNumberLabel", szText);
 	SetText("MemberNameField", (char*) pkCharacterStats->m_strName.c_str());
 	SetNumber("MembersArmourField", (int) pkCharacterStats->m_fArmour);

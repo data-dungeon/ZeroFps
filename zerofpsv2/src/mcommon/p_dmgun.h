@@ -64,7 +64,7 @@ class MCOMMON_API P_DMGun: public Property {
 		void SetMaxAmmo		 (int iMaxAmmo)		{ m_iMaxAmmo = iMaxAmmo; }
 		void SetRandom		 (float fRandom)	{ m_fRandom = fRandom; }
 		void SetRange		 (float fRange)		{ m_fRange = fRange; }
-		void SetBurstLenght	 (float fBurstL)	{ m_fBurstLength = fBurstL; }
+		void SetBulletsPerAmmo	 (int iBullets)	{ m_iBulletsPerAmmo = iBullets; }
 		void SetSound		 (string strSound)	{ m_strSound = strSound; }
 		void SetAmmo		 (int iAmmo);
 

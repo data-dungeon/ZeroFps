@@ -52,7 +52,7 @@ void DMLua::Init(EntityManager* pkObjMan,ZFScriptSystem* pkScript)
 	pkScript->ExposeFunction("SetGunAmmo", DMLua::SetGunAmmoLua);				
 	pkScript->ExposeFunction("SetGunMaxAmmo", DMLua::SetGunAmmoLua);			
 	pkScript->ExposeFunction("SetGunRandom", DMLua::SetGunRandomLua);				
-	pkScript->ExposeFunction("SetGunBurstLenght", DMLua::SetGunBurstLenghtLua);	
+	pkScript->ExposeFunction("SetGunBulletsPerAmmo", DMLua::SetGunBulletsPerAmmoLua);	
 	pkScript->ExposeFunction("SetGunSound", DMLua::SetGunSoundLua);	
 }
 // ------------------------------------------------------------------------------------------------
@@ -662,7 +662,7 @@ int DMLua::SetGunAmmoLua (lua_State* pkLua)
 	return 0;
 }
 
-int DMLua::SetGunBurstLenghtLua (lua_State* pkLua)
+int DMLua::SetGunBulletsPerAmmoLua (lua_State* pkLua)
 {
 	Entity* pkEntity = TestScriptInput (2, pkLua);
 
@@ -680,7 +680,7 @@ int DMLua::SetGunBurstLenghtLua (lua_State* pkLua)
 
 	double dBLenght;
 	g_pkScript->GetArgNumber(pkLua, 1, &dBLenght);
-	pkGunP->SetBurstLenght ( float(dBLenght) );
+	pkGunP->SetBulletsPerAmmo ( int(dBLenght) );
 
 	return 0;
 }
