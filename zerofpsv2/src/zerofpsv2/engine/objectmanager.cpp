@@ -507,10 +507,16 @@ Object*	ObjectManager::GetObjectByNetWorkID(int iNetID)
 	if(iNetID == -1)
 		return NULL;
 
+//	int bla = 0;
 	for(list<Object*>::iterator it=m_akObjects.begin();it!=m_akObjects.end();it++) {
 		if((*it)->iNetWorkID == iNetID)
+		{	
+//			cout<<"BLA:"<<bla<<endl;
 			return (*it);
+		}
+//		bla++;
 	}
+	
 
 	return NULL;
 }
@@ -1500,7 +1506,7 @@ void ObjectManager::UpdateZones()
 	unsigned int iZ;
 
 
-	int iTrackerLOS = 5;
+	int iTrackerLOS = 3;
 
 	// Set All Zones as inactive.
 	for(iZ=0;iZ<m_kZones.size();iZ++) {

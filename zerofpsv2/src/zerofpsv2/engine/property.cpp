@@ -15,7 +15,7 @@ Property::Property()
 	m_iType=PROPERTY_TYPE_NORMAL;
 	m_iSide=PROPERTY_SIDE_SERVER;
 	m_pkObject=NULL;
-	strcpy(m_acName,"NoName");		
+	strcpy(m_acName,"NoName");		 
 	
 	m_iSortPlace=0;
 	m_bSortDistance=false;

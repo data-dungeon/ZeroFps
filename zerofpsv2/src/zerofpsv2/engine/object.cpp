@@ -542,7 +542,7 @@ void Object::PackTo(NetPacket* pkNetPacket)
 	pkNetPacket->Write(m_fRadius);
 
 	pkNetPacket->Write_NetStr(m_strName.c_str());
-	g_ZFObjSys.Logf("net", " .Name '%s':", m_strName.c_str() );
+	//g_ZFObjSys.Logf("net", " .Name '%s':", m_strName.c_str() );
 	
 //	char szPropertyName[256];
 
