@@ -35,8 +35,10 @@ private:
 
    vector<string> m_kEquippableOn;
 
-   // vart det är tillåtet att placera föremålet
+   // what kind of item is this?
    EquipmentCategory m_eEquipmentCategory;
+   bool m_bIsContainer; // is a container
+   int m_iContainerID; 
 
 public:
    ItemStats();
@@ -51,6 +53,9 @@ public:
    int GetAttackBonus ( string kAttackName );
    int GetDefenceBonus ( string kDefenceName );
    EquipmentCategory GetEquipmentCategory();
+
+   void SetContainer();
+   int GetContainerID() { return m_iContainerID; } // returns -1 if item isn't a container
 
    void SetSkillBonus ( string kSkillName, int iValue );
    void SetAttributeBonus ( string kAttributeName, int iValue );

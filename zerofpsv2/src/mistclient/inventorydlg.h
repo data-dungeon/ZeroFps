@@ -19,13 +19,15 @@
 
 #include <vector>
 #include <string>
+#include <stack>
 using namespace std;
+
+const int MAIN_CONTAINER = 0;
 
 class InventoryDlg// : public ZFSubSystem  
 {
 public:
 	
-
 	typedef pair<pair<string, string>,ItemStats*> itItem;
 
 	bool AddItems(vector<pair<pair<string,string>,ItemStats*> >&vkItems);
@@ -34,7 +36,6 @@ public:
 	void OnCommand(int iID);
 	void OnMouseMove(int x, int y, bool bMouseDown);
 	
-
 	enum SlotType
 	{
 		CONTAINTER_SLOTS,
@@ -54,23 +55,30 @@ public:
 		char m_szPic[2][75];
 		SlotType m_eType;
 		Point m_kSqr;
+
+		int m_iContainer;
+		int m_iContainerID; // only if this slot is a container
 	};
 
 	Slot* FindSlot(int mouse_x, int mouse_y);
-	void OnClick(int x, int y, bool bMouseDown);
+	void OnClick(int x, int y, bool bMouseDown, bool bLeftButton);
+	void OnDClick(int x, int y, bool bLeftButton);
 	
 	InventoryDlg(ZGuiWnd* pkDlgWnd);
 	~InventoryDlg();
 
-	static int GetID(Point sqr);
+	
 
 private:
+	void SwitchContainer(int iNewContainer);
 	void AddSlot(const char *szPic, const char *szPicA, Point sqr, 
-		SlotType eType, ItemStats* pkItemStats);
+		SlotType eType, ItemStats* pkItemStats, int iContainer);
 	bool RemoveSlot(/*Point sqr,*/ Slot* pkSlot); //bool bDragItem=false);
 	bool GetFreeSlotPos(Point& refSqr);
 	bool SlotExist(int sx, int sy);
+	static int GenerateID(Point sqr);
 
+	string GetWndByID(int iID);
 	void ScrollItems(int iPos);
 	
 	void RegisterSlot(Slot slot);
@@ -78,7 +86,8 @@ private:
 	Point MousePosToSpecialSqrPos(int x, int y, EquipmentCategory eCategory);
 	vector<Slot> m_kItemSlots;
 	vector<Slot> m_kDragSlots;
-
+	stack<int> m_kContainerStack;
+	
 	typedef vector<Slot>::iterator itSlot;
 
 	ZGui* m_pkGui;
@@ -86,10 +95,16 @@ private:
 	TextureManager* m_pkTexMan;
 	ZFAudioSystem* m_pkAudioSys;
 	ZGuiWnd* m_pkDlgWnd;
+	ZGuiLabel* m_pkSelectionLabel;
+	ZGuiButton* m_pkBackButton;
+	Slot* m_pkSelectedSlot;
 
 	static int s_iSlotZCounter;
 	
 	int m_iCurrentScrollPos;
+	int m_iPrevScrollPos;
+	int m_iCurrentContainer;
+	int m_iPrevContainer;
 
 	Point m_kClickOffset;
 

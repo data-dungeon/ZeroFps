@@ -3,7 +3,7 @@
 //////////////////////////////////////////////////////////////////////
 
 #include "inventorydlg.h"
-#include "../zerofpsv2/basic/zfsystem.h"
+//#include "../zerofpsv2/basic/zfsystem.h"
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
@@ -18,8 +18,22 @@ InventoryDlg::InventoryDlg(ZGuiWnd* pkDlgWnd)// : ZFSubSystem("InventoryDlg")
 	m_pkTexMan = static_cast<TextureManager*>(g_ZFObjSys.GetObjectPtr("TextureManager"));
 	m_pkAudioSys = static_cast<ZFAudioSystem*>(g_ZFObjSys.GetObjectPtr("ZFAudioSystem"));
 	m_kClickOffset = Point(0,0);
-	m_iCurrentScrollPos = 0;
+	m_iCurrentScrollPos = m_iPrevScrollPos = 0;
 	m_pkDlgWnd = pkDlgWnd;
+	m_pkSelectedSlot = NULL;
+
+	m_pkSelectionLabel = new ZGuiLabel(Rect(264,16,264+32,16+32),m_pkDlgWnd,true,23443);
+	m_pkSelectionLabel->SetSkin(new ZGuiSkin(-1,-1,-1,-1,  -1,-1,-1,-1, 0,0,0, 255,0,0, 2, 0, 1));
+	m_pkSelectionLabel->Hide();
+	m_iCurrentContainer = m_iPrevContainer = MAIN_CONTAINER;
+
+	m_pkBackButton = new ZGuiButton(Rect(472,259,472+28,259+19), m_pkDlgWnd, true, 33333);
+	m_pkBackButton->SetButtonUpSkin(new ZGuiSkin(-1,-1,-1,-1,  -1,-1,-1,-1, 155,0,0, 0,0,0, 0, 0, 0));
+	m_pkBackButton->SetButtonHighLightSkin(new ZGuiSkin(-1,-1,-1,-1,  -1,-1,-1,-1, 155,0,0, 255,255,255, 1, 0, 0));
+	m_pkBackButton->SetButtonDownSkin(new ZGuiSkin(-1,-1,-1,-1,  -1,-1,-1,-1, 0,255,0, 0,0,0, 0, 0, 0));
+	m_pkGui->RegisterWindow( m_pkBackButton, "BackPackBackButton" );
+
+	m_kContainerStack.push(m_iCurrentContainer); 
 }
 
 InventoryDlg::~InventoryDlg()
@@ -37,7 +51,7 @@ bool InventoryDlg::AddItem(const char *szPic, const char *szPicA, ItemStats* pkI
 		return false;
 	}
 			
-	AddSlot(szPic, szPicA, sqr, CONTAINTER_SLOTS, pkItemStats);
+	AddSlot(szPic, szPicA, sqr, CONTAINTER_SLOTS, pkItemStats, MAIN_CONTAINER);
 
 	ScrollItems(m_iCurrentScrollPos+1);
 	ScrollItems(m_iCurrentScrollPos-1);
@@ -60,7 +74,7 @@ bool InventoryDlg::AddItems(vector<pair<pair<string, string>,ItemStats*> >&vkIte
 		}
 
 		AddSlot((*it).first.first.c_str(), (*it).first.second.c_str(), 
-			sqr, CONTAINTER_SLOTS, (*it).second);
+			sqr, CONTAINTER_SLOTS, (*it).second, MAIN_CONTAINER);
 	}
 
 	ScrollItems(m_iCurrentScrollPos+1);
@@ -70,104 +84,153 @@ bool InventoryDlg::AddItems(vector<pair<pair<string, string>,ItemStats*> >&vkIte
 }
 
 
-void InventoryDlg::OnClick(int x, int y, bool bMouseDown)
+void InventoryDlg::OnClick(int x, int y, bool bMouseDown, bool bLeftButton)
 {
+	printf("Current container = %i\n", m_iCurrentContainer);
+
 	Point sqr = MousePosToSqr(x,y);
 
 	Slot* pkSlot = FindSlot(x,y);
 
 	char szPic[50], szPicA[50];
 
-	if(pkSlot)
+	//
+	// Left click
+	//
+	if(bLeftButton)
 	{
-		// ta tag i ett föremål?
-		if(bMouseDown)
+		if(pkSlot)
 		{
-			strcpy(szPic, pkSlot->m_szPic[0]);
-			strcpy(szPicA, pkSlot->m_szPic[1]);
-			ItemStats* pkStats = pkSlot->m_pkItemStats;
-			SlotType prev_type = pkSlot->m_eType;
-
-			if(RemoveSlot(pkSlot))
+			// ta tag i ett föremål?
+			if(bMouseDown)
 			{
-				if(prev_type == SPECIAL_SLOTS)
+				printf("container = %i\n", pkSlot->m_iContainer);
+
+				strcpy(szPic, pkSlot->m_szPic[0]);
+				strcpy(szPicA, pkSlot->m_szPic[1]);
+				ItemStats* pkStats = pkSlot->m_pkItemStats;
+				SlotType prev_type = pkSlot->m_eType;
+
+				if(RemoveSlot(pkSlot))
 				{
-					sqr.x = -x;
-					sqr.y = -y;					
+					if(prev_type == SPECIAL_SLOTS)
+					{
+						sqr.x = -x;
+						sqr.y = -y;					
+					}
+
+					AddSlot(szPic, szPicA, sqr, UNDER_MOUSE, pkStats, m_iCurrentContainer);
+
+					m_pkAudioSys->StartSound("/data/sound/open_window.wav",
+						m_pkAudioSys->GetListnerPos(),m_pkAudioSys->GetListnerDir(),false);
+
+					m_kClickOffset.x = 32;//x-pkSlot->m_pkLabel->GetScreenRect().Left; //(264+sqr.x*48); 
+					m_kClickOffset.y = 32;//y-pkSlot->m_pkLabel->GetScreenRect().Top;  //(16+sqr.y*48);
+
+					m_pkGui->SetCaptureToWnd( m_pkDlgWnd ); // set capture
+				}
+			}
+		}
+		else // släppa tillbaks ett föremål
+		if(!m_kDragSlots.empty() && bMouseDown == false)
+		{
+			Slot kSlotToAdd = m_kDragSlots.back();
+
+			// det går inte att placera en container i sig själv
+			if(kSlotToAdd.m_iContainerID == m_iCurrentContainer)
+				sqr = Point(-1,-1);
+
+			if(sqr == Point(-1,-1))
+			{
+				sqr = kSlotToAdd.m_kSqr; // välj den gamla positionen (ruta eller pixel)
+										 // om slot:en inte fanns.
+			}
+		
+			strcpy(szPic, kSlotToAdd.m_szPic[0]);
+			strcpy(szPicA, kSlotToAdd.m_szPic[1]);
+			ItemStats* pkStats = kSlotToAdd.m_pkItemStats;
+			
+			if(RemoveSlot(&kSlotToAdd))
+			{
+				SlotType type = CONTAINTER_SLOTS;
+				Point test = MousePosToSpecialSqrPos(x,y,pkStats->GetEquipmentCategory());
+				if( test != Point(-1,-1) )
+				{
+					type = SPECIAL_SLOTS;
+			
+					if(!SlotExist(test.x,test.y))
+						sqr = test;
+				}
+				else
+				{
+					if(sqr.x > 4)
+					{
+						type = SPECIAL_SLOTS;
+					}
 				}
 
-				AddSlot(szPic, szPicA, sqr, UNDER_MOUSE, pkStats);
+				int sx, sy;
+				if(sqr.x < 5) // container item
+				{
+					sx = 264 + sqr.x * 48;
+					sy = 16 + sqr.y * 48;
+				}
+				else
+				{
+					sx = sqr.x;
+					sy = sqr.y;
+				}
 
-				m_pkAudioSys->StartSound("/data/sound/open_window.wav",
-					m_pkAudioSys->GetListnerPos(),m_pkAudioSys->GetListnerDir(),false);
+				if(SlotExist(sx, sy))
+				{
+					GetFreeSlotPos(sqr);
+					type = CONTAINTER_SLOTS;					
+				}
+		
+				AddSlot(szPic, szPicA, sqr, type, pkStats, m_iCurrentContainer);
 
-				m_kClickOffset.x = 32;//x-pkSlot->m_pkLabel->GetScreenRect().Left; //(264+sqr.x*48); 
-				m_kClickOffset.y = 32;//y-pkSlot->m_pkLabel->GetScreenRect().Top;  //(16+sqr.y*48);
+				if(m_kDragSlots.empty())
+					m_pkGui->KillWndCapture(); // remove capture
 
-				m_pkGui->SetCaptureToWnd( m_pkDlgWnd ); // set capture
+				m_pkAudioSys->StartSound("/data/sound/close_window.wav",
+					m_pkAudioSys->GetListnerPos(),m_pkAudioSys->GetListnerDir(),false);			
 			}
 		}
 	}
-	else // släppa tillbaks ett föremål
-	if(!m_kDragSlots.empty() && bMouseDown == false)
+	//
+	// Right click
+	//
+	else
 	{
-		Slot kSlotToAdd = m_kDragSlots.back();
-
-		if(sqr == Point(-1,-1))
+		if(pkSlot && bMouseDown)
 		{
-			sqr = kSlotToAdd.m_kSqr; // välj den gamla positionen (ruta eller pixel)
-									 // om slot:en inte fanns.
+			Rect rcClickLabel = pkSlot->m_pkLabel->GetScreenRect();
+			m_pkSelectionLabel->SetPos(rcClickLabel.Left, rcClickLabel.Top, true, true);  
+			m_pkSelectionLabel->Show();
+			m_pkSelectedSlot = pkSlot;
 		}
-	
-		strcpy(szPic, kSlotToAdd.m_szPic[0]);
-		strcpy(szPicA, kSlotToAdd.m_szPic[1]);
-		ItemStats* pkStats = kSlotToAdd.m_pkItemStats;
-		
-		if(RemoveSlot(&kSlotToAdd))
+	}
+}
+
+void InventoryDlg::OnDClick(int x, int y, bool bLeftButton)
+{
+	if(bLeftButton == false)
+	{
+		Slot* pkSlot = FindSlot(x,y);
+
+		if(pkSlot)
 		{
-			SlotType type = CONTAINTER_SLOTS;
-			Point test = MousePosToSpecialSqrPos(x,y,pkStats->GetEquipmentCategory());
-			if( test != Point(-1,-1) )
-			{
-				type = SPECIAL_SLOTS;
-		
-				if(!SlotExist(test.x,test.y))
-					sqr = test;
-			}
-			else
-			{
-				if(sqr.x > 4)
-				{
-					type = SPECIAL_SLOTS;
-				}
-			}
+			int new_container = pkSlot->m_pkItemStats->GetContainerID();
 
-			int sx, sy;
-			if(sqr.x < 5) // container item
+			if(new_container != -1)
 			{
-				sx = 264 + sqr.x * 48;
-				sy = 16 + sqr.y * 48;
-			}
-			else
-			{
-				sx = sqr.x;
-				sy = sqr.y;
-			}
+				SwitchContainer(new_container);
 
-			if(SlotExist(sx, sy))
-			{
-				GetFreeSlotPos(sqr);
-				type = CONTAINTER_SLOTS;
-				
+				m_pkSelectionLabel->Hide();
+				m_pkSelectedSlot = NULL;
+
+				m_kContainerStack.push(new_container);
 			}
-	
-			AddSlot(szPic, szPicA, sqr, type, pkStats);
-
-			if(m_kDragSlots.empty())
-				m_pkGui->KillWndCapture(); // remove capture
-
-			m_pkAudioSys->StartSound("/data/sound/close_window.wav",
-				m_pkAudioSys->GetListnerPos(),m_pkAudioSys->GetListnerDir(),false);			
 		}
 	}
 }
@@ -183,7 +246,16 @@ InventoryDlg::Slot* InventoryDlg::FindSlot(int mouse_x, int mouse_y)
 	for(i=0; i<m_kItemSlots.size(); i++)
 	{
 		if(m_kItemSlots[i].m_kSqr == sqr)
-			return &m_kItemSlots[i];
+		{
+			if(	m_kItemSlots[i].m_eType != SPECIAL_SLOTS)
+			{
+				if(m_kItemSlots[i].m_iContainer != m_iCurrentContainer)
+					continue;
+			}
+
+			if(m_kItemSlots[i].m_pkLabel->IsVisible())
+				return &m_kItemSlots[i];
+		}
 	}
 
 	// Leta efter special slots
@@ -193,7 +265,15 @@ InventoryDlg::Slot* InventoryDlg::FindSlot(int mouse_x, int mouse_y)
 		if(m_kItemSlots[i].m_pkLabel->IsVisible())
 		{
 			if(m_kItemSlots[i].m_pkLabel->GetScreenRect().Inside(mouse_x, mouse_y))
+			{
+				if(	m_kItemSlots[i].m_eType != SPECIAL_SLOTS)
+				{
+					if(m_kItemSlots[i].m_iContainer != m_iCurrentContainer)
+						continue;
+				}
+					
 				return &m_kItemSlots[i];
+			}
 		}
 	}
 
@@ -227,6 +307,34 @@ Point InventoryDlg::MousePosToSpecialSqrPos(int x, int y, EquipmentCategory eCat
 		if(Rect(208,64,208+32,64+32).Inside(x,y)) return Point(208,64);
 		if(Rect(16,64,208+32,64+32).Inside(x,y)) return Point(16,64);
 		break;
+	case Cloak:
+		if(Rect(64,16,64+32,16+32).Inside(x,y)) return Point(64,16);
+		break;
+	case Helm:
+		if(Rect(112,16,112+32,16+32).Inside(x,y)) return Point(112,16);
+		break;
+	case Amulett:
+		if(Rect(160,16,160+32,16+32).Inside(x,y)) return Point(160,16);
+		break;
+	case Shield:
+		if(Rect(208,16,208+32,16+32).Inside(x,y)) return Point(208,16);
+		break;
+	case Bracer:
+		if(Rect(16,112,16+32,112+32).Inside(x,y)) return Point(16,112);
+		break;
+	case Glove:
+		if(Rect(208,112,208+32,112+32).Inside(x,y)) return Point(208,112);
+		break;
+	case Ring:
+		if(Rect(16,160,16+32,160+32).Inside(x,y)) return Point(16,160);
+		if(Rect(208,160,208+32,160+32).Inside(x,y)) return Point(208,160);
+		break;
+	case Boots:
+		if(Rect(16,208,16+32,208+32).Inside(x,y)) return Point(16,208);
+		break;
+	case Belt:
+		if(Rect(208,208,208+32,208+32).Inside(x,y)) return Point(208,208);
+		break;
 	}
 	
 	return Point(-1, -1);
@@ -242,12 +350,27 @@ bool InventoryDlg::RemoveSlot(Slot* pkSlot)
 	{
 		for(itSlot it = m_kItemSlots.begin(); it != m_kItemSlots.end(); it++)
 		{
-			if((*it).m_kSqr == sqr)
+			Slot s = (*it);
+
+			if( s.m_iContainer == m_iCurrentContainer || s.m_eType == SPECIAL_SLOTS)
 			{
-				m_pkGui->UnregisterWindow((*it).m_pkLabel);
-				m_kItemSlots.erase(it);
-				return true;
-			}		
+				if(s.m_kSqr == sqr)
+				{
+					if(m_pkSelectedSlot)
+					{
+						if(s.m_pkLabel->GetScreenRect() == 
+							m_pkSelectionLabel->GetScreenRect() )
+						{
+							m_pkSelectionLabel->Hide();
+							m_pkSelectedSlot = NULL;
+						}
+					}
+
+					m_pkGui->UnregisterWindow(s.m_pkLabel);
+					m_kItemSlots.erase(it);
+					return true;
+				}
+			}
 		}
 	}
 	else
@@ -268,14 +391,14 @@ bool InventoryDlg::RemoveSlot(Slot* pkSlot)
 
 void InventoryDlg::RegisterSlot(InventoryDlg::Slot slot)
 {
-	int id = GetID(slot.m_kSqr);
+	int id = GenerateID(slot.m_kSqr);
 
 	char szSlotName[50];
 	sprintf(szSlotName, "ItemSlotLabel%i", id);
 	m_pkGui->RegisterWindow(slot.m_pkLabel, szSlotName);
 }
 
-int InventoryDlg::GetID(Point sqr)
+int InventoryDlg::GenerateID(Point sqr)
 {
 	static int counter = 1000; counter++;
 	return counter;
@@ -292,37 +415,28 @@ void InventoryDlg::OnMouseMove(int x, int y, bool bMouseDown)
 
 void InventoryDlg::OnCommand(int iID)
 {
-	
+	string strScrollbarName = GetWndByID(iID);
+
+	if(strScrollbarName == "BackPackBackButton")
+	{
+		if(m_kContainerStack.size() > 1)
+		{
+			m_kContainerStack.pop();
+
+			int new_container = m_kContainerStack.top();
+
+			SwitchContainer(new_container);
+		}
+	}
 }
 
 void InventoryDlg::OnScroll(int iID, int iPos)
 {
-	ZGuiWnd* pkParent = m_pkResMan->Wnd("BackPackWnd");
+	string strScrollbarName = GetWndByID(iID);
 
-	list<ZGuiWnd*> childs;
-	pkParent->GetChildrens(childs);
-
-	list<ZGuiWnd*>::iterator itChild = childs.begin() ;
-
-	ZGuiWnd* pkClickWnd = NULL;
-	
-	for( ; itChild != childs.end(); itChild++)
+	if(strScrollbarName == "SlotListScrollbar")
 	{
-		if((*itChild)->GetID() == (unsigned int) iID)
-		{
-			pkClickWnd = *itChild;
-			break;
-		}
-	}
-
-	if(pkClickWnd != NULL)
-	{
-		string strScrollbarName = pkClickWnd->GetName();
-
-		if(strScrollbarName == "SlotListScrollbar")
-		{
-			ScrollItems(iPos);
-		}
+		ScrollItems(iPos);
 	}
 }
 
@@ -339,22 +453,37 @@ void InventoryDlg::ScrollItems(int iPos)
 	{
 		Slot slot = (*it);
 
-		if(slot.m_eType != SPECIAL_SLOTS)
+		if(slot.m_iContainer == m_iCurrentContainer)
 		{
-			Rect rc = slot.m_pkLabel->GetScreenRect(); 
+			if(slot.m_eType != SPECIAL_SLOTS)
+			{
+				Rect rc = slot.m_pkLabel->GetScreenRect(); 
 
-			int y = rc.Top+offset*48;
+				int y = rc.Top+offset*48;
 
-			slot.m_pkLabel->SetPos(rc.Left, y, true, true);
+				slot.m_pkLabel->SetPos(rc.Left, y, true, true);
 
-			(*it).m_kSqr.y = (y-16) / 48;
+				(*it).m_kSqr.y = (y-16) / 48;
 
-			if(y < 0 || y > 192)
-				slot.m_pkLabel->Hide();
-			else
-				slot.m_pkLabel->Show();
+				if(y < 0 || y > 192)
+					slot.m_pkLabel->Hide();
+				else
+					slot.m_pkLabel->Show();
+			}
 		}
 	}	
+
+	if(m_pkSelectedSlot && m_pkSelectedSlot->m_eType != SPECIAL_SLOTS)
+	{
+		if(m_pkSelectedSlot->m_iContainer == m_iCurrentContainer)
+		{
+			Rect rc = m_pkSelectionLabel->GetScreenRect(); 
+			int y = rc.Top+offset*48;
+			m_pkSelectionLabel->SetPos(rc.Left, y, true, true);
+			if(y < 0 || y > 192) m_pkSelectionLabel->Hide();
+			else m_pkSelectionLabel->Show();
+		}
+	}
 }
 
 bool InventoryDlg::GetFreeSlotPos(Point& refSqr)
@@ -383,10 +512,8 @@ bool InventoryDlg::GetFreeSlotPos(Point& refSqr)
 	return false;
 }
 
-
-
 void InventoryDlg::AddSlot(const char *szPic, const char *szPicA, Point sqr, 
-						   SlotType eType, ItemStats* pkItemStats)
+						   SlotType eType, ItemStats* pkItemStats, int iContainer)
 {
 	int sx, sy;
 
@@ -409,7 +536,7 @@ void InventoryDlg::AddSlot(const char *szPic, const char *szPicA, Point sqr,
 
 	int size = (eType == UNDER_MOUSE) ? 64 : 32;
 
-	int id = GetID(sqr);
+	int id = GenerateID(sqr);
 
 	ZGuiLabel* pkNewLabel = new ZGuiLabel(Rect(sx,sy,sx+size,sy+size), 
 		m_pkResMan->Wnd("BackPackWnd"), true, id);
@@ -442,6 +569,8 @@ void InventoryDlg::AddSlot(const char *szPic, const char *szPicA, Point sqr,
 
 	kNewSlot.m_eType = eType;
 	kNewSlot.m_pkItemStats = pkItemStats;
+	kNewSlot.m_iContainer = iContainer;
+	kNewSlot.m_iContainerID = kNewSlot.m_pkItemStats->GetContainerID();
 
 	switch(eType)
 	{
@@ -460,8 +589,70 @@ bool InventoryDlg::SlotExist(int sx, int sy)
 {
 	itSlot it;
 	for( it = m_kItemSlots.begin(); it != m_kItemSlots.end(); it++)
-		if((*it).m_pkLabel->GetScreenRect().Inside(sx,sy))
-			return true;
+	{
+		Slot slot = (*it);
+		if(slot.m_pkLabel->GetScreenRect().Inside(sx,sy))
+		{
+			if(slot.m_iContainer == m_iCurrentContainer)
+			{
+				if(slot.m_pkLabel->IsVisible())
+					return true;
+			}
+		}
+	}
 		
 	return false;
+}
+
+
+void InventoryDlg::SwitchContainer(int iNewContainer)
+{
+	m_iPrevContainer = m_iCurrentContainer;
+	m_iCurrentContainer = iNewContainer;
+
+	itSlot it;
+	for( it = m_kItemSlots.begin(); it != m_kItemSlots.end(); it++)
+	{
+		Slot slot = (*it);
+
+		if(slot.m_eType == CONTAINTER_SLOTS)
+		{
+			if(slot.m_iContainer == iNewContainer)
+				slot.m_pkLabel->Show();
+			else
+				slot.m_pkLabel->Hide();
+		}
+	}
+
+	//
+	// Scroll items
+	//
+
+/*	static_cast<ZGuiScrollbar*>(m_pkResMan->Wnd(
+		"SlotListScrollbar"))->SetScrollInfo(0,100,0.15f,0);*/
+
+}
+
+string InventoryDlg::GetWndByID(int iID)
+{
+	ZGuiWnd* pkParent = m_pkResMan->Wnd("BackPackWnd");
+
+	list<ZGuiWnd*> childs;
+	pkParent->GetChildrens(childs);
+
+	list<ZGuiWnd*>::iterator itChild = childs.begin() ;
+
+	ZGuiWnd* pkClickWnd = NULL;
+	
+	for( ; itChild != childs.end(); itChild++)
+	{
+		if((*itChild)->GetID() == (unsigned int) iID)
+		{
+			pkClickWnd = *itChild;
+			return string(pkClickWnd->GetName());
+		}
+	}
+
+	return string("");
+
 }

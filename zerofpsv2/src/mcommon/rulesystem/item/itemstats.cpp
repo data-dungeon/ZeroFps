@@ -281,6 +281,7 @@ ItemStats::ItemStats()
    m_fQuality = 1;
    m_iQuantity = 1;
    m_eEquipmentCategory = Item;
+   m_iContainerID = -1;
 
 }
 
@@ -409,3 +410,10 @@ bool ItemStats::CanEquipOn ( string kSlotName )
 }
 
 // ---------------------------------------------------------------------------------------------
+
+void ItemStats::SetContainer()
+{ 
+	static int s_iContainerCounter=0;
+	s_iContainerCounter++;
+	m_iContainerID = s_iContainerCounter;
+}

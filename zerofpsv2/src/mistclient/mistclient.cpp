@@ -25,11 +25,23 @@ static bool GUIPROC( ZGuiWnd* win, unsigned int msg, int numparms, void *params 
 		break;
 
 	case ZGM_LBUTTONDOWN:
-		g_kMistClient.OnClick(((int*)params)[0], ((int*)params)[1], true, win);
+		g_kMistClient.OnClick(((int*)params)[0], ((int*)params)[1], true, true, win);
+		break;
+	case ZGM_LBUTTONUP:
+		g_kMistClient.OnClick(((int*)params)[0], ((int*)params)[1], false, true, win);
+		break;
+	case ZGM_RBUTTONDOWN:
+		g_kMistClient.OnClick(((int*)params)[0], ((int*)params)[1], true, false, win);
+		break;
+	case ZGM_RBUTTONUP:
+		g_kMistClient.OnClick(((int*)params)[0], ((int*)params)[1], false, false, win);
 		break;
 
-	case ZGM_LBUTTONUP:
-		g_kMistClient.OnClick(((int*)params)[0], ((int*)params)[1], false, win);
+	case ZGM_LBUTTONDBLCLK:
+		g_kMistClient.OnDClick(((int*)params)[0], ((int*)params)[1], true, win);
+		break;
+	case ZGM_RBUTTONDBLCLK:
+		g_kMistClient.OnDClick(((int*)params)[0], ((int*)params)[1], false, win);
 		break;
 
 	case ZGM_MOUSEMOVE:
@@ -502,37 +514,33 @@ void MistClient::OnCommand(int iID, ZGuiWnd *pkMainWnd)
 				{
 					m_pkInventDlg = new InventoryDlg(GetWnd("BackPackWnd"));
 
-					const int ANTAL = 250;
+					const int ANTAL = 5;
 
 					ItemStats* pkTestItems = new ItemStats[ANTAL];
 
 					typedef pair<EquipmentCategory, pair<string,string> > tInfo;
 
-					tInfo info[250];
-					int i;
-
-					for( i=0; i<250; i++)
+					tInfo info[ANTAL] =
 					{
-						info[i] = tInfo(Weapon, pair<string, string>("dagger.bmp", "dagger_a.bmp"));
-					}
-
-
-			/*		{
 						tInfo(Weapon, pair<string, string>("dagger.bmp", "dagger_a.bmp")),
 						tInfo(Weapon, pair<string, string>("dagger.bmp", "dagger_a.bmp")),
-						tInfo(Item, pair<string, string>("spellbook.bmp", "spellbook_a.bmp")),
-						tInfo(Item, pair<string, string>("gembag1.bmp", "gembag1_a.bmp")),
-					};*/
+						tInfo(Belt, pair<string, string>("spellbook.bmp", "spellbook_a.bmp")),
+						tInfo(Ring, pair<string, string>("gembag1.bmp", "gembag1_a.bmp")),
+						tInfo(Ring, pair<string, string>("gembag1.bmp", "gembag1_a.bmp")),
+					};
 
 					vector<InventoryDlg::itItem> kItems;
 
-					for( i=0; i<ANTAL; i++)
+					for( int i=0; i<ANTAL; i++)
 					{
 						pkTestItems[i].SetEquipmentCategory(info[i].first); 
 						kItems.push_back( InventoryDlg::itItem(
 							pair<string,string>(info[i].second.first, 
 							info[i].second.second), &pkTestItems[i]) );
 					}
+
+					kItems[2].second->SetContainer(); 
+					kItems[0].second->SetContainer(); 
 					
 					m_pkInventDlg->AddItems(kItems);
 				}
@@ -609,14 +617,25 @@ Object* MistClient::GetTargetObject()
 	return pkClosest;
 }
 
-void MistClient::OnClick(int x, int y, bool bMouseDown, ZGuiWnd *pkMain)
+void MistClient::OnClick(int x, int y, bool bMouseDown, bool bLeftButton, ZGuiWnd *pkMain)
 {
 	if(pkMain == NULL)
 		return;
 
 	if(strcmp(pkMain->GetName(), "BackPackWnd") == 0)
 	{
-		m_pkInventDlg->OnClick(x,y,bMouseDown);
+		m_pkInventDlg->OnClick(x,y,bMouseDown,bLeftButton);
+	}
+}
+
+void MistClient::OnDClick(int x, int y, bool bLeftButton, ZGuiWnd *pkMain)
+{
+	if(pkMain == NULL)
+		return;
+
+	if(strcmp(pkMain->GetName(), "BackPackWnd") == 0)
+	{
+		m_pkInventDlg->OnDClick(x,y,bLeftButton);
 	}
 }
 
@@ -641,3 +660,5 @@ void MistClient::OnScroll(int iID, int iPos, ZGuiWnd *pkMain)
 		m_pkInventDlg->OnScroll(iID,iPos);
 	}	
 }
+
+

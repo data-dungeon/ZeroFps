@@ -3,19 +3,20 @@
 
 enum EquipmentCategory
 {
-	Item,	// kan vara allt möjligt (utan nedastående),
-			// dessa föremål går endast att placera
-			// i container slots.
+	Item,	 // can be almost anything.. can only be placed in container slots.
 
-	Armor,	// dessa kan endast placeras i de 13
-	Cloak,	// unika slots som representerar vad
-	Helm,	// spelaren bär på kroppen.
-	Amulett,
-	Shield,
-	Weapon,
-	Bracer,
-	Glove,
-	Ring,
+	//
+	// Items that both can be placed in a container and on a special slot.
+	//
+	Armor,	 
+	Cloak,	 // A cloak that wizards wear to protect them self
+	Helm,	 
+	Amulett, 
+	Shield,  
+	Weapon,  
+	Bracer,  // Thick bands of metal or leather tied to a characters forearm.
+	Glove,   // (handskar)
+	Ring,	
 	Boots,
 	Belt
 };
