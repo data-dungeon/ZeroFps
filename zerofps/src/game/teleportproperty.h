@@ -18,6 +18,7 @@ class TeleportProperty: public Property {
 	
 	public:
 		TeleportProperty();
+		~TeleportProperty();
 	
 		void Update();
 		void Touch(Object* pkObject);		

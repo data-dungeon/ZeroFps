@@ -34,6 +34,7 @@ class PlayerControlProperty: public Property {
 		bool onGround;
 		
 		PlayerControlProperty(Input *pkInput,HeightMap *pkMap);
+		~PlayerControlProperty();		
 
 		void Update();
 		void Touch(Object* pkObject);		

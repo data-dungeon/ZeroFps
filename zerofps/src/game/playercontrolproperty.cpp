@@ -28,6 +28,12 @@ PlayerControlProperty::PlayerControlProperty(Input *pkInput,HeightMap *pkMap)
 	walksound->m_bLoop=false;
 };
 
+PlayerControlProperty::~PlayerControlProperty()
+{
+	m_pkAlSys->RemoveSound(walksound);
+	delete walksound;
+}
+
 /*
 class	ClientMoveCommand
 {
@@ -114,7 +120,7 @@ void PlayerControlProperty::Update() {
 	//update sound possition
 	walksound->m_kPos=m_pkObject->GetPos();
 
-	if(walking)
+	if(walking && onGround)
 		m_pkAlSys->AddSound(walksound);
 	else
 		m_pkAlSys->RemoveSound(walksound);

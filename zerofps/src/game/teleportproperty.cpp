@@ -20,6 +20,17 @@ TeleportProperty::TeleportProperty()
 	m_kToPos.Set(10,10,10);
 }
 
+TeleportProperty::~TeleportProperty()
+{
+	m_pkAlSys->RemoveSound(sound);
+	m_pkAlSys->RemoveSound(sound2);	
+
+	delete sound;
+	delete sound2;
+
+}
+
+
 void TeleportProperty::Update()
 {
 	sound->m_kPos=m_pkObject->GetPos();
