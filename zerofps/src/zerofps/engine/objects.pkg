@@ -1,6 +1,7 @@
 class Object;
 class Property;
 class ModelProperty;
+class CollisionProperty;
 class CollisionObject;
 class CollisionSphere;
 class CollisionPoint;
@@ -8,6 +9,7 @@ class CollisionPoint;
 #include "object.h"
 #include "property.h"
 #include "modelproperty.h"
+#include "collisionproperty.h"
 #include "collisionobject.h"
 #include "collisionsphere.h"
 #include "collisionpoint.h"

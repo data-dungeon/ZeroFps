@@ -1,12 +1,21 @@
 #include "object.h"
 
 Object::Object() {
+	m_bStatic=false;
+	m_pkObjectMan=NULL;
 	m_kPos=Vector3(0,0,0);
 	m_kRot=Vector3(0,0,0);
 }
 
 
 Object::~Object() {
+//	cout<<"OBJECT DIES"<<endl;
+
+	//if the object is in a objectmanager then tell the objectmanager
+	//to remove it before we delete it
+//	if(m_pkObjectMan!=NULL)
+//		m_pkObjectMan->Remove(this);
+	
 	for(list<Property*>::iterator it=m_akPropertys.begin();it!=m_akPropertys.end();it++) {
 		delete (*it);
 	}

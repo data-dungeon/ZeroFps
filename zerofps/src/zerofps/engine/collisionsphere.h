@@ -12,10 +12,11 @@ class ENGINE_API CollisionSphere:public CollisionObject{
 	private:
 		
 	public:
-		Vector3 m_kPos;
-		float m_fRadius;	
+		Vector3 *m_kPos;
+		float *m_fRadius;	
 	
 		CollisionSphere(Vector3 kPos,float fRadius);
+		CollisionSphere(Vector3 *kPos,float *fRadius);
 		
 		bool Collide(CollisionObject *kOther,bool bContinue);
 		

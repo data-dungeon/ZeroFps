@@ -6,18 +6,25 @@
 #include <list>
 #include <string.h>
 #include "engine_x.h"
+#include "objectmanager.h"
 
 using namespace std;
+
+class ObjectManager;
 
 class ENGINE_API Object {
 	protected:
 		Vector3 m_kPos;
 		Vector3 m_kRot;
 		bool m_bStatic;	
+		bool m_bDelete;
 
 		list<Property*> m_akPropertys;
 
 	public:
+		ObjectManager* m_pkObjectMan; 
+		
+		
 		Object();		
 		~Object();
 		
@@ -27,11 +34,15 @@ class ENGINE_API Object {
 		void Update();
 		bool Update(char* acName);
 		
-		inline bool Static(void){return m_bStatic;};
-		inline void Static(bool newStatic){m_bStatic=newStatic;};
+
+//		inline void Static(bool newStatic){m_bStatic=newStatic;};
 		
 		inline Vector3 &GetPos(){return m_kPos;};
 		inline Vector3 &GetRot(){return m_kRot;};
+//		inline bool &GetDelete(){return m_bDelete;};
+		inline bool &Static(){return m_bStatic;};		
+		inline void SetObjectMan(ObjectManager* pkObjectMan) {m_pkObjectMan=pkObjectMan;};		
+		
 		
 };
 

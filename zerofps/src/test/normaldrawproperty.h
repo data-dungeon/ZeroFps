@@ -12,6 +12,8 @@ class NormalDrawProperty: public Property {
 	private:
 		HeightMap *m_pkMap;
 		Render *m_pkRender;
+		
+
 
 	public:
 		NormalDrawProperty(HeightMap* pkHeightMap,Render *pkRender);

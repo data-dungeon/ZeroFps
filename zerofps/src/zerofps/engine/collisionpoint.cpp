@@ -1,8 +1,11 @@
 #include "collisionpoint.h"
 
-CollisionPoint::CollisionPoint(Vector3 kNewPos) {
+CollisionPoint::CollisionPoint(Vector3 *kNewPos) {
 	m_kPos=kNewPos;
-
+}
+CollisionPoint::CollisionPoint(Vector3 kNewPos) {
+	m_kPos=new Vector3();
+	*m_kPos=kNewPos;
 }
 
 bool CollisionPoint::Collide(CollisionObject *kOther,bool bContinue) {
@@ -21,7 +24,7 @@ bool CollisionPoint::Collide(CollisionObject *kOther,bool bContinue) {
 
 
 bool CollisionPoint::CollidePoint(CollisionPoint *kCp) {
-	return (kCp->m_kPos==m_kPos);
+	return ((*kCp->m_kPos)==(*m_kPos));
 }
 
 

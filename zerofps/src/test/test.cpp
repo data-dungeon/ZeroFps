@@ -91,18 +91,15 @@ void Test::OnInit(void) {
 	pkLight->Add(sol);
 	
 	
-	Object *kul=new Object;
-	kul->AddProperty(new NormalDrawProperty(test,pkRender));	
-	kul->AddProperty(new PlayerControlProperty(pkInput));		
-	kul->GetPos().x+=10;
-	
-	Object *ball=new Object;
-	ball->AddProperty(new PlayerControlProperty(pkInput));
-	ball->AddProperty(new ModelProperty());
-	ball->AddProperty(new NormalDrawProperty(test,pkRender));	
-	
-	pkObjectMan->Add(kul);
-	pkObjectMan->Add(ball);
+	for(int i=0;i<100;i++) {
+		Object *ball=new Object;
+		ball->AddProperty(new PlayerControlProperty(pkInput,pkFps,test));
+		ball->AddProperty(new ModelProperty());
+		ball->AddProperty(new CollisionProperty(&ball->GetPos(),new float(2)));
+		ball->GetPos()=Vector3(rand()%100,500,rand()%100);
+		pkObjectMan->Add(ball);
+	}
+
 
 	CollisionSphere *sp1=new CollisionSphere(Vector3(0,0,0),8);
 	CollisionSphere *sp2=new CollisionSphere(Vector3(4,0,0),4);
@@ -332,3 +329,7 @@ void Test::FH_RitaObject(void)
 		glPopMatrix();
 	}
 }
+
+
+
+
