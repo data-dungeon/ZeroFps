@@ -35,11 +35,13 @@ void P_CharacterControl::Init()
 void P_CharacterControl::Update()
 {
 
+	Vector3 kVel(0,0,0);	
+
 	bool bHoppa = false;
 
 	if(P_Tcs* pkTcs = (P_Tcs*)GetEntity()->GetProperty("P_Tcs"))
 	{
-		Vector3 kVel(0,0,0);	
+		
 			
 		if(m_kControls[eUP])
 			kVel.z = 1;
@@ -84,7 +86,6 @@ void P_CharacterControl::Update()
 	{
 		if(bHoppa)
 		{
-			printf("hoppa\n");
 			pkSound->StartSound("data/sound/jump.wav", false);
 		}
 
@@ -103,7 +104,7 @@ void P_CharacterControl::Update()
 			}
 		}
 		else
-		if(move_state == idle)
+		if(move_state == idle && !kVel.NearlyZero(0.1f) )
 		{
 			move_state = moving;
 

@@ -164,6 +164,9 @@
 				RelativePath=".\p_charactercontrol.cpp">
 			</File>
 			<File
+				RelativePath=".\p_characterproperty.cpp">
+			</File>
+			<File
 				RelativePath=".\p_charstats.cpp">
 			</File>
 			<File
@@ -256,6 +259,9 @@
 			</File>
 			<File
 				RelativePath=".\p_charactercontrol.h">
+			</File>
+			<File
+				RelativePath=".\p_characterproperty.h">
 			</File>
 			<File
 				RelativePath=".\p_charstats.h">

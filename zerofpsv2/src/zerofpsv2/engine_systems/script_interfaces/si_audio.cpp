@@ -112,14 +112,14 @@ int AudioLua::PlaySoundLua(lua_State* pkLua)
 	char acName[100];
 	g_pkScript->GetArg(pkLua, 1, acName);
 
-	//printf("Play Sound '%s' on object %d\n", acName,  iObjectID);
+	printf("Play Sound '%s' on object %d\n", acName,  iObjectID);
 
 	Entity* pkObject = g_pkObjectMan->GetEntityByID(iObjectID);
 	P_Sound* pkSound = dynamic_cast<P_Sound*>(pkObject->GetProperty("P_Sound"));
 
 	if(pkSound)
 	{
-		pkSound->StartSound(string("data/sound/") + string(acName), false);
+		pkSound->StartSound(string("data/sound/") + string(acName), true);
 	}
 	else
 	{

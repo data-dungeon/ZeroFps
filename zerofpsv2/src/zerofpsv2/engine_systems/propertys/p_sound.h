@@ -4,33 +4,23 @@
 #include "../../engine/property.h"
 #include "../engine_systems_x.h"
 #include "../audio/zfaudiosystem.h"
-#include "../../engine/zerofps.h"
+#include "../../engine/entitymanager.h"
 
 using namespace std;
-
-enum SoundAction
-{
-	SA_DO_NOTHING,
-	SA_START_SOUND, 
-	SA_STOP_SOUND
-};
 
 class ENGINE_SYSTEMS_API P_Sound : public Property
 {
 private:
 	ZFAudioSystem* m_pkAudioSystem;
-	ZeroFps* m_pkFps;
+	EntityManager* m_pEntityMan;
 
-	struct sound_info
-	{
-		string m_strFileName;
-		bool m_bLoop;
-		bool m_bPlaying;
+	string m_strFileName;
+	bool m_bLoop;
+	
+	string m_strStopFileName;
 
-		SoundAction m_eAction;
-	};
-
-	vector<sound_info> m_kSounds;
+	bool started;
+	Vector3 prevpos;
 
 public:
 	P_Sound();

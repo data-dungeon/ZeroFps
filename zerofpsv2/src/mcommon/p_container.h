@@ -57,7 +57,7 @@ public:
 
    void RequestUpdateFromServer();
 
-   int Items()                         { return m_kContainedObjects.size(); }
+   int Items()                         { return (int) m_kContainedObjects.size(); }
 
    vector<int>* GetItemsInContainer()  { return &m_kContainedObjects; }
 
