@@ -1351,7 +1351,7 @@ int DMLua::GetDMObjectLua(lua_State* pkLua)
 						string strEntName = kObjs[i]->GetName();
 
 						// Kolla om det är ett polisstation genom att titta på objektets namn
-						if( strEntName.find("t_door_bank") != string::npos)
+						if( strEntName.find("t_door_policestation") != string::npos)
 						{
 							dEntID = (double)kObjs[i]->GetEntityID();
 							break;
