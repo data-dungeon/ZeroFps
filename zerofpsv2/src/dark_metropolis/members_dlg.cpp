@@ -394,10 +394,12 @@ void CMembersDlg::OnClick(int x, int y, bool bMouseDown, bool bLeftButton,
 					else
 					if((*kContainer.pkContainer->GetItem(sx,sy)) == -1)
 					{
+
 						if(m_pkMoveInfo->m_kFromContainer.pkContainer->MoveItem(
 							*m_pkMoveInfo->m_pMoveObject, kContainer.pkContainer, sx, sy))
 						{
-							OnEquip(*m_pkMoveInfo->m_pMoveObject, kContainer.pkContainer);
+							OnEquip(*kContainer.pkContainer->GetItem(sx,sy), 
+								kContainer.pkContainer);
 
 							m_pkMoveInfo->m_pkMoveButton->SetPos(dx,dy,true,true); 
 							m_pkMoveInfo->m_pkMoveButton->SetMoveArea(
@@ -890,5 +892,7 @@ void CMembersDlg::UpdateCamera()
 
 void CMembersDlg::OnEquip(int iItemID, DMContainer* pkDestContainer)
 {
+	printf("%i\n", iItemID);
+
 	pkDestContainer->Print();
 }
