@@ -232,7 +232,7 @@ class ENGINE_API Entity
 		
 	public:
 
-		EntityManager*				m_pkEntityMan;						///< Ptr to Entity manger.
+		EntityManager*				m_pkEntityManager;				///< Ptr to Entity manger.
   		ZeroFps*						m_pkZeroFps;						///< Ptr to zerofps. 
 
 		NetWorkRole					m_eRole;								///< This node power on Entity.

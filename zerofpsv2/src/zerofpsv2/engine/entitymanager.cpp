@@ -973,7 +973,7 @@ void EntityManager::PackToClients()
 		for(list<P_Track*>::iterator it = m_kTrackedObjects.begin(); it != m_kTrackedObjects.end(); it++ ) 
 		{
 			if((*it)->m_iConnectID == (int) iClient)
-				(*it)->GetObject()->GetAllEntitys(&kObjects, true);
+				(*it)->GetEntity()->GetAllEntitys(&kObjects, true);
 		}		
 		PackToClient(iClient, kObjects,false);
 		
@@ -1108,9 +1108,9 @@ void EntityManager::DumpActiverPropertysToLog(char* szMsg)
 
 	for(vector<Property*>::iterator it=m_akPropertys.begin();it!=m_akPropertys.end();it++) 
 	{
-		Logf("net", "%s (%d)", (*it)->m_acName, (*it)->GetObject()->m_iEntityID );
-		if((*it)->GetObject()->m_pkParent)
-			Logf("net", " Parent Obj: %s\n", (*it)->GetObject()->m_pkParent->m_strName.c_str() );
+		Logf("net", "%s (%d)", (*it)->m_acName, (*it)->GetEntity()->m_iEntityID );
+		if((*it)->GetEntity()->m_pkParent)
+			Logf("net", " Parent Obj: %s\n", (*it)->GetEntity()->m_pkParent->m_strName.c_str() );
 	}
 	
 }
@@ -1537,7 +1537,7 @@ list<P_Track*>* EntityManager::GetTrackerList()
 
 void EntityManager::AddTracker(P_Track* kObject)
 {
-	cout << "Now tracking " << kObject->GetObject()->m_iEntityID << endl;
+	cout << "Now tracking " << kObject->GetEntity()->m_iEntityID << endl;
 	m_kTrackedObjects.push_back(kObject);
 }
 
@@ -1912,7 +1912,7 @@ bool EntityManager::SaveTrackers(string strSaveDir)
 
 	for(list<P_Track*>::iterator iT=m_kTrackedObjects.begin();iT!=m_kTrackedObjects.end();iT++) 
 	{		
-		int iZone = GetZoneIndex((*iT)->GetObject(),(*iT)->GetObject()->m_iCurrentZone,(*iT)->m_bClosestZone);				
+		int iZone = GetZoneIndex((*iT)->GetEntity(),(*iT)->GetEntity()->m_iCurrentZone,(*iT)->m_bClosestZone);				
 		kFile.Write(&iZone, sizeof(iZone), 1);		
 		//cout<<"Saving tracker for zone:"<<iZone<<endl;			
 	}
@@ -2633,7 +2633,7 @@ void EntityManager::UpdateTrackers()
 			m_kZones[iZ].m_iRange							= 10000;
 		
 		//get current zone
-		iZoneIndex = GetZoneIndex((*iT)->GetObject(),(*iT)->GetObject()->m_iCurrentZone,(*iT)->m_bClosestZone);
+		iZoneIndex = GetZoneIndex((*iT)->GetEntity(),(*iT)->GetEntity()->m_iCurrentZone,(*iT)->m_bClosestZone);
 		
 		if(iZoneIndex == -1)
 		{

@@ -32,7 +32,7 @@ void P_Spawn::Update()
 		return;
 	
 	//draw a ball on the server
-	if( m_pkObjMan->IsUpdate(PROPERTY_TYPE_RENDER) ) 
+	if( m_pkEntityManager->IsUpdate(PROPERTY_TYPE_RENDER) ) 
 	{
 		//m_pkRender->Sphere(m_pkObject->GetWorldPosV(),0.5,1,Vector3(1,0,0),true);
 		return;
@@ -50,7 +50,7 @@ void P_Spawn::Update()
 			{				
 				//dont do anything if spawnded objects is at max
 				if(m_iEntityCounter < m_iMaxEntitys)
-					SpawnEntity(m_pkObject->GetLocalPosV());				
+					SpawnEntity(m_pkEntity->GetLocalPosV());				
 			
 				m_fTimer  = m_pkFps->m_pkObjectMan->GetSimTime();			
 			}
@@ -80,7 +80,7 @@ void P_Spawn::Update()
 							HACK FOR DEMO: No Spawn radius
 						****************/
 						//Vector3 kPos = m_pkObject->GetLocalPosV();
-						Vector3 kPos = m_pkObject->GetLocalPosV() + Vector3( (rand() % (int)m_fSpawnRadius) - m_fSpawnRadius/2 ,0,(rand() % (int)m_fSpawnRadius) - m_fSpawnRadius/2);					
+						Vector3 kPos = m_pkEntity->GetLocalPosV() + Vector3( (rand() % (int)m_fSpawnRadius) - m_fSpawnRadius/2 ,0,(rand() % (int)m_fSpawnRadius) - m_fSpawnRadius/2);					
 						SpawnEntity(kPos);				
 					}
 				}				
@@ -136,7 +136,7 @@ void P_Spawn::SpawnEntity(Vector3 kPos)
 
 	// if have scriptinterface, run OnSpawn
 	//if(P_ScriptInterface* pkSI = (P_ScriptInterface*)m_pkObject->GetProperty("P_ScriptInterface"))
-		m_pkObjMan->CallFunction (m_pkObject,  "OnSpawn" );
+		m_pkEntityManager->CallFunction (m_pkEntity,  "OnSpawn" );
 }
 
 vector<PropertyValues> P_Spawn::GetPropertyValues()

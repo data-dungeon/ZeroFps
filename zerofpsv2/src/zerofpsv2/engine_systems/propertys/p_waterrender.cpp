@@ -38,8 +38,8 @@ void P_WaterRender::Update()
 {	
 	m_fBlendValue = 1.0f; // Disable blend effect...
 
-	if(m_pkObject->m_pkEntityMan->GetCurrentUpdateFlags() & PROPERTY_TYPE_NORMAL &&
-		m_pkObject->m_pkEntityMan->GetCurrentUpdateFlags() & PROPERTY_SIDE_CLIENT) {
+	if(m_pkEntity->m_pkEntityManager->GetCurrentUpdateFlags() & PROPERTY_TYPE_NORMAL &&
+		m_pkEntity->m_pkEntityManager->GetCurrentUpdateFlags() & PROPERTY_SIDE_CLIENT) {
 		if(m_bBlendDirUp) {
 			m_fBlendValue += 0.05;
 			if(m_fBlendValue > 1.0)
@@ -53,7 +53,7 @@ void P_WaterRender::Update()
 		}
 	else 
 	{
-		m_pkRender->DrawWater(m_pkZeroFps->GetCam()->GetPos(),m_pkObject->GetWorldPosV(),m_pkObject->GetWorldRotV(),m_iSize,m_iStep,m_iTexture,m_fBlendValue);
+		m_pkRender->DrawWater(m_pkZeroFps->GetCam()->GetPos(),m_pkEntity->GetWorldPosV(),m_pkEntity->GetWorldRotV(),m_iSize,m_iStep,m_iTexture,m_fBlendValue);
 		
 	}
 }

@@ -28,7 +28,7 @@ void P_ShadowBlob::Update()
 	{
 		m_bHaveSet = true;
 		
-		if(P_Mad* pkMad = (P_Mad*)m_pkObject->GetProperty("P_Mad"))
+		if(P_Mad* pkMad = (P_Mad*)m_pkEntity->GetProperty("P_Mad"))
 		{
 			m_kScale.Set(pkMad->GetRadius(),pkMad->GetRadius(),pkMad->GetRadius());
 		}
@@ -39,7 +39,7 @@ void P_ShadowBlob::Update()
 	m_pkZShaderSystem->ClearGeometry();
 	
 	m_pkZShaderSystem->MatrixPush();
-	m_pkZShaderSystem->MatrixTranslate(m_pkObject->GetIWorldPosV()+m_kOffset);
+	m_pkZShaderSystem->MatrixTranslate(m_pkEntity->GetIWorldPosV()+m_kOffset);
 	
 	float x = m_kScale.x/2.0;
 	float z = m_kScale.z/2.0;

@@ -3064,7 +3064,7 @@ int MistLandLua::GetClosestItemOfTypeLua(lua_State* pkLua)
       float fDistance = 99999999;      
       
       // TODO!!!: check more than the zone the user is in
-      ZoneData* pkZone = pkObj->m_pkEntityMan->GetZone( pkObj->GetWorldPosV() );
+      ZoneData* pkZone = pkObj->m_pkEntityManager->GetZone( pkObj->GetWorldPosV() );
 
       vector<Entity*>* pkList = new vector<Entity*>;
 
@@ -3234,7 +3234,7 @@ int MistLandLua::GetSeenPlayerLua(lua_State* pkLua)
       float fDistance = 99999999;      
       
       // TODO!!!: check more than the zone the user is in
-      ZoneData* pkZone = pkObj->m_pkEntityMan->GetZone( pkObj->GetWorldPosV() );
+      ZoneData* pkZone = pkObj->m_pkEntityManager->GetZone( pkObj->GetWorldPosV() );
 
       vector<Entity*>* pkList = new vector<Entity*>;
 

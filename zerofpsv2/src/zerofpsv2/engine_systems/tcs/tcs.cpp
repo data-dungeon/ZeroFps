@@ -299,8 +299,8 @@ void Tcs::HandleCollission(Tcs_collission* pkCol)
 	//sync entitys before touching	
 	SyncEntitys();
 	//touch objects	
-	pkCol->pkBody1->GetObject()->Touch(pkCol->pkBody2->GetObject()->GetEntityID());
-	pkCol->pkBody2->GetObject()->Touch(pkCol->pkBody1->GetObject()->GetEntityID());	
+	pkCol->pkBody1->GetEntity()->Touch(pkCol->pkBody2->GetEntity()->GetEntityID());
+	pkCol->pkBody2->GetEntity()->Touch(pkCol->pkBody1->GetEntity()->GetEntityID());	
 	//sync bodys after touching
 	SyncBodys();
 	
@@ -318,9 +318,9 @@ void Tcs::SyncEntitys()
 			else
 				m_pkRender->Sphere(m_kBodys[i]->m_kNewPos,m_kBodys[i]->m_fRadius ,1,Vector3(0,1,0),false);					
 		
-		m_kBodys[i]->GetObject()->SetWorldPosV(m_kBodys[i]->m_kNewPos);
-		m_kBodys[i]->GetObject()->SetVel(m_kBodys[i]->m_kLinearVelocity);
-		m_kBodys[i]->GetObject()->SetLocalRotM(m_kBodys[i]->m_kNewRotation);
+		m_kBodys[i]->GetEntity()->SetWorldPosV(m_kBodys[i]->m_kNewPos);
+		m_kBodys[i]->GetEntity()->SetVel(m_kBodys[i]->m_kLinearVelocity);
+		m_kBodys[i]->GetEntity()->SetLocalRotM(m_kBodys[i]->m_kNewRotation);
 	}
 }
 
@@ -328,8 +328,8 @@ void Tcs::SyncBodys()
 {
 	for(unsigned int i=0;i<m_kBodys.size();i++)
 	{
-		m_kBodys[i]->m_kNewPos = m_kBodys[i]->GetObject()->GetWorldPosV();		
-		m_kBodys[i]->m_kNewRotation = m_kBodys[i]->GetObject()->GetLocalRotM();
+		m_kBodys[i]->m_kNewPos = m_kBodys[i]->GetEntity()->GetWorldPosV();		
+		m_kBodys[i]->m_kNewRotation = m_kBodys[i]->GetEntity()->GetLocalRotM();
 		//m_kBodys[i]->m_kLinearVelocity = m_kBodys[i]->GetObject()->GetVel();							
 	}
 }
@@ -460,9 +460,9 @@ void Tcs::HandleCharacterCollission(P_Tcs* pkCharacter,P_Tcs* pkBody)
 	if(pkCharacter->m_akWalkableGroups[pkBody->m_iGroup])
 	{
 			
-		Vector3 dir = (m_kLastTestPos - pkCharacter->GetObject()->GetWorldPosV()).Unit();
+		Vector3 dir = (m_kLastTestPos - pkCharacter->GetEntity()->GetWorldPosV()).Unit();
 		
-		pkCharacter->m_kNewPos = pkCharacter->GetObject()->GetWorldPosV() - dir * 0.1;
+		pkCharacter->m_kNewPos = pkCharacter->GetEntity()->GetWorldPosV() - dir * 0.1;
 	}
 }
 
@@ -1567,7 +1567,7 @@ void Tcs::TryToSleep(P_Tcs* pkBody1,P_Tcs* pkBody2)
 			if(pkBody1->m_bDisableOnSleep)
 			{
 				pkBody1->Disable();
-				pkBody1->GetObject()->DeleteProperty("P_Tcs");;
+				pkBody1->GetEntity()->DeleteProperty("P_Tcs");;
 			}
 		}
 			
@@ -1576,7 +1576,7 @@ void Tcs::TryToSleep(P_Tcs* pkBody1,P_Tcs* pkBody2)
 			if(pkBody2->m_bDisableOnSleep)
 			{
 				pkBody2->Disable();
-				pkBody2->GetObject()->DeleteProperty("P_Tcs");
+				pkBody2->GetEntity()->DeleteProperty("P_Tcs");
 			}
 		}
 	}

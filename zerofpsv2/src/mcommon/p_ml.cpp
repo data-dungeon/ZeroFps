@@ -20,7 +20,7 @@ P_Ml::P_Ml()
 void P_Ml::Init()
 {
 	if(m_strText == "")
-		m_strText = m_pkObject->GetName();
+		m_strText = m_pkEntity->GetName();
 
 }
 
@@ -46,12 +46,12 @@ void P_Ml::Update()
 		pkText->GetPass(0)->m_bDepthTest = 				true;				//needs to disable z-test , else marker wont work
 	}
 	
-	if(m_pkObjMan->IsUpdate(PROPERTY_TYPE_RENDER))
+	if(m_pkEntityManager->IsUpdate(PROPERTY_TYPE_RENDER))
 	{
 		if(m_bShowText)
 		{
 			m_pkZShaderSystem->BindMaterial(pkText);			
-			m_pkRender->PrintBillboard(m_pkZeroFps->GetCam()->GetRotM(),GetObject()->GetIWorldPosV()+Vector3(0,GetObject()->GetRadius(),0),GetObject()->GetName().c_str(),0.2,true);
+			m_pkRender->PrintBillboard(m_pkZeroFps->GetCam()->GetRotM(),GetEntity()->GetIWorldPosV()+Vector3(0,GetEntity()->GetRadius(),0),GetEntity()->GetName().c_str(),0.2,true);
 		}
 	}
 }

@@ -128,7 +128,7 @@ void P_Controller::AddTrigger(string strKey, int iAxis, float fValue)
 void P_Controller::SpringTrigger (int iAxis, float fValue)
 {
 	// if object hasn't got physic_prop, it can't be moved with controller...yet
-	P_Tcs* pkTcs = (P_Tcs*)GetObject()->GetProperty("P_Tcs");
+	P_Tcs* pkTcs = (P_Tcs*)GetEntity()->GetProperty("P_Tcs");
 
 	if ( !pkTcs )
 		return;
@@ -154,7 +154,7 @@ void P_Controller::SpringTrigger (int iAxis, float fValue)
 	{
       Camera* pkCamera = m_pkZeroFps->GetRenderCamera("AppView");
 
-		if ( Entity* pkEnt = m_pkObjMan->GetEntityByID(pkCamera->GetEntityID()) )
+		if ( Entity* pkEnt = m_pkEntityManager->GetEntityByID(pkCamera->GetEntityID()) )
 		{
 			Vector3 kTemp = kVel;
 

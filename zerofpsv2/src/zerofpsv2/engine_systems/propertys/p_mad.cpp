@@ -38,7 +38,7 @@ void P_Mad::Update()
 		return;
 
 	
-	if( m_pkObjMan->IsUpdate(PROPERTY_TYPE_RENDER) ) 
+	if( m_pkEntityManager->IsUpdate(PROPERTY_TYPE_RENDER) ) 
 	{		
 		
 	 	//make sure theres only one animation update per frame		
@@ -51,7 +51,7 @@ void P_Mad::Update()
 			UpdateAnimation(m_pkZeroFps->GetFrameTime());
 		}		
 
-		if(!m_pkZeroFps->GetCam()->GetFrustum()->SphereInFrustum(m_pkObject->GetWorldPosV(),GetRadius()))
+		if(!m_pkZeroFps->GetCam()->GetFrustum()->SphereInFrustum(m_pkEntity->GetWorldPosV(),GetRadius()))
 			return;
 		
 		/*
@@ -65,8 +65,8 @@ void P_Mad::Update()
 		if(m_bIsVisible)
 		{		
 			m_pkZShaderSystem->MatrixPush();
-				m_pkZShaderSystem->MatrixTranslate(m_pkObject->GetIWorldPosV() + m_kOffset);
-				m_pkZShaderSystem->MatrixMult(Matrix4(m_pkObject->GetWorldRotM()));
+				m_pkZShaderSystem->MatrixTranslate(m_pkEntity->GetIWorldPosV() + m_kOffset);
+				m_pkZShaderSystem->MatrixMult(Matrix4(m_pkEntity->GetWorldRotM()));
 				m_pkZShaderSystem->MatrixScale(m_fScale);
 	
 				Draw_All(m_pkZeroFps->m_iMadDraw);
@@ -76,7 +76,7 @@ void P_Mad::Update()
 		if(m_pkZeroFps->m_iMadDraw & MAD_DRAW_SPHERE) 
 		{
 			m_pkZShaderSystem->MatrixPush();
-				m_pkZShaderSystem->MatrixTranslate(m_pkObject->GetIWorldPosV() + m_kOffset);
+				m_pkZShaderSystem->MatrixTranslate(m_pkEntity->GetIWorldPosV() + m_kOffset);
 				m_pkRender->Sphere(Vector3::ZERO, GetRadius(), 2, Vector3(1,1,1),false);
 			m_pkZShaderSystem->MatrixPop();
 			
@@ -180,7 +180,7 @@ void P_Mad::Load(ZFIoInterface* pkPackage,int iVersion)
 	
 	
 	//update object radius
-	m_pkObject->SetRadius(GetRadius());
+	m_pkEntity->SetRadius(GetRadius());
 	
 	SetNetUpdateFlag(true);	
 }
@@ -284,7 +284,7 @@ bool P_Mad::HandleSetValue( string kValueName ,string kValue )
 	
 	if(strcmp(kValueName.c_str(), "m_fScale") == 0) {
 		m_fScale = float( atof(kValue.c_str()) );
-		m_pkObject->SetRadius(GetRadius());
+		m_pkEntity->SetRadius(GetRadius());
 				
 		SetNetUpdateFlag(true);
 		return true;
@@ -319,11 +319,11 @@ bool P_Mad::LineVSSphere(Vector3 &kPos,Vector3 &kDir,bool bIgnoreY )
 	Plane P;
 	P.Set(kDir,kPos);
 	
-	if(!P.SphereInside( m_pkObject->GetWorldPosV(),GetRadius()))
+	if(!P.SphereInside( m_pkEntity->GetWorldPosV(),GetRadius()))
 		return false;
 	
 	
-	Vector3 c = m_pkObject->GetWorldPosV() - kPos;
+	Vector3 c = m_pkEntity->GetWorldPosV() - kPos;
 	
 	if(bIgnoreY)
 		c.y = 0;
@@ -492,9 +492,9 @@ void P_Mad::GenerateModelMatrix()
 	m_kModelMatrix.Identity();
 	m_kModelMatrix.Scale(m_fScale,m_fScale,m_fScale);
 	Matrix4 kMat;
-	kMat = m_pkObject->GetWorldRotM();
+	kMat = m_pkEntity->GetWorldRotM();
 	m_kModelMatrix *= kMat;	
-	m_kModelMatrix.Translate(m_pkObject->GetWorldPosV());		
+	m_kModelMatrix.Translate(m_pkEntity->GetWorldPosV());		
 
 }
 

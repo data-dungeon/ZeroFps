@@ -73,27 +73,27 @@ void P_PfPath::RenderPath()
 
 void P_PfPath::Update()
 {
-	if( m_pkObjMan->IsUpdate(PROPERTY_TYPE_RENDER) && m_pkObjMan->IsUpdate(PROPERTY_TYPE_RENDER)) 
+	if( m_pkEntityManager->IsUpdate(PROPERTY_TYPE_RENDER) && m_pkEntityManager->IsUpdate(PROPERTY_TYPE_RENDER)) 
 	{
 		RenderPath();
 		return;
 	}
 
-	if( m_pkObjMan->IsUpdate(PROPERTY_TYPE_NORMAL) && m_pkObjMan->IsUpdate(PROPERTY_SIDE_CLIENT))
+	if( m_pkEntityManager->IsUpdate(PROPERTY_TYPE_NORMAL) && m_pkEntityManager->IsUpdate(PROPERTY_SIDE_CLIENT))
 		return;
 
 	//TCS TEST
 	P_Tcs* pkTcs = NULL;//(P_Tcs*)m_pkObject->GetProperty("P_Tcs");
 		
 		
-	Vector3 kPos = m_pkObject->GetWorldPosV();
+	Vector3 kPos = m_pkEntity->GetWorldPosV();
 
 	// This section are about to be removed, i think, could be, don't know what it is doing... - Vim
 				ZoneData* pkZone;
 				P_PfMesh* pkMesh;
 
-				int iStartZone	= m_pkObjMan->GetZoneIndex(kPos,-1, false);
-				pkZone = m_pkObjMan->GetZoneData(iStartZone);
+				int iStartZone	= m_pkEntityManager->GetZoneIndex(kPos,-1, false);
+				pkZone = m_pkEntityManager->GetZoneData(iStartZone);
 				if(!pkZone)
 					return;
 				
@@ -126,7 +126,7 @@ void P_PfPath::Update()
 	if(fdist < (m_fSpeed) * m_pkFps->m_pkObjectMan->GetSimDelta() ) 
 	{
 		if(!pkTcs)
-			m_pkObject->SetWorldPosV(kGoal);
+			m_pkEntity->SetWorldPosV(kGoal);
 		
 		m_iNextGoal++;
 		if(m_iNextGoal == (int) m_kPath.size()) 
@@ -138,7 +138,7 @@ void P_PfPath::Update()
 			}
 
 			//play idle
-			P_Mad* pm = (P_Mad*)m_pkObject->GetProperty("P_Mad");
+			P_Mad* pm = (P_Mad*)m_pkEntity->GetProperty("P_Mad");
 			if(pm)
 				pm->SetAnimation((char*)m_kIdleAnim.c_str(),0);
 					
@@ -166,7 +166,7 @@ void P_PfPath::Update()
 		pkTcs->ApplyForce(Vector3(0,0,0),kdiff*20);
 	}
 	else
-		m_pkObject->SetWorldPosV(kPos);
+		m_pkEntity->SetWorldPosV(kPos);
 	
 		
 	//setup character orientation
@@ -180,7 +180,7 @@ void P_PfPath::Update()
 		kRotM.LookDir(kdiff.Unit(),Vector3(0,1,0));
 		kRotM.Transponse();
 		
-		m_pkObject->SetLocalRotM(kRotM);
+		m_pkEntity->SetLocalRotM(kRotM);
 	}
 }
 
@@ -242,7 +242,7 @@ bool P_PfPath::MakePathFind(Vector3 kDestination)
 {
 	vector<PathNode> kPath;
 
-	Vector3 kPathStart = m_pkObject->GetWorldPosV();
+	Vector3 kPathStart = m_pkEntity->GetWorldPosV();
 	Vector3 kPathEnd   = kDestination;
 	
 	kPath.clear();
@@ -256,7 +256,7 @@ bool P_PfPath::MakePathFind(Vector3 kDestination)
 		
 		
 		//play run animation
-		P_Mad* pm = (P_Mad*)m_pkObject->GetProperty("P_Mad");
+		P_Mad* pm = (P_Mad*)m_pkEntity->GetProperty("P_Mad");
 		if(pm)
 			if(pm->GetCurrentAnimationName() != m_kRunAnim)
 				pm->SetAnimation((char*)m_kRunAnim.c_str(),0);

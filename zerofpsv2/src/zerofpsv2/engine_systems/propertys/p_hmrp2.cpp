@@ -34,14 +34,14 @@ void P_HMRP2::Init()
 	if(!m_pkHeightMap)
 		m_pkHeightMap = new HeightMap;
 
-	m_pkHeightMap->SetID( m_pkObject->GetEntityID() );
+	m_pkHeightMap->SetID( m_pkEntity->GetEntityID() );
 }
 
 void P_HMRP2::Update() 
 {	
 	if(m_pkHeightMap!=NULL){
-		m_pkHeightMap->SetPosition(m_pkObject->GetWorldPosV());
-		m_pkLight->Update(m_pkObject->GetWorldPosV());
+		m_pkHeightMap->SetPosition(m_pkEntity->GetWorldPosV());
+		m_pkLight->Update(m_pkEntity->GetWorldPosV());
 		m_pkRender->DrawHMLodSplat(m_pkHeightMap,m_pkZeroFps->GetCam()->GetPos(),int(m_pkZeroFps->m_fFps));
 //		m_pkRender->DrawNormals(m_pkHeightMap,m_pkObject->GetWorldPosV(),int(m_pkZeroFps->m_fFps));
 //		m_pkRender->G4DrawHMLodSplat(m_pkHeightMap,m_pkZeroFps->GetCam()->GetPos(),m_pkZeroFps->m_iFps);		
@@ -85,7 +85,7 @@ void P_HMRP2::SetPolyMode(PolygonMode eMode)
 void P_HMRP2::Save(ZFIoInterface* pkPackage)
 {
 	char hmapname[256];
-	sprintf(hmapname, "%s/hm%d",m_pkObject->m_pkEntityMan->GetWorldDir().c_str() ,m_pkObject->GetEntityID());
+	sprintf(hmapname, "%s/hm%d",m_pkEntity->m_pkEntityManager->GetWorldDir().c_str() ,m_pkEntity->GetEntityID());
 
 	cout << "Should Save HMRP2: " << hmapname << endl;
 	if(m_pkHeightMap)
@@ -95,7 +95,7 @@ void P_HMRP2::Save(ZFIoInterface* pkPackage)
 void P_HMRP2::Load(ZFIoInterface* pkPackage,int iVersion)
 {
 	char hmapname[256];
-	sprintf(hmapname, "%s/hm%d", m_pkObject->m_pkEntityMan->GetWorldDir().c_str(), m_pkObject->GetEntityID());
+	sprintf(hmapname, "%s/hm%d", m_pkEntity->m_pkEntityManager->GetWorldDir().c_str(), m_pkEntity->GetEntityID());
 	cout << "Should Load HMRP2: " << hmapname << endl;
 
 	m_pkHeightMap = new HeightMap;

@@ -49,9 +49,9 @@ void P_Vegitation::Random(P_HMRP2* pkHmrp2)
 	
 	if(pkHmrp2)
 	{
-		float sx = m_pkObject->GetWorldPosV().x;
-		float sz = m_pkObject->GetWorldPosV().z;
-		float sy = m_pkObject->GetWorldPosV().y;
+		float sx = m_pkEntity->GetWorldPosV().x;
+		float sz = m_pkEntity->GetWorldPosV().z;
+		float sy = m_pkEntity->GetWorldPosV().y;
 	
 		for(int i=0;i<m_iAmount;i++)
 		{
@@ -77,7 +77,7 @@ void P_Vegitation::Random(P_HMRP2* pkHmrp2)
 void P_Vegitation::Update()
 {
 	//frustum culling
-	if(!m_pkFps->GetCam()->GetFrustum()->SphereInFrustum(m_pkObject->GetWorldPosV(),m_fRadius))
+	if(!m_pkFps->GetCam()->GetFrustum()->SphereInFrustum(m_pkEntity->GetWorldPosV(),m_fRadius))
 		return;
 			
 	if(!m_CheckedForHM)
@@ -85,7 +85,7 @@ void P_Vegitation::Update()
 		m_CheckedForHM = true;
 	
 		//check if theres a heightmap in this zone	
-		Entity* hme = m_pkObject->GetParent();
+		Entity* hme = m_pkEntity->GetParent();
 		if(hme)
 		{
 			P_HMRP2* pkhmrp = (P_HMRP2*)hme->GetProperty("P_HMRP2");
@@ -99,7 +99,7 @@ void P_Vegitation::Update()
 	}
 			
 			
-	Vector3 ObjectPos = m_pkObject->GetWorldPosV();			
+	Vector3 ObjectPos = m_pkEntity->GetWorldPosV();			
 			
 	
 	float fDistance = float(ObjectPos.DistanceTo(m_pkFps->GetCam()->GetPos()) - m_fRadius);

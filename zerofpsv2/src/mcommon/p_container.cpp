@@ -21,7 +21,7 @@ P_Container::P_Container()
 
 void P_Container::Init()
 {
-   m_iContainerID = m_pkObject->GetEntityID();
+   m_iContainerID = m_pkEntity->GetEntityID();
 }
 
 // -----------------------------------------------------------------------------------------------
@@ -39,7 +39,7 @@ bool P_Container::AddObject ( int iAddToContainer )
    if ( (int) m_kContainedObjects.size() < m_iCapacity )
    {
 
-      Entity *pkEntity = m_pkObject->m_pkEntityMan->GetEntityByID ( iAddToContainer );
+      Entity *pkEntity = m_pkEntity->m_pkEntityManager->GetEntityByID ( iAddToContainer );
 
       if ( !pkEntity )
       {
@@ -62,7 +62,7 @@ bool P_Container::AddObject ( int iAddToContainer )
       pkIP->m_pkItemStats->m_iCurrentContainer = m_iContainerID;
 
       // make object child of containers parent
-      pkEntity->SetParent ( m_pkObject );
+      pkEntity->SetParent ( m_pkEntity );
 
       m_kContainedObjects.push_back ( iAddToContainer );
 
@@ -87,13 +87,13 @@ bool P_Container::RemoveObject ( int iRemoveFromContainer )
          m_uiVersion++;
 
          Entity *pkEntity = 
-            m_pkObject->m_pkEntityMan->GetEntityByID ( (*kIte) );
+            m_pkEntity->m_pkEntityManager->GetEntityByID ( (*kIte) );
 
          // Set which container the item is in
          ((P_Item*)pkEntity->GetProperty("P_Item"))->m_pkItemStats->m_iCurrentContainer = -1;
 
          // unparent object
-         m_pkObject->RemoveChild (pkEntity );
+         m_pkEntity->RemoveChild (pkEntity );
 
          pkEntity->AttachToZone();
 
@@ -132,7 +132,7 @@ void P_Container::GetAllItemsInContainer( vector<Entity*>* pkItemList )
       for ( unsigned int i = 0; i < m_kContainedObjects.size(); i++ )
       {
          Entity *pkEntity = 
-            m_pkObject->m_pkEntityMan->GetEntityByID ( m_kContainedObjects[i] );
+            m_pkEntity->m_pkEntityManager->GetEntityByID ( m_kContainedObjects[i] );
 
          // add item to container list
          pkItemList->push_back ( pkEntity );
@@ -154,7 +154,7 @@ void P_Container::GetAllItemsInContainer( vector<Entity*>* pkItemList )
 void P_Container::RequestUpdateFromServer()
 {
    int iClientObjectID = m_pkZeroFps->GetClientObjectID();
-   Entity* pkClientObj = m_pkObjMan->GetEntityByID(iClientObjectID);
+   Entity* pkClientObj = m_pkEntityManager->GetEntityByID(iClientObjectID);
 
    if ( pkClientObj )
    {
@@ -165,7 +165,7 @@ void P_Container::RequestUpdateFromServer()
 
       // get client object
       kOrder.m_sOrderName = "(rq)cont";
-      kOrder.m_iObjectID = m_pkObject->GetEntityID();
+      kOrder.m_iObjectID = m_pkEntity->GetEntityID();
       kOrder.m_iClientID = m_pkZeroFps->GetConnectionID();
       kOrder.m_iCharacter = pkCP->m_iActiveCaracterObjectID;
 
@@ -291,7 +291,7 @@ void P_Container::PackFrom(NetPacket* pkNetPacket, int iConnectionID )
       AddObject (iID);
 
       // request update for item at the same time
-      Entity* pkObj = m_pkObject->m_pkEntityMan->GetEntityByID(iID);
+      Entity* pkObj = m_pkEntity->m_pkEntityManager->GetEntityByID(iID);
 
       cout << "GOT ITEM IN CONT" << endl;
 

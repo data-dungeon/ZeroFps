@@ -311,7 +311,7 @@ void P_Item::PackFrom(NetPacket* pkNetPacket, int iConnectionID )
       pkNetPacket->Read( &m_pkItemStats->m_uiVersion, sizeof(unsigned int) );
 
       if ( m_pkInventoryList )
-         m_pkInventoryList->push_back ( m_pkObject );
+         m_pkInventoryList->push_back ( m_pkEntity );
 
 
    }
@@ -323,12 +323,12 @@ void P_Item::PackFrom(NetPacket* pkNetPacket, int iConnectionID )
 Entity* P_Item::Split ( int iTookens )
 {
    // only works if object was created from script 
-   if ( m_pkObject->m_strCreatedFromScript.size() && iTookens > 0 && iTookens < m_pkItemStats->GetQuantity() )
+   if ( m_pkEntity->m_strCreatedFromScript.size() && iTookens > 0 && iTookens < m_pkItemStats->GetQuantity() )
    {
       m_pkItemStats->AddQuantity( -iTookens );      
 
       // in zone???
-      Entity *pkNewObject = m_pkObjMan->CreateEntityFromScript ( m_pkObject->m_strCreatedFromScript.c_str() );
+      Entity *pkNewObject = m_pkEntityManager->CreateEntityFromScript ( m_pkEntity->m_strCreatedFromScript.c_str() );
 
       // copy all object data
       P_Item *pkNewItemProp = (P_Item*)pkNewObject->GetProperty("P_Item");
@@ -355,7 +355,7 @@ bool P_Item::Stock ( Entity *pkObject )
          pkIP->m_pkItemStats->m_iQuantity += m_pkItemStats->m_iQuantity;
 
          // remove the stacked object
-         m_pkObjMan->Delete ( pkObject );
+         m_pkEntityManager->Delete ( pkObject );
 
          return true;
       }
@@ -369,7 +369,7 @@ void P_Item::RequestUpdateFromServer (string kType)
 {
    
    int iClientObjectID = m_pkZeroFps->GetClientObjectID();
-   Entity* pkClientObj = m_pkObjMan->GetEntityByID(iClientObjectID);
+   Entity* pkClientObj = m_pkEntityManager->GetEntityByID(iClientObjectID);
 
    if ( pkClientObj )
    {
@@ -387,7 +387,7 @@ void P_Item::RequestUpdateFromServer (string kType)
 
          // get client object
          kOrder.m_sOrderName = "(rq)item";
-         kOrder.m_iObjectID = m_pkObject->GetEntityID();
+         kOrder.m_iObjectID = m_pkEntity->GetEntityID();
          kOrder.m_iClientID = m_pkZeroFps->GetConnectionID();
          kOrder.m_iCharacter = pkCC->m_iActiveCaracterObjectID;
 
@@ -431,7 +431,7 @@ bool P_Item::UseOn ( Entity *pkCharacterObject )
       m_pkItemStats->EquipOn ( pkChar->GetCharStats() );
 
       // Object is destroyed when used
-      m_pkObject->m_pkEntityMan->Delete ( m_pkObject );
+      m_pkEntity->m_pkEntityManager->Delete ( m_pkEntity );
 
       return true;
    }

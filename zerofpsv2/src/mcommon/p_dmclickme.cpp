@@ -18,7 +18,7 @@ vector<PropertyValues> P_DMClickMe::GetPropertyValues()
 
 void P_DMClickMe::Init()
 {
-	m_pkScript = (P_ScriptInterface*)m_pkObject->GetProperty("P_ScriptInterface");
+	m_pkScript = (P_ScriptInterface*)m_pkEntity->GetProperty("P_ScriptInterface");
 	m_bIsHouse = false;
 }
 
@@ -26,16 +26,16 @@ void P_DMClickMe::Init()
 
 void P_DMClickMe::Update()
 {
-	m_pkScript = (P_ScriptInterface*)m_pkObject->GetProperty("P_ScriptInterface");
+	m_pkScript = (P_ScriptInterface*)m_pkEntity->GetProperty("P_ScriptInterface");
 
 	for ( list<Visiter>::iterator kIte = m_kVisiters.begin(); kIte != m_kVisiters.end(); kIte++ )
 	{
-		(*kIte).m_fVisitTime -= m_pkObject->m_pkZeroFps->GetFrameTime();
+		(*kIte).m_fVisitTime -= m_pkEntity->m_pkZeroFps->GetFrameTime();
 
 		// visit time is over, get out of the house
 		if ( (*kIte).m_fVisitTime <= 0 )
 		{
-			Entity* pkVisiter = m_pkObjMan->GetEntityByID ( (*kIte).m_iVisiter );
+			Entity* pkVisiter = m_pkEntityManager->GetEntityByID ( (*kIte).m_iVisiter );
 
 			if ( pkVisiter == 0 )
 			{
@@ -47,7 +47,7 @@ void P_DMClickMe::Update()
 
 			// call script function exit
 			//((P_ScriptInterface*)m_pkScript)->CallFunction ( "Exit" );
-			m_pkObjMan->CallFunction ( m_pkObject, "Exit" );
+			m_pkEntityManager->CallFunction ( m_pkEntity, "Exit" );
 
 			// remove from list
 			m_kVisiters.erase ( kIte++ );
@@ -82,7 +82,7 @@ void P_DMClickMe::Load(ZFIoInterface* pkPackage,int iVersion)
 void P_DMClickMe::Click()
 {
 	if ( m_pkScript == 0 )
-		m_pkScript = (P_ScriptInterface*)m_pkObject->GetProperty("P_ScriptInterface");
+		m_pkScript = (P_ScriptInterface*)m_pkEntity->GetProperty("P_ScriptInterface");
 
 	if ( m_pkScript == 0 )
 	{
@@ -91,7 +91,7 @@ void P_DMClickMe::Click()
 	}
 
 	//((P_ScriptInterface*)m_pkScript)->CallFunction ("Click");
-	m_pkObjMan->CallFunction (m_pkObject, "Click");
+	m_pkEntityManager->CallFunction (m_pkEntity, "Click");
 }
 
 // ------------------------------------------------------------------------------------------
@@ -99,7 +99,7 @@ void P_DMClickMe::Click()
 void P_DMClickMe::Click(int iObjID)
 {
 	if ( m_pkScript == 0 )
-		m_pkScript = (P_ScriptInterface*)m_pkObject->GetProperty("P_ScriptInterface");
+		m_pkScript = (P_ScriptInterface*)m_pkEntity->GetProperty("P_ScriptInterface");
 
 	if ( m_pkScript == 0 )
 	{
@@ -117,7 +117,7 @@ void P_DMClickMe::Click(int iObjID)
 
 	kParams.push_back (kData);
 
-	m_pkObjMan->CallFunction (  m_pkObject, "Click", &kParams );	
+	m_pkEntityManager->CallFunction (  m_pkEntity, "Click", &kParams );	
 }
 
 // ------------------------------------------------------------------------------------------

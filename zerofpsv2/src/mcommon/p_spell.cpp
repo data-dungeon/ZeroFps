@@ -62,7 +62,7 @@ void P_Spell::Update()
       if ( m_fDamageTimer > m_pkSpellType->m_fDamageEvery )
       {
          m_fDamageTimer = 0;
-         DealDamage ( &m_pkSpellType->m_kDamage, m_pkObject );
+         DealDamage ( &m_pkSpellType->m_kDamage, m_pkEntity );
       }
 
 
@@ -72,7 +72,7 @@ void P_Spell::Update()
          if ( m_fAge >= m_pkSpellType->m_kGraphicEffects[m_iPSIndex].m_fStartTime )
          {
             // can't have more than one PSystem/object, so create a new object for each new PS *sigh*
-            Entity *pkNewObject = m_pkObject->m_pkEntityMan->CreateEntity();
+            Entity *pkNewObject = m_pkEntity->m_pkEntityManager->CreateEntity();
 
             // create and attach PS to new object
             P_PSystem *pkPSProp =  (P_PSystem*)pkNewObject->AddProperty ("P_PSystem");
@@ -81,7 +81,7 @@ void P_Spell::Update()
             // add PSystem offset
             pkPSProp->GetPSystem()->m_kPosOffset += m_pkSpellType->m_kGraphicEffects[m_iPSIndex].m_kOffset;
 
-            pkNewObject->SetParent (m_pkObject);
+            pkNewObject->SetParent (m_pkEntity);
             pkNewObject->SetRelativeOri(true);
 
             pkNewObject->AttachToZone();
@@ -103,7 +103,7 @@ void P_Spell::Update()
       {
          // remove&delete PSystems spell used
          for ( unsigned int i = 0; i < m_kPSystems.size(); i++ )
-            m_pkObject->m_pkEntityMan->Delete( m_kPSystems[i] );
+            m_pkEntity->m_pkEntityManager->Delete( m_kPSystems[i] );
 
          // delete spell-object or property
 //         if ( m_pkSpellType->m_iOnDestruction == eKILL_SELF )
@@ -146,8 +146,8 @@ bool P_Spell::CastOn ( Entity *pkObject )
  //false = remove bonuses (on end of spell)
 void P_Spell::Bonuses(bool bAddBonuses)
 {
-   CharacterProperty *pkCharStats = (CharacterProperty*)m_pkObject->GetProperty("P_CharStats");
-   P_Item *pkItem = (P_Item*)m_pkObject->GetProperty("P_Item");
+   CharacterProperty *pkCharStats = (CharacterProperty*)m_pkEntity->GetProperty("P_CharStats");
+   P_Item *pkItem = (P_Item*)m_pkEntity->GetProperty("P_Item");
 
 
    // if parent is item...
@@ -291,7 +291,7 @@ P_Spell* P_Spell::Copy()
    for ( unsigned int i = 0; i < m_kAttackedObjects.size(); i++ )
       pkNewP->m_kAttackedObjects.push_back ( m_kAttackedObjects[i] );
 
-   pkNewP->m_kAttackedObjects.push_back ( m_pkObject->GetEntityID() );
+   pkNewP->m_kAttackedObjects.push_back ( m_pkEntity->GetEntityID() );
 
    return pkNewP;
 }
@@ -301,7 +301,7 @@ P_Spell* P_Spell::Copy()
 void P_Spell::DoCollisions()
 {
    // get zone spell is in
-   ZoneData* pkZone = m_pkObject->m_pkEntityMan->GetZone( m_pkObject->GetWorldPosV() );
+   ZoneData* pkZone = m_pkEntity->m_pkEntityManager->GetZone( m_pkEntity->GetWorldPosV() );
 
    // get all objects in zone
    vector<Entity*> kObjects;
@@ -314,7 +314,7 @@ void P_Spell::DoCollisions()
       
       // don't care if spell collides with own ps or self
       // don't test against the zone object :) We don't want to burn that away
-      if ( kObjects[i] == m_pkObject || pkZone->m_pkZone == kObjects[i] )
+      if ( kObjects[i] == m_pkEntity || pkZone->m_pkZone == kObjects[i] )
          bOk = false;
 
 
@@ -359,7 +359,7 @@ void P_Spell::DoCollisions()
          // if the object had right to be affacted by the spell
          if ( bOk )
          {
-				Vector3 Pos = m_pkObject->GetLocalPosV();
+				Vector3 Pos = m_pkEntity->GetLocalPosV();
             float fDist = float( kObjects[i]->GetLocalPosV().DistanceXZTo ( Pos ) );
 
             // calculate collision radius
@@ -375,7 +375,7 @@ void P_Spell::DoCollisions()
                if ( m_pkSpellType->m_kOnHit[0] == "attachnewspell" )
                {
                   Entity *pkNewSpell =
-                  m_pkObject->m_pkEntityMan->CreateEntityFromScript ( m_pkSpellType->m_kOnHit[1].c_str() );
+                  m_pkEntity->m_pkEntityManager->CreateEntityFromScript ( m_pkSpellType->m_kOnHit[1].c_str() );
 
                   if ( pkNewSpell )
                   {
@@ -395,13 +395,13 @@ void P_Spell::DoCollisions()
 
                // destroy spell (TODO!!!: after dealt damage!!! )
                if ( m_pkSpellType->m_kOnHit[0] == "destroyspell" ) 
-                  m_pkObject->m_pkEntityMan->Delete ( m_pkObject );
+                  m_pkEntity->m_pkEntityManager->Delete ( m_pkEntity );
 
                // creates a new spell at the hit location and removes the old one
                if ( m_pkSpellType->m_kOnHit[0] == "createnewspell" ) 
                {
                   Entity *pkNewSpell =
-                  m_pkObject->m_pkEntityMan->CreateEntityFromScriptInZone (m_pkSpellType->m_kOnHit[1].c_str(), 
+                  m_pkEntity->m_pkEntityManager->CreateEntityFromScriptInZone (m_pkSpellType->m_kOnHit[1].c_str(), 
                                                                            kObjects[i]->GetWorldPosV() );
                   pkNewSpell->SetWorldPosV ( kObjects[i]->GetWorldPosV() );
                   /*
@@ -417,24 +417,24 @@ void P_Spell::DoCollisions()
                   pkNewSpellObject->AttachToZone();
                   */
 
-                  m_pkObject->m_pkEntityMan->Delete ( m_pkObject );
+                  m_pkEntity->m_pkEntityManager->Delete ( m_pkEntity );
                }
 
                // creates a psystem at the hit location and removes the spell
                if ( m_pkSpellType->m_kOnHit[0] == "createpsystem" ) 
                {
-                  Entity *pkNewPSystem = m_pkObject->m_pkEntityMan->CreateEntity();
+                  Entity *pkNewPSystem = m_pkEntity->m_pkEntityManager->CreateEntity();
             
                   P_PSystem *pkNewPSProp = new P_PSystem;
                   kObjects[i]->AddProperty( pkNewPSProp );
                   pkNewPSProp->SetValue ( "PSType", m_pkSpellType->m_kOnHit[1] );
             
-                  pkNewPSystem->SetWorldPosV ( m_pkObject->GetWorldPosV() );
-                  pkNewPSystem->SetWorldRotV ( m_pkObject->GetWorldRotV() );
+                  pkNewPSystem->SetWorldPosV ( m_pkEntity->GetWorldPosV() );
+                  pkNewPSystem->SetWorldRotV ( m_pkEntity->GetWorldRotV() );
 
                   pkNewPSystem->AttachToZone();
 
-                  m_pkObject->m_pkEntityMan->Delete ( m_pkObject );
+                  m_pkEntity->m_pkEntityManager->Delete ( m_pkEntity );
                }
 
                // the spell maskes a copy of itself that attaches on the hit object

@@ -40,13 +40,13 @@ void P_Light::Update()
 {
 	//draw ball on the server
 	if(m_pkZeroFps->GetDebugGraph())
-		m_pkRender->Sphere(m_pkObject->GetIWorldPosV(),0.1,1,Vector3(1,0,1),true);
+		m_pkRender->Sphere(m_pkEntity->GetIWorldPosV(),0.1,1,Vector3(1,0,1),true);
 
 
-	m_pkLightSource->kPos = m_pkObject->GetWorldPosV();
+	m_pkLightSource->kPos = m_pkEntity->GetWorldPosV();
 	
 	if(m_pkLightSource->iType == SPOT_LIGHT)	
-		m_pkLightSource->kRot = m_pkObject->GetWorldRotM().VectorTransform(Vector3(0,0,1));
+		m_pkLightSource->kRot = m_pkEntity->GetWorldRotM().VectorTransform(Vector3(0,0,1));
 
 		
 	switch(m_iMode)

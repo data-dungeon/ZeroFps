@@ -24,7 +24,7 @@ P_ScriptInterface::P_ScriptInterface()
 
 P_ScriptInterface::~P_ScriptInterface()
 {
-	m_pkObjMan->CallFunction(m_pkObject, "Destroy");	
+	m_pkEntityManager->CallFunction(m_pkEntity, "Destroy");	
 }
 
 void P_ScriptInterface::Update()
@@ -41,13 +41,13 @@ void P_ScriptInterface::Update()
 	if(!m_bHaveRunInit)
 	{
 		m_bHaveRunInit = true;		
-		m_pkObjMan->CallFunction(m_pkObject, "Init");
+		m_pkEntityManager->CallFunction(m_pkEntity, "Init");
 	}
 
 	if(m_fHeartRate != -1)
 		if(m_pkFps->m_pkObjectMan->GetSimTime() - m_fTimer > m_fHeartRate)
 		{
-			m_pkObjMan->CallFunction(m_pkObject, "HeartBeat");
+			m_pkEntityManager->CallFunction(m_pkEntity, "HeartBeat");
 			
 			m_fTimer = m_pkFps->m_pkObjectMan->GetSimTime();
 		}
@@ -68,10 +68,10 @@ bool P_ScriptInterface::CallFunction(const char* acFunction,vector<ARG_DATA>* pk
 
 bool P_ScriptInterface::SendObjectClickEvent(const char* acType,int iCallerObject )	
 {
-	if(m_pkObject->GetEntityScript() && acType != NULL)
+	if(m_pkEntity->GetEntityScript() && acType != NULL)
 	{
 		//set self id before calling the funktion
-		ObjectManagerLua::g_iCurrentObjectID = m_pkObject->GetEntityID();
+		ObjectManagerLua::g_iCurrentObjectID = m_pkEntity->GetEntityID();
 		
 		//set caller id
 		ObjectManagerLua::g_iCurrentPCID = iCallerObject;
@@ -82,7 +82,7 @@ bool P_ScriptInterface::SendObjectClickEvent(const char* acType,int iCallerObjec
 		args[0].pData = new char[strlen(acType)+1];
 		strcpy((char*)args[0].pData, acType);
 		
-		bool bSuccess = m_pkScriptSys->Call(m_pkObject->GetEntityScript(), "Use", args);
+		bool bSuccess = m_pkScriptSys->Call(m_pkEntity->GetEntityScript(), "Use", args);
 
 		delete[] args[0].pData;
 		
@@ -96,10 +96,10 @@ bool P_ScriptInterface::SendObjectClickEvent(const char* acType,int iCallerObjec
 
 bool P_ScriptInterface::SendGroudClickEvent(const char* acType,Vector3 kPos,int iCallerObject)
 {
-	if(m_pkObject->GetEntityScript() && acType != NULL)
+	if(m_pkEntity->GetEntityScript() && acType != NULL)
 	{
 		//set self id before calling the funktion
-		ObjectManagerLua::g_iCurrentObjectID = m_pkObject->GetEntityID();
+		ObjectManagerLua::g_iCurrentObjectID = m_pkEntity->GetEntityID();
 		
 		//set caller id
 		ObjectManagerLua::g_iCurrentPCID = iCallerObject;
@@ -117,7 +117,7 @@ bool P_ScriptInterface::SendGroudClickEvent(const char* acType,Vector3 kPos,int 
 		args[3].pData = &kPos.z;
 		
 		
-		bool bSuccess = m_pkScriptSys->Call( m_pkObject->GetEntityScript(), "GroundClick", args);
+		bool bSuccess = m_pkScriptSys->Call( m_pkEntity->GetEntityScript(), "GroundClick", args);
 
 		delete[] args[0].pData;
 		
@@ -145,7 +145,7 @@ void P_ScriptInterface::Touch(int iId)
 	args[0].eType = tINT;
 	args[0].pData = &iId;
 	
-	m_pkObjMan->CallFunction(m_pkObject, "Collission",&args);	
+	m_pkEntityManager->CallFunction(m_pkEntity, "Collission",&args);	
 }
 
 void P_ScriptInterface::OnEvent(GameMessage& Msg)
@@ -158,7 +158,7 @@ void P_ScriptInterface::OnEvent(GameMessage& Msg)
 	
 	string strName = string("on") + Msg.m_Name;
    
-	m_pkObjMan->CallFunction(m_pkObject, strName.c_str(), 0);
+	m_pkEntityManager->CallFunction(m_pkEntity, strName.c_str(), 0);
 }
 
 
@@ -177,12 +177,12 @@ void P_ScriptInterface::Load(ZFIoInterface* pkPackage,int iVersion)
 
 bool P_ScriptInterface::SendEvent(const char* acEvent)
 {
-	if(m_pkObject->GetEntityScript() != NULL)
+	if(m_pkEntity->GetEntityScript() != NULL)
 	{
 		//set self id before calling the funktion
-		ObjectManagerLua::g_iCurrentObjectID = m_pkObject->GetEntityID();
+		ObjectManagerLua::g_iCurrentObjectID = m_pkEntity->GetEntityID();
 		
-		bool bSuccess = m_pkScriptSys->Call(m_pkObject->GetEntityScript(), (char*)acEvent,0,0);
+		bool bSuccess = m_pkScriptSys->Call(m_pkEntity->GetEntityScript(), (char*)acEvent,0,0);
 		//cout << "Calling Event: " << acEvent << " = " << bSuccess << endl;
 
 		return bSuccess;

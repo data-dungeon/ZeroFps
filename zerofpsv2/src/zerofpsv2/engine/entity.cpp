@@ -20,11 +20,11 @@ typedef list<Property*>::iterator	itListProperty;
 Entity::Entity() 
 {
 	// Get Ptrs to some usefull Subsystems.
-	m_pkEntityMan			= static_cast<EntityManager*>(g_ZFObjSys.GetObjectPtr("EntityManager"));
+	m_pkEntityManager		= static_cast<EntityManager*>(g_ZFObjSys.GetObjectPtr("EntityManager"));
 	m_pkPropertyFactory	= static_cast<PropertyFactory*>(g_ZFObjSys.GetObjectPtr("PropertyFactory"));	
 	m_pkZeroFps			   = static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
 		
-	ZFAssert(m_pkEntityMan,			"Entity::Entity(): Failed to find ObjectManger");
+	ZFAssert(m_pkEntityManager,	"Entity::Entity(): Failed to find EntityManager");
 	ZFAssert(m_pkPropertyFactory,	"Entity::Entity(): Failed to find PropertyFactory");
 	ZFAssert(m_pkZeroFps,		   "Entity::Entity(): Failed to find ZeroFps");
 
@@ -96,7 +96,7 @@ Entity::~Entity()
 	}
 
 	// Tell Entity manger that we are no more.
-	m_pkEntityMan->UnLink(this);
+	m_pkEntityManager->UnLink(this);
 	
 	delete(m_pScriptFileHandle);
 }
@@ -116,7 +116,7 @@ Property* Entity::AddProperty(Property* pkNewProperty)
 		++kIt;
 	}
 	/////////////////7
-	pkNewProperty->SetObject(this);
+	pkNewProperty->SetEntity(this);
 	m_akPropertys.push_back(pkNewProperty);
 	pkNewProperty->Init();
 	
@@ -194,7 +194,7 @@ bool Entity::DeleteProperty(const char* acName)
 
 void Entity::PropertyLost(Property* pkProp)
 {
-	if(pkProp->m_pkObject == this)
+	if(pkProp->m_pkEntity == this)
 	{
 		vector<Property*>::iterator kIt = m_akPropertys.begin();
 		while(kIt != m_akPropertys.end())
@@ -202,7 +202,7 @@ void Entity::PropertyLost(Property* pkProp)
 			(*kIt)->PropertyLost(pkProp);
 			++kIt;
 		}
-		pkProp->m_pkObject = NULL;
+		pkProp->m_pkEntity = NULL;
 	}	
 }
 
@@ -241,10 +241,10 @@ void  Entity::GetPropertys(vector<Property*> *akPropertys,int iType,int iSide)
 	}
 }
 
-/**	\brief	Returns a vector with propertys for the Entity and child objects.
+/**	\brief	Returns a vector with propertys for the Entity and child Entitys.
 	
 	Returns a vector with the the propertys that have the correct type and side flags.
-	Walks child objects of selected Entity.
+	Walks child Entitys of selected Entity.
 */
 void Entity::GetAllPropertys(vector<Property*> *akPropertys,int iType,int iSide)
 {
@@ -252,7 +252,7 @@ void Entity::GetAllPropertys(vector<Property*> *akPropertys,int iType,int iSide)
 	if(m_iUpdateStatus & UPDATE_NONE)
 		return;
 
-	//get this objects propertys
+	//get this Entitys propertys
 	GetPropertys(akPropertys,iType,iSide);	
 	
 	//return if no child updates shuld be done
@@ -326,7 +326,7 @@ void Entity::RemoveChild(Entity* pkEntity)
 		}
 		++kIt;
 	}
-	pkEntity->SetParent(NULL);		// Set objects parent to NULL.
+	pkEntity->SetParent(NULL);		// Set Entitys parent to NULL.
 }
 
 /**	\brief	Sets Entity to be our parent.
@@ -409,7 +409,7 @@ bool Entity::AttachToZone(const Vector3& kPos)
 	{
 		if(!m_bRelativeOri)
 		{		
-			int nZ = m_pkEntityMan->GetZoneIndex(kPos,m_iCurrentZone,false);
+			int nZ = m_pkEntityManager->GetZoneIndex(kPos,m_iCurrentZone,false);
 			
 			if(nZ == m_iCurrentZone)
 				return true;
@@ -420,7 +420,7 @@ bool Entity::AttachToZone(const Vector3& kPos)
 				return false;
 			}
 			
-			ZoneData* cz = m_pkEntityMan->GetZoneData(nZ);
+			ZoneData* cz = m_pkEntityManager->GetZoneData(nZ);
 			if(!cz)
 			{
 				//cout<<"zone does not exist"<<endl;
@@ -446,7 +446,7 @@ bool Entity::AttachToZone(const Vector3& kPos)
 void Entity::ZoneChange(int iCurrent,int iNew)
 {
 	//lets fins out wich clients has this entity
-	for(list<P_Track*>::iterator it = m_pkEntityMan->m_kTrackedObjects.begin();it!= m_pkEntityMan->m_kTrackedObjects.end();it++)
+	for(list<P_Track*>::iterator it = m_pkEntityManager->m_kTrackedObjects.begin();it!= m_pkEntityManager->m_kTrackedObjects.end();it++)
 	{	
 		if((*it)->m_iConnectID != -1)
 		{		
@@ -458,7 +458,7 @@ void Entity::ZoneChange(int iCurrent,int iNew)
 					cout<<"Entity "<<m_iEntityID<< " has moved to an untracked zone for client "<<(*it)->m_iConnectID<<endl;
 					
 					// send delete request to client here =)
-					m_pkEntityMan->SendDeleteEntity((*it)->m_iConnectID,m_iEntityID);
+					m_pkEntityManager->SendDeleteEntity((*it)->m_iConnectID,m_iEntityID);
 				}		
 			}
 		}
@@ -477,12 +477,12 @@ bool Entity::GetZoneNeighbours(vector<Entity*>* pkZones)
 	if(!IsZone())
 		return false;
 		
-	if(ZoneData* pkZD = m_pkEntityMan->GetZone(this))
+	if(ZoneData* pkZD = m_pkEntityManager->GetZone(this))
 	{
 		pkZones->push_back(this);
 		
 		for(int i = 0;i<pkZD->m_iZoneLinks.size();i++)
-			if(ZoneData* pkZD2 =	m_pkEntityMan->GetZoneData(pkZD->m_iZoneLinks[i]))
+			if(ZoneData* pkZD2 =	m_pkEntityManager->GetZoneData(pkZD->m_iZoneLinks[i]))
 				if(pkZD2->m_pkZone)
 					pkZones->push_back(pkZD2->m_pkZone);
 				
@@ -678,9 +678,9 @@ void Entity::PackFrom(NetPacket* pkNetPacket, int iConnectionID)
 		int iParentID	=	-1;
 		
 		pkNetPacket->Read( iParentID );		
-		Entity* parent = m_pkEntityMan->GetEntityByID(iParentID);
+		Entity* parent = m_pkEntityManager->GetEntityByID(iParentID);
 		if(!parent)
-			parent = m_pkEntityMan->CreateEntityByNetWorkID(iParentID);
+			parent = m_pkEntityManager->CreateEntityByNetWorkID(iParentID);
 		SetParent(parent);
 		LOGSIZE("Object::ParentID", 4);
 	}
@@ -703,8 +703,8 @@ void Entity::PackFrom(NetPacket* pkNetPacket, int iConnectionID)
 		{
 			int iDelObjectID;
 			pkNetPacket->Read(iDelObjectID );
-			pkNetSlave = m_pkEntityMan->GetEntityByID(iDelObjectID);
-			m_pkEntityMan->Delete(pkNetSlave);
+			pkNetSlave = m_pkEntityManager->GetEntityByID(iDelObjectID);
+			m_pkEntityManager->Delete(pkNetSlave);
 		}
 	}
 
@@ -813,8 +813,8 @@ void Entity::PackFrom(NetPacket* pkNetPacket, int iConnectionID)
 
 	int iEnd = pkNetPacket->m_iPos;
 	
-	m_pkEntityMan->m_iTotalNetEntityData += (iEnd - iStart);
-	m_pkEntityMan->m_iNumOfNetEntitys ++;
+	m_pkEntityManager->m_iTotalNetEntityData += (iEnd - iStart);
+	m_pkEntityManager->m_iNumOfNetEntitys ++;
 }
 
 /**	\brief	Load Entity.
@@ -828,10 +828,10 @@ void Entity::Load(ZFIoInterface* pkFile,bool bLoadID,bool bLoadChilds)
 	pkFile->Read(&iNewID,sizeof(iNewID),1);	
 	if(bLoadID)
 	{
-		m_pkEntityMan->Link(this,iNewID);
+		m_pkEntityManager->Link(this,iNewID);
 	}
 	else
-		m_pkEntityMan->Link(this);	
+		m_pkEntityManager->Link(this);	
 
 	pkFile->Read(&m_bRelativeOri,sizeof(m_bRelativeOri),1);	
 	pkFile->Read(&m_bInterpolate,sizeof(m_bInterpolate),1);	
@@ -923,7 +923,7 @@ void Entity::Load(ZFIoInterface* pkFile,bool bLoadID,bool bLoadChilds)
 		//load all childs
 		for( i = 0; i < iChilds; i++ )
 		{
-			Entity* newobj = m_pkEntityMan->CreateEntity(false);
+			Entity* newobj = m_pkEntityManager->CreateEntity(false);
 			newobj->SetParent(this);
 			newobj->Load(pkFile,bLoadID);		
 		}
@@ -1616,7 +1616,7 @@ void Entity::UpdateDeleteList()
 	//make sure that all clients have gotten the delete list
 	for(unsigned int i = 0;i < m_kNetUpdateFlags.size();i++)
 	{
-		if(m_pkEntityMan->m_pkNetWork->IsConnected(i))
+		if(m_pkEntityManager->m_pkNetWork->IsConnected(i))
 		{
 			//cout<<"testing con "<<i<<endl;
 			if(m_kNetUpdateFlags[i][NETUPDATEFLAG_DELETE] == true)

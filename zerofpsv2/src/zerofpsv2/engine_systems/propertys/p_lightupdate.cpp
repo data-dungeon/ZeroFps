@@ -15,7 +15,7 @@ P_LightUpdate::P_LightUpdate()
 
 void P_LightUpdate::Update()
 {
-	m_pkLight->Update(m_pkObject->GetWorldPosV());
+	m_pkLight->Update(m_pkEntity->GetWorldPosV());
 }
 
 

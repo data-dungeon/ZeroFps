@@ -206,12 +206,12 @@ P_PfMesh::~P_PfMesh()
 
 void P_PfMesh::Update()
 {
-	if( m_pkObjMan->IsUpdate(PROPERTY_TYPE_NORMAL) ) 
+	if( m_pkEntityManager->IsUpdate(PROPERTY_TYPE_NORMAL) ) 
 	{
 		if(m_NaviMesh.size() == 0)
 		{
-			m_pkMad = (P_Mad*)m_pkObject->GetProperty("P_Mad");
-			P_HMRP2* pkHmap = (P_HMRP2*)m_pkObject->GetProperty("P_HMRP2");
+			m_pkMad = (P_Mad*)m_pkEntity->GetProperty("P_Mad");
+			P_HMRP2* pkHmap = (P_HMRP2*)m_pkEntity->GetProperty("P_HMRP2");
 
 			if(m_pkMad)
 				SetMad(m_pkMad);
@@ -220,7 +220,7 @@ void P_PfMesh::Update()
 		}
 	}
 
-	if( m_pkObjMan->IsUpdate(PROPERTY_TYPE_RENDER) ) 
+	if( m_pkEntityManager->IsUpdate(PROPERTY_TYPE_RENDER) ) 
 	{
 		if(m_pkAStar->m_bDrawNaviMesh)
 			DrawNaviMesh();
@@ -272,7 +272,7 @@ void P_PfMesh::BuildNavMesh(bool bWorldCoo, vector<Mad_Face>* pkFace, vector<Vec
 
 	Vector3 kNormal;
 
-	Matrix4 kMat = m_pkObject->GetWorldOriM();
+	Matrix4 kMat = m_pkEntity->GetWorldOriM();
 
 	for(unsigned int i=0; i<pkFace->size(); i++) 
 	{
@@ -351,10 +351,10 @@ void P_PfMesh::SetHmap(P_HMRP2* pkHmap)
 void P_PfMesh::AutoMakeNaviMesh()
 {
 	// Try to find a Hmap or Mad to build mesh from.
-	P_HMRP2* pkHmap = (P_HMRP2*)m_pkObject->GetProperty("P_HMRP2");
+	P_HMRP2* pkHmap = (P_HMRP2*)m_pkEntity->GetProperty("P_HMRP2");
 	if(pkHmap)
 		SetHmap(pkHmap);
-	P_Mad* pkMad = (P_Mad*)m_pkObject->GetProperty("P_Mad");
+	P_Mad* pkMad = (P_Mad*)m_pkEntity->GetProperty("P_Mad");
 	if(pkMad)
 		SetMad(pkMad);
 
@@ -363,7 +363,7 @@ void P_PfMesh::AutoMakeNaviMesh()
 
 void P_PfMesh::CalcNaviMesh()
 {
-	P_Mad* pkMad = dynamic_cast<P_Mad*>(m_pkObject->GetProperty("P_Mad"));
+	P_Mad* pkMad = dynamic_cast<P_Mad*>(m_pkEntity->GetProperty("P_Mad"));
 	if(!pkMad)	
 		return;
 

@@ -9,8 +9,8 @@ ShadowMesh::ShadowMesh(P_Mad* pkMad,LightSource* pkLightSource,int iShadowMode)
 	m_iShadowMode =	iShadowMode;
 
 	m_pkMad = 			pkMad;
-	m_kMadPos = 		pkMad->GetObject()->GetIWorldPosV();
-	m_kMadRotation = 	pkMad->GetObject()->GetWorldRotM();
+	m_kMadPos = 		pkMad->GetEntity()->GetIWorldPosV();
+	m_kMadRotation = 	pkMad->GetEntity()->GetWorldRotM();
 	m_fMadScale = 		pkMad->m_fScale;
 
 	m_pkLightSource = pkLightSource;
@@ -53,7 +53,7 @@ bool ShadowMesh::Equals(P_Mad* pkMad,LightSource* pkLightSource,int iShadowMode)
 		return false;
 
 	//mad position
-	if(m_kMadPos != pkMad->GetObject()->GetIWorldPosV())
+	if(m_kMadPos != pkMad->GetEntity()->GetIWorldPosV())
 		return false;
 
 	//light position
@@ -69,7 +69,7 @@ bool ShadowMesh::Equals(P_Mad* pkMad,LightSource* pkLightSource,int iShadowMode)
 	}
 
 	//mad rotation
-	if(m_kMadRotation != pkMad->GetObject()->GetWorldRotM() )
+	if(m_kMadRotation != pkMad->GetEntity()->GetWorldRotM() )
 		return false;
 
 	//mad scale
@@ -220,7 +220,7 @@ void ZShadow::Update()
 
 			//find witch lights to enable
 			vector<LightSource*>	kLights;
-			m_pkLight->GetClosestLights(&kLights,m_iNrOfShadows, pkMad->GetObject()->GetIWorldPosV(),false);
+			m_pkLight->GetClosestLights(&kLights,m_iNrOfShadows, pkMad->GetEntity()->GetIWorldPosV(),false);
 			//m_pkLight->GetClosestLights(&kLights,m_iNrOfShadows, pkMad->GetObject()->GetIWorldPosV(),true);
 			
 			for(int i = 0;i<kLights.size();i++)
@@ -282,12 +282,12 @@ bool ZShadow::SetupMesh(P_Mad* pkMad)
 			Matrix4 m_kModelMatrix;
 
 			Matrix4 ori;
-			ori = pkMad->GetObject()->GetWorldRotM();
+			ori = pkMad->GetEntity()->GetWorldRotM();
 
 			m_kModelMatrix.Identity();
 			m_kModelMatrix.Scale(pkMad->m_fScale,pkMad->m_fScale,pkMad->m_fScale);
 			m_kModelMatrix *= ori;
-			m_kModelMatrix.Translate(pkMad->GetObject()->GetIWorldPosV());
+			m_kModelMatrix.Translate(pkMad->GetEntity()->GetIWorldPosV());
 
 			//transform vertexs
 			for(int i = 0;i<m_iNrOfVerts;i++)

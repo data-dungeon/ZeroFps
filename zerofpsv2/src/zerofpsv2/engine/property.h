@@ -128,10 +128,10 @@ private:
 
 /////END OF GUBB ULTRACLASS!!/// 
 
-/**	\brief	A property of a object.
+/**	\brief	A property of a Entity.
 	 \ingroup Engine
 
-  A Property is the things that make the objects in the world diffrent. 
+  A Property is the things that make the Entitys in the world diffrent. 
 */
 class ENGINE_API Property
 {
@@ -148,8 +148,8 @@ class ENGINE_API Property
 		///////////////////////////////////////////
 	protected:
 		ZeroFps*				m_pkZeroFps;			// Vim - Change To ObjectManger
-		Entity*				m_pkObject;
-		EntityManager*    m_pkObjMan;
+		Entity*				m_pkEntity;
+		EntityManager*    m_pkEntityManager;
 	
 		//netflags
 		void	SetNrOfConnections(int iConNR);
@@ -170,15 +170,15 @@ class ENGINE_API Property
 		template<class T> void GetProperty(T *&pT)
 		{
 			pT = 0;
-			if(m_pkObject)
+			if(m_pkEntity)
 			{
-				vector<Property*>::iterator kIt = m_pkObject->m_akPropertys.begin();
-				while(kIt != m_pkObject->m_akPropertys.end())
+				vector<Property*>::iterator kIt = m_pkEntity->m_akPropertys.begin();
+				while(kIt != m_pkEntity->m_akPropertys.end())
 				{
 					if(pT = dynamic_cast<T*>(*kIt))
 					{
 						this->PointerFound(typeid(T*));
-						kIt = m_pkObject->m_akPropertys.end();
+						kIt = m_pkEntity->m_akPropertys.end();
 					}
 					else
 						++kIt;
@@ -197,11 +197,11 @@ class ENGINE_API Property
 		
 		int		m_iVersion;				//used for multiple versionsof load ,shuld be incresed if save data changes
 		
-		int		m_iType;				// property type
-		int		m_iSide;				// server or client property
+		int		m_iType;					// property type
+		int		m_iSide;					// server or client property
 		
 		bool		bNetwork;				// True if property needs to be sent o network.
-		bool		m_bSave;				// True if propertys should be saved with object.
+		bool		m_bSave;					// True if propertys should be saved with entity.
 		char		m_acName[50];			// Name of Property. Set when property is created.	
 
 
@@ -231,7 +231,7 @@ class ENGINE_API Property
 		virtual void Touch(Collision* pkCol) {};					//executet when collision occurs
 		virtual void Touch(int iId) {};								//executet when collision occurs		
 		virtual void ZoneChange(int iCurrent,int iNew) {};
-		virtual void Init() {};											//executet when property is added to an object
+		virtual void Init() {};											//executet when property is added to an entity
 		virtual void Update() {};										//executet once every game loop
 		virtual void PackTo(NetPacket* pkNetPacket, int iConnectionID)		{	};
 		virtual void PackFrom(NetPacket* pkNetPacket, int iConnectionID)	{	};
@@ -241,8 +241,8 @@ class ENGINE_API Property
 		virtual void Load(ZFIoInterface* pkFile,int iVersion)					{	};		
 
 		// Inlines
-		inline void SetObject(Entity* pkObject)	{	m_pkObject=pkObject;	};
-		inline Entity *GetObject()						{	return m_pkObject;	};
+		inline void SetEntity(Entity* pkEntity)	{	m_pkEntity=pkEntity;	};
+		inline Entity *GetEntity()						{	return m_pkEntity;	};
 
 		virtual bool operator<(Property& kOther);
 

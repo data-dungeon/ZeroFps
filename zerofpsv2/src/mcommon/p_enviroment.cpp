@@ -168,7 +168,7 @@ void P_Enviroment::Init()
 	
 	m_iRain = 0;
 	
-	m_iRainTextureID = m_pkObject->m_pkZeroFps->m_pkTexMan->Load("data/textures/rainsplash.tga", 0);
+	m_iRainTextureID = m_pkEntity->m_pkZeroFps->m_pkTexMan->Load("data/textures/rainsplash.tga", 0);
 }
 
 void P_Enviroment::Update()
@@ -297,7 +297,7 @@ void P_Enviroment::SetEnviroment(const char* csEnviroment )
 	//setup skybox property
 	if(es->m_strSkybox1 != "" && es->m_strSkybox2 != "")
 	{
-		P_SkyBoxRender* ps = (P_SkyBoxRender*)m_pkObject->AddProperty("P_SkyBoxRender");	
+		P_SkyBoxRender* ps = (P_SkyBoxRender*)m_pkEntity->AddProperty("P_SkyBoxRender");	
 		if(ps)
 			ps->SetTexture(es->m_strSkybox1.c_str(),es->m_strSkybox2.c_str());
 	}
@@ -306,15 +306,15 @@ void P_Enviroment::SetEnviroment(const char* csEnviroment )
 	//setup particle property
 	if(es->m_strParticles != "")
 	{
-		P_PSystem* ps = (P_PSystem*)m_pkObject->AddProperty("P_PSystem");	
+		P_PSystem* ps = (P_PSystem*)m_pkEntity->AddProperty("P_PSystem");	
 		if(ps)
 			ps->SetPSType(es->m_strParticles);
 	}
 	
 	//setup light property	
-	P_Light* pl = (P_Light*)m_pkObject->GetProperty("P_Light");		
+	P_Light* pl = (P_Light*)m_pkEntity->GetProperty("P_Light");		
 	if(!pl)
-		pl = (P_Light*)m_pkObject->AddProperty("P_Light");	
+		pl = (P_Light*)m_pkEntity->AddProperty("P_Light");	
 	
 	if(pl)
 	{	
@@ -344,9 +344,9 @@ void P_Enviroment::ResetEnviroment()
 {
 	
 	//m_pkRender->SetFog(Vector4(0,0,0,0),0,50,false);
-	m_pkObject->DeleteProperty("P_PSystem");
-	m_pkObject->DeleteProperty("P_AmbientSound");
-	m_pkObject->DeleteProperty("P_SkyBoxRender");	
+	m_pkEntity->DeleteProperty("P_PSystem");
+	m_pkEntity->DeleteProperty("P_AmbientSound");
+	m_pkEntity->DeleteProperty("P_SkyBoxRender");	
 	
 	m_pkCurrentLP = NULL;
 	m_kSunDiffuseColor.Set(1,1,1,1);
@@ -408,7 +408,7 @@ void P_Enviroment::MakeRainSplashes()
 	m_kDrops.clear();
 
 	vector<Entity*> kObjects;		
-	if(ZoneData* pkZD = m_pkObjectMan->GetZone(m_pkObject->GetWorldPosV()))
+	if(ZoneData* pkZD = m_pkObjectMan->GetZone(m_pkEntity->GetWorldPosV()))
 	{
 		if(pkZD->m_pkZone)
 		{
@@ -434,7 +434,7 @@ void P_Enviroment::MakeRainSplashes()
 	
 	for(int j = 0;j < m_iRain;j++)
 	{
-		Vector3 kDropStart = m_pkObject->GetWorldPosV() + Vector3( ( (rand()%2000)/100.0)-10.0,20,((rand()%2000)/100.0)-10.0);
+		Vector3 kDropStart = m_pkEntity->GetWorldPosV() + Vector3( ( (rand()%2000)/100.0)-10.0,20,((rand()%2000)/100.0)-10.0);
 		
 		float fTop = -999999;
 		Vector3 kPos;

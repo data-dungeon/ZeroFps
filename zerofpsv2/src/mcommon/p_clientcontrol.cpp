@@ -140,7 +140,7 @@ void P_ClientControl::UpdateCharacter()
 		return;
 	
 	//hack
-	Entity* pkEnt = m_pkObjMan->GetEntityByID(m_iActiveCaracterObjectID);
+	Entity* pkEnt = m_pkEntityManager->GetEntityByID(m_iActiveCaracterObjectID);
 	
 	if(pkEnt)
 	{
@@ -188,7 +188,7 @@ void P_ClientControl::UpdateCharacter()
 
 void P_ClientControl::SetupServerinfoP()
 {
-	Entity* pkEnt = m_pkObjMan->GetEntityByName("A t_serverinfo.lua");
+	Entity* pkEnt = m_pkEntityManager->GetEntityByName("A t_serverinfo.lua");
 	
 	if(pkEnt)
 	{

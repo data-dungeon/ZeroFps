@@ -31,7 +31,7 @@ void P_DMShop::Init()
 	m_pkObjectMan = 
 		static_cast<EntityManager*>(g_ZFObjSys.GetObjectPtr("EntityManager"));
 
-	m_pkItems = new DMContainer(m_pkObjMan,m_pkObject->GetEntityID(),8,10);
+	m_pkItems = new DMContainer(m_pkEntityManager,m_pkEntity->GetEntityID(),8,10);
 }
 
 //-----------------------------------------------------------------------------

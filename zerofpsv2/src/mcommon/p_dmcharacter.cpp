@@ -163,20 +163,20 @@ P_DMCharacter::~P_DMCharacter()
 void P_DMCharacter::Init()
 {
 
-	m_pkBackPack = new DMContainer(m_pkObjMan,m_pkObject->GetEntityID(),6,5);
-	m_pkBody = 		new DMContainer(m_pkObjMan,m_pkObject->GetEntityID(),3,4);
+	m_pkBackPack = new DMContainer(m_pkEntityManager,m_pkEntity->GetEntityID(),6,5);
+	m_pkBody = 		new DMContainer(m_pkEntityManager,m_pkEntity->GetEntityID(),3,4);
 	m_pkBody->AddItemType (DMITEM_ARMOUR);
 	m_pkBody->SetMaxItems(1);
-	m_pkBelt = 		new DMContainer(m_pkObjMan,m_pkObject->GetEntityID(),4,1);
+	m_pkBelt = 		new DMContainer(m_pkEntityManager,m_pkEntity->GetEntityID(),4,1);
 	m_pkBelt->AddItemType(DMITEM_GRENADE);
 	m_pkBelt->AddItemType(DMITEM_CLIP);		
 	m_pkBelt->AddItemType(DMITEM_MEDKIT);
-	m_pkHand = 		new DMContainer(m_pkObjMan,m_pkObject->GetEntityID(),2,3,false);
-	m_pkHand = 		new DMContainer(m_pkObjMan,m_pkObject->GetEntityID(),3,2,false);
+	m_pkHand = 		new DMContainer(m_pkEntityManager,m_pkEntity->GetEntityID(),2,3,false);
+	m_pkHand = 		new DMContainer(m_pkEntityManager,m_pkEntity->GetEntityID(),3,2,false);
 	m_pkHand->AddItemType(DMITEM_GRENADE);	
 	m_pkHand->AddItemType(DMITEM_WEAPON);	
 	m_pkHand->SetMaxItems(1);	
-	m_pkImplants = new DMContainer(m_pkObjMan,m_pkObject->GetEntityID(),3,3);
+	m_pkImplants = new DMContainer(m_pkEntityManager,m_pkEntity->GetEntityID(),3,3);
 	m_pkImplants->AddItemType(DMITEM_IMPLANT);
 	
 	//cout<< "New character created"<<endl;
@@ -197,7 +197,7 @@ void P_DMCharacter::Damage(int iType,int iDmg)
 	
 	// oh madness, blood psystem in the nick of time :D
 	if ( m_iTeam != 10 )
-		m_pkObject->m_pkEntityMan->CreateEntityFromScriptInZone("data/script/objects/particles/blood.lua", m_pkObject->GetWorldPosV());
+		m_pkEntity->m_pkEntityManager->CreateEntityFromScriptInZone("data/script/objects/particles/blood.lua", m_pkEntity->GetWorldPosV());
 
 	if(m_kStats.m_iLife <= 0)
 	{
@@ -205,14 +205,14 @@ void P_DMCharacter::Damage(int iType,int iDmg)
 		if(iNumSounds > 0)
 		{
 			m_pkAudioSys->StartSound(m_vkDeathSounds[rand() % iNumSounds], 
-				m_pkObject->GetWorldPosV());
+				m_pkEntity->GetWorldPosV());
 		}
 		
 		ChangeState (DEAD);
 	}
 	else
 	{
-		float t = m_pkObjMan->GetSimTime();
+		float t = m_pkEntityManager->GetSimTime();
 		static float prevSoundPlayTime = 0;
 
 		if(t - prevSoundPlayTime > 2.0f) // spela max 1 ljud varannan sek
@@ -221,7 +221,7 @@ void P_DMCharacter::Damage(int iType,int iDmg)
 			if(iNumSounds > 0)
 			{
 				m_pkAudioSys->StartSound(m_vkDefenciveActionQuots[rand() % iNumSounds], 
-					m_pkObject->GetWorldPosV());
+					m_pkEntity->GetWorldPosV());
 				prevSoundPlayTime = t;
 			}
 		}
@@ -231,7 +231,7 @@ void P_DMCharacter::Damage(int iType,int iDmg)
 
 void P_DMCharacter::Shoot (Vector3 kLocation)
 {
-	float t = m_pkObjMan->GetSimTime();
+	float t = m_pkEntityManager->GetSimTime();
 
 	static float prevSoundPlayTime = 0;
 
@@ -249,31 +249,31 @@ void P_DMCharacter::Shoot (Vector3 kLocation)
 		if(iNumSounds > 0)
 		{
 			m_pkAudioSys->StartSound(m_vkOffenciveActionQuots[rand() % iNumSounds], 
-				m_pkObject->GetWorldPosV());
+				m_pkEntity->GetWorldPosV());
 			prevSoundPlayTime = t;
 		}
 	}
 
-	P_Mad* pkMad = (P_Mad*)m_pkObject->GetProperty ("P_Mad");
+	P_Mad* pkMad = (P_Mad*)m_pkEntity->GetProperty ("P_Mad");
 
 	pkP_Gun->m_iTeam = m_iTeam;
 
 	// worsen aim with distance
-	Vector3 kTemp = pkP_Gun->GetObject()->GetWorldPosV();
+	Vector3 kTemp = pkP_Gun->GetEntity()->GetWorldPosV();
 	float fDist = kLocation.DistanceTo( kTemp );
 
 	// rotate character towards target
-	Vector3 kdiff = kLocation - m_pkObject->GetWorldPosV();
+	Vector3 kdiff = kLocation - m_pkEntity->GetWorldPosV();
 	kdiff.y = 0;
 	Matrix4 kRotM;
 
 	kRotM.LookDir( kdiff.Unit(), Vector3(0, 1, 0) );
 	kRotM.Transponse();
-	m_pkObject->SetLocalRotM(kRotM);
+	m_pkEntity->SetLocalRotM(kRotM);
 
 
 	// Start shoot animation, if gun isn't empty
-	if(P_Mad* pkMad = (P_Mad*)m_pkObject->GetProperty("P_Mad"))
+	if(P_Mad* pkMad = (P_Mad*)m_pkEntity->GetProperty("P_Mad"))
 	{
 		if ( pkP_Gun->HasAmmo() && pkP_Gun->ReadyToFire() )
 		{
@@ -281,7 +281,7 @@ void P_DMCharacter::Shoot (Vector3 kLocation)
 			pkMad->SetNextAnimation ("idle");
 
 			// clear p_path, can't move and shoot at the same time
-			P_PfPath* pkPath = (P_PfPath*)m_pkObject->GetProperty("P_PfPath");
+			P_PfPath* pkPath = (P_PfPath*)m_pkEntity->GetProperty("P_PfPath");
 			if ( pkPath )
 				pkPath->ClearPath();
 		}
@@ -380,7 +380,7 @@ void P_DMCharacter::Update()
 			
 			
 	
-	if(P_PfPath* pkPF = (P_PfPath*)m_pkObject->GetProperty("P_PfPath"))
+	if(P_PfPath* pkPF = (P_PfPath*)m_pkEntity->GetProperty("P_PfPath"))
 	{
 		if(pkPF->HavePath() == false)
 		{
@@ -393,7 +393,7 @@ void P_DMCharacter::Update()
 				if(m_bPlayWalkSound == true)
 				{
 					m_pkAudioSys->StopSound("/data/sound/walk_zombie.wav", 
-						m_pkObject->GetIWorldPosV()); 	
+						m_pkEntity->GetIWorldPosV()); 	
 					m_bPlayWalkSound = false;
 					//printf("stoppa ljud!\n");
 				}
@@ -408,7 +408,7 @@ void P_DMCharacter::Update()
 				if(m_bPlayWalkSound == false && m_iTeam != 1 && m_iTeam != 2 )
 				{
 					m_pkAudioSys->StartSound("/data/sound/walk_zombie.wav", 
-						m_pkObject->GetIWorldPosV(), 
+						m_pkEntity->GetIWorldPosV(), 
 						Vector3(0,0,1), true );
 					m_bPlayWalkSound = true;
 					//printf("starta ljud!\n");
@@ -420,8 +420,8 @@ void P_DMCharacter::Update()
 				{
 					// WARNING! Detta kan bli slött som ASET, kommentera bort i värsta fall :)
 					m_pkAudioSys->MoveSound("/data/sound/walk_zombie.wav", 
-						m_pkObject->GetIWorldPosV(),
-						m_pkObject->GetIWorldPosV());
+						m_pkEntity->GetIWorldPosV(),
+						m_pkEntity->GetIWorldPosV());
 				}
 			}
 		}
@@ -518,7 +518,7 @@ void P_DMCharacter::UseQuickItem(int iItemIndex, bool bIndexIsItemType)
 
 					if( iObjectID != -1)
 					{
-						pkWeapon = m_pkObjMan->GetEntityByID ( iObjectID );
+						pkWeapon = m_pkEntityManager->GetEntityByID ( iObjectID );
 
 						string strGunItemName = 
 							((P_DMItem*)pkWeapon->GetProperty("P_DMItem"))->GetName();
@@ -546,7 +546,7 @@ void P_DMCharacter::UseQuickItem(int iItemIndex, bool bIndexIsItemType)
 
 	// default, run scriptfunction, item itself decides what happens
 	default:
-		Entity* pkQItem = m_pkObject->m_pkEntityMan->GetEntityByID(kItemList[iBeltIndex].m_iItemID);
+		Entity* pkQItem = m_pkEntity->m_pkEntityManager->GetEntityByID(kItemList[iBeltIndex].m_iItemID);
 
 		if ( pkQItem == 0 )
 			break;
@@ -558,7 +558,7 @@ void P_DMCharacter::UseQuickItem(int iItemIndex, bool bIndexIsItemType)
 			// send in characterID
 			vector<ARG_DATA> kParams;
 
-			int iValue = m_pkObject->GetEntityID();;
+			int iValue = m_pkEntity->GetEntityID();;
 			
 			ARG_DATA kData;
 			kData.eType = tINT;
@@ -566,7 +566,7 @@ void P_DMCharacter::UseQuickItem(int iItemIndex, bool bIndexIsItemType)
 
 			kParams.push_back (kData);
 
-			m_pkObjMan->CallFunction (m_pkObject, "Use", &kParams );	
+			m_pkEntityManager->CallFunction (m_pkEntity, "Use", &kParams );	
 		//}
 
 		break;
@@ -611,7 +611,7 @@ void P_DMCharacter::MakeStringLowerCase(string& s)
 void P_DMCharacter::SetMoveSpeed (float fSpeed)
 {
 	// get pf_path property
-	P_PfPath* pkPath = (P_PfPath*)m_pkObject->GetProperty("P_PfPath");
+	P_PfPath* pkPath = (P_PfPath*)m_pkEntity->GetProperty("P_PfPath");
 
 	m_kStats.m_fSpeed = fSpeed;
 
@@ -627,7 +627,7 @@ void P_DMCharacter::SetMoveSpeed (float fSpeed)
 void P_DMCharacter::AddMoveSpeed (float fSpeed)
 {
 	// get pf_path property
-	P_PfPath* pkPath = (P_PfPath*)m_pkObject->GetProperty("P_PfPath");
+	P_PfPath* pkPath = (P_PfPath*)m_pkEntity->GetProperty("P_PfPath");
 
 	m_kStats.m_fSpeed += fSpeed;
 
@@ -689,7 +689,7 @@ bool P_DMCharacter::HandleOrder(DMOrder* pkOrder,bool bNew)
 	{
 		case eWalk:
 			{
-				if(P_PfPath* pkPF = (P_PfPath*)m_pkObject->GetProperty("P_PfPath"))
+				if(P_PfPath* pkPF = (P_PfPath*)m_pkEntity->GetProperty("P_PfPath"))
 				{
 					//new order do pathfind
 					if(bNew)
@@ -712,9 +712,9 @@ bool P_DMCharacter::HandleOrder(DMOrder* pkOrder,bool bNew)
 			
 		case ePickup:
 			{
-				if(Entity* pkPickEnt = m_pkObjMan->GetEntityByID(pkOrder->m_iEntityID))
+				if(Entity* pkPickEnt = m_pkEntityManager->GetEntityByID(pkOrder->m_iEntityID))
 				{
-					if( pkPickEnt->GetWorldPosV().DistanceTo(m_pkObject->GetWorldPosV()) < 1) 
+					if( pkPickEnt->GetWorldPosV().DistanceTo(m_pkEntity->GetWorldPosV()) < 1) 
 					{
 						if(pkPickEnt->GetUseZones())
 						{	
@@ -736,12 +736,12 @@ bool P_DMCharacter::HandleOrder(DMOrder* pkOrder,bool bNew)
 			
 		case eEnterHQ:
 			{
-				if(Entity* pkPickEnt = m_pkObjMan->GetEntityByID(pkOrder->m_iEntityID))
+				if(Entity* pkPickEnt = m_pkEntityManager->GetEntityByID(pkOrder->m_iEntityID))
 				{
 					if(P_DMHQ* pkHQ = (P_DMHQ*)pkPickEnt->GetProperty("P_DMHQ"))
 					{
 						Vector3 kPos1 = pkPickEnt->GetWorldPosV();
-						Vector3 kPos2 = m_pkObject->GetWorldPosV();
+						Vector3 kPos2 = m_pkEntity->GetWorldPosV();
 						kPos1.y = 0;
 						kPos2.y = 0;
 
@@ -749,7 +749,7 @@ bool P_DMCharacter::HandleOrder(DMOrder* pkOrder,bool bNew)
 						if( kPos1.DistanceTo(kPos2) < 1)
 						{
 							ClearOrders();
-							pkHQ->InsertCharacter(m_pkObject->GetEntityID());							
+							pkHQ->InsertCharacter(m_pkEntity->GetEntityID());							
 							return true;
 						}
 						else
@@ -764,18 +764,18 @@ bool P_DMCharacter::HandleOrder(DMOrder* pkOrder,bool bNew)
 
 		case eClickMe:
 			{
-				if(Entity* pkPickEnt = m_pkObjMan->GetEntityByID(pkOrder->m_iEntityID))
+				if(Entity* pkPickEnt = m_pkEntityManager->GetEntityByID(pkOrder->m_iEntityID))
 				{
 					if(P_DMClickMe* pkClick = (P_DMClickMe*)pkPickEnt->GetProperty("P_DMClickMe"))
 					{
 						Vector3 kPos1 = pkPickEnt->GetWorldPosV();
-						Vector3 kPos2 = m_pkObject->GetWorldPosV();
+						Vector3 kPos2 = m_pkEntity->GetWorldPosV();
 						kPos1.y = 0;
 						kPos2.y = 0;
 
 						if( kPos1.DistanceTo(kPos2) < 2)
 						{
-							pkClick->Click( m_pkObject->GetEntityID() );
+							pkClick->Click( m_pkEntity->GetEntityID() );
 							//pkHQ->InsertCharacter(m_pkObject->GetEntityID());
 							return true;
 						}
@@ -813,13 +813,13 @@ void P_DMCharacter::ChangeState (int iState)
 	if ( m_iState == PANIC )
 	{
 		//if(P_ScriptInterface* pkSi = (P_ScriptInterface*)m_pkObject->GetProperty("P_ScriptInterface"))
-			m_pkObjMan->CallFunction(m_pkObject, "Panic");
+			m_pkEntityManager->CallFunction(m_pkEntity, "Panic");
 	}
 	// character died :_(
 	else if ( m_iState == DEAD )
 	{
 		//if(P_ScriptInterface* pkSi = (P_ScriptInterface*)m_pkObject->GetProperty("P_ScriptInterface"))
-			m_pkObjMan->CallFunction(m_pkObject, "Dead");
+			m_pkEntityManager->CallFunction(m_pkEntity, "Dead");
 
 		// clear orders
 		while ( !m_kOrderQueue.empty() )
@@ -849,7 +849,7 @@ P_DMGun* P_DMCharacter::GetGun()
 			if ( *m_pkHand->GetItem(x,y) != -1 )
 				iWeapID = *m_pkHand->GetItem(x,y);
 
-	if ( Entity* pkGun = m_pkObjMan->GetEntityByID(iWeapID) )
+	if ( Entity* pkGun = m_pkEntityManager->GetEntityByID(iWeapID) )
 		if ( P_DMGun* pkGunP = (P_DMGun*)pkGun->GetProperty("P_DMGun") )
 			return pkGunP;
 

@@ -28,7 +28,7 @@ void P_Car::Init()
 
 void P_Car::Update()
 {
-		P_Tcs* pkTcs = (P_Tcs*)GetObject()->GetProperty("P_Tcs");
+		P_Tcs* pkTcs = (P_Tcs*)GetEntity()->GetProperty("P_Tcs");
 			
 		if(!pkTcs)
 		{
@@ -45,8 +45,8 @@ void P_Car::Update()
 		Vector3 kDriveForce = Vector3(0,0,-15);
 		Vector3 kStearForce = Vector3( 10,0,0);
 				
-		kDriveForce = GetObject()->GetLocalRotM().VectorTransform(kDriveForce);
-		kStearForce = GetObject()->GetLocalRotM().VectorTransform(kStearForce);
+		kDriveForce = GetEntity()->GetLocalRotM().VectorTransform(kDriveForce);
+		kStearForce = GetEntity()->GetLocalRotM().VectorTransform(kStearForce);
 
 		if(m_pkInputHandle->Pressed(KEY_U))
 			pkTcs->ApplyForce(kDrivePos,kDriveForce);
@@ -74,12 +74,12 @@ void P_Car::Update()
 
 void P_Car::Trust(Vector3 kPos,Vector3 kForce)
 {
-	P_Tcs* pkTcs = (P_Tcs*)GetObject()->GetProperty("P_Tcs");
+	P_Tcs* pkTcs = (P_Tcs*)GetEntity()->GetProperty("P_Tcs");
 	float		fMaxForce = 10;
 
-	Vector3 kUpForce  = GetObject()->GetLocalRotM().VectorTransform(-kForce);
-	Vector3 kWPos = GetObject()->GetLocalRotM().VectorTransform(kPos);
-	kWPos += GetObject()->GetLocalPosV();
+	Vector3 kUpForce  = GetEntity()->GetLocalRotM().VectorTransform(-kForce);
+	Vector3 kWPos = GetEntity()->GetLocalRotM().VectorTransform(kPos);
+	kWPos += GetEntity()->GetLocalPosV();
 
 	Vector3 kGround = LineTest(kWPos,kWPos + (kForce.Unit() * 50));		
 	
@@ -104,7 +104,7 @@ Vector3 P_Car::LineTest(Vector3 kStart,Vector3 kStop)
 	vector<Entity*> kObjects;
 	kObjects.clear();
 
-	m_pkObjMan->GetZoneEntity()->GetAllEntitys(&kObjects);
+	m_pkEntityManager->GetZoneEntity()->GetAllEntitys(&kObjects);
 
 	Vector3 kClosest;
 	float closest = 999999999;
@@ -118,7 +118,7 @@ Vector3 P_Car::LineTest(Vector3 kStart,Vector3 kStop)
 		if(kObjects[i]->GetEntityID() <100000)
 			continue;
 
-		if(kObjects[i] == GetObject())
+		if(kObjects[i] == GetEntity())
 			continue;
 			
 		//if(!kObjects[i]->IsZone())

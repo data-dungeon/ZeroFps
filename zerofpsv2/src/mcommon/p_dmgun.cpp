@@ -47,17 +47,17 @@ P_DMGun::~P_DMGun()
 void P_DMGun::Init()
 {
 	//cout<< "New GUN created"<<endl;
-	m_iHitSparkleTextureID = m_pkObject->m_pkZeroFps->m_pkTexMan->Load("data/textures/dm/gun_sparkle.tga", 0);
-	m_iGunFireTextureID =  m_pkObject->m_pkZeroFps->m_pkTexMan->Load("data/textures/gunfire.tga", 0);
+	m_iHitSparkleTextureID = m_pkEntity->m_pkZeroFps->m_pkTexMan->Load("data/textures/dm/gun_sparkle.tga", 0);
+	m_iGunFireTextureID =  m_pkEntity->m_pkZeroFps->m_pkTexMan->Load("data/textures/gunfire.tga", 0);
 }
 
 bool P_DMGun::Fire(Vector3 kTarget)
 {	
 	// update target position
-	Vector3 kTemp = m_pkObject->GetWorldPosV();
+	Vector3 kTemp = m_pkEntity->GetWorldPosV();
 	m_fTargetDist = kTarget.DistanceTo(kTemp);
 
-	m_kDir = kTarget - (m_pkObject->GetWorldPosV() + m_kGunOffset);
+	m_kDir = kTarget - (m_pkEntity->GetWorldPosV() + m_kGunOffset);
 
 	if ( m_bFireing )
 		return false;
@@ -65,18 +65,18 @@ bool P_DMGun::Fire(Vector3 kTarget)
 	m_bFirstUpdateSinceFireing = true;
 	m_bFireing = true;
 
-	float t = m_pkObjMan->GetSimTime();
+	float t = m_pkEntityManager->GetSimTime();
 	m_fTimeFired = t;
 
 	// Barrelfire
 	if ( m_strBarrelFirePS.size() && m_iAmmo )
 	{
-		Entity *pkBF = m_pkObject->m_pkEntityMan->CreateEntityFromScriptInZone(m_strBarrelFirePS.c_str(), 
-			m_pkObject->GetWorldPosV());
+		Entity *pkBF = m_pkEntity->m_pkEntityManager->CreateEntityFromScriptInZone(m_strBarrelFirePS.c_str(), 
+			m_pkEntity->GetWorldPosV());
 		
 		pkBF->SetWorldPosV(Vector3(0,0,0));
 		pkBF->SetRelativeOri(true);
-		pkBF->SetParent(m_pkObject);
+		pkBF->SetParent(m_pkEntity);
 	}
 
 	return true;
@@ -95,9 +95,9 @@ void P_DMGun::Update()
 	static float prevAmmoPlayTime = 0;
 	static float prevShotPlayTime = 0;
 
-	float t = m_pkObjMan->GetSimTime();
+	float t = m_pkEntityManager->GetSimTime();
 
-	if(m_pkObjMan->IsUpdate(PROPERTY_TYPE_RENDER))
+	if(m_pkEntityManager->IsUpdate(PROPERTY_TYPE_RENDER))
 	{
 		//barellfire
 		if(m_bFireing)
@@ -134,7 +134,7 @@ void P_DMGun::Update()
 		
 			// draw hit-sparkle
 			m_pkZeroFps->m_pkRender->DrawBillboard(
-				m_pkObject->m_pkZeroFps->GetCam()->GetModelViewMatrix(), 
+				m_pkEntity->m_pkZeroFps->GetCam()->GetModelViewMatrix(), 
 				m_kHitPos[i].first, 0.4, m_iHitSparkleTextureID);
 		}
 	
@@ -162,7 +162,7 @@ void P_DMGun::Update()
 		{
 			cout<<"IM OUT OF AMMO"<<endl;
 			m_pkAudioSys->StartSound("data/sound/no_ammo.wav",	
-				m_pkObject->GetWorldPosV(), m_kDir, false);
+				m_pkEntity->GetWorldPosV(), m_kDir, false);
 			prevAmmoPlayTime = t;
 		}
 	}
@@ -207,7 +207,7 @@ void P_DMGun::Update()
 	//play sound
 	if(t - prevShotPlayTime > 1.0f) // spela max 1 ljud/ sek (eller när nytt skott avlossas)
 	{
-		m_pkAudioSys->StartSound(m_strSound, m_pkObject->GetWorldPosV(), m_kDir, false);
+		m_pkAudioSys->StartSound(m_strSound, m_pkEntity->GetWorldPosV(), m_kDir, false);
 		prevShotPlayTime = t;
 	}
 	
@@ -220,13 +220,13 @@ void P_DMGun::Update()
 
 bool P_DMGun::FireBullets(int iAmount)
 {
-	float t = m_pkObjMan->GetSimTime();
-	Vector3 kStart = m_pkObject->GetWorldPosV() + m_kGunOffset;
+	float t = m_pkEntityManager->GetSimTime();
+	Vector3 kStart = m_pkEntity->GetWorldPosV() + m_kGunOffset;
 //	float dist = (kStart - m_kDir).Length();
 //	Vector3 kSDir = (m_kDir - kStart).Unit();
 	
 	vector<Entity*> kObjects;		
-	m_pkObjMan->GetZoneEntity()->GetAllEntitys(&kObjects);	
+	m_pkEntityManager->GetZoneEntity()->GetAllEntitys(&kObjects);	
 
 
 	for(int i =0;i<iAmount;i++)
@@ -248,7 +248,7 @@ bool P_DMGun::FireBullets(int iAmount)
 		
 		for(unsigned int i=0;i<kObjects.size();i++)
 		{
-			if(kObjects[i] == m_pkObject)
+			if(kObjects[i] == m_pkEntity)
 				continue;
 		
 			//get mad property and do a linetest		
@@ -293,7 +293,7 @@ bool P_DMGun::FireBullets(int iAmount)
 			
 			
 			// smoke psystem
-			Entity* pkSmoke = m_pkObject->m_pkEntityMan->CreateEntityFromScript("data/script/objects/weapons/gunsmoke.lua");
+			Entity* pkSmoke = m_pkEntity->m_pkEntityManager->CreateEntityFromScript("data/script/objects/weapons/gunsmoke.lua");
 			pkSmoke->SetWorldPosV (kPickPos);
 			pkSmoke->AttachToZone();
 
@@ -311,14 +311,14 @@ bool P_DMGun::FireBullets(int iAmount)
 					//{
 						vector<ARG_DATA> kParams;
 
-						int iFoe = m_pkObject->GetEntityID();
+						int iFoe = m_pkEntity->GetEntityID();
 
 						ARG_DATA kData;
 						kData.eType = tINT;
 						kData.pData = &iFoe;
 						kParams.push_back (kData);
 
-						m_pkObjMan->CallFunction(pkClosest, "OnTakingDmgFrom", &kParams);
+						m_pkEntityManager->CallFunction(pkClosest, "OnTakingDmgFrom", &kParams);
 					//}
 
 					pkChar->Damage(0, int(m_fDamage));
@@ -327,7 +327,7 @@ bool P_DMGun::FireBullets(int iAmount)
 		else
 		{			
 			// smoke psystem
-			Entity* pkSmoke = m_pkObject->m_pkEntityMan->CreateEntityFromScript("data/script/objects/weapons/gunsmoke.lua");
+			Entity* pkSmoke = m_pkEntity->m_pkEntityManager->CreateEntityFromScript("data/script/objects/weapons/gunsmoke.lua");
 			pkSmoke->SetWorldPosV (kPickPos);
 			pkSmoke->AttachToZone();
 

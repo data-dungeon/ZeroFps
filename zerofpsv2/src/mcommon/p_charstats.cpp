@@ -10,7 +10,7 @@
 void CharacterProperty::Update()
 {
    if ( m_pkCharStats->m_fReloadTimer > 0 )
-      m_pkCharStats->m_fReloadTimer -= m_pkObject->m_pkEntityMan->GetSimDelta();
+      m_pkCharStats->m_fReloadTimer -= m_pkEntity->m_pkEntityManager->GetSimDelta();
 }
 
 // ------------------------------------------------------------------------------------------
@@ -30,7 +30,7 @@ vector<PropertyValues> CharacterProperty::GetPropertyValues()
 
 void CharacterProperty::Init()
 {
-   m_pkCharStats = new CharacterStats( m_pkObject );
+   m_pkCharStats = new CharacterStats( m_pkEntity );
 
    m_pkCharStats->m_fReloadTime = 5;
    m_pkCharStats->m_fReloadTimer = 0;
@@ -507,7 +507,7 @@ void CharacterProperty::RequestUpdateFromServer( string kData )
 {
  
    int iClientObjectID = m_pkZeroFps->GetClientObjectID();
-   Entity* pkClientObj = m_pkObjMan->GetEntityByID(iClientObjectID);
+   Entity* pkClientObj = m_pkEntityManager->GetEntityByID(iClientObjectID);
 
    if ( pkClientObj )
    {
@@ -521,7 +521,7 @@ void CharacterProperty::RequestUpdateFromServer( string kData )
       {
          // get client object
          kOrder.m_sOrderName = "(rq)attr";
-         kOrder.m_iObjectID = m_pkObject->GetEntityID();
+         kOrder.m_iObjectID = m_pkEntity->GetEntityID();
          kOrder.m_iClientID = m_pkZeroFps->GetConnectionID();
          kOrder.m_iCharacter = pkCP->m_iActiveCaracterObjectID;
 
@@ -534,7 +534,7 @@ void CharacterProperty::RequestUpdateFromServer( string kData )
       {
          // get client object
          kOrder.m_sOrderName = "(rq)skil";
-         kOrder.m_iObjectID = m_pkObject->GetEntityID();
+         kOrder.m_iObjectID = m_pkEntity->GetEntityID();
          kOrder.m_iClientID = m_pkZeroFps->GetConnectionID();
          kOrder.m_iCharacter = pkCP->m_iActiveCaracterObjectID;
 
@@ -547,7 +547,7 @@ void CharacterProperty::RequestUpdateFromServer( string kData )
       {
          // get client object
          kOrder.m_sOrderName = "(rq)cdat";
-         kOrder.m_iObjectID = m_pkObject->GetEntityID();
+         kOrder.m_iObjectID = m_pkEntity->GetEntityID();
          kOrder.m_iClientID = m_pkZeroFps->GetConnectionID();
          kOrder.m_iCharacter = pkCP->m_iActiveCaracterObjectID;
 
@@ -561,7 +561,7 @@ void CharacterProperty::RequestUpdateFromServer( string kData )
       {
          // get client object
          kOrder.m_sOrderName = "(rq)char";
-         kOrder.m_iObjectID = m_pkObject->GetEntityID();
+         kOrder.m_iObjectID = m_pkEntity->GetEntityID();
          kOrder.m_iClientID = m_pkZeroFps->GetConnectionID();
          kOrder.m_iCharacter = pkCP->m_iActiveCaracterObjectID;
 
@@ -575,7 +575,7 @@ void CharacterProperty::RequestUpdateFromServer( string kData )
       {
          // get client object
          kOrder.m_sOrderName = "(rq)life";
-         kOrder.m_iObjectID = m_pkObject->GetEntityID();
+         kOrder.m_iObjectID = m_pkEntity->GetEntityID();
          kOrder.m_iClientID = m_pkZeroFps->GetConnectionID();
          kOrder.m_iCharacter = pkCP->m_iActiveCaracterObjectID;
 

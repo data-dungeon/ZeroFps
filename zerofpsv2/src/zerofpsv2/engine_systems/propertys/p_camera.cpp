@@ -46,7 +46,7 @@ void P_Camera::Update()
 				r.Rotate(Vector3(-90,0,0));
 				m_pkCamera->SetRotM(r);
 				
-				Vector3 kPos = m_pkObject->GetIWorldPosV();
+				Vector3 kPos = m_pkEntity->GetIWorldPosV();
 				Vector3 dir = kPos - m_kInterPos;
 				
 				m_kInterPos +=dir/8;
@@ -83,7 +83,7 @@ void P_Camera::Update()
 	 			kOffset += m_kOffset;
 								
 				
-				LookAt(m_pkObject->GetIWorldPosV() + kOffset,m_pkObject->GetIWorldPosV() + m_kOffset,Vector3(0,1,0));
+				LookAt(m_pkEntity->GetIWorldPosV() + kOffset,m_pkEntity->GetIWorldPosV() + m_kOffset,Vector3(0,1,0));
 				
 
 				strCamName = " 3P ";
@@ -96,7 +96,7 @@ void P_Camera::Update()
 				if(m_f3PPAngle < -90)
 					m_f3PPAngle = -90;
 				
-				m_pkCamera->SetPos(m_pkObject->GetIWorldPosV() + m_kOffset );			
+				m_pkCamera->SetPos(m_pkEntity->GetIWorldPosV() + m_kOffset );			
 				Matrix4 kRot;											
 				kRot.Identity();
 				kRot.Rotate(0,180,0);				
@@ -108,9 +108,9 @@ void P_Camera::Update()
 			
 			case CAM_TYPEFIRSTPERSON:
 			{
-				m_pkCamera->SetPos(m_pkObject->GetIWorldPosV() + m_kOffset );
+				m_pkCamera->SetPos(m_pkEntity->GetIWorldPosV() + m_kOffset );
 				Matrix4 kMat4;
-				kMat4 = m_pkObject->GetWorldRotM();		
+				kMat4 = m_pkEntity->GetWorldRotM();		
 				kMat4.Rotate(0,180,0);
 				kMat4.Transponse();				
 				m_pkCamera->SetRotM(kMat4);
@@ -119,14 +119,14 @@ void P_Camera::Update()
 				break; 
 			}
 			case CAM_TYPETOPDOWN:
-				m_pkCamera->SetPos(m_pkObject->GetWorldPosV() + Vector3(0,10,0));
+				m_pkCamera->SetPos(m_pkEntity->GetWorldPosV() + Vector3(0,10,0));
 				m_pkCamera->SetRot(Vector3(90,0,0));
 				strCamName = " TD ";
 
 				break;
 
 			case CAM_TYPEISO:
-				m_pkCamera->SetPos(m_pkObject->GetWorldPosV() + Vector3(10,10,10));
+				m_pkCamera->SetPos(m_pkEntity->GetWorldPosV() + Vector3(10,10,10));
 				m_pkCamera->SetRot(Vector3(45,-45,0));
 				strCamName = " ISO ";
 
@@ -134,11 +134,11 @@ void P_Camera::Update()
 
 				
 			case CAM_TYPECHASE:
-				kYawVector = GetYawVector2(m_pkObject->GetWorldRotV().y);
+				kYawVector = GetYawVector2(m_pkEntity->GetWorldRotV().y);
 
-				m_pkCamera->SetPos(m_pkObject->GetWorldPosV() - (kYawVector * CHASE_CAM_DISTANCE) + 
+				m_pkCamera->SetPos(m_pkEntity->GetWorldPosV() - (kYawVector * CHASE_CAM_DISTANCE) + 
 					Vector3(0,CHASE_CAM_DISTANCE,0));
-				m_pkCamera->SetRot(Vector3(m_pkObject->GetWorldRotV() + Vector3(0,90,0)));
+				m_pkCamera->SetRot(Vector3(m_pkEntity->GetWorldRotV() + Vector3(0,90,0)));
 				strCamName = " Chase ";
 
 				break;
@@ -146,7 +146,7 @@ void P_Camera::Update()
 			case CAM_TYPEDYNAMICISO:
 				kYawVector = GetYawVector2(m_kDynamicIso.y);
 
-				m_pkCamera->SetPos(m_pkObject->GetWorldPosV() - (kYawVector * CHASE_CAM_DISTANCE) + 
+				m_pkCamera->SetPos(m_pkEntity->GetWorldPosV() - (kYawVector * CHASE_CAM_DISTANCE) + 
 					Vector3(0,CHASE_CAM_DISTANCE,0));
 				m_pkCamera->SetRot(Vector3(m_kDynamicIso + Vector3(0,90,0)));
 				strCamName = " Dyn ISO ";
@@ -155,7 +155,7 @@ void P_Camera::Update()
 				
 			case CAM_TYPESIDE:
 				strCamName = " Side ";
-				m_pkCamera->SetPos(m_pkObject->GetWorldPosV() + Vector3(0,0,10));
+				m_pkCamera->SetPos(m_pkEntity->GetWorldPosV() + Vector3(0,0,10));
 				m_pkCamera->SetRot(Vector3(0,20,0));
 
 				break;
@@ -211,10 +211,10 @@ void P_Camera::OrthoMove(Vector3 kMove)
 	if(!m_pkCamera)	
 		return;
 
-	Vector3 kPos = m_pkObject->GetLocalPosV();
+	Vector3 kPos = m_pkEntity->GetLocalPosV();
 	kPos += m_pkCamera->GetOrthoAxisX() * kMove.x;
 	kPos += m_pkCamera->GetOrthoAxisY() * kMove.y;
-	m_pkObject->SetLocalPosV(kPos);
+	m_pkEntity->SetLocalPosV(kPos);
 }
 
 void P_Camera::SetCamera(Camera *pkCamera) 
@@ -229,9 +229,9 @@ void P_Camera::SetCamera(Camera *pkCamera)
 	//update camera entity ID 
 	if(m_pkCamera)
 	{
-		m_pkCamera->m_iEntity = m_pkObject->GetEntityID();		
+		m_pkCamera->m_iEntity = m_pkEntity->GetEntityID();		
 		
-		cout<<"Attached a new camera to" << m_pkObject->GetType() << endl;		
+		cout<<"Attached a new camera to" << m_pkEntity->GetType() << endl;		
 		//cout<<"current camera position "<<m_pkCamera->GetPos().x<<" "<<m_pkCamera->GetPos().y<<" "<<m_pkCamera->GetPos().z<<endl;
 		//cout<<"new position "<<m_pkObject->GetWorldPosV().x<<" "<< m_pkObject->GetWorldPosV().y<<" "<<m_pkObject->GetWorldPosV().z<<endl;
 	}

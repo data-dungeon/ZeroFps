@@ -31,7 +31,7 @@ void P_Primitives3D::Update()
 //		return;
 
 	Vector3 min, max;
-	Vector3 pos = m_pkObject->GetIWorldPosV();
+	Vector3 pos = m_pkEntity->GetIWorldPosV();
 
 	switch(m_ePrimType)
 	{

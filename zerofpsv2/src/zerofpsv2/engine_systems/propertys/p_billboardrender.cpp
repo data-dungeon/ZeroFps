@@ -35,10 +35,10 @@ void P_BillBoardRender::UpdateSet()
 
 void P_BillBoardRender::Update()
 {
-	if(!m_pkFps->GetCam()->GetFrustum()->SphereInFrustum(m_pkObject->GetWorldPosV(),m_fScale))
+	if(!m_pkFps->GetCam()->GetFrustum()->SphereInFrustum(m_pkEntity->GetWorldPosV(),m_fScale))
 		return;
 		
-	Vector3 pos = m_pkObject->GetIWorldPosV();
+	Vector3 pos = m_pkEntity->GetIWorldPosV();
 	m_pkRender->DrawBillboard(m_pkFps->GetCam()->GetModelViewMatrix(),pos,m_fScale,m_iTexture);
 }
 

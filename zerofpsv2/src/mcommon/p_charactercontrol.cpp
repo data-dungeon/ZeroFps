@@ -34,7 +34,7 @@ void P_CharacterControl::Init()
 void P_CharacterControl::Update()
 {
 
-	if(P_Tcs* pkTcs = (P_Tcs*)GetObject()->GetProperty("P_Tcs"))
+	if(P_Tcs* pkTcs = (P_Tcs*)GetEntity()->GetProperty("P_Tcs"))
 	{
 		Vector3 kVel(0,0,0);	
 			
@@ -48,7 +48,7 @@ void P_CharacterControl::Update()
 			kVel.x = -1;
 			
 		//transform velocity
-		kVel = GetObject()->GetWorldRotM().VectorTransform(kVel);							
+		kVel = GetEntity()->GetWorldRotM().VectorTransform(kVel);							
 		kVel.y = 0;
 			
 		if(kVel.Length() > 0)
@@ -70,7 +70,7 @@ void P_CharacterControl::Update()
 	kRot.Identity();
 	kRot.Rotate(0,m_fYAngle,0);
 	kRot.Transponse();				
-	GetObject()->SetLocalRotM(kRot);				
+	GetEntity()->SetLocalRotM(kRot);				
 	
 }
 

@@ -30,9 +30,9 @@ P_DMHQ::~P_DMHQ()
 void P_DMHQ::Init()
 {
 	//cout<< "New HQ created"<<endl;
-	m_pkObject->SetUpdateStatus(UPDATE_NOCHILDS);
+	m_pkEntity->SetUpdateStatus(UPDATE_NOCHILDS);
 
-	m_pkStockroom = new DMContainer(m_pkObjMan,m_pkObject->GetEntityID(),8,10);
+	m_pkStockroom = new DMContainer(m_pkEntityManager,m_pkEntity->GetEntityID(),8,10);
 	m_pkStockroom->AddItemType(DMITEM_ARMOUR);
 	m_pkStockroom->AddItemType(DMITEM_GRENADE);
 	m_pkStockroom->AddItemType(DMITEM_CLIP);
@@ -46,7 +46,7 @@ void P_DMHQ::Init()
 
 void P_DMHQ::SpawnNewCharacter(int iNr)
 {
-	Entity* pkEnt = m_pkObjMan->CreateEntityFromScript("data/script/objects/characters/member.lua");
+	Entity* pkEnt = m_pkEntityManager->CreateEntityFromScript("data/script/objects/characters/member.lua");
 	
 	if(iNr != -1)
 	{
@@ -102,7 +102,7 @@ void P_DMHQ::RandomizeHireList(int iNr)
 
 bool P_DMHQ::InsertCharacter(int iID)
 {
-	Entity* pkEnt = m_pkObjMan->GetEntityByID(iID);
+	Entity* pkEnt = m_pkEntityManager->GetEntityByID(iID);
 	if(pkEnt)
 	{
 		P_DMCharacter* pkCharProp;
@@ -115,12 +115,12 @@ bool P_DMHQ::InsertCharacter(int iID)
 					static_cast<ZFAudioSystem*>(g_ZFObjSys.GetObjectPtr("ZFAudioSystem"));
 
 				pkAudioSys->StopSound("/data/sound/walk_zombie.wav", 
-					m_pkObject->GetIWorldPosV()); 
+					m_pkEntity->GetIWorldPosV()); 
 			}
 
 			cout<<"character entering HQ"<<endl;
 			
-			pkEnt->SetParent(m_pkObject);
+			pkEnt->SetParent(m_pkEntity);
 			
 			return true;
 		}
@@ -132,7 +132,7 @@ bool P_DMHQ::InsertCharacter(int iID)
 void P_DMHQ::GetCharacters(vector<int>* m_pkEntitys)
 {
 	vector<Entity*>	m_kEntitys;
-	m_pkObject->GetAllEntitys(&m_kEntitys,true);
+	m_pkEntity->GetAllEntitys(&m_kEntitys,true);
 	
 	
 	for(unsigned int i = 0;i<m_kEntitys.size();i++)
@@ -154,7 +154,7 @@ bool P_DMHQ::EjectCharacter(int iID)
 	{
 		if(m_kEntitys[i] == iID)	
 		{
-			if(Entity* pkEnt = m_pkObjMan->GetEntityByID(m_kEntitys[i]))
+			if(Entity* pkEnt = m_pkEntityManager->GetEntityByID(m_kEntitys[i]))
 			{				
 				Eject(pkEnt);
 				return true;
@@ -172,7 +172,7 @@ void P_DMHQ::EjectAllCharacters()
 	
 	for(unsigned int i = 0;i<m_kEntitys.size();i++)
 	{
-		if(Entity* pkEnt = m_pkObjMan->GetEntityByID(m_kEntitys[i]))
+		if(Entity* pkEnt = m_pkEntityManager->GetEntityByID(m_kEntitys[i]))
 		{
 			Eject(pkEnt);
 		}
@@ -181,18 +181,18 @@ void P_DMHQ::EjectAllCharacters()
 
 void P_DMHQ::Eject(Entity* pkEnt)
 {
-	pkEnt->SetParent(m_pkObject->GetParent());
-	pkEnt->SetWorldPosV(m_pkObject->GetWorldPosV());
+	pkEnt->SetParent(m_pkEntity->GetParent());
+	pkEnt->SetWorldPosV(m_pkEntity->GetWorldPosV());
 				
 	if(P_PfPath* pkPath = (P_PfPath*)pkEnt->GetProperty("P_PfPath"))
-		pkPath->MakePathFind(m_pkObject->GetWorldPosV()+m_kExitOffset+Vector3( (rand()%20)/10.0,0,(rand()%20)/10.0));
+		pkPath->MakePathFind(m_pkEntity->GetWorldPosV()+m_kExitOffset+Vector3( (rand()%20)/10.0,0,(rand()%20)/10.0));
 }
 
 bool P_DMHQ::FireCharacter(int iID)
 {
 	if(EjectCharacter(iID))
 	{
-		m_pkObjMan->Delete(iID);
+		m_pkEntityManager->Delete(iID);
 		return true;
 	}
 

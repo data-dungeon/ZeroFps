@@ -16,11 +16,11 @@ void P_AI::Update()
 {
    // TODO!! damn this...
    if ( !m_pkCharProp )
-      m_pkCharProp = (CharacterProperty*)m_pkObject->GetProperty ("P_CharStats");
+      m_pkCharProp = (CharacterProperty*)m_pkEntity->GetProperty ("P_CharStats");
    
    if(!m_pkSound)
    {
-   	m_pkSound = (P_Sound*)m_pkObject->GetProperty ("P_Sound");
+   	m_pkSound = (P_Sound*)m_pkEntity->GetProperty ("P_Sound");
    }
    
    
@@ -32,7 +32,7 @@ void P_AI::Update()
 
    // check if order is finished, and if so, go on to the next one
    if ( m_pkCurrentOrder->m_kOrderType == "MovingTowards" 
-        && m_pkObject->GetWorldPosV().DistanceXZTo(m_pkCurrentOrder->m_kPosition) < 0.8f )
+        && m_pkEntity->GetWorldPosV().DistanceXZTo(m_pkCurrentOrder->m_kPosition) < 0.8f )
    {
       NextOrder();
    }
@@ -40,21 +40,21 @@ void P_AI::Update()
    {
       m_eAI_Mode = eATTACKMODE;
 
-      Entity* pkEnemy = m_pkObject->m_pkEntityMan->GetEntityByID( m_pkCurrentOrder->m_iTargetID );
+      Entity* pkEnemy = m_pkEntity->m_pkEntityManager->GetEntityByID( m_pkCurrentOrder->m_iTargetID );
 
       // if enemy is dead, remove order
       if ( !pkEnemy )
       {
          m_eAI_Mode = eIDLEMODE;
 
-         ((P_Mad*)m_pkObject->GetProperty("P_Mad"))->SetNextAnimation ("idle");
+         ((P_Mad*)m_pkEntity->GetProperty("P_Mad"))->SetNextAnimation ("idle");
 
          NextOrder();
          return;
       }
 
       // if character is to far away, move closer (not player, only enemies)
-		Vector3 kPos = m_pkObject->GetWorldPosV();
+		Vector3 kPos = m_pkEntity->GetWorldPosV();
       if ( pkEnemy->GetWorldPosV().DistanceXZTo(kPos) > 2 )
       {
 			// Players can't have moveorders, don't have any p_path
@@ -76,7 +76,7 @@ void P_AI::Update()
       else
       {
          // stop the character, if character has p_path
-			P_PfPath* pkPath = ((P_PfPath*)m_pkObject->GetProperty ("P_PfPath"));
+			P_PfPath* pkPath = ((P_PfPath*)m_pkEntity->GetProperty ("P_PfPath"));
 
 			if ( pkPath )
 				pkPath->ClearPath();
@@ -95,7 +95,7 @@ void P_AI::Update()
 				   kRotM.LookDir(kdiff.Unit(),Vector3(0,1,0));
    				kRotM.Transponse();		
             }
-				m_pkObject->SetLocalRotM(kRotM);
+				m_pkEntity->SetLocalRotM(kRotM);
 			
 				//play a nice sound
 				if(m_pkSound)
@@ -105,11 +105,11 @@ void P_AI::Update()
 
             // create splattblood PSystem
             if ( kWhenHit.size() )
-               m_pkObject->m_pkEntityMan->CreateEntityFromScriptInZone ( kWhenHit.c_str(), pkEnemy->GetWorldPosV() );
+               m_pkEntity->m_pkEntityManager->CreateEntityFromScriptInZone ( kWhenHit.c_str(), pkEnemy->GetWorldPosV() );
 
             // change animation to attack animation
-            ((P_Mad*)m_pkObject->GetProperty("P_Mad"))->SetAnimation ("attack", 0);
-            ((P_Mad*)m_pkObject->GetProperty("P_Mad"))->SetNextAnimation ("idle");
+            ((P_Mad*)m_pkEntity->GetProperty("P_Mad"))->SetAnimation ("attack", 0);
+            ((P_Mad*)m_pkEntity->GetProperty("P_Mad"))->SetNextAnimation ("idle");
 
             // roll to hit!
             if ( m_pkCharProp->GetCharStats()->RollSkillDice(
@@ -128,7 +128,7 @@ void P_AI::Update()
    else if ( m_pkCurrentOrder->m_kOrderType == "MoveTo" )
    {
       // make a pathfinding
-      ((P_PfPath*)m_pkObject->GetProperty ("P_PfPath"))->MakePathFind ( m_pkCurrentOrder->m_kPosition );
+      ((P_PfPath*)m_pkEntity->GetProperty ("P_PfPath"))->MakePathFind ( m_pkCurrentOrder->m_kPosition );
 
       Order *pkMoveOrd = new Order;
 
@@ -162,10 +162,10 @@ void P_AI::Update()
       // face object
       if ( m_pkCurrentOrder->m_iTargetID )
       {
-         Entity* pkFaceObj = m_pkObject->m_pkEntityMan->GetEntityByID( m_pkCurrentOrder->m_iTargetID );
+         Entity* pkFaceObj = m_pkEntity->m_pkEntityManager->GetEntityByID( m_pkCurrentOrder->m_iTargetID );
 
 		   //rotate to target
-		   Vector3 kdiff = pkFaceObj->GetWorldPosV() - m_pkObject->GetWorldPosV();
+		   Vector3 kdiff = pkFaceObj->GetWorldPosV() - m_pkEntity->GetWorldPosV();
 		   kdiff.y = 0;
 		   Matrix4 kRotM;
 
@@ -176,14 +176,14 @@ void P_AI::Update()
    		   kRotM.Transponse();		
          }
 
-		   m_pkObject->SetLocalRotM(kRotM);
+		   m_pkEntity->SetLocalRotM(kRotM);
       }
       else
       {
          Matrix4 kM;
-			kM= m_pkObject->GetLocalRotM();
+			kM= m_pkEntity->GetLocalRotM();
          kM.LookDir ( m_pkCurrentOrder->m_kPosition, Vector3(0,1,0) );
-         m_pkObject->SetLocalRotM ( kM );
+         m_pkEntity->SetLocalRotM ( kM );
       }
 
       NextOrder();
@@ -191,19 +191,19 @@ void P_AI::Update()
    }
    else if ( m_pkCurrentOrder->m_kOrderType == "Action" )
    {
-      Entity* pkEnt = m_pkObject->m_pkEntityMan->GetEntityByID( m_pkCurrentOrder->m_iTargetID );
+      Entity* pkEnt = m_pkEntity->m_pkEntityManager->GetEntityByID( m_pkCurrentOrder->m_iTargetID );
 	
-		Vector3 kPos = m_pkObject->GetWorldPosV();
+		Vector3 kPos = m_pkEntity->GetWorldPosV();
 
       // if character has reached object position
       if ( m_pkCurrentOrder->m_kPosition.DistanceXZTo(kPos) <= 0.8f )
       {
          // stop the character
-         ((P_PfPath*)m_pkObject->GetProperty ("P_PfPath"))->ClearPath();
+         ((P_PfPath*)m_pkEntity->GetProperty ("P_PfPath"))->ClearPath();
 
          // check if object still exists!!
          if ( pkEnt )
-            ((P_ScriptInterface*)pkEnt->GetProperty("P_ScriptInterface"))->SendObjectClickEvent( "PickUp", m_pkObject->GetEntityID() );
+            ((P_ScriptInterface*)pkEnt->GetProperty("P_ScriptInterface"))->SendObjectClickEvent( "PickUp", m_pkEntity->GetEntityID() );
          
          NextOrder();
       }
@@ -269,7 +269,7 @@ vector<PropertyValues> P_AI::GetPropertyValues()
 
 void P_AI::Init()
 {
-   m_pkCharProp = (CharacterProperty*)m_pkObject->GetProperty ("P_CharStats");
+   m_pkCharProp = (CharacterProperty*)m_pkEntity->GetProperty ("P_CharStats");
 
 //   if ( !m_pkCharProp )
 //      cout << "Warning!!! P_AI is assigned to a object withour P_CharStats." << endl;
@@ -417,7 +417,7 @@ void P_AI::CleanEnemies ()
 	for ( map<int, bool>::iterator kIte = m_kEnemies.begin();
 			kIte != m_kEnemies.end(); kIte++ )
 	{
-		if ( !m_pkObject->m_pkEntityMan->GetEntityByID ( (*kIte).first ) )
+		if ( !m_pkEntity->m_pkEntityManager->GetEntityByID ( (*kIte).first ) )
 			m_kEnemies.erase ( kIte++ );
 	}
 }

@@ -32,7 +32,7 @@ void P_AmbientSound::Update()
 //	if(m_pkFps->m_bServerMode)
 //		return;
 
-	Entity* pkObject = GetObject();
+	Entity* pkObject = GetEntity();
 
 	Vector3 pos = pkObject->GetWorldPosV();
 
@@ -184,7 +184,7 @@ void P_AmbientSound::PackFrom(NetPacket* pkNetPacket, int iConnectionID )
 
 void P_AmbientSound::Stop()
 {
-	Entity* pkObject = GetObject();
+	Entity* pkObject = GetEntity();
 	m_pkAudioSystem->StopSound(m_strFileName, pkObject->GetWorldPosV());
 	m_bStarted = false;
 }
@@ -217,7 +217,7 @@ void P_Sound::Update()
 	{*/
 		if(!m_strFileName.empty())
 		{
-			Entity* pkObject = GetObject();
+			Entity* pkObject = GetEntity();
 
 			m_pkAudioSystem->StartSound(m_strFileName, 
 				pkObject->GetWorldPosV(), pkObject->GetVel(), false);

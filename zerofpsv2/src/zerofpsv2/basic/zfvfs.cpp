@@ -130,7 +130,8 @@ bool ZFVFileSystem::GetRootMerge(int iRootIndex, string strFileName, string& str
 {
 	// always convert to an absolut path, 
 	if(strFileName[0] != '/')
-		strFileName.insert(0,1,'/');
+		strFileName = string("/") + strFileName;
+		//strFileName.insert(0,1,'/');
 		//strFileName.erase(0,1);
 
 	if(m_kRootPath[iRootIndex].m_strVfsPath.length() == 1)
@@ -243,7 +244,8 @@ void ZFVFileSystem::AddRootPath(string strRootPath, string strVfsPath)
 {
 	//always absolut vfs paths
 	if(strVfsPath[0] != '/')
-		strVfsPath.insert(0,1,'/');
+		strVfsPath = string("/") + strVfsPath; 
+		//strVfsPath.insert(0,1,'/');
 	
 	//no / at the end of either real or vfs path
 	if(strVfsPath.length() != 1)

@@ -82,7 +82,7 @@ void P_Tcs::Disable()
 
 void P_Tcs::Update()
 {	
-	if( m_pkObjMan->IsUpdate(PROPERTY_TYPE_RENDER) ) {
+	if( m_pkEntityManager->IsUpdate(PROPERTY_TYPE_RENDER) ) {
 		if(m_bPolygonTest)
 		{
 			if(!m_bHavePolygonData)
@@ -100,7 +100,7 @@ void P_Tcs::Update()
 			}
 		}
 	}
-	if( m_pkObjMan->IsUpdate(PROPERTY_TYPE_RENDER) ) 
+	if( m_pkEntityManager->IsUpdate(PROPERTY_TYPE_RENDER) ) 
 	{
 		if(m_pkTcs->GetDebugGraph() != 0)
 			Draw();
@@ -311,7 +311,7 @@ bool P_Tcs::HandleSetValue( string kValueName, string kValue )
 
 float P_Tcs::GetBoundingRadius()
 {
-	P_Mad* mp = static_cast<P_Mad*>(m_pkObject->GetProperty("P_Mad"));
+	P_Mad* mp = static_cast<P_Mad*>(m_pkEntity->GetProperty("P_Mad"));
 	if(mp)
 	{
 		float frad = mp->GetRadius();
@@ -326,7 +326,7 @@ bool P_Tcs::SetupMeshData()
 {
 	//cout<<"setting up mesh:"<<endl;
 	//look for mad property
-	P_Mad* pkMP = static_cast<P_Mad*>(m_pkObject->GetProperty("P_Mad"));	
+	P_Mad* pkMP = static_cast<P_Mad*>(m_pkEntity->GetProperty("P_Mad"));	
 	if(pkMP != NULL)
 	{
 		//cout<<"found mad property"<<endl;
@@ -497,7 +497,7 @@ bool P_Tcs::TestSides(Vector3* kVerts,Vector3* pkNormal,Vector3 kPos)
 
 void P_Tcs::Draw()
 {
-	m_pkRender->Sphere(GetObject()->GetIWorldPosV(),m_fRadius,2,Vector3(1,0,1),false);
+	m_pkRender->Sphere(GetEntity()->GetIWorldPosV(),m_fRadius,2,Vector3(1,0,1),false);
 
 /*
 	if(!m_pkVertex)
@@ -548,9 +548,9 @@ void P_Tcs::GenerateModelMatrix()
 	m_kModelMatrix.Scale(m_fScale,m_fScale,m_fScale);
 	
 	Matrix4 kMat;
-	kMat = m_pkObject->GetWorldRotM();
+	kMat = m_pkEntity->GetWorldRotM();
 	m_kModelMatrix *= kMat;	
-	m_kModelMatrix.Translate(m_pkObject->GetWorldPosV());		
+	m_kModelMatrix.Translate(m_pkEntity->GetWorldPosV());		
 
 }
 
@@ -576,9 +576,9 @@ void P_Tcs::ApplyForce(Vector3 kAttachPos,const Vector3& kForce,bool bLocal)
 	{
 		//are we using local cordinats or not, if so rotate it
 		if(bLocal)
-			kAttachPos = GetObject()->GetLocalRotM().VectorTransform(kAttachPos);	
+			kAttachPos = GetEntity()->GetLocalRotM().VectorTransform(kAttachPos);	
 		else
-			kAttachPos = kAttachPos - GetObject()->GetWorldPosV();
+			kAttachPos = kAttachPos - GetEntity()->GetWorldPosV();
 		
 		//calculate and add momental force		
 		m_kExternalRotForce += kForce.Cross(kAttachPos);
@@ -605,9 +605,9 @@ void P_Tcs::ApplyImpulsForce(Vector3 kAttachPos,const Vector3& kForce,bool bLoca
 	{	
 		//are we using local cordinats or not, if so rotate it
 		if(bLocal)
-			kAttachPos = GetObject()->GetLocalRotM().VectorTransform(kAttachPos);	
+			kAttachPos = GetEntity()->GetLocalRotM().VectorTransform(kAttachPos);	
 		else
-			kAttachPos = kAttachPos - GetObject()->GetWorldPosV();
+			kAttachPos = kAttachPos - GetEntity()->GetWorldPosV();
 				
 			
 		m_kRotVelocity += kForce.Cross(kAttachPos) * m_fInertia; 
@@ -632,9 +632,9 @@ Vector3 P_Tcs::GetVel(Vector3 kPos,bool bLocal)
 	{
 		//are we using local cordinats or not, if so rotate it
 		if(bLocal)
-			kPos = GetObject()->GetLocalRotM().VectorTransform(kPos);	
+			kPos = GetEntity()->GetLocalRotM().VectorTransform(kPos);	
 		else
-			kPos = kPos - GetObject()->GetWorldPosV();
+			kPos = kPos - GetEntity()->GetWorldPosV();
 	
 	
 		return m_kLinearVelocity - m_kRotVelocity.Cross(kPos);
@@ -659,7 +659,7 @@ void P_Tcs::Sleep()
 	
 		
 	if(m_bRemoveOnSleep)
-		GetObject()->m_pkEntityMan->Delete(GetObject());
+		GetEntity()->m_pkEntityManager->Delete(GetEntity());
 }
 
 void P_Tcs::AddRestingBody(P_Tcs* pkBody)

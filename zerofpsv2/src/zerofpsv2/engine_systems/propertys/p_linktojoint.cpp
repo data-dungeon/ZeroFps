@@ -17,17 +17,17 @@ P_LinkToJoint::P_LinkToJoint()
 
 P_LinkToJoint::~P_LinkToJoint()	
 {	
-	m_pkObject->SetInterpolate(true);
+	m_pkEntity->SetInterpolate(true);
 }
 void P_LinkToJoint::Init()			
 {	
 	//turn off interpolation of current objects madss
-	m_pkObject->SetInterpolate(false);
+	m_pkEntity->SetInterpolate(false);
 }
 
 void P_LinkToJoint::Update() 
 {
-	P_Mad* pkMad = dynamic_cast<P_Mad*>(m_pkObject->GetParent()->GetProperty("P_Mad"));
+	P_Mad* pkMad = dynamic_cast<P_Mad*>(m_pkEntity->GetParent()->GetProperty("P_Mad"));
 	if(!pkMad)
 		return;
 
@@ -47,18 +47,18 @@ void P_LinkToJoint::Update()
 	kMat = pkCore->GetBoneTransform(pkCore->GetJointID(m_strToJoint.c_str()));
 	kPos = kMat.GetPos() * pkMad->m_fScale;
 	kMat.SetPos(Vector3(0,0,0));
-	kParentMat = m_pkObject->GetParent()->GetWorldRotM();
+	kParentMat = m_pkEntity->GetParent()->GetWorldRotM();
 	kMat *= kParentMat;	//add parents rotation , cos where not using realtive orientation anymore
 
 	Matrix3 kMat3;
 	kMat3 = kMat;
-	m_pkObject->SetLocalRotM(kMat3);
+	m_pkEntity->SetLocalRotM(kMat3);
 	
-	kMat = m_pkObject->GetParent()->GetWorldRotM();
+	kMat = m_pkEntity->GetParent()->GetWorldRotM();
 	kPos = kMat.VectorRotate(kPos);	//apply object rotation to joint offset
-	kPos += m_pkObject->GetParent()->GetIWorldPosV();							//apply interpolatet parent position 
+	kPos += m_pkEntity->GetParent()->GetIWorldPosV();							//apply interpolatet parent position 
 	
-	m_pkObject->SetLocalPosV(kPos);
+	m_pkEntity->SetLocalPosV(kPos);
 	
 //	cout << "P_LinkToJoint LocalPosV: " << kPos.x << ", " << kPos.y << ", " << kPos.z << endl;
 

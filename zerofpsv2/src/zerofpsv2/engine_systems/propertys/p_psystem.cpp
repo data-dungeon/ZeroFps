@@ -16,12 +16,12 @@ void P_PSystem::Update()
 	if ( m_pkPSystem )
 	{
 		Matrix4 kMat;
-		kMat = m_pkObject->GetWorldRotM();
+		kMat = m_pkEntity->GetWorldRotM();
 		
       // returns true if the PSystem is finished
-		if ( !m_pkPSystem->Update( m_pkObject->GetIWorldPosV(), kMat ) )
+		if ( !m_pkPSystem->Update( m_pkEntity->GetIWorldPosV(), kMat ) )
 		{
- 		   if(m_pkObjMan->IsUpdate(PROPERTY_TYPE_RENDER_NOSHADOW))
+ 		   if(m_pkEntityManager->IsUpdate(PROPERTY_TYPE_RENDER_NOSHADOW))
  		   {
 	 		   m_pkPSystem->Draw();
 			}
@@ -30,7 +30,7 @@ void P_PSystem::Update()
       {
          if ( m_pkPSystem->m_pkPSystemType->m_kPSystemBehaviour.m_bRemoveParentOnFinish )
          {
-            m_pkObject->m_pkEntityMan->Delete ( m_pkObject );
+            m_pkEntity->m_pkEntityManager->Delete ( m_pkEntity );
 			}
 
          delete m_pkPSystem;

@@ -1014,7 +1014,7 @@ bool InventoryDlg::EquipSpecialSlot(ItemStats* pkItemStats, int iNetworkID, Equi
 
    // get client object
    kOrder.m_sOrderName = "equip";
-   kOrder.m_iObjectID = pkItemStats->m_pkProperty->GetObject()->GetEntityID();
+   kOrder.m_iObjectID = pkItemStats->m_pkProperty->GetEntity()->GetEntityID();
    kOrder.m_iClientID = m_pkZeroFps->GetConnectionID();
    kOrder.m_iCharacter = pkCC->m_iActiveCaracterObjectID;
    kOrder.m_iUseLess = eCategory;

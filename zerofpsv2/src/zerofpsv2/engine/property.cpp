@@ -8,13 +8,13 @@
 Property::Property()
 {
 	m_pkZeroFps				= static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));		
-	m_pkObjMan        	= static_cast<EntityManager*>(g_ZFObjSys.GetObjectPtr("EntityManager"));
+	m_pkEntityManager   	= static_cast<EntityManager*>(g_ZFObjSys.GetObjectPtr("EntityManager"));
 	
 	m_iType=				PROPERTY_TYPE_NORMAL;
 	m_iSide=				PROPERTY_SIDE_SERVER;	
 	bNetwork = 			false;
 	m_bSave = 			true;	
-	m_pkObject=			NULL;	
+	m_pkEntity=			NULL;	
 	m_iSortPlace=		0;
 	m_bSortDistance=	false;
 	m_iVersion =		1;
@@ -32,8 +32,8 @@ Property::~Property()
 		delete (*kIt);
 		++kIt;
 	}
-	if(m_pkObject)
-		m_pkObject->RemoveProperty(this);
+	if(m_pkEntity)
+		m_pkEntity->RemoveProperty(this);
 }
 
 // Game Messages
@@ -65,8 +65,8 @@ bool Property::operator<(Property& kOther)
 		{
 			if(m_iSortPlace == kOther.m_iSortPlace)
 			{			
-				d1 = (float) abs( (int)m_pkZeroFps->GetCam()->GetPos().DistanceTo(m_pkObject->GetWorldPosV()) );
-				d2 = (float) abs( (int)m_pkZeroFps->GetCam()->GetPos().DistanceTo(kOther.m_pkObject->GetWorldPosV()) );
+				d1 = (float) abs( (int)m_pkZeroFps->GetCam()->GetPos().DistanceTo(m_pkEntity->GetWorldPosV()) );
+				d2 = (float) abs( (int)m_pkZeroFps->GetCam()->GetPos().DistanceTo(kOther.m_pkEntity->GetWorldPosV()) );
 				return d1<d2;		
 			} else 
 			{

@@ -32,18 +32,18 @@ P_ArcadeCharacter::~P_ArcadeCharacter()
 void P_ArcadeCharacter::Init()
 {
 	cout<< "New character created"<<endl;
-	GetObject()->SetInterpolate(true);
+	GetEntity()->SetInterpolate(true);
 
 }
 
 void P_ArcadeCharacter::Update()
 {
 
-	if(P_Tcs* pkTcs = (P_Tcs*)GetObject()->GetProperty("P_Tcs"))
+	if(P_Tcs* pkTcs = (P_Tcs*)GetEntity()->GetProperty("P_Tcs"))
 	{
 		Vector3 kDir = m_kCameraRotation.VectorTransform(m_kDir);
 	
-		Vector3 kCurrentDir = GetObject()->GetWorldRotM().VectorTransform(Vector3(0,0,1));			
+		Vector3 kCurrentDir = GetEntity()->GetWorldRotM().VectorTransform(Vector3(0,0,1));			
 //		kCurrentDir = m_kCameraRotation.VectorTransform(kCurrentDir);		
 		Vector3 kSide = kCurrentDir.Cross(Vector3(0,1,0));
 
@@ -61,9 +61,9 @@ void P_ArcadeCharacter::Update()
 		if(fAng > 0.01)
 		{
 			if(fS > 0)
-				GetObject()->RotateLocalRotV(Vector3(0, 15 * fAng,0));
+				GetEntity()->RotateLocalRotV(Vector3(0, 15 * fAng,0));
 			else
-				GetObject()->RotateLocalRotV(Vector3(0,-15 * fAng ,0));
+				GetEntity()->RotateLocalRotV(Vector3(0,-15 * fAng ,0));
 		}
 		
 		
@@ -132,11 +132,11 @@ void P_ArcadeCharacter::Update()
 
 void P_ArcadeCharacter::Fire()
 {
-	if(P_DMGun* pkGun = (P_DMGun*)GetObject()->GetProperty ("P_DMGun"))
+	if(P_DMGun* pkGun = (P_DMGun*)GetEntity()->GetProperty ("P_DMGun"))
 	{
 		//Vector3 kDir = GetObject()->GetWorldRotM().VectorTransform(Vector3(0,0,1));	
 	
-		pkGun->Fire( GetObject()->GetWorldPosV() + m_kAim.Unit());
+		pkGun->Fire( GetEntity()->GetWorldPosV() + m_kAim.Unit());
 	}
 	else
 		cout<<"missing P_DMGun"<<endl;
@@ -147,11 +147,11 @@ void P_ArcadeCharacter::AutoAim()
 
 
 	vector<Entity*> kObjects;	
-	m_pkObjMan->GetZoneEntity()->GetAllEntitys(&kObjects);	
+	m_pkEntityManager->GetZoneEntity()->GetAllEntitys(&kObjects);	
 	
 
-	Vector3 kDir = GetObject()->GetWorldRotM().VectorTransform(Vector3(0,0,1));			
-	Vector3 kStart = m_pkObject->GetWorldPosV()+kDir;
+	Vector3 kDir = GetEntity()->GetWorldRotM().VectorTransform(Vector3(0,0,1));			
+	Vector3 kStart = m_pkEntity->GetWorldPosV()+kDir;
 
 	
 	float closest = 999999999;
@@ -160,7 +160,7 @@ void P_ArcadeCharacter::AutoAim()
 	
 	for(unsigned int i=0;i<kObjects.size();i++)
 	{
-		if(kObjects[i] == m_pkObject)
+		if(kObjects[i] == m_pkEntity)
 			continue;
 
 		if(kObjects[i]->IsZone())
@@ -192,7 +192,7 @@ void P_ArcadeCharacter::AutoAim()
 		Vector3 kPos = kStart+kDir * closest;
 		kPos.y = pkClosest->GetWorldPosV().y;
 	
-		m_kAim = kPos - m_pkObject->GetWorldPosV();
+		m_kAim = kPos - m_pkEntity->GetWorldPosV();
 		
 		if(m_kAim.Length() == 0)
 			m_kAim.Set(0,0,1);
