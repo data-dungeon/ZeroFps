@@ -419,3 +419,11 @@ void ZGuiListbox::SelNone()
 {
 	m_pkSelectedItem = NULL;
 }
+
+
+void ZGuiListbox::SetZValue(int iValue)
+{
+	printf("ZValue ZGuiListbox: %i\n", iValue);
+	ZGuiWnd::SetZValue(iValue);
+	m_pkScrollbarVertical->SetZValue(iValue-1);
+}

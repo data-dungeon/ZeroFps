@@ -73,6 +73,15 @@ public:
 	Rect GetWndRect();		// Get the windows area, relative to it´s parent.
 	Rect GetScreenRect();	// Get the real screen area.
 
+
+	struct Bigger_ZValue : public binary_function<ZGuiWnd*, ZGuiWnd*, bool> {
+		bool operator()(ZGuiWnd* x, ZGuiWnd* y) { return x->m_iZValue > y->m_iZValue; };
+	} ZValue_Cmp;
+
+	int m_iZValue;
+	virtual void SetZValue(int iValue);
+	void SortChilds();
+
 	void SetInternalControlState(bool IsInternalControl) { m_bInternalControl = IsInternalControl; }
 	void SetMoveArea(Rect kScreenRect,bool bFreeMovement=false); // the rect is in screen space.
 	void GetChildrens(list<ZGuiWnd*>& kList);

@@ -21,6 +21,7 @@ class Gui
 {
 private:
 	ZGuiTextbox* CreateTextbox(ZGuiWnd* pkParent, int iID, int x, int y, int w, int h, bool bMulitLine=false);
+	ZGuiCombobox* CreateCombobox(ZGuiWnd* pkParent, int iID, int x, int y, int w, int h, bool bMenu);
 	ZGuiListbox* CreateListbox(ZGuiWnd* pkParent, int iID, int x, int y, int w, int h);
 	ZGuiButton* CreateButton(ZGuiWnd* pkParent, int iID, int pos_x, int pos_y, char* pkName);
 	ZGuiLabel* CreateLabel(ZGuiWnd* pkParent, int iID, int x, int y, int w, int h, char* strText);
@@ -36,6 +37,8 @@ private:
 	int m_iScreenCX;
 	int m_iScreenCY;
 	
+	void AddItemToList(ZGuiWnd *pkWnd, bool bCombobox, const char *item, int id);
+	void AddItemsToList(ZGuiWnd* pkWnd, bool bCombobox, char** items, int Number);
 	ZGuiWnd* CreatePropertyDialog(int x, int y, int Widht, int Height);
 	ZGuiWnd* CreateFilePathDialog(int x, int y, int Widht, int Height);
 	bool FillPathList(ZGuiListbox* pkListbox, string pkDir);
@@ -43,6 +46,7 @@ private:
 	bool InitSkins();
 
 public:
+	
 	bool ZGWinProc( ZGuiWnd* pkWindow, unsigned int uiMessage, int iNumberOfParams, void *pkParams );
 	bool IsMenuActive() { return m_bMenuActive; }
 	void ToogleMenu();

@@ -19,6 +19,7 @@ ZGuiWnd* ZGuiWnd::m_pkWndUnderCursor = NULL;
 
 ZGuiWnd::ZGuiWnd(Rect kRectangle, ZGuiWnd* pkParent, bool bVisible, int iID)
 {
+	m_iZValue = 0;
 	m_pkGUI = NULL;
 	m_pkCallback = NULL;
 	m_kArea = kRectangle; 
@@ -255,9 +256,9 @@ bool ZGuiWnd::Render(ZGuiRender* pkRenderer)
 		pkRenderer->RenderBorder(m_kArea);
 	}
 
-	// Render childrens
-	for( WINit w = m_kChildList.begin();
-		 w != m_kChildList.end(); w++)
+	// Render childrens back to front
+	for( WINrit w = m_kChildList.rbegin();
+		 w != m_kChildList.rend(); w++)
 		 {
 			if( (*w)->m_bVisible == true)
 			{
@@ -412,4 +413,12 @@ ZGui* ZGuiWnd::GetGUI()
 	return pkGui;
 }
 
+void ZGuiWnd::SetZValue(int iValue)
+{
+	m_iZValue = iValue;
+}
 
+void ZGuiWnd::SortChilds()
+{
+	m_kChildList.sort(ZValue_Cmp);
+}

@@ -22,6 +22,7 @@ public:
 	ZGuiScrollbar(Rect kRectangle, ZGuiWnd* pkParent, bool bVisible, int iID);
 	virtual ~ZGuiScrollbar();
 
+	void SetZValue(int iValue);
 	void CreateInternalControls();
 	bool Render( ZGuiRender* renderer );
 	void SetThumbButtonSkins(ZGuiSkin* pkSkinNormal, ZGuiSkin* pkSkinHighLight);

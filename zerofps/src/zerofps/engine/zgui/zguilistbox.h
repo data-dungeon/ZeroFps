@@ -40,6 +40,8 @@ public:
 	void SetItemHighLightSkin(ZGuiSkin* pkSkin);
 	bool Notify(ZGuiWnd* pkWnd, int iCode);
 	bool Render( ZGuiRender* renderer );
+
+	void SetZValue(int iValue); // överlagrad
 	unsigned short GetItemHeight() { return m_unItemHeight; }
 	ZGuiListitem* GetSelItem();
 	ZGuiScrollbar* GetVScrollbar() { return m_pkScrollbarVertical; }
@@ -47,6 +49,8 @@ public:
 	typedef list<ZGuiListitem*>::iterator itItemList;
 
 	Rect& GetItemArea() { return m_kItemArea; }
+
+	ZGuiScrollbar* GetScrollbar() { return m_pkScrollbarVertical; }
 
 private:
 	

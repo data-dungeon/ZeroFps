@@ -5,6 +5,7 @@
 //#include "zeroedit.h"
 #include "gui.h"
 #include "resource_id.h"
+#include <algorithm>
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
@@ -58,6 +59,17 @@ bool Gui::ZGWinProc( ZGuiWnd* pkWindow, unsigned int uiMessage, int iNumberOfPar
 		case ID_PROPERTY_WND_CLOSE:
 			m_pkEdit->pkGui->ShowMainWindow(ID_PROPERTY_WND_MAIN, false);
 			break;
+
+		case ID_OBJECTS_CB:
+			{
+				ZGuiWnd *win = m_pkEdit->pkGui->GetWindow(iControllID);
+				if(win)
+				{
+					win->SetZValue(122);
+					win->GetParent()->SortChilds();
+				}
+			}
+			break;
 		}
 		break;
 
@@ -90,6 +102,40 @@ bool Gui::ZGWinProc( ZGuiWnd* pkWindow, unsigned int uiMessage, int iNumberOfPar
 					h = 500;
 					CreatePropertyDialog(m_iScreenCX-w/2,m_iScreenCY-h/2,w,h);
 					break;
+				}
+			}
+
+			if(iID == ID_OBJECTS_CB)
+			{
+				ZGuiListitem* pkSelItem = ((ZGuiCombobox*)(win))->GetListbox()->GetSelItem();
+
+				if(pkSelItem)
+				{
+					Object* pkObject = m_pkEdit->pkFps->m_pkObjectMan->GetObject(pkSelItem->GetText());
+
+					if(pkObject)
+					{
+						ZGuiWnd* pkWnd = m_pkEdit->pkGui->GetWindow(ID_PROPERTIES_CB);
+
+						if(pkWnd)
+						{
+							ZGuiCombobox* pkCB = (ZGuiCombobox*) pkWnd;
+							pkCB->RemoveAllItems();
+
+							list<Property*> pkList;
+							pkObject->GetPropertys(&pkList, PROPERTY_TYPE_ALL, PROPERTY_SIDE_ALL);
+
+							list<Property*>::iterator s = pkList.begin();
+							list<Property*>::iterator e = pkList.end();
+							int counter=0;
+
+							for( ; s != e; s++ )
+							{
+								pkCB->SetLabelText((*s)->m_acName);
+								AddItemToList(pkCB, true, (*s)->m_acName, counter++);
+							}
+						}
+					}
 				}
 			}
 		}
@@ -299,6 +345,22 @@ ZGuiListbox* Gui::CreateListbox(ZGuiWnd* pkParent, int iID, int x, int y, int w,
 	return pkListbox;
 }
 
+ZGuiCombobox* Gui::CreateCombobox(ZGuiWnd* pkParent, int iID, int x, int y, int w, int h, bool bMenu)
+{
+	h += (20 % h); // avrunda till närmsta 20 tal
+
+	ZGuiCombobox* pkCombobox = new ZGuiCombobox(Rect(x,y,x+w,y+h), pkParent, true, iID, 20,
+		GetSkin("font"), GetTexture("font_a"), GetSkin("menu"), GetSkin("dark_blue"), 
+		GetSkin("dark_blue"), GetSkin("menu"), -1);
+
+	if(bMenu == false)
+	{
+		pkCombobox->SetScrollbarSkin(GetSkin("menu_item_sel"), 
+			GetSkin("menu_item_hl"), GetSkin("menu_item_hl"));
+	}
+	return pkCombobox;
+}
+
 ZGuiTextbox* Gui::CreateTextbox(ZGuiWnd* pkParent, int iID, int x, int y, int w, int h, bool bMulitLine)
 {
 /*	h += (20 % h); // avrunda till närmsta 20 tal*/
@@ -317,7 +379,6 @@ ZGuiLabel* Gui::CreateLabel(ZGuiWnd* pkParent, int iID, int x, int y, int w, int
 	h += (20 % h); // avrunda till närmsta 20 tal
 
 	ZGuiLabel* pkLabel = new ZGuiLabel(Rect(x,y,x+w,y+h), pkParent, true, iID);
-	pkLabel->SetSkin(GetSkin("dark_blue"));
 	pkLabel->SetTextSkin(GetSkin("font"), GetTexture("font_a"));
 
 	if(strText)
@@ -352,6 +413,9 @@ ZGuiWnd* Gui::CreateFilePathDialog(int x, int y, int w, int h)
 
 ZGuiWnd* Gui::CreatePropertyDialog(int x, int y, int w, int h)
 {
+	list<Object*> pkObjectList;
+	m_pkEdit->pkFps->m_pkObjectMan->GetAllObjects(&pkObjectList);
+
 	if( m_pkEdit->pkGui->GetMainWindow(ID_PROPERTY_WND_MAIN))
 	{
 		m_pkEdit->pkGui->ShowMainWindow(ID_PROPERTY_WND_MAIN, true);
@@ -362,9 +426,33 @@ ZGuiWnd* Gui::CreatePropertyDialog(int x, int y, int w, int h)
 	pkMainWindow->SetSkin(GetSkin("blue"));
 	pkMainWindow->SetMoveArea(Rect(0,0,m_pkEdit->m_iWidth,m_pkEdit->m_iHeight));
 
+	int y_pos;
+
 	CreateButton(pkMainWindow, ID_PROPERTY_WND_CLOSE, w-20, 0, "x");
 	CreateLabel(pkMainWindow, 0, 20, 20, 16*5, 20, "Name:");
 	CreateTextbox(pkMainWindow, ID_NAME_TEXTBOX, 16*6, 20, 200, 20);
+
+	CreateLabel(pkMainWindow, 0, 20, 60, 16*4, 20, "Pos:");
+	CreateTextbox(pkMainWindow, ID_POSX_TEXTBOX, 16*6, 60, 16*6, 20);
+	CreateTextbox(pkMainWindow, ID_POSY_TEXTBOX, 16*6+16*7, 60, 16*6, 20);
+	CreateTextbox(pkMainWindow, ID_POSZ_TEXTBOX, 16*6+16*7*2, 60, 16*6, 20);
+
+	y_pos = 100;
+
+	ZGuiCombobox* cb;
+
+	CreateLabel(pkMainWindow, 0, 20, y_pos, 16*9-5, 20, "Objects:");
+	CreateLabel(pkMainWindow, 0, 20, y_pos+40, 16*9-5, 20, "Props:");
+
+	cb = CreateCombobox(pkMainWindow, ID_PROPERTIES_CB, 16*10, y_pos+40, 300, 20, false);
+	cb = CreateCombobox(pkMainWindow, ID_OBJECTS_CB, 16*10, y_pos, 300, 20, false);
+	
+	list<Object*>::iterator s = pkObjectList.begin();
+	list<Object*>::iterator e = pkObjectList.end();
+	int counter=0;
+
+	for( ; s != e; s++ )
+		AddItemToList(cb, true, (*s)->GetName().c_str(), counter++);
 
 	m_pkEdit->pkGui->AddMainWindow(ID_PROPERTY_WND_MAIN, pkMainWindow, m_pkWndProc, true);
 
@@ -420,3 +508,33 @@ bool Gui::FillPathList(ZGuiListbox* pkListbox, string strDir)
 }
 
 
+
+void Gui::AddItemsToList(ZGuiWnd *pkWnd, bool bCombobox, char **items, int iNumber)
+{
+	if(bCombobox)
+	{
+		ZGuiCombobox* pkCombobox = (ZGuiCombobox*) pkWnd;
+		for(int i=0; i<iNumber; i++)
+			pkCombobox->AddItem(items[i], i);
+	}
+	else
+	{
+		ZGuiListbox* pkListbox = (ZGuiListbox*) pkWnd;
+		for(int i=0; i<iNumber; i++)
+			pkListbox->AddItem(items[i], i);
+	}
+}
+
+void Gui::AddItemToList(ZGuiWnd *pkWnd, bool bCombobox, const char *item, int id)
+{
+	if(bCombobox)
+	{
+		ZGuiCombobox* pkCombobox = (ZGuiCombobox*) pkWnd;
+		pkCombobox->AddItem((char*)item, id);
+	}
+	else
+	{
+		ZGuiListbox* pkListbox = (ZGuiListbox*) pkWnd;
+		pkListbox->AddItem((char*)item, id);
+	}
+}

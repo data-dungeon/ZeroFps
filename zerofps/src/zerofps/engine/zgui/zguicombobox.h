@@ -36,9 +36,11 @@ public:
 	void SetLabelWidth(int iWidth);
 	void IsMenu(bool bIsMenu);
 	void SetNumVisibleRows(unsigned short iNumVisibleRows);
+	bool RemoveAllItems(); // välj denna istället för den i listboxen annars rensas inte textboxen...
 
 	ZGuiListitem* GetItem(int iID);
 
+	void SetZValue(int iValue); // överlagrad
 	ZGuiListbox* GetListbox() { return m_pkListbox; }
 
 private:

@@ -19,7 +19,12 @@ const int ID_PROPERTY_WND				= 9013;
 const int ID_PROPERTY_WND_MAIN			= 9014;
 const int ID_PROPERTY_WND_CLOSE			= 9015;
 const int ID_NAME_TEXTBOX				= 9016;
+const int ID_POSX_TEXTBOX				= 9017;
+const int ID_POSY_TEXTBOX				= 9018;
+const int ID_POSZ_TEXTBOX				= 9019;
+const int ID_OBJECTS_CB					= 9020;
+const int ID_PROPERTIES_CB				= 9021;
 
-static int iLastIDNr = 9012;
+static int iLastIDNr = 9022;
 
 #endif

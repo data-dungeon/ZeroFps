@@ -179,5 +179,9 @@ void ZGuiScrollbar::CreateInternalControls()
 	SetScrollInfo(0,100,0.15f,0);
 }
 
-
-
+void ZGuiScrollbar::SetZValue(int iValue)
+{
+	printf("ZValue ZGuiScrollbar: %i\n", iValue);
+	ZGuiWnd::SetZValue(iValue);
+	m_pkThumbButton->SetZValue(iValue-1);
+}
