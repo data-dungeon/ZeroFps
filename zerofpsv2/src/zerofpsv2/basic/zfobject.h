@@ -13,6 +13,19 @@ using namespace std;
 class ZFSubSystem;
 class ZFObjectManger;
 
+/// Type of Command
+enum ZFCmdDataType 
+{
+	CSYS_NONE = 0,					// None valid data.
+	CSYS_FUNCTION,					// Function ptr.
+	CSYS_INT,						// int.
+	CSYS_FLOAT,						// float.
+	CSYS_DOUBLE,					// float.
+	CSYS_LONG,						// float.
+	CSYS_BOOL,						// bool.
+	CSYS_STRING,					// /0 terminated string.
+};
+
 class BASIC_API CmdArgument
 {
 public:
@@ -37,7 +50,10 @@ protected:
 			
 
 public:
-	ZFObjectManger*		m_pkObjectManger;		
+	ZFObjectManger*			m_pkSystem;	
+	
+	ZFObjectManger&	GetSystem();
+
 	virtual void RunCommand(int cmdid, const CmdArgument* kCommand) {};
 
 	ZFSubSystem*	GetParent() const;					///< Get ptr to object parent.
@@ -52,6 +68,10 @@ public:
 	void RemoveChild(ZFSubSystem* pkObject);			///< Remove one of our children.
 
 	void PrintChilds(const char* szParentName);		///< Debug: Prints childs from this object. 
+	bool Register_Cmd(char* szName, int iCmdID, char* szHelp = NULL, int iNumOfArg = 0);	///< Register a Cmd for this SubSys.
+	bool RegisterVariable(const char* szName, void* pvAddress, ZFCmdDataType eType);			///< Register a var for this SubSys
+
+	void Logf(const char* szName, const char* szMessageFmt,...);
 
 	virtual ~ZFSubSystem();
 

@@ -30,18 +30,6 @@ struct NameObject
 	int				m_bStarted;				// True if this subsystem has started ok.
 };
 
-/// Type of Command
-enum ZFCmdDataType 
-{
-	CSYS_NONE = 0,					// None valid data.
-	CSYS_FUNCTION,					// Function ptr.
-	CSYS_INT,						// int.
-	CSYS_FLOAT,						// float.
-	CSYS_DOUBLE,					// float.
-	CSYS_LONG,						// float.
-	CSYS_BOOL,						// bool.
-	CSYS_STRING,					// /0 terminated string.
-};
 
 /// Contains data about a stored command.
 class BASIC_API ZFCmdData

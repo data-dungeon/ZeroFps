@@ -1,8 +1,9 @@
 #include <iostream>
 #include <string>
-
 #include <iostream>
 #include <string>
+#include <cstdio>
+#include <cstdarg>
 
 #include "basic_x.h"
 #include "os.h"
@@ -18,7 +19,7 @@ ZFSubSystem::ZFSubSystem(char *szName)
 {
 	m_strZFpsName = string("");
 	m_pkParent = NULL;
-	m_pkObjectManger = NULL;
+	m_pkSystem = NULL;
 	g_ZFObjSys.Register(this, szName, NULL);
 }
 
@@ -117,6 +118,43 @@ void ZFSubSystem::DestroyChildren()
 	}
 
 }
+
+bool ZFSubSystem::Register_Cmd(char* szName, int iCmdID, char* szHelp, int iNumOfArg)
+{
+	return g_ZFObjSys.Register_Cmd(szName,iCmdID,this, szHelp, iNumOfArg);	
+}
+
+bool ZFSubSystem::RegisterVariable(const char* szName, void* pvAddress, ZFCmdDataType eType)
+{
+	return g_ZFObjSys.RegisterVariable(szName,pvAddress,eType, this);	
+
+}
+
+ZFObjectManger& ZFSubSystem::GetSystem()
+{
+	return *m_pkSystem;
+}
+
+char g_LogFormatTxt3[4096];	
+
+void ZFSubSystem::Logf(const char* szName, const char* szMessageFmt,...)
+{
+	va_list		ap;							// Pointer To List Of Arguments
+
+	// Make sure we got something to work with.
+	if (szMessageFmt == NULL)	return;					
+
+	va_start(ap, szMessageFmt);						// Parses The String For Variables
+		vsprintf(g_LogFormatTxt3, szMessageFmt, ap);		// And Convert Symbols
+	va_end(ap);								// 
+
+	// Now call our print function.
+	GetSystem().Log(szName, g_LogFormatTxt3);
+}
+
+
+
+
 
 /**
 	dfsad

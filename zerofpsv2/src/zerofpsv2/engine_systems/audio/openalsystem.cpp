@@ -17,11 +17,11 @@ OpenAlSystem::OpenAlSystem()
 : ZFSubSystem("OpenAlSystem") 
 {
 	//Gubb was here
-	g_ZFObjSys.Register_Cmd("musicload",FID_MUSICLOAD,this);
-	g_ZFObjSys.Register_Cmd("musicplay",FID_MUSICPLAY,this);
-	g_ZFObjSys.Register_Cmd("musicstop",FID_MUSICSTOP,this);
-	g_ZFObjSys.Register_Cmd("musicvolume",FID_MUSICVOLUME,this);
-	g_ZFObjSys.Register_Cmd("musicbuffers",FID_MUSICBUFFERS,this);
+	Register_Cmd("musicload",FID_MUSICLOAD);
+	Register_Cmd("musicplay",FID_MUSICPLAY);
+	Register_Cmd("musicstop",FID_MUSICSTOP);
+	Register_Cmd("musicvolume",FID_MUSICVOLUME);
+	Register_Cmd("musicbuffers",FID_MUSICBUFFERS);
 }
 
 OpenAlSystem::~OpenAlSystem()

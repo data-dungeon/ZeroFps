@@ -8,6 +8,8 @@
 
 using namespace std;
 
+class ZeroFps;
+
 /// Links a resource type with a creation function
 class ResourceCreateLink
 {
@@ -66,6 +68,7 @@ class BASIC_API ZFResourceDB : public ZFSubSystem {
 
 		void RunCommand(int cmdid, const CmdArgument* kCommand);
 
+		ZeroFps*					m_pkZeroFps;
 
 	public:
 		ZFResourceDB();

@@ -89,9 +89,25 @@ ZFResourceDB::ZFResourceDB()
 	RegisterResource( string(".bmp"), Create__ResTexture	);
 */
 
-	g_ZFObjSys.Register_Cmd("res_list",FID_LISTRES,this);
+	Register_Cmd("res_list",FID_LISTRES);
 	g_ZFObjSys.Log_Create("resdb");
 }
+
+bool ZFResourceDB::StartUp()	
+{ 
+	m_pkZeroFps = dynamic_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
+
+	return true; 
+}
+
+bool ZFResourceDB::ShutDown() 
+{ 
+
+	return true; 
+}
+
+bool ZFResourceDB::IsValid()	{ return true; }
+
 
 ZFResourceDB::~ZFResourceDB()
 {
@@ -110,10 +126,8 @@ void ZFResourceDB::Refresh()
 			}
 		}
 
-	ZeroFps* pkZeofps = dynamic_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
-
 	for(it = m_kResources.begin(); it != m_kResources.end(); it++ ) {
-		pkZeofps->DevPrintf("res", "%s - %d", (*it)->m_strName.c_str(), (*it)->m_iNumOfUsers);
+		m_pkZeroFps->DevPrintf("res", "%s - %d", (*it)->m_strName.c_str(), (*it)->m_iNumOfUsers);
 		}
 }
 
@@ -261,7 +275,7 @@ ResourceCreateLink*	ZFResourceDB::FindResourceTypeFromFullName(string strResName
 
 void ZFResourceDB::RunCommand(int cmdid, const CmdArgument* kCommand)
 {
-	ZeroFps* pkZeroFps = static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
+//	ZeroFps* pkZeroFps = static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
 
 	list<ZFResourceInfo*>::iterator it;
 
@@ -269,16 +283,12 @@ void ZFResourceDB::RunCommand(int cmdid, const CmdArgument* kCommand)
 		case FID_LISTRES:
 
 		for(it = m_kResources.begin(); it != m_kResources.end(); it++ ) {
-			pkZeroFps->DevPrintf("res", "- %s - %d",(*it)->m_strName.c_str(),(*it)->m_iNumOfUsers);
+			m_pkZeroFps->DevPrintf("res", "- %s - %d",(*it)->m_strName.c_str(),(*it)->m_iNumOfUsers);
 			}
 			break;
 
 		};
 }
-
-bool ZFResourceDB::StartUp()	{ return true; }
-bool ZFResourceDB::ShutDown() { return true; }
-bool ZFResourceDB::IsValid()	{ return true; }
 
 
 

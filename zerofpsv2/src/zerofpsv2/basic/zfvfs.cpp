@@ -81,14 +81,14 @@ int ZFVFile::GetSize()
 ZFVFileSystem::ZFVFileSystem()
 : ZFSubSystem("ZFVFileSystem")
 {
-	g_ZFObjSys.Register_Cmd("cd", FID_CD,this);
-	g_ZFObjSys.Register_Cmd("dir", FID_DIR,this);
+	Register_Cmd("cd", FID_CD);
+	Register_Cmd("dir", FID_DIR);
 	m_kCurentDir = "";
 }
 
 bool ZFVFileSystem::StartUp()
 { 
-	m_pkBasicFS = static_cast<ZFBasicFS*>(g_ZFObjSys.GetObjectPtr("ZFBasicFS"));		
+	m_pkBasicFS = static_cast<ZFBasicFS*>(GetSystem().GetObjectPtr("ZFBasicFS"));		
 	return true;
 }
 
@@ -207,7 +207,7 @@ bool ZFVFileSystem::DirExist(string strName)
 
 void ZFVFileSystem::RunCommand(int cmdid, const CmdArgument* kCommand)
 {
-	BasicConsole* m_pkConsole = static_cast<BasicConsole*>(g_ZFObjSys.GetObjectPtr("Console"));		
+	BasicConsole* m_pkConsole = static_cast<BasicConsole*>(GetSystem().GetObjectPtr("Console"));		
 	unsigned int i;
 	vector<string> kFiles;
 

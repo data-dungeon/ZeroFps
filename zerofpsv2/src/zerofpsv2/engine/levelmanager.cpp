@@ -12,14 +12,14 @@
 
 LevelManager::LevelManager(): ZFSubSystem("LevelManager")
 {
-	m_pkZeroFps=static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
-	m_pkObjectMan=static_cast<ObjectManager*>(g_ZFObjSys.GetObjectPtr("ObjectManager"));
-	m_pkBasicFS=static_cast<ZFBasicFS*>(g_ZFObjSys.GetObjectPtr("ZFBasicFS"));
-	m_pkConsole=static_cast<Console*>(g_ZFObjSys.GetObjectPtr("Console"));
-	m_pkRender=static_cast<Render*>(g_ZFObjSys.GetObjectPtr("Render"));
+	m_pkZeroFps=static_cast<ZeroFps*>(GetSystem().GetObjectPtr("ZeroFps"));
+	m_pkObjectMan=static_cast<ObjectManager*>(GetSystem().GetObjectPtr("ObjectManager"));
+	m_pkBasicFS=static_cast<ZFBasicFS*>(GetSystem().GetObjectPtr("ZFBasicFS"));
+	m_pkConsole=static_cast<Console*>(GetSystem().GetObjectPtr("Console"));
+	m_pkRender=static_cast<Render*>(GetSystem().GetObjectPtr("Render"));
 //	m_pkCmd=static_cast<CmdSystem*>(g_ZFObjSys.GetObjectPtr("CmdSystem"));
-	m_pkIni=static_cast<ZFIni*>(g_ZFObjSys.GetObjectPtr("ZFIni"));
-	m_pkLight = static_cast<Light*>(g_ZFObjSys.GetObjectPtr("Light"));
+	m_pkIni=static_cast<ZFIni*>(GetSystem().GetObjectPtr("ZFIni"));
+	m_pkLight = static_cast<Light*>(GetSystem().GetObjectPtr("Light"));
 	
 	m_pkMap=new HeightMap();
 	
@@ -32,10 +32,10 @@ LevelManager::LevelManager(): ZFSubSystem("LevelManager")
 	m_kMapBaseDir			=	"../data/maps";
 	m_bDrawZones			= false;
 	
-	g_ZFObjSys.RegisterVariable("l_zoneradius", &m_fZoneRadius,CSYS_FLOAT, this);
-	g_ZFObjSys.RegisterVariable("l_Showdecorations", &m_iShowDecorations,CSYS_INT, this);
-	g_ZFObjSys.RegisterVariable("l_decorationstep", &m_iDecorationStep,CSYS_INT, this);
-	g_ZFObjSys.RegisterVariable("l_showzones", &m_bDrawZones, CSYS_BOOL, this);
+	RegisterVariable("l_zoneradius", &m_fZoneRadius,CSYS_FLOAT);
+	RegisterVariable("l_Showdecorations", &m_iShowDecorations,CSYS_INT);
+	RegisterVariable("l_decorationstep", &m_iDecorationStep,CSYS_INT);
+	RegisterVariable("l_showzones", &m_bDrawZones, CSYS_BOOL);
 
 //	m_pkCmd->Add(&m_fZoneRadius,"l_zoneradius",type_float);		
 //	m_pkCmd->Add(&m_iShowDecorations,"l_Showdecorations",type_int);		

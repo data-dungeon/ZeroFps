@@ -7,14 +7,14 @@
 CmdSystem::CmdSystem()
 : ZFSubSystem("CmdSystem") 
 {
-	g_ZFObjSys.Register_Cmd("set",		FID_SET,this, "set name value", 2);
-	g_ZFObjSys.Register_Cmd("varlist",	FID_VARLIST, this);
-	g_ZFObjSys.Register_Cmd("sys",		FID_SYS, this);
+	Register_Cmd("set",		FID_SET, "set name value", 2);
+	Register_Cmd("varlist",	FID_VARLIST);
+	Register_Cmd("sys",		FID_SYS);
 }
 
 bool CmdSystem::StartUp()	
 { 
-	m_pkCon = dynamic_cast<BasicConsole*>(g_ZFObjSys.GetObjectPtr("Console"));
+	m_pkCon = dynamic_cast<BasicConsole*>((GetSystem().GetObjectPtr("Console")));
 	return true; 
 }
 
@@ -30,7 +30,7 @@ bool CmdSystem::IsValid()
 
 bool CmdSystem::Set(const char* acName,const char* acData)
 {
-	return g_ZFObjSys.SetVariable(const_cast<char*>(acName),const_cast<char*>(acData));
+	return GetSystem().SetVariable(const_cast<char*>(acName),const_cast<char*>(acData));
 }
 
 void CmdSystem::RunCommand(int cmdid, const CmdArgument* kCommand)
@@ -47,12 +47,12 @@ void CmdSystem::RunCommand(int cmdid, const CmdArgument* kCommand)
 			
 			break;
 
-		case FID_VARLIST:	g_ZFObjSys.PrintVariables();	break;
+		case FID_VARLIST:	GetSystem().PrintVariables();	break;
 
 		case FID_SYS:
 			// Draw All Systems to console.
-			for(unsigned int i=0; i < m_pkObjectManger->kObjectNames.size();i++) {
-				m_pkCon->Printf(" %s, %d\n", m_pkObjectManger->kObjectNames[i].m_strName.c_str(), m_pkObjectManger->kObjectNames[i].m_iNumOfRequests );
+			for(unsigned int i=0; i < m_pkSystem->kObjectNames.size();i++) {
+				m_pkCon->Printf(" %s, %d\n", m_pkSystem->kObjectNames[i].m_strName.c_str(), m_pkSystem->kObjectNames[i].m_iNumOfRequests );
 			}
 
 			break;

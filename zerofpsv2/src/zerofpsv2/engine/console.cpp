@@ -9,12 +9,12 @@ using namespace std;
 Console::Console()
   : BasicConsole("Console"), MAX_CMD_HISTRORY_LENGTH(50) {
    	
-	m_pkEngine	= static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
-	m_pkInput	= static_cast<Input*>(g_ZFObjSys.GetObjectPtr("Input"));	
+	m_pkEngine	= static_cast<ZeroFps*>(GetSystem().GetObjectPtr("ZeroFps"));
+	m_pkInput	= static_cast<Input*>(GetSystem().GetObjectPtr("Input"));	
 	m_pkRender	= m_pkEngine->m_pkRender;
 	m_pkTexMan  = m_pkEngine->m_pkTexMan;
 
-	g_ZFObjSys.Log_Create("console");
+	GetSystem().Log_Create("console");
 	
 	m_iBufferSize=100;
 	m_kText.resize(m_iBufferSize);
@@ -396,7 +396,7 @@ bool Console::Execute(char* aText) {
 		return false;
 	}
 	
-	if(!g_ZFObjSys.RunCommand(aText))
+	if(!GetSystem().RunCommand(aText))
 	{
 		Printf("Command Not Found");
 		return false;

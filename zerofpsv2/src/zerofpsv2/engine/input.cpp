@@ -12,7 +12,7 @@ Input::Input()
 		cout<<"Sdl_Input dont want to work =("<<endl;
 		exit(1);
 	}*/
-	m_pkZeroFps=static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
+	m_pkZeroFps=static_cast<ZeroFps*>(GetSystem().GetObjectPtr("ZeroFps"));
 		
 	m_bKeyRepeat = true;
 	
@@ -21,11 +21,11 @@ Input::Input()
 	m_iGrabtime=SDL_GetTicks();
 	m_bInputEnabled=true;
 
-	g_ZFObjSys.Register_Cmd("togglegrab",FID_TOGGLEGRAB,this);
-	g_ZFObjSys.Register_Cmd("bind",FID_BIND,this);
-	g_ZFObjSys.Register_Cmd("unbindall",FID_UNBINDALL,this);
-	g_ZFObjSys.Register_Cmd("listactions",FID_LISTACTIONS,this);		
-	g_ZFObjSys.Register_Cmd("mousesens",FID_MOUSESENS,this);		
+	Register_Cmd("togglegrab",FID_TOGGLEGRAB);
+	Register_Cmd("bind",FID_BIND);
+	Register_Cmd("unbindall",FID_UNBINDALL);
+	Register_Cmd("listactions",FID_LISTACTIONS);		
+	Register_Cmd("mousesens",FID_MOUSESENS);		
 
 	SDL_EnableKeyRepeat(SDL_DEFAULT_REPEAT_DELAY,SDL_DEFAULT_REPEAT_INTERVAL);
 	
@@ -343,7 +343,7 @@ void Input::ListActions()
 
 bool Input::GetConsole()
 {
-	m_pkConsole	= static_cast<BasicConsole*>(g_ZFObjSys.GetObjectPtr("Console"));
+	m_pkConsole	= static_cast<BasicConsole*>(GetSystem().GetObjectPtr("Console"));
 	
 	if(m_pkConsole==NULL) 
 		return false;

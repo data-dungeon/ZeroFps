@@ -11,8 +11,8 @@ PhysicsEngine::PhysicsEngine()
 
 bool PhysicsEngine::StartUp()	
 { 
-	m_pkZeroFps		= static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));		
-	m_pkObjectMan	= static_cast<ObjectManager*>(g_ZFObjSys.GetObjectPtr("ObjectManager"));		
+	m_pkZeroFps		= static_cast<ZeroFps*>(GetSystem().GetObjectPtr("ZeroFps"));		
+	m_pkObjectMan	= static_cast<ObjectManager*>(GetSystem().GetObjectPtr("ObjectManager"));		
 
 	return true; 
 }

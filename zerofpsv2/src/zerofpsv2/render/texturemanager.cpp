@@ -13,15 +13,15 @@ TextureManager::TextureManager()
 {
 	m_iCurrentTexture = NO_TEXTURE;
 
-	g_ZFObjSys.Register_Cmd("t_list",FID_LISTTEXTURES,this);
-	g_ZFObjSys.Register_Cmd("t_reload",FID_FORCERELOAD,this);
-	g_ZFObjSys.Register_Cmd("t_testload",FID_TESTLOADER,this);
-	g_ZFObjSys.Register_Cmd("t_unload",FID_UNLOAD,this);
+	Register_Cmd("t_list",		FID_LISTTEXTURES);
+	Register_Cmd("t_reload",	FID_FORCERELOAD);
+	Register_Cmd("t_testload",	FID_TESTLOADER);
+	Register_Cmd("t_unload",	FID_UNLOAD);
 }	
 
 bool TextureManager::StartUp()	
 {
-	m_pkZFFileSystem	=	static_cast<ZFVFileSystem*>(g_ZFObjSys.GetObjectPtr("ZFVFileSystem"));		
+	m_pkZFFileSystem	=	static_cast<ZFVFileSystem*>(GetSystem().GetObjectPtr("ZFVFileSystem"));		
 	
 	return true;
 }	
@@ -434,7 +434,7 @@ const char* TextureManager::GetFileName(unsigned int uiIndex)
 
 void TextureManager::ListTextures(void)
 {
-	BasicConsole* pkConsole = static_cast<BasicConsole*>(g_ZFObjSys.GetObjectPtr("Console"));
+	BasicConsole* pkConsole = static_cast<BasicConsole*>(GetSystem().GetObjectPtr("Console"));
 
 	pkConsole->Printf("Texture Dump");
 	for(unsigned int i=0; i<m_iTextures.size(); i++){
@@ -447,7 +447,7 @@ void TextureManager::ListTextures(void)
 
 void TextureManager::ReloadAll(void)
 {
-	BasicConsole* pkConsole = static_cast<BasicConsole*>(g_ZFObjSys.GetObjectPtr("Console"));
+	BasicConsole* pkConsole = static_cast<BasicConsole*>(GetSystem().GetObjectPtr("Console"));
 	texture *pkTex;
 
 	pkConsole->Printf("Texture Force Reload");

@@ -98,9 +98,6 @@ ZFObjectManger::ZFObjectManger()
 #ifdef _DEBUG
 	g_Logf("Starting ZeroFps Object System\n");
 #endif
-
-//	g_ZFObjSys.Register_Cmd("set",		FID_SET,this, "set name value", 2);
-//	g_ZFObjSys.Register_Cmd("varlist",	FID_VARLIST,this);
 }
 
 ZFObjectManger::~ZFObjectManger()
@@ -155,7 +152,7 @@ void ZFObjectManger::Register(ZFSubSystem* pkObject, char* acName, ZFSubSystem* 
 	kObjectNames.push_back(kObjName);
 	pkObject->m_strZFpsName		= string(acName);
 
-	pkObject->m_pkObjectManger = this;
+	pkObject->m_pkSystem = this;
 
 #ifdef _DEBUG
 	g_Logf("ok\n");

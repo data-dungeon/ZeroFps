@@ -13,14 +13,14 @@ ObjectManager::ObjectManager()
 	m_iTotalNetObjectData	= 0;
 	m_iNumOfNetObjects		= 0;
 
-	g_ZFObjSys.Register_Cmd("o_logtree",FID_LOGOHTREE,this);	
-	g_ZFObjSys.Register_Cmd("o_dumpp",FID_LOGACTIVEPROPERTYS,this);	
-	g_ZFObjSys.Register_Cmd("sendmsg",FID_SENDMESSAGE,this, "sendmsg name id",2);	
+	Register_Cmd("o_logtree",FID_LOGOHTREE);	
+	Register_Cmd("o_dumpp",FID_LOGACTIVEPROPERTYS);	
+	Register_Cmd("sendmsg",FID_SENDMESSAGE, "sendmsg name id",2);	
 }
 
 bool ObjectManager::StartUp()	
 {
-	m_pkZeroFps=static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));		
+	m_pkZeroFps=static_cast<ZeroFps*>(GetSystem().GetObjectPtr("ZeroFps"));		
 
 	m_fEndTimeForceNet		= m_pkZeroFps->GetEngineTime();
 
@@ -49,7 +49,7 @@ ObjectManager::~ObjectManager()
 		fAvgObjSize = float(m_iTotalNetObjectData / m_iNumOfNetObjects);
 		}
 
-	g_ZFObjSys.Logf("net", " Avg Obj Size: %f\n", fAvgObjSize);
+	Logf("net", " Avg Obj Size: %f\n", fAvgObjSize);
 
 }
 
@@ -221,7 +221,7 @@ Object* ObjectManager::CreateObjectByNetWorkID(int iNetID)
 	pkNew->m_eRole			= NETROLE_PROXY;
 	pkNew->m_eRemoteRole	= NETROLE_AUTHORITY;
 	
-	g_ZFObjSys.Logf("net", " CreateObjectByNetWorkID( %d ).\n", iNetID);
+	Logf("net", " CreateObjectByNetWorkID( %d ).\n", iNetID);
 
 //	pkNew->AddProperty("ModelProperty");
 	return pkNew;
@@ -499,10 +499,10 @@ void ObjectManager::UpdateDeleteList(NetPacket* pkNetPacket)
 	pkNetPacket->Read(iObjectID);
 
 	while(iObjectID != -1) {
-		g_ZFObjSys.Logf("net", "Delete: Object %d\n", iObjectID);
+		Logf("net", "Delete: Object %d\n", iObjectID);
 		pkNetSlave = GetObjectByNetWorkID(iObjectID);
 		if(pkNetSlave == NULL) {
-			g_ZFObjSys.Logf("net", " Object '%d' not found.\n", iObjectID);	
+			Logf("net", " Object '%d' not found.\n", iObjectID);	
 			}
 		else {
 			Delete(pkNetSlave);
@@ -518,11 +518,11 @@ void ObjectManager::UpdateState(NetPacket* pkNetPacket)
 	pkNetPacket->Read(iObjectID);
 
 	while(iObjectID != -1) {
-		g_ZFObjSys.Logf("net", " Object State[%d]\n", iObjectID);
+		Logf("net", " Object State[%d]\n", iObjectID);
 
 		pkNetSlave = GetObjectByNetWorkID(iObjectID);
 		if(pkNetSlave == NULL) {
-				g_ZFObjSys.Logf("net", " Object '%d' not found. Trying to create...\n", iObjectID);	
+				Logf("net", " Object '%d' not found. Trying to create...\n", iObjectID);	
 			pkNetSlave = CreateObjectByNetWorkID(iObjectID);
 			}
 				
@@ -535,7 +535,7 @@ void ObjectManager::UpdateState(NetPacket* pkNetPacket)
 			pkNetPacket->Read(iObjectID);
 			}
 		else {
-			g_ZFObjSys.Logf("net", " Object '%d' not found (again) :(.\n", iObjectID);
+			Logf("net", " Object '%d' not found (again) :(.\n", iObjectID);
 			return;
 			}
 		}	
@@ -543,11 +543,11 @@ void ObjectManager::UpdateState(NetPacket* pkNetPacket)
 
 void ObjectManager::PackToClients()
 {
-	NetWork* net = static_cast<NetWork*>(g_ZFObjSys.GetObjectPtr("NetWork"));
+	NetWork* net = static_cast<NetWork*>(GetSystem().GetObjectPtr("NetWork"));
 	if(net->GetNumOfClients() == 0)
 		return;
 
-	g_ZFObjSys.Logf("net", " *** ObjectManager::PackToClients() *** \n");
+	Logf("net", " *** ObjectManager::PackToClients() *** \n");
 
 
 	if(m_pkZeroFps->GetEngineTime() < m_fEndTimeForceNet) {
@@ -574,11 +574,11 @@ void ObjectManager::PackToClients()
 		if((*it)->m_eRole != NETROLE_AUTHORITY)		continue;
 
 		NP.Write((*it)->iNetWorkID);
-		g_ZFObjSys.Logf("net", "Object [%d]\n",(*it)->iNetWorkID );
+		Logf("net", "Object [%d]\n",(*it)->iNetWorkID );
 		(*it)->PackTo(&NP);
 		iPacketSize++;
 
-		g_ZFObjSys.Logf("net", " Size: %d\n\n",NP.m_iPos );
+		Logf("net", " Size: %d\n\n",NP.m_iPos );
 
 		if(NP.m_iPos >= 512) {
 			NP.Write(iEndOfObject);
@@ -619,20 +619,20 @@ void ObjectManager::PackToClients()
 // Debug / Help Functions		
 void ObjectManager::DisplayTree()
 {
-	g_ZFObjSys.Log_Create("fisklins");
+	GetSystem().Log_Create("fisklins");
 	m_pkWorldObject->PrintTree(0);
 }
 
 
 void ObjectManager::DumpActiverPropertysToLog(char* szMsg)
 {
-	g_ZFObjSys.Logf("net", "%s : %d\n", szMsg, m_akPropertys.size() );
+	Logf("net", "%s : %d\n", szMsg, m_akPropertys.size() );
 
 	for(vector<Property*>::iterator it=m_akPropertys.begin();it!=m_akPropertys.end();it++) 
 	{
-		g_ZFObjSys.Logf("net", "%s (%d)", (*it)->m_acName, (*it)->GetObject()->iNetWorkID );
+		Logf("net", "%s (%d)", (*it)->m_acName, (*it)->GetObject()->iNetWorkID );
 		if((*it)->GetObject()->m_pkParent)
-			g_ZFObjSys.Logf("net", " Parent Obj: %s\n", (*it)->GetObject()->m_pkParent->m_kName.c_str() );
+			Logf("net", " Parent Obj: %s\n", (*it)->GetObject()->m_pkParent->m_kName.c_str() );
 	}
 	
 }
@@ -930,9 +930,9 @@ void ObjectManager::OwnerShip_Request(Object* pkObj)
 	NP.Write((char) ZFGP_REQOWNOBJECT);
 	NP.Write(ZFGP_ENDOFPACKET);
 
-	NetWork* net = static_cast<NetWork*>(g_ZFObjSys.GetObjectPtr("NetWork"));
+	NetWork* net = static_cast<NetWork*>(GetSystem().GetObjectPtr("NetWork"));
 	net->SendToAllClients(&NP);
-	g_ZFObjSys.Logf("net", " Sending Own Request for %d\n", pkObj->iNetWorkID);
+	Logf("net", " Sending Own Request for %d\n", pkObj->iNetWorkID);
 	
 }
 
@@ -950,11 +950,11 @@ void ObjectManager::OwnerShip_OnRequest(Object* pkObj)
 	NP.Write((char) ZFGP_GIVEOWNOBJECT);
 	NP.Write(ZFGP_ENDOFPACKET);
 
-	NetWork* net = static_cast<NetWork*>(g_ZFObjSys.GetObjectPtr("NetWork"));
+	NetWork* net = static_cast<NetWork*>(GetSystem().GetObjectPtr("NetWork"));
 	net->SendToAllClients(&NP);
 
 	OwnerShip_Give(pkObj);
-	g_ZFObjSys.Logf("net", " Gives away ownership of %d\n", pkObj->iNetWorkID);
+	Logf("net", " Gives away ownership of %d\n", pkObj->iNetWorkID);
 
 }
 
@@ -964,7 +964,7 @@ void ObjectManager::OwnerShip_OnGrant(Object* pkObj)
 		return;
 
 	OwnerShip_Take(pkObj);
-	g_ZFObjSys.Logf("net", " This node now own %d\n", pkObj->iNetWorkID);
+	Logf("net", " This node now own %d\n", pkObj->iNetWorkID);
 }
 
 /*

@@ -52,12 +52,12 @@ void ZeroTank::Init()
 	m_pkMap = pkLevelMan->GetHeightMap();	
 
 	//register variables
-	g_ZFObjSys.RegisterVariable("m_iGameType", &m_iGameType,CSYS_INT, this);
+	RegisterVariable("m_iGameType", &m_iGameType,CSYS_INT);
 	
 	//register commmands bös
-	g_ZFObjSys.Register_Cmd("load",FID_LOAD,this);		
-	g_ZFObjSys.Register_Cmd("unload",FID_UNLOAD,this);			
-	g_ZFObjSys.Register_Cmd("massspawn",FID_MASSSPAWN,this);			
+	Register_Cmd("load",FID_LOAD);		
+	Register_Cmd("unload",FID_UNLOAD);			
+	Register_Cmd("massspawn",FID_MASSSPAWN);			
 
 	//damn "#¤(="%#( lighting fix bös
 	glEnable(GL_LIGHTING );
@@ -143,7 +143,7 @@ void ZeroTank::OnSystem()
 	//setup client
 	if(pkFps->m_bClientMode && !pkFps->m_bServerMode)
 	{
-		g_ZFObjSys.Logf("net","??? m_iSelfObjectID %d\n", m_iSelfObjectID);
+		GetSystem().Logf("net","??? m_iSelfObjectID %d\n", m_iSelfObjectID);
 
 
 
@@ -242,7 +242,7 @@ void ZeroTank::RunCommand(int cmdid, const CmdArgument* kCommand)
 			
 						
 			pkConsole->Printf("Everything is loaded ,Starting server");
-			g_ZFObjSys.RunCommand("server Default server");	
+			GetSystem().RunCommand("server Default server");	
 			break;		
 		
 		case FID_UNLOAD:

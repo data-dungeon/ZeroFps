@@ -20,17 +20,17 @@ Render::Render()
 	m_iScreenShootNum			= 0;
 	m_iHmTempList				= 0;
 
-	g_ZFObjSys.RegisterVariable("r_maxlayers", &m_iMaxLandscapeLayers,CSYS_INT, this);
-	g_ZFObjSys.RegisterVariable("r_drawland", &m_iDrawLandscape,CSYS_INT, this);
+	RegisterVariable("r_maxlayers", &m_iMaxLandscapeLayers,CSYS_INT);
+	RegisterVariable("r_drawland", &m_iDrawLandscape,CSYS_INT);
 }
 
 bool Render::StartUp()
 {
 	// Get SubSystem Ptrs
-	m_pkTexMan	= static_cast<TextureManager*>(g_ZFObjSys.GetObjectPtr("TextureManager"));
- 	m_pkFrustum = static_cast<Frustum*>(g_ZFObjSys.GetObjectPtr("Frustum"));
- 	m_pkLight	= static_cast<Light*>(g_ZFObjSys.GetObjectPtr("Light")); 	
- 	m_pkZShader = static_cast<ZShader*>(g_ZFObjSys.GetObjectPtr("ZShader")); 	 	
+	m_pkTexMan	= static_cast<TextureManager*>(GetSystem().GetObjectPtr("TextureManager"));
+ 	m_pkFrustum = static_cast<Frustum*>(GetSystem().GetObjectPtr("Frustum"));
+ 	m_pkLight	= static_cast<Light*>(GetSystem().GetObjectPtr("Light")); 	
+ 	m_pkZShader = static_cast<ZShader*>(GetSystem().GetObjectPtr("ZShader")); 	 	
 
 	//setup material for heightmap rendering
 

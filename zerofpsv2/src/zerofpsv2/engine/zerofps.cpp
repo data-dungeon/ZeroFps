@@ -70,38 +70,38 @@ ZeroFps::ZeroFps(void) : I_ZeroFps("ZeroFps")
 	m_iDepth						= 16;
 
 	// Register Commands
-	g_ZFObjSys.RegisterVariable("m_sens", &m_pkInput->m_fMouseSensitivity,CSYS_FLOAT, this);
-	g_ZFObjSys.RegisterVariable("r_landlod", &m_pkRender->m_iDetail,CSYS_INT, this);
-	g_ZFObjSys.RegisterVariable("r_viewdistance", &m_pkRender->m_iViewDistance,CSYS_INT, this);
-	g_ZFObjSys.RegisterVariable("r_autolod", &m_pkRender->m_iAutoLod,CSYS_INT, this);
-	g_ZFObjSys.RegisterVariable("r_fpslock", &m_pkRender->m_iFpsLock,CSYS_INT, this);
-	g_ZFObjSys.RegisterVariable("r_maxlights", &m_pkLight->m_iNrOfLights,CSYS_INT, this);
-	g_ZFObjSys.RegisterVariable("r_width", &m_iWidth,CSYS_INT, this);
-	g_ZFObjSys.RegisterVariable("r_height", &m_iHeight,CSYS_INT, this);
-	g_ZFObjSys.RegisterVariable("r_depth", &m_iDepth,CSYS_INT, this);
-	g_ZFObjSys.RegisterVariable("r_fullscreen", &m_iFullScreen,CSYS_INT, this);
-	g_ZFObjSys.RegisterVariable("r_maddraw", &m_iMadDraw,CSYS_INT, this);
-	g_ZFObjSys.RegisterVariable("r_madlod", &g_fMadLODScale,CSYS_FLOAT, this);
-	g_ZFObjSys.RegisterVariable("r_madlodlock", &g_iMadLODLock,CSYS_FLOAT, this);
-	g_ZFObjSys.RegisterVariable("e_systemfps", &m_fSystemUpdateFps,CSYS_FLOAT, this);	
-	g_ZFObjSys.RegisterVariable("e_runsim", &m_bRunWorldSim,CSYS_BOOL, this);	
-	g_ZFObjSys.RegisterVariable("r_logrp", &g_iLogRenderPropertys,CSYS_INT, this);	
+	RegisterVariable("m_sens", &m_pkInput->m_fMouseSensitivity,CSYS_FLOAT);
+	RegisterVariable("r_landlod", &m_pkRender->m_iDetail,CSYS_INT);
+	RegisterVariable("r_viewdistance", &m_pkRender->m_iViewDistance,CSYS_INT);
+	RegisterVariable("r_autolod", &m_pkRender->m_iAutoLod,CSYS_INT);
+	RegisterVariable("r_fpslock", &m_pkRender->m_iFpsLock,CSYS_INT);
+	RegisterVariable("r_maxlights", &m_pkLight->m_iNrOfLights,CSYS_INT);
+	RegisterVariable("r_width", &m_iWidth,CSYS_INT);
+	RegisterVariable("r_height", &m_iHeight,CSYS_INT);
+	RegisterVariable("r_depth", &m_iDepth,CSYS_INT);
+	RegisterVariable("r_fullscreen", &m_iFullScreen,CSYS_INT);
+	RegisterVariable("r_maddraw", &m_iMadDraw,CSYS_INT);
+	RegisterVariable("r_madlod", &g_fMadLODScale,CSYS_FLOAT);
+	RegisterVariable("r_madlodlock", &g_iMadLODLock,CSYS_FLOAT);
+	RegisterVariable("e_systemfps", &m_fSystemUpdateFps,CSYS_FLOAT);	
+	RegisterVariable("e_runsim", &m_bRunWorldSim,CSYS_BOOL);	
+	RegisterVariable("r_logrp", &g_iLogRenderPropertys,CSYS_INT);	
 
 	// Register Variables
-	g_ZFObjSys.Register_Cmd("setdisplay",FID_SETDISPLAY,this);
-	g_ZFObjSys.Register_Cmd("quit",FID_QUIT,this);
-	g_ZFObjSys.Register_Cmd("slist",FID_SLIST,this);
-	g_ZFObjSys.Register_Cmd("connect",FID_CONNECT,this);
-	g_ZFObjSys.Register_Cmd("server",FID_SERVER,this);
-	g_ZFObjSys.Register_Cmd("printobject",FID_PRINTOBJECT,this);	
-	g_ZFObjSys.Register_Cmd("version",FID_VERSION,this);	
-	g_ZFObjSys.Register_Cmd("credits",FID_CREDITS,this);	
-	g_ZFObjSys.Register_Cmd("echo",FID_ECHO,this);	
-	g_ZFObjSys.Register_Cmd("gldump",FID_GLDUMP,this);	
-	g_ZFObjSys.Register_Cmd("devshow",FID_DEV_SHOWPAGE,this, "devshow name", 1);	
-	g_ZFObjSys.Register_Cmd("devhide",FID_DEV_HIDEPAGE,this, "devhide name", 1);	
-	g_ZFObjSys.Register_Cmd("debug",FID_LISTMAD,this);	
-	g_ZFObjSys.Register_Cmd("shot",FID_SCREENSHOOT,this);	
+	Register_Cmd("setdisplay",FID_SETDISPLAY);
+	Register_Cmd("quit",FID_QUIT);
+	Register_Cmd("slist",FID_SLIST);
+	Register_Cmd("connect",FID_CONNECT);
+	Register_Cmd("server",FID_SERVER);
+	Register_Cmd("printobject",FID_PRINTOBJECT);	
+	Register_Cmd("version",FID_VERSION);	
+	Register_Cmd("credits",FID_CREDITS);	
+	Register_Cmd("echo",FID_ECHO);	
+	Register_Cmd("gldump",FID_GLDUMP);	
+	Register_Cmd("devshow",FID_DEV_SHOWPAGE, "devshow name", 1);	
+	Register_Cmd("devhide",FID_DEV_HIDEPAGE, "devhide name", 1);	
+	Register_Cmd("debug",FID_LISTMAD);	
+	Register_Cmd("shot",FID_SCREENSHOOT);	
 
 }
 
@@ -775,7 +775,6 @@ char g_szIpPort[256];
 void ZeroFps::RunCommand(int cmdid, const CmdArgument* kCommand)
 {
 	int i;
-	int iArghhh;
 
 	vector<string> kFiles;
 	vector<string> kCreditsStrings;
@@ -977,25 +976,25 @@ void ZeroFps::HandleNetworkPacket(NetPacket* pkNetPacket)
 
 		switch(ucGamePacketType) {
 			case ZFGP_DELETEOBJECT:
-				g_ZFObjSys.Logf("net", "HandleNetworkPacket(ZFGP_DELETEOBJECT)\n");
+				Logf("net", "HandleNetworkPacket(ZFGP_DELETEOBJECT)\n");
 				m_pkObjectMan->UpdateDeleteList(pkNetPacket);
 				break;
 
 			case ZFGP_OBJECTSTATE: 
-				g_ZFObjSys.Logf("net", "HandleNetworkPacket(ZFGP_OBJECTSTATE)\n");
+				Logf("net", "HandleNetworkPacket(ZFGP_OBJECTSTATE)\n");
 				m_pkObjectMan->UpdateState(pkNetPacket);
 				break;
 
 			case ZFGP_CLIENTSTATE: 
-				g_ZFObjSys.Logf("net", "HandleNetworkPacket(ZFGP_CLIENTSTATE)\n");
+				Logf("net", "HandleNetworkPacket(ZFGP_CLIENTSTATE)\n");
 				break;
 		
 			case ZFGP_CLIENTCMD: 
-				g_ZFObjSys.Logf("net", "HandleNetworkPacket(ZFGP_CLIENTCMD)\n");
+				Logf("net", "HandleNetworkPacket(ZFGP_CLIENTCMD)\n");
 				break;
 			
 			case ZFGP_PRINT: 
-				g_ZFObjSys.Logf("net", "HandleNetworkPacket(ZFGP_PRINT)\n");
+				Logf("net", "HandleNetworkPacket(ZFGP_PRINT)\n");
 				break;
 
 			case ZFGP_REQOWNOBJECT: 

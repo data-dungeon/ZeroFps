@@ -11,6 +11,7 @@
 
 #include "../../basic/vector3.h"
 #include "../engine_systems_x.h"
+#include "../../basic/zfresource.h"
 
 class ENGINE_SYSTEMS_API I_HeightMap2 
 {
@@ -24,6 +25,7 @@ public:
 	virtual int GetWidth() = 0;
 	virtual int GetHeight() = 0;
 	virtual float GetScale() = 0;
+	virtual ZFResourceHandle* GetMaterial() = 0;
 
 };
 
