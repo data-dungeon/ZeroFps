@@ -11,7 +11,7 @@ ZFScriptSystem*	MistLandLua::g_pkScript;
 ObjectManager*		MistLandLua::g_pkObjMan;
 int					MistLandLua::g_iCurrentObjectID;
 int					MistLandLua::g_iLastCollidedID;
-int					MistLandLua::g_iCurrentPCID;
+int					MistLandLua::g_iCurrentPCID = -1;
 
 
 void MistLandLua::Init(ObjectManager* pkObjMan,ZFScriptSystem* pkScript)
@@ -90,6 +90,7 @@ void MistLandLua::Init(ObjectManager* pkObjMan,ZFScriptSystem* pkScript)
    // equip / unequip
    pkScript->ExposeFunction("EquipFromScript",   		MistLandLua::EquipFromScriptLua);			
    pkScript->ExposeFunction("UnEquip",	      		   MistLandLua::UnEquipLua);			
+	pkScript->ExposeFunction("Equip",	      		   MistLandLua::EquipLua);			
 
 }
 
@@ -1740,7 +1741,8 @@ int MistLandLua::EquipLua (lua_State* pkLua)
 
             if ( pkChar )
             {      
-               pkChar->GetCharStats()->Equip ( pkObject, string(acSlot) );            
+               pkChar->GetCharStats()->Equip ( pkObject, string(acSlot) );    
+					printf("Succeeded to equip item\n");
             }
             else
                cout << "Warning! Tried to equip something on a non-character object!" << endl;

@@ -407,7 +407,10 @@ void CharacterStats::SetDefenceValue (string kDefenceType, int iValue)
 bool CharacterStats::Equip ( Object *pkObject, string kSlot )
 {
    // check if object is itemobject (has a itemproperty)
-   P_Item* pkP_Item = (P_Item*)pkObject->GetProperty("P_Item");
+
+	int apa;
+	
+	P_Item* pkP_Item = (P_Item*)pkObject->GetProperty("P_Item");
 
    if ( !pkP_Item )
       return false;

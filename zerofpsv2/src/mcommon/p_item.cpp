@@ -28,6 +28,7 @@ P_Item::P_Item()
 	m_iSide = PROPERTY_SIDE_CLIENT;
 
    m_pkItemStats = new ItemStats;
+	bNetwork = true;
    
 	strcpy(m_acName,"P_Item");
 }

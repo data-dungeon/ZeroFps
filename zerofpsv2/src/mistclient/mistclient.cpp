@@ -752,7 +752,9 @@ void MistClient::PickUp()
 			{
 				map<string, Object*>* vkEquipmentList = stats->GetEquippedList();
 
-				map<string, Object*>::iterator it;
+				printf("%i\n", stats->GetEquippedList()->size());
+
+		/*		map<string, Object*>::iterator it;
 				for( it=vkEquipmentList->begin(); it!=vkEquipmentList->end(); it++)
 				{
 					P_Item* pkItemProp = static_cast<P_Item*>(it->second->GetProperty("P_Item"));
@@ -764,7 +766,7 @@ void MistClient::PickUp()
 						if(pkStats)
 							m_pkInventDlg->AddItem(pkStats);
 					}
-				}
+				}*/
 			}
 		}
 	}
