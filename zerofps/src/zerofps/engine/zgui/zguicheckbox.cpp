@@ -8,6 +8,7 @@
 #include "../../basic/zguifont.h"
 #include "zguiradiobutton.h"
 #include "zgui.h"
+#include <typeinfo>
 
 ///////////////////////////////////////////////////////////////////////////////
 // Name: Construction/Destruction
@@ -179,4 +180,14 @@ void ZGuiCheckbox::Resize(int iWidth, int iHeight, bool bChangeMoveArea)
 	iWidth = GetScreenRect().Width(); // dont allow horizontal resize
 
 	ZGuiWnd::Resize(iWidth, iHeight, bChangeMoveArea);
+}
+
+void ZGuiCheckbox::CopyNonUniqueData(const ZGuiWnd* pkSrc)
+{
+	if(pkSrc && typeid(*pkSrc)==typeid(ZGuiCheckbox))
+	{
+		m_pkLabel->CopyNonUniqueData( ((ZGuiCheckbox*)pkSrc)->m_pkLabel );
+	}
+
+	ZGuiWnd::CopyNonUniqueData(pkSrc);
 }

@@ -9,6 +9,7 @@
 #include "../../render/zguirenderer.h"
 #include <iostream>
 #include <cstdio>
+#include <typeinfo>
 
 const int COMBOBOX_LABEL_ID = 800;
 const int LISTBOX_ID = 801;
@@ -38,7 +39,7 @@ ZGuiCombobox::ZGuiCombobox(Rect kRectangle,ZGuiWnd* pkParent,
 	m_pkLabel = new ZGuiLabel(rc,this,true,COMBOBOX_LABEL_ID);
 	m_pkLabel->SetSkin(pkTopItemSkin);
 
-	m_unNumVisibleRows = 10; 
+	m_unNumVisibleRows = 4; 
 	rc.Top = 20;
 	rc.Bottom = rc.Top+iItemHeight*m_unNumVisibleRows;
 
@@ -303,4 +304,15 @@ void ZGuiCombobox::Resize(int iWidth,int iHeight,bool bChangeMoveArea)
 		m_pkLabel->Resize(iWidth,m_pkListbox->GetItemHeight());
 
 	ZGuiWnd::Resize(iWidth,iHeight,bChangeMoveArea);
+}
+
+void ZGuiCombobox::CopyNonUniqueData(const ZGuiWnd* pkSrc)
+{
+	if(pkSrc && typeid(*pkSrc)==typeid(ZGuiCombobox))
+	{
+		m_pkLabel->CopyNonUniqueData( ((ZGuiCombobox*)pkSrc)->m_pkLabel );
+		m_pkListbox->CopyNonUniqueData( ((ZGuiCombobox*)pkSrc)->m_pkListbox );
+	}
+
+	ZGuiWnd::CopyNonUniqueData(pkSrc);
 }

@@ -69,6 +69,7 @@ public:
 	ZGuiButton* CreateButton(ZGuiWnd* pkParent, int iID, char* szRegName, int x, int y, 
 		int w, int h, char *szName, int TabOrderNr=-1);
 
+	bool IsResNameLegalForWnd(const ZGuiWnd* pkWndToCheck, const char* szResName);
 	ZGuiWnd* GetWnd(const char* szName);
 	ZGuiSkin* GetSkin(const char* szName, bool bAllocateNew=false);
 	int GetTexture(const char* szName);

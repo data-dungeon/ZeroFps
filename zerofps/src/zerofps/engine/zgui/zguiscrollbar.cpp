@@ -6,6 +6,7 @@
 #include "zguibutton.h"
 #include "../../render/zguirenderer.h"
 #include "zgui.h"
+#include <typeinfo>
 
 // Static internal IDs for the scrollbar button
 const int SCROLLTHUMB_ID = 520;
@@ -247,4 +248,30 @@ void ZGuiScrollbar::ToogleHorizontal()
 	m_pkThumbButton->SetPos(0,0);
 
 	m_bHorzintal = !m_bHorzintal;
+}
+
+void ZGuiScrollbar::CopyNonUniqueData(const ZGuiWnd* pkSrc)
+{
+	if(pkSrc && typeid(*pkSrc)==typeid(ZGuiScrollbar))
+	{
+		m_iScrollChange = ((ZGuiScrollbar*)pkSrc)->m_iScrollChange;
+		m_nMax = ((ZGuiScrollbar*)pkSrc)->m_nMax;
+		m_nMin = ((ZGuiScrollbar*)pkSrc)->m_nMin;
+		m_nPos = ((ZGuiScrollbar*)pkSrc)->m_nPos;
+		m_usThumbSize = ((ZGuiScrollbar*)pkSrc)->m_usThumbSize;
+	}
+
+	ZGuiWnd::CopyNonUniqueData(pkSrc);
+	m_pkThumbButton->SetMoveArea(GetScreenRect());
+	m_pkThumbButton->SetPos(0,0,false,true);
+
+	// Change size of scrollbar.
+	Resize(
+		((ZGuiWnd*)pkSrc)->GetScreenRect().Width(),
+		((ZGuiWnd*)pkSrc)->GetScreenRect().Height());
+
+	// Change horizontal/vertical mode and resize thumb button.
+	while(m_bHorzintal != ((ZGuiScrollbar*)pkSrc)->m_bHorzintal)
+		ToogleHorizontal();
+
 }

@@ -22,6 +22,7 @@ public:
 	ZGuiCheckbox(Rect kRectangle, ZGuiWnd* pkParent=NULL, bool bVisible=true, int iID=0);
 	virtual ~ZGuiCheckbox();
 
+	void CopyNonUniqueData(const ZGuiWnd* pkSrc);
 	void SetButtonCheckedSkin(ZGuiSkin* pkSkin);
 	void SetButtonUncheckedSkin(ZGuiSkin* pkSkin);
 	void SetLabelSkin(ZGuiSkin* pkSkin);

@@ -495,3 +495,15 @@ void ZGuiListbox::GetWndSkinsDesc(vector<SKIN_DESC>& pkSkinDesc) const
 	for(unsigned int i=iStart; i<pkSkinDesc.size(); i++)
 		pkSkinDesc[i].second.insert(0, "Listbox: ");
 }
+
+void ZGuiListbox::CopyNonUniqueData(const ZGuiWnd* pkSrc)
+{
+	if(pkSrc && typeid(*pkSrc)==typeid(ZGuiListbox))
+	{
+		if(((ZGuiListbox*)pkSrc)->m_pkScrollbarVertical)
+			m_pkScrollbarVertical->CopyNonUniqueData( 
+				((ZGuiListbox*)pkSrc)->m_pkScrollbarVertical );
+	}
+
+	ZGuiWnd::CopyNonUniqueData(pkSrc);
+}

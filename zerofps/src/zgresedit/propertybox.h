@@ -21,7 +21,6 @@ public:
 	bool OnClose(bool bSave);
 	
 private:
-	bool IsResNameLegal(char* szResName);
 	void UpdateUniquePropertyText(ZGuiWnd* pkControl, CtrlType eWndType);
 	void CreateUniqueProperites();
 

@@ -1328,9 +1328,25 @@ bool ZGui::SetSkins(vector<tSkinInf>& kAllSkinsTempArray, ZGuiWnd* pkWnd)
 }
 
 bool ZGui::ChangeWndRegName(ZGuiWnd* pkWndToRename, const char* pkNewName)
-{
-	// Om det inte redan finns ett fönster med det namnet...
-	if(m_pkResManager->Wnd(pkNewName) == NULL) 
+{	
+	ZGuiWnd* pkExistingWnd = m_pkResManager->Wnd(string(pkNewName));
+
+	// Finns det redan ett fönster med det namnet och detta fönster
+	// är inte det fönster som skall döpas om?
+	if(pkExistingWnd != NULL && pkWndToRename != pkExistingWnd) 
+	{
+		return false; // det finns redan ett fönster med detta namn.
+	}
+
+	// Finns det redan ett fönster med det namnet och detta fönster
+	// är det fönster som skall döpas om?
+	if(pkExistingWnd != NULL && pkWndToRename == pkExistingWnd) 
+	{
+		if(strcmp(pkExistingWnd->GetName(), pkWndToRename->GetName()) == 0) 
+			return true; // namnet har inte ändrats
+	}
+
+	if(pkExistingWnd == NULL)
 	{
 		// Radera (ej deallokera) fönstret i guimanagern.
 		if(m_pkResManager->RemoveWnd(pkWndToRename->GetName()) == false)
@@ -1338,12 +1354,9 @@ bool ZGui::ChangeWndRegName(ZGuiWnd* pkWndToRename, const char* pkNewName)
 
 		// Lägg till fönstret på nytt, fast med ett annat namn.
 		strcpy(pkWndToRename->m_szName, pkNewName);
-		return m_pkResManager->Add(string(pkNewName), pkWndToRename) != NULL;
+		if(!m_pkResManager->Add(string(pkNewName), pkWndToRename))
+			return false;
 	}
 
-	// Namnet är inte ändrat.
-	if(m_pkResManager->Wnd(pkNewName) == pkWndToRename) 
-		return true;
-
-	return false;
+	return true;
 }

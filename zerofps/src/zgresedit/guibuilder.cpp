@@ -856,10 +856,37 @@ bool GuiBuilder::RenameWnd(ZGuiWnd* pkWndToRename, const char *szNewName)
 {
 	bool bSuccess;
 
+	if(szNewName == NULL)
+		return false;
+
+	int iLength = strlen(szNewName);
+
+	if(iLength < 1)
+		return false;
+
+	for(int i=0; i<iLength; i++)
+	{
+		if(szNewName[i] >= 48 && szNewName[i] <= 57)  // numbers
+			continue;
+		if(szNewName[i] >= 65 && szNewName[i] <= 90)  // big letters
+			continue;
+		if(szNewName[i] >= 97 && szNewName[i] <= 122) // small letters
+			continue;
+		if(szNewName[i] == '_' || szNewName[i] == '#')
+			continue;
+
+		return false;
+	}
+
 	if(pkWndToRename == NULL)
 		bSuccess = false;
 	else
+	{
+		if(strcmp(pkWndToRename->GetName(), szNewName) == 0)
+			return true;
+
 		bSuccess = m_pkGui->ChangeWndRegName(pkWndToRename, szNewName);
+	}
 
 	if(!bSuccess)
 	{
@@ -874,4 +901,41 @@ bool GuiBuilder::RenameWnd(ZGuiWnd* pkWndToRename, const char *szNewName)
 	}
 
 	return bSuccess;
+}
+
+bool GuiBuilder::IsResNameLegalForWnd(const ZGuiWnd* pkWndToCheck, 
+									  const char* szResName)
+{
+	if(szResName == NULL || pkWndToCheck == NULL)
+		return false;
+
+	int iLength = strlen(szResName);
+
+	if(iLength < 1)
+		return false;
+
+	for(int i=0; i<iLength; i++)
+	{
+		if(szResName[i] >= 48 && szResName[i] <= 57)  // numbers
+			continue;
+		if(szResName[i] >= 65 && szResName[i] <= 90)  // big letters
+			continue;
+		if(szResName[i] >= 97 && szResName[i] <= 122) // small letters
+			continue;
+		if(szResName[i] == '_' || szResName[i] == '#')
+			continue;
+
+		return false;
+	}
+
+	const char* szOldName = ((ZGuiWnd*) pkWndToCheck)->GetName();
+
+	if(strcmp(szOldName, szResName) == 0)
+		return true;
+
+	ZGuiWnd* pkWnd = GetWnd(szResName);
+	if(pkWnd == NULL)
+		return true;
+
+	return false;
 }

@@ -53,6 +53,7 @@ public:
 	Rect& GetItemArea() { return m_kItemArea; }
 
 	ZGuiScrollbar* GetScrollbar() { return m_pkScrollbarVertical; }
+	void CopyNonUniqueData(const ZGuiWnd* pkSrc);
 
 private:
 	

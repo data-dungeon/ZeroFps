@@ -187,7 +187,6 @@ bool ControlBox::CreateNewType(CtrlType eType, ZGuiWndProc oWndProc)
 		break;
 	case COMBOBOX:
 		pkWin=m_pkGuiBuilder->CreateCombobox(pkParent,-1,NULL,x,y,w=100,h=20,false);
-		((ZGuiCombobox*)pkWin)->SetNumVisibleRows(2);
 		break;
 	case SCROLLBAR:
 		pkWin=m_pkGuiBuilder->CreateScrollbar(pkParent,-1,NULL,x,y,w=20,h=100);
@@ -242,13 +241,13 @@ void ControlBox::CreateCopy()
 		char name[50]; 
 
 		// copy data
-		*pkNewWnd = *pkPrevSelWnd;
+		pkNewWnd->CopyNonUniqueData(pkPrevSelWnd);
 
 		// change some values
 		pkNewWnd->SetID(id);
 
-		sprintf(name, "%s%i\n", m_pkGuiBuilder->GetTypeName(pkNewWnd), id);
-		m_pkGuiBuilder->RenameWnd(pkNewWnd, name);
+		sprintf(name, "%s%i", m_pkGuiBuilder->GetTypeName(pkNewWnd), id);
+		m_pkGui->ChangeWndRegName(pkNewWnd, name);
 
 		pkNewWnd->Move(0,pkPrevSelWnd->GetScreenRect().Height());
 	}
@@ -717,11 +716,13 @@ bool ControlBox::LoadGUI(ZFIni *pkINI, TextureManager* pkTexMan)
 void ControlBox::ClearAll()
 {
 	unsigned int i;
+	unsigned int uiNumWindows = m_pkCreatedWindows.size();
+
+	vector<ZGuiWnd::SKIN_DESC> kSkinList;
 
 	// First, delete all skin.
-	for( i=0; i<m_pkCreatedWindows.size(); i++)
+	for( i=0; i<uiNumWindows; i++)
 	{
-		vector<ZGuiWnd::SKIN_DESC> kSkinList;
 		m_pkCreatedWindows[i].m_pkWnd->GetWndSkinsDesc(kSkinList);
 
 		for(unsigned int j=0; j<kSkinList.size(); j++)
@@ -729,6 +730,8 @@ void ControlBox::ClearAll()
 			delete kSkinList[j].first;
 			kSkinList[j].first = NULL;
 		}
+
+		kSkinList.clear(); 
 	}
 
 	// Create a list with windows that are Main windows

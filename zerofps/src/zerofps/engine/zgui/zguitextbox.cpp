@@ -11,6 +11,7 @@
 #include "../../engine/input.h"
 #include <stdio.h>
 #include "../input.h"
+#include <typeinfo>
 
 #define VERT_SCROLLBAR_TEXBOX_ID 22
 #define HORZ_SCROLLBAR_TEXBOX_ID 23
@@ -145,7 +146,7 @@ bool ZGuiTextbox::ProcessKBInput(int nKey)
 		return true;
 	}
 
-	if(nKey == KEY_BACKSPACE)
+	if(nKey == KEY_BACKSPACE && m_strText)
 	{
 		if(m_iCursorPos > 0)
 		{
@@ -165,7 +166,7 @@ bool ZGuiTextbox::ProcessKBInput(int nKey)
 		return true;
 	}
 
-	if(nKey == KEY_DELETE)
+	if(nKey == KEY_DELETE && m_strText)
 	{
 		if((unsigned)m_iCursorPos < strlen(m_strText))
 		{
@@ -540,4 +541,16 @@ int ZGuiTextbox::GetRowLength(int search_row)
 	}
 
 	return -1;
+}
+
+void ZGuiTextbox::CopyNonUniqueData(const ZGuiWnd* pkSrc)
+{
+	if(pkSrc && typeid(*pkSrc)==typeid(ZGuiTextbox))
+	{
+		if(m_pkScrollbarVertical)
+			m_pkScrollbarVertical->CopyNonUniqueData( 
+				((ZGuiTextbox*)pkSrc)->m_pkScrollbarVertical );
+	}
+
+	ZGuiWnd::CopyNonUniqueData(pkSrc);
 }

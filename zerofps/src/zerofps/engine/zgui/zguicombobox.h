@@ -44,6 +44,7 @@ public:
 	void Resize(int Width, int Height, bool bChangeMoveArea=true); // overloaded
 	ZGuiListbox* GetListbox() { return m_pkListbox; }
 	const int GetNumVisibleRows() { return m_unNumVisibleRows; }
+	void CopyNonUniqueData(const ZGuiWnd* pkSrc);
 
 private:
 	ZGuiLabel* m_pkLabel;

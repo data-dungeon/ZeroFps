@@ -5,6 +5,7 @@
 #include "zguiradiobutton.h"
 #include "../../render/zguirenderer.h"
 #include "zgui.h"
+#include <typeinfo>
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
@@ -177,4 +178,14 @@ void ZGuiRadiobutton::Resize(int iWidth, int iHeight, bool bChangeMoveArea)
 	iWidth = GetScreenRect().Width(); // dont allow vertcal resize
 
 	ZGuiWnd::Resize(iWidth, iHeight, bChangeMoveArea);
+}
+
+void ZGuiRadiobutton::CopyNonUniqueData(const ZGuiWnd* pkSrc)
+{
+	if(pkSrc && typeid(*pkSrc)==typeid(ZGuiRadiobutton))
+	{
+		m_pkCheckbox->CopyNonUniqueData( ((ZGuiRadiobutton*)pkSrc)->m_pkCheckbox );
+	}
+
+	ZGuiWnd::CopyNonUniqueData(pkSrc);
 }

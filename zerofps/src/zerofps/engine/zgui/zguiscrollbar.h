@@ -39,6 +39,8 @@ public:
 	int m_iScrollChange;
 
 	ZGuiButton* GetButton() { return m_pkThumbButton; }
+	void CopyNonUniqueData(const ZGuiWnd* pkSrc);
+
 private:
 	ZGuiButton* m_pkThumbButton;
 	bool m_bHorzintal;

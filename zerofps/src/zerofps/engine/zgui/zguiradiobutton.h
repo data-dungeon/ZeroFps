@@ -29,6 +29,7 @@ public:
 	char* GetText();// overloaded
 	void Resize(int Width, int Height, bool bChangeMoveArea=true); // overloaded
 	int GetGroupID() {return m_iGroupID;}
+	void CopyNonUniqueData(const ZGuiWnd* pkSrc);
 
 private:
 

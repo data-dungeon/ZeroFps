@@ -519,41 +519,38 @@ void ZGuiWnd::Disable()
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-// Name: operator= (ZGuiWnd)
-// Description: Deep copy all data from one window to another.
+// Name: Copy
+// Description: Deep copy non unique data from one window to another.
 //				Function is virtual and should be overloaded!
 //
-const ZGuiWnd& ZGuiWnd::operator= (const ZGuiWnd& src)
+void ZGuiWnd::CopyNonUniqueData(const ZGuiWnd* pkSrc)
 {
 	vector<SKIN_DESC> kDstSkins;
 	vector<SKIN_DESC> kSrcSkins;
 	
 	GetWndSkinsDesc(kDstSkins);
-	src.GetWndSkinsDesc(kSrcSkins);
+	pkSrc->GetWndSkinsDesc(kSrcSkins);
 	
 	for(unsigned int i=0; i<kDstSkins.size(); i++)
 	{
 		*kDstSkins[i].first = *kSrcSkins[i].first;
 	}
 
-	m_iZValue = src.m_iZValue;
-	m_ulFlags = src.m_ulFlags;
-	m_bEnabled = src.m_bEnabled;
-	m_iID = src.m_iID;
-	m_iTextLength = src.m_iTextLength;
+	m_ulFlags = pkSrc->m_ulFlags;
+	m_bEnabled = pkSrc->m_bEnabled;
+	m_iTextLength = pkSrc->m_iTextLength;
 	
-	if(m_strText)
-		m_strText = strdup(src.m_strText);
+	if(pkSrc->m_strText)
+	{
+		m_strText = new char[strlen(pkSrc->m_strText)+1];
+		strcpy(m_strText, pkSrc->m_strText);
+	}
 
-	m_pkFont = src.m_pkFont;
-	strcpy(m_szName, src.m_szName);
-	m_iTabOrderNumber = src.m_iTabOrderNumber;
-	m_kArea = src.m_kArea;
-	m_kMoveArea = src.m_kMoveArea;
-	m_pkGuiMan = src.m_pkGuiMan;
-	m_pkParent = src.m_pkParent;
-	m_pkGUI =src.m_pkGUI;
-	m_pkCallback = src.m_pkCallback;
-	
-	return *this;
+	m_pkFont = pkSrc->m_pkFont;
+	m_kArea = pkSrc->m_kArea;
+	m_kMoveArea = pkSrc->m_kMoveArea;
+	m_pkGuiMan = pkSrc->m_pkGuiMan;
+	m_pkParent = pkSrc->m_pkParent;
+	m_pkGUI =pkSrc->m_pkGUI;
+	m_pkCallback = pkSrc->m_pkCallback;
 }

@@ -35,6 +35,7 @@ public:
 	void SetScrollbarSkin(ZGuiSkin* pkSkinScrollArea, 
 		ZGuiSkin* pkSkinThumbButton, ZGuiSkin* pkSkinThumbButtonHighLight);
 	void GetWndSkinsDesc(vector<SKIN_DESC>& pkSkinDesc) const; // overloaded
+	void CopyNonUniqueData(const ZGuiWnd* pkSrc);
 
 private:
 	int GetNumRows(char* szText);

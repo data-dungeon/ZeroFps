@@ -173,6 +173,16 @@ bool PropertyBox::OnClose(bool bSave)
 			m_pkGuiBuilder->GetWnd("CtrlPropIDEB")->GetText()));
 		SelectWnd::GetInstance()->m_pkWnd->SetTabOrderNr(atoi(
 			m_pkGuiBuilder->GetWnd("CtrlTabOrderEB")->GetText()));
+
+		switch(m_pkGuiBuilder->GetWndType(
+			SelectWnd::GetInstance()->m_pkWnd))
+		{
+			case COMBOBOX:
+				((ZGuiCombobox*)SelectWnd::GetInstance()->m_pkWnd)->
+					SetNumVisibleRows(atoi(m_pkGuiBuilder->
+						GetWnd("NumVisibleRowsEB")->GetText()));
+				break;
+		}
 	}
 
 	m_pkGui->ShowMainWindow(m_pkGuiBuilder->GetWnd("CtrlPropBoxWnd"),false);
@@ -204,6 +214,13 @@ void PropertyBox::Update(ZGuiWnd* pkWnd)
 		m_pkGuiBuilder->SetTextString("CtrlPropCaptionEB",pkWnd->GetText());
 		m_pkGuiBuilder->SetTextString("CtrlPropIDName",(char*)pkWnd->GetName());
 
+		if(SelectWnd::GetInstance()->m_pkWnd->Enabled())
+			((ZGuiCheckbox*)m_pkGuiBuilder->GetWnd("CtrlDisabledCH"))->UncheckButton();
+		else
+			((ZGuiCheckbox*)m_pkGuiBuilder->GetWnd("CtrlDisabledCH"))->CheckButton();
+
+		// Show/Hide and update special property values
+
 		const CtrlType c_iSelWndType = m_pkGuiBuilder->GetWndType(
 			SelectWnd::GetInstance()->m_pkWnd);
 
@@ -217,13 +234,7 @@ void PropertyBox::Update(ZGuiWnd* pkWnd)
 			}
 			else
 				it->second->Hide();
-		}
-
-		if(SelectWnd::GetInstance()->m_pkWnd->Enabled())
-			((ZGuiCheckbox*)m_pkGuiBuilder->GetWnd("CtrlDisabledCH"))->UncheckButton();
-		else
-			((ZGuiCheckbox*)m_pkGuiBuilder->GetWnd("CtrlDisabledCH"))->CheckButton();
-				
+		}		
 	}
 }
 
@@ -242,36 +253,21 @@ bool PropertyBox::DlgProc( ZGuiWnd* pkWnd,unsigned int uiMessage,
 		switch(((int*)pkParams)[0]) // control id
 		{
 		case ID_CTRLOK_BN:
-			
 			if(SelectWnd::GetInstance()->m_pkWnd)
 			{
-				bool bLegal = false;
 				char* szNewRegName;
 				szNewRegName = m_pkGuiBuilder->GetWnd("CtrlPropIDName")->GetText();
-				if(szNewRegName)
-				{
-					bLegal = true;
 
-					// Kolla först om namnet är giltligt
-					if(IsResNameLegal(szNewRegName) == false)
-						bLegal = false;
-
-					// Försök byta namn på fönstret.
-					// Avbryt om det redan finns ett fönster med det namnet.
-					if(!m_pkGuiBuilder->RenameWnd(
-						SelectWnd::GetInstance()->m_pkWnd, szNewRegName))
-					{
-						bLegal = false;
-					}	
-				}
-
-				if(bLegal)
+				if(m_pkGuiBuilder->RenameWnd(
+					SelectWnd::GetInstance()->m_pkWnd,
+					szNewRegName))
 				{
 					OnClose(true);
 				}
 				else
 				{
-					m_pkGuiBuilder->SetTextString("CtrlPropIDName", "NAME_NOT_ALLOWED!");
+					m_pkGuiBuilder->SetTextString("CtrlPropIDName",
+						"bad name!");
 					return false;
 				}
 			}
@@ -284,11 +280,12 @@ bool PropertyBox::DlgProc( ZGuiWnd* pkWnd,unsigned int uiMessage,
 			((ZGuiScrollbar*)SelectWnd::GetInstance()->m_pkWnd)->ToogleHorizontal();
 			break;
 		case ID_CRTLMOVEABLEWND_CB:
+			printf("hhheee\n");
 			if(m_pkGuiBuilder->IsButtonChecked("ToogleMoveableWndCB"))
 				SelectWnd::GetInstance()->m_pkWnd->SetMoveArea(Rect(0,0,1024,768));
 			else
 				SelectWnd::GetInstance()->m_pkWnd->SetMoveArea(
-					SelectWnd::GetInstance()->m_pkWnd->GetMoveArea());
+					SelectWnd::GetInstance()->m_pkWnd->GetScreenRect());
 			break;
 		case ID_CRTLDISABLED_CB:
 			if(m_pkGuiBuilder->IsButtonChecked("CtrlDisabledCH"))
@@ -409,50 +406,48 @@ void PropertyBox::CreateUniqueProperites()
 	pkTextbox = m_pkGuiBuilder->CreateTextbox(m_pkDlgBox,
 		ID_CTRLNUMVISROWSCOMBOBOX_EB,"NumVisibleRowsEB",x+90,y,w,h,false);
 	pkTextbox->SetWindowFlag(WF_CANHAVEFOCUS);
+	pkTextbox->SetText("4");
 	pkTextbox->Hide();
 	m_kSpecCtrls.push_back(pair<CtrlType, ZGuiWnd*>(COMBOBOX,pkTextbox));
 }
 
 void PropertyBox::UpdateUniquePropertyText(ZGuiWnd *pkControl, CtrlType c_iSelWndType)
 {
-/*	switch(c_iSelWndType)
+	switch(c_iSelWndType)
 	{
 	case WINDOW:
 		if(pkControl == m_pkGuiBuilder->GetWnd("ToogleMoveableWndCB"))
 		{
-			if(m_pkGuiBuilder->IsButtonChecked("ToogleMoveableWndCB"))
-				SelectWnd::GetInstance()->m_pkWnd->SetMoveArea(Rect(0,0,1024,768));
+			if( SelectWnd::GetInstance()->m_pkWnd->GetMoveArea() ==
+				SelectWnd::GetInstance()->m_pkWnd->GetScreenRect() )
+			{
+				((ZGuiCheckbox*) pkControl)->UncheckButton();
+			}
 			else
-				SelectWnd::GetInstance()->m_pkWnd->SetMoveArea(
-					SelectWnd::GetInstance()->m_pkWnd->GetMoveArea());
+			{
+				((ZGuiCheckbox*) pkControl)->CheckButton();
+			}
 		}
 		break;
-	}*/
-}
 
-bool PropertyBox::IsResNameLegal(char *szResName)
-{
-	if(szResName == NULL)
-		return false;
+	case SCROLLBAR:
+		if(pkControl == m_pkGuiBuilder->GetWnd("ToogleScrollbarTypeCB"))
+		{
+			bool bHorzintal = SelectWnd::GetInstance()->m_pkWnd->
+					GetWndRect().Width() > 
+				SelectWnd::GetInstance()->m_pkWnd->
+					GetWndRect().Height() ? true : false;
 
-	int iLength = strlen(szResName);
-
-	if(iLength < 1)
-		return false;
-
-	for(int i=0; i<iLength; i++)
-	{
-		if(szResName[i] >= 48 && szResName[i] <= 57)  // numbers
-			continue;
-		if(szResName[i] >= 65 && szResName[i] <= 90)  // big letters
-			continue;
-		if(szResName[i] >= 97 && szResName[i] <= 122) // small letters
-			continue;
-		if(szResName[i] == '_' || szResName[i] == '#')
-			continue;
-
-		return false;
+			if( bHorzintal )
+			{
+				((ZGuiCheckbox*) pkControl)->UncheckButton();
+			}
+			else
+			{
+				((ZGuiCheckbox*) pkControl)->CheckButton();
+			}
+		}
+		break;
 	}
-
-	return true;
 }
+

@@ -42,7 +42,7 @@ class ENGINE_API ZGuiWnd
 
 public:
 
-	virtual const ZGuiWnd& operator= (const ZGuiWnd& src);
+	virtual void CopyNonUniqueData(const ZGuiWnd* pkSrc);
 
 	ZGuiWnd(Rect kRectangle, ZGuiWnd* pkParent=NULL, bool bVisible=true, 
 		int iID=0);
