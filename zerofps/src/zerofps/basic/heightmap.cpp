@@ -32,8 +32,7 @@ float HeightMap::Height(float x,float z) {
 
 	if(x<0 || x>m_iHmSize || z<0 || z>m_iHmSize) 
 		return 1;
-	
-	bool over;	
+
 	int lx=int(x);
 	int lz=int(z);
 	float ox=x-float(lx);
@@ -48,23 +47,20 @@ float HeightMap::Height(float x,float z) {
 	float ry=(1.0+ox*-1.0);
 //	cout<< ry<<endl;
 	if(oz>ry){
-		over=true;
 		bp=verts[(lz+1)*m_iHmSize+(lx+1)].height;
 		xp=verts[(lz+1)*m_iHmSize+(lx)].height-bp;
 		zp=verts[(lz)*m_iHmSize+(lx+1)].height-bp;		
 		ox=1.0-ox;
 		oz=1.0-oz;
 	}else{
-		over=false;
 		bp=verts[lz*m_iHmSize+lx].height;
 		xp=verts[(lz)*m_iHmSize+(lx+1)].height-bp;
 		zp=verts[(lz+1)*m_iHmSize+(lx)].height-bp;				
-	}
-	
+	}	
 
-	float height=bp+m_kPosition.y+(xp*ox)+(zp*oz);
+//	float height=bp+m_kPosition.y+(xp*ox)+(zp*oz);
 //	cout<<"::::: > "<<xp<<" "<<zp<<" "<<bp<<" "<<"Hegiht: "<<height<<" x" <<(xp*ox)<<" y"<<(zp*oz)<<endl;
-	return height;
+	return bp+m_kPosition.y+(xp*ox)+(zp*oz);
 	
 }
 

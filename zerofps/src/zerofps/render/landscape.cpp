@@ -218,8 +218,7 @@ void Render::DrawHMlod(HeightMap* kmap,Vector3 CamPos,int iFps){
 						flip=false;
 					
 					if(flip){//change texturecordinats only on flip
-				 		
-				 		
+				 						 		
 				 		//Get New texture cordinats
 						GiveTexCor(nt,ns,kmap->verts[z*kmap->m_iHmSize+x].texture);//caculate texture cordinats						
 					
@@ -290,7 +289,7 @@ void Render::DrawHMlod(HeightMap* kmap,Vector3 CamPos,int iFps){
 		}
 	*/
 	glDisable(GL_COLOR_MATERIAL);	
-	glPolygonMode(GL_FRONT,GL_FILL);
+//	glPolygonMode(GL_FRONT,GL_FILL);
 	glPopMatrix();
 }
 

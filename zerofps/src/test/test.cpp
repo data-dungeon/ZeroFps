@@ -68,9 +68,9 @@ void Test::OnIdle(void) {
 	float z=pkFps->m_kCamPos->z;
 	float x=pkFps->m_kCamPos->x;	
 	
-	pkFps->m_kCamPos->y=test->Height(x,z)+4;	
+//	pkFps->m_kCamPos->y=test->Height(x,z)+4;	
 	glPushMatrix();
-		glTranslatef(260,test->Height(260,z),z);
+		glTranslatef(x+30,test->Height(x+30,z),z);
 		glutSolidSphere(1,10,10);
 	glPopMatrix();
 
