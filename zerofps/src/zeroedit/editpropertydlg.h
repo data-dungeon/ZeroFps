@@ -28,15 +28,17 @@ public:
 
 	bool DlgProc( ZGuiWnd* pkWindow, unsigned int uiMessage, int iNumberOfParams, void *pkParams );
 
+	bool OnCloseEditProperty(bool bSave);
+	bool OnCloseAddProperty(bool bSave);
+
 private:
 	void UpdateStats(int iComboBoxID);
 	void RemoveProperty();
 	ZGuiWnd* Create(int x, int y, int w, int h);
 
 	ZGuiWnd* CreateAddPropertyDlg(int x, int y, int w, int h);
-	bool OnCloseAddProperty(bool bSave);
+	
 	void OnOpenAddProperty();
-	bool OnCloseEditProperty(bool bSave);
 	void OnOpenEditProperty();
 
 	Gui* m_pkGui;

@@ -65,7 +65,7 @@ private:
 	ZGuiWnd* Get(char* strName);
 
 public:
-	void OpenPropHACK();
+	void UpdatePropertybox();
 	bool WndProc( ZGuiWnd* pkWindow, unsigned int uiMessage, int iNumberOfParams, void *pkParams );
 
 	void CaptureInput(bool bCapture);
