@@ -519,10 +519,6 @@ void Matrix4::Rotate(float fX, float fY, float fZ)
 									float(-sin(fY))	 ,0			,float(cos(fY))		,0,
 									0			,0			,0				,1);	
 											*/
-	Matrix4 rotatez=Matrix4(cz			 ,-sz			,0				,0,
-									sz			 ,cz	 		,0				,0,
-									0			,0			,1				,0,
-									0			,0			,0				,1);	
 	
 	Matrix4 rotatex=Matrix4(1			,0			,0				,0,
 									0			,cx		  ,-sx			,0,
@@ -534,6 +530,10 @@ void Matrix4::Rotate(float fX, float fY, float fZ)
 									-sy	 	,0			,cy			,0,
 									0			,0			,0				,1);	
 												 
+	Matrix4 rotatez=Matrix4(cz			 ,-sz			,0				,0,
+									sz			 ,cz	 		,0				,0,
+									0			,0			,1				,0,
+									0			,0			,0				,1);	
 						 
 	*this *=rotatex*rotatey*rotatez;
 
@@ -585,19 +585,19 @@ Vector3 Matrix4::GetRotVector()
 	float ftry;
 	
 	
-	angle_y = D = -asin( data[2]);
+	angle_y = D = asin( data[2]);
 	C           =  cos( angle_y );
 	angle_y    *= degtorad;
     
-	if ( fabs( angle_y ) > 0.0005 )
-   {
+//	if ( fabs( angle_y ) > 0.0005 )
+//   {
 		ftrx      =  data[10] / C;
 		ftry      = -data[6]  / C;
 		angle_x  = atan2( ftry, ftrx ) * degtorad;
 		ftrx      =  data[0] / C;
 		ftry      = -data[1] / C;
    	angle_z  = atan2( ftry, ftrx ) * degtorad;
-   }
+/*   }
 	else
 	{
    	angle_x  = 0;
@@ -605,6 +605,11 @@ Vector3 Matrix4::GetRotVector()
       ftry      = data[4];
       angle_z  = atan2( ftry, ftrx ) * degtorad;
 	}
+*/
+/*	ftrx = data[10];
+	ftry = data[8];	
+	angle_y = atan2(ftry,ftrx) * degtorad;
+	*/
 
 	angle_x = Clamp( angle_x, 0, 360 );
 	angle_y = Clamp( angle_y, 0, 360 );
@@ -612,6 +617,45 @@ Vector3 Matrix4::GetRotVector()
 	
 
 	return Vector3(angle_x,angle_y,angle_z);
+	
+/*	const double fEpsilon = 1e-12;
+	
+	double angleX, angleY, angleZ;
+
+	angleY = atan2(data[8], sqrt(data[9]*data[9]+data[10]*data[10]));
+	double cosangleY = cos(angleY);
+
+	if(fabs(cosangleY) > epsilon)
+	{
+		angleZ = atan2(-data[4]/cosangleY,data[0]/cosangleY);
+		angleX = atan2(-data[9]/cosangleY, data[10]/cosangleY);
+	}
+	else
+	{
+		if(fabs(PId2-angleY) < epsilon)
+		{
+			angleX = atan2(data[1], data[5]);
+			angleY = PId2;
+			angleZ = 0.0;
+		}
+		else
+		{
+			angleX = atan2(-data[1], data[5]);
+			angleY = -PId2;
+			angleZ = 0.0;
+		}
+	}
+
+	// We set the result:
+//	xT = (float) (-angleX*PIUNDER180);
+//	yT = (float) (-angleY*PIUNDER180);
+//	zT = (float) (-angleZ*PIUNDER180);
+	
+	angleX = -angleX * degtorad;
+	angleY = -angleY * degtorad;
+	angleZ = -angleZ * degtorad;
+	
+	return Vector3(angleX,angleY,angleZ);*/
 }
 
 

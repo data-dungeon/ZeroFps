@@ -8,7 +8,6 @@ ZMaterialSettings::ZMaterialSettings()
 	m_iTUs[1] = -1;		
 	m_iTUs[2] = -1;			
 	m_iTUs[3] = -1;			*/
-	cout<<"bla:"<<endl;
 	m_kTUs[0] = new ZFResourceHandle();
 	m_kTUs[1] = new ZFResourceHandle();
 	m_kTUs[2] = new ZFResourceHandle();
@@ -36,7 +35,6 @@ ZMaterialSettings::~ZMaterialSettings()
 {
 	for(int i=0;i<4;i++)
 	{
-		cout<<"deleting:"<<i<<endl;
 		if(m_kTUs[i])
 			delete m_kTUs[i];	
 			
@@ -170,8 +168,6 @@ bool ZMaterial::LoadPass(int iPass)
 		//cout<<passname.c_str()<<" section is missing"<<endl;
 		return false;
 	}
-	
-	cout<<"loading pass: "<<iPass<<endl;
 	
 	//load pass settings
 	ZMaterialSettings* newpass = AddPass();

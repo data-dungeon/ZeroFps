@@ -285,6 +285,8 @@ class ENGINE_API Object
 		Vector3		GetWorldPosV();
 		
 		//set oritentation data
+		void			SetRelativeOri(bool bRO) {m_bRelativeOri = bRO;};
+		
 		void			SetLocalRotM(Matrix4 kNewRot);
 		void			SetLocalRotV(Vector3);
 		void			SetLocalPosV(Vector3);

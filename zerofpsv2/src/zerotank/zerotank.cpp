@@ -283,7 +283,6 @@ void ZeroTank::Input()
 
 	static float fRotate = 0;
 	static Vector3 kRotate(0,0,0); 
-	kRotate.Set(0,0,0);
 	
 	if(m_pkZeroTank_Modify) {
 		// Translate
@@ -299,6 +298,11 @@ void ZeroTank::Input()
 		m_pkZeroTank_Modify->SetLocalPosV(newpos);		
 	
 		kRotate = m_pkZeroTank_Modify->GetLocalRotV();
+		
+		//cout<<"x:"<<kRotate.x<<" y:"<<kRotate.y<<" z:"<<kRotate.z<<endl;
+		kRotate.Set(0,0,0);
+		
+		
 		// Rotate
 		if(pkInput->Pressed(KEY_J))	kRotate.x += fSpeedScale;			
 		if(pkInput->Pressed(KEY_U))	kRotate.x -= fSpeedScale;			
@@ -307,9 +311,9 @@ void ZeroTank::Input()
 		if(pkInput->Pressed(KEY_O))	kRotate.z += fSpeedScale;			
 		if(pkInput->Pressed(KEY_L))	kRotate.z -= fSpeedScale;			
 
-		//m_pkZeroTank_Modify->RotateLocalRotV(kRotate);
-			m_pkZeroTank_Modify->SetLocalRotV(kRotate);
-		}
+		m_pkZeroTank_Modify->RotateLocalRotV(kRotate);
+		//m_pkZeroTank_Modify->SetLocalRotV(kRotate);
+	}
 	
 	if(pkInput->Pressed(KEY_R))
 	{
@@ -556,12 +560,14 @@ void ZeroTank::OnServerStart(void)
 	if(m_pkZeroTankTower) {
 		m_pkZeroTankTower->SetParent(m_pkZeroTankHull);
 		m_pkZeroTankTower->SetLocalPosV(Vector3(0,0.81,0));
+		m_pkZeroTankTower->SetRelativeOri(true);
 	}
 
 	m_pkZeroTankGun = pkObjectMan->CreateObjectByArchType("ZeroRTSGun");
 	if(m_pkZeroTankGun) {
 		m_pkZeroTankGun->SetParent(m_pkZeroTankTower);
 		m_pkZeroTankGun->SetLocalPosV(Vector3(-1.1,0.4,0));
+		m_pkZeroTankGun->SetRelativeOri(true);
 	}
 
 	if(pkObjectMan->GetNumOfZones() != 0) {
