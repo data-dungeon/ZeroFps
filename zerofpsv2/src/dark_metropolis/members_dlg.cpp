@@ -17,7 +17,7 @@ CMembersDlg::CMembersDlg() : CGameDlg("MembersWnd", &g_kDM)
 	m_rcItemContainer				= Rect(355+35,11+51,355+221,11+206);
 	m_rcArmorContainer		   = Rect(263+17,70-8,263+17,70-8);
 	m_rcCyberneticsContainer   = Rect(303,184,396,277);
-	m_rcQuickItemContainer	   = Rect(43,184,167,215);
+	m_rcQuickItemContainer	   = Rect(-38+65,235+46,-38+189,235+77);
 	m_rcWeaponContainer			= Rect(17+12,37+31,110+12,99+31);
 
 	m_pkMoveInfo = NULL;
@@ -1031,6 +1031,8 @@ void CMembersDlg::UpdateCamera()
 
 void CMembersDlg::OnEquip(int iItemID, DMContainer* pkDestContainer)
 {
+	printf("Calling OnEquip\n");
+
 	m_pkAudioSys->StartSound("data/sound/computer beep 5.wav", 
 		m_pkAudioSys->GetListnerPos()); 
 

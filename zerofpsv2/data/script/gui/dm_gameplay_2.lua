@@ -116,30 +116,30 @@ function GUICreate()
 	--
 	--
 
-	CreateWnd(1,"quickitem_1","item_bar","",145,30,32,32,0)
-	ChangeSkin("quickitem_1","Skin16","Button up")
-	ChangeSkin("quickitem_1","Skin2","Button down")
-	ChangeSkin("quickitem_1","Skin3","Button focus")
+	CreateWnd(1,"GamePlayDlgQuickItem1","item_bar","",145,30,32,32,0)
+	ChangeSkin("GamePlayDlgQuickItem1","Skin16","Button up")
+	ChangeSkin("GamePlayDlgQuickItem1","Skin2","Button down")
+	ChangeSkin("GamePlayDlgQuickItem1","Skin3","Button focus")
 	
-	CreateWnd(1,"quickitem_2","item_bar","",181,30,32,32,0)
-	ChangeSkin("quickitem_2","Skin16","Button up")
-	ChangeSkin("quickitem_2","Skin2","Button down")
-	ChangeSkin("quickitem_2","Skin3","Button focus")
+	CreateWnd(1,"GamePlayDlgQuickItem2","item_bar","",181,30,32,32,0)
+	ChangeSkin("GamePlayDlgQuickItem2","Skin16","Button up")
+	ChangeSkin("GamePlayDlgQuickItem2","Skin2","Button down")
+	ChangeSkin("GamePlayDlgQuickItem2","Skin3","Button focus")
 
-	CreateWnd(1,"quickitem_3","item_bar","",145,66,32,32,0)
-	ChangeSkin("quickitem_3","Skin16","Button up")
-	ChangeSkin("quickitem_3","Skin2","Button down")
-	ChangeSkin("quickitem_3","Skin3","Button focus")
+	CreateWnd(1,"GamePlayDlgQuickItem3","item_bar","",145,66,32,32,0)
+	ChangeSkin("GamePlayDlgQuickItem3","Skin16","Button up")
+	ChangeSkin("GamePlayDlgQuickItem3","Skin2","Button down")
+	ChangeSkin("GamePlayDlgQuickItem3","Skin3","Button focus")
 
-	CreateWnd(1,"quickitem_4","item_bar","",181,66,32,32,0)
-	ChangeSkin("quickitem_4","Skin16","Button up")
-	ChangeSkin("quickitem_4","Skin2","Button down")
-	ChangeSkin("quickitem_4","Skin3","Button focus")
+	CreateWnd(1,"GamePlayDlgQuickItem4","item_bar","",181,66,32,32,0)
+	ChangeSkin("GamePlayDlgQuickItem4","Skin16","Button up")
+	ChangeSkin("GamePlayDlgQuickItem4","Skin2","Button down")
+	ChangeSkin("GamePlayDlgQuickItem4","Skin3","Button focus")
 
-	CreateWnd(1,"weapon","item_bar","",248,32,96,64,0)
-	ChangeSkin("weapon","Skin17","Button up")
-	ChangeSkin("weapon","Skin2","Button down")
-	ChangeSkin("weapon","Skin3","Button focus")
+	CreateWnd(1,"GamePlayDlgWeaponBn","item_bar","",248,32,96,64,0)
+	ChangeSkin("GamePlayDlgWeaponBn","Skin17","Button up")
+	ChangeSkin("GamePlayDlgWeaponBn","Skin2","Button down")
+	ChangeSkin("GamePlayDlgWeaponBn","Skin3","Button focus")
 
 	
 

@@ -307,7 +307,7 @@ void CGamePlayDlg::SelectAgent(int iAgent, bool bSelectModels)
 						pkItemProperty->GetIcon();
 
 					char szQuickItem[50];
-					sprintf(szQuickItem, "GamePlayDlgQuickItem%i", i);
+					sprintf(szQuickItem, "GamePlayDlgQuickItem%i", i+1);
 
 					ZGuiButton* pkQuickItemBn = (ZGuiButton*) 
 						GetWnd(szQuickItem);
