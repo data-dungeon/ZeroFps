@@ -817,7 +817,6 @@ void InventoryDlg::DropItems()
          kOrder.m_iUseLess = 0;
 
          pkCC->AddOrder ( kOrder );
-
       }
 
 		m_pkGui->UnregisterWindow((*it).m_pkLabel);

@@ -260,10 +260,17 @@ bool ZGuiListbox::RemoveAllItems()
 	return true;
 }
 
+bool g_bInv;
+
 bool ZGuiListbox::Notify(ZGuiWnd* pkWnd, int iCode)
 {
 	if(pkWnd->GetID() == VERT_SCROLLBAR_ID)
 	{
+		if(iCode == NCODE_CLICK_DOWN)
+			g_bInv =true;
+		else
+			g_bInv =false;
+
 		ScrollItems(m_pkScrollbarVertical);
 		return true;
 	}
@@ -319,21 +326,19 @@ void ZGuiListbox::ScrollItems(ZGuiScrollbar* pkScrollbar)
 {
 	// Move all items
 	list<ZGuiListitem*>::iterator it;
-	for( it = m_pkItemList.begin();
-		 it != m_pkItemList.end(); it++)
+	for( it = m_pkItemList.begin(); it != m_pkItemList.end(); it++)
 		 {
-			(*it)->Move(0,pkScrollbar->m_iScrollChange*(int)m_unItemHeight);
+			if(g_bInv) // fulhack för att unvika att scrollbaren flytar items fel
+				(*it)->Move(0,-pkScrollbar->m_iScrollChange*(int)m_unItemHeight);
+			else
+				(*it)->Move(0,pkScrollbar->m_iScrollChange*(int)m_unItemHeight);
 
 			Rect rc = (*it)->GetButton()->GetScreenRect();
-			if( rc.Bottom > GetScreenRect().Top && 
-				rc.Top < GetScreenRect().Bottom)  
-			{
+
+			if( rc.Bottom > GetScreenRect().Top && rc.Top < GetScreenRect().Bottom)  
 				(*it)->GetButton()->Show();
-			}
 			else
-			{
 				(*it)->GetButton()->Hide();
-			}
 		 }	
 
 	// Reset parameter
