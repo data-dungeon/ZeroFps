@@ -3,7 +3,7 @@
 
 #include "zfio.h"
 #include <cstdio>
-
+#include <errno.h>
 
 class ZFIoFile : public ZFIo {
 	private:

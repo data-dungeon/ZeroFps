@@ -313,7 +313,25 @@ ObjectDescriptor* ObjectManager::GetTemplate(const char* acName)
 	return NULL;
 }
 
+bool ObjectManager::LoadTemplate(const char* acFile)
+{
+	cout<<"loading template"<<endl;
+	
+	ZFFile fil;
+	if(!fil.Open(acFile,false)){
+		return false;
+	}
+		
+	ObjectDescriptor* newtemplate=new ObjectDescriptor;	
 
+	newtemplate->LoadFromFile(&fil);
+	
+	AddTemplate(newtemplate);
+	
+	fil.Close();
+
+	return true;
+}
 
 
 

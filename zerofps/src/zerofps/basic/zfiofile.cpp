@@ -3,12 +3,14 @@
 
 bool ZFIoFile::Open(const char* file,bool bWritable) 
 {
+	errno=0;
+	
 	if(bWritable)
-		m_kFile = fopen(file, "w+");
+		m_kFile = fopen(file, "w+b");
 	else
-		m_kFile = fopen(file, "r");
+		m_kFile = fopen(file, "r+b");
 
-	if(!m_kFile)
+	if(errno != 0)
 		return false;
 	else
 		return true;

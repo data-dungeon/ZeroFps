@@ -23,6 +23,8 @@ class BASIC_API ZFMemPackage{
 		bool Read(void* pData,int iSize);
 		bool Write(void* pData,int iSize);		
 	
+		void* GetDataPointer() {return (void*)&m_acData[0];};
+	
 		template <class Any>
 		bool Read(Any &data)
 		{

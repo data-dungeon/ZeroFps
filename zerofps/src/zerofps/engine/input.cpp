@@ -16,6 +16,7 @@ Input::Input()
 	for(int i =0;i<400;i++) 
 		m_akButtonList[i]=false;
 	
+	m_iQueueLength=100;
 	m_fMouseSensitivity=1;	
 	m_iGrabtime=SDL_GetTicks();
 	m_bInputEnabled=true;
@@ -36,6 +37,10 @@ void Input::Update(void) {
 			case SDL_KEYDOWN:
 				//put key in list
 				m_aPressedKeys.push(m_kEvent.key.keysym.sym);
+				if(m_aPressedKeys.size()>m_iQueueLength)
+					m_aPressedKeys.pop();
+				
+				
 				//set button ass pressed		
 				m_akButtonList[m_kEvent.key.keysym.sym]=true;					    	
     		break;			

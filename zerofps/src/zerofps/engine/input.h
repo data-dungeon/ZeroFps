@@ -84,13 +84,14 @@ class ENGINE_API Input : public ZFObject {
 		SDL_Event m_kEvent;
 		unsigned int m_iGrabtime;			
 		int m_iMouseX,m_iMouseY;
+		int m_iQueueLength;
 		
 		queue<int> m_aPressedKeys;
 	
 		enum FuncId_e
-			{
+		{
 			FID_TOGGLEGRAB,
-			};
+		};
 
 		void RunCommand(int cmdid, const CmdArgument* kCommand);
 		void GrabInput(void);

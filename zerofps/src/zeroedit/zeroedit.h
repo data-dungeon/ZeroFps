@@ -36,7 +36,9 @@ class ZeroEdit :public Application {
 			FID_NEWMAP,
 			FID_OBJECTTREE,
 			FID_SAVETEMPLATE,
-			FID_LISTTEMPLATES
+			FID_LOADTEMPLATE,
+			FID_LISTTEMPLATES,
+			FID_MAKETEMPLATE
 		};	
 	
 		Camera *m_pkCamera;

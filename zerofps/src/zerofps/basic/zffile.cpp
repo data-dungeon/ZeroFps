@@ -3,24 +3,36 @@
 
 ZFFile::ZFFile(const char* acName,bool bWritable)
 {
-	SetIo(new ZFIoFile());
-	Open(acName,bWritable);	
+	m_bOpen=false;
+	m_bWritable=false;
+	m_acName="";
 	
+	SetIo(new ZFIoFile());	
+	Open(acName,bWritable);	
+
 
 }
 
 ZFFile::ZFFile()
 {
+	m_bOpen=false;
+	m_bWritable=false;
+	m_acName="";
+	
 	SetIo(new ZFIoFile());
 }
 
 
 bool ZFFile::Open(const char* acName,bool bWritable)
 {
+	if(m_bOpen)
+		Close();
+
 	if(m_kIo->Open(acName,bWritable)){
 		m_acName=acName;
 		m_bWritable=bWritable;
 		m_bOpen=true;
+		SetPos(0);
 		return true;
 	} else {
 		m_bOpen=false;
@@ -35,11 +47,17 @@ bool ZFFile::Close()
 
 bool ZFFile::Read(void* data,int iSize)
 {
+	if(!m_bOpen)
+		return false;
+	
 	return m_kIo->Read(data,iSize);
 }
 
 bool ZFFile::Write(void* data,int iSize)
 {
+	if(!m_bOpen)
+		return false;
+	
 	return m_kIo->Write(data,iSize);
 }
 

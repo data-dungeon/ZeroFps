@@ -19,8 +19,10 @@ void ZeroEdit::OnInit(void)
 	g_ZFObjSys.Register_Cmd("savemap",FID_SAVEMAP,this);		
 	g_ZFObjSys.Register_Cmd("newmap",FID_NEWMAP,this);		
 	g_ZFObjSys.Register_Cmd("objecttree",FID_OBJECTTREE,this);		
-	g_ZFObjSys.Register_Cmd("savetemplate",FID_SAVETEMPLATE,this);		
-	g_ZFObjSys.Register_Cmd("listtemplates",FID_LISTTEMPLATES,this);			
+	g_ZFObjSys.Register_Cmd("maketemplate",FID_MAKETEMPLATE,this);		
+	g_ZFObjSys.Register_Cmd("listtemplates",FID_LISTTEMPLATES,this);
+	g_ZFObjSys.Register_Cmd("savetemplate",FID_SAVETEMPLATE,this);
+	g_ZFObjSys.Register_Cmd("loadtemplate",FID_LOADTEMPLATE,this);	
 
 
 	//start text =)
@@ -192,7 +194,7 @@ void ZeroEdit::RunCommand(int cmdid, const CmdArgument* kCommand)
 			CreateNew(size);
 			break;
 			
-		case FID_SAVETEMPLATE:
+		case FID_MAKETEMPLATE:
 			if(kCommand->m_kSplitCommand.size() <= 1) {
 				pkConsole->Printf("Please type a template name");
 				break;
@@ -219,9 +221,40 @@ void ZeroEdit::RunCommand(int cmdid, const CmdArgument* kCommand)
 			ListTemplates();
 			break;
 
+		case FID_LOADTEMPLATE:
+			if(kCommand->m_kSplitCommand.size() <= 1) {
+				pkConsole->Printf("Please type a template name");
+				break;
+			}
+		
+			if(!pkObjectMan->LoadTemplate(kCommand->m_kSplitCommand[1].c_str()))
+				pkConsole->Printf("Error loading template");
+			
+			break;
+
+		case FID_SAVETEMPLATE:
+			if(kCommand->m_kSplitCommand.size() <= 1) {
+				pkConsole->Printf("Please type a template name");
+				break;
+			}
+			
+			ObjectDescriptor* objtemplate=pkObjectMan->GetTemplate(kCommand->m_kSplitCommand[1].c_str());
+			if(objtemplate==NULL)
+			{
+				pkConsole->Printf("Template does not exist");
+				break;
+			}
+
+			ZFFile tempfile;
+			tempfile.Open("test.zob",true);
+			
+			objtemplate->SaveToFile(&tempfile);
+			
+			tempfile.Close();				
+			break;
+			
+		
 	}
-
-
 }
 
 void ZeroEdit::OnServerStart(void)
