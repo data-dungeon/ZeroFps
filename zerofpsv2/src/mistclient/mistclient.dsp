@@ -88,10 +88,6 @@ LINK32=link.exe
 
 SOURCE=.\mistclient.cpp
 # End Source File
-# Begin Source File
-
-SOURCE=.\scriptinterfaces.cpp
-# End Source File
 # End Group
 # Begin Group "Header Files"
 
@@ -99,10 +95,6 @@ SOURCE=.\scriptinterfaces.cpp
 # Begin Source File
 
 SOURCE=.\mistclient.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\scriptinterfaces.h
 # End Source File
 # End Group
 # Begin Group "Resource Files"

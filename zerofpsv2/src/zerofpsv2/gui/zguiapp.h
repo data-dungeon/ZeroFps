@@ -73,6 +73,9 @@ public:
 
 	typedef bool (*callback)(ZGuiWnd* pkWnd, unsigned int uiMessage, int iNumParams, void *pParams);
 
+	int GetWidth();
+	int GetHeight();
+
 	ZGuiApp(callback oMainWndProc);
 	~ZGuiApp();
 

@@ -2,12 +2,15 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#include "scriptinterfaces.h"
+#include "../../script/zfscript.h"
+#include "../../gui/zgui.h"
+#include "gui_scriptinterface.h"
 
-#define _DONT_MAIN
-#include "mistclient.h"
-
-extern MistClient g_kMistClient;
+void GuiAppLua::Init(ZGuiApp* pkGuiApp, ZFScript* pkScript)
+{
+	g_pkGuiApp = pkGuiApp;
+	g_pkScript = pkScript;
+}
 
 // Name: CreateWndLua
 // Parameters:
@@ -16,7 +19,7 @@ extern MistClient g_kMistClient;
 // (9) unsigned long uiFlags
 int GuiAppLua::CreateWndLua(lua_State* pkLua)
 {
-	ZFScript* pkScript = g_kMistClient.GetScript();
+	ZFScript* pkScript = g_pkScript; //g_kMistClient.GetScript();
 
 	int iNumArgs = pkScript->GetNumArgs(pkLua);
 
@@ -67,7 +70,10 @@ int GuiAppLua::CreateWndLua(lua_State* pkLua)
 		}
 	}
 
-	g_kMistClient.CreateWnd(eType, szResName, szText, (int) dID, dParentID, 
+/*	g_kMistClient.CreateWnd(eType, szResName, szText, (int) dID, dParentID, 
+		(int) x, (int) y, (int) w, (int) h, (unsigned long) f);
+*/
+	g_pkGuiApp->CreateWnd(eType, szResName, szText, (int) dID, (int) dParentID, 
 		(int) x, (int) y, (int) w, (int) h, (unsigned long) f);
 
 	return 1;
@@ -78,7 +84,7 @@ int GuiAppLua::CreateWndLua(lua_State* pkLua)
 // (0) int iParentID, (1) int iID
 int GuiAppLua::AddTabPageLua(lua_State* pkLua)
 {
-	ZFScript* pkScript = g_kMistClient.GetScript();
+	ZFScript* pkScript = g_pkScript;//g_kMistClient.GetScript();
 
 	int iNumArgs = pkScript->GetNumArgs(pkLua);
 
@@ -91,7 +97,8 @@ int GuiAppLua::AddTabPageLua(lua_State* pkLua)
 	char szResName[100];
 	pkScript->GetArg(pkLua, 1, szResName);
 
-	g_kMistClient.AddTabPage((int)dType, szResName);
+	//g_kMistClient.AddTabPage((int)dType, szResName);
+	g_pkGuiApp->AddTabPage((int)dType, szResName);
 
 	return 1;
 }
@@ -101,7 +108,7 @@ int GuiAppLua::AddTabPageLua(lua_State* pkLua)
 // (0) int iID to wnd
 int GuiAppLua::CloseWndLua(lua_State* pkLua)
 {
-	ZFScript* pkScript = g_kMistClient.GetScript();
+	ZFScript* pkScript = g_pkScript; //g_kMistClient.GetScript();
 
 	int iNumArgs = pkScript->GetNumArgs(pkLua);
 
@@ -111,7 +118,8 @@ int GuiAppLua::CloseWndLua(lua_State* pkLua)
 	char szWnd[100];
 	pkScript->GetArg(pkLua, 0, szWnd);
 
-	g_kMistClient.CloseWindow(szWnd);
+	//g_kMistClient.CloseWindow(szWnd);
+	g_pkGuiApp->CloseWindow(szWnd); 
 
 	return 1;
 }
@@ -124,7 +132,7 @@ int GuiAppLua::CloseWndLua(lua_State* pkLua)
 // Like: "Window", "Button up", "Button down" (look inside the function GetWndSkinsDesc)
 int GuiAppLua::ChangeSkinLua(lua_State* pkLua)
 {	
-	ZFScript* pkScript = g_kMistClient.GetScript();
+	ZFScript* pkScript = g_pkScript; //g_kMistClient.GetScript();
 
 	int iNumArgs = pkScript->GetNumArgs(pkLua);
 	
@@ -140,28 +148,29 @@ int GuiAppLua::ChangeSkinLua(lua_State* pkLua)
 	char szSkinType[50];
 	pkScript->GetArg(pkLua, 2, szSkinType);
 
-	g_kMistClient.ChangeSkin(pkScript, (int) wndID, szSkinName, szSkinType);
+	//g_kMistClient.ChangeSkin(pkScript, (int) wndID, szSkinName, szSkinType);
+	g_pkGuiApp->ChangeSkin(pkScript, (int) wndID, szSkinName, szSkinType);
 
 	return 1;
 }
 
 int GuiAppLua::GetScreenWidthLua(lua_State* pkLua)
 {
-	ZFScript* pkScript = g_kMistClient.GetScript();
-	pkScript->AddReturnValue(pkLua, (double) g_kMistClient.m_iWidth);
+	ZFScript* pkScript = g_pkScript; //g_kMistClient.GetScript();
+	pkScript->AddReturnValue(pkLua, (double) g_pkGuiApp->GetWidth());//g_kMistClient.m_iWidth);
 	return 1;
 }
 
 int GuiAppLua::GetScreenHeightLua(lua_State* pkLua)
 {
-	ZFScript* pkScript = g_kMistClient.GetScript();
-	pkScript->AddReturnValue(pkLua, g_kMistClient.m_iHeight);
+	ZFScript* pkScript = g_pkScript; //g_kMistClient.GetScript();
+	pkScript->AddReturnValue(pkLua, g_pkGuiApp->GetHeight());//g_kMistClient.m_iHeight);
 	return 1;
 }
 
 int GuiAppLua::IsWndVisibleLua(lua_State* pkLua)
 {
-	ZFScript* pkScript = g_kMistClient.GetScript();
+	ZFScript* pkScript = g_pkScript; //g_kMistClient.GetScript();
 
 	int iNumArgs = pkScript->GetNumArgs(pkLua);
 
@@ -173,7 +182,10 @@ int GuiAppLua::IsWndVisibleLua(lua_State* pkLua)
 
 	int ret = 0;
 	
-	if(g_kMistClient.IsWndVisible(szName))
+/*	if(g_kMistClient.IsWndVisible(szName))
+		ret = 1;*/
+
+	if(g_pkGuiApp->IsWndVisible(szName)) 
 		ret = 1;
 
 	pkScript->AddReturnValue(pkLua, ret);
@@ -187,7 +199,7 @@ int GuiAppLua::IsWndVisibleLua(lua_State* pkLua)
 // (1) char* Item name
 int GuiAppLua::AddListboxItemLua(lua_State* pkLua)
 {
-	ZFScript* pkScript = g_kMistClient.GetScript();
+	ZFScript* pkScript = g_pkScript; //g_kMistClient.GetScript();
 
 	int iNumArgs = pkScript->GetNumArgs(pkLua);
 
@@ -200,7 +212,8 @@ int GuiAppLua::AddListboxItemLua(lua_State* pkLua)
 	char szItemName[100];
 	pkScript->GetArg(pkLua, 1, szItemName);
 
-	g_kMistClient.AddListItem(szWndName, szItemName);
+	//g_kMistClient.AddListItem(szWndName, szItemName);
+	g_pkGuiApp->AddListItem(szWndName, szItemName);
 	
 	return 1;
 }
@@ -210,7 +223,7 @@ int GuiAppLua::AddListboxItemLua(lua_State* pkLua)
 // (0) char* resName of the Listbox
 int GuiAppLua::ClearListboxLua(lua_State* pkLua)
 {
-	ZFScript* pkScript = g_kMistClient.GetScript();
+	ZFScript* pkScript = g_pkScript; //g_kMistClient.GetScript();
 
 	int iNumArgs = pkScript->GetNumArgs(pkLua);
 
@@ -220,7 +233,9 @@ int GuiAppLua::ClearListboxLua(lua_State* pkLua)
 	char szWndName[100];
 	pkScript->GetArg(pkLua, 0, szWndName);
 
-	g_kMistClient.ClearListbox(szWndName);
+	//g_kMistClient.ClearListbox(szWndName);
+	g_pkGuiApp->ClearListbox(szWndName); 
+
 
 	return 1;
 }
@@ -232,7 +247,7 @@ int GuiAppLua::ClearListboxLua(lua_State* pkLua)
 // (0) char* resName of the Listbox
 int GuiAppLua::GetWndLua(lua_State* pkLua)
 {
-	ZFScript* pkScript = g_kMistClient.GetScript();
+	ZFScript* pkScript = g_pkScript; //g_kMistClient.GetScript();
 
 	int iNumArgs = pkScript->GetNumArgs(pkLua);
 
@@ -242,7 +257,8 @@ int GuiAppLua::GetWndLua(lua_State* pkLua)
 	char szWndName[100];
 	pkScript->GetArg(pkLua, 0, szWndName);
 
-	int ret = g_kMistClient.GetWndID(szWndName);
+	//int ret = g_kMistClient.GetWndID(szWndName);
+	int ret = g_pkGuiApp->GetWndID(szWndName);
 
 	pkScript->AddReturnValue(pkLua, ret);
 
@@ -255,7 +271,7 @@ int GuiAppLua::GetWndLua(lua_State* pkLua)
 // (1) 
 int GuiAppLua::SetTextInt(lua_State* pkLua)
 {
-	ZFScript* pkScript = g_kMistClient.GetScript();
+	ZFScript* pkScript = g_pkScript; //g_kMistClient.GetScript();
 
 	int iNumArgs = pkScript->GetNumArgs(pkLua);
 
@@ -268,8 +284,8 @@ int GuiAppLua::SetTextInt(lua_State* pkLua)
 	double dValue;
 	pkScript->GetArg(pkLua, 1, &dValue);
 
-	g_kMistClient.SetTextInt(szWndName, (int) dValue);
+	//g_kMistClient.SetTextInt(szWndName, (int) dValue);
+	g_pkGuiApp->SetTextInt(szWndName, (int) dValue);
 
 	return 1;
-
 }

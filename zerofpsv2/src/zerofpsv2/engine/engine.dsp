@@ -183,6 +183,10 @@ SOURCE=.\fh.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\engine_systems\script_interfaces\gui_scriptinterface.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\engine_systems\common\heightmap.cpp
 # End Source File
 # Begin Source File
@@ -396,6 +400,10 @@ SOURCE=.\engine_x.h
 # Begin Source File
 
 SOURCE=.\fh.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\engine_systems\script_interfaces\gui_scriptinterface.h
 # End Source File
 # Begin Source File
 

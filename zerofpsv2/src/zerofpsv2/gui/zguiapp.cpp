@@ -719,3 +719,13 @@ int ZGuiApp::GetWndID(char* szResName)
 	
 	return -1;
 }
+
+int ZGuiApp::GetWidth()
+{
+	return m_pkGui->m_iResX;
+}
+
+int ZGuiApp::GetHeight()
+{
+	return m_pkGui->m_iResY;
+}
