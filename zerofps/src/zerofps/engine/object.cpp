@@ -699,6 +699,9 @@ float Object::GetI()
 	
 	if(i>1)
 		i=1;
+	
+	if(i<0)
+		i=0;
 		
 //	cout<<"I"<<i<<endl;
 		
