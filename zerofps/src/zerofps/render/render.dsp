@@ -60,7 +60,7 @@ LINK32=link.exe
 # Begin Special Build Tool
 ProjDir=.
 SOURCE="$(InputPath)"
-PostBuild_Cmds=copy                                 $(ProjDir)\debug\*.lib                                 ..\..\..\bin\ 
+PostBuild_Cmds=copy                                  $(ProjDir)\debug\*.lib                                  ..\..\..\bin\ 
 # End Special Build Tool
 
 !ELSEIF  "$(CFG)" == "render - Win32 Debug"
@@ -91,7 +91,7 @@ LINK32=link.exe
 # Begin Special Build Tool
 ProjDir=.
 SOURCE="$(InputPath)"
-PostBuild_Cmds=copy                                 $(ProjDir)\debug\*.lib                                 ..\..\..\bin\ 
+PostBuild_Cmds=copy                                  $(ProjDir)\debug\*.lib                                  ..\..\..\bin\ 
 # End Special Build Tool
 
 !ELSEIF  "$(CFG)" == "render - Win32 Release Profile"
@@ -126,7 +126,7 @@ LINK32=link.exe
 # Begin Special Build Tool
 ProjDir=.
 SOURCE="$(InputPath)"
-PostBuild_Cmds=copy                                 $(ProjDir)\debug\*.lib                                 ..\..\..\bin\ 
+PostBuild_Cmds=copy                                  $(ProjDir)\debug\*.lib                                  ..\..\..\bin\ 
 # End Special Build Tool
 
 !ENDIF 
@@ -178,6 +178,10 @@ SOURCE=..\ogl\extgl.c
 # Begin Source File
 
 SOURCE=.\frustum.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\glguirender.cpp
 # End Source File
 # Begin Source File
 
@@ -251,6 +255,10 @@ SOURCE=.\texturemanager.cpp
 !ENDIF 
 
 # End Source File
+# Begin Source File
+
+SOURCE=.\zguirenderer.cpp
+# End Source File
 # End Group
 # Begin Group "Header Files"
 
@@ -258,6 +266,10 @@ SOURCE=.\texturemanager.cpp
 # Begin Source File
 
 SOURCE=.\frustum.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\glguirender.h
 # End Source File
 # Begin Source File
 
@@ -282,6 +294,10 @@ SOURCE=.\render_x.h
 # Begin Source File
 
 SOURCE=.\texturemanager.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\zguirenderer.h
 # End Source File
 # End Group
 # Begin Group "Resource Files"

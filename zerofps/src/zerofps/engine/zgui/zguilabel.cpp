@@ -1,0 +1,45 @@
+// Label.cpp: implementation of the Label class.
+//
+//////////////////////////////////////////////////////////////////////
+
+#include "..\basic\zguiskin.h"
+#include "zguilabel.h"
+#include "..\render\zguirenderer.h"
+
+//////////////////////////////////////////////////////////////////////
+// Construction/Destruction
+//////////////////////////////////////////////////////////////////////
+
+ZGuiLabel::ZGuiLabel(Rect kRectangle, ZGuiWnd* pkParent, bool bVisible, int iID) :
+	ZGuiControl(kRectangle, pkParent, bVisible, iID)
+{
+	m_bEnabled = false; // labels are static
+}
+
+ZGuiLabel::~ZGuiLabel()
+{
+
+}
+
+bool ZGuiLabel::Render( ZGuiRender* pkRenderer )
+{
+	if(m_iBkMaskTexture > 0)
+		pkRenderer->SetMaskTexture(m_iBkMaskTexture);
+
+	pkRenderer->SetSkin(m_pkSkin);
+	pkRenderer->RenderQuad(GetScreenRect(),(m_iBkMaskTexture > 0)); 
+	pkRenderer->RenderBorder(GetScreenRect()); 
+
+	if(m_strText != NULL)
+	{
+		if(m_pkTextSkin && m_pkTextSkin->m_iBkTexID != -1)
+		{
+			if(m_iTextMaskTexture > 0)
+				pkRenderer->SetMaskTexture(m_iTextMaskTexture);
+
+			pkRenderer->SetSkin(m_pkTextSkin); 
+			pkRenderer->RenderText(m_strText, GetScreenRect(), 16, -1, (m_iTextMaskTexture > 0));
+		}
+	}
+	return true;
+} 

@@ -89,6 +89,10 @@ SOURCE=.\index.txt
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\kodstd.txt
+# End Source File
+# Begin Source File
+
 SOURCE=.\MAD.txt
 # End Source File
 # Begin Source File

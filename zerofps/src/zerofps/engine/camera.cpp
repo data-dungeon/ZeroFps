@@ -19,7 +19,8 @@ void Camera::UpdateAll(int iWidth,int iHeight)
 
 void Camera::Update(int iWidth,int iHeight) {
 
-	if(m_bViewChange){
+	if(m_bViewChange)
+	{
 		m_bViewChange=false;
 	
 		//load projection matrix

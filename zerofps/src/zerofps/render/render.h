@@ -37,6 +37,8 @@ class RENDER_API Render : public ZFObject {
 		int m_iAutoLod;
 	
 		Render();
+
+		TextureManager* GetTexMangager() { return m_pkTexMan; }
 		
 /*		
 		void GetFrustum();

@@ -7,6 +7,10 @@
 
 using namespace std;
 
+#define DECLSPECIFIER __declspec(dllimport)
+#define EXPIMP_TEMPLATE extern
+
+/*EXPIMP_TEMPLATE template class DECLSPECIFIER Any;*/
 
 class BASIC_API ZFMemPackage{
 	private:
@@ -35,7 +39,7 @@ class BASIC_API ZFMemPackage{
 			return Read((void*)&data,sizeof(data));
 		}
 		
-		template <class Any>		
+		template <class Any>	
 		bool Write(Any &data)
 		{
 			return Write((void*)&data,sizeof(data));

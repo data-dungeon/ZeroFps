@@ -32,7 +32,7 @@ void Core::Load(const char* MadFileName)
 	FILE* fp = fopen(MadFileName, "rb");
 
 	// Read head
-	fread(&kHead,sizeof(Mad_Header),1,fp);
+ 	fread(&kHead,sizeof(Mad_Header),1,fp);
 
 	// Read SubMesh
 	pkSubMesh = new Mad_SubMesh [kHead.iNumOfSubMeshes];

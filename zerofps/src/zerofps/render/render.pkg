@@ -2,14 +2,13 @@ class Light;
 class Render;
 class TextureManager;
 class Frustum;
+class ZGuiRender;
+class GLGuiRender;
 
 #include "light.h"
 #include "render.h"
 #include "texturemanager.h"
 #include "mad.h"
 #include "frustum.h"
-
-
-
-
-
+#include "zguirenderer.h"
+#include "glguirender.h"

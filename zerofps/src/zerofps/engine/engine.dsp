@@ -60,7 +60,7 @@ LINK32=link.exe
 # Begin Special Build Tool
 ProjDir=.
 SOURCE="$(InputPath)"
-PostBuild_Cmds=copy                                             $(ProjDir)\debug\*.lib                                             ..\..\..\bin\ 
+PostBuild_Cmds=copy                                               $(ProjDir)\debug\*.lib                                               ..\..\..\bin\ 
 # End Special Build Tool
 
 !ELSEIF  "$(CFG)" == "engine - Win32 Debug"
@@ -91,7 +91,7 @@ LINK32=link.exe
 # Begin Special Build Tool
 ProjDir=.
 SOURCE="$(InputPath)"
-PostBuild_Cmds=copy                                             $(ProjDir)\debug\*.lib                                             ..\..\..\bin\ 
+PostBuild_Cmds=copy                                               $(ProjDir)\debug\*.lib                                               ..\..\..\bin\ 
 # End Special Build Tool
 
 !ELSEIF  "$(CFG)" == "engine - Win32 Release Profile"
@@ -126,7 +126,7 @@ LINK32=link.exe
 # Begin Special Build Tool
 ProjDir=.
 SOURCE="$(InputPath)"
-PostBuild_Cmds=copy                                             $(ProjDir)\debug\*.lib                                             ..\..\..\bin\ 
+PostBuild_Cmds=copy                                               $(ProjDir)\debug\*.lib                                               ..\..\..\bin\ 
 # End Special Build Tool
 
 !ENDIF 
@@ -585,6 +585,54 @@ SOURCE=.\zerofps.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\zgui\zgui.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\zgui\zguibutton.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\zgui\zguicheckbox.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\zgui\zguicombobox.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\zgui\zguicontrol.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\zgui\zguilabel.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\zgui\zguilistbox.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\zgui\zguilistitem.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\zgui\zguiradiobutton.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\zgui\zguiscrollbar.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\zgui\zguitextbox.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\zgui\zguiwindow.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\zoneobject.cpp
 # End Source File
 # End Group
@@ -746,6 +794,102 @@ SOURCE=.\zerofps.h
 # Begin Source File
 
 SOURCE=..\ogl\zfpsgl.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\zgui\zgui.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\zgui\zgui.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\zgui\zguibutton.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\zgui\zguibutton.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\zgui\zguicheckbox.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\zgui\zguicheckbox.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\zgui\zguicombobox.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\zgui\zguicombobox.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\zgui\zguicontrol.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\zgui\zguicontrol.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\zgui\zguilabel.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\zgui\zguilabel.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\zgui\zguilistbox.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\zgui\zguilistbox.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\zgui\zguilistitem.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\zgui\zguilistitem.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\zgui\zguiradiobutton.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\zgui\zguiradiobutton.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\zgui\zguiscrollbar.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\zgui\zguiscrollbar.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\zgui\zguitextbox.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\zgui\zguitextbox.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\zgui\zguiwindow.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\zgui\zguiwindow.h
 # End Source File
 # Begin Source File
 

@@ -35,8 +35,7 @@ class ENGINE_API LightProperty: public Property {
 		inline void SetExp(float fExp) {spot->fExp=fExp;}; 
 		inline void SetConst_Atten(float fConst_Atten) {spot->fConst_Atten=fConst_Atten;};
 		inline void SetLinear_Atten(float fLinear_Atten) {spot->fLinear_Atten=fLinear_Atten;};
-		inline void SetQuadratic_Atten(float fQuadratic_Atten) {fQuadratic_Atten=fQuadratic_Atten;};
-		
+		inline void SetQuadratic_Atten(float fQuadratic_Atten) {fQuadratic_Atten=fQuadratic_Atten;};	
 };
 
 Property* Create_LightProperty();

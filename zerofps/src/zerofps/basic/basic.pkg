@@ -8,6 +8,8 @@ class Matrix4;
 class ZFObjectManger;
 class ZFObject;
 class HeightMap;
+class Rect;
+class ZGuiSkin;
 
 class ZFIo;
 class ZFIoFile;
@@ -34,12 +36,15 @@ class ZFMemPackage;
 #include "globals.h"
 #include "fileio.h"
 #include "halfedge.h"
+#include "rect.h"
 
 #include "zfio.h"
 #include "zfiofile.h"
 #include "zffile.h"
 
 #include "zfmempackage.h"
+#include "rect.h"
+#include "zguiskin.h"
 
 
 

@@ -60,7 +60,7 @@ LINK32=link.exe
 # Begin Special Build Tool
 ProjDir=.
 SOURCE="$(InputPath)"
-PostBuild_Cmds=copy                                 $(ProjDir)\debug\*.lib                                 ..\..\..\bin\ 
+PostBuild_Cmds=copy                                   $(ProjDir)\debug\*.lib                                   ..\..\..\bin\ 
 # End Special Build Tool
 
 !ELSEIF  "$(CFG)" == "basic - Win32 Debug"
@@ -128,7 +128,7 @@ LINK32=link.exe
 # Begin Special Build Tool
 ProjDir=.
 SOURCE="$(InputPath)"
-PostBuild_Cmds=copy                                 $(ProjDir)\debug\*.lib                                 ..\..\..\bin\ 
+PostBuild_Cmds=copy                                   $(ProjDir)\debug\*.lib                                   ..\..\..\bin\ 
 # End Special Build Tool
 
 !ENDIF 
@@ -191,6 +191,10 @@ SOURCE=.\quaternion.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\rect.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\vector3.cpp
 # SUBTRACT CPP /YX
 # End Source File
@@ -206,6 +210,10 @@ SOURCE=.\zffile.cpp
 # Begin Source File
 
 SOURCE=.\zfiofile.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\zfmempackage.cpp
 # End Source File
 # Begin Source File
 
@@ -236,6 +244,10 @@ SOURCE=.\zfobjectmanger.cpp
 
 !ENDIF 
 
+# End Source File
+# Begin Source File
+
+SOURCE=.\zguiskin.cpp
 # End Source File
 # End Group
 # Begin Group "Header Files"
@@ -307,6 +319,10 @@ SOURCE=.\quaternion.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\rect.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\vector3.h
 # End Source File
 # Begin Source File
@@ -340,6 +356,10 @@ SOURCE=.\zfobject.h
 # Begin Source File
 
 SOURCE=.\zfobjectmanger.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\zguiskin.h
 # End Source File
 # End Group
 # Begin Group "Resource Files"

@@ -651,7 +651,6 @@ void Render::DrawGrassPatch(Vector3 kCamPos,Vector3 kPos,Vector3 kScale,int fW,i
 	glMaterialfv(GL_FRONT_AND_BACK,GL_AMBIENT,mat_ambient);		
 	glTexEnvf(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE);	
 	
-	
 	glAlphaFunc(GL_GREATER,0.3);
 	glEnable(GL_ALPHA_TEST);
 	
@@ -674,17 +673,16 @@ void Render::DrawGrassPatch(Vector3 kCamPos,Vector3 kPos,Vector3 kScale,int fW,i
 		
 		glBegin(GL_QUADS);	
 		glNormal3f(0,0,1);
-		glTexCoord2f(0,0);glVertex3f(-0.5,0.5,0); 
-		glTexCoord2f(0,1);glVertex3f(-0.5,-0.5,0); 
-		glTexCoord2f(1,1);glVertex3f(0.5,-0.5,0); 
+		glTexCoord2f(0,0);glVertex3f(-0.5,0.5,0);
+		glTexCoord2f(0,1);glVertex3f(-0.5,-0.5,0);
+		glTexCoord2f(1,1);glVertex3f(0.5,-0.5,0);
 		glTexCoord2f(1,0);glVertex3f(0.5,0.5,0); 
 		
 		glNormal3f(1,0,0);
-		glTexCoord2f(0,0);glVertex3f(0,0.5,0.5); 
-		glTexCoord2f(0,1);glVertex3f(0,-0.5,0.5); 
-		glTexCoord2f(1,1);glVertex3f(0,-0.5,-0.5); 
-		glTexCoord2f(1,0);glVertex3f(0,0.5,-0.5); 	
-		
+		glTexCoord2f(0,0);glVertex3f(0,0.5,0.5);
+		glTexCoord2f(0,1);glVertex3f(0,-0.5,0.5);
+		glTexCoord2f(1,1);glVertex3f(0,-0.5,-0.5);
+		glTexCoord2f(1,0);glVertex3f(0,0.5,-0.5);
 		glEnd();
 				
 		glPopMatrix();

@@ -50,7 +50,6 @@ void Render::PrintChar(char cChar) {
 	float y=(float(int(pos/texwidth)*FONTWIDTH)*glu+width);
 	float x=float(pos%texwidth)*glu;//+width/2;
 	
-	
 	glPushAttrib(GL_LIGHTING_BIT);
 	glDisable(GL_LIGHTING);
 	glAlphaFunc(GL_GREATER,0.1);
@@ -59,7 +58,7 @@ void Render::PrintChar(char cChar) {
  	m_pkTexMan->BindTexture(aCurentFont,T_NOMIPMAPPING);  
 
 	glPushMatrix();
-	glBegin(GL_QUADS);			
+	glBegin(GL_QUADS);		
 //			glColor4f(1.0,1.0,1.0,1.0);  	  
 	glNormal3f(0,0,1);
  	  
@@ -69,7 +68,6 @@ void Render::PrintChar(char cChar) {
 	glTexCoord2f(x,y-width);		glVertex3f(-0.5,0.5,0);    
 	glEnd();				
 	glPopMatrix();
-	
 	
 	glDisable(GL_ALPHA_TEST);
 
