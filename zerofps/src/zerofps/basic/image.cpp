@@ -3,7 +3,6 @@
 #include <string.h> 
 #include "image.h"
 
-#include <windows.h>
 
 // Defines
 #define BITMAP_ID				0x4D42	// universal id for a bitmap
@@ -773,3 +772,9 @@ bool Image::load_bmp(FILE* pkFile)
 
 	return true;
 }
+
+
+
+
+
+
