@@ -3,71 +3,26 @@
 #include "../../basic/zfsystem.h"
 #include "../../engine/res_texture.h"
 
-//float fGameTime;
 char szFullTexName[256];
 extern int g_iNumOfMadSurfaces;
 extern float g_fMadLODScale;
 
-#define MAD_NOANIM	-1
+//#define MAD_NOANIM	-1
 
-
-/*
-void SetGameTime(void)
-{
-	fGameTime = SDL_GetTicks() / 1000.0;
-}*/
- 
 Mad_Modell::Mad_Modell()
 {
-	m_pkTex = static_cast<TextureManager*>(g_ZFObjSys.GetObjectPtr("TextureManager"));
-	m_pkShader = static_cast<ZShader*>(g_ZFObjSys.GetObjectPtr("ZShader"));	
+	m_pkTex		= static_cast<TextureManager*>(g_ZFObjSys.GetObjectPtr("TextureManager"));
+	m_pkShader	= static_cast<ZShader*>(g_ZFObjSys.GetObjectPtr("ZShader"));	
 	
 	fCurrentTime		= 0;
-	iActiveAnimation	= MAD_NOANIM;
-	m_iNextAnimation	= MAD_NOANIM;
+	iActiveAnimation	= MAD_NOANIMINDEX;
+	m_iNextAnimation	= MAD_NOANIMINDEX;
 
 //	fLastUpdate			= 0;
 	m_bLoop				= true;
 	m_bActive			= true;
-	m_fScale				= 1.0;
+	m_fScale			= 1.0;
 }
-
-/*
-Mad_Modell::Mad_Modell(string strResName)
-{
-	m_kMadFile = strResName;
-	if(!kMadHandle.SetRes(strResName))
-		return;
-
-	// pkCore = pkModell;
-	// m_kMadFile = pkCore->Name;
-
-	PlayAnimation(0, 0.0);
-	m_fScale = 1.0;
-	m_bActive = true;
-	//pkCore->ClearReplaceTexture();
-//	fGameTime = 0;
-
-	TextureManager*	m_pkTex = static_cast<TextureManager*>(g_ZFObjSys.GetObjectPtr("TextureManager"));
-	LoadTextures();
-	AddMesh(0);
-}*/
-
-/*Mad_Modell::Mad_Modell(Mad_Core* pkModell) 
-{
-	pkCore = pkModell;
-	m_kMadFile = pkCore->Name;
-
-	PlayAnimation(0, 0.0);
-	m_fScale = 1.0;
-	m_bActive = true;
-	pkCore->ClearReplaceTexture();
-	fGameTime = 0;
-
-	TextureManager*	m_pkTex = static_cast<TextureManager*>(g_ZFObjSys.GetObjectPtr("TextureManager"));
-	LoadTextures();
-	AddMesh(0);
-}*/
 
 void Mad_Modell::SetBasePtr(string strResName)
 {
@@ -78,37 +33,16 @@ void Mad_Modell::SetBasePtr(string strResName)
 	if(!kMadHandle.SetRes(strResName))
 		return;
 
-//	PlayAnimation(0, 0.0);
 	m_bActive = true;
 //	pkCore->ClearReplaceTexture();
-	TextureManager*	m_pkTex = static_cast<TextureManager*>(g_ZFObjSys.GetObjectPtr("TextureManager"));
 	LoadTextures();
-
+	AddMesh(0);
 //	Mad_Core* pkCore = dynamic_cast<Mad_Core*>(kMadHandle.GetResourcePtr()); 
 //	Create_GLList(pkCore->GetMeshByID(0));
-	AddMesh(0);
-
-/*	m_fScale = 1.0;
-	m_bActive = true;
-	
-	TextureManager*	m_pkTex = static_cast<TextureManager*>(g_ZFObjSys.GetObjectPtr("TextureManager"));
-
-	if(pkModell) {
-		pkCore = pkModell;
-		m_kMadFile = pkCore->Name;
-		PlayAnimation(0, 0.0);
-		pkCore->ClearReplaceTexture();
-		LoadTextures();
-		Create_GLList(pkCore->GetMeshByID(0));
-
-		AddMesh(0);
-		}*/
 }
 
 void Mad_Modell::PlayAnimation(int iAnimNum, float fStartTime)
 {
-//	SetGameTime();
-
 	iActiveAnimation	=	iAnimNum;
 	fCurrentTime		=	fStartTime;
 //	fLastUpdate			=	fGameTime; 
@@ -144,7 +78,7 @@ void Mad_Modell::UpdateAnimation(float fDelta)
 {
 	if(!m_bActive)
 		return;
-	if(iActiveAnimation == MAD_NOANIM)
+	if(iActiveAnimation == MAD_NOANIMINDEX)
 		return;
 
 	if(kMadHandle.IsValid() == false)
@@ -168,9 +102,9 @@ void Mad_Modell::UpdateAnimation(float fDelta)
 			m_bActive = false;
 
 			// We shall not loop so lets try to move on to the next anim if any.
-			if(m_iNextAnimation != MAD_NOANIM) {
+			if(m_iNextAnimation != MAD_NOANIMINDEX) {
 				PlayAnimation(m_iNextAnimation, 0);
-				m_iNextAnimation = MAD_NOANIM;
+				m_iNextAnimation = MAD_NOANIMINDEX;
 				}
 			//else {
 				//
@@ -402,7 +336,6 @@ void Mad_Modell::LoadTextures()
 
 	int iNumOfMesh = GetNumOfMesh();
 	int iNumOfSubMesh;
-//	int iTexID;
 
 	Mad_Core* pkCore = dynamic_cast<Mad_Core*>(kMadHandle.GetResourcePtr()); 
 
@@ -420,43 +353,6 @@ void Mad_Modell::LoadTextures()
 			sprintf(szFullTexName,"data/material/%s.zmt",pkTexInfo->ucTextureName);
 
 			 m_pkMesh->SetTextureHandle(m_pkSubMesh->iTextureIndex,szFullTexName);			
-
-//massa ond jimmy kod som richard kommenterat bort
-
-/*			sprintf(szFullTexName, "data/textures/%s.tga", pkTexInfo->ucTextureName);
-			
-			if(pkTexInfo->bIsAlphaTest)
-				sprintf(szFullTexName, "data/textures/%s.tga", pkTexInfo->ucTextureName);
-			else 
-				sprintf(szFullTexName, "data/textures/%s.bmp", pkTexInfo->ucTextureName);
-*/
-			/*pkTexInfo->bClampTexture	= false;
-			pkTexInfo->bIsAlphaTest		= false;
-			pkTexInfo->bTwoSided		= false;
-			cout << szFullTexName;
-			cout << " bClampTexture: " << pkTexInfo->bClampTexture;
-			cout << " bIsAlphaTest: " << pkTexInfo->bIsAlphaTest;
-			cout << " bTwoSided: " << pkTexInfo->bTwoSided;
-			cout << endl;
-			//cout << iM << "/" << iSubM << ": " << szFullTexName << endl;
-			if(strcmp("../data/textures/pine_branch_color02.tga",szFullTexName) == 0) {
-				pkTexInfo->bClampTexture	= true;
-				pkTexInfo->bIsAlphaTest		= true;
-				pkTexInfo->bTwoSided		= true;
-				}*/
-
-			/*if(pkTexInfo->bClampTexture)
-				iTexID = pkTex->Load(szFullTexName,T_CLAMP);
-			else
-				iTexID = pkTex->Load(szFullTexName,0);
-			*/
-
-			//m_pkMesh->SetTextureID(m_pkSubMesh->iTextureIndex, iTexID);
-
-	
-			// här har dvoid haxat lite			
-			
-//			m_pkMesh->SetTextureHandle(m_pkSubMesh->iTextureIndex, pkTexInfo->ucTextureName);
 			}
 		}
 }
@@ -487,18 +383,6 @@ void Mad_Modell::SetReplaceTexture(char* szOrgName, char* szNew)
 		}
 	}
 }
-
-/*				
-Mad_CoreMesh* g_pkLastMesh;
-
-	int						m_aiReplaceTextures[256];
-	ZFResourceHandle		m_akReplaceTexturesHandles[256];
-
-	ZFResourceHandle* pkRes = m_pkMesh->GetTextureHandle(m_pkSubMesh->iTextureIndex);
-	
-	ResTexture* pkTexture = static_cast<ResTexture*>(pkRes->GetResourcePtr());
-	m_pkTex->BindTexture( pkTexture->m_iTextureID );
-*/
 
 void Mad_Modell::Draw_All(int iDrawFlags)
 {
@@ -531,9 +415,6 @@ void Mad_Modell::Draw_All(int iDrawFlags)
 	int iNumOfFaces;
 	int iNumOfSubMesh;
 
-//	Render* m_pkRender=static_cast<Render*>(g_ZFObjSys.GetObjectPtr("Render"));		
-//	m_pkRender->DumpGLState();
-
 	if(iDrawFlags &	MAD_DRAW_LINES)
 		glPolygonMode(GL_FRONT, GL_LINE);
 
@@ -549,12 +430,7 @@ void Mad_Modell::Draw_All(int iDrawFlags)
 		m_pkShader->SetPointer(NORMAL_POINTER,GetNormalsPtr());						
 		m_pkShader->SetDrawMode(TRIANGLES_MODE);
 		m_pkShader->SetNrOfVertexs(GetNumVertices());
-		
-		
-/*		glTexCoordPointer(2,GL_FLOAT,0,GetTextureCooPtr());
-		glVertexPointer(3,GL_FLOAT,0,GetVerticesPtr());
-		glNormalPointer(GL_FLOAT,0,GetNormalsPtr());
-*/
+	
 		iNumOfSubMesh = GetNumOfSubMesh(m_kActiveMesh[iM]);
 		
 		for(int iSubM = 0; iSubM < iNumOfSubMesh; iSubM++) {
@@ -581,23 +457,8 @@ void Mad_Modell::Draw_All(int iDrawFlags)
 				m_pkShader->SetNrOfIndexes(iNumOfFaces * 3);
 				
 				m_pkShader->Draw();
-
-/*				if(pkTexInfo->bIsAlphaTest) {
-					glEnable(GL_ALPHA_TEST);
-					glAlphaFunc(GL_GEQUAL, 0.5);
-					}*/
-				
-
-/*
-				glDrawElements(GL_TRIANGLES,
-					iNumOfFaces * 3,
-					GL_UNSIGNED_INT,
-					GetFacesPtr());
-*/				
 				g_iNumOfMadSurfaces += iNumOfFaces;
 				}
-
-				
 
 			if(iDrawFlags & MAD_DRAW_NORMAL)
 				DrawNormal(GetVerticesPtr(), GetNormalsPtr());
@@ -611,7 +472,6 @@ void Mad_Modell::Draw_All(int iDrawFlags)
 	glPolygonMode(GL_FRONT, GL_FILL );
 
 	glPopAttrib();
-
 }
 
 

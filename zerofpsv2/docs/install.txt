@@ -1,0 +1,10 @@
+How to - ZeroFps/MistLands
+
+1: MistLand Libs:
+ A: 	STLport		4.5.3	http://www.stlport.org/	(Windows Only)
+ B: 	Glut		3.7	http://www.opengl.org/developers/documentation/glut.html
+ C:	SDL		1.2.5	http://www.libsdl.org
+ D: 	SDL_net		1.2.5	http://www.libsdl.org/projects/SDL_net/
+ E:	Lua		4.0.1	http://www.lua.org/
+ F:	OpenALSDK	1.0	http://www.openal.org/
+ G: 	Ogg Vorbis 	1.0	http://www.vorbis.com/download

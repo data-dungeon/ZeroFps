@@ -8,6 +8,7 @@
 #include "zfsystem.h"
 #include <cstdio>
 #include <cstdarg>
+#include <conio.h>
 using namespace std;
 
 
@@ -209,3 +210,38 @@ float round2(float val)
 
 
 */
+
+
+void ZFError(const char *fmt, ...)
+{
+	va_list		ap;							// Pointer To List Of Arguments
+
+	// Make sure we got something to work with.
+	if (fmt == NULL)	return;					
+
+	va_start(ap, fmt);						// Parses The String For Variables
+		vsprintf(g_szFormatText, fmt, ap);		// And Convert Symbols
+	va_end(ap);								// 
+
+	// Now call our print function.
+	cout << "ERROR: " <<  g_szFormatText << endl;
+	getch();
+	exit(1);
+
+}
+
+void ZFWarning(const char *fmt, ...)
+{
+	va_list		ap;							// Pointer To List Of Arguments
+
+	// Make sure we got something to work with.
+	if (fmt == NULL)	return;					
+
+	va_start(ap, fmt);						// Parses The String For Variables
+		vsprintf(g_szFormatText, fmt, ap);		// And Convert Symbols
+	va_end(ap);								// 
+
+	// Now call our print function.
+	cout << "Warning: " <<  g_szFormatText << endl;
+}
+

@@ -54,6 +54,11 @@ float BASIC_API round2(float val);
 
 extern char g_szFormatText[4096];	
 
+BASIC_API void ZFError(const char *fmt, ...);
+BASIC_API void ZFWarning(const char *fmt, ...);
+
+
+
 enum BASIC_API GlobalButton
 {
 	gKEY_ESCAPE=0,

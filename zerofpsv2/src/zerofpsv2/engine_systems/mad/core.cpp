@@ -1,8 +1,6 @@
 #include "mad_core.h"
 #include "../../basic/quaternion.h"
 #include "../../basic/zfassert.h"
-//#include "../basic/zfassert.h"
-//#include "globals.h"
 
 Matrix4		g_Madkbonetransform[MAX_BONES];		// Bone transformation matrix
 Matrix4		g_FullBoneTransform[MAX_BONES];		// Bone transformation matrix.
@@ -37,11 +35,9 @@ void Mad_Core::Save_SD(ZFVFile* pkZFile)
 {
 	int iNumOfBones = m_kSkelleton.size();
 	pkZFile->Write(&iNumOfBones, sizeof(int),1);
-	//	fwrite(&iNumOfBones, sizeof(int),1,pkFp);
 
 	for(unsigned int i=0; i < m_kSkelleton.size(); i++) {
 		pkZFile->Write(&m_kSkelleton[i],sizeof(Mad_CoreBone),1);
-	//	fwrite(&m_kSkelleton[i],sizeof(Mad_CoreBone),1,pkFp);
 	}
 }
 
@@ -63,10 +59,8 @@ void Mad_Core::Save_SD(const char* filename)
 		return;
 		}
 	
-	//FILE* fp = fopen(filename, "wb");
 	Save_SD(&kZFile);
 	kZFile.Close();
-	//fclose(fp);
 }
 
 void Mad_Core::Save_AD(int iMeshId, const char* filename)
@@ -77,10 +71,8 @@ void Mad_Core::Save_AD(int iMeshId, const char* filename)
 		return;
 		}
 
-	//FILE* fp = fopen(filename, "wb");
 	Save_AD(iMeshId, &kZFile);
 	kZFile.Close();
-//	fclose(fp);
 }
 
 
@@ -92,11 +84,8 @@ void Mad_Core::Save_MD(int iMeshId, const char* filename)
 		return;
 		}
 
-//	FILE* MadFp = fopen(filename, "wb");
 	Save_MD(iMeshId, &kZFile);
 	kZFile.Close();
-//	fclose(MadFp);
-	
 }
 
 void Mad_Core::Save_MAD(const char* filename)
@@ -105,18 +94,11 @@ void Mad_Core::Save_MAD(const char* filename)
 
 	PrintCoreInfo();
 
-//	m_kMesh[0].CreateVertexNormals();
-
 	ZFVFile kZFile;
 	if( !kZFile.Open(string(filename),0,true) ) {
 		cout << "Failed to open " << filename << endl;
 		return;
 		}
-/*	FILE* MadFp = fopen(filename, "wb");
-	if(!MadFp) {
-		cout << "Failed to open '" << filename << "' for writing" << endl;
-		return;
-		}*/
 
 	Mad_Header m_kMadHeader;
 	// Setup MAD Header.
@@ -126,7 +108,6 @@ void Mad_Core::Save_MAD(const char* filename)
 		
 	// Write MAD Header.
 	kZFile.Write(&m_kMadHeader,sizeof(Mad_Header), 1);
-	//fwrite(&m_kMadHeader,sizeof(Mad_Header), 1, MadFp);
 	
 	// Write SD
 	Save_SD(&kZFile);
@@ -142,8 +123,6 @@ void Mad_Core::Save_MAD(const char* filename)
 	// Write MA
 
 	kZFile.Close();
-//	fclose(MadFp);
-
 }
 
  
@@ -195,7 +174,6 @@ int Mad_Core::GetAnimationTimeInFrames(int iAnim)
 int Mad_Core::GetAnimIndex(char* szName)
 {
 	for(unsigned int i=0; i<m_kBoneAnim.size(); i++) {
-		//printf("Anim Name %s\n",  m_kBoneAnim[i].m_szName);
 		if(strcmp(szName, m_kBoneAnim[i].m_szName) == 0)
 			return i;
 		}
@@ -211,14 +189,6 @@ void Mad_Core::SetReplaceTexture(char* szFileName)
 //		aiReplaceTextureIndex[i] = pkTextureManger->Load(nisse,0);
 */
 }
-
-
-/*
-void InversTransformMatrix(Matrix4& pkIn, Matrix4& pkOut)
-{
-	pkOut = pkIn;
-	pkOut = pkIn.Invert2();
-}*/
 
 void Mad_Core::SetUpBindPose()
 {
@@ -249,56 +219,8 @@ void Mad_Core::SetUpBindPose()
 
 	for (i = 0; i < m_kSkelleton.size(); i++) {
 		m_MadkbonetransformI[i] = g_Madkbonetransform[i].Invert2();
-		//InversTransformMatrix(g_Madkbonetransform[i],g_MadkbonetransformI[i]);
 		}	
 }
-
-/*
-void Core::CreateFrame(void)
-{
-	Mad_CoreMesh* mesh = &m_kMesh[0];
-	g_pkVertex	= &mesh->akFrames[iActiveFrame].akVertex[0];
-	g_pkNormals = &mesh->akFrames[iActiveFrame].akNormal[0];
-
-	if(!m_bInterpolVertexFrames)
-		return;
-
-	Vector3* pkStartFrame;
-	Vector3* pkEndFrame;
-	Vector3* pkFrame;
-	int i;
-
-	int iNumOfFrame = GetAnimationTimeInFrames(iActiveAnimation);
-	int iStartFrame = int(fActiveAnimationTime / 0.1);
-	int iEndFrame = iStartFrame + 1;
-	if(iEndFrame >= iNumOfFrame) 
-		iEndFrame = 0;
-	
-	int iStartVertexFrame = m_kMesh[0].akAnimation[iActiveAnimation].KeyFrame[iStartFrame].iVertexFrame;
-	int iEndVertexFrame = m_kMesh[0].akAnimation[iActiveAnimation].KeyFrame[iEndFrame].iVertexFrame;
-
-	pkStartFrame = &mesh->akFrames[iStartVertexFrame].akVertex[0];
-	pkEndFrame = &mesh->akFrames[iEndVertexFrame].akVertex[0];
-	pkFrame = g_akVertexBuffer;
-
-	for(i=0; i< mesh->kHead.iNumOfVertex; i++) {
-		Vector3 diff = pkEndFrame[i] - pkStartFrame[i];
-		pkFrame[i] = pkStartFrame[i] + diff * fFrameOffs;
-		}
-
-	pkStartFrame = &mesh->akFrames[iStartVertexFrame].akNormal[0];
-	pkEndFrame = &mesh->akFrames[iEndVertexFrame].akNormal[0];
-	pkFrame = g_akNormalBuffer;
-
-	for(i=0; i< mesh->kHead.iNumOfVertex; i++) {
-		Vector3 diff = pkEndFrame[i] - pkStartFrame[i];
-		pkFrame[i] = pkStartFrame[i] + diff * fFrameOffs;
-		}
-
-	g_pkVertex	= g_akVertexBuffer;
-	g_pkNormals = g_akNormalBuffer;
-}*/
-
 
 void Mad_Core::SetupBonePose()
 {
@@ -315,14 +237,6 @@ void Mad_Core::SetupBonePose()
 
 	Vector3 Angles;
 
-/*	int iNumOfFrame = m_kBoneAnim[iActiveAnimation].m_kBoneKeyFrames.size();
-	int iStartFrame = int(fActiveAnimationTime / g_fMadFrameTime);
-	int iEndFrame = iStartFrame + 1;
-	if(iStartFrame >= iNumOfFrame) 
-		iStartFrame = 0;
-	if(iEndFrame >= iNumOfFrame) 
-		iEndFrame = 0;*/
-
 	Mad_CoreBoneKey* pkStartKey = &m_kBoneAnim[iActiveAnimation].m_kBoneKeyFrames[iStartFrame].m_kBonePose[0];
 	Mad_CoreBoneKey* pkEndKey = &m_kBoneAnim[iActiveAnimation].m_kBoneKeyFrames[iEndFrame].m_kBonePose[0];
 
@@ -333,10 +247,6 @@ void Mad_Core::SetupBonePose()
 
 	float OneMinusFrameOffs = float(1.0) - fFrameOffs;
 
-
-//	int iNumOfBones = m_kSkelleton.size();
-//	int iNumOfFrames = m_kBoneAnim.size();
-//	int i
 	int iBoneKeys = m_kBoneAnim[iActiveAnimation].m_kBoneKeyFrames[iStartFrame].m_kBonePose.size();
 
 
@@ -348,37 +258,8 @@ void Mad_Core::SetupBonePose()
 		// Interp Keys
 		g_Madq[i].QuaternionSlerp(&kStart, &kEnd, fFrameOffs);
 
-//		if(m_kSkelleton[i].m_iParent != -1)
 			g_Madpos[i] = pkStartKey[i].m_kPosition * OneMinusFrameOffs + pkEndKey[i].m_kPosition * fFrameOffs;
-//		else 
-//			g_Madpos[i].Set(0,0,0);
 		}
-
-	// Controllers
-	
-/*	Vector3	kBindAngle;
-	Vector3 kBindPos;
-
-	for(i=0; i<m_kControllers.size(); i++) {
-		float fNew = m_kControllers[i].m_fMin + (m_kControllers[i].m_fMax - m_kControllers[i].m_fMin) * m_kControllers[i].m_fValue;
-		cout << "fNew:  " << fNew << endl;
-		
-		kBindAngle = m_kSkelleton[m_kControllers[i].m_iJointID].m_kRotation;
-		kBindPos = m_kSkelleton[m_kControllers[i].m_iJointID].m_kPosition;
-
-		switch(m_kControllers[i].m_eAxis) {
-			case CONTROLL_ANGLE_X:	kBindAngle.x = fNew;		break;
-			case CONTROLL_ANGLE_Y:	kBindAngle.y = fNew;	 break;
-			case CONTROLL_ANGLE_Z:	kBindAngle.z = fNew;	 break;
-			case CONTROLL_MOVE_X:	kBindPos.x = fNew;		 break;
-			case CONTROLL_MOVE_Y:	kBindPos.y = fNew;	 	 break;
-			case CONTROLL_MOVE_Z:	kBindPos.z = fNew;		 break;
-			}
-
-		g_Madq[m_kControllers[i].m_iJointID].AngleQuaternion(kBindAngle);
-		g_Madpos[m_kControllers[i].m_iJointID] = kBindPos;
-		}*/
-	
 
 	for (i = 0; i < m_kSkelleton.size(); i++) {
 		kMadkBoneMatrix.Identity();
@@ -451,15 +332,6 @@ void Mad_Core::SetBoneAnimationTime(int iAnim, float fTime, bool bLoop)
 		}
 
 	fFrameOffs = fFrame - iStartFrame;
-
-/*
-	int iNumOfFrame = m_kBoneAnim[iActiveAnimation].m_kBoneKeyFrames.size();
-	int iFrame = int(fActiveAnimationTime / g_fMadFrameTime);
-	fFrameOffs = (fActiveAnimationTime / g_fMadFrameTime) - iFrame;
-	iBoneFrame = iFrame;
-	if(iBoneFrame >= int(m_kBoneAnim[iActiveAnimation].m_kBoneKeyFrames.size()) )
-		iBoneFrame = m_kBoneAnim[iActiveAnimation].m_kBoneKeyFrames.size();
-*/
 }
 
 
@@ -468,11 +340,9 @@ void Mad_Core::LoadSkelleton(ZFVFile* pkZFile)
 	Mad_CoreBone kNewBone;
 	int iNumOfBones;
 	pkZFile->Read(&iNumOfBones, 1, sizeof(int));
-	//fread(&iNumOfBones, 1, sizeof(int), pkFp);
 
 	for(int i=0; i<iNumOfBones; i++) {
 		pkZFile->Read(&kNewBone, 1, sizeof(Mad_CoreBone));
-		//fread(&kNewBone, 1, sizeof(Mad_CoreBone), pkFp);
 		m_kSkelleton.push_back(kNewBone);
 		}
 }
@@ -490,8 +360,6 @@ void Mad_Core::LoadMesh(ZFVFile* pkZFile)
 	Mad_CoreMesh	kNewMesh;
 	kNewMesh.Load(pkZFile);
 	m_kMesh.push_back(kNewMesh);
-
-//	Mad_CoreMesh* pkMesh = &m_kMesh[0];
 }
 
 
@@ -503,10 +371,8 @@ void Mad_Core::LoadSkelleton(const char* MadFileName)
 		return;
 		}
 
-	//FILE*	fp = fopen("test.sd","rb");
 	LoadSkelleton(&kZFile);
 	kZFile.Close();
-	//fclose(fp);
 	SetUpBindPose();
 }
 
@@ -518,10 +384,8 @@ void Mad_Core::LoadAnimation(const char* MadFileName)
 		return;
 		}
 
-	//FILE*	fp = fopen("test.ad","rb");
 	LoadAnimation(&kZFile);
 	kZFile.Close();
-	//fclose(fp);
 }
 
 void Mad_Core::LoadMesh(const char* MDFileName)
@@ -531,18 +395,14 @@ void Mad_Core::LoadMesh(const char* MDFileName)
 		cout << "Failed to open " << "test.sd" << endl;
 		return;
 		}
-//	FILE* fp = fopen(MDFileName, "rb");
 	LoadMesh(&kZFile);
 	kZFile.Close();
-//	fclose(fp);
 }
 
 
 bool Mad_Core::Create(string MadFileName)
-//bool Mad_Core::LoadMad(const char* MadFileName)
 {
 	strcpy(Name,MadFileName.c_str());
-//	cout << "Name " << Name << endl;
 
 	if(strcmp(Name, "/data/mad/goblin.mad") == 0) {
 		int gam = 1;
@@ -555,32 +415,15 @@ bool Mad_Core::Create(string MadFileName)
 		return false;
 		}
 
-/*	FILE* MadFp = fopen(MadFileName, "rb");
-	if(!MadFp) {
-		cout << "Failed to find" << MadFileName << endl;
-		return false;
-		}
-	
-	*/
-
 	Mad_Header kMadHeader;
 	kZFile.Read(&kMadHeader,sizeof(Mad_Header), 1);
-	//fread(&kMadHeader,sizeof(Mad_Header), 1, MadFp);
 	
 	// Check Versions Num
 	if(kMadHeader.m_iVersionNum != MAD_VERSION) {
 		cout << "Wrong version " << kMadHeader.m_iVersionNum << " in " << MadFileName << endl;
 		}	
 
-/*
-	cout << "m_iVersionNum: "		<< kMadHeader.m_iVersionNum << endl;
-	cout << "m_iNumOfMeshes: "		<< kMadHeader.m_iNumOfMeshes << endl;
-	cout << "m_iNumOfAnimations: "	<< kMadHeader.m_iNumOfAnimations << endl;
-*/
-	
-
 	LoadSkelleton(&kZFile);
-//	LoadSkelleton(MadFp);
 	SetUpBindPose();
 
 	unsigned int i;
@@ -590,11 +433,8 @@ bool Mad_Core::Create(string MadFileName)
 
 	for(i=0; i<kMadHeader.m_iNumOfMeshes; i++)
 		LoadMesh(&kZFile);
-		//LoadMesh(MadFp);
 
-//	fclose(MadFp);
 	kZFile.Close();
-//	PrintCoreInfo();
 
 	if(m_kSkelleton.size() == 1) {
 		for(i=0; i<m_kMesh.size(); i++)
@@ -675,7 +515,6 @@ void Mad_Core::PrepareMesh(Mad_CoreMesh* pkMesh)
 	if(pkMesh->bNotAnimated)
 		return;
 	
-	//Matrix4 kFullTransform;
 	int* piBoneConnection;
 	Vector3* pkVertex = &pkMesh->akFrames[0].akVertex[0];
 	Vector3* pkNormal = &pkMesh->akFrames[0].akNormal[0];
@@ -793,7 +632,6 @@ void Mad_Core::CalculateRadius()
 
 	for(unsigned int i=0; i <pkMesh->akFrames[0].akVertex.size(); i++) 
 	{
-//		float newdist = (pkVertex[i] - CenterPos).Length();
 		float newdist = pkVertex[i].Length();		
 		
 		if(newdist > fDist)
@@ -803,51 +641,6 @@ void Mad_Core::CalculateRadius()
 	}
 
 	m_fBoundRadius = fDist;
-	
-	
-/*
-	Vector3 kMin = pkVertex[0] - CenterPos;
-	Vector3 kMax = kMin;
-	Vector3 kDiff;
-
-	for(unsigned int i=0; i <pkMesh->akFrames[0].akVertex.size(); i++) {
-		kDiff = pkVertex[i] - CenterPos;
-		
-		if(kDiff.x < kMin.x)
-			kMin.x = kDiff.x;
-		else if (kDiff.x > kMax.x)
-			kMax.x = kDiff.x;
-
-		if(kDiff.y < kMin.y)
-			kMin.y = kDiff.y;
-		else if (kDiff.y > kMax.y)
-			kMax.y = kDiff.y;
-
-		if(kDiff.z < kMin.z)
-			kMin.z = kDiff.z;
-		else if (kDiff.z > kMax.z)
-			kMax.z = kDiff.z;
-		}
-
-
-	Vector3 kDiagonal = (kMax - kMin) / 2;
-	float fRadius = kDiagonal.Length();
-	cout << "fRadius: " << fRadius << endl;
-
-	kMin.Abs();
-	kMax.Abs();
-	float fMaxDist = kMin.x;
-	if(kMin.y > fMaxDist)	fMaxDist = kMin.y;
-	if(kMin.z > fMaxDist)	fMaxDist = kMin.z;
-
-	if(kMax.x > fMaxDist)	fMaxDist = kMax.x;
-	if(kMax.y > fMaxDist)	fMaxDist = kMax.y;
-	if(kMax.z > fMaxDist)	fMaxDist = kMax.z;
-
-	m_fBoundRadius = fMaxDist;	// * 1.42;
-	
-	cout << "m_fBoundRadius: " << fMaxDist << endl;
-//	return fRadius;*/
 }
 
 float Mad_Core::GetRadius()
@@ -869,16 +662,11 @@ Vector3 Mad_Core::GetJointPosition(char* szJointName)
 {
 	unsigned int i;
 
-//	cout << "Num of joints " << m_kSkelleton.size() << endl;
-
 	if(szJointName) {
 		for(i=0; i<m_kSkelleton.size(); i++) {
-			//cout << "Joint " << m_kSkelleton[i].m_acName << endl;
 
 			if(strcmp(m_kSkelleton[i].m_acName, szJointName) == 0) {
-				//cout << "Joint found " << endl;
 				return g_FullBoneTransform[i].GetPosVector();
-				//return m_kSkelleton[i].m_kPosition;
 				}
 			}
 		}
@@ -889,7 +677,6 @@ Vector3 Mad_Core::GetJointPosition(char* szJointName)
 			}
 		}
 
-	//cout << "Joint not found" << endl;
 	return Vector3::ZERO;
 }
 
@@ -917,8 +704,6 @@ void Mad_Core::CreateController(char* szName, char* szJoint, ControllAxis eAxis,
 		}
 
 	m_kControllers.push_back(kNewControll);
-
-	//cout << "Controller createt for bone" << kNewControll.m_iJointID << endl;
 }
 
 void Mad_Core::SetControll(char* szName, float fValue)
@@ -934,8 +719,6 @@ void Mad_Core::SetControll(char* szName, float fValue)
 			return;
 			}
 		}
-
-//	cout << "Controller not found" << endl;
 }
 
 int	Mad_Core::GetMeshIDByName(char* szName)

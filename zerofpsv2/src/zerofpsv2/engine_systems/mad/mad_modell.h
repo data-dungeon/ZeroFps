@@ -21,16 +21,14 @@ class ENGINE_SYSTEMS_API Mad_Modell
 private:
 	
 	TextureManager*		m_pkTex;
-	ZShader*					m_pkShader;
 
 	// Render Interface
 	Mad_CoreMesh*		m_pkMesh;
 	Mad_CoreSubMesh*	m_pkSubMesh;
 	int					m_iSubMesh;
 
-	int						m_aiReplaceTextures[256];
-	ZFResourceHandle		m_akReplaceTexturesHandles[256];
-
+	int					m_aiReplaceTextures[256];
+	ZFResourceHandle	m_akReplaceTexturesHandles[256];
 
 	void LoadTextures();
 	void DrawNormal(Vector3* pkVertex, Vector3* pkNormals);
@@ -55,8 +53,8 @@ private:
 	void	Create_GLList(Mad_CoreMesh* pkMesh);
 
 protected:
+	ZShader*			m_pkShader;
 	vector<int>				m_kActiveMesh;
-	
 
 public:
 	string	m_kMadFile;

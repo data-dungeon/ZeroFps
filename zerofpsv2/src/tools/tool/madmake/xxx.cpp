@@ -492,7 +492,11 @@ void ModellXXX::ReadExportAD(const char* filename,	const char* szName)
 		
 		if(strcmp(tmpstr, "Frame") == 0) {
 			if(iFrameNum != -1) {
-//				NewBoneAnim.m_kBoneKeyFrames.push_back(kNewBoneKeyFrame);
+				/* Check for correct num of bones in each keyframe.*/
+				if(kNewBoneKeyFrame.Size () != m_akSkelleton.size())
+					ZFError("Animation %s have to wrong num of bones in keyframes. ", filename);
+
+
 				kNewBoneAnim.PushBack(kNewBoneKeyFrame);
 				kNewBoneKeyFrame.Clear();
 				}
@@ -532,6 +536,7 @@ void ModellXXX::ReadExportAD(const char* filename,	const char* szName)
 	kNewBoneAnim.PushBack(kNewBoneKeyFrame);
 
 	strcpy(kNewBoneAnim.m_szName, szName);
+
 	cout << "Anim Size: " << kNewBoneAnim.Size();
 	m_kBoneAnim.push_back(kNewBoneAnim);
 
@@ -599,6 +604,10 @@ void ModellXXX::Read( const char* filename )
 
 		if (!strcmp (ucpToken, "!sd-export"))
 		{
+			if(m_akSkelleton.size()) {
+				ZFError("Line %d. Skelleton is already loaded.", kMMScipt.iLine);
+				}
+
 			ucpToken = kMMScipt.GetToken();
 			cout << "Setting Bones" << ucpToken << endl;
 			ReadExportSD(ucpToken);

@@ -3,14 +3,14 @@
 #include "../../render/render.h"
 #include "../../basic/zfsystem.h"
  
-extern int g_iMadLODLock;
-extern float g_fMadLODScale;
+extern int		g_iMadLODLock;
+extern float	g_fMadLODScale;
  
 P_Mad::P_Mad()
 {
 	m_pkZeroFps =		static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
 	m_pkRender	=		static_cast<Render*>(g_ZFObjSys.GetObjectPtr("Render")); 
-	m_pkZShader = 		static_cast<ZShader*>(g_ZFObjSys.GetObjectPtr("ZShader")); 
+//	m_pkZShader = 		static_cast<ZShader*>(g_ZFObjSys.GetObjectPtr("ZShader")); 
 	
 	strcpy(m_acName,"P_Mad");
 	bNetwork	 = true;
@@ -58,7 +58,7 @@ void P_Mad::Update()
 */		
 		//set force transparent if not visible
 		if(!m_bIsVisible)
-			m_pkZShader->SetForceBlending(BLEND_FORCE_TRANSPARENT);
+			m_pkShader->SetForceBlending(BLEND_FORCE_TRANSPARENT);
 		
 
 		glPushMatrix();
@@ -83,7 +83,7 @@ void P_Mad::Update()
 	
 		//reset blend
 		if(!m_bIsVisible)
-			m_pkZShader->SetForceBlending(BLEND_MATERIAL);
+			m_pkShader->SetForceBlending(BLEND_MATERIAL);
 	
 	
 		return;
