@@ -1,5 +1,5 @@
-#ifndef _OSWIN32_H_
-#define _OSWIN32_H_
+#ifndef _BASIC_OSWIN32_H_
+#define _BASIC_OSWIN32_H_
 
 //	Things that only apply to Windows (VC++ 6.0) in this file.
 

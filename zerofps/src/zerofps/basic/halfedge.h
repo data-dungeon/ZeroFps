@@ -1,5 +1,5 @@
-#ifndef _HALFEDGE_H_
-#define _HALFEDGE_H_
+#ifndef _BASIC_HALFEDGE_H_
+#define _BASIC_HALFEDGE_H_
 
 #include <vector>
 #include "basic_x.h"

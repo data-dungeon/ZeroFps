@@ -1,5 +1,5 @@
-#ifndef _MATRIX4_H_
-#define _MATRIX4_H_
+#ifndef _BASIC_MATRIX4_H_
+#define _BASIC_MATRIX4_H_
 
 #include <iostream>
 #include "basic_x.h"

@@ -1,5 +1,5 @@
-#ifndef _CMDSYSTEM_H_
-#define _CMDSYSTEM_H_
+#ifndef _BASIC_CMDSYSTEM_H_
+#define _BASIC_CMDSYSTEM_H_
 
 #include <vector>
 #include <iostream>

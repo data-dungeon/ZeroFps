@@ -170,6 +170,9 @@ void ZeroFps::MainLoop(void) {
 				//update all collisions
 				m_pkCollisionMan->Update();				
 
+				// Describe Active Cam.
+				string strCamDesc = GetCam()->GetCameraDesc();
+				DevPrintf(strCamDesc.c_str());
 
 				//run application Head On Display 
 				SetCamera(m_pkConsoleCamera);
@@ -262,6 +265,8 @@ void ZeroFps::InitDisplay(int iWidth,int iHeight,int iDepth) {
 }
 
 void ZeroFps::Swap(void) {
+	DrawDevStrings();
+
 	SDL_GL_SwapBuffers();  //guess
 
 	glLoadIdentity();
@@ -350,13 +355,21 @@ void ZeroFps::DevPrintf(const char *fmt, ...)
 
 void ZeroFps::DrawDevStrings()
 {
+	glPushAttrib(GL_LIGHTING_BIT);
+	glDisable(GL_LIGHTING);
+	glDisable(GL_ALPHA_TEST);
+
+	m_pkRender->SetFont("file:../data/textures/text/devstr.bmp");
+
 	float fYOffset = 0.85;
 	for(int i=0; i<akDevString.size(); i++) {
-		m_pkRender->Print(Vector3(-1.1,fYOffset,-1),Vector3(0,0,0),Vector3(0.04,0.04,0.04), const_cast<char*>(akDevString[i].c_str()));	
-		fYOffset -= 0.05;
+		m_pkRender->Print(Vector3(-1.1,fYOffset,-1),Vector3(0,0,0),Vector3(0.02,0.02,0.02), const_cast<char*>(akDevString[i].c_str()));	
+		fYOffset -= 0.02;
 	}
 
 	akDevString.clear();
+	glPopAttrib();
+
 }
 
 void ZeroFps::RunCommand(int cmdid, const CmdArgument* kCommand)

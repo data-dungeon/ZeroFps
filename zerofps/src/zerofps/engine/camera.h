@@ -33,6 +33,8 @@ class ENGINE_API Camera {
 		Vector3 &GetPos(){return m_kPos;};
 		Vector3 &GetRot(){return m_kRot;};
 		Matrix4 GetModelMatrix();
+
+		string GetCameraDesc();
 };
 
 #endif

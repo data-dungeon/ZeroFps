@@ -269,7 +269,7 @@ void HeightMap::GenerateTextures() {
 				}
 			}
 			diff.Normalize();
-			slope=diff.Dot(Vector3(0,1,0)) *degtorad;
+			slope=diff.Dot(Vector3(0,1,0)) * degtorad;
 			height=GetVert(x,z)->height;						
 //			cout<<"Slope:"<<slope<<endl;
 

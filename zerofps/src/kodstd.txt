@@ -7,25 +7,30 @@ Filnamn:
 
 
 Kod
-	All kod skrivs med indentering motsvarande tre blanksteg och tab-tecken är
-	det som bör användas. Rader bör vara kortare än 80 tecken så att alla utvecklare slipper
-	köpa widescreen skärmar.
+	All kod skrivs med indentering motsvarande tre blanksteg och tab-tecken 
+	är det som bör användas. Rader bör vara kortare än 80 tecken så att alla 
+	utvecklare slipper köpa widescreen skärmar.
 
 Kodstandard
-	All kod ska följa ISO/ANSI C++ och ska kompilera utan varningar under följande inställningar:
+	All kod ska följa ISO/ANSI C++ och ska kompilera utan varningar under 
+	följande inställningar:
 		VC++ 6.0:	Warning Level 3
 		GCC ??:		???
 
-	Platformsberoende kod ska undvikas och kan om növändigt endast placeras i modulen Basic. 
-	const ska användas för att markera att funktion/metod inte ändrar på någon variabel.
+	Platformsberoende kod ska undvikas och kan om növändigt endast placeras
+		i modulen Basic. 
+	const ska användas för att markera att funktion/metod inte ändrar på 
+		någon variabel.
 
-	ZFAssert ska användas för assert. Finns i basic och tar test som första parameter och 
-		en sträng som andra parameter. Strängen ska vara "class::function: Beskrivning".
+	ZFAssert ska användas för assert. Finns i basic och tar test som första 
+		parameter och en sträng som andra parameter. Strängen ska vara 
+		"class::function: Beskrivning".
 
 Headerfiler
 	#ifndef skrivs som MODUL_FILNAMN_H_
-	En .h fil ska endast innehålla det som krävs för interfacet till klassen (dvs att använda den).
-		Saker som endast krävs för implentationen av klassen ska placeras i källkodsfilen.
+	En .h fil ska endast innehålla det som krävs för interfacet till klassen
+		(dvs att använda den). Saker som endast krävs för implentationen av 
+		klassen ska placeras i källkodsfilen.
 
 	Headerfiler utanför den lokala katalogen refererar man till med
 	sökvägar relativt källkodsroten, dvs <code>#include "res/res.h"</code>.
@@ -36,34 +41,43 @@ Headerfiler
 Källkodsfiler:
 	Layout:
 		<Copyright>				
-		<File Header>		Är en std kommentar som beskriver filens namn, vad den gör och
-							liknande. Kolla i filehead.txt för att se hur den ska se ut.
-		<Include Files>		I bokstavs ordning och med std filer först och våra filer sedan. 
+		<File Header>		Är en std kommentar som beskriver filens namn, 
+			vad den gör och liknande. Kolla i filehead.txt för att se hur 
+			den ska se ut.
+		<Include Files>		I bokstavs ordning och med std filer först och
+			våra filer sedan. 
 		<Define / Macro>	Defines / macros som behövs i denna källkods fil.
-		<Types>				Type för denna källkodsfil (typedefs / union / struct / class).
-		<Functions>			Member functions i samma ordning som angivits i class.
-		<Comment>			Om långa beskrivningar krävs skrivs dom längst ned i ett eget kommentar fält.
+		<Types>				Type för denna källkodsfil 
+			(typedefs / union / struct / class).
+		<Functions>			Member functions i samma ordning som angivits i 
+			class.
+		<Comment>			Om långa beskrivningar krävs skrivs dom längst 
+			ned i ett eget kommentar fält.
 
 Kommentarer
 	Klasser, metoder och medlemsvariabler skall kommenteras i headerfilen.
 	
-	Bookmarks används för att markera olika platser i källkoden. Alla bookmarks skrivs som BM-*** där ***
-	är en tag som varierar med vilken typ av bookmark det är.
+	Bookmarks används för att markera olika platser i källkoden. Alla 
+		bookmarks skrivs som BM-*** där *** är en tag som varierar med vilken
+		typ av bookmark det är.
 
 		BM-NOTE "namn"
-			En extra lång kommentar finns i <Comment> fältet under det namn som anges.
+			En extra lång kommentar finns i <Comment> fältet under det namn 
+			som anges.
 		BM-REF "..."
-			En referens till ett annat dokument. Skrivs som länk eller boknamn och sidor.
+			En referens till ett annat dokument. Skrivs som länk eller boknamn 
+			och sidor.
 		BM-CHECK "namn" "vad"
-			Anger att "namn" ska undersöka "vad". Kan vara att kolla att en funktion fungerar som den ska.
+			Anger att "namn" ska undersöka "vad". Kan vara att kolla att en 
+			funktion fungerar som den ska.
 		BM-BUG "namn" "beskrivning"
 			Anger att en bug har hittats och ska rättas till.
 
 Names:
 	Klass / Struct / Unions
 		Skrivs i MixedCase.
-		Åtkomstblocken i klasser / respektive källkodsfiler anges i ordningen private, protected och
-			public. Det ska bara finnas en av varje.
+		Åtkomstblocken i klasser / respektive källkodsfiler anges i ordningen 
+			private, protected och public. Det ska bara finnas en av varje.
 	
 		Class Prefixes:
 			Class name					C			
@@ -101,8 +115,8 @@ Names:
 			Double						d
 			Enumeration					e			
 
-			C-String					sz			Null terminated c-stryle string.
-			string (C++)				str			C++ string object.
+			C-String					sz	Null terminated c-stryle string.
+			string (C++)				str	C++ string object.
 
 
 Felhantering

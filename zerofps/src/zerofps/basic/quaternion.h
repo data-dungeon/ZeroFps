@@ -1,5 +1,5 @@
-#ifndef _QUATERNION_H_
-#define _QUATERNION_H_
+#ifndef _BASIC_QUATERNION_H_
+#define _BASIC_QUATERNION_H_
 
 #include "basic_x.h"
 #include "os.h"

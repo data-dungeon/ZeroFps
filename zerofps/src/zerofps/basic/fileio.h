@@ -1,5 +1,5 @@
-#ifndef _FILEIO_H_
-#define _FILEIO_H_
+#ifndef _BASIC_FILEIO_H_
+#define _BASIC_FILEIO_H_
 
 #include <iostream>
 #include <string>

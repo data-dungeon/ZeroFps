@@ -1,7 +1,7 @@
 //#define HM_SIZE 200
 
-#ifndef _HEIGHTMAP_H_
-#define _HEIGHTMAP_H_
+#ifndef _BASIC_HEIGHTMAP_H_
+#define _BASIC_HEIGHTMAP_H_
 
 #include <SDL/SDL.h>
 #include <SDL/SDL_image.h>

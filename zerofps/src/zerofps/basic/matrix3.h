@@ -1,5 +1,5 @@
-#ifndef _MATRIX3_H_
-#define _MATRIX3_H_
+#ifndef _BASIC_MATRIX3_H_
+#define _BASIC_MATRIX3_H_
 
 #include <iostream>
 #include "basic_x.h"

@@ -1,5 +1,5 @@
-#ifndef _ZFOBJECTMANGER_H_
-#define _ZFOBJECTMANGER_H_
+#ifndef _BASIC_ZFOBJECTMANGER_H_
+#define _BASIC_ZFOBJECTMANGER_H_
 
 #include "basic_x.h"
 #include "os.h"

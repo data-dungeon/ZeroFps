@@ -18,7 +18,7 @@ void Camera::UpdateAll(int iWidth,int iHeight)
 }
 
 void Camera::Update(int iWidth,int iHeight) {
-	
+
 	if(m_bViewChange){
 		m_bViewChange=false;
 	
@@ -92,4 +92,14 @@ Matrix4 Camera::GetModelMatrix() {
 	return temp;
 }
 
+string Camera::GetCameraDesc()
+{
+	char desc[256];
+	string strDesc;
 
+	sprintf(desc, "Cam: <%.3f, %.3f, %.3f>, <%.3f, %.3f, %.3f>", m_kPos.x,m_kPos.y,m_kPos.z,
+		m_kRot.x,m_kRot.y,m_kRot.z);
+	strDesc = desc;
+
+	return strDesc;
+}

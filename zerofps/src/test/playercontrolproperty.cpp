@@ -33,12 +33,14 @@ void PlayerControlProperty::Update() {
 		m_pkObject->GetPos().x+=cos((m_pkObject->GetRot().y-270)/degtorad)*m_pkFps->GetFrameTime()*speed;			
 		m_pkObject->GetPos().z+=sin((m_pkObject->GetRot().y-270)/degtorad)*m_pkFps->GetFrameTime()*speed;			
 	}
-	if(m_pkInput->Pressed(KEY_Z)){
+
+/*	if(m_pkInput->Pressed(KEY_Z)){
 		m_pkObject->GetRot().y-=0.1*m_pkFps->GetFrameTime();
 	}
 	if(m_pkInput->Pressed(KEY_C)){
 		m_pkObject->GetRot().y+=0.1*m_pkFps->GetFrameTime();
-	}
+	}*/
+
 	if(m_pkInput->Pressed(MOUSERIGHT) ){
 		if(dynamic_cast<PlayerObject*>(m_pkObject)->onGround){
 			m_pkObject->GetVel().y+=5;// *m_pkFps->GetFrameTime();;						

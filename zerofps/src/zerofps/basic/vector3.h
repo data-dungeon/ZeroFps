@@ -1,5 +1,5 @@
-#ifndef _VECTOR3_H_
-#define _VECTOR3_H_
+#ifndef _BASIC_VECTOR3_H_
+#define _BASIC_VECTOR3_H_
 
 #include <iostream>
 #include "basic_x.h"

@@ -1,5 +1,5 @@
-#ifndef _OS_H_
-#define _OS_H_
+#ifndef _BASIC_OS_H_
+#define _BASIC_OS_H_
 
 // Includes the correct operation system file.
 

@@ -2,7 +2,7 @@
 #include "walker.h"
 
 
-Test olle("MegaGame",1024,768,16);
+Test olle("MegaGame",800,600,16);
 
 Test::Test(char* aName,int iWidth,int iHeight,int iDepth): Application(aName,iWidth,iHeight,iDepth) {
 
@@ -100,7 +100,7 @@ void Test::OnInit(void) {
 	
 	int i;
 	
-	for( i=0;i<4;i++) {
+/*	for( i=0;i<20;i++) {
 		Object *ball=new WalkerObject();
 		float x=290 + rand()%200;
 		float y=730 + rand()%100;
@@ -108,6 +108,7 @@ void Test::OnInit(void) {
 		pkObjectMan->Add(ball);
 		pkCollisionMan->Add(ball);
 	}
+*/
 
 /*	Object *sussi;
 	for(i=0;i<5;i++) {
@@ -212,7 +213,6 @@ void Test::OnHud(void) {
 
 	pkFps->DevPrintf("Fiskarna i havet");
 	pkFps->DevPrintf("Fps: %d aa",pkFps->m_iFps);
-	pkFps->DrawDevStrings();
 
 	glAlphaFunc(GL_GREATER,0.3);
 	glEnable(GL_ALPHA_TEST);

@@ -1,5 +1,5 @@
-#ifndef _GLOBALS_H_
-#define _GLOBALS_H_
+#ifndef _BASIC_GLOBALS_H_
+#define _BASIC_GLOBALS_H_
 
 #include <cstring>
 #include <iostream>
@@ -15,8 +15,6 @@ using namespace std;
 #ifndef min
 #define min(a,b)            (((a) < (b)) ? (a) : (b))
 #endif
-
-//#define min(a,b) ((a) < (b) ? (a)  : (b))
 
 float const degtorad = float(57.3248);
 

@@ -1,5 +1,5 @@
-#ifndef _ZFOBJECT_H_XXXX
-#define _ZFOBJECT_H_XXXX
+#ifndef _BASIC_ZFOBJECT_H_XXXX
+#define _BASIC_ZFOBJECT_H_XXXX
 
 #include <string>
 #include <vector>
