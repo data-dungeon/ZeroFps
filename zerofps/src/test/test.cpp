@@ -65,24 +65,12 @@ void Test::OnIdle(void) {
 	
 	if(pkFps->m_kCamPos->y<test->Height(x,z)+2.4)
 		pkFps->m_kCamPos->y=test->Height(x,z)+2.5;	
-//	pkFps->m_kCamPos->y=test->Height(x,z)+4;	
-//	if(pkRender->SphereInFrustum(*pkFps->m_kCamPos,Vector4(100,0,100,10)))
-//		cout<<"HORA"<<endl;
-	
-//	if(pkRender->CubeInFrustum(100,0,100,10))
-//		cout<<"HORA"<<endl;
-	
-//	cout<<">>>> "<<pkRender->SphereInFrustum(*pkFps->m_kCamPos,Vector4(100,0,100,0))<<endl;	
 
-//		cout<<"you se it=)"<<endl;
 
-//	glPushMatrix();
-//		glTranslatef(100,0,100);
-//		glutSolidSphere(10,10,10);
-//	glPopMatrix();
 
 	pkRender->DrawWater(*pkFps->m_kCamPos,Vector3(512,0,512),Vector3(0,0,0),1200,30);
 	
+	pkRender->DrawCross(Vector3(0,50,0),Vector3(0,0,0),Vector3(4,4,4),pkTexMan->Load("file:../data/textures/tree.tga"));	
 //	cout<<pkFps->m_iFps<<endl;
 }
 

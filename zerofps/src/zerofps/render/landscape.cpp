@@ -406,4 +406,40 @@ void Render::GiveTexCor(float &iX,float &iY,int iNr) {
 //	cout<<"X: "<<iX<< "  Y: "<<iY<<endl;
 }
 
+void Render::DrawCross(Vector3 kPos,Vector3 kHead,Vector3 kScale,int iTexture) {
+	glPushMatrix();
+	
+	glTranslatef(kPos.x,kPos.y,kPos.z);	
+	glRotatef(kHead.x, 1, 0, 0);
+	glRotatef(kHead.y, 0, 1, 0);	
+	glRotatef(kHead.z, 0, 0, 1);
+	glScalef(kScale.x,kScale.y,kScale.z);
+	
+	m_pkTexMan->BindTexture(iTexture);  
+	
+  glLightModeli( GL_LIGHT_MODEL_TWO_SIDE, 1);
+	glDisable(GL_CULL_FACE);	
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA,GL_ONE);
 
+	glBegin(GL_QUADS);
+	
+	glNormal3f(0,0,-1);
+	glTexCoord2f(0,0);glVertex3f(-0.5,0.5,0); 
+	glTexCoord2f(0,1);glVertex3f(-0.5,-0.5,0); 
+	glTexCoord2f(1,1);glVertex3f(0.5,-0.5,0); 
+	glTexCoord2f(1,0);glVertex3f(0.5,0.5,0); 
+
+	glNormal3f(1,0,0);
+	glTexCoord2f(0,0);glVertex3f(0,0.5,-0.5); 
+	glTexCoord2f(0,1);glVertex3f(0,-0.5,-0.5); 
+	glTexCoord2f(1,1);glVertex3f(0,-0.5,0.5); 
+	glTexCoord2f(1,0);glVertex3f(0,0.5,0.5); 
+	glEnd();
+	
+	
+  glLightModeli( GL_LIGHT_MODEL_TWO_SIDE, 0);	
+	glDisable(GL_BLEND);
+	glEnable(GL_CULL_FACE);
+	glPopMatrix();
+}

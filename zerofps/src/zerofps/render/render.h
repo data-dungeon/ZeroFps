@@ -49,17 +49,19 @@ class RENDER_API Render {
 		void Line(Vector3 kPos1,Vector3 kPos2);
 		void Dot(float x,float y,float z);
 		void SetColor(Vector3 kColor);
-		void DrawHM(HeightMap* kmap);
-		void DrawHMlod(HeightMap* kmap,Vector3 CamPos,int iFps);
 //		void DrawHMQT(HeightMap* kmap);		
 //		void DrawQuad(HM_vert* vert,int width);
+		void DrawConsole(char* m_aCommand,vector<char*>* m_kText); 
+		
+		void DrawHM(HeightMap* kmap);
+		void DrawHMlod(HeightMap* kmap,Vector3 CamPos,int iFps);		
 		void DrawSkyBox(Vector3 CamPos);
 		void DrawWater(Vector3 kCamPos,Vector3 kPosition,Vector3 kHead,int iSize,int iStep);
 		void DrawSimpleWater(Vector3 kPosition,int iSize);
-		void SetFog(Vector4 kFogColor,float FogDensity,float FogStart,float FogStop,bool FogEnable);
-		void DrawConsole(char* m_aCommand,vector<char*>* m_kText); 
-		
+		void SetFog(Vector4 kFogColor,float FogDensity,float FogStart,float FogStop,bool FogEnable);		
 		void GiveTexCor(float &iX,float &iY,int iNr);
+		void DrawCross(Vector3 kPos,Vector3 kHead,Vector3 kScale,int iTexture);
+
 };
 
 
