@@ -41,7 +41,16 @@ bool DlgBox::IsOpen()
 
 void DlgBox::SetPos(int x, int y)
 {
+	if(x < 0) x = 0; 
+	if(y < 0) y = 0;
+
 	m_pkDlgBox->SetPos(x,y,true,true);
+}
+
+void DlgBox::GetPos(int& x, int& y)
+{
+	x = m_pkDlgBox->GetScreenRect().Left;
+	y = m_pkDlgBox->GetScreenRect().Top;
 }
 
 void DlgBox::CenterCursor()

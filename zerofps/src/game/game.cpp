@@ -27,8 +27,6 @@ void Game::OnInit()
 		pkConsole->Printf("No game_autoexec.ini.ini found");
 }
 
-
-
 static bool WINPROC( ZGuiWnd* pkWindow, unsigned int uiMessage, int iNumberOfParams, void *pkParams ) {
 	return true; }
 
@@ -42,6 +40,20 @@ static bool PLAYER_INVENTORYPROC( ZGuiWnd* wnd, unsigned int msg, int num, void 
 		case InventCloseBN:
 			g_kGame.m_pkPlayerInventoryBox->OnClose(false);
 			break;
+		}
+		break;
+
+	case ZGM_RBUTTONUP:
+		int x,y;
+		x = ((int*)parms)[0];
+		y = ((int*)parms)[1];
+
+		Object* pkSelObject;
+		pkSelObject = g_kGame.m_pkPlayerInventoryBox->GetItemObject(x,y);
+
+		if(pkSelObject)
+		{
+			g_kGame.OpenExamineMenu(pkSelObject,x,y);
 		}
 		break;
 	}
@@ -80,9 +92,6 @@ static bool EXAMINE_BOXPROC( ZGuiWnd* wnd, unsigned int msg, int num, void *parm
 			g_kGame.m_pkExamineMenu->OnClose(true);
 			g_kGame.OpenContainer();
 			return true;
-		}
-		else
-		{
 		}
 		break;
 	}
@@ -154,7 +163,9 @@ void Game::OnIdle(void)
 				m_pkPlayerInventoryBox->Update();
 
 			if(m_pkContainerBox->IsOpen())
+			{
 				m_pkContainerBox->Update();
+			}
 
 			PlayerExamineObject();
 
@@ -370,9 +381,16 @@ void Game::SetupLevel()
 			ContainerProperty* pkPlayerContainerProp = 
 				static_cast<ContainerProperty*>(m_pkPlayer->GetProperty("ContainerProperty"));
 			pkPlayerContainerProp->m_kContainer.SetSize(5,5);
-
 			m_pkPlayerInventoryBox->SetContainer(&pkPlayerContainerProp->m_kContainer);
-			//m_pkContainerBox->SetContainer(&pkPlayerContainerProp->m_kContainer);
+
+			// Set player control property pointer to itembox
+			PlayerControlProperty* pkPlayerControlProperty = 
+				static_cast<PlayerControlProperty*>(m_pkPlayer->GetProperty("PlayerControlProperty"));
+
+			if(pkPlayerControlProperty)
+				m_pkPlayerInventoryBox->SetPlayerControlProperty(pkPlayerControlProperty);
+			else
+				printf("failed to set player controller property to gui window!\n");
 		}		
 	}
 	
@@ -471,10 +489,10 @@ void Game::InitScript()
 
 void Game::PlayerExamineObject()
 {
-	PlayerControlProperty* m_pkPlayerCtrl = static_cast<PlayerControlProperty*>
+	PlayerControlProperty* pkPlayerCtrl = static_cast<PlayerControlProperty*>
 			(m_pkPlayer->GetProperty("PlayerControlProperty"));
 
-	Object* pkObjectTouched = m_pkPlayerCtrl->m_pkUseObject;
+	Object* pkObjectTouched = pkPlayerCtrl->m_pkUseObject;
 
 	if(pkObjectTouched != NULL)
 	{
@@ -487,13 +505,15 @@ void Game::PlayerExamineObject()
 				m_pkContainerBox->SetContainer(&cp->m_kContainer);
 		}
 
+		//OpenExamineMenu(pkObjectTouched);
+
 		ItemProperty* ip = static_cast<ItemProperty*>
 			(pkObjectTouched->GetProperty("ItemProperty"));
 
 		if(ip != NULL)
 		{
 			m_pkExamineMenu->SetItemProperty(ip);
-			m_pkExamineMenu->SetPlayerControlProperty(m_pkPlayerCtrl);
+			m_pkExamineMenu->SetPlayerControlProperty(pkPlayerCtrl);
 
 			if(m_pkExamineMenu->IsOpen() == false)
 			{
@@ -524,5 +544,31 @@ void Game::OpenContainer()
 	{
 		printf("Failed to open container GUI box!\n");
 		
+	}
+}
+
+void Game::OpenExamineMenu(Object* pkObject, int x, int y)
+{
+	ItemProperty* ip = static_cast<ItemProperty*>
+		(pkObject->GetProperty("ItemProperty"));
+
+	if(ip != NULL)
+	{
+		PlayerControlProperty* pkPlayerCtrl = static_cast<PlayerControlProperty*>
+			(m_pkPlayer->GetProperty("PlayerControlProperty"));
+
+		m_pkExamineMenu->SetItemProperty(ip);
+		m_pkExamineMenu->SetPlayerControlProperty(pkPlayerCtrl);
+
+		if(m_pkExamineMenu->IsOpen() == false)
+		{
+			if(x == -1 && y== -1)
+			{
+				x = m_iWidth/2; 
+				y = m_iHeight/2;
+			}
+
+			m_pkExamineMenu->OnOpen(x,y);
+		}
 	}
 }

@@ -46,6 +46,9 @@ class ZGuiResourceManager;
 #define ZGM_LBUTTONDOWN					 0x0201
 #define ZGM_LBUTTONUP					 0x0202
 #define ZGM_LBUTTONDBLCLK				 0x0203
+#define ZGM_RBUTTONDOWN					 0x0204
+#define ZGM_RBUTTONUP					 0x0205
+#define ZGM_RBUTTONDBLCLK				 0x0206
 #define ZGM_MOVING						 0x0216
 #define ZGM_SCROLL						 0x0222
 #define ZGM_EN_CHANGE					 0x0300

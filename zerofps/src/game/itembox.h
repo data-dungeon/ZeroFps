@@ -11,6 +11,7 @@
 
 #include "dialogbox.h"
 
+class PlayerControlProperty;
 class Container;
 class TextureManager;
 class Object;
@@ -19,7 +20,9 @@ struct GuiData;
 class ItemBox : public DlgBox 
 {
 public:
+	Object* GetItemObject(int mx, int my);
 	Container* GetContainer();
+	void SetPlayerControlProperty(PlayerControlProperty *pkPlayerProp);
 	void SetContainer(Container* pkContainer);
 	void Update();
 	ItemBox(ZGui* pkGui, ZGuiWndProc oMainWndProc, TextureManager* pkTexMan, 
@@ -61,6 +64,7 @@ private:
 	static ZGuiSkin* s_kStaticGridSkinNormal;
 	static ZGuiSkin* s_kStaticGridSkinUnused;
 
+	PlayerControlProperty* m_pkPlayerProp;
 	TextureManager* m_pkTexMan;
 	Container* m_pkContainer;
 	Input* m_pkInput;

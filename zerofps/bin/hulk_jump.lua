@@ -1,5 +1,5 @@
 -- script test for game
-player_pos_y = 40
+player_pos_y = player_pos_y + 40
 pkConsole:Print("hulk_jump")
 
 piss = Vector3:new(2.0, 2.0, 2.0)

@@ -68,6 +68,7 @@ class COMMON_API PlayerControlProperty: public Property {
 		Object* GetObject();
 		
 	public:
+		void Drop(Object* pkObject);
 
 		PlayerControlProperty(Input *pkInput,HeightMap *pkMap);
 		~PlayerControlProperty();		

@@ -13,6 +13,7 @@ class DlgBox
 public:
 	void KillFocus();
 	void SetPos(int x, int y);
+	void GetPos(int& x, int& y);
 	bool IsOpen();
 	int Height();
 	int Width();

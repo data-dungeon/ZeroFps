@@ -4,6 +4,7 @@
 
 #include "itembox.h"
 #include "../common/container.h"
+#include "../common/playercontrolproperty.h"
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
@@ -21,6 +22,7 @@ ItemBox::ItemBox(ZGui* pkGui, ZGuiWndProc oMainWndProc, TextureManager* pkTexMan
 		m_ciTopY(iTopY), m_ciCols(iCols), m_ciRows(iRows)
 {
 	m_iGridIDCounterStart = s_iStaticGridIDCounter;
+	m_pkPlayerProp = NULL;
 	m_pkMoveItem = NULL;
 	m_pkContainer = NULL;
 	m_pkTexMan = pkTexMan;
@@ -37,15 +39,6 @@ bool ItemBox::DlgProc( ZGuiWnd* pkWnd,unsigned int uiMessage,
 {
 	switch(uiMessage)
 	{
-	// Command Messages
-/*	case ZGM_COMMAND:
-		switch(((int*)pkParams)[0]) // control id
-		{
-		case InventCloseBN:
-			OnClose(false);
-			break;
-		}
-		break;*/
 
 	case ZGM_LBUTTONDOWN:
 		unsigned int i;
@@ -66,7 +59,27 @@ bool ItemBox::DlgProc( ZGuiWnd* pkWnd,unsigned int uiMessage,
 
 			bool bObjectMoved = false;
 
-			slot_pos kItemCell = GetSlot(((int*)pkParams)[0], ((int*)pkParams)[1]);
+			int mx = ((int*)pkParams)[0], my = ((int*)pkParams)[1];
+
+			// Drop item
+			if(m_pkDlgBox->GetScreenRect().Inside(mx,my) == false)
+			{
+				if((m_pkPlayerProp != NULL) && (m_pkMoveItem != NULL))
+				{
+					Object* pkObject = m_pkContainer->GetItem(
+						m_pkMoveItem->second.first, 
+						m_pkMoveItem->second.second);
+
+		/*			RemoveSlot(m_pkMoveItem->second.first, 
+						m_pkMoveItem->second.second);
+					m_pkContainer->RemoveItem(pkObject);*/
+					//m_pkPlayerProp->Drop(pkObject);
+		/*			m_pkMoveItem = NULL;*/
+					return true;
+				}
+			}
+
+			slot_pos kItemCell = GetSlot(mx,my);
 			if(kItemCell.first != -1) // was the button released inside the grid?
 			{
 				Object* pkObject = m_pkContainer->GetItem(
@@ -197,6 +210,11 @@ void ItemBox::Update()
 		for(it2 = kRemoveVector.begin(); it2 != kRemoveVector.end(); it2++)
 			RemoveSlot(it2->first, it2->second);
 	}
+}
+
+void ItemBox::SetPlayerControlProperty(PlayerControlProperty *pkPlayerProp)
+{
+	m_pkPlayerProp = pkPlayerProp;
 }
 
 void ItemBox::SetContainer(Container* pkContainer)
@@ -361,17 +379,16 @@ void ItemBox::CreateStaticGrid()
 		}
 }
 
+Object* ItemBox::GetItemObject(int mx, int my)
+{
+	slot_pos kSlot = GetSlot(mx, my);
+	if(kSlot.first == -1)
+		return NULL;
 
+	if(m_pkContainer == NULL)
+		return NULL;
 
+	Object* pkObject = m_pkContainer->GetItem(kSlot.first, kSlot.second);
 
-
-
-
-
-
-
-
-
-
-
-
+	return pkObject;
+}

@@ -120,7 +120,8 @@ bool ExaminePUMenu::OnOpen(int x, int y)
 	{
 		x -= m_pkDlgBox->GetScreenRect().Width()/2;
 		y -= m_pkDlgBox->GetScreenRect().Height()/2;
-		m_pkDlgBox->SetPos(x,y,true,true);
+
+		SetPos(x,y);
 	}
 
 	CenterCursor();
@@ -145,6 +146,7 @@ bool ExaminePUMenu::OnClose(bool bSave)
 		}
 	}
 
+	m_iPickedListIndex = -1;
 	m_pkItemProperty = NULL;
 	m_pkPlayerProp = NULL;
 

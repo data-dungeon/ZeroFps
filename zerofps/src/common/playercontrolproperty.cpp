@@ -152,10 +152,10 @@ void PlayerControlProperty::Update() {
 	if(m_pkInput->Action(m_iActionJump) && !m_bLockCamera)
 	{
 		if(onGround && m_fGroundAngle < 75){
+
 			//cout<<"walking on normal: "<<GroundNormal.x<<" "<<GroundNormal.y<<" "<<GroundNormal.z<<endl;
 			
-			m_pkObject->GetVel()+=GroundNormal*5;	
-		
+			m_pkObject->GetVel()+=GroundNormal*5;			
 			//vel.y=5;
 			walking=false;
 		}
@@ -201,6 +201,9 @@ void PlayerControlProperty::Update() {
 			m_pkCameraProperty->GetDynamicAngles().y += x / (180 / m_fFov);
 			}
 		}
+
+	if(m_bLockCamera)
+		m_pkObject->SetRot(m_pkObject->GetRot());
 	
 	//update sound possition
 	walksound->m_kPos=m_pkObject->GetPos();
@@ -414,3 +417,8 @@ bool PlayerControlProperty::PickUp(Object* pkObject)
 	return true;
 }
 
+
+void PlayerControlProperty::Drop(Object *pkObject)
+{
+
+}

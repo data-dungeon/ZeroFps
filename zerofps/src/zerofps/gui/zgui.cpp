@@ -366,8 +366,11 @@ bool ZGui::OnMouseUpdate()
 		s_iPrevY = y;
 	}
 
+	bool bLeftPressed =  (m_bLeftButtonDown  == false && bLeftButtonDown  == true);
+	bool bRightPressed = (m_bRightButtonDown == false && bRightButtonDown == true);
+
 	// Har vänster musknapp klickats (men inte släppt)
-	if(m_bLeftButtonDown == false && bLeftButtonDown == true)
+	if( bLeftPressed || bRightPressed )
 	{		
 		if(pkFocusWindow)
 		{
@@ -386,14 +389,15 @@ bool ZGui::OnMouseUpdate()
 				if(pkParent) 
 					pkParent->SortChilds();
 				
-				ZGuiWnd::m_pkWndClicked->Notify(ZGuiWnd::m_pkWndClicked,
-					NCODE_CLICK_DOWN);
+				if(bLeftPressed)
+					ZGuiWnd::m_pkWndClicked->Notify(ZGuiWnd::m_pkWndClicked,
+						NCODE_CLICK_DOWN);
 
 				// Send a Left Button Down Message...
 				int* pkParams = new int[2];
 				pkParams[0] = x; pkParams[1] = y;
 				m_pkActiveMainWin->pkCallback(ZGuiWnd::m_pkWndClicked,
-					ZGM_LBUTTONDOWN,2,pkParams);
+					bLeftPressed ? ZGM_LBUTTONDOWN : ZGM_RBUTTONDOWN, 2,pkParams);
 				delete[] pkParams;
 			}
 			else
@@ -439,13 +443,16 @@ bool ZGui::OnMouseUpdate()
 		}
 	}
 
+	bool bLeftReleased =  (m_bLeftButtonDown  == true && bLeftButtonDown  == false);
+	bool bRightReleased = (m_bRightButtonDown == true && bRightButtonDown == false);
+
 	// Har vänster musknapp släpts (men inte klickats)?
-	if(m_bLeftButtonDown == true && bLeftButtonDown == false)
+	if(bLeftReleased || bRightReleased)
 	{
 		if(pkFocusWindow && ZGuiWnd::m_pkWndClicked != NULL)
 		{
 			// Informera fönstret innan att det har tappat fokus.
-			if(ZGuiWnd::m_pkWndUnderCursor)
+			if(ZGuiWnd::m_pkWndUnderCursor && bLeftReleased)
 			{
 				if(ZGuiWnd::m_pkPrevWndClicked && 
 					ZGuiWnd::m_pkPrevWndClicked != ZGuiWnd::m_pkWndUnderCursor)
@@ -462,21 +469,26 @@ bool ZGui::OnMouseUpdate()
 			{
 				//SetFocus(ZGuiWnd::m_pkWndClicked);
 
-				ZGuiWnd::m_pkWndClicked->Notify(ZGuiWnd::m_pkWndClicked,
-					NCODE_CLICK_UP);
+				if(bLeftReleased)
+					ZGuiWnd::m_pkWndClicked->Notify(ZGuiWnd::m_pkWndClicked,
+						NCODE_CLICK_UP);
 				
-				// Notify the main window that the window have been clicked
 				int* pkParams = new int[1];
-				pkParams[0] = ZGuiWnd::m_pkWndClicked->GetID(); // control id
-				m_pkActiveMainWin->pkCallback(m_pkActiveMainWin->pkWnd,
-					ZGM_COMMAND,1,pkParams);
-				delete[] pkParams;
+
+				// Notify the main window that the window have been clicked
+				if(bLeftReleased)
+				{
+					pkParams[0] = ZGuiWnd::m_pkWndClicked->GetID(); // control id
+					m_pkActiveMainWin->pkCallback(m_pkActiveMainWin->pkWnd,
+						ZGM_COMMAND,1,pkParams);
+					delete[] pkParams;
+				}
 
 				// Send a Left Button Up Message...
 				pkParams = new int[2];
 				pkParams[0] = x; pkParams[1] = y;
 				m_pkActiveMainWin->pkCallback(ZGuiWnd::m_pkWndClicked,
-					ZGM_LBUTTONUP,2,pkParams);
+					bLeftReleased ? ZGM_LBUTTONUP : ZGM_RBUTTONUP,2,pkParams);
 				delete[] pkParams;
 
 				static bool s_bClickedOnes = false;
@@ -489,7 +501,7 @@ bool ZGui::OnMouseUpdate()
 					pkParams = new int[2];
 					pkParams[0] = x; pkParams[1] = y;
 					m_pkActiveMainWin->pkCallback(ZGuiWnd::m_pkWndClicked,
-						ZGM_LBUTTONDBLCLK,2,pkParams);
+						bLeftReleased ? ZGM_LBUTTONDBLCLK : ZGM_RBUTTONDBLCLK,2,pkParams);
 					s_bClickedOnes = false;
 					delete[] pkParams;
 				}
@@ -503,7 +515,7 @@ bool ZGui::OnMouseUpdate()
 			}
 			else
 			{
-				if(ZGuiWnd::m_pkPrevWndUnderCursor)
+				if(ZGuiWnd::m_pkPrevWndUnderCursor && bLeftReleased)
 					ZGuiWnd::m_pkWndClicked->Notify(
 						ZGuiWnd::m_pkPrevWndUnderCursor,NCODE_RELEASE);
 
@@ -512,7 +524,7 @@ bool ZGui::OnMouseUpdate()
 				pkParams = new int[2];
 				pkParams[0] = x; pkParams[1] = y;
 				m_pkActiveMainWin->pkCallback(ZGuiWnd::m_pkWndClicked,
-					ZGM_LBUTTONUP,2,pkParams);
+					bLeftReleased ? ZGM_LBUTTONUP : ZGM_RBUTTONUP,2,pkParams);
 				delete[] pkParams;
 			}
 		}
