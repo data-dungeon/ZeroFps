@@ -175,9 +175,9 @@ void Tcs::UpdateLineTests(float fAlphaTime)
 	for(unsigned int i=0;i<m_kBodys.size();i++)
 	{				
 		if(m_kBodys[i]->m_bCharacter)
-		{
-		
-			
+		{					
+			bool bTuchedGround = false;
+			 
 			//if(TestLine(m_kBodys[i]->m_kNewPos,Vector3(0,-1,0),m_kBodys[i]))
 			if(CharacterLineTest(m_kBodys[i]->m_kNewPos,Vector3(0,-1,0),m_kBodys[i]))
 			{		
@@ -188,28 +188,32 @@ void Tcs::UpdateLineTests(float fAlphaTime)
 				distance = m_kBodys[i]->m_kNewPos.DistanceTo(m_kLastLineTestColPos);
 				if(distance < m_kBodys[i]->m_fLegLength)
 				{
+					bTuchedGround = true;
+				
 					m_kBodys[i]->m_kNewPos = m_kLastLineTestColPos + Vector3(0,m_kBodys[i]->m_fLegLength*0.9,0);
 					m_kBodys[i]->m_bOnGround = true;
 					m_kBodys[i]->m_kLinearVelocity.y= 0;
 				
 					//ground breaks
 					m_kBodys[i]->m_kLinearVelocity -= 10*(m_kBodys[i]->m_kLinearVelocity * fAlphaTime);											
-				}			
-				else
-				{
-					m_kBodys[i]->m_bOnGround = false;			
-					
-
-					//add breaks to character :D					
-					float fOld = m_kBodys[i]->m_kLinearVelocity.y;
-				
-					//air breaks
-					m_kBodys[i]->m_kLinearVelocity -= 4*(m_kBodys[i]->m_kLinearVelocity * fAlphaTime);						
-				
-					//m_kBodys[i]->m_kLinearVelocity.Set(0,fOld,0);
-					m_kBodys[i]->m_kLinearVelocity.y = fOld;
-				}		
+				}
 			}
+			
+			//what do do if we didt touch the ground?			
+			if(!bTuchedGround)
+			{
+				m_kBodys[i]->m_bOnGround = false;			
+				
+
+				//add breaks to character :D					
+				float fOld = m_kBodys[i]->m_kLinearVelocity.y;
+			
+				//air breaks
+				m_kBodys[i]->m_kLinearVelocity -= 4*(m_kBodys[i]->m_kLinearVelocity * fAlphaTime);						
+			
+				//m_kBodys[i]->m_kLinearVelocity.Set(0,fOld,0);
+				m_kBodys[i]->m_kLinearVelocity.y = fOld;
+			}		
 		}
 	}
 }
