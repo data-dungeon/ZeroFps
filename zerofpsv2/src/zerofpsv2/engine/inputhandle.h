@@ -18,7 +18,7 @@ class ENGINE_API InputHandle
 		~InputHandle();
 		
 		bool IsActive() {return m_bActive;};
-		bool SetActive(bool bValue) {m_bActive = bValue;};				
+		void SetActive(bool bValue) {m_bActive = bValue;};				
 		
 		// INPUT WRAPER FUCTIONS
 		

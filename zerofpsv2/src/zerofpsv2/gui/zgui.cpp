@@ -410,10 +410,11 @@ bool ZGui::OnMouseUpdate(int x, int y, bool bLBnPressed,
 						 float fGameTime)
 {
 
-	if(bLBnPressed)
+/*	if(bLBnPressed)
 		printf("nere\n");
 	else
 		printf("uppe\n");
+*/
 
 	if(bMBnPressed) // ignorera mitten knappen och ge spelet fokus
 	{
@@ -545,7 +546,7 @@ bool ZGui::OnMouseUpdate(int x, int y, bool bLBnPressed,
 						NCODE_CLICK_DOWN);
 
 					m_bHandledMouse = true;
-					printf("m_bHandledMouse = true\n");
+					//printf("m_bHandledMouse = true\n");
 				}
 
 				// Send a Left Button Down Message...
@@ -610,8 +611,9 @@ bool ZGui::OnMouseUpdate(int x, int y, bool bLBnPressed,
 		m_bHaveInputFocus = false;
 
 		if(bLeftReleased){
-		m_bHandledMouse = false;
-		printf("m_bHandledMouse = false\n");}
+			m_bHandledMouse = false;
+			//printf("m_bHandledMouse = false\n");
+		}
 
 		if(pkFocusWindow && ZGuiWnd::m_pkWndClicked != NULL)
 		{

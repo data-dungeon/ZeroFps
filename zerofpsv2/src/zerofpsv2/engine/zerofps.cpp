@@ -310,11 +310,11 @@ void ZeroFps::Run_EngineShell()
 		mx,my,m_pkGuiInputHandle->Pressed(MOUSELEFT),m_pkGuiInputHandle->Pressed(MOUSERIGHT),
 		m_pkGuiInputHandle->Pressed(MOUSEMIDDLE));
 
+	//disablar applicationens input om guit har hanterat den	
 	if(m_pkGui->m_bHandledMouse)
-	{
-		//disablar applicationens input om guit har hanterat den
-		m_pkApp->m_pkInputHandle->SetTempDisable(true);
-	}
+		m_pkApp->m_pkInputHandle->SetActive(false);
+	else
+		m_pkApp->m_pkInputHandle->SetActive(true);	
 
 	//end of console input
 

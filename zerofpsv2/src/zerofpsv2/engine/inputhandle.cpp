@@ -9,14 +9,12 @@ InputHandle::InputHandle(string strHandleName)
 	m_pkInput			= static_cast<Input*>(g_ZFObjSys.GetObjectPtr("Input"));		
 	m_strHandleName	= strHandleName;
 	m_bActive			= false;
-	m_bTempDisabled	= false;
 
 	if(!m_pkInput)
 	{
 		cout<<"ERROR: input handle could not find input subsystem, prepare for a crash ;-) (make sure the handle is dynamicly created)"<<endl;
 		return;
 	}
-	
 	
 	m_pkInput->RegisterInputHandle(this);
 }
@@ -29,11 +27,11 @@ InputHandle::~InputHandle()
 	}
 }
 
-// INPUT WRAPER FUNCTIOINS
+// INPUT WRAPPER FUNCTIOINS
 
 QueuedKeyInfo InputHandle::GetQueuedKey()
 {
-	if(m_bActive && !m_bTempDisabled)
+	if(m_bActive)
 		return m_pkInput->GetQueuedKey();
 	else
 		return QueuedKeyInfo(-1,0);
@@ -41,7 +39,7 @@ QueuedKeyInfo InputHandle::GetQueuedKey()
 
 int InputHandle::SizeOfQueue()
 {
-	if(m_bActive && !m_bTempDisabled)
+	if(m_bActive)
 		return m_pkInput->SizeOfQueue();
 	else
 		return 0;
@@ -49,13 +47,13 @@ int InputHandle::SizeOfQueue()
 
 void InputHandle::MouseXY(int &iX,int &iY)
 {
-	if(m_bActive && !m_bTempDisabled)
+	if(m_bActive)
 		m_pkInput->MouseXY(iX,iY);
 }
 
 void InputHandle::SDLMouseXY(int &iX,int &iY)
 {
-	if(m_bActive && !m_bTempDisabled)
+	if(m_bActive)
 		m_pkInput->SDLMouseXY(iX,iY);
 	else
 	{
@@ -66,26 +64,26 @@ void InputHandle::SDLMouseXY(int &iX,int &iY)
 
 void InputHandle::UnitMouseXY(float &fX,float &fY)
 {	
-	if(m_bActive && !m_bTempDisabled)
+	if(m_bActive)
 		m_pkInput->UnitMouseXY(fX,fY);
 }
 
 void InputHandle::RelMouseXY(int &iX,int &iY)
 {
-	if(m_bActive && !m_bTempDisabled)
+	if(m_bActive)
 		m_pkInput->RelMouseXY(iX,iY);
 }
 
 void InputHandle::SetCursorInputPos(int x, int y)
 {
-	if(m_bActive && !m_bTempDisabled)
+	if(m_bActive)
 		m_pkInput->SetCursorInputPos(x,y);
 }
 
 
 bool InputHandle::Pressed(Buttons eButton)
 {
-	if(m_bActive && !m_bTempDisabled)
+	if(m_bActive)
 		return m_pkInput->Pressed(eButton);
 	else
 		return false;
@@ -94,7 +92,7 @@ bool InputHandle::Pressed(Buttons eButton)
 
 bool InputHandle::VKIsDown(string strName)
 {
-	if(m_bActive && !m_bTempDisabled)
+	if(m_bActive)
 		return m_pkInput->VKIsDown(strName);
 	else
 		return false;
@@ -102,7 +100,7 @@ bool InputHandle::VKIsDown(string strName)
 
 void InputHandle::Reset()
 {
-	if(m_bActive && !m_bTempDisabled)
+	if(m_bActive)
 		m_pkInput->Reset();
 }
 
