@@ -5,6 +5,7 @@
 #include "gameplay_dlg.h"
 #include "handleagents_dlg.h"
 #include "./members_dlg.h"
+#include "../zerofpsv2/basic/zguifont.h"
 
 CMembersDlg::CMembersDlg() : CGameDlg("MembersWnd", &g_kDM)
 {
@@ -13,11 +14,11 @@ CMembersDlg::CMembersDlg() : CGameDlg("MembersWnd", &g_kDM)
 	m_pkMoveButton = NULL;
 	m_iCursorRangeDiffX=m_iCursorRangeDiffY=0;
 
-	m_rcItemContainer				= Rect(423,29,640,277);
-	m_rcArmorContainer		   = Rect(303,29,396,153);
+	m_rcItemContainer				= Rect(355+35,11+51,355+221,11+206);
+	m_rcArmorContainer		   = Rect(263+17,70-8,263+17,70-8);
 	m_rcCyberneticsContainer   = Rect(303,184,396,277);
 	m_rcQuickItemContainer	   = Rect(43,184,167,215);
-	m_rcWeaponContainer			= Rect(74,29,136,122);
+	m_rcWeaponContainer			= Rect(17+12,37+31,110+12,99+31);
 
 	m_pkMoveInfo = NULL;
 	m_pkSelectInfo = NULL;
@@ -33,24 +34,24 @@ CMembersDlg::~CMembersDlg()
 void CMembersDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName)
 {
 	// MembersWnd
-	if(strClickName == "MembersClosBn")
+	if(strClickName == "MembersCloseBn")
 	{
 		for(int i=0; i<m_vkItemButtons.size(); i++)
 			m_vkItemButtons[i]->GetSkin()->m_unBorderSize = 0;
 
 		ShowWnd("MembersWnd", false, false);
-		ShowWnd("TestCameraWnd", false, false);
+	//	ShowWnd("TestCameraWnd", false, false);
 
 		if(m_eWidowMode == HQ_EQUIP_MEMBERS)
 		{
 			m_pkGui->KillWndCapture(); 
-			m_pkGui->SetCaptureToWnd(GetWnd("HQWnd"));
+			//m_pkGui->SetCaptureToWnd(GetWnd("HQWnd"));
 		}
 		else
 		if(m_eWidowMode == HQ_BROWSE_MEMBERS_AND_AGENTS_AVAILABLE_FOR_HIRING)
 		{
 			m_pkGui->KillWndCapture(); 
-			m_pkGui->SetCaptureToWnd(GetWnd("AgentsWnd"));
+			//m_pkGui->SetCaptureToWnd(GetWnd("AgentsWnd"));
 		}
 		else
 		{
@@ -112,20 +113,22 @@ void CMembersDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName)
 		m_pkAudioSys->StartSound("data/sound/computer beep 5.wav", 
 			m_pkAudioSys->GetListnerPos()); 
 	}
-	//else
-	//{
-	//	if(m_pkSelectInfo != NULL)
-	//	{
-	//		delete m_pkSelectInfo;
-	//		m_pkSelectInfo = NULL;
-	//		ShowWnd("MemberSelItemBorder", false);
-	//	}
-	//}
+	else
+	{
+		if(m_pkSelectInfo != NULL)
+		{
+			delete m_pkSelectInfo;
+			m_pkSelectInfo = NULL;
+			ShowWnd("MemberSelItemBorder", false);
+		}
+	}
 
 }
 
 void CMembersDlg::SetWindowMode(WINDOW_MODE eType)
 {
+
+
 
 	m_eWidowMode = eType;
 
@@ -134,18 +137,21 @@ void CMembersDlg::SetWindowMode(WINDOW_MODE eType)
 	ShowWnd("MemberSelItemBorder", false);
 	m_pkMoveButton = NULL;
 
-	if(m_pkModellCamera == NULL)
-	{
-		CreateCamera();
-	}
-	else
-	{
-		ShowWnd("TestCameraWnd", true);
-	}
+	//if(m_pkModellCamera == NULL)
+	//{
+	//	CreateCamera();
+	//}
+	//else
+	//{
+	//	ShowWnd("TestCameraWnd", true);
+	//}
 
 	switch(eType)
 	{
 		case HQ_EQUIP_MEMBERS:
+
+			printf("HQ_EQUIP_MEMBERS\n");
+
 			ShowWnd("MembersEquipBn", true); // visa equip knappen
 			ShowWnd("MembersDropItemBn", false); // dölj drop knappen
 
@@ -313,26 +319,57 @@ void CMembersDlg::SwitchCharacter(bool bNext)
 
 void CMembersDlg::SetStats(DMCharacterStats* pkCharacterStats)
 {
-	char szText[50];
+	//static ZGuiFont* pkFont = NULL;
 
-	sprintf(szText, "Agent %s", pkCharacterStats->m_strName.c_str());
-	SetText("CurrentMemberNumberLabel", szText);
-	SetText("MemberNameField", (char*) pkCharacterStats->m_strName.c_str());
-	SetNumber("MembersArmourField", (int) pkCharacterStats->m_fArmour);
-	SetNumber("MemberSpeedField", (int) pkCharacterStats->m_fSpeed);
-	SetNumber("MemberWageField", (int) pkCharacterStats->m_fWage);
+	//if(pkFont == NULL)
+	//{
+	//	ZGuiFont* pkFont = new ZGuiFont(16,16,0,221222);				
+	//	pkFont->CreateFromFile("data/textures/text/test2.bmp");			
+	//	
+	//}
 
-	sprintf(szText, "%i/%i", pkCharacterStats->m_iLife, 
-		pkCharacterStats->m_iMaxLife);
-	SetText("MemberLifeField", szText);
+	//
+	//	GetWnd("MemberName")->SetFont(pkFont);
+	//	GetWnd("MemeberArmor")->SetFont(pkFont);
+	//	GetWnd("MemberSpeed")->SetFont(pkFont);
+	//	GetWnd("MemeberWage")->SetFont(pkFont);
+
+	char szText[150];	
+
+	sprintf(szText, "Name: %s", pkCharacterStats->m_strName);
+	GetWnd("MemberName")->SetText(szText);
+
+	sprintf(szText, "Armor: %i", (int) pkCharacterStats->m_fArmour);
+	GetWnd("MemeberArmor")->SetText(szText);
+
+	sprintf(szText, "Speed: %i", (int) pkCharacterStats->m_fSpeed);
+	GetWnd("MemberSpeed")->SetText(szText);
+
+	sprintf(szText, "Wage: %i%", (int) pkCharacterStats->m_fWage);
+	GetWnd("MemeberWage")->SetText(szText);
+
+
+	//char szText[50];
+
+	//sprintf(szText, "Agent %s", pkCharacterStats->m_strName.c_str());
+	//SetText("CurrentMemberNumberLabel", szText);
+	//SetText("MemberNameField", (char*) pkCharacterStats->m_strName.c_str());
+	//SetNumber("MembersArmourField", (int) pkCharacterStats->m_fArmour);
+	//SetNumber("MemberSpeedField", (int) pkCharacterStats->m_fSpeed);
+	//SetNumber("MemberWageField", (int) pkCharacterStats->m_fWage);
+
+	//sprintf(szText, "%i/%i", pkCharacterStats->m_iLife, 
+	//	pkCharacterStats->m_iMaxLife);
+	//SetText("MemberLifeField", szText);
 
 	UpdateLevelbar(pkCharacterStats);
+	UpdateHealthbar(pkCharacterStats);
 
-	string szTexName = string("data/textures/gui/dm/portraits/") +
-		pkCharacterStats->m_strIcon;
+	//string szTexName = string("data/textures/gui/dm/portraits/") +
+	//	pkCharacterStats->m_strIcon;
 
-	GetWnd("MemberIcon")->GetSkin()->m_iBkTexID = 
-		GetTexID((char*)szTexName.c_str());
+	//GetWnd("MemberIcon")->GetSkin()->m_iBkTexID = 
+	//	GetTexID((char*)szTexName.c_str());
 }
 
 void CMembersDlg::SetCharacterStats(Entity* pkCharacterObject)
@@ -345,13 +382,14 @@ void CMembersDlg::SetCharacterStats(Entity* pkCharacterObject)
 
 	if(pkCharacterObject == NULL)
 	{
-		SetText("MemberNameField", "");
-		SetText("MembersArmourField", "");
-		SetText("MemberSpeedField", "");
-		SetText("MemberLifeField", "");
+		//SetText("MemberNameField", "");
+		//SetText("MembersArmourField", "");
+		//SetText("MemberSpeedField", "");
+		//SetText("MemberLifeField", "");
 		SetText("CurrentMemberNumberLabel", "");
-		GetWnd("MemberIcon")->GetSkin()->m_iBkTexID = -1;
+	//	GetWnd("MemberIcon")->GetSkin()->m_iBkTexID = -1;
 		UpdateLevelbar(NULL);
+		UpdateHealthbar(NULL);
 		return;
 	}
 
@@ -363,7 +401,7 @@ void CMembersDlg::SetCharacterStats(Entity* pkCharacterObject)
 
 	SetStats(pkCharProperty->GetStats());
 
-	//pkCharacterStats = pkCharProperty->GetStats();
+	pkCharacterStats = pkCharProperty->GetStats();
 
 	//sprintf(szText, "Agent %i", pkCharacterObject->GetEntityID());
 	//SetText("CurrentMemberNumberLabel", szText);
@@ -597,9 +635,6 @@ bool CMembersDlg::GetContainer(int x, int y, CONTAINER_INFO& kContainer, int age
 
 	if((pkMain = GetWnd("MembersWnd")) == NULL)
 		return false;
-
-	//int agent_obj_id = ((CGamePlayDlg*)
-	//	GetGameDlg(GAMEPLAY_DLG))->GetSelAgentObject();
 
 	if(agent_obj_id)
 	{
@@ -860,11 +895,17 @@ void CMembersDlg::UpdateInventory(Entity* pkCharacterObject)
 				pkButton->Show();
 				pkButton->Disable();
 
+				// Move ikon to top and set movearea to parent window
+				static int s_okaZ = 10000;
+				pkButton->m_iZValue = s_okaZ++;
+				GetWnd("MembersWnd")->SortChilds(); 
+
 				m_vkItemButtons.push_back(pkButton);
 			}
 		}
 	}
 }
+
 void CMembersDlg::UpdateLevelbar(DMCharacterStats* pkCharacterStats)
 {
 	bool bFailed = false;
@@ -875,39 +916,77 @@ void CMembersDlg::UpdateLevelbar(DMCharacterStats* pkCharacterStats)
 	}
 	else
 	{
-		//P_DMCharacter* pkCharProperty = (P_DMCharacter*) 
-		//	pkCharacterObject->GetProperty("P_DMCharacter");
+		if(pkCharacterStats)
+		{
+			int Level = pkCharacterStats->m_iLevel;
+			int XP = 500; //(int)pkCharacterStats->m_fExperience;
+			int XPNextLevel = (int)pkCharacterStats->m_fNextLevel;
 
-		//if(pkCharProperty)
-		//{
-		//	DMCharacterStats* pkCharacterStats = pkCharProperty->GetStats();
-			if(pkCharacterStats)
-			{
-				int Level = pkCharacterStats->m_iLevel;
-				int XP =  (int)pkCharacterStats->m_fExperience;
-				int XPNextLevel = (int)pkCharacterStats->m_fNextLevel;
+			if(XP > XPNextLevel)
+				XP = XPNextLevel;
 
-				if(XP > XPNextLevel)
-					XP = XPNextLevel;
+			char szText[50];
+			sprintf(szText, "Level : %i (%i/%i)", Level, XP, XPNextLevel);
+			SetText("LevelbarTopic", szText);
 
-				char szText[50];
-				sprintf(szText, "Level : %i (%i/%i)", Level, XP, XPNextLevel);
-				SetText("LevelbarTopic", szText);
+			const float MAX_SIZE_LEVELBAR = (float) GetWnd("LevelbarBK")->GetScreenRect().Width();
 
-				const float MAX_SIZE_LEVELBAR = (float) GetWnd("LevelbarBK")->GetScreenRect().Width();
+			float procent_av_next_level = (float) XP / (float) XPNextLevel;
 
-				float procent_av_next_level = (float) XP / (float) XPNextLevel;
+			GetWnd("LevelbarFront")->Resize(
+				(int)(procent_av_next_level*MAX_SIZE_LEVELBAR),20,true); 
 
-				GetWnd("LevelbarFront")->Resize(
-					(int)(procent_av_next_level*MAX_SIZE_LEVELBAR),20,true); 
-			}
-		//}
+		}
+
 	}
 
 	if(bFailed)
 	{
 		SetText("LevelbarTopic", "");
 		GetWnd("LevelbarFront")->Resize(0,20,true); 
+	}
+}
+
+void CMembersDlg::UpdateHealthbar(DMCharacterStats* pkCharacterStats)
+{
+	return;
+
+	bool bFailed = false;
+
+	if(pkCharacterStats == NULL)
+	{
+		bFailed = true;
+	}
+	else
+	{
+		if(pkCharacterStats)
+		{
+			int Level = pkCharacterStats->m_iLife;
+			int XP = 500; //(int)pkCharacterStats->m_fExperience;
+			int XPNextLevel = (int)pkCharacterStats->m_iMaxLife;
+
+			if(XP > XPNextLevel)
+				XP = XPNextLevel;
+
+			char szText[50];
+			sprintf(szText, "Life : %i (%i/%i)", Level, XP, XPNextLevel);
+			SetText("HealthBarTopic", szText);
+
+			const float MAX_SIZE_LEVELBAR = (float) GetWnd("HealthBarBK")->GetScreenRect().Width();
+
+			float procent_av_next_level = (float) XP / (float) XPNextLevel;
+
+			GetWnd("HealthBarFront")->Resize(
+				(int)(procent_av_next_level*MAX_SIZE_LEVELBAR),20,true); 
+
+		}
+
+	}
+
+	if(bFailed)
+	{
+		SetText("HealthBarTopic", "");
+		GetWnd("HealthBarFront")->Resize(0,20,true); 
 	}
 }
 
@@ -938,19 +1017,19 @@ void CMembersDlg::CreateCamera()
 
 void CMembersDlg::UpdateCamera()
 {
-	if(m_pkModellCamera)
-	{
-		if(GetWnd("TestCameraWnd")->IsVisible())
-		{
-			m_pkModellCamera->SetRender(true);			
-			//m_pkModellCamera->ClearViewPort(); 
-			//m_pkModellCamera->UpdateAll(256, 256);
-		}
-		else
-		{
-			//m_pkModellCamera->SetRender(false);			
-		}
-	}
+	//if(m_pkModellCamera)
+	//{
+	//	if(GetWnd("TestCameraWnd")->IsVisible())
+	//	{
+	//		m_pkModellCamera->SetRender(true);			
+	//		//m_pkModellCamera->ClearViewPort(); 
+	//		//m_pkModellCamera->UpdateAll(256, 256);
+	//	}
+	//	else
+	//	{
+	//		//m_pkModellCamera->SetRender(false);			
+	//	}
+	//}
 }
 
 void CMembersDlg::OnEquip(int iItemID, DMContainer* pkDestContainer)

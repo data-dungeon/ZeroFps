@@ -13,6 +13,7 @@ void DrawFont(HDC hdc)
 	static HPEN blue_pen = CreatePen(PS_SOLID,0,RGB(0,0,255));
 	static HPEN red_pen = CreatePen(PS_SOLID,0,RGB(255,0,0));
 
+
 	SelectObject (hdc, CreateFontIndirect (&lf)) ;
 	SelectObject (hdc, blue_pen) ;
 
@@ -23,7 +24,7 @@ void DrawFont(HDC hdc)
 
 	int oka=0, x, y;
 
-	int start_char = 0; // ändra till 0 om det är en textur för konsolen
+	int start_char = 32; // ändra till 0 om det är en textur för konsolen
 
 	for(y=0; y<ROW_WIDTH; y++)
 	{
@@ -98,7 +99,7 @@ static LRESULT CALLBACK WndProc (HWND khWnd, UINT uiMessage, WPARAM wParam, LPAR
 	cf.lStructSize = sizeof (CHOOSEFONT) ;
     cf.hwndOwner   = khWnd ;
     cf.lpLogFont   = &lf ;
-	cf.Flags       = CF_INITTOLOGFONTSTRUCT | CF_SCREENFONTS ;
+	cf.Flags       = CF_INITTOLOGFONTSTRUCT | CF_SCREENFONTS | CF_LIMITSIZE;
 	cf.rgbColors      = 0 ;
 	cf.lCustData      = 0 ;
 	cf.lpfnHook       = NULL ;
@@ -107,7 +108,7 @@ static LRESULT CALLBACK WndProc (HWND khWnd, UINT uiMessage, WPARAM wParam, LPAR
 	cf.lpszStyle      = NULL ;
 	cf.nFontType      = 0 ;      
 	cf.nSizeMin       = 0 ;
-	cf.nSizeMax       = 0 ;
+	cf.nSizeMax       = 128 ;
 
 	static CHOOSECOLOR cc ;
 	static COLORREF    crCustColors[16] ;
@@ -281,15 +282,27 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, PSTR, int)
 	const int STYLE  = WS_POPUPWINDOW  ^WS_BORDER | WS_VISIBLE ;
 	HWND khWnd = CreateWindow (szAppName, szAppName, STYLE, 0, 0, sx, sy, 0, 0, hInstance, NULL);
 
-    MSG  msg;
-    while( WM_QUIT != msg.message  )
-    {
-        GetMessage( &msg, NULL, 0U, 0U );
-		TranslateMessage( &msg );
-		DispatchMessage( &msg );
-    }	
+  //  MSG  msg;
+  //  while( WM_QUIT != msg.message  )
+  //  {
+  //      GetMessage( &msg, NULL, 0U, 0U );
+		//TranslateMessage( &msg );
+		//DispatchMessage( &msg );
+  //  }	
+
+
+	MSG msg;
+	while (GetMessage (&msg, NULL, 0, 0))
+	{
+		TranslateMessage (&msg) ;
+		DispatchMessage (&msg) ;
+	}
 
 	DestroyWindow(khWnd);
+
+	return msg.wParam ;
+
+//	DestroyWindow(khWnd);
 
 	return 0;
 }

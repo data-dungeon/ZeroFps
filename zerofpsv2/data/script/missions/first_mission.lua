@@ -13,6 +13,8 @@ MissionText =
 	long = "Find the evil maffia boss XXX and kill him. He is somewhere in the park at night and is very angry!. You will get 1000 xp and some money if you kill him"
 }
 
+Success = 22
+
 function OnMissionSuccess()
 	SetNewMission("data/script/missions/second_mission.lua")
 	Print ("Starting mission - 2!");
@@ -27,11 +29,9 @@ function IsMissionDone()
 
 
 	if GetVar("BadGuyDead") == 1 then
-		g_iMissionStatus = 1; -- success
 		Print ("MissionDone!!!");
+		OnMissionSuccess();
 	end
-
-	OnMissionSuccess();
 
 end
 
@@ -42,9 +42,9 @@ function IsMissionFailed()
 	-----------------------------------------------------------------------
 	-- Om alla agenter är döda så har uppdraget misslyckats.
 	-----------------------------------------------------------------------
-	if num_of_living_agents == 0 then
-		g_iMissionStatus = -1; -- success
-	end
+--	if num_of_living_agents == 0 then
+--		
+--	end
 
 
 end

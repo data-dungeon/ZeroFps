@@ -45,7 +45,7 @@ void CHQDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName)
 	else
 	if(strClickName == "HQMembersBn") // the folder button
 	{
-		LoadDlg("data/script/gui/dm_members.lua");
+		LoadDlg("data/script/gui/dm_members_2.lua");
 		m_pkGui->SetCaptureToWnd(GetWnd("MembersWnd"));
 
 		CMembersDlg* pkMembersDlg = (CMembersDlg*) GetGameDlg(MEMBERS_DLG);
@@ -115,7 +115,7 @@ void CHQDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName)
 			ShowWnd("MembersWnd", false);
 		else
 		{
-			LoadDlg("data/script/gui/dm_members.lua");	
+			LoadDlg("data/script/gui/dm_members_2.lua");	
 
 			ClearListbox("MemberSkillsLB");
 			AddListItem("MemberSkillsLB", "Heavy Guns : 5");

@@ -41,7 +41,7 @@ void CGamePlayDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName)
 	//
 	if(strClickName == "ActiveCharacterPortraitBn") 
 	{
-		LoadDlg("data/script/gui/dm_members.lua");
+		LoadDlg("data/script/gui/dm_members_2.lua");
 		m_pkGui->SetCaptureToWnd(GetWnd("MembersWnd"));
 
 		CMembersDlg* pkMembersDlg = (CMembersDlg*) GetGameDlg(MEMBERS_DLG);

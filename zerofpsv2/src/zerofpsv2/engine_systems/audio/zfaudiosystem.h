@@ -126,6 +126,8 @@ private:
 
 	unsigned int m_uiCurrentCachSize; // bytes
 	unsigned int m_uiMaxCachSize; // bytes
+	
+	int m_iEnableSound; // enable/disable
 
 	bool m_bIsValid;
 	

@@ -27,7 +27,7 @@ end
 function HeartBeat()
 
 	if HavePath(SIGetSelfID()) then
-		return;
+		return
 	end	
 
 	if ( IsDead(SIGetSelfID()) == 1) then
@@ -38,7 +38,7 @@ function HeartBeat()
 			Delete(SIGetSelfID());
 		end
 		
-		return;
+		return
 	end
 
 	local pos = GetObjectPos(SIGetSelfID());

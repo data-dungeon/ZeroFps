@@ -480,6 +480,11 @@ void GLGuiRender::RenderText( char *strText, Rect rc, int iCursorPos, int iRende
 
 	int fontTexture = m_pkTextureManger->Load(m_pkFont->m_szFileName.c_str(),0);
 
+	
+	int fontTexture_a = fontTexture; //m_pkTextureManger->Load(m_pkFont->m_szFileName.c_str(),0);
+
+
+
 	m_iCursorPos = iCursorPos;
 
 	m_rcTextBox = rc;
@@ -495,7 +500,8 @@ void GLGuiRender::RenderText( char *strText, Rect rc, int iCursorPos, int iRende
 		glEnable(GL_BLEND);					// Enable Blending
 		glDisable(GL_DEPTH_TEST);			// Disable Depth Testing
 		glBlendFunc(GL_ZERO, GL_SRC_COLOR);	
-		m_pkTextureManger->BindTexture( fontTexture );				
+		
+		m_pkTextureManger->BindTexture( fontTexture_a );				
 		glDisable(GL_TEXTURE_2D);
 		
 		if(bMultiLine)

@@ -117,6 +117,8 @@ void DarkMetropolis::GUI_OnCommand(int iID, bool bRMouseBnClick,
 	{
 		strMainWnd = pkMainWnd->GetName();
 
+		printf("%s\n", strMainWnd.c_str());
+
 		list<ZGuiWnd*> kChilds;
 		pkMainWnd->GetChildrens(kChilds);
 

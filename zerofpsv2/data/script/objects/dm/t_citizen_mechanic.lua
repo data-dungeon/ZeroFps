@@ -20,6 +20,17 @@ end
 
 function Init()
 	SetMoveSpeed (SIGetSelfID(), 1.9);
+	AddDefenciveActionQuot(SIGetSelfID(), "data/sound/mechanic/defensive/daq_ahh_that_fuckin_hurt.wav")
+	AddDefenciveActionQuot(SIGetSelfID(), "data/sound/mechanic/defensive/daq_careful.wav")
+	AddDefenciveActionQuot(SIGetSelfID(), "data/sound/mechanic/defensive/daq_damn.wav")
+	AddDefenciveActionQuot(SIGetSelfID(), "data/sound/mechanic/defensive/daq_didnt_do_nothin.wav")
+	AddDefenciveActionQuot(SIGetSelfID(), "data/sound/mechanic/defensive/daq_dont_shoot.wav")
+	AddDefenciveActionQuot(SIGetSelfID(), "data/sound/mechanic/defensive/daq_fuck.wav")
+	AddDefenciveActionQuot(SIGetSelfID(), "data/sound/mechanic/defensive/daq_please_dont_shoot_me.wav")
+	AddDefenciveActionQuot(SIGetSelfID(), "data/sound/mechanic/defensive/daq_shit.wav")
+	AddDefenciveActionQuot(SIGetSelfID(), "data/sound/mechanic/defensive/daq_you_shootin_at_me_for.wav")
+	AddDeathSound(SIGetSelfID(), "data/sound/mechanic/death/death1.wav")
+	AddDeathSound(SIGetSelfID(), "data/sound/mechanic/death/death2.wav")
 end
 
 function HeartBeat()
@@ -50,7 +61,6 @@ function Dead()
 	PlayAnim(SIGetSelfID(), "die");
 	SetNextAnim(SIGetSelfID(), "dead");
 	ClearPathFind(SIGetSelfID());
-	PlaySound (SIGetSelfID(), "death/DEATH6.WAV");
 	SetEntityVar(SIGetSelfID, "deadtime", 0);
 
 	if Random(10) < 3 then

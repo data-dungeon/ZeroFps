@@ -200,6 +200,8 @@ ZFAudioSystem::ZFAudioSystem(int uiMaxCachSize) : ZFSubSystem("ZFAudioSystem")
 	m_bIsValid = false;
 	m_uiCurrentCachSize = 0;
 	m_uiMaxCachSize = uiMaxCachSize;
+
+	RegisterVariable("r_enablesound",&m_iEnableSound,CSYS_INT);
 }
 
 ZFAudioSystem::~ZFAudioSystem()
@@ -508,6 +510,9 @@ void ZFAudioSystem::Update()
 {
 	// Spela upp ogg music.
 	m_pkMusic->Update(m_kPos);
+
+	if(m_iEnableSound == 0)
+		return;
 
 	// Temporär vektor som fylls med det ljud som inte längre kan höras
 	// eller som har stannat.

@@ -83,5 +83,6 @@ private:
 	bool DropItem(ITEM_MOVE_INFO* pkObject);
 	void UpdateInventory(Entity* pkCharacterObject);
 	void UpdateLevelbar(DMCharacterStats* pkStats);
+	void UpdateHealthbar(DMCharacterStats* pkCharacterStats);
 	void CreateCamera();
 };

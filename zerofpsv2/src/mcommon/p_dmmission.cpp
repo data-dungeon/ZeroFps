@@ -1,5 +1,6 @@
 #include "p_dmmission.h" 
 #include "si_dm.h"
+#include "p_dmgameinfo.h"
 
 P_DMMission::P_DMMission()
 {
@@ -25,12 +26,15 @@ P_DMMission::~P_DMMission()
 
 void P_DMMission::Init()
 {
-	ZFVFileSystem* m_pkFileSys = reinterpret_cast<ZFVFileSystem*>(
+	m_pkObjectMan = 
+		static_cast<EntityManager*>(g_ZFObjSys.GetObjectPtr("EntityManager"));
+
+	ZFVFileSystem* pkFileSys = reinterpret_cast<ZFVFileSystem*>(
 		g_ZFObjSys.GetObjectPtr("ZFVFileSystem"));	
 
 	vector<string> t;
 	vector<string> final;
-	m_pkFileSys->ListDir(&t, "data/script/missions/");
+	pkFileSys->ListDir(&t, "data/script/missions/");
 	for(unsigned int i=0; i<t.size(); i++)
 	{
 		if(t[i].find(".lua") != string::npos)
@@ -141,17 +145,12 @@ void P_DMMission::Update()
 				"IsMissionDone", 0, 0);
 			m_fMissionDoneCheckTime = fTimeCheck;
 
-			if(DMLua::g_iMissionStatus == 1)
-			{
-				printf("\n---------------------------------\n");
-				printf("Mission \"%s\" sucess!\n", m_pkCurrentMission->m_strScript.c_str());
-				printf("\n---------------------------------\n");
+			bool bSuccess;
+			int iSuccess = m_pkScriptSys->GetGlobalInt(
+				((ZFScript*)m_pkCurrentMission->m_pkScriptResHandle->GetResourcePtr())->m_pkLuaState, 
+				"Success", &bSuccess);
 
-				m_pkScriptSys->Call(m_pkCurrentMission->m_pkScriptResHandle, 
-					"OnMissionSuccess", 0, 0);
-
-				RemoveMission(m_pkCurrentMission->m_strScript); 
-			}
+			printf("APA = %i\n", iSuccess);
 		}
 
 		//
@@ -163,16 +162,6 @@ void P_DMMission::Update()
 			m_pkScriptSys->Call(m_pkCurrentMission->m_pkScriptResHandle, 
 				"IsMissionFailed", 0, 0);
 			m_fMissionFailedCheckTime = fTimeCheck;
-
-			if(DMLua::g_iMissionStatus == -1)
-			{
-				printf("\n---------------------------------\n");
-				printf("Mission \"%s\" failed!\n", m_pkCurrentMission->m_strScript.c_str());
-				printf("\n---------------------------------\n");
-
-				//m_pkScriptSys->Call(m_pkScriptResHandle, "OnMissionSuccess", 0, 0);
-				RemoveMission(m_pkCurrentMission->m_strScript);
-			}
 		}
 	}
 }
@@ -208,6 +197,17 @@ bool P_DMMission::SetCurrentMission(string strMissionScript)
 	{
 		if(m_vkMissions[i]->m_strScript == strMissionScript)
 		{
+			if(m_pkCurrentMission != NULL)
+			{
+				int ExtraCash = m_pkCurrentMission->m_iCash;
+				int ExtraXP = m_pkCurrentMission->m_iXP;
+
+				if(!RemoveMission(m_pkCurrentMission->m_strScript))
+				{	
+					printf("Failed to remove mission!\n");
+				}
+			}
+
 			m_pkCurrentMission = m_vkMissions[i];
 			bSuccess = true;
 			break;

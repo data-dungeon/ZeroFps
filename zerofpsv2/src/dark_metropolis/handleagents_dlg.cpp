@@ -66,7 +66,7 @@ void CHandleAgents::OnCommand(ZGuiWnd *pkMainWnd, string strClickName)
 		if(bAButtonIsSelected)
 		{
 			m_pkGui->KillWndCapture();
-			LoadDlg("data/script/gui/dm_members.lua");
+			LoadDlg("data/script/gui/dm_members_2.lua");
 			ShowWnd("MembersWnd", true/*, true*/);
 
 			CMembersDlg* pkMembersDlg = (CMembersDlg*) GetGameDlg(MEMBERS_DLG);
