@@ -632,8 +632,9 @@ bool DarkMetropolis::StartNewGame(string strClanName,string strClanColor)
 	
 	
 	//start server
-	GetSystem().RunCommand("server Default server",CSYS_SRC_SUBSYS);			
-
+	//GetSystem().RunCommand("server Default server",CSYS_SRC_SUBSYS);			
+	m_pkFps->StartServer(true,false);
+	
 	//create a new gameinfo entity
 	m_pkGameInfoEntity = m_pkObjectMan->CreateObject();
 	m_pkGameInfoEntity->SetParent(m_pkObjectMan->GetGlobalObject());
@@ -684,7 +685,8 @@ bool DarkMetropolis::LoadGame(string strClanName)
 	cout<<"CLAN NAME:"<<m_pkGameInfoProperty->m_strClanName<<endl;
 	
 	//start server
-	GetSystem().RunCommand("server Default server",CSYS_SRC_SUBSYS);			
+	//GetSystem().RunCommand("server Default server",CSYS_SRC_SUBSYS);			
+	m_pkFps->StartServer(true,false);
 	
 	//set camera position
 	if(m_pkCameraEntity)

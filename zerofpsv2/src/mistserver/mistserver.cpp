@@ -1133,7 +1133,8 @@ void MistServer::RunCommand(int cmdid, const CmdArgument* kCommand)
 	switch(cmdid) {
 		case FID_NEW:
 			m_pkObjectMan->Clear();
-			GetSystem().RunCommand("server Default server",CSYS_SRC_SUBSYS);
+			//GetSystem().RunCommand("server Default server",CSYS_SRC_SUBSYS);
+			m_pkFps->StartServer(true,false);
 			m_strWorldDir = "";
 			SetTitle("MistServer");
 			break;
@@ -1186,7 +1187,8 @@ void MistServer::RunCommand(int cmdid, const CmdArgument* kCommand)
 			
 */						
 			cout<<"starting server"<<endl;
-			GetSystem().RunCommand("server Default server",CSYS_SRC_SUBSYS);			
+			//GetSystem().RunCommand("server Default server",CSYS_SRC_SUBSYS);			
+			m_pkFps->StartServer(true,false);
 			
 			break;		
 		
@@ -1245,7 +1247,8 @@ void MistServer::RunCommand(int cmdid, const CmdArgument* kCommand)
 				SoloToggleView();
 			GetSystem().RunCommand("set e_simspeed 0.0",CSYS_SRC_SUBSYS);
 			m_pkObjectMan->LoadWorld("snapshot");
-			GetSystem().RunCommand("server Default server",CSYS_SRC_SUBSYS);			
+			//GetSystem().RunCommand("server Default server",CSYS_SRC_SUBSYS);			
+			m_pkFps->StartServer(true,false);
 			break;
 
 		case FID_USERS:

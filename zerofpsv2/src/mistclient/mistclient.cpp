@@ -632,6 +632,7 @@ void MistClient::RunCommand(int cmdid, const CmdArgument* kCommand)
 			cout<<"starting server"<<endl;
 			GetSystem().RunCommand("server Default server",CSYS_SRC_SUBSYS);			
 			
+			
 			break;	
 		
 		case FID_UNLOAD:

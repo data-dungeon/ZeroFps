@@ -261,17 +261,20 @@ void ZeroFps::Run_EngineShell()
 	*/
 
 	DevPrintf("conn","Num of Clients: %d", m_pkNetWork->GetNumOfClients());
-	if(m_bServerMode) {
-		for(int i=0; i<4; i++) {
+	if(m_bServerMode) 
+	{
+		for(int i=0; i<4; i++) 
+		{
 			DevPrintf("conn","Client[%d]: %s", i, m_kClient[i].m_strLogin.c_str());
 			// Server gives upp object a time after connection
 
-			if(m_kClient[i].m_pkObject) {
+			if(m_kClient[i].m_pkObject) 
+			{
 				if(GetEngineTime() > (m_kClient[i].m_fConnectTime + 5))
 					m_pkObjectMan->OwnerShip_Give( m_kClient[i].m_pkObject );
-				}
 			}
 		}
+	}
 
 	DevPrintf("common","Num Objects: %d", m_pkObjectMan->GetNumOfObjects());
 	DevPrintf("common","NextObjectID: %d", m_pkObjectMan->GetNextObjectID());
@@ -824,8 +827,6 @@ void ZeroFps::RunCommand(int cmdid, const CmdArgument* kCommand)
 	vector<string> kFiles;
 	vector<string> kCreditsStrings;
 	DevStringPage* page;
-	string strLogin = "user";
-	string strPass  = "userpass";
 	
 	GameMessage gm;
 
@@ -849,46 +850,65 @@ void ZeroFps::RunCommand(int cmdid, const CmdArgument* kCommand)
 			break;
 
 		case FID_CONNECT:
+		{
 			if(kCommand->m_kSplitCommand.size() <= 1) 
 				return;
+		
 
-			
+			/*
+			//local host			
 			if(strcmp(kCommand->m_kSplitCommand[1].c_str(), "lh") == 0) 
 			{
 				strcpy(g_szIpPort, "127.0.0.1:4242");
 			}
 			else
 				sprintf(g_szIpPort, "%s:4242", kCommand->m_kSplitCommand[1].c_str());
+			*/
 
+			string strLogin = "user";
+			string strPass  = "userpass";
+							
+			//login
 			if(kCommand->m_kSplitCommand.size() >= 3)
 				strLogin = kCommand->m_kSplitCommand[2];
 
+			//password
 			if(kCommand->m_kSplitCommand.size() >= 4)
 				strPass = kCommand->m_kSplitCommand[3];
 
 			m_pkConsole->Printf("Connect: %s, %s, %s", g_szIpPort, 
 				strLogin.c_str(), strPass.c_str());
 			m_pkConsole->Printf("Connect to: %s", g_szIpPort);
-
-			m_pkNetWork->ClientStart(g_szIpPort, strLogin.c_str(), strPass.c_str());
 			m_pkConsole->Printf("FID_CONNECT");
+			
+			StartClient(strLogin,strPass,kCommand->m_kSplitCommand[1].c_str(),4242);
+			
+			/*
+			m_pkNetWork->ClientStart(g_szIpPort, strLogin.c_str(), strPass.c_str());
 			m_pkApp->OnClientStart();
 			m_bClientMode = true;
+			*/
 			break;
-
+		}
+			
 		case FID_SERVER:
-			if(kCommand->m_kSplitCommand.size() <= 1) {
+			if(kCommand->m_kSplitCommand.size() <= 1)
+			{
 				m_pkConsole->Printf("You need to give a name for your server.");
 				return;
-				}
+			}
 
 			m_pkConsole->Printf("Start a server with name %s", kCommand->m_kSplitCommand[1].c_str());
 
+			//start server
+			StartServer(true,true,kCommand->m_kSplitCommand[1].c_str());
+			/*
 			m_pkNetWork->ServerStart();
 			m_pkApp->OnServerStart();
 
 			m_bServerMode = true;
 			m_bClientMode = true;
+			*/
 			break;
 	
 		case FID_DIR:
@@ -1022,6 +1042,38 @@ void ZeroFps::RunCommand(int cmdid, const CmdArgument* kCommand)
 			break;
 	}	
 }
+
+
+void ZeroFps::StartServer(bool bClient,bool bNetwork,string strServerName)
+{
+	if(bNetwork)
+		m_pkNetWork->ServerStart();
+	
+	m_bServerMode = true;		
+	if(bClient)
+		m_bClientMode = true;
+
+	m_pkApp->OnServerStart();
+}
+
+void ZeroFps::StartClient(string strLogin,string strPassword,string strServerIP,int iPort)
+{
+	sprintf(g_szIpPort, "%s:%d", strServerIP,iPort);
+	
+	m_pkNetWork->ClientStart(g_szIpPort, strLogin.c_str(), strPassword.c_str());
+	m_bClientMode = true;
+
+	m_pkApp->OnClientStart();
+}
+
+void ZeroFps::StopAll()
+{
+	m_pkNetWork->CloseSocket();
+	
+	m_bServerMode = false;
+	m_bClientMode = false;
+}
+
 
 void ZeroFps::PrintToClient(int iConnectionID, const char* szMsg)
 {

@@ -294,18 +294,21 @@ bool NetWork::IsConnected(int iId)
 
 void NetWork::StartSocket(bool bStartServer)
 {
-	if(m_pkSocket) {
+	if(m_pkSocket) 
+	{
 		cout << "StartSocket: Socket is already open" << endl;
 		return;
-		}
+	}
 
 	int iSocketNum = 0;
 	if(bStartServer)	iSocketNum = 4242;
 	m_pkSocket = SDLNet_UDP_Open( iSocketNum );
-	if(!m_pkSocket) {
+	
+	if(!m_pkSocket) 
+	{
 		cout << "SDLNet_UDP_Open: " <<  SDLNet_GetError() << endl;
 		return;
-		}
+	}
 	
 }
 
@@ -684,22 +687,26 @@ void NetWork::Run()
 
 	if( m_eNetStatus == NET_NONE )	return;
 
+	//reset byte counters for all connections
 	unsigned int i;
-	for(i=0; i<m_RemoteNodes.size(); i++) {
+	for(i=0; i<m_RemoteNodes.size(); i++) 
+	{
 		m_RemoteNodes[i].m_iNumOfBytesRecvNetFrame = 0;
-		}
+	}
 	
 	NetPacket NetP;
 	int iClientID;
 
 	// Recv all packets.
-	while(Recv(&NetP)) {
+	while(Recv(&NetP)) 
+	{
 		// Update Stats
 		iClientID = GetClientNumber(&NetP.m_kAddress);
 		NetP.m_iClientID = iClientID;
 		iRecvBytes += NetP.m_iLength;
 
-		if(iClientID != ZF_NET_NOCLIENT) {
+		if(iClientID != ZF_NET_NOCLIENT)
+		{
 			m_RemoteNodes[iClientID].m_iNumOfPacketsRecv ++;
 			m_RemoteNodes[iClientID].m_iNumOfBytesRecvNetFrame += NetP.m_iLength;
 			m_RemoteNodes[iClientID].m_fLastMessageTime = fEngineTime;
@@ -708,11 +715,12 @@ void NetWork::Run()
 				m_RemoteNodes[iClientID].m_iOutOfOrderNetFrame ++;
 			m_RemoteNodes[iClientID].m_iLastRecvPacket = NetP.m_kData.m_kHeader.m_iOrder;
 			m_RemoteNodes[iClientID].m_kRecvSizeGraph.PushValue((float)(NetP.m_iLength));
-			}
+		}
 		
 		Logf("netpac", " Order: %d, Size: %d\n", NetP.m_kData.m_kHeader.m_iOrder, NetP.m_iLength);
 
-		switch(NetP.m_kData.m_kHeader.m_iPacketType) {
+		switch(NetP.m_kData.m_kHeader.m_iPacketType) 
+		{
 			// If controll handle_controllpacket.
 			case ZF_NETTYPE_CONTROL:
 				HandleControlMessage(&NetP);
@@ -733,11 +741,12 @@ void NetWork::Run()
 					NetP.m_kData.m_kHeader.m_iPacketType,
 					NetP.m_iLength);
 
-			}
 		}
+	}
 
 	// Check for any lost connections
-	for(i=0; i<m_RemoteNodes.size(); i++) {
+	for(i=0; i<m_RemoteNodes.size(); i++)
+	{
 		if(m_RemoteNodes[i].m_eConnectStatus == NETSTATUS_DISCONNECT)
 			continue;
 
@@ -746,17 +755,19 @@ void NetWork::Run()
 		m_RemoteNodes[i].m_iNumOfBytesRecvNetFrame = 0;
 	
 		// Refresh num of recd bytes graphs
-		if(fEngineTime > m_fStatsUpdate) {
+		if(fEngineTime > m_fStatsUpdate) 
+		{
 			m_RemoteNodes[i].m_kRecvGraph.NextValue( );
-			}
+		}
 
-		if(fEngineTime > ( m_RemoteNodes[i].m_fLastMessageTime + 60 )) {
+		if(fEngineTime > ( m_RemoteNodes[i].m_fLastMessageTime + 60 )) 
+		{
 			// Time out this connection.
 			m_pkZeroFps->Disconnect(i);
 			m_pkConsole->Printf("Connection to %d timed out.", i);
 			m_RemoteNodes[i].m_eConnectStatus = NETSTATUS_DISCONNECT;
-			}
 		}
+	}
 
 	if(fEngineTime > m_fStatsUpdate)
 		m_fStatsUpdate = fEngineTime + float(1.0);	

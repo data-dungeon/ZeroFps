@@ -244,6 +244,10 @@ class ENGINE_API ZeroFps : public I_ZeroFps {
 		void MainLoop(void);
 		void QuitEngine();
 		
+		void StartServer(bool bClient = true,bool bNetwork = true,string strServerName="Unkown");
+		void StartClient(string strLogin,string strPassword,string strServerIP,int iPort = 4242);
+		void StopAll();
+		
 		//system 
 		bool StartUp();
 		bool ShutDown();
