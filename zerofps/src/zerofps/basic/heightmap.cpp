@@ -290,12 +290,12 @@ void HeightMap::GenerateTextures() {
 			}
 			else if(slope<50){
 				GetVert(x,z)->texture=2;//slope
-				GetVert(x,z)->color=Vector3(.4,.4,.2);				
+				GetVert(x,z)->color=Vector3(.6,.6,.0);				
 			}				
 			else {
 				if(height<6) {  //if we are very low draw nice sand =)
 					GetVert(x,z)->texture=0;
-					GetVert(x,z)->color=Vector3(1,.95,0.86);												
+					GetVert(x,z)->color=Vector3(2,1.7,1.2);												
 				} else {//else i like som grass
 					GetVert(x,z)->texture=1;
 					GetVert(x,z)->color=Vector3(.35,.65,.0);				
