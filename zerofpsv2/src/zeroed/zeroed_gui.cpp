@@ -2,6 +2,7 @@
 #include "../zerofpsv2/engine_systems/propertys/p_ambientsound.h"
 #include "../zerofpsv2/gui/zguiresourcemanager.h"
 #include "../zerofpsv2/engine/zerofps.h"
+#include "../zerofpsv2/basic/zfbasicfs.h"
 
 void ZeroEd::SetupGuiEnviroment()
 {
@@ -67,6 +68,8 @@ void ZeroEd::SetupGuiEnviroment()
 
 	GUIServerInfo::Load(m_vkServerList);
 	GUIFillServerList();
+
+	AddLoadFoldersToMenu();
 }
 
 void ZeroEd::OnKeyPress(int iID, ZGuiWnd* win)
@@ -535,7 +538,15 @@ void ZeroEd::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 						printf("strPassword = %s\n", item.strPassword.c_str());
 						printf("------------------------------------\n");
 						m_pkZeroFps->StartClient(item.strUserName, item.strPassword, item.strServerIP);
-					}				
+					}
+					else
+					if(pkParentItem && !strcmp(pkParentItem->szNameID, "Menu_Loadmap"))
+					{
+						char szCommand[512];
+						sprintf(szCommand, "load %s", pkItem->pkButton->GetText()); 
+						m_pkZeroFps->m_pkConsole->Execute(szCommand);
+					}
+
 				}
 			}
 
@@ -907,3 +918,22 @@ void ZeroEd::InitMainMenu()
 	}
 }
 
+void ZeroEd::AddLoadFoldersToMenu()
+{
+	vector<string> vkFolders;
+	m_pkBasicFS->ListDir(&vkFolders, m_pkBasicFS->GetCWD() , true);
+
+	ZGuiMenu* pkMenu = ((ZGuiMenu*)GetWnd("MainMenu"));
+
+	for(int i=0; i<vkFolders.size(); i++)
+	{
+		string strZonesPunktDat = vkFolders[i] + "/" + string("zones.dat");
+		if(m_pkBasicFS->FileExist(strZonesPunktDat.c_str()))
+		{			
+			string strID = string("Menu_Loadmap_") + vkFolders[i].c_str();
+			pkMenu->AddItem(vkFolders[i].c_str(), strID.c_str(), "Menu_Loadmap");
+		}
+	}
+	
+	pkMenu->ResizeMenu();
+}

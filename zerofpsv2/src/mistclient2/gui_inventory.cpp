@@ -645,7 +645,7 @@ void InventoryDlg::OnDropItem(int mx, int my)
 		}
 	}
 
-	g_kMistClient.SendMoveItem(iItemID, iTarget, iSlotX, iSlotY);
+	g_kMistClient.SendMoveItem(iItemID, iTarget, iSlotX, iSlotY, 2);
 	
 	g_kMistClient.RequestOpenInventory();
 	if(m_iActiveContainerID)

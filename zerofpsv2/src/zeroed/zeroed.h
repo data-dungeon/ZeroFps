@@ -200,6 +200,7 @@ class ZeroEd :public Application , public ZGuiApp {
 		void InitMainMenu();
 		void GUIFillServerList();
 		void OnGUIAddServer(bool bAdd);
+		void AddLoadFoldersToMenu();
 
 		//camera stuff
 		void  CreateEditCameras();
