@@ -186,7 +186,8 @@ void Console::Execute(char* aText) {
 		return;
 	}
 	
-	g_ZFObjSys.RunCommand(aText);
+	if(!g_ZFObjSys.RunCommand(aText))
+		Printf("Command Not Found");
 }
 
 

@@ -239,6 +239,13 @@ void ZeroEdit::RunCommand(int cmdid, const CmdArgument* kCommand)
 				break;
 			}
 			
+			if(!pkObjectMan->SaveTemplate(kCommand->m_kSplitCommand[1].c_str(),kCommand->m_kSplitCommand[2].c_str()))
+			{
+				pkConsole->Printf("Error Saving template");
+				break;
+			}
+			
+			/*
 			ObjectDescriptor* objtemplate=pkObjectMan->GetTemplate(kCommand->m_kSplitCommand[1].c_str());
 			if(objtemplate==NULL)
 			{
@@ -252,6 +259,7 @@ void ZeroEdit::RunCommand(int cmdid, const CmdArgument* kCommand)
 			objtemplate->SaveToFile(&tempfile);
 			
 			tempfile.Close();				
+			*/
 			
 			pkConsole->Printf("Template %s Saved",kCommand->m_kSplitCommand[1].c_str());
 			break;

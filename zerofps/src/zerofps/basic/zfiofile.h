@@ -2,6 +2,7 @@
 #define _ZFIOFILE_H_
 
 #include "zfio.h"
+#include "basic_x.h"
 #include <cstdio>
 #include <errno.h>
 #include "basic_x.h"

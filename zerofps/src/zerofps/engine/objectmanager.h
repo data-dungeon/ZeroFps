@@ -59,6 +59,8 @@ class ENGINE_API ObjectManager : public ZFObject{
 		ObjectDescriptor* GetTemplate(const char* acName);
 		Object* CreateObject(const char* acName);
 		bool LoadTemplate(const char* acFile);
+		bool SaveTemplate(const char* acName,const char* acFile);
+		bool SaveAllObjects(const char* acFile);
 		
 		void UpdateState(NetPacket* pkNetPacket);	//Updates objects.
 		void PackToClients();						//Packs and Sends to ALL clients.

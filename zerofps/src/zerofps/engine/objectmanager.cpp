@@ -333,5 +333,31 @@ bool ObjectManager::LoadTemplate(const char* acFile)
 	return true;
 }
 
+bool ObjectManager::SaveTemplate(const char* acName,const char* acFile)
+{
+	cout<<"saving template "<<acName<<endl;
+	
+	ObjectDescriptor* objtemplate=GetTemplate(acName);
+	if(objtemplate==NULL)
+		return false;
+	
+	ZFFile kFile;
+	if(!kFile.Open(acFile,true))
+		return false;
+	
+	objtemplate->SaveToFile(&kFile);	
+	
+	kFile.Close();
+		
+	return true;
+}
+
+bool SaveAllObjects(const char* acFile)
+{
+
+
+}
+
+
 
 
