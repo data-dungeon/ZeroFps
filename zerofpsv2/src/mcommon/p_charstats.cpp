@@ -39,7 +39,7 @@ void CharacterProperty::Init()
 
 CharacterProperty::CharacterProperty()
 {
-   m_fReloadTime = 5;
+   m_fReloadTime = 1;
    m_fReloadTimer = 0;
 
    m_iSide = PROPERTY_SIDE_SERVER;
