@@ -19,16 +19,13 @@ class MCOMMON_API Skill
 		ZFResourceHandle*	m_pkScriptFileHandle;	
 		
 		//owner character
-		int	m_iOwnerID;		
-		
+		int	m_iOwnerID;				
 		
 		//skill data
 		int		m_iLevel;
 		string	m_strParentSkill;
 		
-		void UpdateFromScript();
-		
-		
+		void UpdateFromScript();			
 
 	public:
 		string	m_strInGameName;
@@ -38,6 +35,7 @@ class MCOMMON_API Skill
 		
 		float		m_fReloadTime;
 		float		m_fTimeLeft;
+		float		m_fLastUpdate;
 		
 		Skill(const string& strScriptFile, int iOwnerID);
 		~Skill();
@@ -113,6 +111,7 @@ class MCOMMON_API P_CharacterProperty: public Property
 		float			m_fMarkerSize;
 		
 		vector<Skill*>	m_kSkills;
+		float				m_fSkillTimer;
 			
 		//over head text
 		ZMaterial*	m_pkTextMaterial;
@@ -215,6 +214,8 @@ class MCOMMON_API P_CharacterProperty: public Property
 		Skill* GetSkillPointer(const string& strSkillName);
 		void UseSkill(const string& strSkillScript,int iTarget,const Vector3& kPos,const Vector3& kDir);
 		void RemoveAllSkills();
+		
+		void UpdateSkills();
 		
 		//client code
 		void AddChatMsg(const string& strChatMsg);

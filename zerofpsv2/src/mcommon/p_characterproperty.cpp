@@ -28,6 +28,7 @@ Skill::Skill(const string& strScriptFile, int iOwnerID)
 	m_iLevel = 				0;	
 	m_fReloadTime =		1;
 	m_fTimeLeft =			1;
+	m_fLastUpdate = 		-1;
 	m_strSchool =			"UnkownSchool";
 	
 }
@@ -94,6 +95,14 @@ void Skill::Use(int iTargetID,const Vector3& kPos,const Vector3& kDir)
 		return;	
 	}
 	
+	//check reload
+	if(m_fTimeLeft != 0)
+	{
+		cout<<"skill not reloaded yet"<<endl;
+		return;	
+	}
+	
+	
 	static Vector3 kPosCopy,kDirCopy;
 	kPosCopy = kPos;
 	kDirCopy = kDir;
@@ -129,6 +138,8 @@ void Skill::Use(int iTargetID,const Vector3& kPos,const Vector3& kDir)
 		return;
 	}			
 	
+	//reset reload timer
+	m_fTimeLeft = m_fReloadTime;
 }
 
 
@@ -353,6 +364,7 @@ P_CharacterProperty::P_CharacterProperty()
 	m_fChatTime				=	0;
 	m_strChatMsg			=	"";
 	m_fStatTimer			=	0;
+	m_fSkillTimer			=	0;
 	m_iFaction				=	0;
 	m_bWalkSound			=	true;
 	m_fLegLength			=	0;
@@ -506,6 +518,43 @@ void P_CharacterProperty::UpdateStats()
 	
 	
 }
+
+void P_CharacterProperty::UpdateSkills()
+{
+	float fTime = m_pkZeroFps->GetTicks();
+	
+	//update each seccond
+	if( fTime > m_fSkillTimer + 1.0)
+	{
+		m_fSkillTimer = fTime;
+		
+		for(int i = 0;i<m_kSkills.size();i++)
+		{
+			if( (m_pkZeroFps->GetEngineTime() < m_kSkills[i]->m_fLastUpdate) || m_kSkills[i]->m_fLastUpdate == -1)
+			{
+				cout<<"skill time dont match"<<endl;				
+				m_kSkills[i]->m_fLastUpdate =m_pkZeroFps->GetEngineTime();
+				continue; 
+			}
+		
+			//already reloaded
+			if(m_kSkills[i]->m_fTimeLeft == 0)
+				continue;
+				
+			//decrese timeleft
+			m_kSkills[i]->m_fTimeLeft -= m_pkZeroFps->GetEngineTime() - m_kSkills[i]->m_fLastUpdate ;			
+			if(m_kSkills[i]->m_fTimeLeft < 0)
+				m_kSkills[i]->m_fTimeLeft = 0;
+			
+			//update last update time
+			m_kSkills[i]->m_fLastUpdate = m_pkZeroFps->GetEngineTime();
+			
+			if(m_kSkills[i]->m_fTimeLeft == 0)
+				cout<<"skill reloaded:"<<m_kSkills[i]->GetName()<<endl;
+		}
+	}
+}
+
 
 void P_CharacterProperty::SetupContainers()
 {
@@ -834,6 +883,9 @@ void P_CharacterProperty::Update()
 		
 			//update stats
 			UpdateStats();
+			
+			//update skills
+			UpdateSkills();
 		}
 			
 		//CLIENT
