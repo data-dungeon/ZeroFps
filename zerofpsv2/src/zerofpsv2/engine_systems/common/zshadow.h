@@ -87,7 +87,9 @@ class ENGINE_SYSTEMS_API ZShadow  : public ZFSubSystem
 		float 		m_fExtrudeDistance;		//distance to extrude the siluet vertices
 		float			m_fFrontCapOffset;
 		bitset<8>	m_kShadowGroups;
-
+		bool			m_abSaveGroups[8];
+		
+		
 		void DrawCapings(ShadowMesh* pkShadowMesh);
 		void DrawExtrudedSiluet(ShadowMesh* pkShadowMesh);
 		void DrawShadow(float fItensity);
@@ -115,13 +117,13 @@ class ENGINE_SYSTEMS_API ZShadow  : public ZFSubSystem
 		ZShadow();
 		void Update();
 
-		void EnableShadowGroup(int i) {m_kShadowGroups[i] = true;};
-		void DisableShadowGroup(int i) {m_kShadowGroups[i] = false;};
+		void EnableShadowGroup(int i) {	m_kShadowGroups[i] = true;				}
+		void DisableShadowGroup(int i){	m_kShadowGroups[i] = false;			}
 
-		int GetCurrentActiveShadows() { return m_iCurrentActiveShadows;};
-		int GetCurrentShadows() {return m_iCurrentShadows;};
-		int GetCurrentVerts() 	{return m_iCurrentVerts;};
-		int GetBuffertSize()		{return int(m_kShadowMeshs.size()); }
+		int GetCurrentActiveShadows() {	return m_iCurrentActiveShadows;		}
+		int GetCurrentShadows() 		{	return m_iCurrentShadows;				}
+		int GetCurrentVerts() 			{	return m_iCurrentVerts;					}
+		int GetBuffertSize()				{	return int(m_kShadowMeshs.size());	}
 
 		bool StartUp();
 		bool ShutDown();

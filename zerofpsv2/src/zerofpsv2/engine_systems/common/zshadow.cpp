@@ -112,6 +112,15 @@ ZShadow::ZShadow(): ZFSubSystem("ZShadow")
 	RegisterVariable("r_shadowmode",			&m_iShadowMode,CSYS_INT);
 	RegisterVariable("r_shadowdebug",		&m_iDebug,CSYS_INT);
 	RegisterVariable("r_shadowintensity",	&m_fShadowIntensity,CSYS_FLOAT);
+	
+	//ugly damn save shadowgroups hack deluxe alla dvoid
+	char nr[4];
+	for(int i = 0;i<8;i++)
+	{
+		m_abSaveGroups[i] = m_kShadowGroups[i];
+		IntToChar(nr,i);
+		RegisterVariable((string("r_shadow_save_hack")+string(nr)).c_str(), &(m_abSaveGroups[i]) ,CSYS_BOOL);		
+	}
 }
 
 bool ZShadow::StartUp()
@@ -122,9 +131,16 @@ bool ZShadow::StartUp()
 	m_pkEntityMan		= static_cast<EntityManager*>(GetSystem().GetObjectPtr("EntityManager"));
 	m_pkZShaderSystem	= static_cast<ZShaderSystem*>(GetSystem().GetObjectPtr("ZShaderSystem"));
 	
+	//load shadow groups
+	for(int i = 0;i<8;i++)
+	{
+		m_kShadowGroups[i] = m_abSaveGroups[i];
+
+	}	
+	
 	//EnableShadowGroup(0); 
 	//EnableShadowGroup(1); 	
-	EnableShadowGroup(2);
+	//EnableShadowGroup(2);
 	
 	
 	//the material for drawing the shadow models	
@@ -177,6 +193,13 @@ bool ZShadow::ShutDown()
 	delete m_pkShadowMap;
 	delete m_pkShadowModel;
 
+	//save shadow groups
+	for(int i = 0;i<8;i++)
+	{
+		m_abSaveGroups[i] = m_kShadowGroups[i];
+	}
+	
+		
 	return true;
 }
 

@@ -21,7 +21,7 @@ void GuiMsgStartScreen( string strMainWnd, string strController,
 			}
 			else
 			if(strController == "QuitBn")
-			{
+			{		
 				g_kMistClient.m_pkZeroFps->QuitEngine();
 			}
 			else
