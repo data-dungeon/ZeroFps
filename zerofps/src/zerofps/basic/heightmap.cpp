@@ -10,7 +10,7 @@ HeightMap::HeightMap()
  : ZFObject("HeightMap") {
  
  	m_pkFile=static_cast<FileIo*>(g_ZFObjSys.GetObjectPtr("FileIo"));		
-	m_iError=0;
+	m_iError=4;
 	
 	verts=NULL;
 	Create(128);

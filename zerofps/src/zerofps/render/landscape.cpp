@@ -740,8 +740,7 @@ void Render::DrawHMLodSplat(HeightMap* kMap,Vector3 CamPos,int iFps)
 	
 //	glNewList(m_iHmTempList,GL_COMPILE);
 	DrawAllHM(kMap,CamPos);
-//	glEndList();		
-	
+//	glEndList();			
 //	glCallList(m_iHmTempList);		
 		
 		
@@ -757,7 +756,7 @@ void Render::DrawHMLodSplat(HeightMap* kMap,Vector3 CamPos,int iFps)
 		
 	
 	for(int i=1;i<kMap->m_kSets.size();i++)
-	{		
+	{	
 		glActiveTextureARB(GL_TEXTURE0_ARB);	
 		m_pkTexMan->BindTexture(kMap->m_kSets[i].m_acMask,0);	
 		
@@ -782,7 +781,7 @@ void Render::DrawHMLodSplat(HeightMap* kMap,Vector3 CamPos,int iFps)
 
 void Render::DrawAllHM(HeightMap* kMap,Vector3 CamPos)
 {
-	int iPatchSize=32;
+	int iPatchSize=64;
 
 	for(int z=0;z<kMap->m_iHmSize;z+=iPatchSize)
 	{

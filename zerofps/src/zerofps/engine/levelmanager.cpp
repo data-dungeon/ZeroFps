@@ -14,7 +14,7 @@ LevelManager::LevelManager(): ZFObject("LevelManager")
 	m_pkMap=new HeightMap();
 	
 	m_bVisibleZones=true;
-	m_fZoneRadius=250;	
+	m_fZoneRadius=200;	
 	m_kMapBaseDir="../data/maps";
 	
 	m_pkCmd->Add(&m_fZoneRadius,"l_zoneradius",type_float);		
