@@ -767,6 +767,9 @@ void NetWork::HandleControlMessage(NetPacket* pkNetPacket)
 			break;
 
 		case ZF_NETCONTROL_ACKREL:
+			if(pkNetPacket->m_iClientID == ZF_NET_NOCLIENT)
+				break;
+
 			int iRelID, iNumOfAcks;
 			pkNetPacket->Read( iNumOfAcks ); 
 
@@ -1096,17 +1099,19 @@ void NetWork::DisconnectAll()
 {
 	if(!m_pkSocket)	return;
 
-	// Create a disconnect packet and sent it to all connects.
+/*	// Create a disconnect packet and sent it to all connects.
 	NetPacket kNetPRespons;
 	kNetPRespons.Clear();
 	kNetPRespons.m_kData.m_kHeader.m_iPacketType = ZF_NETTYPE_CONTROL;
 	kNetPRespons.Write((unsigned char) ZF_NETCONTROL_DISCONNECT);
 	kNetPRespons.TargetSetClient(ZF_NET_ALLCLIENT);
 	Send2(&kNetPRespons);
-	//SendToAllClients(&kNetPRespons);
+	//SendToAllClients(&kNetPRespons);*/
 
+	cout << "DISCONNECT ALL" << endl;
 	for(unsigned int i=0; i<m_RemoteNodes.size(); i++) {
 		m_RemoteNodes[i].m_eConnectStatus = NETSTATUS_DISCONNECT;
+		m_RemoteNodes[i].Clear();
 	}
 }
 
@@ -1126,6 +1131,9 @@ void NetWork::RunCommand(int cmdid, const CmdArgument* kCommand)
 			break;
 
 		case FID_DNS:
+			DisconnectAll();
+
+			/*
 			if(kCommand->m_kSplitCommand.size() <= 1)
 				return;
 
@@ -1139,6 +1147,7 @@ void NetWork::RunCommand(int cmdid, const CmdArgument* kCommand)
 			}
 			else
 				m_pkConsole->Printf("Failed to find ip for: %s.", kCommand->m_kSplitCommand[1].c_str());
+			*/
 			break;
 		}	
 
