@@ -143,10 +143,6 @@ void CGamePlayDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName,
 				UpdateAgentList();
 			}
 		}
-
-	//	ZGuiWnd* pkActiveCharBn = GetWnd("ActiveCharacterPortraitBn");
-	//	GetWnd("ActiveCharacterPortraitLabel")->m_iZValue = pkActiveCharBn->m_iZValue + 1;
-	//	GetWnd("ActiveCharacterPortraitLabel")->GetParent()->SortChilds();
 	}
 	else
 	if(strClickName == "PauseBn")
@@ -283,8 +279,6 @@ void CGamePlayDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName,
 		{
 			Entity* pkEnt = GetObject(GetSelAgentObject()); 
 
-			//bool bDoubleClick = false;
-
 			if(pkEnt && bRMouseBnClick)
 				m_pkDM->MoveCamera(pkEnt->GetWorldPosV());
 
@@ -294,7 +288,7 @@ void CGamePlayDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName,
 
 bool CGamePlayDlg::InitDlg()
 {
-	if(!m_bInitialized)
+	if(!m_bInitialized) //
 	{
 		ShowWnd("CharPortBn1", false);
 		ShowWnd("CharPortBn2", false);
@@ -339,10 +333,10 @@ bool CGamePlayDlg::InitDlg()
 			new ZGuiSkin(GetTexID("data/textures/gui/dm/label_bk_a.bmp"),1),	// scroll area	
 			new ZGuiSkin(GetTexID("data/textures/gui/dm/thumbbn_u.bmp"),0),	// thumb button		
 			new ZGuiSkin(GetTexID("data/textures/gui/dm/thumbbn_f.bmp"),0),	// thumb button focus	
-			new ZGuiSkin(GetTexID("data/textures/gui/dm/top_u.bmp"),0),	// top button up	
-			new ZGuiSkin(GetTexID("data/textures/gui/dm/top_d.bmp"),0),	// top button down	
-			new ZGuiSkin(GetTexID("data/textures/gui/dm/bottom_u.bmp"),0),	// bottom button up		
-			new ZGuiSkin(GetTexID("data/textures/gui/dm/bottom_d.bmp"),0)  // bottom button down	
+			new ZGuiSkin(GetTexID("data/textures/gui/dm/top_u.bmp"),0),			// top button up	
+			new ZGuiSkin(GetTexID("data/textures/gui/dm/top_d.bmp"),0),			// top button down	
+			new ZGuiSkin(GetTexID("data/textures/gui/dm/bottom_u.bmp"),0),		// bottom button up		
+			new ZGuiSkin(GetTexID("data/textures/gui/dm/bottom_d.bmp"),0)		// bottom button down	
 			);
 	}
 
@@ -407,8 +401,6 @@ void CGamePlayDlg::SelectAgentGUI(int iAgent, bool bSelectModels)
 	if(m_bInitialized == false)
 		return;
 
-//	printf("CGamePlayDlg::SelectAgentGUI\n");
-
 	Entity* pkAgentObject;
 	P_DMCharacter* pkCharProperty;
 	DMCharacterStats* pkCharacterStats;
@@ -461,7 +453,7 @@ void CGamePlayDlg::SelectAgentGUI(int iAgent, bool bSelectModels)
 				ZGuiButton* pkActiveWeaponBn = (ZGuiButton*) 
 					GetWnd("GamePlayDlgWeaponBn");
 				GetWnd("GamePlayDlgWeaponBn")->Show();
-				SetButtonIcon(pkActiveWeaponBn, szTexName, false, true);		
+				SetButtonIcon(pkActiveWeaponBn, szTexName, true, true);		
 			}
 		}
 		else

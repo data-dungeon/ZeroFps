@@ -23,6 +23,8 @@ private:
 	
 	int m_iStartAgent;
 	int m_iStartHireAgent;
+
+	int m_iAgentPrice; // vad varje agent kostar
 	
 	bool SendOutAgent(int iID);
 	bool BuyAgent(int iAgentID);
@@ -31,4 +33,5 @@ private:
 	int GetNumAgentsInBase();
 	int GetNumAgentsToHire();
 	void PrintStats(DMCharacterStats* pkStats);
+
 };

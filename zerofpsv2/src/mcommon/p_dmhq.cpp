@@ -188,6 +188,17 @@ void P_DMHQ::Eject(Entity* pkEnt)
 		pkPath->MakePathFind(m_pkObject->GetWorldPosV()+m_kExitOffset+Vector3( (rand()%20)/10.0,0,(rand()%20)/10.0));
 }
 
+bool P_DMHQ::FireCharacter(int iID)
+{
+	if(EjectCharacter(iID))
+	{
+		m_pkObjMan->Delete(iID);
+		return true;
+	}
+
+	return false;
+}
+
 
 vector<PropertyValues> P_DMHQ::GetPropertyValues()
 {

@@ -33,9 +33,6 @@ void CBriefingDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName, bool bRMou
 
 		if(pkHQ)
 		{
-	//		P_DMMission* pkMissionProperty = (P_DMMission*) 
-	//			pkHQ->GetProperty("P_DMMission");
-
 			P_DMMission* pkMissionProperty = (P_DMMission*) 
 				GetDMObject(GAME_INFO)->GetProperty("P_DMMission");
 

@@ -340,15 +340,15 @@ void CItemTransactionDlg::MoveItemToStockroom(ITEM_MOVE_INFO kItem)
 	if(kItem.m_kFromContainer.pkContainer->MoveItem(
 		*kItem.m_pMoveObject, pkStookroom))
 	{
-		printf("Moving item id %i from container id % to container id %i\n",
-			*kItem.m_pMoveObject, kItem.m_kFromContainer.pkContainer->GetOwnerID(), 
-			pkStookroom->GetOwnerID());
+		//printf("Moving item id %i from container id % to container id %i\n",
+		//	*kItem.m_pMoveObject, kItem.m_kFromContainer.pkContainer->GetOwnerID(), 
+		//	pkStookroom->GetOwnerID());
 	}
 	else
 	{
-		printf("Failed to move item id %i from container id % to container id %i\n",
-			*kItem.m_pMoveObject, kItem.m_kFromContainer.pkContainer->GetOwnerID(), 
-			pkStookroom->GetOwnerID());
+		//printf("Failed to move item id %i from container id % to container id %i\n",
+		//	*kItem.m_pMoveObject, kItem.m_kFromContainer.pkContainer->GetOwnerID(), 
+		//	pkStookroom->GetOwnerID());
 
 		m_strErrorMsg = "Can't put that item in the stockroom!";
 	}
@@ -388,15 +388,15 @@ bool CItemTransactionDlg::MoveItemFromInventory(ITEM_MOVE_INFO kItem)
 	if(kItem.m_kFromContainer.pkContainer->MoveItem(
 		*kItem.m_pMoveObject, pkContainer))
 	{
-		printf("Moving item id %i from container id % to container id %i\n",
-			*kItem.m_pMoveObject, kItem.m_kFromContainer.pkContainer->GetOwnerID(), 
-			pkContainer->GetOwnerID());
+		//printf("Moving item id %i from container id % to container id %i\n",
+		//	*kItem.m_pMoveObject, kItem.m_kFromContainer.pkContainer->GetOwnerID(), 
+		//	pkContainer->GetOwnerID());
 	}
 	else
 	{
-		printf("Failed to move item id %i from container id % to container id %i\n",
-			*kItem.m_pMoveObject, kItem.m_kFromContainer.pkContainer->GetOwnerID(), 
-			pkContainer->GetOwnerID());
+		//printf("Failed to move item id %i from container id % to container id %i\n",
+		//	*kItem.m_pMoveObject, kItem.m_kFromContainer.pkContainer->GetOwnerID(), 
+		//	pkContainer->GetOwnerID());
 
 		m_strErrorMsg = "Can't move that, no space or wrong container.";
 		return false;
@@ -416,15 +416,15 @@ void CItemTransactionDlg::MoveItemToShop(ITEM_MOVE_INFO kItem) // ie.Sell item
 	if(kItem.m_kFromContainer.pkContainer->MoveItem(
 		*kItem.m_pMoveObject, pkShop))
 	{
-		printf("Moving item id %i from container id % to container id %i\n",
-			*kItem.m_pMoveObject, kItem.m_kFromContainer.pkContainer->GetOwnerID(), 
-			pkShop->GetOwnerID());
+		//printf("Moving item id %i from container id % to container id %i\n",
+		//	*kItem.m_pMoveObject, kItem.m_kFromContainer.pkContainer->GetOwnerID(), 
+		//	pkShop->GetOwnerID());
 	}
 	else
 	{
-		printf("Failed to move item id %i from container id % to container id %i\n",
-			*kItem.m_pMoveObject, kItem.m_kFromContainer.pkContainer->GetOwnerID(), 
-			pkShop->GetOwnerID());
+		//printf("Failed to move item id %i from container id % to container id %i\n",
+		//	*kItem.m_pMoveObject, kItem.m_kFromContainer.pkContainer->GetOwnerID(), 
+		//	pkShop->GetOwnerID());
 
 		m_strErrorMsg = "The Shop will not buy that!";
 	}
@@ -486,13 +486,7 @@ int CItemTransactionDlg::Buy(int iItemIndex)
 
 bool CItemTransactionDlg::Sell(int iItemIndex)
 {
-	// Fråga affären vad den vill ge för ett föremål av den typen.
-	// Affären tittar bland alla sina föremål och kollar om det finns
-	// ett liknande föremål, ser på värdet på föremålet som skickas in
-	// och kommer fram till ett pris.
-
 	P_DMShop* pkShop = (P_DMShop*) GetDMObject(HQ)->GetProperty("P_DMShop");
-
 	int iPrice = pkShop->GetBuyPrice(*m_vkFocusCharItems[iItemIndex].m_pMoveObject);
 
 	P_DMGameInfo* pkGameInfo = (P_DMGameInfo*)
@@ -502,9 +496,8 @@ bool CItemTransactionDlg::Sell(int iItemIndex)
 
 	if(iPrice != -1)
 	{
-		printf("The shop buy the item! (price: %i, you have: %i)\n",
-			iPrice, pkGameInfo->m_iMoney);
-
+		//printf("The shop buy the item! (price: %i, you have: %i)\n",
+		//	iPrice, pkGameInfo->m_iMoney);
 		return true;
 	}
 	else

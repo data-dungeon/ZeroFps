@@ -10,7 +10,6 @@ public:
 	void OnKeyPress(int iKey, ZGuiWnd* pkCurrentMainWnd);
 
 	void StartFade(float fGameTime);
-	void EndFade();
 	void UpdateFade(float fGameTime);
 	bool InitDlg();
 

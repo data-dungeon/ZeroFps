@@ -41,12 +41,6 @@ void CNewGameDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName,
 				m_pkAudioSys->GetListnerPos()); 
 		}
 	}
-/*	else
-	if(strClickName == "StartNewGameBack")
-	{
-		LoadDlg("data/script/gui/dm_start.lua");
-		pkMainWnd->Hide();
-	}	*/	
 	else
 	if(strClickName == "SelectNextBaseBn")
 	{
@@ -86,26 +80,9 @@ void CNewGameDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName,
 
 void CNewGameDlg::AddContinueButton()
 {
-	// Flytta ner alla knappar under "Start" knappen och lägg visa
-	// continue knappen
-
 	if(GetGameInfo() == NULL)
 	{
-		//char* aButtons[] = {
-		//	"OptionsBn", "QuitBn", "SaveNewGameBn", "CreditsBn",
-		//	"LoadNewGameBn"
-		//};
-
-		//for(int i=0; i<sizeof(aButtons)/sizeof(aButtons[1]); i++)
-		//{
-		//	GetWnd(aButtons[i])->Move(0,24,false,true);
-		//	GetWnd(aButtons[i])->SetMoveArea(
-		//		GetWnd(aButtons[i])->GetScreenRect(), true);
-		//}
-
-		//ShowWnd("ContinueGameBn", true);
 		GetWnd("ContinueGameBn")->Show();
-	//	GetWnd("ContinueGameBn")->SetPos(365,122,false,true);
 	}
 }
 
@@ -132,30 +109,9 @@ void CNewGameDlg::StartFade(float fGameTime)
 
 		if(strcmp(pkWnd->GetName(), "ContinueGameBn") != 0)
 			pkWnd->Hide();
-
 	}
 }
 
-void CNewGameDlg::EndFade()
-{
-	//GetWnd("DMStartWnd")->GetSkin()->m_afBkColor[0] = 1;
-	//GetWnd("DMStartWnd")->GetSkin()->m_afBkColor[1] = 1;
-	//GetWnd("DMStartWnd")->GetSkin()->m_afBkColor[2] = 1;
-
-	//list<ZGuiWnd*> kChilds;
-	//GetWnd("DMStartWnd")->GetChildrens(kChilds);
-
-	//list<ZGuiWnd*>::iterator it = kChilds.begin();
-	//for( ; it != kChilds.end(); it++)
-	//{
-	//	ZGuiWnd* pkWnd = (*it);
-
-	//	pkWnd->GetSkin()->m_afBkColor[0] = 0.75f;
-	//	pkWnd->GetSkin()->m_afBkColor[1] = 0.75f;
-	//	pkWnd->GetSkin()->m_afBkColor[2] = 0.75f;
-
-	//}
-}
 
 void CNewGameDlg::UpdateFade(float fFrameTime)
 {
@@ -248,7 +204,6 @@ void CNewGameDlg::SetFade(float fColor)
 				((ZGuiButton*)pkWnd)->GetButtonUpSkin()->m_afBkColor[0] = 0.75f;
 				((ZGuiButton*)pkWnd)->GetButtonUpSkin()->m_afBkColor[1] = 0.75f;
 				((ZGuiButton*)pkWnd)->GetButtonUpSkin()->m_afBkColor[2] = 0.75f;
-
 			}
 		}
 	}

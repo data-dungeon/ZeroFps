@@ -106,8 +106,6 @@ void CMissionDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName,
 				break;
 			}
 		}
-
-
 	}
 	
 }
@@ -159,8 +157,6 @@ void CMissionDlg::UpdateMessageboxes(int iVectorOffset)
 
 	vector<DMMissionInfo> vkInfo;
 	pkMissionProperty->GetPossibleMissions(reputation, vkInfo); 
-
-	//printf("Num possible missions: %i\n", vkInfo.size());
 
 	unsigned int iStart_index = iVectorOffset;// - vkInfo.size();
 

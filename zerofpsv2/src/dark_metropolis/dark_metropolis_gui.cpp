@@ -178,8 +178,6 @@ void DarkMetropolis::GUI_OnCommand(int iID, bool bRMouseBnClick,
 	if(strClickName.empty())
 		return;
 
-	printf("strClickName = %s, %s\n", strClickName.c_str(), strMainWnd.c_str());
-
 	if(strMainWnd == "DMStartWnd" ||
 		strMainWnd == "DMOptionsWnd")
 	{
@@ -418,8 +416,6 @@ void DarkMetropolis::GUI_OnSelectCB(int iListBoxID, int iItemIndex,
 
 	string strMainWnd = pkMain->GetName();
 
-	printf("strMainWnd = %s\n", strMainWnd.c_str());
-
 	if(strMainWnd == "ItemTransactionWnd" && pkComboBox != NULL)
 	{
 		m_pkItemTransactionDlg->OnSelectCB(pkComboBox, iItemIndex);
@@ -540,8 +536,6 @@ void DarkMetropolis::GUI_OnMoveSlider(int iID, int iPos, ZGuiWnd* pkMainWnd)
 
 	if(strCtrl.empty())
 		return;
-
-	printf("%s\n", strCtrl.c_str());
 
 	if(strMainWnd == "DMOptionsWnd")
 	{
@@ -705,8 +699,6 @@ bool DarkMetropolis::GUI_NewGame(ZGuiWnd *pkMainWnd)
 		if(max_x < pkData->m_kPos.x) max_x = pkData->m_kPos.x;
 		if(max_z < pkData->m_kPos.z) max_z = pkData->m_kPos.z;
 	}
-	printf("world min = %f, %f\n", min_x, min_z);
-	printf("world max = %f, %f\n", max_x, max_z);
 
 	m_fWorldMinX = min_x;
 	m_fWorldMinY = min_z;

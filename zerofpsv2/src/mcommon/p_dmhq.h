@@ -43,6 +43,7 @@ class MCOMMON_API P_DMHQ: public Property {
 		void GetCharacters(vector<int>* m_pkEntitys);
 		bool EjectCharacter(int iID);
 		void EjectAllCharacters();
+		bool FireCharacter(int iID);
 		
 		void SpawnNewCharacter(int iNr = -1);
 		void RandomizeHireList(int iNr);

@@ -23,7 +23,6 @@ public:
 
 	void SetWindowMode(WINDOW_MODE eType);
 	const WINDOW_MODE GetWindowMode() { return m_eWidowMode; }
-	void UpdateCamera();
 
 	void OnKeyPress(int iKey, ZGuiWnd* pkCurrentMainWnd);
 
@@ -34,8 +33,6 @@ protected:
 
 private:
 
-	Camera* m_pkModellCamera;
-	Entity*	m_pkCameraObject;
 	ZeroFps* m_pkFps;
 
 	WINDOW_MODE m_eWidowMode;
@@ -86,5 +83,4 @@ private:
 	void UpdateInventory(Entity* pkCharacterObject);
 	void UpdateLevelbar(DMCharacterStats* pkStats);
 	void UpdateHealthbar(DMCharacterStats* pkCharacterStats);
-	void CreateCamera();
 };

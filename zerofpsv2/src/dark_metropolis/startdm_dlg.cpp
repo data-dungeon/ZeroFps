@@ -280,7 +280,6 @@ void CStartDMDlg::OnClick(int x, int y, bool bMouseDown, bool bLeftButton, ZGuiW
 
 void CStartDMDlg::CancelIntro()
 {
-	printf("cancel\n");
 	GetWnd("DMIntroWnd")->Hide();
 	m_bPlayIntro = false;	
 
@@ -288,7 +287,6 @@ void CStartDMDlg::CancelIntro()
 	m_pkGui->SetCaptureToWnd(GetWnd("DMStartWnd")); 
 	
 	m_pkGui->PlaceWndFrontBack(GetWnd("DMStartWnd"), true); 
-	
 }
 
 int CStartDMDlg::GetNextPicture()
@@ -331,7 +329,7 @@ int CStartDMDlg::GetNextPicture()
 		if(bOK)
 		{
 			m_vkPlayedPictures.push_back(picture);
-			printf("Printing credits for: %s\n", Labels[picture]);
+			//printf("Printing credits for: %s\n", Labels[picture]);
 			return picture;
 		}
 	}

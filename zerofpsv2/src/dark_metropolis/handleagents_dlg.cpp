@@ -11,6 +11,7 @@ CHandleAgents::CHandleAgents() : CGameDlg("AgentsWnd", &g_kDM)
 	m_iStartAgent = 0;
 	m_iStartHireAgent = 0;
 	m_iSelAgentToHire = -1;
+	m_iAgentPrice = 100;
 }
 
 CHandleAgents::~CHandleAgents()
@@ -29,58 +30,6 @@ void CHandleAgents::OnCommand(ZGuiWnd *pkMainWnd, string strClickName,
 
 		m_pkAudioSys->StartSound("data/sound/computer beep 5.wav", 
 			m_pkAudioSys->GetListnerPos()); 
-	}
-	else
-	if(strClickName == "AgentsInfoBn")
-	{
-		//DMCharacterStats empty;
-		//empty.m_strName = "";
-
-		//m_kViewAgentInfo = empty;
-
-		//int sel_agent;
-		//bool bAButtonIsSelected=false;
-		//for(unsigned int i=0; i<m_vkCharsInBaseBns.size(); i++)
-		//{
-		//	if(m_vkCharsInBaseBns[i].first->IsChecked())
-		//	{
-		//		sel_agent = i;
-		//		m_iSelAgent = m_vkCharsInBaseBns[sel_agent].second;
-		//		bAButtonIsSelected=true;
-
-		//		m_kViewAgentInfo = *((P_DMCharacter*)
-		//			GetObject(m_iSelAgent)->GetProperty("P_DMCharacter"))->GetStats(); 
-		//		break;
-		//	}
-		//}
-
-		//for( unsigned int i=0; i<m_vkAgentsToHireBns.size(); i++)
-		//{
-		//	if(m_vkAgentsToHireBns[i].first->IsChecked())
-		//	{
-		//		m_kViewAgentInfo = m_vkAgentsToHireBns[i].second;
-		//		bAButtonIsSelected=true;
-		//		break;
-		//	}
-		//}
-
-		//if(bAButtonIsSelected)
-		//{
-		//	m_pkGui->KillWndCapture();
-		//	LoadDlg("data/script/gui/dm_members_2.lua");
-		//	ShowWnd("MembersWnd", true/*, true*/);
-
-		//	CMembersDlg* pkMembersDlg = (CMembersDlg*) GetGameDlg(MEMBERS_DLG);
-
-		//	if(pkMembersDlg)
-		//		pkMembersDlg->SetWindowMode(
-		//			CMembersDlg::HQ_BROWSE_MEMBERS_AND_AGENTS_AVAILABLE_FOR_HIRING); 
-
-		//	m_pkGui->SetCaptureToWnd(GetWnd("MembersWnd"));
-
-		//	m_pkAudioSys->StartSound("data/sound/computer beep 5.wav", 
-		//		m_pkAudioSys->GetListnerPos()); 
-		//}
 	}
 	else
 	if(strClickName == "SendOutAgentBn")
@@ -107,6 +56,8 @@ void CHandleAgents::OnCommand(ZGuiWnd *pkMainWnd, string strClickName,
 					m_vkCharsInBaseBns[i].first->Hide();
 
 				((CGamePlayDlg*)GetGameDlg(GAMEPLAY_DLG))->UpdateAgentList();
+
+				m_iSelAgent = -1;
 				break;
 			}
 		}
@@ -157,6 +108,25 @@ void CHandleAgents::OnCommand(ZGuiWnd *pkMainWnd, string strClickName,
 
 			m_pkAudioSys->StartSound("data/sound/computer beep 5.wav", 
 				m_pkAudioSys->GetListnerPos()); 
+		}
+	}
+	else
+	if(strClickName == "FireAgentBn" && m_iSelAgent != -1)
+	{
+		if(((P_DMHQ*)GetDMObject(HQ)->GetProperty("P_DMHQ"))->FireCharacter(m_iSelAgent))
+		{
+			m_iSelAgent = -1;
+			UpdateAgentInBaseList(m_iStartAgent);
+
+			P_DMGameInfo* pkGameInfo = (P_DMGameInfo*)
+				GetDMObject(GAME_INFO)->GetProperty("P_DMGameInfo");
+			
+			// Öka pengar
+			pkGameInfo->m_iMoney += m_iAgentPrice;
+
+			char szText[50];
+			sprintf(szText, "Money: %i", pkGameInfo->m_iMoney);
+			SetText("AgentsMoneyLabel", szText);
 		}
 	}
 	else
@@ -348,6 +318,26 @@ bool CHandleAgents::InitDlg()
 			m_vkAgentsToHireBns[i].first->GetUncheckedSkin()->m_iBkTexID = -1; 
 			m_vkAgentsToHireBns[i].second.m_strName = "";
 		}		
+
+		//////////////////////////////////////////////////////////////////////////////
+		// Hämta priset på en agent på ett väldigt osnyggt sätt
+		// (jag kollar vad som står mellan parantestecknen i
+		// texten för knappen som skapas i filen dm_agents2.lua.
+		// OSNYGG SISTA I MINUTEN LÖSNING (för att slippa bygga om världen efter att
+		// ha laggt till data i character propertyn)
+		bool bCount=false;
+		char szLabel[50], szPrice[10];
+		strcpy(szLabel, GetWnd("HireAgentBn")->GetText());
+		int c=0;
+		for(int i=0; i<strlen(szLabel); i++)
+		{
+			if(szLabel[i-1] == '(') bCount=true;
+			if(szLabel[i] == ')') bCount=false;
+			if(bCount) szPrice[c++] = szLabel[i];
+		}
+		szPrice[c] = '\0';
+		m_iAgentPrice = atoi(szPrice);
+		//////////////////////////////////////////////////////////////////////////////
 	}
 
 	UpdateAgentInBaseList(m_iStartAgent);
@@ -362,39 +352,18 @@ bool CHandleAgents::InitDlg()
 
 bool CHandleAgents::BuyAgent(int iAgentID)
 {
-	int iPrice = 100;
+	int iPrice = m_iAgentPrice;
 
 	P_DMGameInfo* pkGameInfo = (P_DMGameInfo*)
 		GetDMObject(GAME_INFO)->GetProperty("P_DMGameInfo");
 
-	//////////////////////////////////////////////////////////////////////////////
-	// Hämta priset på en agent på ett väldigt osnyggt sätt
-	// (jag kollar vad som står mellan parantestecknen i
-	// texten för knappen som skapas i filen dm_agents2.lua.
-	// OSNYGG SISTA I MINUTEN LÖSNING (för att slippa bygga om världen efter att
-	// ha laggt till data i character propertyn)
-	bool bCount=false;
-	char szLabel[50], szPrice[10];
-	strcpy(szLabel, GetWnd("HireAgentBn")->GetText());
-	int c=0;
-	for(int i=0; i<strlen(szLabel); i++)
-	{
-		if(szLabel[i-1] == '(') bCount=true;
-		if(szLabel[i] == ')') bCount=false;
-		if(bCount) szPrice[c++] = szLabel[i];
-	}
-	szPrice[c] = '\0';
-	iPrice = atoi(szPrice);
-	//////////////////////////////////////////////////////////////////////////////
-
-	if(pkGameInfo->m_iMoney - iPrice > 0)
+	if(pkGameInfo && (pkGameInfo->m_iMoney - iPrice > 0) )
 	{
 		if(iAgentID != -1)
 		{
 			((P_DMHQ*)GetDMObject(HQ)->GetProperty("P_DMHQ"))->SpawnNewCharacter(iAgentID);
 			UpdateAgentToHireList(m_iStartHireAgent);
 			UpdateAgentInBaseList(m_iStartAgent);
-
 
 			pkGameInfo->m_iMoney -= iPrice;
 
@@ -418,7 +387,6 @@ bool CHandleAgents::SendOutAgent(int iAgentID)
 
 		if(pkHQ->EjectCharacter( iAgentID ))
 		{
-			printf("Sending out characterd id %i", iAgentID);
 			((CGamePlayDlg*)GetGameDlg(GAMEPLAY_DLG))->SelectAgentGUI(iAgentID, true);
 			((CGamePlayDlg*)GetGameDlg(GAMEPLAY_DLG))->UpdateAgentList();
 			return true;
@@ -439,8 +407,6 @@ void CHandleAgents::UpdateAgentInBaseList(int iStartAgent)
 
 		vector<int> vkCharsInBase;
 		pkHQ->GetCharacters(&vkCharsInBase);
-
-		printf("There are %i in the HQ\n", vkCharsInBase.size());
 
 		for(unsigned int i=0; i<7; i++)
 		{
@@ -527,8 +493,6 @@ void CHandleAgents::UpdateAgentToHireList(int iStartAgent)
 		P_DMHQ* pkHQ = (P_DMHQ*) pkHQObject->GetProperty("P_DMHQ");
 
 		vector<DMCharacterStats>* vkAgetsToHire = pkHQ->GetHireList();
-
-		printf("There are %i to hire!\n", vkAgetsToHire->size());
 
 		for(unsigned int i=0; i<7; i++)
 		{

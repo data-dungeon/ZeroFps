@@ -5,7 +5,6 @@
 #include "gameplay_dlg.h"
 #include "handleagents_dlg.h"
 #include "./members_dlg.h"
-#include "../zerofpsv2/basic/zguifont.h"
 
 CMembersDlg::CMembersDlg() : CGameDlg("MembersWnd", &g_kDM)
 {
@@ -22,7 +21,6 @@ CMembersDlg::CMembersDlg() : CGameDlg("MembersWnd", &g_kDM)
 
 	m_pkMoveInfo = NULL;
 	m_pkSelectInfo = NULL;
-	m_pkModellCamera = NULL;
 
 	m_pkFps = static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
 }
@@ -143,19 +141,9 @@ void CMembersDlg::SetWindowMode(WINDOW_MODE eType)
 	ShowWnd("MemberSelItemBorder", false);
 	m_pkMoveButton = NULL;
 
-	//if(m_pkModellCamera == NULL)
-	//{
-	//	CreateCamera();
-	//}
-	//else
-	//{
-	//	ShowWnd("TestCameraWnd", true);
-	//}
-
 	switch(eType)
 	{
 		case HQ_EQUIP_MEMBERS:
-
 
 			ShowWnd("MembersEquipBn", true); // visa equip knappen
 			ShowWnd("MembersDropItemBn", false); // dölj drop knappen
@@ -324,21 +312,6 @@ void CMembersDlg::SwitchCharacter(bool bNext)
 
 void CMembersDlg::SetStats(DMCharacterStats* pkCharacterStats)
 {
-	//static ZGuiFont* pkFont = NULL;
-
-	//if(pkFont == NULL)
-	//{
-	//	ZGuiFont* pkFont = new ZGuiFont(16,16,0,221222);				
-	//	pkFont->CreateFromFile("data/textures/text/test2.bmp");			
-	//	
-	//}
-
-	//
-	//	GetWnd("MemberName")->SetFont(pkFont);
-	//	GetWnd("MemeberArmor")->SetFont(pkFont);
-	//	GetWnd("MemberSpeed")->SetFont(pkFont);
-	//	GetWnd("MemeberWage")->SetFont(pkFont);
-
 	char szText[150];	
 
 	sprintf(szText, "Name: %s", pkCharacterStats->m_strName.c_str());
@@ -353,28 +326,8 @@ void CMembersDlg::SetStats(DMCharacterStats* pkCharacterStats)
 	sprintf(szText, "Wage: %i%", (int) pkCharacterStats->m_fWage);
 	GetWnd("MemeberWage")->SetText(szText);
 
-
-	//char szText[50];ok
-
-	//sprintf(szText, "Agent %s", pkCharacterStats->m_strName.c_str());
-	//SetText("CurrentMemberNumberLabel", szText);
-	//SetText("MemberNameField", (char*) pkCharacterStats->m_strName.c_str());
-	//SetNumber("MembersArmourField", (int) pkCharacterStats->m_fArmour);
-	//SetNumber("MemberSpeedField", (int) pkCharacterStats->m_fSpeed);
-	//SetNumber("MemberWageField", (int) pkCharacterStats->m_fWage);
-
-	//sprintf(szText, "%i/%i", pkCharacterStats->m_iLife, 
-	//	pkCharacterStats->m_iMaxLife);
-	//SetText("MemberLifeField", szText);
-
 	UpdateLevelbar(pkCharacterStats);
 	UpdateHealthbar(pkCharacterStats);
-
-	//string szTexName = string("data/textures/gui/dm/portraits/") +
-	//	pkCharacterStats->m_strIcon;
-
-	//GetWnd("MemberIcon")->GetSkin()->m_iBkTexID = 
-	//	GetTexID((char*)szTexName.c_str());
 }
 
 void CMembersDlg::SetCharacterStats(Entity* pkCharacterObject)
@@ -981,9 +934,7 @@ void CMembersDlg::UpdateHealthbar(DMCharacterStats* pkCharacterStats)
 
 			GetWnd("HealthBarFront")->Resize(
 				(int)(procent_av_next_level*MAX_SIZE_LEVELBAR),20,true); 
-
 		}
-
 	}
 
 	if(bFailed)
@@ -991,48 +942,6 @@ void CMembersDlg::UpdateHealthbar(DMCharacterStats* pkCharacterStats)
 		SetText("HealthBarTopic", "");
 		GetWnd("HealthBarFront")->Resize(0,20,true); 
 	}
-}
-
-void CMembersDlg::CreateCamera()
-{
-	//create camera
-	m_pkModellCamera=new Camera(Vector3(0,0,0),Vector3(0,0,0),90,1.333,0.25,250);	
-	m_pkModellCamera->SetName("ModellCamera");
-	m_pkModellCamera->SetRender(true);
-	m_pkModellCamera->SetSelected(true);
-	
-	EntityManager* pkObjectMan = static_cast<EntityManager*>(g_ZFObjSys.GetObjectPtr("EntityManager"));
-	m_pkCameraObject = pkObjectMan->CreateObjectFromScript("data/script/objects/t_camedit.lua");
-	
-	ZGuiWnd* pkWnd = CreateWnd(Wnd, "TestCameraWnd", "GuiMainWnd", "", 0,0, 256, 256, 0);
-	pkWnd->SetRenderTarget(m_pkModellCamera); 
-	pkWnd->GetSkin()->m_bTransparent = false; //true; 
-
-	if(m_pkCameraObject) 
-	{
-		m_pkCameraObject->SetParent( pkObjectMan->GetWorldObject() );
-		P_Camera* m_pkCamProp = (P_Camera*)m_pkCameraObject->GetProperty("P_Camera");
-		m_pkCameraObject->SetLocalPosV(Vector3(0,0,0));
-		m_pkCamProp->SetCamera(m_pkModellCamera);
-		m_pkCameraObject->GetSave() = false;
-	}
-}
-
-void CMembersDlg::UpdateCamera()
-{
-	//if(m_pkModellCamera)
-	//{
-	//	if(GetWnd("TestCameraWnd")->IsVisible())
-	//	{
-	//		m_pkModellCamera->SetRender(true);			
-	//		//m_pkModellCamera->ClearViewPort(); 
-	//		//m_pkModellCamera->UpdateAll(256, 256);
-	//	}
-	//	else
-	//	{
-	//		//m_pkModellCamera->SetRender(false);			
-	//	}
-	//}
 }
 
 void CMembersDlg::OnEquip(int iItemID, DMContainer* pkDestContainer)
