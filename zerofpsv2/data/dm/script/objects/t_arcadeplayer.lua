@@ -20,7 +20,7 @@ function Create()
 			
 			InitParameter("radius",0.5);
 			
-			InitParameter("group",1);
+			InitParameter("group",2);
 			InitParameter("groupflag",0);
 			InitParameter("groupflag",1);
 			

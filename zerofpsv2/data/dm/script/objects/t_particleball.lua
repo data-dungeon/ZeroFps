@@ -12,7 +12,7 @@ function Create()
 --			InitParameter("polygontest","true");
 			InitParameter("radius",-1);
 			InitParameter("gravity","true");
-			InitParameter("group",2);
+			InitParameter("group",3);
 			InitParameter("groupflag",0);
 --			InitParameter("groupflag",1);			
 			InitParameter("airfriction",0.5);
