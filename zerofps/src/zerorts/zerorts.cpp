@@ -141,7 +141,7 @@ void ZeroRTS::OnIdle()
 			
 	Input();
 	
-//	TileEngine::m_pkInstance->Draw();
+	TileEngine::m_pkInstance->Draw();
 
 /* //COMMENT OUT BY DVOID
 	PickInfo p = Pick();
@@ -406,6 +406,11 @@ void ZeroRTS::Input()
 			m_pkUserPanel->OnSelectObjects(pkObjectMan->GetObjectByNetWorkID(
 				info.iObject));
 		}
+		else
+		{
+			if(pkInput->Pressed(KEY_B))
+				m_pkConstructMan->Build("ZeroRTSFactory", info.kSquare); 
+		}
 	}
 	
 	if(pkInput->Action(m_iActionScroll))
@@ -497,11 +502,10 @@ void ZeroRTS::RunCommand(int cmdid, const CmdArgument* kCommand)
 			
 			//setup tile engine
 			m_pkTileEngine->CreateMap();
-			m_pkConstructMan->Init();
+			m_pkConstructMan->Init("techtree.txt");
 			
 			pkConsole->Printf("Everything is loaded ,Starting server");
-			g_ZFObjSys.RunCommand("server Default server");
-			
+			g_ZFObjSys.RunCommand("server Default server");			
 			break;		
 		
 		case FID_UNLOAD:

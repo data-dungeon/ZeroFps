@@ -1,22 +1,25 @@
 [building0]
-name=command center
+name=ZeroRTSCommandCenter
 id=0
 giver=-1
 level=0
+parent=0
 cost=100
 
 [building1]
-name=power plant
+name=ZeroRTSPowerPlant
 id=1
 giver=0
 level=1
+parent=1
 cost=100
 
 [building2]
-name=radar tower
+name=ZeroRTSRadar
 id=2
 giver=1
 level=2
+parent=2
 cost=100
 
 [building3]
@@ -24,6 +27,7 @@ name=guard tower mg
 id=3
 giver=2
 level=3
+parent=3
 cost=100
 
 [building4]
@@ -31,6 +35,7 @@ name=guard tower heavy
 id=4
 giver=2
 level=3
+parent=3
 cost=100
 	
 [building5]	
@@ -38,151 +43,174 @@ name=guard tower missile
 id=5
 giver=2
 level=3
+parent=3
 cost=100
 
 [building6]
 name=ap shells
-id=6
+id=11
 giver=10
-level=4
+level=6
+parent=11
 cost=100
 	
 [building7]
 name=hw mg bullets
-id=7
+id=12
 giver=10
-level=4
+level=6
+parent=11
 cost=100 
 
 [building8]
-name=heavy tank
-id=8
+name=ZeroRTSHeavyTank
+id=13
 giver=10
-level=4
+parent=0
+level=6
+parent=11
 cost=100
 
 [building9]
 name=missile truck
-id=9
+id=14
 giver=10
-level=4
+level=6
+parent=11
 cost=100
 
 [building10]
-name=weapon factory
+name=ZeroRTSWeaponFactory
 id=10
-giver=2
-level=3
+giver=9
+level=5
+parent=10
 cost=100
 
 [building11]
 name=jeep
-id=11
-giver=2
-level=3
+id=15
+giver=9
+level=5
+parent=10
 cost=100
 
 [building12]
-name=light tank
-id=12
-giver=2
-level=3
+name=ZeroRTSLightTank
+id=16
+giver=9
+level=5
+parent=10
 cost=100
 
 [building13]
-name=factory
-id=13
+name=ZeroRTSFactory
+id=9
 giver=1
-level=2
+level=4
+parent=9
 cost=100
 
 [building14]
-name=barack
-id=14
+name=ZeroRTSBarack
+id=17
 giver=1
-level=2
+level=7
+parent=17
 cost=100
 	
 [building15]
-name=traing facility
-id=15
-giver=14
-level=3
+name=ZeroRTSTraining
+id=18
+giver=17
+level=8
+parent=18
 cost=100
 
 [building16]
 name=navy seals training
-id=16
-giver=15
-level=4
+id=19
+giver=18
+level=9
+parent=19
 cost=100
 
 [building17]
 name=officer
-id=17
-giver=15
-level=4
+id=20
+giver=18
+level=9
+parent=19
 cost=100
 
 [building18]
 name=mg infantry
-id=18
-giver=14
-level=3
+id=21
+giver=17
+level=8
+parent=18
 cost=100
 
 [building19]
 name=rocket infantry
-id=19
-giver=14
-level=3
+id=22
+giver=17
+level=8
+parent=18
 cost=100
 
 [building20]
-name=shipyard
-id=20
+name=ZeroRTSShipYard
+id=23
 giver=1
-level=2
+level=10
+parent=23
 cost=100
 
 [building21]
 name=destroyer
-id=21
-giver=20
-level=3
+id=24
+giver=23
+level=11
+parent=24
 cost=100
 
 [building22]
 name=transport ship
-id=22
-giver=20
-level=3
+id=25
+giver=23
+level=11
+parent=24
 cost=100
 
 [building23]
 name=necular prupultion		
-id=23
-giver=20
-level=3
+id=26
+giver=23
+level=11
+parent=24
 cost=100
 
 [building24]
-name=supply center		
-id=24
+name=ZeroRTSSuply		
+id=6
 giver=0
 level=1
+parent=1
 cost=100
 
 [building25]
-name=enginering crew
-id=25
+name=ZeroRTSEngineringCrew
+id=7
 giver=0
 level=1
+parent=1
 cost=100
 
 [building26]
 name=transport truck
-id=26
+id=8
 giver=0
+parent=1
 level=1
 cost=100

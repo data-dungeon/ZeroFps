@@ -70,17 +70,22 @@ class object
 		class ZeroRTSCommandCenter
 			parent ZeroRTSUnit
 			set MadProperty m_kMadFile /data/mad/rts/build/cmd.mad
-			set MadProperty m_fScale 0.3
+			set MadProperty m_fScale 1
 
 		class ZeroRTSFactory
 			parent ZeroRTSUnit
 			set MadProperty m_kMadFile /data/mad/rts/build/factory.mad
 			set MadProperty m_fScale 0.3
+			set P_ServerUnit m_cWidth 5
+			set P_ServerUnit m_cHeight 5
 
 		class ZeroRTSPowerPlant
 			parent ZeroRTSUnit
 			set MadProperty m_kMadFile /data/mad/rts/build/power.mad
 			set MadProperty m_fScale 0.3
+			set P_ServerUnit m_cWidth 3
+			set P_ServerUnit m_cHeight 3
+
 
 		class ZeroRTSRadar
 			parent ZeroRTSUnit

@@ -317,8 +317,6 @@ void UserPanel::OnClickCmdButton(int iCtrlID)
 	r = m_kClickInfoMap.find(pkButton);
 	if(r != m_kClickInfoMap.end())	
 	{
-		
-
 		if(r->second->m_bNeedArgument == false)
 		{
 			UnitCommand cmd;
@@ -402,61 +400,6 @@ void UserPanel::OnSelectObjects(Object* pkObjectInFocus)
 	}
 }
 
-/* COMMENT OUT BY ZEB
-void ZeroRTS::SetObjDstPos(int sqr_x, int sqr_y, Object* pkObject)
-{	
-	if(pkObject == NULL)
-		return;
-
-	Vector3 newp = GetPosFromSqr(Point(sqr_x, sqr_y));
-
-	pkObject->SetPos(newp);
-	pkObject->SetPos(newp);
-}
-
-void ZeroRTS::BuildPath()
-{
-	static bool bDone = false;
-	if(bDone == false)
-		bDone = true;
-	else
-		return;
-
-	int aiCost[5];
-	aiCost[0] = 15; // gräs (grön nyans)
-	aiCost[1] = 1; // väg (röd nyans)
-	aiCost[2] = 7; // sten (blå nyans)
-	aiCost[3] = 10; // öken (röd nyans)
-	aiCost[4] = 999; // vatten
-
-	PathBuilder kPathBuilder(m_pkMap, &m_pkTestPath);
-	kPathBuilder.Build(aiCost);
-}
-
-bool ZeroRTS::MovePath(Object* pkObject)
-{
-	static float prev_time = 0;
-
-	float time = pkFps->GetGameTime();
-
-	if(time - prev_time > 0.125f)
-	{
-		int x=-1, y=-1;
-		if(!m_pkTestPath->GetNextStep(x,y))
-		{
-			return true; // do nothing
-		}
-		
-		if(!(x==-1&&y==-1))
-			SetObjDstPos(x, y, pkObject);
-
-		prev_time = time;
-	}
-
-	return true;
-}
-*/
-
 void UserPanel::UpdateGraphic()
 {	
 	if(!m_pkZeroRts->m_kSelectedObjects.empty())
@@ -467,8 +410,8 @@ void UserPanel::UpdateGraphic()
 		if(pkClientUnit)
 		{
 			int h=178-153;
+			
 			int w = (float) pkClientUnit->m_kInfo.m_Info2.m_cHealth / 255.0f * m_fOriginalHealthbarSize;
-
 			if(w >= 0)
 				m_pkGuiBuilder->Get("UnitHealthLB")->Resize(w,h);
 		}

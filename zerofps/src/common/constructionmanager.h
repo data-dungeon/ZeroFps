@@ -13,6 +13,9 @@
 #include "../zerofps/engine/engine.pkg"
 #include "../zerofps/basic/basic.pkg"
 #include "common_x.h"
+
+class TileEngine;
+
 using namespace std;
 
 struct Structure
@@ -24,18 +27,21 @@ struct Structure
 	unsigned char ucID;					// vilket id byggnaden har
 	unsigned char ucGiver;				// vilken struktur som producerad denna struktur
 	unsigned char ucTechLevel;			// vilken teknisk nivå denna ligger på.
+	unsigned char ucParent;				// vilken byggnad i samma tech level som tar en till nästa nivå.
 };
 
 class COMMON_API ConstructionManager  
 {
 public:
+	bool Build(char* szStructureName, Point kSquare);
+	void PrintUpgrades(int iTechLevel);
 	void PrintAll();
 	ConstructionManager(int iNumTeams);
 	virtual ~ConstructionManager();
 
 	// Funktion som returnerar en ny tech level.
 	int GetPossibleBuildings(unsigned int uiTechLevel, vector<Structure>& akStructures);
-	void Init();
+	void Init(char* szTechTreeINIFile);
 
 	const int c_iNumTeams;
 
@@ -44,8 +50,11 @@ public:
 
 private:
 	vector<Structure> m_kAllStructures;
-	vector<Structure> *m_paTeamTechTree;
-	map<int, string> m_kNameMap;
+	map<int, Structure> m_kNameMap;
+	char m_cMaxTechLevel;
+
+	ObjectManager* m_pkObjectMan;
+	TileEngine* m_pkTileEngine;
 };
 
 #endif // !defined(AFX_CONSTRUCTIONMANAGER_H__7CB50AE5_958B_4A02_AA3A_E2F7CD829953__INCLUDED_)
