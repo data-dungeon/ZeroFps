@@ -102,9 +102,7 @@ class MistServer :public Application , public ZGuiApp
 		
 		void SendPlayerListToClient(int iClient);
 		void SendContainer(int iContainerID,int iClientID,bool bOpen);
-				
-		void OpenContainer(int iContainerID,int iClientID);
-		
+						
 		Vector3 GetPlayerStartPos();
 
 		int CreatePlayer(const char* csPlayer,const char* csCharacter,const char* csLocation,int iConID);		
@@ -146,8 +144,10 @@ class MistServer :public Application , public ZGuiApp
 		bool ShutDown();
 		bool IsValid();
 
+		//game stuff
 		void SayToClients(const string& strMsg,int iClientID = -2);				
-		
+		void OpenContainer(int iContainerID,int iClientID);
+
 };
 
 
@@ -155,6 +155,7 @@ class MistServer :public Application , public ZGuiApp
 namespace SI_MistServer
 {
 	int SayToCharacterLua(lua_State* pkLua);
+	int OpenContainerLua(lua_State* pkLua);
 };
 
 

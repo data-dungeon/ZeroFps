@@ -53,7 +53,7 @@ void P_Container::Update()
 vector<PropertyValues> P_Container::GetPropertyValues()
 {
 	vector<PropertyValues> kReturn(0);
-			/*
+			
 	kReturn[0].kValueName = "sizex";
 	kReturn[0].iValueType = VALUETYPE_INT;
 	kReturn[0].pkValue    = &m_iSizeX;		
@@ -61,7 +61,7 @@ vector<PropertyValues> P_Container::GetPropertyValues()
 	kReturn[1].kValueName = "sizey";
 	kReturn[1].iValueType = VALUETYPE_INT;
 	kReturn[1].pkValue    = &m_iSizeY;		
-	*/
+	
 	
 	return kReturn;	
 }
@@ -69,7 +69,7 @@ vector<PropertyValues> P_Container::GetPropertyValues()
 
 bool P_Container::HandleSetValue( string kValueName ,string kValue )
 {
-/*
+
 	if(strcmp(kValueName.c_str(), "sizex") == 0) {
 		m_iSizeX = atoi(kValue.c_str()) ;
 		return true;
@@ -80,8 +80,8 @@ bool P_Container::HandleSetValue( string kValueName ,string kValue )
 		return true;
 	}
 
-	m_pkContainer->SetSize(m_iSizeX,m_iSizeY);
-*/	
+	SetSize(m_iSizeX,m_iSizeY);
+	
 	return false;
 }
 
@@ -629,13 +629,7 @@ using namespace ObjectManagerLua;
 
 namespace SI_P_Container
 {
-	int OpenContainerLua(lua_State* pkLua)
-	{
-		if(g_pkScript->GetNumArgs(pkLua) != 2)
-			return 0;			
-			
-			
-	}
+
 }
 
 Property* Create_P_Container()

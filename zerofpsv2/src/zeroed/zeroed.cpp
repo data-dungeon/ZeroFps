@@ -433,7 +433,8 @@ void ZeroEd::RegisterPropertys()
 	Register_P_CharacterProperty(m_pkZeroFps);
 	Register_P_Ml(m_pkZeroFps);
 	Register_P_CharacterControl(m_pkZeroFps);	
-
+	Register_P_Container(m_pkZeroFps);
+	
 	m_pkPropertyFactory->Register("P_Car", Create_P_Car);
 
 	m_pkPropertyFactory->Register("P_DMClickMe", Create_P_DMClickMe);
@@ -452,7 +453,6 @@ void ZeroEd::RegisterPropertys()
 	m_pkPropertyFactory->Register("P_Item", Create_P_Item);
 	m_pkPropertyFactory->Register("P_Spell", Create_P_Spell);
 	m_pkPropertyFactory->Register("P_AI", Create_P_AI);
-	m_pkPropertyFactory->Register("P_Container", Create_P_Container);
 	m_pkPropertyFactory->Register("P_ArcadeCharacter", Create_P_ArcadeCharacter);
 	
 	m_pkPropertyFactory->Register("P_Container", Create_P_Container);

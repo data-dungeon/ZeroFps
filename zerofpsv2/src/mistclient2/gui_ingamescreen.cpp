@@ -27,7 +27,8 @@ void GuiMsgIngameScreen( string strMainWnd, string	strController,
 			else
 			if(strController == "OpenInventoryBn")
 			{
-				g_kMistClient.m_pkInventoryDlg->Open(); 
+				//g_kMistClient.m_pkInventoryDlg->Open(); 
+				g_kMistClient.RequestOpenInventory(); 
 				g_kMistClient.PositionActionButtons();
 			}
 		}

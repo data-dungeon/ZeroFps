@@ -62,17 +62,13 @@ class MCOMMON_API P_Container: public Property
 		bool ItemTypeOK(int iType);		
 		
 		
-		//int 	m_iSizeX;
-		//int 	m_iSizeY;
 		bool	m_bFirstUpdate;
 	
 		vector<PropertyValues> GetPropertyValues();
 		bool HandleSetValue( string kValueName ,string kValue );
-		//void SetSize();
+
 		
-	public:
-		//MLContainer*	m_pkContainer;
-		
+	public:		
 		P_Container();		
 		~P_Container();
 		
@@ -81,24 +77,21 @@ class MCOMMON_API P_Container: public Property
 		void Save(ZFIoInterface* pkPackage);
 		void Load(ZFIoInterface* pkPackage,int iVersion);			
 
-		
+		void FindMyItems();					//must be called after loading, and after childs has been created
 		
 		void SetSize(int iX,int iY);
+		char GetSizeX()								{return char(m_iSizeX);};
+		char GetSizeY()								{return char(m_iSizeY);};
 
 		int GetOwnerID()								{return m_iOwnerID;};
-		void SetOwnerID(int iOwner)					{m_iOwnerID = iOwner;};
-						
+		void SetOwnerID(int iOwner)					{m_iOwnerID = iOwner;};						
 		
 		void AddItemType(int iType) 				{m_kItemTypes.push_back(iType);};
-		void ClearItemTypes() 						{m_kItemTypes.clear();};
-		
+		void ClearItemTypes() 						{m_kItemTypes.clear();};		
 		void SetMaxItems(int iItems) 				{m_iMaxItems = iItems;}; 
-
 		void SetContainerType(int iType)			{m_iContainerType = iType;};
 		int  GetContainerType()						{return m_iContainerType;};
 		
-		char GetSizeX()								{return char(m_iSizeX);};
-		char GetSizeY()								{return char(m_iSizeY);};
 		
 		bool MoveItem(int iID,int iX,int iY);
 		bool MoveItem(int iID,P_Container* pkDest,int iX,int iY);
@@ -108,23 +101,16 @@ class MCOMMON_API P_Container: public Property
 		bool AddItem(int iID);
 		bool DropItem(int iID,const Vector3& kPos);
 		void DropAll(const Vector3& kPos);		
-		
-		int HaveItem(const string strItemName);		
-		
 		bool RemoveItem(int iID);
 		bool RemoveItem(int iX,int iY);
 		
+		int HaveItem(const string strItemName);		
+				
 		void 				GetItemList(vector<MLContainerInfo>* pkItemList);
 		vector<int>* 	GetItemTypes ()		{ return &m_kItemTypes; }
 		int 				GetNrOfItems();
 		int* 				GetItem(int iX,int iY); // Zeb: Flytta denna så den blev public..EEEVIL
-
-		void FindMyItems();					//must be called after loading, and after childs has been created
 		
-		
-//		void Save(ZFIoInterface* pkPackage);
-//		void Load(ZFIoInterface* pkPackage);
-
 		void Print();		
 };
 

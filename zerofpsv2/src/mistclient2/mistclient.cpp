@@ -220,10 +220,10 @@ void MistClient::RegisterPropertys()
 	m_pkPropertyFactory->Register("P_Enviroment", 			Create_P_Enviroment);
 	m_pkPropertyFactory->Register("P_Ml", 						Create_P_Ml);
 	m_pkPropertyFactory->Register("P_Item", 					Create_P_Item);
-	m_pkPropertyFactory->Register("P_Container", 			Create_P_Container);
 
 	Register_P_CharacterControl(m_pkZeroFps);
 	Register_P_FogPlane(m_pkZeroFps);	
+	Register_P_Container(m_pkZeroFps);
 }
 
 void MistClient::RenderInterface(void)

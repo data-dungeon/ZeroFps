@@ -198,8 +198,11 @@ int InitObjectLua(lua_State* pkLua)
 		
 		//set return object of there is none
 		if(!g_kScriptState.g_pkReturnObject)
+		{
 			g_kScriptState.g_pkReturnObject = g_kScriptState.g_pkLastObject;
-		
+			g_kScriptState.g_iCurrentObjectID = g_kScriptState.g_pkReturnObject->GetEntityID();
+		}
+			
 		return 1;
 	}
 		
@@ -209,8 +212,12 @@ int InitObjectLua(lua_State* pkLua)
 	
 	//set return object of there is none	
 	if(!g_kScriptState.g_pkReturnObject)
+	{
 		g_kScriptState.g_pkReturnObject = g_kScriptState.g_pkLastObject;
-	
+		g_kScriptState.g_iCurrentObjectID = g_kScriptState.g_pkReturnObject->GetEntityID();
+	}	
+		
+		
 	return 1;
 }	
 

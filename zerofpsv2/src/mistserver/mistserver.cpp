@@ -213,6 +213,8 @@ void MistServer::RegisterResources()
 void MistServer::RegisterScriptFunctions()
 {
 	g_pkScript->ExposeFunction("SayToCharacter",	SI_MistServer::SayToCharacterLua);
+	g_pkScript->ExposeFunction("OpenContainer",	SI_MistServer::OpenContainerLua);
+	
 }
 
 void MistServer::RegisterPropertys()
@@ -220,13 +222,13 @@ void MistServer::RegisterPropertys()
 	m_pkPropertyFactory->Register("P_ArcadeCharacter",	Create_P_ArcadeCharacter);
 	m_pkPropertyFactory->Register("P_Enviroment", Create_P_Enviroment);
 	m_pkPropertyFactory->Register("P_ShadowBlob", Create_P_ShadowBlob);
-	m_pkPropertyFactory->Register("P_Item", Create_P_Item);
-	m_pkPropertyFactory->Register("P_Container", Create_P_Container);
+	m_pkPropertyFactory->Register("P_Item", Create_P_Item);	
 		
 	Register_P_CharacterProperty(m_pkZeroFps);	
 	Register_P_Ml(m_pkZeroFps);
 	Register_P_CharacterControl(m_pkZeroFps);
 	Register_P_FogPlane(m_pkZeroFps);
+	Register_P_Container(m_pkZeroFps);
 
 }
 
@@ -1170,7 +1172,18 @@ void MistServer::OpenContainer(int iContainerID,int iClientID)
 					if(pkContainerP->GetContainerType() == eInventory)
 					{
 						SendContainer(iContainerID,iClientID,true);
-					}				
+					}
+					else
+					{
+						//do distance check
+						if(pkCharacter->GetWorldPosV().DistanceTo(pkContainerEnt->GetWorldPosV()) < 2.0)
+						{
+							 SayToClients("Opening container",iClientID);
+							 SendContainer(iContainerID,iClientID,true);
+						}
+						else
+							SayToClients("You are to far away",iClientID);
+					}
 				}
 			}
 		}
@@ -1282,25 +1295,51 @@ Vector3 MistServer::GetPlayerStartPos()
 
 
 
-//script interface for mistserver
-int SI_MistServer::SayToCharacterLua(lua_State* pkLua)
+//--------- script interface for mistserver
+namespace SI_MistServer
 {
-	if(g_pkScript->GetNumArgs(pkLua) != 2)
+	int SayToCharacterLua(lua_State* pkLua)
+	{
+		if(g_pkScript->GetNumArgs(pkLua) != 2)
+			return 0;
+		
+		int id;
+		double dTemp;
+		g_pkScript->GetArgNumber(pkLua, 0, &dTemp);
+		id = (int)dTemp;
+		
+		char	acMessage[256];
+		g_pkScript->GetArgString(pkLua, 1, acMessage);		
+		
+		if(PlayerData* pkData = g_kMistServer.m_pkPlayerDB->GetPlayerDataByCharacterID(id))		
+			g_kMistServer.SayToClients(acMessage,pkData->m_iConnectionID);
+		else
+			cout<<"WARNING: could not find character ID:"<<id<<endl;
+		
+				
 		return 0;
-	
-	int id;
-	double dTemp;
-	g_pkScript->GetArgNumber(pkLua, 0, &dTemp);
-	id = (int)dTemp;
-	
-	char	acMessage[256];
-	g_pkScript->GetArgString(pkLua, 1, acMessage);		
-	
-	if(PlayerData* pkData = g_kMistServer.m_pkPlayerDB->GetPlayerDataByCharacterID(id))		
-		g_kMistServer.SayToClients(acMessage,pkData->m_iConnectionID);
-	else
-		cout<<"WARNING: could not find character ID:"<<id<<endl;
-	
+	}
+
+	int OpenContainerLua(lua_State* pkLua)
+	{
+		if(g_pkScript->GetNumArgs(pkLua) != 2)
+			return 0;			
 			
-	return 0;
+		int iCharacter;
+		int iContainer;
+		double dTemp;
+		
+		g_pkScript->GetArgNumber(pkLua, 0, &dTemp);
+		iContainer = (int)dTemp;
+		
+		g_pkScript->GetArgNumber(pkLua, 1, &dTemp);
+		iCharacter = (int)dTemp;	
+		
+		cout<<"blub"<<endl;
+		if(PlayerData* pkData = g_kMistServer.m_pkPlayerDB->GetPlayerDataByCharacterID(iCharacter))
+		{
+			cout<<"blubaa"<<endl;	
+			g_kMistServer.OpenContainer(iContainer,pkData->m_iConnectionID);
+		}										
+	}
 }
