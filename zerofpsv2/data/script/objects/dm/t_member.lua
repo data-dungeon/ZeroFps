@@ -69,12 +69,11 @@ function FirstRun()
 end
 
 function HeartBeat()
-	--SetZoneModel(GetZoneID(SIGetSelfID()),"data/mad/zones/dm/zon_asfalt.mad")
 	--p = {}
-	--p[1] = -6
+	--p[1] = 0
 	--p[2] = 1
 	--p[3] = 0
-	--SetZoneModel(GetZoneIDAtPos(p),"data/mad/zones/dm/zon_asfalt.mad")
+	--CreateEntity("data/script/objects/dm/t_police.lua",p);
 
 	if ( IsDead(SIGetSelfID()) == 1) then
 		AddToEntityVar (SIGetSelfID(), "deadtime", 1);

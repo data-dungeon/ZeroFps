@@ -33,21 +33,23 @@ namespace ObjectManagerLua
 
 	extern int						g_iCurrentObjectID;
 
-	//create funktions
-	int ENGINE_SYSTEMS_API InitObjectLua(lua_State* pkLua);	
+	//create funktions  --- these are only used inside the create funktion
+	int ENGINE_SYSTEMS_API InitObjectLua(lua_State* pkLua);
 	int ENGINE_SYSTEMS_API InitPropertyLua(lua_State* pkLua);
 	int ENGINE_SYSTEMS_API InitParameterLua(lua_State* pkLua);
-	
-	int ENGINE_SYSTEMS_API AttachToParent(lua_State* pkLua);	
-	
-	int ENGINE_SYSTEMS_API SetParentObjectLua(lua_State* pkLua);		
+
+	int ENGINE_SYSTEMS_API AttachToParent(lua_State* pkLua);
+
+	int ENGINE_SYSTEMS_API SetParentObjectLua(lua_State* pkLua);
 	int ENGINE_SYSTEMS_API SetLocalPosLua(lua_State* pkLua);
-	int ENGINE_SYSTEMS_API SetReturnObjectLua(lua_State* pkLua);	
-	
-	int ENGINE_SYSTEMS_API HaveRelativOriLua(lua_State* pkLua);		
+	int ENGINE_SYSTEMS_API SetReturnObjectLua(lua_State* pkLua);
+
+	int ENGINE_SYSTEMS_API HaveRelativOriLua(lua_State* pkLua);
 	//---
 
-	int ENGINE_SYSTEMS_API DeleteLua(lua_State* pkLua);		
+	// entity management
+	int ENGINE_SYSTEMS_API CreateEntityLua(lua_State* pkLua);
+	int ENGINE_SYSTEMS_API DeleteLua(lua_State* pkLua);
 
 	// Object Variables
 	int ENGINE_SYSTEMS_API GetLocalDouble(lua_State* pkLua);		

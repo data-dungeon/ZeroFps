@@ -33,33 +33,36 @@ void Init(EntityManager* pkObjMan, ZFScriptSystem* pkScript)
 		
 	//create
 	pkScript->ExposeFunction("InitObject",				ObjectManagerLua::InitObjectLua);
-	pkScript->ExposeFunction("InitProperty",	  	ObjectManagerLua::InitPropertyLua);
+	pkScript->ExposeFunction("InitProperty",		  	ObjectManagerLua::InitPropertyLua);
 	pkScript->ExposeFunction("InitParameter",			ObjectManagerLua::InitParameterLua);
-	pkScript->ExposeFunction("AttachToParent",		ObjectManagerLua::AttachToParent);			
+	pkScript->ExposeFunction("AttachToParent",		ObjectManagerLua::AttachToParent);
 	pkScript->ExposeFunction("SetLocalPos",			ObjectManagerLua::SetLocalPosLua);
-	pkScript->ExposeFunction("HaveRelativOri",		ObjectManagerLua::HaveRelativOriLua);	
+	pkScript->ExposeFunction("HaveRelativOri",		ObjectManagerLua::HaveRelativOriLua);
 	pkScript->ExposeFunction("SetParentObject",  	ObjectManagerLua::SetParentObjectLua);
 	pkScript->ExposeFunction("SetReturnObject",  	ObjectManagerLua::SetReturnObjectLua);
 	//----
-	
+
+	// entity management
+	pkScript->ExposeFunction("CreateEntity", 			ObjectManagerLua::CreateEntityLua);
 	pkScript->ExposeFunction("Delete",  				ObjectManagerLua::DeleteLua);
 
+	// mad handling
 	pkScript->ExposeFunction("PlayAnim",				ObjectManagerLua::PlayAnim);
 	pkScript->ExposeFunction("SetNextAnim",			ObjectManagerLua::SetNextAnim);
 	pkScript->ExposeFunction("AddMesh",					ObjectManagerLua::AddMesh);
 
-	// Object Variables
+	// entity Variables
 	pkScript->ExposeFunction("GetLocalDouble",		ObjectManagerLua::GetLocalDouble);
 	pkScript->ExposeFunction("SetLocalDouble",		ObjectManagerLua::SetLocalDouble);
 
-	// object orientation
+	// entity orientation
 	pkScript->ExposeFunction("GetObjectPos",			ObjectManagerLua::GetObjectPosLua);
 	pkScript->ExposeFunction("GetObjectRot",			ObjectManagerLua::GetObjectRotLua);
 	pkScript->ExposeFunction("SetObjectPos",			ObjectManagerLua::SetObjectPosLua);
 	pkScript->ExposeFunction("DistanceTo",				ObjectManagerLua::DistanceToLua);
 
 	// rotation functions
-	pkScript->ExposeFunction("SetRotVel",			  ObjectManagerLua::SetObjectRotVelLua);
+	pkScript->ExposeFunction("SetRotVel",				ObjectManagerLua::SetObjectRotVelLua);
 
 	// velocity functions
 	pkScript->ExposeFunction("SetVelTo",				ObjectManagerLua::SetVelToLua);
@@ -743,6 +746,33 @@ int SetZoneModelLua(lua_State* pkLua)
 	}
 
    return 0;
+}
+
+int CreateEntityLua (lua_State* pkLua)
+{
+	if( g_pkScript->GetNumArgs(pkLua) == 2)
+	{
+     	char	acType[128];
+		g_pkScript->GetArgString(pkLua, 0, acType);
+
+		Vector3 kPos;
+		vector<TABLE_DATA> vkData;
+		g_pkScript->GetArgTable(pkLua, 2, vkData);
+		kPos = Vector3(
+			(float) (*(double*) vkData[0].pData),
+			(float) (*(double*) vkData[1].pData),
+			(float) (*(double*) vkData[2].pData));
+
+		if(Entity* pkEntity = g_pkObjMan->CreateObjectFromScriptInZone(acType,kPos))
+		{
+			g_pkScript->AddReturnValue( pkLua, pkEntity->GetEntityID() );
+			return 1;
+		}
+	}
+
+	g_pkScript->AddReturnValue( pkLua, -1 );
+	return 0;
+
 }
 
 }
