@@ -1,11 +1,12 @@
 #ifndef _MATRIX_H_
 #define _MATRIX_H_
 
+#include "basic_x.h"
 #include <iostream>
 #include "vector4.h"
 using namespace std;
 
-class Matrix4 {
+class BASIC_API Matrix4 {
 	private:	
 	
 	public:

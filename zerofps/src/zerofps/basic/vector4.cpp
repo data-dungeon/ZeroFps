@@ -136,6 +136,8 @@ float &Vector4::operator[](const int i)
 		case 3:
 			return w;
 	}
+
+	return x;
 }
 
 Vector4 Vector4::operator*(const Matrix4 &f) const 

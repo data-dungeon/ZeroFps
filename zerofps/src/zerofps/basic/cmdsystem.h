@@ -1,6 +1,7 @@
 #ifndef _CMDSYSTEM_H_
 #define _CMDSYSTEM_H_
 
+#include "basic_x.h"
 #include <vector>
 #include <iostream>
 #include <cstring>
@@ -27,7 +28,7 @@ struct funktion {
 //	void* pAddress;
 };
 
-class CmdSystem {
+class BASIC_API CmdSystem {
 	private:
 		vector<variable*> kVars;		
 		vector<funktion*> kFunks;		

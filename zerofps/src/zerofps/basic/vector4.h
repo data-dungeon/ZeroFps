@@ -1,13 +1,14 @@
 #ifndef _Vector4_H_
 #define _Vector4_H_
 
+#include "basic_x.h"
 #include <iostream>
 
 using namespace std;
 
 class Matrix4;
 
-class Vector4 {
+class BASIC_API Vector4 {
 	public:
 		float x,y,z,w;
 	

@@ -1,11 +1,12 @@
 #ifndef _VECTOR3_H_
 #define _VECTOR3_H_
 
+#include "basic_x.h"
 #include <iostream>
 
 using namespace std;
 
-class Vector3 {
+class BASIC_API Vector3 {
 	public:
 		float x,y,z;
 	
