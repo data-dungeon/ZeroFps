@@ -336,6 +336,8 @@ void MistClient::Input()
 		if(IsWndVisible("MLStartWnd"))
 			LoadInGameGui();
 	}
+	
+
 		
 	// taunts
 	if ( m_pkInputHandle->VKIsDown("taunt1") || m_pkInputHandle->VKIsDown("taunt2")|| 

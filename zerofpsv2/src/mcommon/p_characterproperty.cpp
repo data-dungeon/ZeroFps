@@ -1,7 +1,7 @@
 #include "p_characterproperty.h"
 #include "p_charactercontrol.h"
 
-
+#include "../zerofpsv2/engine_systems/script_interfaces/si_objectmanager.h" 
 
 P_CharacterProperty::P_CharacterProperty()
 {
@@ -344,7 +344,38 @@ void P_CharacterProperty::PackFrom( NetPacket* pkNetPacket, int iConnectionID  )
 }
 
 
+// SCRIPT INTERFACE FOR P_CharacterProperty
+using namespace ObjectManagerLua;
 
+namespace SI_P_CharacterProperty
+{
+	int PickupItemLua(lua_State* pkLua)
+	{
+		if(g_pkScript->GetNumArgs(pkLua) != 2)
+			return 0;		
+	
+		int iCharcterID;
+		int iItemID;
+		double dTemp;
+		g_pkScript->GetArgNumber(pkLua, 0, &dTemp);
+		iCharcterID = (int)dTemp;
+		g_pkScript->GetArgNumber(pkLua, 1, &dTemp);
+		iItemID = (int)dTemp;
+		
+		cout<<iCharcterID<<"trying to pickup "<<iItemID<<endl;
+		
+		if(Entity* pkEnt = g_pkObjMan->GetEntityByID(iCharcterID))
+			if(P_CharacterProperty* pkCP = (P_CharacterProperty*)pkEnt->GetProperty("P_CharacterProperty"))		
+			{	
+				if(pkCP->m_pkInventory->AddItem(iItemID))
+					cout<<"sucessfully picked up item"<<endl;
+				else
+					cout<<"could not pick that up"<<endl;
+			}
+			else
+				cout<<"WARNING: entity without P_CharacterProperty tried to pickup an item"<<endl;
+	}
+}
 
 
 Property* Create_P_CharacterProperty()
@@ -353,6 +384,14 @@ Property* Create_P_CharacterProperty()
 }
 
 
+void Register_P_CharacterProperty(ZeroFps* pkZeroFps)
+{
+	// Register Property
+	pkZeroFps->m_pkPropertyFactory->Register("P_CharacterProperty", Create_P_CharacterProperty);					
 
+	// Register Property Script Interface
+	g_pkScript->ExposeFunction("PickupItem",	SI_P_CharacterProperty::PickupItemLua);
+
+}
 
 

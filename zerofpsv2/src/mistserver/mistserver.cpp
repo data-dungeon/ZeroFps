@@ -216,7 +216,7 @@ void MistServer::RegisterScriptFunctions()
 
 void MistServer::RegisterPropertys()
 {
-	m_pkPropertyFactory->Register("P_CharacterProperty", Create_P_CharacterProperty);
+//	m_pkPropertyFactory->Register("P_CharacterProperty", Create_P_CharacterProperty);
 	m_pkPropertyFactory->Register("P_CharacterControl",  Create_P_CharacterControl);
 
 	m_pkPropertyFactory->Register("P_ArcadeCharacter",	Create_P_ArcadeCharacter);
@@ -226,6 +226,7 @@ void MistServer::RegisterPropertys()
 	m_pkPropertyFactory->Register("P_Item", Create_P_Item);
 	m_pkPropertyFactory->Register("P_Container", Create_P_Container);
 		
+	Register_P_CharacterProperty(m_pkZeroFps);	
 	Register_P_Ml(m_pkZeroFps);
 	
 //	m_pkPropertyFactory->Register("P_Car", Create_P_Car);	
@@ -985,7 +986,7 @@ void MistServer::OnNetworkMessage(NetPacket *PkNetMessage)
 							break;
 						}
 				
-					cout<<"character: "<<	pkData->m_strCharacterName<<" doint action: "<<strAction<<" on "<<iEntity<<endl;
+					//cout<<"character: "<<	pkData->m_strCharacterName<<" doint action: "<<strAction<<" on "<<iEntity<<endl;
 				
 					vector<ScriptFuncArg> args(2);
 					args[0].m_kType.m_eType = tINT;

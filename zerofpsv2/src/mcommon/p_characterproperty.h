@@ -18,7 +18,6 @@ class MCOMMON_API P_CharacterProperty: public Property
 		ZShaderSystem*	m_pkZShaderSystem;
 		EntityManager*	m_pkEntityMan;
 
-		MLContainer*	m_pkInventory;
 		
 		
 		//over head text
@@ -66,6 +65,8 @@ class MCOMMON_API P_CharacterProperty: public Property
 
 		
 	public:
+		MLContainer*	m_pkInventory;
+	
 	
 		P_CharacterProperty();
 		~P_CharacterProperty();
@@ -96,6 +97,7 @@ class MCOMMON_API P_CharacterProperty: public Property
 };
 
 MCOMMON_API Property* Create_P_CharacterProperty();
+MCOMMON_API void Register_P_CharacterProperty(ZeroFps* pkZeroFps);
 
 #endif
 

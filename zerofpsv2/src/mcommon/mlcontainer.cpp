@@ -170,6 +170,7 @@ bool MLContainer::AddItem(int iID,int iX,int iY)
 					cout<<"enabling item"<<endl;
 				}
 
+				Print();
 				
 				return true;
 			}
