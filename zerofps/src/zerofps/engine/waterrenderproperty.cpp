@@ -45,6 +45,8 @@ void WaterRenderProperty::SetTexture(const char* acTexture)
 
 void WaterRenderProperty::Update() 
 {	
+	m_fBlendValue = 1.0f; // Disable blend effect...
+
 	if(m_pkObject->m_pkObjectMan->m_iUpdateFlags & PROPERTY_TYPE_NORMAL &&
 		m_pkObject->m_pkObjectMan->m_iUpdateFlags & PROPERTY_SIDE_CLIENT) {
 		if(m_bBlendDirUp) {

@@ -24,7 +24,6 @@ void ZeroRTS::OnInit()
 	//run autoexec script
 	if(!pkIni->ExecuteCommands("zerorts_autoexec.ini"))
 		pkConsole->Printf("No game_autoexec.ini.ini found");
-
 }
 
 void ZeroRTS::Init()
@@ -55,7 +54,6 @@ void ZeroRTS::Init()
 	//set clicktimer
 	m_fClickTimer = pkFps->GetTicks();
 	m_fClickDelay = 0.2;
-	
 	
 	//gui bös
 	pkInput->SetCursorInputPos(m_iWidth/2, m_iHeight/2);
@@ -184,6 +182,10 @@ void ZeroRTS::Input()
 		m_fClickTimer = pkFps->GetTicks();
 	
 		PickInfo info = Pick();
+
+		printf("Picked square: (%i,%i)\n", info.kSquare.x, info.kSquare.y);  
+
+		SetObjDstPos(info.kSquare.x, info.kSquare.y);
 		
 		//do we want to clear?
 		if(!pkInput->Action(m_iActionSelectManyModifier))
@@ -214,7 +216,10 @@ void ZeroRTS::Input()
 		pkLevelMan->ChangeLandscapeFillMode(FILL);
 
 	if(pkInput->GetQueuedKey() == KEY_M && m_pkMiniMap)
-		m_pkMiniMap->bDraw = !m_pkMiniMap->bDraw;
+	{
+		static bool s_bToggle = true;
+		m_pkMiniMap->Show((s_bToggle=!s_bToggle));
+	}
 			
 }
 
@@ -255,8 +260,8 @@ void ZeroRTS::RunCommand(int cmdid, const CmdArgument* kCommand)
 				break;			
 			}
 
-			m_pkMiniMap = new MiniMap();
-			m_pkMiniMap->Create(pkTexMan, pkLevelMan, m_pkGuiBuilder); 
+			m_pkMiniMap = new MiniMap(m_pkGuiBuilder);
+			m_pkMiniMap->Create(pkTexMan, pkLevelMan); 
 			
 			pkConsole->Printf("Level loaded");
 			
@@ -300,9 +305,8 @@ Object* ZeroRTS::PickObject()
 	vector<Object*> obs;
 	pkObjectMan->TestLine(&obs,m_pkCamera->GetPos(),dir);
 	
-	
 	Object* close =NULL;
-	float dist= 999999999;
+	float dist = 999999999;
 	
 	for(unsigned int i=0;i<obs.size();i++)
 	{
@@ -318,7 +322,6 @@ Object* ZeroRTS::PickObject()
 			dist = d;
 			close = obs[i];
 		}
-	
 	}
 
 	obs.clear();
@@ -338,7 +341,11 @@ PickInfo ZeroRTS::Pick()
 {
 	PickInfo temp;
 	
-	temp.pkVert = PickMap(temp.kHitPos);	
+	temp.pkVert = PickMap(temp.kHitPos);
+	temp.kSquare.x = m_pkMap->m_iHmSize/2+ceil(temp.kHitPos.x / HEIGHTMAP_SCALE);
+	temp.kSquare.y = m_pkMap->m_iHmSize/2+ceil(temp.kHitPos.z / HEIGHTMAP_SCALE);
+
+	printf("%f\n", temp.kHitPos.x);
 	
 	Object* pkPicked = PickObject();	
 	
@@ -433,3 +440,49 @@ P_ClientUnit* ZeroRTS::GetClientUnit(int iID)
 	return (P_ClientUnit*)pkObject->GetProperty("P_ClientUnit");
 }
 
+
+void ZeroRTS::SetObjDstPos(int sqr_x, int sqr_y)
+{
+	static int ob;
+
+	if(m_kSelectedObjects.empty() && ob == -1)
+		return;
+	
+	if(!m_kSelectedObjects.empty())
+		ob = m_kSelectedObjects.front();
+
+	Object* pkObject = pkObjectMan->GetObjectByNetWorkID(ob);
+	
+	if(pkObject == NULL)
+		return;
+
+	Vector3 prev = 
+	pkObject->GetPos();
+
+	float x = -128*HEIGHTMAP_SCALE + sqr_x*HEIGHTMAP_SCALE;
+	float z = -128*HEIGHTMAP_SCALE + sqr_y*HEIGHTMAP_SCALE;
+
+	x -= HEIGHTMAP_SCALE/2;
+	z += HEIGHTMAP_SCALE/2;
+
+	Vector3 newp = Vector3(x, m_pkMap->Height(x,z), z);
+
+	pkObject->SetPos(newp);
+	pkObject->SetPos(newp);
+
+
+/*	Object* pkObject = pkObjectMan->GetObjectByNetWorkID(m_kSelectedObjects.front());
+	
+	HeightMap* hp = pkLevelMan->GetHeightMap();
+
+	float x = pkObject->GetPos().x,
+		  y = pkObject->GetPos().z;
+
+	hp->GetMapXZ(x,y);
+
+	int tile_x = x / HEIGHTMAP_SCALE, tile_y = y / HEIGHTMAP_SCALE;
+
+	printf("Tile = (%i, %i)\n", tile_x, tile_y);*/
+
+	//pkObjectMan->Remove(pkDemon);
+}

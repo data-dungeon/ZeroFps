@@ -12,14 +12,15 @@
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 
-MiniMap::MiniMap() : m_iDisclosuredCellRow(43)
+MiniMap::MiniMap(GuiBuilder* pkGuiBuilder) : m_iDisclosuredCellRow(43)
 {
 	m_pbDisclosuredCells = new bool[m_iDisclosuredCellRow*m_iDisclosuredCellRow];
 	memset(m_pbDisclosuredCells, 0, 
 		sizeof(bool)*(m_iDisclosuredCellRow*m_iDisclosuredCellRow));
 	m_fCameraPosX = 0.5f;
 	m_fCameraPosY = 0.5f;
-	bDraw = true;
+	m_bVisible = true;
+	m_pkGuiBuilder = pkGuiBuilder;
 }
 
 MiniMap::~MiniMap()
@@ -29,13 +30,13 @@ MiniMap::~MiniMap()
 
 void MiniMap::Draw(Camera *pkCamera, ZGui* pkGui)
 {
-	if(!bDraw)
-		return;
-
 	// minimap dimension
 	int mmSize = m_iSize; 
 	int mmLeft = m_kScreenPos.x;
 	int mmTop  = m_kScreenPos.y;
+
+	if(!m_bVisible)
+		return;
 
 	MoveFov(pkCamera->GetPos().x, pkCamera->GetPos().z);
 
@@ -79,15 +80,21 @@ void MiniMap::Draw(Camera *pkCamera, ZGui* pkGui)
 			p = Point(mmLeft+s[i*2], mmTop+s[i*2+1]);
 
 			for(int j=0; j<200; j++)
-				array[k++] = Point(p.x+rand()%30, p.y+rand()%20);
+				array[k++] = Point(p.x+rand()%30, p.y+rand()%30);
 		}
 
 		init = true;
 	}
 
 	int i;
-	for(i=0; i<200; i++)
-		pkGui->DrawPoint(array[i], 255, 128, 0);
+	for(i=0; i<10; i++)
+	{
+		Point p = array[i];
+		pkGui->DrawPoint(p, 255, 128, 0); p.x += 1;
+		pkGui->DrawPoint(p, 255, 128, 0); p.y += 1;
+		pkGui->DrawPoint(p, 255, 128, 0); p.x -= 1;
+		pkGui->DrawPoint(p, 255, 128, 0); 
+	}
 
 	for( i=200; i<400; i++)
 		pkGui->DrawPoint(array[i], 0, 0, 128);
@@ -121,8 +128,7 @@ void MiniMap::Draw(Camera *pkCamera, ZGui* pkGui)
 
 }
 
-void MiniMap::Create(TextureManager *pkTexMan, LevelManager *pkLevelMan,
-					 GuiBuilder* pkGuiBuilder)
+void MiniMap::Create(TextureManager *pkTexMan, LevelManager *pkLevelMan)
 {
 	const int TEXTURE_SIZE = 128; // not same as minimap window size...
 
@@ -169,13 +175,9 @@ void MiniMap::Create(TextureManager *pkTexMan, LevelManager *pkLevelMan,
 			}
 
 			if(height < epsilon)
-			{
 				b = 255;
-			}
 			else
-			{
 				g = 255;
-			}
 
 			pkTexMan->PsetRGB(x,y,r,g,b);
 		}
@@ -183,10 +185,10 @@ void MiniMap::Create(TextureManager *pkTexMan, LevelManager *pkLevelMan,
 
 	pkTexMan->SwapTexture();
 
-	pkGuiBuilder->GetSkin("minimap")->m_iBkTexID = 
+	m_pkGuiBuilder->GetSkin("minimap")->m_iBkTexID = 
 		pkTexMan->Load("../data/textures/minimap.bmp", T_NOMIPMAPPING);
 
-	Rect rc = pkGuiBuilder->Get("MiniMapWnd")->GetScreenRect();
+	Rect rc = m_pkGuiBuilder->Get("MiniMapWnd")->GetScreenRect();
 	m_kScreenPos.x = rc.Left;
 	m_kScreenPos.y = rc.Top;
 	m_iSize = rc.Width();
@@ -241,4 +243,14 @@ void MiniMap::DiscloseCells(Rect rcCamera)
 		dy += TILE_SIZE;
 		dx = 0;
 	}	
+}
+
+void MiniMap::Show(bool bVisible)
+{
+	m_bVisible = bVisible;
+
+	if(m_bVisible)
+		m_pkGuiBuilder->Get("MiniMapWnd")->Show();
+	else
+		m_pkGuiBuilder->Get("MiniMapWnd")->Hide();
 }

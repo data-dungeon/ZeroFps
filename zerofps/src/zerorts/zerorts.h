@@ -24,7 +24,8 @@ struct PickInfo
 	int		iObject;
 	HM_vert* pkVert;
 	
-	Vector3 	kHitPos;
+	Vector3 kHitPos;
+	Point	kSquare;
 };
 
 const float CAMERA_HEIGHT = 30.0f;
@@ -59,6 +60,7 @@ class ZeroRTS :public Application {
 		float			m_fClickDelay;
 
 	public:
+		void SetObjDstPos(int sqr_x, int sqr_y);
 		//void DrawMinimap();
 		
 		GuiBuilder* m_pkGuiBuilder;

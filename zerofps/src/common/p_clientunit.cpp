@@ -40,8 +40,8 @@ void P_ClientUnit::Update()
 	}
 
 
-	if(m_bSelected)
-		cout<<"Helth:"<<(int)m_kInfo.m_cHealth<<endl;
+	//if(m_bSelected)
+		//cout<<"Helth:"<<(int)m_kInfo.m_cHealth<<endl;
 }
 
 
