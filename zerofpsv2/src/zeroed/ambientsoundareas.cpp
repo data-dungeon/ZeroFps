@@ -236,7 +236,8 @@ string AmbientSoundAreas::GetAmbientSound(string strArea)
 
 void AmbientSoundAreas::Update(ZFAudioSystem* pkAudioSys)
 {
-	if(m_iPlayingSoundID)
+/*	if(m_iPlayingSoundID)
 		pkAudioSys->MoveSound(m_iPlayingSoundID,
 			pkAudioSys->GetListnerPos(), Vector3(0,0,0), 1.0f); 
+*/			
 }

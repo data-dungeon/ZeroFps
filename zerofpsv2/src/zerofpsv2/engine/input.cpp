@@ -10,7 +10,7 @@ Input::Input()
 
 	// Set Default values
 	m_fMouseSensitivity = 	1;	
-	m_bGrabInput = 			true;
+	m_bGrabInput = 			false;
 	
 	// Register Variables
 	RegisterVariable("m_sens",			&m_fMouseSensitivity,	CSYS_FLOAT);
@@ -54,6 +54,7 @@ bool Input::StartUp()
 	SDL_EnableKeyRepeat(SDL_DEFAULT_REPEAT_DELAY,SDL_DEFAULT_REPEAT_INTERVAL);		
 	SetupMapToKeyState();	
 
+	
 	return true;
 }
 

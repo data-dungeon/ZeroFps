@@ -146,6 +146,7 @@ public:
 	void GetProfileTimers(vector<TimerInfo >* pkTimers);
 	int GetTotalTime();					/*{	return SDL_GetTicks() - m_iTotalTime;	};*/
 	bool* GetProfileEnabledPointer()	{	return &m_bProfileEnabled;					};
+	bool  GetProfileEnabled()			{	return m_bProfileEnabled;					};
 	
 	//program arguments
 	int GetNumberOfArguments()			{	return m_kRawArguments.size();			};

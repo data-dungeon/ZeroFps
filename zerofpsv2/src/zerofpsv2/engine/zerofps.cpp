@@ -767,11 +767,15 @@ void ZeroFps::Swap(void) {
 		m_fAvrageFpsTime = GetTicks();
 				
 		//update profile information
-		m_kProfileData.clear();					
-		g_ZFObjSys.GetProfileTimers(&m_kProfileData);
-		m_iProfileTotalTime = g_ZFObjSys.GetTotalTime();		
-		g_ZFObjSys.ClearProfileTimers();			
-
+		#ifndef NOPROFILE
+		if(g_ZFObjSys.GetProfileEnabled())
+		{
+			m_kProfileData.clear();					
+			g_ZFObjSys.GetProfileTimers(&m_kProfileData);
+			m_iProfileTotalTime = g_ZFObjSys.GetTotalTime();		
+			g_ZFObjSys.ClearProfileTimers();			
+		}
+		#endif
 	} 
 	 
 		
