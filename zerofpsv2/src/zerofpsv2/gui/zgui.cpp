@@ -789,7 +789,9 @@ bool ZGui::Update(float fGameTime, int iKeyPressed, bool bLastKeyStillPressed,
 {
 	if(m_bActive == true)
 	{
-		OnMouseUpdate(x, y, bLBnPressed, bRBnPressed, bMBnPressed, fGameTime);
+		if(m_pkCursor && m_pkCursor->IsVisible())	
+			OnMouseUpdate(x, y, bLBnPressed, bRBnPressed, bMBnPressed, fGameTime);
+
 		//OnKeyUpdate(iKeyPressed, bLastKeyStillPressed, bShiftIsPressed, m_fGameTime);
 		KeyboardInput(iKeyPressed, bShiftIsPressed, fGameTime);
 
