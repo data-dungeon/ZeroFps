@@ -1302,6 +1302,7 @@ void Render::DrawAABB( Vector3 kMin,Vector3 kMax, Vector3 kColor, float fLineSiz
 		pkLine->GetPass(0)->m_iCullFace = CULL_FACE_NONE;		
 		pkLine->GetPass(0)->m_bLighting = false;
 		pkLine->GetPass(0)->m_bColorMaterial = true;
+		pkLine->GetPass(0)->m_bFog = false;
 		
 	}
 	pkLine->GetPass(0)->m_kVertexColor = Vector4(kColor.x,kColor.y,kColor.z,1);
