@@ -129,6 +129,8 @@ void Test::OnInit(void) {
 
 
 void Test::OnIdle(void) {
+//	cout<<pkFps->m_kCamPos->y<<endl;
+
 
 //	pkLight->Update();
 	pkRender->DrawSkyBox(*pkFps->m_kCamPos);
