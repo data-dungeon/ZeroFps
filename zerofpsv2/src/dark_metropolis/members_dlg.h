@@ -23,6 +23,7 @@ public:
 
 	void SetWindowMode(WINDOW_MODE eType);
 	const WINDOW_MODE GetWindowMode() { return m_eWidowMode; }
+	void UpdateCamera();
 
 protected:
 	void OnMouseMove(int x, int y, bool bMouseDown, ZGuiWnd *pkMain);
@@ -30,6 +31,10 @@ protected:
 	void OnCommand(ZGuiWnd *pkMainWnd, string strClickName);
 
 private:
+
+	Camera* m_pkModellCamera;
+	Entity*	m_pkCameraObject;
+	ZeroFps* m_pkFps;
 
 	WINDOW_MODE m_eWidowMode;
 
@@ -71,12 +76,10 @@ private:
 	ITEM_MOVE_INFO* m_pkSelectInfo;
 
 	bool GetContainer(int x, int y, CONTAINER_INFO& kContainer, int agent_obj_id);
-	//bool GetContainer(int x, int y, CONTAINER_INFO& kContainer);
 	bool GetItemPosFromCursor(int x, int y, int& itempos_x, 
 		int& itempos_y, int& slotpos_x, int& slotpos_y);
 	void DropItem(ITEM_MOVE_INFO* pkObject);
 	void UpdateInventory(Entity* pkCharacterObject);
-	
-	// void AddSlot(int 
 	void UpdateLevelbar(Entity* pkCharacterObject);
+	void CreateCamera();
 };

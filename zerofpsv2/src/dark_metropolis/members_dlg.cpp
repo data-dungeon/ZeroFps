@@ -19,6 +19,9 @@ CMembersDlg::CMembersDlg() : CGameDlg("MembersWnd", &g_kDM)
 
 	m_pkMoveInfo = NULL;
 	m_pkSelectInfo = NULL;
+	m_pkModellCamera = NULL;
+
+	m_pkFps = static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
 }
 
 CMembersDlg::~CMembersDlg() 
@@ -34,6 +37,7 @@ void CMembersDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName)
 			m_vkItemButtons[i]->GetSkin()->m_unBorderSize = 0;
 
 		ShowWnd("MembersWnd", false, true);
+		ShowWnd("TestCameraWnd", false, true);
 	}
 	else
 	if(strClickName == "MembersEquipBn")
@@ -84,12 +88,22 @@ void CMembersDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName)
 
 void CMembersDlg::SetWindowMode(WINDOW_MODE eType)
 {
+
 	m_eWidowMode = eType;
 
 	Entity* pkHQObject = GetDMObject(HQ);
 
 	ShowWnd("MemberSelItemBorder", false);
 	m_pkMoveButton = NULL;
+
+	if(m_pkModellCamera == NULL)
+	{
+		CreateCamera();
+	}
+	else
+	{
+		ShowWnd("TestCameraWnd", true);
+	}
 
 	switch(eType)
 	{
@@ -770,5 +784,46 @@ void CMembersDlg::UpdateLevelbar(Entity* pkCharacterObject)
 	{
 		SetText("LevelbarTopic", "");
 		GetWnd("LevelbarFront")->Resize(0,20,true); 
+	}
+}
+
+void CMembersDlg::CreateCamera()
+{
+	//create camera
+	m_pkModellCamera=new Camera(Vector3(0,0,0),Vector3(0,0,0),70,1.333,0.25,250);	
+	m_pkModellCamera->m_bRender = true;
+	m_pkModellCamera->m_bSelected = true;
+	
+	EntityManager* pkObjectMan = static_cast<EntityManager*>(g_ZFObjSys.GetObjectPtr("EntityManager"));
+	m_pkCameraObject = pkObjectMan->CreateObjectFromScript("data/script/objects/t_camedit.lua");
+	
+	ZGuiWnd* pkWnd = CreateWnd(Wnd, "TestCameraWnd", "GuiMainWnd", "", 0,0, 256, 256, 0);
+	pkWnd->SetRenderTarget(m_pkModellCamera); 
+	pkWnd->GetSkin()->m_bTransparent = false; //true; 
+
+	if(m_pkCameraObject) 
+	{
+		m_pkCameraObject->SetParent( pkObjectMan->GetWorldObject() );
+		P_Camera* m_pkCamProp = (P_Camera*)m_pkCameraObject->GetProperty("P_Camera");
+		m_pkCameraObject->SetLocalPosV(Vector3(0,0,0));
+		m_pkCamProp->SetCamera(m_pkModellCamera);
+		m_pkCameraObject->GetSave() = false;
+	}
+}
+
+void CMembersDlg::UpdateCamera()
+{
+	if(m_pkModellCamera)
+	{
+		if(GetWnd("TestCameraWnd")->IsVisible())
+		{
+			m_pkModellCamera->m_bRender = true;			
+			m_pkModellCamera->ClearViewPort(); 
+			m_pkModellCamera->Update(256, 256);
+		}
+		else
+		{
+			m_pkModellCamera->m_bRender = false;			
+		}
 	}
 }

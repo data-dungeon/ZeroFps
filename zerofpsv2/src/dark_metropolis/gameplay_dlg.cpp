@@ -106,6 +106,20 @@ bool CGamePlayDlg::InitDlg()
 			string icon = GetAgentStats(kMembersInField[i]->GetEntityID())->m_strIcon;
 			string szTexName = string("data/textures/gui/dm/portraits/") + icon;
 			SetButtonIcon(m_akAgetIcons[i].pkButton, szTexName, false);
+
+			DMCharacterStats* pkStats = GetAgentStats(m_akAgetIcons[i].iAgentObjectID);
+
+			float curr = pkStats->m_iLife <= pkStats->m_iMaxLife ? 
+				pkStats->m_iLife : pkStats->m_iMaxLife;
+			float max = pkStats->m_iMaxLife;
+
+			if(curr < 0)
+				curr = 0;
+
+			float procent_av_max = 1 - (float) curr / (float) max;
+			float w = 64.0f - (procent_av_max * 64.f);
+			m_akAgetIcons[i].pkLifeProgressbar->Resize((int)w,8,true); 
+
 		}
 		else
 		{
@@ -193,3 +207,4 @@ DMCharacterStats* CGamePlayDlg::GetAgentStats(int iAgent)
 
 	return NULL;
 }
+

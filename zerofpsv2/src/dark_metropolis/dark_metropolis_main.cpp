@@ -7,6 +7,7 @@
 
 #include "dark_metropolis.h"
 #include "gameplay_dlg.h"
+#include "members_dlg.h"
 #include "hq_dlg.h"
 
 DarkMetropolis g_kDM("DarkMetropolis",0,0,0);
@@ -99,6 +100,9 @@ void DarkMetropolis::OnIdle()
 		Input();
 
 	m_pkFps->UpdateCamera(); 	
+
+	if(m_pkMembersDlg)
+		((CMembersDlg*)m_pkMembersDlg)->UpdateCamera();
 }
 
 void DarkMetropolis::RenderInterface(void)

@@ -87,6 +87,8 @@ void DarkMetropolis::GUI_Init()
 	m_pkItemTransactionDlg = new CItemTransactionDlg();
 	m_pkMembersDlg = new CMembersDlg();
 	m_pkHandleAgents = new CHandleAgents();
+
+	
 }
 
 void DarkMetropolis::GUI_OnCommand(int iID, bool bRMouseBnClick, 
