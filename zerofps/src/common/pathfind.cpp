@@ -320,7 +320,7 @@ PathFind::SEARCH_STATE PathFind::SearchStep()
 		}
 
 		// Kolla om detta är den närmsta noden.
-		if(m_bGoToClosest)
+		if(m_bGoToClosest == true)
 		{
 			if( pkNode->GetHeuristicCost(m_pkDestNode->m_kSqrPos) <
 				m_pkClosestNode->GetHeuristicCost(m_pkDestNode->m_kSqrPos))
@@ -658,7 +658,7 @@ PathFind::NodePtr PathFind::GetNextNextDiagonalStep(PathFind::NodePtr pkNode)
 bool PathFind::ImpossibleToReach(int iStartPosX, int iStartPosY, int iDestPosX, int iDestPosY)
 {
 	// Är rutan i sig blockerad
-	if(m_bGoToClosest)
+	if(m_bGoToClosest == false)
 	{
 		if(GetTerrainCost(iDestPosX, iDestPosY) == BLOCKED_VALUE)
 			return true;
