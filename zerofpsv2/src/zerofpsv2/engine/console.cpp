@@ -227,6 +227,7 @@ void Console::Update(void) {
 		for(int i=0;i<TEXT_MAX_LENGHT;i++)					//wipe the command buffer
 			m_aCommand[i]=' ';				
 		strcpy(m_aCommand,"");
+		
 		return;
 	}
 				
@@ -236,20 +237,22 @@ void Console::Update(void) {
 		m_bShift=false;
 	}
 
-	if(iKeyPressed==KEY_DOWN)
+	if(iKeyPressed==KEY_UP)
 	{
-		if(m_nLastCommand > 0)
+		if(m_nLastCommand >= 0)
 		{
-			m_nLastCommand--;
 			strcpy(m_aCommand, m_kCommandHistory[m_nLastCommand].c_str());
+			
+			if(m_nLastCommand > 0)
+				m_nLastCommand--;
 		}
 		return;
 	}
-	if(iKeyPressed==KEY_UP)
+	if(iKeyPressed==KEY_DOWN)
 	{
 		if(m_nLastCommand+1 < m_kCommandHistory.size())
 		{
-			m_nLastCommand++;
+			m_nLastCommand++;						
 			strcpy(m_aCommand, m_kCommandHistory[m_nLastCommand].c_str());
 		}
 		else
@@ -415,14 +418,25 @@ bool Console::Execute(char* aText) {
 	}
 	else
 	{
-		m_kCommandHistory.push_back(string(aText));
-
-		if(m_kCommandHistory.size() > MAX_CMD_HISTRORY_LENGTH)
+		if(!m_kCommandHistory.empty())
 		{
-			m_kCommandHistory.pop_front();
-		}
-	}
+			if(m_kCommandHistory.back() != aText)
+			{
+				m_kCommandHistory.push_back(string(aText));
 
+				if(m_kCommandHistory.size() > MAX_CMD_HISTRORY_LENGTH)
+				{
+					m_kCommandHistory.pop_front();
+				}
+			}
+		}
+		else
+			m_kCommandHistory.push_back(string(aText));
+	
+		m_nLastCommand = m_kCommandHistory.size()-1;
+	
+	}
+	
 	return true;
 }
 
