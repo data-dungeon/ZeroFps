@@ -5,22 +5,22 @@ CSSphere::CSSphere(float fRadius)
 	m_fRadius=fRadius;
 }
 
-Collision* CSSphere::Test(CollisionShape* kOther,float fTime,bool bContinue)
+Collision* CSSphere::Test(CollisionShape* kOther,bool bContinue)
 {	
 	if(typeid(*kOther)==typeid(CSSphere)){
 		CSSphere *kCs=dynamic_cast<CSSphere*>(kOther);
 		
-		return Collide_CSSphere(kCs,fTime);		
+		return Collide_CSSphere(kCs);		
 	} else if(bContinue)
 	{
-		return kOther->Test(this,fTime,false);
+		return kOther->Test(this,false);
 	};
 	
 	//cout<<"Unhandled collision"<<endl;
 	return NULL;
 }
 
-Collision* CSSphere::Collide_CSSphere(CSSphere* kOther,float fTime)
+Collision* CSSphere::Collide_CSSphere(CSSphere* kOther)
 {
 	Object* O1=m_pkPP->GetObject();
 	Object* O2=kOther->m_pkPP->GetObject();

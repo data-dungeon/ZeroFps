@@ -5,6 +5,7 @@
 #include "../basic/basic.pkg"
 #include "engine_x.h"
 #include "cssphere.h"
+#include "csbox.h"
 #include "madproperty.h"
 #include "mad_core.h"
 
@@ -40,18 +41,24 @@ class ENGINE_API CSMech : public CollisionShape
 		float m_fScale;
 		
 		CSMech();	
-		Collision* Test(CollisionShape* kOther,float fTime,bool bContinue);
-
-		Collision* Collide_CSSphere(CSSphere* kOther,float fTime);
+		Collision* Test(CollisionShape* kOther,bool bContinue);
+		Collision* Collide_CSSphere(CSSphere* kOther);
+		Collision* Collide_CSBox(CSBox* kOther);
+		
 		
 		Vector3& Closest(Vector3& kCurPos,Vector3& OPos1,Vector3& OPos2);
-		bool Closer(Vector3& kCurPos,Vector3& OPos1,Vector3& OPos2);
-		
-		bool TestPolygon(Vector3* kVerts,Vector3 kPos1,Vector3 kPos2,float fR);
+		bool Closer(Vector3& kCurPos,Vector3& OPos1,Vector3& OPos2);		
 		bool TestSides(Vector3* kVerts,Vector3* pkNormal,Vector3 kPos,float fR);
 		
-		bool SetUpMech();
+		bool TestPolygon(Vector3* kVerts,Vector3 kPos1,Vector3 kPos2,float fR);
 		
+		bool TestLineVSPolygon(Vector3* kVerts,Vector3 kPos1,Vector3 kPos2);
+		bool TestSides(Vector3* kVerts,Vector3* pkNormal,Vector3 kPos);		
+		bool TestAxisBox(Vector3 kPos1,Vector3 kPos2,Vector3 kScale);
+		
+		bool BoxEdgeTest(Vector3 kPos,Vector3 kScale);
+		
+		bool SetUpMech();		
 		void GenerateModelMatrix();
 		
 };

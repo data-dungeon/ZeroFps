@@ -83,13 +83,13 @@ Collision* PhysicsEngine::DeepTest(PhysicProperty* pkPP1,PhysicProperty* pkPP2)
 	
 	
 	if(CS1!=NULL && CS2!=NULL)	
-		pkCD=CS1->Test(CS2,m_fFrameTime,true);
+		pkCD=CS1->Test(CS2,true);
 	else if(CS1!=NULL && CS2==NULL)	
-		pkCD=CS1->Test(CSP2,m_fFrameTime,true);
+		pkCD=CS1->Test(CSP2,true);
 	else if(CS1==NULL && CS2!=NULL)	
-		pkCD=CSP1->Test(CS2,m_fFrameTime,true);
+		pkCD=CSP1->Test(CS2,true);
 	else if(CS1==NULL && CS2==NULL)
-		pkCD=CSP1->Test(CSP2,m_fFrameTime,true);
+		pkCD=CSP1->Test(CSP2,true);
 
 	return pkCD;
 }
@@ -203,8 +203,6 @@ void PhysicsEngine::HandleCollisions()
 
 	m_kCPs.sort(SortCollision);
 
-//	if(m_kCPs.size()/2>1)
-//		cout<<"nr Of tests: "<<m_kCPs.size()/2<<endl;
 
 	PhysicProperty* pkSPP=NULL;
 	Collision* pkCO=NULL;

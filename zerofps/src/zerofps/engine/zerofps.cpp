@@ -204,8 +204,8 @@ void ZeroFps::Run_EngineShell()
 		m_pkInput->ToggleGrab();
 			
 	//toggle fullscreen on X systems	// SHELL	
-//	if(m_pkInput->Pressed(KEY_F11))
-//		ToggleFullScreen();		
+	if(m_pkInput->Pressed(KEY_F11))
+		ToggleFullScreen();		
 
 	if(m_pkInput->Pressed(KEY_TAB))
 	{		

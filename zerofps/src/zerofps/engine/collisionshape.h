@@ -20,7 +20,7 @@ class ENGINE_API CollisionShape
 		
 		void SetPPPointer(PhysicProperty* pkPP);
 		
-		virtual Collision* Test(CollisionShape* kOther,float fTime,bool bContinue)=0;
+		virtual Collision* Test(CollisionShape* kOther,bool bContinue)=0;
 };
 
 #endif

@@ -1,6 +1,6 @@
 #include "playerobject.h"
 #include "../zerofps/engine/cssphere.h"
- 
+#include "../zerofps/engine/csbox.h"
 
 PlayerObject::PlayerObject(HeightMap *pkMap,Input *pkInput)
 {
@@ -19,7 +19,9 @@ PlayerObject::PlayerObject(HeightMap *pkMap,Input *pkInput)
 	AddProperty("PhysicProperty");
 	PhysicProperty* pp=static_cast<PhysicProperty*>(GetProperty("PhysicProperty"));
 	pp->m_bStride=true;
-//	static_cast<CSSphere*>(pp->GetColSphere())->m_fRadius=1;
+	pp->m_bGlide=false;	
+//	pp->SetColShape(new CSBox(Vector3(.8,1.8,.8)));	
+	
 
 
 //	AddProperty("MadProperty");

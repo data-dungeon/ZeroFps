@@ -8,6 +8,7 @@
 using namespace std;
 
 class CSSphere;
+class CSBox;
 
 class ENGINE_API HeightMapCS : public CollisionShape
 {
@@ -17,8 +18,9 @@ class ENGINE_API HeightMapCS : public CollisionShape
 		HeightMap* m_pkMap;
 
 		HeightMapCS(HeightMap* pkMap);		
-		Collision* Test(CollisionShape* kOther,float fTime,bool bContinue);
-		Collision* Collide_CSSphere(CSSphere* kOther,float fTime);
+		Collision* Test(CollisionShape* kOther,bool bContinue);
+		Collision* Collide_CSSphere(CSSphere* kOther);
+		Collision* Collide_CSBox(CSBox* kOther);		
 
 };
 

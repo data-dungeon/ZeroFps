@@ -19,9 +19,9 @@ class ENGINE_API CSBox : public CollisionShape
 		Vector3 m_kScale;
 		
 		CSBox(Vector3 kScale);	
-		Collision* Test(CollisionShape* kOther,float fTime,bool bContinue);
+		Collision* Test(CollisionShape* kOther,bool bContinue);
 
-		Collision* Collide_CSSphere(CSSphere* kOther,float fTime);
+		Collision* Collide_CSSphere(CSSphere* kOther);
 		
 //		Vector3 TestQuad(Vector3 V1,Vector3 V2,Vector3 V3,Vector3 V4,Vector3 kPos1,Vector3 kPos2,float fR);
 
