@@ -676,7 +676,7 @@ void DarkMetropolis::Input()
 			//enter HQ
 			if(P_DMHQ* pkHQ = (P_DMHQ*)pkPickEnt->GetProperty("P_DMHQ"))
 			{				
-				
+
 				for(unsigned int i = 0;i < m_kSelectedEntitys.size();i++)
 				{					
 					if(Entity* pkEnt = m_pkObjectMan->GetObjectByNetWorkID(m_kSelectedEntitys[i]))
