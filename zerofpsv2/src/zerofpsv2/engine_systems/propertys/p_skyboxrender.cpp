@@ -37,17 +37,17 @@ void P_SkyBoxRender::SetTexture(const char* acHor,const char* acTop)
 		m_bModeSixSides = true;
 	//T_CLAMP
 		strTexName = strBase + "_ft.bmp";
-		m_iTexture[SKYBOXSIDE_FORWARD]	= m_pkTexMan->Load(strTexName.c_str(),0);
+		m_iTexture[SKYBOXSIDE_FORWARD]	= m_pkTexMan->Load(strTexName.c_str(),T_CLAMP);
 		strTexName = strBase + "_rt.bmp";
-		m_iTexture[SKYBOXSIDE_RIGHT]	= m_pkTexMan->Load(strTexName.c_str(),0);
+		m_iTexture[SKYBOXSIDE_RIGHT]	= m_pkTexMan->Load(strTexName.c_str(),T_CLAMP);
 		strTexName = strBase + "_bk.bmp";
-		m_iTexture[SKYBOXSIDE_BACK]	= m_pkTexMan->Load(strTexName.c_str(),0);
+		m_iTexture[SKYBOXSIDE_BACK]	= m_pkTexMan->Load(strTexName.c_str(),T_CLAMP);
 		strTexName = strBase + "_lf.bmp";
-		m_iTexture[SKYBOXSIDE_LEFT]	= m_pkTexMan->Load(strTexName.c_str(),0);
+		m_iTexture[SKYBOXSIDE_LEFT]	= m_pkTexMan->Load(strTexName.c_str(),T_CLAMP);
 		strTexName = strBase + "_up.bmp";
-		m_iTexture[SKYBOXSIDE_UP]	= m_pkTexMan->Load(strTexName.c_str(),0);
+		m_iTexture[SKYBOXSIDE_UP]	= m_pkTexMan->Load(strTexName.c_str(),T_CLAMP);
 		strTexName = strBase + "_dn.bmp";
-		m_iTexture[SKYBOXSIDE_DOWN]	= m_pkTexMan->Load(strTexName.c_str(),0);
+		m_iTexture[SKYBOXSIDE_DOWN]	= m_pkTexMan->Load(strTexName.c_str(),T_CLAMP);
 		}
 	else {
 		m_bModeSixSides = false;
