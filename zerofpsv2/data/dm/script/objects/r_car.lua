@@ -16,9 +16,9 @@ function Create()
 			InitParameter("groupflag",0);
 			InitParameter("groupflag",1);
 			InitParameter("inertia",1);
-			InitParameter("airfriction",1);
+			InitParameter("airfriction",2);
 			
-			InitParameter("mass",1);
+			InitParameter("mass",2);
 			InitParameter("inertia",0.2);
 			InitParameter("bounce",0.0);
 			InitParameter("friction",1);

@@ -41,8 +41,8 @@ void P_Car::Update()
 		Vector3 kStearPos = Vector3(0,0,-2);
 		Vector3 kDrivePos = Vector3(0,0, 2);
 		
-		Vector3 kDriveForce = Vector3(0,0,-10);
-		Vector3 kStearForce = Vector3( 6,0,0);
+		Vector3 kDriveForce = Vector3(0,0,-15);
+		Vector3 kStearForce = Vector3( 10,0,0);
 				
 		kDriveForce = GetObject()->GetLocalRotM().VectorTransform(kDriveForce);
 		kStearForce = GetObject()->GetLocalRotM().VectorTransform(kStearForce);
@@ -63,11 +63,11 @@ void P_Car::Update()
 			
 		//apply some trust
 		
-		Trust(Vector3( 0.75,0.2,-1.5),Vector3(0,-0.35,0));
-		Trust(Vector3(-0.75,0.2,-1.5),Vector3(0,-0.35,0));
+		Trust(Vector3( 0.75,0.3,-1.5),Vector3(0,-2,0));
+		Trust(Vector3(-0.75,0.3,-1.5),Vector3(0,-2,0));
 
-		Trust(Vector3( 0.75,0.2,1.5),Vector3(0,-0.35,0));
-		Trust(Vector3(-0.75,0.2,1.5),Vector3(0,-0.35,0));
+		Trust(Vector3( 0.75,0.3,1.5),Vector3(0,-2,0));
+		Trust(Vector3(-0.75,0.3,1.5),Vector3(0,-2,0));
 				
 }
 
@@ -86,7 +86,7 @@ void P_Car::Trust(Vector3 kPos,Vector3 kForce)
 	if(fFd > 3)
 		return;
 	
-	Vector3 kRealForce = kUpForce / (fFd * fFd) ;
+	Vector3 kRealForce = kUpForce / (fFd ) ;
 	
 	if(kRealForce.Length() > fMaxForce)
 		kRealForce = kRealForce.Unit() * fMaxForce;
@@ -117,8 +117,11 @@ Vector3 P_Car::LineTest(Vector3 kStart,Vector3 kStop)
 		if(kObjects[i]->GetEntityID() <100000)
 			continue;
 
-		if(!kObjects[i]->IsZone())
+		if(kObjects[i] == GetObject())
 			continue;
+			
+		//if(!kObjects[i]->IsZone())
+		//	continue;
 
 		//-------------
 
