@@ -330,17 +330,15 @@ bool ZFVFileSystem::ListDir(vector<string>* pkFiles, string strName, bool bOnlyM
 	sort(start, end);
 
 	//remove duplicates (WARNING, this algoritm only works if the list is sorted by name)
-	string old="";
 	for(vector<string>::iterator it = pkFiles->begin();it != pkFiles->end();it++)
 	{	
-		if((*it) == old)
+		if( (it+1) == pkFiles->end())
+			continue;
+		if( *it == *(it+1))
 		{
-			old = (*it);
-			pkFiles->erase(it);
-			it = pkFiles->begin();		
+			pkFiles->erase(it+1);
+			it--;
 		}
-		else	
-			old = (*it);		
 	}
 	
 	return true;
