@@ -234,6 +234,12 @@ void DarkMetropolis::GUI_OnClick(int x, int y, bool bMouseDown,
 	{
 		m_pkMembersDlg->OnClick(x, y, bMouseDown, bLeftButton, pkMain);
 	}
+
+	if(strMainWnd == "DMIntroWnd" || 
+		strMainWnd == "StartNewGameWnd")
+	{
+		m_pkStartDMDlg->OnClick(x, y, bMouseDown, bLeftButton, pkMain);
+	}
 	
 }
 

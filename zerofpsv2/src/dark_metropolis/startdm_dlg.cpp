@@ -118,6 +118,8 @@ void CStartDMDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName)
 void CStartDMDlg::PlayIntroScreen()
 {
 	LoadDlg("data/script/gui/dm_intro.lua");
+	m_pkGui->SetCaptureToWnd(GetWnd("DMIntroWnd")); 
+	m_pkGui->SetFocus(GetWnd("DMIntroWnd"));
 	
 	int antal = sizeof(CStartDMDlg::Labels) / sizeof(CStartDMDlg::Labels[1]);
 	for(int i=0; i<antal; i++)
@@ -167,8 +169,7 @@ void CStartDMDlg::Update(float fFrameTime)
 		{
 			if(m_fFadeOffset > 0.98)
 			{
-				GetWnd("DMIntroWnd")->Hide();
-				m_bPlayIntro = false;
+				CancelIntro();
 			}
 		}
 
@@ -178,3 +179,17 @@ void CStartDMDlg::Update(float fFrameTime)
 	}
 }
 
+void CStartDMDlg::OnClick(int x, int y, bool bMouseDown, bool bLeftButton, ZGuiWnd *pkMain)
+{
+	CancelIntro();
+}
+
+void CStartDMDlg::CancelIntro()
+{
+	printf("cancel\n");
+	GetWnd("DMIntroWnd")->Hide();
+	m_bPlayIntro = false;	
+
+	m_pkGui->SetCaptureToWnd(GetWnd("StartNewGameWnd")); 
+	m_pkGui->KillWndCapture();
+}

@@ -8,6 +8,7 @@ public:
 	~CStartDMDlg();
 
 	void OnCommand(ZGuiWnd *pkMainWnd, string strClickName);
+	void OnClick(int x, int y, bool bMouseDown, bool bLeftButton, ZGuiWnd *pkMain);
 	void Update(float fFrameTime);
 
 private:
@@ -29,5 +30,7 @@ private:
 	};
 
 	INTRO_CRAP m_kApa;
+
+	void CancelIntro();
 	
 };
