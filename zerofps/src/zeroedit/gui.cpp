@@ -367,7 +367,7 @@ bool Gui::InitSkins()
 	m_kSkinMap.insert( map<string, ZGuiSkin*>::value_type(string("menu_item_sel"), 
 		new ZGuiSkin(bn_up,-1,-1,-1, -1,-1,-1,-1, 128,0,0, 0,0,0, 0, false,false) ) ); 
 	m_kSkinMap.insert( map<string, ZGuiSkin*>::value_type(string("menu"), 
-		new ZGuiSkin(128, 128, 128, 0, 0, 0, 0)) ); 
+		new ZGuiSkin(128, 128, 128, 92, 92, 92, 1)) ); 
 	m_kSkinMap.insert( map<string, ZGuiSkin*>::value_type(string("dark_blue"), 
 		new ZGuiSkin(0, 0, 128, 0, 0, 0, 0)) ); 
 	m_kSkinMap.insert( map<string, ZGuiSkin*>::value_type(string("white"), 
@@ -713,7 +713,7 @@ bool Gui::CreateMenu(ZFIni* pkIni, char* szFileName)
 	Rect rc = Rect(0,0,128,32);
 
 	int iMenuOffset = 0;
-	int iMenuWidth = pkFont->GetLength("File")+6;
+	int iMenuWidth = pkFont->GetLength(" File")+6;
 	Rect rcMenu(0,0,iMenuWidth,20);
 	iMenuOffset += iMenuWidth;
 
@@ -725,11 +725,11 @@ bool Gui::CreateMenu(ZFIni* pkIni, char* szFileName)
 	pkMenuCBox->SetLabelText("File");
 	pkMenuCBox->SetNumVisibleRows(5);
 	pkMenuCBox->IsMenu(true);
-	pkMenuCBox->AddItem("Load map...", IDM_LOAD_HEIGHTMAP);
-	pkMenuCBox->AddItem("Load template...", IDM_LOAD_TEMPLATE);
-	pkMenuCBox->AddItem("Save template...", IDM_SAVE_TEMPLATE);
-	pkMenuCBox->AddItem("Edit property...", IDM_CREATE_NEW_PROPERTY);
-	pkMenuCBox->AddItem("Quit", IDM_CLOSE);
+	pkMenuCBox->AddItem(" Load map...", IDM_LOAD_HEIGHTMAP);
+	pkMenuCBox->AddItem(" Load template...", IDM_LOAD_TEMPLATE);
+	pkMenuCBox->AddItem(" Save template...", IDM_SAVE_TEMPLATE);
+	pkMenuCBox->AddItem(" Edit property...", IDM_CREATE_NEW_PROPERTY);
+	pkMenuCBox->AddItem(" Quit", IDM_CLOSE);
 	Register(pkMenuCBox, "MainMenuCB1");
 
 	if(!pkIni->Open(szFileName, false))
@@ -762,7 +762,7 @@ bool Gui::CreateMenu(ZFIni* pkIni, char* szFileName)
 		if(strcmp(parent, "NULL") == 0)
 		{
 			char szTitle[50];
-			strcpy(szTitle, pkIni->GetValue(akSections[i].c_str(), "Title"));
+			sprintf(szTitle, " %s", pkIni->GetValue(akSections[i].c_str(), "Title"));
 			iMenuWidth = pkFont->GetLength(szTitle) + 6; // move rc right
 
 			rcMenu = Rect(iMenuOffset,0,iMenuOffset+iMenuWidth,20);
