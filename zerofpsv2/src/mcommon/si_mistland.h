@@ -12,6 +12,8 @@ class PSystemProperty;
 #include "../zerofpsv2/engine_systems/propertys/p_psystem.h"
 #include "p_event.h"
 #include "p_ml.h"
+#include <map>
+#include <string>
 
 using namespace std;
 
@@ -22,6 +24,7 @@ namespace MistLandLua
 	
 	extern int						g_iCurrentObjectID;
 	extern int						g_iLastCollidedID;
+	extern map<string,string> MCOMMON_API	g_vkIpUsers;
 
 	extern int MCOMMON_API 		g_iCurrentPCID;
 
@@ -38,6 +41,7 @@ namespace MistLandLua
 
 	int MCOMMON_API AddActionLua(lua_State* pkLua);				//(int objectid,string action) add action to action list of object
 
+	int MCOMMON_API AddUser(lua_State* pkLua);
 
    // character status
    int MCOMMON_API RollSkillDiceLua (lua_State* pkLua);       // returns failed/suceeded

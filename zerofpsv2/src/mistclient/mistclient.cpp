@@ -14,6 +14,7 @@
 #include "../zerofpsv2/gui/zgui.h"
 #include "../mcommon/si_mistland.h"
 #include "../zerofpsv2/basic/zguifont.h"
+#include <typeinfo>
  
 MistClient g_kMistClient("MistClient",0,0,0);
 
@@ -51,6 +52,10 @@ static bool GUIPROC( ZGuiWnd* win, unsigned int msg, int numparms, void *params 
 		break;
 	case ZGM_SCROLL:
 		g_kMistClient.OnScroll(((int*)params)[0], ((int*)params)[2], win);
+		break;
+
+	case ZGM_CBN_SELENDOK:
+		g_kMistClient.OnSelectCB(((int*)params)[0], ((int*)params)[1], win);
 		break;
 
 	}
@@ -150,7 +155,10 @@ void MistClient::Init()
 
 	// Fulhack så länge för att kunna styra gui:t innan man har kopplat upp mot serven.
 	pkFps->m_bClientMode = true;
-	
+
+	ZFResourceHandle kIpSetupScript;
+	kIpSetupScript.SetRes("data/script/net/ipsetup.lua");
+	pkScript->Call(&kIpSetupScript, "SetupIP", 0, 0);	
 }
 
 void MistClient::RegisterResources()
@@ -601,19 +609,21 @@ void MistClient::OnCommand(int iID, ZGuiWnd *pkMainWnd)
 	if(strMainWndName == "IntroWnd")
 	{
 		if(strClickWndName == "OpenConnectButton")
+		{
 			pkScript->Call(m_pkScriptResHandle, "OnClickConnect",0,0);
+
+			ClearListbox("IPNumbersComboBox");
+
+			map<string,string>::iterator itIPs = MistLandLua::g_vkIpUsers.begin();
+			for( ; itIPs != MistLandLua::g_vkIpUsers.end(); itIPs++)
+				AddListItem("IPNumbersComboBox", (char*) itIPs->first.c_str());
+		}
 		else
 		if(strClickWndName == "ConnectToServerButton")
 		{
 			char* szIpName = GetWnd("IPNumberEditbox")->GetText();
-
 			pkFps->m_pkNetWork->ClientStart(szIpName);
 			pkApp->OnClientStart();
-			
-
-/*			CmdArgument* args = new CmdArgument;
-			args->m_kSplitCommand.insert("192.168.0.160:4242");
-			pkFps->RunCommand(ZeroFps::FID_CONNECT, args);*/
 		}
 	}
 	if(m_pkInventDlg)
@@ -739,6 +749,43 @@ void MistClient::OnScroll(int iID, int iPos, ZGuiWnd *pkMain)
 
 	if(strcmp(pkMain->GetName(), "BackPackWnd") == 0)
 		m_pkInventDlg->OnScroll(iID,iPos);	
+}
+
+void MistClient::OnSelectCB(int ListBoxID, int iItemIndex, ZGuiWnd *pkMain)
+{
+	if(pkMain == NULL) return;
+
+	ZGuiCombobox* pkComboBox = NULL;
+	list<ZGuiWnd*> childs;
+	pkMain->GetChildrens(childs);
+
+	list<ZGuiWnd*>::iterator it = childs.begin();
+	for(; it != childs.end(); it++)
+	{
+		ZGuiWnd* pkWnd = (*it);
+		if(pkWnd->GetID() == ListBoxID)
+		{
+			if(typeid(*pkWnd)==typeid(ZGuiCombobox))
+			{
+				pkComboBox = static_cast<ZGuiCombobox*>(pkWnd);
+				break;
+			}
+		}
+	}
+
+	if(pkComboBox != NULL)
+	{
+		char* szUser = pkComboBox->GetListbox()->GetSelItem()->GetText();
+
+		map<string, string>::iterator itIPInfo;
+		itIPInfo = MistLandLua::g_vkIpUsers.find(string(szUser));
+
+		if(itIPInfo != MistLandLua::g_vkIpUsers.end())
+		{
+			GetWnd("UserEditbox")->SetText((char*)itIPInfo->first.c_str());
+			GetWnd("IPNumberEditbox")->SetText((char*)itIPInfo->second.c_str());
+		}
+	}
 }
 
 void MistClient::SetActiveCaracter(int iCaracter)
@@ -1007,3 +1054,5 @@ bool MistClient::PickZones()
 	return false;
 	//cout<<"nr of zones picked:"<<iNrOfZones<<endl;
 }
+
+

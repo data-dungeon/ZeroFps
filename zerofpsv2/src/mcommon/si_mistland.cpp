@@ -9,11 +9,12 @@
 #include <cmath>                    // for trigonometry functions
 
 
-ZFScriptSystem*	MistLandLua::g_pkScript;
-ObjectManager*		MistLandLua::g_pkObjMan;
-int					MistLandLua::g_iCurrentObjectID;
-int					MistLandLua::g_iLastCollidedID;
-int					MistLandLua::g_iCurrentPCID = -1;
+ZFScriptSystem*		MistLandLua::g_pkScript;
+ObjectManager*			MistLandLua::g_pkObjMan;
+int						MistLandLua::g_iCurrentObjectID;
+int						MistLandLua::g_iLastCollidedID;
+int						MistLandLua::g_iCurrentPCID = -1;
+map<string,string>	MistLandLua::g_vkIpUsers;
 
 
 void MistLandLua::Init(ObjectManager* pkObjMan,ZFScriptSystem* pkScript)
@@ -109,6 +110,8 @@ void MistLandLua::Init(ObjectManager* pkObjMan,ZFScriptSystem* pkScript)
 
    pkScript->ExposeFunction("CastSpell",	            MistLandLua::CastSpellLua);
 
+	// setup ip
+	pkScript->ExposeFunction("AddUser", MistLandLua::AddUser);
 
 }
 
@@ -2083,3 +2086,34 @@ int MistLandLua::CastSpellLua (lua_State* pkLua)
 }
 
 // ----------------------------------------------------------------------------------------------
+
+// 1:st arg = user name (string)
+// 2:nd arg = ip name (ie."192.168.0.153:4242") (string)
+int MistLandLua::AddUser (lua_State* pkLua)
+{
+	if( g_pkScript->GetNumArgs(pkLua) != 2 )
+	{
+		printf("Failed to add user to list. Bad argumetns!\n");
+		return 0;
+	}
+
+   char acName[128], acIP[128];
+	
+	//user name
+	g_pkScript->GetArgString(pkLua, 0, acName);
+
+   //user ip
+	g_pkScript->GetArgString(pkLua, 1, acIP);
+
+	map<string,string>::iterator it = g_vkIpUsers.find(string(acName));
+
+	if(it != g_vkIpUsers.end())
+	{
+		printf("Failed to add user to list. User already exist!\n");
+		return 0;
+	}
+
+	g_vkIpUsers.insert(map<string,string>::value_type(string(acName),string(acIP)));
+
+	return 1;
+}
