@@ -42,10 +42,10 @@
 
 #include "../mcommon/p_arcadecharacter.h"
 
-/**	\brief	Da ZeroEdit
-		\ingroup ZeroEdit
+/**	\brief	Da ZeroEd
+		\ingroup ZeroEd
 */
-class ZeroEdit :public Application , public ZGuiApp {
+class ZeroEd :public Application , public ZGuiApp {
 	private:
 
 		bool PlaceObjectOnGround(int iObjectID, int iZoneID);
@@ -197,7 +197,7 @@ class ZeroEdit :public Application , public ZGuiApp {
 		void OnClickTreeItem(char *szTreeBox, char *szParentNodeText, 
 			char *szClickNodeText, bool bHaveChilds);
 		
-		ZeroEdit(char* aName,int iWidth,int iHeight,int iDepth);
+		ZeroEd(char* aName,int iWidth,int iHeight,int iDepth);
 	 	
 	 	void OnInit();
 		void OnIdle();

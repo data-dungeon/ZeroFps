@@ -1,8 +1,8 @@
 /**
-	\defgroup ZeroEdit ZeroEdit
+	\defgroup ZeroEd ZeroEd
 	\ingroup MistLand
 
-  ZeroEdit is the Editor Application of the game MistLands.
+  ZeroEd is the Editor Application of the game MistLands.
 */ 
  
 #include <set> 
@@ -26,7 +26,7 @@
 #include "../mcommon/si_dm.h"
 #include "../zerofpsv2/engine_systems/propertys/p_scriptinterface.h"
 
-ZeroEdit g_kMistServer("ZeroEdit", 0, 0, 0);
+ZeroEd g_kMistServer("ZeroEd", 0, 0, 0);
 
 static bool GUIPROC( ZGuiWnd* win, unsigned int msg, int numparms, void *params ) 
 {
@@ -52,10 +52,10 @@ static bool GUIPROC( ZGuiWnd* win, unsigned int msg, int numparms, void *params 
 }
 
 
-ZeroEdit::ZeroEdit(char* aName,int iWidth,int iHeight,int iDepth) 
+ZeroEd::ZeroEd(char* aName,int iWidth,int iHeight,int iDepth) 
 	: Application(aName,iWidth,iHeight,iDepth), ZGuiApp(GUIPROC)
 { 
-	g_ZFObjSys.Log_Create("zerodit");
+	g_ZFObjSys.Log_Create("zeroed");
 
 	// Set Default values
 	m_bEditSun		= false;
@@ -107,7 +107,7 @@ ZeroEdit::ZeroEdit(char* aName,int iWidth,int iHeight,int iDepth)
 } 
 
 
-int ZeroEdit::GetView(float x, float y)
+int ZeroEd::GetView(float x, float y)
 {
 	Vector3 kMin, kMax;
 
@@ -125,7 +125,7 @@ int ZeroEdit::GetView(float x, float y)
 	return -1;
 }
 
-bool ZeroEdit::SetCamera(int iNum)
+bool ZeroEd::SetCamera(int iNum)
 {
 	switch(iNum) 
 	{
@@ -161,7 +161,7 @@ bool ZeroEdit::SetCamera(int iNum)
 }
 
 
-bool ZeroEdit::SetViewPort(const char* szVpName)
+bool ZeroEd::SetViewPort(const char* szVpName)
 {
 	ZGuiWnd* pkWnd = GetWnd(szVpName);	
 	if(!pkWnd)
@@ -185,7 +185,7 @@ bool ZeroEdit::SetViewPort(const char* szVpName)
 	return true;
 }
 
-void ZeroEdit::CreateEditCameras()
+void ZeroEd::CreateEditCameras()
 {
 	for(int i=0; i<4; i++) 
 	{
@@ -216,12 +216,13 @@ void ZeroEdit::CreateEditCameras()
 }
 
 
-void ZeroEdit::OnInit() 
+void ZeroEd::OnInit() 
 {
 	m_pkZFVFileSystem->AddRootPath( string("../data/mistlands/") ,"data/");
 	m_pkZFVFileSystem->AddRootPath( string("../data/dm/") ,"data/");
+	m_pkZFVFileSystem->AddRootPath( string("../data/zeroed/") ,"data/");
 	
-	m_pkConsole->Printf(" ZeroEdit (mistland dedicated server)");
+	m_pkConsole->Printf(" ZeroEd (mistland dedicated server)");
 	m_pkConsole->Printf("--------------------------------");
 	m_pkConsole->Printf("");
 
@@ -237,7 +238,7 @@ void ZeroEdit::OnInit()
 	
 }
 
-void ZeroEdit::Init()
+void ZeroEd::Init()
 {	
 	m_pkFps->m_bClientMode = true;
 
@@ -307,7 +308,7 @@ void ZeroEdit::Init()
 		"data/script/gui/menu.txt", true); 
 
 	//setup caption
-	SetTitle("ZeroEdit");
+	SetTitle("ZeroEd");
 	// hide cursor
 	m_pkInput->ShowCursor(true);
 
@@ -340,7 +341,7 @@ void ZeroEdit::Init()
 	GetWnd("vp4")->SetZValue(0);
 }
 
-void ZeroEdit::SetupGuiEnviroment()
+void ZeroEd::SetupGuiEnviroment()
 {
 	// Create from script.
 	LoadGuiFromScript("data/script/gui/server.lua");
@@ -367,12 +368,12 @@ void ZeroEdit::SetupGuiEnviroment()
 }
 
 
-void ZeroEdit::RegisterResources()
+void ZeroEd::RegisterResources()
 {
 	m_pkResourceDB->RegisterResource( string(".env"), Create__EnvSetting	);
 }
 
-void ZeroEdit::RegisterPropertys()
+void ZeroEd::RegisterPropertys()
 {
 	m_pkPropertyFactory->Register("P_Car", Create_P_Car);
 
@@ -399,7 +400,7 @@ void ZeroEdit::RegisterPropertys()
 }
 
 
-void ZeroEdit::DrawHMEditMarker(HeightMap* pkHmap, Vector3 kCenterPos, float fInRadius, float fOutRadius )
+void ZeroEd::DrawHMEditMarker(HeightMap* pkHmap, Vector3 kCenterPos, float fInRadius, float fOutRadius )
 {
 	if(pkHmap == NULL)	return;
 
@@ -437,7 +438,7 @@ void ZeroEdit::DrawHMEditMarker(HeightMap* pkHmap, Vector3 kCenterPos, float fIn
 }
 
 
-void ZeroEdit::DrawSelectedEntity()
+void ZeroEd::DrawSelectedEntity()
 {
 	for(set<int>::iterator itEntity = m_SelectedEntitys.begin(); itEntity != m_SelectedEntitys.end(); itEntity++ ) 
 	{
@@ -461,7 +462,7 @@ void ZeroEdit::DrawSelectedEntity()
 }
 
 
-void ZeroEdit::Select_Toggle(int iId, bool bMultiSelect)
+void ZeroEd::Select_Toggle(int iId, bool bMultiSelect)
 {
 	if(!bMultiSelect && m_iCurrentObject != iId)		
 		Select_None();
@@ -484,7 +485,7 @@ void ZeroEdit::Select_Toggle(int iId, bool bMultiSelect)
 	}
 }
 
-void ZeroEdit::DeleteSelected()
+void ZeroEd::DeleteSelected()
 {
 	if(m_SelectedEntitys.size() == 0)	return;
 
@@ -518,7 +519,7 @@ void ZeroEdit::DeleteSelected()
 }
 
 
-void ZeroEdit::OnIdle()
+void ZeroEd::OnIdle()
 {	
 	m_pkFps->SetCamera(m_pkActiveCamera);		
 	m_pkFps->GetCam()->ClearViewPort();	
@@ -560,7 +561,7 @@ void ZeroEdit::OnIdle()
 }
 
 
-void ZeroEdit::RenderInterface(void)
+void ZeroEd::RenderInterface(void)
 {
 	DrawSelectedEntity();
 	if(m_iEditMode == EDIT_HMAP) {
@@ -572,7 +573,7 @@ void ZeroEdit::RenderInterface(void)
 	if(m_iEditMode == EDIT_OBJECTS)	DrawCrossMarker(m_kObjectMarkerPos);		
 }
 
-HeightMap* ZeroEdit::SetPointer()
+HeightMap* ZeroEd::SetPointer()
 {
 	m_kDrawPos.Set(0,0,0);
 
@@ -614,7 +615,7 @@ HeightMap* ZeroEdit::SetPointer()
 }
 
 
-void ZeroEdit::HMModifyCommand(float fSize)
+void ZeroEd::HMModifyCommand(float fSize)
 {
 	float fTime = m_pkFps->m_pkObjectMan->GetSimDelta();
 
@@ -640,7 +641,7 @@ void ZeroEdit::HMModifyCommand(float fSize)
 
 
 // Handles input for EditMode Terrain.
-void ZeroEdit::Input_EditTerrain()
+void ZeroEd::Input_EditTerrain()
 {
 	if(m_pkInputHandle->VKIsDown("inrad+"))		m_fHMInRadius += 1 * m_pkFps->m_pkObjectMan->GetSimDelta();
 	if(m_pkInputHandle->VKIsDown("inrad-"))		m_fHMInRadius -= 1 * m_pkFps->m_pkObjectMan->GetSimDelta();
@@ -688,7 +689,7 @@ void ZeroEdit::Input_EditTerrain()
 
 
 // Handles input for EditMode Zones.
-void ZeroEdit::Input_EditZone()
+void ZeroEd::Input_EditZone()
 {
 	if(m_pkInputHandle->Pressed(MOUSELEFT) && !DelayCommand())
 	{
@@ -744,7 +745,7 @@ void ZeroEdit::Input_EditZone()
 
 
 // Handles input for EditMode Object.
-void ZeroEdit::Input_EditObject(float fMouseX, float fMouseY)
+void ZeroEd::Input_EditObject(float fMouseX, float fMouseY)
 {
 	if(m_pkInputHandle->VKIsDown("copy"))	EditRunCommand(FID_COPY);
 	if(m_pkInputHandle->VKIsDown("paste"))	EditRunCommand(FID_PASTE);
@@ -841,7 +842,7 @@ void ZeroEdit::Input_EditObject(float fMouseX, float fMouseY)
 	if(m_pkInputHandle->VKIsDown("rotz-"))			pkObj->RotateLocalRotV(Vector3(0,0,-100*m_pkFps->GetFrameTime()));			
 }
 
-void ZeroEdit::Input_Camera(float fMouseX, float fMouseY)
+void ZeroEd::Input_Camera(float fMouseX, float fMouseY)
 {
 //	if(m_pkInputHandle->Pressed(KEY_Z))		SetCamera(0);
 //	if(m_pkInputHandle->Pressed(KEY_X))		SetCamera(1);
@@ -953,7 +954,7 @@ void ZeroEdit::Input_Camera(float fMouseX, float fMouseY)
 	}
 }
 
-void ZeroEdit::Input()
+void ZeroEd::Input()
 {
 	//set speed depending on edit mode
 	if(m_iEditMode == EDIT_HMAP)		m_CamMoveSpeed = 20;
@@ -1030,7 +1031,7 @@ void ZeroEdit::Input()
 	}
 };
 
-void ZeroEdit::OnHud(void)
+void ZeroEd::OnHud(void)
 {
 	m_pkFps->DevPrintf("common","Active Propertys: %d",m_pkObjectMan->GetActivePropertys());	
 	m_pkFps->DevPrintf("common", "Fps: %f",m_pkFps->m_fFps);	
@@ -1046,7 +1047,7 @@ void ZeroEdit::OnHud(void)
 		}
 }
 
-bool ZeroEdit::DelayCommand()
+bool ZeroEd::DelayCommand()
 {
 	if(m_pkFps->GetEngineTime() < m_fDelayTime)
 		return true;
@@ -1055,7 +1056,7 @@ bool ZeroEdit::DelayCommand()
 	return false;
 }
 
-void ZeroEdit::EditRunCommand(FuncId_e eEditCmd)
+void ZeroEd::EditRunCommand(FuncId_e eEditCmd)
 {
 	Entity* pkActiveEntity = m_pkObjectMan->GetObjectByNetWorkID( m_iCurrentObject );
 	if(pkActiveEntity == NULL)
@@ -1097,7 +1098,7 @@ void ZeroEdit::EditRunCommand(FuncId_e eEditCmd)
 }
 
 
-void ZeroEdit::RunCommand(int cmdid, const CmdArgument* kCommand)
+void ZeroEd::RunCommand(int cmdid, const CmdArgument* kCommand)
 {
 	ClientOrder kOrder;
 
@@ -1111,7 +1112,7 @@ void ZeroEdit::RunCommand(int cmdid, const CmdArgument* kCommand)
 			m_pkObjectMan->Clear();
 			GetSystem().RunCommand("server Default server",CSYS_SRC_SUBSYS);
 			m_strWorldDir = "";
-			SetTitle("ZeroEdit");
+			SetTitle("ZeroEd");
 			break;
 		
 		case FID_LOAD:
@@ -1132,7 +1133,7 @@ void ZeroEdit::RunCommand(int cmdid, const CmdArgument* kCommand)
 			
 			// Set the title to include the world name.
 			m_strWorldDir = kCommand->m_kSplitCommand[1];
-			strNewTitle = "ZeroEdit - " + m_strWorldDir;
+			strNewTitle = "ZeroEd - " + m_strWorldDir;
 			SetTitle(strNewTitle);
 
 			/*			if(kCommand->m_kSplitCommand.size() <= 1)
@@ -1202,7 +1203,7 @@ void ZeroEdit::RunCommand(int cmdid, const CmdArgument* kCommand)
 
 			// Set the title to include the world name.
 			m_strWorldDir = kCommand->m_kSplitCommand[1];
-			strNewTitle = "ZeroEdit - " + m_strWorldDir;
+			strNewTitle = "ZeroEd - " + m_strWorldDir;
 			SetTitle(strNewTitle);
 
 /*			cout<<"saving world:"<<endl;
@@ -1343,7 +1344,7 @@ void ZeroEdit::RunCommand(int cmdid, const CmdArgument* kCommand)
 
 }
 
-void ZeroEdit::SoloToggleView()
+void ZeroEd::SoloToggleView()
 {
 	if(DelayCommand())	return;
 	
@@ -1376,7 +1377,7 @@ void ZeroEdit::SoloToggleView()
 	}
 }
 
-void ZeroEdit::CamFollow(bool bFollowMode)
+void ZeroEd::CamFollow(bool bFollowMode)
 {
 	if(bFollowMode)
 	{
@@ -1415,17 +1416,17 @@ void ZeroEdit::CamFollow(bool bFollowMode)
 	}
 }
 
-bool ZeroEdit::StartUp()	
+bool ZeroEd::StartUp()	
 { 
 	m_pkAStar	= static_cast<AStar*>(GetSystem().GetObjectPtr("AStar"));
 	return true; 
 }
 
-bool ZeroEdit::ShutDown()	{ return true; }
-bool ZeroEdit::IsValid()	{ return true; }
+bool ZeroEd::ShutDown()	{ return true; }
+bool ZeroEd::IsValid()	{ return true; }
 
 /*	Return 3D postion of mouse in world. */
-Vector3 ZeroEdit::Get3DMouseDir(bool bMouse)
+Vector3 ZeroEd::Get3DMouseDir(bool bMouse)
 {
 	Vector3 dir;
 	float x,y;		
@@ -1479,7 +1480,7 @@ Vector3 ZeroEdit::Get3DMouseDir(bool bMouse)
 }
 
 /*	Returns 3D dir of mouse click in world. */
-Vector3 ZeroEdit::Get3DMousePos(bool m_bMouse=true)
+Vector3 ZeroEd::Get3DMousePos(bool m_bMouse=true)
 {
 	Vector3 dir;
 	float x,y;		
@@ -1538,7 +1539,7 @@ Vector3 ZeroEdit::Get3DMousePos(bool m_bMouse=true)
 	return dir;
 }
 
-Entity* ZeroEdit::GetTargetObject()
+Entity* ZeroEd::GetTargetObject()
 {
 	Vector3 start	= m_pkFps->GetCam()->GetPos() + Get3DMousePos(true)*2;
 	Vector3 dir		= Get3DMouseDir(true);
@@ -1592,7 +1593,7 @@ Entity* ZeroEdit::GetTargetObject()
 }
 
 
-void ZeroEdit::AddZone(Vector3 kPos, Vector3 kSize, string strName, bool bEmpty)
+void ZeroEd::AddZone(Vector3 kPos, Vector3 kSize, string strName, bool bEmpty)
 {
 	if(m_pkObjectMan->IsInsideZone(kPos, kSize))
 		return;
@@ -1616,14 +1617,14 @@ void ZeroEdit::AddZone(Vector3 kPos, Vector3 kSize, string strName, bool bEmpty)
 }
 
 
-void ZeroEdit::DrawZoneMarker(Vector3 kPos)
+void ZeroEd::DrawZoneMarker(Vector3 kPos)
 {
 	Vector3 bla = m_kZoneSize / 2;
 	m_pkRender->DrawAABB(kPos-bla,kPos+bla, m_pkRender->GetEditColor( "zonemarker" ));
 }
 
 
-void ZeroEdit::DrawCrossMarker(Vector3 kPos)
+void ZeroEd::DrawCrossMarker(Vector3 kPos)
 {
 	// Set Color here.
 	m_pkRender->Line(kPos-Vector3(1,0,0),kPos+Vector3(1,0,0));
@@ -1632,7 +1633,7 @@ void ZeroEdit::DrawCrossMarker(Vector3 kPos)
 }
 
 
-void ZeroEdit::UpdateZoneMarkerPos()
+void ZeroEd::UpdateZoneMarkerPos()
 {
 	Vector3 temp = m_pkFps->GetCam()->GetPos() + Get3DMousePos(false)*15;
 
@@ -1662,13 +1663,13 @@ void ZeroEdit::UpdateZoneMarkerPos()
 }
 
 
-void ZeroEdit::UpdateObjectMakerPos()
+void ZeroEd::UpdateObjectMakerPos()
 {
 	m_kObjectMarkerPos = /*m_pkFps->GetCam()*/ m_pkActiveCamera->GetPos() + Get3DMousePos(true)*2;
 }
 
 
-void ZeroEdit::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
+void ZeroEd::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 {
 	ZGuiWnd* pkWndClicked = NULL;
 
@@ -1789,7 +1790,7 @@ void ZeroEdit::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 	}
 }
 
-void ZeroEdit::OnClickListbox(int iListBoxID, int iListboxIndex, ZGuiWnd* pkMain)
+void ZeroEd::OnClickListbox(int iListBoxID, int iListboxIndex, ZGuiWnd* pkMain)
 {
 	if(pkMain == NULL)
 		return;
@@ -1832,7 +1833,7 @@ void ZeroEdit::OnClickListbox(int iListBoxID, int iListboxIndex, ZGuiWnd* pkMain
 	}
 }
 
-void ZeroEdit::AutoSetZoneSize(string strName)
+void ZeroEd::AutoSetZoneSize(string strName)
 {
 	int iPos = strName.find_last_of('-');
 	if( iPos == string::npos )
@@ -1847,7 +1848,7 @@ void ZeroEdit::AutoSetZoneSize(string strName)
 }
 
 
-void ZeroEdit::OnClickTreeItem(char *szTreeBox, char *szParentNodeText, 
+void ZeroEd::OnClickTreeItem(char *szTreeBox, char *szParentNodeText, 
 											char *szClickNodeText, bool bHaveChilds)
 {
 	if(strcmp(szTreeBox, "ZoneModelTree") == 0)
@@ -1894,7 +1895,7 @@ void ZeroEdit::OnClickTreeItem(char *szTreeBox, char *szParentNodeText,
 	}
 }
 
-void ZeroEdit::OnClickTabPage(ZGuiTabCtrl *pkTabCtrl, int iNewPage, int iPrevPage)
+void ZeroEd::OnClickTabPage(ZGuiTabCtrl *pkTabCtrl, int iNewPage, int iPrevPage)
 {
 	string strTabCtrlName = pkTabCtrl->GetName();
 
@@ -1912,7 +1913,7 @@ void ZeroEdit::OnClickTabPage(ZGuiTabCtrl *pkTabCtrl, int iNewPage, int iPrevPag
 	}
 }
 
-void ZeroEdit::RotateActiveZoneObject()
+void ZeroEd::RotateActiveZoneObject()
 {
 	if(m_iCurrentMarkedZone != -1)
 	{
@@ -1933,7 +1934,7 @@ void ZeroEdit::RotateActiveZoneObject()
 	}
 }
 
-void ZeroEdit::ToogleLight(bool bEnabled)
+void ZeroEd::ToogleLight(bool bEnabled)
 {
 	if(bEnabled)
 		m_pkZShader->SetForceLighting(LIGHT_ALWAYS_ON);
@@ -1941,7 +1942,7 @@ void ZeroEdit::ToogleLight(bool bEnabled)
 		m_pkZShader->SetForceLighting(LIGHT_ALWAYS_OFF);
 }
 
-void ZeroEdit::UpdateStartLocatons()
+void ZeroEd::UpdateStartLocatons()
 {
 	m_kLocations.clear();
 
@@ -1950,7 +1951,7 @@ void ZeroEdit::UpdateStartLocatons()
 }
 
 
-Vector3 ZeroEdit::GetPlayerStartLocation(const char* csName)
+Vector3 ZeroEd::GetPlayerStartLocation(const char* csName)
 {
 	for(unsigned int i=0;i<m_kLocations.size();i++)
 		if(m_kLocations[i].first == csName)
@@ -1962,7 +1963,7 @@ Vector3 ZeroEdit::GetPlayerStartLocation(const char* csName)
 	return Vector3(0,0,0);
 }
 
-void ZeroEdit::PathTest() 
+void ZeroEd::PathTest() 
 {
 	return;
 
@@ -1985,13 +1986,13 @@ void ZeroEdit::PathTest()
 }
 
 
-void ZeroEdit::SendTextToMistClientInfoBox(char *szText)
+void ZeroEd::SendTextToMistClientInfoBox(char *szText)
 {
 	  
 }
 
 
-void ZeroEdit::SetZoneEnviroment(const char* csEnviroment)
+void ZeroEd::SetZoneEnviroment(const char* csEnviroment)
 {
 	//set default enviroment
 	m_strActiveEnviroment=csEnviroment;
@@ -2006,7 +2007,7 @@ void ZeroEdit::SetZoneEnviroment(const char* csEnviroment)
 	}	
 }
 
-string ZeroEdit::GetZoneEnviroment()
+string ZeroEd::GetZoneEnviroment()
 {
 	string env;
 	
@@ -2019,7 +2020,7 @@ string ZeroEdit::GetZoneEnviroment()
 	return env;
 }
 
-char* ZeroEdit::GetSelEnviromentString()
+char* ZeroEd::GetSelEnviromentString()
 {
 	ZGuiListbox* pkEnviromentList = static_cast<ZGuiListbox*>(GetWnd("EnviromentPresetList"));
 	if(pkEnviromentList)
@@ -2034,7 +2035,7 @@ char* ZeroEdit::GetSelEnviromentString()
 
 
 
-bool ZeroEdit::PlaceObjectOnGround(int iObjectID, int iZoneID)
+bool ZeroEd::PlaceObjectOnGround(int iObjectID, int iZoneID)
 {
 	Entity* pkObj = m_pkObjectMan->GetObjectByNetWorkID(iObjectID);		
 	if(pkObj) 
