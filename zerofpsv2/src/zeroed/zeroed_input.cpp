@@ -366,10 +366,13 @@ void ZeroEd::Input_Camera(float fMouseX, float fMouseY)
 		{
 			
 			m_pkActiveCameraObject->SetLocalRotM(kRm);	
-		//	SDL_ShowCursor(false);
+			
+			//m_pkInput->ShowCursor(false);
+			//SDL_ShowCursor(false);
 		}
 		//else
-		//	SDL_ShowCursor(true);
+		//	m_pkInput->ShowCursor(true);
+			//SDL_ShowCursor(true);
 	}
 
 	else 

@@ -108,6 +108,7 @@ class ENGINE_API Input : public ZFSubSystem {
 
 		int				m_iSDLMouseX, m_iSDLMouseY;
 		float				m_fMouseSensitivity;
+		bool				m_bVisibleHWCursor;
 
 		bool				m_bHaveReleasedMWUP,m_bHaveReleasedMWDOWN;
 	

@@ -55,6 +55,8 @@ class MadView :public Application , public ZGuiApp
 		int m_iCurrRotAngle;
 		float* m_apObjRotAngles[3];
 
+		float	m_fObjectRadius;
+		
 		Mad_CoreSubMesh* m_pkSelMesh;
 		Entity* m_pkViewObject;
 		string m_strMadFile;

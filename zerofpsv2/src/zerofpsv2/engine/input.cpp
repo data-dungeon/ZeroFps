@@ -39,6 +39,8 @@ bool Input::StartUp()
 	m_fRelMouseX =		0;
 	m_fRelMouseY =		0;
 	
+	m_bVisibleHWCursor = true;
+	
 	m_bHaveReleasedMWUP = 	false;
 	m_bHaveReleasedMWDOWN = false;
 	
@@ -736,10 +738,15 @@ void Input::SetCursorInputPos(float x, float y)
 
 void Input::ShowCursor(bool bShow)
 {
+	if(bShow == m_bVisibleHWCursor)
+		return;
+
+	m_bVisibleHWCursor = bShow;
+		
 	if(bShow)
 		SDL_ShowCursor(SDL_ENABLE);
 	else
-		SDL_ShowCursor(SDL_DISABLE);
+		SDL_ShowCursor(SDL_DISABLE);		
 }
 
 int  Input::SDLToZeroFpsKey(int iSdlSym)

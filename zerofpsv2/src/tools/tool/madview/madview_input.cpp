@@ -17,21 +17,28 @@ void MadView::Input()
 	}
 	Vector3 kCamerPos = m_pkCameraObject->GetWorldPosV();
 
-	if(m_pkInputHandle->Pressed(KEY_W))
-		kCamerPos.z += 0.01f;
-	if(m_pkInputHandle->Pressed(KEY_S))
-		kCamerPos.z -= 0.01f;
+	if(m_pkInputHandle->Pressed(KEY_W) )
+		kCamerPos.z += m_fObjectRadius * 0.01f;
+	if(m_pkInputHandle->Pressed(KEY_S) )
+		kCamerPos.z -= m_fObjectRadius*  0.01f;
 
 	if(m_pkInputHandle->Pressed(KEY_Q))
-		kCamerPos.y += 0.01f;
+		kCamerPos.y += m_fObjectRadius * 0.01f;
 	if(m_pkInputHandle->Pressed(KEY_E))
-		kCamerPos.y -= 0.01f;
+		kCamerPos.y -= m_fObjectRadius * 0.01f;
 
 	if(m_pkInputHandle->Pressed(KEY_A))
-		kCamerPos.x += 0.01f;
+		kCamerPos.x += m_fObjectRadius * 0.01f;
 	if(m_pkInputHandle->Pressed(KEY_D))
-		kCamerPos.x -= 0.01f;
+		kCamerPos.x -= m_fObjectRadius * 0.01f;
 
+	if(m_pkInputHandle->Pressed(MOUSEWUP)) 	
+		kCamerPos.z += m_fObjectRadius * 0.2;
+	
+	if(m_pkInputHandle->Pressed(MOUSEWDOWN))	
+		kCamerPos.z -=  m_fObjectRadius * 0.2;
+		
+		
 	if(m_pkInputHandle->Pressed(KEY_LEFT))
 		m_fObjRotY-=1;
 	if(m_pkInputHandle->Pressed(KEY_RIGHT))

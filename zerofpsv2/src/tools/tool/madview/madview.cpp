@@ -43,6 +43,8 @@ MadView::MadView(char* aName,int iWidth,int iHeight,int iDepth)
 	m_iObjRotMode = OBJ_ROT_NONE;
 	m_fObjRotDelay = 0.005f;
 
+	m_fObjectRadius = 0.5;
+	
 	m_iCurrRotAngle = 0;
 	m_fObjRotX=m_fObjRotY=m_fObjRotZ=0;
 	m_apObjRotAngles[0] = &m_fObjRotX;

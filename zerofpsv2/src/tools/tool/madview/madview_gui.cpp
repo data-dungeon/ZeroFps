@@ -226,12 +226,19 @@ void MadView::ChangeMad(string strName)
 	m_strMadFile = strName;
 	pkMad->SetBase(strName.c_str());
 
+	m_fObjectRadius = 0.5;
+		
 	Mad_Core* pkCore = dynamic_cast<Mad_Core*>(pkMad->kMadHandle.GetResourcePtr()); 
 
 	ZFAssert(pkCore, "Failed to get Mad_Core pointer!\n");
 	if(pkCore == NULL)
 		return;
 
+	//dvoids flytta kameran hax :D
+	m_pkCameraObject->SetWorldPosV(Vector3(0,-2.5,-pkMad->GetRadius()*2));			
+	m_fObjectRadius = pkMad->GetRadius();
+	
+	
 	char szText[100];
 
 	// Update information in textboxes
