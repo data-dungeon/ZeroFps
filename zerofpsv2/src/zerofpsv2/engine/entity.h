@@ -186,6 +186,7 @@ class ENGINE_API Entity
 		bool							m_bZone;
 		bool							m_bSave;								///< True if this entity should save to disk.
 	
+		bool							m_bSendChilds;						//shuld childs be sent to clients?
 		int							m_iNetUpdateFlags;				///< Network flags for what needs to be updated to clients.					
 		int							m_iUpdateStatus;					
 		ObjectType					m_iObjectType;						

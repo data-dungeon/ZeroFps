@@ -1825,11 +1825,13 @@ void EntityManager::UpdateZones()
 				//if(pkZoneRefresh->m_iRange < m_iTrackerLOS / 2)
 				{
 					pkZoneRefresh->m_pkZone->SetUpdateStatus(UPDATE_ALL);
+					pkZoneRefresh->m_pkZone->m_bSendChilds = true;					
 					//cout<<"whit childs"<<endl;					
 				}
 				else
 				{
 					pkZoneRefresh->m_pkZone->SetUpdateStatus(UPDATE_NOCHILDS);
+					pkZoneRefresh->m_pkZone->m_bSendChilds = false;
 					//cout<<"no childs"<<endl;
 				}
 			}

@@ -56,7 +56,8 @@ Entity::Entity()
 	m_bRelativeOri			= false;
 	m_bFirstSetPos			= true;
 	m_bInterpolate			= true;
-	iNetWorkID			= -1;
+	iNetWorkID				= -1;
+	m_bSendChilds			= true;
 //	m_kVariables.clear();
 
 	//clear child list
@@ -504,10 +505,13 @@ void Entity::GetAllDynamicEntitys(vector<Entity*> *pakObjects)
 
 	pakObjects->push_back(this);	
 	
-	for(vector<Entity*>::iterator it=m_akChilds.begin();it!=m_akChilds.end();it++) {
-		(*it)->GetAllDynamicEntitys(pakObjects);
-	}	
-	
+	//shuld childs be sent to client?
+	if(m_bSendChilds)	
+	{
+		for(vector<Entity*>::iterator it=m_akChilds.begin();it!=m_akChilds.end();it++) {
+			(*it)->GetAllDynamicEntitys(pakObjects);
+		}	
+	}
 }
 
 /**	\brief	Adds ourself and all our children to the list of objects.
