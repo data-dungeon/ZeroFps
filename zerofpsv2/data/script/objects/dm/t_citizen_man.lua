@@ -25,7 +25,6 @@ function Init()
 
 	AddDefenciveActionQuot(SIGetSelfID(), "data/sound/citizen_man/defensive/help.wav");
 	AddDefenciveActionQuot(SIGetSelfID(), "data/sound/citizen_man/defensive/have you lost your mind, dude.wav");
-	AddDefenciveActionQuot(SIGetSelfID(), "data/sound/citizen_man/defensive/god damn! stop that, mr. military guy!.wav");
 	AddDefenciveActionQuot(SIGetSelfID(), "data/sound/citizen_man/defensive/do you want this jacket, take it2!.wav");
 	AddDefenciveActionQuot(SIGetSelfID(), "data/sound/citizen_man/defensive/listen crazy man, I can give you money!!!.wav");
 	AddDefenciveActionQuot(SIGetSelfID(), "data/sound/citizen_man/defensive/oh my god!.wav");

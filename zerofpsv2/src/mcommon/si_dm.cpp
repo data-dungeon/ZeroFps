@@ -1165,6 +1165,7 @@ int DMLua::GetEntityPosLua (lua_State* pkLua)
 // Tar ett nummer, returnerar Entity ID på ett object eller -1 om inget finns.
 // 0 = HQ
 // 1 = Hospital
+// 2 = Polisstation
 int DMLua::GetDMObjectLua(lua_State* pkLua)
 {
 	double dObjectType = -1;
@@ -1203,6 +1204,24 @@ int DMLua::GetDMObjectLua(lua_State* pkLua)
 
 						// Kolla om det är ett sjukhus genom att titta på objektets namn
 						if( strEntName.find("t_door_hospit") != string::npos)
+						{
+							dEntID = (double)kObjs[i]->GetEntityID();
+							break;
+						}
+					}
+				}				
+				break;
+
+			case 2: // Polisstation
+				for ( i = 0; i < kObjs.size(); i++ )
+				{
+					P_DMClickMe* pkProperty = (P_DMClickMe*)kObjs[i]->GetProperty("P_DMClickMe");
+					if(pkProperty)
+					{
+						string strEntName = kObjs[i]->GetName();
+
+						// Kolla om det är ett polisstation genom att titta på objektets namn
+						if( strEntName.find("t_door_bank") != string::npos)
 						{
 							dEntID = (double)kObjs[i]->GetEntityID();
 							break;
@@ -1322,19 +1341,22 @@ int DMLua::GetItemByNameLua(lua_State* pkLua)
 	string strItemToFind = "";
 
 	char temp[256];
-	if(g_pkScript->GetArgString(pkLua, 1, temp))
+	if(g_pkScript->GetArgString(pkLua, 0, temp))
 	{
 		strItemToFind = temp;
 	
 		vector<Entity*> kObjs;
 		g_pkObjMan->GetAllObjects(&kObjs);
 
+		printf("--- ALL ITEMS ---\n");
+
 		for ( int i = 0; i < kObjs.size(); i++ )
 		{
 			P_DMItem* pkItemProperty = (P_DMItem*)kObjs[i]->GetProperty("P_DMItem");
 			if(pkItemProperty)
 			{
-				// Equipa till högkvarteret
+				printf("%s\n", pkItemProperty->GetName().c_str());
+
 				if(pkItemProperty->GetName() == strItemToFind)
 				{
 					dItem = kObjs[i]->GetEntityID();
@@ -1342,6 +1364,8 @@ int DMLua::GetItemByNameLua(lua_State* pkLua)
 				}
 			}
 		}
+
+		printf("---------------\n");
 	}
 
 	g_pkScript->AddReturnValue( pkLua, dItem );
