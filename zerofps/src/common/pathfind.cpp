@@ -13,8 +13,6 @@ static int TEMP_TERRAIN[65536];
 
 static Point g_kFrom, g_kTo;
 
-int g_test = 0;
-
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
@@ -25,6 +23,7 @@ PathFind::PathFind(int* piMapTerrain, int iMapWidth, unsigned int uiBlockedValue
 	m_piMapTerrain = piMapTerrain;
 	m_siMapWidth = iMapWidth;
 	m_bPathIsReversed = false;
+	m_bGoToClosest = true;
 }
 
 PathFind::~PathFind()
@@ -32,10 +31,12 @@ PathFind::~PathFind()
 
 }
 
-bool PathFind::Rebuild(int iStartPosX, int iStartPosY, int iDestPosX, int iDestPosY)
+bool PathFind::Rebuild(int iStartPosX, int iStartPosY, int iDestPosX, int iDestPosY,
+					   bool bGoToClosest)
 {
-	//vector<Tile>* pkTiles = TileEngine::m_pkInstance->GetTilesPointer();
+	m_bGoToClosest = bGoToClosest;
 
+	//vector<Tile>* pkTiles = TileEngine::m_pkInstance->GetTilesPointer();
 
 	// Börja med att tömma kön.
 	while(m_kqClosestPath.size())
@@ -46,7 +47,6 @@ bool PathFind::Rebuild(int iStartPosX, int iStartPosY, int iDestPosX, int iDestP
 		g_kFrom = Point(iStartPosX, iStartPosY);
 		g_kTo = Point(iDestPosX, iDestPosY);
 	}
-
 
 	memcpy(TEMP_TERRAIN, m_piMapTerrain, 
 		sizeof(int)*(m_siMapWidth*m_siMapWidth)); // kopiera den riktiga terrängen till en temp variabel.
@@ -66,7 +66,6 @@ bool PathFind::Rebuild(int iStartPosX, int iStartPosY, int iDestPosX, int iDestP
 				TEMP_TERRAIN[y*m_siMapWidth+x] = BLOCKED_VALUE;
 			}
 		}
-
 
 	if(ImpossibleToReach(iStartPosX, iStartPosY, iDestPosX, iDestPosY))
 		return false;
@@ -104,7 +103,6 @@ bool PathFind::Rebuild(int iStartPosX, int iStartPosY, int iDestPosX, int iDestP
 
 	// Fill a queue with all (x,y) positions 
 	// from the steps from start to end
-	
 	
 	return FillQueue();
 }
@@ -322,12 +320,14 @@ PathFind::SEARCH_STATE PathFind::SearchStep()
 		}
 
 		// Kolla om detta är den närmsta noden.
-		if( pkNode->GetHeuristicCost(m_pkDestNode->m_kSqrPos) <
-			m_pkClosestNode->GetHeuristicCost(m_pkDestNode->m_kSqrPos))
+		if(m_bGoToClosest)
 		{
-			g_test++;
-			m_pkClosestNode = pkNode;
-			m_kqClosestPath.push(Point(m_pkClosestNode->m_kSqrPos.x, m_pkClosestNode->m_kSqrPos.y));
+			if( pkNode->GetHeuristicCost(m_pkDestNode->m_kSqrPos) <
+				m_pkClosestNode->GetHeuristicCost(m_pkDestNode->m_kSqrPos))
+			{
+				m_pkClosestNode = pkNode;
+				m_kqClosestPath.push(Point(m_pkClosestNode->m_kSqrPos.x, m_pkClosestNode->m_kSqrPos.y));
+			}
 		}
 
 		// push pkNode onto Closed, as we have expanded it now
@@ -503,10 +503,8 @@ int PathFind::GetTerrainCost(int x, int y)
 		return BLOCKED_VALUE;	 
 	}
 
-	return TEMP_TERRAIN[y*m_siMapWidth+x];
+	return TEMP_TERRAIN[(y*m_siMapWidth)+x];
 }
-
-
 
 // Name:		FillQueue
 // Description:	Fills a queue with Point´s that forms a grid path
@@ -521,7 +519,7 @@ bool PathFind::FillQueue()
 
 	SEARCH_STATE uiSearchState;
 
-	unsigned int c_iCounter=0, c_iMaxSteps=(m_siMapWidth/4)*(m_siMapWidth/4);
+	unsigned int c_iCounter=0, c_iMaxSteps=(m_siMapWidth/6)*(m_siMapWidth/6);
 
 	do
 	{
@@ -559,7 +557,10 @@ bool PathFind::FillQueue()
 	}
 	else
 	{
-		printf("Unit have not found end node, going to closest one..\n", g_test);
+		printf("Unit have not found end node, going to closest one..\n");
+
+		if(m_bGoToClosest == false)
+			return false;
 
 /*		while(m_kqClosestPath.size())
 		{
@@ -657,8 +658,11 @@ PathFind::NodePtr PathFind::GetNextNextDiagonalStep(PathFind::NodePtr pkNode)
 bool PathFind::ImpossibleToReach(int iStartPosX, int iStartPosY, int iDestPosX, int iDestPosY)
 {
 	// Är rutan i sig blockerad
-/*	if(GetTerrainCost(iDestPosX, iDestPosY) == BLOCKED_VALUE)
-		return true;*/
+	if(m_bGoToClosest)
+	{
+		if(GetTerrainCost(iDestPosX, iDestPosY) == BLOCKED_VALUE)
+			return true;
+	}
 /*
 	if( GetTerrainCost(iDestPosX+1, iDestPosY) == BLOCKED_VALUE
 		&& GetTerrainCost(iDestPosX, iDestPosY+1) == BLOCKED_VALUE

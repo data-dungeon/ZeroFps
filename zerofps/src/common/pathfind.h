@@ -32,6 +32,7 @@ const int BLOCKED = 999;	// Unpassable square
 class COMMON_API PathFind : public ZFObject 
 {
 private:
+	bool m_bGoToClosest;
 	
 	// A node represents a possible state in the search
 	// The user provided state type is included inside this type
@@ -129,7 +130,7 @@ public:
 
 	void Reset();
 	bool GetNextStep(int &riSquareX, int &riSquareY);
-	bool Rebuild(int startx, int starty, int endx, int endy);
+	bool Rebuild(int startx, int starty, int endx, int endy, bool bGoToClosest);
 	int GetTerrainCost(int x, int y);
 
 	static int m_siMapWidth;
