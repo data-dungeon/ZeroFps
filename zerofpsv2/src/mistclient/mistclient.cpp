@@ -539,8 +539,8 @@ void MistClient::OnCommand(int iID, ZGuiWnd *pkMainWnd)
 							info[i].second.second), &pkTestItems[i]) );
 					}
 
-					kItems[2].second->SetContainer(); 
-					kItems[0].second->SetContainer(); 
+					kItems[2].second->RegisterAsContainer(); 
+					kItems[0].second->RegisterAsContainer(); 
 					
 					m_pkInventDlg->AddItems(kItems);
 				}

@@ -55,9 +55,6 @@ public:
 		SlotType m_eType;
 		Point m_kSqr;
 		Point m_kRealSqr;
-
-		int m_iContainer;
-		int m_iContainerID; // only if this slot is a container
 	};
 
 	Slot* FindSlot(int mouse_x, int mouse_y);
@@ -66,8 +63,6 @@ public:
 	
 	InventoryDlg(ZGuiWnd* pkDlgWnd);
 	~InventoryDlg();
-
-	
 
 private:
 	void DropItems();
@@ -105,11 +100,7 @@ private:
 	int m_iCurrentScrollPos;
 	int m_iCurrentContainer;
 
-
 	Point m_kClickOffset;
-
-
-
 };
 
 #endif // !defined(AFX_INVENTORYDLG_H__E2EC300C_10CF_4D5C_B948_2FD7FCAB2686__INCLUDED_)

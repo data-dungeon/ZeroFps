@@ -37,8 +37,9 @@ private:
 
    // what kind of item is this?
    EquipmentCategory m_eEquipmentCategory;
-   bool m_bIsContainer; // is a container
-   int m_iContainerID; 
+   
+   int m_iContainerID; // id of this container
+	int m_iCurrentContainer; // id to the container where this item is.
 
 public:
    ItemStats();
@@ -54,8 +55,18 @@ public:
    int GetDefenceBonus ( string kDefenceName );
    EquipmentCategory GetEquipmentCategory();
 
-   void SetContainer();
-   int GetContainerID() { return m_iContainerID; } // returns -1 if item isn't a container
+	// gör detta föremål till en container
+   void RegisterAsContainer();
+
+	//	returns -1 if item isn't a container 
+	// OBS! Blanda inte ihop denna funktion och GetCurrentContainer
+   int GetContainerID() { return m_iContainerID; }  
+		
+	// hämta ID't till den container där detta föremål ligger
+	int GetCurrentContainer() { return m_iCurrentContainer; } 
+
+	// sätt föremålet i en ny container
+	void PlaceInContainer(int iContainer) { m_iCurrentContainer = iContainer; } 
 
    void SetSkillBonus ( string kSkillName, int iValue );
    void SetAttributeBonus ( string kAttributeName, int iValue );

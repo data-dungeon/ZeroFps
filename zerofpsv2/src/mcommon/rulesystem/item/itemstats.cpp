@@ -411,7 +411,7 @@ bool ItemStats::CanEquipOn ( string kSlotName )
 
 // ---------------------------------------------------------------------------------------------
 
-void ItemStats::SetContainer()
+void ItemStats::RegisterAsContainer()
 { 
 	static int s_iContainerCounter=0;
 	s_iContainerCounter++;

@@ -137,7 +137,7 @@ void InventoryDlg::OnClick(int x, int y, bool bMouseDown, bool bLeftButton)
 			Slot kSlotToAdd = m_kDragSlots.back();
 
 			// det går inte att placera en container i sig själv
-			if(kSlotToAdd.m_iContainerID == m_iCurrentContainer)
+			if(kSlotToAdd.m_pkItemStats->GetContainerID() == m_iCurrentContainer)
 				sqr = Point(-1,-1);
 
 			if(sqr == Point(-1,-1))
@@ -214,7 +214,7 @@ void InventoryDlg::OnClick(int x, int y, bool bMouseDown, bool bLeftButton)
 
 void InventoryDlg::OnDClick(int x, int y, bool bLeftButton)
 {
-	if(bLeftButton == false)
+	if(bLeftButton == false) // Right button Double Click
 	{
 		Slot* pkSlot = FindSlot(x,y);
 
@@ -222,18 +222,19 @@ void InventoryDlg::OnDClick(int x, int y, bool bLeftButton)
 		{
 			int new_container = pkSlot->m_pkItemStats->GetContainerID();
 
-			if(new_container != -1)
+			if(new_container != -1 && m_kContainerStack.top() != new_container)
 			{
 				SwitchContainer(new_container);
-
-				m_pkSelectionLabel->Hide();
-				m_pkSelectedSlot = NULL;
 
 				m_kContainerStack.push(new_container);
 
 				m_pkAudioSys->StartSound("/data/sound/WoodenPanelClose.wav",
 					m_pkAudioSys->GetListnerPos(),m_pkAudioSys->GetListnerDir(),false);					
 			}
+
+			// dölj markören igen
+			m_pkSelectionLabel->Hide();
+			m_pkSelectedSlot = NULL;
 		}
 	}
 }
@@ -252,7 +253,7 @@ InventoryDlg::Slot* InventoryDlg::FindSlot(int mouse_x, int mouse_y)
 		{
 			if(	m_kItemSlots[i].m_eType != SPECIAL_SLOTS)
 			{
-				if(m_kItemSlots[i].m_iContainer != m_iCurrentContainer)
+				if(m_kItemSlots[i].m_pkItemStats->GetCurrentContainer() != m_iCurrentContainer)
 					continue;
 			}
 
@@ -271,7 +272,7 @@ InventoryDlg::Slot* InventoryDlg::FindSlot(int mouse_x, int mouse_y)
 			{
 				if(	m_kItemSlots[i].m_eType != SPECIAL_SLOTS)
 				{
-					if(m_kItemSlots[i].m_iContainer != m_iCurrentContainer)
+					if(m_kItemSlots[i].m_pkItemStats->GetCurrentContainer() != m_iCurrentContainer)
 						continue;
 				}
 					
@@ -355,7 +356,7 @@ bool InventoryDlg::RemoveSlot(Slot* pkSlot)
 		{
 			Slot s = (*it);
 
-			if( s.m_iContainer == m_iCurrentContainer || s.m_eType == SPECIAL_SLOTS)
+			if( s.m_pkItemStats->GetCurrentContainer() == m_iCurrentContainer || s.m_eType == SPECIAL_SLOTS)
 			{
 				if(s.m_kSqr == sqr)
 				{
@@ -459,7 +460,7 @@ void InventoryDlg::ScrollItems(int iPos)
 	{
 		Slot slot = (*it);
 
-		if(slot.m_iContainer == m_iCurrentContainer)
+		if(slot.m_pkItemStats->GetCurrentContainer() == m_iCurrentContainer)
 		{
 			if(slot.m_eType != SPECIAL_SLOTS)
 			{
@@ -481,7 +482,7 @@ void InventoryDlg::ScrollItems(int iPos)
 
 	if(m_pkSelectedSlot && m_pkSelectedSlot->m_eType != SPECIAL_SLOTS)
 	{
-		if(m_pkSelectedSlot->m_iContainer == m_iCurrentContainer)
+		if(m_pkSelectedSlot->m_pkItemStats->GetCurrentContainer() == m_iCurrentContainer)
 		{
 			Rect rc = m_pkSelectionLabel->GetScreenRect(); 
 			int y = rc.Top+offset*48;
@@ -502,7 +503,7 @@ bool InventoryDlg::GetFreeSlotPos(Point& refSqr, int iContainer)
 
 			itSlot it;
 			for( it = m_kItemSlots.begin(); it != m_kItemSlots.end(); it++)
-				if((*it).m_kSqr == t && (*it).m_iContainer == iContainer)
+				if((*it).m_kSqr == t && (*it).m_pkItemStats->GetCurrentContainer() == iContainer)
 				{
 					bTaken = true;
 					break;
@@ -575,8 +576,7 @@ void InventoryDlg::AddSlot(const char *szPic, const char *szPicA, Point sqr,
 
 	kNewSlot.m_eType = eType;
 	kNewSlot.m_pkItemStats = pkItemStats;
-	kNewSlot.m_iContainer = iContainer;
-	kNewSlot.m_iContainerID = kNewSlot.m_pkItemStats->GetContainerID();
+	kNewSlot.m_pkItemStats->PlaceInContainer(iContainer);
 
 	switch(eType)
 	{
@@ -605,7 +605,7 @@ bool InventoryDlg::SlotExist(int sx, int sy)
 		Slot slot = (*it);
 		if(slot.m_pkLabel->GetScreenRect().Inside(sx,sy))
 		{
-			if(slot.m_iContainer == m_iCurrentContainer)
+			if(slot.m_pkItemStats->GetCurrentContainer() == m_iCurrentContainer)
 			{
 				if(slot.m_pkLabel->IsVisible())
 					return true;
@@ -633,7 +633,7 @@ void InventoryDlg::SwitchContainer(int iNewContainer)
 		if(slot.m_eType == CONTAINTER_SLOTS)
 		{
 			// Placer föremålen på rätt ställen i den nya gridden.
-			if(slot.m_iContainer == iNewContainer)
+			if(slot.m_pkItemStats->GetCurrentContainer() == iNewContainer)
 			{
 				int nx = 264 + slot.m_kRealSqr.x * 48;
 				int ny = 16  + slot.m_kRealSqr.y * 48;
@@ -681,9 +681,9 @@ void InventoryDlg::DropItems()
 	itSlot it;
 	for( it = m_kDragSlots.begin(); it != m_kDragSlots.end(); it++)
 	{
-		if((*it).m_iContainer != MAIN_CONTAINER)
+		if((*it).m_pkItemStats->GetCurrentContainer() != MAIN_CONTAINER)
 		{
-			int iNewContainer = (*it).m_iContainer - 1;
+			int iNewContainer = (*it).m_pkItemStats->GetCurrentContainer() - 1;
 
 			Point sqr;
 			if(GetFreeSlotPos(sqr, iNewContainer))
