@@ -62,17 +62,21 @@ void MadProperty::Update()
 	if(!m_bIsVisible)
 		return;
 
-	Vector4 sphere=m_pkObject->GetPos();
-	sphere.w = GetRadius();
+//	Vector4 sphere=m_pkObject->GetPos();
+//	sphere.w = GetRadius();
 
-	if(!m_pkFrustum->SphereInFrustum(sphere))
+//	if(!m_pkFrustum->SphereInFrustum(sphere))
+//		return;
+	if(!m_pkFrustum->SphereInFrustum(m_pkObject->GetPos(),GetRadius()))
 		return;
+
+
 
 	glPushMatrix();
 		glTranslatef(m_pkObject->GetPos().x,m_pkObject->GetPos().y,m_pkObject->GetPos().z);
 		glScalef(m_fScale * 0.01, m_fScale * 0.01, m_fScale * 0.01);
 		glRotatef(m_pkObject->GetRot().z ,0,0,1);		
-//		glRotatef(m_pkObject->GetRot().x ,1,0,0);
+		glRotatef(m_pkObject->GetRot().x ,1,0,0);
 		// FH's Föreningens årsmöte.
 		glRotatef(- (m_pkObject->GetRot().y - 90) ,0,1,0);
 		Draw_All(m_pkZeroFps->m_iMadDraw);

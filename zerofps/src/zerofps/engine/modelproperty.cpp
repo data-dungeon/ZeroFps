@@ -18,10 +18,10 @@ ModelProperty::ModelProperty() {
 
 
 void ModelProperty::Update() {
-	Vector4 sphere=m_pkObject->GetPos();
-	sphere.w=m_fRadius;
+//	Vector4 sphere=m_pkObject->GetPos();
+//	sphere.w=m_fRadius;
 	
-	if(!m_pkFrustum->SphereInFrustum(sphere))
+	if(!m_pkFrustum->SphereInFrustum(m_pkObject->GetPos(),m_fRadius))
 		return;
 	
 	glPushAttrib(GL_FOG_BIT|GL_LIGHTING_BIT | GL_TEXTURE_BIT | GL_COLOR_BUFFER_BIT );

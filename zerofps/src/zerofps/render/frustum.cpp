@@ -108,6 +108,17 @@ bool Frustum::PointInFrustum( Vector3 kPoint)
    return true;
 }
 
+bool Frustum::PointInFrustum( Vector3& kPoint)
+{
+	for(int p = 0; p < 6; p++ ){
+		if( m_akFrustum[p][0] * kPoint.x + m_akFrustum[p][1] * kPoint.y + m_akFrustum[p][2] * kPoint.z + m_akFrustum[p][3] <= 0 )
+			return false;         
+	}
+	
+   return true;
+}
+
+
 bool Frustum::SphereInFrustum(Vector4 kPoint)
 {
 	float d;
@@ -116,6 +127,51 @@ bool Frustum::SphereInFrustum(Vector4 kPoint)
 	{
 		d = m_akFrustum[p][0] * kPoint.x + m_akFrustum[p][1] * kPoint.y + m_akFrustum[p][2] * kPoint.z + m_akFrustum[p][3];
 		if( d <= -kPoint.w )
+			return false;
+	}
+
+	return true;
+}
+
+
+bool Frustum::SphereInFrustum(Vector4& kPoint)
+{
+	float d;
+
+	for(int p = 0; p < 6; p++ )
+	{
+		d = m_akFrustum[p][0] * kPoint.x + m_akFrustum[p][1] * kPoint.y + m_akFrustum[p][2] * kPoint.z + m_akFrustum[p][3];
+		if( d <= -kPoint.w )
+			return false;
+	}
+
+	return true;
+}
+
+/*
+bool Frustum::SphereInFrustum(Vector3& kPos,float& fRadius)
+{
+	float d;
+
+	for(int p = 0; p < 6; p++ )
+	{
+		d = m_akFrustum[p][0] * kPos.x + m_akFrustum[p][1] * kPos.y + m_akFrustum[p][2] * kPos.z + m_akFrustum[p][3];
+		if( d <= -fRadius )
+			return false;
+	}
+
+	return true;
+}*/
+
+
+bool Frustum::SphereInFrustum(Vector3 kPos,float fRadius)
+{
+	float d;
+
+	for(int p = 0; p < 6; p++ )
+	{
+		d = m_akFrustum[p][0] * kPos.x + m_akFrustum[p][1] * kPos.y + m_akFrustum[p][2] * kPos.z + m_akFrustum[p][3];
+		if( d <= -fRadius )
 			return false;
 	}
 

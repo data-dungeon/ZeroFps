@@ -34,6 +34,9 @@ void CrossRenderProperty::UpdateSet()
 
 void CrossRenderProperty::Update()
 {
+	if(!m_pkFrustum->SphereInFrustum(m_pkObject->GetPos(),m_kScale.x))
+		return;
+		
 	m_pkRender->DrawCross(m_pkObject->GetPos(),m_pkObject->GetRot(),m_kScale,m_iTex1);//,m_iTex2);
 }
 

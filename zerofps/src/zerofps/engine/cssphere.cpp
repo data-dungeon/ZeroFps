@@ -95,19 +95,12 @@ Collision* CSSphere::Collide_CSSphere(CSSphere* kOther,float fTime)
 	  return NULL;
 	}
 	
-//	movevec.Normalize();
-// movevec*=distance;
-
 /*	cout << "distance: " << distance << endl;
 	cout << "movevec.Length(): " << movevec.Length() << endl;
 	cout << "absmovevec.Length(): " << fabs(movevec.Length()) << endl;*/
 
 	float bla = distance / fabs(movevec.Length());
-//	cout << "bla: " << bla << endl;
-//	if(bla<0)
-//		bla=0;
-	
-	
+
 	Vector3 statmov1=movevec1 * bla;
 	Vector3 statmov2=movevec2 * bla;	
 

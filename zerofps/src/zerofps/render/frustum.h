@@ -16,9 +16,18 @@ class RENDER_API Frustum : public ZFObject
 	public:
 		Frustum();
 		void GetFrustum();
+		
 		bool PointInFrustum(Vector3 kPoint);
+		bool PointInFrustum(Vector3& kPoint);		
+		
 		bool SphereInFrustum(Vector4 kPoint);
+		bool SphereInFrustum(Vector4& kPoint);		
+		
+		//bool SphereInFrustum(Vector3& kPos,float& fRadius);
+		bool SphereInFrustum(Vector3 kPos,float fRadius);		
+		
 		bool CubeInFrustum( float x, float y, float z, float sizex,float sizey,float sizez );
+		
 };
 
 
