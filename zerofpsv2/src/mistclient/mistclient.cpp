@@ -1254,13 +1254,18 @@ void MistClient::OpenActionMenu(int mx, int my)
 		if(!bWndExist)
 		{
 			ZGuiSkin* pkButtonSkins = new ZGuiSkin[3];
-			pkButtonSkins[0].m_iBkTexID = pkTexMan->Load("data/textures/gui/actions/actionbutton_u.bmp", 0);
-			pkButtonSkins[1].m_iBkTexID = pkTexMan->Load("data/textures/gui/actions/actionbutton_d.bmp", 0);
-			pkButtonSkins[2].m_iBkTexID = pkTexMan->Load("data/textures/gui/actions/actionbutton_f.bmp", 0);
 
-			pkButtonSkins[0].m_iBkTexAlphaID = pkTexMan->Load("data/textures/gui/actions/actionbutton_a.bmp", 0);
-			pkButtonSkins[1].m_iBkTexAlphaID = pkTexMan->Load("data/textures/gui/actions/actionbutton_a.bmp", 0);
-			pkButtonSkins[2].m_iBkTexAlphaID = pkTexMan->Load("data/textures/gui/actions/actionbutton_a.bmp", 0);
+			pkButtonSkins[0].m_iBkTexAlphaID = pkTexMan->Load("data/textures/gui/actions/action_a.bmp", 0);
+			pkButtonSkins[1].m_iBkTexAlphaID = pkTexMan->Load("data/textures/gui/actions/action_a.bmp", 0);
+			pkButtonSkins[2].m_iBkTexAlphaID = pkTexMan->Load("data/textures/gui/actions/action_a.bmp", 0);
+
+			pkButtonSkins[2].m_afBkColor[0] = 0.5f;
+			pkButtonSkins[2].m_afBkColor[1] = 0.5f;
+			pkButtonSkins[2].m_afBkColor[2] = 1;
+
+			pkButtonSkins[1].m_afBkColor[0] = 0;
+			pkButtonSkins[1].m_afBkColor[1] = 0;
+			pkButtonSkins[1].m_afBkColor[2] = 1;
 
 			pkButton->SetButtonUpSkin(&pkButtonSkins[0]);
 			pkButton->SetButtonDownSkin(&pkButtonSkins[1]);
@@ -1273,30 +1278,13 @@ void MistClient::OpenActionMenu(int mx, int my)
 			pkWnd->SetPos(mx+x-fOffset-x_diff, my+y-fOffset-y_diff, true, true);
 		}
 
-		sprintf(name, "%s%i", "ActionLabel", i);
-		bWndExist = GetWnd(name) != NULL;
-
-		CreateWnd(Label, name, "MainWnd", "", mx-x_diff+x-fOffset, my-y_diff+y-fOffset, 32, 32, 0);
-
-		if(!bWndExist)
-		{
-			ZGuiSkin* pkActionSkin = new ZGuiSkin;
-			pkActionSkin->m_iBkTexAlphaID = pkTexMan->Load("data/textures/gui/actions/action_a.bmp", 0);
-			pkActionSkin->m_iBkTexID = pkTexMan->Load("data/textures/gui/actions/noaction.bmp", 0);
-			GetWnd(name)->SetSkin(pkActionSkin);
-		}
-		else
-		{
-			ZGuiWnd* pkWnd = GetWnd(name);
-			pkWnd->Show();
-			pkWnd->SetPos(mx+x-fOffset-x_diff, my+y-fOffset-y_diff, true, true);
-		}
-
 		if(i < vkActions.size())
 		{
 			char szActionIcon[128];
 			sprintf(szActionIcon, "data/textures/gui/actions/%s.bmp", vkActions[i].c_str());
-			GetWnd(name)->GetSkin()->m_iBkTexID = pkTexMan->Load(szActionIcon, 0);
+			((ZGuiButton*) GetWnd(name))->GetButtonUpSkin()->m_iBkTexID = pkTexMan->Load(szActionIcon, 0);
+			((ZGuiButton*) GetWnd(name))->GetButtonDownSkin()->m_iBkTexID = pkTexMan->Load(szActionIcon, 0);
+			((ZGuiButton*) GetWnd(name))->GetButtonHighLightSkin()->m_iBkTexID = pkTexMan->Load(szActionIcon, 0);
 
 			map<ZGuiButton*,string>::iterator res =
 				m_kActionBnTranslator.find(pkButton);
@@ -1330,10 +1318,6 @@ void MistClient::CloseActionMenu()
 	for(int i=0; i<MAX_NUM_ACTION_BUTTONS; i++)
 	{
 		sprintf(szName, "%s%i", "ActionButton", i);
-		pkWnd = GetWnd(szName);
-		if(pkWnd) pkWnd->Hide();
-
-		sprintf(szName, "%s%i", "ActionLabel", i);
 		pkWnd = GetWnd(szName);
 		if(pkWnd) pkWnd->Hide();
 	}

@@ -182,9 +182,9 @@ bool GLGuiRender::RenderQuad(Rect rc)
 
 	glBegin(GL_QUADS);	 
 
-		if(bDrawMasked)
+/*		if(bDrawMasked)
 			glColor3f(1,1,1);
-		else
+		else*/
 			glColor3f(m_pkSkin->m_afBkColor[0],m_pkSkin->m_afBkColor[1],
 				m_pkSkin->m_afBkColor[2]);
 

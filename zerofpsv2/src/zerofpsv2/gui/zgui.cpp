@@ -449,7 +449,7 @@ bool ZGui::OnMouseUpdate(int x, int y, bool bLBnPressed,
 			if(!ClickedWndAlphaTex(x,y,pkFocusWindow))
 			{
 				m_bHaveInputFocus = false;
-				printf("clicked on alpha\n");
+				//printf("clicked on alpha\n");
 				return true;
 			}
 
@@ -1616,11 +1616,11 @@ bool ZGui::ClickedWndAlphaTex(int mx, int my, ZGuiWnd *pkWndClicked)
 	ZGuiWnd* pkParent = pkWndClicked->GetParent();
 	if(pkParent)
 	{
-		if( typeid(*pkParent)!=typeid(ZGuiListbox) )
+		if( typeid(*pkParent)==typeid(ZGuiListbox) )
 			return true;
-		if( typeid(*pkParent)!=typeid(ZGuiTreebox) )
+		if( typeid(*pkParent)==typeid(ZGuiTreebox) )
 			return true;
-		if( typeid(*pkParent)!=typeid(ZGuiCheckbox) )
+		if( typeid(*pkParent)==typeid(ZGuiCheckbox) )
 			return true;
 	}
 
