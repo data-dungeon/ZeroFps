@@ -246,6 +246,17 @@ void DarkMetropolis::GUI_OnMouseMove(int x, int y, bool bMouseDown,
 
 void DarkMetropolis::GUI_OnScroll(int iID, int iPos, ZGuiWnd *pkMain)
 {
+	string strMainWnd;
+
+	if(pkMain)
+	{
+		strMainWnd = pkMain->GetName();
+	}
+
+	if(strMainWnd == "MissionWnd")
+	{
+		m_pkMissionDlg->OnScroll(iID, iPos, pkMain);
+	}
 }
 
 void DarkMetropolis::GUI_OnSelectCB(int ListBoxID, int iItemIndex, 

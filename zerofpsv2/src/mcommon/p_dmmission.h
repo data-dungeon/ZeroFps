@@ -51,7 +51,7 @@ class MCOMMON_API P_DMMission: public Property {
 		void Load(ZFIoInterface* pkPackage);
 
 		bool SetCurrentMission(string strMissionScript);
-		void GetPossibleMissions(int iLevel);
+		void GetPossibleMissions(int iLevel, vector<DMMissionInfo>& vkInfo);
 
 		//string m_strName;
 		//string m_strMissionScript;

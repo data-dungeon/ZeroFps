@@ -235,7 +235,23 @@ Property* Create_P_DMMission()
 	return new P_DMMission;
 }
 
-void P_DMMission::GetPossibleMissions(int iLevel)
+void P_DMMission::GetPossibleMissions(int iLevel, vector<DMMissionInfo>& vkInfo)
 {
-	
+	for(int i=0; i<m_vkMissions.size(); i++)
+	{
+		if(m_vkMissions[i]->m_iLevel == iLevel)
+		{
+			DMMissionInfo kInfo;
+			kInfo.m_iLevel = m_vkMissions[i]->m_iLevel;
+			kInfo.m_iCash = m_vkMissions[i]->m_iCash;
+			kInfo.m_iXP = m_vkMissions[i]->m_iXP;
+			kInfo.m_pkScriptResHandle = m_vkMissions[i]->m_pkScriptResHandle;
+			kInfo.m_strInfoTextLong = m_vkMissions[i]->m_strInfoTextLong;
+			kInfo.m_strInfoTextShort = m_vkMissions[i]->m_strInfoTextShort;
+			kInfo.m_strName = m_vkMissions[i]->m_strName;
+			kInfo.m_strScript = m_vkMissions[i]->m_strScript;
+
+			vkInfo.push_back( kInfo );
+		}
+	}
 }

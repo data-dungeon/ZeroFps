@@ -11,6 +11,7 @@ public:
 	virtual void OnClick(int x, int y, bool bMouseDown, bool bLeftButton, ZGuiWnd *pkMain) {}
 	virtual void OnCommand(ZGuiWnd *pkMainWnd, string strClickName) {};
 	virtual void OnMouseMove(int x, int y, bool bMouseDown, ZGuiWnd *pkMain) {}
+	virtual void OnScroll(int iID, int iPos, ZGuiWnd *pkMain) {};
 	virtual bool InitDlg() {return true;}
 	virtual void OpenDlg(){};
 
