@@ -709,10 +709,13 @@ void ZShader::SetVertexProgram(int iVPID)
 // SOFTWARE SHADERS
 void ZShader::TextureOffset()
 {
-	for(int i=0;i<m_iNrOfVertexs;i++)
+	if(m_pkTexturePointer0)
 	{
-		m_pkTexturePointer0[i].x += SDL_GetTicks() * m_pkCurentMaterial->m_faTextureOffset[0];
-		m_pkTexturePointer0[i].y += SDL_GetTicks() * m_pkCurentMaterial->m_faTextureOffset[1];
+		for(int i=0;i<m_iNrOfVertexs;i++)
+		{
+			m_pkTexturePointer0[i].x += SDL_GetTicks() * m_pkCurentMaterial->m_faTextureOffset[0];
+			m_pkTexturePointer0[i].y += SDL_GetTicks() * m_pkCurentMaterial->m_faTextureOffset[1];
+		}
 	}
 }
 

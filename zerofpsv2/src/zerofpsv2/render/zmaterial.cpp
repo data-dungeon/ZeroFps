@@ -155,6 +155,12 @@ bool ZMaterial::LoadGlobalSection()
 		else
 			m_bWaves = false;
 
+	if(m_kIni.KeyExist("global","randommovements"))
+		if(m_kIni.GetBoolValue("global","randommovements"))
+			m_bRandomMovements = true;
+		else
+			m_bRandomMovements = false;
+
 	// load textureoffset values
 	if(m_kIni.KeyExist("global","textureoffset_u"))
 		m_faTextureOffset[0] = m_kIni.GetFloatValue("global","textureoffset_u");
@@ -166,17 +172,14 @@ bool ZMaterial::LoadGlobalSection()
 	else
 		m_faTextureOffset[1] = 0;
 
-	// m_bTextureOffset = m_faTextureOffset[0] + m_faTextureOffset[1]; // <- Zeblar: Vad i %#%"!!e gör du här? :)
-	// Edit by zeblar 040121 start
-		if(m_faTextureOffset[0] + m_faTextureOffset[1] >= 1.0f) m_bTextureOffset = true;
-		else m_bTextureOffset = false;
-	// Edit by zeblar 040121 end
+	if( (m_faTextureOffset[0] + m_faTextureOffset[1]) != 0 )
+	{
+		m_bTextureOffset = true;
+	}
+	else
+		m_bTextureOffset = false;
 
-	if(m_kIni.KeyExist("global","randommovements"))
-		if(m_kIni.GetBoolValue("global","randommovements"))
-			m_bRandomMovements = true;
-		else
-			m_bRandomMovements = false;
+
 
 
 	return true;

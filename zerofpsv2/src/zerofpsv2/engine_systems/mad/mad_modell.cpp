@@ -425,7 +425,13 @@ void Mad_Modell::Draw_All(int iDrawFlags)
 			pkCore->PrepareMesh(pkCore->GetMeshByID(m_kActiveMesh[iM]));
 
 		m_pkShader->Reset();
+		
+		//setup all texture pointers
 		m_pkShader->SetPointer(TEXTURE_POINTER0,GetTextureCooPtr());
+		m_pkShader->SetPointer(TEXTURE_POINTER1,GetTextureCooPtr());		
+		m_pkShader->SetPointer(TEXTURE_POINTER2,GetTextureCooPtr());		
+		m_pkShader->SetPointer(TEXTURE_POINTER3,GetTextureCooPtr());		
+		
 		m_pkShader->SetPointer(VERTEX_POINTER,GetVerticesPtr());		
 		m_pkShader->SetPointer(NORMAL_POINTER,GetNormalsPtr());						
 		m_pkShader->SetDrawMode(TRIANGLES_MODE);
