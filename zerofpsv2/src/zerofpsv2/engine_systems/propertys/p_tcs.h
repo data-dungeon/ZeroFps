@@ -102,6 +102,12 @@ class ENGINE_SYSTEMS_API P_Tcs : public Property
 		Vector3	m_kNewPos;
 		Matrix4	m_kNewRotation;
 		
+		//bakup used for push/pop calls in tcs
+		Vector3	m_kOldNewPos;
+		Vector3	m_kOldLinearVelocity;
+		Matrix4	m_kOldNewRotation;
+		Vector3	m_kOldRotVelocity;
+		
 
 		vector<PropertyValues> GetPropertyValues();
 		bool HandleSetValue( string kValueName, string kValue );

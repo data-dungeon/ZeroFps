@@ -174,8 +174,6 @@ bool ZFResourceDB::StartUp()
 
 bool ZFResourceDB::ShutDown() 
 { 
-	cout<<"UNLOADING"<<endl;
-
 	m_bInstantExpire = true;
 
 	printf("Unloading Res: ");

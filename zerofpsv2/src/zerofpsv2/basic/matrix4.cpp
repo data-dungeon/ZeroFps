@@ -45,14 +45,18 @@ void Matrix4::Set( float v1,float v2,float v3 ,float v4,
 // Operators	-	Assignment
 Matrix4 Matrix4::operator=(const Matrix4 &kOther)
 {
-	for(int i=0;i<16;i++)
-		data[i]=kOther.data[i];
+	memcpy(data,kOther.data,sizeof(data));
+	
+	
+/*	for(int i=0;i<16;i++)
+		data[i]=kOther.data[i];*/
 	
 	return *this;
 }
 
 void Matrix4::operator=(const Matrix3 &rkMatrix)
 {
+
 	Identity();
 
 	RowCol[0][0] = rkMatrix.m_aafRowCol[0][0];
@@ -81,16 +85,21 @@ void Matrix4::operator= (const Quaternion& rkQuaternion)
 // Operators	-	Comparison
 bool Matrix4::operator== (const Matrix4& rkMatrix) const
 {
-    for (int iRow = 0; iRow < 4; iRow++)
-    {
-        for (int iCol = 0; iCol < 4; iCol++)
-        {
-            if ( RowCol[iRow][iCol] != rkMatrix.RowCol[iRow][iCol] )
-                return false;
-        }
-    }
+	if(memcmp(data,rkMatrix.data,sizeof(data)) == 0)
+		return true;
 
-    return true;
+	return false;
+
+//     for (int iRow = 0; iRow < 4; iRow++)
+//     {
+//         for (int iCol = 0; iCol < 4; iCol++)
+//         {
+//             if ( RowCol[iRow][iCol] != rkMatrix.RowCol[iRow][iCol] )
+//                 return false;
+//         }
+//     }
+
+//    return true;
 }
 
 bool Matrix4::operator!= (const Matrix4& rkMatrix) const

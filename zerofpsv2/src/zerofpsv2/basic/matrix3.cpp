@@ -62,7 +62,7 @@ Vector3 Matrix3::GetAxis(int iAxisNum)
 // Operators	-	Assignment
 Matrix3& Matrix3::operator= (const Matrix3& rkMatrix)
 {
-    memcpy(m_aafRowCol,rkMatrix.m_aafRowCol,9*sizeof(float));
+    memcpy(m_aafRowCol,rkMatrix.m_aafRowCol,sizeof(m_afData));
     return *this;
 }
 
@@ -89,14 +89,19 @@ void Matrix3::operator= (const Quaternion& rkQuaternion)
 // Operators	-	Comparison
 bool Matrix3::operator== (const Matrix3& rkMatrix) const
 {
-    for (int iRow = 0; iRow < 3; iRow++)
-    {
-        for (int iCol = 0; iCol < 3; iCol++)
-        {
-            if ( m_aafRowCol[iRow][iCol] != rkMatrix.m_aafRowCol[iRow][iCol] )
-                return false;
-        }
-    }
+	if(memcmp(m_afData,rkMatrix.m_afData,sizeof(m_afData)) == 0)
+		return true;
+
+	return false;	
+
+//     for (int iRow = 0; iRow < 3; iRow++)
+//     {
+//         for (int iCol = 0; iCol < 3; iCol++)
+//         {
+//             if ( m_aafRowCol[iRow][iCol] != rkMatrix.m_aafRowCol[iRow][iCol] )
+//                 return false;
+//         }
+//     }
 
     return true;
 }

@@ -39,10 +39,6 @@ class ENGINE_SYSTEMS_API Tcs : public ZFSubSystem
 		vector<P_Tcs*>		m_kBodys;		
 		vector<Tcs_collission*>	m_kCollissions;		
 		
-		vector<Vector3>	m_kOldPos;
-		vector<Matrix4>	m_kOldRot;
-		vector<Vector3>	m_kOldVel;
-		vector<Vector3>	m_kOldRotVel;
 		
 		Vector3				m_kLastLineTestColPos;
 		Vector3				m_kLastTestPos;

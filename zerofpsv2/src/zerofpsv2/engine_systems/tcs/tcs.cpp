@@ -224,32 +224,26 @@ void Tcs::Update(float fAlphaTime)
 
 void Tcs::PushVelPos()
 {
-	m_kOldPos.clear();
-	m_kOldRot.clear();
-	m_kOldVel.clear();
-	m_kOldRotVel.clear();
-
-
-	for(unsigned int i=0;i<m_kBodys.size();i++)
-	{
-		m_kOldPos.push_back(m_kBodys[i]->m_kNewPos);
-		m_kOldVel.push_back(m_kBodys[i]->m_kLinearVelocity);
+ 	for(unsigned int i=0;i<m_kBodys.size();i++)
+ 	{
+		m_kBodys[i]->m_kOldNewPos = m_kBodys[i]->m_kNewPos;
+		m_kBodys[i]->m_kOldLinearVelocity = m_kBodys[i]->m_kLinearVelocity;
 		
-		m_kOldRot.push_back(m_kBodys[i]->m_kNewRotation);
-		m_kOldRotVel.push_back(m_kBodys[i]->m_kRotVelocity);
+		m_kBodys[i]->m_kOldNewRotation = m_kBodys[i]->m_kNewRotation;
+		m_kBodys[i]->m_kOldRotVelocity = m_kBodys[i]->m_kRotVelocity;	
 	}
 }
 
 void Tcs::PopVelPos()
 {
-	for(unsigned int i=0;i<m_kBodys.size();i++)
-	{
-		m_kBodys[i]->m_kNewPos = m_kOldPos[i];
-		m_kBodys[i]->m_kLinearVelocity = m_kOldVel[i];
+ 	for(unsigned int i=0;i<m_kBodys.size();i++)
+ 	{
+		m_kBodys[i]->m_kNewPos = m_kBodys[i]->m_kOldNewPos;
+		m_kBodys[i]->m_kLinearVelocity = m_kBodys[i]->m_kOldLinearVelocity;
 		
-		m_kBodys[i]->m_kNewRotation = m_kOldRot[i];
-		m_kBodys[i]->m_kRotVelocity = m_kOldRotVel[i];
-	}
+		m_kBodys[i]->m_kNewRotation = m_kBodys[i]->m_kOldNewRotation;
+		m_kBodys[i]->m_kRotVelocity = m_kBodys[i]->m_kOldRotVelocity;	
+	}	
 }
 
 void Tcs::ClearCollissions()
