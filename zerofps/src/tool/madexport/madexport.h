@@ -70,6 +70,7 @@ private:
 	MStatus			getMesh(void);
 	MStatus			LoopFrames(void);
 
+	MStatus			GetBoneNames(void);
 	MStatus			GetBoneList(void);		// Get Bone list.
 	MStatus			WriteBoneList(void);	// Write Bone list to output file.
 	MStatus			WriteBonePose(void);

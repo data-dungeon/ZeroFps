@@ -338,7 +338,6 @@ MStatus MadExport::CalculateTriangleVertex (int vt, MVector &pt, MVector &n, flo
 		return status;
 	}
 
-	// move U & V into the -1 <= {U,V} <= 1 space for compatibility with engine
 /*	int offset;
 	offset = u;
 	if (offset >= 1 || offset <= -1) {
@@ -367,8 +366,6 @@ MStatus	MadExport::LoopFrames(void)
 	MTime	tmNew;
 	MStatus	status;
 
-//	getBones();
-
 	// Remember the frame the scene was at so we can restore it later.
 	MTime currentFrame = MAnimControl::currentTime();
 	MTime startFrame = MAnimControl::minTime();
@@ -394,7 +391,26 @@ MStatus	MadExport::LoopFrames(void)
 	return status;
 }
 
+MStatus MadExport::GetBoneNames(void)
+{
+	BoneList::iterator itBones;
+	NameIntMap::iterator mapIt;
 
+	for (itBones = m_kBoneList.begin(); itBones != m_kBoneList.end(); itBones++)
+	{
+		mapIt = m_kJointMap.find((*itBones)->m_ucpParentName);
+		if (mapIt != m_kJointMap.end()) {
+			(*itBones)->m_iParentId = (*mapIt).second;
+			cout << "Parent: " << (*itBones)->m_iParentId << endl;
+		}
+		else 
+			cout  << "No parent2 \n";
+
+	}
+
+	return MStatus::kSuccess;
+
+}
 
 MStatus MadExport::GetBoneList(void)
 {
@@ -420,7 +436,7 @@ MStatus MadExport::GetBoneList(void)
 					MString nspace = kJoint.parentNamespace (&status);
 					cout << " (from referenced file " << nspace.asChar() << ")\n";
 				} else {
-					cout << "\n";
+					cout << "";
 				}
  
 			MadExpBone *bone = new MadExpBone;
@@ -436,8 +452,11 @@ MStatus MadExport::GetBoneList(void)
 			// Pop one up the path stack to get our parent
 			kJointPath.pop(1);
 
-			MFnDagNode parentNode(kJointPath, &status);
-			if ( !status ) {
+	 		MFnDagNode parentNode(kJointPath, &status);
+			bone->m_ucpParentName = strdup(parentNode.name().asChar());
+
+			/*if ( !status ) {
+				cout  << "No parent \n";
 				status.perror("MFnDagNode constructor");
 				return status;
 				}
@@ -446,12 +465,18 @@ MStatus MadExport::GetBoneList(void)
 				mapIt = m_kJointMap.find(parentName);
 				if (mapIt != m_kJointMap.end()) {
 					bone->m_iParentId = (*mapIt).second;
+					cout << "Parent: " << bone->m_iParentId << endl;
 				}
-			}	
+				else 
+					cout  << "No parent2 \n";
+			}*/
 
 			m_kBoneList.push_back(bone);
 			}
 		}
+
+	GetBoneNames();
+	return MStatus::kSuccess;
 }
  
 
@@ -532,7 +557,6 @@ MStatus	MadExport::WriteBonePose(void)
 
 MStatus	MadExport::Export_SX(char* filename)
 {
-
 	m_pkOutFile = fopen(filename, "w+");
 	if (!m_pkOutFile) {
 		cout << "unable to open file " << filename << " for writing\n";
@@ -573,7 +597,6 @@ MStatus	MadExport::Export_AX(char* filename)
 	}
 
 	GetBoneList();
-
 
  	int		frameFirst;
 	int		frameLast;
@@ -617,7 +640,26 @@ MStatus	MadExport::Export_MX(char* filename)
 		return MStatus::kSuccess;
 	}
 
-	LoopFrames();
+	GetBoneList();
+
+ 	int		frameFirst;
+	int		frameLast;
+	MTime	tmNew;
+	MStatus	status;
+
+	// Remember the frame the scene was at so we can restore it later.
+	MTime currentFrame	= MAnimControl::currentTime();
+	MGlobal::viewFrame( currentFrame );
+
+	for (int i=frameFirst; i<=frameLast; i++)
+	{
+		fprintf(m_pkOutFile, "Frame %d\n", i);
+
+		// Do Things for each frame.
+		UpdateBoneList();
+		getMesh();
+		WriteBonePose();
+	}
 
 	fclose(m_pkOutFile);
 	return MStatus::kSuccess;

@@ -32,6 +32,8 @@ public:
 	int			m_iId;
 	int			m_iParentId;
 	char*		m_ucpName;
+	char*		m_ucpParentName;
+
 	MDagPath	m_kPath;
 
 	void Print(FILE *file)

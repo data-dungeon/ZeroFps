@@ -93,7 +93,7 @@ bool ModellHalfLife::Export(MadExporter* mad, const char* filename)
 		}
 
 	// Export Mesh Objects
-	HLBodyPart*	pkBodyParts = (HLBodyPart*) (m_pcFileBuffer + m_pkHeader->m_iBodyPartsIndex);
+/*	HLBodyPart*	pkBodyParts = (HLBodyPart*) (m_pcFileBuffer + m_pkHeader->m_iBodyPartsIndex);
 	HLModel* pkModel;
 
 	char* pcVertexBone;
@@ -124,7 +124,7 @@ bool ModellHalfLife::Export(MadExporter* mad, const char* filename)
 		}
 
 	return false;
-
+*/
 
 	// Export Animation
 	Mad_CoreBoneAnimation	NewBoneAnim;
