@@ -1536,11 +1536,11 @@ enabled=1
 area_left=340
 area_top=292
 area_right=398
-area_bottom=311
+area_bottom=312
 move_area_left=653
 move_area_top=590
 move_area_right=711
-move_area_bottom=609
+move_area_bottom=670
 tab_order=24
 
 [Button2]
@@ -1650,11 +1650,11 @@ enabled=1
 area_left=128
 area_top=157
 area_right=328
-area_bottom=177
+area_bottom=237
 move_area_left=441
 move_area_top=455
 move_area_right=641
-move_area_bottom=475
+move_area_bottom=535
 tab_order=18
 
 [Textbox7]
