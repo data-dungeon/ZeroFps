@@ -48,3 +48,9 @@ void DlgBox::CenterCursor()
 	int my = m_pkDlgBox->GetScreenRect().Top + m_pkDlgBox->GetScreenRect().Height() / 2;
 	m_pkGui->ShowCursor(true,mx,my);
 }
+
+void DlgBox::KillFocus()
+{
+	ZGuiWnd::m_pkFocusWnd = NULL;
+	m_pkDlgBox->KillFocus();
+}

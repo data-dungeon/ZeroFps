@@ -148,6 +148,8 @@ bool ExaminePUMenu::OnClose(bool bSave)
 
 	m_pkGui->ShowCursor(false);
 
+	KillFocus();
+
 	return true;
 }
 

@@ -156,6 +156,7 @@ bool ItemBox::OnClose(bool bSave)
 {
 	m_pkGui->ShowMainWindow(m_pkDlgBox, false);
 	m_pkGui->ShowCursor(false);
+	KillFocus();
 	return true;
 }
 

@@ -419,23 +419,25 @@ bool PlayerControlProperty::SkipFrame()
 {
 	bool bSkip = false;
 
-/*	if(m_bSkipFrame == true)
+	if(m_bSkipFrame == true)
 	{
-		static float PREVTIME = m_pkFps->GetGameTime();
-		static float TIME = 1.00f;
+		static float c_fPrevtime = m_pkFps->GetGameTime();
+		static float c_fTime = 1.00f;
 		float fCurrTime = m_pkFps->GetGameTime();
 
-		if(((fCurrTime-PREVTIME) > TIME))
+		if(((fCurrTime-c_fPrevtime) < c_fTime))
 		{
-			m_bSkipFrame = false;
-			m_pkInput->Reset();
-			PREVTIME = fCurrTime;
+			bSkip = true;
+			m_bSkipFrame = true;			
+			return true;
 		}
 		else
 		{
-			return true;
+			// m_pkInput->Reset();
+			c_fPrevtime = fCurrTime;
+			m_bSkipFrame = false;
 		}
-	}*/
+	}
 
 	return bSkip;
 }

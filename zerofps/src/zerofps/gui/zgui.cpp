@@ -165,19 +165,21 @@ bool ZGui::AddMainWindow(int iMainWindowID,ZGuiWnd* pkWindow, char* szName,
 {
 	if(GetMainWindow(iMainWindowID))
 	{
-		string strError = "Tried to add a main window with a id that already exist!";
-		ZFAssert(0, strError.c_str() );
+		char szError[50];
+		sprintf(szError, "Tried to add a main window with id (%i) and name (%s) that already " \
+			"exist!\n", iMainWindowID, szName);
+		printf(szError);
+		ZFAssert(0, szError );
 	}
 
 	// Ett main window skall inte ha någon parent!
 	pkWindow->SetParent(NULL);
 	
-
-	MAIN_WINDOW* pkNewMainWindow = new MAIN_WINDOW;
-	pkNewMainWindow->iID = iMainWindowID;
-	pkNewMainWindow->pkCallback = cb;
-	pkNewMainWindow->pkWnd = pkWindow;
-	pkNewMainWindow->iZValue = 0;
+	MAIN_WINDOW* pkNewMainWindow	= new MAIN_WINDOW;
+	pkNewMainWindow->iID			= iMainWindowID;
+	pkNewMainWindow->pkCallback		= cb;
+	pkNewMainWindow->pkWnd			= pkWindow;
+	pkNewMainWindow->iZValue		= 0;
 
 	m_pkMainWindows.push_back(pkNewMainWindow);
 

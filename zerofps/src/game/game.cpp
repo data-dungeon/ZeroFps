@@ -420,18 +420,23 @@ void Game::InitGui()
 
 	ZGuiWnd* pkPlayerStatusMainWnd = new ZGuiWnd(Rect(x,y,x+190,y+190),NULL,true,id++);
 	pkPlayerStatusMainWnd->SetSkin(pkMainSkin);
+	pkPlayerStatusMainWnd->RemoveWindowFlag(WF_CANHAVEFOCUS);
 
 	x = 10; y = 10;
 	ZGuiWnd* pkHelthbarBk = new ZGuiWnd(Rect(x,y,x+170,y+10),pkPlayerStatusMainWnd,true,id++);
 	ZGuiWnd* pkHelthbar = new ZGuiWnd(Rect(0,0,170,10),pkHelthbarBk,true,id++);
 	pkHelthbarBk->SetSkin(pkHealthBkSkin);
 	pkHelthbar->SetSkin(pkHealthSkin);
+	pkHelthbar->RemoveWindowFlag(WF_CANHAVEFOCUS);
+	pkHelthbarBk->RemoveWindowFlag(WF_CANHAVEFOCUS);
 
 	y += 20;
 	ZGuiWnd* pkArmorbarBk = new ZGuiWnd(Rect(x,y,x+170,y+10),pkPlayerStatusMainWnd,true,id++);
 	ZGuiWnd* pkArmorbar = new ZGuiWnd(Rect(0,0,170,10),pkArmorbarBk,true,id++);
 	pkArmorbarBk->SetSkin(pkArmorBkSkin);
 	pkArmorbar->SetSkin(pkArmorSkin);
+	pkArmorbar->RemoveWindowFlag(WF_CANHAVEFOCUS);
+	pkArmorbarBk->RemoveWindowFlag(WF_CANHAVEFOCUS);
 
 	pkGui->AddMainWindow(id++, pkPlayerStatusMainWnd, "PlayerStatusMainWnd", WINPROC, true);
 
