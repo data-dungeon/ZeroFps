@@ -271,6 +271,7 @@ class ENGINE_API Entity
 		bool AttachToZone();		
 		bool AttachToZone(const Vector3& kPos);		
 		bool GetZoneNeighbours(vector<Entity*>* pkZones);
+		bool InActiveZone();
 		
 		// NetWork/Demo/Save/Load Code.
 		bool IsNetWork();															// True if this Entity has any netactive propertys.

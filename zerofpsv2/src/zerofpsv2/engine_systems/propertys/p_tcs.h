@@ -92,7 +92,8 @@ class ENGINE_SYSTEMS_API P_Tcs : public Property
 		Vector3	m_kAABBMin;
 		Matrix4	m_kAABBRotation;
 		
-      bool		m_bOnGround;		
+		bool		m_bActive;      
+		bool		m_bOnGround;		
 		bool		m_bTempStatic;				
 		Vector3	m_kLastPos;				//used to determin if a body is resting
 		float		m_fMoveDistance;		//total movement since last rest find call
@@ -172,6 +173,7 @@ class ENGINE_SYSTEMS_API P_Tcs : public Property
 		void SetHmap(HeightMap* pkMap) 			{ m_pkHmap = pkMap; }
 		
 		//gets		
+		bool  InActive()		{ return ( m_bStatic || m_bSleeping || m_bTempStatic || !m_bActive);	}
 		bool  GetOnGround() 	{ return m_bOnGround;				};
 		float GetRadius()		{ return m_fRadius;					};
 		Vector3 GetLinVel()	{ return m_kLinearVelocity;		};

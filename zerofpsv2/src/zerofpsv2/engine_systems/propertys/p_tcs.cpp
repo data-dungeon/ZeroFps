@@ -55,6 +55,7 @@ P_Tcs::P_Tcs()
 	m_bDisableOnSleep =	false;
 	m_bRemoveOnSleep =	false;
 	m_bNoColRespons =		false;
+	m_bActive = 			false;
 	
 	m_fMoveDistance = 	0;
 	
@@ -104,12 +105,17 @@ void P_Tcs::Update()
 {	
 	if( m_pkEntityManager->IsUpdate(PROPERTY_TYPE_NORMAL) ) 
 	{
+		//add p_tcs to tcs
 		if(!m_bHaveUpdated)
 		{
 			Enable();
 			m_bHaveUpdated = true;
 		}
+		
+		//is in active zone
+		m_bActive = m_pkEntity->InActiveZone();
 			
+		//get polygon data
 		if( (m_iTestType == E_MESH) || (m_iTestType == E_HMAP))
 		{
 			if(!m_bHavePolygonData)
@@ -128,9 +134,15 @@ void P_Tcs::Update()
 		}
 		
 		if(m_pkTcs->GetDebugGraph() != 0)		
+		{
 			m_iType = PROPERTY_TYPE_RENDER | PROPERTY_TYPE_NORMAL;
+			m_iSide = PROPERTY_SIDE_SERVER | PROPERTY_SIDE_CLIENT;
+		}
 		else
+		{
 			m_iType = PROPERTY_TYPE_NORMAL;
+			m_iSide = PROPERTY_SIDE_SERVER;
+		}
 	}
 	else if( m_pkEntityManager->IsUpdate(PROPERTY_TYPE_RENDER) ) 
 	{
@@ -654,8 +666,9 @@ void P_Tcs::Draw()
 {
 	// Draw TCS bound sphere.
 //	m_pkRender->Sphere(GetEntity()->GetIWorldPosV(),m_fRadius,2,Vector3(1,0,1),false);
-	
-	if(m_bStatic)
+	if(!m_bActive)
+		m_pkRender->DrawAABB(GetEntity()->GetIWorldPosV() + m_kAABBMin,GetEntity()->GetIWorldPosV() + m_kAABBMax,Vector3(1,0,1) );	
+	else if(m_bStatic)
 		m_pkRender->DrawAABB(GetEntity()->GetIWorldPosV() + m_kAABBMin,GetEntity()->GetIWorldPosV() + m_kAABBMax,Vector3(1,1,1) );
 	else if(m_bSleeping)
 		m_pkRender->DrawAABB(GetEntity()->GetIWorldPosV() + m_kAABBMin,GetEntity()->GetIWorldPosV() + m_kAABBMax,Vector3(0,0,1) );

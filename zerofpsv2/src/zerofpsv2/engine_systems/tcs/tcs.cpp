@@ -237,7 +237,7 @@ void Tcs::PushVelPos()
 {
  	for(unsigned int i=0;i<m_kBodys.size();i++)
  	{
-		if(m_kBodys[i]->m_bStatic || m_kBodys[i]->m_bSleeping)
+		if(m_kBodys[i]->InActive())
 			continue;
 			
 		m_kBodys[i]->m_kOldNewPos = m_kBodys[i]->m_kNewPos;
@@ -252,7 +252,7 @@ void Tcs::PopVelPos()
 {
  	for(unsigned int i=0;i<m_kBodys.size();i++)
  	{
-		if(m_kBodys[i]->m_bStatic || m_kBodys[i]->m_bSleeping)
+		if(m_kBodys[i]->InActive())
 			continue;
 
 				
@@ -295,18 +295,18 @@ void Tcs::Shock()
 		for(int i = 0;i<m_kCollissions.size();i++)
 		{
 			//check if both are now static
-			if(	(m_kCollissions[i]->pkBody1->m_bStatic || m_kCollissions[i]->pkBody1->m_bTempStatic) && 
-					(m_kCollissions[i]->pkBody2->m_bStatic || m_kCollissions[i]->pkBody2->m_bTempStatic)	)
+			if(	(m_kCollissions[i]->pkBody1->InActive()) && 
+					(m_kCollissions[i]->pkBody2->InActive())	)
 					continue;
 		
 			//is one static?
-			if(	m_kCollissions[i]->pkBody1->m_bStatic || m_kCollissions[i]->pkBody1->m_bTempStatic
-				||	m_kCollissions[i]->pkBody2->m_bStatic || m_kCollissions[i]->pkBody2->m_bTempStatic)
+			if(	m_kCollissions[i]->pkBody1->InActive()
+				||	m_kCollissions[i]->pkBody2->InActive())
 			{
 				//handle collission as a bouncing collision but no angular effect
 				HandleCollission(m_kCollissions[i],false,true);
 				
-				if(m_kCollissions[i]->pkBody1->m_bStatic || m_kCollissions[i]->pkBody1->m_bTempStatic)
+				if(m_kCollissions[i]->pkBody1->InActive())
 					m_kCollissions[i]->pkBody2->m_bTempStatic = true;
 				else
 					m_kCollissions[i]->pkBody1->m_bTempStatic = true;
@@ -334,7 +334,7 @@ void Tcs::UpdateLineTests(float fAlphaTime)
 
 	for(unsigned int i=0;i<m_kBodys.size();i++)
 	{
-		if(m_kBodys[i]->m_bStatic || m_kBodys[i]->m_bSleeping)
+		if(m_kBodys[i]->InActive())
 			continue;
 					
 		if(m_kBodys[i]->m_bCharacter)
@@ -471,7 +471,7 @@ void Tcs::HandleCollission(Tcs_collission* pkCol,bool bNoBounce,bool bNoAngular)
 			//	j*= 2.0;
 				
 			// APPLY IMPULSES					
-			if( (!pkCol->pkBody1->m_bStatic) && (!pkCol->pkBody1->m_bTempStatic) )
+			if( (!pkCol->pkBody1->m_bStatic) && (!pkCol->pkBody1->m_bTempStatic) && (pkCol->pkBody1->m_bActive) )
 			{		
 				if(bNoAngular)
 				{
@@ -485,7 +485,7 @@ void Tcs::HandleCollission(Tcs_collission* pkCol,bool bNoBounce,bool bNoAngular)
 				}
 			}		
 			
-			if( (!pkCol->pkBody2->m_bStatic) && (!pkCol->pkBody2->m_bTempStatic) )
+			if( (!pkCol->pkBody2->m_bStatic) && (!pkCol->pkBody2->m_bTempStatic) && (pkCol->pkBody2->m_bActive) )
 			{
 				if(bNoAngular)
 				{
@@ -524,7 +524,7 @@ void Tcs::FindRestingBodys()
 	//update move distance
 	for(int i = 0;i<m_kBodys.size();i++)
 	{
-		if(m_kBodys[i]->m_bStatic ||  m_kBodys[i]->m_bSleeping)
+		if(m_kBodys[i]->InActive())
 			continue;
 	
 		//update bodys total movement
@@ -541,7 +541,7 @@ void Tcs::FindRestingBodys()
 	
 		for(int i = 0;i<m_kBodys.size();i++)
 		{
-			if(m_kBodys[i]->m_bStatic ||  m_kBodys[i]->m_bSleeping)
+			if(m_kBodys[i]->InActive())
 				continue;
 			
 			//check if body has moved less then fRestMaxDist since last check
@@ -590,12 +590,7 @@ void Tcs::FindRestingBodys()
 void Tcs::SyncEntitys()
 {
 	for(unsigned int i=0;i<m_kBodys.size();i++)
-	{	
-		if(m_iDebugGraph == 3)		
-			if(!m_kBodys[i]->m_bSleeping && !m_kBodys[i]->m_bStatic)
-				m_pkRender->Sphere(m_kBodys[i]->m_kNewPos,m_kBodys[i]->m_fRadius ,1,Vector3(1,0,0),false);
-			else
-				m_pkRender->Sphere(m_kBodys[i]->m_kNewPos,m_kBodys[i]->m_fRadius ,1,Vector3(0,1,0),false);					
+	{			
 		
 		m_kBodys[i]->GetEntity()->SetWorldPosV(m_kBodys[i]->m_kNewPos);
 		//m_kBodys[i]->GetEntity()->SetVel(m_kBodys[i]->m_kLinearVelocity);
@@ -623,7 +618,7 @@ void Tcs::UpdateBodyVels(float fAtime)
 
 void Tcs::UpdateBodyVel(P_Tcs* pkBody,float fAtime)
 {
-	if(pkBody->m_bStatic || pkBody->m_bSleeping || pkBody->m_bTempStatic)
+	if(pkBody->InActive())
 		return;
 	
 								
@@ -644,7 +639,7 @@ void Tcs::UpdateBodyPos(float fAtime)
 {
 	for(unsigned int i=0;i<m_kBodys.size();i++)
 	{	
-		if(m_kBodys[i]->m_bStatic || m_kBodys[i]->m_bSleeping || m_kBodys[i]->m_bTempStatic)
+		if(m_kBodys[i]->InActive())
 			continue;
 
 			
@@ -660,7 +655,7 @@ void Tcs::UpdateForces()
 {
 	for(unsigned int i=0;i<m_kBodys.size();i++)
 	{	
-		if(m_kBodys[i]->m_bStatic || m_kBodys[i]->m_bSleeping || m_kBodys[i]->m_bTempStatic)
+		if(m_kBodys[i]->InActive())
 			continue;
 
 		//increse active body count
@@ -716,7 +711,7 @@ void Tcs::UpdateAllVelnPos(float fAtime)
 
 void Tcs::UpdateBodyVelnPos(P_Tcs* pkBody,float fAtime)
 {
-	if(pkBody->m_bStatic || pkBody->m_bSleeping)
+	if(pkBody->InActive())
 		return;
 	
 		
@@ -751,7 +746,7 @@ void Tcs::UpdateCollissions(vector<Tcs_collission*>*	pkCollissions)
 		for(unsigned int B2=B1+1;B2<m_kBodys.size();B2++)
 		{					
 			//dont test if both bodys are static or sleeping
-			if( (m_kBodys[B1]->m_bStatic || m_kBodys[B1]->m_bSleeping) && (m_kBodys[B2]->m_bStatic || m_kBodys[B2]->m_bSleeping))
+			if( (m_kBodys[B1]->InActive()) && (m_kBodys[B2]->InActive()))
 				continue;		
 				
 			//check collission groups
@@ -844,7 +839,7 @@ void Tcs::UpdateAABBs()
 		P_Tcs* pkBody = m_kBodys[i];
 	
 		//if body is static or sleeping check if rotation has changes, if not dont update
-		if(pkBody->m_bStatic || pkBody->m_bSleeping)
+		if(pkBody->InActive())
 		{
 			//unchanged rotation
 			if(pkBody->m_kAABBRotation == pkBody->m_kNewRotation)			

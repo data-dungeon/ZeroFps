@@ -43,6 +43,10 @@ void P_AI::Init()
 
 void P_AI::Update() 
 {
+	if(!m_pkEntity->InActiveZone())
+		return;
+
+
 	if(!m_pkCharacterControl)
 	{
 		m_pkCharacterControl = (P_CharacterControl*)m_pkEntity->GetProperty("P_CharacterControl");

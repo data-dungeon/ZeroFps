@@ -30,6 +30,7 @@ void ZoneData::Clear()
 	
 	m_fInactiveTime = 0;
 	m_bTracked = 		false;
+	m_bActive =			false;
 	m_iZoneObjectID = -1;
 	m_iRange = 			0;		
 	m_iVersion =		1;
@@ -2319,69 +2320,96 @@ void EntityManager::UpdateZoneLinks(int iId)
 
 bool EntityManager::BoxVSBox(Vector3 kPos1,Vector3 kSize1,Vector3 kPos2,Vector3 kSize2)
 {
+	static Vector3 kSizeCopy1;
+	static Vector3 kSizeCopy2;
 	
-	//box 1
-	float x1 = float(kSize1.x/2.0);
-	float y1 = float(kSize1.y/2.0);
-	float z1 = float(kSize1.z/2.0);
-	
-	vector<Vector3>	kTestDirs1;
-	kTestDirs1.push_back(Vector3(-x1,y1,z1));
-	kTestDirs1.push_back(Vector3(x1,y1,z1));
-	kTestDirs1.push_back(Vector3(x1,-y1,z1));
-	kTestDirs1.push_back(Vector3(-x1,-y1,z1));
-	
-	kTestDirs1.push_back(Vector3(-x1,y1,-z1));
-	kTestDirs1.push_back(Vector3(x1,y1,-z1));
-	kTestDirs1.push_back(Vector3(x1,-y1,-z1));
-	kTestDirs1.push_back(Vector3(-x1,-y1,-z1));
-	
-	//box 2
-	float x2 = float(kSize2.x/2.0);
-	float y2 = float(kSize2.y/2.0);
-	float z2 = float(kSize2.z/2.0);
-	
-	vector<Vector3>	kTestDirs2;
-	kTestDirs2.push_back(Vector3(-x2,y2,z2));
-	kTestDirs2.push_back(Vector3(x2,y2,z2));
-	kTestDirs2.push_back(Vector3(x2,-y2,z2));
-	kTestDirs2.push_back(Vector3(-x2,-y2,z2));
-	
-	kTestDirs2.push_back(Vector3(-x2,y2,-z2));
-	kTestDirs2.push_back(Vector3(x2,y2,-z2));
-	kTestDirs2.push_back(Vector3(x2,-y2,-z2));
-	kTestDirs2.push_back(Vector3(-x2,-y2,-z2));
+	kSizeCopy1 = kSize1 / 2.0;
+	kSizeCopy2 = kSize2 / 2.0;
 
-	unsigned int i;
-	// box1 vs box2
-	for( i = 0 ;i<kTestDirs1.size();i++)
-	{
-		Vector3 kPoint = kPos1 + kTestDirs1[i];
+	if( (kPos2.x - kSizeCopy2.x ) > (kPos1.x + kSizeCopy1.x ) )
+		return false;
 		
-		if(kPoint.x < (kPos2.x - x2))	continue;		
-		if(kPoint.y < (kPos2.y - y2))	continue;
-		if(kPoint.z < (kPos2.z - z2))	continue;
-		if(kPoint.x > (kPos2.x + x2))	continue;
-		if(kPoint.y > (kPos2.y + y2))	continue;
-		if(kPoint.z > (kPos2.z + z2))	continue;
-		return true;
-	}
-
-	// box2 vs box1
-	for( i = 0 ;i<kTestDirs2.size();i++)
-	{
-		Vector3 kPoint = kPos2 + kTestDirs2[i];
+	if( (kPos2.x + kSizeCopy2.x ) < (kPos1.x - kSizeCopy1.x ) )
+		return false;
 		
-		if(kPoint.x < (kPos1.x - x1))	continue;		
-		if(kPoint.y < (kPos1.y - y1))	continue;
-		if(kPoint.z < (kPos1.z - z1))	continue;
-		if(kPoint.x > (kPos1.x + x1))	continue;
-		if(kPoint.y > (kPos1.y + y1))	continue;
-		if(kPoint.z > (kPos1.z + z1))	continue;
-		return true;
-	}
+	if( (kPos2.z - kSizeCopy2.z ) > (kPos1.z + kSizeCopy1.z ) )
+		return false;
 
-	return false;
+	if( (kPos2.z + kSizeCopy2.z ) < (kPos1.z - kSizeCopy1.z ) )
+		return false;
+
+	if( (kPos2.y - kSizeCopy2.y ) > (kPos1.y + kSizeCopy1.y ) )
+		return false;	
+		
+	if( (kPos2.y + kSizeCopy2.y ) < (kPos1.y - kSizeCopy1.y ) )
+		return false;
+
+
+	return true;			
+
+	
+// 	//box 1
+// 	float x1 = float(kSize1.x/2.0);
+// 	float y1 = float(kSize1.y/2.0);
+// 	float z1 = float(kSize1.z/2.0);
+// 	
+// 	vector<Vector3>	kTestDirs1;
+// 	kTestDirs1.push_back(Vector3(-x1,y1,z1));
+// 	kTestDirs1.push_back(Vector3(x1,y1,z1));
+// 	kTestDirs1.push_back(Vector3(x1,-y1,z1));
+// 	kTestDirs1.push_back(Vector3(-x1,-y1,z1));
+// 	
+// 	kTestDirs1.push_back(Vector3(-x1,y1,-z1));
+// 	kTestDirs1.push_back(Vector3(x1,y1,-z1));
+// 	kTestDirs1.push_back(Vector3(x1,-y1,-z1));
+// 	kTestDirs1.push_back(Vector3(-x1,-y1,-z1));
+// 	
+// 	//box 2
+// 	float x2 = float(kSize2.x/2.0);
+// 	float y2 = float(kSize2.y/2.0);
+// 	float z2 = float(kSize2.z/2.0);
+// 	
+// 	vector<Vector3>	kTestDirs2;
+// 	kTestDirs2.push_back(Vector3(-x2,y2,z2));
+// 	kTestDirs2.push_back(Vector3(x2,y2,z2));
+// 	kTestDirs2.push_back(Vector3(x2,-y2,z2));
+// 	kTestDirs2.push_back(Vector3(-x2,-y2,z2));
+// 	
+// 	kTestDirs2.push_back(Vector3(-x2,y2,-z2));
+// 	kTestDirs2.push_back(Vector3(x2,y2,-z2));
+// 	kTestDirs2.push_back(Vector3(x2,-y2,-z2));
+// 	kTestDirs2.push_back(Vector3(-x2,-y2,-z2));
+// 
+// 	unsigned int i;
+// 	// box1 vs box2
+// 	for( i = 0 ;i<kTestDirs1.size();i++)
+// 	{
+// 		Vector3 kPoint = kPos1 + kTestDirs1[i];
+// 		
+// 		if(kPoint.x < (kPos2.x - x2))	continue;		
+// 		if(kPoint.y < (kPos2.y - y2))	continue;
+// 		if(kPoint.z < (kPos2.z - z2))	continue;
+// 		if(kPoint.x > (kPos2.x + x2))	continue;
+// 		if(kPoint.y > (kPos2.y + y2))	continue;
+// 		if(kPoint.z > (kPos2.z + z2))	continue;
+// 		return true;
+// 	}
+// 
+// 	// box2 vs box1
+// 	for( i = 0 ;i<kTestDirs2.size();i++)
+// 	{
+// 		Vector3 kPoint = kPos2 + kTestDirs2[i];
+// 		
+// 		if(kPoint.x < (kPos1.x - x1))	continue;		
+// 		if(kPoint.y < (kPos1.y - y1))	continue;
+// 		if(kPoint.z < (kPos1.z - z1))	continue;
+// 		if(kPoint.x > (kPos1.x + x1))	continue;
+// 		if(kPoint.y > (kPos1.y + y1))	continue;
+// 		if(kPoint.z > (kPos1.z + z1))	continue;
+// 		return true;
+// 	}
+// 
+// 	return false;
 }
 
 
@@ -2694,6 +2722,7 @@ void EntityManager::UpdateTrackers()
 	for(int iZ=0;iZ<m_kZones.size();iZ++) 
 	{
 		m_kZones[iZ].m_bTracked		= false;
+		m_kZones[iZ].m_bActive		= false;
 	}
 
 
@@ -2731,6 +2760,7 @@ void EntityManager::UpdateTrackers()
 			//add the one andonly zone to new active zones
 			kNewActiveZones.insert(iZoneIndex);
 			pkStartZone->m_bTracked = true;
+			pkStartZone->m_bActive = true;
 		}
 		else
 		{			
@@ -2750,7 +2780,8 @@ void EntityManager::UpdateTrackers()
 	
 				if(kTrackerPos.DistanceTo(pkZone->m_kPos) <= float(m_iTrackerLOS))
 				{
-			
+					pkZone->m_bActive = true;
+				
 					for(unsigned int i=0; i<pkZone->m_iZoneLinks.size(); i++) 
 					{
 						ZoneData* pkOtherZone = GetZoneData(pkZone->m_iZoneLinks[i]); //				pkZone->m_pkZoneLinks[i];	//GetZoneData(pkZone->m_iZoneLinks[i]);				

@@ -43,6 +43,7 @@ public:
 
 	float					m_fInactiveTime;
 	bool					m_bTracked;					//is there a tracker touching this zone
+	bool					m_bActive;
 	int					m_iRange;						// Range to tracker i num of zones.
 	
 	bool IsInside(const Vector3& kPoint);

@@ -385,6 +385,16 @@ void Entity::DeleteAllChilds()
 	m_akChilds.clear();
 }
 
+bool Entity::InActiveZone()
+{
+	if(ZoneData* pkZone = m_pkEntityManager->GetZoneData(m_iCurrentZone))
+	{
+		return pkZone->m_bActive;	
+	}
+
+	return true;
+}
+
 bool Entity::AttachToZone()
 {
 	return AttachToZone(GetLocalPosV());
