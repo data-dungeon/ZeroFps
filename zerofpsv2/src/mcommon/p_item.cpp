@@ -239,7 +239,6 @@ void P_Item::PackTo(NetPacket* pkNetPacket, int iConnectionID )
          //  if a object which has requested info was found...
          if ( (*kIte).m_iClientID == iConnectionID && (*kIte).m_kSendType == "itemdata" )
          {
-
             pkNetPacket->Write_NetStr( "data" );
 
             // icon

@@ -1374,10 +1374,9 @@ void MistServer::HandleOrders()
                   kSend.m_iClientID = order->m_iClientID;
                   kSend.m_kSendType = "container";
                   pkItProp->AddSendsData ( kSend );
-
                }
             }
-
+            /*
             // if characters wanter updated container
             else if ( pkChar )
             {
@@ -1389,7 +1388,7 @@ void MistServer::HandleOrders()
                   kSend.m_kSendType = "container";
                   pkItProp->AddSendsData ( kSend );
                }
-            }
+            }*/
             else
                cout << "Error! Non-P_Item_Object requested for updated containerinfo!" << endl;
          }

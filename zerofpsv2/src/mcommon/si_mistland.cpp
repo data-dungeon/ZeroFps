@@ -1521,7 +1521,6 @@ int MistLandLua::RegisterAsContainerLua (lua_State* pkLua)
          else
             cout << "Warning! Tried to use a item function on a non-item object!" << endl;
       }
-
    }
 
    return 0;
@@ -2662,12 +2661,12 @@ int MistLandLua::SetContainerSizeLua (lua_State* pkLua)
   		CharacterProperty* pkCP = (CharacterProperty*)pkEntity->GetProperty("P_CharStats");
       P_Item* pkIP = (P_Item*)pkEntity->GetProperty("P_Item");
 
-      if ( pkCP )
+     /* if ( pkCP )
       {
          pkCP->GetCharStats()->MakeContainer();
 
          pkCP->GetCharStats()->m_pkContainer->m_iCapacity = dSize;
-      }
+      }*/
       if ( pkIP )
       {
          pkIP->m_pkItemStats->MakeContainer();
@@ -2735,17 +2734,15 @@ int MistLandLua::GetPickedUpByLua (lua_State* pkLua)
 	
 	if( g_pkScript->GetNumArgs(pkLua) == 1 )
 	{
-      cout << "pickeduped" << endl;
-
       // the ID if the object who has the container
       double dChar;
 
       g_pkScript->GetArgNumber(pkLua, 0, &dChar);
 
-      Entity* pkCharObj = g_pkObjMan->GetObjectByNetWorkID((int)g_iCurrentObjectID);
+      Entity* pkCharObj = g_pkObjMan->GetObjectByNetWorkID((int)dChar);
+  
       if(!pkCharObj)
       	return 0;
-      
       
       /*
 
