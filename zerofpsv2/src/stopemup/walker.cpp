@@ -64,6 +64,12 @@ void P_Walker::Update()
 	}
 	
 	
+	//UGLY falloutside of map  bug fix
+	if(GetEntity()->GetWorldPosV().y < -4.0)
+	{
+		Damage(9999999,-1);
+	}
+	
 	//check if paralized
 	if(m_fParaTime != -1)
 	{

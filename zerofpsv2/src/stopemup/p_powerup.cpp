@@ -50,7 +50,7 @@ P_Powerup::P_Powerup()
 		switch(iRand)
 		{
 			case 7:
-				if(iLevel >= 25 )
+				if(iLevel >= 26 )
 				{
 					m_iPowerupType = iRand;
 					m_strPowerupName = "Spread Gun";			
