@@ -7,6 +7,8 @@
 
 using namespace std;
 
+class ZFObject;
+
 struct NameObject
 {
 	string		m_strName;			// Name of object.
@@ -38,3 +40,6 @@ public:
 extern BASIC_API ZFObjectManger g_ZFObjSys;
 
 #endif
+
+
+

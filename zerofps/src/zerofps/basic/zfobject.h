@@ -3,12 +3,13 @@
 
 #include <string>
 #include <vector>
+#include "basic.pkg"
 #include "basic_x.h"
 
 using namespace std;
 
-class ZFObjectManger;
-class ZFObject;
+//class ZFObjectManger;
+//class ZFObject;
 
 #define NOOBJECT_INDEX	-1
 
@@ -40,7 +41,13 @@ public:
 
 	virtual ~ZFObject();
 
-	friend ZFObjectManger;
+	friend class ZFObjectManger;
 };
 
 #endif
+
+
+
+
+
+

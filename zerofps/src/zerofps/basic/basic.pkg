@@ -5,6 +5,8 @@ class Vector3;
 class HalfEdge;
 class Vector4;
 class Matrix4;
+class ZFObjectManger;
+class ZFObject;
 
 #include <cassert>
 

@@ -61,7 +61,7 @@ void ZFObject::RemoveChild(ZFObject* pkObject)
 	if(iIndex == NOOBJECT_INDEX)
 		return;
 
-	m_akChild.erase(&m_akChild[iIndex]);
+//	m_akChild.erase(&m_akChild[iIndex]);
 	pkObject->m_pkParent = NULL;
 }
 
