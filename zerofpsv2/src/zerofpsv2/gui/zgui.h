@@ -164,7 +164,7 @@ public:
 	int m_iMouseX, m_iMouseY;
 	bool m_bMouseLeftPressed;
 	
-	bool m_bHaveInputFocus; //! om guit har focus eller inte
+//	bool m_bHaveInputFocus; //! om guit har focus eller inte
 
 	bool m_bDisableAlphatest;
 
@@ -182,7 +182,6 @@ private:
 
 	void FormatKey(int& iKey, bool bShiftIsPressed);
 	void KeyboardInput(int key, bool shift, float time);
-	void SetInputFocus(ZGuiWnd* pkClickWnd, bool bSet);
 	bool SetSkins(vector<tSkinInf>& kAllSkinsArray, ZGuiWnd* pkWnd);
 	bool RunKeyCommand(int iKey);
 	ZGuiWnd* FindNextTabWnd(ZGuiWnd* pkCurrentWnd, bool bNext);

@@ -498,7 +498,7 @@ void MistServer::OnIdle()
 	m_pkFps->SetCamera(m_pkActiveCamera);		
 	m_pkFps->GetCam()->ClearViewPort();	
 
-	if(pkGui->m_bHaveInputFocus == false)
+	if(pkGui->m_bHandledMouse == false)
 	{
 		Input();	
 	}

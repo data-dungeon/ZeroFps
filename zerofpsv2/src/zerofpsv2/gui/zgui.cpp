@@ -35,8 +35,6 @@ ZGui::ZGui(int iResX, int iResY) : ZFSubSystem("Gui")
 
 	m_bActive = false;
 
-	m_bHaveInputFocus = false;
-
 	m_bHandledMouse = false;
 
 	m_acLineColor[0] = 255;
@@ -504,8 +502,6 @@ bool ZGui::Update(float fGameTime, int iKeyPressed, bool bLastKeyStillPressed,
 {
 	if(m_bActive == true)
 	{
-		m_bHaveInputFocus = false;
-		
 		if(m_pkCursor && m_pkCursor->IsVisible())	
 			OnMouseUpdate(x, y, bLBnPressed, bRBnPressed, bMBnPressed, fGameTime);
 
@@ -725,12 +721,7 @@ void ZGui::OnKeyPress(int iKey)
 			if(bIsTextbox)
 			{
 				bMultiLine = ((ZGuiTextbox*) ZGuiWnd::m_pkFocusWnd)->IsMultiLine();
-
-	/*			if(iKey == KEY_RETURN)
-					m_bHaveInputFocus = false;*/
 			}
-	/*		else
-				m_bHaveInputFocus = false;*/
 
 			if((iKey==KEY_DOWN || iKey==KEY_UP) && !(bIsTextbox && bMultiLine))
 			{
@@ -929,27 +920,12 @@ void ZGui::SetRes(int iResX, int iResY)
 	m_iResY = iResY;
 }
 
-void ZGui::SetInputFocus(ZGuiWnd* pkClikWnd, bool bSet)
-{
-	m_bHaveInputFocus = true;
-
-	if( typeid(*pkClikWnd) == typeid(ZGuiWnd) )
-	{
-		if(pkClikWnd->GetSkin())
-		{
-			if(pkClikWnd->GetSkin()->m_bTransparent)
-			{
-				m_bHaveInputFocus = false;
-			}
-		}
-	}
-}
-
 void ZGui::KeyboardInput(int key, bool shift, float time)
 {
 	if(key != -1)
 	{
 		FormatKey(key, shift);
+		m_bHandledMouse = false; // Ge alltid fokusen till APP :)
 	}
 
 	const float REPEAT_DELAY_SEC = 0.5f;
@@ -1297,7 +1273,7 @@ bool ZGui::OnMouseUpdate(int x, int y, bool bLBnPressed,
 
 	if(bMBnPressed) // ignorera mitten knappen och ge spelet fokus
 	{
-		m_bHaveInputFocus = false;
+		m_bHandledMouse = false;
 		return true;
 	}
 
@@ -1314,6 +1290,7 @@ bool ZGui::OnMouseUpdate(int x, int y, bool bLBnPressed,
 
 	if(m_pkActiveMainWin == NULL)
 	{
+		m_bHandledMouse = false;
 		return false;
 	}
 
@@ -1337,8 +1314,16 @@ bool ZGui::OnMouseUpdate(int x, int y, bool bLBnPressed,
 				{
 					SetFocus(wnd->pkWnd);
 
-					if(m_pkActiveMainWin->pkWnd->GetSkin()->m_bTransparent == false)
-						m_bHandledMouse = true;
+					//if(m_pkActiveMainWin->pkWnd->GetSkin()->m_bTransparent == true)
+					//{
+					//	m_bHandledMouse = false;
+					//}
+					//else
+					//{
+					//	m_bHandledMouse = true;
+					//}
+
+					m_bHandledMouse = true;
 
 					return true;					
 				}
@@ -1355,10 +1340,16 @@ bool ZGui::OnMouseUpdate(int x, int y, bool bLBnPressed,
 	}
 
 	if(m_pkActiveMainWin == NULL)
+	{
+		m_bHandledMouse = false;
 		return false;
+	}
 
 	if(!m_pkActiveMainWin->pkWnd) 
+	{
+		m_bHandledMouse = false;
 		return false; 
+	}
 	
 	ZGuiWnd* pkFocusWindow;
 	
@@ -1407,7 +1398,7 @@ bool ZGui::OnMouseUpdate(int x, int y, bool bLBnPressed,
 			{
 				if(ClickedWndAlphaTex(x,y,pkFocusWindow) == false)
 				{
-					m_bHaveInputFocus = false;
+					m_bHandledMouse = false;
 
 					// Stäng eventuell meny
 					CloseActiveMenu();
@@ -1417,7 +1408,10 @@ bool ZGui::OnMouseUpdate(int x, int y, bool bLBnPressed,
 			}
 
 			if(pkFocusWindow->m_bUseClipper && !pkFocusWindow->m_kClipperArea.Inside(x,y))
+			{
+				m_bHandledMouse = false;
 				return true;
+			}
 
 			ZGuiWnd::m_pkWndClicked = pkFocusWindow;
 			SetFocus(ZGuiWnd::m_pkWndClicked);
@@ -1436,7 +1430,6 @@ bool ZGui::OnMouseUpdate(int x, int y, bool bLBnPressed,
 				
 				if(bLeftPressed || (pkFocusWindow->m_bAcceptRightClicks && bRightPressed) )
 				{
-					SetInputFocus(ZGuiWnd::m_pkWndClicked, true);
 					ZGuiWnd::m_pkWndClicked->Notify(ZGuiWnd::m_pkWndClicked,
 						NCODE_CLICK_DOWN);
 
@@ -1450,9 +1443,18 @@ bool ZGui::OnMouseUpdate(int x, int y, bool bLBnPressed,
 							m_bClickedMenu = true;
 						}
 					}
-						
-					m_bHandledMouse = true;
-					//printf("m_bHandledMouse = true\n");
+				}
+
+				ZGuiWnd* test; 
+				if( (test=m_pkActiveMainWin->pkWnd->Find(x,y)))//!ClickedWndAlphaTex(x,y, ZGuiWnd::m_pkWndClicked))
+				{
+					if(ClickedWndAlphaTex(x,y,test)==true)
+					{
+						if(test->GetSkin() && test->GetSkin()->m_bTransparent == false)
+						{
+							m_bHandledMouse = true;
+						}
+					}
 				}
 
 				// Send a Left Button Down Message...
@@ -1486,12 +1488,10 @@ bool ZGui::OnMouseUpdate(int x, int y, bool bLBnPressed,
 
 	// Är vänster musknapp nertryckt?
 	if( bLeftButtonDown == true && ZGuiWnd::m_pkWndClicked)
-	{		
+	{
 		// Skall fönstret flyttas?
 		if(!(ZGuiWnd::m_pkWndClicked->GetMoveArea() == ZGuiWnd::m_pkWndClicked->GetScreenRect()))
 		{
-			SetInputFocus(ZGuiWnd::m_pkWndClicked, true);
-
 			ZGuiWnd::m_pkWndClicked->Notify(ZGuiWnd::m_pkWndClicked,NCODE_MOVE);
 			ZGuiWnd::m_pkWndClicked->SetPos(x-m_pnCursorRangeDiffX,y-
 				m_pnCursorRangeDiffY,true,false);
@@ -1499,6 +1499,8 @@ bool ZGui::OnMouseUpdate(int x, int y, bool bLBnPressed,
 			// Notify the main window that the window is moving
 			if(m_bLeftButtonDown == true)
 			{
+				m_bHandledMouse = true;
+
 				int* pkParams = new int[5];
 				pkParams[0] = ZGuiWnd::m_pkWndClicked->GetID();
 				pkParams[1] = ZGuiWnd::m_pkWndClicked->GetScreenRect().Left;
@@ -1518,17 +1520,10 @@ bool ZGui::OnMouseUpdate(int x, int y, bool bLBnPressed,
 	// Har vänster musknapp släpts (men inte klickats)?
 	if(bLeftReleased || bRightReleased)
 	{
-		m_bHaveInputFocus = false;
-
-		if(bLeftReleased){
-			m_bHandledMouse = false;
-			//printf("m_bHandledMouse = false\n");
-		}
+		m_bHandledMouse = false;
 
 		if(pkFocusWindow && ZGuiWnd::m_pkWndClicked != NULL)
 		{
-			//m_bHaveInputFocus = false;
-
 			// Informera fönstret innan att det har tappat fokus.
 			if(ZGuiWnd::m_pkWndUnderCursor && (bLeftReleased || 
 				(pkFocusWindow->m_bAcceptRightClicks && bRightReleased) ))
@@ -1574,7 +1569,7 @@ bool ZGui::OnMouseUpdate(int x, int y, bool bLBnPressed,
 							pkParams[1] = (pkFocusWindow->m_bAcceptRightClicks && bRightReleased); // höger musknapp har triggat knapp kommandot
 							m_pkActiveMainWin->pkCallback(pkMainWnd, ZGM_COMMAND,2,pkParams);
 
-							//m_bHaveInputFocus = true;
+							m_bHandledMouse = true;
 						}
 					}
 					delete[] pkParams;
