@@ -56,6 +56,8 @@ void ZGuiToolTip::Update(int mouse_x, int mouse_y, bool bMouseClick, float fGame
 		return;
 	}
 
+	static float fLifeTime = 0.75f;
+
 	for(unsigned int i=0; i<m_vkWindowList.size(); i++)
 	{
 		ZGuiWnd* pkWnd = m_vkWindowList[i].pkWnd;
@@ -65,6 +67,9 @@ void ZGuiToolTip::Update(int mouse_x, int mouse_y, bool bMouseClick, float fGame
 		{
 			if(pkWnd->GetScreenRect().Inside(mouse_x,mouse_y))
 			{
+
+				fLifeTime = m_vkWindowList[i].fLifeTimeInSec;
+
 				m_pkToolTipWnd->Show(); 
 				m_pkToolTipWnd->SetText((char*)m_vkWindowList[i].strText.c_str(), false);
 
@@ -138,7 +143,7 @@ void ZGuiToolTip::Update(int mouse_x, int mouse_y, bool bMouseClick, float fGame
 		}
 	}
 
-	if(fGameTime - m_fToolTipDisplayTime > m_fDisplayTime)
+	if(fGameTime - m_fToolTipDisplayTime > fLifeTime/*m_fDisplayTime*/)
 	{
 		m_pkToolTipWnd->Hide();
 	}
@@ -160,12 +165,13 @@ void ZGuiToolTip::Update(int mouse_x, int mouse_y, bool bMouseClick, float fGame
 	m_iPrevCursorY = mouse_y;
 }
 
-void ZGuiToolTip::AddToolTip(ZGuiWnd* pkWnd, string strText)
+void ZGuiToolTip::AddToolTip(ZGuiWnd* pkWnd, string strText, float fLifeTimeInSec)
 {
 	TOOLTIP_INFO ttinfo;
 
 	ttinfo.pkWnd = pkWnd;
 	ttinfo.strText = strText;
+	ttinfo.fLifeTimeInSec = fLifeTimeInSec;
 
 	m_vkWindowList.push_back(ttinfo);
 }

@@ -23,7 +23,7 @@ public:
 	virtual ~ZGuiToolTip();
 
 	void Update(int mouse_x, int mouse_y, bool bMouseClick, float fGameTime);
-	void AddToolTip(ZGuiWnd* pkWnd, string strText);
+	void AddToolTip(ZGuiWnd* pkWnd, string strText, float fLifeTimeInSec=0.75f);
 	void RemoveToolTip(ZGuiWnd* pkWnd);
 	void CloseAll();
 
@@ -35,6 +35,7 @@ private:
 	{
 		ZGuiWnd* pkWnd;
 		string strText;
+		float fLifeTimeInSec;
 	};
 
 	vector<TOOLTIP_INFO> m_vkWindowList;
