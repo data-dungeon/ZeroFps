@@ -1,12 +1,9 @@
 #ifndef _BASIC_GLOBALS_H_
 #define _BASIC_GLOBALS_H_
 
-//#include <cstring>
 #include <iostream>
-#include "basic_x.h"
-#include "os.h"
 #include <cmath>
-
+#include "basic_x.h"
 #include "vector3.h"
 
 using namespace std;

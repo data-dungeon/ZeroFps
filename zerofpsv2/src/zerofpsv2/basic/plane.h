@@ -3,7 +3,7 @@
 
 #include "vector3.h"
 #include "basic_x.h"
-#include "os.h"
+//#include "os.h"
 
 /**	\brief	Descibes a Plane in 3D.
 		\ingroup Basic

@@ -1,10 +1,8 @@
 #ifndef _BASIC_BASICCONSOLE_H_
 #define _BASIC_BASICCONSOLE_H_
 
-#include "os.h"
 #include "zfsubsystem.h"
 #include "basic_x.h"
-#include <iostream>
 #include <vector>
 
 using namespace std;

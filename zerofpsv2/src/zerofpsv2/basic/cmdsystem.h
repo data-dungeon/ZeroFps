@@ -6,9 +6,8 @@
 #include <cstring>
 #include <string.h>
 #include "basic_x.h"
-#include "os.h"
 #include "zfsubsystem.h"
-#include "basicconsole.h"
+//#include "basicconsole.h"
 
 using namespace std;
 
@@ -18,7 +17,7 @@ using namespace std;
 class BASIC_API CmdSystem : public ZFSubSystem  
 {
 	private:
-		BasicConsole*			m_pkCon;
+//		BasicConsole*			m_pkCon;
 
 	public:
 		enum FuncId_e

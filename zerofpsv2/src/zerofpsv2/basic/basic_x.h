@@ -23,6 +23,10 @@
 #define BASIC_API __declspec(dllimport)
 #endif
 
+#pragma warning( disable : 4251 )	// class 'type' needs to have dll-interface 
+#pragma warning( disable : 4305 )	// truncation from 'type1' to 'type2'
+#pragma warning( disable : 4786 )	// identifier was truncated to 'number' characters in the debug information
+
 #endif
 
 #if !defined(WIN32) 

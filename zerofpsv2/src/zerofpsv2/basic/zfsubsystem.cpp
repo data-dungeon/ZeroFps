@@ -6,7 +6,7 @@
 #include <cstdarg>
 
 #include "basic_x.h"
-#include "os.h"
+//#include "os.h"
 #include "zfsubsystem.h"
 #include "zfsystem.h"
 #include "globals.h"

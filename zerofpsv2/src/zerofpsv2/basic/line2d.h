@@ -4,7 +4,7 @@
 #include <iostream>
 #include <cmath>
 #include "basic_x.h"
-#include "os.h"
+//#include "os.h"
 #include "vector2.h"
 
 using namespace std;

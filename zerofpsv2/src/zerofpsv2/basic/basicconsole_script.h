@@ -9,7 +9,7 @@
 int tolua_basicconsole_open (lua_State* tolua_S);
 void tolua_basicconsole_close (lua_State* tolua_S);
 
-#include "os.h"
+//#include "os.h"
 #include "zfobject.h"
 #include "basic_x.h"
 #include <iostream>

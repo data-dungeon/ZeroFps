@@ -2,7 +2,7 @@
 #define _BASIC_ZFOBJECTMANGER_H_
 
 #include "basic_x.h"
-#include "os.h"
+//#include "os.h"
 
 #include <vector>
 #include "zfsubsystem.h"
