@@ -90,7 +90,7 @@ bool EntityManager::StartUp()
 {
 	m_pkZeroFps	=	static_cast<ZeroFps*>(GetSystem().GetObjectPtr("ZeroFps"));		
 	m_pkNetWork	= static_cast<NetWork*>(GetSystem().GetObjectPtr("NetWork"));
-	m_pkScript = static_cast<ZFScriptSystem*>(GetSystem().GetObjectPtr("ZFScriptSystem"));
+	m_pkScript  = static_cast<ZFScriptSystem*>(GetSystem().GetObjectPtr("ZFScriptSystem"));
 
 	m_fEndTimeForceNet		= m_pkZeroFps->GetEngineTime();
 
@@ -1159,8 +1159,7 @@ Entity* EntityManager::CloneObject(int iNetID)
 	return pkObjClone;
 }
 
-
-
+/*
 void EntityManager::Test_CreateZones()
 {
 	
@@ -1192,7 +1191,7 @@ void EntityManager::Test_CreateZones()
 
 //	AutoConnectZones();
 //	int ispya = 2;
-}
+}*/
 
 void EntityManager::Test_DrawZones()
 {
@@ -1222,6 +1221,7 @@ void EntityManager::Test_DrawZones()
 	}
 }
 
+/*
 void EntityManager::AutoConnectZones()
 {
 	Vector3 kCenterPos;
@@ -1250,7 +1250,7 @@ void EntityManager::AutoConnectZones()
 			}
 		}
 	}
-}
+}*/
 
 Vector3 EntityManager::GetZoneCenter(int iZoneNum)
 {

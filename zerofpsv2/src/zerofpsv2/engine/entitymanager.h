@@ -17,7 +17,6 @@ class NetWork;
 class ZoneObject;
 class P_Track;
 
-
 /// Data about a Zone in the World.
 class ZoneData
 {
@@ -81,31 +80,30 @@ class ENGINE_API EntityManager : public ZFSubSystem{
 		//current world directory to save/load zone data to 
 		string						m_kWorldDirectory;
 		
-		list<Entity*>				m_akObjects;									///< List of all objects.
+		list<Entity*>				m_akObjects;												///< List of all objects.
 		
 		// DELETE
 		vector<int>					m_aiDeleteList;
-//		vector<int>					m_aiNetDeleteList;
 		
 		// Zones
 		vector<ZoneData>			m_kZones;
 		
 		// Trackers
 		list<Entity*> 				m_kTrackedObjects;	
-		int							m_iTrackerLOS;					//tracker line of sight
+		int							m_iTrackerLOS;												//tracker line of sight
 
-		list<ObjectDescriptor*> m_akTemplates;							///< List of templates.
+		//list<ObjectDescriptor*> m_akTemplates;											///< List of templates.
 		
-		vector<Property*>			m_akPropertys;									///< List of Active Propertys.	
-		int							m_iNrOfActivePropertys;						///> Size of akProperty list.
+		vector<Property*>			m_akPropertys;												///< List of Active Propertys.	
+		int							m_iNrOfActivePropertys;									///> Size of akProperty list.
 
-		int							iNextObjectID;													///< Next free object ID.
-		bool							m_bUpdate;														///< Disable all updates except RENDER.	
+		int							iNextObjectID;												///< Next free object ID.
+		bool							m_bUpdate;													///< Disable all updates except RENDER.	
 		bool							m_bDrawZones;
 
 		void RunCommand(int cmdid, const CmdArgument* kCommand);
 		void GetPropertys(int iType,int iSide);						///< Fill propery list.
-		void TESTVIM_LoadArcheTypes(char* szFileName);
+//		void TESTVIM_LoadArcheTypes(char* szFileName);
 
 	public:
 		int		m_iForceNetUpdate;					
@@ -119,6 +117,9 @@ class ENGINE_API EntityManager : public ZFSubSystem{
 
 		EntityManager();
 		~EntityManager();
+		bool StartUp();
+		bool ShutDown();
+		bool IsValid();
 	
 		// Add/Remove Objects
 		void Link(Entity* pkNewObject);									///< Link this to the Object manager
@@ -135,7 +136,6 @@ class ENGINE_API EntityManager : public ZFSubSystem{
 		// Delete
 		void Delete(Entity* pkNewObject);								///< Adds an object to delete qeue
 		void UpdateDelete();													///< Deletes objects in delete qeue	
-//		void UpdateDeleteList(NetPacket* pkNetPacket);
 
 		// Updates
 		void Update(int iType,int iSide,bool bSort);					///< Run update on selected propertys.
@@ -143,10 +143,6 @@ class ENGINE_API EntityManager : public ZFSubSystem{
 		void UpdateGameMessages(void);									///< Update game messages.
 		void SetUpdate(bool bUpdate) { m_bUpdate=bUpdate; };		
 		
-
-		// Arch types
-//		bool IsA(Entity* pkObj, string strStringType);
-
 		// Gets
 		Entity* GetWorldObject()	{	return m_pkWorldObject;				};
 		Entity* GetZoneObject()		{	return m_pkZoneObject;					};		
@@ -167,6 +163,12 @@ class ENGINE_API EntityManager : public ZFSubSystem{
 		void PackToClient(int iClient, vector<Entity*> kObjects);
 		void PackToClients();												//Packs and Sends to ALL clients.
 
+		void OwnerShip_Request(Entity* pkObj);		// Use this to request ownership of a object.
+		void OwnerShip_OnRequest(Entity* pkObj);	// Called when a request for ownership arrives on server.
+		void OwnerShip_OnGrant(Entity* pkObj);		// Recv on client of he gets controll of a object from server.	
+		void OwnerShip_Take(Entity* pkObj);		
+		void OwnerShip_Give(Entity* pkObj);
+
 		// Debug / Help Functions		
 		void DisplayTree();
 		void DumpActiverPropertysToLog(char* szMsg);					///< Log all propertys in m_akPropertys.
@@ -185,30 +187,40 @@ class ENGINE_API EntityManager : public ZFSubSystem{
 
 		//picking of objects
 		bool TestLine(vector<Entity*>* pkObList,Vector3 kPos,Vector3 kVec);
-
-		void OwnerShip_Request(Entity* pkObj);		// Use this to request ownership of a object.
-		void OwnerShip_OnRequest(Entity* pkObj);	// Called when a request for ownership arrives on server.
-		void OwnerShip_OnGrant(Entity* pkObj);		// Recv on client of he gets controll of a object from server.	
-		void OwnerShip_Take(Entity* pkObj);		
-		void OwnerShip_Give(Entity* pkObj);
+		bool BoxVSBox(Vector3 kPos1,Vector3 kSize1,Vector3 kPos2,Vector3 kSize2);
+      
 		
-		bool StartUp();
-		bool ShutDown();
-		bool IsValid();
-
 		//zone system
 		int GetNumOfZones();
-		void Test_CreateZones();
 		void Test_DrawZones();
 		void UpdateZones();
 		ZoneData* GetZone(Entity* PkObject);
 		int GetZoneIndex(Entity* PkObject,int iCurrentZone,bool bClosestZone);
 		int GetZoneIndex(Vector3 kMyPos,int iCurrentZone,bool bClosestZone);
-
 		ZoneData* GetZone(Vector3 kPos);
-		void AutoConnectZones();
 		Vector3 GetZoneCenter(int iZoneNum);
-	
+		void ForceUnload();					//forcing unload of all loaded zones
+		void ForceSave();						//forcing save of all loaded zones
+		bool LoadZones();						//load zone info list
+		bool SaveZones();						//save zone info list
+		void LoadZone(int iId);				//load zone
+		void SaveZone(int iId);				//save zone
+		void UnLoadZone(int iId);			//unload zone (saves and deletes)
+		ZoneData*	GetZoneData(int iID);
+		int CreateZone();
+		int CreateZone(Vector3 kPos,Vector3 kSize);
+		void DeleteZone(int iId);
+		int GetUnusedZoneID();		
+		void Zones_Refresh();
+		void ClearZoneLinks(int iId);
+		void SetZoneModel(const char* szName,int iId);
+		bool IsInsideZone(Vector3 kPos,Vector3 kSize);
+		void UpdateZoneLinks(int iId);
+		bool NewWorld();		
+
+		//void AutoConnectZones();
+		//void Test_CreateZones();
+
 		//trackers
 		void AddTracker(Entity* kObject);
 		void RemoveTracker(Entity* kObject);
@@ -217,55 +229,12 @@ class ENGINE_API EntityManager : public ZFSubSystem{
 		void ClearTrackers();
 		vector<int>	GetActiveZoneIDs(int iTracker);	// Returns a list with zones that the tracked activates,
 		
-		
 		void SetWorldDir(const char* acDir) {m_kWorldDirectory = acDir;};
 		bool LoadWorld(const char* acDir);
-				
-		void ForceUnload();					//forcing unload of all loaded zones
-		void ForceSave();						//forcing save of all loaded zones
-		
-		bool LoadZones();						//load zone info list
-		bool SaveZones();						//save zone info list
-		void LoadZone(int iId);				//load zone
-		void SaveZone(int iId);				//save zone
-		void UnLoadZone(int iId);			//unload zone (saves and deletes)
-		
-		ZoneData*	GetZoneData(int iID);
-		int CreateZone();
-		int CreateZone(Vector3 kPos,Vector3 kSize);
-		void DeleteZone(int iId);
-		int GetUnusedZoneID();		
-		bool NewWorld();		
-		void Zones_Refresh();
-		void ClearZoneLinks(int iId);
-
-		void SetZoneModel(const char* szName,int iId);
-	
-		bool IsInsideZone(Vector3 kPos,Vector3 kSize);
-		void UpdateZoneLinks(int iId);
-
-		//box vs vox test
-		bool BoxVSBox(Vector3 kPos1,Vector3 kSize1,Vector3 kPos2,Vector3 kSize2);
 
 		friend class Entity;
 		friend class ZeroFps;		
 };
 
 #endif
-
-
-//		void AddTracker(Object* kObject);
-//		void RemoveTracker(Object* kObject);
-//		int GetNrOfTrackedObjects();
-//		list<Object*>* GetTrackerList();
-//		void ClearTrackers();
-
-//		void UpdateZones();
-//		void EnableZone(int xp,int zp,Vector3 &kPos);
-//		Object* GetClosestZone(Vector3 &kPos);
-
-//		void DrawZones();
-
-
-
 
