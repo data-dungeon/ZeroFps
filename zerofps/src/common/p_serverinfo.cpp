@@ -76,13 +76,17 @@ void P_ServerInfo::HandleEvents()
 {
 	while(!m_kClientEvents.empty())
 	{
-		switch(m_kClientEvents.front().m_iType)
+		EffectSystem::m_pkInstance->AddFX(m_kClientEvents.front().m_iType,m_kClientEvents.front().m_kPos);	
+		
+/*		switch(m_kClientEvents.front().m_iType)
 		{
 			case 0:
 				cout<<"got damn nice expolsion effect event from server"<<endl;
+				EffectSystem::m_pkInstance->AddFX(FX_88MMHIT,m_kClientEvents.front().m_kPos);
+
 				break;
 		
-		}
+		}*/
 	
 		m_kClientEvents.pop();	
 	}

@@ -14,6 +14,17 @@
 
 using namespace std;
 
+enum COMMON_API FX_TYPES{
+	FX_88MMHIT,
+	FX_EXPLOSION1,
+	FX_88MMFIRE,
+};
+
+enum COMMON_API PARTICLE_TYPES{
+	PART_SMOKE,
+	PART_DEBRI,
+	PART_FIRE,
+};
 
 class COMMON_API EffectSystem 
 {
@@ -21,13 +32,35 @@ class COMMON_API EffectSystem
 		HeightMap*		m_pkMap;
 		LevelManager*	m_pkLevelMan;
 		ObjectManager* m_pkObjectMan;
-		Render*	m_pkRender;		
-			
+		Render*			m_pkRender;		
+		ZeroFps*			m_pkFps;
+		TextureManager* m_pkTexMan;
+		
+		int m_iMaxParts;
+		
+		struct particle
+		{
+			int 		iType;
+			Vector3	kPos;
+			Vector3	kVel;
+			float		fTTL;
+			float		fCTime;
+		};
+		
+		vector<particle>	m_kParts;
+		
+		void AddPart(int iType,Vector3 kPos);
+		void StopPart(int iID);
+		
 	public:
 		static EffectSystem*		m_pkInstance;		
 	
 		EffectSystem();
+		void Setup(int iMaxParts);
 		
+		void Update();		
+		void AddFX(int iType,Vector3 kPos);
+		void Draw();		
 };
 
 

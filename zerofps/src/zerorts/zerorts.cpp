@@ -85,6 +85,9 @@ void ZeroRTS::Init()
 	
 	//setup gui shit =P
 	SetupGUI();
+	
+	//setup particle fx system
+	EffectSystem::m_pkInstance->Setup(1000);
 
 	srand( (int) (pkFps->GetGameTime()*1000) );
 
@@ -199,6 +202,9 @@ void ZeroRTS::OnIdle()
 		pkRender->Line(right, bottom);
 		pkRender->Line(bottom, left);
 	}
+
+	EffectSystem::m_pkInstance->Update();
+	EffectSystem::m_pkInstance->Draw();	
 
 	DrawPath();
 }
@@ -486,6 +492,7 @@ void ZeroRTS::RunCommand(int cmdid, const CmdArgument* kCommand)
 			
 			pkConsole->Printf("Level loaded");
 
+			KillSkybox();
 			SetupSpawnPoints();
 			
 			//setup tile engine
@@ -1127,3 +1134,28 @@ void ZeroRTS::DrawPath()
 		}
 	}
 }
+
+void ZeroRTS::KillSkybox()
+{
+	cout<<"searching for skybox"<<endl;	
+	
+	vector<Object*> kObject;
+	
+	pkObjectMan->GetAllObjects(&kObject);
+	
+	for(int i=0;i<kObject.size();i++)
+	{
+		if(kObject[i]->GetName() == "SkyBoxObject")
+		{
+			cout<<"foudn skybox,,,,die die!!!!"<<endl;
+			pkObjectMan->Delete(kObject[i]);
+		}
+	}
+			
+
+}
+
+
+
+
+

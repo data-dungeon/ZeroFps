@@ -156,6 +156,8 @@ class ZeroRTS :public Application {
 		void CreateClientUnits(int iID);
 		void RemoveClientUnits(int iID);
 
+		void KillSkybox();
+
 	//Palls (friends) =)
 	friend class UserPanel;
 };

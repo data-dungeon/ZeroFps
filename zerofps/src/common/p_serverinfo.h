@@ -14,6 +14,8 @@
 #include <iostream>
 #include "common_x.h"
 
+#include "effectsystem.h"
+
 
 using namespace std;
 

@@ -152,12 +152,19 @@ bool P_UnitSystem::FireWeapon(P_ServerUnit* pkSu,Point kTarget,int iWeapon)
 							return false;
 						}
 					
-						Event temp;
-						temp.m_iType = 0;
-						temp.m_kPos.Set(0,5,0);
 					
 						if(m_pkServerInfo)
+						{
+							Event temp;
+							temp.m_iType = FX_88MMHIT;
+							temp.m_kPos = ob->GetPos();
+							
 							m_pkServerInfo->AddEvent(temp);
+									
+							temp.m_iType = FX_88MMFIRE;
+							temp.m_kPos = pkSu->GetObject()->GetPos();							
+							m_pkServerInfo->AddEvent(temp);							
+						}
 					
 						int iDamage = int(pkWeapon->iDamage * pkWeapon->afModifiers[pkTarget->m_kInfo.m_Info2.m_cArmor] * pkArmor->fModifier);
 						return pkTarget->Damage(iDamage);
