@@ -13,15 +13,6 @@ end
 
 
 function Click(ID)
-	if Money() > 50 then
-		PlaySound (SIGetSelfID(), "dooropen.wav");
-		PlaySound (SIGetSelfID(), "dice.wav");
-		PlayAnim(SIGetSelfID(), "open");
-		SetNextAnim(SIGetSelfID(), "idle");
-		SwallowPlayer (SIGetSelfID(), ID, 8);
-	else
-		PlaySound (SIGetSelfID(), "door_closed.wav");
-	end
 end
 
 function Exit()
