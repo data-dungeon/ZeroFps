@@ -452,7 +452,9 @@ void ZeroEd::Select_Toggle(int iId, bool bMultiSelect)
 	{
 		Select_Add(iId);
 		m_iCurrentObject = iId;
-		UpdatePropertyList(iId);
+
+      if(m_iEditMode == EDIT_OBJECTS)
+         ((ZGuiTabCtrl*)GetWnd("WorkTabWnd"))->SetCurrentPage(2);
 	}
 	else 
 	{
@@ -465,6 +467,8 @@ void ZeroEd::Select_Toggle(int iId, bool bMultiSelect)
 				m_iCurrentObject = -1;
 		}
 	}
+
+   UpdatePropertyList(m_iCurrentObject);
 }
 
 void ZeroEd::DeleteSelected()
