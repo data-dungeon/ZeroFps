@@ -25,6 +25,8 @@ P_AmbientSound::P_AmbientSound()
 	m_fGain = 0.0f;
 
 	m_fFadeTimer = -1;
+
+	m_bDotFileDontExist = false;
 }
 
 P_AmbientSound::~P_AmbientSound()
@@ -36,16 +38,12 @@ void P_AmbientSound::Update()
 {
 	if(m_pEntityMan->IsUpdate(PROPERTY_SIDE_SERVER))
 	{
-		if(m_bDotFileLoaded == false)
-		{
-			/*
-				// det där ser inge vidare ut, du borde nog inte spara data i nån ".dot" fil, varför inte spara datan i propertyt istället?
-			
+		if(m_bDotFileLoaded == false && m_bDotFileDontExist == false)
+		{			
 			if(LoadDotFile(m_pEntityMan->GetLoadDir() + string("/asa.dot")))
 			{
 				m_bDotFileLoaded = true;
 			}
-			*/
 		}
 		else
 		{
@@ -135,6 +133,7 @@ bool P_AmbientSound::LoadDotFile(string strFileName)
 	ZFVFile kZFile;
 	if( !kZFile.Open(string(strFileName),0,false) ) {
 		cout << "Failed to load dot file: " << strFileName.c_str() << endl;
+		m_bDotFileDontExist = true;
 		return false;
 		}
 	

@@ -27,6 +27,7 @@ class ENGINE_SYSTEMS_API P_AmbientSound : public Property
 		// Serverdata
 		int m_iCurrentAmbientArea;
 		bool m_bDotFileLoaded;
+		bool m_bDotFileDontExist;
 
 		bool LoadDotFile(string strFileName);
 		bool PntInPolygon(Vector2 *pt, vector<Vector2*>& vPolygon);
