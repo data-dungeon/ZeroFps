@@ -284,14 +284,13 @@ int ObjectManagerLua::AddMesh(lua_State* pkLua)
 	int iId1 = (int)dTemp;
 
 	// Get MeshName
-	char acName[100];
-	g_pkScript->GetArg(pkLua, 1, acName);
+	g_pkScript->GetArgNumber(pkLua, 1, &dTemp);		
+	int iId2 = (int)dTemp;
 
 	Entity* o1 = g_pkObjMan->GetObjectByNetWorkID(iId1);
 	P_Mad* mp = dynamic_cast<P_Mad*>(o1->GetProperty("P_Mad"));
 
-	cout << "Trying to add Mesh " << acName << endl;
-	mp->AddMesh( acName );
+	mp->AddMesh( iId2 );
 	return 1;
 }
 

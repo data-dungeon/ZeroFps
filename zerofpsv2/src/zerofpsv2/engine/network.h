@@ -154,7 +154,7 @@ public:
 
 	string	GetLocalIP();			
 	NetWorkStatus			m_eNetStatus;
-	vector<RemoteNode>	m_akClients;
+//	vector<RemoteNode>	m_akClients;
 
 	NetWork();
 	~NetWork();
