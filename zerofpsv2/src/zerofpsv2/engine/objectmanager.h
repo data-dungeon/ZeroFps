@@ -29,8 +29,7 @@ public:
 	ZoneObject*			m_pkZone;
 	int					m_iZoneID;
 	Vector3				m_kPos;
-	Vector3				m_kMin;
-	Vector3				m_kMax;
+	Vector3				m_kSize;
 	vector<int>			m_iZoneLinks;
 
 	float		m_fInactiveTime;
@@ -213,7 +212,12 @@ class ENGINE_API ObjectManager : public ZFSubSystem{
 		int GetUnusedZoneID();		
 		bool NewWorld();		
 		void Zones_Refresh();
+		void ClearZoneLinks(int iId);
 
+		bool IsInsideZone(Vector3 kPos,Vector3 kSize);
+		void UpdateZoneLinks(int iId);
+
+		bool BoxVSBox(Vector3 kPos1,Vector3 kSize1,Vector3 kPos2,Vector3 kSize2);
 
 		friend class Object;
 		friend class ZeroFps;		

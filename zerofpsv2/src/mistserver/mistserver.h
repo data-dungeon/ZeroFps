@@ -33,9 +33,12 @@ class MistServer :public Application , public ZGuiApp {
 		Object* m_pkCameraObject;
 		Camera* m_pkCamera;
 
+		Vector3	m_kZoneSize;
 
 		Vector3	Get3DMousePos();
 		Object*	GetTargetObject();		
+
+		void AddZone(Vector3 Pos );
 
 	public:
 		void OnCommand(int iID, ZGuiWnd* pkMainWnd);

@@ -15,8 +15,7 @@ ZoneData& ZoneData::operator=(const ZoneData &kOther)
 	m_pkZone				= kOther.m_pkZone;
 	m_iZoneID			= kOther.m_iZoneID;
 	m_kPos				= kOther.m_kPos;
-	m_kMin				= kOther.m_kMin;
-	m_kMax				= kOther.m_kMax;
+	m_kSize				= kOther.m_kSize;
 	m_iZoneLinks		= kOther.m_iZoneLinks;
 	m_fInactiveTime	= kOther.m_fInactiveTime;
 	m_bActive			= kOther.m_bActive;
@@ -26,13 +25,16 @@ ZoneData& ZoneData::operator=(const ZoneData &kOther)
 
 bool ZoneData::IsInside(Vector3 kPoint)
 {
-	if(kPoint.x < (m_kPos.x + m_kMin.x))	return false;
-	if(kPoint.y < (m_kPos.y + m_kMin.y))	return false;
-	if(kPoint.z < (m_kPos.z + m_kMin.z))	return false;
+	Vector3 half;
+	half.Set(m_kSize.x/2,m_kSize.y/2,m_kSize.z/2);
 
-	if(kPoint.x > (m_kPos.x + m_kMax.x))	return false;
-	if(kPoint.y > (m_kPos.y + m_kMax.y))	return false;
-	if(kPoint.z > (m_kPos.z + m_kMax.z))	return false;
+	if(kPoint.x < (m_kPos.x - half.x))	return false;
+	if(kPoint.y < (m_kPos.y - half.y))	return false;
+	if(kPoint.z < (m_kPos.z - half.z))	return false;
+
+	if(kPoint.x > (m_kPos.x + half.x))	return false;
+	if(kPoint.y > (m_kPos.y + half.y))	return false;
+	if(kPoint.z > (m_kPos.z + half.z))	return false;
 
 	return true;
 }
@@ -972,8 +974,7 @@ void ObjectManager::Test_CreateZones()
 				m_kZones[id].m_bUsed = true;
 				m_kZones[id].m_bActive = false;
 				m_kZones[id].m_pkZone = NULL;
-				m_kZones[id].m_kMin = Vector3(-iZonesSize/2,-iZonesSize/2,-iZonesSize/2);
-				m_kZones[id].m_kMax = Vector3(iZonesSize/2,iZonesSize/2,iZonesSize/2);
+				m_kZones[id].m_kSize = Vector3(iZonesSize,iZonesSize,iZonesSize);
 				m_kZones[id].m_kPos   = kPos; 
 				
 /*				m_kZones[id].m_bActive = true;	
@@ -1017,8 +1018,8 @@ void ObjectManager::Test_DrawZones()
 	Render* m_pkRender=static_cast<Render*>(GetSystem().GetObjectPtr("Render"));
 
 	for(unsigned int i=0;i<m_kZones.size();i++) {
-		Vector3 kMin = m_kZones[i].m_kPos + m_kZones[i].m_kMin;
-		Vector3 kMax = m_kZones[i].m_kPos + m_kZones[i].m_kMax;
+		Vector3 kMin = m_kZones[i].m_kPos - m_kZones[i].m_kSize/2;
+		Vector3 kMax = m_kZones[i].m_kPos + m_kZones[i].m_kSize/2;
 
 		if(m_kZones[i].m_bActive)
 			m_pkRender->DrawAABB( kMin,kMax, Vector3(1,0,0) );
@@ -1111,6 +1112,7 @@ ZoneData* ObjectManager::GetZone(Vector3 kPos)
 
 	return NULL;
 }
+
 
 ZoneData* ObjectManager::GetZone(Object* PkObject)
 {
@@ -1301,8 +1303,6 @@ int ObjectManager::CreateZone()
 
 int ObjectManager::CreateZone(Vector3 kPos,Vector3 kSize)
 {
-	Vector3 maxmin;
-	maxmin.Set(kSize.x/2,kSize.y/2,kSize.z/2);
 	
 	int id = GetUnusedZoneID();
 
@@ -1310,8 +1310,7 @@ int ObjectManager::CreateZone(Vector3 kPos,Vector3 kSize)
 	m_kZones[id].m_bActive = false;	
 	m_kZones[id].m_iZoneID = id;
 	m_kZones[id].m_pkZone = NULL;
-	m_kZones[id].m_kMax = maxmin;
-	m_kZones[id].m_kMin = -maxmin;	
+	m_kZones[id].m_kSize = kSize;
 	m_kZones[id].m_kPos = kPos;
 
 	m_kZones[id].m_iZoneLinks.clear();
@@ -1334,25 +1333,7 @@ void ObjectManager::DeleteZone(int iId)
 	m_kZones[iId].m_bUsed = false;
 	m_kZones[iId].m_bActive = false;
 	
-	//loop trough all connected zones
-	for(int i = 0;m_kZones[iId].m_iZoneLinks.size();i++)
-	{
-		ZoneData* zone = GetZoneData( m_kZones[iId].m_iZoneLinks[i] );
-		
-		//loop trough the connected zones connected zones
-		for(vector<int>::iterator it=zone->m_iZoneLinks.begin();it!=zone->m_iZoneLinks.end();it++)
-		{
-			if((*it) == iId)
-			{
-				zone->m_iZoneLinks.erase(it);
-				it = zone->m_iZoneLinks.begin();
-				continue;
-			}
-		}
-	}
-	
-	//clear all links
-	m_kZones[iId].m_iZoneLinks.clear();
+	ClearZoneLinks(iId);	
 	
 	//unload the zone
 	UnLoadZone(iId);
@@ -1382,8 +1363,7 @@ bool ObjectManager::LoadZones()
 	
 		kFile.Read(&iNumOfLinks, sizeof(iNumOfLinks), 1);
 		kFile.Read(&kZData.m_iZoneID, sizeof(kZData.m_iZoneID), 1);
-		kFile.Read(&kZData.m_kMax, sizeof(kZData.m_kMax), 1);
-		kFile.Read(&kZData.m_kMin, sizeof(kZData.m_kMin), 1);
+		kFile.Read(&kZData.m_kSize, sizeof(kZData.m_kSize), 1);
 		kFile.Read(&kZData.m_kPos, sizeof(kZData.m_kPos), 1);
 
 		for(zl=0; zl < iNumOfLinks; zl++) {
@@ -1425,8 +1405,7 @@ bool ObjectManager::SaveZones()
 
 		kFile.Write(&iNumOfLinks, sizeof(iNumOfLinks), 1);
 		kFile.Write(&m_kZones[i].m_iZoneID, sizeof(m_kZones[i].m_iZoneID), 1);
-		kFile.Write(&m_kZones[i].m_kMax, sizeof(m_kZones[i].m_kMax), 1);
-		kFile.Write(&m_kZones[i].m_kMin, sizeof(m_kZones[i].m_kMin), 1);
+		kFile.Write(&m_kZones[i].m_kSize, sizeof(m_kZones[i].m_kSize), 1);		
 		kFile.Write(&m_kZones[i].m_kPos, sizeof(m_kZones[i].m_kPos), 1);
 
 		for(int zl=0; zl < iNumOfLinks; zl++)
@@ -1603,11 +1582,138 @@ bool ObjectManager::LoadWorld(const char* acDir)
 	return LoadZones();
 }
 
+void ObjectManager::ClearZoneLinks(int iId)
+{
+	//loop trough all connected zones
+	for(int i = 0;m_kZones[iId].m_iZoneLinks.size();i++)
+	{
+		ZoneData* zone = GetZoneData( m_kZones[iId].m_iZoneLinks[i] );
+		
+		//loop trough the connected zones connected zones
+		for(vector<int>::iterator it=zone->m_iZoneLinks.begin();it!=zone->m_iZoneLinks.end();it++)
+		{
+			if((*it) == iId)
+			{
+				zone->m_iZoneLinks.erase(it);
+				it = zone->m_iZoneLinks.begin();
+				continue;
+			}
+		}
+	}
+	
+	//clear all links
+	m_kZones[iId].m_iZoneLinks.clear();
 
 
+}
+
+bool ObjectManager::IsInsideZone(Vector3 kPos,Vector3 kSize)
+{
+	for(unsigned int i=0;i<m_kZones.size();i++) 
+	{
+		if(BoxVSBox(kPos,kSize-0.1,m_kZones[i].m_kPos,m_kZones[i].m_kSize-0.1))
+			return true;
+	}
+	return false;
+	
+}
+
+void ObjectManager::UpdateZoneLinks(int iId)
+{
+	ZoneData* pkZone = GetZoneData(iId);
+	if(!pkZone)
+		return;
+
+	//clear all connections
+	ClearZoneLinks(iId);
+	
+	
+	Vector3 kPos = m_kZones[iId].m_kPos;
+	Vector3 kSize = m_kZones[iId].m_kSize;
+	
+	//go trough all zones and check if they are to be connected
+	for(unsigned int i=0;i<m_kZones.size();i++) 
+	{
+		if(i == iId)
+			continue;
+			
+		if(BoxVSBox(kPos,kSize ,m_kZones[i].m_kPos, m_kZones[i].m_kSize))
+		{
+			m_kZones[iId].m_iZoneLinks.push_back(i);
+			m_kZones[i].m_iZoneLinks.push_back(iId);
+		}
+		
+	}
+	
+
+}
 
 
+bool ObjectManager::BoxVSBox(Vector3 kPos1,Vector3 kSize1,Vector3 kPos2,Vector3 kSize2)
+{
+	
+	//box 1
+	float x1 = (kSize1.x/2.0);
+	float y1 = (kSize1.y/2.0);
+	float z1 = (kSize1.z/2.0);
+	
+	vector<Vector3>	kTestDirs1;
+	kTestDirs1.push_back(Vector3(-x1,y1,z1));
+	kTestDirs1.push_back(Vector3(x1,y1,z1));
+	kTestDirs1.push_back(Vector3(x1,-y1,z1));
+	kTestDirs1.push_back(Vector3(-x1,-y1,z1));
+	
+	kTestDirs1.push_back(Vector3(-x1,y1,-z1));
+	kTestDirs1.push_back(Vector3(x1,y1,-z1));
+	kTestDirs1.push_back(Vector3(x1,-y1,-z1));
+	kTestDirs1.push_back(Vector3(-x1,-y1,-z1));
+	
+	//box 2
+	float x2 = (kSize2.x/2.0);
+	float y2 = (kSize2.y/2.0);
+	float z2 = (kSize2.z/2.0);
+	
+	vector<Vector3>	kTestDirs2;
+	kTestDirs2.push_back(Vector3(-x2,y2,z2));
+	kTestDirs2.push_back(Vector3(x2,y2,z2));
+	kTestDirs2.push_back(Vector3(x2,-y2,z2));
+	kTestDirs2.push_back(Vector3(-x2,-y2,z2));
+	
+	kTestDirs2.push_back(Vector3(-x2,y2,-z2));
+	kTestDirs2.push_back(Vector3(x2,y2,-z2));
+	kTestDirs2.push_back(Vector3(x2,-y2,-z2));
+	kTestDirs2.push_back(Vector3(-x2,-y2,-z2));
 
+	// box1 vs box2
+	for(int i = 0 ;i<kTestDirs1.size();i++)
+	{
+		Vector3 kPoint = kPos1 + kTestDirs1[i];
+		
+		if(kPoint.x < (kPos2.x - x2))	continue;		
+		if(kPoint.y < (kPos2.y - y2))	continue;
+		if(kPoint.z < (kPos2.z - z2))	continue;
+		if(kPoint.x > (kPos2.x + x2))	continue;
+		if(kPoint.y > (kPos2.y + y2))	continue;
+		if(kPoint.z > (kPos2.z + z2))	continue;
+		return true;
+	}
+
+	// box2 vs box1
+	for(int i = 0 ;i<kTestDirs2.size();i++)
+	{
+		Vector3 kPoint = kPos2 + kTestDirs2[i];
+		
+		if(kPoint.x < (kPos1.x - x1))	continue;		
+		if(kPoint.y < (kPos1.y - y1))	continue;
+		if(kPoint.z < (kPos1.z - z1))	continue;
+		if(kPoint.x > (kPos1.x + x1))	continue;
+		if(kPoint.y > (kPos1.y + y1))	continue;
+		if(kPoint.z > (kPos1.z + z1))	continue;
+		return true;
+	}
+
+	return false;
+}
 
 
 

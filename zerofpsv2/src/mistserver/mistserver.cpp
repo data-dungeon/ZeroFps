@@ -45,6 +45,8 @@ void MistServer::OnInit()
 
 void MistServer::Init()
 {	
+	m_kZoneSize.Set(8,8,8);
+	
 	//register commmands bös
 	Register_Cmd("load",FID_LOAD);		
 
@@ -60,7 +62,6 @@ void MistServer::Init()
 	
 	//init mistland script intreface
 	MistLandLua::Init(pkObjectMan,pkScript);
-
 
 
 	SDL_WM_SetCaption("Mistland, the land of mist", NULL);
@@ -124,8 +125,15 @@ void MistServer::Input()
 		m_pkCameraObject->SetLocalPosV(newpos);
 		m_pkCameraObject->RotateLocalRotV(rot);	
 	
+	
+	
+		if(pkInput->Pressed(KEY_SPACE))
+		{
+			AddZone(m_pkCameraObject->GetWorldPosV());
+	
+		}
+	
 	}
-
 
 
 };
@@ -284,7 +292,25 @@ Object* MistServer::GetTargetObject()
 }
 
 
+void MistServer::AddZone(Vector3 kPos )
+{
+	Vector3 kSnap;
+	
+	kSnap.x = round(kPos.x/4.0) * 4.0;
+	kSnap.y = round(kPos.y/4.0) * 4.0;
+	kSnap.z = round(kPos.z/4.0) * 4.0;
 
+
+
+	if(pkObjectMan->IsInsideZone(kSnap,m_kZoneSize))
+		return;
+		
+	
+	int id = pkObjectMan->CreateZone(kSnap,m_kZoneSize);
+	pkObjectMan->UpdateZoneLinks(id);
+	
+
+}
 
 
 
