@@ -67,7 +67,7 @@ bool UserPanel::Create(int x, int y, char* szResourceFile, char* szDlgName)
 
 	// Button tooltip
 	ZGuiLabel* pkLabel = m_pkGuiBuilder->CreateLabel(m_pkDlgBox, 0, 
-		m_pkZeroRts->m_iWidth-310, 160, 300, 20, "", "CmdButtonTipLB");
+		m_pkZeroRts->m_iWidth-310+110, 160, 300, 20, "", "CmdButtonTipLB");
 	pkLabel->SetZValue(m_akCommandBns.back()->m_iZValue+1);
 
 	// Unit health progress bar
@@ -414,6 +414,19 @@ void UserPanel::UpdateGraphic()
 			int w = (float) pkClientUnit->m_kInfo.m_Info2.m_cHealth / 255.0f * m_fOriginalHealthbarSize;
 			if(w >= 0)
 				m_pkGuiBuilder->Get("UnitHealthLB")->Resize(w,h);
+		}
+	}
+
+	P_ServerInfo* pkServerInfo = m_pkZeroRts->m_pkServerInfo;
+	if(pkServerInfo && m_pkZeroRts->m_pkClientInput)
+	{
+		int team = m_pkZeroRts->m_pkClientInput->GetPlayerID();
+		if(team >= 0 && team < 4)
+		{
+			char szText[100];
+			sprintf(szText, "zcredits: %i, team: %i", 
+				pkServerInfo->m_kSInfo.m_aiPlayerResourses[team], team);
+			m_pkGuiBuilder->Get("CmdButtonTipLB")->SetText(szText);
 		}
 	}
 }

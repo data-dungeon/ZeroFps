@@ -92,6 +92,8 @@ class ZeroRTS :public Application {
 
 		Object* test_path_find_object;
 
+		P_ServerInfo* m_pkServerInfo;
+
 	public:
 		void DrawPath(); bool m_bDrawPath;
 		GuiBuilder* m_pkGuiBuilder;

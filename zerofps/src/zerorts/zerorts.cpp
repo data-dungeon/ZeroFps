@@ -13,19 +13,18 @@ static bool USERPANELPROC( ZGuiWnd* win, unsigned int msg, int numparms, void *p
 ZeroRTS::ZeroRTS(char* aName,int iWidth,int iHeight,int iDepth) 
 	: Application(aName,iWidth,iHeight,iDepth) 
 {
-	m_pkTileEngine=TileEngine::m_pkInstance;
-	m_pkConstructMan=ConstructionManager::m_pkInstance;
-
-	
-	m_pkMiniMap = 					NULL;
-	m_pkClientInput = 			NULL;
-	m_iSelfObjectID =				-1;
-	m_HaveFoundHMapObject =		false;
-	m_bDisableCameraScroll =	false;
-	m_iGameType =					1;
+	m_pkTileEngine			 = TileEngine::m_pkInstance;
+	m_pkConstructMan		 = ConstructionManager::m_pkInstance;
+	m_pkMiniMap				 = NULL;
+	m_pkClientInput			 = NULL;
+	m_pkServerInfo			 = NULL;
+	m_iSelfObjectID			 = -1;
+	m_HaveFoundHMapObject	 = false;
+	m_bDisableCameraScroll	 = false;
+	m_iGameType				 = 1;
 	m_kClickPos = m_kDragPos = NO_SELECTION;
-	test_path_find_object = NULL;
-	m_bDrawPath = false;
+	test_path_find_object    = NULL;
+	m_bDrawPath				 = false;
 }
 
 void ZeroRTS::OnInit() 
@@ -251,7 +250,15 @@ void ZeroRTS::OnSystem()
 				ClientInit();
 			}
 		}		
-	
+
+		if(!m_pkServerInfo)
+		{
+			Object* sio = pkObjectMan->GetObject("A ServerInfoObject");
+
+			if(sio)
+				m_pkServerInfo = (P_ServerInfo*)sio->GetProperty("P_ServerInfo");	
+		}
+
 		//try to get self id
 		if(m_iSelfObjectID == -1)
 			m_iSelfObjectID = pkFps->GetClientObjectID();
@@ -268,8 +275,11 @@ void ZeroRTS::OnSystem()
 			pkObjectMan->GetWorldObject()->AddProperty("P_ClientInput");
 			m_pkClientInput = (P_ClientInput*)pkObjectMan->GetWorldObject()->GetProperty("P_ClientInput");
 			m_pkClientInput->m_bGod = true;
-		}
+		}	
+		
 	}
+
+
 }
 
 void ZeroRTS::Input()
@@ -435,6 +445,8 @@ void ZeroRTS::Input()
 		if(sio != NULL)
 		{		
 			P_ServerInfo* si = (P_ServerInfo*)sio->GetProperty("P_ServerInfo");	
+
+			
 		
 			if(si != NULL)
 			{
@@ -1250,8 +1262,3 @@ void ZeroRTS::KillSkybox()
 			
 
 }
-
-
-
-
-
