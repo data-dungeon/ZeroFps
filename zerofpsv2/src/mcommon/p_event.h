@@ -35,8 +35,10 @@ class MCOMMON_API P_Event: public Property {
 		bool SendEvent(const char* acEvent);
 		bool SendObjectClickEvent(const char* acType,int iCallerObject );		
 		bool SendGroudClickEvent(const char* acType,Vector3 kPos,int iCallerObject);
-		
 		void Touch(int iId);					//executet when collision occurs
+
+		void Set1SUpdate(bool blub) {m_bRun1SUpdate = blub;};
+		
 };
 
 MCOMMON_API Property* Create_P_Event();

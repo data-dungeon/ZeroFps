@@ -45,6 +45,8 @@ void MistLandLua::Init(EntityManager* pkObjMan,ZFScriptSystem* pkScript)
 	pkScript->ExposeFunction("AddAction",					MistLandLua::AddActionLua);			
 	pkScript->ExposeFunction("MessageCaracter",			MistLandLua::MessageCaracterLua);
 	
+	pkScript->ExposeFunction("HaveHeartbeat",				MistLandLua::HaveHeartbeatLua);
+	
 	pkScript->ExposeFunction("StartPrivateSound",		MistLandLua::StartPrivateSoundLua);
 	pkScript->ExposeFunction("StartSound",					MistLandLua::StartSoundLua);
 	
@@ -366,6 +368,28 @@ int MistLandLua::MessageCaracterLua(lua_State* pkLua)
 		
 	//send message
 	g_pkServerInfo->MessageCharacter(id,acEvent);
+	
+	return 0;
+}
+
+int MistLandLua::HaveHeartbeatLua(lua_State* pkLua)
+{
+	if(g_pkScript->GetNumArgs(pkLua) == 1)
+	{
+		double dId;	
+		g_pkScript->GetArgNumber(pkLua, 0, &dId);
+
+		Entity* pkObject = g_pkObjMan->GetObjectByNetWorkID((int)dId);
+		
+		if(pkObject)
+		{	
+			P_Event* ep = (P_Event*)pkObject->GetProperty("P_Event");
+			if(ep)
+				ep->Set1SUpdate(true);			
+		}
+	}
+	else
+		cout<<"Forgot object id argument to HaveHeartbeat()"<<endl;	
 	
 	return 0;
 }

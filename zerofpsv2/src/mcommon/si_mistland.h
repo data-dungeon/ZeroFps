@@ -49,6 +49,8 @@ namespace MistLandLua
 	int MCOMMON_API AddActionLua(lua_State* pkLua);				//(int objectid,string action) add action to action list of object
 	int MCOMMON_API MessageCaracterLua(lua_State* pkLua);				//(int objectid,string message) send a message to caracters controling player
 
+	int MCOMMON_API HaveHeartbeatLua(lua_State* pkLua);				//(int objectid) will enable the 1s update function on this object
+
 	// sound crap
 	int MCOMMON_API StartPrivateSoundLua(lua_State* pkLua);
 	int MCOMMON_API StartSoundLua(lua_State* pkLua);
