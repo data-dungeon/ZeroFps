@@ -1125,3 +1125,25 @@ void MistServer::SendTextToMistClientInfoBox(char *szText)
 {
 	  
 }
+
+
+void MistServer::SetZoneEnviroment(const char* csEnviroment)
+{
+	ZoneData* z = pkObjectMan->GetZoneData(m_iCurrentMarkedZone);
+		
+	if(z)
+		z->m_strEnviroment = csEnviroment;
+
+}
+
+string MistServer::GetZoneEnviroment()
+{
+	string env;
+	
+	ZoneData* z = pkObjectMan->GetZoneData(m_iCurrentMarkedZone);
+		
+	if(z)
+		env = z->m_strEnviroment;
+
+	return env;
+}

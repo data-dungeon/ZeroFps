@@ -72,6 +72,8 @@ class MistServer :public Application , public ZGuiApp {
 		Vector3	Get3DMousePos(bool m_bMouse);
 		Object*	GetTargetObject();		
 
+		void SetZoneEnviroment(const char* csEnviroment);
+		string GetZoneEnviroment();
 		void UpdateZoneMarkerPos();
 		void UpdateObjectMakerPos();
 		void DrawZoneMarker(Vector3 kPos);
