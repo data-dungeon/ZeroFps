@@ -35,7 +35,7 @@ P_Tcs::~P_Tcs()
 
 void P_Tcs::Init()
 {
-	cout<<"Tiny Collisions system property Added"<<endl;	
+	//cout<<"Tiny Collisions system property Added"<<endl;	
 	Enable();
 }
 
