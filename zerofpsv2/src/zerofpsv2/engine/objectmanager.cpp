@@ -1895,7 +1895,7 @@ bool ObjectManager::IsInsideZone(Vector3 kPos,Vector3 kSize)
 		if(!m_kZones[i].m_bUsed)
 			continue;
 
-		if(BoxVSBox(kPos,kSize-0.1,m_kZones[i].m_kPos,m_kZones[i].m_kSize-0.1))
+		if(BoxVSBox(kPos,kSize-0.1,m_kZones[i].m_kPos,m_kZones[i].m_kSize))
 			return true;
 	}
 	return false;
