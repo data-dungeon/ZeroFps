@@ -5,8 +5,8 @@
 */
 
 
-#ifndef _P_SERVERUNIT_H_
-#define _P_SERVERUNIT_H_
+#ifndef _P_SUPLYGIVER_H_
+#define _P_SUPLYGIVER_H_
 
 #include "../zerofps/engine/objects.pkg"
 #include "../zerofps/engine/engine.pkg"

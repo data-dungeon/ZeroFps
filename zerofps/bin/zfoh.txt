@@ -39,6 +39,7 @@ class object
 		class ZeroRTSEngineringCrew
 			parent ZeroRTSUnit
 			add P_UnitMoveAI
+			add P_UnitBuildAI
 			set MadProperty m_kMadFile /data/mad/rts/unit/ecrew.mad
 			set MadProperty m_fScale 0.3
 
@@ -115,6 +116,8 @@ class object
 			parent ZeroRTSUnit
 			set MadProperty m_kMadFile /data/mad/rts/build/suply.mad
 			set MadProperty m_fScale 0.3
+			add P_SuplyGiver
+			
 
 		class ZeroRTSBarack
 			parent ZeroRTSUnit
