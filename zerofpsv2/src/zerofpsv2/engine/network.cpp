@@ -460,6 +460,7 @@ bool NetWork::SendRaw(NetPacket* pkNetPacket)
 			int iIndex = m_RemoteNodes[pkNetPacket->m_iClientID].GetFreeRelStore();
 			if(iIndex == -1)
 			{
+				m_RemoteNodes[pkNetPacket->m_iClientID].m_bIsFlood = true;
 				cout << "Connection Flood" << endl;
 				for(int i=0; i<ZF_NET_MAXREL; i++)
 					m_RemoteNodes[pkNetPacket->m_iClientID].m_akRelPack[i].m_kHeader.m_iPacketType = ZF_NETTYPE_NONE;
@@ -471,7 +472,7 @@ bool NetWork::SendRaw(NetPacket* pkNetPacket)
 			memcpy(pkRelPak, &pkNetPacket->m_kData, sizeof( ZFNetPacketData ));
 			m_RemoteNodes[pkNetPacket->m_iClientID].m_akRelPackSendTime[iIndex] = m_pkZeroFps->GetEngineTime();
 			m_RemoteNodes[pkNetPacket->m_iClientID].m_aiRelPackSize[iIndex] = pkNetPacket->m_iLength;
-
+		
 			// WRITE: Store time to update ping.
 			if(m_RemoteNodes[pkNetPacket->m_iClientID].m_iRelPingIndex == 0)
 			{
@@ -808,7 +809,26 @@ void NetWork::DevShow_ClientConnections()
 
 		AddressToStr(&m_RemoteNodes[i].m_kAddress,szAdress);
 
-/*		szRelSendWait[0]='[';
+		// Räkna antal använda buffers.
+		int iNumOfUsesBuffers = 0;
+		for(int iRel=0; iRel<ZF_NET_MAXREL; iRel++)
+		{
+			if(m_RemoteNodes[i].m_akRelPack[iRel].m_kHeader.m_iPacketType != ZF_NETTYPE_NONE)
+				iNumOfUsesBuffers++;
+		}
+
+/*		int iAsp;
+		for(iAsp=0;iAsp<200; iAsp++)
+			szRelSendWait[iAsp]=' ';
+		int iProc = float(iNumOfUsesBuffers) / float(ZF_NET_MAXREL) * 10;
+		szRelSendWait[0]='[';
+		iRelIndex = 1;
+		for(iAsp=0; iAsp<iProc; iAsp++)
+			szRelSendWait[iAsp] = '.';
+		szRelSendWait[iRelIndex++]=']';
+		szRelSendWait[iRelIndex++] = 0;*/
+/*
+		szRelSendWait[0]='[';
 		iRelIndex = 1;
 		for(int iRel=0; iRel<ZF_NET_MAXREL; iRel++)
 		{
@@ -821,7 +841,7 @@ void NetWork::DevShow_ClientConnections()
 		szRelSendWait[iRelIndex++]=']';
 		szRelSendWait[iRelIndex++] = 0;
 
-		szRelRecvWait[0]='[';
+/*		szRelRecvWait[0]='[';
 		iRelIndex = 1;
 		for(int iRel=0; iRel<ZF_NET_MAXREL; iRel++)
 		{
@@ -1016,6 +1036,14 @@ void NetWork::Run()
 			m_RemoteNodes[i].m_kRecvGraph.NextValue( );
 		}
 
+		// Disconnect if connection is flooded
+		if(m_RemoteNodes[i].m_bIsFlood)
+		{
+			m_pkZeroFps->Disconnect(i);
+			m_pkConsole->Printf("Connection to %d was flooded.", i);
+			m_RemoteNodes[i].m_eConnectStatus = NETSTATUS_DISCONNECT;
+		}
+
 		if(fEngineTime > ( m_RemoteNodes[i].m_fLastMessageTime + 60 )) 
 		{
 			// Time out this connection.
@@ -1023,6 +1051,7 @@ void NetWork::Run()
 			m_pkConsole->Printf("Connection to %d timed out.", i);
 			m_RemoteNodes[i].m_eConnectStatus = NETSTATUS_DISCONNECT;
 		}
+
 
 		// Resend any old packets
 		for(int iRel = 0; iRel < ZF_NET_MAXREL; iRel++)

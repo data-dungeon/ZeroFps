@@ -2,6 +2,7 @@
 #define _ENGINE_NETWORK_H_
 
 #include "deque"
+#include "set"
 
 #pragma warning( disable : 4512) // 'class' : assignment operator could not be generated 
 
@@ -68,6 +69,7 @@ public:
 
 	int				m_iReliableSendOrder;			// Next Order num to use for next reliable packet.
 	int				m_iReliableRecvOrder;			// The Order num of next reliable packet we are waiting for.
+	bool			m_bIsFlood;
 
 	// Stats
 	int				m_iNumOfPacketsSent;				// Total num of packets sent (Any type).
@@ -98,8 +100,9 @@ public:
 	ZFNetPacketData	m_akRelPack[ZF_NET_MAXREL];
 	float					m_akRelPackSendTime[ZF_NET_MAXREL];
 	int					m_aiRelPackSize[ZF_NET_MAXREL];
-
-	ZFNetPacketData	m_akRelPackRecv[ZF_NET_MAXREL];	// Reliable packets that have been recv out of order.
+	set<int>				m_kRelSend;										// Sorted set with Id's for all packets that been sent but not ack.
+   
+	ZFNetPacketData	m_akRelPackRecv[ZF_NET_MAXREL];			// Reliable packets that have been recv out of order.
 	int					m_aiRelPackRecvSize[ZF_NET_MAXREL];
 
 	vector<int>			m_kRelAckList;
@@ -140,7 +143,6 @@ struct ZFNet_String
 	string	m_NetString;	// Da string
 	bool		m_bNeedUpdate;	// True if we need to request a update from server.
 };
-
 
 /** \brief	NetWork SubSystem
 	 \ingroup Engine

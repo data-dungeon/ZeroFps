@@ -60,6 +60,8 @@ void RemoteNode::Clear()
 		m_akRelPack[i].m_kHeader.m_iPacketType = ZF_NETTYPE_NONE;
 		m_akRelPackRecv[i].m_kHeader.m_iPacketType = ZF_NETTYPE_NONE;
 		}
+
+	m_bIsFlood = false;
 }
 
 void RemoteNode::SetAddress(IPaddress* pkAddress)

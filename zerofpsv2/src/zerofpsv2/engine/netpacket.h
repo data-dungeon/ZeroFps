@@ -110,6 +110,8 @@ public:
 	void TargetAddClient(int iClientID);	// Add this to list of target clients.
 	void TatgetClearClient();					// Clear Target list of clients.
 	void SetTarget(const char* szIp);
+
+	float	m_fTime;
 };
 
 
