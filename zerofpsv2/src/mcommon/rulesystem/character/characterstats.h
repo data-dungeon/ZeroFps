@@ -53,6 +53,9 @@ private:
 
    FightStats m_kFightStats;
 
+   
+   bool m_bIsPlayer;
+
    void RecieveSkillExp ( StatDescriber *pkStat, float fDifficulty, string kName );
    void RecieveAttrExp ( StatDescriber *pkStat, float fDifficulty );
 

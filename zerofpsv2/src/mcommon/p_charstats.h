@@ -7,7 +7,7 @@
 #include "../zerofpsv2/basic/zfini.h"
 #include "rulesystem/sendtype.h"
 
-enum { eATTRIBUTES, eSKILLS, eDATA };
+enum { eATTRIBUTES, eSKILLS, eDATA, eHP };
 
 class MCOMMON_API CharacterProperty: public Property 
 {

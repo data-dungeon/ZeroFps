@@ -10,7 +10,6 @@ void CharacterProperty::Update()
 {
    if ( m_fReloadTimer > 0 )
       m_fReloadTimer -= m_pkObject->m_pkFps->GetFrameTime();
-
 }
 
 // ------------------------------------------------------------------------------------------
@@ -280,11 +279,10 @@ void CharacterProperty::PackTo(NetPacket* pkNetPacket, int iConnectionID )
 
    if ( !m_kSends.size() )
       pkNetPacket->Write( &iStuff, sizeof(int) );
-
-   for (list<SendType>::iterator kIte = m_kSends.begin(); kIte != m_kSends.end(); kIte++ )
+   else
    {
-      // get continer data
-      if ( (*kIte).m_iClientID == iConnectionID && (*kIte).m_kSendType == "skills" )
+      // send character skills
+      if ( m_kSends.front().m_iClientID == iConnectionID && m_kSends.front().m_kSendType == "skills" )
       {
          iStuff = eSKILLS;
 
@@ -306,16 +304,87 @@ void CharacterProperty::PackTo(NetPacket* pkNetPacket, int iConnectionID )
             // skill value
             pkNetPacket->Write( &(*kIte).second.m_iValue, sizeof(int) );
          }
+      }
+      // send character attributes
+      else if ( m_kSends.front().m_iClientID == iConnectionID && m_kSends.front().m_kSendType == "attributes" )
+      {
+         iStuff = eATTRIBUTES;
 
-         cout << "skill data is sent" << endl;
+         pkNetPacket->Write( &iStuff, sizeof(int) );
 
+         // get container vector
+         map<string, StatDescriber>* pkAttributes = &m_pkCharStats->m_kAttributes;
+
+         iStuff = pkAttributes->size();
+
+         // write number of skills
+         pkNetPacket->Write( &iStuff, sizeof(int) );
+
+         for ( map<string, StatDescriber>::iterator kIte = pkAttributes->begin();
+               kIte != pkAttributes->end(); kIte++ )
+         {
+            // attribute name
+            pkNetPacket->Write_Str( (*kIte).first.c_str() );
+            // attribute value
+            pkNetPacket->Write( &(*kIte).second.m_iValue, sizeof(int) );
+         }
+
+         cout << "Sent attr" << endl;
+      }
+      // send character data (name, rase, sex...)
+      else if ( m_kSends.front().m_iClientID == iConnectionID && m_kSends.front().m_kSendType == "data" )
+      {
+         iStuff = eDATA;
+
+         pkNetPacket->Write( &iStuff, sizeof(int) );
+
+         // get container vector
+         map<string, string>* pkData = &m_pkCharStats->m_kData;
+
+         iStuff = pkData->size();
+
+         // write number of skills
+         pkNetPacket->Write( &iStuff, sizeof(int) );
+
+         for ( map<string, string>::iterator kIte = pkData->begin();
+               kIte != pkData->end(); kIte++ )
+         {
+            // attribute name
+            pkNetPacket->Write_Str( (*kIte).first.c_str() );
+            // attribute value
+            pkNetPacket->Write_Str( (*kIte).second.c_str() );
+         }
+
+         cout << "Sent data" << endl;
+      }
+      // send hp
+      else if ( m_kSends.front().m_iClientID == iConnectionID && m_kSends.front().m_kSendType == "hp" )
+      {
+         iStuff = eHP;
+
+         pkNetPacket->Write( &iStuff, sizeof(int) );
+          
+         int iHP = m_pkCharStats->GetHP(); 
+
+         // send hp
+         pkNetPacket->Write( &iHP, sizeof(int) );
+
+         cout << "SentHP:" << iHP << endl;
+          
+      }
+      else
+      {
+         pkNetPacket->Write( &iStuff, sizeof(int) );
+
+         cout << "P_CharStats::PackTo SendOrder:" << m_kSends.front().m_kSendType << " invalid!" << endl;
       }
 
-      m_kSends.erase ( kIte++ );
+      m_kSends.erase ( m_kSends.begin() );
 
    }
 
-  	SetNetUpdateFlag(iConnectionID, false);
+   if ( !m_kSends.size() )
+  	   SetNetUpdateFlag(iConnectionID, false);
 }
 
 // ------------------------------------------------------------------------------------------
@@ -334,7 +403,7 @@ void CharacterProperty::PackFrom(NetPacket* pkNetPacket, int iConnectionID )
    {
       int iCount, iValue;
 
-      // write number of skills
+      // read number of skills
       pkNetPacket->Read( &iCount, sizeof(int) );
 
       char caSkillName[128];
@@ -349,11 +418,62 @@ void CharacterProperty::PackFrom(NetPacket* pkNetPacket, int iConnectionID )
          m_pkCharStats->m_kSkills[string(caSkillName)].m_iValue = iValue;
       }
 
-      cout << "got skill data from server" << endl;
+   }
+   else if ( iType == eATTRIBUTES )
+   {
+      int iCount, iValue;
+
+      // read number of attributes
+      pkNetPacket->Read( &iCount, sizeof(int) );
+
+      char caAttrName[128];
+
+      for ( int i = 0; i < iCount; i++ )
+      {
+         // read attribute name
+         pkNetPacket->Read_Str( caAttrName );
+         // read attribute value
+         pkNetPacket->Read( &iValue, sizeof(int) );
+
+         m_pkCharStats->m_kAttributes[string(caAttrName)].m_iValue = iValue;
+      }
+
+      cout << "got attribute data from server" << endl;
+   }
+   else if ( iType == eDATA )
+   {
+      int iCount;
+
+      // read number of datas
+      pkNetPacket->Read( &iCount, sizeof(int) );
+
+      char caAttrName[128], caAttrValue[128];
+
+      for ( int i = 0; i < iCount; i++ )
+      {
+         // read data name
+         pkNetPacket->Read_Str( caAttrName );
+         // read data value
+         pkNetPacket->Read_Str( caAttrValue );
+
+         m_pkCharStats->m_kData[string(caAttrName)] = caAttrValue;
+      }
+
+      cout << "got attribute data from server" << endl;
+   }
+   else if ( iType == eHP )
+   {
+      int iHP;
+
+      pkNetPacket->Read ( &iHP, sizeof(int) );
+
+      m_pkCharStats->m_kPointStats["hp"] = iHP;
+
+      cout << "Got hp:" << m_pkCharStats->GetHP() << endl;
 
    }
-
-
+   else
+      cout << "Got unknown data in p_charstats::packfrom" << endl;
 }
 
 // ------------------------------------------------------------------------------------------
@@ -414,7 +534,7 @@ void CharacterProperty::RequestUpdateFromServer( string kData )
       else if ( kData == "data" )
       {
          // get client object
-         kOrder.m_sOrderName = "(rq)data";
+         kOrder.m_sOrderName = "(rq)cdat";
          kOrder.m_iObjectID = m_pkObject->iNetWorkID;
          kOrder.m_iClientID = m_pkZeroFps->GetConnectionID();
          kOrder.m_iCharacter = pkCP->m_iActiveCaracterObjectID;

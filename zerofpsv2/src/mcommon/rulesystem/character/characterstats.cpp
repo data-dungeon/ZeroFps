@@ -3,6 +3,8 @@
 #include "../../../zerofpsv2/engine_systems/propertys/p_mad.h"
 #include "../../../zerofpsv2/engine_systems/propertys/p_linktojoint.h"
 #include "characterstats.h"
+#include "../../p_charstats.h"
+#include "../../p_clientcontrol.h"
 #include "../item/itemstats.h"
 #include <iostream>
 #include <string>
@@ -21,6 +23,10 @@ CharacterStats::CharacterStats( Entity *pkParent )
    m_pkParent = pkParent;
 
 	m_strScriptWhenHit = "";
+
+   m_bIsPlayer = m_pkParent->GetType() == "t_player.lua";
+
+   cout << "PLayer is:" << m_bIsPlayer << endl;
 
 	// if stat-types isn't loaded
 	if ( !g_kSkills.size() && !g_kAttributes.size() && !g_kData.size() )
@@ -395,6 +401,26 @@ void CharacterStats::AddHP( int iValue )
 {
    m_kPointStats["hp"] += iValue;
    m_uiVersion++;
+
+   // if character is player, send updated life to client
+   if ( m_bIsPlayer )
+   {
+
+      P_ClientControl* pkCC = (P_ClientControl*)m_pkParent->GetProperty("P_ClientControl");
+
+      if ( pkCC )
+      {
+         SendType kNewSend;
+
+         kNewSend.m_iClientID = pkCC->m_iClientID;
+         kNewSend.m_kSendType = "hp";
+         ((CharacterProperty*)m_pkParent->GetProperty("P_CharStats"))->AddSendsData (kNewSend);
+
+         cout << "Sent datastuff" << endl;
+      }
+      else
+         cout << "stuff didn't have clientcontrol" << endl;
+   }
    
    if(m_kPointStats["hp"].Value() <= 0)
    {
