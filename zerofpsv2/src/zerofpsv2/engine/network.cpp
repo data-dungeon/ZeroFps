@@ -613,6 +613,8 @@ void NetWork::HandleControlMessage(NetPacket* pkNetPacket)
 			break;
 
 		case ZF_NETCONTROL_JOINYES:
+			cout << "CONNECT YES RECVD" << endl;
+
 			// Client can join.
 			iClientID = GetFreeClientNum();
 			assert(iClientID != ZF_NET_NOCLIENT);
@@ -667,6 +669,7 @@ void NetWork::HandleControlMessage(NetPacket* pkNetPacket)
 				m_pkConsole->Printf("NetWork::HandleControlMessage(ZF_NETCONTROL_DISCONNECT)");
 				m_pkZeroFps->Disconnect(iClientID);
 				m_RemoteNodes[iClientID].m_eConnectStatus = NETSTATUS_DISCONNECT;
+				m_RemoteNodes[iClientID].Clear();
 				}
 
 			// Outer side disconnect.
@@ -912,9 +915,13 @@ void NetWork::Run()
 				// Only clients can send rel packets.
 				if(iClientID != ZF_NET_NOCLIENT) 
 				{
+					cout << "Recv REL: " << NetP.m_kData.m_kHeader.m_iOrder << ". Current OrderID: " << m_RemoteNodes[iClientID].m_iReliableRecvOrder << endl;
+
 					// Check if it is the correct packet.
 					if(m_RemoteNodes[iClientID].m_iReliableRecvOrder == NetP.m_kData.m_kHeader.m_iOrder)
 					{
+						cout << "Recv REL: " << NetP.m_kData.m_kHeader.m_iOrder << endl;
+	
 						m_pkZeroFps->HandleNetworkPacket(&NetP);
 						m_RemoteNodes[iClientID].m_iReliableRecvOrder++;
 						m_RemoteNodes[iClientID].m_kRelAckList.push_back( NetP.m_kData.m_kHeader.m_iOrder );

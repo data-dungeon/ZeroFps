@@ -401,6 +401,14 @@ void MistClient::OnClientConnected()
 
 void MistClient::OnDisconnect(int iConnectionID)
 {
+	// Clear Entity Manger.
+	m_pkEntityManager->Clear();
+   
+	// Load start screen.
+	LoadStartScreenGui();
+
+	m_iCharacterID = -1;
+
 	cout << "NOOOOOOOOOOOO im disconnected" << endl;
 }
 
