@@ -12,7 +12,8 @@ CMissionDlg::~CMissionDlg()
 {
 }
 
-void CMissionDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName)
+void CMissionDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName,
+									 bool bRMouseBnClick)
 {
 	P_DMMission* pkMissionProperty = (P_DMMission*) 
 		GetDMObject(GAME_INFO)->GetProperty("P_DMMission");

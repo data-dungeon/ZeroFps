@@ -28,7 +28,7 @@ public:
 protected:
 	void OnMouseMove(int x, int y, bool bMouseDown, ZGuiWnd *pkMain);
 	void OnClick(int x, int y, bool bMouseDown, bool bLeftButton, ZGuiWnd *pkMain);
-	void OnCommand(ZGuiWnd *pkMainWnd, string strClickName);
+	void OnCommand(ZGuiWnd *pkMainWnd, string strClickName, bool bRMouseBnClick);
 
 private:
 

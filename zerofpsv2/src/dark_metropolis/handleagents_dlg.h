@@ -7,7 +7,7 @@ public:
 	CHandleAgents();
 	~CHandleAgents();
 
-	void OnCommand(ZGuiWnd *pkMainWnd, string strClickName); 
+	void OnCommand(ZGuiWnd *pkMainWnd, string strClickName, bool bRMouseBnClick); 
 	bool InitDlg();
 	int GetSelAgent() { return m_iSelAgent; }
 

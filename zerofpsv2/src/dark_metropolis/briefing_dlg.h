@@ -7,6 +7,6 @@ public:
 	CBriefingDlg();
 	~CBriefingDlg();
 
-	void OnCommand(ZGuiWnd *pkMainWnd, string strClickName);
+	void OnCommand(ZGuiWnd *pkMainWnd, string strClickName, bool bRMouseBnClick);
 	bool InitDlg();
 };

@@ -7,7 +7,7 @@ public:
 	CGamePlayDlg();
 	~CGamePlayDlg();
 
-	void OnCommand(ZGuiWnd *pkMainWnd, string strClickName);
+	void OnCommand(ZGuiWnd *pkMainWnd, string strClickName, bool bRMouseBnClick);
 	void SelectAgentGUI(int iAgent, bool bSelectModels);
 	int GetSelAgentObject() { return m_iSelectedAgent; } // object id
 	

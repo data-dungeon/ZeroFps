@@ -10,7 +10,7 @@ public:
 
 	virtual void OnSelectCB(ZGuiCombobox* pkCombobox, int iItemIndex) {};
 	virtual void OnClick(int x, int y, bool bMouseDown, bool bLeftButton, ZGuiWnd *pkMain) {}
-	virtual void OnCommand(ZGuiWnd *pkMainWnd, string strClickName) {};
+	virtual void OnCommand(ZGuiWnd *pkMainWnd, string strClickName, bool bRMouseBnClick) {};
 	virtual void OnMouseMove(int x, int y, bool bMouseDown, ZGuiWnd *pkMain) {}
 	virtual void OnScroll(int iID, int iPos, ZGuiWnd *pkMain) {};
 	virtual bool InitDlg() {return true;}

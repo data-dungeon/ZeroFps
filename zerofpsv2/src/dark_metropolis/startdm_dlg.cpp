@@ -28,7 +28,8 @@ CStartDMDlg::~CStartDMDlg()
 {
 }
 
-void CStartDMDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName)
+void CStartDMDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName,
+									 bool bRMouseBnClick)
 {
 	if(strClickName == "StarNewGameBn")
 	{

@@ -31,7 +31,8 @@ CMembersDlg::~CMembersDlg()
 {
 }
 
-void CMembersDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName)
+void CMembersDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName, 
+									 bool bRMouseBnClick)
 {
 	// MembersWnd
 	if(strClickName == "MembersCloseBn")

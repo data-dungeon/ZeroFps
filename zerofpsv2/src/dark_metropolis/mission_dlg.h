@@ -7,7 +7,7 @@ public:
 	CMissionDlg();
 	~CMissionDlg();
 
-	void OnCommand(ZGuiWnd *pkMainWnd, string strClickName);
+	void OnCommand(ZGuiWnd *pkMainWnd, string strClickName, bool bRMouseBnClick);
 	bool InitDlg();
 
 	string m_strSelMission;

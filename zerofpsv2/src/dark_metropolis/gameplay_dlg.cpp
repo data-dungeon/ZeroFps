@@ -15,7 +15,8 @@ CGamePlayDlg::~CGamePlayDlg()
 {
 }
 
-void CGamePlayDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName)
+void CGamePlayDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName,
+									  bool bRMouseBnClick)
 {
 	if(strClickName == "GamPlayMenuBn")
 	{
@@ -202,7 +203,16 @@ void CGamePlayDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName)
 
 	for(int i=0; i<5; i++)
 		if(strClickName == icon_name[i])
+		{
+			Entity* pkEnt = GetObject(GetSelAgentObject()); 
+
+			//bool bDoubleClick = false;
+
+			if(pkEnt && bRMouseBnClick)
+				m_pkDM->MoveCamera(pkEnt->GetWorldPosV());
+
 			SelectAgentGUI(m_akAgetIcons[i].iAgentObjectID, true);
+		}
 }
 
 bool CGamePlayDlg::InitDlg()
@@ -229,6 +239,7 @@ bool CGamePlayDlg::InitDlg()
 		for(int i=0; i<5; i++)
 		{
 			m_akAgetIcons[i].pkButton = (ZGuiButton*)GetWnd(szNameID[i*2]);
+			m_akAgetIcons[i].pkButton->m_bAcceptRightClicks = true;
 			m_akAgetIcons[i].pkLifeProgressbar = (ZGuiLabel*)GetWnd(szNameID[i*2+1]);
 		}		
 

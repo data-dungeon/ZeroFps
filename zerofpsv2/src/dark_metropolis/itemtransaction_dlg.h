@@ -7,7 +7,7 @@ public:
 	CItemTransactionDlg();
 	~CItemTransactionDlg();
 
-	void OnCommand(ZGuiWnd *pkMainWnd, string strClickName);
+	void OnCommand(ZGuiWnd *pkMainWnd, string strClickName, bool bRMouseBnClick);
 	bool InitDlg();
 
 	enum VIEW_MODE { store_room, shop };

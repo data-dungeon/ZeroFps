@@ -307,6 +307,11 @@ void DarkMetropolis::RegisterPropertys()
 	m_pkPropertyFactory->Register("P_DMClickMe",			Create_P_DMClickMe);	
 }
 
+void DarkMetropolis::MoveCamera(Vector3 pos)
+{
+	m_pkCameraEntity->SetWorldPosV(pos);
+}
+
 void DarkMetropolis::Input()
 {
 	//get mouse
@@ -348,6 +353,7 @@ void DarkMetropolis::Input()
 				}
 			}
 	
+
 	if(m_pkInputHandle->Pressed(KEY_O))
 	{
 		if(Entity* pkEnt = m_pkObjectMan->GetObjectByNetWorkID(m_iHQID))

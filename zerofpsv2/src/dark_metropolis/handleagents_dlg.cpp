@@ -17,7 +17,8 @@ CHandleAgents::~CHandleAgents()
 {
 }
 
-void CHandleAgents::OnCommand(ZGuiWnd *pkMainWnd, string strClickName)
+void CHandleAgents::OnCommand(ZGuiWnd *pkMainWnd, string strClickName,
+										bool bRMouseBnClick)
 {
 	//InitDlg();
 

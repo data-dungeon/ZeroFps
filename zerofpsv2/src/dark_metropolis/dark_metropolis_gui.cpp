@@ -136,32 +136,32 @@ void DarkMetropolis::GUI_OnCommand(int iID, bool bRMouseBnClick,
 
 	if(strMainWnd == "DMStartWnd")
 	{
-		m_pkStartDMDlg->OnCommand(pkMainWnd, strClickName);
+		m_pkStartDMDlg->OnCommand(pkMainWnd, strClickName, bRMouseBnClick);
 	}
 	else
 	if(strMainWnd == "StartNewGameWnd")
 	{
-		m_pkNewGameDlg->OnCommand(pkMainWnd, strClickName);
+		m_pkNewGameDlg->OnCommand(pkMainWnd, strClickName, bRMouseBnClick);
 	}
 	else
 	if(strMainWnd == "HQWnd")
 	{
-		m_pkHQDlg->OnCommand(pkMainWnd, strClickName);
+		m_pkHQDlg->OnCommand(pkMainWnd, strClickName, bRMouseBnClick);
 	}
 	else
 	if(strMainWnd == "MembersWnd")
 	{
-		m_pkMembersDlg->OnCommand(pkMainWnd, strClickName);
+		m_pkMembersDlg->OnCommand(pkMainWnd, strClickName, bRMouseBnClick);
 	}
 	else
 	if(strMainWnd == "MissionWnd")
 	{
-		m_pkMissionDlg->OnCommand(pkMainWnd, strClickName);
+		m_pkMissionDlg->OnCommand(pkMainWnd, strClickName, bRMouseBnClick);
 	}
 	else
 	if(strMainWnd == "BriefingWnd")
 	{
-		m_pkBriefingDlg->OnCommand(pkMainWnd, strClickName);
+		m_pkBriefingDlg->OnCommand(pkMainWnd, strClickName, bRMouseBnClick);
 	}
 	else
 	if(strMainWnd == "GamePlayPanelWnd" ||
@@ -174,19 +174,19 @@ void DarkMetropolis::GUI_OnCommand(int iID, bool bRMouseBnClick,
 		strMainWnd == "item_bar" ||
 		strMainWnd == "MissionInfoWnd")
 	{
-		m_pkGamePlayDlg->OnCommand(pkMainWnd, strClickName);
+		m_pkGamePlayDlg->OnCommand(pkMainWnd, strClickName, bRMouseBnClick);
 	}
 	else
 	if(strMainWnd == "ItemTransactionWnd" ||
 		strMainWnd == "ItemRemoveWnd" ||
 		strMainWnd == "ItemAddWnd" )
 	{
-		m_pkItemTransactionDlg->OnCommand(pkMainWnd, strClickName);
+		m_pkItemTransactionDlg->OnCommand(pkMainWnd, strClickName, bRMouseBnClick);
 	}
 	else
 	if(strMainWnd == "AgentsWnd")
 	{		
-		m_pkHandleAgents->OnCommand(pkMainWnd, strClickName);
+		m_pkHandleAgents->OnCommand(pkMainWnd, strClickName, bRMouseBnClick);
 	}
 	else
 	if(strMainWnd == "LoadListWnd")

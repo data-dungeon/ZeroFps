@@ -13,7 +13,8 @@ CHQDlg::~CHQDlg(void)
 {
 }
 
-void CHQDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName)
+void CHQDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName,
+							  bool bRMouseBnClick)
 {
 	if(m_pkHQ == NULL)
 	{

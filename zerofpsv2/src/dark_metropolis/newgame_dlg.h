@@ -6,7 +6,7 @@ class CNewGameDlg : public CGameDlg
 public:
 	CNewGameDlg();
 	~CNewGameDlg();
-	void OnCommand(ZGuiWnd *pkMainWnd, string strClickName);
+	void OnCommand(ZGuiWnd *pkMainWnd, string strClickName, bool bRMouseBnClick);
 
 	void StartFade(float fGameTime);
 	void EndFade();

@@ -16,7 +16,8 @@ CItemTransactionDlg::~CItemTransactionDlg()
 {
 }
 
-void CItemTransactionDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName)
+void CItemTransactionDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName,
+												bool bRMouseBnClick)
 {
 	if(strClickName == "ItemRemoveTransactionPrevPageBn")
 	{

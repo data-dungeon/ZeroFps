@@ -11,7 +11,8 @@ CNewGameDlg::~CNewGameDlg()
 
 }
 
-void CNewGameDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName)
+void CNewGameDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName,
+									 bool bRMouseBnClick)
 {
 	if(strClickName == "StartNewGameDone")
 	{

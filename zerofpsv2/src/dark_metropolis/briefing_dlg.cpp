@@ -11,7 +11,7 @@ CBriefingDlg::~CBriefingDlg()
 {
 }
 
-void CBriefingDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName)
+void CBriefingDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName, bool bRMouseBnClick)
 {
 	string strSelMission = ((CMissionDlg*)GetGameDlg(MISSION_DLG))->m_strSelMission;
 
