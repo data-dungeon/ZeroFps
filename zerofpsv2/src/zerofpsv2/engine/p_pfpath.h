@@ -49,6 +49,8 @@ class ENGINE_API P_PfPath : public Property
 		
 //		vector<Vector3> OptimizePath(vector<Vector3> kInPath);
 		
+		void RenderPath();
+
 		void SetSpeed(float fSpeed) { m_fSpeed = fSpeed;};
 		void SetTilt(bool bTilt) { m_bTilt = bTilt;};
 		

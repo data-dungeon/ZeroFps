@@ -11,8 +11,8 @@ P_PfPath::P_PfPath()
 //	m_iType = PROPERTY_TYPE_NORMAL | PROPERTY_TYPE_RENDER;
 //	m_iSide = PROPERTY_SIDE_SERVER | PROPERTY_SIDE_CLIENT;
 
-	m_iType = PROPERTY_TYPE_NORMAL;// | PROPERTY_TYPE_RENDER;
-	m_iSide = PROPERTY_SIDE_SERVER;// | PROPERTY_SIDE_CLIENT;
+	m_iType = PROPERTY_TYPE_NORMAL | PROPERTY_TYPE_RENDER;
+	m_iSide = PROPERTY_SIDE_SERVER | PROPERTY_SIDE_CLIENT;
 
 	m_pkFps=static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
 	m_pkAStar=static_cast<AStar*>(g_ZFObjSys.GetObjectPtr("AStar"));	
@@ -35,19 +35,45 @@ void P_PfPath::Init()
 
 }
 
+void P_PfPath::RenderPath()
+{
+	if(!m_pkAStar->m_bDrawPaths) 
+		return;
+
+	Render* pkRender = static_cast<Render*>(g_ZFObjSys.GetObjectPtr("Render")); 
+	int i;
+
+	glColor3f(1,0,0);
+	if(m_kRawPath.size() >= 2) {
+		for(i=0; i<m_kRawPath.size() - 1; i++) {
+			pkRender->Line(m_kRawPath[i].kPosition + Vector3(0,0.1,0), m_kRawPath[i+1].kPosition + Vector3(0,0.1,0));
+			}	
+		}
+
+	glColor3f(0,1,0);
+	if(m_kPath.size() >= 2) {
+		for(i=0; i < (m_kPath.size() - 1); i++) {
+			pkRender->Line(m_kPath[i] + Vector3(0,0.1,0), m_kPath[i+1] + Vector3(0,0.1,0));
+			}	
+		}
+}
+
+
 void P_PfPath::Update()
 {
-//	if(!m_bHaveOffset)
-//		SetupOffset();
-		
-		
+	if( m_pkObjMan->IsUpdate(PROPERTY_TYPE_RENDER) && m_pkObjMan->IsUpdate(PROPERTY_TYPE_RENDER)) {
+		RenderPath();
+		return;
+		}
+
+	if( m_pkObjMan->IsUpdate(PROPERTY_TYPE_NORMAL) && m_pkObjMan->IsUpdate(PROPERTY_SIDE_CLIENT))
+		return;
+
 	Vector3 kPos = m_pkObject->GetWorldPosV();
 
 	ZoneData* pkZone;
 	P_PfMesh* pkMesh;
 	NaviMeshCell* pkEndCell;
-
-	
 
 	int iStartZone	= m_pkObjMan->GetZoneIndex(kPos,-1, false);
 	pkZone = m_pkObjMan->GetZoneData(iStartZone);
@@ -66,42 +92,9 @@ void P_PfPath::Update()
 		return ;
 		}
 	
-	if( m_pkObjMan->IsUpdate(PROPERTY_TYPE_RENDER) ) {
-		Render* pkRender = static_cast<Render*>(g_ZFObjSys.GetObjectPtr("Render")); 
-		int i;
 
-		glColor3f(1,0,0);
-		if(m_kRawPath.size() >= 2) {
-			for(i=0; i<m_kRawPath.size() - 1; i++) {
-				pkRender->Line(m_kRawPath[i].kPosition + Vector3(0,0.1,0), m_kRawPath[i+1].kPosition + Vector3(0,0.1,0));
-				}	
-			}
-
-		glColor3f(0,1,0);
-		if(m_kPath.size() >= 2) {
-			for(i=0; i < (m_kPath.size() - 1); i++) {
-				pkRender->Line(m_kPath[i] + Vector3(0,0.1,0), m_kPath[i+1] + Vector3(0,0.1,0));
-				}	
-			}
-		
+	if(m_kPath.size() == 0)
 		return;
-		}
-
-	if(m_kPath.size() == 0) {
-/*		Vector3 kStart;
-		Vector3 kEnd;
-		kStart = m_pkObject->GetWorldPosV();
-		kEnd = kStart + Vector3(100 - rand()%200,0,100 - rand()%200);
-		vector<Vector3>	kNewPath;
-
-		if(m_pkZeroFps->m_pkAStar->GetFullPath(kStart,kEnd,kNewPath)) {
-			reverse(kNewPath.begin(), kNewPath.end());
-			SetPath(kNewPath);
-			}*/
-
-		return;
-		}
-	//m_kOffset = Vector3(0,1,0);
 
 	// Get Distance to next goal.
 	Vector3 kGoal = m_kPath[m_iNextGoal] + m_kOffset;

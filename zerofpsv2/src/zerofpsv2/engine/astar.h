@@ -104,6 +104,7 @@ private:
 	vector<AStarCellNode*>	kClosedList;
 	
 	bool		m_bDrawNaviMesh;
+	bool		m_bDrawPaths;
 
 public:
 	AStar();
@@ -131,6 +132,7 @@ public:
 	bool IsValid() { return true;  }
 
 	friend class P_PfMesh;
+	friend class P_PfPath;
 };
 
 #endif

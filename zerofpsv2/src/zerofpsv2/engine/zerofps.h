@@ -110,6 +110,7 @@ class ENGINE_API ZeroFps : public I_ZeroFps {
 			// DevStrings
 			FID_DEV_SHOWPAGE,	
 			FID_DEV_HIDEPAGE,
+			FID_DEV_TOGGLE,
 
 			FID_SCREENSHOOT,
 		};
@@ -121,7 +122,7 @@ class ENGINE_API ZeroFps : public I_ZeroFps {
 		float 	m_fAvrageFpsTime;
 		int		m_iAvrageFrameCount;
 		
-		int		m_iLockFps;
+		bool		m_bLockFps;
 		float 	m_fLockFrameTime;
 		
 		float 	m_fSystemUpdateFps;

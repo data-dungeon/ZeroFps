@@ -11,6 +11,7 @@ AStar::AStar()
 
 	// Register Variables
 	RegisterVariable("ai_shownavmesh", &m_bDrawNaviMesh,	CSYS_BOOL);	
+	RegisterVariable("ai_showpath",	&m_bDrawPaths,	CSYS_BOOL);	
 
 }
 

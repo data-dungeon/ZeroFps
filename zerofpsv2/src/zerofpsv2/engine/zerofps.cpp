@@ -84,7 +84,7 @@ ZeroFps::ZeroFps(void) : I_ZeroFps("ZeroFps")
 	m_bRenderOn					= true;
 	m_iServerConnection		= -1;
 	m_iMaxPlayers				= ZF_DEF_PLAYERS;
-	m_iLockFps					= false;
+	m_bLockFps					= false;
 	
 
 	// Register Variables
@@ -96,7 +96,7 @@ ZeroFps::ZeroFps(void) : I_ZeroFps("ZeroFps")
 	RegisterVariable("r_logrp",			&g_iLogRenderPropertys,	CSYS_INT);	
 	RegisterVariable("r_render",			&m_bRenderOn,				CSYS_BOOL);	
 	RegisterVariable("n_maxplayers",		&m_iMaxPlayers,			CSYS_INT,		CSYS_FLAG_SRC_CMDLINE|CSYS_FLAG_SRC_INITFILE);	
-	RegisterVariable("e_lockfps",		&m_iLockFps,			CSYS_INT);	
+	RegisterVariable("e_lockfps",			&m_bLockFps,				CSYS_BOOL);	
 	
 	// Register Commands
 	Register_Cmd("setdisplay",FID_SETDISPLAY);
@@ -111,6 +111,7 @@ ZeroFps::ZeroFps(void) : I_ZeroFps("ZeroFps")
 	Register_Cmd("gldump",FID_GLDUMP);	
 	Register_Cmd("devshow",FID_DEV_SHOWPAGE, CSYS_FLAG_SRC_ALL, "devshow name", 1);	
 	Register_Cmd("devhide",FID_DEV_HIDEPAGE, CSYS_FLAG_SRC_ALL, "devhide name", 1);	
+	Register_Cmd("devtog",FID_DEV_TOGGLE, CSYS_FLAG_SRC_ALL, "devtog name", 1);	
 	Register_Cmd("debug",FID_LISTMAD);	
 	Register_Cmd("shot",FID_SCREENSHOOT);	
 }
@@ -380,7 +381,7 @@ void ZeroFps::Update_System()
 {
 	int iLoops;
 
-	if(m_iLockFps)
+	if(m_bLockFps)
 	{	
 		iLoops = 1;				//if fps is locked, there is no need to calculate number of loops, i shuld always be 1
 	}
@@ -495,7 +496,7 @@ void ZeroFps::MainLoop(void) {
 		 
 		 
 		//handle locked fps delay
-		if(m_iLockFps)
+		if(m_bLockFps)
 		{
 			float fDelay = GetGameFrameTime() - (GetTicks() - m_fLockFrameTime);
 		
@@ -905,6 +906,14 @@ void ZeroFps::RunCommand(int cmdid, const CmdArgument* kCommand)
 			if(page)
 				page->m_bVisible = false;
 			break;
+
+		case FID_DEV_TOGGLE:
+			page = DevPrint_FindPage(kCommand->m_kSplitCommand[1].c_str());
+			if(page)
+				page->m_bVisible = !page->m_bVisible;
+			break;
+
+
 
 		case FID_SCREENSHOOT:	m_pkRender->ScreenShot();	break;
 
