@@ -87,7 +87,7 @@ void PlayerControlProperty::Update() {
 	
 	if(onGround && m_fGroundAngle >= 60)	{
 		Vector3  res(GroundNormal.x,-1,GroundNormal.z);		
-		m_pkObject->GetAcc()+=res*50;
+		m_pkObject->GetAcc()+=res*25;
 	}	
 
 	if(m_pkInput->Action(m_iActionStrafeRight)){
@@ -136,6 +136,11 @@ void PlayerControlProperty::Update() {
 			for(int i=0;i<ActionList.size();i++)
 			{
 				cout<<ActionList[i]<<endl;			
+			}
+			
+			if(ActionList.size() >0)
+			{
+				ip->Use(NORMALUSE,ActionList[0].c_str());
 			}
 			
 			//PickUp(bla);
@@ -235,18 +240,24 @@ void PlayerControlProperty::Update() {
 void PlayerControlProperty::Touch(Collision* pkCol)
 {
 	Object* pkOther;
+	PhysicProperty* pkPP;
 	Vector3 kNormal;
 	
 	if(pkCol->m_pkPP1->GetObject() == (Object*)this)
 	{
 		pkOther=pkCol->m_pkPP2->GetObject();
+		pkPP=pkCol->m_pkPP2;
 		kNormal=pkCol->m_kNormal2;
 	}
 	else
 	{
 		pkOther=pkCol->m_pkPP1->GetObject();
+		pkPP=pkCol->m_pkPP1;		
 		kNormal=pkCol->m_kNormal1;		
 	}
+
+	if(!pkPP->m_bSolid)
+		return;
 
 	//	cout<<"walking on normal: "<<kNormal.x<<" "<<kNormal.y<<" "<<kNormal.z<<endl;
 	m_fGroundAngle = RadToDeg(Vector3(0,1,0).Angle(kNormal));

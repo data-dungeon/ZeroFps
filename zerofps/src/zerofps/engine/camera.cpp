@@ -15,7 +15,7 @@ void Camera::UpdateAll(int iWidth,int iHeight)
 {
 	m_bViewChange=true;
 	m_bViewPortChange=true;
-	Update(iWidth,iHeight);
+//	Update(iWidth,iHeight);
 }
 
 void Camera::Update(int iWidth,int iHeight) 
@@ -85,17 +85,6 @@ void Camera::SetFov(float fFov)
 {
 	m_fFov = fFov;
 	SetView(fFov, m_fAspect, m_fNear, m_fFar);
-/*	SetViewPort(0,0,1,1);
-
-	m_bViewChange	=	true;
-
-	
-	glMatrixMode(GL_PROJECTION);	
-	glPushMatrix();
-		gluPerspective(m_fFov, m_fAspect, m_fNear, m_fFar);	
-		glGetFloatv(GL_PROJECTION_MATRIX,(float*)&m_kCamMatrix[0]);
-	glPopMatrix();
-	glMatrixMode(GL_MODELVIEW);	*/
 }
 
 
@@ -112,16 +101,6 @@ void Camera::SetViewPort(float fX,float fY,float fW,float fH)
 
 }
 
-/*
-Matrix4 Camera::GetModelViewMatrix()
-{
-	Matrix4 temp;
-	
-	glGetFloatv(GL_MODELVIEW_MATRIX, &temp[0]);
-
-	return temp;
-}
-*/
 
 void Camera::ClearViewPort() {
 	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);	

@@ -10,8 +10,7 @@ class ENGINE_API Camera {
 		Matrix4 m_kCamProjectionMatrix;
 		Matrix4 m_kCamModelViewMatrix;
 		Vector3 m_kPos;
-		Vector3 m_kRot;
-		
+		Vector3 m_kRot;	
 			
 		bool m_bViewChange;
 		bool m_bViewPortChange;				
@@ -41,7 +40,6 @@ class ENGINE_API Camera {
 		Vector3 &GetPos(){return m_kPos;};
 		Vector3 &GetRot(){return m_kRot;};
 		Matrix4& GetModelViewMatrix() {return m_kCamModelViewMatrix;};
-//		Matrix4 GetModelViewMatrix();
 		Matrix4& GetProjectionMatrix() {return m_kCamProjectionMatrix;};		
 
 		void SetFov(float fFov);

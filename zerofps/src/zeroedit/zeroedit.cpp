@@ -126,11 +126,13 @@ void ZeroEdit::OnInit(void)
 void ZeroEdit::OnIdle(void) 
 {	
 	pkFps->SetCamera(m_pkCamera);		
-	pkFps->GetCam()->ClearViewPort();	
+	pkFps->GetCam()->ClearViewPort();		
 	
+	Input(); 	
+ 	pkFps->UpdateCamera(); 	
  	SetPointer();
 	DrawMarkers();
-	Input();
+
 }
 
 

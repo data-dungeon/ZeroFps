@@ -461,7 +461,10 @@ void ZeroFps::SetDisplay()
 
 void ZeroFps::SetCamera(Camera* pkCamera)
 {
+	//set camera pointer
 	m_pkCamera=pkCamera;		
+	
+	//call updateall so that the camera updates viewport and realoads projectionmatrix
 	m_pkCamera->UpdateAll(m_iWidth,m_iHeight);
 	
 	UpdateCamera();
@@ -469,6 +472,7 @@ void ZeroFps::SetCamera(Camera* pkCamera)
 
 void ZeroFps::UpdateCamera()
 {
+	//update camera
 	m_pkCamera->Update(m_iWidth,m_iHeight);
 	
 	//get the frustrum for frustum culling

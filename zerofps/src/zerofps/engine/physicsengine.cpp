@@ -396,9 +396,6 @@ bool PhysicsEngine::Stride(PhysicProperty* pkPP)
 	Vector3 kOldPos = pkPP->GetObject()->GetPos();
 	Collision *pkCD = NULL;	
 	
-//	if(kOldNewPos == kOldPos)
-//		return false;
-	
 	if(kOldNewPos.x == kOldPos.x &&
 		kOldNewPos.z == kOldPos.z)
 		return false;
@@ -409,7 +406,6 @@ bool PhysicsEngine::Stride(PhysicProperty* pkPP)
 	
 	pkPP->GetObject()->GetPos() = kOldPos + kBack;
 	pkPP->m_kNewPos = kOldPos + Vector3(0,pkPP->m_bStrideHeight,0) + kBack;
-//	pkPP->m_kNewPos.y = kOldNewPos.y + pkPP->m_bStrideHeight;
 	
 	if(pkCD = CheckIfColliding(pkPP))
 	{
@@ -496,6 +492,9 @@ Collision* PhysicsEngine::CheckIfColliding(PhysicProperty* pkPP)
 			
 			
 		PhysicProperty* PP2 = static_cast<PhysicProperty*>(*it2);
+
+		if(!PP2->m_bSolid)
+			continue;
 
 		//dont collide two static objects =)
 		if(PP1->GetObject()->GetObjectType()==OBJECT_TYPE_STATIC &&
