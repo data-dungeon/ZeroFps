@@ -33,8 +33,6 @@ public:
 	unsigned int GetIndex();
 	void SetIndex(unsigned int iIndex);
 
-//	bool m_bMenuItem;
-
 	bool operator < (const ZGuiListitem &I)
 	{         
 	   if(m_iIndex > I.m_iIndex)

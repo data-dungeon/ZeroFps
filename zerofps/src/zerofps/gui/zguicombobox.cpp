@@ -128,6 +128,9 @@ bool ZGuiCombobox::Notify(ZGuiWnd* pkWnd,int iCode)
 
 		if(m_pkListbox->IsVisible())
 		{
+			if(m_bIsMenu)
+				m_pkListbox->SelNone();
+			
 			m_pkListbox->Hide();
 	
 			Resize(m_pkLabel->GetScreenRect().Width(),

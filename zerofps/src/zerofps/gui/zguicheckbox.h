@@ -45,7 +45,6 @@ public:
 protected:
 	ZGuiSkin* m_pkSkinBnDown, *m_pkSkinBnUp;
 	ZGuiLabel* m_pkLabel;
-	//int m_iMaskTexUnchecked, m_iMaskTexChecked;
 	bool m_bChecked;
 };
 

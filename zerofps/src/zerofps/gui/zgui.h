@@ -69,7 +69,7 @@ public:
 	ZGuiFont* AddBitmapFont(char* strBitmapName, char cCharsOneRow, char cCellSize, char cPixelGapBetweenChars, int iID);
 	ZGuiFont* GetBitmapFont(int iID);
 
-	void ShowMainWindow(/*int iID*/ZGuiWnd* pkMainWnd, bool bShow);
+	void ShowMainWindow(ZGuiWnd* pkMainWnd, bool bShow);
 	bool Activate(bool bActive);
 	void SetCursor(int TextureID, int MaskTextureID=-1, int Width=16, int Height=16);
 	void ShowCursor(bool bShow);

@@ -46,14 +46,13 @@ public:
 
 	ZGuiWnd(Rect kRectangle, ZGuiWnd* pkParent=NULL, bool bVisible=true, 
 		int iID=0);
-	//virtual ~ZGuiWnd();
 
 	virtual void SetFont(ZGuiFont* pkFont);
 	ZGuiFont* GetFont() { return m_pkFont; }
 
 	virtual void Resize(int Width, int Height, bool bChangeMoveArea=true);
 	ZGuiSkin* GetSkin() { return m_pkSkin; }
-	virtual void SetSkin(ZGuiSkin* pkSkin/*, int iBkMaskTexture = -1, int iBorderMaskTexture = -1*/);
+	virtual void SetSkin(ZGuiSkin* pkSkin);
 	
 	typedef bool (*callbackfunc)(ZGuiWnd* pkWnd, unsigned int uiMessage, 
 		int iNumParams, void *pParams);
@@ -154,8 +153,6 @@ protected:
 
 	char m_szName[50]; // Same name as the resource manager use to find the window.
 	unsigned int m_iID; // Kan vara 0 och är i så fall ett statisk fönster.
-	//int m_iBkMaskTexture; // -1 innebär att det inte finns någon alpha textur
-	//int m_iBorderMaskTexture; // -1 innebär att det inte finns någon alpha textur
 
 	virtual ~ZGuiWnd(); // Set the destructor to protected and and let class ZGui
 	friend class ZGui;	// be a friend so that only ZGui can destroy windows
