@@ -167,6 +167,7 @@ public:
 //	bool m_bHaveInputFocus; //! om guit har focus eller inte
 
 	bool m_bDisableAlphatest;
+	bool m_bUseHardwareMouse;  // true = snabb, go mus
 
 	void OnScreenSizeChange(int iPrevWidth, int iPrevHeight, int iNewWidth, int iNewHeight);
 	void SetWndForeground(ZGuiWnd* pkWnd);

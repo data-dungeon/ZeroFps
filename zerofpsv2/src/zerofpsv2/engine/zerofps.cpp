@@ -299,7 +299,10 @@ void ZeroFps::Run_EngineShell()
 
 	// Updata Gui input
 	int mx, my;
-	m_pkGuiInputHandle->SDLMouseXY(mx,my);
+	if(m_pkGui->m_bUseHardwareMouse == true)
+		m_pkGuiInputHandle->SDLMouseXY(mx,my);
+	else
+		m_pkGuiInputHandle->MouseXY(mx,my);
 
 	int iInputKey = -1;
 	for(int i=0; i<256; i++)

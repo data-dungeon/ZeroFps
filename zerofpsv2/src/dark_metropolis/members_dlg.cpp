@@ -394,7 +394,6 @@ void CMembersDlg::OnClick(int x, int y, bool bMouseDown, bool bLeftButton,
 					else
 					if((*kContainer.pkContainer->GetItem(sx,sy)) == -1)
 					{
-
 						if(m_pkMoveInfo->m_kFromContainer.pkContainer->MoveItem(
 							*m_pkMoveInfo->m_pMoveObject, kContainer.pkContainer, sx, sy))
 						{

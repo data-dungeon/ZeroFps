@@ -86,8 +86,18 @@ void DarkMetropolis::OnInit()
 
 	// create gui script
 	GUI_Init();
+
+	// Jaja... får väll ge mig dvoid :( Men efter crunchen vill jag ha detta _fixat_
+	pkGui->m_bUseHardwareMouse = false;
 	
-	m_pkInput->ShowCursor(true);
+	m_pkInput->ShowCursor(pkGui->m_bUseHardwareMouse);
+
+	if(pkGui->m_bUseHardwareMouse == false)
+	{
+		pkGui->SetCursor(0,0, pkTexMan->Load("data/textures/gui/cursor.bmp", 0),
+			pkTexMan->Load("data/textures/gui/cursor_a.bmp", 0), 32, 32);
+		pkGui->ShowCursor(true);
+	}
 	
 	if(!m_pkIni->ExecuteCommands("dark_metropolis_autoexec.ini"))
 		m_pkConsole->Printf("No dark_metropolis_autoexec.ini found");
@@ -330,7 +340,8 @@ void DarkMetropolis::Input()
 	}
 	else
 	{
-		m_pkInput->ShowCursor(true);
+		if(pkGui->m_bUseHardwareMouse == true)
+			m_pkInput->ShowCursor(true);
 		
 		/* utkomenterat av Zerom: jobbig kamera!!!!!
 		if(m_pkCameraProp)

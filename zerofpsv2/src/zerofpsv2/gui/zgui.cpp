@@ -69,6 +69,8 @@ bool ZGui::StartUp()
 	m_pkToolTip = new ZGuiToolTip();
 	m_pkToolTip->SetSkin(new ZGuiSkin(255,255,198, 128,128,128, 1));
 
+	m_bUseHardwareMouse = true;
+
 	return true; 
 }
 
@@ -344,8 +346,8 @@ bool ZGui::Render()
 	 }
 
 	// Draw cursor
-//	if(m_pkCursor->IsVisible())
-//		m_pkCursor->Render();
+	if(!m_bUseHardwareMouse && m_pkCursor->IsVisible())
+		m_pkCursor->Render();
 
 	m_pkRenderer->EndRender(); 
 
@@ -502,7 +504,7 @@ bool ZGui::Update(float fGameTime, int iKeyPressed, bool bLastKeyStillPressed,
 {
 	if(m_bActive == true)
 	{
-		if(m_pkCursor && m_pkCursor->IsVisible())	
+		//if(m_pkCursor && m_pkCursor->IsVisible())	
 			OnMouseUpdate(x, y, bLBnPressed, bRBnPressed, bMBnPressed, fGameTime);
 
 		KeyboardInput(iKeyPressed, bShiftIsPressed, fGameTime);
@@ -1283,7 +1285,8 @@ bool ZGui::OnMouseUpdate(int x, int y, bool bLBnPressed,
 	m_iMouseX = x; m_iMouseY = y;
 	m_bMouseLeftPressed = bLBnPressed;
 
-	m_pkCursor->SetPos(x,y);
+	if(m_bUseHardwareMouse == false)
+		m_pkCursor->SetPos(x,y);
 
 	bool bLeftButtonDown = bLBnPressed;
 	bool bRightButtonDown = bRBnPressed;
