@@ -1691,7 +1691,6 @@ int ObjectManager::GetUnusedZoneID()
 	{
 		if(!m_kZones[i].m_bUsed)
 		{	
-			//cout<<"found unused zone: "<<endl;
 			return i;
 		}
 	}
@@ -1702,7 +1701,6 @@ int ObjectManager::GetUnusedZoneID()
 	newzone.m_bUsed = false;
 	m_kZones.push_back(newzone);
 	
-	//cout<<"created new zone id:"<<m_kZones.size() - 1<<endl;
 	return m_kZones.size() - 1;
 }
 
