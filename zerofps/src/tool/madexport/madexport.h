@@ -96,6 +96,8 @@ private:
 	MDagPath		m_skinPath;	
 	int				*m_rgWeights;	// for each vertex, store index of influence joint
 
+	MString			m_strMeshName;				// Name of exported mesh
+	void			PrintSelection();
 
 public:
     MStatus			doIt( const MArgList& args );

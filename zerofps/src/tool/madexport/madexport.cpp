@@ -170,20 +170,12 @@ MStatus MadExport::GetSkinClusterWeights(void)
 	float infMax;
 
 	// Iterate through graph and search for skinCluster nodes
-	cout << "GetSkinClusterWeights: 1" << endl;
 	MItDependencyNodes iter( MFn::kSkinClusterFilter );
 	for ( ; !iter.isDone(); iter.next() ) {
 		MObject object = iter.item();
 		count++;
 
 		MFnSkinCluster skinCluster(object);
-
-		// did the user specify a skin cluster?
-		m_strSkinCluster = skinCluster.name();
-
-		// otherwise proceed with analyzing this skinCluster
-		// get the list of influence objects. store all influence objects in the array "m_rgInfs"
-		// only used if the user decides not to export all bones
 
 		MStatus stat;
 		unsigned int nInfs = skinCluster.influenceObjects(m_rgInfs, &stat);
@@ -192,13 +184,11 @@ MStatus MadExport::GetSkinClusterWeights(void)
 			continue;
 		}
 
-		cout << "GetSkinClusterWeights: 2" << endl;
 		if (0 == nInfs) {
 			stat = MStatus::kFailure;
 			stat.perror("Error: No influence objects found.");
 			return stat;
 		}
-		cout << "GetSkinClusterWeights: 3" << endl;
 			
 		// loop through the geometries affected by this cluster
 		unsigned int nGeoms = skinCluster.numOutputConnections();
@@ -221,62 +211,59 @@ MStatus MadExport::GetSkinClusterWeights(void)
 
 			// print out the path name of the skin, vertexCount & influenceCount
 			cout << "found skin: '" << m_skinPath.partialPathName().asChar() << "' with " << gIter.count() << " vertices " << "and " << nInfs << " influences\n";
-							
-			// set up the array for all vertices
-			if (m_rgWeights) {
-				delete m_rgWeights;
-			}
+			if(m_strMeshName == m_skinPath.partialPathName().asChar()) {
+				m_strSkinCluster = skinCluster.name();
+	
+				// set up the array for all vertices
+				if (m_rgWeights) {
+					delete m_rgWeights;
+				}
 
-			m_rgWeights = new int[gIter.count(&stat)];
-			if (!stat) {
-				stat.perror ("Error creating array of vertices");
-				return stat;
-			}
-			cout << "GetSkinClusterWeights: 4" << endl;
-
-			for ( /* nothing */ ; !gIter.isDone(); gIter.next() ) {
-				MObject comp = gIter.component(&stat);
+				m_rgWeights = new int[gIter.count(&stat)];
 				if (!stat) {
-					stat.perror ("Error getting component.");
+					stat.perror ("Error creating array of vertices");
 					return stat;
 				}
-				cout << "GetSkinClusterWeights: 5" << endl;
+
+				for ( /* nothing */ ; !gIter.isDone(); gIter.next() ) {
+					MObject comp = gIter.component(&stat);
+					if (!stat) {
+						stat.perror ("Error getting component.");
+						return stat;
+					}
 
 
-				// Get the weights for this vertex (one per influence object)
-				MFloatArray wts;
-				unsigned int infCount;
-				stat = skinCluster.getWeights(m_skinPath,comp,wts,infCount);
-				if (!stat) {
-					stat.perror ("Error getting weights.");
-					return stat;
-				}
-				cout << "GetSkinClusterWeights: 6" << endl;
+					// Get the weights for this vertex (one per influence object)
+					MFloatArray wts;
+					unsigned int infCount;
+					stat = skinCluster.getWeights(m_skinPath,comp,wts,infCount);
+					if (!stat) {
+						stat.perror ("Error getting weights.");
+						return stat;
+					}
 
 
-				if (0 == infCount) {
-					stat = MStatus::kFailure;
-					cout << "Error: 0 influence objects.\n";
-					return stat;
-				}
-				cout << "GetSkinClusterWeights: 7" << endl;
+					if (0 == infCount) {
+						stat = MStatus::kFailure;
+						cout << "Error: 0 influence objects.\n";
+						return stat;
+					}
 
 
-				// find the strongest influencer for this vertex
-				infMax = 0;
-				m_rgWeights[gIter.index()] = 0;
-				for (unsigned int iInf = 0; iInf < infCount ; ++iInf ) {
-					int r = wts[iInf];
-					if (wts[iInf] > infMax) {
-						m_rgWeights[gIter.index()] = iInf;
-						infMax = wts[iInf];
+					// find the strongest influencer for this vertex
+					infMax = 0;
+					m_rgWeights[gIter.index()] = 0;
+					for (unsigned int iInf = 0; iInf < infCount ; ++iInf ) {
+						int r = wts[iInf];
+						if (wts[iInf] > infMax) {
+							m_rgWeights[gIter.index()] = iInf;
+							infMax = wts[iInf];
+						}
 					}
 				}
 			}
 		}
 	} 
-	cout << "GetSkinClusterWeights: 100" << endl;
-
 
 	if (0 == count) {
 		cout << "No skinned meshes found in this scene. Is your mesh bound to a skeleton?\n";
@@ -293,6 +280,105 @@ MStatus MadExport::GetSkinClusterWeights(void)
 
 MStatus	MadExport::getMesh(void)
 {
+//	MDagPath		node;
+	MDagPath		path;
+	MObject			component;
+	MSelectionList	list;
+	MFnDagNode		fnNode;
+
+//		cout << nodeFn.name().asChar() << "is selected\n";
+	MStatus	status;
+
+	cout << "Get MESH:" << endl;
+
+//	MItDependencyNodes iter( MFn::kMesh  );
+//	for ( ; !iter.isDone(); iter.next() ) {
+	MGlobal::getActiveSelectionList(list);
+	for(unsigned int index = 0;  index< list.length(); index++) {
+		list.getDagPath(index, path, component);
+		fnNode.setObject( path );
+		
+		//MObject object = iter.item();
+		//MFnDagNode fnNode (object);
+		//status = fnNode.getPath (path);
+
+		/*if (status == MStatus::kFailure)
+		{
+			status.perror ("unable to lookup path for child of bone");
+			cout << "unable to lookup path " << endl;
+			return (MStatus::kFailure);
+		}*/
+ 
+		if(fnNode.isIntermediateObject(&status))
+			continue;
+ 
+		status = path.extendToShape();
+		if (status != MStatus::kSuccess) {
+			// no geometry under this node...
+			cout << "Not geometry" << endl;
+			continue;
+		}
+  
+		MFnMesh fnMesh(path, &status);
+		if (status != MStatus::kSuccess) {
+			// this object is not a mesh
+			cout << "Not a Mesh" << endl;
+			continue;
+		}
+ 
+		int instanceNum = 0;
+		if (path.isInstanced())
+			instanceNum = path.instanceNumber();
+  
+		MString fullpathname;
+		fullpathname = path.partialPathName(&status);
+		m_strMeshName = fullpathname;
+	 	GetSkinClusterWeights();
+
+		//fullpathname = path.fullPathName(&status);
+		//cout << ":" << fullpathname.asChar() << endl;
+
+		int iNumOfTriangles = GetNumOfMeshTriangles(path);
+		fprintf(m_pkOutFile, "Num %d\n", iNumOfTriangles);
+
+		// Get a list of all shaders attached to this mesh
+		MObjectArray rgShaders;
+		MIntArray rgFaces;
+		status = fnMesh.getConnectedShaders (instanceNum, rgShaders, rgFaces);
+		if (status == MStatus::kFailure)
+		{
+			status.perror("Unable to load shaders for mesh");
+			return (MStatus::kFailure);
+		}
+
+		// Create table of textures used by each shader.
+		MString texFilename;
+		MStringArray rgTextures (rgShaders.length(), "");
+
+		for ( int i=0; i<rgShaders.length(); i++ ) {
+			MObject shader = rgShaders[i];
+
+
+			status = GetShaderTextureFileName (texFilename, shader);
+			if (status == MStatus::kFailure) {
+		        status.perror ("Unable to retrieve filename of texture");
+		        continue;
+			}
+
+			rgTextures[i] = texFilename;
+			cout << "Shader " << i << ": " << rgTextures[i].asChar() << endl;
+		}
+
+
+		// Skapa en polygon iterator för objectet.
+		MItMeshPolygon piter(path, MObject::kNullObj, &status);
+		parsePolySet(piter,rgTextures, rgFaces);
+	}
+
+	return MS::kSuccess;
+
+
+/*
 	MStatus	status;
 
 	cout << "Get MESH:" << endl;
@@ -375,6 +461,7 @@ MStatus	MadExport::getMesh(void)
 	}
 
 	return MS::kSuccess;
+	*/
 }
 
 
@@ -855,6 +942,7 @@ MStatus	MadExport::Export_SX(char* filename)
 	WriteBoneList();
 
 	fclose(m_pkOutFile);
+	cout << "=)\n";
 	return MStatus::kSuccess;
 }
 
@@ -898,9 +986,11 @@ MStatus	MadExport::Export_AX(char* filename)
 	fclose(m_pkOutFile);
 	return MStatus::kSuccess;
 }
- 
+  
 MStatus	MadExport::Export_MX(char* filename)
 {
+	cout << "Exporting Mesh\n";
+	
 	m_bIsAnimation	= false;
 	m_bIsBaseData	= true;
 
@@ -910,13 +1000,7 @@ MStatus	MadExport::Export_MX(char* filename)
 		return MStatus::kSuccess;
 	}
  
-	cout << "Export_MX: 0" << endl;
-	GetSkinClusterWeights();
-	cout << "Export_MX: 1" << endl;
 	GetBoneList();
-	cout << "Export_MX: 2" << endl;
-
-
 	MTime	tmNew;
 	MStatus	status;
 
@@ -925,12 +1009,11 @@ MStatus	MadExport::Export_MX(char* filename)
 	MGlobal::viewFrame( currentFrame );
 
 	UpdateBoneList();
-	cout << "Export_MX: 3" << endl;
 	getMesh();
 //	ExportBoneGeometry();
-	cout << "Export_MX: 4" << endl;
 
 	fclose(m_pkOutFile);
+	cout << "Export_MX DONE\n";
 	return MStatus::kSuccess;
 }
  
@@ -961,6 +1044,23 @@ MStatus MadExport::ShowHelp(void)
 	return MStatus::kSuccess;
 }
 
+void MadExport::PrintSelection()
+{
+	MDagPath		node;
+	MObject			component;
+	MSelectionList	list;
+	MFnDagNode		nodeFn;
+
+	MGlobal::getActiveSelectionList(list);
+	for(unsigned int i = 0;  i< list.length(); i++) {
+		list.getDagPath(i, node, component);
+		nodeFn.setObject( node );
+		cout << nodeFn.name().asChar() << "is selected\n";
+		}
+
+
+
+}
 
 
 // PUBLIC / Interface
@@ -991,6 +1091,10 @@ MStatus MadExport::doIt( const MArgList& args )
 	if(strcmp(args.asString( 0 ).asChar(), "a") == 0)
 		return Export_AX("c:\\test.ax");
 
+	if(strcmp(args.asString( 0 ).asChar(), "test") == 0)
+		PrintSelection();
+
+	cout << "DONE\n";
 
 	return MS::kSuccess;
 }
