@@ -1017,8 +1017,8 @@ bool ZGui::ClickedWndAlphaTex(int mx, int my, ZGuiWnd *pkWndClicked)
 		float tex_h = (float) pkSurface->m_iHeight;
 
 		int mod = 0;
-		if(bIsTGA)
-			mod = (int) -tex_h;
+	/*	if(bIsTGA)
+			mod = (int) -tex_h;*/ // 10 okt 2004 - tog bort, funkade inte att klicka på knappar med TGA textur annars.
 
 		float dx = (int)(tex_w*x_offset);
 		float dy = mod+(int)(tex_h*y_offset);
