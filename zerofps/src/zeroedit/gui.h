@@ -70,7 +70,7 @@ public:
 	bool WndProc( ZGuiWnd* pkWindow, unsigned int uiMessage, int iNumberOfParams, void *pkParams );
 
 	void CaptureInput(bool bCapture);
-	bool HaveFocus() { return m_pkEdit->pkGui->MouseHoverWnd();/* m_bGuiHaveFocus;*/ }
+	bool HaveFocus();
 
 	Gui(ZeroEdit* pkEdit);
 	virtual ~Gui();

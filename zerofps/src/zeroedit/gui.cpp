@@ -507,3 +507,39 @@ void Gui::ClosePropertybox()
 		m_pkEdit->pkGui->ShowMainWindow( Get("PropertyDlg"), false);
 	}
 }
+
+bool Gui::HaveFocus()
+{
+	static bool bGiveGuiFocus = false;
+	static bool bWindowClicked = false;
+	
+	bool bMouseHoverWnd = m_pkEdit->pkGui->MouseHoverWnd();
+
+	if(bMouseHoverWnd && m_pkEdit->pkInput->Pressed(MOUSELEFT) && !bWindowClicked)
+	{
+		bGiveGuiFocus = true;
+		bWindowClicked = true;
+	}
+
+	if(m_pkEdit->pkInput->Pressed(MOUSELEFT) && !bWindowClicked)
+	{
+		bGiveGuiFocus = false;
+		bWindowClicked = false;
+	}
+
+	if(bWindowClicked == true && !m_pkEdit->pkInput->Pressed(MOUSELEFT))
+	{
+		bGiveGuiFocus = false;
+		bWindowClicked = false;
+	}
+
+	if(ZGuiWnd::m_pkFocusWnd != NULL)
+	{
+		if( typeid(*ZGuiWnd::m_pkFocusWnd) == typeid(ZGuiTextbox) )
+		{
+			bGiveGuiFocus = true;
+		}
+	}
+
+	return bGiveGuiFocus;
+}

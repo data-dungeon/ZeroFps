@@ -611,13 +611,7 @@ void ZeroEdit::Input()
 {
 	if(m_pkGui->HaveFocus()) 
 	{
-	//	printf("gui have focus!");
 		pkInput->SetInputEnabled(false); 
-	}
-	else
-	{
-	//	printf("camera have focus!");
-		pkInput->SetInputEnabled(true); 
 	}
 
 	float childmovespeed=2;
@@ -1210,4 +1204,3 @@ bool ZeroEdit::SaveLandToFile(const char* acFile)
 
 	return true;
 }
-
