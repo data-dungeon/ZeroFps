@@ -195,7 +195,11 @@ void MistClient::LoadInGameGui()
 	ShowWnd("LoginWnd", false);
 	ShowWnd("RestartMsgBox", false);
 
-	LoadGuiFromScript("data/script/gui/ml_gamegui.lua");
+	if(!LoadGuiFromScript("data/script/gui/ml_gamegui.lua"))
+	{
+		printf("Failed to load GUI script!\n");
+		return;
+	}
 
 	((ZGuiTextbox*) GetWnd("ChatTextbox"))->ToggleMultiLine(true);
 	((ZGuiTextbox*) GetWnd("ChatTextbox"))->SetReadOnly(true); 

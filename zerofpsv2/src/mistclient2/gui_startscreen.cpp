@@ -33,6 +33,11 @@ void GuiMsgStartScreen( string strMainWnd, string strController,
 					g_kMistClient.ShowWnd("OptionsWnd",	true,	true,	true);
 					g_kMistClient.m_pkOptionsDlg->Open();
 				}
+				else
+				{
+					printf("Failed to load GUI script!\n");
+					return;
+				}
 			}
 			else
 			if(strController == "ContinueGameBn")

@@ -4,8 +4,11 @@
 void ZeroEd::SetupGuiEnviroment()
 {
 	// Create from script.
-	ZFAssert(LoadGuiFromScript("data/script/gui/zeroed2.lua"),
-		"Failed to load GUI script!\n");
+	if(!LoadGuiFromScript("data/script/gui/zeroed2.lua"))
+	{
+		printf("Failed to load GUI script!\n");
+		return;
+	}
 
 	GetWnd("worktab")->Hide();
 
@@ -19,7 +22,7 @@ void ZeroEd::SetupGuiEnviroment()
    ZGuiFont* pkOutLineFont = new ZGuiFont("OutLineFont");
    pkOutLineFont->Create(szFontData, m_pkTexMan->Load(szFontTex, 0), 1);
 	m_pkGuiMan->Add("OutLineFont", pkOutLineFont);
-	
+
 	// Fill zone- and object treebox.
 	BuildFileTree("ZoneModelTree", "data/mad/zones", ".mad");
 	BuildFileTree("ObjectTree", "data/script/objects", ".lua");
@@ -498,7 +501,12 @@ void ZeroEd::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 					{
 						bool bFistTime = GetWnd("ManageConnectionsWnd") == NULL;
 
-						LoadGuiFromScript("data/script/gui/manageconnection.lua");
+						if(!LoadGuiFromScript("data/script/gui/manageconnection.lua"))
+						{
+							printf("Failed to load GUI script!\n");
+							return;
+						}
+
 						GUIFillServerList();
 
 						if(bFistTime)

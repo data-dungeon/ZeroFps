@@ -263,6 +263,7 @@ void ZeroEd::CreateEditCameras()
 
 void ZeroEd::OnInit() 
 {
+
 	m_pkZFVFileSystem->AddRootPath( "../datafiles/mistlands/",	"/data");
 	//m_pkZFVFileSystem->AddRootPath( "../datafiles/dm/" ,			"/data");
 	m_pkZFVFileSystem->AddRootPath( "../datafiles/zeroed/" ,		"/data");
@@ -287,7 +288,6 @@ void ZeroEd::OnInit()
 //	GetWnd("AddPointsToSounAreaBn")->m_bUseAlhpaTest = false;
 
 	InitMainMenu();
-
 }
 
 void ZeroEd::Init()
@@ -365,6 +365,7 @@ void ZeroEd::Init()
 	m_kSun.kDiffuse=Vector4(0.5,0.5,0.5,0);
 	m_kSun.kAmbient=Vector4(0.5,0.5,0.5,0);
 	m_kSun.iType=DIRECTIONAL_LIGHT;			
+
 
 	// Create startup GUI for the the server from script.
 	SetupGuiEnviroment();
