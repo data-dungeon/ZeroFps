@@ -46,6 +46,7 @@ class ENGINE_API Camera {
 		void RotateV(Vector3 kRot) { m_kRotM.Rotate(kRot);};
 		void MultRotM(Matrix4 kRotM) { m_kRotM = kRotM * m_kRotM ;};
 		
+		Matrix4 GetRotM() { return m_kRotM;};
 		void SetPos(Vector3 kPos){ m_kPos=kPos;};
 		void SetRot(Vector3 kRot){ m_kRot=kRot;};
 		Vector3 &GetPos(){return m_kPos;};

@@ -153,41 +153,47 @@ void MistClient::Input()
 	Vector3 rot;// = m_pkCamera->GetRot();
 	rot.Set(0,0,0);// = m_pkCamera->GetRot();
 	
+	Matrix4 rt = m_pkCamera->GetRotM();
+	rt.Transponse();
+	Vector3 bla = Vector3(0,0,1);
+	bla.Normalize();
+	bla = rt.VectorRotate(bla);
+		
+	//cout<<"B: "<<bla.x<<" "<<bla.y<<" "<<bla.z<<endl;
+	
 	if(pkInput->Pressed(KEY_D)){
-		newpos.x+=cos((rot.y)/degtorad) *pkFps->GetFrameTime()*speed;			
-		newpos.z+=sin((rot.y)/degtorad) *pkFps->GetFrameTime()*speed;				
+		newpos-=rt.VectorRotate(Vector3(-1,0,0));		
 	}
 	if(pkInput->Pressed(KEY_A)){
-		newpos.x+=cos((rot.y+180)/degtorad)*pkFps->GetFrameTime()*speed;			
-		newpos.z+=sin((rot.y+180)/degtorad)*pkFps->GetFrameTime()*speed;				
+		newpos-=rt.VectorRotate(Vector3(1,0,0));		
 	}	
 	if(pkInput->Pressed(KEY_W))	{
-		newpos.x+=cos((rot.y-90)/degtorad)*pkFps->GetFrameTime()*speed;			
-		newpos.z+=sin((rot.y-90)/degtorad)*pkFps->GetFrameTime()*speed;			
+		newpos-=rt.VectorRotate(Vector3(0,0,1));
 	}					
 	if(pkInput->Pressed(KEY_S))	{
-		newpos.x+=cos((rot.y-90-180)/degtorad)*pkFps->GetFrameTime()*speed;			
-		newpos.z+=sin((rot.y-90-180)/degtorad)*pkFps->GetFrameTime()*speed;
+		newpos-=rt.VectorRotate(Vector3(0,0,-1));	
 	}		
 	
-	if(pkInput->Pressed(KEY_Q))
+/*	if(pkInput->Pressed(KEY_Q))
 		newpos.y+=2*pkFps->GetFrameTime()*speed;			
 	if(pkInput->Pressed(KEY_E))
 		newpos.y-=2*pkFps->GetFrameTime()*speed;
-
+*/
 	int x,z;		
 	pkInput->RelMouseXY(x,z);	
 	
 	rot.x+=z/5.0;
-	rot.y+=x/5.0;	
+	rot.y-=x/5.0;	
 	
-//	m_pkME->SetLocalPosV(newpos);
-//	m_pkME->SetLocalRotV(rot);	
+	if(pkInput->Pressed(KEY_Q))
+		rot.z+= 5 * pkFps->GetFrameTime()*speed;
+	if(pkInput->Pressed(KEY_E))
+		rot.z-= 5 * pkFps->GetFrameTime()*speed;
 
 	float fSpeedScale = pkFps->GetFrameTime()*speed;
 
 	m_pkCamera->SetPos(newpos);
-	//m_pkCamera->RotateV(rot); 
+ 
 	//m_pkCamera->SetRot(rot);
 
 	static float fRotate = 0;
@@ -275,6 +281,8 @@ void MistClient::Input()
 
   //rot.Set(SDL_GetTicks()/50.0,SDL_GetTicks()/50.0,SDL_GetTicks()/50.0);
 		//m_pkME->RotateLocalRotV(rot);
+	
+		m_pkCamera->RotateV(rot);
 	}
 
 }
@@ -385,7 +393,7 @@ void MistClient::OnServerStart(void)
 		m_pkTestobj->AttachToClosestZone();
 	
 		CameraProperty* cam = (CameraProperty*)m_pkTestobj->GetProperty("CameraProperty");
-		cam->SetCamera(m_pkCamera);
+		//cam->SetCamera(m_pkCamera);
 	
 		m_pkTestobj->SetWorldPosV(Vector3(0,20,0));
 	}

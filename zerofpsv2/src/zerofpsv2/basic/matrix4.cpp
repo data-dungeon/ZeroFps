@@ -535,9 +535,9 @@ void Matrix4::Rotate(float fX, float fY, float fZ)
 									0			,0			,1				,0,
 									0			,0			,0				,1);	
 						 
-	 *this = (rotatex*rotatey*rotatez) * (*this); 						 
+	// *this = (rotatex*rotatey*rotatez) * (*this); 						 
 	// *this = (rotatex*rotatey*rotatez) * (*this); 
-	// *this *= rotatez*rotatey*rotatex;
+	 *this *= rotatez*rotatey*rotatex;
 
 }
 
