@@ -39,10 +39,19 @@ Light::Light()
 
 }
 
+void Light::SetLighting(bool bOn)
+{
+	if(bOn)
+		glEnable(GL_LIGHTING);
+	else
+		glDisable(GL_LIGHTING);
+}
+
 bool Light::StartUp()	
 { 
 	glLightModelf(GL_LIGHT_MODEL_TWO_SIDE, 0);
-	glEnable(GL_LIGHTING);
+	SetLighting(true);
+	
 	return true;	
 }
 

@@ -19,8 +19,7 @@ ZMaterialSettings::ZMaterialSettings()
 	m_iPolygonModeFront = LINE_POLYGON;
 	m_iPolygonModeBack =	LINE_POLYGON;			
 	
-//	m_bLighting =	 true;
-	m_bLighting =	 false;
+	m_bLighting =	 true;
 	m_bCullFace = 	true;
 	m_bAlphaTest =	false;
 	m_iDepthFunc =	LESS_DEPTH;

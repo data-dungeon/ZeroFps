@@ -22,6 +22,7 @@ bool ZShader::StartUp()
 			
 	SetVertexProgram(NO_VPROGRAM);
 			
+	m_iForceLighting = MATERIAL;
 			
 	return true;
 } 
@@ -477,10 +478,18 @@ void ZShader::SetupRenderStates(ZMaterialSettings* pkSettings)
 	glBlendFunc(blendsrc,blenddst);				
 	
 	//lighting setting
-	if(pkSettings->m_bLighting)
+	if(m_iForceLighting == MATERIAL)
+	{
+		if(pkSettings->m_bLighting)
+			glEnable(GL_LIGHTING);
+		else
+			glDisable(GL_LIGHTING);
+	}
+	else if(m_iForceLighting == ALWAYS_ON)
 		glEnable(GL_LIGHTING);
-	else
+	else if(m_iForceLighting == ALWAYS_OFF)
 		glDisable(GL_LIGHTING);
+		
 		
 	//cullface setting
 	if(pkSettings->m_bCullFace)

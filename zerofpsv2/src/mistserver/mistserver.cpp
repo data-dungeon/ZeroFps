@@ -92,7 +92,8 @@ void MistServer::Init()
 	Register_Cmd("save",FID_SAVE);		
 
 	//damn "#¤(="%#( lighting fix bös
-	glEnable(GL_LIGHTING );
+	pkLight->SetLighting(true);
+	pkZShader->SetForceLighting(ALWAYS_OFF);	
 	
 	//register property bös
 	RegisterPropertys();
@@ -263,6 +264,14 @@ void MistServer::Input()
 		
 		if(pkInput->Pressed(KEY_F2))
 			m_iEditMode = EDIT_OBJECTS;		
+	
+		if(pkInput->Pressed(KEY_I))
+			pkZShader->SetForceLighting(ALWAYS_ON);	
+		if(pkInput->Pressed(KEY_O))
+			pkZShader->SetForceLighting(ALWAYS_OFF);
+		if(pkInput->Pressed(KEY_P))
+			pkZShader->SetForceLighting(MATERIAL);
+	
 	
 		//edit zone  mode
 		if(m_iEditMode == EDIT_ZONES)
@@ -677,8 +686,6 @@ void MistServer::OnClickTreeItem(char *szTreeBox, char *szParentNodeText,
 
 void MistServer::RotateActiveZoneObject()
 {
-	//int id = pkObjectMan->GetZoneIndex(m_kZoneMarkerPos,-1,false);	
-
 	if(m_iCurrentMarkedZone != -1)
 	{
 		ZoneData* pkData = pkObjectMan->GetZoneData(m_iCurrentMarkedZone);

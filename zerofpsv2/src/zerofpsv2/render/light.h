@@ -91,6 +91,9 @@ class RENDER_API Light : public ZFSubSystem {
 		void Update(Vector3 kPos);
 		void RunCommand(int cmdid, const CmdArgument* kCommand) { }
 
+		void SetLighting(bool bOn);
+		
+
 		bool StartUp();	
 		bool ShutDown();
 		bool IsValid();

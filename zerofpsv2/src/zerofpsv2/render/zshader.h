@@ -18,6 +18,13 @@ using namespace std;
 class ZMaterial;
 class ZMaterialSettings;
 
+enum RENDER_API FORCE_LIGHTING
+{
+	ALWAYS_ON,
+	ALWAYS_OFF,
+	MATERIAL,
+};
+
 enum RENDER_API BLEND_SRC
 {
 	ZERO_BLEND_SRC						= 0,
@@ -146,6 +153,9 @@ class RENDER_API ZShader : public ZFSubSystem
 		//mode to use (depending on underlying system , etc this may be opengl types)
 		int			m_iDrawMode;
 		
+		//force lighting to this
+		int			m_iForceLighting;		
+		
 		//did we copy the data?
 		bool			m_bCopyedData;
 	
@@ -183,6 +193,7 @@ class RENDER_API ZShader : public ZFSubSystem
 		ZShader();
 		bool StartUp();
 	
+		void SetForceLighting(int iMode) { m_iForceLighting = iMode;};
 		void SetMaterial(ZMaterial* pkMaterial);		
 		void SetPointer(int iType,void* pkPointer);
 		void SetNrOfVertexs(int iNr);
@@ -192,6 +203,7 @@ class RENDER_API ZShader : public ZFSubSystem
 		void SetVertexProgram(int iVPID);
 		int  GetCurrentVertexProgram() {return m_iCurrentVertexProgram;};
 		bool SupportVertexProgram() { return m_bVertexProgram;};
+		
 		
 		void Reset();
 		void Draw();
