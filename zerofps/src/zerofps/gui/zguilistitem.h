@@ -1,0 +1,55 @@
+// zguilistitem.h: interface for the ZGuiListitem class.
+//
+//////////////////////////////////////////////////////////////////////
+
+#if !defined(AFX_ZGUILISTITEM_H__375F63D5_876F_46C7_AFDA_9EED11404346__INCLUDED_)
+#define AFX_ZGUILISTITEM_H__375F63D5_876F_46C7_AFDA_9EED11404346__INCLUDED_
+
+#if _MSC_VER > 1000
+#pragma once
+#endif // _MSC_VER > 1000
+
+#include "gui_x.h"
+
+class ZGuiButton;
+class ZGuiSkin;
+class ZGuiWnd;
+
+class GUI_API ZGuiListitem  
+{
+public:
+	void SetText(char* strText);
+	ZGuiListitem(ZGuiWnd* pkParent,char* strText=0, unsigned int iIndex=0, 
+		ZGuiSkin* pkSkin=0, ZGuiSkin* pkSelected=0, ZGuiSkin* pkHighLigtSkin=0);
+	virtual ~ZGuiListitem();
+
+	char* GetText();
+	void Move(int dx, int dy);
+	void Select();
+	void Deselect();
+	void SetPos(int x, int y);
+	void Resize(int w, int h);
+	ZGuiButton* GetButton() { return m_pkButton; }
+	unsigned int GetIndex();
+	void SetIndex(unsigned int iIndex);
+
+//	bool m_bMenuItem;
+
+	bool operator < (const ZGuiListitem &I)
+	{         
+	   if(m_iIndex > I.m_iIndex)
+		   return false;
+	   else
+		   return true;
+	}
+
+	
+private:
+	unsigned int m_iIndex;
+	ZGuiButton* m_pkButton;	
+};
+
+#endif // !defined(AFX_ZGUILISTITEM_H__375F63D5_876F_46C7_AFDA_9EED11404346__INCLUDED_)
+
+
+

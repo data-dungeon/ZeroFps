@@ -60,7 +60,7 @@ LINK32=link.exe
 # Begin Special Build Tool
 ProjDir=.
 SOURCE="$(InputPath)"
-PostBuild_Cmds=copy                  $(ProjDir)\release\*.lib                                   ..\..\..\bin\ 
+PostBuild_Cmds=copy                   $(ProjDir)\release\*.lib                                    ..\..\..\bin\ 
 # End Special Build Tool
 
 !ELSEIF  "$(CFG)" == "engine - Win32 Debug"
@@ -87,11 +87,11 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 sdl_net.lib OpenAL32.lib ALut.lib render.lib basic.lib glu32.lib opengl32.lib sdl_mixer.lib sdl.lib sdlmain.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /profile /debug /machine:I386 /out:"..\..\..\bin\engine.dll" /libpath:"..\..\..\bin"
+# ADD LINK32 sdl_net.lib OpenAL32.lib ALut.lib gui.lib render.lib basic.lib glu32.lib opengl32.lib sdl_mixer.lib sdl.lib sdlmain.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /profile /debug /machine:I386 /out:"..\..\..\bin\engine.dll" /libpath:"..\..\..\bin"
 # Begin Special Build Tool
 ProjDir=.
 SOURCE="$(InputPath)"
-PostBuild_Cmds=copy                                                                       $(ProjDir)\debug\*.lib                                                                       ..\..\..\bin\ 
+PostBuild_Cmds=copy                                                                        $(ProjDir)\debug\*.lib                                                                        ..\..\..\bin\ 
 # End Special Build Tool
 
 !ELSEIF  "$(CFG)" == "engine - Win32 Release Profile"
@@ -649,62 +649,6 @@ SOURCE=.\zerofps.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\zgui\zgui.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\zgui\zguibutton.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\zgui\zguicheckbox.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\zgui\zguicombobox.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\zgui\zguicontrol.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\zgui\zguicursor.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\zgui\zguilabel.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\zgui\zguilistbox.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\zgui\zguilistitem.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\zgui\zguiradiobutton.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\zgui\zguiresourcemanager.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\zgui\zguiscrollbar.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\zgui\zguitextbox.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\zgui\zguiwindow.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\zoneobject.cpp
 # End Source File
 # End Group
@@ -930,106 +874,6 @@ SOURCE=.\zerofps.h
 # Begin Source File
 
 SOURCE=..\ogl\zfpsgl.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\zgui\zgui.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\zgui\zguibutton.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\zgui\zguibutton.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\zgui\zguicheckbox.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\zgui\zguicheckbox.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\zgui\zguicombobox.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\zgui\zguicombobox.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\zgui\zguicontrol.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\zgui\zguicontrol.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\zgui\zguicursor.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\zgui\zguilabel.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\zgui\zguilabel.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\zgui\zguilistbox.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\zgui\zguilistbox.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\zgui\zguilistitem.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\zgui\zguilistitem.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\zgui\zguiradiobutton.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\zgui\zguiradiobutton.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\zgui\zguiresourcemanager.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\zgui\zguiscrollbar.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\zgui\zguiscrollbar.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\zgui\zguitextbox.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\zgui\zguitextbox.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\zgui\zguiwindow.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\zgui\zguiwindow.h
 # End Source File
 # Begin Source File
 

@@ -3,8 +3,8 @@
 //////////////////////////////////////////////////////////////////////
 
 #include "fileopendlg.h"
-#include "../zerofps/engine/zgui/zgui.h"
-#include "../zerofps/engine/zgui/zguiresourcemanager.h"
+#include "../zerofps/gui/zgui.h"
+#include "../zerofps/gui/zguiresourcemanager.h"
 #include "../zerofps/basic/zfbasicfs.h"
 #include "../zerofps/engine/input.h"
 //#include "resource_id.h"

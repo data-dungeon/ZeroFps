@@ -9,8 +9,6 @@ class Camera;
 class SoundBufferManager;
 class OpenAlSystem;
 class PropertyFactory;
-class ZGui;
-class ZGuiResourceManager;
 class LevelManager;
 class PhysicsEngine;
 
@@ -30,8 +28,6 @@ class PhysicsEngine;
 #include "property.h"
 #include "levelmanager.h"
 #include "lightproperty.h"
-#include "zgui/zgui.h"
-#include "zgui/zguiresourcemanager.h"
 #include "physicsengine.h"
 
 

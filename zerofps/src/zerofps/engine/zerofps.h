@@ -21,6 +21,9 @@ using namespace std;
 
 class Basic;
 class Render;
+class ZGui;
+class ZGuiResourceManager;
+class GLGuiRender;
 
 class Application;
 class NetPacket;

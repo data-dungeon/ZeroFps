@@ -5,6 +5,7 @@
 #include "../basic/basic.pkg"
 #include "../render/render.pkg"
 #include "../engine/engine.pkg"
+#include "../gui/gui.pkg"
 
 using namespace std;
 
