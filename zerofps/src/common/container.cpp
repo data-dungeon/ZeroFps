@@ -61,6 +61,18 @@ int Container::GetItemPos(Object* pkObject)
 	return -1;
 }
 
+Object* Container::GetItem(int iX,int iY)
+{
+	int id = GetID(iX,iY);
+	Object* pkTemp;	
+	
+	if(id == -1)
+		return NULL;
+
+	return m_kObjects[id].pkObject;
+
+}
+
 
 void Container::SetSize(int iX,int iY)
 {

@@ -129,6 +129,7 @@ void PlayerControlProperty::Update() {
 			ItemProperty* ip = static_cast<ItemProperty*>(bla->GetProperty("ItemProperty"));
 			cout << "OBJECT :"<<ip->m_kItemName<<endl;
 			
+			/*
 			vector<string> ActionList;
 			ip->GetUses(NORMALUSE,&ActionList);
 			
@@ -142,8 +143,8 @@ void PlayerControlProperty::Update() {
 			{
 				ip->Use(NORMALUSE,ActionList[0].c_str());
 			}
-			
-			//PickUp(bla);
+			*/
+			PickUp(bla);
 		}
 	}
 	
