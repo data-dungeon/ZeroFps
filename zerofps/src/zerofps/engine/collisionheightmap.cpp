@@ -34,9 +34,8 @@ bool CollisionHeightMap::CollidePoint(CollisionPoint *pkCp){
 	{
 		if( pkCp->m_kPos->z >= m_pkHM->m_kPosition.z  &&  pkCp->m_kPos->z <= m_pkHM->m_kPosition.z+m_pkHM->m_iHmSize )
 		{
-//			cout<<"on heightmap"<<endl;
-			
-
+			if( pkCp->m_kPos->y <= m_pkHM->Height( pkCp->m_kPos->x , pkCp->m_kPos->z ))
+				return true;
 		}
 	}
 	return false;

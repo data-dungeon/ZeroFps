@@ -66,33 +66,37 @@ void ZeroFps::MainLoop(void) {
 				//run application main loop
 				m_pkApp->OnIdle();				
 				
-				
-				//run application Head On Display 
-				SetCamera(m_pkConsoleCamera);
-				m_pkApp->OnHud();
-				
-				
 				//this changes mode to console
 				if(m_pkInput->Pressed(TAB)){
 					glPushAttrib(GL_LIGHTING_BIT);
 					glDisable(GL_LIGHTING);
 					m_iState=state_console;
 					m_pkInput->Reset();
-					m_pkTempCamera=m_pkCamera;					
+//					m_pkTempCamera=m_pkCamera;					
 					SetCamera(m_pkConsoleCamera);					
 					break;
 				}
+				
+				//toggle keyboard/mouse grabing
 				if(m_pkInput->Pressed(F12))
-					m_pkInput->ToggleGrab();				
+					m_pkInput->ToggleGrab();
+					
+				//toggle fullscreen on X systems
 				if(m_pkInput->Pressed(F11))
 					ToggleFullScreen();				
 
 				//handle input
 				m_pkInput->Update();
+				
 				//update all objects
 				m_pkObjectMan->Update();
+				
 				//update all collisions
 				m_pkCollisionMan->Update();				
+
+				//run application Head On Display 
+				SetCamera(m_pkConsoleCamera);
+				m_pkApp->OnHud();
 
 				//swap buffers and calculate fps
 				Swap();
@@ -106,10 +110,12 @@ void ZeroFps::MainLoop(void) {
 				m_pkConsole->Update();
 				Swap();
 				
+/*				
+				//set the old camera when changing to in-game state
 				if(m_iState==state_normal){
 					SetCamera(m_pkTempCamera);
 				}					
-				
+*/				
 				break;
 			}
 		}
