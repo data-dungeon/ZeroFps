@@ -86,10 +86,8 @@ class MCOMMON_API P_Container: public Property
 		void SetSize(int iX,int iY);
 
 		int GetOwnerID()								{return m_iOwnerID;};
-		int SetOwnerID(int iOwner)					{m_iOwnerID = iOwner;};
+		void SetOwnerID(int iOwner)					{m_iOwnerID = iOwner;};
 						
-//		void SetDisableItems(bool bDisable) 	{m_bDisableItems = bDisable;};
-//		bool GetDisableItems() 						{return m_bDisableItems;};
 		
 		void AddItemType(int iType) 				{m_kItemTypes.push_back(iType);};
 		void ClearItemTypes() 						{m_kItemTypes.clear();};

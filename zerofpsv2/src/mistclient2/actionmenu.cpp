@@ -83,8 +83,14 @@ void ActionMenu::Open()
 	if(pkEnt == NULL)
 		return;
 
+	
+	//get actions from p_ml
 	if(P_Ml* pkMl = (P_Ml*)pkEnt->GetProperty("P_Ml"))
 		pkMl->GetActions(m_kActions);
+
+	//if theres an p_item also add pickup action		
+	if(pkEnt->GetProperty("P_Item"))
+		m_kActions.push_back("Pickup");
 
 	if(m_kActions.size() < 2)
 		return;
@@ -298,7 +304,11 @@ void ActionMenu::OnMouseMove(bool bLeftButtonPressed, int mx, int my)
 				{
 					strController.erase(0,p+1);
 					int iAction = atoi(strController.c_str());
-					g_kMistClient.SendAction(m_iEntityID, m_kActions[iAction]);
+					
+					if(m_kActions[iAction] == "Pickup")
+						g_kMistClient.SendMoveItem(m_iEntityID,-1,-1,-1);
+					else
+						g_kMistClient.SendAction(m_iEntityID, m_kActions[iAction]);
 				}
 			}
 		}
