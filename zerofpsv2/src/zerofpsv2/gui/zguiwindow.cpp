@@ -8,6 +8,7 @@
 #include "../basic/zguifont.h"
 #include "zguiresourcemanager.h"
 #include "zgui.h"
+#include "../engine/camera.h"
 #include <typeinfo>
 #include <math.h>
 
@@ -71,6 +72,8 @@ ZGuiWnd::ZGuiWnd(Rect kRectangle, ZGuiWnd* pkParent, bool bVisible, int iID)
 
 	m_bResizeHorz = true;
 	m_bResizeVert = true;
+
+	m_pkCamera = NULL;
 }
 
 ZGuiWnd::~ZGuiWnd()
@@ -257,6 +260,13 @@ void ZGuiWnd::SetMoveArea(Rect rc, bool bFreeMovement)
 			m_kMoveArea.Bottom = max_y;
 	}
 }
+
+void ZGuiWnd::SetRenderTarget(Camera* pkCam) 
+{ 
+	m_pkCamera = pkCam;
+	pkCam->m_pkWnd = this;
+}
+
 
 bool ZGuiWnd::Render(ZGuiRender* pkRenderer)
 {

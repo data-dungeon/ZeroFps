@@ -67,6 +67,8 @@ class TextureManager;
 
 #define ZG_DEFAULT_GUI_FONT				 1
 
+class I_ZeroFps;
+
 /** \brief	Gui SubSystem
 	 \ingroup Gui
 */
@@ -198,6 +200,7 @@ private:
 	ZGuiCursor* m_pkCursor;
 	ZGuiResourceManager* m_pkResManager;
 	TextureManager* m_pkTexMan;
+	I_ZeroFps*	m_pkZeroFps;
 	ZGuiToolTip* m_pkToolTip;
 	ZGuiMenu* m_pkActiveMenu; // den meny som senast klickades
 	bool m_bClickedMenu;

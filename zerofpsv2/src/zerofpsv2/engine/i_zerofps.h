@@ -50,7 +50,8 @@ public:
 		 	
 	virtual	void SetRenderTarget(Camera* pkCamera)= 0;
 	virtual void RemoveRenderTarget(Camera* pkCamera)= 0;
-		
+	virtual void Draw_RenderTarget(Camera* pkCamera) = 0;
+
 	virtual int GetWidth()= 0;
 	virtual int GetHeight()= 0;
 	virtual int GetDepth() = 0;

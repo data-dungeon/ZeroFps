@@ -558,14 +558,52 @@ void ZeroFps::SetRenderTarget(Camera* pkCamera)
 
 void ZeroFps::RemoveRenderTarget(Camera* pkCamera)
 {
+	m_kRenderTarget.clear();
+//	m_kRenderTarget.remo(pkCamera);	
+}
+
+void ZeroFps::Draw_RenderTarget(Camera* pkCamera)
+{
+	// Save State
+	glPushAttrib(GL_TEXTURE_BIT | GL_LIGHTING_BIT | GL_FOG_BIT | 
+		GL_DEPTH_BUFFER_BIT | GL_ENABLE_BIT | GL_CURRENT_BIT | GL_VIEWPORT_BIT | GL_SCISSOR_BIT );
+	glMatrixMode(GL_PROJECTION);
+	glPushMatrix();
+	glMatrixMode(GL_MODELVIEW);
+	glPushMatrix();
+
+
+	if(pkCamera->m_bRender == false)	return;
+
+	SetCamera(pkCamera);
+	GetCam()->ClearViewPort();	
 	
+	UpdateCamera();
+	if(m_bDrawAxisIcon)
+		m_pkRender->Draw_AxisIcon(5);
+	if(m_bRenderOn == 1)
+		m_pkObjectMan->Update(PROPERTY_TYPE_RENDER,PROPERTY_SIDE_CLIENT,true);
+	m_pkObjectMan->Test_DrawZones();
+	m_pkApp->RenderInterface();
+
+	// Restore State
+	glPopAttrib();
+	glMatrixMode(GL_PROJECTION);
+	glPopMatrix();
+	glMatrixMode(GL_MODELVIEW);
+	glPopMatrix();
+	//glViewport(0,0,800,600);
+	//glScissor(0,0,800,600);
+
 }
 
 void ZeroFps::Draw_RenderTargets()
 {
 //	cout << "Render: ";
 	for(unsigned int i=0; i<m_kRenderTarget.size(); i++)
-	{
+		Draw_RenderTarget(m_kRenderTarget[i]);
+
+/*	{
 		if(m_kRenderTarget[i]->m_bRender == false)	continue;
 
 		SetCamera(m_kRenderTarget[i]);
@@ -582,6 +620,7 @@ void ZeroFps::Draw_RenderTargets()
 	}
 
 	//cout << endl;
+*/
 }
 
 void ZeroFps::Swap(void) {

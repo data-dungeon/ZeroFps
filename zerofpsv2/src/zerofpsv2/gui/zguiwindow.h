@@ -20,6 +20,7 @@ class ZGuiRender;
 class ZGuiSkin;
 class ZGuiFont;
 class ZGuiResourceManager;
+class Camera;
 
 const int NCODE_CLICK_UP	= 78;
 const int NCODE_CLICK_DOWN	= 79;
@@ -149,8 +150,11 @@ public:
 
 	virtual void SetResizeFlags(bool bHorz, bool bVert);
 
-protected:
+	void SetRenderTarget(Camera* pkCam);
+	Camera* GetRenderTarget() {	return m_pkCamera;  }
 
+protected:
+	Camera*	m_pkCamera;		// Render taget if any.
 
 	int m_iResolutionX, m_iResolutionY;
 	

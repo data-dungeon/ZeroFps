@@ -12,6 +12,8 @@
 #include "../basic/globals.h"
 #include "../basic/keys.h"
 #include "./zgui.h"
+#include "../engine/i_zerofps.h"
+#include "../engine/camera.h"
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
@@ -52,6 +54,8 @@ bool ZGui::StartUp()
 		g_ZFObjSys.GetObjectPtr("ZGuiResourceManager"));
 	m_pkTexMan = static_cast<TextureManager*>(
 		g_ZFObjSys.GetObjectPtr("TextureManager"));
+	m_pkZeroFps = static_cast<I_ZeroFps*>(
+		g_ZFObjSys.GetObjectPtr("ZeroFps"));
 	m_pkActiveMainWin = NULL;
 	m_bLeftButtonDown = false;
 	m_bRightButtonDown = false;
@@ -288,6 +292,8 @@ int ZGui::GetMainWindowID(char* strWindow)
 	return -1;
 }
 
+
+
 // Rendera det aktiva fönstret (och alla dess childs)
 bool ZGui::Render()
 {
@@ -309,8 +315,16 @@ bool ZGui::Render()
 
 		(*it)->pkWnd->Render(m_pkRenderer);
 
-		 if(pkWnd->m_bUseClipper)
+		if(pkWnd->m_bUseClipper)
 			 m_pkRenderer->EnableClipper(false);		
+
+		if(pkWnd->m_pkCamera && pkWnd->IsVisible()) 
+		{
+			//m_pkRenderer->EndRender(); 
+			m_pkZeroFps->Draw_RenderTarget(pkWnd->m_pkCamera);
+			//m_pkRenderer->StartRender();
+			//m_pkRenderer->SetFont(GetBitmapFont(ZG_DEFAULT_GUI_FONT));
+		}
 	 }
 
 	// Draw points

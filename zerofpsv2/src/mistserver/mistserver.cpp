@@ -50,6 +50,12 @@ static bool GUIPROC( ZGuiWnd* win, unsigned int msg, int numparms, void *params 
 		int* data; data = (int*) params; 
 		g_kMistServer.OnClickTabPage((ZGuiTabCtrl*) data[2], data[0], data[1]);// fram med släggan
 		break;
+
+/*	case ZGM_SETFOCUS:
+		g_kMistServer.SetViewPort(win->GetName());
+		cout << "Set Focus to window: "  << win->GetName() << endl;
+		break;*/
+
 	}
 	return true;
 }
@@ -102,6 +108,8 @@ MistServer::MistServer(char* aName,int iWidth,int iHeight,int iDepth)
    
 	m_pkActiveCameraObject	= NULL;
 	m_pkActiveCamera			= NULL;
+
+	m_strActiveViewPort = "none";
 } 
 
 
@@ -123,10 +131,22 @@ int MistServer::GetView(float x, float y)
 	return -1;
 }
 
-
 bool MistServer::SetCamera(int iNum)
 {
-	if(iNum == -1)	return false;
+
+	switch(iNum) 
+	{
+		case 0:	return SetViewPort("vp1");	break;
+		case 1:	return SetViewPort("vp2");	break;
+		case 2:	return SetViewPort("vp3");	break;
+		case 3:	return SetViewPort("vp4");	break;
+		default:
+			return false;
+	}
+
+	return false;
+
+/*	if(iNum == -1)	return false;
 	if(m_pkActiveCamera == m_pkCamera[iNum])	return false;
 
 	if(m_pkActiveCamera) m_pkActiveCamera->m_bSelected = false;
@@ -144,9 +164,34 @@ bool MistServer::SetCamera(int iNum)
 		m_pkActiveCamera->m_bRender = true;
 	}
 
-	return true;
+	return true;*/
 }
 
+
+bool MistServer::SetViewPort(const char* szVpName)
+{
+	ZGuiWnd* pkWnd = GetWnd(szVpName);	
+	if(!pkWnd)
+		return false;
+	if(!pkWnd->IsVisible())
+		return false;
+
+	Camera* pkCam = pkWnd->GetRenderTarget();
+	if(!pkCam)
+		return false;
+
+
+	if(m_pkActiveCamera == pkCam)	return false;
+
+	if(m_pkActiveCamera) m_pkActiveCamera->m_bSelected = false;
+	m_pkActiveCameraObject	= m_pkObjectMan->GetObjectByNetWorkID( pkCam->m_iEntity );
+	m_pkActiveCamera			= pkCam;
+	m_pkActiveCamera->m_bSelected = true;
+
+	m_strActiveViewPort  = szVpName;
+
+	return true;
+}
 
 void MistServer::CreateEditCameras()
 {
@@ -164,7 +209,18 @@ void MistServer::CreateEditCameras()
 
 	m_pkActiveCameraObject	= NULL;
 	m_pkActiveCamera			= NULL;
-	SetCamera(0);
+
+	GetWnd("vp1")->SetRenderTarget(m_pkCamera[0]);
+	GetWnd("vp2")->SetRenderTarget(m_pkCamera[1]);
+	GetWnd("vp3")->SetRenderTarget(m_pkCamera[2]);
+	GetWnd("vp4")->SetRenderTarget(m_pkCamera[3]);
+
+	GetWnd("vp1")->SetMoveArea(Rect(0,0,800,600), false);
+	GetWnd("vp2")->SetMoveArea(Rect(0,0,800,600), false);
+	GetWnd("vp3")->SetMoveArea(Rect(0,0,800,600), false);
+	GetWnd("vp4")->SetMoveArea(Rect(0,0,800,600), false);
+
+	SetViewPort("vp1");
 }
 
 
@@ -213,26 +269,26 @@ void MistServer::Init()
 	//initiate our camera
 	m_pkCamera[0]=new Camera(Vector3(0,0,0),Vector3(0,0,0),90,1.333,0.25,250);	
 	m_pkCamera[0]->SetName("persp");
-	m_pkCamera[0]->SetViewPort(0.5,0.5,0.5,0.5);
-	m_pkFps->SetRenderTarget(m_pkCamera[0]);
+	//m_pkCamera[0]->SetViewPort(0.5,0.5,0.5,0.5);
+	//m_pkFps->SetRenderTarget(m_pkCamera[0]);
 
 	m_pkCamera[1]=new Camera(Vector3(0,0,0),Vector3(0,0,0),90,1.333,0.25,250);	
 	m_pkCamera[1]->SetName("top");
-	m_pkCamera[1]->SetViewPort(0.0,0.5,0.5,0.5);
+	//m_pkCamera[1]->SetViewPort(0.0,0.5,0.5,0.5);
 	m_pkCamera[1]->SetViewMode("top");
-	m_pkFps->SetRenderTarget(m_pkCamera[1]);
+	//m_pkFps->SetRenderTarget(m_pkCamera[1]);
 	
 	m_pkCamera[2]=new Camera(Vector3(0,0,0),Vector3(0,0,0),90,1.333,0.25,250);	
 	m_pkCamera[2]->SetName("front");
-	m_pkCamera[2]->SetViewPort(0.0,0.0,0.5,0.5);
+	//m_pkCamera[2]->SetViewPort(0.0,0.0,0.5,0.5);
 	m_pkCamera[2]->SetViewMode("front");
-	m_pkFps->SetRenderTarget(m_pkCamera[2]);
+	//m_pkFps->SetRenderTarget(m_pkCamera[2]);
 
 	m_pkCamera[3]=new Camera(Vector3(0,0,0),Vector3(0,0,0),90,1.333,0.25,250);	
 	m_pkCamera[3]->SetName("right");
-	m_pkCamera[3]->SetViewPort(0.5,0.0,0.5,0.5);
+	//m_pkCamera[3]->SetViewPort(0.5,0.0,0.5,0.5);
 	m_pkCamera[3]->SetViewMode("right");
-	m_pkFps->SetRenderTarget(m_pkCamera[3]);
+	//m_pkFps->SetRenderTarget(m_pkCamera[3]);
 
 	//init mistland script intreface
 	MistLandLua::Init(m_pkObjectMan,m_pkScript);
@@ -760,10 +816,17 @@ void MistServer::Input_EditObject(float fMouseX, float fMouseY)
 
 void MistServer::Input_Camera(float fMouseX, float fMouseY)
 {
-	if(m_pkInputHandle->Pressed(KEY_Z))		SetCamera(0);
-	if(m_pkInputHandle->Pressed(KEY_X))		SetCamera(1);
-	if(m_pkInputHandle->Pressed(KEY_C))		SetCamera(2);
-	if(m_pkInputHandle->Pressed(KEY_V))		SetCamera(3);
+//	if(m_pkInputHandle->Pressed(KEY_Z))		SetCamera(0);
+//	if(m_pkInputHandle->Pressed(KEY_X))		SetCamera(1);
+//	if(m_pkInputHandle->Pressed(KEY_C))		SetCamera(0);
+//	if(m_pkInputHandle->Pressed(KEY_V))		SetCamera(1);
+
+	if(m_pkInputHandle->Pressed(KEY_Z))		SetViewPort("vp1");
+	if(m_pkInputHandle->Pressed(KEY_X))		SetViewPort("vp2");
+	if(m_pkInputHandle->Pressed(KEY_C))		SetViewPort("vp3");
+	if(m_pkInputHandle->Pressed(KEY_V))		SetViewPort("vp4");
+
+
 
 	if(m_pkInputHandle->VKIsDown("slow")){
 		m_CamMoveSpeed *= 0.25;
@@ -878,11 +941,11 @@ void MistServer::Input()
 	m_pkInputHandle->RelMouseXY(x,z);	
 
 	// First see if we clicked to change view port.
-	if(m_pkInputHandle->Pressed(MOUSELEFT))
+	if(m_pkInputHandle->Pressed(MOUSELEFT) || m_pkInputHandle->Pressed(KEY_0))
 	{
 		int mx,my;
 		m_pkInputHandle->SDLMouseXY(mx,my);
-		my = 768 - my; 
+		my = m_iHeight - my; 
 		int iClickedViewPort = GetView(mx, my);
 		if(SetCamera(iClickedViewPort))
 			m_fDelayTime = m_pkFps->GetEngineTime() + 0.5;
@@ -1216,23 +1279,34 @@ void MistServer::RunCommand(int cmdid, const CmdArgument* kCommand)
 void MistServer::SoloToggleView()
 {
 	if(DelayCommand())	return;
+	
+	Camera* pkCam = GetWnd(m_strActiveViewPort)->GetRenderTarget();
 
-	if(m_bSoloMode) {
+	if(m_bSoloMode) 
+	{
+		m_pkFps->RemoveRenderTarget(NULL);
+		pkCam->m_bForceFullScreen = false;
 		m_bSoloMode = false;
-		m_pkCamera[0]->SetViewPort(0.5,0.5,0.5,0.5);	m_pkCamera[0]->m_bRender = true;
-		m_pkCamera[1]->SetViewPort(0.0,0.5,0.5,0.5); m_pkCamera[1]->m_bRender = true;
-		m_pkCamera[2]->SetViewPort(0.0,0.0,0.5,0.5); m_pkCamera[2]->m_bRender = true;
-		m_pkCamera[3]->SetViewPort(0.5,0.0,0.5,0.5); m_pkCamera[3]->m_bRender = true;
-		}
-	else {
+		GetWnd("vp1")->Show();	GetWnd("vp1")->SetPos(400,0,true,true);		GetWnd("vp1")->Resize(400,300,false);
+		GetWnd("vp2")->Show();	GetWnd("vp2")->SetPos(0,0,true,true);			GetWnd("vp2")->Resize(400,300,false);
+		GetWnd("vp3")->Show();	GetWnd("vp3")->SetPos(0,300,true,true);		GetWnd("vp3")->Resize(400,300,false);
+		GetWnd("vp4")->Show();	GetWnd("vp4")->SetPos(400,300,true,true);		GetWnd("vp4")->Resize(400,300,false);
+	}
+	else
+	{
 		m_bSoloMode = true;
-		m_pkCamera[0]->SetViewPort(0,0,0,0); m_pkCamera[0]->m_bRender = false;
-		m_pkCamera[1]->SetViewPort(0,0,0,0); m_pkCamera[1]->m_bRender = false;
-		m_pkCamera[2]->SetViewPort(0,0,0,0); m_pkCamera[2]->m_bRender = false;
-		m_pkCamera[3]->SetViewPort(0,0,0,0); m_pkCamera[3]->m_bRender = false;
-		m_pkActiveCamera->SetViewPort(0,0,1,1);
-		m_pkActiveCamera->m_bRender = true;
+		GetWnd("vp1")->Hide();
+		GetWnd("vp2")->Hide();
+		GetWnd("vp3")->Hide();
+		GetWnd("vp4")->Hide();
+
+		// Add Active as ZeroFps Fullscreen Render Target.
+		if(pkCam) 
+		{
+			m_pkFps->SetRenderTarget(pkCam);
+			pkCam->m_bForceFullScreen = true;
 		}
+	}
 }
 
 void MistServer::CamFollow(bool bFollowMode)
@@ -1420,6 +1494,14 @@ void MistServer::OnServerStart(void)
 		else
 			cout<<"ERROR: No server P_ServerInfo property created, this is no good"<<endl;
 	}
+
+	SoloToggleView();
+	m_fDelayTime = m_pkFps->GetEngineTime();
+	SoloToggleView();
+	GetWnd("vp1")->SetZValue(0);
+	GetWnd("vp2")->SetZValue(0);
+	GetWnd("vp3")->SetZValue(0);
+	GetWnd("vp4")->SetZValue(0);
 }
 
 void MistServer::OnClientStart(void)
@@ -1520,6 +1602,8 @@ Vector3 MistServer::Get3DMousePos(bool m_bMouse=true)
 		x = -0.5f + (float) (mx - kViewCorner.x) / (float) kViewSize.x;
 		y = -0.5f + (float) ((m_pkApp->m_iHeight - my) - kViewCorner.y) / (float) kViewSize.y;
 		
+		//cout << "ViewCorner: " << kViewCorner.x << ", " << kViewCorner.y << endl;
+		//cout << "kViewSize: " << kViewSize.x << ", " << kViewSize.y << endl;
 
 		if(m_pkActiveCamera->GetViewMode() == Camera::CAMMODE_PERSP) 
 		{

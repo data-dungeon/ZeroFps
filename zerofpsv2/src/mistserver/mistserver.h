@@ -127,6 +127,7 @@ class MistServer :public Application , public ZGuiApp {
 
 		Entity*	GetTargetObject();		
 
+		string	m_strActiveViewPort;
 		void  CreateEditCameras();
 		bool	SetCamera(int iNum);
 		int	GetView(float x, float y);
@@ -194,6 +195,8 @@ class MistServer :public Application , public ZGuiApp {
 		void Input_EditObject(float fMouseX, float fMouseY);
 
 	public:
+		bool	SetViewPort(const char* szVpName);
+
 		void OnClickTabPage(ZGuiTabCtrl *pkTabCtrl, int iNewPage, int iPrevPage);
 		void OnClickListbox( int iListBoxID/*ZGuiWnd* pkListBox*/, int iListboxIndex, ZGuiWnd* pkMain);
 		void OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd* pkMainWnd);

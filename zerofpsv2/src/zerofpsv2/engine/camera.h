@@ -6,6 +6,7 @@
 #include "../basic/matrix4.h"
 #include "../render/frustum.h"
 #include "engine_x.h"
+#include "../gui/zguiwindow.h"
 
 /** \brief	A Camera (ViewPoint) in ZeroFPS
 	 \ingroup Engine
@@ -23,6 +24,8 @@ class ENGINE_API Camera
 			CAMMODE_ORTHO_BACK,
 			CAMMODE_ORTHO_RIGHT,
 		};
+	
+	ZGuiWnd*	m_pkWnd;
 
 	private:	
 
@@ -37,10 +40,12 @@ class ENGINE_API Camera
 		bool m_bViewChange;
 		bool m_bViewPortChange;				
 		
-		float m_fX;
-		float m_fY;
-		float m_fWidth;
-		float m_fHeight;
+		//float m_fX;
+		//float m_fY;
+		//float m_fWidth;
+		//float m_fHeight;
+		Vector3	m_kViewPortCorner;
+		Vector3	m_kViewPortSize;
 
 		string	m_strName;		// Is used in GetCameraDesc.
 
@@ -55,9 +60,9 @@ class ENGINE_API Camera
 		float m_fAppWidth;
 		float m_fAppHeight;
 
+
 		void	DrawGrid();
 		
-	
 
 	public:
 		Frustum m_kFrustum;
@@ -71,6 +76,7 @@ class ENGINE_API Camera
 		bool		m_bSelected;
 
 		int		m_iEntity;			// ID Of entity that this camera is connected to.
+		bool		m_bForceFullScreen;
 
 		Camera(Vector3 kPos,Vector3 kRot,float fFov,float fAspect,float fNear,float fFar);
 		void Update(int iWidth,int iHeight);
@@ -83,6 +89,7 @@ class ENGINE_API Camera
 
 		void SetOrthoView();
 		void SetViewPort(float iX,float iY,float iW,float iH);
+		//void SetViewPortPerc(float iX,float iY,float iW,float iH);
 		void ClearViewPort();
 		void SetFov(float fFov);
 		

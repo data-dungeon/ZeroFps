@@ -272,6 +272,7 @@ class ENGINE_API ZeroFps : public I_ZeroFps {
 		void SetRenderTarget(Camera* pkCamera);
 		void RemoveRenderTarget(Camera* pkCamera);
 		void Draw_RenderTargets();
+		void Draw_RenderTarget(Camera* pkCamera);
 		
 		int GetWidth(){return m_pkRender->GetWidth();}
 		int GetHeight(){return m_pkRender->GetHeight();};		

@@ -70,6 +70,9 @@ function GUICreate()
 	Skin31 = { tex1="0", tex2="0", tex3="0", tex4="0", tex1a="0", tex2a="0", tex3a="0", tex4a="0", bkR=214, bkG=211,
 	 bkB=206, borderR=255, borderG=255, borderB=255, bd_size=0, tile=0, trans=0 }
 	Skin32 = { tex1="wnd_bk.bmp", tex2="wndborder_left.bmp", tex3="wndborder_top.bmp", tex4="wndborder_corner.bmp",
+	 tex1a="0", tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=255, bkB=255, borderR=255, borderG=255, borderB=255, bd_size=2,
+	 tile=1, trans=1 }
+	Skin33 = { tex1="wnd_bk.bmp", tex2="wndborder_left.bmp", tex3="wndborder_top.bmp", tex4="wndborder_corner.bmp",
 	 tex1a="0", tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=255, bkB=255, borderR=255, borderG=255, borderB=255, bd_size=8,
 	 tile=1, trans=0 }
 	-------------------------------------------------------------------------
@@ -77,7 +80,6 @@ function GUICreate()
 	-- 0 = Wnd, 1 = Button, 2 = Checkbox, 3 = Combobox, 4 = Label, 5 = Listbox, 6 = Radiobutton,
 	-- 7 = Scrollbar, 8 = Slider, 9 = TabControl, 10 = Textbox, 11 = Treebox
 	-------------------------------------------------------------------------
-
 	CreateWnd(0,"GuiMainWnd","","",0,0,800,600,0)
 	ChangeSkin("GuiMainWnd","Skin12","Window")
 
@@ -91,8 +93,20 @@ function GUICreate()
 	ChangeSkin("ToggleLight","Skin24","Checkbox: Button down")
 	ChangeSkin("ToggleLight","Skin12","Checkbox: Label")
 
+	CreateWnd(0,"vp1","","",282,24,250,250,0)
+	ChangeSkin("vp1","Skin32","Window")
+
+	CreateWnd(0,"vp2","","",17,25,250,250,0)
+	ChangeSkin("vp2","Skin32","Window")
+
+	CreateWnd(0,"vp3","","",18,291,250,250,0)
+	ChangeSkin("vp3","Skin32","Window")
+
+	CreateWnd(0,"vp4","","",284,290,250,250,0)
+	ChangeSkin("vp4","Skin32","Window")
+
 	CreateWnd(0,"worktab","","",527,288,256,257,0)
-	ChangeSkin("worktab","Skin32","Window")
+	ChangeSkin("worktab","Skin33","Window")
 
 	CreateWnd(9,"WorkTabWnd","worktab","",0,0,256,256,0)
 	ChangeSkin("WorkTabWnd","Skin25","Tabctrl")

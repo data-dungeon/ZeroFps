@@ -9,9 +9,9 @@ bool Camera::m_bGridSnap(false);
 Camera::Camera(Vector3 kPos,Vector3 kRot,float fFov,float fAspect,float fNear,float fFar)
 {
 	SetView(fFov,fAspect,fNear,fFar);
-	//SetOrthoView();
-	SetViewPort(0,0,1,1);
-	//SetViewPort(0.25,0.25,0.5,0.5);
+	
+	Render* pkRender = dynamic_cast<Render*>(g_ZFObjSys.GetObjectPtr("Render"));
+	SetViewPort(0,0,pkRender->GetWidth(),pkRender->GetHeight());
 	SetPos(kPos);
 	SetRot(kRot);
 	m_kRotM.Identity();
@@ -25,6 +25,8 @@ Camera::Camera(Vector3 kPos,Vector3 kRot,float fFov,float fAspect,float fNear,fl
 
 	m_eMode = CAMMODE_PERSP; //just initiating it
 	m_fGridSpace = 1.0;
+	m_pkWnd = NULL;
+	m_bForceFullScreen = false;
 }
 
 void Camera::UpdateAll(int iWidth,int iHeight) 
@@ -35,6 +37,8 @@ void Camera::UpdateAll(int iWidth,int iHeight)
 
 void Camera::Update(int iWidth,int iHeight) 
 {
+	Render* pkRender = dynamic_cast<Render*>(g_ZFObjSys.GetObjectPtr("Render"));
+
 	m_fAppWidth  = iWidth;
 	m_fAppHeight = iHeight;
 
@@ -48,9 +52,52 @@ void Camera::Update(int iWidth,int iHeight)
 	}
 	
 	if(m_bViewPortChange)
-	{	
+	{
 		m_bViewPortChange=false;
+
+		Rect kJagVillSpelUT2k4;
+		//kJagVillSpelUT2k4.,Bottom
+
+		int iSx, iSy;
+		iSx = m_kViewPortCorner.x;			//iWidth * m_fX;
+		iSy = m_kViewPortCorner.y;			//iHeight*m_fY;
+		int iW, iH;
+		iW = m_kViewPortSize.x;				//iWidth*m_fWidth;
+		iH = m_kViewPortSize.y;				//iHeight*m_fHeight;
+
+		if(m_pkWnd) 
+		{
+			Rect kJagVillSpelUT2k4 = m_pkWnd->GetScreenRect();
+			iSx = kJagVillSpelUT2k4.Left;
+			iSy = 600 - kJagVillSpelUT2k4.Top - kJagVillSpelUT2k4.Height();
+			iW  = kJagVillSpelUT2k4.Width(); 
+			iH  = kJagVillSpelUT2k4.Height(); 
+			//cout << "ViewPort: " << iSx << ", " << iSy << " - " << iW << "," << iH << endl;
 		
+			iSx = float(iSx) / 800.0 * pkRender->GetWidth();
+			iSy = float(iSy)  / 600.0  * pkRender->GetHeight();
+			iW = float(iW) / 800.0 * pkRender->GetWidth();
+			iH = float(iH)  / 600.0  *  pkRender->GetHeight();
+			//cout << "ViewPort: " << iSx << ", " << iSy << " - " << iW << "," << iH << endl;
+
+			m_kViewPortCorner.x = iSx;
+			m_kViewPortCorner.y = iSy;
+			m_kViewPortSize.x = iW;
+			m_kViewPortSize.y = iH;
+		}
+
+		if(m_bForceFullScreen)
+		{
+			iSx = 0;
+			iSy = 0;
+			iW = pkRender->GetWidth();
+			iH = pkRender->GetHeight();
+		}
+
+		glScissor  ( iSx, iSy,	iW, iH );
+		glViewport ( iSx, iSy,	iW, iH );		
+		
+/*
 		glScissor(	int(iWidth*m_fX),
 						int(iHeight*m_fY),
 						int(iWidth*m_fWidth),
@@ -60,7 +107,7 @@ void Camera::Update(int iWidth,int iHeight)
 						int(iHeight*m_fY),
 						int(iWidth*m_fWidth),
 						int(iHeight*m_fHeight));		
-	
+*/	
 	}
 
 	
@@ -87,16 +134,16 @@ void Camera::Update(int iWidth,int iHeight)
 Vector3 Camera::GetViewPortSize()
 {
 	Vector3 kRes;
-	kRes.x = m_fAppWidth * m_fWidth;
-	kRes.y = m_fAppHeight * m_fHeight;
+	kRes.x = m_kViewPortSize.x;	//m_fAppWidth * m_fWidth;
+	kRes.y = m_kViewPortSize.y;	//m_fAppHeight * m_fHeight;
 	return kRes;
 }
 
 Vector3 Camera::GetViewPortCorner()
 {
 	Vector3 kRes;
-	kRes.x = m_fAppWidth * m_fX;
-	kRes.y = m_fAppHeight * m_fY;
+	kRes.x = m_kViewPortCorner.x;	//m_fAppWidth * m_fX;
+	kRes.y = m_kViewPortCorner.y;	//m_fAppHeight * m_fY;
 	return kRes;
 }
 
@@ -210,12 +257,18 @@ void Camera::SetViewPort(float fX,float fY,float fW,float fH)
 {
 	m_bViewPortChange=true;
 
-	m_fX=fX;
-	m_fY=fY;
+//	m_fX=fX;
+//	m_fY=fY;
 	
-	m_fWidth=fW;
-	m_fHeight=fH;
+//	m_fWidth=fW;
+//	m_fHeight=fH;
+
+	m_kViewPortCorner.Set(fX,fY,0);
+	m_kViewPortSize.Set(fW,fH,0);
 }
+
+		void SetViewPort(float iX,float iY,float iW,float iH);
+
 
 void Camera::DrawGrid()
 {
