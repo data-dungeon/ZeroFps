@@ -1,0 +1,104 @@
+Object systemet i ZeroFps är det som hanterar alla spelare, monster, NPC, föremål och
+alla andra saker som finns i spelvärlden. 
+
+	Object:		
+		Ett föremål/varelse i spelvärlden. Även icke fysiska saker som ex Mission Goals
+		och triggers är object. Alla object har ett ID och ett Namn. Dom enskilda objecten
+		har sen olika Propertys som bestämmer hur dom fungerar.
+	Property:	
+		En egenskap som består av data och metoder. Varje property har ett ID och ett namn.
+	Links:
+		Links är speciella propertys som kopplar samman object. En link innehåller en pekare/id
+		till ett annat object och sen data/metoder för länken. Länkar är alltid dubbelriktade så
+		om en länk skapas från A till B skapas även en länk från B till A.
+	Object Manger:
+		Det object i ZeroFps som innehåller alla object och sköter skapandet, förstörandet och
+		updates av dom. Den har även stöd för att vara kopplade till andra object mangers och 
+		clona över object mot dom (nätverk).
+	Events:
+		Events används för att markera olika händelser i spelet. Dom kan sändas/tas emot av
+		objectmanger, objekt och propertys. Mottagare kan vara enskilda objekt, olika typer av
+		objekt eller ex objekt inom en viss radie.
+	Physic Engine:
+		Hanterar kollision och förflyttning av object.
+	Timers:
+		En mängd olika timers används för att driva spelet. All tid anges med float och i sekunder.
+		
+		 ComputerTime:	Är tiden som den anges av ens dator. Anges som xx.yy.zz. Mest användbar 
+						till savegames och sånt.
+		 AppTime:		Tid i sekunder sen App (ZeroFps) startade. 
+		 GameTime:		Är tiden i spelet sekunder. Börjar på 0 sen spelet startade. Är den timer 
+						som själva spelet använder för sina updates. 
+	Tick:
+		Är en update av Game State då en delta_time har passerat sen senaste Tick.
+    Game State:
+		Är samlingen av alla object och alla deras propertys värden vid en tid då inte en Tick pågår.
+
+	Update Loop:
+		time = gettime();
+		timedelta = time - oldtime;
+
+		OM.Update(time);		// Update AI, Animation, Destroy old objects.
+		Physic.Update(time);	// Move objects, collide, handle collision effects.
+
+
+		OM.Sound();				// Välj vilka ljud som e viktigast, fade in/out, play sounds. Play music.
+		OM.PreRender();			// Vis Cull Objects, Sort States.	
+		OM.Render();			// Draw
+		OM.PostRender();		// Cleanup, Save Stats.
+		
+PHYSIC:
+Sköter om alla förflyttningar och kollisioner samt direkta effekter av dessa. Alla object
+som ska kunna påverka/påverkas av andra object genom kollisioner ska ligga här. Varje object
+i Physic ska ha följande egenskaper.
+
+ Physics: 		Anger hur objectet rör på sig.
+ 	None:		Object som aldrig rör sig (statiska).
+	Walk:		Människoliknande som kräver något att gå på för att förflytta sig.
+	Newton:		
+	
+ Shape:		Är den shape som används för att testa kollision mot andra object.
+	Sfär:
+	AABB:
+	OOBB:
+	
+ Type:		Vad som ska ske när en kollision upptäcks mellan två object.
+	NONE:		Ett object med denna egenskap kan ej påverka/påverkas av andra object.
+	TRIGGER:
+	BLOCK:
+
+En update av physic systemet går sker genom att alla object gås igenom och följande görs för varje object.
+	* Räkna ut vart fysik modellen flyttar detta föremål till.
+	* Skapa en sweepbox för hela förflyttningen.
+	* Alla object inom sweepbox är sådana som det är möjligt att kollidera med.
+	* För alla sådana object så testar man för kollision och sorterar dom i ordning som man kolliderar dom.
+	* Objectet flyttas sen längs tidslinjen och kolliderar men alla object och deras effekter sker. 
+		Dessa effekter kan leda till att object byter riktning så att nya uträckningar är nödvändiga
+		och fysik sim måste starta om.
+
+SOUND:
+Sköter uppspelning av alla ljudeffekter och musik. Inga ljud spelas upp direkt av object systemet utan alla 
+ljud markeras bara med namn, starttid och andra egenskaper. Varje client i spelet har sedan en lyssnarposition
+som dom använder för att räkna ut vilka ljud som är viktigast att spela upp för dom. 
+
+RENDER:
+Renderingen av världen sker i tre steg som körs för varje aktiv viewport som ska ritas ut. 
+
+PreRender:
+ * Går igenom alla object och räknar ut vilka man kan se.
+ * Sorterar alla object i render order.
+ * Sorterar alla object efter states.
+ * LOD
+
+Render:
+ * Loopa alla objekt som är synliga och rita dom.
+
+PostRender:
+ * Spara ned stats.
+
+
+
+
+
+
+

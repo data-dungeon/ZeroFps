@@ -1,0 +1,36 @@
+Engine Shell:
+Den enda del av UI som används direkt av ZeroFos är Consolen. Via den kan man skriva in kommandon och ändra
+på variabler. 
+
+ZFGUI API:
+Är ett API för att skapa UI liknande det i windows. Det finns klasser för kontroller, messages och menyer.
+Ett windows system finns ochså med hela spel fönstret som desktop. Detta API kommer även användas till editor
+och liknande. Alla controller ska använda ett liknande interface så det blir enkelt att byta mellan dom.
+
+ Controlls: 
+	Textbox:		
+	Listbox:		
+	Combobox:		
+	Check box:		
+	Radio button:	
+	Scrollbar:	
+	Picture Box:
+	Label:
+	Group Box:
+
+
+Game Shell:
+Är dom skärmar som inte har direkt med själva spelandet att göra och är saker som options,
+join/start network och andra inställningar. Alla dessa görs med ZFGUI och bakom dessa så sker 
+det mesta som kommandon till Engine Shell.
+
+Game Play Screen:
+Är skärmen som spelaren ser den när man spelar. Ex spelskärmen med hälsa, ammo samt dom skärmar som
+används när man hackar olika saker. Dessa använder ochså ZFGUI men oftast med egna draw funktioner då 
+det krävs lite roligare former på dom.
+
+
+
+
+
+

@@ -1,0 +1,103 @@
+ZFPS NETWORK MODELL:
+	Client/Server system där servern alltid har rätt.
+	Varje deltagare i ett nätverkspel benämns en Node.
+	Den Node som startar spelet kallas Host Node.
+	Host Node blir även server.
+	Allt i spelet hanteras som objekt. Ex object är spelare, vapen, monster, hissar, fordon och spelvärlden man är i.
+	Alla object i världen ägs av någon Node. Den Noden som äger ett object är ansvarigt för att updatera den och updatera
+		andra nodes som är intresserade av den.
+	Alla object ägs av Servern.
+	Varje object har ett unikt ID som kan användas för att beskriva det. 
+	Varje objekt har förutom ett ID även ett type ID som beskriver typ av objekt. Detta kan avändas för att förenkla
+	 beskrivningar av object då ett svärd kan anges med bara sin typ om det inte är något anolunda med just detta svärd.
+	Stacking används på object för att förenkla. Ex 200 guld mynt beskrivs som en hög med tvåhundra object av typen guldmynt
+	 och inte som 200 enskilda guldmynt.
+	Komprimering används för att minska mängden data. Flera monster kan ex beskrivas med sin typ och sen dom egenskaper
+	 som e olika för varje monster.
+	Objekt grupperingar används för att skapa grupper av föremål. Ex 4 krigare och två bågskyttar förekommer ofta så dom
+	 kan beskrivas som Grupp 34 och beskrivas en gång för alla noder så vet alla vad den är varje gång en grupp 34 kommer
+	 gående.
+	
+	Bandwith Limit:
+		Varje Node kan ange till andra Nodes max gräns för data som dom kan ta emot per sekund. Varje node kan
+		även sätt max data som den vill sända per sekund.
+
+	Relevant Objects:
+		Verje Node håller reda på en lista med med relevanta object för alla andra anslutna noder. Endast
+		relevanta object är dom som kan sändas över till en annan node.
+
+	Priority:
+		Varje objeckt kan ha en priority angiven som beskriver hur viktig denna sak är i spelsammanhang. Object med
+		högre priority updateras oftare. Ex så får fiender hög prioritet och dekorotiva object lägre.
+
+	Replication:
+		Är proccesen att för över object till dom nodes som är intresserade. Detta sker genom att dom olika propertys 
+		hos olika object förs över. Varje property har själv ansvaret för att packa ned/upp sig själv till/från nätverks
+		packet. Varje object i spelet har en ObjectView för varje relevant client. 
+		Denna OV kollar varje frame vilka data som har ändrats i objektet och ansvarar
+		för att packa ned dom i minsta möjliga utrymme. Denna data sänds sedan till client som ochså har en OV kopplad
+		till varje object. Denna OV packar upp datan och ersätter den som redan finns om den datan är nyare.
+		Det finns endast en form av OV och den hanterar alla data i objekten. Varje propery i ett object kan ange 
+		om det har ändrats eller ej och vet hur dom packar ned sig själva till en OV och upp från en. En OV loopar
+		bara alla propertys och packar ned/upp dom som behövs.
+
+		Data sänds sen över nätverket och packas upp på andra sidan och skriver oftast bara över den äldre datan.
+
+	Komprimering:
+		Data som sänds över nätverket ska komprimeras för att ta mindre plats. 
+
+	Object Roles:
+		Varje object har en Role som beskriver hur en Node ska uppdatera detta object.
+		
+			Proxy:		Ska aldrig updateras av en en client utan endast via dom updates som kommer från server.
+			Simulated:	Ska simulera enklare fysik men server updates kan ändra rörelsen.
+			Predict:	Använder spec kod för att gissa hur den ska updateras.
+			Authority:	Ska updateras som vanligt.
+
+	Prediction:
+
+
+	Inet:
+		InitServer()	Används när en server startar.
+		InitClient()	Används när en client startar.
+		PreLogin()		Anropas när en client försöker ansluta till servern. Kan anropas flera gånger för att 
+						avgöra om client ska få ansluta. Slutar med att client inte får joina eller att han får
+						joina och då kommer Login vara nästa funktion att anropas. Denna funktion ska användas till
+						player limits, passwords och liknande.
+		Login()			
+		PostLogin()		
+
+	Shutdown:
+	
+	NetDriver:	
+		Är den lägsta nätverks nivån i ZeroFps. Den skapar/förstör connections och sänder/tar emot data. 
+		Den bryr sig inte om innehåller i dom paket den får / ger till ZeroFps. Den grunläggande drivern
+		i ZeroFps använder UDP. Data som NetDriver behöver läggs i början av varje paket och stippas bort
+		innan dom ges till ZeroFps.
+
+			Ansvarsområden:
+			*	Connections:	Hanterar connections med timeouts och liknande.
+			*	Packets:		Allt som sänds/tas emot sker i packet med en bestämd max size.
+			*	Checksums:		Kollar att paket som/sänds tas emot är korrekta. 
+			*	Unreliable:		Ingen garanti på att dom kommer fram eller ordning dom kommer fram i.
+			*	Stats:			Håller reda på ping, packetloss och liknande för varje anslutning.
+
+	ZeroFps Protocol:
+		Är det nätverkspaket som används av ZeroFps engine.
+
+			Skapa Object:		
+			Förstöra Object:	
+			Update Object:		
+			Transfer Files:		
+			Object:				
+			Propertys:			
+			Resurser:			
+
+	Spelare som äventyrar på egen hand äger oftast området omkring sig själva.
+	När två spelare möts så förs området omkring dom över till en av dom så att han blir server för deras område.		
+	Objekt kan byta node som dom lever på. Ex saker som spelaren bär kan byta node om spelaren ger dom till en anna spelare.
+	 Ett objekt som byter ägare kan få en hel sjö av underobjekt att ochså byta ägare.
+	Vem som är Server respektive Client kan variera under spelets gång och det kan vara olika C/S för
+	olika saker i spelet.
+	En node som vill få fram den node som äger ett visst objekt kan fråga efter det på nätverket.
+

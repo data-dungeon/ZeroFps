@@ -1,0 +1,183 @@
+
+BASIC:
+	Design Patterns
+		Singleton:
+		Factory.
+		
+	Log filer:
+	Ini filer:
+
+	Console:
+		Auto complete
+		Memory av senaste använda console commands.
+		Clear.
+		Scroll up/down.
+
+	Fil Klass:
+	Image Klass:
+	Object Namn System:
+	Alla object som skapas kan ges ett unikt namn. Via namnet kan man få en pekare till ett object och med cast omvandla den så man kan anropa funktioner i objektet.
+	Command System:
+	Gör det möjligt för klasser att registrera funktioner.
+	Timer:
+		Delay
+		GetCurrentTime:
+	Tokenizer:
+	Math:
+		Plane:
+
+	Command System som lagrar kommand tills dom körs.
+	Developer String Display:
+
+
+ENGINE:
+	Collision/Physic Engine:
+		Stationära (Statiska) objekt. Ex terrängen, byggnader, skog och träd.
+		Dynamiska object. Ex spelare, fordon, projektiler.
+
+	Game Object:
+		GameObjectFactory:
+		Byggader och inomhusmiljöer.
+		Hissar, dörrar, stegar.
+		Knappar, kontrollpaneler, datorskärmar.
+		Mark/luft/vatten/rymd fordon.
+
+	Game Object Propertys:
+		Mad:		Animations property för MAD's.
+		Movment:
+		
+
+	Resurs Hantering (Levels, Modells, Sound, Textures, Scripts):
+		Streaming av alla data för obegränsat stora världar.
+
+		Sound:
+		Music:
+		Modells:
+		Levels:
+
+
+	Input:
+		Bindable keys.
+		Save/Restore till config files.
+		Bindmode
+		Mouse, Keyb, Joystick.
+
+	Nätverk:
+		C/S modell.
+		Antal Spelare (Mål/Max):	8 / 16
+		Anslutning:					LAN 10 
+
+	AABB
+
+		
+AI:
+	Actors som agerar i teams och sammarbetat.
+	Sensory Inputs:
+		Syn:	
+		Hörsel:	
+		Känsel:	
+		Lukt:
+		Spec:		Ex night vision, radar, motion sensors.
+	FSM Class.
+	Generic AStar
+	LOD AI
+
+RENDER:
+	Scene Graph:
+		Culling and Sorting
+		Portals 
+
+	Terräng:
+		Snyggare mark på landskap.
+		Träd, buskar och skogar.
+		Vägar.
+		Floder.
+		Skyboxes.
+
+	Skuggor
+
+	Textures and Transparency 
+		Multi-textures, light maps, dark maps, decals.
+		Projected textures, including projected lights and shadows.
+		Animated textures, for effects such as fog, fire, smoke, and explosions
+		Environment maps (spherical / cubic environment). 
+		Rendered textures, which may be used for television screens in the scene, dynamic shadows, mirrors, and other advanced effects.
+		Translucency, modulation, and masking 
+
+	MAD:
+		Interpolering av Vertex Animerade object.
+		Render mesh med skelletanimation.
+
+
+	FOG:
+	LOD på samtliga object som ritas ut.
+	Particle Systems
+
+SOUND:
+	Open AL.
+
+TOOLS:
+	MADMAKE:
+		Script .mm ska kunna hantera alla former av export.
+		Användbart stöd för 3DS, Mdl(Q),Mdl(Hl) och Md2.
+		
+
+		? Attatcjment points
+		? External/Internal textures
+		? Texture groups
+		? Materials/Shaders
+		? Replace textures
+		? Animerade textures.
+		? Eye pos.
+		? Animation blending.
+		? IK
+		? Controllers
+		? Events
+		? BBOX
+		? Hit boxes / Zones
+		? LOD Dynamisk, Textures, Skelletton/Anim LOD.
+		? Skinned Characters
+
+		Exportera 3DS filer liknande sättet I UT.
+		MAD Strip make som omvandlar triangel list till strips.
+		MAD Lod som skapar flera LOD triangel lists.
+		Ta bort mellan steget med PMD.
+		Class som importeras ska innehålla exporter kod och inte MAD klassen.
+		Skapa en 3DS export klass.
+		Byt till STL helt och hållet och undvika pekare.
+		Ta bort oanvända vertex från MAD's (vertex som inte används av någon triangel).
+		-Optimera mängden SubMeshes
+
+		3DS Exporter:
+		En 3DS per animation där objectet ska ha namnet "OBJxx" där xx är nummer på keyframe i ordningen. Nummer måste börja med 01. 
+		För flera animationer på samma object får man använda flera 3DS filer.
+		Materials: Skin, transp, weapons,  
+
+		 Error(char*,...)
+		 DevPrint(char*,...)
+  
+		 SetExtension
+		 GetFileName
+		 GetExtension
+		 GetPath
+		 SplitPathFileExt
+ 
+		 LoadScriptFile(char*)
+		 UnGetToken
+		 GetToken
+		 TokenAvil
+	MADEXPORT:
+		Gör till ett riktigt file export plugin.
+		Export skellet animation.
+ 
+	EDITOR:
+		Ingame editor för att skapa missions.
+		Landscape mod.
+
+
+
+
+
+
+LINKS:
+Snapshot guide: http://dit.perm.ru/articles/3DMAX/Tutorial/

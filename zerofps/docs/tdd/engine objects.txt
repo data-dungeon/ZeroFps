@@ -1,0 +1,51 @@
+Alla större system (Render, Sound, Console,...) ska placeras i ZeroFps namnsystem. Det
+används för att man ska kunna komma åt object från olika platser i programmet utan
+att behöva använda globala variabler. Varje object får ett eget namn som man kan använda.
+
+Detta namn är oftast samma sak som klass namnet för object som det endast finns ett av.
+Detta system används även för att sända messages (kommandon) till object. 
+
+Math:	Matrix3, Matrix4, Quaternion, Vector3, Vector4.
+
+ ZFObject:
+ ZFObjectManger:
+ BasicConsole:
+ CmdSystem:
+
+
+ ZeroFps:
+ Console:
+ Input:
+ Application:
+ AudioMangern:
+
+ 
+ Core:
+ Frustum:
+ Light:
+ Render:
+ TextureManger:
+
+
+
+
+System Object:
+Är sådana object som det endast finns en enda av i ZeroFps. Dessa kan man komma åt genom
+deras namn i name system.
+
+	ZeroFps:
+		FileIo
+		TextureManager
+		Frustum
+		Render
+		Console
+		CmdSystem
+		Input
+		AudioManager
+		Light
+		ObjectManager
+		CollisionManager
+		SoundBufferManager
+		OpenAlSystem
+		NetWork
+	Application:

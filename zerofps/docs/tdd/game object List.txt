@@ -1,0 +1,86 @@
+Game Object i ZeroFps:
+ SkyBox:	Ritar en skybox. 
+ HojdMap:	Är en hojdmap för landskaps terräng. 
+ WorldMap:	Är spelvärlden man spelar i och den innehåller flertalet olika hojdmaps. Dessa laddas
+			dynamiskt beroende var spelaren / spelarna är. På servern laddas endast den data som krävs för
+			server code (collision, fysik). 
+  
+ SFX:		Billboards (pint, line). 
+ Sound:		Avger ett ljud.
+
+
+
+
+*** Propertys ***
+ 
+ Position:			Anger objektets position och riktning.
+
+ Sound/
+  Sound:			Spelar upp ljud.
+ 
+ Render/
+  Light:			Objekt har en egen ljuskälla som lyser upp omkring den.
+  RenderType:		Hur objekt ritas ut. Normals, None, Editor.
+  Self Ambient:		Min light level för objekt.
+  Transparancy:		Markerar ett object som genomskinligt. Alla genomskinliga object ritas ut sist.
+  Mad:				En modell med skellet animationer.
+ 
+ SFX/
+  ParticleEmitter:	Skapar partiklar.
+  ParticleForce:	Kraftfält som påverkar partiklar.
+ 
+ Attach:			Kopplar ett object till ett annat.
+
+Fysik:
+ Typ				Hur objectets position,rotation och rörelser updateras.
+	NONE:			Rör sig aldig.
+	GHOST:			Rör sig men påverkar inget annat.
+	WALK:	
+	FLY, TOSS, BOUNCE:
+
+Collision:
+ Type:				Avgör modell som används för att avgöra collision på detta object.
+	POINT, SPHERE, LINE, AABBOX, OOBBOX:
+
+ Dimensions:		Beskriver formen på collision object.
+
+ Effect:			Vad som händer när en kollision sker.
+	NONE:
+	TRIGGER:
+	BLOCK:
+
+*** Links ***
+ Awerness:			Hur medveten en AI är om något annat object.
+
+*** Events ***
+
+
+
+
+
+PROPERTYS:
+Propertys är enskilda egenskaper som kan ges till objekt. Dom sorteras in i en heraki för att vara lättare att överblicka men herakin har ingen övrigare effekt.
+
+Network Category:	Client, Server, ClientServer.
+Position:		Position, riktning.
+Damage Model:
+Vision Type:		
+Model Name:
+
+OBJECT HIERARCHY:
+Arv används för att bygga upp en object heraki. Alla ärver från basklassen object som är en grunläggande klass med förmågan att ha egenskaper. Varje klass kan sen lägga till eller ändra egenskaper.
+
+Object:
+	Sfx:
+	Physical:
+		Weapons
+		PowerUps:
+		Decoration:
+		Functional:
+		Lights:
+		Keys:
+		Monsters:
+	Traps:
+Marker:
+Projectile:
+

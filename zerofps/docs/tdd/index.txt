@@ -1,0 +1,90 @@
+End User Platform and OS: 
+	Windows (98/2000/ME) och Linux.
+	1.5 Ghz, 128 MB RAM.
+	GeForce 2+.
+	OpenGL 1.2
+	OpenAL 1.0
+	TCP/IP
+	LAN 10 MB
+
+Development Platform and OS:
+	Windows:	VC++ 6.0
+	Linux:		
+
+External Code: 
+	STLPort:	Används i windows till VC++ 6.0.
+	SDL Libs:	Används för att utveckla på både windows och linux.
+		SDL:	
+		Mixer:	Ljud mixer för musik. 
+		Image:	Ladda bilder/textures.
+		Net:	Sköter om low level nätverks kod. 
+	AponAL:		Spelar upp ljud.
+	ExtGl:		Laddar opengl 1.2 under windows. Används ej i linux.
+
+Code Modules:
+ Basic:		Grundläggande klasser (math, namnsystem, log files, fil system).
+ Engine:	Objectmangement, network, client/server, Input, Physic/Collision, sound.
+ Render:	Utritning (*opengl). Rendering av modeller och landskap. Textures.
+ App.Exe:	
+
+Control Loop: 
+ Main:
+	Main anropar EngineStart direkt och det är därifrån allt händer.
+
+ EngineStart:
+	Create Engine:
+
+	Kör Engine.Init med kommand line argument.
+
+	Engine.MainLoop();
+		NetWork.Run();
+		Ov.Run();
+	
+		Input.Update();
+			Läser input update från tangentbord, mus och joystick.
+
+		EngineShell.Run();
+			Updates console, updates ZFGUI.
+
+		App.Run();
+		
+		ObjectManger.Update();
+			Updaterar spelvärlden en tid framåt (AI, Animation, Destroy old objects).  
+		Collision.Update();
+			Flyttar object, kollision och hanterar effekterna av dom.
+		
+		Sound.Update();
+			Väljer vilka ljud som är viktigast fade in/out, play sounds. Play music.
+		*ObjectManger.Render();
+			Ritar ut spelvärlden.
+		
+		App.Hud();
+
+	Engine.ShutDown();
+
+	Remove Engine();
+
+Game Object Data: 
+
+Data Flow: 
+
+Game Physics and Statistics:
+
+Artificial Intelligence:
+
+Multiplayer: 
+
+User Interface
+
+Game Shell: 
+
+Main Play Screen(s): 
+
+Art and Video
+
+Graphics Engine: 
+
+Artist Instructions: 
+Sound and Music
+Sound Engineering Instructions: 
+Level Specific Code
