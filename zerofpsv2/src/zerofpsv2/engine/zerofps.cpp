@@ -40,8 +40,8 @@ ZeroFps::ZeroFps(void) : I_ZeroFps("ZeroFps")
 	m_pkGuiRenderer			= new GLGuiRender;
 	m_pkNetWork					= new NetWork;
 	m_pkMusic					= new OggMusic(24,4096);
-	m_pkOpenAlSystem			= new OpenAlSystem;
-	m_pkSBM						= new SoundBufferManager;	
+	m_pkAudioSystem			= new ZFAudioSystem;
+//	m_pkSBM						= new SoundBufferManager;	
 	m_pkObjectMan				= new ObjectManager;
 	m_pkCmd						= new CmdSystem;
 	m_pkConsole					= new Console;
@@ -114,8 +114,8 @@ ZeroFps::~ZeroFps()
 	delete m_pkGuiMan;
 	delete m_pkGuiRenderer;
 	delete m_pkNetWork;
-	delete m_pkOpenAlSystem;
-	delete m_pkSBM;
+	delete m_pkAudioSystem;
+//	delete m_pkSBM;
 	delete m_pkObjectMan;
 	delete m_pkCmd;
 	delete m_pkConsole;
@@ -323,11 +323,11 @@ void ZeroFps::Run_Client()
 //	m_pkLevelMan->DrawZones();
 	m_pkObjectMan->Test_DrawZones();
 
-	//update openal sound system			
+	//update sound system			
 	Vector3 up=(m_pkCamera->GetRot()-Vector3(0,90,0));//.AToU();
 	up.x=90;
-	m_pkOpenAlSystem->SetListnerPosition(m_pkCamera->GetPos(),(m_pkCamera->GetRot()+Vector3(0,90,0)).AToU(),up.AToU());//(m_pkCamera->GetRot()-Vector3(-90,90,0)).AToU());
-	m_pkOpenAlSystem->Update();
+	m_pkAudioSystem->SetListnerPosition(m_pkCamera->GetPos(),(m_pkCamera->GetRot()+Vector3(0,90,0)).AToU(),up.AToU());//(m_pkCamera->GetRot()-Vector3(-90,90,0)).AToU());
+	m_pkAudioSystem->Update();
 
 	//run application Head On Display 
 	SetCamera(m_pkConsoleCamera);			
@@ -949,10 +949,11 @@ void ZeroFps::HandleNetworkPacket(NetPacket* pkNetPacket)
 
 void ZeroFps::RegisterResources()
 {
-	m_pkResourceDB->RegisterResource( string(".mad"), Create__Mad_Core		);
+	m_pkResourceDB->RegisterResource( string(".mad"), Create__Mad_Core	);
 	m_pkResourceDB->RegisterResource( string(".tga"), Create__ResTexture	);
 	m_pkResourceDB->RegisterResource( string(".bmp"), Create__ResTexture	);
-	m_pkResourceDB->RegisterResource( string(".zmt"), Create__Material	);	
+	m_pkResourceDB->RegisterResource( string(".zmt"), Create__Material	);
+	m_pkResourceDB->RegisterResource( string(".wav"), Create__WavSound	);
 	m_pkResourceDB->RegisterResource( string(".zvp"), Create__ZVProgram	);	
 }
 

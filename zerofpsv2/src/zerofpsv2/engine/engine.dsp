@@ -107,6 +107,10 @@ SOURCE=.\application.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\engine_systems\audio\audiosystem.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\engine_systems\propertys\autoparentproperty.cpp
 # End Source File
 # Begin Source File
@@ -271,10 +275,6 @@ SOURCE=..\engine_systems\audio\OggMusic.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\engine_systems\audio\openalsystem.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=..\engine_systems\propertys\p_heightmap2.cpp
 # End Source File
 # Begin Source File
@@ -340,6 +340,10 @@ SOURCE=..\engine_systems\common\zoneobject.cpp
 # Begin Source File
 
 SOURCE=.\application.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\engine_systems\audio\audiosystem.h
 # End Source File
 # Begin Source File
 
@@ -492,10 +496,6 @@ SOURCE=.\objectmanager.h
 # Begin Source File
 
 SOURCE=..\engine_systems\audio\oggmusic.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\engine_systems\audio\openalsystem.h
 # End Source File
 # Begin Source File
 

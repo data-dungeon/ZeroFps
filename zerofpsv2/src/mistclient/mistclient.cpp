@@ -65,8 +65,6 @@ void MistClient::Init()
 	m_pkMap2 = new Heightmap2(/*"HeightMap"*/);
 	m_pkMap2->CreateHMFromImage("/data/textures/hmap.tga");
 
-
-
 	// set caption
 	SDL_WM_SetCaption("Mistland", NULL);
 	
@@ -78,8 +76,6 @@ void MistClient::Init()
 	
 	// hide cursor
 	SDL_ShowCursor(SDL_DISABLE);
-
-
 }
 
 void MistClient::RegisterActions()
@@ -230,8 +226,30 @@ void MistClient::Input()
 		pkObjectMan->TestLine(&kObjects,start,dir);
 		
 		cout<<"Objects targeted:"<<kObjects.size()<<endl;
-	
-		
+	}
+
+	int iPressedKey = pkInput->GetQueuedKey();
+
+	switch(iPressedKey)
+	{
+	case KEY_P:
+/*		{
+			static ZFSound kTestSound;
+			kTestSound.m_kPos = Vector3(0,0,0);
+			kTestSound.m_kVel = Vector3(0,0,1);
+			kTestSound.m_bLoop = false;
+			kTestSound.Create("../data/sound/walk.wav");
+			pkAudioSys->AddSound(&kTestSound);
+		}*/
+
+		static ZFSound* s = new ZFSound;
+		s->m_kPos = Vector3(0,0,0);
+		//s.m_kVel = Vector3(0,0,1);
+		s->Create("../data/sound/walk.wav");
+		s->m_bLoop = false;
+		pkAudioSys->AddSound(s);
+
+		break;
 	}
 
 }
@@ -251,8 +269,6 @@ void MistClient::OnHud(void)
 
 void MistClient::RunCommand(int cmdid, const CmdArgument* kCommand)
 {
-	int i;
-
 	switch(cmdid) {
 		case FID_LOAD:
 			if(kCommand->m_kSplitCommand.size() <= 1)
