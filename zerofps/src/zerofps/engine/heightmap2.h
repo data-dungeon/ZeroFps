@@ -4,10 +4,15 @@
 
 #include "../basic/basic.pkg"
 #include "../render/render.pkg"
-
-
 #include "engine_x.h"
 
+
+class ENGINE_API HM2_texcor
+{
+	public:
+		float x;
+		float y;
+};
 
 class ENGINE_API HM2_vert
 {
@@ -28,6 +33,7 @@ class ENGINE_API HM2_level
 		vector<Vector3>	kVertex;
 		vector<Vector3>	kNormal;
 		vector<HM2_face>	kIndex;
+		vector<HM2_texcor> kTexCor;
 };
 
 class ENGINE_API HM2_patch
@@ -45,6 +51,7 @@ class ENGINE_API HM2_patch
 		float fMaxHeight;					//maximum vertex height in this patch
 		float fMinHeight;					//maximum vertex height in this patch
 		float fAvrageHeight;
+		
 };
 
 
@@ -53,6 +60,7 @@ class ENGINE_API Heightmap2
 	private:
 		
 		TextureManager*	m_pkTexMan;
+		Frustum*				m_pkFrustum;	
 	
 		vector<HM2_vert>	m_kBasicData;
 		vector<HM2_patch> m_kRenderData;
@@ -65,6 +73,8 @@ class ENGINE_API Heightmap2
 		int					m_iPatchHeight;		
 		
 		float					m_fScale;
+		
+		float					m_fDetail;
 		
 		
 		bool LoadBasicDataFromImage(const char* acFile);
@@ -84,6 +94,8 @@ class ENGINE_API Heightmap2
 
 		bool CreateHMFromImage(const char* acFile);		
 		void UpdateRecLodLevel(Vector3 kCamPos);
+		void UpdateFrustumCulling();
+		
 		
 		HM2_vert* GetVert(int x,int y)
 		{

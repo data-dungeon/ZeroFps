@@ -1183,11 +1183,11 @@ void Render::DrawHM2(Heightmap2* pkMap,Vector3 kCamPos)
 	pkMap->UpdateRecLodLevel(kCamPos); 
 
 	glPushMatrix();
-	glPushAttrib(GL_ALL_ATTRIB_BITS); 
+	glPushAttrib(GL_ALL_ATTRIB_BITS);  
 
-	glDisable(GL_LIGHTING);
-	glDisable(GL_TEXTURE_2D);
-	
+	//glDisable(GL_LIGHTING);
+	//glDisable(GL_TEXTURE_2D);
+	m_pkTexMan->BindTexture("grass.tga",0);
 	
 	glDisableClientState(GL_COLOR_ARRAY);	
 	glDisableClientState(GL_INDEX_ARRAY);	
@@ -1196,8 +1196,9 @@ void Render::DrawHM2(Heightmap2* pkMap,Vector3 kCamPos)
 	
 	glEnableClientState(GL_NORMAL_ARRAY);
 	glEnableClientState(GL_VERTEX_ARRAY);
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);	
 	
-	glPolygonMode(GL_FRONT, GL_LINE);	
+	//glPolygonMode(GL_FRONT, GL_LINE);	
 	
 	int px =  pkMap->m_iWidth / pkMap->m_iPatchWidth;
 	int py =  pkMap->m_iHeight / pkMap->m_iPatchHeight;
@@ -1208,12 +1209,29 @@ void Render::DrawHM2(Heightmap2* pkMap,Vector3 kCamPos)
 	{			
 		for(int x = 0;x<px;x++)
 		{
-			int iLevel = (*m_kRenderData)[ (y*px) + x].iReLev;
+			HM2_patch* pkPatch = &(*m_kRenderData)[ (y*px) + x];
+	
+	
+	/*		float xx = x*pkMap->m_iPatchWidth + pkMap->m_iPatchWidth/2;
+			float yy = y*pkMap->m_iPatchWidth + pkMap->m_iPatchWidth/2;
+			
 		
-			HM2_level* pkLevel = &((*m_kRenderData)[ (y*px) + x].kLevels[iLevel]);
+			float center = (pkPatch->fMaxHeight + pkPatch->fMinHeight)/2;
+		
+			if(!m_pkFrustum->CubeInFrustum(xx,center,yy,
+				pkMap->m_iPatchWidth/2,(pkPatch->fMaxHeight - pkPatch->fMinHeight)/2,pkMap->m_iPatchHeight/2))
+				continue;
+			*/	
+		
+			int iLevel = pkPatch->iReLev;
+			if(iLevel < 0)
+				continue;
+		
+			HM2_level* pkLevel = &(pkPatch->kLevels[iLevel]);
 		
 			glVertexPointer(3,GL_FLOAT,0,&pkLevel->kVertex[0]);
 			glNormalPointer(GL_FLOAT,0,&pkLevel->kNormal[0]);
+			glTexCoordPointer(2,GL_FLOAT,0,&pkLevel->kTexCor[0]);
 			
 			
 			glDrawArrays(GL_TRIANGLE_STRIP,0,pkLevel->kVertex.size());
