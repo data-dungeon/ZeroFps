@@ -234,6 +234,14 @@ SOURCE=.\rulesystem\spell\spellstats.h
 # End Group
 # Begin Source File
 
+SOURCE=.\rulesystem\container.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\rulesystem\container.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\rulesystem\fightstats.h
 # End Source File
 # Begin Source File

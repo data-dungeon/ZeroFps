@@ -5,6 +5,7 @@
 
 #include "../../mcommon_x.h"
 #include "../character/characterstats.h"
+#include "../container.h"
 #include "inventory_info.h"
 
 #include <map>
@@ -42,6 +43,9 @@ private:
 	static int s_iContainerCounter;
 
 public:
+   Container* m_pkContainer; // items can contain objects :)
+   Container* m_pkIsInContainer; // which container the item (if any) is in
+
 	char m_szPic[2][50]; ///< namnet på inventory slotsen, vanlig bild och alpha blend bild (ej full väg, bara namnet på filen)
    int m_iIconID[2];
 
@@ -106,6 +110,9 @@ public:
    void AddBeforeName ( string kAddName );
 
    void Print();
+
+   // returns false if object already is a container
+   bool MakeContainer ();
 
    bool operator== ( ItemStats &kItemStats );
    ItemStats& operator= ( ItemStats &kItemStats );

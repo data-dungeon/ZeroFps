@@ -317,8 +317,9 @@ ItemStats::ItemStats()
    m_iIconID[0] = 0;
    m_iIconID[1] = 0;
    m_uiVersion = 0;
-
-
+   
+   m_pkContainer = 0;//new Container (this);
+   m_pkIsInContainer = 0;
 }
 
 // ---------------------------------------------------------------------------------------------
@@ -468,6 +469,8 @@ ItemStats& ItemStats::operator= ( ItemStats &kItemStats )
 
 bool ItemStats::LoadIcons ( char *cpIcon, char *cpIconMask )
 {
+   // TODO: load as resources
+
    // load icon
 	TextureManager* m_pkTexMan = static_cast<TextureManager*>(g_ZFObjSys.GetObjectPtr("TextureManager"));	
 
@@ -501,6 +504,20 @@ void ItemStats::AddBeforeName ( string kAddName )
 
 // ---------------------------------------------------------------------------------------------
 
+// returns false if object already is a container
+bool ItemStats::MakeContainer ()
+{
+   if ( m_pkContainer )
+      return false;
+   else
+   {
+//      m_pkContainer = new Container (this);
+      return true;
+   }
+}
+
+// ---------------------------------------------------------------------------------------------
+
 void ItemStats::RegisterAsContainer()
 { 
    m_uiVersion++;
@@ -508,3 +525,5 @@ void ItemStats::RegisterAsContainer()
    s_iContainerCounter++;
 	m_iContainerID = s_iContainerCounter;
 }
+
+// ---------------------------------------------------------------------------------------------

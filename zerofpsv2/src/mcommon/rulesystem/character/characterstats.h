@@ -63,6 +63,8 @@ public:
    
 	int test_var;
 
+   unsigned int m_uiVersion; // which version of char the prop. holds. Server always have the latest.
+
 	CharacterStats( Entity *pkParent );
 
    FightStats* GetFightStats()             { return &m_kFightStats; }

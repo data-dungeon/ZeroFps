@@ -11,6 +11,8 @@ CharacterStats::CharacterStats( Entity *pkParent )
 {
 	test_var = 44;
 
+   m_uiVersion = 0;
+
    m_pkParent = pkParent;
 
 	// if stat-types isn't loaded
@@ -76,6 +78,8 @@ void CharacterStats::SetSkill (string kName, int iStartValue)
       {
 	      m_kSkills[kName].m_iValue = iStartValue;
          m_kSkills[kName].m_fExp = 0;
+
+         m_uiVersion++;
       }
 }
 
@@ -89,6 +93,8 @@ void CharacterStats::SetAttribute (string kName, int iStartValue)
       {
    	   m_kAttributes[kName].m_iValue = iStartValue;
          m_kAttributes[kName].m_fExp = 0;
+
+         m_uiVersion++;
       }
 }
 
@@ -99,6 +105,9 @@ void CharacterStats::SetData (string kName, string kStartValue)
    for ( unsigned int i = 0; i < g_kData.size(); i++ )
       if ( g_kData[i] == kName )
 	      m_kData[kName] = kStartValue;
+
+    m_uiVersion++;
+
 }
 
 // ------------------------------------------------------------------------------------------
@@ -108,7 +117,10 @@ void CharacterStats::SetSkillExp (string kName, float fExp)
    map<string, StatDescriber>::iterator kIte = m_kSkills.find(kName);
 
    if ( kIte != m_kSkills.end() )
+   {
       m_kSkills[kName].m_fExp = fExp;
+      m_uiVersion++;
+   }
    else
       cout << "Warning! Couln't find skill " << kName << " (tried to set exp. value)" << endl;
 
@@ -121,7 +133,10 @@ void CharacterStats::SetAttributeExp (string kName, float fExp)
    map<string, StatDescriber>::iterator kIte = m_kAttributes.find(kName);
 
    if ( kIte != m_kAttributes.end() )
+   {
       m_kAttributes[kName].m_fExp = fExp;
+      m_uiVersion++;
+   }
    else
       cout << "Warning! Couln't find attribute " << kName << " (tried to set exp. value)" << endl;
 }
@@ -181,6 +196,8 @@ void CharacterStats::RecieveSkillExp ( StatDescriber *pkStat, float fDifficulty,
 {
    // TODO: add difficulty to bonuses....somehow :)
 
+   m_uiVersion++;
+
    pkStat->m_fExp += fDifficulty / float(pkStat->m_iValue);
 
    map<string, float>::iterator kIte;
@@ -219,6 +236,8 @@ void CharacterStats::RecieveSkillExp ( StatDescriber *pkStat, float fDifficulty,
 
 void CharacterStats::RecieveAttrExp ( StatDescriber *pkStat, float fExp )
 {
+   m_uiVersion++;
+
    pkStat->m_fExp += fExp;
    TestLevelUp ( pkStat );
 }
@@ -240,6 +259,7 @@ void CharacterStats::TestLevelUp ( StatDescriber *pkStat )
 
 void CharacterStats::AddSkillValue ( string kSkillName, int iValue )
 {
+   m_uiVersion++;
    m_kSkills[kSkillName].m_iValue += iValue;
 }
 
@@ -248,6 +268,7 @@ void CharacterStats::AddSkillValue ( string kSkillName, int iValue )
 void CharacterStats::AddAttributeValue ( string kAttributeName, int iValue )
 {
    m_kAttributes[kAttributeName].m_iValue += iValue;
+   m_uiVersion++;
 }
 
 // ------------------------------------------------------------------------------------------
@@ -259,6 +280,7 @@ bool CharacterStats::SetCurrentSkill ( string kNewCurrentSkill )
    if ( kIte != m_kSkills.end() )
    {
       m_kCurrentSkill = kNewCurrentSkill;
+      m_uiVersion++;
       return true;
    }
    else
@@ -339,6 +361,7 @@ void CharacterStats::Print()
 void CharacterStats::SetHP( string kValue )
 {
    m_kPointStats["hp"] = kValue;
+   m_uiVersion++;
 }
 
 // ------------------------------------------------------------------------------------------
@@ -346,6 +369,7 @@ void CharacterStats::SetHP( string kValue )
 void CharacterStats::SetMP( string kValue )
 {
    m_kPointStats["mp"] = kValue;
+   m_uiVersion++;
 }
 
 // ------------------------------------------------------------------------------------------
@@ -353,6 +377,7 @@ void CharacterStats::SetMP( string kValue )
 void CharacterStats::AddHP( int iValue )
 {
    m_kPointStats["hp"] += iValue;
+   m_uiVersion++;
 }
 
 // ------------------------------------------------------------------------------------------
@@ -360,6 +385,7 @@ void CharacterStats::AddHP( int iValue )
 void CharacterStats::AddMP( int iValue )
 {
    m_kPointStats["mp"] += iValue;
+   m_uiVersion++;
 }
 
 // ------------------------------------------------------------------------------------------
@@ -368,6 +394,7 @@ void CharacterStats::SetCounter( string kName, int iValue )
 {
    m_kPointStats[kName] = iValue;
    m_kPointStats[kName].SetMaxValue(iValue);
+   m_uiVersion++;
 }
 
 // ------------------------------------------------------------------------------------------
@@ -378,6 +405,8 @@ void CharacterStats::AddAttackValue ( string kAttackType, int iValue )
 
    if ( m_kFightStats.m_kAttack[kAttackType] < 0 )
       m_kFightStats.m_kAttack[kAttackType] = 0;
+
+   m_uiVersion++;
 }
 
 // ------------------------------------------------------------------------------------------
@@ -388,6 +417,8 @@ void CharacterStats::AddDefenceValue ( string kDefenceType, int iValue )
 
    if ( m_kFightStats.m_kDefence[kDefenceType] < 0 )
       m_kFightStats.m_kDefence[kDefenceType] = 0;
+
+   m_uiVersion++;
 }
 
 // ------------------------------------------------------------------------------------------
@@ -395,6 +426,8 @@ void CharacterStats::AddDefenceValue ( string kDefenceType, int iValue )
 void CharacterStats::SetAttackValue (string kAttackType, int iValue)
 {
    m_kFightStats.m_kAttack[kAttackType] = iValue;
+
+   m_uiVersion++;
 }
 
 // ------------------------------------------------------------------------------------------
@@ -402,6 +435,8 @@ void CharacterStats::SetAttackValue (string kAttackType, int iValue)
 void CharacterStats::SetDefenceValue (string kDefenceType, int iValue)
 {
    m_kFightStats.m_kDefence[kDefenceType] = iValue;
+   
+   m_uiVersion++;
 }
 
 // ------------------------------------------------------------------------------------------
@@ -426,6 +461,7 @@ bool CharacterStats::Equip ( Entity *pkObject, string kSlot )
       // check if the slot already is taken, if so, switch objects...somehow!?
       m_kEquipment[kSlot] = pkObject;
 
+      m_uiVersion++;
 
       // stick Object to MAD model
       return true;
@@ -449,6 +485,8 @@ Entity* CharacterStats::UnEquip (string kSlot)
       pkP_Item->m_pkItemStats->UnEquip( this );
       
       m_kEquipment[kSlot] = 0;
+
+      m_uiVersion++;
 
       return pkTemp;
    }

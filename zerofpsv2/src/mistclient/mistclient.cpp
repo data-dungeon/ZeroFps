@@ -372,7 +372,7 @@ void MistClient::Input()
 						order.m_sOrderName = vkActionNames[0]; //"Klicka";
 						order.m_iClientID = pkFps->GetConnectionID();
 						order.m_iObjectID = m_pkTargetObject->iNetWorkID;				
-						order.m_iCaracter = m_iActiveCaracterObjectID;
+						order.m_iCharacter = m_iActiveCaracterObjectID;
 						
 						//set this to -1 if its not a ground click
 						order.m_iFace = -1;
@@ -391,7 +391,7 @@ void MistClient::Input()
 						
 						order.m_sOrderName = "Move";
 						order.m_iClientID = pkFps->GetConnectionID();
-						order.m_iCaracter = m_iActiveCaracterObjectID;
+						order.m_iCharacter = m_iActiveCaracterObjectID;
 						
 						order.m_kPos = m_kTargetPos;
 						order.m_iZoneObjectID = m_iTargetZoneObject;										
@@ -647,8 +647,9 @@ void MistClient::OnCommand(int iID, ZGuiWnd *pkMainWnd)
 
 									order.m_sOrderName = res->second;
 									order.m_iClientID = pkFps->GetConnectionID();
-									order.m_iObjectID = m_pkTargetObject2->iNetWorkID;				
-									order.m_iCaracter = m_iActiveCaracterObjectID;
+
+									order.m_iObjectID = m_pkTargetObject->iNetWorkID;				
+									order.m_iCharacter = m_iActiveCaracterObjectID;
 
 									//set this to -1 if its not a ground click
 									order.m_iFace = -1;
@@ -1154,7 +1155,7 @@ void MistClient::OnClientInputSend(char *szText)
 						
 	order.m_sOrderName = message; 
 	order.m_iClientID = pkFps->GetConnectionID();
-	order.m_iCaracter = m_iActiveCaracterObjectID;				
+	order.m_iCharacter = m_iActiveCaracterObjectID;				
 	order.m_iFace = -1;
 						
 	m_pkClientControlP->AddOrder(order);
