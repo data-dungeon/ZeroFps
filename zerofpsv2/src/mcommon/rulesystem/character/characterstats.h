@@ -44,6 +44,8 @@ private:
 	map<string, StatCounter> m_kPointStats;   // mp, hp...
 	map<string, string> m_kData; // name, rase, sex
 
+   map<string, StatDescriber> m_kSpells;
+
    map<string, Object*> m_kEquipment;
 
    Object *m_pkParent;

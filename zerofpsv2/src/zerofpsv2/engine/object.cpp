@@ -129,18 +129,16 @@ void Object::RemoveProperty(Property* pkProp)
 {
 	//m_akPropertys.remove(pkProp);
 	
-	///EVIL GUBB/////
-	vector<Property*>::iterator kIt = m_akPropertys.begin();
-	while(kIt != m_akPropertys.end())
-	{
-		if((*kIt) == pkProp)
-		{
-			(*kIt) = m_akPropertys.back();
-			m_akPropertys.pop_back();
-			kIt = m_akPropertys.end();
-		}
-		++kIt;
-	}
+	///EVIL GUBB///// ---changed by EVIL ZEROM who didn't like it when it crashed
+   for ( vector<Property*>::iterator kIte = m_akPropertys.begin();
+         kIte != m_akPropertys.end(); kIte++ )
+   {
+		if((*kIte) == pkProp)
+      {
+         m_akPropertys.erase ( kIte );
+         break;
+      }
+   }
 
 	PropertyLost(pkProp);
 }

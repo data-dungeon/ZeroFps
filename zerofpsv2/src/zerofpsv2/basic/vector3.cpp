@@ -255,3 +255,7 @@ Vector3 Vector3::operator*(const Matrix4 &f) const
 }
 */
 
+double Vector3::DistanceTo (Vector3 &to)
+{
+   return sqrt( pow(x - to.x,2) + pow(y - to.y, 2) + pow(z - to.z,2) );
+}

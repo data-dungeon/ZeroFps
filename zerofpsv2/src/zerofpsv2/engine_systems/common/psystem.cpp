@@ -23,7 +23,7 @@ void PSystem::Draw()
 
 // ------------------------------------------------------------------------------------------
 
-void PSystem::Update( Vector3 kNewPosition, Matrix4 kNewRotation )
+bool PSystem::Update( Vector3 kNewPosition, Matrix4 kNewRotation )
 {
 
 	// Inherit position from parent
@@ -36,7 +36,7 @@ void PSystem::Update( Vector3 kNewPosition, Matrix4 kNewRotation )
 
 	// don't update live-forevever psystems if not inside frustum
 	if ( m_pkPSystemType->m_kPSystemBehaviour.m_fLifeTime == -1 && !m_bInsideFrustum )
-		return;
+		return false;
 
 	glPushAttrib(GL_ALL_ATTRIB_BITS);
 
@@ -95,7 +95,7 @@ void PSystem::Update( Vector3 kNewPosition, Matrix4 kNewRotation )
 	}
 
 	// Update lifetime for particles
-	int i;
+	unsigned int i;
 	
 	for ( i = m_uiFirstParticle; i < m_uiLastParticle + 1; i++ )
 	{
@@ -118,12 +118,11 @@ void PSystem::Update( Vector3 kNewPosition, Matrix4 kNewRotation )
 	for ( i = 0; i < m_kPSProperties.size(); i++ )
 		m_kPSProperties[i]->Update();
 
-	// Has PSystem reachet its age and has no active particles, kill it
+	// Has PSystem reachet its age and has no active particles, return true (PS finished)
 	if ( m_fAge != -1 && m_fAge < 0 && m_uiLastParticle - m_uiFirstParticle < 1 )
-	{
-		// uhm..delete it...somehow...
-//		cout << "dead" << endl;
-	}
+      return true;
+   else 
+      return false;
 
 
 }

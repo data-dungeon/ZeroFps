@@ -42,8 +42,7 @@ private:
 	Render* m_pkRender;
 
 	Vector3 
-		m_kPosition,
-		m_kPosOffset;
+		m_kPosition;
 	
 	Matrix4 m_kRotation;
 
@@ -75,9 +74,11 @@ private:
 	PSystemType* m_pkPSystemType;
 
 public:
+	Vector3 m_kPosOffset;
+
 	void TestInsideFrustum();
 	void Draw();
-	void Update( Vector3 kNewPosition, Matrix4 kNewRotation );
+	bool Update( Vector3 kNewPosition, Matrix4 kNewRotation );
 	void AddPSProperty ( ParticleProperty *pkPSProperty );
 
    float Age()                               { return m_fAge; }

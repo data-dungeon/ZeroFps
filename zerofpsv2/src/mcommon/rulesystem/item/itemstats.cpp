@@ -443,7 +443,6 @@ bool ItemStats::LoadIcons ( char *cpIcon, char *cpIconMask )
 	m_iIconID[1] = m_pkTexMan->Load( cpIconMask, 0 );
    m_iIconID[1] = m_pkTexMan->GetTextureID (m_iIconID[1]);
 
-
    return true;
 }
 
@@ -468,4 +467,3 @@ void ItemStats::RegisterAsContainer()
 	s_iContainerCounter++;
 	m_iContainerID = s_iContainerCounter;
 }
-

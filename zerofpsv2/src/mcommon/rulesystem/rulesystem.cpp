@@ -10,7 +10,9 @@ MCOMMON_API vector<string> g_kData;
 MCOMMON_API vector<string> g_kCounters;
 MCOMMON_API map<string, SkillType> g_kSkillExps;
 MCOMMON_API map<string, vector<string> > g_kSkillGroups;
+MCOMMON_API map<string, SpellStats*> g_kSpells;
 
+// -----------------------------------------------------------------------------------------------
 
 int DealDamage ( FightStats *pkAttacker, CharacterStats *pkVictim )
 {
@@ -22,20 +24,222 @@ int DealDamage ( FightStats *pkAttacker, CharacterStats *pkVictim )
    return int(fTotalDmg);
 }
 
+// -----------------------------------------------------------------------------------------------
 
+bool LoadSpell (string kSpellName)
+{
+   ZFIni kIniLoader;
+
+	string kLoadName = "/data/spells/" + kSpellName + ".zsp";
+
+   if ( !kIniLoader.Open(kLoadName.c_str(), 0) )
+   {
+      cout << "Error! Couldn't find spell " << kLoadName << endl;
+      return false;
+   }
+   else
+   {
+      SpellStats *pkNewSpell = new SpellStats;
+
+      // spellname
+	   if ( kIniLoader.KeyExist("spell", "name") )
+		   pkNewSpell->m_kSpellName = kIniLoader.GetValue("spell", "name");
+	   else
+         pkNewSpell->m_kSpellName = kSpellName;
+
+      // spellcost (mp)
+	   if ( kIniLoader.KeyExist("spell", "cost") )
+		   pkNewSpell->m_iCost = kIniLoader.GetIntValue("spell", "cost");
+	   else
+         pkNewSpell->m_iCost = 0;
+
+      // required level (level what?!)
+	   if ( kIniLoader.KeyExist("spell", "required_level") )
+		   pkNewSpell->m_iRequiredLevel = kIniLoader.GetIntValue("spell", "required_level");
+	   else
+         pkNewSpell->m_iRequiredLevel = 0;
+
+
+      // LifeTime
+	   if ( kIniLoader.KeyExist("spell", "lifetime") )
+		   pkNewSpell->m_fLifeTime = kIniLoader.GetFloatValue("spell", "lifetime");
+	   else
+         pkNewSpell->m_fLifeTime = 0;
+
+
+       // Spellgroup
+	   if ( kIniLoader.KeyExist("spell", "spellgroup") )
+		   pkNewSpell->m_kSpellGroup = kIniLoader.GetValue("spell", "spellgroup");
+	   else
+         pkNewSpell->m_kSpellGroup = "none";
+
+
+      // on hit object
+      if ( kIniLoader.KeyExist("onhit", "event") )
+         pkNewSpell->m_kOnHit[0] = kIniLoader.GetValue("onhit", "event");
+      else
+         pkNewSpell->m_kOnHit[0] = "nothing";
+
+      if ( kIniLoader.KeyExist("onhit", "type") )
+         pkNewSpell->m_kOnHit[1] = kIniLoader.GetValue("onhit", "type");
+      else
+         pkNewSpell->m_kOnHit[1] = "error!!";
+
+      
+      // cast on..
+	   if ( kIniLoader.KeyExist("spell", "cast_on") )
+      {
+         string kCastOn = kIniLoader.GetValue("spell", "cast_on");
+         if ( kCastOn == "ground" )
+		      pkNewSpell->m_iCastOn = eON_GROUND;
+         if ( kCastOn == "enemy" )
+		      pkNewSpell->m_iCastOn = eON_ENEMY;
+         if ( kCastOn == "friend" )
+		      pkNewSpell->m_iCastOn = eON_FRIEND;
+         if ( kCastOn == "caster" )
+		      pkNewSpell->m_iCastOn = eON_CASTER;
+      }
+	   else
+         pkNewSpell->m_iCastOn = eON_GROUND;      
+
+      // do what on destruction
+	   if ( kIniLoader.KeyExist("spell", "ondestruction") )
+      {
+         string kStuff = kIniLoader.GetValue("spell", "ondestruction");
+         if ( kStuff == "killparent" )
+		      pkNewSpell->m_iOnDestruction = eKILL_PARENT;
+         if ( kStuff == "killself" )
+            pkNewSpell->m_iOnDestruction = eKILL_SELF;
+      }
+	   else
+         pkNewSpell->m_iOnDestruction = eKILL_SELF;
+
+
+      vector<string> kBonuses;
+      unsigned int i;
+      
+      // load bonuses/curses
+
+      // skills
+      kBonuses.clear();
+      kIniLoader.GetKeyNames ( "skillbonuses", kBonuses );
+      for ( i = 0; i < kBonuses.size(); i++ )
+         pkNewSpell->m_kSkillBonuses[kBonuses[i]] = kIniLoader.GetIntValue("skillbonuses", (char*)kBonuses[i].c_str());
+      
+      // attributes
+      kBonuses.clear();
+      kIniLoader.GetKeyNames ( "attributebonuses", kBonuses );
+      for ( i = 0; i < kBonuses.size(); i++ )
+         pkNewSpell->m_kAttributeBonuses[kBonuses[i]] = kIniLoader.GetIntValue("attributebonuses", (char*)kBonuses[i].c_str());
+   
+      // attack
+      kBonuses.clear();
+      kIniLoader.GetKeyNames ( "attackbonuses", kBonuses );
+      for ( i = 0; i < kBonuses.size(); i++ )
+         pkNewSpell->m_kFightBonuses.m_kAttack[kBonuses[i]] = kIniLoader.GetIntValue("attackbonuses", (char*)kBonuses[i].c_str());
+
+      // defence
+      kBonuses.clear();
+      kIniLoader.GetKeyNames ( "defencebonuses", kBonuses );
+      for ( i = 0; i < kBonuses.size(); i++ )
+         pkNewSpell->m_kFightBonuses.m_kDefence[kBonuses[i]] = kIniLoader.GetIntValue("defencebonuses", (char*)kBonuses[i].c_str());
+
+
+      // damage
+      kBonuses.clear();
+      kIniLoader.GetKeyNames ( "damage", kBonuses );
+      for ( i = 0; i < kBonuses.size(); i++ )
+         pkNewSpell->m_kDamage[kBonuses[i]] = kIniLoader.GetIntValue("damage", (char*)kBonuses[i].c_str());
+
+
+      // test for 10 gfx effects
+      for ( i = 0; i < 9; i++ )
+      {
+         char strName[5] = "gfx ";
+         strName[3] = (49 + i); // ascii(49) = 1
+
+         // gfx effects
+         if ( kIniLoader.SectionExist(strName) )
+         {
+            GfxSpellEffect kGfx;
+   
+            // LifeTime
+	         if ( kIniLoader.KeyExist(strName, "starttime") )
+		         kGfx.m_fStartTime = kIniLoader.GetFloatValue(strName, "starttime");
+	         else
+               kGfx.m_fStartTime = 0;
+
+            // PSystemName
+	         if ( kIniLoader.KeyExist(strName, "psystem") )
+		         kGfx.m_kPSystemName = kIniLoader.GetValue(strName, "psystem");
+	         else
+               kGfx.m_kPSystemName = "error";
+
+            // OffsetX
+	         if ( kIniLoader.KeyExist(strName, "offset_x") )
+		         kGfx.m_kOffset.x = kIniLoader.GetFloatValue(strName, "offset_x");
+	         else
+               kGfx.m_kOffset.x = 0;
+
+            // OffsetY
+	         if ( kIniLoader.KeyExist(strName, "offset_y") )
+		         kGfx.m_kOffset.y = kIniLoader.GetFloatValue(strName, "offset_y");
+	         else
+               kGfx.m_kOffset.y = 0;
+
+            // OffsetZ
+	         if ( kIniLoader.KeyExist(strName, "offset_z") )
+		         kGfx.m_kOffset.z = kIniLoader.GetFloatValue(strName, "offset_z");
+	         else
+               kGfx.m_kOffset.z = 0;
+
+            // attack type (target)
+	         if ( kIniLoader.KeyExist(strName, "attacktype") )
+            {
+               string kType = kIniLoader.GetValue(strName, "attacktype");
+               if ( kType == "caster" )
+                  kGfx.m_iAttackType = eON_CASTER;
+               if ( kType == "ground" )
+                  kGfx.m_iAttackType = eON_GROUND;
+               if ( kType == "enemy" )
+                  kGfx.m_iAttackType = eON_ENEMY;
+               if ( kType == "friend" )
+                  kGfx.m_iAttackType = eON_FRIEND;
+               if ( kType == "caster to enemy" )
+                  kGfx.m_iAttackType = eFROM_CASTER_TO_ENEMY;
+               if ( kType == "enemy to caster" )
+                  kGfx.m_iAttackType = eFROM_ENEMY_TO_CASTER;
+            }
+	         else
+               kGfx.m_iAttackType = eON_GROUND;
+
+            pkNewSpell->m_kGraphicEffects.push_back(kGfx);
+
+         }
+      } // for i to 10
+
+      g_kSpells[kSpellName] = pkNewSpell;
+
+   }
+
+
+   return true;
+}
+
+// -----------------------------------------------------------------------------------------------
 
 void LoadStatTypes()
 {
-		ZFIni m_kIniLoader;
+		ZFIni kIniLoader;
 
       // Load attributes
 		string kLoadName = "/data/stats/attributes.zs";
 
-		if( !m_kIniLoader.Open(kLoadName.c_str(), 0) )		
+		if( !kIniLoader.Open(kLoadName.c_str(), 0) )		
 			cout << "Error! Couldn't find attributes.zs!!!" << endl;
 		else
 		{
-			m_kIniLoader.GetSectionNames ( g_kAttributes );
+			kIniLoader.GetSectionNames ( g_kAttributes );
 
          cout << "Attributes loaded!!" << endl;
 		}
@@ -43,11 +247,11 @@ void LoadStatTypes()
       // Load data
 		kLoadName = "/data/stats/data.zs";
 
-		if( !m_kIniLoader.Open(kLoadName.c_str(), 0) )		
+		if( !kIniLoader.Open(kLoadName.c_str(), 0) )		
 			cout << "Error! Couldn't find data.zs!!!" << endl;
 		else
 		{
-			m_kIniLoader.GetSectionNames ( g_kData );
+			kIniLoader.GetSectionNames ( g_kData );
 
          cout << "DataStats loaded!!" << endl;
 		}
@@ -55,11 +259,11 @@ void LoadStatTypes()
       // Load counters
 		kLoadName = "/data/stats/counters.zs";
 
-		if( !m_kIniLoader.Open(kLoadName.c_str(), 0) )		
+		if( !kIniLoader.Open(kLoadName.c_str(), 0) )		
 			cout << "Error! Couldn't find counters.zs!!!" << endl;
 		else
 		{
-			m_kIniLoader.GetSectionNames ( g_kCounters );
+			kIniLoader.GetSectionNames ( g_kCounters );
 
          cout << "Attributes loaded!!" << endl;
 		}
@@ -67,12 +271,12 @@ void LoadStatTypes()
       // Load skills
 		kLoadName = "/data/stats/skills.zs";
 
-		if( !m_kIniLoader.Open(kLoadName.c_str(), 0) )		
+		if( !kIniLoader.Open(kLoadName.c_str(), 0) )		
 			cout << "Error! Couldn't find skills.zs!!!" << endl;
 		else
 		{
          // Get all skilltypes
-			m_kIniLoader.GetSectionNames ( g_kSkills );
+			kIniLoader.GetSectionNames ( g_kSkills );
 
          unsigned int i;
 
@@ -82,28 +286,28 @@ void LoadStatTypes()
             unsigned int j;
 
             // check if, and which group the skill belongs to
-            if ( m_kIniLoader.KeyExist( (char*)g_kSkills[i].c_str(), "group") )
-               g_kSkillGroups[ m_kIniLoader.GetValue( (char*)g_kSkills[i].c_str(), "group" ) ]
+            if ( kIniLoader.KeyExist( (char*)g_kSkills[i].c_str(), "group") )
+               g_kSkillGroups[ kIniLoader.GetValue( (char*)g_kSkills[i].c_str(), "group" ) ]
                   .push_back ( (char*)g_kSkills[i].c_str() );
 
 
             // loop through all attributes and search for bonuses
             for ( j = 0; j < g_kAttributes.size(); j++ )
             {
-               if ( m_kIniLoader.KeyExist( (char*)g_kSkills[i].c_str(), (char*)g_kAttributes[j].c_str()) )
+               if ( kIniLoader.KeyExist( (char*)g_kSkills[i].c_str(), (char*)g_kAttributes[j].c_str()) )
                {
                   g_kSkillExps[ g_kSkills[i] ].m_kAttributeExp[g_kAttributes[j]] =
-                     m_kIniLoader.GetFloatValue( (char*)g_kSkills[i].c_str(), (char*)g_kAttributes[j].c_str() );
+                     kIniLoader.GetFloatValue( (char*)g_kSkills[i].c_str(), (char*)g_kAttributes[j].c_str() );
                }
             }
 
             // loop through all skills and search for bonuses
             for ( j = 0; j < g_kSkills.size(); j++ )
             {
-               if ( m_kIniLoader.KeyExist( (char*)g_kSkills[i].c_str(), (char*)g_kSkills[j].c_str()) )
+               if ( kIniLoader.KeyExist( (char*)g_kSkills[i].c_str(), (char*)g_kSkills[j].c_str()) )
                {
                   g_kSkillExps[ g_kSkills[i] ].m_kSkillExp[g_kSkills[j]] =
-                     m_kIniLoader.GetFloatValue( (char*)g_kSkills[i].c_str(), (char*)g_kSkills[j].c_str() );
+                     kIniLoader.GetFloatValue( (char*)g_kSkills[i].c_str(), (char*)g_kSkills[j].c_str() );
                }
                 
             }
@@ -116,11 +320,13 @@ void LoadStatTypes()
             // loop through all groups and search for bonuses
             for ( map<string, vector<string> >::iterator kIte = g_kSkillGroups.begin();
                   kIte != g_kSkillGroups.end(); kIte++)
-               if ( m_kIniLoader.KeyExist( (char*)g_kSkills[i].c_str(), (char*)(*kIte).first.c_str() ) )
+               if ( kIniLoader.KeyExist( (char*)g_kSkills[i].c_str(), (char*)(*kIte).first.c_str() ) )
                   g_kSkillExps[ g_kSkills[i] ].m_kGroupExp[(char*)(*kIte).first.c_str()] =
-                     m_kIniLoader.GetFloatValue( (char*)g_kSkills[i].c_str(), (char*)(*kIte).first.c_str() );
+                     kIniLoader.GetFloatValue( (char*)g_kSkills[i].c_str(), (char*)(*kIte).first.c_str() );
       
          cout << "Skills loaded!!" << endl;
 		}
 
 }
+
+// -----------------------------------------------------------------------------------------------

@@ -140,7 +140,6 @@ private:
 class ENGINE_API Property 
 {
 	private:
-		ZeroFps*				m_pkZeroFps;			// Vim - Change To ObjectManger
 
 		///beware of the the code /Gubb  //////////////
 		string ValueToString(void *pkValue, PropertyValues *pkPropertyValue); 
@@ -151,7 +150,8 @@ class ENGINE_API Property
 		void PropertyLost(Property* pkProperty); 
 		///////////////////////////////////////////
 	protected:
-		Object*					m_pkObject;
+		ZeroFps*				m_pkZeroFps;			// Vim - Change To ObjectManger
+		Object*				m_pkObject;
       ObjectManager*    m_pkObjMan;
 		//PropertyFactory*		m_pkPropertyFactory;	// Vim - Removes
 	
@@ -204,7 +204,7 @@ class ENGINE_API Property
 
 
 		// Property Edit Interface
-		//evil gubb code! haha/////////////////////////////////////////7
+		//evil gubb code! haha/////////////////////////////////////////
 		bool SetValue(string kValueName ,string kValue);
 		bool SetValue(string kValueName, unsigned int iIndex ,string kValue);
 		bool CheckIfResize(string kValueName);

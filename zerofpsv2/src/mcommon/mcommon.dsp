@@ -130,6 +130,10 @@ SOURCE=.\p_serverinfo.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\p_spell.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\si_mistland.cpp
 # End Source File
 # End Group
@@ -167,6 +171,10 @@ SOURCE=.\p_ml.h
 # Begin Source File
 
 SOURCE=.\p_serverinfo.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\p_spell.h
 # End Source File
 # Begin Source File
 
