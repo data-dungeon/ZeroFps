@@ -243,10 +243,6 @@ SOURCE=.\main.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\engine_systems\propertys\modelproperty.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\netslaveobject.cpp
 # End Source File
 # Begin Source File
@@ -284,6 +280,10 @@ SOURCE=..\engine_systems\propertys\physicproperty.cpp
 # Begin Source File
 
 SOURCE=..\engine_systems\physicsengine\physicsengine.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\engine_systems\propertys\primitives3d.cpp
 # End Source File
 # Begin Source File
 
@@ -504,6 +504,10 @@ SOURCE=..\engine_systems\propertys\physicproperty.h
 # Begin Source File
 
 SOURCE=..\engine_systems\physicsengine\physicsengine.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\engine_systems\propertys\primitives3d.h
 # End Source File
 # Begin Source File
 

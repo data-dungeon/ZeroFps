@@ -86,13 +86,8 @@ ZFResourceDB::ZFResourceDB()
 {
 	m_iNextID = 0;
 
-
-/*	RegisterResource( string(".mad"), Create__Mad_Core		);
-	RegisterResource( string(".tga"), Create__ResTexture	);
-	RegisterResource( string(".bmp"), Create__ResTexture	);
-*/
-
-	Register_Cmd("res_list",FID_LISTRES, CSYS_FLAG_SRC_ALL);
+	Register_Cmd("res_list",	FID_LISTRES,	CSYS_FLAG_SRC_ALL);
+	Register_Cmd("res_types",	FID_LISTTYPES,	CSYS_FLAG_SRC_ALL);
 	g_ZFObjSys.Log_Create("resdb");
 }
 
@@ -279,8 +274,6 @@ ResourceCreateLink*	ZFResourceDB::FindResourceTypeFromFullName(string strResName
 
 void ZFResourceDB::RunCommand(int cmdid, const CmdArgument* kCommand)
 {
-//	ZeroFps* pkZeroFps = static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
-
 	list<ZFResourceInfo*>::iterator it;
 
 	switch (cmdid) {
@@ -291,6 +284,12 @@ void ZFResourceDB::RunCommand(int cmdid, const CmdArgument* kCommand)
 			}
 			break;
 
+		case FID_LISTTYPES:
+			GetSystem().Printf("Resource types: ");
+			for(unsigned int i=0; i<m_kResourceFactory.size(); i++) {
+				GetSystem().Printf(" [%d] = %s",i, m_kResourceFactory[i].m_strName.c_str());
+				}
+			break;
 		};
 }
 

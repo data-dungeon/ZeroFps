@@ -37,7 +37,7 @@ void CrossRenderProperty::UpdateSet()
 
 void CrossRenderProperty::Update()
 {
-//	return;
+	return;
 	if(!m_pkFps->GetCam()->m_kFrustum.SphereInFrustum(m_pkObject->GetPos(),m_kScale.x))
 		return;
 		

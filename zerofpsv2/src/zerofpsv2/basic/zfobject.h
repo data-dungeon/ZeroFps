@@ -51,6 +51,7 @@ enum ZFCmdSource
 class BASIC_API CmdArgument
 {
 public:
+	ZFCmdSource			m_eSource;
 	string				m_strFullCommand;
 	vector<string>		m_kSplitCommand;
 

@@ -54,6 +54,7 @@ class BASIC_API ZFResourceDB : public ZFSubSystem {
 		enum FuncId_e
 		{
 			FID_LISTRES,
+			FID_LISTTYPES,
 		};
 
 
