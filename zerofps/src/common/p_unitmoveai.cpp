@@ -194,7 +194,7 @@ AIBase* P_UnitMoveAI::UpdateAI()
 					
 					m_iCurrentState = UNIT_WAIT;										
 					m_kCurretDestination = m_pkObject->GetPos();
-					m_fWaitTime = m_pkFps->GetGameTime() + ((rand() % 2000)/1000.0);
+					m_fWaitTime = m_pkFps->GetGameTime() + ((rand() % 1000)/1000.0);
 					m_iRetries = 0;
 							
 					return this;
@@ -234,21 +234,20 @@ AIBase* P_UnitMoveAI::UpdateAI()
 		{
 			CheckForOrder();
 			
-			if(m_iRetries >= 4)
+			if(m_iRetries >= 3)
 			{
 				return NULL;
 			
 			}
 			
-			if( (m_pkFps->GetGameTime() - m_fWaitTime) > 1.5)
+			if( (m_pkFps->GetGameTime() - m_fWaitTime) > 1)
 			{
 				//cout<<"trying again " <<m_iRetries<<endl;				
 				m_iRetries++;
 				
 				m_fWaitTime = m_pkFps->GetGameFrameTime();
 				
-				if(!DoPathFind(m_pkObject->GetPos(),m_kEndPos,false))
-					return this;
+				DoPathFind(m_pkObject->GetPos(),m_kEndPos,true);
 			}
 			
 			

@@ -676,7 +676,7 @@ void Object::MakeCloneOf(Object* pkOrginal)
 			cout << " Setting '" << akPropertyNames[i] << "' to '" << (*it)->GetValue(akPropertyNames[i]) << "'\n";
 			}
 		
-		//*pkProp = (*it);
+		// *pkProp = (*it);
 		}
 	
 	
@@ -723,7 +723,7 @@ void Object::SetRot(Vector3 kRot)
 {
 	if(kRot != m_kRot) {
 		m_iNetUpdateFlags |= OBJ_NETFLAG_ROT;
-		cout << "SetRot changed " << endl;
+		//cout << "SetRot changed " << endl;
 		}
 
 	m_kOldRot = m_kRot;
@@ -734,7 +734,7 @@ void Object::SetPos(Vector3 kPos)
 {
 	if(kPos != m_kPos) {
 		m_iNetUpdateFlags |= OBJ_NETFLAG_POS;
-		cout << "SetPos changed " << endl;
+		//cout << "SetPos changed " << endl;
 		}
 
 	m_kOldPos = m_kPos;
