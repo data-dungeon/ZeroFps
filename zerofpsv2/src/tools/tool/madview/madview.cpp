@@ -63,7 +63,6 @@ MadView::MadView(char* aName,int iWidth,int iHeight,int iDepth)
 
 void MadView::OnInit() 
 {
-m_strMadFile = "data/mad/cube.mad";
 
 	//open mad from command line
 	if(g_ZFObjSys.GetNumberOfArguments() >= 2)
@@ -73,21 +72,19 @@ m_strMadFile = "data/mad/cube.mad";
 	}
 
 	//m_pkZFVFileSystem->AddRootPath( "/" , "/");
-	m_pkZFVFileSystem->AddRootPath( "../datafiles/mistlands/",	"/data");
+	//m_pkZFVFileSystem->AddRootPath( "../datafiles/mistlands/",	"/data");
 	m_pkZFVFileSystem->AddRootPath( "../datafiles/madview/", "/data");
 
 	m_pkConsole->Printf(" MadView ");
 	m_pkConsole->Printf("--------------------------------");
 	m_pkConsole->Printf("");
 
-	Init();
-
+	
 	//run autoexec script
-	if(!m_pkIni->ExecuteCommands("/zeroed_autoexec.ini"))
-		m_pkConsole->Printf("No zeroed_autoexec.ini found");
-		
+	if(!m_pkIni->ExecuteCommands("/madview_autoexec.ini"))
+		m_pkConsole->Printf("No madview_autoexec.ini found");
 	
-	
+	Init();
 }
 
 void MadView::Init()
@@ -198,6 +195,7 @@ void MadView::CreateCamera()
 	m_pkCamera=new Camera(Vector3(0,0,0),Vector3(0,0,0),70,1.333,0.25,250);	
 	m_pkCamera->m_bForceFullScreen = true;
 	m_pkCamera->SetName("persp");
+	//m_pkCamera->SetClearViewPort(true);
 	m_pkZeroFps->AddRenderCamera(m_pkCamera);
 
 	m_pkCameraObject = m_pkEntityManager->CreateEntityFromScript("data/script/objects/t_camedit.lua");
