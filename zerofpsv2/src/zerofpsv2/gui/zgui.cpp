@@ -335,8 +335,8 @@ bool ZGui::Render(int fps)
 	//m_pkRenderer->RenderRects(m_kRectsToDraw); 
 
 	//// Draw lines
-	//m_pkRenderer->RenderLines(m_kLinesToDraw,
-	//	m_acLineColor[0],m_acLineColor[1],m_acLineColor[2],1.0f);
+	m_pkRenderer->RenderLines(m_kLinesToDraw,
+		m_acLineColor[0],m_acLineColor[1],m_acLineColor[2],1.0f);
 
 	 if(m_pkToolTip)
 	 {
