@@ -33,7 +33,7 @@
 #include "../mcommon/ml_netmessages.h"
 #include "../mcommon/p_charactercontrol.h"
 #include "../mcommon/p_characterproperty.h"
-#include "../zerofpsv2/engine_systems/propertys/propertys.pkg"
+#include "../zerofpsv2/engine_systems/propertys/p_ambientsound.h"
 
 ZeroEd g_kZeroEd("ZeroEd", 0, 0, 0);
 

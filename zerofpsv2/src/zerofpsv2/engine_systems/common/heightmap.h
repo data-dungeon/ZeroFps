@@ -1,6 +1,6 @@
 #ifndef _BASIC_HEIGHTMAP_H_
 #define _BASIC_HEIGHTMAP_H_
-
+ 
 #include <SDL/SDL.h>
 #include "../engine_systems_x.h"
 #include <vector>

@@ -1,5 +1,5 @@
 #include "zeroed.h"
-#include "../zerofpsv2/engine_systems/propertys/propertys.pkg"
+#include "../zerofpsv2/engine_systems/propertys/p_ambientsound.h"
 
 void ZeroEd::SetupGuiEnviroment()
 {

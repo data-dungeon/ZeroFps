@@ -9,7 +9,6 @@
 #include <algorithm>
   
 #include "mistserver.h"
-#include "../zerofpsv2/engine_systems/common/heightmap.h"
 #include "../zerofpsv2/engine/p_pfpath.h"
 #include "../zerofpsv2/gui/zgui.h"
 #include "../zerofpsv2/engine_systems/script_interfaces/si_gui.h"
@@ -23,9 +22,8 @@
 #include "../mcommon/ml_netmessages.h"
 #include "../mcommon/p_charactercontrol.h"
 #include "../mcommon/p_characterproperty.h"
-#include "../zerofpsv2/engine_systems/propertys/propertys.pkg"
-
-
+#include "../zerofpsv2/engine_systems/propertys/p_track.h"
+ 
 MistServer g_kMistServer("MistServer", 0, 0, 0);
 Entity* pkEntTestArc;
 

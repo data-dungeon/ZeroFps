@@ -194,9 +194,6 @@
 				RelativePath=".\i_camera.cpp">
 			</File>
 			<File
-				RelativePath="..\engine_systems\common\i_heightmap2.cpp">
-			</File>
-			<File
 				RelativePath=".\i_zerofps.cpp">
 			</File>
 			<File
@@ -345,9 +342,6 @@
 				RelativePath=".\i_camera.h">
 			</File>
 			<File
-				RelativePath="..\engine_systems\common\i_heightmap2.h">
-			</File>
-			<File
 				RelativePath=".\i_zerofps.h">
 			</File>
 			<File
@@ -382,9 +376,6 @@
 			</File>
 			<File
 				RelativePath="..\engine_systems\propertys\p_billboardrender.h">
-			</File>
-			<File
-				RelativePath="..\engine_systems\propertys\p_body.h">
 			</File>
 			<File
 				RelativePath="..\engine_systems\propertys\p_camera.h">
