@@ -122,6 +122,7 @@ class ENGINE_API Camera : public I_Camera
 		//shadow hack
 		unsigned int	m_iShadowTexture;
 		int				m_iShadowSize;
+		float				m_fShadowArea;
 		int				m_iCurrentRenderMode;
 		
 		Matrix4			m_kLightProjMatrix;

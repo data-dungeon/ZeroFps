@@ -66,8 +66,9 @@ Camera::Camera(Vector3 kPos,Vector3 kRot,float fFov,float fAspect,float fNear,fl
 	else if(iMaxSize >= 512 )
 		m_iShadowSize = 512;
 	
-
+		
 	m_iShadowTexture = -1;
+	m_fShadowArea = 30;
 	
 	glGenTextures(1, &m_iShadowTexture);
 	glBindTexture(GL_TEXTURE_2D, m_iShadowTexture);
@@ -82,7 +83,8 @@ Camera::Camera(Vector3 kPos,Vector3 kRot,float fFov,float fAspect,float fNear,fl
 
 	//Light projection matrix
  	m_pkZShaderSystem->MatrixMode(MATRIX_MODE_PROJECTION);		
- 	m_pkZShaderSystem->MatrixGeneratePerspective(25,1,m_fNear,m_fFar);
+	m_pkZShaderSystem->MatrixGenerateOrtho(-m_fShadowArea,m_fShadowArea,-m_fShadowArea,m_fShadowArea,m_fNear,m_fFar);
+ 	//m_pkZShaderSystem->MatrixGeneratePerspective(25,1,m_fNear,m_fFar);
  	m_pkZShaderSystem->MatrixSave(&m_kLightProjMatrix);			
 }
 
