@@ -133,8 +133,8 @@ ZeroFps::ZeroFps(void) : I_ZeroFps("ZeroFps")
 	RegisterVariable("e_lockfps",			&m_bLockFps,				CSYS_BOOL);	
 	RegisterVariable("r_axis",				&m_bDrawAxisIcon,			CSYS_BOOL);	
 	RegisterVariable("p_tcsfullframe",	&m_bTcsFullframe,			CSYS_BOOL);	
-	RegisterVariable("e_profile",			g_ZFObjSys.GetProfileEnabledPointer(),			CSYS_BOOL);	
-	
+	RegisterVariable("e_profile",			g_ZFObjSys.GetProfileEnabledPointer(),		CSYS_BOOL);	
+	RegisterVariable("e_log",				g_ZFObjSys.GetLogEnabledPointer(),			CSYS_BOOL);	
 	
 	
 	// Register Commands
@@ -1654,10 +1654,10 @@ void ZeroFps::QuitEngine()
 	{
 		m_pkEntityManager->GetWorldEntity()->GetAllVarNames(kPropertyNames);
 
-		LOGF("net", "WorldObject Dump %f\n", GetEngineTime());
+		g_Logf("net", "WorldObject Dump %f\n", GetEngineTime());
 		for(unsigned int i=0; i<kPropertyNames.size(); i++) 
 		{
-			LOGF("net", " %s %f\n",kPropertyNames[i].c_str(),  m_pkEntityManager->GetWorldEntity()->GetVarDouble(kPropertyNames[i]));
+			g_Logf("net", " %s %f\n",kPropertyNames[i].c_str(),  m_pkEntityManager->GetWorldEntity()->GetVarDouble(kPropertyNames[i]));
 		}
 	}
 

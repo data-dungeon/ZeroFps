@@ -94,6 +94,9 @@ class BASIC_API ZFSystem	/*	ZFSystem	*/
 private:
 	CmdSystem*				m_pkCmdSystem;
 
+	//want to log
+	bool						m_bLogEnabled;
+	
 	//profileing
 	bool								m_bProfileEnabled;
 	map<string,ProfileTimer>	m_kTimers;
@@ -145,6 +148,9 @@ public:
 	void ClearProfileTimers();
 	void GetProfileTimers(vector<TimerInfo >* pkTimers);
 	int GetTotalTime();					/*{	return SDL_GetTicks() - m_iTotalTime;	};*/
+	
+	bool* GetLogEnabledPointer()		{	return &m_bLogEnabled;						};
+	bool  GetLogEnabled()				{	return m_bLogEnabled;						};	
 	bool* GetProfileEnabledPointer()	{	return &m_bProfileEnabled;					};
 	bool  GetProfileEnabled()			{	return m_bProfileEnabled;					};
 	

@@ -30,11 +30,11 @@ bool TextureManager::StartUp()
 bool TextureManager::ShutDown()
 {
 	if(m_iTextures.size()) {
-		LOGF("zerofps", "TextureManager::ShutDown: There are loaded textures left\n");
+		g_Logf("zerofps", "TextureManager::ShutDown: There are loaded textures left\n");
 		
 		for(unsigned int i=0; i < m_iTextures.size(); i++) {
 			if(m_iTextures[i])
-				LOGF("zerofps", " [%d] = %s\n", i, m_iTextures[i]->file.c_str());
+				g_Logf("zerofps", " [%d] = %s\n", i, m_iTextures[i]->file.c_str());
 			}
 		}
 	

@@ -124,6 +124,7 @@ ZFSystem::ZFSystem()
 	m_pkCmdSystem = new CmdSystem;
 	
 	m_bProfileEnabled =	false;
+	m_bLogEnabled	=		true;
 	m_iTotalTime = 		0;	
 }
 
@@ -688,6 +689,8 @@ ZFLogFile*	ZFSystem::Log_Find(const char* szName)
 			return &m_kLogFiles[i];
 		}
 
+	cout<<"WARNING: ZFSystem::Log_Find , log "<<szName<< " not found"<<endl;
+		
 	return NULL;
 }
 
@@ -731,6 +734,9 @@ void ZFSystem::Log(const char* szMessage)
 
 void ZFSystem::Log(const char* szName, const char* szMessage)
 {
+	if(!m_bLogEnabled)
+		return;
+
 	ZFLogFile* pkLog = Log_Find( szName );
 	if(!pkLog)
 		return;
@@ -742,6 +748,10 @@ char g_LogFormatTxt2[4096];
 
 void ZFSystem::Logf(const char* szName, const char* szMessageFmt,...)
 {
+	if(!m_bLogEnabled)
+		return;
+
+
 	ZFLogFile* pkLog = Log_Find( szName );
 	if(!pkLog)
 		return;

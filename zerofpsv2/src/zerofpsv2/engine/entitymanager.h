@@ -124,6 +124,7 @@ class ENGINE_API EntityManager : public ZFSubSystem{
 		
 		//debug
 		bool						m_bDrawZones;						//shuld zones be drawed
+		bool						m_bDrawEnviroments;
 		bool						m_bDrawZoneConnections;			//shuld connection betwen zones be drawed
 		
 		// sim time system

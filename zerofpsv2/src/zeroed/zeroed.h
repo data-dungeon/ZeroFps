@@ -92,7 +92,8 @@ class ZeroEd :public Application , public ZGuiApp {
 			EDIT_OBJECTS,
 			EDIT_HMAP,
 			EDIT_MAX,
-			EDIT_AMBIENTSOUNDS,		
+			EDIT_AMBIENTSOUNDS,
+			EDIT_ENVIROMENTS,		
 		};
 
 		enum GUISelectFileWndState_e

@@ -1160,7 +1160,7 @@ void TabIn(int iSpaces)
 {
 	int i;
 	for(i=0;i<iSpaces;i++)	
-		LOGF("fisklins"," ");
+		g_Logf("fisklins"," ");
 }
 
 /**	\brief	Print Info about a Entity and all its children to file.
@@ -1170,28 +1170,28 @@ void Entity::PrintTree(int pos)
 	const char* szValue;
 	string strValue;
 
-	LOGF("fisklins", "" );
+	g_Logf("fisklins", "" );
 
 	TabIn(pos);
 
-	TabIn(pos);			LOGF("fisklins", "Entity[%d]\n", m_iEntityID);
-	TabIn(pos);			LOGF("fisklins", "{\n" );
+	TabIn(pos);			g_Logf("fisklins", "Entity[%d]\n", m_iEntityID);
+	TabIn(pos);			g_Logf("fisklins", "{\n" );
 
-	TabIn(pos + 3);	LOGF("fisklins", "Name = %s\n", GetName().c_str() );
-	TabIn(pos + 3);	LOGF("fisklins", "ObjType = %s\n", m_strType.c_str() );
-	TabIn(pos + 3);	LOGF("fisklins", "Pos = <%f,%f,%f>\n", GetWorldPosV().x, GetWorldPosV().y, GetWorldPosV().z );
-	TabIn(pos + 3);	LOGF("fisklins", "Rot = <%f,%f,%f>\n", GetWorldRotV().x, GetWorldRotV().y, GetWorldRotV().z );
-	TabIn(pos + 3);	LOGF("fisklins", "Vel = <%f,%f,%f>\n", m_kVel.x, m_kVel.y, m_kVel.z );
-	TabIn(pos + 3);	LOGF("fisklins", "m_kAcc = <%f,%f,%f>\n", m_kAcc.x, m_kAcc.y, m_kAcc.z );
-	TabIn(pos + 3);	LOGF("fisklins", "Name = %s\n", m_strType.c_str() );
+	TabIn(pos + 3);	g_Logf("fisklins", "Name = %s\n", GetName().c_str() );
+	TabIn(pos + 3);	g_Logf("fisklins", "ObjType = %s\n", m_strType.c_str() );
+	TabIn(pos + 3);	g_Logf("fisklins", "Pos = <%f,%f,%f>\n", GetWorldPosV().x, GetWorldPosV().y, GetWorldPosV().z );
+	TabIn(pos + 3);	g_Logf("fisklins", "Rot = <%f,%f,%f>\n", GetWorldRotV().x, GetWorldRotV().y, GetWorldRotV().z );
+	TabIn(pos + 3);	g_Logf("fisklins", "Vel = <%f,%f,%f>\n", m_kVel.x, m_kVel.y, m_kVel.z );
+	TabIn(pos + 3);	g_Logf("fisklins", "m_kAcc = <%f,%f,%f>\n", m_kAcc.x, m_kAcc.y, m_kAcc.z );
+	TabIn(pos + 3);	g_Logf("fisklins", "Name = %s\n", m_strType.c_str() );
 
-	TabIn(pos + 3);	LOGF("fisklins", "UpdateStatus = %d\n", m_iUpdateStatus );
-	TabIn(pos + 3);	LOGF("fisklins", "Save = %d\n", m_bSave );
+	TabIn(pos + 3);	g_Logf("fisklins", "UpdateStatus = %d\n", m_iUpdateStatus );
+	TabIn(pos + 3);	g_Logf("fisklins", "Save = %d\n", m_bSave );
 
 	vector<string> akPropertyNames;
 	
 	for(vector<Property*>::iterator it = m_akPropertys.begin(); it != m_akPropertys.end(); it++) {
-		TabIn(pos + 3);	LOGF("fisklins", "%s\n" ,(*it)->m_acName);
+		TabIn(pos + 3);	g_Logf("fisklins", "%s\n" ,(*it)->m_acName);
 		akPropertyNames = (*it)->GetValueNames();
 
 		for(unsigned int i=0; i < akPropertyNames.size(); i++) {
@@ -1199,8 +1199,8 @@ void Entity::PrintTree(int pos)
 			szValue = strValue.c_str();
 
 			TabIn(pos + 6);
-				LOGF("fisklins", "%s = ",akPropertyNames[i].c_str());
-				LOGF("fisklins", "%s\n",szValue );
+				g_Logf("fisklins", "%s = ",akPropertyNames[i].c_str());
+				g_Logf("fisklins", "%s\n",szValue );
 			}
 		}
 
@@ -1208,7 +1208,7 @@ void Entity::PrintTree(int pos)
 		(*it2)->PrintTree(pos+1);
 	}
 
-	TabIn(pos);	LOGF("fisklins", "}\n" );
+	TabIn(pos);	g_Logf("fisklins", "}\n" );
 }
 
 

@@ -707,6 +707,11 @@ void ZeroEd::RenderInterface(void)
 		DrawHMEditMarker(pkMap, m_kDrawPos, m_fHMInRadius,m_fHMOutRadius);
 	}
 
+	if(m_iEditMode == EDIT_ENVIROMENTS)
+	{
+		
+	}
+	
 	
 	if(m_iEditMode == EDIT_ZONES)
 		UpdateModelMarker(m_kZoneMarkerPos,true);

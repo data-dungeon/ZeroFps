@@ -67,6 +67,7 @@ EntityManager::EntityManager()
 	m_iNumOfNetEntitys		= 0;
 	m_bDrawZones				= false;
 	m_bDrawZoneConnections	= false;
+	m_bDrawEnviroments		= false;
 	m_iTrackerLOS				= 25;	
 	m_iObjectDistance			= 50;
 	m_fZoneUnloadTime			= 3;	
@@ -83,6 +84,8 @@ EntityManager::EntityManager()
 	m_iSendType					= ZF_NETTYPE_REL;			// ZF_NETTYPE_UNREL	ZF_NETTYPE_REL
 
 	// Register Variables
+		
+	RegisterVariable("l_showenvs",			&m_bDrawEnviroments,			CSYS_BOOL);
 	RegisterVariable("l_showzones",			&m_bDrawZones,					CSYS_BOOL);
 	RegisterVariable("l_showconn",			&m_bDrawZoneConnections,	CSYS_BOOL);
 	RegisterVariable("e_simspeed",			&m_fSimTimeScale,				CSYS_FLOAT);
@@ -143,7 +146,7 @@ EntityManager::~EntityManager()
 		fAvgObjSize = float(m_iTotalNetEntityData / m_iNumOfNetEntitys);
 		}
 
-	LOGF("net", " Avg Obj Size: %f\n", fAvgObjSize);
+	g_Logf("net", " Avg Obj Size: %f\n", fAvgObjSize);
 	
 	//LOGF("net", "apan är löst");
 	
@@ -1032,13 +1035,13 @@ void EntityManager::DisplayTree()
 
 void EntityManager::DumpActiverPropertysToLog(char* szMsg)
 {
-	LOGF("net", "%s : %d\n", szMsg, m_akPropertys.size() );
+	g_Logf("net", "%s : %d\n", szMsg, m_akPropertys.size() );
 
 	for(vector<Property*>::iterator it=m_akPropertys.begin();it!=m_akPropertys.end();it++) 
 	{
-		LOGF("net", "%s (%d)", (*it)->m_acName, (*it)->GetEntity()->m_iEntityID );
+		g_Logf("net", "%s (%d)", (*it)->m_acName, (*it)->GetEntity()->m_iEntityID );
 		if((*it)->GetEntity()->m_pkParent)
-			LOGF("net", " Parent Obj: %s\n", (*it)->GetEntity()->m_pkParent->m_strName.c_str() );
+			g_Logf("net", " Parent Obj: %s\n", (*it)->GetEntity()->m_pkParent->m_strName.c_str() );
 	}
 	
 }
@@ -1284,7 +1287,7 @@ void EntityManager::OwnerShip_Request(Entity* pkObj)
 	NP.TargetSetClient(ZF_NET_ALLCLIENT);
 	m_pkNetWork->Send2(&NP);
 //	net->SendToAllClients(&NP);
-	LOGF("net", " Sending Own Request for %d\n", pkObj->m_iEntityID);
+	g_Logf("net", " Sending Own Request for %d\n", pkObj->m_iEntityID);
 	
 }
 
@@ -1308,7 +1311,7 @@ void EntityManager::OwnerShip_OnRequest(Entity* pkObj)
 //	net->SendToAllClients(&NP);
 
 	OwnerShip_Give(pkObj);
-	LOGF("net", " Gives away ownership of %d\n", pkObj->m_iEntityID);
+	g_Logf("net", " Gives away ownership of %d\n", pkObj->m_iEntityID);
 
 }
 
@@ -1318,7 +1321,7 @@ void EntityManager::OwnerShip_OnGrant(Entity* pkObj)
 		return;
 
 	OwnerShip_Take(pkObj);
-	LOGF("net", " This node now own %d\n", pkObj->m_iEntityID);
+	g_Logf("net", " This node now own %d\n", pkObj->m_iEntityID);
 }
 
 Entity* EntityManager::CloneEntity(int iNetID)
@@ -1412,12 +1415,35 @@ void EntityManager::DrawZones(const vector<ZoneData>* pkZoneList)
 		pkMatZoneCache->GetPass(0)->m_kVertexColor = m_pkRender->GetEditColor("inactive/zoneunloading");
 	}					
 	
+	static ZMaterial* pkMatText = NULL;	
+	if(!pkMatText)
+	{
+		pkMatText = new ZMaterial;
+		pkMatText->GetPass(0)->m_kTUs[0]->SetRes("data/textures/text/defguifont.tga");
+		pkMatText->GetPass(0)->m_iPolygonModeFront = 	FILL_POLYGON;
+		pkMatText->GetPass(0)->m_iCullFace = 				CULL_FACE_BACK;		
+		pkMatText->GetPass(0)->m_bLighting = 				false;		
+		pkMatText->GetPass(0)->m_bColorMaterial = 		true;
+		pkMatText->GetPass(0)->m_kVertexColor =			Vector3(1,0,1);
+		pkMatText->GetPass(0)->m_bFog = 						false;		
+		pkMatText->GetPass(0)->m_bAlphaTest =				true;		
+		pkMatText->GetPass(0)->m_bDepthTest = 				true;	
+	}
+		
+	ZGuiFont* m_pkFont=NULL;
+	if(!m_pkFont)
+	{
+		m_pkFont = new ZGuiFont("defguifont");
+		m_pkFont->Create("/data/textures/text/defguifont.fnt",-1);	
+	}
+		
 	//draw zones
 	for(unsigned int i=0;i<pkZoneList->size();i++) 
 	{
 		if((*pkZoneList)[i].m_iStatus == EZS_UNUSED)
 			continue;
 
+			
 		Vector3 kMin = (*pkZoneList)[i].m_kPos;
 		Vector3 kMax = (*pkZoneList)[i].m_kPos + (*pkZoneList)[i].m_kSize / 2;
 		kMin.x -= int( (*pkZoneList)[i].m_kSize.x / 2 );
@@ -1433,6 +1459,12 @@ void EntityManager::DrawZones(const vector<ZoneData>* pkZoneList)
 			case EZS_LOADED:
 				m_pkZShaderSystem->BindMaterial(pkMatZoneOn);
 				m_pkRender->DrawAABB(kMin,kMax);
+				
+				//print enviroment
+				if(m_bDrawEnviroments)
+					if(!((*pkZoneList)[i].m_strEnviroment.empty()))
+						m_pkRender->PrintBillboard(m_pkZeroFps->GetCam()->GetRotM(),(*pkZoneList)[i].m_kPos,1,(*pkZoneList)[i].m_strEnviroment,pkMatText,m_pkFont,true);
+				
 				break;
 		
 			case EZS_UNLOADED:

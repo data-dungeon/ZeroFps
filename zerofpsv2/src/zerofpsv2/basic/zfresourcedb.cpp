@@ -189,7 +189,7 @@ bool ZFResourceDB::ShutDown()
 		list<ZFResourceInfo*>::iterator it;
 
 		for(it = m_kResources.begin(); it != m_kResources.end(); it++ )
-			LOGF("resdb", " [%d] = %s\n", (*it)->m_iNumOfUsers, (*it)->m_strName.c_str() );
+			g_Logf("resdb", " [%d] = %s\n", (*it)->m_iNumOfUsers, (*it)->m_strName.c_str() );
 	}
 
 	return true; 
@@ -284,12 +284,12 @@ void ZFResourceDB::ReloadResource(ZFResourceInfo* pkResInfo)
 
 	// Failed to create resource.
 	if(!pkRes) {
-		LOGF("resdb", "Failed to create resource %s\n", pkResInfo->m_strName.c_str());
+		g_Logf("resdb", "Failed to create resource %s\n", pkResInfo->m_strName.c_str());
 		return;
 		}
 
 	if(pkRes->Create(pkResInfo->m_strName.c_str()) == false) {
-		LOGF("resdb", "Failed to Load resource %s\n", pkResInfo->m_strName.c_str());
+		g_Logf("resdb", "Failed to Load resource %s\n", pkResInfo->m_strName.c_str());
 		return;
 		}
 
@@ -336,14 +336,14 @@ void ZFResourceDB::GetResource(ZFResourceHandle& kResHandle, string strResName)
 
 	// Failed to create resource.
 	if(!pkRes) {
-		LOGF("resdb", "Failed to create resource %s\n", strResName.c_str());
+		g_Logf("resdb", "Failed to create resource %s\n", strResName.c_str());
 //		cout<<"Error: failed to create resource "<<strResName<<endl;
 		return;
 		}
 
 	//Mad_Core* pkCore = new Mad_Core;
 	if(pkRes->Create(strResName.c_str()) == false) {
-		LOGF("resdb", "Failed to Load resource %s\n", strResName.c_str());
+		g_Logf("resdb", "Failed to Load resource %s\n", strResName.c_str());
 		return;
 		}
 
@@ -366,7 +366,7 @@ void ZFResourceDB::FreeResource(ZFResourceHandle& kResHandle)
 {
 	ZFResourceInfo* pkRes = GetResourceData(kResHandle.m_strName);
 	if(pkRes == NULL) {
-		LOGF("resdb", "FreeResource on non valid handle.\n", kResHandle.m_strName.c_str());
+		g_Logf("resdb", "FreeResource on non valid handle.\n", kResHandle.m_strName.c_str());
 		return;
 		}
 
