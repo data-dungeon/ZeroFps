@@ -66,6 +66,7 @@ void PlayerControlProperty::Update() {
 	if(m_pkInput->Pressed(KEY_Q)){
 		Object *test = new BunnyObject();
 		test->GetPos()=m_pkObject->GetPos();
+		m_pkObjectMan->GetWorldObject()->AddChild(test);
 		m_pkObjectMan->Add(test);
 		m_pkCollisionMan->Add(test);	
 	}	

@@ -20,7 +20,7 @@ class ENGINE_API CollisionHeightMap:public CollisionObject
 		bool CollideSphere(CollisionSphere *pkCs,Vector3 *pkPos);
 		bool CollidePoint(CollisionPoint *pkCp,Vector3 *pkPos);
 		
-		float GetBoundingRadius() {return sqrt(m_pkHM->m_iHmSize*m_pkHM->m_iHmSize + m_pkHM->m_iHmSize*m_pkHM->m_iHmSize)/2 ;};
+		float GetBoundingRadius() {return sqrt(float(m_pkHM->m_iHmSize*m_pkHM->m_iHmSize + m_pkHM->m_iHmSize*m_pkHM->m_iHmSize))/2 ;};
 };
 
 #endif
