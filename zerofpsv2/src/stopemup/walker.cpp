@@ -25,11 +25,11 @@ P_Walker::P_Walker()
 	float fPlayers = m_pkStopEmUp->GetPlayers();
 	float fLevel =  m_pkStopEmUp->GetLevel();
 	
-	fPlayers *= 0.80;	
+	fPlayers *= 1.00;	
 	if(fPlayers < 1)
 		fPlayers = 1;
 	
-	fLevel *= 0.30;
+	fLevel *= 0.40;
 	if(fLevel < 1)
 		fLevel = 1;
 			
@@ -258,7 +258,7 @@ void P_Walker::Touch(int iID)
 				
 			int iOwner = pkEnt->GetVarDouble("owner");
 		
-			Damage(20,iOwner);
+			Damage(15,iOwner);
 			m_pkEntityManager->Delete(pkEnt);
 		}
 	
