@@ -121,11 +121,24 @@ char* ZFBasicFS::GetCWD()
 
 bool ZFBasicFS::DirExist(const char* acName)
 {
-	if(CreateFile(acName, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, 
-		FILE_ATTRIBUTE_NORMAL,0) == INVALID_HANDLE_VALUE)
+	if(acName == NULL)
 		return false;
 
-	return true;
+	char* szPath = new char[strlen(acName)+5];
+	strcpy(szPath, acName);
+
+	if(strnicmp("\\*",acName+strlen(acName)-2,2))
+		strcat(szPath, "\\*");
+
+	HANDLE res;
+	WIN32_FIND_DATA finddata;
+	res = FindFirstFile(szPath, &finddata);
+
+	bool bExist = (res == INVALID_HANDLE_VALUE) ? false : true;
+
+	FindClose(res);
+
+	return bExist;
 }
 
 
