@@ -105,6 +105,7 @@ void ZeroRTS::RegisterActions()
 
 void ZeroRTS::RegisterPropertys()
 {
+	pkPropertyFactory->Register("P_UnitSystem", Create_P_UnitSystem);	
 	pkPropertyFactory->Register("P_UnitMoveAI", Create_P_UnitMoveAI);	
 	pkPropertyFactory->Register("P_FogRender", Create_P_FogRender);	
 	pkPropertyFactory->Register("P_RenderSelection", Create_P_RenderSelection);	
@@ -123,7 +124,7 @@ void ZeroRTS::OnIdle()
 	Input();
 	
 
-/*
+/* DVOID
 	PickInfo p = Pick();
 	
 	Point bla = GetSqrFromPos(p.kHitPos);
@@ -209,11 +210,7 @@ void ZeroRTS::OnSystem()
 					if(m_pkClientInput != NULL)
 					{
 						cout<<"Found client input property"<<endl;					
-						
-						//run client init
 						cout << "My Num: " << m_pkClientInput->m_iPlayerID;
-						//ClientInit();
-						
 					}
 				}
 			}
@@ -916,11 +913,13 @@ void ZeroRTS::SetupSpawnPoints()
 
 void ZeroRTS::OnServerStart(void)
 {	
+	cout<<"HOCKER"<<endl;
+
 	//add server info property
 	if(!pkObjectMan->GetObject("A ServerInfoObject"))
 	{
 		Object* pkObj = pkObjectMan->CreateObjectByArchType("ServerInfoObject");
-		if(!pkObjectMan->CreateObjectByArchType("ServerInfoObject"))
+		if(!pkObj)
 			cout<<"Faild to create serverinfoobject"<<endl;
 		else
 			pkObjectMan->GetWorldObject()->AddChild(pkObj);

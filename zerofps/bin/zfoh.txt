@@ -11,6 +11,7 @@ class object
 	class ServerInfoObject
 		parent object
 		add P_ServerInfo
+		add P_UnitSystem
 
 	class ZeroRTSUnit
 		parent object
