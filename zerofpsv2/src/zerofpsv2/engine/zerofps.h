@@ -304,6 +304,8 @@ class ENGINE_API ZeroFps : public I_ZeroFps {
 		void DevPrintf(const char* szName, const char *fmt, ...);
 
 		//graphs
+		bool GetMinimized()					{	return m_bMinimized;		}
+		bool GetRenderOn()					{	return m_bRenderOn;		}
 		bool GetDebugGraph() 				{	return m_bDebugGraph;	}
 		void SetDebugGraph(bool bDebug)	{	m_bDebugGraph = bDebug;	}
 		bool GetDrawAxesIcon() 				{	return m_bDrawAxisIcon;	}

@@ -415,16 +415,15 @@ Vector3 Camera::GetOrthoMove(Vector3 kMove)
 
 void Camera::RenderView()
 {
-	if(!m_bRender)
-		return;
-
 	//set current camera in engine ( render propertys wants to know this)
 	m_pkZeroFps->m_pkCamera=this;			
-		
-		
+				
 	//first make this camera matrises the current ones
 	InitView();
 	
+	//return if no rendering shuld be done
+	if( (!m_bRender) || (!m_pkZeroFps->GetRenderOn()) || m_pkZeroFps->GetMinimized() )
+		return;
 	
 	//get root entity
 	Entity* pkRootEntity = m_pkEntityMan->GetEntityByID(m_iRootEntity);

@@ -687,17 +687,19 @@ Camera* ZeroFps::GetRenderCamera(string strName)
 
 void ZeroFps::Draw_RenderCamera(Camera* pkCamera)
 {
+	//render camera view
+	pkCamera->RenderView();
+	
 	//if render is disable just clear the viewport (looks better)
+	/*
 	if(!m_bRenderOn || m_bMinimized)
 	{
 		pkCamera->InitView();		
 		return;
 	}
-
+	*/
 	//cout<<"rendering camera:"<<pkCamera->GetName()<<endl;
 	
-	//render camera view
-	pkCamera->RenderView();
 
 }
 
