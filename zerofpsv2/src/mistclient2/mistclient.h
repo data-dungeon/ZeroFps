@@ -48,6 +48,7 @@ class MistClient :public Application, public ZGuiApp {
 		int			m_iCharacterID;				//current active character ID      
 		int			m_iPickedEntityID;			// Selected entity for use.								
 		bitset<6>	m_kCharacterControls;
+		bool			m_bDead;
 		
 		//game
 		vector<string>	m_kEmotes;					//emote list

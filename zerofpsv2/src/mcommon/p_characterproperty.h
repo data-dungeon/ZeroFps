@@ -174,6 +174,7 @@ class MCOMMON_API P_CharacterProperty: public Property
 		vector<PropertyValues> GetPropertyValues();				
 		void SendBuffList();
 		void SendStats();
+		void SendDeathInfo();
 		
 		void UpdateStats();		
 		void SetupCharacterStats();

@@ -705,13 +705,16 @@ void P_CharacterProperty::OnDeath()
 		pkMad->SetAnimation("Death",0);
 		pkMad->SetNextAnimation(MAD_NOLOOP);	
 	}
-	
-	
+		
 	//disable character movement
 	if(P_CharacterControl* pkCC = (P_CharacterControl*)m_pkEntity->GetProperty("P_CharacterControl"))
 	{
 		pkCC->SetEnabled(false);	
 	}
+	
+	
+	//send death info to client
+	SendDeathInfo();
 }
 
 void P_CharacterProperty::UpdateSkills()
@@ -1178,6 +1181,19 @@ void P_CharacterProperty::PlayCharacterMovementSounds()
 		m_kCurrentCharacterStates[eJUMPING] =	pkCC->GetCharacterState(eJUMPING);
 		m_kCurrentCharacterStates[eSWIMMING] =	pkCC->GetCharacterState(eSWIMMING);
 	}
+}
+
+void P_CharacterProperty::SendDeathInfo()
+{
+	if(m_iConID == -1)
+		return;
+
+	NetPacket kNp;
+	kNp.Write((char) MLNM_SC_DEAD);	
+	
+	//send package
+	kNp.TargetSetClient(m_iConID);
+	m_pkApp->SendAppMessage(&kNp);		
 }
 
 void P_CharacterProperty::SendStats()

@@ -944,6 +944,14 @@ void MistClient::OnNetworkMessage(NetPacket *pkNetMessage)
 			break;
 		}			
 
+		case MLNM_SC_DEAD:
+		{
+			cout<<"YOU ARE DEAD"<<endl;
+		
+			m_bDead = true;
+			
+			break;
+		}		
 		
 		case MLNM_SC_ITEMINFO:
 		{
@@ -1227,8 +1235,9 @@ void MistClient::OnClientStart(void)
 {
 	m_pkConsole->Printf("Trying to connect");	
 	m_iCharacterID		=	-1;
-	m_iTargetID 			=	-1;
+	m_iTargetID 		=	-1;
 	m_bFrontView		=	false;
+	m_bDead				= false;
 }
 
 void MistClient::OnClientConnected() 
