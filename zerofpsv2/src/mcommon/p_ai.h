@@ -43,6 +43,8 @@ class MCOMMON_API P_AI: public Property
 		void UseOffensiveSkill();
 		float GetOffensiveRange();
 		
+		bool ValidTarget(int iTarget);
+		
 	public:
 
 		P_AI();

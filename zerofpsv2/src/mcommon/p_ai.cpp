@@ -156,6 +156,12 @@ void P_AI::Update()
 		//look at
 		case 2:
 		{
+			if(!ValidTarget(m_iTarget))
+			{
+				m_iState = 1;
+				break;
+			}		
+		
 			if(Entity* pkEnemy = m_pkEntityManager->GetEntityByID(m_iTarget))
 			{
 				float fDistance = pkEnemy->GetWorldPosV().DistanceTo(m_pkEntity->GetWorldPosV());
@@ -179,11 +185,7 @@ void P_AI::Update()
 				}
 				
 			}
-			else
-			{
-				cout<<"target disapered"<<endl;
-				m_iState = 1;
-			}
+
 			
 			break;
 		}
@@ -191,6 +193,12 @@ void P_AI::Update()
 		//chase
 		case 3:
 		{
+			if(!ValidTarget(m_iTarget))
+			{
+				m_iState = 1;
+				break;
+			}		
+		
 			if(Entity* pkEnemy = m_pkEntityManager->GetEntityByID(m_iTarget))
 			{
 				float fDistance = pkEnemy->GetWorldPosV().DistanceTo(m_pkEntity->GetWorldPosV());
@@ -216,11 +224,7 @@ void P_AI::Update()
 				
 			
 			}
-			else
-			{
-				cout<<"target disapered"<<endl;
-				m_iState = 1;
-			}			
+	
 			
 			break;
 		}
@@ -228,6 +232,12 @@ void P_AI::Update()
 		//attack
 		case 5:
 		{
+			if(!ValidTarget(m_iTarget))
+			{
+				m_iState = 1;
+				break;
+			}
+			
 			if(Entity* pkEnemy = m_pkEntityManager->GetEntityByID(m_iTarget))
 			{
 				float fDistance = pkEnemy->GetWorldPosV().DistanceTo(m_pkEntity->GetWorldPosV());
@@ -244,11 +254,6 @@ void P_AI::Update()
 				UseOffensiveSkill();
 	
 			}
-			else
-			{
-				cout<<"target disapered"<<endl;
-				m_iState = 1;				
-			}
 			
 			break;							
 		}	
@@ -260,6 +265,15 @@ void P_AI::Update()
          break;							
 		}
 	}
+}
+
+bool P_AI::ValidTarget(int iTarget)
+{
+	if(P_CharacterProperty* pkCP = (P_CharacterProperty*)m_pkEntityManager->GetPropertyFromEntityID(iTarget,"P_CharacterProperty"))
+		if(!pkCP->IsDead())
+			return true;	
+
+	return false;	
 }
 
 void P_AI::Touch(int iID)
@@ -350,6 +364,8 @@ int P_AI::FindClosestEnemy(float fMaxRange)
 				
 			if(P_CharacterProperty* pkCP = static_cast<P_CharacterProperty*>(pkProp))
 			{
+				if(pkCP->IsDead())
+					continue;
 				//found character
 				
 				//is it eeevil?
