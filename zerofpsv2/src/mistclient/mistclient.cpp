@@ -59,6 +59,10 @@ static bool GUIPROC( ZGuiWnd* win, unsigned int msg, int numparms, void *params 
 		g_kMistClient.OnSelectCB(((int*)params)[0], ((int*)params)[1], win);
 		break;
 
+	case ZGM_KEYPRESS:
+		g_kMistClient.OnKeyPress(((int*)params)[0], win);		
+		break;
+
 	}
 	return true;
 }
@@ -166,6 +170,11 @@ void MistClient::Init()
 	// give focus to main window
 	pkGui->SetFocus(GetWnd("MainWnd")); 
 
+	// Bara test.. //////////////////////
+		GetWnd("IntroWnd")->Hide();
+		pkScript->Call(m_pkScriptResHandle, "CreatePlayerPanel", 0, 0);
+		CreateGuiInterface();
+	/////////////////////////////////////
 
 }
 
@@ -245,6 +254,9 @@ void MistClient::OnIdle()
 
 	if(m_pkSkillDlg && m_pkSkillDlg->IsVisible())
 		m_pkSkillDlg->Update();
+
+	if(m_pkStatsDlg && m_pkStatsDlg->IsVisible())
+		m_pkStatsDlg->Update();
 
 }
 
@@ -670,9 +682,12 @@ void MistClient::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 					m_pkInventDlg = new InventoryDlg(GetWnd("BackPackWnd"));
 
 					// Set current container and main container
-					P_Item* pkItem = (P_Item*) m_pkActiveCharacter->GetProperty("P_Item");
-					m_pkInventDlg->SetCurrentContainer( pkItem->m_pkItemStats->m_iContainerID );
-					m_pkInventDlg->SetMainContainer( pkItem->m_pkItemStats->m_iContainerID );
+					if(m_pkActiveCharacter)
+					{
+						P_Item* pkItem = (P_Item*) m_pkActiveCharacter->GetProperty("P_Item");
+						m_pkInventDlg->SetCurrentContainer( pkItem->m_pkItemStats->m_iContainerID );
+						m_pkInventDlg->SetMainContainer( pkItem->m_pkItemStats->m_iContainerID );
+					}
 				}
 
 				// order itemcontainer to begin gather iteminfo from server
@@ -680,26 +695,37 @@ void MistClient::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 				{
 					pkGui->SetFocus(GetWnd("BackPackWnd"));
 
-				   ((P_Item*)m_pkActiveCharacter->GetProperty("P_Item"))->
-						GetAllItemsInContainer(m_pkInventDlg->m_pkAddItemList);  
+					if(m_pkActiveCharacter)
+						((P_Item*)m_pkActiveCharacter->GetProperty("P_Item"))->
+							GetAllItemsInContainer(m_pkInventDlg->m_pkAddItemList);  
 
 				}
 				else
 					pkGui->SetFocus(GetWnd("PanelBkWnd"));
 
+/*				// comment out by zeb
             CharacterProperty* pkCP = (CharacterProperty*)m_pkActiveCharacter->GetProperty("P_CharStats");
 
-            if ( pkCP )
+            if ( pkCP ) 
                pkCP->RequestUpdateFromServer("skills");
             else
-               cout << "Errorrrrrrrrrrrrr!" << endl;
+               cout << "Errorrrrrrrrrrrrr!" << endl;*/
 			}
 			if(strClickWndName == "StatsButton")
 			{
-				pkScript->Call(m_pkScriptResHandle, "OnClickStats", 0, 0);
+				bool bExist = GetWnd("StatsWnd") != NULL;
+
+				pkScript->Call(m_pkScriptResHandle, "OnClickStats", 0, 0); // create
+
 
 				if ( GetWnd("StatsWnd")->IsVisible() )
 					pkGui->SetFocus(GetWnd("StatsWnd"));
+
+				if(m_pkActiveCharacter)
+					m_pkStatsDlg->SetCharacterProperty((CharacterProperty*)
+						m_pkActiveCharacter->GetProperty("P_CharStats"));
+
+				m_pkStatsDlg->ToogleOpen();
 			}
 			else
 			if(strClickWndName == "MapButton")
@@ -1181,16 +1207,11 @@ void MistClient::CreateGuiInterface()
 	GetWnd("InputBox")->SetFont( pkFont);
 	GetWnd("InfoBox")->GetFont()->m_cCharCellSize = 12; 	
 
-/*	pkGui->AddKeyCommand(KEY_RETURN, GetWnd("InputBox"), GetWnd("SendInputBoxBn") );
-	pkGui->AddKeyCommand(KEY_RETURN, GetWnd("MainWnd"), GetWnd("ToggleInputBoxBn") );
-	pkGui->AddKeyCommand(KEY_RETURN, GetWnd("PanelBkWnd"), GetWnd("ToggleInputBoxBn") );*/
-
 	m_pkQuickBoard = new QuickBoard(this);
-	//m_pkQuickBoard->AddQuickItem("apple", NULL);
 	
 	m_pkSpellDlg = new SpellDlg(this, m_pkQuickBoard);
-
 	m_pkSkillDlg = new SkillDlg(this, m_pkQuickBoard);
+	m_pkStatsDlg = new StatsDlg(this);
 
 	// give focus to main window
 	pkGui->SetFocus(GetWnd("PanelBkWnd")); 
@@ -1461,3 +1482,18 @@ void MistClient::UpdateCullObjects()
 		
 }
 
+void MistClient::OnKeyPress(int iKey, ZGuiWnd *pkWnd)
+{
+	if(iKey == KEY_ESCAPE)
+	{
+		if(pkWnd && pkWnd->IsVisible()  )
+		{
+			if(strcmp(pkWnd->GetName(), "StatsWnd") == 0)
+			{
+				pkWnd->Hide();
+				pkGui->SetFocus(GetWnd("MainWnd")); 
+				pkAudioSys->StartSound("/data/sound/close_window.wav",pkAudioSys->GetListnerPos()); 
+			}
+		}
+	}
+}

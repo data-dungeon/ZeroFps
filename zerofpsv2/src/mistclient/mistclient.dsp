@@ -109,6 +109,10 @@ SOURCE=.\skilldlg.cpp
 
 SOURCE=.\spelldlg.cpp
 # End Source File
+# Begin Source File
+
+SOURCE=.\statsdlg.cpp
+# End Source File
 # End Group
 # Begin Group "Header Files"
 
@@ -136,6 +140,10 @@ SOURCE=.\skilldlg.h
 # Begin Source File
 
 SOURCE=.\spelldlg.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\statsdlg.h
 # End Source File
 # End Group
 # Begin Group "Resource Files"

@@ -45,8 +45,7 @@ class TextureManager;
 #define ZGM_DESTROY                  0x0002
 #define ZGM_SETFOCUS						 0x0007
 #define ZGM_CBN_SELENDOK				 0x0009
-#define ZGM_KEYDOWN						 0x0100
-#define ZGM_KEYUP							 0x0101
+#define ZGM_KEYPRESS						 0x0100
 #define ZGM_COMMAND						 0x0111
 #define ZGM_SHOWWINDOW					 0x0018
 #define ZGM_MOUSEMOVE					 0x0200

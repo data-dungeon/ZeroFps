@@ -28,6 +28,7 @@ public:
 	void OnCommand(ZGuiWnd* pkWndClicked);
 	void ToogleOpen();
 	void SetCharacterProperty(CharacterProperty* pkCharProp);
+	bool IsVisible();
 
 private:
 	ZGuiApp* m_pkApp;
@@ -37,6 +38,8 @@ private:
 	ZFAudioSystem* m_pkAudioSys;
 	ZGuiWnd* m_pkDialog;
 	CharacterProperty* m_pkCharProperty;
+	ZGuiListbox* m_pkSkillList;
+	ZGuiListbox* m_pkAttackDefList;
 
 };
 

@@ -936,52 +936,63 @@ bool ZGui::RunKeyCommand(int iKey)
 
 void ZGui::OnKeyPress(int iKey)
 {
-	if(ZGuiWnd::m_pkFocusWnd && iKey != -1)
+	if(ZGuiWnd::m_pkFocusWnd)
 	{	
-		bool bIsTextbox = typeid(*ZGuiWnd::m_pkFocusWnd) == 
-			typeid(ZGuiTextbox) ? true : false;
-
-		bool bMultiLine = false;
-		if(bIsTextbox)
+		if(iKey != -1)
 		{
-			bMultiLine = ((ZGuiTextbox*) ZGuiWnd::m_pkFocusWnd)->IsMultiLine();
+			bool bIsTextbox = typeid(*ZGuiWnd::m_pkFocusWnd) == 
+				typeid(ZGuiTextbox) ? true : false;
 
-/*			if(iKey == gKEY_RETURN)
+			bool bMultiLine = false;
+			if(bIsTextbox)
+			{
+				bMultiLine = ((ZGuiTextbox*) ZGuiWnd::m_pkFocusWnd)->IsMultiLine();
+
+	/*			if(iKey == gKEY_RETURN)
+					m_bHaveInputFocus = false;*/
+			}
+	/*		else
 				m_bHaveInputFocus = false;*/
+
+			if((iKey==gKEY_DOWN || iKey==gKEY_UP) && !(bIsTextbox && bMultiLine))
+			{
+				// Find the child with the next tab nr...
+				ZGuiWnd* pkNext = FindNextTabWnd(ZGuiWnd::m_pkFocusWnd,
+					(iKey==gKEY_DOWN));
+
+				if(pkNext)
+					SetFocus( pkNext );
+			}
+
+			// Send a WM Command message when Return or space ar being hit
+			if( (iKey == gKEY_RETURN || iKey == gKEY_SPACE) 
+				&& !(bIsTextbox && bMultiLine) )
+			{
+				ZGuiWnd::m_pkFocusWnd->Notify(ZGuiWnd::m_pkFocusWnd,
+					NCODE_CLICK_DOWN);
+				ZGuiWnd::m_pkFocusWnd->Notify(ZGuiWnd::m_pkFocusWnd,
+					NCODE_CLICK_UP);
+				ZGuiWnd::m_pkFocusWnd->Notify(ZGuiWnd::m_pkFocusWnd,
+					NCODE_RELEASE);
+			}
 		}
-/*		else
-			m_bHaveInputFocus = false;*/
 
-		if((iKey==gKEY_DOWN || iKey==gKEY_UP) && !(bIsTextbox && bMultiLine))
-		{
-			// Find the child with the next tab nr...
-			ZGuiWnd* pkNext = FindNextTabWnd(ZGuiWnd::m_pkFocusWnd,
-				(iKey==gKEY_DOWN));
+		static int sLastPressedKey = -100;
 
-			if(pkNext)
-				SetFocus( pkNext );
-		}
-
-		// Send a WM Command message when Return or space ar being hit
-		if( (iKey == gKEY_RETURN || iKey == gKEY_SPACE) 
-			&& !(bIsTextbox && bMultiLine) )
-		{
-			ZGuiWnd::m_pkFocusWnd->Notify(ZGuiWnd::m_pkFocusWnd,
-				NCODE_CLICK_DOWN);
-			ZGuiWnd::m_pkFocusWnd->Notify(ZGuiWnd::m_pkFocusWnd,
-				NCODE_CLICK_UP);
-			ZGuiWnd::m_pkFocusWnd->Notify(ZGuiWnd::m_pkFocusWnd,
-				NCODE_RELEASE);
-
-			int kParams[1] = { ZGuiWnd::m_pkFocusWnd->GetID() };
+		if(iKey == -1 && sLastPressedKey != -100)
+		{			
+			// En knapp har tryckts ner.
+			int kParams[1] = {sLastPressedKey};
 			m_pkActiveMainWin->pkCallback(ZGuiWnd::m_pkFocusWnd,
-				ZGM_KEYDOWN,1,(int*) kParams);
-		}
+				ZGM_KEYPRESS,1,(int*) kParams);
 
-		// En knapp har tryckts ner.
-		int kParams[1] = {iKey};
-		m_pkActiveMainWin->pkCallback(ZGuiWnd::m_pkFocusWnd,
-			ZGM_KEYDOWN,1,(int*) kParams);
+			sLastPressedKey = -100;
+		}
+		
+		if(iKey != -1)
+		{
+			sLastPressedKey = iKey;
+		}
 
 		RunKeyCommand(iKey);
 	}

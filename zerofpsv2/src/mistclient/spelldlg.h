@@ -17,7 +17,6 @@
 using namespace std;
 #include <string>
 
-
 const int NUM_PAGES = 10;
 const int NUM_SCHOOLS = 10;
 const int SPELL_ROWS = 4;
@@ -48,7 +47,6 @@ private:
 	ZGuiButton* m_pkSpellButtons[SPELL_ROWS][SPELL_COLS];
 	QuickBoard* m_pkQuickBoard;
 
-	
 
 	struct SpellSlot
 	{

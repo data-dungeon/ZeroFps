@@ -56,8 +56,6 @@ private:
 	CharacterProperty* m_pkCharProperty;
 
 	ZGuiButton* m_pkSkillButtons[SKILL_ROWS][SKILL_COLS];
-	
-
 
 	map<string, SkillSlot*> m_vkSkillSlots;
 

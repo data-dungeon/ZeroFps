@@ -32,6 +32,7 @@
 #include "quickboard.h"
 #include "spelldlg.h"
 #include "skilldlg.h"
+#include "statsdlg.h"
 #include "henchman_button.h"
 
 class MistClient :public Application, public ZGuiApp {
@@ -97,6 +98,8 @@ class MistClient :public Application, public ZGuiApp {
 		SpellDlg*		  m_pkSpellDlg;
 		QuickBoard*		  m_pkQuickBoard;
 		SkillDlg*		  m_pkSkillDlg;
+		StatsDlg*		  m_pkStatsDlg;
+
 		void CreateGuiInterface();
 
 		Entity* m_pkActiveCharacter;
@@ -109,6 +112,7 @@ class MistClient :public Application, public ZGuiApp {
 		void UpdateCullObjects();
 		
 	public:
+		void OnKeyPress(int iKey, ZGuiWnd* pkWnd);
 		void CloseActionMenu();
 		void OpenActionMenu(int x, int y);
 		void OnClientInputSend(char* szText);
