@@ -22,3 +22,9 @@ end
 function HeartBeat()
 
 end
+
+function Dead()
+	PlayAnim(SIGetSelfID(), "die");
+	SetNextAnim(SIGetSelfID(), "dead");
+end
+
