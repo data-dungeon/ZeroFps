@@ -4,7 +4,9 @@
 
 #include "inventorydlg.h"
 #include "../mcommon/p_item.h"
-//#include "../zerofpsv2/basic/zfsystem.h"
+#include "../zerofpsv2/basic/zfsystem.h"
+#include "../zerofpsv2/engine/entitymanager.h"
+
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
@@ -65,10 +67,10 @@ bool InventoryDlg::AddItem(Entity* pkEntity)
 }
 
 bool InventoryDlg::AddItems(vector<Entity*> &vkItems)
-{
-	vector<Entity*>::iterator it = vkItems.begin();
+{   
+	vector<Entity*>::iterator itNewItem = vkItems.begin();
 
-	for( ; it != vkItems.end(); it++)
+	for( ; itNewItem != vkItems.end(); itNewItem++)
 	{
 		Point sqr;
 
@@ -78,10 +80,34 @@ bool InventoryDlg::AddItems(vector<Entity*> &vkItems)
 			return false;
 		}
 
-		P_Item* pkItemProp = (P_Item*)(*it)->GetProperty ("P_Item");
+		P_Item* pkItemProp = (P_Item*)(*itNewItem)->GetProperty ("P_Item");
 
-		AddSlot(pkItemProp->m_pkItemStats->m_szPic[0], pkItemProp->m_pkItemStats->m_szPic[1], 
-			sqr, CONTAINTER_SLOTS, pkItemProp->m_pkItemStats, (*it)->iNetWorkID, MAIN_CONTAINER);
+		bool bAlreadyExist = false;
+
+		// check if the item already exists, if so, just update it
+		for ( vector<Slot>::iterator itInventory = m_kItemSlots.begin(); 
+				itInventory != m_kItemSlots.end(); itInventory++ )
+		{
+			Slot kSlot = (*itInventory);
+
+			if ( kSlot.m_iNetWorkID == (*itNewItem)->iNetWorkID )
+			{
+				kSlot.m_pkItemStats = pkItemProp->m_pkItemStats;
+
+				UpdateSkin(kSlot);
+				bAlreadyExist = true;
+			}
+		}
+		
+		if(bAlreadyExist == false)
+		{
+			AddSlot(pkItemProp->m_pkItemStats->m_szPic[0], pkItemProp->m_pkItemStats->m_szPic[1], 
+				sqr, CONTAINTER_SLOTS, pkItemProp->m_pkItemStats, (*itNewItem)->iNetWorkID, MAIN_CONTAINER);
+		}
+		else
+		{
+			printf("Already exist\n");
+		}
 	}
 
 	ScrollItems(m_iCurrentScrollPos+1);
@@ -114,6 +140,33 @@ void InventoryDlg::OnClick(int x, int y, bool bMouseDown, bool bLeftButton)
 				ItemStats* pkStats = pkSlot->m_pkItemStats;
 				SlotType prev_type = pkSlot->m_eType;
             int iNetworkID = pkSlot->m_iNetWorkID;
+				
+/*				EntityManager* pkObjectMan = static_cast<EntityManager*>(
+					g_ZFObjSys.GetObjectPtr("EntityManager"));
+
+				if(pkObjectMan) // SKALL GÖRAS EFTER REMOVE (se nedan)
+				{
+					Entity* pkObject = pkObjectMan->GetObjectByNetWorkID( pkSlot->m_iNetWorkID );
+
+					if(pkObject)
+					{
+						P_Item* pkItemProp = (P_Item*)pkObject->GetProperty ("P_Item"); 
+
+						if(pkItemProp)
+						{
+							if(pkItemProp->m_pkItemStats)
+								printf("iNetworkID = %s\n", pkItemProp->m_pkItemStats->m_szPic[0]);
+
+							ZGuiSkin* pkSkin = pkSlot->m_pkLabel->GetSkin();
+							string strFullPath = string("/data/textures/gui/items/") 
+								+ string(pkItemProp->m_pkItemStats->m_szPic[0]);
+
+							pkSkin->m_iBkTexID = m_pkTexMan->Load(strFullPath.c_str(), 0);
+							pkSlot->m_pkLabel->SetSkin(pkSkin);
+						}
+					}
+					
+				}*/
 
 				if(RemoveSlot(pkSlot))
 				{
@@ -548,33 +601,9 @@ bool InventoryDlg::GetFreeSlotPos(Point& refSqr, int iContainer)
 }
 
 void InventoryDlg::AddSlot(const char *szPic, const char *szPicA, Point sqr, 
-						   SlotType eType, ItemStats* pkItemStats, int iNetworkID, int iContainer)
-{
-
-   // check if the item already exists, if so, just update it
-   for ( vector<Slot>::iterator kIte = m_kItemSlots.begin(); 
-         kIte != m_kItemSlots.end(); kIte++ )
-   {
-      // if the item was found, update it and exit function
-      if ( (*kIte).m_iNetWorkID == iNetworkID )
-      {
-         (*kIte).m_pkItemStats = pkItemStats;
-
-         // check if a new icon must be loaded
-         //if ( strcmp((*kIte).m_szPic[0], szPic) )
-         {
-            cout << "Changed icon to:" << szPic << endl;
-
-				ZGuiSkin* pkSkin = (*kIte).m_pkLabel->GetSkin();
-
-				//pkSkin->m_iBkTexAlphaID = m_pkTexMan->Load( 
-
-         }
-
-         return;
-      }
-   }
-   
+									SlotType eType, ItemStats* pkItemStats, 
+									int iNetworkID, int iContainer)
+{   
 	int sx, sy;
 
 	if(eType == SPECIAL_SLOTS)
@@ -648,6 +677,10 @@ void InventoryDlg::AddSlot(const char *szPic, const char *szPicA, Point sqr,
 		break;
 	}
 
+	// Sätt skin
+	UpdateSkin(kNewSlot);
+
+	// registe wnd
 	RegisterSlot(kNewSlot);
 }
 
@@ -829,4 +862,33 @@ void InventoryDlg::Update()
          m_pkAddItemList->clear();
       }
    }
+
+	vector<Slot>::iterator test = m_kItemSlots.begin();
+	for( ; test != m_kItemSlots.end(); test++)
+		UpdateSkin((*test));
+}
+
+void InventoryDlg::UpdateSkin(Slot slot)
+{
+	EntityManager* pkObjectMan = static_cast<EntityManager*>(g_ZFObjSys.GetObjectPtr("EntityManager"));
+
+	if(pkObjectMan) 
+	{
+		Entity* pkObject = pkObjectMan->GetObjectByNetWorkID( slot.m_iNetWorkID );
+
+		if(pkObject)
+		{
+			P_Item* pkItemProp = (P_Item*)pkObject->GetProperty ("P_Item"); 
+
+			if(pkItemProp)
+			{
+				ZGuiSkin* pkSkin = slot.m_pkLabel->GetSkin();
+				string strFullPath = string("/data/textures/gui/items/") 
+					+ string(pkItemProp->m_pkItemStats->m_szPic[0]);
+
+				pkSkin->m_iBkTexID = m_pkTexMan->Load(strFullPath.c_str(), 0);
+				slot.m_pkLabel->SetSkin(pkSkin);
+			}
+		}		
+	}
 }

@@ -78,6 +78,7 @@ public:
 	~InventoryDlg();
 
 private:
+	void UpdateSkin(Slot slot);
 	int GetPrevContainer();
 	void DropItemsToContainer(int iContainer);
 	void DropItems();

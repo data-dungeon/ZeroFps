@@ -582,7 +582,7 @@ void MistClient::OnCommand(int iID, ZGuiWnd *pkMainWnd)
 	ZGuiWnd* pkWndClicked = GetWnd(iID);
 
 	if(pkWndClicked == NULL)
-		return;
+		return; 
 
 	string strMainWndName = pkMainWnd->GetName();
 	string strClickWndName = pkWndClicked->GetName();
