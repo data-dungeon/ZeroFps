@@ -50,6 +50,10 @@ function GUICreate()
 	Skin21 = { tex1="delete_f.bmp", tex2="0", tex3="0", tex4="0", tex1a="0", tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=255,
 	 bkB=255, borderR=255, borderG=255, borderB=255, bd_size=0, tile=0, trans=0 }
 
+
+	Skin22 = { tex1="0", tex2="0", tex3="0", tex4="0", tex1a="0", tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=255,
+	 bkB=255, borderR=255, borderG=0, borderB=0, bd_size=4, tile=0, trans=1 }
+
 	-------------------------------------------------------------------------
 	-- Create all windows in correct order (parents before childrens etc.)
 	-- 0 = Wnd, 1 = Button, 2 = Checkbox, 3 = Combobox, 4 = Label, 5 = Listbox, 6 = Radiobutton,
@@ -143,6 +147,10 @@ function GUICreate()
 	ChangeSkin("MembersDropItemBn","Skin13","Button up")
 	ChangeSkin("MembersDropItemBn","Skin14","Button down")
 	ChangeSkin("MembersDropItemBn","Skin14","Button focus")
+
+	CreateWnd(4,"MemberSelItemBorder","MembersWnd","",0,0,32,32,0)
+	ChangeSkin("MemberSelItemBorder","Skin22","Label")
+
 
 
 
