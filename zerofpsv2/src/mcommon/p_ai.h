@@ -31,7 +31,7 @@ class MCOMMON_API P_AI: public Property
       
 		void Init();
 	   void Update();
-		
+		void Touch(int iID);		
 
 //       void Save(ZFIoInterface* pkPackage);
 //       void Load(ZFIoInterface* pkPackage,int iVersion);

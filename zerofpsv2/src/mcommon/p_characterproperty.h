@@ -13,44 +13,98 @@ class P_Buff;
 
 
 
+class MCOMMON_API CharacterStat
+{
+	public:
+		string	m_strName;
+		int		m_iValue;
+		int		m_iMod;
+	
+		CharacterStat(const string& strName,int iValue,int iMod)
+		{
+			m_strName = strName;
+			m_iValue = iValue;
+			m_iMod = iMod;
+		};
+				
+};
 
 class MCOMMON_API CharacterStats
 {
 	public:
-		int	m_iLevel; 
-		int	m_iExperience;
-		int	m_iNextLevel;		
+// 		int	m_iLevel; 
+// 		int	m_iExperience;
+// 		int	m_iNextLevel;		
+// 		
+// 		int	m_iSpeed;
+// 		int	m_iSpeedMod;
+// 		
+// 		int	m_iMana;
+// 		int	m_iManaMax;
+// 		int	m_iManaMaxMod;
+// 		
+// 		int	m_iLife;
+// 		int	m_iLifeMax;
+// 		int	m_iLifeMaxMod;
+// 		
+// 		int	m_iStrength;
+// 		int	m_iStrengthMod;
+// 		int	m_iDexterity;
+// 		int	m_iDexterityMod;
+// 		int	m_iVitality;
+// 		int	m_iVitalityMod;
+// 		int	m_iIntelligence;
+// 		int	m_iIntelligenceMod;
+// 		int	m_iWisdom;
+// 		int	m_iWisdomMod;
+// 		
+// 		int	m_iArmor;
+// 		int	m_iArmorMod;
+// 		
+// 		int	m_iDamageMin;
+// 		int	m_iDamageMinMod;
+// 		int	m_iDamageMax;
+// 		int	m_iDamageMaxMod;
+// 				
 		
-		int	m_iSpeed;
-		int	m_iSpeedMod;
+		vector<CharacterStat>	m_kStats;
 		
-		int	m_iMana;
-		int	m_iManaMax;
-		int	m_iManaMaxMod;
+		CharacterStats()
+		{
+			m_kStats.push_back(CharacterStat("Level"			,0,0));
+			m_kStats.push_back(CharacterStat("Experience"	,0,0));
+			m_kStats.push_back(CharacterStat("NextLevel"		,0,0));
+			m_kStats.push_back(CharacterStat("Speed"			,0,0));
+			m_kStats.push_back(CharacterStat("Mana"			,0,0));
+			m_kStats.push_back(CharacterStat("ManaMax"		,0,0));
+			m_kStats.push_back(CharacterStat("Life"			,0,0));
+			m_kStats.push_back(CharacterStat("LifeMax"		,0,0));
+			m_kStats.push_back(CharacterStat("Strength"		,0,0));
+			m_kStats.push_back(CharacterStat("Dexterity"		,0,0));
+			m_kStats.push_back(CharacterStat("Vitality"		,0,0));
+			m_kStats.push_back(CharacterStat("Intelligence"	,0,0));
+			m_kStats.push_back(CharacterStat("Wisdom"			,0,0));
+			m_kStats.push_back(CharacterStat("Charisma"		,0,0));
+			m_kStats.push_back(CharacterStat("Armor"			,0,0));
+			m_kStats.push_back(CharacterStat("DamageMin"		,0,0));
+			m_kStats.push_back(CharacterStat("DamageMax"		,0,0));
 		
-		int	m_iLife;
-		int	m_iLifeMax;
-		int	m_iLifeMaxMod;
+		}
 		
-		int	m_iStrength;
-		int	m_iStrengthMod;
-		int	m_iDexterity;
-		int	m_iDexterityMod;
-		int	m_iVitality;
-		int	m_iVitalityMod;
-		int	m_iIntelligence;
-		int	m_iIntelligenceMod;
-		int	m_iWisdom;
-		int	m_iWisdomMod;
-		
-		int	m_iArmor;
-		int	m_iArmorMod;
-		
-		int	m_iDamageMin;
-		int	m_iDamageMinMod;
-		int	m_iDamageMax;
-		int	m_iDamageMaxMod;
-				
+		void SetStat(const string& strName,int iValue)
+		{
+			for(int i=0;i<m_kStats.size();i++)
+				if(m_kStats[i].m_strName == strName)
+					m_kStats[i].m_iValue = iValue;
+		}
+
+		void SetMod(const string& strName,int iValue)
+		{
+			for(int i=0;i<m_kStats.size();i++)
+				if(m_kStats[i].m_strName == strName)
+					m_kStats[i].m_iMod = iValue;
+		}
+
 };
 
 
@@ -63,6 +117,8 @@ class MCOMMON_API P_CharacterProperty: public Property
 		EntityManager*	m_pkEntityMan;
 		Application*	m_pkApp;
 		
+		
+		CharacterStats	m_kCharacterStats;
 		
 		//over head text
 		ZMaterial*	m_pkTextMaterial;

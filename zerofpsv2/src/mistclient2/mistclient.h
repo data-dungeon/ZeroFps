@@ -84,7 +84,7 @@ class MistClient :public Application, public ZGuiApp {
 		void UpdateBuffIconList(vector<BUFF_ICON_INFO>* kList);
 
 		
-		BUFF_ICON_INFO m_kBuffIcons[MistClient::MAX_NUM_BUFF_ICONS];
+		BUFF_ICON_INFO m_kBuffIcons[MAX_NUM_BUFF_ICONS];
 
 		bool ReadWriteServerList(bool bRead);
 

@@ -49,7 +49,8 @@ void P_AI::Update()
 		case 1:
 		{
 			float fRot = m_pkCharacterControl->GetYAngle();				
-			fRot += Randomf(20)-10;
+			//fRot += Randomf(20)-10;
+			fRot +=4;
 			m_pkCharacterControl->SetYAngle(fRot);								
 			m_pkCharacterControl->SetControl(eUP,true);					
 		
@@ -57,6 +58,16 @@ void P_AI::Update()
 		}
 	
 	}
+}
+
+void P_AI::Touch(int iID)
+{
+	float fRot = m_pkCharacterControl->GetYAngle();				
+	//fRot += Randomf(20)-10;
+	fRot +=180;
+	m_pkCharacterControl->SetYAngle(fRot);								
+
+
 }
 
 

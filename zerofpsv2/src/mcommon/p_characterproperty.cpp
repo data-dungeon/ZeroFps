@@ -533,9 +533,8 @@ void P_CharacterProperty::SendBuffList()
 	kNp.Write((char) MLNM_SC_BUFFLIST);	
 	
 	vector<Property*> kProps;
-	GetEntity()->GetPropertys(&kProps,PROPERTY_TYPE_NORMAL,PROPERTY_SIDE_SERVER);
+	GetEntity()->GetAllPropertys(&kProps,PROPERTY_TYPE_NORMAL,PROPERTY_SIDE_SERVER);
 
-		
 	for(int i = 0;i<kProps.size();i++)
 	{
 		if(P_Buff* pkBuff = dynamic_cast<P_Buff*>(kProps[i]))
