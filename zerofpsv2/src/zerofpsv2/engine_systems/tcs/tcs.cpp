@@ -1,7 +1,7 @@
 #include "tcs.h"
 #include "../propertys/p_tcs.h"
 #include "../common/heightmap.h"
-
+	
 Tcs::Tcs(): ZFSubSystem("Tcs")
 {
 	Logf("zerofps","Tiny Collission system created");
@@ -225,8 +225,21 @@ void Tcs::HandleCollission(Tcs_collission* pkCol)
 		fMass2 = 999999999;	
 	}
 	
-	//cout<<"v1:"<<kRotVel1.Length()<<" "<<pkCol->pkBody1->m_kLinearVelocity.Length()<<endl;
-	//cout<<"v2:"<<kRotVel2.Length()<<" "<<pkCol->pkBody2->m_kLinearVelocity.Length()<<endl;
+//	cout<<"v1:"<<kRotVel1.Length()<<" "<<pkCol->pkBody1->m_kLinearVelocity.Length()<<endl;
+//	cout<<"v2:"<<kRotVel2.Length()<<" "<<pkCol->pkBody2->m_kLinearVelocity.Length()<<endl;
+	
+	if(pkCol->pkBody1->m_bStatic && (kRotVel1.Length() != 0) )
+		cout<<"CPPPPPPPPP"<<endl;
+
+	if(pkCol->pkBody2->m_bStatic && (kRotVel2.Length() != 0) )
+		cout<<"CPPPPPPPPP"<<endl;
+		
+		
+	if(kRotVel1.Length() != 0)
+	{
+		cout<<"buggga "<<kRotVel1.Length()<<endl;
+		//return;
+	}
 	
 	float fTotalj = 0;
 	
@@ -1046,6 +1059,15 @@ void Tcs::TestMeshVsMesh(P_Tcs* pkBody1,P_Tcs* pkBody2,float fAtime)
 	if( !pkBody2->m_pkVertex || !pkBody2->m_pkFaces || !pkBody1->m_pkVertex || !pkBody1->m_pkFaces)
 	{
 		return;		
+	}
+	
+	//the smalest object shuld be body2 for best result
+	if(pkBody2->m_fRadius > pkBody1->m_fRadius)
+	{
+		P_Tcs* pkBakup = pkBody1;
+	
+		pkBody1 = pkBody2;
+		pkBody2 = pkBakup;
 	}
 	
 	
