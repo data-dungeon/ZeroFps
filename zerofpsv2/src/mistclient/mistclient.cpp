@@ -755,6 +755,9 @@ Entity* MistClient::GetTargetObject()
 		if(kObjects[i]->GetName() == "ZoneObject")
 			continue;
 		
+		if(kObjects[i]->GetName() == "StaticEntity")
+			continue;		
+		
 		if(kObjects[i]->GetName() == "A t_serverinfo.lua")
 			continue;		
 		

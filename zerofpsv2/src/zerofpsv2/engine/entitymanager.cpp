@@ -1721,10 +1721,16 @@ void EntityManager::LoadZone(int iId)
 		
 		Vector3 kPos = kZData->m_kPos;
 		object->SetLocalPosV(kPos);
-		object->GetUpdateStatus()=UPDATE_DYNAMIC;
+		//object->GetUpdateStatus()=UPDATE_DYNAMIC;
 		object->AddProperty("P_LightUpdate");	//always attach a lightupdateproperty to new zones
 
 		SetZoneModel("data/mad/zones/emptyzone.mad",iId);
+
+		//add static entity
+		Entity* staticentity = new Entity;
+		staticentity->GetName() = "StaticEntity";
+		staticentity->SetParent(kZData->m_pkZone);
+		
 
 		return;
 	}
@@ -2023,8 +2029,49 @@ void EntityManager::SetUnderConstruction(int iId)
 			return;
 		}
 		
+		//make sure zone is loaded
+		if(!zd->m_pkZone)
+		{
+			cout<<"cant construct unloaded zone"<<endl;
+			return;
+		}
+		
+		
+		//reattach static entitys to zoneobject
+		
+		//first find the staticentity
+		Entity* pkStaticEntity=NULL;		
+		vector<Entity*> kEntitys;				
+		zd->m_pkZone->GetAllObjects(&kEntitys);
+		for(int i=0;i<kEntitys.size();i++)
+		{
+			if(kEntitys[i]->GetName()=="StaticEntity")
+			{
+				pkStaticEntity=kEntitys[i]; 
+				break;
+			}		
+		}
+		
+		//if no staticentity was found, complain
+		if(!pkStaticEntity)
+		{
+			cout<<"Error zone has no staticentity"<<endl;
+			return;
+		}
+		
+		//find all static objects and attach them to zoneobject
+		int nrofstatic=0;
+		for(int i=0;i<kEntitys.size();i++)
+			if(kEntitys[i]->m_iObjectType == OBJECT_TYPE_STATIC)
+			{
+				kEntitys[i]->SetParent(zd->m_pkZone);
+				nrofstatic++;
+			}
+		
+		//update zonedata		
 		zd->m_bUnderContruction = true;
-		cout<<"Setting zone:"<<iId<<" in construction mode revision:"<<zd->m_iRevision<<endl;		
+		cout<<"Setting zone:"<<iId<<" in construction mode revision:"<<zd->m_iRevision<< " static entitys:"<<nrofstatic<<" dynamic entitys:"<<kEntitys.size()-nrofstatic<<endl;
+		
 	}
 }
 
@@ -2038,10 +2085,52 @@ void EntityManager::CommitZone(int iId)
 			//cout<<"Zone is not underconstruction"<<endl;
 			return;
 		}
-	
-		zd->m_bUnderContruction = false;
-		zd->m_iRevision++;
 		
-		cout<<"committing zone:"<<iId<<" new revision is:"<<zd->m_iRevision<<endl;
+		//make sure zone is loaded		
+		if(!zd->m_pkZone)
+		{
+			cout<<"cant commit unloaded zone"<<endl;
+			return;
+		}
+	
+		
+		//reattach static entitys to staticentity entity		
+		
+		
+		//first find the staticentity
+		Entity* pkStaticEntity=NULL;		
+		vector<Entity*> kEntitys;				
+		zd->m_pkZone->GetAllObjects(&kEntitys);
+		for(int i=0;i<kEntitys.size();i++)
+		{
+			if(kEntitys[i]->GetName()=="StaticEntity")
+			{
+				pkStaticEntity=kEntitys[i]; 
+				break;
+			}		
+		}
+		
+		//if no staticentity was found, complain
+		if(!pkStaticEntity)
+		{
+			cout<<"Error zone has no staticentity"<<endl;
+			return;
+		}
+		
+		
+		//find all static objects and attach them to staticentity
+		int nrofstatic=0;		
+		for(int i=0;i<kEntitys.size();i++)
+			if(kEntitys[i]->m_iObjectType == OBJECT_TYPE_STATIC)
+			{	
+				kEntitys[i]->SetParent(pkStaticEntity);
+				nrofstatic++;
+			}
+	
+	
+		//update zone data
+		zd->m_bUnderContruction = false;
+		zd->m_iRevision++;		
+		cout<<"committing zone:"<<iId<<" new revision is:"<<zd->m_iRevision<<" static entitys:"<<nrofstatic<<" dynamic entitys:"<<kEntitys.size()-nrofstatic<<endl;
 	}
 }

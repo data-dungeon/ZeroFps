@@ -31,6 +31,7 @@ void ObjectManagerLua::Init(EntityManager* pkObjMan, ZFScriptSystem* pkScript)
 	pkScript->ExposeFunction("AttachToParent",		ObjectManagerLua::AttachToParent);			
 	pkScript->ExposeFunction("SetLocalPos",			ObjectManagerLua::SetLocalPosLua);
 	pkScript->ExposeFunction("HaveRelativOri",		ObjectManagerLua::HaveRelativOriLua);	
+	pkScript->ExposeFunction("IsStatic",				ObjectManagerLua::IsStaticLua);		
 	pkScript->ExposeFunction("SetParentObject",  	ObjectManagerLua::SetParentObjectLua);
 	pkScript->ExposeFunction("SetReturnObject",  	ObjectManagerLua::SetReturnObjectLua);
 
@@ -188,6 +189,17 @@ int ObjectManagerLua::HaveRelativOriLua(lua_State* pkLua)
 
 	
 	g_pkLastObject->SetRelativeOri(true);
+
+	return 0;
+}
+
+int ObjectManagerLua::IsStaticLua(lua_State* pkLua)
+{
+	if(g_pkLastObject == NULL)
+		return 0;
+
+	
+	g_pkLastObject->GetObjectType() = OBJECT_TYPE_STATIC;
 
 	return 0;
 }

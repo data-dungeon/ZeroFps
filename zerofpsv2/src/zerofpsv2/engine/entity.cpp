@@ -40,13 +40,13 @@ Entity::Entity()
 	m_eRemoteRole			= NETROLE_PROXY;
 
 	m_iObjectType			= OBJECT_TYPE_DYNAMIC;	
-	m_iUpdateStatus			= UPDATE_ALL;
+	m_iUpdateStatus		= UPDATE_ALL;
 	m_bZone					= false;
 	m_iCurrentZone			= -1;
 	m_bUseZones				= false;
 	m_bSave					= true;	
 	m_pkParent				= NULL;
-	m_bRelativeOri			=	false;
+	m_bRelativeOri			= false;
 	
 	m_akChilds.clear();	
 	
@@ -245,10 +245,15 @@ void Entity::GetAllPropertys(vector<Property*> *akPropertys,int iType,int iSide)
 	
 	for(vector<Entity*>::iterator it=m_akChilds.begin();it!=m_akChilds.end();it++)
 	{	
-		if(m_iUpdateStatus & UPDATE_ALL)
+		(*it)->GetAllPropertys(akPropertys,iType,iSide);		
+	}		
+	
+/*		if(m_iUpdateStatus & UPDATE_ALL)
 		{
-			(*it)->GetAllPropertys(akPropertys,iType,iSide);
+
 		} 
+	}
+	
 		else
 		{
 			
@@ -272,10 +277,11 @@ void Entity::GetAllPropertys(vector<Property*> *akPropertys,int iType,int iSide)
 				case OBJECT_TYPE_STATDYN:
 					if(m_iUpdateStatus & UPDATE_STATDYN)		
 						(*it)->GetAllPropertys(akPropertys,iType,iSide);
-					break;*/
+					break;*
 			}
 		}
 	}
+*/	
 }
 
 /**	\brief	Adds a property to an Entity if it does not have it yet.

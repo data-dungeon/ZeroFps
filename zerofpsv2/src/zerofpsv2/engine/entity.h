@@ -77,43 +77,7 @@ public:
 	string	m_strVariable;
 	string	m_strValue;
 };
-		// Assign
-/*
-class ENGINE_API PropertyArcheType
-{
-public:
-	PropertyArcheType();
-	~PropertyArcheType();
 
-	string						m_strName;
-	vector<PropertyValue>	m_kVariables;
-
-	PropertyArcheType(const PropertyArcheType &Other);
-	PropertyArcheType& operator=(const PropertyArcheType &Other);
-
-};
-
-class ENGINE_API ObjectArcheType
-{
-private:
-	void AddArchProperty(string strArchPropertys);
-	PropertyArcheType*	GetArchProperty(string strArchPropertys);
-
-public:
-	string	m_strName;
-	string	m_strParentName;
-
-	vector<PropertyArcheType>	m_kArchPropertys;
-
-	void SetValue(string strProperty, string strVariable, string Value);
-	PropertyArcheType*	GetAddArchProperty(string strArchPropertys);
-
-	ObjectArcheType();
-	~ObjectArcheType();
-
-	ObjectArcheType(const ObjectArcheType &Other);
-	ObjectArcheType& operator=(const ObjectArcheType &Other);
-};*/
 
 // Net Flags for Network updates
 #define OBJ_NETFLAG_POS		1
@@ -183,7 +147,7 @@ class ENGINE_API Entity
 		ObjectType					m_iObjectType;						
 	
 		// Rotation & Position.
-		bool						m_bRelativeOri;					///< True if this object transform is in the frame of its parent.
+		bool							m_bRelativeOri;					///< True if this object transform is in the frame of its parent.
 		bitset<7>					m_kGotData;							
 
 		Vector3						m_kLocalPosV;						///< Local position. important
@@ -200,11 +164,11 @@ class ENGINE_API Entity
 
 		Vector3						m_kVel;								///< Velocity of object.
 		Vector3						m_kAcc;								///< Acc of object.
-		float						m_fRadius;							///< Radius of object.
+		float							m_fRadius;							///< Radius of object.
 
-		bool						m_bUseZones;
+		bool							m_bUseZones;
 		int							m_iCurrentZone;
-		vector<Entity*>				m_akChilds;							///< List of child objects.
+		vector<Entity*>			m_akChilds;							///< List of child objects.
 		vector<Property*>			m_akPropertys;						///< List of propertys of object.
 		
 		Entity();				
@@ -215,7 +179,7 @@ class ENGINE_API Entity
 	
 		NetWorkRole					m_eRole;							///< This node power on object.
 		NetWorkRole					m_eRemoteRole;						///< Remote node power on object.
-		bool						m_bIsNetWork;
+		bool							m_bIsNetWork;
 
       string                  m_strCreatedFromScript; // which script the object was created from. used when splitting items
 
