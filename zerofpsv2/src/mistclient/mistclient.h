@@ -18,8 +18,9 @@
 
 #include "../zerofpsv2/engine_systems/common/heightmap2.h"
 
+#include "../zerofpsv2/gui/zgui.h"
 
-class MistClient :public Application {
+class MistClient :public Application, public ZGuiApp {
 	private:
 		
 		// actions
@@ -84,6 +85,8 @@ class MistClient :public Application {
 		bool StartUp();
 		bool ShutDown();
 		bool IsValid();
+
+		ZFScript* GetScript() { return pkScript; }
 
 };
 

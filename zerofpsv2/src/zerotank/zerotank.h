@@ -16,9 +16,8 @@
 
 #include "../zerofpsv2/engine_systems/mad/mad_modell.h"
 
-//#include "guiapp.h"
-
 #include "../zerofpsv2/engine_systems/propertys/cameraproperty.h"
+
 #include "../zerofpsv2/gui/zgui.h"
 
 //#include "../common/common.pkg"

@@ -1,4 +1,5 @@
 #include "mistclient.h"
+#include "scriptinterfaces.h"
 #include "../zerofpsv2/engine_systems/common/heightmap.h"
 #include "../zerofpsv2/engine_systems/propertys/madproperty.h"
 #include "../zerofpsv2/engine_systems/propertys/primitives3d.h"
@@ -7,8 +8,19 @@
 
 MistClient g_kMistClient("MistClient",0,0,0);
 
+static bool GUIPROC( ZGuiWnd* win, unsigned int msg, int numparms, void *params ) 
+{
+	switch(msg)
+	{
+	case ZGM_COMMAND:
+		g_kMistClient.OnCommand(((int*)params)[0], win);
+		break;
+	}
+	return true;
+}
+
 MistClient::MistClient(char* aName,int iWidth,int iHeight,int iDepth) 
-	: Application(aName,iWidth,iHeight,iDepth)
+	: Application(aName,iWidth,iHeight,iDepth), ZGuiApp(GUIPROC)
 { 
 
 	m_iSelfObjectID			= -1;
@@ -65,7 +77,8 @@ void MistClient::Init()
 	//SDL_WM_SetCaption("Mistland, the land of mist", NULL);
 	
 	InitializeScript();
-	//InitializeGui(pkGui, pkTexMan, pkScript, pkGuiMan);
+	InitializeGui(pkGui, pkTexMan, pkScript, pkGuiMan);
+	SDL_ShowCursor(SDL_DISABLE);
 
 }
 
@@ -392,7 +405,7 @@ void MistClient::OnCommand(int iID, ZGuiWnd *pkMainWnd)
 
 bool MistClient::InitializeScript()
 {
-/*	// Script functions for using the gui
+	// Script functions for using the gui
 	pkScript->ExposeFunction("CreateWnd", GuiAppLua::CreateWndLua);
 	pkScript->ExposeFunction("AddTabPage", GuiAppLua::AddTabPageLua);
 	pkScript->ExposeFunction("AddListItem", GuiAppLua::AddListboxItemLua);
@@ -404,6 +417,6 @@ bool MistClient::InitializeScript()
 	pkScript->ExposeFunction("GetScreenHeight", GuiAppLua::GetScreenHeightLua); 
 	pkScript->ExposeFunction("IsWndVisible", GuiAppLua::IsWndVisibleLua); 
 	pkScript->ExposeFunction("SetTextInt", GuiAppLua::SetTextInt); 
-*/
+
 	return true;
 }
