@@ -328,7 +328,7 @@ void ZeroFps::Run_Client()
 		m_pkInput->SetInputEnabled(true);						
 		
 	//run application main loop
-	m_pkApp->OnIdle();							
+	m_pkApp->OnIdle();
 	m_pkObjectMan->Update(PROPERTY_TYPE_NORMAL,PROPERTY_SIDE_CLIENT,false);
 		
 
@@ -680,7 +680,8 @@ void ZeroFps::RunCommand(int cmdid, const CmdArgument* kCommand)
 			break;
 
 		case FID_SLIST:
-			m_pkConsole->Printf("List of servers");
+			m_bClientMode = false;
+//			m_pkConsole->Printf("List of servers");
 //			m_pkNetWork->ServerList();
 			break;
 

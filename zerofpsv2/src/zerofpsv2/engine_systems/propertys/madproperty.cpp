@@ -20,33 +20,13 @@ MadProperty::MadProperty()
 	m_fScale	 = 1.0;
 }
 
-/*MadProperty::MadProperty(string strResName) 
-{
-	m_pkZeroFps  =	static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
-
-	strcpy(m_acName,"MadProperty");
-	bNetwork	 = true;
-
-	m_iType=PROPERTY_TYPE_RENDER;
-	m_iSide=PROPERTY_SIDE_CLIENT;
-
-	m_bIsVisible = true;
-
-	ZFResourceDB* pkResDB = static_cast<ZFResourceDB*>(g_ZFObjSys.GetObjectPtr("ZFResourceDB"));
-	pkResDB->GetResource(kMadHandle, strResName);
-
-	PlayAnimation(0, 0.0);
-	m_fScale  = 1.0;
-	m_bActive = true;
-}*/
-
 void MadProperty::Update() 
 {
 	Mad_Core* pkCore = dynamic_cast<Mad_Core*>(kMadHandle.GetResourcePtr()); 
 	if(!pkCore)
 		return;
 
-	if( m_pkObjMan->IsUpdate(PROPERTY_TYPE_NORMAL ) &  m_pkObjMan->IsUpdate(PROPERTY_SIDE_SERVER )) {
+	if( m_pkObjMan->IsUpdate(PROPERTY_TYPE_NORMAL ) /* &  m_pkObjMan->IsUpdate(PROPERTY_SIDE_SERVER)*/ ) {
 		UpdateAnimation(m_pkZeroFps->GetGameFrameTime());
 		return;
 		}
@@ -100,7 +80,6 @@ void MadProperty::SetBase(const char* acName)
 {
 	SetBasePtr(string(acName));
 	m_iNetUpdateFlags = 1;
-	//	SetBasePtr(m_pkZeroFps->GetMADPtr(acName));
 }
 
 void MadProperty::Save(ZFIoInterface* pkPackage)
@@ -114,7 +93,6 @@ void MadProperty::Save(ZFIoInterface* pkPackage)
 
 void MadProperty::Load(ZFIoInterface* pkPackage)
 {
-	//pkPackage->Seek(0,0);
 	char temp[50];
 	pkPackage->Read((void*)temp,50,1);	
 	SetBase(temp);
@@ -129,24 +107,26 @@ void MadProperty::Load(ZFIoInterface* pkPackage)
 
 void MadProperty::PackTo(NetPacket* pkNetPacket, int iConnectionID )
 {
-//	pkNetPacket->Write_Str(m_kMadFile.c_str());
 	pkNetPacket->Write_NetStr(m_kMadFile.c_str());
-	pkNetPacket->Write(m_fScale);
+	pkNetPacket->Write( m_fScale );
+	pkNetPacket->Write( iActiveAnimation );
+	
 	m_iNetUpdateFlags = 0;
 }
  
 void MadProperty::PackFrom(NetPacket* pkNetPacket, int iConnectionID )
 {
 	char temp[50];
-	//pkNetPacket->Read_Str(temp);
 	pkNetPacket->Read_NetStr(temp);
 	SetBase(temp);
-
 	pkNetPacket->Read(m_fScale);
 
-//	g_ZFObjSys.Logf("net", " .Mad Name: %s\n", temp);
-}
+	int iNewAnim;
+	pkNetPacket->Read( iNewAnim );
+	if(iNewAnim != iActiveAnimation)
+		PlayAnimation(iNewAnim, 0);
 
+}
 
 vector<PropertyValues> MadProperty::GetPropertyValues()
 {
@@ -159,8 +139,6 @@ vector<PropertyValues> MadProperty::GetPropertyValues()
 	kReturn[1].kValueName = "m_kMadFile";
 	kReturn[1].iValueType = VALUETYPE_STRING;
 	kReturn[1].pkValue    = (void*)&m_kMadFile;
-
-//	string	m_kMadFile;
 
 	return kReturn;
 }
@@ -185,44 +163,6 @@ Property* Create_MadProperty()
 {
 	return new MadProperty;
 }
-
-
-
-
-/*
-	float fTestValue;
-
-  Input* pkInput = static_cast<Input*>(g_ZFObjSys.GetObjectPtr("Input")); 
-	
-	if(strcmp(m_kMadFile.c_str(), "../data/mad/dropship.mad") == 0) {
-		if(pkInput->Pressed(KEY_F7))
-			pkCore->CreateController("lucka", "joint6",CONTROLL_ANGLE_Y,95-84,0-84);
-		if(pkInput->Pressed(KEY_F8))
-			fTestValue -= 0.1;
-		if(pkInput->Pressed(KEY_F9))
-			fTestValue += 0.1;
-	
-		pkCore->SetControll("lucka",fTestValue);
-		}*/
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
