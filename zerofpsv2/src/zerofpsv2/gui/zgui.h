@@ -3,6 +3,10 @@
 #ifndef _GUI_ZGUI_H_
 #define _GUI_ZGUI_H_
 
+#pragma warning( disable : 4512) // 'class' : assignment operator could not be generated 
+#pragma warning( disable : 4786) // truncate long names
+#pragma warning( disable : 4251) // needs to have dll-interface
+
 #include "gui_x.h"
 #include "zguiwindow.h"
 #include "zguibutton.h"
@@ -26,9 +30,6 @@
 #include "../basic/zguiskin.h"
 #include "../basic/zfassert.h"
 #include "../basic/zfini.h"
-
-#pragma warning( disable : 4786) // truncate long names
-#pragma warning( disable : 4251) // needs to have dll-interface
 
 #include <list>
 #include <vector>

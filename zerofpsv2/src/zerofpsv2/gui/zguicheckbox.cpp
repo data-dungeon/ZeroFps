@@ -139,7 +139,7 @@ void ZGuiCheckbox::UncheckButton()
 //
 void ZGuiCheckbox::SetText(char* szText, bool bResizeWnd)
 {
-	ZGui* pkGui = GetGUI();
+//	ZGui* pkGui = GetGUI();
 	if(!m_pkFont && m_pkResMan)
 		m_pkFont = m_pkResMan->Font("defguifont");
 	

@@ -124,7 +124,7 @@ void ZGuiRadiobutton::SetText(char* strText, bool bResizeWnd)
 {
 	m_pkCheckbox->SetText(strText,true);
 
-	ZGui* pkGui = GetGUI();
+//	ZGui* pkGui = GetGUI();
 	if(!m_pkFont && m_pkResMan)
 		m_pkFont = m_pkResMan->Font("defguifont");
 
@@ -133,7 +133,7 @@ void ZGuiRadiobutton::SetText(char* strText, bool bResizeWnd)
 	if(m_pkFont != NULL)
 		usTextLength = m_pkFont->GetLength(strText);
 
-	int usFullsize = GetScreenRect().Width() + usTextLength;
+//	int usFullsize = GetScreenRect().Width() + usTextLength;
 
 	// Ändra storlek på radiobutton kontrollen.
 	// (så att man även träffar knappen när man klickar på texten)

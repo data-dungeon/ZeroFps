@@ -51,7 +51,7 @@ void ZGuiToolTip::Update(int mouse_x, int mouse_y, bool bMouseClick, float fGame
 	for(unsigned int i=0; i<m_vkWindowList.size(); i++)
 	{
 		ZGuiWnd* pkWnd = m_vkWindowList[i].pkWnd;
-		ZGuiWnd* pkParent = pkWnd->GetParent();
+//		ZGuiWnd* pkParent = pkWnd->GetParent();
 
 		if(pkWnd->IsVisible() )
 		{

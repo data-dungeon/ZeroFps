@@ -46,7 +46,7 @@ bool ZGuiMenu::Notify(ZGuiWnd* pkWindow, int iCode)
 
 		for(int i=0; i<m_vkItems.size(); i++)
 		{
-			if(m_vkItems[i]->pkButton->GetID() == iMenuID)
+			if((int)m_vkItems[i]->pkButton->GetID() == iMenuID)
 			{
 				if(m_vkItems[i]->bOpenSubMenu)
 				{
@@ -393,7 +393,7 @@ void ZGuiMenu::ResizeMenu()
 	const int SPACE_BETWEEN_SUB_MENUS = 8;
 
 	// Börja med att skala om alla utan parent till sin rätta storlek.
-	int iPrevIndex;
+	int iPrevIndex=0; // 040701 = int iPrevIndex;
 
 	for(int j=0; j<m_vkItems.size(); j++)
 	{

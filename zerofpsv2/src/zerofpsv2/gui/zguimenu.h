@@ -3,6 +3,8 @@
 #ifndef _GUI_ZGUIMENU_H_
 #define _GUI_ZGUIMENU_H_
 
+#pragma warning( disable : 4512) // 'class' : assignment operator could not be generated 
+
 #include <map>
 #include "gui_x.h"
 #include "../basic/rect.h"

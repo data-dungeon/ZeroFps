@@ -192,6 +192,8 @@ ZGuiWnd* ZGuiApp::CreateWnd(GuiType eType, char* szResourceName, char* szText, Z
 	case Menu:
 		pkWnd = new ZGuiMenu( Rect(x,y,x+w,y+h), pkParent, true, iID);
 		break;
+	default:
+		return NULL;
 	}
 	
 	switch(eType)
@@ -535,7 +537,7 @@ ZGuiSkin* ZGuiApp::AddSkinFromScript2(char *szName, lua_State* pkLuaState,
 void ZGuiApp::InitDefaultSkins(/*ZFScriptSystem* pkScript*/)
 {
 	// first texture loaded do not show up (?). fulhack fix: load crap texture.
-	int crap = m_pkTextureMan->Load("/data/textures/gui/crap.bmp", 0);
+//	int crap = m_pkTextureMan->Load("/data/textures/gui/crap.bmp", 0);
 
 	typedef map<string, ZGuiSkin*>::value_type strSkin;
 
@@ -738,7 +740,7 @@ ZGuiWnd* ZGuiApp::GetTabPage(char* szTabBox, int iPage)
 {
 	ZGuiWnd* pkWnd = m_pkResMan->Wnd(string(szTabBox));
 
-	bool bIsTabCtrl = (GetWndType(pkWnd) == TabControl);
+//	bool bIsTabCtrl = (GetWndType(pkWnd) == TabControl);
 
 	ZFAssert(pkWnd, "ZGuiApp::GetTabPage: Window is not a tab control!");
 

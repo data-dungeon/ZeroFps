@@ -106,7 +106,7 @@ ZGuiTreeboxNode* ZGuiTreebox::CreateNode(ZGuiTreeboxNode* pkParent, char* szText
 	
 	if(pkParent != NULL)
 	{
-		int iNumItems = pkParent->kChilds.size();
+//		int iNumItems = pkParent->kChilds.size();
 
 		x = pkParent->pkButton->GetWndRect().Right + HORZ_ROW_SPACE;
 		y = 0; 
@@ -181,7 +181,7 @@ ZGuiTreeboxNode* ZGuiTreebox::CreateNode(ZGuiTreeboxNode* pkParent, char* szText
 void ZGuiTreebox::OpenChilds(list<ZGuiTreeboxNode*> kChilds, bool bOpen)
 {
 	int iCounter=0;
-	int iNumChilds = (int) kChilds.size(); 
+//	int iNumChilds = (int) kChilds.size(); 
 	for(itNode n=kChilds.begin(); n!=kChilds.end(); n++)  
 	{
 		int x = (*n)->pkParent->pkButton->GetScreenRect().Right + HORZ_ROW_SPACE;
@@ -1023,7 +1023,7 @@ void ZGuiTreebox::GetWndSkinsDesc(vector<SKIN_DESC>& pkSkinDesc) const
 
 bool ZGuiTreebox::Clear()
 {
-	ZGui* pkGui = GetGUI();
+//	ZGui* pkGui = GetGUI();
 	map<string, ZGuiTreeboxNode* >::iterator it;
 	for(it=m_kNodeMap.begin(); it!= m_kNodeMap.end(); it++)
 	{

@@ -3,6 +3,8 @@
 #ifndef _ZGUIAPP_H
 #define _ZGUIAPP_H
 
+#pragma warning( disable : 4512) // 'class' : assignment operator could not be generated 
+
 #include "gui_x.h"
 #include <map>
 #include <string>

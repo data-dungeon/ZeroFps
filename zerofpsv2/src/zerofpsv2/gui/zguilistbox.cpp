@@ -122,9 +122,9 @@ void ZGuiListbox::CreateInternalControls()
 {
 	Rect rc = GetWndRect();
 	int x = rc.Width()-m_iScrollbarWidth;
-	int y = 0;
+//	int y = 0;
 	int w = m_iScrollbarWidth;
-	int h = rc.Height();
+//	int h = rc.Height();
 
 	m_pkScrollbarVertical = new ZGuiScrollbar(Rect(x,0,x+w,GetScreenRect().Height()),
 		this,true,VERT_SCROLLBAR_ID); 
@@ -155,7 +155,7 @@ ZGuiListitem* ZGuiListbox::AddItem(char* strText, unsigned int iIndex, bool bSel
 
 	UpdateList();
 
-	ZGui* pkGui = GetGUI();
+//	ZGui* pkGui = GetGUI();
 	if(m_pkFont == NULL && m_pkResMan)
 		m_pkFont = m_pkResMan->Font("defguifont");
 
@@ -358,7 +358,7 @@ void ZGuiListbox::ScrollItems(ZGuiScrollbar* pkScrollbar)
 	if(!m_pkItemList.empty())
 		m_unItemHeight = (*m_pkItemList.begin())->GetButton()->GetScreenRect().Height();  
 
-	int change = pkScrollbar->m_iScrollChange*(int)m_unItemHeight;
+//	int change = pkScrollbar->m_iScrollChange*(int)m_unItemHeight;
 	int scroll_pos = pkScrollbar->GetPos(); 
 
 	// Move all items

@@ -17,8 +17,8 @@ ZGuiSlider::ZGuiSlider(Rect kRect, ZGuiWnd* pkParent, bool bVisible, int iID,
 					   int iMin, int iMax, unsigned long ulStyle)
 					   : ZGuiWnd(kRect, pkParent, bVisible, iID)
 {
-	ZGuiButton* m_pkButton = NULL;
-	ZGuiLabel* m_pkLabel  = NULL;
+//	ZGuiButton* m_pkButton = NULL;
+//	ZGuiLabel* m_pkLabel  = NULL;
 	m_uiCtrlStyle = ulStyle;
 	m_iMin = iMin;
 	m_iMax = iMax;
@@ -37,8 +37,8 @@ void ZGuiSlider::CreateInternalControls()
 	int iHeight = GetScreenRect().Height();
 	int iWidth  = GetScreenRect().Width();
 
-	int iSliderHeight = iHeight*5;
-	int iSliderWidth  = iHeight*2;
+//	int iSliderHeight = iHeight*5;
+//	int iSliderWidth  = iHeight*2;
 
 	Rect rcBkArea, rcSlider, rcSliderMoveArea = GetScreenRect();
 
@@ -116,7 +116,7 @@ void ZGuiSlider::SetPos(int iPos, bool bRedraw, bool bUpdateBuddy)
 				if(bRedraw == true)
 				{
 					int iWidth  = GetScreenRect().Width();
-					int iBnHeight = m_pkButton->GetScreenRect().Height();
+//					int iBnHeight = m_pkButton->GetScreenRect().Height();
 					int iBnWidth  = m_pkButton->GetScreenRect().Width();
 
 					float fLength = (float) (iWidth-iBnWidth);

@@ -188,7 +188,7 @@ bool ZGuiTabCtrl::DeletePage(unsigned int uiIndex)
 	if(pkGui == NULL)
 		return false;
 
-	if(uiIndex == m_iPrevCurrentPage)
+	if((int)uiIndex == m_iPrevCurrentPage)
 		m_iPrevCurrentPage = -1;
 
 	unsigned int counter = 0;
@@ -204,7 +204,7 @@ bool ZGuiTabCtrl::DeletePage(unsigned int uiIndex)
 		counter++;
 	}
 
-	int iMoveOffset;
+	int iMoveOffset=0;
 
 	counter = 0; // reset
 	list<ZGuiButton*>::iterator it2 = m_kTabList.begin();
@@ -419,7 +419,7 @@ void ZGuiTabCtrl::SetCurrentPage(unsigned int index)
 
 			// Find first visible button.
 			unsigned int uiIndex=0;
-			ZGuiButton* pkFirst = NULL;
+//			ZGuiButton* pkFirst = NULL;
 			for(itButton = m_kTabList.begin(); itButton != m_kTabList.end(); itButton++)
 			{
 				if(uiIndex == index)
@@ -675,7 +675,7 @@ void ZGuiTabCtrl::OnChangeWndText(ZGuiWnd *pkWnd)
 		counter++;
 	}
 
-	unsigned int width_change;
+	unsigned int width_change=0;
 
 	counter = 0; //reset
 	list<ZGuiButton*>::iterator itButton = m_kTabList.begin();

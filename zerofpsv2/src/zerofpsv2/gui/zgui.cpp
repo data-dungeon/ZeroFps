@@ -1120,7 +1120,7 @@ bool ZGui::ClickedWndAlphaTex(int mx, int my, ZGuiWnd *pkWndClicked)
 		return true;
 	}
 
-	return false;
+//	return false;
 }
 
 void ZGui::SetWndForeground(ZGuiWnd *pkWnd)
@@ -1345,7 +1345,7 @@ bool ZGui::OnMouseUpdate(int x, int y, bool bLBnPressed,
 		MAIN_WINDOW* wnd; // = FindMainWnd(x,y);
 		if( bClicked )
 		{ 
-			if(wnd = FindMainWnd(x,y) )
+			if((wnd = FindMainWnd(x,y)) != NULL) //if(wnd = FindMainWnd(x,y) ) -- Ändring 040701
 			{
 				if(wnd != m_pkActiveMainWin)
 				{
@@ -1485,7 +1485,8 @@ bool ZGui::OnMouseUpdate(int x, int y, bool bLBnPressed,
 				}
 
 				ZGuiWnd* test; 
-				if( (test=m_pkActiveMainWin->pkWnd->Find(x,y)))//!ClickedWndAlphaTex(x,y, ZGuiWnd::m_pkWndClicked))
+//				if( (test=m_pkActiveMainWin->pkWnd->Find(x,y))) //!ClickedWndAlphaTex(x,y, ZGuiWnd::m_pkWndClicked))
+				if( (test=m_pkActiveMainWin->pkWnd->Find(x,y)) != NULL) // 040701
 				{
 					if(ClickedWndAlphaTex(x,y,test)==true)
 					{

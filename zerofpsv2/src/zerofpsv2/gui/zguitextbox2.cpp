@@ -227,64 +227,62 @@ void ZGuiTextbox::SetText(char* strText, bool bResizeWnd)
 		BuildTextStrings();
 	}
 	
-	return;
+	//if(strText == NULL || strlen(strText) < 1)
+	//{
+	//	delete[] m_strText;
+	//	m_iTextLength = 1;
+	//	m_strText = new char[m_iTextLength];
+	//	m_strText[0] = '\0';
+	//	return;
+	//}
 
-	if(strText == NULL || strlen(strText) < 1)
-	{
-		delete[] m_strText;
-		m_iTextLength = 1;
-		m_strText = new char[m_iTextLength];
-		m_strText[0] = '\0';
-		return;
-	}
+	//if(m_bNumberOnly)
+	//	for(unsigned int i=0; i<strlen(strText); i++)
+	//		if(strText[i] < 48 || strText[i] > 57)
+	//			return;
 
-	if(m_bNumberOnly)
-		for(unsigned int i=0; i<strlen(strText); i++)
-			if(strText[i] < 48 || strText[i] > 57)
-				return;
+	//int iLength = strlen(strText)+1;
 
-	int iLength = strlen(strText)+1;
+	//if(iLength > 1)
+	//{
+	//	if(m_strText != NULL)
+	//	{
+	//		delete[] m_strText;
+	//		m_iTextLength = 0;
+	//	}
 
-	if(iLength > 1)
-	{
-		if(m_strText != NULL)
-		{
-			delete[] m_strText;
-			m_iTextLength = 0;
-		}
+	//	m_iTextLength = iLength;
+	//	m_strText = new char[m_iTextLength];
+	//	strcpy(m_strText, strText);
+	//}
+	//
+	//m_iCurrMaxText = strlen(strText);
 
-		m_iTextLength = iLength;
-		m_strText = new char[m_iTextLength];
-		strcpy(m_strText, strText);
-	}
-	
-	m_iCurrMaxText = strlen(strText);
+	//if(m_iCurrMaxText < 0)
+	//	m_iCurrMaxText = 0;
 
-	if(m_iCurrMaxText < 0)
-		m_iCurrMaxText = 0;
+	//m_iCursorPos = strlen(strText);
 
-	m_iCursorPos = strlen(strText);
+	//if(m_iCursorPos < 0)
+	//	m_iCursorPos = 0;
 
-	if(m_iCursorPos < 0)
-		m_iCursorPos = 0;
+	//int* piParams = new int[1];
+	//piParams[0] = GetID(); // Listbox ID
+	//ZGui* pkGui = GetGUI();
+	//if(pkGui)
+	//{
+	//	callbackfunc cb = pkGui->GetActiveCallBackFunc();
 
-	int* piParams = new int[1];
-	piParams[0] = GetID(); // Listbox ID
-	ZGui* pkGui = GetGUI();
-	if(pkGui)
-	{
-		callbackfunc cb = pkGui->GetActiveCallBackFunc();
+	//	if(cb)
+	//	{
+	//		ZGuiWnd* pkActiveWnd = pkGui->GetActiveMainWnd();
 
-		if(cb)
-		{
-			ZGuiWnd* pkActiveWnd = pkGui->GetActiveMainWnd();
+	//		if(pkActiveWnd)
+	//			cb(pkActiveWnd, ZGM_EN_CHANGE, 1, piParams);
+	//	}
+	//}
 
-			if(pkActiveWnd)
-				cb(pkActiveWnd, ZGM_EN_CHANGE, 1, piParams);
-		}
-	}
-
-	delete[] piParams;
+	//delete[] piParams;
 }
 
 void ZGuiTextbox::CreateInternalControls()
@@ -628,7 +626,7 @@ bool ZGuiTextbox::ProcessKBInput(int iKey)
 			return true;
 		}
 
-		return true;
+	//	return true;
 	}
 
 	if(iKey == KEY_LEFT)
@@ -1097,7 +1095,7 @@ bool ZGuiTextbox::BuildTagList()
 	// Calculate text length
 	for(int i=0; i<m_kTextTags.size(); i++)
 	{
-		if(i+1 == m_kTextTags.size())
+		if(i+1 == (int) m_kTextTags.size())
 			m_kTextTags[i].iNumChars = strlen(m_strText)-m_kTextTags[i].iPos;
 		else
 			m_kTextTags[i].iNumChars = m_kTextTags[i+1].iPos-m_kTextTags[i].iPos;
@@ -1242,10 +1240,10 @@ void ZGuiTextbox::BuildTextStrings()
 	map<int,int> mkMaxBaselineHeight;
 
 	const int LEFT = MARG_SIZE, TOP = 0;
-	const int TOTAL_LENGTH = strlen(m_strText);
+//	const int TOTAL_LENGTH = strlen(m_strText);
 	const int WIDTH = GetWndRect().Width() - 20 - (LEFT*2);
 	int xPos = LEFT;
-	int iRow = 0, iLettersProcessed=0;
+	int iRow = 0;//, iLettersProcessed=0;
 
 	vector<TEXT_TAG> kFinal;
 	int w = 0, row=0, max_row=0, max_baseline=0;
