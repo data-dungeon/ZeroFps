@@ -13,6 +13,8 @@ namespace StdLua
 
 void Init(ZFScriptSystem* pkScript, ZFVFileSystem* pkVFS)
 {
+	cout << "Add SI: Std" << endl;
+
 	g_pkScript = pkScript;
 	g_pkVFS = pkVFS;
 	

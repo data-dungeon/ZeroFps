@@ -694,11 +694,56 @@ int SetNextAnim(lua_State* pkLua)
 	mp->SetNextAnimation(acName);
 	return 1;
 }
+
+/**	\fn PlayAnim(ObjectID, AnimName)
+ 	\relates MistLandScript
+   \brief Sets the playing animation.
+*/
+int PlayAnim(lua_State* pkLua)
+{
+	double dTemp;
+	g_pkScript->GetArgNumber(pkLua, 0, &dTemp);		
+	int iId1 = (int)dTemp;
+
+	char acName[100];
+	g_pkScript->GetArg(pkLua, 1, acName);
+
+//	printf("Should Play A Animation '%s' on object %d", acName,  iId1);
+
+	Entity* o1 = g_pkObjMan->GetEntityByID(iId1);
+	P_Mad* mp = dynamic_cast<P_Mad*>(o1->GetProperty("P_Mad"));
+	mp->SetAnimation(acName,0);
+	
+	return 1;
+}
+
+
+int AddMesh(lua_State* pkLua)
+{
+	// Get ObjectID ID
+	double dTemp;
+	g_pkScript->GetArgNumber(pkLua, 0, &dTemp);		
+	int iId1 = (int)dTemp;
+
+	// Get MeshName
+	g_pkScript->GetArgNumber(pkLua, 1, &dTemp);		
+	int iId2 = (int)dTemp;
+
+	Entity* o1 = g_pkObjMan->GetEntityByID(iId1);
+	P_Mad* mp = dynamic_cast<P_Mad*>(o1->GetProperty("P_Mad"));
+
+	mp->AddMesh( iId2 );
+	return 1;
+}
+
+
 }
 
 void Register_MadProperty(ZeroFps* pkZeroFps)
 {
-	g_pkScript->ExposeFunction("SetNextAnim", SI_PMad::SetNextAnim);
+	g_pkScript->ExposeFunction("SetNextAnim",	SI_PMad::SetNextAnim);
+	g_pkScript->ExposeFunction("PlayAnim",		SI_PMad::PlayAnim);
+	g_pkScript->ExposeFunction("AddMesh",		SI_PMad::AddMesh);
 }
 
 

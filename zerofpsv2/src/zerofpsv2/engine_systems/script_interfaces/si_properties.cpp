@@ -17,6 +17,8 @@ namespace PropertiesLua
 
 void Init(ZFScriptSystem* pkScript, EntityManager* pkObjMan)
 {
+	cout << "Add SI: Properties" << endl;
+
 	g_pkScript = pkScript;
 	g_pkObjMan = pkObjMan;
 

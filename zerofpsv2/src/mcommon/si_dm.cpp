@@ -24,6 +24,8 @@ map<int, DMLua::PATROL_POINTS>	DMLua::m_kPatrolPoints;
 void DMLua::Init(EntityManager* pkObjMan,ZFScriptSystem* pkScript, 
 					  ZGuiResourceManager* pkGuiResMan)
 {
+	cout << "Add SI: DM" << endl;
+
 	g_pkObjMan = pkObjMan;
 	g_pkScript = pkScript;
 	g_pkGuiResMan = pkGuiResMan;

@@ -14,6 +14,8 @@ EntityManager* AudioLua::g_pkEntityMan;
 void AudioLua::Init(ZFAudioSystem* pkAudio, EntityManager* pkObjMan,
 						  ZFScriptSystem* pkScript)
 {
+	cout << "Add SI: Audio" << endl;
+
 	g_pkScript = pkScript;
 	g_pAudioSys = pkAudio;
 	g_pkEntityMan = pkObjMan;

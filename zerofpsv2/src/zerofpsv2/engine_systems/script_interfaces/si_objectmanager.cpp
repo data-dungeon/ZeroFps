@@ -40,6 +40,8 @@ Vector3 GetVectorArg(lua_State* pkLua, int iIndex)
 
 void Init(EntityManager* pkObjMan, ZFScriptSystem* pkScript)
 {
+	cout << "Add SI: ObjectManager" << endl;
+
 	g_pkObjMan = pkObjMan;
 	g_pkScript = pkScript;
 	
@@ -64,9 +66,9 @@ void Init(EntityManager* pkObjMan, ZFScriptSystem* pkScript)
 	pkScript->ExposeFunction("Delete",  				ObjectManagerLua::DeleteLua);
 
 	// mad handling
-	pkScript->ExposeFunction("PlayAnim",				ObjectManagerLua::PlayAnim);
+//	pkScript->ExposeFunction("PlayAnim",				ObjectManagerLua::PlayAnim);
 //	pkScript->ExposeFunction("SetNextAnim",			ObjectManagerLua::SetNextAnim);
-	pkScript->ExposeFunction("AddMesh",					ObjectManagerLua::AddMesh);
+//	pkScript->ExposeFunction("AddMesh",					ObjectManagerLua::AddMesh);
 
 	// entity Variables
 	pkScript->ExposeFunction("GetLocalDouble",		ObjectManagerLua::GetLocalDouble);
@@ -493,6 +495,7 @@ int GetObjectRotLua(lua_State* pkLua)
  	\relates MistLandScript
    \brief Sets the playing animation.
 */
+/*
 int PlayAnim(lua_State* pkLua)
 {
 	double dTemp;
@@ -509,7 +512,7 @@ int PlayAnim(lua_State* pkLua)
 	mp->SetAnimation(acName,0);
 	
 	return 1;
-}
+}*/
 
 /**	\fn SetNextAnim(ObjectID, AnimName)
  	\relates MistLandScript
@@ -534,7 +537,7 @@ int SetNextAnim(lua_State* pkLua)
 	mp->SetNextAnimation(acName);
 	return 1;
 }
-*/
+
 
 int AddMesh(lua_State* pkLua)
 {
@@ -552,7 +555,7 @@ int AddMesh(lua_State* pkLua)
 
 	mp->AddMesh( iId2 );
 	return 1;
-}
+}*/
 
 /**	\fn GetLocalDouble(ObjectID, VariableName)
  	\relates MistLandScript

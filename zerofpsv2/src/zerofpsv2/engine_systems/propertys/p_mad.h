@@ -98,6 +98,8 @@ class ENGINE_SYSTEMS_API P_Mad : public Property, public Mad_Modell {
 namespace SI_PMad
 {
 	int ENGINE_SYSTEMS_API SetNextAnim(lua_State* pkLua);
+	int ENGINE_SYSTEMS_API PlayAnim(lua_State* pkLua);
+	int ENGINE_SYSTEMS_API AddMesh(lua_State* pkLua);
 	
 }
 
