@@ -1176,6 +1176,20 @@ void ZGResEdit::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 					string strLoadName(szFileName);
 					strLoadName.erase(0,2);
 
+               string::size_type pos = strLoadName.find("/mistlands");
+               if(pos != string::npos)
+                  strLoadName.erase(pos, strlen("/mistlands"));
+               if((pos=strLoadName.find("/dm")) != string::npos)
+                  strLoadName.erase(pos, strlen("/dm"));
+               if((pos = strLoadName.find("/extdata")) != string::npos)
+                  strLoadName.erase(pos, strlen("/extdata"));
+               if((pos = strLoadName.find("/sysdata")) != string::npos)
+                  strLoadName.erase(pos, strlen("/sysdata"));
+               if((pos = strLoadName.find("/zgresedit")) != string::npos)
+                  strLoadName.erase(pos, strlen("/zgresedit"));
+
+               printf("strLoadName = %s\n", strLoadName.c_str());
+
 					ZGuiWnd* pkMainWnd = GetWnd("GuiMainWnd");
 
 					// Börja med att ta bort alla fönster

@@ -38,6 +38,8 @@ class MistClient :public Application, public ZGuiApp {
 		void Input();
 		
 		void Say(string strMsg);
+
+      bool NameIPFromServerList(string& strName, string& strIP);
 		
 	public:
 		//application virtuals

@@ -6,6 +6,8 @@ bool GUIPROC( ZGuiWnd* win, unsigned int msg, int numparms, void *params )
 {
    string strMainWnd;
    string strController;
+
+   static bool s_bChangeServerName = false;
    
    if(msg == ZGM_COMMAND)
    {
@@ -51,9 +53,30 @@ bool GUIPROC( ZGuiWnd* win, unsigned int msg, int numparms, void *params )
          else
          if(strController == "AddServerBn")
          {
+            s_bChangeServerName = false;
             g_kMistClient.ShowWnd("AddNewServerWnd", true, true, true);
             g_kMistClient.SetText("NewServerNameEB", "");
             g_kMistClient.SetText("NewServerIPName", "");
+         }
+         else
+         if(strController == "EditServerBn")
+         {
+            s_bChangeServerName = true;
+            g_kMistClient.ShowWnd("AddNewServerWnd", true, true, true);
+
+            char* szSelItem = g_kMistClient.GetSelItem("ServerList");
+            if( szSelItem )
+            {
+               string strText = string(szSelItem);
+
+               int pos = (int) strText.find("-");
+
+               string strName = strText.substr(0, pos-1);
+               string strIP = strText.substr(pos+2, strText.length()-pos);
+
+               g_kMistClient.SetText("NewServerNameEB", (char*)strName.c_str());
+               g_kMistClient.SetText("NewServerIPName", (char*)strIP.c_str());
+            }
          }
          else
          if(strController == "RemoveServerBn")
@@ -66,7 +89,7 @@ bool GUIPROC( ZGuiWnd* win, unsigned int msg, int numparms, void *params )
                int pos = (int) strText.find("-");
 
                string strName = strText.substr(0, pos-1);
-               string strIP = strText.substr(pos+2, /*strText.length()*/strText.length()-pos);
+               string strIP = strText.substr(pos+2, strText.length()-pos);
 
                g_kMistClient.AddRemoveServer(strName.c_str(), strIP.c_str(), false);
                g_kMistClient.UpdateServerListbox();
@@ -99,6 +122,13 @@ bool GUIPROC( ZGuiWnd* win, unsigned int msg, int numparms, void *params )
             {
                if( strlen(szName) > 0 && strlen(szIP) > 0)
                {
+                  if(s_bChangeServerName)
+                  {
+                     string szOLDName, szOLDIP;
+                     if(g_kMistClient.NameIPFromServerList(szOLDName, szOLDIP))
+                        g_kMistClient.AddRemoveServer(szOLDName.c_str(), szOLDIP.c_str(), false);
+                  }
+
                   g_kMistClient.AddRemoveServer(szName, szIP);
                   g_kMistClient.UpdateServerListbox();
                }
@@ -152,4 +182,21 @@ bool GUIPROC( ZGuiWnd* win, unsigned int msg, int numparms, void *params )
    }
 
    return true;
+}
+
+bool MistClient::NameIPFromServerList(string& strName, string& strIP)
+{
+   char* szSelItem = GetSelItem("ServerList");
+   if( szSelItem )
+   {
+      string strText = string(szSelItem);
+
+      int pos = (int) strText.find("-");
+
+      strName = strText.substr(0, pos-1);
+      strIP = strText.substr(pos+2, strText.length()-pos);
+      return true;
+   }
+
+   return false;
 }

@@ -15,6 +15,8 @@
 #include "../zerofpsv2/engine_systems/script_interfaces/si_gui.h"
 #include "../mcommon/p_arcadecharacter.h"
 #include "../mcommon/ml_netmessages.h"
+#include "../zerofpsv2/gui/zguiresourcemanager.h"
+#include "../zerofpsv2/basic/zguifont.h"
 
 MistClient g_kMistClient("MistClient",0,0,0);
 
@@ -63,11 +65,27 @@ void MistClient::OnInit()
 	m_pkFps->StartServer(true,false);
 
    // initialize gui system with default skins, font etc
-	InitGui(m_pkScript, "defguifont", "data/script/gui/defskins.lua", NULL, false, true); 
+	InitGui(m_pkScript, "morpheus10", "data/script/gui/defskins.lua", NULL, false, true); 
 
    // load startup screen 
    if(!m_bSkipLoginScreen)
+   {
       LoadGuiFromScript("data/script/gui/ml_start.lua");
+
+      char szFontData[512], szFontTex[512];
+      sprintf(szFontData, "data/textures/gui/fonts/%s.fnt", "defguifont");
+      sprintf(szFontTex, "data/textures/gui/fonts/%s.tga", "defguifont");
+      
+      ZGuiFont* font = new ZGuiFont("listboxfont");
+      font->Create(szFontData, m_pkTexMan->Load(szFontTex, 0));
+	   m_pkGui->GetResMan()->Add("listboxfont", font);
+
+      GetWnd("ServerList")->SetFont(font); 
+      GetWnd("LoginNameEB")->SetFont(font); 
+      GetWnd("LoginPWEb")->SetFont(font); 
+      GetWnd("NewServerIPName")->SetFont(font); 
+      GetWnd("NewServerNameEB")->SetFont(font); 
+   }
 
    // load software cursor
 	m_pkGui->SetCursor( 0,0, m_pkTexMan->Load("data/textures/gui/cursor.bmp", 0),

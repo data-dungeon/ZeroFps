@@ -159,6 +159,8 @@ ZGuiListitem* ZGuiListbox::AddItem(char* strText, unsigned int iIndex, bool bSel
 	if(m_pkFont == NULL && m_pkResMan)
 		m_pkFont = m_pkResMan->Font("defguifont");
 
+   SetFont(m_pkFont);
+
 	int iWidth = GetScreenRect().Width();
 	int iHeight = GetScreenRect().Height();
 	int iNewWidth = m_pkFont->GetLength(strText) + 25;
@@ -653,12 +655,13 @@ void ZGuiListbox::SetResizeFlags(bool bHorz, bool bVert)
 	 }
 }
 
+void ZGuiListbox::SetFont(ZGuiFont* pkFont)
+{
+	m_pkFont = pkFont;
 
-
-
-
-
-
-
-
-
+	list<ZGuiListitem*>::iterator it;
+	for(  it = m_pkItemList.begin(); it != m_pkItemList.end(); it++)
+   {
+		(*it)->GetButton()->SetFont(pkFont);
+	}
+}

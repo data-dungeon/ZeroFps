@@ -407,7 +407,7 @@ void Scene::CreateUI()
 	m_pkGui->ShowMainWindow(m_pkSelectFileWnd, false);
 
 	((ZGuiTreebox*)m_pkApp->GetWnd("FileTree"))->Clear();
-	BuildFileTree("FileTree", "data", ".lua");
+	BuildFileTree("FileTree", "datafiles", ".lua");
 	m_pkApp->SetText("SelectedFileEB", "");
 
 	m_pkApp->CreateWnd(Label, "OwerwriteWarning", "SelectFileWnd", "", 400-240, 16+400-16-64+24+15, 100, 20, 0);

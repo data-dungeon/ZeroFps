@@ -17,6 +17,8 @@ class ZGuiScrollbar;
 class GUI_API ZGuiListbox : public ZGuiWnd
 {
 public:
+
+   void SetFont(ZGuiFont* pkFont); // overloaded
 	void SetEnable(bool bEnable);
 	bool SelItem(const char* szText);
 	bool SelItem(int iIndex);
