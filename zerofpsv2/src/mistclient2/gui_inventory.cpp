@@ -116,6 +116,18 @@ void InventoryDlg::OnCommand(string strController)
 
 void InventoryDlg::OnMouseMove(bool bLeftButtonPressed, int mx, int my)
 {
+	if(g_kMistClient.m_iPickedUpItem)
+	{
+		for(int i=0; i<m_vkInventoryItemList.size(); i++)
+		{
+			if(m_vkInventoryItemList[i].iItemID == g_kMistClient.m_iPickedUpItem)
+			{
+				m_iMoveSlot = i;
+				break;
+			}
+		}
+	}
+
 	if(g_kMistClient.m_pkGui->m_bMouseRightPressed)
 	{
 		m_iSelItemID = -1;
