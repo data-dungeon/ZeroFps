@@ -311,6 +311,8 @@ bool ZGui::Render(int fps)
 	if(!m_bRenderEnabled)
 		return true;
 
+	StartProfileTimer("gui render");		
+		
 	m_pkRenderer->StartRender(m_bClearScreen);
 	
 	// Blit windows with lowest z order first.
@@ -375,6 +377,8 @@ bool ZGui::Render(int fps)
 
 	m_pkRenderer->EndRender(); 
 
+	StopProfileTimer("gui render");	
+	
 	return true;
 }
 

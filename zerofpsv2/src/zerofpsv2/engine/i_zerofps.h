@@ -42,10 +42,9 @@ public:
 
 	virtual	void GetEngineCredits(vector<string>& kCreditsStrings)= 0;
 		 	
-	virtual	void AddRenderCamera(Camera* pkCamera)= 0;
+	virtual void AddRenderCamera(Camera* pkCamera)= 0;
 	virtual void RemoveRenderCamera(Camera* pkCamera)= 0;
 	virtual void ClearRenderCameras()= 0;
-	virtual void Draw_RenderCamera(Camera* pkCamera) = 0;
 	
 
 /*	virtual int GetWidth()= 0;

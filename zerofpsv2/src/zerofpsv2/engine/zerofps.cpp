@@ -608,17 +608,16 @@ void ZeroFps::Update_System()
 
 void ZeroFps::Draw_EngineShell()
 {
-	
+	StartProfileTimer("Render");					
+
 	//render cameras	
-	StartProfileTimer("Draw_RenderCameras");	
 	Draw_RenderCameras();
-	StopProfileTimer("Draw_RenderCameras");		
 	
 	//render gui
-	StartProfileTimer("gui render");	
-	m_pkGui->Render((int)m_fAvrageFps);
-	StopProfileTimer("gui render");	
+	if(!m_bMinimized)	
+		m_pkGui->Render((int)m_fAvrageFps);
 	
+		
 	//set console kamera matrisses, and clear depthbuffer
 	m_pkConsoleCamera->InitView();
 	
@@ -628,10 +627,13 @@ void ZeroFps::Draw_EngineShell()
 	//on hud drawing
 	m_pkApp->OnHud();
 
-	//draw console	
-	if(m_pkConsole->IsActive()) 
-		m_pkConsole->Draw();
+	//draw console
+	if(!m_bMinimized)
+		if(m_pkConsole->IsActive()) 
+			m_pkConsole->Draw();
 
+			
+	StopProfileTimer("Render");				
 }
 
 void ZeroFps::MainLoop(void) 
@@ -670,10 +672,9 @@ void ZeroFps::MainLoop(void)
 				Run_Client();		
 			StopProfileTimer("System");
 				
-			//render stuff
-			StartProfileTimer("Render");				
+			//render stuff			
 			Draw_EngineShell();
-			StopProfileTimer("Render");
+			
 
 		}
 		
@@ -725,17 +726,18 @@ void ZeroFps::RemoveRenderCamera(Camera* pkCamera)
 		if(pkCamera == (*it))
 			m_kRenderCamera.erase(it);
 	}	
-
-	//m_kRenderTarget.clear();
-//	m_kRenderTarget.remo(pkCamera);	
 }
 
 void ZeroFps::Draw_RenderCameras()
 {
+	StartProfileTimer("Draw_RenderCameras");	
+
 	for(unsigned int i=0; i<m_kRenderCamera.size(); i++)
-	{
-		Draw_RenderCamera(m_kRenderCamera[i]);
+	{		
+		m_kRenderCamera[i]->RenderView();
 	}
+	
+	StopProfileTimer("Draw_RenderCameras");	
 }
 
 Camera* ZeroFps::GetRenderCamera(string strName)
@@ -749,23 +751,7 @@ Camera* ZeroFps::GetRenderCamera(string strName)
 	return NULL;
 }
 
-void ZeroFps::Draw_RenderCamera(Camera* pkCamera)
-{
-	//render camera view
-	pkCamera->RenderView();
-	
-	//if render is disable just clear the viewport (looks better)
-	/*
-	if(!m_bRenderOn || m_bMinimized)
-	{
-		pkCamera->InitView();		
-		return;
-	}
-	*/
-	//cout<<"rendering camera:"<<pkCamera->GetName()<<endl;
-	
 
-}
 
 
 void ZeroFps::Swap(void) {

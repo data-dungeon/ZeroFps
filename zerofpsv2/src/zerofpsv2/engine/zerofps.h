@@ -298,7 +298,6 @@ class ENGINE_API ZeroFps : public I_ZeroFps {
 		void RemoveRenderCamera(Camera* pkCamera);
 		void ClearRenderCameras();
 		void Draw_RenderCameras();
-		void Draw_RenderCamera(Camera* pkCamera);
 		Camera* GetRenderCamera(string strName);
 		
 		//toggle functions		
