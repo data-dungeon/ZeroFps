@@ -114,6 +114,16 @@ class ZeroEd :public Application , public ZGuiApp {
 			eLeft 
 		};
 
+		enum HMapEditMode
+		{
+			HMAP_EDITVERTEX,
+			HMAP_DRAWSMFLAT,
+			HMAP_DRAWMASK,
+			HMAP_DRAWVISIBLE,
+			HMAP_MAX,
+		};
+
+
 		//wierd stuff
 		char		szCoolName[256];
 		string	strMasterSmiley;
@@ -149,6 +159,7 @@ class ZeroEd :public Application , public ZGuiApp {
 		
 		//edit stuff
 		int		m_iEditMode;
+		int		m_iHMapEditMode;
 
 		//camera
 		Entity*	m_pkCameraObject[4];
@@ -280,6 +291,8 @@ class ZeroEd :public Application , public ZGuiApp {
 		void	SendAddZone(Vector3 kPos, Vector3 kSize, Vector3 kModelRot, string strName);		
 		void	SendRotateEntity(int iEntityID,const Vector3& kRot);
 		
+		vector<HMSelectVertex> GetAllSelectedHMVertex();
+
 	public:
 		bool SetViewPort(const char* szVpName);
 

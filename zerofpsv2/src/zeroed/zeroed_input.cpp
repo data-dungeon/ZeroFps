@@ -3,6 +3,28 @@
 #include "../zerofpsv2/engine_systems/propertys/p_hmrp2.h"
 #include "../zerofpsv2/engine_systems/propertys/p_ambientsound.h"
 
+vector<HMSelectVertex> ZeroEd::GetAllSelectedHMVertex()
+{
+	P_HMRP2* hmrp;
+	vector<HMSelectVertex> kReturnVertex;
+
+	for(set<int>::iterator itEntity = m_SelectedEntitys.begin(); itEntity != m_SelectedEntitys.end(); itEntity++ ) 
+	{
+		Entity* pkEntity = m_pkEntityManager->GetEntityByID((*itEntity));
+		if(!pkEntity)			continue;
+		hmrp = dynamic_cast<P_HMRP2*>(pkEntity->GetProperty("P_HMRP2"));
+		if(hmrp == NULL)		continue;
+
+		Vector3 kLocalOffset = m_kDrawPos - hmrp->m_pkHeightMap->m_kCornerPos;
+
+		vector<HMSelectVertex> kSelVertex = hmrp->m_pkHeightMap->GetSelection(m_kDrawPos,m_fHMInRadius,m_fHMOutRadius);
+		kReturnVertex.insert(kReturnVertex.begin(), kSelVertex.begin(), kSelVertex.end());
+	}
+
+	return kReturnVertex;
+}
+
+
 // Handles input for EditMode Terrain.
 void ZeroEd::Input_EditTerrain()
 {
@@ -13,41 +35,67 @@ void ZeroEd::Input_EditTerrain()
 	if(m_fHMInRadius > m_fHMOutRadius)
 		m_fHMInRadius = m_fHMOutRadius;
 
-	if(m_pkInputHandle->VKIsDown("hmraise"))		HMModifyCommand(5); 
-	if(m_pkInputHandle->VKIsDown("hmlower"))		HMModifyCommand(-5);
-	if(m_pkInputHandle->VKIsDown("hmsm") ) 		HMModifyCommand(0.0); 
-
-	if(m_pkInputHandle->VKIsDown("hmpaint")) 
+	switch(m_iHMapEditMode)
 	{
-		for(set<int>::iterator itEntity = m_SelectedEntitys.begin(); itEntity != m_SelectedEntitys.end(); itEntity++ ) 
-		{
-			Entity* pkEntity = m_pkEntityManager->GetEntityByID((*itEntity));
-			if(!pkEntity)			continue;
-			P_HMRP2* hmrp = dynamic_cast<P_HMRP2*>(pkEntity->GetProperty("P_HMRP2"));
-			if(hmrp == NULL)		continue;
-			Vector3 kLocalOffset = m_kDrawPos - hmrp->m_pkHeightMap->m_kCornerPos;
-			hmrp->m_pkHeightMap->DrawMask(m_kDrawPos, m_iEditLayer,m_fHMInRadius,255,255,255,1);
-/*			if(m_iEditLayer == 1)
-				hmrp->m_pkHeightMap->DrawVisible(kLocalOffset, false);
-			else
-				hmrp->m_pkHeightMap->DrawVisible(kLocalOffset, true);*/
+		case HMAP_EDITVERTEX: 
+			if(m_pkInputHandle->VKIsDown("hmraise"))		
+				HMModifyCommand(5); 
+			if(m_pkInputHandle->VKIsDown("hmlower"))		
+				HMModifyCommand(-5);			
+			break;
+		
+		case HMAP_DRAWSMFLAT:
+			if(m_pkInputHandle->VKIsDown("hmraise"))		
+				HMModifyCommand(0.0);  
+			if(m_pkInputHandle->VKIsDown("hmlower"))	
+			{
+				m_kSelectedHMVertex = GetAllSelectedHMVertex();
+				if(m_kSelectedHMVertex.size() > 0) 
+					HeightMap::Merge(m_kSelectedHMVertex);
 			}
-		}
+			break;
+
+		case HMAP_DRAWMASK:
+			if(m_pkInputHandle->VKIsDown("hmraise"))	
+			{
+				for(set<int>::iterator itEntity = m_SelectedEntitys.begin(); itEntity != m_SelectedEntitys.end(); itEntity++ ) 
+				{
+					Entity* pkEntity = m_pkEntityManager->GetEntityByID((*itEntity));
+					if(!pkEntity)			continue;
+					P_HMRP2* hmrp = dynamic_cast<P_HMRP2*>(pkEntity->GetProperty("P_HMRP2"));
+					if(hmrp == NULL)		continue;
+					Vector3 kLocalOffset = m_kDrawPos - hmrp->m_pkHeightMap->m_kCornerPos;
+					hmrp->m_pkHeightMap->DrawMask(m_kDrawPos, m_iEditLayer,m_fHMInRadius,255,255,255,1);
+				}
+			}
+			break;
+
+		case HMAP_DRAWVISIBLE:
+			for(set<int>::iterator itEntity = m_SelectedEntitys.begin(); itEntity != m_SelectedEntitys.end(); itEntity++ ) 
+			{
+				Entity* pkEntity = m_pkEntityManager->GetEntityByID((*itEntity));
+				if(!pkEntity)			continue;
+				P_HMRP2* hmrp = dynamic_cast<P_HMRP2*>(pkEntity->GetProperty("P_HMRP2"));
+				if(hmrp == NULL)		continue;
+				Vector3 kLocalOffset = m_kDrawPos - hmrp->m_pkHeightMap->m_kCornerPos;
+
+				if(m_pkInputHandle->VKIsDown("hmraise"))		
+					hmrp->m_pkHeightMap->DrawVisible(kLocalOffset, true);
+				if(m_pkInputHandle->VKIsDown("hmlower"))		
+					hmrp->m_pkHeightMap->DrawVisible(kLocalOffset, false);
+			}
+			
+			break;
+	}
 
 	if(m_pkInputHandle->Pressed(KEY_1)) m_iEditLayer = 1;		
 	if(m_pkInputHandle->Pressed(KEY_2)) m_iEditLayer = 2;			
 	if(m_pkInputHandle->Pressed(KEY_3)) m_iEditLayer = 3;			
 
-	if(m_pkInputHandle->Pressed(KEY_4))
-	{
-		Entity* pkEntity = m_pkEntityManager->GetEntityByID(m_iCurrentObject);
-		if(pkEntity)
-		{
-			P_HMRP2* hmrp = dynamic_cast<P_HMRP2*>(pkEntity->GetProperty("P_HMRP2"));
-			if(hmrp)
-            hmrp->m_pkHeightMap->Invert();			
-		}
-	}
+	if(m_pkInputHandle->Pressed(KEY_4)) m_iHMapEditMode = HMAP_EDITVERTEX;		
+	if(m_pkInputHandle->Pressed(KEY_5)) m_iHMapEditMode = HMAP_DRAWSMFLAT;			
+	if(m_pkInputHandle->Pressed(KEY_6)) m_iHMapEditMode = HMAP_DRAWMASK;			
+	if(m_pkInputHandle->Pressed(KEY_7)) m_iHMapEditMode = HMAP_DRAWVISIBLE;			
 }
 
 

@@ -44,12 +44,13 @@ void P_HMRP2::Init()
 
 void P_HMRP2::Update() 
 {	
+	cout << "Render HMAP" << endl; 
 	if(m_pkHeightMap!=NULL)
 	{
 		m_pkHeightMap->SetPosition(m_pkEntity->GetWorldPosV());
 		m_pkLight->Update(m_pkEntity->GetWorldPosV());
 		m_pkRender->DrawHMLodSplat(m_pkHeightMap,m_pkZeroFps->GetCam()->GetPos(),int(m_pkZeroFps->m_fFps));
-//		m_pkRender->DrawNormals(m_pkHeightMap,m_pkEntity->GetWorldPosV(),int(m_pkZeroFps->m_fFps));
+		//m_pkRender->DrawNormals(m_pkHeightMap,m_pkEntity->GetWorldPosV(),int(m_pkZeroFps->m_fFps));
 	}
 }
 

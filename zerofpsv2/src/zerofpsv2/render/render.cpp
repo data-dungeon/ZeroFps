@@ -21,6 +21,7 @@ Render::Render()
 	m_iDrawLandscape			= 1;
 	m_iScreenShootNum			= 0;
 	m_eLandscapePolygonMode = FILL;
+	m_iDrawLandNormal       = 0;
 
 	m_kConsoleColor.Set(1,1,1);
 	m_bCapture					= false;
@@ -35,6 +36,7 @@ Render::Render()
 	RegisterVariable("r_maxlayers",		&m_iMaxLandscapeLayers, CSYS_INT);
 	RegisterVariable("r_drawland",		&m_iDrawLandscape, CSYS_INT);
 	RegisterVariable("r_terrfill",		&m_eLandscapePolygonMode, CSYS_INT);
+	RegisterVariable("r_terrnorm",		&m_iDrawLandNormal, CSYS_BOOL);
 
 	RegisterVariable("r_landlod",			&m_iDetail,CSYS_INT);
 	RegisterVariable("r_viewdistance",	&m_iViewDistance,CSYS_INT);

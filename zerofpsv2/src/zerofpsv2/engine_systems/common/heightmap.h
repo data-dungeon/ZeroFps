@@ -15,6 +15,7 @@
 #define HM_FLAGVISIBLE2	2
 
 struct Mad_Face;
+class HeightMap;
 
 struct ENGINE_SYSTEMS_API HM_vert 
 {
@@ -60,8 +61,10 @@ public:
 class ENGINE_SYSTEMS_API HMSelectVertex
 {
 public:
-	int		m_iIndex;
-	float		m_fValue;
+	HeightMap*	m_pkHeightMap;	// Hmap this vertex is part of.
+	int			m_iIndex;
+	float			m_fValue;
+	Vector3		m_kWorld;			// World coo of this hmap vertex.
 };
 
 
@@ -69,7 +72,7 @@ public:
 class ENGINE_SYSTEMS_API HeightMap
 {
 	private:			
-		TextureManager*	m_pkTexMan;		
+		TextureManager*	m_pkTexMan;					// Ptr to texture manger.
 
 		int					m_iID;						// ID Assigned to each Hm in the game. Used for savefile names.
 
@@ -80,14 +83,14 @@ class ENGINE_SYSTEMS_API HeightMap
 
 		HM_vert*				verts;						// Ptr to array of HMVertex. 
 		vector<HM_Layer>	m_kLayer;					// All layers in the HM.
-		unsigned char*		m_pkTileFlags;
+		unsigned char*		m_pkTileFlags;				// Bitflags for the tiles.
 
-		Vector3				m_kPosition;				// Position of Center of HMAP
 
 		bool AllocHMMemory(int iSize);				// Alloc memory for HMVertex.
 		void Clear();
 
 	public:
+		Vector3				m_kPosition;				// Position of Center of HMAP
 		Vector3				m_kCornerPos;				// Position of the Corner of the HM (for rendering).
 		Vector3				m_kCornerOffset;			// Offset of Corner of the HM from the center.
 		bool					m_bInverted;				
@@ -130,10 +133,13 @@ class ENGINE_SYSTEMS_API HeightMap
 		Vector3 Tilt(float x,float z);		
 
 		// Edit Commands / Selection
+		
 		vector<HMSelectVertex> GetSelection(Vector3 kCenter, float fInRadius, float fOutRadius);
-		void Smooth(vector<HMSelectVertex> kSelected);
-		void Flatten(vector<HMSelectVertex> kSelected, Vector3 kPos);
-		void Raise(vector<HMSelectVertex> kSelected, float fSize);		// Raise or lower a selection.
+		static void Merge(vector<HMSelectVertex> kSelected);
+		static void RefreshHmaps(vector<HMSelectVertex> kSelected);
+		static void Smooth(vector<HMSelectVertex> kSelected);
+		static void Flatten(vector<HMSelectVertex> kSelected, Vector3 kPos);
+		static void Raise(vector<HMSelectVertex> kSelected, float fSize);		// Raise or lower a selection.
 		void DrawMask(Vector3 kPos,int iMode,float fSize,int r,int g,int b,int a);
 		void DrawVisible(Vector3 kPos, bool bVisible);
 	

@@ -3,6 +3,7 @@
 #include <cmath>
 #include <cstring>
 #include <cstdio>
+#include <set>
 #include "heightmap.h"
 #include "../../render/frustum.h"
 #include "../../render/render.h"
@@ -566,23 +567,41 @@ void HeightMap::GetMapXZ(float& x,float& z)
 
 }
 
+void HeightMap::RefreshHmaps(vector<HMSelectVertex> kSelected)
+{
+	set<HeightMap*> kHmaps;
+	for(int i=0; i<kSelected.size(); i++) 
+	{
+		HeightMap* pkHmap = kSelected[i].m_pkHeightMap;
+		kHmaps.insert(pkHmap);
+	}
+
+	for(set<HeightMap*>::iterator it = kHmaps.begin(); it != kHmaps.end(); it++)
+		(*it)->GenerateNormals();
+}
+
 //void HeightMap::Smooth(int iStartx,int iStartz,int iWidth,int iHeight)
 void HeightMap::Smooth(vector<HMSelectVertex> kSelected)
 {
 	int iX, iZ;
 	int iIndex;
 
+	//vector<HeightMap*> kHmaps;
 
-	for(int i=0; i<kSelected.size(); i++) {
+	for(int i=0; i<kSelected.size(); i++) 
+	{
+		HeightMap* pkHmap = kSelected[i].m_pkHeightMap;
+		//kHmaps.push_back(pkHmap);
+
 		iIndex = kSelected[i].m_iIndex;
 
-		iX = iIndex % (m_iTilesSide + 1);
-		iZ = iIndex / (m_iTilesSide + 1);
+		iX = iIndex % (pkHmap->m_iTilesSide + 1);
+		iZ = iIndex / (pkHmap->m_iTilesSide + 1);
 
-		if(iX <= 0)					continue;
-		if(iX >= m_iTilesSide)	continue;
-		if(iZ <= 0)					continue;
-		if(iZ >= m_iTilesSide)	continue;
+		if(iX <= 0)								continue;
+		if(iX >= pkHmap->m_iTilesSide)	continue;
+		if(iZ <= 0)								continue;
+		if(iZ >= pkHmap->m_iTilesSide)	continue;
 			
 		float med=0;
 		for(int q=-1;q<2;q++)
@@ -591,14 +610,16 @@ void HeightMap::Smooth(vector<HMSelectVertex> kSelected)
 				{							
 				} else 
 				{
-					med+=verts[(iZ+q)*m_iVertexSide+(iX+w)].height;							
+					med += pkHmap->verts[(iZ+q)*pkHmap->m_iVertexSide+(iX+w)].height;							
 				}
 			}
 		med=med/8;
-		verts[kSelected[i].m_iIndex].height = med;
+		pkHmap->verts[kSelected[i].m_iIndex].height = med;
 		}
 
-	GenerateNormals();
+	RefreshHmaps(kSelected);
+//	for(int iHmap = 0; iHmap < kHmaps.size(); iHmap++)
+//		kHmaps[iHmap]->GenerateNormals();
 
 //			int iVertexIndex = z * (m_iTilesSide + 1) + x;
 
@@ -651,11 +672,33 @@ void HeightMap::Smooth(vector<HMSelectVertex> kSelected)
 
 void HeightMap::Flatten(vector<HMSelectVertex> kSelected, Vector3 kPos)
 {	
-	float fHeight = Height(kPos.x,kPos.z);
+/*	float fHeight = Height(kPos.x,kPos.z);
 
 	for(int i=0; i<kSelected.size(); i++) {
 		verts[kSelected[i].m_iIndex].height = fHeight;
+		}*/
+}
+
+void HeightMap::Merge(vector<HMSelectVertex> kSelected)
+{
+	float		fHeight;
+	Vector3	kNormal;
+
+	for(int i=0; i<kSelected.size(); i++) 
+	{
+		HeightMap* pkHmap = kSelected[i].m_pkHeightMap;
+		fHeight = kSelected[i].m_pkHeightMap->verts[kSelected[i].m_iIndex].height;
+		fHeight = kSelected[i].m_pkHeightMap->m_kPosition.y + fHeight;
+
+		for(int j=0; j<kSelected.size(); j++) 
+		{
+			if(kSelected[i].m_kWorld == kSelected[j].m_kWorld) 
+			{
+				kSelected[j].m_pkHeightMap->verts[kSelected[j].m_iIndex].height = fHeight -
+					kSelected[j].m_pkHeightMap->m_kPosition.y;
+			}
 		}
+	}
 }
 
 vector<HMSelectVertex> HeightMap::GetSelection(Vector3 kCenter, float fInRadius, float fOutRadius)
@@ -679,6 +722,7 @@ vector<HMSelectVertex> HeightMap::GetSelection(Vector3 kCenter, float fInRadius,
 
 	for(int z = iMinZ ; z < iMaxZ; z++) {
 		for(int x = iMinX ; x < iMaxX ; x++) {	
+			kSel.m_pkHeightMap = this;
 			// Calc World Pos of the vertex.
 			int iVertexIndex = z * (m_iTilesSide + 1) + x;
 			kSel.m_iIndex = iVertexIndex;
@@ -691,6 +735,8 @@ vector<HMSelectVertex> HeightMap::GetSelection(Vector3 kCenter, float fInRadius,
 
 			fLen = kDiff.Length();
 
+			kSel.m_kWorld = kWorld;
+			kSel.m_kWorld.y = 0;
 			// If inside inner circle set value to max.
 			if(fLen < fInRadius) {
 				kSel.m_fValue = 1.0;
@@ -715,10 +761,10 @@ vector<HMSelectVertex> HeightMap::GetSelection(Vector3 kCenter, float fInRadius,
 void HeightMap::Raise(vector<HMSelectVertex> kSelected, float fSize)
 {
 	for(int i=0; i<kSelected.size(); i++) {
-		verts[kSelected[i].m_iIndex].height += fSize * kSelected[i].m_fValue;
+		kSelected[i].m_pkHeightMap->verts[kSelected[i].m_iIndex].height += fSize * kSelected[i].m_fValue;
 		}
 
-	GenerateNormals();
+	RefreshHmaps(kSelected);
 }
 
 float HeightMap::GetBrushSizeInAlphaUVSpace(float fSize)
@@ -835,8 +881,8 @@ void HeightMap::DrawVisible(Vector3 kPos, bool bVisible)
 		m_pkTileFlags[iIndex] |= iTri;	
 	else
 		m_pkTileFlags[iIndex] &= ~iTri;	
-
-	cout << "Index: " <<iTri << endl;
+	
+	cout << "Index: " << iIndex << endl;
 }
 
 

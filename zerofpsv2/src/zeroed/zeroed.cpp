@@ -81,6 +81,7 @@ ZeroEd::ZeroEd(char* aName,int iWidth,int iHeight,int iDepth)
 	m_bRemoteEditing			=	false;
 	m_kZoneModelRotation		= 	Vector3(0,0,0);
 	m_pkZoneMarkerEntity 	=	NULL;
+	m_iHMapEditMode			=  HMAP_EDITVERTEX; 
 		
 	strcpy(szCoolName , "Guldfisk");	
 
@@ -838,25 +839,29 @@ HeightMap* ZeroEd::SetPointer()
 void ZeroEd::HMModifyCommand(float fSize)
 {
 	float fTime = m_pkZeroFps->m_pkEntityManager->GetSimDelta();
+	P_HMRP2* hmrp;
 
 	for(set<int>::iterator itEntity = m_SelectedEntitys.begin(); itEntity != m_SelectedEntitys.end(); itEntity++ ) 
 	{
 		Entity* pkEntity = m_pkEntityManager->GetEntityByID((*itEntity));
 		if(!pkEntity)			continue;
-		P_HMRP2* hmrp = dynamic_cast<P_HMRP2*>(pkEntity->GetProperty("P_HMRP2"));
+		hmrp = dynamic_cast<P_HMRP2*>(pkEntity->GetProperty("P_HMRP2"));
 		if(hmrp == NULL)		continue;
 
 		Vector3 kLocalOffset = m_kDrawPos - hmrp->m_pkHeightMap->m_kCornerPos;
 
-		m_kSelectedHMVertex = hmrp->m_pkHeightMap->GetSelection(m_kDrawPos,m_fHMInRadius,m_fHMOutRadius);
-		if(m_kSelectedHMVertex.size() > 0) {
-			if(fSize == 0.0)
-				hmrp->m_pkHeightMap->Smooth(m_kSelectedHMVertex);
-			else
-				hmrp->m_pkHeightMap->Raise(m_kSelectedHMVertex, fSize * fTime);
-			m_kSelectedHMVertex.clear();
-			}
-		}
+		vector<HMSelectVertex> kSelVertex = hmrp->m_pkHeightMap->GetSelection(m_kDrawPos,m_fHMInRadius,m_fHMOutRadius);
+		m_kSelectedHMVertex.insert(m_kSelectedHMVertex.begin(), kSelVertex.begin(), kSelVertex.end());
+	}
+
+	if(m_kSelectedHMVertex.size() > 0) 
+	{
+		if(fSize == 0.0)
+			hmrp->m_pkHeightMap->Smooth(m_kSelectedHMVertex);
+		else
+			hmrp->m_pkHeightMap->Raise(m_kSelectedHMVertex, fSize * fTime);
+		m_kSelectedHMVertex.clear();
+	}
 }
 
 void ZeroEd::OnHud(void)

@@ -76,6 +76,7 @@ class RENDER_API Render : public ZFSubSystem {
 		int			m_iLodUpdate;				
 		int			m_iMaxLandscapeLayers;
 		int			m_iDrawLandscape;
+		int			m_iDrawLandNormal;
 
 		int			m_iDetail;				//	grid size of lod tiles for the terran
 		int			m_iViewDistance;		//	how far until we cut the landscape	

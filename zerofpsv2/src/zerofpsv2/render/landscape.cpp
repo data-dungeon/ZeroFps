@@ -524,6 +524,10 @@ void Render::DrawHMLodSplat(HeightMap* kMap,Vector3 CamPos,int iFps)
 
 	glPopAttrib();
 	glPopMatrix();
+
+	if(m_iDrawLandNormal)
+		DrawNormals(kMap,kMap->m_kPosition,0);
+
 }
 
 void Render::DrawAllHM(HeightMap* kMap,Vector3 CamPos,bool bBorders)
