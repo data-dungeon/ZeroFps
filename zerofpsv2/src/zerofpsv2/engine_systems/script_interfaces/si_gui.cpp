@@ -32,6 +32,8 @@ void GuiAppLua::Init(ZGuiApp* pkGuiApp, ZFScriptSystem* pkScript)
 	pkScript->ExposeFunction("SetFont", GuiAppLua::SetFontLua);
 	pkScript->ExposeFunction("SetFont", GuiAppLua::SetFontLua);
 	pkScript->ExposeFunction("ChangeWndParameter", GuiAppLua::ChangeWndParameterLua);
+
+
 	
 }
 

@@ -447,7 +447,11 @@ void ZeroFps::Run_EngineShell()
 	}
    else
    {
-		UpdateGuiInput();
+		StartProfileTimer("gui input");	
+	
+			UpdateGuiInput();
+
+		StopProfileTimer("gui input");	
    }
 
 	//update delete
@@ -587,9 +591,9 @@ void ZeroFps::Draw_EngineShell()
 	StopProfileTimer("Draw_RenderCameras");		
 	
 	//render gui
-	StartProfileTimer("gui");	
+	StartProfileTimer("gui render");	
 	m_pkGui->Render((int)m_fAvrageFps);
-	StopProfileTimer("gui");	
+	StopProfileTimer("gui render");	
 	
 	//set console kamera matrisses, and clear depthbuffer
 	m_pkConsoleCamera->InitView();

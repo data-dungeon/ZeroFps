@@ -683,6 +683,17 @@ void ZeroEd::OnIdle()
 	{
 		UpdatePreviewObject();
 	}
+
+	ZGuiMenu* pkWnd = (ZGuiMenu*)GetWnd("MainMenu");
+
+	if(pkWnd && pkWnd->IsOpen() )
+	{
+		m_pkZeroFps->DevPrint_Show(false); 
+	}
+	else
+	{
+		m_pkZeroFps->DevPrint_Show(true); 
+	}
 	
 }
 
@@ -1451,41 +1462,6 @@ void ZeroEd::UpdateZoneMarkerPos()
 			else
 			{
 				m_kZoneMarkerPos = GetZonePosAutoSnap();
-				/*
-				m_kZoneMarkerPos = m_kLastZonePos + Vector3(m_kZoneSize.x,0,m_kZoneSize.z) - 
-					Vector3( (m_kZoneSize.x-m_kLastZoneSize.x)/2, -(m_kZoneSize.y-m_kLastZoneSize.y)/2, 
-					(m_kZoneSize.z-m_kLastZoneSize.z)/2 );
-
-				switch(m_iAutoSnapZoneCorner)
-				{
-				case eTop:
-					m_kZoneMarkerPos.x += (m_kLastZonePos.x-m_kZoneMarkerPos.x) - (m_kZoneSize.x-m_kLastZoneSize.x)/2;
-					break;
-				case eTopRight:
-					m_kZoneMarkerPos.x += (m_kLastZonePos.x-m_kZoneMarkerPos.x) - (m_kZoneSize.x-m_kLastZoneSize.x)/2 - m_kLastZoneSize.x;
-					break;
-				case eBottom:
-					m_kZoneMarkerPos.x += (m_kLastZonePos.x-m_kZoneMarkerPos.x) - (m_kZoneSize.x-m_kLastZoneSize.x)/2;
-					m_kZoneMarkerPos.z += (m_kLastZonePos.z-m_kZoneMarkerPos.z) - (m_kZoneSize.z-m_kLastZoneSize.z)/2 - m_kLastZoneSize.z;
-					break;
-				case eBottomRight:
-					m_kZoneMarkerPos.x += (m_kLastZonePos.x-m_kZoneMarkerPos.x) - (m_kZoneSize.x-m_kLastZoneSize.x)/2 - m_kLastZoneSize.x;
-					m_kZoneMarkerPos.z += (m_kLastZonePos.z-m_kZoneMarkerPos.z) - (m_kZoneSize.z-m_kLastZoneSize.z)/2 - m_kLastZoneSize.z;
-					break;
-				case eBottomLeft:
-					m_kZoneMarkerPos.z += (m_kLastZonePos.z-m_kZoneMarkerPos.z) - (m_kZoneSize.z-m_kLastZoneSize.z)/2 - m_kLastZoneSize.z;
-					break;
-				case eLeft:
-					m_kZoneMarkerPos.z += - m_kLastZoneSize.z;
-					break;
-				case eRight:
-					m_kZoneMarkerPos.x += (m_kLastZonePos.x-m_kZoneMarkerPos.x) - (m_kZoneSize.x-m_kLastZoneSize.x)/2 - m_kLastZoneSize.x;
-					m_kZoneMarkerPos.z += - m_kLastZoneSize.z;
-					break;
-				case eNone:
-					m_kZoneMarkerPos = m_kLastZonePos;
-					break;
-				}*/
 			}
 		}
 		

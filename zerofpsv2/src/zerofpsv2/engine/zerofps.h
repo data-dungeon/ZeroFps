@@ -197,8 +197,7 @@ class ENGINE_API ZeroFps : public I_ZeroFps {
 		void GetEngineCredits(vector<string>& kCreditsStrings);
 		void DrawDevStrings();		
 		
-		
-		void DevPrint_Show(bool bVisible);
+
 		DevStringPage*	DevPrint_FindPage(const char* szName);		
 		
 		//zeroed network stuff
@@ -309,6 +308,7 @@ class ENGINE_API ZeroFps : public I_ZeroFps {
 		//devpage
 		void DevPrintf(const char* szName, const char *fmt, ...);
 		bool DevPrintPageVisible(const char* szName);
+		void DevPrint_Show(bool bVisible);
 
 		//graphs
 		bool GetMinimized()					{	return m_bMinimized;		}
