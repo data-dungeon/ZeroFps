@@ -16,7 +16,17 @@ P_Ml::P_Ml()
 	m_iSpawn= -1;
 	m_iSpawnZon = -1;
 	
-	m_bJustSaved= false;
+	m_bJustSaved =	false;
+	m_bShowText =	false;
+	
+	m_strText = "";
+}
+
+void P_Ml::Init()
+{
+	if(m_strText == "")
+		m_strText = m_pkObject->GetName();
+
 }
 
 P_Ml::~P_Ml()
@@ -79,11 +89,14 @@ void P_Ml::Update()
 		if(m_pkObjMan->IsUpdate(PROPERTY_TYPE_NORMAL))
 			m_bJustSaved = false;
 	
-	
+		
 	if(m_pkObjMan->IsUpdate(PROPERTY_TYPE_RENDER))
 	{
-		m_pkRender->Print(m_pkObject->GetWorldPosV()+Vector3(0,m_pkObject->GetRadius()+0.2,0),Vector3(.1,.1,.1),(char*)m_pkObject->GetName().c_str());				
-	
+		if(m_bShowText)
+		{
+			m_pkRender->SetFont("data/textures/text/objecttext.tga");
+			m_pkRender->Print(m_pkObject->GetIWorldPosV()+Vector3(0,m_pkObject->GetRadius()+0.2,0),Vector3(.2,.2,.2),(char*)m_strText.c_str());				
+		}
 	}
 }
 
@@ -130,17 +143,31 @@ void P_Ml::Save(ZFIoInterface* pkPackage)
 
 	pkPackage->Write((void*)&m_iSpawn,sizeof(m_iSpawn),1);
 	pkPackage->Write((void*)&m_iSpawnZon,sizeof(m_iSpawnZon),1);	
+	pkPackage->Write((void*)&m_bShowText,sizeof(m_bShowText),1);	
 	
 	m_bJustSaved = true;
 }
 
 void P_Ml::Load(ZFIoInterface* pkPackage)
 {
-	pkPackage->Read((void*)&m_iSpawn,sizeof(m_iSpawn),1);	
-	
+	pkPackage->Read((void*)&m_iSpawn,sizeof(m_iSpawn),1);		
 	pkPackage->Read((void*)&m_iSpawnZon,sizeof(m_iSpawnZon),1);	
+	pkPackage->Read((void*)&m_bShowText,sizeof(m_bShowText),1);		
 }
 
+
+
+vector<PropertyValues> P_Ml::GetPropertyValues()
+{
+	vector<PropertyValues> kReturn(1);
+		
+	kReturn[0].kValueName = "showtext";
+	kReturn[0].iValueType = VALUETYPE_BOOL;
+	kReturn[0].pkValue    = (void*)&m_bShowText;
+
+
+	return kReturn;
+}
 
 Property* Create_P_Ml()
 {

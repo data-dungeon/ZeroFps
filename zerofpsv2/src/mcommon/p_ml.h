@@ -25,7 +25,12 @@ class MCOMMON_API P_Ml: public Property {
 		int				m_iSpawn;
 
 		bool				m_bJustSaved;
+		
+		bool				m_bShowText;
+		string			m_strText;
 
+
+		vector<PropertyValues> GetPropertyValues();
 	public:
 
 		void GetActions(vector<string>& actions) { actions = m_kActions; }
@@ -35,8 +40,12 @@ class MCOMMON_API P_Ml: public Property {
 		~P_Ml();
 		
 		void Update();
+		void Init();
 		
 		void AddAction(const char* csAction);
+		
+		void SetText(string strText) {m_strText = strText;};
+		string GetText() {return m_strText;};
 		
 		void SetSpawnPointer(int iSpawner,int iZon) {m_iSpawn = iSpawner;m_iSpawnZon = iZon;};
 		

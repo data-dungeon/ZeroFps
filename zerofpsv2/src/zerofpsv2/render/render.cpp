@@ -48,7 +48,7 @@ Render::Render()
 	Register_Cmd("ccolor",	FID_CONSOLECOLOR);	
 	Register_Cmd("shot",		FID_SHOT);	
 	
-	
+	SetFont("data/textures/text/devstr.bmp");
 }
 
 bool Render::StartUp()
@@ -312,7 +312,7 @@ void Render::PrintChar(unsigned char cChar)
  	//m_pkTexMan->BindTexture(aCurentFont,T_NOMIPMAPPING);  
 //	RES ResTexture* pkTexture = static_cast<ResTexture*>(m_kConsoleText.GetResourcePtr());
 // RES	m_pkTexMan->BindTexture( pkTexture->m_iTextureID );
-	m_pkTexMan->BindTexture("data/textures/text/devstr.bmp" ,0 );
+	m_pkTexMan->BindTexture(aCurentFont ,T_NOMIPMAPPING );
 
 	glPushMatrix();
 	glBegin(GL_QUADS);		
@@ -344,7 +344,7 @@ void Render::PrintChar2(char cChar)
 // 	m_pkTexMan->BindTexture(aCurentFont,T_NOMIPMAPPING);  
 // RES	ResTexture* pkTexture = static_cast<ResTexture*>(m_kConsoleText.GetResourcePtr());
 // RES	m_pkTexMan->BindTexture( pkTexture->m_iTextureID );
-	m_pkTexMan->BindTexture("data/textures/text/devstr.bmp" ,0 );
+	m_pkTexMan->BindTexture(aCurentFont ,T_NOMIPMAPPING );
 
 
 	int iFontSize = 8;
@@ -464,7 +464,7 @@ void Render::Print2(Vector3 kPos,char* aText) {
 
 
 void Render::SetFont(char* aFont) {
-//	strcpy(aCurentFont,aFont);
+	strcpy(aCurentFont,aFont);
 // RES	m_kConsoleText.SetRes(aFont);
 }
 
@@ -513,7 +513,7 @@ void Render::Mode2D_Start()
 	glPushMatrix();
 	glLoadIdentity();
 
-	SetFont("data/textures/text/devstr.bmp");
+	//SetFont("data/textures/text/devstr.bmp");
 
 	glPushAttrib(GL_ALL_ATTRIB_BITS);
 
@@ -541,6 +541,7 @@ void Render::Mode2D_End()
 void Render::DrawConsole(char* m_aCommand,vector<char*>* m_kText,int iStartLine) 
 {
 	Mode2D_Start();
+	SetFont("data/textures/text/devstr.bmp");
 
 	glColor3f(m_kConsoleColor.x,m_kConsoleColor.y,m_kConsoleColor.z);
 
