@@ -33,6 +33,7 @@ enum SEARCH_TASK
 class Gui
 {
 private:
+	bool IsButtonChecked(char* szName);
 	bool CreateWorkPanel();
 	void OpenPropertyDlg();
 	
@@ -58,6 +59,8 @@ private:
 		int h, bool bMenu);
 	ZGuiListbox* CreateListbox(ZGuiWnd* pkParent, int iID, int x, int y, int w,
 		int h);
+	ZGuiCheckbox* CreateCheckbox(ZGuiWnd* pkParent, int iID, int x, int y, int w, 
+		int h, bool bChecked, char *pkName, char* pkResName);
 	ZGuiButton* CreateButton(ZGuiWnd* pkParent, int iID, int pos_x, int pos_y,
 		int w, int h, char* pkName);
 	ZGuiLabel* CreateLabel(ZGuiWnd* pkParent, int iID, int x, int y, int w,

@@ -6,6 +6,7 @@
 #include <stdio.h>
 #include "../basic/zguifont.h"
 #include "../basic/zguiskin.h"
+#include "zgui.h"
 
 ///////////////////////////////////////////////////////////////////////////////
 // Construction/Destruction
@@ -283,6 +284,12 @@ void ZGuiTabCtrl::SetCurrentPage(unsigned int index)
 			
 			SetButtonSkin((*itButton), 1);
 			(*itPage)->Show();
+
+			int* piParams = new int[2];
+			piParams[0] = m_uiCurrentPage;
+			piParams[1] = iPrevCurrentPage;
+			SendNotifyMessage(ZGM_TCN_SELCHANGE, 2, piParams);
+			delete[] piParams;
 		}
 		else
 		{
@@ -412,4 +419,25 @@ bool ZGuiTabCtrl::MoveTabs(bool bLeft)
 void ZGuiTabCtrl::SetFont(ZGuiFont* pkFont)
 {
 	m_pkFont = pkFont;
+}
+
+bool ZGuiTabCtrl::SendNotifyMessage(int iType, int iParams, void *pMsg)
+{
+	ZGui* pkGui = GetGUI();
+	if(pkGui)
+	{
+		callbackfunc cb = pkGui->GetActiveCallBackFunc();
+		if(cb)
+		{
+			ZGuiWnd* pkActivMainWnd = pkGui->GetActiveMainWnd();
+
+			if(pkActivMainWnd)
+			{	
+				cb(pkActivMainWnd, iType, iParams, pMsg);
+				return true;
+			}
+		}
+	}
+
+	return false;
 }

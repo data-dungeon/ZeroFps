@@ -126,7 +126,53 @@ bool Gui::WorkPanelProc( ZGuiWnd* pkWindow, unsigned int uiMessage,
 {
 	switch(uiMessage)
 	{
+	case ZGM_TCN_SELCHANGE:
+		int iPage; iPage = ((int*)pkParams)[0];
+		switch(iPage)
+		{
+		case 0: // Add object
+			m_pkEdit->m_iMode = ADDOBJECT;
+			break;
+		case 1: // Paint texture
+			m_pkEdit->m_iMode = TEXTURE;
+			break;
+		case 2: // Elevation tool
+			if(IsButtonChecked("RaiseLowerGroundChB"))
+				m_pkEdit->m_iMode = RAISE;
+			else
+				m_pkEdit->m_iMode = LOWER;
+			break;
+		}
+		break;
 	case ZGM_COMMAND:
+		int iControllID; iControllID = ((int*)pkParams)[0];
+		switch(iControllID)
+		{
+		case ID_RAISLOWERGROUND_CHB:
+			if(IsButtonChecked("RaiseLowerGroundChB"))
+				m_pkEdit->m_iMode = RAISE;
+			else
+				m_pkEdit->m_iMode = LOWER;
+			break;
+		case ID_SMOOTHGROUND_CHB:
+			if(IsButtonChecked("SmoothGroundChB"))
+				m_pkEdit->m_iMode = SMOOTH;
+			else
+				m_pkEdit->m_iMode = RAISE;
+			break;
+		case ID_PENCILSIZE_RADIOGROUP:
+			m_pkEdit->m_iPencilSize = 4; // small
+			break;
+		case ID_PENCILSIZE_RADIOGROUP+1:
+			m_pkEdit->m_iPencilSize = 8; // medium
+			break;
+		case ID_PENCILSIZE_RADIOGROUP+2:
+			m_pkEdit->m_iPencilSize = 14; // large
+			break;
+		case ID_PENCILSIZE_RADIOGROUP+3:
+			m_pkEdit->m_iPencilSize = 20; // extra-large
+			break;
+		}
 		break;
 	}
 	return true;
@@ -215,6 +261,8 @@ bool Gui::InitSkins()
 	int arrow_prev_down = m_pkEdit->pkTexMan->Load("file:../data/textures/prev_arrow_down.bmp", 0);
 	int arrow_next_up = m_pkEdit->pkTexMan->Load("file:../data/textures/next_arrow_up.bmp", 0);
 	int arrow_next_down = m_pkEdit->pkTexMan->Load("file:../data/textures/next_arrow_down.bmp", 0);
+	int cbox_off = m_pkEdit->pkTexMan->Load("file:../data/textures/checkbox_off.bmp",0);
+	int cbox_on = m_pkEdit->pkTexMan->Load("file:../data/textures/checkbox_on.bmp",0);
 
 	m_kSkinMap.insert( map<string, ZGuiSkin*>::value_type(string("main"), 
 		new ZGuiSkin(bk1,bd1,bd2,bd3,-1,-1,-1,bda,16,true) ) ); 
@@ -258,6 +306,10 @@ bool Gui::InitSkins()
 		new ZGuiSkin(128,128,128,92,92,92,1)));
 	m_kSkinMap.insert( map<string, ZGuiSkin*>::value_type(string("tabbn_front"), 
 		new ZGuiSkin(214,211,206,0,0,0,0)));
+	m_kSkinMap.insert( map<string, ZGuiSkin*>::value_type(string("cbox_off"), 
+		new ZGuiSkin(cbox_off,false)) ); 
+	m_kSkinMap.insert( map<string, ZGuiSkin*>::value_type(string("cbox_on"), 
+		new ZGuiSkin(cbox_on,false)) ); 
 
 	return true;
 }
@@ -335,6 +387,24 @@ ZGuiButton* Gui::CreateButton(ZGuiWnd* pkParent, int iID, int x, int y, int w,
 	pkButton->SetButtonUpSkin(GetSkin("bn_up"));
 	pkButton->SetText(pkName);
 	pkButton->SetGUI(m_pkGui);
+
+	return pkButton;
+}
+
+ZGuiCheckbox* Gui::CreateCheckbox(ZGuiWnd* pkParent, int iID, int x, int y, int w, 
+								  int h, bool bChecked, char *pkText, char* pkResName)
+{
+	ZGuiCheckbox* pkButton = new ZGuiCheckbox(Rect(x,y,x+w,y+h),pkParent,true,iID);
+	pkButton->SetButtonCheckedSkin(GetSkin("cbox_on"));
+	pkButton->SetButtonUncheckedSkin(GetSkin("cbox_off"));
+	pkButton->SetText(pkText);
+	pkButton->SetGUI(m_pkGui);
+
+	if(bChecked == true)
+		pkButton->CheckButton();
+
+	if(pkResName != NULL)
+		Register(pkButton, pkResName);
 
 	return pkButton;
 }
@@ -833,26 +903,63 @@ bool Gui::CreateWorkPanel()
 	int w = 224, y = 20, h = 224, x = m_pkEdit->m_iWidth-w;
 
 	vector<string> akTabNames;
-	akTabNames.push_back("Paint terrain");
+	akTabNames.push_back("Add object");
+	akTabNames.push_back("Paint texture");
 	akTabNames.push_back("Elevation tool");
 
 	m_pkWorkPanel = CreateTabbedDialog("WorkPanel",12314124,2321323,
 		x,y,w,h,akTabNames,WORKPANELPROC);
 
-	ZGuiWnd* pkPage1 = m_pkWorkPanel->GetPage(0);
-
-	CreateLabel(pkPage1, 0, 5, 5, 50, 20, "Brush size");
-	
+	ZGuiWnd* pkPage;
 	vector<string> vkNames;
+
+	// Create page 1: - Add object
+	pkPage = m_pkWorkPanel->GetPage(0);
+	CreateLabel(pkPage, 0, 5, 5, 50, 20, "MAD objects");
+	ZGuiListbox* pkMadList = CreateListbox(pkPage, ID_MADOBJECTS_LB, 5, 25, 209, 140);
+	
+	m_pkEdit->pkBasicFS->ListDir(&vkNames, "../data/mad", false);
+	for(unsigned int i=1; i<vkNames.size(); i++)
+		AddItemToList(pkMadList, false, vkNames[i].c_str(), i, false);
+
+	CreateButton(pkPage, ID_LOADMADFILE, 5, 170, 50, 20, "Open");
+
+	// Create page 2: - Paint terrain
+	pkPage = m_pkWorkPanel->GetPage(1);
+
+	CreateLabel(pkPage, 0, 5, 5, 50, 20, "Brush size");
+	vkNames.clear();
 	vkNames.push_back("Small");
 	vkNames.push_back("Medium");
 	vkNames.push_back("Large");
 	vkNames.push_back("Extra-Large");
 
-	int iHeight = CreateRadiobuttons(pkPage1, vkNames, 
+	int iHeight = CreateRadiobuttons(pkPage, vkNames, 
 		"BrushSizeRadioGroup", ID_BRUSHSIZE_RADIOGROUP, 5, 30, 16);
-
 	CheckRadioButton("BrushSizeRadioGroup", "Medium");
 
+	// Create page 3: - Elevation tool
+	pkPage = m_pkWorkPanel->GetPage(2);
+
+	CreateCheckbox(pkPage, ID_RAISLOWERGROUND_CHB, 5, 5, 16, 16, true,
+		"Raise", "RaiseLowerGroundChB");
+	CreateCheckbox(pkPage, ID_SMOOTHGROUND_CHB, 5, 25, 16, 16, true,
+		"Smooth", "SmoothGroundChB");
+
+	CreateLabel(pkPage, 0, 5, 50, 50, 20, "Pencil size");
+	iHeight = CreateRadiobuttons(pkPage, vkNames, 
+		"PencilSizeRadioGroup", ID_PENCILSIZE_RADIOGROUP, 5, 70, 16);
+	CheckRadioButton("PencilSizeRadioGroup", "Medium");
+
 	return true;
+}
+
+bool Gui::IsButtonChecked(char *szName)
+{
+	ZGuiWnd* pkButton = Get(szName);
+
+	if(pkButton == NULL)
+		return false;
+
+	return ((ZGuiCheckbox*) pkButton)->IsChecked();
 }

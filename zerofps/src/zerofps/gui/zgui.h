@@ -55,6 +55,7 @@ class ZGuiResourceManager;
 #define ZGM_SCROLL						 0x0222
 #define ZGM_EN_CHANGE					 0x0300
 #define ZGM_SELECTLISTITEM				 0x0311
+#define ZGM_TCN_SELCHANGE				 0x5501
 
 #define ZG_DEFAULT_GUI_FONT				 1
 

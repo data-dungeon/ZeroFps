@@ -737,11 +737,15 @@ void ZeroEdit::Input()
 		pkInput->SetInputEnabled(false);
 	}
 
-	if(pkInput->Pressed(MOUSELEFT)) // fulhack för att stänga menyn.
+	if(pkInput->Pressed(MOUSELEFT)) 
 	{
 		int x,y;
 		pkInput->MouseXY(x,y);
-		if(pkGui->GetMainWindowFromPoint(x,y) != m_pkGui->GetMenu())
+
+		ZGuiWnd* pkWndUnderCursor = pkGui->GetMainWindowFromPoint(x,y);
+
+		// fulhack för att stänga menyn.
+		if(pkWndUnderCursor != m_pkGui->GetMenu())
 			m_pkGui->CloseMenu();
 	}
 
@@ -1074,11 +1078,24 @@ void ZeroEdit::Input()
 			break;			
 	}
 
-	if(pkInput->Pressed(KEY_SPACE))
+	int iKey = pkInput->GetQueuedKey();
+
+	switch(iKey)
 	{
-		CmdArgument* pkCmd = new CmdArgument();
-		pkCmd->Set("opendlg PropertyDlg");
-		RunCommand(FID_OPENDLG, pkCmd);
+		case KEY_SPACE:
+			{
+			CmdArgument* pkCmd = new CmdArgument();
+			pkCmd->Set("opendlg PropertyDlg");
+			RunCommand(FID_OPENDLG, pkCmd);
+			}
+			break;
+
+		case KEY_F12:
+			if(m_pkGui->m_pkWorkPanel->IsVisible())
+				m_pkGui->m_pkWorkPanel->Hide();
+			else
+				m_pkGui->m_pkWorkPanel->Show();
+			break;
 	}
 }
 
