@@ -254,7 +254,9 @@ bool P_Mad::AddMesh(int iSId)
 
 vector<PropertyValues> P_Mad::GetPropertyValues()
 {
-	vector<PropertyValues> kReturn(4);
+	vector<PropertyValues> kReturn(5);
+	
+	
 	
 	kReturn[0].kValueName = "m_fScale";
 	kReturn[0].iValueType = VALUETYPE_FLOAT;
@@ -272,6 +274,10 @@ vector<PropertyValues> P_Mad::GetPropertyValues()
 	kReturn[3].iValueType = VALUETYPE_INT;
 	kReturn[3].pkValue    = (void*)&m_iShadowGroup;
 
+	kReturn[4].kValueName = "m_iSortPlace";
+	kReturn[4].iValueType = VALUETYPE_INT;
+	kReturn[4].pkValue    = (void*)&m_iSortPlace;
+	
 	return kReturn;
 }
 

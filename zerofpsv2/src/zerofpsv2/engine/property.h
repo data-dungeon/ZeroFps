@@ -196,14 +196,14 @@ class ENGINE_API Property
 		virtual ~Property();
 
 		int		m_iSortPlace;			//	place in update queue
-		bool	m_bSortDistance;
+		bool		m_bSortDistance;
 		
 		int		m_iType;				// property type
 		int		m_iSide;				// server or client property
 		
-		bool	bNetwork;				// True if property needs to be sent o network.
-		bool	m_bSave;				// True if propertys should be saved with object.
-		char	m_acName[50];			// Name of Property. Set when property is created.	
+		bool		bNetwork;				// True if property needs to be sent o network.
+		bool		m_bSave;				// True if propertys should be saved with object.
+		char		m_acName[50];			// Name of Property. Set when property is created.	
 
 
 		// Property Edit Interface
