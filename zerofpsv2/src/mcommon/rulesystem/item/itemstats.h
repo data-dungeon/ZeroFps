@@ -4,7 +4,7 @@
 #define _RULESYSTEM_ITEMSTATS_H_
 
 #include "../../mcommon_x.h"
-#include "itemdatabase.h"
+//#include "itemdatabase.h"
 #include <map>
 #include <string>
 	using namespace std;

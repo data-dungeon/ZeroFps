@@ -1,11 +1,14 @@
 #include "si_std.h"
 #include <cmath>                    // for trigonometry functions
+#include "../../basic/zfvfs.h"
 
 ZFScriptSystem* StdLua::g_pkScript;
+ZFVFileSystem*	StdLua::g_pkVFS;
 
-void StdLua::Init(ZFScriptSystem* pkScript)
+void StdLua::Init(ZFScriptSystem* pkScript, ZFVFileSystem* pkVFS)
 {
 	g_pkScript = pkScript;
+	g_pkVFS = pkVFS;
 	
 	pkScript->ExposeFunction("Print",	StdLua::PrintLua);
 	pkScript->ExposeFunction("Sin",	StdLua::SinLua);	
@@ -73,27 +76,61 @@ int StdLua::TanLua(lua_State* pkLua)
 }
 
 // 1:st argument = Path to folder with files (char*)
-// 2:nd argument = Table to be filled with files (table)
 
 int StdLua::GetFilesInFolderLua(lua_State* pkLua)
 {
-	if(g_pkScript->GetNumArgs(pkLua) != 2)
+	if(g_pkScript->GetNumArgs(pkLua) != 1)
 	{
-		printf("StdLua::GetFilesInFolderLua Failed!: Bad argumets\n");
+		printf("StdLua::GetFilesInFolderLua Failed!: Incorrect number of argumets\n");
 		return 0;
 	}
 
+	char acPath[256];
+	g_pkScript->GetArgString(pkLua, 0, acPath);
+
+	string strRealPath;
+
+	unsigned int i;
+
 	vector<TABLE_DATA> vkData;
-	g_pkScript->GetArgTable(pkLua, 1, vkData);
 
-/*
-	char* piss = (char*) vkData[0].pData;
-	delete[] piss;
+	vector<string> vkFileNames;
+	g_pkVFS->ListDir(&vkFileNames, "data/mad/zones", false);
 
-	vkData[0].pData = new char[50];
-	strcpy((char*)vkData[0].pData, "mamma");*/
+	unsigned int uiNumFiles = vkFileNames.size();
 
-	g_pkScript->SetArgTable(pkLua, 1, vkData);
+	// Lägg till antalet filer som första argument
+	TABLE_DATA temp;
+	temp.pData = new double;
+	(*(double*) temp.pData) = uiNumFiles;
+	temp.bNumber = true;
+	vkData.push_back(temp);
 
+	for(i=0; i<uiNumFiles; i++)
+	{
+		unsigned int legth = vkFileNames[i].size();
+
+		if(legth > 0)
+		{
+			TABLE_DATA temp;
+			temp.pData = new char[legth+1];
+			strcpy( (char*) temp.pData, vkFileNames[i].c_str());
+			temp.bNumber = false;
+			vkData.push_back(temp);
+		}
+	}
+
+	g_pkScript->AddReturnValueTable(pkLua, 1, vkData);
+
+	if(vkData[0].pData)
+		delete (double*) vkData[0].pData;
+
+	for(i=1; i<vkData.size(); i++) // börja på 1
+	{
+		if(vkData[i].pData)
+			delete[] (char*) vkData[i].pData;
+	}
+
+	return 1;
 	
 }

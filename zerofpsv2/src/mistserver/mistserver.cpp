@@ -22,6 +22,14 @@ static bool GUIPROC( ZGuiWnd* win, unsigned int msg, int numparms, void *params 
 	case ZGM_COMMAND:
 		g_kMistServer.OnCommand(((int*)params)[0], win);
 		break;
+
+	case ZGM_SELECTLISTITEM:
+
+		g_kMistServer.OnClickListbox(
+			g_kMistServer.GetWnd(((int*)params)[0]), 
+			((int*)params)[1]);
+
+		break;
 	}
 	return true;
 }
@@ -462,10 +470,26 @@ void MistServer::OnCommand(int iID, ZGuiWnd *pkMainWnd)
 	{
 		string strName = pkWndClicked->GetName();
 
+		printf("%s\n", pkMainWnd->GetName());
+
 		if(strName == "OpenWorkTabButton")
 			pkScript->Call(m_pkScriptResHandle, "OpenWorkPad", 0, 0); 
 	}
+
 }
 
+void MistServer::OnClickListbox(ZGuiWnd *pkListBox, int iListboxIndex)
+{
+	if(pkListBox)
+	{
+		string strName = pkListBox->GetName();
+
+		if(strName == "ZoneModelListbox")
+		{
+			m_strActiveZoneName = 
+				((ZGuiListbox*) pkListBox)->GetItem(iListboxIndex)->GetText();
+		}
+	}
+}
 
 

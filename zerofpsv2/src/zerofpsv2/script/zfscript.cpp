@@ -408,35 +408,22 @@ bool ZFScriptSystem::GetArgTable(lua_State* state, int iIndex, vector<TABLE_DATA
 	return false;
 }
 
-bool ZFScriptSystem::SetArgTable(lua_State* state, int iIndex, vector<TABLE_DATA>& vkData)
+// returnerar en tabel med data till lua
+void ZFScriptSystem::AddReturnValueTable(lua_State* state, int iIndex, vector<TABLE_DATA>& vkData)
 {
-	int iLuaIndex = iIndex + 1;
+	lua_newtable(state);
 
-	if(lua_istable(state, iLuaIndex))
+	for (unsigned int i=0; i<vkData.size(); i++) 
 	{
-		for(unsigned int i=0; i<vkData.size(); i++)
-		{
-			TABLE_DATA current = vkData[i];
+		lua_pushnumber(state, i+1);
 
-			if(current.bNumber)
-			{
-				//lua_pushusertag(state, current.pData, m_iLuaTagDouble);
-				lua_pushnumber(state, 22);
-				lua_rawseti(state, iLuaIndex, 1+i);
-			}
-			else
-			if(lua_isstring(state, 3+i))
-			{
-				//lua_pushusertag(state, current.pData, m_iLuaTagString);
-				lua_pushstring(state, "uga");
-				lua_rawseti(state, iLuaIndex, 1+i);
-			}
-		}
+		if(vkData[i].bNumber == false)
+			lua_pushstring(state, (char*) vkData[i].pData);
+		else
+			lua_pushnumber(state, (*(double*) vkData[i].pData));
 
-		return true;
+		lua_settable(state, -3);
 	}
-
-	return false;
 }
 
 bool ZFScriptSystem::GetArgNumber(lua_State* state, int iIndex, double* data)

@@ -526,9 +526,14 @@ bool ZGui::OnMouseUpdate(int x, int y, bool bLBnPressed,
 				// Notify the main window that the window have been clicked
 				if(bLeftReleased)
 				{
-					pkParams[0] = ZGuiWnd::m_pkWndClicked->GetID(); // control id
-					m_pkActiveMainWin->pkCallback(m_pkActiveMainWin->pkWnd,
-						ZGM_COMMAND,1,pkParams);
+					if( ZGuiWnd::m_pkWndClicked->GetParent() && 
+						 typeid(*ZGuiWnd::m_pkWndClicked->GetParent())!=typeid(ZGuiListbox) ) // tillfällig ful lösning för att listboxitems inte skall generera COMMAND messages..
+					{
+						pkParams[0] = ZGuiWnd::m_pkWndClicked->GetID(); // control id
+						m_pkActiveMainWin->pkCallback(m_pkActiveMainWin->pkWnd,
+							ZGM_COMMAND,1,pkParams);
+
+					}
 					delete[] pkParams;
 				}
 

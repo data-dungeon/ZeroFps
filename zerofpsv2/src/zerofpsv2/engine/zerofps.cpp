@@ -137,7 +137,7 @@ ZeroFps::~ZeroFps()
 bool ZeroFps::StartUp()	
 {
 	//std lua lib
-	StdLua::Init(m_pkScript);
+	StdLua::Init(m_pkScript, m_pkZFVFileSystem );
 	
 	m_kCurentDir = m_pkBasicFS->GetCWD();
 	 
@@ -1016,6 +1016,7 @@ void ZeroFps::GetEngineCredits(vector<string>& kCreditsStrings)
 	kCreditsStrings.push_back( string("   Erik 'Zeb' Glans			") );
 	kCreditsStrings.push_back( string("   Patrik 'Gubb' Sellin		") );
 	kCreditsStrings.push_back( string("   Nina 'Nanna3d' Rydqvist	") );
+	kCreditsStrings.push_back( string("   Magnus 'Zerom' ?			") );
 }
 
 bool ZeroFps::PreConnect(IPaddress kRemoteIp, char* szWhy256)

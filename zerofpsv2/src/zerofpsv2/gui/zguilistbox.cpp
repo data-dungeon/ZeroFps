@@ -286,7 +286,7 @@ bool ZGuiListbox::Notify(ZGuiWnd* pkWnd, int iCode)
 					// Send a scroll message to the main winproc...
 					int* piParams = new int[2];
 					piParams[0] = GetID(); // Listbox ID
-					piParams[1] = m_pkSelectedItem->GetIndex(); // list item ID
+					piParams[1] = m_pkSelectedItem->GetIndex(); // list item index
 					
 					ZGui* pkGui = GetGUI();
 					if(pkGui == NULL)

@@ -8,6 +8,9 @@
 #include "Shlwapi.h"
 #include <iostream>
 #include <cstdio>
+#include "zfsystem.h"
+#include "zfvfs.h"
+
 
 bool ZFBasicFS::ListDir(vector<string>* pkFiles, const char* acName, bool bOnlyMaps)
 {  

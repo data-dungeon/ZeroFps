@@ -10,12 +10,15 @@ class ZFScriptSystem;
 
 using namespace std;
 
+class ZFVFileSystem;
+
 namespace StdLua
 {
 
 	extern ZFScriptSystem* 		g_pkScript;
+	extern ZFVFileSystem*		g_pkVFS;
 	
-	void ENGINE_SYSTEMS_API Init(ZFScriptSystem* pkScript);
+	void ENGINE_SYSTEMS_API Init(ZFScriptSystem* pkScript, ZFVFileSystem* pkBasicFS);
 	
 	int ENGINE_SYSTEMS_API PrintLua(lua_State* pkLua);	
 	

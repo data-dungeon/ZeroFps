@@ -107,10 +107,6 @@ SOURCE=.\application.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\engine_systems\propertys\autoparentproperty.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=..\engine_systems\propertys\billboardrenderproperty.cpp
 # End Source File
 # Begin Source File
@@ -303,22 +299,6 @@ SOURCE=.\res_texture.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\engine_systems\script_interfaces\si_audio.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\engine_systems\script_interfaces\si_gui.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\engine_systems\script_interfaces\si_objectmanager.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\engine_systems\script_interfaces\si_std.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=..\engine_systems\propertys\skyboxrenderproperty.cpp
 # End Source File
 # Begin Source File
@@ -352,10 +332,6 @@ SOURCE=..\engine_systems\common\zoneobject.cpp
 # Begin Source File
 
 SOURCE=.\application.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\engine_systems\propertys\autoparentproperty.h
 # End Source File
 # Begin Source File
 
@@ -543,22 +519,6 @@ SOURCE=.\res_texture.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\engine_systems\script_interfaces\si_audio.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\engine_systems\script_interfaces\si_gui.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\engine_systems\script_interfaces\si_objectmanager.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\engine_systems\script_interfaces\si_std.h
-# End Source File
-# Begin Source File
-
 SOURCE=..\engine_systems\propertys\skyboxrenderproperty.h
 # End Source File
 # Begin Source File
@@ -672,6 +632,42 @@ SOURCE=.\psystemmanager.cpp
 # Begin Source File
 
 SOURCE=.\psystemmanager.h
+# End Source File
+# End Group
+# Begin Group "scriptinterfaces"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=..\engine_systems\script_interfaces\si_audio.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\engine_systems\script_interfaces\si_audio.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\engine_systems\script_interfaces\si_gui.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\engine_systems\script_interfaces\si_gui.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\engine_systems\script_interfaces\si_objectmanager.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\engine_systems\script_interfaces\si_objectmanager.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\engine_systems\script_interfaces\si_std.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\engine_systems\script_interfaces\si_std.h
 # End Source File
 # End Group
 # End Target

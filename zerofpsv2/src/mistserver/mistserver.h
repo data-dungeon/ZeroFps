@@ -33,7 +33,7 @@ class MistServer :public Application , public ZGuiApp {
 			FID_SAVE,
 		};
 
-
+		string  m_strActiveZoneName;
 		Object* m_pkCameraObject;
 		Camera* m_pkCamera;
 
@@ -51,6 +51,7 @@ class MistServer :public Application , public ZGuiApp {
 		void AddZone();
 
 	public:
+		void OnClickListbox( ZGuiWnd* pkListBox, int iListboxIndex);
 		void OnCommand(int iID, ZGuiWnd* pkMainWnd);
 		
 		MistServer(char* aName,int iWidth,int iHeight,int iDepth);
