@@ -23,7 +23,7 @@ ZoneData& ZoneData::operator=(const ZoneData &kOther)
 	m_iRange				= kOther.m_iRange;
 	return *this; 
 }
-
+  
 ZoneData::ZoneData()
 {
 	m_bNew = false;
