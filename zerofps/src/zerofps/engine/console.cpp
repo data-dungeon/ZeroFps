@@ -86,7 +86,7 @@ void Console::Update(void) {
 			if(m_nLastCommand > 0)
 			{
 				m_nLastCommand--;
-				strcpy(m_aCommand, m_kCommandHistory.at(m_nLastCommand).c_str());	
+				strcpy(m_aCommand, m_kCommandHistory[m_nLastCommand].c_str());	
 			}
 			continue;
 		}
@@ -95,13 +95,13 @@ void Console::Update(void) {
 			if(m_nLastCommand+1 < m_kCommandHistory.size())
 			{
 				m_nLastCommand++;
-				strcpy(m_aCommand, m_kCommandHistory.at(m_nLastCommand).c_str());		
+				strcpy(m_aCommand, m_kCommandHistory[m_nLastCommand].c_str());		
 			}
 			else
 			{
 				int last = m_kCommandHistory.size()-1;
 				if(last >= 0)
-					strcpy(m_aCommand, m_kCommandHistory.at(last).c_str());		
+					strcpy(m_aCommand, m_kCommandHistory[last].c_str());		
 			}
 			continue;
 		}

@@ -125,10 +125,10 @@ void PlayerControlProperty::Update() {
 
 void PlayerControlProperty::Touch(Object* pkObject)
 {
-	if(pkObject->GetName() == "HeightMapObject")
-	{
+	Vector3 Dis=pkObject->GetPos()-m_pkObject->GetPos();	
+		
+	if(Dis.y<0)
 		onGround=true;
-	}
 }
 
 

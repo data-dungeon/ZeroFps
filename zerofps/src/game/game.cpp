@@ -165,7 +165,7 @@ void Game::SetUpMenuScreen()
 	Vector3 *solpos=new Vector3(1000,1000,1000);
 		sol->kRot=solrot;
 		sol->kPos=solpos;		
-		sol->kDiffuse=Vector4(0.2,0.2,0.2,1);	//Dag
+		sol->kDiffuse=Vector4(0.5,0.5,0.5,1);	//Dag
 		sol->kAmbient=Vector4(0.02,0.02,0.02,1);
 		sol->iType=POINT_LIGHT;			
 		sol->iPriority=10;

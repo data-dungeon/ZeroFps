@@ -1,6 +1,6 @@
 #include "physicproperty.h"
 #include "cssphere.h"
-//#include "collisionshape.h"
+#include <typeinfo>
 
 PhysicProperty::PhysicProperty()
 {
@@ -41,23 +41,19 @@ float PhysicProperty::GetBoundingRadius()
 	MadProperty* mp = static_cast<MadProperty*>(m_pkObject->GetProperty("MadProperty"));
 	if(mp!=NULL)
 	{
-//		cout<<"Got radius from madproperty"<<endl;
 		return mp->pkCore->GetRadius();	
 	}
 	
 	ModelProperty* mop = static_cast<ModelProperty*>(m_pkObject->GetProperty("ModelProperty"));
 	if(mop!=NULL)
 	{
-//		cout<<"Got radius from Modelproperty"<<endl;	
 		return mop->m_fRadius;	
 	}
 	
 	HMRP2* hp = static_cast<HMRP2*>(m_pkObject->GetProperty("HMRP2"));
 	if(hp!=NULL)
 	{
-//		cout<<"Got radius from heightmap"<<endl;	
-		float k=hp->GetHeightMap()->GetSize()/2;
-		
+		float k=hp->GetHeightMap()->GetSize()/2;		
 		return sqrt((k*k)+(k*k));
 	}
 	
@@ -67,8 +63,31 @@ float PhysicProperty::GetBoundingRadius()
 void PhysicProperty::Save(ZFMemPackage* pkPackage)
 {
 	pkPackage->Write((void*)&m_bGravity,4);
-	pkPackage->Write((void*)&m_bFloat,4);
-	pkPackage->Write((void*)&m_bSolid,4);	
+	pkPackage->Write((void*)&m_bFloat,4);	
+	pkPackage->Write((void*)&m_bSolid,4);		
+	pkPackage->Write((void*)&(static_cast<CSSphere*>(GetColSphere())->m_fRadius),4);	
+
+
+	int type;
+	if(m_pkColObject==NULL)
+	{
+		type=0;
+	}
+	else if(typeid(*m_pkColObject) == typeid(CSSphere))
+	{
+		type=1;		
+	}
+		
+	pkPackage->Write((void*)&type,4);		
+	
+
+	switch(type)
+	{
+		case 1:
+			pkPackage->Write((void*)&(static_cast<CSSphere*>(m_pkColObject)->m_fRadius),4);						
+			break;
+	}	
+	
 }
 
 void PhysicProperty::Load(ZFMemPackage* pkPackage)
@@ -76,6 +95,19 @@ void PhysicProperty::Load(ZFMemPackage* pkPackage)
 	pkPackage->Read((void*)&m_bGravity,4);
 	pkPackage->Read((void*)&m_bFloat,4);
 	pkPackage->Read((void*)&m_bSolid,4);	
+	pkPackage->Read((void*)&(static_cast<CSSphere*>(GetColSphere())->m_fRadius),4);		
+
+
+	int type;
+	pkPackage->Read((void*)&type,4);
+	
+	switch(type)
+	{
+		case 1:
+			SetColShape(new CSSphere(0));	
+			pkPackage->Read((void*)&(static_cast<CSSphere*>(m_pkColObject)->m_fRadius),4);
+			break;
+	}		
 }
 
 

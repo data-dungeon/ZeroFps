@@ -49,6 +49,7 @@ struct ENGINE_API Collision
 	Vector3 m_kPos2;
 
 	bool m_bAdded;
+	bool m_bChecked;
 };
 
 struct ENGINE_API CP

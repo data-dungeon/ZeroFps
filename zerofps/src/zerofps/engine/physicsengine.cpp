@@ -126,6 +126,11 @@ void PhysicsEngine::CheckCollisions()
 
 				PhysicProperty* PP2 = static_cast<PhysicProperty*>(*it2);
 		
+				//dont collide two static objects =)
+				if(PP1->GetObject()->GetObjectType()==OBJECT_TYPE_STATIC &&
+					PP2->GetObject()->GetObjectType()==OBJECT_TYPE_STATIC)
+					continue;
+		
 				if(TestMotionSpheres(PP1,PP2))
 				{
 					CollisionData* pkCD=NULL;
@@ -142,6 +147,7 @@ void PhysicsEngine::CheckCollisions()
 						temp->m_kPos2=pkCD->m_kPos2;						
 						
 						temp->m_bAdded=false;
+						temp->m_bChecked=false;						
 						
 						m_kCollisions.push_back(temp);
 										
@@ -206,8 +212,12 @@ void PhysicsEngine::HandleCollisions()
 		{
 			if(pkCol->m_bAdded==false)
 			{
-				pkCol->m_bAdded=true;				
-				kCols.push_back(pkCol);
+				if(pkCol->m_bChecked==false)
+					pkCol->m_bChecked=true;
+				else{
+					pkCol->m_bAdded=true;
+					kCols.push_back(pkCol);
+				}
 			}
 	
 			if(pkCol->m_pkPP1->m_bSolid && pkCol->m_pkPP2->m_bSolid)
@@ -223,14 +233,15 @@ void PhysicsEngine::HandleCollisions()
 			if(pkCol->m_bAdded==false)
 			{
 			
-				Vector3 kOldNewPos1=pkCol->m_pkPP1->m_kNewPos;
-				Vector3 kOldNewPos2=pkCol->m_pkPP2->m_kNewPos;
+//				Vector3 kOldNewPos1=(*it)->m_pkPP->m_kNewPos;
+				
+//				Vector3 kOldNewPos2=pkCol->m_pkPP2->m_kNewPos;
 				
 				//set the objects m_kNewPos to the one after a collision with the last solide object
 				if(pkCO->m_pkPP1==(*itCp)->m_pkPP)
 					(*itCp)->m_pkPP->m_kNewPos=pkCO->m_kPos1;
 				else
-					(*itCp)->m_pkPP->m_kNewPos=pkCO->m_kPos1;
+					(*itCp)->m_pkPP->m_kNewPos=pkCO->m_kPos2;
 
 	
 				CollisionData* pkCD=NULL;
@@ -240,19 +251,24 @@ void PhysicsEngine::HandleCollisions()
 				//if a collision still occurs then update the collision data and puch it in kCols
 				if(pkCD!=NULL)
 				{
-					cout<<"multi collision"<<endl;
+//					cout<<"multi collision"<<endl;
 				
 					pkCol->m_kPos1=pkCD->m_kPos1;						
 					pkCol->m_kPos2=pkCD->m_kPos2;						
 											
-					pkCol->m_bAdded=true;
-					kCols.push_back(pkCol);
+					if(pkCol->m_bChecked==false)
+						pkCol->m_bChecked=true;
+					else
+					{
+						pkCol->m_bAdded=true;
+						kCols.push_back(pkCol);
+					}
 					
 					delete pkCD;
 				}
 
-				pkCol->m_pkPP1->m_kNewPos=kOldNewPos1;
-				pkCol->m_pkPP2->m_kNewPos=kOldNewPos2;					
+//				pkCol->m_pkPP1->m_kNewPos=kOldNewPos1;
+//				pkCol->m_pkPP2->m_kNewPos=kOldNewPos2;					
 				
 			}
 		}
