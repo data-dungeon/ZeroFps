@@ -275,9 +275,7 @@ class ENGINE_API ZeroFps : public I_ZeroFps {
 		float GetSystemUpdateFpsDelta() 	{	return m_fSystemUpdateFpsDelta;				}
 		
 		//camera
-		//void SetCamera(Camera* pkCamera);	
-		//void UpdateCamera();
-		Camera *GetCam()						{	return m_pkCamera;	}		//get current render camera, can me NULL
+		Camera *GetCam()						{	return m_pkCamera;	}		//get current render camera, can be NULL
 
 		//render targets
 		void AddRenderCamera(Camera* pkCamera);
@@ -286,11 +284,6 @@ class ENGINE_API ZeroFps : public I_ZeroFps {
 		void Draw_RenderCameras();
 		void Draw_RenderCamera(Camera* pkCamera);
 		Camera* GetRenderCamera(string strName);
-
-		//screen info
-		int GetWidth(){return m_pkRender->GetWidth();}
-		int GetHeight(){return m_pkRender->GetHeight();};		
-		int GetDepth(){return m_pkRender->GetDepth();};		
 		
 		//toggle functions		
 		void ToggleFullScreen(void);
@@ -309,8 +302,8 @@ class ENGINE_API ZeroFps : public I_ZeroFps {
 		int	Connect(int iConnectionID, char* szLogin, char* szPass);
 		void	Disconnect(int iConnectionID);
 		int	GetClientObjectID();
-		int	GetConnectionID() {	return m_iServerConnection;	};		///< Return our Connection Num on the Server.
-		int	GetMaxPlayers() {return m_iMaxPlayers;};
+		int	GetConnectionID() 			{	return m_iServerConnection;	}		///< Return our Connection Num on the Server.
+		int	GetMaxPlayers() 				{	return m_iMaxPlayers;			}
 		
 		void HandleEditCommand(NetPacket* pkNetPacket);						
 		void RouteEditCommand(NetPacket* pkNetPacket);						

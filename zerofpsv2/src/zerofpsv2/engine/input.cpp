@@ -26,6 +26,7 @@ Input::Input()
 bool Input::StartUp()	
 { 
 	m_pkZeroFps	=	static_cast<ZeroFps*>(GetSystem().GetObjectPtr("ZeroFps"));
+	m_pkRender = 	static_cast<Render*>(GetSystem().GetObjectPtr("Render"));
 	GetConsole();	
 
 	m_bKeyRepeat	= true;
@@ -432,8 +433,8 @@ void Input::MouseXY(int &iX,int &iY)
 
 void Input::UnitMouseXY(float &fX,float &fY) 
 {	
-	fX = float( (m_iAbsMouseX/(float)m_pkZeroFps->GetWidth())-0.5 );
-	fY = float( (m_iAbsMouseY/(float)m_pkZeroFps->GetHeight())-0.5 );
+	fX = float( (m_iAbsMouseX/(float)m_pkRender->GetWidth())-0.5 );
+	fY = float( (m_iAbsMouseY/(float)m_pkRender->GetHeight())-0.5 );
 }
 
 
@@ -442,8 +443,8 @@ void Input::UpdateMousePos()
 	SDL_GetMouseState(&m_iSDLMouseX,&m_iSDLMouseY);
 
 
-	int width=m_pkZeroFps->GetWidth();
-	int height=m_pkZeroFps->GetHeight();
+	int width=m_pkRender->GetWidth();
+	int height=m_pkRender->GetHeight();
 
 	int relx;
 	int rely;

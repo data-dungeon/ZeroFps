@@ -48,9 +48,10 @@ public:
 	virtual void Draw_RenderCamera(Camera* pkCamera) = 0;
 	
 
-	virtual int GetWidth()= 0;
+/*	virtual int GetWidth()= 0;
 	virtual int GetHeight()= 0;
 	virtual int GetDepth() = 0;
+*/	
 };
 
 #endif // !defined(AFX_IZEROFPS_H__8841D12A_728A_4690_895A_EE183F23E28D__INCLUDED_)

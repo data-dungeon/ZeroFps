@@ -5,6 +5,7 @@
 #include "../basic/zfsubsystem.h"
 #include "../basic/rect.h"
 #include "../basic/keys.h"
+#include "../render/render.h"
 #include <iostream>
 #include <cstdlib>
 #include <SDL/SDL.h>
@@ -79,7 +80,8 @@ class ENGINE_API Input : public ZFSubSystem {
 		};		
 
 		BasicConsole*			m_pkConsole;
-		ZeroFps*					m_pkZeroFps;	
+		ZeroFps*					m_pkZeroFps;
+		Render*					m_pkRender;	
 		
 		vector<VKData>			m_VirtualKeys;								// Virtual keys.
 		vector<InputHandle*>	m_kInputHandles;
