@@ -157,7 +157,7 @@ class MistClient :public Application, public ZGuiApp {
 
 		void RegBeginPlay(string strChar);
 		void DeleteChar(string strChar);
-		void AddChar(string strChar);
+		void AddChar(string strChar, string strMod);
 
       friend bool GUIPROC( ZGuiWnd* win, unsigned int msg, int numparms, void *params );
       friend void GuiMsgStartScreen( string strMainWnd, string strController, unsigned int msg, int numparms, void *params );

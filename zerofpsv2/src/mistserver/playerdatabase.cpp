@@ -205,7 +205,7 @@ bool PlayerDatabase::VerifyPlayer(string strPlayer,string strPassword)
 }
 
 
-bool PlayerDatabase::CreateNewCharacter(string strPlayer, string strCharacter)
+bool PlayerDatabase::CreateNewCharacter(string strPlayer, string strCharacter, string strModell)
 {
 	ZFVFile kFile;
 
@@ -232,6 +232,15 @@ bool PlayerDatabase::CreateNewCharacter(string strPlayer, string strCharacter)
 		return false;
 	}
 	
+	P_Mad* pkMad = dynamic_cast<P_Mad*>(pkEntity->GetProperty("P_Mad"));
+	if(!pkMad)
+		return false;
+
+	if(strModell == "Good guy")
+      pkMad->SetBase("/data/mad/player.mad");
+	if(strModell == "Bad guy")
+      pkMad->SetBase("/data/mad/player2.mad");
+
 	//setup entity
 	pkEntity->SetName(strCharacter);
 	pkEntity->SetSave(true);

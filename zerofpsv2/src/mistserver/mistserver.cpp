@@ -822,13 +822,13 @@ int MistServer::CreatePlayer(const char* csPlayer,const char* csCharacter,const 
 	//if it fails try to create a new character
 	if(!pkObject)
 	{
-		cout<<"Character not found, trying to create it"<<endl;
+/*		cout<<"Character not found, trying to create it"<<endl;
 		if(m_pkPlayerDB->CreateNewCharacter(csPlayer,csCharacter))
 		{
 			//new character created , now load it
 			pkObject = m_pkPlayerDB->CreateCharacter(csPlayer,csCharacter);
 		}
-		else	
+		else	*/
 			return -1;
 		
 	}
@@ -889,10 +889,12 @@ void MistServer::OnNetworkMessage(NetPacket *PkNetMessage)
 		{
 			string strChar;
 			PkNetMessage->Read_Str(strChar);
-			cout << "Plz Add: " << strChar << endl;
+			string strMod;
+			PkNetMessage->Read_Str(strMod);
+			cout << "Plz Add: " << strChar << " with modell " << strMod << endl;
 
 			string strLogin = m_pkZeroFps->m_kClient[PkNetMessage->m_iClientID].m_strLogin;
-			m_pkPlayerDB->CreateNewCharacter(strLogin, strChar);
+			m_pkPlayerDB->CreateNewCharacter(strLogin, strChar, strMod);
 			SendCharacterList(PkNetMessage->m_iClientID);
 
 			break;

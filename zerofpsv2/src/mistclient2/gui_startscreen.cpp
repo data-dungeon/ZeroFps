@@ -356,10 +356,12 @@ void GuiMsgStartScreen( string strMainWnd, string strController,
 				g_kMistClient.m_pkGui->SetCaptureToWnd(g_kMistClient.GetWnd("CharGen_SelectCharWnd"));
 		
 				char*	szSelItem =	g_kMistClient.GetText("CharGen_CharNameEb");
-				if(szSelItem)
+				char*	szSelMod =	g_kMistClient.GetSelItem("CharGen_ModellList");
+				if(szSelItem && szSelMod)
 				{
-					g_kMistClient.AddChar(string(szSelItem));
+					g_kMistClient.AddChar(string(szSelItem),string(szSelMod));
 				}
+
 				/*
 				g_kMistClient.AddListItem("CharGen_CharList", g_kMistClient.GetText("CharGen_CharNameEb"), true);	
 				int iItem = ((ZGuiCombobox*)g_kMistClient.GetWnd("CharGen_CharList"))->GetListbox()->GetItemCount();

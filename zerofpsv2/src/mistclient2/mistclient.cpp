@@ -1358,12 +1358,13 @@ void MistClient::DeleteChar(string strChar)
 	SendAppMessage(&kNp);
 }
 
-void MistClient::AddChar(string strChar)
+void MistClient::AddChar(string strChar, string strMod)
 {
 	NetPacket kNp;
 	kNp.Clear();
 	kNp.Write((char) MLNM_CS_CHARADD);
 	kNp.Write_Str(strChar);
+	kNp.Write_Str(strMod);
 	kNp.TargetSetClient(0);
 	SendAppMessage(&kNp);
 }

@@ -67,7 +67,7 @@ class PlayerDatabase
 		bool CreatePlayer(string strPlayer,string strPassword);
 		bool VerifyPlayer(string strPlayer,string strPassword);
 		
-		bool CreateNewCharacter(string strPlayer, string strCharacter);
+		bool CreateNewCharacter(string strPlayer, string strCharacter, string strModell);
 		Entity* CreateCharacter(string strPlayer, string strCharacter);
 		bool SaveCharacter(Entity* pkEntity,string strPlayer);
 		
