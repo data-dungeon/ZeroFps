@@ -131,8 +131,12 @@ void SkillDlg::OnCommand(ZGuiWnd* pkWndClicked)
 			{		
 				Rect rc = pkWndClicked->GetScreenRect(); 
 				SkillDlg::SkillSlot* pkSkill = GetSkillFromCursorPos(rc.Left+8, rc.Top+8);
-				m_pkQuickBoard->AddSlot( QuickBoard::Skill, pkSkill->strName.c_str() );
-				ToogleOpen();
+
+				if(pkSkill != NULL)
+				{
+					m_pkQuickBoard->AddSlot( QuickBoard::Skill, pkSkill->strName.c_str() );
+					ToogleOpen();
+				}
 				break;
 			}
 		}
