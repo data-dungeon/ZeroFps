@@ -12,12 +12,14 @@ class ENGINE_API InputHandle
 		string	m_strHandleName;
 		Input*	m_pkInput;		
 		bool		m_bActive;
+		bool		m_bTempDisabled;
 
 	public:
 		InputHandle(string strHandleName);
 		~InputHandle();
 		
 		bool IsActive() {return m_bActive;};
+		bool SetTempDisable(bool bValue) {m_bTempDisabled = bValue;};
 		
 		// INPUT WRAPER FUCTIONS
 		
@@ -30,11 +32,7 @@ class ENGINE_API InputHandle
 		void RelMouseXY(int &iX,int &iY);
 		void SetCursorInputPos(int x, int y);		
 		
-		bool Pressed(Buttons eButton);
-		
-//		void ShowCursor(bool bShow);		
-//		bool VKBind(string strName, Buttons kKey, int iIndex );
-//		bool VKBind(string strName, string strKeyName);
+		bool Pressed(Buttons eButton);		
 		bool VKIsDown(string strName);
 		
 		void Reset();

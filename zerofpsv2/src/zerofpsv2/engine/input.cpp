@@ -67,6 +67,14 @@ bool Input::ShutDown()
 
 bool Input::IsValid()	{ return true;	}
 
+void Input::UpdateInputHandles()
+{
+	for(int i = 0;i<m_kInputHandles.size();i++)
+	{
+		m_kInputHandles[i]->m_bTempDisabled = false;
+	}	
+}
+
 void Input::ClearActiveInputHandles()
 {
 	//reset input
@@ -199,7 +207,9 @@ void Input::Update(void)
 	m_iMouseX=-1;	
 	m_iMouseY=-1;
 	
+	UpdateInputHandles();
 	UpdateMousePos();
+	
 
 	SDL_GetMouseState(&m_iSDLMouseX,&m_iSDLMouseY);
 	Buttons iZfKey;

@@ -111,6 +111,7 @@ class ENGINE_API Input : public ZFSubSystem {
 		
 		void UpdateMousePos();
 
+		void UpdateInputHandles();
 		
 		//int m_iNrActions;		
 		//map<const string, pair<const string, int>**>		m_kActions;

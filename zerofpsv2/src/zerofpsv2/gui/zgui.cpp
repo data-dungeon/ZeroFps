@@ -454,8 +454,9 @@ bool ZGui::OnMouseUpdate(int x, int y, bool bLBnPressed,
 				if(wnd != m_pkActiveMainWin)
 				{
 					SetFocus(wnd->pkWnd);
-					//OnMouseUpdate(x,y, bLBnPressed,bRBnPressed, bMBnPressed, fGameTime);
-					return true;						//DVOID: detta tycks inte vara så bra då man måste klicka två gånger på en widget för att först fokusera och sedan själva klicket, beror på att jag nu resetar musklicket om guit hanterade det
+					m_bHandledMouse = true;
+
+					return true;					
 				}
 			}
 		}

@@ -264,7 +264,6 @@ bool ZeroFps::Init(int iNrOfArgs, char** paArgs)
 /* Code that need to run on both client/server. */
 void ZeroFps::Run_EngineShell()
 {
-	//m_pkInput->SetInputEnabled(true);
 
 	/*
 	m_pkObjectMan->PackToClients();
@@ -306,27 +305,16 @@ void ZeroFps::Run_EngineShell()
 			iInputKey = i; break;
 		}
 
-	
-
 	m_pkGui->Update(GetGameTime(),iInputKey,false,
 		(m_pkGuiInputHandle->Pressed(KEY_RSHIFT) || m_pkGuiInputHandle->Pressed(KEY_LSHIFT)),
 		mx,my,m_pkGuiInputHandle->Pressed(MOUSELEFT),m_pkGuiInputHandle->Pressed(MOUSERIGHT),
 		m_pkGuiInputHandle->Pressed(MOUSEMIDDLE));
 
-	 //UNCOMMENT THIS ZEB =)
-/*	if(m_pkGui->m_bHandledMouse)
+	if(m_pkGui->m_bHandledMouse)
 	{
-		// TO DVOID : Det går inte att göra en Reset av inputkön eftersom GUI:t 
-		// behöver veta både när musknappen trycks ner och när musknappen släpps
-		// (m_bHandledMouse sätts till true när musknappen trycks ner på en widget
-		// och sedan till false när musknappen sedan släpps). Som det är nu så tror
-		// systemet att musknappen har släppts med en gång eftersom det körs en reset
-		// direkt efter att att m_bHandledMouse har blivit satt till true.
-		// Eventuell lösning på problemet: Radera inte mousestate. Måste alltid gå att 
-		// kolla om musknappen är nedtryckt eller upptryckt.
-
-		m_pkGuiInputHandle->Reset();	//resets keys if guit handled the input
-	}*/
+		//disablar applicationens input om guit har hanterat den
+		m_pkApp->m_pkInputHandle->SetTempDisable(true);
+	}
 
 	//end of console input
 
@@ -348,9 +336,6 @@ void ZeroFps::Run_EngineShell()
 
 void ZeroFps::Run_Server()
 {
-	//update zones
-	//m_pkLevelMan->UpdateZones();			
-	
 	//update system
 	Update_System(true);
 
@@ -358,20 +343,12 @@ void ZeroFps::Run_Server()
 
 void ZeroFps::Run_Client()
 {
-/*	if(m_pkConsole->IsActive())
-		m_pkInputHandle->SetInputEnabled(false);
-	else 
-		m_pkInput->SetInputEnabled(true);						
-*/		
 	//run application main loop
 	m_pkApp->OnIdle();
 
-//	if(!m_bServerMode)
-//		m_pkObjectMan->Update(PROPERTY_TYPE_NORMAL,PROPERTY_SIDE_CLIENT,false);
 	if(!m_bServerMode)
 		Update_System(false);
 	
-
 	//update zones
 	m_pkObjectMan->UpdateZones();	
 
@@ -665,7 +642,6 @@ void ZeroFps::SetCamera(Camera* pkCamera)
 void ZeroFps::UpdateCamera()
 {
 	//update camera
-//	m_pkCamera->Update(m_pkRender->GetWidth()m_iWidth,m_iHeight);
 	m_pkCamera->Update(m_pkRender->GetWidth(),m_pkRender->GetHeight());
 	
 	//get the frustrum for frustum culling
