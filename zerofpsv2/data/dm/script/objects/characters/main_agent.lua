@@ -34,7 +34,7 @@ end
 
 function Init()
 	SetLeaderOfTeam(SIGetSelfID(), 0);
-	AddItem(SIGetSelfID(), "data/script/objects/t_rifle.lua", 1);
+	AddItem(SIGetSelfID(), "data/script/objects/weapons/rifle.lua", 1);
 	BindKey(SIGetSelfID(), "move_left", 0, -50);
 	BindKey(SIGetSelfID(), "move_right", 0, 50);
 	BindKey(SIGetSelfID(), "move_up", 2, -50);

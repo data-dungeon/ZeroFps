@@ -28,7 +28,7 @@ function Init()
 	AddDeathSound(SIGetSelfID(), "data/sound/cyborg/death1.wav");
 --	SISetHeartRate(SIGetSelfID(),4);
 	SetTeam (SIGetSelfID(), 2);
-	AddItem(SIGetSelfID(), "data/script/objects/t_rifle.lua", 1); -- snuten skall naturligvis ha en picka i början... (tråkigt spel annars)
+	AddItem(SIGetSelfID(), "data/script/objects/weapons/rifle.lua", 1); -- snuten skall naturligvis ha en picka i början... (tråkigt spel annars)
 
 	PlayAnim(SIGetSelfID(), "idle");
 

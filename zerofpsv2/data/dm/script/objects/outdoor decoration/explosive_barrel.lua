@@ -44,7 +44,7 @@ end
 
 function Dead()
 
-	RunScript("data/script/objects/t_explosion.lua",SIGetSelfID());
+	RunScript("data/script/objects/particles/explosion.lua",SIGetSelfID());
 
 	Delete (SIGetSelfID());
 

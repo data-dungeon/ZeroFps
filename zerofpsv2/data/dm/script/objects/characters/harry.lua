@@ -78,7 +78,7 @@ function Init()
 
 
 
-	AddItem(SIGetSelfID(), "data/script/objects/t_shotgun.lua", 1);
+	AddItem(SIGetSelfID(), "data/script/objects/weapons/shotgun.lua", 1);
 
 	PlayAnim(SIGetSelfID(), "idle");
 
@@ -198,11 +198,11 @@ function Dead()
 
 
 
-	RunScript ("data/script/objects/t_money.lua", SIGetSelfID());
+	RunScript ("data/script/objects/pickup gears/money.lua", SIGetSelfID());
 
-	RunScript ("data/script/objects/t_money.lua", SIGetSelfID());
+	RunScript ("data/script/objects/pickup gears/money.lua", SIGetSelfID());
 
-	RunScript ("data/script/objects/t_money.lua", SIGetSelfID());
+	RunScript ("data/script/objects/pickup gears/money.lua", SIGetSelfID());
 
 
 

@@ -50,7 +50,7 @@ function HeartBeat()
 
 	if GetEntityVar(ID, "Timer") == 0 then
 
-		RunScript("data/script/objects/t_explosion.lua",ID);		
+		RunScript("data/script/objects/weapons/explosion.lua",ID);		
 
 		Delete(ID);
 

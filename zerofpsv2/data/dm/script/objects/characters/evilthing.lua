@@ -112,10 +112,10 @@ function Dead()
 	p = GetObjectPos(SIGetSelfID());
 	p[2] = p[2] + 0.5;
 		
-	CreateEntity("data/script/objects/spiderflesh.lua",p);	
-	CreateEntity("data/script/objects/spiderflesh.lua",p);	
-	CreateEntity("data/script/objects/spiderflesh.lua",p);	
-	CreateEntity("data/script/objects/spiderflesh.lua",p);	
+	CreateEntity("data/script/objects/misc/spiderflesh.lua",p);	
+	CreateEntity("data/script/objects/misc/spiderflesh.lua",p);	
+	CreateEntity("data/script/objects/misc/spiderflesh.lua",p);	
+	CreateEntity("data/script/objects/misc/spiderflesh.lua",p);	
 
 	Delete(SIGetSelfID());
 end

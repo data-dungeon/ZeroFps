@@ -44,7 +44,7 @@ function Exit()
 
 	do
 
-		Baldies[i] = RunScript("data/script/objects/t_baldie.lua");
+		Baldies[i] = RunScript("data/script/objects/characters/baldie.lua"); 
 
 		SetState(Baldies[i], 4); --aggro
 

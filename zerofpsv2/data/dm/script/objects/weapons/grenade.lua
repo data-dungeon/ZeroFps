@@ -46,7 +46,7 @@ end
 
 function Use(UserID)
 
-	ID = RunScript("data/script/objects/t_grenade_unsafe.lua",UserID);
+	ID = RunScript("data/script/objects/weapons/grenade_unsafe.lua",UserID);
 
 
 

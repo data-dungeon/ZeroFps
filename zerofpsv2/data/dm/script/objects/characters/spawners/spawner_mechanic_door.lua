@@ -18,7 +18,7 @@ function Create()
 
 			InitParameter("SpawnMode",1);			
 
-			InitParameter("Template","data/script/objects/t_citizen_mechanic.lua");	
+			InitParameter("Template","data/script/objects/characters/citizen_mechanic.lua");	
 
 			InitParameter("SpawnArea",1);			
 

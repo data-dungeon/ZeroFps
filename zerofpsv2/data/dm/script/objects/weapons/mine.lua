@@ -46,7 +46,7 @@ end
 
 function Use(UserID)
 
-	RunScript("data/script/objects/t_mine_unsafe.lua",UserID);
+	RunScript("data/script/objects/weapons/mine_unsafe.lua",UserID);
 
 end
 

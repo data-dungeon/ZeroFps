@@ -126,7 +126,7 @@ function Init()
 
 
 
---	Equip(SIGetSelfID(), "data/script/objects/t_gun.lua", 1);
+--	Equip(SIGetSelfID(), "data/script/objects/weapons/gun.lua", 1);
 
 end
 

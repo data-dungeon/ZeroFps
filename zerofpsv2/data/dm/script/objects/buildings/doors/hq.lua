@@ -22,37 +22,37 @@ function Init()
 end
 
 function FirstRun()
-	AddItemToShop(SIGetSelfID(), "/data/script/objects/dm/t_gun.lua", 300);
-	AddItemToShop(SIGetSelfID(), "/data/script/objects/dm/t_gun.lua", 300);
-	AddItemToShop(SIGetSelfID(), "/data/script/objects/dm/t_shotgun_clip.lua", 50);
-	AddItemToShop(SIGetSelfID(), "/data/script/objects/dm/t_shotgun_clip.lua", 50);
-	AddItemToShop(SIGetSelfID(), "/data/script/objects/dm/t_shotgun_clip.lua", 50);
-	AddItemToShop(SIGetSelfID(), "/data/script/objects/dm/t_shotgun_clip.lua", 50);
-	AddItemToShop(SIGetSelfID(), "/data/script/objects/dm/t_shotgun_clip.lua", 50);
-	AddItemToShop(SIGetSelfID(), "/data/script/objects/dm/t_shotgun_clip.lua", 50);
-	AddItemToShop(SIGetSelfID(), "/data/script/objects/dm/t_handgun_clip.lua", 25);	
-	AddItemToShop(SIGetSelfID(), "/data/script/objects/dm/t_handgun_clip.lua", 25);	
-	AddItemToShop(SIGetSelfID(), "/data/script/objects/dm/t_handgun_clip.lua", 25);	
-	AddItemToShop(SIGetSelfID(), "/data/script/objects/dm/t_handgun_clip.lua", 25);	
-	AddItemToShop(SIGetSelfID(), "/data/script/objects/dm/t_handgun_clip.lua", 25);	
-	AddItemToShop(SIGetSelfID(), "/data/script/objects/dm/t_handgun_clip.lua", 25);	
-	AddItemToShop(SIGetSelfID(), "/data/script/objects/dm/t_shotgun.lua", 800);
-	AddItemToShop(SIGetSelfID(), "/data/script/objects/dm/t_shotgun.lua", 800);
-	AddItemToShop(SIGetSelfID(), "/data/script/objects/dm/t_rifle.lua", 1500);
-	AddItemToShop(SIGetSelfID(), "/data/script/objects/dm/t_rifle.lua", 1500);
-	AddItemToShop(SIGetSelfID(), "/data/script/objects/dm/t_rifle_clip.lua", 100);
-	AddItemToShop(SIGetSelfID(), "/data/script/objects/dm/t_rifle_clip.lua", 100);
+	AddItemToShop(SIGetSelfID(), "/data/script/objects/weapons/gun.lua", 300);
+	AddItemToShop(SIGetSelfID(), "/data/script/objects/weapons/gun.lua", 300);
+	AddItemToShop(SIGetSelfID(), "/data/script/objects/weapons/shotgun_clip.lua", 50);
+	AddItemToShop(SIGetSelfID(), "/data/script/objects/weapons/shotgun_clip.lua", 50);
+	AddItemToShop(SIGetSelfID(), "/data/script/objects/weapons/shotgun_clip.lua", 50);
+	AddItemToShop(SIGetSelfID(), "/data/script/objects/weapons/shotgun_clip.lua", 50);
+	AddItemToShop(SIGetSelfID(), "/data/script/objects/weapons/shotgun_clip.lua", 50);
+	AddItemToShop(SIGetSelfID(), "/data/script/objects/weapons/shotgun_clip.lua", 50);
+	AddItemToShop(SIGetSelfID(), "/data/script/objects/weapons/handgun_clip.lua", 25);	
+	AddItemToShop(SIGetSelfID(), "/data/script/objects/weapons/handgun_clip.lua", 25);	
+	AddItemToShop(SIGetSelfID(), "/data/script/objects/weapons/handgun_clip.lua", 25);	
+	AddItemToShop(SIGetSelfID(), "/data/script/objects/weapons/handgun_clip.lua", 25);	
+	AddItemToShop(SIGetSelfID(), "/data/script/objects/weapons/handgun_clip.lua", 25);	
+	AddItemToShop(SIGetSelfID(), "/data/script/objects/weapons/handgun_clip.lua", 25);	
+	AddItemToShop(SIGetSelfID(), "/data/script/objects/weapons/shotgun.lua", 800);
+	AddItemToShop(SIGetSelfID(), "/data/script/objects/weapons/shotgun.lua", 800);
+	AddItemToShop(SIGetSelfID(), "/data/script/objects/weapons/rifle.lua", 1500);
+	AddItemToShop(SIGetSelfID(), "/data/script/objects/weapons/rifle.lua", 1500);
+	AddItemToShop(SIGetSelfID(), "/data/script/objects/weapons/rifle_clip.lua", 100);
+	AddItemToShop(SIGetSelfID(), "/data/script/objects/weapons/rifle_clip.lua", 100);
 
-	AddItemToShop(SIGetSelfID(), "/data/script/objects/dm/t_mine.lua", 100);
-	AddItemToShop(SIGetSelfID(), "/data/script/objects/dm/t_mine.lua", 100);
-	AddItemToShop(SIGetSelfID(), "/data/script/objects/dm/t_mine.lua", 100);
+	AddItemToShop(SIGetSelfID(), "/data/script/objects/weapons/mine.lua", 100);
+	AddItemToShop(SIGetSelfID(), "/data/script/objects/weapons/mine.lua", 100);
+	AddItemToShop(SIGetSelfID(), "/data/script/objects/weapons/mine.lua", 100);
 
-	AddItemToShop(SIGetSelfID(), "/data/script/objects/dm/t_medkit.lua", 300);
-	AddItemToShop(SIGetSelfID(), "/data/script/objects/dm/t_medkit.lua", 300);
-	AddItemToShop(SIGetSelfID(), "/data/script/objects/dm/t_medkit.lua", 300);
+	AddItemToShop(SIGetSelfID(), "/data/script/objects/weapons/medkit.lua", 300);
+	AddItemToShop(SIGetSelfID(), "/data/script/objects/weapons/medkit.lua", 300);
+	AddItemToShop(SIGetSelfID(), "/data/script/objects/weapons/medkit.lua", 300);
 
-	AddItemToShop(SIGetSelfID(), "/data/script/objects/dm/t_armour.lua", 1700);
-	AddItemToShop(SIGetSelfID(), "/data/script/objects/dm/t_armour.lua", 1700);
+	AddItemToShop(SIGetSelfID(), "/data/script/objects/weapons/armour.lua", 1700);
+	AddItemToShop(SIGetSelfID(), "/data/script/objects/weapons/armour.lua", 1700);
 end
 
 function HeartBeat()

@@ -37,7 +37,7 @@ function Init()
 	AddDeathSound(SIGetSelfID(), "data/sound/mechanic/death/death1.wav")
 	AddDeathSound(SIGetSelfID(), "data/sound/mechanic/death/death2.wav")
 
-	AddItem(SIGetSelfID(), "data/script/objects/t_iron_bar.lua", 1);
+	AddItem(SIGetSelfID(), "data/script/objects/weapons/iron_bar.lua", 1);
 	SetTeam (SIGetSelfID(), 4);
 
 	SISetHeartRate(SIGetSelfID(),2);
@@ -107,7 +107,7 @@ function Dead()
 	PanicArea(SIGetSelfID(), 12);
 
 	if Random(10) < 3 then
-		RunScript ("data/script/objects/t_money.lua", SIGetSelfID());
+		RunScript ("data/script/objects/pickup gears/money.lua", SIGetSelfID());
 	end
 
 end

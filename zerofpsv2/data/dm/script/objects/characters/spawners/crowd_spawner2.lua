@@ -16,7 +16,7 @@ function Create()
 
 			InitParameter("SpawnMode",1);			
 
-			InitParameter("Template","data/script/objects/t_mob_man.lua");	
+			InitParameter("Template","data/script/objects/characters/mob_man.lua");	
 
 			InitParameter("SpawnArea",1);			
 

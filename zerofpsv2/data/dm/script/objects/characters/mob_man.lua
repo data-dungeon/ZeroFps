@@ -124,7 +124,7 @@ function HeartBeat()
 
 		AddToVar("MobSuccess", 1);
 
-		RunScript("data/script/objects/t_explosion.lua",SIGetSelfID());
+		RunScript("data/script/objects/particles/explosion.lua",SIGetSelfID());
 
 		Delete (SelfID);	
 
