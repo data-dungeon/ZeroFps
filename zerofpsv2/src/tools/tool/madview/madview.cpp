@@ -62,6 +62,8 @@ MadView::MadView(char* aName,int iWidth,int iHeight,int iDepth)
 	Register_Cmd("object_rotation_mode", FID_OBJECTROTATIONMODE);	
 	Register_Cmd("object_rotation_speed", FID_OBJECTROTATIONSPEED);	
 	
+	m_strMadFile = "data/mad/cube.mad";
+	RegisterVariable("r_madfile", &m_strMadFile, CSYS_STRING);
 	
 } 
 
@@ -205,7 +207,7 @@ void MadView::CreateViewObject()
 	m_pkViewObject->SetParent( m_pkEntityManager->GetWorldEntity() ); 
 
 	P_Mad* pkMad = (P_Mad*) m_pkViewObject->AddProperty("P_Mad");
-	pkMad->SetBase("/data/mad/cleaver.mad");
+	pkMad->SetBase(m_strMadFile.c_str());
 	pkMad->SetScale(1);
 
 	m_pkViewObject->AddProperty("P_LightUpdate");

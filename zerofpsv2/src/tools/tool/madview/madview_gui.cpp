@@ -134,8 +134,10 @@ void MadView::OnClickTreeItem(char *szTreeBox, char *szParentNodeText,
 
 		if(strFullpath.find(".mad") != string::npos)
 		{
+			m_strMadFile = strFullpath;
+
 			P_Mad* pkMad = (P_Mad*) m_pkViewObject->GetProperty("P_Mad");
-			pkMad->SetBase(strFullpath.c_str());
+			pkMad->SetBase(m_strMadFile.c_str());
 			pkMad->SetScale(1);
 
 			ShowWnd("SelectFileWnd", false); // close window

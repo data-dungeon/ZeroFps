@@ -44,6 +44,7 @@ class MadView :public Application , public ZGuiApp
 		float* m_apObjRotAngles[3];
 
 		Entity* m_pkViewObject;
+		string m_strMadFile;
 	
 		//delay
 		float	m_fDelayTime;
