@@ -13,7 +13,7 @@ P_ClientUnit::P_ClientUnit() : m_bCommandsUpdated(false)
 
 	bNetwork = true;
 
-	m_kInfo.m_cTeam =			0;
+	m_kInfo.m_cTeam =			255;
 	m_kInfo.m_cHealth =		255;
 	m_kInfo.m_cWeapon =		0;
 	m_kInfo.m_cArmor = 		0;

@@ -169,7 +169,7 @@ void ZeroRTS::OnIdle()
 	glEnable(GL_LIGHTING);
 */
 //	m_pkFogRender->Explore(mpos.x,mpos.z,30);		
-
+/*
 	// tassa
 	if(m_pkMoveObject)
 		MovePath(m_pkMoveObject);
@@ -178,13 +178,14 @@ void ZeroRTS::OnIdle()
 		int iObjID = pkFps->GetClientObjectID();
 		m_iSelfObjectID = iObjID;
 		}
+*/
 
 	//update player possition
 	Object* pkObj = pkObjectMan->GetObjectByNetWorkID( m_iSelfObjectID );
 	if(pkObj) {
 		pkObjectMan->OwnerShip_Take( pkObj );
-		pkObj->SetPos(pkFps->GetCam()->GetPos() + Vector3(0,-5,0));
-		pkObj->SetPos(pkFps->GetCam()->GetPos() + Vector3(0,-5,0));
+		pkObj->SetPos(pkFps->GetCam()->GetPos() + Vector3(0,-10,0));
+		pkObj->SetPos(pkFps->GetCam()->GetPos() + Vector3(0,-10,0));
 	}
 
 	if(m_pkMiniMap)
@@ -450,24 +451,6 @@ void ZeroRTS::OnHud(void)
 		m_pkMiniMap->Draw(m_pkCamera, pkGui, m_pkFogRender, pkRender); */
 }
 
-void ZeroRTS::OnServerStart(void)
-{	
-	//add server info property
-	if(!pkObjectMan->GetObject("A ServerInfoObject"))
-	{
-		Object* pkObj = pkObjectMan->CreateObjectByArchType("ServerInfoObject");
-		if(!pkObjectMan->CreateObjectByArchType("ServerInfoObject"))
-			cout<<"Faild to create serverinfoobject"<<endl;
-		else
-			pkObjectMan->GetWorldObject()->AddChild(pkObj);
-	}
-	
-}
-
-void ZeroRTS::OnClientStart(void)
-{
-}
-
 void ZeroRTS::RunCommand(int cmdid, const CmdArgument* kCommand)
 {
 	Object* pkmad;
@@ -490,7 +473,12 @@ void ZeroRTS::RunCommand(int cmdid, const CmdArgument* kCommand)
 			
 			pkConsole->Printf("Level loaded");
 
+			SetupSpawnPoints();
 			BuildPath();
+			
+			pkConsole->Printf("Everything is loaded ,Starting server");
+			g_ZFObjSys.RunCommand("server Default server");
+			
 			break;		
 		
 		case FID_UNLOAD:
@@ -795,9 +783,14 @@ void ZeroRTS::HandleOrders()
 			if(ob != NULL)			
 			{	
 				P_ServerUnit* su = (P_ServerUnit*)ob->GetProperty("P_ServerUnit");
+				
 				if(su != NULL)
 				{
-					su->RunExternalCommand(uc);	
+					//check that teems mach
+					if( int(su->m_kInfo.m_cTeam) == int(uc->m_cPlayerID))							
+						su->RunExternalCommand(uc);							
+					else
+						cout<<"Player :"<<int(uc->m_cPlayerID)<< " is trying to Cheat"<<endl;
 				}
 				else
 					cout<<"Error: P_ServerUnit not found on unit"<<endl;
@@ -842,9 +835,111 @@ void ZeroRTS::OnServerClientJoin(ZFClient* pkClient,int iConID)
 	P_ClientInput* ci = (P_ClientInput*)pkClient->m_pkObject->GetProperty("P_ClientInput");	
 	ci->m_iPlayerID = iConID;
 
+	CreateClientUnits(iConID);
 }
 
 void ZeroRTS::OnServerClientPart(ZFClient* pkClient,int iConID)
 {
 	cout<<"Client "<<iConID<<" Parted"<<endl;	
+	
+	RemoveClientUnits(iConID);
 }
+
+void ZeroRTS::SetupSpawnPoints()
+{
+	cout<<"Searching for spawn points"<<endl;	
+	
+	vector<Object*>	kObjects;	
+	kObjects.clear();
+	m_kSpawnPoints.clear();
+	
+	pkObjectMan->GetAllObjects(&kObjects);
+	
+	for(int i=0;i<kObjects.size();i++)
+	{
+		if(kObjects[i]->GetName() == "A ZeroRTSSpawnPoint")
+		{
+			m_kSpawnPoints.push_back(kObjects[i]->GetPos());
+			pkObjectMan->Delete(kObjects[i]);
+		}
+	}
+
+	cout<<"found "<<m_kSpawnPoints.size()<< " spawn points"<<endl;	
+}
+
+void ZeroRTS::OnServerStart(void)
+{	
+	//add server info property
+	if(!pkObjectMan->GetObject("A ServerInfoObject"))
+	{
+		Object* pkObj = pkObjectMan->CreateObjectByArchType("ServerInfoObject");
+		if(!pkObjectMan->CreateObjectByArchType("ServerInfoObject"))
+			cout<<"Faild to create serverinfoobject"<<endl;
+		else
+			pkObjectMan->GetWorldObject()->AddChild(pkObj);
+	}
+	
+}
+
+void ZeroRTS::OnClientStart(void)
+{
+}
+
+
+void ZeroRTS::CreateClientUnits(int iID)
+{
+	
+	
+	
+	//create player start object	
+	Object* ob = pkObjectMan->CreateObjectByArchType("ZeroRTSEngineringCrew");
+	
+	if(ob)
+	{
+		cout<<"setting object pos to "<<m_kSpawnPoints[iID].x<<" "<<m_kSpawnPoints[iID].y<<" "<<m_kSpawnPoints[iID].z<<endl;
+		ob->SetPos(m_kSpawnPoints[iID]);
+		ob->SetPos(m_kSpawnPoints[iID]);		
+		
+		ob->AttachToClosestZone();
+		
+		P_ServerUnit* su = (P_ServerUnit*)ob->GetProperty("P_ServerUnit");
+		
+		if(su)
+		{
+			su->m_kInfo.m_cTeam = iID;		
+		}
+		else
+			cout<<"error unit did not create correctly"<<endl;
+	}
+	else
+		cout<<"error could not create client units"<<endl;
+
+}
+
+void ZeroRTS::RemoveClientUnits(int iID)
+{
+	cout<<"removing Clients units"<<endl;	
+	
+	vector<Object*>	kObjects;	
+	kObjects.clear();
+	
+	pkObjectMan->GetAllObjects(&kObjects);
+	
+	for(int i=0;i<kObjects.size();i++)
+	{
+		P_ServerUnit* su = (P_ServerUnit*)kObjects[i]->GetProperty("P_ServerUnit");		
+		
+		if(su)
+		{
+			//does this player own this unit?
+			if(int(su->m_kInfo.m_cTeam) == iID)
+			{	
+				//yes it does,,lets kill it =) MOHAHAHA!		
+				pkObjectMan->Delete(kObjects[i]);
+			}
+		}		
+	}
+}
+
+
+

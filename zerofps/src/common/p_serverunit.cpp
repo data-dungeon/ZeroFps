@@ -7,7 +7,7 @@ P_ServerUnit::P_ServerUnit() : m_bUpdateCommands(true), m_pkCurrentAIState(NULL)
 	m_iType=PROPERTY_TYPE_NORMAL;
 	m_iSide=PROPERTY_SIDE_SERVER;
 
-	m_kInfo.m_cTeam =			0;
+	m_kInfo.m_cTeam =			255;
 	m_kInfo.m_cHealth =		255;
 	m_kInfo.m_cWeapon =		0;
 	m_kInfo.m_cArmor = 		0;

@@ -1,8 +1,8 @@
-class object
-	class ZeroRTSPlayer
+class object	
+	class ZeroRTSSpawnPoint
 		parent object
-		set ModelProperty Radius	1
-		
+		set MadProperty m_kMadFile /data/mad/cone.mad
+		set MadProperty m_fScale 5
 	
 	class ZeroRTSTestBox
 		parent object
@@ -11,6 +11,17 @@ class object
 	class ServerInfoObject
 		parent object
 		add P_ServerInfo
+
+	class ZeroRTSUnit
+		parent object
+		add P_ServerUnit
+		Add AutoParentProperty		
+		
+		class ZeroRTSEngineringCrew
+			parent ZeroRTSUnit
+			add P_UnitMoveAI
+			set MadProperty m_kMadFile /data/mad/adaptor.mad
+			set MadProperty m_fScale 1
 
 	class physics
 		parent object

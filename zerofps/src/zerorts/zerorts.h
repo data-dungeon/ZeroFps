@@ -16,7 +16,6 @@
 
 class UserPanel;
 class MiniMap;
-//class P_ClientInput;
 #include "guibuilder.h"
 
 
@@ -52,6 +51,7 @@ class ZeroRTS :public Application {
 		int			m_iActionUnExploreAll;		
 		int			m_iActionPrintServerInfo;				
 		
+		//this is true when client has got heightmap from server
 		bool			m_HaveFoundHMapObject;
 		
 		//console funktions
@@ -63,16 +63,20 @@ class ZeroRTS :public Application {
 		};
 
 		//list containin network ID of all selected units
-		list<int>	m_kSelectedObjects;
+		list<int>			m_kSelectedObjects;
 			
 		//client delay
-		float			m_fClickTimer;
-		float			m_fClickDelay;
+		float					m_fClickTimer;
+		float					m_fClickDelay;
 		
 		//fog update
-		float			m_fFogTimer;
+		float					m_fFogTimer;
 
-		int			m_iSelfObjectID;				// Network ID that i use to send data to server.
+		//clients own little qute object
+		int					m_iSelfObjectID;				// Network ID that i use to send data to server.
+
+		//list of possible spawn points
+		vector<Vector3>	m_kSpawnPoints;
 
 	public:
 
@@ -136,9 +140,16 @@ class ZeroRTS :public Application {
 		//order handler
 		void HandleOrders();
 
+		//Setup spawn points
+		void SetupSpawnPoints();
+
 		//on client join, server runs this
 		void OnServerClientJoin(ZFClient* pkClient,int iConID);
 		void OnServerClientPart(ZFClient* pkClient,int iConID);
+
+		//create client units
+		void CreateClientUnits(int iID);
+		void RemoveClientUnits(int iID);
 
 	//Palls (friends) =)
 	friend class UserPanel;
