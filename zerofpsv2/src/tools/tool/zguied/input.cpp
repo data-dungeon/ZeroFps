@@ -222,38 +222,30 @@ void ZGuiEd::HandleInput()
 					CheckMovement();
 				}
 				else
-				if(kFocusWnd == GetCtrl(IDC_RGB_COLOR_R_EB, 0))
+				if(kFocusWnd == GetCtrl(IDC_RGB_COLOR_R_EB, 0) ||
+					kFocusWnd == GetCtrl(IDC_RGB_COLOR_G_EB, 0) ||
+					kFocusWnd == GetCtrl(IDC_RGB_COLOR_B_EB, 0))
 				{
+					float fColor;
 					ZGuiSkin** ppkSkin;
 					if(GetSelSkin(ppkSkin))
 					{
-						float fColor = (float) atoi(text) / 255.0f;
+						GetWindowText(GetCtrl(IDC_RGB_COLOR_R_EB, 0), text, 512);
+						fColor = (float) atoi(text) / 255.0f;
 						if(IsDlgButtonChecked(g_kDlgBoxRight, IDC_SKINTYPE_BACKGROUND_RB))
 							(*ppkSkin)->m_afBkColor[0] = fColor;
 						else
 							(*ppkSkin)->m_afBorderColor[0] = fColor;
-					}
-				}
-				else
-				if(kFocusWnd == GetCtrl(IDC_RGB_COLOR_G_EB, 0))
-				{
-					ZGuiSkin** ppkSkin;
-					if(GetSelSkin(ppkSkin))
-					{
-						float fColor = (float) atoi(text) / 255.0f;
+					
+						GetWindowText(GetCtrl(IDC_RGB_COLOR_G_EB, 0), text, 512);
+						fColor = (float) atoi(text) / 255.0f;
 						if(IsDlgButtonChecked(g_kDlgBoxRight, IDC_SKINTYPE_BACKGROUND_RB))
 							(*ppkSkin)->m_afBkColor[1] = fColor;
 						else
 							(*ppkSkin)->m_afBorderColor[1] = fColor;
-					}
-				}
-				else
-				if(kFocusWnd == GetCtrl(IDC_RGB_COLOR_B_EB, 0))
-				{
-					ZGuiSkin** ppkSkin;
-					if(GetSelSkin(ppkSkin))
-					{
-						float fColor = (float) atoi(text) / 255.0f;
+
+						GetWindowText(GetCtrl(IDC_RGB_COLOR_B_EB, 0), text, 512);
+						fColor = (float) atoi(text) / 255.0f;
 						if(IsDlgButtonChecked(g_kDlgBoxRight, IDC_SKINTYPE_BACKGROUND_RB))
 							(*ppkSkin)->m_afBkColor[2] = fColor;
 						else
