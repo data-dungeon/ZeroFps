@@ -715,6 +715,7 @@ void ZFSystem::Printf(const char* szMessageFmt,...)
 void CmdArgument::Set(const char* szCmdArgs)
 {
 	m_strFullCommand = string(szCmdArgs);
+//	m_strFullCommand.replace(m_strFullCommand.begin(), m_strFullCommand.end(),9,32);	// Replace tab with space.
 	m_kSplitCommand.clear();
 	string	kNewArg;
 
