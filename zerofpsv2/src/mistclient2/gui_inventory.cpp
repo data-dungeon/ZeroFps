@@ -952,7 +952,7 @@ void InventoryDlg::CloseSplitStockWnd(bool bExecuteSplit)
 {
 	ZGuiWnd* pkSplitStockWnd = g_kMistClient.GetWnd("SplitStockWnd");
 
-	if(!pkSplitStockWnd->IsVisible())
+	if(pkSplitStockWnd == NULL || !pkSplitStockWnd->IsVisible())
 		return;
 
 	pkSplitStockWnd->Hide();
