@@ -88,6 +88,9 @@ void Test::OnInit(void) {
 //		sol->kAmbient=Vector4(0,0,0,0);		
 		sol->iType=POINT_LIGHT;			
 		sol->iPriority=10;
+		sol->fConst_Atten=1;
+		sol->fLinear_Atten=0;
+		sol->fQuadratic_Atten=0;
 
 
 /*	pkLight->Add(spot2);			
