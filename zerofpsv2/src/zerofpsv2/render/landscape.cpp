@@ -1204,39 +1204,27 @@ void Render::DrawHM2(Heightmap2* pkMap,Vector3 kCamPos)
 	pkIMap->UpdateRecLodLevel(kCamPos); 
 
 	glPushMatrix();
-//	glPushAttrib(GL_ALL_ATTRIB_BITS);  
 
 	Vector3 kPos = pkMap->GetPos() - Vector3(pkMap->m_iWidth*pkMap->m_fScale / 2.0,0,pkMap->m_iHeight*pkMap->m_fScale / 2.0);
 	glTranslatef(kPos.x,kPos.y,kPos.z);
 
 
-//	glDisable(GL_LIGHTING);
-//	glDisable(GL_TEXTURE_2D);
-	//m_pkTexMan->BindTexture("grass.tga",0);
-	glColor4f(1,1,1,1);
-/*	
-	glDisableClientState(GL_COLOR_ARRAY);	
-	glDisableClientState(GL_INDEX_ARRAY);	
-	glDisableClientState(GL_TEXTURE_COORD_ARRAY);	
-	glDisableClientState(GL_EDGE_FLAG_ARRAY);	
-	glDisableClientState(GL_NORMAL_ARRAY);
-	
-	glEnableClientState(GL_NORMAL_ARRAY);
-	glEnableClientState(GL_VERTEX_ARRAY);
-	glEnableClientState(GL_TEXTURE_COORD_ARRAY);	
-	*/
-//	glPolygonMode(GL_FRONT, GL_LINE);	
 	
 	int px =  pkMap->m_iWidth / pkMap->m_iPatchWidth;
 	int py =  pkMap->m_iHeight / pkMap->m_iPatchHeight;
 	
 	vector<HM2_patch>* m_kRenderData = &pkMap->m_kRenderData;
 		
-	m_kHeightmapMaterial.GetPass(0)->m_iTUs[0] = m_pkTexMan->Load("bla.tga",0);		
-	m_kHeightmapMaterial.GetPass(0)->m_iTUs[1] = m_pkTexMan->Load("mask.tga",0);			
+		
+
+	ZMaterial* test = (ZMaterial*)pkMap->GetMaterial()->GetResourcePtr();
+	
+		
+//	test->GetPass(0)->m_kTUs[0].SetRes("bla.tga");// = m_pkTexMan->Load("bla.tga",0);		
+//	test->GetPass(0)->m_iTUs[1] = m_pkTexMan->Load("mask.tga",0);			
 		
 	m_pkZShader->Reset();
-	m_pkZShader->SetMaterial(&m_kHeightmapMaterial);
+	m_pkZShader->SetMaterial(test);
 	m_pkZShader->SetDrawMode(TRIANGLESTRIP_MODE);
 	
 	for(int y = 0;y<py;y++)

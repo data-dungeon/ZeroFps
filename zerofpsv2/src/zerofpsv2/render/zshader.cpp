@@ -245,10 +245,18 @@ void ZShader::Waves()
 
 void ZShader::SetupTU(ZMaterialSettings* pkSettings,int iTU)
 {
-	if(pkSettings->m_iTUs[iTU] >= 0)
+	int iTexture;
+	ResTexture* pkRt = (ResTexture*)pkSettings->m_kTUs[iTU].GetResourcePtr();
+	
+	if(!pkRt)
+		iTexture = -1;
+	else
+		iTexture = (pkRt)->m_iTextureID;
+		
+	if( iTexture >= 0)
 	{	
 		glEnable(GL_TEXTURE_2D);
-		m_pkTexMan->BindTexture(pkSettings->m_iTUs[iTU]);
+		m_pkTexMan->BindTexture(iTexture);
 		
 		glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE);	
 			

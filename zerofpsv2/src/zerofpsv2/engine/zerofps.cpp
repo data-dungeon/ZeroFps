@@ -1024,6 +1024,7 @@ void ZeroFps::RegisterResources()
 	m_pkResourceDB->RegisterResource( string(".mad"), Create__Mad_Core		);
 	m_pkResourceDB->RegisterResource( string(".tga"), Create__ResTexture	);
 	m_pkResourceDB->RegisterResource( string(".bmp"), Create__ResTexture	);
+	m_pkResourceDB->RegisterResource( string(".shd"), Create__Material	);	
 }
 
 void ZeroFps::RegisterPropertys()

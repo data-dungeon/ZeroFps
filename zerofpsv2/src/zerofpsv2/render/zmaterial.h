@@ -7,14 +7,14 @@
 #include "../ogl/zfpsgl.h"
 #include "../basic/zfini.h"
 
-
+#include "../basic/zfresource.h"
 
 using namespace std;
 
 class RENDER_API ZMaterialSettings
 {
 	public:
-		int	m_iTUs[4];		
+		ZFResourceHandle	m_kTUs[4];		
 		
 		int	m_iTUTexCords[4];
 		
@@ -37,7 +37,7 @@ class RENDER_API ZMaterialSettings
 };
 
 
-class RENDER_API ZMaterial
+class RENDER_API ZMaterial : public ZFResource
 {
 	private:
 		vector<ZMaterialSettings> m_kPasses;
@@ -53,6 +53,7 @@ class RENDER_API ZMaterial
 				
 		
 		ZMaterial();
+		bool Create(string strName);	//for resource system
 	
 		int GetNrOfPasses() {return m_kPasses.size();};
 		ZMaterialSettings* GetPass(int iPass);
@@ -65,6 +66,7 @@ class RENDER_API ZMaterial
 	friend class ZShader;
 };
 
+RENDER_API ZFResource* Create__Material();
 
 
 #endif

@@ -4,10 +4,15 @@
 
 ZMaterialSettings::ZMaterialSettings()
 {
-	m_iTUs[0] = -1;
+/*	m_iTUs[0] = -1;
 	m_iTUs[1] = -1;		
 	m_iTUs[2] = -1;			
-	m_iTUs[3] = -1;			
+	m_iTUs[3] = -1;			*/
+	
+/*	m_kTUs[0].SetRes("");
+	m_kTUs[1].SetRes("");	
+	m_kTUs[2].SetRes("");
+	m_kTUs[3].SetRes("");	*/
 	
 	m_iTUTexCords[0] = CORDS_FROM_ARRAY_0;
 	m_iTUTexCords[1] = CORDS_FROM_ARRAY_1;	
@@ -32,8 +37,8 @@ ZMaterial::ZMaterial()
 	Clear();
 
 	ZMaterialSettings* first = AddPass();	
-	first->m_iTUs[0] = 1; 
-
+//	first->m_iTUs[0] = NO_TEXTURE; 
+//	first->m_kTUs[0].SetRes("/data/textures/notex.bmp");
 
 }
 
@@ -80,7 +85,7 @@ bool ZMaterial::LoadShader(const char* acFile)
 		}
 	
 	
-		cout<<"shader loaded: found "<<iPass<<" passes"<<endl;
+		cout<<"shader "<<acFile<<" loaded: found "<<iPass<<" passes"<<endl;
 		return true;
 	}
 	else
@@ -149,6 +154,15 @@ bool ZMaterial::LoadPass(int iPass)
 	if(m_kIni.KeyExist(passname.c_str(),"alphatest"))
 		newpass->m_bAlphaTest = m_kIni.GetBoolValue(passname.c_str(),"alphatest");
 	
+	if(m_kIni.KeyExist(passname.c_str(),"tu0"))
+		newpass->m_kTUs[0].SetRes(m_kIni.GetValue(passname.c_str(),"tu0"));
+	if(m_kIni.KeyExist(passname.c_str(),"tu1"))
+		newpass->m_kTUs[1].SetRes(m_kIni.GetValue(passname.c_str(),"tu1"));
+	if(m_kIni.KeyExist(passname.c_str(),"tu2"))
+		newpass->m_kTUs[2].SetRes(m_kIni.GetValue(passname.c_str(),"tu2"));
+	if(m_kIni.KeyExist(passname.c_str(),"tu3"))
+		newpass->m_kTUs[3].SetRes(m_kIni.GetValue(passname.c_str(),"tu3"));
+
 	
 	if(m_kIni.KeyExist(passname.c_str(),"tutexcords0"))
 		newpass->m_iTUTexCords[0] = m_kIni.GetIntValue(passname.c_str(),"tutexcords0");
@@ -177,3 +191,18 @@ bool ZMaterial::LoadPass(int iPass)
 	
 	return true;
 }
+
+bool ZMaterial::Create(string strName)
+{
+	return LoadShader(strName.c_str());
+}
+
+ZFResource* Create__Material()
+{
+	return new ZMaterial;
+}
+
+
+
+
+

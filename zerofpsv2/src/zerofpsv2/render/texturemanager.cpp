@@ -346,10 +346,11 @@ int TextureManager::Load(const char* acFileName,int iOption)
 	//else load it
 	texture *temp = GetFreeTexture();
 	temp->file=acFileName;
-	
+
 	// If texture can't be loaded, Load error texture.
 	iOption |= GetOptionsFromFileName(acFileName);
 	SetOptions(temp, iOption);
+
 	if(!LoadTexture(temp,acFileName)) {
 		// If error texture fails to load cry a little and return NO_TEXTURE.
 		cout << "Failed to find texture '" << acFileName << "'" << endl;
@@ -359,6 +360,7 @@ int TextureManager::Load(const char* acFileName,int iOption)
 			return NO_TEXTURE;
 		}
 	}
+	
 	//add the texture to the loaded textures vector
 //	m_iTextures.push_back(temp);
 	

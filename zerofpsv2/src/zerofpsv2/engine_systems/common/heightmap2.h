@@ -8,7 +8,7 @@
 #include "../../render/texturemanager.h"
 #include "../../render/frustum.h"
 #include "../../basic/zfobjectmanger.h"
-
+#include "../../basic/zfresource.h"
 
 class ENGINE_SYSTEMS_API HM2_texcor
 {
@@ -74,6 +74,7 @@ class ENGINE_SYSTEMS_API Heightmap2 : public I_HeightMap2
 		vector<HM2_patch>		  m_kRenderData;		
 		vector<TextureSet>			m_kTextureSets;
 
+		ZFResourceHandle	m_kHeightmapMaterial;
 		
 		int		m_iWidth;
 		int		m_iHeight;
@@ -118,6 +119,7 @@ class ENGINE_SYSTEMS_API Heightmap2 : public I_HeightMap2
 		int GetHeight() { return m_iHeight; }
 		float GetScale() { return m_fScale; }
 		void SetPos(Vector3 kNewPos) { m_kPos = kNewPos;};
+		ZFResourceHandle* GetMaterial() {return &m_kHeightmapMaterial;};
 		
 		HM2_vert* GetVert(int x,int y)
 		{

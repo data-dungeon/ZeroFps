@@ -11,6 +11,7 @@
 #include "texturemanager.h"
 #include "frustum.h"
 #include "light.h"
+#include "../engine/res_texture.h"
 
 using namespace std;
 class ZMaterial;

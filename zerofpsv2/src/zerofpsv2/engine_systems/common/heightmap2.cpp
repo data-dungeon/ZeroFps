@@ -14,6 +14,9 @@ Heightmap2::Heightmap2(/*char* szName*/) //: I_HeightMap2("Heightmap2")
 	m_fDetail = 70;
 		
 	m_bLoaded = false;
+	
+	m_kHeightmapMaterial.SetRes("landshader.shd");		
+	
 }
 
 bool Heightmap2::LoadBasicDataFromImage(const char* acFile)

@@ -62,7 +62,7 @@ class RENDER_API Render : public ZFSubSystem {
 		
 //		ZFResourceHandle	m_kConsoleText;
 		
-		ZMaterial	m_kHeightmapMaterial;
+
 		
 
 		void RunCommand(int cmdid, const CmdArgument* kCommand) { }

@@ -33,7 +33,9 @@ bool Render::StartUp()
  	m_pkZShader = static_cast<ZShader*>(g_ZFObjSys.GetObjectPtr("ZShader")); 	 	
 
 	//setup material for heightmap rendering
-	m_kHeightmapMaterial.GetPass(0)->m_iPolygonModeFront = FILL_POLYGON;
+
+
+/*	m_kHeightmapMaterial.GetPass(0)->m_iPolygonModeFront = FILL_POLYGON;
 	m_kHeightmapMaterial.GetPass(0)->m_iDepthFunc = LESS_DEPTH;
 	m_kHeightmapMaterial.GetPass(0)->m_iTUTexCords[1] = CORDS_FROM_ARRAY_0;
 //	m_kHeightmapMaterial.AddPass()->m_iPolygonModeFront = GL_LINE;
@@ -42,6 +44,7 @@ bool Render::StartUp()
 
 	m_kHeightmapMaterial.m_bWaves = false;	
 	m_kHeightmapMaterial.m_bRandomMovements = false;		
+*/
 
 	return true;
 }

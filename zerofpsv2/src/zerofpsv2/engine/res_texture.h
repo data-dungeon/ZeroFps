@@ -6,7 +6,7 @@
 #include "../basic/zfobjectmanger.h"
 #include "engine_x.h"
 
-class ResTexture : public ZFResource
+class ENGINE_API ResTexture : public ZFResource
 {
 private:
 
