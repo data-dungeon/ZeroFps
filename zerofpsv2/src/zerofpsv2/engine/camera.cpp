@@ -62,6 +62,8 @@ void Camera::Update(int iWidth,int iHeight)
 	//get modelview matrix
 	glGetFloatv(GL_MODELVIEW_MATRIX, (float*)&m_kCamModelViewMatrix.data);
 	
+	//update the frustum
+	m_kFrustum.GetFrustum();
 }
 
 void Camera::SetView(float fFov,float fAspect,float fNear,float fFar)

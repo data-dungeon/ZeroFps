@@ -3,7 +3,7 @@
 Heightmap2::Heightmap2(/*char* szName*/) //: I_HeightMap2("Heightmap2")
 {
 	m_pkTexMan=static_cast<TextureManager*>(g_ZFObjSys.GetObjectPtr("TextureManager"));			
- 	m_pkFrustum = static_cast<Frustum*>(g_ZFObjSys.GetObjectPtr("Frustum"));
+ 	m_pkFps = static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
  	
 	cout<<"Heightmap 2 created"<<endl;
 	
@@ -15,7 +15,7 @@ Heightmap2::Heightmap2(/*char* szName*/) //: I_HeightMap2("Heightmap2")
 		
 	m_bLoaded = false;
 	
-	m_kHeightmapMaterial.SetRes("../data/material/landshader.zmt");		
+	m_kHeightmapMaterial.SetRes("data/material/landshader.zmt");		
 }
 
 bool Heightmap2::LoadBasicDataFromImage(const char* acFile)
@@ -459,7 +459,7 @@ void Heightmap2::UpdateFrustumCulling()
 		
 			LocalToWorld(&kPos);
 		
-			if(!m_pkFrustum->CubeInFrustum(kPos.x,kPos.y,kPos.z,
+			if(!m_pkFps->GetCam()->m_kFrustum.CubeInFrustum(kPos.x,kPos.y,kPos.z,
 				m_iPatchWidth/2,
 				(pkPatch->fMaxHeight - pkPatch->fMinHeight)/2,
 				m_iPatchHeight/2))

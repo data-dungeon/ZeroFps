@@ -49,10 +49,10 @@ class RENDER_API Render : public ZFSubSystem {
 			FID_CONSOLECOLOR,
 		};
 
-		Frustum*			m_pkFrustum;
-		TextureManager*		m_pkTexMan;
+//		Frustum*				m_pkFrustum;
+		TextureManager*	m_pkTexMan;
 		Light*				m_pkLight;
-		ZShader*			m_pkZShader;
+		ZShader*				m_pkZShader;
 		BasicConsole*		m_pkConsole;
 		
 		char			aCurentFont[256];

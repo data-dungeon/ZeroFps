@@ -13,7 +13,6 @@ ModelProperty::ModelProperty() {
 	m_iStacks = 10;
 	m_kColor.Set(1,1,1);
 	
-	m_pkFrustum=static_cast<Frustum*>(g_ZFObjSys.GetObjectPtr("Frustum"));
 	m_pkRender=static_cast<Render*>(g_ZFObjSys.GetObjectPtr("Render"));	
 }
 
@@ -22,7 +21,7 @@ void ModelProperty::Update() {
 //	Vector4 sphere=m_pkObject->GetPos();
 //	sphere.w=m_fRadius;
 	
-	if(!m_pkFrustum->SphereInFrustum(m_pkObject->GetPos(),m_fRadius))
+	if(!m_pkFps->GetCam()->m_kFrustum.SphereInFrustum(m_pkObject->GetPos(),m_fRadius))
 		return;
 
 

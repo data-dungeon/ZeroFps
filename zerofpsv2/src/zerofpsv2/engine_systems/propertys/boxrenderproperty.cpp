@@ -1,14 +1,15 @@
 #include "boxrenderproperty.h"
 #include "../../basic/zfobjectmanger.h"
 #include "../../engine/object.h"
+#include "../../engine/zerofps.h"
  
 BoxRenderProperty::BoxRenderProperty()
 {
 	strcpy(m_acName,"BoxRenderProperty");		
 
-	m_pkFrustum=static_cast<Frustum*>(g_ZFObjSys.GetObjectPtr("Frustum"));
 	m_pkTexMan=static_cast<TextureManager*>(g_ZFObjSys.GetObjectPtr("TextureManager"));	
 	m_pkRender=static_cast<Render*>(g_ZFObjSys.GetObjectPtr("Render"));		
+	m_pkFps=static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));	
 	
 	m_iType=PROPERTY_TYPE_RENDER;
 	m_iSide=PROPERTY_SIDE_CLIENT;
@@ -37,7 +38,7 @@ void BoxRenderProperty::Update()
 {
 	
 
-	if(!m_pkFrustum->SphereInFrustum(m_pkObject->GetPos(),GetBoundingRadius()))
+	if(!m_pkFps->GetCam()->m_kFrustum.SphereInFrustum(m_pkObject->GetPos(),GetBoundingRadius()))
 		return;
 		
 	m_pkRender->DrawBox(m_pkObject->GetPos(),m_pkObject->GetRot(),m_kScale,m_iTex1);//,m_iTex2);

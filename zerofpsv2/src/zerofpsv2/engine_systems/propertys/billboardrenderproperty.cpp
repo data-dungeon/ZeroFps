@@ -5,7 +5,6 @@ BillBoardRenderProperty::BillBoardRenderProperty()
 {
 	strcpy(m_acName,"BillBoardRenderProperty");		
 
-	m_pkFrustum=static_cast<Frustum*>(g_ZFObjSys.GetObjectPtr("Frustum"));
 	m_pkTexMan=static_cast<TextureManager*>(g_ZFObjSys.GetObjectPtr("TextureManager"));	
 	m_pkRender=static_cast<Render*>(g_ZFObjSys.GetObjectPtr("Render"));		
 	m_pkFps=static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));			
@@ -36,7 +35,7 @@ void BillBoardRenderProperty::UpdateSet()
 
 void BillBoardRenderProperty::Update()
 {
-	if(!m_pkFrustum->SphereInFrustum(m_pkObject->GetPos(),m_fScale))
+	if(!m_pkFps->GetCam()->m_kFrustum.SphereInFrustum(m_pkObject->GetPos(),m_fScale))
 		return;
 		
 	m_pkRender->DrawBillboard(m_pkFps->GetCam()->GetModelViewMatrix(),m_pkObject->GetPos(),m_fScale,m_iTexture);

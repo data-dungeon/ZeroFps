@@ -22,7 +22,6 @@ class ENGINE_SYSTEMS_API MadProperty : public Property, public Mad_Modell {
 		MadProperty(string strResName);
 		void CloneOf(Property* pkProperty) { }
 		
-		Frustum* m_pkFrustum;
 		ZeroFps* m_pkZeroFps;
 
 		bool	m_bIsVisible;

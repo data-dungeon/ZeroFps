@@ -4,6 +4,7 @@
 
 #include "../basic/vector3.h"
 #include "../basic/matrix4.h"
+#include "../render/frustum.h"
 #include "engine_x.h"
 
 class ENGINE_API Camera {
@@ -27,8 +28,9 @@ class ENGINE_API Camera {
 		float	m_fAspect;
 		float	m_fNear;
 		float	m_fFar;
-
+		
 	public:
+		Frustum m_kFrustum;
 		
 		Camera(Vector3 kPos,Vector3 kRot,float fFov,float fAspect,float fNear,float fFar);
 		void Update(int iWidth,int iHeight);

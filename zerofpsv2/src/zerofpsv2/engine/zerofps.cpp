@@ -693,7 +693,7 @@ void ZeroFps::UpdateCamera()
 	m_pkCamera->Update(m_iWidth,m_iHeight);
 	
 	//get the frustrum for frustum culling
-	m_pkFrustum->GetFrustum();				
+	//m_pkFrustum->GetFrustum();				
 }
 
 DevStringPage*	ZeroFps::DevPrint_FindPage(const char* szName)

@@ -5,7 +5,6 @@ HeightMapRenderProperty::HeightMapRenderProperty(HeightMap* pkHeightMap)
 {
 	strcpy(m_acName,"HeightMapRenderProperty");		
 
-	m_pkFrustum	=static_cast<Frustum*>(g_ZFObjSys.GetObjectPtr("Frustum"));
 	m_pkTexMan	=static_cast<TextureManager*>(g_ZFObjSys.GetObjectPtr("TextureManager"));	
 	m_pkZeroFps	=static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));		
 	m_pkRender	=static_cast<Render*>(g_ZFObjSys.GetObjectPtr("Render"));		

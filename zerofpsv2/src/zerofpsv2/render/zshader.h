@@ -112,7 +112,6 @@ class RENDER_API ZShader : public ZFSubSystem
 		};
 		
 		//systems
-		Frustum*				m_pkFrustum;
 		TextureManager*	m_pkTexMan;
 		Light*				m_pkLight;		
 		

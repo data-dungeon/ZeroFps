@@ -5,20 +5,19 @@
 #include <iostream>
 #include <string>
 #include "../engine_systems_x.h"
+#include "../../engine/zerofps.h"
 
 using namespace std;
 
 
 class ENGINE_SYSTEMS_API CrossRenderProperty: public Property {
-		Frustum* m_pkFrustum;
+
 		TextureManager* m_pkTexMan;
 		Render* m_pkRender;	
-	
+		ZeroFps* m_pkFps;
 		string m_kTex1; 
-//		string m_kTex2;		
 		
 		int m_iTex1;
-//		int m_iTex2;
 	
 		Vector3 m_kScale;
 		

@@ -15,7 +15,6 @@ MadProperty::MadProperty()
 	bNetwork			= true;
 	m_bIsVisible	= true;
 
-	m_pkFrustum	=	static_cast<Frustum*>(g_ZFObjSys.GetObjectPtr("Frustum"));
 	m_pkZeroFps =	static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
 }
 
@@ -25,7 +24,7 @@ MadProperty::MadProperty(string strResName)
 	strcpy(m_acName,"MadProperty");
 	m_iType=PROPERTY_TYPE_RENDER;
 	m_iSide=PROPERTY_SIDE_CLIENT;
-	m_pkFrustum	=	static_cast<Frustum*>(g_ZFObjSys.GetObjectPtr("Frustum"));
+	
 	m_pkZeroFps =	static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
 
 	ZFResourceDB* pkResDB = static_cast<ZFResourceDB*>(g_ZFObjSys.GetObjectPtr("ZFResourceDB"));
@@ -75,7 +74,7 @@ void MadProperty::Update()
 	if(!m_bIsVisible)
 		return;
 	
-	if(!m_pkFrustum->SphereInFrustum(m_pkObject->GetPos(),GetRadius()))
+	if(!m_pkZeroFps->GetCam()->m_kFrustum.SphereInFrustum(m_pkObject->GetPos(),GetRadius()))
 		return;
 
 	// Set Object LOD.

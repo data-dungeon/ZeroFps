@@ -12,7 +12,6 @@ using namespace std;
 
 class ENGINE_SYSTEMS_API HeightMapRenderProperty: public Property {
 		HeightMap* m_pkHeightMap;
-		Frustum* m_pkFrustum;
 		TextureManager* m_pkTexMan;
 		ZeroFps* m_pkZeroFps;
 		Render* m_pkRender;	

@@ -22,7 +22,6 @@ class ENGINE_SYSTEMS_API VegitationProperty: public Property {
 
 		vector<vegitation>	m_akPositions;
 
-		Frustum*				m_pkFrustum;
 		TextureManager*	m_pkTexMan;
 		Render*				m_pkRender;	
 		ZeroFps*				m_pkFps;

@@ -7,7 +7,6 @@ VegitationProperty::VegitationProperty()
 	m_iType=PROPERTY_TYPE_RENDER;
 	m_iSide=PROPERTY_SIDE_CLIENT;
 	
-	m_pkFrustum=static_cast<Frustum*>(g_ZFObjSys.GetObjectPtr("Frustum"));
 	m_pkTexMan=static_cast<TextureManager*>(g_ZFObjSys.GetObjectPtr("TextureManager"));	
 	m_pkRender=static_cast<Render*>(g_ZFObjSys.GetObjectPtr("Render"));			
 	m_pkFps = static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
@@ -37,7 +36,7 @@ void VegitationProperty::Init()
 void VegitationProperty::Update()
 {
 	//frustum culling
-	if(!m_pkFrustum->SphereInFrustum(m_pkObject->GetPos(),m_fRadius))
+	if(!m_pkFps->GetCam()->m_kFrustum.SphereInFrustum(m_pkObject->GetPos(),m_fRadius))
 		return;
 			
 	Vector3 ObjectPos = m_pkObject->GetPos();			

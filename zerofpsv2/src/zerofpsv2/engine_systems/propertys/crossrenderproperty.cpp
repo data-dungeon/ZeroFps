@@ -1,15 +1,16 @@
 #include "crossrenderproperty.h"
 #include "../../basic/zfobjectmanger.h"
 #include "../../engine/object.h"
+#include "../../engine/zerofps.h"
 
 CrossRenderProperty::CrossRenderProperty()
 {
 	strcpy(m_acName,"CrossRenderProperty");		
 
-	m_pkFrustum=static_cast<Frustum*>(g_ZFObjSys.GetObjectPtr("Frustum"));
 	m_pkTexMan=static_cast<TextureManager*>(g_ZFObjSys.GetObjectPtr("TextureManager"));	
 	m_pkRender=static_cast<Render*>(g_ZFObjSys.GetObjectPtr("Render"));		
-	
+	m_pkFps=static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));			
+		
 	m_iType=PROPERTY_TYPE_RENDER;
 	m_iSide=PROPERTY_SIDE_CLIENT;
 	
@@ -37,7 +38,7 @@ void CrossRenderProperty::UpdateSet()
 void CrossRenderProperty::Update()
 {
 //	return;
-	if(!m_pkFrustum->SphereInFrustum(m_pkObject->GetPos(),m_kScale.x))
+	if(!m_pkFps->GetCam()->m_kFrustum.SphereInFrustum(m_pkObject->GetPos(),m_kScale.x))
 		return;
 		
 	m_pkRender->DrawCross(m_pkObject->GetPos(),m_pkObject->GetRot(),m_kScale,m_iTex1);//,m_iTex2);

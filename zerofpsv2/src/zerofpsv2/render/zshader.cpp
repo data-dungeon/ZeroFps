@@ -8,10 +8,7 @@ ZShader::ZShader() : ZFSubSystem("ZShader")
 bool ZShader::StartUp()
 {
  	m_pkTexMan	= static_cast<TextureManager*>(GetSystem().GetObjectPtr("TextureManager"));
- 	m_pkFrustum = static_cast<Frustum*>(GetSystem().GetObjectPtr("Frustum"));
  	m_pkLight	= static_cast<Light*>(GetSystem().GetObjectPtr("Light")); 		
- 	
-//	Reset();
 			
 	return true;
 } 

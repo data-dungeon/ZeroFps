@@ -11,7 +11,6 @@ using namespace std;
 
 
 class ENGINE_SYSTEMS_API BillBoardRenderProperty: public Property {
-		Frustum* m_pkFrustum;
 		TextureManager* m_pkTexMan;
 		Render* m_pkRender;	
 		ZeroFps* m_pkFps;

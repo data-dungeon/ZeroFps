@@ -39,24 +39,10 @@ bool Render::StartUp()
 {
 	// Get SubSystem Ptrs
 	m_pkTexMan	= static_cast<TextureManager*>(GetSystem().GetObjectPtr("TextureManager"));
- 	m_pkFrustum = static_cast<Frustum*>(GetSystem().GetObjectPtr("Frustum"));
+// 	m_pkFrustum = static_cast<Frustum*>(GetSystem().GetObjectPtr("Frustum"));
  	m_pkLight	= static_cast<Light*>(GetSystem().GetObjectPtr("Light")); 	
  	m_pkZShader = static_cast<ZShader*>(GetSystem().GetObjectPtr("ZShader")); 	 	
  	m_pkConsole = static_cast<BasicConsole*>(GetSystem().GetObjectPtr("Console")); 	 	
-
-	//setup material for heightmap rendering
-
-
-/*	m_kHeightmapMaterial.GetPass(0)->m_iPolygonModeFront = FILL_POLYGON;
-	m_kHeightmapMaterial.GetPass(0)->m_iDepthFunc = LESS_DEPTH;
-	m_kHeightmapMaterial.GetPass(0)->m_iTUTexCords[1] = CORDS_FROM_ARRAY_0;
-//	m_kHeightmapMaterial.AddPass()->m_iPolygonModeFront = GL_LINE;
-//	m_kHeightmapMaterial.GetPass(1)->m_bCullFace = false;
-	m_kHeightmapMaterial.m_bCopyData = false;
-
-	m_kHeightmapMaterial.m_bWaves = false;	
-	m_kHeightmapMaterial.m_bRandomMovements = false;		
-*/
 
 	return true;
 }

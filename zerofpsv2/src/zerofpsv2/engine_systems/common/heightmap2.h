@@ -9,6 +9,7 @@
 #include "../../render/frustum.h"
 #include "../../basic/zfobjectmanger.h"
 #include "../../basic/zfresource.h"
+#include "../../engine/zerofps.h"
 
 class ENGINE_SYSTEMS_API HM2_texcor
 {
@@ -68,11 +69,11 @@ class ENGINE_SYSTEMS_API Heightmap2 : public I_HeightMap2
 	private:
 		
 		TextureManager*			m_pkTexMan;
-		Frustum*						m_pkFrustum;	
+		ZeroFps*						m_pkFps;
 	
 		vector<HM2_vert>			m_kBasicData;
 		vector<HM2_patch>		  m_kRenderData;		
-		vector<TextureSet>			m_kTextureSets;
+		vector<TextureSet>		m_kTextureSets;
 
 		ZFResourceHandle	m_kHeightmapMaterial;
 		

@@ -348,7 +348,7 @@ void Mad_Modell::LoadTextures()
 
 			Mad_CoreTexture* pkTexInfo = GetTextureInfo();
 			
-			sprintf(szFullTexName,"../data/material/%s.zmt",pkTexInfo->ucTextureName);
+			sprintf(szFullTexName,"data/material/%s.zmt",pkTexInfo->ucTextureName);
 
 			 m_pkMesh->SetTextureHandle(m_pkSubMesh->iTextureIndex,szFullTexName);			
 

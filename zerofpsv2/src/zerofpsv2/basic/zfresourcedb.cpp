@@ -71,6 +71,9 @@ bool  ZFResourceHandle::IsValid()
 
 ZFResource* ZFResourceHandle::GetResourcePtr()
 {
+	if(m_iID == -1)
+		return NULL;
+	
 	ZFResourceDB* pkResDB = static_cast<ZFResourceDB*>(g_ZFObjSys.GetObjectPtr("ZFResourceDB"));
 	return pkResDB->GetResourcePtr(*this);
 }

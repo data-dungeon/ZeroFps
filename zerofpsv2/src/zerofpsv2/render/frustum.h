@@ -12,7 +12,7 @@
 using namespace std;
 
 /// A Frustum pyramid in 3D.
-class RENDER_API Frustum : public ZFSubSystem
+class RENDER_API Frustum 
 {
 	private:
 		Vector4 m_akFrustum[6];
@@ -22,21 +22,16 @@ class RENDER_API Frustum : public ZFSubSystem
 		Frustum();
 		void GetFrustum();
 		
-		bool PointInFrustum(Vector3 kPoint);
-//		bool PointInFrustum(Vector3& kPoint);		
-		
+		bool PointInFrustum(Vector3 kPoint);		
 		bool SphereInFrustum(Vector4 kPoint);
-		bool SphereInFrustum(Vector4& kPoint);		
-		
-		//bool SphereInFrustum(Vector3& kPos,float& fRadius);
-		bool SphereInFrustum(Vector3 kPos,float fRadius);		
-		
+		bool SphereInFrustum(Vector4& kPoint);				
+		bool SphereInFrustum(Vector3 kPos,float fRadius);				
 		bool CubeInFrustum( float x, float y, float z, float sizex,float sizey,float sizez );
 		
-		bool StartUp()	{ return true;	}
+/*		bool StartUp()	{ return true;	}
 		bool ShutDown()	{ return true;	}
 		bool IsValid()	{ return true;	}
-
+*/
 };
 
 

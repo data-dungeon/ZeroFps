@@ -9,10 +9,10 @@ ZMaterialSettings::ZMaterialSettings()
 	m_iTUs[2] = -1;			
 	m_iTUs[3] = -1;			*/
 	
-	m_kTUs[0].SetRes("");
-	m_kTUs[1].SetRes("");	
-	m_kTUs[2].SetRes("");
-	m_kTUs[3].SetRes("");
+	m_kTUs[0].FreeRes();
+	m_kTUs[1].FreeRes();
+	m_kTUs[2].FreeRes();
+	m_kTUs[3].FreeRes();
 	
 	m_iTUTexCords[0] = CORDS_FROM_ARRAY_0;
 	m_iTUTexCords[1] = CORDS_FROM_ARRAY_1;	

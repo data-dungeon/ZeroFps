@@ -10,10 +10,10 @@ using namespace std;
 
 
 class ENGINE_SYSTEMS_API BoxRenderProperty: public Property {
-		Frustum* m_pkFrustum;
 		TextureManager* m_pkTexMan;
 		Render* m_pkRender;	
-	
+		ZeroFps* m_pkFps;
+			
 		string m_kTex1; 
 
 		int m_iTex1;
