@@ -224,7 +224,8 @@ bool ZGui::Render()
 	}
 
 	// Draw cursor
-	m_pkCursor->Render();
+	if(m_pkCursor->IsVisible())
+		m_pkCursor->Render();
 
 	m_pkRenderer->EndRender(); 
 
@@ -560,7 +561,8 @@ bool ZGui::Update()
 bool ZGui::Activate(bool bActive)
 {
 	m_bActive = bActive;
-	ShowCursor(m_bActive);
+	if(m_pkCursor->IsVisible())
+		ShowCursor(m_bActive);
 	return m_bActive;
 }
 
@@ -661,4 +663,9 @@ void ZGui::AddKeyCommand(int Key, ZGuiWnd *pkFocusWnd, ZGuiWnd *pkTriggerWnd)
 {
 	m_KeyCommandTable.insert(map< pair<ZGuiWnd*, int>, ZGuiWnd* >
 		::value_type(pair<ZGuiWnd*, int>(pkFocusWnd,Key), pkTriggerWnd) ); 
+}
+
+void ZGui::ShowCursor(bool bShow)
+{
+	m_pkCursor->Show(bShow);
 }

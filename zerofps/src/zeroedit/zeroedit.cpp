@@ -30,7 +30,7 @@ void ZeroEdit::OnInit(void)
 	g_ZFObjSys.Register_Cmd("saveobjects",FID_SAVEOBJECTS,this);	
 	g_ZFObjSys.Register_Cmd("loadobjects",FID_LOADOBJECTS,this);		
 	g_ZFObjSys.Register_Cmd("save",FID_SAVE,this);	
-	g_ZFObjSys.Register_Cmd("load",FID_LOAD,this);		
+	g_ZFObjSys.Register_Cmd("load",FID_LOAD,this);
 	g_ZFObjSys.Register_Cmd("fog",FID_FOG,this);		
 	g_ZFObjSys.Register_Cmd("water",FID_WATER,this);		
 	g_ZFObjSys.Register_Cmd("skybox",FID_SKYBOX,this);		
@@ -41,7 +41,7 @@ void ZeroEdit::OnInit(void)
 	g_ZFObjSys.Register_Cmd("saveland",FID_SAVELAND,this);		
 	g_ZFObjSys.Register_Cmd("madview",FID_VIEWMAD,this);		
 	g_ZFObjSys.Register_Cmd("moon",FID_MOON,this);			
-	g_ZFObjSys.Register_Cmd("sun",FID_SUN,this);		
+	g_ZFObjSys.Register_Cmd("sun",FID_SUN,this);
 	
 	g_ZFObjSys.Register_Cmd("findobj",FID_FINDOBJECT,this);			
 	g_ZFObjSys.Register_Cmd("nextobj",FID_FINDOBJECT,this);			
@@ -94,6 +94,8 @@ void ZeroEdit::OnInit(void)
 	
 	//create a default small world
 	pkLevelMan->CreateEmptyLevel(128);
+
+	m_kMapBaseDir = pkLevelMan->GetMapBaseDir();
 
 
 

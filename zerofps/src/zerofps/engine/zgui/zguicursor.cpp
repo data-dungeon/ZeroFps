@@ -11,6 +11,7 @@
 
 ZGuiCursor::ZGuiCursor()
 {
+	m_bVisible = true;
 	m_pkSkin = NULL;
 	m_iMaskTexture = -1;
 	m_pkRenderer = static_cast<ZGuiRender*>(g_ZFObjSys.GetObjectPtr("ZGuiRender"));
@@ -59,4 +60,14 @@ void ZGuiCursor::SetSize(int Width, int Height)
 {
 	m_kRect.Right = m_kRect.Left + Width;
 	m_kRect.Bottom = m_kRect.Top + Height;
+}
+
+bool ZGuiCursor::IsVisible()
+{
+	return m_bVisible;
+}
+
+void ZGuiCursor::Show(bool bShow)
+{
+	m_bVisible = bShow;
 }

@@ -19,7 +19,8 @@ public:
 	ZGuiCursor();
 	virtual ~ZGuiCursor();
 
-	void Show(bool bShow) { m_bVisible = bShow; }
+	void Show(bool bShow);
+	bool IsVisible();
 	void SetSkin(ZGuiSkin* pkSkin, int iMaskTexture=-1);
 	void SetSize(int Width, int Height);
 	void SetPos(int x, int y);

@@ -88,7 +88,7 @@ LINK32=link.exe
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 # Begin Source File
 
-SOURCE=..\game\adaptorsniper.cpp
+SOURCE=.\adaptorsniper.cpp
 # End Source File
 # Begin Source File
 
@@ -112,11 +112,11 @@ SOURCE=.\gui.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\game\massdriverprojectile.cpp
+SOURCE=.\massdriverprojectile.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\game\massdriverproperty.cpp
+SOURCE=.\massdriverproperty.cpp
 # End Source File
 # Begin Source File
 

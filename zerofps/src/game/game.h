@@ -36,8 +36,9 @@ class Game :public Application {
 		void CreateZones();
 		void Init();
 		void SetUpMenuScreen();
-		
-		void input();				
+
+		void InitGUI();
+		void Input();				
 		void SetupLevel();		
 //		bool LoadLevel(const char* acFile);				
 
@@ -45,8 +46,11 @@ class Game :public Application {
 //		void CreateNew(int iSize);
 		
 		PlayerObject* m_pkPlayer;
+		float* m_pfPlayerHealth;
+		float* m_pfPlayerArmor;
 
 	public:
+		
 //		Core	m_kTestCore;
 
 		enum FuncId_e

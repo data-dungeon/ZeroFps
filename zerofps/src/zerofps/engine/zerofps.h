@@ -120,7 +120,7 @@ class ENGINE_API ZeroFps : public ZFObject {
 		bool m_bClientMode;
 		bool m_bConsoleMode;
 		bool m_bDrawDevList;
-		bool m_bGuiMode;
+		bool m_bGuiMode, m_bGuiTakeControl;
 		
 		int	m_iMadDraw;				// Flags for what part's of mad's that should be draw.
 		

@@ -39,6 +39,7 @@ ZeroFps::ZeroFps(void)
 	m_bConsoleMode=false;
 	m_bDrawDevList=true;
 	m_bGuiMode=false;
+	m_bGuiTakeControl=true;
 	m_iMadDraw = 1;
 	
 //	akCoreModells.reserve(25);
@@ -185,10 +186,13 @@ void ZeroFps::MainLoop(void) {
 					m_pkInput->Reset();
 				}
 				
-				if(m_bGuiMode)
-					m_pkInput->SetInputEnabled(false);
-				else
-					m_pkInput->SetInputEnabled(true);
+				if(m_bGuiTakeControl)
+				{
+					if(m_bGuiMode)
+						m_pkInput->SetInputEnabled(false);
+					else
+						m_pkInput->SetInputEnabled(true);
+				}
 			}
 			
 				
@@ -339,14 +343,20 @@ void ZeroFps::ToggleGui(void)
 	
 	if(m_bGuiMode == true)
 	{
-		SDL_ShowCursor(SDL_DISABLE);
-		m_bDrawDevList = false;
+		if(m_bGuiTakeControl)
+		{
+			SDL_ShowCursor(SDL_DISABLE);
+			m_bDrawDevList = false;
+		}
 		m_pkGui->Activate(true);
 	}
 	else
 	{
-		SDL_ShowCursor(SDL_ENABLE);
-		m_bDrawDevList = true;
+		if(m_bGuiTakeControl)
+		{
+			SDL_ShowCursor(SDL_ENABLE);
+			m_bDrawDevList = true;
+		}
 		m_pkGui->Activate(false);
 	}
 }

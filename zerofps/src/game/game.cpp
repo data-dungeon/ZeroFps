@@ -19,6 +19,11 @@ void Game::OnInit()
 
 }
 
+static bool WINPROC( ZGuiWnd* pkWindow, unsigned int uiMessage, int iNumberOfParams, void *pkParams ) 
+{
+	return true; 
+}
+
 void Game::Init()
 {
 	//setup some default variables
@@ -39,6 +44,8 @@ void Game::Init()
 	
 	//set gamestate to menu
 	m_iGameState=GAME_STATE_MENU;
+
+	InitGUI();
 }
 
 void Game::OnServerStart(void)
@@ -52,6 +59,11 @@ void Game::OnClientStart(void)
 
 
 void Game::OnIdle(void) {
+
+	pkFps->m_bGuiMode = true;
+	pkFps->ToggleGui();
+	//pkGui->ShowCursor(false);
+
 	switch(m_iGameState)
 	{
 		case GAME_STATE_MENU:
@@ -77,6 +89,15 @@ void Game::OnIdle(void) {
 			break;
 		}
 	}
+
+	if(pkInput->Pressed(KEY_C)) {
+		CameraProperty* pkCam = dynamic_cast<CameraProperty*>(m_pkPlayer->GetProperty("CameraProperty"));
+		if(pkCam) {
+			pkCam->NextType((CameraProperty::CamType_e) 0);
+			}
+		}
+
+	Input();
 
 }
 
@@ -113,17 +134,26 @@ void Game::OnHud(void)
 //	pkRender->Quad(Vector3(.8,.8,-1),Vector3(0,0,m_pkPlayer->GetRot().y),Vector3(0.2,0.2,0.2),pkTexMan->Load("file:../data/textures/compas.tga",0));
 	
 			glDisable(GL_ALPHA_TEST);
+
+			const int max_width = 100;
+			float fMod = (float) pkGuiMan->Wnd("helthbar_bk")->GetScreenRect().Width() / max_width;
+
+			pkGuiMan->Wnd("helthbar")->Resize((int)(fMod*(*m_pfPlayerHealth)),10);
+			pkGuiMan->Wnd("armorbar")->Resize((int)(fMod*(*m_pfPlayerArmor)),10);
 		}
 	}
 
 	glEnable(GL_LIGHTING);		
 	glPopAttrib();
+
+	pkFps->m_bGuiMode = false;
+	pkFps->ToggleGui();
 }
 
 
-void Game::input() 
+void Game::Input() 
 {
-	cout << ";(" << endl;
+	int iKey = pkInput->GetQueuedKey();
 
 		/*
 	//Get mouse x,y		
@@ -185,7 +215,6 @@ void Game::SetUpMenuScreen()
 	pkFps->m_pkAudioMan->LoadMusic("file:../data/music/theme.mp3");		
 	pkFps->m_pkAudioMan->PlayMusic();
 
-
 	m_iGameState=GAME_STATE_MENU;
 }
 
@@ -211,7 +240,10 @@ void Game::SetupLevel()
 			m_pkPlayer->AttachToClosestZone();
 //			pkCollisionMan->Add(m_pkPlayer);			
 			pkLevelMan->AddTracker(m_pkPlayer);
-			
+
+			m_pfPlayerHealth = &static_cast<StatusProperty*>(m_pkPlayer->GetProperty("StatusProperty"))->m_fHealth;
+			m_pfPlayerArmor  = &static_cast<StatusProperty*>(m_pkPlayer->GetProperty("StatusProperty"))->m_fArmor;
+
 			po=(*it);
 		}		
 	}
@@ -231,8 +263,38 @@ void Game::SetupLevel()
 	m_iGameState=GAME_STATE_INGAME;
 }
 
+void Game::InitGUI()
+{
+	int id = 1;
+	int x = m_iWidth-200, y = m_iHeight-200;
 
+	ZGuiSkin* pkMainSkin =		new ZGuiSkin(-1, -1, -1, -1, 192, 192, 192, 0,   0,   0,   2);
+	ZGuiSkin* pkHealthBkSkin =	new ZGuiSkin(-1, -1, -1, -1, 255, 0,   0,   0,   0,   128, 4);
+	ZGuiSkin* pkHealthSkin =	new ZGuiSkin(-1, -1, -1, -1, 0,   0,   255, 0,   0,   128, 4);
+	ZGuiSkin* pkArmorBkSkin =	new ZGuiSkin(-1, -1, -1, -1, 255, 0,   0,   0,   0,   128, 4);
+	ZGuiSkin* pkArmorSkin =		new ZGuiSkin(-1, -1, -1, -1, 0,   255, 0,   0,   0,   128, 4);
 
+	ZGuiWnd* pkPlayerStatusMainWnd = new ZGuiWnd(Rect(x,y,x+190,y+190),NULL,true,id++);
+	pkPlayerStatusMainWnd->SetSkin(pkMainSkin);
 
+	x = 10; y = 10;
+	ZGuiWnd* pkHelthbarBk = new ZGuiWnd(Rect(x,y,x+170,y+10),pkPlayerStatusMainWnd,true,id++);
+	ZGuiWnd* pkHelthbar = new ZGuiWnd(Rect(0,0,170,10),pkHelthbarBk,true,id++);
+	pkHelthbarBk->SetSkin(pkHealthBkSkin);
+	pkHelthbar->SetSkin(pkHealthSkin);
 
+	y += 20;
+	ZGuiWnd* pkArmorbarBk = new ZGuiWnd(Rect(x,y,x+170,y+10),pkPlayerStatusMainWnd,true,id++);
+	ZGuiWnd* pkArmorbar = new ZGuiWnd(Rect(0,0,170,10),pkArmorbarBk,true,id++);
+	pkArmorbarBk->SetSkin(pkArmorBkSkin);
+	pkArmorbar->SetSkin(pkArmorSkin);
 
+	pkGui->AddMainWindow(id++, pkPlayerStatusMainWnd, WINPROC, true);
+
+	pkGuiMan->Add(string("helthbar"), pkHelthbar);
+	pkGuiMan->Add(string("armorbar"), pkArmorbar);
+	pkGuiMan->Add(string("helthbar_bk"), pkHelthbarBk);
+	pkGuiMan->Add(string("armorbar_bk"), pkArmorbarBk);
+
+	pkFps->m_bGuiTakeControl = false;
+}
