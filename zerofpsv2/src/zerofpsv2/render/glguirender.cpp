@@ -1026,6 +1026,48 @@ void GLGuiRender::StartDrawText()
 	glEnable(GL_ALPHA_TEST);
 }
 
+//void GLGuiRender::DrawString(const char* text, const int length, int x, int y, 
+//									  const float color[3], const ZGuiFont* pkFont)
+//{		 		
+//	m_pkTextureManger->BindTexture( pkFont->m_iTextureID );		
+//	glEnable(GL_TEXTURE_2D);
+//
+//	int index;
+//	GLfloat tx, ty, tw, th;
+//
+//	//const int CHARACTERS_TOTALT = strlen(text);
+//	y = m_iScreenHeight-y-pkFont->m_iRowHeight;
+//
+//	glBegin(GL_QUADS);
+//
+//	glColor4f(color[0], color[1], color[2], 1);
+//
+//	for(int i=0; i<length; i++)
+//	{		
+//		index = text[i];
+//		if(index < 0 || index > 255)
+//			continue;
+//	
+//		if(text[i] != ' ' && text[i] != '\t')
+//		{
+//			tx = (float) pkFont->m_aChars[index].iPosX / pkFont->m_iTextureWidth;
+//			ty = (float) pkFont->m_aChars[index].iPosY / pkFont->m_iTextureHeight;
+//			tw = (float) pkFont->m_aChars[index].iSizeX / pkFont->m_iTextureWidth;
+//			th = (float) pkFont->m_aChars[index].iSizeY / pkFont->m_iTextureHeight;
+//
+//			glTexCoord2f(tx,1.0f-ty);			glVertex2i(x, y + pkFont->m_aChars[index].iSizeY);		 
+//			glTexCoord2f(tx+tw,1.0f-ty);		glVertex2i(x + pkFont->m_aChars[index].iSizeX, y + pkFont->m_aChars[index].iSizeY);    
+//			glTexCoord2f(tx+tw,1.0f-ty-th);	glVertex2i(x + pkFont->m_aChars[index].iSizeX, y);    
+//			glTexCoord2f(tx,1.0f-ty-th);		glVertex2i(x, y);
+//		}
+//
+//		x += pkFont->m_aChars[index].iSizeX;
+//	}
+//
+//	glEnd();
+//}
+
+
 void GLGuiRender::DrawString(const char* text, const int length, int x, int y, 
 									  const float color[3], const ZGuiFont* pkFont)
 {		 		
@@ -1035,12 +1077,25 @@ void GLGuiRender::DrawString(const char* text, const int length, int x, int y,
 	int index;
 	GLfloat tx, ty, tw, th;
 
-	//const int CHARACTERS_TOTALT = strlen(text);
 	y = m_iScreenHeight-y-pkFont->m_iRowHeight;
+
+	float temp = y;
 
 	glBegin(GL_QUADS);
 
 	glColor4f(color[0], color[1], color[2], 1);
+	
+	int clipp_side=0; // 0 = top, 1 = bottom
+	Rect rcClipper = m_rcClipperArea;
+	if(m_bClipperEnabled)
+	{
+		rcClipper.Top = -rcClipper.Top + m_iScreenHeight-pkFont->m_iRowHeight;
+		rcClipper.Bottom = -rcClipper.Bottom + m_iScreenHeight;
+		clipp_side = 0;
+
+		if(m_rcClipperArea.Top == -1)
+			clipp_side = 1;
+	}
 
 	for(int i=0; i<length; i++)
 	{		
@@ -1050,15 +1105,67 @@ void GLGuiRender::DrawString(const char* text, const int length, int x, int y,
 	
 		if(text[i] != ' ' && text[i] != '\t')
 		{
-			tx = (float) pkFont->m_aChars[index].iPosX / pkFont->m_iTextureWidth;
-			ty = (float) pkFont->m_aChars[index].iPosY / pkFont->m_iTextureHeight;
-			tw = (float) pkFont->m_aChars[index].iSizeX / pkFont->m_iTextureWidth;
-			th = (float) pkFont->m_aChars[index].iSizeY / pkFont->m_iTextureHeight;
+			if(m_bClipperEnabled)
+			{	
+				float fTexOffset=0, fQuadHeight=0;
 
-			glTexCoord2f(tx,1.0f-ty);			glVertex2i(x, y + pkFont->m_aChars[index].iSizeY);		 
-			glTexCoord2f(tx+tw,1.0f-ty);		glVertex2i(x + pkFont->m_aChars[index].iSizeX, y + pkFont->m_aChars[index].iSizeY);    
-			glTexCoord2f(tx+tw,1.0f-ty-th);	glVertex2i(x + pkFont->m_aChars[index].iSizeX, y);    
-			glTexCoord2f(tx,1.0f-ty-th);		glVertex2i(x, y);
+				if(clipp_side == 0)
+				{
+					fQuadHeight = rcClipper.Top + pkFont->m_aChars[index].iSizeY - temp;				
+					fTexOffset = (temp -(float) rcClipper.Top) / 
+						(float) pkFont->m_aChars[index].iSizeY * ( 
+						(float) pkFont->m_aChars[index].iSizeY / pkFont->m_iTextureHeight);
+					y = temp;
+
+					tx = (float) pkFont->m_aChars[index].iPosX / pkFont->m_iTextureWidth;
+					ty = (float) pkFont->m_aChars[index].iPosY / pkFont->m_iTextureHeight + fTexOffset;
+					tw = (float) pkFont->m_aChars[index].iSizeX / pkFont->m_iTextureWidth;
+					th = (float) pkFont->m_aChars[index].iSizeY / pkFont->m_iTextureHeight - fTexOffset;
+
+					glTexCoord2f(tx,1.0f-ty);			glVertex2i(x, y + fQuadHeight);		 
+					glTexCoord2f(tx+tw,1.0f-ty);		glVertex2i(x + pkFont->m_aChars[index].iSizeX, y + fQuadHeight);    
+					glTexCoord2f(tx+tw,1.0f-ty-th);	glVertex2i(x + pkFont->m_aChars[index].iSizeX, y);    
+					glTexCoord2f(tx,1.0f-ty-th);		glVertex2i(x, y);
+				}
+				else
+				{
+					tx = (float) pkFont->m_aChars[index].iPosX / pkFont->m_iTextureWidth;
+					ty = (float) pkFont->m_aChars[index].iPosY / pkFont->m_iTextureHeight;
+					tw = (float) pkFont->m_aChars[index].iSizeX / pkFont->m_iTextureWidth;
+					th = (float) pkFont->m_aChars[index].iSizeY / pkFont->m_iTextureHeight;
+
+					fQuadHeight = pkFont->m_aChars[index].iSizeY ;
+					y = temp;
+
+					if( y+fQuadHeight >= rcClipper.Bottom)
+					{
+						int height = y+fQuadHeight-rcClipper.Bottom;
+						float procent = (float) height / (float) pkFont->m_iRowHeight;
+
+						th = th*procent;
+						fQuadHeight = fQuadHeight*procent;
+						y += (pkFont->m_iRowHeight-fQuadHeight);
+					}
+
+					glTexCoord2f(tx,1.0f-ty);			glVertex2i(x, y + fQuadHeight);		 
+					glTexCoord2f(tx+tw,1.0f-ty);		glVertex2i(x + pkFont->m_aChars[index].iSizeX, y + fQuadHeight);    
+					glTexCoord2f(tx+tw,1.0f-ty-th);	glVertex2i(x + pkFont->m_aChars[index].iSizeX, y);    
+					glTexCoord2f(tx,1.0f-ty-th);		glVertex2i(x, y);	
+				}
+				
+			}
+			else
+			{
+				tx = (float) pkFont->m_aChars[index].iPosX / pkFont->m_iTextureWidth;
+				ty = (float) pkFont->m_aChars[index].iPosY / pkFont->m_iTextureHeight;
+				tw = (float) pkFont->m_aChars[index].iSizeX / pkFont->m_iTextureWidth;
+				th = (float) pkFont->m_aChars[index].iSizeY / pkFont->m_iTextureHeight;
+
+				glTexCoord2f(tx,1.0f-ty);			glVertex2i(x, y + pkFont->m_aChars[index].iSizeY);		 
+				glTexCoord2f(tx+tw,1.0f-ty);		glVertex2i(x + pkFont->m_aChars[index].iSizeX, y + pkFont->m_aChars[index].iSizeY);    
+				glTexCoord2f(tx+tw,1.0f-ty-th);	glVertex2i(x + pkFont->m_aChars[index].iSizeX, y);    
+				glTexCoord2f(tx,1.0f-ty-th);		glVertex2i(x, y);
+			}
 		}
 
 		x += pkFont->m_aChars[index].iSizeX;
@@ -1066,4 +1173,3 @@ void GLGuiRender::DrawString(const char* text, const int length, int x, int y,
 
 	glEnd();
 }
-

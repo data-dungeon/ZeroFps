@@ -86,44 +86,48 @@ bool ZGuiTextbox::Render( ZGuiRender* pkRenderer )
 
 	if(m_strText != NULL)
 	{
-		Rect kRect = GetScreenRect();
-
-		kRect.Left += 2;
-		kRect.Right -= 2;
-
-		if(m_bMultiLine)
-		{
-			kRect.Top += 2;
-			kRect.Bottom -= 2;
-
-			if(m_pkScrollbarVertical->IsVisible())
-				kRect.Right -= 17;
-		}
-		
 		int cursor_pos = m_bBlinkCursor ? m_iCursorPos : -1;
 		if(m_bReadOnly)
 			cursor_pos = -1;
-
-		//int iCharsPrinted, iRowsPrinted;
-		//pkRenderer->RenderText(m_strText, kRect, cursor_pos, 
-		//	m_iRenderDistFromTop, m_bMultiLine, iCharsPrinted, iRowsPrinted, 
-		//	m_afTextColor);
 		
 		if(m_bMultiLine)
 		{
 			int yPos;
 			int top = GetScreenRect().Top;
-			int bottom = GetScreenRect().Bottom - MARG_SIZE * 2;
+			int bottom = GetScreenRect().Bottom /*- MARG_SIZE * 2*/;
 
 			int px = GetScreenRect().Left, py = top;
 
 			pkRenderer->StartDrawText(); 
 
-			for(int i=m_iCursorRow; i<m_kTextTags.size(); i++)
+			for(int i=/*m_iCursorRow*/0; i<m_kTextTags.size(); i++)
 			{
+				top = GetScreenRect().Top - m_kTextTags[i].iRowHeight;
+				bottom = GetScreenRect().Bottom;
+
 				yPos = py + m_kTextTags[i].y+m_iRenderDistFromTop;
-				if(yPos >= top && yPos + m_kTextTags[i].pkFont->m_iRowHeight <= bottom)
+				if(yPos >= top && yPos /*+ m_kTextTags[i].iRowHeight*/ < bottom)
 				{
+					if(yPos < top + m_kTextTags[i].iRowHeight)
+					{
+						Rect rc;
+						rc.Top = GetScreenRect().Top;
+						rc.Bottom = -1;
+						pkRenderer->SetClipperArea(rc); 
+						pkRenderer->EnableClipper(true);
+					}
+					else
+					if(yPos + m_kTextTags[i].iRowHeight > bottom)
+					{
+						Rect rc;
+						rc.Bottom = GetScreenRect().Bottom;
+						rc.Top = -1;
+						pkRenderer->SetClipperArea(rc); 
+						pkRenderer->EnableClipper(true);
+					}
+					else
+						pkRenderer->EnableClipper(false);
+
 					pkRenderer->DrawString(
 						m_strText+m_kTextTags[i].iPos, m_kTextTags[i].iNumChars, 
 						px + m_kTextTags[i].x, yPos, 
@@ -131,9 +135,13 @@ bool ZGuiTextbox::Render( ZGuiRender* pkRenderer )
 				}
 			}
 
+			pkRenderer->EnableClipper(false);
 		}
 		else
 		{
+			Rect kRect = GetScreenRect();
+			kRect.Left += 2;
+			kRect.Right -= 2;
 			pkRenderer->RenderText(m_strText, kRect, cursor_pos, m_afTextColor, NULL);
 		}
 
@@ -344,20 +352,17 @@ void ZGuiTextbox::ScrollText(ZGuiScrollbar* pkScrollbar)
 	if(m_iStartrow < 0)
 		m_iStartrow = 0;
 
-	m_iRenderDistFromTop = 0; 
+	float tomuch = m_iTotalTextHeight - GetScreenRect().Height() + pkScrollbar->GetArrowButtonHeight();
+	float top = (float) GetScreenRect().Top + pkScrollbar->GetArrowButtonHeight();
+	float bottom = (float) GetScreenRect().Bottom - pkScrollbar->GetArrowButtonHeight() - 
+		pkScrollbar->GetButton()->GetScreenRect().Height();
+	float now = pkScrollbar->GetButton()->GetScreenRect().Top;
 
-	set<int> m_kAdded;
-	for(int i=0; i<m_kTextTags.size(); i++)
-	{
-		if(m_kTextTags[i].iRow < m_iStartrow)
-		{
-			if(m_kAdded.find(m_kTextTags[i].iRow) == m_kAdded.end())
-			{
-				m_iRenderDistFromTop -= m_kTextTags[i].iRowHeight;
-				m_kAdded.insert(m_kTextTags[i].iRow);
-			}
-		}
-	}
+	bottom -= top;
+	now -= top;
+
+	float procent = now / bottom;
+	m_iRenderDistFromTop = -tomuch *procent;
 
 	// Reset parameter
 	pkScrollbar->m_iScrollChange = 0;
@@ -426,6 +431,8 @@ bool ZGuiTextbox::UpdateScrollbar()
 
 	float fThumbSize = (float) (GetScreenRect().Height()-(MARG_SIZE*2)-
 		(m_pkScrollbarVertical->GetArrowButtonHeight()*2)) / (float)  m_iTotalTextHeight;
+
+	fThumbSize = 0.25f;
 
 	m_pkScrollbarVertical->SetScrollInfo(0,m_iNumRows,fThumbSize,m_iCursorRow);
 
@@ -542,77 +549,35 @@ bool ZGuiTextbox::ProcessKBInput(int iKey)
 
 	if( m_bMultiLine )
 	{
-		static int s_row_start=0;
-
-		static int curr_line=0;
-
 		if(iKey == KEY_DOWN)
 		{
-			/*if(m_iCursorRow < m_iNumRows)
-			{
-				m_iCursorRow++;
-				m_iCursorPos = m_pkRowOffsets[m_iCursorRow];
-
-				int max_visible_row = (GetScreenRect().Height()) / m_pkFont->m_iRowHeight;
-
-				if(m_iCursorRow >= max_visible_row+s_row_start)
-				{	
-					ScrollText(m_iCursorRow-max_visible_row+1);
-					s_row_start++;
-				}
-			}*/
-
-			//if(m_iCursorRow < m_iNumRows)
-			//{
-			//	m_iRenderDistFromTop -= m_kTextStrings[m_iCursorRow].h;
-			//	m_iCursorRow++;
-			//	UpdateScrollbar();
-			//}
-
-			if(curr_line != m_iNumRows+1)
+			if(m_iCursorRow != m_iNumRows+1)
 			{
 				for(int i=0; i<m_kTextTags.size(); i++)
 				{
-					if(m_kTextTags[i].iRow == curr_line)
+					if(m_kTextTags[i].iRow == m_iCursorRow)
 					{
 						m_iRenderDistFromTop -= m_kTextTags[i].iRowHeight;
-						curr_line++;
+						m_iCursorRow++;
+						UpdateScrollbar();
 						break;
 					}
 				}
 			}
-			
+
 			return true;
 		}
 		else
 		{
-			/*if(m_iCursorRow > 0)
-			{
-				m_iCursorRow--;
-				m_iCursorPos = m_pkRowOffsets[m_iCursorRow];
-
-				if(m_iCursorRow == s_row_start)
-				{	
-					ScrollText(m_iCursorRow);
-					s_row_start--;
-				}
-			}*/
-			
-			//if(m_iCursorRow > 0)
-			//{
-			//	m_iRenderDistFromTop += m_kTextStrings[m_iCursorRow].h;
-			//	m_iCursorRow--;
-			//	UpdateScrollbar();
-			//}
-
-			if(curr_line != 0)
+			if(m_iCursorRow != 0)
 			{
 				for(int i=0; i<m_kTextTags.size(); i++)
 				{
-					if(m_kTextTags[i].iRow == curr_line-1)
+					if(m_kTextTags[i].iRow == m_iCursorRow-1)
 					{
 						m_iRenderDistFromTop +=  m_kTextTags[i].iRowHeight;					
-						curr_line--;
+						m_iCursorRow--;
+						UpdateScrollbar();
 						break;
 					}
 				}
@@ -1104,7 +1069,7 @@ void ZGuiTextbox::BuildTextStrings()
 	if(m_bMultiLine == false || m_kTextTags.size() < 1)
 		return;
 
-	const int LEFT = MARG_SIZE, TOP = MARG_SIZE;
+	const int LEFT = MARG_SIZE, TOP = 0;
 	const int TOTAL_LENGTH = strlen(m_strText);
 	const int WIDTH = GetWndRect().Width() - 20 - (LEFT*2);
 	int xPos = LEFT;
@@ -1153,10 +1118,10 @@ void ZGuiTextbox::BuildTextStrings()
 				}
 				else
 				{
+					max_row=t.pkFont->m_iRowHeight;
 					yPos += max_row; //t.pkFont->m_iRowHeight; 
 					xPos = LEFT;
-					row++;
-					max_row=t.pkFont->m_iRowHeight;
+					row++;					
 				}
 
 				if(ch == '\n')
@@ -1224,4 +1189,6 @@ void ZGuiTextbox::BuildTextStrings()
 				m_iNumRows = m_kTextTags[j].iRow;
 		}
 	}
+
+	printf("m_iTotalTextHeight = %i\n", m_iTotalTextHeight);
 }
