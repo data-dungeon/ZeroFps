@@ -2174,6 +2174,14 @@ void EntityManager::CommitZone(int iId)
 			return;
 		}
 	
+		// Update PFind Mesh
+		P_PfMesh* pkMesh = (P_PfMesh*)zd->m_pkZone->GetProperty("P_PfMesh");
+		if(pkMesh) {
+			pkMesh->CalcNaviMesh();
+			}
+
+		
+
 		
 		//reattach static entitys to staticentity entity		
 		

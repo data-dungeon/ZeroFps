@@ -283,6 +283,10 @@ SOURCE=..\engine_systems\propertys\p_skyboxrender.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\engine_systems\propertys\p_tcs.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\engine_systems\propertys\p_track.cpp
 # End Source File
 # Begin Source File
@@ -312,6 +316,10 @@ SOURCE=.\propertyfactory.cpp
 # Begin Source File
 
 SOURCE=.\res_texture.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\engine_systems\tcs\tcs.cpp
 # End Source File
 # Begin Source File
 
@@ -495,6 +503,10 @@ SOURCE=..\engine_systems\propertys\p_skyboxrender.h
 # End Source File
 # Begin Source File
 
+SOURCE=..\engine_systems\propertys\p_tcs.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\engine_systems\propertys\p_track.h
 # End Source File
 # Begin Source File
@@ -528,6 +540,10 @@ SOURCE=..\engine_systems\propertys\propertys.pkg
 # Begin Source File
 
 SOURCE=.\res_texture.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\engine_systems\tcs\tcs.h
 # End Source File
 # Begin Source File
 

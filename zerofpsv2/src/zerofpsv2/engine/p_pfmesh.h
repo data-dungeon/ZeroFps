@@ -59,6 +59,8 @@ class ENGINE_API P_PfMesh : public Property
 		void PackFrom(NetPacket* pkNetPacket, int iConnectionID );
 
 		void SetMad(P_Mad* pkMad);
+		void CalcNaviMesh();
+
 		void DrawNaviMesh();
 		void LinkCells();
 		void LinkToConnectedCells(NaviMeshCell* pkNavCell);

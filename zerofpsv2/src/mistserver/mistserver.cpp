@@ -1047,8 +1047,9 @@ void MistServer::RotateActiveZoneObject()
 	if(m_iCurrentMarkedZone != -1)
 	{
 		ZoneData* pkData = pkObjectMan->GetZoneData(m_iCurrentMarkedZone);
-		if(pkData)
+		if(pkData) {
 			pkData->m_pkZone->RotateLocalRotV( Vector3(0,90.0f,0) ); 
+			}
 	}
 }
 
@@ -1152,7 +1153,7 @@ void MistServer::PathTest()
 		kPathStart = pkObjectMan->GetZoneCenter(iStartZone);
 		kPathEnd   = pkObjectMan->GetZoneCenter(iEndZone);
 
-		bool bres = m_pkAStar->GetPath(kPathStart,kPathEnd,kPath);
+//		bool bres = m_pkAStar->GetPath(kPathStart,kPathEnd,kPath);
 		}
 }
 
@@ -1191,7 +1192,7 @@ void MistServer::HandleOrders()
 			{	
 				message+=order->m_sOrderName[pos];
 			}
-				
+			 	
 			//cout<<"got message to "<<playername<<": "<<message<<endl;
 			
 			if(m_pkServerInfoP)
@@ -1208,7 +1209,7 @@ void MistServer::HandleOrders()
 				kPathStart = ob->GetWorldPosV();
 				kPathEnd   = order->m_kPos;
 				kPath.clear();
-				bool bres = m_pkAStar->GetPath(kPathStart,kPathEnd,kPath);
+				bool bres = m_pkAStar->GetFullPath(kPathStart,kPathEnd,kPath);
 
 				if(bres) {
 					cout << "Path was found. Size " << kPath.size()  << endl;

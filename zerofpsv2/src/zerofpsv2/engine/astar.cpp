@@ -16,7 +16,7 @@ bool AStar::StartUp()
 	return true;
 }
 
-
+/*
 AStarNode* FindNodeInList(vector<AStarNodePtr>& List, int iID)
 {
 	for(unsigned int i=0; i<List.size(); i++) {
@@ -108,8 +108,9 @@ bool AStar::GetPath(Vector3 kStart, Vector3 kEnd, vector<Vector3>& kPath)
 		}
 
 	return false;
-}
+}*/
 
+/*
 void AStar::CalcCoset(AStarNode* pkNode)
 {
 	ZoneData* pkZone;
@@ -130,6 +131,55 @@ void AStar::MakePath(AStarNode* pkNode, vector<Vector3>& kPath)
 	} while(pkNode);
 }
 
+
+
+*/
+
+
+/*
+AStarNode* FindNodeInList(vector<AStarNodePtr>& List, int iID)
+{
+	for(unsigned int i=0; i<List.size(); i++) {
+		if(List[i]->m_iZoneID == iID)
+			return List[i];
+		}
+
+	return NULL;
+}
+*/
+
+
+AStarCellNode* FindNodeInList( vector< AStarCellNode*>& List, NaviMeshCell* pkCell)
+{
+	for(unsigned int i=0; i<List.size(); i++) {
+		if(List[i]->pkNaviCell == pkCell)
+			return List[i];
+		}
+
+	return NULL;
+}
+
+void AStar::MakePath(AStarCellNode* pkNode, vector<Vector3>& kPath)
+{
+	do {
+		kPath.push_back(pkNode->pkNaviCell->m_kCenter);
+		pkNode = pkNode->m_pParent;
+	} while(pkNode);
+}
+
+
+void AStar::CalcCoset(AStarCellNode* pkNode)
+{
+//	ZoneData* pkZone;
+//	pkZone = m_pkObjectManger->GetZoneData(pkNode->m_iZoneID);
+	
+	pkNode->m_fGValue = pkNode->m_pParent->m_fFValue + 1;
+	Vector3 kDist		= m_kStart - pkNode->pkNaviCell->m_kCenter;
+	pkNode->m_fHValue = kDist.Length();
+	pkNode->m_fFValue = pkNode->m_fGValue + pkNode->m_fHValue;
+
+}
+
 bool AStar::GetFullPath(Vector3 kStart, Vector3 kEnd, vector<Vector3>& kPath)
 {
 	printf("Creating full path");
@@ -141,18 +191,113 @@ bool AStar::GetFullPath(Vector3 kStart, Vector3 kEnd, vector<Vector3>& kPath)
 	m_iStartZone	= m_pkObjectManger->GetZoneIndex(m_kStart,-1, false);
 	m_iEndZone		= m_pkObjectManger->GetZoneIndex(m_kGoal,-1, false);
 
+	if(m_iStartZone < 0)		// No path found.
+		return false;
+	if(m_iEndZone < 0)		// No path found.
+		return false;
 	if(m_iStartZone != m_iEndZone)
 		return false;
 
+	if(m_pkObjectManger->GetZoneData(m_iStartZone) == NULL)	return false;
+	if(m_pkObjectManger->GetZoneData(m_iEndZone) == NULL)	return false;
+
+
+	AStarCellNode* pkNewNode;
+	NaviMeshCell* pkEndCell;
 	ZoneData* pkZone;
+	P_PfMesh* pkMesh;
+
+	// Get Ptr to End Cell.
 	pkZone = m_pkObjectManger->GetZoneData(m_iEndZone);
 	if(pkZone->m_pkZone == NULL)
 		return false;
+	pkMesh = (P_PfMesh*)pkZone->m_pkZone->GetProperty("P_PfMesh");
+	if(pkMesh == NULL)
+		return false;
+	pkEndCell = pkMesh->GetCell(m_kGoal);
+	if(pkEndCell == NULL) {
+		printf("No End Cell Was Found :(\n");
+		return false;
+		}
 
-	P_PfMesh* pkMesh = (P_PfMesh*)pkZone->m_pkZone->GetProperty("P_PfMesh");
-	if(pkMesh) {
-		pkMesh->GetCell(m_kGoal);
+	vector<AStarCellNode*>	kOpenList;
+	vector<AStarCellNode*>	kClosedList;
+
+	// 1: Let P = the starting point.
+	pkZone = m_pkObjectManger->GetZoneData(m_iStartZone);
+	if(pkZone->m_pkZone == NULL)
+		return false;
+	pkMesh = (P_PfMesh*)pkZone->m_pkZone->GetProperty("P_PfMesh");
+	if(pkMesh == NULL)
+		return false;
+	
+	pkNewNode = new AStarCellNode(pkMesh->GetCell(kStart));
+
+	// 2: Assign f,g and h values to P.
+	pkNewNode->m_pParent = NULL;
+	pkNewNode->m_fGValue = 0;
+	pkNewNode->m_fHValue = 0;
+	pkNewNode->m_fFValue = 0;
+
+	// 3: Add P to open list.
+	kOpenList.push_back(pkNewNode);
+	push_heap( kOpenList.begin(), kOpenList.end(), HeapCellComp() );
+
+	NaviMeshCell* pkCell;
+
+	// 4: Let B be the best node from the open list.
+	while(kOpenList.size()) {
+		// Get best node from open list
+		AStarCellNode* pkNode = kOpenList.front();
+		pop_heap( kOpenList.begin(), kOpenList.end(), HeapCellComp() );
+		kOpenList.pop_back();
+
+		// 4:a	If B is the goal node.
+		if(pkNode->pkNaviCell == pkEndCell) {
+			MakePath(pkNode, kPath);
+			return true;
+			}
+
+		//pkZone = m_pkObjectManger->GetZoneData(pkNode->m_iZoneID);
+		pkCell = pkNode->pkNaviCell;
+
+		// 5: Let C be a node connected to B.
+		for(unsigned int i=0; i<3; i++) {
+			if(pkCell->m_apkLinks[i] == NULL)	continue;
+
+			// 5:a Assign f,g and h values to C.
+			pkNewNode = new AStarCellNode( pkCell->m_apkLinks[i]);
+			pkNewNode->m_pParent = pkNode;
+			CalcCoset(pkNewNode);
+
+			// 5:b Check if C is in the open or closed list
+			AStarCellNode* pkInOpen   = FindNodeInList(kOpenList,		pkNewNode->pkNaviCell);
+			AStarCellNode* pkInClosed = FindNodeInList(kClosedList,	pkNewNode->pkNaviCell);
+			
+			if(pkInOpen || pkInClosed) {
+				if(pkInOpen) {
+					if(pkNewNode->m_fGValue < pkInOpen->m_fGValue) {
+						*pkInOpen = *pkNewNode;
+						delete pkNewNode;
+						push_heap( kOpenList.begin(), kOpenList.end(), HeapCellComp() );
+						}
+					}
+				if(pkInClosed) {
+					// Ignore step 5bi1
+					delete pkNewNode;
+					}
+				}
+			else {
+				// 5bii
+				kOpenList.push_back(pkNewNode);
+				push_heap( kOpenList.begin(), kOpenList.end(), HeapCellComp() );
+				}
+			}
 		}
 
 	return false;
 }
+
+
+
+

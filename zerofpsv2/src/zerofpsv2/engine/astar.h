@@ -6,6 +6,9 @@
 #include "console.h"
 #include "entitymanager.h"
 
+class NaviMeshCell;
+
+/*
 class AStarNode
 {
 public:
@@ -37,7 +40,44 @@ class HeapComp
 		{
 			return a->m_fFValue > b->m_fFValue;
 		}
+};*/
+
+
+
+
+class AStarCellNode
+{
+public:
+	float m_fGValue;			// cost of this node + it's predecessors
+	float m_fHValue;			// heuristic estimate of distance to goal
+	float m_fFValue;			// sum of cumulative cost of predecessors and self and heuristic
+
+	NaviMeshCell*	pkNaviCell;
+	AStarCellNode*	m_pParent;
+
+	AStarCellNode(NaviMeshCell* pkCell)
+	{
+		pkNaviCell	= pkCell;
+		m_fGValue	= 0;
+		m_fHValue	= 0;
+		m_fFValue	= 0;
+		m_pParent	= NULL;
+	}
 };
+
+typedef AStarCellNode* AStarCellNodePtr;
+
+// Klass som STL använder för att sortera noderna i nodlistorna
+class HeapCellComp
+{
+	public:
+		bool operator() ( const AStarCellNodePtr a, const AStarCellNodePtr b ) const
+		{
+			return a->m_fFValue > b->m_fFValue;
+		}
+};
+
+
 
 
 
@@ -47,9 +87,8 @@ class ENGINE_API AStar : public ZFSubSystem
 private:
 	EntityManager*	m_pkObjectManger;
 
-	Vector3 m_kStart;
-	Vector3 m_kGoal;
-
+	Vector3	m_kStart;
+	Vector3	m_kGoal;
 	int		m_iStartZone;
 	int		m_iEndZone;
 
@@ -57,10 +96,20 @@ public:
 	AStar();
 	virtual ~AStar() {}
 
-	bool GetPath(Vector3 kStart, Vector3 kEnd, vector<Vector3>& kPath);
+//	AStarNode* FindNodeInList(vector<AStarNodePtr>& List, int iID);
+//	bool GetPath(Vector3 kStart, Vector3 kEnd, vector<Vector3>& kPath);
+
+	
+	
 	bool GetFullPath(Vector3 kStart, Vector3 kEnd, vector<Vector3>& kPath);
-	void CalcCoset(AStarNode* pkNode);
-	void MakePath(AStarNode* pkNode, vector<Vector3>& kPath);
+
+	
+//	void CalcCoset(AStarNode* pkNode);
+//	void MakePath(AStarNode* pkNode, vector<Vector3>& kPath);
+
+	void CalcCoset(AStarCellNode* pkNode);
+	void MakePath(AStarCellNode* pkNode, vector<Vector3>& kPath);
+
 
 	bool StartUp();
 	bool ShutDown() { return true; }

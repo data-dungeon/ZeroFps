@@ -113,6 +113,8 @@ void P_PfMesh::PackFrom(NetPacket* pkNetPacket, int iConnectionID )
 
 void P_PfMesh::SetMad(P_Mad* pkMad)
 {
+	printf("Refreshing Mesh\n");
+
 	m_NaviMesh.clear();
 
 	Mad_Core* pkCore = dynamic_cast<Mad_Core*>(pkMad->kMadHandle.GetResourcePtr()); 
@@ -131,6 +133,9 @@ void P_PfMesh::SetMad(P_Mad* pkMad)
 	printf("Vertex/Normals: %d,%d\n",(*pkVertex).size(),(*pkNormal).size());
 	Vector3 kNormal;
 
+	Matrix4 kMat = m_pkObject->GetWorldOriM();
+
+
 	for(int i=0; i<pkFace->size(); i++) {
 		kNormal.Set(0,0,0);
 		kNormal += (*pkNormal)[ (*pkFace)[i].iIndex[0] ];
@@ -142,6 +147,10 @@ void P_PfMesh::SetMad(P_Mad* pkMad)
 		kNaviMesh.m_kVertex[0] = (*pkVertex)[ (*pkFace)[i].iIndex[0] ];
 		kNaviMesh.m_kVertex[1] = (*pkVertex)[ (*pkFace)[i].iIndex[1] ];
 		kNaviMesh.m_kVertex[2] = (*pkVertex)[ (*pkFace)[i].iIndex[2] ];
+
+		kNaviMesh.m_kVertex[0] = kMat.VectorTransform(kNaviMesh.m_kVertex[0]);
+		kNaviMesh.m_kVertex[1] = kMat.VectorTransform(kNaviMesh.m_kVertex[1]);
+		kNaviMesh.m_kVertex[2] = kMat.VectorTransform(kNaviMesh.m_kVertex[2]);
 
 		kNaviMesh.m_kCenter = (kNaviMesh.m_kVertex[0] + kNaviMesh.m_kVertex[1] + kNaviMesh.m_kVertex[2]) / 3;
 		kNaviMesh.m_apkLinks[0] = NULL;
@@ -156,17 +165,22 @@ void P_PfMesh::SetMad(P_Mad* pkMad)
 	m_pkSelected = &m_NaviMesh[0];
 }
 
+void P_PfMesh::CalcNaviMesh()
+{
+	P_Mad* pkMad = dynamic_cast<P_Mad*>(m_pkObject->GetProperty("P_Mad"));
+	if(!pkMad)	
+		return;
+
+	SetMad(pkMad);
+}
+
+
 void P_PfMesh::DrawNaviMesh()
 {
 	if(m_NaviMesh.size() == 0)
 		return;
 
 	glPushMatrix();
-	Vector3 pos = m_pkObject->GetIWorldPosV();
-	glTranslatef(pos.x,pos.y,pos.z);
-
-	Matrix4 ori = m_pkObject->GetWorldRotM();
-	glMultMatrixf(&ori[0]);
 
 	glDisable(GL_LIGHTING );
 	glDisable(GL_TEXTURE_2D);
@@ -238,7 +252,7 @@ void P_PfMesh::LinkCells()
 
 NaviMeshCell* P_PfMesh::GetCell(Vector3 kPos)
 {
-	kPos -= m_pkObject->GetWorldPosV();
+//	kPos -= m_pkObject->GetWorldPosV();
 
 	float fClosest = 100000000;
 	int iIndex = 0;
