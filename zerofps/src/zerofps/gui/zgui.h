@@ -58,6 +58,7 @@ class GUI_API ZGui
 {
 public:	
 	
+	bool MouseHoverWnd();
 	bool ChangeWndRegName(ZGuiWnd* pkWndToRename, const char* pkNewName);
 	ZGuiSkin* GetFocusBorderSkin() { return m_pkFocusBorderSkin; }
 	void SetDefaultFont(ZGuiFont* pkFont);
@@ -139,6 +140,7 @@ private:
 	ZGuiCursor* m_pkCursor;
 	ZGuiResourceManager* m_pkResManager;
 	Input* m_pkInput;
+	bool m_bHoverWindow;
 	
 	list<MAIN_WINDOW*> m_pkMainWindows; // A list of main windows
 	MAIN_WINDOW* m_pkActiveMainWin;	// Pointer to the active main window

@@ -17,6 +17,7 @@
 
 ZGui::ZGui()
 {
+	m_bHoverWindow = false;
 	m_iHighestZWndValue = 10;
 
 	m_bActive = false;
@@ -335,7 +336,10 @@ bool ZGui::OnMouseUpdate()
 		return false;
 
 	ZGuiWnd* pkFocusWindow = m_pkActiveMainWin->pkWnd->Find(x,y);
-
+	
+	// Registrer if mouse pointer moves over a window.
+	m_bHoverWindow = (pkFocusWindow != NULL);
+	
 	ZGuiWnd::m_pkWndUnderCursor = pkFocusWindow;
 
 	// Send a Mouse Move Message...
@@ -1430,4 +1434,9 @@ bool ZGui::ChangeWndRegName(ZGuiWnd* pkWndToRename, const char* pkNewName)
 	}
 
 	return true;
+}
+
+bool ZGui::MouseHoverWnd()
+{
+	return m_bHoverWindow;
 }
