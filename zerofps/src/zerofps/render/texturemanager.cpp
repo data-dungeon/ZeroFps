@@ -1,5 +1,6 @@
 #include "texturemanager.h"
 #include "../ogl/zfpsgl.h"
+#include "../basic/zfvfs.h"
 
 #define ERROR_TEXTURE	"../data/textures/notex.bmp"
 
@@ -8,6 +9,7 @@ TextureManager::TextureManager(FileIo* pkFile)
  : ZFObject("TextureManager") {
 
 	m_pkFile=pkFile;
+	m_pkZFFileSystem	=	static_cast<ZFVFileSystem*>(g_ZFObjSys.GetObjectPtr("ZFVFileSystem"));		
 
 	m_iCurrentTexture = NO_TEXTURE;
 
@@ -100,45 +102,51 @@ bool TextureManager::LoadTexture(texture *pkTex,const char *acFilename) {
   return true;
 }
 
-SDL_Surface *TextureManager::LoadImage(const char *acFilename) {
-  //Uint8 *rowhi, *rowlo;
-  //Uint8 *tmpbuf, tmpch;
-  SDL_Surface *image;
-  //int i, j;
+SDL_Surface *TextureManager::LoadImage(const char *acFilename) 
+{
+	bool bIsTga = false;
 
+	if(strstr(acFilename,".tga"))
+		bIsTga = true;
+	
+	SDL_Surface *image;
 
-	image = IMG_Load(m_pkFile->File(acFilename));
-    if ( image == NULL ) {
-    //  fprintf(stderr, "Unable to load %s: %s\n", acFilename, SDL_GetError());
+	ZFVFile ZFFile;
+	if(! ZFFile.Open(m_pkFile->File(acFilename), 0, false)) {
+		//cout << "Failed to open file " << endl;
+		return NULL;
+		}
+
+	//cout << "ZFFile open OK " << endl;
+	
+	SDL_RWops* pkRWOps = SDL_RWFromFP(ZFFile.m_pkFilePointer, 0);
+	if(pkRWOps == NULL) {
+      //fprintf(stderr, "Unable to create RWop\n");
+		ZFFile.Close();
+		return NULL;
+		}
+
+	if(bIsTga)
+		image = IMG_LoadTGA_RW(pkRWOps);
+	else
+		image = IMG_Load_RW(pkRWOps, 0);
+   
+	if ( image == NULL ) {
+		//fprintf(stderr, "Unable to load %s\n", m_pkFile->File(acFilename));
+		ZFFile.Close();
       return(NULL);
     }
 
-/*
-  // GL surfaces are upsidedown and RGB, not BGR :-) 
-  tmpbuf = (Uint8 *)malloc(image->pitch);
-  if ( tmpbuf == NULL ) {
-    fprintf(stderr, "Out of memory\n");
-    return(NULL);
-    }
-    rowhi = (Uint8 *)image->pixels;
-    rowlo = rowhi + (image->h * image->pitch) - image->pitch;
-    for ( i=0; i<image->h/2; ++i ) {
-      for ( j=0; j<image->w; ++j ) {
-        tmpch = rowhi[j*3];
-        rowhi[j*3] = rowhi[j*3+2];
-        rowhi[j*3+2] = tmpch;
-        tmpch = rowlo[j*3];
-        rowlo[j*3] = rowlo[j*3+2];
-        rowlo[j*3+2] = tmpch;
-        }
-      memcpy(tmpbuf, rowhi, image->pitch);
-      memcpy(rowhi, rowlo, image->pitch);
-      memcpy(rowlo, tmpbuf, image->pitch);
-      rowhi += image->pitch;
-      rowlo -= image->pitch;
-    }
-  free(tmpbuf);
-  */
+	ZFFile.Close();
+
+/*	// VIM
+	//image = IMG_Load(m_pkFile->File(acFilename));
+
+  if ( image == NULL ) {
+    //  fprintf(stderr, "Unable to load %s: %s\n", acFilename, SDL_GetError());
+      return(NULL);
+    }*/
+
   return(image);
 };
 

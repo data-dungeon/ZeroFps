@@ -57,6 +57,8 @@ class RENDER_API TextureManager : public ZFObject {
 		void ReloadAll(void);
 		void SetOptions(texture *pkTex, int iOptions);
 
+		ZFVFileSystem*	m_pkZFFileSystem;
+
 	public:
 		TextureManager(FileIo* pkFile);
 		int Load(const char* acFileName,int iOption);		
