@@ -149,7 +149,7 @@ void PhysicProperty::SetColShape(CollisionShape* pkCs)
 
 vector<PropertyValues> PhysicProperty::GetPropertyValues()
 {
-	vector<PropertyValues> kReturn(7);
+	vector<PropertyValues> kReturn(8);
 
 	kReturn[0].kValueName="m_bGravity";
 	kReturn[0].iValueType=VALUETYPE_BOOL;
@@ -200,9 +200,14 @@ vector<PropertyValues> PhysicProperty::GetPropertyValues()
 		}
 		
 		case 3:
-			kReturn[6].kValueName="co-mech-nothing";
-			kReturn[6].iValueType=VALUETYPE_BOOL;
-			kReturn[6].pkValue=(void*)&m_bDummyValue;
+			kReturn[6].kValueName="co-mech-id";
+			kReturn[6].iValueType=VALUETYPE_INT;
+			kReturn[6].pkValue=(void*)&static_cast<CSMech*>(m_pkColObject)->m_iModelID;								
+			
+			kReturn[7].kValueName="co-mech-scale";
+			kReturn[7].iValueType=VALUETYPE_FLOAT;
+			kReturn[7].pkValue=(void*)&static_cast<CSMech*>(m_pkColObject)->m_fScale;								
+			
 			break;
 	
 	}

@@ -3,7 +3,11 @@
 
 CSMech::CSMech()
 {
-	m_fcoloffset=0.01;
+	m_fcoloffset = 0.01;
+	m_bHavePolygonData = false;
+	m_pkCore = 	NULL;
+	m_iModelID = 0;
+	m_fScale = 	20;
 }
 
 Collision* CSMech::Test(CollisionShape* kOther,float fTime,bool bContinue)
@@ -23,30 +27,48 @@ Collision* CSMech::Test(CollisionShape* kOther,float fTime,bool bContinue)
 
 Collision* CSMech::Collide_CSSphere(CSSphere* kOther,float fTime)
 {
+	if(!m_bHavePolygonData)
+	{	
+		if(SetUpMech())
+			m_bHavePolygonData=true;
+	
+	}
+
 	Object* O1=m_pkPP->GetObject();
 	Object* O2=kOther->m_pkPP->GetObject();
 
 
-	Vector3 test[3];
-	test[0].Set(1,1,-1);
-	test[1].Set(1,1,1);	
-	test[2].Set(3,-1,-1);
+
+/*
+	Vector3 data[3];
+	data[0].Set(1,1,-1);
+	data[1].Set(1,1,1);	
+	data[2].Set(3,-1,-1);
 /*
 	test[0].Set(1,1,1);
 	test[1].Set(-1,1,1);	
 	test[2].Set(-1,-1,1);
 */
 
-
+	
 	bool hit=false;
 	Vector3 HitPos,HitNormal;
 
-	if(TestPolygon(test,O2->GetPos() , kOther->m_pkPP->m_kNewPos,kOther->m_fRadius))
+
+	Vector3 data[3];
+	for(int i=0;i<m_pkFaces->size();i++)
 	{
-		//cout<<"Blub"<<endl;
-		hit=true;
-		HitPos=m_kColPos;
-		HitNormal=m_kColNormal;
+
+		for(int j=0;j<3;j++)
+			data[j] = (*m_pkVertex)[ (*m_pkFaces)[i].iIndex[j]];
+	
+		if(TestPolygon(data,O2->GetPos() , kOther->m_pkPP->m_kNewPos,kOther->m_fRadius))
+		{
+			//cout<<"Blub"<<endl;
+			hit=true;
+			HitPos=m_kColPos;
+			HitNormal=m_kColNormal;
+		}
 	}
 
 	if(!hit)
@@ -88,24 +110,29 @@ bool CSMech::TestPolygon(Vector3* kVerts,Vector3 kPos1,Vector3 kPos2,float fR)
 	
 	//add objects possition to vertexs
 	for(int i=0;i<3;i++)
-		kNLVerts[i] = kVerts[i] + m_pkPP->GetObject()->GetPos();
+		kNLVerts[i] = (kVerts[i]*m_fScale) + m_pkPP->GetObject()->GetPos();
 
 	Vector3 V1 = kNLVerts[1] - kNLVerts[0];
 	Vector3 V2 = kNLVerts[2] - kNLVerts[0];		
-	Vector3 Normal= (V1.Cross(V2).Unit());
+	Vector3 Normal= V1.Cross(V2);
+	
+	if(Normal.Length() == 0)
+	{
+		Normal.Set(0,1,0);
+	}
 	
 	Normal.Normalize();
 	P.m_fD = -Normal.Dot(kNLVerts[0]);	
 	P.m_kNormal = Normal;
 
 
-//	cout<<"Normal "<<P.m_kNormal.x<<" "<<P.m_kNormal.y<<" "<<P.m_kNormal.z<<endl;
-//	cout<<"D "<<P.m_fD<<endl;	
+	cout<<"Normal "<<P.m_kNormal.x<<" "<<P.m_kNormal.y<<" "<<P.m_kNormal.z<<endl;
+	cout<<"D "<<P.m_fD<<endl;	
 	
 	if(P.LineTest(kPos1 + (-Normal * fR), kPos2 + (-Normal * fR),&m_kColPos)){
 		if(TestSides(kNLVerts,&Normal,m_kColPos,fR))
 		{
-//			cout<<"Collision"<<endl;
+			cout<<"Collision"<<endl;
 			m_kColPos += (Normal*m_fcoloffset) + (Normal * fR);
 			m_kColNormal = Normal;
 			return true;
@@ -142,9 +169,9 @@ bool CSMech::TestSides(Vector3* kVerts,Vector3* pkNormal,Vector3 kPos,float fR)
 	
 	}
 	
-	return inside;
+
 	
-/*
+
 	Render* pkRender = static_cast<Render*>(g_ZFObjSys.GetObjectPtr("Render"));	
 	
 	
@@ -156,7 +183,67 @@ bool CSMech::TestSides(Vector3* kVerts,Vector3* pkNormal,Vector3 kPos,float fR)
 	
 	pkRender->Line(kVerts[1],kVerts[1]+side[2].m_kNormal);
 	pkRender->Line(kVerts[2],kVerts[2]+side[2].m_kNormal);		
-*/	
 	
+	
+	return inside;	
 //	return true;
+}
+
+
+bool CSMech::SetUpMech()
+{
+	//look for mad property
+	MadProperty* pkMP = static_cast<MadProperty*>(m_pkPP->GetObject()->GetProperty("MadProperty"));	
+	if(pkMP != NULL)
+	{
+		cout<<"found mad property"<<endl;
+		//look for core pointer in mad property
+		m_pkCore = pkMP->pkCore;	
+		if(m_pkCore != NULL)
+		{
+			cout<<"found core"<<endl;
+			//look for mech pointer in core
+			m_pkCoreMech = m_pkCore->GetMeshByID(m_iModelID);					
+			if(m_pkCoreMech != NULL)		
+			{
+				cout<<"found mech"<<endl;
+				
+				m_pkFaces = m_pkCoreMech->GetFacesPointer();
+				m_pkVertex = (*m_pkCoreMech->GetVertexFramePointer())[0].GetVertexPointer();
+				m_pkNormal = (*m_pkCoreMech->GetVertexFramePointer())[0].GetNormalPointer();
+				
+				//found the mech return true
+				return true;
+			}
+		}
+	
+	}
+	
+	cout<<"error mech not found"<<endl;
+	return false;
+
+/*
+	//did not find any mad property return false
+	if(m_pkMP == NULL)
+		return false;
+	
+	//get core pointer
+	m_pkCore = m_pkMadProperty->pkCore;
+	
+	//is the core pointer vallid?
+	if(m_pkCore == NULL)
+		return false;
+	
+	cout<<"found mad property"<<endl;
+	
+	//get mech pointer
+	m_pkCoreMech = m_pkCore->GetMeshByID(m_iModelID);
+		
+	//is the mech pointer valid?
+	if(m_pkCoreMech == NULL)
+		return false;
+		
+	//everything was ok return true
+	return true;
+*/	
 }

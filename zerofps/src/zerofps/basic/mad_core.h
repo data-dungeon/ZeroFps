@@ -76,6 +76,9 @@ public:
 	void Resize(int iNewSize);
 	void Clear();
 	void PushBack(Vector3 kVertex, Vector3 kNormal);
+	
+	vector<Vector3>* GetVertexPointer() {return &akVertex;};
+	vector<Vector3>* GetNormalPointer() {return &akNormal;};
 
 	friend class Mad_CoreMesh;
 	friend class Mad_Core;
@@ -181,6 +184,9 @@ public:
 	Mad_CoreTexture* GetTextureInfo(int iTextureIndex);
 	void SetTextureID(int iTextureIndex, int iID);
 	int GetTextureID(int iTextureIndex);
+	
+	vector<Mad_Face>* GetFacesPointer() {return &akFaces;};
+	vector<Mad_CoreVertexFrame>* GetVertexFramePointer() {return &akFrames;};	
 
 	void CreateRigidBoneConnections(int iBoneId = 0);
 	void Save(FILE* fp);
