@@ -4,6 +4,7 @@
 #include <vector>
 #include <iostream>
 #include <cstring>
+#include <string.h>
 #include "basic_x.h"
 #include "os.h"
 #include "zfobject.h"
@@ -15,7 +16,9 @@ enum data_types {
 	type_int,
 	type_float,
 	type_double,
-	type_long	
+	type_long,
+	type_string
+	
 };
 
 struct variable {
@@ -24,17 +27,12 @@ struct variable {
 	void* pAddress;				// Pointer to variable
 };
 
-struct funktion 
-{
-	char* aName;				// Name of function.
-	void (*pAddress) (void);	// Address to function.
-};
+
 
 class BASIC_API CmdSystem : public ZFObject  {
 	private:
 		vector<variable*> kVars;		
-		vector<funktion*> kFunks;		
-				
+						
 		BasicConsole* m_pkCon;
 
 	public:
@@ -48,15 +46,14 @@ class BASIC_API CmdSystem : public ZFObject  {
 
 		CmdSystem(void);
 		
-		void Add(void* pAddress,char* aName,int iType);		//add new ingame variable
-		void AddCmd(void*,char* aName);
-		void Get(char* aName);														//print variable aName
-		void List(void);																	//list all variables
-		bool Set(char* aName,double dData);								//set variable aName to dData
-		bool Run(char* aName);
-		inline vector<variable*> &GetList(void) {return kVars;};
-		inline vector<funktion*> &GetCmdList(void) {return kFunks;};		
-		double GetVar(int i);
+		void Add(void* pAddress,const char* aName,int iType);		//add new ingame variable
+//		void Get(const char* aName);														//print variable aName
+		void List();																	//list all variables
+		bool Set(const char* aName,const char* acData);								//set variable aName to dData
+		void SetString(int i,const char* acData);								//set variable aName to dData		
+		void SetValue(int i,const char* acData);								//set variable aName to dData		
+//		inline vector<variable*> &GetList(void) {return kVars;};
+		void* GetVar(int i);
 };
 
 

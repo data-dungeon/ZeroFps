@@ -24,6 +24,9 @@ enum UPDATE_STATUS{
 };
 
 
+
+
+
 class ENGINE_API Object {
 	protected:
 		Vector3 m_kPos;
@@ -55,13 +58,13 @@ class ENGINE_API Object {
 		
 		void GetPropertys(list<Property*> *akPropertys,int iType,int iSide);		
 		void GetAllPropertys(list<Property*> *akPropertys,int iType,int iSide);		//used mainly for updates
-		Property* GetProperty(char* acName);
+		Property* GetProperty(const char* acName);
 
-		void AddProperty(Property* pkNewProperty);
-		void AddProperty(char* acName);		
+		bool AddProperty(Property* pkNewProperty);
+		bool AddProperty(const char* acName);		
 		Property* AddProxyProperty(char* acName);
-		bool RemoveProperty(char* acName);
-		bool Update(char* acName);
+		bool RemoveProperty(const char* acName);
+		bool Update(const char* acName);
 		
 		void AddChild(Object* pkObject);
 		void RemoveChild(Object* pkObject);

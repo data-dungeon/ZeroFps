@@ -4,7 +4,7 @@
 #include "zfobjectmanger.h"
 #include "globals.h"
 
-CmdSystem::CmdSystem(void)
+CmdSystem::CmdSystem()
 : ZFObject("CmdSystem") {
 	g_ZFObjSys.Register_Cmd("set",FID_SET,this);
 	g_ZFObjSys.Register_Cmd("varlist",FID_VARLIST,this);
@@ -14,7 +14,7 @@ CmdSystem::CmdSystem(void)
 }
 
 
-void CmdSystem::Add(void* pAddress,char* aName,int iType) {
+void CmdSystem::Add(void* pAddress,const char* aName,int iType) {
 //	cout<<"adding "<<aName<<" "<<iType<<" : "<<pAddress<<endl;
 	char* aVarName=new char[256];				//create space to store variable name
 	strcpy(aVarName,aName);							//Copy aName to the alocated space
@@ -30,41 +30,32 @@ void CmdSystem::Add(void* pAddress,char* aName,int iType) {
 	kVars.push_back(kNy);								//push in to variable vector
 }
 
-void CmdSystem::AddCmd(void* pAddress,char* aName) {
-//	cout<<"adding "<<aName<<" "<<iType<<" : "<<pAddress<<endl;
-	char* aVarName=new char[256];				//create space to store variable name
-	strcpy(aVarName,aName);							//Copy aName to the alocated space
-	Gemens(aVarName);										//convert variable name to only lowercases
-	
-	funktion *kNy=new funktion;					//create new variable entry
-	
-
-	kNy->aName=aVarName;								//set name pointer
-//	kNy->pAddress=pAddress;							//set varialbe data pointer
-
-	kFunks.push_back(kNy);								//push in to variable vector
-}
-
-
-void CmdSystem::Get(char* aName) {
+/*
+void CmdSystem::Get(const char* aName) {
 	Gemens(aName);											//convert searched name to lowercases
 	for(int i=0;i<kVars.size();i++) {		//loop trough all variables in variable vector
 		if(strcmp(kVars[i]->aName,aName)==0){	//if we find the variable
-			m_pkCon->Printf("%s = %f", aName, GetVar(i));
+			if(kVars[i]->iType == type_string)
+				m_pkCon->Printf("%s = %s", aName, ((string*)GetVar(i))->c_str());
+			else 
+				m_pkCon->Printf("%s = %d", aName, *(double*)GetVar(i));
 			//cout<<aName<<" = "<<GetVar(i)<<endl;//print it
 		}
 	}
 }
+*/
 
-void CmdSystem::List(void) {
+void CmdSystem::List() {
 	for(int i=0;i<kVars.size();i++) {		//loop trough variable vector
 		cout<<kVars[i]->aName<<" = "<<GetVar(i)<<endl;	//print all elements
 	}
 }
 
-double CmdSystem::GetVar(int i) {
+void* CmdSystem::GetVar(int i) {
 	double pdData;
+	string pkData;
 	
+	/*
 	//check what type and convert the void pointer depending on that type
 	switch(kVars[i]->iType) {
 		case type_int:
@@ -75,56 +66,66 @@ double CmdSystem::GetVar(int i) {
 			pdData= (double)*(double*)kVars[i]->pAddress;break;
 		case type_long:
 			pdData= (double)*(long*)kVars[i]->pAddress;break;
-			
+		case type_string:
+			return (void*)kVars[i]->pAddress;
 	}	
-	return pdData;
+	*/
+	
+	return (void*)kVars[i]->pAddress;
+//	return (void*)&pdData;
 }
 
-bool CmdSystem::Set(char* aName,double dData) {
+bool CmdSystem::Set(const char* acName,const char* acData)
+{
+	char aName[50];
+	strcpy(aName,acName);
 	Gemens(aName);
-	bool found=false;
 	
 	//loop trough variable vector 
 	for(int i=0;i<kVars.size();i++) {
 		if(strcmp(kVars[i]->aName,aName)==0){	//if we find the right variable
-			found=true;
-			switch(kVars[i]->iType) {		//set it depending on what type it is
-				case type_int:
-					*(int*)kVars[i]->pAddress=(int)dData;break;
-				case type_float:
-					*(float*)kVars[i]->pAddress=(float)dData;break;
-				case type_double:
-					*(double*)kVars[i]->pAddress=(double)dData;break;
-				case type_long:
-					*(long*)kVars[i]->pAddress=(long)dData;break;
+			if(kVars[i]->iType == type_string) {
+				SetString(i,acData);											
+			}else {
+				SetValue(i,acData);
+			}
 			
-			}				
+			return true;
 		}
 	}
-	return found;
+	
+	return false;
+}
+
+
+void CmdSystem::SetValue(int i,const char* acData) {
+	
+	float dData = atof(acData);
+	
+		switch(kVars[i]->iType) {		//set it depending on what type it is
+			case type_int:
+				*(int*)kVars[i]->pAddress=(int)dData;break;
+			case type_float:
+				*(float*)kVars[i]->pAddress=(float)dData;break;
+			case type_double:
+				*(double*)kVars[i]->pAddress=(double)dData;break;
+			case type_long:
+				*(long*)kVars[i]->pAddress=(long)dData;break;
+		
+		}
 }	
 
-bool CmdSystem::Run(char* aName) {
-	Gemens(aName);
-	bool found=false;
-	
-	//loop trough variable vector 
-	for(int i=0;i<kVars.size();i++) {
-		if(strcmp(kVars[i]->aName,aName)==0){	//if we find the right variable
-			found=true;
-			cout<<"excuting "<<aName<<endl;		
-		}
-	}
-	return found;
-}	
+void CmdSystem::SetString(int i,const char* acData) {
+	(*(string*)kVars[i]->pAddress)=acData;
+}
 
 void CmdSystem::RunCommand(int cmdid, const CmdArgument* kCommand)
 {
 //		Need to move console to basic.
-	char name[256]="";
-	char value[20]="";
-	int i=4;		
-	char text[255]="";
+//	char name[256]="";
+//	char value[20]="";
+//	int i=4;		
+//	char text[255]="";
 
 	switch(cmdid) {
 		case FID_SET:
@@ -139,20 +140,12 @@ void CmdSystem::RunCommand(int cmdid, const CmdArgument* kCommand)
 				return;
 			}
 			
-/*			
-			strcpy(text,"Setting ");
-			strcat(text,kCommand->m_kSplitCommand[1].c_str());
-			strcat(text,"=");
-			strcat(text,kCommand->m_kSplitCommand[2].c_str());
-			cout << text << endl;
-*/			
-			strcat(name,kCommand->m_kSplitCommand[1].c_str());
-			
-			if(!Set(name,atof(kCommand->m_kSplitCommand[2].c_str()))){
+//			if(!Set(name,atof(kCommand->m_kSplitCommand[2].c_str()))){
+			if(!Set(kCommand->m_kSplitCommand[1].c_str(),&kCommand->m_strFullCommand.c_str()[kCommand->m_kSplitCommand[0].length() + kCommand->m_kSplitCommand[1].length() + 2])){
 				m_pkCon->Printf("Variable not found");
 				return;
 			} else {
-				m_pkCon->Printf("Setting %s = %f",kCommand->m_kSplitCommand[1].c_str(),atof(kCommand->m_kSplitCommand[2].c_str()));
+				m_pkCon->Printf("Setting %s = %s",kCommand->m_kSplitCommand[1].c_str(),kCommand->m_kSplitCommand[2].c_str());
 			}
 			
 			
@@ -161,16 +154,21 @@ void CmdSystem::RunCommand(int cmdid, const CmdArgument* kCommand)
 		case FID_VARLIST:
 			m_pkCon->Printf("### variable list ###");
 
-			for(int i=0;i<GetList().size();i++){
-				m_pkCon->Printf(" %s  =  %.3f",GetList()[i]->aName,GetVar(i));
-				
-//				strcpy(text,GetList()[i]->aName);
-//				strcat(text," = ");
-//		IntToChar(value,(int)GetVar(i));
-//				strcat(text,value);
-				//strcat(text,atoi(m_pkCmd->GetVar(i)))
-				//cout<<<<" = "<<m_pkCmd->GetVar(i)<<endl;
-//				m_pkCon->Printf(text);
+			for(int i=0;i<kVars.size();i++)
+			{
+				switch(kVars[i]->iType)
+				{
+					case type_string:
+						m_pkCon->Printf(" %s = [%s]",kVars[i]->aName,((string*)GetVar(i))->c_str());break;
+					case type_float:
+						m_pkCon->Printf(" %s = [%.3f]",kVars[i]->aName,*(float*)GetVar(i));break;
+					case type_int:
+						m_pkCon->Printf(" %s = [%i]",kVars[i]->aName,*(int*)GetVar(i));break;
+					case type_double:
+						m_pkCon->Printf(" %s = [%.3d]",kVars[i]->aName,*(double*)GetVar(i));break;
+					case type_long:
+						m_pkCon->Printf(" %s = [%l]",kVars[i]->aName,*(long*)GetVar(i));break;										
+				}
 			}
 
 			break;

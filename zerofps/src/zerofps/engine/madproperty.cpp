@@ -21,7 +21,7 @@ MadProperty::MadProperty()
 	m_iSide=PROPERTY_SIDE_CLIENT;
 
 	m_pkFrustum=static_cast<Frustum*>(g_ZFObjSys.GetObjectPtr("Frustum"));
-
+	m_pkZeroFps = static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
 }
 
 MadProperty::MadProperty(Core* pkModell) {
@@ -74,6 +74,12 @@ void MadProperty::Update() {
 
 }
 
+void MadProperty::SetBase(const char* acName)
+{
+	SetBase(m_pkZeroFps->GetMADPtr(acName));
+	m_kMadFile=acName;
+}
+
 void MadProperty::SetBase(Core* pkModell)
 {
 	pkCore = pkModell;
@@ -84,6 +90,8 @@ void MadProperty::SetBase(Core* pkModell)
 	bFlipFace = false;
 	pkCore->ClearReplaceTexture();
 }
+
+
 
 void MadProperty::PlayAnimation(int iAnimNum, float fStartTime)
 {
@@ -169,6 +177,28 @@ void MadProperty::SetReplaceTexture(char* szName)
 {
 	pkCore->SetReplaceTexture(szName);
 }
+
+void MadProperty::Save(ZFMemPackage* pkPackage)
+{	
+	char temp[50];
+	strcpy(temp,m_kMadFile.c_str());
+
+	pkPackage->Write((void*)temp,50);
+	pkPackage->Write(m_fScale);
+}
+
+void MadProperty::Load(ZFMemPackage* pkPackage)
+{
+	pkPackage->SetPos(0);
+	char temp[50];
+	pkPackage->Read((void*)temp,50);	
+	SetBase(temp);
+	
+	float scale;
+	pkPackage->Read(scale);
+	SetScale(scale);
+}
+
 
 
 Property* Create_MadProperty()

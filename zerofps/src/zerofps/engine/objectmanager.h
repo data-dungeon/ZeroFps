@@ -3,10 +3,32 @@
 
 #include "object.h"
 #include <vector>
+#include <list>
+#include "../basic/basic.pkg"
 
 using namespace std;
 
+class ENGINE_API PropertyDescriptor{
+	public:
+		string m_kName;
+		ZFMemPackage m_kData;
+};
 
+class ENGINE_API ObjectDescriptor{
+	public:
+		string m_kName;
+		list<PropertyDescriptor*> m_acPropertyList;		
+		
+		
+		~ObjectDescriptor()
+		{
+			for(list<PropertyDescriptor*>::iterator it=m_acPropertyList.begin();it!=m_acPropertyList.end();it++)
+			{
+				delete (*it);
+			}
+		}
+		
+};
 
 
 class ENGINE_API ObjectManager : public ZFObject{
@@ -20,6 +42,8 @@ class ENGINE_API ObjectManager : public ZFObject{
 		list<Object*>	m_akObjects;
 		vector<Object*> m_akDeleteList;
 		list<Property*> m_akPropertys;
+
+		list<ObjectDescriptor*> m_akTemplates;
 
 		int	iNextObjectID;
 		bool m_bNoUpdate;
@@ -45,6 +69,14 @@ class ENGINE_API ObjectManager : public ZFObject{
 //		void Update();								//update all objects in manager
 //		void Update(int iType);						//update all objects of specified type
 		void UpdateDelete();						//deletes objects in delete qeue	
+		
+		void AddTemplate(ObjectDescriptor* pkNewTemplate);
+		int GetNrOfTemplates();
+		void GetTemplateList(vector<string>* paList);
+		bool MakeTemplate(const char* acName,Object* pkObject);
+		void ClearTemplates();
+		ObjectDescriptor* GetTemplate(const char* acName);
+		Object* CreateObject(const char* acName);
 		
 		void UpdateState(NetPacket* pkNetPacket);	//Updates objects.
 		void PackToClients();						//Packs and Sends to ALL clients.

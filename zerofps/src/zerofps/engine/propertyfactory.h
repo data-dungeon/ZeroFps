@@ -39,7 +39,7 @@ public:
 	PropertyFactory() : ZFObject("PropertyFactory") { }
 	~PropertyFactory() { }
 
-	Property*	CreateProperty(char* szName);
+	Property*	CreateProperty(const char* szName);
 	void		Register(char* szName, Property*	(*Create)());
 
 	void		Display();

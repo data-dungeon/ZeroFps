@@ -2,7 +2,9 @@
 #define _MADPROPERTY_H_
 
 #include "../render/render.pkg"
+#include "zerofps.h"
 #include "property.h"
+#include <string>
 
 using namespace std;
 
@@ -12,12 +14,15 @@ class ENGINE_API MadProperty: public Property {
 	private:
 		Core*	pkCore;
 		Frustum* m_pkFrustum;
+		ZeroFps* m_pkZeroFps;
 		
 		int		iActiveAnimation;
 		float	fCurrentTime;
 		float	fLastUpdate;
 
 		float	m_fScale;
+
+		string m_kMadFile;
 
 		int		m_iNextAnimation;
 		bool	m_bLoop;
@@ -30,6 +35,7 @@ class ENGINE_API MadProperty: public Property {
 
 		void Update();
 		void SetBase(Core* pkModell);
+		void SetBase(const char* acName);
 		void PlayAnimation(int iAnimNum, float fStartTime);
 		void UpdateAnimation(void);
 		void Draw(void);
@@ -55,6 +61,8 @@ class ENGINE_API MadProperty: public Property {
 		void	SetReplaceTexture(char* szName);
 
 		
+		void Save(ZFMemPackage* pkPackage);
+		void Load(ZFMemPackage* pkPackage);
 
 /*
 		// NEED TO WRITE

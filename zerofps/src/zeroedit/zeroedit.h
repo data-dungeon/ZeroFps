@@ -32,7 +32,9 @@ class ZeroEdit :public Application {
 			FID_LOADIMAGEMAP,			
 			FID_SAVEMAP,
 			FID_NEWMAP,
-			FID_OBJECTTREE
+			FID_OBJECTTREE,
+			FID_SAVETEMPLATE,
+			FID_LISTTEMPLATES
 		};	
 	
 		Camera *m_pkCamera;
@@ -50,6 +52,7 @@ class ZeroEdit :public Application {
 		Object* m_pkCurentParent;
 		Object* m_pkCurentChild;
 		
+		string m_kCurentTemplate;
 		float m_fTimer;
 		float m_fDrawRate;
 		bool m_bDrawing;
@@ -74,7 +77,8 @@ class ZeroEdit :public Application {
 		void SelectChild();
 		void SelectParent();		
 		void CreateZones();
-		
+				
+		void ListTemplates();
 		
 		void RegisterPropertys();
 };

@@ -208,11 +208,97 @@ void ObjectManager::Update(int iType,int iSide,bool bSort)
 	}
 }
 
+void ObjectManager::AddTemplate(ObjectDescriptor* pkNewTemplate)
+{
+	m_akTemplates.push_back(pkNewTemplate);
+}
+
+int ObjectManager::GetNrOfTemplates() 
+{	
+	return m_akTemplates.size();
+}
 
 
+void ObjectManager::GetTemplateList(vector<string>* paList)
+{
+	for(list<ObjectDescriptor*>::iterator it=m_akTemplates.begin();it!=m_akTemplates.end();it++) 
+	{
+		paList->push_back((*it)->m_kName);	
+	}
+}
+
+bool ObjectManager::MakeTemplate(const char* acName,Object* pkObject)
+{
+	if(GetTemplate(acName)!=NULL)
+		return false;
+		
+
+	ObjectDescriptor* tempdesc = new ObjectDescriptor;
+	
+	//set name
+	tempdesc->m_kName=acName;
+	
+	list<Property*> pkPropertys;
+	
+	pkObject->GetPropertys(&pkPropertys,PROPERTY_TYPE_ALL,PROPERTY_SIDE_ALL);
+	
+	for(list<Property*>::iterator it=pkPropertys.begin();it!=pkPropertys.end();it++) 
+	{
+		PropertyDescriptor* pkP=new PropertyDescriptor;
+		pkP->m_kName=(*it)->m_acName;
+		(*it)->Save(&pkP->m_kData);
+		
+		tempdesc->m_acPropertyList.push_back(pkP);
+	}
+	
+	AddTemplate(tempdesc);
+	return true;
+}
+
+Object* ObjectManager::CreateObject(const char* acName)
+{	
+	Object* tempobject=new Object;
+	
+	ObjectDescriptor *objtemplate = GetTemplate(acName);
+	
+	//return null if the template does not exist
+	if(objtemplate==NULL)
+		return NULL;
+	
+	tempobject->GetName()=objtemplate->m_kName;
+	
+	for(list<PropertyDescriptor*>::iterator it=objtemplate->m_acPropertyList.begin();it!=objtemplate->m_acPropertyList.end();it++) 
+	{
+		if(tempobject->AddProperty((*it)->m_kName.c_str()))
+		{
+			tempobject->GetProperty((*it)->m_kName.c_str())->Load(&(*it)->m_kData);
+		}
+	}
+	
+	return tempobject;
+}
+
+void ObjectManager::ClearTemplates()
+{
+	for(list<ObjectDescriptor*>::iterator it=m_akTemplates.begin();it!=m_akTemplates.end();it++) 
+	{
+		delete (*it);
+	}
+	
+	m_akTemplates.clear();
+}
 
 
-
+ObjectDescriptor* ObjectManager::GetTemplate(const char* acName)
+{
+	for(list<ObjectDescriptor*>::iterator it=m_akTemplates.begin();it!=m_akTemplates.end();it++) 
+	{
+		if((*it)->m_kName==acName)
+			return (*it);
+	}
+	
+	return NULL;
+}
 
 
 

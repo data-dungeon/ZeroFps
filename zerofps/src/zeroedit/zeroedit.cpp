@@ -18,7 +18,8 @@ void ZeroEdit::OnInit(void)
 	g_ZFObjSys.Register_Cmd("savemap",FID_SAVEMAP,this);		
 	g_ZFObjSys.Register_Cmd("newmap",FID_NEWMAP,this);		
 	g_ZFObjSys.Register_Cmd("objecttree",FID_OBJECTTREE,this);		
-
+	g_ZFObjSys.Register_Cmd("savetemplate",FID_SAVETEMPLATE,this);		
+	g_ZFObjSys.Register_Cmd("listtemplates",FID_LISTTEMPLATES,this);			
 
 
 	//start text =)
@@ -40,6 +41,9 @@ void ZeroEdit::OnInit(void)
 	
 	m_fPointerHeight=1;
 	
+	m_kCurentTemplate="null";
+	pkFps->m_pkCmd->Add(&m_kCurentTemplate,"g_template",type_string);			
+	
 	m_iRandom=1;
 	pkFps->m_pkCmd->Add(&m_iRandom,"g_Random",type_int);		
 	
@@ -55,13 +59,9 @@ void ZeroEdit::OnInit(void)
 	m_fPointDistance=10;
 	pkFps->m_pkCmd->Add(&m_fPointDistance,"g_PointDistance",type_float);	
 	
-	//Heightmap		
-//	m_pkMap->GenerateNormals(); 
-//	m_pkMap->GenerateTextures();
-
-//	m_pkHeightMapObject->GetPos().Set(0,-4,0);			
-//	pkObjectMan->Add(m_pkHeightMapObject);	
-//	pkCollisionMan->Add(m_pkHeightMapObject);
+	
+//	pkFps->m_pkCmd->Add(&m_kCurentTemplate,"g_ful",type_string);			
+	
 	CreateNew(100);
 
 
@@ -80,6 +80,11 @@ void ZeroEdit::OnInit(void)
 		sol->fQuadratic_Atten=0;
 
 	pkLight->Add(sol);
+
+
+	ObjectDescriptor testobject;
+	testobject.m_kName="tree";
+	
 
 }
 
@@ -131,6 +136,8 @@ void ZeroEdit::OnHud(void)
 
 void ZeroEdit::RunCommand(int cmdid, const CmdArgument* kCommand)
 {
+	int size;
+
 	switch(cmdid) {
 		case FID_OBJECTTREE:
 			pkObjectMan->GetWorldObject()->PrintTree(0);
@@ -139,17 +146,18 @@ void ZeroEdit::RunCommand(int cmdid, const CmdArgument* kCommand)
 		case FID_LOADMAP:
 			if(kCommand->m_kSplitCommand.size() <= 1) {
 				pkConsole->Printf("Please Supply a filename");
-				return;
+				break;
 			}
 			
 			Clear();		//clear objects
 			if(!m_pkMap->Load(kCommand->m_kSplitCommand[1].c_str()))
 				pkConsole->Printf("Could not load map =(");
 			break;
+			
 		case FID_LOADIMAGEMAP:
 			if(kCommand->m_kSplitCommand.size() <= 1) {
 				pkConsole->Printf("Please Supply a filename");
-				return;
+				break;
 			}
 			
 			Clear();		//clear objects
@@ -165,23 +173,50 @@ void ZeroEdit::RunCommand(int cmdid, const CmdArgument* kCommand)
 		case FID_SAVEMAP:
 			if(kCommand->m_kSplitCommand.size() <= 1) {
 				pkConsole->Printf("Please Supply a filename");
-				return;
+				break;
 			}
 			
 			if(!m_pkMap->Save(kCommand->m_kSplitCommand[1].c_str()))
 				pkConsole->Printf("Could not save map =(");			
 			break;
+			
 		case FID_NEWMAP:	
 			if(kCommand->m_kSplitCommand.size() <= 1) {
 				pkConsole->Printf("Please Type a mapsize");
-				return;
+				break;
 			}
-			int size=atoi(kCommand->m_kSplitCommand[1].c_str());
+			size=atoi(kCommand->m_kSplitCommand[1].c_str());
 			
 			pkConsole->Printf("Creating new map with size %d",size);
 			CreateNew(size);
 			break;
 			
+		case FID_SAVETEMPLATE:
+			if(kCommand->m_kSplitCommand.size() <= 1) {
+				pkConsole->Printf("Please type a template name");
+				break;
+			}
+			
+			if(m_pkCurentChild==NULL){
+				pkConsole->Printf("You have not selected any child");
+				break;
+			}
+						
+			if(!pkObjectMan->MakeTemplate(kCommand->m_kSplitCommand[1].c_str(),m_pkCurentChild))
+			{
+				pkConsole->Printf("Failed To Make Template");
+				pkConsole->Printf("Template %s already exist",kCommand->m_kSplitCommand[1].c_str());
+				break;
+			}
+			
+			
+			pkConsole->Printf("Template %s Saved",kCommand->m_kSplitCommand[1].c_str());
+			
+			break;
+			
+		case FID_LISTTEMPLATES:			
+			ListTemplates();
+			break;
 
 	}
 
@@ -354,16 +389,11 @@ void ZeroEdit::Input()
 
 					object->GetRot().z+=((rand()%25000)-12500)/1000.0;					
 				}
-//				object->SetParent(m_pkCurentParent);
-//				pkObjectMan->Add(object);				
 				
 				object->AttachToClosestZone();
 
 				m_pkCurentChild=object;
-//				pkCollisionMan->Add(object);
-	
-//				cout<<"CHILDS: "<<m_pkCurentParent->NrOfChilds()<<endl;
-	
+
 			}
 			if(pkInput->Pressed(MOUSERIGHT))
 			{
@@ -398,7 +428,16 @@ void ZeroEdit::Input()
 			
 				CreateZones();
 			}
-			
+			if(pkInput->Pressed(KEY_Z))
+			{
+				Object *object=pkObjectMan->CreateObject(m_kCurentTemplate.c_str());
+				if(object==NULL)
+					break;
+				object->GetPos()=m_kDrawPos;	
+				
+				object->AttachToClosestZone();
+				m_pkCurentChild=object;
+			}
 			break;
 			
 	}
@@ -534,5 +573,22 @@ void ZeroEdit::RegisterPropertys()
 {
 //	pkPropertyFactory->Register("MadProperty", Create_MadProperty);
 
-
 }
+
+void ZeroEdit::ListTemplates()
+{
+	vector<string> akNames;
+	
+	pkObjectMan->GetTemplateList(&akNames);
+	
+	pkConsole->Print("--Object Templates--");
+	for(int i=0;i<akNames.size();i++)
+	{
+		pkConsole->Print(akNames[i].c_str());
+	}
+
+	akNames.clear();
+}
+
+
+

@@ -6,12 +6,12 @@ ZoneObject::ZoneObject()
 	
 	m_pkFps = static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
 
-	AddProperty("ProxyProperty");
-	
-	
 	AddProperty("MadProperty");
 	MadProperty* madp = dynamic_cast<MadProperty*>(GetProperty("MadProperty"));
 	madp->SetBase(m_pkFps->GetMADPtr("../data/mad/zoneobject.mad"));
+
+
+	AddProperty("ProxyProperty");
 
 }
 

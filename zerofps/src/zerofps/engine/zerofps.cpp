@@ -34,7 +34,7 @@ ZeroFps::ZeroFps(void)
 	akCoreModells.reserve(25);
 
 	//add some nice variables =)
-	m_pkCmd->Add(&m_iState,"G_State",type_int);
+//	m_pkCmd->Add(&m_iState,"G_State",type_int);
 	m_pkCmd->Add(&m_pkInput->m_fMouseSensitivity,"m_Sens",type_float);
 	m_pkCmd->Add(&m_pkRender->m_iDetail,"r_LandLod",type_int);
 	m_pkCmd->Add(&m_pkRender->m_iViewDistance,"r_ViewDistance",type_int);	

@@ -86,7 +86,7 @@ void Test::OnInit(void) {
 		sol->kRot=solrot;
 		sol->kPos=solpos;		
 //		sol->kDiffuse=Vector4(1.8,1.8,1.8,1);	//Dag
-		sol->kDiffuse=Vector4(1,1,1,1);	//natt
+		sol->kDiffuse=Vector4(4,4,4,4);	//natt
 		sol->kAmbient=Vector4(0.01,0.01,0.01,0.01);
 //		sol->kAmbient=Vector4(0,0,0,0);		
 		sol->iType=POINT_LIGHT;			
@@ -103,7 +103,7 @@ void Test::OnInit(void) {
 	int i;
 	float waterlevel;
 	
-	for( i=0;i<5000;i++) {
+	for( i=0;i<100;i++) {
 		Object *ball=new BallObject();
 		
 		// Place this tree somewere on land.

@@ -3,7 +3,7 @@
 #include "lightproperty.h"
 
 
-Property* PropertyFactory::CreateProperty(char* szName)
+Property* PropertyFactory::CreateProperty(const char* szName)
 {
 	for(int i=0; i<m_kProperyLinks.size(); i++)
 	{

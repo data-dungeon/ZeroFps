@@ -43,7 +43,7 @@ Object::~Object() {
 	cout<<"Object Destroyed"<<endl;
 }
 
-Property* Object::GetProperty(char* acName) {
+Property* Object::GetProperty(const char* acName) {
 	for(list<Property*>::iterator it=m_akPropertys.begin();it!=m_akPropertys.end();it++) {
 		if(strcmp((*it)->m_acName,acName)==0) {
 			return (*it);
@@ -95,12 +95,16 @@ void  Object::GetPropertys(list<Property*> *akPropertys,int iType,int iSide)
 }
 
 
-void Object::AddProperty(Property* pkNewProperty) {
+bool Object::AddProperty(Property* pkNewProperty) {
+	if(pkNewProperty==NULL)
+		return false;
+
 	pkNewProperty->SetObject(this);
 	m_akPropertys.push_back(pkNewProperty);
+	return true;
 }
 
-void Object::AddProperty(char* acName)
+bool Object::AddProperty(const char* acName)
 {
 /*	Property* pProp = m_pkPropFactory->CreateProperty(acName);
 	if(!pProp)
@@ -112,11 +116,12 @@ void Object::AddProperty(char* acName)
 	if(pProp==NULL)
 	{
 		cout<<"Error Property "<<acName<<" Not Registered"<<endl;
-		return;
+		return false;
 	}
 
 
 	AddProperty(pProp);
+	return true;
 }
 
 Property* Object::AddProxyProperty(char* acName)
@@ -130,7 +135,7 @@ Property* Object::AddProxyProperty(char* acName)
 }
 
 
-bool Object::RemoveProperty(char* acName) {
+bool Object::RemoveProperty(const char* acName) {
 	for(list<Property*>::iterator it=m_akPropertys.begin();it!=m_akPropertys.end();it++) {
 		if(strcmp((*it)->m_acName,acName)==0) {
 			delete (*it);
@@ -177,7 +182,7 @@ void Object::Update(int iType,int iSide){
 }
 */
 
-bool Object::Update(char* acName){
+bool Object::Update(const char* acName){
 	for(list<Property*>::iterator it=m_akPropertys.begin();it!=m_akPropertys.end();it++) {
 		if(strcmp((*it)->m_acName,acName)==0) {
 			(*it)->Update();
