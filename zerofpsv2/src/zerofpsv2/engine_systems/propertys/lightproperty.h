@@ -3,16 +3,27 @@
 
 #include "../../engine/property.h"
 #include "../engine_systems_x.h"
+#include "../../engine/i_zerofps.h"
 using namespace std;
+
+
+enum ENGINE_SYSTEMS_API LIGHT_MODES
+{
+	LMODE_DEFAULT=0,
+	LMODE_TORCH=1,
+
+};
 
 /// Property to make an object cast light.
 class ENGINE_SYSTEMS_API LightProperty: public Property {
 	private:
+		I_ZeroFps*		m_pkZeroFps;
 		LightSource*	m_pkLightSource;
-
-		Light*			m_pkLight;
+		Light*			m_pkLight;	
+		int				m_iMode;
 		
-
+		float				m_fTimer;
+		
 		vector<PropertyValues> GetPropertyValues();
 		
 		void Save(ZFIoInterface* pkPackage);

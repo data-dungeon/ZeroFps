@@ -12,10 +12,14 @@ LightProperty::LightProperty()
 	m_pkLightSource=new LightSource();
 
 	m_pkLight = static_cast<Light*>(g_ZFObjSys.GetObjectPtr("Light"));
+	m_pkZeroFps = static_cast<I_ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
 
 	m_iType=PROPERTY_TYPE_RENDER;
 	m_iSide=PROPERTY_SIDE_CLIENT;
  
+	m_iMode=LMODE_DEFAULT;
+	m_fTimer = m_pkZeroFps->GetTicks();
+	
 	TurnOn();
 	
 }
@@ -35,10 +39,27 @@ void LightProperty::Update()
 {
 	m_pkLightSource->kPos = m_pkObject->GetWorldPosV(); 
 	m_pkLightSource->kRot = m_pkObject->GetWorldRotV();
+	
+
+	switch(m_iMode)
+	{
+		case LMODE_TORCH:
+		{
+			if(m_pkZeroFps->GetTicks() - m_fTimer > 0.05)
+			{
+				m_fTimer = m_pkZeroFps->GetTicks();
+				float hora = ((rand() % 1000))/20000.0;
+	
+				m_pkLightSource->kDiffuse = Vector3(hora + 0.1,hora + 0.1 ,hora + 0.03);
+			}
+			break;		
+		}
+	}
 }
 
 void LightProperty::PackTo( NetPacket* pkNetPacket ) {
 	pkNetPacket->Write( m_pkLightSource->kDiffuse);
+	pkNetPacket->Write( m_pkLightSource->kSpecular);	
 	pkNetPacket->Write( m_pkLightSource->kAmbient);
 	pkNetPacket->Write( m_pkLightSource->iPriority);	
 	pkNetPacket->Write( m_pkLightSource->fCutoff);		
@@ -46,10 +67,12 @@ void LightProperty::PackTo( NetPacket* pkNetPacket ) {
 	pkNetPacket->Write( m_pkLightSource->fConst_Atten);		
 	pkNetPacket->Write( m_pkLightSource->fLinear_Atten);		
 	pkNetPacket->Write( m_pkLightSource->fQuadratic_Atten);		
+	pkNetPacket->Write( m_iMode);			
 }
 
 void LightProperty::PackFrom( NetPacket* pkNetPacket ) {
 	pkNetPacket->Read( m_pkLightSource->kDiffuse );		
+	pkNetPacket->Read( m_pkLightSource->kSpecular );			
 	pkNetPacket->Read( m_pkLightSource->kAmbient);
 	pkNetPacket->Read( m_pkLightSource->iPriority);	
 	pkNetPacket->Read( m_pkLightSource->fCutoff);		
@@ -57,11 +80,12 @@ void LightProperty::PackFrom( NetPacket* pkNetPacket ) {
 	pkNetPacket->Read( m_pkLightSource->fConst_Atten);		
 	pkNetPacket->Read( m_pkLightSource->fLinear_Atten);		
 	pkNetPacket->Read( m_pkLightSource->fQuadratic_Atten);			
+	pkNetPacket->Read( m_iMode);				
 }
 
 vector<PropertyValues> LightProperty::GetPropertyValues()
 {
-	vector<PropertyValues> kReturn(10);
+	vector<PropertyValues> kReturn(11);
 
 	kReturn[0].kValueName = "Ambient";
 	kReturn[0].iValueType = VALUETYPE_VECTOR4;
@@ -103,6 +127,11 @@ vector<PropertyValues> LightProperty::GetPropertyValues()
 	kReturn[9].iValueType = VALUETYPE_INT;
 	kReturn[9].pkValue    = (void*)&m_pkLightSource->iType;
 	
+	kReturn[10].kValueName = "Mode";
+	kReturn[10].iValueType = VALUETYPE_INT;
+	kReturn[10].pkValue    = (void*)&m_iMode;
+	
+	
 	return kReturn;
 }
 
@@ -116,11 +145,14 @@ void LightProperty::Save(ZFIoInterface* pkPackage)
 {
 	
 	pkPackage->Write((void*)m_pkLightSource,sizeof(LightSource),1);
+	pkPackage->Write((void*)&m_iMode,sizeof(m_iMode),1);	
 }
 
 void LightProperty::Load(ZFIoInterface* pkPackage)
 {
 	pkPackage->Read((void*)m_pkLightSource,sizeof(LightSource),1);
+	pkPackage->Read((void*)&m_iMode,sizeof(m_iMode),1);	
+
 }
 
 void LightProperty::TurnOn()
