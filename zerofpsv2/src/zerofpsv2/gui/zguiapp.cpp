@@ -1311,6 +1311,10 @@ bool ZGuiApp::BuildFileTree(char* szTreeBoxName, char* szRootPath, char* szExten
 		for(list<string>::iterator it = vkFileNames.begin(); it != vkFileNames.end(); it++)  
 		{
 			string strLabel = (*it);
+
+			if(strLabel == "CVS")
+				continue;
+
 			string id = currentFolder + string("/") + strLabel;
 
 			bool bIsFolder = strLabel.find(".") == string::npos;
