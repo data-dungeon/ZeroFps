@@ -973,8 +973,9 @@ void ZGui::SetRes(int iResX, int iResY)
 	m_iResX = iResX;
 	m_iResY = iResY;
 }
+
 bool ZGui::AlphaPixelAtPos(int mx, int my, ZGuiWnd *pkWndClicked)
- {
+{
 	if(m_bDisableAlphatest)
 	{
 		printf("Disabled\n");
@@ -1062,10 +1063,6 @@ bool ZGui::AlphaPixelAtPos(int mx, int my, ZGuiWnd *pkWndClicked)
 		if(dx < 0) dx = 0;
 		if(dy < 0) dy = 0;
 
-		printf("texture is tga = %i\n", (int) bIsTGA);
-		printf("tex_w = %0.2f, tex_h = %0.2f\n", tex_w, tex_h);
-		printf("dx = %0.2f, dy = %0.2f\n", dx, dy);
-
 		//unsigned long pixel;
 		color_rgba kColor;
 		if(!pkSurface->get_pixel(int(dx), int(dy), kColor))
@@ -1075,8 +1072,6 @@ bool ZGui::AlphaPixelAtPos(int mx, int my, ZGuiWnd *pkWndClicked)
 		m_pkTexMan->EditEnd( alpha_tex );
 
 		m_pkZShaderSystem->Pop();
-
-		printf("pixel = %i, %i, %i, %i\n", kColor.r, kColor.g, kColor.b, kColor.a);
 
 		if(bIsTGA) 
 		{
@@ -1093,11 +1088,6 @@ bool ZGui::AlphaPixelAtPos(int mx, int my, ZGuiWnd *pkWndClicked)
 				bTransparentPixelUnderCursor = true;
 		}
 	}
-
-	if(bTransparentPixelUnderCursor)
-		printf("Transparent pixel (%i,%i)\n", mx, my);
-	else
-		printf("Opaque pixel (%i,%i)\n", mx, my);
 
 	return bTransparentPixelUnderCursor;
 }

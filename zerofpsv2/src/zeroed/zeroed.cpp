@@ -618,9 +618,6 @@ void ZeroEd::OnSystem()
 
 void ZeroEd::OnIdle()
 {	
-
-
-
 	// FULHACK Tm Vim
 	m_pkEntityManager->OwnerShip_Take( m_pkEntityManager->GetEntityByID( m_pkZeroFps->GetClientObjectID() ) );
 

@@ -269,6 +269,9 @@ void MistServer::OnSystem()
 
 void MistServer::Input_Camera(float fMouseX, float fMouseY)
 {
+	if(m_pkActiveCamera == NULL)
+		return;
+
 	float fSpeedScale = m_pkZeroFps->GetFrameTime()*20;
 
 	if(m_pkActiveCamera->GetViewMode() == Camera::CAMMODE_PERSP) 
