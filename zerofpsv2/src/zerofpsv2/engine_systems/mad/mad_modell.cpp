@@ -28,7 +28,7 @@ Mad_Modell::Mad_Modell()
 	m_bActive	= true;
 
 	
-	m_kDefaultMat.LoadShader("testshader.shd");
+
 }
 
 Mad_Modell::Mad_Modell(string strResName)
@@ -467,15 +467,12 @@ void Mad_Modell::Draw_All(int iDrawFlags)
 		m_pkShader->SetPointer(TEXTURE_POINTER0,GetTextureCooPtr());
 		m_pkShader->SetPointer(VERTEX_POINTER,GetVerticesPtr());		
 		m_pkShader->SetPointer(NORMAL_POINTER,GetNormalsPtr());				
-		m_kDefaultMat.m_bCopyData = true;
-		m_kDefaultMat.m_bWaves = true;		
 		
-//		m_kDefaultMat.GetPass(0)->m_iPolygonModeFront = GL_FILL;
-//		m_kDefaultMat.GetPass(0)->m_iPolygonModeBack = GL_FILL;		
+		m_kDefaultMat.LoadShader("testshader.shd");
+		
 		m_pkShader->SetDrawMode(TRIANGLES_MODE);
 		m_pkShader->SetNrOfVertexs(GetNumVertices());
 		
-
 		
 /*		glTexCoordPointer(2,GL_FLOAT,0,GetTextureCooPtr());
 		glVertexPointer(3,GL_FLOAT,0,GetVerticesPtr());
@@ -517,6 +514,7 @@ void Mad_Modell::Draw_All(int iDrawFlags)
 					
 				m_pkShader->SetMaterial(&m_kDefaultMat);
 				
+				m_kDefaultMat.GetPass(0)->m_kTUs[0].SetRes(pkTexture->strTextureName.c_str());// =  pkTexture->m_iTextureID;
 //				m_kDefaultMat.GetPass(0)->m_iTUs[0] =  pkTexture->m_iTextureID;
 				m_pkShader->SetPointer(INDEX_POINTER,GetFacesPtr());				
 				m_pkShader->SetNrOfIndexes(iNumOfFaces * 3);
