@@ -27,16 +27,17 @@ enum GuiType
 	Treebox,
 };
 
-class GuiBuilder  
+class GuiApp  
 {
 public:
+	void AddListItem(int iListboxID, char* szText, bool bCombobox=false);
 	bool CreateNewRadiobuttonGroup(const char *szName, int id);
-	void Initialize();
-	bool Create(GuiType eType, char* szResourceName, char* szText,
+	void InitializeGui(ZGui* pkGui, TextureManager* pkTexMan);
+	bool CreateWnd(GuiType eType, char* szResourceName, char* szText,
 		int iID, int parentID, int x, int y, int w, int h, unsigned long uiFlags);
 
-	GuiBuilder(ZGui* pkGui, TextureManager* pkTexMan, ZGui::callback oMainWndProc);
-	~GuiBuilder();
+	GuiApp(ZGui::callback oMainWndProc);
+	~GuiApp();
 
 private:
 	int GetTexID(char* szFile);

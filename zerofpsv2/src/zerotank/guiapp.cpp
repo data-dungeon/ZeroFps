@@ -1,8 +1,8 @@
-// guibuilder.cpp: implementation of the GuiBuilder class.
+// guibuilder.cpp: implementation of the GuiApp class.
 //
 //////////////////////////////////////////////////////////////////////
 
-#include "guibuilder.h"
+#include "guiapp.h"
 #include "../zerofpsv2/basic/zfassert.h"
 #include "../zerofpsv2/engine/res_texture.h"
 #include "../zerofpsv2/render/texturemanager.h"
@@ -11,23 +11,19 @@
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 
-GuiBuilder::GuiBuilder(ZGui* pkGui, TextureManager* pkTexMan,
-					   ZGui::callback oMainWndProc)
+GuiApp::GuiApp(ZGui::callback oMainWndProc)
 {
-	m_pkGui = pkGui;
 	m_oMainWndProc = oMainWndProc;
-	m_pkTexMan = pkTexMan;
-
 	m_szLastRadioBGroup = NULL;
 	CreateNewRadiobuttonGroup("DefGUIRadioGroup", 1);
 }
 
-GuiBuilder::~GuiBuilder()
+GuiApp::~GuiApp()
 {
 
 }
 
-ZGuiWnd* GuiBuilder::GetWnd(int iID)
+ZGuiWnd* GuiApp::GetWnd(int iID)
 {
 	map<int, ZGuiWnd*>::iterator res = m_kWindows.find(iID);
 	if(res == m_kWindows.end())
@@ -35,7 +31,7 @@ ZGuiWnd* GuiBuilder::GetWnd(int iID)
 	return res->second;
 }
 
-ZGuiSkin* GuiBuilder::GetSkin(string strName)
+ZGuiSkin* GuiApp::GetSkin(string strName)
 {
 	map<string, ZGuiSkin*>::iterator res = m_kSkins.find(strName);
 	if(res == m_kSkins.end())
@@ -43,11 +39,13 @@ ZGuiSkin* GuiBuilder::GetSkin(string strName)
 	return res->second;
 }
 
-bool GuiBuilder::Create(GuiType eType, char* szResourceName, char* szText, int iID, 
+bool GuiApp::CreateWnd(GuiType eType, char* szResourceName, char* szText, int iID, 
 						int parentID, int x, int y, int w, int h, unsigned long uiFlags)
 {
-	ZFAssert(GetWnd(iID) == NULL, "GuiBuilder::CreateWnd: WindowID already exist"); 
+	ZFAssert(GetWnd(iID) == NULL, "GuiApp::CreateWnd: WindowID already exist"); 
 	ZGuiWnd* pkWnd;
+
+	const int LISTBOX_ITEM_HEIGHT = 20;
 	
 	switch(eType)
 	{
@@ -72,6 +70,10 @@ bool GuiBuilder::Create(GuiType eType, char* szResourceName, char* szText, int i
 		break;
 	case Slider:
 		pkWnd = new ZGuiSlider( Rect(x,y,x+w,y+h), GetWnd(parentID), true, iID);
+		break;
+	case Listbox:
+		pkWnd = new ZGuiListbox( Rect(x,y,x+w,y+h), GetWnd(parentID), true, iID, 
+			LISTBOX_ITEM_HEIGHT, NULL, NULL, NULL);
 		break;
 	}
 	
@@ -104,6 +106,14 @@ bool GuiBuilder::Create(GuiType eType, char* szResourceName, char* szText, int i
 		static_cast<ZGuiSlider*>(pkWnd)->SetSliderSkin(GetSkin("DefSliderSkin"));
 		static_cast<ZGuiSlider*>(pkWnd)->SetBkSkin(GetSkin("DefSliderBkSkin"));
 		break;
+	case Listbox:
+		static_cast<ZGuiListbox*>(pkWnd)->SetSkin( GetSkin("DefLBBkSkin") );
+		static_cast<ZGuiListbox*>(pkWnd)->SetItemNormalSkin(   GetSkin("DefLBitemUSkin"));
+		static_cast<ZGuiListbox*>(pkWnd)->SetItemSelectedSkin( GetSkin("DefLBitemDSkin"));
+		static_cast<ZGuiListbox*>(pkWnd)->SetItemHighLightSkin(GetSkin("DefLBitemFSkin"));
+		static_cast<ZGuiListbox*>(pkWnd)->SetScrollbarSkin(GetSkin("DefSBrBkSkin"),
+			GetSkin("DefSBrNSkin"), GetSkin("DefSBrFSkin") );
+		break;
 	}
 
 	if(eType == Wnd)
@@ -122,12 +132,14 @@ bool GuiBuilder::Create(GuiType eType, char* szResourceName, char* szText, int i
 	return true;
 }
 
-void GuiBuilder::InitTextures()
+void GuiApp::InitTextures()
 {
 	// first texture loaded do not show up (?). fulhack fix: load crap texture.
 	int crap = m_pkTexMan->Load("/data/textures/gui/crap.bmp", 0);
 
 	typedef map<string, ZGuiSkin*>::value_type strSkin;
+
+	ZGuiSkin* skin;
 
 	m_kSkins.insert(strSkin("DefWndSkin", new ZGuiSkin(GetTexID("defwnd.bmp"),0)));
 	m_kSkins.insert(strSkin("DefBnUSkin", new ZGuiSkin(GetTexID("bn_u.bmp"),0)));
@@ -140,15 +152,31 @@ void GuiBuilder::InitTextures()
 	m_kSkins.insert(strSkin("DefSBrNSkin", new ZGuiSkin(GetTexID("sb_n.bmp"),0)));
 	m_kSkins.insert(strSkin("DefSBrFSkin", new ZGuiSkin(GetTexID("sb_f.bmp"),0)));
 	m_kSkins.insert(strSkin("DefSBrBkSkin", new ZGuiSkin(GetTexID("sb_bk.bmp"),1)));
-
-	m_kSkins.insert(strSkin("DefSliderSkin", new ZGuiSkin(GetTexID("slider_a.bmp"),
-		GetTexID("slider.bmp"))));
+	m_kSkins.insert(strSkin("DefSliderSkin", new ZGuiSkin(GetTexID("slider.bmp"),
+		GetTexID("slider_a.bmp"), 0)));
 	m_kSkins.insert(strSkin("DefSliderBkSkin", new ZGuiSkin(255,0,0,  0,0,255, 0)));
+
+	m_kSkins.insert(strSkin("DefLBitemUSkin", new ZGuiSkin(GetTexID("lb_u.bmp"),0)));
+	m_kSkins.insert(strSkin("DefLBitemDSkin", new ZGuiSkin(GetTexID("lb_d.bmp"),0)));
+	
+	skin = new ZGuiSkin(GetTexID("lb_f.bmp"),1);
+	skin->m_afBorderColor[0] = 0.22f; skin->m_afBorderColor[1] = 0.22f;
+	skin->m_afBorderColor[2] = 0.22f; skin->m_unBorderSize = 1;
+	m_kSkins.insert(strSkin("DefLBitemFSkin", skin));
+
+	skin = new ZGuiSkin(GetTexID("lb_bk.bmp"),1);
+	skin->m_afBorderColor[0] = 0.22f; skin->m_afBorderColor[1] = 0.22f;
+	skin->m_afBorderColor[2] = 0.22f; skin->m_unBorderSize = 1;
+	m_kSkins.insert(strSkin("DefLBBkSkin", skin));
+	
 
 }
 
-void GuiBuilder::Initialize()
+void GuiApp::InitializeGui(ZGui* pkGui, TextureManager* pkTexMan)
 {
+	m_pkGui = pkGui;
+	m_pkTexMan = pkTexMan;
+
 	InitTextures();
 
 	// Load gui cursor and hide the os cursor.
@@ -158,7 +186,7 @@ void GuiBuilder::Initialize()
 	SDL_ShowCursor(SDL_DISABLE);
 }
 
-int GuiBuilder::GetTexID(char *szFile)
+int GuiApp::GetTexID(char *szFile)
 {
 	char szPath[256];
 	sprintf(szPath, "%s%s", "/data/textures/gui/", szFile);
@@ -166,7 +194,7 @@ int GuiBuilder::GetTexID(char *szFile)
 }
 
 
-bool GuiBuilder::CreateNewRadiobuttonGroup(const char *szName, int id)
+bool GuiApp::CreateNewRadiobuttonGroup(const char *szName, int id)
 {
 	if(m_szLastRadioBGroup)
 		delete[] m_szLastRadioBGroup;
@@ -177,4 +205,20 @@ bool GuiBuilder::CreateNewRadiobuttonGroup(const char *szName, int id)
 	m_iLastRadioBGroup = id;
 
 	return true;
+}
+
+void GuiApp::AddListItem(int iListboxID, char *szText, bool bCombobox)
+{
+	if(bCombobox == false)
+	{
+		ZGuiListbox* pkListBox = static_cast<ZGuiListbox*>(GetWnd(iListboxID));
+		int iIndex = pkListBox->GetItemCount(); 
+		pkListBox->AddItem(szText, iIndex, false); 
+	}
+	else
+	{
+		ZGuiCombobox* pkComboBox = static_cast<ZGuiCombobox*>(GetWnd(iListboxID));
+		pkComboBox->AddItem(szText, -1, false); 
+	}
+
 }
