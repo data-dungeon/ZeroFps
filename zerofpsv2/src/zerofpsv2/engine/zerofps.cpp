@@ -378,7 +378,8 @@ void ZeroFps::UpdateDevPages()
 			temp[0] = '#';
 			temp[1] = int(( float(m_kProfileData[i].m_iTime) / float(m_iProfileTotalTime) ) *100.0);
 			temp[2] = '/0';		
-			DevPrintf("profile","%s : %dns / %dms / %d%%",	m_kProfileData[i].m_strName.c_str(), int((m_kProfileData[i].m_iTime / m_fAvrageFps)*1000.0) , m_kProfileData[i].m_iTime, int(( float(m_kProfileData[i].m_iTime) / float(m_iProfileTotalTime) ) *100.0));			
+			//DevPrintf("profile","%s : %dns / %dms / %d%%",	m_kProfileData[i].m_strName.c_str(), int((m_kProfileData[i].m_iTime / m_fAvrageFps)*1000.0) , m_kProfileData[i].m_iTime, int(( float(m_kProfileData[i].m_iTime) / float(m_iProfileTotalTime) ) *100.0));			
+			DevPrintf("profile","%s : %dms / %d%%",	m_kProfileData[i].m_strName.c_str(), m_kProfileData[i].m_iTime, int(( float(m_kProfileData[i].m_iTime) / float(m_iProfileTotalTime) ) *100.0));			
 			DevPrintf("profile",temp);
 		}	
 	} 
