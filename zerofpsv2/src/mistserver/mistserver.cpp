@@ -259,7 +259,7 @@ void MistServer::OnInit()
 	Init();
 
 	//init dm script interface (register script functions for gameplay)
-	//DMLua::Init(m_pkObjectMan,m_pkScript,m_pkGuiMan);
+	DMLua::Init(m_pkObjectMan,m_pkScript,m_pkGuiMan);
 
 	//run autoexec script
 	if(!m_pkIni->ExecuteCommands("mistserver_autoexec.ini"))
@@ -567,7 +567,7 @@ void MistServer::OnIdle()
 		//DrawCrossMarker(m_kObjectMarkerPos);		
 	}
 
-	PathTest();
+	//PathTest();
 }
 
 
@@ -1040,7 +1040,8 @@ void MistServer::Input()
 	if(m_pkCameraObject)	
 	{	
 		Input_Camera(float(x),float(z));
-	
+
+		
 		if(m_pkInputHandle->VKIsDown("modezone"))			m_iEditMode = EDIT_ZONES;
 		if(m_pkInputHandle->VKIsDown("modeobj"))			m_iEditMode = EDIT_OBJECTS;		
 		if(m_pkInputHandle->VKIsDown("modehmvertex"))		m_iEditMode = EDIT_HMAP;		
@@ -1049,11 +1050,12 @@ void MistServer::Input()
 		if(m_pkInputHandle->VKIsDown("lightoff"))			m_pkZShader->SetForceLighting(LIGHT_ALWAYS_OFF);
 		if(m_pkInputHandle->VKIsDown("lightstd"))			m_pkZShader->SetForceLighting(LIGHT_MATERIAL);
 	
-		if(m_iEditMode == EDIT_HMAP)				Input_EditTerrain();
-		if(m_iEditMode == EDIT_ZONES)				Input_EditZone();
-		if(m_iEditMode == EDIT_OBJECTS)			Input_EditObject(float(x),float(z));
+		if(m_iEditMode == EDIT_HMAP)						Input_EditTerrain();
+		if(m_iEditMode == EDIT_ZONES)						Input_EditZone();
+		if(m_iEditMode == EDIT_OBJECTS)						Input_EditObject(float(x),float(z));
 
 		if(m_pkInputHandle->VKIsDown("solo"))				SoloToggleView();
+		
 	}
 };
 
@@ -1612,11 +1614,13 @@ void MistServer::OnServerStart(void)
 
 void MistServer::OnClientStart(void)
 {
+	CreateEditCameras();
+
 }
 
 bool MistServer::StartUp()	
 { 
-	m_pkAStar	= static_cast<AStar*>(GetSystem().GetObjectPtr("AStar"));
+//	m_pkAStar	= static_cast<AStar*>(GetSystem().GetObjectPtr("AStar"));
 	return true; 
 }
 
@@ -2261,6 +2265,7 @@ void MistServer::DeletePlayer(int iConID)
 	}
 }
 
+/*
 void MistServer::PathTest() 
 {
 	return;
@@ -2281,7 +2286,7 @@ void MistServer::PathTest()
 
 //		bool bres = m_pkAStar->GetPath(kPathStart,kPathEnd,kPath);
 		}
-}
+}*/
 
 void MistServer::HSO_Edit(ClientOrder* pkOrder)
 {

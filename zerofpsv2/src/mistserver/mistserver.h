@@ -176,13 +176,12 @@ class MistServer :public Application , public ZGuiApp {
 		void ToogleLight(bool bEnabled);
 		void RotateActiveZoneObject();
 
-		/* Owner by Vim, Master Of Ugly Code, King of the armys of bugs. LOL*/
-			AStar*	m_pkAStar;
+		/*	AStar*	m_pkAStar;
 			vector<Vector3> kPath;
 			Vector3 kPathStart;
 			Vector3 kPathEnd;
 
-			void PathTest();
+			void PathTest();*/
 
 		Vector3	m_kDrawPos;
 		HeightMap* SetPointer();

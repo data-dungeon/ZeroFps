@@ -222,7 +222,7 @@ void ZeroEd::OnInit()
 	Init();
 
 	//init dm script interface (register script functions for gameplay)
-	//DMLua::Init(m_pkObjectMan,m_pkScript,m_pkGuiMan);
+	DMLua::Init(m_pkObjectMan,m_pkScript,m_pkGuiMan);
 
 	//run autoexec script
 	if(!m_pkIni->ExecuteCommands("zeroed_autoexec.ini"))
@@ -341,6 +341,12 @@ void ZeroEd::OnServerStart(void)
 	GetWnd("vp2")->SetZValue(0);
 	GetWnd("vp3")->SetZValue(0);
 	GetWnd("vp4")->SetZValue(0);
+}
+
+void ZeroEd::OnClientStart()
+{
+//	if(!m_pkFps->m_bServerMode)
+//		CreateEditCameras();
 }
 
 void ZeroEd::SetupGuiEnviroment()

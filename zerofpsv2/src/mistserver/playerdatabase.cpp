@@ -157,7 +157,7 @@ bool PlayerDatabase::CreateNewCharacter(string strPlayer, string strCharacter)
 	}	
 	
 	//create new caracter and save it	
-	Entity* pkEntity = m_pkEntityMan->CreateObjectFromScript("data/script/objects/t_player.lua");	
+	Entity* pkEntity = m_pkEntityMan->CreateObjectFromScript("data/script/objects/t_camedit.lua");		// t_player
 	pkEntity->SetName(strCharacter);
 	pkEntity->GetSave() = true;
 	pkEntity->SetUseZones(true);
