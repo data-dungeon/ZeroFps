@@ -104,6 +104,11 @@ void PhysicProperty::Save(ZFMemPackage* pkPackage)
 		case 2:
 			pkPackage->Write((void*)&(static_cast<CSBox*>(m_pkColObject)->m_kScale),12);						
 			break;
+		case 3:
+			pkPackage->Write((void*)&(static_cast<CSMech*>(m_pkColObject)->m_iModelID),4);										
+			pkPackage->Write((void*)&(static_cast<CSMech*>(m_pkColObject)->m_fScale),4);													
+//			pkPackage->Write((void*)&(static_cast<CSBox*>(m_pkColObject)->m_kScale),12);						
+			break;
 			
 	}	
 	
@@ -135,6 +140,8 @@ void PhysicProperty::Load(ZFMemPackage* pkPackage)
 			break;
 		case 3:
 			SetColShape(new CSMech());	
+			pkPackage->Read((void*)&(static_cast<CSMech*>(m_pkColObject)->m_iModelID),4);										
+			pkPackage->Read((void*)&(static_cast<CSMech*>(m_pkColObject)->m_fScale),4);																			
 			break;		
 	}		
 }

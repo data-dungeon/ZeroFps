@@ -3,11 +3,11 @@
 
 CSMech::CSMech()
 {
-	m_fcoloffset = 0.01;
+	m_fcoloffset = 0.001;
 	m_bHavePolygonData = false;
 	m_pkCore = 	NULL;
 	m_iModelID = 0;
-	m_fScale = 	5;
+	m_fScale = 	500;
 }
 
 Collision* CSMech::Test(CollisionShape* kOther,float fTime,bool bContinue)
@@ -52,7 +52,8 @@ Collision* CSMech::Collide_CSSphere(CSSphere* kOther,float fTime)
 
 	
 	bool hit=false;
-	Vector3 HitPos,HitNormal;
+	Vector3 HitPos = Vector3(99999,99999,99999);
+	Vector3 HitNormal;
 
 
 	Vector3 data[3];
@@ -64,10 +65,13 @@ Collision* CSMech::Collide_CSSphere(CSSphere* kOther,float fTime)
 	
 		if(TestPolygon(data,O2->GetPos() , kOther->m_pkPP->m_kNewPos,kOther->m_fRadius))
 		{
-			//cout<<"Blub"<<endl;
-			hit=true;
-			HitPos=m_kColPos;
-			HitNormal=m_kColNormal;
+			if(Closer(O2->GetPos(),HitPos,m_kColPos))
+			{
+				//cout<<"Blub"<<endl;
+				hit=true;
+				HitPos=m_kColPos;
+				HitNormal=m_kColNormal;
+			}
 		}
 	}
 
@@ -110,7 +114,7 @@ bool CSMech::TestPolygon(Vector3* kVerts,Vector3 kPos1,Vector3 kPos2,float fR)
 	
 	//add objects possition to vertexs
 	for(int i=0;i<3;i++){
-		kNLVerts[i] = (kVerts[i] * m_fScale)  + m_pkPP->GetObject()->GetPos();
+		kNLVerts[i] = ((kVerts[i] /100) * m_fScale)  + m_pkPP->GetObject()->GetPos();
 		
 		
 		
@@ -141,7 +145,7 @@ bool CSMech::TestPolygon(Vector3* kVerts,Vector3 kPos1,Vector3 kPos2,float fR)
 	if(P.LineTest(kPos1 + (-Normal * fR), kPos2 + (-Normal * fR),&m_kColPos)){
 		if(TestSides(kNLVerts,&Normal,m_kColPos,fR))
 		{
-			cout<<"Collision"<<endl;
+			//cout<<"Collision"<<endl;
 			m_kColPos += (Normal*m_fcoloffset) + (Normal * fR);
 			m_kColNormal = Normal;
 			return true;
@@ -179,7 +183,7 @@ bool CSMech::TestSides(Vector3* kVerts,Vector3* pkNormal,Vector3 kPos,float fR)
 	}
 	
 
-	
+/*	
 
 	Render* pkRender = static_cast<Render*>(g_ZFObjSys.GetObjectPtr("Render"));	
 	
@@ -192,7 +196,7 @@ bool CSMech::TestSides(Vector3* kVerts,Vector3* pkNormal,Vector3 kPos,float fR)
 	
 	pkRender->Line(kVerts[1],kVerts[1]+side[2].m_kNormal);
 	pkRender->Line(kVerts[2],kVerts[2]+side[2].m_kNormal);		
-	
+*/	
 	
 	return inside;	
 //	return true;
@@ -255,4 +259,20 @@ bool CSMech::SetUpMech()
 	//everything was ok return true
 	return true;
 */	
+}
+
+Vector3& CSMech::Closest(Vector3& kCurPos,Vector3& OPos1,Vector3& OPos2)
+{
+	if( (kCurPos-OPos1).Length() < (kCurPos-OPos2).Length())
+		return OPos1;
+	else
+		return OPos2;
+}
+
+bool CSMech::Closer(Vector3& kCurPos,Vector3& OPos1,Vector3& OPos2)
+{
+	if( (kCurPos-OPos2).Length() < (kCurPos-OPos1).Length())
+		return true;
+	else
+		return false;
 }

@@ -245,6 +245,11 @@ void PhysicsEngine::HandleCollisions()
 					pkCol->m_kPos1=pkCD->m_kPos1;						
 					pkCol->m_kPos2=pkCD->m_kPos2;						
 											
+											
+						pkSPP=(*itCp)->m_pkPP;	
+						pkCO=pkCol;
+												
+											
 					if(pkCol->m_bChecked==false)
 					{
 						pkCol->m_bChecked=true;
@@ -253,6 +258,8 @@ void PhysicsEngine::HandleCollisions()
 					{
 						pkCol->m_bAdded=true;
 						kCols.push_back(pkCol);
+					
+				
 					}
 					
 					delete pkCD;

@@ -43,6 +43,7 @@ class ENGINE_API CSMech : public CollisionShape
 		bool TestSides(Vector3* kVerts,Vector3* pkNormal,Vector3 kPos,float fR);
 		
 		bool SetUpMech();
+		
 };
 
 
