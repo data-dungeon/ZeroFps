@@ -85,7 +85,7 @@ bool ZMaterial::LoadShader(const char* acFile)
 		}
 	
 	
-		cout<<"shader "<<acFile<<" loaded: found "<<iPass<<" passes"<<endl;
+		//cout<<"shader "<<acFile<<" loaded: found "<<iPass<<" passes"<<endl;
 		return true;
 	}
 	else

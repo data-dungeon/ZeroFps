@@ -468,7 +468,7 @@ void Mad_Modell::Draw_All(int iDrawFlags)
 		m_pkShader->SetPointer(VERTEX_POINTER,GetVerticesPtr());		
 		m_pkShader->SetPointer(NORMAL_POINTER,GetNormalsPtr());				
 		
-		m_kDefaultMat.LoadShader("testshader.shd");
+		m_kDefaultMat.LoadShader("modelshader.shd");
 		
 		m_pkShader->SetDrawMode(TRIANGLES_MODE);
 		m_pkShader->SetNrOfVertexs(GetNumVertices());
