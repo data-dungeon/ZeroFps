@@ -10,7 +10,7 @@
 //////////////////////////////////////////////////////////////////////
 
 P_UnitBuildAI::P_UnitBuildAI() 
-: m_pkUnit(NULL), m_uiCommandID(0)
+: m_pkUnit(NULL), m_uiCommandID(0), m_uiTechLevel(0)
 {
 	strcpy(m_acName,"P_UnitBuildAI");
 	m_iType=PROPERTY_TYPE_NORMAL;
@@ -21,12 +21,15 @@ P_UnitBuildAI::~P_UnitBuildAI()
 {
 	if(!m_kExternalCommands.empty())
 	{
+
 		vector<ExternalCommand*>::iterator kItor = m_kExternalCommands.begin();
 		while(kItor != m_kExternalCommands.end())
 		{
 			delete *kItor;
+			kItor++;
 		}
 		m_kExternalCommands.clear();
+
 	}
 }
 
@@ -41,7 +44,7 @@ bool P_UnitBuildAI::RegisterExternalCommands()
 		while(kItor != m_kStructures.end())
 		{	
 			
-			ExternalCommand* pkTempCommand = new ExternalCommand(this, (int)kItor->ucID);
+			ExternalCommand* pkTempCommand = new ExternalCommand(this, m_uiCommandID);
 		//	m_pkAttackCommand->m_kUnitCommandInfo.m_bNeedDestination = false;
 			pkTempCommand->m_kUnitCommandInfo.m_bNeedArgument = true;
 			strcpy(pkTempCommand->m_kUnitCommandInfo.m_acCommandName, kItor->szName);
@@ -49,7 +52,7 @@ bool P_UnitBuildAI::RegisterExternalCommands()
 			pkTempCommand->m_kUnitCommandInfo.m_iIconIndex = 4;
 			m_pkUnit->RegisterExternalCommand(pkTempCommand);
 			m_kExternalCommands.push_back(pkTempCommand);
-			
+			m_uiCommandID++;
 			kItor++;
 		}
 	return true;
@@ -58,9 +61,14 @@ bool P_UnitBuildAI::RegisterExternalCommands()
 }
 void P_UnitBuildAI::Init()
 {
-	if(ConstructionManager::GetInstance()->GetPossibleBuildings(0, m_kStructures) > 0)//(m_uiTechLevel, m_kStructures) > 0)
+	cout<<"P_UnitBuildAI:m_uiTechLevel:"<<m_uiTechLevel <<endl;
+	if(ConstructionManager::GetInstance()->GetPossibleBuildings(m_uiTechLevel, m_kStructures) > 0)//(m_uiTechLevel, m_kStructures) > 0)
 	{
-		cout<<"P_UnitBuildAI: got the buildings.." <<endl;
+		cout<<"----------------------------------------" <<endl
+			 <<"------------GUBBS MIGHTY DEBUG!---------" <<endl
+			 <<"P_UnitBuildAI: got the buildings.." <<endl
+			 <<"----------------------------------------" <<endl
+			 <<"----------------------------------------" <<endl;
 		if(RegisterExternalCommands())
 			cout<<"P_UnitBuildAI: RegisterExternalCommands worked" <<endl;
 		else 
@@ -68,13 +76,17 @@ void P_UnitBuildAI::Init()
 	} 
 	else
 	{
-		cout<<"P_UnitBuildAI: faild to get the buildnings.." <<endl;
+		cout<<"----------------------------------------" <<endl
+			 <<"------------GUBBS MIGHTY DEBUG!---------" <<endl
+			 <<"P_UnitBuildAI: faild to get the buildnings.." <<endl
+			 <<"----------------------------------------" <<endl
+			 <<"----------------------------------------" <<endl;
 	}
 }
 
 AIBase* P_UnitBuildAI::RunUnitCommand(int iCommandID, int iXDestinaton, int iYDestinaton, int iTarget)
 {
-	bool bSuccess = false;
+	/*bool bSuccess = false;
 	switch(iCommandID)
 	{
 	default:
@@ -83,8 +95,18 @@ AIBase* P_UnitBuildAI::RunUnitCommand(int iCommandID, int iXDestinaton, int iYDe
 	}
 
 	if(bSuccess)
-		cout<<"I am building " <<endl;
-
+		cout<<"I am building " <<endl;*/
+	if(iCommandID<=m_uiCommandID)
+	{
+		bool bSuccess = false;
+		bSuccess = ConstructionManager::GetInstance()->Build(m_kStructures[iCommandID].szName, 
+			Point(iXDestinaton, iYDestinaton));
+			cout<<m_kStructures[iCommandID].szName <<endl;
+		if(bSuccess)
+			cout<<"I am building " <<endl;
+		else cout<<"I want to build but i cant :(" <<endl;
+			
+	}
 
 	return NULL;
 
@@ -104,6 +126,17 @@ vector<PropertyValues> P_UnitBuildAI::GetPropertyValues()
 	kReturn[0].pkValue=(void*)&m_uiTechLevel;
 	return kReturn;
 }
+
+void P_UnitBuildAI::Save(ZFMemPackage* pkPackage)
+{
+	pkPackage->Write((void*)&m_uiTechLevel,sizeof(m_uiTechLevel));
+}
+
+void P_UnitBuildAI::Load(ZFMemPackage* pkPackage)
+{
+	pkPackage->Read((void*)&m_uiTechLevel,sizeof(m_uiTechLevel));
+}
+
 
 COMMON_API Property* Create_P_UnitBuildAI()
 {

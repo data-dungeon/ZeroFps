@@ -40,7 +40,9 @@ private:
 	vector<ExternalCommand*> m_kExternalCommands;
 	int m_uiTechLevel;
 	unsigned int m_uiCommandID;
-	
+//	unsigned int m_uiNrOfBuildings;
+	void Save(ZFMemPackage* pkPackage);
+	void Load(ZFMemPackage* pkPackage);
 };
 	COMMON_API Property* Create_P_UnitBuildAI();
 #endif // !defined(AFX_P_UNITBUILDAI_H__785E2C51_8B9E_4F78_B019_C8C1EAA500EF__INCLUDED_)
