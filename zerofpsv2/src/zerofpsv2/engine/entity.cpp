@@ -923,8 +923,12 @@ void Entity::Load(ZFIoInterface* pkFile,bool bLoadID,bool bLoadChilds)
 	if(strcmp(acTemp,"none") == 0)
 		m_pScriptFileHandle->FreeRes();
 	else
+	{
 		m_pScriptFileHandle->SetRes(string(acTemp));
-	
+		if(!m_pScriptFileHandle->IsValid())
+			ZFWarning("Entity %d have a non valid entity script (%s)", GetEntityID(), acTemp);
+	}
+
 	//nr of propertys
 	int iProps = 0;
 	pkFile->Read(&iProps,sizeof(iProps),1);	

@@ -1725,8 +1725,8 @@ bool EntityManager::LoadZones(string strSaveDir )
 
 	m_iNextEntityID+=50;  //evil hack
 
-	cout<<"Nr of zones  : "<<iNumOfZone<<endl;
-	cout<<"Next objectID: "<<m_iNextEntityID<<endl;
+	//cout<<"Nr of zones  : " << iNumOfZone<<endl;
+	//cout<<"Next objectID: " << m_iNextEntityID<<endl;
 		
 	ZoneData kZData;
 	
@@ -1792,7 +1792,7 @@ bool EntityManager::SaveZones(string strSaveDir)
 	filename+="/zones.dat";
 	
 	
-	cout<<"saving to :"<<filename<<endl;
+	//cout<<"saving to :"<<filename<<endl;
 	
 	ZFVFile kFile;
 	if(!kFile.Open(filename.c_str(),0,true))
@@ -1807,7 +1807,7 @@ bool EntityManager::SaveZones(string strSaveDir)
 	kFile.Write(&iNumOfZone,sizeof(int),1);
    
    // save latest created entityID
-   cout<<"Next id is:"<<m_iNextEntityID<<endl;
+   //cout<<"Next id is:"<<m_iNextEntityID<<endl;
    kFile.Write(&m_iNextEntityID,sizeof(int),1);
 	
 	
@@ -1837,7 +1837,7 @@ bool EntityManager::SaveZones(string strSaveDir)
 
 	kFile.Close();
 
-	cout<<"zones saved"<<endl;
+	//cout<<"zones saved"<<endl;
 	return true;
 }
 
@@ -1853,7 +1853,7 @@ bool EntityManager::SaveTrackers(string strSaveDir)
 	filename+="/trackers.dat";
 	
 	
-	cout<<"Saving trackeres to :"<<filename<<endl;
+	//cout<<"Saving trackeres to :"<<filename<<endl;
 	
 	ZFVFile kFile;
 	if(!kFile.Open(filename.c_str(),0,true))
@@ -1875,7 +1875,7 @@ bool EntityManager::SaveTrackers(string strSaveDir)
 	
 	kFile.Close();
 	
-	cout<<"trackers saved"<<endl;
+	//cout<<"trackers saved"<<endl;
 	
 	return true;
 }
@@ -1892,7 +1892,7 @@ bool EntityManager::LoadTrackers(string strSaveDir)
 	filename+="/trackers.dat";
 	
 	
-	cout<<"Loading trackers from:"<<filename<<endl;
+	//cout<<"Loading trackers from:"<<filename<<endl;
 	
 	ZFVFile kFile;
 	if(!kFile.Open(filename.c_str(),0,false))
@@ -1904,7 +1904,7 @@ bool EntityManager::LoadTrackers(string strSaveDir)
 
 	int iNrOfTrackers;
 	kFile.Read(&iNrOfTrackers,sizeof(iNrOfTrackers),1);
-	cout<<"number of trackers: "<<iNrOfTrackers<<endl;
+	//cout<<"number of trackers: "<<iNrOfTrackers<<endl;
 	
 	for(int i = 0;i<iNrOfTrackers;i++) 
 	{		
@@ -1922,7 +1922,7 @@ bool EntityManager::LoadTrackers(string strSaveDir)
 	
 	kFile.Close();
 	
-	cout<<"trackers loaded"<<endl;
+	//cout<<"trackers loaded"<<endl;
 	
 	return true;
 }
