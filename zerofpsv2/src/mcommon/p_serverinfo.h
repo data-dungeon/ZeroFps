@@ -51,6 +51,7 @@ class MCOMMON_API P_ServerInfo: public Property {
 		bool PlayerExist(string sName);
 		bool PlayerExist(int id);		
 	
+		void MessageCharacter(int iObjectID,string strMessage);
 		void MessagePlayer(int id,string strMessage);
 		void MessagePlayer(const char* czName,string strMessage);
 

@@ -11,6 +11,8 @@
 
 ZFScriptSystem*		MistLandLua::g_pkScript;
 EntityManager*			MistLandLua::g_pkObjMan;
+P_ServerInfo*		  	MistLandLua::g_pkServerInfo;
+
 int						MistLandLua::g_iCurrentObjectID;
 int						MistLandLua::g_iLastCollidedID;
 int						MistLandLua::g_iCurrentPCID = -1;
@@ -23,6 +25,7 @@ void MistLandLua::Init(EntityManager* pkObjMan,ZFScriptSystem* pkScript)
 	g_pkScript = pkScript;
 	g_iCurrentObjectID = -1;
 	g_iLastCollidedID = -1;
+	g_pkServerInfo = NULL;
 	
 	pkScript->ExposeFunction("GetSelfID",					MistLandLua::GetSelfIDLua);	
 	pkScript->ExposeFunction("GetCurrentPCID",			MistLandLua::GetCurrentPCIDLua);		
@@ -36,6 +39,7 @@ void MistLandLua::Init(EntityManager* pkObjMan,ZFScriptSystem* pkScript)
 	pkScript->ExposeFunction("SetVelTo",					MistLandLua::SetVelToLua);			
 
 	pkScript->ExposeFunction("AddAction",					MistLandLua::AddActionLua);			
+	pkScript->ExposeFunction("MessageCaracter",			MistLandLua::MessageCaracterLua);				
 
    // char.stats-scipts
    pkScript->ExposeFunction("RollSkillDice",				MistLandLua::RollSkillDiceLua);			
@@ -317,6 +321,34 @@ int MistLandLua::AddActionLua(lua_State* pkLua)
 	return 0;
 }
 
+int MistLandLua::MessageCaracterLua(lua_State* pkLua)
+{
+	if(g_pkScript->GetNumArgs(pkLua) != 2)
+		return 0;
+	
+	if(!g_pkServerInfo)
+	{	
+		Entity* pkServerI = g_pkObjMan->GetObject("A t_serverinfo.lua");
+		if(pkServerI)
+			g_pkServerInfo = (P_ServerInfo*)pkServerI->GetProperty("P_ServerInfo");
+		
+		if(!g_pkServerInfo)
+			return 0;
+	}
+	
+	int id;
+	double dTemp;
+	g_pkScript->GetArgNumber(pkLua, 0, &dTemp);
+	id = (int)dTemp;
+	
+	char	acEvent[128];
+	g_pkScript->GetArgString(pkLua, 1, acEvent);
+		
+	//send message
+	g_pkServerInfo->MessageCharacter(id,acEvent);
+	
+	return 0;
+}
 
 
 int MistLandLua::SetPSystemLua(lua_State* pkLua)

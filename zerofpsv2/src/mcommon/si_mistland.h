@@ -14,6 +14,7 @@ class PSystemProperty;
 #include "p_ml.h"
 #include <map>
 #include <string>
+#include "p_serverinfo.h"
 
 using namespace std;
 
@@ -21,11 +22,10 @@ namespace MistLandLua
 {
 	extern ZFScriptSystem* 		g_pkScript;
 	extern EntityManager*		g_pkObjMan;
-	
+	extern P_ServerInfo*		  g_pkServerInfo;
+
 	extern int						g_iCurrentObjectID;
 	extern int						g_iLastCollidedID;
-	
-
 	extern int MCOMMON_API 		g_iCurrentPCID;
 
 	void MCOMMON_API Init(EntityManager* pkObjMan,ZFScriptSystem* pkScript);	
@@ -38,8 +38,8 @@ namespace MistLandLua
 	int MCOMMON_API GetClosestObjectLua(lua_State* pkLua);		//(int objectid) return the closest object to the caller or a parameter id
 	int MCOMMON_API RemoveObjectLua(lua_State* pkLua);				//(int objectid) removes the caller or a parameter id
 	int MCOMMON_API SendEventLua(lua_State* pkLua);					//(int objectid,string event) send event to target object
-
 	int MCOMMON_API AddActionLua(lua_State* pkLua);				//(int objectid,string action) add action to action list of object
+	int MCOMMON_API MessageCaracterLua(lua_State* pkLua);				//(int objectid,string message) send a message to caracters controling player
 
 	// ip crap
 	extern map<string,string> MCOMMON_API	g_kServerList;

@@ -215,6 +215,23 @@ PlayerInfo* P_ServerInfo::GetPlayerInfo(int id)
 	return NULL;
 }
 
+void P_ServerInfo::MessageCharacter(int iObjectID,string strMessage)
+{
+	for(int i =0 ;i< m_kPlayers.size();i++)
+	{	
+		for(int j=0;j<m_kPlayers[i].kControl.size();j++)
+		{	
+			//check for object in player kontrol list
+			if(m_kPlayers[i].kControl[i].first == iObjectID)
+			{
+				//check rights 
+				if(m_kPlayers[i].kControl[i].second & PR_CONTROLS) 
+					m_kPlayers[i].kMessages.push(strMessage);	
+			}		
+		}
+	}
+}
+
 
 void P_ServerInfo::MessagePlayer(const char* czName,string strMessage)
 {
