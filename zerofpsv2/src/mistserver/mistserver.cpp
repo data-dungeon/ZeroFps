@@ -168,7 +168,7 @@ void MistServer::Input()
 	
 		if(pkInput->Pressed(KEY_SPACE))
 		{
-			pkObjectMan->CreateObjectFromScriptInZone("data/script/objects/t_blub.lua",pkFps->GetCam()->GetPos() + Get3DMousePos(false)*20);
+			pkObjectMan->CreateObjectFromScriptInZone("data/script/objects/t_test.lua",pkFps->GetCam()->GetPos() + Get3DMousePos(false)*20);
 		}
 	
 		if(pkInput->Pressed(KEY_1)) m_kZoneSize.Set(4,4,4);
@@ -256,7 +256,7 @@ void MistServer::OnServerClientJoin(ZFClient* pkClient,int iConID)
 	pkClient->m_pkObject->AddProperty("P_Primitives3D");	
 	cout << "Now adding tracker to client" << endl;
 	pkClient->m_pkObject->AddProperty("TrackProperty");	
-//	pkClient->m_pkObject->SetUseZones(false);
+	pkClient->m_pkObject->SetUseZones(false);
 
 }
 

@@ -955,7 +955,7 @@ void Object::SetLocalPosV(Vector3 kPos)
 {
 	
 	//check new zone
-/*	if(m_bUseZones)
+	if(m_bUseZones)
 	{
 		if(!m_bZone)
 		{
@@ -964,20 +964,20 @@ void Object::SetLocalPosV(Vector3 kPos)
 				int nZ = m_pkObjectMan->GetZoneIndex(kPos,m_iCurrentZone,false);
 				if(nZ == -1)
 				{
-					cout<<"object tried to move outside zone"<<endl;
+					//cout<<"object tried to move outside zone"<<endl;
 					return;
 				}
 				
 				ZoneData* cz = m_pkObjectMan->GetZoneData(nZ);
 				if(!cz)
 				{
-					cout<<"zone does not exist"<<endl;
+					//cout<<"zone does not exist"<<endl;
 					return;
 				}
 		
 				if(!cz->m_pkZone)
 				{
-					cout<<"object tried to move to a unloaded zone"<<endl;
+					//cout<<"object tried to move to a unloaded zone"<<endl;
 					return;
 				}
 		
@@ -986,7 +986,7 @@ void Object::SetLocalPosV(Vector3 kPos)
 			}
 		}
 	}
-*/
+
 	
 	m_iNetUpdateFlags |= OBJ_NETFLAG_POS;
 	ResetChildsGotData();

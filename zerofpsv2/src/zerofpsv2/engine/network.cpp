@@ -798,7 +798,7 @@ void NetWork::Run()
 			m_RemoteNodes[i].m_iNumOfBytesRecvNetFrame = 0;
 			}
 
-		if(fEngineTime > ( m_RemoteNodes[i].m_fLastMessageTime + ZF_NET_CONNECTION_TIMEOUT )) {
+		if(fEngineTime > ( m_RemoteNodes[i].m_fLastMessageTime + 60 )) {
 			// Time out this connection.
 			m_pkZeroFps->Disconnect(i);
 			m_pkConsole->Printf("Connection to %d timed out.", i);
