@@ -116,25 +116,9 @@ void ZeroEdit::OnInit(void)
 	pkFps->m_bGuiTakeControl = true; 
 	pkFps->ToggleGui(); 
 
-/*	
-	Sound *welcome=new Sound();
-	welcome->m_acFile="file:../data/sound/welcome.wav";
-	welcome->m_kPos.Set(0,10,0);
-	welcome->m_bLoop=true;
-	pkAlSys->AddSound(welcome);
-*/	
-
-/*
-	Plane plan;
-	plan.Set(Vector3(-1,-1,0),Vector3(10,10,0));	
-	Vector3 pos1(0,0,0);
-	Vector3 pos2(1,1,0);	
-	Vector3 res;
-	plan.LineTest(pos1,pos2,&res);	
-	cout<<"resultat: " <<res.x<<" "<<res.y<<" "<<res.z<<endl;
-	
-	exit(1);
-*/
+	// run zeroedit_autoexec.ini
+	if(!pkIni->ExecuteCommands("zeroedit_autoexec.ini"))
+		pkConsole->Printf("No zeroedit_autoexec.ini.ini found");
 
 }
 
@@ -144,13 +128,7 @@ void ZeroEdit::OnIdle(void)
 	pkFps->SetCamera(m_pkCamera);		
 	pkFps->GetCam()->ClearViewPort();	
 
-
-//	pkRender->DrawBox(Vector3(0,10,0),Vector3(pkFps->GetTicks()*100,0,0),Vector3(5,5,5));
-
 	pkObjectMan->Update(PROPERTY_TYPE_RENDER,PROPERTY_SIDE_CLIENT,true);
-		
-	
-		
 
 	SetPointer();
 	DrawMarkers();

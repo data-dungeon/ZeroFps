@@ -46,6 +46,10 @@ void Game::Init()
 
 	InitGui();
 	InitScript();
+	
+	//run autoexec script
+	if(!pkIni->ExecuteCommands("game_autoexec.ini"))
+		pkConsole->Printf("No game_autoexec.ini.ini found");
 }
 
 void Game::OnServerStart(void)
