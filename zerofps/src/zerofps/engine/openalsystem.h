@@ -9,6 +9,8 @@
 #include <string>
 #include "soundbuffermanager.h"
 #include "engine_x.h"
+#include <AL/al.h>
+#include <AL/alut.h>
 
 class ENGINE_API Sound {
 	public:

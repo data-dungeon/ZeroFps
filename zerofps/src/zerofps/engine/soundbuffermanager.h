@@ -2,7 +2,8 @@
 #define _SOUNDBUFFERMANAGER_H_ 
 
 #include "../basic/basic.pkg"
-#include "AL/alut.h"
+#include <AL/alut.h>
+#include <AL/al.h>
 #include <string.h>
 #include <vector>
 #include "engine_x.h"
