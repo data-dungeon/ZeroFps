@@ -263,6 +263,10 @@ SOURCE=..\engine_systems\audio\OggMusic.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\engine_systems\propertys\p_ambientsound.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\engine_systems\propertys\p_heightmap2.cpp
 # End Source File
 # Begin Source File
@@ -488,6 +492,10 @@ SOURCE=.\objectmanager.h
 # Begin Source File
 
 SOURCE=..\engine_systems\audio\oggmusic.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\engine_systems\propertys\p_ambientsound.h
 # End Source File
 # Begin Source File
 

@@ -10,6 +10,7 @@
 #include "../zerofpsv2/engine_systems/common/heightmap.h"
 #include "../zerofpsv2/engine_systems/propertys/madproperty.h"
 #include "../zerofpsv2/engine_systems/propertys/primitives3d.h"
+#include "../zerofpsv2/engine_systems/propertys/p_ambientsound.h"
 #include "../zerofpsv2/engine_systems/propertys/proxyproperty.h"
 #include "../zerofpsv2/gui/zgui.h"
 
@@ -152,6 +153,30 @@ void ZeroTank::OnSystem()
 void ZeroTank::Input()
 {
 	const int PRESSED_KEY = pkInput->GetQueuedKey();
+
+	switch(PRESSED_KEY)
+	{
+	case KEY_F1:
+		pkAudioSys->StartSound("data/sound/dummy.wav", pkFps->GetCam()->GetPos(), Vector3(0,0,1), true);
+		break;
+	case KEY_F5:
+		pkAudioSys->StopSound("data/sound/dummy.wav", pkFps->GetCam()->GetPos());
+		break;
+	case KEY_F2:
+		pkAudioSys->StartSound("data/sound/walk.wav", pkFps->GetCam()->GetPos(), Vector3(0,0,1), true);
+		break;
+	case KEY_F6:
+		pkAudioSys->StopSound("data/sound/walk.wav", pkFps->GetCam()->GetPos());
+		break;
+	case KEY_F9:
+		printf("Num sounds in system = %i\nNum active channels = %i\n",
+			pkAudioSys->GetNumSounds(), pkAudioSys->GetNumActiveChannels());
+		break;
+	case KEY_F10:
+		pkAudioSys->UnloadAll();
+		break;
+	}
+
 
 	int mx,my;
 	pkInput->MouseXY(mx,my);
@@ -385,6 +410,8 @@ newpos = m_pkME->GetLocalPosV();
 	m_pkME->SetLocalRotV(rot);
 	}
 	*/
+
+
 }
 
 void ZeroTank::OnHud(void) 
@@ -616,6 +643,9 @@ void ZeroTank::OnServerStart(void)
 	m_pkGoblinLord->SetWorldPosV ( Vector3 (20,30,20) );
 	m_pkGoblinLord->AttachToClosestZone();
 	m_pkGoblinLord->AddProperty("P_Primitives3D");
+
+	P_AmbientSound* pkSound = (P_AmbientSound*) m_pkGoblinLord->AddProperty("P_AmbientSound");
+	pkSound->SetSound("data/sound/walk.wav");
 
 	m_pkGoblinSlave =  pkObjectMan->CreateObjectByArchType("Goblin");
 	m_pkGoblinSlave->SetWorldPosV ( Vector3 (20,30,20) );

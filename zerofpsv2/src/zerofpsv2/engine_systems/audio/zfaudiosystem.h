@@ -13,6 +13,7 @@
 #include "oggmusic.h"
 
 #define DUMMY_SOUND "/data/sound/dummy.wav"
+#define HEARABLE_DISTANCE 100.0f
 
 class ZFAudioSystem;
 
@@ -141,7 +142,7 @@ private:
 	bool Restart(ZFSoundInfo *pkSound);
 	void Stop(ZFSoundInfo* pkSound);
 	bool Play(ZFSoundInfo* pkSound);
-	void DeleteSound(ZFSoundInfo* pkSound, bool bRemoveFromSystem);
+	bool DeleteSound(ZFSoundInfo* pkSound, bool bRemoveFromSystem);
 	void GetSoundsUsingResource(ZFSoundRes* pkRes, vector<ZFSoundInfo*>& vkSounds);
 	int ModifyResHandlePriority(string strFileName, int mod);
 	int GetResHandlePriority(string strFileName);

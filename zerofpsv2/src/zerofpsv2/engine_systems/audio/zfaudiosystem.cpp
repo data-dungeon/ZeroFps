@@ -211,6 +211,7 @@ bool ZFAudioSystem::StartSound(string strName, Vector3 pos,
 	if(!InitSound(pkSound))
 	{
 		delete pkSound; // delete sound again.
+		printf("Failed to start sound %s\n", strName.c_str());
 		return false;
 	}
 	
@@ -226,15 +227,17 @@ bool ZFAudioSystem::StartSound(string strName, Vector3 pos,
 ///////////////////////////////////////////////////////////////////////////////
 // Leta reda på det närmsta ljudet och ta bort det.
 ///////////////////////////////////////////////////////////////////////////////
-bool ZFAudioSystem::StopSound(string szName, Vector3 pos)
+bool ZFAudioSystem::StopSound(string strName, Vector3 pos)
 {
-	ZFSoundInfo *pkSound = GetClosest(szName.c_str(), pos);
+	ZFSoundInfo *pkSound = GetClosest(strName.c_str(), pos);
 
 	if(pkSound != NULL)
 	{
-		DeleteSound(pkSound, true);
-		return true;
+		if(DeleteSound(pkSound, true))
+			return true;
 	}
+
+	printf("Failed to stop sound %s\n", strName.c_str());
 
 	return false;
 }
@@ -702,7 +705,7 @@ bool ZFAudioSystem::GetSoundWithLowestPriority(string& strRes)
 ///////////////////////////////////////////////////////////////////////////////
 bool ZFAudioSystem::Hearable(ZFSoundInfo* pkSound)
 {
-	if( (pkSound->m_kPos - m_kPos).Length() < 100 ) 
+	if( (pkSound->m_kPos - m_kPos).Length() < HEARABLE_DISTANCE ) 
 		return true;
 
 	return false;
@@ -754,7 +757,7 @@ void ZFAudioSystem::GetSoundsUsingResource(ZFSoundRes* pkResource,
 // Radera ljudkälla (source) sammt eventuellt ljudbuffert.
 // Tar bort ljudet ur systemet om andra argumetet är satt till true.
 ///////////////////////////////////////////////////////////////////////////////
-void ZFAudioSystem::DeleteSound(ZFSoundInfo *pkSound, bool bRemoveFromSystem)
+bool ZFAudioSystem::DeleteSound(ZFSoundInfo *pkSound, bool bRemoveFromSystem)
 {
 	ALenum error;
 
@@ -786,6 +789,14 @@ void ZFAudioSystem::DeleteSound(ZFSoundInfo *pkSound, bool bRemoveFromSystem)
 	}
 	else
 		pkSound->m_pkResource = NULL;
+
+	if( error == AL_NO_ERROR )
+	{
+		printf("stopping sound\n");
+		return true;
+	}
+
+	return false;
 }
 
 
@@ -912,7 +923,6 @@ void ZFAudioSystem::Stop(ZFSoundInfo *pkSound)
 	if(pkSound->m_uiSourceBufferName == NO_SOURCE)
 		return; // already stoped.
 
-	printf("stopping sound\n");
 	if(pkSound->m_bLoop)
 		DeleteSound(pkSound, false);
 	else

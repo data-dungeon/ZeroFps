@@ -255,7 +255,7 @@ void MistClient::Input()
 		}
 	}
 
-		int iPressedKey = pkInput->GetQueuedKey();
+	int iPressedKey = pkInput->GetQueuedKey();
 
 	switch(iPressedKey)
 	{

@@ -978,6 +978,7 @@ void ZeroFps::RegisterPropertys()
 	m_pkPropertyFactory->Register("CrossRenderProperty", Create_CrossRenderProperty);
 	m_pkPropertyFactory->Register("MadProperty", Create_MadProperty);
 	m_pkPropertyFactory->Register("P_Primitives3D", Create_Prim3DProperty);
+	m_pkPropertyFactory->Register("P_AmbientSound", Create_AmbientSound);
 	m_pkPropertyFactory->Register("LightProperty", Create_LightProperty);
 	m_pkPropertyFactory->Register("WaterRenderProperty",Create_WaterRenderProperty);	
 	m_pkPropertyFactory->Register("SkyBoxRenderProperty",Create_SkyBoxRenderProperty);		
