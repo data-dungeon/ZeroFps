@@ -29,7 +29,7 @@ P_Walker::P_Walker()
 	if(fPlayers < 1)
 		fPlayers = 1;
 	
-	fLevel *= 0.40;
+	fLevel *= 0.35;
 	if(fLevel < 1)
 		fLevel = 1;
 			
