@@ -5,7 +5,7 @@
 
 extern "C"  
 {
-	#include <lua.h>
+	#include <lua/lua.h>
 }
 
 #pragma warning (disable :4786)
