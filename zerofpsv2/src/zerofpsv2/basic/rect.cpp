@@ -21,7 +21,7 @@ Rect::~Rect()
 
 }
 
-bool Rect::Inside(int x, int y)
+bool Rect::Inside(int x, int y) const
 {
 	return (x >= Left && x <= Right &&
 		y >= Top && y <= Bottom) ? true : false;

@@ -19,7 +19,7 @@ public:
 	int Bottom;
 
 	Rect Move(int dx, int dy) const; // påverkar inte objektet i sig utan returnerar ett nytt objekt
-	bool Inside(int x, int y);
+	bool Inside(int x, int y) const;
 	bool Inside(Rect d); 
 	Rect Contract(int iPixels) const; // påverkar inte objektet i sig utan returnerar ett nytt objekt
 
