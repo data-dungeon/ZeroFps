@@ -28,11 +28,11 @@ LightProperty::LightProperty()
 */
 
 	m_pkLight = static_cast<Light*>(g_ZFObjSys.GetObjectPtr("Light"));
-	m_pkLight->Add(m_pkLightSource);
 
 	m_iType=PROPERTY_TYPE_RENDER;
 	m_iSide=PROPERTY_SIDE_CLIENT;
 
+	TurnOn();
 }
 
 LightProperty::~LightProperty()

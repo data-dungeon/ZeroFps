@@ -68,6 +68,7 @@ void Light::SetCamera(Vector3 kCamPos) {
 
 void Light::Add(LightSource *kNewLight){
 	m_kLights.push_back(kNewLight);
+
 }
 
 void Light::Remove(LightSource *kLight) {

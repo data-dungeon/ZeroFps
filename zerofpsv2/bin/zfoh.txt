@@ -3,7 +3,9 @@ class object
 		parent object
 		set MadProperty m_kMadFile /data/mad/orc.mad
 		set MadProperty m_fScale 1
-		add CameraProperty
+		add CameraProperty		
+		add LightProperty
+		add LightUpdateProperty
 
 	class body
 		parent object
