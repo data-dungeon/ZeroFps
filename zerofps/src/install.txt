@@ -14,6 +14,11 @@ How to - ZeroFps
 		CVS:		http://www.wincvs.org/
 		SSH:		http://sfsetup.sourceforge.net/#sfsetup
 	Linux:
+ F: Lua	4.0.1
+	Windows:
+		Source code		http://www.lua.org/ftp/lua.tar.gz
+		Precompiled binaries	http://www.tecgraf.puc-rio.br/lua/ftp/binaries/Windows/	
+	Linux:
 
 2: Installera allt man laddat ned.
 	Windows:
