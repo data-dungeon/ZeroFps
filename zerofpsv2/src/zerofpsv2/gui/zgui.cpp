@@ -512,10 +512,13 @@ void ZGui::SetFocus(ZGuiWnd* pkWnd)
 				 m_pkActiveMainWin = (*it);
 
 				 if(bActiveMainWndHaveChanged)
-				 {						 
-					m_iHighestZWndValue++;
-					m_pkActiveMainWin->pkWnd->m_iZValue = m_iHighestZWndValue;
-					m_pkActiveMainWin->iZValue = m_iHighestZWndValue;
+				 {				
+// Kommenterade ut 2004-sep-19
+//					m_iHighestZWndValue++;
+//					m_pkActiveMainWin->pkWnd->m_iZValue = m_iHighestZWndValue;
+//					m_pkActiveMainWin->iZValue = m_iHighestZWndValue;
+/////////////////////////
+
 					m_pkMainWindows.sort(SortZCmp);
 
 					 // Notify the a new window have focus
@@ -1396,7 +1399,12 @@ bool ZGui::OnMouseUpdate(int x, int y, bool bLBnPressed,
 	}
 	else
 	{
-		m_pkActiveMainWin->pkWnd = m_pkCapturedWindow;
+		//m_pkActiveMainWin->pkWnd = m_pkCapturedWindow;
+      if(bLeftButtonDown && m_bLeftButtonDown==false) // annars körs den alltid
+      {
+         SetFocus(m_pkCapturedWindow);
+         printf("Apa\n");
+      }
 	}
 
 	if(m_pkActiveMainWin == NULL)
@@ -1434,7 +1442,7 @@ bool ZGui::OnMouseUpdate(int x, int y, bool bLBnPressed,
 	// Send a Mouse Move Message...
 	static int s_iPrevX=-1;
 	static int s_iPrevY=-1;
-	if(s_iPrevX != x || s_iPrevY != y && ZGuiWnd::m_pkFocusWnd)
+	if((s_iPrevX != x || s_iPrevY != y) && ZGuiWnd::m_pkFocusWnd != NULL)
 	{
 		int* pkParams = new int[3];
 		pkParams[0] = (int) bLeftButtonDown; pkParams[1] = x; pkParams[2] = y;
@@ -1763,6 +1771,12 @@ bool ZGui::PlaceWndFrontBack(ZGuiWnd* pkWnd, bool bFront)
 
 	if(bFront)
 	{
+      if(m_iHighestZWndValue >= iZHigh)
+      {
+         iZHigh = m_iHighestZWndValue + 1;
+         m_iHighestZWndValue = iZHigh;
+      }
+
 		pkMainWnd->iZValue = iZHigh+1;
 		pkMainWnd->pkWnd->m_iZValue = iZHigh+1;
 	}

@@ -107,7 +107,7 @@ public:
 	void SetTextInt(char* szWndResName, int iNumber, bool bResize=false);
 	void SetText(char* szWndResName, char* szText, bool bResize=false);
 
-	bool ShowWnd(char* szWndResName, bool bShow);
+	bool ShowWnd(char* szWndResName, bool bShow, bool bPlaceFront=false, bool bSetCapture=false);
 
 	ZGuiWnd* GetTabPage(char* szTabBox, int iPage);
 	void AddTabPage(char* szTabboxID, char* szPageResName, char* szName);

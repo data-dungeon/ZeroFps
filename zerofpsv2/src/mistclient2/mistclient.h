@@ -25,6 +25,8 @@ class MistClient :public Application, public ZGuiApp {
 		Camera*				m_pkCamera;
 		int					m_iViewFrom;
 
+      vector<pair<string,string> > m_kServerList;
+
 	public:
 		//application virtuals
 		MistClient(char* aName,int iWidth,int iHeight,int iDepth);
@@ -50,6 +52,9 @@ class MistClient :public Application, public ZGuiApp {
 		
 		void RegisterPropertys();
 		void RegisterResources();
+
+      void AddRemoveServer(const char* szName, const char* szSeverIP, bool bAdd=true);
+      void UpdateServerListbox();
 		
 };
 

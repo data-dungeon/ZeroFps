@@ -1185,9 +1185,16 @@ bool ZGuiApp::LoadGuiFromScript(char* szFileName)
 
 bool ZGuiApp::CreateMenu(char* szFileName)
 {
+   int iMenuHeight;
+
+   if(m_pkResMan->Font("defguifont"))
+      iMenuHeight = m_pkResMan->Font("defguifont")->m_iRowHeight + 2;
+   else
+      iMenuHeight = 20;
+
 	// Skapa själva menyn
 	ZGuiMenu* pkMenu = (ZGuiMenu*) CreateWnd(Menu, "MainMenu", "GuiMainWnd", "", 
-		0,0, 800, 20, 0, TopLeft, ResizeWidth);
+		0,0, GetWidth(), iMenuHeight, 0, TopLeft, ResizeWidth);
 
 	// Öppna INI filen
 	ZFIni kINI;
@@ -1332,16 +1339,25 @@ bool ZGuiApp::SORT_FILES::operator()(string x, string y)
 	return (y > x);
 }
 
-bool ZGuiApp::ShowWnd(char* szWndResName, bool bShow)
+bool ZGuiApp::ShowWnd(char* szWndResName, bool bShow, bool bPlaceFront, bool bSetCapture)
 {
 	ZGuiWnd* pkWnd = GetWnd(szWndResName);
 
 	if(pkWnd)
 	{
 		if(bShow)
+      {
 			pkWnd->Show();
+         if(bPlaceFront) m_pkGuiSys->PlaceWndFrontBack(pkWnd, true);
+         if(bSetCapture) m_pkGuiSys->SetCaptureToWnd(pkWnd);
+      }
 		else
+      {
+         if(m_pkGuiSys->GetWndCapture() == pkWnd)
+            m_pkGuiSys->KillWndCapture();
+
 			pkWnd->Hide();
+      }
 
 		return true;
 	}

@@ -199,9 +199,9 @@ ZGuiWnd* ZGResEdit::DeleteWnd(ZGuiWnd *pkWnd)
 
 void ZGResEdit::OnInit()
 {
-	m_pkZFVFileSystem->AddRootPath( string("../data/zgresedit/") ,"data/");
-//	m_pkZFVFileSystem->AddRootPath( string("../data/mistlands/") ,"data/");
-	m_pkZFVFileSystem->AddRootPath( string("../data/dm/") ,"data/");
+	m_pkZFVFileSystem->AddRootPath( string("../datafiles/zgresedit/") ,"data/");
+	m_pkZFVFileSystem->AddRootPath( string("../datafiles/mistlands/") ,"data/");
+	m_pkZFVFileSystem->AddRootPath( string("../datafiles/dm/") ,"data/");
 
 	glEnable(GL_LIGHTING );
 
