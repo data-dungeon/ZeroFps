@@ -283,48 +283,6 @@ void P_Item::Load(ZFIoInterface* pkPackage,int iVersion)
 			break;
 		}							
 	}
-
-// 	if(iVersion == 3)
-// 	{
-// 		pkPackage->Read_Str(m_strName);
-// 		pkPackage->Read_Str(m_strIcon);
-// 		
-// 		pkPackage->Read(m_iSizeX);
-// 		pkPackage->Read(m_iSizeY);		
-// 		pkPackage->Read(m_iType);
-// 		
-// 		pkPackage->Read(m_iStackSize);
-// 		pkPackage->Read(m_iStackMax);		
-// 		
-// 		pkPackage->Read(m_iInContainerID);		
-// 		pkPackage->Read(m_iInContainerPosX);
-// 		pkPackage->Read(m_iInContainerPosY);		
-// 	}
-// 	
-// 	if(iVersion == 2)
-// 	{
-// 		
-// 	}
-// 	
-// 	if(iVersion == 4)
-// 	{
-// 		pkPackage->Read_Str(m_strName);
-// 		pkPackage->Read_Str(m_strIcon);
-// 		
-// 		pkPackage->Read(m_iSizeX);
-// 		pkPackage->Read(m_iSizeY);		
-// 		pkPackage->Read(m_iType);
-// 		
-// 		pkPackage->Read(m_iStackSize);
-// 		pkPackage->Read(m_iStackMax);		
-// 		
-// 		pkPackage->Read(m_iInContainerID);		
-// 		pkPackage->Read(m_iInContainerPosX);
-// 		pkPackage->Read(m_iInContainerPosY);	
-// 	
-// 		pkPackage->Read_Str(m_strBuffName);
-// 	
-// 	}
 }
 
 vector<PropertyValues> P_Item::GetPropertyValues()

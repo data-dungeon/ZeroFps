@@ -239,9 +239,10 @@ void Stats::RemoveOn(Stats* pkTarget)
 void Stats::Save(ZFIoInterface* pkPackage)
 {
 	//stat version
-	static int iVersion = 1;
+	static int iVersion = 2;
 	pkPackage->Write(iVersion);	
 
+	pkPackage->Write(m_kStats.size());
 	for(int i = 0;i<m_kStats.size();i++)
 	{
 		pkPackage->Write_Str(m_kStats[i].m_strName);
@@ -249,7 +250,7 @@ void Stats::Save(ZFIoInterface* pkPackage)
 		pkPackage->Write(m_kStats[i].m_fMod);	
 	}
 
-	pkPackage->Write_Str(string(""));
+	//pkPackage->Write_Str(string(""));
 	
 	
 // 	cout<<"saved stats"<<endl;
@@ -279,6 +280,22 @@ void Stats::Load(ZFIoInterface* pkPackage)
 		}
 	}
 	
+	if(iVersion == 2)
+	{	
+		m_kStats.clear();
+		
+		int iNr;
+		pkPackage->Read(iNr);
+		for(int i =0;i<iNr;i++)
+		{
+			pkPackage->Read_Str(strName);			
+			pkPackage->Read(fValue);
+			pkPackage->Read(fMod);
+			
+			m_kStats.push_back(Stat(strName,fValue,0)); //dont load mod value
+		}
+		
+	}	
 // 	cout<<"loaded stats"<<endl;
 }
 

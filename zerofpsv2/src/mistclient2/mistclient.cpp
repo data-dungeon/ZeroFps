@@ -965,6 +965,8 @@ void MistClient::OnNetworkMessage(NetPacket *pkNetMessage)
 			int iNr;
 			Stat kTemp("",0,0);
 			
+			kInfo.strInfo += string("\n");
+			
 			pkNetMessage->Read(iNr);
 			for(int i = 0;i<iNr;i++)
 			{
@@ -973,6 +975,9 @@ void MistClient::OnNetworkMessage(NetPacket *pkNetMessage)
 				pkNetMessage->Read(kTemp.m_fMod);
 				
 				m_kStats.push_back(kTemp);
+				
+				kInfo.strInfo += string("\n");
+				kInfo.strInfo += kTemp.m_strName + string(" ") + IntToString(int(kTemp.m_fValue+kTemp.m_fMod));
 			}					
 			
 			cout<<"-- Got item info --"<<endl;
