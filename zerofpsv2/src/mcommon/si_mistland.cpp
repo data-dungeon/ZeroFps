@@ -384,6 +384,7 @@ int MistLandLua::SetVelToLua(lua_State* pkLua)
 	Object* o1 = g_pkObjMan->GetObjectByNetWorkID(iId1);
 	Object* o2 = g_pkObjMan->GetObjectByNetWorkID(iId2);
 
+
 	if(o1 && o2)
 	{
 		if(o2->GetWorldPosV() == o1->GetWorldPosV())
@@ -392,6 +393,7 @@ int MistLandLua::SetVelToLua(lua_State* pkLua)
 		Vector3 dir = (o2->GetWorldPosV() - o1->GetWorldPosV()).Unit();
 		
 		o1->GetVel() = dir*fVel;
+		
 	}
 	return 0;
 }
@@ -1965,21 +1967,30 @@ int MistLandLua::GetRandomAttributeLua (lua_State* pkLua)
 
 int MistLandLua::RunScriptLua (lua_State* pkLua)
 {
- 	if( g_pkScript->GetNumArgs(pkLua) == 1 )
+ 	if( g_pkScript->GetNumArgs(pkLua) == 2 )
    {
      	char	acType[128];
 		g_pkScript->GetArgString(pkLua, 0, acType);
-
-      // save current Object ID
-      int iOldObject = g_iCurrentObjectID;
+		
+		double temp;
+		g_pkScript->GetArgNumber(pkLua, 1, &temp);
+ 		int objectid = temp;
+ 
+      
       ZFScriptSystem* pkZFScriptSys = g_pkScript;
-
+		
+		Object* object = g_pkObjMan->GetObjectByNetWorkID(objectid);
+		if(!object)
+		{
+			cout<<"parend object does not exist"<<endl;
+			return 0;
+		}
+		
       // create the new object
       Object* pkNewObj = g_pkObjMan->CreateObjectFromScriptInZone(acType, 
-                         g_pkObjMan->GetObjectByNetWorkID(iOldObject)->GetWorldPosV() );
+                         object->GetWorldPosV() );
 
       // return everything the way it was
-      g_iCurrentObjectID = iOldObject;
       g_pkScript = pkZFScriptSys;
 
       // return the new object´s ID      
