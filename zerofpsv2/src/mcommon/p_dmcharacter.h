@@ -12,8 +12,9 @@
 
 #include "dmcontainer.h"
 
-
 using namespace std;
+
+class P_DMGun;
 
 enum eSTATE 
 { 
@@ -142,8 +143,7 @@ class MCOMMON_API P_DMCharacter: public Property
 		// XP
 		void AddXP(int iXP);
 
-		int GetGun ();
-
+		P_DMGun*	GetGun ();
 		
 		void Init();		
 		void Update();		

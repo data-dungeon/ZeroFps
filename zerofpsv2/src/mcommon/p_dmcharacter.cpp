@@ -237,23 +237,9 @@ void P_DMCharacter::Shoot (Vector3 kLocation)
 	m_kTarget = kLocation;
 
 	// check if character is equipped with at weapon
-	int iWeapID = -1;
-
-	Entity* pkWeapon;
-	P_DMGun* pkP_Gun;
-	// checks gun inventory
-	for ( int y = 0; y < 2; y++ )
-		for ( int x = 0; x < 3; x++ )
-			if ( *m_pkHand->GetItem(x,y) != -1 )
-				iWeapID = *m_pkHand->GetItem(x,y);
 	// no gun found
-	if(iWeapID == -1)
-		return;
-
-	if ( (pkWeapon = m_pkObjMan->GetObjectByNetWorkID ( iWeapID )) == 0 )
-		return;
-
-	if ( (pkP_Gun = (P_DMGun*)pkWeapon->GetProperty ("P_DMGun")) == 0 )
+	P_DMGun* pkP_Gun = GetGun();
+	if ( pkP_Gun == 0 )
 		return;
 
 	if(t - prevSoundPlayTime > 2.0f) // spela max 1 ljud varannan sek
@@ -271,8 +257,8 @@ void P_DMCharacter::Shoot (Vector3 kLocation)
 
 	pkP_Gun->m_iTeam = m_iTeam;
 
-	// bad aim
-	Vector3 kTemp = pkWeapon->GetWorldPosV();
+	// worsen aim with distance
+	Vector3 kTemp = pkP_Gun->GetObject()->GetWorldPosV();
 	float fDist = kLocation.DistanceTo( kTemp );
 
 	// rotate character towards target
@@ -377,10 +363,17 @@ void P_DMCharacter::Load(ZFIoInterface* pkPackage)
 	m_kStats.m_strIcon = temp;
 }
 
+// -------------------------------------------------------------------------------------------
 
 void P_DMCharacter::Update()
 {
 	UpdateOrders();
+
+	// if stopped shooting, change to idle (TODO: hmm, not sure if this is a good way.. :/)
+	if ( P_DMGun* pkGun = GetGun() )
+		if ( pkGun->ReadyToFire() )
+			ChangeState (IDLE);
+
 	
 	if(P_PfPath* pkPF = (P_PfPath*)m_pkObject->GetProperty("P_PfPath"))
 	{
@@ -429,7 +422,7 @@ void P_DMCharacter::Update()
 		}
 	}
 
-	// Check which animation to use
+	// TODO: Check which animation to use depending on velocity and facing direction
 }
 
 // -----------------------------------------------------------------------------------------------
@@ -841,16 +834,21 @@ void P_DMCharacter::DropAllItems()
 	m_pkImplants->DropAll();
 }
 
-int P_DMCharacter::GetGun()
+P_DMGun* P_DMCharacter::GetGun()
 {
-	vector<ContainerInfo> kItems;
+	int iWeapID = -1;
 
-	m_pkHand->GetItemList ( &kItems );
+	// checks gun inventory
+	for ( int y = 0; y < 2; y++ )
+		for ( int x = 0; x < 3; x++ )
+			if ( *m_pkHand->GetItem(x,y) != -1 )
+				iWeapID = *m_pkHand->GetItem(x,y);
 
-	if ( kItems.size() )
-		return kItems.at(0).m_iItemID;
-	else
-		return 0;
+	if ( Entity* pkGun = m_pkObjMan->GetObjectByNetWorkID(iWeapID) )
+		if ( P_DMGun* pkGunP = (P_DMGun*)pkGun->GetProperty("P_DMGun") )
+			return pkGunP;
+
+	return 0;
 }
 
 Property* Create_P_DMCharacter()

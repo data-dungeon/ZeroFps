@@ -695,17 +695,11 @@ int DMLua::GetWeaponRangeLua(lua_State* pkLua)
 
 	if ( P_DMCharacter* pkChar = (P_DMCharacter*)pkEntity->GetProperty("P_DMCharacter") )
 	{
-		int iGunID = pkChar->GetGun();
-
-		if ( iGunID != 0 )
-		{
-			pkEntity = g_pkObjMan->GetObjectByNetWorkID( iGunID );
-			if ( pkEntity )
-			{		
-				g_pkScript->AddReturnValue(pkLua, double(((P_DMGun*)pkEntity->GetProperty("P_DMGun"))->Range()));
-				return 1;
-			}
-		}		
+		if ( P_DMGun* pkGun2 = pkChar->GetGun() )
+		{		
+			g_pkScript->AddReturnValue(pkLua, pkGun2->Range());
+			return 1;
+		}
 	}
 
 
