@@ -22,7 +22,7 @@ CharacterStats::CharacterStats( Entity *pkParent )
 
    m_pkParent = pkParent;
 
-   SetMoveSpeed (5);
+   //SetMoveSpeed (5);
 
 	m_strScriptWhenHit = "";
 

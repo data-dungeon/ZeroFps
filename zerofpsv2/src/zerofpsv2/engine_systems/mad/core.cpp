@@ -249,6 +249,8 @@ void Mad_Core::SetupBonePose()
 
 	int iBoneKeys = m_kBoneAnim[iActiveAnimation].m_kBoneKeyFrames[iStartFrame].m_kBonePose.size();
 
+   //if ( iBoneKeys != m_kSkelleton.size() )
+   //   return;
 
 	for(i=0; i<m_kSkelleton.size(); i++) {
 		// Get Start/End Keys

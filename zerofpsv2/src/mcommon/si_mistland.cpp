@@ -916,9 +916,11 @@ int MistLandLua::SetSkillValueLua (lua_State* pkLua)
    		int iValue = (int)dTemp;
          
  			CharacterProperty* pkCP = (CharacterProperty*)pkObject->GetProperty("P_CharStats");
-         CharacterStats *pkCS = pkCP->GetCharStats();
 
-         pkCS->SetSkill ( (string)acType, iValue );
+         if ( pkCP )
+            pkCP->GetCharStats()->SetSkill ( (string)acType, iValue );
+         else
+            cout << "Error! Tried to use luaFunc SetSkillValue on a object without P_CharStats" << endl;
       }
    }
 
@@ -942,11 +944,12 @@ int MistLandLua::SetAttributeValueLua (lua_State* pkLua)
          g_pkScript->GetArgNumber(pkLua, 1, &dTemp);		
    		int iValue = (int)dTemp;
          
- 			CharacterProperty* pkCP = (CharacterProperty*)pkObject->GetProperty("P_CharStats");
-         CharacterStats *pkCS = pkCP->GetCharStats();
+         CharacterProperty* pkCP = (CharacterProperty*)pkObject->GetProperty("P_CharStats");
 
-         pkCS->SetAttribute ( (string)acType, iValue );
-
+         if ( pkCP )
+            pkCP->GetCharStats()->SetAttribute ( (string)acType, iValue );
+         else
+            cout << "Error! Tried to use luaFunc SetAttributeValue on a object withour P_CharStats!!!" << endl;
 			
       }
    }
@@ -970,9 +973,11 @@ int MistLandLua::SetDataValueLua (lua_State* pkLua)
 			g_pkScript->GetArgString(pkLua, 1, acType2);
          
   			CharacterProperty* pkCP = (CharacterProperty*)pkObject->GetProperty("P_CharStats");
-         CharacterStats *pkCS = pkCP->GetCharStats();
-
-         pkCS->SetData ( (string)acType, (string)acType2 );
+         
+         if ( pkCP )
+            pkCP->GetCharStats()->SetData ( (string)acType, (string)acType2 );
+         else
+            cout << "Error! Tried to use luaFunc SetDataValue on a entity without P_CharStats" << endl;
       }
    }
 
@@ -997,9 +1002,14 @@ int MistLandLua::SetDefenceValueLua (lua_State* pkLua)
    		int iValue = (int)dTemp;
          
   			CharacterProperty* pkCP = (CharacterProperty*)pkObject->GetProperty("P_CharStats");
-         CharacterStats *pkCS = pkCP->GetCharStats();
 
-         pkCS->SetDefenceValue ( (string)acType, iValue );
+         if ( pkCP )
+         {
+            CharacterStats *pkCS = pkCP->GetCharStats();
+            pkCS->SetDefenceValue ( (string)acType, iValue );
+         }
+         else
+            cout << "ERROR! Tried to use Luafunc: SetDefenceValue och object without P_CharStats" << endl;
       }
    }
 
@@ -1024,9 +1034,11 @@ int MistLandLua::SetAttackValueLua (lua_State* pkLua)
    		int iValue = (int)dTemp;
          
   			CharacterProperty* pkCP = (CharacterProperty*)pkObject->GetProperty("P_CharStats");
-         CharacterStats *pkCS = pkCP->GetCharStats();
-
-         pkCS->SetAttackValue ( (string)acType, iValue );
+         
+         if ( pkCP )
+            pkCP->GetCharStats()->SetAttackValue ( (string)acType, iValue );
+         else
+            cout << "Error! Tried to use luaFunc SetAttackValue on a entity without P_CharStats" << endl;
       }
    }
 
