@@ -165,7 +165,7 @@ int DMLua::GetStateLua(lua_State* pkLua)
 		return 0;
 
 	if ( pkChar->GetStats()->m_iLife > 0 )
-		g_pkScript->AddReturnValue(pkLua, double(pkChar->m_iState) );
+		g_pkScript->AddReturnValue(pkLua, double(pkChar->GetState()) );
 	else
 		g_pkScript->AddReturnValue(pkLua, -1);
 
@@ -400,9 +400,24 @@ int DMLua::MoneyLua(lua_State* pkLua)
 
 // ------------------------------------------------------------------------------------------------
 
-// takes entityID (shooter), vector3? (location to fire at)
+// takes entityID (shooter), vector3 (location to fire at)
 int DMLua::FireAtLocationLua(lua_State* pkLua)
 {
+	Entity* pkShotEnt = TestScriptInput (2, pkLua);
+
+	if ( pkShotEnt == 0)
+		return 0;
+
+	double dEntID;
+	g_pkScript->GetArgNumber(pkLua, 0, &dEntID);
+
+	Vector3 kPos;
+	kPos = GetVectorArg(pkLua, 2);
+
+	if ( Entity* pkChar = g_pkObjMan->GetObjectByNetWorkID( int(dEntID) ) )
+		if (P_DMCharacter* pkDMChar = (P_DMCharacter*)pkShotEnt->GetProperty("P_DMCharacter"))
+			pkDMChar->Shoot ( kPos );
+
 	return 0;
 }
 
@@ -768,3 +783,19 @@ int DMLua::SetLeaderOfTeamLua(lua_State* pkLua)
 }
 
 // ------------------------------------------------------------------------------------------
+
+
+
+
+Vector3 DMLua::GetVectorArg(lua_State* pkLua, int iIndex)
+{
+	Vector3 kPos;
+	vector<TABLE_DATA> vkData;
+	g_pkScript->GetArgTable(pkLua, iIndex, vkData);
+	kPos = Vector3(
+		(float) (*(double*) vkData[0].pData),
+		(float) (*(double*) vkData[1].pData),
+		(float) (*(double*) vkData[2].pData));
+	g_pkScript->DeleteTable(vkData);
+	return kPos;
+}

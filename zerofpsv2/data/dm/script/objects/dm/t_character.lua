@@ -12,10 +12,13 @@ function Create()
 end
 
 function FirstRun()
-	SISetHeartRate(SIGetSelfID(),1);
+	SISetHeartRate(SIGetSelfID(),0.6);
 end
 
 function HeartBeat()
+	if HaveOrders(SIGetSelfID()) == 1 then
+		return;
+	end
 
 	--keep near mainAgent
 	mainAgentID = GetVar("MainAgent");
@@ -24,11 +27,23 @@ function HeartBeat()
 	if DistanceTo(selfID, mainAgentID) > 3 then
 		Print("Tjoff");
 		agent_pos = GetEntityPos(mainAgentID);
-		agent_pos[1] = agent_pos[1] + Random(3)-1.5;
-		agent_pos[3] = agent_pos[3] + Random(3)-1.5;
+		agent_pos[1] = agent_pos[1] + Random(4)-2;
+		agent_pos[3] = agent_pos[3] + Random(4)-2;
 		MakePathFind(selfID,agent_pos);
 	end
 	
+	-- if ammo low, reload
+
+	-- if life low, and has healthpack in belt, use it
+
+	-- if mainAgent shoots, imitate (5 = shooting)
+	if GetState(mainAgentID) == 5 then
+		FireAtLocation(  SIGetSelfID(), GetTarget( mainAgentID )  );
+	end
+
+	-- if is under attack, shoot back
+
+	-- if enemy is near, shoot back
 end
 
 function Dead()

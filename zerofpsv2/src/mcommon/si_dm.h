@@ -58,7 +58,6 @@ namespace DMLua
 	int MCOMMON_API SetTeamLua(lua_State* pkLua);
 	int MCOMMON_API GetCharStatsLua(lua_State* pkLua);
 	int MCOMMON_API SetCharStatsLua(lua_State* pkLua);
-	int MCOMMON_API GetStateLua(lua_State* pkLua);
 	int MCOMMON_API SetStateLua(lua_State* pkLua);
 	int MCOMMON_API GetWeaponRangeLua(lua_State* pkLua);
 	int MCOMMON_API HaveOrdersLua(lua_State* pkLua);	
@@ -71,6 +70,9 @@ namespace DMLua
 	// behaviours for characters
 	int MCOMMON_API PanicAreaLua(lua_State* pkLua);
 	int MCOMMON_API CallForHelpLua(lua_State* pkLua);
+	int MCOMMON_API GetStateLua(lua_State* pkLua);
+	int MCOMMON_API GetTargetLua(lua_State* pkLua);
+
 
 	// police functions
 	int MCOMMON_API GetClosestCallerLua(lua_State* pkLua);
@@ -141,6 +143,9 @@ namespace DMLua
 
 	// special gui stuff
 	int HideAllMapIconsLua(lua_State* pkLua);
+
+	// lua "tools"
+	Vector3 MCOMMON_API GetVectorArg(lua_State* pkLua, int iIndex);
 	
 
 };

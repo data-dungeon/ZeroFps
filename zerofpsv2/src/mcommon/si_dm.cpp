@@ -78,6 +78,8 @@ void DMLua::Init(EntityManager* pkObjMan,ZFScriptSystem* pkScript,
 	pkScript->ExposeFunction("AddPatrolPoint", DMLua::AddPatrolPointLua);
 	pkScript->ExposeFunction("Patrol", DMLua::PatrolLua);
 	pkScript->ExposeFunction("ClearPatrolPath", DMLua::ClearPatrolPathLua);
+	pkScript->ExposeFunction("GetState", DMLua::GetStateLua);
+	pkScript->ExposeFunction("GetTarget", DMLua::GetTargetLua);
 	
 	// math
 	pkScript->ExposeFunction("Random", DMLua::RandomLua);
@@ -1096,7 +1098,7 @@ int DMLua::PanicAreaLua(lua_State* pkLua)
 			// check distance
 			double dDist = kObj[i]->GetWorldPosV().DistanceTo(kObjPos);
 
-			if ( dDist <= dRadie && pkChar->m_iState != PANIC && pkChar->m_iState != DEAD && pkChar->m_iTeam == 1)
+			if ( dDist <= dRadie && pkChar->GetState() != PANIC && pkChar->GetState() != DEAD && pkChar->m_iTeam == 1)
 				pkChar->ChangeState(PANIC);
 
 		}

@@ -206,8 +206,8 @@ function GUICreate()
 	CreateWnd(4,"GamePlayInfoLabel","GamePlayScreen","Return to base! Mission done.",150,470,400,22,0,0,0)
 	ChangeSkin("GamePlayInfoLabel","Skin25","Label")
 
-	CreateWnd(4,"infotext","GamePlayScreen","Testtjoff",120,20,400,22,0,0,0)
-	ChangeSkin("infotext","Skin25","Label")
+	CreateWnd(5,"infotext","GamePlayScreen","Testtjoff",120,20,400,22,0,0,0)
+	ChangeSkin("infotext","Skin25","Listbox")
 
 	--
 	--   quickitems..

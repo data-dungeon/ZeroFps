@@ -1,6 +1,7 @@
 #include "si_dm.h"
 #include "../zerofpsv2/engine/p_pfpath.h" 
 #include "p_dmcharacter.h"
+#include "p_dmgun.h"
 
 int DMLua::HavePathLua(lua_State* pkLua)
 {
@@ -262,6 +263,50 @@ int DMLua::HaveOrdersLua(lua_State* pkLua)
 
 	g_pkScript->AddReturnValue(pkLua, iHasOrders);
 	return 1;
+}
+
+// ------------------------------------------------------------------------------------------------
+
+int DMLua::GetTargetLua(lua_State* pkLua)
+{
+	if(g_pkScript->GetNumArgs(pkLua) == 1)
+	{
+		double dId;
+		
+		g_pkScript->GetArgNumber(pkLua, 0, &dId);				
+		
+		Entity* pkEnt = g_pkObjMan->GetObjectByNetWorkID((int)dId);
+		if(pkEnt)
+			if (P_DMCharacter* pkDMChar = (P_DMCharacter*)pkEnt->GetProperty("P_DMCharacter"))
+			{
+				Vector3 kPos = pkDMChar->m_kTarget;
+
+				vector<TABLE_DATA> vkData;
+
+				TABLE_DATA temp;
+
+				temp.bNumber = true;
+				temp.pData = new double;
+				(*(double*) temp.pData) = kPos.x;
+				vkData.push_back(temp);
+
+				temp.bNumber = true;
+				temp.pData = new double;
+				(*(double*) temp.pData) = kPos.y;
+				vkData.push_back(temp);
+
+				temp.bNumber = true;
+				temp.pData = new double;
+				(*(double*) temp.pData) = kPos.z;
+				vkData.push_back(temp);
+
+				g_pkScript->AddReturnValueTable(pkLua, vkData);
+				return 1;
+			}		
+	}
+
+
+	return 0;
 }
 
 // ------------------------------------------------------------------------------------------------

@@ -56,6 +56,7 @@ bool P_DMGun::Fire(Vector3 kTarget)
 	// update target position
 	Vector3 kTemp = m_pkObject->GetWorldPosV();
 	m_fTargetDist = kTarget.DistanceTo(kTemp);
+
 	m_kDir = kTarget - (m_pkObject->GetWorldPosV() + m_kGunOffset);
 
 	if ( m_bFireing )

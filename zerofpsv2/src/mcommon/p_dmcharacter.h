@@ -19,9 +19,10 @@ enum eSTATE
 { 
 	IDLE			= 0, 
 	DEAD			= 1, 
-	CROUCH		= 2, 
+	CROUCH			= 2, 
 	PANIC			= 3, 
-	AGGRESIVE	= 4,
+	AGGRESIVE		= 4,
+	SHOOTING		= 5
 };
 
 class MCOMMON_API DMCharacterStats
@@ -69,7 +70,8 @@ class MCOMMON_API DMOrder
 		int		m_iEntityID;
 };
 
-class MCOMMON_API P_DMCharacter: public Property {
+class MCOMMON_API P_DMCharacter: public Property 
+{
 	private:
 		vector<PropertyValues> GetPropertyValues();
 	
@@ -85,6 +87,8 @@ class MCOMMON_API P_DMCharacter: public Property {
 		void MakeStringLowerCase(string& s);
 		void UpdateOrders();
 		bool HandleOrder(DMOrder* pkOrder,bool bNew);
+		
+		int					m_iState; // dead, crouching, shooting, idle..etc
 
 	public:
 		//item slots
@@ -96,7 +100,9 @@ class MCOMMON_API P_DMCharacter: public Property {
 
 		int					m_iLeaderOfTeam; // value is leader of that team. -1 is no leader and is def.
 		int					m_iTeam;
-		int					m_iState; // dead, crouching, shooting, idle..etc
+		int	GetState()		{ return m_iState; }
+
+		Vector3				m_kTarget; // shooting target
 
 		vector<string> m_vkMoveSounds;	// fått en action att gå någonstans
 		vector<string> m_vkSelectSounds;		// har blivit markerad

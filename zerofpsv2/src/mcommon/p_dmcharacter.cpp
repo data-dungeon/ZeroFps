@@ -234,36 +234,27 @@ void P_DMCharacter::Shoot (Vector3 kLocation)
 
 	static float prevSoundPlayTime = 0;
 
-	// check if character is equipped with at weapon
+	m_kTarget = kLocation;
 
+	// check if character is equipped with at weapon
 	int iWeapID = -1;
 
 	Entity* pkWeapon;
 	P_DMGun* pkP_Gun;
-
+	// checks gun inventory
 	for ( int y = 0; y < 2; y++ )
 		for ( int x = 0; x < 3; x++ )
 			if ( *m_pkHand->GetItem(x,y) != -1 )
 				iWeapID = *m_pkHand->GetItem(x,y);
-
+	// no gun found
 	if(iWeapID == -1)
 		return;
 
-	pkWeapon = m_pkObjMan->GetObjectByNetWorkID ( iWeapID );
-
-	if ( pkWeapon == 0 )
-	{
-		//cout << "Warning! P_DMCharacter::Shoot: Tried to shoot without a weapon!" << endl;
+	if ( (pkWeapon = m_pkObjMan->GetObjectByNetWorkID ( iWeapID )) == 0 )
 		return;
-	}
 
-	pkP_Gun = (P_DMGun*)pkWeapon->GetProperty ("P_DMGun");
-
-	if ( pkP_Gun == 0)
-	{
-		//cout << "Error! P_DMCharacter::Shoot: Tried to shoot with a non-weapon!" << endl;
+	if ( (pkP_Gun = (P_DMGun*)pkWeapon->GetProperty ("P_DMGun")) == 0 )
 		return;
-	}
 
 	if(t - prevSoundPlayTime > 2.0f) // spela max 1 ljud varannan sek
 	{
@@ -320,6 +311,7 @@ void P_DMCharacter::Shoot (Vector3 kLocation)
 
 		pkP_Gun->Fire (kLocation);
 
+		ChangeState(SHOOTING);
 	}
 
 }
@@ -710,11 +702,12 @@ bool P_DMCharacter::HandleOrder(DMOrder* pkOrder,bool bNew)
 				
 					//doing order
 					if(pkPF->HavePath())
-					{										
 						return false;					
-					}
 					else
+					{
+						ChangeState(IDLE);
 						return true; //order complete
+					}
 				}			
 				break;
 			}
@@ -801,9 +794,9 @@ bool P_DMCharacter::HandleOrder(DMOrder* pkOrder,bool bNew)
 		case eAttack:
 			{
 				Shoot(pkOrder->m_kPosition);
+				ChangeState(SHOOTING);
 			
-				return true;
-			
+				return true;			
 				break;
 			}
 	}
