@@ -110,12 +110,34 @@ void DarkMetropolis::GUI_OnCommand(int iID, bool bRMouseBnClick,
 		else
 		if(strClickName == "LoadNewGameBn")
 		{
-
+			GUI_CreateLoadInterface();
 		}
 		else
 		if(strClickName == "QuitBn")
 		{
 			m_pkFps->QuitEngine();
+		}
+	}
+	else
+	if(strMainWnd == "LoadListWnd")
+	{
+		if(strClickName == "LoadListCancelBn")
+		{
+			pkGui->KillWndCapture();
+			ShowWnd("LoadListWnd", false);
+		}
+		else
+		if(strClickName == "LoadListOKBn")
+		{
+			char* szClanName = GetSelItem("LoadListLB");
+
+			if(szClanName && strlen(szClanName) > 0)
+			{
+				pkGui->KillWndCapture();
+				ShowWnd("LoadListWnd", false);
+				ShowWnd("DMStartWnd", false);
+				GUI_NewGame(szClanName, "red");
+			}
 		}
 	}
 	else
@@ -125,32 +147,11 @@ void DarkMetropolis::GUI_OnCommand(int iID, bool bRMouseBnClick,
 		{
 			if(!strlen(GetWnd("ClanNameEB")->GetText()) == 0)
 			{			
-				//start game
-				if(StartNewGame(GetWnd("ClanNameEB")->GetText(),
-					GetWnd("TeamColorCB")->GetText()))
-				{				
-					LoadGuiFromScript(m_pkScript,"data/script/gui/dm_ingame.lua");
-					pkMainWnd->Hide();
+				char* szClanName = GetWnd("ClanNameEB")->GetText();
+				char* szTeamColor = GetWnd("TeamColorCB")->GetText();
 
-					char* szWndToHide[] =
-					{
-						"GamePlayChar1Wnd", "GamePlayChar2Wnd", 
-						"GamePlayChar3Wnd", "GamePlayChar4Wnd", 
-						"GamePlayChar5Wnd", "GamePlayPanelWnd",
-						"GamePlayInfoWnd", "MembersWnd",
-						"MissionWnd", "BriefingWnd",
-						"BuyWnd", "SellWnd",
-					};
-
-					for(int i=0; i<sizeof(szWndToHide)/sizeof(szWndToHide[1]); i++)
-						ShowWnd(szWndToHide[i], false);
-					
-				}
-				else
-				{
-					//här fär du gärna lägga till något klagomål på att en 
-					//clan med det namnet redan fins				
-				}
+				pkMainWnd->Hide();
+				GUI_NewGame(szClanName, szTeamColor);
 			}
 		}
 		else
@@ -322,4 +323,68 @@ void DarkMetropolis::GUI_OnSelectCB(int ListBoxID, int iItemIndex,
 
 void DarkMetropolis::GUI_OnKeyPress(int iKey, ZGuiWnd *pkWnd)
 {
+}
+
+void DarkMetropolis::GUI_CreateLoadInterface()
+{
+	ZGuiWnd* pkLoadListWnd = CreateWnd(Wnd, "LoadListWnd", "GuiMainWnd", 
+		"", 800/2-150, 50, 300, 400, 0);
+
+	ZGuiWnd* pkTitle = CreateWnd(Label, "LoadListTitle", "LoadListWnd", 
+		"Select your clan", 0, 0, 300, 20, 0);
+
+	pkTitle->SetSkin(new ZGuiSkin());
+	pkTitle->GetSkin()->m_afBkColor[0] = 0.63;
+	pkTitle->GetSkin()->m_afBkColor[1] = 0.5f;
+	pkTitle->GetSkin()->m_afBkColor[2] = 1;
+
+	ZGuiWnd* pkLoadList = CreateWnd(Listbox, "LoadListLB", "LoadListWnd", 
+		"", 8, 28, 300-16, 400-60-28, 0);
+
+	ZGuiWnd* pkOK = CreateWnd(Button, "LoadListOKBn", "LoadListWnd", 
+		"OK", 50, 400-60+20, 60, 20, 0);
+
+	ZGuiWnd* pkCancel = CreateWnd(Button, "LoadListCancelBn", "LoadListWnd", 
+		"Cacel", 200, 400-60+20, 60, 20, 0);
+	
+	pkGui->SetCaptureToWnd(pkLoadListWnd);
+
+	ClearListbox("LoadListLB");
+
+	vector<string> files;
+	if(m_pkBasicFS->ListDir(&files, m_strSaveDirectory.c_str(), true))
+	{
+		for(int i=0; i<files.size(); i++)
+		{
+			if(files[i] != string(".."))
+				AddListItem("LoadListLB", (char*)files[i].c_str());
+		}
+	}
+}
+
+void DarkMetropolis::GUI_NewGame(char* szClanName, char* szTeamColor)
+{
+	//start game
+	if(StartNewGame(szClanName, szTeamColor))
+	{				
+		LoadGuiFromScript(m_pkScript,"data/script/gui/dm_ingame.lua");
+		
+		char* szWndToHide[] =
+		{
+			"GamePlayChar1Wnd", "GamePlayChar2Wnd", 
+			"GamePlayChar3Wnd", "GamePlayChar4Wnd", 
+			"GamePlayChar5Wnd", "GamePlayPanelWnd",
+			"GamePlayInfoWnd", "MembersWnd",
+			"MissionWnd", "BriefingWnd",
+			"BuyWnd", "SellWnd",
+		};
+
+		for(int i=0; i<sizeof(szWndToHide)/sizeof(szWndToHide[1]); i++)
+			ShowWnd(szWndToHide[i], false);					
+	}
+	else
+	{
+		//här fär du gärna lägga till något klagomål på att en 
+		//clan med det namnet redan fins				
+	}
 }

@@ -65,6 +65,9 @@ class DarkMetropolis : public Application, public ZGuiApp
 		bool StartNewGame(string strClanName,string strClanColor);
 		bool LoadGame(string strClanName);
 		void SaveGame();
+
+		void GUI_CreateLoadInterface();
+		void GUI_NewGame(char* szClanName, char* szTeamColor);
 	
 	public:
 		DarkMetropolis(char* aName,int iWidth,int iHeight,int iDepth);

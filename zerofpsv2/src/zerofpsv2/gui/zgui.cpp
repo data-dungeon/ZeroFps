@@ -475,8 +475,13 @@ bool ZGui::OnMouseUpdate(int x, int y, bool bLBnPressed,
 	
 	ZGuiWnd* pkFocusWindow;
 	
-	if(m_pkCapturedWindow == NULL)
+	// Kolla vilken kontroll som har klickats, men inte om
+	// en kontroll är captured och ej är ett fönster.
+	if(m_pkCapturedWindow == NULL || (m_pkCapturedWindow != NULL && 
+		typeid(*m_pkCapturedWindow) == typeid(ZGuiWnd)))
+	{
 		pkFocusWindow = m_pkActiveMainWin->pkWnd->Find(x,y);
+	}
 	else 
 		pkFocusWindow = m_pkCapturedWindow;
 	

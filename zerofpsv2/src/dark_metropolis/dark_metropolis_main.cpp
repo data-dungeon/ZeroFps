@@ -41,7 +41,7 @@ void DarkMetropolis::OnInit()
 	m_strSaveDirectory = "clans/";
 	
 	Register_Cmd("load",FID_LOAD);			
-	Register_Cmd("save",FID_SAVE);		
+	Register_Cmd("save",FID_SAVE);	
 
 
 	m_pkLight->SetLighting(true);
