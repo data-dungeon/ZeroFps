@@ -168,6 +168,8 @@ void P_DMCharacter::Damage(int iType,int iDmg)
 	if(m_kStats.m_iLife <= 0)
 	{
 		cout<<"ARRRGGg *dead*"<<endl;		
+		m_pkAudioSys->StartSound("data/sound/death/death9.wav", 
+			m_pkObject->GetWorldPosV());
 		
 		if(P_ScriptInterface* pkSi = (P_ScriptInterface*)m_pkObject->GetProperty("P_ScriptInterface"))
 		{

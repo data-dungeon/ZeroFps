@@ -21,7 +21,7 @@ class MCOMMON_API DMCharacterStats
 	public:
 		string	m_strName;
 		string	m_strIcon; // porträtt
-	
+		
 		int		m_iLife;
 		int		m_iMaxLife;
 
