@@ -99,6 +99,7 @@ void P_Mad::SetBase(const char* acName)
 void P_Mad::SetAnimation(char* szName, float fStartTime)
 {
 	PlayAnimation(szName,fStartTime);
+	Mad_Modell::SetNextAnimation(-1);
 	SetNetUpdateFlag(true);	
 }
 
@@ -175,7 +176,6 @@ void P_Mad::PackFrom(NetPacket* pkNetPacket, int iConnectionID )
 	pkNetPacket->Read( iNewNextAnim );
 	if(iNewNextAnim != m_iNextAnimation)
 		Mad_Modell::SetNextAnimation(iNewNextAnim);
-
 
 	unsigned char ucNumOfMesh;
 	int iMesh;

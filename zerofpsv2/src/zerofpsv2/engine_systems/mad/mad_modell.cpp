@@ -190,7 +190,12 @@ void Mad_Modell::SetScale(float fScale)
 void	Mad_Modell::SetNextAnimation(int iAnimNum)
 {
 	m_iNextAnimation = iAnimNum;
-	SetLoopedStatus(false);
+	
+	if(iAnimNum != -1)
+		SetLoopedStatus(false);
+	else
+		SetLoopedStatus(true);
+	
 }
 
 void Mad_Modell::SetNextAnimation(char* szName)

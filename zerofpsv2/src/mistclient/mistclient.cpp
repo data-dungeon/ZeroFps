@@ -516,7 +516,6 @@ void MistClient::Input()
 			pkGui->SetFocus(GetWnd("PanelBkWnd")); // set focus to panel (very importent, crash if not)
 		}
 	}
-
 }
 
 void MistClient::OnHud(void) 
