@@ -296,6 +296,8 @@ void InventoryDlg::OpenContainerWnd(int slots_horz, int slots_vert)
 		rcInventory.Left - MAX_WIDTH - bdsize + MAX_WIDTH, 
 		rcInventory.Top + bdsize-20,true,true);
 
+	g_kMistClient.GetWnd("ContainerCloseButton")->Show();
+
 	int current_slot_x=0, current_slot_y=0;
 	
 	for(list<ZGuiWnd*>::iterator it=kChilds.begin(); it!=kChilds.end(); it++)
