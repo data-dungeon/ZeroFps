@@ -52,7 +52,7 @@ private:
 	bool CreateWindows();
 	bool InitSkins();
 
-	ZGuiWnd* Get(string szName);
+	ZGuiWnd* Get(char* strName);
 
 public:
 

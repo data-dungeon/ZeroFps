@@ -165,8 +165,7 @@ bool Gui::WndProc( ZGuiWnd* pkWindow, unsigned int uiMessage, int iNumberOfParam
 							m_pkFileDlgbox = NULL;
 						}
 
-						m_pkFileDlgbox = new FileOpenDlg(this, m_pkEdit->pkFps->m_pkBasicFS,
-							WINPROC, DIRECTORIES_ONLY | DISALLOW_DIR_CHANGE);
+						m_pkFileDlgbox = new FileOpenDlg(this, m_pkEdit->pkFps->m_pkBasicFS, WINPROC);
 					}
 					break;
 
@@ -440,18 +439,18 @@ bool Gui::Register(ZGuiFont *pkFont, char* strName)
 	return (m_pkEdit->pkGuiMan->Add(string(strName), pkFont) != NULL);
 }
 
-ZGuiWnd* Gui::Get(string szName)
+ZGuiWnd* Gui::Get(char* strName)
 {
-	return m_pkEdit->pkGuiMan->Wnd(szName);
+	return m_pkEdit->pkGuiMan->Wnd(string(strName));
 }
 
 void Gui::OnOpenEditProperty()
 {
-	ZGuiWnd* pkPropertysCB = Get(string("PropertyCB"));
-	ZGuiWnd* pkNameEB = Get(string("ObjectNameEB"));
-	ZGuiWnd* pkPosXEB = Get(string("ObjectPosXEB"));
-	ZGuiWnd* pkPosYEB = Get(string("ObjectPosYEB"));
-	ZGuiWnd* pkPosZEB = Get(string("ObjectPosZEB"));
+	ZGuiWnd* pkPropertysCB = Get("PropertyCB");
+	ZGuiWnd* pkNameEB = Get("ObjectNameEB");
+	ZGuiWnd* pkPosXEB = Get("ObjectPosXEB");
+	ZGuiWnd* pkPosYEB = Get("ObjectPosYEB");
+	ZGuiWnd* pkPosZEB = Get("ObjectPosZEB");
 
 	if(pkPropertysCB == NULL)
 	{
@@ -496,5 +495,12 @@ void Gui::OnOpenEditProperty()
 
 bool Gui::OnCloseEditProperty(bool bSave)
 {
+	ZGuiWnd* pkNameEB = Get("ObjectNameEB");
+
+/*	if(pkNameEB)
+	{
+		char strText[512];
+		pkNameEB->GetText(strText);
+	}*/
 	return true;
 }

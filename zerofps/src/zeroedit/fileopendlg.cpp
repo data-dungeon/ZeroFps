@@ -16,10 +16,10 @@ extern ZeroEdit Editor;
 static bool OPENFILEPROC( ZGuiWnd* pkWindow, unsigned int uiMessage, int iNumberOfParams, void *pkParams ){
 	return Editor.m_pkGui->m_pkFileDlgbox->DlgProc(pkWindow, uiMessage, iNumberOfParams, pkParams); }
 
-FileOpenDlg::FileOpenDlg(Gui* pkGui, ZFBasicFS* pkBasicFS, callback cb, 
-						 bitset<NUMBER_OF_FLAGS> flags)
+FileOpenDlg::FileOpenDlg(Gui* pkGui, ZFBasicFS* pkBasicFS, callback cb, bitset<NUMBER_OF_FLAGS> flags)
 {
-	m_vkBitParams = flags;
+	for(unsigned int i=0; i<flags.size(); i++)
+		m_vkBitParams.set(flags[i]);
 
 	m_szSearchPath.reserve(1024);
 	m_szCurrentDir.reserve(128);
@@ -200,7 +200,11 @@ bool FileOpenDlg::FillPathList(ZGuiListbox* pkListbox, string strDir)
 	}
 
 	vector<string> vkFiles;
-	m_pkBasicFS->ListDir(&vkFiles, strDir.c_str() );
+
+	if(m_vkBitParams.test(DIRECTORIES_ONLY))
+		m_pkBasicFS->ListDir(&vkFiles, strDir.c_str(), true );
+	else
+		m_pkBasicFS->ListDir(&vkFiles, strDir.c_str() );
 
 	pkListbox->RemoveAllItems();
 
@@ -209,20 +213,8 @@ bool FileOpenDlg::FillPathList(ZGuiListbox* pkListbox, string strDir)
 		char name[450];
 		for( unsigned int i=0; i<vkFiles.size(); i++)
 		{
-			if(m_bListDirOnly == false)
-			{
-				sprintf(name, "%s", vkFiles[i].c_str());	
-				pkListbox->AddItem(name, i); 
-			}
-			else
-			{
-				if( vkFiles[i].find(".") == string::npos ||
-					vkFiles[i].find("..") != string::npos)
-				{
-					sprintf(name, "%s", vkFiles[i].c_str());	
-					pkListbox->AddItem(name, i); 
-				}
-			}
+			sprintf(name, "%s", vkFiles[i].c_str());	
+			pkListbox->AddItem(name, i); 
 		}
 	}
 	else
