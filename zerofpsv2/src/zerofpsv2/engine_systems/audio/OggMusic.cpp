@@ -58,6 +58,10 @@ bool OggMusic::StartUp()
 		cout<< "error generating buffers!" <<endl;
 	}
 	alGenSources(1, &m_ALuiSource);
+	if (alGetError()!=AL_NO_ERROR)
+	{
+		cout<< "error generating source!" <<endl;
+	}
 	
 	
 	
@@ -67,8 +71,9 @@ bool OggMusic::StartUp()
 
 	if (alGetError()!=AL_NO_ERROR)
 	{
-		cout<<"error generating sources!" <<endl;
+		cout<<"error settingup sources!" <<endl;
 	}
+
 
 //	if((SDL_Init(SDL_INIT_TIMER)==-1))  
 //       cout<<"Could not initialize SDL:"<< SDL_GetError();

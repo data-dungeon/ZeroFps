@@ -130,7 +130,7 @@ void Render::DrawSkyBox(Vector3 CamPos,Vector3 kHead,int iHor,int iTop) {
 	else
 		fYpos=0;
 	
-	fYpos=0;
+	//fYpos=0;
 
 	glPushMatrix();
 	glPushAttrib(GL_LIGHTING_BIT|GL_FOG_BIT);

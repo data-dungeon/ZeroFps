@@ -125,7 +125,7 @@ void MistServer::Init()
 	memset(kSkin.m_afBorderColor, 0, sizeof(float)*3);
 	pkGui->GetToolTip()->SetSkin(kSkin);*/
 	
-	pkInput->ToggleGrab(true);
+	//pkInput->ToggleGrab(true);
 
  	pkFps->SetCamera(m_pkCamera);		
 
@@ -444,7 +444,7 @@ void MistServer::OnServerStart(void)
 		m_pkCameraObject->GetSave() = false;
 		
 		P_SkyBoxRender* sb = (P_SkyBoxRender*)m_pkCameraObject->AddProperty("P_SkyBoxRender");
-		sb->SetTexture("data/textures/env/plainsky/sky","mode6");
+		sb->SetTexture("data/textures/env/sky1.bmp","data/textures/env/sky2.bmp");
 		
 		P_Enviroment* pe = (P_Enviroment*)m_pkCameraObject->AddProperty("P_Enviroment");
 		pe->SetEnable(true);
