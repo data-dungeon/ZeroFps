@@ -1612,6 +1612,8 @@ bool ZGui::OnMouseUpdate(int x, int y, bool bLBnPressed,
 
 		if(pkFocusWindow && ZGuiWnd::m_pkWndClicked != NULL)
 		{
+			printf("pkFocusWindow = %s\n", pkFocusWindow->GetName());
+
 			// Informera fönstret innan att det har tappat fokus.
 			if(ZGuiWnd::m_pkWndUnderCursor && (bLeftReleased || 
 				(pkFocusWindow->m_bAcceptRightClicks && bRightReleased) ))

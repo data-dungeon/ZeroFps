@@ -6,6 +6,8 @@
 #include <list>
 #include "../zerofpsv2/engine/application.h"
 #include "../zerofpsv2/gui/zgui.h"
+#include "../zerofpsv2/gui/zguiresourcemanager.h"
+#include "../zerofpsv2/basic/zguifont.h"
 
 #include "../mcommon/si_mistland.h"
 #include "../mcommon/p_enviroment.h"
@@ -41,6 +43,7 @@ class MistClient :public Application, public ZGuiApp {
 		void Say(string strMsg);
 
       bool NameIPFromServerList(string& strName, string& strIP);
+	  void ToogleChatWnd(bool bOpen);
 		
 	public:
 		//application virtuals
@@ -66,6 +69,7 @@ class MistClient :public Application, public ZGuiApp {
 
       void AddRemoveServer(const char* szName, const char* szSeverIP, bool bAdd=true);
       void UpdateServerListbox();
+	  void AddStringToChatBox(string strMsg);
 
 		void RunCommand(int cmdid, const CmdArgument* kCommand);
 		

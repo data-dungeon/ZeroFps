@@ -1348,7 +1348,7 @@ bool ZGuiApp::ShowWnd(char* szWndResName, bool bShow, bool bPlaceFront, bool bSe
 		if(bShow)
       {
 			pkWnd->Show();
-         if(bPlaceFront) m_pkGuiSys->PlaceWndFrontBack(pkWnd, true);
+         if(bPlaceFront) {m_pkGuiSys->PlaceWndFrontBack(pkWnd, true); m_pkGuiSys->SetFocus(pkWnd); }
          if(bSetCapture) m_pkGuiSys->SetCaptureToWnd(pkWnd);
       }
 		else

@@ -15,8 +15,6 @@
 #include "../zerofpsv2/engine_systems/script_interfaces/si_gui.h"
 #include "../mcommon/p_arcadecharacter.h"
 #include "../mcommon/ml_netmessages.h"
-#include "../zerofpsv2/gui/zguiresourcemanager.h"
-#include "../zerofpsv2/basic/zguifont.h"
 
 MistClient g_kMistClient("MistClient",0,0,0);
 
