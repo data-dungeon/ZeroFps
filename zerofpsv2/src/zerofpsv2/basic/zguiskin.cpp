@@ -2,12 +2,11 @@
 //
 ///////////////////////////////////////////////////////////////////////////////
 
-#include <string.h>
 #include <SDL/SDL.h>
-//using namespace std;
-
+#include "zfvfs.h"
 #include "zguiskin.h"
 
+const ANIMATION_HEADER_SIZE = 17;
 int g_iZIFAnimTexIDCounter=0; // ökas upp för varje animation som skapas och används för att generera ett unikt TexIDName
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -369,28 +368,12 @@ bool ZGuiSkin::operator==(ZGuiSkin d)
 	return true;
 } 
 
-ZIFAnimation::ZIFAnimation()
-{
-	m_pkFile = NULL;
-	m_fLastTick=0;
-	m_szFileName=NULL;
-	m_iWidth=0;
-	m_iHeight=0;
-	m_iNumFrames=0;
-	m_iMsecsPerFrame=0;
-	m_iCurrentFrame=0;
-	m_bPlay=false;
-	m_pPixelData=NULL;
-	m_iPixelDataSize=0;
-	m_bStream=true;
-	g_iZIFAnimTexIDCounter++;
-	sprintf(m_szTexIDName, "ZIFAnimTex%i", g_iZIFAnimTexIDCounter);
-	m_bRebuildTexture=true;
-}
+///////////////////////////////////////////////////////////////////////////////
+// ZIFAnimation
+///////////////////////////////////////////////////////////////////////////////
 
 ZIFAnimation::ZIFAnimation(char* szFileName, bool bStream, bool bRebuildTexture)
 {
-	m_pkFile = NULL;
 	m_fLastTick=0;
 	m_szFileName=new char[strlen(szFileName)+1];
 	strcpy(m_szFileName,szFileName);
@@ -406,6 +389,7 @@ ZIFAnimation::ZIFAnimation(char* szFileName, bool bStream, bool bRebuildTexture)
 	g_iZIFAnimTexIDCounter++;
 	sprintf(m_szTexIDName, "ZIFAnimTex%i", g_iZIFAnimTexIDCounter);
 	m_bRebuildTexture=bRebuildTexture;
+	m_iFileOffset = 0;
 }
 
 ZIFAnimation::~ZIFAnimation()
@@ -435,7 +419,10 @@ bool ZIFAnimation::Update()
 			
 		m_iCurrentFrame++;
 		if(m_iCurrentFrame==m_iNumFrames-1)
+		{
+			m_iFileOffset=ANIMATION_HEADER_SIZE;
 			m_iCurrentFrame=0;
+		}
 
 		return true; // behöver läsa in ny bild till texturen
 	}
@@ -451,20 +438,102 @@ char* ZIFAnimation::GetFramePixels()
 		return m_pPixelData+(m_iPixelDataSize*m_iCurrentFrame);
 }
 
+//bool ZIFAnimation::Read()
+//{
+//	ZFVFile kFile;
+//	if(kFile.Open(m_szFileName,0, false) == false) 
+//	{
+//		fprintf(stderr, "Unable to Open %s: \n", m_szFileName);
+//		return false;
+//	}
+//
+//	if(m_iNumFrames==0) // not initialized
+//	{
+//		fread(&m_iWidth, sizeof(int), 1, kFile.m_pkFilePointer);
+//		fread(&m_iHeight, sizeof(int), 1, kFile.m_pkFilePointer);
+//		fread(&m_iMsecsPerFrame, sizeof(int), 1, kFile.m_pkFilePointer);
+//		fread(&m_iNumFrames, sizeof(int), 1, kFile.m_pkFilePointer);
+//		m_iPixelDataSize = m_iWidth*m_iHeight*3;
+//
+//		// Vi ökar på ID räknaren för texturn med antalet frames om denna
+//		// animation kommer använda så många texturer (1 för varje frame)
+//		if(m_bRebuildTexture==false)
+//		{
+//			m_iIDTexArrayStart = g_iZIFAnimTexIDCounter;
+//			g_iZIFAnimTexIDCounter += m_iNumFrames;
+//		}
+//
+//		if(m_bStream)
+//			m_pPixelData = new char[m_iPixelDataSize];
+//		else
+//		{
+//			m_pPixelData = new char[m_iPixelDataSize*m_iNumFrames];
+//			fread(m_pPixelData, sizeof(char), m_iPixelDataSize*m_iNumFrames, kFile.m_pkFilePointer);
+//			kFile.Close();
+//			return true;
+//		}
+//	}
+//
+//	fseek(kFile.m_pkFilePointer, m_iPixelDataSize*m_iCurrentFrame+(sizeof(int)*4), SEEK_SET);
+//	fread(m_pPixelData, sizeof(char), m_iPixelDataSize, kFile.m_pkFilePointer);
+//	kFile.Close();
+//	return true;
+//}
+
+unsigned char* temp;// = new unsigned char[320*240];
+
 bool ZIFAnimation::Read()
 {
-	m_pkFile = fopen(m_szFileName, "rb");
-	if(m_pkFile == NULL)
+	ZFVFile kFile;
+
+	//
+	// Open file
+	//
+
+	if(kFile.Open(m_szFileName,0, false) == false) 
+	{
+		fprintf(stderr, "Unable to Open %s: \n", m_szFileName);
 		return false;
+	}
+
+	unsigned int iFramesToRead = 1;
+
+	//
+	// Read header
+	//
 
 	if(m_iNumFrames==0) // not initialized
 	{
-		fread(&m_iWidth, sizeof(int), 1, m_pkFile);
-		fread(&m_iHeight, sizeof(int), 1, m_pkFile);
-		fread(&m_iMsecsPerFrame, sizeof(int), 1, m_pkFile);
-		fread(&m_iNumFrames, sizeof(int), 1, m_pkFile);
-		m_iPixelDataSize = m_iWidth*m_iHeight*3;
+		unsigned char byIs8bit;
+		fread(&m_iImageFrameWidth, sizeof(int), 1, kFile.m_pkFilePointer);
+		fread(&m_iImageFrameHeight, sizeof(int), 1, kFile.m_pkFilePointer);
+		fread(&m_iMsecsPerFrame, sizeof(int), 1, kFile.m_pkFilePointer);
+		fread(&m_iNumFrames, sizeof(int), 1, kFile.m_pkFilePointer);
+		fread(&byIs8bit, sizeof(unsigned char), 1, kFile.m_pkFilePointer);
+		m_b8bitsFormat = (byIs8bit > 0);
 
+		m_iWidth = 0;
+		m_iHeight = 0;
+
+		// Set dimension to next valid texture size.
+		int valid_sizes[] = {2048,1024,512,256,128,64,32,16,8,4,2,1};
+		for(int i=0; i<12; i++)
+		{
+			if(m_iWidth == 0)
+			{
+				if(m_iImageFrameWidth > valid_sizes[i]) m_iWidth = valid_sizes[i-1];
+				else if(m_iImageFrameWidth == valid_sizes[i]) m_iWidth = valid_sizes[i];
+			}
+			if(m_iHeight == 0)
+			{
+				if(m_iImageFrameHeight > valid_sizes[i]) m_iHeight = valid_sizes[i-1];
+				else if(m_iImageFrameHeight == valid_sizes[i]) m_iHeight = valid_sizes[i];
+			}
+		}
+
+		m_iPixelDataSize = m_iWidth*m_iHeight*3;
+		m_iFileOffset = ANIMATION_HEADER_SIZE;
+		
 		// Vi ökar på ID räknaren för texturn med antalet frames om denna
 		// animation kommer använda så många texturer (1 för varje frame)
 		if(m_bRebuildTexture==false)
@@ -473,20 +542,102 @@ bool ZIFAnimation::Read()
 			g_iZIFAnimTexIDCounter += m_iNumFrames;
 		}
 
+		int bytes_per_pixel = m_b8bitsFormat ? 1 : 3;
+
 		if(m_bStream)
+		{
 			m_pPixelData = new char[m_iPixelDataSize];
+			temp = new unsigned char[m_iImageFrameWidth*m_iImageFrameHeight*bytes_per_pixel];
+		}
 		else
 		{
+			iFramesToRead = m_iNumFrames; // Läs in alla frames!
 			m_pPixelData = new char[m_iPixelDataSize*m_iNumFrames];
-			fread(m_pPixelData, sizeof(char), m_iPixelDataSize*m_iNumFrames, m_pkFile);
-			fclose(m_pkFile);
-			return true;
+			temp = new unsigned char[m_iImageFrameWidth*m_iImageFrameHeight*bytes_per_pixel*m_iNumFrames];
 		}
 	}
 
-	fseek(m_pkFile, m_iPixelDataSize*m_iCurrentFrame+(sizeof(int)*4), SEEK_SET);
-	fread(m_pPixelData, sizeof(char), m_iPixelDataSize, m_pkFile);
-	fclose(m_pkFile);
+	// 
+	// Read image data 
+	// 
+
+	fseek(kFile.m_pkFilePointer, m_iFileOffset, SEEK_SET);
+
+	const int PICTURE_WIDTH_IN_BYTES = m_iImageFrameWidth*3;
+	const int TEXTURE_WIDTH_IN_BYTES = m_iWidth*3;
+
+	if(m_b8bitsFormat)
+	{
+		unsigned int palette_size;
+		unsigned int palette[256];
+		char* temp_row = new char[PICTURE_WIDTH_IN_BYTES];
+
+		for(int f=0; f<iFramesToRead; f++)
+		{
+			fread(&palette_size, sizeof(unsigned int), 1, kFile.m_pkFilePointer);
+			fread(palette, sizeof(unsigned int), palette_size, kFile.m_pkFilePointer);
+			fread(temp, sizeof(unsigned char), m_iImageFrameWidth*m_iImageFrameHeight, kFile.m_pkFilePointer);
+
+			// Konvertera till 24-bitar
+			unsigned int r,g,b,i,j=0,k=0,palette_idex,bytes=320*240*3,offset=f*m_iWidth*m_iHeight*3;
+			for(i=0; i<bytes; i+=3)
+			{
+				palette_idex = temp[j++];
+				r = palette[palette_idex];
+				g = palette[palette_idex];
+				b = palette[palette_idex];
+
+				g >>= 8;
+				b >>= 16;
+
+				r = r & 0xFF;
+				g = g & 0xFF;
+				b = b & 0xFF;
+
+				temp_row[k] = r;
+				temp_row[k+1] = g;
+				temp_row[k+2] = b;
+				k+=3;
+
+				// Kopiera in pixlarna rad för rad från bilden som är (320x240) till texturen som är (512x256)
+				if(k == PICTURE_WIDTH_IN_BYTES)
+				{
+					memcpy(m_pPixelData+offset, temp_row, PICTURE_WIDTH_IN_BYTES);
+					offset+=TEXTURE_WIDTH_IN_BYTES;
+					k=0;
+				}
+			}
+
+			m_iFileOffset += ( m_iImageFrameWidth*m_iImageFrameHeight + (4*(palette_size+1))  );
+		}
+
+		delete[] temp_row;
+
+		// Ta bort konverteringsbufferten nu eftersom den inte 
+		// kommer att behövas mer och bara tar upp massa minne.
+		if(m_bStream == false)
+			delete[] temp;
+	}
+	else
+	{
+		if(m_iImageFrameWidth != m_iWidth || m_iImageFrameHeight != m_iHeight)
+		{
+			fread(temp, sizeof(unsigned char), 
+				m_iImageFrameWidth*m_iImageFrameHeight*3, kFile.m_pkFilePointer);
+		
+			for(int i=0; i<m_iImageFrameHeight; i++)
+				memcpy(m_pPixelData+(TEXTURE_WIDTH_IN_BYTES*i), 
+					temp+(PICTURE_WIDTH_IN_BYTES*i), PICTURE_WIDTH_IN_BYTES);
+		}
+		else
+		{
+			fread(m_pPixelData, sizeof(unsigned char), m_iPixelDataSize, kFile.m_pkFilePointer);
+		}
+
+		m_iFileOffset += m_iImageFrameWidth*m_iImageFrameHeight*3;
+	}
+
+	kFile.Close();
 	return true;
 }
 

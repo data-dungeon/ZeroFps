@@ -7,13 +7,11 @@
 
 #include "basic_x.h"
 #include "rect.h"
-#include <stdio.h>
 
 class BASIC_API ZIFAnimation
 {
 public:
-	ZIFAnimation();
-	ZIFAnimation(char* szFileName, bool bStream=true, bool bRebuildTexture=true);
+	ZIFAnimation(char* szFileName=0, bool bStream=true, bool bRebuildTexture=true);
 	~ZIFAnimation();
 
 	bool Update();
@@ -26,7 +24,7 @@ public:
 							// Endast små animationer (på typ max: 40 frame) kan dra nytta av att sätta denna till false för att slippa bygga om texturen varje frame.
 
 private:
-	FILE* m_pkFile;
+
 	float m_fLastTick;
 	
 	int m_iNumFrames, m_iCurrentFrame;
@@ -41,6 +39,11 @@ private:
 	char* m_szFileName;
 
 	bool Read();
+
+	bool m_b8bitsFormat;
+	unsigned int m_iFileOffset; // behövs eftersom paletten kan vara olika stor på 8 bitars animationer
+	int m_iImageFrameWidth, m_iImageFrameHeight;
+	
 };
 
 class BASIC_API ZGuiSkin  

@@ -13,7 +13,7 @@
 bool bPlayAnimation = false;
 FILE* pkAnimationFile = NULL;
 
-ZGResEdit g_kResEdit("ResEdit",0,0,0);
+ZGResEdit g_kResEdit("ZGResEdit",0,0,0);
 
 static bool GUIPROC( ZGuiWnd* win, unsigned int msg, int numparms, void *params ) 
 {
@@ -520,7 +520,8 @@ void ZGResEdit::OnKeyDown(int iKey)
 			//apa++;
 
 			//GetWnd("TestWnd")->GetSkin()->m_pkZIFAnimation->m_bPlay=true;
-			m_pkFocusWnd->GetSkin()->m_pkZIFAnimation = new ZIFAnimation("spider.zif",false,false);
+			m_pkFocusWnd->GetSkin()->m_rcBkTile = Rect(0,0,320,240);
+			m_pkFocusWnd->GetSkin()->m_pkZIFAnimation = new ZIFAnimation("TestAnimation.zif",true,true);
 			m_pkFocusWnd->GetSkin()->m_pkZIFAnimation->m_bPlay=true;
 		}
 		break;

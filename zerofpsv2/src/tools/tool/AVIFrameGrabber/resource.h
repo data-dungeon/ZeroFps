@@ -14,8 +14,15 @@
 #define IDC_FRAMES_TOTAL                1008
 #define IDC_MEGABYTE                    1009
 #define IDC_FRAMEWIDTH                  1010
+#define IDC_TIME                        1010
 #define IDC_ANIMATIONEND3               1011
 #define IDC_FRAMEHEIGHT                 1011
+#define IDC_NUMFRAMES                   1011
+#define IDC_FRAMES_PER_SEC              1012
+#define IDC_PROGRESS1                   1013
+#define IDC_FORMAT8                     1014
+#define IDC_COMBO1                      1015
+#define IDC_PREVIEW_SIZE_CB             1015
 #define ID_FILE_OPEN40002               40002
 #define ID_FILE_EXIT                    40003
 #define ID_FILE_SETTING                 40004
@@ -26,7 +33,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        104
 #define _APS_NEXT_COMMAND_VALUE         40005
-#define _APS_NEXT_CONTROL_VALUE         1013
+#define _APS_NEXT_CONTROL_VALUE         1016
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

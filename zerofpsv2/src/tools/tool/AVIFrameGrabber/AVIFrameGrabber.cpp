@@ -46,11 +46,11 @@ bool AVIFrameGrabber::OpenAVI(char* szFile)
 	{
 		// An Error Occurred Opening The Frame
 		m_bOpen = false;
-		return false;
 	}
 
 	m_bOpen = true;
-	return true;
+
+	return m_bOpen;
 }
 
 void AVIFrameGrabber::CloseAVI(void)

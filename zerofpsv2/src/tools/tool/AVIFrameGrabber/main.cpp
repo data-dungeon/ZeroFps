@@ -1,5 +1,6 @@
 
 #include <windows.h>
+#include <commctrl.h>
 #include "AVIFrameGrabber.h"
 #include "bitmapmanager.h"
 #include "resource.h"
@@ -15,94 +16,82 @@ BOOL CALLBACK SettingsDlg (HWND, UINT, WPARAM, LPARAM) ;
 AVIFrameGrabber g_kAVIGrabber;
 BitmapManager g_kBitmapManager;
 
-HDC hdcMem = CreateCompatibleDC(0);
+HWND hwnd;
+HDC hdcMem;// = CreateCompatibleDC(0);
 
-int rows = 5;
-int cols = 5;
-int preview_size = 128;
+char szFileName[128] = "TestAnimation.zif";
+
+bool bRedraw = false;
+int preview_size = 256;
 int num_bitmaps = 0;
 int startframe = 0;
 int animationstart = 0;
 int animationend = 100;
-int frame_width=256;
-int frame_height=256;
+int frames = 10;
+
+bool print_frame = true;
+float fStretchMod = 0.5f;
 
 HWND ctrlWnd;
 HBITMAP bitmaps[256];
 char szAVIFileName[512];
 
-void MakeFrame(int frame, FILE* pkFile);
-void Rebuild(HWND hwnd);
-void CreateAnimation(int animationstart, int animationend, HWND hwnd);
+bool CreateAnimation(int animationstart, int animationend, HWND hwnd);
+void PrintSize();
+
+
+BITMAPINFO bitmapinfo;
 
 int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance,
                     PSTR szCmdLine, int iCmdShow)
 {
-     static TCHAR szAppName[] = TEXT ("AVIFrameGrabber") ;
-     HWND         hwnd ;
-     MSG          msg ;
-     WNDCLASS     wndclass ;
+	static TCHAR szAppName[] = TEXT ("AVIFrameGrabber") ;
+	MSG          msg ;
+	WNDCLASS     wndclass ;
 
-     wndclass.style         = CS_HREDRAW | CS_VREDRAW ;
-     wndclass.lpfnWndProc   = WndProc ;
-     wndclass.cbClsExtra    = 0 ;
-     wndclass.cbWndExtra    = 0 ;
-     wndclass.hInstance     = hInstance ;
-     wndclass.hIcon         = LoadIcon (NULL, IDI_APPLICATION) ;
-     wndclass.hCursor       = LoadCursor (NULL, IDC_ARROW) ;
-     wndclass.hbrBackground = (HBRUSH) GetStockObject (WHITE_BRUSH) ;
-     wndclass.lpszMenuName  = MAKEINTRESOURCE(IDR_MENU1) ;
-     wndclass.lpszClassName = szAppName ;
+	wndclass.style         = CS_HREDRAW | CS_VREDRAW ;
+	wndclass.lpfnWndProc   = WndProc ;
+	wndclass.cbClsExtra    = 0 ;
+	wndclass.cbWndExtra    = 0 ;
+	wndclass.hInstance     = hInstance ;
+	wndclass.hIcon         = LoadIcon (NULL, IDI_APPLICATION) ;
+	wndclass.hCursor       = LoadCursor (NULL, IDC_ARROW) ;
+	wndclass.hbrBackground = (HBRUSH) GetStockObject (WHITE_BRUSH) ;
+	wndclass.lpszMenuName  = MAKEINTRESOURCE(IDR_MENU1) ;
+	wndclass.lpszClassName = szAppName ;
 
-     if (!RegisterClass (&wndclass))
-          return 0 ;
+	if (!RegisterClass (&wndclass))
+		return 0 ;
 
-	 g_kHInstance = hInstance;
-     
-     hwnd = CreateWindow (szAppName, TEXT ("AVI Frame Grabber"), 
-		 WS_OVERLAPPEDWINDOW | WS_MAXIMIZE, CW_USEDEFAULT, CW_USEDEFAULT, 640, 480, 
-		 NULL, NULL, hInstance, NULL) ;        
+	g_kHInstance = hInstance;
 
-	 ctrlWnd = CreateDialog(g_kHInstance, MAKEINTRESOURCE(IDD_SETTINGS), hwnd, SettingsDlg);
+	hwnd = CreateWindow (szAppName, TEXT ("AVI Frame Grabber"), 
+		WS_OVERLAPPEDWINDOW | WS_MAXIMIZE, CW_USEDEFAULT, CW_USEDEFAULT, 640, 480, 
+		NULL, NULL, hInstance, NULL) ;        
 
-	 RECT rc;
-	 GetWindowRect(hwnd, &rc);
+	ctrlWnd = CreateDialog(g_kHInstance, MAKEINTRESOURCE(IDD_SETTINGS), hwnd, SettingsDlg);
+	//EnableWindow(ctrlWnd, false);
+	ShowWindow(ctrlWnd, true);
 
-	 SetWindowPos(ctrlWnd, NULL, rc.right-200, 50, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
-     
-     ShowWindow(hwnd, SW_SHOWMAXIMIZED);
-     UpdateWindow(hwnd);
+	RECT rc;
+	GetWindowRect(hwnd, &rc);
 
-	WPARAM wParam = MAKEWPARAM(ID_FILE_OPEN40002, 0);
-	LPARAM lParam = MAKELPARAM(0, 0);
-	SendMessage(hwnd, WM_COMMAND, wParam, lParam);
-     
-     while (GetMessage (&msg, NULL, 0, 0))
-     {
-          TranslateMessage (&msg) ;
-          DispatchMessage (&msg) ;
-     }
+	SetWindowPos(ctrlWnd, NULL, rc.right-200, 50, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
+
+	ShowWindow(hwnd, SW_SHOWMAXIMIZED);
+	UpdateWindow(hwnd);
+
+	hdcMem = CreateCompatibleDC (GetDC(hwnd)) ;
+
+	ShowWindow(hwnd, SW_SHOWMAXIMIZED);
+	UpdateWindow(hwnd);
+
+	while (GetMessage (&msg, NULL, 0, 0))
+	{
+		TranslateMessage (&msg) ;
+		DispatchMessage (&msg) ;
+	}
      return msg.wParam ;
-}
-
-void DrawBitmap (HDC hdc, int x, int y, HBITMAP hBitmap, int frame)
-{
-     BITMAP bm ;
-     HDC    hMemDC ;
-     
-     hMemDC = CreateCompatibleDC (hdc) ;
-     SelectObject (hMemDC, hBitmap) ;
-     GetObject (hBitmap, sizeof (BITMAP), &bm) ;
-     
-	 SetStretchBltMode(hdc, HALFTONE);
-	 StretchBlt(hdc, x, y, preview_size, preview_size, hMemDC, 0, 0, 
-		 frame_width, frame_height, SRCCOPY) ;
-
-	 char text[20];
-	 sprintf(text, "%i", frame); 
-	 TextOut(hdc, x,y, text, strlen(text));
-     
-     DeleteDC (hMemDC) ;
 }
 
 bool GetFileName(char* szFileName, HWND hwnd, bool bSave)
@@ -168,24 +157,38 @@ LRESULT CALLBACK WndProc (HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 		case ID_FILE_OPEN40002:
 
 			char szFileName[512];
+
 			if(GetFileName(szFileName, hwnd, false))
 			{
+				strcpy(szAVIFileName, szFileName);
+
 				g_kAVIGrabber.CloseAVI();
 
-				strcpy(szAVIFileName, szFileName);
 				if(g_kAVIGrabber.OpenAVI(szAVIFileName)==false)
 				{
 					MessageBox(hwnd, "Failed to open AVI file", "Error", MB_ICONERROR);
+					EnableWindow(ctrlWnd, false);
+					ShowWindow(ctrlWnd, SW_HIDE);
 					return 0;
 				}
 
 				SetDlgItemInt(ctrlWnd, IDC_FRAMES_TOTAL, g_kAVIGrabber.GetNumFrames(), FALSE); 
+				EnableWindow(ctrlWnd, true);
+				ShowWindow(ctrlWnd, SW_SHOW);
+				PrintSize();
 
-				char szTitle[150];
-				sprintf(szTitle, "AVI Frame Grabber - %s", szAVIFileName);
-				SetWindowText(hwnd, szTitle);
-
-				Rebuild(hwnd);
+				ZeroMemory(&bitmapinfo,sizeof(bitmapinfo));
+				bitmapinfo.bmiHeader.biBitCount = 24;
+				bitmapinfo.bmiHeader.biClrImportant = 0;
+				bitmapinfo.bmiHeader.biClrUsed = 0;
+				bitmapinfo.bmiHeader.biCompression = 0;
+				bitmapinfo.bmiHeader.biHeight = g_kAVIGrabber.GetHeight();
+				bitmapinfo.bmiHeader.biPlanes = 1;
+				bitmapinfo.bmiHeader.biSize = 40;
+				bitmapinfo.bmiHeader.biSizeImage = 0;
+				bitmapinfo.bmiHeader.biWidth = g_kAVIGrabber.GetWidth();
+				bitmapinfo.bmiHeader.biXPelsPerMeter = 0;
+				bitmapinfo.bmiHeader.biYPelsPerMeter = 0;
 			}
 
 			break;
@@ -195,16 +198,55 @@ LRESULT CALLBACK WndProc (HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 	case WM_PAINT:
 		hdc = BeginPaint (hwnd, &ps) ;
 
-		if(num_bitmaps > 0)
+		if(g_kAVIGrabber.GetNumFrames() > 0 /*&& bRedraw == true*/)
 		{
-			int frame = 0;
+			SetStretchBltMode(hdc, HALFTONE);
+
+			RECT rcWindow;
+			GetWindowRect(hwnd, &rcWindow);
+
+			int dw = (int)((float)g_kAVIGrabber.GetWidth()*fStretchMod);
+			int dh = (int)((float)g_kAVIGrabber.GetHeight()*fStretchMod);
+
+			int cols = (rcWindow.right - rcWindow.left) / dw ;
+			int rows = (rcWindow.bottom - rcWindow.top) / dh ;
+
+			int frame = startframe;
+			int max = g_kAVIGrabber.GetNumFrames();
+			char text[20];
+
 			for(int y=0; y<rows; y++)
+			{
 				for(int x=0; x<cols; x++)
 				{
-					DrawBitmap(hdc, x*(preview_size+1), y*(preview_size+1), 
-						bitmaps[frame], startframe+frame);
-					frame++;
+					if( x*dw < rcWindow.right && (y*dh < rcWindow.bottom) && frame < max)
+					{
+						char* pixels = g_kAVIGrabber.GetFramePixels(frame);
+						StretchDIBits (hdc, x*dw, y*dh, dw, dh, 0, 0, 
+							g_kAVIGrabber.GetWidth(), g_kAVIGrabber.GetHeight(), 
+							pixels, &bitmapinfo, DIB_RGB_COLORS, SRCCOPY) ;
+						frame++;
+					}
 				}
+			}
+
+			frame=0;
+			for(int y=0; y<rows; y++)
+			{
+				for(int x=0; x<cols; x++)
+				{
+					if( x*dw < rcWindow.right && (y*dh < rcWindow.bottom) && frame < max)
+					{
+						if(print_frame)
+						{
+							sprintf(text, "%i", startframe+(cols*y)+x);
+							TextOut(hdc,x*dw,y*dw, text, strlen(text));
+						}
+					}
+				}
+			}
+
+			bRedraw = false;
 		}
 
 		EndPaint (hwnd, &ps) ;
@@ -220,231 +262,222 @@ LRESULT CALLBACK WndProc (HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 BOOL CALLBACK SettingsDlg (HWND hDlg, UINT message, 
                             WPARAM wParam, LPARAM lParam)
 {
-	int sz,c,r,fr,as,ae,fh,fw;
+	static HWND khWndProgressBar;
+	int fr,as,ae;
 
 	switch (message)
 	{
 	case WM_INITDIALOG :
 		SetDlgItemInt(hDlg, IDC_PICTURE_PREVIEW_SIZE, preview_size, FALSE);
-		SetDlgItemInt(hDlg, IDC_COLS, cols, FALSE);
-		SetDlgItemInt(hDlg, IDC_ROWS, rows, FALSE);
 		SetDlgItemInt(hDlg, IDC_STARTFRAME, startframe, FALSE);
-		SetDlgItemInt(hDlg, IDC_ANIMATIONSTART, animationstart, FALSE);
-		SetDlgItemInt(hDlg, IDC_ANIMATIONEND, animationend, FALSE);
+		SetDlgItemInt(hDlg, IDC_ANIMATIONSTART, animationstart, 0);
+		SetDlgItemInt(hDlg, IDC_ANIMATIONEND, animationend, 0);
 		SetDlgItemInt(hDlg, IDC_FRAMES_TOTAL, g_kAVIGrabber.GetNumFrames(), FALSE); 
-		SetDlgItemInt(hDlg, IDC_FRAMEWIDTH, frame_width, FALSE); 
-		SetDlgItemInt(hDlg, IDC_FRAMEHEIGHT, frame_height, FALSE); 
 
-		SetDlgItemInt(hDlg, IDC_MEGABYTE, 
-			((animationend - animationstart)*frame_width*frame_height*3+16) / 1000000, FALSE);
+		khWndProgressBar = GetDlgItem(hDlg, IDC_PROGRESS1);
+
+		SendDlgItemMessage(hDlg, IDC_PREVIEW_SIZE_CB, CB_ADDSTRING, 0, (LPARAM)"400%");
+		SendDlgItemMessage(hDlg, IDC_PREVIEW_SIZE_CB, CB_ADDSTRING, 0, (LPARAM)"200%");
+		SendDlgItemMessage(hDlg, IDC_PREVIEW_SIZE_CB, CB_ADDSTRING, 0, (LPARAM)"100%");
+		SendDlgItemMessage(hDlg, IDC_PREVIEW_SIZE_CB, CB_ADDSTRING, 0, (LPARAM)"75%");
+		SendDlgItemMessage(hDlg, IDC_PREVIEW_SIZE_CB, CB_ADDSTRING, 0, (LPARAM)"50%");
+		SendDlgItemMessage(hDlg, IDC_PREVIEW_SIZE_CB, CB_ADDSTRING, 0, (LPARAM)"25%");
+		SendDlgItemMessage(hDlg, IDC_PREVIEW_SIZE_CB, CB_ADDSTRING, 0, (LPARAM)"15%");
+		SendDlgItemMessage(hDlg, IDC_PREVIEW_SIZE_CB, CB_ADDSTRING, 0, (LPARAM)"10%");
+		SendDlgItemMessage(hDlg, IDC_PREVIEW_SIZE_CB, CB_SETCURSEL, 4, 0);
+
 		return TRUE ;
 
 	case WM_CLOSE:
 		EndDialog (hDlg, 0) ;
+		bRedraw = true;
 		break;
 
 	case WM_COMMAND :
 		switch (LOWORD (wParam))
 		{
+
 		case IDOK :
 
-			sz = GetDlgItemInt(hDlg, IDC_PICTURE_PREVIEW_SIZE, NULL, FALSE);
-			c = GetDlgItemInt(hDlg, IDC_COLS, NULL, FALSE);
-			r = GetDlgItemInt(hDlg, IDC_ROWS, NULL, FALSE);
 			fr = GetDlgItemInt(hDlg, IDC_STARTFRAME, NULL, FALSE);
 			as = GetDlgItemInt(hDlg, IDC_ANIMATIONSTART, NULL, FALSE);
 			ae = GetDlgItemInt(hDlg, IDC_ANIMATIONEND, NULL, FALSE);
-			fw = GetDlgItemInt(hDlg, IDC_FRAMEWIDTH, NULL, FALSE);
-			fh = GetDlgItemInt(hDlg, IDC_FRAMEHEIGHT, NULL, FALSE);
-
-			int prevlastframe;
-			prevlastframe = startframe+(cols*rows);
-
-			bool bOnlyRefresh;
-			if(sz+(c*r) <= prevlastframe && sz >= startframe)
-				bOnlyRefresh=true;
-			else
-				bOnlyRefresh=false;
 			
-			if(cols*rows < 256)
-			{
-				cols = c;
-				rows = r;
-			}
-
-			if(sz < 512 && sz > 0)
-				preview_size = sz;
-
 			if(as > 0)
 				animationstart = as;
 
 			if(ae > 0)
 				animationend = ae;
 
-			if(fw==2||fw==8||fw==16||fw==32||fw==64||fw==128||fw==256||fw==512)
-				frame_width = fw;
-			if(fh==2||fh==8||fh==16||fh==32||fh==64||fh==128||fh==256||fh==512)
-				frame_height = fh;
-
 			startframe = fr;
-
-			HWND parent;
-			parent = GetParent(hDlg);
-
-			if(bOnlyRefresh)
-			{
-				bOnlyRefresh=true;
-				InvalidateRect(parent, NULL, TRUE);
-				UpdateWindow(parent);
-			}
-			else
-			{
-				Rebuild(parent);
-			}
+			
+			bRedraw = true;
+			InvalidateRect(hwnd, NULL, TRUE);
+			UpdateWindow(hwnd);
+			
 			return TRUE ;
 
 		case IDC_CREATEANIMATION:
 			animationstart = GetDlgItemInt(hDlg, IDC_ANIMATIONSTART, NULL, FALSE);
 			animationend = GetDlgItemInt(hDlg, IDC_ANIMATIONEND, NULL, FALSE);
 
-			fw = GetDlgItemInt(hDlg, IDC_FRAMEWIDTH, NULL, FALSE);
-			fh = GetDlgItemInt(hDlg, IDC_FRAMEHEIGHT, NULL, FALSE);
-
-			if(fw==2||fw==8||fw==16||fw==32||fw==64||fw==128||fw==256||fw==512)
-				frame_width = fw;
-			if(fh==2||fh==8||fh==16||fh==32||fh==64||fh==128||fh==256||fh==512)
-				frame_height = fh;
+			SendMessage(khWndProgressBar, PBM_SETRANGE, 0, MAKELPARAM(animationstart, animationend)); 
+			SendMessage(khWndProgressBar, PBM_SETSTEP, (WPARAM) 1, 0); 
 
 			SetCursor(LoadCursor(NULL, IDC_WAIT));
-			CreateAnimation(animationstart, animationend, hDlg);
-			Rebuild(GetParent(hDlg)); // must rebuild
+			CreateAnimation(animationstart, animationend, khWndProgressBar);
 			SetCursor(LoadCursor(NULL, IDC_ARROW));
+
 			break;
 
-		case IDC_ANIMATIONSTART:
-		case IDC_ANIMATIONEND:
-		case IDC_FRAMEWIDTH:
-		case IDC_FRAMEHEIGHT:
-			{
-				int start = GetDlgItemInt(hDlg, IDC_ANIMATIONSTART, NULL, FALSE);
-				int end = GetDlgItemInt(hDlg, IDC_ANIMATIONEND, NULL, FALSE);
-				int w = GetDlgItemInt(hDlg, IDC_FRAMEWIDTH, NULL, FALSE);
-				int h = GetDlgItemInt(hDlg, IDC_FRAMEHEIGHT, NULL, FALSE);
-
-				int frames = end - start;
-				int size = (frames*w*h*3+16) / 1000000;
-
-				SetDlgItemInt(hDlg, IDC_MEGABYTE, size, FALSE);
-			}
+		case IDC_FORMAT8:
+			PrintSize();
 			break;
 		}
-		break ;
+
+		if( HIWORD(wParam) == EN_UPDATE)
+		{
+			switch(LOWORD(wParam))
+			{
+				case IDC_ANIMATIONSTART:
+				case IDC_ANIMATIONEND:
+					PrintSize();
+					break;
+			}
+		}
+		else
+		if( HIWORD(wParam) == CBN_SELCHANGE)
+		{
+			switch(LOWORD(wParam))
+			{
+				case IDC_PREVIEW_SIZE_CB:
+					int currsel;
+					currsel = SendDlgItemMessage(hDlg, IDC_PREVIEW_SIZE_CB, CB_GETCURSEL, 0, 0);
+					
+					switch(currsel)
+					{
+						case 0: fStretchMod = 4; break;
+						case 1: fStretchMod = 2; break;
+						case 2: fStretchMod = 1; break;
+						case 3: fStretchMod = 0.75f; break;
+						case 4: fStretchMod = 0.5f; break;
+						case 5: fStretchMod = 0.25f; break;
+						case 6: fStretchMod = 0.15f; break;
+						case 7: fStretchMod = 0.10f; break;
+					}
+
+					break;
+			}
+		}
 	}
 	return FALSE ;
 }
 
 
-void MakeFrame(int frame, FILE* pkFile)
+bool CreateAnimation(int animationstart, int animationend, HWND hwnd)
 {
-	const char szFileName[] = "frame.bmp";
+	int num_frames = animationend-animationstart;
 
-	char* pixels = g_kAVIGrabber.GetFramePixels(frame);
+	strcpy(szAVIFileName, "st.avi");
 
-	int width = g_kAVIGrabber.GetWidth();
-	int height = g_kAVIGrabber.GetHeight();
+	if(num_frames > 0 && g_kAVIGrabber.OpenAVI(szAVIFileName))
+	{
+		if(num_frames > g_kAVIGrabber.GetNumFrames())
+			return false;
+		if(animationstart < 0 || animationend > g_kAVIGrabber.GetNumFrames())
+			return false;
 
-	g_kBitmapManager.SaveFile(szFileName, pixels, width, height);
+		FILE* pkFile = fopen(szFileName, "wb");
 
-	bitmaps[num_bitmaps] = (HBITMAP) LoadImage(g_kHInstance, szFileName, IMAGE_BITMAP, 
-		frame_width, frame_height, LR_LOADFROMFILE);
+		int frames_per_second = g_kAVIGrabber.GetFramesPerSecond();
+		
+		unsigned char by8bitsFormat = 
+			(IsDlgButtonChecked(ctrlWnd, IDC_FORMAT8) == BST_CHECKED) ? 1 : 0;
 
-	BITMAPINFO bitmapinfo;
-	ZeroMemory(&bitmapinfo,sizeof(bitmapinfo));
-	bitmapinfo.bmiHeader.biBitCount = 24;
-	bitmapinfo.bmiHeader.biClrImportant = 0;
-	bitmapinfo.bmiHeader.biClrUsed = 0;
-	bitmapinfo.bmiHeader.biCompression = 0;
-	bitmapinfo.bmiHeader.biHeight = frame_height;
-	bitmapinfo.bmiHeader.biPlanes = 1;
-	bitmapinfo.bmiHeader.biSize = 40;
-	bitmapinfo.bmiHeader.biSizeImage = 0;
-	bitmapinfo.bmiHeader.biWidth = frame_width;
-	bitmapinfo.bmiHeader.biXPelsPerMeter = 0;
-	bitmapinfo.bmiHeader.biYPelsPerMeter = 0;
+		int w = g_kAVIGrabber.GetWidth();
+		int h = g_kAVIGrabber.GetHeight();
 
-	//char data[frame_width*frame_height*3];
-	char* pData = new char[frame_width*frame_height*3];
-	GetDIBits(hdcMem, bitmaps[num_bitmaps], 0, (WORD) bitmapinfo.bmiHeader.biHeight, 
-		(void**)(pData), &bitmapinfo, DIB_RGB_COLORS);
+		fwrite(&w, sizeof(int), 1, pkFile);
+		fwrite(&h, sizeof(int), 1, pkFile);
+		fwrite(&frames_per_second, sizeof(int), 1, pkFile);
+		fwrite(&num_frames, sizeof(int), 1, pkFile);
+		fwrite(&by8bitsFormat, sizeof(unsigned char), 1, pkFile);
 
-	if(pkFile == NULL)
-		g_kBitmapManager.SaveFile(szFileName, (char*)pData, frame_width, frame_height);
-	else
-		fwrite(pData, frame_width*frame_height*3, 1, pkFile);
-	
-	delete[] pData;
-}
+		int starTime = timeGetTime();
 
-void Rebuild(HWND hwnd)
-{
-	SetCursor(LoadCursor(NULL, IDC_WAIT));
-
-	for(int i=0; i<256; i++)
-		DeleteObject(bitmaps[i]);
-
-	num_bitmaps = 0;
-
-	int frame=0, max = g_kAVIGrabber.GetNumFrames();
-	for(int y=0; y<rows; y++)
-		for(int x=0; x<cols; x++)
+		for(int i=animationstart; i<animationend; i++)
 		{
-			if(startframe+frame < max)
-			{
-				MakeFrame(startframe+frame, NULL);
-				frame++;
-				num_bitmaps++;
-			}
+			char* pixels = g_kAVIGrabber.GetFramePixels(i);
+			g_kBitmapManager.SaveFile(pkFile, pixels, w, h, by8bitsFormat == 1 ? true : false);
+			SendMessage(hwnd, PBM_STEPIT, 0, 0);
 		}
 
-	InvalidateRect(hwnd, NULL, TRUE);
-	UpdateWindow(hwnd);
+		fclose(pkFile);
+		return true;
+	}
 
-	SetCursor(LoadCursor(NULL, IDC_ARROW));
+	return false;
 }
 
-void CreateAnimation(int animationstart, int animationend, HWND hwnd)
+void PrintSize()
 {
-	char szFileName[512];
-	GetFileName(szFileName, hwnd, true);
+	int frames_per_sec = g_kAVIGrabber.GetFramesPerSecond(); 
 
-	if(strstr(szFileName, ".zif") == NULL)
-		strcat(szFileName, ".zif");
-
-	g_kAVIGrabber.OpenAVI(szAVIFileName);
-	SetDlgItemInt(ctrlWnd, IDC_FRAMES_TOTAL, g_kAVIGrabber.GetNumFrames(), FALSE); 
-
-	FILE* pkFile = fopen(szFileName, "wb");
-	if(pkFile == NULL)
+	if(frames_per_sec == 0)
 		return;
 
-	int w = frame_width;
-	int h = frame_height;
-	int frames_per_second = g_kAVIGrabber.GetFramesPerSecond();
-	int frames = animationend-animationstart;
+//	int apa = INT_MAX;
 
-	fwrite(&w, sizeof(int), 1, pkFile);
-	fwrite(&h, sizeof(int), 1, pkFile);
-	fwrite(&frames_per_second, sizeof(int), 1, pkFile);
-	fwrite(&frames, sizeof(int), 1, pkFile);
+	int start = GetDlgItemInt(ctrlWnd, IDC_ANIMATIONSTART, NULL, FALSE);
+	int end = GetDlgItemInt(ctrlWnd, IDC_ANIMATIONEND, NULL, FALSE);
 
-	for(int i=0; i<256; i++)
-		DeleteObject(bitmaps[i]);
+	int w = g_kAVIGrabber.GetWidth();
+	int h = g_kAVIGrabber.GetHeight();
+	
+	int frames = end - start;
+	double size_in_meg;
 
-	num_bitmaps = 0;
+	char text[20];
 
-	for(int i=animationstart; i<animationend; i++)
-		MakeFrame(i, pkFile);
+	if(frames < 10000)
+	{
+		if(IsDlgButtonChecked(ctrlWnd, IDC_FORMAT8) == BST_CHECKED)
+			size_in_meg = (double)(frames*w*h+32) / 1048576.0;
+		else
+			size_in_meg = (double)(frames*w*h*3+16) / 1048576.0;
 
-	fclose(pkFile);
+		sprintf(text, "%.02f", size_in_meg);
+		SetDlgItemText(ctrlWnd, IDC_MEGABYTE, text);
+	}
+	else
+	{
+		_int64 apa;
+
+		apa = (_int64)frames;
+		apa = apa*(_int64)w;
+		apa = apa*(_int64)h;
+
+		if(IsDlgButtonChecked(ctrlWnd, IDC_FORMAT8) != BST_CHECKED)
+			apa = apa*3;
+
+		if(IsDlgButtonChecked(ctrlWnd, IDC_FORMAT8) != BST_CHECKED)
+			apa = apa + 16;
+		else
+			apa = apa + 32;
+
+		apa = apa / 1048576;
+		
+		sprintf(text, "%i", (int) apa);
+		SetDlgItemText(ctrlWnd, IDC_MEGABYTE, text);
+	}
+
+	sprintf(text, "%.02f", (double)(end-start) / (double)frames_per_sec);
+	SetDlgItemText(ctrlWnd, IDC_TIME, text);
+
+	sprintf(text, "%i", frames_per_sec);
+	SetDlgItemText(ctrlWnd, IDC_FRAMES_PER_SEC, text);
+
+	start = GetDlgItemInt(ctrlWnd, IDC_ANIMATIONSTART, NULL, FALSE);
+	end = GetDlgItemInt(ctrlWnd, IDC_ANIMATIONEND, NULL, FALSE);
+	SetDlgItemInt(ctrlWnd, IDC_NUMFRAMES, end-start, 0);
 }
-
