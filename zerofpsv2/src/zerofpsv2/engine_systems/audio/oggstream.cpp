@@ -114,7 +114,7 @@ bool OggStream::Open(string strFileName)
 			else
 			{
 				m_eFormat = AL_FORMAT_STEREO16;
-				if(m_bListenerRelCoords)
+				if(m_bListenerRelCoords == false)
 					printf("OggStream - Can't play 3dOgg with a stereo file!\n");
 			}
 				

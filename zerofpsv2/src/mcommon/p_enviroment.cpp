@@ -1,6 +1,5 @@
 #include "p_enviroment.h"
 
-
 Property* Create_P_Enviroment()
 {
 	return new P_Enviroment;
@@ -28,6 +27,8 @@ P_Enviroment::P_Enviroment()
 	m_pkZoneEnvSetting = 			NULL;
 	
 	m_iMusicID =						-1;
+	m_fGain = 0.0f;
+	m_fFadeTimer = -1;
 	
 	m_fTimeScale =						1;
 	m_iCurrentSecond = 				0;
@@ -157,11 +158,25 @@ void P_Enviroment::UpdateEnviroment()
 	
 
 	//music
-		
-	static float s_fGain = 0.0f, s_fTimer = -1;
+
 	static string strCurrentMusic;
 	if(m_kCurrentEnvSetting.m_strMusic != strCurrentMusic)
 	{
+		if(m_iMusicID != -1)
+		{
+			if(m_fGain > 0)
+			{
+				FadeGain(true);
+				m_pkAudioSystem->SetGain(m_iMusicID, m_fGain);
+				return;
+			}
+			else
+			{
+				m_fGain = 0.0f;
+				m_fFadeTimer = -1;
+			}
+		}
+
 		if(m_iMusicID != -1)
 		{
 			m_pkAudioSystem->StopAudio(m_iMusicID,true);
@@ -171,26 +186,26 @@ void P_Enviroment::UpdateEnviroment()
 	
 		if(m_kCurrentEnvSetting.m_strMusic.length() != 0)
 		{
-			s_fGain = 0.0f;
-			s_fTimer = m_pkEntityManager->GetSimTime();
+			m_fGain = 0.0f;
 			strCurrentMusic = m_kCurrentEnvSetting.m_strMusic;		
 			m_iMusicID = m_pkAudioSystem->PlayAudio(m_kCurrentEnvSetting.m_strMusic, 
-				Vector3(0,0,0), Vector3(0,0,1), ZFAUDIO_LOOP, s_fGain);
-			m_pkAudioSystem->SetGain(m_iMusicID, s_fGain);
-		}	
-	}
-	else
-	{
-		if(m_iMusicID != -1 && s_fGain < 0.25f) // en liten fade :)
-		{
-			float fTime = m_pkEntityManager->GetSimTime();
-			s_fGain += (fTime - s_fTimer) / (50.0f);
-			m_pkAudioSystem->SetGain(m_iMusicID, s_fGain);
-			s_fTimer = fTime;
+				Vector3(0,0,0), Vector3(0,0,1), ZFAUDIO_LOOP, m_fGain);
+			m_pkAudioSystem->SetGain(m_iMusicID, m_fGain);
 		}
 	}
 
-	
+	if(m_iMusicID != -1 && m_fGain < 1)
+	{
+		FadeGain(false);
+		m_pkAudioSystem->SetGain(m_iMusicID, m_fGain);
+	}
+	else
+	{
+		m_fFadeTimer = -1;
+		m_fGain = 1.0f;
+	}
+
+
 /*	
 	//sky box
 	//setup skybox property
@@ -820,3 +835,27 @@ void P_Enviroment::ResetEnviroment()
 		m_pkSunFlareMat->GetPass(0)->m_iBlendSrc =				SRC_ALPHA_BLEND_SRC;
 		m_pkSunFlareMat->GetPass(0)->m_iBlendDst =				ONE_BLEND_DST;
 	*/
+
+
+
+
+
+void P_Enviroment::FadeGain(bool bOut)
+{
+	const float FADE_TIME = 2.5f; // sekunder.
+
+	float fTime = m_pkEntityManager->GetSimTime();
+
+	if(m_fFadeTimer < 0)
+		m_fFadeTimer = fTime;
+
+	float fTimeSinceLastFrame = fTime - m_fFadeTimer;
+	float dif = fTimeSinceLastFrame / FADE_TIME;
+
+	if(bOut)
+		m_fGain -= dif;
+	else
+		m_fGain += dif;
+
+	m_fFadeTimer = fTime;
+}
