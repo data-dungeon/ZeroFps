@@ -19,6 +19,7 @@ class GuiBuilder;
 class UserPanel : public DlgBox
 {
 public:
+	void OnClickMinimap(int x, int y);
 	bool Click();
 	UserPanel(ZeroRTS* pkZeroRts, ZGuiWndProc oMainWndProc);
 	virtual ~UserPanel();

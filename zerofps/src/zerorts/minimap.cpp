@@ -186,7 +186,7 @@ void MiniMap::Create(TextureManager *pkTexMan, LevelManager *pkLevelMan,
 	pkGuiBuilder->GetSkin("minimap")->m_iBkTexID = 
 		pkTexMan->Load("../data/textures/minimap.bmp", T_NOMIPMAPPING);
 
-	Rect rc = pkGuiBuilder->Get("MinMapWnd")->GetScreenRect();
+	Rect rc = pkGuiBuilder->Get("MiniMapWnd")->GetScreenRect();
 	m_kScreenPos.x = rc.Left;
 	m_kScreenPos.y = rc.Top;
 	m_iSize = rc.Width();

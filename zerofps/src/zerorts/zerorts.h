@@ -27,7 +27,7 @@ struct PickInfo
 	Vector3 	kHitPos;
 };
 
-
+const float CAMERA_HEIGHT = 30.0f;
 
 class ZeroRTS :public Application {
 	private:

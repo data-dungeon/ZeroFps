@@ -37,7 +37,7 @@ bool UserPanel::Create(int x, int y, char* szResourceFile, char* szDlgName)
 	ZGuiWnd* pkMinimap = new ZGuiWnd(Rect(10,9,10+172,10+172),m_pkDlgBox,true,751489);
 	pkMinimap->SetSkin(m_pkGuiBuilder->GetSkin("minimap") );
 	pkMinimap->SetZValue(121212);
-	m_pkGui->RegisterWindow(pkMinimap, "MinMapWnd");
+	m_pkGui->RegisterWindow(pkMinimap, "MiniMapWnd");
 
 	Rect rc(m_pkZeroRts->m_iWidth-48-10,10,0,0);
 	rc.Right = rc.Left + 48; rc.Bottom = rc.Top + 48;
@@ -107,24 +107,33 @@ bool UserPanel::Create(int x, int y, char* szResourceFile, char* szDlgName)
 bool UserPanel::DlgProc( ZGuiWnd* pkWnd,unsigned int uiMessage,
 						 int iNumberOfParams,void *pkParams )
 {
+	int x, y;
+	unsigned int i;
+	ZGuiWnd* pkClickWnd = NULL;
+
 	switch(uiMessage)
 	{
 	case ZGM_LBUTTONDOWN:
 	case ZGM_RBUTTONDOWN:
 
-		int x, y;
 		x = ((int*)pkParams)[0];
 		y = ((int*)pkParams)[1];
-		ZGuiWnd* pkWnd = m_pkDlgBox->Find(x,y);
+
+		if(pkWnd == m_pkGuiBuilder->Get("MiniMapWnd"))
+		{
+			OnClickMinimap(x,y);
+		}
+
+		pkClickWnd = m_pkDlgBox->Find(x,y);
 
 		m_pkGuiBuilder->Get("CmdButtonTipLB")->SetText("");
 
-		for(unsigned int i=0; i<m_akCommandBns.size(); i++)
+		for(i=0; i<m_akCommandBns.size(); i++)
 		{
-			if(m_akCommandBns[i] == pkWnd)
+			if(m_akCommandBns[i] == pkClickWnd)
 			{
 				map<ZGuiButton*,string>::iterator r;
-				r = m_akCmdButtonText.find((ZGuiButton*)pkWnd);
+				r = m_akCmdButtonText.find((ZGuiButton*)pkClickWnd);
 				if(r != m_akCmdButtonText.end())
 					m_pkGuiBuilder->Get("CmdButtonTipLB")->SetText(
 						(char*)r->second.c_str());
@@ -132,6 +141,22 @@ bool UserPanel::DlgProc( ZGuiWnd* pkWnd,unsigned int uiMessage,
 			}
 		}
 		break;
+
+	case ZGM_MOUSEMOVE:
+
+		x = ((int*)pkParams)[1];
+		y = ((int*)pkParams)[2];
+
+		pkClickWnd = m_pkDlgBox->Find(x,y);
+
+		if(((int*)pkParams)[0] == 1) // button down
+		{
+			if(m_pkGuiBuilder->Get("MiniMapWnd") == pkWnd)
+				OnClickMinimap(x,y);
+		}
+
+		break;
+
 	}
 	return true;
 }
@@ -164,8 +189,24 @@ bool UserPanel::Click()
 	return false;
 }
 
+void UserPanel::OnClickMinimap(int x, int y)
+{
+	ZGuiWnd* pkWnd = m_pkGuiBuilder->Get("MiniMapWnd");
 
+	Vector3 pos(0,CAMERA_HEIGHT,0);
 
+	Rect rc = pkWnd->GetScreenRect();
+	x -= rc.Left;
+	y -= rc.Top;
+	
+	float fMapWidth = rc.Width();
+	float fMapHeight = rc.Height();
 
+	float fProcentAvWidth = (1.0f / fMapWidth) * x;
+	float fProcentAvHeight = (1.0f / fMapWidth) * y;
 
+	pos.x = -255 + fProcentAvWidth*512;
+	pos.z = -255 + fProcentAvHeight*512;
 
+	m_pkZeroRts->SetCamPos(pos);
+}
