@@ -78,18 +78,18 @@ void P_Buff::Enable(P_CharacterProperty* pkCP)
 void P_Buff::Disable()
 {
 	if(m_pkCharacter)
-	{
-	
+	{	
 		vector<ScriptFuncArg> kParams;
+		
 		int iID = m_pkCharacter->GetEntity()->GetEntityID();
 		kParams.push_back(ScriptFuncArg( &iID,tINT));	
 		
-		m_pkEntityManager->CallFunction(GetEntity(),"RemoveBuff",&kParams);			
+		m_pkEntityManager->CallFunction(GetEntity(),"RemoveBuff",&kParams);				
 	
-		m_pkCharacter->RemoveBuff(this);	
+		
+		m_pkCharacter = NULL;	
 	}
 	
-	m_pkCharacter = NULL;
 }
 
 

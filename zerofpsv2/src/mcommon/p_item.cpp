@@ -73,7 +73,14 @@ void P_Item::UnEquip()
 		return;
 	}
 
-	m_pkEntityManager->Delete(m_iBuffEntityID);
+	//get character and 
+	if(P_Buff* pkBuff = (P_Buff*)m_pkEntityManager->GetPropertyFromEntityID(m_iBuffEntityID,"P_Buff"))
+	{
+		if(P_CharacterProperty* pkCP = pkBuff->GetCharacter())
+			pkCP->RemoveBuff(pkBuff);	
+	}
+	
+// 	m_pkEntityManager->Delete(m_iBuffEntityID);
 	m_iBuffEntityID = -1;
 }
 

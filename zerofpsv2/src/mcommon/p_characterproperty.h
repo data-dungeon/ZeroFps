@@ -100,8 +100,8 @@ class MCOMMON_API P_CharacterProperty: public Property
 		bool	 GetIsPlayerCharacter()								{	return m_bIsPlayerCharacter;	}
 		
 		
-		P_Buff* AddBuff(const string& strBuffName);			//creates and adds buff to character
-		void RemoveBuff(P_Buff* pkBuff);							//sends update to client about removed buff (does not delete it)
+		P_Buff* AddBuff(const string& strBuffName);			//creates and adds buff to character 
+		void RemoveBuff(P_Buff* pkBuff);							//removes buffs
 		
 		
 		//client code

@@ -581,7 +581,7 @@ void P_CharacterProperty::RemoveBuff(P_Buff* pkBuff)
 {
 	if(pkBuff->GetCharacter() == this)
 	{
-		//m_pkEntityManager->Delete(pkBuff->GetEntity());
+		m_pkEntityManager->Delete(pkBuff->GetEntity());
 		pkBuff->m_bShow = false;
 		
 		SendBuffList();
