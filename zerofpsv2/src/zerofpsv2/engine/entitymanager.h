@@ -166,6 +166,9 @@ class ENGINE_API EntityManager : public ZFSubSystem{
 		void PackToClient(int iClient, vector<Entity*> kObjects);
 		void PackToClients();												//Packs and Sends to ALL clients.
 
+		void StaticData(int iClient, NetPacket* pkNetPacket);
+		void GetStaticData(int iEntityID);
+
 		void OwnerShip_Request(Entity* pkObj);		// Use this to request ownership of a object.
 		void OwnerShip_OnRequest(Entity* pkObj);	// Called when a request for ownership arrives on server.
 		void OwnerShip_OnGrant(Entity* pkObj);		// Recv on client of he gets controll of a object from server.	

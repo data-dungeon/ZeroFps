@@ -901,6 +901,10 @@ void ZeroFps::HandleNetworkPacket(NetPacket* pkNetPacket)
 				m_pkObjectMan->UpdateZoneList(pkNetPacket);
 				break;
 
+			case ZFGP_GETSTATICDATA: 
+				m_pkObjectMan->StaticData(pkNetPacket->m_iClientID, pkNetPacket);
+				break;
+
 			default:
 				cout << "Error in game packet : " << (int) ucGamePacketType << endl;
 				return;

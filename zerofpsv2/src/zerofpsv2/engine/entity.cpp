@@ -468,6 +468,18 @@ void Entity::ZoneChange(int iCurrent,int iNew)
 	}
 }
 
+void Entity::GetAllDynamicEntitys(vector<Entity*> *pakObjects)
+{
+	if( GetName() == "StaticEntity" )
+		return;
+
+	pakObjects->push_back(this);	
+	
+	for(vector<Entity*>::iterator it=m_akChilds.begin();it!=m_akChilds.end();it++) {
+		(*it)->GetAllDynamicEntitys(pakObjects);
+	}	
+	
+}
 
 /**	\brief	Adds ourself and all our children to the list of objects.
 */
@@ -1215,4 +1227,21 @@ Matrix4 Entity::GetLocalOriM()
 	return m_kLocalOriM;
 }
 
+Entity* Entity::GetStaticEntity()
+{
+	Entity* pkStaticEntity=NULL;		
+	vector<Entity*> kEntitys;				
+	GetAllObjects(&kEntitys);
+	
+	for(int i=0;i<kEntitys.size();i++)
+	{
+		if(kEntitys[i]->GetName()=="StaticEntity")
+		{
+			pkStaticEntity=kEntitys[i]; 
+			break;
+		}		
+	}
+	
+	return pkStaticEntity;
+}
 

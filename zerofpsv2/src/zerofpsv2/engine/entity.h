@@ -208,7 +208,9 @@ class ENGINE_API Entity
 		bool HasChild(Entity* pkObject);							
 		int NrOfChilds();												///< Return num of childs to this object.
 		void DeleteAllChilds();										// Remove all childs from this object.
-		void GetAllObjects(vector<Entity*> *pakObjects);	// Return this + all childs.
+		void GetAllObjects(vector<Entity*> *pakObjects);			// Return this + all childs.
+		void GetAllDynamicEntitys(vector<Entity*> *pakObjects);	// Return this + all childs.
+		Entity* GetStaticEntity();
 
 		bool AttachToZone();		
 		bool AttachToZone(Vector3 kPos);		
@@ -224,6 +226,9 @@ class ENGINE_API Entity
 
 		void Load(ZFIoInterface* pkFile);		
 		void Save(ZFIoInterface* pkFile);
+
+		void StaticData(int iClient, NetPacket* pkNetPacket);
+		void GetStaticData(int iEntityID);
 
 		// Collision / Shape.
 		float GetBoundingRadius();									///< Get radius of collision object or radius 1.0 if none found.

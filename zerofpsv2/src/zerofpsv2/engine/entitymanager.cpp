@@ -642,25 +642,7 @@ void EntityManager::UpdateZoneList(NetPacket* pkNetPacket)
 		kZones.push_back(iZoneID);
 		pkNetPacket->Read(iZoneID);
 		}
-
 	
-/*	cout << "Active Zones: "; 
-	for(i=0; i<kZones.size(); i++) 
-		cout << kZones[i] << ", ";
-	cout << endl;*/
-	
-/*	string strZones;
-	char szNum[25];
-	strZones = "Active Zones: ";
-	for(i=0; i<kZones.size(); i++) {
-		sprintf(szNum,"%d",kZones[i]);
-		strZones = strZones + "," + szNum;
-		}*/
-
-//	printf("Num Of Zones %d\n", kZones.size());
-
-	//m_pkZeroFps->DevPrintf("common", "%s", strZones.c_str());
-
 	for( i=0; i<m_pkZoneObject->m_akChilds.size(); i++) {
 		int iLocalZoneID = m_pkZoneObject->m_akChilds[i]->iNetWorkID;
 		
@@ -670,11 +652,20 @@ void EntityManager::UpdateZoneList(NetPacket* pkNetPacket)
 			}
 		}
 
-/*	for(i=0; i<kZones.size(); i++) {
-		if(GetObjectByNetWorkID(kZones[i]) == NULL) {
-			printf("Zone %d not found\n", kZones[i]);
-			}
-	}	*/
+	Entity* pkStaticEntity=NULL;		
+
+	for( i=0; i<m_pkZoneObject->m_akChilds.size(); i++) {
+			// First find the staticentity	
+			Entity* pkZone = m_pkZoneObject->m_akChilds[i];
+			pkStaticEntity = pkZone->GetStaticEntity();
+
+			//if no staticentity was found, complain
+			if(!pkStaticEntity) {
+				GetStaticData(pkZone->iNetWorkID);
+				printf("Need Static Ents for Zone - %d\n", pkZone->iNetWorkID);
+				return;
+				}
+		}
 }
 
 
@@ -756,7 +747,7 @@ void EntityManager::PackToClients()
 			assert(pkZone);
 
 			kObjects.clear();
-			pkZone->GetAllObjects(&kObjects);
+			pkZone->GetAllDynamicEntitys(&kObjects);
 			PackToClient(iClient, kObjects);
 			}
 		}
@@ -893,6 +884,39 @@ void EntityManager::PackToClients()
 }
 */
 
+void EntityManager::StaticData(int iClient, NetPacket* pkNetPacket)
+{
+	int iEntityID;
+	pkNetPacket->Read((int) iEntityID);
+	
+	Entity* pkEnt = GetObjectByNetWorkID( iEntityID );
+	if(!pkEnt)
+		return;
+
+	Entity* pkStatic = pkEnt->GetStaticEntity();
+	if(!pkStatic)
+		return;
+
+	vector<Entity*>	kObjects;
+	m_iForceNetUpdate = 0xFFFFFFFF;
+
+	kObjects.clear();
+	pkStatic->GetAllObjects(&kObjects);
+	PackToClient(iClient, kObjects);
+}
+
+/* Send Request for static data to server. */
+void EntityManager::GetStaticData(int iEntityID)
+{
+	NetPacket NP;
+
+	NP.Clear();
+	NP.m_kData.m_kHeader.m_iPacketType = ZF_NETTYPE_UNREL;
+	NP.Write((char) ZFGP_GETSTATICDATA);
+	NP.Write((int) iEntityID);
+	NP.Write(ZFGP_ENDOFPACKET);
+	m_pkNetWork->SendToClient(0, &NP);
+}
 
 // Debug / Help Functions		
 void EntityManager::DisplayTree()
@@ -2020,6 +2044,8 @@ void EntityManager::ForceSave()
 
 void EntityManager::SetUnderConstruction(int iId)
 {
+	int i;
+
 	ZoneData* zd = GetZoneData(iId);	
 	if(zd)
 	{
@@ -2043,7 +2069,7 @@ void EntityManager::SetUnderConstruction(int iId)
 		Entity* pkStaticEntity=NULL;		
 		vector<Entity*> kEntitys;				
 		zd->m_pkZone->GetAllObjects(&kEntitys);
-		for(int i=0;i<kEntitys.size();i++)
+		for(i=0;i<kEntitys.size();i++)
 		{
 			if(kEntitys[i]->GetName()=="StaticEntity")
 			{
@@ -2061,7 +2087,7 @@ void EntityManager::SetUnderConstruction(int iId)
 		
 		//find all static objects and attach them to zoneobject
 		int nrofstatic=0;
-		for(int i=0;i<kEntitys.size();i++)
+		for(i=0;i<kEntitys.size();i++)
 			if(kEntitys[i]->m_iObjectType == OBJECT_TYPE_STATIC)
 			{
 				kEntitys[i]->SetParent(zd->m_pkZone);
@@ -2077,6 +2103,8 @@ void EntityManager::SetUnderConstruction(int iId)
 
 void EntityManager::CommitZone(int iId)
 {
+	int i;
+
 	ZoneData* zd = GetZoneData(iId);	
 	if(zd)
 	{
@@ -2101,7 +2129,7 @@ void EntityManager::CommitZone(int iId)
 		Entity* pkStaticEntity=NULL;		
 		vector<Entity*> kEntitys;				
 		zd->m_pkZone->GetAllObjects(&kEntitys);
-		for(int i=0;i<kEntitys.size();i++)
+		for(i=0;i<kEntitys.size();i++)
 		{
 			if(kEntitys[i]->GetName()=="StaticEntity")
 			{
@@ -2120,7 +2148,7 @@ void EntityManager::CommitZone(int iId)
 		
 		//find all static objects and attach them to staticentity
 		int nrofstatic=0;		
-		for(int i=0;i<kEntitys.size();i++)
+		for(i=0;i<kEntitys.size();i++)
 			if(kEntitys[i]->m_iObjectType == OBJECT_TYPE_STATIC)
 			{	
 				kEntitys[i]->SetParent(pkStaticEntity);

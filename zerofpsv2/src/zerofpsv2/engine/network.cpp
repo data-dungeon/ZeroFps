@@ -775,6 +775,7 @@ void NetWork::Run()
 	while(Recv(&NetP)) {
 		// Update Stats
 		iClientID = GetClientNumber(&NetP.m_kAddress);
+		NetP.m_iClientID = iClientID;
 		iRecvBytes += NetP.m_iLength;
 
 		if(iClientID != ZF_NET_NOCLIENT) {

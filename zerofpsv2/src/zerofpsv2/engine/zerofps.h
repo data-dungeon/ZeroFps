@@ -57,10 +57,12 @@ enum enginestates
 #define	ZFGP_CLIENTSTATE		2
 #define	ZFGP_CLIENTCMD			3
 #define	ZFGP_PRINT				4
-//#define	ZFGP_DELETEOBJECT		5
 #define	ZFGP_REQOWNOBJECT		6
-#define	ZFGP_GIVEOWNOBJECT		7
-#define	ZFGP_ZONELIST			8	// LIst of active zones sent to client.
+#define	ZFGP_GIVEOWNOBJECT	7
+#define	ZFGP_ZONELIST			8		// LIst of active zones sent to client.
+#define  ZFGP_GETSTATICDATA	9
+#define  ZFGP_STATICDATA		10
+
 #define	ZFGP_ENDOFPACKET		128
 
 class DevStringPage

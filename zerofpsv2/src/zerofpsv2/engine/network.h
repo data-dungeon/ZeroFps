@@ -107,6 +107,7 @@ public:
 	int					m_iLength;
 	int					m_iPos;
 	IPaddress			m_kAddress;
+	int					m_iClientID;
 	bool					m_bReadError;
 
 	void SetError(bool bError) { m_bReadError = bError;	}
