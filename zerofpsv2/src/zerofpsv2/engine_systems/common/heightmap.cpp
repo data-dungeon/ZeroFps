@@ -526,7 +526,7 @@ HM_vert* HeightMap::GetVert(int x,int z) {
 }
 
 
-bool HeightMap::LoadImageHmap(const char* acFile) {
+/*bool HeightMap::LoadImageHmap(const char* acFile) {
 	int smooth=1;
 
 	SDL_Surface *image;
@@ -575,9 +575,9 @@ bool HeightMap::LoadImageHmap(const char* acFile) {
 	
 //	delete image;
 	return true;
-}
+}*/
 
-/*bool HeightMap::LoadImageHmap(const char* acFile) 
+bool HeightMap::LoadImageHmap(const char* acFile) 
 {
 	int smooth=1;
 
@@ -628,10 +628,11 @@ bool HeightMap::LoadImageHmap(const char* acFile) {
 				verts[y*m_iHmSize+x].height=med;
 			}
 		}
+
 	}
 	
 	return true;
-}*/
+}
 
 
 Uint32 HeightMap::GetPixel(SDL_Surface *surface, int x, int y)

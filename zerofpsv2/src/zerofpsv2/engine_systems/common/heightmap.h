@@ -4,7 +4,7 @@
 #define _BASIC_HEIGHTMAP_H_
 
 #include <SDL/SDL.h>
-#include <SDL/SDL_image.h>
+//#include <SDL/SDL_image.h>
 #include "../engine_systems_x.h"
 #include <vector>
 #include <string>
