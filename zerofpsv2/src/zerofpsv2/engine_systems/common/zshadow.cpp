@@ -84,7 +84,7 @@ ZShadow::ZShadow(): ZFSubSystem("ZShadow")
 	m_bDisabled = 			false;
 	m_iDebug = 				0;
 	m_iShadowMode =		ezFail;
-	m_fFrontCapOffset =	0.025;
+	m_fFrontCapOffset =	0.05;
 
 	RegisterVariable("r_shadows",				&m_iNrOfShadows,CSYS_INT);
 	RegisterVariable("r_shadowmode",			&m_iShadowMode,CSYS_INT);
