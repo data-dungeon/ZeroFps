@@ -88,7 +88,9 @@ void P_Mad::Update()
 			ori = m_pkObject->GetWorldRotM();
 			glMultMatrixf(&ori[0]);
 			glScalef(m_fScale, m_fScale, m_fScale);
-			Draw_All(m_pkZeroFps->m_iMadDraw);
+
+			m_pkShader->SetVertexOffset(pos);
+			Draw_All(m_pkZeroFps->m_iMadDraw);			
 		glPopMatrix();
 
 		if(m_pkZeroFps->m_iMadDraw & MAD_DRAW_SPHERE) {

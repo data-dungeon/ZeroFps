@@ -8,8 +8,8 @@ ZShader::ZShader() : ZFSubSystem("ZShader")
 bool ZShader::StartUp()
 {
  	m_pkTexMan	= static_cast<TextureManager*>(GetSystem().GetObjectPtr("TextureManager"));
- 	m_pkLight	= static_cast<Light*>(GetSystem().GetObjectPtr("Light")); 		
-			
+ 	m_pkLight	= static_cast<Light*>(GetSystem().GetObjectPtr("Light"));
+
 	//check if we have arb_vertex_program support
 	if(HaveVertexProgramExt())
 		m_bVertexProgram = true;
@@ -17,16 +17,18 @@ bool ZShader::StartUp()
 	{
 		cout<<"ARB Vertex program not supported"<<endl;
 		m_bVertexProgram = false;
-	}		
-			
-			
+	}
+
+
 	SetVertexProgram(NO_VPROGRAM);
-			
+
 	m_iForceLighting = LIGHT_MATERIAL;
-	m_iForceBledning = BLEND_MATERIAL;	
-			
+	m_iForceBledning = BLEND_MATERIAL;
+
+	SetVertexOffset(Vector3(0,0,0));
+
 	return true;
-} 
+}
 
 bool ZShader::ShutDown()	{ return true; }
 bool ZShader::IsValid()		{ return true; }
@@ -36,30 +38,31 @@ void ZShader::Reset()
 {
 	m_pkCurentMaterial = NULL;
 	m_iNrOfVertexs = 		0;
-	m_iNrOfIndexes = 		0;	
-	
+	m_iNrOfIndexes = 		0;
+
 	m_pkVertexPointer =	NULL;
-	m_pkNormalPointer =	NULL;	
+	m_pkNormalPointer =	NULL;
 	m_pkTexturePointer0 = NULL;
-	m_pkTexturePointer1 = NULL;	
-	m_pkTexturePointer2 = NULL;	
-	m_pkTexturePointer3 = NULL;	
+	m_pkTexturePointer1 = NULL;
+	m_pkTexturePointer2 = NULL;
+	m_pkTexturePointer3 = NULL;
 	m_pkIndexPointer = 	NULL;
-	m_pkColorPointer = 	NULL;	
+	m_pkColorPointer = 	NULL;
 
 	m_pkBakupVertexPointer = NULL;
-	m_pkBakupNormalPointer = NULL;	
+	m_pkBakupNormalPointer = NULL;
 	m_pkBakupTexturePointer0 = NULL;
-	m_pkBakupTexturePointer1 = NULL;		
-	m_pkBakupTexturePointer2 = NULL;		
-	m_pkBakupTexturePointer3 = NULL;		
+	m_pkBakupTexturePointer1 = NULL;
+	m_pkBakupTexturePointer2 = NULL;
+	m_pkBakupTexturePointer3 = NULL;
 	m_pkBakupIndexPointer = NULL;
 	m_pkBakupColorPointer = NULL;
-				
+
 	m_bCopyedData =		false;
-	
+
 	SetDrawMode(POLYGON_MODE);
-	
+
+	//SetVertexOffset(Vector3(0,0,0));
 }
 
 void ZShader::SetPointer(int iType,void* pkPointer)
@@ -629,7 +632,7 @@ void ZShader::CleanCopyedData()
 	m_pkTexturePointer2 = m_pkBakupTexturePointer2;			
 	m_pkTexturePointer3 = m_pkBakupTexturePointer3;			
 	m_pkIndexPointer =	m_pkBakupIndexPointer;		
-	m_pkColorPointer =	m_pkBakupColorPointer;		
+	m_pkColorPointer =	m_pkBakupColorPointer;
 	
 	m_bCopyedData = false;
 	
@@ -651,13 +654,17 @@ void ZShader::Draw()
 		glPushAttrib(GL_ALL_ATTRIB_BITS);
 		
 		SetupRenderStates(m_pkCurentMaterial->GetPass(i));		
-		
+
 		if(m_pkIndexPointer)
 			glDrawElements(m_iDrawMode,m_iNrOfIndexes,GL_UNSIGNED_INT,m_pkIndexPointer);
 		else
-			glDrawArrays(m_iDrawMode,0,m_iNrOfVertexs);	
-	
-		glPopAttrib();	
+			glDrawArrays(m_iDrawMode,0,m_iNrOfVertexs);
+
+
+//		FindSiluetEdges(Vector3(0,0,0));
+
+
+		glPopAttrib();
 	}
 	
 	if(m_bCopyedData)
@@ -691,18 +698,112 @@ void ZShader::SetVertexProgram(int iVPID)
 		
 	if(iVPID == NO_VPROGRAM)
 	{
-		glDisable(GL_VERTEX_PROGRAM_ARB);		
+		glDisable(GL_VERTEX_PROGRAM_ARB);
 	}
-	else	
+	else
 	{
-		glEnable(GL_VERTEX_PROGRAM_ARB);		
-		
+		glEnable(GL_VERTEX_PROGRAM_ARB);
+
 		if(m_iCurrentVertexProgram != iVPID)
 			glBindProgramARB(GL_VERTEX_PROGRAM_ARB, iVPID);
-	}	
-		
-		
+	}
+
+
 	m_iCurrentVertexProgram=iVPID;
+}
+
+void ZShader::FindSiluetEdges(Vector3 kSourcePos)
+{
+	Vector3 v[3];
+
+	vector<pair<int,int> > kTowardsEdges;
+
+	if(m_pkIndexPointer && m_pkVertexPointer)
+	{
+		for(int i = 0;i<m_iNrOfIndexes; i+=3)
+		{
+			v[0] = m_pkVertexPointer[m_pkIndexPointer[i]] ;
+			v[1] = m_pkVertexPointer[m_pkIndexPointer[i+1]] ;
+			v[2] = m_pkVertexPointer[m_pkIndexPointer[i+2]] ;
+
+			Vector3 Normal = (v[1] - v[0]).Cross(v[2] - v[0]).Unit();
+			Vector3 RefV = ( kSourcePos - (v[0] + m_kVertexOffset) ).Unit();
+
+			float d = Normal.Dot(RefV);
+			//cout<<"DOT:"<<<<endl;
+
+			if(d > 0)
+			{
+				pair<int,int> p;
+
+				for(int j = 0;j<3;j++)
+				{
+					switch(j)
+					{
+						case 0:
+							p.first = m_pkIndexPointer[i];
+							p.second = m_pkIndexPointer[i+1];
+							break;
+						case 1:
+							p.first = m_pkIndexPointer[i+1];
+							p.second = m_pkIndexPointer[i+2];
+							break;
+						case 2:
+							p.first = m_pkIndexPointer[i+2];
+							p.second = m_pkIndexPointer[i];
+							break;
+
+					}
+
+
+					bool bFound = false;
+					for(vector<pair<int,int> >::iterator it=kTowardsEdges.begin();it!=kTowardsEdges.end();it++)
+					{
+//						if( ( ( (*it).first == p.first ) 	&& ( (*it).second == p.second ) ) ||
+//							 ( ( (*it).second == p.first ) 	&& ( (*it).first == p.second  ) ) )
+						if( ( ( m_pkVertexPointer[(*it).first] == m_pkVertexPointer[p.first] ) 	&&
+							 	( m_pkVertexPointer[(*it).second] == m_pkVertexPointer[p.second] ) ) ||
+							 	( ( m_pkVertexPointer[(*it).second] == m_pkVertexPointer[p.first] ) 	&&
+								( m_pkVertexPointer[(*it).first] == m_pkVertexPointer[p.second]  ) ) )
+						{
+							kTowardsEdges.erase(it);
+							it = kTowardsEdges.begin();
+							bFound =true;
+
+							//cout<<"removing"<<endl;
+							break;
+						}
+					}
+
+					if(!bFound)
+					{
+						kTowardsEdges.push_back(p);
+					}
+				}
+
+
+/*				glBegin(GL_LINES);
+					glVertex3f(v[0].x,v[0].y,v[0].z);
+					glVertex3f(v[0].x+Normal.x,v[0].y+Normal.y,v[0].z+Normal.z);
+				glEnd();
+*/
+
+
+
+			}
+		}
+
+		for( int i = 0;i< kTowardsEdges.size();i++)
+		{
+			v[0] = m_pkVertexPointer[kTowardsEdges[i].first];
+			v[1] = m_pkVertexPointer[kTowardsEdges[i].second];
+
+				glBegin(GL_LINES);
+					glVertex3f(v[0].x,v[0].y,v[0].z);
+					glVertex3f(v[1].x,v[1].y,v[1].z);
+				glEnd();
+		}
+	}
 }
 
 
@@ -732,7 +833,7 @@ void ZShader::RandomVertexMovements()
 }
 
 void ZShader::Waves()
-{	
+{
 	for(int i=0;i<m_iNrOfVertexs;i++)
 	{
 		float offset = Clamp(m_pkVertexPointer[i].x + m_pkVertexPointer[i].y + m_pkVertexPointer[i].z,0,4);
@@ -772,4 +873,5 @@ void ZShader::ColorEffect(ZMaterialSettings* pkSettings)
 	}
 
 }
+
 

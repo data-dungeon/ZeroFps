@@ -15,6 +15,7 @@
 #include "../engine/res_texture.h"
 #include "zvprogram.h"
 
+
 using namespace std;
 class ZMaterial;
 class ZMaterialSettings;
@@ -160,12 +161,15 @@ class RENDER_API ZShader : public ZFSubSystem
 		Vector4*			m_pkBakupColorPointer;
 		
 		//nr of vertexs
-		int			m_iNrOfVertexs;				
-		int			m_iNrOfIndexes;						
+		int			m_iNrOfVertexs;
+		int			m_iNrOfIndexes;
 		
 		//mode to use (depending on underlying system , etc this may be opengl types)
 		int			m_iDrawMode;
-		
+
+		//vertexdata offset (used for shadow calculations etc)
+		Vector3		m_kVertexOffset;
+
 		//force lighting to this
 		int			m_iForceLighting;		
 		
@@ -206,7 +210,10 @@ class RENDER_API ZShader : public ZFSubSystem
 		void ColorEffect(ZMaterialSettings* pkSettings);
 	
 		bool HaveVertexProgramExt();
-	
+
+		void FindSiluetEdges(Vector3 kSourcePos);
+
+
 	public:
 		ZShader();
 		bool StartUp();
@@ -219,11 +226,13 @@ class RENDER_API ZShader : public ZFSubSystem
 		void SetNrOfVertexs(int iNr);
 		void SetNrOfIndexes(int iNr);		
 		void SetDrawMode(int iDrawMode);
-		
+
+		void SetVertexOffset(Vector3 kOffset) { m_kVertexOffset = kOffset;};
+
 		void SetVertexProgram(int iVPID);
 		int  GetCurrentVertexProgram() {return m_iCurrentVertexProgram;};
 		bool SupportVertexProgram() { return m_bVertexProgram;};
-		
+
 		
 		void Reset();
 		void Draw();
