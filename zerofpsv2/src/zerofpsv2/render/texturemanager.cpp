@@ -304,14 +304,16 @@ SDL_Surface *TextureManager::LoadImage(const char *acFilename)
 	ZFFile.Close();
 */
 	// VIM
-	SDL_Surface *image;
+/*	SDL_Surface *image;
 	image = IMG_Load(acFilename);
 	if ( image == NULL ) {
 		fprintf(stderr, "Unable to load %s: %s\n", acFilename, SDL_GetError());
 		return(NULL);
 	}
 
-   return(image);
+   return(image);*/
+
+   return NULL;
 };
 
 bool TextureManager::UnLoad(const char* acFileName)

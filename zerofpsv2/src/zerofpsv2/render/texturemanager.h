@@ -8,7 +8,7 @@
 #include <list>
 #include <string>
 #include <SDL/SDL.h>
-#include <SDL/SDL_image.h>
+//#include <SDL/SDL_image.h>
 #include "render_x.h"
 #include "../ogl/zfpsgl.h"
 #include <bitset>

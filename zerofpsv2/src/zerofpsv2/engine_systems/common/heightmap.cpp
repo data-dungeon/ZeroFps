@@ -526,7 +526,6 @@ HM_vert* HeightMap::GetVert(int x,int z) {
 }
 
 
-
 bool HeightMap::LoadImageHmap(const char* acFile) {
 	int smooth=1;
 
@@ -578,10 +577,67 @@ bool HeightMap::LoadImageHmap(const char* acFile) {
 	return true;
 }
 
+/*bool HeightMap::LoadImageHmap(const char* acFile) 
+{
+	int smooth=1;
+
+	Image kImage;
+	Uint8 data;
+	Uint32 pixel;
+	
+	bool bSuccess = kImage.load(acFile);
+	if(!bSuccess)
+	{
+		cout<<"Failed to load heightmap "<<acFile<<endl<<endl<<endl;
+		return false;
+	}
+
+	m_iHmSize=kImage.width;
+	cout<<"Image Size is:"<<m_iHmSize<<endl;
+	
+	if(verts)
+		delete[] verts;
+
+	verts=new HM_vert[(m_iHmSize+m_iError)*m_iHmSize];	
+
+	for(int y=0;y<m_iHmSize;y++)
+		for(int x=0;x<m_iHmSize;x++)
+		{							
+			color_rgba color;
+			kImage.get_pixel(x,y,color); 
+		
+			data = color.r;
+			verts[y*m_iHmSize+x].height = data/3;		
+		}
+			
+	float med;
+	for(int l=0;l<smooth;l++) {
+		for(int y=1;y<m_iHmSize-1;y++) {
+			for(int x=1;x<m_iHmSize-1;x++) {
+				med=0;
+				for(int q=-1;q<2;q++)
+					for(int w=-1;w<2;w++){
+						if(q==0 && w==0) {							
+
+						} else {
+							med+=verts[(y+q)*m_iHmSize+(x+w)].height;							
+						}
+					}
+				med=med/8;
+				
+				verts[y*m_iHmSize+x].height=med;
+			}
+		}
+	}
+	
+	return true;
+}*/
+
+
 Uint32 HeightMap::GetPixel(SDL_Surface *surface, int x, int y)
 {
     int bpp = surface->format->BytesPerPixel;
-    /* Here p is the address to the pixel we want to retrieve */
+    // Here p is the address to the pixel we want to retrieve 
     Uint8 *p = (Uint8 *)surface->pixels + y * surface->pitch + x * bpp;
 
     switch(bpp) {
@@ -601,7 +657,7 @@ Uint32 HeightMap::GetPixel(SDL_Surface *surface, int x, int y)
         return *(Uint32 *)p;
 
     default:
-        return 0;       /* shouldn't happen, but avoids warnings */
+        return 0;       // shouldn't happen, but avoids warnings
     }
 }
 

@@ -586,6 +586,21 @@ void Image::set_pixel(int x, int y, unsigned char r,unsigned char g,unsigned cha
 	pixels[offset].b = b;
 }
 
+bool Image::get_pixel(int x, int y, color_rgba& rkColor)
+{
+	if(x > width || y > height)
+		return false;
+
+	int offset = y * width + x;
+
+	rkColor.r = pixels[offset].r;
+	rkColor.g = pixels[offset].g;
+	rkColor.b = pixels[offset].b;
+	rkColor.a = pixels[offset].a;
+
+	return true;
+}
+
 void Image::fill(int sx, int sy, int w, int h,unsigned char r,unsigned char g,unsigned char bl)
 {
 //	assert(pixels);
@@ -939,6 +954,9 @@ bool Image::load_bmp(FILE* pkFile)
 
 	return true;
 }
+
+
+
 
 
 

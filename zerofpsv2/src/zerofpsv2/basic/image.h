@@ -24,6 +24,7 @@ private:
 	void read_rgb(color_rgba* dst,  FILE* fp, int pixsize);		///< Read image data.
 
 public:
+	
 	Image();
 	~Image();
 	Image( const Image& v );
@@ -52,6 +53,7 @@ public:
 	// Tools
 	void flip(bool flipx, bool flipy);				///< Flip image along one or two axis.
 	void set_pixel(int x, int y, unsigned char r, unsigned char g, unsigned char b);	///< Set color of a pixel.
+	bool get_pixel(int x, int y, color_rgba& rkColor);
 	void fill(int sx, int sy, int w, int h, unsigned char r, unsigned char g, unsigned char b);
 
 	void downsample(void);							///< Sample image down so it's size is a power of two.
