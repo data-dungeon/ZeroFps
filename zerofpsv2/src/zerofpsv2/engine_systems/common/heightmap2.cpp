@@ -421,7 +421,7 @@ void Heightmap2::UpdateRecLodLevel(Vector3 kCamPos)
 				pkPatch->fAvrageHeight,(float) (y*m_iPatchHeight + m_iPatchHeight/2));
 			kCenter *= m_fScale;
 		
-			float fDist = (kCamPos - kCenter).Length();
+			float fDist = kCamPos.DistanceTo(kCenter);
 			
 			int iLevel = int(fDist / m_fDetail);
 			

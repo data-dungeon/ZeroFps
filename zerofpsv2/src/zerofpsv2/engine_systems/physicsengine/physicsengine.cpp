@@ -195,13 +195,13 @@ bool PhysicsEngine::TestMotionSpheres(P_Physic* pkPP1,P_Physic* pkPP2)
 	Vector3 o2pos = pkPP2->GetObject()->GetWorldPosV();
 	
 	sp1.m_kPos.Lerp(o1pos,pkPP1->m_kNewPos,0.5);
-	sp1.m_fRadius=((pkPP1->GetObject()->GetWorldPosV()-pkPP1->m_kNewPos).Length() / 2) + static_cast<CSSphere*>(pkPP1->GetColSphere())->m_fRadius;
+	sp1.m_fRadius=(pkPP1->GetObject()->GetWorldPosV().DistanceTo(pkPP1->m_kNewPos) / 2) + static_cast<CSSphere*>(pkPP1->GetColSphere())->m_fRadius;
 
 	sp2.m_kPos.Lerp(o2pos,pkPP2->m_kNewPos,0.5);
-	sp2.m_fRadius=((pkPP2->GetObject()->GetWorldPosV()-pkPP2->m_kNewPos).Length() / 2) + static_cast<CSSphere*>(pkPP2->GetColSphere())->m_fRadius;
+	sp2.m_fRadius=(pkPP2->GetObject()->GetWorldPosV().DistanceTo(pkPP2->m_kNewPos) / 2) + static_cast<CSSphere*>(pkPP2->GetColSphere())->m_fRadius;
 
 	
-	float Dist= (sp1.m_kPos-sp2.m_kPos).Length();
+	float Dist= sp1.m_kPos.DistanceTo(sp2.m_kPos);
 
 	if(Dist < (sp1.m_fRadius + sp2.m_fRadius))
 		return true;

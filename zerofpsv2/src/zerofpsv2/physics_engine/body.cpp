@@ -235,7 +235,7 @@ float Body::CalculateRadius()
 		
 		}	
 
-		fRadius = (max - min).Length()/2;
+		fRadius = max.DistanceTo(min) / 2.f;
 	}
 	
 	return fRadius;

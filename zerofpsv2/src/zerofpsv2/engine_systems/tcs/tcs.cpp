@@ -146,7 +146,7 @@ void Tcs::UpdateLineTests()
 			
 			if(TestLine(m_kBodys[i]->m_kNewPos,Vector3(0,-1,0),m_kBodys[i]))
 			{
-				distance = (m_kBodys[i]->m_kNewPos - m_kLastTestPos).Length();
+				distance = m_kBodys[i]->m_kNewPos.DistanceTo(m_kLastTestPos);
 				if(distance < m_kBodys[i]->m_fLegLength)
 				{
 					m_kBodys[i]->m_kNewPos = m_kLastTestPos + Vector3(0,m_kBodys[i]->m_fLegLength,0);
@@ -392,7 +392,7 @@ bool Tcs::TestSphereVSPolygon(Vector3* kVerts,P_Tcs* pkSphere)
 	
 		if(TestLineVSSphere(kVerts[p1], kVerts[p2],pkSphere))
 		{
-			d = (pkSphere->m_kNewPos - m_kLastTestPos).Length();
+			d = pkSphere->m_kNewPos.DistanceTo(m_kLastTestPos);
 			if( d < closest)
 			{
 				closest = d;
@@ -482,7 +482,7 @@ P_Tcs* Tcs::TestLine(Vector3 kStart,Vector3 kDir,P_Tcs* pkTester)
 		
 		if(TestLineVSMesh(kStart,kDir,m_kBodys[i]))
 		{
-			d = (kStart - m_kLastLineTestColPos).Length();				
+			d = kStart.DistanceTo(m_kLastLineTestColPos);				
 			if(d < closest)
 			{
 				
@@ -643,7 +643,7 @@ void Tcs::TestSphereVsSphere(P_Tcs* pkBody1,P_Tcs* pkBody2,float fAtime)
 
 bool Tcs::CollideSphereVSSphere(P_Tcs* pkBody1,P_Tcs* pkBody2)
 {
-	float d = (pkBody1->m_kNewPos - pkBody2->m_kNewPos).Length() - (pkBody1->m_fRadius + pkBody2->m_fRadius);
+	float d = pkBody1->m_kNewPos.DistanceTo(pkBody2->m_kNewPos) - (pkBody1->m_fRadius + pkBody2->m_fRadius);
 				
 	if(d <= 0)
 		return true;
@@ -763,7 +763,7 @@ bool Tcs::CollideSphereVSMesh(P_Tcs* pkSphere,P_Tcs* pkMesh)
 	
 		if(TestSphereVSPolygon(verts,pkSphere))
 		{	
-			d = (pkSphere->m_kNewPos - m_kLastTestPos).Length();
+			d = pkSphere->m_kNewPos.DistanceTo(m_kLastTestPos);
 		
 			if( d < closest)
 			{

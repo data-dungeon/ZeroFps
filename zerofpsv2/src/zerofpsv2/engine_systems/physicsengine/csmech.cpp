@@ -117,12 +117,12 @@ Collision* CSMech::Collide_CSSphere(CSSphere* kOther)
 	
 	tempdata->m_pkPP2 = kOther->m_pkPP;
 	tempdata->m_kPos2 = kPos2;
-	tempdata->m_fDistance2 = (tempdata->m_kPos2 - O2->GetWorldPosV()).Length();
+	tempdata->m_fDistance2 = tempdata->m_kPos2.DistanceTo(O2->GetWorldPosV());
 	tempdata->m_kNormal2.Set(0,1,0);
 	
 	tempdata->m_pkPP1 = m_pkPP;
 	tempdata->m_kPos1 = O1->GetWorldPosV();
-	tempdata->m_fDistance1 = (tempdata->m_kPos1 - O1->GetWorldPosV()).Length();
+	tempdata->m_fDistance1 = tempdata->m_kPos1.DistanceTo(O1->GetWorldPosV());
 	tempdata->m_kNormal1 = m_kColNormal;
 	
 
@@ -322,7 +322,7 @@ bool CSMech::SetUpMech()
 
 Vector3& CSMech::Closest(Vector3& kCurPos,Vector3& OPos1,Vector3& OPos2)
 {
-	if( (kCurPos-OPos1).Length() < (kCurPos-OPos2).Length())
+	if( kCurPos.DistanceTo(OPos1) < kCurPos.DistanceTo(OPos2))
 		return OPos1;
 	else
 		return OPos2;
@@ -331,7 +331,7 @@ Vector3& CSMech::Closest(Vector3& kCurPos,Vector3& OPos1,Vector3& OPos2)
 
 bool CSMech::Closer(Vector3& kCurPos,Vector3& OPos1,Vector3& OPos2)
 {
-	if( (kCurPos-OPos2).Length() < (kCurPos-OPos1).Length())
+	if( kCurPos.DistanceTo(OPos2) < kCurPos.DistanceTo(OPos1) )
 		return true;
 	else
 		return false;
@@ -395,12 +395,12 @@ Collision* CSMech::Collide_CSBox(CSBox* kOther)
 		
 	tempdata->m_pkPP2 = kOther->m_pkPP;
 	tempdata->m_kPos2 = kFinalPos;
-	tempdata->m_fDistance2 = (tempdata->m_kPos2 - O2->GetWorldPosV()).Length();
+	tempdata->m_fDistance2 = tempdata->m_kPos2.DistanceTo(O2->GetWorldPosV());
 	tempdata->m_kNormal2.Set(0,1,0);
 	
 	tempdata->m_pkPP1 = m_pkPP;
 	tempdata->m_kPos1 = O1->GetWorldPosV();
-	tempdata->m_fDistance1 = (tempdata->m_kPos1 - O1->GetWorldPosV()).Length();
+	tempdata->m_fDistance1 = tempdata->m_kPos1.DistanceTo(O1->GetWorldPosV());
 	tempdata->m_kNormal1 = m_kColNormal;
 	
 

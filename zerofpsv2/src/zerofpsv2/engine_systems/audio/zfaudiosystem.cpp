@@ -753,7 +753,7 @@ bool ZFAudioSystem::GetSoundWithLowestPriority(string& strRes)
 ///////////////////////////////////////////////////////////////////////////////
 bool ZFAudioSystem::Hearable(ZFSoundInfo* pkSound)
 {
-	if( (pkSound->m_kPos - m_kPos).Length() < HEARABLE_DISTANCE )
+	if( pkSound->m_kPos.DistanceTo(m_kPos) < HEARABLE_DISTANCE )
 		return true;
 
 	return false;

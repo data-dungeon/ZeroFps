@@ -701,7 +701,7 @@ bool Physics_Engine::TestBodyVSBody(Body* pkBody1,Body* pkBody2,float fATime)
 
 int Physics_Engine::CollideBody(Body* pkBody1,Body* pkBody2)
 {
-	float d = (pkBody1->m_kPosition - pkBody2->m_kPosition).Length() - (pkBody1->m_fRadius + pkBody2->m_fRadius);
+	float d = pkBody1->m_kPosition.DistanceTo(pkBody2->m_kPosition) - (pkBody1->m_fRadius + pkBody2->m_fRadius);
 				
 	if(fabs(d) <= m_fCtol)	
 		return COLLISSION;

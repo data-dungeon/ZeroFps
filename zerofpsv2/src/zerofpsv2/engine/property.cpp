@@ -62,8 +62,8 @@ bool Property::operator<(Property& kOther)
 			return true;		
 		}else {
 			if(m_iSortPlace == kOther.m_iSortPlace){			
-				d1 = (float) abs( (int)(m_pkZeroFps->GetCam()->GetPos() - m_pkObject->GetWorldPosV()).Length() );
-				d2 = (float) abs( (int)(m_pkZeroFps->GetCam()->GetPos() - kOther.m_pkObject->GetWorldPosV()).Length() );
+				d1 = (float) abs( (int)m_pkZeroFps->GetCam()->GetPos().DistanceTo(m_pkObject->GetWorldPosV()) );
+				d2 = (float) abs( (int)m_pkZeroFps->GetCam()->GetPos().DistanceTo(kOther.m_pkObject->GetWorldPosV()) );
 				return d1<d2;		
 			} else {
 				return false;

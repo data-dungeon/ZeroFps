@@ -591,7 +591,7 @@ void EntityManager::GetZones(set<int>* pkZones,int iZone,Vector3 kPos,float fRad
 	ZoneData* pkTemp = GetZoneData(iZone);
 	if(pkTemp)
 	{
-		float d = (kPos - pkTemp->m_kPos).Length() - pkTemp->m_kSize.Length()/2;
+		float d = kPos.DistanceTo(pkTemp->m_kPos) - pkTemp->m_kSize.Length()/2;
 		if(d > fRadius)
 			return;
 	
@@ -1720,7 +1720,7 @@ int EntityManager::GetZoneIndex(Vector3 kMyPos,int iCurrentZone,bool bClosestZon
 			if(!m_kZones[iZ].m_bUsed)
 				continue;
 			
-			float dis = (m_kZones[iZ].m_kPos - kMyPos).Length();
+			float dis = m_kZones[iZ].m_kPos.DistanceTo(kMyPos);
 		
 			if(dis < d)
 			{
@@ -1777,7 +1777,7 @@ void EntityManager::UpdateZones()
 			pkStartZone = &m_kZones[iZoneIndex];
 			pkStartZone->m_iRange = 0;
 			
-			float f = (pkStartZone->m_kPos - (*iT)->GetObject()->GetWorldPosV()).Length();  
+			float f = pkStartZone->m_kPos.DistanceTo((*iT)->GetObject()->GetWorldPosV());  
 			if(f < pkStartZone->m_fDistance)
 				pkStartZone->m_fDistance = f;			
 			
@@ -1808,7 +1808,7 @@ void EntityManager::UpdateZones()
 					pkOtherZone->m_iRange = iRange;
 					
 					//calculate distance from zone to current tracker, if the current tracker is closer then change value in zone
-					float f = (pkOtherZone->m_kPos - (*iT)->GetObject()->GetWorldPosV()).Length();  
+					float f = pkOtherZone->m_kPos.DistanceTo((*iT)->GetObject()->GetWorldPosV());  
 					if(f < pkOtherZone->m_fDistance)
 						pkOtherZone->m_fDistance = f;
 					

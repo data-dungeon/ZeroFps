@@ -102,7 +102,7 @@ void P_Vegitation::Update()
 	Vector3 ObjectPos = m_pkObject->GetWorldPosV();			
 			
 	
-	float fDistance = (ObjectPos - m_pkFps->GetCam()->GetPos()).Length() - m_fRadius;
+	float fDistance = ObjectPos.DistanceTo(m_pkFps->GetCam()->GetPos()) - m_fRadius;
 	//if(fDistance > 40)
 	//	return;
 						

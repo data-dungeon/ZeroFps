@@ -215,7 +215,7 @@ bool P_DMGun::FireBullets(int iAmount)
 				if(mp->TestLine(kStart,kDir))
 				{	
 					cp = mp->GetLastColPos();
-					d = (kStart - cp).Length();
+					d = kStart.DistanceTo(cp);
 	
 					if(d < closest)
 					{

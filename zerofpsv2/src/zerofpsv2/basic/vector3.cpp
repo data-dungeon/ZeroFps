@@ -10,6 +10,10 @@ const Vector3 Vector3::AXIS_Y(0,1,0);
 const Vector3 Vector3::AXIS_Z(0,0,1);
 const float Vector3::degtorad = float(57.3248);
 
+// used by the new distance formula
+#define SWAP(A, B, T) {T = A; A = B; B = T;}
+
+
 // Comparison
 bool Vector3::operator==(const Vector3 &kOtherV3) const
 {
@@ -256,7 +260,30 @@ Vector3 Vector3::operator*(const Matrix4 &f) const
 
 double Vector3::DistanceTo (Vector3 &to)
 {
-   return sqrt( pow(x - to.x,2) + pow(y - to.y, 2) + pow(z - to.z,2) );
+	float fX = x - to.x;
+	float fY = y - to.y;
+	float fZ = z - to.z;
+
+	// this is called "Taylor series distance" and is supposed to be faster than sqrt
+	int iSwapValue;
+
+	int iDistance;
+	int iX = (int)fabs(fX) * 1024;
+	int iY = (int)fabs(fY) * 1024;
+	int iZ = (int)fabs(fZ) * 1024;
+
+	if(iY < iX)
+		SWAP(iX, iY, iSwapValue);
+	if(iZ < iY)
+		SWAP(iY, iZ, iSwapValue);
+	if(iY < iX) 
+		SWAP(iX, iY, iSwapValue);
+
+	iDistance = (iZ + 11 * (iY >> 5) + (iX >> 2));
+	
+	return((double)(iDistance >> 10));
+
+  // return sqrt( pow(x - to.x,2) + pow(y - to.y, 2) + pow(z - to.z,2) );
 }
 
 double Vector3::DistanceXZTo (Vector3 &to)

@@ -73,7 +73,7 @@ Collision* HeightMapCS::Collide_CSSphere(CSSphere* kOther)
 	Collision* tempdata = new Collision;
 	tempdata->m_pkPP2 = kOther->m_pkPP;
 	tempdata->m_kPos2 = kNewPos;
-	tempdata->m_fDistance2 = (kNewPos - O2->GetWorldPosV()).Length();	
+	tempdata->m_fDistance2 = kNewPos.DistanceTo(O2->GetWorldPosV());	
 	tempdata->m_kNormal2.Set(0,1,0);	
 	
 	tempdata->m_pkPP1 = m_pkPP;
@@ -131,7 +131,7 @@ Collision* HeightMapCS::Collide_CSBox(CSBox* kOther)
 	Collision* tempdata = new Collision;
 	tempdata->m_pkPP2 = kOther->m_pkPP;
 	tempdata->m_kPos2 = kNewPos;
-	tempdata->m_fDistance2 = (kNewPos - O2->GetWorldPosV()).Length();	
+	tempdata->m_fDistance2 = kNewPos.DistanceTo(O2->GetWorldPosV());	
 	tempdata->m_kNormal2.Set(0,1,0);	
 	
 	tempdata->m_pkPP1 = m_pkPP;

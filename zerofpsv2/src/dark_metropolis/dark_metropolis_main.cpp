@@ -529,7 +529,7 @@ void DarkMetropolis::Input()
 			m_iHQID = -1;	
 			
 			//is there a box? , else do a quick check
-			if( (m_kSelectSquareStart-m_kSelectSquareStop).Length() < 0.1)
+			if( m_kSelectSquareStart.DistanceTo(m_kSelectSquareStop) < 0.1)
 			{
 				Entity* pkEnt = GetTargetObject();
 				if(pkEnt)
@@ -711,7 +711,7 @@ void DarkMetropolis::Input()
 					if(Entity* pkEnt = m_pkObjectMan->GetObjectByNetWorkID(m_kSelectedEntitys[i]))
 					{
 						
-						if( (pkPickEnt->GetWorldPosV() - pkEnt->GetWorldPosV()).Length() < 4) 
+						if( pkPickEnt->GetWorldPosV().DistanceTo(pkEnt->GetWorldPosV()) < 4) 
 						{
 							cout<<"entering hq"<<endl;
 						
@@ -740,7 +740,7 @@ void DarkMetropolis::Input()
 */
 						if(P_DMCharacter* pkCh = (P_DMCharacter*)pkEnt->GetProperty("P_DMCharacter"))
 						{
-							if( (pkPickEnt->GetWorldPosV() - pkEnt->GetWorldPosV()).Length() < 1) 
+							if( pkPickEnt->GetWorldPosV().DistanceTo(pkEnt->GetWorldPosV()) < 1) 
 							{
 								cout<<"entering hq"<<endl;
 								//SelectAgent(m_kSelectedEntitys[i], true, false,false); // remove selection
@@ -840,7 +840,7 @@ void DarkMetropolis::Input()
 					{
 						if(P_DMCharacter* pkCh = (P_DMCharacter*)pkEnt->GetProperty("P_DMCharacter"))
 						{																
-							if( (pkPickEnt->GetWorldPosV() - pkEnt->GetWorldPosV()).Length() < 1) 
+							if( pkPickEnt->GetWorldPosV().DistanceTo(pkEnt->GetWorldPosV()) < 1) 
 							{
 							
 								DMOrder kOrder;
@@ -1099,7 +1099,7 @@ Entity* DarkMetropolis::GetTargetObject(bool bZonesOnly)
 			if(mp->TestLine(start,dir))
 			{	
 				cp = mp->GetLastColPos();
-				d = (start - cp).Length();
+				d = start.DistanceTo(cp);
 	
 				if(d < closest)
 				{

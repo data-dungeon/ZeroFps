@@ -719,7 +719,7 @@ bool P_DMCharacter::HandleOrder(DMOrder* pkOrder,bool bNew)
 			{
 				if(Entity* pkPickEnt = m_pkObjMan->GetObjectByNetWorkID(pkOrder->m_iEntityID))
 				{
-					if( (pkPickEnt->GetWorldPosV() - m_pkObject->GetWorldPosV()).Length() < 1) 
+					if( pkPickEnt->GetWorldPosV().DistanceTo(m_pkObject->GetWorldPosV()) < 1) 
 					{
 						if(pkPickEnt->GetUseZones())
 						{	

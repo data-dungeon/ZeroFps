@@ -298,7 +298,7 @@ bool P_Tcs::LineVSMesh(Vector3 &kPos,Vector3 &kDir)
 		
 		if(TestPolygon(data,kPos,Point2))
 		{	
-			d = (m_kColPos-kPos).Length(); 
+			d = m_kColPos.DistanceTo(kPos); 
 			
 			//if this point is closer than the last one, set it as closest
 			if(d < fDist)

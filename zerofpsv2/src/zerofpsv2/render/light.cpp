@@ -122,7 +122,7 @@ void Light::Update(Vector3 kRefPos)
 			//		opengl LightIntesity equation	min(1, 1 / ((*it)-> + l*d + q*d*d))
 			 
 			Vector3 kPos = (*it)->kPos;		
-			float fDistance = (kRefPos-kPos).Length();		
+			float fDistance = kRefPos.DistanceTo(kPos);		
 			//float fIntensity = min(1 , 1 / ( (*it)->fConst_Atten + ((*it)->fLinear_Atten*fDistance) + ((*it)->fQuadratic_Atten*(fDistance*fDistance)) ));
 			float fIntensity = 1 / ( (*it)->fConst_Atten + ((*it)->fLinear_Atten*fDistance) + ((*it)->fQuadratic_Atten*(fDistance*fDistance)) );
 			
