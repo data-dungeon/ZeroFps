@@ -33,6 +33,7 @@ void CHQDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName)
 	{
 		LoadDlg("data/script/gui/dm_mission.lua");
 		m_pkGui->SetCaptureToWnd(GetWnd("MissionWnd"));
+		GetGameDlg(MISSION_DLG)->InitDlg();
 	}
 	else
 	if(strClickName == "HQMembersBn") // the folder button

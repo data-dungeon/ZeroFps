@@ -8,4 +8,7 @@ public:
 	~CMissionDlg();
 
 	void OnCommand(ZGuiWnd *pkMainWnd, string strClickName);
+
+protected:
+	bool InitDlg();
 };

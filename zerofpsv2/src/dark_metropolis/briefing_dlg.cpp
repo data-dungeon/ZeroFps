@@ -25,3 +25,9 @@ void CBriefingDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName)
 		pkMainWnd->Hide();
 	}
 }
+
+bool CBriefingDlg::InitDlg()
+{
+	//SetText("Mission_A_Eb", "Kill Bill");
+	return true;
+}

@@ -8,4 +8,5 @@ public:
 	~CBriefingDlg();
 
 	void OnCommand(ZGuiWnd *pkMainWnd, string strClickName);
+	bool InitDlg();
 };
