@@ -1,5 +1,5 @@
-#ifndef _Vector4_H_
-#define _Vector4_H_
+#ifndef _VECTOR4_H_
+#define _VECTOR4_H_
 
 #include <iostream>
 #include "basic_x.h"

@@ -1,4 +1,5 @@
 #include "matrix4.h"
+#include "matrix3.h"
 
 
 
@@ -61,6 +62,38 @@ Vector4 Matrix4::operator*(const Vector4 &f)
 
 Matrix4 Matrix4::operator*(const Matrix4 &kOther) const 
 {
+/*	int i,j,k;
+	double ab;
+	Matrix4 temp;
+
+	for(i=0; i<4; i++)
+	{
+		for(j=0; j<4; j++)
+		{
+			ab=0;
+			for(k=0; k<4; k++)	ab += RowCol[k][i] * kOther.RowCol[j][k];
+			temp.RowCol[j][i]=ab;
+		}
+	}
+
+	return temp;*/
+
+
+    Matrix4 kProd;
+    for (int iRow = 0; iRow < 4; iRow++)
+    {
+        for (int iCol = 0; iCol < 4; iCol++)
+        {
+            kProd.RowCol[iRow][iCol] =
+                RowCol[iRow][0]*kOther.RowCol[0][iCol] +
+                RowCol[iRow][1]*kOther.RowCol[1][iCol] +
+                RowCol[iRow][2]*kOther.RowCol[2][iCol] +
+                RowCol[iRow][3]*kOther.RowCol[3][iCol];
+        }
+    }
+    return kProd;
+
+/*
 	Matrix4 ny;
 	
 	for(int y=0;y<4;y++){
@@ -72,6 +105,8 @@ Matrix4 Matrix4::operator*(const Matrix4 &kOther) const
 			}
 		}
 	}
+
+	return ny;*/
 	
 /*	
 //	float *ny=new float[4];
@@ -85,7 +120,6 @@ Matrix4 Matrix4::operator*(const Matrix4 &kOther) const
 			ny[y]+=data[y*4+x]*kOther.data[x*4+y];		
 */
 
-	return ny;
 }
 
 void Matrix4::Print()
@@ -114,4 +148,55 @@ float &Matrix4::operator[](const int i)
 	return data[i];
 }
 
+void Matrix4::operator=(const Matrix3 &rkMatrix)
+{
+	RowCol[0][0] = rkMatrix.m_aafRowCol[0][0];
+	RowCol[0][1] = rkMatrix.m_aafRowCol[0][1];
+	RowCol[0][2] = rkMatrix.m_aafRowCol[0][2];
 
+	RowCol[1][0] = rkMatrix.m_aafRowCol[1][0];
+	RowCol[1][1] = rkMatrix.m_aafRowCol[1][1];
+	RowCol[1][2] = rkMatrix.m_aafRowCol[1][2];
+
+	RowCol[2][0] = rkMatrix.m_aafRowCol[2][0];
+	RowCol[2][1] = rkMatrix.m_aafRowCol[2][1];
+	RowCol[2][2] = rkMatrix.m_aafRowCol[2][2];
+
+}
+
+Vector3 Matrix4::VectorRotate (const Vector3 kVec)
+{
+	Vector3 res;
+	
+	res.x = kVec.x * RowCol[0][0] + kVec.y * RowCol[1][0] + kVec.z * RowCol[2][0];
+	res.y = kVec.x * RowCol[0][1] + kVec.y * RowCol[1][1] + kVec.z * RowCol[2][1];
+	res.z = kVec.x * RowCol[0][2] + kVec.y * RowCol[1][2] + kVec.z * RowCol[2][2];
+	return res;
+}
+
+Vector3 Matrix4::VectorIRotate (const Vector3 kVec)
+{
+	Vector3 res;
+	
+	res.x = kVec.x * RowCol[0][0] + kVec.y * RowCol[1][0] + kVec.z * RowCol[2][0];
+	res.y = kVec.x * RowCol[0][1] + kVec.y * RowCol[1][1] + kVec.z * RowCol[2][1];
+	res.z = kVec.x * RowCol[0][2] + kVec.y * RowCol[1][2] + kVec.z * RowCol[2][2];
+	return res;
+}
+
+Vector3 Matrix4::VectorTransform (const Vector3 kVec)
+{
+	Vector3 res;
+	
+/*
+	res.x = kVec.x * RowCol[0][0] + kVec.y * RowCol[0][1] + kVec.z * RowCol[0][2] + RowCol[0][3];
+	res.y = kVec.x * RowCol[1][0] + kVec.y * RowCol[1][1] + kVec.z * RowCol[1][2] + RowCol[1][3];
+	res.z = kVec.x * RowCol[2][0] + kVec.y * RowCol[2][1] + kVec.z * RowCol[2][2] + RowCol[2][3];
+*/
+		
+	res.x = kVec.x * RowCol[0][0] + kVec.y * RowCol[1][0] + kVec.z * RowCol[2][0] + RowCol[3][0];
+	res.y = kVec.x * RowCol[0][1] + kVec.y * RowCol[1][1] + kVec.z * RowCol[2][1] + RowCol[3][1];
+	res.z = kVec.x * RowCol[0][2] + kVec.y * RowCol[1][2] + kVec.z * RowCol[2][2] + RowCol[3][2];
+	
+	return res;
+}

@@ -1,11 +1,12 @@
-#ifndef _MATRIX_H_
-#define _MATRIX_H_
+#ifndef _MATRIX4_H_
+#define _MATRIX4_H_
 
 #include <iostream>
 #include "basic_x.h"
 #include "vector3.h"
 #include "vector4.h"
 
+class Matrix3;
 
 class BASIC_API Matrix4 {
 	private:	
@@ -46,6 +47,7 @@ class BASIC_API Matrix4 {
 		float &operator[](const int i);						
 		
 		Matrix4 operator=(const Matrix4 &kOther);
+		void operator=(const Matrix3 &rkMatrix);
 		Matrix4 operator*(const float &f) const;
 		Matrix4 operator*(const Matrix4 &kOther) const;
 		Matrix4 operator*=(const float &f);		
@@ -55,6 +57,9 @@ class BASIC_API Matrix4 {
 		void Identity();
 
 		// ************************************************
+		Vector3 VectorRotate (const Vector3 kVec);
+		Vector3 VectorIRotate (const Vector3 kVec);
+		Vector3 VectorTransform (const Vector3 kVec);
 };
 
 

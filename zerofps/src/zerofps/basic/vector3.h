@@ -8,7 +8,6 @@ using namespace std;
 
 class BASIC_API Vector3 {
 	private:
-		static float const degtorad = float(57.3248);
 
 	public:
 		float x,y,z;												// NC
@@ -47,7 +46,8 @@ class BASIC_API Vector3 {
 		static const Vector3 AXIS_X;								// NC
 		static const Vector3 AXIS_Y;								// NC
 		static const Vector3 AXIS_Z;								// NC
-		
+		static const float degtorad;
+	
 
 		// ************************************************
 
@@ -72,6 +72,8 @@ class BASIC_API Vector3 {
 //		friend void operator<<(ostream& os, const Vector3 &v);
 //		friend Vector3 operator * ( const float& s, const Vector3& v );
 		void print(void);
+
+		float& Vector3::operator[] (int i);
 };
 
 

@@ -8,6 +8,7 @@ const Vector3 Vector3::ZERO(0,0,0);
 const Vector3 Vector3::AXIS_X(1,0,0);
 const Vector3 Vector3::AXIS_Y(0,1,0);
 const Vector3 Vector3::AXIS_Z(0,0,1);
+const float Vector3::degtorad = float(57.3248);
 
 
 Vector3::Vector3(float fX,float fY,float fZ)
@@ -293,6 +294,13 @@ Vector3 Vector3::Angels(void){
 	return temp;
 }
 
+float& Vector3::operator[] (int i) 
+{
+	if(i==0)	return x;
+	if(i==1)	return y;
+	if(i==2)	return z;
+	return x;
+}
 
 
 
