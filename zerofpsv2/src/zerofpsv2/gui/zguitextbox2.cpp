@@ -1288,7 +1288,6 @@ void ZGuiTextbox::BuildTextStrings()
 				}
 				else
 				{
-					printf("word_break_pos = %i\n" ,word_break_pos);
 					start=word_break_pos;
 					w-=row_width;	
 				}
@@ -1370,6 +1369,4 @@ void ZGuiTextbox::BuildTextStrings()
 	{
 		m_iTotalTextHeight = 0;
 	}
-
-	printf("%i\n", m_iNumRows);
 }
