@@ -322,6 +322,8 @@ bool P_Mad::LineVSMesh(Vector3 &kPos,Vector3 &kDir)
 	if(!pkCoreMesh)
 		return false;
 	
+	pkCore->PrepareMesh(	pkCoreMesh );	
+		
 	pkFaces =	pkCoreMesh->GetLODMesh(0)->GetFacesPointer();
 	pkVertex = (*pkCoreMesh->GetLODMesh(0)->GetVertexFramePointer())[0].GetVertexPointer();
 	pkNormal = (*pkCoreMesh->GetLODMesh(0)->GetVertexFramePointer())[0].GetNormalPointer();
@@ -333,6 +335,9 @@ bool P_Mad::LineVSMesh(Vector3 &kPos,Vector3 &kDir)
 	Vector3	kClosestColPos;
 	m_iColFace = -1;
 	
+	//setup a virtual point in space
+	Vector3 Point2 = kPos+(kDir*1000);
+	
 	Vector3 data[3];
 	float d;
 	for(unsigned int i=0;i<pkFaces->size();i++)
@@ -342,8 +347,6 @@ bool P_Mad::LineVSMesh(Vector3 &kPos,Vector3 &kDir)
 		for(int j=0;j<3;j++)
 			data[j] = m_kModelMatrix.VectorTransform((*pkVertex)[ (*pkFaces)[i].iIndex[j]]);
 		
-		//setup a virtual point in space
-		Vector3 Point2 = kPos+(kDir*1000);
 		
 		
 		if(TestPolygon(data,kPos,Point2))
@@ -396,6 +399,23 @@ bool P_Mad::TestPolygon(Vector3* kVerts,Vector3 kPos1,Vector3 kPos2)
 
 bool P_Mad::TestSides(Vector3* kVerts,Vector3* pkNormal,Vector3 kPos)
 {
+  Vector3 e10=kVerts[1]-kVerts[0];
+  Vector3 e20=kVerts[2]-kVerts[0];
+  float a = e10.Dot(e10);
+  float b = e10.Dot(e20);
+  float c = e20.Dot(e20);
+  float ac_bb=(a*c)-(b*b);
+  Vector3 vp(kPos.x-kVerts[0].x, kPos.y-kVerts[0].y, kPos.z-kVerts[0].z);
+  float d = vp.Dot(e10);
+  float e = vp.Dot(e20);
+  float x = (d*c)-(e*b);
+  float y = (e*a)-(d*b);
+  float z = x+y-ac_bb;
+  return (( ((unsigned int &)z) & ~(((unsigned int &)x)|((unsigned int &)y)) ) & 0x80000000) != 0;
+
+/*	
+
+
 //	Plane side[6];
 	static Plane side[3]; 
 	static Vector3 V1,V2,V3;
@@ -427,7 +447,7 @@ bool P_Mad::TestSides(Vector3* kVerts,Vector3* pkNormal,Vector3 kPos)
 			return false;
 	
 	
-	return true;	
+	return true;	*/
 }
 
 

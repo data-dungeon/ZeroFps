@@ -193,11 +193,19 @@ bool ZShadow::SetupMesh(P_Mad* pkMad)
 			pkCore->PrepareMesh(pkCore->GetMeshByID(iShadowMesh));
 
 			//setup mesh pointers
+			
 			m_pkFaces =		pkMad->GetFacesPtr();
 			m_pkVertex =	pkMad->GetVerticesPtr();
 			m_iNrOfFaces = pkMad->GetNumFaces();
 			m_iNrOfVerts = pkMad->GetNumVertices();
-
+			
+			
+			/*
+			m_pkFaces =	(int*)pkCoreMech->GetLODMesh(0)->GetFacesPointer();
+			m_pkVertex = (Vector3*)(*pkCoreMech->GetLODMesh(0)->GetVertexFramePointer())[0].GetVertexPointer();
+			m_iNrOfFaces = pkCoreMech->GetLODMesh(0)->GetFacesPointer()->size();;
+			m_iNrOfVerts = (*pkCoreMech->GetLODMesh(0)->GetVertexFramePointer())[0].GetVertexPointer()->size();;
+			*/
 
 			//setup model matrix
 			Matrix4 m_kModelMatrix;

@@ -97,7 +97,7 @@ void P_DMGun::Update()
 			// draw hit-sparkle
 			m_pkZeroFps->m_pkRender->DrawBillboard(
 				m_pkObject->m_pkZeroFps->GetCam()->GetModelViewMatrix(), 
-				m_kHitPos[i].first, 0.2, m_iHitSparkleTextureID);
+				m_kHitPos[i].first, 0.3, m_iHitSparkleTextureID);
 		}
 	
 		//vector<pair<Vector3,float> >::iterator kIte2;
@@ -140,6 +140,8 @@ void P_DMGun::Update()
 		return;
 	}
 
+	//m_fFireRate  = 50;
+	//m_iAmmo = 100;
 
 	//how many bullets to fire?	
 	int iAmmoToFire = int((t - m_fTimeBulletFired) * m_fFireRate);
@@ -204,6 +206,7 @@ bool P_DMGun::FireBullets(int iAmount)
 		float closest = 999999999;
 		Entity* pkClosest = NULL;
 		Vector3 kPickPos;
+		
 		for(unsigned int i=0;i<kObjects.size();i++)
 		{
 			if(kObjects[i] == m_pkObject)

@@ -39,7 +39,7 @@ void P_ShadowBlob::Update()
 			//m_kOffset.Set(0,-pkMad->GetRadius(),0);			
 		}
 	}
-
+	
 
 	if(ResTexture* pkRt = (ResTexture*)m_pkTexture->GetResourcePtr())
 	{

@@ -51,7 +51,7 @@ void DarkMetropolis::OnInit()
 	m_fMaxCamDistance =			6;
 	m_fDistance =					m_fMaxCamDistance;	
 	m_fAngle =						0;
-	m_strSaveDirectory =			"clans/";
+	m_strSaveDirectory =			"savegames/";
 	m_pkGameInfoProperty = 		NULL;
 	m_pkGameInfoEntity =			NULL;
 	m_bSelectSquare = 			false;
@@ -63,8 +63,8 @@ void DarkMetropolis::OnInit()
 	m_eGameMode	=					ACTIVE;
 	m_fBulletTime =				-1;
 	m_pkGamePlayInfoLabel =		NULL;
-	m_fCameraMaxDistanceFromAgent = 3;
-	m_fMusicVolume = 0.5f;
+	m_fCameraMaxDistanceFromAgent = 6;
+	m_fMusicVolume = 				0.5f;
 
 	//register commands
 	Register_Cmd("load",FID_LOAD);			
@@ -72,10 +72,10 @@ void DarkMetropolis::OnInit()
 
 	//setup system speed
 	m_pkFps->SetSystemFps(30);
-	m_pkObjectMan->m_fSimTimeScale = 0.33;
+	m_pkObjectMan->m_fSimTimeScale = 1.0;
 	
 	//set tracker los
-	m_pkObjectMan->SetTrackerLos(4);
+	m_pkObjectMan->SetTrackerLos(5);
 	
 	//enable light
 	m_pkLight->SetLighting(true);
@@ -121,12 +121,14 @@ void DarkMetropolis::OnIdle()
 	if(m_eGameMode != PAUSED)
 	{
 		Input();
+		
+		//update camera position
+		CheckCameraPos();	
 	}
+	
 
-	m_pkFps->UpdateCamera(); 	
-
+//	m_pkFps->UpdateCamera(); 	
 	GUI_OnIdle();
-
 }
 
 void DarkMetropolis::RenderInterface(void)
@@ -228,9 +230,6 @@ void DarkMetropolis::RenderInterface(void)
 
 void DarkMetropolis::OnSystem()
 {	
-	//update camera position
-	CheckCameraPos();
-
 
 
 	float t = m_pkFps->m_pkObjectMan->GetGameTime();
@@ -1173,7 +1172,7 @@ void DarkMetropolis::PauseGame(bool bPause)
 	else
 	{
 		GetSystem().RunCommand("set e_runsim 1",CSYS_SRC_SUBSYS);
-		GetSystem().RunCommand("set e_simspeed 0.33",CSYS_SRC_SUBSYS);
+		GetSystem().RunCommand("set e_simspeed 1.0",CSYS_SRC_SUBSYS);
 		m_eGameMode = ACTIVE;
 	}
 }
@@ -1402,15 +1401,16 @@ void DarkMetropolis::CheckCameraPos()
 	
 	if(dist > m_fCameraMaxDistanceFromAgent)
 	{
-		//cout<<"camera to far away"<<endl;
+		//cout<<"camera to far away"<<endl;		
 		Vector3 kTemp = pkClosestEnt->GetIWorldPosV();
 		kTemp.y = 0;
-		Vector3 kDir = (kTemp - kCamPos).Unit();
+		Vector3 kDir = (kCamPos - kTemp).Unit() * m_fCameraMaxDistanceFromAgent;
+		Vector3 kNewPos = kTemp + kDir;
+		kNewPos.y = m_pkCameraEntity->GetWorldPosV().y;
 		
-		Vector3 kNewCamPos = m_pkCameraEntity->GetWorldPosV();
 //		kNewCamPos += kDir * m_pkObjectMan->GetSimDelta() * (dist * 3) ;
 //		kNewCamPos += kDir * m_pkFps->GetFrameTime() * dist  ;
-		kNewCamPos += kDir ;//m_pkFps->GetFrameTime()*100;
-		m_pkCameraEntity->SetWorldPosV(kNewCamPos);
+		//kNewCamPos += kDir;
+		m_pkCameraEntity->SetWorldPosV(kNewPos);
 	}
 }
