@@ -58,6 +58,10 @@ bool GLGuiRender::StartRender()
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+
+	glEnable(GL_BLEND);	
+	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+	glDepthMask(GL_FALSE);	
 		
 	return true;
 }
@@ -72,6 +76,9 @@ bool GLGuiRender::EndRender()
 	glPopMatrix();
 	glMatrixMode(GL_MODELVIEW);
 	glPopMatrix();
+
+	glDepthMask(GL_TRUE);
+	glDisable(GL_BLEND);
 	
 	return true;
 }
@@ -100,6 +107,7 @@ bool GLGuiRender::RenderQuad(Rect rc)
 
 	float wx = 1.0f, wy = 1.0f;
 	int texture = m_pkSkin->m_iBkTexID;
+
 
 	if(m_pkSkin->m_bTileBkSkin == true && texture > 0)
 	{

@@ -313,7 +313,29 @@ void Game::Input()
 		break;
 
 	case KEY_L:
-		OpenLogWnd();
+
+		Object* pkObject;
+		pkObject = pkObjectMan->GetObject("LogStone");
+
+		if(pkObject != NULL)
+		{
+			if(!pkIni->Open("../data/maps/village/log.txt", false))
+				printf("Failed to read log file!\n");
+
+			char* szValue = pkIni->GetValue("ReadStone", "text");
+
+			LogProperty* lp = static_cast<LogProperty*>
+				(pkObject->GetProperty("LogProperty"));
+
+			if(lp != NULL)
+			{
+				lp->m_sLog = szValue;
+				m_pkLogBox->SetLogProperty(lp);
+			}
+
+			OpenLogWnd();
+		}
+		
 		break;
 	}
 }
@@ -447,13 +469,17 @@ void Game::InitGui()
 	int id = 1;
 	int x = 1024-200, y = 768-200;
 
-	ZGuiSkin* pkMainSkin     =	new ZGuiSkin(192, 192, 192, 0,   0,   0,   2);
+	ZGuiSkin* pkMainSkin     =	new ZGuiSkin(255, 255, 255, 0,   0,   0,   0);
 	ZGuiSkin* pkHealthBkSkin =	new ZGuiSkin(255, 0,   0,   0,   0,   128, 4);
 	ZGuiSkin* pkHealthSkin   =	new ZGuiSkin(0,   0,   255, 0,   0,   128, 4);
 	ZGuiSkin* pkArmorBkSkin  =	new ZGuiSkin(255, 0,   0,   0,   0,   128, 4);
 	ZGuiSkin* pkArmorSkin    =	new ZGuiSkin(0,   255, 0,   0,   0,   128, 4);
 
-	ZGuiWnd* pkPlayerStatusMainWnd = new ZGuiWnd(Rect(x,y,x+190,y+190),NULL,true,id++);
+	pkMainSkin->m_iBkTexID = pkTexMan->Load("piss.bmp", 0); // först misslyckas, vet inte varför...
+	pkMainSkin->m_iBkTexID = pkTexMan->Load("../data/textures/player_panel.bmp", 0);
+	pkMainSkin->m_iBkTexAlphaID = pkTexMan->Load("../data/textures/player_panel_a.bmp", 0);
+
+	ZGuiWnd* pkPlayerStatusMainWnd = new ZGuiWnd(Rect(0,m_iHeight-128,m_iWidth,m_iHeight),NULL,true,id++);
 	pkPlayerStatusMainWnd->SetSkin(pkMainSkin);
 	pkPlayerStatusMainWnd->RemoveWindowFlag(WF_CANHAVEFOCUS);
 
