@@ -14,7 +14,7 @@ ZGuiWnd* ZGuiWnd::m_pkPrevWndUnderCursor = NULL;
 ZGuiWnd* ZGuiWnd::m_pkPrevWndClicked = NULL;
 ZGuiWnd* ZGuiWnd::m_pkFocusWnd = NULL;
 
-ZGuiWnd* ZGuiWnd::m_pkWndClicked = NULL;
+ZGuiWnd* ZGuiWnd::m_pkWndClicked = NULL; 
 ZGuiWnd* ZGuiWnd::m_pkWndUnderCursor = NULL;
 
 //////////////////////////////////////////////////////////////////////
@@ -23,8 +23,8 @@ ZGuiWnd* ZGuiWnd::m_pkWndUnderCursor = NULL;
 
 ZGuiWnd::ZGuiWnd(Rect kRectangle, ZGuiWnd* pkParent, bool bVisible, int iID)
 {
-	m_iResolutionX = 1024;
-	m_iResolutionY = 768;
+	m_iResolutionX = 800;
+	m_iResolutionY = 600;
 
 	m_ulFlags = 0;
 	m_iZValue = 0;

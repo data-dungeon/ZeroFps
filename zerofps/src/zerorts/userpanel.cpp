@@ -42,16 +42,16 @@ bool UserPanel::Create(int x, int y, char* szResourceFile, char* szDlgName)
 	pkMinimap->SetZValue(121212);
 	m_pkGui->RegisterWindow(pkMinimap, "MiniMapWnd");
 
-	Rect rc(m_pkZeroRts->m_iWidth-300-10,10,0,0);
+	Rect rc(m_pkZeroRts->m_iWidth-200,10,0,0);
 	rc.Right = rc.Left + CMD_BN_SIZE; rc.Bottom = rc.Top + CMD_BN_SIZE;
 
 	for(int i=0; i<MAX_NUM_CMD_BNS; i++)
 	{
-		if(i%6==0 && i!=0)
+		if(i%3==0 && i!=0)
 		{
-			rc = Rect(m_pkZeroRts->m_iWidth-300-10,10,0,0);
+			rc = Rect(m_pkZeroRts->m_iWidth-200,10,0,0);
 			rc.Right = rc.Left + CMD_BN_SIZE; rc.Bottom = rc.Top + CMD_BN_SIZE;
-			rc = rc.Move(0,(i/6)*(CMD_BN_SIZE+2));
+			rc = rc.Move(0,(i/3)*(CMD_BN_SIZE+2));
 		}
 
 		ZGuiButton* pkButton = new ZGuiButton(rc,m_pkDlgBox,true,ID_CMD_BUTTONS_START+i);
@@ -79,7 +79,6 @@ bool UserPanel::Create(int x, int y, char* szResourceFile, char* szDlgName)
 		m_oMainWndProc, false);
 
 	m_pkDlgBox->SortChilds();
-
 
 	return true;
 }
@@ -259,9 +258,9 @@ ZGuiButton* UserPanel::SetCmdButtonIcon(int iButtonIndex, int iIconIndex, bool b
 
 	int iNumVisibleButtons = GetNumVisibleCmdButtons();
 
-	int x = m_pkZeroRts->m_iWidth-300-10, y = 10;
-	x += (CMD_BN_SIZE+2) * (iNumVisibleButtons % 6);
-	y += (CMD_BN_SIZE+2) * (iNumVisibleButtons / 6);
+	int x = m_pkZeroRts->m_iWidth-200, y = 10;
+	x += (CMD_BN_SIZE+2) * (iNumVisibleButtons % 3);
+	y += (CMD_BN_SIZE+2) * (iNumVisibleButtons / 3);
 
 	Rect rc(x,y,x+CMD_BN_SIZE,y+CMD_BN_SIZE);
 	pkButton->SetPos(x,y,false,true);

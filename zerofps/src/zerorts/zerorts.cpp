@@ -14,6 +14,7 @@ ZeroRTS::ZeroRTS(char* aName,int iWidth,int iHeight,int iDepth)
 	: Application(aName,iWidth,iHeight,iDepth) 
 {
 	m_pkTileEngine=TileEngine::m_pkInstance;
+	m_pkConstructMan=ConstructionManager::m_pkInstance;
 
 	
 	m_pkMiniMap = 					NULL;
@@ -406,7 +407,7 @@ void ZeroRTS::Input()
 				for(int i=0;i<4;i++)				
 					pkConsole->Printf("Player %d has color %d",i,si->m_kSInfo.m_acColor[i]);			
 			
-				for(int i=0;i<4;i++)				
+				for( i=0;i<4;i++)				
 					pkConsole->Printf("Player %d has %d resources",i,si->m_kSInfo.m_aiPlayerResourses[i]);
 			
 			}
@@ -468,6 +469,7 @@ void ZeroRTS::RunCommand(int cmdid, const CmdArgument* kCommand)
 			
 			//setup tile engine
 			m_pkTileEngine->CreateMap();
+			m_pkConstructMan->Init();
 			
 			pkConsole->Printf("Everything is loaded ,Starting server");
 			g_ZFObjSys.RunCommand("server Default server");

@@ -39,6 +39,7 @@ class ZeroRTS :public Application {
 		P_FogRender*	m_pkFogRender;
 		P_ClientInput* m_pkClientInput;		
 		TileEngine*		m_pkTileEngine;
+		ConstructionManager* m_pkConstructMan;
 		
 		Vector3			m_kClickPos, m_kDragPos;
 		bool 				m_bDisableCameraScroll;

@@ -22,6 +22,7 @@
 #include "dialogbox.h"
 #include "pathfind.h"
 #include "pathbuilder.h"
+#include "constructionmanager.h"
 
 //for ZeroRTS
 #include "p_clientinput.h"
