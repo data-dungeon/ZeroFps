@@ -170,7 +170,7 @@ bool Gui::CreateWindows()
 	CreateMenu(m_pkEdit->pkIni, "../data/gui_resource_files/menu.txt");
 
 	// testing treebox
-	bool bTestingTreeBox = true;
+	bool bTestingTreeBox = false;
 	if(bTestingTreeBox)
 	{
 		CreateTestWnd();
