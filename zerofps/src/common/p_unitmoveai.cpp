@@ -140,10 +140,10 @@ AIBase* P_UnitMoveAI::UpdateAI()
 				if(TileEngine::m_pkInstance->GetTile(iX-1,iY-1)->kUnits.size() > 0)
 				{
 					cout<<"Hit something trying to find a new way"<<endl;
-					TileEngine::m_pkInstance->AddUnit(m_kCurretDestination,(P_ServerUnit*)m_pkObject->GetProperty("P_ServerUnit"));					
+					TileEngine::m_pkInstance->AddUnit(m_pkObject->GetPos(),(P_ServerUnit*)m_pkObject->GetProperty("P_ServerUnit"));						
 					
 					//set pos one finale time to prevent ugly interpolation										
-					m_pkObject->SetPos(m_kCurretDestination);					
+					m_pkObject->SetPos(m_kCurretDestination);										
 					m_pkObject->SetPos(m_kCurretDestination);					
 					
 					m_iCurrentState = UNIT_WAIT;
@@ -155,7 +155,10 @@ AIBase* P_UnitMoveAI::UpdateAI()
 					return this;
 				}
 						
-				m_fSpeedMod = 1 - (float(m_pkPathFind->GetTerrainCost(iX,iY)) / 20.0);
+
+				m_fSpeedMod = 1 - (float(m_pkPathFind->GetTerrainCost(iX,iY)) / 20.0);						
+				
+				
 
 				float fX = -(m_pkMap->m_iHmSize/2)*HEIGHTMAP_SCALE + iX*HEIGHTMAP_SCALE;
 				float fZ = -(m_pkMap->m_iHmSize/2)*HEIGHTMAP_SCALE + iY*HEIGHTMAP_SCALE;
@@ -182,7 +185,7 @@ AIBase* P_UnitMoveAI::UpdateAI()
 		{
 			CheckForOrder();
 			
-			if(m_iRetries >= 3)
+			if(m_iRetries >= 20)
 			{
 				return NULL;
 			
