@@ -799,6 +799,7 @@ void ZeroEd::EditRunCommand(FuncId_e eEditCmd)
 
 void ZeroEd::RunCommand(int cmdid, const CmdArgument* kCommand)
 {
+	NetPacket kNp;
 	ClientOrder kOrder;
 
 	vector<string>	kUsers;
@@ -963,6 +964,16 @@ void ZeroEd::RunCommand(int cmdid, const CmdArgument* kCommand)
 			break;
 
 		case FID_TEST_JIDDRA:
+			kNp.Clear();
+			kNp.m_kData.m_kHeader.m_iPacketType = ZF_NETTYPE_UNREL;
+			kNp.Write((char) ZPGP_SS_APP);
+			kNp.Write((char) 121);
+
+			kNp.Write_Str("This is my voice on TV");
+			kNp.Write(ZFGP_ENDOFPACKET);
+			kNp.TargetSetClient(0);
+			m_pkFps->m_pkNetWork->Send2(&kNp);
+
 			m_pkConsole->Printf("Long Text: ");
 			m_pkConsole->Printf("This is a totaly pointless text that have no other purpose then being long and boring and boring and long. In short, don't fall asleep when you read this");
 			m_pkConsole->Printf("\n");
@@ -1508,6 +1519,10 @@ void ZeroEd::RebuildZonePosArray()
 }	
 
 
+void ZeroEd::OnNetworkMessage(NetPacket *PkNetMessage)
+{
+
+}
 
 
 

@@ -1186,3 +1186,17 @@ void MistServer::SendTextToMistClientInfoBox(char *szText)
 {
 	  
 }
+
+void MistServer::OnNetworkMessage(NetPacket *PkNetMessage)
+{
+	char cNisse;
+	char szMsg[256];
+
+	PkNetMessage->Read(cNisse);
+	int iJiddra = cNisse;
+
+	PkNetMessage->Read_Str(szMsg);
+	m_pkConsole->Printf("GULDFISK %d", iJiddra );
+	m_pkConsole->Printf(szMsg);
+}
+

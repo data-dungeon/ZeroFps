@@ -158,6 +158,7 @@ class MistClient :public Application, public ZGuiApp {
 		void OnServerClientJoin(ZFClient* pkClient,int iConID, char* szLogin, char* szPass);
 		void OnServerClientPart(ZFClient* pkClient,int iConID);
 		void RenderInterface(void) { }
+		void OnNetworkMessage(NetPacket *PkNetMessage) {}
 
 		bool StartUp();
 		bool ShutDown();

@@ -38,6 +38,7 @@ class ZGResEdit : public Application, public ZGuiApp
 		void OnSystem() {};
 		void OnServerStart(void) {};
 		void OnClientStart(void) {};
+		void OnNetworkMessage(NetPacket *PkNetMessage) {}
 
 		bool StartUp();
 		bool ShutDown();

@@ -189,6 +189,7 @@ class DarkMetropolis : public Application, public ZGuiApp
 		void OnServerStart();
 		void OnClientStart();
 		void RunCommand(int cmdid, const CmdArgument* kCommand);
+		void OnNetworkMessage(NetPacket *PkNetMessage) {}
 
 		bool StartUp();
 		bool ShutDown();

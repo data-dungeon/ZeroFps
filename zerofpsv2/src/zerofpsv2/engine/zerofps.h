@@ -68,6 +68,7 @@ enum enginestates
 #define	ZFGP_STATICDATA		10
 #define	ZFGP_COMMAND			12
 #define	ZFGP_EDIT				13
+#define  ZPGP_SS_APP				14		
 
 #define	ZFGP_ENDOFPACKET		128
 

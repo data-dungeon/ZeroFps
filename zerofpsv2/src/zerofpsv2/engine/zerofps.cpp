@@ -1139,6 +1139,10 @@ void ZeroFps::HandleNetworkPacket(NetPacket* pkNetPacket)
 				HandleEditCommand(pkNetPacket);
 				break;
 
+			case ZPGP_SS_APP:
+				m_pkApp->OnNetworkMessage( pkNetPacket );
+				break;
+
 			default:
 				cout << "Error in game packet : " << (int) ucGamePacketType << endl;
 				return;
