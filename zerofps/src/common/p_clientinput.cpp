@@ -18,6 +18,7 @@ P_ClientInput::P_ClientInput()
 	
 	m_iPlayerID =	-1;
 	m_bGod =			false;
+	m_iNetUpdateFlags = 1;
 }
 
 void P_ClientInput::Update()
@@ -56,7 +57,9 @@ void P_ClientInput::PackTo(NetPacket* pkNetPacket)
 		m_kCommands.pop();
 	}
 
-	m_iNetUpdateFlags = 0;
+	// If !Server Clear flag. Do this 
+	m_iNetUpdateFlags = 1;
+
 }
 
 void P_ClientInput::PackFrom(NetPacket* pkNetPacket)

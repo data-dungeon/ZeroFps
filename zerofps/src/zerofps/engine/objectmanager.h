@@ -55,6 +55,7 @@ class ENGINE_API ObjectManager : public ZFObject{
 
 		void TESTVIM_LoadArcheTypes(char* szFileName);
 
+
 	public:
 		int	m_iForceNetUpdate;					
 		float	m_fEndTimeForceNet;
@@ -138,6 +139,9 @@ class ENGINE_API ObjectManager : public ZFObject{
 
 		bool TestLine(vector<Object*>* pkObList,Vector3 kPos,Vector3 kVec);
 
+		void OwnerShip_Request(Object* pkObj);		// Use this to request ownership of a object.
+		void OwnerShip_OnRequest(Object* pkObj);	// Called when a request for ownership arrives on server.
+		void OwnerShip_OnGrant(Object* pkObj);		// Recv on client of he gets controll of a object from server.	
 		void OwnerShip_Take(Object* pkObj);		
 		void OwnerShip_Give(Object* pkObj);
 		

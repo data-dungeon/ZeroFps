@@ -25,6 +25,9 @@ ZeroRTS::ZeroRTS(char* aName,int iWidth,int iHeight,int iDepth)
 	m_kClickPos = m_kDragPos = NO_SELECTION;
 	test_path_find_object    = NULL;
 	m_bDrawPath				 = false;
+
+	g_ZFObjSys.Log_Create("zerorts");
+
 }
 
 void ZeroRTS::OnInit() 
@@ -142,7 +145,7 @@ void ZeroRTS::OnIdle()
 			
 	Input();
 	
-//	TileEngine::m_pkInstance->Draw();
+	TileEngine::m_pkInstance->Draw();
 
 /* //COMMENT OUT BY DVOID
 	PickInfo p = Pick();
@@ -219,19 +222,26 @@ void ZeroRTS::OnSystem()
 		m_fFogTimer = pkFps->GetTicks();
 	}
 	
+
 	//setup client
 	if(pkFps->m_bClientMode && !pkFps->m_bServerMode)
 	{
+		g_ZFObjSys.Logf("net","??? m_iSelfObjectID %d\n", m_iSelfObjectID);
+
 		if(m_pkClientInput == NULL)		
 		{
+			g_ZFObjSys.Logf("net","??? m_pkClientInput == NULL\n");
 			if(m_iSelfObjectID != -1)
 			{
+				g_ZFObjSys.Logf("net","??? m_iSelfObjectID != -1\n");
 				Object* pkClientObj = pkObjectMan->GetObjectByNetWorkID(m_iSelfObjectID);
 				if(pkClientObj) {
+					g_ZFObjSys.Logf("net","??? pkClientObj found\n");
 					m_pkClientInput = (P_ClientInput*)pkClientObj->GetProperty("P_ClientInput");
 
 					if(m_pkClientInput != NULL)
 					{
+						g_ZFObjSys.Logf("net","??? Found client input property %d\n", m_pkClientInput->m_iPlayerID);
 						cout<<"Found client input property"<<endl;					
 						cout << "My Num: " << m_pkClientInput->m_iPlayerID;
 					}
@@ -247,6 +257,7 @@ void ZeroRTS::OnSystem()
 			{
 				m_HaveFoundHMapObject = true;
 				
+				g_ZFObjSys.Logf("net","??? Assuming that server has started,executing client init");
 				cout<<"Assuming that server has started,executing client init"<<endl;
 				ClientInit();
 			}

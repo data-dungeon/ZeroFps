@@ -191,8 +191,9 @@ NetWork::NetWork()
 
 	m_kStringTable.resize( ZF_NET_MAXSTRINGS );
 	for(int i=0; i < ZF_NET_MAXSTRINGS; i++) {
-		m_kStringTable[i].m_bInUse		= false;
-		m_kStringTable[i].m_bUpdated	= false;
+		m_kStringTable[i].m_bInUse			= false;
+		m_kStringTable[i].m_bUpdated		= false;
+		m_kStringTable[i].m_bNeedUpdate	= false;
 		m_kStringTable[i].m_NetString = "";
 		}
 
@@ -609,6 +610,7 @@ void NetWork::HandleControlMessage(NetPacket* pkNetPacket)
 			int iObjId;
 			pkNetPacket->Read(iObjId);
 			m_pkZeroFps->m_iRTSClientObject = iObjId;
+			g_ZFObjSys.Logf("net", "ZF_NETCONTROL_CLIENTID: %d\n",m_pkZeroFps->m_iRTSClientObject );
 			break;
 
 		case ZF_NETCONTROL_DISCONNECT:

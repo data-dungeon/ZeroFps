@@ -226,8 +226,9 @@ void ZeroFps::Run_EngineShell()
 		for(int i=0; i<4; i++) {
 			DevPrintf("common","Client[%d]: %s", i, m_kClient[i].m_strName.c_str());
 			// Server gives upp object a time after connection
+			
 			if(m_kClient[i].m_pkObject) {
-				if(GetEngineTime() > (m_kClient[i].m_fConnectTime + 2))
+				if(GetEngineTime() > (m_kClient[i].m_fConnectTime + 5))
 					m_pkObjectMan->OwnerShip_Give( m_kClient[i].m_pkObject );
 				}
 			}
@@ -914,7 +915,8 @@ void ZeroFps::RunCommand(int cmdid, const CmdArgument* kCommand)
 void ZeroFps::HandleNetworkPacket(NetPacket* pkNetPacket)
 {
 	unsigned char ucGamePacketType;
-	
+	int	m_iObjectID;
+
 	pkNetPacket->Read(ucGamePacketType);
 
 	while(ucGamePacketType != ZFGP_ENDOFPACKET) {
@@ -942,6 +944,16 @@ void ZeroFps::HandleNetworkPacket(NetPacket* pkNetPacket)
 			
 			case ZFGP_PRINT: 
 				g_ZFObjSys.Logf("net", "HandleNetworkPacket(ZFGP_PRINT)\n");
+				break;
+
+			case ZFGP_REQOWNOBJECT: 
+				pkNetPacket->Read(m_iObjectID);
+				m_pkObjectMan->OwnerShip_OnRequest(m_pkObjectMan->GetObjectByNetWorkID( m_iObjectID ));
+				break;
+
+			case ZFGP_GIVEOWNOBJECT: 
+				pkNetPacket->Read(m_iObjectID);
+				m_pkObjectMan->OwnerShip_OnGrant(m_pkObjectMan->GetObjectByNetWorkID( m_iObjectID ));
 				break;
 
 			default:

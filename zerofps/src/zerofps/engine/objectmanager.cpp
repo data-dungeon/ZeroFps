@@ -210,7 +210,7 @@ Object* ObjectManager::CreateObjectByNetWorkID(int iNetID)
 	
 	g_ZFObjSys.Logf("net", " CreateObjectByNetWorkID( %d ).\n", iNetID);
 
-	pkNew->AddProperty("ModelProperty");
+//	pkNew->AddProperty("ModelProperty");
 	return pkNew;
 }
 
@@ -466,6 +466,9 @@ Object* ObjectManager::GetObject(const char* acName)
 
 Object*	ObjectManager::GetObjectByNetWorkID(int iNetID)
 {
+	if(iNetID == -1)
+		return NULL;
+
 	for(list<Object*>::iterator it=m_akObjects.begin();it!=m_akObjects.end();it++) {
 		if((*it)->iNetWorkID == iNetID)
 			return (*it);
@@ -898,6 +901,57 @@ void ObjectManager::OwnerShip_Give(Object* pkObj)
 	pkObj->m_eRole			= NETROLE_PROXY;
 	pkObj->m_eRemoteRole	= NETROLE_AUTHORITY;
 
+}
+
+void ObjectManager::OwnerShip_Request(Object* pkObj)
+{
+	if(pkObj == NULL)
+		return;
+
+	if(pkObj->m_eRole	== NETROLE_AUTHORITY)
+		return;
+
+	NetPacket NP;
+	NP.Clear();
+	NP.m_kData.m_kHeader.m_iPacketType = ZF_NETTYPE_UNREL;
+	NP.Write((char) ZFGP_REQOWNOBJECT);
+	NP.Write(ZFGP_ENDOFPACKET);
+
+	NetWork* net = static_cast<NetWork*>(g_ZFObjSys.GetObjectPtr("NetWork"));
+	net->SendToAllClients(&NP);
+	g_ZFObjSys.Logf("net", " Sending Own Request for %d\n", pkObj->iNetWorkID);
+	
+}
+
+void ObjectManager::OwnerShip_OnRequest(Object* pkObj)
+{
+	if(pkObj == NULL)
+		return;
+
+	if(pkObj->m_eRole	== NETROLE_PROXY)
+		return;
+
+	NetPacket NP;
+	NP.Clear();
+	NP.m_kData.m_kHeader.m_iPacketType = ZF_NETTYPE_UNREL;
+	NP.Write((char) ZFGP_GIVEOWNOBJECT);
+	NP.Write(ZFGP_ENDOFPACKET);
+
+	NetWork* net = static_cast<NetWork*>(g_ZFObjSys.GetObjectPtr("NetWork"));
+	net->SendToAllClients(&NP);
+
+	OwnerShip_Give(pkObj);
+	g_ZFObjSys.Logf("net", " Gives away ownership of %d\n", pkObj->iNetWorkID);
+
+}
+
+void ObjectManager::OwnerShip_OnGrant(Object* pkObj)
+{
+	if(pkObj == NULL)
+		return;
+
+	OwnerShip_Take(pkObj);
+	g_ZFObjSys.Logf("net", " This node now own %d\n", pkObj->iNetWorkID);
 }
 
 /*

@@ -119,6 +119,8 @@ AIBase* P_UnitMoveAI::RunUnitCommand(int iCommandID, int iXDestinaton, int iYDes
 			//Vector3 kTempVect = m_pkObject->GetPos();
 			//m_pkObject->SetPos(kTempVect);					
 			//m_pkObject->SetPos(kTempVect);	
+			//move.x = int((m_pkMap->m_iHmSize/2.0)+ceil((m_pkObject->GetPos().x / HEIGHTMAP_SCALE)));
+			//move.y = int((m_pkMap->m_iHmSize/2.0)+ceil((m_pkObject->GetPos().z / HEIGHTMAP_SCALE)));
 			m_iCurrentState = UNIT_MOVE;
 			//m_fSpeedMod = 1;
 			return this;

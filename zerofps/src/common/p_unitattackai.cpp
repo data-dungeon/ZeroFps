@@ -97,6 +97,7 @@ AIBase* P_UnitAttackAI::UpdateAI()
 	{
 	case UNIT_ATTACK:
 		{
+			m_pkTargetObject = NULL;
 			if(m_iTargetID >= 0)//cout<<"hehjehejejhe" <<endl;
 				m_pkTargetObject= m_pkObject->m_pkObjectMan->GetObjectByNetWorkID(m_iTargetID);
 			if(!m_pkTargetObject)
