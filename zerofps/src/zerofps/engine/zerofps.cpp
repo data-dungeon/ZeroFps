@@ -246,10 +246,7 @@ void ZeroFps::Run_Client()
 	m_pkLevelMan->UpdateZones();			
 
 	//   _---------------------------------- fulhack deluxe 
-	SetCamera(m_pkCamera);
-	
-	
-	GetCam()->ClearViewPort();	
+	UpdateCamera();	
 	m_pkObjectMan->Update(PROPERTY_TYPE_RENDER,PROPERTY_SIDE_CLIENT,true);
 
 	//update openal sound system			
@@ -466,21 +463,18 @@ void ZeroFps::SetDisplay()
 
 void ZeroFps::SetCamera(Camera* pkCamera)
 {
+	m_pkCamera=pkCamera;		
+	m_pkCamera->UpdateAll(m_iWidth,m_iHeight);
 	
-	//if we have changed active camera, update all
-	if(m_pkCamera!=pkCamera){
-		m_pkCamera=pkCamera;		
-		m_pkCamera->UpdateAll(m_iWidth,m_iHeight);					
-		
-	//else do a normal update
-	} else {
-		m_pkCamera->Update(m_iWidth,m_iHeight);
-	}
+	UpdateCamera();
+}
+
+void ZeroFps::UpdateCamera()
+{
+	m_pkCamera->Update(m_iWidth,m_iHeight);
 	
 	//get the frustrum for frustum culling
 	m_pkFrustum->GetFrustum();				
-	
-	
 }
 
 DevStringPage*	ZeroFps::DevPrint_FindPage(const char* szName)

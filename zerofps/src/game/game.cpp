@@ -75,7 +75,7 @@ void Game::OnIdle(void)
 		case GAME_STATE_MENU:
 		{
 			pkFps->SetCamera(m_pkCamera);		
-			//pkFps->GetCam()->ClearViewPort();	
+			pkFps->GetCam()->ClearViewPort();	
 			//pkObjectMan->Update(PROPERTY_TYPE_RENDER, PROPERTY_SIDE_CLIENT, true);
 			pkFps->DevPrintf("common", "Active Propertys: %d",pkObjectMan->GetActivePropertys());
 	
@@ -85,7 +85,7 @@ void Game::OnIdle(void)
 		case GAME_STATE_INGAME:
 		{
 			pkFps->SetCamera(m_pkCamera);		
-			//pkFps->GetCam()->ClearViewPort();	
+			pkFps->GetCam()->ClearViewPort();	
 			//pkObjectMan->Update(PROPERTY_TYPE_RENDER, PROPERTY_SIDE_CLIENT, true);
 			pkFps->DevPrintf("common","Active Propertys: %d",pkObjectMan->GetActivePropertys());			
 			

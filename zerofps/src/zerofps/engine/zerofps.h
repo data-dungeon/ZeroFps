@@ -107,47 +107,44 @@ class ENGINE_API ZeroFps : public ZFObject {
 		*/
 		FileIo*					m_pkFile;					///< ?? file io ?? Vim
 		ZFBasicFS*				m_pkBasicFS;				///< Low level platform depended File Functions.
-		ZFVFileSystem*			m_pkZFVFileSystem;			///< ZeroFps own File System.
-		TextureManager*			m_pkTexMan;					///< Manges Textures
+		ZFVFileSystem*			m_pkZFVFileSystem;		///< ZeroFps own File System.
+		TextureManager*		m_pkTexMan;					///< Manges Textures
 		Input*					m_pkInput;					///< Handles all Local Input.
 		PropertyFactory*		m_pkPropertyFactory;		///< Property Creation for Objects.
-		Frustum*				m_pkFrustum;				///< Global Frustum object for culling.
+		Frustum*					m_pkFrustum;				///< Global Frustum object for culling.
 		Light*					m_pkLight;					///< Light Engine.
 		Render*					m_pkRender;					///< Renders Graphic primitives
-		Console*				m_pkConsole;				///< ZeroFps Console.
-		CmdSystem*				m_pkCmd;					///< Handles ZeroFps console variables
+		Console*					m_pkConsole;				///< ZeroFps Console.
+		CmdSystem*				m_pkCmd;						///< Handles ZeroFps console variables
 		AudioManager*			m_pkAudioMan;				///< audio manager (sfx,music)		
 		ObjectManager*			m_pkObjectMan;				///< In Game Object System.
-		CollisionManager*		m_pkCollisionMan;			///< Collision System.
-		SoundBufferManager*		m_pkSBM;					///< Sound
+		CollisionManager*	  m_pkCollisionMan;			///< Collision System.
+		SoundBufferManager*  m_pkSBM;						///< Sound
 		OpenAlSystem*			m_pkOpenAlSystem;			///< Sound
-		NetWork*				m_pkNetWork;				///< NetWork Interface.
+		NetWork*					m_pkNetWork;				///< NetWork Interface.
 		GLGuiRender*			m_pkGuiRenderer;			///< Gui - Zeb
 		ZGuiResourceManager*	m_pkGuiMan;					///< Gui - Zeb
-		ZGui*					m_pkGui;					///< Gui - Zeb
-		ZFIni*					m_pkIni;					///< Ini Files - Zeb
+		ZGui*						m_pkGui;						///< Gui - Zeb
+		ZFIni*					m_pkIni;						///< Ini Files - Zeb
 		LevelManager*			m_pkLevelMan;				///< 
-		PhysicsEngine*			m_pkPhysEngine;				///< 
-		ZFResourceDB*			m_pkResourceDB;				///< Resouce Handler.
+		PhysicsEngine*			m_pkPhysEngine;			///< 
+		ZFResourceDB*			m_pkResourceDB;			///< Resouce Handler.
 		ZFScript*				m_pkScript;					///< script
 
-		Application*			m_pkApp;					///< Application object.
+		Application*			m_pkApp;						///< Application object.
 			
 
-//		vector<Mad_Core*>		akCoreModells;
-
-		int		m_iState;											//	curent game state see enum enginestates
-		int		m_iFps;												//	curent FPS
-		float	m_fFrameTime;										//	frametime in MS
+		int		m_iState;									//	curent game state see enum enginestates
+		int		m_iFps;										//	curent FPS
+		float	m_fFrameTime;									//	frametime in MS
 		
 		bool	m_bServerMode;
 		bool	m_bClientMode;
-//		bool	m_bConsoleMode;
 		bool	m_bDrawDevList;
 		bool	m_bGuiMode, m_bGuiTakeControl;
 		
-		int		m_iMadDraw;											//	Flags for what part's of mad's that should be draw.
-		float	m_fMadLod;											//	If not 0 then force this LOD % on every mad.
+		int		m_iMadDraw;									//	Flags for what part's of mad's that should be draw.
+		float	m_fMadLod;										//	If not 0 then force this LOD % on every mad.
 		
 		ZeroFps(void);		
 		~ZeroFps();		
@@ -167,6 +164,7 @@ class ENGINE_API ZeroFps : public ZFObject {
 		inline float GetGameTime(void) {return float((SDL_GetTicks()/1000.0));};
 		
 		void SetCamera(Camera* pkCamera);	
+		void UpdateCamera();
 		inline Camera *GetCam() {return m_pkCamera;};		
 		int	NumberOfArgs(void);										// Return num of arg to app.
 		string GetArg(int iArgIndex);
