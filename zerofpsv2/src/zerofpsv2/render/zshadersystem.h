@@ -199,6 +199,11 @@ class RENDER_API ZShaderSystem : public ZFSubSystem
 		bool				m_bOcclusion;
 		unsigned int	m_iOcQuery;
 		
+		//other stuff
+		float				m_fRedGamma;
+		float				m_fGreenGamma;
+		float				m_fBlueGamma;
+		
 		//vertex buffers
 		bool				m_bSupportVertexBuffers;
 		

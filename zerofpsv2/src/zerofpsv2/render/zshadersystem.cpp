@@ -2,17 +2,6 @@
 
 ZShaderSystem::ZShaderSystem() : ZFSubSystem("ZShaderSystem")
 {
-	
-};
-
-bool ZShaderSystem::StartUp()
-{
- 	m_pkTexMan	= static_cast<TextureManager*>(GetSystem().GetObjectPtr("TextureManager"));
- 	m_pkLight	= static_cast<Light*>(GetSystem().GetObjectPtr("Light"));
-
-	SetupOpenGL();
-	BindMaterial(NULL);
-	
 	m_iPushPop = 				0;
 	
 	m_iMaterialReloads = 	0;
@@ -31,7 +20,29 @@ bool ZShaderSystem::StartUp()
 	m_bOcclusion = 					false;
 	m_iOcQuery =						0;
 	
+	m_fRedGamma							= 1.0;
+	m_fGreenGamma						= 1.0;
+	m_fBlueGamma						= 1.0;
+		
 	m_bSupportVertexBuffers =		false;
+	
+	//register console/ini variables (this will also load the variable if it exist in the ini file
+	RegisterVariable("r_gammar",	&m_fRedGamma,		CSYS_FLOAT);
+	RegisterVariable("r_gammag",	&m_fGreenGamma,	CSYS_FLOAT);
+	RegisterVariable("r_gammab",	&m_fBlueGamma,		CSYS_FLOAT);	
+	
+	//register console commands
+	Register_Cmd("setgamma",FID_SETGAMMA);		
+	
+};
+
+bool ZShaderSystem::StartUp()
+{
+ 	m_pkTexMan	= static_cast<TextureManager*>(GetSystem().GetObjectPtr("TextureManager"));
+ 	m_pkLight	= static_cast<Light*>(GetSystem().GetObjectPtr("Light"));
+
+	SetupOpenGL();
+	BindMaterial(NULL);
 	
 	//check for vertex and fragment program support
 	if(!(m_bSupportVertexProgram = HaveExtension("GL_ARB_vertex_program")))
@@ -48,10 +59,9 @@ bool ZShaderSystem::StartUp()
 		cout<<"ZSHADER: No Occlusion support"<<endl;
 	else
 		SetupOcculusion();
-		
-		
-	//register console commands
-	Register_Cmd("setgamma",FID_SETGAMMA);			
+			
+	//set gamma after its been loaded
+	SetGamma(m_fRedGamma,m_fGreenGamma,m_fBlueGamma);				
 		
 	return true;
 }
@@ -1506,7 +1516,13 @@ bool ZShaderSystem::SetGamma(float fRed,float fGreen,float fBlue)
 	if( SDL_SetGamma(fRed, fGreen,fBlue)  == -1)
 		return false;
 	else
+	{
+		m_fRedGamma		=	fRed;
+		m_fGreenGamma	=	fGreen;
+		m_fBlueGamma	=	fBlue;		
+	
 		return true;
+	}
 }
 
 void ZShaderSystem::RunCommand(int cmdid, const CmdArgument* kCommand)
