@@ -37,14 +37,14 @@ public:
 	bool SetSkin(ZGuiSkin* pkSkin);
 	void RenderText( char *stText, Rect kScreenRect, 
 		int iCursorPos, int iRenderDistFromTop, bool bMultiLine,
-		int& rCharsPrinted, int& rRowsPrinted);
+		int& rCharsPrinted, int& rRowsPrinted, float afTextcolor[3]);
 	bool SetDisplay(int w, int h);
 	bool SetFont(ZGuiFont* pkFont);
 	void GetScreenSize(int& cx, int& cy);
 	void GetScaleMode(GUIScaleMode& eGUIScaleMode) { eGUIScaleMode = m_eGUIScaleMode; } 
 	void SetScaleMode(GUIScaleMode eGUIScaleMode);
 	void SetClipperArea(Rect rc);
-
+	
 private:
 
 	void PrintWord(int x, int y, char* szWord, int offset, int length);
@@ -56,6 +56,7 @@ private:
 		int iRenderDistFromLeft, int& chars_printed);
 
 	void DoTextTag(); 
+	void RotateVertexCoords90deg(float *pfTUs, float *pfTVs, unsigned char ucRotLaps);
 
 	ZGuiSkin* m_pkSkin; // current skin
 	ZGuiFont* m_pkFont; // current font

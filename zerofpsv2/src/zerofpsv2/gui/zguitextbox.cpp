@@ -92,7 +92,8 @@ bool ZGuiTextbox::Render( ZGuiRender* pkRenderer )
 		int iCharsPrinted, iRowsPrinted;
 
 		pkRenderer->RenderText(m_strText, kRect, cursor_pos, 
-			m_iRenderDistFromTop, m_bMultiLine, iCharsPrinted, iRowsPrinted);
+			m_iRenderDistFromTop, m_bMultiLine, iCharsPrinted, iRowsPrinted, 
+			m_afTextColor);
 
 		m_iNumRows = iRowsPrinted;
 

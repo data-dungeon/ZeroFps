@@ -4,7 +4,7 @@ function Create()
 		InitProperty("P_Mad");
 			InitParameter("m_kMadFile","/data/mad/physicsball.mad");
 			InitParameter("m_fScale",1);
-			InitParameter("m_iShadowGroup","2");
+		--	InitParameter("m_iShadowGroup","2");
 --		InitProperty("P_Primitives3D");
 
 		InitProperty("P_Tcs");

@@ -1633,6 +1633,12 @@ bool ZGui::OnMouseUpdate(int x, int y, bool bLBnPressed,
 	{
 		m_bHandledMouse = false;
 
+		// Byt tillbaks till button_up skin om musknappen har släppts (fast inte på knappen).
+		if(ZGuiWnd::m_pkWndClicked)
+			if( typeid(*ZGuiWnd::m_pkWndClicked)==typeid(ZGuiButton) )
+				((ZGuiButton*) ZGuiWnd::m_pkWndClicked)->SetSkin(
+					((ZGuiButton*) ZGuiWnd::m_pkWndClicked)->GetButtonUpSkin()); 
+
 		if(pkFocusWindow && ZGuiWnd::m_pkWndClicked != NULL)
 		{
 			// Informera fönstret innan att det har tappat fokus.

@@ -117,6 +117,7 @@ public:
 	void GetChildrens(list<ZGuiWnd*>& kList);
 	virtual void SetText(char* strText, bool bResizeWnd=false);
 	virtual char* GetText() { return m_strText; }
+	virtual void SetTextClr(unsigned char ucR, unsigned char ucG, unsigned char ucB);
 	ZGui* GetGUI();
 	static void ResetStaticClickWnds(ZGuiWnd* pkWnd);
 
@@ -167,9 +168,10 @@ protected:
 	ZGuiFont* m_pkFont;
 	char* m_strText;
 	int m_iTextLength;
+	float m_afTextColor[3]; // r,g,b [0-1] (only if font is TGA)
 	Rect m_kClipperArea; ///< Pixels outside this area will not be rendered
 	bool m_bResizeHorz, m_bResizeVert; ///< om fönstret skall skall skalas om horizontellt/vertikalt när skärmen byter upplösning
-
+	
 	char m_szName[50];	// Same name as the resource manager use to find the window.
 	unsigned int m_iID;	// Kan vara 0 och är i så fall ett statisk fönster.
 

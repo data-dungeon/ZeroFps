@@ -28,11 +28,7 @@ void GuiAppLua::Init(ZGuiApp* pkGuiApp, ZFScriptSystem* pkScript)
 	pkScript->ExposeFunction("SetTextInt", GuiAppLua::SetTextInt); 
 	pkScript->ExposeFunction("SetTextString", GuiAppLua::SetTextStringLua); 
 	pkScript->ExposeFunction("AddTreeItem", GuiAppLua::AddTreeItemLua);
-	pkScript->ExposeFunction("SetMoveArea", GuiAppLua::SetMoveAreaLua);
-
-	pkScript->ExposeFunction("TestTableSet", GuiAppLua::TestTableSetLua);
-	pkScript->ExposeFunction("TestTableGet", GuiAppLua::TestTableGetLua);
-		
+	pkScript->ExposeFunction("SetMoveArea", GuiAppLua::SetMoveAreaLua);		
 }
 
 // Name: CreateWndLua
@@ -437,54 +433,6 @@ int GuiAppLua::ShowWndLua(lua_State* pkLua)
 			pkWnd->SetFocus();
 	}
 		
-	return 1;
-}
-
-// skicka in en tabell på 3 floats
-int GuiAppLua::TestTableSetLua(lua_State* pkLua)
-{
-	vector<TABLE_DATA> vkData;
-	g_pkScript->GetArgTable(pkLua, 0, vkData);
-
-	printf("data in table: \n");
-
-	for(unsigned int i=0; i<vkData.size(); i++)
-	{
-		if(vkData[i].bNumber)
-			printf("%f\n", (float) (*(double*) vkData[i].pData));
-		else
-			printf("%s\n", (char*) vkData[i].pData);
-	}
-
-	g_pkScript->DeleteTable(vkData); // don't forget or else memory will leak!
-		
-	return 1;
-}
-
-// retunera en tabell på 3 floats
-int GuiAppLua::TestTableGetLua(lua_State* pkLua)
-{
-	vector<TABLE_DATA> vkData;
-
-	TABLE_DATA temp;
-
-	temp.bNumber = true;
-	temp.pData = new double;
-	(*(double*) temp.pData) = 3.0;
-	vkData.push_back(temp);
-
-	temp.bNumber = true;
-	temp.pData = new double;
-	(*(double*) temp.pData) = 6.0;
-	vkData.push_back(temp);
-
-	temp.bNumber = true;
-	temp.pData = new double;
-	(*(double*) temp.pData) = 9.0;
-	vkData.push_back(temp);
-
-	g_pkScript->AddReturnValueTable(pkLua, vkData);
-
 	return 1;
 }
 

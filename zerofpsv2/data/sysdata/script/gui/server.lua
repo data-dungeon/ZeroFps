@@ -37,7 +37,7 @@ function GUICreate()
 	 bkG=255, bkB=255, borderR=255, borderG=255, borderB=255, bd_size=0, tile=0, trans=0 }
 	Skin15 = { tex1="workbutton_d.bmp", tex2="0", tex3="0", tex4="0", tex1a="0", tex2a="0", tex3a="0", tex4a="0", bkR=255,
 	 bkG=255, bkB=255, borderR=255, borderG=255, borderB=255, bd_size=0, tile=0, trans=0 }
-	Skin16 = { tex1="workbutton_f.bmp", tex2="0", tex3="0", tex4="0", tex1a="0", tex2a="0", tex3a="0", tex4a="0", bkR=255,
+	Skin16 = { tex1="workbutton_u.bmp", tex2="0", tex3="0", tex4="0", tex1a="0", tex2a="0", tex3a="0", tex4a="0", bkR=255,
 	 bkG=255, bkB=255, borderR=255, borderG=255, borderB=255, bd_size=0, tile=0, trans=0 }
 	Skin17 = { tex1="placeonground_u.bmp", tex2="0", tex3="0", tex4="0", tex1a="0", tex2a="0", tex3a="0", tex4a="0",
 	 bkR=255, bkG=255, bkB=255, borderR=255, borderG=255, borderB=255, bd_size=0, tile=0, trans=0 }
@@ -84,13 +84,17 @@ function GUICreate()
 	-- Parameter 11 (last) is window resize type in relation to screen or parent window:
 	-- 0 = None, 1 = MaxSize, 2 = MaxWidth, 3 = MaxHeight
 	-------------------------------------------------------------------------
+
+--	local sw = GetScreenWidth()
+--	local sh = GetScreenWidth()
+
 	CreateWnd(0,"GuiMainWnd","","",0,0,800,600,0,0,0)
 	ChangeSkin("GuiMainWnd","Skin12","Window")
 
 	CreateWnd(1,"OpenWorkTabButton","GuiMainWnd","",760,560,32,32,0,3,0)
 	ChangeSkin("OpenWorkTabButton","Skin14","Button up")
 	ChangeSkin("OpenWorkTabButton","Skin15","Button down")
-	ChangeSkin("OpenWorkTabButton","Skin16","Button focus")
+	ChangeSkin("OpenWorkTabButton","Skin14","Button focus")
 
 	CreateWnd(2,"ToggleLight","GuiMainWnd","",720,560,32,32,0,3,0)
 	ChangeSkin("ToggleLight","Skin23","Checkbox: Button up")

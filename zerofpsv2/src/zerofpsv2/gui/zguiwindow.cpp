@@ -42,6 +42,7 @@ ZGuiWnd::ZGuiWnd(Rect kRectangle, ZGuiWnd* pkParent, bool bVisible, int iID)
 
 	m_strText = NULL;
 	m_iTextLength = 0;
+	m_afTextColor[0] = m_afTextColor[1] = m_afTextColor[2] = 0.0f;
 	m_pkSkin = NULL;
 	m_bVisible = bVisible;
 	m_bInternalControl = false;
@@ -296,6 +297,13 @@ bool ZGuiWnd::Render(ZGuiRender* pkRenderer)
 
 	return true;
 	
+}
+
+void ZGuiWnd::SetTextClr(unsigned char ucR, unsigned char ucG, unsigned char ucB)
+{
+	m_afTextColor[0] = (float) ucR / 255.0f;
+	m_afTextColor[1] = (float) ucG / 255.0f;
+	m_afTextColor[2] = (float) ucB / 255.0f;
 }
 
 ZGuiWnd* ZGuiWnd::Find(int x, int y)

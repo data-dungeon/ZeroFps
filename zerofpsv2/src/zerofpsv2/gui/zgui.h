@@ -66,6 +66,7 @@ class TextureManager;
 #define ZGM_SCN_SETPOS					 0x5601
 
 #define ZG_DEFAULT_GUI_FONT				 1
+#define ZG_DEFAULT_COLOR_FONT1			 2
 
 class I_ZeroFps;
 

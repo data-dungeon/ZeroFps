@@ -64,7 +64,7 @@ void GLGuiRender::SetScaleMode(GUIScaleMode eGUIScaleMode)
 bool GLGuiRender::StartRender()
 {
 	glPushAttrib(/*GL_COLOR_BUFFER_BIT | */GL_TEXTURE_BIT | GL_LIGHTING_BIT | GL_FOG_BIT | 
-		GL_DEPTH_BUFFER_BIT | GL_ENABLE_BIT | GL_CURRENT_BIT); // 040508 - tog bort GL_COLOR_BUFFER_BIT :) (eftersom den fuckade up skuggorna!!!?)
+		GL_DEPTH_BUFFER_BIT | GL_ENABLE_BIT | GL_CURRENT_BIT); // 040513 - tog bort GL_COLOR_BUFFER_BIT :) (eftersom den fuckade up skuggorna!!!?)
 	glDisable(GL_CULL_FACE);
 	glDisable(GL_LIGHTING);
 	glDisable(GL_DEPTH_TEST);
@@ -208,6 +208,12 @@ bool GLGuiRender::RenderQuad(Rect rc)
 		th = -(float)(rc.Bottom-rc.Top) / iTextureHeight;
 	}
 
+	float txs[] = {tx,tx,tx+tw,tx+tw};
+	float tys[] = {ty,th,th,ty};
+
+	if(m_pkSkin->m_ucRots90Degree != 0) 
+		RotateVertexCoords90deg(txs, tys, m_pkSkin->m_ucRots90Degree);
+
 	if(bDrawMasked)
 	{
 		glEnable(GL_TEXTURE_2D);
@@ -219,10 +225,15 @@ bool GLGuiRender::RenderQuad(Rect rc)
 
 		glBegin(GL_QUADS);		
 			glColor3f(1,1,1);
-			glTexCoord2f(tx,ty);		glVertex2i(rc.Left,m_iScreenHeight-rc.Bottom);		 
-			glTexCoord2f(tx,th);		glVertex2i(rc.Left,m_iScreenHeight-rc.Top);		
-			glTexCoord2f(tx+tw,th);  glVertex2i(rc.Right,m_iScreenHeight-rc.Top);    
-			glTexCoord2f(tx+tw,ty);	  glVertex2i(rc.Right,m_iScreenHeight-rc.Bottom);    
+/*			glTexCoord2f(tx,ty);				glVertex2i(rc.Left,m_iScreenHeight-rc.Bottom);		 
+			glTexCoord2f(tx,th);				glVertex2i(rc.Left,m_iScreenHeight-rc.Top);		
+			glTexCoord2f(tx+tw,th);			glVertex2i(rc.Right,m_iScreenHeight-rc.Top);    
+			glTexCoord2f(tx+tw,ty);			glVertex2i(rc.Right,m_iScreenHeight-rc.Bottom);  */
+
+			glTexCoord2f(txs[0],tys[0]);	glVertex2i(rc.Left,m_iScreenHeight-rc.Bottom);		 
+			glTexCoord2f(txs[1],tys[1]);	glVertex2i(rc.Left,m_iScreenHeight-rc.Top);		
+			glTexCoord2f(txs[2],tys[2]);	glVertex2i(rc.Right,m_iScreenHeight-rc.Top);     
+			glTexCoord2f(txs[3],tys[3]);	glVertex2i(rc.Right,m_iScreenHeight-rc.Bottom);   
 		glEnd();							
 	}
 	 		
@@ -256,20 +267,29 @@ bool GLGuiRender::RenderQuad(Rect rc)
 			glColor3f(m_pkSkin->m_afBkColor[0],m_pkSkin->m_afBkColor[1],
 				m_pkSkin->m_afBkColor[2]);
 
-
 		if(bIsTGA)
 		{
-			glTexCoord2f(tx,th);			glVertex2i(rc.Left,m_iScreenHeight-rc.Bottom);		 
+/*			glTexCoord2f(tx,th);			glVertex2i(rc.Left,m_iScreenHeight-rc.Bottom);		 
 			glTexCoord2f(tx,ty);			glVertex2i(rc.Left,m_iScreenHeight-rc.Top);		
 			glTexCoord2f(tx+tw,ty);		glVertex2i(rc.Right,m_iScreenHeight-rc.Top);    
-			glTexCoord2f(tx+tw,th);		glVertex2i(rc.Right,m_iScreenHeight-rc.Bottom);   
+			glTexCoord2f(tx+tw,th);		glVertex2i(rc.Right,m_iScreenHeight-rc.Bottom);  */
+
+			glTexCoord2f(txs[0],tys[0]);	glVertex2i(rc.Left,m_iScreenHeight-rc.Bottom);		 
+			glTexCoord2f(txs[1],tys[1]);	glVertex2i(rc.Left,m_iScreenHeight-rc.Top);		
+			glTexCoord2f(txs[2],tys[2]);	glVertex2i(rc.Right,m_iScreenHeight-rc.Top);    
+			glTexCoord2f(txs[3],tys[3]);	glVertex2i(rc.Right,m_iScreenHeight-rc.Bottom);  
 		}
 		else
 		{
-			glTexCoord2f(tx,ty);			glVertex2i(rc.Left,m_iScreenHeight-rc.Bottom);		 
+	/*		glTexCoord2f(tx,ty);			glVertex2i(rc.Left,m_iScreenHeight-rc.Bottom);		 
 			glTexCoord2f(tx,th);			glVertex2i(rc.Left,m_iScreenHeight-rc.Top);		
 			glTexCoord2f(tx+tw,th);		glVertex2i(rc.Right,m_iScreenHeight-rc.Top);    
-			glTexCoord2f(tx+tw,ty);		glVertex2i(rc.Right,m_iScreenHeight-rc.Bottom);  
+			glTexCoord2f(tx+tw,ty);		glVertex2i(rc.Right,m_iScreenHeight-rc.Bottom);  */
+
+			glTexCoord2f(txs[0],tys[0]);	glVertex2i(rc.Left,m_iScreenHeight-rc.Bottom);		 
+			glTexCoord2f(txs[1],tys[1]);	glVertex2i(rc.Left,m_iScreenHeight-rc.Top);		
+			glTexCoord2f(txs[2],tys[2]);	glVertex2i(rc.Right,m_iScreenHeight-rc.Top);    
+			glTexCoord2f(txs[3],tys[3]);	glVertex2i(rc.Right,m_iScreenHeight-rc.Bottom);  
 		}
 
 
@@ -433,7 +453,7 @@ bool GLGuiRender::RenderBorder(Rect rc)
 }
 
 void GLGuiRender::RenderText( char *strText, Rect rc, int iCursorPos, int iRenderDistFromTop,
-							  bool bMultiLine, int& chars_printed, int& rows_printed)
+							  bool bMultiLine, int& chars_printed, int& rows_printed, float afTextcolor[3])
 {
 	if(m_pkFont == NULL)
 		return; 
@@ -451,6 +471,10 @@ void GLGuiRender::RenderText( char *strText, Rect rc, int iCursorPos, int iRende
 	m_rcTextBox = Rect(t.Left,m_iScreenHeight-t.Bottom,t.Right,m_iScreenHeight-t.Top);
 
 	glColor3f(1,1,1);
+
+	m_afTextColor[0] = afTextcolor[0];
+	m_afTextColor[1] = afTextcolor[1];
+	m_afTextColor[2] = afTextcolor[2];
 
 	bool bIsTGA = m_pkTextureManger->TextureHaveAlpha(fontTexture);
 
@@ -992,4 +1016,26 @@ void GLGuiRender::DoTextTag()
 
 	m_strSyntax.clear(); 
 	m_bSearchForSytax = false;
+}
+
+void GLGuiRender::RotateVertexCoords90deg(float *pfTUs, float *pfTVs, unsigned char ucRotLaps)
+{
+	unsigned char A=0, B=1, C=2, D=3;
+
+	for(unsigned char i=0; i<ucRotLaps; i++)
+	{
+		float pfTempTUs[4] = {pfTUs[0], pfTUs[1], pfTUs[2], pfTUs[3] };
+		float pfTempTVs[4] = {pfTVs[0], pfTVs[1], pfTVs[2], pfTVs[3] };
+
+		// 90 degree
+		pfTUs[A] = pfTempTUs[D];
+		pfTUs[B] = pfTempTUs[A];
+		pfTUs[C] = pfTempTUs[B];
+		pfTUs[D] = pfTempTUs[C];
+
+		pfTVs[A] = pfTempTVs[D];
+		pfTVs[B] = pfTempTVs[A];
+		pfTVs[C] = pfTempTVs[B];
+		pfTVs[D] = pfTempTVs[C];
+	}
 }

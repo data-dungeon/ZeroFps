@@ -34,6 +34,8 @@ ZGuiSkin::ZGuiSkin( int t1,int t2,int t3,int t4,	// Textures
 	m_unBorderSize				= bsz; 
 	m_bTileBkSkin				= tile_texture;
 	m_bTransparent				= transparent;
+
+	m_ucRots90Degree		= 0;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -63,6 +65,8 @@ ZGuiSkin::ZGuiSkin( int t1,int t2,int t3,int t4,	// Textures
 	m_unBorderSize				= bsz; 
 	m_bTileBkSkin				= tile_texture;
 	m_bTransparent				= false;
+
+	m_ucRots90Degree		= 0;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -93,6 +97,7 @@ ZGuiSkin::ZGuiSkin( int r1,int g1,int b1,			// Background color
 	m_unBorderSize				= bsz; 
 	m_bTileBkSkin				= false;
 	m_bTransparent				= bTransparent;
+	m_ucRots90Degree		= 0;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -122,6 +127,8 @@ ZGuiSkin::ZGuiSkin( int r1,int g1,int b1,			// Background color
 	m_unBorderSize				= bsz; 
 	m_bTileBkSkin				= false;
 	m_bTransparent				= false;
+
+	m_ucRots90Degree		= 0;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -150,6 +157,8 @@ ZGuiSkin::ZGuiSkin( int t1,int t2,int t3,int t4,	// Textures
 	m_unBorderSize				= 0; 
 	m_bTileBkSkin				= tile_texture;
 	m_bTransparent				= false;
+
+	m_ucRots90Degree		= 0;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -178,6 +187,8 @@ ZGuiSkin::ZGuiSkin(	int t1,	int a1,				// Textures
 	m_unBorderSize				= 0; 
 	m_bTileBkSkin				= tile_texture;
 	m_bTransparent				= false;
+
+	m_ucRots90Degree		= 0;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -207,6 +218,8 @@ ZGuiSkin::ZGuiSkin(	int t1,						// Textures
 	m_bTileBkSkin				= tile_texture;
 	m_bTransparent				= false;
 	m_bTransparent				= false;
+
+	m_ucRots90Degree		= 0;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -234,6 +247,8 @@ ZGuiSkin::ZGuiSkin()
 	m_unBorderSize				= 0; 
 	m_bTileBkSkin				= false;
 	m_bTransparent				= false;
+
+	m_ucRots90Degree		= 0;
 }
 
 const ZGuiSkin& ZGuiSkin::operator=(const ZGuiSkin& pkSkinSrc )
@@ -259,6 +274,8 @@ const ZGuiSkin& ZGuiSkin::operator=(const ZGuiSkin& pkSkinSrc )
 	m_unBorderSize				= pkSkinSrc.m_unBorderSize;
 	m_bTileBkSkin				= pkSkinSrc.m_bTileBkSkin;
 	m_bTransparent				= pkSkinSrc.m_bTransparent;
+
+	m_ucRots90Degree		= pkSkinSrc.m_ucRots90Degree;
 
 	return *this;
 }
@@ -286,6 +303,8 @@ ZGuiSkin::ZGuiSkin(ZGuiSkin* pkCopy)
 	m_unBorderSize					= pkCopy->m_unBorderSize;
 	m_bTileBkSkin					= pkCopy->m_bTileBkSkin;
 	m_bTransparent					= pkCopy->m_bTransparent;	
+
+	m_ucRots90Degree		= pkCopy->m_ucRots90Degree;
 }
 
 bool ZGuiSkin::operator==(ZGuiSkin d) 
@@ -311,6 +330,8 @@ bool ZGuiSkin::operator==(ZGuiSkin d)
 	if(m_unBorderSize					!= d.m_unBorderSize) return false;
 	if(m_bTileBkSkin					!= d.m_bTileBkSkin) return false;
 	if(m_bTransparent					!= d.m_bTransparent) return false;
+
+	if(m_ucRots90Degree			!= d.m_ucRots90Degree) return false;
 
 	return true;
 } 

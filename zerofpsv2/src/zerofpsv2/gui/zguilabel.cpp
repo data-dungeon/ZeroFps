@@ -54,7 +54,7 @@ bool ZGuiLabel::Render( ZGuiRender* pkRenderer )
 		}
 
 		int iLetters, iRows;
-		pkRenderer->RenderText(m_strText, r, -1, 0, false, iLetters, iRows);
+		pkRenderer->RenderText(m_strText, r, -1, 0, false, iLetters, iRows, m_afTextColor);
 	}
 	return true;
 } 

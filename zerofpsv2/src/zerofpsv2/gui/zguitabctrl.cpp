@@ -112,6 +112,7 @@ bool ZGuiTabCtrl::InsertPage(char* szResWndName, unsigned int uiIndex,
 		pkNewTab = m_kTabList.back();
 
 		pkNewPage->SetText(szTabText); 
+		OnChangeWndText(pkNewPage);
 	}
 	else
 	{

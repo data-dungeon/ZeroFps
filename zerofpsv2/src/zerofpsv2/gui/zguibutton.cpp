@@ -87,7 +87,7 @@ bool ZGuiButton::Render( ZGuiRender* pkRenderer )
 		int iLetters, iRows;
 		pkRenderer->RenderText(m_strText, rcTextRect, -1, 
 			m_bCenterTextHorz == true ? ZG_CENTER_TEXT_HORZ : 0, 
-			false, iLetters, iRows);
+			false, iLetters, iRows, m_afTextColor);
 	}
 
 	return true;

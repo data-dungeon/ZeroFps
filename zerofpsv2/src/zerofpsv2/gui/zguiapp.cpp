@@ -458,6 +458,10 @@ ZGuiSkin* ZGuiApp::AddSkinFromScript(char *szName, ZGuiSkin* pkSkin)
 	if(m_pkScriptSystem->GetGlobal(pkLuaState, szName, "trans", dData))
 		pkNewSkin->m_bTransparent = dData > 0 ? true : false;
 
+	// Number of 90 degree rots on bk skin
+	if(m_pkScriptSystem->GetGlobal(pkLuaState, szName, "rots90deg", dData))
+		pkNewSkin->m_ucRots90Degree = dData;
+
 	return pkNewSkin;
 }
 
@@ -520,6 +524,10 @@ ZGuiSkin* ZGuiApp::AddSkinFromScript2(char *szName, lua_State* pkLuaState,
 		pkNewSkin->m_bTileBkSkin = dData > 0 ? true : false;
 	if(m_pkScriptSystem->GetGlobal(pkLuaState, szName, "trans", dData))
 		pkNewSkin->m_bTransparent = dData > 0 ? true : false;
+
+	// Number of 90 degree rots on bk skin
+	if(m_pkScriptSystem->GetGlobal(pkLuaState, szName, "rots90deg", dData))
+		pkNewSkin->m_ucRots90Degree = dData;
 
 	return pkNewSkin;
 }
