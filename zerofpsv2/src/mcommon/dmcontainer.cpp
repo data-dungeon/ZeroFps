@@ -151,9 +151,15 @@ bool DMContainer::AddItem(int iID,int iX,int iY)
 				pkItem->SetUseZones(false);
 				
 				if(m_bDisableItems)				
+				{
 					pkItem->SetUpdateStatus(UPDATE_NONE);
-				else
+					cout<<"disabling item"<<endl;
+				}
+				else				
+				{
 					pkItem->SetUpdateStatus(UPDATE_ALL);
+					cout<<"enabling item"<<endl;
+				}
 
 				
 				return true;
@@ -227,6 +233,7 @@ bool DMContainer::DropItem(int iID)
 			{
 				ClearItem(iID);
 				
+				cout<<"enabling item"<<endl;
 				pkItem->SetUpdateStatus(UPDATE_ALL);				
 				pkItem->SetUseZones(true);
 				pkItem->SetParent(pkOwner->GetParent());				
