@@ -1,10 +1,10 @@
 #include "entity.h"
 
-//#include "../engine_systems/physicsengine/physicsengine.h"
+
 #include "../basic/zfsystem.h"
 #include "entitymanager.h"
 #include "zerofps.h"
-//#include "../engine_systems/propertys/p_physic.h"
+#include "../engine_systems/propertys/p_track.h"
  
 
 typedef list<Entity*>::iterator		itListObject;
@@ -447,6 +447,26 @@ bool Entity::AttachToZone(const Vector3& kPos)
 
 void Entity::ZoneChange(int iCurrent,int iNew)
 {
+	//lets fins out wich clients has this entity
+	for(list<P_Track*>::iterator it = m_pkEntityMan->m_kTrackedObjects.begin();it!= m_pkEntityMan->m_kTrackedObjects.end();it++)
+	{	
+		if((*it)->m_iConnectID != -1)
+		{		
+			if( (*it)->m_iActiveZones.find(iCurrent) != (*it)->m_iActiveZones.end())
+			{
+				//cout<<"Connection "<<(*it)->m_iConnectID<<" has this entity"<<endl;				
+				if( (*it)->m_iActiveZones.find(iNew) == (*it)->m_iActiveZones.end())
+				{
+					cout<<"Entity "<<m_iEntityID<< " has moved to an untracked zone for client "<<(*it)->m_iConnectID<<endl;
+					
+					// send delete request to client here =)
+				}		
+			}
+		}
+	}
+	
+	
+	//do callback to all propertys
 	for(vector<Property*>::iterator it=m_akPropertys.begin();it!=m_akPropertys.end();it++) 
 	{
 		(*it)->ZoneChange(iCurrent,iNew);
