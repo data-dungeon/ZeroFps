@@ -169,6 +169,9 @@ void ZeroEd::RemoveSelProperty()
 	char* item;
 
 	item = GetSelItem("PropertyList");
+
+	if(item == NULL)
+		return;
 	
 	NetPacket kNp;
 	kNp.Write((char) ZFGP_EDIT);

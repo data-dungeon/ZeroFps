@@ -36,6 +36,7 @@ public:
 	void SetCtrlStyle(unsigned long ulNewStyle); // replaces the previus
 	void SetSliderSkin(ZGuiSkin* pkSkin);
 	void SetBkSkin(ZGuiSkin* pkSkin);
+	ZGuiSkin* GetBkSkin();
 	
 	int  GetPos();
 	void GetRange(int& riMin, int& riMax);

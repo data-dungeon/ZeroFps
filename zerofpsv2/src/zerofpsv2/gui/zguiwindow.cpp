@@ -333,6 +333,13 @@ bool ZGuiWnd::Render(ZGuiRender* pkRenderer)
 	
 }
 
+void ZGuiWnd::GetTextColor(unsigned char& rucR, unsigned char& rucG, unsigned char& rucB)
+{
+	rucR = (unsigned char) (m_afTextColor[0] * 255.0f);
+	rucG = (unsigned char) (m_afTextColor[1] * 255.0f);
+	rucB = (unsigned char) (m_afTextColor[2] * 255.0f);	
+}
+
 void ZGuiWnd::SetTextColor(unsigned char ucR, unsigned char ucG, unsigned char ucB)
 {
 	m_afTextColor[0] = (float) ucR / 255.0f;

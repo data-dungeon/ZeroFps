@@ -579,7 +579,11 @@ ZGuiSkin* ZGuiApp::AddSkinFromScript2(char *szName, lua_State* pkLuaState,
 
 	// Number of 90 degree rots on bk skin
 	if(m_pkScriptSystem->GetGlobal(pkLuaState, szName, "degree", dData))
-		pkNewSkin->m_fRotDegree = dData;
+	{
+		float fAngle = dData;
+		float fMultipel = (PI+PI) / 360.0f;
+		pkNewSkin->m_fRotDegree = fMultipel * fAngle;
+	}
 
 	return pkNewSkin;
 }
@@ -1164,17 +1168,24 @@ void ZGuiApp::ClearListbox(char *szResName)
 	if(pkWnd == NULL)
 		return;
 
-	bool bCombobox = GetWndType(pkWnd) == Combobox ? true : false;
+	GuiType eType = GetWndType(pkWnd);
 
-	if(bCombobox == false)
+	if(eType == Combobox)
 	{
 		ZGuiListbox* pkListBox = static_cast<ZGuiListbox*>(pkWnd);
 		pkListBox->RemoveAllItems();
 	}
 	else
+	if(eType == Listbox)
 	{
 		ZGuiCombobox* pkComboBox = static_cast<ZGuiCombobox*>(pkWnd);
 		pkComboBox->RemoveAllItems();
+	}
+	else
+	if(eType == Treebox)
+	{
+		ZGuiTreebox* pkTreebox = static_cast<ZGuiTreebox*>(pkWnd);
+		pkTreebox->Clear();
 	}
 }
 

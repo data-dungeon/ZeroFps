@@ -14,7 +14,7 @@
 bool bPlayAnimation = false;
 FILE* pkAnimationFile = NULL;
 
-ZGResEdit g_kResEdit("ZGResEdit",0,0,0);
+ZGResEdit g_kResEdit("zgresedit",0,0,0);
 
 string CURRENT_PROJECT_PATH = "../datafiles/mistlands/"; // Ändra till aktuellt proejkt för att spara i rätt folder.
 
@@ -934,8 +934,10 @@ void ZGResEdit::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 				GetListbox()->GetSelItem()->GetText(), rand()%1000);
 			SetText("NewWndNameTextbox", szNewName);
 
-			m_pkGui->SetFocus(pkWnd);
-			pkWnd->Disable(); // Disable wnd (otherwise some ctrls like listoboxes can't be moved easily)
+			m_pkGui->SetFocus(pkWnd, false);
+			//pkWnd->Disable(); // Disable wnd (otherwise some ctrls like listoboxes can't be moved easily)
+
+			pkWnd->SetMoveArea(Rect(0,0,800,600), true);
 
 			UpdateViewWnd();
 			UpdateSkinList(pkWnd);
@@ -1217,6 +1219,8 @@ void ZGResEdit::OnMouseClick(bool bReleased, int x, int y)
       m_pkFocusWnd = m_pkMainWnd;
 		return;
 	}
+
+	printf("pkWnd = %s\n", pkWnd->GetName());
 
 	if(pkWnd == GetWnd("GuiMainWnd"))
 	{

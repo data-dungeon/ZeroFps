@@ -138,6 +138,11 @@ bool ZFBasicFS::FileExist(const char* szFile)
 	return bOK;
 }
 
+bool ZFBasicFS::IsDirectory(const char* szName)
+{
+	// write evil linux code here :)
+}
+
 
 #endif
 

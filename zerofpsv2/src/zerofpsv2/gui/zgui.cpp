@@ -177,7 +177,8 @@ bool ZGui::UnregisterWindow(ZGuiWnd* pkWindow)
 		// Men bara om det är ett (main) fönster. I annat fall
 		// sköter kontrollerna det själva.
 		//if(pkWindow->GetParent() == NULL)
-		if( pkWindow->GetParent() == NULL || typeid(*pkWindow->GetParent())==typeid(ZGuiTabCtrl) ) 
+		ZGuiWnd* pkWndParent = pkWindow->GetParent();
+		if( pkWndParent == NULL || typeid(*pkWndParent)==typeid(ZGuiTabCtrl) ) 
 		{
 			for(WINit w = vkChildList.begin(); w != vkChildList.end(); w++)
 			{
@@ -203,7 +204,7 @@ bool ZGui::UnregisterWindow(ZGuiWnd* pkWindow)
 	}
 	else
 	{
-		cout << "Failed to remove window!" << endl;
+	//	cout << "Failed to remove window!" << endl;
 	}
 
 	return true;
@@ -379,6 +380,10 @@ bool ZGui::Render(int fps)
 
 	StopProfileTimer("r__Gui");	
 	
+	m_kPointsToDraw.clear();
+	m_kRectsToDraw.clear(); 
+	m_kLinesToDraw.clear(); 
+
 	return true;
 }
 
@@ -580,9 +585,7 @@ bool ZGui::UpdateMouse(int x, int y, bool bLBnPressed, bool bRBnPressed, bool bM
 		m_pkToolTip->Update(x,y,(bLBnPressed|bRBnPressed|bMBnPressed),fTime);
 	}
 
-	m_kPointsToDraw.clear();
-	m_kRectsToDraw.clear(); 
-	m_kLinesToDraw.clear(); 
+
 
 	return true;
 }

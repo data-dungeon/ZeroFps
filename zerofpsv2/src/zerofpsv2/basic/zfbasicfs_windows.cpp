@@ -44,6 +44,28 @@ bool ZFBasicFS::ListDir(vector<string>* pkFiles, const char* acName, bool bOnlyM
 	return true;
 }
 
+bool ZFBasicFS::IsDirectory(const char* szName)
+{
+	//DWORD attributes = GetFileAttributes(szName);
+	//if(attributes == INVALID_FILE_ATTRIBUTES)
+	//	return false;
+
+	//return (attributes & FILE_ATTRIBUTE_DIRECTORY);
+
+
+
+	bool direxists=false;
+	DWORD atr=GetFileAttributes(szName);
+	if (atr!=0xFFFFFFFF)
+	{
+		if (atr & FILE_ATTRIBUTE_DIRECTORY)
+		{
+			direxists=true;
+		}
+	}
+	return direxists;
+}
+
 bool ZFBasicFS::ListDirFilter(vector<string>* pkFiles, vector<string>& pkFilters, 
 							  const char* acName, bool bIgnoreMaps)
 {  

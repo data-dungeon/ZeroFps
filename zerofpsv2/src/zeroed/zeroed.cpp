@@ -1908,3 +1908,5 @@ Vector3 ZeroEd::GetZonePosAutoSnap()
 
 	return pos;
 }
+
+

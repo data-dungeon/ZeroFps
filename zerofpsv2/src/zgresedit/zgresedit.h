@@ -15,7 +15,7 @@
 //#include <GL/glut.h>
 #include <list>
 #include "../zerofpsv2/engine/application.h"
-#include "../zerofpsv2/gui/zgui.h"
+#include "../zerofpsv2/gui/zguiapp.h"
 #include "serialization.h"
 
 class Scene;

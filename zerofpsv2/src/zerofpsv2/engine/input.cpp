@@ -253,6 +253,7 @@ BasicKey Input::TranslateKey(SDL_keysym* pkSdlKey)
 
 void Input::Update(void) 
 {
+
 	UpdateInputHandles();
 	UpdateMousePos();
 	

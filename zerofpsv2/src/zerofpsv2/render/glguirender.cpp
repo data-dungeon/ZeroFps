@@ -246,9 +246,11 @@ bool GLGuiRender::RenderQuad(Rect rc)
 	bool bIsTGA;// = m_pkTextureManger->TextureHaveAlpha(m_pkSkin->m_iBkTexID);
 	bIsTGA = m_pkTextureManger->TextureIsTGA(m_pkSkin->m_iBkTexID);
 
+
+
 	if(bIsTGA)
 		bDrawMasked = false;
-
+	
 	int texture = m_pkSkin->m_iBkTexID;
 
 	if(m_pkSkin->m_rcBkTile != Rect(0,0,0,0) && texture > 0)

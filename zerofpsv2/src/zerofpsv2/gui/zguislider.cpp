@@ -163,6 +163,11 @@ void ZGuiSlider::SetBkSkin(ZGuiSkin* pkSkin)
 	m_pkLabel->SetSkin(pkSkin);
 }
 
+ZGuiSkin* ZGuiSlider::GetBkSkin()
+{
+	return m_pkLabel->GetSkin();
+}
+
 bool ZGuiSlider::ProcessKBInput(int nKey)
 {
 	return true;

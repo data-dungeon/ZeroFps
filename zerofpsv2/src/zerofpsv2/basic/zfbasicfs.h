@@ -42,6 +42,8 @@ class BASIC_API ZFBasicFS : public ZFSubSystem
 		bool DirExist(const char* acName);
 		bool FileExist(const char* szFile);
 
+		bool IsDirectory(const char* szName);
+
 		bool StartUp()	{ return true;	}
 		bool ShutDown()	{ return true;	}
 		bool IsValid()	{ return true;	}

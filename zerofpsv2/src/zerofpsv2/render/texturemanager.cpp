@@ -1051,6 +1051,9 @@ bool TextureManager::TextureIsTGA(int iID)
 		char* find;
 		const char* filename = GetFileName(iID);
 
+		if(filename == NULL)
+			return true;
+
 		find = strstr(filename, ".tga");
 		m_kIsTGAMap[iID] = (find == NULL) ? false : true;
 
