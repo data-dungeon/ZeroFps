@@ -12,6 +12,7 @@ void SetGameTime(void)
 MadProperty::MadProperty()
 {
 	strcpy(m_acName,"MadProperty");
+	m_iType=PROPERTY_TYPE_STATIC;
 }
 
 MadProperty::MadProperty(Core* pkModell) {

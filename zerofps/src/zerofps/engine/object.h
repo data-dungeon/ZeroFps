@@ -40,6 +40,7 @@ class ENGINE_API Object {
 		void AddProperty(char* acName);
 		bool RemoveProperty(char* acName);
 		void Update();
+		void Update(int iType);		
 		bool Update(char* acName);
 		
 		inline Vector3 &GetPos(){return m_kPos;};
@@ -51,7 +52,7 @@ class ENGINE_API Object {
 		inline ObjectManager *GetObjectMan() {return m_pkObjectMan;};				
 		
 		virtual void HandleCollision(Object* pkObject,Vector3 kPos,bool bContinue);
-		virtual void ObjectUpdate();		
+//		virtual void ObjectUpdate();		
 		virtual bool Save(void *pkData,int iSize);
 
 };

@@ -6,6 +6,7 @@ BallObject::BallObject() {
 	AddProperty(new CollisionProperty(&m_kPos,new float(.5)));
 	AddProperty(new GravityProperty());
 
+
 	AddProperty("MadProperty");
 	MadProperty* madp = dynamic_cast<MadProperty*>(GetProperty("MadProperty"));
 	madp->SetBase(m_pkFps->GetMADPtr("../data/mad/cyl.mad"));
@@ -23,6 +24,7 @@ void BallObject::HandleCollision(Object* pkOther,Vector3 kPos,bool bContinue){
 	GetPos()=kPos+Vector3(0,.5,0);
 	m_kVel.y=0;
 	onGround=true;
+	GetStatic()=true;
 		
 	} else if(typeid(*pkOther)==typeid(PlayerBallObject)){
 		PlayerBallObject *kO=dynamic_cast<PlayerBallObject*>(pkOther);

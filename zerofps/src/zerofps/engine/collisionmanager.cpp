@@ -36,8 +36,8 @@ void CollisionManager::Update()
 	for(list<CollisionProperty*>::iterator itx=m_akColPropertys.begin();itx!=m_akColPropertys.end();itx++) 
 	{
 		//if the object is static dont test collisions with it
-		if((*itx)->GetObject()->GetStatic())
-			continue;
+//		if((*itx)->GetObject()->GetStatic())
+//			continue;
 		
 		for(list<CollisionProperty*>::iterator ity=itx;ity!=m_akColPropertys.end();ity++) 
 		{

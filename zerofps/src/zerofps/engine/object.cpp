@@ -67,11 +67,23 @@ bool Object::RemoveProperty(char* acName) {
 }
 
 void Object::Update(){
-	//apply the velocity vector to the position vector
-//	m_kPos+=m_kVel;
+
+	//if the object is static then only update those propertys that are static propertys
+	if(m_bStatic){
+		Update(PROPERTY_TYPE_STATIC);
+		return;
+	}
 
 	for(list<Property*>::iterator it=m_akPropertys.begin();it!=m_akPropertys.end();it++) {
 		(*it)->Update();
+	}
+}
+
+void Object::Update(int iType){
+	for(list<Property*>::iterator it=m_akPropertys.begin();it!=m_akPropertys.end();it++) {
+		if((*it)->GetType() == iType){
+			(*it)->Update();
+		}
 	}
 }
 
@@ -91,11 +103,12 @@ void Object::Remove() {
 	}
 }
 
+/*
 void Object::ObjectUpdate() {
 	
 }
 
-
+*/
 
 void Object::HandleCollision(Object* pkObject,Vector3 kPos,bool bContinue){
 //	cout<<"This Object Has not Collision handler"<<endl;

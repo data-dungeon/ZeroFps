@@ -97,7 +97,7 @@ void Test::OnInit(void) {
 	
 	int i;
 	
-	for( i=0;i<50;i++) {
+	for( i=0;i<200;i++) {
 		Object *ball=new BallObject();
 		float x=300 + rand()%100;
 		float y=720 + rand()%100;
@@ -107,7 +107,7 @@ void Test::OnInit(void) {
 	}
 
 	Object *sussi;
-	for(i=0;i<80;i++) {
+	for(i=0;i<0;i++) {
 		sussi=new BunnyObject(test);
 		float x=340 + rand()%10;
 		float y=780 + rand()%10;

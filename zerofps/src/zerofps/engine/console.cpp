@@ -249,3 +249,5 @@ void Console::Printf(const char *fmt, ...)
 	// Now call our print function.
 	Print(format_text);
 }
+
+
