@@ -62,10 +62,10 @@ void Camera::Update(int iWidth,int iHeight)
 			m_kViewPortSize.x  = float(kJagVillSpelUT2k4.Width()); 
 			m_kViewPortSize.y  = float(kJagVillSpelUT2k4.Height()); 
 		
-			m_kViewPortCorner.x	= float(m_kViewPortCorner.x)	/ 800.0 * m_pkRender->GetWidth();
-			m_kViewPortCorner.y	= float(m_kViewPortCorner.y)  / 600.0 * m_pkRender->GetHeight();
-			m_kViewPortSize.x		= float(m_kViewPortSize.x)		/ 800.0 * m_pkRender->GetWidth();
-			m_kViewPortSize.y		= float(m_kViewPortSize.y)		/ 600.0 * m_pkRender->GetHeight();
+			m_kViewPortCorner.x	= float(m_kViewPortCorner.x)	/ float(800.0) * m_pkRender->GetWidth();
+			m_kViewPortCorner.y	= float(m_kViewPortCorner.y)  / float(600.0) * m_pkRender->GetHeight();
+			m_kViewPortSize.x		= float(m_kViewPortSize.x)		/ float(800.0) * m_pkRender->GetWidth();
+			m_kViewPortSize.y		= float(m_kViewPortSize.y)		/ float(600.0) * m_pkRender->GetHeight();
 		}
 
 		if(m_bForceFullScreen)
@@ -266,7 +266,7 @@ void Camera::DrawGrid()
 
 	glBegin(GL_LINES);	
 
-	iStart = fFromX / m_fGridSpace;
+	iStart = int( fFromX / m_fGridSpace );
 	fStart = m_fGridSpace * (float)iStart;
 
 	// Draw X-Grid Lines
@@ -278,7 +278,7 @@ void Camera::DrawGrid()
 		}
 
 	// Draw Y-Grid Lines
-	iStart = fFromY / m_fGridSpace;
+	iStart = int( fFromY / m_fGridSpace );
 	fStart = m_fGridSpace * (float)iStart;
 	for(float y = fStart; y < fToY; y += m_fGridSpace) {
 		kStart	= m_kOrthoAxisX * fFromX	+ m_kOrthoAxisY * y;	
@@ -315,13 +315,13 @@ Vector3 Camera::SnapToGrid(Vector3 kPos)
 	kSign.z  = FSign(kPos.z);
    kPos.Abs();
 
-	kPos += Vector3(m_fGridSpace / 2.0, m_fGridSpace / 2.0, m_fGridSpace / 2.0);
+	kPos += Vector3(m_fGridSpace / float(2.0), m_fGridSpace / float(2.0), m_fGridSpace / float(2.0));
 
-	iStart = kPos.x / m_fGridSpace;
+	iStart = int(kPos.x / m_fGridSpace);
 	kNewPos.x = m_fGridSpace * (float)iStart;
-	iStart = kPos.y / m_fGridSpace;
+	iStart = int(kPos.y / m_fGridSpace);
 	kNewPos.y = m_fGridSpace * (float)iStart;
-	iStart = kPos.z / m_fGridSpace;
+	iStart = int(kPos.z / m_fGridSpace);
 	kNewPos.z = m_fGridSpace * (float)iStart;
 
 	kNewPos.x *= kSign.x;

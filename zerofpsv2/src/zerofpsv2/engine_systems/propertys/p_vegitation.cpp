@@ -60,7 +60,7 @@ void P_Vegitation::Random(P_HMRP2* pkHmrp2)
 			
 			float y = pkHmrp2->m_pkHeightMap->Height(x+sx,z+sz);
 			
-			AddPos(Vector3(x,y-sy -0.1,z));
+			AddPos(Vector3(float(x),float(y-sy -0.1),float(z)));
 		}
 	}
 	else
@@ -102,7 +102,7 @@ void P_Vegitation::Update()
 	Vector3 ObjectPos = m_pkObject->GetWorldPosV();			
 			
 	
-	float fDistance = ObjectPos.DistanceTo(m_pkFps->GetCam()->GetPos()) - m_fRadius;
+	float fDistance = float(ObjectPos.DistanceTo(m_pkFps->GetCam()->GetPos()) - m_fRadius);
 	//if(fDistance > 40)
 	//	return;
 						

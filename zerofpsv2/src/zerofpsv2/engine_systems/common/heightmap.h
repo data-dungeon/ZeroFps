@@ -138,7 +138,7 @@ class ENGINE_SYSTEMS_API HeightMap
 		int GetTopLowTriangle(Vector3 kPos);
 
 		float GetTileSize() { return m_fTileSize; }
-		int	GetSize() {return m_iTilesSide * m_fTileSize; };				// Return the size of one side of the Hm.
+		int	GetSize() {return int(m_iTilesSide * m_fTileSize); };				// Return the size of one side of the Hm.
 
 		HM_vert* LinePick(Vector3 kPos,Vector3 kDir,Vector3 kCenterPos,int iWidth,Vector3& kHitPos);		
 		bool LineVSPolygon(Vector3* pkVerts,Vector3 kPos1,Vector3 kPos2,Vector3& kColPos);

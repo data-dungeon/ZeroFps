@@ -405,7 +405,7 @@ void ZeroFps::Update_System(bool bServer)
 	//m_pkObjectMan->m_fGameFrameTime = m_fSystemUpdateFpsDelta;	// 1/m_fSystemUpdateFps;//(fATime / iLoops);		
 	float m_fLU = m_fSystemUpdateTime;
  	
-	m_fSystemUpdateFpsDelta = 1.0 / m_fSystemUpdateFps;
+	m_fSystemUpdateFpsDelta = float(1.0) / m_fSystemUpdateFps;
 	m_pkObjectMan->m_fSimTimeDelta = m_pkObjectMan->m_fSimTimeScale * m_fSystemUpdateFpsDelta;  
 	
 	for(int i=0;i<iLoops;i++)

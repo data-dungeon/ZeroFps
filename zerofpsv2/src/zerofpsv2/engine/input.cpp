@@ -72,7 +72,7 @@ bool Input::IsValid()	{ return true;	}
 
 void Input::UpdateInputHandles()
 {
-	for(int i = 0;i<m_kInputHandles.size();i++)
+	for(unsigned int i = 0;i<m_kInputHandles.size();i++)
 	{
 		m_kInputHandles[i]->m_bTempDisable = false;
 	}
@@ -84,7 +84,7 @@ void Input::ClearActiveInputHandles()
 	Reset();
 
 	//deactivate all inputhandles
-	for(int i = 0;i<m_kInputHandles.size();i++)
+	for(unsigned int i = 0;i<m_kInputHandles.size();i++)
 	{
 		m_kInputHandles[i]->m_bActive = false;
 	}
@@ -181,7 +181,7 @@ bool Input::UnregisterInputHandle(InputHandle* pkInputHandle)
 
 InputHandle* Input::GetInputHandle(string strName)
 {
-	for(int i = 0;i<m_kInputHandles.size();i++)
+	for(unsigned int i = 0;i<m_kInputHandles.size();i++)
 	{
 		if(m_kInputHandles[i]->m_strHandleName == strName)
 			return m_kInputHandles[i];
@@ -194,7 +194,7 @@ void Input::PrintInputHandlers()
 {
 	cout<<"Registered input handles"<<endl;
 
-	for(int i = 0;i<m_kInputHandles.size();i++)
+	for(unsigned int i = 0;i<m_kInputHandles.size();i++)
 	{
 		cout<<m_kInputHandles[i]->m_strHandleName;
 	
@@ -290,7 +290,7 @@ void Input::AddQueuedKey(SDL_keysym* kKey)
 
 VKData* Input::GetVKByName(string strName)
 {
-	for(int i=0; i<m_VirtualKeys.size(); i++) {
+	for(unsigned int i=0; i<m_VirtualKeys.size(); i++) {
 		if(m_VirtualKeys[i].m_strName == strName)
 			return &m_VirtualKeys[i];
 		}
@@ -354,7 +354,7 @@ void Input::VKList()
 	m_pkConsole->Printf("VK List");	
 	string Key1, Key2, Key3;
 	
-	for(int i=0; i<m_VirtualKeys.size(); i++) {
+	for(unsigned int i=0; i<m_VirtualKeys.size(); i++) {
 		Key1 = GetKeyName((Buttons) m_VirtualKeys[i].m_iInputKey[0]);
 		Key2 = GetKeyName((Buttons) m_VirtualKeys[i].m_iInputKey[1]);
 		Key3 = GetKeyName((Buttons) m_VirtualKeys[i].m_iInputKey[2]);
