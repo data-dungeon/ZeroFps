@@ -1,5 +1,7 @@
 #include "p_enviroment.h"
 
+const float MAX_VOL = 0.25f;
+
 Property* Create_P_Enviroment()
 {
 	return new P_Enviroment;
@@ -194,7 +196,7 @@ void P_Enviroment::UpdateEnviroment()
 		}
 	}
 
-	if(m_iMusicID != -1 && m_fGain < 1)
+	if(m_iMusicID != -1 && m_fGain < MAX_VOL)
 	{
 		FadeGain(false);
 		m_pkAudioSystem->SetGain(m_iMusicID, m_fGain);
@@ -202,7 +204,7 @@ void P_Enviroment::UpdateEnviroment()
 	else
 	{
 		m_fFadeTimer = -1;
-		m_fGain = 1.0f;
+		m_fGain = MAX_VOL;
 	}
 
 
@@ -842,7 +844,7 @@ void P_Enviroment::ResetEnviroment()
 
 void P_Enviroment::FadeGain(bool bOut)
 {
-	const float FADE_TIME = 2.5f; // sekunder.
+	const float FADE_TIME = 10.0f;
 
 	float fTime = m_pkEntityManager->GetSimTime();
 
