@@ -30,6 +30,7 @@
 #include "../mcommon/p_enviroment.h"
 
 #include "inventorydlg.h"
+#include "containerdlg.h"
 #include "quickboard.h"
 #include "spelldlg.h"
 #include "skilldlg.h"

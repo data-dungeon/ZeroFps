@@ -695,6 +695,7 @@ void MistClient::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 				if(bExist == false)
 				{
 					m_pkInventDlg = new InventoryDlg(GetWnd("BackPackWnd"));
+					m_pkContainerDlg->SetInventoryPointer(m_pkInventDlg);
 
 					// Set current container and main container
 					if(m_pkActiveCharacter)
@@ -1490,7 +1491,7 @@ void MistClient::CloseActionMenu()
 {
 	ZGuiWnd* pkWnd;
 	char szName[25];
-	for(int i=0; i<MAX_NUM_ACTION_BUTTONS; i++)
+	for(unsigned int i=0; i<MAX_NUM_ACTION_BUTTONS; i++)
 	{
 		sprintf(szName, "%s%i", "ActionButton", i);
 		pkWnd = GetWnd(szName);
