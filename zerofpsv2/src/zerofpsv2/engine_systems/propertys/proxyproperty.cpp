@@ -93,7 +93,7 @@ TrackProperty::TrackProperty()
 	m_fNextMove			= m_pkFps->GetGameTime() + 1.0;
 	m_iZoneNum			= 0;
 	m_iLastZoneIndex	= 0;
-	m_bClosestZone		= false;
+	m_bClosestZone		= true;
 }
 
 TrackProperty::~TrackProperty() 

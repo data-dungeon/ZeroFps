@@ -34,7 +34,6 @@ public:
 	Vector3				m_kPos;
 	Vector3				m_kMin;
 	Vector3				m_kMax;
-//	int					m_iNumOfLinks;
 	vector<int>			m_iZoneLinks;
 
 	float		m_fInactiveTime;

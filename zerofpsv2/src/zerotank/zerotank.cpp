@@ -539,8 +539,7 @@ void ZeroTank::OnServerClientPart(ZFClient* pkClient,int iConID)
 void ZeroTank::OnServerStart(void)
 {		
 	//pkObjectMan->CreateZone();
-
-	//pkObjectMan->Test_CreateZones();
+	pkObjectMan->Test_CreateZones();
 
 	// ZeroTank
  	m_pkZeroTankHull	= NULL;
@@ -578,6 +577,7 @@ void ZeroTank::OnServerStart(void)
 	{
 		//m_pkCameraObject->SetParent(m_pkZeroTankGun);
 		//m_pkCameraObject->SetRelativeOri(true);
+		m_pkCameraObject->AddProperty("TrackProperty");
 		m_pkCameraObject->AttachToClosestZone();
 		CameraProperty* cam = (CameraProperty*)m_pkCameraObject->GetProperty("CameraProperty");
 		cam->SetCamera(m_pkCamera);

@@ -54,7 +54,7 @@ Object::Object() {
 	
 	ResetGotData();
 
-	cout << "Object Size " << sizeof(Object) << endl;
+	//cout << "Object Size " << sizeof(Object) << endl;
 }
 
 Object::~Object() 

@@ -1143,28 +1143,40 @@ void ObjectManager::Test_CreateZones()
 	Vector3 kRandOffset;
 
 	MazeGen GaaMaze;
-	GaaMaze.Load("maze.bmp");
+	GaaMaze.Load("h:/data/maze.bmp");
 
-	ZoneData kZData;
+//	ZoneData kZData;
 
 	for(int x=0; x<iZonesSide; x++) {
 		for(int z=0; z<iZonesSide; z++) {
 			if(GaaMaze.aaiMaze[x][z] == 1) {
+				int id = CreateZone();//GetUnusedZoneID();
+			
+
+			
 				ZoneObject *object = new ZoneObject();
 				kPos = Vector3(x*iZonesSize,y,z*iZonesSize);
 				object->SetLocalPosV(kPos);
 				object->SetParent(GetWorldObject());				
 				object->GetUpdateStatus()=UPDATE_DYNAMIC;
 				
-				kZData.m_pkZone = object;
-				kZData.m_kPos   = kPos;
-				kZData.m_kMin = - (object->m_kSize * 0.5);
-				kZData.m_kMax =   (object->m_kSize * 0.5);
-				kZData.m_iZoneID = object->iNetWorkID;
-				m_kZones.push_back(kZData);
+				m_kZones[id].m_bActive = true;
+				m_kZones[id].m_pkZone = object;
+				m_kZones[id].m_kMin = - (object->m_kSize * 0.5);
+				m_kZones[id].m_kMax =   (object->m_kSize * 0.5);
+				m_kZones[id].m_kPos   = kPos; 
+				
+/*				m_kZones[id].m_bActive = true;	
+				m_kZones[id].m_bUsed = true;
+				m_kZones[id].m_pkZone = object;
+				m_kZones[id].m_kPos   = kPos;
+				m_kZones[id].m_kMin = - (object->m_kSize * 0.5);
+				m_kZones[id].m_kMax =   (object->m_kSize * 0.5);
+				m_kZones[id].m_iZoneID = id;
+//				m_kZones.push_back(kZData);
 
 				// Create Ground Box.
-				object->AddProperty(new P_Primitives3D(SOLIDBBOX));
+/*				object->AddProperty(new P_Primitives3D(SOLIDBBOX));
 				P_Primitives3D* pk3d = dynamic_cast<P_Primitives3D*>(object->GetProperty("P_Primitives3D"));
 				pk3d->m_kMin =  - (object->m_kSize * 0.5);
 				pk3d->m_kMax =    (object->m_kSize * 0.5);
@@ -1178,8 +1190,8 @@ void ObjectManager::Test_CreateZones()
 					pkBall = CreateObjectByArchType("TVimBollus");
 					pkBall->SetLocalPosV(kPos + kRandOffset);
 					pkBall->SetParent(object);				
-					}
-				}
+				}*/
+			}
 		}
 	}
 
@@ -1229,7 +1241,7 @@ void ObjectManager::AutoConnectZones()
 			pkZone = GetZone(kCheckPos);
 			// If a zone add a link.
 			if(pkZone && (m_kZones[i].m_pkZone != pkZone->m_pkZone)) {
-				m_kZones[i].m_iZoneLinks.push_back(pkZone->m_pkZone->iNetWorkID);
+				m_kZones[i].m_iZoneLinks.push_back(pkZone->m_iZoneID);
 				}
 
 			}
@@ -1295,6 +1307,12 @@ ZoneData* ObjectManager::GetZone(Object* PkObject)
 
 int ObjectManager::GetZoneIndex(Object* PkObject,int iCurrentZone,bool bClosestZone)
 {
+	Vector3 kMyPos = PkObject->GetWorldPosV();
+
+	//first check current zone
+	if(m_kZones[iCurrentZone].IsInside( kMyPos ))
+		return iCurrentZone;
+	
 	
 	//first check zones connected to the last visited zone
 	if(iCurrentZone >= 0)
@@ -1303,17 +1321,17 @@ int ObjectManager::GetZoneIndex(Object* PkObject,int iCurrentZone,bool bClosestZ
 	
 		for(int i = 0;i < pkZone->m_iZoneLinks.size();i++)
 		{
-			if(m_kZones[pkZone->m_iZoneLinks[i]].IsInside(PkObject->GetWorldPosV()))
+			if(m_kZones[pkZone->m_iZoneLinks[i]].IsInside(kMyPos))
 			{	
 				cout<<"Got A close zone"<<endl;
-				return i;						
+				return pkZone->m_iZoneLinks[i];						
 			}
 		}
 	}
 
 	//seccond go trough all zones in the world
 	for(unsigned int iZ=0;iZ<m_kZones.size();iZ++) {
-		if(m_kZones[iZ].IsInside(PkObject->GetWorldPosV()))
+		if(m_kZones[iZ].IsInside(kMyPos))
 		{
 			cout<<"Got A not so close zone"<<endl;			
 			return iZ;
@@ -1327,7 +1345,7 @@ int ObjectManager::GetZoneIndex(Object* PkObject,int iCurrentZone,bool bClosestZ
 		int id = -1;
 	
 		for(unsigned int iZ=0;iZ<m_kZones.size();iZ++) {
-			float dis = (m_kZones[iZ].m_kPos - PkObject->GetWorldPosV()).Length();
+			float dis = (m_kZones[iZ].m_kPos - kMyPos).Length();
 		
 			if(dis < d)
 			{
@@ -1372,20 +1390,24 @@ void ObjectManager::UpdateZones()
 		// Find Active Zone.
 		TrackProperty* pkTrack = dynamic_cast<TrackProperty*>((*iT)->GetProperty("TrackProperty"));
 		pkTrack->m_iActiveZones.clear();
-
+		
 		// First we check if tracker is in the same zone as last time.,
-		if(m_kZones[pkTrack->m_iLastZoneIndex].IsInside( (*iT)->GetWorldPosV() ))
+/*		if(m_kZones[pkTrack->m_iLastZoneIndex].IsInside( (*iT)->GetWorldPosV() ))
 			iZoneIndex = pkTrack->m_iLastZoneIndex;
 		else	// if not we search for zone.
-			iZoneIndex = GetZoneIndex((*iT),pkTrack->m_iLastZoneIndex,pkTrack->m_bClosestZone);
+*/		
+		iZoneIndex = GetZoneIndex((*iT),pkTrack->m_iLastZoneIndex,pkTrack->m_bClosestZone);
 
+		
 		if(iZoneIndex >= 0) {
 			pkTrack->m_iLastZoneIndex = iZoneIndex;
 			pkStartZone = &m_kZones[iZoneIndex];
 			pkStartZone->m_iRange = 0;
 			m_kFloodZones.push_back(pkStartZone);
 			//cout << "pkStartZone: " << pkStartZone->m_iZoneID << endl;
-			}
+		}
+		else
+			pkTrack->m_iLastZoneIndex = -1;
 
 		// Flood Zones in rage to active.
 		while(m_kFloodZones.size()) {
@@ -1668,7 +1690,10 @@ int ObjectManager::GetUnusedZoneID()
 	for(int i=0;i<m_kZones.size();i++)
 	{
 		if(!m_kZones[i].m_bUsed)
+		{	
+			//cout<<"found unused zone: "<<endl;
 			return i;
+		}
 	}
 
 	//if none can be found create a new one
@@ -1677,6 +1702,7 @@ int ObjectManager::GetUnusedZoneID()
 	newzone.m_bUsed = false;
 	m_kZones.push_back(newzone);
 	
+	//cout<<"created new zone id:"<<m_kZones.size() - 1<<endl;
 	return m_kZones.size() - 1;
 }
 
