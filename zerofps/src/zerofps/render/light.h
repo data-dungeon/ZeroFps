@@ -1,6 +1,8 @@
 #ifndef _LIGHT_H_
 #define _LIGHT_H_
 
+
+
 #include <iostream>
 #include <vector>
 #include <list>
@@ -37,6 +39,7 @@ struct LightSource {
 	float fQuadratic_Atten;
 	
 	int iType;
+	int iPriority;
 };
 
 

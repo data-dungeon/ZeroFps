@@ -7,6 +7,8 @@
 
 using namespace std;
 
+#define min(a,b) ((a) < (b) ? (a)  : (b))
+
 float const degtorad=57.3248;
 
 void BASIC_API Gemens(char* aText);

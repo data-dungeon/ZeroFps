@@ -65,6 +65,7 @@ void Test::OnInit(void) {
 		spot->fLinear_Atten=0;
 		spot->fQuadratic_Atten=0.001;
 		spot->iType=SPOT_LIGHT;			
+		spot->iPriority=0;
 
 	LightSource *spot2=new LightSource;
 	Vector3 *spotpos2=new Vector3(50,33,70);
@@ -82,7 +83,7 @@ void Test::OnInit(void) {
 		spot2->fLinear_Atten=0;
 		spot2->fQuadratic_Atten=0.001;
 		spot2->iType=SPOT_LIGHT;			
-
+		spot2->iPriority=0;
 
 	LightSource *sol=new LightSource;	
 	Vector3 *solrot=new Vector3(0,0,0);	
@@ -100,7 +101,7 @@ void Test::OnInit(void) {
 		sol->fLinear_Atten=0;
 		sol->fQuadratic_Atten=0;
 		sol->iType=POINT_LIGHT;			
-
+		sol->iPriority=10;
 
 
 	pkLight->Add(spot);
@@ -141,7 +142,7 @@ void Test::OnIdle(void) {
 
 
 	glPushMatrix();
-		glTranslatef(300,test->Height(300,400),400);
+		glTranslatef(370,test->Height(370,400),400);
 		glColor3f(0,0,1);
 		glScalef(.025,.025,.025);
 		testa.draw();

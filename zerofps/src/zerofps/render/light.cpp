@@ -2,6 +2,7 @@
 
 Light::Light() {
 	m_iNrOfLights=8;
+	glLightModelf(GL_LIGHT_MODEL_TWO_SIDE,0);
 	glEnable(GL_LIGHTING);
 }
 
@@ -15,17 +16,6 @@ void Light::Add(LightSource *kNewLight){
 
 void Light::Remove(LightSource *kLight) {
 	m_kLights.remove(kLight);
-
-/*	for(list<LightSource*>::iterator it=m_kLights.begin();it!=m_kLights.end();it++) {
-		if(*it==kLight)	{
-			m_kLights.erase(it);
-			cout<<"deleted object"<<endl;
-//			cout<<"deltete"<<endl;
-			return;
-		}
-
-
-	}*/
 }
 
 void Light::Update() {
@@ -33,12 +23,35 @@ void Light::Update() {
 	TurnOffAll();
 
 	for(list<LightSource*>::iterator it=m_kLights.begin();it!=m_kLights.end();it++) {
-		Vector3 kPos=(*(*it)->kPos)+(*it)->kConstPos;
-		float kDistance=(*m_kCamPos-kPos).Length();
-
-//		if(kDistance<100){
+		
+		//always add light with priority >10
+		if((*it)->iPriority>=10)
+			if(m_kActiveLights.size()<m_iNrOfLights)
+				m_kActiveLights.push_back(*it);			
+				
+		//if its a directional light add it if there is space
+		if((*it)->iType==DIRECTIONAL_LIGHT){
 			if(m_kActiveLights.size()<m_iNrOfLights)
 				m_kActiveLights.push_back(*it);		
+			cout<<"direct"<<endl;
+		//else add the light if it is bright enough
+		} else {
+			Vector3 kPos = (*(*it)->kPos)+(*it)->kConstPos;		
+			float fDistance = (*m_kCamPos-kPos).Length();		
+			float fIntensity = min(1, 1 / ((*it)->fConst_Atten + (*it)->fLinear_Atten*fDistance + (*it)->fQuadratic_Atten*fDistance*fDistance));
+		
+			cout<<"INT: "<<fIntensity<<endl;
+			
+			if(fIntensity>0.05)
+				if(m_kActiveLights.size()<m_iNrOfLights)
+					m_kActiveLights.push_back(*it);					
+		}
+		
+		
+//			min(1, 1 / ((*it)-> + l*d + q*d*d))
+//		if(kDistance<100){
+//			if(m_kActiveLights.size()<m_iNrOfLights)
+//				m_kActiveLights.push_back(*it);		
 //		}
 		
 	}

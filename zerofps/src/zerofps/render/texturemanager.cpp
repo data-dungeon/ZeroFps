@@ -120,7 +120,7 @@ int TextureManager::Load(char* acFileName,int iOption) {
 	//add the texture to the loaded textures vector
 	m_iTextures.push_back(temp);
 	
-	cout<<"Loaded texture: "<<m_iTextures.back()->file<<" index:"<<m_iTextures.back()->index<<endl;
+//	cout<<"Loaded texture: "<<m_iTextures.back()->file<<" index:"<<m_iTextures.back()->index<<endl;
 	
 	//return our new texture index
 	return m_iTextures.back()->index;
