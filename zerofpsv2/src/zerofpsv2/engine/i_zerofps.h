@@ -25,8 +25,8 @@ public:
 
 	virtual float GetTicks() = 0;
 	virtual float GetFrameTime() = 0;
-	virtual float GetGameTime() = 0;
-	virtual float GetGameFrameTime() = 0;
+//	virtual float GetGameTime() = 0;
+//	virtual float GetGameFrameTime() = 0;
 	virtual float GetLastGameUpdateTime() = 0;
 	virtual float GetEngineTime() = 0;
 

@@ -80,6 +80,10 @@ EntityManager::EntityManager()
 	m_pkClientObject			= NULL;
 	m_pkGlobalObject			= NULL;
 
+	m_fSimTime					= 0;			
+	m_fSimTimeScale			= 1.0;	
+//	GetSimDelta					= 0;
+
 	Register_Cmd("o_logtree",FID_LOGOHTREE);	
 	Register_Cmd("o_dumpp",FID_LOGACTIVEPROPERTYS);	
 	Register_Cmd("sendmsg",FID_SENDMESSAGE, CSYS_FLAG_SRC_ALL, "sendmsg name id",2);	
@@ -92,8 +96,9 @@ EntityManager::EntityManager()
 	Register_Cmd("loadzones",FID_LOADZONES, CSYS_FLAG_SRC_ALL);	
 	Register_Cmd("savezones",FID_SAVEZONE, CSYS_FLAG_SRC_ALL);	
 
-	RegisterVariable("l_showzones", &m_bDrawZones,					CSYS_BOOL);
-	RegisterVariable("l_showconn",  &m_bDrawZoneConnections,		CSYS_BOOL);
+	RegisterVariable("l_showzones",	&m_bDrawZones,					CSYS_BOOL);
+	RegisterVariable("l_showconn",	&m_bDrawZoneConnections,	CSYS_BOOL);
+	RegisterVariable("e_simspeed",	&m_fSimTimeScale,				CSYS_FLOAT);
 	
 	RegisterVariable("l_trackerlos", &m_iTrackerLOS, CSYS_INT);	
 	RegisterVariable("l_objectdistance", &m_iObjectDistance, CSYS_FLOAT);		
@@ -1696,7 +1701,7 @@ int EntityManager::GetZoneIndex(Vector3 kMyPos,int iCurrentZone,bool bClosestZon
 void EntityManager::UpdateZones()
 {
 
-	float fTime = m_pkZeroFps->GetGameTime();
+	float fTime = m_pkZeroFps->m_pkObjectMan->GetGameTime();
 	ZoneData* pkZone;
 	ZoneData* pkStartZone;
 	unsigned int iZ;

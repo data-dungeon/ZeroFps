@@ -15,7 +15,7 @@ P_Event::P_Event()
 	m_bFirstRun=true;
 	m_fHeartRate=-1;
 
-	m_fTimer = m_pkFps->GetGameTime();
+	m_fTimer = m_pkFps->m_pkObjectMan->GetGameTime();
 }
 
 P_Event::~P_Event()
@@ -39,11 +39,11 @@ void P_Event::Update()
 	}
 
 	if(m_fHeartRate != -1)
-		if(m_pkFps->GetGameTime() - m_fTimer > m_fHeartRate)
+		if(m_pkFps->m_pkObjectMan->GetGameTime() - m_fTimer > m_fHeartRate)
 		{
 			SendEvent("HeartBeat");
 			
-			m_fTimer = m_pkFps->GetGameTime();
+			m_fTimer = m_pkFps->m_pkObjectMan->GetGameTime();
 		}
 }
 

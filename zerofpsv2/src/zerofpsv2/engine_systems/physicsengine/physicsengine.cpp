@@ -33,7 +33,7 @@ void PhysicsEngine::Update()
 	m_kPropertys.clear();
 	
 	//get frame time
-	m_fFrameTime=m_pkZeroFps->GetGameFrameTime();
+	m_fFrameTime = m_pkZeroFps->m_pkObjectMan->GetSimDelta();
 	
 	//get all physicpropertys
 	m_pkObjectMan->GetWorldObject()->GetAllPropertys(&m_kPropertys,PROPERTY_TYPE_PHYSIC,PROPERTY_SIDE_SERVER);

@@ -432,7 +432,7 @@ HeightMap* MistServer::SetPointer()
 
 void MistServer::HMModifyCommand(float fSize)
 {
-	float fTime = m_pkFps->GetGameFrameTime();
+	float fTime = m_pkFps->m_pkObjectMan->GetSimDelta();
 
 	for(set<int>::iterator itEntity = m_SelectedEntitys.begin(); itEntity != m_SelectedEntitys.end(); itEntity++ ) 
 	{
@@ -457,10 +457,10 @@ void MistServer::HMModifyCommand(float fSize)
 // Handles input for EditMode Terrain.
 void MistServer::Input_EditTerrain()
 {
-	if(m_pkInputHandle->VKIsDown("inrad+"))		m_fHMInRadius += 1 * m_pkFps->GetGameFrameTime();
-	if(m_pkInputHandle->VKIsDown("inrad-"))		m_fHMInRadius -= 1 * m_pkFps->GetGameFrameTime();
-	if(m_pkInputHandle->VKIsDown("outrad+"))		m_fHMOutRadius += 1 * m_pkFps->GetGameFrameTime();
-	if(m_pkInputHandle->VKIsDown("outrad-"))		m_fHMOutRadius -= 1 * m_pkFps->GetGameFrameTime();
+	if(m_pkInputHandle->VKIsDown("inrad+"))		m_fHMInRadius += 1 * m_pkFps->m_pkObjectMan->GetSimDelta();
+	if(m_pkInputHandle->VKIsDown("inrad-"))		m_fHMInRadius -= 1 * m_pkFps->m_pkObjectMan->GetSimDelta();
+	if(m_pkInputHandle->VKIsDown("outrad+"))		m_fHMOutRadius += 1 * m_pkFps->m_pkObjectMan->GetSimDelta();
+	if(m_pkInputHandle->VKIsDown("outrad-"))		m_fHMOutRadius -= 1 * m_pkFps->m_pkObjectMan->GetSimDelta();
 	if(m_fHMInRadius > m_fHMOutRadius)
 		m_fHMInRadius = m_fHMOutRadius;
 

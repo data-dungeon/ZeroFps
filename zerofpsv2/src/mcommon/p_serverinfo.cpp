@@ -10,7 +10,7 @@ P_ServerInfo::P_ServerInfo()
 
 	bNetwork = true;
 	m_sServerName	= 	"NoName";
-	m_fTimer = m_pkFps->GetGameTime();
+	m_fTimer = m_pkFps->m_pkObjectMan->GetGameTime();
 }
 
 void P_ServerInfo::Update()

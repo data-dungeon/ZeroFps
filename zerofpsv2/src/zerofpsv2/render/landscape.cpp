@@ -1004,10 +1004,10 @@ void Render::DrawPatch(HeightMap* kMap,Vector3 CamPos,int xp,int zp,int iSize,bo
 	float fZDivTexScale;
 	float fXDivHmSize;
 	float fZDivHmSize;
-	int	iVertexIndex;
+//	int	iVertexIndex;
 	float fScaleX, fScaleZ;
 
-	HM_vert* pkHmVertex = kMap->verts;
+//	HM_vert* pkHmVertex = kMap->verts;
 	int z;
 	//int iTestX = kMap->m_iTilesSide;
 	int iTestX = kMap->m_iVertexSide;
@@ -1031,8 +1031,8 @@ void Render::DrawPatch(HeightMap* kMap,Vector3 CamPos,int xp,int zp,int iSize,bo
 			fScaleX = float(x * kMap->m_fTileSize);
 			fScaleZ = float(z * kMap->m_fTileSize);
 
-			float fZStepDivHmSize = ((float)z+iStep) / iTestX;
-			float fZStepDivTexScale = ((float)z+iStep) / TEX_SCALE;
+			//float fZStepDivHmSize = ((float)z+iStep) / iTestX;
+			//float fZStepDivTexScale = ((float)z+iStep) / TEX_SCALE;
 
 			// Triangle 1
 			iTileIndex = z * kMap->m_iTilesSide + x;

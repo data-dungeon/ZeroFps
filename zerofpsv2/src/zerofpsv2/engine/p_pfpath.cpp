@@ -101,7 +101,7 @@ void P_PfPath::Update()
 
 	Vector3 kdiff = kGoal - kPos;
 	float fdist = kdiff.Length();
-	if(fdist < 0.4) 
+	if(fdist < (m_fSpeed) * m_pkFps->m_pkObjectMan->GetSimDelta() ) 
 	{
 		m_pkObject->SetWorldPosV(kGoal);
 		m_iNextGoal++;
@@ -125,7 +125,7 @@ void P_PfPath::Update()
 	}
 
 	kdiff.Normalize();
-	kPos += (kdiff * m_fSpeed) * m_pkFps->GetGameFrameTime();
+	kPos += (kdiff * m_fSpeed) * m_pkFps->m_pkObjectMan->GetSimDelta();
 	m_pkObject->SetWorldPosV(kPos);
 
 

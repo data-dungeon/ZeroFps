@@ -137,10 +137,11 @@ class ENGINE_API ZeroFps : public I_ZeroFps {
 		bool		m_bLockFps;
 		float 	m_fLockFrameTime;
 		
-		float 	m_fSystemUpdateFps;
+		float 	m_fSystemUpdateFps;				// Number of GameLogic Updates each second.
+		float		m_fSystemUpdateFpsDelta;		// Time between each gamelogic update.
 		float 	m_fSystemUpdateTime;
-		float 	m_fGameTime;
-		float 	m_fGameFrameTime;
+//		float 	m_fGameTime;
+//		float 	m_fGameFrameTime;
 		float		m_fEngineTime;						// Time since engine start.
 		bool		m_bRenderOn;
 		bool		m_bDrawAxisIcon;
@@ -232,8 +233,8 @@ class ENGINE_API ZeroFps : public I_ZeroFps {
 		// Timer Functions.
 		float GetTicks()					{	return float((SDL_GetTicks()/1000.0));};
 		float GetFrameTime()				{	return float((m_fFrameTime/1000.0));};
-		float GetGameTime()				{	return m_fGameTime;};
-		float GetGameFrameTime()		{	return m_fGameFrameTime;};
+//		float GetGameTime()				{	return m_fGameTime;};
+//		float GetGameFrameTime()		{	return m_fGameFrameTime;};
 		float GetLastGameUpdateTime()	{	return m_fSystemUpdateTime;};
 		float GetEngineTime()			{	return m_fEngineTime; }
 

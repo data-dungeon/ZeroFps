@@ -1072,7 +1072,7 @@ void MistClient::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 Vector3 MistClient::Get3DMousePos(bool m_bMouse=true)
 {
 	Vector3 dir;
-	float x,y;		
+//	float x,y;		
 	
 	//screen propotions
 	float xp=4;

@@ -69,6 +69,7 @@ ZeroFps::ZeroFps(void) : I_ZeroFps("ZeroFps")
 	m_fFrameTime				= 0;
 	m_fLastFrameTime			= 0;
 	m_fSystemUpdateFps		= 10;
+	m_fSystemUpdateFpsDelta = 1.0 / m_fSystemUpdateFps;
 	m_fSystemUpdateTime		= 0;
 	m_bServerMode				= false;
 	m_bClientMode				= false;
@@ -87,8 +88,8 @@ ZeroFps::ZeroFps(void) : I_ZeroFps("ZeroFps")
 	m_bLockFps					= false;
 	m_bDrawAxisIcon			= true;
 	m_fEngineTime				= 0;
-	m_fGameTime					= 0;
-	m_fGameFrameTime			= 0;
+//	m_fGameTime					= 0;
+//	m_fGameFrameTime			= 0;
 
 	// Register Variables
 	RegisterVariable("r_maddraw",			&m_iMadDraw,				CSYS_INT);
@@ -305,7 +306,7 @@ void ZeroFps::Run_EngineShell()
 			iInputKey = i; break;
 		}
 
-	m_pkGui->Update(GetGameTime(),iInputKey,false,
+	m_pkGui->Update(m_pkObjectMan->GetGameTime(),iInputKey,false,
 		(m_pkGuiInputHandle->Pressed(KEY_RSHIFT) || m_pkGuiInputHandle->Pressed(KEY_LSHIFT)),
 		mx,my,m_pkGuiInputHandle->Pressed(MOUSELEFT),m_pkGuiInputHandle->Pressed(MOUSERIGHT),
 		m_pkGuiInputHandle->Pressed(MOUSEMIDDLE));
@@ -406,14 +407,15 @@ void ZeroFps::Update_System(bool bServer)
 	if(iLoops<=0)
 		return;
 
-	m_fGameFrameTime = 1/m_fSystemUpdateFps;//(fATime / iLoops);		
+//	m_pkObjectMan->m_fGameFrameTime = m_fSystemUpdateFpsDelta;	// 1/m_fSystemUpdateFps;//(fATime / iLoops);		
 	float m_fLU = m_fSystemUpdateTime;
-	
+
+	m_pkObjectMan->m_fSimTimeDelta = m_pkObjectMan->m_fSimTimeScale * m_fSystemUpdateFpsDelta;  
 	
 	for(int i=0;i<iLoops;i++)
 	{	
 		//calculate current game time
-		m_fGameTime = m_fLU + (i * m_fGameFrameTime);
+		m_pkObjectMan->m_fSimTime += /*m_fLU + (i * */ m_pkObjectMan->GetSimDelta();
 	
 		//client & server code
 		
@@ -485,8 +487,8 @@ void ZeroFps::Draw_EngineShell()
 	// TIME
 	DevPrintf("time","Ticks: %f",							GetTicks());
 	DevPrintf("time","FrameTime: %f",					GetFrameTime());
-	DevPrintf("time","GameTime: %f",						GetGameTime());
-	DevPrintf("time","GameFrameTime: %f",				GetGameFrameTime());
+	DevPrintf("time","SimTime: %f",						m_pkObjectMan->GetSimTime());
+	DevPrintf("time","SimDelta: %f",						m_pkObjectMan->GetSimDelta());
 	DevPrintf("time","LastGameUpdateTime: %f",		GetLastGameUpdateTime());
 	DevPrintf("time","EngineTime: %f",					GetEngineTime());
 	DevPrintf("time","Run: %i", m_bRunWorldSim);
@@ -504,7 +506,8 @@ void ZeroFps::Draw_EngineShell()
 	}
 }
 
-void ZeroFps::MainLoop(void) {
+void ZeroFps::MainLoop(void) 
+{
 	while(m_iState!=state_exit) {
 		m_fEngineTime = GetTicks();
 
@@ -512,9 +515,9 @@ void ZeroFps::MainLoop(void) {
 		 
 		 
 		//handle locked fps delay
-		if(m_bLockFps)
+/*		if(m_bLockFps)
 		{
-			float fDelay = GetGameFrameTime() - (GetTicks() - m_fLockFrameTime);
+			float fDelay = m_pkObjectMan->GetGameFrameTime() - (GetTicks() - m_fLockFrameTime);
 		
 			if(fDelay < 0)
 				fDelay = 0;
@@ -527,7 +530,7 @@ void ZeroFps::MainLoop(void) {
 			//	cout<<"Frametime shuld be:"<<pkFps->GetGameFrameTime()<<endl;
 			//	cout<<"Delaying:"<<fDelay<<endl;		
 			//end of delay code ---				
-		}
+		}*/
 		 
 		Run_EngineShell();
 

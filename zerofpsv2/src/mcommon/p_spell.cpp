@@ -50,7 +50,7 @@ void P_Spell::Update()
 
       // update lived time if spell isn't permanent
       if ( m_pkSpellType->m_fLifeTime != -1 )
-	      m_fAge += m_pkZeroFps->GetGameFrameTime();
+	      m_fAge += m_pkZeroFps->m_pkObjectMan->GetSimDelta();
 
 
       // TODO!!! Only test for damage if spell MAKES damage and is stuck on CharacterObject

@@ -209,6 +209,31 @@ Title=Sim (T)
 Parent=Menu_Sys
 Cmd=set e_runsim toggle
 
+[Menu_SysSimSpeed0]
+Title=SimSpeed 0
+Parent=Menu_Sys
+Cmd=set e_simspeed 0.0
+
+[Menu_SysSimSpeed05]
+Title=SimSpeed 0.5
+Parent=Menu_Sys
+Cmd=set e_simspeed 0.5
+
+[Menu_SysSimSpeed1]
+Title=SimSpeed 1
+Parent=Menu_Sys
+Cmd=set e_simspeed 1
+
+[Menu_SysSimSpeed2]
+Title=SimSpeed 2
+Parent=Menu_Sys
+Cmd=set e_simspeed 2
+
+[Menu_SysSimSpeed8]
+Title=SimSpeed 8
+Parent=Menu_Sys
+Cmd=set e_simspeed 8
+
 ; ------------- DEBUG MENU -------------
 
 [Menu_Debug]

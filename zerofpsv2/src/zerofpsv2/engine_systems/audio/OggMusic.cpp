@@ -315,7 +315,7 @@ bool OggMusic::SetVolume(float fVolume)
 
 float OggMusic::GetTicks() 
 {
-	return (m_pkZeroFpsObject->GetGameTime());
+	return (m_pkZeroFpsObject->m_pkObjectMan->GetGameTime());
 };
 
 
