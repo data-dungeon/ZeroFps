@@ -10,6 +10,7 @@
 #endif // _MSC_VER > 1000
 
 #include "../zerofpsv2/basic/zfsubsystem.h"
+#include "../zerofpsv2/engine/zerofps.h"
 #include "../zerofpsv2/gui/zguilabel.h"
 #include "../zerofpsv2/gui/zgui.h"
 #include "../zerofpsv2/gui/zguiresourcemanager.h"
@@ -102,6 +103,8 @@ private:
 	
 	typedef vector<Slot>::iterator itSlot;
 
+   ZeroFps* m_pkZeroFps;
+   EntityManager* m_pkEntityMan;
 	ZGui* m_pkGui;
 	ZGuiResourceManager* m_pkResMan;
 	TextureManager* m_pkTexMan;

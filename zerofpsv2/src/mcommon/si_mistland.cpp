@@ -1389,7 +1389,7 @@ int MistLandLua::RegisterAsContainerLua (lua_State* pkLua)
   			P_Item* pkIP = (P_Item*)pkObject->GetProperty("P_Item");
 
          if ( pkIP )
-				pkIP->m_pkItemStats->RegisterAsContainer();
+				pkIP->m_pkItemStats->MakeContainer();
          else
             cout << "Warning! Tried to use a item function on a non-item object!" << endl;
       }
@@ -1542,7 +1542,7 @@ int MistLandLua::EquipOnLua (lua_State* pkLua)
          if ( pkCP )
             pkCP->m_pkItemStats->AddCanEquipOn( string(acType) );
          else
-            cout << "Warning! Tried to use a item function on a non-item object!" << endl;
+            cout << "Warning! Tried to use function EquipOn on a non-item object!" << endl;
       }
 
    }
@@ -2105,7 +2105,7 @@ int MistLandLua::EquipFromScriptLua (lua_State* pkLua)
             ZFScriptSystem* pkZFScriptSys = g_pkScript;
 
             // create the new object
-            Entity* pkNewObj = g_pkObjMan->CreateObjectFromScriptInZone(acItem, pkObject->GetWorldPosV() );
+            Entity* pkNewObj = g_pkObjMan->CreateObjectFromScript( acItem );
 
             if ( pkNewObj )
             {
@@ -2117,12 +2117,14 @@ int MistLandLua::EquipFromScriptLua (lua_State* pkLua)
                // equip the new, nice object
                if ( !pkChar->GetCharStats()->Equip ( pkNewObj, string(acSlot) ) )
                   // if we couln't equip the object, delete it.
-                  delete pkNewObj;
+                  g_pkObjMan->Delete ( pkNewObj );
             }
 
             // return everything the way it was before calling the script
             g_iCurrentObjectID = iOldObject;
             g_pkScript = pkZFScriptSys;
+
+            pkNewObj->AttachToZone();
 
            
          }
@@ -2504,17 +2506,17 @@ int MistLandLua::SetContainerSizeLua (lua_State* pkLua)
 
       if ( pkCP )
       {
-         if ( !pkCP->GetCharStats()->m_pkContainer )
-            pkCP->GetCharStats()->MakeContainer();
+         pkCP->GetCharStats()->MakeContainer();
 
          pkCP->GetCharStats()->m_pkContainer->m_iCapacity = dSize;
       }
       if ( pkIP )
       {
-         if ( !pkIP->m_pkItemStats->m_pkContainer )
-            pkIP->m_pkItemStats->MakeContainer();
+         pkIP->m_pkItemStats->MakeContainer();
 
          pkIP->m_pkItemStats->m_pkContainer->m_iCapacity = dSize;
+
+         cout << "Changed size to:" << pkIP->m_pkItemStats->m_pkContainer->m_iCapacity << endl;
       }
       
       if ( !pkCP && !pkIP )
@@ -2594,13 +2596,13 @@ int MistLandLua::GetPickedUpByLua (lua_State* pkLua)
             cout << "Warning! Tried to put a item into a non-container object!" << endl;
       */
       
-      P_Item* pkCP = (P_Item*)pkCharObj->GetProperty("P_Item");
+      P_Item* pkIP = (P_Item*)pkCharObj->GetProperty("P_Item");
 
-      if ( pkCP )
+      if ( pkIP )
       {
          // check if the container object has a container
-         if ( pkCP->m_pkItemStats->m_pkContainer )
-            pkCP->m_pkItemStats->m_pkContainer->AddObject ( g_iCurrentObjectID );
+         if ( pkIP->m_pkItemStats->m_pkContainer )
+            pkIP->m_pkItemStats->m_pkContainer->AddObject ( g_iCurrentObjectID );
          else
             cout << "Warning! Tried to put a item into a non-container object!" << endl;
       }

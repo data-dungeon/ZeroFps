@@ -19,12 +19,13 @@ class MCOMMON_API ItemStats
 {
 private:
 
+   static int s_iContainerCounter;
+
    string m_kItemName;
    
    int 
       m_iQuantity,
-      m_iValue, // gold value
-      m_iLastChange; // a value to know if the client should recieve all itemdata or none
+      m_iValue; // gold value
 
    float 
       m_fQuality,
@@ -40,12 +41,10 @@ private:
    // what kind of item is this?
    EquipmentCategory m_eEquipmentCategory;
    
+public:
    int m_iContainerID; // id of this container
 	int m_iCurrentContainer; // id to the container where this item is.
 
-	static int s_iContainerCounter;
-
-public:
    Container* m_pkContainer; // items can contain objects :)
    Container* m_pkIsInContainer; // which container the item (if any) is in
 

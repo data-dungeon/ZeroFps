@@ -321,6 +321,8 @@ ItemStats::ItemStats(P_Item* pkProperty)
    
    m_pkContainer = 0;//new Container (this);
    m_pkIsInContainer = 0;
+   m_iContainerID = -1;
+   m_iCurrentContainer = -1;
 }
 
 // ---------------------------------------------------------------------------------------------
@@ -493,19 +495,14 @@ bool ItemStats::MakeContainer ()
       return false;
    else
    {
-      m_pkContainer = new Container ((Property*)m_pkProperty);
+      m_uiVersion++;
+         
+      m_iContainerID = s_iContainerCounter++;
+
+      m_pkContainer = new Container ( (Property*)m_pkProperty );
+
       return true;
    }
-}
-
-// ---------------------------------------------------------------------------------------------
-
-void ItemStats::RegisterAsContainer()
-{ 
-   m_uiVersion++;
-
-   s_iContainerCounter++;
-	m_iContainerID = s_iContainerCounter;
 }
 
 // ---------------------------------------------------------------------------------------------

@@ -3,13 +3,13 @@
 #include "../p_item.h"
 #include "../../zerofpsv2/engine/entitymanager.h"
 
+
 // -----------------------------------------------------------------------------------------------
 
 Container::Container( Property* pkParent )
 {
    m_pkParent = pkParent;
-   m_iCapacity = 50;
-
+   m_iCapacity = 5;
    m_uiVersion = 0;
 }
 
@@ -27,8 +27,12 @@ bool Container::AddObject ( int iAddToContainer )
       Entity *pkEntity = 
          m_pkParent->GetObject()->m_pkObjectMan->GetObjectByNetWorkID ( iAddToContainer );
 
-      // save down object on HD, objects in containers doesn't need to be updated
+      // objects in containers doesn't need to be updated
       pkEntity->SetUpdateStatus (UPDATE_NONE);
+
+      // Set which container the item is in
+//      ((P_Item*)pkEntity->GetProperty("P_Item"))->m_pkItemStats->m_iCurrentContainer = m_iContainerID;
+//      ((P_Item*)pkEntity->GetProperty("P_Item"))->m_pkItemStats->m_pkIsInContainer = this;
 
       // make object child of containers parent
       pkEntity->SetParent ( m_pkParent->GetObject() );

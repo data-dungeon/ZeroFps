@@ -35,6 +35,8 @@ P_Item::P_Item()
 
 	bNetwork = true;
 
+   m_pkInventoryList = 0;
+
 	strcpy(m_acName,"P_Item");
   
 }
@@ -51,6 +53,8 @@ P_Item::P_Item( string kName )
 
 	bNetwork = true;
 
+   m_pkInventoryList = 0;
+      
 	strcpy(m_acName,"P_Item");
 
 }
@@ -241,6 +245,8 @@ void P_Item::PackTo(NetPacket* pkNetPacket, int iConnectionID )
          //  if a object which has requested info was found...
          if ( (*kIte).m_iClientID == iConnectionID && (*kIte).m_kSendType == "itemdata" )
          {
+            cout << "wrote itemdata" << endl;
+
             pkNetPacket->Write_NetStr( "data" );
 
             // icon
@@ -253,6 +259,11 @@ void P_Item::PackTo(NetPacket* pkNetPacket, int iConnectionID )
             // contatiner id (if it's a container)
             pkNetPacket->Write( &m_pkItemStats->m_iContainerID, 
 					sizeof(m_pkItemStats->m_iContainerID) );
+
+            // which container the object is in
+            pkNetPacket->Write( &m_pkItemStats->m_iContainerID, 
+					sizeof(m_pkItemStats->m_iCurrentContainer) );
+
 
             // item name
             pkNetPacket->Write_NetStr( m_pkItemStats->m_kItemName.c_str() );
@@ -271,10 +282,15 @@ void P_Item::PackTo(NetPacket* pkNetPacket, int iConnectionID )
             // if object isn't a container, don't send anything
             if ( m_pkItemStats->m_pkContainer )
             {
+               cout << "wrote container stuff" << endl;
+
                pkNetPacket->Write_NetStr( "cont" );
 
                // get container vector
                vector<int>* pkItems = m_pkItemStats->m_pkContainer->GetItemsInContainer();
+
+               // container ID
+               pkNetPacket->Write( &m_pkItemStats->m_iContainerID, sizeof(int) );
 
                int iSize = pkItems->size();
 
@@ -318,6 +334,8 @@ void P_Item::PackFrom(NetPacket* pkNetPacket, int iConnectionID )
 
    if ( kDataType == "data" )
    {
+      cout << "got iteminfo data" << endl;
+
       // get icon
       pkNetPacket->Read_NetStr(m_pkItemStats->m_szPic);
 
@@ -329,6 +347,10 @@ void P_Item::PackFrom(NetPacket* pkNetPacket, int iConnectionID )
       pkNetPacket->Read( &m_pkItemStats->m_iContainerID, 
 			sizeof(m_pkItemStats->m_iContainerID) );
 
+            // which container the object is in
+      pkNetPacket->Read( &m_pkItemStats->m_iContainerID, 
+			sizeof(m_pkItemStats->m_iCurrentContainer) );
+
       // item name
       pkNetPacket->Read_NetStr( (char*)m_pkItemStats->m_kItemName.c_str() );
 
@@ -337,12 +359,23 @@ void P_Item::PackFrom(NetPacket* pkNetPacket, int iConnectionID )
       // get version
       pkNetPacket->Read( &m_pkItemStats->m_uiVersion, sizeof(unsigned int) );
 
+      if ( m_pkInventoryList )
+      {
+         cout << "Got obj from server" << endl;
+         m_pkInventoryList->push_back ( m_pkObject );
+      }
+
    }
    else if ( kDataType == "cont" )
    {
+      cout << "got container info" << endl;
+
       // if object isn't a container, better make it one, or it crashes!
       if ( !m_pkItemStats->m_pkContainer )
          m_pkItemStats->MakeContainer();
+
+      // container ID
+      pkNetPacket->Read( &m_pkItemStats->m_iContainerID, sizeof(int) );
 
       int iContSize, iObjID;
 
@@ -365,20 +398,11 @@ void P_Item::PackFrom(NetPacket* pkNetPacket, int iConnectionID )
       // version
       pkNetPacket->Read( &m_pkItemStats->m_pkContainer->m_uiVersion, sizeof(unsigned int) );
 
-      // if a container was requested for, update the given vector
-      for ( list<WaitingFor>::iterator kIte = m_kWaitingForRequest.begin();
-            kIte != m_kWaitingForRequest.end(); kIte++ )
+      if ( m_pkInventoryList )
       {
-         if ( (*kIte).m_iRequest == eWAITING_FOR_CONT )
-         {
-            m_pkItemStats->m_pkContainer->GetAllItemsInContainer(
-               (vector<Entity*>*)(*kIte).m_pkData );
-
-            m_kWaitingForRequest.erase ( kIte++ );            
-         }
-
+         cout << "Got cont from server" << endl;
+         m_pkItemStats->m_pkContainer->GetAllItemsInContainer( m_pkInventoryList );
       }
-
    }
 //   else
 //      cout << "Error! Illegal networkdata sent to P_Item:" << kDataType << endl;
@@ -463,11 +487,10 @@ void P_Item::RequestUpdateFromServer (string kType)
       // for now, the only data the client need is icon, item name and tooltip
       else if ( kType == "data" )
       {
-         // hmm...will this work?
-         // if object already has a name and such, already got his info from the server...
+         // hmm...will this work? Problem if object changes name..ok otherwise..i think
+         //if object already has a name and such, already got his info from the server...
          //if ( m_pkItemStats->m_kItemName.size() )
-           // return;
-
+         //   return;
 
          // get client object
          kOrder.m_sOrderName = "(rq)item";
@@ -496,30 +519,10 @@ void P_Item::GetAllItemsInContainer( vector<Entity*>* pkContainerList )
       return;
    }
 
-   if ( m_pkItemStats->m_pkContainer )
-   {  
-      WaitingFor kNewWait;
-      kNewWait.m_iRequest = eWAITING_FOR_CONT;
-      
-      kNewWait.m_pkData = pkContainerList;
+   m_pkInventoryList = pkContainerList;
 
-      m_kWaitingForRequest.push_back (kNewWait);
+   RequestUpdateFromServer ( "container" );
 
-      RequestUpdateFromServer ( "container" );
-   }
-
-}
-
-// ---------------------------------------------------------------------------------------------
-
-void P_Item::CancelOrder( vector<Entity*>* pkContainerList )
-{
-   list<WaitingFor>::iterator kIte = m_kWaitingForRequest.begin();
-
-   for ( ; kIte != m_kWaitingForRequest.end(); kIte++ )
-      // order found
-      if ( (*kIte).m_pkData == pkContainerList )
-         m_kWaitingForRequest.erase ( kIte++ );
 }
 
 // ---------------------------------------------------------------------------------------------

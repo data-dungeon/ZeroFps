@@ -1,4 +1,5 @@
 #include "../../p_item.h"
+#include "../../../zerofpsv2/engine_systems/propertys/p_mad.h"
 #include "characterstats.h"
 #include "../item/itemstats.h"
 #include <iostream>
@@ -461,6 +462,12 @@ bool CharacterStats::Equip ( Entity *pkObject, string kSlot )
       m_uiVersion++;
 
       // stick Object to MAD model
+      pkObject->SetRelativeOri (true);
+      m_pkParent->AddChild ( pkObject );
+
+      P_LinkToJoint* pkLink = (P_LinkToJoint*)pkObject->AddProperty ("P_LinkToJoint");
+      pkLink->m_strToJoint = kSlot;
+
       return true;
    }
 

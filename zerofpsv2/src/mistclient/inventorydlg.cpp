@@ -3,6 +3,7 @@
 //////////////////////////////////////////////////////////////////////
 
 #include "inventorydlg.h"
+#include "../mcommon/p_clientcontrol.h"
 #include "../mcommon/p_item.h"
 #include "../zerofpsv2/basic/zfsystem.h"
 #include "../zerofpsv2/engine/entitymanager.h"
@@ -20,6 +21,10 @@ InventoryDlg::InventoryDlg(ZGuiWnd* pkDlgWnd)// : ZFSubSystem("InventoryDlg")
 	m_pkResMan = static_cast<ZGuiResourceManager*>(g_ZFObjSys.GetObjectPtr("ZGuiResourceManager"));
 	m_pkTexMan = static_cast<TextureManager*>(g_ZFObjSys.GetObjectPtr("TextureManager"));
 	m_pkAudioSys = static_cast<ZFAudioSystem*>(g_ZFObjSys.GetObjectPtr("ZFAudioSystem"));
+
+   m_pkZeroFps = static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
+   m_pkEntityMan = static_cast<EntityManager*>(g_ZFObjSys.GetObjectPtr("EntityManager"));
+
 	m_kClickOffset = Point(0,0);
 	m_iCurrentScrollPos = 0;
 	m_pkDlgWnd = pkDlgWnd;
@@ -759,9 +764,26 @@ void InventoryDlg::DropItems()
 		}
 		else
 		{
-			// TODO:
-			// Meddela något system att föremålet har släppts på marken.
-		}
+         int iClientObjectID = m_pkZeroFps->GetClientObjectID();
+         Entity* pkClientObj = m_pkEntityMan->GetObjectByNetWorkID(iClientObjectID);
+
+         // get ClientControlProperty
+         P_ClientControl* pkCC = (P_ClientControl*)pkClientObj->GetProperty("P_ClientControl");
+
+         ClientOrder kOrder;
+
+         // get client object
+         kOrder.m_sOrderName = "DropItem";
+         kOrder.m_iObjectID = (*it).m_iNetWorkID;
+         kOrder.m_iClientID = m_pkZeroFps->GetConnectionID();
+         kOrder.m_iCharacter = pkCC->m_iActiveCaracterObjectID;
+         kOrder.m_iUseLess = 0;
+
+         RemoveSlot ( (it) );
+
+         pkCC->AddOrder (kOrder);
+      }
+
 
 		m_pkGui->UnregisterWindow((*it).m_pkLabel);
 

@@ -1375,6 +1375,8 @@ void Entity::SetLocalRotM(Matrix4 kNewRot)
 void Entity::SetLocalRotV(Vector3 kRot)
 {
 	ResetChildsGotData();
+
+   SetNetUpdateFlagAndChilds(NETUPDATEFLAG_ROT,true);
 	
 	m_kLocalRotM.Identity();
 	m_kLocalRotM.Rotate(kRot);
@@ -1444,7 +1446,7 @@ void Entity::SetWorldPosV(Vector3 kPos)
 void Entity::RotateLocalRotV(Vector3 kRot)
 {
 	ResetChildsGotData();
-	SetNetUpdateFlag(1,true);	
+	SetNetUpdateFlagAndChilds(NETUPDATEFLAG_ROT,true);
 	
 	m_kLocalRotM.Rotate(kRot);
 	
@@ -1691,6 +1693,7 @@ void Entity::SetNetUpdateFlag(int iFlagID,bool bValue)
 
 void Entity::SetNetUpdateFlagAndChilds(int iFlagID,bool bValue)
 {
+
 	int i;
 
 	for(i = 0;i<m_kNetUpdateFlags.size();i++)

@@ -412,7 +412,7 @@ Entity* EntityManager::CreateObjectFromScriptInZone(const char* acName,Vector3 k
 		newobj->SetUseZones(true);
 		newobj->SetWorldPosV(kPos);	
 		if(newobj->m_iCurrentZone == -1)
-			cout<<"ERROR!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"<<endl;
+			cout<<"Error! Tried to create a object outside zones."<<endl;
 	}
 
 	return newobj;

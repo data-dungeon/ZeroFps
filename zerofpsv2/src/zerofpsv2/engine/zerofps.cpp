@@ -718,6 +718,9 @@ void ZeroFps::RunCommand(int cmdid, const CmdArgument* kCommand)
 				}
 			else if(strcmp(kCommand->m_kSplitCommand[1].c_str(), "zeb2") == 0) {
 				strcpy(g_szIpPort, "192.168.0.170:4242");
+            }
+			else if(strcmp(kCommand->m_kSplitCommand[1].c_str(), "zerom") == 0) {
+				strcpy(g_szIpPort, "192.168.0.154:4242");
 				}
 			else if(strcmp(kCommand->m_kSplitCommand[1].c_str(), "gubb") == 0) {
 				strcpy(g_szIpPort, "192.168.0.176:4242");

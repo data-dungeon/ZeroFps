@@ -639,9 +639,6 @@ void MistClient::OnCommand(int iID, ZGuiWnd *pkMainWnd)
             // order itemcontainer to begin gather iteminfo from server
             if ( GetWnd("BackPackWnd")->IsVisible() )
                ((P_Item*)m_pkActiveCharacter->GetProperty("P_Item"))->GetAllItemsInContainer(m_pkInventDlg->m_pkAddItemList);
-            // cancel order from server
-            else
-               ((P_Item*)m_pkActiveCharacter->GetProperty("P_Item"))->CancelOrder(m_pkInventDlg->m_pkAddItemList);
 		
 			}
 			if(strClickWndName == "StatsButton")
@@ -972,7 +969,7 @@ void MistClient::SetActiveCaracter(int iCaracter)
 					P_Enviroment* ep = (P_Enviroment*)pkObj->GetProperty("P_Enviroment");
 					if(ep)
 					{
-						//disable enviroment for this caracter
+						//disable enviroment for this character
 						ep->SetEnable(false);						
 						cout<<"disabled enviroment"<<endl;
 					}
@@ -982,7 +979,7 @@ void MistClient::SetActiveCaracter(int iCaracter)
 				m_iActiveCaracterObjectID = -1;
 			}
 			
-			//if the new caracter is valid
+			//if the new character is valid
 			if(iCaracter != -1)
 			{
 				//check rights
@@ -1337,8 +1334,12 @@ void MistClient::UpdateCullObjects()
 		return;
 		
 	Vector3 kStart = m_pkCamera->GetPos();
-	Vector3 kDir = (pkCar->GetWorldPosV() - m_pkCamera->GetPos()).Unit();
-	
+	Vector3 kDir = pkCar->GetWorldPosV() - m_pkCamera->GetPos();
+
+   //if ( kDir != Vector3::ZERO )
+      kDir.Unit();	
+   //else
+   //   return;
 	
 	float d = (pkCar->GetWorldPosV() - kStart).Length() + fAddRadius ;
 

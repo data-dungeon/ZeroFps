@@ -406,7 +406,8 @@ void MistServer::Input()
 			if(pkInput->Pressed(KEY_6)) m_kZoneSize.Set(16,8,8);		
 			if(pkInput->Pressed(KEY_7)) m_kZoneSize.Set(8,8,16);		
 			if(pkInput->Pressed(KEY_8)) m_kZoneSize.Set(4,8,16);				
-			if(pkInput->Pressed(KEY_9)) m_kZoneSize.Set(16,8,4);						
+			if(pkInput->Pressed(KEY_9)) m_kZoneSize.Set(16,8,4);					
+         if(pkInput->Pressed(KEY_0)) m_kZoneSize.Set(8,16,8);
 		}	
 	
 		//edit object mode
@@ -1360,7 +1361,23 @@ void MistServer::HandleOrders()
                cout << "Error! Non-P_Item_Object requested for updated containerinfo!" << endl;
          }
 
-      }      
+      }
+
+
+      // drop item from inventory to ground
+      else if ( order->m_sOrderName == "DropItem" )
+      {
+         Entity* pkEntity = pkObjectMan->GetObjectByNetWorkID(order->m_iObjectID);
+         Entity* pkPlayer = pkObjectMan->GetObjectByNetWorkID(order->m_iCharacter);
+
+         pkEntity->SetUpdateStatus (UPDATE_ALL);
+         pkEntity->GetParent()->RemoveChild (pkEntity);
+
+         pkEntity->SetWorldPosV ( pkPlayer->GetWorldPosV() );
+
+         ((P_Item*)pkEntity->GetProperty("P_Item"))->m_pkItemStats->
+            m_pkIsInContainer->RemoveObject( order->m_iObjectID );
+      }  
 		
 		//normal orders
 		else

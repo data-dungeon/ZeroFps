@@ -9,29 +9,17 @@
 #include <list>
    using namespace std;
 
-enum {eWAITING_FOR_CONT, eWAITING_FOR_DATA};
-
-
-struct WaitingFor
-{
-   int m_iRequest;
-   void* m_pkData;
-};
-
-
 class MCOMMON_API P_Item: public Property 
 {
 	private:
       string m_kObjectScriptname; // which script the object is created from
                                   // needed when splitting items
-      
-      // stuff to get info from network..not very nice...
-      list<WaitingFor> m_kWaitingForRequest;
-   
    public:
+
       list<SendType> m_kSends;       // the clients to recieve data from this property
 
 		ItemStats *m_pkItemStats;
+      vector<Entity*>* m_pkInventoryList;
 
 	   void Update();
 		void CloneOf(Property* pkProperty) {}
@@ -54,7 +42,6 @@ class MCOMMON_API P_Item: public Property
       void RequestUpdateFromServer (string kType);
 
       void GetAllItemsInContainer( vector<Entity*>* pkContainerList );
-      void CancelOrder( vector<Entity*>* pkContainerList );
 
 		void AddSendsData(SendType);
 

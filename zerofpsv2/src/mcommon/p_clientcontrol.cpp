@@ -3,8 +3,6 @@
 queue<ClientOrder> P_ClientControl::m_kServerOrders;
 
 
-
-
 P_ClientControl::P_ClientControl()
 {
 	strcpy(m_acName,"P_ClientControl");		
