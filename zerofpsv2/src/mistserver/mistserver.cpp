@@ -256,7 +256,7 @@ void MistServer::Input()
 	P_Mad* mp;
 	Entity* pkAnimObj = pkObjectMan->GetObjectByNetWorkID(m_iCurrentObject);								
 	if(pkAnimObj)
-		mp = (P_Mad*)pkAnimObj->GetProperty("MadProperty");
+		mp = (P_Mad*)pkAnimObj->GetProperty("P_Mad");
 	
 	if(pkInput->Pressed(KEY_F5) && mp) {
 		mp->SetAnimationActive(false);

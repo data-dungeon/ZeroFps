@@ -637,7 +637,9 @@ Entity* MistClient::GetTargetObject()
 	vector<Entity*> kObjects;
 	kObjects.clear();
 	
-	pkObjectMan->TestLine(&kObjects,start,dir);
+	//pkObjectMan->TestLine(&kObjects,start,dir);
+	
+	pkObjectMan->GetZoneObject()->GetAllObjects(&kObjects);
 	
 	//cout<<"nr of targets: "<<kObjects.size()<<endl;
 	
@@ -663,13 +665,22 @@ Entity* MistClient::GetTargetObject()
 			continue;
 		//-------------
 		
-		float d = (start - kObjects[i]->GetWorldPosV()).Length();
-	
-		if(d < closest)
+		//get mad property and do a linetest
+		P_Mad* mp = (P_Mad*)kObjects[i]->GetProperty("P_Mad");
+		if(mp)
 		{
-			closest = d;
-			pkClosest = kObjects[i];
-		}
+			if(mp->TestLine(start,dir))
+			{	
+				float d = (start - kObjects[i]->GetWorldPosV()).Length();
+	
+				if(d < closest)
+				{
+					closest = d;
+					pkClosest = kObjects[i];
+				}				
+			}
+		}		
+		
 	}
 	
 	return pkClosest;
