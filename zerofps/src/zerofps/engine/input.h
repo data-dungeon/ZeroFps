@@ -6,10 +6,10 @@
 #include <cstdlib>
 #include <SDL/SDL.h>
 #include <queue>
-#include "engine_x.h"
 #include <map>
 #include <string>
-#include "console.h"
+#include "engine_x.h"
+//#include "console.h"
 
 using namespace std;
 
@@ -178,7 +178,9 @@ class ENGINE_API Input : public ZFObject {
 		pair<const string, int>* m_aiActionToButton[400];
 		int m_iNrActions;
 		bool Bind(const string kKey, const string kAction);
-		Console* m_pkConsole;
+		
+		//Console* m_pkConsole;
+		BasicConsole* m_pkConsole;
 
 	public:
 		float m_fMouseSensitivity;

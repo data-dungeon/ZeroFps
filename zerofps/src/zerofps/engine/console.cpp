@@ -37,7 +37,7 @@ void Console::Update(void) {
 		iKey = m_pkInput->GetQueuedKey();
 		
 		//press keys
-		if(iKey == TAB) {
+		if(iKey == KEY_TAB) {
 			glPopAttrib();
 			
 			m_pkEngine->m_bConsoleMode=false;
@@ -59,7 +59,7 @@ void Console::Update(void) {
 			continue;
 		}
 					
-		if(m_pkInput->Pressed(RSHIFT) || m_pkInput->Pressed(LSHIFT)){
+		if(m_pkInput->Pressed(KEY_RSHIFT) || m_pkInput->Pressed(KEY_LSHIFT)){
 			m_bShift=true;
 		}else{
 			m_bShift=false;

@@ -141,8 +141,7 @@ void Mad_Modell::End() {}
 
 int Mad_Modell::GetNumOfMesh() 
 {
-	return 1;
-//	return pkCore->NumOfMeshes();
+ 	return pkCore->NumOfMeshes();
 }
 
 int Mad_Modell::GetNumOfSubMesh(int iMeshID)
@@ -361,7 +360,7 @@ void Mad_Modell::Draw_All(int iDrawFlags)
 		}
 
 	glDisable(GL_ALPHA_TEST);
-	if(iDrawFlags & MAD_DRAW_NORMAL)
+	if(iDrawFlags & MAD_DRAW_BONES)
 		DrawSkelleton();
 
 	glPopAttrib();

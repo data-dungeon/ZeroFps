@@ -120,14 +120,14 @@ bool ZGuiTextbox::ProcessKBInput(unsigned long nKey)
 		m_iCursorPos++;
 	}
 
-	if(nKey == UP)
+	if(nKey == KEY_UP)
 	{
 		m_iCursorPos -= m_iMaxCharsOneRow;
 		if(m_iCursorPos < 0)
 			m_iCursorPos = 0;
 	}
 
-	if(nKey == DOWN)
+	if(nKey == KEY_DOWN)
 		m_iCursorPos += m_iMaxCharsOneRow;
 
 	// Scroll scrollbar

@@ -701,7 +701,7 @@ void Mad_Core::CalculateRadius()
 	if(kMax.y > fMaxDist)	fMaxDist = kMax.y;
 	if(kMax.z > fMaxDist)	fMaxDist = kMax.z;
 
-	m_fBoundRadius = fMaxDist * 1.42;
+	m_fBoundRadius = fMaxDist;	// * 1.42;
 	
 //	return fRadius;
 }

@@ -433,11 +433,12 @@ void Input::ListActions()
 
 bool Input::GetConsole()
 {
-m_pkConsole	= static_cast<Console*>(g_ZFObjSys.GetObjectPtr("Console"));
-if(m_pkConsole==NULL) 
-	return false;
-else 
-	return true;
+	m_pkConsole	= static_cast<BasicConsole*>(g_ZFObjSys.GetObjectPtr("Console"));
+	
+	if(m_pkConsole==NULL) 
+		return false;
+	else 
+		return true;
 }
 
 int Input::RegisterAction(const char *pcAction)

@@ -80,7 +80,7 @@ void MadProperty::Update()
 			m_pkZeroFps->m_iNumOfMadRender++;
 			//DrawBoundSphere(sphere.w * (1 / m_fScale));
 //			DrawBoundSphere(fRadius * (1 / m_fScale));
-			DrawBoundSphere(fRadius);
+//			DrawBoundSphere(fRadius);
 			
 			Draw_All();
 			}

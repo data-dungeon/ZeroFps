@@ -173,7 +173,7 @@ void ZeroFps::MainLoop(void) {
 			m_pkApp->OnIdle();				
 			
 			
-			if(m_pkInput->Pressed(TAB))
+			if(m_pkInput->Pressed(KEY_TAB))
 			{			
 				m_bConsoleMode=true;		
 				m_pkInput->Reset();
@@ -198,11 +198,11 @@ void ZeroFps::MainLoop(void) {
 */				
 				
 			//toggle keyboard/mouse grabing
-			if(m_pkInput->Pressed(F12))
+			if(m_pkInput->Pressed(KEY_F12))
 				m_pkInput->ToggleGrab();
 					
 			//toggle fullscreen on X systems
-			if(m_pkInput->Pressed(F11))
+			if(m_pkInput->Pressed(KEY_F11))
 				ToggleFullScreen();		
 			
 /*			if(m_pkInput->GetQueuedKey() == F10)
