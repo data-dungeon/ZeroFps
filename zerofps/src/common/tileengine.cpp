@@ -183,16 +183,16 @@ void TileEngine::GenerateUnits()
 
 Point TileEngine::GetSqrFromPos(Vector3 pos)
 {
-	int iSquareX = m_pkMap->m_iHmSize/2+floor(pos.x / HEIGHTMAP_SCALE);
-	int iSquareY = m_pkMap->m_iHmSize/2+floor(pos.z / HEIGHTMAP_SCALE);
+	int iSquareX = int((m_pkMap->m_iHmSize/2.0)+floor(pos.x / HEIGHTMAP_SCALE));
+	int iSquareY = int((m_pkMap->m_iHmSize/2.0)+floor(pos.z / HEIGHTMAP_SCALE));
 
 	return Point(iSquareX,iSquareY);
 }
 
 Vector3 TileEngine::GetPosFromSqr(Point square)
 {
-	float x = -(m_pkMap->m_iHmSize/2)*HEIGHTMAP_SCALE + square.x*HEIGHTMAP_SCALE;
-	float z = -(m_pkMap->m_iHmSize/2)*HEIGHTMAP_SCALE + square.y*HEIGHTMAP_SCALE;
+	float x = -(m_pkMap->m_iHmSize/2.0)*HEIGHTMAP_SCALE + square.x*HEIGHTMAP_SCALE;
+	float z = -(m_pkMap->m_iHmSize/2.0)*HEIGHTMAP_SCALE + square.y*HEIGHTMAP_SCALE;
 
 	x -= HEIGHTMAP_SCALE/2;	// Translate to center 
 	z -= HEIGHTMAP_SCALE/2;	// of square.*/
@@ -226,8 +226,11 @@ void TileEngine::AddUnit(Vector3 kPos,P_ServerUnit* kSu)
 		int w = kSu->m_kInfo.m_Info2.m_cWidth;
 		int h = kSu->m_kInfo.m_Info2.m_cHeight;
 			
-		for(int y = int(-(h/2.0));y<(h/2.0);y++)
-			for(int x = int(-(w/2.0));x<(w/2.0);x++)
+		float sh = h/2.0;
+		float sw = w/2.0;		
+			
+		for(int y = int(-sh);y<sh;y++)
+			for(int x = int(-sw);x<sw;x++)
 			{			
 				//cout<<"X:"<<x<<endl;
 				AddUnit(pos.x + x,pos.y + y,kSu->GetObject()->iNetWorkID);
@@ -259,8 +262,14 @@ void TileEngine::Draw()
 	{
 		for(int x = 0;x<m_iSizeX;x++)
 		{
-			
-	
+			if(!GetTile(x,y)->kUnits.empty() || x ==0)
+			{
+				Vector3 pos;
+				pos.Set(x - ceil(m_iSizeX/2.0) + 0.5,4,y - ceil(m_iSizeY/2.0) + 0.5);
+				pos *= HEIGHTMAP_SCALE;
+						
+				m_pkRender->Quad(pos,Vector3(-90,0,0),Vector3(2,2,2),1);
+			}	
 		}
 	}
 }
