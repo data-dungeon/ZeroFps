@@ -104,7 +104,6 @@ void MistServer::CreateEditCameras()
 
 void MistServer::OnInit() 
 {
-
 	m_pkZFVFileSystem->AddRootPath( string("../datafiles/mistlands") ,"/data");
 	//m_pkZFVFileSystem->AddRootPath( string("../datafiles/dm") ,"/data");
 	
@@ -158,8 +157,7 @@ void MistServer::Init()
 	GuiAppLua::Init(&g_kMistServer, m_pkScript);
 
 	// Load default texture and create default font and menu (NULL = No menu).
-	InitGui(m_pkScript, "defguifont", "data/script/gui/defskins.lua", 
-		"data/script/gui/menu.txt", true, true); 
+	InitGui(m_pkScript, "defguifont", "data/script/gui/defskins.lua", NULL, true, true); 
 
 	// Create startup GUI for the the server from script.
 	SetupGuiEnviroment();
@@ -175,8 +173,7 @@ void MistServer::Init()
 	m_kSun.kAmbient=Vector4(0.5,0.5,0.5,0);
 	m_kSun.iType=DIRECTIONAL_LIGHT;			
 	m_pkLight->Add(&m_kSun);
-		
-	
+			
 //	m_pkInputHandle->ToggleGrab();
 //	m_pkPlayerDB->GetLoginCharacters(string("user"));
 
@@ -189,15 +186,15 @@ void MistServer::Init()
 
 void MistServer::SetupGuiEnviroment()
 {
-	// Create from script.
-   if(!LoadGuiFromScript("data/script/gui/server.lua"))
-	{
-		printf("Failed to load GUI script!\n");
-		return;
-	}
+	//// Create from script.
+ //  if(!LoadGuiFromScript("data/script/gui/server.lua"))
+	//{
+	//	printf("Failed to load GUI script!\n");
+	//	return;
+	//}
 
-	m_pkGui->SetCursor( 0,0, m_pkTexMan->Load("data/textures/gui/blue_cursor.bmp", 0),
-		m_pkTexMan->Load("data/textures/gui/blue_cursor_a.bmp", 0), 32, 32);
+	//m_pkGui->SetCursor( 0,0, m_pkTexMan->Load("data/textures/gui/blue_cursor.bmp", 0),
+	//	m_pkTexMan->Load("data/textures/gui/blue_cursor_a.bmp", 0), 32, 32);
 }
 
 
