@@ -25,7 +25,7 @@ ZGuiScrollbar::ZGuiScrollbar(Rect kArea, ZGuiWnd* pkParent, bool bVisible, int i
 
 ZGuiScrollbar::~ZGuiScrollbar()
 {
-
+	delete m_pkThumbButton;
 }
 
 bool ZGuiScrollbar::Render( ZGuiRender* pkRenderer )

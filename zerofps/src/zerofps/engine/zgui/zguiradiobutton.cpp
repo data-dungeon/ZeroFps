@@ -20,13 +20,20 @@ ZGuiRadiobutton::ZGuiRadiobutton(Rect kRectangle, ZGuiWnd* pkParent, int iID, in
 	m_iGroupID = -1;
 	m_pkCheckbox = new ZGuiCheckbox(Rect(0,0,kRectangle.Width(),
 		kRectangle.Height()), this, true, iID);
+	m_pkCheckbox->RemoveWindowFlag(WF_CANHAVEFOCUS);
+	SetWindowFlag(WF_CANHAVEFOCUS);
 	ConnectToGroup(iGroupID, m_pkLastbutton);
 	m_pkLastbutton = this;
 }
 
 ZGuiRadiobutton::~ZGuiRadiobutton()
 {
-
+	if(m_pkCheckbox)
+	{
+		ResetStaticClickWnds(m_pkCheckbox);
+		delete m_pkCheckbox;
+		m_pkCheckbox = NULL;
+	}
 }
 
 bool ZGuiRadiobutton::Render( ZGuiRender* pkRenderer )
@@ -75,7 +82,7 @@ bool ZGuiRadiobutton::Notify(ZGuiWnd* pkWnd, int iCode)
 
 		m_pkCheckbox->CheckButton();
 
-		ZGuiWnd::SetFocus();
+		SetFocus();
 	}
 
 	return true;

@@ -57,6 +57,8 @@ ZGuiListbox::~ZGuiListbox()
 	}
 
 	m_pkItemList.clear(); 
+
+	delete m_pkScrollbarVertical;
 }
 
 bool ZGuiListbox::Render( ZGuiRender* pkRenderer )

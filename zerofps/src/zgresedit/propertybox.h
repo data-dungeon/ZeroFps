@@ -1,7 +1,7 @@
 #ifndef _PROPERTYBOX_H
 #define _PROPERTYBOX_H
 
-#include "DlgBox.h"
+#include "dlgbox.h"
 
 class PropertyBox : public DlgBox  
 {

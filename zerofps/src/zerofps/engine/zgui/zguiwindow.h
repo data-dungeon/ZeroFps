@@ -142,6 +142,8 @@ private:
 	bool m_bHaveFocus;
 	bool m_bInternalControl;
 
+	ZGuiResourceManager* m_pkGuiMan;
+
 };
 
 #endif // !defined(AFX_WINDOW_H__C9899268_8A6F_4E75_A4D7_60CADB518415__INCLUDED_)

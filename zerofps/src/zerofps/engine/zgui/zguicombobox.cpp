@@ -55,7 +55,8 @@ void ZGuiCombobox::SetZValue(int iValue)
 
 ZGuiCombobox::~ZGuiCombobox()
 {
-
+	delete m_pkLabel;
+	delete m_pkListbox;
 }
 
 bool ZGuiCombobox::Render( ZGuiRender* pkRenderer )

@@ -20,12 +20,14 @@ ZGuiCheckbox::ZGuiCheckbox(Rect kRectangle, ZGuiWnd* pkParent, bool bVisible, in
 	m_iMaskTexChecked = -1;
 
 	m_pkLabel = new ZGuiLabel(Rect(0, 0, kRectangle.Width(), kRectangle.Height()), this, true, 0);
+	m_pkLabel->RemoveWindowFlag(WF_CANHAVEFOCUS);
 	m_pkLabel->Move(20,0); 
 }
 
 ZGuiCheckbox::~ZGuiCheckbox()
 {
-
+	ResetStaticClickWnds(m_pkLabel);
+	delete m_pkLabel;
 }
 
 bool ZGuiCheckbox::Render( ZGuiRender* pkRenderer )
@@ -73,7 +75,7 @@ bool ZGuiCheckbox::Notify(ZGuiWnd* pkWnd, int iCode)
 		}
 	}
 
-	m_pkParent->Notify(this, iCode); 
+	m_pkParent->Notify(this, iCode);
 
 	return false;
 }

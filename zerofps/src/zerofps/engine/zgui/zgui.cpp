@@ -79,10 +79,36 @@ bool ZGui::UnregisterWindow(ZGuiWnd* pkWindow)
 	map<int, ZGuiWnd*>::iterator itWnd;
 	itWnd = m_pkWindows.find(pkWindow->GetID());
 
-	if(itWnd == m_pkWindows.end())
-		return false;
+	printf("%i\n", m_pkWindows.size());
 
-	m_pkWindows.erase(itWnd);
+	if(itWnd != m_pkWindows.end())
+	{
+		m_pkWindows.erase(itWnd);
+
+		cout << "Removing window!" << endl;
+
+		ZGuiWnd::ResetStaticClickWnds(pkWindow);
+
+		delete pkWindow;
+	}
+	else
+	{
+		cout << "Failed to remove window!" << endl;
+	}
+
+	// Ta oxå bort eventuellt main window
+	for( list<MAIN_WINDOW*>::iterator itMain = m_pkMainWindows.begin();
+		 itMain != m_pkMainWindows.end(); itMain++ )
+		 {
+			if( (*itMain)->pkWin == pkWindow)
+			{
+				cout << "Removing main window!" << endl;
+
+				delete (*itMain);
+				m_pkMainWindows.erase(itMain);				
+				break;
+			}
+		 }
 
 	return true;
 }
@@ -102,13 +128,8 @@ bool ZGui::AddMainWindow(int iMainWindowID, ZGuiWnd* pkWindow, callback cb, bool
 	pkNewMainWindow->iZValue = iZValueCounter++;
 
 	m_pkMainWindows.push_back(pkNewMainWindow);
-	//m_pkMainWindows.sort();
 
-/*	if(bSetAsActive)
-	{
-		m_pkActiveMainWin = pkNewMainWindow;
-		ZGuiWnd::m_pkFocusWnd = m_pkActiveMainWin->pkWin;
-	}*/
+	RegisterWindow(pkWindow);
 
 	// Gå igenom alla childs och lägg till de till listan.
 	list<ZGuiWnd*> kChildList;

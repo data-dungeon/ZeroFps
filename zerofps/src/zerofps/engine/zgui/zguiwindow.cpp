@@ -36,6 +36,8 @@ ZGuiWnd::ZGuiWnd(Rect kRectangle, ZGuiWnd* pkParent, bool bVisible, int iID)
 	m_bInternalControl = false;
 	m_bEnabled = true;
 	m_pkFont = NULL;
+
+	m_pkGuiMan=static_cast<ZGuiResourceManager*>(g_ZFObjSys.GetObjectPtr("ZGuiResourceManager"));			
 	
 	m_pkParent = pkParent;
 	if(pkParent != NULL)
@@ -73,17 +75,26 @@ ZGuiWnd::~ZGuiWnd()
 {
 	ZGuiWnd* pkParent = GetParent();
 	if(pkParent)
+	{
 		pkParent->RemoveChild(this);
+		pkParent->SetFocus();
+		ZGuiWnd::m_pkFocusWnd = pkParent;
+	}
 
 	for( WINit w = m_kChildList.begin();
 		 w != m_kChildList.end(); w++)
 		 {
 			if((*w) != NULL)
 			{
+				ResetStaticClickWnds((*w));
 				delete (*w);
 				(*w) = NULL;
 			}
 		 }
+
+	ResetStaticClickWnds(this);
+
+
 
 	m_kChildList.clear();
 }
@@ -104,6 +115,7 @@ bool ZGuiWnd::RemoveChild( ZGuiWnd *pkWindow )
 		 {
 			 if(pkWindow == (*w))
 			 {
+				 ResetStaticClickWnds((*w));
 				 m_kChildList.erase(w);
 				 return true;
 			 }

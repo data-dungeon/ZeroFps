@@ -177,6 +177,11 @@ ZGuiRadiobutton* GuiBuilder::CreateRadioButton(ZGuiWnd* pkParent, int iID,
 	pkRadioButton->SetButtonUnselectedSkin(GetSkin("rbn_down"),rbn_a);
 	pkRadioButton->SetButtonSelectedSkin(GetSkin("rbn_up"),rbn_a);
 	pkRadioButton->SetText(szName);
+	
+/*	pkRadioButton->SetFocus();
+	ZGuiWnd::m_pkFocusWnd = pkRadioButton;*/
+
+	pkRadioButton->SetWindowFlag(WF_CANHAVEFOCUS);
 
 	pkPrev = pkRadioButton;
 
