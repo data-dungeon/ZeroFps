@@ -6,7 +6,9 @@ class Vector4;
 class Matrix4;
 class ModellManager;
 class AudioManager;
+class Application;
 
+#include "application.h"
 #include "input.h"
 #include "vector3.h"
 #include "zerofps.h"

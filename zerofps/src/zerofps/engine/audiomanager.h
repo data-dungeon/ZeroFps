@@ -2,6 +2,7 @@
 #define _AUDIOMANAGER_H_
 
 
+#include "engine.pkg"
 #include <iostream>
 #include <SDL/SDL_mixer.h>		
 #include "music.h"

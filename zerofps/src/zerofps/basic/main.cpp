@@ -4,6 +4,8 @@ int main(int iNrOfArgs, char* paArgs[]) {
 	kEngine =new ZeroFps();
 	
 	kEngine->Init(iNrOfArgs,paArgs);
+	
+	return 0;
 }
 
 

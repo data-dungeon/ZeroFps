@@ -1,8 +1,6 @@
-class Application;
 class CmdSystem;
 class FileIo;
 
-#include "application.h"
 #include "cmdsystem.h"
 #include "globals.h"
 #include "fileio.h"
