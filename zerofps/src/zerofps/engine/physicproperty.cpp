@@ -15,8 +15,10 @@ PhysicProperty::PhysicProperty()
 
 
 
-	m_kColSphere=new CSSphere(1);
+	m_pkColSphere=new CSSphere(1);
+	m_pkColSphere->SetPPPointer(this);
 
+	cout<<"set pointer"<<endl;
 }
 
 CollisionData* PhysicProperty::Test(PhysicProperty* kOther)
