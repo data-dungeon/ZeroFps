@@ -571,7 +571,8 @@ string ZFSystem::GetVarValue(ZFCmdData* pkArea)
 			sprintf(szValue, "%d", *(int*)pkArea->m_vValue);
 			break;
 		case CSYS_STRING:
-			sprintf(szValue, "%s", (string*)pkArea->m_vValue);
+			string* pstrValue = (string*)pkArea->m_vValue;
+			sprintf(szValue, "%s", pstrValue->c_str());
 			//m_pkCon->Printf(" %s = [%s]",kVars[i]->aName,((string*)GetVar(i))->c_str());break;
 			break;
 		}

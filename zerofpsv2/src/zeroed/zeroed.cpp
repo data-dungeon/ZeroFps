@@ -85,8 +85,12 @@ ZeroEd::ZeroEd(char* aName,int iWidth,int iHeight,int iDepth)
 	m_bPlaceObjectsOnGround = 	false;
 	m_bDisableFreeZonePlacement = false;
 	m_bIsEditor =  true;
+	strcpy(szCoolName , "Guldfisk");
+   strMasterSmiley = "Vim";
 
 	// Register Variables
+	RegisterVariable("coolname",				&strMasterSmiley,			CSYS_STRING);	
+   RegisterVariable("r_loginstart", &m_strPlayerName, CSYS_STRING);
 	
 	// Register Commands
 	Register_Cmd("new",			FID_NEW);		

@@ -46,6 +46,9 @@
 */
 class ZeroEd :public Application , public ZGuiApp {
 	private:
+		char		szCoolName[256];
+		string	strMasterSmiley;
+      string     m_strPlayerName;
 
 		void RebuildZonePosArray();
 		bool ZoneHaveNeighbour(const Vector3& kPos, const Vector3& kSize);
