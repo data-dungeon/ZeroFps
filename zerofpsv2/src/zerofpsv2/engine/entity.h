@@ -344,7 +344,8 @@ class ENGINE_API Entity
 		inline bool IsZone() 								{	return m_bZone;			};
 		inline int GetEntityID()							{	return m_iEntityID;		};
 		inline int GetUpdateStatus()						{	return m_iUpdateStatus;	};
-		inline bool& GetSave()								{	return m_bSave;			};
+		inline bool GetSave()								{	return m_bSave;			};
+		inline void SetSave(bool bSave)					{	m_bSave = bSave;			};
 		inline string GetName()								{	return m_strName;			};
 		inline string GetType()								{	return m_strType;			};
 		inline ZFResourceHandle* GetEntityScript()   {	return m_pScriptFileHandle;};

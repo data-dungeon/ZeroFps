@@ -212,7 +212,7 @@ void ZeroEd::CreateEditCameras()
 			
 			P_Camera* m_pkCamProp = (P_Camera*)m_pkCameraObject[i]->GetProperty("P_Camera");
 			m_pkCamProp->SetCamera(m_pkCamera[i]);
-			m_pkCameraObject[i]->GetSave() = false;
+			m_pkCameraObject[i]->SetSave(false);
 		}
 	}
 

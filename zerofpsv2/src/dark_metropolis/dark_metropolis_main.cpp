@@ -302,7 +302,7 @@ void DarkMetropolis::OnServerStart()
 			m_pkCameraProp->Set3PYAngle(m_fAngle);
 			m_pkCameraProp->Set3PDistance(m_fDistance);							
 			
-			m_pkCameraEntity->GetSave() = false;
+			m_pkCameraEntity->SetSave(false);
 		}
 		
 		

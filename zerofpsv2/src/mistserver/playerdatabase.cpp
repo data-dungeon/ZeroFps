@@ -1,7 +1,7 @@
 #include "playerdatabase.h"
 #include "../zerofpsv2/basic/zfbasicfs.h"
 
-
+#include "../mcommon/p_characterproperty.h"
 
 
 PlayerDatabase::PlayerDatabase()
@@ -216,13 +216,22 @@ bool PlayerDatabase::CreateNewCharacter(string strPlayer, string strCharacter)
 		return false;
 	}
 	
+	//setup entity
 	pkEntity->SetName(strCharacter);
-	pkEntity->GetSave() = true;
+	pkEntity->SetSave(true);
 	pkEntity->SetUseZones(true);
 
+	//setup propertys
 	if(!pkEntity->GetProperty("P_Track"))	//check if theres a tracker property
-		pkEntity->AddProperty("P_Track");	//else create one
+		 pkEntity->AddProperty("P_Track");	//else create one
 	
+	if(P_CharacterProperty* cp = (P_CharacterProperty*)pkEntity->GetProperty("P_CharacterProperty"))
+	{
+		cp->SetName(strCharacter);
+		cp->SetOwnedByPlayer(strPlayer);
+		cp->SetIsPlayerCharacter(true);
+	}
+		 
 	//save it
 	pkEntity->Save(&kFile);
 	
@@ -253,7 +262,7 @@ Entity* PlayerDatabase::CreateCharacter(string strPlayer, string strCharacter)
 	kFile.Close();
 	
 	//set save to false so it wont we saved whit the rest of the world
-	pkEntity->GetSave() = false;
+	pkEntity->SetSave(false);
 	pkEntity->SetUseZones(true);
 	
 	cout<<"Loaded Character "<<strPlayer<< " -> "<<strCharacter<<endl;
@@ -277,13 +286,13 @@ bool PlayerDatabase::SaveCharacter(Entity* pkEntity,string strPlayer)
 	}	
 
 	//set save
-	pkEntity->GetSave() = true;
+	pkEntity->SetSave(true);
 	
 	//save it
 	pkEntity->Save(&kFile);	
 	
 	//set save to false
-	pkEntity->GetSave() = false;
+	pkEntity->SetSave(false);
 	
 	kFile.Close();
 	

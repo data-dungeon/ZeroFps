@@ -25,8 +25,10 @@ class MCOMMON_API P_Ml: public Property {
 				
 		bool					m_bShowText;
 		string				m_strText;
-
-
+		
+		ZMaterial*			m_pkTextMaterial;
+		ZGuiFont*			m_pkFont;
+		
 		vector<PropertyValues> GetPropertyValues();
 	public:
 

@@ -77,7 +77,7 @@ void MistServer::CreateEditCameras()
 		m_pkActiveCameraObject->SetParent( m_pkEntityManager->GetWorldEntity() );
 		P_Camera* m_pkCamProp = (P_Camera*)m_pkActiveCameraObject->GetProperty("P_Camera");
 		m_pkCamProp->SetCamera(m_pkCamera);
-		m_pkActiveCameraObject->GetSave() = false;
+		m_pkActiveCameraObject->SetSave(false);
 		
 		P_Enviroment* pe = (P_Enviroment*)m_pkActiveCameraObject->AddProperty("P_Enviroment");
 		pe->SetEnable(true);		
@@ -752,18 +752,22 @@ bool MistServer::IsValid()	{ return true; }
 int MistServer::CreatePlayer(const char* csPlayer,const char* csCharacter,const char* csLocation,int iConID)
 {
 
-	//try to create character entity
+	//try to crreate saved character
 	Entity* pkObject = m_pkPlayerDB->CreateCharacter(csPlayer,csCharacter);
 	
 	
-	//if it fails try to create it
+	//if it fails try to create a new character
 	if(!pkObject)
 	{
 		cout<<"Character not found, trying to create it"<<endl;
-		if(!m_pkPlayerDB->CreateNewCharacter(csPlayer,csCharacter))
-			return -1;
-		else	//it was created, now load it
+		if(m_pkPlayerDB->CreateNewCharacter(csPlayer,csCharacter))
+		{
+			//new character created , now load it
 			pkObject = m_pkPlayerDB->CreateCharacter(csPlayer,csCharacter);
+		}
+		else	
+			return -1;
+		
 	}
 	
 	
