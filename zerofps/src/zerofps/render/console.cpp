@@ -118,18 +118,32 @@ void Console::Print(char* aText) {
 }
 
 void Console::Execute(char* aText) {
+	string arg[20];
+	int args;
+	
 	if(strlen(aText)==0){
 		Print("");
 		return;
 	}
 	
-
-	if(strcmp(aText,"quit")==0){
+	
+	//read input parameters 
+	args=0;
+	for(int i=0;i<strlen(aText);i++) {
+		while(int(aText[i])!=32 && i<strlen(aText)){			
+			arg[args].append(1,aText[i]);
+			i++;
+		}
+		if(arg[args].size()!=0)
+			args++;
+	}
+	
+	if(arg[0]=="quit"){
 		exit(1);
 		return;
 	}
 	
-	if(strcmp(aText,"help")==0){
+	if(arg[0]=="help"){
 		Print("");
 		Print("### help ###");
 		Print(" quit         -exit program");
@@ -138,27 +152,17 @@ void Console::Execute(char* aText) {
 		return;
 	}
 	
-	if(strncmp(aText,"set ",4)==0) {
+	if(arg[0]=="set") {
 		char name[256]="";
 		char value[20]="";
 		int i=4;		
 
-		while(aText[i]!='\0' && aText[i]!=' '){
-			strncat(name,&aText[i],1);
-			i++;
-		}
-		if(strlen(name)<1){
+		if(arg[1].size()==0){
 			Print("Please Supply a varible name");
 			return;
 		}
 
-		i++;
-		while(aText[i]!='\0' && aText[i]!=' '){
-			strncat(value,&aText[i],1);
-			i++;
-		}
-
-		if(strlen(value)==0) {
+		if(arg[2].size()==0) {
 			Print("Please Supply a value");
 			return;
 		}
@@ -166,12 +170,14 @@ void Console::Execute(char* aText) {
 		
 		char text[255]="";
 		strcpy(text,"Setting ");
-		strcat(text,name);
+		strcat(text,arg[1].c_str());
 		strcat(text,"=");
-		strcat(text,value);
+		strcat(text,arg[2].c_str());
 		Print(text);
 		
-		if(!m_pkCmd->Set(name,atof(value))){
+		strcat(name,arg[1].c_str());
+		
+		if(!m_pkCmd->Set(name,atof(arg[2].c_str()))){
 			Print("Variable not found");
 			return;
 		}
@@ -179,7 +185,7 @@ void Console::Execute(char* aText) {
 		return;
 	}
 
-	if(strcmp(aText,"varlist")==0) {
+	if(arg[0]=="varlist") {
 		Print("");
 		Print("### variable list ###");
 		for(int i=0;i<m_pkCmd->GetList().size();i++){
@@ -197,7 +203,7 @@ void Console::Execute(char* aText) {
 		return;
 	}
 	
-	if(strcmp(aText,"cmdlist")==0) {
+	if(arg[0]=="cmdlist")==0) {
 		Print("");
 		Print("### funktion list ###");
 		for(int i=0;i<m_pkCmd->GetCmdList().size();i++){
