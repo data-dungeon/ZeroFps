@@ -154,9 +154,9 @@ void Tcs::Update(float fAlphaTime)
 	}
 	
 	//update all character ground line tests
-	StartProfileTimer("tcs-linetests");		
+	//StartProfileTimer("tcs-linetests");		
 	UpdateLineTests(fAlphaTime);
-	StopProfileTimer("tcs-linetests");		
+	//StopProfileTimer("tcs-linetests");		
 	
 	//synd all entitys to bodys
 	SyncEntitys();
@@ -786,15 +786,17 @@ bool Tcs::TestLineVSMesh(Vector3 kStart,Vector3 kDir,P_Tcs* pkB)
 
 bool Tcs::CharacterTestLineVSSphere(Vector3 kP1,Vector3 kP2,P_Tcs* pkB)
 {
-	Vector3 kDir = kP2 - kP1;
-
-	Vector3 c=pkB->m_kNewPos - kP1;		
-
-	float d = kDir.Unit().Dot(c);
-
+	static Vector3 kDir;
+	static Vector3 c;
+	static Vector3 k;
 	
+	kDir = kP2 - kP1;
+	c=pkB->m_kNewPos - kP1;		
+
 	kDir.Normalize();		
-	Vector3 k=kDir.Proj(c);		
+	
+	float d = kDir.Dot(c);
+	k=kDir.Proj(c);		
 	float cdis=c.Length();
 	float kdis=k.Length();
 	float Distance = (float) sqrt((cdis*cdis)-(kdis*kdis));
@@ -805,8 +807,7 @@ bool Tcs::CharacterTestLineVSSphere(Vector3 kP1,Vector3 kP2,P_Tcs* pkB)
 		m_kLastTestPos = pkB->m_kNewPos - c.Unit() * pkB->m_fRadius; //kP1 + k;
 		//m_kLastTestPos.x = kP1.x;
 		//m_kLastTestPos.z = kP1.z;
-		//m_kLastTestPos = kP1 + k;
-		
+		//m_kLastTestPos = kP1 + k;	
 		return true;
 	}		
 	

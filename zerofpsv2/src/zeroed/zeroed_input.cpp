@@ -220,8 +220,8 @@ void ZeroEd::Input_EditObject(float fMouseX, float fMouseY)
 
 	if(m_pkInputHandle->VKIsDown("reposent")) 
 	{
-		kMove = pkObj->GetLocalPosV();
-		kMove = m_pkActiveCamera->GetPos() + Get3DMousePos(true) * 2;
+		//kMove = pkObj->GetLocalPosV();
+		kMove = m_kObjectMarkerPos;
 		
 		if(m_pkActiveCamera->GetViewMode() != Camera::CAMMODE_PERSP) 
 		{
@@ -333,8 +333,8 @@ void ZeroEd::Input_Camera(float fMouseX, float fMouseY)
 
 
 
-	if(m_pkInputHandle->VKIsDown("slow")){
-		m_CamMoveSpeed *= 0.25;
+	if(m_pkInputHandle->VKIsDown("fast")){
+		m_CamMoveSpeed = 20;
 	}
 
 	float fSpeedScale = m_pkZeroFps->GetFrameTime()*m_CamMoveSpeed;
@@ -458,7 +458,7 @@ void ZeroEd::Input()
 
 	//set speed depending on edit mode
 	if(m_iEditMode == EDIT_HMAP)		m_CamMoveSpeed = 20;
-	if(m_iEditMode == EDIT_ZONES)		m_CamMoveSpeed = 20;
+	if(m_iEditMode == EDIT_ZONES)		m_CamMoveSpeed = m_kZoneSize.Length();
 	if(m_iEditMode == EDIT_OBJECTS)	m_CamMoveSpeed = 5;
 	
 	float x = 0, z = 0;		

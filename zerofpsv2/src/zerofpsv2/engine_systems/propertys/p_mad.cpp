@@ -425,7 +425,6 @@ bool P_Mad::LineVSSphere(const Vector3& kPos,Vector3 &kDir,bool bIgnoreY )
 
 bool P_Mad::LineVSMesh(const Vector3& kPos,const Vector3& kDir)
 {
-	StartProfileTimer("P_Mad::LineVSMesh");		
 
 	vector<Mad_Face>*			pkFaces;			// Faces in mesh.
 	vector<Vector3>*			pkVertex;			// Vertex frames for mesh.
@@ -438,14 +437,12 @@ bool P_Mad::LineVSMesh(const Vector3& kPos,const Vector3& kDir)
 	pkCore = (Mad_Core*)kMadHandle.GetResourcePtr(); 
 	if(!pkCore)
 	{
-		StopProfileTimer("P_Mad::LineVSMesh");				
 		return false;
 	}
 		
 	pkCoreMesh = pkCore->GetMeshByID(m_iCollisionMeshID);		
 	if(!pkCoreMesh)
 	{
-		StopProfileTimer("P_Mad::LineVSMesh");						
 		return false;
 	}
 		
@@ -496,11 +493,9 @@ bool P_Mad::LineVSMesh(const Vector3& kPos,const Vector3& kDir)
 		m_kColPos=kClosestColPos; 
 		//m_pkZeroFps->m_pkRender->Sphere(m_kColPos,0.1,5,Vector3(1,0,0),true);					
 		
-		StopProfileTimer("P_Mad::LineVSMesh");				
 		return true;
 	}
 	
-	StopProfileTimer("P_Mad::LineVSMesh");				
 	return false;
 }
 
