@@ -80,9 +80,11 @@ void MistClient::Init()
 	
 	// create gui script
 	GuiAppLua::Init(&g_kMistClient, GetScript());
-	
+
 	// init gui
 	InitializeGui(pkGui, pkTexMan, pkScript, pkGuiMan);
+
+	//ObjectManagerLua::Init(
 	
 	// hide cursor
 	SDL_ShowCursor(SDL_DISABLE);

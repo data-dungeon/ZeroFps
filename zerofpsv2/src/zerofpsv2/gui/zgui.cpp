@@ -45,7 +45,7 @@ bool ZGui::StartUp()
 	m_pkCursor->SetSkin(m_pkCursorSkin);
 
 	ZGuiFont* pkDefaultFont = new ZGuiFont(16,16,0,ZG_DEFAULT_GUI_FONT);
-	char defFontPath[] = "h:/data/textures/text/ms_sans_serif8.bmp"; // FULHACK efterom det inte går
+	char defFontPath[] = "h:/data/textures/text/paternoster8.bmp"; // FULHACK efterom det inte går
 	pkDefaultFont->CreateFromFile(defFontPath);						 // att komma åt den riktiga sökvägen..
 	m_pkFonts.insert(map<int,ZGuiFont*>::value_type(pkDefaultFont->m_iID,
 		pkDefaultFont)); 

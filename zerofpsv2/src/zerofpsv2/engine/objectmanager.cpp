@@ -1194,7 +1194,7 @@ void ObjectManager::AutoConnectZones()
 		kCenterPos = m_kZones[i].m_pkZone->GetWorldPosV();
 
 		// For each possible zone around this one.
-		for(int iDir = 0; iDir < kAutoConnectDirs.size(); iDir++) {
+		for(unsigned int iDir = 0; iDir < kAutoConnectDirs.size(); iDir++) {
 			kCheckPos = kCenterPos + kAutoConnectDirs[iDir];
 			pkZone = GetZone(kCheckPos);
 			// If a zone add a link.
@@ -1326,7 +1326,7 @@ void ObjectManager::UpdateZones()
 			int iRange = pkZone->m_iRange + 1;
 
 			if(iRange < iTrackerLOS) {
-				for(int i=0; i<pkZone->m_iZoneLinks.size(); i++) {
+				for(unsigned int i=0; i<pkZone->m_iZoneLinks.size(); i++) {
 					ZoneData* pkOtherZone = pkZone->m_pkZoneLinks[i];	//GetZoneData(pkZone->m_iZoneLinks[i]);				
 
 					if(pkOtherZone->m_iRange < iRange)	continue;
@@ -1344,7 +1344,7 @@ void ObjectManager::UpdateZones()
 	// If Inactive Zone to old let it die.
 	ZoneData* pkZoneRefresh;
 
-	for(int i=0; i<m_kZones.size(); i++) {
+	for(unsigned int i=0; i<m_kZones.size(); i++) {
 		pkZoneRefresh = &m_kZones[i];
 
 		// Zones that need to load.
@@ -1366,7 +1366,7 @@ void ObjectManager::UpdateZones()
 
 void ObjectManager::Zones_Refresh()
 {
-	for(int i=0; i<m_kZones.size(); i++) {
+	for(unsigned int i=0; i<m_kZones.size(); i++) {
 		// Zones that need to load.
 		if(m_kZones[i].m_bActive && m_kZones[i].m_pkZone == NULL) {
 			LoadZone(m_kZones[i].m_iZoneID);

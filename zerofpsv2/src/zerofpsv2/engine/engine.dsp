@@ -271,6 +271,10 @@ SOURCE=.\objectmanager.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\engine_systems\script_interfaces\objectmanager_scriptinterface.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\engine_systems\audio\OggMusic.cpp
 # End Source File
 # Begin Source File
@@ -492,6 +496,10 @@ SOURCE=.\object.h
 # Begin Source File
 
 SOURCE=.\objectmanager.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\engine_systems\script_interfaces\objectmanager_scriptinterface.h
 # End Source File
 # Begin Source File
 

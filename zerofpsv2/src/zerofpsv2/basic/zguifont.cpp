@@ -72,7 +72,7 @@ bool ZGuiFont::CreateFromFile(char* strFileName)
 					kImage.get_pixel(rx + px, ry + py,kCurrColor); 
 
 					bool bNotBkColor = false;
-					if(kCurrColor.r != 255)
+					if(kCurrColor.r < 85) //!= 255)
 						bNotBkColor = true;
 
 					if(bNotBkColor && px > max_x)

@@ -1,5 +1,14 @@
+#include "../../script/zfscript.h"
 #include "objectmanager_scriptinterface.h"
+#include "../../engine/objectmanager.h"
+#include "../../script/zfscript.h"
 
+ZFScript* 		ObjectManagerLua::g_pkScript;
+ObjectManager* ObjectManagerLua::g_pkObjMan;
+Object*			ObjectManagerLua::g_pkLastObject;
+Object*			ObjectManagerLua::g_pkLastParent;
+Property*		ObjectManagerLua::g_pkLastProperty;
+Object*			ObjectManagerLua::g_pkReturnObject;
 
 void ObjectManagerLua::Init(ObjectManager* pkObjMan, ZFScript* pkScript)
 {
@@ -9,7 +18,7 @@ void ObjectManagerLua::Init(ObjectManager* pkObjMan, ZFScript* pkScript)
 	Reset();
 	
 	pkScript->ExposeFunction("InitObject",				ObjectManagerLua::InitObjectLua);
-	pkScript->ExposeFunction("InitProperty",	  	ObjectManagerLua::InitPropertyLua);
+	pkScript->ExposeFunction("InitProperty",	  		ObjectManagerLua::InitPropertyLua);
 	pkScript->ExposeFunction("InitParameter",			ObjectManagerLua::InitParameterLua);
 	pkScript->ExposeFunction("AttachToClosestZone", ObjectManagerLua::AttachToClosestZoneLua);
 	pkScript->ExposeFunction("AttachToParent",		ObjectManagerLua::AttachToParent);			
@@ -22,10 +31,10 @@ void ObjectManagerLua::Init(ObjectManager* pkObjMan, ZFScript* pkScript)
 
 void ObjectManagerLua::Reset()
 {
-	g_pkLastObject =		NULL;
-	g_pkLastProperty =	NULL;
-	g_pkLastParent =		NULL;
-	g_pkReturnObject = 	NULL;
+	g_pkLastObject   = NULL;
+	g_pkLastProperty = NULL;
+	g_pkLastParent   = NULL;
+	g_pkReturnObject = NULL;
 }
 
 int ObjectManagerLua::InitObjectLua(lua_State* pkLua)

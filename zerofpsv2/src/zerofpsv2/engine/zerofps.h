@@ -147,6 +147,7 @@ class ENGINE_API ZeroFps : public I_ZeroFps {
 		
 
 	public:
+//		Object* CreateScriptObject(const char* szName);
 		/*
 			All Engine Systems in ZeroFps. Listed in the same order they are created in
 			ZeroFps();

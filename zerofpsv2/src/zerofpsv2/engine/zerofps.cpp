@@ -1065,3 +1065,16 @@ int ZeroFps::GetClientObjectID()
 	return m_iRTSClientObject;
 
 }
+
+/*Object* ZeroFps::CreateScriptObject(const char *szName)
+{
+	ObjectManagerLua::Reset();
+
+	if(!m_pkScript->RunScript((char*)szName))
+		return NULL;
+		
+	if(!m_pkScript->CallScript("Create", 0, 0))
+		return NULL;
+	
+	return ObjectManagerLua::g_pkReturnObject;
+}*/
