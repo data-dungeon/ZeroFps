@@ -27,19 +27,20 @@ ZoneData& ZoneData::operator=(const ZoneData &kOther)
   
 ZoneData::ZoneData()
 {
-	m_bNew = false;
-	m_bUsed = false;
-	m_pkZone = NULL;
-	m_iZoneID = 0;
+	m_bNew = 		false;
+	m_bUsed = 		false;
+	m_pkZone =		NULL;
+	m_iZoneID = 	0;
+	
 	m_kPos.Set(0,0,0);
 	m_kSize.Set(0,0,0);
 
 	m_fInactiveTime = 0;
-	m_bActive = false;
+	m_bActive = 		false;
 	m_iZoneObjectID = -1;
-	m_iRange = 0;		
-	m_fDistance = 0;	
-	m_iRevision = 0;
+	m_iRange = 			0;		
+	m_fDistance = 		0;	
+	m_iRevision = 		0;
 	
 	m_strEnviroment = "Default";
 }
@@ -1748,10 +1749,9 @@ void EntityManager::UpdateZones()
 	// Set All Zones as inactive.
 	for(iZ=0;iZ<m_kZones.size();iZ++) 
 	{
-		m_kZones[iZ].m_bActive							= false;
-		//m_kZones[iZ].m_fInactiveTime					= fTime;
-		m_kZones[iZ].m_iRange							 = 10000;
-		m_kZones[iZ].m_fDistance						 = 10000;		
+		m_kZones[iZ].m_bActive		= false;
+		m_kZones[iZ].m_iRange		= 10000;
+		m_kZones[iZ].m_fDistance	= 10000;		
 		
 		if(m_kZones[iZ].m_pkZone)
 			m_kZones[iZ].m_pkZone->SetUpdateStatus(UPDATE_NONE);
@@ -1772,7 +1772,8 @@ void EntityManager::UpdateZones()
 		//get current zone
 		iZoneIndex = GetZoneIndex((*iT)->GetObject(),(*iT)->GetObject()->m_iCurrentZone,(*iT)->m_bClosestZone);
 		
-		if(iZoneIndex >= 0) {
+		if(iZoneIndex >= 0) 
+		{
 			pkStartZone = &m_kZones[iZoneIndex];
 			pkStartZone->m_iRange = 0;
 			
@@ -1834,8 +1835,7 @@ void EntityManager::UpdateZones()
 	}
 
 
-	//loop trough all zones and load/unload them
-	
+	//loop trough all zones and load/unload them	
 	int iOperations = 0;
 	ZoneData* pkZoneRefresh;	
 	for(unsigned int i=0; i<m_kZones.size(); i++) 
@@ -1949,7 +1949,6 @@ int EntityManager::CreateZone(Vector3 kPos,Vector3 kSize)
 	m_kZones[id].m_iZoneLinks.clear();
 	m_kZones[id].m_fInactiveTime = 0;
 	m_kZones[id].m_iRange = 0;
-	//m_kZones[id].m_bUnderContruction = false;
 	m_kZones[id].m_iRevision = 0;
 	m_kZones[id].m_strEnviroment = "Default";
 	m_kZones[id].m_iZoneObjectID = -1;	
@@ -2030,7 +2029,6 @@ bool EntityManager::LoadZones(string strSaveDir )
 
 	for( i=0; i<iNumOfZone; i++) {
 		kFile.Read(&kZData.m_bNew, sizeof(kZData.m_bNew), 1);
-		//kFile.Read(&kZData.m_bUnderContruction, sizeof(kZData.m_bUnderContruction), 1);						
 		kFile.Read(&kZData.m_iRevision, sizeof(kZData.m_iRevision), 1);								
 		kFile.Read(&kZData.m_bUsed, sizeof(kZData.m_bUsed), 1);						
 		kFile.Read(&kZData.m_iZoneID, sizeof(kZData.m_iZoneID), 1);
@@ -2094,7 +2092,6 @@ bool EntityManager::SaveZones(string strSaveDir)
 	{
 
 		kFile.Write(&m_kZones[i].m_bNew, sizeof(m_kZones[i].m_bNew), 1);
-		//kFile.Write(&m_kZones[i].m_bUnderContruction, sizeof(m_kZones[i].m_bUnderContruction), 1);								
 		kFile.Write(&m_kZones[i].m_iRevision, sizeof(m_kZones[i].m_iRevision), 1);										
 		kFile.Write(&m_kZones[i].m_bUsed, sizeof(m_kZones[i].m_bUsed), 1);				
 		kFile.Write(&m_kZones[i].m_iZoneID, sizeof(m_kZones[i].m_iZoneID), 1);
@@ -2183,13 +2180,13 @@ bool EntityManager::LoadTrackers(string strSaveDir)
 
 	int iNrOfTrackers;
 	kFile.Read(&iNrOfTrackers,sizeof(iNrOfTrackers),1);
-
 	for(int i = 0;i<iNrOfTrackers;i++) 
 	{		
 		int iZone;
 		kFile.Read(&iZone,sizeof(iZone),1);
 		
-		LoadZone(iZone);	//load the zone in wich theres suppose to be a tracker
+		//load the zone in wich theres suppose to be a tracker
+		LoadZone(iZone);	
 	}
 	
 	kFile.Close();
@@ -2406,8 +2403,6 @@ void EntityManager::ClearZoneLinks(int iId)
 	
 	//clear all links
 	m_kZones[iId].m_iZoneLinks.clear();
-
-
 }
 
 bool EntityManager::IsInsideZone(Vector3 kPos,Vector3 kSize)
