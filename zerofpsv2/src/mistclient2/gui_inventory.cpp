@@ -46,7 +46,10 @@ InventoryDlg::~InventoryDlg()
 }
 
 void InventoryDlg::Open()
-{
+{	
+	//send iventory request to server
+	g_kMistClient.SendRequestIventory();			
+
 	m_bGuiCaptureBeforOpen = g_kMistClient.m_bGuiCapture; // rembember privius gui capture mode
 
 	// load inventory

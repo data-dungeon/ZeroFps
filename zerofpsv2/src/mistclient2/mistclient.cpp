@@ -383,9 +383,7 @@ void MistClient::Input()
 		if(m_pkInventoryDlg->IsVisible())
 			m_pkInventoryDlg->Close(); 
 		else
-		{
-			SendRequestIventory();			
-		}
+			m_pkInventoryDlg->Open(); 
 	}
 	
 
@@ -750,8 +748,7 @@ void MistClient::OnNetworkMessage(NetPacket *pkNetMessage)
 				cout<<i<<" id:"<<kItemList[i].m_iItemID<<" name:"<<kItemList[i].m_strName<<" icon:"<<kItemList[i].m_strIcon<<" pos:"<<int(kItemList[i].m_cItemX)<<" x "<<int(kItemList[i].m_cItemY)<<endl;			
 			}
 			
-			
-			m_pkInventoryDlg->Open(); 
+
 				
 			break;
 		}		
