@@ -1116,7 +1116,7 @@ void ZShaderSystem::CopyVertexData()
 	
 	if(m_b2DVertexPointer)
 		CopyData((void**)&m_pk2DVertexPointer,sizeof(Vector2)*m_iNrOfVertexs);	
-	
+		
 	if(m_bVertexPointer)
 		CopyData((void**)&m_pkVertexPointer,sizeof(Vector3)*m_iNrOfVertexs);
 
@@ -1152,6 +1152,7 @@ void ZShaderSystem::CopyData(void** pkData,int iSize)
 
 void ZShaderSystem::CleanCopyedData()
 {
+	delete []m_pk2DVertexPointer;	
 	delete []m_pkVertexPointer;	
 	delete []m_pkNormalPointer;		
 	delete []m_pkTexturePointer0;		
@@ -1161,6 +1162,7 @@ void ZShaderSystem::CleanCopyedData()
 	delete []m_pkIndexPointer;		
 	delete []m_pkColorPointer;		
 	
+	m_pk2DVertexPointer =	m_pkBakup2DVertexPointer;	
 	m_pkVertexPointer =	m_pkBakupVertexPointer;	
 	m_pkNormalPointer =	m_pkBakupNormalPointer;		
 	m_pkTexturePointer0 = m_pkBakupTexturePointer0;		
@@ -1525,9 +1527,7 @@ ZVertexBuffer* ZShaderSystem::CreateVertexBuffer()
 	if(m_bColorPointer)
 		iSize += m_iNrOfVertexs*sizeof(Vector4);
 				
-		
-// 	cout<<"vbo total size:"<<iSize<<endl;
-	
+			
 	//allocate vbo
 	glBufferDataARB(GL_ARRAY_BUFFER_ARB, iSize, NULL, GL_STATIC_DRAW_ARB);	
 	

@@ -19,12 +19,6 @@
 
 using namespace std;
 
-enum RENDER_API VERTEXTYPE
-{
-	VERTEXTYPE_2=	0,
-	VERTEXTYPE_3=	1,
-	VERTEXTYPE_4=	2,
-};
 
 enum RENDER_API STENCIL_FUNC
 {
