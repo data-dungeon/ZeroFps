@@ -63,7 +63,7 @@ class TextureSet
 	char m_acMask[256];
 };
 
-class ENGINE_SYSTEMS_API Heightmap2 //: public I_HeightMap2 
+class ENGINE_SYSTEMS_API Heightmap2 : public I_HeightMap2
 {
 	private:
 		
@@ -114,6 +114,9 @@ class ENGINE_SYSTEMS_API Heightmap2 //: public I_HeightMap2
 		
 		bool Loaded() { return m_bLoaded;};
 		Vector3 GetPos() { return m_kPos;};
+		int GetWidth() { return m_iWidth; }
+		int GetHeight() { return m_iHeight; }
+		float GetScale() { return m_fScale; }
 		void SetPos(Vector3 kNewPos) { m_kPos = kNewPos;};
 		
 		HM2_vert* GetVert(int x,int y)

@@ -8,7 +8,7 @@
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 
-I_HeightMap2::I_HeightMap2(char* szName) : ZFSubSystem(szName) 
+I_HeightMap2::I_HeightMap2()
 {
 
 }
