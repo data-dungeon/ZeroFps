@@ -26,7 +26,7 @@ void Render::DrawSkyBox_SixSided(Vector3 CamPos,Vector3 kHead,int* aiSideTexture
 
 //	glDisable(GL_TEXTURE_2D);
 
-	glDisable(GL_CULL_FACE);
+//	glDisable(GL_CULL_FACE);
 
 	Vector3 CubeVertex[8];
 	CubeVertex[0].Set(-1,  1, -1);	//Front	// Top Left	
@@ -82,10 +82,10 @@ void Render::DrawSkyBox_SixSided(Vector3 CamPos,Vector3 kHead,int* aiSideTexture
 
 	m_pkTexMan->BindTexture(aiSideTextures[SKYBOXSIDE_DOWN]);	
 	glBegin(GL_QUADS);
-		glTexCoord2f(0, 1);		glVertex3fv( &CubeVertex[6].x );		
-		glTexCoord2f(0, 0);		glVertex3fv( &CubeVertex[5].x);  
-		glTexCoord2f(1, 0);		glVertex3fv( &CubeVertex[1].x);		
-		glTexCoord2f(1, 1);		glVertex3fv( &CubeVertex[2].x);		
+		glTexCoord2f(1, 1);		glVertex3fv( &CubeVertex[2].x );		
+		glTexCoord2f(1, 0);		glVertex3fv( &CubeVertex[1].x);  
+		glTexCoord2f(0, 0);		glVertex3fv( &CubeVertex[5].x);		
+		glTexCoord2f(0, 1);		glVertex3fv( &CubeVertex[6].x);		
 	glEnd();
 
 
