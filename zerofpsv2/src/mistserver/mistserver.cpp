@@ -833,8 +833,17 @@ void MistServer::OnClickTreeItem(char *szTreeBox, char *szParentNodeText,
 	{
 		if(szClickNodeText && bHaveChilds == false)
 		{
-			m_strActiveObjectName = string("data/script/objects/");
-			m_strActiveObjectName += szClickNodeText;
+			string strFullpath = string("data/script/objects/");
+
+			if(szParentNodeText)
+				strFullpath += string(szParentNodeText);
+
+			if(szClickNodeText)
+				strFullpath += string(szClickNodeText);
+
+			m_strActiveObjectName = strFullpath;
+
+			printf("%s\n", m_strActiveObjectName.c_str());
 		}
 	}
 }
