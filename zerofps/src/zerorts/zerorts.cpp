@@ -24,6 +24,7 @@ ZeroRTS::ZeroRTS(char* aName,int iWidth,int iHeight,int iDepth)
 	m_iGameType =					1;
 	m_kClickPos = m_kDragPos = NO_SELECTION;
 	test_path_find_object =NULL;
+	m_bDrawPath = false;
 
 /*	COMMENT OUT BY ZEB
 	m_pkTestPath = NULL;
@@ -321,6 +322,11 @@ void ZeroRTS::Input()
 	if(pkInput->Action(m_iActionCamDown) || eMouseDir == Down)
 	{
 		MoveCam(Vector3(0,0,100));
+	}
+
+	if(pkInput->GetQueuedKey() == KEY_P)
+	{
+		m_bDrawPath = !m_bDrawPath;
 	}
 	
 	if(pkInput->Action(m_iActionDoOrder))
@@ -913,6 +919,7 @@ void ZeroRTS::SetupSpawnPoints()
 		{
 			m_kSpawnPoints.push_back(kObjects[i]->GetPos());
 			pkObjectMan->Delete(kObjects[i]);
+			printf("APAPAPA %i\n", i);
 		}
 	}
 
@@ -1144,6 +1151,9 @@ void ZeroRTS::SetupGUI()
 
 void ZeroRTS::DrawPath()
 {
+	if(m_bDrawPath == false)
+		return;
+
 	if(test_path_find_object)
 	{
 		P_UnitMoveAI* pkMoveAI = (P_UnitMoveAI*) test_path_find_object->GetProperty("P_UnitMoveAI");
@@ -1154,7 +1164,15 @@ void ZeroRTS::DrawPath()
 
 			if(pkPath)
 			{
-				printf("APA\n");
+				vector<Point> path;
+				pkPath->CopyPath(path);
+
+				for(int i=0; i<path.size(); i++)
+				{
+					Vector3 p = m_pkMap->GetPosFromSqr(path[i]);
+					Vector3 color(1,0,0);
+					pkRender->Sphere(p,1.0f,10,color,true);
+				}
 			}
 		}
 	}

@@ -589,7 +589,7 @@ bool PathFind::FillQueue()
 		{
 			Point sqr(kPath[i].x, kPath[i].y);
 
-			if(i < iSize-2)
+		/*	if(i < iSize-1)
 			{
 				Point kNextNext(kPath[i+2].x, kPath[i+2].y);
 				if( (kNextNext.x == sqr.x+1 && kNextNext.y == sqr.y+1) ||
@@ -598,14 +598,14 @@ bool PathFind::FillQueue()
 				    (kNextNext.x == sqr.x+1 && kNextNext.y == sqr.y-1) )
 				{
 					sqr = kNextNext;
-					i+=2;
+					i++;
 				}
-			}
+			}*/
 
 			m_kqPath.push(sqr); 
 		}
 
-//		FreeAllNodes();
+		FreeAllNodes();
 		
 		return true;
 	}
@@ -702,7 +702,21 @@ void PathFind::ReversePath()
 	m_bPathIsReversed = false;
 }
 
-void PathFind::CopyPath(vector<Point>& path);
+void PathFind::CopyPath(vector<Point>& path)
 {
-	
+	int size = m_kqPath.size();
+
+	path.reserve(size);
+
+	// Kopiera och töm kön
+	int i;
+	for(i=0; i<size; i++)
+	{
+		path.push_back(m_kqPath.front());
+		m_kqPath.pop();
+	}
+
+	// Fyll tillbaks kön
+	for(i=0; i<size; i++)
+		m_kqPath.push(path[i]);
 }

@@ -92,7 +92,7 @@ class ZeroRTS :public Application {
 		Object* test_path_find_object;
 
 	public:
-		void DrawPath();
+		void DrawPath(); bool m_bDrawPath;
 		GuiBuilder* m_pkGuiBuilder;
 		UserPanel*	m_pkUserPanel;
 		
