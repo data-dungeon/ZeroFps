@@ -1,7 +1,7 @@
 SRC=../../
 BINARY=libengine.so
 BINDIR=$(SRC)../bin/
-LIBS=--shared -L$(BINDIR) -lSDL_net -lphysics_engine -L/usr/X11R6/lib `sdl-config --cflags --libs`
+LIBS=--shared -L$(BINDIR) -lSDL_net -L/usr/X11R6/lib `sdl-config --cflags --libs`
 
 OBJS=$(patsubst %.cpp,%.o,$(wildcard *.cpp))
 
