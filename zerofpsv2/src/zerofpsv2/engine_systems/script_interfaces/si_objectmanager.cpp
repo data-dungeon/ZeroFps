@@ -5,6 +5,15 @@
 #include "../../script/zfscript.h"
 #include "../propertys/p_tcs.h"
 #include "../propertys/p_scriptinterface.h"
+#include "../script_interfaces/si_objectmanager.h" 
+
+using namespace ObjectManagerLua;
+
+/**	\brief Class To Collect Script Functions,
+	\ingroup si
+*/
+class SIEntityManger { };
+
 
 namespace ObjectManagerLua
 {
@@ -126,8 +135,8 @@ void Pop()
 	g_pkLastObject			= g_pkLastObjectBak;
 }
 
-/**	\fn Delete( Template, Position)
- 		\relates MistLandScript
+/**	\fn CreateEntity( Template, Position)
+ 		\relates SIEntityManger
 		\param Template Name of template script used to create entity.
 		\param Position Position to create new entity at.
 		\return Return id of new entity or -1 if no one was created.
@@ -157,9 +166,9 @@ int CreateEntityLua (lua_State* pkLua)
 }
 
 /**	\fn Delete( Object )
- 		\relates MistLandScript
-		\param Object ID of entity to delete.
-		\brief Delete the object given as a parameter.
+ 		\relates SIEntityManger
+		\param ID of entity to delete.
+		\brief Delete a entity.
 */
 int DeleteLua(lua_State* pkLua)
 {
@@ -175,13 +184,8 @@ int DeleteLua(lua_State* pkLua)
 	return 0;
 }
 
-
-
-
-
-
 /**	\fn InitObject(ScripName)
- 	\relates MistLandScript
+ 	\relates SIEntityManger
    \brief Run a script to create objects.
    \param ScripName Name of the script to run. If not given a empty object will be created.
 */
@@ -195,6 +199,7 @@ int InitObjectLua(lua_State* pkLua)
 		g_pkScript->GetArg(pkLua, 0, acName);
 		
 		g_pkLastObject = g_pkObjMan->CreateEntityFromScript(acName);
+		g_pkScript->AddReturnValue( pkLua, g_pkLastObject->GetEntityID() );
 		
 		//set return object of there is none
 		if(!g_pkReturnObject)
@@ -205,6 +210,7 @@ int InitObjectLua(lua_State* pkLua)
 		
 	//else create an empty object
 	g_pkLastObject = g_pkObjMan->CreateEntity();
+	g_pkScript->AddReturnValue( pkLua, g_pkLastObject->GetEntityID() );
 	
 	//set return object of there is none	
 	if(!g_pkReturnObject)
@@ -214,7 +220,7 @@ int InitObjectLua(lua_State* pkLua)
 }	
 
 /**	\fn InitProperty(PropertyName)
- 	\relates MistLandScript
+ 	\relates SIEntityManger
    \brief Gives a Entity a property.
    \param PropertyName Name of property to assign to object.
 
@@ -233,10 +239,11 @@ int InitPropertyLua(lua_State* pkLua)
 
 	g_pkLastProperty = g_pkLastObject->AddProperty(acName);
 	return 1;
-}	
+}		
+
 
 /**	\fn InitParameter(szName, szValue )
- 	\relates MistLandScript
+ 	\relates SIEntityManger
    \brief Sets the value of a variable in a property.
    \param szName Name of variable to set.
    \param szValue Value to set variable to.
@@ -263,7 +270,7 @@ int InitParameterLua(lua_State* pkLua)
 }	
 
 /**	\fn AttachToParent()
- 	\relates MistLandScript
+ 	\relates SIEntityManger
 	\brief Sets the last created object to be a child to the active parent object,
 */
 int AttachToParent(lua_State* pkLua)
@@ -282,7 +289,7 @@ int AttachToParent(lua_State* pkLua)
 }	
 
 /**	\fn SetParentObject()
- 	\relates MistLandScript
+ 	\relates SIEntityManger
 	\brief Sets the last created object to be the active parent object.
 */
 int SetParentObjectLua(lua_State* pkLua)
@@ -298,7 +305,7 @@ int SetParentObjectLua(lua_State* pkLua)
 }
 
 /**	\fn SetReturnObject(x,y,z)
- 	\relates MistLandScript
+ 	\relates SIEntityManger
 	\brief Sets the last object to be the object to be returned as the new created object.
 */
 int SetReturnObjectLua(lua_State* pkLua)
@@ -311,7 +318,7 @@ int SetReturnObjectLua(lua_State* pkLua)
 	return 0;
 }
 /**	\fn HaveRelativOri()
- 	\relates MistLandScript
+ 	\relates SIEntityManger
 	\brief Sets the last object to have relative orientation.
 */
 
@@ -330,7 +337,7 @@ int HaveRelativOriLua(lua_State* pkLua)
 
 
 /**	\fn SetLocalPos(x,y,z)
- 	\relates MistLandScript
+ 	\relates SIEntityManger
 	\brief Sets the local pos of the last object.
 */
 int SetLocalPosLua(lua_State* pkLua)
@@ -472,84 +479,8 @@ int GetObjectRotLua(lua_State* pkLua)
 	return 1;
 }
 
-
-
-
-
-
-
-
-
-
-
-/**	\fn PlayAnim(ObjectID, AnimName)
- 	\relates MistLandScript
-   \brief Sets the playing animation.
-*/
-/*
-int PlayAnim(lua_State* pkLua)
-{
-	double dTemp;
-	g_pkScript->GetArgNumber(pkLua, 0, &dTemp);		
-	int iId1 = (int)dTemp;
-
-	char acName[100];
-	g_pkScript->GetArg(pkLua, 1, acName);
-
-//	printf("Should Play A Animation '%s' on object %d", acName,  iId1);
-
-	Entity* o1 = g_pkObjMan->GetEntityByID(iId1);
-	P_Mad* mp = dynamic_cast<P_Mad*>(o1->GetProperty("P_Mad"));
-	mp->SetAnimation(acName,0);
-	
-	return 1;
-}*/
-
-/**	\fn SetNextAnim(ObjectID, AnimName)
- 	\relates MistLandScript
-   \brief Sets the next animation for a object to play.
-
-	Sets the next animation to play on a object. Stops to looping of the currently playing animation
-	(if any) and then play the one given as a parameter. That animation will the loop. 
-*/
-/*
-int SetNextAnim(lua_State* pkLua)
-{
-	double dTemp;
-	g_pkScript->GetArgNumber(pkLua, 0, &dTemp);		
-	int iId1 = (int)dTemp;
-
-	char acName[100];
-	g_pkScript->GetArg(pkLua, 1, acName);
-//	printf("Next Anim to play is '%s' on object %d", acName,  iId1);
-
-	Entity* o1 = g_pkObjMan->GetEntityByID(iId1);
-	P_Mad* mp = dynamic_cast<P_Mad*>(o1->GetProperty("P_Mad"));
-	mp->SetNextAnimation(acName);
-	return 1;
-}
-
-
-int AddMesh(lua_State* pkLua)
-{
-	// Get ObjectID ID
-	double dTemp;
-	g_pkScript->GetArgNumber(pkLua, 0, &dTemp);		
-	int iId1 = (int)dTemp;
-
-	// Get MeshName
-	g_pkScript->GetArgNumber(pkLua, 1, &dTemp);		
-	int iId2 = (int)dTemp;
-
-	Entity* o1 = g_pkObjMan->GetEntityByID(iId1);
-	P_Mad* mp = dynamic_cast<P_Mad*>(o1->GetProperty("P_Mad"));
-
-	mp->AddMesh( iId2 );
-	return 1;
-}*/
-
 /**	\fn GetLocalDouble(ObjectID, VariableName)
- 	\relates MistLandScript
+ 	\relates SIEntityManger
    \brief Get value of a double variable stored in Entity.
    \param ObjectID Entity to get variable from.
    \param VariableName Name of variable.
@@ -580,7 +511,7 @@ int GetLocalDouble(lua_State* pkLua)
 }
 
 /**	\fn SetLocalDouble(ObjectID, VariableName, Value)
- 	\relates MistLandScript
+ 	\relates SIEntityManger
    \brief Set value of a double variable stored in Entity.
    \param ObjectID ObjectID Entity to get variable from.
    \param VariableName VariableName Name of variable.
@@ -859,6 +790,11 @@ int SetZoneModelLua(lua_State* pkLua)
    return 0;
 }
 
+/**	\fn GetObjectType( Entity )
+ 		\relates SIEntityManger
+		\param Entity Id of entity to get type of.
+		\brief Returns the type of the entity
+*/
 int GetObjectTypeLua(lua_State* pkLua)
 {
 	int iId = ObjectManagerLua::g_iCurrentObjectID;
@@ -880,6 +816,11 @@ int GetObjectTypeLua(lua_State* pkLua)
 	return 1;
 }
 
+/**	\fn GetObjectName( Entity )
+ 		\relates SIEntityManger
+		\param Entity Id of entity to get name of.
+		\brief Returns the name of the entity.
+*/
 int GetObjectNameLua(lua_State* pkLua)
 {
 	int iId = ObjectManagerLua::g_iCurrentObjectID;

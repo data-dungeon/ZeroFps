@@ -35,16 +35,6 @@
   This is the documentationen for the ZeroFps Engine, Tools and the game MistLand.
 */
 
-
-/**	\brief Class To Collect Script Functions,
-	\ingroup si
-
-*/
-class MistLandScript
-{
-	
-};
-
 /**	\brief Class To Collect Script Gui Functions,
 	\ingroup si
 */

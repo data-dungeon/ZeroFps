@@ -3,7 +3,10 @@
 #include "entitymanager.h"
 #include "zerofps.h"
 #include "../engine_systems/propertys/p_track.h"
- 
+#include "../engine_systems/script_interfaces/si_objectmanager.h" 
+
+using namespace ObjectManagerLua;
+
 //#define LOGALL
 
 #ifdef LOGALL
@@ -1857,3 +1860,84 @@ void Entity::UpdateDeleteList()
 
 
 
+
+/* ********************************** SCRIPT INTERFACE ****************************************/
+/**	\brief Script functions for Entitys
+	\ingroup si
+*/
+class SIEntity { };
+
+namespace SI_Entity
+{
+/**	\fn AddProperty(Entity, PropertyName)
+ 	\relates SIEntity
+   \brief Gives a Entity a property.
+   \param Entity Entity to add property to.
+   \param PropertyName Name of property to assign to object.
+
+	Adds the property to the entity with def parameters. 
+*/
+int AddPropertyLua(lua_State* pkLua)
+{
+	if(g_pkScript->GetNumArgs(pkLua) != 2)
+		return 0;
+
+	double dTemp;
+	g_pkScript->GetArgNumber(pkLua, 0, &dTemp);
+	Entity* pkObject = g_pkObjMan->GetEntityByID((int)dTemp);	
+	if(!pkObject)
+		return 0;
+
+	char acName[100];
+	g_pkScript->GetArg(pkLua, 1, acName);
+
+	g_pkLastProperty = pkObject->AddProperty(acName);
+	return 1;
+}		
+
+/**	\fn SetParameter(Entity, Property, szName, szValue )
+ 	\relates SIEntity
+   \brief Sets the value of a variable in a property.
+   \param Entity Entity to modify.
+   \param Property The property whith the parameter we wish to set.
+   \param szName Name of variable to set.
+   \param szValue Value to set variable to.
+
+	Sets the variable to a given value on the given entity and property. If
+	entity or property is non valid nothing will happen. 
+*/
+int SetParameterLua(lua_State* pkLua)
+{
+	if(g_pkScript->GetNumArgs(pkLua) != 4)
+		return 0;
+
+	double dTemp;
+	g_pkScript->GetArgNumber(pkLua, 0, &dTemp);
+	Entity* pkObject = g_pkObjMan->GetEntityByID((int)dTemp);	
+	if(!pkObject)
+		return 0;
+
+	char acProperty[50];
+	g_pkScript->GetArg(pkLua, 1, acProperty);
+	Property* pkProp = pkObject->GetProperty(acProperty);
+	if(!pkProp)
+		return 0;
+
+	char acName[50];
+	g_pkScript->GetArg(pkLua, 2, acName);
+	
+	char acData[50];
+	g_pkScript->GetArgString(pkLua, 3, (char*)acData);
+	
+	if(!pkProp->SetValue((string)acName,(string)acData))
+		cout<<"Error setting parameter:"<<acName<<" to "<<acData<<endl;
+	return 0;
+}	
+}
+
+void Register_SIEntityProperty(ZeroFps* pkZeroFps)
+{
+	// Register Property Script Interface
+	g_pkScript->ExposeFunction("AddProperty", SI_Entity::AddPropertyLua);
+	g_pkScript->ExposeFunction("SetParameter",			SI_Entity::SetParameterLua);
+}

@@ -380,6 +380,8 @@ class ENGINE_API Entity
 		virtual void DoNothing() {}
 };
 
+void ENGINE_API Register_SIEntityProperty(ZeroFps* pkZeroFps);
+
 #endif
 
 

@@ -20,8 +20,8 @@ namespace ObjectManagerLua
 	void ENGINE_SYSTEMS_API Push();
 	void ENGINE_SYSTEMS_API Pop();	
 
-	extern ZFScriptSystem* 	g_pkScript;
-	extern EntityManager*	g_pkObjMan;
+	extern ENGINE_SYSTEMS_API ZFScriptSystem* 	g_pkScript;
+	extern ENGINE_SYSTEMS_API EntityManager*	g_pkObjMan;
 	
 	extern ENGINE_SYSTEMS_API	Entity*		g_pkLastObject;
 	extern ENGINE_SYSTEMS_API	Entity*		g_pkLastParent;

@@ -1609,6 +1609,8 @@ void ZeroFps::RegisterPropertys()
 	Register_MadProperty(this);
 	Register_PTcs(this);
 	Register_PController(this);
+
+	Register_SIEntityProperty(this);
 }
 
 
