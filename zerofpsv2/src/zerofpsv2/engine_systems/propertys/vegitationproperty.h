@@ -10,7 +10,7 @@
 
 using namespace std;
 
-
+/// Property to create bushes / trees.
 class ENGINE_SYSTEMS_API VegitationProperty: public Property {
 	private:
 		struct vegitation

@@ -7,8 +7,7 @@
 
 using namespace std;
 
-
-
+/// Import for files from MayaExporter.
 class ModellXXX : public IMadImport
 {
 public:

@@ -17,10 +17,7 @@ class NetWork;
 class ZoneObject;
 
 
-/*
-	Data about a zone.
-*/
-
+/// Data about a Zone in the World.
 class ZoneData
 {
 public:
@@ -42,9 +39,7 @@ public:
 
 };
 
-
-
-
+/// SubSystem that handles all objects in the world.
 class ENGINE_API ObjectManager : public ZFSubSystem{
 	private:
 		enum FuncId_e

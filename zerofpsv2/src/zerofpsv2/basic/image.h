@@ -6,10 +6,12 @@
 
 #pragma pack( 1 )
 
+/// Color (Red Green Blue)
 struct color_rgb {
 	unsigned char r,g,b;
 };
 
+/// Color (Red Green Blue Alpha)
 struct color_rgba {
 	unsigned char r,g,b,a;
 };

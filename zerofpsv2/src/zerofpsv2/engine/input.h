@@ -151,7 +151,6 @@ class Console;
 
 
 /// Engine Systems that handles input (keyb, mouse, joystick).
-
 class ENGINE_API Input : public ZFSubSystem {
 	private:
 		

@@ -9,6 +9,7 @@ using namespace std;
 
 #define MAXTOKEN	512
 
+/// A Textfile we read tokens from.
 class BASIC_API SimpleScript
 {
 public:
@@ -23,6 +24,7 @@ public:
 	bool	Load(const char* ucFileName);
 };
 
+/// Read Simple TextFiles and get tokens.
 class BASIC_API SimpleScriptFile
 {
 public:

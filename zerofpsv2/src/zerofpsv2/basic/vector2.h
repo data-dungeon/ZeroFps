@@ -8,6 +8,7 @@
 
 using namespace std;
 
+/// A Class for vector math operations in 2D.
 class BASIC_API Vector2 {
 	private:
 		

@@ -20,7 +20,7 @@ enum LIGHT_TYPE {
 
 using namespace std;
 
-// Light Source used by render.
+/// Light Source used by render.
 class RENDER_API LightSource {
 	public:
 		//position and rotation
@@ -57,7 +57,7 @@ class RENDER_API LightSource {
 
 };
 
-/// A Light in ZeroFPS.
+/// SubSystem that handles all lights in ZeroFPS.
 class RENDER_API Light : public ZFSubSystem {
 	private:
 		Vector3 m_kCamPos;

@@ -34,6 +34,7 @@ struct pmd_triangle_s
 #define MDL_MAX_FRAMES		256
 #define MDL_MAX_SKINS		100
 
+/// Q1 Mdl Header.
 struct mdlhead_s 
 {
 	Vector3		scale;				// Model scale factors.
@@ -51,6 +52,7 @@ struct mdlhead_s
 	float		size;				// average size of triangles
 };
 
+/// Q1 Mdl Vertex Texture Coo.
 struct dstvert_s
 {
 	int onseam;						// 0 or 0x20 (MDL_SKIN_ONSEAM)
@@ -58,18 +60,21 @@ struct dstvert_s
 	int t;							// position, vertically in range [0,skinheight[
 };
 
+/// Q1 Mdl Triangle.
 struct dtriangle_s
 {
 	int facesfront;					// 0 if part of backskin.
 	int vertices[3];				// Index of 3 triangle vertices	in range [0,numverts[
 };
 
+/// Q1 Mdl Vertex
 struct dtrivertx_s
 {
 	unsigned char packedposition[3];    // X,Y,Z coordinate, packed on 0-255
 	unsigned char lightnormalindex;     // Index of the vertex normal
 };
 
+/// Q1 Mdl Vertex Frame Info
 struct daliasframe_s
 {
 	dtrivertx_s bboxmin;				// Minimum values of X,Y,Z
@@ -77,12 +82,14 @@ struct daliasframe_s
 	char name[IDPOLY_MAX_FRAME_NAME];	// Name of frame
 };
 
+/// Q1 Mdl Vertex Frame
 struct mframe_s
 {
 	daliasframe_s head;						// Frame Info.
 	dtrivertx_s *vertex;					// Array of vertices
 };
 
+/// Import of Quake Modells to Mad.
 class ModellMD1 : public IMadImport
 {
 private:
@@ -120,12 +127,14 @@ public:
 #define MD2_ALIAS_VERSION	8
 #define MD2_IDENT_TAG		0x32504449
 
+/// Q2 Md2 Vertex Texture Coo.
 struct md2_dstvert_t 
 {
 	short s;						
 	short t;						
 };
 
+/// Q2 Md2 Header.
 struct q2mdlhead_s 
 {
 	 int skinwidth;					// Width of skin texture
@@ -145,18 +154,21 @@ struct q2mdlhead_s
 	 int ofs_end;					// ???
 };
 
+/// Q2 Md2 Triangle
 struct md2_dtriangle_t 
 {
 	short index_xyz[3];					// X,Y,Z coordinate, packed on 0-255
 	short index_st[3];					// Index to st coo for vertex.
 };
 
+/// Q2 Md2 Vertex
 struct md2_dtrivertx_t 
 {
 	unsigned char v[3];					// X,Y,Z coordinate, packed on 0-255
 	unsigned char lightnormalindex;		// index of the vertex normal
 };
 
+/// Q2 Md2 Vertex Frame Info
 struct md2_daliasframe_t 
 {
 	float scale[3];						// Model scale factors.
@@ -164,12 +176,14 @@ struct md2_daliasframe_t
 	char  name[IDPOLY_MAX_FRAME_NAME];	// Frame Name
 };
 
+/// Q2 Md2 Vertex Frame
 struct q2frame_t
 {
 	md2_daliasframe_t aliasframe;
 	md2_dtrivertx_t* vertex;
 };
 
+/// Import of Quake2 Modells to Mad.
 class ModellMD2 : public IMadImport
 {
 public:

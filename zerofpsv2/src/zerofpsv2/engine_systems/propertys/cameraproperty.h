@@ -23,6 +23,7 @@ enum ENGINE_SYSTEMS_API CamType_e
 	CAM_TYPE3PERSON, 
 };
 
+/// Connects a Object to a Camera.
 class ENGINE_SYSTEMS_API CameraProperty:public Property 
 {
 	private:

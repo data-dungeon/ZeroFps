@@ -49,6 +49,8 @@ struct ENGINE_SYSTEMS_API Sphere{
 	Vector3 m_kPos;
 };
 
+
+/// PhysicsEngine SubSystem.
 class ENGINE_SYSTEMS_API PhysicsEngine : public ZFSubSystem
 {
 	private:

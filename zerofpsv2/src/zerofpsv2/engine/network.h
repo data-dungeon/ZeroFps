@@ -39,7 +39,7 @@ enum ClientConnectStatus
 	NETSTATUS_DISCONNECT					// Unconnected (free).
 };
 
-/* Information about a remote node and the connection to it. */
+/// A Remote Node on the network.
 class RemoteNode
 {
 public:
@@ -76,12 +76,15 @@ public:
 //	The ZeroFps packet header. Is added to the start of all network packets sent in zerofps.
 #pragma pack( 1 )
 
+/// The ZeroFps packet header.
+/// Is added to the start of all network packets sent in zerofps.
 struct ZFNetHeader
 {
 	int				m_iOrder;							//  Order of packet 
 	unsigned char	m_iPacketType;						//  Type of packet.
 };
 
+/// The Full Data in a Network packet.
 struct ZFNetPacketData
 {
 	ZFNetHeader		m_kHeader;							
@@ -90,7 +93,7 @@ struct ZFNetPacketData
 
 #pragma pack(  )
 
-// A Packet that is sent over network.
+/// A Packet that is sent over network.
 class ENGINE_API NetPacket
 {
 public:
@@ -154,6 +157,7 @@ enum NetWorkStatus
 	strings and if a string is missing it ask the server for it. NS can only be updated on server
 	so client must always send the full strings,
 */
+/// Strings Optimized for network.
 struct ZFNet_String
 {
 	bool		m_bInUse;		// True if this net string is in use.
@@ -163,7 +167,7 @@ struct ZFNet_String
 };
 
 
-/*	NetWork SubSystem	*/
+/// NetWork SubSystem
 class ENGINE_API NetWork : public ZFSubSystem 
 {
 private:

@@ -16,6 +16,7 @@
 class ResourceCreateLink;
 class ZFResourceInfo;
 
+/// Interface to Resource manger.
 class ENGINE_API I_ZFResourceDB : public ZFSubSystem 
 {
 public:

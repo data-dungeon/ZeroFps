@@ -9,9 +9,7 @@ void LogIt(const char *fmt, ...);
 
 class MadExporter;
 
-/*
-Bas klass för alla klasser som kan importeras till MAD.
-*/
+/// Base class for all classes that import data to MAD.
 class IMadImport
 {
 public:
@@ -22,6 +20,7 @@ public:
 	virtual	bool Export(MadExporter* mad, const char* filename) = 0;
 };
 
+/// Exporter for MAD.
 class MadExporter : public Mad_Core
 {
 private:

@@ -42,8 +42,8 @@ struct texture
 	int				m_iSizeInBytes;	// Size of texture in bytes.
 };
 
-/// Handles all textures in the game. Texture can be refered to by name
-///	or id (not same thing as opengl handle).
+/// The SubSystem that handles all textures in ZeroFPS.
+/// Texture can be refered to by name	or id (not same thing as opengl handle).
 class RENDER_API TextureManager : public ZFSubSystem {
 	private:
 		enum FuncId_e

@@ -13,6 +13,7 @@
 #include "../engine_systems_x.h"
 #include "../../basic/zfresource.h"
 
+/// Interface to HeightMap.
 class ENGINE_SYSTEMS_API I_HeightMap2 
 {
 public:

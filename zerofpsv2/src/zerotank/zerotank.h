@@ -20,6 +20,7 @@
 
 #include "../zerofpsv2/gui/zgui.h"
 
+/// Class for ZeroTank application.
 class ZeroTank :public Application, public ZGuiApp {
 	private:
 		Camera*			m_pkCamera;

@@ -9,7 +9,7 @@
 
 using namespace std;
 
-
+/// Property to add a Hmap to a object.
 class ENGINE_SYSTEMS_API HMRP2: public Property {
 		HeightMap* m_pkHeightMap;
 		TextureManager* m_pkTexMan;

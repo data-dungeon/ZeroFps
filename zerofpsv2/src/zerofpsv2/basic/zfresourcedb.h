@@ -18,7 +18,7 @@ public:
 	ZFResource*	(*Create)();		// Create function for resource type.
 };
 
-// Data that the ResM have about a res.
+/// Data that the Resource manger have about a resource.
 class ZFResourceInfo
 {
 private:

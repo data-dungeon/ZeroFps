@@ -72,7 +72,7 @@ public:
 	vector<string>	m_akDevString;
 };
 
-/* Information about a connectet client*/
+/// Information about a connectet client
 class ENGINE_API ZFClient
 {
 public:

@@ -471,10 +471,6 @@ SOURCE=.\main.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\engine_systems\propertys\modelproperty.h
-# End Source File
-# Begin Source File
-
 SOURCE=.\netslaveobject.h
 # End Source File
 # Begin Source File

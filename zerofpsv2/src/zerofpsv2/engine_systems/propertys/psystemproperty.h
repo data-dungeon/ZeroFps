@@ -5,6 +5,7 @@
 #include "../engine_systems_x.h"
 #include "../common/psystem.h"
 
+/// Property for a particle system.
 class ENGINE_SYSTEMS_API PSystemProperty: public Property {
 
 	private:

@@ -16,6 +16,7 @@ class Camera;
 class DevStringPage;
 class NetPacket;
 
+/// Interface to ZeroFPS.
 class ENGINE_API I_ZeroFps : public ZFSubSystem
 {
 public:

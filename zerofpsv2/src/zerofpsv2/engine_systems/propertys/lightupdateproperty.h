@@ -8,6 +8,7 @@
 
 using namespace std;
 
+/// Property that updates lightning.
 class ENGINE_SYSTEMS_API LightUpdateProperty: public Property
 {
 	private:

@@ -3,6 +3,7 @@
 
 #include "madexport.h"
 
+/// HalfLife Header.
 struct HLHeader
 {
 	int					m_Id;
@@ -56,6 +57,7 @@ struct HLHeader
 	int					m_iTransitionIndex;
 };
 
+/// HalfLife Bone.
 struct HLBone
 {
 	char				m_acName[32];
@@ -67,6 +69,7 @@ struct HLBone
 
 };
 
+/// HalfLife Sequence Descriptor.
 struct HLSequenceDesc 
 {
 	char				m_szLabel[32];
@@ -151,6 +154,7 @@ struct HLBodyPart
 	int					m_iModelIndex;
 };
 
+/// HalfLife Model.
 struct HLModel
 {
 	char				m_szName[64];
@@ -171,6 +175,7 @@ struct HLModel
 	int					m_iDeformationGroupIndex;
 };
 
+/// HalfLife 3D Mesh.
 struct HLMesh
 {
 	int					m_iNumOfTriangles;
@@ -180,6 +185,7 @@ struct HLMesh
 	int					m_iNormalIndex;
 };
 
+/// HalfLife Mesh Vertex.
 struct HLMeshVertex
 {
 	short				m_VertexIndex;
@@ -189,6 +195,7 @@ struct HLMeshVertex
 };
 
 
+/// HalfLife Modell Import
 
 class ModellHalfLife : public IMadImport
 {

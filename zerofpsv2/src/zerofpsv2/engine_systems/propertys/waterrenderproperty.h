@@ -11,7 +11,7 @@
 
 using namespace std;
 
-
+/// Property to render a watersurface.
 class ENGINE_SYSTEMS_API WaterRenderProperty: public Property {
 		TextureManager* m_pkTexMan;
 		ZeroFps* m_pkZeroFps;

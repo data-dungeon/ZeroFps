@@ -17,6 +17,7 @@
 
 class ZFAudioSystem;
 
+/// A Sound in the Resource SubSystem.
 class ENGINE_SYSTEMS_API ZFSoundRes : public ZFResource
 {
 	public:
@@ -55,6 +56,7 @@ class ENGINE_SYSTEMS_API SoundInfo
 		friend class ZFAudioSystem;
 };
 
+/// Sub System for Sound.
 class ENGINE_SYSTEMS_API ZFAudioSystem  : public ZFSubSystem 
 {
 public:

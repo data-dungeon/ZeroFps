@@ -14,6 +14,7 @@ using namespace std;
 
 /*EXPIMP_TEMPLATE template class DECLSPECIFIER Any;*/
 
+/// Memory area that one can read/write to.
 class BASIC_API ZFMemPackage : public ZFIoInterface
 {
 	private:

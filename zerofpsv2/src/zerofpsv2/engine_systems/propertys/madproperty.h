@@ -10,6 +10,7 @@ using namespace std;
 
 #define NO_ANIMATION_ID	-1
 
+/// Property to add a Modell (MAD) to a object.
 class ENGINE_SYSTEMS_API MadProperty : public Property, public Mad_Modell {
 	private:
 		vector<PropertyValues> GetPropertyValues();

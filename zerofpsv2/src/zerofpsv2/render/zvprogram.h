@@ -14,6 +14,7 @@ using namespace std;
 
 #define	NO_VPROGRAM	-1
 
+/// A OpenGL Vertex Program.
 class RENDER_API ZVProgram : public ZFResource
 {
 	private:

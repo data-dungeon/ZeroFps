@@ -4,6 +4,7 @@
 #include "../../engine/zerofps.h"
 #include "../engine_systems_x.h"
 
+/// A Zone in the ZeroFPS World.
 class ENGINE_SYSTEMS_API ZoneObject: public Object {
 	private:
 		//ZeroFps *m_pkFps;

@@ -100,6 +100,7 @@ public:
 	friend class Body;
 };
 
+/// Key frame in a Vertex Animation.
 class ENGINE_SYSTEMS_API Mad_CoreKeyFrame
 {
 public:
@@ -112,6 +113,7 @@ public:
 	friend class Mad_CoreMesh;
 };
 
+/// A Vertex animation with all keys.
 class ENGINE_SYSTEMS_API Mad_CoreMeshAnimation
 {
 private:
@@ -135,8 +137,8 @@ public:
 
 };
 
-/// SubMesh in a Mad. A Submesh is part of a mesh were all surfaces has
-/// the same material properties.
+/// SubMesh in a Mad.
+/// A Submesh is part of a mesh were all surfaces has the same material properties.
 struct ENGINE_SYSTEMS_API Mad_CoreSubMesh
 {
 	int		iTextureIndex;				///< Texture used.
@@ -261,6 +263,7 @@ public:
 };
 
 // MAD - AD (Bone Animation Data)
+/// Key for a bone. 
 class ENGINE_SYSTEMS_API Mad_CoreBoneKey
 {
 public:
@@ -283,6 +286,7 @@ public:
 
 };
 
+/// All keys for a single bone in one animation.
 class ENGINE_SYSTEMS_API Mad_CoreBoneKeyFrame
 {
 private:

@@ -20,6 +20,7 @@ public:
 	}
 };
 
+/// Bone in Maya Mad Exporter.
 class MadExpBone  
 {
 public:

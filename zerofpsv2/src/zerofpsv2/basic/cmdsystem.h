@@ -12,7 +12,9 @@
 
 using namespace std;
 
-class BASIC_API CmdSystem : public ZFSubSystem  {
+
+class BASIC_API CmdSystem : public ZFSubSystem  
+{
 	private:
 		BasicConsole*			m_pkCon;
 

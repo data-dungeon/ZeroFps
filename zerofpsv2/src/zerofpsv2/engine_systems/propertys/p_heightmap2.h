@@ -9,7 +9,7 @@
 
 using namespace std;
 
-
+/// Property to add a Heightmap to an object.
 class ENGINE_SYSTEMS_API P_Heightmap2: public Property {
 		Heightmap2	m_kMap;
 	

@@ -20,7 +20,6 @@ enum PROXYPROPERTY_AKTIONS
 	WAKEUP
 };
 
-
 class ENGINE_SYSTEMS_API ProxyProperty: public Property {
 	private:
 		ZeroFps* m_pkFps;
@@ -47,7 +46,7 @@ class ENGINE_SYSTEMS_API ProxyProperty: public Property {
 
 Property* Create_ProxyProperty();
 
-
+/// Property to track objects to activate zones.
 class ENGINE_SYSTEMS_API TrackProperty: public Property {
 	private:
 		ObjectManager*		m_pkOBjM;

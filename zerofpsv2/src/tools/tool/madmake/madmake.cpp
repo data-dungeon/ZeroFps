@@ -65,6 +65,7 @@ string ucaInFile;
 string ucaOutFile;
 string ucaTextureNames;
 
+
 class MadMake
 {
 private:

@@ -76,8 +76,9 @@ struct pcx_header_s
 	short	bytes_per_line;
 	short	palette_type;
 	char	filler[58];
-} ;
+};
 
+/// Bmp pallete Entry.
 struct bmppal_t 
 { 
 	unsigned char ucRed; 
@@ -86,6 +87,7 @@ struct bmppal_t
 	unsigned char ucFlags; 
 }; 
 
+/// Bmp Header.
 struct bmpheader_t 
 { 
 	unsigned short	usType; 
@@ -95,6 +97,7 @@ struct bmpheader_t
 	unsigned long	ulOffBits; 
 };
 
+/// Bmp Info Block.
 struct bmpinfo_t
 { 
     unsigned long	ulSize; 

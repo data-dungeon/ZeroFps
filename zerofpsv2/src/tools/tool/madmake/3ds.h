@@ -11,6 +11,7 @@
 #include <vector>
 using namespace std;
 
+/// 3DS Rgb color
 class rgb_c
 {
 public:
@@ -23,6 +24,7 @@ public:
 	float r,g,b;
 };
 
+/// 3DS Rgb texture.
 struct texture_s
 {
 	char	File_name[MAX_MAPNAME];
@@ -31,6 +33,7 @@ struct texture_s
 	float	Rotation_angle;
 };
 
+/// 3DS Rgb material.
 class material_c
 {
 public:
@@ -52,11 +55,13 @@ public:
 	texture_s	Texture;
 };
 
+/// 3DS Face.
 struct surface_s 
 {
 	unsigned short		index[3];
 };
 
+/// 3DS Face Material.
 class facemat_c
 {
 public:
@@ -72,7 +77,8 @@ public:
 	int*	faces;
 };
 
-class part_c {
+class part_c
+{
 public:
 	int			num_vertex;		
 	int			num_surfaces;
@@ -92,13 +98,14 @@ public:
 	int			num_of_materials;
 };
 
-struct Chunk3DS {
+/// 3DS Chunk.
+struct Chunk3DS 
+{
 	unsigned short		id;
 	long				len;
 };
 
-
-
+/// Importer for 3DS Files.
 class Modell3DS : public IMadImport
 {
 private:

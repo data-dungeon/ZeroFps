@@ -27,6 +27,8 @@ using std::string;**/
 using namespace std;
 
 class ZeroFps;
+
+/// SubSystem that handles music in ZeroFPS.
 class ENGINE_SYSTEMS_API OggMusic: public ZFSubSystem  
 {
 public:

@@ -11,6 +11,7 @@
 
 using namespace std;
 
+/// Settings for one pass in a Material.
 class RENDER_API ZMaterialSettings
 {
 	public:
@@ -37,7 +38,7 @@ class RENDER_API ZMaterialSettings
 		~ZMaterialSettings();
 };
 
-
+/// A Material (Used by the shader SubSys).
 class RENDER_API ZMaterial : public ZFResource
 {
 	private:

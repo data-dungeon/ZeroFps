@@ -6,6 +6,7 @@
 #include "../basic/zfobjectmanger.h"
 #include "engine_x.h"
 
+/// A Texture in the Resource SubSystem.
 class ENGINE_API ResTexture : public ZFResource
 {
 private:

@@ -102,7 +102,7 @@ enum RENDER_API DRAW_MODE
 	POLYGON_MODE,
 };
 
-
+/// ZeroFPS Shader SubSystem.
 class RENDER_API ZShader : public ZFSubSystem
 {
 	private:

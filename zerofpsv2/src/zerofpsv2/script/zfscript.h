@@ -37,6 +37,7 @@ enum ScripObjectType
 	tVector3,
 };
 
+/// A Script in the Resource SubSystem
 class SCRIPT_API ZFScript : public ZFResource
 {
 	public:
@@ -56,7 +57,7 @@ class SCRIPT_API ZFScript : public ZFResource
 
 SCRIPT_API ZFResource* Create__ZFScript();
 
-
+/// SubSys that handles scripts.
 class SCRIPT_API ZFScriptSystem  : public ZFSubSystem
 {
 public:

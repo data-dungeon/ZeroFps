@@ -43,6 +43,7 @@ enum PolygonMode
 	LINE 
 };
 
+/// Render SubSystem
 class RENDER_API Render : public ZFSubSystem {
 	private:
 		enum FuncId_e

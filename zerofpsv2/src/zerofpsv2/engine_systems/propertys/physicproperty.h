@@ -12,6 +12,7 @@ using namespace std;
 
 class CollisionShape;
 
+/// Property to make a object use the physicsengine.
 class ENGINE_SYSTEMS_API PhysicProperty :public Property
 {
 	private:

@@ -5,6 +5,7 @@
 #include "../engine_systems_x.h"
 using namespace std;
 
+/// Property to make an object cast light.
 class ENGINE_SYSTEMS_API LightProperty: public Property {
 	private:
 		LightSource*	m_pkLightSource;

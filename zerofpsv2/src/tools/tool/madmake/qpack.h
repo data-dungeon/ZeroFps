@@ -13,6 +13,7 @@ using namespace std;
 
 class PAKFileFp;
 
+/// Header of a PackFile
 struct PAKHeader
 { 
 	unsigned char ucMagic[4];		// Name of the new WAD format
@@ -20,6 +21,7 @@ struct PAKHeader
 	long lDirSize;					// Number of entries * 0x40 (64 char)
 };
 
+/// Entry inte a packFile
 struct PAKEntry
 { 
 	unsigned char ucFileName[0x38];	// Name of the file, Unix style, with extension,
@@ -28,6 +30,7 @@ struct PAKEntry
 	long lSize;						// Size of the entry in PACK file
 };
 
+/// A PackFile
 class PAKFile 
 {
 public:
@@ -46,6 +49,7 @@ public:
 
 };
 
+/// PakFile File Pointer.
 class PAKFileFp
 {
 public:
@@ -66,6 +70,7 @@ public:
 	bool	Seek(size_t iOffset, int iOrigin);
 };
 
+/// PakFile Manger (Quake1/Quake2) 
 class PAKFile_Manger
 {
 public:

@@ -12,6 +12,7 @@
 #include "../../engine/zerofps.h"
 #include "../../basic/vector2.h"
 
+/// Vertex in a Hmap.
 class ENGINE_SYSTEMS_API HM2_vert
 {
 	public:
@@ -19,6 +20,7 @@ class ENGINE_SYSTEMS_API HM2_vert
 		Vector3	kNormal;
 };
 
+/// A Face in a HMap.
 class ENGINE_SYSTEMS_API HM2_face
 {
 	public:

@@ -13,6 +13,7 @@ using namespace std;
 class ZFSubSystem;
 class BasicConsole;
 
+/// A Log File.
 class ZFLogFile
 {
 public:
