@@ -60,7 +60,7 @@ LINK32=link.exe
 # Begin Special Build Tool
 ProjDir=.
 SOURCE="$(InputPath)"
-PostBuild_Cmds=copy                                  $(ProjDir)\debug\*.lib                                  ..\..\..\bin\ 
+PostBuild_Cmds=copy                                       $(ProjDir)\debug\*.lib                                       ..\..\..\bin\ 
 # End Special Build Tool
 
 !ELSEIF  "$(CFG)" == "render - Win32 Debug"
@@ -91,7 +91,7 @@ LINK32=link.exe
 # Begin Special Build Tool
 ProjDir=.
 SOURCE="$(InputPath)"
-PostBuild_Cmds=copy                                  $(ProjDir)\debug\*.lib                                  ..\..\..\bin\ 
+PostBuild_Cmds=copy                                       $(ProjDir)\debug\*.lib                                       ..\..\..\bin\ 
 # End Special Build Tool
 
 !ELSEIF  "$(CFG)" == "render - Win32 Release Profile"
@@ -126,7 +126,7 @@ LINK32=link.exe
 # Begin Special Build Tool
 ProjDir=.
 SOURCE="$(InputPath)"
-PostBuild_Cmds=copy                                  $(ProjDir)\debug\*.lib                                  ..\..\..\bin\ 
+PostBuild_Cmds=copy                                       $(ProjDir)\debug\*.lib                                       ..\..\..\bin\ 
 # End Special Build Tool
 
 !ENDIF 
@@ -139,24 +139,6 @@ PostBuild_Cmds=copy                                  $(ProjDir)\debug\*.lib     
 # Begin Group "Source Files"
 
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
-# Begin Source File
-
-SOURCE=.\core.cpp
-
-!IF  "$(CFG)" == "render - Win32 Release"
-
-# SUBTRACT CPP /YX
-
-!ELSEIF  "$(CFG)" == "render - Win32 Debug"
-
-!ELSEIF  "$(CFG)" == "render - Win32 Release Profile"
-
-# SUBTRACT BASE CPP /YX
-# SUBTRACT CPP /YX
-
-!ENDIF 
-
-# End Source File
 # Begin Source File
 
 SOURCE=..\ogl\extgl.c
@@ -274,10 +256,6 @@ SOURCE=.\glguirender.h
 # Begin Source File
 
 SOURCE=.\light.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\mad.h
 # End Source File
 # Begin Source File
 

@@ -638,7 +638,7 @@ bool Modell3DS::Export(MadExporter* mad, const char* filename)
 	}*/
 
 	Mad_CoreMeshAnimation kNyAnimation;
-	Mad_KeyFrame kNyKeyF;
+	Mad_CoreKeyFrame kNyKeyF;
 	kNyAnimation.Clear();
 	strcpy(kNyAnimation.Name, "freeze"); 
 	kNyKeyF.Clear();

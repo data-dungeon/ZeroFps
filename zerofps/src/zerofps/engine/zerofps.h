@@ -88,13 +88,14 @@ class ENGINE_API ZeroFps : public ZFObject {
 		ZFIni* m_pkIni;
 		LevelManager* m_pkLevelMan;
 
-		vector<Core>		akCoreModells;
+//		vector<Core>		akCoreModells;
+		vector<Mad_Core>	akCoreModells;
 				
 		
 		int LoadMAD(const char* filename);
 		void ClearMAD(void);
 		int GetMADIndex(const char* filename);
-		Core* GetMADPtr(const char* filename);
+		Mad_Core* GetMADPtr(const char* filename);
 
 		int m_iState;										//curent game state see enum enginestates
 		int m_iFps;											//curent FPS

@@ -5,11 +5,11 @@
 #include <iostream>
 #include <conio.h>
 #include <string>
-#include "mad.h"
-#include "mdl.h"
-#include "3ds.h"
+#include "madexport.h"
+//#include "mdl.h"
+//#include "3ds.h"
 #include "xxx.h"
-#include "halflife.h"
+//#include "halflife.h"
 #include "script.h"
 
 using namespace std;
@@ -92,7 +92,7 @@ IMadImport* MadMake::GetImportObject(string FileName)
 
 	string strExt = GetFileExt(ucaInFile);
 	
-	if( strExt == ".mdl" )
+/*	if( strExt == ".mdl" )
 		pkImport = new ModellMD1;
 		//pkImport = new ModellHalfLife;
 
@@ -100,7 +100,7 @@ IMadImport* MadMake::GetImportObject(string FileName)
 		pkImport = new ModellMD2;
 
 	if( strExt == ".3ds" )
-		pkImport = new Modell3DS;
+		pkImport = new Modell3DS;*/
 
 	if( strExt == ".mm" )
 		pkImport = new ModellXXX;

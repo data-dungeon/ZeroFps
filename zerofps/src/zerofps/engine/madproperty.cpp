@@ -1,14 +1,15 @@
 #include "madproperty.h"
 #include "object.h"
 
-
+/*
 float fGameTime;
 
 void SetGameTime(void)
 {
 
 	fGameTime = SDL_GetTicks() / 1000.0;
-}
+}*/
+
 
 MadProperty::MadProperty()
 {
@@ -24,7 +25,7 @@ MadProperty::MadProperty()
 	m_pkZeroFps = static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
 }
 
-MadProperty::MadProperty(Core* pkModell) {
+MadProperty::MadProperty(Mad_Core* pkModell) {
 	strcpy(m_acName,"MadProperty");
 
 	pkCore = pkModell;
@@ -32,7 +33,7 @@ MadProperty::MadProperty(Core* pkModell) {
 	PlayAnimation(0, 0.0);
 	m_fScale = 1.0;
 	m_bActive = true;
-	bFlipFace = false;
+//	bFlipFace = false;
 	pkCore->ClearReplaceTexture();
 
 }
@@ -43,17 +44,17 @@ void MadProperty::Update() {
 	if(!pkCore)
 		return;
 
-	UpdateAnimation();
+	UpdateAnimation(0);
 
-	int iNumOfFrame = pkCore->GetAnimationTimeInFrames(iActiveAnimation);
-	int iFrame = int(fCurrentTime / 0.1);
+//	int iNumOfFrame = pkCore->GetAnimationTimeInFrames(iActiveAnimation);
+//	int iFrame = int(fCurrentTime / 0.1);
 	
 //	pkCore->SetFrameI(0);
-	pkCore->SetFrameI(pkCore->akAnimation[iActiveAnimation].KeyFrame[0].iVertexFrame + iFrame);
+//	pkCore->SetFrameI(pkCore->akAnimation[iActiveAnimation].KeyFrame[0].iVertexFrame + iFrame);
 //	pkCore->ClearReplaceTexture();
 
-	if(bFlipFace)
-		glCullFace(GL_FRONT);
+//	if(bFlipFace)
+//		glCullFace(GL_FRONT);
 
 	glPushMatrix();
 		glTranslatef(m_pkObject->GetPos().x,m_pkObject->GetPos().y,m_pkObject->GetPos().z);
@@ -64,13 +65,14 @@ void MadProperty::Update() {
 		
 		Vector4 sphere=m_pkObject->GetPos();
 		sphere.w=4;
-		if(m_pkFrustum->SphereInFrustum(sphere))
-			pkCore->draw();
+//		if(m_pkFrustum->SphereInFrustum(sphere))
+			Draw_All();
+		//			pkCore->Draw();
 	
 	glPopMatrix();
 
-	if(bFlipFace)
-		glCullFace(GL_BACK);
+//	if(bFlipFace)
+//		glCullFace(GL_BACK);
 
 }
 
@@ -80,18 +82,18 @@ void MadProperty::SetBase(const char* acName)
 	m_kMadFile=acName;
 }
 
-void MadProperty::SetBase(Core* pkModell)
+void MadProperty::SetBase(Mad_Core* pkModell)
 {
 	pkCore = pkModell;
 	
 	PlayAnimation(0, 0.0);
 	m_fScale = 1.0;
 	m_bActive = true;
-	bFlipFace = false;
+//	bFlipFace = false;
 	pkCore->ClearReplaceTexture();
 }
 
-
+/*
 
 void MadProperty::PlayAnimation(int iAnimNum, float fStartTime)
 {
@@ -100,8 +102,9 @@ void MadProperty::PlayAnimation(int iAnimNum, float fStartTime)
 	iActiveAnimation = iAnimNum;
 	fCurrentTime = fStartTime;
 	fLastUpdate = fGameTime; 
-}
+}*/
 
+/*
 void MadProperty::UpdateAnimation(void)
 {
 	if(!m_bActive)
@@ -120,8 +123,9 @@ void MadProperty::UpdateAnimation(void)
 		fCurrentTime -= fAnimLength;
 
 	fLastUpdate = fGameTime; 
-}
+}*/
 
+/*
 void MadProperty::SetScale(float fScale)
 {
 	m_fScale = fScale;
@@ -176,7 +180,7 @@ void	MadProperty::NextCoreAnimation(void)
 void MadProperty::SetReplaceTexture(char* szName)
 {
 	pkCore->SetReplaceTexture(szName);
-}
+}*/
 
 void MadProperty::Save(ZFMemPackage* pkPackage)
 {	

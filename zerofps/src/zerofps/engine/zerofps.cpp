@@ -530,11 +530,11 @@ int ZeroFps::LoadMAD(const char* filename)
 	if(iMadId != -1)
 		return iMadId;
 
-	Core CoreAdd;
+	Mad_Core CoreAdd;
 	akCoreModells.push_back(CoreAdd);
-	Core* pCoreMdl = &akCoreModells.back();
-	pCoreMdl->SetTextureManger(m_pkTexMan);
-	pCoreMdl->Load(filename);
+	Mad_Core* pCoreMdl = &akCoreModells.back();
+//	pCoreMdl->SetTextureManger(m_pkTexMan);
+	pCoreMdl->LoadMad(filename);
 	return (akCoreModells.size() - 1);
 }
 
@@ -554,7 +554,7 @@ int ZeroFps::GetMADIndex(const char* filename)
 	return -1;
 }
 
-Core* ZeroFps::GetMADPtr(const char* filename)
+Mad_Core* ZeroFps::GetMADPtr(const char* filename)
 {
 	int iMadId = LoadMAD(filename);
 

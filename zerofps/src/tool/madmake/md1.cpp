@@ -186,7 +186,7 @@ void ModellMD1::PrintInfo()
 	cout << "head.size: " << head.size << endl; 
 }
 
-void ModellMD1::TransformTexCoo(int t, int v, MadTextureCoo *st)
+void ModellMD1::TransformTexCoo(int t, int v, Mad_TextureCoo *st)
 {
 	st->s = (float) skinvert[v].s;		
 	st->t = (float) skinvert[v].t;	
@@ -340,7 +340,7 @@ extern void SplitAnimNumAndFrameNum(int AnimAndFrame, int& Anim, int& Frame);
 
 bool ModellMD1::Export(MadExporter* mad, const char* filename)
 {
-	int i;
+	unsigned int i;
 	Mad_CoreMesh* pkMesh = mad->GetMesh("mesh");
 
 	// Transfer to pmd struct.
@@ -365,8 +365,8 @@ bool ModellMD1::Export(MadExporter* mad, const char* filename)
 		}
 
 	vector<pmd_triangle_s>	akPmdTriangles;
-	vector<Mad_VertexFrame>	akVertexFrames;
-	vector<MadTextureCoo>	akTextureCoo;
+	vector<Mad_CoreVertexFrame>	akVertexFrames;
+	vector<Mad_TextureCoo>	akTextureCoo;
 
 	akVertexFrames.resize(pkMesh->kHead.iNumOfFrames);
 	akPmdTriangles.resize(pkMesh->kHead.iNumOfFaces);
@@ -374,7 +374,7 @@ bool ModellMD1::Export(MadExporter* mad, const char* filename)
 	// Read Triangles
 	int vi = 0;
 	int iTextureCooIndex = 0;
-	MadTextureCoo kNyTextureCoo;
+	Mad_TextureCoo kNyTextureCoo;
 
 	for(i=0; i<pkMesh->kHead.iNumOfFaces; i++) {
 		akPmdTriangles[i].vertex_index[0] = tris[i].vertices[0];
@@ -400,7 +400,7 @@ bool ModellMD1::Export(MadExporter* mad, const char* filename)
 	int f;
 
 	Mad_CoreMeshAnimation* pkAnim;
-	Mad_KeyFrame kKeyFrame;
+	Mad_CoreKeyFrame kKeyFrame;
 	int iAnimNum, iFrameNum;
 	char AnimName[256];
 	char AnimNumAsString[256];
@@ -469,7 +469,7 @@ bool ModellMD1::Export(MadExporter* mad, const char* filename)
 
 
 	// Skapa array med alla texture coo. Sätt alla till <0,0>
-	vector<MadTextureCoo> kTextureCoo;
+	vector<Mad_TextureCoo> kTextureCoo;
 	kTextureCoo.resize(pkMesh->kHead.iNumOfVertex);
 
 	// Skapa vertex list med index. Sätt alla till -1.

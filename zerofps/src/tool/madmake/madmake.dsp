@@ -88,26 +88,28 @@ LINK32=link.exe
 # Begin Source File
 
 SOURCE=.\3ds.cpp
-# End Source File
-# Begin Source File
 
-SOURCE=.\core_bone.cpp
-# End Source File
-# Begin Source File
+!IF  "$(CFG)" == "madmake - Win32 Release"
 
-SOURCE=.\core_boneanim.cpp
-# End Source File
-# Begin Source File
+!ELSEIF  "$(CFG)" == "madmake - Win32 Debug"
 
-SOURCE=.\core_mesh.cpp
-# End Source File
-# Begin Source File
+# PROP Exclude_From_Build 1
 
-SOURCE=.\core_meshanim.cpp
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
 SOURCE=.\halflife.cpp
+
+!IF  "$(CFG)" == "madmake - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "madmake - Win32 Debug"
+
+# PROP Exclude_From_Build 1
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
@@ -120,14 +122,41 @@ SOURCE=.\madmake.cpp
 # Begin Source File
 
 SOURCE=.\md1.cpp
+
+!IF  "$(CFG)" == "madmake - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "madmake - Win32 Debug"
+
+# PROP Exclude_From_Build 1
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
 SOURCE=.\md2.cpp
+
+!IF  "$(CFG)" == "madmake - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "madmake - Win32 Debug"
+
+# PROP Exclude_From_Build 1
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
 SOURCE=.\qpack.cpp
+
+!IF  "$(CFG)" == "madmake - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "madmake - Win32 Debug"
+
+# PROP Exclude_From_Build 1
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
@@ -164,7 +193,7 @@ SOURCE=.\halflife.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\mad.h
+SOURCE=.\madexport.h
 # End Source File
 # Begin Source File
 

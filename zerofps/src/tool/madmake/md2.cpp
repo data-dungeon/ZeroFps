@@ -408,8 +408,8 @@ bool ModellMD2::Export(MadExporter* mad, const char* filename)
 		}
 
 	vector<pmd_triangle_s>	akPmdTriangles;
-	vector<Mad_VertexFrame>	akVertexFrames;
-	vector<MadTextureCoo>	akTextureCoo;
+	vector<Mad_CoreVertexFrame>	akVertexFrames;
+	vector<Mad_TextureCoo>	akTextureCoo;
 
 	akVertexFrames.resize(pkMesh->kHead.iNumOfFrames);
 	akPmdTriangles.resize(pkMesh->kHead.iNumOfFaces);
@@ -438,7 +438,7 @@ bool ModellMD2::Export(MadExporter* mad, const char* filename)
 	float x,y,z;
 
 	Mad_CoreMeshAnimation* pkAnim;
-	Mad_KeyFrame kKeyFrame;
+	Mad_CoreKeyFrame kKeyFrame;
 	int iAnimNum, iFrameNum;
 	char AnimName[256];
 	char AnimNumAsString[256];
@@ -502,10 +502,10 @@ bool ModellMD2::Export(MadExporter* mad, const char* filename)
 		pkMesh->akFaces[i].iIndex[2] = akPmdTriangles[i].vertex_index[2];
 	}
 
-	MadTextureCoo kNyTextureCoo;
+	Mad_TextureCoo kNyTextureCoo;
 
 	// Skapa array med alla texture coo. Sätt alla till <0,0>
-	vector<MadTextureCoo> kTextureCoo;
+	vector<Mad_TextureCoo> kTextureCoo;
 	kTextureCoo.resize(pkMesh->kHead.iNumOfVertex);
 
 	// Skapa vertex list med index. Sätt alla till -1.

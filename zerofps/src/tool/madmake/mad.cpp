@@ -4,12 +4,13 @@
 	Vertex animerade object.
 */
 #include <string>
-#include "mad.h"
+//#include "mad.h"
 #include "vector"
 #include "iostream"
 #include <cstdio>
 
-#include "../../zerofps/basic/basicmath.pkg"
+//#include "../../zerofps/basic/basicmath.pkg"
+#include "madexport.h"
 
 using namespace std;
 
@@ -26,11 +27,11 @@ MadExporter::~MadExporter()
 
 }
 
-void MadExporter::Save_SD(FILE* pkFp)
+/*void MadExporter::Save_SD(FILE* pkFp)
 {
 	int iNumOfBones = m_akSkelleton.size();
 	fwrite(&iNumOfBones, sizeof(int),1,pkFp);
-	for(int i=0; i < m_akSkelleton.size(); i++) {
+	for(unsigned int i=0; i < m_akSkelleton.size(); i++) {
 		fwrite(&m_akSkelleton[i],sizeof(Mad_CoreBone),1,pkFp);
 	}
 }
@@ -44,7 +45,6 @@ void MadExporter::Save_AD(int iMeshId, FILE* pkFp)
 {
 	m_kBoneAnim[iMeshId].Save(pkFp);
 }
-
 
 void MadExporter::Save_SD(const char* filename)
 {
@@ -68,26 +68,37 @@ void MadExporter::Save_MD(int iMeshId, const char* filename)
 	fclose(MadFp);
 	
 }
-
+*/
 
 Mad_CoreMesh* MadExporter::GetMesh(char* ucaName)
 {
-	vector<Mad_CoreMesh>::iterator it;
+/*	vector<Mad_CoreMesh>::iterator it;
 
 	for(it = m_kMesh.begin(); it != m_kMesh.end(); it++)
 	{
 		if(strcmp(it->m_acName, ucaName) == 0)
 			return it;
-	}
+	}*/
+
+	Mad_CoreMesh* pkMesh;
+
+	for(int i=0; i<NumOfMeshes(); i++) {
+		pkMesh = GetMeshByID(i);
+		if(strcmp(pkMesh->m_acName, ucaName) == 0)
+			return pkMesh;
+		}
+	
+
 
 	// Finns ingen mesh med det namnet så skapa den och returnera den.
-	Mad_CoreMesh kNewMesh;
+	return CreateCoreMesh(ucaName);
+/*	Mad_CoreMesh kNewMesh;
 	kNewMesh.Clear();
 	strcpy(kNewMesh.m_acName, ucaName);
 	m_kMesh.push_back(kNewMesh);
-	return &m_kMesh.back();
+	return &m_kMesh.back();*/
 }
-
+/*
 void MadExporter::Save_MAD(const char* filename)
 {
 	int i;
@@ -123,8 +134,12 @@ void MadExporter::Save_MAD(const char* filename)
 
 	fclose(MadFp);
 
-}
+}*/
 
+
+void MadExporter::Print_MAD()
+{
+}
 
 
 

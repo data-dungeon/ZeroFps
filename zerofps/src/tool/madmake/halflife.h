@@ -1,7 +1,7 @@
 #ifndef FILE__HALFLIFE_H
 #define FILE__HALFLIFE_H
 
-#include "mad.h"
+#include "madexport.h"
 
 struct HLHeader
 {

@@ -6,7 +6,7 @@
 
 #include "3dsdef.h"
 #include <cstdio>
-#include "mad.h"
+#include "madexport.h"
 
 #include <vector>
 using namespace std;

@@ -1,39 +1,35 @@
 #ifndef _MADPROPERTY_H_
 #define _MADPROPERTY_H_
 
-#include "../render/render.pkg"
+#include "mad_modell.h"
 #include "zerofps.h"
 #include "property.h"
 #include <string>
-
 using namespace std;
 
 #define NO_ANIMATION_ID	-1
 
-class ENGINE_API MadProperty: public Property {
-	private:
-		Core*	pkCore;
-		Frustum* m_pkFrustum;
-		ZeroFps* m_pkZeroFps;
-		
-		int		iActiveAnimation;
-		float	fCurrentTime;
-		float	fLastUpdate;
 
-		float	m_fScale;
-
-		string m_kMadFile;
-
-		int		m_iNextAnimation;
-		bool	m_bLoop;
-
-		bool	m_bActive;			// True if animation system is active.
-
+class ENGINE_API MadProperty : public Property, public Mad_Modell {
 	public:
 		MadProperty();
-		MadProperty(Core* pkModell);
+		MadProperty(Mad_Core* pkModell);
+ 
+		Frustum* m_pkFrustum;
+		ZeroFps* m_pkZeroFps;
+		string m_kMadFile;
 
+
+		void SetBase(Mad_Core* pkModell);
+		void SetBase(const char* acName);
 		void Update();
+		void Save(ZFMemPackage* pkPackage);
+		void Load(ZFMemPackage* pkPackage);
+	
+	//	private:
+/*	
+		
+
 		void SetBase(Core* pkModell);
 		void SetBase(const char* acName);
 		void PlayAnimation(int iAnimNum, float fStartTime);
@@ -62,7 +58,7 @@ class ENGINE_API MadProperty: public Property {
 
 		
 		void Save(ZFMemPackage* pkPackage);
-		void Load(ZFMemPackage* pkPackage);
+		void Load(ZFMemPackage* pkPackage);*/
 
 /*
 		// NEED TO WRITE

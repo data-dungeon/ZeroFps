@@ -154,20 +154,20 @@ void ModellXXX::ReadBaseFrame(const char* filename)
 
 void ModellXXX::ReadCoreMesh(const char* filename, const char* szName)
 {
-	Vector3				kVertex;
-	Vector3				kNormal;
-	MadFace				kFace;
-	Mad_VertexFrame		kFrame;
-	MadTextureCoo		kTextureCoo;
+	Vector3					kVertex;
+	Vector3					kNormal;
+	Mad_Face				kFace;
+	Mad_CoreVertexFrame		kFrame;
+	Mad_TextureCoo			kTextureCoo;
 
 	Mad_CoreMesh* pkMesh = GetMesh(szName);
 
 
 	bool bMakeTextureCoo = true;
 	bool bMakeTriangles = true;
-	if(pkMesh->akTextureCoo.size() > 0)
+	if(pkMesh->SizeTexturesCoo() > 0)
 		bMakeTextureCoo = false;
-	if(pkMesh->akFaces.size() > 0)
+	if(pkMesh->SizeFaces() > 0)
 		bMakeTriangles = false;
 
 	char TextureName[256];
@@ -201,39 +201,45 @@ void ModellXXX::ReadCoreMesh(const char* filename, const char* szName)
 			fscanf(fp, " <%d,%f,%f,%f,%f,%f,%f,%f,%f>",&iBoneLink, &kVertex.x,&kVertex.y,&kVertex.z,
 				&kNormal.x,&kNormal.y,&kNormal.z,
 				&kTextureCoo.s,&kTextureCoo.t);
-			kFace.iIndex[v] = kFrame.akVertex.size();
-			kFrame.akVertex.push_back(kVertex);
-			kFrame.akNormal.push_back(kNormal);			
+			kFace.iIndex[v] = kFrame.Size();
+			kFrame.PushBack(kVertex, kNormal);
+			//kFrame.akVertex.push_back(kVertex);
+			//kFrame.akNormal.push_back(kNormal);			
 
 			
-			pkMesh->akBoneConnections.push_back(iBoneLink);
+//			pkMesh->akBoneConnections.push_back(iBoneLink);
+			pkMesh->PushBackBoneConnection(iBoneLink);
 			
 			if(bMakeTextureCoo)
-				pkMesh->akTextureCoo.push_back(kTextureCoo);
+//				pkMesh->akTextureCoo.push_back(kTextureCoo);
+				pkMesh->PushBackTextureCoo(kTextureCoo);
 			else {
-				diff_s = pkMesh->akTextureCoo[(i*3) + v].s - kTextureCoo.s;
+				/*diff_s = pkMesh->akTextureCoo[(i*3) + v].s - kTextureCoo.s;
 				diff_t = pkMesh->akTextureCoo[(i*3) + v].t - kTextureCoo.t;
 				if(diff_s != 0.0 || diff_t != 0.0 ) {
 					cout << "Err: " << i << ", " << v << "  ";
 					cout << "<" << diff_s << ","<< diff_t << ">" << endl;
-					}
+					}*/
 				}
 		}
 
 		if(bMakeTriangles) {
-			pkMesh->akFaces.push_back(kFace);
+			//pkMesh->akFaces.push_back(kFace);
+			pkMesh->PushBackFaces(kFace);
 			
 			// Skapa en submesh för varje polygon
 			Mad_CoreSubMesh newsub;
 			newsub.iFirstTriangle = i;
 			newsub.iNumOfTriangles = 1;
 			newsub.iTextureIndex = iTexture;
-			pkMesh->akSubMeshes.push_back(newsub);
-			int smsize = pkMesh->akSubMeshes.size();
+			//pkMesh->akSubMeshes.push_back(newsub);
+			pkMesh->PushBackSubMeshes(newsub);
+			//int smsize = pkMesh->akSubMeshes.size();
 			}
 	}
 
-	pkMesh->akFrames.push_back(kFrame);
+//	pkMesh->akFrames.push_back(kFrame);
+	pkMesh->PushBackFrames(kFrame);
 
 	cout << endl;
 
@@ -404,6 +410,7 @@ void Mad_CoreAnimation::PrintAnimation(void)
 void ModellXXX::ReadExportAD(const char* filename,	const char* szName)
 {
 	cout << "Animation: " << filename << " ";
+	cout << "m_kBoneAnim: " << m_kBoneAnim.size();
 	char tmpstr[256];
 	bool done = false;
 
@@ -414,11 +421,11 @@ void ModellXXX::ReadExportAD(const char* filename,	const char* szName)
 	int iFrameNum;
 	iFrameNum = -1;
 
-	Mad_BoneKey				kNewBoneKey;
+	Mad_CoreBoneKey			kNewBoneKey;
+	Mad_CoreBoneKeyFrame	kNewBoneKeyFrame;
 	Mad_CoreBoneAnimation	kNewBoneAnim;
-	Mad_BoneKeyFrame		kNewBoneKeyFrame;
 
-	kNewBoneAnim.Clear();
+	kNewBoneKey.Clear();
 	kNewBoneKeyFrame.Clear();
 	kNewBoneAnim.Clear();
 
@@ -429,7 +436,8 @@ void ModellXXX::ReadExportAD(const char* filename,	const char* szName)
 		
 		if(strcmp(tmpstr, "Frame") == 0) {
 			if(iFrameNum != -1) {
-				kNewBoneAnim.m_kBoneKeyFrames.push_back(kNewBoneKeyFrame);
+//				NewBoneAnim.m_kBoneKeyFrames.push_back(kNewBoneKeyFrame);
+				kNewBoneAnim.PushBack(kNewBoneKeyFrame);
 				kNewBoneKeyFrame.Clear();
 				}
 
@@ -453,14 +461,20 @@ void ModellXXX::ReadExportAD(const char* filename,	const char* szName)
 		kNewBoneKey.m_kRotation.y = atof(tmpstr);
 		fscanf(fp, "%s",tmpstr);
 		kNewBoneKey.m_kRotation.z = atof(tmpstr);
-		kNewBoneKeyFrame.m_kBonePose.push_back(kNewBoneKey);
+//		kNewBoneKeyFrame.m_kBonePose.push_back(kNewBoneKey);
+		kNewBoneKeyFrame.PushBack(kNewBoneKey);
 //		kNewTrack = kNewAnimation.GetTrackForBone(iBoneId);
 //		kNewTrack->m_kKeyFrames.push_back(kNewBoneKey);
 	}
 
 	fclose(fp);
 
+	cout << "HORA" << endl;
+	cout << "kNewBoneAnim: " << kNewBoneAnim.Size() << endl;
+	cout << "m_kBoneAnim: " << m_kBoneAnim.size() << endl;
 	m_kBoneAnim.push_back(kNewBoneAnim);
+	cout << "m_kBoneAnim: " << m_kBoneAnim.size() << endl;
+	cout << "HORA2" << endl;
 
 /*	kNewAnimation.PrintAnimation();
 
@@ -544,11 +558,27 @@ void ModellXXX::Read( const char* filename )
 bool ModellXXX::Export(MadExporter* mad, const char* filename)
 {
 	int i;
-	mad->m_akSkelleton = m_akSkelleton;
-	mad->m_kBoneAnim = m_kBoneAnim;
+	cout << m_kBoneAnim.size() << endl;
+	mad->SetSkelleton(m_akSkelleton);
+	mad->SetAnimation(m_kBoneAnim);
+	
+//	mad->m_akSkelleton = m_akSkelleton;
+//	mad->m_kBoneAnim = m_kBoneAnim;
+
+/*	cout << "m_kBoneAnim.size: " << m_kBoneAnim.size() << endl;
+	cout << "mad->m_kBoneAnim.size: " << mad->m_kBoneAnim.size() << endl;
+
+	for(i=0; i<m_kBoneAnim.size(); i++) {
+		cout << m_kBoneAnim[i].m_szName << endl;
+		}
+
+	for(i=0; i<mad->m_kBoneAnim.size(); i++) {
+		cout << mad->m_kBoneAnim[i].m_szName << endl;
+		}*/
+
 
 //	OptimizeSubMeshes();
-	int imeshSize = m_kMesh.size();
+//	int imeshSize = m_kMesh.size();
 
 	vector<Mad_CoreMesh>::iterator it;
 	for(it = m_kMesh.begin(); it != m_kMesh.end(); it++)
@@ -556,22 +586,28 @@ bool ModellXXX::Export(MadExporter* mad, const char* filename)
 
 	for(it = m_kMesh.begin(); it != m_kMesh.end(); it++)
 	{
-		int iTotalNumOfVertex = it->akFrames[0].akVertex.size();
-		int iTotalTriangles = it->akFaces.size();
-		int iAntalFrames = it->akFrames.size();
+//		int iTotalNumOfVertex = it->akFrames[0].akVertex.size();
+//		int iTotalTriangles = it->akFaces.size();
+//		int iAntalFrames = it->akFrames.size();
+		int iTotalNumOfVertex = it->NumOfVertexPerFrame();
+		int iTotalTriangles = it->SizeFaces();
+		int iAntalFrames = it->SizeFrames();
 		
 		it->kHead.iVersionNum		= 1;
-		it->kHead.iNumOfTextures	= it->akTextures.size();
+//		it->kHead.iNumOfTextures	= it->akTextures.size();
+		it->kHead.iNumOfTextures	= it->SizeTextures();
 		it->kHead.iNumOfVertex		= iTotalNumOfVertex;
 		it->kHead.iNumOfFaces		= iTotalTriangles;
 		it->kHead.iNumOfFrames		= iAntalFrames;
-		it->kHead.iNumOfSubMeshes	= it->akSubMeshes.size();
-		it->kHead.iNumOfAnimation	= it->akAnimation.size();
+//		it->kHead.iNumOfSubMeshes	= it->akSubMeshes.size();
+//		it->kHead.iNumOfAnimation	= it->akAnimation.size();
+		it->kHead.iNumOfSubMeshes	= it->SizeSubMesh();
+		it->kHead.iNumOfAnimation	= it->SizeAnimations();
 
 	}
 
-	mad->m_kMesh = m_kMesh;		
-
+//	mad->m_kMesh = m_kMesh;		
+	mad->SetMesh(m_kMesh);
 
 /*	Mad_CoreMesh* pkMesh = mad->GetMesh("mesh");
 	pkMesh->kHead.iVersionNum		= 1;

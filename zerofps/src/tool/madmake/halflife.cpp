@@ -128,8 +128,8 @@ bool ModellHalfLife::Export(MadExporter* mad, const char* filename)
 
 	// Export Animation
 	Mad_CoreBoneAnimation	NewBoneAnim;
-	Mad_BoneKeyFrame		NewBoneKeyFrame;
-	Mad_BoneKey				NewBoneKey;
+	Mad_CoreBoneKeyFrame	NewBoneKeyFrame;
+	Mad_CoreBoneKey			NewBoneKey;
 	HLSequenceDesc*			pkSequence;
 	HLAnimation*			pkHLAnimation;
 

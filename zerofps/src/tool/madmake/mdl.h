@@ -2,7 +2,7 @@
 #define FILE__MDL_H
 
 #include "qpack.h"
-#include "mad.h"
+#include "madexport.h"
 
 #include "../../zerofps/basic/basicmath.pkg"
 
@@ -90,7 +90,7 @@ private:
 	bool ReadFrames(void);
 	void ReadTriangles(void);
 	int  ReadSkins(void);
-	void TransformTexCoo(int t, int v, MadTextureCoo *st);
+	void TransformTexCoo(int t, int v, Mad_TextureCoo *st);
 
 public:
 	ModellMD1() {};
