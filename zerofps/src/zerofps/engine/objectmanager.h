@@ -57,6 +57,9 @@ class ENGINE_API ObjectManager : public ZFObject{
 		void TESTVIM_LoadArcheTypes(char* szFileName);
 
 	public:
+		int	m_iForceNetUpdate;					
+		float	m_fEndTimeForceNet;
+
 		int	m_iUpdateFlags;												///< Flags of active update.
 		int	m_iRole;															///< I'm i a server or a client or both.
 

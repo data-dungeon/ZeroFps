@@ -24,6 +24,7 @@ ObjectManager::ObjectManager()
 	m_iTotalNetObjectData	= 0;
 	m_iNumOfNetObjects		= 0;
 
+	m_fEndTimeForceNet		= m_pkZeroFps->GetEngineTime();
 
 }
 
@@ -533,7 +534,16 @@ void ObjectManager::PackToClients()
 	g_ZFObjSys.Logf("net", " *** ObjectManager::PackToClients() *** \n");
 
 
-/*
+	if(m_pkZeroFps->GetEngineTime() < m_fEndTimeForceNet) {
+		m_iForceNetUpdate = 0xFFFFFFFF;
+		}
+	else {
+		m_iForceNetUpdate  = 0x0;					
+		}
+
+	m_iForceNetUpdate  = 0x0;					
+
+	/*
 	if(net->m_eNetStatus != NET_SERVER) {
 		m_aiNetDeleteList.clear();
 		return;
@@ -551,6 +561,8 @@ void ObjectManager::PackToClients()
 
 
 	for(list<Object*>::iterator it=m_akObjects.begin();it!=m_akObjects.end();it++) {
+		(*it)->m_iNetUpdateFlags |= m_iForceNetUpdate;
+		
 		if((*it)->NeedToPack() == false)					continue;
 		if((*it)->m_eRole != NETROLE_AUTHORITY)		continue;
 

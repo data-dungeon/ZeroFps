@@ -19,17 +19,19 @@ Object::Object() {
 	m_pkObjectMan->Add(this);	// Add ourself to objectmanger and get NetID.
 
 	// SetDefault Values.
-	m_kPos  = Vector3::ZERO;
-	m_kRot  = Vector3::ZERO;
-	m_kVel  = Vector3::ZERO;
-	m_kAcc  = Vector3::ZERO;
-	m_fRadius = 1;
+	m_kPos		= Vector3::ZERO;
+	m_kRot		= Vector3::ZERO;
+	m_kVel		= Vector3::ZERO;
+	m_kAcc		= Vector3::ZERO;
+	m_fRadius	= 1;
 	
-	m_kOldPos  = Vector3::ZERO;
-	m_kOldRot  = Vector3::ZERO;	
+	m_kOldPos	= Vector3::ZERO;
+	m_kOldRot	= Vector3::ZERO;	
 	
-	m_kName = "Object";	
-	m_strType = "Object";
+	m_kName		= "Object";	
+	m_strType	= "Object";
+
+	m_iNetUpdateFlags = 0;
 
 	m_eRole			= NETROLE_AUTHORITY;
 	m_eRemoteRole	= NETROLE_PROXY;
@@ -40,8 +42,6 @@ Object::Object() {
 	m_bSave					=	true;
 	m_pkParent				=	NULL;
 	m_akChilds.clear();	
-
-
 }
 
 Object::~Object() 
@@ -397,9 +397,16 @@ bool Object::NeedToPack()
 void Object::PackTo(NetPacket* pkNetPacket)
 {
 	//	Write Pos, Rotation.	
-	pkNetPacket->Write(m_kPos);
-	pkNetPacket->Write(m_kRot);
+	pkNetPacket->Write( m_iNetUpdateFlags );
+	if(m_iNetUpdateFlags & OBJ_NETFLAG_POS)
+		pkNetPacket->Write(m_kPos);
+	
+	if(m_iNetUpdateFlags & OBJ_NETFLAG_ROT)
+		pkNetPacket->Write(m_kRot);
+
 	pkNetPacket->Write(m_fRadius);
+
+//	pkNetPacket->Write_NetStr(m_kName.c_str());
 	pkNetPacket->Write_Str(m_kName.c_str());
 	g_ZFObjSys.Logf("net", " Object Name '%s':", m_kName.c_str() );
 	
@@ -422,6 +429,8 @@ void Object::PackTo(NetPacket* pkNetPacket)
 
 //	pkNetPacket->Write_Str("");
 	pkNetPacket->Write_NetStr("");
+
+	m_iNetUpdateFlags = 0;
 }
 
 void Object::PackFrom(NetPacket* pkNetPacket)
@@ -431,23 +440,29 @@ void Object::PackFrom(NetPacket* pkNetPacket)
 	Vector3 kVec;
 	float	  fFloat;
 
-	pkNetPacket->Read(kVec);
-	SetPos(kVec);
-	SetPos(kVec);
-	pkNetPacket->Read(kVec);
-	SetRot(kVec);
-	SetRot(kVec);
+	pkNetPacket->Read( m_iNetUpdateFlags );
+	if(m_iNetUpdateFlags & OBJ_NETFLAG_POS) {
+		pkNetPacket->Read(kVec);
+		SetPos(kVec);
+		SetPos(kVec);
+		g_ZFObjSys.Logf("net", "Pos: <%f,%f,%f>", kVec.x,kVec.y,kVec.z);
+		}
+
+	if(m_iNetUpdateFlags & OBJ_NETFLAG_ROT) {
+		pkNetPacket->Read(kVec);
+		SetRot(kVec);
+		SetRot(kVec);
+		g_ZFObjSys.Logf("net", "Rot: <%f,%f,%f>\n", kVec.x,kVec.y,kVec.z);
+		}
+
 	pkNetPacket->Read(fFloat);
 	GetRadius() = fFloat;
 
 	char szStr[256];
 	pkNetPacket->Read_Str(szStr);
+	//pkNetPacket->Read_NetStr(szStr);
 	m_kName = szStr;
 	g_ZFObjSys.Logf("net", " Object Name '%s':", m_kName.c_str() );
-
-
-	g_ZFObjSys.Logf("net", "<%f,%f,%f>", m_kPos.x,m_kPos.y,m_kPos.z);
-	g_ZFObjSys.Logf("net", "<%f,%f,%f>\n", m_kRot.x,m_kRot.y,m_kRot.z);
 
 	char szProperty[256];
 
@@ -706,12 +721,22 @@ Vector3 Object::GetIPos()
 
 void Object::SetRot(Vector3 kRot)
 {
+	if(kRot != m_kRot) {
+		m_iNetUpdateFlags |= OBJ_NETFLAG_ROT;
+		cout << "SetRot changed " << endl;
+		}
+
 	m_kOldRot = m_kRot;
 	m_kRot = kRot;
 }
 
 void Object::SetPos(Vector3 kPos)
 {
+	if(kPos != m_kPos) {
+		m_iNetUpdateFlags |= OBJ_NETFLAG_POS;
+		cout << "SetPos changed " << endl;
+		}
+
 	m_kOldPos = m_kPos;
 	m_kPos = kPos;
 }

@@ -134,6 +134,9 @@ public:
 	ObjectArcheType& operator=(const ObjectArcheType &Other);
 };
 
+// Net Flags for Network updates
+#define OBJ_NETFLAG_POS		1
+#define OBJ_NETFLAG_ROT		2
 
 
 /// Game Object for things in game 
@@ -145,6 +148,8 @@ class ENGINE_API Object
 
 	protected:
 		Object();		
+
+		int							m_iNetUpdateFlags;					
 
 		Vector3						m_kPos;								///< Position of object in world.
 		Vector3						m_kRot;								///< Rotation of object in world.
