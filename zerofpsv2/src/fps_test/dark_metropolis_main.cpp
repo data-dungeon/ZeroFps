@@ -15,6 +15,8 @@
 #include "../mcommon/p_dmshop.h"
 #include "../zerofpsv2/render/glguirender.h"
 
+#include "../mcommon/p_charactercontrol.h"
+
 DarkMetropolis g_kDM("DM_arcad",0,0,0);
 
 DarkMetropolis::DarkMetropolis(char* aName,int iWidth,int iHeight,int iDepth) 
@@ -386,6 +388,8 @@ bool DarkMetropolis::IsValid()
 
 void DarkMetropolis::RegisterPropertys()
 {
+	m_pkPropertyFactory->Register("P_CharacterControl", Create_P_CharacterControl);
+
 	m_pkPropertyFactory->Register("P_Ml", Create_P_Ml);
 
 	m_pkPropertyFactory->Register("P_ArcadeCharacter",	Create_P_ArcadeCharacter);
@@ -420,6 +424,7 @@ void DarkMetropolis::Input()
 
 	if(m_pkPlayerEntity)
 	{	
+		/*
 		if(P_Tcs* pkTcs = (P_Tcs*)m_pkPlayerEntity->GetProperty("P_Tcs"))
 		{
 			Vector3 kVel(0,0,0);	
@@ -455,9 +460,8 @@ void DarkMetropolis::Input()
 			m_kPlayerwalkforce = kVel;				
 			//pkTcs->SetWalkVel(kVel);				
 		}		
+		*/
 
-		
-					
 		if(P_Camera* pkCam = (P_Camera*)m_pkPlayerEntity->GetProperty("P_Camera"))
 		{
 			
@@ -465,7 +469,7 @@ void DarkMetropolis::Input()
 			pkCam->Set3PPAngle(pkCam->Get3PPAngle() + (z/5.0));
 			
 			
-			pkCam->SetOffset(Vector3(0,1.4,0));
+			pkCam->SetOffset(Vector3(0,1.0,0)); 
 					
 
 			float fDistance = pkCam->Get3PDistance();
@@ -499,14 +503,35 @@ void DarkMetropolis::Input()
 				
 			pkCam->Set3PDistance(fDistance);
 			
-						
-						
+			/*
 			Matrix4 kRot;
 			kRot.Identity();
 			kRot.Rotate(0,pkCam->Get3PYAngle(),0);
 			kRot.Transponse();				
 			m_pkPlayerEntity->SetLocalRotM(kRot);				
+			*/
 		}
+		
+				
+		if(P_CharacterControl* pkCC = (P_CharacterControl*)m_pkPlayerEntity->GetProperty("P_CharacterControl"))
+		{
+			bitset<6>	kControls;
+			
+			kControls[eUP] = m_pkInputHandle->Pressed(KEY_W);
+			kControls[eDOWN] = m_pkInputHandle->Pressed(KEY_S);			
+			kControls[eLEFT] = m_pkInputHandle->Pressed(KEY_A);			
+			kControls[eRIGHT] = m_pkInputHandle->Pressed(KEY_D);
+			kControls[eJUMP] =  m_pkInputHandle->Pressed(MOUSERIGHT);
+		
+			pkCC->SetKeys(&kControls);
+		
+			if(P_Camera* pkCam = (P_Camera*)m_pkPlayerEntity->GetProperty("P_Camera"))
+			{			
+				pkCC->SetRotation(pkCam->Get3PYAngle(),pkCam->Get3PPAngle());
+			}
+		}		
+		
+					
 		
 		if(m_pkInputHandle->Pressed(MOUSELEFT))
 		{
@@ -514,7 +539,7 @@ void DarkMetropolis::Input()
 			{
 				m_fDelayTimer = m_pkFps->GetTicks();
 								
-				Entity* pkEnt = m_pkObjectMan->CreateObjectFromScriptInZone("data/script/objects/particles/particleball.lua",m_pkPlayerEntity->GetWorldPosV()+Vector3(0,1.5,0) );											
+				Entity* pkEnt = m_pkObjectMan->CreateObjectFromScriptInZone("data/script/objects/particles/particleball.lua",m_pkPlayerEntity->GetWorldPosV()+Vector3(0,0.5,0) );											
 				if(P_Tcs* pkTcs = (P_Tcs*)pkEnt->GetProperty("P_Tcs"))
 				{
 					if(P_Camera* pkCam = (P_Camera*)m_pkPlayerEntity->GetProperty("P_Camera"))
@@ -1144,8 +1169,8 @@ bool DarkMetropolis::CreatePlayer()
 					cout<<"setting enviroment"<<endl;	
 				}					
 				
-				m_pkPlayerEntity->DeleteProperty("P_ArcadeCharacter");
-				m_pkPlayerEntity->DeleteProperty("P_Controller");
+				//m_pkPlayerEntity->DeleteProperty("P_ArcadeCharacter");
+				//m_pkPlayerEntity->DeleteProperty("P_Controller");
 				
 				//m_pkPlayerEntity->DeleteProperty("P_Enviroment");
 				
