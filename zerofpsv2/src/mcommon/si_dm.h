@@ -19,8 +19,12 @@ namespace DMLua
 	extern ZFScriptSystem* 		g_pkScript;
 	extern EntityManager*		g_pkObjMan;
 
+	extern int g_iCurrentMission;
+
 	void MCOMMON_API Init(EntityManager* pkObjMan,ZFScriptSystem* pkScript);
-	int MCOMMON_API GetClosestDMCharacterLua(lua_State* pkLua);
+	int MCOMMON_API GetDMCharacterByNameLua(lua_State* pkLua);
+	int MCOMMON_API GetDMCharacterClosestLua(lua_State* pkLua);
+	int MCOMMON_API SetNewMissionLua(lua_State* pkLua);
 };
 
 #endif

@@ -29,6 +29,8 @@ class MCOMMON_API P_DMMission: public Property {
 		void Save(ZFIoInterface* pkPackage);
 		void Load(ZFIoInterface* pkPackage);
 
+		bool SetCurrentMission(string strMissionScript, int iDifficulty);
+
 		string m_strName;
 		string m_strMissionScript;
 
@@ -36,6 +38,11 @@ class MCOMMON_API P_DMMission: public Property {
 
 		ZFScriptSystem* m_pkScriptSys;
 		ZFResourceHandle* m_pkScriptResHandle;
+
+private:
+
+	bool m_bMissionIsChanged;
+	int m_iMission; // om detta nummer inte är samma som DMLua::g_iCurrentMission så har uppdraget lyckats
 
 };
 

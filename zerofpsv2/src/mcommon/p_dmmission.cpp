@@ -1,4 +1,5 @@
 #include "p_dmmission.h" 
+#include "si_dm.h"
 
 P_DMMission::P_DMMission()
 {
@@ -9,11 +10,13 @@ P_DMMission::P_DMMission()
 	m_strName = "Unnamed mission";
 	m_strMissionScript = "";
 	m_iDifficulty = 0;
+	m_bMissionIsChanged = false;
 	
 	bNetwork = true;
 
 	m_pkScriptSys = static_cast<ZFScriptSystem*>(g_ZFObjSys.GetObjectPtr("ZFScriptSystem"));
 	m_pkScriptResHandle = NULL;
+	m_iMission = 0;
 }
 
 P_DMMission::~P_DMMission()
@@ -79,9 +82,21 @@ void P_DMMission::Update()
 	if(m_pkScriptResHandle != NULL)
 	{
 		m_pkScriptSys->Call(m_pkScriptResHandle, "IsMissionDone", 0, 0);
+
+		if(DMLua::g_iCurrentMission > m_iMission)
+		{
+			printf("\n---------------------------------\n");
+			printf("Mission \"%s\" (%i) sucess!\n", m_strMissionScript.c_str(), 
+				m_iMission);
+			printf("\n---------------------------------\n");
+
+			m_iMission = DMLua::g_iCurrentMission;
+			m_pkScriptSys->Call(m_pkScriptResHandle, "OnMissionSuccess", 0, 0);
+		}
 	}
 	else
-	if(!m_strMissionScript.empty() && m_pkScriptResHandle == NULL)
+	if((!m_strMissionScript.empty() && m_pkScriptResHandle == NULL) 
+		|| m_bMissionIsChanged)
 	{
 		m_pkScriptResHandle = new ZFResourceHandle;
 		if(!m_pkScriptResHandle->SetRes(m_strMissionScript))
@@ -91,7 +106,23 @@ void P_DMMission::Update()
 			return;
 		}
 	}
+}
 
+bool P_DMMission::SetCurrentMission(string strMissionScript, int iDifficulty)
+{
+	m_strMissionScript = strMissionScript;
+	m_iDifficulty = iDifficulty;
+	m_bMissionIsChanged = true;
+
+	delete m_pkScriptResHandle;
+	m_pkScriptResHandle = NULL;
+
+	printf("\n---------------------------------\n");
+	printf("Changing mission to \"%s\" (%i)\n", strMissionScript.c_str(), 
+		DMLua::g_iCurrentMission);
+	printf("\n---------------------------------\n");
+
+	return true;
 }
 
 Property* Create_P_DMMission()

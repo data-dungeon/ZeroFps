@@ -1,13 +1,18 @@
+
 function OnMissionSuccess()
---	Print("victory!, mission complete.");	
+	SetNewMission("data/script/missions/second_mission.lua", 2)
 end
 
 function IsMissionDone()
 
-	name = GetClosestDMCharacter();
+	object = GetDMCharacterByName("adolf hitler");
 
-	if name == "mormor ond" then
-		--Print("apan satt i grannen, skulle");
+	-----------------------------------------------------------------------
+	-- Kolla om Adolf hitler inte finns. I så fall antar vi att han död och 
+	-- uppdraget är slutfört.
+	-----------------------------------------------------------------------
+	if object == -1 then
+		CurrentMission = CurrentMission + 1
 	end
 
 end
