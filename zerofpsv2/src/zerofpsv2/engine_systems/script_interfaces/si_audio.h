@@ -26,6 +26,9 @@ namespace AudioLua
 
 	int ENGINE_SYSTEMS_API StopSoundLua(lua_State* pkLua);
 
+	int ENGINE_SYSTEMS_API PlayMusicLua(lua_State* pkLua);
+	int ENGINE_SYSTEMS_API StopMusicLua(lua_State* pkLua);
+
 
 };
 

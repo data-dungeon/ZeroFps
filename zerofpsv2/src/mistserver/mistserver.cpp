@@ -914,7 +914,8 @@ void MistServer::OnCommand(int iID, ZGuiWnd *pkMainWnd)
 			if(strWndClicked == "DeleteObjectButton")
 			{		
 				Entity* pkObj = pkObjectMan->GetObjectByNetWorkID(m_iCurrentObject);		
-				if(pkObj) {
+				if(pkObj) 
+				{
 					pkObjectMan->Delete(pkObj);
 					m_iCurrentObject = -1;
 				}
@@ -923,7 +924,8 @@ void MistServer::OnCommand(int iID, ZGuiWnd *pkMainWnd)
 			if(strWndClicked == "PlaceongroundButton")
 			{
 				Entity* pkObj = pkObjectMan->GetObjectByNetWorkID(m_iCurrentObject);		
-				if(pkObj) {
+				if(pkObj) 
+				{
 					Vector3 pos = pkObj->GetLocalPosV(); pos.y = 0.0;
 					pkObj->SetLocalPosV(pos); 
 					m_iCurrentObject = -1;
@@ -978,19 +980,28 @@ void MistServer::OnClickListbox(int iListBoxID, int iListboxIndex, ZGuiWnd* pkMa
 			}
 		}
 	}
-	else
-	if(strMainWndName == "MainMenu")
+	
+
+	ZGuiWnd* pkParent = pkMain->GetParent(); 
+
+	if(pkParent)
 	{
-		// Run Menu command
-		for(int i=0; i<m_uiNumMenuItems; i++)
+		string strParentName = pkParent->GetName();
+		
+		if(strParentName == "MainMenu")
 		{
-			if( m_pkMenuInfo[i].iIndex == iListboxIndex)
+			// Run Menu command
+			for(int i=0; i<m_uiNumMenuItems; i++)
 			{
-				char* cmd = m_pkMenuInfo[i].szCommando;
-				pkFps->m_pkConsole->Execute(cmd);
-				break;
+				if( m_pkMenuInfo[i].iIndex == iListboxIndex)
+				{
+					char* cmd = m_pkMenuInfo[i].szCommando;
+					pkFps->m_pkConsole->Execute(cmd);
+					break;
+				}
 			}
 		}
+
 	}
 }
 

@@ -279,6 +279,8 @@ void MistClient::OnSystem()
 				// Skapa spelar panelen
 				if(GetWnd("IntroWnd") != NULL && GetWnd("IntroWnd")->IsVisible() )
 				{
+/*					pkMusic->LoadFile("data/music/ambient_loops/grotta3_fx_120bpm.ogg");
+					pkMusic->Play();*/
 					GetWnd("IntroWnd")->Hide();
 					pkScript->Call(m_pkScriptResHandle, "CreatePlayerPanel", 0, 0);
 					CreateGuiInterface();

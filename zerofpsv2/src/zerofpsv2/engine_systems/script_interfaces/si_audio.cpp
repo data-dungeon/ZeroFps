@@ -21,6 +21,9 @@ void AudioLua::Init(ZFAudioSystem* pkAudio, EntityManager* pkObjMan,
 	pkScript->ExposeFunction("PlaySound",	AudioLua::PlaySoundLua);
 	pkScript->ExposeFunction("PlayGuiSound", AudioLua::PlayGuiSoundLua); 
 	pkScript->ExposeFunction("StopSound",	AudioLua::StopSoundLua);
+
+/*	pkScript->ExposeFunction("PlayMusic",	AudioLua::PlayMusicLua);
+	pkScript->ExposeFunction("StopMusic",	AudioLua::StopMusicLua);*/
 }
 
 // PlaySound
@@ -224,5 +227,15 @@ int AudioLua::StopSoundLua(lua_State* pkLua)
 		printf("Failed to stop sound!\n");
 	}*/
 
+	return 1;
+}
+
+int AudioLua::PlayMusicLua(lua_State* pkLua)
+{
+	return 1;
+}
+
+int AudioLua::StopMusicLua(lua_State* pkLua)
+{
 	return 1;
 }
