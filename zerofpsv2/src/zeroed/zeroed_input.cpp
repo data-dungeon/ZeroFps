@@ -58,10 +58,11 @@ void ZeroEd::Input_EditZone()
 		SendZoneListRequest();	
 	}
 
-	if(m_pkInputHandle->Pressed(MOUSELEFT) && !DelayCommand())
+	if((m_pkInputHandle->Pressed(MOUSELEFT) || m_pkInputHandle->Pressed(KEY_KP0)) && !DelayCommand())
 	{
-		if(ZoneHaveNeighbour(m_kZoneMarkerPos, m_kZoneSize))
-			SendAddZone(m_kZoneMarkerPos,m_kZoneSize,m_strActiveZoneName);
+		SendAddZone(m_kZoneMarkerPos,m_kZoneSize,m_strActiveZoneName);
+		m_kLastZonePos=m_kZoneMarkerPos; 
+		m_kLastZoneSize=m_kZoneSize;
 		
 		//request a new zone list
 		//SendZoneListRequest();	
@@ -70,7 +71,7 @@ void ZeroEd::Input_EditZone()
 	if(m_pkInputHandle->Pressed(MOUSEMIDDLE) && !DelayCommand())
 	{
 		SendAddZone(m_kZoneMarkerPos,m_kZoneSize,string(""));
-		
+
 		//request a new zone list
 		//SendZoneListRequest();
 	}	
@@ -91,12 +92,12 @@ void ZeroEd::Input_EditZone()
 	if(m_pkInputHandle->VKIsDown("selectzone") && !DelayCommand())
 	{	
 		m_iCurrentMarkedZone = GetZoneID(m_kZoneMarkerPos);
+		m_kLastZonePos = m_kZoneMarkerPos;
 		
 		if(ZoneData* pkData = GetZoneData(m_iCurrentMarkedZone))
 			Select_Toggle(pkData->m_iZoneObjectID, m_pkInputHandle->Pressed(KEY_LSHIFT));
 	}
 
-	
 	//some default zone sizes, a hack kind of =D
 	if(m_pkInputHandle->Pressed(KEY_1)) m_kZoneSize.Set(4,4,4);
 	if(m_pkInputHandle->Pressed(KEY_2)) m_kZoneSize.Set(8,8,8);
@@ -104,6 +105,18 @@ void ZeroEd::Input_EditZone()
 	if(m_pkInputHandle->Pressed(KEY_4)) m_kZoneSize.Set(32,16,32);	
 	if(m_pkInputHandle->Pressed(KEY_5)) m_kZoneSize.Set(64,16,64);		
 	if(m_pkInputHandle->Pressed(KEY_6)) m_kZoneSize.Set(1024,32,1024);	
+
+	if(m_iAutoSnapZoneCorner != -1)
+	{
+		if(m_pkInputHandle->Pressed(MOUSEWUP)) 	
+		{
+			m_iAutoSnapZoneCorner++; if(m_iAutoSnapZoneCorner==9) m_iAutoSnapZoneCorner=1;
+		}
+		if(m_pkInputHandle->Pressed(MOUSEWDOWN))	
+		{
+			m_iAutoSnapZoneCorner--; if(m_iAutoSnapZoneCorner==0) m_iAutoSnapZoneCorner=8;
+		}
+	}
 }
 
 
@@ -345,9 +358,11 @@ void ZeroEd::Input_Camera(float fMouseX, float fMouseY)
 		if(m_pkInputHandle->VKIsDown("up"))			newpos.y -= fSpeedScale;
 				
 		//mouse wheel test
-		if(m_pkInputHandle->Pressed(MOUSEWUP)) 	newpos.y += 1.0;
-		if(m_pkInputHandle->Pressed(MOUSEWDOWN))	newpos.y -= 1.0;
-		
+		if(m_iAutoSnapZoneCorner == -1)
+		{
+			if(m_pkInputHandle->Pressed(MOUSEWUP)) 	newpos.y += 1.0;
+			if(m_pkInputHandle->Pressed(MOUSEWDOWN))	newpos.y -= 1.0;
+		}
 		
 		Vector3 rot;
 		rot.Set(float(-fMouseY / 5.0),float(-fMouseX / 5.0),0);
@@ -358,8 +373,7 @@ void ZeroEd::Input_Camera(float fMouseX, float fMouseY)
 		Vector3 bla = Vector3(0,0,1);
 		bla = kRm.VectorTransform(bla);
 		kRm.LookDir(bla,Vector3(0,1,0));
-		kRm.Transponse();		
-
+		kRm.Transponse();			
 				
 		m_pkActiveCameraObject->SetLocalPosV(newpos);		
 		if(m_pkInputHandle->VKIsDown("pancam"))

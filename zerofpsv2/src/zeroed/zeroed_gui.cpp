@@ -42,7 +42,6 @@ void ZeroEd::SetupGuiEnviroment()
    m_pkGui->GetToolTip()->AddToolTip(GetWnd("AddPropertyBn"),"Add Selected Property");
 
 	CheckButton("PlaceongroundButton", m_bPlaceObjectsOnGround);
-	CheckButton("DisableFreeZoneBuildBn", m_bDisableFreeZonePlacement);
 
 	ShowWnd("SelectFileWnd", false);
 	ShowWnd("PreviewWnd", false);
@@ -167,8 +166,7 @@ void ZeroEd::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 			else
 			if(strWndClicked == "DisableFreeZoneBuildBn")
 			{
-				m_bDisableFreeZonePlacement = IsButtonChecked((char*)strWndClicked.c_str());
-				RebuildZonePosArray();
+				if(m_iAutoSnapZoneCorner==-1) m_iAutoSnapZoneCorner=0; else m_iAutoSnapZoneCorner=-1;
 			}
 		}
 		else

@@ -67,6 +67,7 @@ class ZeroEd :public Application , public ZGuiApp {
 			FID_CAMGRID,
 			FID_SELNONE,
 			FID_GRIDSIZE,
+			FID_GRIDAUTOSNAP,
 			FID_GRIDSNAP,
 			FID_CAMFOLLOW,
 			FID_CAMNOFOLLOW,
@@ -98,20 +99,30 @@ class ZeroEd :public Application , public ZGuiApp {
 			SELECT_MAD,
 		};
 
-		
+		enum ZoneCorners
+		{ 
+			None=0, 
+			TopLeft, 
+			Top, 
+			TopRight, 
+			Right, 
+			BottomRight, 
+			Bottom, 
+			BottomLeft, 
+			Left 
+		};
+
 		//wierd stuff
 		char		szCoolName[256];
 		string	strMasterSmiley;
 
 		// zone and object edit
-		bool m_bPlaceObjectsOnGround;
-		bool m_bDisableFreeZonePlacement;
-		vector< pair<Vector3,Vector3> > m_kAddedZonePlacement;
-		bool m_bNeedToRebuildZonePosArray;
+		bool		m_bPlaceObjectsOnGround;
+		int		m_iAutoSnapZoneCorner; // -1 = dont use
 
 		// gui stuff
-		int m_iSelectFileState;		
-		Entity* m_pkPreviewEntity;
+		int		m_iSelectFileState;		
+		Entity*	m_pkPreviewEntity;
 		
 		string	m_strWorldDir;						// The current dir for the world. Use for SaveAs and Title.
 
@@ -132,7 +143,7 @@ class ZeroEd :public Application , public ZGuiApp {
 		int		m_iEditMode;
 
 		//zone data
-		string	m_strActiveZoneName, m_strPrevZoneName;
+		string	m_strActiveZoneName;
 		string	m_strActiveObjectName;
 		string	m_strActiveEnviroment;
 		
@@ -148,6 +159,9 @@ class ZeroEd :public Application , public ZGuiApp {
 		//zone data
 		Vector3	m_kZoneSize;
 		Vector3	m_kZoneMarkerPos;
+		Vector3  m_kLastZonePos;
+		Vector3  m_kLastZoneSize;
+		
 		
 		//entity data
 		Vector3	m_kObjectMarkerPos;
@@ -182,8 +196,6 @@ class ZeroEd :public Application , public ZGuiApp {
 		void EditRunCommand(FuncId_e eEditCmd);
 		
 		// zone and object edit
-		void RebuildZonePosArray();
-		bool ZoneHaveNeighbour(const Vector3& kPos, const Vector3& kSize);
 		bool PlaceObjectOnGround(int iObjectID, int iZoneID);
 		bool PlaceObjectOnGround(int iObjectID);
 		

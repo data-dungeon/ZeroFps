@@ -88,7 +88,6 @@ ZeroEd::ZeroEd(char* aName,int iWidth,int iHeight,int iDepth)
 	m_bEditSun		= 					false;
 	m_bSoloMode     = 				true;
 	m_bPlaceObjectsOnGround = 		false;
-	m_bDisableFreeZonePlacement = false;
 	m_bIsEditor =  					true;
 	strcpy(szCoolName , "Guldfisk");
    strMasterSmiley = "Vim";
@@ -116,6 +115,7 @@ ZeroEd::ZeroEd(char* aName,int iWidth,int iHeight,int iDepth)
 	Register_Cmd("selnone", 	FID_SELNONE);
 	Register_Cmd("gridsize", 	FID_GRIDSIZE);
 	Register_Cmd("gridsnap", 	FID_GRIDSNAP);
+	Register_Cmd("gridautosnap", FID_GRIDAUTOSNAP);
 	Register_Cmd("snapsize", 	FID_SNAPSIZE);
 	Register_Cmd("camfollow",	FID_CAMFOLLOW);
 	Register_Cmd("camnofollow",FID_CAMNOFOLLOW);
@@ -145,11 +145,12 @@ ZeroEd::ZeroEd(char* aName,int iWidth,int iHeight,int iDepth)
 	m_bGrabing = false;
 
 	m_fSnapSize = 2;
+	m_kLastZonePos = Vector3(0,0,0);
 
 	m_kTestGraph.SetSize(60,60,100);
 	m_kTestGraph.SetMinMax(0,1500);
 
-
+	m_iAutoSnapZoneCorner = -1;
 } 
 
 
@@ -891,7 +892,7 @@ void ZeroEd::RunCommand(int cmdid, const CmdArgument* kCommand)
 			m_pkZeroFps->StartServer(true,false);
 			m_strWorldDir = "";
 			SetTitle("ZeroEd");
-			m_kAddedZonePlacement.clear(); 
+			m_kLastZonePos=Vector3(0,0,0); 
 			break;
 		
 		case FID_LOAD:
@@ -944,8 +945,6 @@ void ZeroEd::RunCommand(int cmdid, const CmdArgument* kCommand)
 			cout<<"starting server"<<endl;
 			//GetSystem().RunCommand("server Default server",CSYS_SRC_SUBSYS);			
 			m_pkZeroFps->StartServer(true,false);
-			
-			m_bNeedToRebuildZonePosArray = true;
 
 			break;		
 		
@@ -1096,7 +1095,8 @@ void ZeroEd::RunCommand(int cmdid, const CmdArgument* kCommand)
 		case FID_CAMNOFOLLOW:	CamFollow(false);		break;
 			
 		case FID_CAMGRID:		Camera::m_bDrawOrthoGrid = !Camera::m_bDrawOrthoGrid;		break;
-		case FID_GRIDSNAP:	Camera::m_bGridSnap = !Camera::m_bGridSnap;		break;
+		case FID_GRIDSNAP:	Camera::m_bGridSnap = !Camera::m_bGridSnap;	break;
+		case FID_GRIDAUTOSNAP: if(m_iAutoSnapZoneCorner==-1) m_iAutoSnapZoneCorner=0; else m_iAutoSnapZoneCorner=-1;	break; 
 		case FID_SELNONE:		Select_None();		break;
 		case FID_DELETE:		SendDeleteSelected();	break;
 
@@ -1362,11 +1362,56 @@ void ZeroEd::UpdateZoneMarkerPos()
 	if(m_pkActiveCameraObject)
 	{
 		Vector3 temp = m_pkActiveCamera->GetPos() + Get3DMousePos(false)*15;
-	
-		m_kZoneMarkerPos.x = round2(temp.x/m_fSnapSize) * m_fSnapSize;
-		m_kZoneMarkerPos.y = round2(temp.y/m_fSnapSize) * m_fSnapSize;
-		m_kZoneMarkerPos.z = round2(temp.z/m_fSnapSize) * m_fSnapSize;
+		
+		if(m_iAutoSnapZoneCorner == -1)
+		{
+			m_kZoneMarkerPos.x = round2(temp.x/m_fSnapSize) * m_fSnapSize;
+			m_kZoneMarkerPos.y = round2(temp.y/m_fSnapSize) * m_fSnapSize;
+			m_kZoneMarkerPos.z = round2(temp.z/m_fSnapSize) * m_fSnapSize;
+		}
+		else
+		{
+			if(m_kLastZonePos.IsZero())
+				m_kZoneMarkerPos = temp;
+			else
+			{
+				m_kZoneMarkerPos = m_kLastZonePos + Vector3(m_kZoneSize.x,0,m_kZoneSize.z) - 
+					Vector3( (m_kZoneSize.x-m_kLastZoneSize.x)/2, -(m_kZoneSize.y-m_kLastZoneSize.y)/2, 
+					(m_kZoneSize.z-m_kLastZoneSize.z)/2 );
 
+				switch(m_iAutoSnapZoneCorner)
+				{
+				case Top:
+					m_kZoneMarkerPos.x += (m_kLastZonePos.x-m_kZoneMarkerPos.x) - (m_kZoneSize.x-m_kLastZoneSize.x)/2;
+					break;
+				case TopRight:
+					m_kZoneMarkerPos.x += (m_kLastZonePos.x-m_kZoneMarkerPos.x) - (m_kZoneSize.x-m_kLastZoneSize.x)/2 - m_kLastZoneSize.x;
+					break;
+				case Bottom:
+					m_kZoneMarkerPos.x += (m_kLastZonePos.x-m_kZoneMarkerPos.x) - (m_kZoneSize.x-m_kLastZoneSize.x)/2;
+					m_kZoneMarkerPos.z += (m_kLastZonePos.z-m_kZoneMarkerPos.z) - (m_kZoneSize.z-m_kLastZoneSize.z)/2 - m_kLastZoneSize.z;
+					break;
+				case BottomRight:
+					m_kZoneMarkerPos.x += (m_kLastZonePos.x-m_kZoneMarkerPos.x) - (m_kZoneSize.x-m_kLastZoneSize.x)/2 - m_kLastZoneSize.x;
+					m_kZoneMarkerPos.z += (m_kLastZonePos.z-m_kZoneMarkerPos.z) - (m_kZoneSize.z-m_kLastZoneSize.z)/2 - m_kLastZoneSize.z;
+					break;
+				case BottomLeft:
+					m_kZoneMarkerPos.z += (m_kLastZonePos.z-m_kZoneMarkerPos.z) - (m_kZoneSize.z-m_kLastZoneSize.z)/2 - m_kLastZoneSize.z;
+					break;
+				case Left:
+					m_kZoneMarkerPos.z += - m_kLastZoneSize.z;
+					break;
+				case Right:
+					m_kZoneMarkerPos.x += (m_kLastZonePos.x-m_kZoneMarkerPos.x) - (m_kZoneSize.x-m_kLastZoneSize.x)/2 - m_kLastZoneSize.x;
+					m_kZoneMarkerPos.z += - m_kLastZoneSize.z;
+					break;
+				case None:
+					m_kZoneMarkerPos = m_kLastZonePos;
+					break;
+				}
+			}
+		}
+		
 		//
 		// Tvinga kameran att behålla samma X,Y eller Z position som tidigare
 		// om man befinner sig i ortogonalt kameraläge.
@@ -1412,7 +1457,10 @@ void ZeroEd::AutoSetZoneSize(string strName)
 {
 	int iPos = strName.find_last_of('-');
 	if( iPos == string::npos )
+	{
+		m_kZoneSize.Set(8,8,8);
 		return;
+	}
 
 	int x,y,z;
 	char szString[256];
@@ -1523,81 +1571,6 @@ bool ZeroEd::PlaceObjectOnGround(int iObjectID)
 
 	return false;
 }
-
-
-bool ZeroEd::ZoneHaveNeighbour(const Vector3& kPos, const Vector3& kSize)
-{
-	if(m_bDisableFreeZonePlacement == false)
-		return true;
-
-	if(m_bNeedToRebuildZonePosArray)
-		RebuildZonePosArray();
-
-	const int size = m_kAddedZonePlacement.size();
-
-	if(size > 0)
-	{
-		bool bOkidoki = false;
-
-		Vector3 sLeft(kPos);
-		Vector3 sRight(kPos.x + kSize.x, kPos.y, kPos.z);
-		Vector3 sTop(kPos.x, kPos.y, kPos.z + kSize.z);
-		Vector3 sBottom(kPos.x + kSize.x, kPos.y, kPos.z + kSize.z);
-
-		for(int i=0; i<size; i++)
-		{
-			Vector3 pos = m_kAddedZonePlacement[i].first;
-			Vector3 sz = m_kAddedZonePlacement[i].second;
-
-			Vector3 dLeft(pos);
-			Vector3 dRight(pos.x + sz.x, pos.y, pos.z);
-			Vector3 dTop(pos.x, kPos.y, pos.z + sz.z);
-			Vector3 dBottom(pos.x + sz.x, pos.y, pos.z + sz.z);
-
-			if(sLeft == dLeft || sLeft == dRight || sLeft == dTop || sLeft == dBottom) {
-				bOkidoki = true; break;
-			}
-			if(sRight == dLeft || sRight == dRight || sRight == dTop || sRight == dBottom) {
-				bOkidoki = true; break;
-			}
-			if(sTop == dLeft || sTop == dRight || sTop == dTop || sTop == dBottom) {
-				bOkidoki = true; break;
-			}
-			if(sBottom == dLeft || sBottom == dRight || sBottom == dTop || sBottom == dBottom) {
-				bOkidoki = true; break;
-			}
-		}
-
-		if(bOkidoki == false)
-			return false;
-	}
-
-	m_kAddedZonePlacement.push_back( pair<Vector3,Vector3>(kPos, kSize) );
-	return true;	
-}
-
-
-void ZeroEd::RebuildZonePosArray()
-{
-	m_kAddedZonePlacement.clear();
-	vector<Entity*> vkEntList;
-	m_pkEntityManager->GetAllEntitys(&vkEntList);
-	for(int i=0; i<vkEntList.size(); i++)
-	{
-		if(vkEntList[i]->IsZone()) 
-		{
-			int zone = m_pkEntityManager->GetZoneIndex(vkEntList[i]->GetWorldPosV(),-1, false);
-
-			ZoneData* pkData = m_pkEntityManager->GetZoneData(zone);
-			if(pkData)
-				m_kAddedZonePlacement.push_back( pair<Vector3,
-					Vector3>(pkData->m_kPos, pkData->m_kSize) );
-		}
-	}
-
-	m_bNeedToRebuildZonePosArray = false;
-}	
-
 
 void ZeroEd::OnNetworkMessage(NetPacket *PkNetMessage)
 {
