@@ -52,11 +52,12 @@ class ENGINE_SYSTEMS_API P_Camera : public Property
 
 		void SetCamera(Camera *pkCamera);
 		
-		float Get3PYAngle ()							{	return m_f3PYAngle; 		}
-		float Get3PPAngle ()							{	return m_f3PPAngle; 		}
-
-		void Set3PYAngle(float fA) 				{	m_f3PYAngle =  fA;			}
-		void Set3PPAngle(float fP) 				{	m_f3PPAngle =  fP;			}
+		float Get3PYAngle()							{	return m_f3PYAngle; 		}
+		float Get3PPAngle()							{	return m_f3PPAngle; 		}
+		float Get3PDistance()						{	return m_f3PDistance;	}
+		
+		void Set3PYAngle(float fA) 				{	m_f3PYAngle =  fA;		}
+		void Set3PPAngle(float fP) 				{	m_f3PPAngle =  fP;		}
 		void Set3PDistance(float fD) 				{	m_f3PDistance = fD;		}
 		void SetOffset(Vector3 kOffset) 			{	m_kOffset = kOffset;		}
 		void SetType(CamType_e kType);

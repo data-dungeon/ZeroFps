@@ -32,11 +32,11 @@ Entity::Entity()
 
 	// SetDefault Values.
 	m_kLocalRotM.Identity();
-	m_kLocalPosV= Vector3::ZERO;	
+	m_kLocalPosV= 	Vector3::ZERO;	
 	m_kILocalPosV= Vector3::ZERO;	
-	m_kVel		= Vector3::ZERO;
-	m_kAcc		= Vector3::ZERO;
-	m_fRadius	= 1;
+	m_kVel		= 	Vector3::ZERO;
+	m_kAcc		= 	Vector3::ZERO;
+	m_fRadius	= 	1;
 	
   	SetName("A Entity");
 	SetType("Entity");

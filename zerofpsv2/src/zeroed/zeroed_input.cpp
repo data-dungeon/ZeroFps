@@ -315,10 +315,10 @@ void ZeroEd::Input_Camera(float fMouseX, float fMouseY)
 		xv.Normalize();
 		zv.Normalize();
 
-		if(m_pkInputHandle->VKIsDown("right"))		newpos += xv * fSpeedScale;		
-		if(m_pkInputHandle->VKIsDown("left"))		newpos += xv * -fSpeedScale;		
-		if(m_pkInputHandle->VKIsDown("forward"))	newpos += zv * -fSpeedScale;
-		if(m_pkInputHandle->VKIsDown("back"))		newpos += zv * fSpeedScale;	
+		if(m_pkInputHandle->VKIsDown("right"))		newpos += xv * -fSpeedScale;		
+		if(m_pkInputHandle->VKIsDown("left"))		newpos += xv * fSpeedScale;		
+		if(m_pkInputHandle->VKIsDown("forward"))	newpos += zv * fSpeedScale;
+		if(m_pkInputHandle->VKIsDown("back"))		newpos += zv * -fSpeedScale;	
 
 		if(m_pkInputHandle->VKIsDown("down"))		newpos.y += fSpeedScale;
 		if(m_pkInputHandle->VKIsDown("up"))			newpos.y -= fSpeedScale;

@@ -77,7 +77,7 @@ void P_Camera::Update()
 				kRot.Rotate(m_f3PPAngle,m_f3PYAngle,0);
 				kRot.Transponse();
 				
-				Vector3 kOffset(0,0,1);				
+				Vector3 kOffset(0,0,-1);				
 				kOffset = kRot.VectorTransform(kOffset);
 				kOffset *= m_f3PDistance;									
 	 			kOffset += m_kOffset;
@@ -91,9 +91,10 @@ void P_Camera::Update()
 			}	
 			case CAM_TYPEFIRSTPERSON:
 			{
-				m_pkCamera->SetPos(m_pkObject->GetIWorldPosV() + Vector3(0,1.0,0) );
+				m_pkCamera->SetPos(m_pkObject->GetIWorldPosV() + m_kOffset );
 				Matrix4 kMat4;
 				kMat4 = m_pkObject->GetWorldRotM();		
+				kMat4.Rotate(0,180,0);
 				kMat4.Transponse();				
 				m_pkCamera->SetRotM(kMat4);
 				strCamName = " 1P ";

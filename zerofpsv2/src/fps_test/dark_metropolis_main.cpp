@@ -11,6 +11,7 @@
 #include "hq_dlg.h"
 #include "../mcommon/si_dm.h"
 #include "../mcommon/p_dmclickme.h"
+#include "../mcommon/p_ml.h"
 #include "../mcommon/p_dmshop.h"
 #include "../zerofpsv2/render/glguirender.h"
 
@@ -87,7 +88,7 @@ void DarkMetropolis::OnInit()
 	m_pkLight->SetLighting(true);
 
 	//set reference distance in audio syustem
-	m_pkAudioSys->SetReferensDistance(5);
+	m_pkAudioSys->SetReferensDistance(1);
 
 	//create camera
 	m_pkCamera=new Camera(Vector3(0,0,0),Vector3(0,0,0),70,1.333,0.25,250);	
@@ -143,8 +144,11 @@ void DarkMetropolis::OnIdle()
 		Input();
 		
 		//update camera position
-		CheckCameraPos();	
+		//CheckCameraPos();	
 	}
+	
+	
+	
 	
 
 //	m_pkFps->UpdateCamera(); 	
@@ -156,6 +160,17 @@ void DarkMetropolis::OnIdle()
 
 void DarkMetropolis::RenderInterface(void)
 {
+	if(m_pkPlayerEntity)
+	{
+
+		Matrix3 kRot = m_pkPlayerEntity->GetWorldRotM();
+		Vector3 kLine(0,0,1);
+		kLine = kRot.VectorTransform(kLine);
+		kLine*= 4;	
+		
+		m_pkRender->Line(m_pkPlayerEntity->GetWorldPosV(),m_pkPlayerEntity->GetWorldPosV() + kLine);
+	}
+
 //	m_strGameInfoText = "";
 
 	if(Entity* pkEnt = m_pkObjectMan->GetObjectByNetWorkID(m_iCurrentPickedEntity))
@@ -371,6 +386,8 @@ bool DarkMetropolis::IsValid()
 
 void DarkMetropolis::RegisterPropertys()
 {
+	m_pkPropertyFactory->Register("P_Ml", Create_P_Ml);
+
 	m_pkPropertyFactory->Register("P_ArcadeCharacter",	Create_P_ArcadeCharacter);
 	m_pkPropertyFactory->Register("P_Car",					Create_P_Car);
 
@@ -408,20 +425,21 @@ void DarkMetropolis::Input()
 			Vector3 kVel(0,0,0);	
 
 			if(m_pkInputHandle->Pressed(KEY_W))
-				kVel.z = -1;
+				kVel.z = 1;
 			if(m_pkInputHandle->Pressed(KEY_S))
-				kVel.z =  1;
+				kVel.z = -1;
 			if(m_pkInputHandle->Pressed(KEY_A))
-				kVel.x = -1;
+				kVel.x = 1;
 			if(m_pkInputHandle->Pressed(KEY_D))
-				kVel.x =  1;
+				kVel.x = -1;
 
+			
 			kVel = m_pkPlayerEntity->GetWorldRotM().VectorTransform(kVel);							
 			kVel.y = 0;
 			
 		
 			if(kVel.Length() > 0)
-				kVel = kVel.Unit() * 100.0;
+				kVel = kVel.Unit() * 50.0;
 			
 			pkTcs->ClearExternalForces();
 				
@@ -443,19 +461,41 @@ void DarkMetropolis::Input()
 		{
 			
 			pkCam->Set3PYAngle(pkCam->Get3PYAngle() - (x/5.0));
-			pkCam->Set3PPAngle(pkCam->Get3PPAngle() - (z/5.0));
+			pkCam->Set3PPAngle(pkCam->Get3PPAngle() + (z/5.0));
 			
 			
-			pkCam->Set3PDistance(4.0);
-			pkCam->SetOffset(Vector3(0,2,0));
+			pkCam->SetOffset(Vector3(0,1.9,0));
 					
+
+			float fDistance = pkCam->Get3PDistance();
+			if(m_pkInputHandle->Pressed(MOUSEWUP)) 	fDistance -= 0.5;
+			if(m_pkInputHandle->Pressed(MOUSEWDOWN))	fDistance += 0.5;
 			
+			//make sure camera is nto to far away
+			if(fDistance > 10.0)
+				fDistance = 10.0;
+			
+			//make sure camera is not to close
+			if(fDistance < 0.2)
+				fDistance = 0.2;
+
+			//select first or 3d view camera
+			if(fDistance < 0.3)				
+				m_pkCameraProp->SetType(CAM_TYPEFIRSTPERSON);
+			else			
+				m_pkCameraProp->SetType(CAM_TYPE3PERSON);
+				
+						
+				
+			pkCam->Set3PDistance(fDistance);
+			
+						
+						
 			Matrix4 kRot;
 			kRot.Identity();
 			kRot.Rotate(0,pkCam->Get3PYAngle(),0);
 			kRot.Transponse();				
 			m_pkPlayerEntity->SetLocalRotM(kRot);				
-		
 		}
 		
 		if(m_pkInputHandle->Pressed(MOUSELEFT))
@@ -475,7 +515,7 @@ void DarkMetropolis::Input()
 						kRot.Rotate(pkCam->Get3PPAngle(),pkCam->Get3PYAngle(),0);
 						kRot.Transponse();				
 						
-						Vector3 kDir = kRot.VectorTransform(Vector3(0,0,-1));					
+						Vector3 kDir = kRot.VectorTransform(Vector3(0,0,1));					
 						pkTcs->ApplyImpulsForce(kDir*10);				
 					}
 				} 								
