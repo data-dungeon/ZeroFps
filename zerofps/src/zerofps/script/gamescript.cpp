@@ -22,6 +22,13 @@ GameScript::~GameScript()
 
 }
 
+static int LuaGetBasicConsole(lua_State* pkLua) 
+{
+	BasicConsole* var=(BasicConsole*) lua_touserdata(pkLua,2);
+	lua_pushusertag(pkLua, var, tolua_tag(pkLua, "BasicConsole"));
+	return 1;
+}
+
 static int LuaSetBasicConsole(lua_State* pkLua) 
 {
 	BasicConsole* var=(BasicConsole*) lua_touserdata(pkLua,2);
@@ -30,22 +37,28 @@ static int LuaSetBasicConsole(lua_State* pkLua)
 	return 0;
 }
 
-static int LuaGetBasicConsole(lua_State* pkLua) 
+static int LuaGetVector3(lua_State* pkLua) 
 {
-	BasicConsole* var=(BasicConsole*) lua_touserdata(pkLua,2);
-	lua_pushusertag(pkLua, var, tolua_tag(pkLua, "BasicConsole"));
+	Vector3* var=(Vector3*) lua_touserdata(pkLua,2);
+	lua_pushusertag(pkLua, var, tolua_tag(pkLua, "Vector3"));
 	return 1;
 }
 
-void GameScript::OpenPackageFiles()
+static int LuaSetVector3(lua_State* pkLua) 
 {
-	tolua_zfscript_bind_open(GetLua());
-
-	ExposeClass("Console", LuaGetBasicConsole, LuaSetBasicConsole);
+	Vector3* var=(Vector3*) lua_touserdata(pkLua,2);
+	Vector3* val=(Vector3*) lua_touserdata(pkLua,3);
+	var=val;
+	return 0;
 }
 
+void GameScript::OpenPackageFiles()
+{	
+	tolua_zfscript_bind_open(GetLua());
 
-
+	ExposeClass("Console", tConsole, LuaGetBasicConsole, LuaSetBasicConsole);
+	ExposeClass("Vector3", tVector3, LuaGetVector3, LuaSetVector3);
+}
 
 
 

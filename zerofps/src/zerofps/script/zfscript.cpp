@@ -82,7 +82,8 @@ bool ZFScript::RunScript(char* szFileName)
 // Name:		RegisterClass
 // Description:	Registrera en C++ klass som Lua kan se.
 //
-bool ZFScript::ExposeClass(char *szName, lua_CFunction o_LuaGet, 
+bool ZFScript::ExposeClass(char *szName, ScripObjectType eType, 
+						   lua_CFunction o_LuaGet, 
 						   lua_CFunction o_LuaSet)
 {
 	// check if type is already registered
@@ -104,6 +105,10 @@ bool ZFScript::ExposeClass(char *szName, lua_CFunction o_LuaGet,
 	lua_settagmethod(m_pkLua, tolua_tag(m_pkLua,szName), "setglobal");
  
 	m_kExposedClasses.insert(string(szName));
+
+	// Register class
+	m_kClassMap.insert( map<ScripObjectType,string>::value_type(eType, string(szName)) );
+
 	return true;
 }
 
@@ -111,8 +116,21 @@ bool ZFScript::ExposeClass(char *szName, lua_CFunction o_LuaGet,
 // Name:		ExposeClass
 // Description:	Registrera en C++ klass som Lua kan se.
 //
-bool ZFScript::ExposeObject(const char* szName, void* pkData, char* szClassName)
+bool ZFScript::ExposeObject(const char* szName, void* pkData, ScripObjectType eType)
 {
+
+	map<ScripObjectType, string>::iterator itClass;
+	itClass = m_kClassMap.find(eType);
+	
+	// no such element exists
+	if(itClass == m_kClassMap.end())
+	{
+		printf("SCRIPT_API: Error accessing class object!");
+		return false;
+	}
+
+	char *szClassName = (char*) itClass->second.c_str();
+
 	lua_pushusertag(m_pkLua, pkData, tolua_tag(m_pkLua, szClassName));
 	lua_setglobal(m_pkLua, szName);
 	return true;
@@ -132,10 +150,9 @@ bool ZFScript::ExposeFunction(const char *szName, lua_CFunction o_Function)
 // Name:		ExposeVariable
 // Description:	Registrera en C++ variabel som Lua kan se.
 //
-bool ZFScript::ExposeVariable(const char* szName, void* pkData, 
-							  VarType eVariableType)
+bool ZFScript::ExposeVariable(const char* szName, void* pkData, ScripVarType eType)
 {
-	switch(eVariableType)
+	switch(eType)
 	{
 	case tINT:
 		lua_pushusertag(m_pkLua, pkData, m_iLuaTagInt);

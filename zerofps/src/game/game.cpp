@@ -323,5 +323,5 @@ void Game::InitGui()
 void Game::InitScript()
 {
 	m_pkScript = new GameScript();
-	m_pkScript->ExposeObject("pkConsole", pkConsole, "Console");
+	m_pkScript->ExposeObject("pkConsole", pkConsole, tConsole);
 }

@@ -18,12 +18,13 @@ extern "C"  {
 
 #pragma warning (disable :4786)
 #include <set>
+#include <map>
 #include <string>
 using namespace std;
 
 #include "script_x.h"
 
-enum VarType
+enum ScripVarType
 {
 	tINT,
 	tDOUBLE,
@@ -31,14 +32,19 @@ enum VarType
 	tSTRING,
 };
 
+enum ScripObjectType
+{
+	tConsole,
+	tVector3,
+};
+
 class SCRIPT_API ZFScript  
 {
 public:
 
-	bool ExposeClass(char *szName, lua_CFunction o_LuaGet, lua_CFunction o_LuaSet);
-	bool ExposeObject(const char* szName, void* pkData, char* szClassName);
+	bool ExposeObject(const char* szName, void* pkData, ScripObjectType eType);
+	bool ExposeVariable(const char* szName, void* pkData, ScripVarType eType);
 	bool ExposeFunction(const char* szName, lua_CFunction o_Function);
-	bool ExposeVariable(const char* szName, void* pkData, VarType eVariableType);
 	bool RunScript(char* szFileName);
 	ZFScript();
 	virtual ~ZFScript();
@@ -65,9 +71,13 @@ private:
 	int m_iLuaTagString;
 
 	set<string> m_kExposedClasses;
+	map<ScripObjectType, string> m_kClassMap;
 
 protected:
-	
+
+	bool ExposeClass(char *szName, ScripObjectType eType, 
+		lua_CFunction o_LuaGet, lua_CFunction o_LuaSet);
+
 	lua_State* GetLua() { return m_pkLua; }
 
 };
