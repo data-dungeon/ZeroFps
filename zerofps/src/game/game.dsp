@@ -186,10 +186,6 @@ SOURCE=.\gamescriptinterface.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\inventary_id.h
-# End Source File
-# Begin Source File
-
 SOURCE=.\itembox.h
 # End Source File
 # End Group

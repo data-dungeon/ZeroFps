@@ -53,7 +53,6 @@ PlayerControlProperty::PlayerControlProperty(Input *pkInput,HeightMap *pkMap)
 
 	m_pkUseObject = NULL;
 	m_bLockCamera = false;
-	m_bSkipFrame = false;
 };
 
 PlayerControlProperty::~PlayerControlProperty()
@@ -84,9 +83,6 @@ void PlayerControlProperty::Update() {
 	}
 
 	if(!m_bAlive)
-		return;
-
-	if(SkipFrame())
 		return;
 
 	walking=false;
@@ -121,7 +117,7 @@ void PlayerControlProperty::Update() {
 		}
 	}
 
-	if(m_pkInput->Action(m_iActionUseItem))
+	if(m_pkInput->Action(m_iActionUseItem) && !m_bLockCamera)
 	{
 		UseInvItem();	
 	}
@@ -418,30 +414,3 @@ bool PlayerControlProperty::PickUp(Object* pkObject)
 	return true;
 }
 
-
-bool PlayerControlProperty::SkipFrame()
-{
-	bool bSkip = false;
-
-	if(m_bSkipFrame == true)
-	{
-		static float c_fPrevtime = m_pkFps->GetGameTime();
-		static float c_fTime = 1.00f;
-		float fCurrTime = m_pkFps->GetGameTime();
-
-		if(((fCurrTime-c_fPrevtime) < c_fTime))
-		{
-			bSkip = true;
-			m_bSkipFrame = true;			
-			return true;
-		}
-		else
-		{
-			// m_pkInput->Reset();
-			c_fPrevtime = fCurrTime;
-			m_bSkipFrame = false;
-		}
-	}
-
-	return bSkip;
-}

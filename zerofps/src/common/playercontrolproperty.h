@@ -20,7 +20,6 @@ using namespace std;
 
 class COMMON_API PlayerControlProperty: public Property {
 	private:
-		bool SkipFrame();
 		int FORWARD_ACTION;
 		Input *m_pkInput;
 		ZeroFps *m_pkFps;
@@ -86,8 +85,6 @@ class COMMON_API PlayerControlProperty: public Property {
 		Object* m_pkUseObject;
 
 		bool m_bLockCamera;
-		bool m_bSkipFrame;	/// set by the gui on a button click that trigger a close window message.
-							/// needed becuase the weapon are fired after the button have been pushed.
 };
 
 

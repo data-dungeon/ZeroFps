@@ -515,9 +515,6 @@ void Game::LockPlayerCamera(bool bTrue)
 
 	if(m_pkPlayerCtrl)
 		m_pkPlayerCtrl->m_bLockCamera = bTrue;
-
-	if(bTrue == false)
-		m_pkPlayerCtrl->m_bSkipFrame = true;
 }
 
 
