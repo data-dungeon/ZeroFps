@@ -61,13 +61,11 @@ void P_Sound::StartSound(string strName, bool bLoop)
 void P_Sound::StopSound(string strName)
 {
 	for(int i=0; i<m_kSounds.size(); i++)
-	{
 		if(m_kSounds[i].m_strFileName == strName)
 		{
 			m_kSounds.erase( m_kSounds.begin() + i);
 			break;
 		}
-	}
 
 	SetNetUpdateFlag(true);
 }
@@ -76,7 +74,6 @@ void P_Sound::StopSound(string strName)
 void P_Sound::PackTo(NetPacket* pkNetPacket, int iConnectionID )
 {
 	int iNumSounds = m_kSounds.size();
-
 	pkNetPacket->Write(iNumSounds); 
 
 	for(int i=0; i<iNumSounds; i++)
@@ -121,25 +118,23 @@ void P_Sound::PackFrom(NetPacket* pkNetPacket, int iConnectionID )
 		kSoundsOnServer.push_back(si); 
 	}
 
+	Entity* pkEnt = GetEntity();
+
 	// Stoppa ljud som inte längre finns på serven
 	for(int i=0; i<m_kSounds.size(); i++)
 	{
 		bool bExistOnServer = false;
 
 		for(int j=0; j<kSoundsOnServer.size(); j++)
-		{
 			if(kSoundsOnServer[j].m_strFileName == m_kSounds[i].m_strFileName)
 			{
 				bExistOnServer = true;
 				break;
 			}
-		}
 
 		if(bExistOnServer == false)
-		{
-			Entity* pkEnt = GetEntity();
 			m_pkAudioSystem->StopSound(m_kSounds[i].m_strFileName, pkEnt->GetIWorldPosV());
-		}
+		
 	}
 
 	//Spela upp nya ljud som finns på serven men inte klienten
@@ -148,29 +143,22 @@ void P_Sound::PackFrom(NetPacket* pkNetPacket, int iConnectionID )
 		bool bExistOnClient = false;
 
 		for(int j=0; j<m_kSounds.size(); j++)
-		{
-			if(m_kSounds[i].m_strFileName == kSoundsOnServer[j].m_strFileName)
+			if(m_kSounds[j].m_strFileName == kSoundsOnServer[i].m_strFileName)
 			{
 				bExistOnClient = true;
 				break;
 			}
-		}
 
 		if(bExistOnClient == false)
-		{
-			Entity* pkEnt = GetEntity();
 			m_pkAudioSystem->StartSound(kSoundsOnServer[i].m_strFileName, 
 				pkEnt->GetIWorldPosV(), pkEnt->GetVel(), kSoundsOnServer[i].m_bLoop);
-		}
 	}
 
 	m_kSounds.clear(); // radera den gamla listan
 
 	// ... och kopiera in dom nya ljuden
 	for(int i=0; i<kSoundsOnServer.size(); i++)
-	{
 		m_kSounds.push_back( kSoundsOnServer[i] );
-	}
 
 	/// Ta bort alla icke-loopade ljud på klienten
 	vector<sound_info> temp;
