@@ -46,13 +46,13 @@ float HeightMap::Height(float x,float z) {
 	//are we on the over or under polygon in the tile
 	float ry=(1.0+ox*-1.0);
 //	cout<< ry<<endl;
-	if(oz>ry){
+	if(oz>ry){//over left
 		bp=verts[(lz+1)*m_iHmSize+(lx+1)].height;
 		xp=verts[(lz+1)*m_iHmSize+(lx)].height-bp;
 		zp=verts[(lz)*m_iHmSize+(lx+1)].height-bp;		
 		ox=1.0-ox;
 		oz=1.0-oz;
-	}else{
+	}else{//under right
 		bp=verts[lz*m_iHmSize+lx].height;
 		xp=verts[(lz)*m_iHmSize+(lx+1)].height-bp;
 		zp=verts[(lz+1)*m_iHmSize+(lx)].height-bp;				
@@ -78,23 +78,33 @@ Vector3 HeightMap::Tilt(float x,float z) {
 	float oz=z-float(lz);
 	float bp,xp,zp;
 	
-	return verts[lz*m_iHmSize+lx].normal;
+//	return verts[lz*m_iHmSize+lx].normal;
 	
-	/*
+	Vector3 v1,v2,n1;
+	
 	float ry=(1.0+ox*-1.0);
 	if(oz>ry){
-		v1=Vector3(0,(verts[(z+q)*m_iHmSize+(x+1+w)].height)-(verts[(z+q)*m_iHmSize+(x+w)].height) ,1);
-		v2=Vector3(0,(verts[(z+1+q)*m_iHmSize+(x+1+w)].height)- (verts[(z+q)*m_iHmSize+(x+w)].height),0);		
-		v3=Vector3(1,(verts[(z+q+1)*m_iHmSize+(x+w)].height)-(verts[(z+q)*m_iHmSize+(x+w)].height) ,0);	
-
+		
+		v1=Vector3(1,(verts[(lz+1)*m_iHmSize+(lx+1)].height)	-(verts[(lz+1)*m_iHmSize+(lx)].height) ,0);
+		v2=Vector3(0,(verts[(lz+1)*m_iHmSize+(lx+1)].height)	-(verts[(lz)*m_iHmSize+(lx+1)].height) ,1);	
+		
+//		v1=Vector3(1,(verts[(lz+1)*m_iHmSize+(lx)].height)	-(verts[(lz+1)*m_iHmSize+(lx+1)].height) ,0);		
+//		v2=Vector3(0,(verts[(lz)*m_iHmSize+(lx+1)].height)	-(verts[(lz+1)*m_iHmSize+(lx+1)].height) ,1);	
 		n1=v2.Cross(v1);			
-		n2=v3.Cross(v2);				
-
+//		cout<<"UPP"<<endl;
 	}else {
+//		v1=Vector3(0,(verts[(lz)*m_iHmSize+(lx)].height)	-(verts[(lz+1)*m_iHmSize+(lx)].height) ,1);
+//		v2=Vector3(1,(verts[(lz)*m_iHmSize+(lx)].height)	-(verts[(lz)*m_iHmSize+(lx+1)].height) ,0);	
+		
+		v1=Vector3(0,(verts[(lz+1)*m_iHmSize+(lx)].height)	-(verts[(lz)*m_iHmSize+(lx)].height) ,1);
+		v2=Vector3(1,(verts[(lz)*m_iHmSize+(lx+1)].height)	-(verts[(lz)*m_iHmSize+(lx)].height) ,0);		
 	
+		n1=v1.Cross(v2);			
+//		cout<<"DOWN"<<endl;
+	}
 	
-	}*/
-	
+	n1.Normalize();
+	return n1;
 }
 
 
