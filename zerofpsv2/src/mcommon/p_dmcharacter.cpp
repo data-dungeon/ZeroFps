@@ -176,6 +176,21 @@ void P_DMCharacter::Damage(int iType,int iDmg)
 			pkSi->CallFunction("Dead");
 		}
 	}
+	else
+	{
+		int slump = rand() % 100;
+
+		if(slump < 25)
+			m_pkAudioSys->StartSound("data/sound/damage1.wav", 
+				m_pkObject->GetWorldPosV());
+		else
+		if(slump < 50)
+			m_pkAudioSys->StartSound("data/sound/damage2.wav", 
+				m_pkObject->GetWorldPosV());
+		else
+			m_pkAudioSys->StartSound("data/sound/damage3.wav", 
+				m_pkObject->GetWorldPosV());
+	}
 }
 
 void P_DMCharacter::Shoot (Vector3 kLocation)

@@ -17,7 +17,7 @@ function Create()
 end
 
 function Init()
-	SetGunSound (SIGetSelfID(), "data/sound/shotgun.wav");
+	SetGunSound (SIGetSelfID(), "data/sound/12ga_shotgun.wav");
 	SetGunFireRate (SIGetSelfID(), 0.5);
 --	SetGunBurstLenght (SIGetSelfID(), 0.1);
 	SetGunBulletsPerAmmo(SIGetSelfID(), 10);

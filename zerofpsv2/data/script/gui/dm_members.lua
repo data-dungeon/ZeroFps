@@ -83,7 +83,7 @@ function GUICreate()
 	ChangeSkin("PrevMemberBn","Skin3","Button down")
 	ChangeSkin("PrevMemberBn","Skin4","Button focus")
 
-	CreateWnd(4,"CurrentMemberNumberLabel","MembersWnd","",688/2-100/2,412,100,20,0)
+	CreateWnd(4,"CurrentMemberNumberLabel","MembersWnd","",688/2-100/2,412,300,20,0)
 	ChangeSkin("CurrentMemberNumberLabel","Skin1","Label")
 
 	CreateWnd(4,"Label169","MembersWnd","Name:",135,310,40,20,0)

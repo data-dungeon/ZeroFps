@@ -74,6 +74,7 @@ void P_DMGun::SetAmmo (int iAmmo)
 void P_DMGun::Update()
 {
 	static float prevAmmoPlayTime = 0;
+	static float prevShotPlayTime = 0;
 
 	float t = m_pkObjMan->GetSimTime();
 
@@ -111,7 +112,7 @@ void P_DMGun::Update()
 
 	if(m_iAmmo <= 0)
 	{
-		if(t - prevAmmoPlayTime > 0.5f)
+		if(t - prevAmmoPlayTime > 0.5f) // spela max 2 ljud/ sek
 		{
 			cout<<"IM OUT OF AMMO"<<endl;
 			m_pkAudioSys->StartSound("data/sound/no_ammo.wav",	
@@ -138,9 +139,10 @@ void P_DMGun::Update()
 	//has the trigger just been pressed, if so make sure we only fire one round
 	if(m_bFirstUpdateSinceFireing)
 	{
-		//cout<<"tried to fire:"<<iAmmoToFire<<endl;
+		cout<<"tried to fire:"<<iAmmoToFire<<endl;
 		m_bFirstUpdateSinceFireing = false;
 		iAmmoToFire = 1;		
+		prevShotPlayTime = 0;
 	}
 	
 	//check that we have enough ammo
@@ -156,7 +158,11 @@ void P_DMGun::Update()
 	m_fTimeBulletFired = t;
 	
 	//play sound
-	m_pkAudioSys->StartSound(m_strSound,	m_pkObject->GetWorldPosV(), m_kDir, false);
+	if(t - prevShotPlayTime > 1.0f) // spela max 1 ljud/ sek (eller när nytt skott avlossas)
+	{
+		m_pkAudioSys->StartSound(m_strSound,	m_pkObject->GetWorldPosV(), m_kDir, false);
+		prevShotPlayTime = t;
+	}
 	
 	FireBullets(iAmmoToFire * m_iBulletsPerAmmo);
 
