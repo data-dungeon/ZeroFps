@@ -35,10 +35,14 @@ class ZeroFps {
 
 		float m_fLastFrameTime;
 
+		int m_iWidth,m_iHeight,m_iDepth;
+		
+
 		Camera *m_pkCamera;
 		Camera *m_pkConsoleCamera;
 		Camera *m_pkGameCamera;		
 		Camera *m_pkDefaultCamera;
+	
 
 	public:
 		Application* m_pkApp;						//application
@@ -68,6 +72,8 @@ class ZeroFps {
 		void Init(int iNrOfArgs, char** paArgs);	
 		void MainLoop(void);		
 		void InitDisplay(int iWidth,int iHeight,int iDepth);		
+		void SetDisplay(int iWidth,int iHeight,int iDepth);
+		void SetDisplay();
 		void Swap(void);								//swap gl buffers
 		void UpdateCamera(void);
 		

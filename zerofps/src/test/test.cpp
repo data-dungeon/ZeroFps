@@ -10,6 +10,8 @@ Test::Test(char* aName,int iWidth,int iHeight,int iDepth): Application(aName,iWi
 
 
 void Test::OnInit(void) {
+//	pkFps->SetDisplay(640,480,16);
+	
 	pkConsole->Print("MegaUltraSuper Duper Game");
 	pkFps->m_pkAudioMan->LoadMusic("file:../data/music/killer_chin.mod");		
 //	pkFps->m_pkAudioMan->PlayMusic();
@@ -114,6 +116,8 @@ void Test::OnInit(void) {
 
 	glEnable(GL_LIGHTING );
 	
+	
+
 //	Camera *testcam=new Camera(Vector3(50,50,50),Vector3(0,0,0),1.33,90,0.4,300);
 //	pkFps->SetGameCam(testcam);
 

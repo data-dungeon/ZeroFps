@@ -21,6 +21,10 @@ ZeroFps::ZeroFps(void) {
 	m_pkCmd->Add(&m_pkRender->m_iViewDistance,"r_ViewDistance",type_int);	
 	m_pkCmd->Add(&m_pkRender->m_iAutoLod,"r_AutoLod",type_int);		
 	m_pkCmd->Add(&m_pkRender->m_iFpsLock,"r_FpsLock",type_int);		
+	
+	m_pkCmd->Add(&m_iWidth,"r_Width",type_int);			
+	m_pkCmd->Add(&m_iHeight,"r_Height",type_int);		
+	m_pkCmd->Add(&m_iDepth,"r_Depth",type_int);		
 }
 
 
@@ -110,6 +114,10 @@ void ZeroFps::MainLoop(void) {
 
 
 void ZeroFps::InitDisplay(int iWidth,int iHeight,int iDepth) {
+	m_iWidth=iWidth;
+	m_iHeight=iHeight;
+	m_iDepth=iDepth;
+
 
 	//initiera sdl med opengl
 	if(SDL_Init(SDL_OPENGL | SDL_INIT_NOPARACHUTE )<0){
@@ -119,9 +127,7 @@ void ZeroFps::InitDisplay(int iWidth,int iHeight,int iDepth) {
 	
 	atexit(SDL_Quit);
 
-	//create sdl surface
-	m_pkScreen= SDL_SetVideoMode(iWidth,iHeight,iDepth,SDL_OPENGL);
-	glViewport(0, 0,iWidth,iHeight);	
+	SetDisplay();
 
 #ifdef _WIN32
 	RenderDLL_InitExtGL();
@@ -225,4 +231,18 @@ void ZeroFps::ToggleFullScreen(void){
 }
 
 
+void ZeroFps::SetDisplay(int iWidth,int iHeight,int iDepth) {
+	m_iWidth=iWidth;
+	m_iHeight=iHeight;
+	m_iDepth=iDepth;
 
+	SetDisplay();
+}
+
+void ZeroFps::SetDisplay(){
+	SDL_QuitSubSystem(SDL_OPENGL);
+	
+	SDL_InitSubSystem(SDL_OPENGL);
+	m_pkScreen= SDL_SetVideoMode(m_iWidth,m_iHeight,m_iDepth,SDL_OPENGL);
+	glViewport(0, 0,m_iWidth,m_iHeight);	
+}

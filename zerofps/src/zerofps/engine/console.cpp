@@ -217,6 +217,12 @@ void Console::Execute(char* aText) {
 		return;
 	}
 
+	if(arg[0]=="setdisplay") {
+		m_pkEngine->SetDisplay();
+		return;
+	}
+
+
 	Print("### unknown command ###");
 }
 

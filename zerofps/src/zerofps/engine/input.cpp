@@ -4,11 +4,12 @@
 Input::Input() {
 	cout<<"Sdl_Input initializing"<<endl;	
 	
+	/*
 	//init sdl to read events
 	if(SDL_Init(SDL_INIT_EVENTTHREAD)<0){
 		cout<<"Sdl_Input dont want to work =("<<endl;
 		exit(1);
-	}
+	}*/
 	
 	//reset all buttons to false
 	for(int i =0;i<400;i++) 
