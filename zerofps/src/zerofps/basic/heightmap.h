@@ -8,12 +8,12 @@
 
 using namespace std;
 
-struct HM_vert {
+struct BASIC_API HM_vert {
 	float height;	//land height
 	int texture;	//what texture to use
 };
 
-class HeightMap {
+class BASIC_API HeightMap {
 	public:
 		HM_vert verts[HM_SIZE*HM_SIZE];		
 		

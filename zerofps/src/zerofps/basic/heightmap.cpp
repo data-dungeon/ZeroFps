@@ -15,7 +15,7 @@ void HeightMap::Zero() {
 bool HeightMap::Load(char* acFile) {
 	cout<<"Loading new heightmap from file "<<acFile<<endl;
 	
-
+	return true;
 }
 
 void HeightMap::Random() {
