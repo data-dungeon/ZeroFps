@@ -34,6 +34,7 @@ namespace DMLua
 	int MCOMMON_API BeamToLocationLua(lua_State* pkLua);
 	int MCOMMON_API BeamToObjectLua(lua_State* pkLua);
 	int MCOMMON_API TestSkillLua(lua_State* pkLua);
+	int MCOMMON_API GetItemCharLua(lua_State* pkLua);
 	int MCOMMON_API AddMoneyLua(lua_State* pkLua);
 	int MCOMMON_API MoneyLua(lua_State* pkLua);
 	int MCOMMON_API FireAtLocationLua(lua_State* pkLua);

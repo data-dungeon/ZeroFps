@@ -30,6 +30,7 @@ void DMLua::Init(EntityManager* pkObjMan,ZFScriptSystem* pkScript)
 	pkScript->ExposeFunction("BeamToLocation", DMLua::BeamToLocationLua);
 	pkScript->ExposeFunction("BeamToObject", DMLua::BeamToObjectLua);
 	pkScript->ExposeFunction("TestSkill", DMLua::TestSkillLua);
+	pkScript->ExposeFunction("GetItemChar", DMLua::GetItemCharLua);
 	pkScript->ExposeFunction("AddMoney", DMLua::AddMoneyLua);
 	pkScript->ExposeFunction("Money", DMLua::MoneyLua);
 	pkScript->ExposeFunction("FireAtLocation", DMLua::FireAtLocationLua);
@@ -306,7 +307,6 @@ int DMLua::HealLua(lua_State* pkLua)
 	return 0;
 }
 
-
 // ------------------------------------------------------------------------------------------------
 
 // takes a entityID and location (vector3?) and moves that entity to the given position
@@ -376,6 +376,68 @@ int DMLua::TestSkillLua(lua_State* pkLua)
 {
 	return 0;
 }
+
+// ------------------------------------------------------------------------------------------------
+
+// takes entityID, itemTYPE and returns true if exist
+int DMLua::GetItemCharLua(lua_State* pkLua)
+{
+	double dReturnValue = 0;
+	double dType = -1;
+	unsigned int i=0;
+
+	Entity* pkEntity = TestScriptInput (1, pkLua);
+
+	if ( pkEntity == 0)
+	{
+		g_pkScript->AddReturnValue(pkLua, dReturnValue );
+		return 0;
+	}
+	
+	P_DMCharacter* pkChar = (P_DMCharacter*)pkEntity->GetProperty("P_DMCharacter");
+
+	if ( pkChar == 0 )
+		return 0;
+
+	g_pkScript->GetArgNumber(pkLua, 1, &dType);
+
+	if(dType < 1)
+	{
+		g_pkScript->AddReturnValue(pkLua, dReturnValue );
+		return 1;
+	}
+
+	DMContainer* kContainers[] = 
+	{
+		pkChar->m_pkBackPack,
+		pkChar->m_pkBody,
+		pkChar->m_pkBelt,
+		pkChar->m_pkHand,
+		pkChar->m_pkImplants,
+	};
+
+	for(int c=0; c<sizeof(kContainers) / sizeof(kContainers[0]); c++)
+	{
+		vector<ContainerInfo> kItemList;
+		kContainers[c]->GetItemList(&kItemList);
+		for(i=0; i<kItemList.size(); i++)
+			if(kItemList[i].m_iType == dType)
+			{
+				int id = *kContainers[c]->GetItem(
+					kItemList[i].m_iItemX, kItemList[i].m_iItemY);
+				dReturnValue = id;
+				break;
+			}
+
+		if(dReturnValue > 0)
+			break;
+	}
+
+	g_pkScript->AddReturnValue(pkLua, dReturnValue);
+	return 0;
+}
+
+
 
 // ------------------------------------------------------------------------------------------------
 

@@ -132,9 +132,13 @@ void CGameDlg::GetAllAgentsInField(vector<Entity*>& kList)
 		{
 			// check if member belongs to players team
 			if ( ((P_DMCharacter*)kObjects[i]->GetProperty("P_DMCharacter"))->m_iTeam == 0 )
+			{
 				kList.push_back(kObjects[i]);	
+			}
 		}
 }
+
+// Mycket jobb med att få tag på gubbar från mission skripten sen också... Finns ingen funktionalitet för sånt.
 
 void CGameDlg::SetNumber(char* szWndName, float fNumber)
 { 

@@ -106,6 +106,8 @@ void CGamePlayDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName)
 	else
 	if(strClickName == "char_panel_button_ext")
 	{
+		InitDlg(); // <- Måste tydligen uppdatera charlsitan en extra gång!?!!?
+
 		ShowWnd("panel_char", true);
 		ShowWnd("char_panel_button_ext", false);
 		m_bCharbarIsOut = true;
