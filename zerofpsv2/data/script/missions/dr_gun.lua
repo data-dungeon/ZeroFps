@@ -108,6 +108,9 @@ function SendObjectToHospitle(object)
 
 		Delete(object)
 
+		PlayAnim(HospitalObject, "open");
+		SetNextAnim(HospitalObject, "idle");
+
 		NumCiviliansAtDoctor = NumCiviliansAtDoctor + 1
 
 		return 1
@@ -144,7 +147,7 @@ function IsMissionDone()
 			local curr_life = GetCharStats( obj, 0 ) -- 0 = Life
 			local dmg = prev_life - curr_life
 
-			if dmg > 0 then
+			if dmg > 0 and IsDead(obj_wounded) == 0 then
 				
 				CivWoundedList[x*2] = -1 -- markera att denna inte skall räknas mer
 
