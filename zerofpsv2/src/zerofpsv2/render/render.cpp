@@ -115,7 +115,7 @@ void Render::PrintChar(char cChar) {
  	//m_pkTexMan->BindTexture(aCurentFont,T_NOMIPMAPPING);  
 //	RES ResTexture* pkTexture = static_cast<ResTexture*>(m_kConsoleText.GetResourcePtr());
 // RES	m_pkTexMan->BindTexture( pkTexture->m_iTextureID );
-	
+	m_pkTexMan->BindTexture("data/textures/text/devstr.bmp" ,0 );
 
 	glPushMatrix();
 	glBegin(GL_QUADS);		
@@ -147,6 +147,7 @@ void Render::PrintChar2(char cChar)
 // 	m_pkTexMan->BindTexture(aCurentFont,T_NOMIPMAPPING);  
 // RES	ResTexture* pkTexture = static_cast<ResTexture*>(m_kConsoleText.GetResourcePtr());
 // RES	m_pkTexMan->BindTexture( pkTexture->m_iTextureID );
+	m_pkTexMan->BindTexture("data/textures/text/devstr.bmp" ,0 );
 
 
 	int iFontSize = 8;
