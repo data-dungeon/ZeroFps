@@ -7,6 +7,7 @@
 
 class Entity;
 class Property;
+class ItemStats;
 
 class MCOMMON_API Container
 {
@@ -16,6 +17,8 @@ private:
 
 public:
    int m_iCapacity; // number of objets, change to weight??
+
+   unsigned int m_uiVersion;
 
    // returns true if there was room for the object
    bool AddObject (int iAddToContainer );
@@ -27,6 +30,9 @@ public:
 
    bool IsEmpty()                      { return m_kContainedObjects.size(); }
 
+   // empties container
+   void Clear()                        { m_kContainedObjects.clear(); }
+
    // throws out all objects in container, or something :)
    void Empty();
 
@@ -34,7 +40,7 @@ public:
 
    Container( Property* pkParent );
 
-   void GetAllItemsInContainer( vector<int>* kObjectIDs );
+   void GetAllItemsInContainer( vector<ItemStats*>* kObjectIDs );
 
 };
 

@@ -6,16 +6,30 @@
 #include "rulesystem/item/itemstats.h"
 #include "rulesystem/sendtype.h"
 #include "../zerofpsv2/basic/zfini.h"
-#include <vector>
+#include <list>
    using namespace std;
+
+enum {eWAITING_FOR_CONT, eWAITING_FOR_DATA};
+
+
+struct WaitingFor
+{
+   int m_iRequest;
+   void* m_pkData;
+};
+
 
 class MCOMMON_API P_Item: public Property 
 {
 	private:
       string m_kObjectScriptname; // which script the object is created from
                                   // needed when splitting items
+      
+      // stuff to get info from network..not very nice...
+      vector<WaitingFor> m_kWaitingForRequest;
+   
    public:
-      vector<SendType> m_kSends;       // the clients to recieve data from this property
+      list<SendType> m_kSends;       // the clients to recieve data from this property
 
 		ItemStats *m_pkItemStats;
 
@@ -37,7 +51,9 @@ class MCOMMON_API P_Item: public Property
       Entity* Split ( int iTookens );
       bool Stock ( Entity *pkObject );
 
-      void RequestUpdateFromServer ();
+      void RequestUpdateFromServer (string kType);
+
+      void GetAllItemsInContainer( vector<ItemStats*>* pkContainerList );
 
       friend class Container;
 };

@@ -531,24 +531,3 @@ void ItemStats::RegisterAsContainer()
 }
 
 // ---------------------------------------------------------------------------------------------
-
-bool ItemStats::GetAllItemsInContainer( vector<Entity*>* pkItemList )
-{
-   if ( m_pkContainer )   
-   {
-      vector<int> kObjectIDs;
-
-      m_pkContainer->GetAllItemsInContainer ( &kObjectIDs );
-
-      // convert ID:s to entity pointers (easier to handle..)
-      for ( int i = 0; i < kObjectIDs.size(); i++ )
-         pkItemList->push_back( 
-            m_pkProperty->GetObject()->m_pkObjectMan->GetObjectByNetWorkID( kObjectIDs[i] ) );
-
-      return true;
-   }
-
-   return false;
-}
-
-// ---------------------------------------------------------------------------------------------

@@ -1,6 +1,7 @@
 #include "rulesystem/character/characterfactory.h"
 #include "p_charstats.h"
 #include "../zerofpsv2/engine/entity.h"
+#include "../zerofpsv2/engine/zerofps.h"
 
 // ------------------------------------------------------------------------------------------
 
@@ -49,7 +50,6 @@ CharacterProperty::CharacterProperty( string kName )
 	bNetwork = true;   //
 
 	strcpy(m_acName,"P_CharStats");
-
 
 }
 
@@ -278,6 +278,8 @@ void CharacterProperty::PackTo(NetPacket* pkNetPacket, int iConnectionID )
             // send itemIDs in container
             for ( int i = 0; i < pkItems->size(); i++ )
                pkNetPacket->Write( (void*)pkItems->at(i), sizeof(int) );
+
+            cout << "container data is sent" << endl;
          }
 
          m_kSends.erase ( kIte );
@@ -292,10 +294,94 @@ void CharacterProperty::PackTo(NetPacket* pkNetPacket, int iConnectionID )
 
 void CharacterProperty::PackFrom(NetPacket* pkNetPacket, int iConnectionID )
 {
-   // get life
+   string kData;
+
+   pkNetPacket->Read_NetStr( (char*)kData.c_str() );
+
+   if ( kData == "cont" )
+   {
+      int iSize;
+
+      // size of container
+      pkNetPacket->Read( &iSize, sizeof(int) );
+
+      // send itemIDs in container
+      for ( int i = 0; i < iSize; i++ )
+      {
+         int iID;
+         pkNetPacket->Read( &iID, sizeof(int) );
+         m_pkCharStats->m_pkContainer->AddObject (iID);
+      }
+
+      cout << "char recieved cont. data!!! :)" << endl;
+   }
 }
 
 // ------------------------------------------------------------------------------------------
+
+void CharacterProperty::RequestUpdateFromServer( string kData )
+{
+ /*
+   int iClientObjectID = m_pkZeroFps->GetClientObjectID();
+   Entity* pkClientObj = m_pkObjMan->GetObjectByNetWorkID(iClientObjectID);
+
+   if ( pkClientObj )
+   {
+      // get ClientControlProperty
+      P_ClientControl* pkCP = (P_ClientControl*)pkClientObj->GetProperty("P_ClientControl");
+
+      ClientOrder kOrder;
+
+      // order type
+      if ( kData == "container" )
+      {
+         // get client object
+         kOrder.m_sOrderName = "(rq)cont";
+         kOrder.m_iObjectID = m_pkObject->iNetWorkID;
+         kOrder.m_iClientID = m_pkZeroFps->GetConnectionID();
+         kOrder.m_iCharacter = pkCP->m_iActiveCaracterObjectID;
+
+         // use this useless variabel to send which version of the item this prop. has
+         kOrder.m_iFace = m_pkCharStats->m_pkContainer->m_uiVersion;
+
+         pkCP->AddOrder (kOrder);
+      }
+      // attribute and skills, change to only skills or attributes?
+      else if ( kData = "charstats" )
+      {
+         // get client object
+         kOrder.m_sOrderName = "(rq)char";
+         kOrder.m_iObjectID = m_pkObject->iNetWorkID;
+         kOrder.m_iClientID = m_pkZeroFps->GetConnectionID();
+         kOrder.m_iCharacter = pkCP->m_iActiveCaracterObjectID;
+
+         // use this useless variabel to send which version of the item this prop. has
+         kOrder.m_iFace = m_pkCharStats->m_uiVersion;
+
+         pkCP->AddOrder (kOrder);
+      }
+      // life and mana
+      else if ( kData == "life" )
+      {
+         // get client object
+         kOrder.m_sOrderName = "(rq)life";
+         kOrder.m_iObjectID = m_pkObject->iNetWorkID;
+         kOrder.m_iClientID = m_pkZeroFps->GetConnectionID();
+         kOrder.m_iCharacter = pkCP->m_iActiveCaracterObjectID;
+
+         // use this useless variabel to send which version of the item this prop. has
+         kOrder.m_iFace = m_pkCharStats->m_uiVersion;
+
+         pkCP->AddOrder (kOrder);
+      }
+   }
+   else
+      cout << "P_Item::RequestUpdateFromServer(): no client object found!" << endl;
+   */
+}
+
+// ------------------------------------------------------------------------------------------
+
 
 Property* Create_P_CharStats()
 {

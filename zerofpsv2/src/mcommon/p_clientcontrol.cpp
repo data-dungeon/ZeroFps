@@ -16,6 +16,8 @@ P_ClientControl::P_ClientControl()
 	m_pkFps=static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
 
 	m_iMaxOrders = 4;
+
+   m_iActiveCaracterObjectID = -1; // I guess -1 equals no character...// Zerom
 }
 
 void P_ClientControl::Update()

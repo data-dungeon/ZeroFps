@@ -9,6 +9,8 @@ Container::Container( Property* pkParent )
 {
    m_pkParent = pkParent;
    m_iCapacity = 5;
+
+   m_uiVersion = 0;
 }
 
 // -----------------------------------------------------------------------------------------------
@@ -18,6 +20,8 @@ bool Container::AddObject ( int iAddToContainer )
 {
    if ( m_kContainedObjects.size() < m_iCapacity )
    {
+      m_uiVersion++;
+
       m_kContainedObjects.push_back ( iAddToContainer );
 
       Entity *pkEntity = 
@@ -45,6 +49,9 @@ bool Container::RemoveObject ( int iRemoveFromContainer )
          kIte != m_kContainedObjects.end(); kIte++ )
       if ( (*kIte) == iRemoveFromContainer )
       {
+
+         m_uiVersion++;
+
          Entity *pkEntity = 
             m_pkParent->GetObject()->m_pkObjectMan->GetObjectByNetWorkID ( (*kIte) );
 
@@ -83,23 +90,30 @@ void Container::Empty()
 
 // -----------------------------------------------------------------------------------------------
 
-void Container::GetAllItemsInContainer( vector<int>* pkItemList )
+void Container::GetAllItemsInContainer( vector<ItemStats*>* pkItemList )
 {
-   for ( int i = 0; i < m_kContainedObjects.size(); i++ )
-   {
-      pkItemList->push_back ( m_kContainedObjects[i] );
+   if ( pkItemList )
+      for ( int i = 0; i < m_kContainedObjects.size(); i++ )
+      {
+         Entity *pkEntity = 
+            m_pkParent->GetObject()->m_pkObjectMan->GetObjectByNetWorkID ( m_kContainedObjects[i] );
 
-      Entity *pkEntity = 
-         m_pkParent->GetObject()->m_pkObjectMan->GetObjectByNetWorkID ( m_kContainedObjects[i] );
+         // get itemstats property
+         P_Item *pkItem = (P_Item*)pkEntity->GetProperty("P_Item");
 
-      // if object also in container, throw in his items into the vector also
-      P_Item *pkItem = (P_Item*)pkEntity->GetProperty("P_Item");
+         // request for a update at the same time
+         pkItem->RequestUpdateFromServer ("data");
 
-      if ( pkItem )
-         if ( pkItem->m_pkItemStats->m_pkContainer )
-            pkItem->m_pkItemStats->m_pkContainer->GetAllItemsInContainer ( pkItemList );
+         // add item to container list
+         pkItemList->push_back ( pkItem->m_pkItemStats );
 
-   }
+         // if item in container is a container itself, request update to that container...
+   //      if ( pkItem->m_pkItemStats->m_pkContainer )
+     //       ((P_Item*)m_pkParent)->m_pkItemStats->m_pkContainer->GetAllItemsInContainer ( pkItemList );         
+
+      }
+   else
+      cout << "Error! Got a nullpointer pkItemList! (container::GetAllItemsInContainer)" << endl;
 }
 
 // -----------------------------------------------------------------------------------------------

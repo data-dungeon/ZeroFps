@@ -201,6 +201,10 @@ void MistClient::OnIdle()
 	{
 		Input();
 	}
+
+   // update inventory dialog
+   if ( m_pkInventDlg )
+      m_pkInventDlg->Update();
 	
  	pkFps->UpdateCamera(); 	
 	
@@ -349,6 +353,7 @@ void MistClient::Input()
 		
 	if(pkInput->Pressed(MOUSEMIDDLE))
 	{
+
 		if(m_pkCamProp)
 		{
 			m_fAngle +=x/100.0;
@@ -365,6 +370,7 @@ void MistClient::Input()
 			m_pkCamProp->Set3PYPos(1.5);
 		}
 	}
+
 	
 	if(pkInput->Pressed(MOUSELEFT))
 	{
@@ -593,6 +599,8 @@ void MistClient::OnCommand(int iID, ZGuiWnd *pkMainWnd)
 				{
 					m_pkInventDlg = new InventoryDlg(GetWnd("BackPackWnd"));
 
+            }
+
 			/*		const int ANTAL = 5;
 
 					ItemStats* pkTestItems = new ItemStats[ANTAL];
@@ -620,9 +628,14 @@ void MistClient::OnCommand(int iID, ZGuiWnd *pkMainWnd)
 
 					kItems[3].second->RegisterAsContainer(); 
 					kItems[4].second->RegisterAsContainer(); 
-					
-					m_pkInventDlg->AddItems(kItems);	*/
-				}
+					*/
+
+               if ( !m_pkInventDlg->m_pkAddItemList )
+                  m_pkInventDlg->m_pkAddItemList = new vector<ItemStats*>;
+
+               // tell itemcontainer to begin gather iteminfo from server
+               ((P_Item*)m_pkActiveCharacter->GetProperty("P_Item"))->GetAllItemsInContainer(m_pkInventDlg->m_pkAddItemList);
+			
 			}
 			if(strClickWndName == "StatsButton")
 				pkScript->Call(m_pkScriptResHandle, "OnClickStats", 0, 0);
@@ -984,7 +997,12 @@ void MistClient::SetActiveCaracter(int iCaracter)
 							//set current active character
 							m_iActiveCaracter = iCaracter;
 							m_iActiveCaracterObjectID = id;
-							cout<<"current caracter is: "<<m_iActiveCaracter<<endl;
+
+                     // set active character in clientcontrol property also
+                     if ( m_pkClientControlP )
+                        m_pkClientControlP->m_iActiveCaracterObjectID = id;
+
+							cout<<"current character is: "<<m_iActiveCaracter<<endl;
 						}
 					
 						if(ep)

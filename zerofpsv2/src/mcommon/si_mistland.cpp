@@ -121,7 +121,7 @@ void MistLandLua::Init(EntityManager* pkObjMan,ZFScriptSystem* pkScript)
 
 
    // contianer stuff
-   pkScript->ExposeFunction("SetContinerSize",	      MistLandLua::SetContainerSizeLua);
+   pkScript->ExposeFunction("SetContainerSize",	      MistLandLua::SetContainerSizeLua);
    pkScript->ExposeFunction("PutInContainer",	      MistLandLua::PutInContainerLua);
    pkScript->ExposeFunction("GetPickedUpBy",	         MistLandLua::GetPickedUpByLua);
 
@@ -2093,25 +2093,25 @@ int MistLandLua::GetRandomAttributeLua (lua_State* pkLua)
 
 int MistLandLua::RunScriptLua (lua_State* pkLua)
 {
- 	if( g_pkScript->GetNumArgs(pkLua) == 2 )
+ 	if( g_pkScript->GetNumArgs(pkLua) == 2 || g_pkScript->GetNumArgs(pkLua) == 1)
    {
      	char	acType[128];
 		g_pkScript->GetArgString(pkLua, 0, acType);
-		
-		double temp;
+
+      double temp;
 		g_pkScript->GetArgNumber(pkLua, 1, &temp);
  		int objectid = temp;
- 
-      
+
+
       ZFScriptSystem* pkZFScriptSys = g_pkScript;
-		
-		Entity* object = g_pkObjMan->GetObjectByNetWorkID(objectid);
-		if(!object)
-		{
-			cout<<"parend object does not exist"<<endl;
-			return 0;
-		}
-		
+	   
+	   Entity* object = g_pkObjMan->GetObjectByNetWorkID(objectid);
+	   if(!object)
+	   {
+		   cout<<"parend object does not exist"<<endl;
+		   return 0;
+	   }
+   
       // create the new object
       Entity* pkNewObj = g_pkObjMan->CreateObjectFromScriptInZone(acType, 
                          object->GetWorldPosV() );
@@ -2300,9 +2300,19 @@ int MistLandLua::SetContainerSizeLua (lua_State* pkLua)
       P_Item* pkIP = (P_Item*)pkEntity->GetProperty("P_Item");
 
       if ( pkCP )
+      {
+         if ( !pkCP->GetCharStats()->m_pkContainer )
+            pkCP->GetCharStats()->MakeContainer();
+
          pkCP->GetCharStats()->m_pkContainer->m_iCapacity = dSize;
+      }
       if ( pkIP )
+      {
+         if ( !pkIP->m_pkItemStats->m_pkContainer )
+            pkIP->m_pkItemStats->MakeContainer();
+
          pkIP->m_pkItemStats->m_pkContainer->m_iCapacity = dSize;
+      }
       
       if ( !pkCP && !pkIP )
          cout << "Warning! Tried to set container capacity on a non char. or item object!" << endl;
@@ -2368,6 +2378,8 @@ int MistLandLua::GetPickedUpByLua (lua_State* pkLua)
 
       Entity* pkCharObj = g_pkObjMan->GetObjectByNetWorkID(dChar);
       
+      /*
+
       // check if the object is a character
       CharacterProperty* pkCP = (CharacterProperty*)pkCharObj->GetProperty("P_CharStats");
 
@@ -2377,7 +2389,18 @@ int MistLandLua::GetPickedUpByLua (lua_State* pkLua)
             pkCP->GetCharStats()->m_pkContainer->AddObject ( g_iCurrentObjectID );
          else
             cout << "Warning! Tried to put a item into a non-container object!" << endl;
+      */
       
+      P_Item* pkCP = (P_Item*)pkCharObj->GetProperty("P_Item");
+
+      if ( pkCP )
+         // check if the container object has a container
+         if ( pkCP->m_pkItemStats->m_pkContainer )
+            pkCP->m_pkItemStats->m_pkContainer->AddObject ( g_iCurrentObjectID );
+         else
+            cout << "Warning! Tried to put a item into a non-container object!" << endl;
+      
+   
    }
 
    return 0;

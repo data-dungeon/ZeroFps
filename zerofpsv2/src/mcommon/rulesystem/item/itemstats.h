@@ -12,6 +12,7 @@
 #include <string>
 	using namespace std;
 
+class Container;
 class P_Item;
 
 class MCOMMON_API ItemStats
@@ -112,9 +113,6 @@ public:
 
    void AddAfterName ( string kAddName );
    void AddBeforeName ( string kAddName );
-
-   // returns false if the item isn't a container
-   bool GetAllItemsInContainer( vector<Entity*>* pkItemList );
 
    void Print();
 

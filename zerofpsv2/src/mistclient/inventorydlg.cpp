@@ -22,6 +22,8 @@ InventoryDlg::InventoryDlg(ZGuiWnd* pkDlgWnd)// : ZFSubSystem("InventoryDlg")
 	m_pkDlgWnd = pkDlgWnd;
 	m_pkSelectedSlot = NULL;
 
+   m_pkAddItemList = 0;
+
 	m_pkSelectionLabel = new ZGuiLabel(Rect(264,16,264+32,16+32),m_pkDlgWnd,true,23443);
 	m_pkSelectionLabel->SetSkin(new ZGuiSkin(-1,-1,-1,-1,  -1,-1,-1,-1, 0,0,0, 255,0,0, 2, 0, 1));
 	m_pkSelectionLabel->Hide();
@@ -35,7 +37,7 @@ InventoryDlg::InventoryDlg(ZGuiWnd* pkDlgWnd)// : ZFSubSystem("InventoryDlg")
 
 InventoryDlg::~InventoryDlg()
 {
-	
+   delete m_pkAddItemList;
 }
 
 bool InventoryDlg::AddItem(ItemStats* pkItemStats)
@@ -72,6 +74,8 @@ bool InventoryDlg::AddItems(vector<ItemStats*> &vkItems)
 		}
 
 		ItemStats* stats = (*it);
+
+      cout << stats->m_szPic[0] << endl;
 
 		AddSlot(stats->m_szPic[0], stats->m_szPic[1], 
 			sqr, CONTAINTER_SLOTS, stats, MAIN_CONTAINER);
@@ -780,4 +784,22 @@ int InventoryDlg::GetPrevContainer()
 	}
 
 	return value;
+}
+
+
+void InventoryDlg::Update()
+{
+   if ( m_pkAddItemList )
+   {
+      // check if any new objects has arrived to add to the inventory
+      if ( m_pkAddItemList->size() )
+      {
+         AddItems ( *m_pkAddItemList );
+         m_pkAddItemList->clear();
+
+         cout << "Found some shit!" << endl;
+
+      }
+   }
+
 }

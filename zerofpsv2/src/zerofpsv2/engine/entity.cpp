@@ -559,6 +559,9 @@ void Entity::PackTo(NetPacket* pkNetPacket, int iConnectionID)
 
 	pkNetPacket->Write( iParentID );
 
+   // send update status
+   pkNetPacket->Write( m_iUpdateStatus );
+
 	// Force Pos Updates
 	m_iNetUpdateFlags |= (OBJ_NETFLAG_POS | OBJ_NETFLAG_ROT);
 	if(m_aiNetDeleteList.size())
@@ -626,6 +629,10 @@ void Entity::PackFrom(NetPacket* pkNetPacket, int iConnectionID)
 
 	int iParentID;
 	pkNetPacket->Read(iParentID);
+
+   // read update status
+   pkNetPacket->Read( m_iUpdateStatus );
+
 //	m_pkParent = ;
 	this->SetParent(m_pkObjectMan->GetObjectByNetWorkID(iParentID));
 

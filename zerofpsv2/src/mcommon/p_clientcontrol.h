@@ -38,7 +38,7 @@ class MCOMMON_API P_ClientControl: public Property {
 		
 
 	public:
-		int	m_iClientID;
+		int m_iClientID, m_iActiveCaracterObjectID;
 	
 	
 		void CloneOf(Property* pkProperty) { }

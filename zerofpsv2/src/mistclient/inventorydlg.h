@@ -60,6 +60,12 @@ public:
 	Slot* FindSlot(int mouse_x, int mouse_y);
 	void OnClick(int x, int y, bool bMouseDown, bool bLeftButton);
 	void OnDClick(int x, int y, bool bLeftButton);
+
+   // if this vector contain objects, the objects is added to the inventory
+   // the vector is checked for items every frame
+   vector<ItemStats*>* m_pkAddItemList;
+
+   void Update();
 	
 	InventoryDlg(ZGuiWnd* pkDlgWnd);
 	~InventoryDlg();

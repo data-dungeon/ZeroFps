@@ -35,6 +35,8 @@ class MCOMMON_API CharacterProperty: public Property
 
 		bool HandleSetValue( string kValueName, string kValue );
 
+      void RequestUpdateFromServer( string kData );
+
 };
 
 MCOMMON_API Property* Create_P_CharStats();

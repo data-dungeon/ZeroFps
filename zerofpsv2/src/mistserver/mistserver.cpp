@@ -1209,7 +1209,7 @@ void MistServer::HandleOrders()
 				m_pkServerInfoP->MessagePlayer(playername.c_str(),message);
 			}
 		}
-		else if(order->m_iFace != -1) 		//else ground klick
+		else if(order->m_sOrderName == "Move" && order->m_iFace != -1) 		//else ground klick
 		{
 			Entity* ob = pkObjectMan->GetObjectByNetWorkID(order->m_iCharacter);			
 			if(ob)
@@ -1245,78 +1245,79 @@ void MistServer::HandleOrders()
 		}
 
       // request orders
-      else if (strncmp(order->m_sOrderName.c_str(),"(rq)",4) == 0 )
+      else if ( order->m_sOrderName == "(rq)item" )
       {
          // type of request
+   		Entity* pkItemObject = pkObjectMan->GetObjectByNetWorkID(order->m_iObjectID);
 
-         // hmm, not very good..if a request have less than 8 characters, the pointer go nuts
-         char* strRequest = (char*)order->m_sOrderName.c_str() + (sizeof(char)*4);
-
-         // item request
-         if ( strncmp(strRequest, "item", 4) )
+         if ( pkItemObject )
          {
-   			Entity* pkItemObject = pkObjectMan->GetObjectByNetWorkID(order->m_iObjectID);
-
-            if ( pkItemObject )
+            P_Item *pkItProp = (P_Item*) pkItemObject->GetProperty("P_Item");
+            
+            if ( pkItProp )
             {
-               P_Item *pkItProp = (P_Item*) pkItemObject->GetProperty("P_Item");
-               
-               if ( pkItProp )
+               // if the items is of the same version, no need to send data
+               if ( pkItProp->m_pkItemStats->m_uiVersion != order->m_iFace )
                {
-                  // if the items is of the same version, no need to send data
-                  if ( pkItProp->m_pkItemStats->m_uiVersion != order->m_iFace )
-                  {
-                     SendType kSendType;
-                     kSendType.m_iClientID = order->m_iClientID;
-                     kSendType.m_kSendType = "itemdata";
-                     
-                     pkItProp->m_kSends.push_back ( kSendType );
-                  }
-
+                  SendType kSendType;
+                  kSendType.m_iClientID = order->m_iClientID;
+                  kSendType.m_kSendType = "itemdata";
+                  
+                  pkItProp->m_kSends.push_back ( kSendType );
                }
-               else
-                  cout << "Error! Non-P_Item_Object requested for updated iteminfo! This should't be possible!!!" << endl;
+
             }
-
-
+            else
+               cout << "Error! Non-P_Item_Object requested for updated iteminfo! This should't be possible!!!" << endl;
          }
 
-         // container request
-         else if ( strncmp(strRequest, "cont", 4) )
+
+      }
+
+      // container request
+      else if ( order->m_sOrderName == "(rq)cont" )
+      {
+   		Entity* pkObject = pkObjectMan->GetObjectByNetWorkID(order->m_iObjectID);
+         
+         
+         if ( pkObject )
          {
-   			Entity* pkObject = pkObjectMan->GetObjectByNetWorkID(order->m_iObjectID);
-            
-            
-            if ( pkObject )
+
+            P_Item *pkItProp = (P_Item*) pkObject->GetProperty("P_Item");
+            CharacterProperty *pkChar = (CharacterProperty*) pkObject->GetProperty("P_CharStats");
+
+            // if item wanted updated container
+            if ( pkItProp )
             {
-
-               P_Item *pkItProp = (P_Item*) pkObject->GetProperty("P_Item");
-               CharacterProperty *pkChar = (CharacterProperty*) pkObject->GetProperty("P_CharStats");
-
-               // if item wanted updated container
-               if ( pkItProp )
+               // check versions...
+               if ( pkItProp->m_pkItemStats->m_pkContainer->m_uiVersion != order->m_iFace )
                {
                   SendType kSend;
                   kSend.m_iClientID = order->m_iClientID;
                   kSend.m_kSendType = "container";
                   pkItProp->m_kSends.push_back ( kSend );
                }
+            }
 
-               // if characters wanter updated container
-               else if ( pkChar )
+            // if characters wanter updated container
+            else if ( pkChar )
+            {
+               // check versions...
+               if ( pkChar->GetCharStats()->m_pkContainer->m_uiVersion != order->m_iFace )
                {
                   SendType kSend;
                   kSend.m_iClientID = order->m_iClientID;
                   kSend.m_kSendType = "container";
                   pkChar->m_kSends.push_back ( kSend );
-               }
-               else
-                  cout << "Error! Non-P_Item_Object requested for updated containerinfo!" << endl;
-            }
 
+                  cout << "server if preparing to send cont. data" << endl;
+               }
+            }
+            else
+               cout << "Error! Non-P_Item_Object requested for updated containerinfo!" << endl;
          }
 
-      }
+      }      
 
 		else
 		{
