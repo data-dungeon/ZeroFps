@@ -33,7 +33,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="opengl32.lib engine_debug.lib sdlmain.lib sdl.lib gui_debug.lib render_debug.lib basic_debug.lib script_debug.lib odbc32.lib odbccp32.lib"
+				AdditionalDependencies="engine_debug.lib sdlmain.lib sdl.lib gui_debug.lib render_debug.lib basic_debug.lib script_debug.lib odbc32.lib odbccp32.lib"
 				OutputFile="../../../../bin/madview.exe"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="../../../../bin"
@@ -73,7 +73,10 @@
 				Name="VCCLCompilerTool"
 				AdditionalIncludeDirectories="C:\Program\codetool\include"
 				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE"
+				StringPooling="TRUE"
 				RuntimeLibrary="2"
+				EnableFunctionLevelLinking="TRUE"
+				RuntimeTypeInfo="TRUE"
 				UsePrecompiledHeader="2"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="TRUE"
@@ -86,7 +89,7 @@
 				OutputFile="../../../../bin/madview.exe"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="../../../../bin"
-				IgnoreDefaultLibraryNames="msvcrt.lib"
+				IgnoreDefaultLibraryNames=""
 				GenerateDebugInformation="TRUE"
 				SubSystem="1"
 				OptimizeReferences="2"
