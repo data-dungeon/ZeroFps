@@ -12,6 +12,7 @@
 #include "ballobject.h"
 #include "playerobject.h"
 #include "bunnyobject.h"
+#include "teleportproperty.h"
 
 enum GAME_STATE
 {

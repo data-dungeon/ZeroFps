@@ -160,7 +160,7 @@ void Game::RunCommand(int cmdid, const CmdArgument* kCommand)
 
 void Game::RegisterPropertys()
 {
-//	pkPropertyFactory->Register("FloatProperty", Create_FloatProperty);
+	pkPropertyFactory->Register("TeleportProperty", Create_TeleportProperty);
 //	pkPropertyFactory->Register("GravityProperty", Create_GravityProperty);	
 }
 

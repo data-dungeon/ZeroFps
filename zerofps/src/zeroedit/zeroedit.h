@@ -13,7 +13,7 @@
 #include <cstdlib>
 
 #include "ballobject.h"
-//#include "gui.h"
+#include "../game/teleportproperty.h"
 
 class Gui;
 

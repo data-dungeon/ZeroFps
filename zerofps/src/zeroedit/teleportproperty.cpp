@@ -1,0 +1,12 @@
+#include "../game/teleportproperty.cpp"
+
+
+
+
+
+
+
+
+
+
+

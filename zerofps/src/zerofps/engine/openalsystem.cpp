@@ -80,13 +80,22 @@ int OpenAlSystem::GetUnusedSource()
 
 void OpenAlSystem::AddSound(Sound* pkSound) 
 {
-	cout<<"Adding a sound"<<endl;
+//	cout<<"Adding a sound"<<endl;
+	for(list<Sound*>::iterator it=m_akSounds.begin();it!=m_akSounds.end();it++)
+	{	
+		if( (*it) == pkSound)
+		{
+			cout<<"already added"<<endl;
+			return;
+		}
+	}
+	
 	m_akSounds.push_back(pkSound);
 }
 
 void OpenAlSystem::RemoveSound(Sound* pkSound) 
 {
-	cout<<"Removing a sound"<<endl;
+//	cout<<"Removing a sound"<<endl;
 	
 	alSourceStop(m_kSources[pkSound->m_iSource]->m_iSource);
 	if(pkSound->m_iSource!=-1){
@@ -222,7 +231,7 @@ void OpenAlSystem::PlaySound(Sound* pkSound,int iSource)
 
 	
 	alSourcePlay(m_kSources[iSource]->m_iSource);
-	cout<<"Starting to play"<<endl;
+//	cout<<"Starting to play"<<endl;
 }
 
 
