@@ -17,7 +17,7 @@
 #include "../game/statusproperty.h"
 #include "../game/massdriverproperty.h"
 #include "../game/massdriverprojectile.h"
-
+#include "../game/adaptorsniper.h"
 class Gui;
 
 

@@ -13,6 +13,7 @@
 #include "playerobject.h"
 #include "bunnyobject.h"
 #include "teleportproperty.h"
+#include "adaptorsniper.h"
 
 enum GAME_STATE
 {

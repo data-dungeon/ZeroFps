@@ -17,6 +17,8 @@ void PhysicsEngine::Update()
 	if(!m_bUpdate)
 		return;
 	
+//	cout<<"NEW TEST--------------"<<endl;
+	
 	//clear list
 	m_kPropertys.clear();
 	
@@ -271,11 +273,12 @@ void PhysicsEngine::HandleCollisions()
 					//cout<<"taking new pos from "<<pkCO->m_pkPP2->GetObject()->GetName()<<endl;					
 				}
 				
+				/*
 				if((*itCp)->m_pkPP->m_kNewPos == kOldNewPos1)
 				{
-					cout<<"New Possition is same as old one"<<endl;
+					//cout<<"New Possition is same as old one"<<endl;
 					continue;
-				}
+				}*/
 				
 				
 //				cout<<"New Newpos "<<(*itCp)->m_pkPP->m_kNewPos.x<<" "<<(*itCp)->m_pkPP->m_kNewPos.y<<" "<<(*itCp)->m_pkPP->m_kNewPos.z<<endl;

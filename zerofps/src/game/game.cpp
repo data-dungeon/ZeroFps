@@ -170,6 +170,7 @@ void Game::RunCommand(int cmdid, const CmdArgument* kCommand)
 
 void Game::RegisterPropertys()
 {
+	pkPropertyFactory->Register("AdaptorSniper", Create_AdaptorSniper);
 	pkPropertyFactory->Register("StatusProperty", Create_StatusProperty);
 	pkPropertyFactory->Register("TeleportProperty", Create_TeleportProperty);
 	pkPropertyFactory->Register("MassDriverProperty", Create_MassDriverProperty);	
