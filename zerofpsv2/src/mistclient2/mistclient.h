@@ -15,6 +15,7 @@
 
 class OptionsDlg;
 class ActionMenu;
+class InventoryDlg;
 
 typedef void (*msgScreenProg)(string, string, unsigned int msg, int numparms, void *params);
 
@@ -51,6 +52,7 @@ class MistClient :public Application, public ZGuiApp {
 		map<string, msgScreenProg> m_kGuiMsgProcs;
 		OptionsDlg* m_pkOptionsDlg;
 		ActionMenu* m_pkActionDlg;
+		InventoryDlg* m_pkInventoryDlg;
       		
 		bool ReadWriteServerList(bool bRead);
 
@@ -66,9 +68,9 @@ class MistClient :public Application, public ZGuiApp {
 		void RequestKillMe();
 
 		void SendAction(int iEntityID,const string& strAction);
-		void SendRequestIventory();		
-		
-		
+<<<<<<< void SendRequestIventory();	
+			
+		// gui stuff
 		bool NameIPFromServerList(string& strName, string& strIP);
 		void ToogleChatWnd(bool bOpen, bool bSetInputFocus=false);
 		void ResizeChatDlg(bool bBigger);      	
@@ -76,6 +78,7 @@ class MistClient :public Application, public ZGuiApp {
 		void LoadStartScreenGui(bool bShowSplashImage);
 		void SetupGUI();
 		void SetGuiCapture(bool bSet);
+		void PositionActionButtons();
 						
 		void RegisterPropertys();
 		void RegisterResources();
@@ -118,10 +121,11 @@ class MistClient :public Application, public ZGuiApp {
 		friend void GuiMsgIngameScreen( string strMainWnd, string strController, unsigned int msg, int numparms, void *params );
 		friend void GuiMsgOptionsDlg( string strMainWnd, string strController, unsigned int msg, int numparms, void *params );
 		friend void GuiMsgActionDlg( string strMainWnd, string strController, unsigned int msg, int numparms, void *params );
-
+		friend void GuiMsgInventoryDlg( string strMainWnd, string strController, unsigned int msg, int numparms, void *params );
 
 		friend class OptionsDlg;
 		friend class ActionMenu;
+		friend class InventoryDlg;
 };
 
 

@@ -149,6 +149,8 @@ void OptionsDlg::Open()
 	{
 		m_pkMC->GetWnd(szWnds[i])->SetTextColor(255,255,255); 
 	}
+
+	g_kMistClient.PositionActionButtons();
 }
 
 void OptionsDlg::Close(bool bSave)
@@ -204,6 +206,8 @@ void OptionsDlg::Close(bool bSave)
 			else
 				m_pkZShadow->DisableShadowGroup(i);
 	}
+
+	g_kMistClient.PositionActionButtons();
 }
 
 void GuiMsgOptionsDlg( string strMainWnd, string strController,

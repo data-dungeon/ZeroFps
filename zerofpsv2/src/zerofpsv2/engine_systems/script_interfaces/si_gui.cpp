@@ -87,7 +87,7 @@ int GuiAppLua::CreateWndLua(lua_State* pkLua)
 	char szWindowName[50], szParentName[50], szText[512];
 	g_pkScript->GetArg(pkLua, 1, szWindowName);
 	g_pkScript->GetArg(pkLua, 2, szParentName);
-	g_pkScript->GetArg(pkLua, 3, szText);
+	g_pkScript->GetArgString(pkLua, 3, szText);
 
 	double x, y, w, h, f, wndalignent, wndresizetype;
 	g_pkScript->GetArg(pkLua, 4, &x);

@@ -88,6 +88,8 @@ private:
 	ZGuiWnd* GetWndFromPoint(int x, int y);
 	GuiType FormatWndType(string strText);
 	string FormatWndType(GuiType eType);
+	string FormatWndAlignent(ZGuiWnd* pkWnd);
+	string FormatWndResizeType(ZGuiWnd* pkWnd);
 	void MouseClick(bool bLeft, int x, int y);
 	void MouseMove(bool bLeft, int x, int y);
 	bool LoadGUI(const char* szFile);

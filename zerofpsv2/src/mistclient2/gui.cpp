@@ -1,6 +1,7 @@
 #include	"mistclient.h"
 #include "gui_optionsdlg.h"
 #include "actionmenu.h"
+#include "gui_inventory.h"
 
 extern MistClient	g_kMistClient;
 
@@ -101,6 +102,7 @@ void MistClient::SetupGUI()
 
 	m_pkOptionsDlg = new OptionsDlg(this);
 	m_pkActionDlg = new ActionMenu();
+	m_pkInventoryDlg = new InventoryDlg();
 
 	font = g_kMistClient.m_pkGui->GetResMan()->Font("chatboxfont");
 
@@ -143,6 +145,9 @@ void MistClient::SetupGUI()
 	g_kMistClient.m_kGuiMsgProcs.insert( map<string, msgScreenProg>::value_type("GuiMainWnd", GuiMsgIngameScreen));
 
 	g_kMistClient.m_kGuiMsgProcs.insert( map<string, msgScreenProg>::value_type("ActionMenuMain", GuiMsgActionDlg));
+
+	g_kMistClient.m_kGuiMsgProcs.insert( map<string, msgScreenProg>::value_type("InventoryWnd", GuiMsgInventoryDlg));
+	
 
    // load software cursor
 	g_kMistClient.m_pkGui->SetCursor( 0,0, m_pkTexMan->Load("data/textures/gui/cursor.bmp", 0),

@@ -828,6 +828,36 @@ string ZGuiEd::FormatWndType(GuiType eType)
 	return strText;
 }
 
+string ZGuiEd::FormatWndAlignent(ZGuiWnd* pkWnd)
+{
+	string strText = "";
+
+	WndAlignent eAlignment = WndAlignent(pkWnd->m_iWndAlignment);
+
+	if(eAlignment == TopLeft)		strText = "TopLeft";
+	if(eAlignment == TopRight)		strText = "TopRight";
+	if(eAlignment == BottomLeft)	strText = "BottomLeft";	
+	if(eAlignment == BottomRight)	strText = "BottomRight";	
+	if(eAlignment == CenterHorz)	strText = "CenterHorz";	
+	if(eAlignment == CenterVert)	strText = "CenterVert";	
+	if(eAlignment == Center)		strText = "Center";	
+
+	return strText;
+}
+
+string ZGuiEd::FormatWndResizeType(ZGuiWnd* pkWnd)
+{
+	string strText = "";
+
+	WndResizeType eType = WndResizeType(pkWnd->m_iResizeType);
+
+	if(eType == eNone)				strText = "eNone";
+	if(eType == ResizeWidth)		strText = "ResizeWidth";
+	if(eType == ResizeHeight)		strText = "ResizeHeight";	
+	if(eType == Resize)				strText = "Resize";	
+
+	return strText;
+}
 void ZGuiEd::FilterWnd()
 {
 	int sel = SendDlgItemMessage(g_kDlgBoxRight, IDC_NEWCNTRL_CB, CB_GETCURSEL, 0, 0);

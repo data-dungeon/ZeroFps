@@ -22,6 +22,7 @@
 #include "../mcommon/p_shadowblob.h"
 
 #include "actionmenu.h"
+#include "gui_inventory.h"
 
 MistClient g_kMistClient("MistClient",0,0,0);
 
@@ -375,6 +376,14 @@ void MistClient::Input()
 		else
 		if(IsWndVisible("MLStartWnd"))
 			LoadInGameGui();
+	}
+
+	if(m_pkInputHandle->Pressed(KEY_I) && !DelayCommand())
+	{
+		if(m_pkInventoryDlg->IsVisible())
+			m_pkInventoryDlg->Close(); 
+		else
+			m_pkInventoryDlg->Open(); 
 	}
 	
 

@@ -203,6 +203,7 @@ bool ZGuiEd::WriteWindows()
 	fprintf(m_pkSaveFile, "\n\t-- Windowlist ---------------------------------------------------------" \
 		"--------------------------------------------------------------\n\n");
 
+	fprintf(m_pkSaveFile, "\t--Window Types\n\n");
 	fprintf(m_pkSaveFile, "\tlocal Wnd         = 0\n");	
 	fprintf(m_pkSaveFile, "\tlocal Button      = 1\n");	
 	fprintf(m_pkSaveFile, "\tlocal Checkbox    = 2\n");
@@ -218,6 +219,21 @@ bool ZGuiEd::WriteWindows()
 	fprintf(m_pkSaveFile, "\tlocal Menu        = 12\n");
 	fprintf(m_pkSaveFile, "\tlocal Progressbar = 13\n\n");
 
+	fprintf(m_pkSaveFile, "\t--Window Alignent Types\n\n");
+	fprintf(m_pkSaveFile, "\tlocal TopLeft      = 0\n");
+	fprintf(m_pkSaveFile, "\tlocal TopRight     = 1\n");
+	fprintf(m_pkSaveFile, "\tlocal BottomLeft   = 2\n");
+	fprintf(m_pkSaveFile, "\tlocal BottomRight  = 3\n");
+	fprintf(m_pkSaveFile, "\tlocal CenterHorz   = 4\n");
+	fprintf(m_pkSaveFile, "\tlocal CenterVert   = 5\n");
+	fprintf(m_pkSaveFile, "\tlocal Center       = 6\n\n");
+
+	fprintf(m_pkSaveFile, "\t--Window Resize Type\n\n");
+	fprintf(m_pkSaveFile, "\tlocal eNone        = 0\n");
+	fprintf(m_pkSaveFile, "\tlocal ResizeWidth  = 1\n");
+	fprintf(m_pkSaveFile, "\tlocal ResizeHeight = 2\n");
+	fprintf(m_pkSaveFile, "\tlocal Resize       = 3\n\n");
+	
 	ZGuiWnd* pkMainWnd = GetWnd("GuiMainWnd");
 
 	vector<ZGuiWnd*> vkCandidates;
@@ -326,9 +342,10 @@ bool ZGuiEd::WriteWindows()
 			iAlignment = sortlist[k]->m_iWndAlignment;
 			iResizeType = sortlist[k]->m_iResizeType;
 
-			fprintf(m_pkSaveFile, "\tCreateWnd(%s, \"%s\", \"%s\", \"%s\", %i, %i, %i, %i, 0, %i, %i)\n", 
+			fprintf(m_pkSaveFile, "\tCreateWnd(%s, \"%s\", \"%s\", \"%s\", %i, %i, %i, %i, 0, %s, %s)\n", 
 				FormatWndType(GetWndType(sortlist[k])).c_str(), szName, szParent, szLabel, rc.Left, rc.Top, 
-				rc.Width(), rc.Height(), iAlignment, iResizeType);			
+				rc.Width(), rc.Height(), FormatWndAlignent(sortlist[k]).c_str(), 
+				FormatWndResizeType(sortlist[k]).c_str());			
 
 			PrintSkins(sortlist[k]);
 

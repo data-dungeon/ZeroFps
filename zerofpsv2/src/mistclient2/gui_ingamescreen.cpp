@@ -1,4 +1,5 @@
 #include	"mistclient.h"
+#include "gui_inventory.h"
 
 extern MistClient	g_kMistClient;
 
@@ -13,11 +14,19 @@ void GuiMsgIngameScreen( string strMainWnd, string	strController,
 			{
 				g_kMistClient.SetText("SayTextbox",	"");
 				g_kMistClient.ToogleChatWnd(true);
+				g_kMistClient.PositionActionButtons();
 			}
 			else
 			if(strController == "IngameBackBn")
 			{
 				g_kMistClient.LoadStartScreenGui(false);
+				g_kMistClient.PositionActionButtons();
+			}
+			else
+			if(strController == "OpenInventoryBn")
+			{
+				g_kMistClient.m_pkInventoryDlg->Open(); 
+				g_kMistClient.PositionActionButtons();
 			}
 		}
 		else
@@ -26,6 +35,7 @@ void GuiMsgIngameScreen( string strMainWnd, string	strController,
 			if(strController == "CloseChatButton")
 			{
 				g_kMistClient.ToogleChatWnd(false);
+				g_kMistClient.PositionActionButtons();
 			}
 			else
 			if(strController == "ChangeSizeUpChatButton")
@@ -79,6 +89,12 @@ void GuiMsgIngameScreen( string strMainWnd, string	strController,
 			}
 
 			g_kMistClient.m_pkGui->m_bForceGUICapture = false;
+		}
+		else
+		if( ((int*)params)[0] == KEY_P)
+		{
+			if(!g_kMistClient.m_pkInventoryDlg->IsVisible())
+				g_kMistClient.m_pkInventoryDlg->Open(); 
 		}
 	}
 }
@@ -235,4 +251,28 @@ void MistClient::LoadInGameGui()
 		((ZGuiTextbox*)GetWnd("ChatTextbox"))->GetRowCount());
 
 	m_pkGui->SetFocus(GetWnd("GuiMainWnd"), false);
+}
+
+
+void MistClient::PositionActionButtons()
+{
+	int x, y = 0;
+	const int BUTTON_SIZE = 64;
+	const int NUM_BUTTONS = 3;
+
+	ZGuiWnd* pkOpenMenuBn = GetWnd("IngameBackBn");
+	ZGuiWnd* pkOpenInventoryBn = GetWnd("OpenInventoryBn");
+	ZGuiWnd* pkOpenChatButton = GetWnd("OpenChatButton");
+	
+	// Set position for inventory button (2:nd button from left)
+	x = BUTTON_SIZE*(NUM_BUTTONS-1);
+	if(pkOpenMenuBn->IsVisible()) x-=BUTTON_SIZE;
+	pkOpenInventoryBn->SetPos(x,y,false,true);
+
+	// Set position for chat button (3:rd button from left)
+	x = BUTTON_SIZE*(NUM_BUTTONS-1); 
+	if(pkOpenMenuBn->IsVisible()) x-=BUTTON_SIZE;
+	if(pkOpenInventoryBn->IsVisible()) x-=BUTTON_SIZE;
+	pkOpenChatButton->SetPos(x,y,false,true);
+	
 }
