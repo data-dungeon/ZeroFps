@@ -77,8 +77,15 @@ void MadView::Input()
 		Point curr_pos;
 		m_pkInputHandle->SDLMouseXY(curr_pos.x, curr_pos.y);
 
-		m_fObjRotX = curr_pos.y - press_pos.y + prev_x;
-		m_fObjRotY = press_pos.x - curr_pos.x + prev_y;
+		if(!m_pkInputHandle->Pressed(KEY_LSHIFT))
+		{
+			m_fObjRotX = curr_pos.y - press_pos.y + prev_x;
+			m_fObjRotY = press_pos.x - curr_pos.x + prev_y;
+		}
+		else
+		{
+			m_fObjRotZ = curr_pos.y - press_pos.y + prev_x;
+		}
 	}
 	else
 	{
