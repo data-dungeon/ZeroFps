@@ -141,7 +141,12 @@ void CGamePlayDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName)
 		m_pkAudioSys->StartSound("data/sound/panel_in.wav",
 			m_pkAudioSys->GetListnerPos() ); 
 	}
-	
+	else
+	if(strClickName.find("GamePlayDlgQuickItem") != string::npos)
+	{
+		printf("using quickitem\n");
+
+	}	
 
 	//
 	// Markera en agent
