@@ -7,6 +7,7 @@ public:
 	CHQDlg();
 	~CHQDlg();
 
+	void OnKeyPress(int iKey, ZGuiWnd* pkCurrentMainWnd);
 	void OnCommand(ZGuiWnd *pkMainWnd, string strClickName, bool bRMouseBnClick);
 	void OpenDlg();
 

@@ -28,6 +28,14 @@ CStartDMDlg::~CStartDMDlg()
 {
 }
 
+void CStartDMDlg::OnKeyPress(int iKey, ZGuiWnd* pkCurrentMainWnd)
+{
+	if(iKey == KEY_RETURN)
+	{
+		OnCommand(pkCurrentMainWnd, "StarNewGameBn", false);
+	}
+}
+
 void CStartDMDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName,
 									 bool bRMouseBnClick)
 {

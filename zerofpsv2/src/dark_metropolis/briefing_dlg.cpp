@@ -11,6 +11,14 @@ CBriefingDlg::~CBriefingDlg()
 {
 }
 
+void CBriefingDlg::OnKeyPress(int iKey, ZGuiWnd* pkCurrentMainWnd)
+{
+	if(iKey == KEY_ESCAPE)
+	{
+		OnCommand(pkCurrentMainWnd, "BriefingCancelBn", false);
+	}	
+}
+
 void CBriefingDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName, bool bRMouseBnClick)
 {
 	string strSelMission = ((CMissionDlg*)GetGameDlg(MISSION_DLG))->m_strSelMission;

@@ -13,6 +13,14 @@ CHQDlg::~CHQDlg(void)
 {
 }
 
+void CHQDlg::OnKeyPress(int iKey, ZGuiWnd* pkCurrentMainWnd)
+{
+	if(iKey == KEY_ESCAPE)
+	{
+		OnCommand(pkCurrentMainWnd, "HQCloseBn", false);
+	}
+}
+
 void CHQDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName,
 							  bool bRMouseBnClick)
 {

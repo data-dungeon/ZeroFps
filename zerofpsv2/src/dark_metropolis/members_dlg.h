@@ -25,6 +25,8 @@ public:
 	const WINDOW_MODE GetWindowMode() { return m_eWidowMode; }
 	void UpdateCamera();
 
+	void OnKeyPress(int iKey, ZGuiWnd* pkCurrentMainWnd);
+
 protected:
 	void OnMouseMove(int x, int y, bool bMouseDown, ZGuiWnd *pkMain);
 	void OnClick(int x, int y, bool bMouseDown, bool bLeftButton, ZGuiWnd *pkMain);

@@ -7,6 +7,7 @@ public:
 	CStartDMDlg();
 	~CStartDMDlg();
 
+	void OnKeyPress(int iKey, ZGuiWnd* pkCurrentMainWnd);
 	void OnCommand(ZGuiWnd *pkMainWnd, string strClickName, bool bRMouseBnClick);
 	void OnClick(int x, int y, bool bMouseDown, bool bLeftButton, ZGuiWnd *pkMain);
 	void Update(float fFrameTime);

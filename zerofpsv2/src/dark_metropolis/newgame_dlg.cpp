@@ -11,6 +11,14 @@ CNewGameDlg::~CNewGameDlg()
 
 }
 
+void CNewGameDlg::OnKeyPress(int iKey, ZGuiWnd* pkCurrentMainWnd)
+{	
+	if(iKey == KEY_RETURN)
+	{
+		OnCommand(pkCurrentMainWnd, "StartNewGameDone", false);
+	}
+}
+
 void CNewGameDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName,
 									 bool bRMouseBnClick)
 {

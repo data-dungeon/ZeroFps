@@ -31,6 +31,14 @@ CMembersDlg::~CMembersDlg()
 {
 }
 
+void CMembersDlg::OnKeyPress(int iKey, ZGuiWnd* pkCurrentMainWnd)
+{
+	if(iKey == KEY_ESCAPE)
+	{
+		OnCommand(pkCurrentMainWnd, "MembersCloseBn", false);
+	}	
+}
+
 void CMembersDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName, 
 									 bool bRMouseBnClick)
 {

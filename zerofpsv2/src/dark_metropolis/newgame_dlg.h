@@ -7,6 +7,7 @@ public:
 	CNewGameDlg();
 	~CNewGameDlg();
 	void OnCommand(ZGuiWnd *pkMainWnd, string strClickName, bool bRMouseBnClick);
+	void OnKeyPress(int iKey, ZGuiWnd* pkCurrentMainWnd);
 
 	void StartFade(float fGameTime);
 	void EndFade();

@@ -15,6 +15,7 @@ public:
 	virtual void OnScroll(int iID, int iPos, ZGuiWnd *pkMain) {};
 	virtual bool InitDlg() {return true;}
 	virtual void OpenDlg(){};
+	virtual void OnKeyPress(int iKey, ZGuiWnd* pkCurrentMainWnd) {};
 
 	bool IsInitialized() { return m_bInitialized; }
 

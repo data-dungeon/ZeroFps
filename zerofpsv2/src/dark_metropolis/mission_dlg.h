@@ -7,6 +7,7 @@ public:
 	CMissionDlg();
 	~CMissionDlg();
 
+	void OnKeyPress(int iKey, ZGuiWnd* pkCurrentMainWnd);
 	void OnCommand(ZGuiWnd *pkMainWnd, string strClickName, bool bRMouseBnClick);
 	bool InitDlg();
 

@@ -12,6 +12,14 @@ CMissionDlg::~CMissionDlg()
 {
 }
 
+void CMissionDlg::OnKeyPress(int iKey, ZGuiWnd* pkCurrentMainWnd)
+{
+	if(iKey == KEY_ESCAPE)
+	{
+		OnCommand(pkCurrentMainWnd, "MissionCancelBn", false);
+	}	
+}
+
 void CMissionDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName,
 									 bool bRMouseBnClick)
 {

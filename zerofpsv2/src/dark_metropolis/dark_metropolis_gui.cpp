@@ -357,6 +357,65 @@ void DarkMetropolis::GUI_OnSelectLB(int iID, int iIndex, ZGuiWnd* pkMainWnd)
 
 void DarkMetropolis::GUI_OnKeyPress(int iKey, ZGuiWnd *pkWnd)
 {
+	string strMainWnd = "";
+
+	if(pkWnd)
+	{
+		strMainWnd = pkWnd->GetName();	
+		printf("pkWnd = %s\n", pkWnd->GetName());
+	}
+	else
+		return;
+
+	if(strMainWnd == "DMStartWnd")
+	{
+		m_pkStartDMDlg->OnKeyPress(iKey, pkWnd);
+	}
+	else
+	if(strMainWnd == "StartNewGameWnd")
+	{
+		m_pkNewGameDlg->OnKeyPress(iKey, pkWnd);
+	}
+	else
+	if(strMainWnd == "HQWnd")
+	{
+		if(GetWnd("HQWnd")->IsVisible())
+			m_pkHQDlg->OnKeyPress(iKey, pkWnd);
+	}
+	else
+	if(strMainWnd == "MissionWnd")
+	{
+		if(GetWnd("MissionWnd")->IsVisible())
+			m_pkMissionDlg->OnKeyPress(iKey, pkWnd);
+	}
+	else
+	if(strMainWnd == "MembersWnd")
+	{
+		m_pkMembersDlg->OnKeyPress(iKey, pkWnd);
+	}
+	else
+	if(strMainWnd == "BriefingWnd")
+	{
+		m_pkBriefingDlg->OnKeyPress(iKey, pkWnd);
+	}
+	//else
+	//if(strMainWnd == "HQWnd")
+	//{
+	//	m_pkHQDlg->OnCommand(pkMainWnd, strClickName, bRMouseBnClick);
+	//}
+	//else
+	//if(strMainWnd == "MembersWnd")
+	//{
+	//	m_pkMembersDlg->OnCommand(pkMainWnd, strClickName, bRMouseBnClick);
+	//}
+	//else
+	//if(strMainWnd == "MissionWnd")
+	//{
+	//	m_pkMissionDlg->OnCommand(pkMainWnd, strClickName, bRMouseBnClick);
+	//}
+	//else
+
+
 }
 
 void DarkMetropolis::GUI_LoadSave(bool bSave)
