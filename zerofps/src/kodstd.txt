@@ -97,13 +97,15 @@ Kommentarer
 
 	Stora mängder utkommenterad kod singneras.
 
+		Ex: /* COMMENT OUT by: Zeb .... */
+
 		Detta förhindrar att någon av misstag råkar ta bort kod som i själva verket inte skulle 
 		tas bort utan som bara kommenterats ut så länge (tex. för att testa ny funktionalitet)
 		sammt förenklar för den person som vill rensa undan och snygga upp filer.
 
 		Är ett kodblock utkommenterat men inte signerat så klassas detta som skräpkod och
 		riskeras att raderas.
-
+		
 
 Names:
 	Klass / Struct / Unions
