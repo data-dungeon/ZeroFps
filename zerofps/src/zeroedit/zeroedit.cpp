@@ -2,6 +2,8 @@
 #include "gui.h"
 #include "fh.h"
 
+
+
 char* pkTempObjectTemplate = "ZfEditTempObject";
 
 ZeroEdit Editor("ZeroEdit",1024,768,24);
@@ -49,6 +51,8 @@ void ZeroEdit::OnInit(void)
 	g_ZFObjSys.Register_Cmd("prevobj",FID_FINDOBJECT,this);			
 
 	g_ZFObjSys.Register_Cmd("massspawn",FID_MASSSPAWN,this);			
+	g_ZFObjSys.Register_Cmd("fs_save",FID_VFS_SAVE,this);			
+	g_ZFObjSys.Register_Cmd("fs_load",FID_VFS_LOAD,this);			
 
 	
 	//start text =)
@@ -560,6 +564,9 @@ void ZeroEdit::RunCommand(int cmdid, const CmdArgument* kCommand)
 
 		case FID_NEXTOBJECT:	pkConsole->Printf("This command is not done yet :(.");	break;
 		case FID_PREVOBJECT:	pkConsole->Printf("This command is not done yet :(.");	break;
+
+		case FID_VFS_SAVE:	TestFS_Write();	break;
+		case FID_VFS_LOAD:	TestFS_Read();	break;
 
 		case FID_VIEWMAD:
 			

@@ -15,6 +15,8 @@ class FHObject: public Object {
 		void HandleCollision(Object* pkObject,Vector3 kPos,bool bContinue);
 };
 
+void TestFS_Write();
+void TestFS_Read();
 
 #endif
 

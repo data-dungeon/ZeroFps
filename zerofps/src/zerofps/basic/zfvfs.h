@@ -20,7 +20,7 @@ public:
 	ZFVFile();
 	~ZFVFile();
 	
-	bool Open(string strFileName, int iOptions);
+	bool Open(string strFileName, int iOptions, bool bWrite );
 	bool Close();
 
 	bool Read  (void* pkData, int iSize, int iCount);
@@ -60,7 +60,7 @@ class BASIC_API ZFVFileSystem : public ZFObject
 		void ArchiveUnpack()  { }
 		void ArchivePack()  { }
 	
-		FILE* Open(string strFileName, int iOptions);	
+		FILE* Open(string strFileName, int iOptions, bool bWrite);	
 };	
 
 

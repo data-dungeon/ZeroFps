@@ -1,8 +1,11 @@
+#include <iostream.h>
 #include <stdio.h>
 #include "zfobject.h"
 #include "zfobjectmanger.h"
 
 #include "zfvfs.h"
+
+using namespace std;
 
 extern ZFObjectManger g_ZFObjSys;
 
@@ -18,9 +21,9 @@ ZFVFile::~ZFVFile()
 	Close();
 }
 
-bool ZFVFile::Open(string strFileName, int iOptions)
+bool ZFVFile::Open(string strFileName, int iOptions, bool bWrite)
 {
-	m_pkFilePointer = m_pkFileSystem->Open(strFileName, iOptions);
+	m_pkFilePointer = m_pkFileSystem->Open(strFileName, iOptions,bWrite);
 	if(m_pkFilePointer)
 		return true;
 
@@ -82,22 +85,33 @@ ZFVFileSystem::~ZFVFileSystem()
 
 }
 
-FILE* ZFVFileSystem::Open(string strFileName, int iOptions)
+FILE* ZFVFileSystem::Open(string strFileName, int iOptions, bool bWrite)
 {
 	FILE*	pkFp;
 	string	strRootMerge;
+	char*	szOptions;
+	if(bWrite)
+		szOptions = "wb";
+	else
+		szOptions = "rb";
+	
+	cout << "=) =) =)";
 
 	// Try to open file directly.
-	pkFp = fopen(strFileName.c_str(), "rb");
-	if(pkFp)
-		return pkFp;
+//	pkFp = fopen(strFileName.c_str(), szOptions);
+//	if(pkFp)
+//		return pkFp;
 
 	// Try to open from all active RootPaths.
 	for(int i=0; i <m_kstrRootPath.size(); i++) {
 		strRootMerge = m_kstrRootPath[i] + strFileName;
-		pkFp = fopen(strFileName.c_str(), "rb");
-		if(pkFp)
+		pkFp = fopen(strRootMerge.c_str(), szOptions);
+		if(pkFp) {
+			cout << "Path: " << strRootMerge.c_str();
+			cout << "\n";
 			return pkFp;
+			
+			}
 		}
 
 	// Failed to open file.
@@ -106,6 +120,8 @@ FILE* ZFVFileSystem::Open(string strFileName, int iOptions)
 
 void ZFVFileSystem::AddRootPath(string strRootPath)
 {
+	cout << "Adding '" << strRootPath.c_str();
+	cout << "' to VFS root table.\n";
 	m_kstrRootPath.push_back(strRootPath);
 }
 

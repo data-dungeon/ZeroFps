@@ -84,6 +84,18 @@ ZeroFps::ZeroFps(void)
 	g_ZFObjSys.Register_Cmd("sendmsg",FID_SENDMESSAGE,this);	
 
 	m_kCurentDir=m_pkBasicFS->GetCWD();
+	
+	cout << "m_kCurentDir: " << m_kCurentDir.c_str() << endl;
+	char szWorkDir[256];
+	strcpy(szWorkDir, m_kCurentDir.c_str());
+
+	char* szDiv =  strrchr(szWorkDir, '/');
+	if(szDiv)
+		szDiv[1] = 0;
+
+	m_pkZFVFileSystem->AddRootPath(szWorkDir);
+	m_pkZFVFileSystem->AddRootPath("h:/");
+
 
 	RegisterPropertys();
 }
