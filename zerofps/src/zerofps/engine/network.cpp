@@ -667,6 +667,7 @@ void NetWork::HandleControlMessage(NetPacket* pkNetPacket)
 void NetWork::DevShow_ClientConnections()
 {
 	float fEngineTime = m_pkZeroFps->GetEngineTime();
+	m_pkZeroFps->DevPrintf("conn", "Engine Time: %f", fEngineTime);
 
 	char* pkName = "Die Vim";
 	char szAdress[256];
@@ -701,8 +702,6 @@ void NetWork::Run()
 	int iRecvBytes = 0;
 
 	float fEngineTime = m_pkZeroFps->GetEngineTime();
-	m_pkZeroFps->DevPrintf("conn", "Engine Time: %f", fEngineTime);
-	DevShow_ClientConnections();
 
 	if( m_eNetStatus == NET_NONE )	return;
 

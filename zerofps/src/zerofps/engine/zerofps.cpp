@@ -304,6 +304,9 @@ void ZeroFps::Run_Client()
 	SetCamera(m_pkConsoleCamera);			
 	m_pkApp->OnHud();
 	m_pkObjectMan->UpdateDelete();
+
+	m_pkNetWork->DevShow_ClientConnections();
+
 }
 
 void ZeroFps::Update_System()
@@ -443,6 +446,7 @@ void ZeroFps::MainLoop(void) {
 			}
 
 		Draw_EngineShell();
+
 //		m_kFpsGraph.DrawGraph(0,200);
 //		m_pkNetWork->DrawConnectionGraphs();
 

@@ -165,7 +165,7 @@ void P_ServerUnit::Load(ZFMemPackage* pkPackage)
 
 vector<PropertyValues> P_ServerUnit::GetPropertyValues()
 {
-	vector<PropertyValues> kReturn(12);
+	vector<PropertyValues> kReturn(13);
 		
 	kReturn[0].kValueName="m_cTeam";
 	kReturn[0].iValueType=VALUETYPE_CHARVAL;
@@ -214,6 +214,11 @@ vector<PropertyValues> P_ServerUnit::GetPropertyValues()
 	kReturn[11].kValueName="m_iDieEffect";
 	kReturn[11].iValueType=VALUETYPE_INT;
 	kReturn[11].pkValue=(void*)&m_iDieEffect;
+
+	kReturn[12].kValueName	= "m_sIcon";
+	kReturn[12].iValueType	= VALUETYPE_CHARS;
+	kReturn[12].pkValue		= (void*)&m_kInfo.m_cName;
+	
 
 	return kReturn;
 }
