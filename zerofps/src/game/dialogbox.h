@@ -6,6 +6,8 @@
 
 #pragma warning( disable : 4786 )
 
+class Input;
+
 class DlgBox  
 {
 public:
@@ -28,7 +30,7 @@ protected:
 
 	virtual bool OnOpen(int x=-1, int y=-1) = 0;
 	virtual bool OnClose(bool bSave) = 0;
-	void CenterCursor();
+	void CenterCursor(Input* pkInput);
 
 	ZGuiResourceManager* m_pkGuiMan;
 	ZGui* m_pkGui;

@@ -21,8 +21,9 @@ class ItemBox : public DlgBox
 public:
 	void SetContainer(Container* pkContainer);
 	void Update();
-	ItemBox(ZGui* pkGui, ZGuiWndProc oMainWndProc, TextureManager* pkTexMan,
-		int iCols=8, int iRows=8, int iSlotSize=48, int iTopX=5, int iTopY=5);
+	ItemBox(ZGui* pkGui, ZGuiWndProc oMainWndProc, TextureManager* pkTexMan, 
+		Input* pkInput, int iCols=8, int iRows=8, int iSlotSize=48, 
+		int iTopX=5, int iTopY=5);
 	virtual ~ItemBox();
 
 	bool DlgProc( ZGuiWnd* pkWnd,unsigned int uiMessage,
@@ -61,6 +62,7 @@ private:
 
 	TextureManager* m_pkTexMan;
 	Container* m_pkContainer;
+	Input* m_pkInput;
 
 	typedef pair<ZGuiButton*, slot_pos> slot;
 

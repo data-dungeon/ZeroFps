@@ -15,7 +15,8 @@ ZGuiSkin* ItemBox::s_kStaticGridSkinNormal = NULL;
 ZGuiSkin* ItemBox::s_kStaticGridSkinUnused = NULL;
 
 ItemBox::ItemBox(ZGui* pkGui, ZGuiWndProc oMainWndProc, TextureManager* pkTexMan,
-				 int iCols, int iRows, int iSlotSize, int iTopX, int iTopY) 
+				 Input* pkInput, int iCols, int iRows, int iSlotSize, 
+				 int iTopX, int iTopY) 
 	:	DlgBox(pkGui, oMainWndProc), m_ciSlotSize(iSlotSize), m_ciTopX(iTopX), 
 		m_ciTopY(iTopY), m_ciCols(iCols), m_ciRows(iRows)
 {
@@ -23,6 +24,7 @@ ItemBox::ItemBox(ZGui* pkGui, ZGuiWndProc oMainWndProc, TextureManager* pkTexMan
 	m_pkMoveItem = NULL;
 	m_pkContainer = NULL;
 	m_pkTexMan = pkTexMan;
+	m_pkInput = pkInput;
 }
 
 ItemBox::~ItemBox()
@@ -147,7 +149,7 @@ bool ItemBox::OnOpen(int x, int y)
 
 	m_pkGui->ShowMainWindow(m_pkDlgBox, true);
 
-	CenterCursor();
+	CenterCursor(m_pkInput);
 
 	return true;
 }

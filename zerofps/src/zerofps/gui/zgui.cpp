@@ -822,7 +822,7 @@ void ZGui::ShowCursor(bool bShow, int x, int y)
 {
 	if(m_pkInput && !(x==-1 && y==-1) )
 	{
-		m_pkInput->SetCursorPos(x,y); 
+		//m_pkInput->SetCursorInputPos(x,y); 
 	}
 
 	m_pkCursor->Show(bShow);

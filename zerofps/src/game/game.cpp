@@ -449,11 +449,11 @@ void Game::InitGui()
 	m_iActionOpenInventory = pkInput->RegisterAction("inventory_open");
 	m_iActionCloseInventory = pkInput->RegisterAction("inventory_close");
 
-	m_pkPlayerInventoryBox = new ItemBox(pkGui, PLAYER_INVENTORYPROC, pkTexMan);
+	m_pkPlayerInventoryBox = new ItemBox(pkGui, PLAYER_INVENTORYPROC, pkTexMan, pkInput);
 	m_pkPlayerInventoryBox->Create(0,0,
 		"../data/gui_resource_files/inventary_rc.txt", "InventoryWnd");
 
-	m_pkContainerBox = new ItemBox(pkGui, CONTAINER_BOXPROC, pkTexMan);
+	m_pkContainerBox = new ItemBox(pkGui, CONTAINER_BOXPROC, pkTexMan, pkInput);
 	m_pkContainerBox->Create(400,400,
 		"../data/gui_resource_files/container_rc.txt", "ContainerWnd");
 
