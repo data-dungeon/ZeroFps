@@ -143,7 +143,7 @@ void ZeroRTS::OnIdle()
 	}
 */
 	
-/* Dvoid
+/* //Dvoid
 	Vector3 mpos = Get3DMousePos();
 	
 	glDisable(GL_LIGHTING);
@@ -514,9 +514,13 @@ Vector3 ZeroRTS::Get3DMousePos()
 //	mpos.z*=56;
 //	mpos.z-=10.5;
 	
-	mpos.x*=62.5;
-	mpos.z*=47.2;
-	mpos.z-=8.5;
+//	mpos.x*=62.5;
+//	mpos.z*=47.2;
+//	mpos.z-=8.5;
+
+	mpos.x*=75.0;
+	mpos.z*=61.5;
+	mpos.z-=1.2;
 	
 	
 	Matrix4 bla;

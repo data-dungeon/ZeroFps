@@ -130,11 +130,22 @@ void P_ServerUnit::SetRadius()
 void P_ServerUnit::Save(ZFMemPackage* pkPackage)
 {
 	pkPackage->Write(&m_bClient,sizeof(m_bClient));
+	
+	pkPackage->Write(&m_kInfo,sizeof(m_kInfo));
+	pkPackage->Write(&m_kTile,sizeof(m_kTile));	
+	pkPackage->Write(&m_iMaxHealth,sizeof(m_iMaxHealth));	
+	pkPackage->Write(&m_iHealth,sizeof(m_iHealth));
 }
 
 void P_ServerUnit::Load(ZFMemPackage* pkPackage)
 {
 	pkPackage->Read(&m_bClient,sizeof(m_bClient));
+
+	pkPackage->Read(&m_kInfo,sizeof(m_kInfo));
+	pkPackage->Read(&m_kTile,sizeof(m_kTile));	
+	pkPackage->Read(&m_iMaxHealth,sizeof(m_iMaxHealth));	
+	pkPackage->Read(&m_iHealth,sizeof(m_iHealth));
+
 }
 
 vector<PropertyValues> P_ServerUnit::GetPropertyValues()
@@ -142,35 +153,35 @@ vector<PropertyValues> P_ServerUnit::GetPropertyValues()
 	vector<PropertyValues> kReturn(9);
 		
 	kReturn[0].kValueName="m_cTeam";
-	kReturn[0].iValueType=VALUETYPE_INT;
+	kReturn[0].iValueType=VALUETYPE_CHARVAL;
 	kReturn[0].pkValue=(void*)&m_kInfo.m_Info2.m_cTeam;
 
 	kReturn[1].kValueName="m_cHealth";
-	kReturn[1].iValueType=VALUETYPE_INT;
+	kReturn[1].iValueType=VALUETYPE_CHARVAL;
 	kReturn[1].pkValue=(void*)&m_kInfo.m_Info2.m_cHealth;
 	
 	kReturn[2].kValueName="m_cWeapon";
-	kReturn[2].iValueType=VALUETYPE_INT;
+	kReturn[2].iValueType=VALUETYPE_CHARVAL;
 	kReturn[2].pkValue=(void*)&m_kInfo.m_Info2.m_cWeapon;
 	
 	kReturn[3].kValueName="m_cArmor";
-	kReturn[3].iValueType=VALUETYPE_INT;
+	kReturn[3].iValueType=VALUETYPE_CHARVAL;
 	kReturn[3].pkValue=(void*)&m_kInfo.m_Info2.m_cArmor;
 	
 	kReturn[4].kValueName="m_cPropultion";
-	kReturn[4].iValueType=VALUETYPE_INT;
+	kReturn[4].iValueType=VALUETYPE_CHARVAL;
 	kReturn[4].pkValue=(void*)&m_kInfo.m_Info2.m_cPropultion;
 	
 	kReturn[5].kValueName="m_cViewDistance";
-	kReturn[5].iValueType=VALUETYPE_INT;
+	kReturn[5].iValueType=VALUETYPE_CHARVAL;
 	kReturn[5].pkValue=(void*)&m_kInfo.m_Info2.m_cViewDistance;
 	
 	kReturn[6].kValueName="m_cWidth";
-	kReturn[6].iValueType=VALUETYPE_INT;
+	kReturn[6].iValueType=VALUETYPE_CHARVAL;
 	kReturn[6].pkValue=(void*)&m_kInfo.m_Info2.m_cWidth;
 	
 	kReturn[7].kValueName="m_cHeight";
-	kReturn[7].iValueType=VALUETYPE_INT;
+	kReturn[7].iValueType=VALUETYPE_CHARVAL;
 	kReturn[7].pkValue=(void*)&m_kInfo.m_Info2.m_cHeight;
 	
 	kReturn[8].kValueName="m_bClient";

@@ -400,7 +400,14 @@ string Property::ValueToString(void *pkValue, PropertyValues *pkPropertyValue)
 		//itoa(*((int*)pkValue),pk_chsBuffer,10); 
 		IntToChar(pk_chBuffer,*((int*)pkValue));
 		return (kBuffer=pk_chBuffer);
+	
+	case VALUETYPE_CHARVAL:
+	{
+		int val = int(*(unsigned char*)pkValue);
+		IntToChar(pk_chBuffer,val);
 		
+		return (kBuffer=pk_chBuffer);
+	}
 	case VALUETYPE_STRING:
 		return(*(reinterpret_cast<string*>(pkValue)));
 		
@@ -460,6 +467,7 @@ string Property::ValueToString(void *pkValue, PropertyValues *pkPropertyValue)
 
 bool Property::StringToValue(string kValue, void *pkValue, PropertyValues *pkPropertyValue)
 {
+	unsigned char cTemp1;
 	int iTemp1,iTemp2;
 	float fTemp1, fTemp2,fTemp3, fTemp4;
 	string kTemp1, kTemp2, kTemp3;
@@ -477,6 +485,17 @@ bool Property::StringToValue(string kValue, void *pkValue, PropertyValues *pkPro
 					return false;
 				*((int*)pkValue)=iTemp1;
 				return true;
+				
+	case VALUETYPE_CHARVAL:
+		iTemp1 = atoi(kValue.c_str());
+		if((pkPropertyValue->fUpperBound)!=FLT_MAX)
+			if(iTemp1>(pkPropertyValue->fUpperBound))
+				return false;
+			if((pkPropertyValue->fLowerBound)!=FLT_MIN)
+				if(iTemp1<(pkPropertyValue->fLowerBound))
+					return false;
+				*((char*)pkValue)=(char)iTemp1;
+				return true;		
 				
 	case VALUETYPE_STRING:
 		if((pkPropertyValue->fUpperBound)!=FLT_MAX)
