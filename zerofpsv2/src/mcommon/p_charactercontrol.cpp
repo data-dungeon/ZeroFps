@@ -139,14 +139,14 @@ void P_CharacterControl::Update()
 
 void P_CharacterControl::PackTo( NetPacket* pkNetPacket, int iConnectionID ) 
 {
-	pkNetPacket->Write(&m_kCharacterStates,sizeof(m_kCharacterStates));
+	pkNetPacket->Write(m_kCharacterStates);
 	
 	SetNetUpdateFlag(iConnectionID,false);
 }
 
 void P_CharacterControl::PackFrom( NetPacket* pkNetPacket, int iConnectionID  ) 
 {
-	pkNetPacket->Read(&m_kCharacterStates,sizeof(m_kCharacterStates));
+	pkNetPacket->Read(m_kCharacterStates);
 
 	/*
 	for(int i = 0;i<8;i++)
