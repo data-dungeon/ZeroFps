@@ -25,6 +25,7 @@ PathFind::~PathFind()
 
 bool PathFind::Rebuild( int iStartPosX, int iStartPosY, int iDestPosX, int iDestPosY )
 {
+
 	if(ImpossibleToReach(iStartPosX, iStartPosY, iDestPosX, iDestPosY))
 		return false;
 

@@ -27,6 +27,7 @@ class COMMON_API P_FogRender: public Property {
 		string 	m_sFogTexture;			
 
 		float 	m_fScale;	
+		int		m_iTexture;
 		
 	public:
 

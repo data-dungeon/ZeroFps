@@ -4,6 +4,7 @@
 
 #include "p_unitmoveai.h"
 #include "tileengine.h"
+#include <cmath>
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
@@ -16,6 +17,9 @@ P_UnitMoveAI::P_UnitMoveAI() :m_pkMoveUnitCommand(NULL),m_pkUnit(NULL), m_bTemp(
 	strcpy(m_acName,"P_UnitMoveAI");
 	m_iType=PROPERTY_TYPE_NORMAL;
 	m_iSide=PROPERTY_SIDE_SERVER;
+	
+	m_pkFps = static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));	
+	
 }
 
 P_UnitMoveAI::~P_UnitMoveAI()
@@ -69,21 +73,22 @@ bool P_UnitMoveAI::RegisterExternalCommands()
 	
 AIBase* P_UnitMoveAI::RunUnitCommand(int iCommandID, int iXDestinaton, int iYDestinaton, int iTarget)
 {
-	cout<<"sdad" <<endl;
 	switch(iCommandID)
 	{
 	case UNIT_MOVE:
 		{
-			
-			/*Vector3 Vec3;
-			Vec3= m_pkObject->GetPos();
-			Vec3.z+=20;
-			m_pkObject->SetPos(Vec3);*/
-			
+			float fX = -(m_pkMap->m_iHmSize/2)*HEIGHTMAP_SCALE + iXDestinaton*HEIGHTMAP_SCALE;
+			float fZ = -(m_pkMap->m_iHmSize/2)*HEIGHTMAP_SCALE + iYDestinaton*HEIGHTMAP_SCALE;		
+		
+			if(DoPathFind(m_pkObject->GetPos(),Vector3(fX,0,fZ)))
+				return this;
+			else
+				return NULL;
+				
+/*
 			m_kEndPoint = Point(iXDestinaton,iYDestinaton);
 			m_kStartPoint.x =  m_pkMap->m_iHmSize/2+ceil((m_pkObject->GetPos()).x / HEIGHTMAP_SCALE);
-			m_kStartPoint.y = m_pkMap->m_iHmSize/2+ceil((m_pkObject->GetPos()).z / HEIGHTMAP_SCALE);
-			
+			m_kStartPoint.y = m_pkMap->m_iHmSize/2+ceil((m_pkObject->GetPos()).z / HEIGHTMAP_SCALE);			
 			
 			if(m_pkPathFind->Rebuild(m_kStartPoint.x, m_kStartPoint.y, m_kEndPoint.x, m_kEndPoint.y) == false)
 			{
@@ -93,9 +98,10 @@ AIBase* P_UnitMoveAI::RunUnitCommand(int iCommandID, int iXDestinaton, int iYDes
 			} 
 			else
 			{
+				kCurretDestination = m_pkObject->GetPos();
 				m_iCurrentState=UNIT_MOVE;
 				return this;
-			}
+			}*/
 		}
 	}
 	return NULL;
@@ -107,71 +113,111 @@ AIBase* P_UnitMoveAI::UpdateAI()
 	{
 	case UNIT_MOVE:
 		{
-			/*static float prev_time = 0;
-			float time = pkFps->GetGameTime();
 			
-			//if(time - prev_time > 0.125f)
+			if(!MoveTo(kCurretDestination))
 			{
-				int x=-1, y=-1;
-				if(!m_pkTestPath->GetNextStep(x,y))
-				{
-					return true; // do nothing
-				}
-				
-				if(!(x==-1&&y==-1))
-					SetObjDstPos(x, y, pkObject);
-				
-				prev_time = time;
-			}
-			
-			return true;*/
+				cout<<"Reached destination"<<endl;
 
-			int iX=-1, iY=-1;
-			if(!m_pkPathFind->GetNextStep(iX,iY))
-			{
-					return NULL; // do nothing
-			}
-			if(!(iX==-1&&iY==-1))
-			{
-				TileEngine::m_pkInstance->RemoveUnit(m_pkObject->GetPos(),(P_ServerUnit*)m_pkObject->GetProperty("P_ServerUnit"));				
-					
+				int iX=-1, iY=-1;
+				if(!m_pkPathFind->GetNextStep(iX,iY))
+				{
+					cout<<"no new destination"<<endl;
+					//set pos one finale time to prevent ugly interpolation
+					m_pkObject->SetPos(m_pkObject->GetPos());					
+		
+					m_iCurrentState = -1;
+					return NULL;
+				}		
+				
+				cout<<"New destination is "<<iX<<" "<<iY<<endl;
+			
+				//remove old marker
+				TileEngine::m_pkInstance->RemoveUnit(m_pkObject->GetPos(),(P_ServerUnit*)m_pkObject->GetProperty("P_ServerUnit"));							
+						
 				if(TileEngine::m_pkInstance->GetTile(iX-1,iY-1)->kUnits.size() > 0)
 				{
-					TileEngine::m_pkInstance->AddUnit(m_pkObject->GetPos(),(P_ServerUnit*)m_pkObject->GetProperty("P_ServerUnit"));								
-					m_pkPathFind->Reset();
+					m_pkPathFind->Reset();	
+					m_iCurrentState = -1;
 					return NULL;
-				}
-				
-				
+				}						
+						
+			
 				float fX = -(m_pkMap->m_iHmSize/2)*HEIGHTMAP_SCALE + iX*HEIGHTMAP_SCALE;
 				float fZ = -(m_pkMap->m_iHmSize/2)*HEIGHTMAP_SCALE + iY*HEIGHTMAP_SCALE;
-
+			
 				fX -= HEIGHTMAP_SCALE/2;	// Translate to center 
-				fZ -= HEIGHTMAP_SCALE/2;	// of square.*/
+				fZ -= HEIGHTMAP_SCALE/2;	// of square.*
 
 				float fY = m_pkMap->Height(fX,fZ);
-				
-				//OSERVERA det skall vara två för att undvika interpolerings problemen,,temporär lösning
-				m_pkObject->SetPos(Vector3(fX,fY,fZ));
-				m_pkObject->SetPos(Vector3(fX,fY,fZ));				
-							
-				TileEngine::m_pkInstance->AddUnit(m_pkObject->GetPos(),
-					(P_ServerUnit*)m_pkObject->GetProperty("P_ServerUnit"));				
-				
-				return this;
-			}
-			else 
-				return NULL;
-
 			
-
+				kCurretDestination.Set(fX,fY,fZ);
+								
+				//tell tile engine that im standing on kCurretDestination now
+				TileEngine::m_pkInstance->AddUnit(kCurretDestination,(P_ServerUnit*)m_pkObject->GetProperty("P_ServerUnit"));
+				
+				//now we can move 
+				MoveTo(kCurretDestination);
+			}
+			
+			
+			return this;
 		}
 	}
 	
 	return NULL;
 }
 
+bool P_UnitMoveAI::MoveTo(Vector3 kPos)
+{
+	float fVel = 10;	
+		
+	if( (m_pkObject->GetPos() - kPos).Length() < (fVel * m_pkFps->GetGameFrameTime()))
+	{
+		m_pkObject->SetPos(kPos);		
+		return false;
+	}
 
+	Vector3 kMoveV = (kPos - m_pkObject->GetPos()).Unit();
+	Vector3 kNewPos = m_pkObject->GetPos() + kMoveV * (fVel * m_pkFps->GetGameFrameTime());
+
+	//set rotation   this rotation sux
+	Vector3 rot = kMoveV.Angels();
+	rot.x =0;
+	rot.z =0;
+	rot.y = -rot.y;
+
+	m_pkObject->SetRot(rot);		
+	m_pkObject->SetRot(rot);			
+	m_pkObject->SetPos(kNewPos);	
+	return true;
+}
+
+bool P_UnitMoveAI::DoPathFind(Vector3 kStart,Vector3 kStop)
+{
+	cout<<"Path finding"<<endl;
+
+	m_kStartPos = kStart;
+	m_kEndPos = kStop;
+
+	m_kEndPoint.x = int(m_pkMap->m_iHmSize/2+ceil((kStop.x / HEIGHTMAP_SCALE)));
+	m_kEndPoint.y = int(m_pkMap->m_iHmSize/2+ceil((kStop.z / HEIGHTMAP_SCALE)));	
+	
+	m_kStartPoint.x = int(m_pkMap->m_iHmSize/2+ceil((kStart.x / HEIGHTMAP_SCALE)));
+	m_kStartPoint.y = int(m_pkMap->m_iHmSize/2+ceil((kStart.z / HEIGHTMAP_SCALE)));		
+	
+	if(m_pkPathFind->Rebuild(m_kStartPoint.x, m_kStartPoint.y, m_kEndPoint.x, m_kEndPoint.y) == false)
+	{
+		m_kEndPoint = m_kStartPoint;
+		printf("Pathfinding Failed\n");
+		return false;
+	} 
+	else
+	{
+		kCurretDestination = m_pkObject->GetPos();
+		m_iCurrentState=UNIT_MOVE;
+		return true;
+	}
+}
 
 vector<PropertyValues> P_UnitMoveAI::GetPropertyValues()
 {
@@ -187,3 +233,8 @@ COMMON_API Property* Create_P_UnitMoveAI()
 	return new P_UnitMoveAI();
 
 }
+
+
+
+
+

@@ -27,6 +27,27 @@ using namespace std;
 
 class COMMON_API P_UnitMoveAI : public Property, public AIBase
 {
+private: 
+	static HeightMap* m_pkMap;
+	ZeroFps*				m_pkFps;
+	PathFind* 			m_pkPathFind;
+	Point 				m_kStartPoint, m_kEndPoint;
+	Vector3				m_kStartPos,m_kEndPos;
+	
+	Vector3				kCurretDestination;	
+	
+	P_ServerUnit*		m_pkUnit;
+	ExternalCommand*	m_pkMoveUnitCommand;
+	int					m_iCurrentState;
+	bool					m_bTemp;
+	
+	enum { 
+		UNIT_MOVE, 
+		TEMP 
+	};
+
+
+
 public:
 	P_UnitMoveAI();
 	bool RegisterExternalCommands();
@@ -36,19 +57,14 @@ public:
 	void CloneOf(Property* pkProperty) { }
 	void Init();
 	vector<PropertyValues> GetPropertyValues();
-private: 
-	P_ServerUnit* m_pkUnit;
-	ExternalCommand* m_pkMoveUnitCommand;
-	int m_iCurrentState;
-	bool m_bTemp;
-	enum 
-	{ UNIT_MOVE, TEMP };
-
-	static HeightMap* m_pkMap;
-//	PathBuilder* m_pkPathBuilder;
-	PathFind* m_pkPathFind;
-	Point m_kStartPoint, m_kEndPoint;
+	
+	bool MoveTo(Vector3 kPos);
+	bool DoPathFind(Vector3 kStart,Vector3 kStop);
 };
+
 COMMON_API Property* Create_P_UnitMoveAI();
 
 #endif // !defined(AFX_P_UNITMOVEAI_H__A1B57C3C_7DAD_418C_9BB8_05BF11DD6271__INCLUDED_)
+
+
+
