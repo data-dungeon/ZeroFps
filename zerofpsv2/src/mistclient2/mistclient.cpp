@@ -24,6 +24,7 @@
 #include "../mcommon/p_shadowblob.h"
 #include "actionmenu.h"
 #include "gui_inventory.h"
+#include "gui_optionsdlg.h"
 #include "../mcommon/mainmcommon.h"
 
 MistClient g_kMistClient("MistClient",0,0,0);
@@ -458,7 +459,7 @@ void MistClient::Input()
 	//perform the first action in the action list or pickup
 	if( m_pkInputHandle->VKIsDown("use") )
 	{
-		if(!DelayCommand() && (m_pkInventoryDlg->m_iItemUnderCursor == -1 || m_bGuiCapture == false))
+		if(!DelayCommand() )
 		{			
 			if(Entity* pkEnt = m_pkEntityManager->GetEntityByID(m_iPickedEntityID))
 			{								
@@ -467,15 +468,6 @@ void MistClient::Input()
 				{
 					cout<<"trying pickup"<<endl;
 					RequestPickup(m_iPickedEntityID);
-
-					if(m_pkInventoryDlg->IsVisible()) 
-						m_pkInventoryDlg->m_iItemUnderCursor = m_iPickedEntityID;	
-					else
-						m_pkInventoryDlg->m_iItemUnderCursor = -1;
-
-					if(m_bGuiCapture == false)
-						m_pkInventoryDlg->m_iItemUnderCursor = -1;
-
 				}
 				else 
 				// if not an item do first action
@@ -644,6 +636,7 @@ void MistClient::UpdateCharacter()
 		
 		if(P_Enviroment* pkEnv = (P_Enviroment*)pkEnt->GetProperty("P_Enviroment"))
 		{
+			static bool bOnes = 0; if(!bOnes) { pkEnv->LoadEnviroment("data/enviroments/sun.env"); bOnes = true; } // evil code by zeb.. temporary hack to avoid total darkness :)
 			pkEnv->SetEnable(true);				
 		}		
 	}

@@ -262,7 +262,6 @@ void InventoryDlg::OnMouseMove(bool bLeftButtonPressed, int mx, int my)
 			{
 				if( m_vkContainerItemList[i].iItemID != m_iSelItemID)
 					SetSelectionBorder(i, false, true);
-
 			}		
 		}
 	}
@@ -288,16 +287,14 @@ void InventoryDlg::OnMouseMove(bool bLeftButtonPressed, int mx, int my)
 
 void InventoryDlg::PickUpFromGround(bool bLeftButtonPressed, int mx, int my)
 {
-	if(m_kMoveSlot.m_iIndex != -1)
+	if(m_kMoveSlot.m_iIndex != -1) // return if we already have a moveslot.
 		return;
-
-	const float WAIT_TIME_PICKUP = 0.25f;
-
-	float fTime = (float) SDL_GetTicks() / 1000.0f;
 
 	if(bLeftButtonPressed)
 	{
-		if(fTime - m_fPickUpTimer > WAIT_TIME_PICKUP)
+		const float WAIT_TIME_PICKUP = 0.25f; // seconds to wait before item appear under cursor.
+
+		if(g_kMistClient.m_pkZeroFps->GetTicks() - m_fPickUpTimer > WAIT_TIME_PICKUP)
 		{
 			for(int i=0; i<m_vkInventoryItemList.size(); i++)
 				if(m_vkInventoryItemList[i].iItemID == m_iItemUnderCursor)
@@ -309,13 +306,11 @@ void InventoryDlg::PickUpFromGround(bool bLeftButtonPressed, int mx, int my)
 					int id = m_vkInventoryItemList[i].pkWnd->GetSkin()->m_iBkTexID;
 
 					m_kCursorRangeDiff = Point(0,0);
-					g_kMistClient.m_pkGui->SetCursor( mx, my, id, -1, size.x*32, size.y*32);		
-					(*m_ppCursorSkin)->m_unBorderSize = 2;
+					g_kMistClient.m_pkGui->SetCursor( mx, my, id, -1, size.x*32, size.y*32);
 					break;
 				}
 
 			m_iItemUnderCursor = -1;
-			static int apa = 0; printf("apa = %i\n", apa++);
 		}
 	}
 	else
@@ -510,10 +505,11 @@ void InventoryDlg::UpdateInventory(vector<MLContainerInfo>& vkItemList)
 
 		((ZGuiLabel*) pkNewSlot)->m_eTextAlignment = ZGLA_BottomRight;
 
-		if(m_iItemUnderCursor == vkItemList[i].m_iItemID)
+		// If left mouse button is pressed, hide the icon and set it to be visible under cursor.
+		if(g_kMistClient.m_pkGui->m_bMouseLeftPressed)
 		{
-			float fTime = (float) SDL_GetTicks() / 1000.0f;
-			m_fPickUpTimer = fTime;
+			m_iItemUnderCursor = vkItemList[i].m_iItemID;			
+			m_fPickUpTimer = g_kMistClient.m_pkZeroFps->GetTicks();
 			pkNewSlot->Hide();
 		}
 
