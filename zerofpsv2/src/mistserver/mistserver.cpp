@@ -16,7 +16,7 @@
 #include "../zerofpsv2/basic/zguifont.h"
 #include <set> 
 #include <algorithm>
-#include <mbstring.h>
+
 
 MistServer g_kMistServer("MistServer",0,0,0);
 
@@ -1229,7 +1229,7 @@ void MistServer::HandleOrders()
       {
          // type of request
 
-         unsigned char* strRequest = _mbsninc( (const unsigned char*)order->m_sOrderName.c_str(), 4 );
+         //unsigned char* strRequest = _mbsninc( (const unsigned char*)order->m_sOrderName.c_str(), 4 );
 
          // item request
          if ( strncmp(order->m_sOrderName.c_str(), "item", 4) )

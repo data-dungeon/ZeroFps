@@ -32,7 +32,7 @@ static bool GUIPROC( ZGuiWnd* win, unsigned int msg, int numparms, void *params 
 	case ZGM_LBUTTONUP:
 		g_kMistClient.OnClick(((int*)params)[0], ((int*)params)[1], false, true, win);
 		break;
-	case ZGM_RBUTTONDOWN:
+	case ZGM_RBUTTONDOWN:    
 		g_kMistClient.OnClick(((int*)params)[0], ((int*)params)[1], true, false, win);
 		break;
 	case ZGM_RBUTTONUP:
@@ -647,6 +647,7 @@ void MistClient::OnCommand(int iID, ZGuiWnd *pkMainWnd)
 
 									order.m_sOrderName = res->second;
 									order.m_iClientID = pkFps->GetConnectionID();
+									
 
 									order.m_iObjectID = m_pkTargetObject->iNetWorkID;				
 									order.m_iCharacter = m_iActiveCaracterObjectID;
