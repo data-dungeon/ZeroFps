@@ -4,13 +4,14 @@
 #include <iostream>
 #include <vector>
 #include <list>
+#include <SDL/SDL_opengl.h>
 #include "../basic/basic.pkg"
 
 using namespace std;
 enum LIGHT_TYPE {
-	DIRECTIONAL,
-	POINT,
-	SPOT
+	DIRECTIONAL_LIGHT,
+	POINT_LIGHT,
+	SPOT_LIGHT
 };
 
 

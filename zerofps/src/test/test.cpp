@@ -44,7 +44,7 @@ void Test::OnInit(void) {
   
 //  glColorMaterial(GL_FRONT,GL_AMBIENT_AND_DIFFUSE);
 //  glColorMaterial(GL_BACK,GL_AMBIENT_AND_DIFFUSE);
-
+/*
   glLightfv(GL_LIGHT0,GL_DIFFUSE,&white_light[0]);
 //  glLightfv(GL_LIGHT0,GL_SPECULAR,white_light);  
   glLightfv(GL_LIGHT0,GL_AMBIENT,&lmodel_ambient[0]);
@@ -54,39 +54,41 @@ void Test::OnInit(void) {
   
   glEnable(GL_LIGHTING);
   glEnable(GL_LIGHT0);
-  
+  */
   pkRender->SetFog(Vector4(.50,.55,.88,1),2,225,350,true);
 
 
 	testa.Load("babe.pmd");
 	
 	LightSource *sol=new LightSource;
-	Vector3 *solpos=new Vector3(200,10,200);
+	Vector3 *solpos=new Vector3(200,40,200);
 	Vector3 *solrot=new Vector3(0,0,0);
 	
 		sol->kPos=solpos;
 		sol->kRot=solrot;
 		sol->kConstPos=Vector3(0,0,0);
 		sol->kConstRot=Vector3(0,0,0);		
-		sol->kDiffuse=Vector4(1,0,0,1);
+		sol->kDiffuse=Vector4(1,1,1,1);
 		sol->kAmbient=Vector4(.1,.1,.1,.1);
 		sol->kSpecular=Vector4(0,0,0,0);
 		sol->fCutoff=0.5;	
 		sol->fExp=0;
-		sol->fConst_Atten=10;
-		sol->fLinear_Atten=0;
+		sol->fConst_Atten=0;
+		sol->fLinear_Atten=.1;
 		sol->fQuadratic_Atten=0;
-		sol->iType=POINT;			
+		sol->iType=POINT_LIGHT;			
 	pkLight->Add(sol);
 
-	pkLight->Remove(sol);
+//	pkLight->Remove(sol);
+//	pkLight->Remove(sol);	
 }
 
 
 void Test::OnIdle(void) {
 
 	
-	glLightfv(GL_LIGHT0,GL_POSITION,&light_position[0]);	
+//	glLightfv(GL_LIGHT0,GL_POSITION,&light_position[0]);	
+	pkLight->Update();
 
 	pkRender->DrawSkyBox(*pkFps->m_kCamPos);
 	pkRender->DrawHMlod(test,*pkFps->m_kCamPos,pkFps->m_iFps);		
