@@ -70,7 +70,6 @@ struct bmppal_t
 }; 
 
 #pragma pack( 1 )
-
 	struct bmpheader_t 
 	{ 
 		unsigned short	usType; 
@@ -79,7 +78,6 @@ struct bmppal_t
 		unsigned short	usReserved2; 
 		unsigned long	ulOffBits; 
 	};
-
 #pragma pack(  )
 
 struct bmpinfo_t

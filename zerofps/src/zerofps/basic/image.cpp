@@ -616,15 +616,6 @@ void Image::MapColorToAlpha(float fR, float fG, float fB, float fAlpha)
 
 }
 
-static unsigned long GetFileLength(FILE *pkFile)
-{
-	fpos_t lenght;
-	fseek(pkFile,0,SEEK_END);
-	fgetpos(pkFile,&lenght); 
-	fseek(pkFile, 0, SEEK_SET);
-	return (unsigned long) lenght;
-}
-
 bool Image::load_bmp(char* szFileName)
 {
 	FILE *pkFile = fopen(szFileName, "rb");
@@ -632,7 +623,6 @@ bool Image::load_bmp(char* szFileName)
 		return false;
 
 	bool bSuccess = load_bmp(pkFile);
-
 	fclose(pkFile);
 
 	return bSuccess;
@@ -641,90 +631,142 @@ bool Image::load_bmp(char* szFileName)
 bool Image::load_bmp(FILE* pkFile)
 {
 	bmp_t kBitmap;
-
+	memset(&kBitmap, 0, sizeof(bmp_t));
 	fread(&kBitmap.kFileheader, sizeof(bmpheader_t), 1, pkFile);
 	fread(&kBitmap.kInfoheader, sizeof(bmpinfo_t), 1, pkFile);
 
-	// load kPalette if there is one
+	bool bDebug = true;
+
+	if(bDebug)
+	{
+		printf("kBitmap.kFileheader.usType = %i\n", kBitmap.kFileheader.usType); 
+		printf("kBitmap.kFileheader.ulSize = %i\n", kBitmap.kFileheader.ulSize); 
+		printf("kBitmap.kFileheader.usReserved1 = %i\n", kBitmap.kFileheader.usReserved1); 
+		printf("kBitmap.kFileheader.usReserved2 = %i\n", kBitmap.kFileheader.usReserved2); 
+		printf("kBitmap.kFileheader.ulOffBits = %i\n", kBitmap.kFileheader.ulOffBits); 
+
+		printf("kBitmap.kInfoheader.ulSize = %i\n", kBitmap.kInfoheader.ulSize); 
+		printf("kBitmap.kInfoheader.lWidth = %i\n", kBitmap.kInfoheader.lWidth); 
+		printf("kBitmap.kInfoheader.lHeight = %i\n", kBitmap.kInfoheader.lHeight); 
+		printf("kBitmap.kInfoheader.usPlanes = %i\n", kBitmap.kInfoheader.usPlanes); 
+		printf("kBitmap.kInfoheader.usBitCount = %i\n", kBitmap.kInfoheader.usBitCount);
+		printf("kBitmap.kInfoheader.ulCompression = %i\n", kBitmap.kInfoheader.ulCompression); 
+		printf("kBitmap.kInfoheader.ulSizeImage = %i\n", kBitmap.kInfoheader.ulSizeImage); 
+		printf("kBitmap.kInfoheader.lXPelsPerMeter = %i\n", kBitmap.kInfoheader.lXPelsPerMeter); 
+		printf("kBitmap.kInfoheader.lYPelsPerMeter = %i\n", kBitmap.kInfoheader.lYPelsPerMeter); 
+		printf("kBitmap.kInfoheader.ulClrUsed = %i\n", kBitmap.kInfoheader.ulClrUsed); 
+		printf("kBitmap.kInfoheader.ulClrImportant = %i\n", kBitmap.kInfoheader.ulClrImportant); 
+	}
+ 
+	// Testa för om ulSizeImage är 0. Adobe Phoshop sätter denna 
+	// flagga till noll Windows Paint gör det inte.
+	bool bZeroSize = false;
+	if(kBitmap.kInfoheader.ulSizeImage == 0)
+	{
+		bZeroSize = true;
+		int antal = 3;
+		if (kBitmap.kInfoheader.usBitCount == 8)
+			antal = 1;
+		kBitmap.kInfoheader.ulSizeImage = kBitmap.kInfoheader.lHeight*
+			kBitmap.kInfoheader.lWidth*antal;
+	}
+
+	if( kBitmap.kFileheader.usType != BITMAP_ID ||
+		kBitmap.kInfoheader.lHeight < 1 || 
+		kBitmap.kInfoheader.lWidth  < 1 ||
+		kBitmap.kInfoheader.ulSizeImage < 1)
+	{
+		printf("Error loading bitmap. Bad file.\n");
+		return false;
+	}
+
 	if (kBitmap.kInfoheader.usBitCount == 8)
 	{
-		fread(&kBitmap.kPalette, 256*sizeof(bmppal_t), 1, pkFile);
+		fread(&kBitmap.kPalette, sizeof(bmppal_t), 256, pkFile);
 
-		for (int i=0; i<256; i++)
+		for(int i=0; i<256; i++)
 		{
 			int buffer = kBitmap.kPalette[i].ucRed;
 			kBitmap.kPalette[i].ucRed  = kBitmap.kPalette[i].ucBlue;
 			kBitmap.kPalette[i].ucBlue = buffer;
 			kBitmap.kPalette[i].ucFlags = PC_NOCOLLAPSE;
-		} 
+		}
 	}
 
 	fseek(pkFile,-(int)(kBitmap.kInfoheader.ulSizeImage),SEEK_END);
 
+	width = kBitmap.kInfoheader.lWidth;
+	height = kBitmap.kInfoheader.lHeight;
+	pixels = new color_rgba[width*height];
+
+	int i=0, j=0, x=0, y=0;
+
 	switch(kBitmap.kInfoheader.usBitCount)
 	{
 	case 8:
-	case 16:
-		printf("Found 8 or 16bits bitmap.\n");
-
-		if(kBitmap.pkData)
-		{
-			delete[] kBitmap.pkData;
-			kBitmap.pkData=NULL;
-		}
-
 		kBitmap.pkData = new unsigned char[kBitmap.kInfoheader.ulSizeImage];
-		fread(kBitmap.pkData, kBitmap.kInfoheader.ulSizeImage, 1, pkFile);
+		fread(kBitmap.pkData, sizeof(unsigned char), 
+			kBitmap.kInfoheader.ulSizeImage, pkFile);
+
+		for(y=0; y<height; y++)
+			for(x=0; x<width; x++)
+			{
+				int value = kBitmap.pkData[i];
+				if(bZeroSize)
+				{
+					pixels[i].r = kBitmap.kPalette[value].ucRed; 
+					pixels[i].b = kBitmap.kPalette[value].ucGreen;
+					pixels[i].g = kBitmap.kPalette[value].ucBlue; 
+					pixels[i].a = 0;
+				}
+				else
+				{
+					pixels[i].b = kBitmap.kPalette[value].ucRed; 
+					pixels[i].g = kBitmap.kPalette[value].ucGreen;
+					pixels[i].r = kBitmap.kPalette[value].ucBlue; 
+					pixels[i].a = 0;
+				}
+				i++;
+			}
 		break;
+
 	case 24:
-		printf("Found 24 bits bitmap.\n");
-
-		unsigned char* temp = new unsigned char[kBitmap.kInfoheader.ulSizeImage];
-
-		kBitmap.pkData = new unsigned char[2*kBitmap.kInfoheader.lWidth*
+		kBitmap.pkData = new unsigned char[3*kBitmap.kInfoheader.lWidth*
 			kBitmap.kInfoheader.lHeight];
 
-		fread(temp, kBitmap.kInfoheader.ulSizeImage, 1, pkFile);
+		fread(kBitmap.pkData, sizeof(unsigned char), 
+			kBitmap.kInfoheader.ulSizeImage, pkFile);
 
-		bool bFormatIsRGB565 = true;
-		if(bFormatIsRGB565)
-		{
-			int size = kBitmap.kInfoheader.lWidth * 
-				kBitmap.kInfoheader.lHeight;
-
-	        for (int i=0; i<size; i++)
-	        {
-				unsigned char blue  = (temp[(i*3) + 0] >> 3);
-				unsigned char green = (temp[(i*3) + 1] >> 2);
-	            unsigned char red   = (temp[(i*3) + 2] >> 3);
-	
-				// build up 16 bit color word
-		        unsigned char color = ((blue%32 << 0) + (green%64 << 5) + (red%32 << 11));
-				((unsigned short *)kBitmap.pkData)[i] = color;
+		for(y=0; y<height; y++)
+			for(x=0; x<width; x++)
+			{
+				if(bZeroSize)
+				{
+					pixels[i].r = kBitmap.pkData[j++]; 
+					pixels[i].b = kBitmap.pkData[j++];
+					pixels[i].g = kBitmap.pkData[j++]; 
+					pixels[i].a = 0;
+				}
+				else
+				{
+					pixels[i].b = kBitmap.pkData[j++]; 
+					pixels[i].g = kBitmap.pkData[j++];
+					pixels[i].r = kBitmap.pkData[j++]; 
+					pixels[i].a = 0;
+				}
+				i++;
 			}
-		}
-
-		kBitmap.kInfoheader.usBitCount=16;
 		break;
+
+	default:
+		printf("Error loading bitmap. Bitcount %i not suported!.\n",
+			kBitmap.kInfoheader.usBitCount);
+		delete[] pixels;
+		return false;
 	}
-	
-	width = kBitmap.kInfoheader.lWidth;
-	height = kBitmap.kInfoheader.lHeight;
-	int iSize = width*height;
 
-	pixels = new color_rgba[width*height];
-
-	int oka2=0;
-	int oka=0;
-	for(int y=0; y<height; y++)
-		for(int x=0; x<width; x++)
-		{
-			pixels[oka2].r = kBitmap.pkData[oka++];
-			pixels[oka2].g = kBitmap.pkData[oka++];
-			pixels[oka2].b = kBitmap.pkData[oka++];
-			pixels[oka2].a = 0;
-			oka2++;
-		}
+	printf("bitmap loaded (w=%i,h=%i,bpp=%i)\n", width, height, 
+		kBitmap.kInfoheader.usBitCount);
 
 	if(kBitmap.pkData)
 		delete[] kBitmap.pkData;

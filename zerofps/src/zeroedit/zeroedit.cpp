@@ -1056,8 +1056,8 @@ void ZeroEdit::Input()
 		case KEY_F1:
 			{
 				Image kImage;
-				kImage.load_bmp("apa.bmp");
-				kImage.save("apa.tga",false);
+				kImage.load_bmp("ko.bmp");
+				kImage.save("ko.tga",false);
 				// load_bmp pk
 			}
 			break;

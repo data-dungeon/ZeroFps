@@ -477,6 +477,6 @@ void WorkPanelDlg::UpdateMapTexList()
 		else
 			strMapName = strFullName;
 
-		pkCB->AddItem((char*)strMapName.c_str(), (i==0) ? true : false);
+		pkCB->AddItem((char*)strMapName.c_str(), i);
 	}
 }
