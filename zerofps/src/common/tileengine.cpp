@@ -10,7 +10,8 @@ TileEngine* TileEngine::GetInstance()
 
 TileEngine::TileEngine()
 {
-
+	m_iSizeX = -1;
+	m_iSizeY = -1;	
 }
 
 void TileEngine::CreateMap()
@@ -110,15 +111,20 @@ Tile* TileEngine::GetTile(int x,int y)
 
 void TileEngine::AddUnit(int x,int y,int iID)
 {
-	if(!UnitInTile(x,y,iID))
+	if(m_iSizeX != -1)
 	{
-		Tile* t = GetTile(x,y);
+		if(!UnitInTile(x,y,iID))
+		{
+			Tile* t = GetTile(x,y);
 		
-		if(t)
-			t->kUnits.push_back(iID);
-		else
-			cout<<"Invalid tile when adding unit"<<endl;
+			if(t)
+				t->kUnits.push_back(iID);
+			else
+				cout<<"Invalid tile when adding unit"<<endl;
+		}
 	}
+	else
+		cout<<"Trying to add unit before tileengine has been started"<<endl;
 }
 
 void TileEngine::RemoveUnit(int x,int y,int iID)
@@ -212,18 +218,21 @@ void TileEngine::ClearUnits()
 
 void TileEngine::AddUnit(Vector3 kPos,P_ServerUnit* kSu)
 {
-	Point pos = GetSqrFromPos(kPos);
+	if(m_iSizeX != -1)
+	{	
+		Point pos = GetSqrFromPos(kPos);
 		
-	int w = kSu->m_kInfo.m_Info2.m_cWidth;
-	int h = kSu->m_kInfo.m_Info2.m_cHeight;
+		int w = kSu->m_kInfo.m_Info2.m_cWidth;
+		int h = kSu->m_kInfo.m_Info2.m_cHeight;
 			
-	for(int y = int(-(h/2.0));y<(h/2.0);y++)
-		for(int x = int(-(w/2.0));x<(w/2.0);x++)
-		{			
-			//cout<<"X:"<<x<<endl;
-			AddUnit(pos.x + x,pos.y + y,kSu->GetObject()->iNetWorkID);
+		for(int y = int(-(h/2.0));y<(h/2.0);y++)
+			for(int x = int(-(w/2.0));x<(w/2.0);x++)
+			{			
+				//cout<<"X:"<<x<<endl;
+				AddUnit(pos.x + x,pos.y + y,kSu->GetObject()->iNetWorkID);
 			
-		}
+			}
+	}
 
 }
 

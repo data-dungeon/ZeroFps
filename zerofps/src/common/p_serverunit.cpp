@@ -1,4 +1,5 @@
 #include "p_serverunit.h"
+#include "tileengine.h"
 
 P_ServerUnit::P_ServerUnit() : m_bUpdateCommands(true), m_pkCurrentAIState(NULL)
 {
@@ -21,6 +22,11 @@ P_ServerUnit::P_ServerUnit() : m_bUpdateCommands(true), m_pkCurrentAIState(NULL)
 	m_bHaveSetRadius = false;
 
 	m_bClient = true;
+	m_bHaveSetPos = false;
+}
+
+void P_ServerUnit::Init()
+{
 }
 
 
@@ -36,6 +42,12 @@ void P_ServerUnit::Update()
 	{
 		GetClientUnitP();		
 		UpdateClient();
+	}
+		
+	//set position in tile engine once after object has been created
+	if(!m_bHaveSetPos){
+		TileEngine::m_pkInstance->AddUnit(m_pkObject->GetPos(),this);						
+		m_bHaveSetPos = true;
 	}
 		
 	//cout<<"external com:" <<m_kExternalCommands.size() <<endl;

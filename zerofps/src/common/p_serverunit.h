@@ -50,17 +50,21 @@ class COMMON_API P_ServerUnit: public Property {
 		bool					m_bHaveSetRadius;
 		bool					m_bUpdateCommands;
 		bool					m_bClient;
+		bool					m_bHaveSetPos;
 		map<string, ExternalCommand*> m_kExternalCommands;
 		vector<PropertyValues> GetPropertyValues();		
 		AIBase* m_pkCurrentAIState;
 		
 	public:
 		UnitInfo				m_kInfo;
-		void HandleGameMessage(GameMessage& Msg);
 	
 		P_ServerUnit();
+		void Init();		
 		void CloneOf(Property* pkProperty) { }
 		void Update();
+
+		void HandleGameMessage(GameMessage& Msg);
+
 
 		void GetClientUnitP();
 		void UpdateClient();

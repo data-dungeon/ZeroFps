@@ -149,7 +149,7 @@ AIBase* P_UnitMoveAI::UpdateAI()
 					m_iCurrentState = UNIT_WAIT;
 										
 					m_kCurretDestination = m_pkObject->GetPos();
-					m_fWaitTime = m_pkFps->GetGameTime();
+					m_fWaitTime = m_pkFps->GetGameTime() + ((rand() % 2000)/1000.0);
 					m_iRetries = 0;
 							
 					return this;
@@ -182,13 +182,13 @@ AIBase* P_UnitMoveAI::UpdateAI()
 		{
 			CheckForOrder();
 			
-			if(m_iRetries >= 5)
+			if(m_iRetries >= 3)
 			{
 				return NULL;
 			
 			}
 			
-			if( (m_pkFps->GetGameTime() - m_fWaitTime) > 2)
+			if( (m_pkFps->GetGameTime() - m_fWaitTime) > 1.0)
 			{
 				//cout<<"trying again " <<m_iRetries<<endl;				
 				m_iRetries++;
@@ -230,11 +230,17 @@ bool P_UnitMoveAI::MoveTo(Vector3 kPos)
 	Vector3 kMoveV = (kPos - m_pkObject->GetPos()).Unit();
 	Vector3 kNewPos = m_pkObject->GetPos() + kMoveV * (fVel * m_pkFps->GetGameFrameTime());
 
+
 	//set rotation   this rotation sux
 	Vector3 rot = kMoveV.Angels();
 	rot.x =0;
 	rot.z =0;
 	rot.y = -rot.y;
+	
+	
+	//	rot.y = atan2(kMoveV.z,kMoveV.x) * degtorad;
+	
+	//cout<<" Rotating to:"<<rot.y<<endl;
 
 	m_pkObject->SetRot(rot);		
 	m_pkObject->SetRot(rot);			
