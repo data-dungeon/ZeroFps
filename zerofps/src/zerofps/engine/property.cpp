@@ -103,7 +103,6 @@ string Property::GetValue(string kValueName)
 			if( kValueName == kItor->kValueName)
 			{	
 				char pk_chBuffer[50];
-				int  iDecimal, iSign;
 				string kBuffer1,kBuffer2;
 
 				switch(kItor->iValueType)
@@ -122,65 +121,39 @@ string Property::GetValue(string kValueName)
 						else return(kBuffer="false");
 								
 				case VALUETYPE_FLOAT:
-					kBuffer= fcvt(*((float*)kItor->pkValue), 5, &iDecimal, &iSign );
-					if(iDecimal >= 0)
-						kBuffer.insert(iDecimal, ".");
-					else
-						kBuffer.insert(0, ".");
-					if(iSign !=0)
-						kBuffer.insert(0, "-");
-					return kBuffer; 
+					sprintf( pk_chBuffer,"%g", *((float*)kItor->pkValue)  );
+					return kBuffer=pk_chBuffer;
 
 				case VALUETYPE_VECTOR3:
-					kBuffer1=fcvt(( (Vector3*) kItor->pkValue)->operator[](0), 5, &iDecimal, &iSign );
-					kBuffer1.insert(iDecimal, ".");
-					if(iSign !=0)
-					kBuffer1.insert(0, "-");
-					kBuffer1+=" ";
-					kBuffer=kBuffer1;	
-					
-					kBuffer1=fcvt(( (Vector3*) kItor->pkValue)->operator[](1), 5, &iDecimal, &iSign );
-					kBuffer1.insert(iDecimal, ".");
-					if(iSign !=0)
-					kBuffer1.insert(0, "-");
-					kBuffer1+=" ";
-					kBuffer+=kBuffer1;
-					
-					kBuffer1=fcvt(( (Vector3*) kItor->pkValue)->operator[](2), 5, &iDecimal, &iSign );
-					kBuffer1.insert(iDecimal, ".");
-					if(iSign !=0)
-					kBuffer1.insert(0, "-");
-					kBuffer+=kBuffer1;
+					sprintf( pk_chBuffer,"%g", ((Vector3*) kItor->pkValue)->operator[](0)  );
+					kBuffer=pk_chBuffer;
+			
+					sprintf( pk_chBuffer,"%g", ((Vector3*) kItor->pkValue)->operator[](1)  );
+					kBuffer+=" ";
+					kBuffer+=pk_chBuffer;
+				
+					sprintf( pk_chBuffer,"%g", ((Vector3*) kItor->pkValue)->operator[](2)  );
+					kBuffer+=" ";
+					kBuffer+=pk_chBuffer;
 					return kBuffer; 
 				
 				case VALUETYPE_VECTOR4:
-					kBuffer1=fcvt(( (Vector4*) kItor->pkValue)->operator[](0), 5, &iDecimal, &iSign );
-					kBuffer1.insert(iDecimal, ".");
-					if(iSign !=0)
-					kBuffer1.insert(0, "-");
-					kBuffer1+=" ";
-					kBuffer=kBuffer1;	
-					
-					kBuffer1=fcvt(( (Vector4*) kItor->pkValue)->operator[](1), 5, &iDecimal, &iSign );
-					kBuffer1.insert(iDecimal, ".");
-					if(iSign !=0)
-					kBuffer1.insert(0, "-");
-					kBuffer1+=" ";
-					kBuffer+=kBuffer1;
-					
-					kBuffer1=fcvt(( (Vector4*) kItor->pkValue)->operator[](2), 5, &iDecimal, &iSign );
-					kBuffer1.insert(iDecimal, ".");
-					if(iSign !=0)
-					kBuffer1.insert(0, "-");
-					kBuffer1+=" ";
-					kBuffer+=kBuffer1;
-
-					kBuffer1=fcvt(( (Vector4*) kItor->pkValue)->operator[](3), 5, &iDecimal, &iSign );
-					kBuffer1.insert(iDecimal, ".");
-					if(iSign !=0)
-					kBuffer1.insert(0, "-");
-					kBuffer+=kBuffer1;
-					return kBuffer; 
+			
+					sprintf( pk_chBuffer,"%g", ((Vector4*) kItor->pkValue)->operator[](0)  );
+					kBuffer=pk_chBuffer;
+				
+					sprintf( pk_chBuffer,"%g", ((Vector4*) kItor->pkValue)->operator[](1)  );
+					kBuffer+=" ";
+					kBuffer+=pk_chBuffer;
+				
+					sprintf( pk_chBuffer,"%g", ((Vector4*) kItor->pkValue)->operator[](2)  );
+					kBuffer+=" ";
+					kBuffer+=pk_chBuffer;
+				
+					sprintf( pk_chBuffer,"%g", ((Vector4*) kItor->pkValue)->operator[](3)  );
+					kBuffer+=" ";
+					kBuffer+=pk_chBuffer;
+					return kBuffer;
 				}
 			
 			}	
