@@ -857,7 +857,8 @@ int DMLua::GetEntityVarLua (lua_State* pkLua)
 
 	g_pkScript->GetArgString(pkLua, 1, cKey);
 
-	EntityVariable* pkEntVar = pkEntity->GetVar(string(cKey));
+	string strTemp = cKey;
+	EntityVariable* pkEntVar = pkEntity->GetVar(strTemp);
 
 	if ( pkEntVar == 0 )
 		dValue = 0;
@@ -898,7 +899,9 @@ int DMLua::SetEntityVarLua (lua_State* pkLua)
 	g_pkScript->GetArgString(pkLua, 1, cKey);
 	g_pkScript->GetArgNumber(pkLua, 2, &dValue);
 
-	pkEntity->SetVarDouble (string(cKey), dValue);
+
+	string strTemp = cKey;
+	pkEntity->SetVarDouble (strTemp, dValue);
 
 	return 0;
 
@@ -933,15 +936,16 @@ int DMLua::AddToEntityVarLua (lua_State* pkLua)
 
 	double dVar;
 
-	EntityVariable* pkEntVar = pkEntity->GetVar(string(cKey));
+	string strTemp = cKey;
+	EntityVariable* pkEntVar = pkEntity->GetVar(strTemp);
 
 	if ( pkEntVar == 0 )
 		dVar = dAddValue;
 	else
 		dVar = pkEntVar->m_fValue + dAddValue;
 
-
-	pkEntity->SetVarDouble (string(cKey), dVar);
+	string strTemp2 = cKey;
+	pkEntity->SetVarDouble (strTemp2, dVar);
 
 	return 0;
 

@@ -941,6 +941,11 @@ void Entity::Load(ZFIoInterface* pkFile,bool bLoadID,bool bLoadChilds)
 		
 		if(prop)
 			prop->Load(pkFile);
+		else
+		{
+			cout<<"ERROR: Entity name: "<<m_strName<<" type:"<<m_strType<<" has unregistered property: "<<name<<endl;
+			return;
+		}
 	}
 		
 	//Do we want to load the entitys attached childs?
