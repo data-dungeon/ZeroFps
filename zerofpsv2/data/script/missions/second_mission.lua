@@ -13,16 +13,33 @@ MissionText =
 	long = "Walk around in the town and collect XX number of XXX, when you have collected all XXX return to base."
 }
 
+function OnMissionStart()
+
+
+end
+
 function OnMissionSuccess()
---	Print("victory!, mission complete.");	
+
+
+
+end
+
+function OnMissionFailed()
+
+
+
 end
 
 function IsMissionDone()
 
---	Print("Mission number 2\n");
+	-----------------------------------------------------------------------
+	-- Kolla om XXX inte finns. I så fall antar vi att han död och 
+	-- uppdraget är slutfört.
+	-----------------------------------------------------------------------
 
 end
 
 function IsMissionFailed()
---	Print("you have failed!, no cash this time. return tro base!");
+
+
 end
