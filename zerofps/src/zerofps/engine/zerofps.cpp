@@ -216,11 +216,7 @@ void ZeroFps::MainLoop(void) {
 			//update physicsengine
 			m_pkPhysEngine->Update();
 
-			//update all collisions
-//			m_pkCollisionMan->Update();				
-
-			//update openal sound system
-			
+			//update openal sound system			
 			Vector3 up=(m_pkCamera->GetRot()-Vector3(0,90,0));//.AToU();
 			up.x=90;
 			m_pkOpenAlSystem->SetListnerPosition(m_pkCamera->GetPos(),(m_pkCamera->GetRot()+Vector3(0,90,0)).AToU(),up.AToU());//(m_pkCamera->GetRot()-Vector3(-90,90,0)).AToU());
@@ -248,14 +244,13 @@ void ZeroFps::MainLoop(void) {
 		
 		if(m_bConsoleMode)
 		{		
-//			SetCamera(m_pkCamera);			
 			SetCamera(m_pkConsoleCamera);			
-//			m_pkCamera->ClearViewPort();
 			
 			m_pkInput->SetInputEnabled(true);			
 			m_pkConsole->Update();
 		}
 	}
+	
 }
 
 
@@ -698,6 +693,8 @@ void ZeroFps::HandleNetworkPacket(NetPacket* pkNetPacket)
 
 void ZeroFps::RegisterPropertys()
 {
+	m_pkPropertyFactory->Register("BoxRenderProperty", Create_BoxRenderProperty);
+	m_pkPropertyFactory->Register("BillBoardRenderProperty", Create_BillBoardRenderProperty);
 	m_pkPropertyFactory->Register("CrossRenderProperty", Create_CrossRenderProperty);
 	m_pkPropertyFactory->Register("MadProperty", Create_MadProperty);
 	m_pkPropertyFactory->Register("ModelProperty", Create_ModelProperty);

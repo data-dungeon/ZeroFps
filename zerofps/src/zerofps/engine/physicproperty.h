@@ -23,6 +23,8 @@ class ENGINE_API PhysicProperty :public Property
 		bool m_bSolid;
 		bool m_bGlide;
 		
+		float m_fColShape;
+		bool m_bDummyValue;
 		
 		Vector3 m_kNewPos;	//for the physicengine
 		Vector3 m_kNewVel;	//for the physicengine
@@ -41,6 +43,7 @@ class ENGINE_API PhysicProperty :public Property
 
 		void SetColShape(CollisionShape* pkCs);
 
+		bool HandleSetValue( string kValueName ,string kValue );
 
 		void Save(ZFMemPackage* pkPackage);
 		void Load(ZFMemPackage* pkPackage);

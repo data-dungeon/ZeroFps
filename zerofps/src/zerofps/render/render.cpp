@@ -158,10 +158,8 @@ void Render::DrawConsole(char* m_aCommand,vector<char*>* m_kText,int iStartLine)
 }
 
 
-void Render::DrawBillboard(Matrix4 kModelMatrix,Vector3 kPos,float iSize,int iTexture){
-//	kPos=kPos/2;
-	
-	iSize/=2;
+void Render::DrawBillboard(Matrix4& kModelMatrix,Vector3& kPos,float fSize,int iTexture) {
+	fSize/=2;
 	
 	Vector3 x;
 	Vector3 y;
@@ -178,11 +176,11 @@ void Render::DrawBillboard(Matrix4 kModelMatrix,Vector3 kPos,float iSize,int iTe
 
 	glColor4f(1,1,1,1);
 	m_pkTexMan->BindTexture(iTexture); 	
-//	glAlphaFunc(GL_GREATER,0.3);
-//	glEnable(GL_ALPHA_TEST);
+	
+	glAlphaFunc(GL_GREATER,0.3);
+	glEnable(GL_ALPHA_TEST);
 
 //	glTranslatef(kPos.x,kPos.y,kPos.z);	
-	
 	x.Set(kModelMatrix[0], kModelMatrix[4], kModelMatrix[8]);
 	y.Set(kModelMatrix[1], kModelMatrix[5], kModelMatrix[9]); 
 
@@ -191,10 +189,10 @@ void Render::DrawBillboard(Matrix4 kModelMatrix,Vector3 kPos,float iSize,int iTe
    c = kPos + ((x + y) * iSize);
    d = kPos + ((-x + y) * iSize);*/
 
-	a = kPos + ((-x + y) * iSize);
-   b = kPos + ((x + y) * iSize);
-   c = kPos + ((x - y) * iSize);
-   d = kPos + ((-x - y) * iSize);
+	a = kPos + ((-x + y) * fSize);
+   b = kPos + ((x + y) * fSize);
+   c = kPos + ((x - y) * fSize);
+   d = kPos + ((-x - y) * fSize);
 	
 	glBegin(GL_QUADS);
       glTexCoord2f(0.0f, 0.0f);
@@ -218,7 +216,7 @@ void Render::DrawBillboard(Matrix4 kModelMatrix,Vector3 kPos,float iSize,int iTe
 	glEnd();*/
 		
 	
-//	glDisable(GL_ALPHA_TEST);
+	glDisable(GL_ALPHA_TEST);
 
 	glPopMatrix();
 	glPopAttrib();
@@ -247,6 +245,70 @@ void Render::DrawBoundSphere(float fRadius, Vector3)
 	glPopAttrib();
 }
 
+
+void Render::DrawBox(Vector3 kPos,Vector3 kRot,Vector3 kScale,int iTexture)
+{
+	glPushMatrix();
+		
+	glTranslatef(kPos.x,kPos.y,kPos.z);	
+	glRotatef(kRot.x, 1, 0, 0);
+	glRotatef(kRot.y, 0, 1, 0);	
+	glRotatef(kRot.z, 0, 0, 1);
+	glScalef(kScale.x,kScale.y,kScale.z);
+	
+	m_pkTexMan->BindTexture(iTexture); 	
+	glColor4f(1,1,1,1);		
+		
+	glBegin(GL_QUADS);			
+		
+		//front
+		glNormal3f(0,0,1);
+		glTexCoord2f(0.0,1.0);glVertex3f(-0.5  ,-0.5	,0.5);		 
+		glTexCoord2f(1.0,1.0);glVertex3f(0.5	,-0.5	,0.5);		
+		glTexCoord2f(1.0,0.0);glVertex3f(0.5	,0.5	 ,0.5);    
+		glTexCoord2f(0.0,0.0);glVertex3f(-0.5  ,0.5	 ,0.5);    
+	
+		//back
+		glNormal3f(0,0,-1);
+		glTexCoord2f(0.0,0.0);glVertex3f(-0.5  ,0.5	 ,-0.5);    		
+		glTexCoord2f(1.0,0.0);glVertex3f(0.5	,0.5	 ,-0.5);    		
+		glTexCoord2f(1.0,1.0);glVertex3f(0.5	,-0.5	,-0.5);			
+		glTexCoord2f(0.0,1.0);glVertex3f(-0.5  ,-0.5	,-0.5);		 
+	
+		//right
+		glNormal3f(1,0,0);
+		glTexCoord2f(0.0,0.0);glVertex3f(0.5  ,0.5	 ,-0.5);    		
+		glTexCoord2f(1.0,0.0);glVertex3f(0.5	,0.5	 ,0.5);    		
+		glTexCoord2f(1.0,1.0);glVertex3f(0.5	,-0.5	,0.5);			
+		glTexCoord2f(0.0,1.0);glVertex3f(0.5  ,-0.5	,-0.5);				
+
+		//left
+		glNormal3f(-1,0,0);		
+		glTexCoord2f(0.0,1.0);glVertex3f(-0.5  ,-0.5	,-0.5);		 
+		glTexCoord2f(1.0,1.0);glVertex3f(-0.5	,-0.5	,0.5);		
+		glTexCoord2f(1.0,0.0);glVertex3f(-0.5	,0.5	 ,0.5);    
+		glTexCoord2f(0.0,0.0);glVertex3f(-0.5  ,0.5	 ,-0.5);   
+		
+		//top
+		glNormal3f(0,1,0);
+		glTexCoord2f(0.0,1.0);glVertex3f(-0.5  ,0.5	,0.5);		 
+		glTexCoord2f(1.0,1.0);glVertex3f(0.5	,0.5	,0.5);		
+		glTexCoord2f(1.0,0.0);glVertex3f(0.5	,0.5	 ,-0.5);    
+		glTexCoord2f(0.0,0.0);glVertex3f(-0.5  ,0.5	 ,-0.5);    		
+		
+		//botom
+		glNormal3f(0,-1,0);
+		glTexCoord2f(0.0,1.0);glVertex3f(-0.5  ,-0.5	,-0.5);		 
+		glTexCoord2f(1.0,1.0);glVertex3f(0.5	,-0.5	,-0.5);		
+		glTexCoord2f(1.0,0.0);glVertex3f(0.5	,-0.5	 ,0.5);    
+		glTexCoord2f(0.0,0.0);glVertex3f(-0.5  ,-0.5	 ,0.5);    		
+		
+		
+	glEnd();			
+	
+	glPopMatrix();
+
+}
 
 
 

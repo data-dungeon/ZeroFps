@@ -1,5 +1,6 @@
 #include "physicproperty.h"
 #include "cssphere.h"
+#include "csbox.h"
 #include <typeinfo>
 
 PhysicProperty::PhysicProperty()
@@ -16,6 +17,9 @@ PhysicProperty::PhysicProperty()
 
 	m_pkColSphere=NULL;
 	m_pkColObject=NULL;
+
+	m_fColShape=0;
+	m_bDummyValue=true;
 
 	m_pkColSphere=new CSSphere(0);
 	m_pkColSphere->SetPPPointer(this);
@@ -78,6 +82,11 @@ void PhysicProperty::Save(ZFMemPackage* pkPackage)
 	{
 		type=1;		
 	}
+	else if(typeid(*m_pkColObject) == typeid(CSBox))
+	{
+		type=2;		
+	}
+		
 		
 	pkPackage->Write((void*)&type,4);		
 	
@@ -87,6 +96,10 @@ void PhysicProperty::Save(ZFMemPackage* pkPackage)
 		case 1:
 			pkPackage->Write((void*)&(static_cast<CSSphere*>(m_pkColObject)->m_fRadius),4);						
 			break;
+		case 2:
+			pkPackage->Write((void*)&(static_cast<CSBox*>(m_pkColObject)->m_kScale),12);						
+			break;
+			
 	}	
 	
 }
@@ -103,12 +116,19 @@ void PhysicProperty::Load(ZFMemPackage* pkPackage)
 	int type;
 	pkPackage->Read((void*)&type,4);
 	
+	m_fColShape=type;
+	
 	switch(type)
 	{
 		case 1:
 			SetColShape(new CSSphere(0));	
 			pkPackage->Read((void*)&(static_cast<CSSphere*>(m_pkColObject)->m_fRadius),4);
 			break;
+		case 2:
+			SetColShape(new CSBox(Vector3(1,1,1)));	
+			pkPackage->Read((void*)&(static_cast<CSBox*>(m_pkColObject)->m_kScale),12);
+			break;
+		
 	}		
 }
 
@@ -122,7 +142,7 @@ void PhysicProperty::SetColShape(CollisionShape* pkCs)
 
 vector<PropertyValues> PhysicProperty::GetPropertyValues()
 {
-	vector<PropertyValues> kReturn(5);
+	vector<PropertyValues> kReturn(7);
 
 	kReturn[0].kValueName="m_bGravity";
 	kReturn[0].iValueType=VALUETYPE_BOOL;
@@ -143,18 +163,84 @@ vector<PropertyValues> PhysicProperty::GetPropertyValues()
 
 	kReturn[4].kValueName="m_fRadius";
 	kReturn[4].iValueType=VALUETYPE_FLOAT;
-	CSSphere* pkColSphere = static_cast<CSSphere*>(GetColSphere());
+	kReturn[4].pkValue = (void*)&static_cast<CSSphere*>(GetColSphere())->m_fRadius;	
 
+/*
+	CSSphere* pkColSphere = static_cast<CSSphere*>(GetColSphere());
 	float fHata = static_cast<CSSphere*>(GetColSphere())->m_fRadius;
 
 	if(pkColSphere != NULL)
 		kReturn[4].pkValue = (void*)&static_cast<CSSphere*>(GetColSphere())->m_fRadius;
-
 	else
 		assert(0);
+*/
+
+	kReturn[5].kValueName="m_fColShape";
+	kReturn[5].iValueType=VALUETYPE_FLOAT;
+	kReturn[5].pkValue=(void*)&m_fColShape;
+	
+	switch((int)m_fColShape)
+	{
+		case 0:
+			kReturn[6].kValueName="NOCOLSHAPE";
+			kReturn[6].iValueType=VALUETYPE_BOOL;
+			kReturn[6].pkValue=(void*)&m_bDummyValue;
+			break;
+		
+		case 1:{
+			kReturn[6].kValueName="co-sphere-radius";
+			kReturn[6].iValueType=VALUETYPE_FLOAT;
+			kReturn[6].pkValue = (void*)&static_cast<CSSphere*>(m_pkColObject)->m_fRadius;
+	
+			break;
+		}
+	
+		case 2:{
+			kReturn[6].kValueName="co-box-scale";
+			kReturn[6].iValueType=VALUETYPE_VECTOR3;
+			kReturn[6].pkValue = (void*)&static_cast<CSBox*>(m_pkColObject)->m_kScale;								
+			break;
+		}
+	
+	}
+		
+
 
 	return kReturn;
 };
+
+bool PhysicProperty::HandleSetValue( string kValueName ,string kValue )
+{
+	if(strcmp(kValueName.c_str(), "m_fColShape") == 0) 
+	{
+			if(kValue=="0"){
+				if(m_pkColObject!=NULL)
+					delete m_pkColObject;
+				
+				m_fColShape=0;
+			}
+					
+			if(kValue=="1")
+			{
+				if(m_pkColObject!=NULL)
+					delete m_pkColObject;				
+				SetColShape(new CSSphere(1));	
+				m_fColShape=1;
+			}
+			
+			if(kValue=="2")
+			{
+				if(m_pkColObject!=NULL)
+					delete m_pkColObject;								
+				SetColShape(new CSBox(Vector3(1,1,1)));	
+				m_fColShape=2;				
+			}
+			
+			return true;
+	}	
+	
+	return false;
+}
 
 
 Property* Create_PhysicProperty()

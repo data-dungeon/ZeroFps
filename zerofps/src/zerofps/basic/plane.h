@@ -7,17 +7,27 @@
 
 class BASIC_API Plane 
 {
-public:
-	Vector3		kNormal;							// Normal of plane ( A,B,C in plane equation).
-	float		fD;									// Distance ( D in plane equation).
+	public:
+	
+	
+		Vector3		m_kNormal;							// Normal of plane ( A,B,C in plane equation).
+		float			m_fD;									// Distance ( D in plane equation).
 
-	void		Set(float fX, float fY, float fZ, float fInD) {
-		kNormal.Set(fX,fY,fZ);
-		fD = fInD;
+		void Set(float fX, float fY, float fZ, float fInD) {
+			m_kNormal.Set(fX,fY,fZ);
+			m_fD = fInD;
 		}
 	
-	bool PointInside(Vector3 kPoint);
-	bool SphereInside(Vector3 kCenter, float fRadius);
+		void Set(Vector3 kNormal, float fInD) {
+			m_kNormal=kNormal;
+			m_fD = fInD;
+		}	
+	
+		void Set(Vector3 kNormal, Vector3 kPos);
+	
+		bool PointInside(Vector3 kPoint);
+		bool SphereInside(Vector3 kCenter, float fRadius);
+		bool LineTest(Vector3 kP1,Vector3 kP2,Vector3* kColPos); 
 };
 
 #endif

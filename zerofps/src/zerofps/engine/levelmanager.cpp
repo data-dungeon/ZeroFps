@@ -14,14 +14,17 @@ LevelManager::LevelManager(): ZFObject("LevelManager")
 	
 	m_pkMap=new HeightMap();
 	
-	m_bVisibleZones=true;
-	m_fZoneRadius=100;	
-	m_iZpr=2;
-	m_fZoneDistance=64;
-	m_kMapBaseDir="../data/maps";
+	m_bVisibleZones		=	true;
+	m_iShowDecorations	=	1;
+	m_iDecorationStep		=	1;
+	m_fZoneRadius			=	100;	
+	m_iZpr					=	2;
+	m_fZoneDistance		=	64;
+	m_kMapBaseDir			=	"../data/maps";
 	
 	m_pkCmd->Add(&m_fZoneRadius,"l_zoneradius",type_float);		
-	
+	m_pkCmd->Add(&m_iShowDecorations,"l_Showdecorations",type_int);		
+	m_pkCmd->Add(&m_iDecorationStep,"l_decorationstep",type_int);			
 	
 	
 	
@@ -64,23 +67,30 @@ void LevelManager::Clear()
 	CreateNew(128);
 }
 
-void LevelManager::CreateNew(int iSize) 
+void LevelManager::ClearObjects()
 {
 	ClearTrackers();
 	m_pkObjectMan->Clear();
 	m_kZones.clear();
-	
+
 	m_pkHeightMapObject=new HeightMapObject(m_pkMap);		
 	m_pkHeightMapObject->SetParent(m_pkObjectMan->GetWorldObject());
-	m_pkCollisionMan->Add(m_pkHeightMapObject);
+	m_pkHeightMapObject->GetPos().Set(0,-4,0);
+	m_pkMap->SetPosition(Vector3(0,-4,0));
+}
+
+void LevelManager::CreateNew(int iSize) 
+{
+	
+	ClearObjects();
+	
+//	m_pkCollisionMan->Add(m_pkHeightMapObject);
 
 	m_pkMap->Create(iSize);
 	m_pkMap->GenerateNormals(); 
 	m_pkMap->GenerateTextures();
-
-	m_pkHeightMapObject->GetPos().Set(0,-4,0);				
-	m_pkMap->SetPosition(Vector3(0,-4,0));
-			
+	m_pkMap->SetPosition(Vector3(0,-4,0));		
+		
 }
 
 void LevelManager::CreateZones()
@@ -514,8 +524,12 @@ void LevelManager::EnableZone(int xp,int zp,Vector3 &kPos)
 			if(x<0 || z<0 || x>=tot || z>=tot)
 				continue;
 			
-			if(( kPos - m_kZones[x*tot+z]->GetPos()).Length()<m_fZoneRadius)			
-				m_kZones[x*tot+z]->GetUpdateStatus()=UPDATE_STATIC|UPDATE_DYNAMIC|UPDATE_PLAYERS|UPDATE_STATDYN|UPDATE_LIGHT;					
+			if(( kPos - m_kZones[x*tot+z]->GetPos()).Length()<m_fZoneRadius)
+				if(m_iShowDecorations>0)
+//					m_kZones[x*tot+z]->GetUpdateStatus()=UPDATE_ALL|UPDATE_LIGHT;		
+					m_kZones[x*tot+z]->GetUpdateStatus()=UPDATE_STATIC|UPDATE_DYNAMIC|UPDATE_PLAYERS|UPDATE_STATDYN|UPDATE_LIGHT|UPDATE_DECORATION;		
+				else
+					m_kZones[x*tot+z]->GetUpdateStatus()=UPDATE_STATIC|UPDATE_DYNAMIC|UPDATE_PLAYERS|UPDATE_STATDYN|UPDATE_LIGHT;					
 				//m_kZones[x*tot+z]->GetUpdateStatus()=UPDATE_ALL;		
 		}
 	}

@@ -4,6 +4,8 @@ class CameraProperty;
 class CollisionProperty;
 class HeightMapRenderProperty;
 class CrossRenderProperty;
+class BillBoardRenderProperty;
+class BoxRenderProperty;
 class HMRP2;
 class SkyBoxRenderProperty;
 class WaterRenderProperty;
@@ -49,4 +51,5 @@ class CollisionHeightMap;
 #include "hmrp2.h"
 #include "physicproperty.h"
 #include "crossrenderproperty.h"
-
+#include "billboardrenderproperty.h"
+#include "boxrenderproperty.h"

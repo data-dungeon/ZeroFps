@@ -82,19 +82,18 @@ class ENGINE_API Object {
 
 		ObjectType			m_iObjectType;						
 		int					m_iUpdateStatus;					
-//		bool				m_bLockedChilds;					
-		
-		bool				m_bSave;							// True if this object should save to disk.
+		int*					m_piDecorationStep;
+		bool					m_bSave;							// True if this object should save to disk.
 		
 		ObjectManager*		m_pkObjectMan;						// Ptr to object manger.
 		LevelManager* 		m_pkLevelMan;		
 		PropertyFactory*	m_pkPropertyFactory;	
 
 		list<Object*>		m_akChilds;							// List of child objects.
-		list<Property*>		m_akPropertys;						// List of propertys of object.
+		list<Property*>	m_akPropertys;						// List of propertys of object.
 		
 	public:
-		int		iNetWorkID;										// ID used by network state code.
+		int					iNetWorkID;										// ID used by network state code.
 
 		Object();		
 		~Object();
@@ -133,7 +132,7 @@ class ENGINE_API Object {
 
 		// Collision / Shape.
 		float GetBoundingRadius();							// Get radius of collision object or radius 1.0 if none found.
-		void Touch(Object* pkObject);						// Run touch on all properys of this object.
+		void Touch(Collision* pkCol);						// Run touch on all properys of this object.
 
 		inline int &GetUpdateStatus() {return m_iUpdateStatus;};
 		inline ObjectType &GetObjectType(){return m_iObjectType;};

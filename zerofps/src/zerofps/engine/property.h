@@ -15,7 +15,7 @@
 
 using namespace std;
 
-struct CollisionData;
+struct Collision;
 class Object;
 class PropertyFactory;
 
@@ -98,7 +98,7 @@ class ENGINE_API Property
 		
 		Property();
 		virtual ~Property(){};
-		virtual void Touch(Object* pkObject){};
+		virtual void Touch(Collision* pkCol){};
 		virtual void Init(){};
 		virtual void Update(){};			
 		virtual void PackTo(NetPacket* pkNetPacket){} ;

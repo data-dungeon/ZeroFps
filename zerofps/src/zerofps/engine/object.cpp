@@ -277,12 +277,11 @@ Object::Object() {
 	m_kAcc  = Vector3::ZERO;
 	m_kName = "Object";			
 
-	m_iObjectType	=	OBJECT_TYPE_DYNAMIC;
-//	m_bLockedChilds =	false;
-	m_iUpdateStatus =	UPDATE_ALL;
-	m_bSave			=	true;
-	
-	m_pkParent		=	NULL;
+	m_iObjectType			=	OBJECT_TYPE_DYNAMIC;	
+	m_iUpdateStatus		=	UPDATE_ALL;
+	m_piDecorationStep 	=	m_pkLevelMan->GetDecorationStepPointer();
+	m_bSave					=	true;
+	m_pkParent				=	NULL;
 	m_akChilds.clear();	
 }
 
@@ -374,14 +373,11 @@ void  Object::GetPropertys(list<Property*> *akPropertys,int iType,int iSide)
 
 void Object::GetAllPropertys(list<Property*> *akPropertys,int iType,int iSide)
 {
+//	int iDecStep=m_pkLevelMan->GetDecorationStep();
+	int iCurDec=0;
+
 	//get this objects propertys
 	GetPropertys(akPropertys,iType,iSide);	
-	
-//	switch(m_iUpdateStatus)
-//	{
-		//if UPDATE_NONE dont return any child propertys
-//		case UPDATE_NONE:
-//			return;
 	
 	for(list<Object*>::iterator it=m_akChilds.begin();it!=m_akChilds.end();it++)
 	{	
@@ -415,14 +411,28 @@ void Object::GetAllPropertys(list<Property*> *akPropertys,int iType,int iSide)
 					break;
 			
 				case OBJECT_TYPE_DECORATION:
-					if(m_iUpdateStatus & UPDATE_DECORATION)		
-						(*it)->GetAllPropertys(akPropertys,iType,iSide);
+					if(m_iUpdateStatus & UPDATE_DECORATION)
+					{
+						iCurDec++;
+						if(iCurDec >= *m_piDecorationStep)
+						{
+							iCurDec=0;						
+							(*it)->GetAllPropertys(akPropertys,iType,iSide);
+						}
+					}
 					break;
 			}
 		}
 	}
 }
 /*	
+
+//	switch(m_iUpdateStatus)
+//	{
+		//if UPDATE_NONE dont return any child propertys
+//		case UPDATE_NONE:
+//			return;
+
 		if(iType == OBJECT_TYPE_DYNAMIC)	
 			if(m_iUpdateStatus & UPDATE_DYNAMIC)		
 				(*it)->GetAllPropertys(akPropertys,iType,iSide);
@@ -802,11 +812,11 @@ float Object::GetBoundingRadius()
 	return (static_cast<CollisionProperty*>(pr))->GetBoundingRadius();
 }
 
-void Object::Touch(Object* pkObject)
+void Object::Touch(Collision* pkCol)
 {
 	for(list<Property*>::iterator it=m_akPropertys.begin();it!=m_akPropertys.end();it++) 
 	{
-		(*it)->Touch(pkObject);
+		(*it)->Touch(pkCol);
 	}
 }
 

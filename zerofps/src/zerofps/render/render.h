@@ -51,6 +51,8 @@ class RENDER_API Render : public ZFObject {
 		bool CubeInFrustum( float x, float y, float z, float sizex,float sizey,float sizez );
 */		
 		void Quad(Vector3 kPos,Vector3 kHead,Vector3 kScale,int iTexture);
+		
+		
 		void PrintChar(char cChar);
 		void Print(Vector3 kPos,Vector3 kHead,Vector3 kScale,char* aText);
 		void SetFont(char* aFont);
@@ -81,9 +83,10 @@ class RENDER_API Render : public ZFObject {
 		void GiveTexCor(float &iX,float &iY,int iNr);
 		void DrawCross(Vector3 kPos,Vector3 kHead,Vector3 kScale,int iTexture1);//,int iTexture2);
 //		void DrawGrassPatch(Vector3 kCamPos,Vector3 kPos,Vector3 kScale,int fW,int iNr,HeightMap* kMap,int iTexture,int iFps);
-		void DrawBillboard(Matrix4 kModelMatrix,Vector3 kPos,float iSize,int iTexture);
+		void DrawBillboard(Matrix4& kModelMatrix,Vector3& kPos,float fSize,int iTexture);
 
 		void DrawBoundSphere(float fRadius, Vector3);
+		void DrawBox(Vector3 kPos,Vector3 kRot,Vector3 kScale,int iTexture);
 };
 
 RENDER_API void RenderDLL_InitExtGL(void);

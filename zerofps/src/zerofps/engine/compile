@@ -1,4 +1,6 @@
-g++ -c *.cpp zgui/*.cpp -O3
+#g++ -c *.cpp zgui/*.cpp -O3
+#rm -f *.o
+../../complink "*.cpp" "zgui/*.cpp"
 ./relink
 #g++ *.o zgui/*.o -o ../../../bin/libengine.so --shared -O3 -lSDL_mixer -lopenal -lSDL_net -lGL -lGLU -L/usr/X11R6/lib `sdl-config --cflags --libs`
 #g++ *.cpp zgui/*.cpp -o ../../../bin/libengine.so --shared -O3 -lSDL_mixer -lopenal -lSDL_net -lGL -lGLU -L/usr/X11R6/lib `sdl-config --cflags --libs`

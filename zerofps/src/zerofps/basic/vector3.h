@@ -60,6 +60,10 @@ class BASIC_API Vector3 {
 		Vector3 operator*(const float &fOther)		const {
 			return Vector3(x * fOther,y * fOther,z * fOther);
 			}
+		
+		Vector3 operator*(const Vector3 &fOther)		const {
+			return Vector3(x * fOther.x,y * fOther.y,z * fOther.z);
+			}
 	
 		Vector3 operator /  ( const float  s )	const {
 			float invs = 1/s; 

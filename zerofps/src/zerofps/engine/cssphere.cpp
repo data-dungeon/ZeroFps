@@ -16,7 +16,7 @@ Collision* CSSphere::Test(CollisionShape* kOther,float fTime,bool bContinue)
 		return kOther->Test(this,fTime,false);
 	};
 	
-	cout<<"Unhandled collision"<<endl;
+	//cout<<"Unhandled collision"<<endl;
 	return NULL;
 }
 
@@ -147,11 +147,13 @@ Collision* CSSphere::Collide_CSSphere(CSSphere* kOther,float fTime)
 	tempdata->m_pkPP2 = kOther->m_pkPP;
 	tempdata->m_kPos2 = O2->GetPos()+ newmov2;//(movevec2*bla);
 	tempdata->m_fDistance2 = (tempdata->m_kPos2 - O2->GetPos()).Length();
+	tempdata->m_kNormal2=normal2;
 	
 	tempdata->m_pkPP1 = m_pkPP;
 	tempdata->m_kPos1 = O1->GetPos()+newmov1; //(movevec1*bla);
 	tempdata->m_fDistance1 = (tempdata->m_kPos1 - O1->GetPos()).Length();
-
+	tempdata->m_kNormal1=normal1;
+	
 //	tempdata->m_kNormal=Vector3(0,0,0);
 	
 	return tempdata;

@@ -27,7 +27,7 @@ void Camera::Update(int iWidth,int iHeight)
 	
 		//load projection matrix
 		glMatrixMode(GL_PROJECTION);
-		glLoadMatrixf((float*)&m_kCamMatrix[0]);
+		glLoadMatrixf(&m_kCamProjectionMatrix[0]);
 	}
 	
 	if(m_bViewPortChange){	
@@ -56,6 +56,8 @@ void Camera::Update(int iWidth,int iHeight)
 	 	
 	glTranslatef(-m_kPos.x,-m_kPos.y,-m_kPos.z);
 	
+	//get modelview matrix
+	glGetFloatv(GL_MODELVIEW_MATRIX, &m_kCamModelViewMatrix[0]);
 	
 }
 
@@ -67,14 +69,16 @@ void Camera::SetView(float fFov,float fAspect,float fNear,float fFar)
 	m_fAspect	= fAspect;
 	m_fNear		= fNear;
 	m_fFar		= fFar;
-
+	
 	glMatrixMode(GL_PROJECTION);	
 	glPushMatrix();
 	 	glLoadIdentity();													
 		gluPerspective(fFov, fAspect,fNear,fFar);	
-		glGetFloatv(GL_PROJECTION_MATRIX,(float*)&m_kCamMatrix[0]);
+		//get projection matrix
+		glGetFloatv(GL_PROJECTION_MATRIX,&m_kCamProjectionMatrix[0]);
 	glPopMatrix();
 	glMatrixMode(GL_MODELVIEW);	
+	
 }
 
 void Camera::SetFov(float fFov)
@@ -108,16 +112,19 @@ void Camera::SetViewPort(float fX,float fY,float fW,float fH)
 
 }
 
+/*
+Matrix4 Camera::GetModelViewMatrix()
+{
+	Matrix4 temp;
+	
+	glGetFloatv(GL_MODELVIEW_MATRIX, &temp[0]);
+
+	return temp;
+}
+*/
 
 void Camera::ClearViewPort() {
 	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);	
-}
-
-Matrix4 Camera::GetModelMatrix() {
-	Matrix4 temp;
-
-	glGetFloatv(GL_MODELVIEW_MATRIX, &temp[0]);
-	return temp;
 }
 
 string Camera::GetCameraDesc()

@@ -72,7 +72,6 @@ void ObjectManager::Clear()
 void ObjectManager::Update(int iType,int iSide,bool bSort)
 {
 //	UpdateDelete();
-
 	if(!m_bUpdate)
 		if(iType!=PROPERTY_TYPE_RENDER)
 			return;
@@ -89,6 +88,7 @@ void ObjectManager::Update(int iType,int iSide,bool bSort)
 	{
 		(*it)->Update();
 	}
+	
 }
 
 void ObjectManager::UpdateDelete()

@@ -20,33 +20,35 @@ using namespace std;
 
 class ENGINE_API LevelManager : public ZFObject {
 	private:
-		ObjectManager* m_pkObjectMan;
-		ZeroFps* m_pkZeroFps;
+		ObjectManager* 	m_pkObjectMan;
+		ZeroFps* 			m_pkZeroFps;
 		CollisionManager* m_pkCollisionMan;
-		ZFBasicFS* m_pkBasicFS;
-		Console* m_pkConsole;
-		Render* m_pkRender;
-		CmdSystem* m_pkCmd;
-		ZFIni* m_pkIni;
-		Light*	m_pkLight;
+		ZFBasicFS* 			m_pkBasicFS;
+		Console* 			m_pkConsole;
+		Render* 				m_pkRender;
+		CmdSystem* 			m_pkCmd;
+		ZFIni* 				m_pkIni;
+		Light*				m_pkLight;
 		
-		HeightMap* m_pkMap;
-		HeightMapObject* m_pkHeightMapObject;
+		HeightMap* 			m_pkMap;
+		HeightMapObject*	m_pkHeightMapObject;
 		
-		LightSource *m_bSun;
-		LightSource *m_bMoon;	
+		LightSource*		m_bSun;
+		LightSource*		m_bMoon;	
 		
-		bool m_bVisibleZones;
-		float m_fZoneRadius;
+		int 					m_iShowDecorations;
+		int					m_iDecorationStep;
+		bool 					m_bVisibleZones;
+		float 				m_fZoneRadius;
 		
-		int m_iZpr;			//zones per radius
-		float m_fZoneDistance;
+		int 					m_iZpr;			//zones per radius
+		float 				m_fZoneDistance;
 		
-		string m_kMapBaseDir;
+		string 				m_kMapBaseDir;
 		WorldInfoProperty m_kWIP;
 
-		list<Object*> m_kTrackedObjects;		
-		vector<Object*> m_kZones;
+		list<Object*> 		m_kTrackedObjects;		
+		vector<Object*> 	m_kZones;
 
 	public:
 		LevelManager();
@@ -55,6 +57,7 @@ class ENGINE_API LevelManager : public ZFObject {
 		bool SaveLevel(const char* acName);
 		void CreateNew(int iSize);
 		void Clear();
+		void ClearObjects();
 		void CreateEmptyLevel(int iSize);
 		HeightMap* GetHeightMap(){return m_pkMap;};
 
@@ -64,7 +67,10 @@ class ENGINE_API LevelManager : public ZFObject {
 		void SetupWorld();
 		
 		void SetVisibleZones(bool bVisible) {m_bVisibleZones=bVisible;};		
-		float &GetZoneRadius() {return m_fZoneRadius;};
+		float& GetZoneRadius() {return m_fZoneRadius;};
+		
+		int& GetDecorationStep() {return m_iDecorationStep;};
+		int* GetDecorationStepPointer() {return &m_iDecorationStep;};
 		
 		void Fog(Vector3 kColor,float fStart,float fStop);
 		void Water(bool bWater);

@@ -285,8 +285,10 @@ void PhysicsEngine::HandleCollisions()
 
 	for(i=0;i<kCols.size();i++) 
 	{	
-		kCols[i]->m_pkPP1->GetObject()->Touch(kCols[i]->m_pkPP2->GetObject());
-		kCols[i]->m_pkPP2->GetObject()->Touch(kCols[i]->m_pkPP1->GetObject());
+//		kCols[i]->m_pkPP1->GetObject()->Touch(kCols[i]->m_pkPP2->GetObject());
+//		kCols[i]->m_pkPP2->GetObject()->Touch(kCols[i]->m_pkPP1->GetObject());
+		kCols[i]->m_pkPP1->GetObject()->Touch(kCols[i]);
+		kCols[i]->m_pkPP2->GetObject()->Touch(kCols[i]);	
 	}
 }
 
