@@ -149,7 +149,7 @@ public:
 
 	struct SORTZ_CMP : public binary_function<MAIN_WINDOW*, MAIN_WINDOW*, bool> 
 	{
-		bool operator()(MAIN_WINDOW* x, MAIN_WINDOW* y) 
+		bool operator()(const MAIN_WINDOW* x, const MAIN_WINDOW* y) const
 		{ 
 			return x->pkWnd->m_iZValue > y->pkWnd->m_iZValue; 
 		};

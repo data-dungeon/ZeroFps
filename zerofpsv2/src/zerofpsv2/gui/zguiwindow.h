@@ -133,7 +133,7 @@ public:
 
 	struct SORTZ_CMP : public binary_function<ZGuiWnd*, ZGuiWnd*, bool> 
 	{
-		bool operator()(ZGuiWnd* x, ZGuiWnd* y) 
+		bool operator()(const ZGuiWnd* x, const ZGuiWnd* y) const 
 		{ 
 			return x->m_iZValue > y->m_iZValue; 
 		};
