@@ -92,6 +92,35 @@ void P_Buff::Disable()
 	
 }
 
+vector<PropertyValues> P_Buff::GetPropertyValues()
+{
+	vector<PropertyValues> kReturn(5);
+	
+	kReturn[0].kValueName = "name";
+	kReturn[0].iValueType = VALUETYPE_STRING;
+	kReturn[0].pkValue    = &m_strName;	
+
+	kReturn[1].kValueName = "icon";
+	kReturn[1].iValueType = VALUETYPE_STRING;
+	kReturn[1].pkValue    = &m_strIcon;	
+	
+	kReturn[2].kValueName = "type";
+	kReturn[2].iValueType = VALUETYPE_INT;
+	kReturn[2].pkValue    = &m_cType;	
+
+	kReturn[3].kValueName = "show";
+	kReturn[3].iValueType = VALUETYPE_BOOL;
+	kReturn[3].pkValue    = &m_bShow;	
+
+	kReturn[4].kValueName = "timeout";
+	kReturn[4].iValueType = VALUETYPE_FLOAT;
+	kReturn[4].pkValue    = &m_fTimeOut;		
+				
+	
+	return kReturn;
+}
+
+
 
 Property* Create_P_Buff()
 {
