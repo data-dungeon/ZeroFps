@@ -39,6 +39,7 @@ public:
 	string	m_strTexture;				// Name of texture to use.
 	string	m_strDetailTexture;		// Detail texture name.
 	string	m_strMask;					// Name of layer alpha mask.
+	Image		m_kAlphaImage;				// Alpha layer image.
 
 	ZFResourceHandle	m_kMaskHandle;
 
@@ -48,6 +49,7 @@ public:
 		m_strDetailTexture = kOther.m_strDetailTexture;
 		m_strMask = kOther.m_strMask;
 		m_kMaskHandle = kOther.m_kMaskHandle;
+		m_kAlphaImage = kOther.m_kAlphaImage;
 		return *this;
 		}	
 
@@ -151,6 +153,7 @@ class ENGINE_SYSTEMS_API HeightMap
 		vector<string>	Layers_GetNames();
 		
 		friend class Render;
+		friend class P_HMRP2;
 };
 
 #endif

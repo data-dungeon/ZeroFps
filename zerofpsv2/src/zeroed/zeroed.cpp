@@ -465,7 +465,7 @@ void ZeroEd::DrawHMEditMarker(HeightMap* pkHmap, Vector3 kCenterPos, float fInRa
 	if(pkHmap == NULL)	return;
 
 	m_pkRender->DrawBillboard(m_pkZeroFps->GetCam()->GetModelViewMatrix(),kCenterPos,1,
-		m_pkTexMan->Load("../data/textures/pointer.tga",T_NOMIPMAPPING));	
+		m_pkTexMan->Load("/data/textures/pointer.tga",T_NOMIPMAPPING));	
 
 	Vector3	kVertex;
 	vector<Vector3>	kVertexList;

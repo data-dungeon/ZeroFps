@@ -106,10 +106,10 @@ class RENDER_API TextureManager : public ZFSubSystem {
 		bool UnLoad(const char* acFileName);		
 		void ClearAll();
 
-		enum PixelFormat { RGB=GL_RGB, BGR=GL_BGR };
+		enum PixelFormat { RGB=GL_RGB, BGR=GL_BGR, RGBA=GL_RGBA };
 
 		int CreateTextureFromRGB(const char* acName, color_rgb* pixels, 
-			int width, int height, PixelFormat eFormat, bool bOverWrite);
+			int width, int height, PixelFormat eFormat, bool bOverWrite, PixelFormat TargetFormat);
 
 		// Bind Textures
 		void BindTexture(const char* acFileName,int iOption);	// Bind texture by name. Load it if not loaded.

@@ -19,6 +19,8 @@ class ENGINE_SYSTEMS_API P_HMRP2: public Property
 		Render*				m_pkRender;	
 		Light*				m_pkLight;	
 		
+		vector<PropertyValues> GetPropertyValues();
+
 	public:
 		HeightMap*			m_pkHeightMap;
 		string				m_strMapName;		// Name of file to load/save to.

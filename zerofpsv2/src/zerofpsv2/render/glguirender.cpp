@@ -168,7 +168,7 @@ void GLGuiRender::UpdateAnimation()
 			m_pkSkin->m_pkZIFAnimation->GetTexIDName(), 
 			(color_rgb*)m_pkSkin->m_pkZIFAnimation->GetFramePixels(), 
 			m_pkSkin->m_pkZIFAnimation->m_iWidth, m_pkSkin->m_pkZIFAnimation->m_iHeight, 
-			TextureManager::BGR, bRebuildTexture);
+			TextureManager::BGR, bRebuildTexture, TextureManager::RGB);
 	}
 }
 

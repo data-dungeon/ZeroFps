@@ -35,7 +35,7 @@ public:
 	~Image();
 	Image( const Image& v );
 
-	Image& operator = ( Image& v );					///< Make a copy of image.
+	Image& operator = (const Image& v );					///< Make a copy of image.
 
 	int				m_iWidth, m_iHeight;						///< Size of image.
 	color_rgba*		m_pkPixels;								///< Ptr to pixels in image.
@@ -57,6 +57,7 @@ public:
 	void Free(void);												///< Remove image.
 
 	void Save(const char* szFileName, bool bAlpha = false);		///< Save image as a 24 / 32 bit .tga file.
+	void Save(FILE* fp, bool bAlpha = false);							///< Save image as a 24 / 32 bit .tga file.
 
 	// Tools
 	void Flip(bool bFlipX, bool bFlipY);				///< Flip image along one or two axis.

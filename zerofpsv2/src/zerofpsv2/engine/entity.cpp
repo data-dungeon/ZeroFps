@@ -2270,8 +2270,11 @@ int SetLocalVector(lua_State* pkLua)
 	char acName[100];
 	g_pkScript->GetArg(pkLua, 1, acName);
 
-	Vector3 kPos;
-	kPos = GetVectorArg(pkLua, 2);
+	double x,y,z;
+	g_pkScript->GetArgNumber(pkLua, 2, &x);		
+	g_pkScript->GetArgNumber(pkLua, 3, &y);		
+	g_pkScript->GetArgNumber(pkLua, 4, &z);		
+	Vector3 kPos(x,y,z);
 
 	Entity* o1 = g_pkObjMan->GetEntityByID(iId1);
 	o1->SetVarVector(acName, kPos);
@@ -2291,10 +2294,6 @@ int GetLocalVector(lua_State* pkLua)
 
 	Entity* o1 = g_pkObjMan->GetEntityByID(iId1);
 	Vector3 pos = o1->GetVarVector(acName);
-
-	cout << "Local Vec: ";
-	pos.Print();
-	cout << endl;
 
 		vector<TABLE_DATA> vkData;
 

@@ -493,8 +493,15 @@ void Render::DrawHMLodSplat(HeightMap* kMap,Vector3 CamPos,int iFps)
 			break;
 
 		glActiveTextureARB(GL_TEXTURE0_ARB);	
-		m_pkTexMan->BindTexture(kMap->m_kLayer[i].m_strMask.c_str(),T_NOMIPMAPPING|T_ALPHA);	
-	
+		//m_pkTexMan->BindTexture(kMap->m_kLayer[i].m_strMask.c_str(),T_NOMIPMAPPING|T_ALPHA);	
+		string kLayerStr = kMap->m_kLayer[i].m_strMask + string("ost");
+		int iTexID = m_pkTexMan->CreateTextureFromRGB(kLayerStr.c_str(), 
+			(color_rgb*)kMap->m_kLayer[i].m_kAlphaImage.m_pkPixels, 
+			kMap->m_kLayer[i].m_kAlphaImage.m_iWidth, kMap->m_kLayer[i].m_kAlphaImage.m_iHeight, 
+			TextureManager::RGBA,
+         false, TextureManager::RGBA);
+		m_pkTexMan->BindTexture( iTexID );
+
 		glActiveTextureARB(GL_TEXTURE1_ARB);
 		m_pkTexMan->BindTexture(kMap->m_kLayer[i].m_strTexture.c_str(),0);		
 		DrawAllHM(kMap,CamPos,true);	

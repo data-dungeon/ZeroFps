@@ -370,7 +370,7 @@ int TextureManager::Load(const char* szFileName, int iOption)
 
 int TextureManager::CreateTextureFromRGB(const char* acName, color_rgb* pkPixels, 
 										 int iWidth, int iHeight, PixelFormat eFormat,
-										 bool bOverWrite)
+										 bool bOverWrite, PixelFormat iInternalFormat)
 {
 	texture *pkTex;
 
@@ -403,7 +403,7 @@ int TextureManager::CreateTextureFromRGB(const char* acName, color_rgb* pkPixels
 		}
 	}
 
-	GLint iInternalFormat =	GL_RGB;
+	//GLint iInternalFormat =	GL_RGBA;
 	
 	// make sure the m_pkImage is null for swaping;
 	pkTex->m_pkImage2 = NULL;

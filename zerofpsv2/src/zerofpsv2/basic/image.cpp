@@ -307,6 +307,35 @@ void Image::Save(const char* szFileName, bool bAlpha)
 	fclose(fp);
 }
 
+void Image::Save(FILE* fp, bool bAlpha)
+{
+	tgahead_t head;
+	memset(&head,0,sizeof(tgahead_t));
+
+	head.id_length = 0;
+	head.colormap_type = 0;
+	head.image_type = TGA_IMAGETYPE_URGB;
+
+	head.width  = m_iWidth;
+	head.height = m_iHeight;
+
+	if(m_bHasAlpha || bAlpha)	head.pixel_depth = 32;
+		else	head.pixel_depth = 24;
+
+	if(!fp)	return;
+
+	fwrite(&head, sizeof(tgahead_t),1,fp);
+
+	for(int i=0; i<m_iWidth * m_iHeight; i++) {
+		putc(m_pkPixels[i].b,fp);
+		putc(m_pkPixels[i].g,fp);
+		putc(m_pkPixels[i].r,fp);
+		if(bAlpha)
+			putc(m_pkPixels[i].a,fp);
+		}
+}
+
+
 bool Image::load_tga(const char* filename)
 {
 	FILE *fp = fopen(filename,"rb");
@@ -714,7 +743,7 @@ glDrawm_pkPixels(bild.width,bild.height,GL_RGBA ,GL_UNSIGNED_BYTE,bild.m_pkPixel
 
 
 
-Image& Image::operator = ( Image& v ) 
+Image& Image::operator = (const Image& v ) 
 {
 	if(m_pkPixels)	delete [] m_pkPixels;
 	m_pkPixels = NULL;

@@ -21,7 +21,10 @@ void HM_Layer::Load(ZFVFile* pkFile)
 	pkFile->Read(szString, 256,1);
 	m_strMask = szString;
 
-	cout << "Load Layer: " << m_strName << ", " << m_strDetailTexture << "," << m_strMask << endl;
+	//m_kAlphaImage.load(m_strMask.c_str());
+	m_kAlphaImage.load_tga(pkFile->m_pkFilePointer);
+
+	//cout << "Load Layer: " << m_strName << ", " << m_strDetailTexture << "," << m_strMask << endl;
 }
 
 void HM_Layer::Save(ZFVFile* pkFile)
@@ -36,7 +39,11 @@ void HM_Layer::Save(ZFVFile* pkFile)
 	pkFile->Write(szString, 256,1);
 	strcpy(szString, m_strMask.c_str());
 	pkFile->Write(szString, 256,1);
-	cout << "Save Layer: " << m_strName << ", " << m_strDetailTexture << "," << m_strMask << endl;
+
+	//m_kAlphaImage.Save(m_strMask.c_str(),true);
+	m_kAlphaImage.Save(pkFile->m_pkFilePointer, true);
+
+	//cout << "Save Layer: " << m_strName << ", " << m_strDetailTexture << "," << m_strMask << endl;
 }
 
 
@@ -74,7 +81,7 @@ void HeightMap::Clear()
 	m_iNumOfHMVertex	= 0;
 	m_iID					= -1;
 	m_bInverted			= false;
-	m_fTileSize			= 8;
+	m_fTileSize			= 1;
 }
 
 
@@ -104,10 +111,10 @@ void HeightMap::Create(int iTilesSide)
 	Zero();
 
 	// AddTestLayers
-	Layer_Create(string("layer0"), string("data/textures/trock.bmp"));
+	Layer_Create(string("layer0"), string("data/textures/tgrass.bmp"));
 	Layer_Create(string("layer1"), string("data/textures/tdirt.bmp"));
-	Layer_Create(string("layer2"), string("data/textures/tgrass.bmp"));
-	Layer_Create(string("layer3"), string("data/textures/tsand.bmp"));
+	Layer_Create(string("layer2"), string("data/textures/tsand.bmp"));
+	Layer_Create(string("layer3"), string("data/textures/trock.bmp"));
 }
 
 void HeightMap::Zero() 
@@ -483,14 +490,14 @@ bool HeightMap::Save(const char* acFile)
 	savefile.Write((void*)&verts[0],sizeof(HM_vert), m_iVertexSide*m_iVertexSide);
 	savefile.Close();
 	
-	for(int i=0; i<m_kLayer.size(); i++) {
+/*	for(int i=0; i<m_kLayer.size(); i++) {
 		string file=m_kLayer[i].m_strMask;
 		ZFResourceHandle m_kConsoleText;
 		m_kConsoleText.SetRes(m_kLayer[i].m_strMask);	
 		ResTexture* pkTexture = static_cast<ResTexture*>(m_kConsoleText.GetResourcePtr());
 		m_pkTexMan->BindTexture(pkTexture->m_iTextureID);
 		m_pkTexMan->SaveTexture(file.c_str(),0);
-		}
+		}*/
 	
 	return true;
 }
@@ -728,31 +735,32 @@ void HeightMap::DrawMask(Vector3 kPos,int iMask,float fSize,int r,int g,int b,in
 		return;
 		
 //	m_pkTexMan->BindTexture(m_kLayer[iMask].m_strMask.c_str(),0);
-	
-	if(!m_pkTexMan->EditStart(m_kLayer[iMask].m_strMask.c_str())) {
+	string strAlphaName = m_kLayer[iMask].m_strMask + string("ost");
+
+	if(!m_pkTexMan->EditStart(strAlphaName.c_str())) {
 		cout << "Failed to edit texture" << endl;
 		return;
 		}
 	
 	//get texture pos
-	float fSizeW = ((float)GetSize() / (float)m_pkTexMan->EditGetImage(m_kLayer[iMask].m_strMask.c_str())->m_iWidth);
+	float fSizeW = ((float)GetSize() / (float)m_pkTexMan->EditGetImage(strAlphaName.c_str())->m_iWidth);
 	float xpos = (float) ((kPos.x) / (float)GetSize())  ;
 	float ypos = (float) ((kPos.z) / (float)GetSize())  ;
 	
-	xpos *= (float)m_pkTexMan->EditGetImage(m_kLayer[iMask].m_strMask.c_str())->m_iWidth;
-	ypos *= (float)m_pkTexMan->EditGetImage(m_kLayer[iMask].m_strMask.c_str())->m_iHeight;
-	cout << "Texture pos: "<< xpos << ", " << ypos << endl;
+	xpos *= (float)m_pkTexMan->EditGetImage(strAlphaName.c_str())->m_iWidth;
+	ypos *= (float)m_pkTexMan->EditGetImage(strAlphaName.c_str())->m_iHeight;
+	//cout << "Texture pos: "<< xpos << ", " << ypos << endl;
 
 	float fRealSize = GetBrushSizeInAlphaUVSpace( fSize );	// * (float)m_pkTexMan->GetImage()->w;
 //	int size=fRealSize;
 	
-	cout << "Brush size: " << fRealSize << endl;
+	//cout << "Brush size: " << fRealSize << endl;
 	//cout << "Img Size: " << m_pkTexMan->GetImage()->m_iWidth << "," << m_pkTexMan->GetImage()->m_iHeight;
 
-	Image* pkImg = m_pkTexMan->EditGetImage( m_kLayer[iMask].m_strMask.c_str() );
+	Image* pkImg = m_pkTexMan->EditGetImage( strAlphaName.c_str() );
 	int iW, iH;
-	iW = m_pkTexMan->EditGetImage(m_kLayer[iMask].m_strMask.c_str())->m_iWidth;
-	iH = m_pkTexMan->EditGetImage(m_kLayer[iMask].m_strMask.c_str())->m_iHeight;
+	iW = m_pkTexMan->EditGetImage(strAlphaName.c_str())->m_iWidth;
+	iH = m_pkTexMan->EditGetImage(strAlphaName.c_str())->m_iHeight;
 
 
 	for(float i=0;i<fRealSize;i+=0.5)
@@ -810,8 +818,9 @@ void HeightMap::DrawMask(Vector3 kPos,int iMask,float fSize,int r,int g,int b,in
 		cout << "Failed to swap back texture" << endl;
 		}*/
 
-	m_pkTexMan->EditCommit(m_kLayer[iMask].m_strMask.c_str());
-	m_pkTexMan->EditEnd(m_kLayer[iMask].m_strMask.c_str());
+	m_pkTexMan->EditCommit(strAlphaName.c_str());
+	m_kLayer[iMask].m_kAlphaImage = *pkImg; 
+	m_pkTexMan->EditEnd(strAlphaName.c_str());
 }
 
 void HeightMap::DrawVisible(Vector3 kPos, bool bVisible)
@@ -1082,7 +1091,9 @@ bool HeightMap::Layer_Create(string strName, string strTexture)
 	Image kImg;
 	kImg.CreateEmpty(128,128);
 	kImg.fill(0,0,128,128,0,0,0,0);
-	kImg.Save(szMaskName, true);
+	//kImg.Save(szMaskName, true);
+	//kLayer.m_kAlphaImage.load(szMaskName);
+	kLayer.m_kAlphaImage = kImg;
 
 	//kLayer.m_kMaskHandle.SetRes(kLayer.m_strMask.c_str());	
 
