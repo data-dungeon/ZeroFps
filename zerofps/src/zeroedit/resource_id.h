@@ -18,6 +18,7 @@ const int IDM_CREATE_NEW_PROPERTY		= 9012;
 const int ID_PROPERTY_WND				= 9013;
 const int ID_PROPERTY_WND_MAIN			= 9014;
 const int ID_PROPERTY_WND_CLOSE			= 9015;
+const int ID_NAME_TEXTBOX				= 9016;
 
 static int iLastIDNr = 9012;
 

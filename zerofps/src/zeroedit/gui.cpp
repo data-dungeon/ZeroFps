@@ -227,6 +227,8 @@ bool Gui::InitSkins()
 		new ZGuiSkin(-1, -1, -1, -1, 128, 128, 128, 0, 0, 0, 0)) ); 
 	m_kSkinMap.insert( map<string, ZGuiSkin*>::value_type(string("dark_blue"), 
 		new ZGuiSkin(-1, -1, -1, -1, 0, 0, 128, 0, 0, 0, 0)) ); 
+	m_kSkinMap.insert( map<string, ZGuiSkin*>::value_type(string("white"), 
+		new ZGuiSkin(-1, -1, -1, -1, 255, 255, 255, 0, 0, 0, 0)) ); 
 
 	return true;
 }
@@ -302,7 +304,7 @@ ZGuiTextbox* Gui::CreateTextbox(ZGuiWnd* pkParent, int iID, int x, int y, int w,
 	h += (20 % h); // avrunda till närmsta 20 tal
 
 	ZGuiTextbox* pkTextbox = new ZGuiTextbox(Rect(x,y,x+w,y+h), pkParent, true, iID);
-	pkTextbox->SetSkin(GetSkin("dark_blue"));
+	pkTextbox->SetSkin(GetSkin("white"));
 	pkTextbox->SetTextSkin(GetSkin("font"), GetTexture("font_a"));
 
 	return pkTextbox;
@@ -359,7 +361,8 @@ ZGuiWnd* Gui::CreatePropertyDialog(int x, int y, int w, int h)
 	pkMainWindow->SetMoveArea(Rect(0,0,m_pkEdit->m_iWidth,m_pkEdit->m_iHeight));
 
 	CreateButton(pkMainWindow, ID_PROPERTY_WND_CLOSE, w-20, 0, "x");
-	CreateLabel(pkMainWindow, 0, 20, 20, 100, 20, "apa");
+	CreateLabel(pkMainWindow, 0, 20, 20, 16*5, 20, "Name:");
+	CreateTextbox(pkMainWindow, ID_NAME_TEXTBOX, 16*6, 20, 200, 20);
 
 	m_pkEdit->pkGui->AddMainWindow(ID_PROPERTY_WND_MAIN, pkMainWindow, m_pkWndProc, true);
 
