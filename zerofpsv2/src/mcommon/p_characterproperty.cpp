@@ -118,8 +118,48 @@ void P_CharacterProperty::SetupContainers()
 				case eRightHand:
 					cout<<"found right hand"<<endl;
 					m_iRightHand = kEntitys[i]->GetEntityID();
+					break;			
+				case eGloves:
+					cout<<"found gloves"<<endl;
+					m_iGloves = kEntitys[i]->GetEntityID();
 					break;
-			
+				case eCape:
+					cout<<"found Cape"<<endl;
+					m_iCape = kEntitys[i]->GetEntityID();
+					break;										
+				case eNecklace:
+					cout<<"found Necklace"<<endl;
+					m_iNecklace = kEntitys[i]->GetEntityID();
+					break;										
+				case eBracers:
+					cout<<"found Bracers"<<endl;
+					m_iBracers = kEntitys[i]->GetEntityID();
+					break;										
+				case eBelt:
+					cout<<"found Belt"<<endl;
+					m_iBelt = kEntitys[i]->GetEntityID();
+					break;										
+				case eFeets:
+					cout<<"found feets"<<endl;
+					m_iFeets = kEntitys[i]->GetEntityID();
+					break;										
+				case eRing1:
+					cout<<"found ring1"<<endl;
+					m_iRing1= kEntitys[i]->GetEntityID();
+					break;										
+				case eRing2:
+					cout<<"found ring2"<<endl;
+					m_iRing2 = kEntitys[i]->GetEntityID();
+					break;										
+				case eRing3:
+					cout<<"found ring3"<<endl;
+					m_iRing3 = kEntitys[i]->GetEntityID();
+					break;										
+				case eRing4:
+					cout<<"found ring4"<<endl;
+					m_iRing4 = kEntitys[i]->GetEntityID();
+					break;										
+					
 			}
 		}
 	}
@@ -150,6 +190,8 @@ void P_CharacterProperty::SetupContainers()
 				pkCon->SetContainerType(eBody);
 				pkCon->SetOwnerID(GetEntity()->GetEntityID());
 				pkCon->SetStaticOwner(true);
+				pkCon->SetMaxItems(1);
+				pkCon->AddItemType(MLITEM_BODY);
 				
 		//head
 		pkContainer = m_pkEntityMan->CreateEntity();
@@ -160,6 +202,8 @@ void P_CharacterProperty::SetupContainers()
 				pkCon->SetContainerType(eHead);
 				pkCon->SetOwnerID(GetEntity()->GetEntityID());
 				pkCon->SetStaticOwner(true);
+				pkCon->SetMaxItems(1);
+				pkCon->AddItemType(MLITEM_HEAD);
 				
 		//left hand
 		pkContainer = m_pkEntityMan->CreateEntity();
@@ -170,6 +214,8 @@ void P_CharacterProperty::SetupContainers()
 				pkCon->SetContainerType(eLeftHand);
 				pkCon->SetOwnerID(GetEntity()->GetEntityID());
 				pkCon->SetStaticOwner(true);
+				pkCon->SetMaxItems(1);
+				pkCon->AddItemType(MLITEM_HAND);
 				
 		//right hand
 		pkContainer = m_pkEntityMan->CreateEntity();
@@ -180,25 +226,132 @@ void P_CharacterProperty::SetupContainers()
 				pkCon->SetContainerType(eRightHand);
 				pkCon->SetOwnerID(GetEntity()->GetEntityID());
 				pkCon->SetStaticOwner(true);
-																		
+				pkCon->SetMaxItems(1);
+				pkCon->AddItemType(MLITEM_HAND);
+
+		//eGloves
+		pkContainer = m_pkEntityMan->CreateEntity();
+			m_iGloves = pkContainer->GetEntityID();
+			pkContainer->SetParent(GetEntity());
+			pkCon = (P_Container*)pkContainer->AddProperty("P_Container");				
+				pkCon->SetSize(2,2);
+				pkCon->SetContainerType(eGloves);
+				pkCon->SetOwnerID(GetEntity()->GetEntityID());
+				pkCon->SetStaticOwner(true);
+				pkCon->SetMaxItems(1);
+				pkCon->AddItemType(MLITEM_GLOVES);
+				
+		//eCape
+		pkContainer = m_pkEntityMan->CreateEntity();
+			m_iCape = pkContainer->GetEntityID();
+			pkContainer->SetParent(GetEntity());
+			pkCon = (P_Container*)pkContainer->AddProperty("P_Container");				
+				pkCon->SetSize(2,2);
+				pkCon->SetContainerType(eCape);
+				pkCon->SetOwnerID(GetEntity()->GetEntityID());
+				pkCon->SetStaticOwner(true);
+				pkCon->SetMaxItems(1);
+				pkCon->AddItemType(MLITEM_CAPE);																					
+		
+		//eNecklace
+		pkContainer = m_pkEntityMan->CreateEntity();
+			m_iNecklace = pkContainer->GetEntityID();
+			pkContainer->SetParent(GetEntity());
+			pkCon = (P_Container*)pkContainer->AddProperty("P_Container");				
+				pkCon->SetSize(1,1);
+				pkCon->SetContainerType(eNecklace);
+				pkCon->SetOwnerID(GetEntity()->GetEntityID());
+				pkCon->SetStaticOwner(true);
+				pkCon->SetMaxItems(1);
+				pkCon->AddItemType(MLITEM_NECKLACE);																					
+		
+		//eBracers
+		pkContainer = m_pkEntityMan->CreateEntity();
+			m_iBracers = pkContainer->GetEntityID();
+			pkContainer->SetParent(GetEntity());
+			pkCon = (P_Container*)pkContainer->AddProperty("P_Container");				
+				pkCon->SetSize(2,1);
+				pkCon->SetContainerType(eBracers);
+				pkCon->SetOwnerID(GetEntity()->GetEntityID());
+				pkCon->SetStaticOwner(true);
+				pkCon->SetMaxItems(1);
+				pkCon->AddItemType(MLITEM_BRACERS);					
+
+		//eBelt
+		pkContainer = m_pkEntityMan->CreateEntity();
+			m_iBelt = pkContainer->GetEntityID();
+			pkContainer->SetParent(GetEntity());
+			pkCon = (P_Container*)pkContainer->AddProperty("P_Container");				
+				pkCon->SetSize(2,1);
+				pkCon->SetContainerType(eBelt);
+				pkCon->SetOwnerID(GetEntity()->GetEntityID());
+				pkCon->SetStaticOwner(true);
+				pkCon->SetMaxItems(1);
+				pkCon->AddItemType(MLITEM_BELT);					
+								
+		//eFeets
+		pkContainer = m_pkEntityMan->CreateEntity();
+			m_iFeets = pkContainer->GetEntityID();
+			pkContainer->SetParent(GetEntity());
+			pkCon = (P_Container*)pkContainer->AddProperty("P_Container");				
+				pkCon->SetSize(2,2);
+				pkCon->SetContainerType(eFeets);
+				pkCon->SetOwnerID(GetEntity()->GetEntityID());
+				pkCon->SetStaticOwner(true);
+				pkCon->SetMaxItems(1);
+				pkCon->AddItemType(MLITEM_FEETS);									
+				
+		//eRing1
+		pkContainer = m_pkEntityMan->CreateEntity();
+			m_iRing1 = pkContainer->GetEntityID();
+			pkContainer->SetParent(GetEntity());
+			pkCon = (P_Container*)pkContainer->AddProperty("P_Container");				
+				pkCon->SetSize(1,1);
+				pkCon->SetContainerType(eRing1);
+				pkCon->SetOwnerID(GetEntity()->GetEntityID());
+				pkCon->SetStaticOwner(true);
+				pkCon->SetMaxItems(1);
+				pkCon->AddItemType(MLITEM_RING);					
+
+		//eRing2
+		pkContainer = m_pkEntityMan->CreateEntity();
+			m_iRing2 = pkContainer->GetEntityID();
+			pkContainer->SetParent(GetEntity());
+			pkCon = (P_Container*)pkContainer->AddProperty("P_Container");				
+				pkCon->SetSize(1,1);
+				pkCon->SetContainerType(eRing2);
+				pkCon->SetOwnerID(GetEntity()->GetEntityID());
+				pkCon->SetStaticOwner(true);
+				pkCon->SetMaxItems(1);
+				pkCon->AddItemType(MLITEM_RING);	
+				
+		//eRing3
+		pkContainer = m_pkEntityMan->CreateEntity();
+			m_iRing3 = pkContainer->GetEntityID();
+			pkContainer->SetParent(GetEntity());
+			pkCon = (P_Container*)pkContainer->AddProperty("P_Container");				
+				pkCon->SetSize(1,1);
+				pkCon->SetContainerType(eRing3);
+				pkCon->SetOwnerID(GetEntity()->GetEntityID());
+				pkCon->SetStaticOwner(true);
+				pkCon->SetMaxItems(1);
+				pkCon->AddItemType(MLITEM_RING);		
+
+		//eRing4
+		pkContainer = m_pkEntityMan->CreateEntity();
+			m_iRing4 = pkContainer->GetEntityID();
+			pkContainer->SetParent(GetEntity());
+			pkCon = (P_Container*)pkContainer->AddProperty("P_Container");				
+				pkCon->SetSize(1,1);
+				pkCon->SetContainerType(eRing4);
+				pkCon->SetOwnerID(GetEntity()->GetEntityID());
+				pkCon->SetStaticOwner(true);
+				pkCon->SetMaxItems(1);
+				pkCon->AddItemType(MLITEM_RING);	
+				
+																															
 		cout<<"done"<<endl;
 	}
-		
-	/*
-	//containers
-	m_pkInventory		=	new MLContainer(m_pkEntityMan,GetEntity()->GetEntityID(),6,12,true,0);
-	m_pkHead				=	new MLContainer(m_pkEntityMan,GetEntity()->GetEntityID(),2,2,true,1);
-	m_pkBody				=	new MLContainer(m_pkEntityMan,GetEntity()->GetEntityID(),2,4,true,2);
-	m_pkLeftHand		=	new MLContainer(m_pkEntityMan,GetEntity()->GetEntityID(),2,4,true,3);
-	m_pkRightHand		=	new MLContainer(m_pkEntityMan,GetEntity()->GetEntityID(),2,4,true,3);
-	
-	m_pkInventory->SetContainerType(eInventory);
-	
-	m_pkHead->SetMaxItems(1);
-	m_pkBody->SetMaxItems(1);
-	m_pkLeftHand->SetMaxItems(1);
-	m_pkRightHand->SetMaxItems(1);
-	*/
 
 }
 
@@ -211,15 +364,7 @@ P_CharacterProperty::~P_CharacterProperty()
 	m_pkAudioSystem->StopAudio(m_iSwimSoundID);
 
 	delete m_pkTextMaterial;
-	delete m_pkFont;
-	
-/*	//delete containers
-	delete m_pkInventory;
-	delete m_pkHead;
-	delete m_pkBody;
-	delete m_pkLeftHand;
-	delete m_pkRightHand;
-*/	
+	delete m_pkFont;	
 }
 
 

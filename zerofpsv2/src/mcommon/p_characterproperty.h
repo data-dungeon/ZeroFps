@@ -69,18 +69,20 @@ class MCOMMON_API P_CharacterProperty: public Property
 	public:
 		//containers
 		int	m_iInventory;
+		
 		int	m_iHead;
+		int	m_iGloves;
+		int	m_iCape;		
+		int	m_iNecklace;				
 		int	m_iBody;
 		int	m_iLeftHand;
-		int	m_iRightHand;
-		
-		int	m_iGloves;
-		int	m_iCape;
-		int	m_iNecklace;
-		int	m_iLeftRing;
-		int	m_iRightRing;
-		int	m_iBracers;
-		int	m_iBelt;
+		int	m_iRightHand;		
+		int	m_iBracers;		
+		int	m_iRing1;
+		int	m_iRing2;
+		int	m_iRing3;
+		int	m_iRing4;
+		int	m_iBelt;		
 		int	m_iFeets;
 		
 	

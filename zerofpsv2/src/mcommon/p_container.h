@@ -13,11 +13,23 @@ using namespace std;
 enum MCOMMON_API ContainerTypes
 {
 	eNormal,
+	
 	eInventory,
 	eLeftHand,
 	eRightHand,
 	eHead,
 	eBody,
+	eGloves,
+	eCape,
+	eNecklace,
+	eBracers,
+	eBelt,
+	eFeets,
+	eRing1,
+	eRing2,
+	eRing3,
+	eRing4,
+	
 };
 
 
