@@ -1052,7 +1052,7 @@ void MistServer::HandleOrders()
 	
 	while(P_ClientControl::NrOfOrders() > 0 )
 	{
-		ClientOrder* order = P_ClientControl::GetNextOrder();
+		ClientOrder* order = P_ClientControl::GetNextOrder();	
 		
 		if(!CheckValidOrder(order))
 		{
@@ -1062,15 +1062,15 @@ void MistServer::HandleOrders()
 		}
 		cout<<"handling order "<<order->m_sOrderName<<" from client:"<<order->m_iClientID<<endl;
 		
-		//move order
-		if(order->m_sOrderName == "Move")
+		//ground klick order		
+		if(order->m_iFace != -1)
 		{
 			Object* ob = pkObjectMan->GetObjectByNetWorkID(order->m_iCaracter);			
 			if(ob)
 			{
 				P_Event* pe = (P_Event*)ob->GetProperty("P_Event");
 				if(pe)
-					pe->SendEvent("Move", order->m_sOrderName.c_str(), order->m_iCaracter ,order->m_kPos);
+					pe->SendGroudClickEvent(order->m_sOrderName.c_str(), order->m_kPos,order->m_iFace,order->m_iCaracter ,order->m_iZoneObjectID);
 			}
 
 		}
@@ -1083,7 +1083,7 @@ void MistServer::HandleOrders()
 				P_Event* pe = (P_Event*)ob->GetProperty("P_Event");
 				if(pe)
 				{	
-					pe->SendEvent("Use", order->m_sOrderName.c_str(), order->m_iCaracter ,order->m_kPos);				
+					pe->SendObjectClickEvent(order->m_sOrderName.c_str(), order->m_iCaracter);				
 				
 				}			
 			}

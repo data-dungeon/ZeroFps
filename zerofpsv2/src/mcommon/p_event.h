@@ -32,7 +32,10 @@ class MCOMMON_API P_Event: public Property {
 		//void ZoneChange(int iCurrent,int iNew);
 		
 		void Update();				
-		bool SendEvent(const char* acEvent, const char* acType="NoName",int iCallerObject = -1,Vector3 kPos = Vector3(0,0,0));
+		bool SendEvent(const char* acEvent);
+		bool SendObjectClickEvent(const char* acType,int iCallerObject );		
+		bool SendGroudClickEvent(const char* acType,Vector3 kPos,int iFace,int iCallerObject,int iZoneObjectID);
+		
 		void Touch(Collision* pkCol);					//executet when collision occurs
 };
 

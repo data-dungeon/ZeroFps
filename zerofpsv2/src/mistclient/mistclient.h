@@ -75,12 +75,14 @@ class MistClient :public Application, public ZGuiApp {
 		float					m_fDistance;		
 		float 				m_fClickDelay;
 		
+		//zone picking 
 		Vector3				m_kTargetPos;
 		int					m_iTargetZoneObject;
 		int					m_iTargetFace;		
 		
 		Vector3	Get3DMousePos();
 		Object*	GetTargetObject();	
+		bool PickZones();
 		
 		InventoryDlg*	  m_pkInventDlg;
 		void CreateGuiInterface();
@@ -117,8 +119,6 @@ class MistClient :public Application, public ZGuiApp {
 		void OnServerStart(void);
 		void OnClientStart(void);
 		
-		
-		bool PickZones();
 		
 		void SetActiveCaracter(int iCaracter);
 		

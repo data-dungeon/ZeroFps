@@ -40,7 +40,22 @@ void P_Event::Update()
 }
 
 
-bool P_Event::SendEvent(const char* acEvent, const char* acType,int iCallerObject,Vector3 kPos)
+bool P_Event::SendEvent(const char* acEvent)
+{
+	if(m_pkObject->GetObjectScript() != NULL)
+	{
+		//set self id before calling the funktion
+		MistLandLua::g_iCurrentObjectID = m_pkObject->iNetWorkID;
+		
+		bool bSuccess = m_pkScriptSys->Call(m_pkObject->GetObjectScript(), (char*)acEvent,0,0);
+
+		return bSuccess;
+	}
+
+	return false;
+}
+
+bool P_Event::SendObjectClickEvent(const char* acType,int iCallerObject )	
 {
 	if(m_pkObject->GetObjectScript() && acType != NULL)
 	{
@@ -50,22 +65,41 @@ bool P_Event::SendEvent(const char* acEvent, const char* acType,int iCallerObjec
 		//set caller id
 		MistLandLua::g_iCurrentPCID = iCallerObject;
 
-		//ful hack
-		if(strcmp(acType,"Move")==0)
-		{
-			//cout<<"Pos:"<<kPos.x<<" "<<kPos.y<<" "<<kPos.z<<endl;
-			m_pkObject->SetWorldPosV(kPos);
-			return true;
-		}
-
 
 		vector<ARG_DATA> args(1);
 		args[0].eType = tSTRING;
 		args[0].pData = new char[strlen(acType)+1];
 		strcpy((char*)args[0].pData, acType);
 		
-		bool bSuccess = m_pkScriptSys->Call(
-			m_pkObject->GetObjectScript(), (char*)acEvent, args);
+		bool bSuccess = m_pkScriptSys->Call(m_pkObject->GetObjectScript(), "Use", args);
+
+		delete[] args[0].pData;
+		
+		return bSuccess;
+	}
+
+}
+
+
+bool P_Event::SendGroudClickEvent(const char* acType,Vector3 kPos,int iFace,int iCallerObject,int iZoneObjectID)
+{
+	if(m_pkObject->GetObjectScript() && acType != NULL)
+	{
+		//set self id before calling the funktion
+		MistLandLua::g_iCurrentObjectID = m_pkObject->iNetWorkID;
+		
+		//set caller id
+		MistLandLua::g_iCurrentPCID = iCallerObject;
+
+		m_pkObject->SetWorldPosV(kPos);
+		return true;
+
+		vector<ARG_DATA> args(1);
+		args[0].eType = tSTRING;
+		args[0].pData = new char[strlen(acType)+1];
+		strcpy((char*)args[0].pData, acType);
+		
+		bool bSuccess = m_pkScriptSys->Call( m_pkObject->GetObjectScript(), "GroundClick", args);
 
 		delete[] args[0].pData;
 		
@@ -73,6 +107,8 @@ bool P_Event::SendEvent(const char* acEvent, const char* acType,int iCallerObjec
 	}
 
 	return false;
+
+
 }
 
 void P_Event::Touch(Collision* pkCol)

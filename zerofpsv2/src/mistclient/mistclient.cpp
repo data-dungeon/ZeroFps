@@ -349,6 +349,9 @@ void MistClient::Input()
 						order.m_iObjectID = pkObject->iNetWorkID;				
 						order.m_iCaracter = m_iActiveCaracterObjectID;
 						
+						//set this to -1 if its not a ground click
+						order.m_iFace = -1;
+						
 						m_pkClientControlP->AddOrder(order);
 					} 
 				}
@@ -363,9 +366,11 @@ void MistClient::Input()
 						
 						order.m_sOrderName = "Move";
 						order.m_iClientID = pkFps->GetConnectionID();
-						order.m_iObjectID = -1;				
 						order.m_iCaracter = m_iActiveCaracterObjectID;
+						
 						order.m_kPos = m_kTargetPos;
+						order.m_iZoneObjectID = m_iTargetZoneObject;										
+						order.m_iFace = m_iTargetFace;
 						
 						m_pkClientControlP->AddOrder(order);
 					} 
@@ -373,8 +378,6 @@ void MistClient::Input()
 			}
 			m_fClickDelay = pkFps->GetTicks();					
 		}
-
-		//PickUp();
 	}
 }
 

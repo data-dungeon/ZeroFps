@@ -21,6 +21,9 @@ class MCOMMON_API ClientOrder
 		int		m_iCaracter;
 		
 		Vector3	m_kPos;
+		int		m_iFace;
+		int		m_iZoneObjectID;		
+		
 };
 
 
