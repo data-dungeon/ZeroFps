@@ -63,7 +63,14 @@ bool FileOpenDlg::DlgProc( ZGuiWnd* pkWindow, unsigned int uiMessage, int iNumbe
 			switch(iControllID)
 			{
 			case ID_FILEPATH_WND_CLOSE:
-				m_pkZGui->ShowMainWindow(ID_FILEPATH_WND_MAIN, false);
+				{
+					m_pkZGui->ShowMainWindow(ID_FILEPATH_WND_MAIN, false);
+					ZGuiWnd* pkWin = m_pkZGui->GetActiveMainWnd();
+					if(pkWin)
+					{
+						printf("%i\n", pkWin->GetID());
+					}
+				}
 				break;
 
 			case ID_FILEPATH_OPEN_BN:

@@ -571,13 +571,18 @@ void ZGui::ShowMainWindow(int iID, bool bShow)
 				}
 				else
 				{
-					(*it)->pkWin->Hide();
-					
 					if(m_pkPrevMainWnd)
 					{
 						if(m_pkPrevMainWnd->pkWin->IsVisible())
 							RearrangeWnds(m_pkPrevMainWnd);
 					}
+					else
+					{
+						if(m_pkMainWindows.size() > 0)
+							m_pkActiveMainWin = m_pkMainWindows.front();
+					}
+
+					(*it)->pkWin->Hide();
 				}
 
 				break;

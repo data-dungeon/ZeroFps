@@ -293,11 +293,9 @@ ZGuiWnd* ZGuiWnd::Find(int x, int y)
 	{
 		if(pkFind)
 		{
-			if(pkFind->GetScreenRect().Inside(x,y))
+			if(pkFind->GetScreenRect().Inside(x,y) && pkFind->IsVisible() )
 				return pkFind;
 		}
-		
-		return NULL;
 	}
 
 	return NULL;

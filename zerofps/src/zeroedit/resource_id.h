@@ -30,7 +30,6 @@ const int ID_BITMAP_FONT				= 9024;
 const int ID_PROPERTY_OK				= 9025;
 const int ID_PROPERTY_CANEL				= 9026;
 const int IDM_LOAD_HEIGHTMAP			= 9027;
-
-static int iLastIDNr = 9025;
+const int ID_MAINWND_MENU_CB			= 9028;
 
 #endif

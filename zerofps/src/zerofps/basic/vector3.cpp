@@ -200,4 +200,6 @@ Vector3 Vector3::AToU()
 	New.y+=cos((x-90)/degtorad);
 	New.z+=sin((x-90)/degtorad);
 
+	return New;
+
 }

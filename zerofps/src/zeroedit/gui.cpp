@@ -158,7 +158,7 @@ bool Gui::CreateWindows()
 	Rect rc = Rect(0,0,128,32);
 
 	rc = Rect(0,0,200,200);
-	ZGuiCombobox* pkMenuCBox = new ZGuiCombobox(rc, pkMenu, true, iLastIDNr++, 20,
+	ZGuiCombobox* pkMenuCBox = new ZGuiCombobox(rc, pkMenu, true, ID_MAINWND_MENU_CB, 20,
 		GetSkin("menu"), GetSkin("dark_blue"), GetSkin("dark_blue"), GetSkin("menu"), -1);
 	pkMenuCBox->SetLabelText("File");
 	pkMenuCBox->IsMenu(true);
