@@ -245,7 +245,7 @@ void Render::DrawHMlod(HeightMap* kmap,Vector3 CamPos,int iFps){
 //				m_kOldCamPos=CamPos;
 				if(iFps<(m_iFpsLock-5) && m_iDetail>20){
 					m_iDetail--;	
-				} else if(iFps>(m_iFpsLock+5) && m_iDetail<80){
+				} else if(iFps>(m_iFpsLock+5) && m_iDetail<100){
 					m_iDetail++;		
 				}
 //			}
@@ -406,7 +406,8 @@ void Render::DrawHMlod(HeightMap* kmap,Vector3 CamPos,int iFps){
 	
 		}
 	*/
-	glDisable(GL_COLOR_MATERIAL);	
+	glColor4f(1,1,1,1);
+	glDisable(GL_COLOR_MATERIAL);
 //	glPolygonMode(GL_FRONT,GL_FILL);
 	glPopMatrix();
 }

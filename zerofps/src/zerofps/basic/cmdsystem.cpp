@@ -139,19 +139,22 @@ void CmdSystem::RunCommand(int cmdid, const CmdArgument* kCommand)
 				return;
 			}
 			
-			
+/*			
 			strcpy(text,"Setting ");
 			strcat(text,kCommand->m_kSplitCommand[1].c_str());
 			strcat(text,"=");
 			strcat(text,kCommand->m_kSplitCommand[2].c_str());
 			cout << text << endl;
-			
+*/			
 			strcat(name,kCommand->m_kSplitCommand[1].c_str());
 			
 			if(!Set(name,atof(kCommand->m_kSplitCommand[2].c_str()))){
 				m_pkCon->Printf("Variable not found");
 				return;
+			} else {
+				m_pkCon->Printf("Setting %s = %f",kCommand->m_kSplitCommand[1].c_str(),atof(kCommand->m_kSplitCommand[2].c_str()));
 			}
+			
 			
 			break;
 

@@ -146,6 +146,47 @@ void HeightMap::GenerateNormals() {
 	}
 }
 
+void HeightMap::GenerateNormals(int iPosX,int iPosZ,int iWidth,int iHeight)
+{
+	Vector3 med;
+	Vector3 v1,v2,v3,n1,n2;
+	
+	if(iPosX>m_iHmSize || iPosZ>m_iHmSize)
+		return;
+	if(iPosX<0 || iPosZ <0)
+		return;	
+	if(iPosX+iWidth>m_iHmSize || iPosZ+iHeight>m_iHmSize){
+		iWidth=iWidth-(iPosX+iWidth-m_iHmSize);
+		iHeight=iHeight-(iPosZ+iHeight-m_iHmSize);
+	}
+	
+	for(int z=iPosZ;z<iPosZ+iHeight-1;z++){
+		for(int x=iPosX;x<iPosX+iWidth-1;x++) {
+			med=Vector3(0,0,0);  //reset medium vector
+			for(int q=-1;q<1;q++){
+				for(int w=-1;w<1;w++){
+					v1=Vector3(1,(verts[(z+q)*m_iHmSize+(x+1+w)].height)-(verts[(z+q)*m_iHmSize+(x+w)].height) ,0);
+					v2=Vector3(1,(verts[(z+1+q)*m_iHmSize+(x+1+w)].height)- (verts[(z+q)*m_iHmSize+(x+w)].height),1);		
+					v3=Vector3(0,(verts[(z+q+1)*m_iHmSize+(x+w)].height)-(verts[(z+q)*m_iHmSize+(x+w)].height) ,1);	
+	
+					n1=v2.Cross(v1);			
+					n2=v3.Cross(v2);				
+//					n1.normalize();
+//					n2.normalize();
+	
+					med=med+n1+n2;
+				}	
+			}
+			med=med*0.125;	//insted of  division by 8 
+			med.Normalize();
+			verts[z*m_iHmSize+x].normal=med;
+			verts[z*m_iHmSize+x].texture=2;			
+		}
+	}
+
+
+}
+
 
 bool HeightMap::Load(const char* acFile) {
 	cout<<"Loading heightmap from file "<<acFile<<endl;
@@ -370,7 +411,7 @@ void HeightMap::GenerateTextures() {
 	}
 }
 
-bool HeightMap::LoadImageHmap(char* acFile) {
+bool HeightMap::LoadImageHmap(const char* acFile) {
 	int smooth=1;
 
 	SDL_Surface *image;

@@ -344,6 +344,8 @@ bool Render::CubeInFrustum( float x, float y, float z, float sizex,float sizey,f
 */
 
 void Render::DrawBillboard(Matrix4 kModelMatrix,Vector3 kPos,int iSize,int iTexture){
+//	kPos=kPos/2;
+	
 	Vector3 x;
 	Vector3 y;
 	
@@ -362,7 +364,7 @@ void Render::DrawBillboard(Matrix4 kModelMatrix,Vector3 kPos,int iSize,int iText
 //	glAlphaFunc(GL_GREATER,0.3);
 //	glEnable(GL_ALPHA_TEST);
 
-	glTranslatef(kPos.x,kPos.y,kPos.z);	
+//	glTranslatef(kPos.x,kPos.y,kPos.z);	
 	
 	x.Set(kModelMatrix[0], kModelMatrix[4], kModelMatrix[8]);
 	y.Set(kModelMatrix[1], kModelMatrix[5], kModelMatrix[9]); 

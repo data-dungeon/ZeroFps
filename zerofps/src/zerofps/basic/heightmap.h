@@ -53,9 +53,10 @@ class BASIC_API HeightMap: public ZFObject {
 		void Random();
 		bool Load(const char* acFile);
 		bool Save(const char* acFile);
-		bool LoadImageHmap(char* acFile);
+		bool LoadImageHmap(const char* acFile);
 		void GenerateNormals();
 		void GenerateTextures();
+		void GenerateNormals(int iPosX,int iPosZ,int iWidth,int iHeight);		
 		float Height(float x,float z);
 		Vector3 Tilt(float x,float z);		
 		void SetTileSet(char* acTileSet);
