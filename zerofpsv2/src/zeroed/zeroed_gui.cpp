@@ -248,6 +248,30 @@ void ZeroEd::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 				if(szArea)
 					m_pkAmbientSoundAreas->ClearAllPointsInAmbientArea(szArea);
 			}
+			else
+			if(strWndClicked == "PlayAmbientSoundBn")
+			{
+				static bool s_bPlay = true;
+				
+				if(s_bPlay)
+				{
+					if(m_pkAmbientSoundAreas->m_iPlayingSoundID > 0)
+						m_pkAudioSys->StopSound(m_pkAmbientSoundAreas->m_iPlayingSoundID);
+
+					m_pkAmbientSoundAreas->m_iPlayingSoundID = m_pkAudioSys->StartSound( GetText("NewAsFileNameEb"), m_pkAudioSys->GetListnerPos(),
+						Vector3(0,0,0), true, 1.0f);
+				}
+				else
+				{
+					if(m_pkAmbientSoundAreas->m_iPlayingSoundID > 0)
+					{
+						m_pkAudioSys->StopSound(m_pkAmbientSoundAreas->m_iPlayingSoundID);
+						m_pkAmbientSoundAreas->m_iPlayingSoundID = -1;
+					}
+				}
+
+				s_bPlay = !s_bPlay;
+			}
       }
 		else
 		if(strMainWnd == "AddNewProperyWnd")

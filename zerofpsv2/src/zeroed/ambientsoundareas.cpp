@@ -3,6 +3,7 @@
 AmbientSoundAreas::AmbientSoundAreas()
 {
 	m_bAddPointsToSoundArea = false;
+	m_iPlayingSoundID = -1;
 }
 
 AmbientSoundAreas::~AmbientSoundAreas()
@@ -227,4 +228,11 @@ string AmbientSoundAreas::GetAmbientSound(string strArea)
 			return m_kAmbientAreas[i].m_strFileName;
 
 	return "";
+}
+
+void AmbientSoundAreas::Update(ZFAudioSystem* pkAudioSys)
+{
+	if(m_iPlayingSoundID)
+		pkAudioSys->MoveSound(m_iPlayingSoundID,
+			pkAudioSys->GetListnerPos(), Vector3(0,0,0), 1.0f); 
 }

@@ -698,6 +698,11 @@ void ZeroEd::OnIdle()
 		//DrawCrossMarker(m_kObjectMarkerPos);		
 	}
 
+	if(m_iEditMode == EDIT_AMBIENTSOUNDS)
+	{
+		m_pkAmbientSoundAreas->Update(m_pkAudioSys);
+	}
+
 	
 }
 

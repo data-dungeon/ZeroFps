@@ -31,6 +31,9 @@ public:
 
 	bool m_bAddPointsToSoundArea;
 	string m_strAmbientAreaEdited;
+	int m_iPlayingSoundID;
+
+	void Update(ZFAudioSystem* pkAudioSys);
 
 private:
 
