@@ -36,9 +36,11 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile=".\Debug/FontGen.exe"
+				AdditionalDependencies="basic.lib"
+				OutputFile="../../../../bin/fontgen.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"
+				AdditionalLibraryDirectories="../../../../bin"
 				GenerateDebugInformation="TRUE"
 				ProgramDatabaseFile=".\Debug/FontGen.pdb"
 				SubSystem="2"

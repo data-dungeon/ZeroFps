@@ -515,8 +515,8 @@ void ZGResEdit::OnKeyDown(int iKey)
 
 	case KEY_A:
 		{
-			m_pkFocusWnd->GetSkin()->m_pkZIFAnimation->m_bPlay = 
-				!m_pkFocusWnd->GetSkin()->m_pkZIFAnimation->m_bPlay;
+			//m_pkFocusWnd->GetSkin()->m_pkZIFAnimation->m_bPlay = 
+			//	!m_pkFocusWnd->GetSkin()->m_pkZIFAnimation->m_bPlay;
 		}
 		break;
 
