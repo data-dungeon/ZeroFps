@@ -4,7 +4,7 @@ FloatProperty::FloatProperty() {
 	m_pkFps = static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
 //	m_pkFps=pkFps;
 	
-	m_fGravity=-0.00002;
+	m_fGravity=-13;
 	strcpy(m_acName,"GravityProperty");	
 	
 
@@ -13,7 +13,7 @@ FloatProperty::FloatProperty() {
 void FloatProperty::Update() {
 	if(m_pkObject->GetPos().y<0) {
 		//if upspeed becomes to great dont add more speed
-		if(m_pkObject->GetVel().y<0.004) 
+		if(m_pkObject->GetVel().y<4) 
 			m_pkObject->GetVel().y-=m_fGravity * m_pkFps->GetFrameTime();
 		m_pkObject->GetPos().y+=m_pkObject->GetVel().y * m_pkFps->GetFrameTime();
 		

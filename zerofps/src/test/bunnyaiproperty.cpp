@@ -14,7 +14,7 @@ BunnyAIProperty::BunnyAIProperty()
 
 void BunnyAIProperty::Update() 
 {
-	float speed=0.002;
+	float speed=2;
 	BunnyObject *bunny = dynamic_cast<BunnyObject*>(m_pkObject);
 	
 	
@@ -37,7 +37,7 @@ void BunnyAIProperty::Update()
 
 	
 	if(bunny->onGround){
-		m_pkObject->GetVel().y+=0.002;
+		m_pkObject->GetVel().y+=2;
 		m_pkObject->GetPos().y+=0.05;		
 	}
 	

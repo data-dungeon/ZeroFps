@@ -12,7 +12,7 @@ PlayerControlProperty::PlayerControlProperty(Input *pkInput,HeightMap *pkMap) {
 
 
 void PlayerControlProperty::Update() {
-	float speed=0.006;
+	float speed=6;
 	
 	//cant move fast while in air
 //	if(dynamic_cast<PlayerObject*>(m_pkObject)->onGround==false)
@@ -42,7 +42,7 @@ void PlayerControlProperty::Update() {
 	}
 	if(m_pkInput->Pressed(MOUSERIGHT) ){
 		if(dynamic_cast<PlayerObject*>(m_pkObject)->onGround){
-			m_pkObject->GetVel().y+=0.005;// *m_pkFps->GetFrameTime();;						
+			m_pkObject->GetVel().y+=5;// *m_pkFps->GetFrameTime();;						
 		}
 	}
 	if(m_pkInput->Pressed(KEY_Q)){
