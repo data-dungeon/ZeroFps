@@ -117,6 +117,11 @@ class ENGINE_API Input : public ZFSubSystem {
 		string			m_strBindKey;
 		int				m_iBindKeyIndex;
 
+		//joystick info
+		int							m_iNumOfJoySticks;
+		vector<SDL_Joystick*>	m_kJoySticks;
+		
+		
 
 		void RunCommand(int cmdid, const CmdArgument* kCommand);
 		void Reset(void);		
@@ -146,6 +151,9 @@ class ENGINE_API Input : public ZFSubSystem {
 		bool VKIsDown(string strName);		
 		void BindBindMode(int iKey);
 
+		void KeyDown(int iKey);
+		void KeyUp(int iKey);
+		
 public:
 
 		Input();

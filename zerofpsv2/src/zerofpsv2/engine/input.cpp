@@ -56,7 +56,27 @@ bool Input::StartUp()
 	SDL_EnableKeyRepeat(SDL_DEFAULT_REPEAT_DELAY,SDL_DEFAULT_REPEAT_INTERVAL);		
 	SetupMapToKeyState();	
 
+	//joysticks
 	
+	//enable joystick events
+	SDL_JoystickEventState(SDL_ENABLE);
+	
+	//get number of joysticks
+	m_iNumOfJoySticks  = SDL_NumJoysticks();
+	
+	//open detected joysticks
+	for(int i= 0;i<m_iNumOfJoySticks;i++)
+	{
+		cout<<"Found joystick "<<i<<" : "<<SDL_JoystickName(i);
+	
+		if(SDL_Joystick* pkStick = SDL_JoystickOpen(i))		
+			m_kJoySticks.push_back(pkStick);
+		else
+			cout<<" WARNING: could not access joystick";
+			
+		cout<<endl;
+	}	
+		
 	return true;
 }
 
@@ -284,12 +304,14 @@ void Input::Update(void)
 				//add key to queuedkeys
 				AddQueuedKey(&kNewKey,true);
 
-				//set pressed state
-				m_akKeyState[kNewKey.m_iKey].m_bDown = true;
+				KeyDown(kNewKey.m_iKey);
 				
-				//handle keybindings
-				if(m_bBindMode)
-					BindBindMode(kNewKey.m_iKey);
+// 				//set pressed state
+// 				m_akKeyState[kNewKey.m_iKey].m_bDown = true;
+// 				
+// 				//handle keybindings
+// 				if(m_bBindMode)
+// 					BindBindMode(kNewKey.m_iKey);
 									
 				break;			
 
@@ -300,10 +322,61 @@ void Input::Update(void)
 				AddQueuedKey(&kNewKey,false);
 				
 				//set pressed state
-				m_akKeyState[kNewKey.m_iKey].m_bDown = false;
+				//m_akKeyState[kNewKey.m_iKey].m_bDown = false;
+				
+				KeyUp(kNewKey.m_iKey);
 				
     		break;    		
  
+			//joystick
+			case SDL_JOYBUTTONDOWN:
+			{
+				int iButton = m_kEvent.jbutton.button;								
+				iButton+= 500 + 20 * m_kEvent.jbutton.which;				
+				
+				KeyDown(iButton);
+				break;			
+			}
+				
+			case SDL_JOYBUTTONUP:
+			{
+				int iButton = m_kEvent.jbutton.button;			
+				iButton+= 500 + 20 * m_kEvent.jbutton.which;
+				
+				KeyUp(iButton);
+    			break;    		
+			}
+			
+			case SDL_JOYAXISMOTION:
+			{
+				int iKey = 500 + (20 * m_kEvent.jaxis.which) + 10;			
+				iKey += m_kEvent.jaxis.axis * 2;
+				
+				//cout<<"axes "<<m_kEvent.jaxis.axis<<"  "<<m_kEvent.jaxis.value<<endl;
+				
+				//min
+				if(m_kEvent.jaxis.value < -5000)
+				{
+					KeyDown(iKey);
+					KeyUp(iKey + 1);
+				}
+				else
+				//max
+				if(m_kEvent.jaxis.value > 5000)
+				{
+					KeyUp(iKey);
+					KeyDown(iKey + 1);
+				}
+				else
+				{
+					KeyUp(iKey);
+					KeyUp(iKey+1);
+				}
+			
+				break;
+			}
+			
+						
 	    	//mouse    		
    	 	case SDL_MOUSEBUTTONDOWN:
 			{	
@@ -311,7 +384,8 @@ void Input::Update(void)
 				int iKey = SDLToZeroFpsKey(m_kEvent.button.button);
 				
 				//sett pressed status
-				m_akKeyState[iKey].m_bDown = true;
+				KeyDown(iKey);
+				//m_akKeyState[iKey].m_bDown = true;
 				
 				//special cases for mousewheel
 				if(iKey == MOUSEWUP)
@@ -325,7 +399,7 @@ void Input::Update(void)
 				}
 									
 				//bind key
-				BindBindMode(iKey);
+				//BindBindMode(iKey);
 							
 					
 				break;
@@ -348,7 +422,8 @@ void Input::Update(void)
 				else
 				{
 					//sett pressed status
-					m_akKeyState[iKey].m_bDown = false;
+					KeyUp(iKey);
+					//m_akKeyState[iKey].m_bDown = false;
 				}
 				
 				
@@ -357,6 +432,23 @@ void Input::Update(void)
 		}	
 	}
 }
+
+void Input::KeyDown(int iKey)
+{
+	//set pressed state
+	m_akKeyState[iKey].m_bDown = true;
+	
+	//handle keybindings
+	if(m_bBindMode)
+		BindBindMode(iKey);
+}
+
+void Input::KeyUp(int iKey)
+{
+	//set pressed state
+	m_akKeyState[iKey].m_bDown = false;
+}
+
 
 void Input::AddQueuedKey(BasicKey* pkKey,bool bPressed)
 {

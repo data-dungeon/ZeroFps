@@ -240,10 +240,10 @@ void StopEmUp::Input()
 			if(P_Camera* pkCam = (P_Camera*)pkCharacter->GetProperty("P_Camera"))
 			{	
 				
-				m_kCharacterControls[eUP] = 	m_pkInputHandle->Pressed(KEY_UP);
-				m_kCharacterControls[eDOWN] =	m_pkInputHandle->Pressed(KEY_DOWN);			
-				m_bFire							=	m_pkInputHandle->Pressed(KEY_LCTRL);			
-				m_bSFire							=	m_pkInputHandle->Pressed(KEY_LSHIFT);			
+				m_kCharacterControls[eUP] = 	m_pkInputHandle->Pressed(KEY_UP) || m_pkInputHandle->Pressed(JOYSTICK0_AXIS1_MIN);
+				m_kCharacterControls[eDOWN] =	m_pkInputHandle->Pressed(KEY_DOWN) || m_pkInputHandle->Pressed(JOYSTICK0_AXIS1_MAX);			
+				m_bFire							=	m_pkInputHandle->Pressed(KEY_LCTRL) || m_pkInputHandle->Pressed(JOYSTICK0_BUTTON0);			
+				m_bSFire							=	m_pkInputHandle->Pressed(KEY_LSHIFT) || m_pkInputHandle->Pressed(JOYSTICK0_BUTTON1);			
 				
 				float fYAngle = pkCam->Get3PYAngle();
 				
@@ -252,17 +252,17 @@ void StopEmUp::Input()
 				m_kCharacterControls[eRIGHT] = false;
 				
 				//want to straf or turn?
-				if(m_pkInputHandle->Pressed(KEY_LALT))
+				if(m_pkInputHandle->Pressed(KEY_LALT) || m_pkInputHandle->Pressed(JOYSTICK0_BUTTON3))
 				{
-					m_kCharacterControls[eLEFT] = m_pkInputHandle->Pressed(KEY_LEFT);				
-					m_kCharacterControls[eRIGHT] = m_pkInputHandle->Pressed(KEY_RIGHT);	
+					m_kCharacterControls[eLEFT] = m_pkInputHandle->Pressed(KEY_LEFT) || m_pkInputHandle->Pressed(JOYSTICK0_AXIS0_MIN);				
+					m_kCharacterControls[eRIGHT] = m_pkInputHandle->Pressed(KEY_RIGHT) || m_pkInputHandle->Pressed(JOYSTICK0_AXIS0_MAX);	
 				}
 				else
 				{
-					if(m_pkInputHandle->Pressed(KEY_LEFT))
+					if(m_pkInputHandle->Pressed(KEY_LEFT) || m_pkInputHandle->Pressed(JOYSTICK0_AXIS0_MIN))
 						fYAngle += m_pkZeroFps->GetFrameTime()*100;
 					
-					if(m_pkInputHandle->Pressed(KEY_RIGHT))
+					if(m_pkInputHandle->Pressed(KEY_RIGHT) || m_pkInputHandle->Pressed(JOYSTICK0_AXIS0_MAX))
 						fYAngle -= m_pkZeroFps->GetFrameTime()*100;
 				}
 								

@@ -49,7 +49,7 @@ Property* Create_LinkToJoint();
 ZeroFps::ZeroFps(void) : I_ZeroFps("ZeroFps") 
 {
 	// StartUp SDL
-	if(SDL_Init(SDL_INIT_VIDEO)<0)
+	if(SDL_Init(SDL_INIT_VIDEO|SDL_INIT_JOYSTICK)<0)
 	{
 		g_Logf("Error: Failed to StartUp SDL\n");
 	}	
