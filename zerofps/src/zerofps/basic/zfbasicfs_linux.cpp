@@ -4,7 +4,7 @@
 
 #ifndef WIN32
 
-bool ZFBasicFS::ListDirectory(vector<string>* pkFiles,const char* acName)
+bool ZFBasicFS::ListDir(vector<string>* pkFiles,const char* acName)
 {
 
 	DIR* kDir;
@@ -25,7 +25,7 @@ bool ZFBasicFS::ListDirectory(vector<string>* pkFiles,const char* acName)
 	return true;
 }
 
-bool ZFBasicFS::CreateDirectory(const char* acName)
+bool ZFBasicFS::CreateDir(const char* acName)
 {
 	if(mkdir(acName,S_IRWXU)==-1)
 		return false;
@@ -33,12 +33,18 @@ bool ZFBasicFS::CreateDirectory(const char* acName)
 	return true;
 }
 
-bool ZFBasicFS::RemoveDirectory(const char* acName)
+bool ZFBasicFS::RemoveDir(const char* acName)
 {
 	if(rmdir(acName)==-1)
 		return false;
 
 	return true;
+}
+
+char* ZFBasicFS::GetCWD()
+{
+	getcwd(m_acDir,2048);
+	return m_acDir;
 }
 
 #endif

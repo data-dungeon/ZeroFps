@@ -434,3 +434,6 @@ bool GLGuiRender::SetDisplay(int w, int h)
 	m_iScreenHeight = h;
 	return true;
 }
+
+
+

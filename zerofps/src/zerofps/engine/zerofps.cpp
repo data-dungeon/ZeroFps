@@ -55,6 +55,9 @@ ZeroFps::ZeroFps(void)
 	g_ZFObjSys.Register_Cmd("connect",FID_CONNECT,this);
 	g_ZFObjSys.Register_Cmd("server",FID_SERVER,this);
 	g_ZFObjSys.Register_Cmd("dir",FID_DIR,this);	
+	g_ZFObjSys.Register_Cmd("cd",FID_CD,this);	
+
+	m_kCurentDir=m_pkBasicFS->GetCWD();
 
 	RegisterPropertys();
 }
@@ -417,6 +420,8 @@ char g_szIpPort[256];
 
 void ZeroFps::RunCommand(int cmdid, const CmdArgument* kCommand)
 {
+	vector<string> kFiles;
+	
 	switch(cmdid) {
 		case FID_SETDISPLAY:
 			SetDisplay();
@@ -461,13 +466,9 @@ void ZeroFps::RunCommand(int cmdid, const CmdArgument* kCommand)
 			break;
 	
 		case FID_DIR:
-			vector<string> kFiles;
-
-			string kDir;
-			kDir=".";
-			m_pkBasicFS->ListDirectory(&kFiles,kDir.c_str());
+			m_pkBasicFS->ListDir(&kFiles,m_kCurentDir.c_str());
 			
-			m_pkConsole->Printf("DIRECTORY %s",kDir.c_str());
+			m_pkConsole->Printf("Listing %s",m_kCurentDir.c_str());
 			for(int i=0;i<kFiles.size();i++)
 			{
 				m_pkConsole->Printf(kFiles[i].c_str());
@@ -477,6 +478,44 @@ void ZeroFps::RunCommand(int cmdid, const CmdArgument* kCommand)
 			kFiles.clear();
 		
 			break;
+			
+		case FID_CD:	
+			if(kCommand->m_kSplitCommand.size() <= 1) {
+				m_pkConsole->Printf(m_kCurentDir.c_str());
+				return;
+			}
+			
+			// special case when entering .. directory
+			if(kCommand->m_kSplitCommand[1]=="..")
+			{
+				for(int i=m_kCurentDir.length()-1;i>0;i--)
+				{
+					if(m_kCurentDir[i]=='/'){
+						m_kCurentDir[i]='\0';						
+						m_kCurentDir=m_kCurentDir.c_str();
+						break;
+					}
+				}
+				m_pkConsole->Printf(m_kCurentDir.c_str());				
+				break;
+			}					
+				
+			//enter a normal directory
+			if(m_pkBasicFS->ListDir(&kFiles,(m_kCurentDir+"/"+kCommand->m_kSplitCommand[1]).c_str()))
+			{
+				m_kCurentDir += "/";
+				m_kCurentDir += kCommand->m_kSplitCommand[1];
+				m_pkConsole->Printf(m_kCurentDir.c_str());
+			} else
+			{
+				m_pkConsole->Printf("Cant change directory");
+				break;
+			}
+					
+			kFiles.clear();
+					
+			break;
+	
 	}	
 }
 

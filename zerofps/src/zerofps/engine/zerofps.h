@@ -40,36 +40,34 @@ enum enginestates
 
 class ENGINE_API ZeroFps : public ZFObject {
 	private:		
+		enum FuncId_e
+		{
+			FID_SETDISPLAY,
+			FID_QUIT,
+			FID_SLIST,			// List all servers
+			FID_CONNECT,		// Connect to server.
+			FID_SERVER,			// Start a Server.
+			FID_DIR,
+			FID_CD
+		};
+		
 		SDL_Surface* m_pkScreen;		
-		void HandleArgs(int iNrOfArgs, char** paArgs);
 
 		float m_fLastFrameTime;
-
 		int m_iWidth,m_iHeight,m_iDepth;
 		int m_iFullScreen;
 		
+		vector<string>	AppArguments;		
 		
 		Camera *m_pkTempCamera;
 		Camera *m_pkCamera;
 		Camera *m_pkConsoleCamera;
 		Camera *m_pkDefaultCamera;
 	
-		vector<string>	AppArguments;
-
-		
-
-		enum FuncId_e
-			{
-			FID_SETDISPLAY,
-			FID_QUIT,
-			FID_SLIST,			// List all servers
-			FID_CONNECT,		// Connect to server.
-			FID_SERVER,			// Start a Server.
-			FID_DIR
-			};
+		string m_kCurentDir;
 
 		void RunCommand(int cmdid, const CmdArgument* kCommand);
-		
+		void HandleArgs(int iNrOfArgs, char** paArgs);		
 
 	public:
 		Application* m_pkApp;						//application

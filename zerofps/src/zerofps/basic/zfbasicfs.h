@@ -20,8 +20,11 @@ using namespace std;
 
 class BASIC_API ZFBasicFS
 {
+	char m_acDir[2048];
+
 	
 	public:
+		char* GetCWD();		
 		bool CreateDir(const char* acName);
 		bool RemoveDir(const char* acName);
 		bool ListDir(vector<string>* pkFiles,const char* acName);
