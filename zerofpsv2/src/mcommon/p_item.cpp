@@ -24,7 +24,7 @@ P_Item::P_Item()
 
 	//item info
 	m_strInfo = "Nothing is known about this item";
-	m_strImage = "default.tga";
+	m_strImage = "default.bmp"; // zeb: ändrade till bmp... skall vara bmp.
 	
 	//container
 	m_iInContainerID = -1;
