@@ -685,6 +685,7 @@ void NetWork::HandleControlMessage(NetPacket* pkNetPacket)
 			int iRelID;
 			pkNetPacket->Read( iRelID ); 
 			m_RemoteNodes[ pkNetPacket->m_iClientID ].FreeRelStore( iRelID );
+			cout << "Recvd Ack for: " << iRelID << endl;
 			break;
 			}
 	}
@@ -726,7 +727,7 @@ void NetWork::DevShow_ClientConnections()
 		m_pkZeroFps->DevPrintf("conn", " Node[%d] %s %s %d/%d %d/%d - %f - %d - %s", i, pkName, szAdress,
 			m_RemoteNodes[i].m_iNumOfPacketsSent, m_RemoteNodes[i].m_iNumOfBytesSent,
 			m_RemoteNodes[i].m_iNumOfPacketsRecv, m_RemoteNodes[i].m_iNumOfBytesRecv,
-			( m_RemoteNodes[i].m_fLastMessageTime + ZF_NET_CONNECTION_TIMEOUT ) - fEngineTime, m_RemoteNodes[i].m_iOutOfOrderNetFrame, 
+			( m_RemoteNodes[i].m_fLastMessageTime + ZF_NET_CONNECTION_TIMEOUT ) - fEngineTime, m_RemoteNodes[i].m_iReliableRecvOrder , //m_RemoteNodes[i].m_iOutOfOrderNetFrame
 			szRelWait);
 
       // evil stuff
@@ -807,14 +808,35 @@ void NetWork::Run()
 				// Only clients can send rel packets.
 				if(iClientID != ZF_NET_NOCLIENT) 
 				{
-					m_pkZeroFps->HandleNetworkPacket(&NetP);
+					// Check if it is the correct packet.
+					if(m_RemoteNodes[iClientID].m_iReliableRecvOrder == NetP.m_kData.m_kHeader.m_iOrder)
+					{
+						m_pkZeroFps->HandleNetworkPacket(&NetP);
+						m_RemoteNodes[iClientID].m_iReliableRecvOrder++;
 
-					// Send Ack that we got the pack.
-					kNetPRespons.m_kData.m_kHeader.m_iPacketType = ZF_NETTYPE_CONTROL;
-					kNetPRespons.Write((unsigned char) ZF_NETCONTROL_ACKREL);
-					kNetPRespons.Write( NetP.m_kData.m_kHeader.m_iOrder ); 
-					kNetPRespons.m_kAddress = NetP.m_kAddress;
-					SendRaw(&kNetPRespons);
+						// Send Ack that we got the pack.
+						kNetPRespons.Clear();
+						kNetPRespons.m_kData.m_kHeader.m_iPacketType = ZF_NETTYPE_CONTROL;
+						kNetPRespons.Write((unsigned char) ZF_NETCONTROL_ACKREL);
+						kNetPRespons.Write( NetP.m_kData.m_kHeader.m_iOrder ); 
+						kNetPRespons.m_kAddress = NetP.m_kAddress;
+						SendRaw(&kNetPRespons);
+					}
+					else
+					{
+						if(NetP.m_kData.m_kHeader.m_iOrder < m_RemoteNodes[iClientID].m_iReliableRecvOrder)
+						{
+							cout << "Duplicate Message: ";
+							cout << NetP.m_kData.m_kHeader.m_iOrder - m_RemoteNodes[iClientID].m_iReliableRecvOrder << endl;
+							break;	// Evil Duplicate, throw away.
+						}
+						if(NetP.m_kData.m_kHeader.m_iOrder > m_RemoteNodes[iClientID].m_iReliableRecvOrder)
+						{
+							cout << "Out Of Order Message: " << NetP.m_kData.m_kHeader.m_iOrder << " while waiting for: " << m_RemoteNodes[iClientID].m_iReliableRecvOrder << " : ";
+							cout << NetP.m_kData.m_kHeader.m_iOrder - m_RemoteNodes[iClientID].m_iReliableRecvOrder << endl;
+							break;	// WRITE: We missed some packets, store this while waiting for the correct one.
+						}
+					}
 				}
 				break;
 			

@@ -26,6 +26,7 @@ void RemoteNode::Clear()
 	m_kAddress.port		=  0;
 
 	m_iReliableSendOrder = 0;
+	m_iReliableRecvOrder = 0;
 
 	m_iNumOfPacketsSent	= 0;
 	m_iNumOfPacketsRecv  = 0;

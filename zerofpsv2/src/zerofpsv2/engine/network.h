@@ -66,7 +66,8 @@ public:
 	void SetAddress(IPaddress* pkAddress);			// Sets address of node.
 	void Clear();
 
-	int				m_iReliableSendOrder;
+	int				m_iReliableSendOrder;			// Next Order num to use for next reliable packet.
+	int				m_iReliableRecvOrder;			// The Order num of next reliable packet we are waiting for.
 
 	// Stats
 	int				m_iNumOfPacketsSent;				// Total num of packets sent (Any type).
