@@ -167,12 +167,8 @@ bool FileOpenDlg::DlgProc( ZGuiWnd* pkWindow,unsigned int uiMessage,
 }
 
 bool FileOpenDlg::Create(int x,int y,int w,int h,ZGuiWndProc pkDlgProc)
-{
-/*	m_pkGui->LoadDialog("../data/gui_resource_files/zgresource_rc.txt", 
-		"Window69", pkDlgProc);*/
-
-	
-	ZGuiWnd* pkMainWindow=m_pkResMan->Wnd("FOOpenFileWnd");
+{	
+	ZGuiWnd* pkMainWindow = m_pkResMan->Wnd("FOOpenFileWnd");
 
 	if( pkMainWindow )
 	{
@@ -180,15 +176,18 @@ bool FileOpenDlg::Create(int x,int y,int w,int h,ZGuiWndProc pkDlgProc)
 		FillPathList((ZGuiListbox*)m_pkResMan->Wnd("FOFilePathLB"),
 			m_szSearchPath);
 
+		ZGuiWnd* pkButton = m_pkResMan->Wnd("FOFileOpenBN");
+		ZGuiWnd* pkLabel = m_pkResMan->Wnd("FOFileOpenTitle");
+
 		if(m_vkBitParams.test(SAVE_FILES))
 		{
-			m_pkResMan->Wnd("FOFileOpenBN")->SetText("Save");
-			m_pkResMan->Wnd("FOFileOpenLabel")->SetText("Save");
+			if(pkButton) pkButton->SetText("Save");
+			if(pkLabel) pkLabel->SetText("Save");
 		}
 		else
 		{
-			m_pkResMan->Wnd("FOFileOpenBN")->SetText("Open");
-			m_pkResMan->Wnd("FOFileOpenLabel")->SetText("Open");
+			if(pkButton) pkButton->SetText("Open");
+			if(pkLabel) pkLabel->SetText("Open");
 		}
 
 		return true;

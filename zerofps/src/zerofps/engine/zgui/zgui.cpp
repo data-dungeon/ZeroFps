@@ -1239,8 +1239,7 @@ bool ZGui::LoadDialog(char* szResourceFile, char* szWndResName, callback cb)
 			atoi(pkINI->GetValue((char*)vkSections[i].c_str(), "area_top")),
 			atoi(pkINI->GetValue((char*)vkSections[i].c_str(), "area_right")),
 			atoi(pkINI->GetValue((char*)vkSections[i].c_str(), "area_bottom")));
-		Rect rc_m( atoi(pkINI->GetValue((char*)vkSections[i].c_str(),
-			"move_area_left")),
+		Rect rc_m( atoi(pkINI->GetValue((char*)vkSections[i].c_str(),"move_area_left")),
 			atoi(pkINI->GetValue((char*)vkSections[i].c_str(), "move_area_top")),
 			atoi(pkINI->GetValue((char*)vkSections[i].c_str(), "move_area_right")),
 			atoi(pkINI->GetValue((char*)vkSections[i].c_str(), "move_area_bottom")));
@@ -1256,6 +1255,7 @@ bool ZGui::LoadDialog(char* szResourceFile, char* szWndResName, callback cb)
 		{
 			// Create main window.
 			pkNewWnd = new ZGuiWnd(rc, NULL, bVisible, wnd_id);
+			pkNewWnd->SetMoveArea(rc_m);
 
 			WNDNAME kNewMainWnd;
 			kNewMainWnd.first = pkNewWnd;
@@ -1296,6 +1296,7 @@ bool ZGui::LoadDialog(char* szResourceFile, char* szWndResName, callback cb)
 						radio_group_name,pkPrevRadiobutton,bVisible);
 					((ZGuiRadiobutton*) pkNewWnd)->SetButtonSelectedSkin(new ZGuiSkin());
 					((ZGuiRadiobutton*) pkNewWnd)->SetButtonUnselectedSkin(new ZGuiSkin());
+					((ZGuiRadiobutton*) pkNewWnd)->GetButton()->SetLabelSkin(new ZGuiSkin());
 				}
 				break;
 			case LISTBOX:

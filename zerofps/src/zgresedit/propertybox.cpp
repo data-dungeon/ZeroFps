@@ -302,7 +302,8 @@ bool PropertyBox::DlgProc( ZGuiWnd* pkWnd,unsigned int uiMessage,
 		case ID_CRTLMOVEABLEWND_CB:
 			printf("hhheee\n");
 			if(m_pkGuiBuilder->IsButtonChecked("ToogleMoveableWndCB"))
-				SelectWnd::GetInstance()->m_pkWnd->SetMoveArea(Rect(0,0,1024,768));
+				SelectWnd::GetInstance()->m_pkWnd->SetMoveArea(
+					m_pkGuiBuilder->m_rcScreen);
 			else
 				SelectWnd::GetInstance()->m_pkWnd->SetMoveArea(
 					SelectWnd::GetInstance()->m_pkWnd->GetScreenRect());

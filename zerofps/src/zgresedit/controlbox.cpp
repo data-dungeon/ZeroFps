@@ -535,10 +535,6 @@ bool ControlBox::LoadGUI(ZFIni *pkINI, TextureManager* pkTexMan)
 {
 	ClearAll();
 
-/*	m_pkGui->LoadDialog("../data/gui_resource_files/zgresource_rc.txt",
-		"PropertyDlg", m_oMainWndProc);*/
-
-
 	vector<string> vkSections;
 	pkINI->GetSectionNames(vkSections);
 
