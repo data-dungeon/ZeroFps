@@ -21,6 +21,8 @@ class AdaptorSniper: public Property {
 		float m_fRotateSpeed;
 		float m_fWalkSpeed;
 		
+		float m_fHitTime;
+		
 //		Vector3 GetYawVector(float fAngleDeg);
 		
 		float BestYawTurnDir(float fStart, float fEnd, float fSpeed);

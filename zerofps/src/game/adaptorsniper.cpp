@@ -15,6 +15,7 @@ AdaptorSniper::AdaptorSniper()
 	m_pkStatusProperty=NULL;
 	
 	m_fChangeTime=m_pkFps->GetTicks();
+	m_fHitTime=m_pkFps->GetTicks();	
 	m_fDirUpdate=4;
 	m_fRotateSpeed=2;
 	m_fWalkSpeed=3;	
@@ -37,7 +38,7 @@ void AdaptorSniper::Update()
 	if(m_pkFps->GetTicks() - m_fChangeTime >= m_fDirUpdate) 
 	{
 		m_fChangeTime=m_pkFps->GetTicks();
-		m_kDir.Set(0,rand()%360,0);
+		m_kDir.Set(0,rand()%360,0);		
 	}
 	
 	
@@ -59,10 +60,24 @@ void AdaptorSniper::Update()
 
 void AdaptorSniper::Touch(Object* pkObject)
 {
-//	m_fChangeTime=0;
 	if(pkObject->GetName() != "HeightMapObject")
 	{		
 		m_pkObject->GetRot().y+=180;
+	}
+
+	if(pkObject->GetName() == "Player")
+	{
+		if(m_pkFps->GetTicks() - m_fHitTime >= 1) 
+		{
+			m_fHitTime=m_pkFps->GetTicks();
+
+			cout<<"Swish adaptor kicks players ass"<<endl;
+			StatusProperty* sp=static_cast<StatusProperty*>(pkObject->GetProperty("StatusProperty"));
+			if(sp!=NULL)
+			{
+				sp->Damage(20);
+			}	
+		}
 	}
 
 }

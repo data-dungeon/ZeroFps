@@ -56,7 +56,7 @@ void PlayerControlProperty::Update() {
 	else
 	{
 		if(m_pkStatusProperty->m_fHealth<0)
-			cout<<"DIEEEEEEEEEEEED!"<<endl;
+			cout<<"PLAYER DIED !!!!"<<endl;
 	}
 
 	float lutning=acos(Vector3(0,1,0).Dot(m_pkMap->Tilt(m_pkObject->GetPos().x,m_pkObject->GetPos().z)))*degtorad;
