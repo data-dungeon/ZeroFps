@@ -15,7 +15,7 @@ using namespace std;
 class ENGINE_API ModelProperty: public Property {
 	private:
 		Frustum *m_pkFrustum;
-
+		vector<PropertyValues> GetPropertyValues();
 	public:
 		float	m_fRadius;
 		int		m_iSlices;
