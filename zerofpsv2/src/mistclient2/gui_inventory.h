@@ -3,6 +3,7 @@
 
 #include "../zerofpsv2/basic/vector2.h"
 #include "../zerofpsv2/basic/zguiskin.h"
+#include "../mcommon/mlcontainer.h"
 
 class TextureManager;
 class ZGuiWnd;
@@ -19,6 +20,8 @@ public:
 	InventoryDlg();
 	~InventoryDlg();
 
+	void Update(vector<MLContainerInfo>& vkContainerList);
+
 	void Open();
 	void Close();
 	void OnCommand(string strController);
@@ -34,6 +37,8 @@ private:
 
 	const int ICON_WIDTH;
 	const int ICON_HEIGHT;
+
+	vector<string> m_vkItemList;
 };
 
 #endif

@@ -464,22 +464,30 @@ void MistClient::Input()
 				{
 					vector<string>	kActions;
 					pkMl->GetActions(kActions);
-
-					//m_pkActionDlg->SetEntity(pkEnt);			
-					//m_pkActionDlg->Open();
 					
 					if(!kActions.empty())
 					{
-						SendAction(m_iPickedEntityID,kActions[0]);
-						
+						if(kActions[0] == "Pickup")
+						{
+							if(P_Item* pkItem = (P_Item*)pkEnt->GetProperty("P_Item"))
+							{
+								m_pkInventoryDlg->Open(); 
+								if(m_bGuiCapture == false)
+									SetGuiCapture(true);
+
+								SendAction(m_iPickedEntityID,kActions[0]);
+							}
+						}
+						else
+						{
+							SendAction(m_iPickedEntityID,kActions[0]);						
+						}
 					}
 				}			
 			}
 		}	
 	}	
-
-	
-		
+			
 	//check buttons
 	m_kCharacterControls[eUP] = 	m_pkInputHandle->VKIsDown("move_forward");
 	m_kCharacterControls[eDOWN] =	m_pkInputHandle->VKIsDown("move_back");			
@@ -756,6 +764,7 @@ void MistClient::OnNetworkMessage(NetPacket *pkNetMessage)
 				cout<<i<<" id:"<<kItemList[i].m_iItemID<<" name:"<<kItemList[i].m_strName<<" icon:"<<kItemList[i].m_strIcon<<" pos:"<<int(kItemList[i].m_cItemX)<<" x "<<int(kItemList[i].m_cItemY)<<" stack:"<<kItemList[i].m_iStackSize<<endl;			
 			}
 			
+			m_pkInventoryDlg->Update(kItemList);
 
 				
 			break;
@@ -1029,14 +1038,15 @@ Vector3 MistClient::Get3DMouseDir(bool bMouse)
 }
 
 
-void MistClient::SetGuiCapture(bool bCapture)
+void MistClient::SetGuiCapture(bool bCapture, bool bMoveCursorToCenter)
 {
 	m_bGuiCapture = bCapture;
 	
 	if(m_bGuiCapture == true)
 	{
 		//g_kMistClient.m_pkGui->m_bHandledMouse = false;
-		m_pkInputHandle->SetCursorInputPos(m_pkRender->GetWidth()/2,m_pkRender->GetHeight()/2);
+		if(bMoveCursorToCenter)
+			m_pkInputHandle->SetCursorInputPos(m_pkRender->GetWidth()/2,m_pkRender->GetHeight()/2);
 		m_pkGui->ShowCursor(true);
 	}
 	else

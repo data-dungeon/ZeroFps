@@ -79,7 +79,7 @@ class MistClient :public Application, public ZGuiApp {
 		void LoadInGameGui();
 		void LoadStartScreenGui(bool bShowSplashImage);
 		void SetupGUI();
-		void SetGuiCapture(bool bSet);
+		void SetGuiCapture(bool bSet, bool bMoveCursorToCenter=true);
 		void PositionActionButtons();
 						
 		void RegisterPropertys();

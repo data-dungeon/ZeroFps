@@ -38,6 +38,7 @@ void GuiMsgInventoryDlg( string strMainWnd, string strController, unsigned int m
 InventoryDlg::InventoryDlg() : ICON_WIDTH(32), ICON_HEIGHT(32)
 {
 	m_pkMainWnd = NULL;
+	m_pkTexMan = g_kMistClient.m_pkTexMan;
 }
 
 InventoryDlg::~InventoryDlg()
@@ -93,5 +94,41 @@ void InventoryDlg::OnCommand(string strController)
 void InventoryDlg::OnMouseMove(bool bLeftButtonPressed, int mx, int my)
 {
 
+}
 
+void InventoryDlg::Update(vector<MLContainerInfo>& vkItemList)
+{
+	printf("size of container list = %i\n", vkItemList.size());
+
+	// Ta bort alla gamla items
+	for(int i=0; i<m_vkItemList.size(); i++)
+	{
+		ZGuiWnd* pkWnd = g_kMistClient.GetWnd(m_vkItemList[i]);
+		delete pkWnd->GetSkin();
+		g_kMistClient.m_pkGui->UnregisterWindow( pkWnd );
+	}
+
+	const Point kUpperLef(27,87);
+
+	m_vkItemList.clear();
+
+	int x,y,w,h;
+	char szItemName[128];
+	for(int i=0; i<vkItemList.size(); i++)
+	{
+		sprintf(szItemName, "InventoryItemLabel%i", i);
+		x = kUpperLef.x + vkItemList[i].m_cItemX * ICON_WIDTH + vkItemList[i].m_cItemX;
+		y = kUpperLef.y + vkItemList[i].m_cItemY * ICON_HEIGHT + vkItemList[i].m_cItemY;
+		w = vkItemList[i].m_cItemW * ICON_WIDTH;
+		h = vkItemList[i].m_cItemH * ICON_HEIGHT;
+
+		ZGuiWnd* pkNewSlot = g_kMistClient.CreateWnd(Label, szItemName, "InventoryWnd", "", x, y, w, h, 0);
+		pkNewSlot->Show();
+
+		pkNewSlot->SetSkin(new ZGuiSkin());
+		pkNewSlot->GetSkin()->m_iBkTexID = m_pkTexMan->Load(
+			string(string("data/textures/gui/items/") + vkItemList[i].m_strIcon).c_str(), 0) ;	
+
+		m_vkItemList.push_back(string(szItemName));
+	}
 }
