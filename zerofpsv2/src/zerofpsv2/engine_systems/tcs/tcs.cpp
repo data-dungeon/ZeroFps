@@ -1307,7 +1307,7 @@ bool Tcs::CollideMeshVSMesh(P_Tcs* pkBody1,P_Tcs* pkBody2,Tcs_collission* pkTemp
 
 bool Tcs::TestLineVSPolygon(Vector3* pkPolygon,Vector3* pkPos1,Vector3* pkPos2,Plane* pkPlane)
 {
-	float fMinDist = 0.01;
+	static float fMinDist = 0.05;
 
 	if(pkPlane->LineTest(*pkPos1,*pkPos2,&m_kLastTestPos))
 	{
@@ -1322,74 +1322,73 @@ bool Tcs::TestLineVSPolygon(Vector3* pkPolygon,Vector3* pkPos1,Vector3* pkPos2,P
 				 m_kLastTestPos.DistanceTo(pkPolygon[1]) < fMinDist ||
 				 m_kLastTestPos.DistanceTo(pkPolygon[2]) < fMinDist)
 			{
-				//cout<<"Vertex"<<endl;
-
+				
+				//vertex VS face
 				m_kLastTestNormal = -pkPlane->m_kNormal;
 
 				return true;
 			}
 			else
 			{
+				//edge VS edge
+			
 				Vector3 L = (*pkPos2 - *pkPos1);
 			
+				//calculate normals
 				Vector3 n1 = L.Cross(pkPolygon[0] - pkPolygon[1]).Unit();
 				Vector3 n2 = L.Cross(pkPolygon[1] - pkPolygon[2]).Unit();
 				Vector3 n3 = L.Cross(pkPolygon[2] - pkPolygon[0]).Unit();
-				
 										
+				//calculate distance betwen edges				
 				float f1 = (pkPolygon[0] - *pkPos1).Proj(n1).Length();
 				float f2 = (pkPolygon[1] - *pkPos1).Proj(n2).Length();
 				float f3 = (pkPolygon[2] - *pkPos1).Proj(n3).Length();
 				
-				if(f1 < f2 && f1 < f3)
-				{
-				//	cout<<"f1"<<endl;
-					if( (m_kLastTestNormal = L.Cross(pkPolygon[0] - pkPolygon[1]).Unit()).Angle(-pkPlane->m_kNormal) < 1.5707)
-						return true;
-									
-					if( (m_kLastTestNormal = -L.Cross(pkPolygon[0] - pkPolygon[1]).Unit()).Angle(-pkPlane->m_kNormal) < 1.5707)
-						return true;
-				}
-				if(f2 < f1 && f2 < f3)
-				{
-					if( (m_kLastTestNormal = L.Cross(pkPolygon[1] - pkPolygon[2]).Unit()).Angle(-pkPlane->m_kNormal) < 1.5707)
-						return true;
 				
-					if( (m_kLastTestNormal = -L.Cross(pkPolygon[1] - pkPolygon[2]).Unit()).Angle(-pkPlane->m_kNormal) < 1.5707)
-						return true;
+				int i1 = -1;
+				int i2 = -1;
+				Vector3 v2;
 				
-				//	cout<<"f2"<<endl;
-				//	if( (m_kLastTestNormal = L.Cross(pkPolygon[1] - pkPolygon[2]).Unit()).Angle(pkPlane->m_kNormal) < 1.5707)
-				//		m_kLastTestNormal = -m_kLastTestNormal;					
+				if((f1 < f2) && (f1 < f3))
+				{
+					m_kLastTestNormal = n1;
+					v2 = (pkPolygon[0] + pkPolygon[1]) *0.5;
+				};
+				if((f2 < f1) && (f2 < f3))
+				{
+					m_kLastTestNormal = n2;
+					v2 = (pkPolygon[1] + pkPolygon[2]) *0.5;
+				};
+				if((f3 < f1) && (f3 < f2))
+				{
+					m_kLastTestNormal = n3;
+					v2 = (pkPolygon[2] + pkPolygon[0]) *0.5;
+				};
+				
+				//compare to face normal to chose wich direction the normal shuld have
+				if( m_kLastTestNormal.Angle(-pkPlane->m_kNormal) < 1.5707)
+					return true;
 					
-				//	m_kLastTestNormal = -L.Cross(pkPolygon[1] - pkPolygon[2]).Unit();
-				}
-				if(f3 < f1 && f3 < f2)
-				{
-				//	cout<<"f3"<<endl;
-					if( (m_kLastTestNormal = L.Cross(pkPolygon[2] - pkPolygon[0]).Unit()).Angle(-pkPlane->m_kNormal) < 1.5707)
-						return true;
-						
-					if( (m_kLastTestNormal = -L.Cross(pkPolygon[2] - pkPolygon[0]).Unit()).Angle(-pkPlane->m_kNormal) < 1.5707)					
-						return true;
-				//		m_kLastTestNormal = -m_kLastTestNormal;					
-				
-				//	m_kLastTestNormal = -L.Cross(pkPolygon[2] - pkPolygon[0]).Unit();
-				}	
+				m_kLastTestNormal = -m_kLastTestNormal;									
+				if( m_kLastTestNormal.Angle(-pkPlane->m_kNormal) < 1.5707)
+					return true;
 					
-				//m_kLastTestNormal = -pkPlane->m_kNormal;
-				//m_kLastTestNormal.Set(0,0,0);
+				//generate reference normal , in case of 90degredes angle, use a fuzzy calculated normal
+				Vector3 v1 = (*pkPos2 + *pkPos1) *0.5;
+				Vector3 refn = (v1 - v2).Unit();
 				
-				//cout<<"EDGE:"<<endl;
-				//m_kLastTestNormal = -( *pkPos1 - *pkPos2).Cross(pkPolygon[0] - pkPolygon[1]).Unit();
+					
+				if(m_kLastTestNormal.Angle(refn) < 1.5707)
+					return true;
 				
-				//m_kLastTestNormal = ( *pkPos1 - *pkPos2).Cross(pkPolygon[0] - pkPolygon[1]).Unit();
-				//m_kLastTestNormal = -(pkPolygon[0] - pkPolygon[1]).Cross( *pkPos1 - *pkPos2).Unit();
-				//m_kLastTestNormal = -(pkPolygon[0] - pkPolygon[1]).Cross( *pkPos1 - *pkPos2).Unit();
-			
-				return false;
-			}
-			
+				m_kLastTestNormal = -m_kLastTestNormal;													
+				if(m_kLastTestNormal.Angle(refn) < 1.5707)
+					return true;
+				
+					
+				return false;		
+
+			}			
 		}
 	}
 	
