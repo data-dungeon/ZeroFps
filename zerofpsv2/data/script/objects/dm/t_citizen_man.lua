@@ -57,10 +57,10 @@ function Dead()
 	SetNextAnim(SIGetSelfID(), "dead");
 	ClearPathFind(SIGetSelfID());
 	PlaySound (SIGetSelfID(), "death/DEATH6.WAV");
-	SetEntityVar(SIGetSelfID, "deadtime", 0);
+	SetEntityVar(SIGetSelfID(), "deadtime", 0);
 
 
-	PanicArea (SIGetSelfID(), 5);
+	PanicArea (SIGetSelfID(), 13);
 
 	if Random(10) < 4 then
 		RunScript ("data/script/objects/dm/t_money.lua", SIGetSelfID());
@@ -68,7 +68,7 @@ function Dead()
 end
 
 function Panic()
-	SetMoveSpeed (SIGetSelfID(), 6);
+	SetMoveSpeed (SIGetSelfID(), 5);
 	SetRunAnim (SIGetSelfID(), "panic");
 	SetIdleAnim (SIGetSelfID(), "panic_idle");	
 	ClearPathFind(SIGetSelfID());
