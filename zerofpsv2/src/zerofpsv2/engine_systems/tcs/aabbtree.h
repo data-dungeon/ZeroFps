@@ -11,8 +11,8 @@ using namespace std;
 class AABBTreeInfo
 {
 	public:
-		int	m_iMaxDepth;
-		int	m_iMaxTriangles;
+		int	m_iMaxDepth;				//max djup i trädet
+		int	m_iMaxTriangles;			//max antal trianglar i ett löv 
 };
 
 
@@ -82,17 +82,17 @@ class AABBTree
 		AABBTree();
 		~AABBTree();
 
-		bool IsValid()			{	return m_pkRootNode;	};		
-		void Clear();
+		bool IsValid()			{	return m_pkRootNode;	};
+		void Clear();														//tömmer trädet
 				
-		void Create(vector<Mad_Face>* m_pkFaces, 
+		void Create(vector<Mad_Face>* m_pkFaces, 					//skapar ett aabb träd utifrån datan
 						vector<Vector3>* m_pkVertex, 
 						vector<Vector3>* m_pkNormal, 
 						const Matrix4& kRotation, 
 						float fScale
 						);
 		
-		void GetAABBList(vector<AABB>* pkAABBList);
+		void GetAABBList(vector<AABB>* pkAABBList);				//ger lista med alla AABB's i trädet, för rendrering
 };
 
 

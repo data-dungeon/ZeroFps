@@ -6,7 +6,7 @@ AABBTree::AABBTree()
 {
 	m_pkRootNode = NULL;
 
-	m_kInfo.m_iMaxDepth 		= 100;
+	m_kInfo.m_iMaxDepth 		= 50;
 	m_kInfo.m_iMaxTriangles = 5;
 
 }
@@ -37,7 +37,7 @@ void AABBTree::Create(	vector<Mad_Face>* m_pkFaces,
 	int iSize = m_pkFaces->size();
 	for(int f= 0;f<iSize;f++)
 	{
-		//setup vertex
+		//transform vertex
 		kTemp.m_kVerts[0] =  kRotation.VectorTransform( (*m_pkVertex)[(*m_pkFaces)[f].iIndex[0]] );
 		kTemp.m_kVerts[1] =  kRotation.VectorTransform( (*m_pkVertex)[(*m_pkFaces)[f].iIndex[1]] );
 		kTemp.m_kVerts[2] =  kRotation.VectorTransform( (*m_pkVertex)[(*m_pkFaces)[f].iIndex[2]] );	
@@ -51,9 +51,8 @@ void AABBTree::Create(	vector<Mad_Face>* m_pkFaces,
 		kTriangles.push_back(kTemp);
 	}
 
-	//remove old root node if any
-	if(m_pkRootNode)
-		delete m_pkRootNode;
+	//clear list tree
+	Clear();
 		
 	//create new root node
 	m_pkRootNode = new AABBNode;
@@ -85,7 +84,6 @@ AABBNode::~AABBNode()
 }
 
 
-
 void AABBNode::Create(vector<Triangle>*	pkTriangles,int iDepth,const AABBTreeInfo& kInfo)
 {
 	//setup AABB
@@ -94,24 +92,25 @@ void AABBNode::Create(vector<Triangle>*	pkTriangles,int iDepth,const AABBTreeInf
 	//do we want to create childs
 	if(pkTriangles->size() > kInfo.m_iMaxTriangles && iDepth < kInfo.m_iMaxDepth)
 	{
+		//in wich axis shuld we split the mesh?
 		int iLongestAxis = m_kBox.LongestAxis();	
-		Vector3 kGeoAvrageCenter(0,0,0);
 		
-		//calculate geometrix avrage
+		//calculate geometri avrage
+		Vector3 kGeoAvrageCenter(0,0,0);				
 		int iSize = pkTriangles->size();
 		for(int i = 0;i<iSize;i++)
 			kGeoAvrageCenter += (*pkTriangles)[i].Middle();
 		kGeoAvrageCenter *= 1.0 / iSize;
 			
 		//split polygons
-		vector<Triangle>	kBucket1;
-		vector<Triangle>	kBucket2;			
+		vector<Triangle>	kChildBucket1;
+		vector<Triangle>	kChildBucket2;			
 		for(int i = 0;i<iSize;i++)
 		{
 			if( (*pkTriangles)[i].Middle()[iLongestAxis] > kGeoAvrageCenter[iLongestAxis])
-				kBucket2.push_back((*pkTriangles)[i]);
+				kChildBucket2.push_back((*pkTriangles)[i]);
 			else
-				kBucket1.push_back((*pkTriangles)[i]);				
+				kChildBucket1.push_back((*pkTriangles)[i]);				
 		}
 		
 		
@@ -119,19 +118,17 @@ void AABBNode::Create(vector<Triangle>*	pkTriangles,int iDepth,const AABBTreeInf
 		m_pkChild1 = new AABBNode();
 		m_pkChild2 = new AABBNode();
 		
-		m_pkChild1->Create(&kBucket1,iDepth+1,kInfo);
-		m_pkChild2->Create(&kBucket2,iDepth+1,kInfo);
+		m_pkChild1->Create(&kChildBucket1,iDepth+1,kInfo);
+		m_pkChild2->Create(&kChildBucket2,iDepth+1,kInfo);
 	}
 	else
 	{		
-		//cout<<"bucket size"<<pkTriangles->size()<<endl;
-	
+		// copy triangles to this node
 		m_kTriangles = *pkTriangles;
 		
 		m_pkChild1=NULL;
 		m_pkChild2=NULL;
 	}
-
 }
 
 void AABBNode::GetAABBList(vector<AABB>* pkAABBList)
