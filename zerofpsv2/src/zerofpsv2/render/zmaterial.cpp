@@ -9,10 +9,10 @@ ZMaterialSettings::ZMaterialSettings()
 	m_iTUs[2] = -1;			
 	m_iTUs[3] = -1;			*/
 	
-/*	m_kTUs[0].SetRes("");
+	m_kTUs[0].SetRes("");
 	m_kTUs[1].SetRes("");	
 	m_kTUs[2].SetRes("");
-	m_kTUs[3].SetRes("");	*/
+	m_kTUs[3].SetRes("");
 	
 	m_iTUTexCords[0] = CORDS_FROM_ARRAY_0;
 	m_iTUTexCords[1] = CORDS_FROM_ARRAY_1;	
@@ -157,7 +157,7 @@ bool ZMaterial::LoadPass(int iPass)
 	//load pass settings
 	ZMaterialSettings* newpass = AddPass();
 	
-	
+
 	if(m_kIni.KeyExist(passname.c_str(),"lighting"))
 		newpass->m_bLighting = m_kIni.GetBoolValue(passname.c_str(),"lighting");
 	if(m_kIni.KeyExist(passname.c_str(),"cullface"))

@@ -301,8 +301,10 @@ void ZShader::SetupTU(ZMaterialSettings* pkSettings,int iTU)
 		}
 	}
 	else
+	{
+		//cout<<"disabl*:ASD: "<<iTU<<endl;
 		glDisable(GL_TEXTURE_2D);	
-
+	}
 }
 
 void ZShader::SetupRenderStates(ZMaterialSettings* pkSettings)
@@ -410,7 +412,7 @@ void ZShader::SetupRenderStates(ZMaterialSettings* pkSettings)
 	}
 	
 	//setup dst blend factor	
-	switch(pkSettings->m_iBlendSrc)
+	switch(pkSettings->m_iBlendDst)
 	{
 		case ZERO_BLEND_DST:
 			blenddst = GL_ZERO;
