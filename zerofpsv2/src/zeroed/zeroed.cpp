@@ -427,8 +427,8 @@ void ZeroEd::RegisterPropertys()
 {
 	m_pkPropertyFactory->Register("P_CharacterProperty",	Create_P_CharacterProperty);
 	m_pkPropertyFactory->Register("P_CharacterControl", 	Create_P_CharacterControl);
-	m_pkPropertyFactory->Register("P_Ml",						Create_P_Ml);
-
+	
+	Register_P_Ml(m_pkZeroFps);
 
 	
 

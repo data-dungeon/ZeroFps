@@ -48,7 +48,7 @@ void MistLandLua::Init(EntityManager* pkObjMan,ZFScriptSystem* pkScript)
 	//pkScript->ExposeFunction("SetPSystem",					MistLandLua::SetPSystemLua);			
 
 	
-	pkScript->ExposeFunction("AddAction",					MistLandLua::AddActionLua);			
+//	pkScript->ExposeFunction("AddAction",					MistLandLua::AddActionLua);			
 	pkScript->ExposeFunction("MessageCaracter",			MistLandLua::MessageCaracterLua);
 	
 //	pkScript->ExposeFunction("SetHeartRate",				MistLandLua::SetHeartRateLua);
@@ -280,35 +280,35 @@ int MistLandLua::GetClosestObjectLua(lua_State* pkLua)
 
 
 
-int MistLandLua::AddActionLua(lua_State* pkLua)
-{
-	if(g_pkScript->GetNumArgs(pkLua) != 2)
-		return 0;
-	
-	int id;
-	double dTemp;
-	g_pkScript->GetArgNumber(pkLua, 0, &dTemp);
-	id = (int)dTemp;
-	
-	Entity* pkObject = g_pkObjMan->GetEntityByID(id);
-	if(pkObject)
-	{
-		P_Ml* pe = (P_Ml*)pkObject->GetProperty("P_Ml");	
-		
-		if(pe)
-		{
-			char	acEvent[128];
-			g_pkScript->GetArgString(pkLua, 1, acEvent);
-		
-			pe->AddAction(acEvent);
-			return 0;
-		}
-		else
-			cout<<"Error tried to add action on object whitout P_Ml property"<<endl;
-	}
-	
-	return 0;
-}
+// int MistLandLua::AddActionLua(lua_State* pkLua)
+// {
+// 	if(g_pkScript->GetNumArgs(pkLua) != 2)
+// 		return 0;
+// 	
+// 	int id;
+// 	double dTemp;
+// 	g_pkScript->GetArgNumber(pkLua, 0, &dTemp);
+// 	id = (int)dTemp;
+// 	
+// 	Entity* pkObject = g_pkObjMan->GetEntityByID(id);
+// 	if(pkObject)
+// 	{
+// 		P_Ml* pe = (P_Ml*)pkObject->GetProperty("P_Ml");	
+// 		
+// 		if(pe)
+// 		{
+// 			char	acEvent[128];
+// 			g_pkScript->GetArgString(pkLua, 1, acEvent);
+// 		
+// 			pe->AddAction(acEvent);
+// 			return 0;
+// 		}
+// 		else
+// 			cout<<"Error tried to add action on object whitout P_Ml property"<<endl;
+// 	}
+// 	
+// 	return 0;
+// }
 
 int MistLandLua::MessageCaracterLua(lua_State* pkLua)
 {

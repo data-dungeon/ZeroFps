@@ -1,6 +1,7 @@
 #include "p_ml.h" 
 #include "../zerofpsv2/engine_systems/propertys/p_mad.h"
 #include "p_characterproperty.h"
+#include "../zerofpsv2/engine_systems/script_interfaces/si_objectmanager.h" 
 
 P_Ml::P_Ml()
 {
@@ -12,7 +13,7 @@ P_Ml::P_Ml()
 	m_pkZShaderSystem=	static_cast<ZShaderSystem*>(g_ZFObjSys.GetObjectPtr("ZShaderSystem"));			
 
 	bNetwork = true;	
-	m_iVersion = 2;
+	m_iVersion = 3;
 	
 	m_bShowText =	false;	
 	m_strText = "";
@@ -76,7 +77,7 @@ void P_Ml::Update()
 
 void P_Ml::AddAction(const char* csAction)
 {
-	//cout<<"registering action:"<<csAction<<endl;
+	cout<<"registering action:"<<csAction<<endl;
 	m_kActions.push_back(string(csAction));	
 	SetNetUpdateFlag(true);		
 }
@@ -116,6 +117,11 @@ void P_Ml::PackFrom( NetPacket* pkNetPacket, int iConnectionID  )
 void P_Ml::Save(ZFIoInterface* pkPackage)
 {	
 	pkPackage->Write((void*)&m_bShowText,sizeof(m_bShowText),1);		
+	
+	int nr = m_kActions.size();
+	pkPackage->Write(nr);
+	for(int i = 0;i<nr;i++)
+		pkPackage->Write_Str(m_kActions[i]);
 }
 
 void P_Ml::Load(ZFIoInterface* pkPackage,int iVersion)
@@ -136,6 +142,24 @@ void P_Ml::Load(ZFIoInterface* pkPackage,int iVersion)
 			pkPackage->Read((void*)&m_bShowText,sizeof(m_bShowText),1);		
 			break;
 		}
+		
+		case 3:
+		{
+			pkPackage->Read((void*)&m_bShowText,sizeof(m_bShowText),1);		
+			
+			
+			int nr;
+			pkPackage->Read(nr);
+			m_kActions.clear();
+			string temp;
+			for(int i = 0;i<nr;i++)
+			{
+				pkPackage->Read_Str(temp);
+				m_kActions.push_back(temp);
+			}
+				
+			break;
+		}		
 	}
 }
 
@@ -152,7 +176,61 @@ vector<PropertyValues> P_Ml::GetPropertyValues()
 	return kReturn;
 }
 
+
+// SCRIPT INTERFACE FOR P_Ml
+using namespace ObjectManagerLua;
+
+namespace SI_P_Ml
+{
+	int AddActionLua(lua_State* pkLua)
+	{
+		if(g_pkScript->GetNumArgs(pkLua) != 2)
+			return 0;
+		
+		int id;
+		double dTemp;
+		g_pkScript->GetArgNumber(pkLua, 0, &dTemp);
+		id = (int)dTemp;
+		
+		Entity* pkObject = g_pkObjMan->GetEntityByID(id);
+		if(pkObject)
+		{
+			P_Ml* pe = (P_Ml*)pkObject->GetProperty("P_Ml");	
+			
+			if(pe)
+			{
+				char	acEvent[128];
+				g_pkScript->GetArgString(pkLua, 1, acEvent);
+			
+				pe->AddAction(acEvent);
+				return 0;
+			}
+			else
+				cout<<"Error tried to add action on object whitout P_Ml property"<<endl;
+		}
+		
+		return 0;
+	}
+
+
+}
+
+
 Property* Create_P_Ml()
 {
 	return new P_Ml;
 }
+
+void Register_P_Ml(ZeroFps* pkZeroFps)
+{
+	// Register Property
+	pkZeroFps->m_pkPropertyFactory->Register("P_Ml", Create_P_Ml);					
+
+	// Register Property Script Interface
+	g_pkScript->ExposeFunction("AddAction",	SI_P_Ml::AddActionLua);
+/*	g_pkScript->ExposeFunction("ApplyImpuls",	SI_PTcs::ApplyImpulsLua);
+	g_pkScript->ExposeFunction("SetRotVel",	SI_PTcs::SetObjectRotVelLua);
+	g_pkScript->ExposeFunction("Bounce",		SI_PTcs::BounceLua);				*/
+}
+
+

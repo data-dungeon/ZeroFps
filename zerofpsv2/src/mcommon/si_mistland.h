@@ -50,7 +50,7 @@ namespace MistLandLua
 	int MCOMMON_API GetLastCollidedObjectLua(lua_State* pkLua);	
 	int MCOMMON_API GetClosestObjectLua(lua_State* pkLua);			//(int objectid) return the closest object to the caller or a parameter id
 //	int MCOMMON_API RemoveObjectLua(lua_State* pkLua);					//(int objectid) removes the caller or a parameter id
-	int MCOMMON_API AddActionLua(lua_State* pkLua);						//(int objectid,string action) add action to action list of object
+// 	int MCOMMON_API AddActionLua(lua_State* pkLua);						//(int objectid,string action) add action to action list of object
 	int MCOMMON_API MessageCaracterLua(lua_State* pkLua);				//(int objectid,string message) send a message to caracters controling player
 
 

@@ -210,12 +210,14 @@ void MistServer::RegisterPropertys()
 	m_pkPropertyFactory->Register("P_CharacterControl",  Create_P_CharacterControl);
 
 	m_pkPropertyFactory->Register("P_ArcadeCharacter",	Create_P_ArcadeCharacter);
-	m_pkPropertyFactory->Register("P_Ml", Create_P_Ml);
+// 	m_pkPropertyFactory->Register("P_Ml", Create_P_Ml);
 	m_pkPropertyFactory->Register("P_Enviroment", Create_P_Enviroment);
 	m_pkPropertyFactory->Register("P_ShadowBlob", Create_P_ShadowBlob);
 	m_pkPropertyFactory->Register("P_Item", Create_P_Item);
 	m_pkPropertyFactory->Register("P_Container", Create_P_Container);
 		
+	Register_P_Ml(m_pkZeroFps);
+	
 //	m_pkPropertyFactory->Register("P_Car", Create_P_Car);	
 //	m_pkPropertyFactory->Register("P_DMCharacter", Create_P_DMCharacter);
 //	m_pkPropertyFactory->Register("P_DMShop", Create_P_DMShop);
