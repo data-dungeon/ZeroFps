@@ -1543,6 +1543,9 @@ void ZeroEd::AutoSetZoneSize(string strName)
 	sscanf(szString,"%dx%dx%d", &x,&y,&z);
 	m_kZoneSize.Set(float(x),float(y),float(z));
 	//cout << "Setting Size " << x << ", " << y << ", "<< z << endl;
+	
+	//also reset rotation 
+	m_kZoneModelRotation.Set(0,0,0);
 }
 
 void ZeroEd::SendRotateEntity(int iEntityID,const Vector3& kRot)
