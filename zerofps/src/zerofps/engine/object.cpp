@@ -2,13 +2,13 @@
 #include "collisionproperty.h"
 
 Object::Object() {
-//	m_bStatic=false;
 	m_pkObjectMan=NULL;
 	m_kPos=Vector3(0,0,0);
 	m_kRot=Vector3(0,0,0);
 	m_kVel=Vector3(0,0,0);
-//	m_iType=0;
-	
+
+	m_kName="Object";
+		
 	m_bLockedChilds=false;
 	
 	m_pkParent=NULL;
@@ -366,7 +366,7 @@ void Object::PrintTree(int pos)
 {
 	for(int i=0;i<pos;i++)
 		cout<<" ";
-	cout<<""<<endl;
+	cout<<m_kName<<endl;
 
 	for(list<Object*>::iterator it=m_akChilds.begin();it!=m_akChilds.end();it++) {
 		(*it)->PrintTree(pos+1);

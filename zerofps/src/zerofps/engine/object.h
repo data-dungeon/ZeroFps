@@ -33,8 +33,8 @@ class ENGINE_API Object {
 		list<Object*> m_akChilds;
 		Object* m_pkParent;	
 	
-
-	
+		string m_kName;
+		
 	public:
 
 		int		iNetWorkID;		// ID used by network state code.

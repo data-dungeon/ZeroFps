@@ -259,14 +259,12 @@ void ZeroEdit::Input()
 		
 		//child delete mohahaha
 		if(pkInput->Pressed(BACKSPACE)) {
-			if(m_pkCurentChild==pkObjectMan->GetWorldObject())
-				cout<<"WOLRD OBJECT"<<endl;
-		
 			if(m_pkCurentChild!=NULL)
 				if(m_pkCurentChild!=m_pkHeightMapObject) 
 					if(m_pkCurentChild!=pkObjectMan->GetWorldObject()){					
 						delete m_pkCurentChild;
 						m_pkCurentChild=NULL;
+						m_pkCurentParent=m_pkHeightMapObject;
 					}
 
 		}
@@ -329,8 +327,6 @@ void ZeroEdit::Input()
 			
 				m_fTimer=pkFps->GetTicks();
 			
-//				m_pkCurentParent=m_pkHeightMapObject;				
-			
 				Object *object = new BallObject();
 				object->GetPos()=m_kDrawPos-Vector3(0,1,0);
 				object->SetParent(m_pkCurentParent);
@@ -338,7 +334,6 @@ void ZeroEdit::Input()
 				m_pkCurentChild=object;
 //				pkCollisionMan->Add(object);
 	
-//				Object* pk=static_cast<Object*>(m_pkHeightMapObject);
 				cout<<"CHILDS: "<<m_pkHeightMapObject->NrOfChilds()<<endl;
 	
 			}
@@ -346,6 +341,11 @@ void ZeroEdit::Input()
 			{
 				SelectChild();
 			}
+			if(pkInput->Pressed(SPACE))
+			{
+				SelectParent();
+			}
+			
 			break;
 			
 	}
@@ -415,28 +415,40 @@ void ZeroEdit::DrawMarkers()
 
 void ZeroEdit::SelectChild()
 {
+	Object* temp=GetClosest(m_kDrawPos);
+	
+	if(temp!=NULL)
+		m_pkCurentChild=temp;	
+
+}
+
+void ZeroEdit::SelectParent()
+{
+	Object* temp=GetClosest(m_kDrawPos);
+	
+	if(temp!=NULL)
+		m_pkCurentParent=temp;	
+}
+
+Object* ZeroEdit::GetClosest(Vector3 kPos)
+{
 	list<Object*> temp;
 	float mindistance=999999999;
 	Object* minobject=NULL;
 	
-	
-	
 	pkObjectMan->GetWorldObject()->GetAllObjects(&temp);
 	
 	for(list<Object*>::iterator it=temp.begin();it!=temp.end();it++) {
-		float distance = abs(((*it)->GetPos() - m_kDrawPos).Length());
+		float distance = abs(((*it)->GetPos() - kPos).Length());
 		if(distance<mindistance){
 			mindistance=distance;
 			minobject=(*it);
 		}
 	}			
 	
-	m_pkCurentChild=minobject;
-	
 	temp.clear();
+	
+	return minobject;
 }
-
-
-
 
 

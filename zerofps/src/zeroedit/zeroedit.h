@@ -68,7 +68,9 @@ class ZeroEdit :public Application {
 		void SetPointer();	
 		void DrawMarkers();
 		void Clear();
+		Object* GetClosest(Vector3 kPos);
 		void SelectChild();
+		void SelectParent();		
 };
 
 
