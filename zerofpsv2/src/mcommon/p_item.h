@@ -59,7 +59,8 @@ class MCOMMON_API P_Item: public Property
 		int		m_iInContainerID;					//last known container this item was in, if -1 it was not in any container
 		int		m_iInContainerPosX;				//last known position in a container this item had
 		int		m_iInContainerPosY;
-// 		vector<PropertyValues> GetPropertyValues();
+ 		
+		vector<PropertyValues> GetPropertyValues();
 			
 	public:
 		MLItemStats m_kItemStats;

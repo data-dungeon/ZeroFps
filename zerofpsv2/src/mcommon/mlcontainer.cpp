@@ -100,6 +100,26 @@ bool MLContainer::HaveItem(int iID)
 	return false;
 }
 
+int MLContainer::HaveItem(const string strItemName)
+{
+	for( int iY = 0;iY<m_iSizeY;iY++)
+	{
+		for( int iX = 0;iX<m_iSizeX;iX++)
+		{
+			if(Entity* pkEnt = m_pkEntMan->GetEntityByID(*GetItem(iX,iY)))
+			{
+				if(P_Item* pkItem = (P_Item*)pkEnt->GetProperty("P_Item"))
+				{
+					if(pkItem->m_strName == strItemName)
+						return *GetItem(iX,iY);				
+				}
+			}
+		}
+	}
+		
+	return -1;
+}
+
 void MLContainer::ClearItem(int iID)
 {
 	for( int iY = 0;iY<m_iSizeY;iY++)

@@ -68,6 +68,30 @@ void P_Item::Load(ZFIoInterface* pkPackage,int iVersion)
 	}
 }
 
+vector<PropertyValues> P_Item::GetPropertyValues()
+{
+	vector<PropertyValues> kReturn(4);
+	
+		
+	kReturn[0].kValueName = "name";
+	kReturn[0].iValueType = VALUETYPE_STRING;
+	kReturn[0].pkValue    = &m_strName;		
+
+	kReturn[1].kValueName = "sizex";
+	kReturn[1].iValueType = VALUETYPE_INT;
+	kReturn[1].pkValue    = &m_iSizeX;		
+
+	kReturn[2].kValueName = "sizey";
+	kReturn[2].iValueType = VALUETYPE_INT;
+	kReturn[2].pkValue    = &m_iSizeY;		
+
+	kReturn[3].kValueName = "icon";
+	kReturn[3].iValueType = VALUETYPE_STRING;
+	kReturn[3].pkValue    = &m_strIcon;			
+	
+	return kReturn;
+}
+
 
 Property* Create_P_Item()
 {

@@ -71,6 +71,8 @@ class MCOMMON_API MLContainer
 		bool DropItem(int iID);
 		void DropAll();		
 		
+		int HaveItem(const string strItemName);		
+		
 		bool RemoveItem(int iID);
 		bool RemoveItem(int iX,int iY);
 		

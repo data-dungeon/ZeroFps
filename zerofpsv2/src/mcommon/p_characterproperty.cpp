@@ -404,13 +404,42 @@ namespace SI_P_CharacterProperty
 			if(P_CharacterProperty* pkCP = (P_CharacterProperty*)pkEnt->GetProperty("P_CharacterProperty"))		
 			{	
 				if(pkCP->m_pkInventory->AddItem(iItemID))
+				{
 					cout<<"sucessfully picked up item"<<endl;
+					return 0;
+				}
 				else
 					cout<<"could not pick that up"<<endl;
 			}
 			else
 				cout<<"WARNING: entity without P_CharacterProperty tried to pickup an item"<<endl;
+				
+		return 0;
 	}
+	
+	int HaveItemLua(lua_State* pkLua)
+	{
+		if(g_pkScript->GetNumArgs(pkLua) != 2)
+			return 0;		
+		
+		int iCharcterID;
+		double dTemp;
+		double dItemID = -1;
+		char czItemName[64];
+		
+		g_pkScript->GetArgNumber(pkLua, 0, &dTemp);
+		iCharcterID = (int)dTemp;
+		
+		g_pkScript->GetArgString(pkLua, 1,czItemName);
+		
+		if(Entity* pkEnt = g_pkObjMan->GetEntityByID(iCharcterID))
+			if(P_CharacterProperty* pkCP = (P_CharacterProperty*)pkEnt->GetProperty("P_CharacterProperty"))		
+				dItemID = pkCP->m_pkInventory->HaveItem(czItemName);
+			
+
+		g_pkScript->AddReturnValue(pkLua, dItemID);							
+		return 1;		
+	}	
 }
 
 
@@ -427,6 +456,7 @@ void Register_P_CharacterProperty(ZeroFps* pkZeroFps)
 
 	// Register Property Script Interface
 	g_pkScript->ExposeFunction("PickupItem",	SI_P_CharacterProperty::PickupItemLua);
+	g_pkScript->ExposeFunction("HaveItem",		SI_P_CharacterProperty::HaveItemLua);
 
 }
 
