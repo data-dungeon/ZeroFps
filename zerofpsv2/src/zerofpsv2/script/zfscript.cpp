@@ -594,8 +594,14 @@ bool ZFScriptSystem::Call(ZFResourceHandle* pkResHandle, char* szFuncName,
 
 	lua_call(pkScript->m_pkLuaState, vkParams.size(), 0);
 
+	/*	Debug - Vim
+		Writes out the stack index for the current lua state. Should be Zero.*/
+	// cout << "Stack Index: " << lua_gettop ( pkScript->m_pkLuaState ) << endl;
+
+	/* Bug - Parameters are removed buy the called lua function. 
 	if(!vkParams.empty())
 		lua_pop(pkScript->m_pkLuaState, vkParams.size());
+	*/
 
 	return true;
 }

@@ -940,8 +940,19 @@ void MistServer::OnNetworkMessage(NetPacket *PkNetMessage)
 		{
 			int iEntity;
 			PkNetMessage->Read(iEntity);
+
 			if(Entity* pkObj = m_pkEntityManager->GetEntityByID(iEntity))
-				m_pkEntityManager->CallFunction(pkObj, "Useit",NULL);;
+			{
+				// Get EntityID for client doing stuff.
+            PlayerData* pkData = m_pkPlayerDB->GetPlayerData(PkNetMessage->m_iClientID);
+				//Entity* pkCharacter = m_pkEntityManager->GetEntityByID(pkData->m_iCharacterID);
+				vector<ScriptFuncArg> args(1);
+				args[0].m_kType.m_eType = tINT;
+				args[0].m_pData = &pkData->m_iCharacterID;
+
+				//m_pkEntityManager->CallFunction(pkObj, "Useit",NULL);;
+				m_pkEntityManager->CallFunction(pkObj, "Useit",&args);	
+			}
 			break;
 		}
 
