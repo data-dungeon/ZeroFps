@@ -12,19 +12,22 @@
 // Construction/Destruction
 //////////// //////////////////////////////////////////////////////////
 
-int ZGuiMenu::s_iMenuIDCounter = 0;
+//int ZGuiMenu::s_iMenuIDCounter = 0;
 const int MENU_ITEM_HEIGHT = 20;
 
-ZGuiMenu::ZGuiMenu(Rect kArea, ZGuiWnd* pkParent, bool bVisible, int iID) :
+ZGuiMenu::ZGuiMenu(Rect kArea, ZGuiWnd* pkParent, bool bVisible, int iID, bool bPopup) :
 	ZGuiWnd(kArea, pkParent, bVisible, iID)
 {
 	m_bIsOpen = false;
+	m_bPopup = bPopup;
 	m_bEnabled = true;
 	m_bNeedToResize = true;
 	RemoveWindowFlag(WF_CANHAVEFOCUS); // knappar har inte focus by default
 	RemoveWindowFlag(WF_TOPWINDOW); // kan inte användas som mainwindow
 
 	CreateInternalControls();
+
+	s_iMenuIDCounter = 0;
 
 	m_pkFont = m_pkResMan->Font("defguifont"); 
 	if(m_pkFont)
@@ -35,8 +38,11 @@ ZGuiMenu::ZGuiMenu(Rect kArea, ZGuiWnd* pkParent, bool bVisible, int iID) :
 }
 
 ZGuiMenu::~ZGuiMenu()
-{
-
+{	
+	for(int i=0; i<m_vkItems.size(); i++)
+	{
+		delete m_vkItems[i];
+	}
 }
 
 bool ZGuiMenu::Notify(ZGuiWnd* pkWindow, int iCode)
@@ -54,6 +60,9 @@ bool ZGuiMenu::Notify(ZGuiWnd* pkWindow, int iCode)
 					Resize(GetScreenRect().Width(), 20);
 					m_bIsOpen = false;
 					HideAll();
+
+					if(m_bPopup)
+						Hide();
 				}
 
 				break;
@@ -112,8 +121,11 @@ bool ZGuiMenu::Render( ZGuiRender* pkRenderer )
 		}
 	}
 
-	if(m_pkLabel)
+	if(m_pkLabel && m_bPopup == false)
 		m_pkLabel->Render(pkRenderer); 
+
+	if(m_bPopup)
+		m_vkItems[0]->pkButton->Hide();
 
 	for(int i=0; i<m_vkItems.size(); i++)
 	{
@@ -192,19 +204,31 @@ void ZGuiMenu::CreateInternalControls()
 	m_pkSkinDown->m_afBorderColor[2] = (1.0f / 255) * Bdf ;
 
 	m_pkSkinDown->m_unBorderSize = 1;
+
+	if(m_bPopup)
+	{
+		AddItem("Pm", "PopupRootMain", NULL, true);
+	}
 }
 
 bool ZGuiMenu::AddItem(const char* szText, const char* szNameID, 
 							  const char* szParentID, bool bOpenSubMenu)
 {
+	char* szRealParent = NULL;
+
+	if(szParentID == NULL && !m_vkItems.empty() && m_bPopup)
+		szRealParent = "PopupRootMain";
+	else
+		szRealParent = (char*) szParentID;
+
 	ZGuiMenuItem* new_item = new ZGuiMenuItem();
 
 	new_item->szNameID = new char[strlen(szNameID)+1];
 	strcpy(new_item->szNameID, szNameID);
 
-	new_item->pkParent = GetItem(szParentID);	
+	new_item->pkParent = GetItem(szRealParent);	
 
-	if(szNameID == NULL || (szParentID != NULL && new_item->pkParent == NULL) )
+	if(szNameID == NULL || (szRealParent != NULL && new_item->pkParent == NULL) )
 	{
 		delete new_item;
 		printf("Failed to add menu item. Bad arguments\n");
@@ -213,10 +237,10 @@ bool ZGuiMenu::AddItem(const char* szText, const char* szNameID,
 
 	int x = 0;
 	int y = 0;
-	int w = 100;
+	int w = m_pkFont->GetLength(szText);
 	int h = MENU_ITEM_HEIGHT;
 
-	ZGuiMenuItem* pkParent = GetItem(szParentID);
+	ZGuiMenuItem* pkParent = GetItem(szRealParent);
 
 	bool bShow = false;
 
@@ -233,7 +257,7 @@ bool ZGuiMenu::AddItem(const char* szText, const char* szNameID,
 			y = pkParent->pkButton->GetWndRect().Bottom;
 		}
 
-		y += GetNumChilds((char*)szParentID) * MENU_ITEM_HEIGHT;
+		y += GetNumChilds((char*)szRealParent) * MENU_ITEM_HEIGHT;
 	}
 	else
 	{
@@ -263,6 +287,11 @@ bool ZGuiMenu::AddItem(const char* szText, const char* szNameID,
 	{
 		m_mkSubMenuStateMap.insert( 
 			map<ZGuiMenuItem*,bool>::value_type( new_item, false ) );
+	}
+
+	if(m_bPopup && !m_vkItems.empty())
+	{
+		OpenSubMenu(m_vkItems[0], true);
 	}
 
 	return true;
@@ -368,12 +397,66 @@ void ZGuiMenu::HideAll()
 		if(!it->first->pkButton->IsVisible())
 			it->second = false;
 	}	
+
+	if(m_bPopup && !m_vkItems.empty())
+	{
+		OpenSubMenu(m_vkItems[0], true);
+	}
 }
 
 void ZGuiMenu::ResizeMenu()
 {
 	if(m_pkFont == NULL)
 		return;
+
+	if(m_bPopup)
+	{
+		map<string,int> sizes;
+
+		for(int j=0; j<m_vkItems.size(); j++)		
+		{
+			if(m_vkItems[j]->pkParent == NULL)
+				continue;
+
+			map<string,int>::iterator it = sizes.find( string(m_vkItems[j]->pkParent->szNameID) );
+
+			if(it != sizes.end())
+			{
+				int sz = m_pkFont->GetLength(m_vkItems[j]->pkButton->GetText());
+
+				int max_size = it->second;
+
+				if(max_size < sz)
+					max_size = sz;
+
+				sizes[ string(m_vkItems[j]->pkParent->szNameID) ] = max_size;
+			}
+			else
+			{
+				int sz = m_pkFont->GetLength(m_vkItems[j]->pkButton->GetText());
+				sizes[ string(m_vkItems[j]->pkParent->szNameID) ] = sz;
+			}
+		}
+
+		for(int j=0; j<m_vkItems.size(); j++)
+		{
+			if(m_vkItems[j]->pkParent == NULL)
+				continue;
+
+			int w = sizes[ string(m_vkItems[j]->pkParent->szNameID) ];
+			m_vkItems[j]->pkButton->Resize(w,-1,true); 
+			m_vkItems[j]->pkButton->Move(0,-MENU_ITEM_HEIGHT,false,false); 
+
+			Rect rc = m_vkItems[j]->pkButton->GetWndRect(); 
+
+			if(m_vkItems[j]->pkParent && m_vkItems[j]->pkParent != GetItem("PopupRootMain"))
+				rc.Left = m_vkItems[j]->pkParent->pkButton->GetWndRect().Right + 1; 
+
+			m_vkItems[j]->pkButton->SetPos(rc.Left,rc.Top,false,true);
+		}
+
+		return;
+	}
 
 	const int SPACE_BETWEEN_SUB_MENUS = 8;
 
@@ -382,7 +465,7 @@ void ZGuiMenu::ResizeMenu()
 
 	for(int j=0; j<m_vkItems.size(); j++)
 	{
-		if(m_vkItems[j]->pkParent == NULL)
+		if(m_vkItems[j]->pkParent == NULL || m_bPopup)
 		{
 			ZGuiButton* pkButton = m_vkItems[j]->pkButton;
 			pkButton->SetFont(m_pkFont); 
@@ -390,10 +473,16 @@ void ZGuiMenu::ResizeMenu()
 			int width = m_pkFont->GetLength( pkButton->GetText() ); 
 			pkButton->Resize(width, MENU_ITEM_HEIGHT);
 
-			if( j > 0 )
+			if( j > 0 || m_bPopup)
 			{
 				int x = m_vkItems[iPrevIndex]->pkButton->GetWndRect().Right + SPACE_BETWEEN_SUB_MENUS; 
 				int y = pkButton->GetWndRect().Top; 
+
+				if(m_bPopup)
+				{
+					x = 0;
+					y-=pkButton->GetWndRect().Height();
+				}
 				
 				pkButton->SetPos(x, y, false, true);
 				pkButton->SetMoveArea(pkButton->GetScreenRect(), false); 				
@@ -427,7 +516,7 @@ void ZGuiMenu::ResizeMenu()
 		int max = -1;
 		for(int j=0; j<m_vkItems.size(); j++)
 		{
-			if(m_vkItems[j]->pkParent == it->first)
+			if(m_vkItems[j]->pkParent == it->first || m_bPopup)
 			{
 				ZGuiButton* pkButton = m_vkItems[j]->pkButton;
 				pkButton->SetFont(m_pkFont); 
@@ -450,7 +539,7 @@ void ZGuiMenu::ResizeMenu()
 	{
 		for(int j=0; j<m_vkItems.size(); j++)
 		{
-			if(m_vkItems[j]->pkParent == it->first)
+			if(m_vkItems[j]->pkParent == it->first || m_bPopup)
 			{
 				ZGuiButton* pkButton = m_vkItems[j]->pkButton;
 				pkButton->Resize(kMaxWidths[iIndex], MENU_ITEM_HEIGHT);
@@ -470,8 +559,7 @@ void ZGuiMenu::ResizeMenu()
 			{
 				ZGuiButton* pkButton = m_vkItems[j]->pkButton;
 
-				int x; 
-
+				int x;
 				if(m_vkItems[j]->pkParent->pkParent == NULL)
 					x = m_vkItems[j]->pkParent->pkButton->GetWndRect().Left;
 				else

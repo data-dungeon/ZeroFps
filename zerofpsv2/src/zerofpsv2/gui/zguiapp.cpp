@@ -80,7 +80,7 @@ ZGuiSkin* ZGuiApp::GetSkin(string strName)
 }
 
 ZGuiWnd* ZGuiApp::CreateWnd(GuiType eType, char* szResourceName, char* szText, ZGuiWnd* pkParent, 
-								int x, int y, int w, int h, unsigned long uiFlags,
+								int x, int y, int w, int h, int iFlags,
 								WndAlignent eAlignment, WndResizeType eResizeType)
 {
 	
@@ -128,14 +128,14 @@ ZGuiWnd* ZGuiApp::CreateWnd(GuiType eType, char* szResourceName, char* szText, Z
 		if(iNewHeight != -1) h = iNewHeight;
 	}
 
-	// Om parent fönstret är en TabControl så är uiFlags = sidnummret och parent fönstret
+	// Om parent fönstret är en TabControl så är iFlags = sidnummret och parent fönstret
 	// måste då tas fram på nytt.
 	if( GetWndType(pkParent) == TabControl)
 	{
 		AddTabPage((char*)pkParent->GetName(), szResourceName, szText);
-		return ((ZGuiTabCtrl*)(pkParent))->GetPage(uiFlags);
+		return ((ZGuiTabCtrl*)(pkParent))->GetPage(iFlags);
 
-/*		pkParent = ((ZGuiTabCtrl*)(pkParent))->GetPage(uiFlags);
+/*		pkParent = ((ZGuiTabCtrl*)(pkParent))->GetPage(iFlags);
 
 		printf("pkParent Name = %s\n", pkParent->GetName());
 		if(pkParent == NULL)
@@ -171,7 +171,7 @@ ZGuiWnd* ZGuiApp::CreateWnd(GuiType eType, char* szResourceName, char* szText, Z
 	case Listbox:
 		pkWnd = new ZGuiListbox( Rect(x,y,x+w,y+h), pkParent, true, iID, 
 			LISTBOX_ITEM_HEIGHT, NULL, NULL, NULL);
-		if(uiFlags & READ_ONLY) 
+		if(iFlags & READ_ONLY) 
 			((ZGuiListbox*) pkWnd)->SetEnable(false);
 		break;
 	case Combobox:
@@ -180,8 +180,8 @@ ZGuiWnd* ZGuiApp::CreateWnd(GuiType eType, char* szResourceName, char* szText, Z
 		break;
 	case Textbox:
 		pkWnd = new ZGuiTextbox( Rect(x,y,x+w,y+h), pkParent, true, iID, 
-			uiFlags & EB_IS_MULTILINE);
-		if(uiFlags & READ_ONLY) 
+			iFlags & EB_IS_MULTILINE);
+		if(iFlags & READ_ONLY) 
 			((ZGuiTextbox*) pkWnd)->SetReadOnly(true);
 		break;
 	case Treebox:
@@ -191,7 +191,7 @@ ZGuiWnd* ZGuiApp::CreateWnd(GuiType eType, char* szResourceName, char* szText, Z
 		pkWnd = new ZGuiTabCtrl( Rect(x,y,x+w,y+h), pkParent, true, iID);
 		break;
 	case Menu:
-		pkWnd = new ZGuiMenu( Rect(x,y,x+w,y+h), pkParent, true, iID);
+		pkWnd = new ZGuiMenu( Rect(x,y,x+w,y+h), pkParent, true, iID, iFlags & MENU_IS_POPUP);
 		break;
 	case Progressbar:
 		pkWnd = new ZGuiProgressbar( Rect(x,y,x+w,y+h), pkParent, true, iID);
@@ -344,7 +344,7 @@ ZGuiWnd* ZGuiApp::CreateWnd(GuiType eType, char* szResourceName, char* szText, Z
 
 	pkWnd->Show(); 
 
-	if(uiFlags & CREATE_WND_HIDDEN) 
+	if(iFlags & CREATE_WND_HIDDEN) 
 		pkWnd->Hide();
 
 	if(eScaleMode == GUIScaleManually && m_bDisableGuiScaleMode == false)
@@ -404,12 +404,12 @@ ZGuiWnd* ZGuiApp::CreateWnd(GuiType eType, char* szResourceName, char* szText, Z
 
 
 ZGuiWnd* ZGuiApp::CreateWnd(GuiType eType, char* szWndName, char* szParentName, 
-								char* szLabel, int x, int y, int w, int h, unsigned long uiFlags, 
+								char* szLabel, int x, int y, int w, int h, int iFlags, 
 								WndAlignent eAlignment, WndResizeType eResizeType)
 {
 	ZGuiWnd* pkParent = m_pkResMan->Wnd(string(szParentName)); // GetWnd(parentID);
 	return CreateWnd(eType, szWndName, szLabel, pkParent, x, y, w, h, 
-		uiFlags, eAlignment, eResizeType);
+		iFlags, eAlignment, eResizeType);
 }
 
 ZGuiSkin* ZGuiApp::AddSkinFromScript(char *szName, ZGuiSkin* pkSkin)

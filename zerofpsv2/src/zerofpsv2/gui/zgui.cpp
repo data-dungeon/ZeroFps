@@ -554,14 +554,16 @@ bool ZGui::UpdateMouse(int x, int y, bool bLBnPressed, bool bRBnPressed, bool bM
 {
 	if(m_bActive == true)
 	{
+		m_fTime = fTime;
+
 		//if(m_pkCursor && m_pkCursor->IsVisible())	
 			OnMouseUpdate(x, y, bLBnPressed, bRBnPressed, bMBnPressed, fTime);
 
-			if(bLBnPressed == false && bRBnPressed == false)
-				m_bHandledMouse = false;
+		if(bLBnPressed == false && bRBnPressed == false)
+			m_bHandledMouse = false;
 
-			if(m_bForceGUICapture)
-				m_bHandledMouse = true;
+		if(m_bForceGUICapture)
+			m_bHandledMouse = true;
 		
 		m_pkToolTip->Update(x,y,(bLBnPressed|bRBnPressed|bMBnPressed),fTime);
 	}

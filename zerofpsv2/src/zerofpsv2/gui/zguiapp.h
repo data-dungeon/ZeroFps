@@ -19,9 +19,10 @@ class ZGuiResourceManager;
 class ZFResourceHandle;
 class ZFScript;
 
-#define EB_IS_MULTILINE			0x1
-#define READ_ONLY					0x2
-#define CREATE_WND_HIDDEN		0x3
+#define EB_IS_MULTILINE			1
+#define READ_ONLY					2
+#define CREATE_WND_HIDDEN		4
+#define MENU_IS_POPUP			8
 
 enum GuiType
 {
@@ -120,11 +121,11 @@ public:
 		char* szScriptFile, char* szMenuFile, bool bUseHardwareMouse, bool bScaleGUIManually);
 
 	ZGuiWnd* CreateWnd(GuiType eType, char* szWndName, char* szParentName, 
-		char* szLabel, int x, int y, int w, int h, unsigned long uiFlags,
+		char* szLabel, int x, int y, int w, int h, int iFlags,
 		WndAlignent eAlignment=TopLeft, WndResizeType eResizeType=eNone);
 
 	ZGuiWnd* CreateWnd(GuiType eType, char* szResourceName, char* szText, 
-		ZGuiWnd* pkParent, int x, int y, int w, int h, unsigned long uiFlags,
+		ZGuiWnd* pkParent, int x, int y, int w, int h, int iFlags,
 		WndAlignent eAlignment=TopLeft, WndResizeType eResizeType=eNone);
 
 	void CloseWindow(char* szResName);

@@ -24,7 +24,6 @@ void MadView::SetupGuiEnviroment()
 
 	GetWnd("MaterialFileTree")->Hide();
 	GetWnd("AnimationFileTree")->Hide();
-	
 }
 
 void MadView::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)

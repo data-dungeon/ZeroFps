@@ -187,6 +187,8 @@ public:
 	ZGuiWnd* m_pkFpsWnd;
 	ZGuiLabel* m_pkFpsLabel;
 
+	float m_fTime;
+
 	bool PlaceWndFrontBack(ZGuiWnd* pkMainWnd, bool bFront);
 
 private:

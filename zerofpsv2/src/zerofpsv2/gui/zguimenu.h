@@ -29,7 +29,7 @@ class GUI_API ZGuiMenu : public ZGuiWnd
 {
 public:
 	ZGuiMenu(Rect kRectangle, ZGuiWnd* pkParent=NULL, bool bVisible=true, 
-		int iID=0);
+		int iID=0, bool bPopup=false);
 
 	virtual ~ZGuiMenu();
 
@@ -70,11 +70,12 @@ private:
 	ZGuiSkin* m_pkItemSkinFocus;
 	ZGuiSkin* m_pkSkinDown;
 
-	static int s_iMenuIDCounter;
+	int s_iMenuIDCounter;
 
 	bool m_bNeedToResize;
 
 	bool m_bIsOpen;
+	bool m_bPopup;
 
 };
 
