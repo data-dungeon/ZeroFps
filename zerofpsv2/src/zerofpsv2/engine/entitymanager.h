@@ -211,7 +211,7 @@ class ENGINE_API EntityManager : public ZFSubSystem{
 		void UpdateDelete();													///< Deletes Entity in delete qeue	
 
 		// Updates
-		void 	Update(int iType,int iSide,bool bSort,Entity* pkRootEntity = NULL,bool bForceRootOnly = false);					///< Run update on selected propertys.
+		void 	Update(int iType,int iSide,bool bSort,Entity* pkRootEntity = NULL,bool bForceRootOnly = false,bool bUpdateList = true);				///< Run update on selected propertys.
 		bool 	IsUpdate(int iFlags);											///< Check if the current update is of a selected type
 		void 	UpdateGameMessages(void);									///< Update game messages.
 		int 	GetCurrentUpdateFlags()	{	return m_iUpdateFlags;	};

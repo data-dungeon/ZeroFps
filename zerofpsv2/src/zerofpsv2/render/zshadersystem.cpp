@@ -37,9 +37,10 @@ ZShaderSystem::ZShaderSystem() : ZFSubSystem("ZShaderSystem")
 	
 	
 	//force settings
-	m_iForceCullFace = 	-1;
+	m_iForceCullFace 	= 	-1;
 	m_iForceColorMask = 	-1;
 	m_iForceAlphaTest =	-1;
+	m_iForceLighting	=	-1;
 };
 
 bool ZShaderSystem::StartUp()
@@ -566,11 +567,18 @@ void ZShaderSystem::SetupPass(int iPass)
 
 	
 	//lighting setting
-	if(pkSettings->m_bLighting)
+	if(m_iForceLighting == -1)
+	{	
+		if(pkSettings->m_bLighting)
+			glEnable(GL_LIGHTING);
+		else
+			glDisable(GL_LIGHTING);	
+	}
+	else if(m_iForceLighting == 1)
 		glEnable(GL_LIGHTING);
-	else
+	else if(m_iForceLighting == 0)
 		glDisable(GL_LIGHTING);	
-		
+			
 	//cullface setting
 	int iCull = pkSettings->m_iCullFace;
 	if(m_iForceCullFace != -1)

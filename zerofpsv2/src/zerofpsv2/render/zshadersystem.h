@@ -259,6 +259,7 @@ class RENDER_API ZShaderSystem : public ZFSubSystem
 		int			m_iForceCullFace;
 		int			m_iForceColorMask;
 		int			m_iForceAlphaTest;
+		int			m_iForceLighting;
 		
 		//basic		
 		void SetupOpenGL();

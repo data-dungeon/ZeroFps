@@ -34,19 +34,30 @@ LightSource::LightSource()
 Light::Light()
 : ZFSubSystem("Light") 
 {
-	m_iNrOfLights=8;							//this shuld never be greater than 8
+	m_iNrOfLights=		8;							//this shuld never be greater than 8
+	m_bAmbientOnly =	false;
+	m_bEnabled = 		true;
 
+	
 	RegisterVariable("r_maxlights",		&m_iNrOfLights,CSYS_INT);
-	m_bAmbientOnly 	= false;
-
+	
+	
+	//enable lighting
+	SetLighting(true);
 }
 
 void Light::SetLighting(bool bOn)
 {
 	if(bOn)
-		glEnable(GL_LIGHTING);
+	{
+		glEnable(GL_LIGHTING);		
+		m_bEnabled = true;
+	}
 	else
+	{
 		glDisable(GL_LIGHTING);
+		m_bEnabled = false;
+	}
 }
 
 bool Light::StartUp()	
@@ -103,6 +114,9 @@ void Light::Update(Vector3 kRefPos)
 	m_kSorted.clear();	
 	TurnOffAll();
 
+	if(!m_bEnabled)
+		return;
+	
 	list<LightSource*>::iterator it;
 
 	//loop trough all lightsources and find wich to view

@@ -581,11 +581,12 @@ void Camera::RenderView()
 		//draw LIT light				
 		InitView();	
 		m_iCurrentRenderMode = RENDER_NORMAL;
-		m_pkEntityMan->Update(PROPERTY_TYPE_RENDER,PROPERTY_SIDE_CLIENT,true,pkRootEntity,m_bRootOnly);		
+		m_pkEntityMan->Update(PROPERTY_TYPE_RENDER,PROPERTY_SIDE_CLIENT,true,pkRootEntity,m_bRootOnly,false);		
 		
 		//draw shadowed scene
 		if(pkLight)
 		{
+			//disable diffuse and specular lighting for the shadowcasting lightsource
 			Vector4 kDiffuseBak  = pkLight->kDiffuse;
 			Vector4 kSpecularBak = pkLight->kSpecular;;			
 			pkLight->kDiffuse.Set(0,0,0,0);
@@ -716,7 +717,7 @@ void Camera::DrawShadowedScene()
 	m_pkZShaderSystem->ReloadMaterial();		
 	
 	Entity* pkRootEntity = m_pkEntityMan->GetEntityByID(m_iRootEntity);
-	m_pkEntityMan->Update(PROPERTY_TYPE_RENDER,PROPERTY_SIDE_CLIENT,true,pkRootEntity,m_bRootOnly);	
+	m_pkEntityMan->Update(PROPERTY_TYPE_RENDER,PROPERTY_SIDE_CLIENT,true,pkRootEntity,m_bRootOnly,false);	
 	
 	
 	glActiveTextureARB(GL_TEXTURE3_ARB);
@@ -732,7 +733,7 @@ void Camera::DrawShadowedScene()
 	glDisable(GL_TEXTURE_GEN_Q);
 	
 	//Restore other states
-	glDisable(GL_LIGHTING);
+	//glDisable(GL_LIGHTING);
 	glActiveTextureARB(GL_TEXTURE0_ARB);
 }
 

@@ -70,6 +70,7 @@ class RENDER_API Light : public ZFSubSystem {
 		vector<LightSource*> m_kActiveLights;
 
 		bool		m_bAmbientOnly;
+		bool		m_bEnabled;
 		
 		void TurnOffAll();
 		

@@ -388,45 +388,53 @@ void EntityManager::UpdateDelete()
 	This function collects all propertys that fit the selected flags, sorts them if it needs to
 	and then runs the update function of each of this propertys.
 */
-void EntityManager::Update(int iType,int iSide,bool bSort,Entity* pkRootEntity,bool bForceRootOnly)
+void EntityManager::Update(int iType,int iSide,bool bSort,Entity* pkRootEntity,bool bForceRootOnly,bool bUpdateList)
 {
-	m_iUpdateFlags = iType | iSide;
-	
-	//clear property  list
-	m_akPropertys.clear();	
-
-	//get propertys
-	if(bForceRootOnly)
+	if(bUpdateList)
 	{
-		if(pkRootEntity)
-			pkRootEntity->GetPropertys(&m_akPropertys,iType,iSide);
-		else
-			m_pkWorldEntity->GetPropertys(&m_akPropertys,iType,iSide);
-	}
-	else
-	{	
-		if(pkRootEntity)
-			pkRootEntity->GetAllPropertys(&m_akPropertys,iType,iSide);
-		else
-			m_pkWorldEntity->GetAllPropertys(&m_akPropertys,iType,iSide);
-	}
 	
-	//logg stuff		
-	m_iNrOfActivePropertys = m_akPropertys.size();	
-	m_pkZeroFps->DevPrintf("om", "OM::Update(%s, %s,%d) = %d",
-		GetPropertyTypeName(iType),GetPropertySideName(iSide),bSort,m_iNrOfActivePropertys);
-
-	//sort all propertys
-	if(bSort)
-		stable_sort(m_akPropertys.begin(),m_akPropertys.end(),Less_Property);
-
+		m_iUpdateFlags = iType | iSide;
 		
-	//run updat ein all propertys
+		//clear property  list
+		m_akPropertys.clear();	
+	
+		//get propertys
+		if(bForceRootOnly)
+		{
+			if(pkRootEntity)
+				pkRootEntity->GetPropertys(&m_akPropertys,iType,iSide);
+			else
+				m_pkWorldEntity->GetPropertys(&m_akPropertys,iType,iSide);
+		}
+		else
+		{	
+			if(pkRootEntity)
+				pkRootEntity->GetAllPropertys(&m_akPropertys,iType,iSide);
+			else
+				m_pkWorldEntity->GetAllPropertys(&m_akPropertys,iType,iSide);
+		}
+		
+		//logg stuff		
+		m_iNrOfActivePropertys = m_akPropertys.size();	
+		m_pkZeroFps->DevPrintf("om", "OM::Update(%s, %s,%d) = %d",
+			GetPropertyTypeName(iType),GetPropertySideName(iSide),bSort,m_iNrOfActivePropertys);
+	
+		//sort all propertys
+		if(bSort)
+			stable_sort(m_akPropertys.begin(),m_akPropertys.end(),Less_Property);
+
+	}
+		
+	//run update in all propertys
+	for(int i = 0;i<m_akPropertys.size();i++)
+		m_akPropertys[i]->Update();
+
+/*			
 	for(vector<Property*>::iterator it=m_akPropertys.begin();it!=m_akPropertys.end();it++)
 	{ 
 		//cout<<(*it)->m_acName<<endl;
 		(*it)->Update();
-	}
+	}*/
 }
 
 bool EntityManager::IsUpdate(int iFlags)
