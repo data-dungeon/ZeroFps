@@ -363,6 +363,9 @@ Object* ObjectManager::CreateObjectFromScriptInZone(const char* acName,Vector3 k
 	if(id == -1)
 		return NULL;
 	
+	//force loading of this zone
+	LoadZone(id);
+	
 	if(!m_kZones[id].m_pkZone)
 		return NULL;
 		
@@ -719,6 +722,11 @@ void ObjectManager::PackToClients()
 		// Pack and Send all Client Objects
 		kObjects.clear();
 		m_pkClientObject->GetAllObjects(&kObjects);
+		PackToClient(iClient, kObjects);
+
+		//pack and send global objects
+		kObjects.clear();
+		m_pkGlobalObject->GetAllObjects(&kObjects);
 		PackToClient(iClient, kObjects);
 
 		// Loop all zones activated by client.
@@ -2025,6 +2033,8 @@ void ObjectManager::SetZoneModel(const char* szName,int iId)
 
 void ObjectManager::ForceUnload()
 {	
+
+	//loop trough all loaded zones, and unload em , to make sure that all zones is saved
 	for(unsigned int i=0;i<m_kZones.size();i++) 
 	{
 		if(!m_kZones[i].m_bUsed)
@@ -2033,4 +2043,7 @@ void ObjectManager::ForceUnload()
 		if(m_kZones[i].m_pkZone)
 			UnLoadZone(i);		
 	}
+	
+	//after unloading , reload 	
+	UpdateZones();
 }

@@ -219,7 +219,7 @@ bool ZFAudioSystem::StartSound(string strName, Vector3 pos,
 	// Lägg till ljudet till vektorn med ljud.
 	m_kSoundList.push_back( pkSound );
 
-	printf("Starting sound (priority: %i)\n", GetResHandlePriority(strName));
+	//printf("Starting sound (priority: %i)\n", GetResHandlePriority(strName));
 
 	return true;
 }
@@ -803,7 +803,7 @@ bool ZFAudioSystem::DeleteSound(ZFSoundInfo *pkSound, bool bRemoveFromSystem)
 
 	if( error == AL_NO_ERROR )
 	{
-		printf("stopping sound\n");
+		//printf("stopping sound\n");
 		return true;
 	}
 

@@ -146,6 +146,13 @@ void MistClient::OnIdle()
 	pkRender->Line(pos,pos+Vector3(10,0,0));
 	pkRender->Line(pos,pos+Vector3(0,10,0));	
 	pkRender->Line(pos,pos+Vector3(0,0,10));	
+	
+	if(m_pkServerInfo)
+	{
+		pkFps->DevPrintf("client","ServerName: %s", m_pkServerInfo->m_sServerName.c_str());
+		pkFps->DevPrintf("client","Players: %d", m_pkServerInfo->GetNrOfPlayers());
+	
+	}	
 }
 
 void MistClient::OnSystem() 
@@ -165,9 +172,6 @@ void MistClient::OnSystem()
 				{			
 					pkConsole->Printf("Got client object, Trying to get client control");
 			
-				//	m_pkClientControlP = (P_ClientControl*)m_pkClientObject->AddProperty("P_ClientControl");
-				//m_pkClientObject->AddProperty("P_ClientControl");
-				
 					m_pkClientControlP = (P_ClientControl*)m_pkClientObject->GetProperty("P_ClientControl");				
 					if(m_pkClientControlP)
 					{
@@ -181,11 +185,13 @@ void MistClient::OnSystem()
 		
 		if(!m_pkServerInfo)
 		{
-			m_pkServerInfo = (P_ServerInfo*)pkObjectMan->GetObject("A t_serverinfo.lua");
+			Object* pkServerI = pkObjectMan->GetObject("A t_serverinfo.lua");
+			if(pkServerI)
+				m_pkServerInfo = (P_ServerInfo*)pkServerI->GetProperty("P_ServerInfo");
+				
 			if(m_pkServerInfo)
 			{
-				cout<<"Got server info"<<endl;
-				exit(1);
+				pkConsole->Printf("Got server info");
 			}
 		}
 	};

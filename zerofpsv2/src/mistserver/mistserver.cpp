@@ -380,7 +380,12 @@ void MistServer::Input()
 			//remove			
 			if(pkInput->Pressed(KEY_R))
 			{
+				cout<<"Deleting object:"<<m_iCurrentObject<<endl;
+				
 				Object* pkObj = pkObjectMan->GetObjectByNetWorkID(m_iCurrentObject);
+								
+				if(pkObj)
+					cout<<"name:"<<pkObj->GetName()<<endl;
 								
 				if(pkObj)
 					pkObjectMan->Delete(pkObj);
@@ -509,10 +514,15 @@ void MistServer::OnServerClientJoin(ZFClient* pkClient,int iConID)
 
 	pkClient->m_pkObject->AddProperty("P_ClientControl");
 
+		
+	UpdateStartLocatons();
+	int iPlayerID  = CreatePlayer("Olle","Start",iConID);
+	
 	if(m_pkServerInfoP)
+	{	
 		m_pkServerInfoP->AddPlayer(iConID,"UnKnownPlayer");
-		
-		
+		m_pkServerInfoP->AddObject(iConID,iPlayerID);
+	}
 }
 
 void MistServer::OnServerClientPart(ZFClient* pkClient,int iConID)
@@ -611,8 +621,15 @@ Object* MistServer::GetTargetObject()
 		if(kObjects[i] == m_pkCameraObject)
 			continue;
 		
+		if(kObjects[i]->iNetWorkID <100000)
+			continue;
+		
 		if(kObjects[i]->GetName() == "ZoneObject")
 			continue;
+		
+		if(kObjects[i]->GetName() == "A t_serverinfo.lua")
+			continue;
+		
 		
 		float d = (start - kObjects[i]->GetWorldPosV()).Length();
 	
@@ -805,6 +822,46 @@ void MistServer::ToogleLight(bool bEnabled)
 		pkZShader->SetForceLighting(ALWAYS_ON);
 	else
 		pkZShader->SetForceLighting(ALWAYS_OFF);
+}
+
+void MistServer::UpdateStartLocatons()
+{
+	m_kLocations.clear();
+
+	pair<string,Vector3> temp("Start",Vector3(10,0,0));
+	m_kLocations.push_back(temp);
+}
+
+
+Vector3 MistServer::GetPlayerStartLocation(const char* csName)
+{
+	for(int i=0;i<m_kLocations.size();i++)
+		if(m_kLocations[i].first == csName)
+		{	
+			cout<<"found location: "<<csName<<endl;
+			return m_kLocations[i].second;
+		}
+	
+	return Vector3(0,0,0);
+}
+
+int MistServer::CreatePlayer(const char* csName,const char* csLocation,int iConID)
+{
+	cout<<"creating new player:"<<csName<<endl;
+	
+	Vector3 kStartPos = GetPlayerStartLocation(csLocation);
+	
+	Object* pkObject = pkObjectMan->CreateObjectFromScriptInZone("data/script/objects/t_player.lua",kStartPos);
+	
+	if(!pkObject)
+	{	
+		cout<<"Error creating player caracter"<<endl;
+		return -1;
+	}
+	
+	cout<<"player created"<<endl;	
+		
+	return pkObject->iNetWorkID;
 }
 
 void MistServer::PathTest()

@@ -120,18 +120,18 @@ void PSystemProperty::Load(ZFIoInterface* pkPackage)
 
 void PSystemProperty::PackTo( NetPacket* pkNetPacket ) 
 {
-   pkNetPacket->Write( m_pkPSystem->m_pkPSystemType->m_kName );
-	pkNetPacket->Write( m_pkPSystem->m_fAge );
+//   pkNetPacket->Write( m_pkPSystem->m_pkPSystemType->m_kName );
+//	pkNetPacket->Write( m_pkPSystem->m_fAge );
 }
 
 // ------------------------------------------------------------------------------------------
 
 void PSystemProperty::PackFrom( NetPacket* pkNetPacket ) 
 {
-   pkNetPacket->Read( m_pkPSystem->m_pkPSystemType->m_kName );
-	pkNetPacket->Read( m_pkPSystem->m_fAge );
+//   pkNetPacket->Read( m_pkPSystem->m_pkPSystemType->m_kName );
+//	pkNetPacket->Read( m_pkPSystem->m_fAge );
 
-   m_pkPSystem->TimeoffSet();
+//   m_pkPSystem->TimeoffSet();
 }
 
 // ------------------------------------------------------------------------------------------

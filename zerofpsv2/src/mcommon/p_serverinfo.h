@@ -18,7 +18,7 @@ class MCOMMON_API P_ServerInfo: public Property {
 		{
 			int		iId;
 			string	sPlayerName;
-		
+			vector<int>	kControl;
 		};
 
 		vector<PlayerInfo>	m_kPlayers;
@@ -30,7 +30,8 @@ class MCOMMON_API P_ServerInfo: public Property {
 		void CloneOf(Property* pkProperty) { }
 		P_ServerInfo();
 		
-		
+		void AddObject(int id,int iObjID);
+		void RemoveObject(int id,int iObjID);		
 		void AddPlayer(int id,string sName);
 		void RemovePlayer(int id);
 		void RemovePlayer(string sName);
@@ -38,6 +39,10 @@ class MCOMMON_API P_ServerInfo: public Property {
 		bool PlayerExist(int id);		
 
 		int GetNrOfPlayers(){return m_kPlayers.size();};
+		
+      void PackTo(NetPacket* pkNetPacket);
+		void PackFrom(NetPacket* pkNetPacket);
+		
 };
 
 MCOMMON_API Property* Create_P_ServerInfo();

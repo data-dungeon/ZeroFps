@@ -51,7 +51,7 @@ void P_AmbientSound::Update()
 					pkObject->GetVel(), m_bLoop))
 				{
 					m_bStarted = true;
-					printf("--------- Sound have started ---------- \n");
+					//printf("--------- Sound have started ---------- \n");
 				}
 			}
 		}
@@ -123,7 +123,7 @@ vector<PropertyValues> P_AmbientSound::GetPropertyValues()
 
 void P_AmbientSound::Save(ZFIoInterface* pkFile)
 {
-	printf("P_AmbientSound::Save!\n");
+	//printf("P_AmbientSound::Save!\n");
 	m_bSoundHaveBeenSaved = true;
 
 	pkFile->Write( &m_bSoundHaveBeenSaved,sizeof(bool),1); // have been saved or not
@@ -141,7 +141,7 @@ void P_AmbientSound::Save(ZFIoInterface* pkFile)
 
 void P_AmbientSound::Load(ZFIoInterface* pkFile)
 {
-	printf("P_AmbientSound::Load!\n");
+	//printf("P_AmbientSound::Load!\n");
 
 	char* szFileName = NULL;
 	unsigned int uiFileNameSize;

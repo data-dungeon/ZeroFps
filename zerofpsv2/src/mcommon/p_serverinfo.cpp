@@ -8,8 +8,10 @@ P_ServerInfo::P_ServerInfo()
 	
 	m_pkFps=static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
 
-
+	bNetwork = true;
 	m_sServerName	= 	"NoName";
+	
+	cout<<"server info created"<<endl;
 }
 
 
@@ -24,7 +26,8 @@ void P_ServerInfo::AddPlayer(int id,string sName)
 	PlayerInfo temp;
 	temp.iId = id;
 	temp.sPlayerName = sName;
-
+	temp.kControl.clear();
+	
 	m_kPlayers.push_back(temp);
 }
 
@@ -75,6 +78,100 @@ bool P_ServerInfo::PlayerExist(int id)
 	}
 	return false;
 }
+
+
+void P_ServerInfo::AddObject(int id,int iObjID)
+{
+	for(vector<PlayerInfo>::iterator it = m_kPlayers.begin(); it != m_kPlayers.end(); it++) 
+	{
+		if((*it).iId == id)
+		{
+			for(int i = 0;i<(*it).kControl.size();i++)
+			{
+				if((*it).kControl[i] == iObjID)
+					return;
+			}
+			
+			(*it).kControl.push_back(iObjID);
+		}
+	}
+}
+
+void P_ServerInfo::RemoveObject(int id,int iObjID)
+{
+	for(vector<PlayerInfo>::iterator it = m_kPlayers.begin(); it != m_kPlayers.end(); it++) 
+	{
+		if((*it).iId == id)
+		{
+			for(vector<int>::iterator it2 = (*it).kControl.begin(); it2 != (*it).kControl.end(); it2++)
+			{
+				if((*it2) == iObjID)
+				{
+					(*it).kControl.erase(it2);
+					return;
+				}
+			
+			}
+		}
+	}	
+
+}
+
+void P_ServerInfo::PackTo( NetPacket* pkNetPacket ) 
+{
+   pkNetPacket->Write_Str( m_sServerName.c_str());
+
+	int players = m_kPlayers.size();	
+	pkNetPacket->Write(&players,sizeof(players));
+	
+	for(int i=0;i<m_kPlayers.size();i++)
+	{
+		pkNetPacket->Write(&m_kPlayers[i].iId,sizeof(m_kPlayers[i].iId));
+		pkNetPacket->Write_Str(m_kPlayers[i].sPlayerName.c_str());		
+		
+		int objects = m_kPlayers[i].kControl.size();
+		pkNetPacket->Write(&objects,sizeof(objects));
+		for(int j =0;j<objects;j++)
+			pkNetPacket->Write(&m_kPlayers[i].kControl[j],sizeof(m_kPlayers[i].kControl[j]));
+	}
+	
+}
+
+
+void P_ServerInfo::PackFrom( NetPacket* pkNetPacket ) 
+{   
+	char tm[120];
+   pkNetPacket->Read_Str( tm );
+	m_sServerName = tm;
+
+	m_kPlayers.clear();
+	
+	int players;
+	pkNetPacket->Read(&players,sizeof(players));	
+	
+	for(int i=0;i<players;i++)	
+	{
+		PlayerInfo temp;
+		pkNetPacket->Read(&temp.iId,sizeof(temp.iId));
+	   char tm[120];		   
+		pkNetPacket->Read_Str(tm);		
+		temp.sPlayerName = tm;
+		
+		temp.kControl.clear();
+		
+		int objects; 
+		pkNetPacket->Read(&objects,sizeof(objects));
+		
+		for(int i =0;i<objects;i++)
+		{	
+			int t;
+			pkNetPacket->Read(&t,sizeof(t));
+			temp.kControl.push_back(t);
+		}
+		m_kPlayers.push_back(temp);
+	}
+}
+
 
 Property* Create_P_ServerInfo()
 {

@@ -17,6 +17,8 @@
 #include "../zerofpsv2/engine_systems/propertys/cameraproperty.h"
 #include "../zerofpsv2/gui/zgui.h"
 
+#include <vector>
+
 
 #include "../mcommon/p_event.h"
 #include "../mcommon/si_mistland.h"
@@ -43,15 +45,19 @@ class MistServer :public Application , public ZGuiApp {
 		
 		};
 
+		//server stuff
+		Object* m_pkServerInfo;
+		P_ServerInfo* m_pkServerInfoP;
+
+		vector<pair<string,Vector3> >	m_kLocations;
+
+		//edit stuff
 		int		m_iEditMode;
 
 		string	m_strActiveZoneName, m_strPrevZoneName;
 		string	m_strActiveObjectName;
 		Object*	m_pkCameraObject;
 		Camera*	m_pkCamera;
-
-		Object* m_pkServerInfo;
-		P_ServerInfo* m_pkServerInfoP;
 
 		Vector3	m_kZoneSize;
 		Vector3	m_kZoneMarkerPos;
@@ -102,6 +108,10 @@ class MistServer :public Application , public ZGuiApp {
 		
 		//init client
 		void ClientInit();
+		
+		int CreatePlayer(const char* csName,const char* csLocation,int iConID);
+		Vector3 GetPlayerStartLocation(const char* csName);
+		void UpdateStartLocatons();
 		
 		//on client join, server runs this
 		void OnServerClientJoin(ZFClient* pkClient,int iConID);
