@@ -185,6 +185,9 @@ void PhysicsEngine::HandleCollisions()
 
 	m_kCPs.sort(SortCollision);
 
+	if(m_kCPs.size()/2>1)
+		cout<<"nr Of tests: "<<m_kCPs.size()/2<<endl;
+
 	PhysicProperty* pkSPP=NULL;
 	Collision* pkCO=NULL;
 	for(list<CP*>::iterator itCp=m_kCPs.begin();itCp!=m_kCPs.end();itCp++) 
@@ -253,6 +256,7 @@ void PhysicsEngine::HandleCollisions()
 					}
 					
 					delete pkCD;
+								
 				}
 				
 				(*itCp)->m_pkPP->m_kNewPos=kOldNewPos1;				
@@ -290,6 +294,8 @@ void PhysicsEngine::HandleCollisions()
 		kCols[i]->m_pkPP1->GetObject()->Touch(kCols[i]);
 		kCols[i]->m_pkPP2->GetObject()->Touch(kCols[i]);	
 	}
+	
+//	cout<<"nr Of collisions: "<<kCols.size()<<endl;
 }
 
 void PhysicsEngine::ClearCollisions()

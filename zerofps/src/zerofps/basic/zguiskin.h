@@ -79,3 +79,10 @@ public:
 };
 
 #endif // !defined(AFX_ZGUISKIN_H__E13E6AC7_8EAE_468F_A100_74C5559BE66E__INCLUDED_)
+
+
+
+
+
+
+

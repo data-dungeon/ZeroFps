@@ -36,6 +36,16 @@ bool Plane::SphereInside(Vector3 kCenter, float fRadius)
 }
 
 
+float Plane::PointTest(Vector3 kPoint)
+{
+	return (m_kNormal.Dot(kPoint) + m_fD);
+}
+
+float Plane::SphereTest(Vector3 kPoint,float fRadius)
+{
+	return (m_kNormal.Dot(kPoint) + m_fD) + fRadius;
+}
+
 bool Plane::LineTest(Vector3 kP1,Vector3 kP2,Vector3* kColPos)
 {
 //	float i0=(kNormal.x*kP1.x)+(kNormal.y*kP1.y)+(kNormal.z*kP1.z);
@@ -47,16 +57,16 @@ bool Plane::LineTest(Vector3 kP1,Vector3 kP2,Vector3* kColPos)
 	float final_t= -(i1 + m_fD) / (i0-i1);
 	
 	
-//	Vector3 pos;	
-	
-	*kColPos = (kP1*final_t) + (kP2*(1 - final_t));
+
 	
 //	pos.x = (kP1.x*final_t) + ( kP2.x* (1-final_t));
 //	pos.y = (kP1.y*final_t) + ( kP2.y* (1-final_t));
 //	pos.z = (kP1.z*final_t) + ( kP2.z* (1-final_t));	
 	
-	if(final_t > 0 && final_t < 1)
+	if(final_t > 0 && final_t < 1){
+		*kColPos = (kP1*final_t) + (kP2*(1 - final_t));		
 		return true;
+	}
 	else
 		return false;
 }

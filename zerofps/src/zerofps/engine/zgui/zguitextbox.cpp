@@ -273,7 +273,9 @@ void ZGuiTextbox::SetFocus()
 			int row = iVertOffset / m_pkFont->m_cCharCellSize;
 			int rows = GetNumRows();
 
-			for(int i=0; i<row; i++)
+			int i;
+
+			for(i=0; i<row; i++)
 				m_iCursorPos += GetRowLength(i);
 
 			// Adderar för horizontellt avstånd från vänsterkant.

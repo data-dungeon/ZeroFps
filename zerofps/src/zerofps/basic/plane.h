@@ -27,6 +27,9 @@ class BASIC_API Plane
 	
 		bool PointInside(Vector3 kPoint);
 		bool SphereInside(Vector3 kCenter, float fRadius);
+		
+		float SphereTest(Vector3 kPoint,float fRadius);
+		float PointTest(Vector3 kPoint);
 		bool LineTest(Vector3 kP1,Vector3 kP2,Vector3* kColPos); 
 };
 

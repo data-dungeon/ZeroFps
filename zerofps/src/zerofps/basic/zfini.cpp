@@ -436,3 +436,12 @@ void ZFIni::GetSectionNames(vector<string>& kSectionList)
 	for(int i=0; i<m_iNumSections; i++)
 		kSectionList.push_back(m_pstrSections[i]);
 }
+
+
+
+
+
+
+
+
+

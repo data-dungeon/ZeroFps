@@ -4,6 +4,8 @@
 CSBox::CSBox(Vector3 kScale)
 {
 	m_kScale=kScale;
+	
+	coloffset=0.00001;
 }
 
 Collision* CSBox::Test(CollisionShape* kOther,float fTime,bool bContinue)
@@ -40,11 +42,17 @@ Collision* CSBox::Collide_CSSphere(CSSphere* kOther,float fTime)
 	Vector3 HitPos;
 	Vector3 HitNormal;
 	
+	
 	if(TestTop(O2->GetPos() , kOther->m_pkPP->m_kNewPos , kOther->m_fRadius)){
 		hit=true;
-		HitPos=m_kColPos;
-		HitNormal.Set(0,1,0);	
+//		if(Closer(O2->GetPos(),HitPos,m_kColPos))
+//		{		
+			HitPos=m_kColPos;
+			HitNormal.Set(0,1,0);
+//		}
 	}
+	
+	
 	if(TestBotom(O2->GetPos() , kOther->m_pkPP->m_kNewPos , kOther->m_fRadius)){
 		hit=true;
 		if(Closer(O2->GetPos(),HitPos,m_kColPos))
@@ -86,9 +94,22 @@ Collision* CSBox::Collide_CSSphere(CSSphere* kOther,float fTime)
 		}
 	}
 	
+/*	
+	
+	if(TestInside(O2->GetPos() , kOther->m_pkPP->m_kNewPos , kOther->m_fRadius))
+	{
+		cout<<"inside a box"<<endl;
+		HitPos=m_kColPos;
+		hit=true;
+	}
+*/	
+	
+	
+	
 	
 	if(!hit)
 		return NULL;
+
 
 	
 	
@@ -104,6 +125,7 @@ Collision* CSBox::Collide_CSSphere(CSSphere* kOther,float fTime)
 	}
 
 
+	
 
 	Collision* tempdata = new Collision;
 	
@@ -139,11 +161,11 @@ bool CSBox::TestTop(Vector3 kPos1,Vector3 kPos2,float fR)
 	side[2].Set(Vector3(1,0,0),m_pkPP->GetObject()->GetPos()+(Vector3(-0.5,0.5,0)*m_kScale));		
 	side[3].Set(Vector3(-1,0,0),m_pkPP->GetObject()->GetPos()+(Vector3(0.5,0.5,0)*m_kScale));		
 	
-	bool hit= surface.LineTest(kPos1, kPos2 + (-kNormal * fR),&m_kColPos);
+	bool hit= surface.LineTest(kPos1+ (-kNormal * fR), kPos2 + (-kNormal * fR),&m_kColPos);
 	
 	if(hit)
 	{
-		m_kColPos += (kNormal*0.0001) + (kNormal * fR);			
+		m_kColPos += (kNormal*coloffset) + (kNormal * fR);			
 		for(int i=0;i<4;i++)
 		{
 			if(!side[i].SphereInside(m_kColPos,fR)){
@@ -174,11 +196,11 @@ bool CSBox::TestBotom(Vector3 kPos1,Vector3 kPos2,float fR)
 	side[2].Set(Vector3(1,0,0),m_pkPP->GetObject()->GetPos()+(Vector3(-0.5,-0.5,0)*m_kScale));		
 	side[3].Set(Vector3(-1,0,0),m_pkPP->GetObject()->GetPos()+(Vector3(0.5,-0.5,0)*m_kScale));		
 	
-	bool hit= surface.LineTest(kPos1, kPos2 + (-kNormal * fR),&m_kColPos);
+	bool hit= surface.LineTest(kPos1+ (-kNormal * fR), kPos2 + (-kNormal * fR),&m_kColPos);
 	
 	if(hit)
 	{
-		m_kColPos += (kNormal*0.0001) + (kNormal * fR);			
+		m_kColPos += (kNormal*coloffset) + (kNormal * fR);			
 		for(int i=0;i<4;i++)
 		{
 			if(!side[i].SphereInside(m_kColPos,fR)){
@@ -210,11 +232,11 @@ bool CSBox::TestFront(Vector3 kPos1,Vector3 kPos2,float fR)
 	side[2].Set(Vector3(1,0,0),m_pkPP->GetObject()->GetPos()+(Vector3(-0.5,0,0.5)*m_kScale));		
 	side[3].Set(Vector3(-1,0,0),m_pkPP->GetObject()->GetPos()+(Vector3(0.5,0,0.5)*m_kScale));		
 	
-	bool hit= surface.LineTest(kPos1, kPos2 + (-kNormal * fR),&m_kColPos);
+	bool hit= surface.LineTest(kPos1+ (-kNormal * fR), kPos2 + (-kNormal * fR),&m_kColPos);
 	
 	if(hit)
 	{
-		m_kColPos += (kNormal*0.0001) + (kNormal * fR);			
+		m_kColPos += (kNormal*coloffset) + (kNormal * fR);			
 		for(int i=0;i<4;i++)
 		{
 			if(!side[i].SphereInside(m_kColPos,fR)){
@@ -245,11 +267,11 @@ bool CSBox::TestBack(Vector3 kPos1,Vector3 kPos2,float fR)
 	side[2].Set(Vector3(1,0,0),m_pkPP->GetObject()->GetPos()+(Vector3(-0.5,0,-0.5)*m_kScale));		
 	side[3].Set(Vector3(-1,0,0),m_pkPP->GetObject()->GetPos()+(Vector3(0.5,0,-0.5)*m_kScale));		
 	
-	bool hit= surface.LineTest(kPos1, kPos2 + (-kNormal * fR),&m_kColPos);
+	bool hit= surface.LineTest(kPos1+ (-kNormal * fR), kPos2 + (-kNormal * fR),&m_kColPos);
 	
 	if(hit)
 	{
-		m_kColPos += (kNormal*0.0001) + (kNormal * fR);			
+		m_kColPos += (kNormal*coloffset) + (kNormal * fR);			
 		for(int i=0;i<4;i++)
 		{
 			if(!side[i].SphereInside(m_kColPos,fR)){
@@ -280,11 +302,11 @@ bool CSBox::TestLeft(Vector3 kPos1,Vector3 kPos2,float fR)
 	side[2].Set(Vector3(0,0,1),m_pkPP->GetObject()->GetPos()+(Vector3(-0.5,0,-0.5)*m_kScale));		
 	side[3].Set(Vector3(0,0,-1),m_pkPP->GetObject()->GetPos()+(Vector3(-0.5,0,0.5)*m_kScale));		
 	
-	bool hit= surface.LineTest(kPos1, kPos2 + (-kNormal * fR),&m_kColPos);
+	bool hit= surface.LineTest(kPos1+ (-kNormal * fR), kPos2 + (-kNormal * fR),&m_kColPos);
 	
 	if(hit)
 	{
-		m_kColPos += (kNormal*0.0001) + (kNormal * fR);			
+		m_kColPos += (kNormal*coloffset) + (kNormal * fR);			
 		for(int i=0;i<4;i++)
 		{
 			if(!side[i].SphereInside(m_kColPos,fR)){
@@ -315,11 +337,11 @@ bool CSBox::TestRight(Vector3 kPos1,Vector3 kPos2,float fR)
 	side[2].Set(Vector3(0,0,1),m_pkPP->GetObject()->GetPos()+(Vector3(0.5,0,-0.5)*m_kScale));		
 	side[3].Set(Vector3(0,0,-1),m_pkPP->GetObject()->GetPos()+(Vector3(0.5,0,0.5)*m_kScale));		
 	
-	bool hit= surface.LineTest(kPos1, kPos2 + (-kNormal * fR),&m_kColPos);
+	bool hit= surface.LineTest(kPos1+ (-kNormal * fR), kPos2 + (-kNormal * fR),&m_kColPos);
 	
 	if(hit)
 	{
-		m_kColPos += (kNormal*0.0001) + (kNormal * fR);			
+		m_kColPos += (kNormal*coloffset) + (kNormal * fR);			
 		for(int i=0;i<4;i++)
 		{
 			if(!side[i].SphereInside(m_kColPos,fR)){
@@ -333,6 +355,61 @@ bool CSBox::TestRight(Vector3 kPos1,Vector3 kPos2,float fR)
 	
 
 }
+
+bool CSBox::TestInside(Vector3 kPos1,Vector3 kPos2,float fR)
+{
+	Plane side[6];
+	
+	side[0].Set(Vector3(0,1,0),m_pkPP->GetObject()->GetPos()+(Vector3(0,0.5,0)*m_kScale));	
+	side[1].Set(Vector3(0,-1,0),m_pkPP->GetObject()->GetPos()+(Vector3(0,-0.5,0)*m_kScale));	
+	side[2].Set(Vector3(1,0,0),m_pkPP->GetObject()->GetPos()+(Vector3(0.5,0,0)*m_kScale));		
+	side[3].Set(Vector3(-1,0,0),m_pkPP->GetObject()->GetPos()+(Vector3(-0.5,0,0)*m_kScale));		
+	side[4].Set(Vector3(0,0,1),m_pkPP->GetObject()->GetPos()+(Vector3(0,0,0.5)*m_kScale));	
+	side[5].Set(Vector3(0,0,-1),m_pkPP->GetObject()->GetPos()+(Vector3(0,0,-0.5)*m_kScale));	
+	
+	
+	bool inside=true;
+	float fDist=-9999999;
+	int iPlane;
+	for(int i=0;i<6;i++)
+	{
+	/*
+		if(!side[i].SphereInside(kPos1,fR))
+			inside=false;
+		
+		if(!side[i].SphereInside(kPos2,fR))
+			inside=false;
+	*/
+		if(side[i].SphereTest(kPos1,fR) >0)
+			inside=false;
+		
+		
+		if(side[i].SphereTest(kPos2,fR) >0)
+			inside=false;
+		
+		
+		if(inside)
+		{
+			float d=side[i].SphereTest(kPos2,fR);
+			if(d > fDist){
+				fDist=d;
+				iPlane=i;
+			}
+		}
+	}
+	
+	if(inside)
+	{
+		cout<<"dist:"<<fDist<<" Plane:"<<iPlane<<endl;
+		m_kColPos=kPos2+side[iPlane].m_kNormal*(fDist*-1);
+	
+	}
+	
+	
+	return inside;
+}
+
+
 
 
 Vector3& CSBox::Closest(Vector3& kCurPos,Vector3& OPos1,Vector3& OPos2)

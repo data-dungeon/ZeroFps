@@ -12,6 +12,8 @@ class ENGINE_API CSBox : public CollisionShape
 {
 	private:
 		Vector3 m_kColPos;
+		float coloffset;
+		
 
 	public:
 		Vector3 m_kScale;
@@ -31,6 +33,8 @@ class ENGINE_API CSBox : public CollisionShape
 		bool TestBack(Vector3 kPos1,Vector3 kPos2,float fR);						
 		bool TestLeft(Vector3 kPos1,Vector3 kPos2,float fR);						
 		bool TestRight(Vector3 kPos1,Vector3 kPos2,float fR);						
+	
+		bool TestInside(Vector3 kPos1,Vector3 kPos2,float fR);
 
 		Vector3& Closest(Vector3& kCurPos,Vector3& OPos1,Vector3& OPos2);
 		bool Closer(Vector3& kCurPos,Vector3& OPos1,Vector3& OPos2);
