@@ -18,8 +18,6 @@ void ZeroRTS::OnInit()
 	pkConsole->Printf(" ZeroRTS");
 	pkConsole->Printf("--------------------------------");
 	pkConsole->Printf(" Does anything work yet?");
-	
-
 
 	Init();
 
@@ -405,7 +403,6 @@ bool ZeroRTS::AlreadySelected(int iID)
 	for(list<int>::iterator it = m_kSelectedObjects.begin();it != m_kSelectedObjects.end();it++)		
 		if((*it) == iID)
 			return true;
-	
 	
 	return false;
 }

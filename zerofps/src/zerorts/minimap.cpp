@@ -196,9 +196,9 @@ void MiniMap::MoveFov(float fCameraPosX, float fCameraPosY)
 {
 	static int counter = 0;
 
-	float length = 362, hojd = 417;
-	float procent_av_bredd = (float) (fCameraPosX + 181) / length;
-	float procent_av_hojd = (float) (fCameraPosY + 182) / hojd;
+	float length = /*362*/512, hojd = /*417*/512;
+	float procent_av_bredd = (float) (fCameraPosX + /*181*/256) / length;
+	float procent_av_hojd = (float) (fCameraPosY + /*182*/256) / hojd;
 
 	if(counter > 23)
 	{
