@@ -10,6 +10,7 @@ ZeroEdit::ZeroEdit(char* aName,int iWidth,int iHeight,int iDepth)
 	: Application(aName,iWidth,iHeight,iDepth) 
 {	
 	m_eCameraMode = FreeFlight;
+	m_pkPlaceChild = NULL;
 }
  
 void ZeroEdit::OnInit(void) 
@@ -831,6 +832,14 @@ void ZeroEdit::Input()
 		// fulhack för att stänga menyn.
 		if(pkWndUnderCursor != m_pkGui->GetMenu())
 			m_pkGui->CloseMenu();
+
+		if(m_pkPlaceChild)
+		{
+			m_pkPlaceChild->SetPos(m_kDrawPos);	
+			m_pkPlaceChild->SetPos(m_kDrawPos);					
+   			m_pkPlaceChild->AttachToClosestZone();
+			m_pkPlaceChild = NULL;
+		}
 	}
 
 	float childmovespeed=2;

@@ -125,6 +125,9 @@ class ZeroEdit :public Application {
 
 		Object* m_pkCurentParent;
 		Object* m_pkCurentChild;
+		Object* m_pkPlaceChild; // object created when clicked button in workpanel.
+								// if this pointer is not null create a new object
+								// and set this pointer to null.
 		
 		string m_kMapBaseDir;
 

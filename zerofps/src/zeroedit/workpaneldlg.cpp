@@ -294,10 +294,7 @@ bool WorkPanelDlg::DlgProc( ZGuiWnd* pkWnd, unsigned int uiMessage,
 			{
 				string szMadFile = pkItem->GetText();
 				pkNewObject = m_pkEdit->pkObjectMan->CreateObjectByArchType( szMadFile.c_str() );	
-				pkNewObject->SetPos(m_pkEdit->m_kDrawPos);	
-				pkNewObject->SetPos(m_pkEdit->m_kDrawPos);					
-   			pkNewObject->AttachToClosestZone();
-				m_pkEdit->m_pkCurentChild=pkNewObject;
+				m_pkEdit->m_pkPlaceChild=pkNewObject;
 			}
 
 			}
