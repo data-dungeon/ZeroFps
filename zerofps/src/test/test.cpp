@@ -115,8 +115,8 @@ void Test::OnInit(void)
 	pkLight->Add(spot);	*/
 	pkLight->Add(sol);
 	
-	int i;
-	float waterlevel;
+//	int i;
+//	float waterlevel;
 	
 
 /*	

@@ -22,7 +22,7 @@ OpenAlSystem::OpenAlSystem()
 
 OpenAlSystem::~OpenAlSystem()
 {
-	for(int i=0;i<m_kSources.size();i++) {
+	for(unsigned int i=0;i<m_kSources.size();i++) {
 		delete m_kSources[i];
 	}
 }
@@ -70,7 +70,7 @@ void OpenAlSystem::SetListnerPosition(Vector3 kPos,Vector3 kHead,Vector3 kUp)
 
 int OpenAlSystem::GetUnusedSource()
 {
-	for(int i=0;i<m_kSources.size();i++) {
+	for(unsigned int i=0;i<m_kSources.size();i++) {
 		if(m_kSources[i]->m_bUsed==false){
 			return i;
 		}
@@ -154,7 +154,7 @@ void OpenAlSystem::Update()
 		}
 	}
 	
-	int i;
+	unsigned int i;
 	for(i=0;i<kRemove.size();i++){
 		RemoveSound(kRemove[i]);	
 	}

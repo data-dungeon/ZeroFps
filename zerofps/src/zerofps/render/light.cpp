@@ -257,7 +257,7 @@ void Light::Update(Vector3 kRefPos)
 	
 	
 	//Put the first 8 in m_kActiveLights
-	int i=0;
+	unsigned int i=0;
 	m_kSorted.sort(More_Light);
 
 	for( it=m_kSorted.begin();it!=m_kSorted.end();it++) {

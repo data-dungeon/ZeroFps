@@ -105,7 +105,7 @@ void Core::SetFrameI(int iFrame)
 void Core::LoopPlayAnim(int iAnim)
 {
 	iActiveKeyFrame++;
-	if(iActiveKeyFrame >= akAnimation[iAnim].KeyFrame.size())
+	if((unsigned int)iActiveKeyFrame >= akAnimation[iAnim].KeyFrame.size())
 		iActiveKeyFrame = 0;
 
 	iActiveFrame = akAnimation[iAnim].KeyFrame[iActiveKeyFrame].iVertexFrame;
@@ -255,7 +255,7 @@ void Core::DrawSkelleton(float x, float y, float z)
 	glColor3f(1,1,1);
 	glTranslatef(x,y + 10,z);
 	glScalef(0.3,0.3,0.3);
-	for(int i=0; i<kSkelleton.size(); i++) {
+	for(unsigned int i=0; i<kSkelleton.size(); i++) {
 		glPushMatrix();
 		SetPosRot(i);
 		glutSolidSphere(0.1, 8, 8);

@@ -168,7 +168,7 @@ void TextureManager::BindTexture(const char* acFileName,int iOption) {
 
 void TextureManager::ClearAll()
 {
-	for(int i=0;i<m_iTextures.size();i++){
+	for(unsigned int i=0;i<m_iTextures.size();i++){
 		glDeleteTextures(1,&m_iTextures[i]->index);
 		delete m_iTextures[i];
 	}
@@ -178,7 +178,7 @@ void TextureManager::ClearAll()
 
 int TextureManager::GetIndex(const char* szFileName)
 {
-	for(int i=0; i<m_iTextures.size(); i++){
+	for(unsigned int i=0; i<m_iTextures.size(); i++){
 		if(m_iTextures[i]->file == szFileName) {
 			return i;		
 		}		

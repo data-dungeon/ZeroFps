@@ -234,7 +234,7 @@ void NetWork::Run()
 	NetPacket NetP;
 
 	unsigned char ucPacketType;
-	unsigned char ucPacketLength;
+//	unsigned char ucPacketLength;
 
 	while(Recv(&NetP)) {
 		// Read packet Type & Size
@@ -277,7 +277,7 @@ void NetWork::SendToAllClients(NetPacket* pkNetPacket)
 		return;
 
 	cout << "Update Clients: ";
-	for(int i=0; i<RemoteNodes.size(); i++) {
+	for(unsigned int i=0; i<RemoteNodes.size(); i++) {
 		pkNetPacket->m_kAddress = RemoteNodes[i].m_kAddress;
 		Send(pkNetPacket);
 		cout << ".";		

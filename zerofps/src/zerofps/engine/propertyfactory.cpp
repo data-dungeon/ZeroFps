@@ -5,7 +5,7 @@
 
 Property* PropertyFactory::CreateProperty(const char* szName)
 {
-	for(int i=0; i<m_kProperyLinks.size(); i++)
+	for(unsigned int i=0; i<m_kProperyLinks.size(); i++)
 	{
 		if(strcmp(m_kProperyLinks[i].m_szName, szName) == 0)
 		{
@@ -34,7 +34,7 @@ void PropertyFactory::Display()
 {
 	cout << "Listing properys : 'name' : 'active' : 'total created'" << endl;
 
-	for(int i=0; i<m_kProperyLinks.size(); i++)
+	for(unsigned int i=0; i<m_kProperyLinks.size(); i++)
 	{
 		cout << m_kProperyLinks[i].m_szName << " : " << m_kProperyLinks[i].iCount 
 			<< " : " << m_kProperyLinks[i].iTotalCreated << endl;

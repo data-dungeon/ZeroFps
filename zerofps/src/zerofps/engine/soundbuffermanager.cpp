@@ -22,7 +22,8 @@ int SoundBufferManager::Load(char* acFile)
    }
    
 	ALsizei size=0;
-	ALsizei freq, bits;
+	ALsizei freq;
+//	ALsizei bits;
    ALenum format;
    ALvoid *data;
 //   ALboolean err;
@@ -63,7 +64,7 @@ int SoundBufferManager::LoadSound(char* acFile)
 
 int SoundBufferManager::GetIndex(char* acFile) 
 {
-	for(int i=0;i<m_kBuffers.size();i++) {
+	for(unsigned int i=0;i<m_kBuffers.size();i++) {
 		if(m_kBuffers[i]->m_acFile==acFile)
 			return m_kBuffers[i]->m_iIndex;	
 	}	
@@ -74,7 +75,7 @@ int SoundBufferManager::GetIndex(char* acFile)
 
 void SoundBufferManager::ClearAll() 
 {
-	for(int i=0;i<m_kBuffers.size();i++) {
+	for(unsigned int i=0;i<m_kBuffers.size();i++) {
 		alDeleteBuffers(1,&m_kBuffers[i]->m_iIndex);
 		delete m_kBuffers[i];
 	}	

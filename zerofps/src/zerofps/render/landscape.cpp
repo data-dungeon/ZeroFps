@@ -15,7 +15,7 @@ void Render::DrawSkyBox(Vector3 CamPos,Vector3 kHead,int iHor,int iTop) {
 	glScalef(200,200,200);
 	
 	glColor4f(1,1,1,1);
-	
+	 
 	m_pkTexMan->BindTexture(iHor);	
 	glBegin(GL_QUAD_STRIP);		
 		//FRONT
@@ -117,7 +117,7 @@ void Render::DrawWater(Vector3 kCamPos,Vector3 kPosition,Vector3 kHead,int iSize
 	m_pkTexMan->BindTexture(iTexture);	
 	glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE);
 	
-	float tx=SDL_GetTicks()/80000.0;	
+	float tx= float(SDL_GetTicks()/80000.0);	
 	
 	for(int x=0;x<iSize;x+=iStep){	
 		glBegin(GL_TRIANGLE_STRIP);
@@ -126,7 +126,7 @@ void Render::DrawWater(Vector3 kCamPos,Vector3 kPosition,Vector3 kHead,int iSize
 		glColor4f(1,1,1,0.5);	
 	
 		for(int z=0;z<iSize;z+=iStep) {
-			float y=sin((SDL_GetTicks()/1000.0)+(z/iStep)*freq)*amp;		
+			float y= float(sin((SDL_GetTicks()/1000.0)+(z/iStep)*freq)*amp);		
 		
 			glMultiTexCoord2fARB(GL_TEXTURE0_ARB,0,z/(iStep)+tx);		
 			glMultiTexCoord2fARB(GL_TEXTURE1_ARB,.5,z/(iStep)-tx);				
@@ -668,8 +668,8 @@ void Render::DrawGrassPatch(Vector3 kCamPos,Vector3 kPos,Vector3 kScale,int fW,i
 	srand(1);
 
 	for(int i=0;i<iNr;i++){
-		float x=(rand()%(fW*1000))/1000.0 + (kPos.x-fW/2);
-		float z=(rand()%(fW*1000))/1000.0 + (kPos.z-fW/2);
+		float x= float((rand()%(fW*1000))/1000.0 + (kPos.x-fW/2));
+		float z= float((rand()%(fW*1000))/1000.0 + (kPos.z-fW/2));
 		float y=kMap->Height(x,z)+kScale.y/2;
 	
 		if(kMap->GetVert(int(x-kMap->m_kPosition.x),int(z-kMap->m_kPosition.z))->texture!=1)

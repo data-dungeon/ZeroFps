@@ -86,7 +86,7 @@ int ZFObject::GetChildIndex(char* szName)
 
 ZFObject* ZFObject::GetChildPtr(int iIndex)
 {
-	if(iIndex >= 0 || iIndex < m_akChild.size())
+	if(iIndex >= 0 || (unsigned int)iIndex < m_akChild.size())
 		return m_akChild[iIndex];
 
 	return NULL;

@@ -720,7 +720,7 @@ void ZeroEdit::ListTemplates()
 	pkObjectMan->GetTemplateList(&akNames);
 	
 	pkConsole->Print("--Object Templates--");
-	for(int i=0;i<akNames.size();i++)
+	for(unsigned int i=0;i<akNames.size();i++)
 	{
 		pkConsole->Print(akNames[i].c_str());
 	}

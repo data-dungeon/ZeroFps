@@ -121,9 +121,9 @@ class ENGINE_API ZeroFps : public ZFObject {
 		
 		void ToggleFullScreen(void);
 		
-		inline float GetTicks(void) {return (SDL_GetTicks()/1000.0);};
-		inline float GetFrameTime() {return (m_fFrameTime/1000.0);};
-		inline float GetGameTime(void) {return (SDL_GetTicks()/1000.0);};
+		inline float GetTicks(void) {return float((SDL_GetTicks()/1000.0));};
+		inline float GetFrameTime() {return float((m_fFrameTime/1000.0));};
+		inline float GetGameTime(void) {return float((SDL_GetTicks()/1000.0));};
 		
 		void SetCamera(Camera* pkCamera);
 	
