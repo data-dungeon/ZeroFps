@@ -1471,11 +1471,11 @@ void MistClient::CreateGuiInterface()
 	static_cast<ZGuiTextbox*>(GetWnd("InfoBox"))->SetReadOnly(true); 
 	GetWnd("InfoBox")->GetSkin()->m_bTileBkSkin = true; 
 
-	ZGuiFont* pkFont = new ZGuiFont(16,16,0,0);
-	pkFont->CreateFromFile("/data/textures/text/small.bmp"); 
-	GetWnd("InfoBox")->SetFont( pkFont);
-	GetWnd("InputBox")->SetFont( pkFont);
-	GetWnd("InfoBox")->GetFont()->m_cCharCellSize = 12; 	
+	//ZGuiFont* pkFont = new ZGuiFont(16,16,0,0);
+	//pkFont->CreateFromFile("/data/textures/text/small.bmp"); 
+	//GetWnd("InfoBox")->SetFont( pkFont);
+	//GetWnd("InputBox")->SetFont( pkFont);
+	//GetWnd("InfoBox")->GetFont()->m_cCharCellSize = 12; 	
 
 	m_pkQuickBoard = new QuickBoard(this);
 	
