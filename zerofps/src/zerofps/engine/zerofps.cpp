@@ -338,6 +338,9 @@ void ZeroFps::Update_System()
 		m_fGameTime = m_fLU + (i * m_fGameFrameTime);
 		
 		if(m_bRunWorldSim) {
+			//update application systems
+			m_pkApp->OnSystem();
+			
 			//update all normal propertys
 			m_pkObjectMan->Update(PROPERTY_TYPE_NORMAL,PROPERTY_SIDE_SERVER,false);
 			m_pkObjectMan->UpdateGameMessages();

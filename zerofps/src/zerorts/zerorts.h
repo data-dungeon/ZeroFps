@@ -73,7 +73,8 @@ class ZeroRTS :public Application {
 	 	void OnInit(void);
 		void OnIdle(void);
 		void OnHud(void);
-
+		void OnSystem();
+		
 		/* Pathfind test */////////////////////////////////////
 		PathFind* m_pkTestPath;
 		Point m_pkStart, m_pkEnd;

@@ -249,6 +249,7 @@ bool ZFObjectManger::Register_Cmd(char* szName, int iCmdID, ZFObject* kObject,ch
 	// Check if there is already something with this name.
 	if(FindArea(szName)) 
 		return false;
+	
 
 	ZFCmdData kNewCmd;
 	kNewCmd.m_strName	= string(szName);

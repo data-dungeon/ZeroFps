@@ -98,7 +98,8 @@ class Game :public Application {
 	 	void OnInit(void);
 		void OnIdle(void);
 		void OnHud(void);
-
+		void OnSystem(){ };
+		
 		void OnServerStart(void);
 		void OnClientStart(void);
 		

@@ -22,6 +22,8 @@ class COMMON_API P_FogRender: public Property {
 		Render*	m_pkRender;
 		TextureManager* m_pkTexMan;
 			
+		string 	m_sFogTexture;
+			
 	public:
 		Vector3 	m_kScale;
 		
@@ -29,6 +31,10 @@ class COMMON_API P_FogRender: public Property {
 		P_FogRender();
 		void CloneOf(Property* pkProperty) { }
 		void Update();
+		
+		void Explore(float x,float y,float r);
+		void UnExplore(float x,float y, float r);
+		void SetScale(Vector3 kScale) {m_kScale = kScale;};
 
 };
 

@@ -28,7 +28,10 @@ void ZeroRTS::OnInit()
 	if(!pkIni->ExecuteCommands("zerorts_autoexec.ini"))
 		pkConsole->Printf("No game_autoexec.ini.ini found");
 		
-//	pkObjectMan->GetWorldObject()->AddProperty("P_FogRender");
+	pkObjectMan->GetWorldObject()->AddProperty("P_FogRender");
+	P_FogRender* fr = (P_FogRender*)pkObjectMan->GetWorldObject()->GetProperty("P_FogRender");
+	fr->SetScale(Vector3(512,512,1));
+	
 }
 
 void ZeroRTS::Init()
@@ -95,7 +98,7 @@ void ZeroRTS::RegisterPropertys()
 	pkPropertyFactory->Register("P_ServerUnit", Create_P_ServerUnit);	
 }
 
-void ZeroRTS::OnIdle(void) 
+void ZeroRTS::OnIdle() 
 {
 	pkFps->SetCamera(m_pkCamera);		
 	pkFps->GetCam()->ClearViewPort();	
@@ -114,6 +117,12 @@ void ZeroRTS::OnIdle(void)
 	// tassa
 	if(m_pkMoveObject)
 		MovePath(m_pkMoveObject);
+}
+
+void ZeroRTS::OnSystem() 
+{
+
+
 }
 
 void ZeroRTS::Input()
