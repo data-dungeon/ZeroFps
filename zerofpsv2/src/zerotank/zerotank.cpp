@@ -140,7 +140,7 @@ void ZeroTank::OnIdle()
  	pkFps->UpdateCamera(); 	
 	
 	m_pkMap2->SetPos(Vector3(0,0,0));
-	pkRender->DrawHM2(m_pkMap2,pkFps->GetCam()->GetPos());
+//	pkRender->DrawHM2(m_pkMap2,pkFps->GetCam()->GetPos());
 
 
 /*
@@ -436,6 +436,9 @@ void ZeroTank::OnServerClientJoin(ZFClient* pkClient,int iConID)
 	cout<<"Client "<<iConID<<" Joined"<<endl;
 	
 	pkClient->m_pkObject->AddProperty("P_Primitives3D");	
+	cout << "Now adding tracker to client" << endl;
+	pkClient->m_pkObject->AddProperty("TrackProperty");	
+	pkObjectMan->AddTracker(pkClient->m_pkObject);
 	
 	//setup client input
 	pkClient->m_pkObject->AddProperty("P_ClientInput");
@@ -508,6 +511,9 @@ void ZeroTank::OnServerStart(void)
 	}*/
 
 
+	pkObjectMan->Test_CreateZones();
+
+
 	// ZeroTank
  	m_pkZeroTankHull	= NULL;
 	m_pkZeroTankTower	= NULL;
@@ -515,7 +521,7 @@ void ZeroTank::OnServerStart(void)
 
 	m_pkZeroTankHull = pkObjectMan->CreateObjectByArchType("ZeroRTSHull");
 	if(m_pkZeroTankHull) {
-		m_pkZeroTankHull->SetWorldPosV(Vector3(0,10,0));
+		m_pkZeroTankHull->SetWorldPosV(Vector3(8,10,7));
 		m_pkZeroTankHull->AttachToClosestZone();
 
 		//m_pkZeroTankHull->AddProperty("CameraProperty");
@@ -538,7 +544,7 @@ void ZeroTank::OnServerStart(void)
 	if(pkObjectMan->GetNumOfZones() != 0) {
 		pkConsole->Printf("Num of Zones: %d",pkObjectMan->GetNumOfZones());
 
-		for(int i=0; i<5; i++) {
+/*		for(int i=0; i<5; i++) {
 			m_pkZeroTankTrack = pkObjectMan->CreateObjectByArchType("TrackObject");
 			if(m_pkZeroTankTrack) {
 				int iRandZone =  rand() % pkObjectMan->GetNumOfZones();
@@ -547,7 +553,16 @@ void ZeroTank::OnServerStart(void)
 				pkObjectMan->AddTracker(m_pkZeroTankTrack);
 
 			}
-		}
+		}*/
+
+			m_pkZeroTankTrack = pkObjectMan->CreateObjectByArchType("TrackObject");
+			if(m_pkZeroTankTrack) {
+				int iRandZone =  rand() % pkObjectMan->GetNumOfZones();
+				m_pkZeroTankTrack->SetWorldPosV( pkObjectMan->GetZoneCenter(iRandZone) );
+				m_pkZeroTankTrack->AttachToClosestZone();
+				pkObjectMan->AddTracker(m_pkZeroTankTrack);
+			}
+	
 	}
 
 

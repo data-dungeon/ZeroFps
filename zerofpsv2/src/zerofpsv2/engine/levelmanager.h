@@ -42,10 +42,10 @@ class ENGINE_API LevelManager : public ZFSubSystem {
 
 //		list<Object*> 		m_kTrackedObjects;		
 //		vector<Object*> 	m_kZones;
+//		bool					m_bDrawZones;
 
 		Object*				CreateHeightMapObject(HeightMap* m_pkMap);
 		
-//		bool					m_bDrawZones;
 
 	public:
 		LevelManager();

@@ -575,6 +575,8 @@ void ObjectManager::PackToClients()
 	int iEndOfObject = -1;
 
 	for(list<Object*>::iterator it=m_akObjects.begin();it!=m_akObjects.end();it++) {
+		//Logf("net", "Check Object [%d]\n",(*it)->iNetWorkID );
+
 		(*it)->m_iNetUpdateFlags |= m_iForceNetUpdate;
 		
 		if((*it)->NeedToPack() == false)					continue;
@@ -1098,6 +1100,7 @@ list<Object*>* ObjectManager::GetTrackerList()
 
 void ObjectManager::AddTracker(Object* kObject)
 {
+	cout << "Now tracking " << kObject->iNetWorkID << endl;
 	m_kTrackedObjects.push_back(kObject);
 }
 
@@ -1192,3 +1195,8 @@ void ObjectManager::UpdateZones()
 
 }
 
+vector<int>	ObjectManager::GetActiveZoneIDs(int iTracker)
+{
+	vector<int>	Nisse;
+	return Nisse;
+}

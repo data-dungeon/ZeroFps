@@ -162,7 +162,7 @@ bool ZeroFps::StartUp()
 	m_kFpsGraph.SetMinMax(0,1000);		
 	m_kFpsGraph.SetSize(100,100,100);
 
-	this->m_pkObjectMan->Test_CreateZones();
+//	m_pkObjectMan->Test_CreateZones();
 	return true;
 }
 
@@ -810,7 +810,7 @@ void ZeroFps::RunCommand(int cmdid, const CmdArgument* kCommand)
 
 			m_pkApp->OnServerStart();
 			m_bServerMode = true;
-			m_bClientMode = true;
+				m_bClientMode = true;
 			break;
 	
 		case FID_DIR:
@@ -1059,7 +1059,11 @@ void ZeroFps::Connect(int iConnectionID)
 	m_kClient[iConnectionID].m_pkObject = m_pkObjectMan->CreateObject();//m_pkObjectMan->CreateObjectByArchType("ZeroRTSPlayer");
 	assert(m_kClient[iConnectionID].m_pkObject);	
 	m_kClient[iConnectionID].m_pkObject->SetWorldPosV(Vector3(0,0,2));
-	m_kClient[iConnectionID].m_pkObject->AttachToClosestZone();
+
+	// Connect all client objects to top level object,
+	m_kClient[iConnectionID].m_pkObject->SetParent(m_pkObjectMan->GetWorldObject());
+	//m_kClient[iConnectionID].m_pkObject->AttachToClosestZone();
+	
 	m_kClient[iConnectionID].m_fConnectTime = GetEngineTime();
 
 	m_pkConsole->Printf("Player Object %d", m_kClient[iConnectionID].m_pkObject->iNetWorkID);

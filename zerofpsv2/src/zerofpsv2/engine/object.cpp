@@ -445,12 +445,23 @@ bool Object::NeedToPack()
 
 void Object::PackTo(NetPacket* pkNetPacket)
 {
+	int iParentID	=	-1;
+	if(m_pkParent)
+		iParentID = m_pkParent->iNetWorkID;
+
+	pkNetPacket->Write( iParentID );
+
+	// Force Pos Updates
+//	m_iNetUpdateFlags |= OBJ_NETFLAG_POS;
+
 	// Write Object Update Flags.
 	pkNetPacket->Write( m_iNetUpdateFlags );
 
 	//	Write Pos, Rotation, radius and name.
+	Vector3 kPos;
+	kPos = GetLocalPosV();
 	if(m_iNetUpdateFlags & OBJ_NETFLAG_POS)
-		pkNetPacket->Write(m_kPos);
+		pkNetPacket->Write(kPos);
 	
 	if(m_iNetUpdateFlags & OBJ_NETFLAG_ROT)
 		pkNetPacket->Write(m_kRot);
@@ -490,7 +501,13 @@ void Object::PackTo(NetPacket* pkNetPacket)
 
 void Object::PackFrom(NetPacket* pkNetPacket)
 {
+	int iParentID;
+	pkNetPacket->Read(iParentID);
+//	m_pkParent = ;
+	this->SetParent(m_pkObjectMan->GetObjectByNetWorkID(iParentID));
+
 	int iStart = pkNetPacket->m_iPos;
+	
 
 	Vector3 kVec;
 	float	  fFloat;
@@ -498,14 +515,15 @@ void Object::PackFrom(NetPacket* pkNetPacket)
 	pkNetPacket->Read( m_iNetUpdateFlags );
 	if(m_iNetUpdateFlags & OBJ_NETFLAG_POS) {
 		pkNetPacket->Read(kVec);
-		SetWorldPosV(kVec);
+		SetLocalPosV(kVec);
 		//SetPos(kVec);
 		g_ZFObjSys.Logf("net", " .Pos: <%f,%f,%f>", kVec.x,kVec.y,kVec.z);
 		}
 
 	if(m_iNetUpdateFlags & OBJ_NETFLAG_ROT) {
 		pkNetPacket->Read(kVec);
-		SetWorldPosV(kVec);
+		//SetWorldPosV(kVec);
+		SetWorldRotV(kVec);
 		SetWorldRotV(kVec);
 		g_ZFObjSys.Logf("net", " .Rot: <%f,%f,%f>\n", kVec.x,kVec.y,kVec.z);
 		}
@@ -1022,6 +1040,7 @@ void Object::SetWorldRotV(Vector3 kRot)
 
 void Object::SetLocalPosV(Vector3 kPos)
 {
+	m_iNetUpdateFlags |= OBJ_NETFLAG_POS;
 	ResetChildsGotData();
 	
 	m_kLocalPosV = kPos;
@@ -1029,6 +1048,7 @@ void Object::SetLocalPosV(Vector3 kPos)
 
 void Object::SetWorldPosV(Vector3 kPos)
 {
+	m_iNetUpdateFlags |= OBJ_NETFLAG_POS;
 	Vector3 kDiff = kPos - GetWorldPosV();
 	Vector3 newlocalpos = m_kLocalPosV + kDiff;
 	

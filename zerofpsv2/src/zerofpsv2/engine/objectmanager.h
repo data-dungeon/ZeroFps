@@ -174,6 +174,7 @@ class ENGINE_API ObjectManager : public ZFSubSystem{
 		int GetNrOfTrackedObjects();
 		list<Object*>* GetTrackerList();
 		void ClearTrackers();
+		vector<int>	GetActiveZoneIDs(int iTracker);	// Returns a list with zones that the tracked activates,
 		
 
 };
