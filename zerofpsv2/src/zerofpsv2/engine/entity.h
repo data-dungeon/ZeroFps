@@ -63,6 +63,7 @@ public:
 	int			m_FromObject;		///< ID of Entity that sent message.
 	int			m_ToObject;			///< ID of target Entity.
 	string		m_Name;				///< Name of GameMessage.
+	string		m_strParameter;
 };
 
 

@@ -25,21 +25,45 @@ bool PropertyFactory::ShutDown()
 
 bool PropertyFactory::IsValid()	{ return true;	}
 
-Property* PropertyFactory::CreateProperty(const char* szName)
+ProperyCreateLink* PropertyFactory::GetPropertyLink(const char* szName)
 {
 	for(unsigned int i=0; i<m_kProperyLinks.size(); i++)
 	{
 		if(strcmp(m_kProperyLinks[i].m_szName, szName) == 0)
-		{
-			m_kProperyLinks[i].iCount++;
-			m_kProperyLinks[i].iTotalCreated++;
-			return m_kProperyLinks[i].Create();
-		}
-		
+			return &m_kProperyLinks[i];
 	}
 
-//	assert(0);
 	return NULL;
+}
+
+
+Property* PropertyFactory::CreateProperty(const char* szName)
+{
+	ProperyCreateLink* pkPl = GetPropertyLink(szName);
+	if(! pkPl)
+	{
+		ZFWarning("Property '%s' is not registered.", szName);
+		return NULL;
+	}
+
+	// Create Property
+	pkPl->iCount++;
+	pkPl->iTotalCreated++;
+	Property* pkProp = pkPl->Create();
+	
+	if(!pkProp)
+	{
+		ZFWarning("Failed to create property '%s'.", szName);
+		return NULL;
+	}
+
+	if(strcmp(szName, pkProp->m_acName) != 0)
+	{
+		ZFWarning("Internal property name '%s' does not match whit registered property name '%s'.",
+			pkProp->m_acName, szName);
+	}
+
+	return pkProp;
 }
 
 void PropertyFactory::Register(char* szName, Property*	(*Create)())

@@ -1048,12 +1048,13 @@ void EntityManager::DumpActiverPropertysToLog(char* szMsg)
 }
 
 // Message System.
-void EntityManager::SendMsg(string strName, int iFrom, int iTo)
+void EntityManager::SendMsg(string strName, string strParam, int iFrom, int iTo)
 {
 	GameMessage Msg;
-	Msg.m_FromObject	= iFrom;
-	Msg.m_ToObject		= iTo;
-	Msg.m_Name			= strName;
+	Msg.m_FromObject	 = iFrom;
+	Msg.m_ToObject		 = iTo;
+	Msg.m_Name			 = strName;
+	Msg.m_strParameter = strParam;
 	RouteMessage(Msg);
 }
 
@@ -1159,6 +1160,8 @@ bool EntityManager::TestLine(vector<Entity*>* pkPPList,Vector3 kPos,Vector3 kVec
 void EntityManager::RunCommand(int cmdid, const CmdArgument* kCommand) 
 { 
 	string strName;
+	string strParam;
+
 	int iTo;
 			unsigned int i;
 			vector<int>	kZones;
@@ -1180,9 +1183,14 @@ void EntityManager::RunCommand(int cmdid, const CmdArgument* kCommand)
 
 		case FID_SENDMESSAGE:
 			strName = kCommand->m_kSplitCommand[1].c_str();
-			iTo = atoi(kCommand->m_kSplitCommand[2].c_str());
-			SendMsg(strName, -1, iTo);
-/*			gm.m_FromObject = -1;
+			strParam = kCommand->m_kSplitCommand[2].c_str();
+			iTo = atoi(kCommand->m_kSplitCommand[3].c_str());
+			GetSystem().Printf("Sending Msg '%s' '%s' to %d from %d", 
+				strName.c_str(), strParam.c_str(), iTo, -1);
+			SendMsg(strName, strParam, -1, iTo);
+
+			
+			/*			gm.m_FromObject = -1;
 			gm.m_ToObject	= atoi(kCommand->m_kSplitCommand[2].c_str());
 			gm.m_Name		= kCommand->m_kSplitCommand[1].c_str();*/
 //			m_pkConsole->Printf("Sending Msg '%s' to %d from %d", gm.m_Name.c_str(), gm.m_ToObject, gm.m_FromObject);

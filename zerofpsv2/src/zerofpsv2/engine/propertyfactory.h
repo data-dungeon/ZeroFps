@@ -49,6 +49,7 @@ public:
 	PropertyFactory();
 	~PropertyFactory() { }
 
+	ProperyCreateLink*	GetPropertyLink(const char* szName);
 	Property*	CreateProperty(const char* szName);
 	void		Register(char* szName, Property*	(*Create)());
 	

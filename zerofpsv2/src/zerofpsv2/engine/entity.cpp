@@ -120,16 +120,7 @@ Property* Entity::AddProperty(const char* acName)
 	ZFAssert(acName, "Entity::AddProperty(): acName is NULL");
 	Property* pProp = m_pkPropertyFactory->CreateProperty(acName);
 	
-	if(pProp==NULL)
-	{
-		cout << "Error Property " << acName << " Not Registered" <<endl;
-		return false;
-	}
-
-	if(strcmp(acName,pProp->m_acName) != 0)
-	{
-		cout<<"WARNING: Internal property name "<<pProp->m_acName<<" does not match whit registered property name "<<acName<<endl;
-	}
+	if(!pProp)	return NULL;
 
 	AddProperty(pProp);
 	return pProp;

@@ -259,7 +259,7 @@ class ENGINE_API EntityManager : public ZFSubSystem{
 
 		
 		// Message System.
-		void SendMsg(string strName, int iFrom, int iTo);
+		void SendMsg(string strName, string strParam, int iFrom, int iTo);
 		void RouteMessage(GameMessage& Msg);
 
 		// Get Strings.

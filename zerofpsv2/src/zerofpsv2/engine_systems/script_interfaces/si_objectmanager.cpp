@@ -489,7 +489,11 @@ int SendEventLua(lua_State* pkLua)
 	
 	char acEvent[128];
 	g_pkScript->GetArgString(pkLua, 1, acEvent);
-	g_pkObjMan->SendMsg(string(acEvent), g_kScriptState.g_iCurrentObjectID, iTargetEntity);
+
+	char acEventParam[128];
+	g_pkScript->GetArgString(pkLua, 2, acEventParam);
+
+	g_pkObjMan->SendMsg(string(acEvent), string(acEventParam), g_kScriptState.g_iCurrentObjectID, iTargetEntity);
 	return 0;
 }
 
