@@ -16,9 +16,6 @@ class MCOMMON_API P_DMGameInfo: public Property {
 	private:
 		vector<PropertyValues> GetPropertyValues();
 	
-		int		m_iReputation;	// Börjar på 1 och bestämmer vilka uppdrag som finns tillgängliga,
-										// ökas när uppdrag lyckas, minskas när uppdrag misslyckas / avbryts.
-
 	public:
 		//clan name and logo info
 		string	m_strClanName;
@@ -26,14 +23,10 @@ class MCOMMON_API P_DMGameInfo: public Property {
 		string	m_strClanLogo;		
 		
 		int		m_iMoney;
+		float		m_fReputation;	// Börjar på 1 och bestämmer vilka uppdrag som finns tillgängliga,
+										// ökas när uppdrag lyckas, minskas när uppdrag misslyckas / avbryts.
 				
 		Vector3	m_kCameraPos;		
-
-
-		
-		
-		void ChangeReputation(int mod) { m_iReputation += mod; }
-		int  GetReputation() { return m_iReputation; }
 		
 		P_DMGameInfo();
 		~P_DMGameInfo();

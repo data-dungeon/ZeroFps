@@ -209,19 +209,10 @@ void P_DMCharacter::Shoot (Vector3 kLocation)
 
 	static float prevSoundPlayTime = 0;
 
-	if(t - prevSoundPlayTime > 2.0f) // spela max 1 ljud varannan sek
-	{
-		int iNumSounds = m_vkOffenciveActionQuots.size();
-		if(iNumSounds > 0)
-		{
-			m_pkAudioSys->StartSound(m_vkOffenciveActionQuots[rand() % iNumSounds], 
-				m_pkObject->GetWorldPosV());
-			prevSoundPlayTime = t;
-		}
-	}
-
 	// check if character is equipped with at weapon
-	int iWeapID = 0;
+
+	int iWeapID = -1;
+
 	Entity* pkWeapon;
 	P_DMGun* pkP_Gun;
 
@@ -229,6 +220,9 @@ void P_DMCharacter::Shoot (Vector3 kLocation)
 		for ( int x = 0; x < 3; x++ )
 			if ( *m_pkHand->GetItem(x,y) != -1 )
 				iWeapID = *m_pkHand->GetItem(x,y);
+
+	if(iWeapID == -1)
+		return;
 
 	pkWeapon = m_pkObjMan->GetObjectByNetWorkID ( iWeapID );
 
@@ -244,6 +238,17 @@ void P_DMCharacter::Shoot (Vector3 kLocation)
 	{
 		cout << "Error! P_DMCharacter::Shoot: Tried to shoot with a non-weapon!" << endl;
 		return;
+	}
+
+	if(t - prevSoundPlayTime > 2.0f) // spela max 1 ljud varannan sek
+	{
+		int iNumSounds = m_vkOffenciveActionQuots.size();
+		if(iNumSounds > 0)
+		{
+			m_pkAudioSys->StartSound(m_vkOffenciveActionQuots[rand() % iNumSounds], 
+				m_pkObject->GetWorldPosV());
+			prevSoundPlayTime = t;
+		}
 	}
 
 	P_Mad* pkMad = (P_Mad*)m_pkObject->GetProperty ("P_Mad");
@@ -469,24 +474,22 @@ void P_DMCharacter::UseQuickItem(int iItemIndex) // <- iItemIndex = 0,1,2,3 dvs 
 					if( pkP_Gun != NULL )
 					{
 						pkP_Gun->Reload();
+
+						if(m_pkBelt->RemoveItem(kItemList[i].m_iItemX,kItemList[i].m_iItemY))
+						{
+							printf("Removing clip\n");
+							return;
+						}
+						else
+						{
+							printf("Failed to remove clip\n");
+							return;
+						}
 					}
 					else
 					{
 						printf("Failed to reload weapon, not correct weapon in hand\n");
-					}
-
-					int a = kItemList[i].m_iItemX;
-					int b = kItemList[i].m_iItemY;
-
-					if(m_pkBelt->RemoveItem(a,b))
-					{
-						printf("Removing clip\n");
-						return;
-					}
-					else
-					{
-						printf("Failed to remove clip\n");
-						return;
+						return; // return
 					}
 
 					break;
@@ -544,6 +547,17 @@ void P_DMCharacter::AddMoveSpeed (float fSpeed)
 }
 
 // -----------------------------------------------------------------------------------------------
+
+void P_DMCharacter::AddXP(int iXP)
+{
+	m_kStats.m_fExperience += iXP;
+
+	if(m_kStats.m_fExperience >= m_kStats.m_fNextLevel)
+	{
+		m_kStats.m_iLevel++;
+		m_kStats.m_fNextLevel = m_kStats.m_fNextLevel + 1000; // Låt nästa grad vara 1000 XP svårare.
+	}
+}
 
 vector<PropertyValues> P_DMCharacter::GetPropertyValues()
 {

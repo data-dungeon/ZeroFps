@@ -22,6 +22,7 @@ end
 
 function Init()
 	SetMoveSpeed (SIGetSelfID(), 1.9);
+	SetTeam (SIGetSelfID(), 1);
 end
 
 function HeartBeat()

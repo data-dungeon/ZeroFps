@@ -31,8 +31,8 @@ void CBriefingDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName)
 			P_DMMission* pkMissionProperty = (P_DMMission*) 
 				GetDMObject(GAME_INFO)->GetProperty("P_DMMission");
 
-			int reputation = ((P_DMGameInfo*)
-				GetDMObject(GAME_INFO)->GetProperty("P_DMGameInfo"))->GetReputation();
+			float reputation = ((P_DMGameInfo*)
+				GetDMObject(GAME_INFO)->GetProperty("P_DMGameInfo"))->m_fReputation;
 
 			vector<DMMissionInfo> vkInfo;
 			pkMissionProperty->GetPossibleMissions(reputation, vkInfo); 
@@ -59,6 +59,20 @@ void CBriefingDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName)
 		}
 	}
 	else
+	if(strClickName == "BriefingCancelMissionBn")
+	{
+		P_DMMission* pkMissionProperty = (P_DMMission*) 
+			GetDMObject(GAME_INFO)->GetProperty("P_DMMission");
+		pkMissionProperty->CancelCurrent(); 
+
+		pkMainWnd->Hide();
+		m_pkGui->KillWndCapture();
+		m_pkGui->SetCaptureToWnd(GetWnd("HQWnd"));
+
+		m_pkAudioSys->StartSound("data/sound/computer beep 5.wav", 
+			m_pkAudioSys->GetListnerPos()); 
+	}
+	else
 	if(strClickName == "BriefingCancelBn")
 	{
 		pkMainWnd->Hide();
@@ -74,33 +88,39 @@ bool CBriefingDlg::InitDlg()
 {
 	string strSelMission = ((CMissionDlg*)GetGameDlg(MISSION_DLG))->m_strSelMission;
 
-	Entity* pkHQ = GetDMObject(HQ);
+	P_DMMission* pkMissionProperty = (P_DMMission*) 
+		GetDMObject(GAME_INFO)->GetProperty("P_DMMission");
 
-	if(pkHQ)
+	ShowWnd("BriefingCancelMissionBn", false);
+	ShowWnd("BriefingAcceptBn", true);
+
+	if(pkMissionProperty->GetCurrentMission() != NULL)
 	{
-		//P_DMMission* pkMissionProperty = (P_DMMission*) 
-		//	pkHQ->GetProperty("P_DMMission");
+		ShowWnd("BriefingAcceptBn", false);
 
-		P_DMMission* pkMissionProperty = (P_DMMission*) 
-			GetDMObject(GAME_INFO)->GetProperty("P_DMMission");
-
-		int reputation = ((P_DMGameInfo*)
-			GetDMObject(GAME_INFO)->GetProperty("P_DMGameInfo"))->GetReputation();
-
-		vector<DMMissionInfo> vkInfo;
-		pkMissionProperty->GetPossibleMissions(reputation, vkInfo); 
-
-		for(unsigned int i=0; i<vkInfo.size(); i++)
+		if(pkMissionProperty->GetCurrentMission()->m_strName == strSelMission)
 		{
-			if(vkInfo[i].m_strName == strSelMission)
-			{
-				((ZGuiTextbox*)GetWnd("MissionDetailEb"))->ToggleMultiLine(true);
-				((ZGuiTextbox*)GetWnd("MissionDetailEb"))->SetReadOnly(true);
-				SetText("MissionDetailEb", (char*) vkInfo[i].m_strInfoTextLong.c_str());		
-				break;
-			}
+			ShowWnd("BriefingCancelMissionBn", true);
 		}
 	}
+
+	float reputation = ((P_DMGameInfo*)
+		GetDMObject(GAME_INFO)->GetProperty("P_DMGameInfo"))->m_fReputation;
+
+	vector<DMMissionInfo> vkInfo;
+	pkMissionProperty->GetPossibleMissions(reputation, vkInfo); 
+
+	for(unsigned int i=0; i<vkInfo.size(); i++)
+	{
+		if(vkInfo[i].m_strName == strSelMission)
+		{
+			((ZGuiTextbox*)GetWnd("MissionDetailEb"))->ToggleMultiLine(true);
+			((ZGuiTextbox*)GetWnd("MissionDetailEb"))->SetReadOnly(true);
+			SetText("MissionDetailEb", (char*) vkInfo[i].m_strInfoTextLong.c_str());		
+			break;
+		}
+	}
+
 
 	return true;
 }

@@ -5,6 +5,7 @@
 CMissionDlg::CMissionDlg() : CGameDlg("MissionWnd", &g_kDM)
 {
 	m_iScrollbarPos = 0;
+	m_strSelMission = "";
 }
 
 CMissionDlg::~CMissionDlg() 
@@ -13,6 +14,9 @@ CMissionDlg::~CMissionDlg()
 
 void CMissionDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName)
 {
+	P_DMMission* pkMissionProperty = (P_DMMission*) 
+		GetDMObject(GAME_INFO)->GetProperty("P_DMMission");
+
 	if(strClickName == "BriefingBn")
 	{
 		if(!m_strSelMission.empty())
@@ -38,7 +42,8 @@ void CMissionDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName)
 			m_pkAudioSys->GetListnerPos()); 
 	}
 	else
-	if(strClickName.find("_Eb") != string::npos)
+	if(strClickName.find("_Eb") != string::npos && 
+		pkMissionProperty->GetCurrentMission() == NULL )
 	{
 		m_strSelMission.clear(); // töm
 
@@ -73,33 +78,26 @@ void CMissionDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName)
 			GetWnd("Mission_C_Eb")->GetSkin()->m_afBkColor[2] = 0.12; 
 		}
 
-		Entity* pkHQ = GetDMObject(HQ);
+		float reputation = ((P_DMGameInfo*)
+			GetDMObject(GAME_INFO)->GetProperty("P_DMGameInfo"))->m_fReputation;
 
-		if(pkHQ)
+		vector<DMMissionInfo> vkInfo;
+		pkMissionProperty->GetPossibleMissions(reputation, vkInfo); 
+
+		char* szShortText = GetWnd((char*)strClickName.c_str())->GetText();
+
+		for(unsigned int i=0; i<vkInfo.size(); i++)
 		{
-			P_DMMission* pkMissionProperty = (P_DMMission*) 
-				GetDMObject(GAME_INFO)->GetProperty("P_DMMission");
-
-			int reputation = ((P_DMGameInfo*)
-				GetDMObject(GAME_INFO)->GetProperty("P_DMGameInfo"))->GetReputation();
-
-			vector<DMMissionInfo> vkInfo;
-			pkMissionProperty->GetPossibleMissions(reputation, vkInfo); 
-
-			char* szShortText = GetWnd((char*)strClickName.c_str())->GetText();
-
-			for(unsigned int i=0; i<vkInfo.size(); i++)
+			if(szShortText == vkInfo[i].m_strInfoTextShort)
 			{
-				if(szShortText == vkInfo[i].m_strInfoTextShort)
-				{
-					m_strSelMission = vkInfo[i].m_strName;
+				m_strSelMission = vkInfo[i].m_strName;
 
-					m_pkAudioSys->StartSound("data/sound/computer beep 5.wav", 
-						m_pkAudioSys->GetListnerPos()); 
-					break;
-				}
+				m_pkAudioSys->StartSound("data/sound/computer beep 5.wav", 
+					m_pkAudioSys->GetListnerPos()); 
+				break;
 			}
 		}
+
 
 	}
 	
@@ -157,7 +155,7 @@ void CMissionDlg::UpdateMessageboxes(int iVectorOffset)
 		Entity* pkGameInfoObj = GetDMObject(GAME_INFO);
 		P_DMGameInfo* pkGameInfo = (P_DMGameInfo*) pkGameInfoObj->GetProperty("P_DMGameInfo");
 
-		int reputation = pkGameInfo->GetReputation();
+		float reputation = pkGameInfo->m_fReputation;
 
 		vector<DMMissionInfo> vkInfo;
 		pkMissionProperty->GetPossibleMissions(reputation, vkInfo); 

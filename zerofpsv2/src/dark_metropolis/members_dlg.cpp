@@ -931,16 +931,14 @@ void CMembersDlg::UpdateLevelbar(DMCharacterStats* pkCharacterStats)
 			char szText[50];
 			sprintf(szText, "Level : %i (%i/%i)", Level, XP, XPNextLevel);
 			SetText("LevelbarTopic", szText);
+		
+			int xp_current_level = XP - 1000 * (Level-1); // nu har vi ett värde mellan 0-1000
+			float procent_av_next_level = (float) xp_current_level / (float) 1000;
 
 			const float MAX_SIZE_LEVELBAR = (float) GetWnd("LevelbarBK")->GetScreenRect().Width();
-
-			float procent_av_next_level = (float) XP / (float) XPNextLevel;
-
 			GetWnd("LevelbarFront")->Resize(
 				(int)(procent_av_next_level*MAX_SIZE_LEVELBAR),20,true); 
-
 		}
-
 	}
 
 	if(bFailed)

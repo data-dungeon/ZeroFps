@@ -12,6 +12,8 @@
 
 using namespace std;
 
+class P_DMGameInfo;
+
 struct MCOMMON_API DMMissionInfo
 {
 	int m_iLevel;
@@ -33,11 +35,13 @@ class MCOMMON_API P_DMMission: public Property {
 		
 		bool GetMissionInfoFromScript(DMMissionInfo** ppInfo);
 		const char* GetMissionText(bool bLong);
+		void OnMissionSuccess();
 
 		vector<DMMissionInfo*> m_vkMissions;
 		DMMissionInfo* m_pkCurrentMission;
 
 		EntityManager* m_pkObjectMan;
+		P_DMGameInfo* m_pkGameInfoEntity;
 		
 	public:
 		
@@ -53,8 +57,11 @@ class MCOMMON_API P_DMMission: public Property {
 		void Load(ZFIoInterface* pkPackage);
 
 		bool SetCurrentMission(string strMissionScript);
-		void GetPossibleMissions(int iLevel, vector<DMMissionInfo>& vkInfo);
+		void GetPossibleMissions(float fReputation, vector<DMMissionInfo>& vkInfo);
 		bool RemoveMission(string strMissionScript);
+		bool CancelCurrent();
+
+		DMMissionInfo* GetCurrentMission() { return m_pkCurrentMission; }
 
 		ZFScriptSystem* m_pkScriptSys;
 		ZeroFps* m_pkZeroFps;

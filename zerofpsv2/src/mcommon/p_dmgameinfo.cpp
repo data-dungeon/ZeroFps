@@ -16,7 +16,7 @@ P_DMGameInfo::P_DMGameInfo()
 	
 	m_iMoney = 0;
 	m_kCameraPos.Set(0,0,0);
-	m_iReputation = 1;
+	m_fReputation = 1.0f;
 
 }
 
@@ -29,7 +29,7 @@ P_DMGameInfo::~P_DMGameInfo()
 void P_DMGameInfo::Init()
 {
 	cout<<"game info created"<<endl;
-	m_iReputation = 1;
+	m_fReputation = 1;
 }
 
 
@@ -60,7 +60,7 @@ void P_DMGameInfo::Save(ZFIoInterface* pkPackage)
 	
 	pkPackage->Write(&m_kCameraPos,sizeof(m_kCameraPos),1);	
 
-	pkPackage->Write(&m_iReputation,sizeof(m_iReputation),1);	
+	pkPackage->Write(&m_fReputation,sizeof(m_fReputation),1);	
 	
 }
 
@@ -81,7 +81,7 @@ void P_DMGameInfo::Load(ZFIoInterface* pkPackage)
 
 	pkPackage->Read(&m_kCameraPos,sizeof(m_kCameraPos),1);	
 
-	pkPackage->Read(&m_iReputation,sizeof(m_iReputation),1);	
+	pkPackage->Read(&m_fReputation,sizeof(m_fReputation),1);	
 
 }
 

@@ -45,6 +45,13 @@ function GUICreate()
 	ChangeSkin("BriefingCancelBn","Skin2","Button down")
 	ChangeSkin("BriefingCancelBn","Skin3","Button focus")
 
+
+	CreateWnd(1,"BriefingCancelMissionBn","BriefingWnd","Cacel mission",30,387,134,20,0)
+	ChangeSkin("BriefingCancelMissionBn","Skin1","Button up")
+	ChangeSkin("BriefingCancelMissionBn","Skin2","Button down")
+	ChangeSkin("BriefingCancelMissionBn","Skin3","Button focus")
+
+
 	CreateWnd(10,"MissionDetailEb","BriefingWnd","",8,8,600,360,0)
 	ChangeSkin("MissionDetailEb","Skin5","Textbox")
 	ChangeSkin("MissionDetailEb","Skin6","Textbox: Scrollbar")

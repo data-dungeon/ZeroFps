@@ -8,7 +8,6 @@
 
 ZFScriptSystem*				DMLua::g_pkScript;
 EntityManager*				DMLua::g_pkObjMan;
-int							DMLua::g_iMissionStatus;
 map<string, double>			DMLua::m_kVars;
 
 // ------------------------------------------------------------------------------------------------
@@ -17,14 +16,12 @@ void DMLua::Init(EntityManager* pkObjMan,ZFScriptSystem* pkScript)
 {
 	g_pkObjMan = pkObjMan;
 	g_pkScript = pkScript;
-	g_iMissionStatus = 0; // 0 = active/inactive, 1 = success, -1 = failed
 	
 	pkScript->ExposeFunction("GetNumOfLivingAgents", DMLua::GetNumOfLivingAgentsLua);
 	pkScript->ExposeFunction("GetDMCharacterByName", DMLua::GetDMCharacterByNameLua);
 	pkScript->ExposeFunction("SetDMCharacterName", DMLua::SetDMCharacterNameLua);
 	pkScript->ExposeFunction("GetDMCharacterClosest", DMLua::GetDMCharacterClosestLua);
-	pkScript->ExposeFunction("SetNewMission", DMLua::SetNewMissionLua);
-	pkScript->ExposeVariable("CurrentMission", (int*)&DMLua::g_iMissionStatus, tINT); 
+	//pkScript->ExposeFunction("SetNewMission", DMLua::SetNewMissionLua);
 
 	// character functions
 	pkScript->ExposeFunction("KillCharacter", DMLua::KillCharacterLua);
@@ -182,38 +179,38 @@ int DMLua::GetDMCharacterClosestLua(lua_State* pkLua)
 }
 // ------------------------------------------------------------------------------------------------
 
-int DMLua::SetNewMissionLua(lua_State* pkLua)
-{
-	if( g_pkScript->GetNumArgs(pkLua) == 1 )
-	{
-		char szName[256];
-		P_DMMission* pkMissionProp = NULL;
-	
-		g_pkScript->GetArgString(pkLua, 0, szName);
-
-		Entity* pkGlobal = g_pkObjMan->GetGlobalObject();
-
-		vector<Entity*> kObjects;
-		pkGlobal->GetAllEntitys(&kObjects);
-
-		for(unsigned int i=0;i<kObjects.size();i++)
-			if(kObjects[i]->GetProperty("P_DMGameInfo"))
-			{
-				pkMissionProp = (P_DMMission*) kObjects[i]->GetProperty("P_DMMission");
-				break;
-			}
-
-		if(pkMissionProp == NULL)
-		{
-			printf("Failed to change mission, failed to find property\n");
-			return 0;
-		}
-
-		pkMissionProp->SetCurrentMission( szName);
-	}
-
-	return 0; // this function returns zero (0) argument
-}
+//int DMLua::SetNewMissionLua(lua_State* pkLua)
+//{
+//	if( g_pkScript->GetNumArgs(pkLua) == 1 )
+//	{
+//		char szName[256];
+//		P_DMMission* pkMissionProp = NULL;
+//	
+//		g_pkScript->GetArgString(pkLua, 0, szName);
+//
+//		Entity* pkGlobal = g_pkObjMan->GetGlobalObject();
+//
+//		vector<Entity*> kObjects;
+//		pkGlobal->GetAllEntitys(&kObjects);
+//
+//		for(unsigned int i=0;i<kObjects.size();i++)
+//			if(kObjects[i]->GetProperty("P_DMGameInfo"))
+//			{
+//				pkMissionProp = (P_DMMission*) kObjects[i]->GetProperty("P_DMMission");
+//				break;
+//			}
+//
+//		if(pkMissionProp == NULL)
+//		{
+//			printf("Failed to change mission, failed to find property\n");
+//			return 0;
+//		}
+//
+//		pkMissionProp->SetCurrentMission( szName);
+//	}
+//
+//	return 0; // this function returns zero (0) argument
+//}
 
 // ------------------------------------------------------------------------------------------------
 

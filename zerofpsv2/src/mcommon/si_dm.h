@@ -18,8 +18,6 @@ namespace DMLua
 	extern ZFScriptSystem* 		g_pkScript;
 	extern EntityManager*		g_pkObjMan;
 
-	extern int g_iMissionStatus;
-
 	extern map<string, double> m_kVars;
 
 	void MCOMMON_API Init(EntityManager* pkObjMan,ZFScriptSystem* pkScript);

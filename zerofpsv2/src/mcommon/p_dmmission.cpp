@@ -1,6 +1,7 @@
 #include "p_dmmission.h" 
 #include "si_dm.h"
 #include "p_dmgameinfo.h"
+#include "p_dmcharacter.h" 
 
 P_DMMission::P_DMMission()
 {
@@ -16,6 +17,7 @@ P_DMMission::P_DMMission()
 	m_fMissionFailedCheckTime=0;
 
 	m_pkCurrentMission = NULL;
+	m_pkGameInfoEntity = NULL;
 }
 
 P_DMMission::~P_DMMission()
@@ -128,6 +130,25 @@ void P_DMMission::Load(ZFIoInterface* pkPackage)
 
 void P_DMMission::Update()
 {
+	if(m_pkGameInfoEntity == NULL)
+	{
+		Entity* pkGlobal = m_pkObjectMan->GetGlobalObject();
+
+		vector<Entity*> kObjects;
+		pkGlobal->GetAllEntitys(&kObjects);
+
+		for(unsigned int i=0;i<kObjects.size();i++)
+			if(kObjects[i]->GetProperty("P_DMGameInfo"))
+			{
+				m_pkGameInfoEntity = (P_DMGameInfo*) 
+					kObjects[i]->GetProperty("P_DMGameInfo");
+				break;
+			}
+	}
+
+	if(m_pkGameInfoEntity == NULL)
+		return;
+
 	if(m_pkCurrentMission == NULL)
 		return;
 
@@ -145,10 +166,21 @@ void P_DMMission::Update()
 				"IsMissionDone", 0, 0);
 			m_fMissionDoneCheckTime = fTimeCheck;
 
-			bool bSuccess;
-			int iSuccess = m_pkScriptSys->GetGlobalInt(
+			double dSuccess;
+			m_pkScriptSys->GetGlobal(
 				((ZFScript*)m_pkCurrentMission->m_pkScriptResHandle->GetResourcePtr())->m_pkLuaState, 
-				"Success", &bSuccess);
+				"MissionInfo", "success", dSuccess);
+
+			if(dSuccess > 0.9f) // lyckats med uppdraget?
+			{
+				OnMissionSuccess();
+				
+				RemoveMission(m_pkCurrentMission->m_strScript);
+				m_pkCurrentMission = NULL;
+
+				return ; // returnera (viktigt)
+			}
+
 		}
 
 		//
@@ -173,11 +205,14 @@ bool P_DMMission::RemoveMission(string strMission)
 	{
 		if((*it)->m_strScript == strMission)
 		{
+			if(m_pkCurrentMission == (*it))
+				m_pkCurrentMission = NULL;
+
 			delete (*it)->m_pkScriptResHandle;
 			delete (*it);
 
 			m_vkMissions.erase(it);
-			m_pkCurrentMission = NULL;
+
 			bSuccess = true;
 
 			break;
@@ -185,6 +220,17 @@ bool P_DMMission::RemoveMission(string strMission)
 	}
 
 	return bSuccess;
+}
+
+bool P_DMMission::CancelCurrent()
+{
+	if(m_pkCurrentMission)
+	{
+		m_pkScriptSys->Call(m_pkCurrentMission->m_pkScriptResHandle, 
+			"OnMissionFailed", 0, 0);
+	}
+
+	return RemoveMission(m_pkCurrentMission->m_strScript);
 }
 
 bool P_DMMission::SetCurrentMission(string strMissionScript)
@@ -195,17 +241,6 @@ bool P_DMMission::SetCurrentMission(string strMissionScript)
 	{
 		if(m_vkMissions[i]->m_strScript == strMissionScript)
 		{
-			if(m_pkCurrentMission != NULL)
-			{
-				int ExtraCash = m_pkCurrentMission->m_iCash;
-				int ExtraXP = m_pkCurrentMission->m_iXP;
-
-				if(!RemoveMission(m_pkCurrentMission->m_strScript))
-				{	
-					printf("Failed to remove mission!\n");
-				}
-			}
-
 			m_pkCurrentMission = m_vkMissions[i];
 			bSuccess = true;
 			break;
@@ -221,6 +256,12 @@ bool P_DMMission::SetCurrentMission(string strMissionScript)
 	printf("Starting mission \"%s\"\n", strMissionScript.c_str());
 	printf("\n---------------------------------\n");
 
+	//
+	// Anropa den Lua funktion som har till uppgift att initiera uppdraget.
+	//
+	m_pkScriptSys->Call(m_pkCurrentMission->m_pkScriptResHandle, 
+		"OnMissionStart", 0, 0);
+
 	return bSuccess;
 }
 
@@ -233,6 +274,7 @@ bool P_DMMission::GetMissionInfoFromScript(DMMissionInfo** ppInfo)
 	char szName[128];
 	double dDifficulty;
 	double dXP;
+	double dChash;
 
 	(*ppInfo)->m_pkScriptResHandle = (*ppInfo)->m_pkScriptResHandle;
 
@@ -244,6 +286,9 @@ bool P_DMMission::GetMissionInfoFromScript(DMMissionInfo** ppInfo)
 
 	m_pkScriptSys->GetGlobal(pkScript->m_pkLuaState, "MissionInfo", "xp", dXP);
 	(*ppInfo)->m_iXP = (int) dXP;
+
+	m_pkScriptSys->GetGlobal(pkScript->m_pkLuaState, "MissionInfo", "cash", dChash);
+	(*ppInfo)->m_iCash = (int) dChash;
 
 	m_pkScriptSys->GetGlobal(pkScript->m_pkLuaState, "MissionText", "short", szInfoTextShort);	
 	m_pkScriptSys->GetGlobal(pkScript->m_pkLuaState, "MissionText", "long", szInfoTextLong);
@@ -258,11 +303,11 @@ Property* Create_P_DMMission()
 	return new P_DMMission;
 }
 
-void P_DMMission::GetPossibleMissions(int iLevel, vector<DMMissionInfo>& vkInfo)
+void P_DMMission::GetPossibleMissions(float fReputation, vector<DMMissionInfo>& vkInfo)
 {
 	for(unsigned int i=0; i<m_vkMissions.size(); i++)
 	{
-		if(m_vkMissions[i]->m_iLevel == iLevel)
+		if(m_vkMissions[i]->m_iLevel <= fReputation)
 		{
 			DMMissionInfo kInfo;
 			kInfo.m_iLevel = m_vkMissions[i]->m_iLevel;
@@ -277,4 +322,46 @@ void P_DMMission::GetPossibleMissions(int iLevel, vector<DMMissionInfo>& vkInfo)
 			vkInfo.push_back( kInfo );
 		}
 	}
+}
+
+
+void P_DMMission::OnMissionSuccess()
+{
+	int ExtraCash = m_pkCurrentMission->m_iCash;
+	int ExtraXP = m_pkCurrentMission->m_iXP;
+
+	// Öka gruppens pengar
+	m_pkGameInfoEntity->m_iMoney += ExtraCash;
+
+	// Öka gruppens reputatation, som möjligör fler svårare uppdrag.
+	m_pkGameInfoEntity->m_fReputation += (float) ExtraXP / 1000.0f;
+	
+	unsigned int iAntal=0, i;
+	vector<Entity*> kObjects;	
+	m_pkObjectMan->GetAllObjects(&kObjects);
+
+	// Kolla hur många agenter som finns.
+	for(i=0;i<kObjects.size();i++)
+		if((P_DMCharacter*)kObjects[i]->GetProperty("P_DMCharacter"))
+			if ( ((P_DMCharacter*)kObjects[i]->GetProperty("P_DMCharacter"))->m_iTeam == 0 )
+				iAntal++;
+
+	int iXPEachMember = ExtraXP/iAntal;
+
+	// Öka alla agenters XP
+	for(i=0;i<kObjects.size();i++)
+		if((P_DMCharacter*)kObjects[i]->GetProperty("P_DMCharacter"))
+			if ( ((P_DMCharacter*)kObjects[i]->GetProperty("P_DMCharacter"))->m_iTeam == 0 )
+			{
+				((P_DMCharacter*)kObjects[i]->GetProperty(
+					"P_DMCharacter"))->AddXP(iXPEachMember);
+			}
+
+	printf("Mission %s success!\nRaising cash for (%i) agents, with %i and xp with %i\n%s%f",
+		m_pkCurrentMission->m_strName.c_str(), 
+		iAntal,
+		m_pkCurrentMission->m_iCash,
+		m_pkCurrentMission->m_iXP,
+		"The groups reputation is now:",
+		m_pkGameInfoEntity->m_fReputation);
 }

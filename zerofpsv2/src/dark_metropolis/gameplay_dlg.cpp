@@ -48,6 +48,9 @@ void CGamePlayDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName)
 
 		if(pkMembersDlg)
 			pkMembersDlg->SetWindowMode(CMembersDlg::IN_GAME); 
+
+		m_pkAudioSys->StartSound("data/sound/computer beep 5.wav", 
+			m_pkAudioSys->GetListnerPos()); 
 	}
 	else
 	if(strClickName == "PauseBn")
@@ -152,6 +155,9 @@ void CGamePlayDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName)
 			P_DMCharacter* pkCharacter = (P_DMCharacter*)
 				GetObject(m_iSelectedAgent)->GetProperty("P_DMCharacter");
 
+			m_pkAudioSys->StartSound("data/sound/computer beep 6.wav", 
+				m_pkAudioSys->GetListnerPos()); 
+
 			pkCharacter->UseQuickItem(iItem);
 			SelectAgent(m_iSelectedAgent, false);
 		}
@@ -200,6 +206,10 @@ bool CGamePlayDlg::InitDlg()
 			m_akAgetIcons[i].pkButton = (ZGuiButton*)GetWnd(szNameID[i*2]);
 			m_akAgetIcons[i].pkLifeProgressbar = (ZGuiLabel*)GetWnd(szNameID[i*2+1]);
 		}		
+
+		ZGuiButton* pkActiveCharBn = (ZGuiButton*) 
+			GetWnd("ActiveCharacterPortraitBn");
+		pkActiveCharBn->Hide();
 	}
 
 	if(m_bSkillbarIsOut) 
@@ -230,7 +240,6 @@ bool CGamePlayDlg::InitDlg()
 	}
 	else GetWnd("item_bar")->Hide();
 	
-
 	vector<Entity*> kMembersInField;
 	GetAllAgentsInField(kMembersInField);
 	
@@ -267,6 +276,11 @@ bool CGamePlayDlg::InitDlg()
 		}
 	}
 
+	if(m_iSelectedAgent != -1)
+	{
+		SelectAgent(m_iSelectedAgent, false);
+	}
+
 	m_bInitialized = true;
 
 	return true;
@@ -277,6 +291,11 @@ void CGamePlayDlg::SelectAgent(int iAgent, bool bSelectModels)
 	Entity* pkAgentObject;
 	P_DMCharacter* pkCharProperty;
 	DMCharacterStats* pkCharacterStats;
+
+	ZGuiButton* pkActiveCharBn = (ZGuiButton*) 
+		GetWnd("ActiveCharacterPortraitBn");
+
+	pkActiveCharBn->Hide();
 
 	if((pkAgentObject = GetObject(iAgent)))
 	{
@@ -291,8 +310,7 @@ void CGamePlayDlg::SelectAgent(int iAgent, bool bSelectModels)
 		string szTexName = string("data/textures/gui/dm/portraits/") +
 			pkCharacterStats->m_strIcon;
 
-		ZGuiButton* pkActiveCharBn = (ZGuiButton*) 
-			GetWnd("ActiveCharacterPortraitBn");
+		pkActiveCharBn->Show();
 
 		SetButtonIcon(pkActiveCharBn, szTexName, false);
 

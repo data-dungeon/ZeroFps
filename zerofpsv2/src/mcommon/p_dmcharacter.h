@@ -89,6 +89,9 @@ class MCOMMON_API P_DMCharacter: public Property {
 		void SetMoveSpeed (float fSpeed);		
 		void AddMoveSpeed (float fSpeed);
 
+		// XP
+		void AddXP(int iXP);
+
 		
 		void Init();		
 		void Update();		
