@@ -28,7 +28,7 @@ PathBuilder::~PathBuilder()
 
 void PathBuilder::Build(int pkObjectTypeCost[5], float fMaxAngle)
 {
-	int iMapSize = m_pkHeightMap->m_iHmSize;
+	int iMapSize = m_pkHeightMap->m_iHmSize - 1;
 	int y,x;
 
 	if(fMaxAngle > 90)

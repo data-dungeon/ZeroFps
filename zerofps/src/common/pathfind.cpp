@@ -3,15 +3,20 @@
 //////////////////////////////////////////////////////////////////////
 
 #include "pathfind.h"
+#include "tileengine.h"
 
-int PathFind::m_siMapWidth = 256;
+int PathFind::m_siMapWidth = 255;
+
+static int TEMP_TERRAIN[65536];
+
+static Point g_kFrom, g_kTo;
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 
 PathFind::PathFind(int* piMapTerrain, int iMapWidth, unsigned int uiBlockedValue) 
-	: ZFObject("PathFind") , m_pkSearchNode( NULL ), BLOCKED_VALUE(uiBlockedValue)
+	: ZFObject("PathFind"), m_pkSearchNode( NULL ), BLOCKED_VALUE(uiBlockedValue)
 {
 	m_piMapTerrain = piMapTerrain;
 	m_siMapWidth = iMapWidth;
@@ -23,8 +28,37 @@ PathFind::~PathFind()
 
 }
 
-bool PathFind::Rebuild( int iStartPosX, int iStartPosY, int iDestPosX, int iDestPosY )
+bool PathFind::Rebuild(int iStartPosX, int iStartPosY, int iDestPosX, int iDestPosY)
 {
+	//vector<Tile>* pkTiles = TileEngine::m_pkInstance->GetTilesPointer();
+
+	if(m_bPathIsReversed == false)
+	{
+		g_kFrom = Point(iStartPosX, iStartPosY);
+		g_kTo = Point(iDestPosX, iDestPosY);
+	}
+
+	memcpy(TEMP_TERRAIN, m_piMapTerrain, 
+		sizeof(int)*65536); // kopiera den riktiga terrängen till en temp variabel.
+
+	int l = min(iStartPosX, iDestPosX); // 
+	int t = max(iStartPosY, iDestPosY); // T---R
+ 	int r = max(iStartPosX, iDestPosX); // |   |
+	int b = min(iStartPosY, iDestPosY); // L---B
+
+	printf("-------------------------%i\n", m_siMapWidth);
+
+	for(int y=b; y<=t; y++)
+		for(int x=l; x<=r; x++)
+		{
+			Tile* pkTile = TileEngine::m_pkInstance->GetTile(x-1,y-1);
+			if( pkTile != NULL && pkTile->kUnits.size() > 0)
+			{
+				TEMP_TERRAIN[y*m_siMapWidth+x] = BLOCKED_VALUE;
+				printf("Blocked Tile Found!!\n");
+			}
+		}
+
 	if(ImpossibleToReach(iStartPosX, iStartPosY, iDestPosX, iDestPosY))
 		return false;
 
@@ -37,6 +71,8 @@ bool PathFind::Rebuild( int iStartPosX, int iStartPosY, int iDestPosX, int iDest
 		// nå (en ruta omringad av blockerad terrän, tex. en ö)
 		swap(iStartPosX, iDestPosX);
 		swap(iStartPosY, iDestPosY);
+
+		swap(g_kFrom, g_kTo);
 	}
 
 	m_pkStartNode = new Node(iStartPosX, iStartPosY);
@@ -439,7 +475,7 @@ int PathFind::GetTerrainCost(int x, int y)
 		return BLOCKED_VALUE;	 
 	}
 
-	return m_piMapTerrain[(y*m_siMapWidth)+x];
+	return TEMP_TERRAIN[y*m_siMapWidth+x];
 }
 
 
@@ -466,8 +502,8 @@ bool PathFind::FillQueue()
 			counter=0;
 			Reset();
 			m_bPathIsReversed = true;
-			return Rebuild(m_pkStartNode->m_kSqrPos.x, m_pkStartNode->m_kSqrPos.y, 
-				m_pkDestNode->m_kSqrPos.x, m_pkDestNode->m_kSqrPos.y);
+			printf("Swaping startpoint and endpoint and searching again\n");
+			return Rebuild(g_kFrom.x, g_kFrom.y, g_kTo.x, g_kTo.y);
 		}
 
 		uiSearchState = SearchStep();
