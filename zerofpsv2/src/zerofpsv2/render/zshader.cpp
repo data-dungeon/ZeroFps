@@ -626,6 +626,9 @@ void ZShader::Draw()
 	
 	glPopMatrix();
 
+
+	//strange reason this has to be here, push_attrib does not take it =(
+	glDisable(GL_VERTEX_PROGRAM_ARB);	
 }
 
 
