@@ -70,9 +70,8 @@ bool GLGuiRender::StartRender()
 	glPushMatrix();
     glLoadIdentity();
 
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+/*	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);*/
 		
 	return true;
 }
@@ -122,6 +121,9 @@ bool GLGuiRender::RenderQuad(Rect rc)
 		glEnable(GL_TEXTURE_2D);
 		m_pkTextureManger->BindTexture( texture );
 
+/*		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST)*/;
+
 		int iWidth=32, iHeight=32;
 		glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_WIDTH, &iWidth);
 		glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_HEIGHT, &iHeight);
@@ -138,6 +140,10 @@ bool GLGuiRender::RenderQuad(Rect rc)
 		glBlendFunc(GL_DST_COLOR,GL_ZERO);		
 
 		m_pkTextureManger->BindTexture( m_pkSkin->m_iBkTexAlphaID );
+
+/*		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);*/
+
 		glBegin(GL_QUADS);		
 			glColor3f(1,1,1);
 			glTexCoord2f(0,0);	  glVertex2i(rc.Left,m_iScreenHeight-rc.Bottom);		 
@@ -151,6 +157,9 @@ bool GLGuiRender::RenderQuad(Rect rc)
 	{
 		glEnable(GL_TEXTURE_2D);
 		m_pkTextureManger->BindTexture( texture );
+
+/*		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);*/
 
 		if(bDrawMasked)
 			glBlendFunc(GL_ONE, GL_ONE);	// Copy Image 1 Color To The Screen
@@ -245,6 +254,9 @@ bool GLGuiRender::RenderBorder(Rect rc)
 			}
 
 			m_pkTextureManger->BindTexture( texture );
+
+/*			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);*/
 
 		}
 		else
@@ -354,6 +366,8 @@ void GLGuiRender::RenderText( char *strText, Rect rc, int iCursorPos, int iRende
 //		m_pkTextureManger->BindTexture( fontTexture );
 		m_pkTextureManger->BindTexture( fontTexture );		
 		
+/*		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);*/
 		
 		glDisable(GL_TEXTURE_2D);
 
@@ -372,6 +386,9 @@ void GLGuiRender::RenderText( char *strText, Rect rc, int iCursorPos, int iRende
 	{
 		//m_pkTextureManger->BindTexture( texture );
 		m_pkTextureManger->BindTexture( texture );		
+/*
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);*/
 	
 		glEnable(GL_TEXTURE_2D);
 

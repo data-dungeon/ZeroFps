@@ -549,11 +549,13 @@ bool Image::load(const char* filename)
 		}
 
 	//if(strcmp(ext,".pcx") == 0)		return load_pcx(filename);
-	if(strcmp(ext,".bmp") == 0) {
+	if(strcmp(ext,".bmp") == 0) 
+	{
 		//this->create_empty(64,64);	
 		//this->fill(0,0,this->width,this->height,255,0,0);
+
 		return load_bmp(filename);
-		}	
+	}	
 
 	return false;	// Not supported.
 }
@@ -565,16 +567,7 @@ bool Image::load(FILE* fp, const char* filename)
 	if(ext == NULL)		return false;
 	
 	if(strcmp(ext,".tga") == 0)	return load_tga(fp);
-	if(strcmp(ext,".bmp") == 0) 
-	{	
-		if(strcmp("../data/textures/button_focus2.bmp", filename)==NULL) 
-		{
-			printf("---------------------------\n DEBUGGING FILE \"%s\"\n----------------------\n", filename); 
-			DEBUG_PRINT = true;
-		} 
-		
-		return load_bmp(fp);	
-	}
+	if(strcmp(ext,".bmp") == 0) return load_bmp(fp);
 
 	return false;	// Not supported.
 }
@@ -822,6 +815,7 @@ bool Image::load_bmp(const char* szFileName)
 
 bool Image::load_bmp(FILE* pkFile)
 {
+
 	bmp_t kBitmap;
 	memset(&kBitmap, 0, sizeof(bmp_t));
 	fread(&kBitmap.kFileheader, sizeof(bmpheader_t), 1, pkFile);
@@ -838,6 +832,8 @@ bool Image::load_bmp(FILE* pkFile)
 			antal = 1;
 		kBitmap.kInfoheader.ulSizeImage = kBitmap.kInfoheader.lHeight*
 			kBitmap.kInfoheader.lWidth*antal;
+
+		kBitmap.kInfoheader.ulSizeImage += 2; // Fulhack!
 	}
 
 	if( kBitmap.kFileheader.usType != BITMAP_ID ||
@@ -902,6 +898,10 @@ bool Image::load_bmp(FILE* pkFile)
 		kBitmap.pkData = new unsigned char[3*kBitmap.kInfoheader.lWidth*
 			kBitmap.kInfoheader.lHeight];
 
+		if(bZeroSize)
+		fread(kBitmap.pkData, sizeof(unsigned char), 
+			kBitmap.kInfoheader.ulSizeImage-2, pkFile); // Fulhack!
+		else
 		fread(kBitmap.pkData, sizeof(unsigned char), 
 			kBitmap.kInfoheader.ulSizeImage, pkFile);
 
