@@ -133,7 +133,7 @@ bool P_UnitSystem::FireWeapon(P_ServerUnit* pkSu,Point kTarget,int iWeapon)
 			if(tg->kUnits.empty())
 			{		
 				cout<<"boom..miss"<<endl;
-				return false;
+				return true;
 			}
 			
 			for(list<int>::iterator it = tg->kUnits.begin();it != tg->kUnits.end();it++)		
