@@ -493,8 +493,6 @@ void Scene::ScaleWndToTexSize(ZGuiWnd *pkWnd, char *szSelSkinType)
 
 ZGuiWnd* Scene::CloneWnd(ZGuiWnd *pkWnd, int xpos, int ypos)
 {
-	printf("%i\n", xpos);
-
 	ZGuiWnd* pkNewWnd = NULL;
 
 	GuiType eWndType = m_pkApp->GetType(pkWnd);
@@ -547,7 +545,71 @@ ZGuiWnd* Scene::CloneWnd(ZGuiWnd *pkWnd, int xpos, int ypos)
 		printf("Failed to create window!\n");
 	}
 
+	vector<ZGuiWnd::SKIN_DESC> vkSkinDesc;
+	pkWnd->GetWndSkinsDesc(vkSkinDesc);
+
+	for(unsigned int i=0; i<vkSkinDesc.size(); i++)
+	{
+		vector<ZGuiWnd::SKIN_DESC> vkNewSkinDesc;
+		pkNewWnd->GetWndSkinsDesc(vkNewSkinDesc);
+
+		for(unsigned int j=0; j<vkNewSkinDesc.size(); j++)
+		{	
+			if(j==i)
+			{
+				if((*vkNewSkinDesc[j].first))
+					delete (*vkNewSkinDesc[j].first);
+
+				(*vkNewSkinDesc[j].first) = new ZGuiSkin((*vkSkinDesc[i].first));
+				break;
+			}
+		}
+
+		vkNewSkinDesc.clear(); 
+	}
+
+	AddStandardElements(pkNewWnd);
+
 	pkNewWnd->Disable();
 
 	return pkNewWnd;
+}
+
+void Scene::AddStandardElements(ZGuiWnd *pkWnd)
+{
+	GuiType eWndType = m_pkApp->GetType(pkWnd);
+
+	char* szName = (char*) pkWnd->GetName();
+
+	//
+	// Lägg till element till listboxar och trädboxar
+	//
+	if(eWndType == Treebox)
+	{
+		((ZGuiTreebox*) GetWnd(szName))->Clear();
+
+		m_pkApp->AddTreeItem(szName, "ParentNode", "RootNode", "Parent", 1, 2);
+
+		char szNodeName[50], szNodeID[50];
+
+		for(int i=0; i<25; i++)
+		{	
+			sprintf(szNodeID, "ChildNode%i", i);
+			sprintf(szNodeName, "This is Child number %i", i);
+			m_pkApp->AddTreeItem(szName, szNodeID, "ParentNode", szNodeName, 0, 1);
+		}
+	}
+	else
+	if(eWndType == Listbox || eWndType == Combobox)
+	{
+		m_pkApp->ClearListbox(szName);
+
+		char szText[50];
+
+		for(int i=0; i<20; i++)
+		{
+			sprintf(szText, "Item%i", i);
+			m_pkApp->AddListItem(szName, szText);
+		}
+	}
 }

@@ -29,6 +29,7 @@ public:
 	ZGuiWnd* m_pkSelectFileWnd;
 	ZGuiWnd* m_pkDefProp;
 
+	void AddStandardElements(ZGuiWnd *pkWnd);
 	bool BuildFileTree(char* szTreeBoxName, char* szRootPath, char* szExtension);
 	bool IsSceneWnd(ZGuiWnd* pkWnd);
 
@@ -40,6 +41,7 @@ public:
 	void RemoveAlias(ZGuiWnd* pkWnd);
 	void ScaleWndToTexSize(ZGuiWnd* pkWnd, char* szSelSkinType);
 	ZGuiWnd* CloneWnd(ZGuiWnd* pkWnd, int xpos, int ypos);
+
 
 private:
 	void CreateUI();

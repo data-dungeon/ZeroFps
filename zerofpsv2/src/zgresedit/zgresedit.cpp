@@ -311,6 +311,8 @@ void ZGResEdit::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 			if(szSkinType != NULL && m_pkFocusWnd != NULL )
 				m_pkScene->ScaleWndToTexSize(m_pkFocusWnd, szSkinType);
 		}
+
+		m_pkAudioSys->StartSound("/data/sound/button_press1.wav");
 	}
 	else
 	if(strMainWndName == "WorkSpace")
@@ -351,6 +353,8 @@ void ZGResEdit::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 		else
 		if(strClickWndName == "StretchTextureCB" && m_pkFocusWnd)
 		{
+			m_pkAudioSys->StartSound("/data/sound/button_press1.wav");
+
 			vector<ZGuiWnd::SKIN_DESC> vkSkinDesc;
 			m_pkFocusWnd->GetWndSkinsDesc(vkSkinDesc);
 
@@ -372,6 +376,8 @@ void ZGResEdit::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 		else
 		if(strClickWndName == "RemoveTextureBn" && m_pkFocusWnd)
 		{
+			m_pkAudioSys->StartSound("/data/sound/button_press1.wav");
+
 			// Ta bort textur på vald kontroll
 			vector<ZGuiWnd::SKIN_DESC> vkSkinDesc;
 			m_pkFocusWnd->GetWndSkinsDesc(vkSkinDesc);
@@ -410,6 +416,8 @@ void ZGResEdit::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 		else
 		if(strClickWndName == "TransparentTextureCB" && m_pkFocusWnd)
 		{
+			m_pkAudioSys->StartSound("/data/sound/button_press1.wav");
+
 			vector<ZGuiWnd::SKIN_DESC> vkSkinDesc;
 			m_pkFocusWnd->GetWndSkinsDesc(vkSkinDesc);
 
@@ -426,6 +434,8 @@ void ZGResEdit::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 		else
 		if(strClickWndName == "CreateWndBn")
 		{
+			m_pkAudioSys->StartSound("/data/sound/smith_hammer4.wav");
+
 			char* szName = GetText("NewWndNameTextbox");
 			char szParent[100];
 			char szLabel[100];
@@ -579,7 +589,7 @@ void ZGResEdit::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 				}
 			}
 
-			AddStandardElements(pkWnd);
+			m_pkScene->AddStandardElements(pkWnd);
 
 			// Slumpa fram ett nytt controllnamn till nästa fönster...
 			char szNewName[100];
@@ -656,7 +666,15 @@ void ZGResEdit::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 			int length = strlen(szTextbox);
 			
 			if(szTextbox != NULL && length > 1 && szTextbox[length-1] != '/')
-				strcpy(szFileName, GetText("SelectedFileEB"));
+			{
+				char* szFile = GetText("SelectedFileEB");
+				
+				// Lägg till prefixet "../data/" om det inte redan finns.
+				if(strstr(szFile, "../data/") == NULL)
+					sprintf(szFileName, "../data/%s", GetText("SelectedFileEB"));
+				else
+					sprintf(szFileName, "%s", GetText("SelectedFileEB"));
+			}
 			else
 			{
 				SetText("SelectedFileEB", "../data/");
@@ -703,7 +721,7 @@ void ZGResEdit::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 					{
 						if(m_pkScene->IsSceneWnd(it2->second) == false)
 						{
-							ZGResEdit::AddStandardElements(it2->second);
+							m_pkScene->AddStandardElements(it2->second);
 							it2->second->Disable();
 						}
 					}
@@ -715,6 +733,8 @@ void ZGResEdit::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 		else
 		if(strClickWndName == "SelectedFileUpdate")
 		{
+			m_pkAudioSys->StartSound("/data/sound/button_press1.wav");
+
 			((ZGuiTreebox*)GetWnd("FileTree"))->Clear();
 			m_pkScene->BuildFileTree("FileTree", "data", ".lua");
 			SetText("SelectedFileEB", "");
@@ -1108,7 +1128,7 @@ void ZGResEdit::DeleteWnd(ZGuiWnd *pkWnd)
 {
 	if(pkWnd != NULL)
 	{
-		ZGuiWnd* pkSearch = pkWnd;
+/*		ZGuiWnd* pkSearch = pkWnd;
 
 		while(1)
 		{
@@ -1120,18 +1140,26 @@ void ZGResEdit::DeleteWnd(ZGuiWnd *pkWnd)
 			pkSearch = pkWnd->GetParent();
 			if(pkSearch == NULL)
 				break;
-		}
+		}*/
 
 		if(pkWnd->GetParent())
 		{
 			m_pkFocusWnd = pkWnd->GetParent();
 			pkGui->SetFocus(m_pkFocusWnd);
+			m_pkMainWnd = m_pkFocusWnd;
+		}
+		else
+		{
+			m_pkFocusWnd = NULL;
+			m_pkMainWnd = NULL;
 		}
 
 		m_pkScene->RemoveAlias(pkWnd);
 
 		pkGui->UnregisterWindow(pkWnd);
 		pkWnd = NULL;
+
+		m_pkAudioSys->StartSound("/data/sound/chop_knife.wav");
 	}
 }
 
@@ -1281,6 +1309,8 @@ void ZGResEdit::OnSelectWnd(ZGuiWnd *pkWnd)
 
 		m_pkFocusWnd = pkCopy;
 		m_pkMoveWnd = m_pkFocusWnd;
+
+		// --- olle
 	}
 }
 
@@ -1336,44 +1366,7 @@ void ZGResEdit::OnClickListbox(int iListBoxID, int iListboxIndex, ZGuiWnd* pkMai
 	}
 }
 
-void ZGResEdit::AddStandardElements(ZGuiWnd *pkWnd)
-{
-	GuiType eWndType = GetType(pkWnd);
 
-	char* szName = (char*) pkWnd->GetName();
-
-	//
-	// Lägg till element till listboxar och trädboxar
-	//
-	if(eWndType == Treebox)
-	{
-		((ZGuiTreebox*) m_pkScene->GetWnd(szName))->Clear();
-
-		AddTreeItem(szName, "ParentNode", "RootNode", "Parent", 1, 2);
-
-		char szNodeName[50], szNodeID[50];
-
-		for(int i=0; i<25; i++)
-		{	
-			sprintf(szNodeID, "ChildNode%i", i);
-			sprintf(szNodeName, "This is Child number %i", i);
-			AddTreeItem(szName, szNodeID, "ParentNode", szNodeName, 0, 1);
-		}
-	}
-	else
-	if(eWndType == Listbox || eWndType == Combobox)
-	{
-		ClearListbox(szName);
-
-		char szText[50];
-
-		for(int i=0; i<20; i++)
-		{
-			sprintf(szText, "Item%i", i);
-			AddListItem(szName, szText);
-		}
-	}
-}
 
 void ZGResEdit::OpenDefPropWnd(string strWndType)
 {
