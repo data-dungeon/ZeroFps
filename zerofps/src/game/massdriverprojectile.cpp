@@ -29,16 +29,10 @@ void MassDriverProjectile::Update()
 		if(m_pkFps->GetTicks() - m_fCreateTime >.5)
 			m_pkObjectMan->Delete(m_pkObject);			
 	}
-
-
-
 }
 
 void MassDriverProjectile::Touch(Object* pkObject)
 {
-//	if(pkObject->iNetWorkID == shoterid)
-//		return;
-
 	if(m_iMode==0)
 	{	
 	
@@ -55,9 +49,6 @@ void MassDriverProjectile::Touch(Object* pkObject)
 
 		m_fCreateTime=m_pkFps->GetTicks();
 	}
-	
-	m_pkObjectMan->Delete(m_pkObject);	
-
 }
 
 

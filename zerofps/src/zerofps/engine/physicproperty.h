@@ -21,7 +21,8 @@ class ENGINE_API PhysicProperty :public Property
 		bool m_bGravity;
 		bool m_bFloat;
 		bool m_bSolid;
-	
+		bool m_bGlide;
+		
 		
 		Vector3 m_kNewPos;	//for the physicengine
 		Vector3 m_kNewVel;	//for the physicengine

@@ -30,15 +30,10 @@ void MachineGunProjectile::Update()
 			m_pkObjectMan->Delete(m_pkObject);			
 	}
 
-
-
 }
 
 void MachineGunProjectile::Touch(Object* pkObject)
 {
-//	if(pkObject->iNetWorkID == shoterid)
-//		return;
-
 	if(m_iMode==0)
 	{	
 	

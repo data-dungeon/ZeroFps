@@ -102,6 +102,7 @@ void MassDriverProperty::Use()
 	PhysicProperty* mp = dynamic_cast<PhysicProperty*>(Bullet->AddProperty("PhysicProperty"));
 	mp->m_bGravity=false;
 	mp->m_bFloat=false;
+	mp->m_bGlide=false;
 	static_cast<CSSphere*>(mp->GetColSphere())->m_fRadius=0.01;	
 	
 	Bullet->SetParent(m_pkObjectMan->GetWorldObject());

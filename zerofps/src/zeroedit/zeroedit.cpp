@@ -574,7 +574,7 @@ void ZeroEdit::Input()
 
 	//camera movements
 	if(pkInput->Pressed(KEY_X)){
-		speed*=0.5;
+		speed*=0.25;
 	}
 	if(pkInput->Pressed(KEY_D)){
 		pkFps->GetCam()->GetPos().x+=cos((pkFps->GetCam()->GetRot().y)/degtorad) *pkFps->GetFrameTime()*speed;			

@@ -104,19 +104,59 @@ Collision* CSSphere::Collide_CSSphere(CSSphere* kOther,float fTime)
 
 	float bla = distance / fabs(movevec.Length());
 //	cout << "bla: " << bla << endl;
-	if(bla<0)
-		bla=0;
+//	if(bla<0)
+//		bla=0;
+	
+	
+	Vector3 statmov1=movevec1 * bla;
+	Vector3 statmov2=movevec2 * bla;	
+
+	Vector3 newmov1=O1->GetPos() + (movevec1*bla);
+	Vector3 newmov2=O2->GetPos() + (movevec2*bla);	
+	
+	Vector3 normal1 = (newmov2 - newmov1).Unit();
+	Vector3 normal2 = (newmov1 - newmov2).Unit();	
+	
+	
+	if(m_pkPP->m_bGlide) {
+		Vector3 bu = movevec1-statmov1;
+		float bulen=bu.Length();
+		if(bulen!=0)
+			bu.Normalize();		
+		
+		bu+=normal2;
+		
+		newmov1 = statmov1 + bu*bulen;
+	} else {
+		newmov1 = movevec1 * bla;
+	}
+	
+	
+	if(kOther->m_pkPP->m_bGlide) {		
+		Vector3 bu = movevec2-statmov2;
+		float bulen=bu.Length();
+		if(bulen!=0)
+			bu.Normalize();
+		
+		bu+=normal1;
+		
+		newmov2 = statmov2 + bu*bulen;
+	} else {
+		newmov2 = movevec2 * bla;
+	}
+	
+	
 	
 	
 	//assemble collision data
 	Collision* tempdata = new Collision;
 	
 	tempdata->m_pkPP2 = kOther->m_pkPP;
-	tempdata->m_kPos2 = O2->GetPos()+(movevec2*bla);
+	tempdata->m_kPos2 = O2->GetPos()+ newmov2;//(movevec2*bla);
 	tempdata->m_fDistance2 = (tempdata->m_kPos2 - O2->GetPos()).Length();
 	
 	tempdata->m_pkPP1 = m_pkPP;
-	tempdata->m_kPos1 = O1->GetPos()+(movevec1*bla);
+	tempdata->m_kPos1 = O1->GetPos()+newmov1; //(movevec1*bla);
 	tempdata->m_fDistance1 = (tempdata->m_kPos1 - O1->GetPos()).Length();
 
 //	tempdata->m_kNormal=Vector3(0,0,0);

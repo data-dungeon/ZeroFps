@@ -119,27 +119,10 @@ void AdaptorSniper::Update()
 
 void AdaptorSniper::Touch(Object* pkObject)
 {
-	if(pkObject->GetName() != "HeightMapObject" && pkObject->GetName() != "Player")
+	if(pkObject->GetObjectType() != OBJECT_TYPE_STATIC)
 	{		
 		m_pkObject->GetRot().y+=180;
 	}
-
-	if(pkObject->GetName() == "Player")
-	{
-		
-		if(m_pkFps->GetTicks() - m_fHitTime >= 1) 
-		{
-			m_fHitTime=m_pkFps->GetTicks();
-
-			cout<<"Swish adaptor kicks players ass"<<endl;
-			StatusProperty* sp=static_cast<StatusProperty*>(pkObject->GetProperty("StatusProperty"));
-			if(sp!=NULL)
-			{
-				sp->Damage(20);
-			}	
-		}
-	}
-
 }
 
 void AdaptorSniper::Fire(Vector3 kAim)

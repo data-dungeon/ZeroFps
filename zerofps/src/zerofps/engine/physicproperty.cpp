@@ -12,7 +12,7 @@ PhysicProperty::PhysicProperty()
 	m_bGravity=true;
 	m_bFloat=true;	
 	m_bSolid=true;	
-
+	m_bGlide=true;
 
 	m_pkColSphere=NULL;
 	m_pkColObject=NULL;
@@ -65,6 +65,7 @@ void PhysicProperty::Save(ZFMemPackage* pkPackage)
 	pkPackage->Write((void*)&m_bGravity,4);
 	pkPackage->Write((void*)&m_bFloat,4);	
 	pkPackage->Write((void*)&m_bSolid,4);		
+	pkPackage->Write((void*)&m_bGlide,4);			
 	pkPackage->Write((void*)&(static_cast<CSSphere*>(GetColSphere())->m_fRadius),4);	
 
 
@@ -95,6 +96,7 @@ void PhysicProperty::Load(ZFMemPackage* pkPackage)
 	pkPackage->Read((void*)&m_bGravity,4);
 	pkPackage->Read((void*)&m_bFloat,4);
 	pkPackage->Read((void*)&m_bSolid,4);	
+	pkPackage->Read((void*)&m_bGlide,4);		
 	pkPackage->Read((void*)&(static_cast<CSSphere*>(GetColSphere())->m_fRadius),4);		
 
 
@@ -120,7 +122,7 @@ void PhysicProperty::SetColShape(CollisionShape* pkCs)
 
 vector<PropertyValues> PhysicProperty::GetPropertyValues()
 {
-	vector<PropertyValues> kReturn(4);
+	vector<PropertyValues> kReturn(5);
 
 	kReturn[0].kValueName="m_bGravity";
 	kReturn[0].iValueType=VALUETYPE_BOOL;
@@ -134,14 +136,19 @@ vector<PropertyValues> PhysicProperty::GetPropertyValues()
 	kReturn[2].iValueType=VALUETYPE_BOOL;
 	kReturn[2].pkValue=(void*)&m_bSolid;
 
-	kReturn[3].kValueName="m_fRadius";
-	kReturn[3].iValueType=VALUETYPE_FLOAT;
+	kReturn[3].kValueName="m_bGlide";
+	kReturn[3].iValueType=VALUETYPE_BOOL;
+	kReturn[3].pkValue=(void*)&m_bGlide;
+
+
+	kReturn[4].kValueName="m_fRadius";
+	kReturn[4].iValueType=VALUETYPE_FLOAT;
 	CSSphere* pkColSphere = static_cast<CSSphere*>(GetColSphere());
 
 	float fHata = static_cast<CSSphere*>(GetColSphere())->m_fRadius;
 
 	if(pkColSphere != NULL)
-		kReturn[3].pkValue = (void*)&static_cast<CSSphere*>(GetColSphere())->m_fRadius;
+		kReturn[4].pkValue = (void*)&static_cast<CSSphere*>(GetColSphere())->m_fRadius;
 
 	else
 		assert(0);
