@@ -2,6 +2,7 @@
 #include "gui_optionsdlg.h"
 #include "actionmenu.h"
 #include "gui_inventory.h"
+#include "gui_equipwnd.h"
 #include "../zerofpsv2/gui/zguiresourcemanager.h"
 
 extern MistClient	g_kMistClient;
@@ -99,6 +100,7 @@ void MistClient::SetupGUI()
 	m_pkOptionsDlg = new OptionsDlg(this);
 	m_pkActionDlg = new ActionMenu();
 	m_pkInventoryDlg = new InventoryDlg();
+	m_pkEquipmentDlg = new EquipmentDlg();
 
 	font = g_kMistClient.m_pkGui->GetResMan()->Font("chatboxfont");
 
@@ -145,7 +147,9 @@ void MistClient::SetupGUI()
 	g_kMistClient.m_kGuiMsgProcs.insert( map<string, msgScreenProg>::value_type("InventoryWnd", GuiMsgInventoryDlg));
 	g_kMistClient.m_kGuiMsgProcs.insert( map<string, msgScreenProg>::value_type("ContainerWnd", GuiMsgInventoryDlg));
 	g_kMistClient.m_kGuiMsgProcs.insert( map<string, msgScreenProg>::value_type("SplitStockWnd", GuiMsgInventoryDlg));
-	
+
+	g_kMistClient.m_kGuiMsgProcs.insert( map<string, msgScreenProg>::value_type("EquipmentDlg", GuiMsgEquipmentDlg));
+
    // load software cursor
 	g_kMistClient.m_pkGui->SetCursor( 0,0, m_pkTexMan->Load("data/textures/gui/cursor.bmp", 0),
 		m_pkTexMan->Load("data/textures/gui/cursor_a.bmp", 0), 32, 32);
@@ -155,6 +159,8 @@ void MistClient::SetupGUI()
 	GetWnd("ContinueGameBn")->Hide();
 
 	SetGuiCapture(true);
+
+	
 }
 
 

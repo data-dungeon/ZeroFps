@@ -25,6 +25,7 @@
 #include "actionmenu.h"
 #include "gui_inventory.h"
 #include "gui_optionsdlg.h"
+#include "gui_equipwnd.h"
 #include "../mcommon/mainmcommon.h"
 
 MistClient g_kMistClient("MistClient",0,0,0);
@@ -147,6 +148,7 @@ void MistClient::OnInit()
 	if(m_pkIni->GetIntValue("ZFAudioSystem", "a_enablesound") == 0 && 
 		m_pkIni->GetIntValue("ZFAudioSystem", "a_enablemusic") == 0)
 		m_pkAudioSys->SetMainVolume(0); // tempgrej för att stänga av all audio, finns inget vettigt sett för tillfället
+
 }
 
 void MistClient::RunCommand(int cmdid, const CmdArgument* kCommand)
@@ -360,6 +362,16 @@ void MistClient::Input()
 			m_pkInventoryDlg->Close(); 
 		else
 			RequestOpenInventory();
+	}
+
+	if(m_pkInputHandle->Pressed(KEY_E) && !DelayCommand())
+	{			
+		if(m_pkEquipmentDlg->IsVisible())
+			m_pkEquipmentDlg->Close(); 
+		else
+		{
+			m_pkEquipmentDlg->Open(); 
+		}
 	}
 			
 	// taunts
@@ -917,6 +929,7 @@ bool MistClient::ShutDown()
 {
    ReadWriteServerList(false);
 	delete m_pkInventoryDlg;
+	delete m_pkEquipmentDlg;
 	delete m_pkActionDlg;
 	delete m_pkOptionsDlg;
    return true;

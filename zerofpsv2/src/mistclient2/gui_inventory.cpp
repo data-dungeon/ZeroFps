@@ -236,6 +236,7 @@ void InventoryDlg::OnMouseMove(bool bLeftButtonPressed, int mx, int my)
 					{
 						m_kSplitSlot.m_iIndex = i;
 						m_kSplitSlot.bIsInventoryItem = true;
+						m_kSplitSlotTarget.m_iIndex = -1;
 						OpenSplitStockWnd();
 					}
 				}
@@ -665,12 +666,18 @@ void InventoryDlg::OnDropItem(int mx, int my)
 	InventoryDropTarget eDropTarget = GetDropTargetFromScreenPos(mx, my);
 	pair<int, bool> kTargetSlot = GetItemFromScreenPos(mx, my);
 
+	bool bTargetIsInventoryItem = kTargetSlot.second = true;
+
 	Point slot = SlotFromScreenPos(mx, my, (eDropTarget == DropTarget_Inventory));
 	iSlotX = slot.x;
 	iSlotY = slot.y;
 
 	pkVector = (m_kMoveSlot.bIsInventoryItem) ? &m_vkInventoryItemList : &m_vkContainerItemList;	
 	iItemID = (*pkVector)[m_kMoveSlot.m_iIndex].iItemID;
+	bool bIsSplitSlot = (*pkVector)[m_kMoveSlot.m_iIndex].iStackSize > 1;
+	bool bTryExecuteSlplit = false;
+
+	m_kSplitSlotTarget.m_iIndex = -1;
 
 	if(kTargetSlot.first == -1) // no collision
 	{					
@@ -687,41 +694,52 @@ void InventoryDlg::OnDropItem(int mx, int my)
 	}
 	else
 	{
-		if(eDropTarget == DropTarget_Ground)
-			iTarget = iSlotX = iSlotY = -1;
-		else
-		if( (m_kMoveSlot.bIsInventoryItem && kTargetSlot.second) || 
-			 (!m_kMoveSlot.bIsInventoryItem && !kTargetSlot.second) )
-		{
-			iTarget = (*pkVector)[kTargetSlot.first].iItemID;
-			if((*pkVector)[kTargetSlot.first].bIsContainer)
-				iSlotX = iSlotY = -1;
-		}
-		else
+		if( !( (m_kMoveSlot.bIsInventoryItem && bTargetIsInventoryItem) || 
+			   (!m_kMoveSlot.bIsInventoryItem && !bTargetIsInventoryItem) ) ) // not dropping in same window?
 		{
 			if(eDropTarget == DropTarget_Inventory)
 				pkVector = &m_vkInventoryItemList;				
 			else
 				pkVector = &m_vkContainerItemList;
-				
+		}
+
+		if(eDropTarget == DropTarget_Ground)
+			iTarget = iSlotX = iSlotY = -1;
+		else		
 			iTarget = (*pkVector)[kTargetSlot.first].iItemID;
 
-			if((*pkVector)[kTargetSlot.first].bIsContainer)
-				iSlotX = iSlotY = -1;
+		if((*pkVector)[kTargetSlot.first].bIsContainer)
+			iSlotX = iSlotY = -1;
+		else
+		if(bIsSplitSlot)
+		{
+			bTryExecuteSlplit = true;
+			m_kSplitSlotTarget.m_iIndex = kTargetSlot.first;
+			m_kSplitSlotTarget.bIsInventoryItem = kTargetSlot.second;
 		}
 	}
 
-	g_kMistClient.SendMoveItem(iItemID, iTarget, iSlotX, iSlotY);
-	
+	if(bTryExecuteSlplit == false)
+	{
+		g_kMistClient.SendMoveItem(iItemID, iTarget, iSlotX, iSlotY);
+	}
+
 	g_kMistClient.RequestOpenInventory();
 	if(m_iActiveContainerID)
 		g_kMistClient.SendRequestContainer(m_iActiveContainerID);
-
+	
 	g_kMistClient.m_pkGui->SetCursor((int)mx+m_kCursorRangeDiff.x, (int)my+m_kCursorRangeDiff.y, 
 			m_pkTexMan->Load("data/textures/gui/cursor.bmp", 0),
 			m_pkTexMan->Load("data/textures/gui/cursor_a.bmp", 0), 32, 32);
 
 	g_kMistClient.m_pkInputHandle->SetCursorInputPos(mx+m_kCursorRangeDiff.x,my+m_kCursorRangeDiff.y);	
+
+	if(bTryExecuteSlplit)
+	{
+		m_kSplitSlot.m_iIndex = m_kMoveSlot.m_iIndex;
+		m_kSplitSlot.bIsInventoryItem = m_kMoveSlot.bIsInventoryItem;	
+		OpenSplitStockWnd();
+	}
 }
 
 int InventoryDlg::TestForCollision(int iTestSlot, bool bInventory)
@@ -959,14 +977,40 @@ void InventoryDlg::CloseSplitStockWnd(bool bExecuteSplit)
 
 	if(bExecuteSplit && m_kSplitSlot.m_iIndex != -1)
 	{
-		int iItemID=-1, iTarget=-1, iSlotX=1, iSlotY=-1, iCount=1;
+		int iItemID=-1, iTarget=-1, iSlotX=1, iSlotY=-1, iCount=0;
+
+		bool bSuccesss;
+		int iTemp = g_kMistClient.GetTextInt("SplitStockSplitEb", &bSuccesss);
+		if(bSuccesss)
+		{	
+			iCount = iTemp;
+		}
 
 		if(m_kSplitSlot.bIsInventoryItem)
 			iItemID = m_vkInventoryItemList[m_kSplitSlot.m_iIndex].iItemID;
 		else
 			iItemID = m_vkContainerItemList[m_kSplitSlot.m_iIndex].iItemID;
 
-		g_kMistClient.SendMoveItem(iItemID, iTarget, iSlotX, iSlotY, iCount);	
+		if(m_kSplitSlotTarget.m_iIndex != -1)
+		{
+			Point slot;
+			if(m_kSplitSlotTarget.bIsInventoryItem)
+			{
+				iTarget = m_vkInventoryItemList[m_kSplitSlotTarget.m_iIndex].iItemID;
+				slot = SlotFromWnd(m_vkInventoryItemList[m_kSplitSlotTarget.m_iIndex].pkWnd, true);
+			}
+			else
+			{
+				iTarget = m_vkContainerItemList[m_kSplitSlotTarget.m_iIndex].iItemID;
+				slot = SlotFromWnd(m_vkInventoryItemList[m_kSplitSlotTarget.m_iIndex].pkWnd, false);
+			}
+
+			iSlotX = slot.x;
+			iSlotY = slot.y;			
+		}
+
+		if(iCount != 0)
+			g_kMistClient.SendMoveItem(iItemID, iTarget, iSlotX, iSlotY, iCount);	
 		
 		if(m_kSplitSlot.bIsInventoryItem)
 			g_kMistClient.RequestOpenInventory();
@@ -975,9 +1019,10 @@ void InventoryDlg::CloseSplitStockWnd(bool bExecuteSplit)
 			if(m_iActiveContainerID)
 				g_kMistClient.SendRequestContainer(m_iActiveContainerID);
 		}
-
-		m_kSplitSlot.m_iIndex = -1;
 	}
+
+	m_kSplitSlot.m_iIndex = -1;
+	m_kSplitSlotTarget.m_iIndex = -1;
 	
 	ZGuiWnd::m_pkFocusWnd->KillFocus();
 	g_kMistClient.m_pkGui->SetFocus(m_pkInventoryWnd, false);	

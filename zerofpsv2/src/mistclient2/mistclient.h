@@ -8,6 +8,7 @@
 class OptionsDlg;
 class ActionMenu;
 class InventoryDlg;
+class EquipmentDlg;
 class Camera;
 class Entity;
 
@@ -49,10 +50,12 @@ class MistClient :public Application, public ZGuiApp {
 	
 		vector<pair<string,string> > m_kServerList;
 		map<string, msgScreenProg> m_kGuiMsgProcs;
-		OptionsDlg* 	m_pkOptionsDlg;
-		ActionMenu* 	m_pkActionDlg;
-		InventoryDlg*	m_pkInventoryDlg;
-      		
+
+		OptionsDlg* m_pkOptionsDlg;
+		ActionMenu* m_pkActionDlg;
+		InventoryDlg* m_pkInventoryDlg;
+		EquipmentDlg* m_pkEquipmentDlg;
+
 		bool ReadWriteServerList(bool bRead);
 
 		void UpdateCharacter();
@@ -140,10 +143,12 @@ class MistClient :public Application, public ZGuiApp {
 		friend void GuiMsgOptionsDlg( string strMainWnd, string strController, unsigned int msg, int numparms, void *params );
 		friend void GuiMsgActionDlg( string strMainWnd, string strController, unsigned int msg, int numparms, void *params );
 		friend void GuiMsgInventoryDlg( string strMainWnd, string strController, unsigned int msg, int numparms, void *params );
-
+		friend void GuiMsgEquipmentDlg( string strMainWnd, string strController, unsigned int msg, int numparms, void *params );
+		
 		friend class OptionsDlg;
 		friend class ActionMenu;
 		friend class InventoryDlg;
+		friend class EquipmentDlg;
 };
 
 

@@ -2,6 +2,7 @@
 #include "gui_optionsdlg.h"
 #include "../zerofpsv2/engine/zerofps.h"
 #include "gui_inventory.h"
+#include "gui_equipwnd.h"
 
 extern MistClient g_kMistClient;
 

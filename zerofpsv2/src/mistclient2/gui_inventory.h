@@ -95,6 +95,7 @@ private:
 
 	SPECIAL_SLOT m_kMoveSlot; 
 	SPECIAL_SLOT m_kSplitSlot; 
+	SPECIAL_SLOT m_kSplitSlotTarget; 
 
 	int m_iSelItemID; // ITEM_SLOT::iItemID (aka MLContainerInfo::m_iItemID)
 	int m_iHighestZ;

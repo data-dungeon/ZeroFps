@@ -1,5 +1,6 @@
 #include	"mistclient.h"
 #include "gui_inventory.h"
+#include "gui_equipwnd.h"
 #include "../zerofpsv2/engine_systems/audio/zfaudiosystem.h"
 #include "../zerofpsv2/gui/zguiresourcemanager.h"
 
@@ -29,6 +30,12 @@ void GuiMsgIngameScreen( string strMainWnd, string	strController,
 			{
 				//g_kMistClient.m_pkInventoryDlg->Open(); 
 				g_kMistClient.RequestOpenInventory(); 
+				g_kMistClient.PositionActionButtons();
+			}
+			else
+			if(strController == "OpenEquipWndBn")
+			{
+				g_kMistClient.m_pkEquipmentDlg->Open(); 
 				g_kMistClient.PositionActionButtons();
 			}
 		}
@@ -262,23 +269,28 @@ void MistClient::LoadInGameGui()
 
 void MistClient::PositionActionButtons()
 {
-	int x, y = 0;
+	int x = 0, y = 0;
 	const int BUTTON_SIZE = 64;
-	const int NUM_BUTTONS = 3;
+	const int NUM_BUTTONS = 4;
 
 	ZGuiWnd* pkOpenMenuBn = GetWnd("IngameBackBn");
 	ZGuiWnd* pkOpenInventoryBn = GetWnd("OpenInventoryBn");
+	ZGuiWnd* pkOpenEquipWndBn = GetWnd("OpenEquipWndBn");
 	ZGuiWnd* pkOpenChatButton = GetWnd("OpenChatButton");
-	
-	// Set position for inventory button (2:nd button from left)
-	x = BUTTON_SIZE*(NUM_BUTTONS-1);
-	if(pkOpenMenuBn->IsVisible()) x-=BUTTON_SIZE;
-	pkOpenInventoryBn->SetPos(x,y,false,true);
 
-	// Set position for chat button (3:rd button from left)
-	x = BUTTON_SIZE*(NUM_BUTTONS-1); 
-	if(pkOpenMenuBn->IsVisible()) x-=BUTTON_SIZE;
-	if(pkOpenInventoryBn->IsVisible()) x-=BUTTON_SIZE;
+	x = BUTTON_SIZE * (NUM_BUTTONS-1);
+
+	pkOpenMenuBn->SetPos(x,y,false,true);
+	if(pkOpenMenuBn->IsVisible()) 
+		x-=BUTTON_SIZE;
+
+	pkOpenInventoryBn->SetPos(x,y,false,true);
+	if(pkOpenInventoryBn->IsVisible()) 
+		x-=BUTTON_SIZE;
+
+	pkOpenEquipWndBn->SetPos(x,y,false,true);
+	if(pkOpenEquipWndBn->IsVisible()) 
+		x-=BUTTON_SIZE;
+
 	pkOpenChatButton->SetPos(x,y,false,true);
-	
 }
