@@ -77,6 +77,7 @@ int ZFVFile::GetSize()
 ZFVFileSystem::ZFVFileSystem()
 : ZFObject("ZFVFileSystem")
 {
+	m_pkBasicFS = static_cast<ZFBasicFS*>(g_ZFObjSys.GetObjectPtr("ZFBasicFS"));		
 
 }
 
@@ -123,5 +124,38 @@ void ZFVFileSystem::AddRootPath(string strRootPath)
 	cout << "Adding '" << strRootPath.c_str();
 	cout << "' to VFS root table.\n";
 	m_kstrRootPath.push_back(strRootPath);
+}
+
+string	ZFVFileSystem::GetCurrentWorkingDir()
+{
+	string strWorkDir = m_pkBasicFS->GetCWD();
+	return strWorkDir;
+}
+
+bool ZFVFileSystem::CreateDir(string strDir)
+{
+	return m_pkBasicFS->CreateDir(strDir.c_str());
+}
+
+bool ZFVFileSystem::RemoveDir(string strDir)
+{
+	return m_pkBasicFS->RemoveDir(strDir.c_str());
+}
+
+bool ZFVFileSystem::ListDir(vector<string>* pkFiles, string strName, bool bOnlyMaps)
+{
+	return m_pkBasicFS->ListDir(pkFiles, strName.c_str(), bOnlyMaps);
+}
+
+bool ZFVFileSystem::ListDirFilter(vector<string>* pkFiles, vector<string>& pkFilters, 
+	string strName, bool bIgnoreMaps)
+{
+	return m_pkBasicFS->ListDirFilter(pkFiles, pkFilters, strName.c_str(), bIgnoreMaps);
+
+}
+
+bool ZFVFileSystem::DirExist(string strName)
+{
+	return m_pkBasicFS->DirExist(strName.c_str());
 }
 

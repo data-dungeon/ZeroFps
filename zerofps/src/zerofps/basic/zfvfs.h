@@ -5,6 +5,7 @@
 #include <string>
 #include "basic_x.h"
 #include "zfobject.h"
+#include "zfbasicfs.h"
 
 using namespace std;
 
@@ -34,6 +35,8 @@ public:
 class BASIC_API ZFVFileSystem : public ZFObject 
 {
 	private:
+		ZFBasicFS*	m_pkBasicFS;
+		
 		vector<string>	m_kstrRootPath;				// Active root paths.
 	
 
@@ -61,6 +64,16 @@ class BASIC_API ZFVFileSystem : public ZFObject
 		void ArchivePack()  { }
 	
 		FILE* Open(string strFileName, int iOptions, bool bWrite);	
+
+
+		string	GetCurrentWorkingDir();
+		bool CreateDir(string strDir);
+		bool RemoveDir(string strDir);
+		bool ListDir(vector<string>* pkFiles, string strName, bool bOnlyMaps=false);
+		bool ListDirFilter(vector<string>* pkFiles, vector<string>& pkFilters, 
+			string strName, bool bIgnoreMaps = false);
+		bool DirExist(string strName);
+
 };	
 
 
