@@ -10,6 +10,7 @@
 #include "vector3.h"
 #include "fileio.h"
 #include "globals.h"
+#include "zffile.h"
 
 struct BASIC_API HM_vert {
 	float height;	//land height

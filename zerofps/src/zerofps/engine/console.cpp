@@ -76,6 +76,11 @@ void Console::Update(void) {
 						strncat(m_aCommand,(char*)&(code),1);
 						break;
 					}
+					if(code=='.'){
+						code=':';
+						strncat(m_aCommand,(char*)&(code),1);
+						break;
+					}					
 					if(code=='7'){
 						code='/';
 						strncat(m_aCommand,(char*)&(code),1);

@@ -16,15 +16,14 @@ void Test::OnInit(void) {
 
 //------------Map---------
 	test=new HeightMap(pkFile);
-//	test->Random();
 	test->SetTileSet("file:../data/textures/landbw.bmp");
-	
-//	test->Save("test.hm");
-//	test->Load("file:test.hm");
 	if(!test->LoadImageHmap("file:islands.bmp"))
 		cout<<"Error loading map"<<endl;
 	test->GenerateNormals();
 	test->GenerateTextures();
+
+//	test->Save("blub.hm");
+//	test->Load("blub.hm");
 
 	test->SetPosition(Vector3(0,-4,0));
 //----------------------------
@@ -140,6 +139,9 @@ void Test::OnInit(void) {
 	welcome->m_kPos.Set(300,25,785);
 	welcome->m_bLoop=true;
 	pkAlSys->AddSound(welcome);
+	
+	
+
 }
 
 

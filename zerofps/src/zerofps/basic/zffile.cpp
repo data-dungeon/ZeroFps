@@ -5,6 +5,8 @@ ZFFile::ZFFile(char* acName,bool bWritable)
 {
 	SetIo(new ZFIoFile());
 	Open(acName,bWritable);	
+	
+
 }
 
 ZFFile::ZFFile()
@@ -40,6 +42,20 @@ bool ZFFile::Write(void* data,int iSize)
 {
 	return m_kIo->Write(data,iSize);
 }
+
+template <class Any>
+bool ZFFile::Read(Any data)
+{
+	return m_kIo->Read((void*)&data,sizeof(Any));
+}
+
+template <class Any>
+bool ZFFile::Write(Any data)
+{
+	return m_kIo->Write((void*)&data,sizeof(Any));
+}
+
+
 
 int ZFFile::GetPos()
 {

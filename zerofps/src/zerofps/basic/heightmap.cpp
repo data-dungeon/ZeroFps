@@ -46,7 +46,7 @@ float HeightMap::Height(float x,float z) {
 	float bp,xp,zp;
 
 	
-	//are we on the over or under polygon in the tile
+	//are we on the over or under polygon in the tile   gillar min fina engelska =)
 	float ry=(1.0+ox*-1.0);
 
 	if(oz>ry){//over left
@@ -141,10 +141,35 @@ void HeightMap::GenerateNormals() {
 bool HeightMap::Load(char* acFile) {
 	cout<<"Loading heightmap from file "<<acFile<<endl;
 	
+	HM_fileheader k_Fh;
+	
+	ZFFile savefile;
+	if(!savefile.Open(acFile,false)){
+		cout<<"Could not Load heightmap"<<endl;
+		return false;
+	}
+	savefile.Read((void*)&k_Fh,sizeof(k_Fh));
+	
+	m_iHmSize=k_Fh.m_iHmSize;
+	
+	delete[] verts;
+	verts=new HM_vert[(m_iHmSize+m_iError)*m_iHmSize];
+	
+	
+	for(int i=0;i<m_iHmSize*m_iHmSize;i++) 
+	{
+		savefile.Read((void*)&verts[i],sizeof(HM_vert));	
+	}
+	
+	savefile.Close();
+	
+	
+	
+	
 	//setup fileheader
 //	HM_fileheader k_Fh;
-	
-	//open file
+/*	
+	//open file	
 	FILE* fp=fopen(m_pkFile->File(acFile),"rb");
 	if(fp==NULL)
 		return false;
@@ -166,7 +191,7 @@ bool HeightMap::Load(char* acFile) {
 	
 	
 	fclose(fp);
-		
+*/		
 	
 	return true;
 }
@@ -179,6 +204,22 @@ bool HeightMap::Save(char* acFile) {
 	HM_fileheader k_Fh;
 	k_Fh.m_iHmSize=m_iHmSize;
 	
+	ZFFile savefile;
+	if(!savefile.Open(acFile,true)){
+		cout<<"Could not save heightmap"<<endl;
+		return false;
+	}
+	savefile.Write((void*)&k_Fh,sizeof(HM_fileheader));
+	
+	for(int i=0;i<m_iHmSize*m_iHmSize;i++) 
+	{
+		savefile.Write((void*)&verts[i],sizeof(HM_vert));	
+	}
+	
+	savefile.Close();
+	
+	
+	/*
 	//open file
 	FILE* fp=fopen(m_pkFile->File(acFile),"wb");
 	if(fp==NULL)
@@ -191,7 +232,7 @@ bool HeightMap::Save(char* acFile) {
 	for(int i=0;i<m_iHmSize*m_iHmSize;i++) {
 		fwrite(&verts[i].height,sizeof(float),1,fp);
 	}
-
+*/
 //		fwrite(&verts[0],sizeof(HM_vert),m_iHmSize*m_iHmSize,fp);
 
 //	}
@@ -199,7 +240,7 @@ bool HeightMap::Save(char* acFile) {
 	
 	
 	//close file
-	fclose(fp);
+//	fclose(fp);
 	
 	return true;
 }

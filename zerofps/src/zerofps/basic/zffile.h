@@ -26,11 +26,18 @@ class ZFFile {
 		bool Read(void* data,int iSize);
 		bool Write(void* data,int iSize);
 
+		template <class Any> 
+		bool Read(Any data);
+		template <class Any> 
+		bool Write(Any data);
+
+
 		int GetPos();
 		bool SetPos(int iPos);
 		
 		void SetIo(ZFIo* kIo) {m_kIo=kIo;};
 		ZFIo *GetIo() {return m_kIo;};
+		
 };
 
 

@@ -11,9 +11,10 @@ PlayerObject::PlayerObject(HeightMap *pkMap,Input *pkInput)
 	AddProperty(new FloatProperty());	
 	AddProperty(new ModelProperty());
 	
+	
 	AddProperty("LightProperty");
 	LightProperty* pkJumpLight = dynamic_cast<LightProperty*>(GetProperty("LightProperty"));
-	pkJumpLight->SetDiffuse(Vector4(.1,.1,.1,0));
+	pkJumpLight->SetDiffuse(Vector4(.01,.01,.01,0));
 	pkJumpLight->SetQuadratic_Atten(0.01);
 	
 	onGround=false;
