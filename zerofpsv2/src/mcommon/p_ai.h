@@ -69,7 +69,6 @@ class MCOMMON_API P_AI: public Property
       void AddDynamicOrder ( string kOrderType, int iTargetID1, int iTargetID2, Vector3 kPosition, string kType );
 
 	   void Update();
-		void CloneOf(Property* pkProperty) {}
 		vector<PropertyValues> GetPropertyValues(); 
 
       void Init();

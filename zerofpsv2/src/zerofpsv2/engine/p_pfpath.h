@@ -63,8 +63,6 @@ class ENGINE_API P_PfPath : public Property
 
 	protected:
 		vector<PropertyValues> GetPropertyValues();
-
-		void CloneOf(Property* pkProperty)					{ }
 };
 
 Property* Create_P_PfPath();

@@ -14,7 +14,6 @@ class ENGINE_SYSTEMS_API P_PSystem : public Property {
 
 	public:
 		void Update();
-		void CloneOf(Property* pkProperty) {}
 		vector<PropertyValues> GetPropertyValues();
 
 		P_PSystem( string kPSType );

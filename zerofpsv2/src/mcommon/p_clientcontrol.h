@@ -76,7 +76,6 @@ class MCOMMON_API P_ClientControl: public Property {
 		int 		m_iClientID, m_iActiveCaracterObjectID;
 		Controls m_kControls;
 		
-		void CloneOf(Property* pkProperty) { }
 		P_ClientControl();
 		
 		void Update();

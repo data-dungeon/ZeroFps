@@ -109,7 +109,6 @@ class ENGINE_API P_PfMesh : public Property
 
 		void PackTo(NetPacket* pkNetPacket, int iConnectionID )		{ }
 		void PackFrom(NetPacket* pkNetPacket, int iConnectionID )	{ }
-		void CloneOf(Property* pkProperty)									{ }
 
 	protected:
 		vector<PropertyValues> GetPropertyValues();

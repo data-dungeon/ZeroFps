@@ -44,7 +44,6 @@ class MCOMMON_API P_Spawn: public Property {
 		vector<PropertyValues> GetPropertyValues();
 		
 	public:
-		void CloneOf(Property* pkProperty) { }
 		P_Spawn();
 		
 		void Update();

@@ -61,7 +61,6 @@ class MCOMMON_API P_DMItem: public Property {
 
 		int m_iValue; // vad föremålet kostar att köpa / sälja
 
-		void CloneOf(Property* pkProperty) { }
 		
 		void Init();
 		

@@ -20,7 +20,6 @@ class ENGINE_SYSTEMS_API P_HeightMapRender : public Property {
 	
 	public:
 		P_HeightMapRender(HeightMap* pkHeightMap);
-		void CloneOf(Property* pkProperty) { }
 		void Update();
 
 		void SetHeightMap(HeightMap* pkHeightMap);

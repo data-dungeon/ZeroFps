@@ -14,7 +14,6 @@ class ENGINE_SYSTEMS_API P_WorldInfo : public Property {
 		ZeroFps *m_pkFps;
 	
 	public:
-		void CloneOf(Property* pkProperty) { }
 
 
 		string m_kSkyBoxHor;

@@ -30,7 +30,6 @@ class ENGINE_SYSTEMS_API P_Body :public Property
 		
 		void Update();
 		
-		void CloneOf(Property* pkProperty) { }
 
 		bool Enable();
 		bool Disable();

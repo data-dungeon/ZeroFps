@@ -45,7 +45,6 @@ class MCOMMON_API P_ServerInfo: public Property {
 
 		queue<string>			m_kMyMessages;					//messages recived is put in this queue		
 		
-		void CloneOf(Property* pkProperty) { }
 		P_ServerInfo();
 		
 		PlayerInfo* GetPlayerInfo(int id);

@@ -141,7 +141,6 @@ class MCOMMON_API P_DMCharacter: public Property {
 		
 		void Init();		
 		void Update();		
-		void CloneOf(Property* pkProperty) { }		
 		void Save(ZFIoInterface* pkPackage);
 		void Load(ZFIoInterface* pkPackage);
 		

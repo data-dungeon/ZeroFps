@@ -18,7 +18,6 @@ class ENGINE_SYSTEMS_API P_Heightmap2: public Property {
 		
 	public:
 		P_Heightmap2();
-		void CloneOf(Property* pkProperty) { }
 		void Update();
 
 //		void PackTo(NetPacket* pkNetPacket);

@@ -41,8 +41,7 @@ class MCOMMON_API P_DMClickMe: public Property {
 		P_DMClickMe();
 		~P_DMClickMe();
 
-		void CloneOf(Property* pkProperty) { }
-		
+	
 		void Update();
 		void Init();	
 	

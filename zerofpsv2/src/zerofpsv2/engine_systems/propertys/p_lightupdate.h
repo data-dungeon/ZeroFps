@@ -19,7 +19,6 @@ class ENGINE_SYSTEMS_API P_LightUpdate : public Property
 	P_LightUpdate();
 	
 	
-	void CloneOf(Property* pkProperty) { }
 	void Update();
 	
 	void PackTo(NetPacket* pkNetPacket, int iConnectionID ) ;

@@ -37,7 +37,6 @@ class ENGINE_SYSTEMS_API P_Track : public Property {
 		
 		P_Track();
 		~P_Track();
-		void CloneOf(Property* pkProperty) { }
 };
 
 Property* Create_TrackProperty();

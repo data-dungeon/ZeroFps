@@ -25,7 +25,6 @@ public:
    unsigned int m_uiVersion;
 
  	void Update();
-	void CloneOf(Property* pkProperty) {}
 	vector<PropertyValues> GetPropertyValues();
 
    void PackFrom(NetPacket* pkNetPacket, int iConnectionID );

@@ -32,7 +32,6 @@ class MCOMMON_API P_ShadowBlob: public Property {
 		P_ShadowBlob();
 		~P_ShadowBlob();
 
-		void CloneOf(Property* pkProperty) { }
 		
 		void Update();
 		void Init();

@@ -101,7 +101,6 @@ class ENGINE_SYSTEMS_API P_Tcs : public Property
 		void Init();
 
 		
-		void CloneOf(Property* pkProperty) { }		
 		void Update();
 		
 		void Enable();

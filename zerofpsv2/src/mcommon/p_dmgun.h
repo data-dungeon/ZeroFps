@@ -59,7 +59,6 @@ class MCOMMON_API P_DMGun: public Property {
 		P_DMGun();
 		~P_DMGun();
 
-		void CloneOf(Property* pkProperty) { }
 		
 		void Update();
 		void Init();

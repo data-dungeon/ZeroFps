@@ -45,7 +45,6 @@ class ENGINE_SYSTEMS_API P_Vegitation : public Property {
 		P_Vegitation();
 		~P_Vegitation();
 		
-		void CloneOf(Property* pkProperty) { }
 		void Update();
 		void Init();
 

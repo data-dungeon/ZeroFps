@@ -21,7 +21,6 @@ public:
 
 	void Play(string strName);
 	void Update();
-	void CloneOf(Property* pkProperty) {};
 	void PackTo(NetPacket* pkNetPacket, int iConnectionID);
 	void PackFrom(NetPacket* pkNetPacket, int iConnectionID);
 };
@@ -56,7 +55,6 @@ class ENGINE_SYSTEMS_API P_AmbientSound : public Property
 		P_AmbientSound();
 		~P_AmbientSound();
 
-		void CloneOf(Property* pkProperty);
 		void Update();
 
 		void Save(ZFIoInterface* pkFile);

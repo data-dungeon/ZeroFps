@@ -27,7 +27,6 @@ class MCOMMON_API P_DMShop: public Property {
 		P_DMShop();
 		~P_DMShop();
 
-		void CloneOf(Property* pkProperty) { }
 		void Init();
 		
 		void Save(ZFIoInterface* pkPackage);

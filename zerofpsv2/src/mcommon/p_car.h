@@ -25,7 +25,6 @@ class MCOMMON_API P_Car : public Property
 		P_Car();
 		~P_Car();
 
-		void CloneOf(Property* pkProperty) { }
 
 		void Update();
 		void Init();

@@ -47,7 +47,6 @@ class ENGINE_SYSTEMS_API P_Camera : public Property
 
 	public:
 		P_Camera();
-		void CloneOf(Property* pkProperty) { }
 	
 		void Update();
 

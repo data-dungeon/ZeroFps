@@ -47,7 +47,6 @@ class ENGINE_SYSTEMS_API P_Mad : public Property, public Mad_Modell {
 		void Load(ZFIoInterface* pkPackage);
 		void PackTo(NetPacket* pkNetPacket, int iConnectionID );
 		void PackFrom(NetPacket* pkNetPacket, int iConnectionID );
-		void CloneOf(Property* pkProperty) { }
 
 		//model handling
 		void SetBase(const char* acName);

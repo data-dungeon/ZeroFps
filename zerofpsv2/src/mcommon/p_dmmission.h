@@ -48,7 +48,6 @@ class MCOMMON_API P_DMMission: public Property {
 		P_DMMission();
 		~P_DMMission();
 
-		void CloneOf(Property* pkProperty) { }
 		
 		void Init();
 		void Update();

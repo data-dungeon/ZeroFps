@@ -55,6 +55,7 @@ bool P_Event::SendEvent(const char* acEvent)
 		MistLandLua::g_iCurrentObjectID = m_pkObject->GetEntityID();
 		
 		bool bSuccess = m_pkScriptSys->Call(m_pkObject->GetEntityScript(), (char*)acEvent,0,0);
+		//cout << "Calling Event: " << acEvent << " = " << bSuccess << endl;
 
 		return bSuccess;
 	}
@@ -129,7 +130,7 @@ void P_Event::Touch(int iId)
 {
 	MistLandLua::g_iLastCollidedID = iId;
 	SendEvent("Collission");	
-	
+	//cout << "Collision" << endl;
 /*	if(pkCol->m_pkPP1->GetObject() == m_pkObject)
 		MistLandLua::g_iLastCollidedID = pkCol->m_pkPP2->GetObject()->GetEntityID();
 	else

@@ -25,7 +25,6 @@ class MCOMMON_API P_ArcadeCharacter : public Property
 		P_ArcadeCharacter();
 		~P_ArcadeCharacter();
 
-		void CloneOf(Property* pkProperty) { }
 
 		void Update();
 		void Init();

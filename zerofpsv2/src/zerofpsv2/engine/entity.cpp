@@ -1204,6 +1204,7 @@ void Entity::PrintTree(int pos)
 	TabIn(pos);	g_ZFObjSys.Logf("fisklins", "}\n" );
 }
 
+/*
 void Entity::MakeCloneOf(Entity* pkOrginal)
 {
 	SetParent(pkOrginal->m_pkParent);
@@ -1237,7 +1238,7 @@ void Entity::MakeCloneOf(Entity* pkOrginal)
 			}
 		}
 	m_fRadius			= pkOrginal->m_fRadius;	
-}
+}*/
 
 void Entity::SetRadius(float fRadius)
 {

@@ -38,7 +38,6 @@ class MCOMMON_API P_Ml: public Property {
 
 		void GetActions(vector<string>& actions) { actions = m_kActions; }
 
-		void CloneOf(Property* pkProperty) { }
 		P_Ml();
 		~P_Ml();
 		

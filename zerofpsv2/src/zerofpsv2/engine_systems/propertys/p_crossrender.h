@@ -26,7 +26,6 @@ class ENGINE_SYSTEMS_API P_CrossRender : public Property {
 	
 	public:
 		P_CrossRender();
-		void CloneOf(Property* pkProperty) { }
 		void Update();
 
 		void SetTexture(const char* acTex1);//,const char* acTex2);// {m_kTex1=acTex1 ; m_kTex2=acTex2;};

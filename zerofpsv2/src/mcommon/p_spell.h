@@ -28,7 +28,6 @@ class MCOMMON_API P_Spell: public Property
 		SpellStats *m_pkSpellType; // template for spelltype
 
 	   void Update();
-		void CloneOf(Property* pkProperty) {}
       P_Spell* Copy();
 
 		vector<PropertyValues> GetPropertyValues(); 

@@ -240,7 +240,6 @@ class ENGINE_API Property
 		// Save / Load
 		virtual void Save(ZFIoInterface* pkFile){};
 		virtual void Load(ZFIoInterface* pkFile){};		
-		virtual void CloneOf(Property* pkProperty) = 0;
 
 		// Inlines
 		inline void SetObject(Entity* pkObject)	{	m_pkObject=pkObject;	};

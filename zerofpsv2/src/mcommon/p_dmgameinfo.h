@@ -31,7 +31,6 @@ class MCOMMON_API P_DMGameInfo: public Property {
 		P_DMGameInfo();
 		~P_DMGameInfo();
 
-		void CloneOf(Property* pkProperty) { }		
 		void Init();		
 		void Save(ZFIoInterface* pkPackage);
 		void Load(ZFIoInterface* pkPackage);

@@ -79,6 +79,18 @@ void P_ScriptInterface::Touch(int iId)
 	CallFunction("Collission",&args);	
 }
 
+void P_ScriptInterface::OnEvent(GameMessage& Msg)
+{
+	cout << "[P_ScriptInterface]: Recv GM: " << m_acName << ", ";
+	cout << Msg.m_ToObject << ", ";
+	cout << Msg.m_FromObject << ", ";
+	cout << Msg.m_Name;
+	cout << endl;
+	
+	string strName = string("on") + Msg.m_Name;
+   
+	CallFunction(strName.c_str(), 0);
+}
 
 
 void P_ScriptInterface::Save(ZFIoInterface* pkPackage)

@@ -31,7 +31,6 @@ class MCOMMON_API P_DMHQ: public Property {
 		P_DMHQ();
 		~P_DMHQ();
 
-		void CloneOf(Property* pkProperty) { }
 		
 //		void Update();
 		void Init();

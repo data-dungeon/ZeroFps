@@ -283,10 +283,6 @@ class ENGINE_API Entity
 		bool AttachToZone(Vector3 kPos);		
 		bool GetZoneNeighbours(vector<Entity*>* pkZones);
 		
-		
-		void MakeCloneOf(Entity* pkOrginal);
-
-
 		// NetWork/Demo/Save/Load Code.
 		bool IsNetWork();															// True if this object has any netactive propertys.
 		bool NeedToPack();														// Returns true if there is any netactive properys in object

@@ -21,12 +21,13 @@ class ENGINE_SYSTEMS_API P_ScriptInterface: public Property {
 		float 	m_fTimer;
 
 	public:
-		void CloneOf(Property* pkProperty) { }
 		P_ScriptInterface();
 		~P_ScriptInterface();
 		
 		void Update();				
 		bool CallFunction(const char* acFunction,vector<ARG_DATA>* pkParams = NULL);
+
+		void OnEvent(GameMessage& Msg);
 
       void Save(ZFIoInterface* pkPackage);
       void Load(ZFIoInterface* pkPackage);

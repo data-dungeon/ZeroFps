@@ -99,7 +99,6 @@ class MCOMMON_API P_Enviroment: public Property {
 				
 	public:
 
-		void CloneOf(Property* pkProperty) { }
 		P_Enviroment();
 		
 		

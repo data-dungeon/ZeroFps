@@ -26,7 +26,6 @@ class ENGINE_SYSTEMS_API P_HMRP2: public Property
 
 		void SetPolyMode(int iMode);
 		P_HMRP2(HeightMap* pkHeightMap, string strMapName);
-		void CloneOf(Property* pkProperty) { }
 		void Update();
 
 		void SetHeightMap(HeightMap* pkHeightMap, string strMapName);

@@ -25,7 +25,6 @@ class MCOMMON_API P_Item: public Property
 		vector<Entity*>* m_pkInventoryList;
 
 		void Update();
-		void CloneOf(Property* pkProperty) {}
 		vector<PropertyValues> GetPropertyValues(); 
 
 		P_Item( string kName );

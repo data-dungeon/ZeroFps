@@ -27,11 +27,6 @@ P_AmbientSound::~P_AmbientSound()
 		Stop();
 }
 
-void P_AmbientSound::CloneOf(Property* pkProperty)
-{
-
-}
-
 void P_AmbientSound::Update()
 {
 	if(m_pkFps->m_bServerMode)

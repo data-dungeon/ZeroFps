@@ -26,7 +26,6 @@ class ENGINE_SYSTEMS_API P_BillBoardRender : public Property {
 	
 	public:
 		P_BillBoardRender();
-		void CloneOf(Property* pkProperty) { }
 		void Update();
 
 		void SetTexture(const char* acTexure);

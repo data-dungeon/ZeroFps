@@ -28,7 +28,6 @@ class MCOMMON_API P_Event: public Property {
 		float m_fTimer;
 
 	public:
-		void CloneOf(Property* pkProperty) { }
 		P_Event();
 		~P_Event();
 		

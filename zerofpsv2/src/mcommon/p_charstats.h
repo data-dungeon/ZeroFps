@@ -24,7 +24,6 @@ class MCOMMON_API CharacterProperty: public Property
       void Init();
 
 	   void Update();
-		void CloneOf(Property* pkProperty) {}
 		vector<PropertyValues> GetPropertyValues(); 
 
 

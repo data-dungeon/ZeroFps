@@ -1431,7 +1431,6 @@ Entity* EntityManager::CloneObject(int iNetID)
 	pkObjClone->SetParent(pkObjOrginal->GetParent());
 	kFile.Close();
 
-//	pkObjClone->MakeCloneOf(pkObjOrginal);
 	return pkObjClone;
 }
 
