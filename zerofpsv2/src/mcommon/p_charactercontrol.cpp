@@ -46,7 +46,7 @@ void P_CharacterControl::Update()
 		//SetCharacterState(eRUNNING,false);
 		//SetCharacterState(eWALKING,false);
 		SetCharacterState(eJUMPING,false);
-		SetCharacterState(eIDLE_SWIMING,false);
+		SetCharacterState(eSWIMING,false);
 			
 		if(P_Tcs* pkTcs = (P_Tcs*)GetEntity()->GetProperty("P_Tcs"))
 		{
