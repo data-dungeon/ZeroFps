@@ -1062,6 +1062,7 @@ bool ZGui::AlphaPixelAtPos(int mx, int my, ZGuiWnd *pkWndClicked)
 		else
 		{
 			m_pkTexMan->EditEnd( alpha_tex );
+			m_pkZShaderSystem->Pop();
 			return false; // för zeroms skull :) Nu funkar det bara att picka på på Alpha pixlar i en tga bild.
 		}
 
