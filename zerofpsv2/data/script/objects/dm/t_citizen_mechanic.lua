@@ -63,7 +63,13 @@ function Dead()
 	PlayAnim(SIGetSelfID(), "die");
 	SetNextAnim(SIGetSelfID(), "dead");
 	ClearPathFind(SIGetSelfID());
-	PlaySound (SIGetSelfID(), "death/DEATH2.WAV");
+
+	if Random(2) == 1 then
+		PlaySound (SIGetSelfID(), "mechanic/death/DEATH1.WAV");
+	else
+		PlaySound (SIGetSelfID(), "mechanic/death/DEATH2.WAV");
+	end
+
 	SetEntityVar(SIGetSelfID, "deadtime", 0);
 
 	if Random(10) < 3 then
