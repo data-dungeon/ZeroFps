@@ -503,11 +503,15 @@ void MistServer::Input()
 						}
 					}
 
+				if(m_pkInput->VKIsDown("hmpaint")) {
+					hmrp->m_pkHeightMap->DrawMask(m_kDrawPos, 1,8,255,255,255,255);
+					}
+ 
 				if(m_pkInput->VKIsDown("hmlower"))
 					m_kSelectedHMVertex = hmrp->m_pkHeightMap->GetSelection(m_kDrawPos,m_fHMInRadius,m_fHMOutRadius);
 					if(m_kSelectedHMVertex.size() > 0) {
-						//hmrp->m_pkHeightMap->Raise(m_kSelectedHMVertex, -5 * m_pkFps->GetGameFrameTime());
-						hmrp->m_pkHeightMap->Flatten(m_kSelectedHMVertex, m_kDrawPos);
+						hmrp->m_pkHeightMap->Raise(m_kSelectedHMVertex, -5 * m_pkFps->GetGameFrameTime());
+						//hmrp->m_pkHeightMap->Flatten(m_kSelectedHMVertex, m_kDrawPos);
 						m_kSelectedHMVertex.clear();
 						}
 				}	

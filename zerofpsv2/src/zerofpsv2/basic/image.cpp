@@ -287,7 +287,7 @@ void Image::Save(const char* szFileName, bool bAlpha)
 	head.width  = m_iWidth;
 	head.height = m_iHeight;
 
-	if(m_bHasAlpha)	head.pixel_depth = 32;
+	if(m_bHasAlpha || bAlpha)	head.pixel_depth = 32;
 		else	head.pixel_depth = 24;
 
 	FILE *fp = fopen(szFileName,"wb");

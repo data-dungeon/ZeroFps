@@ -876,28 +876,42 @@ void HeightMap::Raise(vector<HMSelectVertex> kSelected, float fSize)
 	}
 }*/
 
-void HeightMap::DrawMask(int iPosX,int iPosy,int iMask,int iSize,int r,int g,int b,int a)
+void HeightMap::DrawMask(Vector3 kPos,int iMask,int iSize,int r,int g,int b,int a)
 {
+	kPos -= m_kCornerPos;
+	cout << "Modify: " << kPos.x << ", " << kPos.z << endl;
+
+
 	if(iMask <= 0 || iMask >= int(m_kSets.size()))
 		return;
 	
 	
 	ZFResourceHandle m_kConsoleText;
 	m_kConsoleText.SetRes(m_kSets[iMask].m_acMask);	
-		
+	cout << m_kSets[iMask].m_acMask << endl;	
+
 	ResTexture* pkTexture = static_cast<ResTexture*>(m_kConsoleText.GetResourcePtr());
 	m_pkTexMan->BindTexture(pkTexture->m_iTextureID);
 
-	//m_pkTexMan->BindTexture(m_kSets[iMask].m_acMask,0);
+	m_pkTexMan->BindTexture(m_kSets[iMask].m_acMask,0);
 	
 	
 	if(!m_pkTexMan->MakeTextureEditable())
 		return;
 	
 	//get texture pos
-	float xpos = (float) ((iPosX * HEIGHTMAP_SCALE) * (GetSize() / m_pkTexMan->GetImage()->w))  ;
-	float ypos = (float) ((iPosy * HEIGHTMAP_SCALE) * (GetSize() / m_pkTexMan->GetImage()->h))  ;
-		
+	float fSizeW = ((float)GetSize() / (float)m_pkTexMan->GetImage()->w);
+	float xpos = (float) ((kPos.x * HEIGHTMAP_SCALE) / (float)GetSize())  ;
+	float ypos = (float) ((kPos.z * HEIGHTMAP_SCALE) / (float)GetSize())  ;
+	
+	cout << "GetSize: " << GetSize() << " : ";
+   cout << m_pkTexMan->GetImage()->w << ",";
+	cout << m_pkTexMan->GetImage()->h << endl;	
+
+
+	xpos *= (float)m_pkTexMan->GetImage()->w;
+	ypos *= (float)m_pkTexMan->GetImage()->h;
+	cout << "RealCoo: " << xpos << ", " << ypos << endl;
 	int size=iSize;
 
 	for(float i=0;i<size;i+=0.5)

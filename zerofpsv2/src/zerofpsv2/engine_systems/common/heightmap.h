@@ -111,7 +111,7 @@ class ENGINE_SYSTEMS_API HeightMap /*: public ZFSubSystem */
 		void Flatten(vector<HMSelectVertex> kSelected, Vector3 kPos);
 		void Raise(vector<HMSelectVertex> kSelected, float fSize);		// Raise or lower a selection.
 		
-		void DrawMask(int iPosX,int iPosy,int iMode,int iSize,int r,int g,int b,int a);
+		void DrawMask(Vector3 kPos,int iMode,int iSize,int r,int g,int b,int a);
 		
 		int GetSize(){return m_iHmSize*HEIGHTMAP_SCALE;};
 		void AddSet(const char* acTexture,const char* acDetailTexture,const char* acMask);
