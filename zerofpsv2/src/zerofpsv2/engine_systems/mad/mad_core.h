@@ -88,10 +88,12 @@ public:
 	void Clear();
 	void PushBack(Vector3 kVertex, Vector3 kNormal);
 	
-	vector<Vector3>* GetVertexPointer() {return &akVertex;};
-	vector<Vector3>* GetNormalPointer() {return &akNormal;};
-	Vector3* GetVertexPointer2() {return &akVertex[0];};
-	Vector3* GetNormalPointer2() {return &akNormal[0];};
+	vector<Vector3>* GetVertexPointer() {return &akVertex;		};
+	vector<Vector3>* GetNormalPointer() {return &akNormal;		};
+	Vector3* GetVertexPointer2()			{return &akVertex[0];	};
+	Vector3* GetNormalPointer2()			{return &akNormal[0];	};
+
+	int  GetSizeInBytes();					
 
 	friend class Mad_CoreMesh;
 	friend class Mad_Core;
@@ -127,6 +129,8 @@ public:
 	void Resize(int iNewSize);
 	void PushBack(Mad_CoreKeyFrame kKeyFrame);
 
+	int  GetSizeInBytes();					
+
 	friend class Mad_Core;
 
 };
@@ -156,12 +160,12 @@ private:
 	ZFResourceHandle					akTexturesHandles[256];		// Texture resurs handles
 
 public:
-	bool							bNotAnimated;		///< True if this is a static mesh that we could put in a display list.
-	int								iDisplayID;			///< Display List ID if any.
-	void							SetDisplayID(int iId) { iDisplayID = iId; }
-	int								GetDisplayID() { return iDisplayID; }
+	bool									bNotAnimated;		///< True if this is a static mesh that we could put in a display list.
+	int									iDisplayID;			///< Display List ID if any.
+	void									SetDisplayID(int iId) { iDisplayID = iId; }
+	int									GetDisplayID() { return iDisplayID; }
 
-	char							m_acName[MAD_MAX_NAME];		///< Name of mesh.
+	char									m_acName[MAD_MAX_NAME];		///< Name of mesh.
 	Mad_CoreMeshHeader				kHead;
 
 	Mad_CoreMesh();
@@ -228,6 +232,8 @@ public:
 	void SetTextureFlags(void);
 
 	void FlipFaces();
+
+	int  GetSizeInBytes();
 
 	friend class Mad_Core;
 	friend class Body;
@@ -303,6 +309,8 @@ public:
 	int Size();
 	void Resize(int iNewSize);
 	void PushBack(Mad_CoreBoneKey kBoneKey);
+	int  GetSizeInBytes();
+
 	friend class Mad_Core;
 
 };
@@ -320,13 +328,14 @@ public:
 	~Mad_CoreBoneAnimation();
 	void Clear(void);
 	void operator=(const Mad_CoreBoneAnimation& kOther);
-
+	
 	void Save(ZFVFile* pkZFile);									///< Save animation	
 	void Load(ZFVFile* pkZFile);									///< Load animation
 
 	int Size();												
 	void Resize(int iNewSize);
 	void PushBack(Mad_CoreBoneKeyFrame kBoneKeyFrame);
+	int  GetSizeInBytes();
 	friend class Mad_Core;
 };
 
@@ -364,28 +373,36 @@ struct ENGINE_SYSTEMS_API Mad_Header
 class ENGINE_SYSTEMS_API Mad_Core : public ZFResource
 {
 private:
-	vector<Mad_CoreBone>			m_kSkelleton;		// Skelleton for modell.
-	vector<Mad_CoreBoneAnimation>	m_kBoneAnim;		// List of all bone animations for modell.
-	vector<Mad_CoreMesh>			m_kMesh;			// List of all mesh object for modell.
+	vector<Mad_CoreBone>					m_kSkelleton;								// Skelleton for modell.
+	vector<Mad_CoreBoneAnimation>		m_kBoneAnim;								// List of all bone animations for modell.
+	vector<Mad_CoreMesh>					m_kMesh;										// List of all mesh object for modell.
 
 	// Inverse bone transformation matrix for bind pose
-	Matrix4							m_MadkbonetransformI[MAX_BONES];
+	Matrix4									m_MadkbonetransformI[MAX_BONES];
 
 	// Radius from local origo that contain all of modell.
-	float							m_fBoundRadius;
+	float										m_fBoundRadius;
 
 public:
-	Mad_Header	kMadHeader;
+	Mad_Header								kMadHeader;
 
-	char		Name[256];
-	float		fFrameOffs;
-	int			iBoneFrame;
+	char										Name[256];
+	float										fFrameOffs;
+	int										iBoneFrame;
 
-	int			iActiveAnimation;
-	int			iActiveFrame;
-	int			iActiveKeyFrame;
-	float		fActiveAnimationTime;
+	int										iActiveAnimation;
+	int										iActiveFrame;
+	int										iActiveKeyFrame;
+	float										fActiveAnimationTime;
 	
+	bool										m_bInterpolVertexFrames;
+	bool										m_bDrawNormals;
+
+	int										aiTextureIndex[MAD_MAX_TEXTURES];
+	int										aiReplaceTextureIndex[MAD_MAX_TEXTURES];
+
+	vector<Controller>					m_kControllers;
+
 	Mad_Core();
 	~Mad_Core();
 	
@@ -414,15 +431,9 @@ public:
 	bool Create(string strName);
 	int CalculateSize();
 
-
 	void SetAnimationTime(int iAnim, float fTime );
 	void SetBoneAnimationTime(int iAnim, float fTime );
 
-	bool m_bInterpolVertexFrames;
-	bool m_bDrawNormals;
-
-	int	 aiTextureIndex[MAD_MAX_TEXTURES];
-	int	 aiReplaceTextureIndex[MAD_MAX_TEXTURES];
 	void ClearReplaceTexture(void);
 	void SetReplaceTexture(char* szFileName);
 
@@ -472,7 +483,6 @@ public:
 	int GetJointID(char* szJointName);
 	Vector3 GetJointPosition(char* szJointName);	// Use NULL to get pos for first root joint.
 
-	vector<Controller>	m_kControllers;
 	void CreateController(char* szName, char* szJoint, ControllAxis eAxis, float fMin, float fMax);
 	void SetControll(char* szName, float fValue);
 

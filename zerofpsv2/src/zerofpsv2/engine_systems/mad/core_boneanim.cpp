@@ -77,6 +77,22 @@ void Mad_CoreBoneAnimation::Load(ZFVFile* pkZFile)
 	}
 }
 
+int Mad_CoreBoneAnimation::GetSizeInBytes()
+{
+	int iSizeInBytes = 0;
+	iSizeInBytes += sizeof(Mad_CoreBoneAnimation);
+	for(int i=0; i<m_kBoneKeyFrames.size(); i++) 
+		iSizeInBytes += m_kBoneKeyFrames[i].GetSizeInBytes();
+
+	return iSizeInBytes;
+}
+
+
+
+
+
+
+
 
 
 void Mad_CoreBoneKeyFrame::Save(ZFVFile* pkZFile)
@@ -120,7 +136,13 @@ void Mad_CoreBoneKeyFrame::PushBack(Mad_CoreBoneKey kBoneKey)
 	m_kBonePose.push_back(kBoneKey);
 }
 
-
+int  Mad_CoreBoneKeyFrame::GetSizeInBytes()
+{
+	int iSizeInBytes = 0;
+	iSizeInBytes += sizeof(Mad_CoreBoneKeyFrame);
+	iSizeInBytes += m_kBonePose.size() * sizeof(Mad_CoreBoneKey);
+	return iSizeInBytes;
+}
 
 
 

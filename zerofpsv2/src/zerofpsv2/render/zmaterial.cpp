@@ -230,7 +230,12 @@ bool ZMaterial::Create(string strName)
 
 int ZMaterial::CalculateSize()
 {
-	return 1;
+	int iSizeInByes = 0;
+	iSizeInByes += sizeof(ZMaterial);
+
+	// Add Size for all pass.
+	return iSizeInByes;
+
 }
 
 

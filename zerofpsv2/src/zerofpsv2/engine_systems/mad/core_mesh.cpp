@@ -577,3 +577,26 @@ void Mad_CoreMesh::FlipFaces()
 		akFaces[i].iIndex[2] = i0;
 		}
 }
+
+int Mad_CoreMesh::GetSizeInBytes()
+{
+	int iSizeInBytes = 0;
+	iSizeInBytes += sizeof(Mad_CoreMesh);
+
+	iSizeInBytes += sizeof(Mad_CoreTexture) * akTextures.size();
+	iSizeInBytes += sizeof(Mad_TextureCoo)  * akTextureCoo.size();
+	iSizeInBytes += sizeof(Mad_Face)			 * akFaces.size();
+	
+	for(int iVf = 0; iVf < akFrames.size(); iVf++)
+		iSizeInBytes += akFrames[iVf].GetSizeInBytes();
+
+	iSizeInBytes += sizeof(Mad_CoreSubMesh) * akSubMeshes.size();
+
+	for(int iMa = 0; iMa < akAnimation.size(); iMa++)
+		iSizeInBytes += akAnimation[iMa].GetSizeInBytes();
+
+	iSizeInBytes += sizeof(int) * akBoneConnections.size();
+
+	return iSizeInBytes;
+}
+

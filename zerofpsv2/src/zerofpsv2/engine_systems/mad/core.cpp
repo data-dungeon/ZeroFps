@@ -547,7 +547,18 @@ bool Mad_Core::Create(string MadFileName)
 
 int Mad_Core::CalculateSize()
 {
-	return 4;
+	int iSizeInBytes = 0;
+	iSizeInBytes += sizeof(Mad_Core);
+	
+	iSizeInBytes += sizeof(Mad_CoreBone) * m_kSkelleton.size();
+	
+	for(int iBa=0; iBa<m_kBoneAnim.size(); iBa++)
+		iSizeInBytes += m_kBoneAnim[iBa].GetSizeInBytes();
+	
+	for(int iM=0; iM<m_kMesh.size(); iM++)
+		iSizeInBytes += m_kMesh[iM].GetSizeInBytes();
+
+	return iSizeInBytes;
 }
 
 

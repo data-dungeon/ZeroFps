@@ -42,3 +42,28 @@ void Mad_CoreMeshAnimation::PushBack(Mad_CoreKeyFrame kKeyFrame)
 {
 	KeyFrame.push_back(kKeyFrame);
 }
+
+int  Mad_CoreMeshAnimation::GetSizeInBytes()
+{
+	int iSizeInBytes = 0;
+	iSizeInBytes += sizeof(Mad_CoreMeshAnimation);
+	iSizeInBytes += sizeof(Mad_CoreKeyFrame) * KeyFrame.size();
+	return iSizeInBytes;
+}
+
+
+
+
+
+
+
+
+
+int Mad_CoreVertexFrame::GetSizeInBytes()
+{
+	int iSizeInBytes = 0;
+	iSizeInBytes += sizeof(Mad_CoreVertexFrame);
+	iSizeInBytes += sizeof(Vector3) * akVertex.size();
+	iSizeInBytes += sizeof(Vector3) * akNormal.size();
+	return iSizeInBytes;
+}
