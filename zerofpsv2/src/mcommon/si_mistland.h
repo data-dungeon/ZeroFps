@@ -17,13 +17,20 @@ class PSystemProperty;
 #include <string>
 #include "p_serverinfo.h"
 
+struct LogInInfo
+{
+	string acIP;
+	string acUserName;
+	string acPassword;
+};
+
 using namespace std;
 
 namespace MistLandLua
 {
 	extern ZFScriptSystem* 		g_pkScript;
 	extern EntityManager*		g_pkObjMan;
-	extern P_ServerInfo*		  g_pkServerInfo;
+	extern P_ServerInfo*			g_pkServerInfo;
 
 	extern int						g_iCurrentObjectID;
 	extern int						g_iLastCollidedID;
@@ -47,7 +54,7 @@ namespace MistLandLua
 	int MCOMMON_API StartSoundLua(lua_State* pkLua);
 
 	// ip crap
-	extern map<string,string> MCOMMON_API	g_kServerList;
+	extern map<string,LogInInfo*> MCOMMON_API	g_kServerList;
 	extern string MCOMMON_API g_kDefServer;
 	int MCOMMON_API AddServerLua(lua_State* pkLua);
 	int MCOMMON_API SetDefaultServerLua(lua_State* pkLua);

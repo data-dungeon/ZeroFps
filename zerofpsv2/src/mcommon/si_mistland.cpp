@@ -10,15 +10,15 @@
 #include <cmath>                    // for trigonometry functions
 
 
-ZFScriptSystem*		MistLandLua::g_pkScript;
-EntityManager*			MistLandLua::g_pkObjMan;
-P_ServerInfo*		  	MistLandLua::g_pkServerInfo;
+ZFScriptSystem*			MistLandLua::g_pkScript;
+EntityManager*				MistLandLua::g_pkObjMan;
+P_ServerInfo*		  		MistLandLua::g_pkServerInfo;
 
-int						MistLandLua::g_iCurrentObjectID;
-int						MistLandLua::g_iLastCollidedID;
-int						MistLandLua::g_iCurrentPCID = -1;
-map<string,string>	MistLandLua::g_kServerList;
-string					MistLandLua::g_kDefServer;
+int							MistLandLua::g_iCurrentObjectID;
+int							MistLandLua::g_iLastCollidedID;
+int							MistLandLua::g_iCurrentPCID = -1;
+map<string,LogInInfo* >	MistLandLua::g_kServerList;
+string						MistLandLua::g_kDefServer;
 
 void MistLandLua::Init(EntityManager* pkObjMan,ZFScriptSystem* pkScript)
 {
@@ -2319,13 +2319,13 @@ int MistLandLua::CastSpellLua (lua_State* pkLua)
 // 2:nd arg = ip name (ie."192.168.0.153:4242") (string)
 int MistLandLua::AddServerLua(lua_State* pkLua)
 {
-	if( g_pkScript->GetNumArgs(pkLua) != 2 )
+	if( g_pkScript->GetNumArgs(pkLua) != 4 )
 	{
 		printf("Failed to add user to list. Bad argumetns!\n");
 		return 0;
 	}
 
-   char acName[128], acIP[128];
+   char acName[128], acIP[128], acUserName[128], acPassword[128];
 	
 	//user name
 	g_pkScript->GetArgString(pkLua, 0, acName);
@@ -2333,7 +2333,18 @@ int MistLandLua::AddServerLua(lua_State* pkLua)
    //user ip
 	g_pkScript->GetArgString(pkLua, 1, acIP);
 
-	map<string,string>::iterator it = g_kServerList.find(string(acName));
+   //user ip
+	g_pkScript->GetArgString(pkLua, 2, acUserName);
+
+	//user ip
+	g_pkScript->GetArgString(pkLua, 3, acPassword);
+
+	LogInInfo* pkLogInfo = new LogInInfo;
+	pkLogInfo->acIP = acIP;
+	pkLogInfo->acUserName = acUserName;
+	pkLogInfo->acPassword = acPassword;
+
+	map<string,LogInInfo* >::iterator it = g_kServerList.find(string(acName));
 
 	if(it != g_kServerList.end())
 	{
@@ -2341,7 +2352,7 @@ int MistLandLua::AddServerLua(lua_State* pkLua)
 		return 0;
 	}
 
-	g_kServerList.insert(map<string,string>::value_type(string(acName),string(acIP)));
+	g_kServerList.insert(map<string,LogInInfo*>::value_type(string(acName), pkLogInfo));
 
 	return 1;
 }

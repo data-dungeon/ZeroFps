@@ -720,7 +720,7 @@ void MistClient::OnCommand(int iID, ZGuiWnd *pkMainWnd)
 
 			static_cast<ZGuiCombobox*>(GetWnd("IPNumbersComboBox"))->SetNumVisibleRows(iNumRows);
 			
-			map<string,string>::iterator itIPs = MistLandLua::g_kServerList.begin();
+			map<string,LogInInfo*>::iterator itIPs = MistLandLua::g_kServerList.begin();
 			for( ; itIPs != MistLandLua::g_kServerList.end(); itIPs++)
 			{
 				AddListItem("IPNumbersComboBox", (char*) itIPs->first.c_str());
@@ -730,12 +730,12 @@ void MistClient::OnCommand(int iID, ZGuiWnd *pkMainWnd)
 //			if(static_cast<ZGuiCombobox*>(GetWnd(
 //				"IPNumbersComboBox"))->GetListbox()->GetSelItem() == NULL)
 			{
-				map<string,string>::iterator itDef =
+				map<string,LogInInfo*>::iterator itDef =
 					MistLandLua::g_kServerList.find(MistLandLua::g_kDefServer);
 				if(itDef != MistLandLua::g_kServerList.end())
 				{
 					ZGuiCombobox* pkCBox = static_cast<ZGuiCombobox*>(GetWnd("IPNumbersComboBox"));
-					GetWnd("IPNumberEditbox")->SetText((char*) itDef->second.c_str());
+					GetWnd("IPNumberEditbox")->SetText((char*) itDef->second->acIP.c_str());
 					pkCBox->SetLabelText((char*) itDef->first.c_str());
 				}
 			}
@@ -904,12 +904,14 @@ void MistClient::OnSelectCB(int ListBoxID, int iItemIndex, ZGuiWnd *pkMain)
 	{
 		char* szUser = pkComboBox->GetListbox()->GetSelItem()->GetText();
 
-		map<string, string>::iterator itIPInfo;
+		map<string, LogInInfo*>::iterator itIPInfo;
 		itIPInfo = MistLandLua::g_kServerList.find(string(szUser));
 
 		if(itIPInfo != MistLandLua::g_kServerList.end())
 		{
-			GetWnd("IPNumberEditbox")->SetText((char*)itIPInfo->second.c_str());
+			GetWnd("IPNumberEditbox")->SetText((char*)itIPInfo->second->acIP.c_str());
+			GetWnd("UserEditbox")->SetText((char*)itIPInfo->second->acUserName.c_str());
+			GetWnd("PasswordEditbox")->SetText((char*)itIPInfo->second->acPassword.c_str());
 		}
 	}
 }
