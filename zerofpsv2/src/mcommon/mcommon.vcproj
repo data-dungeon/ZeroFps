@@ -209,6 +209,9 @@
 				RelativePath=".\p_event.cpp">
 			</File>
 			<File
+				RelativePath=".\p_fogplane.cpp">
+			</File>
+			<File
 				RelativePath=".\p_item.cpp">
 			</File>
 			<File
@@ -313,6 +316,9 @@
 			</File>
 			<File
 				RelativePath=".\p_event.h">
+			</File>
+			<File
+				RelativePath=".\p_fogplane.h">
 			</File>
 			<File
 				RelativePath=".\p_item.h">

@@ -14,6 +14,7 @@
 #include "../mcommon/p_charactercontrol.h"
 
 class OptionsDlg;
+class ActionMenu;
 
 typedef void (*msgScreenProg)(string, string, unsigned int msg, int numparms, void *params);
 
@@ -48,6 +49,7 @@ class MistClient :public Application, public ZGuiApp {
 		vector<pair<string,string> > m_kServerList;
 		map<string, msgScreenProg> m_kGuiMsgProcs;
 		OptionsDlg* m_pkOptionsDlg;
+		ActionMenu* m_pkActionDlg;
       		
 		bool ReadWriteServerList(bool bRead);
 
@@ -112,9 +114,11 @@ class MistClient :public Application, public ZGuiApp {
       friend void GuiMsgStartScreen( string strMainWnd, string strController, unsigned int msg, int numparms, void *params );
 		friend void GuiMsgIngameScreen( string strMainWnd, string strController, unsigned int msg, int numparms, void *params );
 		friend void GuiMsgOptionsDlg( string strMainWnd, string strController, unsigned int msg, int numparms, void *params );
+		friend void GuiMsgActionDlg( string strMainWnd, string strController, unsigned int msg, int numparms, void *params );
 
 
 		friend class OptionsDlg;
+		friend class ActionMenu;
 };
 
 

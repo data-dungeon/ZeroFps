@@ -22,7 +22,7 @@
 #include "../mcommon/p_container.h"
 #include "../mcommon/p_fogplane.h"
 
-#include "gui_optionsdlg.h"
+#include "actionmenu.h"
 
 MistClient g_kMistClient("MistClient",0,0,0);
 
@@ -88,34 +88,39 @@ void MistClient::OnInit()
 	m_pkZeroFps->StartServer(true,false);
 
 	// create gui for mistlands
-	m_pkOptionsDlg = new OptionsDlg(this);
 	SetupGUI();
-
+	
 	ToggleGuiCapture(1);
 
 	//run autoexec script
 	if(!m_pkIni->ExecuteCommands("mistclient_autoexec.ini"))
 		m_pkConsole->Printf("No game_autoexec.ini.ini found");	
-
-		
-		
-		
+	
 	//test
-	m_pkEntityManager->SetWorldDir("clienttemp");
-	if(m_pkEntityManager->LoadWorld("../datafiles/mistlands/menulevel"))
+	bool test = 0;
+	if(test)
 	{
-		m_pkEntityManager->SetTrackerLos(50);
-		
-		Entity* pkEnt = m_pkEntityManager->CreateEntity();
-		pkEnt->SetParent(m_pkEntityManager->GetWorldEntity());
-		
-		pkEnt->AddProperty("P_Track");
-		P_Enviroment* pkEnv = (P_Enviroment*)pkEnt->AddProperty("P_Enviroment");	
-		pkEnv->LoadEnviroment("data/enviroments/night.env");
-		pkEnv->SetEnable(true);	
+		m_pkEntityManager->SetWorldDir("clienttemp");
+		if(m_pkEntityManager->LoadWorld("../datafiles/mistlands/menulevel"))
+		{
+			m_pkEntityManager->SetTrackerLos(50);
+			
+			Entity* pkEnt = m_pkEntityManager->CreateEntity();
+			pkEnt->SetParent(m_pkEntityManager->GetWorldEntity());
+			
+			pkEnt->AddProperty("P_Track");
+			P_Enviroment* pkEnv = (P_Enviroment*)pkEnt->AddProperty("P_Enviroment");	
+			pkEnv->LoadEnviroment("data/enviroments/snow.env");
+			pkEnv->SetEnable(true);	
+		}
+		else
+			cout<<"WARNING: could not find menulevel"<<endl;	
 	}
-	else
-		cout<<"WARNING: could not find menulevel"<<endl;	
+
+	//Entity* pkEnt = m_pkEntityManager->CreateEntity();
+	//pkEnt->SetParent(m_pkEntityManager->GetWorldEntity());
+	//P_Enviroment* pkEnv = (P_Enviroment*)pkEnt->AddProperty("P_Enviroment");	
+	//pkEnv->LoadEnviroment("data/enviroments/rain.env");
 
 }
 
@@ -423,16 +428,22 @@ void MistClient::Input()
 	if( m_pkInputHandle->VKIsDown("use") )
 	{
 		if(!DelayCommand())
-		{
+		{			
 			if(Entity* pkEnt = m_pkEntityManager->GetEntityByID(m_iPickedEntityID))
 			{
 				if(P_Ml* pkMl = (P_Ml*)pkEnt->GetProperty("P_Ml"))
 				{
-					vector<string>	kActions;
-					pkMl->GetActions(kActions);
+	/*				vector<string>	kActions;
+					pkMl->GetActions(kActions);*/
+
+					m_pkActionDlg->SetEntity(pkEnt);			
+					m_pkActionDlg->Open();
 					
-					if(!kActions.empty())
+		/*			if(!kActions.empty())
+					{
 						SendAction(m_iPickedEntityID,kActions[0]);
+						
+					}*/
 				}			
 			}
 		}	

@@ -1,3 +1,6 @@
+#ifndef _GUI_OPTIONSDLG_H_
+#define _GUI_OPTIONSDLG_H_
+
 class MistClient;
 
 class OptionsDlg
@@ -31,3 +34,5 @@ private:
 	Input* m_pkInput;
 	ZeroFps* m_pkZeroFps;
 };
+
+#endif

@@ -1,4 +1,6 @@
 #include	"mistclient.h"
+#include "gui_optionsdlg.h"
+#include "actionmenu.h"
 
 extern MistClient	g_kMistClient;
 
@@ -44,6 +46,23 @@ bool GUIPROC( ZGuiWnd* win, unsigned int msg, int numparms,	void *params )
 				strMainWnd = g_kMistClient.GetWnd("GuiMainWnd")->GetName();
 		}
 	}
+	else
+	if(msg == ZGM_MOUSEMOVE)
+	{
+		strMainWnd = win->GetName();
+
+		if(win->IsVisible())
+		{
+
+		map<string,msgScreenProg>::iterator itCallback;
+		itCallback = g_kMistClient.m_kGuiMsgProcs.find(strMainWnd);
+		if(itCallback != g_kMistClient.m_kGuiMsgProcs.end())			
+			itCallback->second(strMainWnd, "", ZGM_MOUSEMOVE, 0, 0);
+
+		}
+		
+		return true;
+	}
 
 
 	if(strController.empty())
@@ -79,6 +98,9 @@ void MistClient::SetupGUI()
 		printf("Error loading gui script!\n");
 		return;
 	}
+
+	m_pkOptionsDlg = new OptionsDlg(this);
+	m_pkActionDlg = new ActionMenu();
 
 	font = g_kMistClient.m_pkGui->GetResMan()->Font("chatboxfont");
 
@@ -119,6 +141,8 @@ void MistClient::SetupGUI()
 	g_kMistClient.m_kGuiMsgProcs.insert( map<string, msgScreenProg>::value_type("GameGuiToolbar", GuiMsgIngameScreen));
 	g_kMistClient.m_kGuiMsgProcs.insert( map<string, msgScreenProg>::value_type("ChatDlgMainWnd", GuiMsgIngameScreen));
 	g_kMistClient.m_kGuiMsgProcs.insert( map<string, msgScreenProg>::value_type("GuiMainWnd", GuiMsgIngameScreen));
+
+	g_kMistClient.m_kGuiMsgProcs.insert( map<string, msgScreenProg>::value_type("ActionMenuMain", GuiMsgActionDlg));
 
    // load software cursor
 	g_kMistClient.m_pkGui->SetCursor( 0,0, m_pkTexMan->Load("data/textures/gui/cursor.bmp", 0),
