@@ -572,7 +572,8 @@ void PathFind::ReversePath()
 	vector<Point> apa;
 	apa.reserve(size);
 
-	for(int i=0; i<size; i++)
+	int i;
+	for(i=0; i<size; i++)
 	{
 		apa.push_back(m_kqPath.front());
 		m_kqPath.pop();
