@@ -22,7 +22,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="C:\Program\AliasWavefront\Maya4.5\include"
+				AdditionalIncludeDirectories="C:\gfx\Maya5.0\include"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;NT_PLUGIN"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -91,7 +91,7 @@ copy $(ProjectDir)debug\*.mll &quot;C:\Program\AliasWavefront\Maya4.5\bin\plug-i
 			<Tool
 				Name="VCCLCompilerTool"
 				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories=".,C:\AW\Maya4.0\include"
+				AdditionalIncludeDirectories="C:\gfx\Maya5.0\include"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;NT_PLUGIN"
 				StringPooling="TRUE"
 				RuntimeLibrary="2"
@@ -157,7 +157,7 @@ copy $(ProjectDir)debug\*.mll &quot;C:\Program\AliasWavefront\Maya4.5\bin\plug-i
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="C:\Program\AliasWavefront\Maya5.0\include"
+				AdditionalIncludeDirectories="C:\gfx\Maya5.0\include"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;NT_PLUGIN"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -243,9 +243,6 @@ copy $(ProjectDir)debug\*.mll &quot;C:\Program\AliasWavefront\Maya5.0\bin\plug-i
 			Name="Resource Files"
 			Filter="ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe">
 		</Filter>
-		<File
-			RelativePath="..\..\..\..\..\Documents and Settings\jima02\My Documents\maya\scripts\MadExportOptions.mel">
-		</File>
 	</Files>
 	<Globals>
 	</Globals>
