@@ -235,7 +235,9 @@ bool GLGuiRender::RenderQuad(Rect rc)
 		glTexCoord2f(tx,ty);			glVertex2i(rc.Left,m_iScreenHeight-rc.Bottom);		 
 		glTexCoord2f(tx,th);			glVertex2i(rc.Left,m_iScreenHeight-rc.Top);		
 		glTexCoord2f(tx+tw,th);		glVertex2i(rc.Right,m_iScreenHeight-rc.Top);    
-		glTexCoord2f(tx+tw,ty);		glVertex2i(rc.Right,m_iScreenHeight-rc.Bottom);    
+		glTexCoord2f(tx+tw,ty);		glVertex2i(rc.Right,m_iScreenHeight-rc.Bottom);   
+
+
 	glEnd();
 
 	if(bDrawMasked)

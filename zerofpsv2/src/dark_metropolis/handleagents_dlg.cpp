@@ -5,6 +5,8 @@
 CHandleAgents::CHandleAgents() : CGameDlg("AgentsWnd", &g_kDM)
 {
 	m_bInitialized = false;
+	m_iSelAgent = -1;
+	m_iStartAgent = 0;
 }
 
 CHandleAgents::~CHandleAgents()
@@ -25,11 +27,13 @@ void CHandleAgents::OnCommand(ZGuiWnd *pkMainWnd, string strClickName)
 	else
 	if(strClickName == "AgentsInfoBn")
 	{
+		int sel_agent;
 		bool bAButtonIsSelected=false;
 		for(int i=0; i<m_vkCharsInBaseBns.size(); i++)
 		{
-			if(m_vkCharsInBaseBns[i]->IsChecked())
+			if(m_vkCharsInBaseBns[i].first->IsChecked())
 			{
+				sel_agent = i;
 				bAButtonIsSelected=true;
 				break;
 			}
@@ -37,6 +41,8 @@ void CHandleAgents::OnCommand(ZGuiWnd *pkMainWnd, string strClickName)
 
 		if(bAButtonIsSelected)
 		{
+			m_iSelAgent = m_vkCharsInBaseBns[sel_agent].second;
+
 			m_pkGui->KillWndCapture();
 			LoadDlg("data/script/gui/dm_members.lua");
 			ShowWnd("MembersWnd", true, true);
@@ -53,15 +59,27 @@ void CHandleAgents::OnCommand(ZGuiWnd *pkMainWnd, string strClickName)
 	{
 		for(int i=0; i<m_vkCharsInBaseBns.size(); i++)
 		{
-			if(m_vkCharsInBaseBns[i]->IsChecked())
+			if(m_vkCharsInBaseBns[i].first->IsChecked())
 			{
-				if(SendOutAgent(i))
-				{
-					m_vkCharsInBaseBns[i]->Hide();
-				}
+				if(SendOutAgent(m_vkCharsInBaseBns[i].second))
+					m_vkCharsInBaseBns[i].first->Hide();
 				break;
 			}
 		}
+	}
+	else
+	if(strClickName == "PrevAgentInHQBn")
+	{
+		if(m_iStartAgent > 0)
+			m_iStartAgent--;
+
+		UpdateAgentList(m_iStartAgent);
+	}
+	else
+	if(strClickName == "NextAgentInHQ")
+	{
+		m_iStartAgent++;
+		UpdateAgentList(m_iStartAgent);
 	}
 
 	int pos;
@@ -79,7 +97,16 @@ void CHandleAgents::OnCommand(ZGuiWnd *pkMainWnd, string strClickName)
 		for(int i=0; i<7; i++)
 		{
 			if(strClickName != szButtons[i])
+			{
 				((ZGuiCheckbox*)GetWnd(szButtons[i]))->UncheckButton();
+			}
+			else
+			{
+				int AgentID = m_vkCharsInBaseBns[i].second;
+				char szText[50];
+				sprintf(szText, "Your agent %i/%i - Mr Smith %i", 0, 0, AgentID);
+				SetText("AgentInHQLabel", szText);
+			}
 		}
 	}
 
@@ -104,23 +131,65 @@ void CHandleAgents::OnCommand(ZGuiWnd *pkMainWnd, string strClickName)
 
 bool CHandleAgents::InitDlg()
 {
+	m_iStartAgent = 0;
+
 	if(!m_bInitialized)
 	{
-		m_vkCharsInBaseBns.push_back((ZGuiCheckbox*)GetWnd("AgentsInHQBn1"));
-		m_vkCharsInBaseBns.push_back((ZGuiCheckbox*)GetWnd("AgentsInHQBn2"));
-		m_vkCharsInBaseBns.push_back((ZGuiCheckbox*)GetWnd("AgentsInHQBn3"));
-		m_vkCharsInBaseBns.push_back((ZGuiCheckbox*)GetWnd("AgentsInHQBn4"));
-		m_vkCharsInBaseBns.push_back((ZGuiCheckbox*)GetWnd("AgentsInHQBn5"));
-		m_vkCharsInBaseBns.push_back((ZGuiCheckbox*)GetWnd("AgentsInHQBn6"));
-		m_vkCharsInBaseBns.push_back((ZGuiCheckbox*)GetWnd("AgentsInHQBn7"));
+		m_vkCharsInBaseBns.push_back(pair<ZGuiCheckbox*, int>
+			((ZGuiCheckbox*)GetWnd("AgentsInHQBn1"),-1));
+		m_vkCharsInBaseBns.push_back(pair<ZGuiCheckbox*, int>
+			((ZGuiCheckbox*)GetWnd("AgentsInHQBn2"),-1));
+		m_vkCharsInBaseBns.push_back(pair<ZGuiCheckbox*, int>
+			((ZGuiCheckbox*)GetWnd("AgentsInHQBn3"),-1));
+		m_vkCharsInBaseBns.push_back(pair<ZGuiCheckbox*, int>
+			((ZGuiCheckbox*)GetWnd("AgentsInHQBn4"),-1));
+		m_vkCharsInBaseBns.push_back(pair<ZGuiCheckbox*, int>
+			((ZGuiCheckbox*)GetWnd("AgentsInHQBn5"),-1));
+		m_vkCharsInBaseBns.push_back(pair<ZGuiCheckbox*, int>
+			((ZGuiCheckbox*)GetWnd("AgentsInHQBn6"),-1));
+		m_vkCharsInBaseBns.push_back(pair<ZGuiCheckbox*, int>
+			((ZGuiCheckbox*)GetWnd("AgentsInHQBn7"),-1));
+
+
+		for(int i=0; i<7; i++)
+		{
+			m_vkCharsInBaseBns[i].first->GetCheckedSkin()->m_iBkTexID = -1; 
+			m_vkCharsInBaseBns[i].first->GetUncheckedSkin()->m_iBkTexID = -1; 
+			m_vkCharsInBaseBns[i].second = -1;
+		}
+
+		UpdateAgentList(m_iStartAgent);
+
 	}
 
-	for(int i=0; i<7; i++)
+
+
+	m_bInitialized = true;
+
+	return true;
+}
+
+bool CHandleAgents::SendOutAgent(int iAgentID)
+{
+	Entity* pkHQObject = GetDMObject(HQ);
+
+	if(pkHQObject)
 	{
-		m_vkCharsInBaseBns[i]->GetCheckedSkin()->m_iBkTexID = -1; 
-		m_vkCharsInBaseBns[i]->GetUncheckedSkin()->m_iBkTexID = -1; 
+		P_DMHQ* pkHQ = (P_DMHQ*) pkHQObject->GetProperty("P_DMHQ");
+
+		if(pkHQ->EjectCharacter( iAgentID ))
+		{
+			printf("Sending out characterd id %i", iAgentID);
+			return true;
+		}
 	}
 
+	printf("Failed to send out character\n");
+	return false;
+}
+
+void CHandleAgents::UpdateAgentList(int iStartAgent)
+{
 	Entity* pkHQObject = GetDMObject(HQ);
 
 	if(pkHQObject)
@@ -134,17 +203,28 @@ bool CHandleAgents::InitDlg()
 
 		for(int i=0; i<7; i++)
 		{
-			if(i<vkCharsInBase.size())
+			if((i+iStartAgent)<vkCharsInBase.size())
 			{
-				int tex_id = GetTexID("data/textures/gui/dm/portrait4.bmp");
-				m_vkCharsInBaseBns[i]->Show();
-				m_vkCharsInBaseBns[i]->GetUncheckedSkin()->m_iBkTexID = tex_id; 			
-				m_vkCharsInBaseBns[i]->GetCheckedSkin()->m_iBkTexID = tex_id; 
-				m_vkCharsInBaseBns[i]->GetCheckedSkin()->m_afBkColor[1] = 0;
+				P_DMCharacter* pkCharProperty = (P_DMCharacter*) 
+					GetObject(vkCharsInBase[i+iStartAgent])->GetProperty("P_DMCharacter");
+
+				ZFAssert(pkCharProperty, 
+					"CMembersDlg::SetCharacterStats - No character property\n");
+
+				string szTexName = string("data/textures/gui/dm/portraits/") +
+					pkCharProperty->GetStats()->m_strIcon;
+
+				int tex_id = GetTexID((char*) szTexName.c_str());
+				m_vkCharsInBaseBns[i].first->Show();
+				m_vkCharsInBaseBns[i].first->GetUncheckedSkin()->m_iBkTexID = tex_id; 			
+				m_vkCharsInBaseBns[i].first->GetCheckedSkin()->m_iBkTexID = tex_id; 
+				m_vkCharsInBaseBns[i].first->GetCheckedSkin()->m_afBkColor[1] = 0;
+				m_vkCharsInBaseBns[i].second = vkCharsInBase[i+iStartAgent];				
 			}
 			else
 			{
-				m_vkCharsInBaseBns[i]->Hide();
+				m_vkCharsInBaseBns[i].first->Hide();
+				m_vkCharsInBaseBns[i].second = -1;
 			}
 		}
 	}
@@ -152,33 +232,4 @@ bool CHandleAgents::InitDlg()
 	{
 		printf("Failed to get HQ entiry\n");
 	}
-
-	m_bInitialized = true;
-
-	return true;
-}
-
-bool CHandleAgents::SendOutAgent(int iID)
-{
-	Entity* pkHQObject = GetDMObject(HQ);
-
-	if(pkHQObject)
-	{
-		P_DMHQ* pkHQ = (P_DMHQ*) pkHQObject->GetProperty("P_DMHQ");
-
-		vector<int> vkCharsInBase;
-		pkHQ->GetCharacters(&vkCharsInBase);
-
-		if(!vkCharsInBase.empty())
-		{
-			if(pkHQ->EjectCharacter( vkCharsInBase[iID] ))
-			{
-				printf("Sending out characterd id %i", vkCharsInBase[iID]);
-				return true;
-			}
-		}
-	}
-
-	printf("Failed to send out character\n");
-	return false;
 }

@@ -25,9 +25,7 @@ void CGamePlayDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName)
 		if(IsWndVisible("HQWnd"))
 			ShowWnd("HQWnd", false);
 		else
-		{
 			GetGameDlg(HQ_DLG)->OpenDlg();
-		}
 	}
 	else
 	//
@@ -146,6 +144,23 @@ void CGamePlayDlg::SelectAgent(int iAgent, bool bSelectModels)
 			GetWnd("ActiveCharacterPortraitBn");
 
 		SetButtonIcon(pkActiveCharBn, szTexName, false);
+
+		// Lägg till en ram kring valt porträtt och ta bort gammla ramar
+		for(int i=0; i<5; i++)
+		{
+			if(m_akAgetIcons[i].iAgentObjectID == iAgent)
+			{
+				m_akAgetIcons[i].pkButton->GetButtonHighLightSkin()->m_unBorderSize = 2; 
+				m_akAgetIcons[i].pkButton->GetButtonDownSkin()->m_unBorderSize = 2; 
+				m_akAgetIcons[i].pkButton->GetButtonUpSkin()->m_unBorderSize = 2; 
+			}
+			else
+			{
+				m_akAgetIcons[i].pkButton->GetButtonHighLightSkin()->m_unBorderSize = 0; 
+				m_akAgetIcons[i].pkButton->GetButtonDownSkin()->m_unBorderSize = 0; 				
+				m_akAgetIcons[i].pkButton->GetButtonUpSkin()->m_unBorderSize = 0; 
+			}
+		}
 
 		bool bMultiSelect = m_pkDM->m_pkInputHandle->VKIsDown("multiselect");
 

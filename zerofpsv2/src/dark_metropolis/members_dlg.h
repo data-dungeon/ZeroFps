@@ -37,6 +37,7 @@ private:
 	void SetCharacterStats(Entity* pkCharacterObject);
 
 	int m_iCurrentCharacterPage;
+	int m_iActiveCharacteInBase;
 	
 	vector<Entity*> m_kMembersInField;
 
@@ -69,11 +70,13 @@ private:
 	ITEM_MOVE_INFO* m_pkMoveInfo;
 	ITEM_MOVE_INFO* m_pkSelectInfo;
 
-	bool GetContainer(int x, int y, CONTAINER_INFO& kContainer);
+	bool GetContainer(int x, int y, CONTAINER_INFO& kContainer, int agent_obj_id);
+	//bool GetContainer(int x, int y, CONTAINER_INFO& kContainer);
 	bool GetItemPosFromCursor(int x, int y, int& itempos_x, 
 		int& itempos_y, int& slotpos_x, int& slotpos_y);
 	void DropItem(ITEM_MOVE_INFO* pkObject);
 	void UpdateInventory(Entity* pkCharacterObject);
 	
 	// void AddSlot(int 
+	void UpdateLevelbar(Entity* pkCharacterObject);
 };

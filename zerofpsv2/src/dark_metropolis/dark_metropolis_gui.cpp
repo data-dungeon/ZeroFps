@@ -345,7 +345,7 @@ bool DarkMetropolis::GUI_NewGame(ZGuiWnd *pkMainWnd)
 	//for(int i=0; i<sizeof(szWndToHide)/sizeof(szWndToHide[1]); i++)
 	//	ShowWnd(szWndToHide[i], false);	
 
-	StartSong("data/music/dm ingame.ogg");
-	
+	StartSong("data/music/dm ingame.ogg");	
+
 	return true;
 }

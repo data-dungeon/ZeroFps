@@ -376,7 +376,7 @@ void DarkMetropolis::Input()
 				if(pkEnt)
 					if(pkEnt->GetProperty("P_DMCharacter"))   //selected a character
 					{
-						((CGamePlayDlg*)m_pkGamePlayDlg)->SelectAgent(pkEnt->GetEntityID(), false);  //detta fuckar upp
+						((CGamePlayDlg*)m_pkGamePlayDlg)->SelectAgent(pkEnt->GetEntityID(), false);
 						SelectAgent(pkEnt->GetEntityID(), false,false, false);
 					}
 					else if(pkEnt->GetProperty("P_DMHQ"))		//selected a HQ , 
@@ -417,7 +417,6 @@ void DarkMetropolis::Input()
 							}
 				}
 
-		//	detta också, denna tycks anropa någon egen select funtion och tömmer selection listan helatiden så det går inte välja flera gubbar smatidigt
 				if(last_object_selected != -1)
 					((CGamePlayDlg*)m_pkGamePlayDlg)->SelectAgent(
 						last_object_selected, false); 
@@ -749,7 +748,6 @@ Vector3 DarkMetropolis::Get3DMousePos(bool m_bMouse=true)
 	Matrix4 rm = m_pkCamera->GetRotM();
 	rm.Transponse();
 	dir = rm.VectorTransform(dir);
-	
 	return dir;
 }
 

@@ -1,9 +1,12 @@
 #include "dark_metropolis.h"
 #include "members_dlg.h"
 #include "gameplay_dlg.h"
+#include "handleagents_dlg.h"
+#include ".\members_dlg.h"
 
 CMembersDlg::CMembersDlg() : CGameDlg("MembersWnd", &g_kDM)
 {
+	m_iActiveCharacteInBase = -1;
 	m_iCurrentCharacterPage=0;
 	m_pkMoveButton = NULL;
 	m_iCursorRangeDiffX=m_iCursorRangeDiffY=0;
@@ -85,8 +88,6 @@ void CMembersDlg::SetWindowMode(WINDOW_MODE eType)
 
 	Entity* pkHQObject = GetDMObject(HQ);
 
-	SetText("CurrentMemberNumberLabel", "");
-
 	ShowWnd("MemberSelItemBorder", false);
 	m_pkMoveButton = NULL;
 
@@ -106,11 +107,8 @@ void CMembersDlg::SetWindowMode(WINDOW_MODE eType)
 
 				if(!vkCharsInBase.empty())
 				{
-					char text[50];
-					sprintf(text, "Agent %i", 
-						vkCharsInBase[m_iCurrentCharacterPage]);
-					SetText("CurrentMemberNumberLabel", text);
 					SetCharacterStats(GetObject(vkCharsInBase[m_iCurrentCharacterPage]));
+					m_iActiveCharacteInBase = vkCharsInBase[m_iCurrentCharacterPage];
 				}
 				else
 				{
@@ -123,6 +121,10 @@ void CMembersDlg::SetWindowMode(WINDOW_MODE eType)
 		case HQ_BROWSE_MEMBERS_AND_AGENTS_AVAILABLE_FOR_HIRING:
 			ShowWnd("MembersEquipBn", false); // dölj equip knappen
 			ShowWnd("MembersDropItemBn", false); // dölj drop knappen
+
+			int iAgentObject;
+			iAgentObject = ((CHandleAgents*)GetGameDlg(HANDLE_AGENTS_DLG))->GetSelAgent();
+			SetCharacterStats(GetObject(iAgentObject));
 			break;
 
 		case IN_GAME:
@@ -145,25 +147,25 @@ void CMembersDlg::SetWindowMode(WINDOW_MODE eType)
 				((CGamePlayDlg*)GetGameDlg(GAMEPLAY_DLG))->GetSelAgentObject();
 
 			if(!m_kMembersInField.empty())
-			{
-				char text[50];
-				sprintf(text, "Agent %i", m_kMembersInField[0]->GetEntityID());
-				SetText("CurrentMemberNumberLabel", text);
-				
+			{				
 				SetCharacterStats(GetObject(iSelAgentObject));
-			}
-
-			if(iSelAgentObject != 1)
-			{
-				for(int i=0; i<5; i++)
+			
+				if(iSelAgentObject != 1)
 				{
-					int iObjectID = m_kMembersInField[i]->GetEntityID();
-					if(iSelAgentObject == iObjectID)
+					for(int i=0; i<5; i++)
 					{
-						m_iCurrentCharacterPage = i;
-						break;
+						int iObjectID = m_kMembersInField[i]->GetEntityID();
+						if(iSelAgentObject == iObjectID)
+						{
+							m_iCurrentCharacterPage = i;
+							break;
+						}
 					}
 				}
+			}
+			else
+			{
+				SetCharacterStats(NULL);
 			}
 
 			break;
@@ -174,7 +176,18 @@ void CMembersDlg::SwitchCharacter(bool bNext)
 {
 	Entity* pkHQObject = GetDMObject(HQ);
 	vector<int> vkCharsInBase;
-	char text[50];
+
+	if(m_pkSelectInfo)
+	{
+		delete m_pkSelectInfo;
+		m_pkSelectInfo = NULL;
+
+		for(int i=0; i<m_vkItemButtons.size(); i++)
+		{
+			m_vkItemButtons[i]->GetButtonUpSkin()->m_unBorderSize = 0;
+			m_vkItemButtons[i]->GetSkin()->m_unBorderSize = 0;
+		}
+	}
 
 	switch(m_eWidowMode)
 	{
@@ -188,9 +201,6 @@ void CMembersDlg::SwitchCharacter(bool bNext)
 		P_DMHQ* pkHQ;
 		pkHQ = (P_DMHQ*) pkHQObject->GetProperty("P_DMHQ");
 		pkHQ->GetCharacters(&vkCharsInBase);
-
-		printf("There are %i chars in the base\n",
-			vkCharsInBase.size());
 
 		if(vkCharsInBase.empty())
 		{
@@ -211,11 +221,8 @@ void CMembersDlg::SwitchCharacter(bool bNext)
 
 		int agent_object;
 		agent_object = vkCharsInBase[m_iCurrentCharacterPage];
-		sprintf(text, "Agent %i", agent_object);
-		SetText("CurrentMemberNumberLabel", text);
 		SetCharacterStats(GetObject(agent_object));
-
-
+		m_iActiveCharacteInBase = agent_object;
 		break;
 
 	case IN_GAME:
@@ -231,14 +238,16 @@ void CMembersDlg::SwitchCharacter(bool bNext)
 				m_iCurrentCharacterPage--;
 		}
 
-		sprintf(text, "Agent %i", 
-			m_kMembersInField[m_iCurrentCharacterPage]->GetEntityID());
-		SetText("CurrentMemberNumberLabel", text);
-
-		SetCharacterStats(m_kMembersInField[m_iCurrentCharacterPage]);
-
-		((CGamePlayDlg*)GetGameDlg(GAMEPLAY_DLG))->SelectAgent(
-			m_kMembersInField[m_iCurrentCharacterPage]->GetEntityID(), true);
+		if(m_kMembersInField.empty() == false)
+		{
+			SetCharacterStats(m_kMembersInField[m_iCurrentCharacterPage]);
+			((CGamePlayDlg*)GetGameDlg(GAMEPLAY_DLG))->SelectAgent(
+				m_kMembersInField[m_iCurrentCharacterPage]->GetEntityID(), true);
+		}
+		else
+		{
+			SetCharacterStats(NULL);
+		}
 
 		break;
 
@@ -260,8 +269,9 @@ void CMembersDlg::SetCharacterStats(Entity* pkCharacterObject)
 		SetText("MembersArmourField", "");
 		SetText("MemberSpeedField", "");
 		SetText("MemberLifeField", "");
-		SetText("LevelbarTopic", "");
+		SetText("CurrentMemberNumberLabel", "");
 		GetWnd("MemberIcon")->GetSkin()->m_iBkTexID = -1;
+		UpdateLevelbar(NULL);
 		return;
 	}
 
@@ -273,6 +283,8 @@ void CMembersDlg::SetCharacterStats(Entity* pkCharacterObject)
 
 	pkCharacterStats = pkCharProperty->GetStats();
 
+	sprintf(szText, "Agent %i", pkCharacterObject->GetEntityID());
+	SetText("CurrentMemberNumberLabel", szText);
 	SetText("MemberNameField", (char*) pkCharacterStats->m_strName.c_str());
 	SetNumber("MembersArmourField", (int) pkCharacterStats->m_fArmour);
 	SetNumber("MemberSpeedField", (int) pkCharacterStats->m_fSpeed);
@@ -282,10 +294,7 @@ void CMembersDlg::SetCharacterStats(Entity* pkCharacterObject)
 		pkCharacterStats->m_iMaxLife);
 	SetText("MemberLifeField", szText);
 
-	sprintf(szText, "Level : %i (%i/%i)", pkCharacterStats->m_iLevel,
-		(int)(pkCharacterStats->m_fExperience), 
-		(int)(pkCharacterStats->m_fNextLevel));
-	SetText("LevelbarTopic", szText);
+	UpdateLevelbar(pkCharacterObject);
 
 	string szTexName = string("data/textures/gui/dm/portraits/") +
 		pkCharacterStats->m_strIcon;
@@ -317,6 +326,13 @@ void CMembersDlg::OnClick(int x, int y, bool bMouseDown, bool bLeftButton,
 
 	int dx, dy, sx, sy;
 
+	int agent_obj_id;
+
+	if(m_eWidowMode == IN_GAME)
+		agent_obj_id = ((CGamePlayDlg*)GetGameDlg(GAMEPLAY_DLG))->GetSelAgentObject();
+	else
+		agent_obj_id = m_iActiveCharacteInBase;
+
 	// musknappen har släppts
 	if(bMouseDown == false)
 	{
@@ -324,7 +340,7 @@ void CMembersDlg::OnClick(int x, int y, bool bMouseDown, bool bLeftButton,
 		{
 			bool bMoveOK = false;
 			CONTAINER_INFO kContainer;
-			if( GetContainer(x, y, kContainer) )
+			if( GetContainer(x, y, kContainer, agent_obj_id) )
 			{
 				x = m_pkMoveInfo->m_pkMoveButton->GetScreenRect().Left + 
 					m_pkMoveInfo->m_pkMoveButton->GetScreenRect().Width()/4;
@@ -344,8 +360,6 @@ void CMembersDlg::OnClick(int x, int y, bool bMouseDown, bool bLeftButton,
 						if(m_pkMoveInfo->m_kFromContainer.pkContainer->MoveItem(
 							*m_pkMoveInfo->m_pMoveObject, kContainer.pkContainer, sx, sy))
 						{
-							printf("Moving item OK\n");
-							kContainer.pkContainer->Print();
 							m_pkMoveInfo->m_pkMoveButton->SetPos(dx,dy,true,true); 
 							m_pkMoveInfo->m_pkMoveButton->SetMoveArea(
 								m_pkMoveInfo->m_pkMoveButton->GetScreenRect(),true);
@@ -389,7 +403,7 @@ void CMembersDlg::OnClick(int x, int y, bool bMouseDown, bool bLeftButton,
 			if(x>rc.Left && x<rc.Right && y>rc.Top && y<rc.Bottom )
 			{
 				CONTAINER_INFO kContainer;
-				if( GetContainer(x, y, kContainer) )
+				if( GetContainer(x, y, kContainer, agent_obj_id) )
 				{
 					if(m_pkMoveInfo)
 					{
@@ -450,7 +464,7 @@ void CMembersDlg::OnClick(int x, int y, bool bMouseDown, bool bLeftButton,
 }
 
 // x och y är skärmkoordinater
-bool CMembersDlg::GetContainer(int x, int y, CONTAINER_INFO& kContainer)
+bool CMembersDlg::GetContainer(int x, int y, CONTAINER_INFO& kContainer, int agent_obj_id)
 {
 	ZGuiWnd* pkMain;
 	DMContainer* pkBackPack=NULL, *pkArmor=NULL;
@@ -461,8 +475,8 @@ bool CMembersDlg::GetContainer(int x, int y, CONTAINER_INFO& kContainer)
 	if((pkMain = GetWnd("MembersWnd")) == NULL)
 		return false;
 
-	int agent_obj_id = ((CGamePlayDlg*)
-		GetGameDlg(GAMEPLAY_DLG))->GetSelAgentObject();
+	//int agent_obj_id = ((CGamePlayDlg*)
+	//	GetGameDlg(GAMEPLAY_DLG))->GetSelAgentObject();
 
 	if(agent_obj_id)
 	{
@@ -711,5 +725,50 @@ void CMembersDlg::UpdateInventory(Entity* pkCharacterObject)
 				m_vkItemButtons.push_back(pkButton);
 			}
 		}
+	}
+}
+void CMembersDlg::UpdateLevelbar(Entity* pkCharacterObject)
+{
+	bool bFailed = false;
+
+	if(pkCharacterObject == NULL)
+	{
+		bFailed = true;
+	}
+	else
+	{
+		P_DMCharacter* pkCharProperty = (P_DMCharacter*) 
+			pkCharacterObject->GetProperty("P_DMCharacter");
+
+		if(pkCharProperty)
+		{
+			DMCharacterStats* pkCharacterStats = pkCharProperty->GetStats();
+			if(pkCharacterStats)
+			{
+				int Level = pkCharacterStats->m_iLevel;
+				int XP =  (int)pkCharacterStats->m_fExperience;
+				int XPNextLevel = (int)pkCharacterStats->m_fNextLevel;
+
+				if(XP > XPNextLevel)
+					XP = XPNextLevel;
+
+				char szText[50];
+				sprintf(szText, "Level : %i (%i/%i)", Level, XP, XPNextLevel);
+				SetText("LevelbarTopic", szText);
+
+				const float MAX_SIZE_LEVELBAR = (float) GetWnd("LevelbarBK")->GetScreenRect().Width();
+
+				float procent_av_next_level = (float) XP / (float) XPNextLevel;
+
+				GetWnd("LevelbarFront")->Resize(
+					(int)(procent_av_next_level*MAX_SIZE_LEVELBAR),20,true); 
+			}
+		}
+	}
+
+	if(bFailed)
+	{
+		SetText("LevelbarTopic", "");
+		GetWnd("LevelbarFront")->Resize(0,20,true); 
 	}
 }
