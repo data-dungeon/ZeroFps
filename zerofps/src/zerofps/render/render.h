@@ -97,6 +97,7 @@ class RENDER_API Render : public ZFObject {
 		void DrawBillboard(Matrix4& kModelMatrix,Vector3& kPos,float fSize,int iTexture);
 
 		void DrawBoundSphere(float fRadius, Vector3);
+		void DrawBoundingBox(Vector3 kPos,Vector3 kRot,Vector3 kScale);
 		void DrawBox(Vector3 kPos,Vector3 kRot,Vector3 kScale,int iTexture);
 		void DrawColorBox(Vector3 kPos,Vector3 kRot,Vector3 kScale,Vector3 kColor);
 		void DrawAABB( float x, float y, float z, float sizex,float sizey,float sizez, Vector3 kColor );

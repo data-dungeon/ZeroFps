@@ -1090,7 +1090,7 @@ void ZeroEdit::Input()
 			}
 			break;
 
-		case KEY_F10:
+		case KEY_F1:
 			DlgBox* pkWorkpanel;
 			pkWorkpanel = m_pkGui->GetDlg("WorkPanelDlg");
 			
@@ -1098,15 +1098,6 @@ void ZeroEdit::Input()
 				pkWorkpanel->Close(false);
 			else
 				pkWorkpanel->Open();
-			break;
-
-		case KEY_F1:
-			{
-				Image kImage;
-				kImage.load_bmp("ko.bmp");
-				kImage.save("ko.tga",false);
-				// load_bmp pk
-			}
 			break;
 	}
 }
@@ -1243,7 +1234,9 @@ void ZeroEdit::DrawMarkers()
 			size=1;
 		
 		glDisable(GL_LIGHTING);
-		pkRender->Sphere(m_pkCurentChild->GetPos(),size,20,Vector3(1,0,0),false);
+		//pkRender->Sphere(m_pkCurentChild->GetPos(),size,20,Vector3(1,0,0),false);
+		pkRender->DrawBoundingBox(m_pkCurentChild->GetPos(),
+			m_pkCurentChild->GetRot(),Vector3(size,size,size));
 		glEnable(GL_LIGHTING);
 		
 		if(m_pkCurentChild->GetParent()){

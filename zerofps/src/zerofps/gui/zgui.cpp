@@ -2,13 +2,11 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#include "../basic/rect.h"
 #include "zgui.h"
 #include "zguiwindow.h"
 #include "../render/zguirenderer.h"
 #include "../render/texturemanager.h"
 #include "zguiresourcemanager.h"
-#include "../basic/zfassert.h"
 #include <typeinfo>
 
 //////////////////////////////////////////////////////////////////////
@@ -16,7 +14,7 @@
 //////////////////////////////////////////////////////////////////////
 
 
-ZGui::ZGui()
+ZGui::ZGui() : ZFObject("Gui") 
 {
 	m_pkCapturedWindow = NULL;
 	m_bHoverWindow = false;

@@ -575,6 +575,16 @@ ZGuiTreeboxNode* ZGuiTreebox::RemoveNode(ZGuiTreeboxNode *pkNode)
 				}
 			}
 
+			// Stäng parent noden så att nodträdet uppdateras.
+			if(pkNode->pkParent)
+			{
+				if(pkNode->pkParent->bIsOpen)
+				{
+					OpenNode(pkNode->pkParent, false);
+					pkNode->pkParent->pkButton->UncheckButton();
+				}
+			}
+
 			delete pkNode->pkButton; pkNode->pkButton = NULL;
 			delete pkNode; pkNode = NULL;
 
@@ -613,6 +623,16 @@ ZGuiTreeboxNode* ZGuiTreebox::RemoveNode(ZGuiTreeboxNode *pkNode)
 							break;
 						}
 					}
+			}
+
+			// Stäng parent noden så att nodträdet uppdateras.
+			if(pkNode->pkParent)
+			{
+				if(pkNode->pkParent->bIsOpen)
+				{
+					OpenNode(pkNode->pkParent, false);
+					pkNode->pkParent->pkButton->UncheckButton();
+				}
 			}
 
 			m_kNodeList.erase(p);
@@ -676,12 +696,10 @@ bool ZGuiTreebox::DeleteNode(ZGuiTreeboxNode* pkNode, bool bRemoveFromMap)
 
 	printf("-------- DeleteNode END ----------\n");
 
-	// Öppna stäng noden så att nodträdet uppdateras.
-	if(pkParent->bIsOpen)
-	{
-		OpenNode(pkParent, false);
-		OpenNode(pkParent, true);
-	}
+	return true;
+}
 
+bool ZGuiTreebox::ProcessKBInput(int iKey)
+{
 	return true;
 }

@@ -422,6 +422,47 @@ void Render::DrawBox(Vector3 kPos,Vector3 kRot,Vector3 kScale,int iTexture)
 
 }
 
+void Render::DrawBoundingBox(Vector3 kPos,Vector3 kRot,Vector3 kScale)
+{
+	glPushMatrix();
+		
+	glTranslatef(kPos.x,kPos.y,kPos.z);	
+	glRotatef(kRot.x, 1, 0, 0);
+	glRotatef(kRot.y, 0, 1, 0);	
+	glRotatef(kRot.z, 0, 0, 1);
+	glScalef(kScale.x,kScale.y,kScale.z);
+	
+	glColor4f(1,0,0,1);		
+		
+	Vector3 a(-0.5f, -0.5f, -0.5f);
+	Vector3 b(-0.5f,  0.5f, -0.5f);
+	Vector3 c( 0.5f,  0.5f, -0.5f);
+	Vector3 d( 0.5f, -0.5f, -0.5f);
+
+	Vector3 e(-0.5f, -0.5f,  0.5f);
+	Vector3 f(-0.5f,  0.5f,  0.5f);
+	Vector3 g( 0.5f,  0.5f,  0.5f);
+	Vector3 h( 0.5f, -0.5f,  0.5f);
+	
+	Line(a,b); 
+	Line(b,c); 
+	Line(c,d); 
+	Line(d,a); 
+
+	Line(e,f); 
+	Line(f,g); 
+	Line(g,h); 
+	Line(h,e); 
+
+	Line(b,f); 
+	Line(c,g); 
+	Line(d,h); 
+	Line(a,e); 
+		
+	glPopMatrix();
+
+}
+
 void Render::DrawColorBox(Vector3 kPos,Vector3 kRot,Vector3 kScale,Vector3 kColor)
 {
 	glPushMatrix();

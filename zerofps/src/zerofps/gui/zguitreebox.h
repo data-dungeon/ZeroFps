@@ -73,6 +73,7 @@ private:
 	ZGuiTreeboxNode* RemoveNode(ZGuiTreeboxNode *pkNode);
 	ZGuiTreeboxNode* FindLastChild(ZGuiTreeboxNode* pkFrom);
 
+	bool ProcessKBInput(int iKey);
 	void SetSelColor(ZGuiTreeboxNode* pkNode);
 	void ScrollRows(bool bVertically);
 	void ChangeScrollbarRange(int width, int height);

@@ -6,8 +6,7 @@
 #define _GUI_ZGUI_H_
 
 #include "gui_x.h"
-#include "../basic/zguiskin.h"
-#include "../basic/zguifont.h"
+#include "../basic/basic.pkg"
 #include "zguiwindow.h"
 #include "zguibutton.h"
 #include "zguicheckbox.h"
@@ -29,8 +28,6 @@
 using namespace std;
 
 class ZGuiRender;
-//class Input;
-//class ZeroFps;
 class ZGuiResourceManager;
 
 /*
@@ -61,7 +58,7 @@ class ZGuiResourceManager;
 
 #define ZG_DEFAULT_GUI_FONT				 1
 
-class GUI_API ZGui  
+class GUI_API ZGui : public ZFObject 
 {
 public:	
 	
