@@ -51,10 +51,6 @@ ZeroFps::ZeroFps(void)
 	g_iMadLODLock = 0;
 	m_pkCamera = NULL;
 
-	//	akCoreModells.reserve(25);
-	//	add some nice variables =)
-	//	m_pkCmd->Add(&m_iState,"G_State",type_int);
-
 	g_ZFObjSys.RegisterVariable("m_Sens", &m_pkInput->m_fMouseSensitivity,CSYS_FLOAT);
 	g_ZFObjSys.RegisterVariable("r_LandLod", &m_pkRender->m_iDetail,CSYS_INT);
 	g_ZFObjSys.RegisterVariable("r_ViewDistance", &m_pkRender->m_iViewDistance,CSYS_INT);
@@ -69,7 +65,7 @@ ZeroFps::ZeroFps(void)
 	g_ZFObjSys.RegisterVariable("r_madlod", &g_fMadLODScale,CSYS_FLOAT);
 	g_ZFObjSys.RegisterVariable("r_madlodlock", &g_iMadLODLock,CSYS_FLOAT);
 
-/*	
+/*	Vim
 
 	m_pkCmd->Add(&m_pkInput->m_fMouseSensitivity,"m_Sens",type_float);
 	m_pkCmd->Add(&m_pkRender->m_iDetail,"r_LandLod",type_int);
@@ -233,7 +229,7 @@ void ZeroFps::Run_EngineShell()
 void ZeroFps::Run_Server()
 {
 	//update zones
-	m_pkLevelMan->UpdateZones();			
+	//m_pkLevelMan->UpdateZones();			
 	
 	//update all normal propertys
 	m_pkObjectMan->Update(PROPERTY_TYPE_NORMAL,PROPERTY_SIDE_ALL,false);
@@ -256,6 +252,11 @@ void ZeroFps::Run_Client()
 		
 	//run application main loop
 	m_pkApp->OnIdle();							
+	//update zones
+	m_pkLevelMan->UpdateZones();			
+
+	GetCam()->ClearViewPort();	
+	m_pkObjectMan->Update(PROPERTY_TYPE_RENDER,PROPERTY_SIDE_CLIENT,true);
 
 	//update openal sound system			
 	Vector3 up=(m_pkCamera->GetRot()-Vector3(0,90,0));//.AToU();
@@ -263,22 +264,32 @@ void ZeroFps::Run_Client()
 	m_pkOpenAlSystem->SetListnerPosition(m_pkCamera->GetPos(),(m_pkCamera->GetRot()+Vector3(0,90,0)).AToU(),up.AToU());//(m_pkCamera->GetRot()-Vector3(-90,90,0)).AToU());
 	m_pkOpenAlSystem->Update();
 
+	//run application Head On Display 
+	SetCamera(m_pkConsoleCamera);			
+	m_pkApp->OnHud();
+}
+
+void ZeroFps::Draw_EngineShell()
+{
 	// Describe Active Cam.
 	string strCamDesc = GetCam()->GetCameraDesc();
 	DevPrintf("common",strCamDesc.c_str());
-
-	//run application Head On Display 
-	SetCamera(m_pkConsoleCamera);
-	m_pkApp->OnHud();
-
-	// Update GUI
-	if(!m_pkConsole->IsActive())
-		m_pkGui->Update();
+	DevPrintf("common" , "NumMads/NumMadSurfaces: %d / %d", m_iNumOfMadRender , g_iNumOfMadSurfaces);
 
 	m_iNumOfMadRender = 0;
 	g_iNumOfMadSurfaces = 0;
+	
+	if(m_pkConsole->IsActive()) {		
+		SetCamera(m_pkConsoleCamera);			
+		
+		m_pkInput->SetInputEnabled(true);			
+		m_pkConsole->Update();
+	}		
+	else {
+		// Update GUI
+		m_pkGui->Update();
+	}
 }
-
 
 void ZeroFps::MainLoop(void) {
 
@@ -290,18 +301,26 @@ void ZeroFps::MainLoop(void) {
 
 		if(m_bServerMode)	Run_Server();
 		if(m_bClientMode)	Run_Client();
-		
-		if(m_pkConsole->IsActive())
-		{		
-			SetCamera(m_pkConsoleCamera);			
-			
-			m_pkInput->SetInputEnabled(true);			
-			m_pkConsole->Update();
-		}
+
+		Draw_EngineShell();
 	}
-	
 }
 
+void ZeroFps::SetRenderTarget(Camera* pkCamera)
+{
+	for(int i=0; i<m_kRenderTarget.size(); i++)
+		if(m_kRenderTarget[i] == pkCamera)
+			return;
+
+	m_kRenderTarget.push_back(pkCamera);
+	cout << "Adding: " << pkCamera->GetName();
+	cout << " to active rendertargets\n";
+}
+
+void ZeroFps::RemoveRenderTarget(Camera* pkCamera)
+{
+	
+}
 
 
 void ZeroFps::InitDisplay(int iWidth,int iHeight,int iDepth) {
@@ -688,6 +707,7 @@ void ZeroFps::RunCommand(int cmdid, const CmdArgument* kCommand)
 			break;
 
 		case FID_DEV_SHOWPAGE:
+			DevPrintf(kCommand->m_kSplitCommand[1].c_str(), "=)");	// Force creation of page.
 			page = DevPrint_FindPage(kCommand->m_kSplitCommand[1].c_str());
 			if(page)
 				page->m_bVisible = true;
@@ -701,12 +721,6 @@ void ZeroFps::RunCommand(int cmdid, const CmdArgument* kCommand)
 
 			
 		case FID_SENDMESSAGE:
-			/* Vim
-			if(kCommand->m_kSplitCommand.size() <= 2) {
-				m_pkConsole->Printf("sendmsg name id");
-				return;
-			}*/
-
 			gm.m_FromObject = -1;
 			gm.m_ToObject	= atoi(kCommand->m_kSplitCommand[2].c_str());
 			gm.m_Name		= kCommand->m_kSplitCommand[1].c_str();

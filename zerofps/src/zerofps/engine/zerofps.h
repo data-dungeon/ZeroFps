@@ -97,6 +97,7 @@ class ENGINE_API ZeroFps : public ZFObject {
 		void Run_EngineShell();
 		void Run_Server();
 		void Run_Client();
+		void Draw_EngineShell();
 
 	public:
 		/*
@@ -184,6 +185,12 @@ class ENGINE_API ZeroFps : public ZFObject {
 
 		void GetEngineCredits(vector<string>& kCreditsStrings);
 		 
+		vector<Camera*>	m_kRenderTarget;
+		
+		void SetRenderTarget(Camera* pkCamera);
+		void RemoveRenderTarget(Camera* pkCamera);
+		
+
 };
 
 

@@ -24,14 +24,14 @@ ZFResourceInfo::~ZFResourceInfo()
 ZFResourceHandle::ZFResourceHandle()
 {
 	m_iHandleID = g_iResourceHandleID ++;
-	cout << "ZFResourceHandle::ZFResourceHandle: " << m_iHandleID << endl;
+//	cout << "ZFResourceHandle::ZFResourceHandle: " << m_iHandleID << endl;
 	m_iID = -1;
 }
 
 ZFResourceHandle::~ZFResourceHandle()
 {
 	FreeRes();
-	cout << "ZFResourceHandle::~ZFResourceHandle: " << m_iHandleID <<endl;
+//	cout << "ZFResourceHandle::~ZFResourceHandle: " << m_iHandleID <<endl;
 }
 
 bool ZFResourceHandle::SetRes(string strName)
@@ -39,7 +39,7 @@ bool ZFResourceHandle::SetRes(string strName)
 	FreeRes();
 
 	
-	cout << "ZFResourceHandle::SetRes: " << m_iHandleID << " to " << strName << endl;
+//	cout << "ZFResourceHandle::SetRes: " << m_iHandleID << " to " << strName << endl;
 
 	m_strName = strName;
 	ZFResourceDB* pkResDB = static_cast<ZFResourceDB*>(g_ZFObjSys.GetObjectPtr("ZFResourceDB"));
@@ -98,7 +98,7 @@ void ZFResourceDB::Refresh()
 
 	for(it = m_kResources.begin(); it != m_kResources.end(); it++ ) {
 		if((*it)->m_iNumOfUsers == 0) {
-			cout << "ResDB: Remove '" << (*it)->m_strName << "'" << endl;
+			//cout << "ResDB: Remove '" << (*it)->m_strName << "'" << endl;
 			delete (*it);
 			it = m_kResources.erase(it);
 			}

@@ -75,9 +75,8 @@ void Game::OnIdle(void)
 		case GAME_STATE_MENU:
 		{
 			pkFps->SetCamera(m_pkCamera);		
-			pkFps->GetCam()->ClearViewPort();	
-			
-			pkObjectMan->Update(PROPERTY_TYPE_RENDER, PROPERTY_SIDE_CLIENT, true);
+			//pkFps->GetCam()->ClearViewPort();	
+			//pkObjectMan->Update(PROPERTY_TYPE_RENDER, PROPERTY_SIDE_CLIENT, true);
 			pkFps->DevPrintf("common", "Active Propertys: %d",pkObjectMan->GetActivePropertys());
 	
 			break;
@@ -86,21 +85,20 @@ void Game::OnIdle(void)
 		case GAME_STATE_INGAME:
 		{
 			pkFps->SetCamera(m_pkCamera);		
-			pkFps->GetCam()->ClearViewPort();	
-			
-			pkObjectMan->Update(PROPERTY_TYPE_RENDER, PROPERTY_SIDE_CLIENT, true);
+			//pkFps->GetCam()->ClearViewPort();	
+			//pkObjectMan->Update(PROPERTY_TYPE_RENDER, PROPERTY_SIDE_CLIENT, true);
 			pkFps->DevPrintf("common","Active Propertys: %d",pkObjectMan->GetActivePropertys());			
 			
 			break;
 		}
 	}
 
-	if(pkInput->Pressed(KEY_C)) {
+/*	if(pkInput->Pressed(KEY_C)) {
 		CameraProperty* pkCam = dynamic_cast<CameraProperty*>(m_pkPlayer->GetProperty("CameraProperty"));
 		if(pkCam) {
 			pkCam->NextType((CameraProperty::CamType_e) 0);
 			}
-		}
+		}*/
 
 	Input();
 
