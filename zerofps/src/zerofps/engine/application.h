@@ -22,6 +22,7 @@ class ENGINE_API Application {
 		Input* pkInput;
 		TextureManager* pkTexMan;
 		FileIo* pkFile;
+//		Light* pkLight;
 		
 	public:
 		static Application* pkApp;

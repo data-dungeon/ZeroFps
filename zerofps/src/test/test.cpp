@@ -59,6 +59,26 @@ void Test::OnInit(void) {
 
 
 	testa.Load("babe.pmd");
+/*	
+	LightSource *sol=new LightSource;
+	Vector3 *solpos=new Vector3(200,10,200);
+	Vector3 *solrot=new Vector3(0,0,0);
+	
+		sol->kPos=solpos;
+		sol->kRot=solrot;
+		sol->kConstPos=Vector3(0,0,0);
+		sol->kConstRot=Vector3(0,0,0);		
+		sol->kDiffuse=Vector4(1,0,0,1);
+		sol->kAmbient=Vector4(.1,.1,.1,.1);
+		sol->kSpecular=Vector4(0,0,0,0);
+		sol->fCutoff=0.5;	
+		sol->fExp=0;
+		sol->fConst_Atten=10;
+		sol->fLinear_Atten=0;
+		sol->fQuadratic_Atten=0;
+		sol->iType=POINT;			
+	pkLight->Add(sol);
+*/
 }
 
 

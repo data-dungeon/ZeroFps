@@ -31,7 +31,6 @@ class Test :public Application {
 		void OnIdle(void);
 		void OnHud(void);
 
-
 		void input();
 };
 

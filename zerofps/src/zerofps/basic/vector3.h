@@ -71,7 +71,7 @@ class BASIC_API Vector3 {
 
 
 BASIC_API Vector3 operator * ( const float& s, const Vector3& v );
-BASIC_API ostream& operator<<(ostream& os, const Vector3 &v);
+//BASIC_API ostream& operator<<(ostream& os, const Vector3 &v);
 
 #endif
 

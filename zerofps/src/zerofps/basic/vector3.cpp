@@ -245,3 +245,10 @@ ostream& operator<<(ostream& os, const Vector3 &v)
 	os <<  2345; 
 	return os;
 }
+
+
+
+
+
+
+
