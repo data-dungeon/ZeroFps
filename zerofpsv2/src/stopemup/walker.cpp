@@ -22,13 +22,15 @@ P_Walker::P_Walker()
 	int iPlayers = m_pkStopEmUp->GetPlayers();
 	int iLevel =  m_pkStopEmUp->GetLevel();
 	
+	iPlayers *= 0.75;
+	
 	if(iPlayers < 1)
 		iPlayers = 1;
 	
 	if(iLevel < 1)
 		iLevel = 1;
 	
-	m_iLife = (10 * iLevel) * iPlayers;
+	m_iLife = (5 * iLevel) * iPlayers ;
 }
 
 void P_Walker::Update()
@@ -158,7 +160,7 @@ void P_Walker::Touch(int iID)
 					if(pkTarget->GetWorldPosV().DistanceTo(GetEntity()->GetWorldPosV()) > pkTarget->GetWorldPosV().DistanceTo(pkEnt->GetWorldPosV()))
 					{
 				
-						Paralize(0.25);
+						Paralize(0.2);
 				
 					}
 				}
@@ -178,7 +180,7 @@ void P_Walker::Touch(int iID)
 
 void P_Walker::Damage(int iDmg)
 {
-	Paralize(0.5);
+	//Paralize(0.1);
 	
 	m_iLife--;
 				

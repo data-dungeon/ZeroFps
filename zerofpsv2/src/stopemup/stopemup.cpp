@@ -203,12 +203,25 @@ void StopEmUp::Input()
 	
 				float fYAngle = pkCam->Get3PYAngle();
 				
-				if(m_pkInputHandle->Pressed(KEY_LEFT))
-					fYAngle += m_pkZeroFps->GetFrameTime()*100;
+				//reset straf keys
+				m_kCharacterControls[eLEFT] = false;
+				m_kCharacterControls[eRIGHT] = false;
 				
-				if(m_pkInputHandle->Pressed(KEY_RIGHT))
-					fYAngle -= m_pkZeroFps->GetFrameTime()*100;
-				
+				//want to straf or turn?
+				if(m_pkInputHandle->Pressed(KEY_LALT))
+				{
+					m_kCharacterControls[eLEFT] = m_pkInputHandle->Pressed(KEY_LEFT);				
+					m_kCharacterControls[eRIGHT] = m_pkInputHandle->Pressed(KEY_RIGHT);	
+				}
+				else
+				{
+					if(m_pkInputHandle->Pressed(KEY_LEFT))
+						fYAngle += m_pkZeroFps->GetFrameTime()*100;
+					
+					if(m_pkInputHandle->Pressed(KEY_RIGHT))
+						fYAngle -= m_pkZeroFps->GetFrameTime()*100;
+				}
+								
 				pkCam->Set3PYAngle( fYAngle);
 				
 			}	
