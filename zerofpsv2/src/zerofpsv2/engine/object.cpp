@@ -971,7 +971,8 @@ void Object::SetLocalPosV(Vector3 kPos)
 	//check new zone
 	if(m_bUseZones)
 	{
-		AttachToZone(kPos);
+		if(!AttachToZone(kPos))
+			return;
 	}
 
 	m_iNetUpdateFlags |= OBJ_NETFLAG_POS;

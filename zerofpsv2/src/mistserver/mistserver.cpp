@@ -331,6 +331,7 @@ void MistServer::Input()
 				}
 			}
 			
+			//remove			
 			if(pkInput->Pressed(KEY_R))
 			{
 				Object* pkObj = pkObjectMan->GetObjectByNetWorkID(m_iCurrentObject);
@@ -340,6 +341,38 @@ void MistServer::Input()
 			
 				m_iCurrentObject = -1;
 			}
+		
+			Object* pkObj = pkObjectMan->GetObjectByNetWorkID(m_iCurrentObject);								
+			if(!pkObj)
+				return;		
+		
+			//move left
+			if(pkInput->Pressed(KEY_LEFT))
+					pkObj->SetLocalPosV(pkObj->GetLocalPosV() + Vector3(-1 * pkFps->GetFrameTime(),0,0));			
+			if(pkInput->Pressed(KEY_RIGHT))
+					pkObj->SetLocalPosV(pkObj->GetLocalPosV() + Vector3(1 * pkFps->GetFrameTime(),0,0));			
+			if(pkInput->Pressed(KEY_UP))
+					pkObj->SetLocalPosV(pkObj->GetLocalPosV() + Vector3(0,0,-1 * pkFps->GetFrameTime()));			
+			if(pkInput->Pressed(KEY_DOWN))
+					pkObj->SetLocalPosV(pkObj->GetLocalPosV() + Vector3(0,0,1 * pkFps->GetFrameTime()));			
+			if(pkInput->Pressed(KEY_RSHIFT))
+					pkObj->SetLocalPosV(pkObj->GetLocalPosV() + Vector3(0,1 * pkFps->GetFrameTime(),0));			
+			if(pkInput->Pressed(KEY_RCTRL))
+					pkObj->SetLocalPosV(pkObj->GetLocalPosV() + Vector3(0,-1 * pkFps->GetFrameTime(),0));			
+			//rotation		
+			if(pkInput->Pressed(KEY_INSERT))
+				pkObj->RotateLocalRotV(Vector3(100*pkFps->GetFrameTime(),0,0));			
+			if(pkInput->Pressed(KEY_DELETE))
+				pkObj->RotateLocalRotV(Vector3(-100*pkFps->GetFrameTime(),0,0));			
+			if(pkInput->Pressed(KEY_HOME))
+				pkObj->RotateLocalRotV(Vector3(0,100*pkFps->GetFrameTime(),0));			
+			if(pkInput->Pressed(KEY_END))
+				pkObj->RotateLocalRotV(Vector3(0,-100*pkFps->GetFrameTime(),0));			
+			if(pkInput->Pressed(KEY_PAGEUP))
+				pkObj->RotateLocalRotV(Vector3(0,0,100*pkFps->GetFrameTime()));			
+			if(pkInput->Pressed(KEY_PAGEDOWN))
+				pkObj->RotateLocalRotV(Vector3(0,0,-100*pkFps->GetFrameTime()));			
+				
 		}		
 	}
 };

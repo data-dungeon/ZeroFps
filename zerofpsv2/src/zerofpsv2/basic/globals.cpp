@@ -190,8 +190,6 @@ Vector3 RndColor()
 
 float round2(float val)
 {
-	cout<<"HORA"<<endl;
-
 	int lower = (int) val;
 	if(val - lower > 0.49999999999999999f)
 		return (float) lower + 1.0f;
