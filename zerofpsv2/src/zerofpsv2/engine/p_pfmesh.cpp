@@ -326,9 +326,10 @@ void P_PfMesh::DrawNaviMesh()
 
 	glPushMatrix();
 
+	glPushAttrib(GL_DEPTH_BUFFER_BIT );
 	glDisable(GL_LIGHTING );
 	glDisable(GL_TEXTURE_2D);
-
+	glDepthFunc(GL_EQUAL);
 	glColor3f(1,1,1);
 	Vector3 kColor;
 
@@ -371,6 +372,7 @@ void P_PfMesh::DrawNaviMesh()
 
 	glEnable(GL_TEXTURE_2D);
 	glEnable(GL_LIGHTING);
+	glPopAttrib();
 
 	glPopMatrix();
 }

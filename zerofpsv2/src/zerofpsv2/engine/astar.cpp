@@ -278,6 +278,9 @@ bool AStar::GetFullPath(Vector3 kStart, Vector3 kEnd, vector<PathNode>& kPath)
 	ZoneData* pkZone;
 	P_PfMesh* pkMesh;
 
+	P_PfMesh* pkPfStartMesh;
+	P_PfMesh* pkPfEndMesh;
+
 	// Get Ptr to End Cell.
 	pkZone = m_pkObjectManger->GetZoneData(m_iEndZone);
 	if(pkZone->m_pkZone == NULL)
@@ -285,6 +288,7 @@ bool AStar::GetFullPath(Vector3 kStart, Vector3 kEnd, vector<PathNode>& kPath)
 	pkMesh = (P_PfMesh*)pkZone->m_pkZone->GetProperty("P_PfMesh");
 	if(pkMesh == NULL)
 		return false;
+	pkPfEndMesh = pkMesh;
 	//pkEndCell = pkMesh->GetCell(m_kGoal);
 	pkEndCell = pkMesh->GetCurrentCell(m_kGoal);
 	if(pkEndCell == NULL) {
@@ -300,6 +304,7 @@ bool AStar::GetFullPath(Vector3 kStart, Vector3 kEnd, vector<PathNode>& kPath)
 	pkMesh = (P_PfMesh*)pkZone->m_pkZone->GetProperty("P_PfMesh");
 	if(pkMesh == NULL)
 		return false;
+	pkPfStartMesh = pkMesh;
 
 	NaviMeshCell* pkStartCell = pkMesh->GetCurrentCell( kStart );
 	if(pkStartCell == NULL) {
@@ -334,10 +339,17 @@ bool AStar::GetFullPath(Vector3 kStart, Vector3 kEnd, vector<PathNode>& kPath)
 		// 4:a	If B is the goal node.
 		if(pkNode->pkNaviCell == pkEndCell) {
 			MakePath(pkNode, kPath);
+			PathNode kNode;
+			kNode.kPosition = kStart;
+			kNode.pkStartMesh = pkPfStartMesh;
+			kNode.pkStartCell = 	pkStartCell;
+			kPath.push_back( kNode );
+
 			reverse(kPath.begin(), kPath.end());
 
-			PathNode kNode;
 			kNode.kPosition = kRealEnd;
+			kNode.pkStartMesh = pkPfEndMesh;
+			kNode.pkStartCell = 	pkEndCell;
 			kPath.push_back( kNode );
 			return true;
 			}
