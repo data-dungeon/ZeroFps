@@ -767,7 +767,6 @@ bool TextureManager::SaveTexture(const char* acFile,int iLevel)
 	{
 		glGetTexImage(GL_TEXTURE_2D,iLevel,iFormat,iType,temp.pixels);
 		//cout << "Arghhhhhhhhhhhhh:" << GetOpenGLErrorName(glGetError()) << "\n";		
-		temp.flip(false,true);
 		temp.save(acFile,true);
 	}
 

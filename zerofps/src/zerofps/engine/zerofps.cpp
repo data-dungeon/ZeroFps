@@ -35,7 +35,7 @@ ZeroFps::ZeroFps(void)
 	m_pkLevelMan				= new LevelManager();
 	m_pkPhysEngine				= new PhysicsEngine();
 	m_pkResourceDB				= new ZFResourceDB();
-
+	m_pkPhysics_Engine		= new Physics_Engine();
 
 	m_iFullScreen=			0;
 	m_fFrameTime=			0;

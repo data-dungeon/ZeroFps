@@ -13,6 +13,7 @@
 #include "network.h"
 #include "zfresourcedb.h"
 #include "mad_core.h"
+#include "../physics_engine/physics_engine.pkg"
 
 #define ZF_VERSION_NUM		"ZF 0.0"
 
@@ -143,6 +144,7 @@ class ENGINE_API ZeroFps : public ZFObject {
 		PhysicsEngine*			m_pkPhysEngine;			///< 
 		ZFResourceDB*			m_pkResourceDB;			///< Resouce Handler.
 		ZFScript*				m_pkScript;					///< script
+		Physics_Engine*		m_pkPhysics_Engine;		///< PhysicsEngine
 
 		Application*			m_pkApp;						///< Application object.
 			

@@ -23,7 +23,6 @@ int ENGINE_API EngineStart(int iNrOfArgs, char* paArgs[])
 		}
 
 	delete kEngine;
-	
 	// This leave console window on screen.
 	exit(1);
 

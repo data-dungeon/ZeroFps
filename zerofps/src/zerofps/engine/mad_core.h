@@ -464,6 +464,8 @@ public:
 	vector<Controller>	m_kControllers;
 	void CreateController(char* szName, char* szJoint, ControllAxis eAxis, float fMin, float fMax);
 	void SetControll(char* szName, float fValue);
+
+	friend class Body;
 };
 
 #endif

@@ -1,2 +1,2 @@
-g++ *.o -o ../../bin/zeroedit -L../../bin/ -lcommon -lbasic -lengine -lrender -lgui -lscript -lglut  -L/usr/X11R6/lib
+g++ *.o -o ../../bin/zeroedit -L../../bin/ -lcommon -lbasic -lengine -lrender -lphysics_engine -lgui -lscript -lglut  -L/usr/X11R6/lib
 #g++ *.o -pg -o ../../bin/zeroedit -L../../bin/ -lbasic -lengine -lrender -lglut -L/usr/X11R6/lib

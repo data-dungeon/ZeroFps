@@ -1,0 +1,1 @@
+g++ *.o -o ../../../bin/libphysics_engine.so --shared -O3 -L../../../bin/ -L/usr/X11R6/lib `sdl-config --cflags --libs`
