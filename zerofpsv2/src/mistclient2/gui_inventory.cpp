@@ -805,8 +805,9 @@ void InventoryDlg::OnDropItem(int mx, int my)
 	//		m_pkTexMan->Load("data/textures/gui/cursor.bmp", 0),
 	//		m_pkTexMan->Load("data/textures/gui/cursor_a.bmp", 0), 32, 32);
 
+	float w = g_kMistClient.GetScaleX()*64.0f, h = g_kMistClient.GetScaleY()*64.0f ;
 	g_kMistClient.m_pkGui->SetCursor( (int)mx+m_kCursorRangeDiff.x, (int)my+m_kCursorRangeDiff.y, 
-		m_pkTexMan->Load("data/textures/gui/cursor_sword.tga", 0), -1, 64, 64);
+		m_pkTexMan->Load("data/textures/gui/cursor_sword.tga", 0), -1, w, h);
 
 	g_kMistClient.m_pkInputHandle->SetCursorInputPos(mx+m_kCursorRangeDiff.x,my+m_kCursorRangeDiff.y);	
 

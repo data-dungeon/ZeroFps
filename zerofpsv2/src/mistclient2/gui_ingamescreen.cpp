@@ -253,6 +253,7 @@ void MistClient::LoadInGameGui()
 	}
 
 	((ZGuiTextbox*) GetWnd("ChatTextbox"))->ToggleMultiLine(true);
+	((ZGuiTextbox*) GetWnd("ChatTextbox"))->GetScrollbar()->Resize((int)(16.0f*GetScaleX()), -1);  
 	((ZGuiTextbox*) GetWnd("ChatTextbox"))->SetReadOnly(true); 
 
 	((ZGuiTextbox*) GetWnd("ChatTextbox"))->SetScrollbarSkin(

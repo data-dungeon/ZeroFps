@@ -607,13 +607,17 @@ bool ZGuiTextbox::IsReadOnly()
 
 void ZGuiTextbox::Resize(int Width, int Height, bool bChangeMoveArea)
 {
+	float fWidthBefore = GetScreenRect().Width();
+
 	if(Width == -1) Width = GetScreenRect().Width();
 	if(Height == -1) Height = GetScreenRect().Height();
 
 	if(m_pkScrollbarVertical)
 	{
-		m_pkScrollbarVertical->SetPos(m_bLeftAlignedScrollbar ? 0 : Width-16, 0, false, true);
-		m_pkScrollbarVertical->Resize(16,Height);
+		float mod = (float) Width / (float) fWidthBefore;
+		float w = mod*(float)m_pkScrollbarVertical->GetScreenRect().Width();
+		m_pkScrollbarVertical->SetPos(m_bLeftAlignedScrollbar ? 0 : Width-w, 0, false, true);
+		m_pkScrollbarVertical->Resize(w,Height);
 	}
 
 	ZGuiWnd::Resize(Width, Height, bChangeMoveArea); 

@@ -570,14 +570,20 @@ ZGuiSkin* ZGuiApp::AddSkinFromScript2(char *szName, lua_State* pkLuaState,
 
 	//lua_State* pkLuaState = ((ZFScript*) pkResHandle->GetResourcePtr())->m_pkLuaState; //GetGuiScript()->m_pkLuaState;
 
+	bool bHaveAlpha = false;
+
 	// Textures
 	if(m_pkScriptSystem->GetGlobal(pkLuaState, szName, "tex1", szData))
 	{
 		pkNewSkin->m_iBkTexID = strcmp(szData, "0") != 0 ? GetTexID(szData) : -1;
-
+		string strImageFile = string("/data/textures/gui/") + string(szData);
 		if(pkNewSkin->m_iBkTexID != -1)
-			m_pkGuiSys->CreatePickMapForImage(pkNewSkin->m_iBkTexID, 
-				string("/data/textures/gui/") + string(szData));
+		{
+			m_pkGuiSys->CreatePickMapForImage(pkNewSkin->m_iBkTexID, strImageFile);
+			char *ext = strrchr( strImageFile.c_str(), '.');
+			if(ext != NULL && strcmp(ext,".tga") == 0)		
+				bHaveAlpha = true;
+		}
 	}
 	if(m_pkScriptSystem->GetGlobal(pkLuaState, szName, "tex2", szData))
 		pkNewSkin->m_iHorzBorderTexID = strcmp(szData, "0") != 0 ? GetTexID(szData) : -1;
@@ -595,6 +601,10 @@ ZGuiSkin* ZGuiApp::AddSkinFromScript2(char *szName, lua_State* pkLuaState,
 		pkNewSkin->m_iVertBorderTexAlphaID = strcmp(szData, "0") != 0 ? GetTexID(szData) : -1;
 	if(m_pkScriptSystem->GetGlobal(pkLuaState, szName, "tex4a", szData))
 		pkNewSkin->m_iBorderCornerTexAlphaID = strcmp(szData, "0") != 0 ? GetTexID(szData) : -1;
+
+	if(pkNewSkin->m_iBkTexAlphaID != -1 || pkNewSkin->m_iHorzBorderTexAlphaID != -1 || 
+		pkNewSkin->m_iVertBorderTexAlphaID != -1 || pkNewSkin->m_iBorderCornerTexAlphaID != -1)
+		bHaveAlpha = true;
 
 	// Color Bk
 	if(m_pkScriptSystem->GetGlobal(pkLuaState, szName, "bkR", dData))
@@ -639,6 +649,9 @@ ZGuiSkin* ZGuiApp::AddSkinFromScript2(char *szName, lua_State* pkLuaState,
 		float fMultipel = (PI+PI) / 360.0f;
 		pkNewSkin->m_fRotDegree = fMultipel * fAngle;
 	}
+
+	// Have alpha
+	pkNewSkin->m_bHaveAlpha = bHaveAlpha;
 
 	return pkNewSkin;
 }

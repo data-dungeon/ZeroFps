@@ -928,7 +928,7 @@ void MistClient::UpdateServerListbox()
    for(int i=0; i<m_kServerList.size(); i++)
    {
       sprintf(szText, "%s - %s", m_kServerList[i].first.c_str(), m_kServerList[i].second.c_str());
-      g_kMistClient.AddListItem("ServerList", szText);
+      g_kMistClient.AddListItem("ServerList", szText, i==0);
    }
 }
 

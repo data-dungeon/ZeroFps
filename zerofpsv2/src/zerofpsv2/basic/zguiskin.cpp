@@ -40,6 +40,8 @@ ZGuiSkin::ZGuiSkin( int t1,int t2,int t3,int t4,	// Textures
 	m_ucRots90Degree		= 0;
 
 	m_pkZIFAnimation		= 0;
+
+	m_bHaveAlpha = 0;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -74,6 +76,8 @@ ZGuiSkin::ZGuiSkin( int t1,int t2,int t3,int t4,	// Textures
 	m_ucRots90Degree		= 0;
 
 	m_pkZIFAnimation		= 0;
+
+	m_bHaveAlpha = 0;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -108,6 +112,8 @@ ZGuiSkin::ZGuiSkin( int r1,int g1,int b1,			// Background color
 	m_ucRots90Degree		= 0;
 
 	m_pkZIFAnimation		= 0;
+
+	m_bHaveAlpha = 0;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -142,6 +148,8 @@ ZGuiSkin::ZGuiSkin( int r1,int g1,int b1,			// Background color
 	m_ucRots90Degree		= 0;
 
 	m_pkZIFAnimation		= 0;
+
+	m_bHaveAlpha = 0;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -176,6 +184,8 @@ ZGuiSkin::ZGuiSkin( int t1,int t2,int t3,int t4,	// Textures
 	m_ucRots90Degree		= 0;
 
 	m_pkZIFAnimation		= 0;
+
+	m_bHaveAlpha = 0;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -209,6 +219,8 @@ ZGuiSkin::ZGuiSkin(	int t1,	int a1,				// Textures
 	m_ucRots90Degree		= 0;
 
 	m_pkZIFAnimation		= 0;
+
+	m_bHaveAlpha = 0;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -243,6 +255,8 @@ ZGuiSkin::ZGuiSkin(	int t1,						// Textures
 	m_ucRots90Degree		= 0;
 
 	m_pkZIFAnimation		= 0;
+
+	m_bHaveAlpha = 0;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -275,6 +289,8 @@ ZGuiSkin::ZGuiSkin()
 	m_ucRots90Degree		= 0;
 
 	m_pkZIFAnimation		= 0;
+
+	m_bHaveAlpha = 0;
 
 }
 
@@ -341,7 +357,6 @@ ZGuiSkin::ZGuiSkin(ZGuiSkin* pkCopy)
 	m_rcBkTile				= pkCopy->m_rcBkTile;
 
 	m_pkZIFAnimation		= pkCopy->m_pkZIFAnimation;
-
 }
 
 bool ZGuiSkin::operator==(ZGuiSkin d) 

@@ -5,6 +5,7 @@
 #include "gui_equipwnd.h"
 #include "../zerofpsv2/engine_systems/propertys/p_mad.h"
 #include "../mcommon/p_enviroment.h"
+#include "../zerofpsv2/engine/inputhandle.h"
 
 extern MistClient g_kMistClient;
 
@@ -143,6 +144,55 @@ void GuiMsgStartScreen( string strMainWnd, string strController,
 				if(!g_kMistClient.LoadGuiFromScript(g_kMistClient.m_kGuiScrips[GSF_CHARGEN].c_str()))
 				{
 					printf("failed to load character generation screen\n");
+
+ZGuiWnd* pkModelWnd = g_kMistClient.GetWnd("CharGen_ModelPreviewLabel");
+
+				Camera* pkCam = dynamic_cast<Camera*>(pkModelWnd->GetRenderTarget());
+
+				if(pkCam == NULL)
+				{
+					g_kMistClient.AddListItem("CharGen_ModellList", "Good guy");
+					g_kMistClient.AddListItem("CharGen_ModellList", "Bad guy");
+					((ZGuiCombobox*)g_kMistClient.GetWnd("CharGen_ModellList"))->SetNumVisibleRows(2);
+
+					g_kMistClient.SelListItemByIndex("CharGen_ModellList", 1);
+
+					Entity* pkModellEnt = g_kMistClient.m_pkEntityManager->CreateEntity();
+					pkModellEnt->SetSave(false);
+					pkModellEnt->SetWorldPosV(Vector3(0,0,0));
+					pkModellEnt->AddProperty("P_LightUpdate");
+					pkModellEnt->AddProperty("P_Mad");
+
+					Vector4 kCurrentDiffuse(1,1,1,1);
+					Vector4 kCurrentAmbient(1,1,1,1);
+					Vector3 kSunPos(0,0,0);
+
+					P_Light* pkLight = (P_Light*)pkModellEnt->AddProperty("P_Light");
+
+					pkLight->SetType(DIRECTIONAL_LIGHT);
+					pkLight->SetDiffuse(kCurrentDiffuse);
+					pkLight->SetAmbient(kCurrentAmbient);		
+					pkLight->SetRot(kSunPos);	
+
+					string szMadFile = string("data/mad/") + string("player2.mad");
+					((P_Mad*)pkModellEnt->GetProperty("P_Mad"))->SetBase(szMadFile.c_str());	
+
+					float aspect = (float) pkModelWnd->GetScreenRect().Width() /
+						(float) pkModelWnd->GetScreenRect().Height();
+
+					pkCam = new Camera(Vector3(0,0,0),Vector3(0,0,0),70,aspect,0.01,200);	
+					pkCam->SetDebugGraphs(false);
+					pkCam->SetClearViewPort(false);  
+					pkCam->SetRootEntityID(pkModellEnt->GetEntityID());
+
+					pkModelWnd->SetRenderTarget(pkCam);
+
+					P_Mad* pkMad = ((P_Mad*)pkModellEnt->GetProperty("P_Mad"));					
+					pkModellEnt->SetWorldPosV(Vector3(0,-1.0f,-pkMad->GetRadius()));
+
+					//Mad_Core* pkCore = dynamic_cast<Mad_Core*>(pkMad->kMadHandle.GetResourcePtr()); 					
+					//pkMad->SetAnimation(pkCore->GetAnimationName(1).c_str(), 0);				
+				}
 				}
 
 				g_kMistClient.m_pkGui->PlaceWndFrontBack(g_kMistClient.GetWnd("CharGen_SelectCharWnd"), true);
@@ -238,9 +288,15 @@ void GuiMsgStartScreen( string strMainWnd, string strController,
 
 					pkModelWnd->SetRenderTarget(pkCam);
 
-					P_Mad* pkMad = ((P_Mad*)pkModellEnt->GetProperty("P_Mad"));
+					P_Mad* pkMad = ((P_Mad*)pkModellEnt->GetProperty("P_Mad"));					
 					pkModellEnt->SetWorldPosV(Vector3(0,-1.0f,-pkMad->GetRadius()));
+
+					//Mad_Core* pkCore = dynamic_cast<Mad_Core*>(pkMad->kMadHandle.GetResourcePtr()); 					
+					//pkMad->SetAnimation(pkCore->GetAnimationName(1).c_str(), 0);				
 				}
+
+				// Set keyboard focus to name textbox.
+				g_kMistClient.m_pkGui->SetFocus(g_kMistClient.GetWnd("CharGen_CharNameEb"), true);
 			}
 		}
 		else
@@ -306,8 +362,56 @@ void GuiMsgStartScreen( string strMainWnd, string strController,
 
 					pkMad->SetBase(szMadFile.c_str());
 					pkEnt->SetWorldPosV(Vector3(0,-1.0f,-pkMad->GetRadius()));
+					pkEnt->SetWorldRotV(Vector3(0,0,0));
 				}
 			}
+		}
+	}
+
+	if(msg == ZGM_MOUSEMOVE)
+	{
+		if(strMainWnd == "CharGen_CreateCharWnd")
+		{
+			ZGuiWnd* pkModelWnd = g_kMistClient.GetWnd("CharGen_ModelPreviewLabel");			
+
+			static Point press_pos;
+			static bool pressed = false;
+			static float prev_x = 0, prev_y = 0, prev_z = 0;
+			static float fObjRotX=0, fObjRotY=0, fObjRotZ=0;
+			static float m_fObjRotX=0, m_fObjRotY=0, m_fObjRotZ=0;
+
+			if(g_kMistClient.m_pkInputHandle->Pressed(MOUSELEFT))
+			{
+				Point curr_pos(g_kMistClient.m_pkGui->m_iMouseX, g_kMistClient.m_pkGui->m_iMouseY);
+
+				if(pressed == false)
+				{
+					press_pos = curr_pos;
+					pressed = true;
+				}
+
+				m_fObjRotX = curr_pos.y - press_pos.y + prev_x;
+				m_fObjRotY = press_pos.x - curr_pos.x + prev_y;
+
+				if(pkModelWnd->GetScreenRect().Inside(curr_pos.x, curr_pos.y	))
+				{
+					m_fObjRotX = press_pos.x - curr_pos.x  + prev_x;
+
+					if(Camera* pkCam = dynamic_cast<Camera*>(pkModelWnd->GetRenderTarget()))
+					{
+						Entity* pkEnt = g_kMistClient.m_pkEntityManager->GetEntityByID(pkCam->GetRootEntityID());
+						pkEnt->SetWorldRotV(Vector3(fObjRotX,m_fObjRotX,fObjRotZ));
+					}
+				}
+			}
+			else
+			{
+				pressed = false;
+				prev_x = m_fObjRotX;
+				prev_y = m_fObjRotY;
+				prev_z = m_fObjRotZ;
+			}
+
 		}
 	}
 }

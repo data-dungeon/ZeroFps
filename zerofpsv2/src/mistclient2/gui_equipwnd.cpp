@@ -246,6 +246,7 @@ void EquipmentDlg::HighlightSlot(int iItemType)
 	for(int i=0; i<m_vkHighLightslots.size(); i++)
 	{
 		m_vkHighLightslots[i]->m_pkWnd->Show();
+		m_vkHighLightslots[i]->m_pkWnd->GetSkin()->m_bTransparent = true;
 		m_vkHighLightslots[i]->m_pkWnd->GetSkin()->m_unBorderSize = 4;  
 	}
 }
@@ -481,8 +482,9 @@ void EquipmentDlg::OnDropItem(int mx, int my)
 	}
 
 	// Show normal cursor again.
+	float w = g_kMistClient.GetScaleX()*64.0f, h = g_kMistClient.GetScaleY()*64.0f ;
 	g_kMistClient.m_pkGui->SetCursor( (int)mx+m_kCursorRangeDiff.x, (int)my+m_kCursorRangeDiff.y, 
-		m_pkTexMan->Load("data/textures/gui/cursor_sword.tga", 0), -1, 64, 64);
+		m_pkTexMan->Load("data/textures/gui/cursor_sword.tga", 0), -1, w, h);
 
 	g_kMistClient.m_pkInputHandle->SetCursorInputPos(mx+m_kCursorRangeDiff.x,my+m_kCursorRangeDiff.y);	
 

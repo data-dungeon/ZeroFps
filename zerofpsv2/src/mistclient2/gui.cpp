@@ -233,7 +233,8 @@ void MistClient::SetupGUI()
 	GetWnd("ContinueGameBn")->Hide();
 
    // load software cursor
-	g_kMistClient.m_pkGui->SetCursor( 0,0, m_pkTexMan->Load("data/textures/gui/cursor_sword.tga", 0), -1, 64, 64);
+	float w = g_kMistClient.GetScaleX()*64.0f, h = g_kMistClient.GetScaleY()*64.0f ;
+	g_kMistClient.m_pkGui->SetCursor( 0,0, m_pkTexMan->Load("data/textures/gui/cursor_sword.tga", 0), -1, w, h);
 	g_kMistClient.m_pkGui->ShowCursor(false); 
    g_kMistClient.m_pkInput->ShowCursor(false);
 	SetGuiCapture(true);
@@ -314,9 +315,6 @@ void MistClient::FindGUIScriptsByResSuffix()
 
 			if(pos != string::npos && pos != -1 )
 			{
-				char tee[] = { strFile[0], '\0' };
-				printf("%s\n", tee);
-
 				int p = strFile.find_last_of("x");
 				if(p != string::npos)
 				{			

@@ -105,6 +105,8 @@ bool GLGuiRender::StartRender(bool bClear)
 
 	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE); // Fuckar upp grafiken!
 	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE); // Fuckar upp grafiken!
+
+	glEnable(GL_ALPHA_TEST);
 		
 	return true;
 }
@@ -118,6 +120,9 @@ bool GLGuiRender::EndRender()
 	glMatrixMode(GL_PROJECTION);
 	glPopMatrix();
 	glMatrixMode(GL_MODELVIEW);
+
+	glDisable(GL_ALPHA_TEST);
+
 	glPopMatrix();
 	
 	m_pkShader->Pop();
@@ -338,12 +343,12 @@ bool GLGuiRender::RenderQuad(Rect rc)
 		glDisable(GL_TEXTURE_2D);
 	}
 
-	if(bIsTGA)
+	if(bIsTGA || (m_pkSkin && m_pkSkin->m_bHaveAlpha))
 	{
 		glColor4f(1,1,1,1);		
 		//glDisable(GL_LIGHTING);
 		glAlphaFunc(GL_GREATER,0.1);
-		glEnable(GL_ALPHA_TEST);
+//		glEnable(GL_ALPHA_TEST);
 	}
 
 	glBegin(GL_QUADS);	 
@@ -807,7 +812,7 @@ void GLGuiRender::RenderText( char *strText, Rect rc, int iCursorPos,
 	glAlphaFunc(GL_GREATER,0.1f);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glEnable(GL_BLEND);			
-	glEnable(GL_ALPHA_TEST);
+	//glEnable(GL_ALPHA_TEST);
 
 	int chars_printed;
 	PrintRow(strText, rc, iCursorPos, iRenderDistFromLeft, chars_printed);
@@ -1151,7 +1156,7 @@ int GLGuiRender::StartDrawText(bool bCreateDisplayList)
 	glAlphaFunc(GL_GREATER,0.1f);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glEnable(GL_BLEND);			
-	glEnable(GL_ALPHA_TEST);
+	//glEnable(GL_ALPHA_TEST);
 
 	return iListID;
 }

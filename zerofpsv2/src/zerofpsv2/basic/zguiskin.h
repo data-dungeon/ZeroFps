@@ -84,6 +84,7 @@ public:
 	bool m_bTileBkSkin;
 
 	bool m_bTransparent; // andvänds bla. av labels som inte skall ha nån bakgrundsfärg.
+	bool m_bHaveAlpha; // om det är en TGA eller en bmp med alpha textur
 
 	void SetAnimation(char* szName, int iMode, int iOptions, bool bPlay);
 
