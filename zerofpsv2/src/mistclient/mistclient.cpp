@@ -114,8 +114,8 @@ void MistClient::Init()
 	//register resources
 	RegisterResources();
 
-	m_pkMap2 = new Heightmap2(/*"HeightMap"*/);
-	m_pkMap2->CreateHMFromImage("/data/textures/hmap.tga");
+//	m_pkMap2 = new Heightmap2(/*"HeightMap"*/);
+//	m_pkMap2->CreateHMFromImage("/data/textures/hmap.tga");
 
 	// set caption
 	SDL_WM_SetCaption("MistClient", NULL);
@@ -190,10 +190,10 @@ void MistClient::OnIdle()
 	
  	pkFps->UpdateCamera(); 	
 	
-	if(m_pkMap2) {
+/*	if(m_pkMap2) {
 		m_pkMap2->SetPos(Vector3(0,0,0));
 		//pkRender->DrawHM2(m_pkMap2,pkFps->GetCam()->GetPos());	
-		}
+		}*/
 
 	Vector3 pos = Get3DMousePos();
 	pos+=pkFps->GetCam()->GetPos();
