@@ -146,9 +146,10 @@ void P_CharacterControl::PackTo( NetPacket* pkNetPacket, int iConnectionID )
 
 void P_CharacterControl::PackFrom( NetPacket* pkNetPacket, int iConnectionID  ) 
 {
+	cout<<"blub:"<<sizeof(m_kCharacterStates)<<endl;
+	
 	pkNetPacket->Read(m_kCharacterStates);
 
-	cout<<"blub:"<<sizeof(m_kCharacterStates)<<endl;
 	
 	/*
 	for(int i = 0;i<8;i++)
