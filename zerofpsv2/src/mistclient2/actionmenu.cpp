@@ -89,9 +89,11 @@ void ActionMenu::Open()
 	if(m_kActions.empty())
 		return;
 
+	m_bGuiCaptureBeforOpen = g_kMistClient.m_bGuiCapture; // rembember privius gui capture mode
+
 	printf("Open action menu\n");
 
-	g_kMistClient.SetGuiCapture(true);
+	g_kMistClient.SetGuiCapture(true); // change to gui capture (mouse cursor)
 
 	ResetIconSkins();
 
@@ -203,7 +205,8 @@ void ActionMenu::Close()
 	ResetIconSkins();
 	m_iEntityID = -1;
 	m_pkMainWnd->Hide();
-	g_kMistClient.SetGuiCapture(false);
+
+	g_kMistClient.SetGuiCapture(m_bGuiCaptureBeforOpen);
 
 	printf("Close action menu\n");
 }
@@ -275,7 +278,6 @@ void ActionMenu::OnMouseMove(bool bLeftButtonPressed, int mx, int my)
 	}
 
 }
-
 
 void ActionMenu::SetEntity(int iEntityID)
 {

@@ -40,6 +40,7 @@ private:
 	
 	vector< pair<ZGuiSkin*,bool> > m_vkIconSkins;
 	ZGuiLabel* m_pkIconSelection;
+	bool m_bGuiCaptureBeforOpen;
 
 	const int ICON_WIDTH;
 	const int ICON_HEIGHT;
