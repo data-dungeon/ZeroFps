@@ -57,8 +57,10 @@ void MistServer::OnInit()
 
 void MistServer::Init()
 {	
+	//zone defaults
 	m_kZoneSize.Set(8,8,8);
 	m_iCurrentMarkedZone = -1;
+	m_strActiveZoneName = "emptyzone.mad";
 	
 	//click delay
 	m_fClickDelay = pkFps->GetTicks();
@@ -427,22 +429,23 @@ Object* MistServer::GetTargetObject()
 
 void MistServer::AddZone()
 {
-
-// wtf? (zerom)
-/* Vector3 kSnap;
-	
-	kSnap.x = int(kPos.x/4.0) * 4.0;
-	kSnap.y = int(kPos.y/4.0) * 4.0;
-	kSnap.z = int(kPos.y/4.0) * 4.0;
-
-//	printf("%f,%f,%f\n", m_kZoneSize.x, m_kZoneSize.y, m_kZoneSize.z);
-*/
-
-
 	if(pkObjectMan->IsInsideZone(m_kZoneMarkerPos,m_kZoneSize))
 		return;
 		
 	int id = pkObjectMan->CreateZone(m_kZoneMarkerPos,m_kZoneSize);
+	
+	//force loading of this zone
+	pkObjectMan->LoadZone(id);
+
+	//set zone model
+	string strFullPath = "data/mad/zones/";
+	int pos = strFullPath.size();
+	strFullPath.insert(pos, m_strActiveZoneName);
+	if(id != -1)
+	{
+		pkObjectMan->SetZoneModel(strFullPath.c_str(),id);
+	}	
+	
 }
 
 
