@@ -108,7 +108,7 @@ P_Track::~P_Track()
 
 void P_Track::Init() 
 {
-	cout << "Trackerproperty Init" << endl;
+	//cout << "Trackerproperty Init" << endl;
 	m_pkOBjM->AddTracker(m_pkObject);
 }
 

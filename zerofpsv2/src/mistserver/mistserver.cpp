@@ -3,7 +3,7 @@
 	\ingroup MistLand
 
   MistServer is the Server of the game MistLands.
-*/
+*/ 
 
 #include "mistserver.h"
 #include "../zerofpsv2/engine_systems/common/heightmap.h"
@@ -84,6 +84,9 @@ void MistServer::OnInit()
 
 void MistServer::Init()
 {	
+	//create player database
+	m_pkPlayerDB = new PlayerDatabase();
+
 	//default edit mode 
 	m_iEditMode = EDIT_ZONES;
 
@@ -592,25 +595,48 @@ void MistServer::OnServerClientJoin(ZFClient* pkClient,int iConID)
 	
 	// moget ;)
 	vector<string> kNames;
-	kNames.push_back("Kalle");
-	kNames.push_back("stefan");	
-	kNames.push_back("olle");	
-	kNames.push_back("bengt");	
-	kNames.push_back("röva");	
-	kNames.push_back("fitta");	
-	kNames.push_back("hellvete");	
-	kNames.push_back("kuk");	
-	kNames.push_back("hora");	
+	kNames.push_back("vim");	
+	kNames.push_back("zeb");	
+	kNames.push_back("dvoid");
+	kNames.push_back("zerom");	
+	kNames.push_back("player1");	
+	kNames.push_back("player2");	
+	kNames.push_back("player3");	
+	
+	
+	string strPlayer  = "Kalle";
+	string strPasswd = "hubba";
+	string strCharacter = "mrbad";
+	
+	
+	//check valid password
+	if(!m_pkPlayerDB->VerifyPlayer(strPlayer,"blahop"))
+	{
+		cout<<"Wrong password or player dont exist"<<endl;
+		cout<<"trying to create a new player"<<endl;
+		if(!m_pkPlayerDB->CreatePlayer(strPlayer,"blahop"))
+		{
+			cout<<"error creating player "<<strPlayer<<endl;
+			return;
+		}
+	}
+	
 	
 	//create player object
-	int iPlayerID  = CreatePlayer(kNames[iConID].c_str(),"Start",iConID);
+	int iPlayerID  = CreatePlayer(strPlayer.c_str(),strCharacter.c_str(),"Start",iConID);
+	
+	if(iPlayerID == -1)
+	{
+		cout<<"Error creating playercharacter"<<endl;
+	}
+	
 	
 	if(m_pkServerInfoP)
 	{	
 		//wich rights shuld a client have on its player caracter
 		int playerrights = PR_OWNER|PR_CONTROLS|PR_LOOKAT;
 		
-		m_pkServerInfoP->AddPlayer(iConID,kNames[iConID].c_str());
+		m_pkServerInfoP->AddPlayer(iConID,strPlayer.c_str());
 		m_pkServerInfoP->AddObject(iConID,iPlayerID,playerrights);
 	}
 }
@@ -621,6 +647,7 @@ void MistServer::OnServerClientPart(ZFClient* pkClient,int iConID)
 
 	if(m_pkServerInfoP)
 		m_pkServerInfoP->RemovePlayer(iConID);	
+	
 	cout<<"Client "<<iConID<<" Parted"<<endl;	
 }
 
@@ -1066,32 +1093,44 @@ Vector3 MistServer::GetPlayerStartLocation(const char* csName)
 	return Vector3(0,0,0);
 }
 
-int MistServer::CreatePlayer(const char* csName,const char* csLocation,int iConID)
+int MistServer::CreatePlayer(const char* csPlayer,const char* csCharacter,const char* csLocation,int iConID)
 {
-	cout<<"creating new player:"<<csName<<endl;
-	
+
 	Vector3 kStartPos = GetPlayerStartLocation(csLocation);
+		
+	//try to create character entity
+	Entity* pkObject = m_pkPlayerDB->CreateCharacter(csPlayer,csCharacter);
 	
-	Entity* pkObject = pkObjectMan->CreateObjectFromScriptInZone("data/script/objects/t_player.lua",kStartPos);
+	
+	//if it fails try to create it
+	if(!pkObject)
+	{
+		cout<<"Character not found, trying to create it"<<endl;
+		if(!m_pkPlayerDB->CreateNewCharacter(csPlayer,csCharacter))
+			return -1;
+		else	//it was created, now load it
+			pkObject = m_pkPlayerDB->CreateCharacter(csPlayer,csCharacter);
+	}
+	
 	
 	if(pkObject)
 	{	
-		pkObject->GetSave() = false;
-		pkObject->AddProperty("P_Track");	
+		//set position in world
+		pkObject->SetWorldPosV(kStartPos);
+		
+		//setup tracker to correct tracker id
 		P_Track* pkTrack = dynamic_cast<P_Track*>(pkObject->GetProperty("P_Track"));	
 		if(pkTrack)
 			pkTrack->SetClient(iConID);	
-
-		printf("id %i\n", pkObject->iNetWorkID);
 	}
 	else
 	{	
-		cout<<"Error creating player caracter"<<endl;
+		cout<<"Error creating caracter entity"<<endl;
 		return -1;
 	}
-	
-	cout<<"player created"<<endl;	
-		
+			
+	cout<<"created character entity"<<csPlayer<<" -> "<<csCharacter<<endl;
+			
 	return pkObject->iNetWorkID;
 }
 
@@ -1109,6 +1148,8 @@ void MistServer::DeletePlayer(int iConID)
 					Entity* pkObj = pkObjectMan->GetObjectByNetWorkID(pi->kControl[i].first);
 					
 					//save object here
+					m_pkPlayerDB->SaveCharacter(pkObj,pi->sPlayerName);
+					
 					
 					//delete it
 					if(pkObj)

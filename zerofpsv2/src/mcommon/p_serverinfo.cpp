@@ -11,7 +11,6 @@ P_ServerInfo::P_ServerInfo()
 	bNetwork = true;
 	m_sServerName	= 	"NoName";
 	
-	cout<<"server info created"<<endl;
 }
 
 

@@ -30,6 +30,8 @@
 #include "../mcommon/p_clientcontrol.h"
 #include "../mcommon/p_enviroment.h"
 
+#include "playerdatabase.h"
+
 class MistServer :public Application , public ZGuiApp {
 	private:
 
@@ -64,6 +66,8 @@ class MistServer :public Application , public ZGuiApp {
 		P_ServerInfo* m_pkServerInfoP;
 
 		vector<pair<string,Vector3> >	m_kLocations;
+		
+		PlayerDatabase*	m_pkPlayerDB;
 
 		//edit stuff
 		int		m_iEditMode;
@@ -143,7 +147,7 @@ class MistServer :public Application , public ZGuiApp {
 		//init client
 		void ClientInit();
 		
-		int CreatePlayer(const char* csName,const char* csLocation,int iConID);
+		int CreatePlayer(const char* csPlayer,const char* csCharacter,const char* csLocation,int iConID);
 		void DeletePlayer(int iConID);
 		Vector3 GetPlayerStartLocation(const char* csName);
 		void UpdateStartLocatons();
