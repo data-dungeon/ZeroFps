@@ -28,7 +28,7 @@ private:
 	int					m_iSubMesh;
 
 	int					m_aiReplaceTextures[256];
-	ZFResourceHandle	m_akReplaceTexturesHandles[256];
+	ZFResourceHandle	m_akReplaceTexturesHandles[256];				//ytterst in effektivt, o skapa 256 st res handles varje gång en modell skapas, blir många konstruktor anrop i onödan
 
 	void LoadTextures();
 	void DrawNormal(Vector3* pkVertex, Vector3* pkNormals);

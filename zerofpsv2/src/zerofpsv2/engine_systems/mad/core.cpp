@@ -512,6 +512,10 @@ Vector3*  Mad_Core::GetVerticesPtr()
 	if(g_pkSelectedMesh->bNotAnimated)
 		return &g_pkSelectedMesh->GetLODMesh(0)->akFrames[0].akVertex[0];
 
+	//dvoid fix
+	if(iActiveAnimation == MAD_NOANIMINDEX)
+		return &g_pkSelectedMesh->GetLODMesh(0)->akFrames[0].akVertex[0];
+		
 	return g_TransformedVertex;
 }
 
@@ -520,6 +524,10 @@ Vector3* Mad_Core::GetNormalsPtr()
 	if(g_pkSelectedMesh->bNotAnimated)
 		return &g_pkSelectedMesh->GetLODMesh(0)->akFrames[0].akNormal[0];
 
+	if(iActiveAnimation == MAD_NOANIMINDEX)
+		return &g_pkSelectedMesh->GetLODMesh(0)->akFrames[0].akNormal[0];
+	
+	
 	return g_TransformedNormal;
 }
 
@@ -542,15 +550,22 @@ int Mad_Core::GetTextureID()
 
 void Mad_Core::PrepareMesh(Mad_CoreMesh* pkMesh)
 {
-	Vector3* pkVertexDst;
-	Vector3* pkNormalDst;
 
 	g_pkSelectedMesh = pkMesh;
 	//g_pkSelectedRawMesh = pkMesh->GetLODMesh(0);
 
+	if(iActiveAnimation == MAD_NOANIMINDEX)
+		return;
+	
 	if(pkMesh->bNotAnimated)
 		return;
 	
+	
+	
+	Vector3* pkVertexDst;
+	Vector3* pkNormalDst;
+		
+		
 	int* piBoneConnection;
 	Vector3* pkVertex = &g_pkSelectedMesh->GetLODMesh(0)->akFrames[0].akVertex[0];
 	Vector3* pkNormal = &g_pkSelectedMesh->GetLODMesh(0)->akFrames[0].akNormal[0];
@@ -559,7 +574,8 @@ void Mad_Core::PrepareMesh(Mad_CoreMesh* pkMesh)
 	pkNormalDst = g_TransformedNormal;
 	piBoneConnection = &g_pkSelectedMesh->GetLODMesh(0)->akBoneConnections[0];
 
-	for(int i = 0; i<g_pkSelectedMesh->GetLODMesh(0)->kHead.iNumOfVertex; i++) {
+	for(int i = 0; i<g_pkSelectedMesh->GetLODMesh(0)->kHead.iNumOfVertex; i++) 
+	{
 		//iBoneConnection = pkMesh->akBoneConnections[i];
 		*pkVertexDst = g_FullBoneTransform[*piBoneConnection].VectorTransform( *pkVertex );
 		*pkNormalDst = g_FullBoneTransform[*piBoneConnection].VectorRotate( *pkNormal );
@@ -576,7 +592,7 @@ void Mad_Core::PrepareMesh(Mad_CoreMesh* pkMesh)
 		g_TransformedVertex[i] = kFullTransform.VectorTransform(pkMesh->akFrames[0].akVertex[i]);
 		g_TransformedNormal[i] = kFullTransform.VectorRotate(pkMesh->akFrames[0].akNormal[i]);
 		*/
-		}
+	}
 }
 
 

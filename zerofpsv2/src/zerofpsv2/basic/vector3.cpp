@@ -262,6 +262,10 @@ Vector3 Vector3::operator*(const Matrix4 &f) const
 	return ny;
 }
 */
+double Vector3::DistanceTo (const Vector4& to)
+{
+   return sqrt( pow(x - to.x,2) + pow(y - to.y, 2) + pow(z - to.z,2) );
+}
 
 double Vector3::DistanceTo (const Vector3& to)
 {

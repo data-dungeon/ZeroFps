@@ -9,6 +9,7 @@
 using namespace std;
 
 class Matrix3;
+class Vector4;
 
 /**	\brief	A Class for vector math operations in 3D..
 		\ingroup Basic
@@ -161,6 +162,7 @@ class BASIC_API Vector3 {
 		Vector3 AToU();												///< convert Angel Vector to a Unit Vector
 
       double DistanceTo (const Vector3& to);
+		double DistanceTo (const Vector4& to);
       double DistanceXZTo (const Vector3& to);
 
 		void Print(void);

@@ -362,11 +362,6 @@ void Light::EnableLight(LightSource* pkLight,int iGlLight)
 			temp.w = 0;			
 			glLightfv(light,GL_POSITION,(float*)&temp);								//		&temp[0]		
 			
-			//seset spot
-			//glLightfv(light,GL_SPOT_DIRECTION,spotdir);		  				  		  				
-			//glLightf(light,GL_SPOT_EXPONENT,0);
-			//glLightf(light,GL_SPOT_CUTOFF,180);				  				
-			
 			break;
 		case POINT_LIGHT:
 			temp=pkLight->kPos;
