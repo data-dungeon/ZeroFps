@@ -331,6 +331,10 @@ Object* ObjectManager::CreateObjectFromScript(const char* acName)
 	if(!m_pkScript->CallScript("Create", 0, 0))
 		return NULL;
 	
+	
+	ObjectManagerLua::g_pkReturnObject->m_strType	= acName;
+	ObjectManagerLua::g_pkReturnObject->m_strName	= string("A ") + acName;
+	
 	return ObjectManagerLua::g_pkReturnObject;
 }
 
