@@ -151,4 +151,97 @@ Vector3 Vector3::Cross( const Vector3& v )	const
 }
 
 
+bool Vector3::IsZero(void) const
+{
+	return (x == 0.0 && y == 0.0 && z == 0.0); 
+}
 
+bool Vector3::NearlyEquals( const Vector3& v, const float e ) const	
+{
+	return (fabs(x-v.x) < e && fabs(y-v.y) < e && fabs(z-v.z) < e);
+}
+
+bool Vector3::NearlyZero( const float e ) const 				
+{
+	return (fabs(x) < e && fabs(y) < e && fabs(z) < e);
+}
+
+Vector3 Vector3::operator /  ( const float  s )	const					
+{
+	float invs = 1/s; 
+	return Vector3( invs*x, invs*y, invs*z );
+}
+
+Vector3& Vector3::operator /= ( const float& s )					
+{
+	float r = 1 / s; x *= r; y *= r; z *= r; 
+	return *this; 
+}
+
+float Vector3::SquaredLength(void) const
+{
+	return x*x + y*y +z*z;  
+}
+
+Vector3 Vector3::Proj( Vector3& v )				
+{
+	float dot = this->Dot(v);
+	float len = Length();
+	len *= len;
+
+	//	vector_c p = (dot / len) * (*this) ;	??
+	Vector3 p = (*this);
+	float scale = (dot / len);
+	p *= scale;
+	return p;
+}
+
+Vector3 Vector3::Perp( Vector3& v )				
+{
+	Vector3 p = v - Proj(v);
+	return p;
+}
+
+float Vector3::Angle( Vector3& v )				
+{
+	return acos( Dot(v) ); 
+}
+
+void Vector3::Abs(void)								
+{
+	x = fabs(x);	y = fabs(y);	z = fabs(z); 
+}
+
+int	Vector3::AbsMaxCoo(void)	
+{
+	Vector3 test = *this;
+	test.Abs();
+	if(x >= y && x >= z)	return 0;
+	if(y >= x && y >= z)	return 1;
+	if(z >= x && z >= y)	return 2;
+	return 0;
+}
+
+void Vector3::Lerp(Vector3& from, Vector3& to, float flerp)
+{
+	*this = to - from;
+	*this *= flerp;
+	*this += from;
+}
+
+void Vector3::print(void)
+{
+	cout << "<" << x << "," << y << "," << z << ">";
+}
+
+// FRIEND FUNCTIONS
+Vector3 operator * ( const float& s, const Vector3& v )
+{
+	return v * s;
+}
+
+ostream& operator<<(ostream& os, const Vector3 &v)
+{
+	os <<  2345; 
+	return os;
+}

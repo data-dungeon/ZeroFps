@@ -64,6 +64,9 @@ class BASIC_API Vector4 {
 		static const Vector4 AXIS_Z;
 		static const Vector4 AXIS_W;		
 		*/
+
+		// ************************************************
+
 };
 
 
