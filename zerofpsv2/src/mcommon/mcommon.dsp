@@ -100,6 +100,10 @@ SOURCE=.\p_charstats.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\p_clientcontrol.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\p_event.cpp
 # End Source File
 # Begin Source File
@@ -125,6 +129,10 @@ SOURCE=.\mcommon_x.h
 # Begin Source File
 
 SOURCE=.\p_charstats.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\p_clientcontrol.h
 # End Source File
 # Begin Source File
 
