@@ -235,6 +235,7 @@ void ZGuiWnd::UpdatePos(int iPrevPosX, int iPrevPosY, int w, int h,
 
 void ZGuiWnd::SetMoveArea(Rect rc, bool bFreeMovement)
 {
+
 	m_kMoveArea = rc;
 
 	ZGuiWnd* pkParent = GetParent();

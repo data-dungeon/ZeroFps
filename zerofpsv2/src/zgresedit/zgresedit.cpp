@@ -47,6 +47,152 @@ ZGResEdit::ZGResEdit(char* aName,int iWidth,int iHeight,int iDepth)
 	m_bUpdateSize = false;	
 }
 
+ZGuiWnd* ZGResEdit::GetWndFromPoint(int x, int y)
+{
+	list<pair<ZGuiWnd*, int> > kTargets;
+
+	map<string,ZGuiWnd*> kWindows;
+	m_pkGuiMan->GetWindows(kWindows); 
+	map<string,ZGuiWnd*>::iterator it = kWindows.begin();
+	for( ; it != kWindows.end(); it++)
+	{
+		if(GetWndType((*it).second) == Wnd )
+		{
+			if(ClickInsideWnd((*it).second, x,y))
+				kTargets.push_back( pair<ZGuiWnd*, int>((*it).second,0) );
+		}
+	}
+
+	if(kTargets.empty())
+		return NULL; // inte klickat på någon mainwindow
+
+	kTargets.sort(SortZValue);
+
+	ZGuiWnd* pkMainWnd = kTargets.front().first; // best mainwindow
+
+	list<ZGuiWnd*> childs;
+	pkMainWnd->GetChildrens(childs);
+
+	if(childs.empty())
+		return pkMainWnd; // finns inga barn så vi returnerar null
+
+	kTargets.clear();
+
+	list<ZGuiWnd*>::iterator it2 = childs.begin();
+	for( ; it2 != childs.end(); it2++)
+	{
+		if(ClickInsideWnd((*it2), x,y))
+			kTargets.push_back( pair<ZGuiWnd*, int>((*it2),0) );
+	}
+
+	if(kTargets.empty())
+		return pkMainWnd; // klickade inte på något barn
+
+	kTargets.sort(SortZValue);
+
+	ZGuiWnd* pkChild = kTargets.front().first; // best child
+
+	// Hantera tabuleringsboxar på ett speciellt sätt
+	if(GetWndType(pkChild) == TabControl )
+	{
+		ZGuiTabCtrl* pkTabCtrl = static_cast<ZGuiTabCtrl*>(pkChild);
+
+		int iZValue = pkTabCtrl->m_iZValue;
+		
+		ZGuiWnd* pkWnd = pkTabCtrl->GetPage(pkTabCtrl->GetCurrentPage()); 
+
+		if(pkWnd && ClickInsideWnd(pkWnd, x,y))
+		{
+			//pkGui->SetFocus(pkWnd);
+			//m_pkFocusWnd = pkWnd;
+			m_pkMainWnd = pkWnd;
+			if(m_pkMainWnd == NULL) m_pkMainWnd = GetWnd("GuiMainWnd");
+
+			list<ZGuiWnd*> childs;
+			pkWnd->GetChildrens(childs);
+
+			kTargets.clear();
+
+			list<ZGuiWnd*>::iterator it2 = childs.begin();
+			for( ; it2 != childs.end(); it2++)
+			{
+				if(ClickInsideWnd((*it2), x,y))
+					kTargets.push_back( pair<ZGuiWnd*, int>((*it2),0) );
+			}
+
+			if(kTargets.empty())
+			{
+				if(!m_pkInputHandle->Pressed(KEY_LSHIFT))
+					return pkWnd;
+				else
+					return pkWnd->GetParent();
+			}
+
+			kTargets.sort(SortZValue);
+			pkChild = kTargets.front().first; // best child
+		}
+
+	}
+	
+	return pkChild;
+}
+
+
+
+ZGuiWnd* ZGResEdit::DeleteWnd(ZGuiWnd *pkWnd)
+{
+	ZGuiWnd* pkReturnWnd = NULL;
+
+	m_pkFocusWnd = NULL;
+
+	if(pkWnd != NULL)
+	{
+		TempSave(true);
+
+		m_pkAudioSys->StartSound("/data/sound/chop_knife.wav");
+
+		if(pkWnd->GetParent())
+		{
+			pkReturnWnd = pkWnd->GetParent();
+
+			m_pkScene->RemoveAlias(pkWnd);
+
+			/*m_pkFocusWnd = pkWnd->GetParent();
+			m_pkGui->SetFocus(m_pkFocusWnd);
+			m_pkMainWnd = m_pkFocusWnd;*/
+
+			if(GetWndType(pkWnd->GetParent()) == TabControl)
+			{
+				ZGuiTabCtrl* pkTabCtrl =  ((ZGuiTabCtrl*) pkWnd->GetParent());
+
+				unsigned int current_page = pkTabCtrl->GetCurrentPage(); 
+				pkTabCtrl->DeletePage(current_page);
+
+				if(pkTabCtrl->GetNumPages() != 0)
+				{
+					int new_page = current_page-1;
+					if(new_page < 0)
+						new_page = 0;
+					
+					pkTabCtrl->SetCurrentPage(new_page); 	
+					ZGuiWnd* pkPage = pkTabCtrl->GetPage(new_page);
+					pkGui->SetFocus(pkPage);
+					return pkPage;
+				}
+			}
+		}
+		else
+		{
+			m_pkMainWnd = GetWnd("GuiMainWnd");
+		}
+
+		pkGui->UnregisterWindow(pkWnd);
+		pkWnd = NULL;
+	}
+	
+	return pkReturnWnd;
+}
+
 void ZGResEdit::OnInit()
 {
 	glEnable(GL_LIGHTING );
@@ -139,20 +285,20 @@ void ZGResEdit::OnIdle()
 	else
 	if(m_eEditMode == SET_MOVE_AREA && m_pkFocusWnd != NULL)
 	{
-		Rect rc = m_pkFocusWnd->GetMoveArea(); 
+		//Rect rc = m_pkFocusWnd->GetMoveArea(); 
 
-		int x=rc.Left,y=rc.Top,w=abs(rc.Right-x),h=abs(rc.Bottom-y);
-		x = GetTextInt("PosXTextbox", NULL);
-		y = GetTextInt("PosYTextbox", NULL);
-		w = GetTextInt("WidthTextbox", NULL);
-		h = GetTextInt("HeightTextbox", NULL);
-		if(x > 800) x = 800; if(x < 0) x = 0; if(y > 600) y = 600; if(y < 0) y = 0;
-		if(w > 800) w = 800; if(w < 0) w = 0; if(h > 600) h = 600; if(h < 0) y = 0;
-		m_pkScene->m_pkSelectMoveAreaWnd->SetPos(x,y,true,true);
-		m_pkScene->m_pkSelectMoveAreaWnd->Resize(w,h,true); 
-		DrawSelectionRect(m_pkScene->m_pkSelectMoveAreaWnd);	
+		//int x=rc.Left,y=rc.Top,w=abs(rc.Right-x),h=abs(rc.Bottom-y);
+		//x = GetTextInt("PosXTextbox", NULL);
+		//y = GetTextInt("PosYTextbox", NULL);
+		//w = GetTextInt("WidthTextbox", NULL);
+		//h = GetTextInt("HeightTextbox", NULL);
+		//if(x > 800) x = 800; if(x < 0) x = 0; if(y > 600) y = 600; if(y < 0) y = 0;
+		//if(w > 800) w = 800; if(w < 0) w = 0; if(h > 600) h = 600; if(h < 0) y = 0;
+		//m_pkScene->m_pkSelectMoveAreaWnd->SetPos(x,y,true,true);
+		//m_pkScene->m_pkSelectMoveAreaWnd->Resize(w,h,true); 
+		//DrawSelectionRect(m_pkScene->m_pkSelectMoveAreaWnd);	
 
-		m_pkFocusWnd->SetMoveArea(Rect(x,y,x+w,y+h),true);
+		//m_pkFocusWnd->SetMoveArea(Rect(x,y,x+w,y+h),true);
 	}
 
 	if(m_pkFocusWnd)
@@ -877,10 +1023,12 @@ void ZGResEdit::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 	{
 		if(strClickWndName == "FreemoveCheckbox")
 		{
+			printf("ooooeee\n");
+
 			if(IsButtonChecked("FreemoveCheckbox"))
 				m_pkFocusWnd->SetMoveArea(Rect(0,0,800,600), true);
 			else
-				m_pkFocusWnd->SetMoveArea(m_pkFocusWnd->GetScreenRect(), false);
+				m_pkFocusWnd->SetMoveArea(m_pkFocusWnd->GetScreenRect(), true);
 		}
 		else
 		if(strClickWndName == "ReadOnlyCheckbox")
@@ -1088,98 +1236,6 @@ bool ZGResEdit::ClickInsideWnd(ZGuiWnd* pkWnd, int x, int y)
 	return false;
 }
 
-ZGuiWnd* ZGResEdit::GetWndFromPoint(int x, int y)
-{
-	list<pair<ZGuiWnd*, int> > kTargets;
-
-	map<string,ZGuiWnd*> kWindows;
-	m_pkGuiMan->GetWindows(kWindows); 
-	map<string,ZGuiWnd*>::iterator it = kWindows.begin();
-	for( ; it != kWindows.end(); it++)
-	{
-		if(GetWndType((*it).second) == Wnd )
-		{
-			if(ClickInsideWnd((*it).second, x,y))
-				kTargets.push_back( pair<ZGuiWnd*, int>((*it).second,0) );
-		}
-	}
-
-	if(kTargets.empty())
-		return NULL; // inte klickat på någon mainwindow
-
-	kTargets.sort(SortZValue);
-
-	ZGuiWnd* pkMainWnd = kTargets.front().first; // best mainwindow
-
-	list<ZGuiWnd*> childs;
-	pkMainWnd->GetChildrens(childs);
-
-	if(childs.empty())
-		return pkMainWnd; // finns inga barn så vi returnerar null
-
-	kTargets.clear();
-
-	list<ZGuiWnd*>::iterator it2 = childs.begin();
-	for( ; it2 != childs.end(); it2++)
-	{
-		if(ClickInsideWnd((*it2), x,y))
-			kTargets.push_back( pair<ZGuiWnd*, int>((*it2),0) );
-	}
-
-	if(kTargets.empty())
-		return pkMainWnd; // klickade inte på något barn
-
-	kTargets.sort(SortZValue);
-
-	ZGuiWnd* pkChild = kTargets.front().first; // best child
-
-	// Hantera tabuleringsboxar på ett speciellt sätt
-	if(GetWndType(pkChild) == TabControl )
-	{
-		ZGuiTabCtrl* pkTabCtrl = static_cast<ZGuiTabCtrl*>(pkChild);
-
-		int iZValue = pkTabCtrl->m_iZValue;
-		
-		ZGuiWnd* pkWnd = pkTabCtrl->GetPage(pkTabCtrl->GetCurrentPage()); 
-
-		if(pkWnd && ClickInsideWnd(pkWnd, x,y))
-		{
-			//pkGui->SetFocus(pkWnd);
-			//m_pkFocusWnd = pkWnd;
-			m_pkMainWnd = pkWnd;
-			if(m_pkMainWnd == NULL) m_pkMainWnd = GetWnd("GuiMainWnd");
-
-			list<ZGuiWnd*> childs;
-			pkWnd->GetChildrens(childs);
-
-			kTargets.clear();
-
-			list<ZGuiWnd*>::iterator it2 = childs.begin();
-			for( ; it2 != childs.end(); it2++)
-			{
-				if(ClickInsideWnd((*it2), x,y))
-					kTargets.push_back( pair<ZGuiWnd*, int>((*it2),0) );
-			}
-
-			if(kTargets.empty())
-			{
-				if(!m_pkInputHandle->Pressed(KEY_LSHIFT))
-					return pkWnd;
-				else
-					return pkWnd->GetParent();
-			}
-
-			kTargets.sort(SortZValue);
-			pkChild = kTargets.front().first; // best child
-		}
-
-	}
-	
-	return pkChild;
-}
-
-
-
 void ZGResEdit::SetPos(ZGuiWnd* pkWnd, int x, int y)
 {
 	bool bLegalMoveWnd = true;
@@ -1234,7 +1290,7 @@ void ZGResEdit::SetPos(ZGuiWnd* pkWnd, int x, int y)
 		if(y < 0+bd_size) y = bd_size;
 	}
 
-	pkWnd->SetPos(x, y, bScreenSpace, true); 
+	pkWnd->SetPos(x, y, bScreenSpace, true ); 
 
 	if(rc.Left != x || rc.Top != y)
 		m_bUpdatePos = true;
@@ -1364,8 +1420,7 @@ void ZGResEdit::OnSelectCB(int ListBoxID, int iItemIndex, ZGuiWnd *pkMain)
 	}
 }
 
-void ZGResEdit::OnClickTreeItem(char *szTreeBox, char *szParentNodeText, 
-										 char *szClickNodeText, bool bHaveChilds)
+void ZGResEdit::OnClickTreeItem(char *szTreeBox, char *szParentNodeText, char *szClickNodeText, bool bHaveChilds)
 {
 	//
 	// Byt textur på vald kontroll typ
@@ -1587,10 +1642,6 @@ void ZGResEdit::OnReleaseButton(int mx, int my)
 	m_kSelStart = Point(-1,-1);
 	m_kClickPos = Point(-1,-1);
 }
-
-// kLine = En linje som skall klippas mot alla rektanglar
-// rects = Alla rektanglar som linjen skall klippas mot
-// out = vektor med linjer som blir resultatet efter klippning
 
 void ZGResEdit::ClipLine(Line kLine, const vector<Rect> rects, vector<Line>& out)
 {
@@ -2105,60 +2156,6 @@ void ZGResEdit::UpdatePropertyWnd()
 		m_pkScene->UpdateOptionsWnd( m_pkFocusWnd );
 }
 
-
-ZGuiWnd* ZGResEdit::DeleteWnd(ZGuiWnd *pkWnd)
-{
-	ZGuiWnd* pkReturnWnd = NULL;
-
-	m_pkFocusWnd = NULL;
-
-	if(pkWnd != NULL)
-	{
-		TempSave(true);
-
-		m_pkAudioSys->StartSound("/data/sound/chop_knife.wav");
-
-		if(pkWnd->GetParent())
-		{
-			pkReturnWnd = pkWnd->GetParent();
-
-			m_pkScene->RemoveAlias(pkWnd);
-
-			/*m_pkFocusWnd = pkWnd->GetParent();
-			m_pkGui->SetFocus(m_pkFocusWnd);
-			m_pkMainWnd = m_pkFocusWnd;*/
-
-			if(GetWndType(pkWnd->GetParent()) == TabControl)
-			{
-				ZGuiTabCtrl* pkTabCtrl =  ((ZGuiTabCtrl*) pkWnd->GetParent());
-
-				unsigned int current_page = pkTabCtrl->GetCurrentPage(); 
-				pkTabCtrl->DeletePage(current_page);
-
-				if(pkTabCtrl->GetNumPages() != 0)
-				{
-					int new_page = current_page-1;
-					if(new_page < 0)
-						new_page = 0;
-					
-					pkTabCtrl->SetCurrentPage(new_page); 	
-					ZGuiWnd* pkPage = pkTabCtrl->GetPage(new_page);
-					pkGui->SetFocus(pkPage);
-					return pkPage;
-				}
-			}
-		}
-		else
-		{
-			m_pkMainWnd = GetWnd("GuiMainWnd");
-		}
-
-		pkGui->UnregisterWindow(pkWnd);
-		pkWnd = NULL;
-	}
-	
-	return pkReturnWnd;
-}
 
 void ZGResEdit::TempSave(bool bSave)
 {

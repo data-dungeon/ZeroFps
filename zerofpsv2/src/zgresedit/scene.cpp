@@ -737,6 +737,10 @@ void Scene::UpdateOptionsWnd(ZGuiWnd* pkFocusWnd)
 	{
 	case Wnd:
 		m_pkApp->CreateWnd(Checkbox, "FreemoveCheckbox", "OptionsWnd", "Moveable", 10, 10, 16, 16, 0);
+		if(pkFocusWnd->GetMoveArea() == Rect(0,0,800,600) )
+			((ZGuiCheckbox*)m_pkApp->GetWnd("FreemoveCheckbox"))->CheckButton();
+		else
+			((ZGuiCheckbox*)m_pkApp->GetWnd("FreemoveCheckbox"))->UncheckButton();
 		break;
 	case Textbox:
 		m_pkApp->CreateWnd(Checkbox, "ReadOnlyCheckbox", "OptionsWnd", "Read-only", 10, 10, 16, 16, 0);
