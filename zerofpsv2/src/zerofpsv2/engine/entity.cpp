@@ -450,8 +450,10 @@ void Entity::ZoneChange(int iCurrent,int iNew)
 				//cout<<"Connection "<<(*it)->m_iConnectID<<" has this entity"<<endl;				
 				if( (*it)->m_iActiveZones.find(iNew) == (*it)->m_iActiveZones.end())
 				{
+					//if this object is the tracker, dont remove it
 					if((*it)->GetEntity() == this)
 						continue;
+					
 					cout<<"Entity "<<m_iEntityID<< " has moved to an untracked zone for client "<<(*it)->m_iConnectID<<endl;
 					
 					// send delete request to client here =)
