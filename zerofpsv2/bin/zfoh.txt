@@ -100,17 +100,17 @@ class object
 
 	class ZeroRTSHull
 		parent object
-		set MadProperty m_kMadFile /data/mad/rts/unit/hull.mad
+		set MadProperty m_kMadFile /data/mad/hull.mad
 	
 
 	class ZeroRTSTower
 		parent object
-		set MadProperty m_kMadFile /data/mad/rts/unit/tower.mad
+		set MadProperty m_kMadFile /data/mad/tower.mad
 	
 
 	class ZeroRTSGun
 		parent object
-		set MadProperty m_kMadFile /data/mad/rts/unit/gun.mad
+		set MadProperty m_kMadFile /data/mad/gun.mad
 	
 	class Monster
 		parent object

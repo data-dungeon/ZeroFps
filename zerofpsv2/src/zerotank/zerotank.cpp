@@ -1,3 +1,6 @@
+// zip -r zfdata data
+
+
 #include "zerotank.h"
 #include "../zerofpsv2/engine_systems/script_interfaces/si_gui.h"
 #include "../zerofpsv2/engine_systems/common/heightmap.h"
@@ -65,7 +68,7 @@ void ZeroTank::OnInit()
 	Object *pkGob = pkObjectMan->CreateObjectByArchType("Goblin");
 	
 	// minoutar
-	Object* pk8 = pkObjectMan->CreateObjectByArchType("VimTest1");		// Minoutar VimTest1
+	Object* pk8 = pkObjectMan->CreateObjectByArchType("Minoutar");		// Minoutar VimTest1
 	Object* pk11 = pkObjectMan->CreateObjectByArchType("Min_axe");
 
 	// PSystem
@@ -546,7 +549,7 @@ void ZeroTank::OnServerStart(void)
 	m_pkZeroTankGun	= NULL;
 	m_pkCameraObject	= NULL;
 
-	m_pkZeroTankHull = pkObjectMan->CreateObjectByArchType("Goblin");
+	m_pkZeroTankHull = pkObjectMan->CreateObjectByArchType("ZeroRTSHull");
 	if(m_pkZeroTankHull) {
 		m_pkZeroTankHull->SetWorldPosV(Vector3(8,10,7));
 		m_pkZeroTankHull->AttachToClosestZone();
@@ -556,7 +559,7 @@ void ZeroTank::OnServerStart(void)
 		//cam->SetCamera(m_pkCamera);
 	}
 
-/*	m_pkZeroTankTower = pkObjectMan->CreateObjectByArchType("ZeroRTSTower");
+	m_pkZeroTankTower = pkObjectMan->CreateObjectByArchType("ZeroRTSTower");
 	if(m_pkZeroTankTower) {
 		m_pkZeroTankTower->SetParent(m_pkZeroTankHull);
 		m_pkZeroTankTower->SetLocalPosV(Vector3(0,0.81,0));
@@ -569,7 +572,7 @@ void ZeroTank::OnServerStart(void)
 		m_pkZeroTankGun->SetLocalPosV(Vector3(-1.1,0.4,0));
 		m_pkZeroTankGun->SetRelativeOri(true);
 	}
-*/
+
 
 	m_pkCameraObject = pkObjectMan->CreateObjectByArchType("camera");
 	if(m_pkCameraObject)

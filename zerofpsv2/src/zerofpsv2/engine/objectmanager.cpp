@@ -1417,7 +1417,7 @@ vector<int>	ObjectManager::GetActiveZoneIDs(int iTracker)
 void ObjectManager::LoadZones()
 {
 	ZFVFile kFile;
-	kFile.Open("zones.dat",0,false);
+	kFile.Open("data/zones.dat",0,false);
 
 	int iNumOfZone;
 	kFile.Read(&iNumOfZone,sizeof(int),1);
@@ -1458,7 +1458,7 @@ void ObjectManager::LoadZones()
 void ObjectManager::SaveZones()
 {
 	ZFVFile kFile;
-	kFile.Open("zones.dat",0,true);
+	kFile.Open("data/zones.dat",0,true);
 
  	int iNumOfZone = m_kZones.size();
 	kFile.Write(&iNumOfZone,sizeof(int),1);
