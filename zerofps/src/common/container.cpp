@@ -139,7 +139,7 @@ bool Container::AddItem(Object* pkObject)
 	int iY=0;
 	
 	//get a free slot to put the item
-	if(!GetFreeSlot(pkIP->m_iItemSizeX,pkIP->m_iItemSizeX,iX,iY))
+	if(!GetFreeSlot(pkIP->m_iItemSizeX,pkIP->m_iItemSizeY,iX,iY))
 		return false;
 	
 	//create data	
@@ -152,7 +152,7 @@ bool Container::AddItem(Object* pkObject)
 	m_kObjects.push_back(kTemp);
 
 	//set slot to item ID
-	SetID(iX,iY,pkIP->m_iItemSizeX,pkIP->m_iItemSizeX,GetItemPos(pkObject));
+	SetID(iX,iY,pkIP->m_iItemSizeX,pkIP->m_iItemSizeY,GetItemPos(pkObject));
 
 	PrintContainer();
 

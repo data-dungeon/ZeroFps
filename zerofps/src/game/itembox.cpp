@@ -43,7 +43,7 @@ bool ItemBox::DlgProc( ZGuiWnd* pkWnd,unsigned int uiMessage,
 	case ZGM_LBUTTONDOWN:
 		{
 			// Check wich button that should move.
-			map<slot_pos, ZGuiButton*>>::iterator it;
+			map<slot_pos, ZGuiButton*>::iterator it;
 			for(it = m_kSlotsTable.begin(); it != m_kSlotsTable.end(); it++)
 			{
 				if(pkWnd == it->second)
@@ -64,7 +64,7 @@ bool ItemBox::DlgProc( ZGuiWnd* pkWnd,unsigned int uiMessage,
 			int mx = ((int*)pkParams)[0], my = ((int*)pkParams)[1];
 
 			int x=-1,y=-1;
-			map<slot_pos, ZGuiButton*>>::iterator it;
+			map<slot_pos, ZGuiButton*>::iterator it;
 			for(it = m_kSlotsTable.begin(); it != m_kSlotsTable.end(); it++)
 			{
 				if(it->second->GetScreenRect().Inside(mx,my))
@@ -82,8 +82,12 @@ bool ItemBox::DlgProc( ZGuiWnd* pkWnd,unsigned int uiMessage,
 				int sx = tx+m_pkMoveItem->second->GetScreenRect().Width() / m_ciSlotSize;
 				int sy = ty+m_pkMoveItem->second->GetScreenRect().Height() / m_ciSlotSize;
 
-				for(int y=ty; y<sy; y++)
-					for(int x=tx; x<sx; x++)
+
+				int y;
+				int x;
+				
+				for(y=ty; y<sy; y++)
+					for(x=tx; x<sx; x++)
 					{
 						map<slot_pos,ZGuiButton*>::iterator res =
 							m_kSlotsTable.find(slot_pos(x,y));
@@ -149,7 +153,7 @@ bool ItemBox::Create(int x, int y, int w, int h, ZGuiWndProc pkWndProc)
 			slot_pos(rc.Left, rc.Top), (ZGuiButton*)(*it)));
 	}
 
-	map<slot_pos, ZGuiButton*>>::iterator it2;
+	map<slot_pos, ZGuiButton*>::iterator it2;
 	for(it2 = m_kSlotsTable.begin(); it2 != m_kSlotsTable.end(); it2++)
 	{
 		int cell_x = it2->first.first / m_ciSlotSize;
