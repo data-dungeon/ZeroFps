@@ -43,6 +43,8 @@ class SCRIPT_API ZFScript : public ZFResource
 		ZFScript();
 		~ZFScript();
 		bool Create(string strName);	// overloaded
+
+		int CalculateSize();
 		
 	private:
 

@@ -79,8 +79,6 @@ class ENGINE_SYSTEMS_API ZFSound : public ZFResource
 		bool Create(string strName);	// overloaded
 
 		int CalculateSize();
-		bool Start(int iSourceIndex, int iSourceName);
-		bool Load();
 
 		Vector3 m_kPos;					// sounds position
 		Vector3 m_kVel;					// sounds velocity

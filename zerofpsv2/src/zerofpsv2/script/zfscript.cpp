@@ -539,3 +539,8 @@ ZFResource* Create__ZFScript()
 {
 	return new ZFScript;
 }
+
+int ZFScript::CalculateSize()
+{
+	return 4;
+}
