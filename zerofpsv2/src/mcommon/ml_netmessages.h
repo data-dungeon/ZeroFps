@@ -14,6 +14,7 @@ enum MLNM_ClientToServer
 	MLNM_CS_REQ_KILLME,
 	MLNM_CS_ANIM,
 	MLNM_CS_USE,
+	MLNM_CS_LOOK,
 };
 
 //	A network message from the server to the client.

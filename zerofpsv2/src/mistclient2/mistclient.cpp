@@ -277,6 +277,23 @@ void MistClient::Input()
 		}
 	}
 
+	if ( m_pkInputHandle->VKIsDown("look") )
+	{
+		if(!DelayCommand())
+		{
+			if(m_pkHighlight)
+			{
+				NetPacket kNp;			
+				kNp.Write((char) MLNM_CS_LOOK);
+				kNp.Write(m_pkHighlight->GetEntityID());
+				kNp.TargetSetClient(0);
+				SendAppMessage(&kNp);		
+			}
+		}
+	}
+
+	
+
 	if(m_pkInputHandle->Pressed(KEY_F1) && !DelayCommand())
 	{
 		if(IsWndVisible("ChatDlgMainWnd"))

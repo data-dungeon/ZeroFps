@@ -945,6 +945,29 @@ void MistServer::OnNetworkMessage(NetPacket *PkNetMessage)
 			break;
 		}
 
+		case MLNM_CS_LOOK:
+		{
+			int iEntity;
+			PkNetMessage->Read(iEntity);
+			if(Entity* pkObj = m_pkEntityManager->GetEntityByID(iEntity))
+			{
+				// Read Str from 
+				string strLook = pkObj->GetVarString("szLook");
+				if(strLook.empty())
+					strLook = "nothing";
+
+				// Write to client
+				m_pkConsole->Printf("Msg> You see %s", strLook.c_str());
+
+				NetPacket kNp;			
+				kNp.Write((char) MLNM_SC_SAY);
+				kNp.Write_Str(string("You see ") + strLook);
+				kNp.TargetSetClient( PkNetMessage->m_iClientID);
+				SendAppMessage(&kNp);	
+			}
+			break;
+		}
+
 		default:
 			cout << "Error in game packet : " << (int) ucType << endl;
 			PkNetMessage->SetError(true);
