@@ -110,7 +110,7 @@ ZeroFps::ZeroFps(void) : I_ZeroFps("ZeroFps")
 	Register_Cmd("version",FID_VERSION);	
 	Register_Cmd("credits",FID_CREDITS);	
 	Register_Cmd("echo",FID_ECHO);	
-	Register_Cmd("gldump",FID_GLDUMP);	
+//	Register_Cmd("gldump",FID_GLDUMP);	
 	Register_Cmd("devshow",FID_DEV_SHOWPAGE, CSYS_FLAG_SRC_ALL, "devshow name", 1);	
 	Register_Cmd("devhide",FID_DEV_HIDEPAGE, CSYS_FLAG_SRC_ALL, "devhide name", 1);	
 	Register_Cmd("devtog",FID_DEV_TOGGLE, CSYS_FLAG_SRC_ALL, "devtog name", 1);	
@@ -902,9 +902,9 @@ void ZeroFps::RunCommand(int cmdid, const CmdArgument* kCommand)
 				m_pkConsole->Printf(kCreditsStrings[i].c_str());
 			break;
 		
-		case FID_GLDUMP:
+/*		case FID_GLDUMP:
 			m_pkRender->DumpGLState();
-			break;
+			break;*/
 
 		case FID_LISTMAD:
 			if(kCommand->m_kSplitCommand.size() <= 1) {

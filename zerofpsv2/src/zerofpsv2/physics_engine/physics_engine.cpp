@@ -81,8 +81,9 @@ void Physics_Engine::Update(float fAlphaTime)
 	static Render* pkRender = static_cast<Render*>(g_ZFObjSys.GetObjectPtr("Render"));	
 	for(list<Body*>::iterator it = m_kBodys.begin(); it != m_kBodys.end(); it++) 
 	{
-		pkRender->Sphere((*it)->m_kPosition,(*it)->m_fRadius*2,1,Vector3(0,1,0),false);
-		pkRender->Sphere((*it)->m_kPosition + (*it)->Rot((*it)->m_kMassCenter),0.1,1,Vector3(0,1,1),false);		
+		// Vim - is this the wrong way?
+		// pkRender->Sphere((*it)->m_kPosition,(*it)->m_fRadius*2,1,Vector3(0,1,0),false);
+		// pkRender->Sphere((*it)->m_kPosition + (*it)->Rot((*it)->m_kMassCenter),0.1,1,Vector3(0,1,1),false);		
 	
 	}
 
@@ -844,7 +845,8 @@ Collission* Physics_Engine::FindNextCollission()
 	
 	static Render* pkRender = static_cast<Render*>(g_ZFObjSys.GetObjectPtr("Render"));
 	
-	pkRender->Sphere(pkClosest->kPos,0.2,1,Vector3(1,0,0),true);
+		// Vim - is this the wrong way?
+	// pkRender->Sphere(pkClosest->kPos,0.2,1,Vector3(1,0,0),true);
 	
 	
 	return pkClosest;

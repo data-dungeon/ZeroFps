@@ -48,9 +48,10 @@ class RENDER_API Render : public ZFSubSystem {
 	private:
 		enum FuncId_e
 		{
-			FID_GLINFO,
-			FID_CONSOLECOLOR,
-			FID_SHOT,
+			FID_GLINFO,				// Display basic info about OpenGL to console.		
+			FID_GLDUMP,				// Dump current glstate to file.
+			FID_CONSOLECOLOR,		
+			FID_SHOT,				
 		};
 
 		TextureManager*	m_pkTexMan;
@@ -168,7 +169,7 @@ class RENDER_API Render : public ZFSubSystem {
 
 		void GetMinMax(HeightMap* kMap, float& fMin, float& fMax, int xp,int zp,int iSize);
 
-		void DumpGLState(void);
+		void DumpGLState(char* szFileName);
 
 		void Draw_AxisIcon(float scale = 1.0);													///< Draw axis lines.
 		void Draw_MarkerCross(Vector3 kPos, Vector3 Color, float fScale = 1.0);		///< Draw a cross made up of lines.

@@ -4,6 +4,8 @@
 #include "../engine_systems/common/psystem.h"
 #include "../engine/psystemmanager.h"
  
+FILE* pkGlDumpLog;
+
 Render::Render()  
 :	ZFSubSystem("Render") , m_eLandscapePolygonMode(FILL) 
 {
@@ -44,9 +46,11 @@ Render::Render()
 	RegisterVariable("r_fullscreen",		&m_iFullScreen,CSYS_INT);
 
 	// Register Our Own commands.
-	Register_Cmd("glinfo",	FID_GLINFO);	
-	Register_Cmd("ccolor",	FID_CONSOLECOLOR);	
-	Register_Cmd("shot",		FID_SHOT);	
+	Register_Cmd("r_glinfo",	FID_GLINFO);	
+	Register_Cmd("r_gldump",	FID_GLDUMP);	
+	Register_Cmd("ccolor",		FID_CONSOLECOLOR);	
+	Register_Cmd("shot",			FID_SHOT);	
+
 	
 	SetFont("data/textures/text/devstr.bmp");
 }
@@ -1299,8 +1303,6 @@ void Render::CaptureScreenShoot( int m_iWidth, int m_iHeight )
 	kScreen.save(szImageName ,false);
 }
 
-
-
 char* BoolStr(bool bFlag)
 {
 	if(bFlag)
@@ -1309,43 +1311,104 @@ char* BoolStr(bool bFlag)
 		return "False";
 }
 
-
 void GlDump_IsEnabled(int iGlEnum, char* szName)
 {
 	bool bFlag = false;
 	if(glIsEnabled(iGlEnum) == GL_TRUE)
 		bFlag = true;
 
-	cout << szName << " : " << BoolStr(bFlag)	<< endl;
+	fprintf(pkGlDumpLog, "%s : %s \n", szName, BoolStr(bFlag) );
+//	cout << szName << " : " << BoolStr(bFlag)	<< endl;
+}
+
+void GlDump_GetPointv(int iGlEnum, char* szName)
+{
+	GLvoid *pkValue;
+	glGetPointerv(iGlEnum, (GLvoid**)&(pkValue));
+
+	fprintf(pkGlDumpLog, "%s : %d \n", szName, pkValue );
+//	cout << szName << " : " << pkValue << endl;
+}
+
+void GlDump_GetIntv(int iGlEnum, char* szName, int iValues)
+{
+	int i;
+
+	int afValues[16];
+	for( i=0; i<16; i++)
+		afValues[i] = -12345678;
+
+	glGetIntegerv(iGlEnum, afValues);	
+
+	fprintf(pkGlDumpLog, "%s : ", szName);
+	//cout << szName << " : ";
+	for( i=0; i<iValues; i++) {
+		fprintf(pkGlDumpLog, "%d : ", afValues[i]);
+		//cout << afValues[i] << " ";
+		}
+	fprintf(pkGlDumpLog, "\n");
+//	cout << endl;
 }
 
 void GlDump_GetFloatv(int iGlEnum, char* szName, int iValues)
 {
+	int i;
+
 	float afValues[16];
+	for( i=0; i<16; i++)
+		afValues[i] = -12345678;
+
 	glGetFloatv(iGlEnum, afValues);	
 
-	cout << szName << " : ";
-	for(int i=0; i<iValues; i++) {
-		cout << afValues[i] << " ";
+//	cout << szName << " : ";
+	fprintf(pkGlDumpLog, "%s : ", szName);
+	for( i=0; i<iValues; i++) {
+		fprintf(pkGlDumpLog, "%f : ", afValues[i]);
+		//cout <<  << " ";
 		}
-	cout << endl;
+	fprintf(pkGlDumpLog, "\n");
+//	cout << endl;
+
 }
 
-void Render::DumpGLState(void)
+void GlDump_GetMatrixv(int iGlEnum, char* szName, int iValues)
 {
+	int i;
+
+	Matrix4 akValues[64];
+	for( i=0; i<64; i++)
+		akValues[i].Identity();
+
+	glGetFloatv(iGlEnum, (float*)&akValues[0].data[0]);	
+
+	fprintf(pkGlDumpLog, "%s : ", szName);
+	for( i=0; i<iValues; i++) {
+		fprintf(pkGlDumpLog, "\n");
+
+		for(int y=0;y<4;y++){
+			for(int x=0;x<4;x++){
+				fprintf(pkGlDumpLog, "%d\t", akValues[i].data[y*4+x]);
+			}
+			fprintf(pkGlDumpLog, "\n");
+		}
+		}
+	fprintf(pkGlDumpLog, "\n");
+}
+
+void Render::DumpGLState(char* szFileName)
+{
+	pkGlDumpLog = fopen(szFileName,"wt");
+	
 	// Get and Dump OpenGL State to log.
-	cout << "-------------------------------------------------------------------" << endl;
-	cout << "Render::DumpGLSTate" << endl;
+	//cout << "-------------------------------------------------------------------" << endl;
+	//cout << "Render::DumpGLSTate" << endl;
+
 
 	GlDump_IsEnabled(GL_AUTO_NORMAL , "GL_AUTO_NORMAL");
 	GlDump_IsEnabled(GL_COLOR_MATERIAL , "GL_COLOR_MATERIAL");
 	GlDump_IsEnabled(GL_CULL_FACE , "GL_CULL_FACE");
-	GlDump_IsEnabled(GL_DEPTH_TEST , "GL_DEPTH_TEST");
-	GlDump_IsEnabled(GL_DITHER , "GL_DITHER");
-	GlDump_IsEnabled(GL_LIGHTING , "GL_LIGHTING");
 	GlDump_IsEnabled(GL_LINE_SMOOTH , "GL_LINE_SMOOTH");
 	GlDump_IsEnabled(GL_LINE_STIPPLE , "GL_LINE_STIPPLE");
-	GlDump_IsEnabled(GL_LOGIC_OP , "GL_LOGIC_OP");
 	GlDump_IsEnabled(GL_MAP1_COLOR_4 , "GL_MAP1_COLOR_4");
 	GlDump_IsEnabled(GL_MAP1_INDEX , "GL_MAP1_INDEX");
 	GlDump_IsEnabled(GL_MAP1_NORMAL , "GL_MAP1_NORMAL");
@@ -1365,12 +1428,9 @@ void Render::DumpGLState(void)
 	GlDump_IsEnabled(GL_MAP2_TEXTURE_COORD_4 , "GL_MAP2_TEXTURE_COORD_4");
 	GlDump_IsEnabled(GL_MAP2_VERTEX_3 , "GL_MAP2_VERTEX_3");
 	GlDump_IsEnabled(GL_MAP2_VERTEX_4 , "GL_MAP2_VERTEX_4");
-	GlDump_IsEnabled(GL_NORMALIZE , "GL_NORMALIZE");
 	GlDump_IsEnabled(GL_POINT_SMOOTH , "GL_POINT_SMOOTH");
 	GlDump_IsEnabled(GL_POLYGON_SMOOTH , "GL_POLYGON_SMOOTH");
 	GlDump_IsEnabled(GL_POLYGON_STIPPLE , "GL_POLYGON_STIPPLE");
-	GlDump_IsEnabled(GL_SCISSOR_TEST , "GL_SCISSOR_TEST");
-	GlDump_IsEnabled(GL_STENCIL_TEST , "GL_STENCIL_TEST");
 
 	cout << "Texture:" << endl;
 	GlDump_IsEnabled(GL_TEXTURE_1D , "GL_TEXTURE_1D");
@@ -1381,53 +1441,25 @@ void Render::DumpGLState(void)
 	GlDump_IsEnabled(GL_TEXTURE_GEN_T , "GL_TEXTURE_GEN_T");
 
 	cout << "Accumulation:" << endl;
-	GlDump_GetFloatv(GL_ACCUM_CLEAR_VALUE,		"GL_ACCUM_CLEAR_VALUE", 1);
 	GlDump_GetFloatv(GL_ACCUM_RED_BITS,			"GL_ACCUM_RED_BITS", 1);
 	GlDump_GetFloatv(GL_ACCUM_GREEN_BITS,		"GL_ACCUM_GREEN_BITS", 1);
 	GlDump_GetFloatv(GL_ACCUM_BLUE_BITS,		"GL_ACCUM_BLUE_BITS", 1);
 	GlDump_GetFloatv(GL_ACCUM_ALPHA_BITS,		"GL_ACCUM_ALPHA_BITS", 1);
 
-	cout << "Alpha:" << endl;
-	GlDump_IsEnabled(GL_ALPHA_TEST ,			"GL_ALPHA_TEST");
-	GlDump_GetFloatv(GL_ALPHA_TEST_REF,			"GL_ALPHA_TEST_REF", 1);
 
-	cout << "Blend:" << endl;
-	GlDump_IsEnabled(GL_BLEND , "GL_BLEND");
-	GlDump_GetFloatv(GL_BLEND_DST,				"GL_BLEND_DST", 1);
-	GlDump_GetFloatv(GL_BLEND_SRC,				"GL_BLEND_SRC", 1);
-
-	
 	GlDump_GetFloatv(GL_ATTRIB_STACK_DEPTH,		"GL_ATTRIB_STACK_DEPTH", 1);
-	GlDump_GetFloatv(GL_AUX_BUFFERS,			"GL_AUX_BUFFERS", 1);
-	GlDump_GetFloatv(GL_COLOR_CLEAR_VALUE,		"GL_COLOR_CLEAR_VALUE", 4);
 	GlDump_GetFloatv(GL_COLOR_MATERIAL_FACE,	"GL_COLOR_MATERIAL_FACE", 1);
 	GlDump_GetFloatv(GL_COLOR_MATERIAL_PARAMETER, "GL_COLOR_MATERIAL_PARAMETER", 1);
 	GlDump_GetFloatv(GL_CULL_FACE_MODE,			"GL_CULL_FACE_MODE", 1);
-	GlDump_GetFloatv(GL_CURRENT_INDEX,			"GL_CURRENT_INDEX", 1);
-	GlDump_GetFloatv(GL_CURRENT_RASTER_DISTANCE, "GL_CURRENT_RASTER_DISTANCE", 1);
-	GlDump_GetFloatv(GL_CURRENT_RASTER_INDEX,	"GL_CURRENT_RASTER_INDEX", 1);
-	GlDump_GetFloatv(GL_DEPTH_CLEAR_VALUE,		"GL_DEPTH_CLEAR_VALUE", 1);
-	GlDump_GetFloatv(GL_DEPTH_FUNC,				"GL_DEPTH_FUNC", 1);
 	GlDump_GetFloatv(GL_DEPTH_SCALE,			"GL_DEPTH_SCALE", 1);
-	GlDump_GetFloatv(GL_DRAW_BUFFER,			"GL_DRAW_BUFFER", 1);
 	GlDump_GetFloatv(GL_FRONT_FACE,				"GL_FRONT_FACE", 1);
 	GlDump_GetFloatv(GL_INDEX_BITS,				"GL_INDEX_BITS", 1);
-	GlDump_GetFloatv(GL_INDEX_CLEAR_VALUE,		"GL_INDEX_CLEAR_VALUE", 1);
 	GlDump_GetFloatv(GL_LINE_WIDTH,				"GL_LINE_WIDTH", 1);
 	GlDump_GetFloatv(GL_LIST_BASE,				"GL_LIST_BASE", 1);
 	GlDump_GetFloatv(GL_LIST_INDEX,				"GL_LIST_INDEX", 1);
 	GlDump_GetFloatv(GL_LIST_MODE,				"GL_LIST_MODE", 1);
 	GlDump_GetFloatv(GL_TEXTURE_ENV_MODE,		"GL_TEXTURE_ENV_MODE", 1);
 	GlDump_GetFloatv(GL_TEXTURE_ENV_COLOR,		"GL_TEXTURE_ENV_COLOR", 4);
-	GlDump_GetFloatv(GL_COLOR_WRITEMASK,		"GL_COLOR_WRITEMASK", 1);
-	GlDump_GetFloatv(GL_CURRENT_COLOR,			"GL_CURRENT_COLOR", 1);
-	GlDump_GetFloatv(GL_CURRENT_RASTER_COLOR,	"GL_CURRENT_RASTER_COLOR", 1);
-	GlDump_GetFloatv(GL_CURRENT_RASTER_POSITION, "GL_CURRENT_RASTER_POSITION", 1);
-	GlDump_GetFloatv(GL_CURRENT_RASTER_TEXTURE_COORDS, "GL_CURRENT_RASTER_TEXTURE_COORDS", 1);
-	GlDump_GetFloatv(GL_CURRENT_TEXTURE_COORDS, "GL_CURRENT_TEXTURE_COORDS", 1);
-	GlDump_GetFloatv(GL_LIGHT_MODEL_AMBIENT,	"GL_LIGHT_MODEL_AMBIENT", 1);
-	GlDump_GetFloatv(GL_DEPTH_RANGE,			"GL_DEPTH_RANGE", 2);
-	GlDump_GetFloatv(GL_VIEWPORT,				"GL_VIEWPORT", 4);
 
 	GlDump_GetFloatv(GL_ALPHA_BITS,				"GL_ALPHA_BITS", 1);
 	GlDump_GetFloatv(GL_RED_BITS,				"GL_RED_BITS", 1);
@@ -1446,27 +1478,204 @@ void Render::DumpGLState(void)
 	GlDump_GetFloatv(GL_GREEN_SCALE,			"GL_GREEN_SCALE", 1);
 	GlDump_GetFloatv(GL_DEPTH_BIAS,				"GL_DEPTH_BIAS", 1);
 
-	cout << "Matrix:" << endl;
-	GlDump_GetFloatv(GL_MATRIX_MODE,			"GL_MATRIX_MODE", 1);
-	GlDump_GetFloatv(GL_PROJECTION_STACK_DEPTH, "GL_PROJECTION_STACK_DEPTH", 1);
+
+	// NNNNNNNNNNNEEEEEEEEEEEEEEEEEEEEEEWWWWWWWWWWWWWWWWWWWW
+
+	fprintf(pkGlDumpLog, "\n\nCurrent Values and Associated Data: \n");
+	GlDump_GetFloatv(GL_CURRENT_COLOR,					"GL_CURRENT_COLOR",	4);							// Current color.
+	GlDump_GetFloatv(GL_CURRENT_INDEX,					"GL_CURRENT_INDEX",	1);							// Current color index.
+	GlDump_GetFloatv(GL_CURRENT_TEXTURE_COORDS,		"GL_CURRENT_TEXTURE_COORDS",	4);				// Current texture coordinates.
+	GlDump_GetFloatv(GL_CURRENT_NORMAL,					"GL_CURRENT_NORMAL",				3);				// Current normal.
+	GlDump_GetFloatv(GL_CURRENT_RASTER_POSITION,		"GL_CURRENT_RASTER_POSITION", 4);				// Current raster position
+	GlDump_GetFloatv(GL_CURRENT_RASTER_DISTANCE,		"GL_CURRENT_RASTER_DISTANCE", 1);				// Current raster distance
+	GlDump_GetFloatv(GL_CURRENT_RASTER_COLOR,			"GL_CURRENT_RASTER_COLOR",		4);				// Color associated with raster position
+	GlDump_GetFloatv(GL_CURRENT_RASTER_INDEX,			"GL_CURRENT_RASTER_INDEX",		1);				// Color index associated with raster position
+	GlDump_GetFloatv(GL_CURRENT_RASTER_TEXTURE_COORDS, "GL_CURRENT_RASTER_TEXTURE_COORDS", 1);	// Texture coordinates associated with raster position
+	GlDump_IsEnabled(GL_CURRENT_RASTER_POSITION_VALID , "GL_CURRENT_RASTER_POSITION_VALID");		// Raster position valid bit
+	GlDump_IsEnabled(GL_EDGE_FLAG , "GL_EDGE_FLAG");															// Edge flag
+
+
+
+	fprintf(pkGlDumpLog, "\n\nVertex Array Data: \n");
+	//		CLIENT ACTIVE TEXTURE
+	GlDump_IsEnabled(GL_VERTEX_ARRAY ,			"GL_VERTEX_ARRAY");								// Vertex array enable
+	GlDump_GetIntv(GL_VERTEX_ARRAY_SIZE,		"GL_VERTEX_ARRAY_SIZE",		1);				// Coordinates per vertex
+	GlDump_GetIntv(GL_VERTEX_ARRAY_TYPE,		"GL_VERTEX_ARRAY_TYPE",		4);				// Type of vertex coordinates
+	GlDump_GetIntv(GL_VERTEX_ARRAY_STRIDE,		"GL_VERTEX_ARRAY_STRIDE",	1);				// Stride between vertices
+	GlDump_GetPointv(GL_VERTEX_ARRAY_POINTER, "GL_VERTEX_ARRAY_POINTER");					// Pointer to the vertex array
+
+	GlDump_IsEnabled(GL_NORMAL_ARRAY ,			"GL_NORMAL_ARRAY");								// Vertex array enable
+	GlDump_GetIntv(GL_NORMAL_ARRAY_TYPE,		"GL_NORMAL_ARRAY_TYPE",		4);				// Type of vertex coordinates
+	GlDump_GetIntv(GL_NORMAL_ARRAY_STRIDE,		"GL_NORMAL_ARRAY_STRIDE",	1);				// Stride between vertices
+	GlDump_GetPointv(GL_NORMAL_ARRAY_POINTER, "GL_NORMAL_ARRAY_POINTER");					// Pointer to the vertex array
+
+	GlDump_IsEnabled(GL_COLOR_ARRAY ,			"GL_COLOR_ARRAY");								// Vertex array enable
+	GlDump_GetIntv(GL_COLOR_ARRAY_SIZE,			"GL_COLOR_ARRAY_SIZE",		1);				// Coordinates per vertex
+	GlDump_GetIntv(GL_COLOR_ARRAY_TYPE,			"GL_COLOR_ARRAY_TYPE",		4);				// Type of vertex coordinates
+	GlDump_GetIntv(GL_COLOR_ARRAY_STRIDE,		"GL_COLOR_ARRAY_STRIDE",	1);				// Stride between vertices
+	GlDump_GetPointv(GL_COLOR_ARRAY_POINTER,	"GL_COLOR_ARRAY_POINTER");						// Pointer to the vertex array
+
+	GlDump_IsEnabled(GL_INDEX_ARRAY ,			"GL_INDEX_ARRAY");								// Vertex array enable
+	GlDump_GetIntv(GL_INDEX_ARRAY_TYPE,			"GL_INDEX_ARRAY_TYPE",		4);				// Type of vertex coordinates
+	GlDump_GetIntv(GL_INDEX_ARRAY_STRIDE,		"GL_INDEX_ARRAY_STRIDE",	1);				// Stride between vertices
+	GlDump_GetPointv(GL_INDEX_ARRAY_POINTER,	"GL_INDEX_ARRAY_POINTER");						// Pointer to the vertex array
+
+	GlDump_IsEnabled(GL_TEXTURE_COORD_ARRAY ,				"GL_TEXTURE_COORD_ARRAY");					// Vertex array enable
+	GlDump_GetIntv(GL_TEXTURE_COORD_ARRAY_SIZE,			"GL_TEXTURE_COORD_ARRAY_SIZE", 1);		// Coordinates per vertex
+	GlDump_GetIntv(GL_TEXTURE_COORD_ARRAY_TYPE,			"GL_TEXTURE_COORD_ARRAY_TYPE", 4);		// Type of vertex coordinates
+	GlDump_GetIntv(GL_TEXTURE_COORD_ARRAY_STRIDE,		"GL_TEXTURE_COORD_ARRAY_STRIDE", 1);	// Stride between vertices
+	GlDump_GetPointv(GL_TEXTURE_COORD_ARRAY_POINTER,	"GL_TEXTURE_COORD_ARRAY_POINTER");		// Pointer to the vertex array
+
+	GlDump_IsEnabled(GL_EDGE_FLAG_ARRAY ,			"GL_EDGE_FLAG_ARRAY");								// Vertex array enable
+	GlDump_GetIntv(GL_EDGE_FLAG_ARRAY_STRIDE,		"GL_EDGE_FLAG_ARRAY_STRIDE",	1);				// Stride between vertices
+	GlDump_GetPointv(GL_EDGE_FLAG_ARRAY_POINTER,	"GL_EDGE_FLAG_ARRAY_POINTER");					// Pointer to the vertex array
+
+	fprintf(pkGlDumpLog, "\n\nTransformation state: \n");
+	GlDump_GetMatrixv(GL_MODELVIEW_MATRIX,"GL_MODELVIEW_MATRIX",1 );
+	GlDump_GetMatrixv(GL_PROJECTION_MATRIX,"GL_PROJECTION_MATRIX",1 );
+	GlDump_GetMatrixv(GL_TEXTURE_MATRIX,"GL_TEXTURE_MATRIX",1 );
+	GlDump_GetFloatv(GL_VIEWPORT,				"GL_VIEWPORT", 4);
+	GlDump_GetFloatv(GL_DEPTH_RANGE,			"GL_DEPTH_RANGE", 2);
 	GlDump_GetFloatv(GL_MODELVIEW_STACK_DEPTH,	"GL_MODELVIEW_STACK_DEPTH", 1);
+	GlDump_GetFloatv(GL_PROJECTION_STACK_DEPTH, "GL_PROJECTION_STACK_DEPTH", 1);
+	GlDump_GetFloatv(GL_TEXTURE_STACK_DEPTH, "GL_TEXTURE_STACK_DEPTH", 1);
+	GlDump_GetFloatv(GL_MATRIX_MODE,			"GL_MATRIX_MODE", 1);
+	GlDump_IsEnabled(GL_NORMALIZE , "GL_NORMALIZE");
+	GlDump_IsEnabled(GL_RESCALE_NORMAL , "GL_RESCALE_NORMAL");
+	// CLIP PLANEi			GetClipPlane
+	// CLIP PLANEi			IsEnabled
 
-	cout << "Fog:" << endl;
-	GlDump_IsEnabled(GL_FOG , "GL_FOG");
+	fprintf(pkGlDumpLog, "\n\nColoring: \n");
+	GlDump_GetFloatv(GL_FOG_COLOR,			"GL_FOG_COLOR", 4);
+	GlDump_GetFloatv(GL_FOG_INDEX,			"GL_FOG_INDEX", 1);
 	GlDump_GetFloatv(GL_FOG_DENSITY,			"GL_FOG_DENSITY", 1);
+	GlDump_GetFloatv(GL_FOG_START,			"GL_FOG_START", 1);
 	GlDump_GetFloatv(GL_FOG_END,				"GL_FOG_END", 1);
-	GlDump_GetFloatv(GL_FOG_HINT,				"GL_FOG_HINT", 1);
-	GlDump_GetFloatv(GL_FOG_INDEX,				"GL_FOG_INDEX", 1);
 	GlDump_GetFloatv(GL_FOG_MODE,				"GL_FOG_MODE", 1);
-	GlDump_GetFloatv(GL_FOG_START,				"GL_FOG_START", 1);
-	GlDump_GetFloatv(GL_FOG_COLOR,				"GL_FOG_COLOR", 4);
+	GlDump_IsEnabled(GL_FOG ,					"GL_FOG");
+	GlDump_GetIntv(GL_SHADE_MODEL,			"GL_SHADE_MODEL", 1);			
 
-	cout << "Limits:" << endl;
-	GlDump_GetFloatv(GL_MAX_TEXTURE_SIZE,		"GL_MAX_TEXTURE_SIZE", 1);
+	// Lighting 6.11
+	fprintf(pkGlDumpLog, "\n\nLighting: \n");
+	GlDump_IsEnabled(GL_LIGHTING , "GL_LIGHTING");
+	//	COLOR MATERIAL
+	//	COLOR MATERIAL PARAMETER
+	//	COLOR MATERIAL FACE
+	//	AMBIENT
+	//	DIFFUSE
+	//	SPECULAR
+	//	EMISSION
+	//	SHININESS
+	GlDump_GetFloatv(GL_LIGHT_MODEL_AMBIENT,	"GL_LIGHT_MODEL_AMBIENT", 1);
+	GlDump_IsEnabled(GL_LIGHT_MODEL_LOCAL_VIEWER ,	"GL_LIGHT_MODEL_LOCAL_VIEWER");
+	GlDump_IsEnabled(GL_LIGHT_MODEL_TWO_SIDE ,	"GL_LIGHT_MODEL_TWO_SIDE");
+	//LIGHT_MODEL_COLOR_CONTROL
+	// AMBIENT
+	//	DIFFUSE
+	//	SPECULAR
+	//	POSITION
+	//	CONSTANT ATTENUATION
+	//	LINEAR ATTENUATION
+	//	QUADRATIC ATTENUATION
+	//	SPOT DIRECTION
+	//	SPOT EXPONENT
+	//	SPOT CUTOFF
+	//	LIGHTi
+	//	COLOR INDEXES
 
-//	glGetFloatv(XXX, afValues);			cout << "XXX: " << afValues[0] << endl;
-//	glGetFloatv(XXX, afValues);		cout << "XXX: " << afValues[0] <<"," << afValues[1] << "," << afValues[2] << "," << afValues[3] << endl;
+	// Rasterization 6.12
+	// Multisampling 6.13
+	// Texture Objects 6.14
+	// Texture Environment and Generation Version 6.17
 
+	// Pixel Operations 6.18
+	fprintf(pkGlDumpLog, "\n\nPixel Operations: \n");
+	GlDump_IsEnabled(GL_SCISSOR_TEST , "GL_SCISSOR_TEST");
+	//SCISSOR_BOX
+	GlDump_IsEnabled(GL_ALPHA_TEST ,			"GL_ALPHA_TEST");
+	GlDump_GetIntv(GL_ALPHA_TEST_FUNC,			"GL_ALPHA_TEST_FUNC", 1);			
+	GlDump_GetFloatv(GL_ALPHA_TEST_REF,			"GL_ALPHA_TEST_REF", 1);
+	GlDump_IsEnabled(GL_STENCIL_TEST , "GL_STENCIL_TEST");
+	//STENCIL_FUNC
+	//STENCIL_VALUE MASK
+	//STENCIL_REF
+	//STENCIL_FAIL
+	//STENCIL_PASS_DEPTH_FAIL
+	//STENCIL_PASS_DEPTH_PASS
+	GlDump_IsEnabled(GL_DEPTH_TEST , "GL_DEPTH_TEST");
+	GlDump_GetFloatv(GL_DEPTH_FUNC,				"GL_DEPTH_FUNC", 1);
+	GlDump_IsEnabled(GL_BLEND , "GL_BLEND");
+	GlDump_GetFloatv(GL_BLEND_DST,				"GL_BLEND_DST", 1);
+	GlDump_GetFloatv(GL_BLEND_SRC,				"GL_BLEND_SRC", 1);
+	GlDump_IsEnabled(GL_DITHER , "GL_DITHER");
+	//INDEX LOGIC OP (v1.0:LOGIC OP)
+	//COLOR_LOGIC_OP
+	GlDump_IsEnabled(GL_LOGIC_OP , "GL_LOGIC_OP");
+
+	// Framebuffer Control 6.19
+	fprintf(pkGlDumpLog, "\n\nFramebuffer Control: \n");
+	GlDump_GetFloatv(GL_DRAW_BUFFER,				"GL_DRAW_BUFFER", 1);
+	GlDump_GetIntv(GL_INDEX_WRITEMASK,			"GL_INDEX_WRITEMASK", 1);
+	GlDump_GetFloatv(GL_COLOR_WRITEMASK,		"GL_COLOR_WRITEMASK", 4);
+	GlDump_IsEnabled(GL_DEPTH_WRITEMASK ,		"GL_DEPTH_WRITEMASK");
+	GlDump_GetIntv(GL_STENCIL_WRITEMASK,		"GL_STENCIL_WRITEMASK", 1);
+	GlDump_GetFloatv(GL_COLOR_CLEAR_VALUE,		"GL_COLOR_CLEAR_VALUE", 4);
+	GlDump_GetFloatv(GL_INDEX_CLEAR_VALUE,		"GL_INDEX_CLEAR_VALUE", 1);
+	GlDump_GetFloatv(GL_DEPTH_CLEAR_VALUE,		"GL_DEPTH_CLEAR_VALUE", 1);
+	GlDump_GetIntv(GL_STENCIL_CLEAR_VALUE,		"GL_STENCIL_CLEAR_VALUE", 1);
+	GlDump_GetFloatv(GL_ACCUM_CLEAR_VALUE,		"GL_ACCUM_CLEAR_VALUE", 1);
+
+	// Pixels 6.20
+	
+	// Hints 6.26 
+	fprintf(pkGlDumpLog, "\n\nHints: \n");
+	GlDump_GetIntv(GL_PERSPECTIVE_CORRECTION_HINT,	"GL_PERSPECTIVE_CORRECTION_HINT", 1);
+	GlDump_GetIntv(GL_POINT_SMOOTH_HINT,				"GL_POINT_SMOOTH_HINT", 1);
+	GlDump_GetIntv(GL_LINE_SMOOTH_HINT,					"GL_LINE_SMOOTH_HINT", 1);
+	GlDump_GetIntv(GL_POLYGON_SMOOTH_HINT,				"GL_POLYGON_SMOOTH_HINT", 1);
+	GlDump_GetIntv(GL_FOG_HINT,							"GL_FOG_HINT", 1);
+	GlDump_GetIntv(GL_TEXTURE_COMPRESSION_HINT,		"GL_TEXTURE_COMPRESSION_HINT", 1);
+
+	// Implementation Dependent Values 6.27
+	fprintf(pkGlDumpLog, "\n\nImplementation Dependent Values: \n");
+	GlDump_GetIntv(GL_MAX_LIGHTS,							"GL_MAX_LIGHTS", 1);			
+	GlDump_GetIntv(GL_MAX_CLIP_PLANES,					"GL_MAX_CLIP_PLANES", 1);			
+	GlDump_GetIntv(GL_MAX_MODELVIEW_STACK_DEPTH,		"GL_MAX_MODELVIEW_STACK_DEPTH", 1);			
+	GlDump_GetIntv(GL_MAX_PROJECTION_STACK_DEPTH,	"GL_MAX_PROJECTION_STACK_DEPTH", 1);			
+	GlDump_GetIntv(GL_MAX_TEXTURE_STACK_DEPTH,		"GL_MAX_TEXTURE_STACK_DEPTH", 1);			
+	GlDump_GetIntv(GL_SUBPIXEL_BITS,						"GL_SUBPIXEL_BITS", 1);			
+	GlDump_GetIntv(GL_MAX_3D_TEXTURE_SIZE,				"GL_MAX_3D_TEXTURE_SIZE", 1);			
+	GlDump_GetIntv(GL_MAX_TEXTURE_SIZE,					"GL_MAX_TEXTURE_SIZE", 1);			
+	GlDump_GetIntv(GL_MAX_CUBE_MAP_TEXTURE_SIZE,		"GL_MAX_CUBE_MAP_TEXTURE_SIZE", 1);			
+	GlDump_GetIntv(GL_MAX_PIXEL_MAP_TABLE,				"GL_MAX_PIXEL_MAP_TABLE", 1);			
+	GlDump_GetIntv(GL_MAX_NAME_STACK_DEPTH,			"GL_MAX_NAME_STACK_DEPTH", 1);			
+	GlDump_GetIntv(GL_MAX_LIST_NESTING,					"GL_MAX_LIST_NESTING", 1);			
+	GlDump_GetIntv(GL_MAX_EVAL_ORDER,					"GL_MAX_EVAL_ORDER", 1);			
+	// MAX VIEWPORT DIMS
+	GlDump_GetIntv(GL_MAX_ATTRIB_STACK_DEPTH,	"GL_MAX_ATTRIB_STACK_DEPTH", 1);			
+	GlDump_GetIntv(GL_MAX_CLIENT_ATTRIB_STACK_DEPTH,	"GL_MAX_CLIENT_ATTRIB_STACK_DEPTH", 1);			
+	GlDump_GetFloatv(GL_AUX_BUFFERS,			"GL_AUX_BUFFERS", 1);
+	GlDump_IsEnabled(GL_RGBA_MODE , "GL_RGBA_MODE");
+	GlDump_IsEnabled(GL_INDEX_MODE , "GL_INDEX_MODE");
+	GlDump_IsEnabled(GL_DOUBLEBUFFER , "GL_DOUBLEBUFFER");
+	GlDump_IsEnabled(GL_STEREO , "GL_STEREO");
+	//ALIASED POINT SIZE RANGE
+	//SMOOTH POINT SIZE RANGE
+	//SMOOTH POINT SIZE GRANULARITY
+	//ALIASED LINE WIDTH RANGE
+	//SMOOTH_LINE_WIDTH_RANGE
+	//SMOOTH LINE WIDTH GRANULARITY
+	GlDump_GetIntv(GL_MAX_ELEMENTS_INDICES,	"GL_MAX_ELEMENTS_INDICES", 1);			
+	GlDump_GetIntv(GL_MAX_ELEMENTS_VERTICES,	"GL_MAX_ELEMENTS_VERTICES", 1);			
+	GlDump_GetIntv(GL_MAX_TEXTURE_UNITS,	"GL_MAX_TEXTURE_UNITS", 1);			
+	GlDump_GetIntv(GL_SAMPLE_BUFFERS,		"GL_SAMPLE_BUFFERS", 1);			
+	GlDump_GetIntv(GL_SAMPLES,					"GL_SAMPLES", 1);			
+	//COMPRESSED TEXTURE FORMATS
+	GlDump_GetIntv(GL_NUM_COMPRESSED_TEXTURE_FORMATS,		"GL_NUM_COMPRESSED_TEXTURE_FORMATS", 1);			
+
+
+
+	fclose(pkGlDumpLog);
 }
 
 
@@ -1508,9 +1717,11 @@ void Render::GlInfo()
 void Render::RunCommand(int cmdid, const CmdArgument* kCommand)
 {
 	switch(cmdid) {
-		case FID_GLINFO:	GlInfo();	break;
+		case FID_GLINFO:			GlInfo();							break;
 		case FID_CONSOLECOLOR:	m_kConsoleColor.Set(1,0,0);	break;
 		case FID_SHOT:				m_bCapture = true;				break;
+		case FID_GLDUMP:			DumpGLState("gldump.txt");		break;
+
 		}
 }
 
