@@ -43,6 +43,13 @@ namespace DMLua
 	// lualua functions
 	int MCOMMON_API RunScriptLua(lua_State* pkLua);
 
+	// Path finding
+	int MCOMMON_API HavePathLua(lua_State* pkLua);
+	int MCOMMON_API MakePathFindLua(lua_State* pkLua);
+
+	// math
+	int MCOMMON_API RandomLua(lua_State* pkLua);
+
 	// functions to get less code
 	Entity* TestScriptInput (int iArgs, lua_State* pkLua);
 	Entity* GetHQEntity ();

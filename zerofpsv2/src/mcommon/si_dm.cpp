@@ -35,6 +35,13 @@ void DMLua::Init(EntityManager* pkObjMan,ZFScriptSystem* pkScript)
 	pkScript->ExposeFunction("FireAtLocation", DMLua::FireAtLocationLua);
 	pkScript->ExposeFunction("FireAtObject", DMLua::FireAtCharacterLua);
 	pkScript->ExposeFunction("SetMoveSpeed", DMLua::SetMoveSpeedLua);
+
+	// path finding
+	pkScript->ExposeFunction("HavePath", DMLua::HavePathLua);					
+	pkScript->ExposeFunction("MakePathFind", DMLua::MakePathFindLua);
+
+	// math
+	pkScript->ExposeFunction("Random", DMLua::RandomLua);
 }
 // ------------------------------------------------------------------------------------------------
 
@@ -397,6 +404,77 @@ int DMLua::FireAtCharacterLua(lua_State* pkLua)
 
 }
 
+int DMLua::HavePathLua(lua_State* pkLua)
+{
+	if(g_pkScript->GetNumArgs(pkLua) == 1)
+	{
+		double dId;
+		int ret = 0;
+		
+		g_pkScript->GetArgNumber(pkLua, 0, &dId);				
+		
+		Entity* pkEnt = g_pkObjMan->GetObjectByNetWorkID((int)dId);
+		if(pkEnt)
+		{
+			P_PfPath* pf = (P_PfPath*)pkEnt->GetProperty("P_PfPath");
+			if(pf)
+				if(pf->HavePath())
+				{
+					g_pkScript->AddReturnValue(pkLua,1);
+					return 1;		
+				}
+		}
+		
+	}
+	return 0;
+}
+
+int DMLua::MakePathFindLua(lua_State* pkLua)
+{
+	if(g_pkScript->GetNumArgs(pkLua) == 2)
+	{
+		double dId;
+		Vector3 kPos;		
+		vector<TABLE_DATA> vkData;
+		
+		g_pkScript->GetArgNumber(pkLua, 0, &dId);				
+		g_pkScript->GetArgTable(pkLua, 2, vkData);
+
+		kPos = Vector3(
+			(float) (*(double*) vkData[0].pData),
+			(float) (*(double*) vkData[1].pData),
+			(float) (*(double*) vkData[2].pData)); 
+		
+		Entity* pkEnt = g_pkObjMan->GetObjectByNetWorkID((int)dId);
+		if(pkEnt)
+		{
+			P_PfPath* pf = (P_PfPath*)pkEnt->GetProperty("P_PfPath");
+			if(pf)
+				pf->MakePathFind(kPos);
+		}
+	}
+	return 0;
+}
+
+
+int DMLua::RandomLua (lua_State* pkLua)
+{
+ 	if( g_pkScript->GetNumArgs(pkLua) == 1 )
+   {
+      double dTemp;
+      g_pkScript->GetArgNumber(pkLua, 0, &dTemp);
+
+      if ( dTemp < 0 )
+         dTemp = 1;
+
+
+      g_pkScript->AddReturnValue(pkLua, rand()%int(dTemp) );
+
+      return 1;
+   }
+
+   return 0;
+}
 
 Entity* DMLua::TestScriptInput (int iArgs, lua_State* pkLua)
 {

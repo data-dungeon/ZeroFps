@@ -15,7 +15,7 @@ P_DMGun::P_DMGun()
 	m_fBurstLength = 		1;
 	m_bFireing =			false;
 	
-	m_kGunOffset.Set(0,1,0);
+	m_kGunOffset.Set(0,0,0);
 	
 	//default gun
 	m_strName = 	"YberGun";
@@ -56,8 +56,7 @@ bool P_DMGun::Fire(Vector3 kTarget)
 void P_DMGun::Update()
 {
 	float t = m_pkObjMan->GetSimTime();
-	
-	
+
 	if(m_pkObjMan->IsUpdate(PROPERTY_TYPE_RENDER))
 	{
 		float f;

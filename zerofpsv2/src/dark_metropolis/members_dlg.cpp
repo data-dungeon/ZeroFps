@@ -896,27 +896,26 @@ void CMembersDlg::OnEquip(int iItemID, DMContainer* pkDestContainer)
 {
 	Entity* pkEntity = m_pkFps->m_pkObjectMan->GetObjectByNetWorkID ( iItemID );
 
-	
 	// check type of item equipped
-	if ( pkEntity )
-	{
 
+	// equip weapon
+	if ( pkEntity  )
+	{
 		// Get owner object
 		Entity* pkOwner = m_pkFps->m_pkObjectMan->GetObjectByNetWorkID ( pkDestContainer->GetOwnerID() ); 
 
-		pkOwner->AddChild ( pkEntity );
-		//pkEntity->SetWorldPosV ( pkOwner->GetWorldPosV() );
-		pkEntity->SetLocalPosV ( Vector3(1,1,1) );
-		pkEntity->SetWorldPosV ( Vector3(0, 1, 0) );
-		pkEntity->SetUseZones(false);
 		pkEntity->SetUpdateStatus ( UPDATE_ALL );
+		pkOwner->SetUpdateStatus( UPDATE_ALL );
+
+		pkEntity->SetUseZones(false);
+
+		pkEntity->SetLocalPosV ( Vector3(0,1.4,0.7) );
+		pkEntity->SetWorldPosV ( Vector3(0,1.4,0.7) );
+
 		pkEntity->SetRelativeOri (true);
 
 		//P_LinkToJoint* pkLink = (P_LinkToJoint*)pkEntity->AddProperty ("P_LinkToJoint");      
 		//pkLink->SetJoint( "righthand" );
-
 	}
-	else
-		cout << "FAILEDDDDDDDDDD!!!" << endl;
 
 }

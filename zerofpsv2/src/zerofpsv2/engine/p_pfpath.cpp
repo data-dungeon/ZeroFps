@@ -110,6 +110,8 @@ void P_PfPath::Update()
 	Vector3 kGoal = m_kPath[m_iNextGoal] + m_kOffset;
 
 	Vector3 kdiff = kGoal - kPos;
+
+
 	float fdist = kdiff.Length();
 	if(fdist < (m_fSpeed) * m_pkFps->m_pkObjectMan->GetSimDelta() ) 
 	{
@@ -143,11 +145,15 @@ void P_PfPath::Update()
 	if(!m_bTilt)
 		kdiff.y = 0;
 	
-	Matrix4 kRotM;
-	kRotM.LookDir(kdiff.Unit(),Vector3(0,1,0));
-	kRotM.Transponse();
+	// Zerom bug fixes, on low speed goal and pos is same and craches on kdiff.unit
+	if ( kGoal.x != kPos.x || kGoal.z != kPos.z )
+	{
+		Matrix4 kRotM;
+		kRotM.LookDir(kdiff.Unit(),Vector3(0,1,0));
+		kRotM.Transponse();
 		
-	m_pkObject->SetLocalRotM(kRotM);
+		m_pkObject->SetLocalRotM(kRotM);
+	}
 }
 
 
