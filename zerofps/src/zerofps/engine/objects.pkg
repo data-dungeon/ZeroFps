@@ -5,12 +5,14 @@ class CameraProperty;
 class CollisionProperty;
 class HeightMapRenderProperty;
 class SkyBoxRenderProperty;
+class WaterRenderProperty;
 class CollisionObject;
 class CollisionSphere;
 class CollisionPoint;
 class CollisionHeightMap;
 class HeightMapObject;
 class SkyBoxObject;
+class WaterObject;
 
 #include "object.h"
 #include "property.h"
@@ -26,8 +28,8 @@ class SkyBoxObject;
 #include "heightmaprenderproperty.h"
 #include "skyboxobject.h"
 #include "skyboxrenderproperty.h"
-
-
+#include "waterrenderproperty.h"
+#include "waterobject.h"
 
 
 

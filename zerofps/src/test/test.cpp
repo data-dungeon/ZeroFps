@@ -127,7 +127,7 @@ void Test::OnInit(void) {
 
 	//player
 	m_pkPlayer=new PlayerObject(test,pkInput);
-	m_pkPlayer->GetPos()=Vector3(400,25,705);		
+	m_pkPlayer->GetPos().Set(400,25,705);		
 	m_pkPlayer->AddProperty(new CameraProperty(cam1));
 	pkObjectMan->Add(m_pkPlayer);
 	pkCollisionMan->Add(m_pkPlayer);
@@ -135,15 +135,22 @@ void Test::OnInit(void) {
 	
 	//skybox
 	SkyBoxObject *sky=new SkyBoxObject("file:../data/textures/skybox-hor.bmp","file:../data/textures/skybox-topbotom.bmp");
-	sky->SetRotate(Vector3(.5,0,0));
+	sky->SetRotate(Vector3(22.5,0,0));
 	pkObjectMan->Add(sky);	
-	pkCollisionMan->Add(sky);
+
 	
-	//add a collisionproperty for our heightmap
+	//water
+	WaterObject *water=new WaterObject(1200,10,"file:../data/textures/water2.bmp");
+	water->GetPos().Set(512,0,512);
+	pkObjectMan->Add(water);	
+	
+	
+	//Heightmap
 	HeightMapObject *hm=new HeightMapObject(test);
-	hm->GetPos()=Vector3(0,-4,0);			
+	hm->GetPos().Set(0,-4,0);			
 	pkObjectMan->Add(hm);	
 	pkCollisionMan->Add(hm);
+
 
 
 	Sound *welcome=new Sound();
@@ -153,8 +160,6 @@ void Test::OnInit(void) {
 	pkAlSys->AddSound(welcome);
 
 	ZFObjectManger::GetInstance()->PrintObjects();
-
-	pkObjectMan->GetPropertys(PROPERTY_TYPE_RENDER,PROPERTY_SIDE_CLIENT);
 
 }
 
@@ -212,7 +217,8 @@ void Test::OnIdle(void) {
 		glAlphaFunc(GL_GREATER,0.3);
 			pkRender->DrawBillboard(pkFps->GetCam()->GetModelMatrix(),Vector3(140,50,450),20,pkTexMan->Load("file:../data/textures/star.tga",T_NOMIPMAPPING));	
 	
-		pkRender->DrawWater(pkFps->GetCam()->GetPos(),Vector3(512,0,512),Vector3(0,0,0),1200,50);	
+//			pkRender->DrawWater(pkFps->GetCam()->GetPos(),Vector3(512,0,512),Vector3(0,0,0),1200,50,pkTexMan->Load("file:../data/textures/water2.bmp",0));	
+//		pkRender->DrawWater(pkFps->GetCam()->GetPos(),Vector3(512,0,512),Vector3(0,0,0),1200,50);	
 	
 
 	

@@ -82,7 +82,8 @@ void Render::DrawSkyBox(Vector3 CamPos,Vector3 kHead,int iHor,int iTop) {
 }
 
 
-void Render::DrawWater(Vector3 kCamPos,Vector3 kPosition,Vector3 kHead,int iSize,int iStep) {
+void Render::DrawWater(Vector3 kCamPos,Vector3 kPosition,Vector3 kHead,int iSize,int iStep,int iTexture) {
+
 	float freq=500.0;
 	float amp=0.5;
 	
@@ -107,14 +108,16 @@ void Render::DrawWater(Vector3 kCamPos,Vector3 kPosition,Vector3 kHead,int iSize
 	
 	glActiveTextureARB(GL_TEXTURE0_ARB);
 	glEnable(GL_TEXTURE_2D);
-	//glBindTexture(GL_TEXTURE_2D,m_pkTexMan->Load("file:../data/textures/water2.bmp",0));
-	m_pkTexMan->BindTexture(m_pkTexMan->Load("file:../data/textures/water2.bmp",0));
+//	glBindTexture(GL_TEXTURE_2D,m_pkTexMan->Load("file:../data/textures/water2.bmp",0));
+//	m_pkTexMan->BindTexture(m_pkTexMan->Load("file:../data/textures/water2.bmp",0));
+	m_pkTexMan->BindTexture(iTexture);
 	glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE);
 	
 	glActiveTextureARB(GL_TEXTURE1_ARB);
 	glEnable(GL_TEXTURE_2D);	
 //	glBindTexture(GL_TEXTURE_2D,m_pkTexMan->Load("file:../data/textures/water2.bmp",0));
-	m_pkTexMan->BindTexture(m_pkTexMan->Load("file:../data/textures/water2.bmp",0));
+//	m_pkTexMan->BindTexture(m_pkTexMan->Load("file:../data/textures/water2.bmp",0));
+	m_pkTexMan->BindTexture(iTexture);	
 	glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_ADD);
 	
 	float tx=SDL_GetTicks()/80000.0;	
