@@ -33,7 +33,7 @@ void P_Spawn::Update()
 	//draw a ball on the server
 	if( m_pkObjMan->IsUpdate(PROPERTY_TYPE_RENDER) ) 
 	{
-		m_pkRender->Sphere(m_pkObject->GetWorldPosV(),0.5,1,Vector3(1,0,0),true);
+		//m_pkRender->Sphere(m_pkObject->GetWorldPosV(),0.5,1,Vector3(1,0,0),true);
 		return;
 	}
 	

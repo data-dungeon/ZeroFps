@@ -125,7 +125,7 @@ void MistServer::Init()
 	memset(kSkin.m_afBorderColor, 0, sizeof(float)*3);
 	pkGui->GetToolTip()->SetSkin(kSkin);*/
 	
-	//pkInput->ToggleGrab(true);
+	pkInput->ToggleGrab(true);
 
  	pkFps->SetCamera(m_pkCamera);		
 
