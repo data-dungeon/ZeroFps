@@ -37,6 +37,25 @@ public:
 	int		m_iInputKey[VKMAPS];
 };
 
+class QueuedKeyInfo
+{
+	public:
+		int	m_iKey;
+		int	m_iModifiers;		// OR-combined bit list (alt , shift , ctrl)
+		
+		QueuedKeyInfo()
+		{
+			m_iKey = -1;
+			m_iModifiers = 0;		
+		};
+		
+		QueuedKeyInfo(int iKey,int iMod)
+		{
+			m_iKey = iKey;
+			m_iModifiers = iMod;
+		};
+};
+
 class Console;
 
 
@@ -77,11 +96,14 @@ class ENGINE_API Input : public ZFSubSystem {
 		unsigned int	m_iQueueLength;
 		bool 				m_bKeyRepeat;
 
-		queue<int>		m_aPressedKeys;
+		//queue<int>		m_aPressedKeys;
+		queue<QueuedKeyInfo>		m_aPressedKeys;
 	
 		void RunCommand(int cmdid, const CmdArgument* kCommand);
 		void GrabInput(void);
 		void ReleaseInput(void);
+		
+		void AddQueuedKey(SDL_keysym* kKey);
 		
 		//int m_iNrActions;
 		
@@ -119,7 +141,7 @@ public:
 		void SetCursorInputPos(int x, int y);
 		
 		
-		int GetQueuedKey();
+		QueuedKeyInfo GetQueuedKey();
 		int SizeOfQueue();
 		void UpdateMousePos();
 		void MouseXY(int &iX,int &iY);

@@ -165,13 +165,16 @@ void Console::ConsoleCmd(CON_CMD eCmd)
 			break;
 
 		case CONCMD_HISTORYUP:		
-			if( !m_kCommandHistory.empty() ) {
+			if( !m_kCommandHistory.empty() ) 
+			{
 				if((m_iLastCommand + 1) < m_kCommandHistory.size() )
 					m_iLastCommand++;
 				
 				strcpy(m_aCommand, m_kCommandHistory[m_iLastCommand].c_str());
 				m_iInputPos = strlen(m_aCommand);
-				}
+			
+				cout<<"upp"<<endl;
+			}
 			
 			break;
 		
@@ -217,8 +220,6 @@ void Console::ConsoleCmd(CON_CMD eCmd)
 	
 void Console::Update(void) 
 {
-	//Draw();
-
 	// Scroll console text
 	static float PREVTIME = m_pkEngine->GetEngineTime();	//GetGameTime();
 	static float TIME = 0.10f;
@@ -226,25 +227,31 @@ void Console::Update(void)
 	bool bUpdate = ((fCurrTime-PREVTIME) > TIME);
 
 	static bool s_bKeyrepeatActivated = false;
-	static int s_iLastKeyPressed;
+	static QueuedKeyInfo s_kLastKeyPressed;
 	static float s_fKeyrepeatCheckTime = m_pkEngine->GetEngineTime();		//GetGameTime();
 	static float s_fLastRepeatTime = m_pkEngine->GetEngineTime();			//GetGameTime();
 
-	int iKeyPressed = m_pkInput->GetQueuedKey();
-/*	if(iKeyPressed != -1)	cout << "Key: " << iKeyPressed << endl;
-	if(iKeyPressed == 8) {
-		int ifsdf = 25;
-		}*/
+	
+	//loop while theres keys to handle
+	while(m_pkInput->SizeOfQueue() > 0)
+	{
+		//get next queued key
+		QueuedKeyInfo kKey = m_pkInput->GetQueuedKey();
 
+		CON_CMD eCmd = CONCMD_NONE;		// We assume we don't need to do any console cmd.
 
-	if(m_pkInput->Pressed(KEY_RSHIFT) || m_pkInput->Pressed(KEY_LSHIFT)){
-		m_bShift=true;
-	}else{
-		m_bShift=false;
-	}
-
-	CON_CMD eCmd = CONCMD_NONE;		// We assume we don't need to do any console cmd.
-
+		//check funktion keys
+		if(kKey.m_iKey == KEY_PAGEUP)		eCmd = CONCMD_SCROLLUP;
+		if(kKey.m_iKey == KEY_PAGEDOWN)	eCmd = CONCMD_SCROLLDOWN;
+		if(kKey.m_iKey == KEY_UP)			eCmd = CONCMD_HISTORYUP;
+		if(kKey.m_iKey == KEY_DOWN)		eCmd = CONCMD_HISTORYDOWN;
+		if(kKey.m_iKey == KEY_LEFT)		eCmd = CONCMD_MARKERLEFT;
+		if(kKey.m_iKey == KEY_RIGHT)		eCmd = CONCMD_MARKERRIGHT;
+		if(kKey.m_iKey == KEY_INSERT)		eCmd = CONCMD_TOGGLEINSERT;
+		if(kKey.m_iKey == KEY_TAB)			eCmd = CONCMD_TOGGLE;
+		if(kKey.m_iKey == KEY_RETURN)		eCmd = CONCMD_RUN;
+		
+	/*
 	if(m_pkInput->Pressed(KEY_PAGEUP))		eCmd = CONCMD_SCROLLUP;
 	if(m_pkInput->Pressed(KEY_PAGEDOWN))	eCmd = CONCMD_SCROLLDOWN;
 	if(m_pkInput->Pressed(KEY_UP))			eCmd = CONCMD_HISTORYUP;
@@ -254,24 +261,82 @@ void Console::Update(void)
 	if(m_pkInput->Pressed(KEY_INSERT))		eCmd = CONCMD_TOGGLEINSERT;
 	if(m_pkInput->Pressed(KEY_TAB))			eCmd = CONCMD_TOGGLE;
 	if(m_pkInput->Pressed(KEY_RETURN))		eCmd = CONCMD_RUN;
+	*/
 
-	if(eCmd != CONCMD_NONE)
-	{
-		cout << "Running Cmd" << endl;
-		if(bUpdate) {
-			PREVTIME = fCurrTime;
-			ConsoleCmd( eCmd );
+		//if a function-key was pressed, execute function and return
+		if(eCmd != CONCMD_NONE)
+		{
+			cout << "Running Cmd" << endl;
+			if(bUpdate) {
+				PREVTIME = fCurrTime;
+				ConsoleCmd( eCmd );
+				}
+			return;
+		}
+
+		//is this a valid key?
+		if( !( (kKey.m_iKey >= 32 && kKey.m_iKey <= 126) || kKey.m_iKey==8 || kKey.m_iKey==13) )
+			continue;
+
+		//type text
+		if(strlen(m_aCommand) < COMMAND_LENGHT) 
+		{
+			//if a new button was pressed, disable keyrepeat and reset repeat timers
+			if(s_kLastKeyPressed.m_iKey != kKey.m_iKey)
+			{
+				s_bKeyrepeatActivated = false;		
+				s_fKeyrepeatCheckTime = m_pkEngine->GetEngineTime();	//GetGameTime();
+				s_fLastRepeatTime = m_pkEngine->GetEngineTime();		//GetGameTime();				
 			}
-		return;
+				
+			//set last pressed key
+			s_kLastKeyPressed = kKey;
+
+			//add character to typed command
+			InsertKey(FormatKey(kKey));
+		}
 	}
 
-
-	//type text
-	if(strlen(m_aCommand)<COMMAND_LENGHT) 
+	//fixar keyrepeat
+	if(s_kLastKeyPressed.m_iKey != -1)//ingen repeat om ingen knapp tryckts
 	{
-		// Registrera senast knappnedtryck.
-		if(iKeyPressed != -1 && 
-			!(iKeyPressed == KEY_LSHIFT || iKeyPressed == KEY_RSHIFT))
+		if(m_pkInput->Pressed((Buttons)s_kLastKeyPressed.m_iKey))
+		{
+	
+		float fCurrTime = m_pkEngine->GetEngineTime();	//GetGameTime();
+		const float REPEAT_DELAY = 0.50f, REPEAT_RATE = 0.1f;
+		
+		if(s_bKeyrepeatActivated == false)
+		{
+			// Är det dags att aktivera Key Repeat?
+			if(fCurrTime - s_fKeyrepeatCheckTime > REPEAT_DELAY)
+			{
+				s_bKeyrepeatActivated = true;
+				s_fKeyrepeatCheckTime = fCurrTime;
+				s_fLastRepeatTime = fCurrTime;
+				cout<<"aktiverar keyrepeaet"<<endl;
+			}
+		}
+		else
+		{
+			// Är det dags att skriva ett nytt tecken?
+			if(fCurrTime - s_fLastRepeatTime > REPEAT_RATE)
+			{
+				InsertKey(FormatKey(s_kLastKeyPressed));
+				s_fLastRepeatTime = fCurrTime;
+			}
+		}		
+		}
+		else
+		{
+			s_bKeyrepeatActivated = false;
+			s_fKeyrepeatCheckTime = m_pkEngine->GetEngineTime();	//GetGameTime();
+			s_fLastRepeatTime = m_pkEngine->GetEngineTime();		//GetGameTime();
+		}			
+	}
+
+/*		// Registrera senast knappnedtryck.
+		if(iKeyPressed != -1 &&  !(iKeyPressed == KEY_LSHIFT || iKeyPressed == KEY_RSHIFT))
 		{
 	
 			// Formatera bokstaven.
@@ -318,7 +383,7 @@ void Console::Update(void)
 			s_fKeyrepeatCheckTime = m_pkEngine->GetEngineTime();	//GetGameTime();
 			s_fLastRepeatTime = m_pkEngine->GetEngineTime();		//GetGameTime();
 		}	
-	}	
+	}*/	
 }
 
 
@@ -331,9 +396,18 @@ bool Console::Execute(char* aText) {
 	Printf("> %s", aText);				// Print command to screen.
 
 	// Put into command history. New command are pushed on front and oldest are poped from back of deque
-	if(!m_kCommandHistory.empty())
+	if(m_kCommandHistory.empty())
+	{		
+		//if history is empty add command
+		m_kCommandHistory.push_front( string(aText) );		
+	}
+	else
+	{
+		//check if command was typed lasttime
 		if(m_kCommandHistory.front() != string(aText))
-			m_kCommandHistory.push_front( string(aText) );
+			m_kCommandHistory.push_front( string(aText) );		
+	}
+		
 	
 	// If deque is full remove last element.
 	if(m_kCommandHistory.size() > MAX_CMD_HISTRORY_LENGTH)
@@ -355,7 +429,7 @@ bool Console::Execute(char* aText) {
 	return true;
 }
 
-void Console::FormatKey(int& r_iKey)
+/*void Console::FormatKey(int& r_iKey)
 {
 	if(m_pkInput->Pressed(KEY_RSHIFT) || m_pkInput->Pressed(KEY_LSHIFT)) 
 	{
@@ -373,7 +447,29 @@ void Console::FormatKey(int& r_iKey)
 			r_iKey='/';
 		}
 	}
+}*/
+
+char Console::FormatKey(QueuedKeyInfo& kKey)
+{
+	if(kKey.m_iModifiers & MODIFIER_SHIFT) 
+	{
+		cout << "Formating Key" << endl;
+		if(kKey.m_iKey>96 && kKey.m_iKey<123){
+			return kKey.m_iKey-32;
+		}
+		if(kKey.m_iKey=='-'){
+			return '_';
+		}
+		if(kKey.m_iKey=='.'){
+			return ':';
+		}					
+		if(kKey.m_iKey=='7'){
+			return '/';
+		}
+	}
+	return kKey.m_iKey;
 }
+
 
 void Console::Toggle()
 {

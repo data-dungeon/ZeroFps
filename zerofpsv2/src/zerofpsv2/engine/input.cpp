@@ -77,12 +77,8 @@ void Input::Update(void)
 		switch(m_kEvent.type) {
 			//keyboard
 			case SDL_KEYDOWN:
-				//put key in list
-				m_aPressedKeys.push(  SDLToZeroFpsKey(m_kEvent.key.keysym.sym)  );
-				//cout << "Key Qued: " << m_kEvent.key.keysym.sym << endl;
-
-				if(m_aPressedKeys.size()>m_iQueueLength)
-					m_aPressedKeys.pop();
+				//add key to queuedkeys
+				AddQueuedKey(&m_kEvent.key.keysym);
 
 				//set button as pressed		
 				iZfKey = (Buttons) SDLToZeroFpsKey(m_kEvent.key.keysym.sym);
@@ -122,6 +118,32 @@ void Input::Update(void)
     			 break;
 		}	
 	}
+}
+
+void Input::AddQueuedKey(SDL_keysym* kKey)
+{
+	int iModifier = 0;
+	
+	//check modifiers
+	if(kKey->mod & KMOD_CTRL)
+		iModifier = iModifier | MODIFIER_CTRL;
+	if(kKey->mod & KMOD_SHIFT)
+		iModifier = iModifier | MODIFIER_SHIFT;
+	if(kKey->mod & KMOD_ALT)
+		iModifier = iModifier | MODIFIER_ALT;
+	if(kKey->mod & KMOD_META)
+		iModifier = iModifier | MODIFIER_META;
+		
+
+	//put key in list
+	m_aPressedKeys.push(  QueuedKeyInfo(SDLToZeroFpsKey(kKey->sym),iModifier)  );	
+	//cout << "Key Qued: " << kKey->sym <<"  modifiers:"<<iModifier<< endl;
+
+
+	//make sure the queue does't get to big
+	while(m_aPressedKeys.size()>m_iQueueLength)
+		m_aPressedKeys.pop();	
+
 }
 
 VKData* Input::GetVKByName(string strName)
@@ -390,27 +412,27 @@ void Input::Save(string strCfgName)
 
 
 
-int Input::GetQueuedKey()
+QueuedKeyInfo Input::GetQueuedKey()
 {
-	int value;	
+	QueuedKeyInfo kKey(-1,0);	
 	
 	if(m_bInputEnabled){
 		if(!m_aPressedKeys.empty()){
-			value = m_aPressedKeys.front();
+			kKey = m_aPressedKeys.front();
 			m_aPressedKeys.pop();
 
-			if(value < 0)
+/*			if(value < 0)
 			{
 				printf("GetQueuedKey: value < 0");
 			}
-
+*/
 			//cout << "GetQueuedKey: " << value << endl;
 
-			return value;
+			return kKey;
 		}
 	}
 	
-	return -1;
+	return kKey;
 }
 
 int Input::SizeOfQueue()

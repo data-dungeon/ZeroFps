@@ -646,7 +646,7 @@ void MistServer::Input_Camera(float fMouseX, float fMouseY)
 void MistServer::Input()
 {
 	// *** HANDE Quueued Keys.
-	int iPressedKey = m_pkInput->GetQueuedKey();
+	int iPressedKey = m_pkInput->GetQueuedKey().m_iKey;
 
 	switch(iPressedKey)
 	{

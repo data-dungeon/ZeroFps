@@ -541,7 +541,7 @@ void MistClient::Input()
 
 
 
-	int pressed_key = m_pkInput->GetQueuedKey();
+	int pressed_key = m_pkInput->GetQueuedKey().m_iKey;
 
 	if(pressed_key == KEY_F1)
 	{

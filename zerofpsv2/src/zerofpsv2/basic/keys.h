@@ -2,6 +2,15 @@
 /*
 	This is the input keys from the keyboard. They are mapped as far as possible to map to ASCII.
 */
+
+enum Key_Modifiers
+{
+	MODIFIER_ALT	= 1,
+	MODIFIER_CTRL	= 8,
+	MODIFIER_SHIFT = 16,
+	MODIFIER_META	= 32,
+};
+
 enum Buttons
 {
 	KEY_BACKSPACE	= 8,		
