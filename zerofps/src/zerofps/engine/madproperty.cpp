@@ -4,7 +4,7 @@
 
 extern int g_iMadLODLock;
 extern float g_fMadLODScale;
-
+ 
 MadProperty::MadProperty()
 {
 	strcpy(m_acName,"MadProperty");
