@@ -12,7 +12,7 @@ P_Event::P_Event()
 	m_pkScriptResHandle = NULL;
 	
 	m_bHaveRunInit=false;
-	m_bRun1SUpdate=true;
+	m_bRun1SUpdate=false;
 
 	m_fTimer = m_pkFps->GetGameTime();
 }

@@ -21,8 +21,6 @@ class ZoneObject;
 class ZoneData
 {
 public:
-	ZoneData& operator=(const ZoneData &kOther);
-	bool IsInside(Vector3 kPoint);
 
 	bool					m_bNew;
 	bool					m_bUsed;
@@ -36,6 +34,9 @@ public:
 	bool					m_bActive;
 	int					m_iRange;						// Range to tracker i num of zones.
 
+	ZoneData& operator=(const ZoneData &kOther);
+	bool IsInside(Vector3 kPoint);
+	ZoneData();
 };
 
 /**	\brief	SubSystem that handles all objects in the world.

@@ -23,6 +23,21 @@ ZoneData& ZoneData::operator=(const ZoneData &kOther)
 	return *this;
 }
 
+ZoneData::ZoneData()
+{
+	m_bNew = false;
+	m_bUsed = false;
+	m_pkZone = NULL;
+	m_iZoneID = 0;
+	m_kPos.Set(0,0,0);
+	m_kSize.Set(0,0,0);
+
+	m_fInactiveTime = 0;
+	m_bActive = false;
+	m_iRange = 0;		
+
+}
+
 bool ZoneData::IsInside(Vector3 kPoint)
 {
 	Vector3 half;
@@ -1346,10 +1361,15 @@ bool ObjectManager::LoadZones()
 		return false;
 	}
 
+	NewWorld();
+
 	int iNumOfZone;
 	kFile.Read(&iNumOfZone,sizeof(int),1);
 
+	cout<<"Nr of zones:"<<iNumOfZone<<endl;
 	ZoneData kZData;
+	kZData.m_bUsed = true;
+	
 	int i,zl;
 	int iLink;
 
@@ -1454,7 +1474,7 @@ void ObjectManager::LoadZone(int iId)
 	filename+=nr;
 	filename+=".dynamic.zone";
 	
-	//cout<<"load from :"<<filename<<endl;
+	cout<<"load from :"<<filename<<endl;
 	
 	ZFVFile kFile;
 	
@@ -1467,7 +1487,7 @@ void ObjectManager::LoadZone(int iId)
 	{	
 		kZData->m_bNew = false;
 		
-		//cout<<"error loading zone, creating a new template zone"<<endl;
+		cout<<"error loading zone, creating a new template zone"<<endl;
 		
 		Vector3 kPos = kZData->m_kPos;
 		object->SetLocalPosV(kPos);
@@ -1507,7 +1527,7 @@ void ObjectManager::UnLoadZone(int iId)
 	filename+=".dynamic.zone";
 
 	
-	//cout<<"saving to :"<<filename<<endl;
+	cout<<"saving to :"<<filename<<endl;
 	
 	ZFVFile kFile;
 	if(!kFile.Open(filename.c_str(),0,true))
@@ -1538,7 +1558,7 @@ int ObjectManager::GetUnusedZoneID()
 	//if none can be found create a new one
 	
 	ZoneData newzone;
-	newzone.m_bUsed = false;
+
 	newzone.m_iZoneID = m_kZones.size() - 1;
 	
 	m_kZones.push_back(newzone);
@@ -1551,9 +1571,7 @@ bool ObjectManager::NewWorld()
 	Clear();
 	m_kZones.clear();
 
-	CreateZone();
-	
-	return SaveZones();
+	return true;
 }
 
 bool ObjectManager::LoadWorld(const char* acDir)
