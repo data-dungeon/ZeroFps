@@ -1,6 +1,6 @@
 base:
-	grund funktionalitet
-	så som fil system
+	grund funktionalitet.
+	så som fil system.
 	hantering av application.
 
 engine:	

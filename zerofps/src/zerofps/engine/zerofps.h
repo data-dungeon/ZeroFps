@@ -31,8 +31,9 @@ class ZeroFps {
 	public:
 		Application* m_pkApp;						//application
 		CmdSystem* m_pkCmd;							//realtime variable handler
+		AudioManager* m_pkAudioMan;			//audio manager (sfx,music)		
 		TextureManager* m_pkTexMan;			//texture manager
-		ModellManager* m_pkModMan;			//texture manager		
+		ModellManager* m_pkModMan;			//model manager
 		Input* m_pkInput;								//keyboard mouse input
 		Primitives* m_pkPrims;					//graphic primitives
 		Console* m_pkConsole;						//console handler
@@ -41,12 +42,16 @@ class ZeroFps {
 		int m_iState;										//curent game state see enum enginestates
 		int m_iFps;											//curent FPS
 		float m_fFrameTime;							//frametime in MS
+		
+		int CMD_PLAYMUSIC;
+		int CMD_STOPMUSIC;
 			
 		ZeroFps(void);
 		
 		void SetApp(void);
 		void Init(int iNrOfArgs, char** paArgs);	
 		void MainLoop(void);
+		void InGameCmd();
 		
 		void InitDisplay(int iWidth,int iHeight,int iDepth);		
 		void Swap(void);								//swap gl buffers

@@ -195,6 +195,16 @@ void Console::Execute(char* aText) {
 		}
 		return;
 	}
+	
+	if(strcmp(aText,"cmdlist")==0) {
+		Print("");
+		Print("### funktion list ###");
+		for(int i=0;i<m_pkCmd->GetCmdList().size();i++){
+			Print(m_pkCmd->GetCmdList()[i]->aName);			
+		}
+		return;
+	}
+
 
 	Print("### unknown command ###");
 }

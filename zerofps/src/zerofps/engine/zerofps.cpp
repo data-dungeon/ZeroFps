@@ -8,10 +8,23 @@ ZeroFps::ZeroFps(void) {
 	m_pkConsole=new Console(this);	
 	m_pkInput=new Input();
 	m_pkModMan=new ModellManager(m_pkFile);
+	m_pkAudioMan=new AudioManager(this);
 	
 	m_pkCmd->Add(&m_iState,"m_iState",type_int);
 	m_pkCmd->Add(&m_iFps,"m_iFps",type_int);
 	m_pkCmd->Add(&m_fFrameTime,"m_fFrameTime",type_float);	
+	
+//	m_pkCmd->AddCmd((void*)&AudioManager::StopMusic,"stopmusic");
+	
+	//---in game commands
+	CMD_PLAYMUSIC=0;
+	CMD_STOPMUSIC=0;
+	
+	m_pkCmd->Add(&CMD_PLAYMUSIC,"PLAYMUSIC",type_int);	
+	m_pkCmd->Add(&CMD_STOPMUSIC,"STOPMUSIC",type_int);		
+
+	//-------------------
+	
 }
 
 
@@ -40,12 +53,10 @@ void ZeroFps::Init(int iNrOfArgs, char** paArgs){
 }
 
 void ZeroFps::MainLoop(void) {
-//	m_pkModMan->Load("horan/fuck/you");
-	m_pkModMan->Load("horan/fuck/ass.pMd");
-
 	while(m_iState!=state_exit) {		
 		switch(m_iState){
 			case state_normal:
+				InGameCmd();
 				m_pkInput->Update();
 				
 				//this changes mode to console
@@ -58,6 +69,7 @@ void ZeroFps::MainLoop(void) {
 				break;			
 			
 			case state_console:
+				InGameCmd();
 				m_pkConsole->Update();
 				m_pkConsole->Draw();
 				Swap();
@@ -114,5 +126,17 @@ void ZeroFps::Swap(void) {
 	m_iFps=int(1000/m_fFrameTime);
 }
 
+void ZeroFps::InGameCmd() {
+	if(CMD_PLAYMUSIC)	{
+		CMD_PLAYMUSIC=0;
+		m_pkAudioMan->PlayMusic();
+	}
+	
+	if(CMD_STOPMUSIC)	{
+		CMD_STOPMUSIC=0;
+		m_pkAudioMan->StopMusic();
+	}
+
+}
 
 

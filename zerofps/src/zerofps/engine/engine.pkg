@@ -5,6 +5,7 @@ class HalfEdge;
 class Vector4;
 class Matrix4;
 class ModellManager;
+class AudioManager;
 
 #include "input.h"
 #include "vector3.h"
@@ -13,7 +14,7 @@ class ModellManager;
 #include "matrix4.h"
 #include "vector4.h"
 #include "modellmanager.h"
-
+#include "audiomanager.h"
 
 
 
