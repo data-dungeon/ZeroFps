@@ -506,7 +506,12 @@ void Entity::GetAllEntitys(vector<Entity*> *pakEntitys,bool bForceAll,bool bChec
 		(*it)->GetAllEntitys(pakEntitys,bForceAll);
 }
 
+void Entity::GetChilds(vector<Entity*>*	pkEntitys)
+{
+	for(int i=0;i<m_akChilds.size();i++)
+		pkEntitys->push_back(m_akChilds[i]);
 
+}
 
 
 /**	\brief	Returns true if there is any netactive properys in Entity

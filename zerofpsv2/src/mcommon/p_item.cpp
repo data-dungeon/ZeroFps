@@ -13,7 +13,7 @@ P_Item::P_Item()
 	m_iSide=PROPERTY_SIDE_SERVER;
 	
 	bNetwork = true;
-	
+	m_iVersion = 2;
 
 	m_strName = "Unnamed Item";
 	m_strIcon = "default.bmp";
@@ -21,6 +21,9 @@ P_Item::P_Item()
 	m_iSizeY = 1;	
 	m_iType = 0;
 
+	m_iInContainerID = -1;
+	m_iInContainerPosX = 0;
+	m_iInContainerPosY = 0;
 }
 
 P_Item::~P_Item()
@@ -36,14 +39,33 @@ void P_Item::Init()
 
 void P_Item::Save(ZFIoInterface* pkPackage)
 {
-
-
+	pkPackage->Write_Str(m_strName);
+	pkPackage->Write_Str(m_strIcon);
+	
+	pkPackage->Write(m_iSizeX);
+	pkPackage->Write(m_iSizeY);	
+	pkPackage->Write(m_iType);
+	
+	pkPackage->Write(m_iInContainerID);
+	pkPackage->Write(m_iInContainerPosX);
+	pkPackage->Write(m_iInContainerPosY);
 }
 
 void P_Item::Load(ZFIoInterface* pkPackage,int iVersion)
 {
-
-
+	if(iVersion == 2)
+	{
+		pkPackage->Read_Str(m_strName);
+		pkPackage->Read_Str(m_strIcon);
+		
+		pkPackage->Read(m_iSizeX);
+		pkPackage->Read(m_iSizeY);		
+		pkPackage->Read(m_iType);
+		
+		pkPackage->Read(m_iInContainerID);		
+		pkPackage->Read(m_iInContainerPosX);
+		pkPackage->Read(m_iInContainerPosY);		
+	}
 }
 
 

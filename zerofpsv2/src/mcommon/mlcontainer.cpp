@@ -2,12 +2,13 @@
 #include "mlcontainer.h"
 #include <iomanip>
 
-MLContainer::MLContainer(EntityManager* pkEntMan,int iOwnerID,int iX ,int iY ,bool bDisable)
+MLContainer::MLContainer(EntityManager* pkEntMan,int iOwnerID,int iX ,int iY ,bool bDisable,int iContainerID )
 {
-	m_pkEntMan = pkEntMan;
-	m_iOwnerID = iOwnerID;
-	m_bDisableItems = bDisable;
-	m_iMaxItems = 0;
+	m_pkEntMan				= pkEntMan;
+	m_iOwnerID 				= iOwnerID;
+	m_bDisableItems 		= bDisable;
+	m_iMaxItems 			= 0;
+	m_iContainerID			= iContainerID;
 	m_kItemTypes.clear();
 	
 	SetSize(iX,iY);
@@ -128,13 +129,16 @@ bool MLContainer::GetItemPos(int iID,int& iRX,int& iRY)
 bool MLContainer::AddItem(int iID,int iX,int iY)
 {
 	if(HaveItem(iID))
+	{
+		cout<<"Item already in container"<<endl;
 		return false;
+	}
 		
 	if(m_iMaxItems != 0)
 		if(GetNrOfItems() >= m_iMaxItems)
 		{
 			//cout<<":"<<GetNrOfItems()<<endl;
-			//cout<<"max nr of items already in container"<<endl;
+			cout<<"max nr of items already in container"<<endl;
 			return false;
 		}
 		
@@ -170,6 +174,12 @@ bool MLContainer::AddItem(int iID,int iX,int iY)
 					cout<<"enabling item"<<endl;
 				}
 
+				
+				//set item's owned by setting
+				pkPItem->m_iInContainerID = m_iContainerID;
+				pkPItem->m_iInContainerPosX = iX;
+				pkPItem->m_iInContainerPosY = iY;
+				
 				Print();
 				
 				return true;
@@ -190,8 +200,11 @@ bool MLContainer::AddItem(int iID,int iX,int iY)
 bool MLContainer::AddItem(int iID)
 {
 	if(HaveItem(iID))
+	{
+		cout<<"Item already in container"<<endl;
 		return false;
-
+	}
+		
 	if(Entity* pkItem = m_pkEntMan->GetEntityByID(iID))
 	{
 		if(P_Item* pkPItem = (P_Item*)pkItem->GetProperty("P_Item"))
@@ -230,6 +243,8 @@ bool MLContainer::AddItem(int iID)
 		}
 	}
 	
+	cout<<"no free space"<<endl;
+	
 	return false;
 }
 
@@ -259,30 +274,35 @@ bool MLContainer::DropItem(int iID)
 	{
 		if(Entity* pkItem = m_pkEntMan->GetEntityByID(iID))
 		{
-			if(HaveItem(iID))
-			{
-				ClearItem(iID);
-
-				// check for joint stuff...
-				//if ( pkItem->GetProperty("P_LinkToJoint") )
-				//	pkItem->RemoveProperty (pkItem->GetProperty("P_LinkToJoint"));
-				pkItem->DeleteProperty("P_LinkToJoint");
+			if(P_Item* pkPItem = (P_Item*)pkItem->GetProperty("P_Item"))
+			{							
+				if(HaveItem(iID))
+				{
+					ClearItem(iID);
+	
+					// check for joint stuff...
+					//if ( pkItem->GetProperty("P_LinkToJoint") )
+					//	pkItem->RemoveProperty (pkItem->GetProperty("P_LinkToJoint"));
+					pkItem->DeleteProperty("P_LinkToJoint");
+						
+	
+					// reset rotation
+					pkItem->SetWorldRotV (Vector3(0,pkItem->GetWorldRotV().y,0));
 					
-
-				// reset rotation
-				pkItem->SetWorldRotV (Vector3(0,pkItem->GetWorldRotV().y,0));
-				
-				cout<<"enabling item"<<endl;
-				pkItem->SetUpdateStatus(UPDATE_ALL);				
-				pkItem->SetUseZones(true);
-				pkItem->SetParent(pkOwner->GetParent());				
-				
-
-				pkItem->SetWorldPosV( Vector3( pkOwner->GetWorldPosV().x + ((rand()%200)-100)/100.f,
-											   pkOwner->GetWorldPosV().y,
-											   pkOwner->GetWorldPosV().z + ((rand()%200)-100)/100.f) );
-				
-				return true;
+					cout<<"enabling item"<<endl;
+					pkItem->SetUpdateStatus(UPDATE_ALL);				
+					pkItem->SetUseZones(true);
+					pkItem->SetParent(pkOwner->GetParent());				
+					
+	
+					pkItem->SetWorldPosV( Vector3( pkOwner->GetWorldPosV().x + ((rand()%200)-100)/100.f,
+													pkOwner->GetWorldPosV().y,
+													pkOwner->GetWorldPosV().z + ((rand()%200)-100)/100.f) );
+					
+					pkPItem->m_iInContainerID = -1;
+													
+					return true;
+				}
 			}
 		}
 	}
@@ -447,24 +467,28 @@ void MLContainer::Save(ZFIoInterface* pkPackage)
 	pkPackage->Write(&m_iSizeX,sizeof(m_iSizeX),1);
 	pkPackage->Write(&m_iSizeY,sizeof(m_iSizeY),1);
 	
+	pkPackage->Write(m_iContainerID);
+	
+	
+/*	
 	//save slots
 	int iSlots = m_kSlots.size();
 	pkPackage->Write(&iSlots,sizeof(iSlots),1);		
 	for(int i = 0 ;i < iSlots;i++)
 		pkPackage->Write(&m_kSlots[i],sizeof(m_kSlots[i]),1);	
-
+*/
+		
 	//save item types
 	int iTypes = m_kItemTypes.size();
 	pkPackage->Write(&iTypes,sizeof(iTypes),1);		
 	for(int i = 0 ;i < iTypes;i++)
 		pkPackage->Write(&m_kItemTypes[i],sizeof(m_kItemTypes[i]),1);	
 	
-	
-	//cout<<"saved DMContainer "<<GetOwnerID()<<"............................................................"<<endl;
 }
 
 void MLContainer::Load(ZFIoInterface* pkPackage)
 {
+	
 	pkPackage->Read(&m_iMaxItems,sizeof(m_iMaxItems),1);	
 	pkPackage->Read(&m_bDisableItems,sizeof(m_bDisableItems),1);	
 	
@@ -472,13 +496,16 @@ void MLContainer::Load(ZFIoInterface* pkPackage)
 	pkPackage->Read(&m_iSizeY,sizeof(m_iSizeY),1);
 
 	SetSize(m_iSizeX,m_iSizeY);
-	
+
+	pkPackage->Read(m_iContainerID);
+		
+/*	
 	//load slots
 	int iSlots;
 	pkPackage->Read(&iSlots,sizeof(iSlots),1);		
 	for(int i = 0 ;i < iSlots;i++)
 		pkPackage->Read(&m_kSlots[i],sizeof(m_kSlots[i]),1);	
-
+*/
 
 	//load types
 	int iTypes;
@@ -491,7 +518,40 @@ void MLContainer::Load(ZFIoInterface* pkPackage)
 		m_kItemTypes.push_back(iT);
 	}
 	
-	//cout<<"loaded DMContainer........................................."<<endl;
+}
+
+void MLContainer::FindMyItems()
+{
+	if(Entity* pkOwner = m_pkEntMan->GetEntityByID( m_iOwnerID ))
+	{
+	
+		vector<Entity*>	kEntitys;
+		pkOwner->GetChilds(&kEntitys);
+	
+		cout<<"parent has :"<<kEntitys.size()<<" childs"<<endl;
+		
+		for(int i = 0;i<kEntitys.size();i++)
+		{
+			if(P_Item* pkItem = (P_Item*)kEntitys[i]->GetProperty("P_Item"))
+			{
+				cout<<"found item"<<endl;
+				
+				if(pkItem->m_iInContainerID == m_iContainerID)
+				{
+					cout<<"its mine =D"<<endl;
+					if(!AddItem(kEntitys[i]->GetEntityID(),pkItem->m_iInContainerPosX,pkItem->m_iInContainerPosY))
+					{
+						cout<<"item did not find on its last known container position, adding it anywhere"<<endl;
+						AddItem(kEntitys[i]->GetEntityID());
+					}
+				}
+				else
+					cout<<"its not mine :("<<endl;
+			}
+		}
+	}
+	else
+		cout<<"ERROR: could not find parent"<<endl;
 }
 
 

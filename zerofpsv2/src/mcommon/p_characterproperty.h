@@ -30,6 +30,8 @@ class MCOMMON_API P_CharacterProperty: public Property
 		bool			m_bIsPlayerCharacter;	//is this and NPC or PC ?
 		string		m_strOwnedByPlayer;		//who owns me ? if anyone
 
+		bool			m_bFirstUpdate;
+		
 		bitset<CHARACTER_STATES>	m_kCurrentCharacterStates;
 			
 		//basic sounds
@@ -65,7 +67,12 @@ class MCOMMON_API P_CharacterProperty: public Property
 
 		
 	public:
+		//containers
 		MLContainer*	m_pkInventory;
+		MLContainer*	m_pkHead;
+		MLContainer*	m_pkBody;
+		MLContainer*	m_pkLeftHand;
+		MLContainer*	m_pkRightHand;
 	
 	
 		P_CharacterProperty();

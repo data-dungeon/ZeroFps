@@ -259,6 +259,7 @@ class ENGINE_API Entity
 		void 	RemoveChild(Entity* pkEntity);							// Remove a child from this.
 		void 	SetParent(Entity* pkEntity);								// Set the parent of this Entity.
 		Entity* GetParent(){return m_pkParent;};						///< Get parent of this Entity.
+		void	GetChilds(vector<Entity*>*	pkEntitys);
 		bool 	HasChild(Entity* pkEntity);							
 		int  	NrOfChilds();													///< Return num of childs to this Entity.
 		void 	DeleteAllChilds();											// Remove all childs from this Entity.

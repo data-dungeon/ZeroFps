@@ -22,7 +22,8 @@ P_CharacterProperty::P_CharacterProperty()
 	m_strName 				=	"NoName";
 	m_strOwnedByPlayer 	=	"NoPlayer";
 	m_bIsPlayerCharacter =	false;
-	m_bOverHeadText		=	true;
+	m_bOverHeadText		=	true;	
+	m_bFirstUpdate			=	true;
 		
 	//basic sounds
 	m_strWalkSound			=	"data/sound/footstep_forest.wav";
@@ -72,8 +73,17 @@ P_CharacterProperty::P_CharacterProperty()
 void P_CharacterProperty::Init()
 {
 	//containers
-	m_pkInventory			=	new MLContainer(m_pkEntityMan,GetEntity()->GetEntityID(),10,5);
-
+	m_pkInventory		=	new MLContainer(m_pkEntityMan,GetEntity()->GetEntityID(),10,5,true,0);
+	m_pkHead				=	new MLContainer(m_pkEntityMan,GetEntity()->GetEntityID(),2,2,true,1);
+	m_pkBody				=	new MLContainer(m_pkEntityMan,GetEntity()->GetEntityID(),2,4,true,2);
+	m_pkLeftHand		=	new MLContainer(m_pkEntityMan,GetEntity()->GetEntityID(),2,4,true,3);
+	m_pkRightHand		=	new MLContainer(m_pkEntityMan,GetEntity()->GetEntityID(),2,4,true,3);
+	
+	m_pkHead->SetMaxItems(1);
+	m_pkBody->SetMaxItems(1);
+	m_pkLeftHand->SetMaxItems(1);
+	m_pkRightHand->SetMaxItems(1);
+	
 }
 
 
@@ -87,7 +97,12 @@ P_CharacterProperty::~P_CharacterProperty()
 	delete m_pkTextMaterial;
 	delete m_pkFont;
 	
+	//delete containers
 	delete m_pkInventory;
+	delete m_pkHead;
+	delete m_pkBody;
+	delete m_pkLeftHand;
+	delete m_pkRightHand;
 }
 
 
@@ -97,6 +112,17 @@ void P_CharacterProperty::Update()
 	{
 		if(m_pkEntityManager->IsUpdate(PROPERTY_SIDE_SERVER))
 		{
+			//try to find items on load
+			if(m_bFirstUpdate)
+			{
+				m_bFirstUpdate = false;
+				m_pkInventory->FindMyItems();	
+				m_pkHead->FindMyItems();	
+				m_pkBody->FindMyItems();	
+				m_pkLeftHand->FindMyItems();	
+				m_pkRightHand->FindMyItems();	
+			}
+		
 			UpdateAnimation();
 		}
 			
@@ -304,7 +330,12 @@ void P_CharacterProperty::Save(ZFIoInterface* pkPackage)
 	pkPackage->Write_Str(m_strOwnedByPlayer);
 	pkPackage->Write(m_bIsPlayerCharacter);
 		
+	//save container settings
 	m_pkInventory->Save(pkPackage);
+	m_pkHead->Save(pkPackage);
+	m_pkBody->Save(pkPackage);
+	m_pkLeftHand->Save(pkPackage);
+	m_pkRightHand->Save(pkPackage);
 }
 
 void P_CharacterProperty::Load(ZFIoInterface* pkPackage,int iVersion)
@@ -313,7 +344,12 @@ void P_CharacterProperty::Load(ZFIoInterface* pkPackage,int iVersion)
 	pkPackage->Read_Str(m_strOwnedByPlayer);	
 	pkPackage->Read(m_bIsPlayerCharacter); 
 	
+	//load container settings
 	m_pkInventory->Load(pkPackage);
+	m_pkHead->Load(pkPackage);
+	m_pkBody->Load(pkPackage);
+	m_pkLeftHand->Load(pkPackage);
+	m_pkRightHand->Load(pkPackage);
 }
 
 void P_CharacterProperty::PackTo( NetPacket* pkNetPacket, int iConnectionID ) 

@@ -34,6 +34,8 @@ class MCOMMON_API MLContainer
 		int	m_iSizeY;						//height
 		int	m_iOwnerID;						//owner entity ID, (owner is gona be the parent for all item entitys)
 
+		int	m_iContainerID;				//this shuld be a uniq id for each container within an entity,used to identify wich items belongs to wich container when loading
+		
 		bool				m_bDisableItems;
 		vector<int>		m_kItemTypes;		//contains item types that can be put in this container, empty = all 
 		int				m_iMaxItems;
@@ -46,9 +48,10 @@ class MCOMMON_API MLContainer
 	
 		bool ItemTypeOK(int iType);
 
+		
 	public:
 
-		MLContainer(EntityManager* pkEntMan,int iOwnerID,int iX = 4,int iY = 4,bool bDisable = true);		
+		MLContainer(EntityManager* pkEntMan,int iOwnerID,int iX = 4,int iY = 4,bool bDisable = true,int iContainerID = 0);		
 		
 		
 		void SetDisableItems(bool bDisable) 	{m_bDisableItems = bDisable;};
@@ -77,6 +80,9 @@ class MCOMMON_API MLContainer
 		int 				GetOwnerID()			{ return m_iOwnerID; }
 		int* 				GetItem(int iX,int iY); // Zeb: Flytta denna så den blev public..EEEVIL
 
+		void FindMyItems();					//must be called after loading, and after childs has been created
+		
+		
 		void Save(ZFIoInterface* pkPackage);
 		void Load(ZFIoInterface* pkPackage);
 
