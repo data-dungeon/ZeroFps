@@ -35,8 +35,6 @@ class Test :public Application {
 	
 	PlayerObject *m_pkPlayer;
 
-	int		TestUpdateSpeedFulHack;
-
 	public:
 		Test(char* aName,int iWidth,int iHeight,int iDepth);
 	 	void OnInit(void);

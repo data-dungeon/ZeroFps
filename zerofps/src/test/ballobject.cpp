@@ -8,10 +8,10 @@ BallObject::BallObject(HeightMap *pkMap,ZeroFps *pkFps) {
 
 	AddProperty("MadProperty");
 	MadProperty* madp = dynamic_cast<MadProperty*>(GetProperty("MadProperty"));
-	madp->SetBase(pkFps->GetMADPtr("bitch2.mad"));
-	madp->SetScale(0.02);
+	madp->SetBase(pkFps->GetMADPtr("cube.mad"));
+//	madp->SetScale(0.02);
 
-	AddProperty("ModelProperty");
+//	AddProperty("ModelProperty");
 
 	m_pkFps=pkFps;
 	onGround=false;
