@@ -8,7 +8,7 @@
 
 using namespace std;
 
-class Sphere;
+struct Sphere;
 
 class ENGINE_API CollisionShape
 {
