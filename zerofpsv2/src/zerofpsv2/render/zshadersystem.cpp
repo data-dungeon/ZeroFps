@@ -1443,7 +1443,14 @@ void ZShaderSystem::SetClearColor(const Vector4& kColor)
 	glClearColor(kColor.x, kColor.y,kColor.z, kColor.w);
 }
 
+unsigned int ZShaderSystem::GetDepth(int iX,int iY)
+{
+	unsigned int iDepth;
 
+	glReadPixels(iX,iY,1,1,GL_DEPTH_COMPONENT,GL_UNSIGNED_INT,&iDepth);
+	
+	return iDepth;
+}
 
 
 

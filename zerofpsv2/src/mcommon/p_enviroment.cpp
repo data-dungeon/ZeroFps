@@ -142,11 +142,12 @@ P_Enviroment::P_Enviroment()
 	m_iType=PROPERTY_TYPE_RENDER;
 	m_iSide=PROPERTY_SIDE_CLIENT;
 	
-	m_pkFps=static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
-	m_pkEntityManager=static_cast<EntityManager*>(g_ZFObjSys.GetObjectPtr("EntityManager"));
-	m_pkRender=static_cast<Render*>(g_ZFObjSys.GetObjectPtr("Render"));	
-	m_pkMusic=static_cast<OggMusic*>(g_ZFObjSys.GetObjectPtr("OggMusic"));		
-
+	m_pkFps=					static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
+	m_pkEntityManager=	static_cast<EntityManager*>(g_ZFObjSys.GetObjectPtr("EntityManager"));
+	m_pkRender=				static_cast<Render*>(g_ZFObjSys.GetObjectPtr("Render"));	
+	m_pkMusic=				static_cast<OggMusic*>(g_ZFObjSys.GetObjectPtr("OggMusic"));		
+	m_pkZShaderSystem = 	static_cast<ZShaderSystem*>(g_ZFObjSys.GetObjectPtr("ZShaderSystem"));		
+	
 	m_iSortPlace	=	10;
 	
 	bNetwork =		true;
@@ -173,6 +174,8 @@ void P_Enviroment::Init()
 
 void P_Enviroment::Update()
 {
+	DrawSun();
+
 	if(m_bEnabled)
 	{
 			
@@ -480,6 +483,14 @@ void P_Enviroment::DrawRainSplashes()
 									m_iRainTextureID);
 		//m_pkRender->Quad(m_kDrops[i],Vector3(-90,0,0),Vector3(0.3,0.3,0.3),m_iRainTextureID);
 	}
+}
+
+void P_Enviroment::DrawSun()
+{
+	//int iDepth = m_pkZShaderSystem->GetDepth(m_pkRender->GetWidth() /2,m_pkRender->GetHeight() /2);
+
+	
+	//cout<<"depth:"<<iDepth<<endl;
 }
 
 

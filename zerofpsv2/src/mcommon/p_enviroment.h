@@ -65,6 +65,7 @@ class MCOMMON_API P_Enviroment: public Property {
 		ZeroFps* 		m_pkFps;
 		EntityManager* m_pkEntityManager;
 		Render*			m_pkRender;
+		ZShaderSystem*	m_pkZShaderSystem;
 		OggMusic*		m_pkMusic;		
 		
 		float				m_fTimer;
@@ -96,6 +97,7 @@ class MCOMMON_API P_Enviroment: public Property {
 		void MakeRainSplashes();
 		void DrawRainSplashes();		
 
+		void DrawSun();
 				
 	public:
 
