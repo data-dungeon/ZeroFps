@@ -142,6 +142,9 @@
 				RelativePath=".\mistserver.cpp">
 			</File>
 			<File
+				RelativePath=".\mistserver.rc">
+			</File>
+			<File
 				RelativePath=".\playerdatabase.cpp">
 			</File>
 		</Filter>
@@ -154,10 +157,16 @@
 			<File
 				RelativePath=".\playerdatabase.h">
 			</File>
+			<File
+				RelativePath=".\resource.h">
+			</File>
 		</Filter>
 		<Filter
 			Name="Resource Files"
 			Filter="ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe">
+			<File
+				RelativePath=".\mistserver.ico">
+			</File>
 			<File
 				RelativePath="..\..\bin\server.ico">
 			</File>
