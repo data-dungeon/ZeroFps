@@ -1,4 +1,5 @@
 #include "game.h"
+#include "../zerofps/script/zfscript.h"
 
 Game olle("ZeroFPS game",1024,768,24);
 
@@ -46,6 +47,8 @@ void Game::Init()
 	m_iGameState=GAME_STATE_MENU;
 
 	InitGUI();
+
+	m_pkScript = new ZFScript();
 }
 
 void Game::OnServerStart(void)
@@ -163,6 +166,13 @@ void Game::Input()
 {
 	int iKey = pkInput->GetQueuedKey();
 
+	if(iKey == KEY_SPACE)
+	{
+		char szFile[] = "hulk_jump.lua";
+		if(!m_pkScript->RunScript(szFile))
+			printf("Failed to run script %s.\n", szFile);
+	}
+
 		/*
 	//Get mouse x,y		
 	int x,z;		
@@ -254,6 +264,8 @@ void Game::SetupLevel()
 			m_pfPlayerArmor  = &static_cast<StatusProperty*>(m_pkPlayer->GetProperty("StatusProperty"))->m_fArmor;
 
 			po=(*it);
+
+			m_pkScript->ExposeVariable("player_pos_y", &m_pkPlayer->GetPos().y, tFLOAT); 
 		}		
 	}
 	

@@ -22,6 +22,8 @@ enum GAME_STATE
 	GAME_STATE_MENU,
 };
 
+class ZFScript;
+
 class Game :public Application {
 	private:
 //		HeightMap *m_pkMap;
@@ -49,6 +51,8 @@ class Game :public Application {
 		PlayerObject* m_pkPlayer;
 		float* m_pfPlayerHealth;
 		float* m_pfPlayerArmor;
+
+		ZFScript* m_pkScript;
 
 	public:
 		

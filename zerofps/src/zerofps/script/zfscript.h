@@ -12,8 +12,17 @@
 #include "script_x.h"
 
 extern "C"  {
-	#include "lua.h"
+	#include <lua.h>
+	#include <lualib.h>
 }
+
+enum VarType
+{
+	tINT,
+	tDOUBLE,
+	tFLOAT,
+	tSTRING,
+};
 
 class SCRIPT_API ZFScript  
 {
@@ -22,10 +31,27 @@ public:
 	virtual ~ZFScript();
 
 	bool RunScript(char* szFileName);
+	
+	bool ExposeVariable(const char* szName, void* pkData, VarType eVariableType);
 
 private:
+
+	static int SetTypeInt(lua_State* pkLua);
+	static int GetTypeInt(lua_State* pkLua);
+	static int SetTypeDouble(lua_State* pkLua);
+	static int GetTypeDouble(lua_State* pkLua);
+	static int SetTypeFloat(lua_State* pkLua);
+	static int GetTypeFloat(lua_State* pkLua);
+	static int SetTypeString(lua_State* pkLua);
+	static int GetTypeString(lua_State* pkLua);
+
 	bool OpenLua();
 	lua_State* m_pkLua;
+
+	int m_iLuaTagInt;
+	int m_iLuaTagDouble;
+	int m_iLuaTagFloat;
+	int m_iLuaTagString;
 };
 
 #endif // !defined(AFX_ZFSCRIPT_H__8BAF0143_B0D3_476F_8410_552548EB16B2__INCLUDED_)

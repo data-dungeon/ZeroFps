@@ -445,11 +445,8 @@ void ControlBox::PrintSkins(Serialization *pkFile, TextureManager* pkTexMan)
 			if(pkSkin == NULL)
 				continue;
 
-			
 			ZFAssert(pkSkin, "No skin!");
 				
-
-
 			// Section
 			pkFile->Outputa("[Skin%i]\n", uiSkinCounter++);
 
