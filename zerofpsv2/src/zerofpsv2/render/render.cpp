@@ -1299,10 +1299,6 @@ void Render::DrawPSystem( PSystem *pkPSystem )
 
 	glDisableClientState (GL_NORMAL_ARRAY);
 
-	glDisable (GL_LIGHTING);
-
-	glColor4f (255,255,255,255);
-
 	// PSystem uses color&alpha values
 	if ( pkPSystem->GetColors() )
 	{
@@ -1313,6 +1309,7 @@ void Render::DrawPSystem( PSystem *pkPSystem )
 	}
 	else
 	{
+		glColor4f (255,255,255,255);
 		glDisableClientState (GL_COLOR_ARRAY);
 		glDisable (GL_COLOR_MATERIAL);
 	}
@@ -1322,6 +1319,7 @@ void Render::DrawPSystem( PSystem *pkPSystem )
 	if ( pkPSystem->GetTexCoords() )
 	{
 		// Turn on the texture coordinate state
+		glEnable (GL_TEXTURE_2D);
 		glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 		glTexCoordPointer( 2, GL_FLOAT, 0, pkPSystem->GetTexCoords() + pkPSystem->Start() * 6 );
 	}

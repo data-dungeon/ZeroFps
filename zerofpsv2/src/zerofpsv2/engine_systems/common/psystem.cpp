@@ -24,6 +24,19 @@ void PSystem::Update( Vector3 kNewPosition, Matrix4 kNewRotation )
 	glPushAttrib(GL_ALL_ATTRIB_BITS);
 
 	glDisable (GL_BLEND);
+	glDisable (GL_ALPHA_TEST);
+	glEnable (GL_DEPTH_TEST);
+
+	glDisable(		GL_BLEND					);
+	glDisable(		GL_LIGHTING				);
+	glDisable(		GL_ALPHA_TEST			);
+	glDepthMask(	GL_FALSE					);	
+	glDisable(		GL_CULL_FACE			);
+	glDisable(		GL_COLOR_MATERIAL 	);
+	glDisable(		GL_FOG					);
+	glDisable(GL_LIGHTING);
+	glDisable(GL_COLOR_MATERIAL);	
+ 	glDisable(GL_TEXTURE_2D);
 
 	// Get Frametime
 	m_fFrameTime = static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"))->GetFrameTime();

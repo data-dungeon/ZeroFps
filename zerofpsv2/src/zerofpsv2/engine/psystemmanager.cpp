@@ -263,8 +263,6 @@ bool PSystemManager::LoadData ( PSystemType *pkPSType )
 	else
 		pkPSType->m_kPSystemBehaviour.m_iBlendDST = 0;
 
-
-
 	// Start RGBA
 	if( m_kIniLoader.KeyExist("start_color", "r") )
 		pkPSType->m_kParticleBehaviour.m_kStartColor.r = m_kIniLoader.GetFloatValue("start_color", "r");
@@ -392,14 +390,6 @@ bool PSystemManager::LoadData ( PSystemType *pkPSType )
 		pkPSType->m_kPSystemBehaviour.m_fParticlesPerSec = 1.f / m_kIniLoader.GetIntValue("particles_persecond", "time");
 	else
 		pkPSType->m_kPSystemBehaviour.m_fParticlesPerSec = 0.2f;
-
-
-	// Particles from start
-	if( m_kIniLoader.KeyExist("particles_fromstart", "count") )
-		pkPSType->m_kPSystemBehaviour.m_iParticlesFromStart = m_kIniLoader.GetIntValue("particles_fromstart", "count");
-	else
-		pkPSType->m_kPSystemBehaviour.m_iParticlesFromStart = 0;
-
 
 	// Light
 	if( m_kIniLoader.KeyExist("light", "on") )

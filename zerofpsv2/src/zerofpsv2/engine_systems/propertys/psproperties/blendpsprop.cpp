@@ -6,9 +6,7 @@
 void BlendPSProp::Update()
 {
 
-	glBlendFunc (GL_BLEND_DST, m_iBlendDST );
-	glBlendFunc (GL_BLEND_SRC, m_iBlendSRC );
-
+	glBlendFunc ( m_iBlendSRC, m_iBlendDST );
 	glEnable (GL_BLEND);
 
 }

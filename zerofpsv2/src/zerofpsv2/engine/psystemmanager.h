@@ -55,8 +55,8 @@ struct PSystemTypeData
 		m_iBlendSRC,
 		m_iBlendDST,
 		m_iDepthTest,
-		m_iParticlesFromStart,
-		m_iMaxParticles;
+		m_iMaxParticles,
+		m_iPartCreateRand;
 
 	string 
 		m_kSound;
