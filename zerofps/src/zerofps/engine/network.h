@@ -45,7 +45,8 @@ class ENGINE_API NetPacket
 public:
 	NetPacket();
 	~NetPacket();
-	Clear();
+	
+	void Clear();
 
 	void SetTarget(char* szIp);
 
@@ -124,3 +125,10 @@ public:
 };
 
 #endif
+
+
+
+
+
+
+

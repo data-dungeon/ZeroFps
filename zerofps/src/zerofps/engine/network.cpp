@@ -13,7 +13,7 @@ NetPacket::~NetPacket()
 
 }
 
-NetPacket::Clear()
+void NetPacket::Clear()
 {
 	m_iLength = 0;
 	m_iPos = 0;
@@ -311,3 +311,6 @@ void NetWork::ServerList(void)
 	Send(&NetP);
 	m_pkConsole->Printf("Hello... Hello... Anyone...?");*/
 }
+
+
+
