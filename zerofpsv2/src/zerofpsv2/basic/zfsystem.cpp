@@ -121,7 +121,7 @@ ZFSystem::ZFSystem()
 
 	m_pkCmdSystem = new CmdSystem;
 	
-	m_bProfileEnabled =	true;
+	m_bProfileEnabled =	false;
 	m_iTotalTime = 		0;	
 }
 
