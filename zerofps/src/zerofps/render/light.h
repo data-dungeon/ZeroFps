@@ -1,5 +1,5 @@
-#ifndef _LIGHT_H_
-#define _LIGHT_H_
+#ifndef _RENDER_LIGHT_H_
+#define _RENDER_LIGHT_H_
 
 #include "../basic/basic.pkg"
 #include <iostream>
@@ -49,7 +49,7 @@ class RENDER_API LightSource {
 		
 };
 
-
+/// A Light in ZeroFPS.
 class RENDER_API Light : public ZFObject {
 	private:
 		Vector3 m_kCamPos;

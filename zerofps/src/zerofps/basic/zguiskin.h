@@ -2,12 +2,8 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#if !defined(AFX_ZGUISKIN_H__E13E6AC7_8EAE_468F_A100_74C5559BE66E__INCLUDED_)
-#define AFX_ZGUISKIN_H__E13E6AC7_8EAE_468F_A100_74C5559BE66E__INCLUDED_
-
-#if _MSC_VER > 1000
-#pragma once
-#endif // _MSC_VER > 1000
+#ifndef _BASIC_ZGUISKIN_H_
+#define _BASIC_ZGUISKIN_H_
 
 #include "basic_x.h"
 
@@ -78,7 +74,7 @@ public:
 	bool m_bTransparent; // andvänds bla. av labels som inte skall ha nån bakgrundsfärg.
 };
 
-#endif // !defined(AFX_ZGUISKIN_H__E13E6AC7_8EAE_468F_A100_74C5559BE66E__INCLUDED_)
+#endif
 
 
 

@@ -2,12 +2,8 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#if !defined(AFX_ZGUILISTITEM_H__375F63D5_876F_46C7_AFDA_9EED11404346__INCLUDED_)
-#define AFX_ZGUILISTITEM_H__375F63D5_876F_46C7_AFDA_9EED11404346__INCLUDED_
-
-#if _MSC_VER > 1000
-#pragma once
-#endif // _MSC_VER > 1000
+#ifndef _GUI_ZGUILISTITEM_H_
+#define _GUI_ZGUILISTITEM_H_
 
 #include "gui_x.h"
 
@@ -47,7 +43,6 @@ private:
 	ZGuiButton* m_pkButton;	
 };
 
-#endif // !defined(AFX_ZGUILISTITEM_H__375F63D5_876F_46C7_AFDA_9EED11404346__INCLUDED_)
-
+#endif 
 
 

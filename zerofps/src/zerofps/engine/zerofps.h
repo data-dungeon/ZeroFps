@@ -43,6 +43,7 @@ enum enginestates
 #define	ZFGP_PRINT			4
 #define	ZFGP_ENDOFPACKET	128
 
+/// Main class for the ZeroFps engine. 
 class ENGINE_API ZeroFps : public ZFObject {
 	private:		
 		enum FuncId_e

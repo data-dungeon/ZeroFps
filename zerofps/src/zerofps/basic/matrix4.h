@@ -12,6 +12,7 @@
 class Matrix3;
 class Quaternion;
 
+/// A Class for matrix math with 4 x 4 matrix.
 class BASIC_API Matrix4 {
 	private:	
 	

@@ -11,6 +11,7 @@ using namespace std;
 
 class ZFObject;
 
+/// Links Names to ZFObjects
 struct NameObject
 {
 	string		m_strName;			// Name of object.
@@ -18,16 +19,18 @@ struct NameObject
 	int			m_iNumOfRequests;	// Num times name was checked.
 };
 
+/// Type of Command
 enum ZFCmdDataType 
 {
-	CSYS_NONE = 0,			// None valid data.
-	CSYS_FUNCTION,			// Function ptr.
-	CSYS_INT,				// int.
-	CSYS_FLOAT,				// float.
-	CSYS_BOOL,				// bool.
-	CSYS_STRING,			// /0 terminated string.
+	CSYS_NONE = 0,					// None valid data.
+	CSYS_FUNCTION,					// Function ptr.
+	CSYS_INT,						// int.
+	CSYS_FLOAT,						// float.
+	CSYS_BOOL,						// bool.
+	CSYS_STRING,					// /0 terminated string.
 };
-// Contains data about a stored command.
+
+/// Contains data about a stored command.
 class BASIC_API ZFCmdData
 {
 public:
@@ -52,12 +55,12 @@ public:
 	static TClass* GetInstance();	\
 
 
-
+/// Tracks all Engine Systems objects.
 class BASIC_API ZFObjectManger
 {
 private:
-	vector<NameObject>		kObjectNames;		// List of all object names/ptrs.
-	vector<ZFCmdData>		m_kCmdDataList;		// List of all cmd functions/variables.
+	vector<NameObject>		kObjectNames;		///< List of all object names/ptrs.
+	vector<ZFCmdData>		m_kCmdDataList;		///< List of all cmd functions/variables.
 
 public:
 	public:
@@ -70,21 +73,21 @@ public:
 	ZFObjectManger();
 	~ZFObjectManger();
 
-	void Register(ZFObject* pkObject, char* acName, ZFObject* pkParent);
-	void UnRegister(ZFObject* pkObject);
-	ZFObject* GetObjectPtr(char* acName);
+	void Register(ZFObject* pkObject, char* acName, ZFObject* pkParent);	///< Register a Object.
+	void UnRegister(ZFObject* pkObject);									///< UnRegister a objects.
+	ZFObject* GetObjectPtr(char* acName);									///< Get pointer to object by name.
 
-	void Link(ZFObject* pkParent, ZFObject* pkObject);
-	void UnLink(ZFObject* pkObject);
+	void Link(ZFObject* pkParent, ZFObject* pkObject);						///< Links a object as a child to another.
+	void UnLink(ZFObject* pkObject);										///< Unlinks a object from another.
 
 	void PrintObjects(void);
 	void PrintObjectsHer(void);
 
 // Cmd / Functions.
 	ZFCmdData* FindArea(const char* szName);
-	bool Register_Cmd(char* szName, int iCmdID, ZFObject* kObject);
-	bool UnRegister_Cmd(ZFObject* kObject);
-	bool RunCommand(const char* szCmdArg);
+	bool Register_Cmd(char* szName, int iCmdID, ZFObject* kObject);			///< Register a Cmd and object that will handle it.
+	bool UnRegister_Cmd(ZFObject* kObject);									///< UnRegister all cmd's bound to a object.
+	bool RunCommand(const char* szCmdArg);									///< Run a cmd by passing it along to the correct object
 
 };
 

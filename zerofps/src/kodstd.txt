@@ -81,6 +81,21 @@ Kommentarer
 			rad ovanför deklarationen eller med ///< på samma rad efter.
 		Detaljerade kommentarer anges för funktioner med /// ovanför implentationen.
 
+		För att dokumentera vad en fil gör så anger man följande högst upp i den.
+
+		/**	\file 
+			Short Desc (One Line only).
+			Long Desc...
+
+		*/
+
+
+		/** \file file.h
+ * A brief file description.
+ * A more elaborated file description.
+ */
+
+
 Names:
 	Klass / Struct / Unions
 		Skrivs i MixedCase.

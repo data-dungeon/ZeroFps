@@ -2,12 +2,9 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#if !defined(AFX_BUTTON_H__1656E751_9931_4A8F_A55D_907CEEA8E99F__INCLUDED_)
-#define AFX_BUTTON_H__1656E751_9931_4A8F_A55D_907CEEA8E99F__INCLUDED_
+#ifndef _GUI_ZGUIBUTTON_H_
+#define _GUI_ZGUIBUTTON_H_
 
-#if _MSC_VER > 1000
-#pragma once
-#endif // _MSC_VER > 1000
 
 #include "gui_x.h"
 #include "../basic/rect.h"
@@ -34,6 +31,6 @@ protected:
 	ZGuiSkin* m_pkSkinBnUp, *m_pkSkinBnDown, *m_pkSkinBnHLight;
 };
 
-#endif // !defined(AFX_BUTTON_H__1656E751_9931_4A8F_A55D_907CEEA8E99F__INCLUDED_)
+#endif 
 
 

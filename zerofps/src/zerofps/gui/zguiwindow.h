@@ -2,12 +2,8 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#if !defined(AFX_WINDOW_H__C9899268_8A6F_4E75_A4D7_60CADB518415__INCLUDED_)
-#define AFX_WINDOW_H__C9899268_8A6F_4E75_A4D7_60CADB518415__INCLUDED_
-
-#if _MSC_VER > 1000
-#pragma once
-#endif // _MSC_VER > 1000
+#ifndef _GUI_ZGUIWINDOW_H_
+#define _GUI_ZGUIWINDOW_H_
 
 #include "gui_x.h"
 #include "../basic/rect.h"
@@ -171,6 +167,6 @@ private:
 
 };
 
-#endif // !defined(AFX_WINDOW_H__C9899268_8A6F_4E75_A4D7_60CADB518415__INCLUDED_)
+#endif 
 
 

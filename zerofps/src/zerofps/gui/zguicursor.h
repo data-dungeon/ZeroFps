@@ -2,12 +2,8 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#if !defined(AFX_ZGUICURSOR_H__6456F063_B56D_440F_AAB2_BCCA4B48C77B__INCLUDED_)
-#define AFX_ZGUICURSOR_H__6456F063_B56D_440F_AAB2_BCCA4B48C77B__INCLUDED_
-
-#if _MSC_VER > 1000
-#pragma once
-#endif // _MSC_VER > 1000
+#ifndef _GUI_ZGUICURSOR_H_
+#define _GUI_ZGUICURSOR_H_
 
 #include "gui_x.h"
 #include "../basic/rect.h"
@@ -33,4 +29,4 @@ private:
 	bool m_bVisible;
 };
 
-#endif // !defined(AFX_ZGUICURSOR_H__6456F063_B56D_440F_AAB2_BCCA4B48C77B__INCLUDED_)
+#endif 

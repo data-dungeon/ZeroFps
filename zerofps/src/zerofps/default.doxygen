@@ -64,7 +64,7 @@ FILE_PATTERNS          = *.cpp \
                          *.cxx \
                          *.idl
 RECURSIVE              = YES
-EXCLUDE                = 
+EXCLUDE                = C:/Projects/zerofps/src/zerofps/ogl/
 EXCLUDE_SYMLINKS       = NO
 EXCLUDE_PATTERNS       = 
 EXAMPLE_PATH           = 
@@ -187,7 +187,7 @@ INCLUDE_GRAPH          = YES
 INCLUDED_BY_GRAPH      = YES
 GRAPHICAL_HIERARCHY    = YES
 DOT_IMAGE_FORMAT       = png
-DOT_PATH               = 
+DOT_PATH               = "c:/Program Files/ATT/Graphviz/bin/"
 DOTFILE_DIRS           = 
 MAX_DOT_GRAPH_WIDTH    = 1024
 MAX_DOT_GRAPH_HEIGHT   = 1024

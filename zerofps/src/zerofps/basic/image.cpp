@@ -3,6 +3,23 @@
 #include <string.h> 
 #include "image.h"
 
+// Defines
+// TGA FORMAT
+#define TGA_IMAGETYPE_NONE		0		// No image data included.
+#define TGA_IMAGETYPE_UMAP		1		// Uncompressed, color-mapped images.
+#define TGA_IMAGETYPE_URGB		2		// Uncompressed, RGB images.
+#define TGA_IMAGETYPE_UBW		3		// Uncompressed, black and white images.
+#define TGA_IMAGETYPE_RLEMAP	9		// Runlength encoded color-mapped images.
+#define TGA_IMAGETYPE_RLERGB	10		// Runlength encoded RGB images.
+#define TGA_IMAGETYPE_CBW		11		// Compressed, black and white images.
+#define TGA_IMAGETYPE_CMAP		32		// Compressed color-mapped data, using Huffman, Delta, and runlength encoding.
+#define TGA_IMAGETYPE_CMAP2		33		// Compressed color-mapped data, using Huffman, Delta, and
+										// runlength encoding.  4-pass quadtree-type process.
+enum IMG_FORMAT {
+	IMG_FORMAT_RGB,
+	IMG_FORMAT_RGBA,
+	IMG_FORMAT_ALPHA,
+};
 
 static unsigned char getbyte (char*& ptr)
 {

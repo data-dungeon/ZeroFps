@@ -5,13 +5,12 @@
 #include "basic_x.h"
 #include "os.h"
 
+/// Descibes a Plane in 3D.
 class BASIC_API Plane 
 {
 	public:
-	
-	
-		Vector3		m_kNormal;							// Normal of plane ( A,B,C in plane equation).
-		float			m_fD;									// Distance ( D in plane equation).
+		Vector3		m_kNormal;								///< Normal of plane ( A,B,C in plane equation).
+		float		m_fD;									///< Distance ( D in plane equation).
 
 		void Set(float fX, float fY, float fZ, float fInD) {
 			m_kNormal.Set(fX,fY,fZ);

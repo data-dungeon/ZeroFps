@@ -2,12 +2,8 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#if !defined(AFX_ZGUIRADIOBUTTON_H__34742515_ACF4_4DF6_AB10_9A11E2DC881F__INCLUDED_)
-#define AFX_ZGUIRADIOBUTTON_H__34742515_ACF4_4DF6_AB10_9A11E2DC881F__INCLUDED_
-
-#if _MSC_VER > 1000
-#pragma once
-#endif // _MSC_VER > 1000
+#ifndef _GUI_ZGUIRADIOBUTTON_H_
+#define _GUI_ZGUIRADIOBUTTON_H_
 
 #include "gui_x.h"
 #include "zguicheckbox.h"
@@ -50,7 +46,7 @@ private:
 	static ZGuiRadiobutton* m_pkLastbutton;
 };
 
-#endif // !defined(AFX_ZGUIRADIOBUTTON_H__34742515_ACF4_4DF6_AB10_9A11E2DC881F__INCLUDED_)
+#endif 
 
 
 

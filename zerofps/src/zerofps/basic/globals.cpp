@@ -1,3 +1,9 @@
+/**	\file 
+	Contains Global Functions.
+	Global functions are support functions that are usefull put don't fit
+	well into any class or are waiting to be moved into a class.
+*/
+
 #include "globals.h"
 
 #define NRDEG_IN_ONE_RAD	57.29577951
@@ -70,7 +76,6 @@ int BASIC_API PowerOf2(int iVal)
 	
 	return tal;
 }
-
 
 
 

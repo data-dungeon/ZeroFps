@@ -2,12 +2,8 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#if !defined(AFX_CHECKBOX_H__03DB5F8B_D30C_489B_8732_689D12D1B549__INCLUDED_)
-#define AFX_CHECKBOX_H__03DB5F8B_D30C_489B_8732_689D12D1B549__INCLUDED_
-
-#if _MSC_VER > 1000
-#pragma once
-#endif // _MSC_VER > 1000
+#ifndef _GUI_ZGUICHECKBOX_H_
+#define _GUI_ZGUICHECKBOX_H_
 
 #include "gui_x.h"
 #include "../basic/rect.h"
@@ -48,7 +44,7 @@ protected:
 	bool m_bChecked;
 };
 
-#endif // !defined(AFX_CHECKBOX_H__03DB5F8B_D30C_489B_8732_689D12D1B549__INCLUDED_)
+#endif
 
 
 

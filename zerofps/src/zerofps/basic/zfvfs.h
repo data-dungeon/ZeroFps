@@ -11,6 +11,7 @@ using namespace std;
 
 class ZFVFileSystem;
 
+/// A Open File in the VFS
 class BASIC_API ZFVFile
 {
 private:
@@ -32,31 +33,29 @@ public:
 	int GetSize();
 };
 
+/// ZeroFps Virtual File Systems.
 class BASIC_API ZFVFileSystem : public ZFObject 
 {
 	private:
-		ZFBasicFS*	m_pkBasicFS;
-		
-		vector<string>	m_kstrRootPath;				// Active root paths.
-	
+		ZFBasicFS*	m_pkBasicFS;					
+		vector<string>	m_kstrRootPath;				///< Active Root Paths (Maps dir into our VFS).
 
 	public:
 		ZFVFileSystem();
 		~ZFVFileSystem();
 
-		// Root Paths (Maps dir into our VFS)
-		void AddRootPath(string strRootPath);		// Add path to list of active roots
-		void RemoveRootPath(string strRootPath);	// Remove a rootpath.
-		void GetNumOfRootPaths();					// Get num of active rootpaths
+		void AddRootPath(string strRootPath);		///< Add path to list of active roots
+		void RemoveRootPath(string strRootPath);	///< Remove a rootpath.
+		void GetNumOfRootPaths();					///< Get num of active rootpaths
 
-		string GetRootPath(int iIndex);				// Get path with index (0 to NumOfPaths - 1). "" if not found.
+		string GetRootPath(int iIndex);				///< Get path with index (0 to NumOfPaths - 1). "" if not found.
 
-		void Flush();								// Close all unused archives.
-		bool Exists(string strFileName);			// Returns true if a file was found.
+		void Flush();								///< Close all unused archives.
+		bool Exists(string strFileName);			///< Returns true if a file was found.
 		
 
 		// Open / Close
-		void ArchiveOpen() { }
+		void ArchiveOpen() { }					
 		void ArchiveClose()  { }
 
 		// Create / Manage

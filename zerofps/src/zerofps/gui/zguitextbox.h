@@ -2,12 +2,8 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#if !defined(AFX_TEXTBOX_H__BEB2C88E_6983_4DF8_8EB3_506B3304FB7B__INCLUDED_)
-#define AFX_TEXTBOX_H__BEB2C88E_6983_4DF8_8EB3_506B3304FB7B__INCLUDED_
-
-#if _MSC_VER > 1000
-#pragma once
-#endif // _MSC_VER > 1000
+#ifndef _GUI_ZGUITEXTBOX_H_
+#define _GUI_ZGUITEXTBOX_H_
 
 #include "gui_x.h"
 #include "zguicontrol.h"
@@ -54,6 +50,6 @@ private:
 	bool m_bMultiLine;
 };
 
-#endif // !defined(AFX_TEXTBOX_H__BEB2C88E_6983_4DF8_8EB3_506B3304FB7B__INCLUDED_)
+#endif 
 
 

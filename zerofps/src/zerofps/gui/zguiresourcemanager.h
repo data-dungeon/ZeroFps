@@ -2,12 +2,8 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#if !defined(AFX_ZGUIRESOURCEMANAGER_H__522A0AC6_0317_4003_94C3_FE568ABA9E36__INCLUDED_)
-#define AFX_ZGUIRESOURCEMANAGER_H__522A0AC6_0317_4003_94C3_FE568ABA9E36__INCLUDED_
-
-#if _MSC_VER > 1000
-#pragma once
-#endif // _MSC_VER > 1000
+#ifndef _GUI_ZGUIRESMANGER_H_
+#define _GUI_ZGUIRESMANGER_H_
 
 #include "../basic/basic.pkg"
 #include "gui_x.h"
@@ -51,4 +47,4 @@ private:
 
 };
 
-#endif // !defined(AFX_ZGUIRESOURCEMANAGER_H__522A0AC6_0317_4003_94C3_FE568ABA9E36__INCLUDED_)
+#endif

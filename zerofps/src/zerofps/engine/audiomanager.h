@@ -9,6 +9,7 @@
 
 class Music;
 
+/// Engine Systems that runs music and sound.
 class ENGINE_API AudioManager  : public ZFObject{
 	private:
 		Music		*m_pkMusic;

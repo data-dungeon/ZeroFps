@@ -10,6 +10,8 @@ class Matrix4;
 
 using namespace std;
 
+/// A Class for vector math operations in 4D.
+
 class BASIC_API Vector4 {
 	public:
 		float x,y,z,w;

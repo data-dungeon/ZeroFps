@@ -2,12 +2,8 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#if !defined(AFX_COMBOBOX_H__942928D7_8B6B_421F_B821_742984902F7D__INCLUDED_)
-#define AFX_COMBOBOX_H__942928D7_8B6B_421F_B821_742984902F7D__INCLUDED_
-
-#if _MSC_VER > 1000
-#pragma once
-#endif // _MSC_VER > 1000
+#ifndef _GUI_ZGUICOMBOBOX_H_
+#define _GUI_ZGUICOMBOBOX_H_
 
 #include "gui_x.h"
 #include "../basic/rect.h"
@@ -56,7 +52,7 @@ private:
 	unsigned short m_unNumVisibleRows;
 };
 
-#endif // !defined(AFX_COMBOBOX_H__942928D7_8B6B_421F_B821_742984902F7D__INCLUDED_)
+#endif 
 
 
 

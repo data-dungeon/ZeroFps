@@ -22,17 +22,21 @@ using namespace std;
 #define MAD_MD_VERSION			1
 
 // MAD - MD (Mesh Data)
+
+//! Texture coo.
 struct BASIC_API Mad_TextureCoo
 {
 	float	s;							// s Texture Coo.
 	float	t;							// t Texture Coo.
 };
 
+//! A Face in a MAD (with index to vertices).
 struct BASIC_API Mad_Face
 {
 	int		iIndex[3];					// Vertex Index of Face.
 };
 
+//! File Header for a MAD Mesh.
 struct BASIC_API Mad_CoreMeshHeader
 {
 	int		iVersionNum;				// Version num.
@@ -44,6 +48,7 @@ struct BASIC_API Mad_CoreMeshHeader
 	int		iNumOfAnimation;			// Num of animations.
 };
 
+//! Information about a texture used by a MAD (no raw texture data).
 class BASIC_API Mad_CoreTexture
 {
 public:
@@ -60,6 +65,7 @@ public:
 	}
 };
 
+/// Mesh VertexFrame
 class BASIC_API Mad_CoreVertexFrame
 {
 private:
@@ -117,33 +123,36 @@ public:
 
 };
 
+/// SubMesh in a Mad. A Submesh is part of a mesh were all surfaces has
+/// the same material properties.
 struct BASIC_API Mad_CoreSubMesh
 {
-	int		iTextureIndex;				// Texture used.
-	int		iFirstTriangle;				// First triangle to use texture.
-	int		iNumOfTriangles;			// Num of triangles that use texture.
+	int		iTextureIndex;				///< Texture used.
+	int		iFirstTriangle;				///< First triangle to use texture.
+	int		iNumOfTriangles;			///< Num of triangles that use texture.
 };
 
+/// A Mesh in a MAD. 
 class BASIC_API Mad_CoreMesh
 { 
 private:
-	vector<Mad_CoreTexture>			akTextures;			// Texturers used in mesh.			
-	vector<Mad_TextureCoo>			akTextureCoo;		// Texture Coo for mesh.
-	vector<Mad_Face>				akFaces;			// Faces in mesh.
-	vector<Mad_CoreVertexFrame>		akFrames;			// Vertex frames for mesh.
-	vector<Mad_CoreSubMesh>			akSubMeshes;		// Submeshes.
-	vector<Mad_CoreMeshAnimation>	akAnimation;		// Animations.
-	vector<int>						akBoneConnections;	// Vertex -> Bone index.
+	vector<Mad_CoreTexture>			akTextures;			///< Texturers used in mesh.			
+	vector<Mad_TextureCoo>			akTextureCoo;		///< Texture Coo for mesh.
+	vector<Mad_Face>				akFaces;			///< Faces in mesh.
+	vector<Mad_CoreVertexFrame>		akFrames;			///< Vertex frames for mesh.
+	vector<Mad_CoreSubMesh>			akSubMeshes;		///< Submeshes.
+	vector<Mad_CoreMeshAnimation>	akAnimation;		///< Animations.
+	vector<int>						akBoneConnections;	///< Vertex -> Bone index.
 
-	int								iTextureID[256];	// Texture ID's Assigned by rendering sys.
+	int								iTextureID[256];	///< Texture ID's Assigned by rendering sys.
 
 public:
-	bool							bNotAnimated;		// True if this is a static mesh that we could put in a display list.
-	int								iDisplayID;			// Display List ID if any.
+	bool							bNotAnimated;		///< True if this is a static mesh that we could put in a display list.
+	int								iDisplayID;			///< Display List ID if any.
 	void							SetDisplayID(int iId) { iDisplayID = iId; }
 	int								GetDisplayID() { return iDisplayID; }
 
-	char							m_acName[MAD_MAX_NAME];		// Name of mesh.
+	char							m_acName[MAD_MAX_NAME];		///< Name of mesh.
 	Mad_CoreMeshHeader				kHead;
 
 	Mad_CoreMesh();
@@ -204,6 +213,8 @@ public:
 };
 
 // MAD - SD (Skeletal Data)
+
+/// A Bone in a Bones animated Mesh.
 class BASIC_API Mad_CoreBone
 {
 public:
@@ -275,23 +286,24 @@ public:
 
 };
 
+/// Contains all bone keyframes in a bone animation.
 class BASIC_API Mad_CoreBoneAnimation
 {
 private:
-	vector<Mad_CoreBoneKeyFrame>	m_kBoneKeyFrames;
+	vector<Mad_CoreBoneKeyFrame>	m_kBoneKeyFrames;		///< vector of all bone key frames.
 
 public:
-	char	m_szName[MAD_MAX_ANIMATIONNAME];
+	char	m_szName[MAD_MAX_ANIMATIONNAME];				///< Name of this animation.
 
-	Mad_CoreBoneAnimation();
+	Mad_CoreBoneAnimation();				
 	~Mad_CoreBoneAnimation();
 	void Clear(void);
 	void operator=(const Mad_CoreBoneAnimation& kOther);
 
-	void Save(FILE* fp);
-	void Load(FILE* fp);
+	void Save(FILE* fp);									///< Save animation	
+	void Load(FILE* fp);									///< Load animation
 
-	int Size();
+	int Size();												
 	void Resize(int iNewSize);
 	void PushBack(Mad_CoreBoneKeyFrame kBoneKeyFrame);
 	friend class Mad_Core;
@@ -318,9 +330,7 @@ struct Controller
 	float			m_fValue;
 };
 
-
-
-// MAD File 
+/// Header for a MAD File 
 struct BASIC_API Mad_Header
 {
 	int	m_iVersionNum;									// MAD_VERSION
@@ -329,7 +339,7 @@ struct BASIC_API Mad_Header
 	unsigned int	m_iNumOfAnimations;					// Num of bone animations in this file.
 };
 
-
+/// 3D Modells with support for Skellet animation. 
 class BASIC_API Mad_Core
 {
 private:

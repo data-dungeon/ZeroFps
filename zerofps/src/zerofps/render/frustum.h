@@ -1,5 +1,5 @@
-#ifndef _FRUSTUM_H_
-#define _FRUSTUM_H_
+#ifndef _RENDER_FRUSTUM_H_
+#define _RENDER_FRUSTUM_H_
 
 #include "render_x.h"
 #include "../ogl/zfpsgl.h"
@@ -7,6 +7,7 @@
 
 using namespace std;
 
+/// A Frustum pyramid in 3D.
 class RENDER_API Frustum : public ZFObject
 {
 	private:

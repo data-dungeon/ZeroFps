@@ -1,13 +1,8 @@
 // ZFIni.h: interface for the ZFIni class.
 //
 //////////////////////////////////////////////////////////////////////
-
-#if !defined(AFX_ZFINI_H__3DD9DED9_3B35_455C_B1FB_B5D7BD87B819__INCLUDED_)
-#define AFX_ZFINI_H__3DD9DED9_3B35_455C_B1FB_B5D7BD87B819__INCLUDED_
-
-#if _MSC_VER > 1000
-#pragma once
-#endif // _MSC_VER > 1000
+#ifndef _BASIC_ZFINI_H_
+#define _BASIC_ZFINI_H_
 
 #define MAX_LINE_LENGTH 1024
 #define MAX_SECTIONS 1024
@@ -19,6 +14,7 @@ using namespace std;
 #include "zfobject.h"
 #include "basic_x.h"
 
+/// Reads text based INI files (Basic Config Sys of ZeroFps).
 class BASIC_API ZFIni : public ZFObject
 {
 public:
@@ -67,7 +63,6 @@ private:
 	CommandData* m_pkCommandData;
 };
 
-#endif // !defined(AFX_ZFINI_H__3DD9DED9_3B35_455C_B1FB_B5D7BD87B819__INCLUDED_)
-
+#endif 
 
 

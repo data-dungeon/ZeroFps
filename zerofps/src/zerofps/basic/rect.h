@@ -2,12 +2,8 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#if !defined(AFX_RECT_H__9D6EA35C_226A_4A91_BE8F_5E90ADCEC058__INCLUDED_)
-#define AFX_RECT_H__9D6EA35C_226A_4A91_BE8F_5E90ADCEC058__INCLUDED_
-
-#if _MSC_VER > 1000
-#pragma once
-#endif // _MSC_VER > 1000
+#ifndef _BASIC_RECT_H_
+#define _BASIC_RECT_H_
 
 #include "basic_x.h"
 

@@ -8,6 +8,7 @@
 
 using namespace std;
 
+/// A Class for vector math operations in 3D.
 class BASIC_API Vector3 {
 	public:
 // Std Values
@@ -130,25 +131,25 @@ class BASIC_API Vector3 {
 			return x*x + y*y +z*z;  
 			}
 
-		void Normalize(void);										// NC
-		float Dot( const Vector3& v  )		const; 					// NC
-		Vector3 Unit(void)					const;					// NC		
-		Vector3 Cross( const Vector3& v )	const;					// NC
+		void Normalize(void);										///< Normalize this to unit vector.
+		float Dot( const Vector3& v  )		const; 					///< Return dot product between this vec and another one.
+		Vector3 Unit(void)					const;					///< Return unit vector of this.		
+		Vector3 Cross( const Vector3& v )	const;					///< Return cross product between this vector and another one.
 		
 	
-		bool IsZero(void) const;									// True if this = <0,0,0>
-		bool NearlyEquals( const Vector3& v, const float e ) const;	// True if this is == v within the range of +-e
-		bool NearlyZero( const float e ) const; 					// True if this is <0,0,0> within the range of +-e
+		bool IsZero(void) const;									///< True if this = <0,0,0>
+		bool NearlyEquals( const Vector3& v, const float e ) const;	///< True if this is == v within the range of +-e
+		bool NearlyZero( const float e ) const; 					///< True if this is <0,0,0> within the range of +-e
 		
-		Vector3 Proj( Vector3& v );									// Projects v on this.
-		Vector3 Perp( Vector3& v );									// Perp v on this.
-		float Angle( Vector3& v );									// Angle (in rad) between two vectors. 
-		void Abs(void);												// Do a fabs() on coo of this vectors.
-		int	AbsMaxCoo(void);										// Returns Index för den coo med > fabs(value).
-		void Lerp(Vector3& from, Vector3& to, float flerp);			// Linjär interpolering mellan två vectors.
+		Vector3 Proj( Vector3& v );									///< Projects v on this.
+		Vector3 Perp( Vector3& v );									///< Perp v on this.
+		float Angle( Vector3& v );									///< Angle (in rad) between two vectors. 
+		void Abs(void);												///< Do a fabs() on coo of this vectors.
+		int	AbsMaxCoo(void);										///< Returns Index för den coo med > fabs(value).
+		void Lerp(Vector3& from, Vector3& to, float flerp);			///< Linjär interpolering mellan två vectors.
 		
 		Vector3 Angels(void);
-		Vector3 AToU();												//convert Angel Vector to a Unit Vector
+		Vector3 AToU();												///< convert Angel Vector to a Unit Vector
 
 		void Print(void);
 

@@ -2,18 +2,15 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#if !defined(AFX_GLRENDER_H__943EECE7_8487_4E17_B41E_3B4D94D1683F__INCLUDED_)
-#define AFX_GLRENDER_H__943EECE7_8487_4E17_B41E_3B4D94D1683F__INCLUDED_
-
-#if _MSC_VER > 1000
-#pragma once
-#endif // _MSC_VER > 1000
+#ifndef _RENDER_GLGUIRENDER_H_
+#define _RENDER_GLGUIRENDER_H_
 
 #include "render_x.h"
 #include "zguirenderer.h"
 
 class TextureManager;
 
+/// Handles rendering of ZGUI.
 class RENDER_API GLGuiRender : public ZGuiRender  
 {
 public:
@@ -42,4 +39,4 @@ private:
 
 };
 
-#endif // !defined(AFX_GLRENDER_H__943EECE7_8487_4E17_B41E_3B4D94D1683F__INCLUDED_)
+#endif

@@ -2,12 +2,8 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#if !defined(AFX_LISTBOX_H__F667D216_3A7B_4606_907F_E48FFD386301__INCLUDED_)
-#define AFX_LISTBOX_H__F667D216_3A7B_4606_907F_E48FFD386301__INCLUDED_
-
-#if _MSC_VER > 1000
-#pragma once
-#endif // _MSC_VER > 1000
+#ifndef _GUI_ZGUILISTBOX_H_
+#define _GUI_ZGUILISTBOX_H_
 
 #include "gui_x.h"
 #include "../basic/rect.h"
@@ -72,6 +68,6 @@ private:
 	int m_iScrollbarWidth;
 };
 
-#endif // !defined(AFX_LISTBOX_H__F667D216_3A7B_4606_907F_E48FFD386301__INCLUDED_)
+#endif 
 
 

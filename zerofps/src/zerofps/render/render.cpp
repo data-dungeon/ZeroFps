@@ -1,4 +1,5 @@
 #include "render.h"
+#include "../basic/basic.pkg"
 
 Render::Render()  
  :	ZFObject("Render") {
@@ -317,6 +318,7 @@ char* BoolStr(bool bFlag)
 	else
 		return "False";
 }
+
 
 void GlDump_IsEnabled(int iGlEnum, char* szName)
 {

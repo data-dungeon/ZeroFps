@@ -146,6 +146,9 @@ enum Buttons
 
 class Console;
 
+
+/// Engine Systems that handles input (keyb, mouse, joystick).
+
 class ENGINE_API Input : public ZFObject {
 	private:
 		bool GetConsole();

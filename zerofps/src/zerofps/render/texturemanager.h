@@ -1,5 +1,5 @@
-#ifndef _TEXTUREMANAGER_H_
-#define _TEXTUREMANAGER_H_
+#ifndef _RENDER_TEXTUREMANAGER_H_
+#define _RENDER_TEXTUREMANAGER_H_
 
 #include "../basic/basic.pkg"
 #include <iostream>
@@ -22,7 +22,9 @@ enum OPTIONS {
 
 };
 
-/* Texture file name and all paramerers. */
+#define	NO_TEXTURE	-1
+
+/// Texture file name and all paramerers.
 struct texture
 {
 	string file;			// Path/Filename
@@ -31,15 +33,10 @@ struct texture
 	bool m_bMipMapping;		// True if we would like to have mipmapping.
 	bool m_bCompression;
 	bool b_bClamp;			// Texture Clamping.
-
 };
 
-/*
-	Handles all textures in the game. Texture can be refered to by name
-	or id (not same thing as opengl handle).
-*/
-#define	NO_TEXTURE	-1
-
+/// Handles all textures in the game. Texture can be refered to by name
+///	or id (not same thing as opengl handle).
 class RENDER_API TextureManager : public ZFObject {
 	private:
 		enum FuncId_e

@@ -2,8 +2,8 @@
 #define FONTWIDTH 32
 #define TEX_SCALE 2
 
-#ifndef _RENDER_H_
-#define _RENDER_H_
+#ifndef _RENDER_RENDER_H_
+#define _RENDER_RENDER_H_
 
 #include "../basic/basic.pkg"
 #include <cstring>

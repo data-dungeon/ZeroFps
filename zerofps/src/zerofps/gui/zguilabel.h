@@ -2,12 +2,8 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#if !defined(AFX_LABEL_H__EE074D36_08D4_4FF6_92EB_70F5A4E756A4__INCLUDED_)
-#define AFX_LABEL_H__EE074D36_08D4_4FF6_92EB_70F5A4E756A4__INCLUDED_
-
-#if _MSC_VER > 1000
-#pragma once
-#endif // _MSC_VER > 1000
+#ifndef _GUI_ZGUILABEL_H_
+#define _GUI_ZGUILABEL_H_
 
 #include "gui_x.h"
 #include "zguicontrol.h"
@@ -24,7 +20,7 @@ public:
 	bool Notify(ZGuiWnd* pkWnd, int iCode);
 };
 
-#endif // !defined(AFX_LABEL_H__EE074D36_08D4_4FF6_92EB_70F5A4E756A4__INCLUDED_)
+#endif
 
 
 

@@ -2,13 +2,9 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#if !defined(AFX_ZGUIFONT_H__52B0ABD1_BF56_4D1D_A173_BB1CCEE56658__INCLUDED_)
-#define AFX_ZGUIFONT_H__52B0ABD1_BF56_4D1D_A173_BB1CCEE56658__INCLUDED_
-
-#if _MSC_VER > 1000
-#pragma once
-#endif // _MSC_VER > 1000
-
+#ifndef _BASIC_ZGUIFONT_H_
+#define _BASIC_ZGUIFONT_H_
+ 
 #include "basic_x.h"
 #include <SDL/SDL.h>
 #include <SDL/SDL_image.h>

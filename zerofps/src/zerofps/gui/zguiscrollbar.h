@@ -2,12 +2,8 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#if !defined(AFX_ZGUISCROLLBAR_H__88D34F0A_573C_468B_8090_219A2AD24315__INCLUDED_)
-#define AFX_ZGUISCROLLBAR_H__88D34F0A_573C_468B_8090_219A2AD24315__INCLUDED_
-
-#if _MSC_VER > 1000
-#pragma once
-#endif // _MSC_VER > 1000
+#ifndef _GUI_ZGUISCROLLBAR_H_
+#define _GUI_ZGUISCROLLBAR_H_
 
 #include "gui_x.h"
 #include "../basic/rect.h"
@@ -49,7 +45,7 @@ private:
 	
 };
 
-#endif // !defined(AFX_ZGUISCROLLBAR_H__88D34F0A_573C_468B_8090_219A2AD24315__INCLUDED_)
+#endif 
 
 
 
