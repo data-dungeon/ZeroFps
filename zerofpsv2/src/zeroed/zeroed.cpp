@@ -193,7 +193,7 @@ void ZeroEd::CreateEditCameras()
 		m_pkCameraObject[i] = m_pkObjectMan->CreateObjectFromScript("data/script/objects/t_camedit.lua");
 		if(m_pkCameraObject[i]) 
 		{
-			m_pkCameraObject[i]->SetParent( m_pkObjectMan->GetWorldObject() );
+			m_pkCameraObject[i]->SetParent( m_pkObjectMan->GetWorldObject() );			
 			P_Camera* m_pkCamProp = (P_Camera*)m_pkCameraObject[i]->GetProperty("P_Camera");
 			m_pkCamProp->SetCamera(m_pkCamera[i]);
 			m_pkCameraObject[i]->GetSave() = false;
