@@ -135,9 +135,11 @@ void PlayerControlProperty::Update() {
 	if(m_pkObject->GetRot().x<-90)
 		m_pkObject->GetRot().x=-90;
 	
+/*	
 	Vector3 kShowDirYaw = GetYawVector2(m_pkObject->GetRot().y);
 	Render *pkRender = static_cast<Render*>(g_ZFObjSys.GetObjectPtr("Render"));
 	pkRender->Line(m_pkObject->GetPos(), (m_pkObject->GetPos() + kShowDirYaw * 2));
+*/	
 	
 	//update sound possition
 	walksound->m_kPos=m_pkObject->GetPos();

@@ -25,18 +25,23 @@ class AdaptorSniper: public Property {
 		float m_fHitTime;
 		
 		Object* m_pkPlayer;
-		
-//		Vector3 GetYawVector(float fAngleDeg);
-		
+		Sound *walksound;		
+		Sound *firesound;				
+				
+		vector<PropertyValues> GetPropertyValues();
 		float BestYawTurnDir(float fStart, float fEnd, float fSpeed);
 
-		Sound *walksound;		
+		void Fire(Vector3 kAim);
 
 	public:
 		AdaptorSniper();
 		~AdaptorSniper();
 		void Touch(Object* pkObject);
 		void Update();
+		void Save(ZFMemPackage* pkPackage);
+		void Load(ZFMemPackage* pkPackage);
+
+		
 };
 
 Property* Create_AdaptorSniper();

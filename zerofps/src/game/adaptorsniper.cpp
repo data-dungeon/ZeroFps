@@ -1,4 +1,5 @@
 #include "adaptorsniper.h"
+#include "../zerofps/engine/cssphere.h"
 
 
 AdaptorSniper::AdaptorSniper()
@@ -27,6 +28,9 @@ AdaptorSniper::AdaptorSniper()
 	walksound->m_acFile="file:../data/sound/walk.wav";
 	walksound->m_bLoop=true;
 	
+	firesound=new Sound();
+	firesound->m_acFile="file:../data/sound/adaptor_fire.wav";
+	firesound->m_bLoop=false;
 
 }
 
@@ -34,7 +38,9 @@ AdaptorSniper::~AdaptorSniper()
 {
 
 	m_pkAlSys->RemoveSound(walksound);
+	m_pkAlSys->RemoveSound(firesound);	
 	delete walksound;
+	delete firesound;	
 }
 
 void AdaptorSniper::Update()
@@ -77,7 +83,19 @@ void AdaptorSniper::Update()
 		if((m_pkObject->GetPos() - m_pkPlayer->GetPos()).Length() < 30){		
 			m_kDir.y=GetYawAngle(m_pkObject->GetPos() - m_pkPlayer->GetPos())+90;
 			
+			//activate adaptor
 			m_bActive=true;
+			
+			//fire at player
+			if(m_pkFps->GetTicks() - m_fHitTime >= 4) 
+			{
+				m_fHitTime=m_pkFps->GetTicks();			
+								
+				Vector3 kAim= m_pkPlayer->GetPos()-m_pkObject->GetPos();
+				kAim.Normalize();
+				Fire(kAim);
+				//Vector3 kAim=m_pkObject->GetRot().AToU();
+			}
 		}
 	}	
 	
@@ -108,6 +126,7 @@ void AdaptorSniper::Touch(Object* pkObject)
 
 	if(pkObject->GetName() == "Player")
 	{
+		
 		if(m_pkFps->GetTicks() - m_fHitTime >= 1) 
 		{
 			m_fHitTime=m_pkFps->GetTicks();
@@ -122,6 +141,42 @@ void AdaptorSniper::Touch(Object* pkObject)
 	}
 
 }
+
+void AdaptorSniper::Fire(Vector3 kAim)
+{
+	firesound->m_kPos=m_pkObject->GetPos();
+	m_pkAlSys->AddSound(firesound);
+	
+	Object* Bullet=new Object;
+	Bullet->GetName()="MassDriver_Bullet";
+	Bullet->GetVel()=kAim*25;
+	Bullet->GetPos()=m_pkObject->GetPos()+Vector3(0,0.5,0) + Bullet->GetVel().Unit();		
+	Bullet->AddProperty("MassDriverProjectile");		
+	
+	CrossRenderProperty* cr=static_cast<CrossRenderProperty*>(Bullet->AddProperty("CrossRenderProperty"));
+	cr->SetTexture("../data/textures/adaptor_energyball.tga");
+	cr->SetScale(Vector3(.3,.3,.3));
+
+	
+//	dynamic_cast<ModelProperty*>(Bullet->AddProperty("ModelProperty"))->m_fRadius=0.1;	
+	static_cast<CSSphere*>(static_cast<PhysicProperty*>(Bullet->AddProperty("PhysicProperty"))->GetColSphere())->m_fRadius=0.1;		
+	Bullet->SetParent(m_pkObjectMan->GetWorldObject());
+
+}
+
+vector<PropertyValues> AdaptorSniper::GetPropertyValues()
+{
+	vector<PropertyValues> kReturn(1);
+
+	kReturn[0].kValueName="m_bActive";
+	kReturn[0].iValueType=VALUETYPE_BOOL;
+	kReturn[0].pkValue=(void*)&m_bActive;
+	
+	return kReturn;
+};
+
+
+
 
 float AdaptorSniper::BestYawTurnDir(float fStart, float fEnd, float fSpeed)
 {
@@ -152,6 +207,19 @@ float AdaptorSniper::BestYawTurnDir(float fStart, float fEnd, float fSpeed)
 	return fNewAngle;
 }
 
+
+void AdaptorSniper::Save(ZFMemPackage* pkPackage)
+{
+	pkPackage->Write((void*)&m_bActive,4);
+
+
+}
+
+void AdaptorSniper::Load(ZFMemPackage* pkPackage)
+{
+	pkPackage->Read((void*)&m_bActive,4);
+
+}
 
 
 Property* Create_AdaptorSniper()

@@ -50,7 +50,7 @@ void MassDriverProjectile::Touch(Object* pkObject)
 		
 		m_iMode=1;	
 		CrossRenderProperty* cr=static_cast<CrossRenderProperty*>(m_pkObject->AddProperty("CrossRenderProperty"));
-		cr->SetTexture("massdriver_hit.tga");
+		cr->SetTexture("../data/textures/massdriver_hit.tga");
 		cr->SetScale(Vector3(.3,.3,.3));
 	
 

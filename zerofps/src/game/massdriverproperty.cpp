@@ -32,7 +32,7 @@ MassDriverProperty::MassDriverProperty()
 
 void MassDriverProperty::Update()
 {
-	m_kAim=m_pkObject->GetRot().AToU();
+
 
 	if(m_pkInput->Action(m_iActionFire))
 	{
@@ -62,6 +62,8 @@ void MassDriverProperty::Fire()
 	
 	//m_iAmmo--;
 	
+	
+	m_kAim=m_pkObject->GetRot().AToU();	
 	
 	Object* Bullet=new Object;
 	Bullet->GetName()="MassDriver_Bullet";
