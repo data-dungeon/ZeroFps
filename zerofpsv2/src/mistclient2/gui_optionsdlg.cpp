@@ -75,13 +75,13 @@ void OptionsDlg::Open()
 	m_pkMC->CheckButton("LockGammaColorsCheckbox", m_kOptionsValues.m_bLockGammaColors);
 
 	m_pkMC->CheckButton("ScreenSize800x600Rb", 
-		(m_pkRender->GetWidth() == 800 && m_pkRender->GetHeight() == 600) );
+		(m_pkMC->m_iWidth == 800 && m_pkMC->m_iHeight == 600) );
 	m_pkMC->CheckButton("ScreenSize1024x768Rb", 
-		(m_pkRender->GetWidth() == 1024 && m_pkRender->GetHeight() == 768) );
+		(m_pkMC->m_iWidth == 1024 && m_pkMC->m_iHeight == 768) );
 	m_pkMC->CheckButton("ScreenSize1280x1024Rb", 
-		(m_pkRender->GetWidth() == 1280 && m_pkRender->GetHeight() == 1024) );
+		(m_pkMC->m_iWidth == 1280 && m_pkMC->m_iHeight == 1024) );
 	m_pkMC->CheckButton("ScreenSize1600x1200Rb", 
-		(m_pkRender->GetWidth() == 1600 && m_pkRender->GetHeight() == 1200) );
+		(m_pkMC->m_iWidth == 1600 && m_pkMC->m_iHeight == 1200) );
 
 	m_pkMC->CheckButton("ColorDepth16Checkbox", (m_pkRender->GetDepth() == 16) );
 	m_pkMC->CheckButton("ColorDepth32Checkbox", (m_pkRender->GetDepth() == 32) );
@@ -125,10 +125,10 @@ void OptionsDlg::Open()
 
 	m_kOptionsValues.m_iPrevNetSpeed = m_pkMC->m_pkZeroFps->GetConnectionSpeed(); 
 
-	m_pkMC->CheckButton("NetSpeed1Rb", (m_kOptionsValues.m_iPrevNetSpeed == 3000)  );
-	m_pkMC->CheckButton("NetSpeed2Rb", (m_kOptionsValues.m_iPrevNetSpeed == 10000)  );
-	m_pkMC->CheckButton("NetSpeed3Rb", (m_kOptionsValues.m_iPrevNetSpeed == 50000) );
-	
+	//m_pkMC->CheckButton("NetSpeed1Rb", (m_kOptionsValues.m_iPrevNetSpeed == 3300)  );
+	//m_pkMC->CheckButton("NetSpeed2Rb", (m_kOptionsValues.m_iPrevNetSpeed == 10000)  );
+	//m_pkMC->CheckButton("NetSpeed3Rb", (m_kOptionsValues.m_iPrevNetSpeed == 50000) );
+	//
 	for(int i=0; i<pkTabCtrl->GetNumPages(); i++)
 	{
 		if(i!=m_kOptionsValues.m_iCurrentPage)
@@ -149,6 +149,13 @@ void OptionsDlg::Open()
 	fPos = (m_pkInput->GetMouseSens() / 5.0f) * 100.0f ;
 	((ZGuiSlider*)m_pkMC->GetWnd("MouseSensSlider"))->SetRange(0,100);
 	((ZGuiSlider*)m_pkMC->GetWnd("MouseSensSlider"))->SetPos(fPos, true);
+
+	fPos = m_pkZeroFps->GetConnectionSpeed();
+	((ZGuiSlider*)m_pkMC->GetWnd("NetSpeedSlider"))->SetRange(3000,50000);
+	((ZGuiSlider*)m_pkMC->GetWnd("NetSpeedSlider"))->SetPos(fPos, true);
+
+
+
 
 	m_kOptionsValues.m_fPrevSoundVolume = m_pkAudioSys->GetSoundVolume();
 	//m_kOptionsValues.m_fPrevMusicVolume = m_pkAudioSys->GetMusicVolume();
@@ -186,36 +193,44 @@ void OptionsDlg::Close(bool bSave)
 		m_pkAudioSys->SetSoundVolume(m_kOptionsValues.m_fPrevSoundVolume);
 //		m_pkAudioSys->SetMusicVolume(m_kOptionsValues.m_fPrevMusicVolume);
 		
-		char cmd[25];
-		sprintf(cmd, "i_mousesens %.3f", m_kOptionsValues.m_fPrevMouseSens);
-		m_pkZeroFps->m_pkConsole->Execute(cmd);
+		//char cmd[25];
+		//sprintf(cmd, "i_mousesens %.3f", m_kOptionsValues.m_fPrevMouseSens);
+		//m_pkZeroFps->m_pkConsole->Execute(cmd);
 
-		sprintf(cmd, "r_shadowmap %i", m_kOptionsValues.m_bPrevShadowMapState);
-		g_kMistClient.m_pkZeroFps->m_pkConsole->Execute(cmd);		
+		//sprintf(cmd, "r_shadowmap %i", m_kOptionsValues.m_bPrevShadowMapState);
+		//g_kMistClient.m_pkZeroFps->m_pkConsole->Execute(cmd);		
 
-		sprintf(cmd, "r_vegetation %i", m_kOptionsValues.m_bPrevVegetationState);
-		g_kMistClient.m_pkZeroFps->m_pkConsole->Execute(cmd);				
-		
-		sprintf(cmd, "n_netspeed %i", m_kOptionsValues.m_iPrevNetSpeed);
-		g_kMistClient.m_pkZeroFps->m_pkConsole->Execute(cmd);		
+		//sprintf(cmd, "r_vegetation %i", m_kOptionsValues.m_bPrevVegetationState);
+		//g_kMistClient.m_pkZeroFps->m_pkConsole->Execute(cmd);				
+		//
+		//sprintf(cmd, "n_netspeed %i", m_kOptionsValues.m_iPrevNetSpeed);
+		//g_kMistClient.m_pkZeroFps->m_pkConsole->Execute(cmd);		
+
+		m_kOptionsValues.m_iNewNetSpeed = 
+		m_kOptionsValues.m_iPrevNetSpeed = m_pkMC->m_pkZeroFps->GetConnectionSpeed();
 
 		
 	}
 	else // change options
 	{		
+
+		char cmd[25];
+		sprintf(cmd, "n_netspeed %i", m_kOptionsValues.m_iNewNetSpeed);
+		g_kMistClient.m_pkZeroFps->m_pkConsole->Execute(cmd);	
+
 		m_pkZShaderSystem->SetGamma((float)atof(m_pkMC->GetText("GammaRedLabel")),
 			(float)atof(m_pkMC->GetText("GammaGreenLabel")), (float)atof(m_pkMC->GetText("GammaBlueLabel")));
 
 		m_kOptionsValues.m_bLockGammaColors = m_pkMC->IsButtonChecked("LockGammaColorsCheckbox");
 
 		if( (m_pkMC->IsButtonChecked("ScreenSize800x600Rb") &&
-			!(m_pkRender->GetWidth() == 800 && m_pkRender->GetHeight() == 600)) || 
+			!(m_pkMC->m_iWidth == 800 && m_pkMC->m_iHeight == 600)) || 
 			(m_pkMC->IsButtonChecked("ScreenSize1024x768Rb") &&
-			!(m_pkRender->GetWidth() == 1024 && m_pkRender->GetHeight() == 768)) ||
+			!(m_pkMC->m_iWidth == 1024 && m_pkMC->m_iHeight == 768)) ||
 			(m_pkMC->IsButtonChecked("ScreenSize1280x1024Rb") &&
-			!(m_pkRender->GetWidth() == 1280 && m_pkRender->GetHeight() == 1024)) ||
+			!(m_pkMC->m_iWidth == 1280 && m_pkMC->m_iHeight == 1024)) ||
 			(m_pkMC->IsButtonChecked("ScreenSize1600x1200Rb") &&
-			!(m_pkRender->GetWidth() == 1600 && m_pkRender->GetHeight() == 1200)) ||
+			!(m_pkMC->m_iWidth == 1600 && m_pkMC->m_iHeight == 1200)) ||
 			(m_pkMC->IsButtonChecked("ColorDepth16Checkbox") && m_pkRender->GetDepth() != 16) ||
 			(m_pkMC->IsButtonChecked("ColorDepth32Checkbox") && m_pkRender->GetDepth() != 32) ||
 			(m_pkMC->IsButtonChecked("FullscreenCheckbox") && !m_pkRender->GetFullscreen()) ||
@@ -335,25 +350,31 @@ void GuiMsgOptionsDlg( string strMainWnd, string strController,
 		else 
 		if(strMainWnd == "OptionsPageGame")
 		{
-			char cmd[25];
 
-			if(strController == "NetSpeed1Rb")
+			if(strController == "NetSpeedSetDefaultBn")
 			{
-				sprintf(cmd, "n_netspeed %i", 3000);
-				g_kMistClient.m_pkZeroFps->m_pkConsole->Execute(cmd);		
+				((ZGuiSlider*)g_kMistClient.GetWnd("NetSpeedSlider"))->SetPos(3000, true);
 			}
-			else
-			if(strController == "NetSpeed2Rb")
-			{
-				sprintf(cmd, "n_netspeed %i", 10000);
-				g_kMistClient.m_pkZeroFps->m_pkConsole->Execute(cmd);		
-			}
-			else
-			if(strController == "NetSpeed3Rb")
-			{
-				sprintf(cmd, "n_netspeed %i", 50000);
-				g_kMistClient.m_pkZeroFps->m_pkConsole->Execute(cmd);		
-			}
+
+			//char cmd[25];
+
+			//if(strController == "NetSpeed1Rb")
+			//{
+			//	sprintf(cmd, "n_netspeed %i", 3000);
+			//	g_kMistClient.m_pkZeroFps->m_pkConsole->Execute(cmd);		
+			//}
+			//else
+			//if(strController == "NetSpeed2Rb")
+			//{
+			//	sprintf(cmd, "n_netspeed %i", 10000);
+			//	g_kMistClient.m_pkZeroFps->m_pkConsole->Execute(cmd);		
+			//}
+			//else
+			//if(strController == "NetSpeed3Rb")
+			//{
+			//	sprintf(cmd, "n_netspeed %i", 50000);
+			//	g_kMistClient.m_pkZeroFps->m_pkConsole->Execute(cmd);		
+			//}
 
 		}
 		else
@@ -376,7 +397,7 @@ void GuiMsgOptionsDlg( string strMainWnd, string strController,
 				if(g_kMistClient.IsButtonChecked("ScaleGUICheckbox"))
 					g_kMistClient.m_pkGui->m_iScaleMode = 0;
 				else
-					g_kMistClient.m_pkGui->m_iScaleMode = 1;
+					//g_kMistClient.m_pkGui->m_iScaleMode = 1;
 
 				g_kMistClient.ShowWnd("RestartMsgBox",	false);
 				g_kMistClient.m_pkZeroFps->QuitEngine();
@@ -485,6 +506,20 @@ void GuiMsgOptionsDlg( string strMainWnd, string strController,
 				char szCmd[25];
 				sprintf(szCmd, "i_mousesens %.3f", pos);
 				g_kMistClient.m_pkZeroFps->m_pkConsole->Execute(szCmd);
+			}
+		}
+		else
+		if(strMainWnd == "OptionsPageGame")
+		{
+			if(strController == "NetSpeedSlider")
+			{
+				int pos = ((ZGuiSlider*)g_kMistClient.GetWnd("NetSpeedSlider"))->ZGuiSlider::GetPos();
+	
+				char szText[16];
+				sprintf(szText, "%i", pos);				
+				g_kMistClient.SetText("NetSpeedRes", szText);
+
+				g_kMistClient.m_pkOptionsDlg->m_kOptionsValues.m_iNewNetSpeed = pos;
 			}
 		}
 	}

@@ -6,6 +6,7 @@
 #include "zguibutton.h"
 #include "zguilabel.h"
 #include "zguislider.h"
+#include "../basic/keys.h"
 
 static int ID_SLIDER = 433;
 
@@ -170,6 +171,31 @@ ZGuiSkin* ZGuiSlider::GetBkSkin()
 
 bool ZGuiSlider::ProcessKBInput(int nKey)
 {
+	//bool bNotify = false;
+
+	//if(nKey == KEY_LEFT)
+	//{
+	//	if(m_iPos < m_iMax) 
+	//	{
+	//		//m_pkButton->Move(-1,0,true,false);
+	//		//bNotify = true;
+	//		SetPos(m_iPos-1, true);
+	//	}
+	//}
+
+	//if(nKey == KEY_RIGHT)
+	//{
+	//	if(m_iPos > m_iMin) 
+	//	{
+	//		//m_pkButton->Move(1,0,true,false);
+	//		//bNotify = true;
+	//		SetPos(m_iPos+1, true);
+	//	}
+	//}
+
+	//if(bNotify)
+	//	Notify(m_pkButton, NCODE_MOVE);
+
 	return true;
 }
 
@@ -207,19 +233,12 @@ bool ZGuiSlider::Notify(ZGuiWnd* pkWnd, int iCode)
 		if(pkWnd->GetID() == (unsigned int) ID_SLIDER)
 		{
 			Rect rcArea = GetScreenRect();
-			Rect rcButton = m_pkButton->GetScreenRect();
+			Rect rcBnt = m_pkButton->GetScreenRect();
 
-			int width = rcArea.Width(), size = rcButton.Width() + m_iMin;
-			int pos = rcButton.Left -  rcArea.Left;
+			float fProcentAvMax = (float)(rcArea.Right - rcBnt.Right) / (rcArea.Width()-rcBnt.Width());
+			float fPos = m_iMin + ( (1.0f-fProcentAvMax) * (float)(m_iMax-m_iMin) ) ;
 
-			int prev_pos = m_iPos;
-			int new_pos = (int) ( (float) (m_iMax-m_iMin-m_iMin) * (float) 
-				( (float) pos/(width-size) ) );
-
-			if(prev_pos != new_pos)
-			{
-				SetPos(m_iMin+new_pos, true);
-			}
+			SetPos(fPos, true);
 		}
 	}
 	return true;

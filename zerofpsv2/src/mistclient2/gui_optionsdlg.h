@@ -22,6 +22,7 @@ public:
 		float m_fPrevSoundVolume;
 		float m_fPrevMouseSens;
 		int m_iPrevNetSpeed;
+		int m_iNewNetSpeed;
 
 	} m_kOptionsValues;
 
