@@ -225,6 +225,13 @@ bool EditPropertyDlg::OnCloseEditProperty(bool bSave)
 			}
 		}
 	}
+
+	// Send a message to the main winproc...
+	int* piParams = new int[1];
+	piParams[0] = ID_PROPERTY_SET_NEW_VALUE_BN; // Listbox ID
+	DlgProc(m_pkWindow, ZGM_COMMAND, 1, piParams);
+	delete[] piParams;
+
 	return true;
 }
 
@@ -368,8 +375,6 @@ bool EditPropertyDlg::DlgProc( ZGuiWnd* pkWindow, unsigned int uiMessage, int iN
 					string kPrevValue = m_pkSelProperty->GetValue(m_szSelPropValue);
 					char* text = m_pkGui->Get("PropertyValueSetEB")->GetText();
 					m_pkSelProperty->SetValue(m_szSelPropValue, string(text));
-
-					printf("ID_PROPERTY_SET_NEW_VALUE_BN: %s\n", text);
 				}
 			}
 			break;
