@@ -392,7 +392,7 @@ bool EditPropertyDlg::DlgProc( ZGuiWnd* pkWindow, unsigned int uiMessage, int iN
 				else
 					m_szSelProperty.erase();
 
-				UpdateStats();
+				UpdateStats(iID);
 				break;
 
 			case ID_PROPERTY_VALUES_CB:
@@ -404,6 +404,7 @@ bool EditPropertyDlg::DlgProc( ZGuiWnd* pkWindow, unsigned int uiMessage, int iN
 				else
 					m_szSelPropValue.erase();
 
+				UpdateStats(iID);
 				break;
 			}
 		}
@@ -450,50 +451,64 @@ void EditPropertyDlg::RemoveProperty()
 	}
 }
 
-void EditPropertyDlg::UpdateStats()
+void EditPropertyDlg::UpdateStats(int ComboBoxID)
 {
-	if(!m_szSelProperty.empty())
+	if(ComboBoxID == ID_PROPERTIES_CB)
 	{
-		m_pkSelProperty = m_pkCurrentChild->GetProperty( (char*) m_szSelProperty.c_str() );
-	
-		// Clear property values combobox
-		ZGuiCombobox* pkPValueCB = (ZGuiCombobox*) m_pkGui->Get("PropertyValuesCB");
-		pkPValueCB->RemoveAllItems();
-
-		// Fill property values combobox
-		vector<string> akPropertyNames = m_pkSelProperty->GetValueNames();
-		vector<string>::iterator s = akPropertyNames.begin();
-		vector<string>::iterator e = akPropertyNames.end();
-		int counter=0;
-		int antal = akPropertyNames.size();
-
-		for( ; s != e; s++ )
+		if(!m_szSelProperty.empty())
 		{
-			m_pkGui->AddItemToList(pkPValueCB, true, (char*)(*s).c_str(), 
-				counter++, (counter == antal)); // Select the last item in the combox
-		}
+			m_pkSelProperty = m_pkCurrentChild->GetProperty( (char*) m_szSelProperty.c_str() );
+		
+			// Clear property values combobox
+			ZGuiCombobox* pkPValueCB = (ZGuiCombobox*) m_pkGui->Get("PropertyValuesCB");
+			pkPValueCB->RemoveAllItems();
 
+			// Fill property values combobox
+			vector<string> akPropertyNames = m_pkSelProperty->GetValueNames();
+			vector<string>::iterator s = akPropertyNames.begin();
+			vector<string>::iterator e = akPropertyNames.end();
+			int counter=0;
+			int antal = akPropertyNames.size();
+
+			for( ; s != e; s++ )
+			{
+				m_pkGui->AddItemToList(pkPValueCB, true, (char*)(*s).c_str(), 
+					counter, (counter+1 == antal)); // Select the last item in the combox
+
+				counter++;
+			}
+
+			string strPropValue = " ";
+			ZGuiListitem* pkPropValueCBSelItem = pkPValueCB->GetListbox()->GetSelItem();
+
+			if(pkPropValueCBSelItem)
+			{
+				m_szSelPropValue = pkPropValueCBSelItem->GetText();
+				strPropValue = m_pkSelProperty->GetValue(m_szSelPropValue);
+			}
+
+			// Set selected property value in textbox
+			m_pkGui->Get("PropertyValueSetEB")->SetText((char*) strPropValue.c_str());
+		}
+		else
+		{
+			m_pkSelProperty = NULL;
+
+			// Clear property values combobox
+			ZGuiCombobox* pkPValueCB = (ZGuiCombobox*) m_pkGui->Get("PropertyValuesCB");
+			pkPValueCB->RemoveAllItems();
+
+			// Clear property values textbox
+			m_pkGui->Get("PropertyValueSetEB")->SetText(" ");
+		}
+	}
+	else
+	if(ComboBoxID == ID_PROPERTY_VALUES_CB)
+	{
 		string strPropValue = " ";
-		ZGuiListitem* pkPropValueCBSelItem = pkPValueCB->GetListbox()->GetSelItem();
-
-		if(pkPropValueCBSelItem)
-		{
-			m_szSelPropValue = pkPropValueCBSelItem->GetText();
-			strPropValue = m_pkSelProperty->GetValue(m_szSelPropValue);
-		}
+		strPropValue = m_pkSelProperty->GetValue(m_szSelPropValue);
 
 		// Set selected property value in textbox
 		m_pkGui->Get("PropertyValueSetEB")->SetText((char*) strPropValue.c_str());
-	}
-	else
-	{
-		m_pkSelProperty = NULL;
-
-		// Clear property values combobox
-		ZGuiCombobox* pkPValueCB = (ZGuiCombobox*) m_pkGui->Get("PropertyValuesCB");
-		pkPValueCB->RemoveAllItems();
-
-		// Clear property values textbox
-		m_pkGui->Get("PropertyValueSetEB")->SetText(" ");
 	}
 }

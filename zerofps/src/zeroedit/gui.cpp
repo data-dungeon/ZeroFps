@@ -374,8 +374,6 @@ ZGuiLabel* Gui::CreateLabel(ZGuiWnd* pkParent, int iID, int x, int y, int w, int
 
 void Gui::AddItemsToList(ZGuiWnd *pkWnd, bool bCombobox, char **items, int iNumber, bool bSelectLast)
 {
-	int test = 2;
-
 	if(bCombobox)
 	{
 		ZGuiCombobox* pkCombobox = (ZGuiCombobox*) pkWnd;

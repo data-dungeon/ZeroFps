@@ -29,7 +29,7 @@ public:
 	bool DlgProc( ZGuiWnd* pkWindow, unsigned int uiMessage, int iNumberOfParams, void *pkParams );
 
 private:
-	void UpdateStats();
+	void UpdateStats(int iComboBoxID);
 	void RemoveProperty();
 	ZGuiWnd* Create(int x, int y, int w, int h);
 
