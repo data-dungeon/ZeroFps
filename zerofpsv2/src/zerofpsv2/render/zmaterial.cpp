@@ -12,7 +12,7 @@ ZMaterialSettings::ZMaterialSettings()
 	
 	m_bLighting = false;
 	m_bCullFace = false;
-	
+	m_iDepthFunc = GL_LESS;
 };
 
 ZMaterial::ZMaterial()

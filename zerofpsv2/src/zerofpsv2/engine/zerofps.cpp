@@ -129,7 +129,6 @@ ZeroFps::~ZeroFps()
 	m_pkNetWork->ServerEnd();
 	g_ZFObjSys.ShutDown();
 
-	delete m_pkResourceDB;
 	delete m_pkPhysEngine;
 	delete m_pkLevelMan;
 	delete m_pkIni;
@@ -151,6 +150,7 @@ ZeroFps::~ZeroFps()
 	delete m_pkZFVFileSystem;
 	delete m_pkBasicFS;
 	delete m_pkPhysics_Engine;
+	delete m_pkResourceDB;		//d krashar om denna ligger där uppe =(, Dvoid
 }
 
 void ZeroFps::SetApp() {

@@ -38,6 +38,7 @@ enum RENDER_API DRAW_MODE
 	POLYGON_MODE,
 };
 
+
 class RENDER_API ZShader : public ZFObject
 {
 	private:

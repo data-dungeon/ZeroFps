@@ -16,8 +16,11 @@ class RENDER_API ZMaterialSettings
 		int	m_iPolygonModeFront;
 		int	m_iPolygonModeBack;		
 		
+		int	m_iDepthFunc;
+		
 		bool	m_bLighting;	
 		bool	m_bCullFace;
+
 	
 		ZMaterialSettings();
 

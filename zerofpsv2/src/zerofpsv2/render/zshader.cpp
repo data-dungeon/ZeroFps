@@ -185,6 +185,8 @@ void ZShader::SetupRenderStates(ZMaterialSettings* pkSettings)
 	glPolygonMode(GL_FRONT, pkSettings->m_iPolygonModeFront);
 	glPolygonMode(GL_BACK, pkSettings->m_iPolygonModeBack);	
 
+	glDepthFunc(pkSettings->m_iDepthFunc);
+	
 	//lighting setting
 	if(pkSettings->m_bLighting)
 		glEnable(GL_LIGHTING);
@@ -207,18 +209,24 @@ void ZShader::SetupRenderStates(ZMaterialSettings* pkSettings)
 		glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE);	
 			
 	}
+	else
+		glDisable(GL_TEXTURE_2D);
 	
 	//setup TU 2
 	glActiveTextureARB(GL_TEXTURE1_ARB);
 	if(pkSettings->m_iTUs[1] > 0)
 	{	
 		glEnable(GL_TEXTURE_2D);
-		m_pkTexMan->BindTexture(pkSettings->m_iTUs[0]);
+		m_pkTexMan->BindTexture(pkSettings->m_iTUs[1]);
 	
 		glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE);		
 	}
+	else
+		glDisable(GL_TEXTURE_2D);
 
 
+	//want TU 0 to be active when exiting
+	glActiveTextureARB(GL_TEXTURE0_ARB);
 }
 
 void ZShader::CopyVertexData()
