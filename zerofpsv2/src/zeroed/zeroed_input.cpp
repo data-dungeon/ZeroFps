@@ -109,10 +109,14 @@ void ZeroEd::Input_EditObject(float fMouseX, float fMouseY)
 {
 	if(m_pkInputHandle->VKIsDown("copy"))	EditRunCommand(FID_COPY);
 	if(m_pkInputHandle->VKIsDown("paste"))	EditRunCommand(FID_PASTE);
-	if(m_pkInputHandle->VKIsDown("clone"))	EditRunCommand(FID_CLONE);
+	
+	if(m_pkInputHandle->VKIsDown("clone"))	
+	{
+		if(!DelayCommand())
+			EditRunCommand(FID_CLONE);	
+	}
 	
 	NetPacket kNp;
-
 	if(m_pkInputHandle->Pressed(MOUSELEFT) && !DelayCommand() )
 	{
 		/*
