@@ -68,7 +68,7 @@ class RENDER_API ZMaterial : public ZFResource
 		
 		vector<ZMaterialSettings*> m_kPasses;
 		ZFIni								m_kIni;
-		map<string,int> 				m_kEnums;
+		static map<string,int> 		m_kEnums;
 		
 		bool LoadGlobalSection();
 		bool LoadPass(int iPass);		

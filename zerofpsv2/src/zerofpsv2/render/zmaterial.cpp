@@ -2,6 +2,9 @@
 #include "zshader.h"
 #include "../basic/globals.h"
  
+
+map<string,int> ZMaterial::m_kEnums;
+
 ZMaterialSettings::ZMaterialSettings()
 {
 	m_kTUs[0] = new ZFResourceHandle();				// LEAK - MistClient, Level loaded.
@@ -309,6 +312,9 @@ int ZMaterial::CalculateSize()
 
 void ZMaterial::SetupEnums()
 {
+	if(!m_kEnums.empty())
+		return;
+		
 	//numbervalues
 	m_kEnums["-1"] = 									-1;	
 	m_kEnums["0"] = 									0;

@@ -45,20 +45,20 @@ settings in [pass-x]
 	tutexcords0-3 = int	[0,1,2,3]
 		what texture cordinats will this texture unit use.
 		possible options:
-		0 = use texture array 0
-		1 = use texture array 1
-		2 = use texture array 2
-		3 = use texture array 3
-		4 = use auto generated texture cordinats, object linear.
-		5 = use auto generated texture cordinats, eye linear.
-		6 = use auto generated texture cordinats, sphere maped
+		0/TEX_ARAY_0 = use texture array 0
+		1/TEX_ARAY_1 = use texture array 1
+		2/TEX_ARAY_2 = use texture array 2
+		3/TEX_ARAY_3 = use texture array 3
+		4/AUTO_OBJLIN = use auto generated texture cordinats, object linear.
+		5/AUTO_EYELIN = use auto generated texture cordinats, eye linear.
+		6/AUTP_SPHERE = use auto generated texture cordinats, sphere maped
 		
 	polygonmdoefront = int	[1]
 		set how to render front side of polygons in this pass.
 		possible options:
-		0 = fill polygon
-		1 = line polygon
-		2 = point polygon
+		0/FILL = fill polygon
+		1/LINE = line polygon
+		2/POINT = point polygon
 		
 	polygonmodeback = int [1]
 		see polygonmodefront.
@@ -115,9 +115,9 @@ settings in [pass-x]
 	coloreffect = int [-1]
 		enables a vertexcolor effect on the material
 		possible options:
-			-1 = Disabled
-			1  = flickering
-			2  = pulsating
+			-1/DISABLED = Disabled
+			1/FLICKERING  = flickering
+			2/PULSATING  = pulsating
 						
 	vertexprogram = string [none]
 		set what hardware ARB vertex program to use,  (.zvp files)
