@@ -191,7 +191,10 @@ void InventoryDlg::OnMouseMove(bool bLeftButtonPressed, int mx, int my)
 
 			if(g_kMistClient.m_pkGui->m_bMouseRightPressed)
 			{	
-				m_iSelItemID = m_vkInventoryItemList[i].iItemID;
+			//	m_iSelItemID = m_vkInventoryItemList[i].iItemID;
+				g_kMistClient.SendRequestContainer(m_vkInventoryItemList[i].iItemID);
+				return;
+			//	OpenContainerWnd(m_iSelItemID, 
 			}
 		}
 		else
@@ -377,6 +380,7 @@ void InventoryDlg::UpdateInventory(vector<MLContainerInfo>& vkItemList)
 		pkNewSlot->SetSkin(new ZGuiSkin());
 		pkNewSlot->GetSkin()->m_iBkTexID = m_pkTexMan->Load(
 			string(string("data/textures/gui/items/") + vkItemList[i].m_strIcon).c_str(), 0) ;
+		pkNewSlot->GetSkin()->m_bTileBkSkin = 0;
 		pkNewSlot->GetSkin()->m_afBorderColor[0] = BD_R;
 		pkNewSlot->GetSkin()->m_afBorderColor[1] = BD_G;
 		pkNewSlot->GetSkin()->m_afBorderColor[2] = BD_B;
@@ -433,6 +437,7 @@ void InventoryDlg::UpdateContainer(vector<MLContainerInfo>& vkItemList)
 		//}
 
 		pkNewSlot->SetSkin(new ZGuiSkin());
+		pkNewSlot->GetSkin()->m_bTileBkSkin = 0;
 		pkNewSlot->GetSkin()->m_iBkTexID = m_pkTexMan->Load(
 			string(string("data/textures/gui/items/") + vkItemList[i].m_strIcon).c_str(), 0) ;	
 
