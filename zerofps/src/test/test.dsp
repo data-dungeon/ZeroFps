@@ -134,6 +134,10 @@ SOURCE=.\playercontrolproperty.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\playerobject.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\test.h
 # End Source File
 # End Group

@@ -9,10 +9,12 @@
 
 class BallObject: public Object {
 	private:
-
+		ZeroFps *m_pkFps;
 
 	public:
-		BallObject(HeightMap *pkMap);
+		bool onGround;	
+
+		BallObject(HeightMap *pkMap,ZeroFps *pkFps);
 		
 		void HandleCollision(Object* pkObject,Vector3 kPos,bool bContinue);
 
