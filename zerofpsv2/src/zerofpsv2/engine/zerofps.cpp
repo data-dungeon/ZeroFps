@@ -417,7 +417,7 @@ void ZeroFps::UpdateGuiInput()
 
 	   //disablar applicationens input om guit har hanterat den	
 	   if(m_pkGui->m_bHandledMouse == true)
-		   m_pkApp->m_pkInputHandle->SetTempDisable(true);
+			m_pkApp->m_pkInputHandle->SetTempDisable(true);
 	   else
 		   m_pkApp->m_pkInputHandle->SetTempDisable(false);
 }
@@ -1089,6 +1089,9 @@ void ZeroFps::StartClient(string strLogin,string strPassword,string strServerIP,
 	//reset all first
 	StopAll();
 
+	//add a delay between disconnection and trying to connect again
+	SDL_Delay(1000);
+	
 	//clear world   ---detta kan vara ganska evil ibland =D, 
 	m_pkEntityManager->Clear();
 	
