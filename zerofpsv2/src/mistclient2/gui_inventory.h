@@ -44,6 +44,13 @@ public:
 	
 private:
 
+	enum InventoryDropTarget
+	{
+		DropTarget_Inventory,
+		DropTarget_Container,
+		DropTarget_Ground,
+	};
+
 	struct ITEM_SLOT
 	{	
 		ZGuiWnd* pkWnd;
@@ -57,7 +64,7 @@ private:
 		bool bIsInventoryItem;
 	};
 
-	void OnDropItem();
+	void OnDropItem(int mx, int my);
 	void CreateContainerGrid(char slots_horz, char slots_vert);
 	int TestForCollision(int iTestSlot, bool bInventory); // returns -1 if no collision or index to list eitherwise
 	int TestForCollision(Point test_slot, Point test_size, bool bInventory); // returns -1 if no collision or index to list eitherwise
@@ -70,7 +77,10 @@ private:
 	void PickUpFromGround(bool bLeftButtonPressed, int mx, int my);
 	void PickUpFromGrid(int iSlotIndex, bool bInventory, int mx, int my);
 	void OpenContainerItem(bool bOpen, int iSlotIndex, bool bInventory);
-	
+	int GetInventoryContainerID();
+	InventoryDropTarget GetDropTargetFromScreenPos(int x, int y);
+	void SetSelectionBorder(int iIndex, bool bInventory, bool bRemove);
+
 	TextureManager* m_pkTexMan;
 	
 	vector<ITEM_SLOT> m_vkInventoryItemList;
@@ -79,7 +89,7 @@ private:
 	ZGuiWnd* m_pkInventoryWnd;
 	ZGuiWnd* m_pkContainerWnd;
 
-	MOVE_SLOT m_kMoveSlot; // index of m_vkItemList
+	MOVE_SLOT m_kMoveSlot; // index of m_vkInventoryItemList or m_vkContainerItemList
 	int m_iSelItemID; // ITEM_SLOT::iItemID (aka MLContainerInfo::m_iItemID)
 	int m_iHighestZ;
 

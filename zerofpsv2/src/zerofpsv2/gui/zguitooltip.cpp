@@ -171,6 +171,9 @@ void ZGuiToolTip::RemoveToolTip(ZGuiWnd* pkWnd)
 	{
 		if((*it).pkWnd == pkWnd)
 		{
+			if(m_pkLastToolTipWnd == pkWnd)
+				m_pkLastToolTipWnd = NULL;
+
 			m_vkWindowList.erase(it);
 			break;
 		}

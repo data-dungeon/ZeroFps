@@ -1,5 +1,6 @@
 #include "mistclient.h"
 #include "gui_optionsdlg.h"
+#include "gui_inventory.h"
 
 extern MistClient g_kMistClient;
 
@@ -226,5 +227,6 @@ void MistClient::LoadStartScreenGui(bool bShowSplashImage)
 	else
 	{
 		GetWnd("MLStartWnd")->GetSkin()->m_bTransparent = false;
+		m_pkInventoryDlg->Close();
 	}
 }
