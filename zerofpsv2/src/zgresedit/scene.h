@@ -41,6 +41,7 @@ public:
 	void RemoveAlias(ZGuiWnd* pkWnd);
 	void ScaleWndToTexSize(ZGuiWnd* pkWnd, char* szSelSkinType);
 	ZGuiWnd* CloneWnd(ZGuiWnd* pkWnd, int xpos, int ypos);
+//	ZGuiWnd* DeleteWnd(ZGuiWnd *pkWnd); // returns the new focuswnd
 
 
 private:

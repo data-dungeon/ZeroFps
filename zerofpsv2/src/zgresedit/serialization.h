@@ -24,7 +24,9 @@ class Serialization
 {
 public:
 	bool SaveGUI(char* szFileName, Scene* pkScene);
-	bool LoadGUI(const char* szFileName, ZGuiApp* pkApp);
+	bool LoadGUI(const char* szFileName, Scene* pkScene);
+	void TempSave(Scene* pkScene);
+	ZGuiWnd* TempLoad(Scene* pkScene); // returns the new mainwnd/focus wnd
 
 	Serialization();
 	virtual ~Serialization();
@@ -39,7 +41,7 @@ private:
 	ZFBasicFS* m_pkBasicFS;
 	ZGuiResourceManager* m_pkGuiResMan;
 	TextureManager* m_pkTexMan;
-	FILE* m_pkFile;
+	ZGui* m_pkGui;
 
 	struct RANDOM_SORT: public binary_function<ZGuiWnd*, ZGuiWnd*, bool> { 
 		bool operator() (ZGuiWnd* x, ZGuiWnd* y) { return (rand()%10 > 5) ? true : false; }

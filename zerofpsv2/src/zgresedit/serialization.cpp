@@ -20,6 +20,10 @@ Serialization::Serialization()
 	m_pkBasicFS = static_cast<ZFBasicFS*>(g_ZFObjSys.GetObjectPtr("ZFBasicFS"));
 	m_pkGuiResMan = static_cast<ZGuiResourceManager*>(g_ZFObjSys.GetObjectPtr("ZGuiResourceManager"));
 	m_pkTexMan = static_cast<TextureManager*>(g_ZFObjSys.GetObjectPtr("TextureManager"));
+	m_pkGui = static_cast<ZGui*>(g_ZFObjSys.GetObjectPtr("Gui"));
+
+	ZFResourceDB* pkResDB = static_cast<ZFResourceDB*>(g_ZFObjSys.GetObjectPtr("ZFResourceDB"));
+	pkResDB->ToggleInstantExpire(true);
 }
 
 Serialization::~Serialization()
@@ -33,13 +37,16 @@ bool Serialization::SaveGUI(char* szFileName, Scene* pkScene)
 	
 	string strFileName = ChangeExtension(szFileName); // byt ändelse till .lua
 
-	printf("Saving file %s\n", strFileName.c_str());
-
 	FILE* pkFile = fopen(strFileName.c_str(), "w+t"); // öppna filen i skrivläge
 
-	fprintf(pkFile, "-- Mistlands GUI Resource file, START\n\n");
+	if(pkFile == NULL)
+	{
+		printf("Failed to save file! Another application may use the file\n");
+	}
 
-	m_pkFile = pkFile;
+	printf("Saving file %s\n", strFileName.c_str());
+
+	fprintf(pkFile, "-- Mistlands GUI Resource file, START\n\n");
 
 	map<string, ZGuiWnd*> kWindows;
 	m_pkGuiResMan->GetWindows(kWindows); // hämta alla fönster som finns
@@ -276,8 +283,26 @@ bool Serialization::SaveGUI(char* szFileName, Scene* pkScene)
 	return true;
 }
 
-bool Serialization::LoadGUI(const char* szFileName, ZGuiApp* pkApp)
+bool Serialization::LoadGUI(const char* szFileName, Scene* pkScene)
 {
+	ZGuiApp* pkApp = pkScene->GetApp();
+
+	// Börja med att ta bort alla fönster
+	map<string, ZGuiWnd*> kWindows;
+	m_pkGuiResMan->GetWindows(kWindows);
+	map<string, ZGuiWnd*>::iterator it2;
+	for( it2 = kWindows.begin(); it2 != kWindows.end(); it2++)
+	{
+		if(pkScene->IsSceneWnd(it2->second) == false)
+		{
+			if(it2->second)
+				printf("%s\n", it2->second->GetName());
+
+			pkScene->RemoveAlias(it2->second);
+			m_pkGui->UnregisterWindow(it2->second);
+		}
+	}
+
 	printf("Loading file %s\n", szFileName);
 
 	ZFResourceHandle* pkScriptResHandle = new ZFResourceHandle;
@@ -297,6 +322,8 @@ bool Serialization::LoadGUI(const char* szFileName, ZGuiApp* pkApp)
 		printf("Failed to call script\n");
 		return false;
 	}
+
+	pkApp->m_pkScriptResHandle->FreeRes(); 
 
 	return true;
 }
@@ -328,4 +355,49 @@ bool Serialization::ParentHaveBeenSaved(ZGuiWnd *pkParent)
 			return true;
 
 	return false;
+}
+
+void Serialization::TempSave(Scene* pkScene)
+{
+	string strTempFileName = "../data/guires_temp.lua";
+	SaveGUI((char*)strTempFileName.c_str(), pkScene);
+}
+
+ZGuiWnd* Serialization::TempLoad(Scene* pkScene)
+{
+	string strTempFileName = "../data/guires_temp.lua";
+
+	ZGuiWnd* pkReturnWnd = NULL;
+
+	if(m_pkBasicFS->FileExist(strTempFileName.c_str()))
+	{
+		
+
+		strTempFileName.erase(0,2);
+
+		// Ladda in på nytt
+		if(!LoadGUI(strTempFileName.c_str(), pkScene))
+		{
+			printf("Failed to save file %s\n", strTempFileName.c_str());
+			return NULL;
+		}
+
+		// Lägg till standardelement
+		map<string, ZGuiWnd*> kWindows;
+		m_pkGuiResMan->GetWindows(kWindows);
+		for(map<string, ZGuiWnd*>::iterator it = kWindows.begin(); it != kWindows.end(); it++)
+		{
+			if(pkScene->IsSceneWnd(it->second) == false)
+			{
+				pkScene->AddStandardElements(it->second);
+				it->second->Disable();
+			}
+		}
+	}
+	else
+	{
+		printf("Failed to open file %s\n", strTempFileName.c_str());
+	}
+
+	return pkReturnWnd;
 }

@@ -49,11 +49,16 @@ class ZGResEdit : public Application, public ZGuiApp
 
 		ZGResEdit(char* aName,int iWidth,int iHeight,int iDepth);
 
+		Scene* GetScene() { return m_pkScene; }
+
+		ZGuiWnd* DeleteWnd(ZGuiWnd *pkWnd);
+
 	private:
+		void TempSave(bool bSave);
 		void OpenWnd(ZGuiWnd* pkWnd, bool bOpen=true);
 		void UpdateSkinList(ZGuiWnd* pkFocusWnd);
 		void OnClickPropertyOK();
-		void UpdatePropertyData();
+		void UpdatePropertyWnd();
 		void ExecuteCommand();
 		void MoveWndToTop(ZGuiWnd *pkWnd);
 		void UpdateViewWnd();
@@ -66,7 +71,7 @@ class ZGResEdit : public Application, public ZGuiApp
 		void AddStandardElements(ZGuiWnd* pkWnd);
 		bool ClickInsideWnd(ZGuiWnd* pkWnd, int x, int y);
 		void OnSelectWnd(ZGuiWnd* pkWnd);
-		void DeleteWnd(ZGuiWnd* pkWnd);
+
 		
 		void Resize(ZGuiWnd* pkWnd, int w, int h);
 		void SetPos(ZGuiWnd* pkWnd, int x, int y);

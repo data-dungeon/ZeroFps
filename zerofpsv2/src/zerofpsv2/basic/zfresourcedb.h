@@ -88,6 +88,9 @@ class BASIC_API ZFResourceDB : public ZFSubSystem {
 		bool ShutDown();
 		bool IsValid();
 
+		void ToggleInstantExpire(bool bOn) { m_bInstantExpire = bOn; }	// Zeb: Ibland vill jag tvinga resurserna att laddas 
+																		// ur ögonblickligen. Då kör jag en Toggle :)
+
 		// Resource Types
 		void RegisterResource(string strName, ZFResource* (*Create)());
 

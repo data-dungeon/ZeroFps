@@ -40,6 +40,16 @@ void Scene::CreateUI()
 	m_pkApp->CreateWnd(Wnd, "WorkSpace", "", "", 800-204, 8, 200, 600-16, 0);
 	(m_pkWorkSpace = m_pkApp->GetWnd("WorkSpace"))->SetMoveArea(Rect(-190,-490,800+190,600+490),true);
 
+	m_pkApp->CreateWnd(Button, "UndoButton", "WorkSpace", "", 2, 0, 24, 22, 0);
+
+	((ZGuiButton*)m_pkApp->GetWnd("UndoButton"))->SetButtonUpSkin(new ZGuiSkin());
+	((ZGuiButton*)m_pkApp->GetWnd("UndoButton"))->SetButtonHighLightSkin(new ZGuiSkin());
+	((ZGuiButton*)m_pkApp->GetWnd("UndoButton"))->SetButtonDownSkin(new ZGuiSkin());
+
+	((ZGuiButton*)m_pkApp->GetWnd("UndoButton"))->GetButtonUpSkin()->m_iBkTexID = m_pkTexMan->Load("data/textures/gui/undo_u.bmp", 0);
+	((ZGuiButton*)m_pkApp->GetWnd("UndoButton"))->GetButtonHighLightSkin()->m_iBkTexID = m_pkTexMan->Load("data/textures/gui/undo_u.bmp", 0);
+	((ZGuiButton*)m_pkApp->GetWnd("UndoButton"))->GetButtonDownSkin()->m_iBkTexID = m_pkTexMan->Load("data/textures/gui/undo_d.bmp", 0);
+
 	m_pkApp->CreateWnd(Button, "DeleteWnd", "WorkSpace", "", 28, 0, 24, 22, 0);
 
 	((ZGuiButton*)m_pkApp->GetWnd("DeleteWnd"))->SetButtonUpSkin(new ZGuiSkin());
@@ -490,6 +500,46 @@ void Scene::ScaleWndToTexSize(ZGuiWnd *pkWnd, char *szSelSkinType)
 			break;
 		}
 }
+
+/*ZGuiWnd* Scene::DeleteWnd(ZGuiWnd *pkWnd)
+{
+	ZGuiWnd* pkReturnWnd = NULL;
+
+	if(pkWnd != NULL)
+	{
+		if(pkWnd->GetParent())
+		{
+			pkReturnWnd = pkWnd->GetParent();
+
+			RemoveAlias(pkWnd);
+
+			if(m_pkApp->GetType(pkWnd->GetParent()) == TabControl)
+			{
+				ZGuiTabCtrl* pkTabCtrl =  ((ZGuiTabCtrl*) pkWnd->GetParent());
+
+				unsigned int current_page = pkTabCtrl->GetCurrentPage(); 
+				pkTabCtrl->DeletePage(current_page);
+
+				if(pkTabCtrl->GetNumPages() != 0)
+				{
+					int new_page = current_page-1;
+					if(new_page < 0)
+						new_page = 0;
+					
+					pkTabCtrl->SetCurrentPage(new_page); 	
+					ZGuiWnd* pkPage = pkTabCtrl->GetPage(new_page);
+					m_pkGui->SetFocus(pkPage);
+					return pkPage;
+				}
+			}
+		}
+
+		m_pkGui->UnregisterWindow(pkWnd);
+		pkWnd = NULL;
+	}
+	
+	return pkReturnWnd;
+}*/
 
 ZGuiWnd* Scene::CloneWnd(ZGuiWnd *pkWnd, int xpos, int ypos)
 {
