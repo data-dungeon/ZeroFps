@@ -2,7 +2,13 @@
 
 void CollisionManager::Add(Object *kObject)
 {
-	CollisionProperty *pkColProp=dynamic_cast<CollisionProperty*>(kObject->GetProperty("CollisionProperty"));
+
+	Property *pkProperty=kObject->GetProperty("CollisionProperty");
+	//Check if the Object has a collisionproperty else return	
+	if(pkProperty==NULL)
+		return;
+
+	CollisionProperty *pkColProp=dynamic_cast<CollisionProperty*>(pkProperty);
 	pkColProp->SetColMan(this);
 	m_akColPropertys.push_back(pkColProp);
 }

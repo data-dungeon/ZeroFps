@@ -29,11 +29,11 @@ void PlayerControlProperty::Update() {
 	}
 	
 	if(m_pkInput->Pressed(KEY_Q)){
-		ner+=1;
+		ner+=0.13;
 	}
 	
 	
-	ner-=0.20;
+	ner-=0.08;
 	
 	m_pkObject->GetPos().y+=ner;
 
