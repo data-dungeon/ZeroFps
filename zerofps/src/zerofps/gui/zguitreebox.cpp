@@ -677,8 +677,11 @@ bool ZGuiTreebox::DeleteNode(ZGuiTreeboxNode* pkNode, bool bRemoveFromMap)
 	printf("-------- DeleteNode END ----------\n");
 
 	// Öppna stäng noden så att nodträdet uppdateras.
-	OpenNode(pkParent, false);
-	OpenNode(pkParent, true);
+	if(pkParent->bIsOpen)
+	{
+		OpenNode(pkParent, false);
+		OpenNode(pkParent, true);
+	}
 
 	return true;
 }

@@ -824,31 +824,6 @@ bool Image::load_bmp(FILE* pkFile)
 	memset(&kBitmap, 0, sizeof(bmp_t));
 	fread(&kBitmap.kFileheader, sizeof(bmpheader_t), 1, pkFile);
 	fread(&kBitmap.kInfoheader, sizeof(bmpinfo_t), 1, pkFile);
-
-	if(DEBUG_PRINT)
-	{
-		printf("---------------------------------------\n\n\n");
-		printf("kBitmap.kFileheader.usType = %i\n", kBitmap.kFileheader.usType); 
-		printf("kBitmap.kFileheader.ulSize = %i\n", kBitmap.kFileheader.ulSize); 
-		printf("kBitmap.kFileheader.usReserved1 = %i\n", kBitmap.kFileheader.usReserved1); 
-		printf("kBitmap.kFileheader.usReserved2 = %i\n", kBitmap.kFileheader.usReserved2); 
-		printf("kBitmap.kFileheader.ulOffBits = %i\n", kBitmap.kFileheader.ulOffBits); 
-
-		printf("kBitmap.kInfoheader.ulSize = %i\n", kBitmap.kInfoheader.ulSize); 
-		printf("kBitmap.kInfoheader.lWidth = %i\n", kBitmap.kInfoheader.lWidth); 
-		printf("kBitmap.kInfoheader.lHeight = %i\n", kBitmap.kInfoheader.lHeight); 
-		printf("kBitmap.kInfoheader.usPlanes = %i\n", kBitmap.kInfoheader.usPlanes); 
-		printf("kBitmap.kInfoheader.usBitCount = %i\n", kBitmap.kInfoheader.usBitCount);
-		printf("kBitmap.kInfoheader.ulCompression = %i\n", kBitmap.kInfoheader.ulCompression); 
-		printf("kBitmap.kInfoheader.ulSizeImage = %i\n", kBitmap.kInfoheader.ulSizeImage); 
-		printf("kBitmap.kInfoheader.lXPelsPerMeter = %i\n", kBitmap.kInfoheader.lXPelsPerMeter); 
-		printf("kBitmap.kInfoheader.lYPelsPerMeter = %i\n", kBitmap.kInfoheader.lYPelsPerMeter); 
-		printf("kBitmap.kInfoheader.ulClrUsed = %i\n", kBitmap.kInfoheader.ulClrUsed); 
-		printf("kBitmap.kInfoheader.ulClrImportant = %i\n", kBitmap.kInfoheader.ulClrImportant); 
-		printf("-------------------------------------------\n\n\n");
-
-		DEBUG_PRINT = false;
-	}
  
 	// Testa för om ulSizeImage är 0. Adobe Phoshop sätter denna 
 	// flagga till noll Windows Paint gör det inte.
@@ -931,20 +906,10 @@ bool Image::load_bmp(FILE* pkFile)
 		for(y=0; y<height; y++)
 			for(x=0; x<width; x++)
 			{
-				if(bZeroSize)
-				{
-					pixels[i].r = kBitmap.pkData[j++]; //r
-					pixels[i].b = kBitmap.pkData[j++]; //b
-					pixels[i].g = kBitmap.pkData[j++]; //g
-					pixels[i++].a = 0;
-				}
-				else
-				{
-					pixels[i].b = kBitmap.pkData[j++]; 
-					pixels[i].g = kBitmap.pkData[j++];
-					pixels[i].r = kBitmap.pkData[j++]; 
-					pixels[i++].a = 0;
-				}
+				pixels[i].b = kBitmap.pkData[j++]; 
+				pixels[i].g = kBitmap.pkData[j++];
+				pixels[i].r = kBitmap.pkData[j++]; 
+				pixels[i++].a = 0;
 			}
 		break;
 
@@ -954,10 +919,6 @@ bool Image::load_bmp(FILE* pkFile)
 		delete[] pixels;
 		return false;
 	}
-
-	if(DEBUG_PRINT)
-		printf("bitmap loaded (w=%i,h=%i,bpp=%i)\n", width, height, 
-			kBitmap.kInfoheader.usBitCount);
 
 	if(kBitmap.pkData)
 		delete[] kBitmap.pkData;

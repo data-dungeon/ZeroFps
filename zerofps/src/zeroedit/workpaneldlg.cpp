@@ -254,14 +254,19 @@ bool WorkPanelDlg::DlgProc( ZGuiWnd* pkWnd, unsigned int uiMessage,
 				if((pkMadProp=pkCurObject->GetProperty("MadProperty")) == NULL)
 					if((pkMadProp=pkCurObject->AddProperty("MadProperty")) == NULL)
 						break;
-				string szMadFile = ((ZGuiListbox*)m_pkGuiMan->Wnd(
-					"MadFileList"))->GetSelItem()->GetText();
-				pkMadProp->SetValue("m_kMadFile", "data/mad/" + szMadFile);
+				ZGuiListitem* pkItem = ((ZGuiListbox*)m_pkGuiMan->Wnd(
+					"MadFileList"))->GetSelItem();
 
-				// Plocka bort bollen.
-				Property* pkModelProp;
-				if((pkModelProp=pkCurObject->GetProperty("ModelProperty")) != NULL)
-					pkCurObject->RemoveProperty(pkModelProp);
+				if(pkItem)
+				{
+					string szMadFile = pkItem->GetText();
+					pkMadProp->SetValue("m_kMadFile", "data/mad/" + szMadFile);
+
+					// Plocka bort bollen.
+					Property* pkModelProp;
+					if((pkModelProp=pkCurObject->GetProperty("ModelProperty")) != NULL)
+						pkCurObject->RemoveProperty(pkModelProp);
+				}
 			}
 			break;
 		case ID_CREATEMADFILE_BN:
