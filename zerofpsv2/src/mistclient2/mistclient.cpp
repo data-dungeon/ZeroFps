@@ -743,7 +743,7 @@ void MistClient::OnNetworkMessage(NetPacket *pkNetMessage)
 		
 			for(int i = 0;i<kItemList.size();i++)
 			{
-				cout<<i<<" name:"<<kItemList[i].m_strName<<" icon:"<<kItemList[i].m_strIcon<<" pos:"<<int(kItemList[i].m_cItemX)<<" x "<<int(kItemList[i].m_cItemY)<<endl;			
+				cout<<i<<" id:"<<kItemList[i].m_iItemID<<" name:"<<kItemList[i].m_strName<<" icon:"<<kItemList[i].m_strIcon<<" pos:"<<int(kItemList[i].m_cItemX)<<" x "<<int(kItemList[i].m_cItemY)<<endl;			
 			}
 				
 			break;

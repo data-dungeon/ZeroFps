@@ -334,6 +334,9 @@ void EntityManager::Delete(Entity* pkEntity)
 	//if where the owner of this entity also add entity to clients delete lists
 	if(pkEntity->m_eRole == NETROLE_AUTHORITY)
 	{
+		AddEntityToAllClientDeleteQueues(pkEntity->GetEntityID());
+	
+		/*
 		for(int i = 0;i<m_pkZeroFps->GetMaxPlayers();i++)
 		{
 			//only add to clients who is suppose to have the entity
@@ -341,7 +344,7 @@ void EntityManager::Delete(Entity* pkEntity)
 			{			
 				AddEntityToClientDeleteQueue(i,pkEntity->GetEntityID());
 			}
-		}
+		}*/
 	}
 }
  
@@ -671,27 +674,7 @@ void EntityManager::UpdateState(NetPacket* pkNetPacket)
 	}	
 }
 
-void EntityManager::SendDeleteEntity(int iClient,int iEntityID)
-{
-	m_OutNP.Clear();
-	m_OutNP.m_kData.m_kHeader.m_iPacketType = m_iSendType;
-	m_OutNP.TargetSetClient(iClient);
-		
-	m_OutNP.Write((char) ZFGP_DELETEOBJECT);
-	m_OutNP.Write(iEntityID);
-	
-	//m_OutNP.Write(ZFGP_ENDOFPACKET);
-	m_pkNetWork->Send2(&m_OutNP);
 
-
-	//if this entity is going to be deleted on the client only, we want ot resets its flags 
-	if(Entity* pkEnt = GetEntityByID(iEntityID))
-	{
-		pkEnt->ResetAllNetUpdateFlagsAndChilds(iClient);
-	
-		pkEnt->SetExistOnClient(iClient,false);
-	}
-}
 
 void EntityManager::PackEntityToClient(int iClient, vector<Entity*> kObjects,bool bZoneObject)
 {
@@ -820,6 +803,9 @@ bool IsInsideVector(int iVal, vector<int>& iArray)
 
 void EntityManager::PackToClients()
 {
+	bool bCheckSendStatus = true;
+	bool bForceAll = false;
+
 
 	int iMaxSendSize = m_pkNetWork->GetNetSpeed() / m_pkZeroFps->GetSystemFps();
 	m_pkNetWork->SetMaxSendSize(iMaxSendSize);
@@ -907,7 +893,7 @@ void EntityManager::PackToClients()
 		for(list<P_Track*>::iterator it = m_kTrackedObjects.begin(); it != m_kTrackedObjects.end(); it++ ) 
 		{
 			if((*it)->m_iConnectID == (int) iClient)
-				(*it)->GetEntity()->GetAllEntitys(&kObjects, true);
+				(*it)->GetEntity()->GetAllEntitys(&kObjects,bForceAll,bCheckSendStatus);
 		}		
 		PackEntityToClient(iClient, kObjects,false);
 		
@@ -915,10 +901,10 @@ void EntityManager::PackToClients()
 		kObjects.clear();		
 		
 		// Pack and Send all Client Objects
-		m_pkClientEntity->GetAllEntitys(&kObjects, true);
+		m_pkClientEntity->GetAllEntitys(&kObjects,bForceAll,bCheckSendStatus);
 
 		//pack and send global objects
-		m_pkGlobalEntity->GetAllEntitys(&kObjects, true);
+		m_pkGlobalEntity->GetAllEntitys(&kObjects,bForceAll,bCheckSendStatus);
 
 		// Loop all zones activated by client.
 		Entity* pkZoneE;
@@ -937,7 +923,7 @@ void EntityManager::PackToClients()
 				assert(pkZoneE);
 	
 				
-				pkZoneE->GetAllEntitys(&kObjects,true,true);
+				pkZoneE->GetAllEntitys(&kObjects,bForceAll,bCheckSendStatus);
 			}
 		}
 		
@@ -2812,6 +2798,21 @@ void EntityManager::AddEntityToClientDeleteQueue(int iClient,int iEntityID)
 	}
 	
 	//cout<<"added entity:"<<iEntityID<<" to client "<<iClient<< " delete queue"<<endl;
+}
+
+void EntityManager::AddEntityToAllClientDeleteQueues(int iEntityID)
+{
+	if(Entity* pkEntity = GetEntityByID(iEntityID))
+	{	
+		for(int i = 0;i<m_pkZeroFps->GetMaxPlayers();i++)
+		{
+			//only add to clients who is suppose to have the entity			
+			if(pkEntity->GetExistOnClient(i))
+			{			
+				AddEntityToClientDeleteQueue(i,iEntityID);
+			}
+		}	
+	}
 }
 
 

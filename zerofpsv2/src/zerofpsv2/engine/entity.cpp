@@ -448,7 +448,6 @@ void Entity::ZoneChange(int iCurrent,int iNew)
 						cout<<"Entity "<<m_iEntityID<< " has moved to an untracked zone for client "<<(*it)->m_iConnectID<<endl;
 						
 						// send delete request to client here =)
-						//m_pkEntityManager->SendDeleteEntity((*it)->m_iConnectID,m_iEntityID);
 						m_pkEntityManager->AddEntityToClientDeleteQueue((*it)->m_iConnectID,m_iEntityID);
 					}		
 				}
@@ -697,7 +696,7 @@ void Entity::PackTo(NetPacket* pkNetPacket, int iConnectionID)
 */
 void Entity::PackFrom(NetPacket* pkNetPacket, int iConnectionID)
 {
-	//cout<<"got entity "<<GetEntityID()<<endl;
+	//cout<<"got entity "<<GetEntityID()<<"  "<<GetName()<<endl;
 
 	int iStart = pkNetPacket->m_iPos;
 

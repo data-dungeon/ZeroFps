@@ -145,9 +145,7 @@ class ENGINE_API EntityManager : public ZFSubSystem{
 
 		//network
 		void ClearClientDeleteQueue(int iClient);
-		void ClearClientsDeleteQueues();
-		void AddEntityToClientDeleteQueue(int iClient,int iEntityID);
-		
+		void ClearClientsDeleteQueues();		
 		void SendDeleteQueue(int iClient);
 		
 		//check for unloaded zones
@@ -232,13 +230,13 @@ class ENGINE_API EntityManager : public ZFSubSystem{
 
 		void GetAllEntitysInArea(vector<Entity*> *pkEntitys,Vector3 kPos,float fRadius);
 
+		
 		// NetWork
 		void UpdateZoneList(NetPacket* pkNetPacket);
 		void UpdateState(NetPacket* pkNetPacket);												//Updates Entity.
 		void HandleDeleteQueue(NetPacket* pkNetPacket);		
 		void PackEntityToClient(int iClient, vector<Entity*> kEntitys,bool bZoneObject);
 		void PackToClients();																		//Packs and Sends to ALL clients.
-		void SendDeleteEntity(int iClient,int iEntityID);
 		
 		void StaticData(int iClient, NetPacket* pkNetPacket);
 		void GetStaticData(int iEntityID);
@@ -251,6 +249,10 @@ class ENGINE_API EntityManager : public ZFSubSystem{
 
 		void ResetNetUpdateFlags(int iConID);
 
+		//network delete
+		void AddEntityToClientDeleteQueue(int iClient,int iEntityID);
+		void AddEntityToAllClientDeleteQueues(int iEntityID);		
+		
 		// Debug / Help Functions		
 		void DisplayTree();
 		void DumpActiverPropertysToLog(char* szMsg);					///< Log all propertys in m_akPropertys.

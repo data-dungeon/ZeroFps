@@ -6,7 +6,7 @@ MLContainer::MLContainer(EntityManager* pkEntMan,int iOwnerID,int iX ,int iY ,bo
 {
 	m_pkEntMan				= pkEntMan;
 	m_iOwnerID 				= iOwnerID;
-	m_bDisableItems 		= bDisable;
+	m_bDisableItems 		= true;
 	m_iMaxItems 			= 0;
 	m_iContainerID			= iContainerID;
 	m_iContainerType		= eNormal;
@@ -187,7 +187,10 @@ bool MLContainer::AddItem(int iID,int iX,int iY)
 				if(m_bDisableItems)				
 				{
 					pkItem->SetUpdateStatus(UPDATE_NONE);
+										
 					cout<<"disabling item"<<endl;
+					//this will also stop the entity from beeing sent to the client, therefore we tell the client to delete it
+					m_pkEntMan->AddEntityToAllClientDeleteQueues(pkItem->GetEntityID());
 				}
 				else				
 				{
@@ -554,19 +557,19 @@ void MLContainer::FindMyItems()
 		{
 			if(P_Item* pkItem = (P_Item*)kEntitys[i]->GetProperty("P_Item"))
 			{
-				cout<<"found item"<<endl;
+				//cout<<"found item"<<endl;
 				
 				if(pkItem->m_iInContainerID == m_iContainerID)
 				{
-					cout<<"its mine =D"<<endl;
+					//cout<<"its mine =D"<<endl;
 					if(!AddItem(kEntitys[i]->GetEntityID(),pkItem->m_iInContainerPosX,pkItem->m_iInContainerPosY))
 					{
 						cout<<"item did not find on its last known container position, adding it anywhere"<<endl;
 						AddItem(kEntitys[i]->GetEntityID());
 					}
 				}
-				else
-					cout<<"its not mine :("<<endl;
+				//else
+				//	cout<<"its not mine :("<<endl;
 			}
 		}
 	}
