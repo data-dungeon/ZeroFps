@@ -7,59 +7,105 @@
 using namespace std;
 int main( int argc, char* argv[] )
 {
-Korv Nisse;
-
+	Korv Nisse;
+	
 	bool slut = false;
 	vector<string> hej = Nisse.GetValueNames();
 	
 	while(!slut)
 	{
 		int j = 0;
+		int select=0;
 		vector<string>::iterator i = hej.begin();
 		while (i != hej.end())
 		{
 			
 			cout<< j++ <<". "<< *i <<endl;
 			i++;
-		
+			
 		}
 		cout << endl 
-			 << hej.size() <<". Quit" <<endl
-			 << ":>"; 
-		int select;
+			<< hej.size() <<". Quit" <<endl
+			<< ":>"; 
+		
 		cin>>select;
 		if(select==hej.size()) 
 			slut=true;
 		else 
 		{
-			cout << endl 
-				 << hej[select] 
-				 <<"  Value: " << Nisse.GetValue(hej[select])
-				 <<"  UpperBound: " << Nisse.GetUpperBound(hej[select])
-				 <<"  LowerBound: " << Nisse.GetLowerBound(hej[select])
-				 << endl
-				 << "1. Change Value" <<endl
-				 << "2. Quit"<<endl
-				 << ":>"; 
 			int select2=0;
-			cin>>select2;
+			cout << endl 
+				<< hej[select] 
+				<<"  UpperBound: " << Nisse.GetUpperBound(hej[select])
+				<<"  LowerBound: " << Nisse.GetLowerBound(hej[select]) <<endl
+				<<"Value(s) "; 
+			int temp=Nisse.GetNumberOfValues(hej[select]);
+			
+			if(temp<0)
+			{
+				cout << " : " <<Nisse.GetValue(hej[select]);
+				cout << endl
+					<< "1. Change Value" <<endl
+					<< ":>"; 
+				cin>>select2;
 				cout <<endl;
-				if(select2==2) 
-					slut=true;
-				else if(select2==1) 
+				if(select2==1) 
 				{
 					string str;
 					cout<<"New Value: ";
 					cin >> str;
 					Nisse.SetValue(hej[select], str);
-					cout<< endl <<Nisse.GetValue(hej[select]);
+					cout<< "Value Set to:" <<Nisse.GetValue(hej[select]) <<endl <<endl; 
 				}
+			}	
+			else 
+			{
+				for(int ind=0; ind<temp; ind++)
+					cout<< endl << ind <<". " <<Nisse.GetValue(hej[select],ind);
+				
+				if (Nisse.CheckIfResize(hej[select])) cout<<endl <<"ReSize!";
+				
+				
+				cout<< endl 
+					<<"select value to change" <<endl
+					<< ":>"; 
+				cin>>select2;
+				cout <<endl;
+				string str;
+				cout<<"New Value: ";
+				cin >> str;
+				
+				if(select2<Nisse.GetNumberOfValues(hej[select])||Nisse.CheckIfResize(hej[select])) 
+				{
+					
+					Nisse.SetValue(hej[select], select2, str);
+					cout<< "Value Set to:" <<Nisse.GetValue(hej[select], select2) <<endl <<endl; 
+				}
+			}
+			
+			/*else
+			{
+				for(int ind=0; ind<temp; ind++)
+					cout<< endl << ind <<". " <<Nisse.GetValue(hej[select],ind);
+					cin>>select2;
+				cout <<endl;
+				if(select2<Nisse.GetNumberOfValues(hej[select])) 
+				{
+					string str;
+					cout<<"New Value: ";
+					cin >> str;
+					Nisse.SetValue(hej[select], select2, str);
+					cout<< "Value Set to:" <<Nisse.GetValue(hej[select], select2) <<endl <<endl
+				};
+			
+			}*/
+				
 		}
-
+		
 	};
-
+	
 	//cout<<"upperbound: " <<Nisse.GetUpperBound("Status") <<endl;
 	//if(Nisse.GetUpperBound("Status")==0) cout <<"ds";
-return 0;
+	return 0;
 };
 

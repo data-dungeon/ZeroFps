@@ -17,6 +17,7 @@ Vek.set(1.3,2.1,-0.01, 1.0);
 TestVek.push_back(44);
 TestVek.push_back(1);
 TestVek.push_back(5);
+TestVek.resize(15);
 }
 
 
@@ -25,9 +26,12 @@ Korv::~Korv()
 
 }
 
+
 vector<Mat::PropertyValues> Korv::GetPropertyValues()
 {
-vector<Mat::PropertyValues> kReturn(4);
+
+	cout<< "stinky" <<endl;
+	vector<Mat::PropertyValues> kReturn(4);
 
 kReturn[0].kValueName="Storlek";
 kReturn[0].iValueType=VALUETYPE_FLOAT;
@@ -53,6 +57,7 @@ kReturn[3].pkValue=(void*)&TestVek;
 //out <<"TestVek.size:" <<TestVek.size() <<endl; 
 kReturn[3].iNumberOfValues=TestVek.size();
 kReturn[3].fUpperBound=5.0;
+
 
 return kReturn;
 };

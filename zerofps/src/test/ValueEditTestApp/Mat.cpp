@@ -397,7 +397,7 @@ bool Mat::SetValue(string kValueName, string kValue)
 
 bool Mat::SetValue(string kValueName, unsigned int iIndex, string kValue)
 {
-	cout <<"check 1"  <<endl;
+	
 	vector<PropertyValues> kTemp= GetPropertyValues();
 	if(!kTemp.empty())
 	{
@@ -405,20 +405,20 @@ bool Mat::SetValue(string kValueName, unsigned int iIndex, string kValue)
 		vector<PropertyValues>::iterator kItor = kTemp.begin();
 		while (kItor != kTemp.end())
 		{
-			cout <<"check 2"  <<endl;
+	
 			if( kValueName == kItor->kValueName)
 			{
 				
 				
 				if( kItor->iNumberOfValues < 0)
 				{
-					cout <<"check 3a"  <<endl;
+	
 					return StringToValue(kValue, kItor->pkValue, kItor);
 				}
 				
 				else  
 				{
-					cout <<"check 3b"  <<endl;
+	
 					switch(kItor->iValueType)
 					{	
 					case VALUETYPE_INT:	
@@ -828,3 +828,4 @@ vector<PropertyValues> kTemp= GetPropertyValues();
 	return false;
 }*/
 	
+

@@ -23,6 +23,7 @@ using namespace std;
 class Mat  
 {
 public:
+	//bool RemoveValue(string kValueName, unsigned int iIndex);
 	bool SetValue(string kValueName ,string kValue);
 	bool SetValue(string kValueName, unsigned int iIndex ,string kValue);
 	bool CheckIfResize(string kValueName);
