@@ -80,7 +80,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 tolua.lib lua.lib lualib.lib engine.lib basic.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /profile /debug /machine:I386 /out:"..\..\..\bin\script.dll" /libpath:"..\..\..\bin"
+# ADD LINK32 tolua.lib lua.lib engine.lib basic.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /profile /debug /machine:I386 /out:"..\..\..\bin\script.dll" /libpath:"..\..\..\bin"
 # Begin Special Build Tool
 ProjDir=.
 SOURCE="$(InputPath)"
@@ -98,6 +98,10 @@ PostBuild_Cmds=copy  $(ProjDir)\debug\*.lib ..\..\..\bin
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 # Begin Source File
 
+SOURCE=.\gamescript.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\zfscript.cpp
 
 !IF  "$(CFG)" == "script - Win32 Release"
@@ -113,6 +117,10 @@ SOURCE=.\zfscript.cpp
 # Begin Group "Header Files"
 
 # PROP Default_Filter "h;hpp;hxx;hm;inl"
+# Begin Source File
+
+SOURCE=.\gamescript.h
+# End Source File
 # Begin Source File
 
 SOURCE=.\script.pkg

@@ -22,10 +22,11 @@ enum GAME_STATE
 	GAME_STATE_MENU,
 };
 
-class ZFScript;
+class GameScript;
 
 class Game :public Application {
 	private:
+		
 //		HeightMap *m_pkMap;
 //		HeightMapObject *m_pkHeightMapObject;
 
@@ -40,7 +41,8 @@ class Game :public Application {
 		void Init();
 		void SetUpMenuScreen();
 
-		void InitGUI();
+		void InitScript();
+		void InitGui();
 		void Input();				
 		void SetupLevel();		
 //		bool LoadLevel(const char* acFile);				
@@ -52,7 +54,7 @@ class Game :public Application {
 		float* m_pfPlayerHealth;
 		float* m_pfPlayerArmor;
 
-		ZFScript* m_pkScript;
+		GameScript* m_pkScript;
 
 	public:
 		

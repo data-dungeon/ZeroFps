@@ -76,7 +76,8 @@ ZGuiWnd* EditPropertyDlg::Create(int x, int y, int w, int h)
 
 	return pkDialog;
 
-/*
+/*	// COMMENT OUT by: Zeb
+
 	ZGuiWnd* pkMainWindow = new ZGuiWnd(Rect(x,y,x+w,y+h),
 		NULL,true,ID_PROPERTY_WND);
 	pkMainWindow->SetSkin(m_pkGui->GetSkin("main"));
@@ -249,7 +250,7 @@ void EditPropertyDlg::OnOpenEditProperty()
 		if(((ZGuiCombobox*)pkPropertysCB)->GetListbox()->GetSelItem())
 		{
 			int* piParams = new int[2];
-			piParams[0] = /*ID_PROPERTIES_CB*/ PropertyCB; // Listbox ID
+			piParams[0] = /*ID_PROPERTIES_CB*/ PropertyCB; // Listbox ID // COMMENT OUT by: Zeb
 			piParams[1] = ((ZGuiCombobox*)pkPropertysCB)->GetListbox()->GetSelItem()->GetIndex(); // list item ID
 			DlgProc(pkPropertysCB->GetParent(), ZGM_CBN_SELENDOK, 2, piParams);
 			delete[] piParams;
@@ -274,7 +275,8 @@ void EditPropertyDlg::OnOpenEditProperty()
 			break;
 		}
 
-	/*	int apa = m_pkCurrentChild->GetObjectType();
+	/*  // COMMENT OUT by: Zeb
+		int apa = m_pkCurrentChild->GetObjectType();
 
 		ZGuiWnd* pkWndGroup = m_pkGui->Get("ObjectTypeRadioGroup");
 
@@ -357,7 +359,8 @@ bool EditPropertyDlg::OnCloseEditProperty(bool bSave)
 
 	}
 
-/*	int index = -1;
+/*	// COMMENT OUT by: Zeb
+	int index = -1;
 	ZGuiWnd* pkWndGroup = m_pkGui->Get("ObjectTypeRadioGroup");
 
 	if(pkWndGroup)
@@ -417,7 +420,7 @@ bool EditPropertyDlg::OnCloseEditProperty(bool bSave)
 	{
 		// Send a message to the main winproc...
 		int* piParams = new int[1];
-		piParams[0] = /*ID_PROPERTY_SET_NEW_VALUE_BN*/ ChangeValueOKBn; // Listbox ID
+		piParams[0] = /*ID_PROPERTY_SET_NEW_VALUE_BN*/ ChangeValueOKBn; // Listbox ID // COMMENT OUT by: Zeb
 		DlgProc(m_pkWindow, ZGM_COMMAND, 1, piParams);
 		delete[] piParams;
 	}
@@ -503,7 +506,7 @@ bool EditPropertyDlg::OnCloseAddProperty(bool bSave)
 
 			// Send a message to the main winproc...
 			int* piParams = new int[2];
-			piParams[0] = /*ID_PROPERTIES_CB*/ PropertyCB; // Listbox ID
+			piParams[0] = /*ID_PROPERTIES_CB*/ PropertyCB; // Listbox ID // COMMENT OUT by: Zeb
 			piParams[1] = pkPropertysCB->GetListbox()->GetItemCount(); // list item ID
 			DlgProc(pkPropertysCB->GetParent(), ZGM_CBN_SELENDOK, 2, piParams);
 			delete[] piParams;
@@ -529,20 +532,20 @@ bool EditPropertyDlg::DlgProc( ZGuiWnd* pkWindow, unsigned int uiMessage, int iN
 
 		switch(iControllID)
 		{
-		case /*ID_PROPERTY_CANCEL*/ ObjectPropCloseButton:
-		case /*ID_PROPERTY_WND_CLOSE*/ ObjectPropertiesCancel:
+		case /*ID_PROPERTY_CANCEL*/ ObjectPropCloseButton: // COMMENT OUT by: Zeb
+		case /*ID_PROPERTY_WND_CLOSE*/ ObjectPropertiesCancel: // COMMENT OUT by: Zeb
 			if(OnCloseEditProperty(false))
 			{
 				m_pkZGui->ShowMainWindow(m_pkGui->Get("PropertyDlg"), false);
 			}
 			break;
-		case /*ID_PROPERTY_OK*/ObjectPropOK:
+		case /*ID_PROPERTY_OK*/ObjectPropOK: // COMMENT OUT by: Zeb
 			if(OnCloseEditProperty(true))
 			{
 				m_pkZGui->ShowMainWindow(m_pkGui->Get("PropertyDlg"), false);
 			}
 			break;
-		case /*ID_ADDPROPERTY_BN*/AddPropertiesBn:
+		case /*ID_ADDPROPERTY_BN*/AddPropertiesBn: // COMMENT OUT by: Zeb
 			CreateAddPropertyDlg(0,0,300,500);
 			break;
 		case ID_ADDPROPERTY_CLOSE:
@@ -555,10 +558,10 @@ bool EditPropertyDlg::DlgProc( ZGuiWnd* pkWindow, unsigned int uiMessage, int iN
 			if(OnCloseAddProperty(true))
 				m_pkZGui->ShowMainWindow(m_pkGui->Get("EditPropertyDlg"), false);
 			break;
-		case /*ID_REMOVEPROPERTY_BN*/ RemovePropertyBn:
+		case /*ID_REMOVEPROPERTY_BN*/ RemovePropertyBn: // COMMENT OUT by: Zeb
 			RemoveProperty();
 			break;
-		case /*ID_PROPERTY_SET_NEW_VALUE_BN*/ ChangeValueOKBn:
+		case /*ID_PROPERTY_SET_NEW_VALUE_BN*/ ChangeValueOKBn: // COMMENT OUT by: Zeb
 			{
 				if(m_pkSelProperty)
 				{
@@ -601,7 +604,7 @@ bool EditPropertyDlg::DlgProc( ZGuiWnd* pkWindow, unsigned int uiMessage, int iN
 
 			switch(iID)
 			{
-			case /*ID_PROPERTIES_CB*/ PropertyCB:
+			case /*ID_PROPERTIES_CB*/ PropertyCB: // COMMENT OUT by: Zeb
 
 				pkSelItem = ((ZGuiCombobox*)m_pkGui->Get("PropertyCB"))->GetListbox()->GetSelItem();
 
@@ -613,7 +616,7 @@ bool EditPropertyDlg::DlgProc( ZGuiWnd* pkWindow, unsigned int uiMessage, int iN
 				UpdateStats(iID);
 				break;
 
-			case /*ID_PROPERTY_VALUES_CB*/ PropertyValuesCB:
+			case /*ID_PROPERTY_VALUES_CB*/ PropertyValuesCB: // COMMENT OUT by: Zeb
 
 				pkSelItem = ((ZGuiCombobox*)m_pkGui->Get("PropertyValuesCB"))->GetListbox()->GetSelItem();
 
@@ -671,7 +674,7 @@ void EditPropertyDlg::RemoveProperty()
 
 void EditPropertyDlg::UpdateStats(int ComboBoxID)
 {
-	if(ComboBoxID == /*ID_PROPERTIES_CB*/ PropertyCB)
+	if(ComboBoxID == /*ID_PROPERTIES_CB*/ PropertyCB) // COMMENT OUT by: Zeb
 	{
 		if(!m_szSelProperty.empty())
 		{
@@ -721,7 +724,7 @@ void EditPropertyDlg::UpdateStats(int ComboBoxID)
 		}
 	}
 	else
-	if(ComboBoxID == /*ID_PROPERTY_VALUES_CB*/ PropertyValuesCB)
+	if(ComboBoxID == /*ID_PROPERTY_VALUES_CB*/ PropertyValuesCB) // COMMENT OUT by: Zeb
 	{
 		string strPropValue = "";
 		strPropValue = m_pkSelProperty->GetValue(m_szSelPropValue);

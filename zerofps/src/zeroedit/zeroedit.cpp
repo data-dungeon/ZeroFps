@@ -1,7 +1,7 @@
 #include "zeroedit.h"
 #include "gui.h"
 #include "fh.h"
-#include "../zerofps/script/zfscript.h"
+#include "../zerofps/script/gamescript.h"
 
 char* pkTempObjectTemplate = "ZfEditTempObject";
 
@@ -110,7 +110,7 @@ void ZeroEdit::OnInit(void)
 	pkFps->m_bGuiTakeControl = true; 
 	pkFps->ToggleGui(); 
 
-	m_pkScript = new ZFScript();
+	m_pkScript = new GameScript();
 	m_pkScript->ExposeClass("Console", Console::LuaGet, Console::LuaSet);
 	m_pkScript->ExposeObject("pkConsole", pkConsole, "Console");
 

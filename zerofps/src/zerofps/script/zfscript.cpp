@@ -5,11 +5,6 @@
 #include "zfscript.h"
 #include <stdio.h>
 
-// package files
-#include "../basic/basic.pkg"
-#include "../engine/engine.pkg"
-#include "package_files/zfscript_bind.h"
-
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
@@ -36,9 +31,7 @@ bool ZFScript::Open()
 	m_pkLua = lua_open(0);
 
 	// Open base lib for access to some useful functions.
-	lua_baselibopen(m_pkLua);
-
-	OpenPackageFiles();
+//	lua_baselibopen(m_pkLua);
 
 	// Create Lua tag for Int type.
 	m_iLuaTagInt = lua_newtag(m_pkLua);
@@ -68,11 +61,6 @@ bool ZFScript::Open()
 	lua_pushcfunction(m_pkLua, GetTypeString); 
 	lua_settagmethod(m_pkLua, m_iLuaTagString, "setglobal");
 	return true;	
-}
-
-void ZFScript::OpenPackageFiles()
-{
-	tolua_zfscript_bind_open(m_pkLua);
 }
 
 void ZFScript::Close()

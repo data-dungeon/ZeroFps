@@ -1,5 +1,5 @@
 #include "game.h"
-#include "../zerofps/script/zfscript.h"
+#include "../zerofps/script/gamescript.h"
 
 Game olle("ZeroFPS game",1024,768,24);
 
@@ -15,9 +15,6 @@ void Game::OnInit()
 	pkConsole->Printf(" Use load [map] to load a map");
 	
 	SetUpMenuScreen();
-
-
-
 }
 
 static bool WINPROC( ZGuiWnd* pkWindow, unsigned int uiMessage, int iNumberOfParams, void *pkParams ) 
@@ -46,13 +43,8 @@ void Game::Init()
 	//set gamestate to menu
 	m_iGameState=GAME_STATE_MENU;
 
-	InitGUI();
-
-	m_pkScript = new ZFScript();
-
-	m_pkScript->ExposeClass("Console", Console::LuaGet, Console::LuaSet);
-	m_pkScript->ExposeObject("pkConsole", pkConsole, "Console");
-
+	InitGui();
+	InitScript();
 }
 
 void Game::OnServerStart(void)
@@ -292,7 +284,7 @@ void Game::SetupLevel()
 // Name: InitGUI
 // Description:
 //
-void Game::InitGUI()
+void Game::InitGui()
 {
 	int id = 1;
 	int x = m_iWidth-200, y = m_iHeight-200;
@@ -328,9 +320,10 @@ void Game::InitGUI()
 	pkFps->m_bGuiTakeControl = false;
 }
 
+void Game::InitScript()
+{
+	m_pkScript = new GameScript();
 
-
-
-
-
-
+	m_pkScript->ExposeClass("Console", Console::LuaGet, Console::LuaSet);
+	m_pkScript->ExposeObject("pkConsole", pkConsole, "Console");
+}

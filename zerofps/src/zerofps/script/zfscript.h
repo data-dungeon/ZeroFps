@@ -9,11 +9,9 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
-#include "script_x.h"
-
 extern "C"  {
 	#include <lua.h>
-	#include <lualib.h>
+//	#include <lualib.h>
 }
 
 #include <tolua.h>
@@ -23,6 +21,8 @@ extern "C"  {
 #include <string>
 using namespace std;
 
+#include "script_x.h"
+
 enum VarType
 {
 	tINT,
@@ -30,8 +30,6 @@ enum VarType
 	tFLOAT,
 	tSTRING,
 };
-
-//typedef int (*LuaCallback) (lua_State* lua);
 
 class SCRIPT_API ZFScript  
 {
@@ -42,7 +40,6 @@ public:
 	bool ExposeFunction(const char* szName, lua_CFunction o_Function);
 	bool ExposeVariable(const char* szName, void* pkData, VarType eVariableType);
 	bool RunScript(char* szFileName);
-
 	ZFScript();
 	virtual ~ZFScript();
 
@@ -59,8 +56,7 @@ private:
 
 	void Close();
 	bool Open();
-	void OpenPackageFiles();
-
+	
 	lua_State* m_pkLua;
 
 	int m_iLuaTagInt;
@@ -69,6 +65,11 @@ private:
 	int m_iLuaTagString;
 
 	set<string> m_kExposedClasses;
+
+protected:
+	
+	lua_State* GetLua() { return m_pkLua; }
+
 };
 
 #endif // !defined(AFX_ZFSCRIPT_H__8BAF0143_B0D3_476F_8410_552548EB16B2__INCLUDED_)

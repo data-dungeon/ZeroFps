@@ -20,7 +20,7 @@
 #include "../game/adaptorsniper.h"
 #include "../game/treeidleproperty.h"
 class Gui;
-class ZFScript;
+class GameScript;
 
 
 enum EDIT_MODES{
@@ -137,7 +137,7 @@ class ZeroEdit :public Application {
 		void OnClientStart(void);		
 		void RunCommand(int cmdid, const CmdArgument* kCommand);
 		Gui* m_pkGui;
-		ZFScript* m_pkScript;
+		GameScript* m_pkScript;
 		
 	friend class Gui;
 };
