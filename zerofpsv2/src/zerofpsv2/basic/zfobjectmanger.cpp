@@ -666,7 +666,7 @@ void ZFObjectManger::Config_Load(string strFileName)
 	char* pkVal;
 
 	for(unsigned int SubIndex=0; SubIndex < kObjectNames.size();SubIndex++) {
-		cout << "[section] : " << kObjectNames[SubIndex].m_strName << endl;
+		//cout << "[section] : " << kObjectNames[SubIndex].m_strName << endl;
 
 		for(unsigned int i=0; i<m_kCmdDataList.size(); i++) {
 			if(m_kCmdDataList[i].m_eType == CSYS_NONE)		continue; // We don't save none valid data.
@@ -674,8 +674,8 @@ void ZFObjectManger::Config_Load(string strFileName)
 			
 			pkVal = m_kIni.GetValue(kObjectNames[SubIndex].m_strName.c_str(), m_kCmdDataList[i].m_strName.c_str());
 			if(pkVal) {
-				cout << "Setting " << m_kCmdDataList[i].m_strName.c_str();
-				cout << " " << pkVal << endl;
+				//cout << "Setting " << m_kCmdDataList[i].m_strName.c_str();
+				//cout << " " << pkVal << endl;
 				SetVariable(m_kCmdDataList[i].m_strName.c_str(),pkVal);
 				}
 			}

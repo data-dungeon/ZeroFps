@@ -380,7 +380,7 @@ bool Physics_Engine::TestMeshVSPlane(Body* pkBody,Plane* pkPlane,float fATime)
 	if(didpen)
 	{	
 		//add all temp collissions
-		for(int i=0;i<m_kCollissionPoints.size();i++)
+		for(unsigned int i=0;i<m_kCollissionPoints.size();i++)
 		{
 			Collission tempcol;
 
@@ -617,7 +617,7 @@ Collission* Physics_Engine::FindNextCollission()
 	float fClosest = 9999999999;
 	Collission* pkClosest = NULL;
 	
-	for(int i=0;i<m_kCollissions.size();i++)
+	for(unsigned int i=0;i<m_kCollissions.size();i++)
 	{
 		if(m_kCollissions[i].fAtime < fClosest)
 		{
@@ -669,7 +669,7 @@ int Physics_Engine::CollideMeshVSPlane(Body* pkBody,Plane* pkPlane)
 	bool clear=false;
 	
 		
-	for(int i=0;i<pkBody->m_pkVertex->size();i++)	
+	for(unsigned int i=0;i<pkBody->m_pkVertex->size();i++)	
 	{
 		Vector3 point = pkBody->TransRot((*pkBody->m_pkVertex)[i]);
 		

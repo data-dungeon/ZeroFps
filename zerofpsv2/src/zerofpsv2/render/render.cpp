@@ -1,6 +1,7 @@
 #include "render.h"
 #include "../ogl/zfpsgl.h"
-
+#include "../basic/basicconsole.h"
+ 
 Render::Render()  
 :	ZFSubSystem("Render") , m_eLandscapePolygonMode(FILL) 
 {
@@ -27,6 +28,8 @@ Render::Render()
 	RegisterVariable("r_fpslock",			&m_iFpsLock,CSYS_INT);
 
 	// Register Our Own commands.
+	Register_Cmd("glinfo",FID_GLINFO);	
+	
 }
 
 bool Render::StartUp()
@@ -36,6 +39,7 @@ bool Render::StartUp()
  	m_pkFrustum = static_cast<Frustum*>(GetSystem().GetObjectPtr("Frustum"));
  	m_pkLight	= static_cast<Light*>(GetSystem().GetObjectPtr("Light")); 	
  	m_pkZShader = static_cast<ZShader*>(GetSystem().GetObjectPtr("ZShader")); 	 	
+ 	m_pkConsole = static_cast<BasicConsole*>(GetSystem().GetObjectPtr("Console")); 	 	
 
 	//setup material for heightmap rendering
 
@@ -110,7 +114,7 @@ void Render::PrintChar(char cChar) {
 
 	int texwidth=FONTWIDTH*16;	
 	int pos=int(cChar)*FONTWIDTH;		
-	float glu=1.0/texwidth;				//opengl texture cordinats is 0-1
+	float glu = float(1.0/texwidth);				//opengl texture cordinats is 0-1
 	float width=glu*FONTWIDTH;
 	
 	float y=(float(int(pos/texwidth)*FONTWIDTH)*glu+width);
@@ -147,7 +151,7 @@ void Render::PrintChar2(char cChar)
 {
 	int texwidth	=	FONTWIDTH*16;	
 	int pos			=	int(cChar)*FONTWIDTH;		
-	float glu		=	1.0/texwidth;				//opengl texture cordinats is 0-1
+	float glu		=	float(1.0/texwidth);				//opengl texture cordinats is 0-1
 	float width		=	glu*FONTWIDTH;
 	
 	float y	=	(float(int(pos/texwidth)*FONTWIDTH)*glu+width);
@@ -247,9 +251,12 @@ void Render::SetColor(Vector3 kColor)
 }
 
 
-void Render::Dot(float x,float y,float z) {
-	Line(Vector3(x,y,z),Vector3(x+0.05,y+0.05,z+0.05));
-
+void Render::Dot(float x,float y,float z) 
+{
+	Vector3 kStart(x,y,z);
+	Vector3 kEnd = kStart + Vector3(0.05,0.05,0.05);
+	Line(kStart, kEnd);
+//	Line(Vector3(x,y,z),Vector3(x+0.05,y+0.05,z+0.05));
 }
 
 
@@ -676,7 +683,7 @@ void Render::Draw_MarkerCross(Vector3 kPos, Vector3 Color, float fScale)
 	glDisable(GL_TEXTURE_2D);
 	glDisable(GL_LIGHTING );
 	
-	float fHScale = cos(float(45.0)) * fScale;
+	float fHScale = float( cos(float(45.0)) * fScale );
 
 	glTranslatef(kPos.x, kPos.y, kPos.z);
 
@@ -724,7 +731,8 @@ char* BoolStr(bool bFlag)
 
 void GlDump_IsEnabled(int iGlEnum, char* szName)
 {
-	cout << szName << " : " << BoolStr(glIsEnabled(iGlEnum))	<< endl;
+	bool bFlag = glIsEnabled(iGlEnum);
+	cout << szName << " : " << BoolStr(bFlag)	<< endl;
 
 }
 void GlDump_GetFloatv(int iGlEnum, char* szName, int iValues)
@@ -895,10 +903,30 @@ RENDER_API char* GetOpenGLErrorName(GLenum id )
 	return "*** --- ***";
 }
 
+void Render::GlInfo()
+{
+	m_pkConsole->Printf("Gl Version: %s", glGetString(GL_VERSION));
+	m_pkConsole->Printf("Gl Vendor:  %s", glGetString(GL_VENDOR));
+	m_pkConsole->Printf("Gl Render:  %s", glGetString(GL_RENDERER));
+	m_pkConsole->Printf("Gl Extensions:");
+	
+	int i = 0;
+	char szExtName[256];
+	unsigned char* pcExt1 = const_cast<unsigned char*>(glGetString(GL_EXTENSIONS));
+	char* pcExt = (char*)pcExt1;
+	while(sscanf(pcExt, "%s", szExtName) != EOF) {
+		m_pkConsole->Printf(" Ext[%d]: %s", i,szExtName);
+		i++;
+		pcExt += strlen(szExtName) + 1;
+		}
+}
 
-
-
-
+void Render::RunCommand(int cmdid, const CmdArgument* kCommand)
+{
+	switch(cmdid) {
+		case FID_GLINFO:	GlInfo();	break;
+		}
+}
 
 RENDER_API void RenderDLL_InitExtGL(void)
 {

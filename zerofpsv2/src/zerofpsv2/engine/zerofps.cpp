@@ -220,11 +220,10 @@ void ZeroFps::HandleArgs(int iNrOfArgs, char** paArgs) {
 		AppArguments.push_back(strArg);
 		}
 
-	cout<<"Nr of arguments: "<<iNrOfArgs<<endl;
+/*	cout<<"Nr of arguments: "<<iNrOfArgs<<endl;
 	for(int ia = 0; ia < iNrOfArgs; ia++) {
 		cout << "Argument[" << ia << "]: "<< AppArguments[ia] << endl;
-		}
-
+		}*/
 }
 
 int	ZeroFps::NumberOfArgs(void)
@@ -566,12 +565,6 @@ void ZeroFps::InitDisplay(int iWidth,int iHeight,int iDepth)
 	RenderDLL_InitExtGL();
 	extgl_Initialize();
 #endif
-
-	cout << "Gl Version: "		<< glGetString(GL_VERSION) << endl;
-	cout << "Gl Vendor: "		<< glGetString(GL_VENDOR) << endl;
-	cout << "Gl Render: "		<< glGetString(GL_RENDERER) << endl;
-	cout << "Gl Extensions: "	<< glGetString(GL_EXTENSIONS) << endl;
-
 
 	//setup some opengl stuff =)
 	glEnable(GL_TEXTURE_2D);

@@ -2,7 +2,7 @@
 #include <algorithm>
 #include "../basic/globals.h"
 
-
+ 
 LightSource::LightSource() {
 //cout<<"new light"<<endl;
 	

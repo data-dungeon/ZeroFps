@@ -18,8 +18,6 @@ Input::Input()
 
 bool Input::StartUp()	
 { 
-	cout<<"Sdl_Input initializing"<<endl;	
-	
 	/*
 	//init sdl to read events
 	if(SDL_Init(SDL_INIT_EVENTTHREAD)<0){

@@ -4,7 +4,7 @@
 
 #include "../engine_systems/common/heightmap2.h"
 #include "../engine_systems/common/i_heightmap2.h"
- 
+  
 void Render::DrawSkyBox_SixSided(Vector3 CamPos,Vector3 kHead,int* aiSideTextures)
 {
 	glPushMatrix();
@@ -803,7 +803,7 @@ void Render::DrawHMLodSplat(HeightMap* kMap,Vector3 CamPos,int iFps)
 	glEnable(GL_TEXTURE_2D);	
 		
 	
-	for(int i=1;i<kMap->m_kSets.size();i++)
+	for(unsigned int i=1;i<kMap->m_kSets.size();i++)
 	{	
 		if(i >= m_iMaxLandscapeLayers)
 			break;
@@ -1058,7 +1058,7 @@ int iPatchIndex[4096];
 
 void Render::DrawBlocks(HeightMap* kmap)
 {
-	for(int i=0; i<kmap->m_kTerrainBlocks.size(); i++) {
+	for(unsigned int i=0; i<kmap->m_kTerrainBlocks.size(); i++) {
 		DrawAABB(kmap->m_kTerrainBlocks[i].kAABB_Min,kmap->m_kTerrainBlocks[i].kAABB_Max, Vector3(0,1,0));
 
 		}
@@ -1124,10 +1124,10 @@ void Render::DrawPatch_Vim1(HeightMap* kMap,Vector3 CamPos,int xp,int zp,int iSi
 
 	
 	// Draw the Terrain Patch.
-	float fXDivTexScale;
-	float fZDivTexScale;
-	float fXDivHmSize;
-	float fZDivHmSize;
+//	float fXDivTexScale;
+//	float fZDivTexScale;
+//	float fXDivHmSize;
+//	float fZDivHmSize;
 	int	  iVertexIndex;
 	float fScaleX, fScaleZ;
 

@@ -113,8 +113,8 @@ void HeightMap::CreateBlocks()
 
 	for(int z=0; z<m_iHmSize; z += iBlockSize) {
 		for(int x=0; x<m_iHmSize; x += iBlockSize) {
-			kBlock.kAABB_Min.Set(x*HEIGHTMAP_SCALE,1,z*HEIGHTMAP_SCALE);
-			kBlock.kAABB_Max.Set((x + iBlockSize)*HEIGHTMAP_SCALE,1,(z + iBlockSize)*HEIGHTMAP_SCALE);
+			kBlock.kAABB_Min.Set( float(x*HEIGHTMAP_SCALE),	1,	float(z*HEIGHTMAP_SCALE));
+			kBlock.kAABB_Max.Set(float((x + iBlockSize)*HEIGHTMAP_SCALE),1,float((z + iBlockSize)*HEIGHTMAP_SCALE));
 			m_kTerrainBlocks.push_back(kBlock);
 		}
 	}

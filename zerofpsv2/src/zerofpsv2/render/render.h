@@ -20,6 +20,7 @@
 
 class HeightMap;
 class Heightmap2;
+class BasicConsole;
 
 using namespace std;
 
@@ -42,10 +43,16 @@ enum PolygonMode
 
 class RENDER_API Render : public ZFSubSystem {
 	private:
-		Frustum*				m_pkFrustum;
-		TextureManager*	m_pkTexMan;
+		enum FuncId_e
+		{
+			FID_GLINFO,
+		};
+
+		Frustum*			m_pkFrustum;
+		TextureManager*		m_pkTexMan;
 		Light*				m_pkLight;
-		ZShader*				m_pkZShader;
+		ZShader*			m_pkZShader;
+		BasicConsole*		m_pkConsole;
 		
 		char			aCurentFont[256];
 		bool			m_FogEnable;		
@@ -62,10 +69,10 @@ class RENDER_API Render : public ZFSubSystem {
 		
 //		ZFResourceHandle	m_kConsoleText;
 		
-
+		void		GlInfo();						// Print info about opengl driver to console.
 		
 
-		void RunCommand(int cmdid, const CmdArgument* kCommand) { }
+		void RunCommand(int cmdid, const CmdArgument* kCommand);
    	
 	public:
 		int	m_iDetail;				//	grid size of lod tiles for the terran
@@ -132,6 +139,7 @@ class RENDER_API Render : public ZFSubSystem {
 		void Draw_MarkerCross(Vector3 kPos, Vector3 Color, float fScale = 1.0);		///< Draw a cross made up of lines.
 
 		void CaptureScreenShoot( int m_iWidth, int m_iHeight );							///< Take a screenshoot and save it as a TGA.		
+
 };
 
 RENDER_API void RenderDLL_InitExtGL(void);

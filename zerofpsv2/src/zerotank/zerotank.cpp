@@ -38,12 +38,16 @@ void ZeroTank::OnInit()
 	
 	
 	Object* pk0 = pkObjectMan->CreateObjectByArchType("ZeroRTSSpawnPoint");
-	pk0->SetPos(Vector3(0,0,0));
-	pk0->AttachToClosestZone();
+	if(pk0) {
+		pk0->SetPos(Vector3(0,0,0));
+		pk0->AttachToClosestZone();
+		}
 
 	Object* pk1 = pkObjectMan->CreateObjectByArchType("ZeroRTSSpawnPoint");
-	pk1->SetPos(Vector3(30,0,0));
-	pk1->AttachToClosestZone();
+	if(pk1) {
+		pk1->SetPos(Vector3(30,0,0));
+		pk1->AttachToClosestZone();
+	}
 /*
 	Object* pk2 = pkObjectMan->CreateObjectByArchType("ZeroRTSSpawnPoint");
 	pk2->SetPos(Vector3(60,0,0));

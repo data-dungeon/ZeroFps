@@ -143,8 +143,7 @@ FILE* ZFVFileSystem::Open(string strFileName, int iOptions, bool bWrite)
 
 void ZFVFileSystem::AddRootPath(string strRootPath)
 {
-	cout << "Adding to VFS root table: " <<  strRootPath.c_str();
-
+	cout << "Adding to VFS root table: " <<  strRootPath << endl;
 	g_Logf("Adding %s to VFS root table\n", strRootPath.c_str());
 	m_kstrRootPath.push_back(strRootPath);
 	int iSize = m_kstrRootPath.size();
