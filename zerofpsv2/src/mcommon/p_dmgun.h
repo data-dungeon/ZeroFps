@@ -36,11 +36,11 @@ class MCOMMON_API P_DMGun: public Property {
 		float		m_fFireRate;
 		float		m_fDamage;
 		float		m_fRange;		
-		int		m_iAmmo;
-		int		m_iMaxAmmo;		
-		Vector3	m_kDir;
+		int			m_iAmmo;
+		int			m_iMaxAmmo;		
+		Vector3		m_kDir;
 		float		m_fRandom;
-		int		m_iBulletsPerAmmo;
+		int			m_iBulletsPerAmmo;
 		
 		bool		FireBullets(int iAmount);
 
@@ -71,8 +71,8 @@ class MCOMMON_API P_DMGun: public Property {
 		bool HasAmmo		 ()					{ return m_iAmmo; }
 		bool ReadyToFire	 ()					{ return m_bFireing; }
 		
-//		void Save(ZFIoInterface* pkPackage);
-//		void Load(ZFIoInterface* pkPackage);
+		void Save(ZFIoInterface* pkPackage);
+		void Load(ZFIoInterface* pkPackage);
 		
 };
 

@@ -39,7 +39,7 @@ void CHandleAgents::OnCommand(ZGuiWnd *pkMainWnd, string strClickName)
 
 		int sel_agent;
 		bool bAButtonIsSelected=false;
-		for(int i=0; i<m_vkCharsInBaseBns.size(); i++)
+		for(unsigned int i=0; i<m_vkCharsInBaseBns.size(); i++)
 		{
 			if(m_vkCharsInBaseBns[i].first->IsChecked())
 			{
@@ -53,7 +53,7 @@ void CHandleAgents::OnCommand(ZGuiWnd *pkMainWnd, string strClickName)
 			}
 		}
 
-		for(int i=0; i<m_vkAgentsToHireBns.size(); i++)
+		for( unsigned int i=0; i<m_vkAgentsToHireBns.size(); i++)
 		{
 			if(m_vkAgentsToHireBns[i].first->IsChecked())
 			{
@@ -84,7 +84,7 @@ void CHandleAgents::OnCommand(ZGuiWnd *pkMainWnd, string strClickName)
 	else
 	if(strClickName == "SendOutAgentBn")
 	{
-		for(int i=0; i<m_vkCharsInBaseBns.size(); i++)
+		for(unsigned int i=0; i<m_vkCharsInBaseBns.size(); i++)
 		{
 			if(m_vkCharsInBaseBns[i].first->IsChecked())
 			{
@@ -320,7 +320,7 @@ void CHandleAgents::UpdateAgentInBaseList(int iStartAgent)
 
 		printf("There are %i in the HQ\n", vkCharsInBase.size());
 
-		for(int i=0; i<7; i++)
+		for(unsigned int i=0; i<7; i++)
 		{
 			m_vkCharsInBaseBns[i].first->UncheckButton();
 
@@ -404,7 +404,7 @@ void CHandleAgents::UpdateAgentToHireList(int iStartAgent)
 
 		printf("There are %i to hire!\n", vkAgetsToHire->size());
 
-		for(int i=0; i<7; i++)
+		for(unsigned int i=0; i<7; i++)
 		{
 			m_vkAgentsToHireBns[i].first->UncheckButton();
 

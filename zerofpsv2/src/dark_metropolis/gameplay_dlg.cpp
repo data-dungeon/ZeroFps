@@ -215,7 +215,7 @@ bool CGamePlayDlg::InitDlg()
 	vector<Entity*> kMembersInField;
 	GetAllAgentsInField(kMembersInField);
 	
-	for(int i=0; i<5; i++)
+	for(unsigned int i=0; i<5; i++)
 	{
 		if(kMembersInField.size() > i)
 		{

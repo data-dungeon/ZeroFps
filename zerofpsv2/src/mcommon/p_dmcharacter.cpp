@@ -53,7 +53,7 @@ void DMCharacterStats::Randomize()
 	m_iMaxLife = 		rand()%20 + 80;
 	m_iLife = 			m_iMaxLife;
 
-	m_fSpeed = 			rand()%5;
+	m_fSpeed = 			float(rand()%5);
 	m_fArmour = 		0;
 	m_fWage =			10;
 	
@@ -225,7 +225,7 @@ void P_DMCharacter::Shoot (Vector3 kLocation)
 
 	for ( int y = 0; y < 2; y++ )
 		for ( int x = 0; x < 3; x++ )
-			if ( m_pkHand->GetItem(x,y) )
+			if ( *m_pkHand->GetItem(x,y) != -1 )
 				iWeapID = *m_pkHand->GetItem(x,y);
 
 	pkWeapon = m_pkObjMan->GetObjectByNetWorkID ( iWeapID );
@@ -273,6 +273,7 @@ void P_DMCharacter::Shoot (Vector3 kLocation)
 
 void P_DMCharacter::Save(ZFIoInterface* pkPackage)
 {		
+	char temp[128];
 
 	//saving inventory
 	m_pkBackPack->Save(pkPackage);		
@@ -281,12 +282,29 @@ void P_DMCharacter::Save(ZFIoInterface* pkPackage)
 	m_pkHand->Save(pkPackage);
 	m_pkImplants->Save(pkPackage);
 
+	// Saving data stats
+	pkPackage->Write ( &m_kStats.m_iLife, sizeof (m_kStats.m_iLife), 1 );
+	pkPackage->Write ( &m_kStats.m_iMaxLife, sizeof (m_kStats.m_iMaxLife), 1 );
+	pkPackage->Write ( &m_kStats.m_fSpeed, sizeof (m_kStats.m_fSpeed), 1 );
+	pkPackage->Write ( &m_kStats.m_fArmour, sizeof (m_kStats.m_fArmour), 1 );
+	pkPackage->Write ( &m_kStats.m_fWage, sizeof (m_kStats.m_fWage), 1 );
+	pkPackage->Write ( &m_kStats.m_fExperience, sizeof (m_kStats.m_fExperience), 1 );
+	pkPackage->Write ( &m_kStats.m_fNextLevel, sizeof (m_kStats.m_fNextLevel), 1 );
+	pkPackage->Write ( &m_kStats.m_iLevel, sizeof (m_kStats.m_iLevel), 1 );
+	pkPackage->Write ( &m_iTeam, sizeof (m_iTeam), 1 );
+	pkPackage->Write ( &m_iState, sizeof (m_iState), 1 );
 
+	strcpy( temp, m_kStats.m_strName.c_str() );
+	pkPackage->Write(temp,128,1);
+	
+	strcpy( temp, m_kStats.m_strIcon.c_str() );
+	pkPackage->Write(temp,128,1);
 }
 
 void P_DMCharacter::Load(ZFIoInterface* pkPackage)
 {
-	
+	char temp[128];
+
 	//loading inventory
 	m_pkBackPack->Load(pkPackage);		
 	m_pkBody->Load(pkPackage);
@@ -294,6 +312,23 @@ void P_DMCharacter::Load(ZFIoInterface* pkPackage)
 	m_pkHand->Load(pkPackage);
 	m_pkImplants->Load(pkPackage);
 
+	// Saving data stats
+	pkPackage->Read ( &m_kStats.m_iLife, sizeof (m_kStats.m_iLife), 1 );
+	pkPackage->Read ( &m_kStats.m_iMaxLife, sizeof (m_kStats.m_iMaxLife), 1 );
+	pkPackage->Read ( &m_kStats.m_fSpeed, sizeof (m_kStats.m_fSpeed), 1 );
+	pkPackage->Read ( &m_kStats.m_fArmour, sizeof (m_kStats.m_fArmour), 1 );
+	pkPackage->Read ( &m_kStats.m_fWage, sizeof (m_kStats.m_fWage), 1 );
+	pkPackage->Read ( &m_kStats.m_fExperience, sizeof (m_kStats.m_fExperience), 1 );
+	pkPackage->Read ( &m_kStats.m_fNextLevel, sizeof (m_kStats.m_fNextLevel), 1 );
+	pkPackage->Read ( &m_kStats.m_iLevel, sizeof (m_kStats.m_iLevel), 1 );
+	pkPackage->Read ( &m_iTeam, sizeof (m_iTeam), 1 );
+	pkPackage->Read ( &m_iState, sizeof (m_iState), 1 );
+
+	pkPackage->Read(temp,128,1);
+	m_kStats.m_strName = temp;
+	
+	pkPackage->Read(temp,128,1);
+	m_kStats.m_strIcon = temp;
 }
 
 

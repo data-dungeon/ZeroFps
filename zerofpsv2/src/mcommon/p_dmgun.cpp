@@ -80,10 +80,10 @@ void P_DMGun::Update()
 	{
 		float f;
 		Vector3 kColor;
-		for(int i = 0 ;i<m_kHitPos.size();i++)
+		for(unsigned int i = 0 ;i<m_kHitPos.size();i++)
 		{
 			f = (t - m_kHitPos[i].second )*2;
-			kColor.Set(0.8-f,0.8-f,0.8-f);
+			kColor.Set(0.8f - f, 0.8f - f, 0.8f - f);
 		
 			m_pkZeroFps->m_pkRender->Sphere(m_kHitPos[i].first,0.1,1,kColor,true);
 			m_pkZeroFps->m_pkRender->SetColor(kColor);
@@ -235,7 +235,7 @@ bool P_DMGun::FireBullets(int iAmount)
 			
 			
 			if(P_DMCharacter* pkChar = (P_DMCharacter*)pkClosest->GetProperty("P_DMCharacter"))
-					pkChar->Damage(0,m_fDamage);
+					pkChar->Damage(0, int(m_fDamage));
 		}
 		else
 			m_kHitPos.push_back(pair<Vector3,float>(kStart+kDir*100,t));			
@@ -244,6 +244,57 @@ bool P_DMGun::FireBullets(int iAmount)
 	}
 	
 	return true;
+}
+
+
+void P_DMGun::Save(ZFIoInterface* pkPackage)
+{		
+	char temp[128];
+
+	// Saving gun stats
+	pkPackage->Write ( &m_fFireRate, sizeof (m_fFireRate), 1 );
+	pkPackage->Write ( &m_fDamage, sizeof (m_fDamage), 1 );
+	pkPackage->Write ( &m_fRange, sizeof (m_fRange), 1 );
+	pkPackage->Write ( &m_iAmmo, sizeof (m_iAmmo), 1 );
+	pkPackage->Write ( &m_iMaxAmmo, sizeof (m_iMaxAmmo), 1 );
+	pkPackage->Write ( &m_fRandom, sizeof (m_fRandom), 1 );
+	pkPackage->Write ( &m_iBulletsPerAmmo, sizeof (m_iBulletsPerAmmo), 1 );
+	pkPackage->Write ( &m_fTimeFired, sizeof (m_fTimeFired), 1 );
+	pkPackage->Write ( &m_fTimeBulletFired, sizeof (m_fTimeBulletFired), 1 );
+	pkPackage->Write ( &m_fBurstLength, sizeof (m_fBurstLength), 1 );
+	pkPackage->Write ( &m_bFireing, sizeof (m_bFireing), 1 );
+	pkPackage->Write ( &m_bFirstUpdateSinceFireing, sizeof (m_bFirstUpdateSinceFireing), 1 );
+
+	strcpy( temp, m_strName.c_str() );
+	pkPackage->Write(temp,128,1);
+	
+	strcpy( temp, m_strSound.c_str() );
+	pkPackage->Write(temp,128,1);
+}
+
+void P_DMGun::Load(ZFIoInterface* pkPackage)
+{
+		char temp[128];
+
+	// Load gun stats
+	pkPackage->Read ( &m_fFireRate, sizeof (m_fFireRate), 1 );
+	pkPackage->Read ( &m_fDamage, sizeof (m_fDamage), 1 );
+	pkPackage->Read ( &m_fRange, sizeof (m_fRange), 1 );
+	pkPackage->Read ( &m_iAmmo, sizeof (m_iAmmo), 1 );
+	pkPackage->Read ( &m_iMaxAmmo, sizeof (m_iMaxAmmo), 1 );
+	pkPackage->Read ( &m_fRandom, sizeof (m_fRandom), 1 );
+	pkPackage->Read ( &m_iBulletsPerAmmo, sizeof (m_iBulletsPerAmmo), 1 );
+	pkPackage->Read ( &m_fTimeFired, sizeof (m_fTimeFired), 1 );
+	pkPackage->Read ( &m_fTimeBulletFired, sizeof (m_fTimeBulletFired), 1 );
+	pkPackage->Read ( &m_fBurstLength, sizeof (m_fBurstLength), 1 );
+	pkPackage->Read ( &m_bFireing, sizeof (m_bFireing), 1 );
+	pkPackage->Read ( &m_bFirstUpdateSinceFireing, sizeof (m_bFirstUpdateSinceFireing), 1 );
+
+	pkPackage->Read(temp,128,1);
+	m_strName = temp;
+	
+	pkPackage->Read(temp,128,1);
+	m_strSound = temp;
 }
 
 

@@ -261,7 +261,7 @@ int CStartDMDlg::GetNextPicture()
 		}
 		else
 		{
-			for(int i=0; i<m_vkPlayedPictures.size(); i++)
+			for(unsigned int i=0; i<m_vkPlayedPictures.size(); i++)
 			{
 				if(m_vkPlayedPictures[i] == picture)
 				{

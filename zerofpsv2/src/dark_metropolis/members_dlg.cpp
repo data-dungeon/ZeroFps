@@ -36,7 +36,7 @@ void CMembersDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName)
 	// MembersWnd
 	if(strClickName == "MembersCloseBn")
 	{
-		for(int i=0; i<m_vkItemButtons.size(); i++)
+		for(unsigned int i=0; i<m_vkItemButtons.size(); i++)
 			m_vkItemButtons[i]->GetSkin()->m_unBorderSize = 0;
 
 		ShowWnd("MembersWnd", false, false);
@@ -183,7 +183,7 @@ void CMembersDlg::SetWindowMode(WINDOW_MODE eType)
 			int iAgentObject;
 			iAgentObject = ((CHandleAgents*)GetGameDlg(HANDLE_AGENTS_DLG))->GetSelAgent();
 
-			for(int i=0; i<m_vkItemButtons.size(); i++)
+			for(unsigned int i=0; i<m_vkItemButtons.size(); i++)
 				m_vkItemButtons[i]->Hide();
 
 			SetStats(&(((CHandleAgents*)GetGameDlg(HANDLE_AGENTS_DLG))->m_kViewAgentInfo));
@@ -245,7 +245,7 @@ void CMembersDlg::SwitchCharacter(bool bNext)
 		delete m_pkSelectInfo;
 		m_pkSelectInfo = NULL;
 
-		for(int i=0; i<m_vkItemButtons.size(); i++)
+		for(unsigned int i=0; i<m_vkItemButtons.size(); i++)
 		{
 			m_vkItemButtons[i]->GetButtonUpSkin()->m_unBorderSize = 0;
 			m_vkItemButtons[i]->GetSkin()->m_unBorderSize = 0;
@@ -517,7 +517,7 @@ void CMembersDlg::OnClick(int x, int y, bool bMouseDown, bool bLeftButton,
 				delete m_pkSelectInfo;
 				m_pkSelectInfo = NULL;
 
-				for(int i=0; i<m_vkItemButtons.size(); i++)
+				for(unsigned int i=0; i<m_vkItemButtons.size(); i++)
 					m_vkItemButtons[i]->GetSkin()->m_unBorderSize = 0;
 			}
 
@@ -533,7 +533,7 @@ void CMembersDlg::OnClick(int x, int y, bool bMouseDown, bool bLeftButton,
 	{
 		bool m_bNothingSelected = true;
 
-		for(int j=0; j<m_vkItemButtons.size(); j++)
+		for(unsigned int j=0; j<m_vkItemButtons.size(); j++)
 		{
 			m_vkItemButtons[j]->GetButtonHighLightSkin()->m_unBorderSize = 0;
 			m_vkItemButtons[j]->GetButtonDownSkin()->m_unBorderSize = 0;
@@ -541,7 +541,7 @@ void CMembersDlg::OnClick(int x, int y, bool bMouseDown, bool bLeftButton,
 			m_vkItemButtons[j]->GetSkin()->m_unBorderSize = 0;
 		}
 
-		for(int i=0; i<m_vkItemButtons.size(); i++)
+		for(unsigned int i=0; i<m_vkItemButtons.size(); i++)
 		{
 			Rect rc = m_vkItemButtons[i]->GetScreenRect();
 			if(x>rc.Left && x<rc.Right && y>rc.Top && y<rc.Bottom )
@@ -607,7 +607,7 @@ void CMembersDlg::OnClick(int x, int y, bool bMouseDown, bool bLeftButton,
 		// Inte tryckt på nått
 		if(m_bNothingSelected)
 		{
-			for(int i=0; i<m_vkItemButtons.size(); i++)
+			for(unsigned int i=0; i<m_vkItemButtons.size(); i++)
 			{
 				m_vkItemButtons[i]->GetButtonUpSkin()->m_unBorderSize = 0;
 				m_vkItemButtons[i]->GetSkin()->m_unBorderSize = 0;
@@ -786,7 +786,7 @@ bool CMembersDlg::DropItem(ITEM_MOVE_INFO* pkObject)
 	{
 		pkObject->m_pkMoveButton->Hide();
 
-		for(int i=0; i<m_vkItemButtons.size(); i++)
+		for(unsigned int i=0; i<m_vkItemButtons.size(); i++)
 			m_vkItemButtons[i]->GetSkin()->m_unBorderSize = 0;
 
 		delete m_pkSelectInfo;
@@ -816,7 +816,7 @@ void CMembersDlg::UpdateInventory(Entity* pkCharacterObject)
 	ZFAssert(pkCharProperty, 
 		"CMembersDlg::SetCharacterStats - No character property\n");
 
-	for(int i=0; i<m_vkItemButtons.size(); i++)
+	for(unsigned int i=0; i<m_vkItemButtons.size(); i++)
 		m_vkItemButtons[i]->Hide();
 
 	DMContainer* akContainerObjects[] = 
@@ -851,7 +851,7 @@ void CMembersDlg::UpdateInventory(Entity* pkCharacterObject)
 			vector<ContainerInfo> kItemList;
 			pkContainer->GetItemList(&kItemList);
 
-			for(int i=0; i<kItemList.size(); i++)
+			for(unsigned int i=0; i<kItemList.size(); i++)
 			{
 				x = kRect.Left + kItemList[i].m_iItemX*CELL_SIZE;
 				y = kRect.Top + kItemList[i].m_iItemY*CELL_SIZE;
@@ -1042,7 +1042,7 @@ void CMembersDlg::OnEquip(int iItemID, DMContainer* pkDestContainer)
 	vector<int>* pkItemTypes = pkDestContainer->GetItemTypes();
 
 	// check type of item equipped
-	for ( int i = 0; i < pkItemTypes->size(); i++ )
+	for ( unsigned int i = 0; i < pkItemTypes->size(); i++ )
 	{
 			
 		// equip weapon

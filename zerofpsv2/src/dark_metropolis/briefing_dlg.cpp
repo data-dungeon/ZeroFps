@@ -37,7 +37,7 @@ void CBriefingDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName)
 			vector<DMMissionInfo> vkInfo;
 			pkMissionProperty->GetPossibleMissions(reputation, vkInfo); 
 
-			for(int i=0; i<vkInfo.size(); i++)
+			for(unsigned int i=0; i<vkInfo.size(); i++)
 			{
 				if(vkInfo[i].m_strName == strSelMission)
 				{
@@ -90,7 +90,7 @@ bool CBriefingDlg::InitDlg()
 		vector<DMMissionInfo> vkInfo;
 		pkMissionProperty->GetPossibleMissions(reputation, vkInfo); 
 
-		for(int i=0; i<vkInfo.size(); i++)
+		for(unsigned int i=0; i<vkInfo.size(); i++)
 		{
 			if(vkInfo[i].m_strName == strSelMission)
 			{

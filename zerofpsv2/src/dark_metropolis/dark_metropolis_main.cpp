@@ -126,7 +126,7 @@ void DarkMetropolis::RenderInterface(void)
 	*/
 	
 	//draw markers for selected entitys
-	for(int i = 0;i< m_kSelectedEntitys.size();i++)
+	for(unsigned int i = 0;i< m_kSelectedEntitys.size();i++)
 	{
 		Entity* pkEnt = m_pkObjectMan->GetObjectByNetWorkID(m_kSelectedEntitys[i]);
 		if(pkEnt)
@@ -502,7 +502,7 @@ void DarkMetropolis::Input()
 		
 				if(Entity* pkPickEnt = GetTargetObject())
 				{	
-					for(int i = 0;i < m_kSelectedEntitys.size();i++)
+					for(unsigned int i = 0;i < m_kSelectedEntitys.size();i++)
 					{
 						if(Entity* pkEnt = m_pkObjectMan->GetObjectByNetWorkID(m_kSelectedEntitys[i]))
 						{
@@ -533,7 +533,7 @@ void DarkMetropolis::Input()
 			//walk
 			if(pkPickEnt->GetName() == "ZoneObject")	//we clicked on a zone , lets tae a walk
 			{
-				for(int i = 0;i < m_kSelectedEntitys.size();i++)
+				for(unsigned int i = 0;i < m_kSelectedEntitys.size();i++)
 				{
 					Entity* pkEnt = m_pkObjectMan->GetObjectByNetWorkID(m_kSelectedEntitys[i]);
 					if(pkEnt)
@@ -573,7 +573,7 @@ void DarkMetropolis::Input()
 			if(P_DMHQ* pkHQ = (P_DMHQ*)pkPickEnt->GetProperty("P_DMHQ"))
 			{				
 				
-				for(int i = 0;i < m_kSelectedEntitys.size();i++)
+				for(unsigned int i = 0;i < m_kSelectedEntitys.size();i++)
 				{
 					Entity* pkEnt = m_pkObjectMan->GetObjectByNetWorkID(m_kSelectedEntitys[i]);
 					if(pkEnt)				
@@ -606,7 +606,7 @@ void DarkMetropolis::Input()
 			//pick item
 			if(P_DMItem* pkItem = (P_DMItem*)pkPickEnt->GetProperty("P_DMItem"))
 			{				
-				for(int i = 0;i < m_kSelectedEntitys.size();i++)
+				for(unsigned int i = 0;i < m_kSelectedEntitys.size();i++)
 				{
 					if(Entity* pkEnt = m_pkObjectMan->GetObjectByNetWorkID(m_kSelectedEntitys[i]))				
 					{
@@ -904,16 +904,16 @@ Vector3 DarkMetropolis::GetFormationPos(int iType,int iTotal,int iPos)
 {
 	if(iType == FORMATION_CIRCLE)
 	{
-		float g = (360 / iTotal) * iPos;
+		float g = float((360 / iTotal) * iPos);
 	
 		return Vector3(cos(DegToRad(g)),0,sin(DegToRad(g)))*2;	
 	}
 	
 	if(iType == FORMATION_SQUARE)
 	{
-		int iSide = round2(sqrt(float(iTotal)));
+		int iSide = int(round2(sqrt(float(iTotal))));
 	
-		return Vector3(iPos%iSide,0,int(iPos/iSide));
+		return Vector3(float(iPos%iSide),0,float(int(iPos/iSide)));
 	
 	}
 
@@ -933,7 +933,7 @@ int DarkMetropolis::FindActiveHQ()
 	vector<Entity*> kObjects;	
 	m_pkObjectMan->GetZoneObject()->GetAllEntitys(&kObjects,false);
 
-	for(int i = 0;i<kObjects.size();i++)
+	for(unsigned int i = 0;i<kObjects.size();i++)
 	{
 		if(P_DMHQ* pkHQ = (P_DMHQ*)kObjects[i]->GetProperty("P_DMHQ"))
 		{

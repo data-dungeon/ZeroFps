@@ -376,7 +376,7 @@ void DarkMetropolis::GUI_LoadSave(bool bSave)
 	vector<string> files;
 	if(m_pkBasicFS->ListDir(&files, m_strSaveDirectory.c_str(), true))
 	{
-		for(int i=0; i<files.size(); i++)
+		for(unsigned int i=0; i<files.size(); i++)
 			if(files[i] != string(".."))
 				AddListItem("LoadListLB", (char*)files[i].c_str());
 	}
