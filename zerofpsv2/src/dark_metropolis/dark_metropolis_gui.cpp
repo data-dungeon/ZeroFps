@@ -62,12 +62,17 @@ bool GUIPROC(ZGuiWnd* win, unsigned int msg, int numparms, void *params )
 
 void DarkMetropolis::GUI_Init()
 {
+	// Jaja... får väll ge mig dvoid :( Men efter crunchen vill jag ha detta _fixat_
+	bool bUseHardwareMouse = false;
+
+	m_pkInput->ShowCursor(bUseHardwareMouse);
+
 	// Create gui script.
 	GuiAppLua::Init(&g_kDM, m_pkScript);
 	InitGui(m_pkScript,
 		"data/textures/text/ms_sans_serif8.bmp",
 		"data/script/gui/defskins.lua",
-		NULL);
+		NULL, bUseHardwareMouse);
 
 	// Load start sceen.
 	LoadGuiFromScript(m_pkScript, "data/script/gui/dm_start.lua");
@@ -87,9 +92,7 @@ void DarkMetropolis::GUI_Init()
 	m_pkGamePlayDlg = new CGamePlayDlg();
 	m_pkItemTransactionDlg = new CItemTransactionDlg();
 	m_pkMembersDlg = new CMembersDlg();
-	m_pkHandleAgents = new CHandleAgents();
-
-	
+	m_pkHandleAgents = new CHandleAgents();	
 }
 
 void DarkMetropolis::GUI_OnCommand(int iID, bool bRMouseBnClick, 

@@ -507,7 +507,7 @@ void ZeroFps::Draw_EngineShell()
 	}		
 	else 
 	{
-		m_pkGui->Render();
+		m_pkGui->Render((int)m_fAvrageFps);
 	}
 }
 

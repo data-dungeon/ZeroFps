@@ -481,7 +481,9 @@ void ZGuiApp::InitDefaultSkins(ZFScriptSystem* pkScript)
 		m_kSkins.insert( strSkin(szDefNames[i], AddSkinFromScript(szDefNames[i], pkScript) ) );
 }
 
-void ZGuiApp::InitGui(ZFScriptSystem* pkScriptSys, char* szFontTexture, char* szScriptFile, char* szMenuFile)
+void ZGuiApp::InitGui(ZFScriptSystem* pkScriptSys, char* szFontTexture, 
+							 char* szScriptFile, char* szMenuFile,
+							 bool bUseHardwareMouse)
 {
 	// Spara undan viktiga pekare till system.
 	m_pkGui = static_cast<ZGui*>(g_ZFObjSys.GetObjectPtr("Gui"));
@@ -517,6 +519,16 @@ void ZGuiApp::InitGui(ZFScriptSystem* pkScriptSys, char* szFontTexture, char* sz
 	// Create the menu for the application
 	if(szMenuFile != NULL)
 		CreateMenu(szMenuFile, pkScriptSys);
+
+	// Setup cursor
+	m_pkGui->m_bUseHardwareMouse = bUseHardwareMouse;
+	
+	if(m_pkGui->m_bUseHardwareMouse == false)
+	{
+		m_pkGui->SetCursor(0,0, m_pkTexMan->Load("data/textures/gui/cursor.bmp", 0),
+			m_pkTexMan->Load("data/textures/gui/cursor_a.bmp", 0), 32, 32);
+		m_pkGui->ShowCursor(true);
+	}
 }
 
 int ZGuiApp::GetTexID(char *szFile)

@@ -44,10 +44,11 @@ function GUICreate()
 	Skin14 = { tex1="dm/final/corner_char_blob.bmp", tex2="wndborder_left.bmp", tex3="wndborder_top.bmp",
 	 tex4="wndborder_corner.bmp", tex1a="dm/final/corner_char_blob_a.bmp", tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=255, bkB=255,
 	 borderR=255, borderG=255, borderB=255, bd_size=0, tile=1, trans=0 }
+
 	Skin15 = { tex1="dm/final/corner_piece.bmp", tex2="wndborder_left.bmp", tex3="wndborder_top.bmp",
 	 tex4="wndborder_corner.bmp", tex1a="dm/final/corner_piece_a.bmp", tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=255, bkB=255, borderR=255,
 	 borderG=255, borderB=255, bd_size=0, tile=0, trans=0 }
-	
+
 	Skin16 = { tex1="dm/final/quick_item.bmp", tex2="0", tex3="0",
 	 tex4="0", tex1a="0", tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=255, bkB=255, borderR=255,
 	 borderG=255, borderB=255, bd_size=0, tile=0, trans=0 }
@@ -60,8 +61,8 @@ function GUICreate()
 	 tex4="0", tex1a="dm/final/healthbar_a.bmp", tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=255, bkB=255, borderR=255,
 	 borderG=255, borderB=255, bd_size=0, tile=1, trans=0 }
 
-	Skin19 = { tex1="black.bmp", tex2="0", tex3="0", tex4="0", tex1a="0", tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=255,
-	 bkB=255, borderR=255, borderG=255, borderB=255, bd_size=0, tile=0, trans=1 }
+	Skin19 = { tex1="0", tex2="0", tex3="0", tex4="0", tex1a="0", tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=255,
+	 bkB=255, borderR=255, borderG=255, borderB=255, bd_size=0, tile=0, trans=0 }
 
 
 
@@ -270,6 +271,15 @@ function GUICreate()
 	ChangeSkin("ActiveCharacterPortraitBn","Skin2","Button down")
 	ChangeSkin("ActiveCharacterPortraitBn","Skin3","Button focus")
 
+
+
+
+
+	CreateWnd(0,"fps_wnd","GamePlayScreen","",2,2,50,20,0)
+	ChangeSkin("fps_wnd","Skin4","Window")
+
+	CreateWnd(4,"fps_label","fps_wnd","fps: 240",0,0,50,20,0)
+	ChangeSkin("fps_label","Skin19","Label")
 
 
 

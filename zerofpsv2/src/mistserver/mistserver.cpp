@@ -300,7 +300,7 @@ void MistServer::Init()
 	InitGui(m_pkScript, 
 		"data/textures/text/ms_sans_serif8.bmp", 
 		"data/script/gui/defskins.lua", 
-		"data/script/gui/menu.txt");
+		"data/script/gui/menu.txt", true);
 	
 	// Create startup GUI for the the server from script.
 	SetupGuiEnviroment();

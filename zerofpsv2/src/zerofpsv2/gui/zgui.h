@@ -115,7 +115,7 @@ public:
 
 	bool IsActive();
 
-	bool Render(); // Render the active main window
+	bool Render(int fps); // Render the active main window
 
 	ZGuiResourceManager* GetResMan();
 

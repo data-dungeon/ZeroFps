@@ -60,8 +60,13 @@ bool ZGui::StartUp()
 	m_pnCursorRangeDiffX=m_pnCursorRangeDiffY=0;
 	m_pkCursor = new ZGuiCursor();
 	m_pkCursorSkin = new ZGuiSkin();
+	m_pkCursorSkin->m_bTileBkSkin = false;
+	m_pkCursorSkin->m_unBorderSize = 0;
+	m_pkCursorSkin->m_afBkColor[0] = 1;
+	m_pkCursorSkin->m_afBkColor[1] = 1;
+	m_pkCursorSkin->m_afBkColor[2] = 1;
 	m_pkCursor->SetPos(0,0);
-	m_pkCursor->SetSize(16,16);
+	m_pkCursor->SetSize(32,32);
 	m_pkCursor->SetSkin(m_pkCursorSkin);
 
 	m_pkFocusBorderSkin = new ZGuiSkin(0,0,0, 128,128,128, 2);
@@ -295,7 +300,7 @@ int ZGui::GetMainWindowID(char* strWindow)
 
 
 // Rendera det aktiva fönstret (och alla dess childs)
-bool ZGui::Render()
+bool ZGui::Render(int fps)
 {
 	m_pkRenderer->StartRender();
 
@@ -327,15 +332,15 @@ bool ZGui::Render()
 		}
 	 }
 
-	// Draw points
-	m_pkRenderer->RenderPoints(m_kPointsToDraw); 
+	//// Draw points
+	//m_pkRenderer->RenderPoints(m_kPointsToDraw); 
 
-	// Draw rects
-	m_pkRenderer->RenderRects(m_kRectsToDraw); 
+	//// Draw rects
+	//m_pkRenderer->RenderRects(m_kRectsToDraw); 
 
-	// Draw lines
-	m_pkRenderer->RenderLines(m_kLinesToDraw,
-		m_acLineColor[0],m_acLineColor[1],m_acLineColor[2],1.0f);
+	//// Draw lines
+	//m_pkRenderer->RenderLines(m_kLinesToDraw,
+	//	m_acLineColor[0],m_acLineColor[1],m_acLineColor[2],1.0f);
 
 	 if(m_pkToolTip)
 	 {
@@ -348,6 +353,16 @@ bool ZGui::Render()
 	// Draw cursor
 	if(!m_bUseHardwareMouse && m_pkCursor->IsVisible())
 		m_pkCursor->Render();
+
+	// Render fps label (also fix for strange bug with rendering cursor last 
+	// (can't do that, this fuck up the shadowblob)).
+	if(m_pkResManager->Wnd("fps_wnd") != NULL)
+	{
+		char szFps[25];
+		sprintf(szFps, "Fps: %i", fps);
+		m_pkResManager->Wnd("fps_label")->SetText(szFps); 
+		m_pkResManager->Wnd("fps_wnd")->Render( m_pkRenderer );
+	}
 
 	m_pkRenderer->EndRender(); 
 
