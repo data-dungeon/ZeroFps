@@ -819,8 +819,6 @@ void Render::DrawBoundSphere(float fRadius, Vector3)
 
 void Render::DrawBox(Vector3 kPos,Vector3 kRot,Vector3 kScale,int iTexture)
 {
-	cout<<"Render::DrawBox"<<endl;
-
 	glPushMatrix();
 		
 	glTranslatef(kPos.x,kPos.y,kPos.z);	
@@ -885,8 +883,6 @@ void Render::DrawBox(Vector3 kPos,Vector3 kRot,Vector3 kScale,int iTexture)
 
 void Render::DrawBox(Vector3 kPos, Vector3 kCenter, Matrix4 kRot, Vector3 kSize,int iTexture)
 {
-	cout<<"Render::DrawBox"<<endl;
-
 	glPushMatrix();
 
 	glDisable (GL_CULL_FACE);
@@ -2199,7 +2195,7 @@ void Render::DrawPSystem( PSystem *pkPSystem )
 		glEnable(GL_COLOR_MATERIAL);
 
 		glEnableClientState(GL_COLOR_ARRAY);
-		glColorPointer( 4, GL_FLOAT, 0, pkPSystem->GetColors() + pkPSystem->Start() * 12 );
+		glColorPointer( 4, GL_FLOAT, 0, pkPSystem->GetColors() + pkPSystem->Start() * 16 );
 	}
 	else
 	{
@@ -2211,14 +2207,14 @@ void Render::DrawPSystem( PSystem *pkPSystem )
 	// Turn on the texture coordinate state
 	glEnable (GL_TEXTURE_2D);
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-	glTexCoordPointer( 2, GL_FLOAT, 0, pkPSystem->GetTexCoords() + pkPSystem->Start() * 6 );
+	glTexCoordPointer( 2, GL_FLOAT, 0, pkPSystem->GetTexCoords() + pkPSystem->Start() * 8 );
 
 	// Turn on the vertex array state
 	glEnableClientState(GL_VERTEX_ARRAY);
-	glVertexPointer(3, GL_FLOAT, 0, pkPSystem->GetVertices() + pkPSystem->Start() * 9);
+	glVertexPointer(3, GL_FLOAT, 0, pkPSystem->GetVertices() + pkPSystem->Start() * 12);
 
 	// draw the stuff
-	glDrawElements(GL_TRIANGLES, pkPSystem->Particles() * 3, 
+	glDrawElements(GL_QUADS, pkPSystem->Particles() * 4, 
 					   GL_UNSIGNED_INT, pkPSystem->GetIndices() );
 
 

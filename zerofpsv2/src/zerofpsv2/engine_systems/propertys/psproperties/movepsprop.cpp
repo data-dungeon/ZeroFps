@@ -38,20 +38,17 @@ void MovePSProp::Update()
 	
 	Vector3 kRightVect;
 	Vector3 kUpVect;
-	Vector3 a;
-	Vector3 b;	
-	Vector3 c;	
+	Vector3 a,b,c,d;
 
 	kRightVect.Set(afM[0], afM[4], afM[8]); // right_vector
 	kUpVect.Set(afM[1], afM[5], afM[9]); // up_vector
 
 	// fix for box in triangle to get size written in psystemfile
-	kRightVect *= 3;
-	kUpVect *= 3;
 
-	a = kUpVect/2;
-   b = -kUpVect/2 + kRightVect;
-   c = -kUpVect/2 - kRightVect;
+	a = -kRightVect - kUpVect;
+   b = kRightVect - kUpVect;
+   c = kUpVect + kRightVect;
+	d = kUpVect - kRightVect;
 
 	// which dimesions to billboard
 	if ( !m_pkParent->m_pkPSystemType->m_kParticleBehaviour.m_bBillBoardY )
@@ -61,10 +58,10 @@ void MovePSProp::Update()
 		a.z = 0;
 	}
 
-	for ( i = m_pkParent->Start() * 9; i < m_pkParent->End() * 9; i += 9 )
+	for ( i = m_pkParent->Start() * 12; i < m_pkParent->End() * 12; i += 12 )
 	{
 
-		int iPartIndex = i / 9;
+		int iPartIndex = i / 12;
 		float fWidth =  pkParticles->at(iPartIndex).m_kSize.x/2.f;
 		float fHeight = pkParticles->at(iPartIndex).m_kSize.y/2.f;
 		
@@ -72,13 +69,17 @@ void MovePSProp::Update()
 		pfVertices[i + 1] = pkParticles->at(iPartIndex).m_kCenter.y + a.y * fHeight;
 		pfVertices[i + 2] = pkParticles->at(iPartIndex).m_kCenter.z + a.z * fWidth;
 
-		pfVertices[i + 6] = pkParticles->at(iPartIndex).m_kCenter.x + b.x * fWidth;
-		pfVertices[i + 7] = pkParticles->at(iPartIndex).m_kCenter.y + b.y * fHeight;
-		pfVertices[i + 8] = pkParticles->at(iPartIndex).m_kCenter.z + b.z * fWidth;
+		pfVertices[i + 3] = pkParticles->at(iPartIndex).m_kCenter.x + b.x * fWidth;
+		pfVertices[i + 4] = pkParticles->at(iPartIndex).m_kCenter.y + b.y * fHeight;
+		pfVertices[i + 5] = pkParticles->at(iPartIndex).m_kCenter.z + b.z * fWidth;
 
-		pfVertices[i + 3] = pkParticles->at(iPartIndex).m_kCenter.x + c.x * fWidth;
-		pfVertices[i + 4] = pkParticles->at(iPartIndex).m_kCenter.y + c.y * fHeight;
-		pfVertices[i + 5] = pkParticles->at(iPartIndex).m_kCenter.z + c.z * fWidth;
+		pfVertices[i + 6] = pkParticles->at(iPartIndex).m_kCenter.x + c.x * fWidth;
+		pfVertices[i + 7] = pkParticles->at(iPartIndex).m_kCenter.y + c.y * fHeight;
+		pfVertices[i + 8] = pkParticles->at(iPartIndex).m_kCenter.z + c.z * fWidth;
+
+		pfVertices[i + 9] = pkParticles->at(iPartIndex).m_kCenter.x + d.x * fWidth;
+		pfVertices[i + 10] = pkParticles->at(iPartIndex).m_kCenter.y + d.y * fHeight;
+		pfVertices[i + 11] = pkParticles->at(iPartIndex).m_kCenter.z + d.z * fWidth;
 	}
 	
 	delete [] afM;

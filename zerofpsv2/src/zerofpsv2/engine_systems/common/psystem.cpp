@@ -183,7 +183,7 @@ void PSystem::ResetParticle (int iParticleIndex, float fTimeOffset)
 	if ( iParticleIndex < m_uiFirstParticle )
 		m_uiFirstParticle = iParticleIndex;
 
-	int iClrIndex = iParticleIndex * 12;
+	int iClrIndex = iParticleIndex * 16;
 
 	m_fTimeSinceLastCreatedParticle = 0;
 
@@ -276,8 +276,6 @@ void PSystem::ResetParticle (int iParticleIndex, float fTimeOffset)
 		m_kParticles[iParticleIndex].m_kStartColor.w += (((rand()%100) / 100.f) * ((rand()%2) * 2 - 1)) *
 			m_kParticles[iParticleIndex].m_kStartColor.w * m_pkPSystemType->m_kParticleBehaviour.m_kStartColorRandom.w;
 
-		//cout << "b:" << m_kParticles[iParticleIndex].m_kStartColor.z << endl;
-
 		// Random PSystem end colors
 		m_kParticles[iParticleIndex].m_kEndColor.x += (((rand()%100) / 100.f) * ((rand()%2) * 2 - 1)) *
 			m_kParticles[iParticleIndex].m_kEndColor.x * m_pkPSystemType->m_kParticleBehaviour.m_kEndColorRandom.x;
@@ -288,7 +286,7 @@ void PSystem::ResetParticle (int iParticleIndex, float fTimeOffset)
 		m_kParticles[iParticleIndex].m_kEndColor.w += (((rand()%100) / 100.f) * ((rand()%2) * 2 - 1)) *
 			m_kParticles[iParticleIndex].m_kEndColor.w * m_pkPSystemType->m_kParticleBehaviour.m_kEndColorRandom.w;
 
-		for ( int i = 0; i < 12; i += 4 )
+		for ( int i = 0; i < 16; i += 4 )
 		{
 			// Set startcolor
 
@@ -380,7 +378,7 @@ void PSystem::ResetParticle (int iParticleIndex, float fTimeOffset)
 
  	m_kParticles[iParticleIndex].m_kCenter += m_kPosition + m_kRotation.VectorRotate(m_kPosOffset);
 
-   m_kParticles[iParticleIndex].m_kCenter.y += m_pkPSystemType->m_kParticleBehaviour.m_kStartSize.y /2.f;
+   //m_kParticles[iParticleIndex].m_kCenter.y += m_pkPSystemType->m_kParticleBehaviour.m_kStartSize.y /2.f;
 
    m_kParticles[iParticleIndex].m_kCenter += m_kRotation.VectorRotate ( Vector3 (m_pkPSystemType->m_kParticleBehaviour.m_kStartSize.x, 
                                                                         m_pkPSystemType->m_kParticleBehaviour.m_kStartSize.y, 
@@ -413,9 +411,9 @@ void PSystem::DisableParticle ( int iParticleIndex )
 	if ( iParticleIndex < m_uiLastParticle && iParticleIndex > m_uiFirstParticle )
 	{
 		// move clr
-		memcpy (&m_pfColors[iParticleIndex * 12], &m_pfColors[m_uiLastParticle * 12], sizeof(float) * 12);
+		memcpy (&m_pfColors[iParticleIndex * 16], &m_pfColors[m_uiLastParticle * 16], sizeof(float) * 16);
 		// copy vertices
-		memcpy (&m_pfVertices[iParticleIndex * 9], &m_pfVertices[m_uiLastParticle * 9], sizeof(float) * 9);
+		memcpy (&m_pfVertices[iParticleIndex * 12], &m_pfVertices[m_uiLastParticle * 12], sizeof(float) * 12);
 		
 		// move last active particle to disabled particles place
 		memcpy(&m_kParticles[iParticleIndex], &m_kParticles[m_uiLastParticle], sizeof(m_kParticles[i]));

@@ -80,18 +80,21 @@ PSystem* PSystemManager::GetPSSystem ( string kPSName )
 
 float* PSystemManager::CreateTexCoords (int iParticles)
 {
-	float* pfTexCoords = new float[6 + iParticles * 6];
+	float* pfTexCoords = new float[8 + iParticles * 8];
 
-	for ( int i = 0; i < iParticles * 6; i += 6 )
+	for ( int i = 0; i < iParticles * 8; i += 8 )
 	{
-		pfTexCoords[i] = 0.5f;
-		pfTexCoords[i+1] = -0.5f;
+		pfTexCoords[i] = 0;
+		pfTexCoords[i+1] = 0;
 
-		pfTexCoords[i+2] = 2.0f;
-		pfTexCoords[i+3] = 1;
+		pfTexCoords[i+2] = 1;
+		pfTexCoords[i+3] = 0;
 
-		pfTexCoords[i+4] = -1.0f;
+		pfTexCoords[i+4] = 1;
 		pfTexCoords[i+5] = 1;
+
+		pfTexCoords[i+6] = 0;
+		pfTexCoords[i+7] = 1;
 	}
 
 	return pfTexCoords;
@@ -101,23 +104,23 @@ float* PSystemManager::CreateTexCoords (int iParticles)
 
 float* PSystemManager::CreateVertices ( PSystemType *kPSystemType )
 {
-	return new float[9 + kPSystemType->m_kPSystemBehaviour.m_iMaxParticles * 9];
+	return new float[12 + kPSystemType->m_kPSystemBehaviour.m_iMaxParticles * 12];
 }
 
 // ------------------------------------------------------------------------------------------
 
 float* PSystemManager::CreateVerticeColors ( int iParticles )
 {
-	return new float[12 + iParticles * 12];
+	return new float[16 + iParticles * 16];
 }
 
 // ------------------------------------------------------------------------------------------
 
 unsigned int* PSystemManager::CreateIndices ( int iParticles )
 {
-	unsigned int* pfIndices = new unsigned int[3 + iParticles * 3];
+	unsigned int* pfIndices = new unsigned int[4 + iParticles * 4];
 
-	for ( int i = 0; i < 3 + iParticles * 3; i++)
+	for ( int i = 0; i < 4 + iParticles * 4; i++)
 		pfIndices[i] = i;
 
 

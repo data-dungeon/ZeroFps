@@ -31,7 +31,7 @@ void ColorPSProp::Update()
 					pkParticles->at(i).m_fLifeTime;
 
 		// Prevent particle from use time_Color after age
-		for (int j = i * 12; j < i * 12 + 12; j += 4)
+		for (int j = i * 16; j < i * 16 + 16; j += 4)
 		{
 			pfColors[j    ] += m_fR * fFrameTime; 
 			pfColors[j + 1] += m_fG * fFrameTime;
