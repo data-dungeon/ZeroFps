@@ -63,7 +63,7 @@ vector<Property::PropertyValues> LightProperty::GetPropertyValues()
 	kReturn[0].kValueName = "m_fApa";
 	kReturn[0].iValueType = VALUETYPE_FLOAT;
 	kReturn[0].pkValue    = (void*)&m_fApa;
-	m_fApa = 0.0;
+	m_fApa = 0;
 
 
 	return kReturn;

@@ -601,7 +601,7 @@ void Object::PrintTree(int pos)
 		
 		akPropertyNames = (*it2)->GetValueNames();
 
-		for(int iValue = 0; iValue < akPropertyNames.size(); iValue++) {
+		for(unsigned int iValue = 0; iValue < akPropertyNames.size(); iValue++) {
 			cout << akPropertyNames[iValue] << ",";
 			}
 	}

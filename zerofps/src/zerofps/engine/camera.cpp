@@ -8,6 +8,7 @@ Camera::Camera(Vector3 kPos,Vector3 kRot,float fFov,float fAspect,float fNear,fl
 	SetPos(kPos);
 	SetRot(kRot);
 
+	m_strName = "A Camera";
 }
 
 void Camera::UpdateAll(int iWidth,int iHeight) 
@@ -97,10 +98,10 @@ Matrix4 Camera::GetModelMatrix() {
 
 string Camera::GetCameraDesc()
 {
-	char desc[256];
+	char desc[512];
 	string strDesc;
 
-	sprintf(desc, "Cam: <%.3f, %.3f, %.3f>, <%.3f, %.3f, %.3f>", m_kPos.x,m_kPos.y,m_kPos.z,
+	sprintf(desc, "Cam '%s': <%.3f, %.3f, %.3f>, <%.3f, %.3f, %.3f>", m_strName.c_str(), m_kPos.x,m_kPos.y,m_kPos.z,
 		m_kRot.x,m_kRot.y,m_kRot.z);
 	strDesc = desc;
 

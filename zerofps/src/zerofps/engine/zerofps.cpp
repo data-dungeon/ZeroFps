@@ -4,6 +4,7 @@
 //	extern PFNGLFOGCOORDFEXTPROC glFogCoordfEXT;		//glFogCoordsEXT
 int	g_iNumOfFrames;
 
+
 ZeroFps::ZeroFps(void) 
  : ZFObject("ZeroFps") {
 
@@ -66,6 +67,8 @@ ZeroFps::ZeroFps(void)
 	g_ZFObjSys.Register_Cmd("cd",FID_CD,this);	
 	g_ZFObjSys.Register_Cmd("listmad",FID_LISTMAD,this);	
 	g_ZFObjSys.Register_Cmd("printobject",FID_PRINTOBJECT,this);	
+	g_ZFObjSys.Register_Cmd("version",FID_VERSION,this);	
+	g_ZFObjSys.Register_Cmd("credits",FID_CREDITS,this);	
 
 
 	m_kCurentDir=m_pkBasicFS->GetCWD();
@@ -449,6 +452,7 @@ void ZeroFps::RunCommand(int cmdid, const CmdArgument* kCommand)
 	int i;
 
 	vector<string> kFiles;
+	vector<string> kCreditsStrings;
 	
 	switch(cmdid) {
 		case FID_SETDISPLAY:
@@ -557,6 +561,18 @@ void ZeroFps::RunCommand(int cmdid, const CmdArgument* kCommand)
 			m_pkObjectMan->DisplayTree();
 			break;
 
+		case FID_VERSION:
+			m_pkConsole->Printf( ZF_VERSION_NUM );
+			break;
+
+		case FID_CREDITS:
+			GetEngineCredits(kCreditsStrings);
+			for(i=0; i<kCreditsStrings.size(); i++)
+				m_pkConsole->Printf(kCreditsStrings[i].c_str());
+			
+			break;
+
+		
 		case FID_LISTMAD:
 			int iSize = akCoreModells.size();
 			m_pkConsole->Printf("Loaded Mads: ");
@@ -676,6 +692,20 @@ void ZeroFps::QuitEngine()
 	m_iState = state_exit;
 }
 
+void ZeroFps::GetEngineCredits(vector<string>& kCreditsStrings)
+{
+	kCreditsStrings.clear();
+
+	kCreditsStrings.push_back( string("		  ZeroFps Engine		") );
+	kCreditsStrings.push_back( string("		       by				") );
+	kCreditsStrings.push_back( string("								") );
+	kCreditsStrings.push_back( string("   Jimmy 'Vim' Magnusson		") );
+	kCreditsStrings.push_back( string("   Martin 'Diz' Kopparhed	") );
+	kCreditsStrings.push_back( string("   Richard 'Dvoid' Svensson	") );
+	kCreditsStrings.push_back( string("   Erik 'Zeb' Glans			") );
+	kCreditsStrings.push_back( string("   Patrik 'Gubb' Sellin		") );
+	kCreditsStrings.push_back( string("   Nina 'Nanna3d' Rydqvist	") );
+}
 
 
 

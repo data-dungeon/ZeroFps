@@ -7,6 +7,8 @@
 #include "os.h"
 #include <cmath>
 
+#include "vector3.h"
+
 using namespace std;
 
 #ifndef max
@@ -26,5 +28,8 @@ void BASIC_API Gemens(char* aText);
 void BASIC_API IntToChar(char* aText,int iValue);
 
 int BASIC_API PowerOf2(int iVal);
+
+
+Vector3 BASIC_API GetYawVector2(float fAngleDeg);
 
 #endif

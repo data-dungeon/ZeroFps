@@ -29,7 +29,7 @@ Console::Console()
 	m_nLastCommand = 0;
 	m_nStartLine = 0;
 
-	g_ZFObjSys.Register_Cmd("version",FID_VERSION,this);
+//	g_ZFObjSys.Register_Cmd("version",FID_VERSION,this);
 	g_ZFObjSys.Register_Cmd("help",FID_HELP,this);
 }
 

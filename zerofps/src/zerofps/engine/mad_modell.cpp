@@ -3,10 +3,11 @@
 float fGameTime;
 char szFullTexName[256];
 
+/*
 void SetGameTime(void)
 {
 	fGameTime = SDL_GetTicks() / 1000.0;
-}
+}*/
  
 Mad_Modell::Mad_Modell()
 {

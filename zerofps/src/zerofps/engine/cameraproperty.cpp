@@ -10,33 +10,29 @@ CameraProperty::CameraProperty(Camera *pkCamera)
 	m_iSide=PROPERTY_SIDE_CLIENT;
 }
 
-Vector3 GetYawVector2(float fAngleDeg)
-{
-	Vector3 kYaw;
-	kYaw.x = cos(DegToRad(fAngleDeg));	
-	kYaw.y = 0;
-	kYaw.z = sin(DegToRad(fAngleDeg));	
-	return kYaw;
-}
 
 void CameraProperty::Update() 
 {
-	float fYawAngle;
+//	float fYawAngle;
 	Vector3 kYawVector;
+	string strCamName;
 
 	if(m_pkCamera!=NULL) {
 		switch(m_eCameraType) {
 			case CAM_TYPEFIRSTPERSON:
 				m_pkCamera->SetPos(m_pkObject->GetPos() + Vector3(0,0.6,0));
 				m_pkCamera->SetRot(m_pkObject->GetRot() + Vector3(0,90,0));
+				strCamName = " 1P ";
 				break;
 			case CAM_TYPETOPDOWN:
 				m_pkCamera->SetPos(m_pkObject->GetPos() + Vector3(0,10,0));
 				m_pkCamera->SetRot(Vector3(90,0,0));
+				strCamName = " TD ";
 				break;
 
 			case CAM_TYPEISO:
 			case CAM_TYPESIDE:
+				strCamName = " Side ";
 				m_pkCamera->SetPos(m_pkObject->GetPos() + Vector3(0,0,10));
 				m_pkCamera->SetRot(Vector3(0,0,0));
 				/*kYawVector = GetYawVector2(m_pkObject->GetRot().y);
@@ -61,6 +57,7 @@ void CameraProperty::Update()
 		m_pkCamera->SetPos(m_pkObject->GetPos() + Vector3(0,10,0));
 		m_pkCamera->SetRot(Vector3(90,0,0));*/
 
+	m_pkCamera->SetName(strCamName);
 }
 
 void CameraProperty::SetType(CamType_e kType)

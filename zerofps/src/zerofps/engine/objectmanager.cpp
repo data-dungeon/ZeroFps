@@ -52,6 +52,14 @@ void ObjectManager::Remove(Object* pkObject)
 
 void ObjectManager::Delete(Object* pkObject) 
 {
+	for(vector<Object*>::iterator it=m_akDeleteList.begin();it!=m_akDeleteList.end();it++) 
+	{
+		if(pkObject == (*it)) {
+			cout << "Object already in delete list" << endl;
+			return;
+			}
+	}
+	
 	m_akDeleteList.push_back(pkObject);
 }
 

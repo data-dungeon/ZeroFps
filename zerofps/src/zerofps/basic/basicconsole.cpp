@@ -48,10 +48,6 @@ void BasicConsole::Printf(const char *fmt, ...)
 void BasicConsole::RunCommand(int cmdid, const CmdArgument* kCommand)
 {
 	switch(cmdid) {
-		case FID_VERSION:
-			Print("ZeroFps Beta 1.0");
-			break;
-
 		case FID_HELP:
 			Print("");
 			Print("### help ###");

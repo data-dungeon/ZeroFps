@@ -41,7 +41,11 @@ void ZeroEdit::OnInit(void)
 	g_ZFObjSys.Register_Cmd("saveland",FID_SAVELAND,this);		
 	g_ZFObjSys.Register_Cmd("madview",FID_VIEWMAD,this);		
 	g_ZFObjSys.Register_Cmd("moon",FID_MOON,this);			
-	g_ZFObjSys.Register_Cmd("sun",FID_SUN,this);			
+	g_ZFObjSys.Register_Cmd("sun",FID_SUN,this);		
+	
+	g_ZFObjSys.Register_Cmd("findobj",FID_FINDOBJECT,this);			
+	g_ZFObjSys.Register_Cmd("nextobj",FID_FINDOBJECT,this);			
+	g_ZFObjSys.Register_Cmd("prevobj",FID_FINDOBJECT,this);			
 
 	//start text =)
 	pkConsole->Printf("            ZeroEdit ");
@@ -171,6 +175,8 @@ void ZeroEdit::OnHud(void)
 
 void ZeroEdit::RunCommand(int cmdid, const CmdArgument* kCommand)
 {
+	int iObjectID;
+
 	switch(cmdid) {
 		case FID_SUN:{
 			if(kCommand->m_kSplitCommand.size() < 4) {
@@ -497,6 +503,32 @@ void ZeroEdit::RunCommand(int cmdid, const CmdArgument* kCommand)
 			pkConsole->Printf("Level saved");				
 			
 			break;
+
+		case FID_FINDOBJECT:
+			// Find and select object by number.
+			if(kCommand->m_kSplitCommand.size() <= 1) {
+				pkConsole->Printf("findobj [objectnum]");
+				break;
+			}
+
+			iObjectID=atoi(kCommand->m_kSplitCommand[1].c_str());
+			pkConsole->Printf("Trying to find object %d",iObjectID);				
+			m_pkCurentChild = pkObjectMan->GetObjectByNetWorkID(iObjectID);
+			
+			if(m_pkCurentChild) {
+				if(m_pkCurentChild->GetName() == "ZoneObject" ||
+					m_pkCurentChild->GetName() == "WorldObject" ||
+					m_pkCurentChild->GetName() == "HeightMapObject")
+					{
+						m_pkCurentChild=NULL;
+					}
+			}
+		
+			break;
+
+		case FID_NEXTOBJECT:	pkConsole->Printf("This command is not done yet :(.");	break;
+		case FID_PREVOBJECT:	pkConsole->Printf("This command is not done yet :(.");	break;
+
 		case FID_VIEWMAD:
 			
 			if(kCommand->m_kSplitCommand.size() <= 1) {
@@ -510,6 +542,8 @@ void ZeroEdit::RunCommand(int cmdid, const CmdArgument* kCommand)
 			pkmad->GetPos()=m_kDrawPos;
 			pkmad->AttachToClosestZone();
 			break;
+
+			
 	}
 }
 

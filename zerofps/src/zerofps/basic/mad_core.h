@@ -404,7 +404,7 @@ public:
 	void SetInterpol(bool bNewInterpol) { m_bInterpolVertexFrames = bNewInterpol; }
 	bool GetInterpol() { return m_bInterpolVertexFrames; }
 
-	int GetNumOfBones();
+	unsigned int GetNumOfBones();
 	Vector3 GetBonePosition(int iBone);
 	int GetBoneParent(int iBone);
 

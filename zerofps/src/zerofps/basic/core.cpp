@@ -78,7 +78,7 @@ void Mad_Core::Save_MD(int iMeshId, const char* filename)
 
 void Mad_Core::Save_MAD(const char* filename)
 {
-	int i;
+	unsigned int i;
 
 	PrintCoreInfo();
 
@@ -282,7 +282,7 @@ void Mad_Core::SetupBonePose()
 
 	Quaternion kStart, kEnd;
 
-	float OneMinusFrameOffs = 1.0 - fFrameOffs;
+	float OneMinusFrameOffs = float(1.0) - fFrameOffs;
 
 	for(i=0; i<m_kSkelleton.size(); i++) {
 		// Get Start/End Keys
@@ -538,7 +538,7 @@ void Mad_Core::PrepareMesh(Mad_CoreMesh* pkMesh)
 }
 
 
-int Mad_Core::GetNumOfBones()
+unsigned int Mad_Core::GetNumOfBones()
 {
 	return m_kSkelleton.size();
 }
@@ -652,12 +652,12 @@ void Mad_Core::CalculateRadius()
 
 float Mad_Core::GetRadius()
 {
-	return m_fBoundRadius * 0.01;
+	return m_fBoundRadius * float(0.01);	// // BM-NOTE: Exporter scale stämmer inte ännu.
 }
 
 int Mad_Core::GetJointID(char* szJointName)
 {
-	for(int i=0; i<m_kSkelleton.size(); i++) {
+	for(unsigned int i=0; i<m_kSkelleton.size(); i++) {
 		if(strcmp(m_kSkelleton[i].m_acName, szJointName) == 0) 
 			return i;
 		}
@@ -668,7 +668,7 @@ int Mad_Core::GetJointID(char* szJointName)
 
 void Mad_Core::CreateController(char* szName, char* szJoint, ControllAxis eAxis, float fMin, float fMax)
 {
-	for(int i=0; i<m_kControllers.size(); i++) {
+	for(unsigned int i=0; i<m_kControllers.size(); i++) {
 		if(strcmp(szName,m_kControllers[i].m_szName) == 0) {
 			return;
 			}

@@ -73,3 +73,15 @@ int BASIC_API PowerOf2(int iVal)
 
 
 
+
+// Base Changes, Tarnsformations and other functions the nobody in the zerofps really understand ;).
+Vector3 GetYawVector2(float fAngleDeg)
+{
+	Vector3 kYaw;
+	kYaw.x = float(cos(DegToRad(fAngleDeg)));	
+	kYaw.y = 0;
+	kYaw.z = float(sin(DegToRad(fAngleDeg)));	
+	return kYaw;
+}
+
+

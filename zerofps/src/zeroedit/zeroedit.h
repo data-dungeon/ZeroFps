@@ -64,7 +64,11 @@ class ZeroEdit :public Application {
 			FID_VIEWMAD,
 			FID_SUN,
 			FID_MOON,
-			
+
+			FID_FINDOBJECT,				// Finds / selects a object by its number.
+			FID_NEXTOBJECT,
+			FID_PREVOBJECT,
+				
 		};	
 	
 		Object* m_pkCamObj;

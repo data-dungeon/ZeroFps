@@ -1,5 +1,6 @@
 #include "playercontrolproperty.h"
 
+/*
 Vector3 GetYawVector(float fAngleDeg)
 {
 	Vector3 kYaw;
@@ -7,7 +8,7 @@ Vector3 GetYawVector(float fAngleDeg)
 	kYaw.y = 0;
 	kYaw.z = sin(DegToRad(fAngleDeg));	
 	return kYaw;
-}
+}*/
 
 PlayerControlProperty::PlayerControlProperty(Input *pkInput,HeightMap *pkMap)
 {
@@ -82,28 +83,28 @@ void PlayerControlProperty::Update() {
 		
 		//vel.x+=cos((m_pkObject->GetRot().y+90)/degtorad)*speed;
 		//vel.z+=sin((m_pkObject->GetRot().y+90)/degtorad)*speed;
-		vel += GetYawVector(m_pkObject->GetRot().y + 90) * speed;
+		vel += GetYawVector2(m_pkObject->GetRot().y + 90) * speed;
 	}
 	if(m_pkInput->Action(m_iActionStrafeLeft)){
 		walking=true;		
 		
 		//vel.x+=cos((m_pkObject->GetRot().y-90)/degtorad)*speed;
 		//vel.z+=sin((m_pkObject->GetRot().y-90)/degtorad)*speed;		
-		vel += GetYawVector(m_pkObject->GetRot().y - 90) * speed;
+		vel += GetYawVector2(m_pkObject->GetRot().y - 90) * speed;
 	}
 	if(m_pkInput->Action(m_iActionForward)){
 		walking=true;
 		
 		//vel.x+=cos((m_pkObject->GetRot().y)/degtorad)*speed;
 		//vel.z+=sin((m_pkObject->GetRot().y)/degtorad)*speed;	
-		vel += GetYawVector(m_pkObject->GetRot().y) * speed;
+		vel += GetYawVector2(m_pkObject->GetRot().y) * speed;
 	}
 	if(m_pkInput->Action(m_iActionBack)){
 		walking=true;
 		
 		//vel.x+=cos((m_pkObject->GetRot().y+180)/degtorad)*speed;
 		//vel.z+=sin((m_pkObject->GetRot().y+180)/degtorad)*speed;		
-		vel += GetYawVector(m_pkObject->GetRot().y + 180) * speed;
+		vel += GetYawVector2(m_pkObject->GetRot().y + 180) * speed;
 	}
 	if(m_pkInput->Pressed(MOUSERIGHT) ){
 		if(onGround){
@@ -140,7 +141,7 @@ void PlayerControlProperty::Update() {
 	if(m_pkObject->GetRot().x<-90)
 		m_pkObject->GetRot().x=-90;
 	
-	Vector3 kShowDirYaw = GetYawVector(m_pkObject->GetRot().y);
+	Vector3 kShowDirYaw = GetYawVector2(m_pkObject->GetRot().y);
 	Render *pkRender = static_cast<Render*>(g_ZFObjSys.GetObjectPtr("Render"));
 	pkRender->Line(m_pkObject->GetPos(), (m_pkObject->GetPos() + kShowDirYaw * 2));
 	

@@ -316,7 +316,7 @@ void PhysicsEngine::HandleCollisions()
 	}
 	
 	
-	int i;
+	unsigned int i;
 	for( i=0;i<kCols.size();i++) 
 	{	
 		if(kCols[i]->m_pkPP1->m_bSolid && kCols[i]->m_pkPP2->m_bSolid)
@@ -348,7 +348,7 @@ void PhysicsEngine::HandleCollisions()
 
 void PhysicsEngine::ClearCollisions()
 {
-	for(int i=0;i<m_kCollisions.size();i++) 
+	for(unsigned int i=0;i<m_kCollisions.size();i++) 
 	{	
 		delete m_kCollisions[i];
 	}

@@ -417,7 +417,7 @@ bool GLGuiRender::PrintRows(char* text, Rect rc, int iCursorPos)
 	unsigned int y = m_iScreenHeight-rc.Top-m_pkFont->m_cCharCellSize;
 
 	int row=0;
-	int num_chars = strlen(text);
+	unsigned int num_chars = strlen(text);
 	int max_rows = rc.Height() / m_pkFont->m_cCharCellSize;
 
 	glBegin(GL_QUADS);	 

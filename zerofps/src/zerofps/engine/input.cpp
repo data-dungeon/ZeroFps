@@ -332,7 +332,7 @@ void Input::RunCommand(int cmdid, const CmdArgument* kCommand)
 				if(GetConsole())
 					m_pkConsole->Printf("MouseSensitivity: %.3f", m_fMouseSensitivity);
 			else
-				m_fMouseSensitivity=atof(kCommand->m_kSplitCommand[1].c_str());
+				m_fMouseSensitivity = float( atof(kCommand->m_kSplitCommand[1].c_str()) );
 			break;
 	}
 }

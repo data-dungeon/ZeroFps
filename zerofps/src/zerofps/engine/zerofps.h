@@ -14,6 +14,9 @@
 #include <cstdarg>
 #include "network.h"
 
+#define ZF_VERSION_NUM		"ZF 0.0"
+
+
 using namespace std;
 
 class Basic;
@@ -50,6 +53,9 @@ class ENGINE_API ZeroFps : public ZFObject {
 			FID_CD,
 			FID_LISTMAD,		// List all loaded mad's.
 			FID_PRINTOBJECT,	// Print all objects to external console.
+
+			FID_VERSION,	// Print Version info.
+			FID_CREDITS,	// Print Credits to console.
 
 		};
 		
@@ -154,6 +160,9 @@ class ENGINE_API ZeroFps : public ZFObject {
 
 		// Statistik Data
 		int	m_iNumOfMadRender;
+
+		void GetEngineCredits(vector<string>& kCreditsStrings);
+		 
 };
 
 

@@ -28,7 +28,6 @@ public:
 		
 		enum FuncId_e
 			{
-			FID_VERSION,
 			FID_HELP
 			};
 

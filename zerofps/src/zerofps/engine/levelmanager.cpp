@@ -462,7 +462,7 @@ void LevelManager::UpdateZones()
 
 //	cout<<"TOT"<<tot<<endl;
 
-	for(int i=0;i<m_kZones.size();i++)
+	for(unsigned int i=0;i<m_kZones.size();i++)
 		m_kZones[i]->GetUpdateStatus()=UPDATE_DYNAMIC;	
 
 
