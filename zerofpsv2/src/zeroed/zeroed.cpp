@@ -101,6 +101,11 @@ ZeroEd::ZeroEd(char* aName,int iWidth,int iHeight,int iDepth)
 	// Register Variables
 	RegisterVariable("coolname",				&strMasterSmiley,			CSYS_STRING);	
 
+	m_strLoginName = "madviewclient";
+   m_strLoginPW = "topsecret";
+
+   RegisterVariable("loginname", 	&m_strLoginName, CSYS_STRING);
+   RegisterVariable("loginpw", 	&m_strLoginPW, CSYS_STRING);
 	
 	// Register Commands
 	Register_Cmd("new",			FID_NEW);		
@@ -1795,6 +1800,15 @@ void ZeroEd::OnClientConnected()
 {
 	m_bRemoteEditing = true;
 	cout<<"connected"<<endl;
+
+	NetWork* pkNetWork =	static_cast<NetWork*>(GetSystem().GetObjectPtr("NetWork"));
+
+	if(pkNetWork)
+	{
+		char addr[50];
+		if(pkNetWork->AddressToStr(&pkNetWork->m_kServerAddress, addr))
+			AddToIPMenu(addr, true);
+	}
 	
 	SendZoneListRequest();
 }

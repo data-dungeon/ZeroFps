@@ -14,7 +14,7 @@ P_AmbientSound::P_AmbientSound()
 	m_pkZeroFps = static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps")); // för att kunna kolla om debugutprintning skall göras...
 
 	bNetwork = true;
-	m_iType=PROPERTY_TYPE_NORMAL;
+	m_iType=PROPERTY_TYPE_NORMAL|PROPERTY_TYPE_RENDER;
 	m_iSide=PROPERTY_SIDE_CLIENT|PROPERTY_SIDE_SERVER;
 
 	m_strSound = "";
@@ -55,7 +55,9 @@ void P_AmbientSound::SetSound(string strSound)
 	m_strSound = strSound;
 
 	if(m_iAmbientAreaID != -1)
+	{
 		m_pkAudioSystem->ChangeAmbientAreaSound(m_iAmbientAreaID, m_strSound);
+	}
 
 	printf("P_AmbientSound::SetSound %s\n", strSound.c_str());
 }

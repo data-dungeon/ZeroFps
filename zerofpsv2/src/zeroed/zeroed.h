@@ -123,6 +123,7 @@ class ZeroEd :public Application , public ZGuiApp {
 		// gui stuff
 		int		m_iSelectFileState;		
 		Entity*	m_pkPreviewEntity;
+		vector<string> m_vkIPMenuItems;
 		
 		string	m_strWorldDir;						// The current dir for the world. Use for SaveAs and Title.
 
@@ -196,6 +197,7 @@ class ZeroEd :public Application , public ZGuiApp {
 
 		//network
 		vector<ZoneData>			m_kNetworkZones;
+		string		m_strLoginName, m_strLoginPW;
 								
 		//consolecommand handle
 		void EditRunCommand(FuncId_e eEditCmd);
@@ -212,6 +214,8 @@ class ZeroEd :public Application , public ZGuiApp {
 		void UpdatePreviewObject();
 		void OpenObjectMenu();
 		void InitMainMenu();
+		void AddToIPMenu(string strIp, bool bSave);
+		void SaveIPMenu(bool bSave);
 
 		//camera stuff
 		void  CreateEditCameras();

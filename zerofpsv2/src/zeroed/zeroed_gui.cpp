@@ -410,6 +410,13 @@ void ZeroEd::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 			}
 
 			m_pkIni->Close();
+
+			if(strWndClicked.find("Menu_File_Connect_Server") != string::npos)
+			{
+				ZGuiMenu* pkMenu = ((ZGuiMenu*)GetWnd("MainMenu"));
+				m_pkZeroFps->StartClient(m_strLoginName, m_strLoginPW, 
+					pkMenu->GetItem(strWndClicked.c_str())->pkButton->GetText());
+			}
 		}
 	}
 
@@ -760,4 +767,71 @@ void ZeroEd::InitMainMenu()
 
 		m_pkIni->Close();
 	}
+
+	SaveIPMenu(false);
+
+	for(int i=0; i<m_vkIPMenuItems.size(); i++)
+	{
+		AddToIPMenu(m_vkIPMenuItems[i], false);
+	}
+
+}
+
+void ZeroEd::AddToIPMenu(string strIp, bool bSave)
+{
+	ZGuiMenu* pkMenu = ((ZGuiMenu*)GetWnd("MainMenu"));
+
+	char szItemID[100];
+	sprintf(szItemID, "Menu_File_Connect_Server%s", strIp.c_str()); 
+
+	if(pkMenu == NULL || pkMenu->GetItem(szItemID))
+		return;
+	
+	pkMenu->AddItem(strIp.c_str(), szItemID, "Menu_File_Connect", false);
+	pkMenu->UseCheckMark(szItemID, true);
+	pkMenu->SetCheckMark(szItemID, false);
+	pkMenu->SetCheckMarkGroup(szItemID, 12121212);
+
+	pkMenu->ResizeMenu();
+
+	if(bSave)
+	{
+		m_vkIPMenuItems.push_back(strIp);
+		SaveIPMenu(true);
+	}
+}
+
+void ZeroEd::SaveIPMenu(bool bSave)
+{
+	FILE* pkFile = NULL;
+	
+	if(bSave)
+	{
+		pkFile = fopen("ipmenu.txt", "wt");
+		if(pkFile)
+		{
+			for(int i=0; i<m_vkIPMenuItems.size(); i++)
+				fprintf(pkFile, "%s", m_vkIPMenuItems[i].c_str());
+		}
+	}
+	else
+	{
+		pkFile = fopen("ipmenu.txt", "rt");
+
+		if(pkFile)
+		{
+			char strLine[512];
+			while (!feof(pkFile))
+			{
+				if(fgets(strLine, MAX_LINE_LENGTH, pkFile))
+				{
+					if(strlen(strLine) > 1)
+						m_vkIPMenuItems.push_back(strLine);
+				}
+			}
+		}
+	}
+
+	if(pkFile)
+		fclose(pkFile);
 }
