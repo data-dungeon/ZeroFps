@@ -372,7 +372,7 @@ void UserPanel::OnSelectObjects(Object* pkObjectInFocus)
 	{
 		int w, h;
 		Rect rc = m_pkGuiBuilder->Get("UnitHealthLB")->GetScreenRect();
-		float fHelth = (float) pkClientUnit->m_kInfo.m_cHealth / 255.0f;
+		float fHelth = (float) pkClientUnit->m_kInfo.m_Info2.m_cHealth / 255.0f;
 
 		h = rc.Height();
 		w = (int) (float) ( fHelth * m_fOriginalHealthbarSize );

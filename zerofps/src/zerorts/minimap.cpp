@@ -224,7 +224,7 @@ void MiniMap::DrawUnits(float fTime, ZGui* pkGui, float wnd_x, float wnd_y, floa
 		{
 			unsigned char acColor[3] = {0,0,0};
 			
-			switch(pkCInfo->m_kInfo.m_cTeam)
+			switch(pkCInfo->m_kInfo.m_Info2.m_cTeam)
 			{
 			case 0: acColor[0] = 255;
 				break;

@@ -13,8 +13,9 @@ struct UnitCommandInfo
 {
 	char m_acCommandName[64];
 	char m_acComments[256];
-	bool m_bNeedTarget;
-	bool m_bNeedDestination;
+	bool m_bNeedArgument;		// 
+//	bool m_bNeedTarget;
+//	bool m_bNeedDestination;
 	int  m_iIconIndex;
 };
 

@@ -21,7 +21,7 @@
 
 using namespace std;
 
-struct COMMON_API UnitInfo
+struct COMMON_API UnitInfo2
 {
 	unsigned char		m_cTeam;
 	unsigned char		m_cHealth;
@@ -31,6 +31,11 @@ struct COMMON_API UnitInfo
 	unsigned char		m_cViewDistance;	
 	unsigned char		m_cWidth;			//used for buildings
 	unsigned char		m_cHeight;		  //used for buildings	
+};
+
+struct COMMON_API UnitInfo
+{
+	UnitInfo2			m_Info2;
 	char					m_cName[64];		//the units name
 };
 

@@ -1,7 +1,7 @@
 #include "zerofps.h"
 #include "madproperty.h"
 #include "lightproperty.h"
-
+#include "network.h"
 
 Property* PropertyFactory::CreateProperty(const char* szName)
 {
@@ -28,6 +28,10 @@ void PropertyFactory::Register(char* szName, Property*	(*Create)())
 	m_kProperyLinks.push_back(NewLink);
 	
 	cout<<"Property added "<<szName<<endl;
+	
+	NetWork* pkNet = static_cast<NetWork*>(g_ZFObjSys.GetObjectPtr("NetWork"));		
+	pkNet->NetString_Add(szName);
+	
 }
 
 void PropertyFactory::Display()

@@ -59,8 +59,9 @@ bool P_UnitMoveAI::RegisterExternalCommands()
 	{
 		
 		m_pkMoveUnitCommand = new ExternalCommand(this, UNIT_MOVE);
-		m_pkMoveUnitCommand->m_kUnitCommandInfo.m_bNeedDestination = true;
-		m_pkMoveUnitCommand->m_kUnitCommandInfo.m_bNeedTarget = true;
+//		m_pkMoveUnitCommand->m_bNeedDestination = true;
+//		m_pkMoveUnitCommand->m_kUnitCommandInfo.m_bNeedTarget = true;
+		m_pkMoveUnitCommand->m_kUnitCommandInfo.m_bNeedArgument = true;
 		strcpy(m_pkMoveUnitCommand->m_kUnitCommandInfo.m_acCommandName, "Move");
 		strcpy(m_pkMoveUnitCommand->m_kUnitCommandInfo.m_acComments, "kommentar");
 		m_pkMoveUnitCommand->m_kUnitCommandInfo.m_iIconIndex = 1;

@@ -7,14 +7,14 @@ P_ServerUnit::P_ServerUnit() : m_bUpdateCommands(true), m_pkCurrentAIState(NULL)
 	m_iType=PROPERTY_TYPE_NORMAL;
 	m_iSide=PROPERTY_SIDE_SERVER;
 
-	m_kInfo.m_cTeam =			255;
-	m_kInfo.m_cHealth =		255;
-	m_kInfo.m_cWeapon =		0;
-	m_kInfo.m_cArmor = 		0;
-	m_kInfo.m_cPropultion =	0;
-	m_kInfo.m_cViewDistance=20;
-	m_kInfo.m_cWidth =		1;
-	m_kInfo.m_cHeight =		1;	
+	m_kInfo.m_Info2.m_cTeam =			255;
+	m_kInfo.m_Info2.m_cHealth =		255;
+	m_kInfo.m_Info2.m_cWeapon =		0;
+	m_kInfo.m_Info2.m_cArmor = 		0;
+	m_kInfo.m_Info2.m_cPropultion =	0;
+	m_kInfo.m_Info2.m_cViewDistance=20;
+	m_kInfo.m_Info2.m_cWidth =		1;
+	m_kInfo.m_Info2.m_cHeight =		1;	
 	strcpy(m_kInfo.m_cName,"NoName");
 	
 	m_pkClientUnit = NULL;
@@ -80,6 +80,7 @@ void P_ServerUnit::UpdateClient()
 		if(m_bUpdateCommands)
 		{
 			m_pkClientUnit->m_kUnitCommands.clear();
+			//m_bUpdateCommands = false;
 			map<string, ExternalCommand*>::iterator kItor = m_kExternalCommands.begin();
 			while (kItor != m_kExternalCommands.end())
 			{
@@ -122,35 +123,35 @@ vector<PropertyValues> P_ServerUnit::GetPropertyValues()
 		
 	kReturn[0].kValueName="m_cTeam";
 	kReturn[0].iValueType=VALUETYPE_INT;
-	kReturn[0].pkValue=(void*)&m_kInfo.m_cTeam;
+	kReturn[0].pkValue=(void*)&m_kInfo.m_Info2.m_cTeam;
 
 	kReturn[1].kValueName="m_cHealth";
 	kReturn[1].iValueType=VALUETYPE_INT;
-	kReturn[1].pkValue=(void*)&m_kInfo.m_cHealth;
+	kReturn[1].pkValue=(void*)&m_kInfo.m_Info2.m_cHealth;
 	
 	kReturn[2].kValueName="m_cWeapon";
 	kReturn[2].iValueType=VALUETYPE_INT;
-	kReturn[2].pkValue=(void*)&m_kInfo.m_cWeapon;
+	kReturn[2].pkValue=(void*)&m_kInfo.m_Info2.m_cWeapon;
 	
 	kReturn[3].kValueName="m_cArmor";
 	kReturn[3].iValueType=VALUETYPE_INT;
-	kReturn[3].pkValue=(void*)&m_kInfo.m_cArmor;
+	kReturn[3].pkValue=(void*)&m_kInfo.m_Info2.m_cArmor;
 	
 	kReturn[4].kValueName="m_cPropultion";
 	kReturn[4].iValueType=VALUETYPE_INT;
-	kReturn[4].pkValue=(void*)&m_kInfo.m_cPropultion;
+	kReturn[4].pkValue=(void*)&m_kInfo.m_Info2.m_cPropultion;
 	
 	kReturn[5].kValueName="m_cViewDistance";
 	kReturn[5].iValueType=VALUETYPE_INT;
-	kReturn[5].pkValue=(void*)&m_kInfo.m_cViewDistance;
+	kReturn[5].pkValue=(void*)&m_kInfo.m_Info2.m_cViewDistance;
 	
 	kReturn[6].kValueName="m_cWidth";
 	kReturn[6].iValueType=VALUETYPE_INT;
-	kReturn[6].pkValue=(void*)&m_kInfo.m_cWidth;
+	kReturn[6].pkValue=(void*)&m_kInfo.m_Info2.m_cWidth;
 	
 	kReturn[7].kValueName="m_cHeight";
 	kReturn[7].iValueType=VALUETYPE_INT;
-	kReturn[7].pkValue=(void*)&m_kInfo.m_cHeight;
+	kReturn[7].pkValue=(void*)&m_kInfo.m_Info2.m_cHeight;
 	
 
 	return kReturn;

@@ -1,6 +1,7 @@
 #include "network.h"
 #include "zerofps.h"
 
+NetWork* g_pkNetWork;
 
 
 RemoteNode::RemoteNode()
@@ -101,8 +102,33 @@ void NetPacket::Read_Str(char* szString)
 	unsigned char * add = &m_kData.m_acData[m_iPos];
 	strcpy(szString, (char*)add);
 	m_iPos += strlen(szString) + 1;
-
 }
+
+void NetPacket::Write_NetStr (const char* szString)
+{
+	int iIndex = g_pkNetWork->NetString_GetIndex(szString);
+	g_ZFObjSys.Logf("net", "Wriye_NetStr: %d, %s\n", iIndex, szString);
+	
+	Write(iIndex);
+	if(iIndex == ZF_NET_NONETSTRING) 
+		Write_Str(szString);
+}
+
+void NetPacket::Read_NetStr  (char* szString)
+{	
+	string strNetString;
+
+	int iIndex;
+	Read(iIndex);
+
+	if(iIndex == ZF_NET_NONETSTRING) 
+		Read_Str(szString);
+	else
+		strNetString = g_pkNetWork->NetString_GetString(iIndex);
+
+	strcpy(szString, strNetString.c_str());
+}
+
 
 void NetPacket::Write(void* ptr, int iSize)
 {
@@ -161,10 +187,132 @@ NetWork::NetWork()
 
 	SetMaxNodes( 4 );				// Vim - Hard coded for now. Must be same as ZeroFps.m_kClient
 	m_iMaxNumberOfNodes = 4;	
+
+	m_kStringTable.resize( ZF_NET_MAXSTRINGS );
+	for(int i=0; i < ZF_NET_MAXSTRINGS; i++) {
+		m_kStringTable[i].m_bInUse		= false;
+		m_kStringTable[i].m_bUpdated	= false;
+		m_kStringTable[i].m_NetString = "";
+		}
+
+	g_pkNetWork = this;
 }
+
+int NetWork::NetString_GetFree()
+{
+	for(int i=0; i < ZF_NET_MAXSTRINGS; i++) {
+		if(m_kStringTable[i].m_bInUse == false)
+			return i;
+		}
+	return ZF_NET_NONETSTRING;
+}
+
+int NetWork::NetString_Add(const char* szString)
+{
+	string strTest;
+	strTest = /*string("A Cool ") +*/ string(szString);
+	g_ZFObjSys.Logf("net", "NetString Add: = %s\n", strTest.c_str());
+
+	if( m_eNetStatus == NET_CLIENT )	return ZF_NET_NONETSTRING;
+
+	int iIndex = NetString_GetIndex(strTest.c_str());
+	if(iIndex != ZF_NET_NONETSTRING)
+		return iIndex;
+
+	iIndex = NetString_GetFree();
+	if(iIndex == ZF_NET_NONETSTRING)
+		return ZF_NET_NONETSTRING;
+
+	m_kStringTable[iIndex].m_bInUse		= true;
+	m_kStringTable[iIndex].m_bUpdated	= true;
+	m_kStringTable[iIndex].m_NetString	= strTest;
+	return iIndex;
+}
+
+int NetWork::NetString_GetIndex(const char* szString)
+{
+	for(int i=0; i < ZF_NET_MAXSTRINGS; i++) {
+		if(m_kStringTable[i].m_bInUse && (strcmp(szString, m_kStringTable[i].m_NetString.c_str()) == 0) )
+			return i;
+		}
+
+	return ZF_NET_NONETSTRING;
+}
+
+string NetWork::NetString_GetString(int iIndex)
+{
+	if(m_kStringTable[iIndex].m_bInUse)
+		return m_kStringTable[iIndex].m_NetString.c_str();
+	else 
+		return string("nons");
+}
+
+void NetWork::NetString_ReSendAll()
+{
+	for(int i=0; i < ZF_NET_MAXSTRINGS; i++)
+		m_kStringTable[i].m_bUpdated = true;
+}
+
+/*
+	Check all netstrings for updates and send them to the other side.
+*/
+void NetWork::Send_NetStrings()
+{
+	if( m_eNetStatus == NET_NONE )	return;
+	if( m_eNetStatus == NET_CLIENT )	return;
+
+	if(!NetStringIsUpdated())
+		return;
+
+	NetPacket NP;
+	NP.Clear();
+	NP.m_kData.m_kHeader.m_iPacketType = ZF_NETTYPE_CONTROL;
+	NP.Write((char) ZF_NETCONTROL_NETSTRINGS);
+
+
+	for(int i=0; i < ZF_NET_MAXSTRINGS; i++) {
+		if(m_kStringTable[i].m_bInUse && m_kStringTable[i].m_bUpdated) {
+			NP.Write( i );
+			NP.Write_Str(m_kStringTable[i].m_NetString.c_str());
+			m_kStringTable[i].m_bUpdated = false;
+			g_ZFObjSys.Logf("net", "Write NetString[%d]: = %s\n", i, m_kStringTable[i].m_NetString.c_str());
+			}
+
+		// Send if packet to large.
+		if(NP.m_iPos >= 512) {
+			NP.Write( ZF_NET_NONETSTRING );
+			g_ZFObjSys.Logf("net", "Write NetStrings: Order Client 0 : %d", this->RemoteNodes[0].m_iNumOfPacketsSent );
+			SendToAllClients(&NP);
+
+			NP.Clear();
+			NP.m_kData.m_kHeader.m_iPacketType = ZF_NETTYPE_CONTROL;
+			NP.Write((char) ZF_NETCONTROL_NETSTRINGS);
+			}
+		}
+
+	NP.Write( ZF_NET_NONETSTRING );
+	g_ZFObjSys.Logf("net", "Write NetStrings: Order Client 0 : %d", this->RemoteNodes[0].m_iNumOfPacketsSent );
+	SendToAllClients(&NP);
+}
+
+bool NetWork::NetStringIsUpdated()
+{
+	for(int i=0; i < ZF_NET_MAXSTRINGS; i++) {
+		if(m_kStringTable[i].m_bInUse && m_kStringTable[i].m_bUpdated)
+			return true;
+		}
+
+	return false;
+}
+
 
 NetWork::~NetWork()
 {
+	for(int i=0; i < ZF_NET_MAXSTRINGS; i++) {
+		if(m_kStringTable[i].m_bInUse)
+			g_ZFObjSys.Logf("net", "NetString[%d]: = %s\n", i, m_kStringTable[i].m_NetString.c_str());
+		}
+
 	g_ZFObjSys.Log("net", "NetWork SubSystem ShutDown:\n");
 	DisconnectAll();
 	CloseSocket();
@@ -384,6 +532,7 @@ void NetWork::HandleControlMessage(NetPacket* pkNetPacket)
 				kNetPRespons.m_kAddress = pkNetPacket->m_kAddress;
 				Send(&kNetPRespons);
 				m_pkZeroFps->Connect(iClientID);
+				NetString_ReSendAll();
 				}
 			
 			break;
@@ -447,6 +596,26 @@ void NetWork::HandleControlMessage(NetPacket* pkNetPacket)
 
 		case ZF_NETCONTROL_NOP:
 			// 
+			break;
+
+		case ZF_NETCONTROL_NETSTRINGS:
+			g_ZFObjSys.Log("net", "*** *** ZF_NETCONTROL_NETSTRINGS *** ***\n");
+			int iStringID;
+			pkNetPacket->Read(iStringID);
+			g_ZFObjSys.Logf("net", " NetString[%d]\n", iStringID);
+
+			while(iStringID != ZF_NET_NONETSTRING) {
+				pkNetPacket->Read_Str( szText );
+
+				m_kStringTable[iStringID].m_bInUse		= true;
+				m_kStringTable[iStringID].m_bUpdated	= false;
+				m_kStringTable[iStringID].m_NetString	= szText;
+
+				g_ZFObjSys.Logf("net", " NetString[%d] = %s\n",iStringID, m_kStringTable[iStringID].m_NetString.c_str());
+
+				pkNetPacket->Read(iStringID);
+				
+				}
 			break;
 	}
 
@@ -538,7 +707,7 @@ void NetWork::Run()
 	
 			// Else give it to zerofps.
 			case ZF_NETTYPE_UNREL:
-				g_ZFObjSys.Logf("net", "Recv: ZF_NETTYPE_UNREL\n");
+				g_ZFObjSys.Logf("net", "Recv: ZF_NETTYPE_UNREL: Order = %d\n", NetP.m_kData.m_kHeader.m_iOrder);
 
 				m_pkZeroFps->HandleNetworkPacket(&NetP);
 				break;
@@ -567,6 +736,9 @@ void NetWork::Run()
 			RemoteNodes[i].m_eConnectStatus = NETSTATUS_DISCONNECT;
 			}
 		}
+
+	Send_NetStrings();
+
 }
 
 bool NetWork::AddressToStr(IPaddress* pkAddress, char* szString)
@@ -593,6 +765,7 @@ void NetWork::SendToAllClients(NetPacket* pkNetPacket)
 
 		pkNetPacket->m_kAddress = RemoteNodes[i].m_kAddress;
 		pkNetPacket->m_kData.m_kHeader.m_iOrder = RemoteNodes[i].m_iNumOfPacketsSent;
+		g_ZFObjSys.Logf("net", "SendToAllClients[%d] : Order = %d", i, RemoteNodes[i].m_iNumOfPacketsSent );
 		
 		Send(pkNetPacket);
 		}

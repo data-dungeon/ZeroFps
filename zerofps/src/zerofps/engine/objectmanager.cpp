@@ -21,10 +21,21 @@ ObjectManager::ObjectManager()
 	g_ZFObjSys.Register_Cmd("o_dumpp",FID_LOGACTIVEPROPERTYS,this);	
 	g_ZFObjSys.Register_Cmd("sendmsg",FID_SENDMESSAGE,this, "sendmsg name id",2);	
 
+	m_iTotalNetObjectData	= 0;
+	m_iNumOfNetObjects		= 0;
+
+
 }
 
 ObjectManager::~ObjectManager() 
 {
+	float fAvgObjSize;
+
+	if(m_iNumOfNetObjects) {
+		fAvgObjSize = float(m_iTotalNetObjectData / m_iNumOfNetObjects);
+		}
+
+	g_ZFObjSys.Logf("net", " Avg Obj Size: %f\n", fAvgObjSize);
 
 }
 

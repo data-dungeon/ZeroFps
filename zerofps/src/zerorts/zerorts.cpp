@@ -787,10 +787,10 @@ void ZeroRTS::Explore()
 			continue;
 		
 		if(!m_pkClientInput->m_bGod)
-			if(cu->m_kInfo.m_cTeam != m_pkClientInput->m_iPlayerID)
+			if(cu->m_kInfo.m_Info2.m_cTeam != m_pkClientInput->m_iPlayerID)
 				continue;
 		
-		float vd = (float)cu->m_kInfo.m_cViewDistance;
+		float vd = (float)cu->m_kInfo.m_Info2.m_cViewDistance;
 	
 		m_pkFogRender->Explore(kObject[i]->GetPos().x,kObject[i]->GetPos().z,vd);		
 	}
@@ -826,7 +826,7 @@ void ZeroRTS::HandleOrders()
 						su->RunExternalCommand(uc);												
 					}
 					else
-					if( int(su->m_kInfo.m_cTeam) == int(uc->m_cPlayerID))							
+					if( int(su->m_kInfo.m_Info2.m_cTeam) == int(uc->m_cPlayerID))							
 						su->RunExternalCommand(uc);							
 					else
 						cout<<"Player :"<<int(uc->m_cPlayerID)<< " is trying to Cheat"<<endl;
@@ -948,7 +948,7 @@ void ZeroRTS::CreateClientUnits(int iID)
 		
 			if(su)
 			{
-				su->m_kInfo.m_cTeam = iID;		
+				su->m_kInfo.m_Info2.m_cTeam = iID;		
 			}
 			else
 				cout<<"error unit did not create correctly"<<endl;
@@ -968,7 +968,7 @@ void ZeroRTS::CreateClientUnits(int iID)
 			ob->AttachToClosestZone();
 		
 			P_ServerUnit* su = (P_ServerUnit*)ob->GetProperty("P_ServerUnit");		
-			su->m_kInfo.m_cTeam = iID;		
+			su->m_kInfo.m_Info2.m_cTeam = iID;		
 		}			
 	}
 }
@@ -989,7 +989,7 @@ void ZeroRTS::RemoveClientUnits(int iID)
 		if(su)
 		{
 			//does this player own this unit?
-			if(int(su->m_kInfo.m_cTeam) == iID)
+			if(int(su->m_kInfo.m_Info2.m_cTeam) == iID)
 			{	
 				//yes it does,,lets kill it =) MOHAHAHA!		
 				pkObjectMan->Delete(kObjects[i]);

@@ -22,7 +22,7 @@
 #define ZF_NETCONTROL_NOP				6	// Ohh, nothing but i'm still here.
 #define ZF_NETCONTROL_REQCLIENTID	7
 #define ZF_NETCONTROL_CLIENTID		8
-
+#define ZF_NETCONTROL_NETSTRINGS		9
 
 #define MAX_NET_CLIENTS				4
 #define ZF_NET_NOCLIENT				-1
@@ -106,6 +106,9 @@ public:
 	void Write_Str(const char* szString);
 	void Read_Str(char* szString);
 
+	void Write_NetStr (const char* szString);
+	void Read_NetStr  (char* szString);
+
 	template <class Any> 
 	void Write(Any type) {
 		ZFAssert((m_iPos + sizeof(type)) < MAX_PACKET_SIZE, "NetPacket::Write");
@@ -136,6 +139,15 @@ enum NetWorkStatus
 	NET_CLIENT,
 };
 
+#define ZF_NET_MAXSTRINGS	1024
+#define ZF_NET_NONETSTRING	-1
+
+struct ZFNet_String
+{
+	bool		m_bInUse;		// True if this net string is in use.
+	bool		m_bUpdated;		// True if is updated.
+	string	m_NetString;	// Da string
+};
 
 class ENGINE_API NetWork : public ZFObject 
 {
@@ -168,9 +180,23 @@ private:
 
 	void DisconnectAll();											// Send disconenct message to all nodes.
 
+	/*
+		Strings are sent over network as a number or in full. This table maps a index to a string and it 
+		can only be updated on the server so clients will always send full strings. 
+	*/
+
 public:
 	NetWorkStatus			m_eNetStatus;
 	vector<RemoteNode>	m_akClients;
+
+	vector<ZFNet_String>		m_kStringTable;
+	int NetString_GetFree();
+	int NetString_Add(const char* szString);
+	int NetString_GetIndex(const char* szString);
+	string NetString_GetString(int iIndex);
+	void NetString_ReSendAll();
+	void Send_NetStrings();
+	bool NetStringIsUpdated();
 
 	bool Init();
 	bool Close();

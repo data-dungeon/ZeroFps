@@ -13,14 +13,14 @@ P_ClientUnit::P_ClientUnit() : m_bCommandsUpdated(false)
 
 	bNetwork = true;
 
-	m_kInfo.m_cTeam =			255;
-	m_kInfo.m_cHealth =		255;
-	m_kInfo.m_cWeapon =		0;
-	m_kInfo.m_cArmor = 		0;
-	m_kInfo.m_cPropultion =	0;
-	m_kInfo.m_cViewDistance=20;
-	m_kInfo.m_cWidth =		3;
-	m_kInfo.m_cHeight =		3;		
+	m_kInfo.m_Info2.m_cTeam =			255;
+	m_kInfo.m_Info2.m_cHealth =		255;
+	m_kInfo.m_Info2.m_cWeapon =		0;
+	m_kInfo.m_Info2.m_cArmor = 		0;
+	m_kInfo.m_Info2.m_cPropultion =	0;
+	m_kInfo.m_Info2.m_cViewDistance=20;
+	m_kInfo.m_Info2.m_cWidth =		3;
+	m_kInfo.m_Info2.m_cHeight =		3;		
 	strcpy(m_kInfo.m_cName,"NoName");
 	
 	m_bSelected =	false;
@@ -112,8 +112,9 @@ void P_ClientUnit::Load(ZFMemPackage* pkPackage)
 void P_ClientUnit::PackTo(NetPacket* pkNetPacket)
 {
 	g_ZFObjSys.Logf("net", "PackCliUnit Start\n");
-	pkNetPacket->Write(&m_kInfo, sizeof(m_kInfo));
-
+//	pkNetPacket->Write(&m_kInfo, sizeof(m_kInfo));
+	pkNetPacket->Write(&m_kInfo.m_Info2, sizeof(UnitInfo2));
+	pkNetPacket->Write_Str(m_kInfo.m_cName);
 	
 	int iCommandsToSend = -1; 
 	if(m_bCommandsUpdated)
@@ -125,7 +126,13 @@ void P_ClientUnit::PackTo(NetPacket* pkNetPacket)
 		vector<UnitCommandInfo>::iterator kItor = m_kUnitCommands.begin();
 			while (kItor != m_kUnitCommands.end())
 			{
-				pkNetPacket->Write(&(*kItor), sizeof(UnitCommandInfo));
+				//pkNetPacket->Write(&(*kItor), sizeof(UnitCommandInfo));
+				
+				pkNetPacket->Write_Str((*kItor).m_acCommandName);
+				pkNetPacket->Write_Str((*kItor).m_acComments);
+				pkNetPacket->Write( &(*kItor).m_bNeedArgument, sizeof(bool)			);
+				pkNetPacket->Write( &(*kItor).m_iIconIndex, sizeof(int)			);
+
 				kItor++;
 			}
 	} 
@@ -152,7 +159,9 @@ void P_ClientUnit::PackTo(NetPacket* pkNetPacket)
  
 void P_ClientUnit::PackFrom(NetPacket* pkNetPacket)
 {
-	pkNetPacket->Read(&m_kInfo, sizeof(m_kInfo));
+//	pkNetPacket->Read(&m_kInfo, sizeof(m_kInfo));
+	pkNetPacket->Read(&m_kInfo.m_Info2, sizeof(UnitInfo2));
+	pkNetPacket->Read_Str(m_kInfo.m_cName);
 	
 	int iCommandsToRecive;
 	pkNetPacket->Read(&iCommandsToRecive, sizeof(iCommandsToRecive));
@@ -162,7 +171,12 @@ void P_ClientUnit::PackFrom(NetPacket* pkNetPacket)
 		UnitCommandInfo kTempUCInfo;
 		for(int i =0; i<iCommandsToRecive; i++)
 		{
-			pkNetPacket->Read(&kTempUCInfo, sizeof(UnitCommandInfo));
+			//pkNetPacket->Read(&kTempUCInfo, sizeof(UnitCommandInfo));
+			pkNetPacket->Read_Str(kTempUCInfo.m_acCommandName);
+			pkNetPacket->Read_Str(kTempUCInfo.m_acComments);
+			pkNetPacket->Read( &kTempUCInfo.m_bNeedArgument, sizeof(bool)  );
+			pkNetPacket->Read( &kTempUCInfo.m_iIconIndex, sizeof(int)  );
+
 			m_kUnitCommands.push_back(kTempUCInfo);
 		}
 	}

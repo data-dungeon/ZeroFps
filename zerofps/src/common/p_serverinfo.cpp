@@ -17,13 +17,16 @@ P_ServerInfo::P_ServerInfo()
 
 void P_ServerInfo::PackTo(NetPacket* pkNetPacket)
 {
-	pkNetPacket->Write(&m_kSInfo,sizeof(m_kSInfo));
+//	pkNetPacket->Write(&m_kSInfo,sizeof(m_kSInfo));
+	pkNetPacket->Write_Str(m_kSInfo.m_acServerName);
+	pkNetPacket->Write(&m_kSInfo.abyColor,sizeof(unsigned char) * 3);
 }
 
 void P_ServerInfo::PackFrom(NetPacket* pkNetPacket)
 {
-	pkNetPacket->Read(&m_kSInfo, sizeof(m_kSInfo));
-	
+//	pkNetPacket->Read(&m_kSInfo, sizeof(m_kSInfo));
+	pkNetPacket->Read_Str(m_kSInfo.m_acServerName);
+	pkNetPacket->Read(&m_kSInfo.abyColor,sizeof(unsigned char) * 3);
 }
 
 COMMON_API Property* Create_P_ServerInfo()

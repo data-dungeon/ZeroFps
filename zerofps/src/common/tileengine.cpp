@@ -214,8 +214,8 @@ void TileEngine::AddUnit(Vector3 kPos,P_ServerUnit* kSu)
 {
 	Point pos = GetSqrFromPos(kPos);
 		
-	int w = kSu->m_kInfo.m_cWidth;
-	int h = kSu->m_kInfo.m_cHeight;
+	int w = kSu->m_kInfo.m_Info2.m_cWidth;
+	int h = kSu->m_kInfo.m_Info2.m_cHeight;
 			
 	for(int y = int(-(h/2.0));y<(h/2.0);y++)
 		for(int x = int(-(w/2.0));x<(w/2.0);x++)
@@ -231,8 +231,8 @@ void TileEngine::RemoveUnit(Vector3 kPos,P_ServerUnit* kSu)
 {
 	Point pos = GetSqrFromPos(kPos);
 		
-	int w = kSu->m_kInfo.m_cWidth;
-	int h = kSu->m_kInfo.m_cHeight;
+	int w = kSu->m_kInfo.m_Info2.m_cWidth;
+	int h = kSu->m_kInfo.m_Info2.m_cHeight;
 			
 	for(int y =  int(-(h/2.0));y<(h/2.0);y++)
 		for(int x =  int(-(w/2.0));x<(w/2.0);x++)

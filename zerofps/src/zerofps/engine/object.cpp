@@ -40,6 +40,8 @@ Object::Object() {
 	m_bSave					=	true;
 	m_pkParent				=	NULL;
 	m_akChilds.clear();	
+
+
 }
 
 Object::~Object() 
@@ -409,7 +411,8 @@ void Object::PackTo(NetPacket* pkNetPacket)
 		if((*it)->bNetwork) {
 			g_ZFObjSys.Logf("net", "Add\n");
 			strcpy(szPropertyName, (*it)->m_acName);
-			pkNetPacket->Write_Str((*it)->m_acName);
+			//pkNetPacket->Write_Str((*it)->m_acName);
+			pkNetPacket->Write_NetStr((*it)->m_acName);
 			Property* hora = (*it);
 			(*it)->PackTo(pkNetPacket);
 			}
@@ -417,11 +420,14 @@ void Object::PackTo(NetPacket* pkNetPacket)
 			g_ZFObjSys.Logf("net", "Dont Add\n");
 	}
 
-	pkNetPacket->Write_Str("");
+//	pkNetPacket->Write_Str("");
+	pkNetPacket->Write_NetStr("");
 }
 
 void Object::PackFrom(NetPacket* pkNetPacket)
 {
+	int iStart = pkNetPacket->m_iPos;
+
 	Vector3 kVec;
 	float	  fFloat;
 
@@ -445,21 +451,26 @@ void Object::PackFrom(NetPacket* pkNetPacket)
 
 	char szProperty[256];
 
-	pkNetPacket->Read_Str(szProperty);
-	g_ZFObjSys.Logf("net", "Property: %s\n", szProperty);
-//	g_ZFObjSys.Log("net", "Property:\n");
-//	g_ZFObjSys.Log("net", szProperty);
+//	pkNetPacket->Read_Str(szProperty);
+	pkNetPacket->Read_NetStr(szProperty);
+
 
 	while(strcmp(szProperty,"") != 0) {
+		int iPStart = pkNetPacket->m_iPos;
 		Property* pProp  = AddProxyProperty(szProperty);
 		pProp->PackFrom(pkNetPacket);
-		pkNetPacket->Read_Str(szProperty);
+//		pkNetPacket->Read_Str(szProperty);
+		int iPEnd	= pkNetPacket->m_iPos;
+		g_ZFObjSys.Logf("net", "Property: %s Size = %d\n", szProperty, iPEnd - iPStart);
+
+		pkNetPacket->Read_NetStr(szProperty);
 		}	
+
+	int iEnd = pkNetPacket->m_iPos;
+	g_ZFObjSys.Logf("net", "Object Size: %d\n",(iEnd - iStart) );
+	m_pkObjectMan->m_iTotalNetObjectData += (iEnd - iStart);
+	m_pkObjectMan->m_iNumOfNetObjects ++;
 }
-
-
-
-
 
 
 

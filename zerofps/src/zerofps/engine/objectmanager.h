@@ -60,6 +60,9 @@ class ENGINE_API ObjectManager : public ZFObject{
 		int	m_iUpdateFlags;												///< Flags of active update.
 		int	m_iRole;															///< I'm i a server or a client or both.
 
+		int	m_iTotalNetObjectData;
+		int	m_iNumOfNetObjects;
+
 		ObjectManager();
 		~ObjectManager();
 	
