@@ -161,6 +161,9 @@ void CStartDMDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName,
 		((ZGuiSlider*)GetWnd("SFXVolumeSlider"))->SetPos(m_pkAudioSys->GetVolume()*10, true, false);
 		m_pkAudioSys->StartSound("data/sound/computer beep 5.wav", 
 			m_pkAudioSys->GetListnerPos()); 
+
+		m_pkGui->PlaceWndFrontBack(GetWnd("DMStartWnd"), true); 
+		m_pkGui->PlaceWndFrontBack(GetWnd("DMOptionsWnd"), true); 
 	}
 	else
 	if(strClickName == "OptionsCloseBn")

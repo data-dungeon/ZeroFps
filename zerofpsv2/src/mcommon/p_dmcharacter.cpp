@@ -31,11 +31,12 @@ void DMCharacterStats::Randomize()
 	vector<string> kNames;
 	vector<string>	kSNames;
 
+	const int MAX_LINE = 127;
 	char strLine[128];
 
 	if((pkFile = fopen("names1.txt", "r"))) {
 		while (!feof(pkFile)) {
-			fgets(strLine, MAX_LINE_LENGTH, pkFile);
+			fgets(strLine, MAX_LINE, pkFile);
 			kNames.push_back(strLine);
 		}
 		fclose(pkFile);
@@ -43,7 +44,7 @@ void DMCharacterStats::Randomize()
 
 	if((pkFile = fopen("names2.txt", "r"))) {
 		while (!feof(pkFile)) {
-			fgets(strLine, MAX_LINE_LENGTH, pkFile);
+			fgets(strLine, MAX_LINE, pkFile);
 			kSNames.push_back(strLine);
 		}
 		fclose(pkFile);

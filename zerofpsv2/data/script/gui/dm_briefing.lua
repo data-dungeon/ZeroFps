@@ -63,7 +63,7 @@ function GUICreate()
 	ChangeSkin("BriefingCancelBn","Skin1","Button focus")
 
 
-	CreateWnd(1,"BriefingCancelMissionBn","BriefingWnd","Cacel mission",30,387,134,20,0)
+	CreateWnd(1,"BriefingCancelMissionBn","BriefingWnd","Cancel mission",30,387,134,20,0)
 	ChangeSkin("BriefingCancelMissionBn","Skin1","Button up")
 	ChangeSkin("BriefingCancelMissionBn","Skin2","Button down")
 	ChangeSkin("BriefingCancelMissionBn","Skin1","Button focus")

@@ -73,6 +73,8 @@ void CBriefingDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName, bool bRMou
 			GetDMObject(GAME_INFO)->GetProperty("P_DMMission");
 		pkMissionProperty->CancelCurrent(); 
 
+		((CMissionDlg*)GetGameDlg(MISSION_DLG))->m_strSelMission = "";
+
 		pkMainWnd->Hide();
 		m_pkGui->KillWndCapture();
 		m_pkGui->SetCaptureToWnd(GetWnd("HQWnd"));
@@ -86,6 +88,7 @@ void CBriefingDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName, bool bRMou
 		pkMainWnd->Hide();
 		m_pkGui->KillWndCapture();
 		m_pkGui->SetCaptureToWnd(GetWnd("HQWnd"));
+		((ZGuiTextbox*)GetWnd("MissionDetailEb"))->SetText(""); 
 
 		m_pkAudioSys->StartSound("data/sound/computer beep 5.wav", 
 			m_pkAudioSys->GetListnerPos()); 
