@@ -205,7 +205,6 @@ P_Sound::P_Sound()
 	strcpy(m_acName,"P_Sound");
 	m_pkAudioSystem = static_cast<ZFAudioSystem*>(g_ZFObjSys.GetObjectPtr("ZFAudioSystem"));
 	m_pkFps = static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
-	m_bPlay = true;
 	m_strFileName = "";
 }
 
@@ -218,7 +217,7 @@ void P_Sound::Update()
 {
 	if(!m_pkFps->m_bServerMode)
 	{
-		if(!m_strFileName.empty() && m_bPlay == true)
+		if(!m_strFileName.empty())
 		{
 			Entity* pkObject = GetObject();
 
@@ -226,7 +225,6 @@ void P_Sound::Update()
 				pkObject->GetWorldPosV(), pkObject->GetVel(), false);
 
 			m_strFileName = "";
-			m_bPlay = true;
 		}
 	}
 }

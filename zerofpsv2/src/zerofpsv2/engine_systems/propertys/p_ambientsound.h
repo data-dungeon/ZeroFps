@@ -15,8 +15,6 @@ private:
 	ZeroFps* m_pkFps;
 	string m_strFileName, m_strFileNameClient;
 
-	bool m_bPlay;
-
 public:
 	P_Sound();
 	~P_Sound();
