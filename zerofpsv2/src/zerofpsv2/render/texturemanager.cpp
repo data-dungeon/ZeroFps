@@ -6,9 +6,14 @@
 #include "render.h"
 #include "../basic/basicconsole.h"
 
-#define ERROR_TEXTURE	"../data/textures/notex.bmp"
+#define ERROR_TEXTURE	"data/textures/notex.bmp
 
-bool TextureManager::ms_bMipMap;
+
+
+bool TextureManager::ms_bMipMap
+
+
+
  
 TextureManager::TextureManager()
  : ZFSubSystem("TextureManager") 
