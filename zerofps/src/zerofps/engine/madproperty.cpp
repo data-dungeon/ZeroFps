@@ -87,7 +87,14 @@ void MadProperty::Update()
 		float fDist = fabs(kDiff.Length());
 		m_fLod = 1 - (fDist / 300);
 		//cout << "fDist: " << fDist << " / " << "m_fLod: " << m_fLod << endl;
-		}
+		
+		
+		//dvoid yber loding deluxe
+		float blub = GetRadius() / fDist;		
+		if(blub < 0.010)
+			return;
+		
+	}
 
 	g_fMadLODScale = m_fLod;
 
