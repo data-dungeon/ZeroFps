@@ -602,8 +602,8 @@ void ZFAudioSystem::PrintError(ALenum error, char *szDesc)
 {
 	printf("%s Error: ", szDesc);
 
-	switch(error)
-	{/*
+/*	switch(error)
+	{
 	case AL_INVALID_NAME:
 		printf(" AL_INVALID_NAME\n");
 		break;
@@ -618,8 +618,8 @@ void ZFAudioSystem::PrintError(ALenum error, char *szDesc)
 //		break;
 	case AL_OUT_OF_MEMORY:
 		printf(" AL_OUT_OF_MEMORY\n");
-		break;*/
-	}
+		break;
+	}*/
 }
 
 

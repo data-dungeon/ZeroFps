@@ -35,7 +35,7 @@ bool Tcs::IsValid()
 void Tcs::AddBody(P_Tcs* pkPTcs)
 {
 	//check so its not added twice
-	for(int i=0;i<m_kBodys.size();i++)
+	for(unsigned int i=0;i<m_kBodys.size();i++)
 	{
 		if(m_kBodys[i] == pkPTcs)
 			return;
@@ -47,7 +47,7 @@ void Tcs::AddBody(P_Tcs* pkPTcs)
 }
 void Tcs::RemoveBody(P_Tcs* pkPTcs)
 {
-	for(int i=0;i<m_kBodys.size();i++)
+	for(unsigned int i=0;i<m_kBodys.size();i++)
 	{
 		if(m_kBodys[i] == pkPTcs)
 		{	
@@ -76,7 +76,7 @@ void Tcs::Update()
 
 void Tcs::UpdateVel()
 {
-	for(int i=0;i<m_kBodys.size();i++)
+	for(unsigned int i=0;i<m_kBodys.size();i++)
 	{	
 		//apply gravity if enabled
 		if(m_kBodys[i]->m_bGravity)
@@ -89,7 +89,7 @@ void Tcs::UpdateVel()
 
 void Tcs::UpdateMotion()
 {
-	for(int i=0;i<m_kBodys.size();i++)
+	for(unsigned int i=0;i<m_kBodys.size();i++)
 	{	
 //		if(!m_kBodys[i]->m_bStatic)
 			m_kBodys[i]->GetObject()->SetWorldPosV(m_kBodys[i]->m_kNewPos);
@@ -158,7 +158,7 @@ bool Tcs::TestMotionSpheres(P_Tcs* pkB1,P_Tcs* pkB2)
 
 void Tcs::CalcMotionSpheres()
 {
-	for(int i=0;i<m_kBodys.size();i++)
+	for(unsigned int i=0;i<m_kBodys.size();i++)
 	{	
 		//get new pos
 		m_kBodys[i]->m_kNewPos = GetNewPos(m_kBodys[i]);

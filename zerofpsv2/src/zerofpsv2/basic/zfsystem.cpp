@@ -447,7 +447,7 @@ bool ZFSystem::SetVariable(const char* szName, const char* szValue)
 void ZFSystem::SetValue(ZFCmdData* pkArea, const char* szValue) 
 {
 	float dData = float(atof(szValue));
-	bool	bValue;
+	bool	bValue = false;
 
 	switch(pkArea->m_eType) {
 		case CSYS_INT:
@@ -467,8 +467,11 @@ void ZFSystem::SetValue(ZFCmdData* pkArea, const char* szValue)
 				bValue = *(bool*)pkArea->m_vValue;
 				*(bool*)pkArea->m_vValue = !bValue;
 				}
-			else 
-				*(bool*)pkArea->m_vValue=(bool)dData;
+			else {
+				if(dData != 0.0)
+					bValue = true;
+				*(bool*)pkArea->m_vValue = bValue;
+				}
 
 			break;
 	}

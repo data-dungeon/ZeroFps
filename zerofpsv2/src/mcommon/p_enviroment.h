@@ -48,7 +48,7 @@ class MCOMMON_API EnvSetting : public ZFResource
 	friend class P_Enviroment;
 };
 
-RENDER_API ZFResource* Create__EnvSetting();
+MCOMMON_API ZFResource* Create__EnvSetting();
 
 //---end of EnvSetting
 

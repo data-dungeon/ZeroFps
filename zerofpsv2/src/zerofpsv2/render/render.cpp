@@ -500,11 +500,11 @@ void Render::DrawConsole(char* m_aCommand,vector<char*>* m_kText,int iStartLine)
 	if(iStartLine < 0)
 		iStartLine = 0;
 	
-	int iEndLine = iStartLine + 93;
+	unsigned int iEndLine = iStartLine + 93;
 	if(iEndLine >= (*m_kText).size())
 		iEndLine = (*m_kText).size();
 
-	for(int i=iStartLine;	i<iEndLine;	i++) 
+	for(unsigned int i=iStartLine;	i<iEndLine;	i++) 
 	{
 		if((*m_kText)[i] != NULL)
 		{
@@ -1262,10 +1262,13 @@ char* BoolStr(bool bFlag)
 
 void GlDump_IsEnabled(int iGlEnum, char* szName)
 {
-	bool bFlag = glIsEnabled(iGlEnum);
-	cout << szName << " : " << BoolStr(bFlag)	<< endl;
+	bool bFlag = false;
+	if(glIsEnabled(iGlEnum) == GL_TRUE)
+		bFlag = true;
 
+	cout << szName << " : " << BoolStr(bFlag)	<< endl;
 }
+
 void GlDump_GetFloatv(int iGlEnum, char* szName, int iValues)
 {
 	float afValues[16];

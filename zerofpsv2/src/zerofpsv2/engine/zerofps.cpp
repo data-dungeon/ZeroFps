@@ -1054,7 +1054,7 @@ void ZeroFps::QuitEngine()
 		m_pkObjectMan->GetWorldObject()->GetAllVarNames(kPropertyNames);
 
 		Logf("net", "WorldObject Dump %f\n", GetEngineTime());
-		for(int i=0; i<kPropertyNames.size(); i++) {
+		for(unsigned int i=0; i<kPropertyNames.size(); i++) {
 			Logf("net", " %s %f\n",kPropertyNames[i].c_str(),  m_pkObjectMan->GetWorldObject()->GetVarDouble(kPropertyNames[i]));
 			}
 	}
