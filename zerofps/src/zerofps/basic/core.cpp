@@ -638,6 +638,23 @@ void Mad_Core::CalculateRadius()
 	Mad_CoreMesh* pkMesh = &m_kMesh[0];		
 	Vector3* pkVertex = &pkMesh->akFrames[0].akVertex[0];		
 
+	float fDist=0;
+
+	for(unsigned int i=0; i <pkMesh->akFrames[0].akVertex.size(); i++) 
+	{
+//		float newdist = (pkVertex[i] - CenterPos).Length();
+		float newdist = pkVertex[i].Length();		
+		
+		if(newdist > fDist)
+			fDist = newdist;
+
+
+	}
+
+	m_fBoundRadius = fDist;
+	
+	
+/*
 	Vector3 kMin = pkVertex[0] - CenterPos;
 	Vector3 kMax = kMin;
 	Vector3 kDiff;
@@ -679,7 +696,7 @@ void Mad_Core::CalculateRadius()
 	m_fBoundRadius = fMaxDist;	// * 1.42;
 	
 	cout << "m_fBoundRadius: " << fMaxDist << endl;
-//	return fRadius;
+//	return fRadius;*/
 }
 
 float Mad_Core::GetRadius()

@@ -247,12 +247,12 @@ bool Property::SetValue(string kValueName, unsigned int iIndex, string kValue)
 						{	
 							vector<int>* kTempVector = ((vector<int>*)kItor->pkValue);;
 							if(iIndex < kTempVector->size())
-								return StringToValue(kValue,((void*)&(kTempVector->at(iIndex))), kItor);
+								return StringToValue(kValue,((void*)&(kTempVector[iIndex])), kItor);
 							else if(kItor->bResize)
 							{
 								kTempVector->resize(iIndex);
 								kItor->iNumberOfValues = iIndex+1;
-								return StringToValue(kValue,((void*)&(kTempVector->at(iIndex))), kItor);
+								return StringToValue(kValue,((void*)&(kTempVector[iIndex])), kItor);
 							}
 							else 
 								return false;
@@ -261,12 +261,12 @@ bool Property::SetValue(string kValueName, unsigned int iIndex, string kValue)
 						{	
 							vector<string>* kTempVector = ((vector<string>*)kItor->pkValue);;
 							if(iIndex < kTempVector->size())
-								return StringToValue(kValue,((void*)&(kTempVector->at(iIndex))), kItor);
+								return StringToValue(kValue,((void*)&(kTempVector[iIndex])), kItor);
 							else if(kItor->bResize)
 							{
 								kTempVector->resize(iIndex);
 								kItor->iNumberOfValues = iIndex+1;
-								return StringToValue(kValue,((void*)&(kTempVector->at(iIndex))), kItor);
+								return StringToValue(kValue,((void*)&(kTempVector[iIndex])), kItor);
 							}
 							else 
 								return false;
@@ -276,12 +276,12 @@ bool Property::SetValue(string kValueName, unsigned int iIndex, string kValue)
 						{	
 							vector<bool>* kTempVector = ((vector<bool>*)kItor->pkValue);;
 							if(iIndex < kTempVector->size())
-								return StringToValue(kValue,((void*)&(kTempVector->at(iIndex))), kItor);
+								return StringToValue(kValue,((void*)&(kTempVector[iIndex])), kItor);
 							else if(kItor->bResize)
 							{
 								kTempVector->resize(iIndex);
 								kItor->iNumberOfValues = iIndex+1;
-								return StringToValue(kValue,((void*)&(kTempVector->at(iIndex))), kItor);
+								return StringToValue(kValue,((void*)&(kTempVector[iIndex])), kItor);
 							}
 							else 
 								return false;
@@ -291,12 +291,12 @@ bool Property::SetValue(string kValueName, unsigned int iIndex, string kValue)
 						{	
 							vector<float>* kTempVector = ((vector<float>*)kItor->pkValue);;
 							if(iIndex < kTempVector->size())
-								return StringToValue(kValue,((void*)&(kTempVector->at(iIndex))), kItor);
+								return StringToValue(kValue,((void*)&(kTempVector[iIndex])), kItor);
 							else if(kItor->bResize)
 							{
 								kTempVector->resize(iIndex);
 								kItor->iNumberOfValues = iIndex+1;
-								return StringToValue(kValue,((void*)&(kTempVector->at(iIndex))), kItor);
+								return StringToValue(kValue,((void*)&(kTempVector[iIndex])), kItor);
 							}
 							else 
 								return false;
@@ -306,12 +306,12 @@ bool Property::SetValue(string kValueName, unsigned int iIndex, string kValue)
 						{	
 							vector<Vector3>* kTempVector = ((vector<Vector3>*)kItor->pkValue);;
 							if(iIndex < kTempVector->size())
-								return StringToValue(kValue,((void*)&(kTempVector->at(iIndex))), kItor);
+								return StringToValue(kValue,((void*)&(kTempVector[iIndex])), kItor);
 							else if(kItor->bResize)
 							{
 								kTempVector->resize(iIndex);
 								kItor->iNumberOfValues = iIndex+1;
-								return StringToValue(kValue,((void*)&(kTempVector->at(iIndex))), kItor);
+								return StringToValue(kValue,((void*)&(kTempVector[iIndex])), kItor);
 							}
 							else 
 								return false;
@@ -321,12 +321,12 @@ bool Property::SetValue(string kValueName, unsigned int iIndex, string kValue)
 						{	
 							vector<Vector4>* kTempVector = ((vector<Vector4>*)kItor->pkValue);;
 							if(iIndex < kTempVector->size())
-								return StringToValue(kValue,((void*)&(kTempVector->at(iIndex))), kItor);
+								return StringToValue(kValue,((void*)&(kTempVector[iIndex])), kItor);
 							else if(kItor->bResize)
 							{
 								kTempVector->resize(iIndex);
 								kItor->iNumberOfValues = iIndex+1;
-								return StringToValue(kValue,((void*)&(kTempVector->at(iIndex))), kItor);
+								return StringToValue(kValue,((void*)&(kTempVector[iIndex])), kItor);
 							}
 							else 
 								return false;
@@ -406,7 +406,8 @@ string Property::ValueToString(void *pkValue, PropertyValues *pkPropertyValue)
 	switch(pkPropertyValue->iValueType)
 	{	
 	case VALUETYPE_INT:
-		itoa(*((int*)pkValue),pk_chBuffer,10); 
+		//itoa(*((int*)pkValue),pk_chBuffer,10); 
+		IntToChar(pk_chBuffer,*((int*)pkValue));
 		return (kBuffer=pk_chBuffer);
 		
 	case VALUETYPE_STRING:
