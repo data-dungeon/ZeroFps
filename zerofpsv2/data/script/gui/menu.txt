@@ -36,25 +36,15 @@ Parent=NULL
 OpenSubMenu=1
 Cmd=NULL
 
-[Menu_EditCopy]
-Title=Copy
-Parent=Menu_Edit
-Cmd=copy
-
-[Menu_EditPaste]
-Title=Paste
-Parent=Menu_Edit
-Cmd=paste
-
 [Menu_EditDuplicate]
 Title=Duplicate
 Parent=Menu_Edit
-Cmd=duplicate
+Cmd=clone
 
 [Menu_EditDelete]
 Title=Delete
 Parent=Menu_Edit
-Cmd=delete
+Cmd=delsel
 
 [Menu_EditSNone]
 Title=Select - None

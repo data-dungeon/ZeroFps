@@ -1637,6 +1637,19 @@ ZoneData* EntityManager::GetZone(Entity* PkObject)
 	return NULL;
 }
 
+int EntityManager::GetZoneIndex(int iEntityId)
+{
+	for(unsigned int iZ=0;iZ<m_kZones.size();iZ++) 
+	{
+		if(!m_kZones[iZ].m_bUsed)	continue;
+		if(m_kZones[iZ].m_iZoneObjectID == iEntityId)	return iZ;
+		}
+
+	return -1;
+}
+
+
+
 int EntityManager::GetZoneIndex(Entity* PkObject,int iCurrentZone,bool bClosestZone)
 {
 	return GetZoneIndex(PkObject->GetWorldPosV(),iCurrentZone,bClosestZone);

@@ -65,6 +65,8 @@ class MistServer :public Application , public ZGuiApp {
 			FID_GRIDSNAP,
 			FID_CAMFOLLOW,
 			FID_CAMNOFOLLOW,
+			FID_DELETE,
+			FID_CLONE,
 
 		};
 
@@ -126,6 +128,9 @@ class MistServer :public Application , public ZGuiApp {
 		void Select_Remove( int iId )	{ m_SelectedEntitys.erase(iId); }
 		void DrawSelectedEntity();
 		void Select_Toggle(int iId, bool bMultiSelect);
+
+		void DeleteSelected();			// Removes selected entitys.
+
 
 		void SetZoneEnviroment(const char* szEnviroment);
 		string GetZoneEnviroment();

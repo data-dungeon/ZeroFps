@@ -1228,16 +1228,22 @@ void Entity::PrintTree(int pos)
 
 void Entity::MakeCloneOf(Entity* pkOrginal)
 {
-	SetParent(m_pkParent);
+	SetParent(pkOrginal->m_pkParent);
 
-	m_kVel		= pkOrginal->m_kVel;
-	m_strName	= pkOrginal->m_strName;
-	m_strType	= pkOrginal->m_strType;
-	m_iObjectType			= pkOrginal->m_iObjectType;
-	m_iUpdateStatus		= pkOrginal->m_iUpdateStatus;
-	m_bSave		= pkOrginal->m_bSave;
-	m_kAcc		= pkOrginal->m_kAcc;
-	m_fRadius	= pkOrginal->m_fRadius;	
+	SetUseZones(true);
+
+	m_kLocalPosV = pkOrginal->m_kLocalPosV;		
+	m_kLocalRotM = pkOrginal->m_kLocalRotM;			
+	SetWorldPosV(GetWorldPosV());	
+
+
+	m_kVel				= pkOrginal->m_kVel;
+	m_strName			= pkOrginal->m_strName;
+	m_strType			= pkOrginal->m_strType;
+	m_iObjectType		= pkOrginal->m_iObjectType;
+	m_iUpdateStatus	= pkOrginal->m_iUpdateStatus;
+	m_bSave				= pkOrginal->m_bSave;
+	m_kAcc				= pkOrginal->m_kAcc;
 
 	Property* pkProp;
 	vector<string> akPropertyNames;
@@ -1252,6 +1258,7 @@ void Entity::MakeCloneOf(Entity* pkOrginal)
 			pkProp->SetValue(akPropertyNames[i], (*it)->GetValue(akPropertyNames[i]));
 			}
 		}
+	m_fRadius			= pkOrginal->m_fRadius;	
 }
 
 void Entity::SetRadius(float fRadius)

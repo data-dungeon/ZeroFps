@@ -86,6 +86,9 @@ MistServer::MistServer(char* aName,int iWidth,int iHeight,int iDepth)
 	Register_Cmd("gridsnap", FID_GRIDSNAP);
 	Register_Cmd("camfollow", FID_CAMFOLLOW);
 	Register_Cmd("camnofollow", FID_CAMNOFOLLOW);
+	Register_Cmd("delsel", FID_DELETE);
+	Register_Cmd("clone", FID_CLONE);
+	
 
 
 	m_kDrawPos.Set(0,0,0);
@@ -340,19 +343,15 @@ void MistServer::DrawSelectedEntity()
 
 void MistServer::Select_Toggle(int iId, bool bMultiSelect)
 {
-	cout << "Select_Toggle: " << iId;
-	
 	if(!bMultiSelect && m_iCurrentObject != iId)		Select_None();
 	
 	if(m_SelectedEntitys.find(iId) == m_SelectedEntitys.end())
 	{
-		cout << "Add " << endl;
 		Select_Add(iId);
 		m_iCurrentObject = iId;
 	}
 	else 
 	{
-		cout << "Remove " << endl;
 		Select_Remove(iId);
 		if(iId == m_iCurrentObject)
 		{
@@ -364,6 +363,38 @@ void MistServer::Select_Toggle(int iId, bool bMultiSelect)
 	}
 }
 
+void MistServer::DeleteSelected()
+{
+	if(m_SelectedEntitys.size() == 0)	return;
+
+	cout << "Delete Selected: ID, Type, Name" << endl;
+	for(set<int>::iterator itEntity = m_SelectedEntitys.begin(); itEntity != m_SelectedEntitys.end(); itEntity++ ) 
+	{
+		Entity* pkEntity = m_pkObjectMan->GetObjectByNetWorkID((*itEntity));
+		if(!pkEntity)	continue;
+	
+		cout << " " << pkEntity->iNetWorkID << " - '" << pkEntity->GetType() << "' - '" << pkEntity->GetName() << "'" <<endl;
+		if(pkEntity->GetName() == string("ZoneObject"))
+		{
+			int iZoneID = m_pkObjectMan->GetZoneIndex( pkEntity->iNetWorkID );
+			m_pkObjectMan->DeleteZone(iZoneID);
+			cout << "Delete zone " << iZoneID << endl;
+		}
+		else
+			m_pkObjectMan->Delete(pkEntity->iNetWorkID);		
+	}
+
+	m_SelectedEntitys.clear();
+	m_iCurrentObject = -1;
+
+			//fulhack deluxe för att inte kunna ta bort statiska entitys i zoner som inte är underconstruction
+		/*	if(pkObj->GetParent()->GetName() == "StaticEntity")
+			{
+				cout<<"zone is not under construction "<<endl;
+				return;
+			}
+		*/	
+}
 
 void MistServer::OnIdle()
 {	
@@ -545,18 +576,8 @@ void MistServer::Input_EditZone()
 		AddZone(m_kZoneMarkerPos, m_kZoneSize, m_strActiveZoneName);	
 	}
 	
-	if(m_pkInputHandle->Pressed(KEY_T))
-	{
-		AddZone(m_kZoneMarkerPos, m_kZoneSize, m_strActiveZoneName,true);	
-	}
-
-	if(m_pkInputHandle->VKIsDown("remove"))
-	{
-		int id = m_pkObjectMan->GetZoneIndex(m_kZoneMarkerPos,-1,false);
+	if(m_pkInputHandle->VKIsDown("remove"))	DeleteSelected();
 		
-		m_pkObjectMan->DeleteZone(id);
-	}
-	
 	if(m_pkInputHandle->VKIsDown("rotate") && !DelayCommand())
 	{
 		m_iCurrentMarkedZone = m_pkObjectMan->GetZoneIndex(m_kZoneMarkerPos,-1,false);
@@ -615,28 +636,7 @@ void MistServer::Input_EditObject(float fMouseX, float fMouseY)
 	}
 	
 	//remove			
-	if(m_pkInputHandle->VKIsDown("remove"))
-	{
-		
-		Entity* pkObj = m_pkObjectMan->GetObjectByNetWorkID(m_iCurrentObject);
-										
-		if(pkObj)
-		{
-			//fulhack deluxe för att inte kunna ta bort statiska entitys i zoner som inte är underconstruction
-		/*	if(pkObj->GetParent()->GetName() == "StaticEntity")
-			{
-				cout<<"zone is not under construction "<<endl;
-				return;
-			}
-		*/						
-			cout<<"Deleting ID:"<<pkObj->iNetWorkID<<" Name:"<<pkObj->GetName()<<" Type:"<<pkObj->GetType()<<endl;
-			
-			m_pkObjectMan->Delete(pkObj);				
-		}
-
-	
-		m_iCurrentObject = -1;
-	}
+	if(m_pkInputHandle->VKIsDown("remove"))	DeleteSelected();
 
 	Entity* pkObj = m_pkObjectMan->GetObjectByNetWorkID(m_iCurrentObject);								
 	if(!pkObj)
@@ -788,8 +788,8 @@ void MistServer::Input_Camera(float fMouseX, float fMouseY)
 		{
 			// If Cameras are linked.
 			kMove = m_pkActiveCamera->GetOrthoMove(kMove);
-			kMove.Print();
-			cout << endl;
+			//kMove.Print();
+			//cout << endl;
 			m_pkCameraObject[0]->SetLocalPosV(m_pkCameraObject[0]->GetLocalPosV() + kMove);
 		}
 		else 
@@ -828,7 +828,6 @@ void MistServer::Input()
 		int mx,my;
 		m_pkInputHandle->SDLMouseXY(mx,my);
 		my = 768 - my; 
-		cout << "Mus: " << mx << ", " << my << endl;
 		int iClickedViewPort = GetView(mx, my);
 		if(SetCamera(iClickedViewPort))
 			m_fDelayTime = m_pkFps->GetEngineTime() + 0.5;
@@ -1045,7 +1044,9 @@ void MistServer::RunCommand(int cmdid, const CmdArgument* kCommand)
 		case FID_CAMGRID:		Camera::m_bDrawOrthoGrid = !Camera::m_bDrawOrthoGrid;		break;
 		case FID_GRIDSNAP:	Camera::m_bGridSnap = !Camera::m_bGridSnap;		break;
 		case FID_SELNONE:		Select_None();		break;
-			
+		case FID_DELETE:		DeleteSelected();	break;
+
+		case FID_CLONE:		Select_Toggle(m_pkObjectMan->CloneObject(m_iCurrentObject)->iNetWorkID,false );	break;
 
 		case FID_LIGHTMODE:
 			if(kCommand->m_kSplitCommand.size() <= 1)
@@ -1495,6 +1496,8 @@ Entity* MistServer::GetTargetObject()
 	Entity* pkClosest = NULL;	
 	for(unsigned int i=0;i<kObjects.size();i++)
 	{
+		cout << " Check " << kObjects[i]->iNetWorkID << " - '" << kObjects[i]->GetType() << "' - '" << kObjects[i]->GetName() << "'" <<endl;
+
 		if(kObjects[i] == m_pkCameraObject[0])	continue;
 		if(kObjects[i] == m_pkCameraObject[1])	continue;
 		if(kObjects[i] == m_pkCameraObject[2])	continue;

@@ -237,6 +237,7 @@ class ENGINE_API EntityManager : public ZFSubSystem{
 		ZoneData* GetZone(Entity* PkObject);
 		int GetZoneIndex(Entity* PkObject,int iCurrentZone,bool bClosestZone);
 		int GetZoneIndex(Vector3 kMyPos,int iCurrentZone,bool bClosestZone);
+		int GetZoneIndex(int iEntityId);
 		ZoneData* GetZone(Vector3 kPos);
 		Vector3 GetZoneCenter(int iZoneNum);
 		ZoneData*	GetZoneData(int iID);
