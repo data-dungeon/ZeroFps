@@ -20,10 +20,12 @@ struct color_rgba {
 	unsigned char r,g,b,a;
 };
 
-struct tgahead_t {
-	char	id_length;					// Num of bytes with extra info.
-	char	colormap_type;	 		 	// 0 = No color map, 1 = color map.
-	char	image_type;					// A TGA_IMAGETYPE_XXX value.
+/// File Header in TGA Files.
+struct tgahead_t 
+{
+	char	id_length;					///< Num of bytes with extra info.
+	char	colormap_type;	 		 	///< 0 = No color map, 1 = color map.
+	char	image_type;					///< A TGA_IMAGETYPE_XXX value.
 
 	// Color map spec.
 	short	colormap_first;				
@@ -34,11 +36,11 @@ struct tgahead_t {
 	short	yorgin;
 	short	width;
 	short	height;
-	char	pixel_depth;				// Bits per pixel (8,16,24,32).
+	char	pixel_depth;				///< Bits per pixel (8,16,24,32).
 	char	image_desc;
 };
 
-// PCX FORMAT
+/// File Header in PCX Files.
 struct pcx_header_s
 {
 	char	manufacturer;

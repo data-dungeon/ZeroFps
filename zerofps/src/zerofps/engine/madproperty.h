@@ -9,7 +9,6 @@ using namespace std;
 
 #define NO_ANIMATION_ID	-1
 
-
 class ENGINE_API MadProperty : public Property, public Mad_Modell {
 	private:
 		vector<PropertyValues> GetPropertyValues();

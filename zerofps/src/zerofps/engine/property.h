@@ -52,6 +52,7 @@ public:
 			bVector(false) {} 
 };
 
+/// A property of a object.
 class ENGINE_API Property 
 {
 	private:

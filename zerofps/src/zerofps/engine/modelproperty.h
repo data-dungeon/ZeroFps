@@ -10,8 +10,7 @@
 
 using namespace std;
 
-
-
+/// Used to display basic simple 3d objects.
 class ENGINE_API ModelProperty: public Property {
 	private:
 		Frustum *m_pkFrustum;

@@ -11,7 +11,7 @@
 #define MAD_DRAW_SPHERE		8
 #define MAD_DRAW_LINES		16
 
-
+/// A MAD that can play anims.
 class ENGINE_API Mad_Modell 
 {
 private:

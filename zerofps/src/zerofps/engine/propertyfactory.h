@@ -11,7 +11,7 @@
 
 using namespace std;
 
-
+/// Links property name to a create function.
 class ProperyCreateLink
 {
 public:
@@ -28,6 +28,7 @@ public:
 	}
 };
 
+/// Engine System that creates propertys.
 class ENGINE_API PropertyFactory : public ZFObject
 {
 private:
@@ -48,6 +49,5 @@ public:
 };
 
 class ZeroFps;
-//void RegisterPropertys(ZeroFps* zfps);
 
 #endif

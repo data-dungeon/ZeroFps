@@ -38,12 +38,13 @@ enum ObjectType {
 	OBJECT_TYPE_DECORATION,
 };
 
+/// GameMessages is messages that can be sent between objects in the game.
 class GameMessage
 {
 public:
-	int			m_FromObject;
-	int			m_ToObject;
-	string		m_Name;
+	int			m_FromObject;		///< ID of object that sent message.
+	int			m_ToObject;			///< ID of target object.
+	string		m_Name;				///< Name of GameMessage.
 };
 
 class ENGINE_API PropertyDescriptor{
@@ -75,75 +76,76 @@ class ENGINE_API ObjectDescriptor{
 };
 	
 
-
-class ENGINE_API Object {
+/// Game Object for things in game 
+class ENGINE_API Object 
+{
 	private:
-		Object*				m_pkParent;							// Parent Object.
-		vector<GameMessage>	m_kGameMessages;					// Messages that are waiting to be handled by this object.
+		Object*				m_pkParent;							///< Parent Object.
+		vector<GameMessage>	m_kGameMessages;					///< Messages that are waiting to be handled by this object.
 		
 
 
 	protected:
-		Vector3				m_kPos;								// Position of object in world.
-		Vector3				m_kRot;								// Rotation of object in world.
-		Vector3				m_kVel;								// Velocity of object.
-		Vector3				m_kAcc;								// Acc of object.
+		Vector3				m_kPos;								///< Position of object in world.
+		Vector3				m_kRot;								///< Rotation of object in world.
+		Vector3				m_kVel;								///< Velocity of object.
+		Vector3				m_kAcc;								///< Acc of object.
 		
-		string				m_kName;							// Object type name
+		string				m_kName;							///< Object type name
 
 		ObjectType			m_iObjectType;						
 		int					m_iUpdateStatus;					
-		int*					m_piDecorationStep;
-		bool					m_bSave;							// True if this object should save to disk.
+		int*				m_piDecorationStep;
+		bool				m_bSave;							///< True if this object should save to disk.
 		
-		ObjectManager*		m_pkObjectMan;						// Ptr to object manger.
+		ObjectManager*		m_pkObjectMan;						///< Ptr to object manger.
 		LevelManager* 		m_pkLevelMan;		
 		PropertyFactory*	m_pkPropertyFactory;	
 
-		list<Object*>		m_akChilds;							// List of child objects.
-		list<Property*>	m_akPropertys;						// List of propertys of object.
+		list<Object*>		m_akChilds;							///< List of child objects.
+		list<Property*>	m_akPropertys;							///< List of propertys of object.
 		
 	public:
-		int					iNetWorkID;										// ID used by network state code.
+		int					iNetWorkID;							///< ID used by network state code.
 
 		Object();		
 		~Object();
 		
 		// Property Mangement Code.
 
-		Property* AddProperty(Property* pkNewProperty);				// Add a propyrty by ptr.
-		Property* AddProperty(const char* acName);					// Create/Add a property by name.
-		void RemoveProperty(Property* pkProp);					// Remove property by pointer.
-		bool DeleteProperty(const char* acName);				// Remove property by name.
+		Property* AddProperty(Property* pkNewProperty);			///< Add a propyrty by ptr.
+		Property* AddProperty(const char* acName);				///< Create/Add a property by name.
+		void RemoveProperty(Property* pkProp);					///< Remove property by pointer.
+		bool DeleteProperty(const char* acName);				///< Remove property by name.
 
-		Property* GetProperty(const char* acName);									// Returns property by name (first one only). 
-		void GetPropertys(list<Property*> *akPropertys,int iType,int iSide);		// Get all propertys by flags.
-		void GetAllPropertys(list<Property*> *akPropertys,int iType,int iSide);		// used mainly for updates
+		Property* GetProperty(const char* acName);									///< Returns property by name (first one only). 
+		void GetPropertys(list<Property*> *akPropertys,int iType,int iSide);		///< Get all propertys by flags.
+		void GetAllPropertys(list<Property*> *akPropertys,int iType,int iSide);		///< Used mainly for updates
 
-		Property* AddProxyProperty(char* acName);									// Add a property if not exist.
-		bool Update(const char* acName);											// Run update on property 'name'.
+		Property* AddProxyProperty(char* acName);									///< Add a property if not exist.
+		bool Update(const char* acName);											///< Run update on property 'name'.
 
 		// Child/Parent object mangement.
-		void AddChild(Object* pkObject);					// Set a object to be child to this.	
-		void RemoveChild(Object* pkObject);					// Remove a child from this.
-		void SetParent(Object* pkObject);					// Set the parent of this object.
-		Object* GetParent(){return m_pkParent;};			// Get parent of this object.
+		void AddChild(Object* pkObject);					///< Set a object to be child to this.	
+		void RemoveChild(Object* pkObject);					///< Remove a child from this.
+		void SetParent(Object* pkObject);					///< Set the parent of this object.
+		Object* GetParent(){return m_pkParent;};			///< Get parent of this object.
 		bool HasChild(Object* pkObject);					//
-		int NrOfChilds();									// Return num of childs to this object.
-		void DeleteAllChilds();								// Remove all childs from this object.
-		void GetAllObjects(list<Object*> *pakObjects);		// Return this + all childs.
-		void PrintTree(int pos);							// Debug: Prints object tree from object.
-		void AttachToClosestZone();							// Attacth to closest ZoneObject.
+		int NrOfChilds();									///< Return num of childs to this object.
+		void DeleteAllChilds();								///< Remove all childs from this object.
+		void GetAllObjects(list<Object*> *pakObjects);		///< Return this + all childs.
+		void PrintTree(int pos);							///< Debug: Prints object tree from object.
+		void AttachToClosestZone();							///< Attacth to closest ZoneObject.
 
 		// NetWork/Demo/Save/Load Code.
-		bool NeedToPack();									// Returns true if there is any netactive properys in object
-		void PackTo(NetPacket* pkNetPacket);				// Pack Object.
-		void PackFrom(NetPacket* pkNetPacket);				// Unpack Object.
-		void Save(ObjectDescriptor* ObjDesc);				// Save object to object desc.
+		bool NeedToPack();									///< Returns true if there is any netactive properys in object
+		void PackTo(NetPacket* pkNetPacket);				///< Pack Object.
+		void PackFrom(NetPacket* pkNetPacket);				///< Unpack Object.
+		void Save(ObjectDescriptor* ObjDesc);				///< Save object to object desc.
 
 		// Collision / Shape.
-		float GetBoundingRadius();							// Get radius of collision object or radius 1.0 if none found.
-		void Touch(Collision* pkCol);						// Run touch on all properys of this object.
+		float GetBoundingRadius();							///< Get radius of collision object or radius 1.0 if none found.
+		void Touch(Collision* pkCol);						///< Run touch on all properys of this object.
 
 		inline int &GetUpdateStatus() {return m_iUpdateStatus;};
 		inline ObjectType &GetObjectType(){return m_iObjectType;};

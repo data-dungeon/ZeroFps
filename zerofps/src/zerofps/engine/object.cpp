@@ -820,6 +820,7 @@ void Object::Touch(Collision* pkCol)
 	}
 }
 
+/// Adds a GameMessage to be handled later by object.
 void Object::AddGameMessage(GameMessage& Msg)
 {
 	m_kGameMessages.push_back(Msg);
@@ -837,6 +838,7 @@ void Object::HandleMessages()
 	m_kGameMessages.clear();
 }
 
+/// Send a GameMessage to all object propertys.
 void Object::RouteMessage(GameMessage& Msg)
 {
 	for(list<Property*>::iterator it=m_akPropertys.begin();it!=m_akPropertys.end();it++) 
