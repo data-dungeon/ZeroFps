@@ -86,18 +86,20 @@ void P_Sound::PackTo(NetPacket* pkNetPacket, int iConnectionID )
 	}
 
 	SetNetUpdateFlag(iConnectionID,false);
+	
+	if(AllNetUpdateFlagsFalse())
+	{
+		///// Ta bort alla icke-loopade ljud på serven
+		vector<sound_info> temp;
 
+		for(int i=0; i<m_kSounds.size(); i++)
+			if(m_kSounds[i].m_bLoop)
+				temp.push_back( m_kSounds[i]);
 
-	/// Ta bort alla icke-loopade ljud på serven
-	vector<sound_info> temp;
-
-	for(int i=0; i<m_kSounds.size(); i++)
-		if(m_kSounds[i].m_bLoop)
-			temp.push_back( m_kSounds[i]);
-
-	m_kSounds.clear();
-	for(int i=0; i<temp.size(); i++)
-		m_kSounds.push_back(temp[i]);
+		m_kSounds.clear();
+		for(int i=0; i<temp.size(); i++)
+			m_kSounds.push_back(temp[i]);
+	}
 
 }
 

@@ -91,7 +91,7 @@ void P_CharacterControl::Update()
 	{
 		if(bHoppa)
 		{
-			pkSound->StartSound("data/sound/jump.wav", false);
+			pkSound->StartSound("data/sound/jump2.wav", false);
 		}
 
 		Vector3 currpos = pkEnt->GetWorldPosV();
