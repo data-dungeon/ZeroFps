@@ -274,24 +274,14 @@ void MistClient::Input()
 			printf("Failed to stop sound\n");
 		break;
 
-	case KEY_L:
-		{
-			ZFResourceHandle kResHandle;
-			if(!kResHandle.SetRes("data/script/gui/test1.lua"))
-				printf("Failed to load test script\n");
-
-			if(!pkScript->Run( (ZFScript*) kResHandle.GetResourcePtr() ))
-				printf("Failed to run test1.lua\n");
-			else
-				printf("Succeeded to run test1.lua\n");
-
-			if(!pkScript->Call( (ZFScript*) kResHandle.GetResourcePtr(), "Test", 0, 0))
-				printf("Failed to run call \"Test\" in test1.lua\n");
-			else
-				printf("Succeeded to run call \"Test\" in test1.lua\n");
-
-		}
-		break;
+//	case KEY_L:
+//		{
+		//	ZFResourceHandle test1;
+		//	test1.SetRes("data/script/gui/test1.lua");
+		//	pkScript->Run( (ZFScript*) test1.GetResourcePtr() );
+		//	pkScript->Call( (ZFScript*) test1.GetResourcePtr(), "Test", 0, 0);
+//		}
+//		break;
 	}
 
 }

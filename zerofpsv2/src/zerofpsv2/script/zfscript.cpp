@@ -90,7 +90,7 @@ void ZFScriptSystem::CopyGlobalData(lua_State** ppkState)
 	*ppkState = lua_open(0);
 
 	// Create Lua tag for Int type.
-	m_iLuaTagInt = lua_newtag(*ppkState);
+/*	m_iLuaTagInt = lua_newtag(*ppkState);
 	lua_pushcfunction(*ppkState, GetTypeInt);
 	lua_settagmethod(*ppkState, m_iLuaTagInt, "getglobal");
 	lua_pushcfunction(*ppkState, SetTypeInt); 
@@ -115,7 +115,7 @@ void ZFScriptSystem::CopyGlobalData(lua_State** ppkState)
 	lua_pushcfunction(*ppkState, GetTypeString);
 	lua_settagmethod(*ppkState, m_iLuaTagString, "getglobal");
 	lua_pushcfunction(*ppkState, SetTypeString); 
-	lua_settagmethod(*ppkState, m_iLuaTagString, "setglobal");
+	lua_settagmethod(*ppkState, m_iLuaTagString, "setglobal");*/
 
 	unsigned int i;
 	unsigned int iNumFunctions = m_vkGlobalFunctions.size();
