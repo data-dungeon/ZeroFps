@@ -20,21 +20,31 @@ bool Container::AddObject ( int iAddToContainer )
 {
    if ( m_kContainedObjects.size() < m_iCapacity )
    {
-      m_uiVersion++;
-
-      m_kContainedObjects.push_back ( iAddToContainer );
 
       Entity *pkEntity = m_pkParent->GetObject()->m_pkObjectMan->GetObjectByNetWorkID ( iAddToContainer );
+
+      P_Item *pkIP = ((P_Item*)pkEntity->GetProperty("P_Item"));
+
+      if ( !pkIP )
+      {
+         cout << "Error! Tried to put a nonItem object in the container!" << endl;
+         return false;
+      }
+
 
       // objects in containers doesn't need to be updated
       pkEntity->SetUpdateStatus (UPDATE_NONE);
 
       // Set which container the item is in
-//      ((P_Item*)pkEntity->GetProperty("P_Item"))->m_pkItemStats->m_iCurrentContainer = m_iContainerID;
-//      ((P_Item*)pkEntity->GetProperty("P_Item"))->m_pkItemStats->m_pkIsInContainer = this;
+      pkIP->m_pkItemStats->m_iCurrentContainer = ((P_Item*)m_pkParent)->m_pkItemStats->m_iContainerID;
+      pkIP->m_pkItemStats->m_pkIsInContainer = this;
 
       // make object child of containers parent
       pkEntity->SetParent ( m_pkParent->GetObject() );
+
+      m_kContainedObjects.push_back ( iAddToContainer );
+
+      m_uiVersion++;
 
       return true;
    }
@@ -57,6 +67,10 @@ bool Container::RemoveObject ( int iRemoveFromContainer )
 
          Entity *pkEntity = 
             m_pkParent->GetObject()->m_pkObjectMan->GetObjectByNetWorkID ( (*kIte) );
+
+         // Set which container the item is in
+         ((P_Item*)pkEntity->GetProperty("P_Item"))->m_pkItemStats->m_iCurrentContainer = 0;
+         ((P_Item*)pkEntity->GetProperty("P_Item"))->m_pkItemStats->m_pkIsInContainer = 0;
 
 
          // unparent object
