@@ -32,6 +32,8 @@ MistClient::MistClient(char* aName,int iWidth,int iHeight,int iDepth)
 { 
 
 	m_iSelfObjectID			= -1;
+	m_pkClientObject			= NULL;
+	m_pkClientControlP		= NULL;
 	
 	g_ZFObjSys.Log_Create("mistclient");
  
@@ -147,16 +149,33 @@ void MistClient::OnIdle()
 void MistClient::OnSystem() 
 {
 	//setup client
-	if(pkFps->m_bClientMode && !pkFps->m_bServerMode)
+	if(pkFps->m_bClientMode && !pkFps->m_bServerMode && m_pkClientControlP == NULL)
 	{
 		GetSystem().Logf("net","??? m_iSelfObjectID %d\n", m_iSelfObjectID);
 
-
-		//try to get self id
-		if(m_iSelfObjectID == -1)
-			m_iSelfObjectID = pkFps->GetClientObjectID();
-
+		
+		m_iSelfObjectID = pkFps->GetClientObjectID();	
+		if(m_iSelfObjectID != -1)
+		{		
+			m_pkClientObject = pkObjectMan->GetObjectByNetWorkID(m_iSelfObjectID);		
+			if(m_pkClientObject)
+			{			
+				pkConsole->Printf("Got client object, Trying to get client control");
+			
+				m_pkClientControlP = (P_ClientControl*)m_pkClientObject->AddProperty("P_ClientControl");
+				//m_pkClientObject->AddProperty("P_ClientControl");
+				/*
+				m_pkClientControlP = (P_ClientControl*)m_pkClientObject->GetProperty("P_ClientControl");				
+				if(m_pkClientControlP)
+				{
+					pkConsole->Printf("Got client control");
+				
+				}
+				*/
+			}
+		}
 	};
+
 
 }
 
@@ -386,7 +405,7 @@ void MistClient::OnServerStart(void)
 
 void MistClient::OnClientStart(void)
 {
-
+	pkConsole->Printf("Connected, Waiting for client object");
 }
 
 bool MistClient::StartUp()	{ return true; }

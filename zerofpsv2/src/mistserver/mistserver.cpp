@@ -301,7 +301,7 @@ void MistServer::OnServerClientJoin(ZFClient* pkClient,int iConID)
 {
 	cout<<"Client "<<iConID<<" Joined"<<endl;
 	
-	pkClient->m_pkObject->AddProperty("P_ClientControl");	
+	//pkClient->m_pkObject->AddProperty("P_ClientControl");	
 	pkClient->m_pkObject->AddProperty("P_Primitives3D");	
 	cout << "Now adding tracker to client" << endl;
 	pkClient->m_pkObject->AddProperty("TrackProperty");	

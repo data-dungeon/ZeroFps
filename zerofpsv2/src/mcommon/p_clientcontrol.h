@@ -20,6 +20,7 @@ class MCOMMON_API P_ClientControl: public Property {
 		void CloneOf(Property* pkProperty) { }
 		P_ClientControl();
 		
+		void Update();
 };
 
 MCOMMON_API Property* Create_P_ClientControl();

@@ -12,6 +12,12 @@ P_ClientControl::P_ClientControl()
 	cout<<"client Control created"<<endl;
 }
 
+void P_ClientControl::Update()
+{
+	cout<<"client control here"<<endl;
+
+}
+
 
 Property* Create_P_ClientControl()
 {

@@ -51,6 +51,8 @@ class MistClient :public Application, public ZGuiApp {
 
 		//clients own little qute object
 		int					m_iSelfObjectID;				// Network ID that i use to send data to server.
+		Object*				m_pkClientObject;
+		P_ClientControl*	m_pkClientControlP;
 
 		Heightmap2*			m_pkMap2;
 		
@@ -58,8 +60,7 @@ class MistClient :public Application, public ZGuiApp {
 		Object*				m_pkTestobj;
 		CameraProperty*	m_pkCamProp;		
 		float					m_fAngle;
-		float					m_fDistance;
-		
+		float					m_fDistance;		
 		float 				m_fClickDelay;
 		
 		Vector3	Get3DMousePos();
