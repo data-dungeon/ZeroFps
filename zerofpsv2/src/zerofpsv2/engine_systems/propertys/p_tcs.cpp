@@ -36,6 +36,7 @@ P_Tcs::P_Tcs()
 	m_fBounce =				1;
 	m_fFriction = 			0.2;
 	m_bSleeping = 			false;
+	m_bCantSleep = 		false;
 	
 	ResetGroupFlags();
 	ResetWalkGroupFlags();
@@ -148,6 +149,7 @@ void P_Tcs::Save(ZFIoInterface* pkPackage)
 	pkPackage->Write((void*)&m_kExternalRotForce,sizeof(m_kExternalRotForce),1);		
 	pkPackage->Write((void*)&m_bActiveMoment,sizeof(m_bActiveMoment),1);									
 	
+	pkPackage->Write((void*)&m_bCantSleep,sizeof(m_bCantSleep),1);									
 }
 
 void P_Tcs::Load(ZFIoInterface* pkPackage)
@@ -176,11 +178,13 @@ void P_Tcs::Load(ZFIoInterface* pkPackage)
 	pkPackage->Read((void*)&m_kExternalLinearForce,sizeof(m_kExternalLinearForce),1);									
 	pkPackage->Read((void*)&m_kExternalRotForce,sizeof(m_kExternalRotForce),1);									
 	pkPackage->Read((void*)&m_bActiveMoment,sizeof(m_bActiveMoment),1);									
+	
+	pkPackage->Read((void*)&m_bCantSleep,sizeof(m_bCantSleep),1);									
 }
 
 vector<PropertyValues> P_Tcs::GetPropertyValues()
 {
-	vector<PropertyValues> kReturn(16);
+	vector<PropertyValues> kReturn(17);
 
 	int dummy;
 
@@ -247,7 +251,12 @@ vector<PropertyValues> P_Tcs::GetPropertyValues()
 	kReturn[15].kValueName="friction";
 	kReturn[15].iValueType=VALUETYPE_FLOAT;
 	kReturn[15].pkValue=(void*)&m_fFriction;	
-						
+
+	kReturn[16].kValueName="cantsleep";
+	kReturn[16].iValueType=VALUETYPE_BOOL;
+	kReturn[16].pkValue=(void*)&m_bCantSleep;	
+	
+							
 	return kReturn;
 }
 
@@ -384,7 +393,7 @@ bool P_Tcs::TestPolygon(Vector3* kVerts,Vector3 kPos1,Vector3 kPos2)
 	Vector3 V2 = kVerts[2] - kVerts[0];		
 	Vector3 Normal= V1.Cross(V2);
 	
-	
+	 
 	if(Normal.Length() == 0)
 	{
 		return false;
@@ -601,8 +610,9 @@ Vector3 P_Tcs::GetVel(Vector3 kPos,bool bLocal)
 
 void P_Tcs::Sleep()
 {
-	if(m_bStatic)
+	if(m_bStatic || m_bCantSleep)
 		return;
+			
 //	if(m_bSleeping)
 //		return;
 		

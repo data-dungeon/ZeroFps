@@ -62,8 +62,8 @@ class ENGINE_API EntityManager : public ZFSubSystem{
 			FID_LOGACTIVEPROPERTYS,
 			FID_SENDMESSAGE,
 			
-			FID_LOADZONES,
-			FID_SAVEZONE,			
+		//	FID_LOADZONES,
+		//	FID_SAVEZONE,			
 			FID_NEWWORLD,
 			FID_LOADWORLD,
 			FID_SETWORLDDIR,
@@ -109,14 +109,13 @@ class ENGINE_API EntityManager : public ZFSubSystem{
 		int							m_iNrOfActivePropertys;									///> Size of akProperty list.
 
 		int							iNextObjectID;												///< Next free object ID.
-		bool							m_bUpdate;													///< Disable all updates except RENDER.	
 		bool							m_bDrawZones;
 		bool							m_bDrawZoneConnections;
 
+		NetPacket	m_OutNP;		// Used to create/send updates to clients.		
+		
 		void RunCommand(int cmdid, const CmdArgument* kCommand);
 		void GetPropertys(int iType,int iSide);						///< Fill propery list.
-
-		NetPacket	m_OutNP;		// Used to create/send updates to clients.
 
 
 	public:
@@ -167,7 +166,6 @@ class ENGINE_API EntityManager : public ZFSubSystem{
 		void Update(int iType,int iSide,bool bSort);					///< Run update on selected propertys.
 		bool IsUpdate(int iFlags);											///< Check if the current update is of a selected type
 		void UpdateGameMessages(void);									///< Update game messages.
-		void SetUpdate(bool bUpdate) { m_bUpdate=bUpdate; };		
 		
 		// Gets
 		Entity* GetWorldObject()	{	return m_pkWorldObject;				};

@@ -7,6 +7,7 @@ all:
 	cd mistclient/; $(MAKE) $@
 	cd mistserver/; $(MAKE) $@
 	cd dark_metropolis/; $(MAKE) $@
+	cd physics/; $(MAKE) $@
 	
 clean:
 	cd zerofpsv2/; $(MAKE) $@
@@ -14,3 +15,5 @@ clean:
 	cd mistclient/; $(MAKE) $@
 	cd mistserver/; $(MAKE) $@
 	cd dark_metropolis/; $(MAKE) $@
+	cd physics/; $(MAKE) $@
+

@@ -66,7 +66,6 @@ EntityManager::EntityManager()
 {
 
 	iNextObjectID				= 0;
-	m_bUpdate					= true;
 	m_iTotalNetObjectData	= 0;
 	m_iNumOfNetObjects		= 0;
 	m_bDrawZones				= false;
@@ -84,7 +83,6 @@ EntityManager::EntityManager()
 
 	m_fSimTime					= 0;			
 	m_fSimTimeScale			= 1.0;	
-//	GetSimDelta					= 0; 
 
 	Register_Cmd("o_logtree",FID_LOGOHTREE);	
 	Register_Cmd("o_dumpp",FID_LOGACTIVEPROPERTYS);	
@@ -95,8 +93,6 @@ EntityManager::EntityManager()
 	Register_Cmd("saveworld",FID_SAVEWORLD, CSYS_FLAG_SRC_ALL);		
 	Register_Cmd("setworlddir",FID_SETWORLDDIR, CSYS_FLAG_SRC_ALL);		
 	
-	Register_Cmd("loadzones",FID_LOADZONES, CSYS_FLAG_SRC_ALL);	
-	Register_Cmd("savezones",FID_SAVEZONE, CSYS_FLAG_SRC_ALL);	
 
 	RegisterVariable("l_showzones",	&m_bDrawZones,					CSYS_BOOL);
 	RegisterVariable("l_showconn",	&m_bDrawZoneConnections,	CSYS_BOOL);
@@ -118,7 +114,6 @@ bool EntityManager::StartUp()
 	m_fEndTimeForceNet		= m_pkZeroFps->GetEngineTime();
 
 	m_kWorldDirectory = "worldtemp";
-	//m_kTempWorldDirectory = "";
 
 	//create all base objects
 	Clear();
@@ -342,28 +337,6 @@ void EntityManager::UpdateDelete()
 	m_aiDeleteList.clear();
 
 }
-
-/*
-void EntityManager::UpdateDeleteList(NetPacket* pkNetPacket)
-{
-	Object* pkNetSlave;
-	int iObjectID;
-	pkNetPacket->Read(iObjectID);
-
-	while(iObjectID != -1) {
-		//Logf("net", "Delete: Object %d\n", iObjectID);
-		pkNetSlave = GetObjectByNetWorkID(iObjectID);
-		if(pkNetSlave == NULL) {
-			//Logf("net", " Object '%d' not found.\n", iObjectID);	
-			}
-		else {
-			Delete(pkNetSlave);
-			}
-		pkNetPacket->Read(iObjectID);
-		}	
-}*/
-
-
 
 
 /**	\brief	Run update on selected propertys.
@@ -1329,14 +1302,14 @@ void EntityManager::RunCommand(int cmdid, const CmdArgument* kCommand)
 			//RouteMessage(gm);
 			break;
 
-		case FID_LOADZONES:
+/*		case FID_LOADZONES:
 			LoadZones();
 			break;
 
 		case FID_SAVEZONE:
 			SaveZones();
 			break;
-			
+*/			
 		case FID_NEWWORLD:
 			if(kCommand->m_kSplitCommand.size() <= 1)
 			{
@@ -2946,3 +2919,27 @@ void EntityManager::Zones_Refresh()
 	}
 }
 */
+
+
+/*
+void EntityManager::UpdateDeleteList(NetPacket* pkNetPacket)
+{
+	Object* pkNetSlave;
+	int iObjectID;
+	pkNetPacket->Read(iObjectID);
+
+	while(iObjectID != -1) {
+		//Logf("net", "Delete: Object %d\n", iObjectID);
+		pkNetSlave = GetObjectByNetWorkID(iObjectID);
+		if(pkNetSlave == NULL) {
+			//Logf("net", " Object '%d' not found.\n", iObjectID);	
+			}
+		else {
+			Delete(pkNetSlave);
+			}
+		pkNetPacket->Read(iObjectID);
+		}	
+}*/
+
+
+

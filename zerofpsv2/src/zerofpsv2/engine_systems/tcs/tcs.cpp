@@ -92,6 +92,10 @@ void Tcs::Update(float fAlphaTime)
 	if(m_kBodys.empty())
 		return;
 	
+	//make sure alpha time is not to small
+	if(fAlphaTime > 0.1) 
+		fAlphaTime = 0.1; 
+			
 	float fStartTime = m_pkZeroFps->GetTicks();
 	float fRTime = fAlphaTime;
 	m_iNrOfCollissions = 0;
@@ -144,7 +148,7 @@ void Tcs::Update(float fAlphaTime)
 	}
 	
 	//update all character ground line tests
-	UpdateLineTests();
+	UpdateLineTests(fAlphaTime);
 	
 	//synd all entitys to bodys
 	SyncEntitys();
@@ -154,15 +158,14 @@ void Tcs::Update(float fAlphaTime)
 	
 }
 
-void Tcs::UpdateLineTests()
+void Tcs::UpdateLineTests(float fAlphaTime)
 {
 	float distance;
 
 	for(unsigned int i=0;i<m_kBodys.size();i++)
 	{		
 		if(m_kBodys[i]->m_bCharacter)
-		{
-			
+		{	
 			if(TestLine(m_kBodys[i]->m_kNewPos,Vector3(0,-1,0),m_kBodys[i]))
 			{
 				distance = m_kBodys[i]->m_kNewPos.DistanceTo(m_kLastTestPos);
@@ -170,10 +173,17 @@ void Tcs::UpdateLineTests()
 				{
 					m_kBodys[i]->m_kNewPos = m_kLastTestPos + Vector3(0,m_kBodys[i]->m_fLegLength,0);
 					m_kBodys[i]->m_bOnGround = true;
-					m_kBodys[i]->m_kLinearVelocity.y = 0;
+					m_kBodys[i]->m_kLinearVelocity.y= 0;
+				
 				}			
 				else
-					m_kBodys[i]->m_bOnGround = false;				
+					m_kBodys[i]->m_bOnGround = false;			
+					
+
+				//add breaks to character :D					
+				float fOld = m_kBodys[i]->m_kLinearVelocity.y;
+				m_kBodys[i]->m_kLinearVelocity -= 5*(m_kBodys[i]->m_kLinearVelocity * fAlphaTime);						
+				m_kBodys[i]->m_kLinearVelocity.y = fOld;
 			}
 		}
 	}
@@ -377,7 +387,6 @@ void Tcs::UpdateBodyVelnPos(P_Tcs* pkBody,float fAtime)
 	if(pkBody->m_bStatic || pkBody->m_bSleeping)
 		return;
 
-	
 	//apply linear acceleration
 	pkBody->m_kLinearVelocity += pkBody->m_kLinearForce * fAtime;	
 	//apply rotation acceleration
@@ -390,7 +399,7 @@ void Tcs::UpdateBodyVelnPos(P_Tcs* pkBody,float fAtime)
 		
 	
 	//Calculate new position
-	pkBody->m_kNewPos += (pkBody->m_kLinearVelocity * fAtime);// + (pkBody->m_kWalkVel * fAtime);	
+	pkBody->m_kNewPos += (pkBody->m_kLinearVelocity * fAtime);
 	//calculate new rotation 
 	pkBody->m_kNewRotation.RadRotate(pkBody->m_kRotVelocity * fAtime);
 	
@@ -1333,7 +1342,6 @@ void Tcs::TryToSleep(P_Tcs* pkBody1,P_Tcs* pkBody2)
 		pkBody2->Wakeup();				
 		
 */		
-				
 	if((pkBody1->m_kLinearVelocity.Length() < m_fSleepVel) &&
 		(pkBody1->m_kRotVelocity.Length() <  m_fSleepVel/2) &&
 		(pkBody2->m_kLinearVelocity.Length() < m_fSleepVel) &&

@@ -1,5 +1,5 @@
 SRC=../
-BINARY=test
+BINARY=arcade
 BINDIR=$(SRC)../bin/
 LIBS=-L$(BINDIR) -L/usr/X11R6/lib -lengine_systems -lphysics_engine -lbasic -lengine -lmcommon -lrender -lscript -lgui
 

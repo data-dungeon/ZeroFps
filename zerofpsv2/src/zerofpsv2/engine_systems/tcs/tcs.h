@@ -101,7 +101,7 @@ class ENGINE_SYSTEMS_API Tcs : public ZFSubSystem
 		bool CollideMeshVSMesh2(P_Tcs* pkSphere,P_Tcs* pkMesh);			
 		
 		//line tests
-		void UpdateLineTests();		
+		void UpdateLineTests(float fAlphaTime);		
 		void HandleCharacterCollission(P_Tcs* pkCharacter,P_Tcs* pkBody);
 		
 		P_Tcs* TestLine(Vector3 kStart,Vector3 kDir,P_Tcs* pkTester);

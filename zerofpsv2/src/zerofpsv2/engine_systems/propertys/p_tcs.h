@@ -45,6 +45,7 @@ class ENGINE_SYSTEMS_API P_Tcs : public Property
 		float		m_fBounce;
 		float		m_fFriction;
 		bool		m_bSleeping;
+		bool		m_bCantSleep;
 		
       Vector3	m_kRotVel;
 		Vector3	m_kWalkVel;
@@ -131,16 +132,16 @@ class ENGINE_SYSTEMS_API P_Tcs : public Property
 		Vector3 GetVel(Vector3 kPos,bool bLocal = true);
 		
 		//sets 
-		void SetWalkVel(Vector3 kWalkVel) { m_kWalkVel = kWalkVel;};		
-      void SetRotVel (Vector3 kRotVel)    { m_kRotVel = kRotVel; }		
-		void SetPolygonTest(bool t) {m_bPolygonTest = t;};
-		void SetRadius(float t) {m_fRadius = t;};
-		void SetStatic(bool bStatic) {m_bStatic = bStatic;};		
-		void SetRefetchPolygonData() {m_bHavePolygonData = false;};
-		void SetGravity(bool t) {m_bGravity = t;};
-		void SetGroup(int iGroup) {m_iGroup = iGroup;};		
+		void SetWalkVel(Vector3 kWalkVel) 		{m_kWalkVel = kWalkVel;};		
+      void SetRotVel (Vector3 kRotVel)			{m_kRotVel = kRotVel; }		
+		void SetPolygonTest(bool t) 				{m_bPolygonTest = t;};
+		void SetRadius(float t) 					{m_fRadius = t;};
+		void SetStatic(bool bStatic) 				{m_bStatic = bStatic;};		
+		void SetRefetchPolygonData() 				{m_bHavePolygonData = false;};
+		void SetGravity(bool t) 					{m_bGravity = t;};
+		void SetGroup(int iGroup) 					{m_iGroup = iGroup;};		
 		void SetData(vector<Mad_Face> kFaces, vector<Vector3> kVertex, vector<Vector3> kNormals , float fRadius);
-		void SetHmap(HeightMap* pkMap) { m_pkHmap = pkMap; }
+		void SetHmap(HeightMap* pkMap) 			{ m_pkHmap = pkMap; }
 		
 		//gets		
 		Vector3 GetWalkVel() { return m_kWalkVel;}; 				
