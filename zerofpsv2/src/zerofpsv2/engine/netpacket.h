@@ -48,7 +48,7 @@ public:
 	// Target Data
 	/* Group data will be here. */
 	vector<int>			m_iTargetClients;	// List of connections that this packet will be sent to.
-	int					m_iClientID;		// Client ID this packet was recv from.
+	int					m_iClientID;		// Client ID this packet was send/recv from.
 	IPaddress			m_kAddress;			// The IP this packet will be sent to or was recvd from.
 
 

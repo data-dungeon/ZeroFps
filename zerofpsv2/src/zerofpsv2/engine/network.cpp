@@ -396,11 +396,12 @@ bool NetWork::Send2(NetPacket* pkNetPacket)
 	// If we have any clients to send to.
 	if(pkNetPacket->m_iTargetClients.size()) {
 		for(int i=0; i<pkNetPacket->m_iTargetClients.size(); i++) {
-			if(m_RemoteNodes[i].m_eConnectStatus != NETSTATUS_CONNECTED)
+			if(m_RemoteNodes[ pkNetPacket->m_iTargetClients[i] ].m_eConnectStatus != NETSTATUS_CONNECTED)
 				continue;
 			
-			pkNetPacket->m_kAddress = m_RemoteNodes[i].m_kAddress;
-			pkNetPacket->m_kData.m_kHeader.m_iOrder = m_RemoteNodes[i].m_iNumOfPacketsSent;
+			pkNetPacket->m_iClientID = pkNetPacket->m_iTargetClients[i];
+			pkNetPacket->m_kAddress = m_RemoteNodes[ pkNetPacket->m_iClientID ].m_kAddress;
+			pkNetPacket->m_kData.m_kHeader.m_iOrder = m_RemoteNodes[ pkNetPacket->m_iClientID ].m_iNumOfPacketsSent;
 
 			SendRaw(pkNetPacket);
 			}
@@ -409,6 +410,7 @@ bool NetWork::Send2(NetPacket* pkNetPacket)
 		}
 	
 	else {
+		pkNetPacket->m_iClientID = ZF_NET_NOCLIENT;
 		SendRaw(pkNetPacket);
 		return true;
 		}
