@@ -195,7 +195,7 @@ int Mad_Core::GetAnimationTimeInFrames(int iAnim)
 int Mad_Core::GetAnimIndex(char* szName)
 {
 	for(int i=0; i<m_kBoneAnim.size(); i++) {
-		printf("Anim Name %s\n",  m_kBoneAnim[i].m_szName);
+		//printf("Anim Name %s\n",  m_kBoneAnim[i].m_szName);
 		if(strcmp(szName, m_kBoneAnim[i].m_szName) == 0)
 			return i;
 		}
@@ -528,7 +528,7 @@ bool Mad_Core::Create(string MadFileName)
 //bool Mad_Core::LoadMad(const char* MadFileName)
 {
 	strcpy(Name,MadFileName.c_str());
-	cout << "Name " << Name << endl;
+//	cout << "Name " << Name << endl;
 
 	if(strcmp(Name, "/data/mad/goblin.mad") == 0) {
 		int gam = 1;
@@ -745,6 +745,7 @@ void Mad_Core::SetAnimation(vector<Mad_CoreBoneAnimation>	kBoneAnim)
 
 void Mad_Core::PrintCoreInfo()
 {
+	
 	unsigned int i;
 	cout << "Num Of Animations: " << m_kBoneAnim.size() << endl;
 	for(i=0; i<m_kBoneAnim.size(); i++)
@@ -852,7 +853,7 @@ Vector3 Mad_Core::GetJointPosition(char* szJointName)
 {
 	unsigned int i;
 
-	cout << "Num of joints " << m_kSkelleton.size() << endl;
+//	cout << "Num of joints " << m_kSkelleton.size() << endl;
 
 	if(szJointName) {
 		for(i=0; i<m_kSkelleton.size(); i++) {
@@ -896,12 +897,12 @@ void Mad_Core::CreateController(char* szName, char* szJoint, ControllAxis eAxis,
 	kNewControll.m_fValue = 0.0;
 
 	if(kNewControll.m_iJointID == -1) {
-		cout << "Failed to add jointcontroller " << szName << "to joint " << szJoint << endl;
+		//cout << "Failed to add jointcontroller " << szName << "to joint " << szJoint << endl;
 		}
 
 	m_kControllers.push_back(kNewControll);
 
-	cout << "Controller createt for bone" << kNewControll.m_iJointID << endl;
+	//cout << "Controller createt for bone" << kNewControll.m_iJointID << endl;
 }
 
 void Mad_Core::SetControll(char* szName, float fValue)
@@ -918,7 +919,7 @@ void Mad_Core::SetControll(char* szName, float fValue)
 			}
 		}
 
-	cout << "Controller not found" << endl;
+//	cout << "Controller not found" << endl;
 }
 
 int	Mad_Core::GetMeshIDByName(char* szName)

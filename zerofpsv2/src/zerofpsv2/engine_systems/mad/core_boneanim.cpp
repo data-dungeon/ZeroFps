@@ -74,7 +74,7 @@ void Mad_CoreBoneAnimation::Load(ZFVFile* pkZFile)
 		m_kBoneKeyFrames.push_back(NewBoneKeyFrame);
 	}
 
-	printf("Loaded Anim %s - %d Frames\n", m_szName,iNumOfFrames);
+//	printf("Loaded Anim %s - %d Frames\n", m_szName,iNumOfFrames);
 }
 
 int Mad_CoreBoneAnimation::GetSizeInBytes()

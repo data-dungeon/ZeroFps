@@ -27,7 +27,7 @@ Mad_Modell::Mad_Modell()
 	m_iNextAnimation	= MAD_NOANIM;
 
 //	fLastUpdate			= 0;
-	m_bLoop				= false;
+	m_bLoop				= true;
 	m_bActive			= true;
 	m_fScale				= 1.0;
 }
@@ -125,7 +125,7 @@ void Mad_Modell::PlayAnimation(char* szName, float fStartTime)
 		return;
 
 	int iAnimNum = pkCore->GetAnimIndex(szName);
-	printf("Playing Anim %d %f", iAnimNum, pkCore->GetAnimationLengthInS(iAnimNum));
+//	printf("Playing Anim %d %f", iAnimNum, pkCore->GetAnimationLengthInS(iAnimNum));
 
 
 
@@ -164,21 +164,21 @@ void Mad_Modell::UpdateAnimation(float fDelta)
 		if(m_bLoop)
 			fCurrentTime -= fAnimLength;
 		else {
-			fCurrentTime = 1.0;
+			fCurrentTime = fAnimLength;
 			m_bActive = false;
 
 			// We shall not loop so lets try to move on to the next anim if any.
-			//if(m_iNextAnimation != MAD_NOANIM) {
-			//	PlayAnimation(m_iNextAnimation, 0);
-			//	m_iNextAnimation = MAD_NOANIM;
+			if(m_iNextAnimation != MAD_NOANIM) {
+				PlayAnimation(m_iNextAnimation, 0);
+				m_iNextAnimation = MAD_NOANIM;
 				}
 			//else {
 				//
 			//	}
-			//}
+			}
 		}
 
-	printf("Current time %f\n", fCurrentTime);
+//	printf("Current time %f\n", fCurrentTime);
 }
 
 void Mad_Modell::SetScale(float fScale)
@@ -202,7 +202,7 @@ void Mad_Modell::SetNextAnimation(char* szName)
 		return;
 
 	int iAnimNum = pkCore->GetAnimIndex(szName);
-	printf("Playing Anim %d", iAnimNum);
+//	printf("Playing Anim %d", iAnimNum);
 
 	if(iAnimNum == -1)
 		return;
