@@ -26,8 +26,13 @@ public:
 	void Close();
 	void OnCommand(string strController);
 	void OnMouseMove(bool bLeftButtonPressed, int x, int y);
-	bool IsVisible() { if(m_pkInventoryWnd == NULL) return false; return m_pkInventoryWnd && m_pkInventoryWnd->IsVisible(); }
-//	MLContainer* GetContainer();
+	bool IsVisible() 
+	{ 
+		if(m_pkInventoryWnd == NULL) 
+			return false; 
+		return m_pkInventoryWnd->IsVisible(); 
+	}
+	
 	void OpenContainerWnd();
 	void CloseContainerWnd();
 

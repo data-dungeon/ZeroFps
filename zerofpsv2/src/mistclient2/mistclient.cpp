@@ -358,9 +358,6 @@ void MistClient::Input()
 		SetGuiCapture(bSet);
 	}
 
-	//if(m_bGuiCapture)
-	//	return;
-
 	//get relative mouse
 	float x=0;
 	float z=0;		
