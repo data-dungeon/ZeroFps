@@ -377,69 +377,53 @@ bool ZGWinProc( ZGuiWnd* pkWindow, unsigned int uiMessage, int iNumberOfParams, 
 
 bool Test::InitUI()
 {
-
-	ZGuiWnd* pkMainWindow = new ZGuiWnd(Rect(1024/2-500/2,768/2-500/2,1024/2+500/2,768/2+500/2));
+	ZGuiWnd* pkMainWindow = new ZGuiWnd(Rect(1024/2-500/2,768/2-500/2,1024/2+500/2,768/2+100/2));
 //	ZGuiWnd* pkMainWindow2 = new ZGuiWnd(Rect(1024/2-200/2,768/2-200/2,1024/2+200/2,768/2+200/2));
-/*
-	int bk_image1 = pkRender->GetTexMangager()->Load("file:../data/textures/Image1.bmp", 0);
-	int bk_image2 = pkRender->GetTexMangager()->Load("file:../data/textures/Image2.bmp", 0);
-	int bk_image1_a = pkRender->GetTexMangager()->Load("file:../data/textures/Mask1.bmp", 0);
-	int bn1_up = pkRender->GetTexMangager()->Load("file:../data/textures/button_up.bmp", 0);
-	int bn1_down = pkRender->GetTexMangager()->Load("file:../data/textures/button_down.bmp", 0);
-	int bn1_focus = pkRender->GetTexMangager()->Load("file:../data/textures/button_focus.bmp", 0);
-	int radiobn_up = pkRender->GetTexMangager()->Load("file:../data/textures/radiobn_up.bmp", 0);
-	int radiobn_down = pkRender->GetTexMangager()->Load("file:../data/textures/radiobn_down.bmp", 0);
-	int radiobn_a = pkRender->GetTexMangager()->Load("file:../data/textures/radiobn_a.bmp", 0);
-	int font = pkRender->GetTexMangager()->Load("file:../data/textures/font.bmp", 0);
-	int font_a = pkRender->GetTexMangager()->Load("file:../data/textures/font_a.bmp", 0);
 
-/*	pkGui = new ZGui(1024, 768, pkInput);*/
-/*	m_pkGuiRender = new GLGuiRender(1024, 768, pkRender->GetTexMangager(), font);
-	pkGui->SetRenderer(m_pkGuiRender);*/
+//	int bk_image1 = pkRender->GetTexMangager()->Load("file:../data/textures/Image1.bmp", 0);
+//	int bk_image2 = pkRender->GetTexMangager()->Load("file:../data/textures/Image2.bmp", 0);
+//	int bk_image1_a = pkRender->GetTexMangager()->Load("file:../data/textures/Mask1.bmp", 0);
+//	int bn1_up = pkRender->GetTexMangager()->Load("file:../data/textures/button_up.bmp", 0);
+//	int bn1_down = pkRender->GetTexMangager()->Load("file:../data/textures/button_down.bmp", 0);
+//	int bn1_focus = pkRender->GetTexMangager()->Load("file:../data/textures/button_focus.bmp", 0);
+//	int radiobn_up = pkRender->GetTexMangager()->Load("file:../data/textures/radiobn_up.bmp", 0);
+//	int radiobn_down = pkRender->GetTexMangager()->Load("file:../data/textures/radiobn_down.bmp", 0);
+//	int radiobn_a = pkRender->GetTexMangager()->Load("file:../data/textures/radiobn_a.bmp", 0);
+//	int font = pkRender->GetTexMangager()->Load("file:../data/textures/font.bmp", 0);
+//	int font_a = pkRender->GetTexMangager()->Load("file:../data/textures/font_a.bmp", 0);
 
-/*	ZGuiSkin( const long iBkTexID=-1, 
-			  const long iHorzBorderTex=-1, 
-			  const long iVertBorderTex=-1, 
-			  const long iBorderCornerTex=-1, 
-			  const unsigned char byBkR=255, 
-			  const unsigned char byBkG=255, 
-			  const unsigned char byBkB=255,
-			  const unsigned char byBorderR=255, 
-			  const unsigned char byBorderG=255, 
-			  const unsigned char byBorderB=255, 
-			  const unsigned short unBorderSize=0, 
-			  const bool bTileBkSkin = false); */
-/*
-	ZGuiSkin* sk_main = new ZGuiSkin(bk_image1, -1, -1, -1, 255, 255, 255, 255, 0, 0, 5);
-	ZGuiSkin* sk_bn1_up = new ZGuiSkin(bn1_up, -1, -1, -1, 255, 255, 255, 0, 0, 0, 0);
-	ZGuiSkin* sn_bn1_down = new ZGuiSkin(bn1_down, -1, -1, -1, 255, 255, 255, 0, 0, 0, 0);
-	ZGuiSkin* sn_bn1_focus = new ZGuiSkin(bn1_focus, -1, -1, -1, 255, 255, 255, 0, 0, 0, 0);
-	ZGuiSkin* sn_sb1 = new ZGuiSkin(bk_image2, -1, -1, -1, 255, 255, 255, 0, 0, 0, 0);
-	ZGuiSkin* sn_radio_bn_unsel = new ZGuiSkin(radiobn_up, -1, -1, -1, 255, 255, 255, 0, 0, 0, 0);
-	ZGuiSkin* sn_radio_bn_sel = new ZGuiSkin(radiobn_down, -1, -1, -1, 255, 255, 255, 0, 0, 0, 0);
-	ZGuiSkin* sn_font = new ZGuiSkin(font, -1, -1, -1, 255, 255, 255, 0, 0, 0, 0);
-	ZGuiSkin* sn_white = new ZGuiSkin(-1, -1, -1, -1, 255, 255, 255, 0, 0, 0, 8);
-
-	pkMainWindow->SetSkin(sk_main, bk_image1_a);
+	ZGuiSkin* sk_main = new ZGuiSkin(-1, -1, -1, -1, 255, 255, 255, 255, 0, 0, 5);
+//	ZGuiSkin* sk_bn1_up = new ZGuiSkin(bn1_up, -1, -1, -1, 255, 255, 255, 0, 0, 0, 0);
+//	ZGuiSkin* sn_bn1_down = new ZGuiSkin(bn1_down, -1, -1, -1, 255, 255, 255, 0, 0, 0, 0);
+//	ZGuiSkin* sn_bn1_focus = new ZGuiSkin(bn1_focus, -1, -1, -1, 255, 255, 255, 0, 0, 0, 0);
+//	ZGuiSkin* sn_sb1 = new ZGuiSkin(bk_image2, -1, -1, -1, 255, 255, 255, 0, 0, 0, 0);
+//	ZGuiSkin* sn_radio_bn_unsel = new ZGuiSkin(radiobn_up, -1, -1, -1, 255, 255, 255, 0, 0, 0, 0);
+//	ZGuiSkin* sn_radio_bn_sel = new ZGuiSkin(radiobn_down, -1, -1, -1, 255, 255, 255, 0, 0, 0, 0);
+//	ZGuiSkin* sn_font = new ZGuiSkin(font, -1, -1, -1, 255, 255, 255, 0, 0, 0, 0);
+//	ZGuiSkin* sn_white = new ZGuiSkin(-1, -1, -1, -1, 255, 255, 255, 0, 0, 0, 8);
+//
+//	pkMainWindow->SetSkin(sk_main, bk_image1_a);
+//	pkMainWindow->SetMoveArea(Rect(0,0,1024,768));
+//
+//	pkMainWindow2->SetSkin(sn_white);
+//	pkMainWindow2->SetMoveArea(Rect(0,0,1024,768));
+//
+//	ZGuiButton* pkButton = new ZGuiButton(Rect(100,100,180,150),pkMainWindow,true,ID_CLOSE_BUTTON);
+//	pkButton->SetButtonHighLightSkin(sn_bn1_focus);
+//	pkButton->SetButtonDownSkin(sn_bn1_down);
+//	pkButton->SetButtonUpSkin(sk_bn1_up);
+//	pkButton->SetText("Close");
+//	pkButton->SetTextSkin(sn_font, font_a);
+//
+//	ZGuiScrollbar* pkScrollbar = new ZGuiScrollbar(Rect(350,0,370,200),pkMainWindow,true,40);
+//	pkScrollbar->SetSkin(sn_sb1);
+//	pkScrollbar->SetThumbButtonSkins(sk_bn1_up,sk_bn1_up);
+//	
+//	pkGui->AddMainWindow(ID_MAINWND1, pkMainWindow, ZGWinProc, true);
+//	
+	pkMainWindow->SetSkin(sk_main);
 	pkMainWindow->SetMoveArea(Rect(0,0,1024,768));
-
-	pkMainWindow2->SetSkin(sn_white);
-	pkMainWindow2->SetMoveArea(Rect(0,0,1024,768));
-
-	ZGuiButton* pkButton = new ZGuiButton(Rect(100,100,180,150),pkMainWindow,true,ID_CLOSE_BUTTON);
-	pkButton->SetButtonHighLightSkin(sn_bn1_focus);
-	pkButton->SetButtonDownSkin(sn_bn1_down);
-	pkButton->SetButtonUpSkin(sk_bn1_up);
-	pkButton->SetText("Close");
-	pkButton->SetTextSkin(sn_font, font_a);
-
-	ZGuiScrollbar* pkScrollbar = new ZGuiScrollbar(Rect(350,0,370,200),pkMainWindow,true,40);
-	pkScrollbar->SetSkin(sn_sb1);
-	pkScrollbar->SetThumbButtonSkins(sk_bn1_up,sk_bn1_up);
-	
-	pkGui->AddMainWindow(ID_MAINWND1, pkMainWindow, ZGWinProc, true);
-*/	
-//	pkGui->AddMainWindow(ID_MAINWND1+1, pkMainWindow, ZGWinProc, true);
+	pkGui->AddMainWindow(ID_MAINWND1+1, pkMainWindow, ZGWinProc, true);
 
 	return true;
 }

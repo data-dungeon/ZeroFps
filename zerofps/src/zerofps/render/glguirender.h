@@ -17,7 +17,7 @@ class TextureManager;
 class RENDER_API GLGuiRender : public ZGuiRender  
 {
 public:
-	GLGuiRender(int w=0, int h=0, TextureManager* pkTextureManger=NULL);
+	GLGuiRender(/*int w=0, int h=0, TextureManager* pkTextureManger=NULL*/);
 	virtual ~GLGuiRender();
 
 	bool EndRender();
@@ -27,6 +27,7 @@ public:
 	bool SetSkin(ZGuiSkin* pkSkin);
 	bool SetMaskTexture(int iID) { m_iMaskTexture = iID; return true; }
 	bool RenderText( char *stText, Rect kScreenRect, int iFontSize, int iCursorPos, bool bMask=false);
+	bool SetDisplay(int w, int h);
 
 private:
 	GLvoid glPrint(GLint x, GLint y, char *string, int set, int bind_texture_id);	// Where The Printing Happens;

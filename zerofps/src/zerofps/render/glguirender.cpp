@@ -13,15 +13,17 @@
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 
-GLGuiRender::GLGuiRender(int w, int h, TextureManager* pkTextureManger)
+GLGuiRender::GLGuiRender(/*int w, int h, TextureManager* pkTextureManger*/)
 {
 	m_pkSkin = NULL;
-	m_iScreenWidth = w;
-	m_iScreenHeight = h;
+	m_iScreenWidth = 0;
+	m_iScreenHeight = 0;
 	m_iMaskTexture = -1;
-	m_pkTextureManger = pkTextureManger;
+	//m_pkTextureManger = pkTextureManger;
+	m_pkTextureManger=static_cast<TextureManager*>(g_ZFObjSys.GetObjectPtr("TextureManager"));	
 	m_iFontDisplaylistID = 0;
 	BuildFont();
+
 }
 
 GLGuiRender::~GLGuiRender()
@@ -424,4 +426,11 @@ void GLGuiRender::BuildFont()
 			glTranslated(12,0,0);						// Move To The Right Of The Character
 		glEndList();									// Done Building The Display List
 	}													// Loop Until All 256 Are Built
+}
+
+bool GLGuiRender::SetDisplay(int w, int h)
+{
+	m_iScreenWidth = w, 
+	m_iScreenHeight = h;
+	return true;
 }

@@ -48,17 +48,17 @@ public:
 	typedef bool (*callback)(ZGuiWnd* pkWnd, unsigned int uiMessage, int iNumParams, void *pParams);
 	typedef list<ZGuiWnd*>::iterator WIN;
 
-	ZGui(int uiScreenWidth=800, int uiScreenHeight=600, Input* pkInput=NULL);
+	ZGui(/*int uiScreenWidth=800, int uiScreenHeight=600, Input* pkInput=NULL*/);
 	~ZGui();
 
-	bool Initialize(int uiScreenWidth, int uiScreenHeight, Input* pkInput);
+	//bool Initialize(int uiScreenWidth, int uiScreenHeight, Input* pkInput);
 	bool Update();
 
 	ZGuiWnd* GetWindow(unsigned int iID);
 
 	bool AddMainWindow( int iID, ZGuiWnd* pkWindow, callback cb = NULL, bool bSetAsActive = false);		// Add a new main window
 	bool SetActiveMainWindow(int iID);									// Select a new active main window
-	bool SetRenderer( ZGuiRender* pkRender );							// Set a new gui render object
+//	bool SetRenderer( ZGuiRender* pkRender );							// Set a new gui render object
 	bool SetMainWindowCallback( int iID, callback cb = NULL );					// Set a callback function for a specific window
 	
 	ZGuiWnd* GetActiveMainWnd() { if(m_pkActiveMainWin) return m_pkActiveMainWin->pkWin; return NULL; }
@@ -95,7 +95,7 @@ private:
 	MAIN_WINDOW* m_pkActiveMainWin;	// Pointer to the active main window
 
 	map<int, ZGuiWnd*> m_pkWindows;
-	int m_uiScreenWidth, m_uiScreenHeight;
+	//int m_uiScreenWidth, m_uiScreenHeight;
 	bool m_bLeftButtonDown; // previus state of the left mouse button.
 	bool m_bRightButtonDown; // previus state of the left mouse button.
 

@@ -28,6 +28,7 @@ public:
 	virtual bool SetSkin(ZGuiSkin* pkSkin) = 0;
 	virtual bool RenderText( char *stText, Rect kScreenRect, int iFontSize, int iCursorPos, bool bMask=false) = 0;
 	virtual bool SetMaskTexture(int iID) = 0;
+	virtual bool SetDisplay(int w, int h) = 0;
 };
 
 #endif // !defined(AFX_GUIRENDER_H__689588FE_E416_482A_9654_617B1E478E48__INCLUDED_)

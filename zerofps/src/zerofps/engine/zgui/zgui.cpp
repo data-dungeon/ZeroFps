@@ -23,13 +23,15 @@
 //////////////////////////////////////////////////////////////////////
 
 
-ZGui::ZGui(int uiScreenWidth, int uiScreenHeight, Input* pkInput)
+ZGui::ZGui(/*int uiScreenWidth, int uiScreenHeight, Input* pkInput*/)
 {
-	m_pkInput = pkInput;
+	//m_pkInput = pkInput;
+	m_pkInput = static_cast<Input*>(g_ZFObjSys.GetObjectPtr("Input"));
+	m_pkRenderer = static_cast<ZGuiRender*>(g_ZFObjSys.GetObjectPtr("ZGuiRender"));
 	m_pkActiveMainWin = NULL;
 	m_pkFocusWnd = NULL;
-	m_uiScreenWidth = uiScreenWidth;
-	m_uiScreenHeight = uiScreenHeight;
+/*	m_uiScreenWidth = uiScreenWidth;
+	m_uiScreenHeight = uiScreenHeight;*/
 	m_pkWndClicked = NULL;
 	m_pkWndUnderCursor = NULL;
 	m_bLeftButtonDown = false;
@@ -42,13 +44,13 @@ ZGui::~ZGui()
 
 }
 
-bool ZGui::Initialize(int uiScreenWidth, int uiScreenHeight, Input* pkInput)
+/*bool ZGui::Initialize(int uiScreenWidth, int uiScreenHeight, Input* pkInput)
 {
 	m_uiScreenWidth = uiScreenWidth;
 	m_uiScreenHeight = uiScreenHeight;
 	m_pkInput = pkInput;
 	return true;
-}
+}*/
 
 bool ZGui::Update()
 {
@@ -124,12 +126,12 @@ ZGuiWnd* ZGui::GetWindow(unsigned int iID)
 	return itWnd->second;
 }
 
-bool ZGui::SetRenderer(ZGuiRender* pkRenderer)
+/*bool ZGui::SetRenderer(ZGuiRender* pkRenderer)
 {
 	m_pkRenderer = pkRenderer;
 	m_pkActiveMainWin = NULL;
 	return true;
-}
+}*/
 
 // Rendera det aktiva fönstret (och alla dess childs)
 bool ZGui::Render()
