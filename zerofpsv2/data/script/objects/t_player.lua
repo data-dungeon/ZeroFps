@@ -9,15 +9,15 @@ function Create()
 		SetParentObject();
 		SetReturnObject();
 	
---	for x = 0,360,20
---	do
-		InitObject();
+	for x = 0,360,45
+	do
+		InitObject(); 
 			InitProperty("PSystemProperty");
 				InitParameter("PSType","Smoke");				
 			SetLocalPos(Sin(x)*5,5,Cos(x)*5);	
 			AttachToParent();			
 			HaveRelativOri();
---	end
+	end
 
 	InitObject();
 		InitProperty("PSystemProperty");
@@ -25,25 +25,6 @@ function Create()
 		SetLocalPos(0,25,0);	
 		AttachToParent();
 		HaveRelativOri();
-	
-end
-
-function Init()
-	Print("Im the big bad ORC");
-
-	die = GetClosestObject();
-
-	if die
-	then 
-		Print("My Closest object is: ",die);
-		Print("Die :",die);
-			
-		RemoveObject(die);
-	else
-		Print("I have to friends");
-	end
-
-
 	
 end
 
@@ -57,12 +38,17 @@ function Update1S()
 
 	if die
 	then 
-		Print("My Closest object is: ",die);
-		Print("Die :",die);
+--		Print("My Closest object is: ",die);
+--		Print("Die :",die);
 			
 		RemoveObject(die);
 	else
-		Print("I have to friends");
+--		Print("I have no friends");
 	end
 end
 
+
+function Use()
+	Print("U clicked on me");
+
+end

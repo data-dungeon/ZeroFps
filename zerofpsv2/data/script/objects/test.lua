@@ -6,7 +6,7 @@ function Create()
 		InitProperty("PSystemProperty");
 			InitParameter("PSType","Smoke");
 		SetLocalPos(x,0,x);
-		AttachToClosestZone();
+		AttachToClosestZone(); 
 	
 end
 
