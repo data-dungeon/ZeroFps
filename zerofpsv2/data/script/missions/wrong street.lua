@@ -1,0 +1,116 @@
+
+--///////////////////////////////////////////////////////////////////////////////
+--//
+--// Mission: Wrong street
+--//
+--///////////////////////////////////////////////////////////////////////////////
+
+NumOfBaldies = 1; -- max number of baldies, not numbers left
+HarryLastLife = 0;
+HarryID = 0; -- Bad guyen man ska döda
+Baldies = {}; -- Harrys goons
+HarryHouseID = 0; -- harrys hus, dör alla hans goons springer han in hit och hämtar fler
+
+MissionInfo = { name="Wrong street", difficulty=1, xp=900, cash=500, success=0 } -- difficulty = Level
+
+MissionText = 
+{ 
+	short = "Wrong street\n\nSome petty gansters have started selling drugs in the wrong hood and need some demotivation.",
+	long = [[Wrong street\n\nLarge Leonard, the local drugdealer and maffia boss is pissed off. Someone has begun selling drogs in his neighborhood, and not just anyone - it's Harry Hair and his gang of baldies, a gang of lowly and petty thieves! They sure need to be taught a lesson or two.\nLeonard usually finishes his own buissnisses, but thinks to highly of himself to do such a small work. That´s where you come in.\nHe wants you to make Harry and his gang a visit and teach them how hard it is to run your own buissness. Harry is recognized by his large afro hair, and all his gang members are bald.\n\nReward: 500 cash\nObjectives: Kill Harry and return to base.]]
+}
+
+function OnMissionStart()
+	-- create harry and his gangmembers
+
+	--position modifier for the whole gang
+	local pos = {0,0,0};
+
+	HarryID = RunScript("data/script/objects/dm/t_harry.lua");
+
+	for i = 0, NumOfBaldies, 1
+	do
+		Baldies[i] = RunScript("data/script/objects/dm/t_baldie.lua");
+		local newpos = {0,0,0};
+		newpos[0] = Random(6) - 3;
+		newpos[1] = 0;
+		newpos[2] = Random(6) - 3;
+
+		SetObjectPos (Baldies[i], newpos);
+	end
+	
+	HarryHouseID = GetDMObject (3);
+
+	Print ("HOUSE:");
+	Print(HarryHouseID);
+
+end
+
+function OnMissionSuccess()
+
+
+
+end
+
+function OnMissionFailed()
+
+
+
+end
+
+function IsMissionDone()
+	if IsDead(HarryID) == 1 then
+		MissionInfo.success = 1;
+		return
+	end
+
+	-- kolla om harry är på väg till sitt hus
+	if GetState(HarryID) == 3 then
+		--kolla om han nått fram till huset
+		if DistanceTo(HarryID, HarryHouseID) < 1 then
+			SetState(HarryID, 4); --agro
+			SwallowPlayer(HarryHouseID, HarryID, 5);
+			PlayAnim(HarryHouseID, "open");
+			SetNextAnim(HarryHouseID, "idle");
+		end
+
+
+		return		
+	end
+
+
+	-- kolla om harry blivit skadad, isåfall, gå berserk med alla goons
+	if GetCharStats(HarryID, 0) < HarryLastLife then
+		SetState (HarryID, 2);
+		for i = 0, NumOfBaldies, 1
+		do
+			SetState (Baldies[i], 4);
+		end
+	end
+
+	HarryLastLife = GetCharStats(HarryID, 0);
+
+	-- kolla hur många baldies som lever, är alla döda, får harry panic och springer och hämtar fler
+	-- i sitt hus
+	BaldLive = NumOfBaldies;
+
+	for i = 0, NumOfBaldies, 1
+	do
+		if IsDead(Baldies[i]) == 1 then
+			BaldLive = BaldLive - 1;
+		end
+	end
+
+	if BaldLive < 0 then
+		SetState (HarryID, 3); -- panic
+		housepos = GetEntityPos(HarryHouseID);
+		MakePathFind(HarryID, housepos);
+	end
+		
+
+end
+
+function IsMissionFailed()
+
+
+
+end
