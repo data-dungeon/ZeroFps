@@ -231,6 +231,7 @@ void Container::PrintContainer()
 				cout<<" ";
 			else
 				cout<<GetID(x,y);
+			
 		}
 		cout<<endl;
 	}
