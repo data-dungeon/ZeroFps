@@ -79,6 +79,10 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "zeroed", "zeroed\zeroed.vcp
 		{7B1956AB-8670-4D72-9E48-83B4B6FCF3EA} = {7B1956AB-8670-4D72-9E48-83B4B6FCF3EA}
 	EndProjectSection
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "fps_test", "fps_test\fps_test.vcproj", "{B1EDC267-400E-4F5B-AA0E-44B03A9F6617}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfiguration) = preSolution
 		Debug = Debug
@@ -137,6 +141,10 @@ Global
 		{7F410D25-3341-4C83-A8F3-6F1526CE4B0C}.Debug.Build.0 = Debug|Win32
 		{7F410D25-3341-4C83-A8F3-6F1526CE4B0C}.Release.ActiveCfg = Release|Win32
 		{7F410D25-3341-4C83-A8F3-6F1526CE4B0C}.Release.Build.0 = Release|Win32
+		{B1EDC267-400E-4F5B-AA0E-44B03A9F6617}.Debug.ActiveCfg = Debug|Win32
+		{B1EDC267-400E-4F5B-AA0E-44B03A9F6617}.Debug.Build.0 = Debug|Win32
+		{B1EDC267-400E-4F5B-AA0E-44B03A9F6617}.Release.ActiveCfg = Release|Win32
+		{B1EDC267-400E-4F5B-AA0E-44B03A9F6617}.Release.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 	EndGlobalSection
