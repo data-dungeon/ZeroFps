@@ -190,9 +190,6 @@
 				RelativePath="..\engine_systems\common\heightmap.cpp">
 			</File>
 			<File
-				RelativePath="..\engine_systems\common\heightmap2.cpp">
-			</File>
-			<File
 				RelativePath="..\engine_systems\common\i_heightmap2.cpp">
 			</File>
 			<File
@@ -236,12 +233,6 @@
 			</File>
 			<File
 				RelativePath="..\engine_systems\propertys\p_crossrender.cpp">
-			</File>
-			<File
-				RelativePath="..\engine_systems\propertys\p_heightmap2.cpp">
-			</File>
-			<File
-				RelativePath="..\engine_systems\propertys\p_heightmaprender.cpp">
 			</File>
 			<File
 				RelativePath="..\engine_systems\propertys\p_hmrp2.cpp">
@@ -344,9 +335,6 @@
 				RelativePath="..\engine_systems\common\heightmap.h">
 			</File>
 			<File
-				RelativePath="..\engine_systems\common\heightmap2.h">
-			</File>
-			<File
 				RelativePath="..\engine_systems\common\i_heightmap2.h">
 			</File>
 			<File
@@ -399,12 +387,6 @@
 			</File>
 			<File
 				RelativePath="..\engine_systems\propertys\p_crossrender.h">
-			</File>
-			<File
-				RelativePath="..\engine_systems\propertys\p_heightmap2.h">
-			</File>
-			<File
-				RelativePath="..\engine_systems\propertys\p_heightmaprender.h">
 			</File>
 			<File
 				RelativePath="..\engine_systems\propertys\p_hmrp2.h">

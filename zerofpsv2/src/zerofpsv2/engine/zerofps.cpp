@@ -1281,14 +1281,14 @@ void ZeroFps::RegisterPropertys()
 	m_pkPropertyFactory->Register("P_Light",				Create_LightProperty);					
 	m_pkPropertyFactory->Register("P_LinkToJoint",		Create_LinkToJoint);										
 	m_pkPropertyFactory->Register("P_Mad",					Create_MadProperty);				
-	m_pkPropertyFactory->Register("P_Heightmap2",		Create_P_Heightmap2);
+	//m_pkPropertyFactory->Register("P_Heightmap2",		Create_P_Heightmap2);
 	m_pkPropertyFactory->Register("P_Camera",				Create_CameraProperty);			
 	m_pkPropertyFactory->Register("P_Vegitation",		Create_VegitationProperty);
 	m_pkPropertyFactory->Register("P_WaterRender",		Create_WaterRenderProperty);	
 	m_pkPropertyFactory->Register("P_BillBoardRender", Create_BillBoardRenderProperty);
 	m_pkPropertyFactory->Register("P_CrossRender",		Create_CrossRenderProperty);
 	m_pkPropertyFactory->Register("P_SkyBoxRender",		Create_SkyBoxRenderProperty);		
-	m_pkPropertyFactory->Register("P_HeightMapRender",	Create_HeightMapRenderProperty);		
+	//m_pkPropertyFactory->Register("P_HeightMapRender",	Create_HeightMapRenderProperty);		
 	m_pkPropertyFactory->Register("P_HMRP2",				Create_HMRP2);			
 	m_pkPropertyFactory->Register("P_PSystem",			Create_PSystemProperty);											
 

@@ -1304,7 +1304,7 @@ void Render::DrawPatch_Vim1(HeightMap* kMap,Vector3 CamPos,int xp,int zp,int iSi
 	delete [] pkLandTextureCoo2;
 }*/
 
-
+/*
 
 void Render::DrawHM2(Heightmap2* pkMap,Vector3 kCamPos)
 {
@@ -1338,10 +1338,10 @@ void Render::DrawHM2(Heightmap2* pkMap,Vector3 kCamPos)
 	
 	//cout<<"hora loading material"<<endl;
 	//ZMaterial* test = (ZMaterial*)m_pkMap2->GetMaterial()->GetResourcePtr();		
-	/*ResTexture*  bla = (ResTexture*)test->GetPass(0)->m_kTUs[0].GetResourcePtr();
-	if(bla)
-		cout<<"tu0: "<<bla->strTextureName<<endl;		
-*/
+	//ResTexture*  bla = (ResTexture*)test->GetPass(0)->m_kTUs[0].GetResourcePtr();
+	//if(bla)
+	//	cout<<"tu0: "<<bla->strTextureName<<endl;		
+
 	
 	m_pkZShader->Reset();
 	m_pkZShader->SetMaterial(test);
@@ -1375,7 +1375,7 @@ void Render::DrawHM2(Heightmap2* pkMap,Vector3 kCamPos)
 	
 	glPopMatrix();
 }
-
+*/
 
 
 
