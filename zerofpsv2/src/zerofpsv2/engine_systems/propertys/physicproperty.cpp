@@ -14,6 +14,8 @@ PhysicProperty::PhysicProperty()
 	m_iType=PROPERTY_TYPE_PHYSIC;
 	m_iSide=PROPERTY_SIDE_SERVER;	
 	
+	bNetwork  = false;
+	
 	m_bGravity=false;
 	m_bFloat=false;	
 	m_bSolid=false;	

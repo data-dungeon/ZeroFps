@@ -218,6 +218,10 @@ void P_Enviroment::SetEnviroment(char* csEnviroment )
 	//reset everything
 	ResetEnviroment();
 
+	//dont even try to load if theres no string
+	if(m_StrCurrentEnviroment == "")
+		return;
+
 	ZFResourceHandle* pkTempenv = new ZFResourceHandle;	
 	
 	//load enviroment settings

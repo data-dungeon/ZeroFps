@@ -2061,13 +2061,14 @@ int MistLandLua::CastSpellLua (lua_State* pkLua)
          double dTarget;
          g_pkScript->GetArgNumber(pkLua, 2, &dTarget);
 
+			Object* me = g_pkObjMan->GetObjectByNetWorkID(dCaster);
+			if(!me)
+				return 0;
+
+			//cout<<"pos:"<<me.x<<endl;
 
          Object* pkSpell = 
-                 g_pkObjMan->CreateObjectFromScript (acValue);
-
-         pkSpell->SetWorldPosV (g_pkObjMan->CreateObjectByNetWorkID(dCaster)->GetWorldPosV());
-
-         pkSpell->AttachToZone();
+                 g_pkObjMan->CreateObjectFromScriptInZone(acValue,me->GetWorldPosV());
 
          P_Spell* pkSpellProp = (P_Spell*)pkSpell->GetProperty("P_Spell");
          pkSpellProp->SetCaster ( dCaster );

@@ -19,21 +19,19 @@ vector<PropertyValues> CharacterProperty::GetPropertyValues()
 	kReturn[0].pkValue    = (void*)&m_kPSType;*/
 
 	return kReturn;
-
-	bNetwork = true;
 }
 
 // ------------------------------------------------------------------------------------------
 
 CharacterProperty::CharacterProperty()
 {
-	m_iSide = PROPERTY_SIDE_CLIENT;
+	m_iSide = PROPERTY_SIDE_SERVER;
    
    m_pkCharStats = new CharacterStats( m_pkObject );
 
 	strcpy(m_acName,"P_CharStats");
 
-	bNetwork = true;
+	bNetwork = false;
 }
 
 // ------------------------------------------------------------------------------------------
@@ -85,7 +83,6 @@ void CharacterProperty::Save(ZFIoInterface* pkPackage)
    pkPackage->Write ( (void*)&iAttacks, sizeof(int), 1 );
    pkPackage->Write ( (void*)&iDefence, sizeof(int), 1 );
 
-   
    // save data
    for ( kDataIte = m_pkCharStats->m_kData.begin(); kDataIte != m_pkCharStats->m_kData.end(); kDataIte++ )
    {
@@ -121,7 +118,7 @@ void CharacterProperty::Save(ZFIoInterface* pkPackage)
       fValue = (*kIte).second.m_fExp; // exp
       pkPackage->Write ( (void*)&fValue, sizeof(float), 1 );
    }
-
+   
    // save equipment
    for ( kEqIte = m_pkCharStats->m_kEquipment.begin(); kEqIte != m_pkCharStats->m_kEquipment.end(); kEqIte++ )
    {
@@ -131,7 +128,6 @@ void CharacterProperty::Save(ZFIoInterface* pkPackage)
       iValue = (*kEqIte).second->iNetWorkID; // network ID
       pkPackage->Write ( (void*)&iValue, sizeof(int), 1 );
    }
-    
    // save attack stats
    for ( kFightIte = m_pkCharStats->m_kFightStats.m_kAttack.begin(); kFightIte != m_pkCharStats->m_kFightStats.m_kAttack.end(); kFightIte++ )
    {
@@ -141,7 +137,7 @@ void CharacterProperty::Save(ZFIoInterface* pkPackage)
       iValue = (*kFightIte).second; // level
       pkPackage->Write ( (void*)&iValue, sizeof(int), 1 );
    }
-
+   
    // save defence stats
    for ( kFightIte = m_pkCharStats->m_kFightStats.m_kDefence.begin(); kFightIte != m_pkCharStats->m_kFightStats.m_kDefence.end(); kFightIte++ )
    {
@@ -152,7 +148,6 @@ void CharacterProperty::Save(ZFIoInterface* pkPackage)
       pkPackage->Write ( (void*)&iValue, sizeof(int), 1 );
    }
 
-   
    // save parentID
    if ( m_pkCharStats->m_pkParent )
       iValue = m_pkCharStats->m_pkParent->iNetWorkID;
@@ -160,7 +155,6 @@ void CharacterProperty::Save(ZFIoInterface* pkPackage)
       iValue = 0;
 
    pkPackage->Write ( (void*)&iValue, sizeof(int), 1 );
-
 }
 
 // ------------------------------------------------------------------------------------------
