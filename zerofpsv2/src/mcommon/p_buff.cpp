@@ -20,6 +20,9 @@ P_Buff::P_Buff()
 	m_fTimeOut	= -1;
 	m_cType		= 0;
 	m_bShow		= true;
+	
+	
+	m_fAddTime	= 0;
 }
 
 P_Buff::~P_Buff()
@@ -37,27 +40,38 @@ void P_Buff::Init()
 
 void P_Buff::Update()
 {
-	//dont do anything if character is already set
+	//have character
 	if(m_pkCharacter)
-		return;
-	
-	//check if parent or parent parent is a character
-	if(P_CharacterProperty* pkCP = (P_CharacterProperty*)GetEntity()->GetProperty("P_CharacterProperty"))
-	{		
-		cout<<"parent is a character, applying buff"<<endl;		
-		
-		Enable(pkCP);		
-		return;
-	}
-
-	
-	if(Entity* pkGrandParent = GetEntity()->GetParent())
 	{
-		if(P_CharacterProperty* pkCP = (P_CharacterProperty*)pkGrandParent->GetProperty("P_CharacterProperty"))
+		if(m_fTimeOut != -1)
 		{
-			cout<<"grandparent is a character , applying buff"<<endl;
-			Enable(pkCP);
+			if(m_pkZeroFps->GetTicks() > m_fAddTime + m_fTimeOut)
+			{
+				m_pkCharacter->RemoveBuff(this);
+			}
+		}
+	}
+	else
+	{
+		
+		//check if parent or parent parent is a character
+		if(P_CharacterProperty* pkCP = (P_CharacterProperty*)GetEntity()->GetProperty("P_CharacterProperty"))
+		{		
+			cout<<"parent is a character, applying buff"<<endl;		
+			
+			Enable(pkCP);		
 			return;
+		}
+	
+		
+		if(Entity* pkGrandParent = GetEntity()->GetParent())
+		{
+			if(P_CharacterProperty* pkCP = (P_CharacterProperty*)pkGrandParent->GetProperty("P_CharacterProperty"))
+			{
+				cout<<"grandparent is a character , applying buff"<<endl;
+				Enable(pkCP);
+				return;
+			}
 		}
 	}
 }
@@ -73,6 +87,8 @@ void P_Buff::Enable(P_CharacterProperty* pkCP)
 	kParams.push_back(ScriptFuncArg( &iID,tINT));	
 	
 	m_pkEntityManager->CallFunction(GetEntity(),"AddBuff",&kParams);
+	
+	m_fAddTime = m_pkZeroFps->GetTicks();
 }
 
 void P_Buff::Disable()

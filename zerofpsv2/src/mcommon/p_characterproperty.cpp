@@ -557,6 +557,7 @@ void P_CharacterProperty::SendBuffList()
 }
 
 
+
 P_Buff* P_CharacterProperty::AddBuff(const string& strBuffName)
 {
 	const string strBuffDir = "data/script/objects/buffs/";
@@ -574,6 +575,24 @@ P_Buff* P_CharacterProperty::AddBuff(const string& strBuffName)
 		
 	cout<<"WARNING: could not add buff "<<strBuffName<<endl;
 	return NULL;
+}
+
+void P_CharacterProperty::RemoveBuff(const string& strBuffName)
+{
+	vector<Property*> kProps;
+	GetEntity()->GetAllPropertys(&kProps,PROPERTY_TYPE_NORMAL,PROPERTY_SIDE_SERVER);
+
+	for(int i = 0;i<kProps.size();i++)
+	{
+		if(P_Buff* pkBuff = dynamic_cast<P_Buff*>(kProps[i]))
+		{
+			if(pkBuff->m_strName == strBuffName)
+			{
+				cout<<"removing buffs by name: "<<strBuffName<<endl;
+				RemoveBuff(pkBuff);
+			}
+		}
+	}
 }
 
 void P_CharacterProperty::RemoveBuff(P_Buff* pkBuff)
@@ -741,7 +760,45 @@ namespace SI_P_CharacterProperty
 		return 0;			
 	}
 	
+	int AddBuffLua(lua_State* pkLua)
+	{
+		if(g_pkScript->GetNumArgs(pkLua) != 2)
+			return 0;		
 
+			
+		int iCharcterID;
+		char czBuff[128];
+		
+		g_pkScript->GetArgInt(pkLua, 0, &iCharcterID);
+		g_pkScript->GetArgString(pkLua, 1,czBuff);
+		
+		
+		if(P_CharacterProperty* pkCP = (P_CharacterProperty*)g_pkObjMan->GetPropertyFromEntityID(iCharcterID,"P_CharacterProperty"))
+			pkCP->AddBuff(czBuff);		
+	
+		return 0;			
+	}
+
+	int RemoveBuffLua(lua_State* pkLua)
+	{
+		if(g_pkScript->GetNumArgs(pkLua) != 2)
+			return 0;		
+
+			
+		int iCharcterID;
+		char czBuff[128];
+		
+		g_pkScript->GetArgInt(pkLua, 0, &iCharcterID);
+		g_pkScript->GetArgString(pkLua, 1,czBuff);
+		
+		
+		if(P_CharacterProperty* pkCP = (P_CharacterProperty*)g_pkObjMan->GetPropertyFromEntityID(iCharcterID,"P_CharacterProperty"))
+			pkCP->RemoveBuff(czBuff);		
+	
+		return 0;			
+	}
+		
+	
 	int PickupItemLua(lua_State* pkLua)
 	{
 		if(g_pkScript->GetNumArgs(pkLua) != 2)
@@ -820,11 +877,14 @@ void Register_P_CharacterProperty(ZeroFps* pkZeroFps)
 	pkZeroFps->m_pkPropertyFactory->Register("P_CharacterProperty", Create_P_CharacterProperty);					
 
 	// Register Property Script Interface
-	g_pkScript->ExposeFunction("PickupItem",	SI_P_CharacterProperty::PickupItemLua);
-	g_pkScript->ExposeFunction("HaveItem",		SI_P_CharacterProperty::HaveItemLua);
+	g_pkScript->ExposeFunction("PickupItem",		SI_P_CharacterProperty::PickupItemLua);
+	g_pkScript->ExposeFunction("HaveItem",			SI_P_CharacterProperty::HaveItemLua);
 
 	g_pkScript->ExposeFunction("ChangeStat",		SI_P_CharacterProperty::ChangeStatLua);
-	g_pkScript->ExposeFunction("ChangeStatMod",		SI_P_CharacterProperty::ChangeStatModLua);
+	g_pkScript->ExposeFunction("ChangeStatMod",	SI_P_CharacterProperty::ChangeStatModLua);
+	
+	g_pkScript->ExposeFunction("AddBuff",			SI_P_CharacterProperty::AddBuffLua);
+	g_pkScript->ExposeFunction("RemoveBuff",		SI_P_CharacterProperty::RemoveBuffLua);
 	
 }
 

@@ -26,6 +26,8 @@ class MCOMMON_API P_Buff: public Property
 		bool		m_bShow;		
 		
 		
+		float		m_fAddTime;
+		
 		
 		void Enable(P_CharacterProperty* pkCP);
 		void Disable();

@@ -197,6 +197,7 @@ class MCOMMON_API P_CharacterProperty: public Property
 		
 		P_Buff* AddBuff(const string& strBuffName);			//creates and adds buff to character 
 		void RemoveBuff(P_Buff* pkBuff);							//removes buffs
+		void RemoveBuff(const string& strBuffName);
 		
 		
 		//client code
