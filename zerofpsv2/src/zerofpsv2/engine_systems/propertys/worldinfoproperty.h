@@ -2,14 +2,14 @@
 #define _ENGINE_WORLDINFOPROPERTY_H_
 
 #include <string>
-
+#include "../engine_systems_x.h"
 #include "../../engine/property.h"
 #include "../../basic/zfobjectmanger.h"
 #include "../../engine/zerofps.h"
 
 class ZeroFps;
 
-class WorldInfoProperty: public Property {
+class ENGINE_SYSTEMS_API WorldInfoProperty: public Property {
 	private:
 		ZeroFps *m_pkFps;
 	

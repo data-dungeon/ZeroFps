@@ -5,11 +5,12 @@
 #include "../../engine/zerofps.h"
 #include "../../engine/property.h"
 #include <string>
+#include "../engine_systems_x.h"
 using namespace std;
 
 #define NO_ANIMATION_ID	-1
 
-class ENGINE_API MadProperty : public Property, public Mad_Modell {
+class ENGINE_SYSTEMS_API MadProperty : public Property, public Mad_Modell {
 	private:
 		vector<PropertyValues> GetPropertyValues();
 		bool HandleSetValue( string kValueName ,string kValue );

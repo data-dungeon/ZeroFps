@@ -4,10 +4,11 @@
 #include "../../engine/property.h"
 #include "../../engine/engine_x.h"
 #include "../../engine/object.h"
+#include "../engine_systems_x.h"
 
 using namespace std;
 
-class ENGINE_API LightUpdateProperty: public Property
+class ENGINE_SYSTEMS_API LightUpdateProperty: public Property
 {
 	private:
 		Light* m_pkLight;

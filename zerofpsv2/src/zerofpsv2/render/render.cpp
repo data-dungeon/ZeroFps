@@ -41,7 +41,7 @@ bool Render::StartUp()
 //	m_kHeightmapMaterial.AddPass()->m_iPolygonModeFront = GL_LINE;
 //	m_kHeightmapMaterial.GetPass(1)->m_bCullFace = false;
 	m_kHeightmapMaterial.m_bCopyData = false;
-	m_kHeightmapMaterial.m_bWaves = false;	
+	m_kHeightmapMaterial.m_bWaves = true;	
 	m_kHeightmapMaterial.m_bRandomMovements = false;		
 
 	return true;

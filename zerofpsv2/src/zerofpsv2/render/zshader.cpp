@@ -33,7 +33,8 @@ void ZShader::Reset()
 	m_bCopyedData =		false;
 	
 	SetDrawMode(POLYGON_MODE);
-
+	
+	SetupClientStates();
 }
 
 void ZShader::SetPointer(int iType,void* pkPointer)
@@ -219,8 +220,9 @@ void ZShader::Waves()
 {	
 	for(int i=0;i<m_iNrOfVertexs;i++)
 	{
-		m_pkVertexPointer[i].y += sin(SDL_GetTicks()/500.0 + i*0.1);
-
+		//m_pkVertexPointer[i].y += sin(SDL_GetTicks()/500.0 + i*0.1);
+		m_pkTexturePointer0[i].x += sin(SDL_GetTicks()/500.0 + i*0.1);
+		m_pkTexturePointer0[i].y += sin(SDL_GetTicks()/500.0 + i*0.1);		
 	}
 }
 

@@ -5,11 +5,12 @@
 #include <iostream>
 #include "../common/heightmap2.h"
 #include "../../engine/zerofps.h"
+#include "../engine_systems_x.h"
 
 using namespace std;
 
 
-class ENGINE_API P_Heightmap2: public Property {
+class ENGINE_SYSTEMS_API P_Heightmap2: public Property {
 		Heightmap2	m_kMap;
 	
 		Render* m_pkRender;		

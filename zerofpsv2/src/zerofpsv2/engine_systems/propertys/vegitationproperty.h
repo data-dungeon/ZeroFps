@@ -1,6 +1,7 @@
 #ifndef _ENGINE_VEGITATIONPROPERTY_H_
 #define _ENGINE_VEGITATIONPROPERTY_H_
 
+#include "../engine_systems_x.h"
 #include "../../engine/property.h"
 #include <iostream>
 #include <string>
@@ -10,7 +11,7 @@
 using namespace std;
 
 
-class ENGINE_API VegitationProperty: public Property {
+class ENGINE_SYSTEMS_API VegitationProperty: public Property {
 	private:
 		struct vegitation
 		{

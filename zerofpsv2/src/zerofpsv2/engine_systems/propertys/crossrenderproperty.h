@@ -4,11 +4,12 @@
 #include "../../engine/property.h"
 #include <iostream>
 #include <string>
+#include "../engine_systems_x.h"
 
 using namespace std;
 
 
-class ENGINE_API CrossRenderProperty: public Property {
+class ENGINE_SYSTEMS_API CrossRenderProperty: public Property {
 		Frustum* m_pkFrustum;
 		TextureManager* m_pkTexMan;
 		Render* m_pkRender;	

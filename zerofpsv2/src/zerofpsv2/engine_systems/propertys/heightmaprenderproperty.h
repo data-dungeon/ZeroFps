@@ -4,13 +4,13 @@
 #include "../common/heightmap.h"
 #include "../../engine/property.h"
 #include <iostream>
-
+#include "../engine_systems_x.h"
 #include "GL/glut.h"
 
 using namespace std;
 
 
-class ENGINE_API HeightMapRenderProperty: public Property {
+class ENGINE_SYSTEMS_API HeightMapRenderProperty: public Property {
 		HeightMap* m_pkHeightMap;
 		Frustum* m_pkFrustum;
 		TextureManager* m_pkTexMan;

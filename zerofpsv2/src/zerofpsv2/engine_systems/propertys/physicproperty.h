@@ -4,7 +4,7 @@
 #include "../../engine/property.h"
 #include "../physicsengine/collisionshape.h"
 #include <vector>
-
+#include "../engine_systems_x.h"
 
 #include "../../basic/zfobjectmanger.h"
 
@@ -12,7 +12,7 @@ using namespace std;
 
 class CollisionShape;
 
-class ENGINE_API PhysicProperty :public Property
+class ENGINE_SYSTEMS_API PhysicProperty :public Property
 {
 	private:
 		CollisionShape* m_pkColSphere;

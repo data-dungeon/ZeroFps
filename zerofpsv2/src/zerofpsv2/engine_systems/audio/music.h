@@ -14,12 +14,12 @@
 		
 #include <SDL/SDL_mixer.h>		
 #include <iostream>
-#include "../../engine/engine_x.h"
+#include "../engine_systems_x.h"
 #include <iostream>
 
 using namespace std;
 
-class ENGINE_API Music{
+class ENGINE_SYSTEMS_API Music{
 	private:
 		Mix_Music *mus;				//pekare till den laddade musiken
 		char *musicfile;

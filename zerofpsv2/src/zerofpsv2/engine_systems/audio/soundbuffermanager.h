@@ -5,19 +5,19 @@
 #include <AL/al.h>
 #include <string.h>
 #include <vector>
-#include "../../engine/engine_x.h"
+#include "../engine_systems_x.h"
 #include <string>
 #include "../../basic/zfobjectmanger.h"
 
 using namespace std;
 
-class ENGINE_API SoundBuffer {
+class ENGINE_SYSTEMS_API SoundBuffer {
 	public:
 		ALuint m_iIndex;
 		string m_acFile;
 };
 
-class ENGINE_API SoundBufferManager : public ZFObject {
+class ENGINE_SYSTEMS_API SoundBufferManager : public ZFObject {
 	private:
 		vector<SoundBuffer*> m_kBuffers;
 				

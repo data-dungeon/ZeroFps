@@ -2,10 +2,10 @@
 #define _ENGINE_LIGHTPROPERTY_H_
 
 #include "../../engine/property.h"
-
+#include "../engine_systems_x.h"
 using namespace std;
 
-class ENGINE_API LightProperty: public Property {
+class ENGINE_SYSTEMS_API LightProperty: public Property {
 	private:
 		LightSource*	m_pkLightSource;
 		Vector3* pkPos;

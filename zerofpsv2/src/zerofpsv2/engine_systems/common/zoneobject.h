@@ -2,8 +2,9 @@
 #define _ENGINE_ZONEOBJECT_H_
  
 #include "../../engine/zerofps.h"
+#include "../engine_systems_x.h"
 
-class ENGINE_API ZoneObject: public Object {
+class ENGINE_SYSTEMS_API ZoneObject: public Object {
 	private:
 		ZeroFps *m_pkFps;
 		

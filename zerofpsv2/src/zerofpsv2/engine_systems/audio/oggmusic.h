@@ -17,7 +17,7 @@
 #include <iostream>
 //#include <conio.h>
 //#include <sdl.h>
-#include "../../engine/engine_x.h"
+#include "../engine_systems_x.h"
 //#include "zerofps.h"
 #include "../../basic/zfobjectmanger.h"
 
@@ -27,7 +27,7 @@ using std::string;**/
 using namespace std;
 
 class ZeroFps;
-class OggMusic: public ZFObject  
+class ENGINE_SYSTEMS_API OggMusic: public ZFObject  
 {
 public:
 	

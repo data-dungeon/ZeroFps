@@ -7,8 +7,9 @@ using namespace std;
 
 #include "../../engine/property.h"
 #include "../../engine/zerofps.h"
+#include "../engine_systems_x.h"
 
-class ENGINE_API BodyProperty :public Property
+class ENGINE_SYSTEMS_API BodyProperty :public Property
 {
 	private:
 		Physics_Engine*	m_pkPhysics_Engine;

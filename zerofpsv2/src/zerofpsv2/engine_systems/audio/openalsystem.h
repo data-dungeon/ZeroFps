@@ -7,7 +7,7 @@
 #include <string.h>
 #include <string>
 #include "soundbuffermanager.h"
-#include "../../engine/engine_x.h"
+#include "../engine_systems_x.h"
 #include <AL/al.h>
 #include <AL/alut.h>
 #include "oggmusic.h"
@@ -15,7 +15,7 @@
 #include "../../basic/vector3.h"
 #include "../../basic/vector4.h"
 
-class ENGINE_API Sound {
+class ENGINE_SYSTEMS_API Sound {
 	public:
 		string m_acFile;			//wav file to play
 		Vector3 m_kPos;			//sounds position
@@ -29,7 +29,7 @@ class ENGINE_API Sound {
 };
 
 
-class ENGINE_API OpenAlSystem : public ZFObject {
+class ENGINE_SYSTEMS_API OpenAlSystem : public ZFObject {
 	private:
 		struct SourceAlloc{
 			ALuint m_iSource;		

@@ -2,7 +2,7 @@
 #define _ENGINE_MADMODELL_H_
 
 #include "../../engine/zfresourcedb.h"
-#include "../../engine/engine_x.h"
+#include "../engine_systems_x.h"
 #include "mad_core.h"
 #include <vector>
 #include "../../render/texturemanager.h"
@@ -15,7 +15,7 @@
 #define MAD_DRAW_NOLIGHT	32
 
 /// A MAD that can play anims.
-class ENGINE_API Mad_Modell 
+class ENGINE_SYSTEMS_API Mad_Modell 
 {
 private:
 	vector<int>				m_kActiveMesh;

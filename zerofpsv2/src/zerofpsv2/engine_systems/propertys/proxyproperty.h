@@ -8,6 +8,7 @@
 #include "../../engine/zerofps.h"
 #include "../../engine/levelmanager.h"
 #include <string.h>
+#include "../engine_systems_x.h"
 //#include "GL/glut.h"
 
 using namespace std;
@@ -18,7 +19,7 @@ enum PROXYPROPERTY_AKTIONS{
 };
 
 
-class ENGINE_API ProxyProperty: public Property {
+class ENGINE_SYSTEMS_API ProxyProperty: public Property {
 	private:
 		ZeroFps* m_pkFps;
 		LevelManager* m_pkLevelMan;

@@ -5,14 +5,14 @@
 #include "../../basic/zfobjectmanger.h"
 #include <iostream>
 #include "../../engine/zerofps.h"
-
+#include "../engine_systems_x.h"
 #include <string.h>
 //#include "GL/glut.h"
 
 using namespace std;
 
 
-class ENGINE_API SkyBoxRenderProperty: public Property {
+class ENGINE_SYSTEMS_API SkyBoxRenderProperty: public Property {
 		TextureManager* m_pkTexMan;
 		ZeroFps* m_pkZeroFps;
 		Render* m_pkRender;	

@@ -1,6 +1,7 @@
 #ifndef _ENGINE_WATERRENDERPROPERTY_H_
 #define _ENGINE_WATERRENDERPROPERTY_H_
 
+#include "../engine_systems_x.h"
 #include "../../engine/property.h"
 #include <iostream>
 #include "../../basic/zfobjectmanger.h"
@@ -11,7 +12,7 @@
 using namespace std;
 
 
-class ENGINE_API WaterRenderProperty: public Property {
+class ENGINE_SYSTEMS_API WaterRenderProperty: public Property {
 		TextureManager* m_pkTexMan;
 		ZeroFps* m_pkZeroFps;
 		Render*	m_pkRender;	

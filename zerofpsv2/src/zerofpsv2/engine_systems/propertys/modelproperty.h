@@ -3,13 +3,13 @@
 
 #include "../../engine/property.h"
 #include <iostream>
-
+#include "../engine_systems_x.h"
 
 
 using namespace std;
 
 /// Used to display basic simple 3d objects.
-class ENGINE_API ModelProperty: public Property {
+class ENGINE_SYSTEMS_API ModelProperty: public Property {
 	private:
 		Frustum *m_pkFrustum;
 		Render *m_pkRender;		

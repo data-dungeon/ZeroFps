@@ -5,7 +5,7 @@
 using namespace std;
 
 #include <vector>
-#include "../../engine/engine_x.h"
+#include "../engine_systems_x.h"
 #include "../../engine/zfresource.h"
 #include "../../engine/fh.h"
 #include "../../basic/matrix4.h"
@@ -28,20 +28,20 @@ using namespace std;
 // MAD - MD (Mesh Data)
 
 //! Texture coo.
-struct ENGINE_API Mad_TextureCoo
+struct ENGINE_SYSTEMS_API Mad_TextureCoo
 {
 	float	s;							// s Texture Coo.
 	float	t;							// t Texture Coo.
 };
 
 //! A Face in a MAD (with index to vertices).
-struct ENGINE_API Mad_Face
+struct ENGINE_SYSTEMS_API Mad_Face
 {
 	int		iIndex[3];					// Vertex Index of Face.
 };
 
 //! File Header for a MAD Mesh.
-struct ENGINE_API Mad_CoreMeshHeader
+struct ENGINE_SYSTEMS_API Mad_CoreMeshHeader
 {
 	int		iVersionNum;				// Version num.
 	int		iNumOfTextures;				// Num of textures used by mesh.
@@ -53,7 +53,7 @@ struct ENGINE_API Mad_CoreMeshHeader
 };
 
 //! Information about a texture used by a MAD (no raw texture data).
-class ENGINE_API Mad_CoreTexture
+class ENGINE_SYSTEMS_API Mad_CoreTexture
 {
 public:
 	bool	bIsAlphaTest;						// True if needs alpha test.
@@ -70,7 +70,7 @@ public:
 };
 
 /// Mesh VertexFrame
-class ENGINE_API Mad_CoreVertexFrame
+class ENGINE_SYSTEMS_API Mad_CoreVertexFrame
 {
 private:
 	vector<Vector3>	akVertex;			// Array of all vertices.
@@ -97,7 +97,7 @@ public:
 	friend class Body;
 };
 
-class ENGINE_API Mad_CoreKeyFrame
+class ENGINE_SYSTEMS_API Mad_CoreKeyFrame
 {
 public:
 	int		iVertexFrame;				// 
@@ -109,7 +109,7 @@ public:
 	friend class Mad_CoreMesh;
 };
 
-class ENGINE_API Mad_CoreMeshAnimation
+class ENGINE_SYSTEMS_API Mad_CoreMeshAnimation
 {
 private:
 	vector<Mad_CoreKeyFrame>	KeyFrame;	
@@ -132,7 +132,7 @@ public:
 
 /// SubMesh in a Mad. A Submesh is part of a mesh were all surfaces has
 /// the same material properties.
-struct ENGINE_API Mad_CoreSubMesh
+struct ENGINE_SYSTEMS_API Mad_CoreSubMesh
 {
 	int		iTextureIndex;				///< Texture used.
 	int		iFirstTriangle;				///< First triangle to use texture.
@@ -140,7 +140,7 @@ struct ENGINE_API Mad_CoreSubMesh
 };
 
 /// A Mesh in a MAD. 
-class ENGINE_API Mad_CoreMesh
+class ENGINE_SYSTEMS_API Mad_CoreMesh
 { 
 private:
 	vector<Mad_CoreTexture>			akTextures;						///< Texturers used in mesh.			
@@ -235,7 +235,7 @@ public:
 // MAD - SD (Skeletal Data)
 
 /// A Bone in a Bones animated Mesh.
-class ENGINE_API Mad_CoreBone
+class ENGINE_SYSTEMS_API Mad_CoreBone
 {
 public:
 	char				m_acName[32];		// Name of Joint / Bone.
@@ -254,7 +254,7 @@ public:
 };
 
 // MAD - AD (Bone Animation Data)
-class ENGINE_API Mad_CoreBoneKey
+class ENGINE_SYSTEMS_API Mad_CoreBoneKey
 {
 public:
 	Vector3				m_kPosition;		// Position of bone.
@@ -276,7 +276,7 @@ public:
 
 };
 
-class ENGINE_API Mad_CoreBoneKeyFrame
+class ENGINE_SYSTEMS_API Mad_CoreBoneKeyFrame
 {
 private:
 	vector<Mad_CoreBoneKey>		m_kBonePose;	
@@ -307,7 +307,7 @@ public:
 };
 
 /// Contains all bone keyframes in a bone animation.
-class ENGINE_API Mad_CoreBoneAnimation
+class ENGINE_SYSTEMS_API Mad_CoreBoneAnimation
 {
 private:
 	vector<Mad_CoreBoneKeyFrame>	m_kBoneKeyFrames;		///< vector of all bone key frames.
@@ -351,7 +351,7 @@ struct Controller
 };
 
 /// Header for a MAD File 
-struct ENGINE_API Mad_Header
+struct ENGINE_SYSTEMS_API Mad_Header
 {
 	int	m_iVersionNum;									// MAD_VERSION
 	
@@ -360,7 +360,7 @@ struct ENGINE_API Mad_Header
 };
 
 /// 3D Modells with support for Skellet animation. 
-class ENGINE_API Mad_Core : public ZFResource
+class ENGINE_SYSTEMS_API Mad_Core : public ZFResource
 {
 private:
 	vector<Mad_CoreBone>			m_kSkelleton;		// Skelleton for modell.

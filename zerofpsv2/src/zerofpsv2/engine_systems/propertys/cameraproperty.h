@@ -6,10 +6,11 @@
 
 #include "../../engine/camera.h"
 #include "../../engine/zerofps.h"
+#include "../engine_systems_x.h"
 
 using namespace std;
 
-class ENGINE_API CameraProperty:public Property 
+class ENGINE_SYSTEMS_API CameraProperty:public Property 
 {
 	public:
 		enum CamType_e
