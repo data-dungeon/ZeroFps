@@ -302,3 +302,11 @@ void CharacterStats::AddMP( int iValue )
 // diceroll = Dskillvalue, ska vara <= skill-difficulty
 // exp = difficulty / value
 // levelup = 10exp
+
+
+
+
+
+
+
+
