@@ -81,6 +81,10 @@ void Render::InitDisplay(int iWidth,int iHeight,int iDepth)
 		m_iDepth	= iDepth;
 		}
 
+	//reinitialize opengl
+	SDL_QuitSubSystem(SDL_INIT_VIDEO);
+	SDL_InitSubSystem(SDL_INIT_VIDEO);
+		
 	//setup sdl_gl_attributes, this has to be done before creating the sdl opengl window
 	SDL_GL_SetAttribute( SDL_GL_RED_SIZE, 5 );
 	SDL_GL_SetAttribute( SDL_GL_GREEN_SIZE, 5 );
@@ -136,9 +140,6 @@ void Render::SetDisplay()
 {
 	m_pkTexMan->ClearAll();
 
-	//reinitialize opengl
-	SDL_QuitSubSystem(SDL_INIT_VIDEO);
-	SDL_InitSubSystem(SDL_INIT_VIDEO);
 
 	/*
 	//turn of opengl
