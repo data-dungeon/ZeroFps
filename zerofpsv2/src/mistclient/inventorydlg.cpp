@@ -77,6 +77,8 @@ bool InventoryDlg::AddItems(vector<Entity*> &vkItems)
 
 	printf("----INFO---Adding/updating items----INFO-----\n");
 	printf("vkItems size = %i\n", vkItems.size());
+	printf("Inventory current container = %i\n", m_iCurrentContainer);
+	printf("Inventory main container = %i\n", m_iMainContainer);
 
 	for(int i=0; i< vkItems.size(); i++)
 	{
@@ -816,7 +818,6 @@ void InventoryDlg::DropItems()
 
       }
 
-
 		m_pkGui->UnregisterWindow((*it).m_pkLabel);
 
 		kRemoveList.push_back(it);
@@ -917,12 +918,12 @@ void InventoryDlg::UpdateSkin(Slot slot)
 				string strFullPath = string("/data/textures/gui/items/") 
 					+ string(pkItemProp->m_pkItemStats->m_szPic);
 
-/*				if(strcmp(pkItemProp->m_pkItemStats->m_szPic, "dummy.bmp") == 0)
+				if(strcmp(pkItemProp->m_pkItemStats->m_szPic, "dummy.bmp") == 0)
 				{
 					slot.m_pkLabel->Hide();
 				}
 				else
-				{*/
+				{
 					if(slot.m_pkItemStats->GetCurrentContainer() == m_iCurrentContainer)
 						slot.m_pkLabel->Show(); 
 					
@@ -934,7 +935,7 @@ void InventoryDlg::UpdateSkin(Slot slot)
 					pkSkin->m_iBkTexAlphaID = m_pkTexMan->Load(strAlphaTex.c_str(), 0);
 
 					slot.m_pkLabel->SetSkin(pkSkin);
-			/*	}*/
+				}
 			}
 		}		
 	}
