@@ -601,7 +601,8 @@ void ZGui::UpdateKeys(vector<KEY_INFO>& kKeysPressed, float time)
             last_key_press_time = time;
 
             FormatKey(last_key, kKeysPressed[i].shift);
-            ZGuiWnd::m_pkFocusWnd->ProcessKBInput(last_key);
+				if(last_key != 0)
+	            ZGuiWnd::m_pkFocusWnd->ProcessKBInput(last_key);
          }
          else
          {
@@ -614,7 +615,8 @@ void ZGui::UpdateKeys(vector<KEY_INFO>& kKeysPressed, float time)
       {
          if(time - repeat_time > REPEAT_RATE)
          {
-            ZGuiWnd::m_pkFocusWnd->ProcessKBInput(last_key);   
+				if(last_key != 0)			
+            	ZGuiWnd::m_pkFocusWnd->ProcessKBInput(last_key);   
             repeat_time = time;
          }
       }
