@@ -46,10 +46,10 @@ int InputHandle::SizeOfQueue()
 		return 0;
 }
 
-void InputHandle::MouseXY(int &iX,int &iY)
+void InputHandle::MouseXY(float &fX,float &fY)
 {
 	if(m_bActive && !m_bTempDisable)
-		m_pkInput->MouseXY(iX,iY);
+		m_pkInput->MouseXY(fX,fY);
 }
 
 void InputHandle::SDLMouseXY(int &iX,int &iY)
@@ -69,18 +69,18 @@ void InputHandle::UnitMouseXY(float &fX,float &fY)
 		m_pkInput->UnitMouseXY(fX,fY);
 }
 
-void InputHandle::RelMouseXY(int &iX,int &iY)
+void InputHandle::RelMouseXY(float &fX,float &fY)
 {
 	if(m_bActive && !m_bTempDisable)
-		m_pkInput->RelMouseXY(iX,iY);
+		m_pkInput->RelMouseXY(fX,fY);
 	else
 	{
-		iX = 0;
-		iY = 0;	
+		fX = 0;
+		fY = 0;	
 	}
 }
 
-void InputHandle::SetCursorInputPos(int x, int y)
+void InputHandle::SetCursorInputPos(float x, float y)
 {
 	if(m_bActive && !m_bTempDisable)
 		m_pkInput->SetCursorInputPos(x,y);

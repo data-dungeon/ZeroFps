@@ -337,8 +337,8 @@ void MistServer::Input_Camera(float fMouseX, float fMouseY)
 
 void MistServer::Input()
 {
-	int x = 0;
-	int z = 0;		
+	float x ;
+	float z ;		
 	m_pkInputHandle->RelMouseXY(x,z);	
 
 	Vector3 kMove(0,0,0);

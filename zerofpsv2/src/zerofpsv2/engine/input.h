@@ -43,6 +43,12 @@ public:
 	int		m_iInputKey[VKMAPS];		// The real keys that are mapped to this virtual key.
 };
 
+class BasicKey
+{
+	public:
+		int	m_iKey;
+		int	m_iModifiers;
+};
 
 class QueuedKeyInfo
 {
@@ -94,10 +100,9 @@ class ENGINE_API Input : public ZFSubSystem {
 
 		queue<QueuedKeyInfo>	m_aPressedKeys;
 			
-		SDL_Event		m_kEvent;
 		unsigned int	m_iGrabtime;			
-		int				m_iMouseX,m_iMouseY;
-		int				m_iAbsMouseX,m_iAbsMouseY;
+		float				m_fRelMouseX,m_fRelMouseY;
+		float				m_fAbsMouseX,m_fAbsMouseY;
 		unsigned int	m_iQueueLength;
 		bool 				m_bKeyRepeat;
 
@@ -111,47 +116,50 @@ class ENGINE_API Input : public ZFSubSystem {
 		int				m_iBindKeyIndex;
 
 
-
-		void SetupMapToKeyState();
-		int  SDLToZeroFpsKey(int iSdlSym);		
 		void RunCommand(int cmdid, const CmdArgument* kCommand);
+		void Reset(void);		
+		void SetupMapToKeyState();
+		
+		BasicKey TranslateKey(SDL_keysym* pkSdlKey);
+		int  SDLToZeroFpsKey(int iSdlSym);		
+		
 		void GrabInput(void);
 		void ReleaseInput(void);
-		void AddQueuedKey(SDL_keysym* kKey,bool bPressed);
-		bool GetConsole();
 		
-		void UpdateMousePos();
-		
+		void AddQueuedKey(BasicKey* pkKey,bool bPressed);		
+		void UpdateMousePos();		
 		void UpdateInputHandles();
-	
 
-
+		
 		//input fuctions , called by inputhandles 
 		QueuedKeyInfo GetQueuedKey();
 		int SizeOfQueue();
 
-		void MouseXY(int &iX,int &iY);
+		//mouse functions
+		void MouseXY(float &fX,float &fY);
 		void UnitMouseXY(float &fX,float &fY);
 		void SDLMouseXY(int &iX,int &iY);
-		void RelMouseXY(int &iX,int &iY);
-		void SetCursorInputPos(int x, int y);
+		void RelMouseXY(float &iX,float &iY);
+		void SetCursorInputPos(float x, float y);
 		
-		bool Pressed(Buttons eButton);
-		
+		bool Pressed(Buttons eButton);		
 		bool VKIsDown(string strName);		
-		void Reset(void);		
-
 		void BindBindMode(int iKey);
 
 public:
 
 		Input();
 		bool StartUp();
-		bool ShutDown();
-		bool IsValid();
+		bool ShutDown()		{return true;};
+		bool IsValid()			{return true;};
 			
 		void Update(void);
 
+		void ShowCursor(bool bShow);				
+		void ToggleGrab(void);
+		void ToggleGrab(bool bGrab);		
+
+		//virtual keys
 		void StartBindMode(string strBindKey, int iBindIndex);
 		
 		VKData*	GetVKByName(string strName);
@@ -160,16 +168,10 @@ public:
 		
 		void VKList();
 		void Save(string strCfgName);
-		void Load(string strCfgName);
-				
-		void ShowCursor(bool bShow);
-				
-		void ToggleGrab(void);
-		void ToggleGrab(bool bGrab);		
+		void Load(string strCfgName);		
 
 		string  GetKeyName(Buttons eKey);
 		Buttons GetNameByKey(string strName);
-		Buttons GetKeyCode(string strName);
 
 
 		//input handling
@@ -177,6 +179,7 @@ public:
 		bool UnregisterInputHandle(InputHandle* pkInputHandle);
 		InputHandle* GetInputHandle(string strName);
 
+		//input handles
 		bool SetActiveInputHandle(string strName);
 		bool AddActiveInputHandle(string strName);
 		bool RemoveActiveInputHandle(string strName);

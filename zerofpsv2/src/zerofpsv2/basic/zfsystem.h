@@ -104,7 +104,7 @@ public:
 
 	void Register(ZFSubSystem* pkObject, char* acName /*, ZFSubSystem* pkParent*/);		// Register a SubSystem.
 	void UnRegister(ZFSubSystem* pkObject);													// UnRegister a objects.
-	ZFSubSystem* GetObjectPtr(char* acName);													// Get pointer to SubSystem by name.
+	ZFSubSystem* GetObjectPtr(char* acName,bool bWarning = true);													// Get pointer to SubSystem by name.
 	bool StartUp();
 	bool ShutDown();
 	bool IsValid();

@@ -51,6 +51,7 @@ ZeroFps::ZeroFps(void) : I_ZeroFps("ZeroFps")
 	// }
 
 	// Create Engine SubSystems 
+	m_pkBasicFS					= new ZFBasicFS;	
 	m_pkAStar					= new AStar;
 	m_pkZShaderSystem			= new ZShaderSystem;
 	m_pkEntityManager			= new EntityManager;
@@ -70,7 +71,6 @@ ZeroFps::ZeroFps(void) : I_ZeroFps("ZeroFps")
 	m_pkInput					= new Input;		
 	m_pkTexMan					= new TextureManager;
 	m_pkZFVFileSystem			= new ZFVFileSystem;
-	m_pkBasicFS					= new ZFBasicFS;
 	m_pkPSystemManager		= new PSystemManager;
 	m_pkScript					= new ZFScriptSystem;
 	m_pkTcs						= new Tcs;
@@ -359,8 +359,13 @@ void ZeroFps::Run_EngineShell()
 	   if(m_pkGui->m_bUseHardwareMouse == true)
 		   m_pkGuiInputHandle->SDLMouseXY(mx,my);
 	   else
-		   m_pkGuiInputHandle->MouseXY(mx,my);
-
+		{
+		   float x,y;
+			m_pkGuiInputHandle->MouseXY(x,y);
+			mx = x;
+			my = y;
+		}
+			
 	   m_pkGui->UpdateMouse(mx, my,
          m_pkGuiInputHandle->Pressed(MOUSELEFT),
          m_pkGuiInputHandle->Pressed(MOUSERIGHT),

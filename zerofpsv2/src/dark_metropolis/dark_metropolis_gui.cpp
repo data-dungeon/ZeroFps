@@ -93,7 +93,7 @@ void DarkMetropolis::GUI_OnIdle()
 
 			Rect rc = m_pkGamePlayInfoLabel->GetScreenRect();
 
-			int mx,my;
+			float mx,my;
 			m_pkInputHandle->MouseXY(mx,my);
 
 			my+=rc.Height()+16;

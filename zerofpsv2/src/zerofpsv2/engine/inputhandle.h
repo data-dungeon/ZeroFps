@@ -27,11 +27,11 @@ class ENGINE_API InputHandle
 		QueuedKeyInfo GetQueuedKey();
 		int SizeOfQueue();
 		
-		void MouseXY(int &iX,int &iY);
+		void MouseXY(float &fX,float &fY);
 		void UnitMouseXY(float &fX,float &fY);
 		void SDLMouseXY(int &iX,int &iY);
-		void RelMouseXY(int &iX,int &iY);
-		void SetCursorInputPos(int x, int y);		
+		void RelMouseXY(float &fX,float &fY);
+		void SetCursorInputPos(float x, float y);		
 		
 		bool Pressed(Buttons eButton);		
 		bool VKIsDown(string strName);

@@ -155,7 +155,7 @@ void ZFSystem::Register(ZFSubSystem* pkObject, char* acName)
 #endif
 
 	// Make sure that there is no other object with the same name.
-	ZFSubSystem* pkCheck = GetObjectPtr(acName);
+	ZFSubSystem* pkCheck = GetObjectPtr(acName,false);
 	if(pkCheck) {
 		g_Logf("Fail\n");
 		Logf("Warning: There was already a object with name '%s'\n", acName);
@@ -212,17 +212,22 @@ void ZFSystem::UnRegister(ZFSubSystem* pkObject)
 
 	Get a Ptr to the SubSystem with the choosen name. Null if no SubSystem found with this name.
 */
-ZFSubSystem* ZFSystem::GetObjectPtr(char* acName)
+ZFSubSystem* ZFSystem::GetObjectPtr(char* acName,bool bWarning)
 {
 	string Test(acName);
 
-	for(unsigned int i=0; i < kObjectNames.size();i++) {
-		if(kObjectNames[i].m_strName == Test) {
+	for(unsigned int i=0; i < kObjectNames.size();i++) 
+	{
+		if(kObjectNames[i].m_strName == Test) 
+		{
 			kObjectNames[i].m_iNumOfRequests ++;
 			return kObjectNames[i].pkObject;
-			}
 		}
+	}
 
+	if(bWarning)
+		cout<<"WARNING: Requested system pointer not found:"<<acName<<endl;
+		
 	return NULL;
 }
 

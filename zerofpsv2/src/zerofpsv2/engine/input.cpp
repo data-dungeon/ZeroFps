@@ -27,14 +27,17 @@ bool Input::StartUp()
 { 
 	m_pkZeroFps	=	static_cast<ZeroFps*>(GetSystem().GetObjectPtr("ZeroFps"));
 	m_pkRender = 	static_cast<Render*>(GetSystem().GetObjectPtr("Render"));
-	GetConsole();	
+	m_pkConsole	= 	static_cast<BasicConsole*>(GetSystem().GetObjectPtr("Console"));
+	
 
 	m_bKeyRepeat	= 	true;
 	m_iQueueLength	= 	100;
 	m_iGrabtime		= 	SDL_GetTicks();
 
-	m_iAbsMouseX = 	0;
-	m_iAbsMouseY = 	0;
+	m_fAbsMouseX = 	0;
+	m_fAbsMouseY = 	0;
+	m_fRelMouseX =		0;
+	m_fRelMouseY =		0;
 	
 	m_bHaveReleasedMWUP = 	false;
 	m_bHaveReleasedMWDOWN = false;
@@ -51,8 +54,6 @@ bool Input::StartUp()
 	return true;
 }
 
-bool Input::ShutDown()	{	return true;	}
-bool Input::IsValid()	{	return true;	}
 
 void Input::UpdateInputHandles()
 {
@@ -202,14 +203,52 @@ void Input::BindBindMode(int iKey)
 	VKBind(m_strBindKey, (Buttons)iKey, m_iBindKeyIndex);
 }
 
+BasicKey Input::TranslateKey(SDL_keysym* pkSdlKey)
+{
+	BasicKey kTemp;
+	kTemp.m_iKey = pkSdlKey->sym;
+	kTemp.m_iModifiers = 0;
+	
+	//check modifiers
+	if(pkSdlKey->mod & KMOD_CTRL)
+		kTemp.m_iModifiers = kTemp.m_iModifiers | MODIFIER_CTRL;
+	if(pkSdlKey->mod & KMOD_SHIFT)
+		kTemp.m_iModifiers = kTemp.m_iModifiers | MODIFIER_SHIFT;
+	if(pkSdlKey->mod & KMOD_ALT)
+		kTemp.m_iModifiers = kTemp.m_iModifiers | MODIFIER_ALT;
+	if(pkSdlKey->mod & KMOD_META)
+		kTemp.m_iModifiers = kTemp.m_iModifiers | MODIFIER_META;	
+
+		
+	//keytranslations
+	switch(kTemp.m_iKey)
+	{
+		// console button
+		case 167:
+			kTemp.m_iKey = KEY_BACKQUOTE;
+			break;
+			
+		// å ä ö
+		case 229:
+			kTemp.m_iKey = 97;
+			break;
+		case 228:
+			kTemp.m_iKey = 97;
+			break;
+		case 246:
+			kTemp.m_iKey = 111;
+			break;			
+	}
+	
+	
+	// last but not least convert the key to a zerofps key instead of a sdl key =)
+	kTemp.m_iKey = SDLToZeroFpsKey(kTemp.m_iKey);
+	
+	return kTemp;
+}
+
 void Input::Update(void) 
 {
-	m_iMouseX=-1;	
-	m_iMouseY=-1;
-	
-	static int bah = 0;
-	bah++;
-	
 	UpdateInputHandles();
 	UpdateMousePos();
 	
@@ -219,130 +258,113 @@ void Input::Update(void)
 	if(m_bHaveReleasedMWDOWN)
 		m_akKeyState[MOUSEWDOWN].m_bDown=false;
 		
-	
+			
 	Buttons iZfKey;
-	while(SDL_PollEvent(&m_kEvent)) {
-		switch(m_kEvent.type) {
+	BasicKey kNewKey;
+	
+	SDL_Event m_kEvent;
+	while(SDL_PollEvent(&m_kEvent)) 
+	{
+		switch(m_kEvent.type) 
+		{
 			//keyboard
 			case SDL_KEYDOWN:
+				kNewKey = TranslateKey(&m_kEvent.key.keysym);
 			
 				//add key to queuedkeys
-				AddQueuedKey(&m_kEvent.key.keysym,true);
+				AddQueuedKey(&kNewKey,true);
 
-				//set button as pressed		
-				iZfKey = (Buttons) SDLToZeroFpsKey(m_kEvent.key.keysym.sym);
-
-				//linux backquote hack deluxe
-				if(m_kEvent.key.keysym.sym == 167)
-					iZfKey = KEY_BACKQUOTE;
+				//set pressed state
+				m_akKeyState[kNewKey.m_iKey].m_bDown = true;
 				
-				//set status down
-				m_akKeyState[iZfKey].m_bDown = true;	
-
+				//handle keybindings
 				if(m_bBindMode)
-					BindBindMode( SDLToZeroFpsKey(m_kEvent.key.keysym.sym) );
-				
+					BindBindMode(kNewKey.m_iKey);
+									
 				break;			
 
 			case SDL_KEYUP:
+				kNewKey = TranslateKey(&m_kEvent.key.keysym);
+			
 				//set  button as unpressed
-				AddQueuedKey(&m_kEvent.key.keysym,false);
+				AddQueuedKey(&kNewKey,false);
 				
-				//set status up
-				m_akKeyState[SDLToZeroFpsKey(m_kEvent.key.keysym.sym) ].m_bDown = false;	
+				//set pressed state
+				m_akKeyState[kNewKey.m_iKey].m_bDown = false;
+				
     		break;    		
  
 	    	//mouse    		
    	 	case SDL_MOUSEBUTTONDOWN:
-				//cout << "SDL_MOUSEBUTTONDOWN: " << (int) m_kEvent.button.button << endl;
-    			switch(m_kEvent.button.button)
+			{	
+				//translate key
+				int iKey = SDLToZeroFpsKey(m_kEvent.button.button);
+				
+				//sett pressed status
+				m_akKeyState[iKey].m_bDown = true;
+				
+				//special cases for mousewheel
+				if(iKey == MOUSEWUP)
 				{
-    				case SDL_BUTTON_LEFT:		m_akKeyState[MOUSELEFT].m_bDown = true;	break;
-   	 			case SDL_BUTTON_MIDDLE:		m_akKeyState[MOUSEMIDDLE].m_bDown=true;	break;
-    				case SDL_BUTTON_RIGHT:		m_akKeyState[MOUSERIGHT].m_bDown=true;		break;	
-    				case SDL_BUTTON_WHEELUP:	
-						m_akKeyState[MOUSEWUP].m_bDown=true;		
-						m_bHaveReleasedMWUP = false;
-						break;	
-    				case SDL_BUTTON_WHEELDOWN:	
-						m_akKeyState[MOUSEWDOWN].m_bDown=true;
-						m_bHaveReleasedMWDOWN = false;
-						break;	
+					m_bHaveReleasedMWUP = false;
 				}
 				
-				if(m_bBindMode)
-					BindBindMode( SDLToZeroFpsKey(m_kEvent.button.button) );
+				if(iKey == MOUSEWDOWN)
+				{
+					m_bHaveReleasedMWDOWN = false;					
+				}
+									
+				//bind key
+				BindBindMode(iKey);
+							
+					
 				break;
+			}
 
 	    	case SDL_MOUSEBUTTONUP:
- 				//cout << "SDL_MOUSEBUTTONUP: " << (int) m_kEvent.button.button << endl;
-
-				switch(m_kEvent.button.button)
+			{
+				//translate key
+				int iKey = SDLToZeroFpsKey(m_kEvent.button.button);
+				
+				//special cases for mousewheel , pressed status is reseted in update funktion
+				if(iKey == MOUSEWUP)
 				{
-    				case SDL_BUTTON_LEFT:		m_akKeyState[MOUSELEFT].m_bDown=false;		break;
-	    			case SDL_BUTTON_MIDDLE:		m_akKeyState[MOUSEMIDDLE].m_bDown=false;	break;
-    				case SDL_BUTTON_RIGHT:		m_akKeyState[MOUSERIGHT].m_bDown=false;	break;	
-    				case SDL_BUTTON_WHEELUP:	
-						m_bHaveReleasedMWUP = true;
-						//m_akKeyState[MOUSEWUP].m_bDown=false;		
-						break;	
-    				case SDL_BUTTON_WHEELDOWN:	
-						m_bHaveReleasedMWDOWN = true;
-						//m_akKeyState[MOUSEWDOWN].m_bDown=false;	
-						break;	
-   	 		}    	
+					m_bHaveReleasedMWUP = true;
+				}
+				else if(iKey == MOUSEWDOWN)
+				{
+					m_bHaveReleasedMWDOWN = true;					
+				}
+				else
+				{
+					//sett pressed status
+					m_akKeyState[iKey].m_bDown = false;
+				}
+				
+				
     			break;
+			}
 		}	
 	}
 }
 
-void Input::AddQueuedKey(SDL_keysym* kKey,bool bPressed)
+void Input::AddQueuedKey(BasicKey* pkKey,bool bPressed)
 {
-	int iModifier = 0;
-	
-	//check modifiers
-	if(kKey->mod & KMOD_CTRL)
-		iModifier = iModifier | MODIFIER_CTRL;
-	if(kKey->mod & KMOD_SHIFT)
-		iModifier = iModifier | MODIFIER_SHIFT;
-	if(kKey->mod & KMOD_ALT)
-		iModifier = iModifier | MODIFIER_ALT;
-	if(kKey->mod & KMOD_META)
-		iModifier = iModifier | MODIFIER_META;
-
-	int iKey = kKey->sym;
-	//1cout<<"blub:"<<iKey<<"    "<<int(kKey->scancode)<<endl;
-	switch(iKey)
-	{
-		case 229:
-			iKey = 97;
-			break;
-		case 228:
-			iKey = 97;
-			break;
-		case 246:
-			iKey = 111;
-			break;
-			
-	}
-	
 	//put key in list
-	m_aPressedKeys.push(  QueuedKeyInfo(SDLToZeroFpsKey(iKey),iModifier,bPressed)  );	
-	//cout << "Key Qued: " << kKey->sym <<"  modifiers:"<<iModifier<< endl;
-
+	m_aPressedKeys.push(  QueuedKeyInfo(pkKey->m_iKey,pkKey->m_iModifiers,bPressed)  );	
 
 	//make sure the queue does't get to big
 	while(m_aPressedKeys.size()>m_iQueueLength)
 		m_aPressedKeys.pop();	
-
 }
 
 VKData* Input::GetVKByName(string strName)
 {
-	for(unsigned int i=0; i<m_VirtualKeys.size(); i++) {
+	for(unsigned int i=0; i<m_VirtualKeys.size(); i++) 
+	{
 		if(m_VirtualKeys[i].m_strName == strName)
 			return &m_VirtualKeys[i];
-		}
+	}
 	
 	return NULL;
 }
@@ -391,10 +413,11 @@ bool Input::VKIsDown(string strName)
 
 	bool bKeyDown = false;
 	//cout << "Checking" << strName << ": ";
-	for(int i=0; i<VKMAPS;i++) {
+	for(int i=0; i<VKMAPS;i++) 
+	{
 		//cout << pkVk->m_iInputKey[i] << ", ";
 		bKeyDown |= m_akKeyState[pkVk->m_iInputKey[i]].m_bDown;
-		}
+	}
 
 	//cout << endl;
 	return bKeyDown;
@@ -402,29 +425,30 @@ bool Input::VKIsDown(string strName)
 
 void Input::VKList()
 {
-	if(!GetConsole())	return;
 
 	m_pkConsole->Printf("VK List");	
 	string Key1, Key2, Key3;
 	
-	for(unsigned int i=0; i<m_VirtualKeys.size(); i++) {
+	for(unsigned int i=0; i<m_VirtualKeys.size(); i++) 
+	{
 		Key1 = GetKeyName((Buttons) m_VirtualKeys[i].m_iInputKey[0]);
 		Key2 = GetKeyName((Buttons) m_VirtualKeys[i].m_iInputKey[1]);
 		Key3 = GetKeyName((Buttons) m_VirtualKeys[i].m_iInputKey[2]);
 
 		m_pkConsole->Printf(" %s : %s, %s, %s",m_VirtualKeys[i].m_strName.c_str(), 
 			Key1.c_str(), Key2.c_str(), Key3.c_str());	
-		}
+	}
 }
 
 
 
 Buttons Input::GetNameByKey(string strName)
 {
-	for(int i=0; i<MAX_KEYS; i++) {
+	for(int i=0; i<MAX_KEYS; i++) 
+	{
 		if(m_akKeyState[i].m_strName == strName)
 			return (Buttons) i;
-		}
+	}
 
 	return (Buttons) 0;
 }
@@ -434,53 +458,50 @@ string  Input::GetKeyName(Buttons eKey)
 	return m_akKeyState[eKey].m_strName;
 }
 
-Buttons Input::GetKeyCode(string strName)
-{
-	return KEY_F1;
-}
 
-
-
-void Input::MouseXY(int &iX,int &iY) 
+void Input::MouseXY(float &fX,float &fY) 
 {		
-	iX=m_iAbsMouseX;
-	iY=m_iAbsMouseY;
+	fX=m_fAbsMouseX;
+	fY=m_fAbsMouseY;
 }
 
 void Input::UnitMouseXY(float &fX,float &fY) 
 {	
-	fX = float( (m_iAbsMouseX/(float)m_pkRender->GetWidth())-0.5 );
-	fY = float( (m_iAbsMouseY/(float)m_pkRender->GetHeight())-0.5 );
+	fX = float( (m_fAbsMouseX/(float)m_pkRender->GetWidth())-0.5 );
+	fY = float( (m_fAbsMouseY/(float)m_pkRender->GetHeight())-0.5 );
 }
 
 
 void Input::UpdateMousePos()
-{		
+{
+	//update sdlmouse absolute position		
 	SDL_GetMouseState(&m_iSDLMouseX,&m_iSDLMouseY);
 
+	//update relative mousepos
+	int iX,iY;
+	SDL_GetRelativeMouseState(&iX, &iY);			
+	m_fRelMouseX = (float(iX) * m_fMouseSensitivity);
+	m_fRelMouseY = (float(iY) * m_fMouseSensitivity);
+	
+	//update absolute mouse position
+	int iWidth=m_pkRender->GetWidth();
+	int iHeight=m_pkRender->GetHeight();
 
-	int width=m_pkRender->GetWidth();
-	int height=m_pkRender->GetHeight();
-
-	int relx;
-	int rely;
+	m_fAbsMouseX+=m_fRelMouseX;
+	m_fAbsMouseY+=m_fRelMouseY;	
 	
-	RelMouseXY(relx,rely);
-	
-	m_iAbsMouseX+=int(float(relx)*m_fMouseSensitivity);
-	m_iAbsMouseY+=int(float(rely)*m_fMouseSensitivity);	
-	
-	
-	if(m_iAbsMouseX <0)
-		m_iAbsMouseX = 0;	
-	if(m_iAbsMouseY <0)
-		m_iAbsMouseY = 0;
+	//check screen boundres
+	if(m_fAbsMouseX < 0)
+		m_fAbsMouseX = 0;	
 		
-	if(m_iAbsMouseX > width)
-		m_iAbsMouseX = width;
+	if(m_fAbsMouseY < 0)
+		m_fAbsMouseY = 0;
+		
+	if(m_fAbsMouseX > iWidth)
+		m_fAbsMouseX = iWidth;
 	
-	if(m_iAbsMouseY >height)
-		m_iAbsMouseY = height;
+	if(m_fAbsMouseY > iHeight)
+		m_fAbsMouseY = iHeight;
 		
 }
 
@@ -491,15 +512,17 @@ void Input::SDLMouseXY(int &iX,int &iY)
 		iY = m_iSDLMouseY;
 }
 
-void Input::RelMouseXY(int &iX,int &iY) 
+void Input::RelMouseXY(float &fX,float &fY) 
 {		
-
+/*
 		if(m_iMouseX==-1)
 			SDL_GetRelativeMouseState(&m_iMouseX, &m_iMouseY);		
 		
 		iX=int(float(m_iMouseX)*m_fMouseSensitivity);	
 		iY=int(float(m_iMouseY)*m_fMouseSensitivity);		
-
+*/
+	fX = m_fRelMouseX;
+	fY = m_fRelMouseY;
 }
 
 void Input::ToggleGrab(void) 
@@ -538,7 +561,8 @@ void Input::ReleaseInput(void)
 void Input::Reset(void) {
 	SDL_Event kTemp;
 
-	while(SDL_PollEvent(&kTemp)){
+	while(SDL_PollEvent(&kTemp))
+	{
 //		cout<<"flushing"<<endl;
 	}
 	
@@ -546,7 +570,8 @@ void Input::Reset(void) {
 		m_akKeyState[i].m_bDown=false;
 	
 	//clear queue
-	while(!m_aPressedKeys.empty()){
+	while(!m_aPressedKeys.empty())
+	{
 		m_aPressedKeys.pop();
 	}
 }
@@ -587,8 +612,7 @@ void Input::RunCommand(int cmdid, const CmdArgument* kCommand)
 				
 			}
 			else			
-				if(GetConsole())
-					m_pkConsole->Printf("bind <vkey> <key> (<key> <key>  optional)");	
+				m_pkConsole->Printf("bind <vkey> <key> (<key> <key>  optional)");	
 					
 			break;
 
@@ -598,8 +622,7 @@ void Input::RunCommand(int cmdid, const CmdArgument* kCommand)
 
 		case FID_MOUSESENS:
 			if(kCommand->m_kSplitCommand.size()!=2)
-				if(GetConsole())
-					m_pkConsole->Printf("MouseSensitivity: %.3f", m_fMouseSensitivity);
+				m_pkConsole->Printf("MouseSensitivity: %.3f", m_fMouseSensitivity);
 			else
 				m_fMouseSensitivity = float( atof(kCommand->m_kSplitCommand[1].c_str()) );
 			break;
@@ -682,14 +705,7 @@ QueuedKeyInfo Input::GetQueuedKey()
 		kKey = m_aPressedKeys.front();
 		m_aPressedKeys.pop();
 
-/*			if(value < 0)
-			{
-				printf("GetQueuedKey: value < 0");
-			}
-*/
-			//cout << "GetQueuedKey: " << value << endl;
-
-			return kKey;
+		return kKey;
 	}
 	
 	return kKey;
@@ -707,23 +723,10 @@ bool Input::Pressed(Buttons eButton)
 
 
 
-bool Input::GetConsole()
+void Input::SetCursorInputPos(float x, float y)
 {
-	m_pkConsole	= static_cast<BasicConsole*>(GetSystem().GetObjectPtr("Console"));
-	
-	if(m_pkConsole==NULL) 
-		return false;
-	else 
-		return true;
-}
-
-
-void Input::SetCursorInputPos(int x, int y)
-{
-	m_iAbsMouseX=x;
-	m_iAbsMouseY=y;
-
-//	SDL_WarpMouse(x,y);
+	m_fAbsMouseX=x;
+	m_fAbsMouseY=y;
 }
 
 void Input::ShowCursor(bool bShow)

@@ -401,7 +401,7 @@ void ZeroEd::Input()
 	if(m_iEditMode == EDIT_ZONES)		m_CamMoveSpeed = 20;
 	if(m_iEditMode == EDIT_OBJECTS)	m_CamMoveSpeed = 5;
 	
-	int x = 0, z = 0;		
+	float x = 0, z = 0;		
 	m_pkInputHandle->RelMouseXY(x,z);	
 
 	// First see if we clicked to change view port.

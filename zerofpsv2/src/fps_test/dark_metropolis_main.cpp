@@ -425,7 +425,7 @@ void DarkMetropolis::MoveCamera(Vector3 pos)
 void DarkMetropolis::Input()
 {
 	//get mouse
-	int x,z;		
+	float x,z;		
 	m_pkInputHandle->RelMouseXY(x,z);	
 
 

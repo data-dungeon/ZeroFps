@@ -131,7 +131,7 @@ void MistClient::OnIdle()
 void MistClient::Input()
 {
 	//get mouse
-	int x,z;		
+	float x,z;		
 	m_pkInputHandle->RelMouseXY(x,z);	
 	
 	//check buttons

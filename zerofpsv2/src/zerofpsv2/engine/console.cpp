@@ -309,7 +309,7 @@ void Console::Update(void)
 		if(kKey.m_iKey == KEY_INSERT)		eCmd = CONCMD_TOGGLEINSERT;
 		if(kKey.m_iKey == KEY_BACKQUOTE)	eCmd = CONCMD_TOGGLE;
 		if(kKey.m_iKey == KEY_RETURN)		eCmd = CONCMD_RUN;
-		if( kKey.m_iKey == KEY_TAB)			
+		if(kKey.m_iKey == KEY_TAB)			
 		{
 			AutoComplete();
 			kKey.m_iKey = 0;
