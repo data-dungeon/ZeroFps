@@ -15,6 +15,7 @@
 #include "texturemanager.h"
 #include "light.h"
 #include "zshadersystem.h"
+#include "../basic/zguifont.h"
 
 class PSystem;
 class HeightMap;
@@ -135,9 +136,11 @@ class RENDER_API Render : public ZFSubSystem {
 
 
 		//printing and console
+		void PrintBillboard(const Matrix4& kCamRotMatrix,const Vector3& kPos,float fScale,const string& strText,ZMaterial* pkMaterial,ZGuiFont* pkFont,bool bCentered);		
+		void Print(const Vector3& kPos,float fScale,const string& strText,ZMaterial* pkMaterial,ZGuiFont* pkFont);
 		void PrintChar(char cChar,float fPos,float fScale = 1.0);
 		void Print(Vector3 kPos, const char* aText,float fScale = 1.0);
-		void PrintBillboard(const Matrix4& kCamRotMatrix,Vector3 kPos, const char* aText,float fScale = 1.0,bool bCentered = false);
+		//void PrintBillboard(const Matrix4& kCamRotMatrix,Vector3 kPos, const char* aText,float fScale = 1.0,bool bCentered = false);
 		void DrawConsole(char* m_aCommand,vector<char*>* m_kText, int iStartLine, int iMarkerPos, int iMarker); 
 
 		//draw line

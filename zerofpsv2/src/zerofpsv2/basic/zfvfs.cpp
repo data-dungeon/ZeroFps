@@ -258,7 +258,7 @@ void ZFVFileSystem::AddRootPath(string strRootPath, string strVfsPath)
 			
 
 	g_Logf("Mapping system %s to VFS %s\n", strRootPath.c_str(),strVfsPath.c_str());
-	cout<<"Mapping:"<<strRootPath<<" to "<<strVfsPath<<endl;
+	//cout<<"Mapping:"<<strRootPath<<" to "<<strVfsPath<<endl;
 	
 	m_kRootPath.insert(m_kRootPath.begin(),VfsRootPath(strRootPath, strVfsPath));
 }

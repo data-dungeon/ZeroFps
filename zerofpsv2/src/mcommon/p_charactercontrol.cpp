@@ -15,7 +15,7 @@ P_CharacterControl::P_CharacterControl()
 	m_fPAngle = 0;	
 	m_fJumpDelay = 0;
 	
-	m_fSpeed = 50.0;
+	m_fSpeed = 75.0;
 	m_fJumpForce = 4.0; 
 	
 }

@@ -36,22 +36,34 @@ void P_Ml::Update()
 	if(!pkText)
 	{
 		pkText = new ZMaterial;
-		pkText->GetPass(0)->m_kTUs[0]->SetRes("n#data/textures/text/mltext.tga");
+		pkText->GetPass(0)->m_kTUs[0]->SetRes("n#data/textures/text/fetfont.tga");
 		pkText->GetPass(0)->m_iPolygonModeFront = 	FILL_POLYGON;
 		pkText->GetPass(0)->m_iCullFace = 				CULL_FACE_BACK;		
 		pkText->GetPass(0)->m_bLighting = 				false;		
-		pkText->GetPass(0)->m_bColorMaterial = 		true;
+		pkText->GetPass(0)->m_bColorMaterial = 		false;
 		pkText->GetPass(0)->m_bFog = 						true;		
 		pkText->GetPass(0)->m_bAlphaTest =				true;		
-		pkText->GetPass(0)->m_bDepthTest = 				true;				//needs to disable z-test , else marker wont work
+		pkText->GetPass(0)->m_bDepthTest = 				true;
 	}
+	
+	static ZGuiFont* pkFont = NULL;
+	if(!pkFont)
+	{
+		pkFont = new ZGuiFont("FontFan");
+		pkFont->Create("/data/textures/text/fetfont.fnt",-1);
+	
+	}
+	
 	
 	if(m_pkEntityManager->IsUpdate(PROPERTY_TYPE_RENDER))
 	{
 		if(m_bShowText)
 		{
-			m_pkZShaderSystem->BindMaterial(pkText);			
-			m_pkRender->PrintBillboard(m_pkZeroFps->GetCam()->GetRotM(),GetEntity()->GetIWorldPosV()+Vector3(0,GetEntity()->GetRadius(),0),GetEntity()->GetName().c_str(),0.2,true);
+			//m_pkRender->PrintBillboard(m_pkZeroFps->GetCam()->GetRotM(),GetEntity()->GetIWorldPosV()+Vector3(0,GetEntity()->GetRadius(),0),1.0,"1M,.m H iklW",pkText,pkFont,false);
+			m_pkRender->PrintBillboard(m_pkZeroFps->GetCam()->GetRotM(),GetEntity()->GetIWorldPosV()+Vector3(0,GetEntity()->GetRadius(),0),1.0,GetEntity()->GetName(),pkText,pkFont,true);
+			//m_pkRender->Print(GetEntity()->GetIWorldPosV()+Vector3(0,GetEntity()->GetRadius(),0),1.0,"01234abcdABCD",pkText,pkFont);
+			//m_pkZShaderSystem->BindMaterial(pkText);			
+			//m_pkRender->PrintBillboard(m_pkZeroFps->GetCam()->GetRotM(),GetEntity()->GetIWorldPosV()+Vector3(0,GetEntity()->GetRadius(),0),GetEntity()->GetName().c_str(),0.2,true);
 		}
 	}
 }

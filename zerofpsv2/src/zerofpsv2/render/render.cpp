@@ -341,29 +341,96 @@ void Render::Quad(Vector3 kPos,Vector3 kHead,Vector3 kScale,int iTexture, Vector
 	
 	m_pkZShaderSystem->Pop();
 }
-void Render::PrintChar(char cChar,float fPos,float fScale)
+
+void Render::PrintBillboard(const Matrix4& kCamRotMatrix,const Vector3& kPos,float fScale,const string& strText,ZMaterial* pkMaterial,ZGuiFont* pkFont,bool bCentered)
 {
-	int texwidth	=	FONTWIDTH*16;	
-	int pos			=	int(cChar)*FONTWIDTH;		
-	float glu		=	float(1.0/texwidth);				//opengl texture cordinats is 0-1
-	float width		=	glu*FONTWIDTH;
-	
-	float y	=	(float(int(pos/texwidth)*FONTWIDTH)*glu+width);
-	float x	=	float(pos%texwidth)*glu;//+width/2;
+	Matrix4 temp = kCamRotMatrix;
+	temp.Transponse();
 
-	float iFontSize = 8;
+	m_pkZShaderSystem->MatrixPush();
+	m_pkZShaderSystem->MatrixTranslate(kPos);
+	m_pkZShaderSystem->MatrixMult(temp);
 
-	m_pkZShaderSystem->AddQuadV(	Vector2(fPos    ,0),		Vector2(fPos + 1,0),
-											Vector2(fPos + 1,1),	   Vector2(fPos    ,1));
-	
-//	m_pkZShaderSystem->AddQuadV(	Vector3(fPos,0,0),						Vector3(fPos + 1,0,0),
-//											Vector3(fPos + 1,1,0),	Vector3(fPos,1,0));
-												
-	m_pkZShaderSystem->AddQuadUV(	Vector2(x,y),							Vector2(x+width,y),
-											Vector2(x+width,y-width),			Vector2(x,y-width));
-					
+	if(bCentered)
+	{
+		float fLen = pkFont->GetLength(strText.c_str(),strText.length()) / pkFont->m_iRowHeight;
+		m_pkZShaderSystem->MatrixTranslate(Vector3(-(fLen /2.0  )*fScale,0,0));
+	}
+		
+	Print(Vector3(0,0,0),fScale,strText,pkMaterial,pkFont);
+		
+	m_pkZShaderSystem->MatrixPop();	
+
+
 }
 
+void Render::Print(const Vector3& kPos,float fScale,const string& strText,ZMaterial* pkMaterial,ZGuiFont* pkFont)
+{
+	m_pkZShaderSystem->BindMaterial(pkMaterial);
+	
+	m_pkZShaderSystem->MatrixPush();
+	m_pkZShaderSystem->MatrixTranslate(kPos);
+	m_pkZShaderSystem->MatrixScale(fScale);
+	m_pkZShaderSystem->ClearGeometry();
+
+	float fXScale = 1.0/pkFont->m_iTextureWidth;
+	float fYScale = 1.0/pkFont->m_iTextureHeight;
+	
+	int iChar;
+	float fUVX,fUVY,fUVW,fUVH; 
+	float fW,fH;
+	float fXPos=0;
+	
+	for(int i = 0;i<strText.length();i++)
+	{
+		iChar = int(strText[i]);				
+		if(iChar == 32)
+		{
+			fW = float(pkFont->m_iSpaceWidth) /  float(pkFont->m_iRowHeight);
+			fXPos += fW;
+			continue;
+		}
+		
+		fUVX =  float(pkFont->m_aChars[iChar].iPosX) * fXScale;
+		fUVY = -(float(pkFont->m_aChars[iChar].iPosY) * fYScale);
+		fUVW =  float(pkFont->m_aChars[iChar].iSizeX) * fXScale;
+		fUVH =  float(pkFont->m_aChars[iChar].iSizeY) * fYScale;
+	
+		fW	= float(pkFont->m_aChars[iChar].iSizeX) / float(pkFont->m_iRowHeight);
+		fH	= float(pkFont->m_aChars[iChar].iSizeY) / float(pkFont->m_iRowHeight);
+ 		
+		
+		m_pkZShaderSystem->AddQuadV(	Vector2(fXPos    ,0),		Vector2(fXPos + fW,0),
+												Vector2(fXPos + fW,fH),	   Vector2(fXPos    ,fH));
+
+		m_pkZShaderSystem->AddQuadUV(	Vector2(fUVX,fUVY-fUVH),	Vector2(fUVX+fUVW,fUVY-fUVH),
+												Vector2(fUVX+fUVW,fUVY),	Vector2(fUVX,fUVY));
+		
+		fXPos += fW;
+	}
+	
+	m_pkZShaderSystem->DrawGeometry(QUADS_MODE);	
+	m_pkZShaderSystem->MatrixPop();		
+	
+}
+
+
+void Render::PrintChar(char cChar,float fPos,float fScale) 
+{
+	static float fWidth = 1.0/16.0;
+	
+	float fX = (int(cChar) % 16) * fWidth;
+	float fY = ((int(cChar) / 16)+1) * fWidth;
+	
+	
+	m_pkZShaderSystem->AddQuadV(	Vector2(fPos    ,0),		Vector2(fPos + 1,0),
+											Vector2(fPos + 1,1),	   Vector2(fPos    ,1));
+													
+	m_pkZShaderSystem->AddQuadUV(	Vector2(fX,fY),						Vector2(fX+fWidth,fY),
+											Vector2(fX+fWidth,fY-fWidth),		Vector2(fX,fY-fWidth));
+					
+}
+/*
 void Render::PrintBillboard(const Matrix4& kCamRotMatrix,Vector3 kPos,const char* aText,float fScale,bool bCentered) 
 {
 	Matrix4 temp = kCamRotMatrix;
@@ -380,7 +447,7 @@ void Render::PrintBillboard(const Matrix4& kCamRotMatrix,Vector3 kPos,const char
 	Print(Vector3(0,0,0),aText,fScale);
 		
 	m_pkZShaderSystem->MatrixPop();
-}
+}*/
 
 void Render::Print(Vector3 kPos,const char* aText,float fScale) 
 {

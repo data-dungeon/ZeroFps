@@ -1503,7 +1503,7 @@ list<P_Track*>* EntityManager::GetTrackerList()
 
 void EntityManager::AddTracker(P_Track* kObject)
 {
-	cout << "Now tracking " << kObject->GetEntity()->m_iEntityID << endl;
+	//cout << "Now tracking " << kObject->GetEntity()->m_iEntityID << endl;
 	m_kTrackedObjects.push_back(kObject);
 }
 

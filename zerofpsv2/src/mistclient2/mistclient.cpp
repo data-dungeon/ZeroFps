@@ -219,8 +219,17 @@ void MistClient::Input()
 			}			 
 				
 			pkCam->Set3PDistance(fDistance);
+		
+			//rotate character
+			Matrix4 kRot;
+			kRot.Identity();
+			kRot.Rotate(0,pkCam->Get3PYAngle(),0);
+			kRot.Transponse();				
+			pkCharacter->SetLocalRotM(kRot);	
+		
 		}			
 	}	
+	
 }
 
 void MistClient::OnSystem() 
@@ -276,7 +285,7 @@ void MistClient::UpdateCharacter()
 			if(P_Enviroment* pkEnv = (P_Enviroment*)pkEnt->AddProperty("P_Enviroment"))
 			{
 				pkEnv->SetEnable(true);				
-				pkEnv->SetEnviroment("data/enviroments/sun.env");
+				pkEnv->SetEnviroment("data/enviroments/fogy.env");
 			}
 		}
 	}

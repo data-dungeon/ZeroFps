@@ -1115,6 +1115,64 @@ void DarkMetropolis::CheckCameraPos()
 
 bool DarkMetropolis::CreatePlayer()
 {
+	if(Entity* pkEnt = m_pkEntityManager->GetEntityByType("hosstartpos.lua"))
+	{
+		Vector3 kStartPos = pkEnt->GetWorldPosV();	
+		
+		//m_pkEntityManager->Delete(pkEnt);
+	
+		
+		//create entity
+		if(m_pkPlayerEntity = m_pkEntityManager->CreateEntityFromScriptInZone("data/script/objects/characters/arcadeplayer.lua",kStartPos))
+		{			
+			//save id
+			m_iPlayerEntityID = m_pkPlayerEntity->GetEntityID();
+			
+			//create camera entity and attach it to the player
+			m_pkCameraEntity = m_pkEntityManager->CreateEntity();
+			m_pkCameraEntity->SetRelativeOri(true);
+			m_pkCameraEntity->SetParent(m_pkPlayerEntity);
+							
+			//create camera
+			if(m_pkCameraProp = (P_Camera*)m_pkPlayerEntity->AddProperty("P_Camera"))
+			{
+				m_pkCameraProp->SetCamera(m_pkCamera);
+				//m_pkCameraProp->SetType(CAM_TYPEFIRSTPERSON);
+				m_pkCameraProp->SetType(CAM_TYPE3PERSON);
+				m_pkCameraProp->Set3PPAngle(.30);					
+				m_pkCameraProp->Set3PYAngle(m_fAngle);
+				m_pkCameraProp->Set3PDistance(4);							
+			}
+						
+			//create enviroment
+			
+			if(P_Enviroment* pkEnv = (P_Enviroment*)m_pkCameraEntity->AddProperty("P_Enviroment"))
+			{
+				pkEnv->SetEnable(true);
+				pkEnv->SetEnviroment("data/enviroments/dm.env");		
+				cout<<"setting enviroment"<<endl;	
+			}					
+			
+			//m_pkPlayerEntity->DeleteProperty("P_ArcadeCharacter");
+			//m_pkPlayerEntity->DeleteProperty("P_Controller");
+			
+			//m_pkPlayerEntity->DeleteProperty("P_Enviroment");
+			
+			/*
+			if(P_Light* pkL = (P_Light*)m_pkCameraEntity->AddProperty("P_Light"))
+			{	
+				//pkL->SetRot(Vector3(0,0,1));
+			}
+			*/
+		
+							
+			m_pkCameraEntity->SetInterpolate(true);
+			m_pkPlayerEntity->SetInterpolate(true);
+			
+			return true;
+		}
+	}
+/*	
 	vector<Entity*> m_kEntitys;
 	m_pkEntityManager->GetZoneEntity()->GetAllEntitys(&m_kEntitys);
 
@@ -1186,7 +1244,7 @@ bool DarkMetropolis::CreatePlayer()
 				{	
 					//pkL->SetRot(Vector3(0,0,1));
 				}
-				*/
+				*
 			
 								
 				m_pkCameraEntity->SetInterpolate(true);
@@ -1196,7 +1254,7 @@ bool DarkMetropolis::CreatePlayer()
 			}
 		}
 	}
-	return false;
+	return false;*/
 }
 
 

@@ -1351,7 +1351,7 @@ Vector3 Entity::GetIWorldPosV()
 		m_kILocalPosV = GetWorldPosV() + m_kVel * (m_pkEntityMan->GetSimDelta() * fI);
 		*/
 		
-		m_kILocalPosV += (GetWorldPosV() - m_kILocalPosV)/10.0;// * (m_pkZeroFps->GetFrameTime()*3);
+		m_kILocalPosV += (GetWorldPosV() - m_kILocalPosV)/15.0;// * (m_pkZeroFps->GetFrameTime()*3);
 		//m_kILocalPosV += (GetWorldPosV() -m_kILocalPosV ) * (1.0 - fI);
 		
 		
