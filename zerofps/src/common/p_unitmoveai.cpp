@@ -16,8 +16,6 @@ P_UnitMoveAI::P_UnitMoveAI() :m_pkMoveUnitCommand(NULL),m_pkUnit(NULL), m_bTemp(
 	strcpy(m_acName,"P_UnitMoveAI");
 	m_iType=PROPERTY_TYPE_NORMAL;
 	m_iSide=PROPERTY_SIDE_SERVER;
-	
-	
 }
 
 P_UnitMoveAI::~P_UnitMoveAI()
@@ -36,23 +34,18 @@ void P_UnitMoveAI::Init()
 		else
 			cout<<"didnt find the damn HeightMap!!" <<endl;
 	}
-		int aiCost[5];
-		aiCost[0] = 15; // gräs (grön nyans)
-		aiCost[1] = 1; // väg (röd nyans)
-		aiCost[2] = 7; // sten (blå nyans)
-		aiCost[3] = 10; // öken (röd nyans)
-		aiCost[4] = 999; // vatten
 
-		static bool s_bOnes = false;
-		//if(!s_bOnes)
-		{
-			s_bOnes = true;
-		PathBuilder kPathBuilder(m_pkMap, &m_pkPathFind);
-		kPathBuilder.Build(aiCost);
-		}
-	
-	///////Register commands
-		
+	int aiCost[5];
+	aiCost[0] = 15; // gräs (grön nyans)
+	aiCost[1] = 1; // väg (röd nyans)
+	aiCost[2] = 7; // sten (blå nyans)
+	aiCost[3] = 10; // öken (röd nyans)
+	aiCost[4] = 999; // vatten
+
+	PathBuilder kPathBuilder(m_pkMap, &m_pkPathFind);
+	kPathBuilder.Build(aiCost);
+
+	/////// Register commands	
 }
 
 bool P_UnitMoveAI::RegisterExternalCommands()
@@ -132,6 +125,9 @@ AIBase* P_UnitMoveAI::UpdateAI()
 			}
 			
 			return true;*/
+
+			printf("APAN MOVES\n");
+
 			int iX=-1, iY=-1;
 			if(!m_pkPathFind->GetNextStep(iX,iY))
 			{
@@ -152,6 +148,8 @@ AIBase* P_UnitMoveAI::UpdateAI()
 			}
 			else 
 				return NULL;
+
+			
 
 		}
 	}

@@ -22,6 +22,7 @@ const int MAX_NUM_CMD_BNS = 18;
 class UserPanel : public DlgBox
 {
 public:
+	bool PopLastButtonCommand(char* szCommand);
 	void UpdateCmdButtons();
 	
 	bool Click();
@@ -49,7 +50,7 @@ private:
 
 	vector<ZGuiButton*> m_akCommandBns;
 	map<ZGuiButton*, string> m_akCmdButtonText;
-
+	char* m_szLastCmd; // command when the user presses a button.
 };
 
 #endif // !defined(AFX_USERPANEL_H__A8A3CF47_3B60_4C3E_9EB6_42353E9A8A2E__INCLUDED_)

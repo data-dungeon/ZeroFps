@@ -110,6 +110,9 @@ class ENGINE_API HeightMap: public ZFObject {
 		int GetMostVisibleTexture(float x,float y);
 		
 		void GenerateTextures();
+
+		Point GetSqrFromPos(Vector3 pos);
+		Vector3 GetPosFromSqr(Point square);
 		
 		
 		friend class Render;

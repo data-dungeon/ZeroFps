@@ -38,6 +38,8 @@ class ZeroRTS :public Application {
 		MiniMap*			m_pkMiniMap;
 		P_FogRender*	m_pkFogRender;
 		P_ClientInput* m_pkClientInput;
+		Vector3			m_kClickPos, m_kDragPos;
+		bool m_bDisableCameraScroll;
 
 		// actions
 		int 			m_iActionCamLeft;
@@ -78,10 +80,9 @@ class ZeroRTS :public Application {
 		//list of possible spawn points
 		vector<Vector3>	m_kSpawnPoints;
 
-	public:
+		void UpdateSelectionArea();
 
-		Vector3 GetPosFromSqr(Point square);
-		Point GetSqrFromPos(Vector3 pos);
+	public:
 		
 		GuiBuilder* m_pkGuiBuilder;
 		UserPanel*	m_pkUserPanel;

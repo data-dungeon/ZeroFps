@@ -15,6 +15,9 @@ ZeroRTS::ZeroRTS(char* aName,int iWidth,int iHeight,int iDepth)
 	m_pkClientInput = NULL;
 	m_iSelfObjectID = -1;
 	m_HaveFoundHMapObject = false;
+	m_bDisableCameraScroll = false;
+
+	m_kClickPos = m_kDragPos = Vector3(9000,0,9000);
 
 /*	COMMENT OUT BY ZEB
 	m_pkTestPath = NULL;
@@ -192,6 +195,20 @@ void ZeroRTS::OnIdle()
 
 	if(m_pkMiniMap)
 		m_pkMiniMap->Draw(m_pkCamera, pkGui, m_pkFogRender, pkRender); 
+
+//	Vector3 left(-10,0,-10), top(-10,0,10), right(10,0,10), bottom(10,0,-10);
+
+	//m_kClickPos = Vector3(0,0,0);
+	Vector3 
+		left(m_kClickPos.x,m_kClickPos.y+1,m_kDragPos.z), 
+		top(m_kClickPos.x,m_kClickPos.y+1,m_kClickPos.z), 
+		right(m_kDragPos.x,m_kClickPos.y+1,m_kClickPos.z), 
+		bottom(m_kDragPos.x,m_kClickPos.y+1,m_kDragPos.z);
+	
+	pkRender->Line(left, top);
+	pkRender->Line(top, right);
+	pkRender->Line(right, bottom);
+	pkRender->Line(bottom, left);
 }
 
 void ZeroRTS::OnSystem() 
@@ -295,6 +312,8 @@ void ZeroRTS::Input()
 		pkGui->SetCursor(mx, my, (s_iCursorTex = iNewCursorTex), 
 			(s_iCursorTex_a = iNewCursorTex_a), 32, 32);
 
+	UpdateSelectionArea();
+
 	//camera movements
 	if(pkInput->Action(m_iActionCamLeft) || eMouseDir == Left)
 	{
@@ -322,16 +341,22 @@ void ZeroRTS::Input()
 			PickInfo info2 = Pick();
 			//PickInfo info2;
 
-			for(list<int>::iterator it = m_kSelectedObjects.begin();it != m_kSelectedObjects.end();it++)
+			for(list<int>::iterator it = m_kSelectedObjects.begin(); it != m_kSelectedObjects.end();it++)
 			{
 				UnitCommand bla;
-				strcpy(bla.m_acCommandName,"Move");
+
+				// Try to get last command from user panel
+				// (the commando generated when the user clicks on a button)
+				if(!m_pkUserPanel->PopLastButtonCommand(bla.m_acCommandName))
+				{
+					// No commando exist. Use move commando instead,
+					strcpy(bla.m_acCommandName, "Move");
+				}
 
 				//bla.m_iXDestinaton = 100;
 				//bla.m_iYDestinaton = 100;			
 				//info2.kSquare.x = 100;
 				//info2.kSquare.y = 100;
-
 
 				bla.m_iXDestinaton = info2.kSquare.x;
 				bla.m_iYDestinaton = info2.kSquare.y;			
@@ -358,14 +383,14 @@ void ZeroRTS::Input()
 		if(info.iObject != -1)
 		{
 			m_pkMoveObject = pkObjectMan->GetObjectByNetWorkID(info.iObject);
-			m_pkEnd = m_pkStart = GetSqrFromPos(m_pkMoveObject->GetPos());
+			m_pkEnd = m_pkStart = m_pkMap->GetSqrFromPos(m_pkMoveObject->GetPos());
 		}
 		else
 		{
 			if(m_pkStart != Point(-1,-1))
 			{
 				m_pkEnd = info.kSquare;
-				m_pkStart = GetSqrFromPos(m_pkMoveObject->GetPos());
+				m_pkStart = m_pkMap->GetSqrFromPos(m_pkMoveObject->GetPos());
 				if(m_pkTestPath->Rebuild(m_pkStart.x, m_pkStart.y, m_pkEnd.x, m_pkEnd.y) == false)
 				{
 					m_pkEnd = m_pkStart;
@@ -574,8 +599,8 @@ PickInfo ZeroRTS::Pick()
 	PickInfo temp;
 	
 	temp.pkVert = PickMap(temp.kHitPos);
-	temp.kSquare = GetSqrFromPos(temp.kHitPos);
-	
+	temp.kSquare = m_pkMap->GetSqrFromPos(temp.kHitPos);
+
 	Object* pkPicked = PickObject();	
 	
 	if(pkPicked != NULL)	
@@ -615,6 +640,9 @@ Vector3 ZeroRTS::GetCamPos()
 
 void ZeroRTS::MoveCam(Vector3 kVel)
 {
+	if(m_bDisableCameraScroll)
+		return;
+
 	SetCamPos(GetCamPos() + kVel * pkFps->GetFrameTime());
 }
 
@@ -671,27 +699,6 @@ P_ClientUnit* ZeroRTS::GetClientUnit(int iID)
 	Object* pkObject = pkObjectMan->GetObjectByNetWorkID(iID);
 	
 	return (P_ClientUnit*)pkObject->GetProperty("P_ClientUnit");
-}
-
-Point ZeroRTS::GetSqrFromPos(Vector3 pos)
-{
-	int iSquareX = m_pkMap->m_iHmSize/2+ceil(pos.x / HEIGHTMAP_SCALE);
-	int iSquareY = m_pkMap->m_iHmSize/2+ceil(pos.z / HEIGHTMAP_SCALE);
-
-	return Point(iSquareX,iSquareY);
-}
-
-Vector3 ZeroRTS::GetPosFromSqr(Point square)
-{
-	float x = -(m_pkMap->m_iHmSize/2)*HEIGHTMAP_SCALE + square.x*HEIGHTMAP_SCALE;
-	float z = -(m_pkMap->m_iHmSize/2)*HEIGHTMAP_SCALE + square.y*HEIGHTMAP_SCALE;
-
-	x -= HEIGHTMAP_SCALE/2;	// Translate to center 
-	z -= HEIGHTMAP_SCALE/2;	// of square.*/
-
-	float y = m_pkMap->Height(x,z);
-
-	return Vector3(x,y,z);
 }
 
 void ZeroRTS::Explore()
@@ -888,5 +895,45 @@ void ZeroRTS::RemoveClientUnits(int iID)
 	}
 }
 
+void ZeroRTS::UpdateSelectionArea()
+{
+	static bool s_bClicked;
 
+	if(pkInput->Pressed(MOUSELEFT))
+	{
+		static Point s_PrevMousePos(-1,-1);
+	
+		int x,y;
+		pkInput->MouseXY(x,y);
 
+		if(s_PrevMousePos != Point(x,y))
+		{
+			s_PrevMousePos = Point(x,y);
+			Vector3 kHitPos;
+			PickMap(kHitPos);
+
+			if(s_bClicked == false)
+			{
+				if(kHitPos.y < 0)
+					kHitPos.y = 0;
+
+				m_kDragPos = m_kClickPos = kHitPos;
+				m_bDisableCameraScroll = s_bClicked = true;
+			}
+			else
+			{
+				m_kDragPos = kHitPos;
+				if(m_kClickPos.y < m_kDragPos.y)
+					m_kClickPos.y = m_kDragPos.y;
+			}
+		}
+	}
+	else
+	{
+		if(s_bClicked == true)
+		{
+			m_kDragPos = m_kClickPos = Vector3(9000,0,9000);
+			m_bDisableCameraScroll = s_bClicked = false;
+		}
+	}
+}

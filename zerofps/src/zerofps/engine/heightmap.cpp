@@ -1068,6 +1068,27 @@ void HeightMap::GenerateTextures() {
 }
 */
 
+Point HeightMap::GetSqrFromPos(Vector3 pos)
+{
+	int iSquareX = m_iHmSize/2+ceil(pos.x / HEIGHTMAP_SCALE);
+	int iSquareY = m_iHmSize/2+ceil(pos.z / HEIGHTMAP_SCALE);
+
+	return Point(iSquareX,iSquareY);
+}
+
+Vector3 HeightMap::GetPosFromSqr(Point square)
+{
+	float x = -(m_iHmSize/2)*HEIGHTMAP_SCALE + square.x*HEIGHTMAP_SCALE;
+	float z = -(m_iHmSize/2)*HEIGHTMAP_SCALE + square.y*HEIGHTMAP_SCALE;
+
+	x -= HEIGHTMAP_SCALE/2;	// Translate to center 
+	z -= HEIGHTMAP_SCALE/2;	// of square.*/
+
+	float y = Height(x,z);
+
+	return Vector3(x,y,z);
+}
+
 
 
 

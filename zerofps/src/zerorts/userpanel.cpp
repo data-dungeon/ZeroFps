@@ -16,6 +16,7 @@ UserPanel::UserPanel(ZeroRTS* pkZeroRts, ZGuiWndProc oMainWndProc)
 {
 	m_pkZeroRts = pkZeroRts;
 	m_pkGuiBuilder = pkZeroRts->m_pkGuiBuilder;
+	m_szLastCmd = NULL;
 }
 
 UserPanel::~UserPanel()
@@ -298,9 +299,11 @@ void UserPanel::OnClickCmdButton(int iCtrlID)
 	if(pkButton == NULL)
 		return;
 
-/*	UnitCommand kOrder;
-	strcpy(kOrder.m_acCommandName, "Move");
-	m_pkZeroRts->m_pkClientInput->AddOrder(kOrder);*/
+	if(m_szLastCmd)
+		delete[] m_szLastCmd;
+
+	m_szLastCmd = new char[25];
+	strcpy(m_szLastCmd, "Move");
 }
 
 int UserPanel::GetNumVisibleCmdButtons()
@@ -329,6 +332,19 @@ void UserPanel::HideAllCmdButtons()
 			ID_CMD_BUTTONS_START+i);
 		pkButton->Hide();
 	}
+}
+
+bool UserPanel::PopLastButtonCommand(char* szCommand)
+{
+	if(m_szLastCmd != NULL)
+	{
+		strcpy(szCommand, m_szLastCmd);
+		delete[] m_szLastCmd;
+		m_szLastCmd = NULL;
+		return true;
+	}
+
+	return false;
 }
 
 /* COMMENT OUT BY ZEB
@@ -385,3 +401,5 @@ bool ZeroRTS::MovePath(Object* pkObject)
 	return true;
 }
 */
+
+
