@@ -25,6 +25,8 @@ class ENGINE_SYSTEMS_API ZShadow  : public ZFSubSystem
 		int						m_iNrOfVerts;
 		int						m_iNrOfFaces;
 
+		int						m_iDebug;
+
 		//vector<Mad_Face>*		m_pkFaces;			// Faces in mesh.
 		//vector<Vector3>*		m_pkVertex;			// Vertex frames for mesh.
 		vector<Vector3>			m_kTransFormedVertexs;

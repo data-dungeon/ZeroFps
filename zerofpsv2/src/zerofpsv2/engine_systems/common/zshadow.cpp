@@ -10,14 +10,15 @@ ZShadow::ZShadow(): ZFSubSystem("ZShadow")
 	Logf("zerofps","ZShadow system created");
 
 	m_iNrOfShadows =		2;
- 	m_fExtrudeDistance = 10000;
+ 	m_fExtrudeDistance = 100;
 	m_iCurrentShadows = 	0;
 	m_iCurrentVerts = 	0;
 	m_bHaveCheckedBits = false;
 	m_bDisabled = 			false;
+	m_iDebug = 				0;
 
-	RegisterVariable("r_shadows",		&m_iNrOfShadows,CSYS_INT);
-
+	RegisterVariable("r_shadows",				&m_iNrOfShadows,CSYS_INT);
+	RegisterVariable("r_shadowdebug",		&m_iDebug,CSYS_INT);
 }
 
 bool ZShadow::StartUp()
@@ -73,7 +74,7 @@ void ZShadow::Update()
 			{
 				//find witch lights to enable
 				vector<LightSource*>	kLights;
-				m_pkLight->GetClosestLights(&kLights,m_iNrOfShadows, m_pkMad->GetObject()->GetIWorldPosV(),false);
+				m_pkLight->GetClosestLights(&kLights,m_iNrOfShadows, m_pkMad->GetObject()->GetIWorldPosV(),true);
 
 				for(int i = 0;i<kLights.size();i++)
 				{
@@ -161,6 +162,7 @@ void ZShadow::FindFrontCaping(Vector3 kSourcePos)
 	m_iCurrentVerts += iVerts;
 	Vector3 v[3];
 	Vector3 ev[3];
+	Vector3 bv[3];
 
 	for(int i = 0;i<iVerts; i+=3)
 	{
@@ -172,21 +174,42 @@ void ZShadow::FindFrontCaping(Vector3 kSourcePos)
 		Vector3 Normal = (v[1] - v[0]).Cross(v[2] - v[0]);
 		Vector3 RefV = ( kSourcePos - (v[0]) );
 
-		if(Normal.Dot(RefV) < 0)
+		if(Normal.Dot(RefV) > 0)
 		{
 
 
-			ev[0] = v[0] + ( kSourcePos - v[0]).Unit() * 0.01;
+/*			ev[0] = v[0] + ( kSourcePos - v[0]).Unit() * 0.01;
 			ev[1] = v[1] + ( kSourcePos - v[1]).Unit() * 0.01;
 			ev[2] = v[2] + ( kSourcePos - v[2]).Unit() * 0.01;
+*/
+			ev[0] = v[0] + ( v[0] - kSourcePos).Unit() * 0.01;
+			ev[1] = v[1] + ( v[1] - kSourcePos).Unit() * 0.01;
+			ev[2] = v[2] + ( v[2] - kSourcePos).Unit() * 0.01;
 
+
+			bv[0] = v[0] + ( v[0] - kSourcePos).Unit() * m_fExtrudeDistance;
+			bv[1] = v[1] + ( v[1] - kSourcePos).Unit() * m_fExtrudeDistance;
+			bv[2] = v[2] + ( v[2] - kSourcePos).Unit() * m_fExtrudeDistance;
 
 
 			glBegin(GL_TRIANGLES);
-				glVertex3f(ev[2].x,ev[2].y,ev[2].z);
-				glVertex3f(ev[1].x,ev[1].y,ev[1].z);
 				glVertex3f(ev[0].x,ev[0].y,ev[0].z);
+				glVertex3f(ev[1].x,ev[1].y,ev[1].z);
+				glVertex3f(ev[2].x,ev[2].y,ev[2].z);
 			glEnd();
+
+/*			glBegin(GL_TRIANGLES);
+				glVertex3f(v[0].x,v[0].y,v[0].z);
+				glVertex3f(v[1].x,v[1].y,v[1].z);
+				glVertex3f(v[2].x,v[2].y,v[2].z);
+			glEnd();
+*/
+			glBegin(GL_TRIANGLES);
+				glVertex3f(bv[2].x,bv[2].y,bv[2].z);
+				glVertex3f(bv[1].x,bv[1].y,bv[1].z);
+				glVertex3f(bv[0].x,bv[0].y,bv[0].z);
+			glEnd();
+
 		}
 	}
 }
@@ -275,17 +298,11 @@ void ZShadow::ExtrudeSiluet(Vector3 kSourcePos)
 		v[0] = m_kTransFormedVertexs[m_kTowardsEdges[i].first];
 		v[1] = m_kTransFormedVertexs[m_kTowardsEdges[i].second];
 
-		v[0] = v[0] + ( kSourcePos - v[0]).Unit() * 0.01;
-		v[1] = v[1] + ( kSourcePos - v[1]).Unit() * 0.01;
+		v[0] = v[0] + ( v[0] -kSourcePos).Unit() * 0.01;
+		v[1] = v[1] + ( v[1] -kSourcePos).Unit() * 0.01;
 
 		ev[0] = v[0] + ( v[0] - kSourcePos).Unit() * m_fExtrudeDistance;
 		ev[1] = v[1] + ( v[1] - kSourcePos).Unit() * m_fExtrudeDistance;
-
-/*		glBegin(GL_LINES);
-			glVertex3f(v[0].x,v[0].y,v[0].z);
-			glVertex3f(v[1].x,v[1].y,v[1].z);
-		glEnd();
-*/
 
 		glBegin(GL_QUADS);
 			glVertex3f(v[0].x,v[0].y,v[0].z);
@@ -293,6 +310,29 @@ void ZShadow::ExtrudeSiluet(Vector3 kSourcePos)
 			glVertex3f(ev[1].x,ev[1].y,ev[1].z);
 			glVertex3f(v[1].x,v[1].y,v[1].z);
 		glEnd();
+
+		//debug stuff
+		if(m_iDebug != 0)
+		{
+			glPushAttrib(GL_ALL_ATTRIB_BITS);
+				glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
+				glDisable(GL_STENCIL_TEST);
+				glDisable(GL_TEXTURE_2D);
+				glColor4f(1,0,0,0);
+				glDisable(GL_LIGHTING);
+
+				glBegin(GL_LINES);
+					glVertex3f(v[0].x,v[0].y,v[0].z);
+					glVertex3f(v[1].x,v[1].y,v[1].z);
+
+					glVertex3f(v[0].x,v[0].y,v[0].z);
+					glVertex3f(ev[0].x,ev[0].y,ev[0].z);
+
+					glVertex3f(v[1].x,v[1].y,v[1].z);
+					glVertex3f(ev[1].x,ev[1].y,ev[1].z);
+				glEnd();
+			glPopAttrib();
+		}
 	}
 }
 
@@ -302,7 +342,7 @@ void ZShadow::MakeStencilShadow(Vector3 kSourcePos)
 	m_kTowardsEdges.clear();
 	FindSiluetEdges(kSourcePos);
 
-/*
+
 	//carmac inverse (zfail)
 	//back
 	glCullFace(GL_FRONT);
@@ -316,9 +356,9 @@ void ZShadow::MakeStencilShadow(Vector3 kSourcePos)
 	glStencilOp(GL_KEEP, GL_DECR, GL_KEEP);
 	ExtrudeSiluet(kSourcePos);
 	FindFrontCaping(kSourcePos);
-*/
 
 
+/*
 	//the other one ;)
 	//draw front
 	glCullFace(GL_BACK);
@@ -329,7 +369,7 @@ void ZShadow::MakeStencilShadow(Vector3 kSourcePos)
 	glCullFace(GL_FRONT);
 	glStencilOp(GL_KEEP, GL_KEEP, GL_DECR);
 	ExtrudeSiluet(kSourcePos);
-
+*/
 }
 
 void ZShadow::SetupStencilBuffer()
