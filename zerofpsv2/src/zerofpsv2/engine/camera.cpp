@@ -2,6 +2,8 @@
 #include "../render/render.h"
 #include "../ogl/zfpsgl.h"
 
+bool Camera::m_bDrawOrthoGrid(false);
+
 Camera::Camera(Vector3 kPos,Vector3 kRot,float fFov,float fAspect,float fNear,float fFar)
 {
 	SetView(fFov,fAspect,fNear,fFar);
@@ -188,8 +190,8 @@ void Camera::SetViewPort(float fX,float fY,float fW,float fH)
 
 void Camera::DrawGrid()
 {
-	if(m_eMode == CAMMODE_PERSP)
-		return;
+	if(m_bDrawOrthoGrid == false)	return;
+	if(m_eMode == CAMMODE_PERSP)	return;
 
 	Vector3 kStart, kEnd;
 	float		fStart;
@@ -313,3 +315,14 @@ void Camera::OrthoMove(Vector3 kMove)
 	kPos += m_kOrthoAxisY * kMove.y;
 	SetPos(kPos);
 }
+
+Vector3 Camera::GetOrthoMove(Vector3 kMove)
+{
+	Vector3 kNewMove(0,0,0);
+	kNewMove += m_kOrthoAxisX * kMove.x;
+	kNewMove += m_kOrthoAxisY * kMove.y;
+	return kNewMove;
+
+}
+
+

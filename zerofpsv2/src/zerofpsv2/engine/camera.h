@@ -83,6 +83,7 @@ class ENGINE_API Camera
 
 		void OrthoZoom(float fZoom);
 		void OrthoMove(Vector3 kMove);
+		Vector3 GetOrthoMove(Vector3 kMove);
 
 		void SetRotM(Matrix4 kRotM);
 		void RotateV(Vector3 kRot);
@@ -99,6 +100,8 @@ class ENGINE_API Camera
 		string GetName( )						{	return m_strName; }
 
 		string GetCameraDesc();
+
+		static bool	m_bDrawOrthoGrid;
 };
 
 #endif

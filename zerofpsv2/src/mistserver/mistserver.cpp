@@ -23,7 +23,6 @@
 
 #include "../zerofpsv2/gui/zguiresourcemanager.h"
 
-
 MistServer g_kMistServer("MistServer",0,0,0);
 
 static bool GUIPROC( ZGuiWnd* win, unsigned int msg, int numparms, void *params ) 
@@ -82,13 +81,15 @@ MistServer::MistServer(char* aName,int iWidth,int iHeight,int iDepth)
 	Register_Cmd("setcam", FID_SETCAM);		
 	Register_Cmd("camlink", FID_CAMLINK);
 	Register_Cmd("camsolo", FID_CAMSOLO);
-	
+	Register_Cmd("camgrid", FID_CAMGRID);
+	Register_Cmd("selnone", FID_SELNONE);
 
 	m_kDrawPos.Set(0,0,0);
 
 	m_fHMInRadius  = 1;
 	m_fHMOutRadius = 2;
 	m_iEditLayer	= 1;
+	m_fDelayTime   = 0.0;
 
 	m_pkActiveCameraObject	= NULL;
 	m_pkActiveCamera			= NULL;
@@ -579,7 +580,7 @@ void MistServer::Input_EditObject()
 		}
 	}
 	
-	if(m_pkInput->Pressed(MOUSEMIDDLE) || (m_pkInput->Pressed(MOUSERIGHT) && m_pkInput->Pressed(KEY_LSHIFT)))
+	if(m_pkInput->VKIsDown("selectzone") || (m_pkInput->Pressed(MOUSERIGHT) && m_pkInput->Pressed(KEY_LSHIFT)))
 	{		
 		if(m_pkFps->GetTicks() - m_fClickDelay > 0.2)
 		{	
@@ -719,14 +720,25 @@ void MistServer::Input_Camera(float fMouseX, float fMouseY)
 
 		if(m_pkInput->VKIsDown("forward"))	kMove.y += fSpeedScale;
 		if(m_pkInput->VKIsDown("back"))		kMove.y -= fSpeedScale;
-		if(m_pkInput->VKIsDown("right"))	kMove.x += fSpeedScale;
+		if(m_pkInput->VKIsDown("right"))		kMove.x += fSpeedScale;
 		if(m_pkInput->VKIsDown("left"))		kMove.x -= fSpeedScale;	
 		
 		if(m_pkInput->VKIsDown("down"))		m_pkActiveCamera->OrthoZoom(0.9);
 		if(m_pkInput->VKIsDown("up"))			m_pkActiveCamera->OrthoZoom(1.1);
 
-		P_Camera* pkCam = dynamic_cast<P_Camera*>(m_pkActiveCameraObject->GetProperty("P_Camera"));
-		pkCam->OrthoMove(kMove);
+		if(m_pkCameraObject[1]->GetParent() == m_pkCameraObject[0])
+		{
+			// If Cameras are linked.
+			kMove = m_pkActiveCamera->GetOrthoMove(kMove);
+			kMove.Print();
+			cout << endl;
+			m_pkCameraObject[0]->SetLocalPosV(m_pkCameraObject[0]->GetLocalPosV() + kMove);
+		}
+		else 
+		{
+			P_Camera* pkCam = dynamic_cast<P_Camera*>(m_pkActiveCameraObject->GetProperty("P_Camera"));
+			pkCam->OrthoMove(kMove);
+		}
 	}
 }
 
@@ -766,6 +778,7 @@ void MistServer::Input()
 
 	if(m_pkInput->Pressed(KEY_H))	m_pkRender->DumpGLState("zzz.txt");			
 
+
 	if(m_pkCameraObject)	
 	{	
 		Input_Camera(x,z);
@@ -780,7 +793,9 @@ void MistServer::Input()
 	
 		if(m_iEditMode == EDIT_HMAP)				Input_EditTerrain();
 		if(m_iEditMode == EDIT_ZONES)				Input_EditZone();
-		if(m_iEditMode == EDIT_OBJECTS)				Input_EditObject();
+		if(m_iEditMode == EDIT_OBJECTS)			Input_EditObject();
+
+		if(m_pkInput->VKIsDown("solo"))				SoloToggleView();
 	}
 };
 
@@ -794,6 +809,15 @@ void MistServer::OnHud(void)
 	m_pkFps->ToggleGui();
 
 
+}
+
+bool MistServer::DelayCommand()
+{
+	if(m_pkFps->GetEngineTime() < m_fDelayTime)
+		return true;
+
+	m_fDelayTime = m_pkFps->GetEngineTime() + 0.5;
+	return false;
 }
 
 void MistServer::RunCommand(int cmdid, const CmdArgument* kCommand)
@@ -896,24 +920,9 @@ void MistServer::RunCommand(int cmdid, const CmdArgument* kCommand)
 
 				break;
 
-		case FID_CAMSOLO:
-			if(m_bSoloMode) {
-				m_bSoloMode = false;
-				m_pkCamera[0]->SetViewPort(0.5,0.5,0.5,0.5);
-				m_pkCamera[1]->SetViewPort(0.0,0.5,0.5,0.5);
-				m_pkCamera[2]->SetViewPort(0.0,0.0,0.5,0.5);
-				m_pkCamera[3]->SetViewPort(0.5,0.0,0.5,0.5);
-				}
-			else {
-				m_bSoloMode = true;
-				m_pkCamera[0]->SetViewPort(0,0,0,0);
-				m_pkCamera[1]->SetViewPort(0,0,0,0);
-				m_pkCamera[2]->SetViewPort(0,0,0,0);
-				m_pkCamera[3]->SetViewPort(0,0,0,0);
-				m_pkActiveCamera->SetViewPort(0,0,1,1);
-				}
-			break;
-				
+		case FID_CAMSOLO:		SoloToggleView();	break;
+		case FID_CAMGRID:		Camera::m_bDrawOrthoGrid = !Camera::m_bDrawOrthoGrid;		break;
+		case FID_SELNONE:		Select_None();		break;
 
 		case FID_LIGHTMODE:
 			if(kCommand->m_kSplitCommand.size() <= 1)
@@ -949,6 +958,29 @@ void MistServer::RunCommand(int cmdid, const CmdArgument* kCommand)
 	}
 
 }
+
+void MistServer::SoloToggleView()
+{
+	if(DelayCommand())	return;
+
+	if(m_bSoloMode) {
+		m_bSoloMode = false;
+		m_pkCamera[0]->SetViewPort(0.5,0.5,0.5,0.5);
+		m_pkCamera[1]->SetViewPort(0.0,0.5,0.5,0.5);
+		m_pkCamera[2]->SetViewPort(0.0,0.0,0.5,0.5);
+		m_pkCamera[3]->SetViewPort(0.5,0.0,0.5,0.5);
+		}
+	else {
+		m_bSoloMode = true;
+		m_pkCamera[0]->SetViewPort(0,0,0,0);
+		m_pkCamera[1]->SetViewPort(0,0,0,0);
+		m_pkCamera[2]->SetViewPort(0,0,0,0);
+		m_pkCamera[3]->SetViewPort(0,0,0,0);
+		m_pkActiveCamera->SetViewPort(0,0,1,1);
+		}
+}
+
+
 
 void MistServer::ClientInit()
 {

@@ -54,6 +54,11 @@ Title=Delete
 Parent=Menu_Edit
 Cmd=delete
 
+[Menu_EditSNone]
+Title=Select - None
+Parent=Menu_Edit
+Cmd=selnone
+
 ; ------------- VIEW MENU -------------
 [Menu_View]
 Title=View
@@ -119,6 +124,11 @@ Cmd=camlink
 Title=Cam - Solo (T)
 Parent=Menu_View
 Cmd=camsolo
+
+[Menu_ViewGrid]
+Title=Cam - Grid (T)
+Parent=Menu_View
+Cmd=camgrid
 
 ; ------------- SYSTEM MENU -------------
 

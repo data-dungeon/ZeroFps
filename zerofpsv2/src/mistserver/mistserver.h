@@ -59,6 +59,9 @@ class MistServer :public Application , public ZGuiApp {
 			FID_SETCAM,
 			FID_CAMLINK,
 			FID_CAMSOLO,
+			FID_CAMGRID,
+			FID_SELNONE,
+
 		};
 
 		enum EditMode_e
@@ -214,6 +217,10 @@ class MistServer :public Application , public ZGuiApp {
 		void RenderInterface(void);
 
 		void AutoSetZoneSize(string strName);
+		void SoloToggleView();
+
+		float	m_fDelayTime;
+		bool	DelayCommand();
 
 		bool StartUp();
 		bool ShutDown();
