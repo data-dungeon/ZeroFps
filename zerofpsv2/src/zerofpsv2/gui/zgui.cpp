@@ -644,16 +644,6 @@ void ZGui::UpdateKeys(vector<KEY_INFO>& kKeysPressed, float time)
 
 bool ZGui::Activate(bool bActive)
 {
-	// Måste skapa alla defult skins här av någon konstig
-	// anledning (skulle egentligen ha skapats i konstruktorn)
-	// Glöm alltså inte bort att anropa den här funktionen
-	// från applikationen!!!
-	static bool s_bDefaultSkinsCreated = false;
-	if(s_bDefaultSkinsCreated == false)
-	{
-		s_bDefaultSkinsCreated = true;
-	}
-
 	m_bActive = bActive;
 	return m_bActive;
 }
@@ -1170,6 +1160,13 @@ void ZGui::FormatKey(int& iKey, bool bShiftIsPressed)
 			else
 			if(iKey > 96 && iKey < 123)
 				iKey -= 32;
+
+         if(iKey == 39) // ä
+            iKey = 'A';
+         if(iKey == 91) // å
+            iKey = 'A';
+         if(iKey == 59) // ö
+            iKey = 'O';
 		}
 		else
 		{
@@ -1181,6 +1178,12 @@ void ZGui::FormatKey(int& iKey, bool bShiftIsPressed)
 				iKey = '\'';
 			if(iKey == '=')
 				iKey = '´';
+         if(iKey == 39) // ä
+            iKey = 'a';
+         if(iKey == 91) // å
+            iKey = 'a';
+         if(iKey == 59) // ö
+            iKey = 'o';
 		}	
 
 	#endif // #ifdef WIN32

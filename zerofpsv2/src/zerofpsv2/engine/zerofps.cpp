@@ -341,45 +341,52 @@ void ZeroFps::Run_EngineShell()
 	// Update Local Input.
 	m_pkInput->Update();
 
+	// TAB Always handle console.
+	if(m_pkInputHandle->Pressed(KEY_BACKQUOTE))
+	{		
+		m_pkConsole->Toggle();
+	}
+
 	if(m_pkConsole->IsActive()) 
 	{		
 		m_pkConsole->Update();
 	}
-
-	// Updata Gui input
-	int mx, my;
-	if(m_pkGui->m_bUseHardwareMouse == true)
-		m_pkGuiInputHandle->SDLMouseXY(mx,my);
-	else
-		m_pkGuiInputHandle->MouseXY(mx,my);
-
-	m_pkGui->UpdateMouse(mx, my,
-      m_pkGuiInputHandle->Pressed(MOUSELEFT),
-      m_pkGuiInputHandle->Pressed(MOUSERIGHT),
-		m_pkGuiInputHandle->Pressed(MOUSEMIDDLE), 
-      GetTicks());
-
-   vector<ZGui::KEY_INFO> vkKeyInfo;
-
-   while(m_pkGuiInputHandle->SizeOfQueue() > 0)
+   else
    {
-      QueuedKeyInfo kKey = m_pkGuiInputHandle->GetQueuedKey();
+	   // Updata Gui input
+	   int mx, my;
+	   if(m_pkGui->m_bUseHardwareMouse == true)
+		   m_pkGuiInputHandle->SDLMouseXY(mx,my);
+	   else
+		   m_pkGuiInputHandle->MouseXY(mx,my);
 
-      ZGui::KEY_INFO kKeyInfo;
-      kKeyInfo.key = kKey.m_iKey;
-      kKeyInfo.pressed = kKey.m_bPressed;
-      kKeyInfo.shift = (kKey.m_iModifiers & MODIFIER_SHIFT);
-      vkKeyInfo.push_back(kKeyInfo);
+	   m_pkGui->UpdateMouse(mx, my,
+         m_pkGuiInputHandle->Pressed(MOUSELEFT),
+         m_pkGuiInputHandle->Pressed(MOUSERIGHT),
+		   m_pkGuiInputHandle->Pressed(MOUSEMIDDLE), 
+         GetTicks());
+
+      vector<ZGui::KEY_INFO> vkKeyInfo;
+
+      while(m_pkGuiInputHandle->SizeOfQueue() > 0)
+      {
+         QueuedKeyInfo kKey = m_pkGuiInputHandle->GetQueuedKey();
+
+         ZGui::KEY_INFO kKeyInfo;
+         kKeyInfo.key = kKey.m_iKey;
+         kKeyInfo.pressed = kKey.m_bPressed;
+         kKeyInfo.shift = (kKey.m_iModifiers & MODIFIER_SHIFT);
+         vkKeyInfo.push_back(kKeyInfo);
+      }
+
+      m_pkGui->UpdateKeys(vkKeyInfo, GetTicks());
+
+	   //disablar applicationens input om guit har hanterat den	
+	   if(m_pkGui->m_bHandledMouse == true)
+		   m_pkApp->m_pkInputHandle->SetTempDisable(true);
+	   else
+		   m_pkApp->m_pkInputHandle->SetTempDisable(false);
    }
-
-   m_pkGui->UpdateKeys(vkKeyInfo, GetTicks());
-
-	//disablar applicationens input om guit har hanterat den	
-	if(m_pkGui->m_bHandledMouse == true)
-		m_pkApp->m_pkInputHandle->SetTempDisable(true);
-	else
-		m_pkApp->m_pkInputHandle->SetTempDisable(false);
-
 
 	//end of console input
 
@@ -391,11 +398,7 @@ void ZeroFps::Run_EngineShell()
 	if(m_pkInputHandle->Pressed(KEY_F10))	m_pkInput->ToggleGrab();
 	if(m_pkInputHandle->Pressed(KEY_F11))	ToggleFullScreen();		
 
-	// TAB Always handle console.
-	if(m_pkInputHandle->Pressed(KEY_BACKQUOTE))
-	{		
-		m_pkConsole->Toggle();
-	}
+
 
 }
 

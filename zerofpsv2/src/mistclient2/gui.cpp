@@ -135,9 +135,16 @@ bool GUIPROC( ZGuiWnd* win, unsigned int msg, int numparms, void *params )
          else
          if(strController == "ConnectBn")
          {
-            g_kMistClient.SetText("LoginNameEB", (char*) g_kMistClient.m_strLoginName.c_str());
-            g_kMistClient.SetText("LoginPWEb", (char*) g_kMistClient.m_strLoginPW.c_str());
-            g_kMistClient.ShowWnd("LoginWnd", true, true, true);
+            string strName, strIP;
+            if(g_kMistClient.NameIPFromServerList(strName, strIP))
+            {
+               string strTitle = string("Connect to ") + strName;
+               g_kMistClient.SetText("LoginWndLabel", (char*)strTitle.c_str());
+
+               g_kMistClient.SetText("LoginNameEB", (char*) g_kMistClient.m_strLoginName.c_str());
+               g_kMistClient.SetText("LoginPWEb", (char*) g_kMistClient.m_strLoginPW.c_str());
+               g_kMistClient.ShowWnd("LoginWnd", true, true, true);
+            }
          }
       }
       else
