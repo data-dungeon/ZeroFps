@@ -309,7 +309,7 @@ void Scene::CreateUI()
 
 	m_pkApp->CreateWnd(Label, "OwerwriteWarning", "SelectFileWnd", "", 400-240, 16+400-16-64+24+15, 100, 20, 0);
 
-	m_pkSelectMoveAreaWnd = m_pkApp->CreateWnd(Wnd, "SeletMoveAreaWnd", "", "", 0, 0, 200, 200, 0);
+	m_pkSelectMoveAreaWnd = m_pkApp->CreateWnd(Wnd, "SelectMoveAreaWnd", "", "", 0, 0, 200, 200, 0);
 	m_pkSelectMoveAreaWnd->Hide();
 	
 }
@@ -410,6 +410,8 @@ bool Scene::IsSceneWnd(ZGuiWnd* pkWnd)
 	if(pkWnd == m_pkDefProp)
 		return true;
 	if(pkWnd == m_pkSelectMoveAreaWnd)
+		return true;
+	if(pkWnd == NULL)
 		return true;
 	
 	ZGuiWnd* pkParent = pkWnd->GetParent();
@@ -586,18 +588,18 @@ ZGuiWnd* Scene::CloneWnd(ZGuiWnd *pkWnd, int xpos, int ypos)
 			return NULL;
 	}
 
-	if(eWndType == Wnd)				strcpy(szName, "Wnd");
-	else if(eWndType == Button)			strcpy(szName, "Button");
+	if(eWndType == Wnd)					strcpy(szName, "Wnd");
+	else if(eWndType == Button)		strcpy(szName, "Button");
 	else if(eWndType == Checkbox)		strcpy(szName, "Checkbox");
 	else if(eWndType == Combobox)		strcpy(szName, "Combobox");
 	else if(eWndType == Label)			strcpy(szName, "Label");
-	else if(eWndType == Listbox)			strcpy(szName, "Listbox");
+	else if(eWndType == Listbox)		strcpy(szName, "Listbox");
 	else if(eWndType == Radiobutton)	strcpy(szName, "Radiobutton");
-	else if(eWndType == Scrollbar)		strcpy(szName, "Scrollbar");
-	else if(eWndType == Slider)			strcpy(szName, "Slider");
-	else if(eWndType == TabControl)		strcpy(szName, "TabControl");
-	else if(eWndType == Textbox)			strcpy(szName, "Textbox");
-	else if(eWndType == Treebox)			strcpy(szName, "Treebox");
+	else if(eWndType == Scrollbar)	strcpy(szName, "Scrollbar");
+	else if(eWndType == Slider)		strcpy(szName, "Slider");
+	else if(eWndType == TabControl)	strcpy(szName, "TabControl");
+	else if(eWndType == Textbox)		strcpy(szName, "Textbox");
+	else if(eWndType == Treebox)		strcpy(szName, "Treebox");
 
 	strcpy(szLabel, pkWnd->GetText());
 	char szNumber[10];

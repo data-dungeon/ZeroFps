@@ -54,13 +54,13 @@ bool Serialization::SaveGUI(char* szFileName, Scene* pkScene)
 	// kopiera alla fönster till en vektor och sortera den
 	list<ZGuiWnd*> kWnd;
 
-	ZGuiWnd* pkMainWnd = m_pkGuiResMan->Wnd("GuiMainWnd");
+	//ZGuiWnd* pkMainWnd = m_pkGuiResMan->Wnd("GuiMainWnd");
 	
 	map<string, ZGuiWnd*>::iterator it2;
 	for( it2 = kWindows.begin(); it2 != kWindows.end(); it2++)
 	{
 		ZGuiWnd* pkWnd = (*it2).second;
-		if( pkWnd != NULL && !pkScene->IsSceneWnd(pkWnd) && pkWnd != pkMainWnd )
+		if( pkWnd != NULL && !pkScene->IsSceneWnd(pkWnd) /*&& pkWnd != pkMainWnd*/ )
 			kWnd.push_back(pkWnd);
 	}
 
@@ -109,7 +109,7 @@ bool Serialization::SaveGUI(char* szFileName, Scene* pkScene)
 		kSkins.clear(); 
 	}
 
-	vector< pair<ZGuiSkin, string> > kSkinTable;
+	//vector< pair<ZGuiSkin, string> > m_kSkinTable;
 
 	char name[1024], tex[8][1024], szSkin[1024];
 	int r, g, b, r2, g2, b2, bds, tile, trans;
@@ -179,7 +179,7 @@ bool Serialization::SaveGUI(char* szFileName, Scene* pkScene)
 
 		// lägg till skin och namn i en söklista, så att vi senare kan söka reda på rätt skin
 		// att jämnföra med
-		kSkinTable.push_back( pair<ZGuiSkin, string>( *pkSkin, string(name) ));
+		m_kSkinTable.push_back( pair<ZGuiSkin, string>( *pkSkin, string(name) ));
 	}
 
 	//
@@ -192,95 +192,35 @@ bool Serialization::SaveGUI(char* szFileName, Scene* pkScene)
 	fprintf(pkFile, "\t-- 7 = Scrollbar, 8 = Slider, 9 = TabControl, 10 = Textbox, 11 = Treebox\n");
 	fprintf(pkFile, "\t-------------------------------------------------------------------------");
 
+	m_pkFile = pkFile;
+	m_pkScene = pkScene;
+
 	if(kWnd.empty() == false)
 	{
+		list<ZGuiWnd*>::iterator it = kWnd.begin();
+		list<ZGuiWnd*>::iterator next;
+
 		while(1)
-		{		
-			ZGuiWnd* pkWnd = kWnd.back();
-			ZGuiWnd* pkParent = pkWnd->GetParent();
+		{
+			list<ZGuiWnd*>::iterator it = kWnd.begin();
 
-			if(pkParent == NULL || pkParent == pkMainWnd || ParentHaveBeenSaved(pkParent))
+			while( it != kWnd.end() )
 			{
-				Rect rc;
-
-				int iType = (int) pkScene->GetApp()->GetType(pkWnd); 
-
-				const char* szName = pkScene->GetAlias(pkWnd);
-				if(szName == NULL)
-					szName = pkWnd->GetName();
-
-				char szParent[75], szLabel[75];
-
-				if(pkWnd->GetParent())
+				if(PrintWnd(*it)) // returnerar sannt om fönstret gick att printa
 				{
-					const char* szAliasParent = pkScene->GetAlias(pkWnd->GetParent());
-
-					if(szAliasParent)
-						strcpy(szParent, szAliasParent);
-					else
-						strcpy(szParent, pkWnd->GetParent()->GetName());
+					PrintSkins(*it);
+					it = kWnd.erase(it);
+					if(kWnd.empty()) // avbryt om listan är tom
+						break;
 				}
 				else
-					strcpy(szParent, "");
-
-				if(pkWnd->GetText())
-					strcpy(szLabel, pkWnd->GetText());
-				else
-					strcpy(szLabel, "");
-
-				if(szParent == NULL)
-					rc = pkWnd->GetScreenRect();
-				else
-					rc = pkWnd->GetWndRect();
-
-				fprintf(pkFile, "\n\tCreateWnd(%i,\"%s\",\"%s\",\"%s\",%i,%i,%i,%i,0)\n", iType, 
-					szName, szParent, szLabel, rc.Left, rc.Top, rc.Width(), rc.Height());
-
-				if(pkWnd->GetScreenRect() != pkWnd->GetMoveArea())
-				{
-					Rect rc = pkWnd->GetMoveArea();
-					fprintf(pkFile, "\tSetMoveArea(\"%s\",%i,%i,%i,%i)\n",
-						szName, rc.Left, rc.Top, rc.Width(), rc.Height());
-				}
-
-				m_kSavedWnds.push_back(pkWnd);
-
-				//
-				// Printa anrop för att byta texturer
-				//
-
-				vector< pair<ZGuiSkin**, string> >kSkins;
-				pkWnd->GetWndSkinsDesc(kSkins);
-
-				vector< pair<ZGuiSkin**, string> >::iterator itSkin = kSkins.begin(); 
-				for( ; itSkin != kSkins.end(); itSkin++)
-				{
-					if(*itSkin->first)
-					{
-						ZGuiSkin kSkin = *(*itSkin->first);
-
-						// leta rätt på namnet på skin'en och printa
-						for(unsigned int k=0; k<kSkinTable.size(); k++)
-							if(kSkin == kSkinTable[k].first)
-							{
-								fprintf(pkFile, "\tChangeSkin(\"%s\",\"%s\",\"%s\")\n", 
-									szName, kSkinTable[k].second.c_str(), itSkin->second.c_str());
-								break;
-							}
-					}
-				}
-
-				kSkins.clear(); 
-
-				kWnd.pop_back();
-				if(kWnd.empty())
-					break;
+					it++;
 			}
-			else
-			{
-				kWnd.sort(RandomSort); // blanda listan så att ett annat fönster hamnar först...
-			}
+
+			if(kWnd.empty()) // avbryt om listan är tom
+				break;
 		}
+
 	}
 	
 	//
@@ -306,15 +246,21 @@ bool Serialization::LoadGUI(const char* szFileName, Scene* pkScene)
 	map<string, ZGuiWnd*> kWindows;
 	m_pkGuiResMan->GetWindows(kWindows);
 	map<string, ZGuiWnd*>::iterator it2;
+
 	for( it2 = kWindows.begin(); it2 != kWindows.end(); it2++)
 	{
-		if(pkScene->IsSceneWnd(it2->second) == false && it2->second != pkMainWnd)
-		{
-			if(it2->second)
-				printf("%s\n", it2->second->GetName());
+		ZGuiWnd* pkWnd = it2->second;
 
-			pkScene->RemoveAlias(it2->second);
-			m_pkGui->UnregisterWindow(it2->second);
+		if(pkWnd)
+		{
+			if(pkWnd->m_iZValue >= 0)
+			{
+				if(pkWnd != pkMainWnd && pkScene->IsSceneWnd(pkWnd) == false)
+				{
+					pkScene->RemoveAlias(pkWnd);
+					m_pkGui->UnregisterWindow(pkWnd);
+				}
+			}
 		}
 	}
 
@@ -363,7 +309,7 @@ string Serialization::ChangeExtension(char *szFileName)
 	return strFileName;
 }
 
-bool Serialization::ParentHaveBeenSaved(ZGuiWnd *pkParent)
+bool Serialization::WndHaveBeenSaved(ZGuiWnd *pkParent)
 {
 	for(unsigned int i=0; i<m_kSavedWnds.size(); i++)
 		if(pkParent == m_kSavedWnds[i]) // om dess parent har blivit skapad
@@ -425,7 +371,7 @@ bool Serialization::RANDOM_SORT::operator() (ZGuiWnd* x, ZGuiWnd* y)
 	if(pkParentX != NULL && pkParentY != NULL)
 	{
 		if( typeid(*pkParentX) == typeid(ZGuiTabCtrl) && 
-			typeid(*pkParentY) == typeid(ZGuiTabCtrl)  )
+			 typeid(*pkParentY) == typeid(ZGuiTabCtrl)  )
 		{
 			int xPos = 0;
 			int yPos = 0;
@@ -437,11 +383,103 @@ bool Serialization::RANDOM_SORT::operator() (ZGuiWnd* x, ZGuiWnd* y)
 				if(x == pkTab->GetPage(i)) xPos = i;
 				if(y == pkTab->GetPage(i)) yPos = i;
 			}
+			printf("olle");
 
 			return xPos > yPos;
 		}
-
 	}
 
 	return (rand()%10 > 5) ? true : false; 
+}
+
+bool Serialization::PrintWnd(ZGuiWnd* pkWnd)
+{
+	const char* szName;
+	char szParent[75], szLabel[75];
+	int iType;
+	Rect rc;
+	ZGuiWnd* pkParent = pkWnd->GetParent();
+	
+	iType = (int) m_pkScene->GetApp()->GetType(pkWnd);
+	szName = m_pkScene->GetAlias(pkWnd);
+	if(szName == NULL) szName = pkWnd->GetName();
+
+	if(pkParent && !WndHaveBeenSaved(pkParent))
+		return false;
+
+	GuiType eType = m_pkScene->GetApp()->GetType(pkWnd);
+	GuiType eParentType = pkParent != NULL ? m_pkScene->GetApp()->GetType(pkParent) : GuiType_Error;
+
+	if( eParentType == TabControl ) // Är föräldern en tabuleringsbox?
+	{
+		ZGuiTabCtrl* pkTabParent = (ZGuiTabCtrl*) pkParent;
+
+		// Har alla tidigare sidor skapats?
+		for(int i=0; i<pkTabParent->GetNumPages(); i++)
+			if(pkWnd == pkTabParent->GetPage(i))
+			{
+				for(int j=0; j<i; j++)
+					if(WndHaveBeenSaved(pkTabParent->GetPage(j)) == false)
+						return false;
+
+				break;
+			}
+	}
+
+	if(pkParent)
+	{
+		const char* szAliasParent = m_pkScene->GetAlias(pkParent);
+
+		if(szAliasParent)
+			strcpy(szParent, szAliasParent);
+		else
+			strcpy(szParent, pkParent->GetName());
+	}
+	else
+		strcpy(szParent, "");
+
+	if(pkWnd->GetText())
+		strcpy(szLabel, pkWnd->GetText());
+	else
+		strcpy(szLabel, "");
+
+	if(szParent == NULL || strlen(szParent) < 1)
+		rc = pkWnd->GetScreenRect();
+	else
+		rc = pkWnd->GetWndRect();
+
+	fprintf(m_pkFile, "\n\tCreateWnd(%i,\"%s\",\"%s\",\"%s\",%i,%i,%i,%i,0)\n", iType, 
+		szName, szParent, szLabel, rc.Left, rc.Top, rc.Width(), rc.Height());
+
+	m_kSavedWnds.push_back(pkWnd);
+
+	return true;
+}
+
+void Serialization::PrintSkins(ZGuiWnd* pkWnd)
+{
+	const char* szName = pkWnd->GetName();
+
+	vector< pair<ZGuiSkin**, string> >kSkins;
+	pkWnd->GetWndSkinsDesc(kSkins);
+
+	vector< pair<ZGuiSkin**, string> >::iterator itSkin = kSkins.begin(); 
+	for( ; itSkin != kSkins.end(); itSkin++)
+	{
+		if(*itSkin->first)
+		{
+			ZGuiSkin kSkin = *(*itSkin->first);
+
+			// leta rätt på namnet på skin'en och printa
+			for(unsigned int k=0; k<m_kSkinTable.size(); k++)
+				if(kSkin == m_kSkinTable[k].first)
+				{
+					fprintf(m_pkFile, "\tChangeSkin(\"%s\",\"%s\",\"%s\")\n", 
+						szName, m_kSkinTable[k].second.c_str(), itSkin->second.c_str());
+					break;
+				}
+		}
+	}
+
+	kSkins.clear(); 
 }

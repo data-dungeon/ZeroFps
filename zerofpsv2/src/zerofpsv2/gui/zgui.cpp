@@ -156,7 +156,8 @@ bool ZGui::UnregisterWindow(ZGuiWnd* pkWindow)
 		// Ta bort alla barn fönster som tillhör detta fönster.
 		// Men bara om det är ett (main) fönster. I annat fall
 		// sköter kontrollerna det själva.
-		if(pkWindow->GetParent() == NULL)
+		//if(pkWindow->GetParent() == NULL)
+		if( pkWindow->GetParent() == NULL || typeid(*pkWindow->GetParent())==typeid(ZGuiTabCtrl) ) 
 		{
 			for(WINit w = vkChildList.begin(); w != vkChildList.end(); w++)
 			{

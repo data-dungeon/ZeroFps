@@ -69,7 +69,7 @@ void ZGResEdit::OnInit()
 
 	m_pkFps->m_bClientMode = true;
 
-	m_pkInput->ToggleGrab(); // koppla på grab mode
+	//m_pkInput->ToggleGrab(); // koppla på grab mode
 
 	m_pkMainWnd = GetWnd("GuiMainWnd");
 
@@ -218,6 +218,27 @@ void ZGResEdit::OnKeyDown(int iKey)
 {
 	switch(iKey)
 	{
+	case KEY_F7:
+		{
+					map<string, ZGuiWnd*> kWindows;
+					m_pkGuiMan->GetWindows(kWindows);
+					map<string, ZGuiWnd*>::iterator it2;
+
+					int antal = kWindows.size();
+					int oka = 0;
+
+					for( it2 = kWindows.begin(); it2 != kWindows.end(); it2++)
+					{
+						ZGuiWnd* pkWnd = it2->second;
+
+						//if(pkWnd && !m_pkScene->IsSceneWnd(pkWnd) )
+							printf("%i - %s\n", oka++, it2->second->GetName());
+					}
+
+					printf("----------------------\n");
+		}
+		break;
+
 	case KEY_F5:
 		if(m_pkScene->m_pkPropertyWnd->IsVisible()) m_pkScene->m_pkPropertyWnd->Hide();
 		else if(m_eEditMode != VIEW)
@@ -2064,6 +2085,8 @@ void ZGResEdit::UpdatePropertyWnd()
 ZGuiWnd* ZGResEdit::DeleteWnd(ZGuiWnd *pkWnd)
 {
 	ZGuiWnd* pkReturnWnd = NULL;
+
+	m_pkFocusWnd = NULL;
 
 	if(pkWnd != NULL)
 	{

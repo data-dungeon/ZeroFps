@@ -35,13 +35,22 @@ private:
 
 	vector<ZGuiWnd*> m_kSavedWnds;
 
-	bool ParentHaveBeenSaved(ZGuiWnd* pkWnd);
+	bool WndHaveBeenSaved(ZGuiWnd* pkWnd);
+	bool PrintWnd(ZGuiWnd* pkWnd);
+	void PrintSkins(ZGuiWnd* pkWnd);
 
 	string ChangeExtension(char* szName);
 	ZFBasicFS* m_pkBasicFS;
 	ZGuiResourceManager* m_pkGuiResMan;
 	TextureManager* m_pkTexMan;
 	ZGui* m_pkGui;
+	
+	//-- Temporära pekare som sätts i Load/Save
+	FILE* m_pkFile;
+	Scene* m_pkScene;
+	//--
+
+	vector< pair<ZGuiSkin, string> > m_kSkinTable;
 
 	struct RANDOM_SORT: public binary_function<ZGuiWnd*, ZGuiWnd*, bool> { 
 		bool operator() (ZGuiWnd* x, ZGuiWnd* y); // { return (rand()%10 > 5) ? true : false; }
