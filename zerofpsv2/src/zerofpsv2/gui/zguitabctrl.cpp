@@ -298,10 +298,11 @@ void ZGuiTabCtrl::SetCurrentPage(unsigned int index)
 			SetButtonSkin((*itButton), 1);
 			(*itPage)->Show();
 
-			int* piParams = new int[2];
+			int* piParams = new int[3];
 			piParams[0] = m_uiCurrentPage;
 			piParams[1] = iPrevCurrentPage;
-			SendNotifyMessage(ZGM_TCN_SELCHANGE, 2, piParams);
+			piParams[2] = (int) this;
+			SendNotifyMessage(ZGM_TCN_SELCHANGE, 3, piParams);
 			delete[] piParams;
 		}
 		else

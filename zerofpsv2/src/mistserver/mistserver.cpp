@@ -31,7 +31,7 @@ static bool GUIPROC( ZGuiWnd* win, unsigned int msg, int numparms, void *params 
 		break;
 
 	case ZGM_SELECTTREEITEM:
-		char** pszParams = (char**) params;
+		char** pszParams; pszParams = (char**) params;
 		g_kMistServer.OnClickTreeItem( pszParams[0], pszParams[1], 
 			pszParams[2], pszParams[3][0] == '1' ? true : false);		
 
@@ -44,6 +44,11 @@ static bool GUIPROC( ZGuiWnd* win, unsigned int msg, int numparms, void *params 
 		if(pszParams[3])
 			delete[] pszParams[3];
 
+		break;
+
+	case ZGM_TCN_SELCHANGE:
+		int* data; data = (int*) params;
+		g_kMistServer.OnClickTabPage((ZGuiTabCtrl*) data[2], data[0], data[1]);
 		break;
 	}
 	return true;
@@ -731,6 +736,23 @@ void MistServer::OnClickTreeItem(char *szTreeBox, char *szParentNodeText,
 	}
 }
 
+void MistServer::OnClickTabPage(ZGuiTabCtrl *pkTabCtrl, int iNewPage, int iPrevPage)
+{
+	string strTabCtrlName = pkTabCtrl->GetName();
+
+	if(strTabCtrlName == "WorkTabWnd")
+	{
+		switch(iNewPage)
+		{
+		case 0:
+			m_iEditMode = EDIT_ZONES;
+			break;
+		case 1:
+			m_iEditMode = EDIT_OBJECTS;
+			break;
+		}
+	}
+}
 
 void MistServer::RotateActiveZoneObject()
 {
@@ -741,5 +763,7 @@ void MistServer::RotateActiveZoneObject()
 		pkData->m_pkZone->RotateLocalRotV( Vector3(0,90.0f,0) ); 
 	}
 }
+
+
 
 

@@ -70,7 +70,7 @@ class MistServer :public Application , public ZGuiApp {
 		void AddZone();
 
 	public:
-		
+		void OnClickTabPage(ZGuiTabCtrl *pkTabCtrl, int iNewPage, int iPrevPage);
 		void OnClickListbox( ZGuiWnd* pkListBox, int iListboxIndex);
 		void OnCommand(int iID, ZGuiWnd* pkMainWnd);
 		void OnClickTreeItem(char *szTreeBox, char *szParentNodeText, 
