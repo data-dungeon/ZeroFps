@@ -4,6 +4,16 @@
 
 Input::Input() 
  : ZFSubSystem("Input") {
+
+	Register_Cmd("togglegrab",FID_TOGGLEGRAB);
+	Register_Cmd("bind",FID_BIND);
+	Register_Cmd("unbindall",FID_UNBINDALL);
+	Register_Cmd("listactions",FID_LISTACTIONS);		
+	Register_Cmd("mousesens",FID_MOUSESENS);		
+};
+
+bool Input::StartUp()	
+{ 
 	cout<<"Sdl_Input initializing"<<endl;	
 	
 	/*
@@ -21,12 +31,6 @@ Input::Input()
 	m_iGrabtime=SDL_GetTicks();
 	m_bInputEnabled=true;
 
-	Register_Cmd("togglegrab",FID_TOGGLEGRAB);
-	Register_Cmd("bind",FID_BIND);
-	Register_Cmd("unbindall",FID_UNBINDALL);
-	Register_Cmd("listactions",FID_LISTACTIONS);		
-	Register_Cmd("mousesens",FID_MOUSESENS);		
-
 	SDL_EnableKeyRepeat(SDL_DEFAULT_REPEAT_DELAY,SDL_DEFAULT_REPEAT_INTERVAL);
 	
 	
@@ -40,10 +44,15 @@ Input::Input()
 	
 	SetupButtons();	
 
-	
+	return true;
+}
 
+bool Input::ShutDown()
+{
+	return true;	
+}
 
-};
+bool Input::IsValid()	{ return true;	}
 
 void Input::Update(void) {
 	m_iMouseX=-1;	

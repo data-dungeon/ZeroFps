@@ -217,9 +217,9 @@ class ENGINE_API Input : public ZFSubSystem {
 		bool GetInputEnabled() { return m_bInputEnabled;};
 
 
-		bool StartUp()	{ return true;	}
-		bool ShutDown()	{ return true;	}
-		bool IsValid()	{ return true;	}
+		bool StartUp();
+		bool ShutDown();
+		bool IsValid();
 
 		map<int,int> m_kGlobalKeyTranslator;
 };
