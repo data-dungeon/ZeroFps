@@ -15,6 +15,8 @@ InjureList = {} -- en annan lista som söks igenom för att se om några skadeskjut
 RuningToHospitleList = {} -- lista som håller reda på vilka som springer till sjukhuset
 HospitalObject = -1
 
+DrGunCounter = 5
+
 MissionText = 
 { 
 	short = "Dr Gun\n\nWork for Ludavico Hospital",
@@ -26,18 +28,18 @@ Skin1 = { tex1="dm/map_icons/hospital.bmp", tex2="0", tex3="0", tex4="0", tex1a=
  tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=255, bkB=255, borderR=255, borderG=255, borderB=255, bd_size=0, tile=0, trans=0
  }
 
-function OnMissionStart()
-
-	Print("Starting mission Dr Gun")
+function UpdateCivList()
 
 	-- töm listor
-	CivWoundedList = {} 
-	InjureList = {}
-	RuningToHospitleList = {}
+--	CivWoundedList = {} 
+--	InjureList = {}
+--	RuningToHospitleList = {}
 
 	local team = 1 -- team civilians
 	local civ_list = GetCharsByFraction(team) -- hämta en lista på alla civila
 	NumCivilians = civ_list[1] -- första arg är vektorns size
+
+	Print( "NumCivilians = ", NumCivilians)
 
 	-- Hämta information om dom civila i staden
 	local counter = 0 
@@ -52,6 +54,21 @@ function OnMissionStart()
 		CivWoundedList[counter] = life
 		counter = counter + 1
 	end
+
+end
+
+function OnMissionStart()
+
+	Print("Starting mission Dr Gun")
+
+	-- Skapa 2 spawners för gubbar
+	local pos = { 83.4634,1.20561,34.7872 }
+	RunScript("data/script/objects/dm/t_spawner_mechanic_door.lua",-1, pos );
+
+	local pos2 = { 83.8529,1.20561,26.6406 }
+	RunScript("data/script/objects/dm/t_spawner_man_door.lua",-1, pos2 );
+
+	UpdateCivList()
 
 	local pos = GetEntityPos( GetDMObject(0) ) -- hämta objektposition
 
@@ -71,12 +88,6 @@ function OnMissionStart()
 	CreateWnd(4,"HosptialMapLabel","MapWnd","",420,179,16,16,0)
 	ChangeSkin("HosptialMapLabel","Skin1","Label")
 
-	local pos = { 83.4634,1.20561,34.7872 }
-	RunScript("data/script/objects/dm/t_spawner_mechanic_door.lua",-1, pos );
-
-	local pos2 = { 83.8529,1.20561,26.6406 }
-	RunScript("data/script/objects/dm/t_spawner_man_door.lua",-1, pos2 );
-	
 end
 
 function OnMissionSuccess()
@@ -113,12 +124,12 @@ function SendObjectToHospitle(object)
 		return 0
 	end
 
-	local hq_pos = GetEntityPos(HospitalObject)
+	local hospital_pos = GetEntityPos(HospitalObject)
 	local obj_pos = GetEntityPos(object)
 
 	-- Kolla om den skadade personen har kommit fram till sjukhuset
 	-- i så fall ta bort det objektet och öka upp "NumCiviliansAtDoctor"
-	if GetRangeBetween( hq_pos, obj_pos ) < 1 then
+	if GetRangeBetween( hospital_pos, obj_pos ) < 1 then
 
 		Print("------------------------------------------------")
 		Print( "Removing patient at doctor Gun: ", object)
@@ -126,8 +137,8 @@ function SendObjectToHospitle(object)
 
 		Delete(object)
 
-		PlayAnim(HospitalObject, "open");
-		SetNextAnim(HospitalObject, "idle");
+	--	PlayAnim(HospitalObject, "open");
+	--	SetNextAnim(HospitalObject, "idle");
 
 		NumCiviliansAtDoctor = NumCiviliansAtDoctor + 1
 
@@ -141,18 +152,32 @@ function SendObjectToHospitle(object)
 
 	Print("------------------------------------------------")
 	Print( "Sending object: ", object, " to hosptile, pos: ")
-	Print( hq_pos[1] )
-	Print( hq_pos[2] )
-	Print( hq_pos[3] )
+	Print( hospital_pos[1] )
+	Print( hospital_pos[2] )
+	Print( hospital_pos[3] )
 	Print("------------------------------------------------")
 
-	MakePathFind(object, hq_pos)
+	MakePathFind(object, hospital_pos)
 
 	return 0
 end
 
+
 -- Anropas var 3:e sekund
 function IsMissionDone()
+
+	if DrGunCounter == 5 then
+
+		UpdateCivList()
+		DrGunCounter = 0
+	end
+
+	if HospitalObject == -1 then
+
+		HospitalObject = GetDMObject(1)
+	end
+
+	DrGunCounter = DrGunCounter + 1
 
 	-- Kolla om några civila har blivit skadade
 	for x = 0, NumCivilians-1, 1
@@ -165,9 +190,9 @@ function IsMissionDone()
 			local curr_life = GetCharStats( obj, 0 ) -- 0 = Life
 			local dmg = prev_life - curr_life
 
-			Print("prev_life = ", prev_life)
-			Print("curr_life = ", curr_life)
-			Print("dmg = ", dmg)
+		--	Print("prev_life = ", prev_life)
+		--	Print("curr_life = ", curr_life)
+		--	Print("dmg = ", dmg)
 
 			if dmg > 0 and IsDead(obj) == 0 then
 				
@@ -232,6 +257,7 @@ function IsMissionDone()
 
 	Print("Person wounded: ", NumCiviliansWounded)
 	Print("Persons in hospital: ", NumCiviliansAtDoctor)
+	Print("Hospital: ", HospitalObject)
 
 	if NumCiviliansAtDoctor == 5 then
 		MissionInfo.success = 1 -- Uppdraget har lyckats!
