@@ -1251,8 +1251,25 @@ void ZFAudioSystem::UpdateAmbientSound()
 			{
 				if(m_kAmbientAreas[i]->m_bChangeSound)
 				{
-					m_kAmbientAreas[i]->m_iSoundID = StartSound(
-						m_kAmbientAreas[i]->m_strSound, m_kPos, m_kHead/*Vector3(0,0,0)*/, true, 0); // och starta ett nytt.
+					bool bStartNewSound = true;
+					for(int j=0; j<m_kAmbientAreas.size(); j++)
+					{
+						if(i != j && (m_kAmbientAreas[j]->m_strSound == m_kAmbientAreas[i]->m_strSound) )
+						{
+							if(m_kAmbientAreas[j]->m_iSoundID > 0)
+							{
+								bStartNewSound = false;
+								m_kAmbientAreas[i]->m_iSoundID = m_kAmbientAreas[j]->m_iSoundID;
+								m_kAmbientAreas[i]->m_fGain = m_kAmbientAreas[j]->m_fGain;
+								break;
+							}
+						}
+					}
+
+					if(bStartNewSound)
+						m_kAmbientAreas[i]->m_iSoundID = StartSound(m_kAmbientAreas[i]->m_strSound, 
+							m_kPos, m_kHead, true, m_kAmbientAreas[i]->m_fGain); // och starta ett nytt.
+					
 					m_kAmbientAreas[i]->m_bChangeSound = false;
 				}
 				else
@@ -1267,7 +1284,7 @@ void ZFAudioSystem::UpdateAmbientSound()
 						m_kAmbientAreas[i]->m_fFadeTimer = -1;
 					}
 					
-					MoveSound(m_kAmbientAreas[i]->m_iSoundID, m_kPos, m_kHead/*Vector3(0,0,0)*/, m_kAmbientAreas[i]->m_fGain);
+					MoveSound(m_kAmbientAreas[i]->m_iSoundID, m_kPos, m_kHead, m_kAmbientAreas[i]->m_fGain);
 				}
 			}
 			else
@@ -1280,7 +1297,21 @@ void ZFAudioSystem::UpdateAmbientSound()
 					}
 					else
 					{
-						StopSound(m_kAmbientAreas[i]->m_iSoundID);
+						bool bStopSound = true;
+
+						// Det kan hända att ett annat ljud spelar med detta ID. Stoppa inte ljudet i så fall.
+						for(int k=0; k<m_kAmbientAreas.size(); k++)
+						{
+							if((i != k) && m_kAmbientAreas[k]->m_iSoundID == m_kAmbientAreas[i]->m_iSoundID)
+							{
+								bStopSound = false;
+								break;
+							}
+						}
+
+						if(bStopSound)
+							StopSound(m_kAmbientAreas[i]->m_iSoundID);
+
 						m_kAmbientAreas[i]->m_iSoundID = -1;
 						m_kAmbientAreas[i]->m_bChangeSound = true;
 						m_kAmbientAreas[i]->m_fGain = 0.0f;
