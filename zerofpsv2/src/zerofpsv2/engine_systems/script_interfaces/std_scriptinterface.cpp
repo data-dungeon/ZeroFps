@@ -1,4 +1,7 @@
 #include "std_scriptinterface.h"
+#include <cmath>                    // for trigonometry functions
+
+ZFScript* StdLua::g_pkScript;
 
 void StdLua::Init(ZFScript* pkScript)
 {
@@ -20,6 +23,8 @@ int StdLua::PrintLua(lua_State* pkLua)
 	
 		cout<<acText<<endl;
 	}
+
+	return 1;
 }
 
 int StdLua::SinLua(lua_State* pkLua)

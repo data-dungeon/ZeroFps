@@ -13,7 +13,7 @@ using namespace std;
 namespace StdLua
 {
 
-	ZFScript* 		g_pkScript;
+	extern ZFScript* 		g_pkScript;
 	
 	void ENGINE_SYSTEMS_API Init(ZFScript* pkScript);
 	
