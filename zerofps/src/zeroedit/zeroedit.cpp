@@ -825,6 +825,10 @@ void ZeroEdit::Input()
 
 			if(pkInput->Pressed(KEY_P))
 			{
+				if(pkFps->GetTicks()-m_fTimer < m_fDrawRate)
+					break;			
+				m_fTimer=pkFps->GetTicks();
+			
 				if(m_pkCurentChild != NULL)
 				{			
 					VegitationProperty* vp= static_cast<VegitationProperty*>(m_pkCurentChild->GetProperty("VegitationProperty"));
