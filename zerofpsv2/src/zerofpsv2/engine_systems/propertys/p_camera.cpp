@@ -86,7 +86,7 @@ void P_Camera::Update()
 			}	
 			case CAM_TYPEFIRSTPERSON:
 			{
-				m_pkCamera->SetPos(m_pkObject->GetIWorldPosV() + Vector3(0,1.5,0) );
+				m_pkCamera->SetPos(m_pkObject->GetIWorldPosV() + Vector3(0,1.0,0) );
 				Matrix4 kMat4;
 				kMat4 = m_pkObject->GetWorldRotM();		
 				kMat4.Transponse();				

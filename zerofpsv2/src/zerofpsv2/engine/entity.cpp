@@ -57,10 +57,11 @@ Entity::Entity()
 	m_pkParent				= NULL;
 	m_bRelativeOri			= false;
 	m_bFirstSetPos			= true;
-	m_bInterpolate			= false;
+	m_bInterpolate			= true;
 	m_iEntityID				= -1;
 	m_bSendChilds			= true;
 	m_bIsNetWork			= false;
+	
 //	m_kVariables.clear();
 
 	//clear child list
@@ -1440,8 +1441,22 @@ Vector3 Entity::GetIWorldPosV()
 		return GetWorldPosV();
 
 	if(m_bInterpolate)
-	{				
-		m_kILocalPosV += (GetWorldPosV() - m_kILocalPosV)/5.0;// * (m_pkZeroFps->GetFrameTime()*3);
+	{	
+		/*
+		float fATime = m_pkZeroFps->GetTicks() - m_pkZeroFps->GetLastGameUpdateTime();		
+		float fI = (fATime / m_pkZeroFps->GetSystemUpdateFpsDelta());
+		//if( fI > 1.0)
+		//	fI = 1.0;		
+		//cout<<fI<<endl;
+		m_kILocalPosV = GetWorldPosV() + m_kVel * (m_pkEntityMan->GetSimDelta() * fI);
+		*/
+		
+		m_kILocalPosV += (GetWorldPosV() - m_kILocalPosV)/10.0;// * (m_pkZeroFps->GetFrameTime()*3);
+		//m_kILocalPosV += (GetWorldPosV() -m_kILocalPosV ) * (1.0 - fI);
+		
+		
+		
+		//m_kILocalPosV += (GetWorldPosV() - m_kILocalPosV ) / 10.0;
 		
 		return m_kILocalPosV;
 	}

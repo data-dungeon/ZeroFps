@@ -35,7 +35,7 @@ void P_Car::Update()
 			return;	
 		}
 
-		pkTcs->ClearExternalForces();
+		//pkTcs->ClearExternalForces();
 		
 				
 		Vector3 kStearPos = Vector3(0,0,-2);

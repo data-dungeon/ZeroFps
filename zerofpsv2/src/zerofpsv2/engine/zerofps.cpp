@@ -413,7 +413,6 @@ void ZeroFps::Update_System(bool bServer)
 	{	
 		//calculate current game time
 		m_pkObjectMan->m_fSimTime += /*m_fLU + (i * */ m_pkObjectMan->GetSimDelta();
-	
 		//client & server code
 
 						
@@ -470,6 +469,7 @@ void ZeroFps::Update_System(bool bServer)
 		//update the resource manager
 		m_pkResourceDB->Refresh();
 
+		//save current update time, 
 		m_fSystemUpdateTime = GetTicks();
 	}
 

@@ -164,7 +164,7 @@ void Tcs::Update(float fAlphaTime)
 	SyncEntitys();
 	
 	//clear all forces
-//	ResetForces();
+	ResetForces();
 	
 }
 
@@ -1353,10 +1353,10 @@ void Tcs::ResetForces()
 	{	
 		if(m_kBodys[i]->m_bStatic)
 			continue;
-				
-		m_kBodys[i]->m_kExternalLinearForce.Set(0,0,0);
-		m_kBodys[i]->m_kExternalRotForce.Set(0,0,0);	
-	
+							
+		m_kBodys[i]->ClearExternalForces();
+		//m_kBodys[i]->m_kExternalLinearForce.Set(0,0,0);
+		//m_kBodys[i]->m_kExternalRotForce.Set(0,0,0);	3	
 	}
 }
 

@@ -147,11 +147,11 @@ class ENGINE_API EntityManager : public ZFSubSystem{
 		float		m_fSimTimeScale;		// How fast does the time in the sim run with respect to the real world time. 
 		//float 	m_fGameFrameTime;
 		float		m_fSimTimeDelta;
-		float		GetSimTime()				 {	return m_fSimTime; }
-		float		GetGameTime()				{	return m_fSimTime;};
+		float		GetSimTime()				 {	return m_fSimTime; 			}
+		float		GetGameTime()				{	return m_fSimTime;			};
 		//float		GetGameFrameTime()		{	return m_fGameFrameTime;};
-		float		GetSimDelta()				{	return m_fSimTimeDelta;	}
-
+		float		GetSimDelta()				{	return m_fSimTimeDelta;		}
+		
 		int		m_iForceNetUpdate;					
 		float		m_fEndTimeForceNet;
 
