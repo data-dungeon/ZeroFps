@@ -88,16 +88,21 @@ function HeartBeat()
 end
 
 function Dead()
-	PlayAnim(SIGetSelfID(), "die");
-	SetNextAnim(SIGetSelfID(), "dead");
-	ClearPathFind(SIGetSelfID());
+--	Print("DIIIIIIIIE");
+	
+--	PlaySound(SIGetSelfID(),"deaths/trolldie.wav");
+	
+	p = GetObjectPos(SIGetSelfID());
+	p[2] = p[2] + 0.5;
+	
+	CreateEntity("data/script/objects/spiderflesh.lua",p);	
+	CreateEntity("data/script/objects/spiderflesh.lua",p);	
+	CreateEntity("data/script/objects/spiderflesh.lua",p);	
+	CreateEntity("data/script/objects/spiderflesh.lua",p);	
+	
 
-	if Random(2) == 1 then
-		PlaySound (SIGetSelfID(), "mechanic/death/DEATH1.WAV");
-	else
-		PlaySound (SIGetSelfID(), "mechanic/death/DEATH2.WAV");
-	end
+	Delete(SIGetSelfID());
 
-	SetEntityVar(SIGetSelfID(), "deadtime", 0);
-
+	
+	
 end

@@ -72,6 +72,9 @@ namespace ObjectManagerLua
 	// velocity
 	int ENGINE_SYSTEMS_API SetVelToLua(lua_State* pkLua);
 
+	// TCS
+	int ENGINE_SYSTEMS_API ApplyImpulsLua(lua_State* pkLua);
+	
 	//zone management
 	int ENGINE_SYSTEMS_API GetZoneIDLua(lua_State* pkLua);					//returns the zone id that contains entity id
 	int ENGINE_SYSTEMS_API GetZoneIDAtPosLua(lua_State* pkLua);				//returns the zone id at position

@@ -28,7 +28,7 @@ P_DMGun::P_DMGun()
 	m_iMaxAmmo = 	10000;
 	m_kDir.Set(0,0,-1);
 	m_fRandom = 	10.0;
-	m_fDamage =		5;
+	m_fDamage =		50;
 	m_iBulletsPerAmmo = 1;
 	m_iTeam = 		-1; // belongs to no team
 
