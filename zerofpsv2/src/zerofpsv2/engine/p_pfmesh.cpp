@@ -250,7 +250,7 @@ void P_PfMesh::LinkCells()
 		LinkToConnectedCells( &m_NaviMesh[i] );
 		}
 
-	FlagExternalLinks();
+//	FlagExternalLinks();
 }
 
 NaviMeshCell* P_PfMesh::GetCell(Vector3 kPos)
@@ -304,10 +304,12 @@ NaviMeshCell* P_PfMesh::GetCell(Vector3 kA, Vector3 kB)
 
 		// Loop all edges in cell
 		for(int i=0; i<3; i++) {
-			if(pkNavCell->m_aiLinks[i] >= 0)		continue;
+			if(pkNavCell->m_aiLinks[i] > 0)		continue;
 
-			if( pkNavCell->IsConnected(NULL, kA, kB))
+			if( pkNavCell->IsConnected(NULL, kA, kB)) {
+				pkNavCell->m_aiLinks[i] = -1;
 				return pkNavCell;
+				}
 			}
 		}
 

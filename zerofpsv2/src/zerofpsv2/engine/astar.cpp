@@ -324,7 +324,7 @@ bool AStar::GetFullPath(Vector3 kStart, Vector3 kEnd, vector<Vector3>& kPath)
 		for(unsigned int i=0; i<3; i++) {
 			pkNewNode = NULL;
 
-			if(pkCell->m_aiLinks[i] < 0) {
+			if(pkCell->m_aiLinks[i] <= 0) {
 				pkCell->GetEdgeVertex(i, kA, kB);
 				pkNewNode = GetConnectedZone( pkNode->m_pkZoneData, kA, kB);
 				}
