@@ -85,6 +85,12 @@ namespace MistLandLua
    int MCOMMON_API PrintStatsLua (lua_State* pkLua);
    int MCOMMON_API SetScriptWhenHitLua (lua_State* pkLua);
 
+   int MCOMMON_API SetMoveSpeedLua (lua_State* pkLua);
+   int MCOMMON_API AddMoveSpeedLua (lua_State* pkLua);
+
+   int MCOMMON_API SetReloadTimeLua (lua_State* pkLua);
+   int MCOMMON_API AddReloadTimeLua (lua_State* pkLua);
+
 	int MCOMMON_API SetRecalPositionLua (lua_State* pkLua);
 	
    // item stuff

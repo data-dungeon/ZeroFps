@@ -8,8 +8,8 @@
 
 void CharacterProperty::Update()
 {
-   if ( m_fReloadTimer > 0 )
-      m_fReloadTimer -= m_pkObject->m_pkFps->GetFrameTime();
+   if ( m_pkCharStats->m_fReloadTimer > 0 )
+      m_pkCharStats->m_fReloadTimer -= m_pkObject->m_pkFps->GetFrameTime();
 }
 
 // ------------------------------------------------------------------------------------------
@@ -29,19 +29,17 @@ vector<PropertyValues> CharacterProperty::GetPropertyValues()
 
 void CharacterProperty::Init()
 {
-
    m_pkCharStats = new CharacterStats( m_pkObject );
 
    m_pkCharStats->MakeContainer();
 
+   m_pkCharStats->m_fReloadTime = 5;
+   m_pkCharStats->m_fReloadTimer = 0;
 }
 // ------------------------------------------------------------------------------------------
 
 CharacterProperty::CharacterProperty()
 {
-   m_fReloadTime = 1;
-   m_fReloadTimer = 0;
-
    m_iSide = PROPERTY_SIDE_SERVER;
 
 	strcpy(m_acName,"P_CharStats");
@@ -57,9 +55,6 @@ CharacterProperty::CharacterProperty( string kName )
 {
    m_iSide = PROPERTY_SIDE_SERVER;
    
-   m_fReloadTime = 5;
-   m_fReloadTimer = 0;
-
    bNetwork = true;
 
 	strcpy(m_acName,"P_CharStats");
@@ -452,6 +447,8 @@ void CharacterProperty::PackFrom(NetPacket* pkNetPacket, int iConnectionID )
          pkNetPacket->Read_Str( caAttrValue );
 
          m_pkCharStats->m_kData[string(caAttrName)] = caAttrValue;
+
+         cout << "Data from server:" << m_pkCharStats->m_kData[string(caAttrName)] << endl;
       }
    }
    else if ( iType == eHP )

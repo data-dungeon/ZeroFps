@@ -694,15 +694,11 @@ void MistClient::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 				else
 					pkGui->SetFocus(GetWnd("PanelBkWnd"));
 
-/*				// comment out by zeb
-            CharacterProperty* pkCP = (CharacterProperty*)m_pkActiveCharacter->GetProperty("P_CharStats");
+				// comment out by zeb
+            /*CharacterProperty* pkCP = (CharacterProperty*)m_pkActiveCharacter->GetProperty("P_CharStats");
 
-<<<<<<< mistclient.cpp
-            if ( pkCP )
-            {
-=======
             if ( pkCP ) 
->>>>>>> 1.209
+            {
                pkCP->RequestUpdateFromServer("skills");
                pkCP->RequestUpdateFromServer("data");
                pkCP->RequestUpdateFromServer("attributes");

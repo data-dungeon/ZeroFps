@@ -2,6 +2,7 @@
 #include "../../p_event.h"
 #include "../../../zerofpsv2/engine_systems/propertys/p_mad.h"
 #include "../../../zerofpsv2/engine_systems/propertys/p_linktojoint.h"
+#include "../../../zerofpsv2/engine/p_pfpath.h"
 #include "characterstats.h"
 #include "../../p_charstats.h"
 #include "../item/itemstats.h"
@@ -20,6 +21,8 @@ CharacterStats::CharacterStats( Entity *pkParent )
    m_pkContainer = 0;
 
    m_pkParent = pkParent;
+
+   SetMoveSpeed (5);
 
 	m_strScriptWhenHit = "";
 
@@ -565,6 +568,36 @@ void CharacterStats::MakeContainer()
    if ( !m_pkContainer )
       m_pkContainer = new Container ( m_pkParent->GetProperty("P_CharStats") );
 
+}
+
+// ------------------------------------------------------------------------------------------
+
+void CharacterStats::SetMoveSpeed (float fValue)
+{
+   m_fMoveSpeed = fValue;
+
+   // set move speed on path_finding
+   P_PfPath* pkPf = (P_PfPath*)m_pkParent->GetProperty("P_PfPath");
+
+   if ( pkPf )
+      pkPf->SetSpeed ( m_fMoveSpeed );
+   else
+      cout << "Error! Tried to SetMoveSpeed on a character withour P_PfPath property." << endl;
+}
+
+// ------------------------------------------------------------------------------------------
+
+void CharacterStats::AddMoveSpeed (float fValue)
+{
+   m_fMoveSpeed += fValue;
+
+   // set move speed on path_finding
+   P_PfPath* pkPf = (P_PfPath*)m_pkParent->GetProperty("P_PfPath");
+
+   if ( pkPf )
+      pkPf->SetSpeed ( m_fMoveSpeed );
+   else
+      cout << "Error! Tried to SetMoveSpeed on a character withour P_PfPath property." << endl;
 }
 
 // ------------------------------------------------------------------------------------------

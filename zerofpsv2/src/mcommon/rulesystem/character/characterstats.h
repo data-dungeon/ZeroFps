@@ -68,8 +68,22 @@ private:
 
 	Vector3 m_kRecalPos;
 
+   float 
+      m_fMoveSpeed,
+      m_fReloadTime,  // time before next action (attackspeed, shootspeed..etc)
+      m_fReloadTimer; // how long time has passed before last used action
+
 public:
    Container* m_pkContainer;
+
+   // call this when the character has attacked, cast spell or such
+   void ResetActionTimer ()                { m_fReloadTimer = m_fReloadTime; }
+   void SetReloadTime ( float fTime )      { m_fReloadTime = fTime; }
+   void AddReloadTime ( float fTime )      { m_fReloadTime += fTime; }
+   bool ReadyForAction ()                  { return m_fReloadTimer <= 0; }
+
+   void SetMoveSpeed (float fValue);
+   void AddMoveSpeed (float fValue);
 
    // which script is to be run when the player is hit
    string m_strScriptWhenHit;

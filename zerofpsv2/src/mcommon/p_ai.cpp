@@ -57,7 +57,7 @@ void P_AI::Update()
          ((P_PfPath*)m_pkObject->GetProperty ("P_PfPath"))->ClearPath();
 
          // if character has "reloaded", make attack move
-         if ( m_pkCharProp->ReadyForAction() )
+         if ( m_pkCharProp->GetCharStats()->ReadyForAction() )
          {
             string kWhenHit = ((CharacterProperty*)pkEnemy->GetProperty("P_CharStats"))->GetCharStats()->m_strScriptWhenHit;
 
@@ -72,7 +72,7 @@ void P_AI::Update()
             DealDamage( m_pkCharProp->GetCharStats()->GetFightStats(),
                ((CharacterProperty*)pkEnemy->GetProperty("P_CharStats"))->GetCharStats() );
 
-            m_pkCharProp->ResetActionTimer();
+            m_pkCharProp->GetCharStats()->ResetActionTimer();
          }
       }
    }

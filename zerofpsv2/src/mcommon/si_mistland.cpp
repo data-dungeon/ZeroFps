@@ -66,6 +66,12 @@ void MistLandLua::Init(EntityManager* pkObjMan,ZFScriptSystem* pkScript)
    pkScript->ExposeFunction("SetDefence",		         MistLandLua::SetDefenceValueLua);			
    pkScript->ExposeFunction("SetScriptWhenHit",		   MistLandLua::SetScriptWhenHitLua);			
 
+   pkScript->ExposeFunction("SetMoveSpeed",		      MistLandLua::SetMoveSpeedLua);			
+   pkScript->ExposeFunction("AddMoveSpeed",		      MistLandLua::AddMoveSpeedLua);	
+
+   pkScript->ExposeFunction("SetReloadTime",		      MistLandLua::SetReloadTimeLua);			
+   pkScript->ExposeFunction("AddReloadTime",		      MistLandLua::AddReloadTimeLua);	
+
    // hp/mp stuff
    pkScript->ExposeFunction("SetHP",      				MistLandLua::SetHPLua);			
    pkScript->ExposeFunction("SetMP",            		MistLandLua::SetMPLua);			
@@ -1254,6 +1260,119 @@ int MistLandLua::SetScriptWhenHitLua (lua_State* pkLua)
    }
 
    return 0;
+}
+
+// ----------------------------------------------------------------------------------------------
+
+int MistLandLua::SetReloadTimeLua (lua_State* pkLua)
+{
+	if( g_pkScript->GetNumArgs(pkLua) == 1 )
+   {
+		Entity* pkObject = g_pkObjMan->GetObjectByNetWorkID(g_iCurrentObjectID);
+
+	   if (pkObject)
+		{
+  			CharacterProperty* pkCP = (CharacterProperty*)pkObject->GetProperty("P_CharStats");
+
+         if ( pkCP )
+         {
+     		   double dSpeed;
+            g_pkScript->GetArgNumber(pkLua, 0, &dSpeed);
+
+            pkCP->GetCharStats()->SetReloadTime (dSpeed);
+         }
+         else
+            cout << "Warning! Tried to use SetReloadTime on a non-character object!" << endl; 
+      }
+
+   }
+
+   return 0;
+}
+
+// ----------------------------------------------------------------------------------------------
+
+int MistLandLua::AddReloadTimeLua (lua_State* pkLua)
+{
+	if( g_pkScript->GetNumArgs(pkLua) == 1 )
+   {
+		Entity* pkObject = g_pkObjMan->GetObjectByNetWorkID(g_iCurrentObjectID);
+
+	   if (pkObject)
+		{
+  			CharacterProperty* pkCP = (CharacterProperty*)pkObject->GetProperty("P_CharStats");
+
+         if ( pkCP )
+         {
+     		   double dSpeed;
+            g_pkScript->GetArgNumber(pkLua, 0, &dSpeed);
+
+            pkCP->GetCharStats()->AddReloadTime (dSpeed);
+         }
+         else
+            cout << "Warning! Tried to use SetReloadTime on a non-character object!" << endl; 
+      }
+   }
+
+   return 0;
+}
+
+// ----------------------------------------------------------------------------------------------
+
+int MistLandLua::SetMoveSpeedLua (lua_State* pkLua)
+{
+	if( g_pkScript->GetNumArgs(pkLua) == 1 )
+   {
+		Entity* pkObject = g_pkObjMan->GetObjectByNetWorkID(g_iCurrentObjectID);
+
+	   if (pkObject)
+		{
+  			CharacterProperty* pkCP = (CharacterProperty*)pkObject->GetProperty("P_CharStats");
+
+         if ( pkCP )
+         {
+     		   double dSpeed;
+            g_pkScript->GetArgNumber(pkLua, 0, &dSpeed);
+
+            pkCP->GetCharStats()->SetMoveSpeed (dSpeed);
+         }
+         else
+            cout << "Warning! Tried to use SetReloadTime on a non-character object!" << endl; 
+      }
+
+   }
+
+   return 0;
+
+}
+
+// ----------------------------------------------------------------------------------------------
+
+int MistLandLua::AddMoveSpeedLua (lua_State* pkLua)
+{
+	if( g_pkScript->GetNumArgs(pkLua) == 1 )
+   {
+		Entity* pkObject = g_pkObjMan->GetObjectByNetWorkID(g_iCurrentObjectID);
+
+	   if (pkObject)
+		{
+  			CharacterProperty* pkCP = (CharacterProperty*)pkObject->GetProperty("P_CharStats");
+
+         if ( pkCP )
+         {
+     		   double dSpeed;
+            g_pkScript->GetArgNumber(pkLua, 0, &dSpeed);
+
+            pkCP->GetCharStats()->AddMoveSpeed (dSpeed);
+         }
+         else
+            cout << "Warning! Tried to use SetReloadTime on a non-character object!" << endl; 
+      }
+
+   }
+
+   return 0;
+
 }
 
 // ----------------------------------------------------------------------------------------------

@@ -14,15 +14,8 @@ class MCOMMON_API CharacterProperty: public Property
 	private:
 		CharacterStats *m_pkCharStats;
 
-      float m_fReloadTime; // time before next action (attackspeed, shootspeed..etc)
-      float m_fReloadTimer; // how long time has passed before last used action
-   public:
-      // call this when the character has attacker, cast spell or such
-      void ResetActionTimer ()                { m_fReloadTimer = m_fReloadTime; }
-      void SetReloadTime ( float fTime )      { m_fReloadTime = fTime; }
-      void AddReloadTime ( float fTime )      { m_fReloadTime += fTime; }
-      bool ReadyForAction ()                  { return m_fReloadTimer <= 0; }
 
+   public:
       list<SendType> m_kSends;       // the clients to recieve data from this property
 
       void Init();
