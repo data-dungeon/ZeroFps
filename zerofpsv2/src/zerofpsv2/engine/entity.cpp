@@ -1449,6 +1449,7 @@ void Entity::SetLocalPosV(Vector3 kPos)
 	{
 		m_kILocalPosV=m_kLocalPosV;
 		m_bFirstSetPos=false;
+		cout<<"firsttime: "<<m_kILocalPosV.x<<" "<<m_kILocalPosV.y<<" "<<m_kILocalPosV.z<<endl;
 	}
 }
 
@@ -1494,6 +1495,10 @@ Matrix4 Entity::GetLocalRotM()
 
 Vector3 Entity::GetIWorldPosV()
 {
+	//if there has been no setpos return current position
+	if(m_bFirstSetPos)
+		return GetWorldPosV();
+
 	m_kILocalPosV += (GetWorldPosV() - m_kILocalPosV) * (m_pkFps->GetFrameTime()*5);
 
 	return m_kILocalPosV;
