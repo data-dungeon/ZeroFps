@@ -137,50 +137,45 @@ AIBase* P_UnitMoveAI::UpdateAI()
 				//cout<<"New destination is "<<iX<<" "<<iY<<endl;
 			
 				//remove old marker
-				TileEngine::m_pkInstance->RemoveUnit(m_pkObject->GetPos(),(P_ServerUnit*)m_pkObject->GetProperty("P_ServerUnit"));							
+				TileEngine::m_pkInstance->RemoveUnit(m_pkObject->GetPos(),(P_ServerUnit*)m_pkObject->GetProperty("P_ServerUnit"));										
 						
-				if(TileEngine::m_pkInstance->GetTile(iX-1,iY-1)->kUnits.size() > 0)
+				if(!TileEngine::m_pkInstance->GetTile(iX-1,iY-1)->kUnits.empty())
 				{
 
-					cout<<"Hit something trying to find a new way"<<endl;
+					//cout<<"Hit something trying to find a new way"<<endl;
 					TileEngine::m_pkInstance->AddUnit(m_pkObject->GetPos(),(P_ServerUnit*)m_pkObject->GetProperty("P_ServerUnit"));						
 					
 					//set pos one finale time to prevent ugly interpolation										
-					m_pkObject->SetPos(m_kCurretDestination);										
-					m_pkObject->SetPos(m_kCurretDestination);					
+					m_pkObject->SetPos(m_pkObject->GetPos());										
+					m_pkObject->SetPos(m_pkObject->GetPos());					
 					
 					m_iCurrentState = UNIT_WAIT;										
 					m_kCurretDestination = m_pkObject->GetPos();
-					m_fWaitTime = m_pkFps->GetGameTime() + ((rand() % 4000)/1000.0);
+					m_fWaitTime = m_pkFps->GetGameTime() + ((rand() % 2000)/1000.0);
 					m_iRetries = 0;
 							
 					return this;
 				}
 					
-				float fTerrainCost = (float) m_pkPathFind->GetTerrainCost(iX,iY);
+				m_fSpeedMod = 1.0f - (m_pkPathFind->GetTerrainCost(iX,iY) / 20.0);
 
-				m_fSpeedMod = 1.0f - (fTerrainCost / 20.0);
+				//make sure nothing is wrong
+				if(m_fSpeedMod <0)
+					m_fSpeedMod = 1;
 
-			/*	if(fTerrainCost < 0 || fTerrainCost > 10)
-				{
-					printf("Pathfinding returning a strange value\n");
-					printf("iX = %i, iY = %i, fTerrainCost = %f, m_fSpeedMod = %f\n", 
-						iX, iY, fTerrainCost, m_fSpeedMod);
-					m_pkFps->QuitEngine();*
 
-					//m_fSpeedMod = 0.0f;
-				}*/
-
-				float fX = -(m_pkMap->m_iHmSize/2)*HEIGHTMAP_SCALE + iX*HEIGHTMAP_SCALE;
-				float fZ = -(m_pkMap->m_iHmSize/2)*HEIGHTMAP_SCALE + iY*HEIGHTMAP_SCALE;
+				float fX = -(m_pkMap->m_iHmSize/2.0)*HEIGHTMAP_SCALE + iX*HEIGHTMAP_SCALE;
+				float fZ = -(m_pkMap->m_iHmSize/2.0)*HEIGHTMAP_SCALE + iY*HEIGHTMAP_SCALE;
 			
-				fX -= HEIGHTMAP_SCALE/2;	// Translate to center 
-				fZ -= HEIGHTMAP_SCALE/2;	// of square.*
+				fX -= HEIGHTMAP_SCALE/2.0;	// Translate to center 
+				fZ -= HEIGHTMAP_SCALE/2.0;	// of square.*
 
 				float fY = m_pkMap->Height(fX,fZ);
 			
 				m_kCurretDestination.Set(fX,fY,fZ);
 								
+				
+				
 				//tell tile engine that im standing on kCurretDestination now
 				TileEngine::m_pkInstance->AddUnit(m_kCurretDestination,(P_ServerUnit*)m_pkObject->GetProperty("P_ServerUnit"));
 				
@@ -202,14 +197,14 @@ AIBase* P_UnitMoveAI::UpdateAI()
 			
 			}
 			
-			if( (m_pkFps->GetGameTime() - m_fWaitTime) > 2.0)
+			if( (m_pkFps->GetGameTime() - m_fWaitTime) > 1.0)
 			{
-				cout<<"trying again " <<m_iRetries<<endl;				
+				//cout<<"trying again " <<m_iRetries<<endl;				
 				m_iRetries++;
 				
 				m_fWaitTime = m_pkFps->GetGameFrameTime();
 				
-				if(!DoPathFind(m_kCurretDestination,m_kEndPos,false))
+				if(!DoPathFind(m_pkObject->GetPos(),m_kEndPos,false))
 					return this;
 			}
 			
@@ -237,7 +232,6 @@ bool P_UnitMoveAI::MoveTo(Vector3 kPos)
 		
 	if( (m_pkObject->GetPos() - kPos).Length() < (fVel * m_pkFps->GetGameFrameTime()))
 	{
-		//m_pkObject->SetPos(kPos);		
 		return false;
 	}
 
@@ -254,8 +248,7 @@ bool P_UnitMoveAI::MoveTo(Vector3 kPos)
 	
 	//	rot.y = atan2(kMoveV.z,kMoveV.x) * degtorad;
 	
-	//cout<<" Rotating to:"<<rot.y<<endl;
-
+	
 	m_pkObject->SetRot(rot);		
 	m_pkObject->SetRot(rot);			
 	m_pkObject->SetPos(kNewPos);	
@@ -268,24 +261,23 @@ bool P_UnitMoveAI::DoPathFind(Vector3 kStart,Vector3 kStop,bool exact)
 	m_kStartPos = kStart;
 	m_kEndPos = kStop;
 
-	m_kEndPoint.x = int(m_pkMap->m_iHmSize/2+ceil((kStop.x / HEIGHTMAP_SCALE)));
-	m_kEndPoint.y = int(m_pkMap->m_iHmSize/2+ceil((kStop.z / HEIGHTMAP_SCALE)));	
+	m_kEndPoint.x = int((m_pkMap->m_iHmSize/2.0)+ceil((kStop.x / HEIGHTMAP_SCALE)));
+	m_kEndPoint.y = int((m_pkMap->m_iHmSize/2.0)+ceil((kStop.z / HEIGHTMAP_SCALE)));	
 	
-	m_kStartPoint.x = int(m_pkMap->m_iHmSize/2+ceil((kStart.x / HEIGHTMAP_SCALE)));
-	m_kStartPoint.y = int(m_pkMap->m_iHmSize/2+ceil((kStart.z / HEIGHTMAP_SCALE)));		
+	m_kStartPoint.x = int((m_pkMap->m_iHmSize/2.0)+ceil((kStart.x / HEIGHTMAP_SCALE)));
+	m_kStartPoint.y = int((m_pkMap->m_iHmSize/2.0)+ceil((kStart.z / HEIGHTMAP_SCALE)));		
 	
 	//temporary remove this unit so path finding
 	TileEngine::m_pkInstance->RemoveUnit(m_pkObject->GetPos(),
 		(P_ServerUnit*)m_pkObject->GetProperty("P_ServerUnit"));						
 	
-	if(m_pkPathFind->Rebuild(m_kStartPoint.x, m_kStartPoint.y, m_kEndPoint.x, m_kEndPoint.y,exact) == false)
+	if(!m_pkPathFind->Rebuild(m_kStartPoint.x, m_kStartPoint.y, m_kEndPoint.x, m_kEndPoint.y,exact))
 	{
 		//put this unit back
 		TileEngine::m_pkInstance->AddUnit(m_pkObject->GetPos(),(P_ServerUnit*)m_pkObject->GetProperty("P_ServerUnit"));								
 		
 		m_kEndPoint = m_kStartPoint;
-		printf("Pathfinding Failed\n");
-		
+		//printf("Pathfinding Failed\n");
 		
 		return true;
 	} 

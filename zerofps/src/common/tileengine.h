@@ -34,6 +34,15 @@ class COMMON_API TileEngine
 		
 		int				m_iSizeX,m_iSizeY;
 
+	
+		void AddUnit(int x,int y,int iID);
+		void AddUnit(int x,int y,P_ServerUnit* kSu);		
+	
+		void RemoveUnit(int x,int y,int iID);
+		void RemoveUnit(int x,int y,P_ServerUnit* kSu);				
+	
+		bool UnitInTile(int x,int y,int iID);
+	
 	public:
 		static TileEngine*		m_pkInstance;		
 		
@@ -46,11 +55,8 @@ class COMMON_API TileEngine
 		void GenerateHM(int x,int y,int w,int h);
 		
 		void GenerateUnits();		
-		void AddUnit(int x,int y,int iID);
 		void AddUnit(Vector3 kPos,P_ServerUnit* kSu);
-		void RemoveUnit(int x,int y,int iID);
 		void RemoveUnit(Vector3 kPos,P_ServerUnit* kSu);		
-		bool UnitInTile(int x,int y,int iID);
 		void ClearUnits();
 		
 		vector<Tile>* GetTilesPointer() {return &m_kTiles;};

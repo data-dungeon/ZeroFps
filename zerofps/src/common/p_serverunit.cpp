@@ -23,6 +23,9 @@ P_ServerUnit::P_ServerUnit() : m_bUpdateCommands(true), m_pkCurrentAIState(NULL)
 
 	m_bClient = true;
 	m_bHaveSetPos = false;
+	
+	m_kTile.x = -1;
+	m_kTile.y = -1;
 }
 
 void P_ServerUnit::Init()
@@ -236,3 +239,7 @@ void P_ServerUnit::HandleGameMessage(GameMessage& Msg)
 	}
 		
 }
+
+
+
+

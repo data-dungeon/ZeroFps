@@ -128,6 +128,26 @@ void TileEngine::AddUnit(int x,int y,int iID)
 		cout<<"Trying to add unit before tileengine has been started"<<endl;
 }
 
+void TileEngine::AddUnit(int x,int y,P_ServerUnit* kSu)
+{
+	if(m_iSizeX != -1)
+	{	
+		int w = kSu->m_kInfo.m_Info2.m_cWidth;
+		int h = kSu->m_kInfo.m_Info2.m_cHeight;
+			
+		float sh = h/2.0;
+		float sw = w/2.0;			
+	
+		for(int yy = int(-sh);yy<sh;yy++)
+			for(int xx = int(-sw);xx<sw;xx++)
+			{			
+				AddUnit(x + xx,y + yy,kSu->GetObject()->iNetWorkID);			
+			}
+	}
+	else
+		cout<<"Trying to add unit before tileengine has been started"<<endl;
+}
+
 void TileEngine::RemoveUnit(int x,int y,int iID)
 {
 	Tile* t = GetTile(x,y);
@@ -138,6 +158,27 @@ void TileEngine::RemoveUnit(int x,int y,int iID)
 		cout<<"Invalid tile when removing unit"<<endl;
 
 }
+
+void TileEngine::RemoveUnit(int x,int y,P_ServerUnit* kSu)
+{
+	if(m_iSizeX != -1)
+	{	
+		int w = kSu->m_kInfo.m_Info2.m_cWidth;
+		int h = kSu->m_kInfo.m_Info2.m_cHeight;
+			
+		float sh = h/2.0;
+		float sw = w/2.0;			
+	
+		for(int yy = int(-sh);yy<sh;yy++)
+			for(int xx = int(-sw);xx<sw;xx++)
+			{			
+				RemoveUnit(x + xx,y + yy,kSu->GetObject()->iNetWorkID);			
+			}
+	}
+	else
+		cout<<"Trying to add unit before tileengine has been started"<<endl;
+}
+
 
 bool TileEngine::UnitInTile(int x,int y,int iID)
 {
@@ -219,40 +260,21 @@ void TileEngine::ClearUnits()
 
 void TileEngine::AddUnit(Vector3 kPos,P_ServerUnit* kSu)
 {
-	if(m_iSizeX != -1)
-	{	
-		Point pos = GetSqrFromPos(kPos);
-		
-		int w = kSu->m_kInfo.m_Info2.m_cWidth;
-		int h = kSu->m_kInfo.m_Info2.m_cHeight;
-			
-		float sh = h/2.0;
-		float sw = w/2.0;		
-			
-		for(int y = int(-sh);y<sh;y++)
-			for(int x = int(-sw);x<sw;x++)
-			{			
-				//cout<<"X:"<<x<<endl;
-				AddUnit(pos.x + x,pos.y + y,kSu->GetObject()->iNetWorkID);
-			
-			}
-	}
+	Point pos = GetSqrFromPos(kPos);
+	
+	//make sure its removed from its old tile
+	RemoveUnit(kSu->m_kTile.x,kSu->m_kTile.y,kSu);
+	kSu->m_kTile = pos;
+	
+	//add it to the new tile
+	AddUnit(pos.x,pos.y,kSu);
+	
 }
 
 void TileEngine::RemoveUnit(Vector3 kPos,P_ServerUnit* kSu)
 {
 	Point pos = GetSqrFromPos(kPos);
-		
-	int w = kSu->m_kInfo.m_Info2.m_cWidth;
-	int h = kSu->m_kInfo.m_Info2.m_cHeight;
-			
-	for(int y =  int(-(h/2.0));y<(h/2.0);y++)
-		for(int x =  int(-(w/2.0));x<(w/2.0);x++)
-		{			
-			//cout<<"X:"<<x<<endl;
-			RemoveUnit(pos.x + x,pos.y + y,kSu->GetObject()->iNetWorkID);
-			
-		}
+	RemoveUnit(pos.x,pos.y,kSu);
 }
 
 

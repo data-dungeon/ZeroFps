@@ -125,7 +125,7 @@ void ZeroRTS::OnIdle()
 			
 	Input();
 	
-//	TileEngine::m_pkInstance->Draw();
+	TileEngine::m_pkInstance->Draw();
 
 /* //DVOID
 	PickInfo p = Pick();

@@ -57,6 +57,7 @@ class COMMON_API P_ServerUnit: public Property {
 		
 	public:
 		UnitInfo				m_kInfo;
+		Point					m_kTile;		
 	
 		P_ServerUnit();
 		void Init();		
