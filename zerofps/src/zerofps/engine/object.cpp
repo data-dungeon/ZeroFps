@@ -542,6 +542,7 @@ bool Object::HasChild(Object* pkObject)
 	return false;
 }
 
+
 int Object::NrOfChilds()
 {
 	return m_akChilds.size();

@@ -11,6 +11,9 @@ using namespace std;
 
 
 class ENGINE_API MadProperty : public Property, public Mad_Modell {
+	private:
+	
+
 	public:
 		MadProperty();
 		MadProperty(Mad_Core* pkModell);

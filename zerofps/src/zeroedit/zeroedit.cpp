@@ -830,9 +830,17 @@ void ZeroEdit::DrawMarkers()
 */	
 
 	if(m_pkCurentChild!=NULL){
-		float size=m_pkCurentChild->GetBoundingRadius();
+		float size=0.5;
+		
+		MadProperty* mp = static_cast<MadProperty*>(m_pkCurentChild->GetProperty("MadProperty"));
+		if(mp!=NULL)
+		{
+			 size=mp->pkCore->GetRadius();	
+		}		
+		
 		if(size < .5)
 			size=.5;
+			
 		pkRender->DrawBillboard(pkFps->GetCam()->GetModelMatrix(),m_pkCurentChild->GetPos(),size*2,pkTexMan->Load("file:../data/textures/childmarker.tga",T_NOMIPMAPPING));	
 		
 		if(m_pkCurentChild->GetParent()){

@@ -15,6 +15,7 @@ class ENGINE_API PhysicProperty :public Property
 		CollisionShape* m_pkColSphere;
 		CollisionShape* m_pkColObject;
 
+		vector<PropertyValues> GetPropertyValues();
 	public:
 		bool m_bGravity;
 		bool m_bFloat;
