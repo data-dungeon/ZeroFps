@@ -32,7 +32,7 @@ function GUICreate()
 	-- 0 = Wnd, 1 = Button, 2 = Checkbox, 3 = Combobox, 4 = Label, 5 = Listbox, 6 = Radiobutton,
 	-- 7 = Scrollbar, 8 = Slider, 9 = TabControl, 10 = Textbox, 11 = Treebox
 	-------------------------------------------------------------------------
-	CreateWnd(0,"DMOptionsWnd","","",109,188,225,186,0,0,0)
+	CreateWnd(0,"DMOptionsWnd","","",109,188,225,186,0,6,0)
 	ChangeSkin("DMOptionsWnd","Skin1","Window")
 
 	CreateWnd(4,"MusicVolumeLabel","DMOptionsWnd","Music volume",10,12,150,23,0,0,0)

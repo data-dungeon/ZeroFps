@@ -583,7 +583,7 @@ void DarkMetropolis::GUI_LoadSave(bool bSave)
 	bool init = GetWnd("LoadListWnd") == NULL;
 
 	ZGuiWnd* pkLoadListWnd = CreateWnd(Wnd, "LoadListWnd", "GuiMainWnd", 
-		"", 800/2-150, 50, 300, 400, 0);
+		"", 800/2-150, 50, 300, 400, 0, Center);
 	ZGuiWnd* pkTitle = CreateWnd(Label, "LoadListTitle", "LoadListWnd", 
 		"-- Select your clan --", 0, 0, 300, 20-4, 0);
 	ZGuiWnd* pkLoadList = CreateWnd(Listbox, "LoadListLB", "LoadListWnd", 

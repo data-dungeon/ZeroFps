@@ -1141,8 +1141,8 @@ bool ZGui::ClickedWndAlphaTex(int mx, int my, ZGuiWnd *pkWndClicked)
 		float dx = (int)(tex_w*x_offset);
 		float dy = mod+(int)(tex_h*y_offset);
 
-	//	if(dx < 0) dx = 0;
-	//	if(dy < 0) dy = 0;
+		if(dx < 0) dx = 0;
+		if(dy < 0) dy = 0;
 
 		//unsigned long pixel;
 		color_rgba kColor;

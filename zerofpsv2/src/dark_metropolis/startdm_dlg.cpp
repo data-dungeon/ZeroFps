@@ -181,6 +181,9 @@ void CStartDMDlg::PlayIntroScreen()
 	LoadDlg("data/script/gui/dm_intro.lua");
 	m_pkGui->SetCaptureToWnd(GetWnd("DMIntroWnd")); 
 	m_pkGui->SetFocus(GetWnd("DMIntroWnd"));
+
+	int pw = GetWnd("DMIntroWnd")->GetScreenRect().Width();
+	int ph = GetWnd("DMIntroWnd")->GetScreenRect().Height();
 	
 	for(int i=0; i<m_iNumPictures; i++)
 	{
@@ -200,8 +203,8 @@ void CStartDMDlg::PlayIntroScreen()
 			}
 		}
 
-		int x = 800/2 - pkWnd->GetScreenRect().Width()/2; 
-		int y = 600/2 - pkWnd->GetScreenRect().Height()/2;
+		int x = pw/2 - pkWnd->GetScreenRect().Width()/2; 
+		int y = ph/2 - pkWnd->GetScreenRect().Height()/2;
 
 		pkWnd->SetPos(x, y, true, true); 
 		pkWnd->Hide();
