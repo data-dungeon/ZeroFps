@@ -372,6 +372,8 @@ bool Gui::InitSkins()
 	int arrow_next_down = m_pkEdit->pkTexMan->Load("file:../data/textures/next_arrow_down.bmp", 0);
 	int cbox_off = m_pkEdit->pkTexMan->Load("file:../data/textures/checkbox_off.bmp",0);
 	int cbox_on = m_pkEdit->pkTexMan->Load("file:../data/textures/checkbox_on.bmp",0);
+	int slider = m_pkEdit->pkTexMan->Load("file:../data/textures/slider.bmp",0);
+	int slider_a = m_pkEdit->pkTexMan->Load("file:../data/textures/slider_a.bmp",0);
 
 	m_kSkinMap.insert( map<string, ZGuiSkin*>::value_type(string("main"), 
 		new ZGuiSkin(bk1,bd1,bd2,bd3,-1,-1,-1,bda,16,true) ) ); 
@@ -419,6 +421,16 @@ bool Gui::InitSkins()
 		new ZGuiSkin(cbox_off,false)) ); 
 	m_kSkinMap.insert( map<string, ZGuiSkin*>::value_type(string("cbox_on"), 
 		new ZGuiSkin(cbox_on,false)) ); 
+	m_kSkinMap.insert( map<string, ZGuiSkin*>::value_type(string("slider"), 
+		new ZGuiSkin(slider, slider_a, false)) ); 
+	m_kSkinMap.insert( map<string, ZGuiSkin*>::value_type(string("slider_bk_r"), 
+		new ZGuiSkin(255, 0, 0, 0, 0, 0, 1)) ); 
+	m_kSkinMap.insert( map<string, ZGuiSkin*>::value_type(string("slider_bk_g"), 
+		new ZGuiSkin(0, 255, 0, 0, 0, 0, 1)) ); 
+	m_kSkinMap.insert( map<string, ZGuiSkin*>::value_type(string("slider_bk_b"), 
+		new ZGuiSkin(0, 0, 255, 0, 0, 0, 1)) ); 
+	m_kSkinMap.insert( map<string, ZGuiSkin*>::value_type(string("slider_bk_a"), 
+		new ZGuiSkin(255, 0, 255, 0, 0, 0, 1)) ); 
 
 	return true;
 }
@@ -1080,14 +1092,19 @@ bool Gui::CreateWorkPanel()
 	sprintf(aszColor[1], "%i", m_pkEdit->m_iMaskColorG);
 	sprintf(aszColor[2], "%i", m_pkEdit->m_iMaskColorB);
 	sprintf(aszColor[3], "%i", m_pkEdit->m_iMaskColorA);
-	CreateTextbox(pkPage, ID_MASKCOLOR_RED_EB,   25, 50, 30, 16, false, 
+	CreateTextbox(pkPage, ID_MASKCOLOR_RED_EB,   25,  50, 30, 16, false, 
 		aszColor[0], "MaskColorREB", true); 
-	CreateTextbox(pkPage, ID_MASKCOLOR_GREEN_EB, 25, 70, 30, 16, false, 
+	CreateTextbox(pkPage, ID_MASKCOLOR_GREEN_EB, 25,  70, 30, 16, false, 
 		aszColor[1], "MaskColorGEB", true); 
-	CreateTextbox(pkPage, ID_MASKCOLOR_BLUE_EB,  25, 90, 30, 16, false, 
+	CreateTextbox(pkPage, ID_MASKCOLOR_BLUE_EB,  25,  90, 30, 16, false, 
 		aszColor[2], "MaskColorBEB", true);
-	CreateTextbox(pkPage, ID_MASKCOLOR_ALPHA_EB,  25, 110, 30, 16, false, 
+	CreateTextbox(pkPage, ID_MASKCOLOR_ALPHA_EB, 25, 110, 30, 16, false, 
 		aszColor[3], "MaskColorAEB", true);
+
+	CreateSlider(pkPage, 12345, 75,  52, 100, 20, true, NULL, "slider_bk_r");
+	CreateSlider(pkPage, 12346, 75,  72, 100, 20, true, NULL, "slider_bk_g");
+	CreateSlider(pkPage, 12347, 75,  92, 100, 20, true, NULL, "slider_bk_b");
+	CreateSlider(pkPage, 12348, 75, 112, 100, 20, true, NULL, "slider_bk_a");
 
 	CreateLabel(pkPage, 0, 5, 5, 209, 20, "Map");
 	ZGuiCombobox* pkTextureCB = CreateCombobox(pkPage, ID_TERRAINTEXTURE_CB, 
@@ -1146,4 +1163,36 @@ bool Gui::IsButtonChecked(char *szName, char* szGroupName)
 		return false;
 
 	return ((ZGuiCheckbox*) pkButton)->IsChecked();
+}
+
+bool Gui::CreateSlider(ZGuiWnd *pkParent, int iID, int x, int y, int w, int h, 
+					   bool bHorizontal, char *szResName, char* szBkSkin)
+{
+	Rect rc;
+
+	if(bHorizontal)
+	{
+		rc.Left = x;
+		rc.Top  = y;
+		rc.Right = x+16;
+		rc.Bottom = y+16;
+	}
+
+	ZGuiButton* pkButton = new ZGuiButton(rc,pkParent,true,iID);
+	pkButton->SetMoveArea(pkButton->GetScreenRect()+Rect(0,0,w,0));
+	pkButton->SetButtonHighLightSkin(GetSkin("slider"));
+	pkButton->SetButtonDownSkin(GetSkin("slider"));
+	pkButton->SetButtonUpSkin(GetSkin("slider"));
+	pkButton->SetGUI(m_pkGui);
+
+	rc.Left += 8;
+	rc.Right += w-8;
+	rc.Top = y;
+	rc.Bottom = y+4;
+
+	ZGuiLabel* pkLabel = new ZGuiLabel(rc,pkParent,true,0);
+	pkLabel->SetSkin(GetSkin(szBkSkin));
+	pkLabel->SetGUI(m_pkGui);
+
+	return true;
 }
