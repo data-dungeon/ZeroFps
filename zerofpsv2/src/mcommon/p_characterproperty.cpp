@@ -718,8 +718,8 @@ void P_CharacterProperty::OnDeath()
 	
 	if(P_Mad* pkMad = (P_Mad*)m_pkEntity->GetProperty("P_Mad"))
 	{
-		pkMad->SetAnimation("Death",0);
-		pkMad->SetNextAnimation(MAD_NOLOOP);	
+		pkMad->SetAnimation("die", 0);
+		pkMad->m_bLoop = false;
 	}
 		
 	//disable character movement

@@ -2800,3 +2800,31 @@ int MistLandLua::AIHaveTargetLua(lua_State* pkLua)
 
    return 0;
 }
+
+
+// -----------------------------------------------------------------------------------------------
+
+int MistLandLua::SetAIStateLua(lua_State* pkLua)
+{
+ 	if( g_pkScript->GetNumArgs(pkLua) == 2 )
+ 	{
+    	double dEntID, dAIState;
+    	char	acType[128];
+		g_pkScript->GetArgNumber(pkLua, 0, &dEntID);		
+		g_pkScript->GetArgNumber(pkLua, 1, &dAIState);				
+	
+      Entity* pkObj = g_pkObjMan->GetEntityByID(dEntID);
+
+      if ( !pkObj )
+         return 0;
+
+		// Get P_AI
+		P_AI* pkAI = (P_AI*)pkObj->GetProperty("P_AI");
+
+		if ( pkAI )
+			pkAI->SetState(int(dAIState));
+
+      return 0;
+	}
+
+}

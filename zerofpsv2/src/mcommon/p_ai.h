@@ -34,10 +34,7 @@ class MCOMMON_API P_AI: public Property
 		float	m_fFindTime;
 		
 		//look at
-		int	m_iTarget;
-		
-		
-		
+		int	m_iTarget;		
 		
 		vector<PropertyValues> GetPropertyValues(); 
  		bool HandleSetValue( string kValueName, string kValue );
@@ -50,6 +47,8 @@ class MCOMMON_API P_AI: public Property
 
 		P_AI();
       ~P_AI();
+
+		void SetState (int iNewState)		{ m_iState = iNewState; }
       
 		void Init();
 	   void Update();

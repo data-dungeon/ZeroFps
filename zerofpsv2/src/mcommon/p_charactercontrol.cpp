@@ -50,6 +50,8 @@ P_CharacterControl::P_CharacterControl()
 	m_strIdleSitting		=	"riding";
 	m_strIdleSwimming		=	"swim-idle";
 	m_strEmote				=	"taunt";		
+	m_strDie					=	"die";	
+	m_strDead				=	"dead";	
 }
 
 P_CharacterControl::~P_CharacterControl()

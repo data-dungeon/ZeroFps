@@ -396,7 +396,7 @@ bool PSystemManager::LoadData ( PSystemType *pkPSType )
 	if( m_kIniLoader.KeyExist("start_area", "create_style") )
 		pkPSType->m_kPSystemBehaviour.m_kCreateStyle = m_kIniLoader.GetValue("start_area", "create_style");
 	else
-		pkPSType->m_kPSystemBehaviour.m_kCreateStyle = "cirkular";
+		pkPSType->m_kPSystemBehaviour.m_kCreateStyle = "circular";
 
 
 

@@ -26,6 +26,7 @@ enum CharcterStates
 	eRUNNING	=		4,
 	eJUMPING	=		5,
 	eIDLE_SWIMING= 6,
+	eDEAD	       	= 7,
 };
 
 enum CharacterMoveDirection
@@ -85,9 +86,9 @@ class MCOMMON_API P_CharacterControl: public Property
 		string	m_strIdleStanding;
 		string	m_strIdleSitting;
 		string	m_strIdleSwimming;
-		string	m_strEmote;				
-		
-		
+		string	m_strEmote;			
+		string	m_strDead;			
+		string	m_strDie;	
 		
 		void UpdateAnimation();			
 		vector<PropertyValues> GetPropertyValues();

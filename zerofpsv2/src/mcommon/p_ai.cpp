@@ -251,7 +251,14 @@ void P_AI::Update()
 			}
 			
 			break;							
-		}					
+		}	
+		//dead	
+		case 6:
+		{
+			// hello, I'm dead, not much too do..not much AI
+	
+         break;							
+		}
 	}
 }
 
