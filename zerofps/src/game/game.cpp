@@ -154,8 +154,8 @@ void Game::SetUpMenuScreen()
 {
 	pkLevelMan->LoadLevel("menu");
 
-	m_pkCamera->GetPos().Set(252,11,149);	
-	m_pkCamera->GetRot().Set(15,-302,0);	
+	m_pkCamera->GetPos().Set(36,19,18);	
+	m_pkCamera->GetRot().Set(17,18,0);	
 //	m_pkCamera->GetPos().Set(224,40,182);	
 //	m_pkCamera->GetRot().Set(33,128,0);	
 
