@@ -1472,7 +1472,7 @@ bool ZGui::OnMouseUpdate(int x, int y, bool bLBnPressed,
 
 				ZGuiWnd* pkParent = pkFocusWindow->GetParent();
 
-				if(pkParent && typeid(*pkParent)==typeid(ZGuiScrollbar))
+				//if(pkParent && typeid(*pkParent)==typeid(ZGuiScrollbar))
 				{
 					m_bHandledMouse = true;
 				}
