@@ -8,8 +8,6 @@ HeightMapObject::HeightMapObject(HeightMap *pkMap) {
 
 	m_iObjectType=OBJECT_TYPE_STATIC;
 
-	AddProperty(new CollisionProperty(pkMap));
-
 
 	AddProperty("PhysicProperty");
 	PhysicProperty* PP =static_cast<PhysicProperty*>(GetProperty("PhysicProperty"));

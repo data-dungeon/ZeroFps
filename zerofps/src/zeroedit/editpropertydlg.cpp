@@ -768,3 +768,7 @@ void EditPropertyDlg::ClearAllFileds()
 	((ZGuiCombobox*)m_pkGui->Get("PropertyCB"))->RemoveAllItems();
 	((ZGuiCombobox*)m_pkGui->Get("PropertyValuesCB"))->RemoveAllItems();
 }
+
+
+
+

@@ -25,7 +25,6 @@ BunnyObject::BunnyObject()
 	AddProperty("LightProperty");
 	LightProperty* pkJumpLight = dynamic_cast<LightProperty*>(GetProperty("LightProperty"));
 	pkJumpLight->SetDiffuse(Vector4(kColor.x/8,kColor.y/8,kColor.z/8,0));
-	AddProperty(new CollisionProperty(&m_kPos,new float(.15)));
 	onGround=false;
 }
 

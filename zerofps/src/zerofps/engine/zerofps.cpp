@@ -24,7 +24,6 @@ ZeroFps::ZeroFps(void)
 	m_pkCmd						= new CmdSystem;
 	m_pkAudioMan				= new AudioManager(this);
 	m_pkObjectMan				= new ObjectManager();
-	m_pkCollisionMan			= new CollisionManager();	
 	m_pkSBM						= new SoundBufferManager(m_pkFile);	
 	m_pkOpenAlSystem			= new OpenAlSystem();
 	m_pkNetWork					= new NetWork;
@@ -109,7 +108,6 @@ ZeroFps::~ZeroFps()
 	delete m_pkNetWork;
 	delete m_pkOpenAlSystem;
 	delete m_pkSBM;
-	delete m_pkCollisionMan;
 	delete m_pkObjectMan;
 	delete m_pkAudioMan;
 	delete m_pkCmd;

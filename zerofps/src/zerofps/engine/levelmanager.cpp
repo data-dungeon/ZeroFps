@@ -4,7 +4,6 @@ LevelManager::LevelManager(): ZFObject("LevelManager")
 {
 	m_pkZeroFps=static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
 	m_pkObjectMan=static_cast<ObjectManager*>(g_ZFObjSys.GetObjectPtr("ObjectManager"));
-	m_pkCollisionMan=static_cast<CollisionManager*>(g_ZFObjSys.GetObjectPtr("CollisionManager"));	
 	m_pkBasicFS=static_cast<ZFBasicFS*>(g_ZFObjSys.GetObjectPtr("ZFBasicFS"));
 	m_pkConsole=static_cast<Console*>(g_ZFObjSys.GetObjectPtr("Console"));
 	m_pkRender=static_cast<Render*>(g_ZFObjSys.GetObjectPtr("Render"));

@@ -1,7 +1,6 @@
 class Property;
 class ModelProperty;
 class CameraProperty;
-class CollisionProperty;
 class HeightMapRenderProperty;
 class CrossRenderProperty;
 class BillBoardRenderProperty;
@@ -16,27 +15,16 @@ class AutoParentProperty;
 class PhysicProperty;
 
 class Object;
-class CollisionObject;
 class HeightMapObject;
 class SkyBoxObject;
 class WaterObject;
 class ZoneObject;
-
-class CollisionSphere;
-class CollisionPoint;
-class CollisionHeightMap;
-
 
 #include "object.h"
 #include "property.h"
 #include "modelproperty.h"
 #include "cameraproperty.h"
 #include "madproperty.h"
-#include "collisionproperty.h"
-#include "collisionobject.h"
-#include "collisionsphere.h"
-#include "collisionpoint.h"
-#include "collisionheightmap.h"
 #include "heightmapobject.h"
 #include "heightmaprenderproperty.h"
 #include "skyboxobject.h"

@@ -1,13 +1,9 @@
 #include "object.h"
-#include "collisionproperty.h"
 #include "physicsengine.h"
 
 
 typedef list<Object*>::iterator		itListObject;
 typedef list<Property*>::iterator	itListProperty;
-
-
-
 
 ObjectDescriptor::~ObjectDescriptor()
 {
@@ -804,11 +800,11 @@ void Object::Save(ObjectDescriptor* ObjDesc)
 
 float Object::GetBoundingRadius()
 {
-	Property* pr=GetProperty("CollisionProperty");
+	Property* pr=GetProperty("PhysicProperty");
 	if(pr==NULL)
 		return 1;
 
-	return (static_cast<CollisionProperty*>(pr))->GetBoundingRadius();
+	return (static_cast<PhysicProperty*>(pr))->GetBoundingRadius();
 }
 
 void Object::Touch(Collision* pkCol)

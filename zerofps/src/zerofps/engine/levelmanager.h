@@ -4,7 +4,6 @@
 #include "engine_x.h"
 #include "../basic/basic.pkg"
 #include "objectmanager.h"
-#include "collisionmanager.h"
 #include "objects.pkg"
 
 #include "zerofps.h"
@@ -22,7 +21,6 @@ class ENGINE_API LevelManager : public ZFObject {
 	private:
 		ObjectManager* 	m_pkObjectMan;
 		ZeroFps* 			m_pkZeroFps;
-		CollisionManager* m_pkCollisionMan;
 		ZFBasicFS* 			m_pkBasicFS;
 		Console* 			m_pkConsole;
 		Render* 				m_pkRender;

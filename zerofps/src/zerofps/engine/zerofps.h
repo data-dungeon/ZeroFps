@@ -118,7 +118,6 @@ class ENGINE_API ZeroFps : public ZFObject {
 		CmdSystem*				m_pkCmd;						///< Handles ZeroFps console variables
 		AudioManager*			m_pkAudioMan;				///< audio manager (sfx,music)		
 		ObjectManager*			m_pkObjectMan;				///< In Game Object System.
-		CollisionManager*	  m_pkCollisionMan;			///< Collision System.
 		SoundBufferManager*  m_pkSBM;						///< Sound
 		OpenAlSystem*			m_pkOpenAlSystem;			///< Sound
 		NetWork*					m_pkNetWork;				///< NetWork Interface.

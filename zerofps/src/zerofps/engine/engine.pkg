@@ -4,7 +4,6 @@ class AudioManager;
 class Application;
 class Console;
 class ObjectManager;
-class CollisionManager;
 class Camera;
 class SoundBufferManager;
 class OpenAlSystem;
@@ -22,7 +21,6 @@ class PhysicsEngine;
 #include "zerofps.h"
 #include "audiomanager.h"
 #include "objectmanager.h"
-#include "collisionmanager.h"
 #include "fh.h"
 #include "propertyfactory.h"
 #include "property.h"

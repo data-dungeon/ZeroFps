@@ -547,3 +547,7 @@ bool Gui::HaveFocus()
 
 	return bGiveGuiFocus;
 }
+
+
+
+

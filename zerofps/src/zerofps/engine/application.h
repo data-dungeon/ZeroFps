@@ -28,7 +28,6 @@ class ENGINE_API Application : public ZFObject {
 		Light*					pkLight;
 		ObjectManager*			pkObjectMan;
 		PropertyFactory*		pkPropertyFactory;
-		CollisionManager*		pkCollisionMan;
 		OpenAlSystem*			pkAlSys;
 		ZGui*					pkGui;
 		ZGuiResourceManager*	pkGuiMan;
