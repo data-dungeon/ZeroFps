@@ -710,8 +710,6 @@ bool ZGuiApp::ChangeSkin(ZFScriptSystem* pkScript, char* szID,
 	}
 
  
-	//printf("Changing skin to %s\n", szSkinName);
-
 	return true;
 }
 

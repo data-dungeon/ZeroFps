@@ -126,7 +126,7 @@ void MistClient::Init()
 
 	// set caption
 	SDL_WM_SetCaption("MistClient", NULL);
-	 
+ 
 	// create gui script
 	GuiAppLua::Init(&g_kMistClient, pkScript);
 
@@ -348,8 +348,6 @@ void MistClient::Input()
 		}
 	}
 	
-
-
 	if(pkInput->Pressed(MOUSELEFT))
 	{
 		if(m_bActionMenuIsOpen) 

@@ -298,7 +298,7 @@ bool ZGuiListbox::Notify(ZGuiWnd* pkWnd, int iCode)
 					callbackfunc cb = pkGui->GetActiveCallBackFunc();
 					ZFAssert(cb, "ZGuiListbox::Notify, GetActiveCallBackFunc = NULL");
 
-					ZGuiWnd* pkActivMainWnd = pkGui->GetActiveMainWnd();
+					ZGuiWnd* pkActivMainWnd = pkWnd->GetParent()->GetParent() ; //pkGui->GetActiveMainWnd();
 					ZFAssert(pkActivMainWnd, "ZGuiListbox::Notify, pkGui->GetActiveMainWnd() = NULL");
 					
 					cb(pkActivMainWnd, ZGM_SELECTLISTITEM, 2, piParams);

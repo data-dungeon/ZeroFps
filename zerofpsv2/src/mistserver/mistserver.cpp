@@ -926,6 +926,8 @@ void MistServer::OnClickListbox(int iListBoxID, int iListboxIndex, ZGuiWnd* pkMa
 	if(pkListBox != NULL)
 		strListBox = pkListBox->GetName();
 
+	printf("%s\n", strMainWndName.c_str() );
+
 	if(strMainWndName == "EnviromentPage")
 	{
 		if(strListBox == "EnviromentPresetList")
