@@ -14,6 +14,7 @@
 #include "../ogl/zfpsgl.h"
 
 using namespace std;
+
 enum OPTIONS {
 	T_NOMIPMAPPING=1,
 	T_COMPRESSION=8,
@@ -21,9 +22,16 @@ enum OPTIONS {
 
 };
 
-struct texture{
-	string file;
-	GLuint index;
+/* Texture file name and all paramerers. */
+struct texture
+{
+	string file;			// Path/Filename
+	GLuint index;			// OpenGL Index.
+
+	bool m_bMipMapping;		// True if we would like to have mipmapping.
+	bool m_bCompression;
+	bool b_bClamp;			// Texture Clamping.
+
 };
 
 /*
@@ -34,6 +42,12 @@ struct texture{
 
 class RENDER_API TextureManager : public ZFObject {
 	private:
+		enum FuncId_e
+		{
+			FID_LISTTEXTURES,
+			FID_FORCERELOAD,
+		};
+
 		int m_iCurrentTexture;
 		vector<texture*> m_iTextures;
 //		list<texture*> m_iTextures;
@@ -41,7 +55,10 @@ class RENDER_API TextureManager : public ZFObject {
 		FileIo* m_pkFile;			
 		SDL_Surface *LoadImage(const char *filename);	
 		bool LoadTexture(GLuint &iNr,const char* acFilename,int iOption);	
-		void RunCommand(int cmdid, const CmdArgument* kCommand) { }
+		void RunCommand(int cmdid, const CmdArgument* kCommand);
+
+		void ListTextures(void);
+		void ReloadAll(void);
 
 	public:
 		TextureManager(FileIo* pkFile);

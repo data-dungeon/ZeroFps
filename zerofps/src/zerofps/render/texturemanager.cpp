@@ -6,9 +6,13 @@
 
 TextureManager::TextureManager(FileIo* pkFile)
  : ZFObject("TextureManager") {
+
 	m_pkFile=pkFile;
 
 	m_iCurrentTexture = NO_TEXTURE;
+
+	g_ZFObjSys.Register_Cmd("t_list",FID_LISTTEXTURES,this);
+	g_ZFObjSys.Register_Cmd("t_reload",FID_FORCERELOAD,this);
 
 }	
 
@@ -208,6 +212,48 @@ const char* TextureManager::GetFileName(unsigned int uiIndex)
     return NULL;
 }
 
+void TextureManager::ListTextures(void)
+{
+	BasicConsole* pkConsole = static_cast<BasicConsole*>(g_ZFObjSys.GetObjectPtr("Console"));
 
+	pkConsole->Printf("Texture Dump");
+	for(unsigned int i=0; i<m_iTextures.size(); i++){
+		pkConsole->Printf("[%d]: %s", i, m_iTextures[i]->file.c_str());
+	}
+}
 
+void TextureManager::ReloadAll(void)
+{
+	BasicConsole* pkConsole = static_cast<BasicConsole*>(g_ZFObjSys.GetObjectPtr("Console"));
+	texture *pkTex;
 
+	pkConsole->Printf("Texture Force Reload");
+	for(unsigned int i=0; i<m_iTextures.size(); i++){
+		pkTex = m_iTextures[i];
+		
+		// Free Old Texture Object.
+		glDeleteTextures(1,&pkTex->index);
+
+		// If texture can't be loaded, Load error texture.
+		if(!LoadTexture(pkTex->index,pkTex->file.c_str(),0)) {
+			// If error texture fails to load cry a little and return NO_TEXTURE.
+			cout << "Failed to find texture '" << pkTex->file.c_str() << "'" << endl;
+
+			if(!LoadTexture(pkTex->index,ERROR_TEXTURE,0)) {
+				cout<<"Error Loading texture: "<< ERROR_TEXTURE <<endl;
+			}
+		}
+
+	}
+	
+}
+
+void TextureManager::RunCommand(int cmdid, const CmdArgument* kCommand)
+{ 
+	switch(cmdid) {
+		case FID_LISTTEXTURES:	ListTextures();	break;
+		case FID_FORCERELOAD:	ReloadAll();	break;
+		
+
+	};
+}

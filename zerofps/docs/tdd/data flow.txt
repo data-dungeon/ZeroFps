@@ -9,33 +9,56 @@ Mål:
  och används direkt utan uträkningar.
 -Misslyckad laddning får aldrig leda till att programet krashar utan ska leda till warning 
  eller ett fint fel message.
--Alla resurser laddas ur när dom inte längre används.
+-Alla resurser laddas ur en tid efter dom inte längre används.
 -När man laddar en resurs så får man ett handle object till det som används för att komma åt 
  det snabbare. Det ska användas istället för pekare så långt som möjligt och det är den som kan
  sändas över nätverket.
 -Resurserna måste finnas i ZF fil system för att kunna användas.
 
+ZFResourceManger:
+Håller koll på alla laddade resurser i spelet. 
+
+	- Refresh:	Ska köras varje frame. Undersöker alla object och ser om det 
+				är några som kan laddas ur.
+
 
 ZFResource:
-	* Håller reda på hur många som använder en så man kan ta bort sig själv när ingen använder en
-	längre.
-	* Är gjorda för att sändas över nätverk och tar därför liten plats.
-	* Läses in och används direkt utan någon spec preproccesing.
+Är den datan som ZFResourceManger lagrar om varje laddad resurs.
 
-ZFResource:
- ZFRes_MAD:		
- ZFRes_Sound:	
- ZFRes_Music:	
- ZFRes_Speach:	
- ZFRes_Texture:	
+	- ID:		Unikt ID för denna resurs.
+	- Räknare:	Antal användare för denna resurs.
+	- Timer:	Tid då resurs ska laddas ur.
+	- Ptr:		Pekare till resurs objectet.
+
+	- SetRes:
+	- FreeRes:
+
+ZFResourceHandle:
+Det handle som man får för att komma åt resurser när man använder resurs hanteraren.
+Denna klass är abstrakt ska överlagras för varje spec resurs man vill ladda.
+	
+	- ID:		ID för den resurs som detta handle refererar till.
+
+	- SetRes:
+	- FreeRes:
+
+
+
+ ZFRes_MAD:				
+	* Filer med MAD modeller.
+	 
+ ZFRes_Sound:				
+ ZFRes_Music:			
+ ZFRes_Speach:			
+ ZFRes_Texture:			
 
 Ex Code:
 	ZFRes_MAD	bomb;
-	bomb.LoadRes("modell/bomb.mad");
+	bomb.SetRes("modell/bomb.mad");
 	ZFRes_MAD	bomb2;
 	bomb2 = bomb;
 	bomb.UnLoad();
-	bomb.UnLoad();
+	bomb2.UnLoad();
 
 
 
@@ -55,5 +78,7 @@ Eftersom man aldrig kan vara säker på att man kan använda ett handle direkt när 
 (client måste fråga efter resurse, hämta den över nätverket, ladda den) så ska alla användande av 
 resurser på client sidan lyckas oavsett om resursen finns eller ej. Det innebär att handle kan
 användas som vanligt men själva resurs datan kan komma att laddas senare.
+
+
 
 

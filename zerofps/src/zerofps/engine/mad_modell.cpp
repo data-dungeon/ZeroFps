@@ -310,7 +310,12 @@ void Mad_Modell::LoadTextures()
 
 			Mad_CoreTexture* pkTexInfo = GetTextureInfo();
 			sprintf(szFullTexName, "../data/textures/%s.tga", pkTexInfo->ucTextureName);
-			
+			if(pkTexInfo->bIsAlphaTest)
+				sprintf(szFullTexName, "../data/textures/%s.tga", pkTexInfo->ucTextureName);
+			else 
+				sprintf(szFullTexName, "../data/textures/%s.bmp", pkTexInfo->ucTextureName);
+
+
 			/*pkTexInfo->bClampTexture	= false;
 			pkTexInfo->bIsAlphaTest		= false;
 			pkTexInfo->bTwoSided		= false;
