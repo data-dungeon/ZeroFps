@@ -742,7 +742,7 @@ void P_CharacterProperty::OnDeath()
 	//disable TCS collissions
 	if(P_Tcs* pkTcs = (P_Tcs*)m_pkEntity->GetProperty("P_Tcs"))
 	{
-		pkTcs->SetTestType(-1);
+		pkTcs->SetTestType(E_NONE);
 	}
 	
 	

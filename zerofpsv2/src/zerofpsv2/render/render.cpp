@@ -398,7 +398,9 @@ void Render::DrawBillboardQuad(const Matrix4& kCamRotMatrix,const Vector3& kPos,
 
 void Render::PrintBillboard(const Matrix4& kCamRotMatrix,const Vector3& kPos,float fScale,const string& strText,ZMaterial* pkMaterial,ZGuiFont* pkFont,bool bCentered)
 {
-	Matrix4 temp = kCamRotMatrix;
+	static Matrix4 temp;
+	
+	temp = kCamRotMatrix;
 	temp.Transponse();
 
 	m_pkZShaderSystem->MatrixPush();

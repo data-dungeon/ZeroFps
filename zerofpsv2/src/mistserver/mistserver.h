@@ -19,6 +19,7 @@ class ZSSEnviroment;
 class ZSSMLTime;
 class Entity;
 class P_ServerInfo;
+class RuleSystem;
 
 /**	\brief	Da MistServer
 		\ingroup MistServer
@@ -96,6 +97,7 @@ class MistServer :public Application , public ZGuiApp
 						
 	public:
 		PlayerDatabase*	m_pkPlayerDB;				
+		RuleSystem*			m_pkRuleSystem;
 		
 		
 		MistServer(char* aName,int iWidth,int iHeight,int iDepth);	 	
@@ -128,6 +130,7 @@ class MistServer :public Application , public ZGuiApp
 
 		//game stuff
 		void SayToClients(const string& strMsg,const string& strSource = "Server", int iCharacterID = -1,int iClientID = -2);				
+		void SendPointText(const string& strText,const Vector3& kPos,const Vector3& kVel,float fTTL,int iType);
 		void OpenContainer(int iContainerID,int iClientID);
 
 };
@@ -138,6 +141,9 @@ namespace SI_MistServer
 {
 	int SayToCharacterLua(lua_State* pkLua);
 	int OpenContainerLua(lua_State* pkLua);
+	
+	//rule system
+	int DamageLua(lua_State* pkLua);
 };
 
 

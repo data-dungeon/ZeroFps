@@ -25,7 +25,7 @@
 #include "../zerofpsv2/engine/inputhandle.h"
 
 #include "../mcommon/mainmcommon.h"
-
+#include "rulesystem.h"
 
 
 using namespace ObjectManagerLua;
@@ -142,6 +142,7 @@ void MistServer::Init()
 {	
 	//create player database
 	m_pkPlayerDB = new PlayerDatabase();
+	m_pkRuleSystem = new RuleSystem();
 
 	//m_pkZShaderSystem->SetForceLighting(LIGHT_ALWAYS_OFF);	
 	//m_pkZeroFps->SetSystemFps(30);
@@ -235,6 +236,8 @@ void MistServer::RegisterScriptFunctions()
 {
 	g_pkScript->ExposeFunction("SayToCharacter",	SI_MistServer::SayToCharacterLua);
 	g_pkScript->ExposeFunction("OpenContainer",	SI_MistServer::OpenContainerLua);
+	
+	g_pkScript->ExposeFunction("Damage",	SI_MistServer::DamageLua);
 	
 }
 
@@ -1107,6 +1110,32 @@ void MistServer::SendCharacterEquipment(int iCharacter,int iClientID)
 	}
 }
 
+void MistServer::SendPointText(const string& strText,const Vector3& kPos,const Vector3& kVel,float fTTL,int iType)
+{
+	NetPacket kNp;			
+	kNp.Write((char) MLNM_SC_POINTTEXT);
+	
+	kNp.Write_Str(strText);	
+	kNp.Write(kPos);
+	kNp.Write(kVel);
+	kNp.Write(fTTL);
+	kNp.Write(iType);
+	
+
+	//get all player entitys
+	vector<pair<Entity*,int> >	kEntitys;	
+	m_pkPlayerDB->GetPlayerEntitys(&kEntitys);
+
+	//send to all players that is close enough
+	for(int i =0;i<kEntitys.size();i++)
+	{
+		if(kEntitys[i].first->GetWorldPosV().DistanceTo(kPos) < 20)
+		{			
+			kNp.TargetSetClient(kEntitys[i].second);
+			SendAppMessage(&kNp);		
+		}
+	}
+}
 
 void MistServer::SayToClients(const string& strMsg,const string& strSource,int iCharacterID ,int iClientID)
 {
@@ -1182,4 +1211,19 @@ namespace SI_MistServer
 			g_kMistServer.OpenContainer(iContainer,pkData->m_iConnectionID);
 		}										
 	}
+	
+	
+	int DamageLua(lua_State* pkLua)
+	{
+		if(g_pkScript->GetNumArgs(pkLua) != 2)
+			return 0;			
+			
+		int iCharacter;
+		double dDamage;
+		
+		g_pkScript->GetArgInt(pkLua, 0, &iCharacter);		
+		g_pkScript->GetArgNumber(pkLua, 1, &dDamage);
+
+		g_kMistServer.m_pkRuleSystem->Damage(iCharacter,float(dDamage));				
+	}	
 }

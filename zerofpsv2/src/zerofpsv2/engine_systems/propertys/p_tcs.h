@@ -27,6 +27,7 @@ class P_Mad;
 
 enum ENGINE_SYSTEMS_API TestTypes
 {
+	E_NONE	= -1,
 	E_SPHERE = 0,
 	E_MESH	= 1,
 	E_BOX		= 2,

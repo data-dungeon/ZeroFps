@@ -3,6 +3,7 @@
 
 #include "../zerofpsv2/engine/application.h"
 #include "../zerofpsv2/gui/zgui.h"
+#include "pointtext.h"
 
 class OptionsDlg;
 class ActionMenu;
@@ -47,7 +48,9 @@ class MistClient :public Application, public ZGuiApp {
 			FID_KILLME,
 		};
 
-
+		//point text handler
+		PointText*	m_pkPointText;
+		
 		//delay
 		float			m_fDelayTime;
 

@@ -64,6 +64,7 @@ MistClient::MistClient(char* aName,int iWidth,int iHeight,int iDepth)
 
 	m_bGuiCapture = false;
 	m_iNumBuffIcons = 0;
+	
 } 
  
 void MistClient::OnInit() 
@@ -75,7 +76,10 @@ void MistClient::OnInit()
 	Register_Cmd("say",			FID_SAY);
 	Register_Cmd("playerlist",	FID_PLAYERLIST);
 	Register_Cmd("killme",		FID_KILLME);
-		
+
+	//create pointtext manager
+	m_pkPointText = new PointText();
+			
 	
 	//initiate our mainview camera
 	m_pkCamera=new Camera(Vector3(0,0,0),Vector3(0,0,0),85,1.333,0.25,250);	
@@ -150,9 +154,9 @@ void MistClient::OnInit()
 		g_kMistClient.m_pkZeroFps->StartClient(m_strLoginName, m_strLoginPW, m_strQuickStartAddress);		
 	}
 
- 	if(m_pkIni->GetIntValue("ZFAudioSystem", "a_enablesound") == 0 && 
- 		m_pkIni->GetIntValue("ZFAudioSystem", "a_enablemusic") == 0)
- 		m_pkAudioSys->SetMainVolume(0); // tempgrej för att stänga av all audio, finns inget vettigt sett för tillfället
+//  	if(m_pkIni->GetIntValue("ZFAudioSystem", "a_enablesound") == 0 && 
+//  		m_pkIni->GetIntValue("ZFAudioSystem", "a_enablemusic") == 0)
+//  		m_pkAudioSys->SetMainVolume(0); // tempgrej för att stänga av all audio, finns inget vettigt sett för tillfället
 
 }
 
@@ -332,6 +336,8 @@ void MistClient::RenderInterface(void)
 	if(m_iTargetID != -1)
 		DrawTargetMarker();
 		
+		
+	m_pkPointText->Draw();
 		
 // 	Vector3 kPos = m_pkCamera->GetPos() + Get3DMouseDir(true);
 // 	m_pkRender->Line(kPos-Vector3(1,0,0),kPos+Vector3(1,0,0));
@@ -738,6 +744,10 @@ void MistClient::Input()
 	{
 		if(!DelayCommand() )
 		{			
+			if(Entity* pkEnt = m_pkEntityManager->GetEntityByID(m_iPickedEntityID))			
+				m_pkPointText->AddText("klick",pkEnt->GetWorldPosV(),Vector3(0,0.3,0),5,0);
+
+		
 			if(Entity* pkEnt = m_pkEntityManager->GetEntityByID(m_iPickedEntityID))
 			{					
 				//remove current target
@@ -1030,7 +1040,24 @@ void MistClient::OnNetworkMessage(NetPacket *pkNetMessage)
 			break;
 		}
 
+		case MLNM_SC_POINTTEXT:
+		{
+			string strText;
+			Vector3 kPos;
+			Vector3 kVel;
+			float fTTL;
+			int iType;
 			
+			pkNetMessage->Read_Str(strText);	
+			pkNetMessage->Read(kPos);
+			pkNetMessage->Read(kVel);
+			pkNetMessage->Read(fTTL);
+			pkNetMessage->Read(iType);		
+		
+			m_pkPointText->AddText(strText,kPos,kVel,fTTL,iType);
+			break;
+		}			
+		
 		case MLNM_SC_SAY:
 		{
 			string strMsg;
@@ -1050,7 +1077,7 @@ void MistClient::OnNetworkMessage(NetPacket *pkNetMessage)
 					pkCP->AddChatMsg(strMsg);
 				}
 			}
-			
+						
 						
 			break;
 		}			

@@ -130,6 +130,14 @@ PlayerData*	PlayerDatabase::GetPlayerData(int iConnection)
 	return NULL;
 }
 
+void	PlayerDatabase::GetPlayerEntitys(vector<pair<Entity*,int> >* pkEnts)
+{
+	for(int i = 0 ;i<m_strActivePlayers.size();i++)
+	{	
+		if(Entity* pkEnt = m_pkEntityMan->GetEntityByID(m_strActivePlayers[i].m_iCharacterID))	
+			pkEnts->push_back(pair<Entity*,int>(pkEnt,m_strActivePlayers[i].m_iConnectionID));	
+	}
+}
 
 bool PlayerDatabase::Login(string strPlayer,string strPassword)
 {

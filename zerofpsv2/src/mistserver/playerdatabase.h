@@ -84,7 +84,7 @@ class PlayerDatabase
 		
 		vector<string>	GetLoginCharacters(string strLogin);
 		void	GetUsers(vector<string>* pkUsers);
-
+		void	GetPlayerEntitys(vector<pair<Entity*,int> >* pkEnts);
 };
 
 
