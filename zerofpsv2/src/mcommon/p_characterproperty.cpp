@@ -188,7 +188,7 @@ P_CharacterProperty::P_CharacterProperty()
 	m_iSide=PROPERTY_SIDE_SERVER|PROPERTY_SIDE_CLIENT;
 
 	m_bNetwork = 	true;
-	m_iVersion = 	2;
+	m_iVersion = 	3;
 	
 	
 	
@@ -203,7 +203,9 @@ P_CharacterProperty::P_CharacterProperty()
 	m_fChatTime				=	0;
 	m_strChatMsg			=	"";
 	m_fStatTimer			=	0;
+	m_iFaction				=	0;
 	
+	//container id's
 	m_iInventory	= -1;		
 	m_iHead			= -1;
 	m_iGloves		= -1;
@@ -257,6 +259,7 @@ vector<PropertyValues> P_CharacterProperty::GetPropertyValues()
 {
 	vector<PropertyValues> kReturn(0);
 
+		
 
 	return kReturn;	
 }
@@ -302,7 +305,6 @@ void P_CharacterProperty::UpdateStats()
 			
 			
 		//health
-		cout<<"health "<<m_kCharacterStats.GetTotal("Health")<<endl;
 		m_kCharacterStats.ChangeStat("Health",m_kCharacterStats.GetTotal("HealthRegen"));
 		if(m_kCharacterStats.GetTotal("Health") > m_kCharacterStats.GetTotal("HealthMax"))
 			m_kCharacterStats.SetStat("Health",m_kCharacterStats.GetTotal("HealthMax"));
@@ -889,6 +891,7 @@ void P_CharacterProperty::Save(ZFIoInterface* pkPackage)
 	pkPackage->Write_Str(m_strName);
 	pkPackage->Write_Str(m_strOwnedByPlayer);
 	pkPackage->Write(m_bIsPlayerCharacter);
+	pkPackage->Write(m_iFaction);
 		
 	
 	m_kCharacterStats.Save(pkPackage);
@@ -925,6 +928,16 @@ void P_CharacterProperty::Load(ZFIoInterface* pkPackage,int iVersion)
 			break;
 		}
 	
+		case 3:
+		{
+			pkPackage->Read_Str(m_strName);	
+			pkPackage->Read_Str(m_strOwnedByPlayer);	
+			pkPackage->Read(m_bIsPlayerCharacter); 		
+			pkPackage->Read(m_iFaction); 		
+		
+			m_kCharacterStats.Load(pkPackage);
+			break;
+		}		
 	}
 	
 	
@@ -1006,6 +1019,30 @@ using namespace ObjectManagerLua;
 
 namespace SI_P_CharacterProperty
 {
+	//faction
+	int SetFactionLua(lua_State* pkLua)
+	{
+		if(g_pkScript->GetNumArgs(pkLua) != 2)
+		{
+			cout<<"WARNING: SetFaction - wrong number of arguments"<<endl;
+			return 0;		
+		}
+					
+		int iCharcterID;
+		int iFaction;
+		
+		g_pkScript->GetArgInt(pkLua, 0, &iCharcterID);
+		g_pkScript->GetArgInt(pkLua, 1, &iFaction);
+		
+		if(P_CharacterProperty* pkCP = (P_CharacterProperty*)g_pkObjMan->GetPropertyFromEntityID(iCharcterID,"P_CharacterProperty"))
+		{
+			pkCP->SetFaction(iFaction);
+		}
+	
+		return 0;				
+	}
+	
+
 	//stat modification
 	int ChangeStatLua(lua_State* pkLua)
 	{
@@ -1211,6 +1248,9 @@ void Register_P_CharacterProperty(ZeroFps* pkZeroFps)
 	//buffs
 	g_pkScript->ExposeFunction("AddBuff",			SI_P_CharacterProperty::AddBuffLua);
 	g_pkScript->ExposeFunction("RemoveBuff",		SI_P_CharacterProperty::RemoveBuffLua);
+	
+	//faction
+	g_pkScript->ExposeFunction("SetFaction",		SI_P_CharacterProperty::SetFactionLua);
 	
 }
 

@@ -76,6 +76,7 @@ class MCOMMON_API P_CharacterProperty: public Property
 		
 		string		m_strName;					//character name		
 		bool			m_bIsPlayerCharacter;	//is this and NPC or PC ?
+		int			m_iFaction;
 		string		m_strOwnedByPlayer;		//who owns me ? if anyone
 		string		m_strChatMsg;				//last chat msg
 		float			m_fChatTime;				//lst chat msg time
@@ -143,11 +144,12 @@ class MCOMMON_API P_CharacterProperty: public Property
 		void SetRunSound(const string& strFile)				{	m_strRunSound = strFile;				ResetAllNetUpdateFlags();}
 		void SetJumpSound(const string& strFile)				{	m_strJumpSound = strFile;				ResetAllNetUpdateFlags();}
 		void SetSwimSound(const string& strFile)				{	m_strSwimSound = strFile;				ResetAllNetUpdateFlags();}
+		void SetFaction(int iFaction)								{	m_iFaction = iFaction;		}
 		
 		string GetName()												{	return m_strName;					}
 		string GetOwnedByPlayer()									{	return m_strOwnedByPlayer;		}
 		bool	 GetIsPlayerCharacter()								{	return m_bIsPlayerCharacter;	}
-		
+		int	 GetFaction()											{	return m_iFaction;				}
 		
 		P_Buff* AddBuff(const string& strBuffName);			//creates and adds buff to character 
 		void RemoveBuff(P_Buff* pkBuff);							//removes buffs

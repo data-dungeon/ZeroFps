@@ -59,7 +59,11 @@ void P_CharacterControl::Init()
 
 vector<PropertyValues> P_CharacterControl::GetPropertyValues()
 {
-	vector<PropertyValues> kReturn(2);
+	vector<PropertyValues> kReturn(3);
+	
+	kReturn[2].kValueName = "WalkForwardAnim";
+	kReturn[2].iValueType = VALUETYPE_STRING;
+	kReturn[2].pkValue    = (void*)&m_strWalkForward;		
 	
 	kReturn[1].kValueName = "speed";
 	kReturn[1].iValueType = VALUETYPE_FLOAT;
@@ -68,7 +72,9 @@ vector<PropertyValues> P_CharacterControl::GetPropertyValues()
 	kReturn[0].kValueName = "RunForwardAnim";
 	kReturn[0].iValueType = VALUETYPE_STRING;
 	kReturn[0].pkValue    = (void*)&m_strRunForward;	
+
 	
+		
 	return kReturn;
 }
 
@@ -186,6 +192,24 @@ void P_CharacterControl::Update()
 		//update animation
 		UpdateAnimation();
 	}	
+}
+
+void P_CharacterControl::RotateTowards(const Vector3& kPos)
+{
+	static Vector3 kDir;
+	static float fAngle;
+
+	kDir = kPos - GetEntity()->GetWorldPosV();
+	kDir.Normalize();
+	kDir.y = 0;
+	
+	fAngle = Vector3(0,0,1).Angle(kDir);
+	fAngle = -RadToDeg(fAngle);
+	
+	if(kDir.x > 0)
+		fAngle = fabs(fAngle);	
+
+	SetYAngle(fAngle);
 }
 
 void P_CharacterControl::DoEmote(int iEmoteID)

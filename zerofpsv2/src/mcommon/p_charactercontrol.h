@@ -103,7 +103,9 @@ class MCOMMON_API P_CharacterControl: public Property
 																			m_fPAngle = fPAngle;			}
 		float GetYAngle()											{	return m_fYAngle;				};
 		void  SetYAngle(float fYAngle)						{	m_fYAngle = fYAngle;			};
-																			
+														
+		void RotateTowards(const Vector3& kPos);
+							
 		void SetMoveDirection(int iDir);
 		int  GetMovedirection()									{	return m_iDirection;			}
 		void SetCharacterState(int iState,bool bValue);
