@@ -24,10 +24,8 @@ bool GUIServerInfo::ConvertFromFullName(string strFullName)
 
 	strPassword.erase(0, strServerIP.length()+1+strServerName.length()+1+strUserName.length()+1);
 
-	//	printf("strServerName = %s\n", strServerName.c_str());
-	//	printf("strServerIP = %s\n", strServerIP.c_str());
-	//	printf("strUserName = %s\n", strUserName.c_str());
-	//	printf("strPassword = %s\n", strPassword.c_str());
+	if(strPassword[strPassword.size()-1] == '\n')
+		strPassword.erase(strPassword.size()-1, 1);
 
 	return true;
 }
