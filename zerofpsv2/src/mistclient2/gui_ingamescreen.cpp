@@ -296,7 +296,7 @@ void MistClient::InitBuffWnd()
 	if(s_bInitialized == true)
 		return;
 
-	char szName[50];
+	char szName[25];
 	int x=0, y=0, w=32, h=32;
 	ZGuiWnd* pkBuffWnd = GetWnd("BuffWnd");
 
@@ -305,14 +305,13 @@ void MistClient::InitBuffWnd()
 		sprintf(szName, "BuffIcon%i", i);
 
 		m_kBuffIcons[i].m_pkWnd = CreateWnd(Label, szName, "", pkBuffWnd, x, y, w, h, 0);
+		m_kBuffIcons[i].m_pkWnd->Hide();
 
 		ZGuiSkin* pkSkin = new ZGuiSkin();
-		pkSkin->m_bTransparent = true;
-
 		m_kBuffIcons[i].m_pkWnd->SetSkin(pkSkin);
 
 		x += 32;
-		if(x > 238)
+		if(x > pkBuffWnd->GetScreenRect().Width())
 		{
 			x = 0;
 			y += 32;
@@ -334,14 +333,12 @@ void MistClient::UpdateBuffIconList(vector<BUFF_ICON_INFO>* kList)
 
 	string strImageFile;
 
-	printf("kList->size()=%i\n", kList->size());
-
 	for(int i=0; i<MAX_NUM_BUFF_ICONS; i++)
 	{
 		if(i<kList->size())
 		{
 			m_kBuffIcons[i].m_pkWnd->Show();
-			m_kBuffIcons[i].m_strIcon = string("buffs/") + string("default.bmp"); //kList[i].m_strIcon;			
+			m_kBuffIcons[i].m_strIcon = string("buffs/") + (*kList)[i].m_strIcon;			
 			m_kBuffIcons[i].m_strName = (*kList)[i].m_strName;
 			m_kBuffIcons[i].m_cType = (*kList)[i].m_cType;
 			m_kBuffIcons[i].m_fTimeout = (*kList)[i].m_fTimeout;
@@ -354,4 +351,11 @@ void MistClient::UpdateBuffIconList(vector<BUFF_ICON_INFO>* kList)
 			m_kBuffIcons[i].m_pkWnd->Hide();
 		}
 	}
+
+	if(kList->size() < pkBuffWnd->GetScreenRect().Width() / 32)
+		pkBuffWnd->SetPos(pkBuffWnd->GetScreenRect().Left, 
+			152+32, true, true);
+	else
+		pkBuffWnd->SetPos(pkBuffWnd->GetScreenRect().Left, 
+			152, true, true);
 }
