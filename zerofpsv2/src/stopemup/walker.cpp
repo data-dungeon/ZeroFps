@@ -20,18 +20,18 @@ P_Walker::P_Walker()
 	m_fFindNewTargetTime = 0;
 	
 	//setup life depending on current level and number of players	
-	int iPlayers = m_pkStopEmUp->GetPlayers();
-	int iLevel =  m_pkStopEmUp->GetLevel();
+	float fPlayers = m_pkStopEmUp->GetPlayers();
+	float fLevel =  m_pkStopEmUp->GetLevel();
 	
-	iPlayers *= 0.75;
+	fPlayers *= 0.75;	
+	if(fPlayers < 1)
+		fPlayers = 1;
 	
-	if(iPlayers < 1)
-		iPlayers = 1;
-	
-	if(iLevel < 1)
-		iLevel = 1;
+	fLevel *= 0.75;
+	if(fLevel < 1)
+		fLevel = 1;
 			
-	m_iMaxLife = (5 * iLevel) * iPlayers ;
+	m_iMaxLife = (5 * fLevel) * fPlayers ;
 	m_iLife = m_iMaxLife;
 }
 
