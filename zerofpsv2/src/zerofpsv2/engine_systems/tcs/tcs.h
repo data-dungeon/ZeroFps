@@ -18,8 +18,6 @@ class ENGINE_SYSTEMS_API Tcs_collission
 
 		vector<Vector3> kPositions;
 		vector<Vector3> kNormals;
-		vector<Vector3> kTangents;
-		vector<Vector3> kRelVels;
 		
 		float		fAtime;					//alpha time when collission occured	
 		
@@ -28,12 +26,10 @@ class ENGINE_SYSTEMS_API Tcs_collission
 			pkBody1 = NULL;
 			pkBody2 = NULL;
 			
-			fAtime = 0;
+			fAtime = -1;
 			
 			kPositions.clear();
 			kNormals.clear();
-			kTangents.clear();
-			kRelVels.clear();		
 		}
 };
 
@@ -43,8 +39,8 @@ class ENGINE_SYSTEMS_API Tcs : public ZFSubSystem
 		ZeroFps*				m_pkZeroFps;
 		Render*				m_pkRender;
 	
-		vector<P_Tcs*>					m_kBodys;		
-		vector<Tcs_collission*>		m_kCollissions;		
+		vector<P_Tcs*>		m_kBodys;		
+		Tcs_collission		m_kLastCollission;
 		
 		Vector3				m_kLastLineTestColPos;
 		Vector3				m_kLastTestPos;
@@ -79,20 +75,17 @@ class ENGINE_SYSTEMS_API Tcs : public ZFSubSystem
 		void SyncBodys();		
 		void HandleCollission(Tcs_collission* pkCol);
 		void ResetForces();
-		void ClearCollissions();
 		void TryToSleep(P_Tcs* pkBody1,P_Tcs* pkBody2);
 						
-		//help funktions
-		Tcs_collission* FindNextCollission();
 		
 		//collission funktions
-		void TestSphereVsSphere(P_Tcs* pkBody1,P_Tcs* pkBody2,float fAtime);
+		void TestSphereVsSphere(P_Tcs* pkBody1,P_Tcs* pkBody2,float fAtime,Tcs_collission* pkCollission);
 		bool CollideSphereVSSphere(P_Tcs* pkBody1,P_Tcs* pkBody2);			
 		
-		void TestSphereVsMesh(P_Tcs* pkBody1,P_Tcs* pkBody2,float fAtime);
+		void TestSphereVsMesh(P_Tcs* pkBody1,P_Tcs* pkBody2,float fAtime,Tcs_collission* pkCollission);
 		bool CollideSphereVSMesh(P_Tcs* pkSphere,P_Tcs* pkMesh);			
 
-		void TestMeshVsMesh(P_Tcs* pkBody1,P_Tcs* pkBody2,float fAtime);
+		void TestMeshVsMesh(P_Tcs* pkBody1,P_Tcs* pkBody2,float fAtime,Tcs_collission* pkCollission);
 		bool CollideMeshVSMesh(P_Tcs* pkSphere,P_Tcs* pkMesh,Tcs_collission* pkTempCol);			
 		bool CollideMeshVSMesh2(P_Tcs* pkSphere,P_Tcs* pkMesh);			
 		bool CollideMeshVSMesh3(P_Tcs* pkSphere,P_Tcs* pkMesh,Tcs_collission* pkTempCol);			
