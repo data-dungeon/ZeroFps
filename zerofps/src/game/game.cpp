@@ -16,6 +16,7 @@ void Game::OnInit()
 	SetUpMenuScreen();
 
 
+
 }
 
 void Game::Init()
@@ -184,9 +185,9 @@ void Game::SetUpMenuScreen()
 
 	m_pkCamera->GetPos().Set(36,19,18);	
 	m_pkCamera->GetRot().Set(17,18,0);	
-//	m_pkCamera->GetPos().Set(224,40,182);	
-//	m_pkCamera->GetRot().Set(33,128,0);	
-
+	
+	pkFps->m_pkAudioMan->LoadMusic("file:../data/music/theme.mp3");		
+	pkFps->m_pkAudioMan->PlayMusic();
 
 
 	m_iGameState=GAME_STATE_MENU;
@@ -226,6 +227,10 @@ void Game::SetupLevel()
 	}
 	
 	delete po;
+	
+	//start music	
+	pkFps->m_pkAudioMan->LoadMusic("file:../data/music/fast.mp3");		
+	pkFps->m_pkAudioMan->PlayMusic();	
 	
 	m_iGameState=GAME_STATE_INGAME;
 }
