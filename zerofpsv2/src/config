@@ -13,7 +13,8 @@ MAKE = make		#make to use
 ### normal compilation
 CXX = g++              #compiler to use
 CC = g++               #linker to use
-CXXFLAGS= -O3 -g -DNDEBUG -DNOPROFILE			#compiler flags 
+#CXXFLAGS= -O3 -g -DNDEBUG -DNOPROFILE			#compiler flags 
+CXXFLAGS= -O3 -g 										#compiler flags 
 C_ARGS = -O3 -g   									#linker flags
 
 

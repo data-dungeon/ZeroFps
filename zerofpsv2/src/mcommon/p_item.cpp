@@ -1,10 +1,5 @@
 #include "p_item.h"
 
-//#include "../zerofpsv2/engine/entity.h"
-//#include "../zerofpsv2/engine/entitymanager.h"
-//#include "../zerofpsv2/engine/zerofps.h"
-//#include "p_charstats.h"
-
 
 P_Item::P_Item()
 {
@@ -94,7 +89,7 @@ void P_Item::Load(ZFIoInterface* pkPackage,int iVersion)
 
 vector<PropertyValues> P_Item::GetPropertyValues()
 {
-	vector<PropertyValues> kReturn(6);
+	vector<PropertyValues> kReturn(7);
 	
 		
 	kReturn[0].kValueName = "name";
@@ -120,6 +115,10 @@ vector<PropertyValues> P_Item::GetPropertyValues()
 	kReturn[5].kValueName = "stackmax";
 	kReturn[5].iValueType = VALUETYPE_INT;
 	kReturn[5].pkValue    = &m_iStackMax;					
+	
+	kReturn[6].kValueName = "itemtype";
+	kReturn[6].iValueType = VALUETYPE_INT;
+	kReturn[6].pkValue    = &m_iType;			
 	
 	return kReturn;
 }
