@@ -41,6 +41,8 @@ class COMMON_API P_FogRender: public Property {
 		void ExploreAll();
 		
 		void SetScale(float fScale) {m_fScale = fScale;};
+		string GetTextureName(){return m_sFogTexture;};
+		
 
 };
 
