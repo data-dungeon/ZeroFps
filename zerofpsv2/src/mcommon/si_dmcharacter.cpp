@@ -20,7 +20,7 @@ int DMLua::GetDMCharacterByNameLua(lua_State* pkLua)
 	g_pkObjMan->GetAllObjects(&kObjects);
 
 	for(unsigned int i=0;i<kObjects.size();i++)
-		if((pkCharacter = (P_DMCharacter *) kObjects[i]->GetProperty("P_DMCharacter")))
+		if((pkCharacter = (P_DMCharacter *) kObjects[i]->GetProperty("P_DMCharacter")) != NULL)
 		{
 			if( pkCharacter->GetStats()->m_strName.c_str() == string(szName) )
 			{
@@ -87,7 +87,6 @@ int DMLua::SetDMCharacterNameLua(lua_State* pkLua)
 // takes CharacterID, and optional 
 int DMLua::GetDMCharacterClosestLua(lua_State* pkLua) 
 {
-	double dObjectID = -1;
 	double dClosestCharID = -1;
 
 	if( g_pkScript->GetNumArgs(pkLua) == 1 )
@@ -105,7 +104,7 @@ int DMLua::GetDMCharacterClosestLua(lua_State* pkLua)
 
 			for(unsigned int i=0;i<kObjects.size();i++)
 				if( dFromObjectID != kObjects[i]->GetEntityID() &&
-					(pkCharacter = (P_DMCharacter *) kObjects[i]->GetProperty("P_DMCharacter")) )
+					(pkCharacter = (P_DMCharacter *) kObjects[i]->GetProperty("P_DMCharacter")) != NULL)
 				{
 					if(pkCharacter->m_iTeam == 0) // endast spelarens agenter
 					{

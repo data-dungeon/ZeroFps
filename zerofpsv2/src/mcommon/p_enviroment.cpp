@@ -97,7 +97,7 @@ bool EnvSetting::LoadEnviroment(const char* czName)
 		return false;		
 	}
 	
-	return true;
+//	return true;
 }
 
 void EnvSetting::Clear()

@@ -106,7 +106,7 @@ bool P_DMHQ::InsertCharacter(int iID)
 	if(pkEnt)
 	{
 		P_DMCharacter* pkCharProp;
-		if((pkCharProp = (P_DMCharacter*) pkEnt->GetProperty("P_DMCharacter")))
+		if((pkCharProp = (P_DMCharacter*) pkEnt->GetProperty("P_DMCharacter")) != NULL)
 		{
 			// Stoppa eventuellt walksound
 			if(pkCharProp->WalkSoundIsPlaying())

@@ -196,7 +196,7 @@ void CharacterProperty::Save(ZFIoInterface* pkPackage)
 
 
    // save container
-   int iContSize = 0;
+//   int iContSize = 0;
 
 }
 

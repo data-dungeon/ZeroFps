@@ -579,9 +579,7 @@ int MistLandLua::HavePathLua(lua_State* pkLua)
 {
 	if(g_pkScript->GetNumArgs(pkLua) == 1)
 	{
-		double dId;
-		int ret = 0;
-		
+		double dId;		
 		g_pkScript->GetArgNumber(pkLua, 0, &dId);				
 		
 		Entity* pkEnt = g_pkObjMan->GetObjectByNetWorkID((int)dId);
@@ -3144,7 +3142,7 @@ int MistLandLua::GetClosestItemOfTypeLua(lua_State* pkLua)
       for ( unsigned int i = 0; i < pkList->size(); i++ )
       {
          // check if object has item property
-         if ( pkItemProp = (P_Item*)pkList->at(i)->GetProperty ("P_Item") )
+         if ( (pkItemProp = (P_Item*)pkList->at(i)->GetProperty ("P_Item")) != NULL )
          {
             // check if item is of right type
             if ( pkItemProp->m_pkItemStats->m_kItemName == acType )
@@ -3199,7 +3197,7 @@ int MistLandLua::GetClosestPlayerLua(lua_State* pkLua)
       float fDistance = 99999999;      
       
       // TODO!!!: check more than the zone the user is in
-      ZoneData* pkZone = pkObj->m_pkEntityMan->GetZone( pkObj->GetWorldPosV() );
+//      ZoneData* pkZone = pkObj->m_pkEntityMan->GetZone( pkObj->GetWorldPosV() );
 
       vector<Entity*>* pkList = new vector<Entity*>;
 

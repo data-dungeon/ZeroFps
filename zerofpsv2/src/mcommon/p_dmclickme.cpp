@@ -107,7 +107,7 @@ void P_DMClickMe::Click(int iObjID)
 
 	vector<ARG_DATA> kParams;
 
-	int iValue = iObjID;
+//	int iValue = iObjID;
 	
 	ARG_DATA kData;
 	kData.eType = tINT;

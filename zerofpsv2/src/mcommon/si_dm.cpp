@@ -146,7 +146,7 @@ int DMLua::GetNumOfLivingAgentsLua(lua_State* pkLua)
 	g_pkObjMan->GetAllObjects(&kObjects);
 
 	for(unsigned int i=0;i<kObjects.size();i++)
-		if((pkCharacter=(P_DMCharacter*)kObjects[i]->GetProperty("P_DMCharacter")))
+		if((pkCharacter=(P_DMCharacter*)kObjects[i]->GetProperty("P_DMCharacter")) != NULL)
 		{
 			//////////////////////////////////////////////////////////////
 			// TODO: Kolla om det är en agent eller en fiende
@@ -1437,7 +1437,7 @@ int DMLua::AddItemLua(lua_State* pkLua)
 			// equip weapon
 			
 			// Get owner object
-			Entity* pkOwner = pkEnt; 
+//			Entity* pkOwner = pkEnt; 
 			pkNewObj->SetLocalPosV ( Vector3(0,0,0) );
 
 			P_LinkToJoint* pkLink = (P_LinkToJoint*)pkNewObj->AddProperty ("P_LinkToJoint");      

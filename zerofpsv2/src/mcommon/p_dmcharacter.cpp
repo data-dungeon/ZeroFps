@@ -37,7 +37,7 @@ void DMCharacterStats::Randomize()
 
 	if(kNames.empty())
 	{
-		if((pkFile = fopen("names1.txt", "r"))) {
+		if((pkFile = fopen("names1.txt", "r")) != NULL) {
 			while (!feof(pkFile)) {
 				if(fgets(strLine, MAX_LINE, pkFile))
 				{
@@ -50,7 +50,7 @@ void DMCharacterStats::Randomize()
 
 	if(kSNames.empty())
 	{
-		if((pkFile = fopen("names2.txt", "r"))) {
+		if((pkFile = fopen("names2.txt", "r")) != NULL) {
 			while (!feof(pkFile)) {
 				if(fgets(strLine, MAX_LINE, pkFile))
 				{
@@ -280,7 +280,7 @@ void P_DMCharacter::Shoot (Vector3 kLocation)
 		}
 	}
 
-	P_Mad* pkMad = (P_Mad*)m_pkObject->GetProperty ("P_Mad");
+//	P_Mad* pkMad = (P_Mad*)m_pkObject->GetProperty ("P_Mad");
 
 	pkP_Gun->m_iTeam = m_iTeam;
 

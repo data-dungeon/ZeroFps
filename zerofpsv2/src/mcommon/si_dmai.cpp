@@ -6,7 +6,6 @@ int DMLua::HavePathLua(lua_State* pkLua)
 	if(g_pkScript->GetNumArgs(pkLua) == 1)
 	{
 		double dId;
-		int ret = 0;
 		
 		g_pkScript->GetArgNumber(pkLua, 0, &dId);				
 		
@@ -221,7 +220,7 @@ int DMLua::PatrolLua(lua_State* pkLua)
 
 							// är detta 1 mer än den sista punkten (dvs == size på vektorn)
 							// så pathfindar vi tillbaks till punkt 0
-							if(it->second.m_iCurrent == it->second.m_vkPoints.size())
+							if(it->second.m_iCurrent == (int) it->second.m_vkPoints.size())
 								it->second.m_iCurrent = 0;
 
 							// gör pathfind till nästa punkt
