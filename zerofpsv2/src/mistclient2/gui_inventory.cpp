@@ -33,6 +33,42 @@ void GuiMsgInventoryDlg( string strMainWnd, string strController,
 			else
 				g_kMistClient.m_pkInventoryDlg->Open(); 
 		}
+		else
+		if( ((int*)params)[0] == KEY_RETURN)
+		{
+			if( strController	==	"SayTextbox" )
+			{
+				char*	text = g_kMistClient.GetText("SayTextbox");
+				if(text != NULL && strlen(text) > 0)
+				{
+					g_kMistClient.Say(text);
+					g_kMistClient.SetText("SayTextbox",	"");
+				}
+
+				ZGuiWnd::m_pkFocusWnd->KillFocus();
+				g_kMistClient.m_pkGui->SetFocus(g_kMistClient.GetWnd("GuiMainWnd"), false);				
+				g_kMistClient.SetGuiCapture(false);
+				g_kMistClient.m_pkGui->m_bHandledMouse = false;
+			}
+			else
+			{
+				g_kMistClient.ToogleChatWnd(true, true);
+			}
+		}
+		else
+		if( ((int*)params)[0] == KEY_ESCAPE)
+		{
+			if( strController	==	"SayTextbox" )
+			{
+				((ZGuiTextbox*)g_kMistClient.GetWnd(strController))->KillFocus();
+				if(ZGuiWnd::m_pkFocusWnd)
+					ZGuiWnd::m_pkFocusWnd->KillFocus();
+				g_kMistClient.SetGuiCapture(false);				
+				g_kMistClient.m_pkGui->m_bHandledMouse = false;
+			}
+
+			g_kMistClient.m_pkGui->m_bForceGUICapture = false;
+		}
 	}
 }
 

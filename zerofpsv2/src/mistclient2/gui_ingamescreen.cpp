@@ -93,15 +93,15 @@ void GuiMsgIngameScreen( string strMainWnd, string	strController,
 
 			g_kMistClient.m_pkGui->m_bForceGUICapture = false;
 		}
-		else
-		if( ((int*)params)[0] == KEY_P)
-		{
-			if( strController	!=	"SayTextbox" )
-			{
-				if(!g_kMistClient.m_pkInventoryDlg->IsVisible())
-					g_kMistClient.m_pkInventoryDlg->Open(); 
-			}
-		}
+		//else
+		//if( ((int*)params)[0] == KEY_P)
+		//{
+		//	if( strController	!=	"SayTextbox" )
+		//	{
+		//		if(!g_kMistClient.m_pkInventoryDlg->IsVisible())
+		//			g_kMistClient.m_pkInventoryDlg->Open(); 
+		//	}
+		//}
 	}
 }
 
