@@ -280,7 +280,7 @@ void ZGuiTreebox::OpenNode(ZGuiTreeboxNode *pkClickNode, bool bOpen)
 		m_iItemHeight = BUTTON_SIZE+VERT_ROW_SPACE;
 
 	// Change range of vertical scrollbar
-	ChangeScrollbarRange(m_iItemWidth,m_iItemHeight);
+	ChangeScrollbarRange(m_iItemWidth,m_iItemHeight,true);
 }
 
 bool ZGuiTreebox::Notify(ZGuiWnd* pkWnd, int iCode)
@@ -422,7 +422,7 @@ void ZGuiTreebox::CreateInternalControls()
 	h = SCROLLBAR_WIDTH;
 	m_pkHorzScrollbar = new ZGuiScrollbar(Rect(x,y,x+w,y+h),
 		this,true,HORZ_SCROLLBAR_ID); 
-	m_pkHorzScrollbar->SetScrollInfo(0,1,1.0f,0); 
+	m_pkHorzScrollbar->SetScrollInfo(0,100,1.0f,0); 
 
 	// Create root node.
 	ZGuiTreeboxNode* pkRoot = AddItem(NULL, "Root", 1, 1, NULL);
@@ -442,18 +442,20 @@ void ZGuiTreebox::CreateInternalControls()
 	m_pkSelLabel->SetSkin(pkSelLabelSkin);
 }
 
-void ZGuiTreebox::ChangeScrollbarRange(int width, int height)
+void ZGuiTreebox::ChangeScrollbarRange(int width, int height, bool bVerticalScrollbar)
 {
 	float fPageSize;
 
 	// Change range of vertical scrollbar
-	int iRows = (int) ((float) height / (BUTTON_SIZE+VERT_ROW_SPACE));
-	fPageSize = (float) (m_pkVertScrollbar->GetScreenRect().Height()-SCROLL_BUTTON_HEIGHT*2) / height; 
-	if(fPageSize > 1.0f)
-		fPageSize = 1.0f;
+	if(bVerticalScrollbar)
+	{
+		int iRows = (int) ((float) height / (BUTTON_SIZE+VERT_ROW_SPACE));
+		fPageSize = (float) (m_pkVertScrollbar->GetScreenRect().Height()-SCROLL_BUTTON_HEIGHT*2) / height; 
+		if(fPageSize > 1.0f)
+			fPageSize = 1.0f;
 
-	m_pkVertScrollbar->SetScrollInfo(0,iRows,fPageSize,0);
-
+		m_pkVertScrollbar->SetScrollInfo(0,iRows,fPageSize,0);
+	}
 }
 
 void ZGuiTreebox::ScrollRows(bool bVertically)

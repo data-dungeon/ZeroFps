@@ -130,6 +130,7 @@ ZeroFps::~ZeroFps()
 	delete m_pkResourceDB;		//d krashar om denna ligger där uppe =(, Dvoid
 	delete m_pkPSystemManager;
 	delete m_pkZShader;
+	delete m_pkScript;
 }
 
 bool ZeroFps::StartUp()	

@@ -285,7 +285,7 @@ ZGuiSkin* ZGuiApp::AddSkinFromScript(char *szName, ZFScriptSystem *pkScript, ZGu
 	ZGuiSkin* pkNewSkin;
 	
 	if(pkSkin == NULL)
-		pkNewSkin = new ZGuiSkin();		// LEAK - MistServer, Nothing loaded.
+		pkNewSkin = new ZGuiSkin();		// LEAK - MistServer, Nothing loaded. (FIXED!)
 	else
 		pkNewSkin = pkSkin;
 
@@ -392,7 +392,7 @@ void ZGuiApp::InitializeGui(ZGui* pkGui, TextureManager* pkTexMan,
 	m_pkGui->SetCursor(0,0, m_pkTexMan->Load("data/textures/gui/cursor.bmp", 0),
 		m_pkTexMan->Load("data/textures/gui/cursor_a.bmp", 0), 32, 32);
 
-	ZGuiFont* pkDefaultFont = new ZGuiFont(16,16,0,ZG_DEFAULT_GUI_FONT);				// LEAK - MistServer, Nothing loaded.
+	ZGuiFont* pkDefaultFont = new ZGuiFont(16,16,0,ZG_DEFAULT_GUI_FONT);				// LEAK - MistServer, Nothing loaded. (FIXED)
 
 //	char defFontPath[] = szFontTexture; //"data/textures/text/paternoster8.bmp";
 	
@@ -406,7 +406,7 @@ void ZGuiApp::InitializeGui(ZGui* pkGui, TextureManager* pkTexMan,
 	if(m_pkScriptResHandle)
 		delete m_pkScriptResHandle;
 
-	m_pkScriptResHandle = new ZFResourceHandle;												// LEAK - MistServer, Nothing loaded.
+	m_pkScriptResHandle = new ZFResourceHandle;												// LEAK - MistServer, Nothing loaded. 
 	if(!m_pkScriptResHandle->SetRes(szScriptFile))
 	{
 		printf("Failed to load gui_create.lua\n");

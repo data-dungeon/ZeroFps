@@ -78,7 +78,11 @@ bool ZGui::IsValid()	{ return true; }
 
 ZGui::~ZGui()
 {
-
+	map<int,ZGuiFont*>::iterator itFont=m_pkFonts.begin();
+	for( ; itFont != m_pkFonts.end(); itFont++)
+	{
+		delete itFont->second;
+	}
 }
 
 bool ZGui::RegisterWindow(ZGuiWnd* pkNewWindow, char* szName)

@@ -152,6 +152,8 @@ void ZFScriptSystem::Close()
 		delete[] m_vkGlobalVariables[i]->szName;
 		delete m_vkGlobalVariables[i];
 	}
+
+	printf("ZFScriptSystem::Close\n");
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -226,9 +228,9 @@ bool ZFScriptSystem::ExposeFunction(const char *szName, lua_CFunction o_Function
 
 	if(pkState == m_pkLua)
 	{
-		GlobalFuncInfo* func_info = new GlobalFuncInfo;			// LEAK - MistServer, Nothing loaded.		
+		GlobalFuncInfo* func_info = new GlobalFuncInfo;			// LEAK - MistServer, Nothing loaded.	(FIXED)	
 		func_info->pkFunction = o_Function;
-		func_info->szName = new char[ strlen(szName) + 1 ];	// LEAK - MistServer, Nothing loaded.
+		func_info->szName = new char[ strlen(szName) + 1 ];	// LEAK - MistServer, Nothing loaded.	(FIXED)
 		strcpy(func_info->szName, szName);
 		m_vkGlobalFunctions.push_back(func_info);
 
@@ -649,7 +651,7 @@ bool ZFScript::Create(string strName)
 		return false;
 	}
 
-	m_szScriptName = new char[strName.size()+1];				// LEAK - MistServer, Nothing loaded.
+	m_szScriptName = new char[strName.size()+1];				// LEAK - MistServer, Nothing loaded. (SKALL FÖRSTÖRAS MEN GÖRS EJ EFTERSOM EXPIRE KITTET INTE FUNKAR ÄN)
 	strcpy(m_szScriptName, strName.c_str());
 
 	ZFScriptSystem* pkScriptSys = static_cast<ZFScriptSystem*>(g_ZFObjSys.GetObjectPtr("ZFScriptSystem"));

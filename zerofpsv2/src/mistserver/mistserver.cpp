@@ -1119,3 +1119,8 @@ bool MistServer::BuildFileTree(char* szTreeBoxName, char* szRootPath)
 	return true;
 
 }
+
+void MistServer::SendTextToMistClientInfoBox(char *szText)
+{
+	  
+}
