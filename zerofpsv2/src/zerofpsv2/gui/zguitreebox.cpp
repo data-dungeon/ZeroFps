@@ -373,14 +373,14 @@ bool ZGuiTreebox::Notify(ZGuiWnd* pkWnd, int iCode)
 	if(iCode == NCODE_MOVE)
 	{
 		if(pkWnd->GetID() == VERT_SCROLLBAR_ID)
-		{
-			ScrollRows(true);
-		}		
+			ScrollRows();
+		if(pkWnd->GetID() == HORZ_SCROLLBAR_ID)
+			ScrollCols();
 	}
 	else
 	if(iCode == NCODE_CLICK_DOWN)
 	{
-		ScrollRows(true);
+		ScrollRows();
 	}
 
 	return true;
@@ -458,24 +458,21 @@ void ZGuiTreebox::ChangeScrollbarRange(int width, int height, bool bVerticalScro
 	}
 }
 
-void ZGuiTreebox::ScrollRows(bool bVertically)
+void ZGuiTreebox::ScrollRows()
 {	
 	static int PREV_VERT_SCROLLROW = -1000;
 
-	if(bVertically)
-	{
-		m_iStartrow = m_pkVertScrollbar->GetPos();
-		if(m_iStartrow < 0)
-			m_iStartrow = 0;
+	m_iStartrow = m_pkVertScrollbar->GetPos();
+	if(m_iStartrow < 0)
+		m_iStartrow = 0;
 
-		int row_size = 12;
+	int row_size = 12;
 
-		if(m_pkFont)
-			row_size = m_pkFont->m_cCharCellSize;
+	if(m_pkFont)
+		row_size = m_pkFont->m_cCharCellSize;
 
-		// Reset parameter
-		m_pkVertScrollbar->m_iScrollChange = 0;
-	}
+	// Reset parameter
+	m_pkVertScrollbar->m_iScrollChange = 0;
 
 	if(PREV_VERT_SCROLLROW != m_iStartrow)
 	{
@@ -505,6 +502,11 @@ void ZGuiTreebox::ScrollRows(bool bVertically)
 
 	if(m_pkSelectedNode)
 		SetSelectionMarker(m_pkSelectedNode); // set selection marker pos
+}
+
+void ZGuiTreebox::ScrollCols()
+{
+
 }
 
 bool ZGuiTreebox::InsertBranchSkin(unsigned int uiIndex, ZGuiSkin* pkSkin)

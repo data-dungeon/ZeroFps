@@ -71,7 +71,8 @@ private:
 
 	bool ProcessKBInput(int iKey);
 	void SetSelectionMarker(ZGuiTreeboxNode* pkNode);
-	void ScrollRows(bool bVertically);
+	void ScrollRows();
+	void ScrollCols();
 	void ChangeScrollbarRange(int width, int height, bool bVerticalScrollbar);
 	void MoveNode(ZGuiTreeboxNode* pkNode, int steps, bool bRecursive=true);
 	void OpenChilds(list<ZGuiTreeboxNode*> kChilds, bool bOpen);

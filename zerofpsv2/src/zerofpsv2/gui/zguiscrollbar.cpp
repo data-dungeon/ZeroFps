@@ -154,17 +154,17 @@ void ZGuiScrollbar::SetScrollInfo(unsigned int min, unsigned int max,
 	{
 		rcMove.Left += SCROLL_BUTTON_HEIGHT;
 		rcMove.Right -= SCROLL_BUTTON_HEIGHT;
+		m_pkThumbButton->SetMoveArea(rcMove);
 		m_pkThumbButton->SetPos((int)x+SCROLL_BUTTON_HEIGHT+(real_bn_height/2),(int)y, false, false);
 	}
 	else
 	{
 		rcMove.Top += SCROLL_BUTTON_HEIGHT;
 		rcMove.Bottom -= SCROLL_BUTTON_HEIGHT;
+		m_pkThumbButton->SetMoveArea(rcMove);
 		m_pkThumbButton->SetPos((int)x,(int)y+SCROLL_BUTTON_HEIGHT+(real_bn_height/2), false, false);
 	}
-
-	m_pkThumbButton->SetMoveArea(rcMove);
-		
+	
 	if(m_bAutoHideScrollbar)
 	{
 		if(page_size > 0.99f)
