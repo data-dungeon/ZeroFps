@@ -14,7 +14,7 @@ WaterRenderProperty::WaterRenderProperty()
 	
 	SetProperty(100,10,"file:../data/textures/water2.bmp");
 	m_iSortPlace	=	10;
-	m_fBlendValue	=	1;
+	m_fBlendValue	=	0.7;
 	m_bBlendDirUp	=  false;
 
 	bNetwork	=	true;
@@ -45,7 +45,6 @@ void WaterRenderProperty::SetTexture(const char* acTexture)
 
 void WaterRenderProperty::Update() 
 {	
-	m_fBlendValue = 1; // Erik testar minimappen.
 
 //	cout << "m_iUpdateFlags: "<< m_pkObject->m_pkObjectMan->m_iUpdateFlags << endl;
 	if(m_pkObject->m_pkObjectMan->m_iUpdateFlags & PROPERTY_TYPE_NORMAL) {

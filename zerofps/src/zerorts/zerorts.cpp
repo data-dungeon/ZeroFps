@@ -56,6 +56,8 @@ void ZeroRTS::Init()
 	m_fClickTimer = pkFps->GetTicks();
 	m_fClickDelay = 0.2;
 	
+	
+	//gui bös
 	pkInput->SetCursorInputPos(m_iWidth/2, m_iHeight/2);
 	pkGui->ShowCursor(true);
 	SDL_ShowCursor(SDL_DISABLE);	
