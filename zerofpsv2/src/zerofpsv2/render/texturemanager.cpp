@@ -389,6 +389,16 @@ void TextureManager::BindTexture(int iTexture)
 	}
 }
 
+int TextureManager::GetTextureID (int iTexture)
+{
+	if(m_iTextures[iTexture] == NULL)
+		return 0;
+
+	m_iCurrentTexture = NO_TEXTURE;
+
+	return m_iTextures[iTexture]->index;
+}
+
 int TextureManager::GetSizeOfTexture(int iTexture)
 {
 	if(iTexture == -1)

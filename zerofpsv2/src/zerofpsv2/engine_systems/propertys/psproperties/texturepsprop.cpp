@@ -13,7 +13,7 @@ void TexturePSProp::Update()
 
 TexturePSProp::TexturePSProp ( PSystem *pkParent, unsigned int uiTextureNr )
 {
-	m_uiTexture = uiTextureNr + 1;
+	m_uiTexture = uiTextureNr;
 	m_pkParent = pkParent;
 }
 

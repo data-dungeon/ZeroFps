@@ -402,6 +402,7 @@ bool PSystemManager::LoadData ( PSystemType *pkPSType )
 		TextureManager* m_pkTexMan = static_cast<TextureManager*>(g_ZFObjSys.GetObjectPtr("TextureManager"));	
 
 		pkPSType->m_kPSystemBehaviour.m_uiTexture = m_pkTexMan->Load( m_kIniLoader.GetValue("texture", "file"), 16); // 16 = clamp
+      pkPSType->m_kPSystemBehaviour.m_uiTexture = m_pkTexMan->GetTextureID (pkPSType->m_kPSystemBehaviour.m_uiTexture);
 	} 
 	else
 		pkPSType->m_kPSystemBehaviour.m_uiTexture = 0;

@@ -91,6 +91,8 @@ class RENDER_API TextureManager : public ZFSubSystem {
 		
 		int GetSizeOfTexture(int iTexture);
 		void BindTexture(int iTexture);
+      int GetTextureID (int iTexture);
+
 		bool UnLoad(int iTextureID);		
 		
 		int Load(const char* acFileName,int iOption);		
