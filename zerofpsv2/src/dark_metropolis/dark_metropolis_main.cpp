@@ -44,7 +44,7 @@ void DarkMetropolis::OnInit()
 	m_pkCameraEntity = 			NULL;
 	m_pkFps->m_bClientMode =	true;
 	m_fMinCamDistance =			2;
-	m_fMaxCamDistance =			50;
+	m_fMaxCamDistance =			10;
 	m_fDistance =					0;	
 	m_fAngle =						0;
 	m_strSaveDirectory =			"clans/";
@@ -59,6 +59,7 @@ void DarkMetropolis::OnInit()
 	m_eGameMode	=					ACTIVE;
 	m_fBulletTime =				-1;
 	m_pkGamePlayInfoLabel =		NULL;
+	m_fCameraMaxDistanceFromAgent = 3;
 	
 	//register commands
 	Register_Cmd("load",FID_LOAD);			
@@ -115,8 +116,9 @@ void DarkMetropolis::OnIdle()
 
 	GUI_OnIdle();
 
-//	if(m_pkMembersDlg)
-//		((CMembersDlg*)m_pkMembersDlg)->UpdateCamera();
+	//update camera position
+	CheckCameraPos();
+
 }
 
 void DarkMetropolis::RenderInterface(void)
@@ -199,6 +201,8 @@ void DarkMetropolis::RenderInterface(void)
 
 void DarkMetropolis::OnSystem() 
 {	
+
+
 	float t = m_pkFps->m_pkObjectMan->GetGameTime();
 
 	//if no hq has been found, try to find it
@@ -265,9 +269,11 @@ void DarkMetropolis::OnServerStart()
 		if(P_Enviroment* pkEnv = (P_Enviroment*)m_pkCameraEntity->AddProperty("P_Enviroment"))
 		{
 			pkEnv->SetEnable(true);
-			pkEnv->SetEnviroment("data/enviroments/sun.env");
-			
+			pkEnv->SetEnviroment("data/enviroments/sun.env");			
 		}
+		
+		//add tracker to camera
+		m_pkCameraEntity->AddProperty("P_Track");
 	}
 			
 	//m_kAgentsOnField.clear();			
@@ -1281,3 +1287,61 @@ void DarkMetropolis::UpdateAgentsOnField()
 	}
 }
 
+
+void DarkMetropolis::CheckCameraPos()
+{
+	if(!m_pkCameraEntity)
+		return;
+
+	//first check wich object is closest to the camera
+
+
+	float dist = 999999999;
+	Vector3 kCamPos = m_pkCameraEntity->GetWorldPosV();
+	kCamPos.y = 0;
+	Entity* pkClosestEnt = NULL;
+	
+	Vector3 kPos;
+	float d = 0;
+
+	if(Entity* pkEnt = m_pkObjectMan->GetObjectByNetWorkID(m_iActiveHQ))
+	{
+		kPos = pkEnt->GetWorldPosV();
+		kPos.y = 0;
+		dist = kCamPos.DistanceTo(kPos);	
+		pkClosestEnt = pkEnt;
+	}
+	
+	for(int i = 0;i < m_kAgentsOnField.size(); i++)
+	{
+		if(Entity* pkEnt = m_pkObjectMan->GetObjectByNetWorkID(m_kAgentsOnField[i]))
+		{
+			kPos = pkEnt->GetWorldPosV();
+			kPos.y = 0;			
+			d = kCamPos.DistanceTo(kPos);
+			if( d < dist )
+			{
+				dist = d;
+				pkClosestEnt = pkEnt;				
+			}
+		}
+	}
+
+
+	if(!pkClosestEnt)
+		return;
+		
+	
+	if(dist > m_fCameraMaxDistanceFromAgent)
+	{
+		//cout<<"camera to far away"<<endl;
+		Vector3 kTemp = pkClosestEnt->GetWorldPosV();
+		kTemp.y = 0;
+		Vector3 kDir = (kTemp - kCamPos).Unit();
+		
+		Vector3 kNewCamPos = m_pkCameraEntity->GetWorldPosV();
+//		kNewCamPos += kDir * m_pkObjectMan->GetSimDelta() * (dist * 3) ;
+		kNewCamPos += kDir * m_pkFps->GetFrameTime() * dist  ;
+		m_pkCameraEntity->SetWorldPosV(kNewCamPos);
+	}
+}

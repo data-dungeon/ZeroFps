@@ -113,7 +113,7 @@ settings in [pass-x]
 		enable diable colormaterial, used together whit vertexcolors.
 		
 	coloreffect = int [-1]
-		enabled a vertexcolor effect on the material
+		enables a vertexcolor effect on the material
 		possible options:
 			-1 = Disabled
 			1  = flickering

@@ -74,6 +74,8 @@ class DarkMetropolis : public Application, public ZGuiApp
 		float			m_fAngle;
 		float			m_fMinCamDistance;
 		float			m_fMaxCamDistance;
+		float			m_fCameraMaxDistanceFromAgent;
+		
 		
 		GameMode		m_eGameMode;		
 		float			m_fDelayTimer;
@@ -115,6 +117,7 @@ class DarkMetropolis : public Application, public ZGuiApp
 		void ValidateAgentsOnField();
 		void UpdateAgentsOnField();
 
+		void CheckCameraPos();
 		
 	public:
 

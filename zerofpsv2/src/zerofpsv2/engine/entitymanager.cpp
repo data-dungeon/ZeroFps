@@ -2562,9 +2562,8 @@ void EntityManager::SetZoneModel(const char* szName,int iId)
 	if(!pkMesh)
 		pkMesh = (P_PfMesh*)zd->m_pkZone->AddProperty("P_PfMesh");
 	
-	if(pkMesh) {
+	if(pkMesh)
 		pkMesh->SetMad(mp);
-	}
 
 
 

@@ -256,7 +256,8 @@ void P_DMCharacter::Shoot (Vector3 kLocation)
 	pkP_Gun->m_iTeam = m_iTeam;
 
 	// bad aim
-	float fDist = kLocation.DistanceTo( pkWeapon->GetWorldPosV() );
+	Vector3 kTemp = pkWeapon->GetWorldPosV();
+	float fDist = kLocation.DistanceTo( kTemp );
 
 	// rotate character towards target
 	Vector3 kdiff = kLocation - m_pkObject->GetWorldPosV();
