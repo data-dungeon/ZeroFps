@@ -24,7 +24,7 @@ void Test::OnInit(void) {
 //------------Map---------
 	test=new HeightMap(pkFile);
 	test->SetTileSet("file:../data/textures/landbw.bmp");
-	if(!test->LoadImageHmap("file:islands.bmp"))
+	if(!test->LoadImageHmap("file:blub.bmp"))
 		cout<<"Error loading map"<<endl;
 	test->GenerateNormals(); 
 	test->GenerateTextures();
@@ -126,13 +126,16 @@ void Test::OnInit(void) {
 
 	//player
 	m_pkPlayer=new PlayerObject(test,pkInput);
-	m_pkPlayer->GetPos()=Vector3(300,25,785);		
+	m_pkPlayer->GetPos()=Vector3(100,25,105);		
 	m_pkPlayer->AddProperty(new CameraProperty(cam1));
 	pkObjectMan->Add(m_pkPlayer);
 	pkCollisionMan->Add(m_pkPlayer);
 	
 	//add a collisionproperty for our heightmap
 	HeightMapObject *hm=new HeightMapObject(test);
+//	hm->AddProperty(new FloatProperty());
+//	hm->AddProperty(new GravityProperty());
+	hm->GetPos()=Vector3(0,-4,0);			
 	pkObjectMan->Add(hm);	
 	pkCollisionMan->Add(hm);
 

@@ -20,7 +20,8 @@ HeightMapRenderProperty::HeightMapRenderProperty(HeightMap* pkHeightMap)
 
 
 void HeightMapRenderProperty::Update() 
-{
+{	
+	m_pkHeightMap->SetPosition(m_pkObject->GetPos());
 	DrawHMlod(m_pkHeightMap,m_pkZeroFps->GetCam()->GetPos(),m_pkZeroFps->m_iFps);
 }
 
