@@ -243,11 +243,8 @@ void Game::Input()
 				printf("Failed to run script %s.\n", szFile);
 		}
 		break;
-	}
 	
-	if(iKey == KEY_I)
-	//if(pkInput->Action(m_iActionOpenInventory))
-	{
+	case KEY_I:
 		// Open/Close inventory window
 		if(m_pkPlayerInventoryBox->IsOpen() == false)
 		{
@@ -259,16 +256,25 @@ void Game::Input()
 			LockPlayerCamera(false);
 			m_pkPlayerInventoryBox->OnClose(false);
 		}
-	}
+		break;
 
-	if(iKey == KEY_ESCAPE)
-	{
-		LockPlayerCamera(false);
-		m_pkExamineMenu->OnClose(false);
-	}
+	case KEY_ESCAPE:
+	
+		if(m_pkExamineMenu->IsOpen())
+		{
+			m_pkExamineMenu->OnClose(false);
+			LockPlayerCamera(false);
+		}
 
-	if(iKey == KEY_O)
-	{
+		if(m_pkPlayerInventoryBox->IsOpen())
+		{
+			m_pkPlayerInventoryBox->OnClose(false);
+			LockPlayerCamera(false);
+		}
+		break;
+
+	case KEY_O:
+
 		int x = m_iWidth - m_pkContainerBox->Width();
 
 		if(m_pkContainerBox->IsOpen() == false)
@@ -281,16 +287,7 @@ void Game::Input()
 			LockPlayerCamera(false);
 			m_pkContainerBox->OnClose(false);
 		}
-	}
-
-	if(pkInput->Action(m_iActionCloseInventory))
-	{
-		// Open/Close inventory window
-		if(m_pkPlayerInventoryBox->IsOpen())
-		{
-			m_pkPlayerInventoryBox->OnClose(false);
-			LockPlayerCamera(false);
-		}
+		break;
 	}
 }
 
@@ -512,7 +509,10 @@ void Game::LockPlayerCamera(bool bTrue)
 		(m_pkPlayer->GetProperty("PlayerControlProperty"));
 
 	if(m_pkPlayerCtrl)
-		m_pkPlayerCtrl->m_bLockCameraRot = bTrue;
+		m_pkPlayerCtrl->m_bLockCamera = bTrue;
+
+	if(bTrue == false)
+		m_pkPlayerCtrl->m_bSkipFrame = true;
 }
 
 

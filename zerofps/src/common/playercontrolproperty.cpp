@@ -52,7 +52,8 @@ PlayerControlProperty::PlayerControlProperty(Input *pkInput,HeightMap *pkMap)
 	m_fFov = 90;
 
 	m_pkUseObject = NULL;
-	m_bLockCameraRot = false;
+	m_bLockCamera = false;
+	m_bSkipFrame = false;
 };
 
 PlayerControlProperty::~PlayerControlProperty()
@@ -85,25 +86,30 @@ void PlayerControlProperty::Update() {
 	if(!m_bAlive)
 		return;
 
+	if(SkipFrame())
+		return;
+
 	walking=false;
 	Vector3 vel(0,m_pkObject->GetVel().y,0);	
 	
-
-	if(m_pkInput->Action(m_iActionStrafeRight)){
-		walking=true;				
-		vel += GetYawVector2(m_pkObject->GetRot().y + 90) * m_fSpeed;
-	}
-	if(m_pkInput->Action(m_iActionStrafeLeft)){
-		walking=true;		
-		vel += GetYawVector2(m_pkObject->GetRot().y - 90) * m_fSpeed;
-	}
-	if(m_pkInput->Action(m_iActionForward)){
-		walking=true;
-		vel += GetYawVector2(m_pkObject->GetRot().y) * m_fSpeed;
-	}
-	if(m_pkInput->Action(m_iActionBack)){
-		walking=true;
-		vel += GetYawVector2(m_pkObject->GetRot().y + 180) * m_fSpeed;
+	if(!m_bLockCamera)
+	{
+		if(m_pkInput->Action(m_iActionStrafeRight)){
+			walking=true;				
+			vel += GetYawVector2(m_pkObject->GetRot().y + 90) * m_fSpeed;
+		}
+		if(m_pkInput->Action(m_iActionStrafeLeft)){
+			walking=true;		
+			vel += GetYawVector2(m_pkObject->GetRot().y - 90) * m_fSpeed;
+		}
+		if(m_pkInput->Action(m_iActionForward)){
+			walking=true;
+			vel += GetYawVector2(m_pkObject->GetRot().y) * m_fSpeed;
+		}
+		if(m_pkInput->Action(m_iActionBack)){
+			walking=true;
+			vel += GetYawVector2(m_pkObject->GetRot().y + 180) * m_fSpeed;
+		}
 	}
 	if(m_pkInput->Action(m_iActionNextItem))
 	{
@@ -147,7 +153,7 @@ void PlayerControlProperty::Update() {
 	}	
 
 
-	if(m_pkInput->Action(m_iActionJump))
+	if(m_pkInput->Action(m_iActionJump) && !m_bLockCamera)
 	{
 		if(onGround && m_fGroundAngle < 75){
 			//cout<<"walking on normal: "<<GroundNormal.x<<" "<<GroundNormal.y<<" "<<GroundNormal.z<<endl;
@@ -178,8 +184,8 @@ void PlayerControlProperty::Update() {
 
 	m_pkCameraProperty	=	static_cast<CameraProperty*>(m_pkObject->GetProperty("CameraProperty"));
 	
-	if(m_pkInput->Pressed(KEY_X) == false && m_bLockCameraRot == false){
-		// Rrotate the camera and scale with fov.		
+	if(m_pkInput->Pressed(KEY_X) == false && !m_bLockCamera){
+		// Rotate the camera and scale with fov.		
 		m_pkObject->GetRot().x += z / (180 / m_fFov);
 		m_pkObject->GetRot().y += x / (180 / m_fFov);
 
@@ -408,3 +414,28 @@ bool PlayerControlProperty::PickUp(Object* pkObject)
 	return true;
 }
 
+
+bool PlayerControlProperty::SkipFrame()
+{
+	bool bSkip = false;
+
+/*	if(m_bSkipFrame == true)
+	{
+		static float PREVTIME = m_pkFps->GetGameTime();
+		static float TIME = 1.00f;
+		float fCurrTime = m_pkFps->GetGameTime();
+
+		if(((fCurrTime-PREVTIME) > TIME))
+		{
+			m_bSkipFrame = false;
+			m_pkInput->Reset();
+			PREVTIME = fCurrTime;
+		}
+		else
+		{
+			return true;
+		}
+	}*/
+
+	return bSkip;
+}
