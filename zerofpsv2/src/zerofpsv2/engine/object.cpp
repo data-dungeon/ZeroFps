@@ -7,7 +7,7 @@
  
 typedef list<Object*>::iterator		itListObject;
 typedef list<Property*>::iterator	itListProperty;
-
+ 
 Object::Object() 
 {
 	// Get Ptrs to some usefull objects.
@@ -608,7 +608,7 @@ void Object::PackFrom(NetPacket* pkNetPacket)
 		pkNetPacket->Read(kVec);
 		SetLocalPosV(kVec);
 		//SetPos(kVec);
-		g_ZFObjSys.Logf("net", " .Pos: <%f,%f,%f>", kVec.x,kVec.y,kVec.z);
+		//g_ZFObjSys.Logf("net", " .Pos: <%f,%f,%f>", kVec.x,kVec.y,kVec.z);
 		}
 
 	if(m_iNetUpdateFlags & OBJ_NETFLAG_ROT) {
@@ -617,7 +617,7 @@ void Object::PackFrom(NetPacket* pkNetPacket)
 		//SetWorldPosV(kVec);
 		SetLocalRotM(kRotMatrix);
 		//SetWorldRotV(kVec);
-		g_ZFObjSys.Logf("net", " .Rot: <%f,%f,%f>\n", kVec.x,kVec.y,kVec.z);
+		//g_ZFObjSys.Logf("net", " .Rot: <%f,%f,%f>\n", kVec.x,kVec.y,kVec.z);
 		}
 
 	pkNetPacket->Read(fFloat);
@@ -626,8 +626,8 @@ void Object::PackFrom(NetPacket* pkNetPacket)
 	char szStr[256];
 	pkNetPacket->Read_NetStr(szStr);
 	m_strName = szStr;
-	g_ZFObjSys.Logf("net", " .Name '%s'\n", m_strName.c_str() );
-	g_ZFObjSys.Logf("net", " -Head Size = %d\n",  pkNetPacket->m_iPos - iStart );	
+	//g_ZFObjSys.Logf("net", " .Name '%s'\n", m_strName.c_str() );
+	//g_ZFObjSys.Logf("net", " -Head Size = %d\n",  pkNetPacket->m_iPos - iStart );	
 
 	char szProperty[256];
 	pkNetPacket->Read_NetStr(szProperty);
@@ -636,7 +636,7 @@ void Object::PackFrom(NetPacket* pkNetPacket)
 		int iPStart = pkNetPacket->m_iPos;
 		Property* pProp  = AddProxyProperty(szProperty);
 		if(pProp) {
-			g_ZFObjSys.Logf("net", " /%s\n", szProperty);
+			//g_ZFObjSys.Logf("net", " /%s\n", szProperty);
 			pProp->PackFrom(pkNetPacket);
 			}
 		else {
@@ -646,17 +646,17 @@ void Object::PackFrom(NetPacket* pkNetPacket)
 			}
 
 		int iPEnd	= pkNetPacket->m_iPos;
-		g_ZFObjSys.Logf("net", " -Size: %d\n", (iPEnd - iPStart) + 4);	// +4 for netstring for property name
+		//g_ZFObjSys.Logf("net", " -Size: %d\n", (iPEnd - iPStart) + 4);	// +4 for netstring for property name
 
 		pkNetPacket->Read_NetStr(szProperty);
 		}	
 
 	int iEnd = pkNetPacket->m_iPos;
-	g_ZFObjSys.Logf("net", " .End Of Propertys size: 4\n");
-	g_ZFObjSys.Logf("net", " .Size for Object %d\n",(iEnd - iStart) );
+	//g_ZFObjSys.Logf("net", " .End Of Propertys size: 4\n");
+	//g_ZFObjSys.Logf("net", " .Size for Object %d\n",(iEnd - iStart) );
 	m_pkObjectMan->m_iTotalNetObjectData += (iEnd - iStart);
 	m_pkObjectMan->m_iNumOfNetObjects ++;
-	g_ZFObjSys.Logf("net", "\n");
+	//g_ZFObjSys.Logf("net", "\n");
 }
 
 /**	\brief	Load object.
