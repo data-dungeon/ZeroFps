@@ -1163,12 +1163,19 @@ void MistServer::SendContainer(MLContainer* pkContainer,int iClientID)
 		kNp.Write(kItemList[i].m_cItemY);
 		kNp.Write(kItemList[i].m_cItemW);
 		kNp.Write(kItemList[i].m_cItemH);						
-		kNp.Write(kItemList[i].m_iStackSize);		
+		kNp.Write(kItemList[i].m_iStackSize);				
+
+		
+		if(kNp.m_iPos > 1000)
+		{
+			cout<<"container to big, lets krash =P"<<endl;
+			
+		}
 	}
-	
 	
 	kNp.TargetSetClient(iClientID);
 	SendAppMessage(&kNp);
+	
 }
 
 void MistServer::SayToClients(const string& strMsg,int iClientID)
