@@ -98,7 +98,7 @@ class ZGResEdit : public Application, public ZGuiApp
 
 		int m_iXPosBeforeMove, m_iYPosBeforeMove;
 
-		enum ResizeType { RightSide, BottomSide, LeftSide, TopSide, None } m_eCurrentResizeType;
+		enum ResizeType { E_RightSide, E_BottomSide, E_LeftSide, E_TopSide, E_None } m_eCurrentResizeType;
 		enum EditMode { MOVE, RESIZE, VIEW, SET_MOVE_AREA } m_eEditMode;
 
 		int m_iXPos, m_iYPos;

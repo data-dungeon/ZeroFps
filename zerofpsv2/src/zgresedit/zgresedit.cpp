@@ -1312,23 +1312,23 @@ void ZGResEdit::OnMouseClick(bool bReleased, int x, int y)
 //				float width_mod = (float) rc.Width() / rc.Height();
 	//			float height_mod = (float) rc.Height() / rc.Width();
 
-				m_eCurrentResizeType = None;
+				m_eCurrentResizeType = E_None;
 
 				if(dist_left <= dist_right && dist_left <= dist_top && dist_left <= dist_bottom)
-					m_eCurrentResizeType = LeftSide;
+					m_eCurrentResizeType = E_LeftSide;
 				if(dist_right <= dist_left && dist_right <= dist_top && dist_right <= dist_bottom)
-					m_eCurrentResizeType = RightSide;
+					m_eCurrentResizeType = E_RightSide;
 				if(dist_top <= dist_right && dist_top <= dist_left && dist_top <= dist_bottom)
-					m_eCurrentResizeType = TopSide;
+					m_eCurrentResizeType = E_TopSide;
 				if(dist_bottom <= dist_right && dist_bottom <= dist_top && dist_bottom <= dist_left)
-					m_eCurrentResizeType = BottomSide;
+					m_eCurrentResizeType = E_BottomSide;
 				
 				switch(m_eCurrentResizeType)
 				{
-					case LeftSide:   if(dist_left > 20) m_pkResizeWnd = NULL; break;
-					case RightSide:  if(dist_right > 20) m_pkResizeWnd = NULL; break;
-					case TopSide:    if(dist_top > 20) m_pkResizeWnd = NULL; break;
-					case BottomSide: if(dist_bottom > 20) m_pkResizeWnd = NULL; break;
+					case E_LeftSide:   if(dist_left > 20) m_pkResizeWnd = NULL; break;
+					case E_RightSide:  if(dist_right > 20) m_pkResizeWnd = NULL; break;
+					case E_TopSide:    if(dist_top > 20) m_pkResizeWnd = NULL; break;
+					case E_BottomSide: if(dist_bottom > 20) m_pkResizeWnd = NULL; break;
 				}
 			}
 		}
@@ -1970,19 +1970,19 @@ void ZGResEdit::ResizeWnd(int x, int y)
 
 		switch(m_eCurrentResizeType)
 		{
-		case RightSide:
+		case E_RightSide:
 			screen_x = rc.Left; screen_y = rc.Top;
 			w = x - rc.Left;	if(w < 2) w = 2;
 			Resize(m_pkResizeWnd, w,h);
 			break;
 
-		case BottomSide:
+		case E_BottomSide:
 			screen_x = rc.Left; screen_y = rc.Top;
 			h = y - rc.Top;	if(h < 2) h = 2;
 			Resize(m_pkResizeWnd, w,h);
 			break;
 
-		case LeftSide:
+		case E_LeftSide:
 			screen_y = rc.Top;
 			w = rc.Right - x;	if(w < 2) w = 2; h = rc.Height();
 
@@ -2003,7 +2003,7 @@ void ZGResEdit::ResizeWnd(int x, int y)
 			SetPos(m_pkResizeWnd, screen_x, rc.Top);
 			break;
 
-		case TopSide:
+		case E_TopSide:
 			screen_x = rc.Left;
 			w = rc.Width(); h = rc.Bottom - y;	if(h < 2) h = 2;
 
