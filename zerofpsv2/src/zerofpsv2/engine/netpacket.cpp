@@ -61,6 +61,9 @@ void RemoteNode::Clear()
 		m_akRelPackRecv[i].m_kHeader.m_iPacketType = ZF_NETTYPE_NONE;
 		}
 
+	m_kRelAckList.clear();
+	m_kRelSend.clear();
+
 	m_bIsFlood = false;
 }
 

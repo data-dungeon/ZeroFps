@@ -577,6 +577,7 @@ void NetWork::HandleControlMessage(NetPacket* pkNetPacket)
 	char szLogin[64];
 	char szPass[64];
 	int  iConnectAsEditor;
+	int iNetID;
 
 	switch(ucControlType) {
 		// If controll handle_controllpacket.
@@ -608,47 +609,47 @@ void NetWork::HandleControlMessage(NetPacket* pkNetPacket)
 				kNetPRespons.Write_Str( string("There server is full.") );
 				kNetPRespons.m_kAddress = pkNetPacket->m_kAddress;
 				SendRaw(&kNetPRespons);
+				break;
 			}
-			else 
+
+			if(! m_pkZeroFps->PreConnect(pkNetPacket->m_kAddress, szLogin, szPass, iConnectAsEditor, strNoMessage))
 			{
-				if(! m_pkZeroFps->PreConnect(pkNetPacket->m_kAddress, szLogin, szPass, iConnectAsEditor, strNoMessage))
-				{
-					m_pkConsole->Printf("Join Ignored: Preconnect no.");
-					kNetPRespons.m_kData.m_kHeader.m_iPacketType = ZF_NETTYPE_CONTROL;
-					kNetPRespons.Write((unsigned char) ZF_NETCONTROL_JOINNO);
-					kNetPRespons.Write_Str( strNoMessage );
-					kNetPRespons.m_kAddress = pkNetPacket->m_kAddress;
-					SendRaw(&kNetPRespons);
-					break;
-				}
-
-				iClientID = GetFreeClientNum();
-				assert(iClientID != ZF_NET_NOCLIENT);
-
-				// Create New Connection client.
-				m_RemoteNodes[iClientID].SetAddress(&pkNetPacket->m_kAddress);
-				m_RemoteNodes[iClientID].m_eConnectStatus = NETSTATUS_CONNECTED;
-				m_RemoteNodes[iClientID].m_fLastMessageTime = fEngineTime;
-
-				//kNewNode.m_kAddress = pkNetPacket->m_kAddress;
-				//kNewNode.m_eConnectStatus = NETSTATUS_CONNECTED;
-				//RemoteNodes.push_back(kNewNode);
-				m_pkConsole->Printf("Client Connected: %s", m_szAddressBuffer);
-
-				// Tell ZeroFPS Someone has connected.
-				int iNetID = m_pkZeroFps->Connect(iClientID, szLogin, szPass,iConnectAsEditor);
-
-				// Send Connect Yes.
+				m_pkConsole->Printf("Join Ignored: Preconnect no.");
 				kNetPRespons.m_kData.m_kHeader.m_iPacketType = ZF_NETTYPE_CONTROL;
-				kNetPRespons.Write((unsigned char) ZF_NETCONTROL_JOINYES);
-				kNetPRespons.Write( iClientID ); 
-				kNetPRespons.Write( iNetID ); 
-
+				kNetPRespons.Write((unsigned char) ZF_NETCONTROL_JOINNO);
+				kNetPRespons.Write_Str( strNoMessage );
 				kNetPRespons.m_kAddress = pkNetPacket->m_kAddress;
 				SendRaw(&kNetPRespons);
-				
-				NetString_ReSendAll();
+				break;
 			}
+
+			// Connect OK
+			iClientID = GetFreeClientNum();
+			assert(iClientID != ZF_NET_NOCLIENT);
+
+			// Create New Connection client.
+			m_RemoteNodes[iClientID].SetAddress(&pkNetPacket->m_kAddress);
+			m_RemoteNodes[iClientID].m_eConnectStatus = NETSTATUS_CONNECTED;
+			m_RemoteNodes[iClientID].m_fLastMessageTime = fEngineTime;
+
+			//kNewNode.m_kAddress = pkNetPacket->m_kAddress;
+			//kNewNode.m_eConnectStatus = NETSTATUS_CONNECTED;
+			//RemoteNodes.push_back(kNewNode);
+			m_pkConsole->Printf("Client Connected: %s", m_szAddressBuffer);
+
+			// Tell ZeroFPS Someone has connected.
+			iNetID = m_pkZeroFps->Connect(iClientID, szLogin, szPass,iConnectAsEditor);
+
+			// Send Connect Yes.
+			kNetPRespons.m_kData.m_kHeader.m_iPacketType = ZF_NETTYPE_CONTROL;
+			kNetPRespons.Write((unsigned char) ZF_NETCONTROL_JOINYES);
+			kNetPRespons.Write( iClientID ); 
+			kNetPRespons.Write( iNetID ); 
+
+			kNetPRespons.m_kAddress = pkNetPacket->m_kAddress;
+			SendRaw(&kNetPRespons);
+			
+			NetString_ReSendAll();
 			
 			break;
 
@@ -1002,6 +1003,7 @@ void NetWork::Run()
 			m_pkZeroFps->Disconnect(i);
 			m_pkConsole->Printf("Connection to %d was flooded.", i);
 			m_RemoteNodes[i].m_eConnectStatus = NETSTATUS_DISCONNECT;
+			m_RemoteNodes[i].Clear();
 		}
 
 		if(fEngineTime > ( m_RemoteNodes[i].m_fLastMessageTime + 60 )) 
@@ -1010,9 +1012,8 @@ void NetWork::Run()
 			m_pkZeroFps->Disconnect(i);
 			m_pkConsole->Printf("Connection to %d timed out.", i);
 			m_RemoteNodes[i].m_eConnectStatus = NETSTATUS_DISCONNECT;
+			m_RemoteNodes[i].Clear();
 		}
-
-		
 
 		for(set<int>::iterator it = m_RemoteNodes[i].m_kRelSend.begin(); it != m_RemoteNodes[i].m_kRelSend.end(); it++)
 		{
