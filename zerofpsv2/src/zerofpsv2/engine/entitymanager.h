@@ -145,6 +145,7 @@ class ENGINE_API EntityManager : public ZFSubSystem{
 
 		// Delete
 		void Delete(Entity* pkNewObject);								///< Adds an object to delete qeue
+      void Delete(int iNetworkID);								      ///< Adds an object to delete qeue
 		void UpdateDelete();													///< Deletes objects in delete qeue	
 
 		// Updates

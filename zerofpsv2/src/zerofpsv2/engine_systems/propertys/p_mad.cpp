@@ -72,7 +72,6 @@ void P_Mad::Update()
 		//set force transparent if not visible
 		if(!m_bIsVisible)
 			m_pkShader->SetForceBlending(BLEND_FORCE_TRANSPARENT);
-		
 
 		glPushMatrix();
 			Vector3 pos; 

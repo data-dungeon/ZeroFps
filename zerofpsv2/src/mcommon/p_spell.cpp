@@ -110,7 +110,7 @@ void P_Spell::Update()
 //            m_pkObject->RemoveProperty ( this );
 //         else
 
-         m_pkObject->m_pkObjectMan->Delete( m_pkObject ); 
+         //m_pkObject->m_pkObjectMan->Delete( m_pkObject ); 
       }
 
 

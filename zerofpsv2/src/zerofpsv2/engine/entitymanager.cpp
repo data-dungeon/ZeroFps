@@ -272,6 +272,15 @@ Entity* EntityManager::CreateObject(bool bLink)
 
 /**	\brief	Adds an object to delete qeue
 */
+void EntityManager::Delete(int iNetworkID) 
+{
+   Entity* pkE = GetObjectByNetWorkID(iNetworkID);
+
+   if ( pkE )
+      Delete (pkE);
+}
+
+
 void EntityManager::Delete(Entity* pkObject) 
 {
 	if(pkObject == NULL)

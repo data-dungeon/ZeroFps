@@ -3133,21 +3133,21 @@ int MistLandLua::AIMoveToLua(lua_State* pkLua)
          // check if object has AI
          P_AI* pkAI = (P_AI*)pkEnt->GetProperty("P_AI");
 
-         // is AI is player, clear all other orders
-         if ( pkAI->PlayerAI() && strcmp(temp,"dynamic") == 0)
-            pkAI->ClearDynamicOrders();
-         else if ( pkAI->PlayerAI() && strcmp(temp,"static") == 0)
-         {
-            cout << "Warning! Tried to add static order to player" << endl;
-            return 0;
-         }
-
          if ( pkAI )
          {
-            if ( strcmp(temp,"dynamic") == 0 )
-               pkAI->AddDynamicOrder ("MoveTo", 0, 0, kPos, ".");
-            else
-               pkAI->AddStaticOrder ("MoveTo", 0, 0, kPos, ".");
+            // is AI is player, clear all other orders
+            if ( pkAI->PlayerAI() && strcmp(temp,"dynamic") == 0)
+               pkAI->ClearDynamicOrders();
+            else if ( pkAI->PlayerAI() && strcmp(temp,"static") == 0)
+            {
+               cout << "Warning! Tried to add static order to player" << endl;
+               return 0;
+            }
+
+               if ( strcmp(temp,"dynamic") == 0 )
+                  pkAI->AddDynamicOrder ("MoveTo", 0, 0, kPos, ".");
+               else
+                  pkAI->AddStaticOrder ("MoveTo", 0, 0, kPos, ".");
          }
 		}
       else

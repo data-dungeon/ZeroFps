@@ -244,7 +244,7 @@ vector<PropertyValues> P_AI::GetPropertyValues()
 
 void P_AI::Init()
 {
-//   m_pkCharProp = (CharacterProperty*)m_pkObject->GetProperty ("P_CharStats");
+   m_pkCharProp = (CharacterProperty*)m_pkObject->GetProperty ("P_CharStats");
 
 //   if ( !m_pkCharProp )
 //      cout << "Warning!!! P_AI is assigned to a object withour P_CharStats." << endl;
