@@ -430,6 +430,7 @@ void ZeroFps::Update_System(bool bServer)
 {
 
 	int iLoops;
+	float fRest;
 
 	if(m_bLockFps)
 	{	
@@ -644,23 +645,8 @@ Camera* ZeroFps::GetRenderTarget(string strName)
 void ZeroFps::Draw_RenderTarget(Camera* pkCamera)
 {
 	//is this camera enabled
-	if(pkCamera->IsRenderOn() == false)	return;
-
-	// Save State
-	//glPushAttrib(GL_TEXTURE_BIT | GL_LIGHTING_BIT | GL_FOG_BIT | 
-	//	GL_DEPTH_BUFFER_BIT | GL_ENABLE_BIT | GL_CURRENT_BIT | GL_VIEWPORT_BIT | GL_SCISSOR_BIT );
-
-	//glPushAttrib(GL_ALL_ATTRIB_BITS);
-		
-	//dvoid fog fix, problem då fog states skall sparas mellan varje frame....någon vettigare lösning kanske kommer =D
-/*	glPushAttrib(GL_TEXTURE_BIT | GL_LIGHTING_BIT | 
-		GL_DEPTH_BUFFER_BIT | GL_CURRENT_BIT | GL_VIEWPORT_BIT | GL_SCISSOR_BIT );
-	
-	glMatrixMode(GL_PROJECTION);
-	glPushMatrix();
-	glMatrixMode(GL_MODELVIEW);
-	glPushMatrix();
-*/
+	if(!pkCamera->IsRenderOn())
+		return;
 
 	//set this camera as active
 	SetCamera(pkCamera);
@@ -676,29 +662,24 @@ void ZeroFps::Draw_RenderTarget(Camera* pkCamera)
 		
 	if(m_bRenderOn == 1)
 	{
-		
+		//get root entity
+		Entity* pkRootEntity = m_pkObjectMan->GetObjectByNetWorkID(pkCamera->GetRootEntityID());
+		bool	bUpdateRootOnly = pkCamera->GetRootOnly();
+			
 		//update all render propertys that shuld be shadowed
-		m_pkObjectMan->Update(PROPERTY_TYPE_RENDER,PROPERTY_SIDE_CLIENT,true);
+		m_pkObjectMan->Update(PROPERTY_TYPE_RENDER,PROPERTY_SIDE_CLIENT,true,pkRootEntity,bUpdateRootOnly);
 
 		//update shadow map
 		m_pkZShadow->Update();
 
 		//update all render propertys that shuld NOT be shadowed
-		m_pkObjectMan->Update(PROPERTY_TYPE_RENDER_NOSHADOW,PROPERTY_SIDE_CLIENT,true);
+		m_pkObjectMan->Update(PROPERTY_TYPE_RENDER_NOSHADOW,PROPERTY_SIDE_CLIENT,true,pkRootEntity,bUpdateRootOnly);
 
 	}
 
 	m_pkObjectMan->Test_DrawZones();
 	m_pkApp->RenderInterface();
 
-/*	
-	// Restore State
-	glMatrixMode(GL_MODELVIEW);
-	glPopMatrix();
-	glMatrixMode(GL_PROJECTION);
-	glPopMatrix();
-	glPopAttrib();
-*/	
 }
 
 
@@ -751,7 +732,7 @@ void ZeroFps::ToggleGui(void)
 
 void ZeroFps::SetCamera(Camera* pkCamera)
 {
-	//set camera pointer
+	//set camera pointer 
 	m_pkCamera=pkCamera;		
 	
 	//call updateall so that the camera updates viewport and realoads projectionmatrix
@@ -784,7 +765,8 @@ void ZeroFps::DevPrintf(const char* szName, const char *fmt, ...)
 {
 	// Find the page to print to.
 	DevStringPage* page = DevPrint_FindPage(szName);
-	if(!page) {
+	if(!page) 
+	{
 		DevStringPage kNewPage;
 		kNewPage.m_kName = szName;
 		kNewPage.m_bVisible = false;
@@ -792,7 +774,7 @@ void ZeroFps::DevPrintf(const char* szName, const char *fmt, ...)
 		page = DevPrint_FindPage(szName);
 		if(!page)
 			return;
-		}
+	}
 
 	if(page->m_bVisible == false)
 		return;

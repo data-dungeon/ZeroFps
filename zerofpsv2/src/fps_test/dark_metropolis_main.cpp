@@ -479,8 +479,10 @@ void DarkMetropolis::Input()
 			
 		
 			if(kVel.Length() > 0)
-				kVel = kVel.Unit() * 50;
+				kVel = kVel.Unit() * 100.0;
 			
+			pkTcs->ClearExternalForces();
+				
 			if(m_pkInputHandle->Pressed(MOUSERIGHT))
 				if(pkTcs->GetOnGround())
 					if( (m_pkFps->GetTicks() - m_fDelayTimer) > 0.1)
@@ -1131,7 +1133,7 @@ bool DarkMetropolis::CreatePlayer()
 
 	for(int i = 0;i<m_kEntitys.size();i++)
 	{
-		if(m_kEntitys[i]->GetType() == "t_playerstart.lua")
+		if(m_kEntitys[i]->GetType() == "playerstart.lua")
 		{		
 			
 			if(ZoneData* dat = m_pkObjectMan->GetZone(m_kEntitys[i]->GetParent()))

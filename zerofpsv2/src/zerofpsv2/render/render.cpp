@@ -573,7 +573,7 @@ void Render::DrawConsole(char* m_aCommand,vector<char*>* m_kText,int iStartLine,
 	Mode2D_End();
 }
 
-void Render::DrawBillboard(Matrix4& kModelMatrix,Vector3& kPos,float fSize,int iTexture) 
+void Render::DrawBillboard(const Matrix4& kModelMatrix,const Vector3& kPos,float fSize,int iTexture) 
 {
 	m_pkZShaderSystem->Push("DrawBillboard");
 

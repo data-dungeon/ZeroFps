@@ -229,9 +229,7 @@ void Console::ConsoleCmd(CON_CMD eCmd)
 					m_iLastCommand++;
 				
 				strcpy(m_aCommand, m_kCommandHistory[m_iLastCommand].c_str());
-				m_iInputPos = strlen(m_aCommand);
-			
-				cout<<"upp"<<endl;
+				m_iInputPos = strlen(m_aCommand);			
 			}
 			
 			break;

@@ -357,31 +357,41 @@ void EntityManager::UpdateDelete()
 	
 */
 
-void EntityManager::Update(int iType,int iSide,bool bSort)
+void EntityManager::Update(int iType,int iSide,bool bSort,Entity* pkRootEntity,bool bForceRootOnly)
 {
 	m_iUpdateFlags = iType | iSide;
-
-/*	if(!m_bUpdate)
-		if(iType != PROPERTY_TYPE_RENDER)
-			return;*/
-
-	GetPropertys(iType,iSide);
 	
-	m_iNrOfActivePropertys = m_akPropertys.size();
+	//clear property  list
+	m_akPropertys.clear();	
+
+	//get propertys
+	if(bForceRootOnly)
+	{
+		if(pkRootEntity)
+			pkRootEntity->GetPropertys(&m_akPropertys,iType,iSide);
+		else
+			m_pkWorldObject->GetPropertys(&m_akPropertys,iType,iSide);
+	}
+	else
+	{	
+		if(pkRootEntity)
+			pkRootEntity->GetAllPropertys(&m_akPropertys,iType,iSide);
+		else
+			m_pkWorldObject->GetAllPropertys(&m_akPropertys,iType,iSide);
+	}
 	
-//	Logf("net","OM::Update(%s, %s,%d) = %d\n",
-//		GetPropertyTypeName(iType),GetPropertySideName(iSide),bSort,m_iNrOfActivePropertys);
+	//logg stuff		
+	m_iNrOfActivePropertys = m_akPropertys.size();	
 	m_pkZeroFps->DevPrintf("om", "OM::Update(%s, %s,%d) = %d",
 		GetPropertyTypeName(iType),GetPropertySideName(iSide),bSort,m_iNrOfActivePropertys);
 
-	if(bSort){
+	//sort all propertys
+	if(bSort)
 		stable_sort(m_akPropertys.begin(),m_akPropertys.end(),Less_Property);
-	}
 	
+	//run updat ein all propertys
 	for(vector<Property*>::iterator it=m_akPropertys.begin();it!=m_akPropertys.end();it++) 
-	{
 		(*it)->Update();
-	}
 }
 
 bool EntityManager::IsUpdate(int iFlags)
@@ -1205,22 +1215,7 @@ char* EntityManager::GetUpdateStatusName(int eStatus)
 	return pkName;
 }
 
-/*
-char* EntityManager::GetObjectTypeName(int eType)
-{
-	char* pkName = "";
 
-	switch(eType) {
-//		case OBJECT_TYPE_DYNAMIC: 		pkName = "OBJECT_TYPE_DYNAMIC";	break;
-//		case OBJECT_TYPE_STATIC: 		pkName = "OBJECT_TYPE_STATIC";	break;
-/*		case OBJECT_TYPE_PLAYER: 		pkName = "OBJECT_TYPE_PLAYER";	break;
-		case OBJECT_TYPE_STATDYN:		pkName = "OBJECT_TYPE_STATDYN";	break;
-//		case OBJECT_TYPE_DECORATION: 	pkName = "OBJECT_TYPE_DECORATION";	break;*
-		}
-
-	return pkName;
-}
-*/
 
 char* EntityManager::GetPropertyTypeName(int iType)
 {
@@ -1250,12 +1245,6 @@ char* EntityManager::GetPropertySideName(int iSide)
 	return pkName;
 
 
-}
-
-void EntityManager::GetPropertys(int iType,int iSide)
-{
-	m_akPropertys.clear();
-	m_pkWorldObject->GetAllPropertys(&m_akPropertys,iType,iSide);
 }
 
 bool EntityManager::TestLine(vector<Entity*>* pkPPList,Vector3 kPos,Vector3 kVec)
@@ -3331,5 +3320,23 @@ void EntityManager::UpdateZones()
 			}
 		}
 	}
+}
+*/
+
+
+/*
+char* EntityManager::GetObjectTypeName(int eType)
+{
+	char* pkName = "";
+
+	switch(eType) {
+//		case OBJECT_TYPE_DYNAMIC: 		pkName = "OBJECT_TYPE_DYNAMIC";	break;
+//		case OBJECT_TYPE_STATIC: 		pkName = "OBJECT_TYPE_STATIC";	break;
+/*		case OBJECT_TYPE_PLAYER: 		pkName = "OBJECT_TYPE_PLAYER";	break;
+		case OBJECT_TYPE_STATDYN:		pkName = "OBJECT_TYPE_STATDYN";	break;
+//		case OBJECT_TYPE_DECORATION: 	pkName = "OBJECT_TYPE_DECORATION";	break;*
+		}
+
+	return pkName;
 }
 */

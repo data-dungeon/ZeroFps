@@ -177,7 +177,7 @@ bool ZeroEd::SetViewPort(const char* szVpName)
 	if(m_pkActiveCamera == pkCam)	return false;
 
 	if(m_pkActiveCamera) m_pkActiveCamera->SetSelected(false);
-	m_pkActiveCameraObject	= m_pkObjectMan->GetObjectByNetWorkID( pkCam->m_iEntity );
+	m_pkActiveCameraObject	= m_pkObjectMan->GetObjectByNetWorkID( pkCam->GetEntityID() );
 	m_pkActiveCamera		= pkCam;
 	m_pkActiveCamera->SetSelected(true);
 
@@ -482,7 +482,7 @@ void ZeroEd::Select_Toggle(int iId, bool bMultiSelect)
    if(m_iCurrentObject != -1)
 	{
 		if(Entity* pkEnt = m_pkObjectMan->GetObjectByNetWorkID(m_iCurrentObject))
-      	sprintf(szInfoText, "Object selected: %s", pkEnt->GetName().c_str());
+      	sprintf(szInfoText, "Enity selected: ID[%d] Name[%s]", pkEnt->GetEntityID(), pkEnt->GetName().c_str());
 	}
    else
       sprintf(szInfoText, "");
@@ -1102,7 +1102,7 @@ void ZeroEd::CamFollow(bool bFollowMode)
 	else
 	{
 		// End Follow Mode
-		Entity* pkObj = m_pkObjectMan->GetObjectByNetWorkID( m_pkActiveCamera->m_iEntity );		
+		Entity* pkObj = m_pkObjectMan->GetObjectByNetWorkID( m_pkActiveCamera->GetEntityID() );		
 		if(!pkObj)
 			return;	// Hey we are not following anyone.
 

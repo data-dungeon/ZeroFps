@@ -17,24 +17,19 @@ using namespace std;
 class RENDER_API Frustum 
 {
 	private:
-		Vector4 m_akFrustum[6];
-		Plane	m_akFrustumPlanes[6];
+		Vector4 		m_akFrustum[6];
+		Plane			m_akFrustumPlanes[6];
 		
 	public:
 		Frustum();
-		void GetFrustum();
+		void 	GetFrustum(const Matrix4& kProjectionMatrix,const Matrix4& kModelViewMatrix);
 		
-		bool PointInFrustum(Vector3 kPoint);		
-		bool SphereInFrustum(Vector4 kPoint);
-		bool SphereInFrustum(Vector4& kPoint);				
-		bool SphereInFrustum(Vector3 kPos,float fRadius);				
-		bool CubeInFrustum( float x, float y, float z, float sizex,float sizey,float sizez );
-		bool CubeInFrustum ( Vector3 kPosition, Vector3 kCenter, Vector3 kSize, Matrix4 kRotation );
-		
-/*		bool StartUp()	{ return true;	}
-		bool ShutDown()	{ return true;	}
-		bool IsValid()	{ return true;	}
-*/
+		bool 	PointInFrustum(const Vector3& kPoint);		
+		bool 	SphereInFrustum(const Vector4& kPoint);			
+		bool 	SphereInFrustum(const Vector3& kPos,float fRadius);				
+		bool 	CubeInFrustum( float x, float y, float z, float sizex,float sizey,float sizez );
+		bool 	CubeInFrustum ( const Vector3& kPos, const Vector3& kCenter, const Vector3& kSize, Matrix4 kRotation );
+
 };
 
 

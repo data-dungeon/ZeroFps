@@ -7,18 +7,11 @@ Frustum::Frustum()// : ZFSubSystem("Frustum")
 
 }
 
-void Frustum::GetFrustum() {
-   Matrix4   proj;
-   Matrix4   modl;
-   Matrix4   clip;
-   
-	// Get the current PROJECTION matrix from OpenGL 
-   glGetFloatv( GL_PROJECTION_MATRIX, (float*) &proj.data);
-
-   // Get the current MODELVIEW matrix from OpenGL 
-   glGetFloatv( GL_MODELVIEW_MATRIX, (float*)&modl.data );
-
-	 clip=modl*proj;
+void Frustum::GetFrustum(const Matrix4& kProjectionMatrix,const Matrix4& kModelViewMatrix) 
+{
+   static	Matrix4   clip;
+	
+	clip = kModelViewMatrix*kProjectionMatrix;
 	  
 	// Extract the numbers for the RIGHT plane 
    m_akFrustum[0].x = clip.data[ 3] - clip.data[ 0];
@@ -68,7 +61,7 @@ void Frustum::GetFrustum() {
 }
 
 
-bool Frustum::PointInFrustum( Vector3 kPoint)
+bool Frustum::PointInFrustum( const Vector3& kPoint)
 {
 	for(int p = 0; p < 6; p++ ){
 		if( m_akFrustum[p].x * kPoint.x + m_akFrustum[p].y * kPoint.y + m_akFrustum[p].z * kPoint.z + m_akFrustum[p].w <= 0 )
@@ -79,7 +72,7 @@ bool Frustum::PointInFrustum( Vector3 kPoint)
 }
 
 
-bool Frustum::SphereInFrustum(Vector4 kPoint)
+bool Frustum::SphereInFrustum(const Vector4& kPoint)
 {
 	float d;
 
@@ -94,21 +87,8 @@ bool Frustum::SphereInFrustum(Vector4 kPoint)
 }
 
 
-bool Frustum::SphereInFrustum(Vector4& kPoint)
-{
-	float d;
 
-	for(int p = 0; p < 6; p++ )
-	{
-		d = m_akFrustum[p].x * kPoint.x + m_akFrustum[p].y * kPoint.y + m_akFrustum[p].z * kPoint.z + m_akFrustum[p].w;
-		if( d <= -kPoint.w )
-			return false;
-	}
-
-	return true;
-}
-
-bool Frustum::SphereInFrustum(Vector3 kPos,float fRadius)
+bool Frustum::SphereInFrustum(const Vector3& kPos,float fRadius)
 {
 	float d;
 
@@ -154,21 +134,20 @@ bool Frustum::CubeInFrustum( float x, float y, float z, float sizex,float sizey,
 }
 
 
-bool Frustum::CubeInFrustum ( Vector3 kPos, Vector3 kCenter, Vector3 kSize, Matrix4 kRotation )
+bool Frustum::CubeInFrustum ( const Vector3& kPos, const Vector3& kCenter, const Vector3& kSize, Matrix4 kRotation )
 {
 	int p;
+	static Vector3 kEdge[8];
 
-	Vector3 kEdge[8];
 
-
-	kEdge[0] = Vector3( kSize.x, -kSize.y, -kSize.z );
+	kEdge[0] = Vector3(  kSize.x, -kSize.y, -kSize.z );
 	kEdge[1] = Vector3( -kSize.x, -kSize.y, -kSize.z );
-	kEdge[2] = Vector3( -kSize.x, -kSize.y, kSize.z );
-	kEdge[3] = Vector3( kSize.x, -kSize.y, kSize.z );
-	kEdge[4] = Vector3( kSize.x, kSize.y, -kSize.z );
-	kEdge[5] = Vector3( -kSize.x, kSize.y, -kSize.z );
-	kEdge[6] = Vector3( -kSize.x, kSize.y, kSize.z );
-	kEdge[7] = Vector3( kSize.x, kSize.y, kSize.z );
+	kEdge[2] = Vector3( -kSize.x, -kSize.y,  kSize.z );
+	kEdge[3] = Vector3(  kSize.x, -kSize.y,  kSize.z );
+	kEdge[4] = Vector3(  kSize.x,  kSize.y, -kSize.z );
+	kEdge[5] = Vector3( -kSize.x,  kSize.y, -kSize.z );
+	kEdge[6] = Vector3( -kSize.x,  kSize.y,  kSize.z );
+	kEdge[7] = Vector3(  kSize.x,  kSize.y,  kSize.z );
 
 	for ( int i = 0; i < 8; i++ )
 	{	

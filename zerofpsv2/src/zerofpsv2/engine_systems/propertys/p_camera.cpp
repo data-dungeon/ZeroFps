@@ -93,7 +93,7 @@ void P_Camera::Update()
 				m_pkCamera->SetRotM(kMat4);
 				strCamName = " 1P ";
 
-				break;
+				break; 
 			}
 			case CAM_TYPETOPDOWN:
 				m_pkCamera->SetPos(m_pkObject->GetWorldPosV() + Vector3(0,10,0));
@@ -196,11 +196,14 @@ void P_Camera::OrthoMove(Vector3 kMove)
 
 void P_Camera::SetCamera(Camera *pkCamera) 
 {
+	//set old camera's entityID to -1
 	if(m_pkCamera)		
 		m_pkCamera->m_iEntity = -1;
 	
+	//set new camera
 	m_pkCamera = pkCamera; 
 	
+	//update camera entity ID 
 	if(m_pkCamera)
 	{
 		m_pkCamera->m_iEntity = m_pkObject->GetEntityID();		

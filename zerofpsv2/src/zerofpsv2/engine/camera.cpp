@@ -14,7 +14,6 @@ Camera::Camera(Vector3 kPos,Vector3 kRot,float fFov,float fAspect,float fNear,fl
 	SetView(fFov,fAspect,fNear,fFar);
 	SetViewPort( 0, 0, float(m_pkRender->GetWidth()), float(m_pkRender->GetHeight()));
 	SetPos(kPos);
-	SetRot(kRot);
 	m_kRotM.Identity();
 	
 	m_strName = "A Camera";
@@ -24,6 +23,8 @@ Camera::Camera(Vector3 kPos,Vector3 kRot,float fFov,float fAspect,float fNear,fl
 	m_bRender		= true;
 	m_bSelected		= false;
 	m_iEntity		= -1;
+	m_iRootEntity	= -1;
+	m_bRootOnly		= false;
 	m_eMode			= CAMMODE_PERSP;		//	just initiating it
 	m_fGridSpace	= 1.0;					// Defualt grid space is one meter.
 	m_pkWnd			= NULL;
@@ -49,8 +50,7 @@ void Camera::Update(int iWidth,int iHeight)
 		// Load projection.
 		m_pkZShaderSystem->MatrixMode(MATRIX_MODE_PROJECTION);
 		m_pkZShaderSystem->MatrixLoad(&m_kCamProjectionMatrix);
-		//glMatrixMode(GL_PROJECTION);
-		//glLoadMatrixf((float*) &m_kCamProjectionMatrix.data);
+
 	}
 	
 	if(m_bViewPortChange)
@@ -85,21 +85,15 @@ void Camera::Update(int iWidth,int iHeight)
 	
 	//reset modelview matrix and setup the newone
 	m_pkZShaderSystem->MatrixMode(MATRIX_MODE_MODEL);
-	//glMatrixMode(GL_MODELVIEW);
-	m_pkZShaderSystem->MatrixIdentity();
- 	//glLoadIdentity();													
-	m_pkZShaderSystem->MatrixMult(m_kRotM);
-	
-	//glMultMatrixf(&m_kRotM[0]);
+	m_pkZShaderSystem->MatrixIdentity();									
+	m_pkZShaderSystem->MatrixMult(m_kRotM);	
 	m_pkZShaderSystem->MatrixTranslate(-m_kPos);	 	
-	//glTranslatef(-m_kPos.x,-m_kPos.y,-m_kPos.z);
 
-	//get modelview matrix
-	//glGetFloatv(GL_MODELVIEW_MATRIX, (float*)&m_kCamModelViewMatrix.data);
+	//save modelview matrix for future use =)
 	m_pkZShaderSystem->MatrixSave(&m_kCamModelViewMatrix);
 	
 	//update the frustum
-	m_kFrustum.GetFrustum();
+	m_kFrustum.GetFrustum(m_kCamProjectionMatrix,m_kCamModelViewMatrix);
 }
 
 
@@ -136,16 +130,7 @@ void Camera::SetView(float fFov,float fAspect,float fNear,float fFar)
 	m_pkZShaderSystem->MatrixSave(&m_kCamProjectionMatrix);
 	m_pkZShaderSystem->MatrixPop();
 	m_pkZShaderSystem->MatrixMode(MATRIX_MODE_MODEL);
-	
-/*	
-	glMatrixMode(GL_PROJECTION);	
-	glPushMatrix();
-	 	glLoadIdentity();													
-		gluPerspective(fFov, fAspect,fNear,fFar);	
-		glGetFloatv(GL_PROJECTION_MATRIX,(float*)&m_kCamProjectionMatrix.data);
-	glPopMatrix();
-	glMatrixMode(GL_MODELVIEW);	
-*/	
+
 }
 
 
@@ -160,15 +145,6 @@ void Camera::SetOrthoView()
 	m_pkZShaderSystem->MatrixPop();
 	m_pkZShaderSystem->MatrixMode(MATRIX_MODE_MODEL);
 	
-/*	
-	glMatrixMode(GL_PROJECTION);	
-	glPushMatrix();
-		glLoadIdentity();													
-		glOrtho(-m_kOrthoSize.x, m_kOrthoSize.x, -m_kOrthoSize.y, m_kOrthoSize.y, -500, 500); 	
-		glGetFloatv(GL_PROJECTION_MATRIX,(float*)&m_kCamProjectionMatrix.data);
-	glPopMatrix();
-	glMatrixMode(GL_MODELVIEW);	
-*/	
 }
 
 
@@ -386,7 +362,7 @@ string Camera::GetCameraDesc()
 }
 
 
-void Camera::SetRotM(Matrix4 kRotM)	
+void Camera::SetRotM(const Matrix4& kRotM)	
 {	
 	if(m_eMode != CAMMODE_PERSP)
 		return;
@@ -394,7 +370,7 @@ void Camera::SetRotM(Matrix4 kRotM)
 }
 
 
-void Camera::RotateV(Vector3 kRot)			
+void Camera::RotateV(const Vector3& kRot)			
 {	
 	if(m_eMode != CAMMODE_PERSP)
 		return;
@@ -402,7 +378,7 @@ void Camera::RotateV(Vector3 kRot)
 }
 
 
-void Camera::MultRotM(Matrix4 kRotM)
+void Camera::MultRotM(const Matrix4& kRotM)
 {	
 	if(m_eMode != CAMMODE_PERSP)
 		return;

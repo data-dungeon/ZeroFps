@@ -142,7 +142,6 @@ class ENGINE_API EntityManager : public ZFSubSystem{
 
 		
 		void RunCommand(int cmdid, const CmdArgument* kCommand);
-		void GetPropertys(int iType,int iSide);						///< Fill propery list.
 
 		//private zone system functions
 		void UpdateTrackers();
@@ -201,10 +200,10 @@ class ENGINE_API EntityManager : public ZFSubSystem{
 		void UpdateDelete();													///< Deletes objects in delete qeue	
 
 		// Updates
-		void Update(int iType,int iSide,bool bSort);					///< Run update on selected propertys.
-		bool IsUpdate(int iFlags);											///< Check if the current update is of a selected type
-		void UpdateGameMessages(void);									///< Update game messages.
-		int GetCurrentUpdateFlags()	{	return m_iUpdateFlags;	};
+		void 	Update(int iType,int iSide,bool bSort,Entity* pkRootEntity = NULL,bool bForceRootOnly = false);					///< Run update on selected propertys.
+		bool 	IsUpdate(int iFlags);											///< Check if the current update is of a selected type
+		void 	UpdateGameMessages(void);									///< Update game messages.
+		int 	GetCurrentUpdateFlags()	{	return m_iUpdateFlags;	};
 		
 		// Gets
 		Entity* GetWorldObject()	{	return m_pkWorldObject;				};
@@ -216,8 +215,8 @@ class ENGINE_API EntityManager : public ZFSubSystem{
 		int	GetNumOfObjects()		{	return m_akEntitys.size();			}
 		int	GetActivePropertys() {	return m_iNrOfActivePropertys;	};
 		
-		void GetAllObjects(vector<Entity*> *pakObjects);
-		Entity* GetObject(const char* acName);							///< Get a ptr to object by name
+		void 		GetAllObjects(vector<Entity*> *pakObjects);
+		Entity* 	GetObject(const char* acName);							///< Get a ptr to object by name
 		Entity*	GetObjectByNetWorkID(int iNetID);					///< Get a ptr to object by networkID
 
 		void GetAllObjectsInArea(vector<Entity*> *pkEntitys,Vector3 kPos,float fRadius);
@@ -261,38 +260,38 @@ class ENGINE_API EntityManager : public ZFSubSystem{
       
 		
 		//zone system		
-		void UpdateZoneSystem();
-		void SetWorldDir(string strDir) {m_kWorldDirectory = strDir;};
-		string GetWorldDir() { return m_kWorldDirectory; };
-		bool SaveWorld(string strSaveDir,bool bForce=false);
-		bool LoadWorld(string strLoadDir);
+		void 		UpdateZoneSystem();
+		void 		SetWorldDir(string strDir) {m_kWorldDirectory = strDir;};
+		string 	GetWorldDir() { return m_kWorldDirectory; };
+		bool 		SaveWorld(string strSaveDir,bool bForce=false);
+		bool 		LoadWorld(string strLoadDir);
 
-		ZoneData* GetZone(Vector3 kPos);
-		void SetZoneModel(const char* szName,int iId);
+		ZoneData* 	GetZone(Vector3 kPos);
+		void 			SetZoneModel(const char* szName,int iId);
 		ZoneData*	GetZoneData(int iID);
-		int GetZoneIndex(int iEntityId);
-		int GetZoneIndex(Vector3 kMyPos,int iCurrentZone,bool bClosestZone);
-		void DeleteZone(int iId);
-		bool IsInsideZone(Vector3 kPos,Vector3 kSize);
-		bool ZoneHaveNeighbour(Vector3 kPos,Vector3 kSize);
-		int CreateZone(Vector3 kPos,Vector3 kSize);
-		void LoadZone(int iId,string strLoadDir = "");			//load zone
-		void SaveZone(int iId,string strSaveDir = "");			//save zone
-		int GetNumOfZones();
-		int GetUnusedZoneID();		
-		Vector3 GetZoneCenter(int iZoneNum);
-		void SetTrackerLos(int iLos) { m_iTrackerLOS = iLos;};		
-		int GetZoneIndex(Entity* PkObject,int iCurrentZone,bool bClosestZone);
-		ZoneData* GetZone(Entity* PkObject);
+		int 			GetZoneIndex(int iEntityId);
+		int 			GetZoneIndex(Vector3 kMyPos,int iCurrentZone,bool bClosestZone);
+		void 			DeleteZone(int iId);
+		bool 			IsInsideZone(Vector3 kPos,Vector3 kSize);
+		bool 			ZoneHaveNeighbour(Vector3 kPos,Vector3 kSize);
+		int 			CreateZone(Vector3 kPos,Vector3 kSize);
+		void 			LoadZone(int iId,string strLoadDir = "");			//load zone
+		void 			SaveZone(int iId,string strSaveDir = "");			//save zone
+		int 			GetNumOfZones();
+		int 			GetUnusedZoneID();		
+		Vector3 		GetZoneCenter(int iZoneNum);
+		void 			SetTrackerLos(int iLos) { m_iTrackerLOS = iLos;};		
+		int 			GetZoneIndex(Entity* PkObject,int iCurrentZone,bool bClosestZone);
+		ZoneData* 	GetZone(Entity* PkObject);
 		
 		
 		//trackers
-		void AddTracker(P_Track* kObject);
-		void RemoveTracker(P_Track* kObject);
-		int GetNrOfTrackedObjects();
-		list<P_Track*>* GetTrackerList();
-		void ClearTrackers();
-		vector<int>	GetActiveZoneIDs(int iTracker);	// Returns a list with zones that the tracked activates,
+		void 					AddTracker(P_Track* kObject);
+		void 					RemoveTracker(P_Track* kObject);
+		int 					GetNrOfTrackedObjects();
+		list<P_Track*>* 	GetTrackerList();
+		void 					ClearTrackers();
+		vector<int>			GetActiveZoneIDs(int iTracker);	// Returns a list with zones that the tracked activates,
 		
 		bool CallFunction(Entity* pkEntity, const char* acFunction,vector<ARG_DATA>* pkParams = NULL);
 
