@@ -450,7 +450,7 @@ void Camera::RenderView()
 	//update all render propertys that shuld NOT be shadowed
 	m_pkEntityMan->Update(PROPERTY_TYPE_RENDER_NOSHADOW,PROPERTY_SIDE_CLIENT,true,pkRootEntity,m_bRootOnly);
 
-	if(m_bDebugGraphs) // detta är totalt ologiskt, clearviewport har inget med guit o göra, fattar inte varför denna kod ligger här. om det är nått specialfall för guit så bör du vlel inte använda nån variabel som gör nått helt annat.Kommentera INTE ut, är för slippa rendera zonsystem osv till en guikamera.
+	if(m_bDebugGraphs) 
 	{
 		m_pkEntityMan->DrawZones();
 		m_pkZeroFps->m_pkApp->RenderInterface();

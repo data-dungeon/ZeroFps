@@ -650,6 +650,11 @@ void ZShaderSystem::SetupTU(ZMaterialSettings* pkSettings,int iTU)
 				glEnable(GL_TEXTURE_GEN_T);				
 				break;			
 		
+			
+			default:	//if no automatic generation, make sure its disabled
+				glDisable(GL_TEXTURE_GEN_S);
+				glDisable(GL_TEXTURE_GEN_T);
+				break;
 		}
 	}
 	else

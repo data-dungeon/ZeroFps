@@ -466,8 +466,8 @@ void P_Enviroment::DrawSky()
 	//sky
 	if(m_kCurrentEnvSetting.m_strSky.length() != 0)
 	{			
-		m_pkZShaderSystem->SetPointer(TEXTURE_POINTER0,afUvs);		
-		m_pkZShaderSystem->BindMaterial(pkSkyMat);											
+		m_pkZShaderSystem->SetPointer(TEXTURE_POINTER0,afUvs);				
+		m_pkZShaderSystem->BindMaterial(pkSkyMat);												
 		m_pkZShaderSystem->DrawArray(QUADS_MODE);	
 	}
 
