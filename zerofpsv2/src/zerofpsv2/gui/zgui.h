@@ -162,6 +162,7 @@ public:
 	static int m_iResY;
 
 private:
+	void KeyboardInput(int key, bool shift, float time);
 	void SetInputFocus(ZGuiWnd* pkClickWnd, bool bSet);
 	//bool ResizeWnd(ZGuiWnd* pkWnd, int iOldWidth, int iOldHeight, int iNewWidth, int iNewHeight);
 	bool SetSkins(vector<tSkinInf>& kAllSkinsArray, ZGuiWnd* pkWnd);
@@ -172,7 +173,6 @@ private:
 	bool IgnoreKey(int Key);
 	
 	void OnKeyPress(int iKey);
-	bool OnKeyUpdate(int iKeyPressed, bool bLastButtonStillPressed, bool bShiftIsPressed, float fGameTime);
 	bool OnMouseUpdate(int x, int y, bool bLBnPressed, bool bRBnPressed, float fGameTime);
 	
 	ZGuiRender* m_pkRenderer;		// Pointer to the gui render object

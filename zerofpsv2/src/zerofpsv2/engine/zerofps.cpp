@@ -247,63 +247,19 @@ void ZeroFps::Run_EngineShell()
 	DevPrintf("common","Num Objects: %d", m_pkObjectMan->GetNumOfObjects());
 	DevPrintf("common","Res Size: %d", m_pkResourceDB->GetResSizeInBytes());
 
-	// Update GUI
-//	m_pkInput->SetInputEnabled(true);
-
 	// Update Local Input.
 	m_pkInput->Update();
 
+	// Updata Gui input
 	int mx, my;
 	m_pkInput->MouseXY(mx,my);
 
-	map<int,int>::iterator itKeyPressed;
-
-	static bool bReleased;
-
-	int iInputKey = -1; // = m_pkInput->GetQueuedKey(); // wtf
-
+	int iInputKey = -1;
 	for(int i=0; i<255; i++)
-	{
-		if(m_pkInput->Pressed(i))
-		{
-			iInputKey = i;
-			break;
+		if(m_pkInput->Pressed(i)) {
+			iInputKey = i; break;
 		}
-	}
-
-	if(iInputKey == -1)
-		bReleased = true;
-	else
-		bReleased = false;
-
-	static int iPrevKey;
-	
 	m_pkInput->FormatKey(iInputKey);
-
-	bool bGlobalFormat = true; //(iPrevKey == iInputKey) ? true : false;
-
-	if( (iInputKey >= 'a' && iInputKey <= 'z') ||
-		(iInputKey >= 'A' && iInputKey <= 'Z') ||
-		(iInputKey >= '0' && iInputKey <= '9') ||
-		iInputKey == '+' || iInputKey == '?'||
-		iInputKey == ';' || iInputKey == ','||
-		iInputKey == ':' || iInputKey == '.' ||
-		iInputKey == ' ')
-		bGlobalFormat = false;
-
-	if(iPrevKey == iInputKey && bReleased == false)
-	{
-		iInputKey = -1;
-		iPrevKey = iInputKey;
-	}
-
-	if(bGlobalFormat)
-	{
-		itKeyPressed = m_pkInput->m_kGlobalKeyTranslator.find(iInputKey);
-		if(itKeyPressed != m_pkInput->m_kGlobalKeyTranslator.end())
-			iInputKey = itKeyPressed->second;
-	}
-
 	m_pkGui->Update(GetGameTime(),iInputKey,false,
 		(m_pkInput->Pressed(KEY_RSHIFT) || m_pkInput->Pressed(KEY_LSHIFT)),
 		mx,my,m_pkInput->Pressed(MOUSELEFT),m_pkInput->Pressed(MOUSERIGHT));
@@ -715,6 +671,9 @@ void ZeroFps::RunCommand(int cmdid, const CmdArgument* kCommand)
 				}
 			else if(strcmp(kCommand->m_kSplitCommand[1].c_str(), "zeb") == 0) {
 				strcpy(g_szIpPort, "192.168.0.160:4242");
+				}
+			else if(strcmp(kCommand->m_kSplitCommand[1].c_str(), "zeb2") == 0) {
+				strcpy(g_szIpPort, "192.168.0.170:4242");
 				}
 			else
 				sprintf(g_szIpPort, "%s:4242", kCommand->m_kSplitCommand[1].c_str());

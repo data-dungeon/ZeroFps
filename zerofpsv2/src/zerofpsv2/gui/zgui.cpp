@@ -9,6 +9,7 @@
 #include "zguiresourcemanager.h"
 #include <typeinfo>
 #include <queue>
+#include "../basic/globals.h"
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
@@ -622,68 +623,6 @@ bool ZGui::OnMouseUpdate(int x, int y, bool bLBnPressed,
 	return true;
 }
 
-///////////////////////////////////////////////////////////////////////////////
-// Name: OnKeyUpdate
-// Description: Skicka vidare knapp-händelser till kontroller sammt
-//				enabla keyrepeat (och sabba för folk som kan skriva fort...)
-//
-bool ZGui::OnKeyUpdate(int iKeyPressed, bool bLastButtonStillPressed, 
-					   bool bShiftIsPressed, float fGameTime)
-{
-	static bool s_bKeyrepeatActivated = false;
-	static int s_iLastKeyPressed;
-
-	// Registrera senast knappnedtryck.
-	if(iKeyPressed != -1)
-	{
-		if(s_iLastKeyPressed != iKeyPressed)
-			s_bKeyrepeatActivated = false;
-
-		s_iLastKeyPressed = iKeyPressed;
-		OnKeyPress(s_iLastKeyPressed);
-	}
-
-	static float s_fKeyrepeatCheckTime = fGameTime; 
-	static float s_fLastRepeatTime = fGameTime;
-	
-	// Kolla om den sist nedtryckta knappen fortfarande är nedtryckt.
-	//if(m_pkInput->Pressed(s_iLastKeyPressed) && s_iLastKeyPressed != KEY_LSHIFT)
-	if(bLastButtonStillPressed)
-	{
-		float fCurrTime = fGameTime;
-
-		const float REPEAT_DELAY = 0.50f, REPEAT_RATE = 0.05f;
-
-		if(s_bKeyrepeatActivated == false)
-		{
-			// Är det dags att aktivera Key Repeat?
-			if(fCurrTime - s_fKeyrepeatCheckTime > REPEAT_DELAY)
-			{
-				s_bKeyrepeatActivated = true;
-				s_fKeyrepeatCheckTime = fCurrTime;
-				s_fLastRepeatTime = fCurrTime;
-			}
-		}
-		else
-		{
-			// Är det dags att skriva ett nytt tecken?
-			if(fCurrTime - s_fLastRepeatTime > REPEAT_RATE)
-			{
-				OnKeyPress(s_iLastKeyPressed);
-				s_fLastRepeatTime = fCurrTime;
-			}
-		}
-	}
-	else
-	{
-		s_bKeyrepeatActivated = false;
-		s_fKeyrepeatCheckTime = fGameTime;
-		s_fLastRepeatTime = fGameTime;
-	}
-
-	return true;
-}
-
 void ZGui::SetFocus(ZGuiWnd* pkWnd)
 {	
 	// Hitta det fönster som tidigare hade fokus och 
@@ -757,13 +696,14 @@ bool ZGui::IsActive()
 	return m_bActive;
 }
 
-bool ZGui::Update(float m_fGameTime, int iKeyPressed, bool bLastKeyStillPressed,
+bool ZGui::Update(float fGameTime, int iKeyPressed, bool bLastKeyStillPressed,
 				  bool bShiftIsPressed, int x, int y, bool bLBnPressed, bool bRBnPressed)
 {
 	if(m_bActive == true)
 	{
-		OnMouseUpdate(x, y, bLBnPressed, bRBnPressed, m_fGameTime);
-		OnKeyUpdate(iKeyPressed, bLastKeyStillPressed, bShiftIsPressed, m_fGameTime);
+		OnMouseUpdate(x, y, bLBnPressed, bRBnPressed, fGameTime);
+		//OnKeyUpdate(iKeyPressed, bLastKeyStillPressed, bShiftIsPressed, m_fGameTime);
+		KeyboardInput(iKeyPressed, bShiftIsPressed, fGameTime);
 	}
 
 	m_kPointsToDraw.clear();
@@ -1021,9 +961,6 @@ void ZGui::OnKeyPress(int iKey)
 {
 	if(ZGuiWnd::m_pkFocusWnd)
 	{	
-		if(!RunKeyCommand(iKey))
-			ZGuiWnd::m_pkFocusWnd->ProcessKBInput(iKey);
-
 		bool bIsTextbox = typeid(*ZGuiWnd::m_pkFocusWnd) == 
 			typeid(ZGuiTextbox) ? true : false;
 
@@ -1031,18 +968,18 @@ void ZGui::OnKeyPress(int iKey)
 		if(bIsTextbox)
 			bMultiLine = ((ZGuiTextbox*) ZGuiWnd::m_pkFocusWnd)->IsMultiLine();
 
-	/*	if((iKey==KEY_DOWN || iKey==KEY_UP) && !(bIsTextbox && bMultiLine))
+		if((iKey==gKEY_DOWN || iKey==gKEY_UP) && !(bIsTextbox && bMultiLine))
 		{
 			// Find the child with the next tab nr...
 			ZGuiWnd* pkNext = FindNextTabWnd(ZGuiWnd::m_pkFocusWnd,
-				(iKey==KEY_DOWN));
+				(iKey==gKEY_DOWN));
 
 			if(pkNext)
 				SetFocus( pkNext );
-		}*/
+		}
 
 		// Send a WM Command message when Return or space ar being hit
-	/*	if( (iKey == KEY_RETURN || iKey == KEY_SPACE) 
+		if( (iKey == gKEY_RETURN || iKey == gKEY_SPACE) 
 			&& !(bIsTextbox && bMultiLine) )
 		{
 			ZGuiWnd::m_pkFocusWnd->Notify(ZGuiWnd::m_pkFocusWnd,
@@ -1055,14 +992,13 @@ void ZGui::OnKeyPress(int iKey)
 			int kParams[1] = { ZGuiWnd::m_pkFocusWnd->GetID() };
 			m_pkActiveMainWin->pkCallback(ZGuiWnd::m_pkFocusWnd,
 				ZGM_KEYDOWN,1,(int*) kParams);
-		}*/
+		}
 
 		// En knapp har tryckts ner.
 		int kParams[1] = {iKey};
 		m_pkActiveMainWin->pkCallback(ZGuiWnd::m_pkFocusWnd,
 			ZGM_KEYDOWN,1,(int*) kParams);
 	}
-
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -1565,4 +1501,65 @@ void ZGui::SetInputFocus(ZGuiWnd* pkClikWnd, bool bSet)
 			}
 		}
 	}
+}
+
+void ZGui::KeyboardInput(int key, bool shift, float time)
+{
+	const float REPEAT_DELAY_SEC = 0.5f;
+
+	static int s_iLastKeyPressed = -1;
+	static float s_fPressTime;
+
+	bool bPrint = false;
+
+	if(key == -1)
+	{
+		// tagenten har släppts
+		s_iLastKeyPressed = -1;
+	}
+	else
+	if(key == s_iLastKeyPressed)
+	{
+		// om det är samma tagent som innan...
+		if(time-s_fPressTime > REPEAT_DELAY_SEC)
+		{
+			bPrint = true;
+			s_fPressTime = 0;
+		}
+	}
+	else
+	{
+		if(!shift || (shift && s_iLastKeyPressed == -1))
+		{
+			if( key - 32 != s_iLastKeyPressed) 
+			{	// hindra att ett extra tecken skrivs ut om shift varit intryckt innann.
+				if( !((key == '1' && s_iLastKeyPressed == '!') || (key == '2' && s_iLastKeyPressed == '"') ||
+					 (key == '3' && s_iLastKeyPressed == '#') || (key == '4' && s_iLastKeyPressed == '¤') ||
+					 (key == '5' && s_iLastKeyPressed == '%') || (key == '6' && s_iLastKeyPressed == '&') ||
+					 (key == '7' && s_iLastKeyPressed == '/') || (key == '8' && s_iLastKeyPressed == '(') ||
+					 (key == '9' && s_iLastKeyPressed == ')') || (key == '0' && s_iLastKeyPressed == '=') ))
+				{
+					bPrint = true;
+					s_fPressTime = time;
+					s_iLastKeyPressed = key;
+				}
+			}
+		}
+	}
+
+	if(bPrint)
+	{
+		if(key == 8)
+			key = gKEY_BACKSPACE;
+		if(key == 9)
+			key = gKEY_TAB;
+		if(key == 13)
+			key = gKEY_RETURN;
+		
+		// om det är en ny tagent...
+		if(ZGuiWnd::m_pkFocusWnd)
+			ZGuiWnd::m_pkFocusWnd->ProcessKBInput(key);
+	}
+
+	OnKeyPress(key);
 }

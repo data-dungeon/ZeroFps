@@ -240,8 +240,6 @@ bool ZGuiTextbox::ProcessKBInput(int iKey)
 
 	if(iKey == gKEY_BACKSPACE && m_strText)
 	{
-		printf("DELTETE\n");
-
 		if(m_iCursorPos > 0)
 		{
 			if((unsigned)m_iCursorPos == strlen(m_strText))
