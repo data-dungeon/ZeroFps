@@ -17,7 +17,6 @@ OggMusic::OggMusic() :
 	OggMusic(4,4096);
 }
 
-
 OggMusic::OggMusic(unsigned int uiNrOfBuffers, unsigned int uiBufferSize) : 
 	m_bFileOK(false),
 	m_bPlaying(false),
@@ -76,6 +75,17 @@ OggMusic::~OggMusic()
 		ov_clear(&m_kOggFile);
 }
 
+bool OggMusic::StartUp()	
+{ 
+	return true; 
+}
+
+bool OggMusic::ShutDown() 
+{ 
+	return true; 
+}
+
+bool OggMusic::IsValid()	{ return true; }
 
 bool OggMusic::LoadFile(string kFileName)
 {
@@ -299,6 +309,3 @@ float OggMusic::GetTicks()
 	return (m_pkZeroFpsObject->GetGameTime());
 };
 
-bool OggMusic::StartUp()	{ return true; }
-bool OggMusic::ShutDown() { return true; }
-bool OggMusic::IsValid()	{ return true; }

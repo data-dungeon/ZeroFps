@@ -81,12 +81,28 @@ int ZFVFile::GetSize()
 ZFVFileSystem::ZFVFileSystem()
 : ZFSubSystem("ZFVFileSystem")
 {
-	m_pkBasicFS = static_cast<ZFBasicFS*>(g_ZFObjSys.GetObjectPtr("ZFBasicFS"));		
-
 	g_ZFObjSys.Register_Cmd("cd", FID_CD,this);
 	g_ZFObjSys.Register_Cmd("dir", FID_DIR,this);
 	m_kCurentDir = "";
 }
+
+bool ZFVFileSystem::StartUp()
+{ 
+	m_pkBasicFS = static_cast<ZFBasicFS*>(g_ZFObjSys.GetObjectPtr("ZFBasicFS"));		
+	return true;
+}
+
+bool ZFVFileSystem::ShutDown()
+{ 
+	return true;	
+}
+
+bool ZFVFileSystem::IsValid()	
+{ 
+	return true;
+}
+
+
 
 
 ZFVFileSystem::~ZFVFileSystem()

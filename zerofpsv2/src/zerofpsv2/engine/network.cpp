@@ -172,25 +172,21 @@ void NetPacket::SetType(int iType)
 
 
 NetWork::NetWork()
-: ZFSubSystem("NetWork"){
+: ZFSubSystem("NetWork")
+{
 
 	// Create Log Files.
 	g_ZFObjSys.Log_Create("net");
 	g_ZFObjSys.Log_Create("netpac");
 
-	g_ZFObjSys.Log("net", "NetWork SubSystem Startup:\n");
-	g_ZFObjSys.Log("netpac", "NetWork Packet Log:\n");
-
-	m_pkConsole	= static_cast<Console*>(g_ZFObjSys.GetObjectPtr("Console"));
-	m_pkZeroFps	= static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
-
 	strcpy(m_szServerName,"No Name");
 	m_bAcceptClientConnections = false;
-	m_pkSocket = NULL;
-	m_eNetStatus = NET_NONE;
+	m_pkSocket						= NULL;
+	m_eNetStatus					= NET_NONE;
+
 	SetMaxNodes( 4 );				// Vim - Hard coded for now. Must be same as ZeroFps.m_kClient
 	m_iMaxNumberOfNodes = 4;	
-
+	
 	m_kStringTable.resize( ZF_NET_MAXSTRINGS );
 	for(int i=0; i < ZF_NET_MAXSTRINGS; i++) {
 		m_kStringTable[i].m_bInUse			= false;
@@ -198,12 +194,30 @@ NetWork::NetWork()
 		m_kStringTable[i].m_bNeedUpdate	= false;
 		m_kStringTable[i].m_NetString = "";
 		}
+}
+
+bool NetWork::StartUp()	
+{ 
+	m_pkConsole	= static_cast<Console*>(g_ZFObjSys.GetObjectPtr("Console"));
+	m_pkZeroFps	= static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
+
+	g_ZFObjSys.Log("net",		"NetWork SubSystem Startup:\n");
+	g_ZFObjSys.Log("netpac",	"NetWork Packet Log:\n");
 
 	g_pkNetWork = this;
 
 	int iInitRes = SDLNet_Init();
 	g_ZFObjSys.Logf("net", "SDLNet_Init(): %d\n", iInitRes);
+
+	return true; 
 }
+
+bool NetWork::ShutDown() 
+{ 
+	return true; 
+}
+
+bool NetWork::IsValid()	{ return true; }
 
 NetWork::~NetWork()
 {
@@ -878,9 +892,6 @@ void NetWork::TEST_KeepAliveALL()
 		}
 }
 
-bool NetWork::StartUp()	{ return true; }
-bool NetWork::ShutDown() { return true; }
-bool NetWork::IsValid()	{ return true; }
 
 /*
 void NetWork::ServerList(void)

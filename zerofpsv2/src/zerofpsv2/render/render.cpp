@@ -2,22 +2,10 @@
 #include "../ogl/zfpsgl.h"
 
 Render::Render()  
-:	ZFSubSystem("Render") , m_eLandscapePolygonMode(FILL) {
-
-}
-
-bool Render::StartUp()
+:	ZFSubSystem("Render") , m_eLandscapePolygonMode(FILL) 
 {
-	// Get SubSystem Ptrs
-	m_pkTexMan	= static_cast<TextureManager*>(g_ZFObjSys.GetObjectPtr("TextureManager"));
- 	m_pkFrustum = static_cast<Frustum*>(g_ZFObjSys.GetObjectPtr("Frustum"));
- 	m_pkLight	= static_cast<Light*>(g_ZFObjSys.GetObjectPtr("Light")); 	
- 	m_pkZShader = static_cast<ZShader*>(g_ZFObjSys.GetObjectPtr("ZShader")); 	 	
-
 	// Register Our Own commands.
 	// Register Our Own variables.
-	g_ZFObjSys.RegisterVariable("r_maxlayers", &m_iMaxLandscapeLayers,CSYS_INT, this);
-	g_ZFObjSys.RegisterVariable("r_drawland", &m_iDrawLandscape,CSYS_INT, this);
 
 	// Set Our own local variables.
 	m_iSlicesize				= 32;						//grid size of lod tiles
@@ -31,6 +19,18 @@ bool Render::StartUp()
 	m_iDrawLandscape			= 1;
 	m_iScreenShootNum			= 0;
 	m_iHmTempList				= 0;
+
+	g_ZFObjSys.RegisterVariable("r_maxlayers", &m_iMaxLandscapeLayers,CSYS_INT, this);
+	g_ZFObjSys.RegisterVariable("r_drawland", &m_iDrawLandscape,CSYS_INT, this);
+}
+
+bool Render::StartUp()
+{
+	// Get SubSystem Ptrs
+	m_pkTexMan	= static_cast<TextureManager*>(g_ZFObjSys.GetObjectPtr("TextureManager"));
+ 	m_pkFrustum = static_cast<Frustum*>(g_ZFObjSys.GetObjectPtr("Frustum"));
+ 	m_pkLight	= static_cast<Light*>(g_ZFObjSys.GetObjectPtr("Light")); 	
+ 	m_pkZShader = static_cast<ZShader*>(g_ZFObjSys.GetObjectPtr("ZShader")); 	 	
 
 	//setup material for heightmap rendering
 	m_kHeightmapMaterial.GetPass(0)->m_iPolygonModeFront = FILL_POLYGON;

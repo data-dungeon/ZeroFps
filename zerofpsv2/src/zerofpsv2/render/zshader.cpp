@@ -7,14 +7,18 @@ ZShader::ZShader() : ZFSubSystem("ZShader")
 
 bool ZShader::StartUp()
 {
- 	m_pkTexMan = static_cast<TextureManager*>(g_ZFObjSys.GetObjectPtr("TextureManager"));
+ 	m_pkTexMan	= static_cast<TextureManager*>(g_ZFObjSys.GetObjectPtr("TextureManager"));
  	m_pkFrustum = static_cast<Frustum*>(g_ZFObjSys.GetObjectPtr("Frustum"));
- 	m_pkLight = static_cast<Light*>(g_ZFObjSys.GetObjectPtr("Light")); 		
+ 	m_pkLight	= static_cast<Light*>(g_ZFObjSys.GetObjectPtr("Light")); 		
  	
 //	Reset();
 			
 	return true;
 } 
+
+bool ZShader::ShutDown()	{ return true; }
+bool ZShader::IsValid()		{ return true; }
+
 
 void ZShader::Reset()
 {
@@ -556,6 +560,4 @@ void ZShader::Draw()
 	
 }
 
-bool ZShader::ShutDown() { return true; }
-bool ZShader::IsValid()	{ return true; }
 

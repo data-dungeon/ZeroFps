@@ -14,12 +14,8 @@ Sound::Sound()
 
 
 OpenAlSystem::OpenAlSystem()  
-: ZFSubSystem("OpenAlSystem") {
-	sbm= static_cast<SoundBufferManager*>(g_ZFObjSys.GetObjectPtr("SoundBufferManager"));
-
-	Init();
-	GenerateSources(10);
-	
+: ZFSubSystem("OpenAlSystem") 
+{
 	//Gubb was here
 	g_ZFObjSys.Register_Cmd("musicload",FID_MUSICLOAD,this);
 	g_ZFObjSys.Register_Cmd("musicplay",FID_MUSICPLAY,this);
@@ -37,6 +33,22 @@ OpenAlSystem::~OpenAlSystem()
 	//Gubb was here
 	delete m_pkMusic;
 }
+
+bool OpenAlSystem::StartUp()	
+{ 
+	sbm= static_cast<SoundBufferManager*>(g_ZFObjSys.GetObjectPtr("SoundBufferManager"));
+
+	Init();
+	GenerateSources(10);
+	return true; 
+}
+
+bool OpenAlSystem::ShutDown() 
+{ 
+	return true; 
+}
+
+bool OpenAlSystem::IsValid()	{ return true; }
 
 
 void OpenAlSystem::GenerateSources(int m_iNrOfSources)
@@ -304,8 +316,5 @@ void OpenAlSystem::RunCommand(int cmdid, const CmdArgument* kCommand)
 	}
 }
 
-bool OpenAlSystem::StartUp()	{ return true; }
-bool OpenAlSystem::ShutDown() { return true; }
-bool OpenAlSystem::IsValid()	{ return true; }
 
 

@@ -34,11 +34,30 @@ LightSource::LightSource() {
 
 
 Light::Light() 
-: ZFSubSystem("Light") {
+: ZFSubSystem("Light") 
+{
 	m_iNrOfLights=8;				//this shuld never be greater than 8
+}
+
+bool Light::StartUp()	
+{ 
 	glLightModelf(GL_LIGHT_MODEL_TWO_SIDE,0);
 	glEnable(GL_LIGHTING);
+	return true;	
 }
+
+bool Light::ShutDown()
+{ 
+	return true;
+}
+
+bool Light::IsValid()
+{ 
+	return true;
+}
+
+
+
 
 void Light::SetCamera(Vector3 kCamPos) {
 	m_kCamPos=kCamPos;

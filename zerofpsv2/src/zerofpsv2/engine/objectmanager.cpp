@@ -8,27 +8,38 @@
 ObjectManager::ObjectManager() 
 : ZFSubSystem("ObjectManager") 
 {
-	iNextObjectID		= 0;
-	m_bUpdate			= true;
-	
-	m_pkWorldObject	=	new Object();	
-	m_pkWorldObject->GetName()			= "WorldObject";
-	m_pkWorldObject->m_eRole			= NETROLE_AUTHORITY;
-	m_pkWorldObject->m_eRemoteRole	= NETROLE_NONE;
-
-	m_pkZeroFps=static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));		
-	TESTVIM_LoadArcheTypes("zfoh.txt");
+	iNextObjectID				= 0;
+	m_bUpdate					= true;
+	m_iTotalNetObjectData	= 0;
+	m_iNumOfNetObjects		= 0;
 
 	g_ZFObjSys.Register_Cmd("o_logtree",FID_LOGOHTREE,this);	
 	g_ZFObjSys.Register_Cmd("o_dumpp",FID_LOGACTIVEPROPERTYS,this);	
 	g_ZFObjSys.Register_Cmd("sendmsg",FID_SENDMESSAGE,this, "sendmsg name id",2);	
+}
 
-	m_iTotalNetObjectData	= 0;
-	m_iNumOfNetObjects		= 0;
+bool ObjectManager::StartUp()	
+{
+	m_pkZeroFps=static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));		
 
 	m_fEndTimeForceNet		= m_pkZeroFps->GetEngineTime();
 
+	m_pkWorldObject						=	new Object();	
+	m_pkWorldObject->GetName()			= "WorldObject";
+	m_pkWorldObject->m_eRole			= NETROLE_AUTHORITY;
+	m_pkWorldObject->m_eRemoteRole	= NETROLE_NONE;
+
+	TESTVIM_LoadArcheTypes("zfoh.txt");
+
+	return true; 
 }
+
+bool ObjectManager::ShutDown() 
+{ 
+	return true; 
+}
+
+bool ObjectManager::IsValid()	{ return true; }
 
 ObjectManager::~ObjectManager() 
 {
@@ -974,6 +985,3 @@ Object* ObjectManager::CloneObject(int iNetID)
 	return pkObjClone;
 }
 
-bool ObjectManager::StartUp()	{ return true; }
-bool ObjectManager::ShutDown() { return true; }
-bool ObjectManager::IsValid()	{ return true; }

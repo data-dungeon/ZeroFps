@@ -20,6 +20,7 @@ static char Devformat_text[4096];	//
 
 ZeroFps::ZeroFps(void) : I_ZeroFps("ZeroFps") 
 {
+	// Create Engine SubSystems
 	m_pkBasicFS					= new ZFBasicFS;
 	m_pkZFVFileSystem			= new ZFVFileSystem;
 	m_pkTexMan					= new TextureManager;
@@ -44,21 +45,21 @@ ZeroFps::ZeroFps(void) : I_ZeroFps("ZeroFps")
 	m_pkPhysics_Engine		= new Physics_Engine;
 	m_pkZShader					= new ZShader;
 
-	m_iFullScreen=			0;
-	m_fFrameTime=			0;
-	m_fLastFrameTime=		0;
-	m_fSystemUpdateFps=	25;
-	m_fSystemUpdateTime= 0;
-	m_bServerMode = 		false;
-	m_bClientMode = 		false;
-	m_bGuiMode=				false;
-	m_iMadDraw = 			1;
-	g_fMadLODScale = 		1.0;
-	g_iMadLODLock = 		0;
-	m_pkCamera = 			NULL;
-	m_bRunWorldSim	=		true;
-	m_bCapture			=	false;
-
+	// Set Default values
+	m_iFullScreen				= 0;
+	m_fFrameTime				= 0;
+	m_fLastFrameTime			= 0;
+	m_fSystemUpdateFps		= 25;
+	m_fSystemUpdateTime		= 0;
+	m_bServerMode				= false;
+	m_bClientMode				= false;
+	m_bGuiMode					= false;
+	m_iMadDraw					= 1;
+	g_fMadLODScale				= 1.0;
+	g_iMadLODLock				= 0;
+	m_pkCamera					= NULL;
+	m_bRunWorldSim				= true;
+	m_bCapture					= false;
 	g_iLogRenderPropertys	= 0;
 	m_fAvrageFpsTime			= 0;
 	m_iAvrageFrameCount		= 0;
@@ -68,6 +69,7 @@ ZeroFps::ZeroFps(void) : I_ZeroFps("ZeroFps")
 	m_iHeight					= 480;
 	m_iDepth						= 16;
 
+	// Register Commands
 	g_ZFObjSys.RegisterVariable("m_sens", &m_pkInput->m_fMouseSensitivity,CSYS_FLOAT, this);
 	g_ZFObjSys.RegisterVariable("r_landlod", &m_pkRender->m_iDetail,CSYS_INT, this);
 	g_ZFObjSys.RegisterVariable("r_viewdistance", &m_pkRender->m_iViewDistance,CSYS_INT, this);
@@ -85,6 +87,7 @@ ZeroFps::ZeroFps(void) : I_ZeroFps("ZeroFps")
 	g_ZFObjSys.RegisterVariable("e_runsim", &m_bRunWorldSim,CSYS_BOOL, this);	
 	g_ZFObjSys.RegisterVariable("r_logrp", &g_iLogRenderPropertys,CSYS_INT, this);	
 
+	// Register Variables
 	g_ZFObjSys.Register_Cmd("setdisplay",FID_SETDISPLAY,this);
 	g_ZFObjSys.Register_Cmd("quit",FID_QUIT,this);
 	g_ZFObjSys.Register_Cmd("slist",FID_SLIST,this);
@@ -98,36 +101,8 @@ ZeroFps::ZeroFps(void) : I_ZeroFps("ZeroFps")
 	g_ZFObjSys.Register_Cmd("devshow",FID_DEV_SHOWPAGE,this, "devshow name", 1);	
 	g_ZFObjSys.Register_Cmd("devhide",FID_DEV_HIDEPAGE,this, "devhide name", 1);	
 	g_ZFObjSys.Register_Cmd("debug",FID_LISTMAD,this);	
-
 	g_ZFObjSys.Register_Cmd("shot",FID_SCREENSHOOT,this);	
 
-	m_kCurentDir = m_pkBasicFS->GetCWD();
-	 
-	cout << "m_kCurentDir: " << m_kCurentDir.c_str() << endl;
-	char szWorkDir[256];
-	strcpy(szWorkDir, m_kCurentDir.c_str());
-
-	char* szDiv =  strrchr(szWorkDir, '/');
-	if(szDiv)
-		szDiv[1] = 0;
-
-	m_pkZFVFileSystem->AddRootPath(szWorkDir);
-	m_pkZFVFileSystem->AddRootPath("h:/");
-
-
-	RegisterPropertys();
-	RegisterResources();
-
-	m_kClient.resize( 4 );	// Vim - Hard coded for now. Must be same as Network.SetMaxNodes
-	for(int i=0; i<4; i++)
-		m_kClient[i].m_pkObject = NULL;
-
-	m_iRTSClientObject = -1;
-
-	m_bDevPagesVisible = true;
-
-	m_kFpsGraph.SetMinMax(0,1000);		
-	m_kFpsGraph.SetSize(100,100,100);
 }
 
 ZeroFps::~ZeroFps()
@@ -160,8 +135,42 @@ ZeroFps::~ZeroFps()
 	delete m_pkResourceDB;		//d krashar om denna ligger där uppe =(, Dvoid
 }
 
-bool ZeroFps::StartUp()	{ return true; }
-bool ZeroFps::ShutDown() { return true; }
+bool ZeroFps::StartUp()	
+{
+	m_kCurentDir = m_pkBasicFS->GetCWD();
+	 
+	cout << "m_kCurentDir: " << m_kCurentDir.c_str() << endl;
+	char szWorkDir[256];
+	strcpy(szWorkDir, m_kCurentDir.c_str());
+
+	char* szDiv =  strrchr(szWorkDir, '/');
+	if(szDiv)
+		szDiv[1] = 0;
+
+	m_pkZFVFileSystem->AddRootPath(szWorkDir);
+	m_pkZFVFileSystem->AddRootPath("h:/");
+
+	RegisterPropertys();
+	RegisterResources();
+
+	m_kClient.resize( 4 );	// Vim - Hard coded for now. Must be same as Network.SetMaxNodes
+	for(int i=0; i<4; i++)
+		m_kClient[i].m_pkObject = NULL;
+
+	m_iRTSClientObject = -1;
+
+	m_bDevPagesVisible = true;
+
+	m_kFpsGraph.SetMinMax(0,1000);		
+	m_kFpsGraph.SetSize(100,100,100);
+	return true;
+}
+
+bool ZeroFps::ShutDown() 
+{
+	return true; 
+}
+
 bool ZeroFps::IsValid()	{ return true; }
 
 

@@ -6,13 +6,22 @@
 PhysicsEngine::PhysicsEngine() 
 : ZFSubSystem("PhysicsEngine")
 {
-	m_pkZeroFps=static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));		
-	m_pkObjectMan=static_cast<ObjectManager*>(g_ZFObjSys.GetObjectPtr("ObjectManager"));		
-
-	
 	m_bUpdate=true;
 }
 
+bool PhysicsEngine::StartUp()	
+{ 
+	m_pkZeroFps		= static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));		
+	m_pkObjectMan	= static_cast<ObjectManager*>(g_ZFObjSys.GetObjectPtr("ObjectManager"));		
+
+	return true; 
+}
+
+bool PhysicsEngine::ShutDown() 
+{ 
+	return true; 
+}
+bool PhysicsEngine::IsValid()	{ return true; }
 
 void PhysicsEngine::Update()
 {
@@ -549,9 +558,6 @@ Collision* PhysicsEngine::CheckIfColliding(PhysicProperty* pkPP)
 	return pkClosest;
 }
 
-bool PhysicsEngine::StartUp()	{ return true; }
-bool PhysicsEngine::ShutDown() { return true; }
-bool PhysicsEngine::IsValid()	{ return true; }
 
 
 

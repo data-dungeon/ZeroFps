@@ -3,11 +3,24 @@
 Physics_Engine::Physics_Engine() 
 : ZFSubSystem("Physics_Engine")
 {
-	m_fCtol =		0.01;
-	m_iMaxTests =	20;
+	m_fCtol		= 0.01;
+	m_iMaxTests = 20;
 	
-	Clear();
 }
+
+bool Physics_Engine::StartUp()
+{ 
+	Clear();
+	return true; 
+}
+
+bool Physics_Engine::ShutDown() 
+{ 
+	return true; 
+}
+
+bool Physics_Engine::IsValid()	{ return true; }
+
  
 void Physics_Engine::Clear()
 {
@@ -681,10 +694,6 @@ int Physics_Engine::CollideMeshVSPlane(Body* pkBody,Plane* pkPlane)
 	else
 		return NOT;
 }
-
-bool Physics_Engine::StartUp()	{ return true; }
-bool Physics_Engine::ShutDown() { return true; }
-bool Physics_Engine::IsValid()	{ return true; }
 
 
 

@@ -9,10 +9,8 @@
 #define ERROR_TEXTURE	"../data/textures/notex.bmp"
 
 TextureManager::TextureManager()
- : ZFSubSystem("TextureManager") {
-
-	m_pkZFFileSystem	=	static_cast<ZFVFileSystem*>(g_ZFObjSys.GetObjectPtr("ZFVFileSystem"));		
-
+ : ZFSubSystem("TextureManager") 
+{
 	m_iCurrentTexture = NO_TEXTURE;
 
 	g_ZFObjSys.Register_Cmd("t_list",FID_LISTTEXTURES,this);
@@ -23,10 +21,10 @@ TextureManager::TextureManager()
 
 bool TextureManager::StartUp()	
 {
+	m_pkZFFileSystem	=	static_cast<ZFVFileSystem*>(g_ZFObjSys.GetObjectPtr("ZFVFileSystem"));		
 	
 	return true;
 }	
-
 
 
 void TextureManager::SetOptions(texture *pkTex, int iOption)

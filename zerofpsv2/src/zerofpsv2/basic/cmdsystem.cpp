@@ -5,12 +5,27 @@
 #include "globals.h"
 
 CmdSystem::CmdSystem()
-: ZFSubSystem("CmdSystem") {
+: ZFSubSystem("CmdSystem") 
+{
 	g_ZFObjSys.Register_Cmd("set",		FID_SET,this, "set name value", 2);
 	g_ZFObjSys.Register_Cmd("varlist",	FID_VARLIST, this);
 	g_ZFObjSys.Register_Cmd("sys",		FID_SYS, this);
+}
 
+bool CmdSystem::StartUp()	
+{ 
 	m_pkCon = dynamic_cast<BasicConsole*>(g_ZFObjSys.GetObjectPtr("Console"));
+	return true; 
+}
+
+bool CmdSystem::ShutDown() 
+{ 
+	return true; 
+}
+
+bool CmdSystem::IsValid()	
+{ 
+	return true; 
 }
 
 bool CmdSystem::Set(const char* acName,const char* acData)
@@ -45,9 +60,6 @@ void CmdSystem::RunCommand(int cmdid, const CmdArgument* kCommand)
 }
 
 
-bool CmdSystem::StartUp()	{ return true; }
-bool CmdSystem::ShutDown() { return true; }
-bool CmdSystem::IsValid()	{ return true; }
 
 
 

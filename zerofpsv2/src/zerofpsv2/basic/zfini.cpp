@@ -16,14 +16,14 @@
 
 ZFIni::ZFIni() : ZFSubSystem("ZFIni")
 {
-	m_iLines = 0;
-	m_iNumSections = 0;
-	m_bFileReady = false;
-	m_pstrLines = NULL;
-	m_pkSectionData = NULL;
-	m_pstrSections = NULL;
-	m_pstrLines = NULL;
-	m_pkCommandData = NULL;	
+	m_iLines				= 0;
+	m_iNumSections		= 0;
+	m_bFileReady		= false;
+	m_pstrLines			= NULL;
+	m_pkSectionData	= NULL;
+	m_pstrSections		= NULL;
+	m_pstrLines			= NULL;
+	m_pkCommandData	= NULL;	
 
 	g_ZFObjSys.Register_Cmd("exec",FID_EXECUTECOMMANDS,this);
 
