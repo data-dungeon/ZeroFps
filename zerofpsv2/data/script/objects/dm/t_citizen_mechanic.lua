@@ -1,5 +1,3 @@
-deadtime = {};
-
 function Create()
 	
 	InitObject();
@@ -32,10 +30,9 @@ function HeartBeat()
 	end	
 
 	if ( IsDead(SIGetSelfID()) == 1) then
-		deadtime[SIGetSelfID()] = deadtime[SIGetSelfID()] + 1;
+		AddToEntityVar (SIGetSelfID(), "deadtime", 1);
 
-
-		if deadtime[SIGetSelfID()] > 9 then
+		if GetEntityVar(SIGetSelfID(), "deadtime") > 9 then
 			Delete(SIGetSelfID());
 		end
 		
@@ -55,7 +52,7 @@ function Dead()
 	SetNextAnim(SIGetSelfID(), "dead");
 	ClearPathFind(SIGetSelfID());
 	PlaySound (SIGetSelfID(), "death/DEATH6.WAV");
-	deadtime[SIGetSelfID()] = 0;
+	SetEntityVar(SIGetSelfID, "deadtime", 0);
 
 	if Random(10) < 3 then
 		RunScript ("data/script/objects/dm/t_money.lua", SIGetSelfID());
