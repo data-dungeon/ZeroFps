@@ -58,7 +58,7 @@ class ENGINE_SYSTEMS_API P_Vegitation : public Property {
 		void SetScale(Vector3 kScale);
 		void UpdateSet();
 		
-		void AddPos(Vector3 kPos);
+		void AddPos(const Vector3& kPos);
 		void Clear();
 		
 		void CalculateRadius();

@@ -67,6 +67,8 @@ void P_Vegitation::Random(P_HMRP2* pkHmrp2)
 			
 			AddPos(Vector3(float(x),float(y-sy -0.1),float(z)));
 		}
+		
+		CalculateRadius();
 	}
 	else
 	{
@@ -74,6 +76,8 @@ void P_Vegitation::Random(P_HMRP2* pkHmrp2)
 		{
 			AddPos(Vector3( (rand()%size -(size/2)) /100.0f,0, (rand()%size -(size/2)) /100.0f));
 		}
+		
+		CalculateRadius();
 	}
 	
 	SetNetUpdateFlag(true);	
@@ -269,16 +273,15 @@ void P_Vegitation::CalculateRadius()
 
 }
 
-void P_Vegitation::AddPos(Vector3 kPos)
+void P_Vegitation::AddPos(const Vector3& kPos)
 {
-	vegitation temp;
+	static vegitation temp;
 	temp.kPos = kPos;
-	temp.kRot = Vector3( float((rand() % 20) -10.0) ,float(rand() % 320),float((rand() % 20) -10.0));
+	temp.kRot.Set(float((rand() % 20) -10.0) ,float(rand() % 320),float((rand() % 20) -10.0));
 	temp.fWindStart = float((rand() % 2000) / 1000.0);
 
 	m_akPositions.push_back(temp);
 
-	CalculateRadius();
 }
 
 

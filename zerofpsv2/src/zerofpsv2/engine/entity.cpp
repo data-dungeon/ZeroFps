@@ -217,12 +217,13 @@ Property* Entity::GetProperty(const char* acName)
 */
 void  Entity::GetPropertys(vector<Property*> *akPropertys,int iType,int iSide)
 {
-	for(vector<Property*>::iterator it = m_akPropertys.begin(); it != m_akPropertys.end(); it++) {
-		if((*it)->m_iType & iType /*|| iType & PROPERTY_TYPE_ALL*/ ){
-			if((*it)->m_iSide & iSide /*|| iSide == PROPERTY_SIDE_ALL*/ ){
-				akPropertys->push_back((*it));			
-			}
-		}	
+	Property* pkProp;
+	for(int i = 0;i<m_akPropertys.size();i++)
+	{
+		pkProp = m_akPropertys[i];
+		if( (pkProp->m_iType & iType) &&
+			 (pkProp->m_iSide & iSide) )
+			akPropertys->push_back(pkProp);	
 	}
 }
 
@@ -245,10 +246,9 @@ void Entity::GetAllPropertys(vector<Property*> *akPropertys,int iType,int iSide)
 		return;
 	
 	//go trough all childs and get propertys
-	for(vector<Entity*>::iterator it=m_akChilds.begin();it!=m_akChilds.end();it++)
-	{	
-		(*it)->GetAllPropertys(akPropertys,iType,iSide);		
-	}		
+	for(int i =0;i<m_akChilds.size();i++)
+		m_akChilds[i]->GetAllPropertys(akPropertys,iType,iSide);
+	
 }
 
 /**	\brief	Adds a property to an Entity if it does not have it yet.

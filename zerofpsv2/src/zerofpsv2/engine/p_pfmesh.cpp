@@ -189,9 +189,11 @@ int  NaviMeshCell::GetConnectedCellInStep(int iFromCell)
 P_PfMesh::P_PfMesh()
 {
 	strcpy(m_acName,"P_PfMesh");
-	m_iType = PROPERTY_TYPE_RENDER | PROPERTY_TYPE_NORMAL;
+	m_iType = PROPERTY_TYPE_NORMAL;
 	m_iSide = PROPERTY_SIDE_SERVER | PROPERTY_SIDE_CLIENT;
-
+	m_bNetwork = false;
+	
+	
 	m_pkMad			= NULL;
 	m_pkSelected	= NULL;
 
@@ -218,11 +220,15 @@ void P_PfMesh::Update()
 			if(pkHmap)
 				SetHmap(pkHmap);
 		}
+		
+		if(m_pkAStar->m_bDrawNaviMesh)
+			m_iType = PROPERTY_TYPE_RENDER | PROPERTY_TYPE_NORMAL;
+		else
+			m_iType = PROPERTY_TYPE_NORMAL;
 	}
 	else if( m_pkEntityManager->IsUpdate(PROPERTY_TYPE_RENDER) ) 
 	{
-		if(m_pkAStar->m_bDrawNaviMesh)
-			DrawNaviMesh();
+		DrawNaviMesh();
 	}
 }
 
