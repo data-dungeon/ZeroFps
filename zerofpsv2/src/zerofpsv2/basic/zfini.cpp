@@ -312,12 +312,12 @@ bool ZFIni::ProcessINIFile()
 			char* dest;
 			dest = m_pstrLines[iLine] + iNameStartPos;
 			strncpy(m_pkSectionData[sec].strKeyName[key], dest, name_length);
-			if(name_length < strlen(dest))
+			if(name_length <= strlen(dest)) // fixade en bugg 03 08 26 (la till ett '=' tecken)
 				m_pkSectionData[sec].strKeyName[key][name_length] = 0;
 
 			dest = m_pstrLines[iLine] + iValueStartPos;
 			strncpy(m_pkSectionData[sec].strKeyValue[key], dest, value_length);
-			if(value_length < strlen(dest))
+			if(value_length <= strlen(dest)) // fixade en bugg 03 08 26 (la till ett '=' tecken)
 				m_pkSectionData[sec].strKeyValue[key][value_length] = 0;
 		}
 	}
@@ -372,7 +372,7 @@ bool ZFIni::ProcessCommandFile()
 				dest = m_pstrLines[iLine] + start_pos;
 				strncpy(m_pkCommandData->strCommand[iCmdCounter], dest, length);
 
-				if(length < strlen(dest))
+				if(length <= strlen(dest)) // fixade en bugg 03 08 26 (la till ett '=' tecken)
 					m_pkCommandData->strCommand[iCmdCounter][length] = 0;
 
 				iCmdCounter++;

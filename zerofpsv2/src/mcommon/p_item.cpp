@@ -257,12 +257,10 @@ void P_Item::PackTo(NetPacket* pkNetPacket, int iConnectionID )
 					sizeof(m_pkItemStats->m_eEquipmentCategory) );
 
             // contatiner id (if it's a container)
-            pkNetPacket->Write( &m_pkItemStats->m_iContainerID, 
-					sizeof(m_pkItemStats->m_iContainerID) );
+            pkNetPacket->Write( &m_pkItemStats->m_iContainerID, sizeof(int) );
 
             // which container the object is in
-            pkNetPacket->Write( &m_pkItemStats->m_iContainerID, 
-					sizeof(m_pkItemStats->m_iCurrentContainer) );
+            pkNetPacket->Write( &m_pkItemStats->m_iCurrentContainer, sizeof(int) );
 
 
             // item name
@@ -344,12 +342,10 @@ void P_Item::PackFrom(NetPacket* pkNetPacket, int iConnectionID )
 			sizeof(m_pkItemStats->m_eEquipmentCategory) );
 
 		// contatiner id (if it's a container)
-      pkNetPacket->Read( &m_pkItemStats->m_iContainerID, 
-			sizeof(m_pkItemStats->m_iContainerID) );
+      pkNetPacket->Read( &m_pkItemStats->m_iContainerID, sizeof(int) );
 
-            // which container the object is in
-      pkNetPacket->Read( &m_pkItemStats->m_iContainerID, 
-			sizeof(m_pkItemStats->m_iCurrentContainer) );
+      // which container the object is in
+      pkNetPacket->Read( &m_pkItemStats->m_iCurrentContainer, sizeof(int) );
 
       // item name
       pkNetPacket->Read_NetStr( (char*)m_pkItemStats->m_kItemName.c_str() );

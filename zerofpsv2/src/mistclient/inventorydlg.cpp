@@ -60,7 +60,7 @@ bool InventoryDlg::AddItem(Entity* pkEntity)
 		return false;
 	}
 
-   P_Item* pkItemProp = (P_Item*)pkEntity->GetProperty ("P_Item");
+   P_Item* pkItemProp = (P_Item*)pkEntity->GetProperty ("P_Item"); 
    			
 	AddSlot(pkItemProp->m_pkItemStats->m_szPic, sqr, CONTAINTER_SLOTS, 
 		pkItemProp->m_pkItemStats, pkEntity->iNetWorkID, MAIN_CONTAINER);
@@ -73,6 +73,42 @@ bool InventoryDlg::AddItem(Entity* pkEntity)
 
 bool InventoryDlg::AddItems(vector<Entity*> &vkItems)
 {   
+
+	// Printar ut lite crap för att kolla så att datat som kommer in stämmer...
+
+	printf("----INFO---Adding/updating items----INFO-----\n");
+	printf("vkItems size = %i\n", vkItems.size());
+
+	for(int i=0; i< vkItems.size(); i++)
+	{
+		printf("Item %i\n", i);
+		printf("\tiNetWorkID = %i\n", vkItems[i]->iNetWorkID);
+		
+		P_Item* pkItemProp = (P_Item*)(vkItems[i])->GetProperty ("P_Item");
+
+		bool bHavePointer=false;
+
+		if(pkItemProp)
+		{
+			ItemStats* pkItemStats = pkItemProp->m_pkItemStats;
+
+			if(pkItemStats)
+			{
+				printf("\tpkItemStats->m_iCurrentContainer = %i\n", pkItemStats->m_iCurrentContainer);
+				printf("\tpkItemStats->m_iContainerID = %i\n", pkItemStats->m_iContainerID);
+				printf("\tpkItemStats->m_szPic = %s\n", pkItemStats->m_szPic);
+				bHavePointer=true;
+			}
+		}
+
+		if(!bHavePointer)
+			printf("Object have bad pointer\n");
+	}
+
+	printf("-------------------------------------------\n");
+
+
+
 	vector<Entity*>::iterator itNewItem = vkItems.begin();
 
 	for( ; itNewItem != vkItems.end(); itNewItem++)
@@ -81,7 +117,7 @@ bool InventoryDlg::AddItems(vector<Entity*> &vkItems)
 
 		if(!GetFreeSlotPos(sqr, MAIN_CONTAINER))
 		{
-			printf("Failed to find free slot!\n");
+			printf("Failed to find free slot, InventoryDlg::AddItems Failed!\n");
 			return false;
 		}
 
@@ -111,7 +147,7 @@ bool InventoryDlg::AddItems(vector<Entity*> &vkItems)
 		}
 		else
 		{
-			printf("Already exist\n");
+			printf("Item already exist in inventory\n");
 		}
 	}
 
@@ -882,12 +918,12 @@ void InventoryDlg::UpdateSkin(Slot slot)
 				string strFullPath = string("/data/textures/gui/items/") 
 					+ string(pkItemProp->m_pkItemStats->m_szPic);
 
-				if(strcmp(pkItemProp->m_pkItemStats->m_szPic, "dummy.bmp") == 0)
+/*				if(strcmp(pkItemProp->m_pkItemStats->m_szPic, "dummy.bmp") == 0)
 				{
 					slot.m_pkLabel->Hide();
 				}
 				else
-				{
+				{*/
 					if(slot.m_pkItemStats->GetCurrentContainer() == m_iCurrentContainer)
 						slot.m_pkLabel->Show(); 
 					
@@ -899,7 +935,7 @@ void InventoryDlg::UpdateSkin(Slot slot)
 					pkSkin->m_iBkTexAlphaID = m_pkTexMan->Load(strAlphaTex.c_str(), 0);
 
 					slot.m_pkLabel->SetSkin(pkSkin);
-				}
+			/*	}*/
 			}
 		}		
 	}
