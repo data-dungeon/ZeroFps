@@ -132,7 +132,7 @@ void ZeroRTS::Init()
 	m_pkUserPanel->Create(100,100,NULL,NULL);
 	m_pkUserPanel->Open();
 
-	pkInput->ToggleGrab();
+	//pkInput->ToggleGrab();
 }
 
 void ZeroRTS::RegisterActions()
@@ -181,6 +181,9 @@ void ZeroRTS::OnIdle()
 		cout<<"angle:"<<t->fAngle<<endl;
 		cout<<"terra:"<<t->iTerrainType<<endl;
 			
+		if(t->kUnits.size() > 0)			
+			cout<<"Unit:"<<(*t->kUnits.begin())<<endl;
+
 	}
 	
 	

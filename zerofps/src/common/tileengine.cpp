@@ -1,4 +1,5 @@
 #include "tileengine.h"
+#include "p_serverunit.h"
 
 TileEngine::TileEngine()
 {
@@ -20,12 +21,19 @@ void TileEngine::CreateMap()
 
 	m_kTiles.reserve(m_iSizeX * m_iSizeY);
 	
+	Tile bla;
+	for(int i=0;i< (m_iSizeX * m_iSizeY) ;i++)
+	{
+		m_kTiles.push_back(bla);
+	}
+	
 	Generate();
 }
 
 void TileEngine::Generate()
 {
 	GenerateHM(0,0,m_iSizeX,m_iSizeY);
+	GenerateUnits();
 }
 
 void TileEngine::GenerateHM(int ix,int iy,int iw,int ih)
@@ -44,12 +52,13 @@ void TileEngine::GenerateHM(int ix,int iy,int iw,int ih)
 		{
 			for(int x = ix;x<(ix+iw);x++)
 			{
+				int hmsize = m_pkMap->m_iHmSize;
 		
 				//get avrage angle in tile
-				int index1 = (y*m_iSizeX) + x;
-				int index2 = (y*m_iSizeX) + x+1;
-				int index3 = ((y+1)*m_iSizeX) + x;
-				int index4 = ((y+1)*m_iSizeX) + x+1;
+				int index1 = (y*hmsize) + x;
+				int index2 = (y*hmsize) + x+1;
+				int index3 = ((y+1)*hmsize) + x;
+				int index4 = ((y+1)*hmsize) + x+1;
 				
 				float angle1 = yref.Angle(m_pkMap->GetHMVertex()[index1].normal);
 				float angle2 = yref.Angle(m_pkMap->GetHMVertex()[index2].normal);				
@@ -86,7 +95,10 @@ Tile* TileEngine::GetTile(int x,int y)
 		y <  m_iSizeY)
 		return &m_kTiles[(y*m_iSizeX) +x];
 	else
+	{
+		cout<<"get tile out of index"<<endl;
 		return NULL;
+	}
 }
 
 void TileEngine::AddUnit(int x,int y,int iID)
@@ -128,6 +140,35 @@ bool TileEngine::UnitInTile(int x,int y,int iID)
 	return false;
 }
 
+void TileEngine::GenerateUnits()
+{
+	cout<<"generating tile unit info"<<endl;
+	vector<Object*> kObjects;		
+	kObjects.clear();
+	
+	//clear all units
+	ClearUnits();
+
+	//get all objects
+	m_pkObjectMan->GetAllObjects(&kObjects);
+	
+	cout<<"nr of objects:"<<kObjects.size()<<endl;
+	
+	for(int i=0;i<kObjects.size();i++)
+	{
+		P_ServerUnit* su = (P_ServerUnit*)kObjects[i]->GetProperty("P_ServerUnit");		
+			
+		if(su)
+		{
+			Point pos = GetSqrFromPos(kObjects[i]->GetPos());	
+			
+			AddUnit(pos.x,pos.y,kObjects[i]->iNetWorkID);
+		}
+	}
+}
+
+
+
 Point TileEngine::GetSqrFromPos(Vector3 pos)
 {
 	int iSquareX = m_pkMap->m_iHmSize/2+floor(pos.x / HEIGHTMAP_SCALE);
@@ -149,7 +190,20 @@ Vector3 TileEngine::GetPosFromSqr(Point square)
 	return Vector3(x,y,z);
 }
 
+void TileEngine::ClearUnits()
+{
+	for(int y=0;y< m_iSizeY;y++)
+	{
+		for(int x=0;x< m_iSizeX;x++)
+		{
+			Tile* t = GetTile(x,y);
 
+			if(t)
+				if(t->kUnits.size() >0)
+					t->kUnits.clear();
+		}
+	}
+}
 
 
 

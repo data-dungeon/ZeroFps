@@ -8,6 +8,7 @@
 
 #include <list>
 #include "../zerofps/engine/engine.pkg"
+#include "../zerofps/basic/basic.pkg"
 
 using namespace std;
 
@@ -16,7 +17,7 @@ class Tile
 	public:
 		float 		fAngle;
 		int			iTerrainType;
-		list<int>	kUnits;
+		list<int>	kUnits;		
 };
 
 
@@ -41,14 +42,15 @@ class TileEngine
 		void Generate();
 		void GenerateHM(int x,int y,int w,int h);
 		
+		void GenerateUnits();		
 		void AddUnit(int x,int y,int iID);
 		void RemoveUnit(int x,int y,int iID);
 		bool UnitInTile(int x,int y,int iID);
-		
+		void ClearUnits();
 		
 		//convertions
 		Point GetSqrFromPos(Vector3 pos);				
-		Vector3 GetPosFromSqr(Point square)				;
+		Vector3 GetPosFromSqr(Point square);
 
 };
 

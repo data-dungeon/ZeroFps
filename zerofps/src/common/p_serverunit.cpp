@@ -13,6 +13,8 @@ P_ServerUnit::P_ServerUnit() : m_bUpdateCommands(true), m_pkCurrentAIState(NULL)
 	m_kInfo.m_cArmor = 		0;
 	m_kInfo.m_cPropultion =	0;
 	m_kInfo.m_cViewDistance=20;
+	m_kInfo.m_cWidth =		3;
+	m_kInfo.m_cHeight =		3;	
 	strcpy(m_kInfo.m_cName,"NoName");
 	
 	m_pkClientUnit = NULL;

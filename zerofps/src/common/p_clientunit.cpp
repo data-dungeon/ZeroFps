@@ -19,6 +19,8 @@ P_ClientUnit::P_ClientUnit() : m_bCommandsUpdated(false)
 	m_kInfo.m_cArmor = 		0;
 	m_kInfo.m_cPropultion =	0;
 	m_kInfo.m_cViewDistance=20;
+	m_kInfo.m_cWidth =		3;
+	m_kInfo.m_cHeight =		3;		
 	strcpy(m_kInfo.m_cName,"NoName");
 	
 	m_bSelected =	false;

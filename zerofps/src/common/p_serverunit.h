@@ -28,8 +28,10 @@ struct COMMON_API UnitInfo
 	unsigned char		m_cWeapon;
 	unsigned char		m_cArmor;
 	unsigned char		m_cPropultion;
-	unsigned char		m_cViewDistance;
-	char					m_cName[64];	
+	unsigned char		m_cViewDistance;	
+	unsigned char		m_cWidth;			//used for buildings
+	unsigned char		m_cHeight;		  //used for buildings	
+	char					m_cName[64];		//the units name
 };
 
 
