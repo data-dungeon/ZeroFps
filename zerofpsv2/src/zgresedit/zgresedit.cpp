@@ -98,7 +98,7 @@ ZGuiWnd* ZGResEdit::GetWndFromPoint(int x, int y)
 	{
 		ZGuiTabCtrl* pkTabCtrl = static_cast<ZGuiTabCtrl*>(pkChild);
 
-		int iZValue = pkTabCtrl->m_iZValue;
+	//	int iZValue = pkTabCtrl->m_iZValue;
 		
 		ZGuiWnd* pkWnd = pkTabCtrl->GetPage(pkTabCtrl->GetCurrentPage()); 
 
@@ -431,31 +431,31 @@ void ZGResEdit::OnKeyDown(int iKey)
 {
 	switch(iKey)
 	{
-		if(!m_pkInputHandle->Pressed(KEY_LCTRL))
-			break;
+		//if(!m_pkInputHandle->Pressed(KEY_LCTRL))
+		//	break;
 
-		if(m_pkScene->m_pkPropertyWnd->IsVisible()) m_pkScene->m_pkPropertyWnd->Hide();
-		else if(m_eEditMode != VIEW)
-		{
-			m_pkScene->m_pkPropertyWnd->Show();
-			MoveWndToTop(m_pkScene->m_pkPropertyWnd);
-		}
+		//if(m_pkScene->m_pkPropertyWnd->IsVisible()) m_pkScene->m_pkPropertyWnd->Hide();
+		//else if(m_eEditMode != VIEW)
+		//{
+		//	m_pkScene->m_pkPropertyWnd->Show();
+		//	MoveWndToTop(m_pkScene->m_pkPropertyWnd);
+		//}
 
-		if(m_pkScene->m_pkWorkSpace->IsVisible()) m_pkScene->m_pkWorkSpace->Hide();
-		else if(m_eEditMode != VIEW)
-		{
-			m_pkScene->m_pkWorkSpace->Show();
-			MoveWndToTop(m_pkScene->m_pkWorkSpace);
-		}
+		//if(m_pkScene->m_pkWorkSpace->IsVisible()) m_pkScene->m_pkWorkSpace->Hide();
+		//else if(m_eEditMode != VIEW)
+		//{
+		//	m_pkScene->m_pkWorkSpace->Show();
+		//	MoveWndToTop(m_pkScene->m_pkWorkSpace);
+		//}
 
-		if(m_pkScene->m_pkOptionsWnd->IsVisible()) m_pkScene->m_pkOptionsWnd->Hide();
-		else if(m_eEditMode != VIEW)
-		{
-			if(m_pkScene->m_pkOptionsWnd->IsVisible())
-				MoveWndToTop(m_pkScene->m_pkOptionsWnd);
-		}
+		//if(m_pkScene->m_pkOptionsWnd->IsVisible()) m_pkScene->m_pkOptionsWnd->Hide();
+		//else if(m_eEditMode != VIEW)
+		//{
+		//	if(m_pkScene->m_pkOptionsWnd->IsVisible())
+		//		MoveWndToTop(m_pkScene->m_pkOptionsWnd);
+		//}
 
-		break;
+		//break;
 
 	case KEY_RETURN:
 		ExecuteCommand();
@@ -1273,8 +1273,8 @@ void ZGResEdit::OnMouseClick(bool bReleased, int x, int y)
 				int dist_left = abs(x - rc.Left), dist_right = abs(x - rc.Right);
 				int dist_top = abs(y - rc.Top), dist_bottom = abs(y - rc.Bottom);
 
-				float width_mod = (float) rc.Width() / rc.Height();
-				float height_mod = (float) rc.Height() / rc.Width();
+//				float width_mod = (float) rc.Width() / rc.Height();
+	//			float height_mod = (float) rc.Height() / rc.Width();
 
 				m_eCurrentResizeType = None;
 
@@ -1495,6 +1495,7 @@ void ZGResEdit::OnSelectCB(int ListBoxID, int iItemIndex, ZGuiWnd *pkMain)
 			else if(strWndType == "TabControl")		{ x=8; y=8; w=150; h=100; }
 			else if(strWndType == "Textbox")			{ x=8; y=8; w=100; h=20; }
 			else if(strWndType == "Treebox")			{ x=8; y=8; w=100; h=100; }
+			else {x=y=w=h=0;}
 
 			m_iXPos = x; m_iYPos = y;
 			m_iWidth = w; m_iHeight = h;
@@ -1649,7 +1650,7 @@ void ZGResEdit::OnClickTreeItem(char *szTreeBox, char *szParentNodeText, char *s
 
 void ZGResEdit::OnSelectWnd(ZGuiWnd *pkWnd)
 {
-	unsigned int i=0;
+//	unsigned int i=0;
 
 	UpdateSkinList(pkWnd);
 	UpdatePropertyWnd();
