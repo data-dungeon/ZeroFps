@@ -296,18 +296,17 @@ void MistServer::OnServerStart(void)
 {		
 	//create a camera for the server
 	m_pkCameraObject = pkObjectMan->CreateObjectFromScript("data/script/objects/t_camera.lua");
-
-	pkObjectMan->CreateObjectFromScript("data/script/objects/t_player.lua");
-	
 	if(m_pkCameraObject)
 	{	
+		m_pkCameraObject->SetParent(pkObjectMan->GetWorldObject());
 		CameraProperty* m_pkCamProp = (CameraProperty*)m_pkCameraObject->GetProperty("CameraProperty");
 		m_pkCamProp->SetCamera(m_pkCamera);
-		//m_pkCamProp->SetType(CAM_TYPE3PERSON);
 		
 		//the builder/server shuld not connect to zones
 		m_pkCameraObject->SetUseZones(false);		
 	}
+	
+	
 	
 	
 	

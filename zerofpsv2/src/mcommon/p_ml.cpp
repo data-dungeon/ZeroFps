@@ -14,10 +14,11 @@ P_Ml::P_Ml()
 
 void P_Ml::Update()
 {
+/*	//random jump
 	Vector3 pos = m_pkObject->GetLocalPosV();
 	pos += Vector3((rand() % 1000)/1000.0 - 0.5,(rand() % 1000)/1000.0-0.5,(rand() % 1000)/1000.0-0.5)*4;
 	m_pkObject->SetLocalPosV(pos);
-
+*/
 	if(!m_bHaveSetRadius)
 	{
 		MadProperty* mp = (MadProperty*)m_pkObject->GetProperty("MadProperty");

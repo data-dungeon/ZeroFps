@@ -331,7 +331,8 @@ void ZeroTank::OnServerStart(void)
 		//m_pkCameraObject->SetParent(m_pkZeroTankGun);
 		//m_pkCameraObject->SetRelativeOri(true);
 		m_pkCameraObject->AddProperty("TrackProperty");
-		m_pkCameraObject->AttachToClosestZone();
+		m_pkCameraObject->SetParent(pkObjectMan->GetWorldObject());
+		//m_pkCameraObject->AttachToClosestZone();
 		CameraProperty* cam = (CameraProperty*)m_pkCameraObject->GetProperty("CameraProperty");
 		cam->SetCamera(m_pkCamera);
 	}
@@ -346,7 +347,7 @@ void ZeroTank::OnServerStart(void)
 		m_kEditList.push_back( m_pkZeroTankHull );
 		cout << "Goblin: " << m_pkZeroTankHull->iNetWorkID << endl;
 		//m_pkZeroTankHull->SetWorldPosV(Vector3(8,10,7));
-		m_pkZeroTankHull->AttachToClosestZone();
+		m_pkZeroTankHull->SetParent(pkObjectMan->GetWorldObject());
 		//m_pkZeroTankHull->AddProperty("CameraProperty");
 		//CameraProperty* cam = (CameraProperty*)m_pkZeroTankHull->GetProperty("CameraProperty");
 		//cam->SetCamera(m_pkCamera);
@@ -371,7 +372,7 @@ void ZeroTank::OnServerStart(void)
 	if(pkObj) {
 		m_kEditList.push_back( pkObj );
 		pkObj->SetWorldPosV ( Vector3 (0,0,0));
-		pkObj->AttachToClosestZone();
+		pkObj->SetParent(pkObjectMan->GetWorldObject());
 		}
 	
 		pkObj2 = pkObjectMan->CreateObjectByArchType("vimshield");
@@ -390,12 +391,12 @@ void ZeroTank::OnServerStart(void)
 
 	m_pkGoblinLord =  pkObjectMan->CreateObjectByArchType("Goblin");
 	m_pkGoblinLord->SetWorldPosV ( Vector3 (20,30,20) );
-	m_pkGoblinLord->AttachToClosestZone();
+	m_pkGoblinLord->SetParent(pkObjectMan->GetWorldObject());
 	m_pkGoblinLord->AddProperty("P_Primitives3D");
 
 	m_pkGoblinSlave =  pkObjectMan->CreateObjectByArchType("Goblin");
 	m_pkGoblinSlave->SetWorldPosV ( Vector3 (20,30,20) );
-	m_pkGoblinSlave->AttachToClosestZone();
+	m_pkGoblinSlave->SetParent(pkObjectMan->GetWorldObject());
 	
 	P_AmbientSound* pkSound = (P_AmbientSound*) m_pkGoblinLord->AddProperty("P_AmbientSound");
 	pkSound->SetSound("data/sound/walk.wav", true, 2);

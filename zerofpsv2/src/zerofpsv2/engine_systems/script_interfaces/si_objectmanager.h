@@ -26,7 +26,6 @@ namespace ObjectManagerLua
 	int ENGINE_SYSTEMS_API InitPropertyLua(lua_State* pkLua);
 	int ENGINE_SYSTEMS_API InitParameterLua(lua_State* pkLua);
 	
-	int ENGINE_SYSTEMS_API AttachToClosestZoneLua(lua_State* pkLua);
 	int ENGINE_SYSTEMS_API AttachToParent(lua_State* pkLua);	
 	
 	int ENGINE_SYSTEMS_API SetParentObjectLua(lua_State* pkLua);		

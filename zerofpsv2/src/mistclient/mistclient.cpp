@@ -361,9 +361,10 @@ void MistClient::OnServerStart(void)
 	m_pkTestobj = pkObjectMan->CreateObjectFromScript("data/script/objects/t_player.lua");
 	if(m_pkTestobj)
 	{
-		m_pkTestobj->AttachToClosestZone();
+		m_pkTestobj->SetParent(pkObjectMan->GetWorldObject());
 	
 		m_pkTestobj->AddProperty("TrackProperty");	
+
 		m_pkCamProp = (CameraProperty*)m_pkTestobj->GetProperty("CameraProperty");
 		m_pkCamProp->SetCamera(m_pkCamera);
 		m_pkCamProp->SetType(CAM_TYPE3PERSON);

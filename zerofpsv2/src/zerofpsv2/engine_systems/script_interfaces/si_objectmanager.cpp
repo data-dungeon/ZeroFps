@@ -20,7 +20,6 @@ void ObjectManagerLua::Init(ObjectManager* pkObjMan, ZFScriptSystem* pkScript)
 	pkScript->ExposeFunction("InitObject",				ObjectManagerLua::InitObjectLua);
 	pkScript->ExposeFunction("InitProperty",	  		ObjectManagerLua::InitPropertyLua);
 	pkScript->ExposeFunction("InitParameter",			ObjectManagerLua::InitParameterLua);
-	pkScript->ExposeFunction("AttachToClosestZone", ObjectManagerLua::AttachToClosestZoneLua);
 	pkScript->ExposeFunction("AttachToParent",		ObjectManagerLua::AttachToParent);			
 	pkScript->ExposeFunction("SetLocalPos",			ObjectManagerLua::SetLocalPosLua);
 	pkScript->ExposeFunction("HaveRelativOri",		ObjectManagerLua::HaveRelativOriLua);	
@@ -129,18 +128,6 @@ int ObjectManagerLua::InitParameterLua(lua_State* pkLua)
 
 	
 	//cout<<"Setting Parameter in script: "<<acName<<" to "<<acData<<endl;
-	
-	return 0;
-}	
-
-int ObjectManagerLua::AttachToClosestZoneLua(lua_State* pkLua)
-{
-	if(g_pkLastObject == NULL)
-		return 0;
-	
-	g_pkLastObject->AttachToClosestZone();
-
-	//cout<<"Attaching object to zone"<<endl;
 	
 	return 0;
 }	

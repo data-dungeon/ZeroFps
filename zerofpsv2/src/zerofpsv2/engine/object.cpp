@@ -402,6 +402,7 @@ void Object::GetAllObjects(vector<Object*> *pakObjects)
 	}	
 }
 
+/*
 void Object::AttachToClosestZone()
 {
 	vector<Object*> temp;
@@ -427,7 +428,7 @@ void Object::AttachToClosestZone()
 	
 	SetParent(minobject);
 }
-
+*/
 
 /**	\brief	Returns true if object is one that need to be sent over network.
 */
