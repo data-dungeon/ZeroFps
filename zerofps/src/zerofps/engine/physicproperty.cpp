@@ -68,12 +68,14 @@ void PhysicProperty::Save(ZFMemPackage* pkPackage)
 {
 	pkPackage->Write((void*)&m_bGravity,4);
 	pkPackage->Write((void*)&m_bFloat,4);
+	pkPackage->Write((void*)&m_bSolid,4);	
 }
 
 void PhysicProperty::Load(ZFMemPackage* pkPackage)
 {
 	pkPackage->Read((void*)&m_bGravity,4);
 	pkPackage->Read((void*)&m_bFloat,4);
+	pkPackage->Read((void*)&m_bSolid,4);	
 }
 
 

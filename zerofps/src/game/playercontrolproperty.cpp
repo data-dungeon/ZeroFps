@@ -35,7 +35,7 @@ void PlayerControlProperty::Update() {
 	m_pkObject->GetObjectType()=OBJECT_TYPE_PLAYER;
 	
 	
-	float speed=2;
+	float speed=4;
 	walking=false;
 	Vector3 vel(0,m_pkObject->GetVel().y,0);
 	
@@ -89,7 +89,7 @@ void PlayerControlProperty::Update() {
 		}
 	}
 	
-	cout<<"VEL "<<vel.y<<endl;
+//	cout<<"VEL "<<vel.y<<endl;
 	
 	m_pkObject->GetVel()=vel;
 	

@@ -105,27 +105,13 @@ CollisionData* CSSphere::Collide_CSSphere(CSSphere* kOther,float fTime)
 	float bla = distance / abs(movevec.Length());
 	if(bla<0)
 		return NULL;
-//	cout<<"Förhållande "<<bla<<endl;
-			
-//	O1->GetVel()=movevec1*bla;
-//	O2->GetVel()=movevec2*bla;
 	
+	
+//	movevec1.Normalize();
+//	movevec2.Normalize();
 	
 	//assemble collision data
 	CollisionData* tempdata = new CollisionData;
-/*	
-	tempdata->m_pkOther = O2;
-	tempdata->m_kOtherPos = O2->GetPos()+(movevec2*bla);
-	tempdata->m_kOtherVel = movevec2*bla;
-	tempdata->m_kOtherAcc = O2->GetAcc();
-	tempdata->m_kOtherRot = O2->GetRot();
-	
-	tempdata->m_pkThis = O1;
-	tempdata->m_kPos = O1->GetPos()+(movevec1*bla);
-	tempdata->m_kVel = movevec1*bla;
-	tempdata->m_kAcc = O1->GetAcc();
-	tempdata->m_kRot = O1->GetRot();
-*/	
 	
 	tempdata->m_pkPP2 = kOther->m_pkPP;
 	tempdata->m_kPos2 = O2->GetPos()+(movevec2*bla);

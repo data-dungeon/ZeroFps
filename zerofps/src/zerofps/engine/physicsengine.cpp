@@ -34,28 +34,9 @@ void PhysicsEngine::Update()
 
 	CalcNewPos();
 	CheckCollisions();	
-
-//	cout<<"NR OF KNOWN COLLISONS:"<<m_kCollisions.size()<<endl;	
-
 	HandleCollisions();
 
-/*
-	CalcMotionSpheres();
-	TestCollisions();
-	
-	
-	for(list<Property*>::iterator it=m_kPropertys.begin();it!=m_kPropertys.end();it++) {	
-		PhysicProperty* PP = static_cast<PhysicProperty*>(*it);
-		
-		//WARNING THIS CRAP SHULD NOT BE HERE!!!!!!!!!!!!!!
-		PP->Update();
-		
 
-		MoveObject(PP);
-	
-	}
-*/
-	
 	m_kPropertys.clear();
 }
 
@@ -106,29 +87,6 @@ CollisionData* PhysicsEngine::DeepTest(PhysicProperty* pkPP1,PhysicProperty* pkP
 		pkCD=CSP1->Test(CSP2,m_fFrameTime,true);
 
 	return pkCD;
-
-
-/*
-	if(pkCD!=NULL)	
-	{
-	
-		//touch object 1
-		S1->m_pkPP->GetObject()->Touch(pkCD);
-	
-		//inverse the data krap
-		pkCD->m_pkOther=S1->m_pkPP->GetObject();	
-		swap(pkCD->m_kOtherPos,pkCD->m_kPos);
-		swap(pkCD->m_kOtherVel,pkCD->m_kVel);
-		swap(pkCD->m_kOtherAcc,pkCD->m_kAcc);	
-		swap(pkCD->m_kOtherRot,pkCD->m_kRot);	
-
-		//touche object 2
-		S2->m_pkPP->GetObject()->Touch(pkCD);
-	
-		//delete the collision data object
-		delete pkCD;
-	}
-*/	
 }
 
 
@@ -148,7 +106,7 @@ void PhysicsEngine::CalcNewPos()
 void PhysicsEngine::CheckCollisions()
 {
 	//clear all known collisions
-	m_kCollisions.clear();
+	ClearCollisions();	
 	
 	m_bChanged=true;
 	
@@ -170,22 +128,33 @@ void PhysicsEngine::CheckCollisions()
 		
 				if(TestMotionSpheres(PP1,PP2))
 				{
-					//cout<<"spheres collide"<<endl;
-					
 					CollisionData* pkCD=NULL;
 					pkCD=DeepTest(PP1,PP2);
 					
 					if(pkCD!=NULL)
 					{
-						//cout<<"deep collision"<<endl;
-						Collision temp;
-						temp.m_pkPP1=pkCD->m_pkPP1;
-						temp.m_pkPP2=pkCD->m_pkPP2;
+						//create collision data
+						Collision* temp=new Collision;
+						temp->m_pkPP1=pkCD->m_pkPP1;
+						temp->m_pkPP2=pkCD->m_pkPP2;
 					
-						temp.m_kPos1=pkCD->m_kPos1;						
-						temp.m_kPos2=pkCD->m_kPos2;						
+						temp->m_kPos1=pkCD->m_kPos1;						
+						temp->m_kPos2=pkCD->m_kPos2;						
+						
+						temp->m_bAdded=false;
 						
 						m_kCollisions.push_back(temp);
+										
+						//create collision pointers (for sorting)
+						CP* tempcp1=new CP;		
+						CP* tempcp2=new CP;								
+						tempcp1->m_pkPP=pkCD->m_pkPP1;
+						tempcp2->m_pkPP=pkCD->m_pkPP2;
+						tempcp1->m_pkCol=temp;
+						tempcp2->m_pkCol=temp;
+						
+						m_kCPs.push_back(tempcp1);
+						m_kCPs.push_back(tempcp2);						
 						
 						delete pkCD;
 					}
@@ -221,18 +190,83 @@ bool PhysicsEngine::TestMotionSpheres(PhysicProperty* pkPP1,PhysicProperty* pkPP
 
 void PhysicsEngine::HandleCollisions()
 {
-	for(int i=0;i<m_kCollisions.size();i++) 
-	{	
-		if(m_kCollisions[i].m_pkPP1->m_bSolid && m_kCollisions[i].m_pkPP2->m_bSolid)
-		{
-			cout<<"Pos1:"<<m_kCollisions[i].m_kPos1.x<<" "<<m_kCollisions[i].m_kPos1.y<<" "<<m_kCollisions[i].m_kPos1.z<<endl;
-			cout<<"Pos2:"<<m_kCollisions[i].m_kPos2.x<<" "<<m_kCollisions[i].m_kPos2.y<<" "<<m_kCollisions[i].m_kPos2.z<<endl;
-			
-			m_kCollisions[i].m_pkPP1->m_kNewPos=m_kCollisions[i].m_kPos1;
-			m_kCollisions[i].m_pkPP2->m_kNewPos=m_kCollisions[i].m_kPos2;			
+	vector<Collision*> kCols;
+	kCols.clear();
+
+	m_kCPs.sort(SortCollision);
+
+	PhysicProperty* pkSPP=NULL;
+	Collision* pkCO=NULL;
+	for(list<CP*>::iterator it=m_kCPs.begin();it!=m_kCPs.end();it++) 
+	{
+		Collision* pkCol=(*it)->m_pkCol;		
 		
-			m_kCollisions[i].m_pkPP1->m_kNewVel=Vector3(0,0,0);
-			m_kCollisions[i].m_pkPP2->m_kNewVel=Vector3(0,0,0);
+		
+		if((*it)->m_pkPP != pkSPP)
+		{
+			if(pkCol->m_bAdded==false)
+			{
+				pkCol->m_bAdded=true;				
+				kCols.push_back(pkCol);
+			}
+	
+			if(pkCol->m_pkPP1->m_bSolid && pkCol->m_pkPP2->m_bSolid)
+			{
+				pkSPP=(*it)->m_pkPP;	
+				pkCO=pkCol;
+			}
+		}				
+		else	//if the collision hapend after a collision with a solid object
+		{			
+			//check so the collision is not already added
+			if(pkCol->m_bAdded==false)
+			{
+			
+				Vector3 kOldNewPos=(*it)->m_pkPP->m_kNewPos;
+				
+				//set the objects m_kNewPos to the one after a collision with the last solide object
+				if(pkCO->m_pkPP1==(*it)->m_pkPP)
+					(*it)->m_pkPP->m_kNewPos=pkCO->m_kPos1;
+				else
+					(*it)->m_pkPP->m_kNewPos=pkCO->m_kPos1;
+
+	
+				CollisionData* pkCD=NULL;
+				//test collision with the new m_kNewPos that would be after a collision with the first object
+				pkCD=DeepTest(pkCol->m_pkPP1,pkCol->m_pkPP2);
+						
+				//if a collision still occurs then update the collision data and puch it in kCols
+				if(pkCD!=NULL)
+				{
+					cout<<"multi collision"<<endl;
+				
+					pkCol->m_kPos1=pkCD->m_kPos1;						
+					pkCol->m_kPos2=pkCD->m_kPos2;						
+											
+					pkCol->m_bAdded=true;
+					kCols.push_back(pkCol);
+					
+					delete pkCD;
+				}
+				else //else only reset the objects possition
+				{				
+					(*it)->m_pkPP->m_kNewPos=kOldNewPos;
+				}
+			}
+		}
+	}
+	
+	
+
+	for(int i=0;i<kCols.size();i++) 
+	{	
+		if(kCols[i]->m_pkPP1->m_bSolid && kCols[i]->m_pkPP2->m_bSolid)
+		{
+			kCols[i]->m_pkPP1->m_kNewPos=kCols[i]->m_kPos1;
+			kCols[i]->m_pkPP2->m_kNewPos=kCols[i]->m_kPos2;			
+		
+			kCols[i]->m_pkPP1->m_kNewVel=Vector3(0,0,0);
+			kCols[i]->m_pkPP2->m_kNewVel=Vector3(0,0,0);
 		
 		}		
 	}
@@ -245,13 +279,29 @@ void PhysicsEngine::HandleCollisions()
 		(*it)->GetObject()->GetAcc()=static_cast<PhysicProperty*>(*it)->m_kNewAcc;		
 	}
 
-	for(int i=0;i<m_kCollisions.size();i++) 
+	for(int i=0;i<kCols.size();i++) 
 	{	
-		m_kCollisions[i].m_pkPP1->GetObject()->Touch(m_kCollisions[i].m_pkPP2->GetObject());
-		m_kCollisions[i].m_pkPP2->GetObject()->Touch(m_kCollisions[i].m_pkPP1->GetObject());
+		kCols[i]->m_pkPP1->GetObject()->Touch(kCols[i]->m_pkPP2->GetObject());
+		kCols[i]->m_pkPP2->GetObject()->Touch(kCols[i]->m_pkPP1->GetObject());
 	}
 }
 
+void PhysicsEngine::ClearCollisions()
+{
+	for(int i=0;i<m_kCollisions.size();i++) 
+	{	
+		delete m_kCollisions[i];
+	}
+		
+	for(list<CP*>::iterator it=m_kCPs.begin();it!=m_kCPs.end();it++) 
+	{			
+		delete (*it);
+	}
+	
+	
+	m_kCollisions.clear();
+	m_kCPs.clear();
+}
 
 
 /*

@@ -47,9 +47,18 @@ struct ENGINE_API Collision
 
 	Vector3 m_kPos1;
 	Vector3 m_kPos2;
+
+	bool m_bAdded;
 };
 
-struct Sphere{
+struct ENGINE_API CP
+{
+	PhysicProperty* m_pkPP;
+	
+	Collision* m_pkCol;
+};
+
+struct ENGINE_API Sphere{
 	PhysicProperty* m_pkPP;
 	float m_fRadius;
 	Vector3 m_kPos;
@@ -58,6 +67,23 @@ struct Sphere{
 class ENGINE_API PhysicsEngine : public ZFObject
 {
 	private:
+		struct Sort_Collision : public binary_function<CP*, CP*, bool> {
+			bool operator()(CP* x, CP* y) { 
+				
+				//its the same object then check wich collided first
+				if(x->m_pkPP == y->m_pkPP)
+				{
+					float Distance1 = (x->m_pkCol->m_kPos1 - x->m_pkCol->m_kPos2).Length();
+					float Distance2 = (y->m_pkCol->m_kPos1 - y->m_pkCol->m_kPos2).Length();
+					
+					return Distance1 > Distance2;
+				}
+				
+				return x->m_pkPP < y->m_pkPP; 			
+			};
+		} SortCollision;
+	
+		
 		ObjectManager* m_pkObjectMan;
 		ZeroFps* m_pkZeroFps;
 
@@ -70,7 +96,10 @@ class ENGINE_API PhysicsEngine : public ZFObject
 		list<Property*> m_kPropertys;		
 		
 		//collisions
-		vector<Collision> m_kCollisions;
+		vector<Collision*> m_kCollisions;
+		
+		//CP LISTA
+		list<CP*> m_kCPs;		
 		
 		//curent motionspheres
 		vector<Sphere> m_kMotionSpheres;
@@ -90,7 +119,7 @@ class ENGINE_API PhysicsEngine : public ZFObject
 		bool TestMotionSpheres(PhysicProperty* pkPP1,PhysicProperty* pkPP2);
 		CollisionData* DeepTest(PhysicProperty* pkPP1,PhysicProperty* pkPP2);		
 		void HandleCollisions();
-		
+		void ClearCollisions();	
 		
 		
 		
