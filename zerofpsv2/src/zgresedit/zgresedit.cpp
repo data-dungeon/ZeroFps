@@ -7,6 +7,8 @@
 #include "../zerofpsv2/gui/zguiresourcemanager.h"
 #include "scene.h"
 
+#include "../zerofpsv2/engine/inputhandle.h"
+
 ZGResEdit g_kResEdit("ResEdit",0,0,0);
 
 static bool GUIPROC( ZGuiWnd* win, unsigned int msg, int numparms, void *params ) 
@@ -69,7 +71,7 @@ void ZGResEdit::OnInit()
 
 	m_pkFps->m_bClientMode = true;
 
-	//m_pkInput->ToggleGrab(); // koppla på grab mode
+	//m_pkInputHandle->ToggleGrab(); // koppla på grab mode
 
 	m_pkMainWnd = GetWnd("GuiMainWnd");
 
@@ -83,26 +85,27 @@ void ZGResEdit::OnIdle()
 	m_pkFps->GetCam()->ClearViewPort();	
 	m_pkFps->UpdateCamera(); 	
 
-	OnKeyDown(m_pkInput->GetQueuedKey().m_iKey);
+	OnKeyDown(m_pkInputHandle->GetQueuedKey().m_iKey);
 
 	if(m_eEditMode == VIEW)
 		return;
 
 	int x,y;
-	//m_pkInput->MouseXY(x,y);
-	x = m_pkInput->m_iSDLMouseX;
-	y = m_pkInput->m_iSDLMouseY;
+	//m_pkInputHandle->MouseXY(x,y);
+	//x = m_pkInput->m_iSDLMouseX;
+	//y = m_pkInput->m_iSDLMouseY;
+	m_pkInputHandle->SDLMouseXY(x,y);
 
 //	pkGui->SetLineColor(255,0,0);
 
-	if(!m_pkInput->Pressed(KEY_LSHIFT) && m_eEditMode != SET_MOVE_AREA)
+	if(!m_pkInputHandle->Pressed(KEY_LSHIFT) && m_eEditMode != SET_MOVE_AREA)
 	{
 		m_eEditMode = MOVE;
 	}
 
-	if(m_pkInput->Pressed(MOUSELEFT) && m_eEditMode != SET_MOVE_AREA)
+	if(m_pkInputHandle->Pressed(MOUSELEFT) && m_eEditMode != SET_MOVE_AREA)
 	{
-		if(m_pkInput->Pressed(KEY_LSHIFT) && m_pkResizeWnd != NULL)
+		if(m_pkInputHandle->Pressed(KEY_LSHIFT) && m_pkResizeWnd != NULL)
 		{
 //			pkGui->SetLineColor(255,255,0);
 			m_eEditMode = RESIZE;
@@ -130,7 +133,7 @@ void ZGResEdit::OnIdle()
 	else
 	if(m_eEditMode == RESIZE)
 	{
-		if(m_eEditMode == RESIZE && m_pkInput->Pressed(MOUSELEFT))
+		if(m_eEditMode == RESIZE && m_pkInputHandle->Pressed(MOUSELEFT))
 			ResizeWnd(x,y);
 	}
 	else
@@ -166,16 +169,16 @@ void ZGResEdit::OnIdle()
 		if(pkTabCtrl)
 		{
 			unsigned int pressed_keynumber = 1000;
-			if(m_pkInput->Pressed(KEY_1)) pressed_keynumber = 0;
-			else if(m_pkInput->Pressed(KEY_2)) pressed_keynumber = 1;
-			else if(m_pkInput->Pressed(KEY_3)) pressed_keynumber = 2;
-			else if(m_pkInput->Pressed(KEY_4)) pressed_keynumber = 3;
-			else if(m_pkInput->Pressed(KEY_5)) pressed_keynumber = 4;
-			else if(m_pkInput->Pressed(KEY_6)) pressed_keynumber = 5;
-			else if(m_pkInput->Pressed(KEY_7)) pressed_keynumber = 6;
-			else if(m_pkInput->Pressed(KEY_8)) pressed_keynumber = 7;
-			else if(m_pkInput->Pressed(KEY_9)) pressed_keynumber = 8;
-			else if(m_pkInput->Pressed(KEY_0)) pressed_keynumber = 9;
+			if(m_pkInputHandle->Pressed(KEY_1)) pressed_keynumber = 0;
+			else if(m_pkInputHandle->Pressed(KEY_2)) pressed_keynumber = 1;
+			else if(m_pkInputHandle->Pressed(KEY_3)) pressed_keynumber = 2;
+			else if(m_pkInputHandle->Pressed(KEY_4)) pressed_keynumber = 3;
+			else if(m_pkInputHandle->Pressed(KEY_5)) pressed_keynumber = 4;
+			else if(m_pkInputHandle->Pressed(KEY_6)) pressed_keynumber = 5;
+			else if(m_pkInputHandle->Pressed(KEY_7)) pressed_keynumber = 6;
+			else if(m_pkInputHandle->Pressed(KEY_8)) pressed_keynumber = 7;
+			else if(m_pkInputHandle->Pressed(KEY_9)) pressed_keynumber = 8;
+			else if(m_pkInputHandle->Pressed(KEY_0)) pressed_keynumber = 9;
 
 			if(pressed_keynumber < pkTabCtrl->GetNumPages() )
 			{
@@ -247,7 +250,7 @@ void ZGResEdit::OnKeyDown(int iKey)
 		break;
 
 	case KEY_Z:
-		if(m_pkInput->Pressed(KEY_LCTRL))
+		if(m_pkInputHandle->Pressed(KEY_LCTRL))
 			TempSave(false);
 		break;
 
@@ -280,7 +283,7 @@ void ZGResEdit::OnKeyDown(int iKey)
 	case KEY_UP:
 		if(m_pkFocusWnd) 
 		{
-			if(m_pkInput->Pressed(KEY_LSHIFT))
+			if(m_pkInputHandle->Pressed(KEY_LSHIFT))
 			{
 				Rect rc = m_pkFocusWnd->GetScreenRect(); 
 				m_pkFocusWnd->Resize(rc.Width(),rc.Height()-1);
@@ -297,7 +300,7 @@ void ZGResEdit::OnKeyDown(int iKey)
 	case KEY_DOWN:
 		if(m_pkFocusWnd) 
 		{
-			if(m_pkInput->Pressed(KEY_LSHIFT))
+			if(m_pkInputHandle->Pressed(KEY_LSHIFT))
 			{
 				Rect rc = m_pkFocusWnd->GetScreenRect(); 
 				m_pkFocusWnd->Resize(rc.Width(),rc.Height()+1);
@@ -314,7 +317,7 @@ void ZGResEdit::OnKeyDown(int iKey)
 	case KEY_LEFT:
 		if(m_pkFocusWnd)
 		{
-			if(m_pkInput->Pressed(KEY_LSHIFT))
+			if(m_pkInputHandle->Pressed(KEY_LSHIFT))
 			{
 				Rect rc = m_pkFocusWnd->GetScreenRect(); 
 				m_pkFocusWnd->Resize(rc.Width()-1,rc.Height());
@@ -332,7 +335,7 @@ void ZGResEdit::OnKeyDown(int iKey)
 	case KEY_RIGHT:
 		if(m_pkFocusWnd)
 		{
-			if(m_pkInput->Pressed(KEY_LSHIFT))
+			if(m_pkInputHandle->Pressed(KEY_LSHIFT))
 			{
 				Rect rc = m_pkFocusWnd->GetScreenRect(); 
 				m_pkFocusWnd->Resize(rc.Width()+1,rc.Height());
@@ -873,7 +876,7 @@ void ZGResEdit::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 
 void ZGResEdit::OnMouseClick(bool bReleased, int x, int y)
 {
-	if(m_pkInput->Pressed(KEY_A))
+	if(m_pkInputHandle->Pressed(KEY_A))
 		pkGui->m_bDisableAlphatest = true;
 	else
 		pkGui->m_bDisableAlphatest = false;
@@ -1127,7 +1130,7 @@ ZGuiWnd* ZGResEdit::GetWndFromPoint(int x, int y)
 
 			if(kTargets.empty())
 			{
-				if(!m_pkInput->Pressed(KEY_LSHIFT))
+				if(!m_pkInputHandle->Pressed(KEY_LSHIFT))
 					return pkWnd;
 				else
 					return pkWnd->GetParent();
@@ -1451,7 +1454,7 @@ void ZGResEdit::OnSelectWnd(ZGuiWnd *pkWnd)
 	UpdateSkinList(pkWnd);
 	UpdatePropertyWnd();
 	
-	if(m_pkInput->Pressed(KEY_LCTRL))
+	if(m_pkInputHandle->Pressed(KEY_LCTRL))
 	{
 		int x = m_pkFocusWnd->GetScreenRect().Left;
 		int y = m_pkFocusWnd->GetScreenRect().Top;
@@ -1671,7 +1674,7 @@ void ZGResEdit::EnableWnds(bool bEnable)
 
 void ZGResEdit::MoveWnd(int x, int y)
 {
-	if(m_pkMoveWnd != NULL && m_pkInput->Pressed(MOUSELEFT) && 
+	if(m_pkMoveWnd != NULL && m_pkInputHandle->Pressed(MOUSELEFT) && 
 		m_kClickPos != Point(-1,-1))
 	{
 		Rect rc = m_pkMoveWnd->GetScreenRect();
@@ -2195,10 +2198,14 @@ bool ZGResEdit::ShutDown()
 		kINI.Save(szSetupFile);
 	}
 
+//	delete m_pkInputHandle;
+
 	return true;
 }
 
 bool ZGResEdit::StartUp()
 {
+//	m_pkInputHandle = new InputHandle("ZGResEdit");
+
 	return true;
 }

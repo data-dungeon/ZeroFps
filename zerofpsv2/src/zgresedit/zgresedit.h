@@ -115,6 +115,8 @@ class ZGResEdit : public Application, public ZGuiApp
 		int m_iPropertyWndPosX;
 		int m_iPropertyWndPosY;
 
+		//InputHandle*	m_pkInputHandle;
+
 		struct SORT_MOST_PARENTS : public binary_function<pair<ZGuiWnd*, int>, pair<ZGuiWnd*, int>, bool> {
 			bool operator()(pair<ZGuiWnd*, int> x, pair<ZGuiWnd*, int> y) { 
 				return (x.second > y.second);

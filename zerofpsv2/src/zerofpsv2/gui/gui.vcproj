@@ -176,6 +176,9 @@
 				RelativePath=".\zguilistitem.cpp">
 			</File>
 			<File
+				RelativePath=".\zguimenu.cpp">
+			</File>
+			<File
 				RelativePath=".\zguiradiobutton.cpp">
 			</File>
 			<File
@@ -235,6 +238,9 @@
 			</File>
 			<File
 				RelativePath=".\zguilistitem.h">
+			</File>
+			<File
+				RelativePath=".\zguimenu.h">
 			</File>
 			<File
 				RelativePath=".\zguiradiobutton.h">
