@@ -262,10 +262,10 @@ void Render::DrawConsole(char* m_aCommand,vector<char*>* m_kText,int iStartLine)
 		}
 	}
 	
-	glPopMatrix();
 	glMatrixMode(GL_MODELVIEW);
 	glPopMatrix();
 	glMatrixMode(GL_PROJECTION);
+	glPopMatrix();
 
 	glPopAttrib();
 }

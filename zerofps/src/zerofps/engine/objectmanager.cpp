@@ -511,6 +511,8 @@ void ObjectManager::UpdateState(NetPacket* pkNetPacket)
 
 void ObjectManager::PackToClients()
 {
+	g_ZFObjSys.Logf("net", " *** ObjectManager::PackToClients() *** \n");
+
 	NetWork* net = static_cast<NetWork*>(g_ZFObjSys.GetObjectPtr("NetWork"));
 	if(net->m_eNetStatus != NET_SERVER) {
 		m_aiNetDeleteList.clear();
@@ -530,6 +532,9 @@ void ObjectManager::PackToClients()
 	for(list<Object*>::iterator it=m_akObjects.begin();it!=m_akObjects.end();it++) {
 		if((*it)->NeedToPack()) {
 			NP.Write((*it)->iNetWorkID);
+			g_ZFObjSys.Logf("net", "Object: %d\n",(*it)->iNetWorkID );
+
+			
 			/*if((*it)->GetParent()) {
 				NP.Write((*it)->GetParent()->iNetWorkID);
 				}
@@ -541,8 +546,9 @@ void ObjectManager::PackToClients()
 			iPacketSize++;
 			}
 
+		g_ZFObjSys.Logf("net", "PackSize Is: %d\n",NP.m_iPos );
 
-		if(iPacketSize >= 10) {
+		if(NP.m_iPos >= 512) {
 			NP.Write(iEndOfObject);
 			NP.Write(ZFGP_ENDOFPACKET);
 			net->SendToAllClients(&NP);

@@ -398,13 +398,16 @@ void Object::PackTo(NetPacket* pkNetPacket)
 
 	// Loop all properys med Propery::bNetwork = true
 	for(list<Property*>::iterator it=m_akPropertys.begin();it!=m_akPropertys.end();it++) {
+		g_ZFObjSys.Logf("net", "Check '%s':",(*it)->m_acName );
 		if((*it)->bNetwork) {
-			//cout << "Object::PackTo : " << (*it)->m_acName << endl;
+			g_ZFObjSys.Logf("net", "Add\n");
 			strcpy(szPropertyName, (*it)->m_acName);
 			pkNetPacket->Write_Str((*it)->m_acName);
 			Property* hora = (*it);
 			(*it)->PackTo(pkNetPacket);
 			}
+		else 
+			g_ZFObjSys.Logf("net", "Dont Add\n");
 	}
 
 	pkNetPacket->Write_Str("");

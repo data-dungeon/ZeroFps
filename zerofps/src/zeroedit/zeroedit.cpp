@@ -1054,7 +1054,8 @@ void ZeroEdit::Input()
 					break;			
 				m_fTimer=pkFps->GetTicks();
 
-				Object *object = new BallObject();					
+				//Object *object = new BallObject();
+				Object *object = pkObjectMan->CreateObject();
 				object->SetPos(m_kDrawPos);	
 				object->SetPos(m_kDrawPos);					
 				

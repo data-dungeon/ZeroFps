@@ -47,6 +47,129 @@ ZFResource* Create__ResTexture()
 	return new ResTexture;
 }
 
+
+
+DebugGraph::DebugGraph()
+{
+	m_iSize		= 0;
+	m_iWidth		= 0;
+	m_iHeight	= 0;
+	m_iWritePos	= 0;
+	m_kBackColor.Set(1,1,1);
+}
+
+void DebugGraph::SetSize(int iSize,int iWidth, int iHeight)
+{
+	m_kValues.resize(iSize);
+	m_iSize = iSize;
+
+	for(int i=0; i<m_kValues.size(); i++) {
+		m_kValues[i] = rand() % 100;
+		}
+
+	m_iWritePos	= 0;
+	m_iWidth		= iWidth;
+	m_iHeight	= iHeight;
+}
+
+void DebugGraph::SetMinMax(float fMin, float fMax)
+{
+	m_fMin = fMin;
+	m_fMax = fMax;
+}
+
+void DebugGraph::PushValue(float fValue)
+{
+	m_kValues[m_iWritePos] = fValue;
+	m_iWritePos++;
+	if(m_iWritePos >= m_kValues.size())
+		m_iWritePos = 0;
+}
+
+void DebugGraph::DrawSolidBox(int x, int y, int x2, int y2)
+{
+	glColor3f(m_kBackColor.x, m_kBackColor.y, m_kBackColor.z);
+
+	// Draw a Solid Color Box.
+	glBegin(GL_QUADS);
+		glVertex3f(x,y,0);
+		glVertex3f(x2,y,0);
+		glVertex3f(x2,y2,0);
+		glVertex3f(x,y2,0);
+	glEnd();
+}
+
+float	DebugGraph::GetSampleHeight(float fValue)
+{
+	if(fValue >= m_fMax)
+		m_fMax = fValue;
+	if(fValue <= m_fMin)
+		m_fMin = fValue;
+
+	float fDiff = m_fMax - m_fMin;
+	float fP = (fValue - m_fMin) / fDiff;
+	fValue = fP * m_iHeight;
+	return fValue;
+}
+
+void	DebugGraph::SetSampleColor(float fValue)
+{
+
+}
+
+void DebugGraph::DrawGraph(int x, int y)
+{
+	glMatrixMode(GL_PROJECTION);
+	glPushMatrix();
+	glLoadIdentity();
+	gluOrtho2D(0, 1024, 0, 768);
+
+	glMatrixMode(GL_MODELVIEW);
+	glPushMatrix();
+	glLoadIdentity();
+
+	glTranslated(x,y,0);
+
+	glPushAttrib(GL_ALL_ATTRIB_BITS);
+	glDisable(GL_LIGHTING);
+	glDisable(GL_COLOR_MATERIAL);	
+	glDisable(GL_TEXTURE_2D);
+	glDisable(GL_CULL_FACE);
+	glDisable(	GL_FOG);
+
+//	DrawSolidBox(0,0, m_iWidth, m_iHeight);
+
+	int iValueIndex = m_iWritePos;
+	int iOffset = 0;
+	float fSize;
+	glColor3f(1, 0, 0);
+
+	glBegin(GL_LINES);
+	for(;;) {
+		fSize = GetSampleHeight(m_kValues[iValueIndex]);
+		glVertex3f(m_iWidth - iOffset,0,0);
+		glVertex3f(m_iWidth - iOffset,fSize,0);
+		iOffset++;
+		if(iOffset >= m_iWidth)
+			break;
+		iValueIndex--;
+		if(iValueIndex < 0)
+			iValueIndex += m_kValues.size();
+		if(iValueIndex == m_iWritePos)
+			break;
+		}
+	glEnd();
+
+
+	glMatrixMode(GL_MODELVIEW);
+	glPopMatrix();
+	glMatrixMode(GL_PROJECTION);
+	glPopMatrix();
+
+	glPopAttrib();
+
+}
+
 /*** End: Vim ***/
 
 

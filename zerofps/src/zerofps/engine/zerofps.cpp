@@ -1,5 +1,6 @@
 #include "zerofps.h"
 #include "network.h"
+#include "fh.h"
 
 int		g_iNumOfFrames;
 int		g_iNumOfMadSurfaces;
@@ -418,6 +419,13 @@ void ZeroFps::Draw_EngineShell()
 }
 
 void ZeroFps::MainLoop(void) {
+/*	DebugGraph kDg;
+	DebugGraph kDg2;
+
+	kDg.SetMinMax(0,10);		kDg.SetSize(100,100,120);
+	kDg2.SetMinMax(0,10);	kDg2.SetSize(100,100,50);
+	float fTestValue;*/
+
 	while(m_iState!=state_exit) {
 		m_fEngineTime = GetTicks();
 
@@ -425,10 +433,21 @@ void ZeroFps::MainLoop(void) {
 		 
 		Run_EngineShell();
 
-		if(m_bServerMode)	Run_Server();
-		if(m_bClientMode)	Run_Client();
+		if(m_bServerMode)	{
+			Run_Server();
+			}
+		if(m_bClientMode)	{
+			Run_Client();
+			}
 
 		Draw_EngineShell();
+//		fTestValue = rand() % 50;
+/*		fTestValue = m_fFps;
+		kDg.PushValue(fTestValue);
+		kDg2.PushValue(fTestValue);
+		
+		kDg.DrawGraph(0,0);
+		kDg2.DrawGraph(200,0);*/
 	}
 }
 

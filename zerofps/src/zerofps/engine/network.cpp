@@ -36,6 +36,8 @@ void NetPacket::SetTarget(const char* szIp)
 
 void NetPacket::Write_Str(const char* szString)
 {
+	ZFAssert((m_iPos + strlen(szString) + 1) < MAX_PACKET_SIZE, "NetPacket::Write_Str");
+
 	unsigned char * add = &m_acData[m_iPos];
 	strcpy((char*)add, szString);
 	m_iPos += strlen(szString) + 1;
@@ -53,6 +55,8 @@ void NetPacket::Read_Str(char* szString)
 
 void NetPacket::Write(void* ptr, int iSize)
 {
+	ZFAssert((m_iPos + iSize) < MAX_PACKET_SIZE, "NetPacket::Write");
+
 	unsigned char * add = &m_acData[m_iPos];
 	memcpy(add, ptr, iSize);
 	m_iPos += iSize;
@@ -298,11 +302,11 @@ void NetWork::SendToAllClients(NetPacket* pkNetPacket)
 	if(RemoteNodes.size() <= 0)
 		return;
 
-	cout << "Update Clients: ";
+//	cout << "Update Clients: ";
 	for(unsigned int i=0; i<RemoteNodes.size(); i++) {
 		pkNetPacket->m_kAddress = RemoteNodes[i].m_kAddress;
 		Send(pkNetPacket);
-		cout << ".";		
+//		cout << ".";		
 		}
 	cout << endl;
 }

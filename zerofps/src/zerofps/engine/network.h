@@ -59,6 +59,8 @@ public:
 
 	template <class Any> 
 	void Write(Any type) {
+		ZFAssert((m_iPos + sizeof(type)) < MAX_PACKET_SIZE, "NetPacket::Write");
+
 		unsigned char * add = &m_acData[m_iPos];
 		memcpy(add, &type, sizeof(type));
 		m_iPos += sizeof(type);

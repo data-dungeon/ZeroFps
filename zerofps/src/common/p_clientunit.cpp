@@ -93,7 +93,9 @@ void P_ClientUnit::Load(ZFMemPackage* pkPackage)
 
 void P_ClientUnit::PackTo(NetPacket* pkNetPacket)
 {
+	g_ZFObjSys.Logf("net", "PackCliUnit Start\n");
 	pkNetPacket->Write(&m_kInfo, sizeof(m_kInfo));
+	g_ZFObjSys.Logf("net", "PackCliUnit End\n");
 }
  
 void P_ClientUnit::PackFrom(NetPacket* pkNetPacket)
