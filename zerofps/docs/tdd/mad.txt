@@ -1,4 +1,29 @@
-4int numofbones
+Data Sharing:		Delar data som mesh, animationer mellan actors.
+Motion Mixing:		Olika animationer på olika delar.
+Motion Blending:	Flera animationer på en del.
+Inverse Kinematics
+Physics
+Attachments
+Smooth Motions
+Controllers
+Non-Skinned Actors
+Character Instancing
+Level of Detail
+Collision Detection
+Visibility
+Custom vertex attributes
+Custom node attributes
+Smoothing groups and mapping
+Materials
+Mesh deformers
+Open file format
+Dialog Studio
+Maya Support
+Vertex and Pixel Shaders
+Facial Expressions / Lip-sync
+
+
+int numofbones
 
 Bone:
  Name:

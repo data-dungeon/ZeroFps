@@ -299,6 +299,7 @@ Mad_CoreMesh* g_pkLastMesh;
 
 void Mad_Modell::Draw_All(int iDrawFlags)
 {
+
 //	cout << "iDrawFlags: " << iDrawFlags << endl;
 	int iListID = pkCore->GetMeshByID(0)->GetDisplayID();
 	if(iListID != -1) {
@@ -339,6 +340,7 @@ void Mad_Modell::Draw_All(int iDrawFlags)
 
 			if(iDrawFlags & MAD_DRAW_MESH) {
 				iNumOfFaces = GetNumFaces();
+				//iNumOfFaces = 1;
 
 				Mad_CoreTexture* pkTexInfo = GetTextureInfo();
 				m_pkTex->BindTexture( m_pkMesh->GetTextureID(m_pkSubMesh->iTextureIndex));

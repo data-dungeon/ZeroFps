@@ -88,7 +88,7 @@ LINK32=link.exe
 # Begin Special Build Tool
 ProjDir=.
 SOURCE="$(InputPath)"
-PostBuild_Cmds=copy $(ProjDir)\debug\*.mll "C:\Program Files\AliasWavefront\Maya4.5\bin\plug-ins"
+PostBuild_Cmds=copy $(ProjDir)\debug\*.mll "C:\Program Files\AliasWavefront\Maya4.5\bin\plug-ins"	copy $(ProjDir)\debug\*.mll "C:\Program\AliasWavefront\Maya4.5\bin\plug-ins"
 # End Special Build Tool
 
 !ENDIF 

@@ -129,6 +129,7 @@ void Render::Dot(float x,float y,float z) {
 }
 
 
+
 void Render::DrawConsole(char* m_aCommand,vector<char*>* m_kText,int iStartLine) {
 	SetFont("file:../data/textures/text/console.tga");
 

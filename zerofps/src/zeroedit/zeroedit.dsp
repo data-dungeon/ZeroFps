@@ -120,11 +120,19 @@ SOURCE=.\massdriverproperty.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\playercontrolproperty.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\statusproperty.cpp
 # End Source File
 # Begin Source File
 
 SOURCE=.\teleportproperty.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\treeidleproperty.cpp
 # End Source File
 # Begin Source File
 

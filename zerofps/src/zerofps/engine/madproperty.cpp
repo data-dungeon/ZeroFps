@@ -37,6 +37,8 @@ MadProperty::MadProperty(Mad_Core* pkModell)
 
 void MadProperty::Update() 
 {
+//	return;
+
 /*	Input* pkInput = static_cast<Input*>(g_ZFObjSys.GetObjectPtr("Input")); 
 	
 	if(strcmp(m_kMadFile.c_str(), "../data/mad/dropship.mad") == 0) {

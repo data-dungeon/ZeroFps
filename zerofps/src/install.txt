@@ -1,30 +1,32 @@
 How to - ZeroFps
 
 1: Ladda ned alla program och usla libs man behöver.
- A: STLport			4.5.3 - http://www.stlport.org/
-
- B: Glut			3.7	  - http://www.opengl.org/developers/documentation/glut.html
-
- C: Simple DirectMedia Layer 	- http://www.libsdl.org
-	C1:	SDL			1.2.5 - http://www.libsdl.org
-	C2: SDL_image	1.2.2 - http://www.libsdl.org/projects/SDL_image/
-	C3: SDL_mixer	1.2.4 - http://www.libsdl.org/projects/SDL_mixer/
-	C4: SDL_net		1.2.4 - http://www.libsdl.org/projects/SDL_net/
-
- D: OpenALSDK		1.0	  - http://www.openal.org/
-
- E:	SourceForge Development Tools:
+ A: STLport			4.5.3	http://www.stlport.org/
+ B: Glut			3.7	http://www.opengl.org/developers/documentation/glut.html
+ C: Simple DirectMedia Layer 		http://www.libsdl.org
+	C1:	SDL		1.2.5	http://www.libsdl.org
+	C2: SDL_image		1.2.2	http://www.libsdl.org/projects/SDL_image/
+	C3: SDL_mixer		1.2.4	http://www.libsdl.org/projects/SDL_mixer/
+	C4: SDL_net		1.2.4	http://www.libsdl.org/projects/SDL_net/
+ D: OpenALSDK			1.0	http://www.openal.org/
+ E: SourceForge Development Tools:
 	Windows:
 		CVS:		http://www.wincvs.org/
 		SSH:		http://sfsetup.sourceforge.net/#sfsetup
 	Linux:
 
 2: Installera allt man laddat ned.
- E: 
 	Windows:
+	A:
+	B:
+	C:
+	D:	Kör installations programmet.
+	E:
 		CVS:		Installera det och starta det en gång och stäng ned det.
 		SSH:		Installera SfSetup. 	
 	
+
+
 
 3: Sätt upp sökvägar för alla usla libs.
 
