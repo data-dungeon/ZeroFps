@@ -935,10 +935,11 @@ void ZeroRTS::CreateClientUnits(int iID)
 	
 	if(m_iGameType == 2)
 	{
-		for(int i=0;i<20;i++)
+		int i;
+		for(i=0;i<5;i++)
 		{
 			Object* ob = pkObjectMan->CreateObjectByArchType("ZeroRTSLightTank");	
-			Vector3 pos = m_kSpawnPoints[iID] + (Vector3(rand()%20,0,rand()%20)-Vector3(10,0,10));
+			Vector3 pos = m_kSpawnPoints[iID] + (i*3,0,-5);
 			ob->SetPos(pos);
 			ob->SetPos(pos);		
 			ob->AttachToClosestZone();
@@ -946,6 +947,31 @@ void ZeroRTS::CreateClientUnits(int iID)
 			P_ServerUnit* su = (P_ServerUnit*)ob->GetProperty("P_ServerUnit");		
 			su->m_kInfo.m_Info2.m_cTeam = iID;		
 		}			
+		
+		for(i=0;i<5;i++)
+		{
+			Object* ob = pkObjectMan->CreateObjectByArchType("ZeroRTSHeavyTank");	
+			Vector3 pos = m_kSpawnPoints[iID] + (i*3,0,0);			
+			ob->SetPos(pos);
+			ob->SetPos(pos);		
+			ob->AttachToClosestZone();
+		
+			P_ServerUnit* su = (P_ServerUnit*)ob->GetProperty("P_ServerUnit");		
+			su->m_kInfo.m_Info2.m_cTeam = iID;		
+		}			
+		
+		for(i=0;i<5;i++)
+		{
+			Object* ob = pkObjectMan->CreateObjectByArchType("ZeroRTSJeep");	
+			Vector3 pos = m_kSpawnPoints[iID] + (i*3,0,5);
+			ob->SetPos(pos);
+			ob->SetPos(pos);		
+			ob->AttachToClosestZone();
+		
+			P_ServerUnit* su = (P_ServerUnit*)ob->GetProperty("P_ServerUnit");		
+			su->m_kInfo.m_Info2.m_cTeam = iID;		
+		}			
+	
 	}
 }
 

@@ -281,8 +281,8 @@ void P_ServerUnit::HandleGameMessage(GameMessage& Msg)
 bool P_ServerUnit::Damage(int iDamage)
 {
 	m_iHealth -= iDamage;
-	cout<<"Damaging unit "<<iDamage<<endl;
-	cout<<"Unit Got "<<m_iHealth<<" health left"<<endl;
+	//cout<<"Damaging unit "<<iDamage<<endl;
+	//cout<<"Unit Got "<<m_iHealth<<" health left"<<endl;
 		
 	if(m_iHealth <= 0)
 	{
@@ -290,7 +290,6 @@ bool P_ServerUnit::Damage(int iDamage)
 		{
 			if(m_pkServerInfo)
 			{
-				cout<<"bom"<<endl;
 				Event fx;
 					fx.m_iType = m_iDieEffect;
 					fx.m_kPos = m_pkObject->GetPos();
