@@ -63,7 +63,8 @@ private:
 	Point SlotFromScreenPos(int x, int y, bool bInventory);
 	Point SlotFromWnd(ZGuiWnd* pkWnd, bool bInventory);
 	Point SlotSizeFromWnd(ZGuiWnd* pkWnd);
-
+	int GetItemIDFromScreenPos(int x, int y);
+	
 	TextureManager* m_pkTexMan;
 
 	vector<ITEM_SLOT> m_vkInventoryItemList;
@@ -80,6 +81,8 @@ private:
 
 	int m_iSlotsHorzContainer;
 	int m_iSlotsVertContainer;
+
+	Point m_kCursorRangeDiff;
 	
 	Point m_kItemWndPosBeforeMove; // fönster koordinater
 	

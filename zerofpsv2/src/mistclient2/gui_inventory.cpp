@@ -161,13 +161,10 @@ void InventoryDlg::OnMouseMove(bool bLeftButtonPressed, int mx, int my)
 						{
 							m_kMoveSlot.bIsInventoryItem = true;
 							m_kMoveSlot.m_iIndex = i;
-
-							//m_vkInventoryItemList[i].pkWnd->Show();
-							//m_vkInventoryItemList[i].pkWnd->m_iZValue = m_iHighestZ++;
-							//m_pkInventoryWnd->SortChilds(); 
 						
 							Point size = SlotSizeFromWnd(m_vkInventoryItemList[i].pkWnd);
 							int id = m_vkInventoryItemList[i].pkWnd->GetSkin()->m_iBkTexID;
+
 							g_kMistClient.m_pkGui->SetCursor( mx, my, id, -1, size.x*32, size.y*32);							
 						}					
 						break;
@@ -204,6 +201,9 @@ void InventoryDlg::OnMouseMove(bool bLeftButtonPressed, int mx, int my)
 
 			if(bLeftButtonPressed)
 			{
+				m_kCursorRangeDiff.x = mx-m_vkInventoryItemList[i].pkWnd->GetScreenRect().Left; 
+				m_kCursorRangeDiff.y = my-m_vkInventoryItemList[i].pkWnd->GetScreenRect().Top;
+
 				if(m_kMoveSlot.m_iIndex == -1)
 				{
 					m_kItemWndPosBeforeMove.x = m_vkInventoryItemList[i].pkWnd->GetWndRect().Left;
@@ -211,14 +211,18 @@ void InventoryDlg::OnMouseMove(bool bLeftButtonPressed, int mx, int my)
 
 					m_kMoveSlot.bIsInventoryItem = true;
 					m_kMoveSlot.m_iIndex = i; // select new item
-					//m_vkInventoryItemList[i].pkWnd->m_iZValue = m_iHighestZ++;
-					//m_pkInventoryWnd->SortChilds(); 
 
 					m_vkInventoryItemList[i].pkWnd->Hide();
 
 					Point size = SlotSizeFromWnd(m_vkInventoryItemList[i].pkWnd);
 					int id = m_vkInventoryItemList[i].pkWnd->GetSkin()->m_iBkTexID;
-					g_kMistClient.m_pkGui->SetCursor( mx, my, id, -1, size.x*32, size.y*32);	
+
+					int x = mx, y = my;
+					x -= m_kCursorRangeDiff.x;
+					y -= m_kCursorRangeDiff.y;
+
+					g_kMistClient.m_pkGui->SetCursor( x, y, id, -1, size.x*32, size.y*32);	
+					g_kMistClient.m_pkInputHandle->SetCursorInputPos(x,y);  
 				}
 			}
 			else
@@ -271,6 +275,9 @@ void InventoryDlg::OnMouseMove(bool bLeftButtonPressed, int mx, int my)
 
 			if(bLeftButtonPressed)
 			{
+				m_kCursorRangeDiff.x = mx-m_vkContainerItemList[i].pkWnd->GetScreenRect().Left; 
+				m_kCursorRangeDiff.y = my-m_vkContainerItemList[i].pkWnd->GetScreenRect().Top;
+
 				if(m_kMoveSlot.m_iIndex == -1)
 				{
 					m_kItemWndPosBeforeMove.x = m_vkContainerItemList[i].pkWnd->GetWndRect().Left;
@@ -280,12 +287,17 @@ void InventoryDlg::OnMouseMove(bool bLeftButtonPressed, int mx, int my)
 
 					m_kMoveSlot.bIsInventoryItem = false;
 					m_kMoveSlot.m_iIndex = i; // select new item
-					//m_vkContainerItemList[i].pkWnd->m_iZValue = m_iHighestZ++;
-					//m_pkContainerWnd->SortChilds(); 
 
 					Point size = SlotSizeFromWnd(m_vkContainerItemList[i].pkWnd);
 					int id = m_vkContainerItemList[i].pkWnd->GetSkin()->m_iBkTexID;
-					g_kMistClient.m_pkGui->SetCursor( mx, my, id, -1, size.x*32, size.y*32);	
+
+					int x = mx, y = my;
+					x -= m_kCursorRangeDiff.x;
+					y -= m_kCursorRangeDiff.y;
+
+					g_kMistClient.m_pkGui->SetCursor( x, y, id, -1, size.x*32, size.y*32);	
+					g_kMistClient.m_pkInputHandle->SetCursorInputPos(x,y);  
+
 				}
 			}
 			else
@@ -535,6 +547,9 @@ void InventoryDlg::OnDropItem()
 		rcMain = m_vkInventoryItemList[m_kMoveSlot.m_iIndex].pkWnd->GetWndRect();
 		rc = m_vkInventoryItemList[m_kMoveSlot.m_iIndex].pkWnd->GetWndRect();
 		rcScreenMain = m_pkInventoryWnd->GetScreenRect();
+		rcScreenMain.Left += UPPER_LEFT_INVENTORY.x;
+		rcScreenMain.Top += UPPER_LEFT_INVENTORY.y;
+
 		rcDropWnd = m_vkInventoryItemList[m_kMoveSlot.m_iIndex].pkWnd->GetScreenRect();
 
 		iSlotsHorz = SLOTTS_HORZ_INVENTORY;
@@ -548,18 +563,29 @@ void InventoryDlg::OnDropItem()
 		rc = m_vkContainerItemList[m_kMoveSlot.m_iIndex].pkWnd->GetWndRect();
 
 		rcScreenMain = m_pkContainerWnd->GetScreenRect();
+		rcScreenMain.Left += UPPER_LEFT_CONTAINER.x;
+		rcScreenMain.Top += UPPER_LEFT_CONTAINER.y;
+
 		rcDropWnd = m_vkContainerItemList[m_kMoveSlot.m_iIndex].pkWnd->GetScreenRect();
 
 		iSlotsHorz = m_iSlotsHorzContainer;
 		iSlotsVert = m_iSlotsVertContainer;
 	}
 
-	if(!rcScreenMain.Inside(rcDropWnd.Left, rcDropWnd.Top))
+	bool bInsideGrid = rcScreenMain.Inside(rcDropWnd.Left, rcDropWnd.Top);
+	if(bInsideGrid == false) bInsideGrid = rcScreenMain.Inside(rcDropWnd.Right, rcDropWnd.Top);
+	if(bInsideGrid == false) bInsideGrid = rcScreenMain.Inside(rcDropWnd.Right, rcDropWnd.Bottom);
+	if(bInsideGrid == false) bInsideGrid = rcScreenMain.Inside(rcDropWnd.Left, rcDropWnd.Bottom);
+
+	if(!bInsideGrid)
 	{
 		if(m_kMoveSlot.bIsInventoryItem) // flyttar på ett inventoryitem till containern
 		{
 			if(m_pkContainerWnd && m_pkContainerWnd->IsVisible() && 
-				(m_pkContainerWnd->GetScreenRect().Inside(rcDropWnd.Left, rcDropWnd.Top)) )
+				(m_pkContainerWnd->GetScreenRect().Inside(rcDropWnd.Left, rcDropWnd.Top) ||
+				 m_pkContainerWnd->GetScreenRect().Inside(rcDropWnd.Right, rcDropWnd.Top) ||
+				 m_pkContainerWnd->GetScreenRect().Inside(rcDropWnd.Right, rcDropWnd.Bottom) ||
+				 m_pkContainerWnd->GetScreenRect().Inside(rcDropWnd.Left, rcDropWnd.Bottom) ) )
 			{
 				if(Entity* pkCharacter = g_kMistClient.m_pkEntityManager->GetEntityByID(g_kMistClient.m_iCharacterID))
 				{
@@ -580,6 +606,7 @@ void InventoryDlg::OnDropItem()
 			}
 			else
 			{
+				
 				g_kMistClient.SendMoveItem(m_vkInventoryItemList[m_kMoveSlot.m_iIndex].iItemID, -1, -1, -1);
 
 				for(int i=0; i<m_vkInventoryItemList.size(); i++)
@@ -593,7 +620,10 @@ void InventoryDlg::OnDropItem()
 		}
 		else // flyttar på ett containeritem till inventoryt
 		{
-			if(m_pkInventoryWnd->GetScreenRect().Inside(rcDropWnd.Left, rcDropWnd.Top))
+			if(m_pkInventoryWnd->GetScreenRect().Inside(rcDropWnd.Left, rcDropWnd.Top) ||
+				m_pkInventoryWnd->GetScreenRect().Inside(rcDropWnd.Right, rcDropWnd.Top) ||
+				m_pkInventoryWnd->GetScreenRect().Inside(rcDropWnd.Right, rcDropWnd.Bottom) ||
+				m_pkInventoryWnd->GetScreenRect().Inside(rcDropWnd.Left, rcDropWnd.Bottom))
 			{
 				if(Entity* pkCharacter = g_kMistClient.m_pkEntityManager->GetEntityByID(g_kMistClient.m_iCharacterID))
 					if(P_CharacterProperty* pkCharProp = (P_CharacterProperty*)pkCharacter->GetProperty("P_CharacterProperty"))
@@ -660,23 +690,48 @@ void InventoryDlg::OnDropItem()
 				g_kMistClient.SendMoveItem(m_vkContainerItemList[m_kMoveSlot.m_iIndex].iItemID, 
 					-1, slot_x, slot_y);
 			}
+
+			g_kMistClient.RequestOpenInventory();
 		}
 		else
 		{
-			if(m_kMoveSlot.bIsInventoryItem)
-			{
-				m_vkInventoryItemList[m_kMoveSlot.m_iIndex].pkWnd->Show();
-				m_vkInventoryItemList[m_kMoveSlot.m_iIndex].pkWnd->SetPos(m_kItemWndPosBeforeMove.x, 
-					m_kItemWndPosBeforeMove.y, false, true);		
-			}
-			else
-			{
-				m_vkContainerItemList[m_kMoveSlot.m_iIndex].pkWnd->Show();
-				m_vkContainerItemList[m_kMoveSlot.m_iIndex].pkWnd->SetPos(m_kItemWndPosBeforeMove.x, 
-					m_kItemWndPosBeforeMove.y, false, true);	
-			}
+			//int id = GetItemIDFromScreenPos(rcDropWnd.Left, rcDropWnd.Top);
+			//g_kMistClient.SendMoveItem(m_vkInventoryItemList[m_kMoveSlot.m_iIndex].iItemID, id, -1, -1);
+
+			//if(m_kMoveSlot.bIsInventoryItem)
+			//{
+			//	m_vkInventoryItemList[m_kMoveSlot.m_iIndex].pkWnd->Show();
+			//	m_vkInventoryItemList[m_kMoveSlot.m_iIndex].pkWnd->SetPos(x, y, false, true);
+			//	g_kMistClient.SendMoveItem(m_vkInventoryItemList[m_kMoveSlot.m_iIndex].iItemID, 
+			//		id, -1, -1);
+			//}
+			//else
+			//{
+			//	m_vkContainerItemList[m_kMoveSlot.m_iIndex].pkWnd->Show();
+			//	m_vkContainerItemList[m_kMoveSlot.m_iIndex].pkWnd->SetPos(x, y, false, true);
+			//	g_kMistClient.SendMoveItem(m_vkContainerItemList[m_kMoveSlot.m_iIndex].iItemID, 
+			//		id, -1, -1);
+			//}
+
+			g_kMistClient.RequestOpenInventory();
+
+			//if(m_kMoveSlot.bIsInventoryItem)
+			//{
+			//	m_vkInventoryItemList[m_kMoveSlot.m_iIndex].pkWnd->Show();
+			//	m_vkInventoryItemList[m_kMoveSlot.m_iIndex].pkWnd->SetPos(m_kItemWndPosBeforeMove.x, 
+			//		m_kItemWndPosBeforeMove.y, false, true);		
+			//}
+			//else
+			//{
+			//	m_vkContainerItemList[m_kMoveSlot.m_iIndex].pkWnd->Show();
+			//	m_vkContainerItemList[m_kMoveSlot.m_iIndex].pkWnd->SetPos(m_kItemWndPosBeforeMove.x, 
+			//		m_kItemWndPosBeforeMove.y, false, true);	
+			//}
 		}
 	}
+
+	printf("dropping item\n");
+	
 
 //	m_fPickUpTimer = 0;
 }
@@ -722,7 +777,8 @@ bool InventoryDlg::TestForCollision(Point test_slot, Point test_size, bool bInve
 			Point kSlot = SlotFromWnd(m_vkInventoryItemList[i].pkWnd, true);
 			Point kSlotSize = SlotSizeFromWnd(m_vkInventoryItemList[i].pkWnd);
 
-			if(!(kSlot == test_slot && kSlotSize == test_size))
+			//if(!(kSlot == test_slot && kSlotSize == test_size))
+			if(i != m_kMoveSlot.m_iIndex) 
 			{
 				for(int y=0; y<kSlotSize.y; y++)
 					for(int x=0; x<kSlotSize.x; x++)
@@ -737,7 +793,8 @@ bool InventoryDlg::TestForCollision(Point test_slot, Point test_size, bool bInve
 			Point kSlot = SlotFromWnd(m_vkContainerItemList[i].pkWnd, false);
 			Point kSlotSize = SlotSizeFromWnd(m_vkContainerItemList[i].pkWnd);
 
-			if(!(kSlot == test_slot && kSlotSize == test_size))
+			//if(!(kSlot == test_slot && kSlotSize == test_size))
+			if(i != m_kMoveSlot.m_iIndex)
 			{
 				for(int y=0; y<kSlotSize.y; y++)
 					for(int x=0; x<kSlotSize.x; x++)
@@ -792,3 +849,40 @@ Point InventoryDlg::SlotFromScreenPos(int x, int y, bool bInventory)
 
 	return Point(slot_x, slot_y);
 }
+
+int InventoryDlg::GetItemIDFromScreenPos(int x, int y)
+{
+	Rect rc;
+
+	for(int i=0; i<m_vkInventoryItemList.size(); i++)
+	{
+		rc = m_vkInventoryItemList[i].pkWnd->GetScreenRect();
+		if(rc.Inside(x,y))
+			return m_vkInventoryItemList[i].iItemID;
+	}
+
+	for(int i=0; i<m_vkContainerItemList.size(); i++)
+	{
+		rc = m_vkContainerItemList[i].pkWnd->GetScreenRect();
+		if(rc.Inside(x,y))
+			return m_vkContainerItemList[i].iItemID;
+	}
+
+	return -1;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
