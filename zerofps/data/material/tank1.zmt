@@ -1,0 +1,10 @@
+[global]
+copydata=true
+waves=true
+
+[pass-0]
+polygonmodefront=0
+tu0=data/textures/tank1.bmp
+
+
+

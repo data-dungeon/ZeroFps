@@ -1,0 +1,9 @@
+[global]
+
+[pass-0]
+polygonmodefront=0
+tu0=data/textures/teamtexture.bmp
+tu1=env.tga
+tutexcords1=6
+
+

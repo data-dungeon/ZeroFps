@@ -1,0 +1,8 @@
+[global]
+
+[pass-0]
+polygonmodefront=0
+tutexcords1=6
+tu0=grass.tga
+tu1=env.tga
+lighting=false
