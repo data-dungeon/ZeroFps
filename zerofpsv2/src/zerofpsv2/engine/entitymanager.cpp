@@ -1710,17 +1710,18 @@ bool EntityManager::LoadZones(string strSaveDir )
 	
 	int i,zl;
 	int iLink;
+	int iVersion;
 
 	for( i=0; i<iNumOfZone; i++) 
 	{
 		kFile.Read(&kZData.m_iStatus, 	sizeof(kZData.m_iStatus), 1);
 		kFile.Read(&kZData.m_bNew, 		sizeof(kZData.m_bNew), 1);
-		kFile.Read(&kZData.m_iVersion,	sizeof(kZData.m_iVersion), 1);
+		kFile.Read(&iVersion,			sizeof(kZData.m_iVersion), 1);
 		kFile.Read(&kZData.m_iZoneID, 	sizeof(kZData.m_iZoneID), 1);
 		kFile.Read(&kZData.m_kSize, 	sizeof(kZData.m_kSize), 1);
 		kFile.Read(&kZData.m_kPos, 		sizeof(kZData.m_kPos), 1);
 		
-		if ( kZData.m_iVersion > 0 )
+		if ( iVersion > 0 )
 			kFile.Read(&kZData.m_kTestPos, 		sizeof(kZData.m_kTestPos), 1);
 		else
 			kZData.m_kTestPos = kZData.m_kPos;
