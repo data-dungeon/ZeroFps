@@ -42,6 +42,25 @@ class MCOMMON_API DMCharacterStats
 		void Print();
 };
 
+
+enum eOrders
+{
+	eWalk =	0,
+	ePickup = 1,
+	eUse = 	2,
+	eAttack = 3,
+	eEnterHQ = 4,
+};
+
+class MCOMMON_API DMOrder
+{
+	public:
+		int		m_iOrderType;
+		
+		Vector3	m_kPosition;
+		int		m_iEntityID;
+};
+
 class MCOMMON_API P_DMCharacter: public Property {
 	private:
 		vector<PropertyValues> GetPropertyValues();
@@ -52,7 +71,12 @@ class MCOMMON_API P_DMCharacter: public Property {
 		bool m_bCharacterIdle;
 		bool m_bPlayWalkSound;
 
+		queue<DMOrder>		m_kOrderQueue;
+		bool					m_bNewOrder;
+
 		void MakeStringLowerCase(string& s);
+		void UpdateOrders();
+		bool HandleOrder(DMOrder* pkOrder,bool bNew);
 	
 	public:
 		//item slots
@@ -74,6 +98,9 @@ class MCOMMON_API P_DMCharacter: public Property {
 		
 		DMCharacterStats* GetStats() {return &m_kStats;};
 		void Damage(int iType,int iDmg);
+
+		void AddOrder(DMOrder kOrder) {m_kOrderQueue.push(kOrder);};
+		void ClearOrders() {while(!m_kOrderQueue.empty()) m_kOrderQueue.pop();m_bNewOrder = true;};
 
 		// Set right animation and calls shoot function i p_dmgun
 		void Shoot (Vector3 kLocation);

@@ -529,7 +529,15 @@ void DarkMetropolis::Input()
 								m_fBulletTime = m_pkFps->m_pkObjectMan->GetGameTime();
 
 								StartSong("data/music/dm action.ogg");
-								pkCharacter->Shoot (m_kPickPos);
+								//pkCharacter->Shoot (m_kPickPos);
+								
+								DMOrder kOrder;
+								kOrder.m_iOrderType = eAttack;
+								kOrder.m_kPosition = m_kPickPos;							 
+								
+								pkCharacter->ClearOrders();
+								pkCharacter->AddOrder(kOrder);									
+								
 							}
 						}
 					}
@@ -556,31 +564,30 @@ void DarkMetropolis::Input()
 					Entity* pkEnt = m_pkObjectMan->GetObjectByNetWorkID(m_kSelectedEntitys[i]);
 					if(pkEnt)
 					{
-						P_PfPath* pkPF = (P_PfPath*)pkEnt->GetProperty("P_PfPath");
-						if(pkPF)//we have selected an entity whit a pathfind property, lets take a walk =)
+						if(P_DMCharacter* pkCharProp = (P_DMCharacter*)pkEnt->GetProperty("P_DMCharacter"))
 						{					
 							if(i==0)
 							{
-								P_DMCharacter* pkCharProp = 
-									(P_DMCharacter*)pkEnt->GetProperty("P_DMCharacter");
-								
-								if(pkCharProp)
+								int iNumMoveSounds = pkCharProp->m_vkMoveSounds.size();
+								if(iNumMoveSounds > 0)
 								{
-									int iNumMoveSounds = pkCharProp->m_vkMoveSounds.size();
-									if(iNumMoveSounds > 0)
-									{
-										m_pkAudioSys->StartSound(
-											pkCharProp->m_vkMoveSounds[rand()%iNumMoveSounds], 
-											pkEnt->GetIWorldPosV());
-									}
+									m_pkAudioSys->StartSound(
+										pkCharProp->m_vkMoveSounds[rand()%iNumMoveSounds], 
+										pkEnt->GetIWorldPosV());
 								}
 							}
 
-							//randomize position a bit if theres many characters selected
+							DMOrder kWalkOrder;
+							kWalkOrder.m_iOrderType = eWalk;							 
+							
 							if(m_kSelectedEntitys.size() > 1)
-								pkPF->MakePathFind(m_kPickPos + GetFormationPos(m_iCurrentFormation,m_kSelectedEntitys.size(),i));								
+								kWalkOrder.m_kPosition = m_kPickPos + GetFormationPos(m_iCurrentFormation,m_kSelectedEntitys.size(),i);								
 							else
-								pkPF->MakePathFind(m_kPickPos);
+								kWalkOrder.m_kPosition = m_kPickPos;
+							
+							pkCharProp->ClearOrders();
+							pkCharProp->AddOrder(kWalkOrder);
+							
 						}
 					}	
 				}
@@ -592,29 +599,41 @@ void DarkMetropolis::Input()
 			{				
 				
 				for(unsigned int i = 0;i < m_kSelectedEntitys.size();i++)
-				{
-					Entity* pkEnt = m_pkObjectMan->GetObjectByNetWorkID(m_kSelectedEntitys[i]);
-					if(pkEnt)				
+				{					
+					if(Entity* pkEnt = m_pkObjectMan->GetObjectByNetWorkID(m_kSelectedEntitys[i]))				
 					{
-						
-						if( (pkPickEnt->GetWorldPosV() - pkEnt->GetWorldPosV()).Length() < 4) 
-						{
-							cout<<"entering hq"<<endl;
-							SelectAgent(m_kSelectedEntitys[i], true, false,false); // remove selection
-							pkHQ->InsertCharacter(m_kSelectedEntitys[i]);
-							((CGamePlayDlg*)m_pkGamePlayDlg)->SelectAgent(-1, false);
-						}
-						else
-						{
-							P_PfPath* pkPF = (P_PfPath*)pkEnt->GetProperty("P_PfPath");
-							if(pkPF)//we have selected an entity whit a pathfind property, lets take a walk =)
-							{					
-						
-								//randomize position a bit if theres many characters selected
-								if(m_kSelectedEntitys.size() > 1)
-									pkPF->MakePathFind(m_kPickPos + GetFormationPos(m_iCurrentFormation,m_kSelectedEntitys.size(),i));								
-								else
-									pkPF->MakePathFind(m_kPickPos);
+						if(P_DMCharacter* pkCh = (P_DMCharacter*)pkEnt->GetProperty("P_DMCharacter"))
+						{														
+							if( (pkPickEnt->GetWorldPosV() - pkEnt->GetWorldPosV()).Length() < 1) 
+							{
+								cout<<"entering hq"<<endl;
+								SelectAgent(m_kSelectedEntitys[i], true, false,false); // remove selection
+
+								DMOrder kOrder;
+								kOrder.m_iOrderType = eEnterHQ;
+								kOrder.m_iEntityID = pkPickEnt->GetEntityID();							 
+								
+								pkCh->ClearOrders();
+								pkCh->AddOrder(kOrder);										
+							}
+							else
+							{
+								SelectAgent(m_kSelectedEntitys[i], true, false,false); // remove selection
+								
+								pkCh->ClearOrders();
+								
+								DMOrder kOrder;
+								
+								//first walk to the item
+								kOrder.m_iOrderType = eWalk;
+								kOrder.m_kPosition = pkPickEnt->GetWorldPosV();								
+								pkCh->AddOrder(kOrder);
+							
+								//then pick it up
+								kOrder.m_iOrderType = eEnterHQ;
+								kOrder.m_iEntityID = pkPickEnt->GetEntityID();								
+								pkCh->AddOrder(kOrder);							
+								
 							}
 						}
 					}
@@ -661,37 +680,39 @@ void DarkMetropolis::Input()
 				{
 					if(Entity* pkEnt = m_pkObjectMan->GetObjectByNetWorkID(m_kSelectedEntitys[i]))				
 					{
-						if( (pkPickEnt->GetWorldPosV() - pkEnt->GetWorldPosV()).Length() < 4) 
-						{
-							if(P_DMCharacter* pkCh = (P_DMCharacter*)pkEnt->GetProperty("P_DMCharacter"))
-							{										
-								if(pkCh->m_pkBackPack->AddItem(pkPickEnt->GetEntityID()))
-								{	
-									m_pkAudioSys->StartSound("data/sound/pick_up.wav", 
-										pkPickEnt->GetWorldPosV());
-									cout<<"Pickup an item"<<endl;
-									return;
-								}
-								else
-									cout<<"could't pickup item"<<endl;
+						if(P_DMCharacter* pkCh = (P_DMCharacter*)pkEnt->GetProperty("P_DMCharacter"))
+						{																
+							if( (pkPickEnt->GetWorldPosV() - pkEnt->GetWorldPosV()).Length() < 1) 
+							{
+							
+								DMOrder kOrder;
+								//pickup item
+								kOrder.m_iOrderType = ePickup;
+								kOrder.m_iEntityID = pkPickEnt->GetEntityID();							 
+								
+								pkCh->ClearOrders();
+								pkCh->AddOrder(kOrder);							
 							}
-						}
-						else
-						{							
-							//check if this thing can move
-							if(P_PfPath* pkPF = (P_PfPath*)pkEnt->GetProperty("P_PfPath"))
-							{					
-						
-								//randomize position a bit if theres many characters selected
-								if(m_kSelectedEntitys.size() > 1)
-									pkPF->MakePathFind(m_kPickPos + GetFormationPos(m_iCurrentFormation,m_kSelectedEntitys.size(),i));								
-								else
-									pkPF->MakePathFind(m_kPickPos);
+							else
+							{
+								pkCh->ClearOrders();
+								
+								DMOrder kOrder;
+								
+								//first walk to the item
+								kOrder.m_iOrderType = eWalk;
+								kOrder.m_kPosition = pkPickEnt->GetWorldPosV();								
+								pkCh->AddOrder(kOrder);
+							
+								//then pick it up
+								kOrder.m_iOrderType = ePickup;
+								kOrder.m_iEntityID = pkPickEnt->GetEntityID();								
+								pkCh->AddOrder(kOrder);
+								
 							}
 						}
 					}
 				}
-				return;			
 			}
 		}
 	}

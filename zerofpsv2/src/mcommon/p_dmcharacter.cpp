@@ -4,6 +4,7 @@
 #include "../zerofpsv2/engine_systems/propertys/p_scriptinterface.h"
 
 #include "../zerofpsv2/engine/p_pfpath.h"
+#include "p_dmhq.h"
 
 // ---- DMCharacterStats
 DMCharacterStats::DMCharacterStats()
@@ -100,7 +101,7 @@ P_DMCharacter::P_DMCharacter()
 
 
 	bNetwork = true;
-	
+	m_bNewOrder = true;
 	
 	m_pkBackPack = NULL;
 	m_pkBody =		NULL;	
@@ -348,6 +349,8 @@ void P_DMCharacter::Load(ZFIoInterface* pkPackage)
 
 void P_DMCharacter::Update()
 {
+	UpdateOrders();
+
 	if(P_PfPath* pkPF = (P_PfPath*)m_pkObject->GetProperty("P_PfPath"))
 	{
 		if(pkPF->HavePath() == false)
@@ -594,6 +597,111 @@ vector<PropertyValues> P_DMCharacter::GetPropertyValues()
 	return kReturn;
 }
 
+
+void P_DMCharacter::UpdateOrders()
+{
+	if(m_kOrderQueue.empty())
+		return;
+
+	if(HandleOrder(&m_kOrderQueue.front(),m_bNewOrder))
+	{
+		m_kOrderQueue.pop();
+		m_bNewOrder = true;
+		
+		//cout<<"order complete"<<endl;
+	}
+	else
+		m_bNewOrder = false;
+} 
+
+bool P_DMCharacter::HandleOrder(DMOrder* pkOrder,bool bNew)
+{
+	//cout<<"handling order:"<<pkOrder->m_iOrderType<<" left in queue "<<m_kOrderQueue.size()<<endl;
+	
+	switch(pkOrder->m_iOrderType)
+	{
+		case eWalk:
+			{
+				if(P_PfPath* pkPF = (P_PfPath*)m_pkObject->GetProperty("P_PfPath"))
+				{
+					//new order do pathfind
+					if(bNew)
+					{
+						pkPF->MakePathFind(pkOrder->m_kPosition);
+						return false;					
+					}
+				
+					//doing order
+					if(pkPF->HavePath())
+					{										
+						return false;					
+					}
+					else
+						return true; //order complete
+				}			
+				break;
+			}
+			
+		case ePickup:
+			{
+				if(Entity* pkPickEnt = m_pkObjMan->GetObjectByNetWorkID(pkOrder->m_iEntityID))
+				{
+					if( (pkPickEnt->GetWorldPosV() - m_pkObject->GetWorldPosV()).Length() < 1) 
+					{
+						if(pkPickEnt->GetUseZones())
+						{							
+							if(m_pkBackPack->AddItem(pkPickEnt->GetEntityID()))
+							{	
+								m_pkAudioSys->StartSound("data/sound/pick_up.wav", 
+									pkPickEnt->GetWorldPosV());
+								cout<<"Pickup an item"<<endl;
+								return true;
+							}
+							else
+							{
+								cout<<"could't pickup item"<<endl;
+								return true;
+							}
+						}
+					}
+				}
+			
+				break;
+			}
+			
+		case eEnterHQ:
+			{
+				if(Entity* pkPickEnt = m_pkObjMan->GetObjectByNetWorkID(pkOrder->m_iEntityID))
+				{
+					if(P_DMHQ* pkHQ = (P_DMHQ*)pkPickEnt->GetProperty("P_DMHQ"))
+					{
+						if( (pkPickEnt->GetWorldPosV() - m_pkObject->GetWorldPosV()).Length() < 1) 
+						{
+							pkHQ->InsertCharacter(m_pkObject->GetEntityID());
+							return true;
+						}
+						else
+						{
+							cout<<"Cant reach the door"<<endl;
+							return true;
+						}
+					}		
+				}
+				break;
+			}	
+		
+		case eAttack:
+			{
+				Shoot(pkOrder->m_kPosition);
+			
+				return true;
+			
+				break;
+			}
+	}
+	
+	return true;
+}
 
 Property* Create_P_DMCharacter()
 {

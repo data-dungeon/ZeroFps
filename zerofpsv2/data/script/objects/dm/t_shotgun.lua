@@ -22,7 +22,7 @@ function Init()
 --	SetGunBurstLenght (SIGetSelfID(), 0.1);
 	SetGunBulletsPerAmmo(SIGetSelfID(), 10);
 	SetGunDamage (SIGetSelfID(), 5);
-	SetGunRange (SIGetSelfID(), 10);
+	SetGunRange (SIGetSelfID(), 20);
 	SetGunRandom (SIGetSelfID(), 1);
 	SetGunMaxAmmo (SIGetSelfID(), 10);
 	SetGunAmmo (SIGetSelfID(), 10);

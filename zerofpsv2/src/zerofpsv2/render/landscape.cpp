@@ -633,6 +633,9 @@ void Render::SetFog(Vector4 kFogColor,float FogStart,float FogStop,bool FogEnabl
 //	glFogf(GL_FOG_DENSITY,FogDensity);
 	glFogf(GL_FOG_START,FogStart);
 	glFogf(GL_FOG_END,FogStop);	
+	
+	
+	//cout<<"PÅÅ"<<FogStart<<endl;
 }
 
 
