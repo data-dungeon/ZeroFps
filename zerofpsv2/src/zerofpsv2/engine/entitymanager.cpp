@@ -892,7 +892,7 @@ void EntityManager::PackToClients()
 	}		
 
 
-/*	// Client Network send.
+	// Client Network send.
 	if(m_pkZeroFps->m_bClientMode && !m_pkZeroFps->m_bServerMode) 
 	{
 		m_pkWorldEntity->GetAllEntitys(&kObjects, true);
@@ -901,12 +901,12 @@ void EntityManager::PackToClients()
 		m_OutNP.m_kData.m_kHeader.m_iPacketType = m_iSendType;
 		m_OutNP.TargetSetClient(0);
 		
-		PackEntityToClient(0, kObjects,false,GetClientNetSpeed(0));
+		PackEntityToClient(0, kObjects,false,m_pkZeroFps->GetConnectionSpeed());
 		m_OutNP.Write(ZFGP_ENDOFPACKET);
 		m_pkNetWork->Send2(&m_OutNP);
 		return;
 	}
-*/
+
 	// Server Network send.
 	for(iClient=0; iClient < m_pkZeroFps->m_kClient.size(); iClient++) 
 	{
