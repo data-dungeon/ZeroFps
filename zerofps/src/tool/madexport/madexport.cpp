@@ -906,7 +906,7 @@ MStatus	MadExport::Export_MX(char* filename)
 	fclose(m_pkOutFile);
 	return MStatus::kSuccess;
 }
-
+ 
 MStatus	MadExport::Export_FX(char* filename)
 {
 	m_bIsAnimation	= true;

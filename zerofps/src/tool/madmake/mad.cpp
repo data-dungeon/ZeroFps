@@ -26,46 +26,45 @@ MadExporter::~MadExporter()
 
 }
 
+void MadExporter::Save_SD(FILE* pkFp)
+{
+	int iNumOfBones = m_akSkelleton.size();
+	fwrite(&iNumOfBones, sizeof(int),1,pkFp);
+	for(int i=0; i < m_akSkelleton.size(); i++) {
+		fwrite(&m_akSkelleton[i],sizeof(Mad_CoreBone),1,pkFp);
+	}
+}
+
+void MadExporter::Save_MD(int iMeshId, FILE* pkFp)
+{
+	m_kMesh[iMeshId].Save(pkFp);
+}
+
+void MadExporter::Save_AD(int iMeshId, FILE* pkFp)
+{
+	m_kBoneAnim[iMeshId].Save(pkFp);
+}
+
+
 void MadExporter::Save_SD(const char* filename)
 {
 	FILE* fp = fopen(filename, "wb");
-	
-	int iNumOfBones = m_akSkelleton.size();
-	fwrite(&iNumOfBones, sizeof(int),1,fp);
-	for(int i=0; i < m_akSkelleton.size(); i++) {
-		fwrite(&m_akSkelleton[i],sizeof(Mad_CoreBone),1,fp);
-	}
-
+	Save_SD(fp);
 	fclose(fp);
 }
 
-void MadExporter::Save_AD(const char* filename)
+void MadExporter::Save_AD(int iMeshId, const char* filename)
 {
 	FILE* fp = fopen(filename, "wb");
-	
-	int iNumOfAnims = m_kBoneAnim.size();
-	fwrite(&iNumOfAnims, sizeof(int), 1, fp);
-	cout << "Nom of anima: "<< iNumOfAnims << endl;
-	for(int i=0; i < m_kBoneAnim.size(); i++) {
-		m_kBoneAnim[i].Save(fp);
-	}
-
+	Save_AD(iMeshId, fp);
 	fclose(fp);
 }
 
 
-void MadExporter::Save_MD(const char* filename)
+void MadExporter::Save_MD(int iMeshId, const char* filename)
 {
 	FILE* MadFp = fopen(filename, "wb");
-	if(!MadFp) {
-		cout << "Failed to open '" << filename << "' for writing" << endl;
-		return;
-		}
-
-	// Write MD
-	m_kMesh[0].Save(MadFp);
-
-
+	Save_MD(iMeshId, MadFp);
 	fclose(MadFp);
 	
 }
@@ -91,7 +90,9 @@ Mad_CoreMesh* MadExporter::GetMesh(char* ucaName)
 
 void MadExporter::Save_MAD(const char* filename)
 {
-	m_kMesh[0].CreateVertexNormals();
+	int i;
+
+//	m_kMesh[0].CreateVertexNormals();
 
 	FILE* MadFp = fopen(filename, "wb");
 	if(!MadFp) {
@@ -99,20 +100,26 @@ void MadExporter::Save_MAD(const char* filename)
 		return;
 		}
 
+	// Setup MAD Header.
+	m_kMadHeader.m_iVersionNum		= MAD_VERSION;
+	m_kMadHeader.m_iNumOfMeshes		= m_kMesh.size();
+	m_kMadHeader.m_iNumOfAnimations = m_kBoneAnim.size();
+		
 	// Write MAD Header.
-	m_kMadHeader.m_iNumOfMeshes = m_kMesh.size();
 	fwrite(&m_kMadHeader,sizeof(Mad_Header), 1, MadFp);
+	
 	// Write SD
+	Save_SD(MadFp);
 
 	// Write AD
+	for(i=0; i<m_kMadHeader.m_iNumOfAnimations; i++)
+		Save_AD(i, MadFp);
 
 	// Write MD
-	for(int i=0; i<m_kMadHeader.m_iNumOfMeshes; i++)
-		m_kMesh[i].Save(MadFp);
+	for(i=0; i<m_kMadHeader.m_iNumOfMeshes; i++)
+		Save_MD(i, MadFp);
 
 	// Write MA
-
-	// Update Mad Header.
 
 	fclose(MadFp);
 

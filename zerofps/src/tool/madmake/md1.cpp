@@ -548,6 +548,8 @@ bool ModellMD1::Export(MadExporter* mad, const char* filename)
 		pkMesh->akTextureCoo[i].t = kTextureCoo[i].t;
 	}
 
+	pkMesh->CreateRigidBoneConnections();
+
 /*	Mad_Animation* pkAnim;
 	Mad_KeyFrame kKeyFrame;
 	pkAnim = mad->GetAnimation("std");

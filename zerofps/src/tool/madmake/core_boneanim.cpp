@@ -67,7 +67,7 @@ void Mad_CoreBoneAnimation::Load(FILE* fp)
 
 	int iNumOfFrames;
 	fread(&iNumOfFrames,1,sizeof(int),fp);
-
+	cout << "Frames: " << iNumOfFrames<< endl;
 	for(int i=0; i<iNumOfFrames; i++) 
 	{
 		NewBoneKeyFrame.Clear();

@@ -15,6 +15,7 @@ class MadExporter;
 
 #define MAX_MAX_VERTEX			8192	// Max Vertex per mesh.
 
+#define MAD_VERSION				1
 
 /*
 Bas klass för alla klasser som kan importeras till MAD.
@@ -211,7 +212,11 @@ public:
 
 struct Mad_Header
 {
-	int			m_iNumOfMeshes;
+	int	m_iVersionNum;
+	
+	int	m_iNumOfMeshes;
+	int m_iNumOfAnimations;
+
 };
 
 
@@ -225,14 +230,18 @@ public:
 	~MadExporter();
 
 	vector<Mad_CoreMesh>			m_kMesh;
-	vector<Mad_CoreBone>			m_akSkelleton;
 	vector<Mad_CoreBoneAnimation>	m_kBoneAnim;
+	vector<Mad_CoreBone>			m_akSkelleton;
 	
 	Mad_CoreMesh* GetMesh(char* ucaName);
 
+	void Save_SD(FILE* pkFp);
+	void Save_MD(int iMeshId, FILE* pkFp);
+	void Save_AD(int iAnimId, FILE* pkFp);
+
 	void Save_SD(const char* filename);
-	void Save_MD(const char* filename);
-	void Save_AD(const char* filename);
+	void Save_MD(int iMeshId, const char* filename);
+	void Save_AD(int iMeshId, const char* filename);
 	void Save_MAD(const char* filename);
 };
 
