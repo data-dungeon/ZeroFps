@@ -6,6 +6,7 @@
 #include "../engine_systems/propertys/p_primitives3d.h"
 #include "../engine_systems/propertys/p_track.h"
 #include "../engine_systems/propertys/p_mad.h"
+#include "../engine_systems/propertys/p_tcs.h"
 #include "../engine_systems/propertys/p_physic.h"
 #include "fh.h"
 #include "../engine_systems/script_interfaces/si_objectmanager.h"
@@ -2330,6 +2331,7 @@ void EntityManager::SetZoneModel(const char* szName,int iId)
 	if(pp)
 	{
 		pp->SetPolygonTest(true);	
+		pp->SetStatic(true);			
 		pp->SetRefetchPolygonData();
 		pp->SetGroup(0);
 	}

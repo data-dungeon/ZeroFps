@@ -681,6 +681,13 @@ void Entity::PackTo(NetPacket* pkNetPacket, int iConnectionID)
 		pkNetPacket->Write(m_kVel);
 	}
 	
+	//send acceleration
+	if(GetNetUpdateFlag(iConnectionID,NETUPDATEFLAG_ACC))	
+	{
+		SetNetUpdateFlag(iConnectionID,NETUPDATEFLAG_ACC,false);	
+		pkNetPacket->Write(m_kAcc);
+	}
+
 	
 	//send radius
 	if(GetNetUpdateFlag(iConnectionID,NETUPDATEFLAG_RADIUS))	
@@ -802,9 +809,18 @@ void Entity::PackFrom(NetPacket* pkNetPacket, int iConnectionID)
 	{
 		Vector3 kVel;
 		pkNetPacket->Read(kVel);
-		GetVel()=kVel;
+		SetVel(kVel);
 		LOGSIZE("Object::Velocity", sizeof(kVel));
 	}
+	
+	//get acceleration	
+	if(GetNetUpdateFlag(0,NETUPDATEFLAG_ACC))
+	{
+		Vector3 kAcc;
+		pkNetPacket->Read(kAcc);
+		SetAcc(kAcc);
+		LOGSIZE("Object::Acceleration", sizeof(kAcc));
+	}	
 	
 	//get radius
 	if(GetNetUpdateFlag(0,NETUPDATEFLAG_RADIUS))	
@@ -1262,6 +1278,17 @@ void Entity::SetVel(Vector3 kVel)
 	
 	SetNetUpdateFlag(NETUPDATEFLAG_VEL,true);
 }
+
+void Entity::SetAcc(Vector3 kAcc)
+{
+	if(m_kAcc == kAcc)
+		return;
+		
+	m_kAcc = kAcc;
+	
+	SetNetUpdateFlag(NETUPDATEFLAG_ACC,true);
+}
+
 
 void Entity::SetRelativeOri(bool bRO)
 {	

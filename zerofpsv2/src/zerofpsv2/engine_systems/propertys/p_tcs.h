@@ -5,7 +5,7 @@
 #include <vector>
 #include "../engine_systems_x.h"
 
-#include "../tcs/tcs.h"
+//#include "../tcs/tcs.h"
 #include "p_mad.h"
 
 #define TCS_GROUPS 10
@@ -30,13 +30,22 @@ class ENGINE_SYSTEMS_API P_Tcs : public Property
 		Tcs*	m_pkTcs;
 			
 		bool	m_bPolygonTest;
+		bool	m_bStatic;		
 		float	 m_fRadius;						
 		bool	m_bHavePolygonData;
 		bool	m_bGravity;
 		bool	m_bCharacter;
 		int	 m_iGroup;				
-		float  m_fLegLength;
+		float  m_fLegLength;		
+		float	 m_fMass;
+      bool	m_bOnGround;
+      
+      Vector3	m_kRotVel;
+		Vector3 m_kWalkVel;
 		
+		
+		
+		//test flags
 		bitset<TCS_GROUPS>	m_akTestGroups;
 		bitset<TCS_GROUPS>	m_akWalkableGroups;		
 		
@@ -50,10 +59,12 @@ class ENGINE_SYSTEMS_API P_Tcs : public Property
 		vector<Vector3>*		 m_pkNormal;
 
 		//temp data
+		Vector3	m_kVelocity;
+		Vector3	m_fAcceleration;
+		Vector3	m_kForces;
 		Vector3	m_kNewPos;
+		
 		Vector3	m_kMSPos;
-      Vector3 m_kRotVel;
-
 		float		m_fMSRadius;	
 
 		vector<PropertyValues> GetPropertyValues();
@@ -68,7 +79,6 @@ class ENGINE_SYSTEMS_API P_Tcs : public Property
 		
 		void Init();
 
-      void SetRotVel (Vector3 kRotVel)    { m_kRotVel = kRotVel; }
 		
 		void CloneOf(Property* pkProperty) { }		
 		void Update();
@@ -88,10 +98,16 @@ class ENGINE_SYSTEMS_API P_Tcs : public Property
 		bool CheckWalkGroupFlag(int iFlag) {return m_akWalkableGroups[iFlag];};
 		void SetWalkGroupFlag(int iFlag,bool bValue) {m_akWalkableGroups[iFlag] = bValue;};		
 		
+		Vector3 GetWalkVel() { return m_kWalkVel;}; 
+		void SetWalkVel(Vector3 kWalkVel) { m_kWalkVel = kWalkVel;};
+		
+      void SetRotVel (Vector3 kRotVel)    { m_kRotVel = kRotVel; }		
 		void SetPolygonTest(bool t) {m_bPolygonTest = t;};
 		void SetRadius(float t) {m_fRadius = t;};
+		void SetStatic(bool bStatic) {m_bStatic = bStatic;};		
 		void SetRefetchPolygonData() {m_bHavePolygonData = false;};
 		void SetGravity(bool t) {m_bGravity = t;};
+		bool GetOnGround() { return m_bOnGround;};
 		
 		friend class Tcs;
 };

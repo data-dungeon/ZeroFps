@@ -1,4 +1,6 @@
 #include "p_clientcontrol.h" 
+#include "../zerofpsv2/engine_systems/propertys/p_tcs.h"
+
 
 queue<ClientOrder> P_ClientControl::m_kServerOrders;
 
@@ -134,36 +136,42 @@ void P_ClientControl::UpdateCharacter()
 	
 	if(pkEnt)
 	{
-		//setup rotation
-		Matrix3 temp;
-		temp.Identity();
-		temp.RadRotate(0,m_kControls.m_fYRot,0);
-		pkEnt->SetLocalRotM(temp);
+		P_Tcs* tcs = (P_Tcs*)pkEnt->GetProperty("P_Tcs");
+		if(tcs)	
+		{
+			//setup rotation
+			Matrix3 temp;
+			temp.Identity();
+			temp.RadRotate(0,m_kControls.m_fYRot,0);
+			pkEnt->SetLocalRotM(temp);
 		
 		
-//		Vector3 kVel  pkEnt->GetVel();
-		
-		Vector3 kVel;
-		kVel.Set(0,0,0);
-		
-		if(m_kControls.m_akControls[CTRL_UP])
-			kVel.z = 1;
-		
-		if(m_kControls.m_akControls[CTRL_DOWN])
-			kVel.z = -1;
+			Vector3 kVel(0,0,0);
 
-		if(m_kControls.m_akControls[CTRL_LEFT])
-			kVel.x = 1;
+			if(m_kControls.m_akControls[CTRL_UP])
+				kVel.z += 1;
+	
+			if(m_kControls.m_akControls[CTRL_DOWN])
+				kVel.z += -1;
 
-		if(m_kControls.m_akControls[CTRL_RIGHT])
-			kVel.x = -1;
+			if(m_kControls.m_akControls[CTRL_LEFT])
+				kVel.x += 1;
 
-		kVel = temp.VectorTransform(kVel) * 4;
+			if(m_kControls.m_akControls[CTRL_RIGHT])
+				kVel.x += -1;
+
+			if(kVel.Length() > 0)
+				kVel.Normalize();
+			
+			float fSpeed = 10;
+			
+			if(!tcs->GetOnGround())
+				fSpeed /= 4;
+			
+			kVel = temp.VectorTransform(kVel) * fSpeed;
 		
-		//setup y spd
-		kVel.y = pkEnt->GetVel().y;
-		
-		pkEnt->SetVel(kVel);
+			tcs->SetWalkVel(kVel);
+		}
 	}
 }
 

@@ -368,7 +368,6 @@ void ZeroFps::Run_Client()
 	//update new super duper rigid body physics engine deluxe
 	m_pkPhysics_Engine->Update(GetFrameTime());	
 
-
 	if(g_iLogRenderPropertys) {
 		m_pkObjectMan->DumpActiverPropertysToLog("PROPERTY_TYPE_RENDER,PROPERTY_SIDE_CLIENT,true");
 		g_iLogRenderPropertys = 0;
@@ -444,7 +443,7 @@ void ZeroFps::Update_System(bool bServer)
 			
 	
 				//update Tiny Collission system
-				m_pkTcs->Update();	
+				m_pkTcs->Update(m_fGameFrameTime);	
 				
 			}	
 		}

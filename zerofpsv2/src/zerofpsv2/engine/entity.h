@@ -46,6 +46,7 @@ enum NetUpdateFlags
 	NETUPDATEFLAG_DELETE =			8,		
 	NETUPDATEFLAG_RELPOS =			9,		
 	NETUPDATEFLAG_INTERPOLATE =	10,			
+	NETUPDATEFLAG_ACC =				11,				
 };
 
 /*
@@ -92,7 +93,7 @@ public:
 #define OBJ_NETFLAG_ROT		2
 #define OBJ_NETFLAG_DEL		4
 
-#define MAX_NETUPDATEFLAGS	11
+#define MAX_NETUPDATEFLAGS	12
 
 #define MAX_ENTITY_VARIABLENAME	64
 
@@ -350,6 +351,7 @@ class ENGINE_API Entity
 		void			ResetChildsGotData();
 
 		void			SetVel(Vector3 kVel);
+		void			SetAcc(Vector3 kAcc);		
 		void			SetName(string strName);
 		void			SetType(string strType);		
 		void			SetRadius(float fRadius);
@@ -365,7 +367,7 @@ class ENGINE_API Entity
 		inline ZFResourceHandle* GetObjectScript()  { return m_pScriptFileHandle;};
 		
 		inline Vector3 GetVel()					{	return m_kVel;				};		
-		inline Vector3& GetAcc()					{	return m_kAcc;				};
+		inline Vector3 GetAcc()					{	return m_kAcc;				};
 		inline float GetRadius()					{	return m_fRadius;			};		
 		inline Vector3* GetVelPointer()			{	return &m_kVel;			};		
 		inline Vector3* GetAccPointer()			{	return &m_kAcc;			};
@@ -386,7 +388,7 @@ class ENGINE_API Entity
 		double GetVarDouble(string& strName);
 		string GetVarString(string& strName);
 		void	 SetVarDouble(string& strName, double fValue);
-		void	 SetVarString(string& strName, string strValue);
+		void	 SetVarString(string& strName, string strValue);		
 		void	 AddVarDouble(string strName, double fValueToAdd);
 
 		friend class EntityManager;

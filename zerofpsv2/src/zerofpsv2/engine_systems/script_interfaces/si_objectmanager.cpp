@@ -3,6 +3,7 @@
 #include "../../engine/entitymanager.h"
 #include "../../engine_systems/propertys/p_mad.h"
 #include "../../script/zfscript.h"
+#include "../propertys/p_tcs.h"
 
 namespace ObjectManagerLua
 {

@@ -1,5 +1,5 @@
 #include "p_tcs.h"
-#include "p_mad.h"
+//#include "p_mad.h"
 
 
 P_Tcs::P_Tcs()
@@ -25,14 +25,16 @@ P_Tcs::P_Tcs()
 	m_pkVertex =			NULL;	
 	m_pkNormal =			NULL;	
 	m_iModelID=				0;
-
+	m_fMass=					1;
+	m_bStatic=				false;
 	m_iGroup=				0;
+	m_bOnGround=			false;
 	
 	ResetGroupFlags();
 	ResetWalkGroupFlags();
 
-   m_kRotVel = Vector3(0,0,0);
-	
+   m_kRotVel.Set(0,0,0);
+	m_kWalkVel.Set(0,0,0);
 }
 
 P_Tcs::~P_Tcs()
@@ -89,6 +91,11 @@ void P_Tcs::Save(ZFIoInterface* pkPackage)
 	pkPackage->Write((void*)&m_bGravity,sizeof(m_bGravity),1);			
 	pkPackage->Write((void*)&m_bCharacter,sizeof(m_bCharacter),1);				
 	pkPackage->Write((void*)&m_fLegLength,sizeof(m_fLegLength),1);					
+	
+	pkPackage->Write((void*)&m_fMass,sizeof(m_fMass),1);						
+	pkPackage->Write((void*)&m_bStatic,sizeof(m_bStatic),1);						
+	pkPackage->Write((void*)&m_kWalkVel,sizeof(m_kWalkVel),1);							
+	pkPackage->Write((void*)&m_kRotVel,sizeof(m_kRotVel),1);								
 }
 
 void P_Tcs::Load(ZFIoInterface* pkPackage)
@@ -102,11 +109,18 @@ void P_Tcs::Load(ZFIoInterface* pkPackage)
 	pkPackage->Read((void*)&m_bGravity,sizeof(m_bGravity),1);			
 	pkPackage->Read((void*)&m_bCharacter,sizeof(m_bCharacter),1);				
 	pkPackage->Read((void*)&m_fLegLength,sizeof(m_fLegLength),1);					
+
+	pkPackage->Read((void*)&m_fMass,sizeof(m_fMass),1);						
+	pkPackage->Read((void*)&m_bStatic,sizeof(m_bStatic),1);						
+	pkPackage->Read((void*)&m_kWalkVel,sizeof(m_kWalkVel),1);							
+	pkPackage->Read((void*)&m_kRotVel,sizeof(m_kRotVel),1);								
+	
+
 }
 
 vector<PropertyValues> P_Tcs::GetPropertyValues()
 {
-	vector<PropertyValues> kReturn(9);
+	vector<PropertyValues> kReturn(11);
 
 	int dummy;
 
@@ -145,6 +159,14 @@ vector<PropertyValues> P_Tcs::GetPropertyValues()
 	kReturn[8].kValueName="walkablegroupflag";
 	kReturn[8].iValueType=VALUETYPE_INT;
 	kReturn[8].pkValue=(void*)&dummy;
+	
+	kReturn[9].kValueName="mass";
+	kReturn[9].iValueType=VALUETYPE_FLOAT;
+	kReturn[9].pkValue=(void*)&m_fMass;	
+	
+	kReturn[10].kValueName="static";
+	kReturn[10].iValueType=VALUETYPE_BOOL;
+	kReturn[10].pkValue=(void*)&m_bStatic;	
 	
 	return kReturn;
 }

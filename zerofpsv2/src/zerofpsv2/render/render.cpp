@@ -210,7 +210,7 @@ void Render::Sphere(Vector3 kPos,float fRadius,int iRes,Vector3 kColor,bool bSol
 	glPushMatrix();
 	
 		glTranslatef(kPos.x,kPos.y,kPos.z);
-		float scale = fRadius/2;
+		float scale = fRadius;
 		glScalef(scale,scale,scale);
 		
 		for (int i = 0; i < 20; i++) {    
