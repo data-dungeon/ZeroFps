@@ -12,9 +12,8 @@
 class MCOMMON_API ItemStats
 {
 private:
-	float m_fQuality;
-
 	ItemType *m_pkItemType;
+
 	
 
 };

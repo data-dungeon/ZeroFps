@@ -1,6 +1,7 @@
 #ifndef ITEMDATABASE_H
 #define ITEMDATABASE_H
 
+#include "../../mcommon_x.h"
 #include <map>
 #include <string>
 	using namespace std;
@@ -11,7 +12,7 @@ struct ItemType
 	float m_fWeight;  //kg
 	int m_iValue;     // gold value
    int m_iAntal;     // how many in a heap from start
-
+/*
    // when equipped
 	map<string, float> m_kStatModifier_equipped;
 	map<string, float> m_kAttributeModifier_equipped;
@@ -25,11 +26,11 @@ struct ItemType
    map<string, float> m_kDefence_unequipped;
 
    vector<string> m_kEquippableOn;
-
+*/
 };
 
 
-class RULESYSTEM_API ItemDataBase
+class MCOMMON_API ItemDataBase
 {
 private:
 	map<string, ItemType> m_kItemType;
