@@ -5,7 +5,7 @@
 #include "globals.h"
 
 //extern ZFSystem g_ZFObjSys;
-
+  
 using namespace std;
 
 BasicConsole::BasicConsole(char* szName)

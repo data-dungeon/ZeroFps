@@ -66,8 +66,8 @@ LevelManager::LevelManager(): ZFObject("LevelManager")
 
 void LevelManager::CreateEmptyLevel(int iSize)
 {
-//	CreateNew(iSize);
-//	CreateZones();
+	CreateNew(iSize);
+	CreateZones();
 }
 
 void LevelManager::Clear() 
@@ -226,14 +226,14 @@ bool LevelManager::LoadLevel(const char* acFile)
 		m_pkConsole->Printf("Error loading heightmap");
 		return false;
 	};	
-/*	
+	
 	//load textures
 	m_pkMap->ClearSet();
 	m_pkMap->AddSet("../data/textures/nodetail1.bmp","../data/textures/detail1.bmp","FEL");
 	m_pkMap->AddSet("../data/textures/nodetail2.bmp","../data/textures/detail2.bmp",(kBase+"mask1.tga").c_str());
 	m_pkMap->AddSet("../data/textures/nodetail3.bmp","../data/textures/detail3.bmp",(kBase+"mask2.tga").c_str());		
 	m_pkMap->AddSet("../data/textures/nodetail4.bmp","../data/textures/detail4.bmp",(kBase+"mask3.tga").c_str());	
-*/	
+
 	
 	//create zoneobjects
 	CreateZones();		
@@ -291,7 +291,7 @@ bool LevelManager::SaveLevel(const char* acFile)
 	kHmfile+="/";
 	kHmfile+=acFile;
 	kHmfile+="/";	
-	kHmfile+="heightmap";
+//	kHmfile+="heightmap";
 
 	kZolfile=m_kMapBaseDir;
 	kZolfile+="/";
@@ -417,7 +417,7 @@ void LevelManager::SetupWorld()
 	
 	Water(m_kWIP.m_bWater);
 	
-	SkyBox(m_kWIP.m_kSkyBoxHor.c_str(),m_kWIP.m_kSkyBoxTop.c_str(),m_kWIP.m_kSkyBoxRotate);
+//	SkyBox(m_kWIP.m_kSkyBoxHor.c_str(),m_kWIP.m_kSkyBoxTop.c_str(),m_kWIP.m_kSkyBoxRotate);
 	
 	SetSunColor(m_kWIP.m_kSunColor);
 	SetMoonColor(m_kWIP.m_kMoonColor);	

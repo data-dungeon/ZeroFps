@@ -417,7 +417,7 @@ bool HeightMap::Save(const char* acFile) {
 	
 	//hm file
 	string hmfile = acFile;
-	hmfile+=".hm";
+	hmfile+="heightmap.hm";
 	
 	//setup fileheader
 	HM_fileheader k_Fh;
@@ -443,7 +443,7 @@ bool HeightMap::Save(const char* acFile) {
 		for(int i=1;i<m_kSets.size();i++)
 		{
 			string file=acFile;
-			file += ".mask.";
+			file += "mask";
 			char nr[5] = "    ";
 			IntToChar(nr,i+1);
 			file+=nr;

@@ -23,8 +23,8 @@ CFG=render - Win32 Debug
 
 # Begin Project
 # PROP AllowPerConfigDependencies 0
-# PROP Scc_ProjName ""
-# PROP Scc_LocalPath ""
+# PROP Scc_ProjName "render"
+# PROP Scc_LocalPath ".."
 CPP=cl.exe
 MTL=midl.exe
 RSC=rc.exe
@@ -57,7 +57,7 @@ LINK32=link.exe
 # Begin Special Build Tool
 ProjDir=.
 SOURCE="$(InputPath)"
-PostBuild_Cmds=copy               $(ProjDir)\release\*.lib               ..\..\..\bin\ 
+PostBuild_Cmds=copy                $(ProjDir)\release\*.lib                ..\..\..\bin\ 
 # End Special Build Tool
 
 !ELSEIF  "$(CFG)" == "render - Win32 Debug"
@@ -88,7 +88,7 @@ LINK32=link.exe
 # Begin Special Build Tool
 ProjDir=.
 SOURCE="$(InputPath)"
-PostBuild_Cmds=copy               $(ProjDir)\debug\*.lib               ..\..\..\bin\ 
+PostBuild_Cmds=copy                $(ProjDir)\debug\*.lib                ..\..\..\bin\ 
 # End Special Build Tool
 
 !ENDIF 

@@ -7,6 +7,10 @@ Project: "basic"=.\zerofpsv2\basic\basic.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
+    begin source code control
+    basic
+    .\zerofpsv2\basic
+    end source code control
 }}}
 
 Package=<4>
@@ -19,6 +23,10 @@ Project: "engine"=.\zerofpsv2\engine\engine.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
+    begin source code control
+    engine
+    .\zerofpsv2
+    end source code control
 }}}
 
 Package=<4>
@@ -46,6 +54,10 @@ Project: "gui"=.\zerofpsv2\gui\gui.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
+    begin source code control
+    gui
+    .\zerofpsv2\gui
+    end source code control
 }}}
 
 Package=<4>
@@ -67,6 +79,10 @@ Project: "mcommon"=.\mcommon\mcommon.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
+    begin source code control
+    mcommon
+    .\mcommon
+    end source code control
 }}}
 
 Package=<4>
@@ -79,6 +95,10 @@ Project: "mistclient"=.\mistclient\mistclient.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
+    begin source code control
+    mistclient
+    ..
+    end source code control
 }}}
 
 Package=<4>
@@ -97,6 +117,10 @@ Project: "mistserver"=.\mistserver\mistserver.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
+    begin source code control
+    mistserver
+    ..
+    end source code control
 }}}
 
 Package=<4>
@@ -115,6 +139,10 @@ Project: "physics_engine"=.\zerofpsv2\physics_engine\physics_engine.dsp - Packag
 
 Package=<5>
 {{{
+    begin source code control
+    physics_engine
+    .\zerofpsv2\physics_engine
+    end source code control
 }}}
 
 Package=<4>
@@ -130,6 +158,10 @@ Project: "render"=.\zerofpsv2\render\render.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
+    begin source code control
+    render
+    .\zerofpsv2
+    end source code control
 }}}
 
 Package=<4>
@@ -145,6 +177,10 @@ Project: "script"=.\zerofpsv2\script\script.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
+    begin source code control
+    script
+    .\zerofpsv2\script
+    end source code control
 }}}
 
 Package=<4>
@@ -160,6 +196,10 @@ Project: "src"=.\src.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
+    begin source code control
+    src
+    .
+    end source code control
 }}}
 
 Package=<4>
