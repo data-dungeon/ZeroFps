@@ -27,10 +27,10 @@
 #include "../mcommon/p_clientcontrol.h"
 
 #include "inventorydlg.h"
+#include "hencheman_button.h"
 
 class MistClient :public Application, public ZGuiApp {
 	private:
-		
 		// actions
 		int 			m_iActionCamLeft;
 		int 			m_iActionCamRight;
@@ -77,8 +77,14 @@ class MistClient :public Application, public ZGuiApp {
 		Object*	GetTargetObject();	
 		
 		InventoryDlg*	  m_pkInventDlg;
+		void CreateGuiInterface();
 
 		Object* m_pkActiveCharacter;
+
+		vector<HenchmanButton*> m_vkHenchmanIcons;
+		HenchmanButton* m_pkSelHenchmanIcon;
+
+		void UpdateObjectList(PlayerInfo* pkPlayerInfo);
 
 	public:
 		void PickUp();
@@ -119,7 +125,6 @@ class MistClient :public Application, public ZGuiApp {
 		bool IsValid();
 
 		ZFScriptSystem* GetScript() { return pkScript; }
-
 };
 
 
