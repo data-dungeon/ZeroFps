@@ -5,7 +5,6 @@ function Create()
 			InitParameter("m_kMadFile","/data/mad/member.mad");			
 			InitParameter("m_fScale","1");		
 
-		InitProperty("P_DMGun");
 		InitProperty("P_PfPath");
 		InitProperty("P_Track");
 		InitProperty("P_DMCharacter");
