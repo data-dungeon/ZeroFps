@@ -17,7 +17,8 @@ class Console {
 		Primitives* m_pkPrims;
 		TextureManager* m_pkTexMan;
 		Input* m_pkInput;
-
+		
+		SDL_Event m_kEvent;
 		vector<char*> m_kText;
 		char m_aCommand[TEXT_MAX_LENGHT];
 		int m_iBufferSize;

@@ -86,42 +86,11 @@ void Primitives::Pyra(float x,float y,float z) {
 }
 
 void Primitives::PrintChar(char cChar) {
-	char* aTexture;
-	
-	aTexture=NULL;
-	
-	switch(cChar) {
-	
-		case '1':
-			aTexture="data/textures/text/1.bmp";break;
-		case '2':
-			aTexture="data/textures/text/2.bmp";break;
-		case '3':
-			aTexture="data/textures/text/3.bmp";break;
-		case '4':
-			aTexture="data/textures/text/4.bmp";break;
-		case '5':
-			aTexture="data/textures/text/5.bmp";break;
-		case '6':
-			aTexture="data/textures/text/6.bmp";break;
-		case '7':
-			aTexture="data/textures/text/7.bmp";break;
-		case '8':
-			aTexture="data/textures/text/8.bmp";break;
-		case '9':
-			aTexture="data/textures/text/9.bmp";break;
-		case '0':
-			aTexture="data/textures/text/0.bmp";break;
+	char aTexture[]="data/textures/text/ .bmp";
 		
-		case '+':
-			aTexture="data/textures/text/+.bmp";break;
-		case '-':
-			aTexture="data/textures/text/-.bmp";break;
-	
-	
-	}
-			
-	if(aTexture!=NULL)
+	aTexture[19]=cChar;
+				
+	if(aTexture[19]!=' ')
 		Quad(Vector3(0,0,0),Vector3(0,0,0),Vector3(1,1,1),m_pkTexMan->Load(aTexture));
 
 

@@ -26,7 +26,7 @@ void Console::Draw(void) {
 	m_pkPrims->Quad(Vector3(0,0,-.50),Vector3(0,0,0),Vector3(1,1,1),m_pkTexMan->Load("data/textures/background.bmp"));
 
 	
-	for(int i=0;i<15;i++) {
+	for(int i=0;i<22;i++) {
 		if(m_kText[i]!=NULL){
 			m_pkPrims->Print(Vector3(-0.45,-0.40+i/(float)25,-0.499),Vector3(0,0,0),Vector3(.03,.03,.03),m_kText[i]);		
 		}
