@@ -101,11 +101,13 @@ void MadView::Input()
 
 		Point curr_pos;
 		m_pkInputHandle->SDLMouseXY(curr_pos.x, curr_pos.y);
-
-		if(abs(curr_pos.x - press_pos2.x + prev_y2) > abs(curr_pos.y - press_pos2.y + prev_x2))
-			kCamerPos.x += (float)(curr_pos.x - press_pos2.x + prev_y2) / 10000.0f;
-		else
-			kCamerPos.z += (float)(curr_pos.y - press_pos2.y + prev_x2) / 5000.0f;
+		if(press_pos2 != curr_pos)
+		{
+			if(abs(curr_pos.x - press_pos2.x + prev_y2) > abs(curr_pos.y - press_pos2.y + prev_x2))
+				kCamerPos.x += (float)(curr_pos.x - press_pos2.x + prev_y2) / 10000.0f;
+			else
+				kCamerPos.z += (float)(curr_pos.y - press_pos2.y + prev_x2) / 5000.0f;
+		}
 	}
 	else
 	{
@@ -128,8 +130,8 @@ void MadView::Input()
 
 		Point curr_pos;
 		m_pkInputHandle->SDLMouseXY(curr_pos.x, curr_pos.y);
-
-		kCamerPos.y += (float)(curr_pos.y - press_pos3.y + prev_x3) / 5000.0f;
+		if(press_pos3 != curr_pos)
+			kCamerPos.y += (float)(curr_pos.y - press_pos3.y + prev_x3) / 5000.0f;
 	}
 	else
 	{

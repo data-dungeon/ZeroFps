@@ -261,15 +261,12 @@ void MadView::RunCommand(int cmdid, const CmdArgument* kCommand)
 
 			if(toogle)
 			{
-				GetWnd("MadViewInfoBkWnd")->GetSkin()->m_afBkColor[0] = 0.25f;
-				GetWnd("MadViewInfoBkWnd")->GetSkin()->m_afBkColor[1] = 0.25f;
-				GetWnd("MadViewInfoBkWnd")->GetSkin()->m_afBkColor[2] = 0.25f;
+				GetWnd("MadViewInfoWnd")->GetSkin()->m_bTransparent = false;
+
 			}
 			else
 			{
-				GetWnd("MadViewInfoBkWnd")->GetSkin()->m_afBkColor[0] = 0.0f;
-				GetWnd("MadViewInfoBkWnd")->GetSkin()->m_afBkColor[1] = 0.0f;
-				GetWnd("MadViewInfoBkWnd")->GetSkin()->m_afBkColor[2] = 0.0f;		
+				GetWnd("MadViewInfoWnd")->GetSkin()->m_bTransparent = true;
 			}
 
 			toogle = !toogle;		

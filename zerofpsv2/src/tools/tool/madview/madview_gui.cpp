@@ -21,7 +21,6 @@ void MadView::SetupGuiEnviroment()
 		m_pkTexMan->Load("data/textures/gui/tn_po.tga", 0);
 
 	GetWnd("SelectFileWnd")->m_bUseAlhpaTest = false;
-	GetWnd("MadViewInfoBkWnd")->Disable();
 }
 
 void MadView::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
