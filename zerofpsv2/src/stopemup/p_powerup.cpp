@@ -78,7 +78,7 @@ P_Powerup::P_Powerup()
 				break;
 		
 			case 2:
-				if(iLevel >= 12 )
+				if(iLevel >= 12 && iLevel <=30)
 				{
 					m_iPowerupType = iRand;
 					m_strPowerupName = "Flash Gun";	

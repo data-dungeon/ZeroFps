@@ -16,15 +16,24 @@ P_Gun::P_Gun()
 	
 	m_bFire = false;
 	
-	m_fFireDelay = 0.2;
-	m_fLastFire = 0;
-	m_fBulletVel = 20;
+	m_fAngle			= 	45;
+	m_iProjectiles = 	1;
+	m_fFireDelay = 	0.2;
+	m_fLastFire = 		0;
+	m_fBulletVel = 	20;
 	m_strProjectile = "";
-	m_iDamage = 1;
-	m_strSound = "data/sound/auto_gun.wav";
+	m_iDamage = 		1;
+	m_strSound = 		"data/sound/auto_gun.wav";
 	m_strDirectHitObject = "data/script/objects/bullethit.lua";
 }
 
+void P_Gun::SetSound(string strSound)
+{
+	if(P_Sound* pkSound = (P_Sound*)GetEntity()->GetProperty("P_Sound"))
+		pkSound->StopSound(m_strSound);
+		
+	m_strSound = strSound;
+}
 
 void P_Gun::Update()
 {
@@ -55,30 +64,40 @@ void P_Gun::Update()
 
 void P_Gun::FireBullet()
 {
+		//play fire sound
+	if(P_Sound* pkSound = (P_Sound*)GetEntity()->GetProperty("P_Sound"))
+		pkSound->StartSound(m_strSound,true);
+
 	//projectile weapon
 	if(!m_strProjectile.empty())
 	{
-		if(Entity* pkBullet = m_pkEntityManager->CreateEntityFromScriptInZone(m_strProjectile.c_str(),GetEntity()->GetWorldPosV(),GetEntity()->GetCurrentZone()))
-		{
-			pkBullet->SetVarDouble("owner",GetEntity()->GetEntityID());
-			
-			if(P_Tcs* pkTcs = (P_Tcs*)pkBullet->GetProperty("P_Tcs"))
-			{
-			
-				Vector3 kDir = GetEntity()->GetWorldRotM().VectorTransform(Vector3(0,0,1));
-			
-				pkTcs->SetLinVel(kDir*m_fBulletVel);	
-			}
-		}
+		float fAngleDif = m_fAngle / (m_iProjectiles-1);		
+		float fCurrentAngle = -(m_fAngle/2.0);
+		Matrix4 kRot;
 		
+		for(int i = 0;i < m_iProjectiles;i++)
+		{		
+			if(Entity* pkBullet = m_pkEntityManager->CreateEntityFromScriptInZone(m_strProjectile.c_str(),GetEntity()->GetWorldPosV(),GetEntity()->GetCurrentZone()))
+			{
+				pkBullet->SetVarDouble("owner",GetEntity()->GetEntityID());
+				
+				if(P_Tcs* pkTcs = (P_Tcs*)pkBullet->GetProperty("P_Tcs"))
+				{
+					kRot =  GetEntity()->GetWorldRotM();
+					kRot.Rotate(0,fCurrentAngle,0);
+					
+					Vector3 kDir = kRot.VectorTransform(Vector3(0,0,1));
+				
+					pkTcs->SetLinVel(kDir*m_fBulletVel);	
+				}
+			}
+			
+			fCurrentAngle+=fAngleDif;
+		}		
 	}
 	//direct hit
 	else
 	{
-		//play fire sound
-		if(P_Sound* pkSound = (P_Sound*)GetEntity()->GetProperty("P_Sound"))
-			pkSound->StartSound(m_strSound,true);
-	
 	
 		Matrix4 kRot = GetEntity()->GetWorldRotM();
 		kRot.Rotate(Randomf(8)-4,Randomf(8)-4,Randomf(8)-4);

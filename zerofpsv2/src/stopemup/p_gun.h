@@ -8,7 +8,8 @@ class P_Gun : public Property
 {
 	private:
 		float m_fLastFire;
-	
+		
+		string	m_strSound;
 		
 		void FireBullet();
 		
@@ -19,13 +20,14 @@ class P_Gun : public Property
 		int		m_iDamage;
 		string 	m_strProjectile;
 		string	m_strDirectHitObject;
-		string	m_strSound;
+		int		m_iProjectiles;
+		float		m_fAngle;
 		
 		P_Gun();
 	
 		
 		void Update();
-
+		void SetSound(string strSound);
 };
 
 

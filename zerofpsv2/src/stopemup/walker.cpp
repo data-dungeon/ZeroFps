@@ -230,7 +230,7 @@ void P_Walker::Touch(int iID)
 			}		
 		}
 	
-		//hit by bullet
+		//hit by flashgun bullet
 		if(pkEnt->GetType() == "bullet.lua")
 		{
 			if(iID == iLastHit)
@@ -242,6 +242,20 @@ void P_Walker::Touch(int iID)
 			Damage(30,iOwner);
 			m_pkEntityManager->Delete(pkEnt);
 		}
+	
+		//hit by flashgun bullet
+		if(pkEnt->GetType() == "spreadgun-bullet.lua")
+		{
+			if(iID == iLastHit)
+				return;			
+			iLastHit = iID;
+				
+			int iOwner = pkEnt->GetVarDouble("owner");
+		
+			Damage(20,iOwner);
+			m_pkEntityManager->Delete(pkEnt);
+		}
+	
 	}
 }
 
