@@ -989,16 +989,18 @@ void MistServer::OnNetworkMessage(NetPacket *PkNetMessage)
 			int iTargetContainer;
 			int iPosX;
 			int iPosY;
+			int iCount;
 			
 			PkNetMessage->Read(iItemID);
 			PkNetMessage->Read(iTargetContainer);
 			PkNetMessage->Read(iPosX);
 			PkNetMessage->Read(iPosY);			
+			PkNetMessage->Read(iCount);			
 		
-			P_Container*	pkTargetContainer = NULL;
-			P_Container*	pkInContainer = NULL;
-			P_Item* 			pkItem = NULL;
-			Entity*			pkCharacter = NULL;
+			P_Container*	pkTargetContainer = 	NULL;
+			P_Container*	pkInContainer = 		NULL;
+			P_Item* 			pkItem = 				NULL;
+			Entity*			pkCharacter = 			NULL;
 			
 			//get container
 			if(Entity* pkContainerEnt = m_pkEntityManager->GetEntityByID(iTargetContainer))

@@ -79,7 +79,7 @@ class MistClient :public Application, public ZGuiApp {
 		//general network sends
 		void SendAction(int iEntityID,const string& strAction);
 		void SendRequestContainer(int iContainerID);		
-		void SendMoveItem(int iItemID,int iTarget,int iPosX,int iPosY);	
+		void SendMoveItem(int iItemID,int iTarget,int iPosX,int iPosY,int iCount = -1);	
 			/*SendMoveItem hjälp.
 				iItemID : alltid entity id't för itemet i fråga
 				iTraget : target container entity ID , om -1 så antas i spelarens inventory

@@ -1116,7 +1116,7 @@ void MistClient::SendRequestContainer(int iContainerID)
 	SendAppMessage(&kNp);			
 }
 
-void MistClient::SendMoveItem(int iItemID,int iTarget,int iPosX,int iPosY)
+void MistClient::SendMoveItem(int iItemID,int iTarget,int iPosX,int iPosY,int iCount)
 {
 	NetPacket kNp;			
 	kNp.Write((char) MLNM_CS_MOVE_ITEM);
@@ -1125,6 +1125,7 @@ void MistClient::SendMoveItem(int iItemID,int iTarget,int iPosX,int iPosY)
 	kNp.Write(iTarget);
 	kNp.Write(iPosX);
 	kNp.Write(iPosY);
+	kNp.Write(iCount);
 	
 	kNp.TargetSetClient(0);
 	SendAppMessage(&kNp);			
