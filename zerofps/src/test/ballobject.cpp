@@ -3,7 +3,7 @@
 BallObject::BallObject(HeightMap *pkMap,ZeroFps *pkFps) {
 	SetPropertyFactory(&pkFps->m_kPropertyFactory);
 
-	AddProperty(new CollisionProperty(&m_kPos,new float(1)));
+	AddProperty(new CollisionProperty(&m_kPos,new float(.5)));
 	AddProperty(new GravityProperty(pkFps));
 
 	AddProperty("MadProperty");
@@ -23,7 +23,7 @@ void BallObject::HandleCollision(Object* pkOther,Vector3 kPos,bool bContinue){
 	if(typeid(*pkOther)==typeid(HeightMapObject)){
 		HeightMapObject *kO=dynamic_cast<HeightMapObject*>(pkOther);
 	
-	GetPos()=kPos+Vector3(0,1,0);
+	GetPos()=kPos+Vector3(0,.5,0);
 	m_kVel.y=0;
 	onGround=true;
 		
