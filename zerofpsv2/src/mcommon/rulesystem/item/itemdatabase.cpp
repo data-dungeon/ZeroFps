@@ -69,43 +69,26 @@ bool ItemDataBase::LoadItemData (string kItemName)
    string kName;
 
    // Load itemstat and modifiers
-   for ( int type = 0; type < 8; type++ )
+   for ( int type = 0; type < 4; type++ )
    {
       switch (type)
       {
          case 0:
-            pkMod = &m_kItemType[kItemName].m_kSkillModifier_equipped;
-            kName = "skill_bonuses_equipped";
+            pkMod = &m_kItemType[kItemName].m_kSkillModifier;
+            kName = "skillbonuses";
             break;
          case 1:
-            pkMod = &m_kItemType[kItemName].m_kSkillModifier_unequipped;
-            kName = "skill_bonuses_unequipped";
+            pkMod = &m_kItemType[kItemName].m_kAttributeModifier;
+            kName = "attributebonuses";
             break;
          case 2:
-            pkMod = &m_kItemType[kItemName].m_kAttributeModifier_equipped;
-            kName = "attribute_bonuses_equipped";
+            pkMod = &m_kItemType[kItemName].m_kFightStats.m_kAttack;
+            kName = "attackbonuses";
             break;
          case 3:
-            pkMod = &m_kItemType[kItemName].m_kAttributeModifier_unequipped;
-            kName = "attribute_bonuses_unequipped";
+            pkMod = &m_kItemType[kItemName].m_kFightStats.m_kDefence;
+            kName = "defencebonuses";
             break;
-         case 4:
-            pkMod = &m_kItemType[kItemName].m_kAttack_equipped;
-            kName = "attack_equipped";
-            break;
-         case 5:
-            pkMod = &m_kItemType[kItemName].m_kAttack_unequipped;
-            kName = "attack_unequipped";
-            break;
-         case 6:
-            pkMod = &m_kItemType[kItemName].m_kDefence_equipped;
-            kName = "defence_equipped";
-            break;
-         case 7:
-            pkMod = &m_kItemType[kItemName].m_kDefence_unequipped;
-            kName = "defence_unequipped";
-            break;
-
       }
 
 

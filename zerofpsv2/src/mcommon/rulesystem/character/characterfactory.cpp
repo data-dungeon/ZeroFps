@@ -37,7 +37,7 @@ CharacterStats* CharacterFactory::GetCharacterData(string kCharacterName)
 		}
 
 		
-		int i;
+		unsigned int i;
 
 		// load skills
       vector<string> *pkData = &g_kSkills;
@@ -101,6 +101,24 @@ CharacterStats* CharacterFactory::GetCharacterData(string kCharacterName)
 			else
 				g_kCharacters[kCharacterName].SetData((char*)pkData->at(i).c_str(), "none");
 		}
+
+      pkData->clear();
+
+      // Load attack values
+      m_kIniLoader.GetKeyNames( "attack", *pkData );
+      for ( i = 0; i < pkData->size(); i++ )
+      {
+         g_kCharacters[kCharacterName].m_kFightStats.m_kAttack[pkData->at(i)] =
+              m_kIniLoader.GetIntValue("attack", (char*)pkData->at(i).c_str() );
+      }
+      
+      // Load defence values
+      m_kIniLoader.GetKeyNames( "defence", *pkData );
+      for ( i = 0; i < pkData->size(); i++ )
+      {
+         g_kCharacters[kCharacterName].m_kFightStats.m_kDefence[pkData->at(i)] =
+              m_kIniLoader.GetIntValue("defence", (char*)pkData->at(i).c_str() );
+      }
 	}
 
    CharacterStats *pkNewStats = new CharacterStats;
@@ -167,7 +185,7 @@ void CharacterFactory::LoadStatTypes()
          // loop through all skills to get attributebonuses
          for ( int i = 0; i < g_kSkills.size(); i++ )
          {
-            int j;
+            unsigned int j;
 
             // loop through all attributes and search for bonuses
             for ( j = 0; j < g_kAttributes.size(); j++ )
@@ -177,8 +195,8 @@ void CharacterFactory::LoadStatTypes()
                   g_kSkillExps[ g_kSkills[i] ].m_kAttributeExp[g_kAttributes[j]] =
                      m_kIniLoader.GetFloatValue( (char*)g_kSkills[i].c_str(), (char*)g_kAttributes[j].c_str() );
                }
-            
             }
+
             // loop through all skills and search for bonuses
             for ( j = 0; j < g_kSkills.size(); j++ )
             {

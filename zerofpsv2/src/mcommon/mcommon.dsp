@@ -199,14 +199,6 @@ SOURCE=.\rulesystem\character\statcounter.h
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=.\rulesystem\item\itemdatabase.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\rulesystem\item\itemdatabase.h
-# End Source File
-# Begin Source File
-
 SOURCE=.\rulesystem\item\itemstats.cpp
 # End Source File
 # Begin Source File
@@ -222,6 +214,10 @@ SOURCE=.\rulesystem\item\itemstats.h
 SOURCE=.\rulesystem\spell\spellstats.h
 # End Source File
 # End Group
+# Begin Source File
+
+SOURCE=.\rulesystem\fightstats.h
+# End Source File
 # Begin Source File
 
 SOURCE=.\rulesystem\rulesystem.cpp

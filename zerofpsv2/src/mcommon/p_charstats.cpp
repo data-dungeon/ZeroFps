@@ -27,7 +27,7 @@ CharacterProperty::CharacterProperty()
 {
 	m_iSide = PROPERTY_SIDE_CLIENT;
    
-   m_pkCharStats = 0;
+   m_pkCharStats = new CharacterStats;
 
 	strcpy(m_acName,"P_CharStats");
 }
@@ -36,7 +36,7 @@ CharacterProperty::CharacterProperty()
 
 CharacterProperty::CharacterProperty( string kName )
 {
-   m_pkCharStats = 0;
+   m_pkCharStats = new CharacterStats;
 
 	strcpy(m_acName,"P_CharStats");
 }
@@ -45,12 +45,6 @@ CharacterProperty::CharacterProperty( string kName )
 
 bool CharacterProperty::HandleSetValue( string kValueName, string kValue )
 {
-	if( strcmp(kValueName.c_str(), "Rase") == 0 ) 
-	{
-      m_pkCharStats = CharacterFactory::GetCharacterData( kValue );
-
-		return true;
-	}
 
 	return false;
 }

@@ -1429,7 +1429,7 @@ void Render::DrawPSystem( PSystem *pkPSystem )
 	Vector3 kScale = pkPSystem->GetPSystemType()->m_kPSystemBehaviour.m_kMaxSize;
 
 	Vector3 kPos = pkPSystem->GetPosition() + 
-						pkPSystem->GetPSystemType()->m_kPSystemBehaviour.m_kPosOffset;			
+						pkPSystem->GetRotation().VectorRotate(pkPSystem->GetPSystemType()->m_kPSystemBehaviour.m_kPosOffset);			
 
 	kScale *= 2.f;
 
@@ -1438,7 +1438,7 @@ void Render::DrawPSystem( PSystem *pkPSystem )
 	glDisable (GL_LIGHTING);
 	glDepthMask(GL_FALSE);
 	DrawBox(kPos, pkPSystem->GetPSystemType()->m_kPSystemBehaviour.m_kCullPosOffset, 
-			  pkPSystem->GetRotation(), kScale, 2);
+			  pkPSystem->GetRotation(), kScale, 1);
 	*/
 
 	glPopMatrix();

@@ -258,8 +258,6 @@ void PSystem::ResetParticle (int iParticleIndex, float fTimeOffset)
 	else
 		m_kParticles[iParticleIndex].m_kCenter.z = 0;
 
-	m_kParticles[iParticleIndex].m_kCenter += m_kPosition + m_kRotation.VectorRotate(m_kPosOffset);
-
 	// Set current particle to active
 	m_kParticles[iParticleIndex].m_bActive = true;
 
@@ -365,6 +363,15 @@ void PSystem::ResetParticle (int iParticleIndex, float fTimeOffset)
 	if ( m_pkPSystemType->m_kParticleBehaviour.m_bStartSpeedInheritDirection )
 		m_kParticles[iParticleIndex].m_kVelocity = m_kRotation.VectorRotate(kRandomDir * m_pkPSystemType->m_kParticleBehaviour.m_fStartSpeed);
 
+ 	m_kParticles[iParticleIndex].m_kCenter += m_kPosition + m_kRotation.VectorRotate(m_kPosOffset);
+
+   m_kParticles[iParticleIndex].m_kCenter.y += m_pkPSystemType->m_kParticleBehaviour.m_kStartSize.y /2.f;
+
+   m_kParticles[iParticleIndex].m_kCenter += m_kRotation.VectorRotate ( Vector3 (m_pkPSystemType->m_kParticleBehaviour.m_kStartSize.x, 
+                                                                        m_pkPSystemType->m_kParticleBehaviour.m_kStartSize.y, 
+                                                                        m_pkPSystemType->m_kParticleBehaviour.m_kStartSize.x )) ;
+      
+
 }
 
 // ------------------------------------------------------------------------------------------
@@ -406,7 +413,7 @@ unsigned int PSystem::GetDepthValue()
 
 // ------------------------------------------------------------------------------------------
 
-void PSystem::TimeoffSet ()
+void PSystem::TimeoffSet (bool bUseAge)
 {
 	// create particles
 	for ( int i = 0; i < m_pkPSystemType->m_kPSystemBehaviour.m_iMaxParticles; i++ )

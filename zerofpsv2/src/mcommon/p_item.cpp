@@ -1,5 +1,4 @@
 #include "p_item.h"
-#include "rulesystem/item/itemdatabase.h"
 #include "../zerofpsv2/engine/object.h"
 
 // ------------------------------------------------------------------------------------------
@@ -26,9 +25,9 @@ vector<PropertyValues> P_Item::GetPropertyValues()
 P_Item::P_Item()
 {
 	m_iSide = PROPERTY_SIDE_CLIENT;
-   
-   m_pkItemStats = 0;
 
+   m_pkItemStats = new ItemStats;
+   
 	strcpy(m_acName,"P_Item");
 }
 
@@ -36,7 +35,7 @@ P_Item::P_Item()
 
 P_Item::P_Item( string kName )
 {
-   m_pkItemStats = 0;
+   m_pkItemStats = new ItemStats;
 
 	strcpy(m_acName,"P_Item");
 }
@@ -47,7 +46,7 @@ bool P_Item::HandleSetValue( string kValueName, string kValue )
 {
 	if( strcmp(kValueName.c_str(), "Type") == 0 ) 
 	{
-      m_pkItemStats = ItemDataBase::GetItem ( kValue );
+//      m_pkItemStats = ItemDataBase::GetItem ( kValue );
 
 		return true;
 	}

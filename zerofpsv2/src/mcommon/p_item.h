@@ -16,6 +16,8 @@ class MCOMMON_API P_Item: public Property
 		void CloneOf(Property* pkProperty) {}
 		vector<PropertyValues> GetPropertyValues(); 
 
+      ItemStats* GetItemStats()                 { return m_pkItemStats; }
+
 
 		P_Item( string kName );
 		P_Item();

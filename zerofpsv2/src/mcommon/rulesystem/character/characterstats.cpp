@@ -62,6 +62,7 @@ string CharacterStats::GetCommonStatValue (string kName)
 void CharacterStats::SetSkill (string kName, int iStartValue)
 {
 	m_kSkills[kName].m_iValue = iStartValue;
+   m_kSkills[kName].m_fExp = 0;
 }
 
 // ------------------------------------------------------------------------------------------
@@ -69,6 +70,7 @@ void CharacterStats::SetSkill (string kName, int iStartValue)
 void CharacterStats::SetAttribute (string kName, int iStartValue)
 {
 	m_kAttributes[kName].m_iValue = iStartValue;
+   m_kAttributes[kName].m_fExp = 0;
 }
 
 // ------------------------------------------------------------------------------------------
@@ -282,6 +284,23 @@ void CharacterStats::Print()
       cout << "  exp:" << (*kSklIte).second.m_fExp << endl;
    }
 
+   // Print attack values
+   cout << endl << "Attack:" << endl;
+   cout << "-------" << endl;
+
+   for ( map<string, int>::iterator kAtt = m_kFightStats.m_kAttack.begin(); 
+         kAtt != m_kFightStats.m_kAttack.end(); kAtt++ )
+      cout << (*kAtt).first << ":" << (*kAtt).second << endl;
+
+
+   // print defence values
+   cout << endl << "Defence:" << endl;
+   cout << "-------" << endl;
+
+   for ( map<string, int>::iterator kDef = m_kFightStats.m_kDefence.begin(); 
+         kDef != m_kFightStats.m_kDefence.end(); kDef++ )
+      cout << (*kDef).first << ":" << (*kDef).second << endl;
+
    cout << endl << "-o~O~o--o~O~o--o~O~o--o~O~o--o~O~o--o~O~o--o~O~o--o~O~o--o~O~o-" << endl;
 
 }
@@ -297,7 +316,7 @@ void CharacterStats::SetHP( string kValue )
 
 void CharacterStats::SetMP( string kValue )
 {
-   m_kPointStats["hp"] = kValue;
+   m_kPointStats["mp"] = kValue;
 }
 
 // ------------------------------------------------------------------------------------------
@@ -320,6 +339,40 @@ void CharacterStats::SetCounter( string kName, float fValue )
 {
    m_kPointStats[kName] = fValue;
    m_kPointStats[kName].SetMaxValue(fValue);
+}
+
+// ------------------------------------------------------------------------------------------
+
+void CharacterStats::AddAttackValue ( string kAttackType, int iValue )
+{
+   m_kFightStats.m_kAttack[kAttackType] += iValue;
+
+   if ( m_kFightStats.m_kAttack[kAttackType] < 0 )
+      m_kFightStats.m_kAttack[kAttackType] = 0;
+}
+
+// ------------------------------------------------------------------------------------------
+
+void CharacterStats::AddDefenceValue ( string kDefenceType, int iValue )
+{
+   m_kFightStats.m_kDefence[kDefenceType] += iValue;
+
+   if ( m_kFightStats.m_kDefence[kDefenceType] < 0 )
+      m_kFightStats.m_kDefence[kDefenceType] = 0;
+}
+
+// ------------------------------------------------------------------------------------------
+
+void CharacterStats::SetAttackValue (string kAttackType, int iValue)
+{
+   m_kFightStats.m_kAttack[kAttackType] = iValue;
+}
+
+// ------------------------------------------------------------------------------------------
+
+void CharacterStats::SetDefenceValue (string kDefenceType, int iValue)
+{
+   m_kFightStats.m_kDefence[kDefenceType] = iValue;
 }
 
 // ------------------------------------------------------------------------------------------

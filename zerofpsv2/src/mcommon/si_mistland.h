@@ -43,9 +43,13 @@ namespace MistLandLua
    int MCOMMON_API AddAttributeValueLua (lua_State* pkLua);
    int MCOMMON_API SetSkillValueLua (lua_State* pkLua);
    int MCOMMON_API SetAttributeValueLua (lua_State* pkLua);
+   int MCOMMON_API SetDefenceValueLua (lua_State* pkLua);
+   int MCOMMON_API SetAttackValueLua (lua_State* pkLua);
    int MCOMMON_API SetDataValueLua (lua_State* pkLua);
    int MCOMMON_API SetHPLua (lua_State* pkLua);
    int MCOMMON_API SetMPLua (lua_State* pkLua);
+   int MCOMMON_API SetMaxHPLua (lua_State* pkLua);
+   int MCOMMON_API SetMaxMPLua (lua_State* pkLua);
    int MCOMMON_API GetHPLua (lua_State* pkLua);
    int MCOMMON_API GetMPLua (lua_State* pkLua);
    int MCOMMON_API GetHpPercentLua (lua_State* pkLua);
@@ -57,6 +61,36 @@ namespace MistLandLua
    // item stuff
    int MCOMMON_API EquipLua (lua_State* pkLua);
    int MCOMMON_API UnEquipLua (lua_State* pkLua);
+   int MCOMMON_API GetQuantityLua (lua_State* pkLua);
+   int MCOMMON_API SetQuantityLua (lua_State* pkLua);
+   int MCOMMON_API AddQuantityLua (lua_State* pkLua);
+   
+   int MCOMMON_API SetQuantityLua (lua_State* pkLua);
+   int MCOMMON_API SetQualityLua (lua_State* pkLua);
+   int MCOMMON_API SetSkillBonusLua (lua_State* pkLua);
+   int MCOMMON_API SetAttributeBonusLua (lua_State* pkLua);
+   int MCOMMON_API SetAttackBonusLua (lua_State* pkLua);
+   int MCOMMON_API SetDefenceBonusLua (lua_State* pkLua);
+   int MCOMMON_API EquipOnLua (lua_State* pkLua);
+   
+   int MCOMMON_API GetSkillBonusLua (lua_State* pkLua);
+   int MCOMMON_API GetAttributeBonusLua (lua_State* pkLua);
+   int MCOMMON_API GetAttackBonusLua (lua_State* pkLua);
+   int MCOMMON_API GetDefenceBonusLua (lua_State* pkLua);
+
+   int MCOMMON_API AddSkillBonusLua (lua_State* pkLua);
+   int MCOMMON_API AddAttributeBonusLua (lua_State* pkLua);
+   int MCOMMON_API AddAttackBonusLua (lua_State* pkLua);
+   int MCOMMON_API AddDefenceBonusLua (lua_State* pkLua);
+   
+   int MCOMMON_API PrintItemStatsLua (lua_State* pkLua);
+   int MCOMMON_API SetItemNameLua (lua_State* pkLua);
+   int MCOMMON_API SetItemWeightLua (lua_State* pkLua);
+
+   int MCOMMON_API SetItemValueLua (lua_State* pkLua);
+   int MCOMMON_API GetItemValueLua (lua_State* pkLua);
+   int MCOMMON_API AddItemValueLua (lua_State* pkLua);
+
 
 
 	

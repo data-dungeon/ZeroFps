@@ -4,6 +4,7 @@
 #pragma warning (disable :4786)
 
 #include "../mcommon_x.h"
+#include "fightstats.h"
 #include <map>
 #include <string>
 #include <vector>
@@ -16,6 +17,8 @@ struct SkillType
    map<string, float> m_kAttributeExp;
    map<string, float> m_kSkillExp;
 };
+
+int DealDamage ( FightStats *pkAttacker, CharacterStats *pkVictim );
 
 extern MCOMMON_API map<string, CharacterStats> g_kCharacters;
 extern MCOMMON_API vector<string> g_kSkills;

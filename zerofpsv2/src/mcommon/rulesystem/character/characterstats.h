@@ -8,6 +8,8 @@
 #include "../rulesystem.h"
 #include "statcounter.h"
 
+#include "../fightstats.h"
+
 #include <string>
 #include <map>
 #include <vector>
@@ -34,6 +36,7 @@ private:
 	map<string, StatDescriber> m_kAttributes; // sty, smi...
 	map<string, StatCounter> m_kPointStats;   // mp, hp...
 	map<string, string> m_kData; // name, rase, sex
+   FightStats m_kFightStats;
 
    void RecieveSkillExp ( StatDescriber *pkStat, float fDifficulty, string kName );
    void RecieveAttrExp ( StatDescriber *pkStat, float fDifficulty );
@@ -56,6 +59,9 @@ public:
 
    void SetHP( string kValue );
    void SetMP( string kValue );
+
+   void SetMaxHP ( int iValue )                    { m_kPointStats["hp"].SetMaxValue(iValue); }
+   void SetMaxMP ( int iValue )                    { m_kPointStats["mp"].SetMaxValue(iValue); }
    
    void AddHP( int iValue );
    void AddMP( int iValue );
@@ -69,11 +75,15 @@ public:
    // Add points to stats.
    void AddSkillValue ( string kSkillName, int iValue );
    void AddAttributeValue ( string kAttributeName, int iValue );
+   void AddAttackValue ( string kAttackType, int iValue );
+   void AddDefenceValue ( string kDefenceType, int iValue );
 
 	// Set stat.
    void SetSkill		 (string kName, int fStartValue);
 	void SetAttribute  (string kName, int fStartValue);
 	void SetData (string kName, string kStartValue);
+   void SetAttackValue (string kAttackType, int iValue);
+   void SetDefenceValue (string kDefenceType, int iValue);
 
    // Set stat. exp
    void SetSkillExp (string kName, float fExp);
@@ -93,6 +103,8 @@ public:
    void Print();
 
    void SetCounter( string kName, float fValue );
+
+   friend class CharacterFactory;
 
 };
 

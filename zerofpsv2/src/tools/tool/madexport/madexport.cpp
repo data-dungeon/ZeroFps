@@ -13,6 +13,7 @@
 #include <assert.h>
 #include <map> 
 #include <vector> 
+using namespace std;
 
 #define EXPORT_NONE		0
 #define EXPORT_BONES	1
@@ -43,7 +44,7 @@ void LogIt(const char *fmt, ...)
 	va_end(ap);								// 
 
 	// Now call our print function.
-	cout << format_text << endl;
+	//cout << format_text << endl;
 }
 
  
@@ -141,10 +142,10 @@ MStatus MadExport::GetShaderTextureFileName (MString &filename, MObject &set)
 /*
 MStatus MadExport::CreateFile(char* filename)
 {
-	cout << "opening file " << filename << "\n";
+	//cout << "opening file " << filename << "\n";
 	m_pkOutFile = fopen(filename, "w+");
 	if (!m_pkOutFile) {
-		cout << "unable to open file for writing\n";
+		//cout << "unable to open file for writing\n";
 		return MStatus::kSuccess;
 	}
 
@@ -224,7 +225,7 @@ MStatus MadExport::GetSkinClusterWeights(void)
 			// print out the path name of the skin, vertexCount & influenceCount
 			LogIt("Found Skin %s with %d vertices and %d influences.", 
 				m_skinPath.partialPathName().asChar(),gIter.count() , nInfs );
-			//cout << "found skin: '" << m_skinPath.partialPathName().asChar() << "' with " << gIter.count() <<
+			////cout << "found skin: '" << m_skinPath.partialPathName().asChar() << "' with " << gIter.count() <<
 			//	" vertices " << "and " << nInfs << " influences\n";
 		
 			if(m_strMeshName == m_skinPath.partialPathName().asChar()) {
@@ -261,7 +262,7 @@ MStatus MadExport::GetSkinClusterWeights(void)
 
 					if (0 == infCount) {
 						stat = MStatus::kFailure;
-						cout << "Error: 0 influence objects.\n";
+						//cout << "Error: 0 influence objects.\n";
 						return stat;
 					}
 
@@ -282,10 +283,10 @@ MStatus MadExport::GetSkinClusterWeights(void)
 	} 
 
 	if (0 == count) {
-		cout << "No skinned meshes found in this scene. Is your mesh bound to a skeleton?\n";
+		//cout << "No skinned meshes found in this scene. Is your mesh bound to a skeleton?\n";
 		return MStatus::kFailure;
 	} else if (m_skinPath.partialPathName().length() == 0) {
-		cout << "Could not find desired skin cluster '" << m_strSkinCluster.asChar() << "'\n";
+		//cout << "Could not find desired skin cluster '" << m_strSkinCluster.asChar() << "'\n";
 		return MStatus::kFailure;
 	} else {
 		LogIt("Processing skin cluster %s", m_strSkinCluster.asChar());
@@ -302,10 +303,10 @@ MStatus	MadExport::getMesh(void)
 	MSelectionList	list;
 	MFnDagNode		fnNode;
 
-//		cout << nodeFn.name().asChar() << "is selected\n";
+//		//cout << nodeFn.name().asChar() << "is selected\n";
 	MStatus	status;
 
-//	cout << "Get MESH:" << endl;
+//	//cout << "Get MESH:" << endl;
 
 //	MItDependencyNodes iter( MFn::kMesh  );
 //	for ( ; !iter.isDone(); iter.next() ) {
@@ -321,7 +322,7 @@ MStatus	MadExport::getMesh(void)
 		/*if (status == MStatus::kFailure)
 		{
 			status.perror ("unable to lookup path for child of bone");
-			cout << "unable to lookup path " << endl;
+			//cout << "unable to lookup path " << endl;
 			return (MStatus::kFailure);
 		}*/
  
@@ -380,7 +381,7 @@ MStatus	MadExport::getMesh(void)
 
 			rgTextures[i] = texFilename;
 			LogIt("Shader %d : %s", i, rgTextures[i].asChar());
-			//cout << "Shader " << i << ": " << rgTextures[i].asChar() << endl;
+			////cout << "Shader " << i << ": " << rgTextures[i].asChar() << endl;
 		}
 
 
@@ -395,7 +396,7 @@ MStatus	MadExport::getMesh(void)
 /*
 	MStatus	status;
 
-	cout << "Get MESH:" << endl;
+	//cout << "Get MESH:" << endl;
 
 	MItDependencyNodes iter( MFn::kMesh  );
 	for ( ; !iter.isDone(); iter.next() ) {
@@ -408,7 +409,7 @@ MStatus	MadExport::getMesh(void)
 		if (status == MStatus::kFailure)
 		{
 			status.perror ("unable to lookup path for child of bone");
-			cout << "unable to lookup path " << endl;
+			//cout << "unable to lookup path " << endl;
 			return (MStatus::kFailure);
 		}
  
@@ -418,14 +419,14 @@ MStatus	MadExport::getMesh(void)
 		status = path.extendToShape();
 		if (status != MStatus::kSuccess) {
 			// no geometry under this node...
-			cout << "Not geometry" << endl;
+			//cout << "Not geometry" << endl;
 			continue;
 		}
 
 		MFnMesh fnMesh(path, &status);
 		if (status != MStatus::kSuccess) {
 			// this object is not a mesh
-			cout << "Not a Mesh" << endl;
+			//cout << "Not a Mesh" << endl;
 			continue;
 		}
  
@@ -435,7 +436,7 @@ MStatus	MadExport::getMesh(void)
   
 		MString fullpathname;
 		fullpathname = path.fullPathName(&status);
-		cout << object.apiTypeStr() << ":" << fullpathname.asChar() << endl;
+		//cout << object.apiTypeStr() << ":" << fullpathname.asChar() << endl;
 	
 		int iNumOfTriangles = GetNumOfMeshTriangles(path);
 		fprintf(m_pkOutFile, "Num %d\n", iNumOfTriangles);
@@ -465,7 +466,7 @@ MStatus	MadExport::getMesh(void)
 			}
 
 			rgTextures[i] = texFilename;
-			cout << "Shader " << i << ": " << rgTextures[i].asChar() << endl;
+			//cout << "Shader " << i << ": " << rgTextures[i].asChar() << endl;
 		}
 
 
@@ -507,7 +508,7 @@ MStatus MadExport::parsePolySet(MItMeshPolygon &meshPoly,MStringArray rgTextures
 		// verify polygon has UV information
 		/*if (!meshPoly.hasUVs (&status)) {
 			status = MS::kFailure;
-			cout << "polygon is missing UV information\n";
+			//cout << "polygon is missing UV information\n";
 			return status;
 		}*/
 		 
@@ -526,7 +527,7 @@ MStatus MadExport::parsePolySet(MItMeshPolygon &meshPoly,MStringArray rgTextures
 			}
 
 			if ((rgpt.length() != 3) || (rgint.length() != 3)) {
-				cout << "3 points not returned for triangle\n";
+				//cout << "3 points not returned for triangle\n";
 				status = MS::kFailure;
 				return status;
 			} 
@@ -543,17 +544,17 @@ MStatus MadExport::parsePolySet(MItMeshPolygon &meshPoly,MStringArray rgTextures
 				if (iTexture >= 0) {
 					if(rgTextures[iTexture] == "") {
 						iNumOfMissingTextures++;
-						//cout << "Mesh"
-						//cout << "Missing Texture on surface" << endl;
+						////cout << "Mesh"
+						////cout << "Missing Texture on surface" << endl;
 						fprintf(m_pkOutFile, "error.bmp ");
 						}
 					else
 						fprintf(m_pkOutFile, "%s ", rgTextures[iTexture].asChar());
-					//cout << "Texture : " << iTexture <<"," << rgTextures[iTexture].asChar() << endl;
+					////cout << "Texture : " << iTexture <<"," << rgTextures[iTexture].asChar() << endl;
 				}
 	 			else 
 				{
-					cout << "No Valid Texture: " << endl;
+					//cout << "No Valid Texture: " << endl;
 					fprintf(m_pkOutFile, "error.bmp ");
 				}
 			}
@@ -573,7 +574,7 @@ MStatus MadExport::parsePolySet(MItMeshPolygon &meshPoly,MStringArray rgTextures
 		}
 
 	if(iNumOfMissingTextures) {
-		cout << "Mesh: " << m_strMeshName.asChar() << " had " << iNumOfMissingTextures << " surfaces without textures" << endl;
+		//cout << "Mesh: " << m_strMeshName.asChar() << " had " << iNumOfMissingTextures << " surfaces without textures" << endl;
 		}
 
 	return MS::kSuccess;
@@ -598,14 +599,14 @@ MStatus MadExport::CalculateTriangleVertex (int vt, int &iWeight, MVector &pt, M
 	status = meshPoly.getNormal (vtLocal, n, MSpace::kWorld);
 	if (!status && m_bIsBaseData) {
 		LogIt("error getting normal for local vertex %d and object vertex %d",vtLocal, vt);
-		//cout << "error getting normal for local vertex " << vtLocal << " and object vertex " << vt << "\n";
+		////cout << "error getting normal for local vertex " << vtLocal << " and object vertex " << vt << "\n";
 		return status;
 	}
 
 	status = meshPoly.getUVIndex (vtLocal, vtUV, u, v);
 	if (!status && m_bIsBaseData) {
 		LogIt("error getting UV Index for local vertex %d and object vertex %d",vtLocal, vt);
-		//cout << "error getting UV Index for local vertex " << vtLocal << " and object vertex " << vt << "\n";
+		////cout << "error getting UV Index for local vertex " << vtLocal << " and object vertex " << vt << "\n";
 		return status;
 	}
 
@@ -641,7 +642,7 @@ MStatus MadExport::CalculateTriangleVertex (int vt, int &iWeight, MVector &pt, M
 			iWeight = (*mapIt2).second;
 		} else {
 			// error - bone not found!
-			cout << "Error: can't find weight bone with index " << iWeight << " and name '" << name << "' in joint map\n";
+			//cout << "Error: can't find weight bone with index " << iWeight << " and name '" << name << "' in joint map\n";
 			return MS::kFailure;
 		}
 	} else {
@@ -666,7 +667,7 @@ MStatus MadExport::ExportBoneGeometry( )
 			MObject obj = fnJoint.child(i, &status);
 			if (status == MStatus::kFailure)
 			{
-				cout << "Unable to load child for bone" << endl;
+				//cout << "Unable to load child for bone" << endl;
 				status.perror("Unable to load child for bone");
 				return (MStatus::kFailure);
 			}
@@ -675,12 +676,12 @@ MStatus MadExport::ExportBoneGeometry( )
 			status = fnNode.getPath (path);
 			if (status == MStatus::kFailure)
 			{
-				cout << "unable to lookup path for child of bone" << endl;
+				//cout << "unable to lookup path for child of bone" << endl;
 				status.perror ("unable to lookup path for child of bone");
 				return (MStatus::kFailure);
 			}
  
-			cout << "Name: " << fnNode.name().asChar() << endl;
+			//cout << "Name: " << fnNode.name().asChar() << endl;
 
 			// Have to make the path include the shape below it so that
 			// we can determine if the underlying shape node is instanced.
@@ -689,7 +690,7 @@ MStatus MadExport::ExportBoneGeometry( )
 			status = path.extendToShape();
 			if (status != MStatus::kSuccess) {
 				// no geometry under this node...
-				cout << "No Geo"<< endl;
+				//cout << "No Geo"<< endl;
 				continue;
 			}
  
@@ -704,7 +705,7 @@ MStatus MadExport::ExportBoneGeometry( )
 			if (status != MStatus::kSuccess) {
 				// this object is not a mesh
 				// no geometry under this node...
-				cout << "No Mesh"<< endl;
+				//cout << "No Mesh"<< endl;
 				continue;
 			}
 
@@ -830,7 +831,7 @@ MStatus MadExport::GetBoneList(void)
 			bone->m_ucpParentName = strdup(parentNode.name().asChar());
 
 			/*if ( !status ) {
-				cout  << "No parent \n";
+				//cout  << "No parent \n";
 				status.perror("MFnDagNode constructor");
 				return status;
 				}
@@ -839,10 +840,10 @@ MStatus MadExport::GetBoneList(void)
 				mapIt = m_kJointMap.find(parentName);
 				if (mapIt != m_kJointMap.end()) {
 					bone->m_iParentId = (*mapIt).second;
-					cout << "Parent: " << bone->m_iParentId << endl;
+					//cout << "Parent: " << bone->m_iParentId << endl;
 				}
 				else 
-					cout  << "No parent2 \n";
+					//cout  << "No parent2 \n";
 			}*/
 
 			m_kBoneList.push_back(bone);
@@ -934,7 +935,7 @@ MStatus	MadExport::Export_SX(const char* filename)
 {
 	m_pkOutFile = fopen(filename, "w+");
 	if (!m_pkOutFile) {
-		cout << "Unable to open file " << filename << " for writing\n";
+		//cout << "Unable to open file " << filename << " for writing\n";
 		return MStatus::kFailure;
 	}
 
@@ -967,7 +968,7 @@ MStatus	MadExport::Export_AX(const char* filename)
 {
 	m_pkOutFile = fopen(filename, "w+");
 	if (!m_pkOutFile) {
-		cout << "Unable to open file " << filename << " for writing\n";
+		//cout << "Unable to open file " << filename << " for writing\n";
 		return MStatus::kFailure;
 	}
 
@@ -1011,7 +1012,7 @@ MStatus	MadExport::Export_MX(const char* filename)
 
 	m_pkOutFile = fopen(filename, "w+");
 	if (!m_pkOutFile) {
-		cout << "Unable to open file " << filename << " for writing\n";
+		//cout << "Unable to open file " << filename << " for writing\n";
 		return MStatus::kFailure;
 	}
  
@@ -1038,7 +1039,7 @@ MStatus	MadExport::Export_FX(const char* filename)
 
 	m_pkOutFile = fopen(filename, "w+");
 	if (!m_pkOutFile) {
-		cout << "Unable to open file " << filename << " for writing\n";
+		//cout << "Unable to open file " << filename << " for writing\n";
 		return MStatus::kFailure;
 	}
 
@@ -1050,11 +1051,11 @@ MStatus	MadExport::Export_FX(const char* filename)
 
 MStatus MadExport::ShowHelp(void)
 {
-	cout << "madexport for ZeroFps." << endl;
-	cout << "'madexport s' to export a skelleton file" << endl;
-	cout << "'madexport a' to export a animation file" << endl;
-	cout << "'madexport m' to export a base file" << endl;
-	cout << "'madexport f' to export a frame file" << endl;
+	//cout << "madexport for ZeroFps." << endl;
+	//cout << "'madexport s' to export a skelleton file" << endl;
+	//cout << "'madexport a' to export a animation file" << endl;
+	//cout << "'madexport m' to export a base file" << endl;
+	//cout << "'madexport f' to export a frame file" << endl;
 	return MStatus::kSuccess;
 }
 
@@ -1069,7 +1070,7 @@ void MadExport::PrintSelection()
 	for(unsigned int i = 0;  i< list.length(); i++) {
 		list.getDagPath(i, node, component);
 		nodeFn.setObject( node );
-		cout << nodeFn.name().asChar() << "is selected\n";
+		//cout << nodeFn.name().asChar() << "is selected\n";
 		}
 }
 
@@ -1115,8 +1116,8 @@ MStatus MadExport::writer( const MFileObject& file, const MString& options, File
 	MString FileExt;
 	MString TempName;
 
-//	cout << "FileName " << FullPathName.asChar() << "\n";
-//	cout << "Options: " << options.asChar() << "\n";
+//	//cout << "FileName " << FullPathName.asChar() << "\n";
+//	//cout << "Options: " << options.asChar() << "\n";
 
 	int iExportFlag = EXPORT_NONE;
 
@@ -1179,7 +1180,7 @@ MStatus MadExport::writer( const MFileObject& file, const MString& options, File
 			break;
 
 		case EXPORT_NONE:
-			cout << "Exporting Nothing\n";
+			//cout << "Exporting Nothing\n";
 			ShowHelp();
 			break;
 
@@ -1243,7 +1244,7 @@ MStatus initializePlugin( MObject obj )
 		"MadExportOptions", "", true );
 
 	if (!status) {
-		cout << "Error :(.\n";
+		//cout << "Error :(.\n";
 		return status;
 	}
 

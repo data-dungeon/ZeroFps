@@ -116,6 +116,7 @@ struct ParticleTypeData
 
 struct PSystemType
 {
+   string m_kName;
 	ParticleTypeData m_kParticleBehaviour;
 	PSystemTypeData m_kPSystemBehaviour;
 };

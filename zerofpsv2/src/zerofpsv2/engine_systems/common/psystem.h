@@ -106,7 +106,8 @@ public:
 	void DisableParticle ( int iParticleIndex );
 
 	// Make PSystem have particles from start
-	void TimeoffSet ();
+	void TimeoffSet ( bool bUseAge = false );
+   
 
 	unsigned int GetAlphaTestValue();
 	unsigned int GetDepthValue();
@@ -119,6 +120,8 @@ public:
 	friend class SizePSProp;
 
 	PSystemType* GetPSystemType()					{ return m_pkPSystemType; }
+
+   friend class PSystemProperty;
 };
 
 #endif

@@ -173,6 +173,8 @@ bool PSystemManager::LoadNewPSystem ( string kName )
 		kNewType.m_kParticleBehaviour.m_fLifeTime /
 		kNewType.m_kPSystemBehaviour.m_fParticlesPerSec;
 
+   kNewType.m_kName = kName;
+
 	cout << "PSystemtype " << kName << " loaded!" << endl;
 
 	// Add new type
@@ -526,7 +528,9 @@ bool PSystemManager::LoadData ( PSystemType *pkPSType )
 	else
 		pkPSType->m_kPSystemBehaviour.m_kCullingTest = "cube";
 
-
+   pkPSType->m_kPSystemBehaviour.m_kPosOffset.x -= pkPSType->m_kParticleBehaviour.m_kStartSize.x;
+   pkPSType->m_kPSystemBehaviour.m_kPosOffset.y -= pkPSType->m_kParticleBehaviour.m_kStartSize.y;
+   pkPSType->m_kPSystemBehaviour.m_kPosOffset.z -= pkPSType->m_kParticleBehaviour.m_kStartSize.x;
 
 	// close the file
 	//m_kIniLoader.Close();
@@ -855,13 +859,19 @@ void PSystemManager::CalculateMaxSize ( PSystemType *pkPSType )
 	else if ( kSize5.z <= kSize1.z && kSize5.z <= kSize3.z && kSize5.z <= kSize2.z && kSize5.z <= kSize4.z && kSize5.z < 0)
 		kMinValues.z = kSize5.z;
 
+   // the height of the particle
+   kMinValues.y -= pkPSType->m_kParticleBehaviour.m_kStartSize.y;
+
 	pkPSType->m_kPSystemBehaviour.m_kCullPosOffset += (kMaxValues + kMinValues) / 2.f;
 	pkPSType->m_kPSystemBehaviour.m_kCullPosOffset.y -= fHeight;
 
-
 	pkPSType->m_kPSystemBehaviour.m_kMaxSize = (kMaxValues - kMinValues) / 2.f;
 
+   pkPSType->m_kPSystemBehaviour.m_kCullPosOffset.y += pkPSType->m_kParticleBehaviour.m_kStartSize.y /2.f;
 
+   pkPSType->m_kPSystemBehaviour.m_kCullPosOffset += ( Vector3 (pkPSType->m_kParticleBehaviour.m_kStartSize.x, 
+                                                                        pkPSType->m_kParticleBehaviour.m_kStartSize.y, 
+                                                                        pkPSType->m_kParticleBehaviour.m_kStartSize.x )) ;
 }
 
 // ------------------------------------------------------------------------------------------

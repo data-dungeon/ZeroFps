@@ -10,8 +10,17 @@ MCOMMON_API map<string, SkillType> g_kSkillExps;
 
 
 
+int DealDamage ( FightStats *pkAttacker, CharacterStats *pkVictim )
+{
+   float fTotalDmg = 0;
+
+   // räkna ut damage på nån vänster...
 
 
 
 
 
+
+
+   return int(fTotalDmg);
+}

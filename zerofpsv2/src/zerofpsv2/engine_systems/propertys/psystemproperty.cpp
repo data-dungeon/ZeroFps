@@ -30,6 +30,8 @@ vector<PropertyValues> PSystemProperty::GetPropertyValues()
 
 PSystemProperty::PSystemProperty()
 {
+   bNetwork = true;
+
 	m_iType = PROPERTY_TYPE_RENDER;
 	m_iSide = PROPERTY_SIDE_CLIENT;
 	m_iSortPlace =	9;
@@ -43,6 +45,12 @@ PSystemProperty::PSystemProperty()
 
 PSystemProperty::PSystemProperty( string kPSType )
 {
+   bNetwork = true;
+
+   m_iType = PROPERTY_TYPE_RENDER;
+	m_iSide = PROPERTY_SIDE_CLIENT;
+	m_iSortPlace =	9;
+
 	strcpy(m_acName,"PSystemProperty");
 	SetPSType ( kPSType );
 }
@@ -106,8 +114,24 @@ void PSystemProperty::Load(ZFIoInterface* pkPackage)
    pkPackage->Read ( (void*)&fAge, sizeof(float), 1 );
    m_pkPSystem->SetAge (fAge);
 
+}
 
+// ------------------------------------------------------------------------------------------
 
+void PSystemProperty::PackTo( NetPacket* pkNetPacket ) 
+{
+   pkNetPacket->Write( m_pkPSystem->m_pkPSystemType->m_kName );
+	pkNetPacket->Write( m_pkPSystem->m_fAge );
+}
+
+// ------------------------------------------------------------------------------------------
+
+void PSystemProperty::PackFrom( NetPacket* pkNetPacket ) 
+{
+   pkNetPacket->Read( m_pkPSystem->m_pkPSystemType->m_kName );
+	pkNetPacket->Read( m_pkPSystem->m_fAge );
+
+   m_pkPSystem->TimeoffSet();
 }
 
 // ------------------------------------------------------------------------------------------
