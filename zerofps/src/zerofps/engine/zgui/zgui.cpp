@@ -929,12 +929,7 @@ bool ZGui::RunKeyCommand(int iKey)
 void ZGui::OnKeyPress(int iKey)
 {
 	if(ZGuiWnd::m_pkFocusWnd)
-	{
-		// En knapp har tryckts ner.
-		int kParams[1] = {iKey};
-		m_pkActiveMainWin->pkCallback(ZGuiWnd::m_pkFocusWnd,
-			ZGM_KEYDOWN,1,(int*) kParams);
-			
+	{	
 		if(!RunKeyCommand(iKey))
 			ZGuiWnd::m_pkFocusWnd->ProcessKBInput(iKey);
 
@@ -962,6 +957,11 @@ void ZGui::OnKeyPress(int iKey)
 			m_pkActiveMainWin->pkCallback(ZGuiWnd::m_pkFocusWnd,
 				ZGM_KEYDOWN,1,(int*) kParams);
 		}
+
+		// En knapp har tryckts ner.
+		int kParams[1] = {iKey};
+		m_pkActiveMainWin->pkCallback(ZGuiWnd::m_pkFocusWnd,
+			ZGM_KEYDOWN,1,(int*) kParams);
 	}
 
 }

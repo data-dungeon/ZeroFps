@@ -643,7 +643,6 @@ bool ControlBox::LoadGUI(ZFIni *pkINI, TextureManager* pkTexMan)
 			break;
 		}
 
-		pkWnd->SetMoveArea(Rect(0,0,1024,768)); // must set this to a high value
 		pkWnd->SetWindowFlag(WF_CANHAVEFOCUS); // to allow movement.
 
 		SelectSkins(kAllSkinsTempArray, pkWnd);

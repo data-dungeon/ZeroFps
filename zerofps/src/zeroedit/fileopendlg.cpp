@@ -168,10 +168,10 @@ bool FileOpenDlg::DlgProc( ZGuiWnd* pkWindow,unsigned int uiMessage,
 
 bool FileOpenDlg::Create(int x,int y,int w,int h,ZGuiWndProc pkDlgProc)
 {
-	m_pkGui->LoadDialog("../data/gui_resource_files/zgresource_rc.txt", 
-		"Window69", pkDlgProc);
+/*	m_pkGui->LoadDialog("../data/gui_resource_files/zgresource_rc.txt", 
+		"Window69", pkDlgProc);*/
 
-	/*
+	
 	ZGuiWnd* pkMainWindow=m_pkResMan->Wnd("FOFileOpenDlg");
 
 	if( pkMainWindow )
@@ -247,7 +247,7 @@ bool FileOpenDlg::Create(int x,int y,int w,int h,ZGuiWndProc pkDlgProc)
 
 	m_pkGui->AddKeyCommand(KEY_ESCAPE,pkMainWindow,pkCancelBn);
 	m_pkGui->AddKeyCommand(KEY_ESCAPE,pkMainWindow,pkCloseBn);
-	m_pkGui->AddKeyCommand(KEY_RETURN,pkMainWindow,pkOKBn);*/
+	m_pkGui->AddKeyCommand(KEY_RETURN,pkMainWindow,pkOKBn);
 
 	return true;
 }

@@ -239,7 +239,7 @@ bool ZGuiTextbox::ProcessKBInput(int nKey)
 	}
 
 	// Send a message to the main winproc...
-	if(nKey == KEY_RETURN)
+	//if(nKey == KEY_RETURN)
 	{
 		int* piParams = new int[1];
 		piParams[0] = GetID(); // Listbox ID
