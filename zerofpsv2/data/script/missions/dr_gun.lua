@@ -62,10 +62,10 @@ function OnMissionStart()
 	Print("Starting mission Dr Gun")
 
 	-- Skapa 2 spawners för gubbar
-	local pos = { 83.4634,1.20561,34.7872 }
+	local pos = { 83.0,1.20561,33.5357 } --{ 83.4634,1.20561,34.7872 }
 	RunScript("data/script/objects/dm/t_spawner_mechanic_door.lua",-1, pos );
 
-	local pos2 = { 83.8529,1.20561,26.6406 }
+	local pos2 = { 83.0,1.20561,29.1071 } --{ 83.8529,1.20561,26.6406 }
 	RunScript("data/script/objects/dm/t_spawner_man_door.lua",-1, pos2 );
 
 	UpdateCivList()
@@ -259,9 +259,11 @@ function IsMissionDone()
 	Print("Persons in hospital: ", NumCiviliansAtDoctor)
 	Print("Hospital: ", HospitalObject)
 
-	if NumCiviliansAtDoctor == 5 then
+	if NumCiviliansWounded == 5 then --NumCiviliansAtDoctor == 5 then
 		MissionInfo.success = 1 -- Uppdraget har lyckats!
 	end
+
+
 
 end
 
