@@ -8,6 +8,9 @@
 #include <GL/glut.h>
 #include "../zerofps/engine/application.h"
 
+#include "normaldrawproperty.h"
+#include "playercontrolproperty.h"
+
 class Test :public Application {
 	HeightMap *test;
 	HeightMap *test2;

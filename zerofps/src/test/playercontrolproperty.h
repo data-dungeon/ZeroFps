@@ -1,20 +1,17 @@
 #ifndef _PLAYERCONTROLPROPERTY_H_
 #define _PLAYERCONTROLPROPERTY_H_
 
-#include "objects.pkg"
-#include "../basic/basic.pkg"
-#include "../render/render.pkg"
+#include "../zerofps/engine/objects.pkg"
+#include "../zerofps/engine/engine.pkg"
 #include <iostream>
 
 using namespace std;
 
 class PlayerControlProperty: public Property {
 	private:
-		HeightMap *m_pkMap;
-		Render *m_pkRender;
-
+		Input *m_pkInput;
 	public:
-		PlayerControlProperty(HeightMap* pkHeightMap,Render *pkRender);
+		PlayerControlProperty(Input *pkInput);
 
 		void Update();
 

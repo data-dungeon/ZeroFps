@@ -1,12 +1,16 @@
 class Object;
 class Property;
-class PlayerControlProperty;
 class ModelProperty;
+class CollisionObject;
+class CollisionSphere;
+class CollisionPoint;
 
 #include "object.h"
 #include "property.h"
-#include "playercontrolproperty.h"
 #include "modelproperty.h"
+#include "collisionobject.h"
+#include "collisionsphere.h"
+#include "collisionpoint.h"
 
 
 

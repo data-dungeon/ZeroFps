@@ -31,15 +31,12 @@ void Test::OnInit(void) {
 	IntToChar(fps,pkFps->m_iFps);
 	fpsupdate=0;
 
-
-	float b=1.2;
-
 	pkFps->m_pkCmd->Add(&speed,"g_speed",type_float);		
 	speed=0.025;
   	
-  	m_iGrass=0;	
+	m_iGrass=0;	
 	pkFps->m_pkCmd->Add(&m_iGrass,"g_grass",type_int);		  	
-  	m_iGrassVolyme=150;	
+	m_iGrassVolyme=150;	
 	pkFps->m_pkCmd->Add(&m_iGrassVolyme,"g_grassvolyme",type_int);		  	
 
   
@@ -98,12 +95,24 @@ void Test::OnInit(void) {
 	
 	
 	Object *kul=new Object;
-//	PlayerControlProperty *fuck=new PlayerControl;
-	kul->AddProperty(new PlayerControlProperty(test,pkRender));	
-//	kul->AddProperty(new ModelProperty());
+	kul->AddProperty(new NormalDrawProperty(test,pkRender));	
+	kul->AddProperty(new PlayerControlProperty(pkInput));		
+	kul->GetPos().x+=10;
+	
+	Object *ball=new Object;
+	ball->AddProperty(new PlayerControlProperty(pkInput));
+	ball->AddProperty(new ModelProperty());
+	ball->AddProperty(new NormalDrawProperty(test,pkRender));	
 	
 	pkObjectMan->Add(kul);
+	pkObjectMan->Add(ball);
+
+	CollisionSphere *sp1=new CollisionSphere;
+	CollisionSphere *sp2=new CollisionSphere;
+	CollisionPoint *p1=new CollisionPoint(Vector3(1,1,1));
 	
+	p1->Collide(sp1,true);
+	sp1->Collide(sp2,true);	
 }
 
 
