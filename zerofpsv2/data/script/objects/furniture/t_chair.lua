@@ -1,7 +1,7 @@
 function Create()
 	
 	InitObject();
-		IsStatic();
+		InitProperty("P_DMItem");	
 		InitProperty("P_Mad");	
 			InitParameter("m_kMadFile","/data/mad/chair.mad");
 			InitParameter("m_fScale","1");
