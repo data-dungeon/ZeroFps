@@ -85,6 +85,8 @@ public:
 
 	ZFResourceHandle* m_pkScriptResHandle;
 
+	bool m_bGuiHaveFocus;
+
 private:
 	unsigned int m_uiWindowIDCounter;
 	GuiType GetType(ZGuiWnd* pkWnd);

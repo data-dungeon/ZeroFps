@@ -126,6 +126,9 @@ void MistServer::OnSystem()
 
 void MistServer::Input()
 {
+	if(m_bGuiHaveFocus)
+		return;
+
 	float speed = 20;
 
 	int x,z;		
@@ -476,7 +479,18 @@ void MistServer::OnCommand(int iID, ZGuiWnd *pkMainWnd)
 		printf("%s\n", pkMainWnd->GetName());
 
 		if(strName == "OpenWorkTabButton")
+		{
 			pkScript->Call(m_pkScriptResHandle, "OpenWorkPad", 0, 0); 
+
+			if( IsWndVisible( "WorkTabWnd" ) )
+			{
+				m_bGuiHaveFocus = true;
+			}
+			else
+			{
+				m_bGuiHaveFocus = false;
+			}
+		}
 	}
 
 }

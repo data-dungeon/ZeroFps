@@ -18,6 +18,7 @@
 
 ZGuiApp::ZGuiApp(ZGui::callback oMainWndProc)
 {
+	m_bGuiHaveFocus = false;
 	m_uiWindowIDCounter = 1;
 	m_pkScriptResHandle = NULL;
 	m_oMainWndProc = oMainWndProc;
