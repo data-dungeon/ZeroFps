@@ -347,9 +347,9 @@ void MistServer::SetupGuiEnviroment()
 	for(unsigned int i=0; i<vkFileNames.size(); i++)
 		AddListItem("EnviromentPresetList", (char*) vkFileNames[i].c_str());
 
-	pkGui->GetToolTip()->AddToolTip(GetWnd("ToggleLight"),"Light");
-	pkGui->GetToolTip()->AddToolTip(GetWnd("OpenWorkTabButton"),"Worktab");
-	pkGui->GetToolTip()->AddToolTip(GetWnd("RotateZoneModellButton"),"Rotate");
+	m_pkGui->GetToolTip()->AddToolTip(GetWnd("ToggleLight"),"Light");
+	m_pkGui->GetToolTip()->AddToolTip(GetWnd("OpenWorkTabButton"),"Worktab");
+	m_pkGui->GetToolTip()->AddToolTip(GetWnd("RotateZoneModellButton"),"Rotate");
 }
 
 
@@ -387,7 +387,8 @@ void MistServer::DrawHMEditMarker(HeightMap* pkHmap, Vector3 kCenterPos, float f
 {
 	if(pkHmap == NULL)	return;
 
-	m_pkRender->DrawBillboard(m_pkFps->GetCam()->GetModelViewMatrix(),kCenterPos,1,pkTexMan->Load("../data/textures/pointer.tga",T_NOMIPMAPPING));	
+	m_pkRender->DrawBillboard(m_pkFps->GetCam()->GetModelViewMatrix(),kCenterPos,1,
+		m_pkTexMan->Load("../data/textures/pointer.tga",T_NOMIPMAPPING));	
 
 	Vector3				kVertex;
 	vector<Vector3>	kVertexList;
@@ -506,7 +507,7 @@ void MistServer::OnIdle()
 	m_pkFps->SetCamera(m_pkActiveCamera);		
 	m_pkFps->GetCam()->ClearViewPort();	
 
-	if(pkGui->m_bHandledMouse == false)
+	if(m_pkGui->m_bHandledMouse == false)
 	{
 		Input();	
 	}

@@ -146,7 +146,7 @@ void MistClient::Init()
 	GuiAppLua::Init(&g_kMistClient, m_pkScript);
 
 	HenchmanButton::s_iHenchemanAlphaTex = 
-		pkTexMan->Load("/data/textures/gui/portraits/portrait_a.bmp", 0);
+		m_pkTexMan->Load("/data/textures/gui/portraits/portrait_a.bmp", 0);
 
 	// init gui
 	InitGui(m_pkScript, 
@@ -157,8 +157,8 @@ void MistClient::Init()
 	//init mistland script intreface
 	MistLandLua::Init(m_pkObjectMan,m_pkScript);
 	
-//	pkGui->SetCursor(0,0, pkTexMan->Load("data/textures/gui/cursor.bmp", 0),
-//		pkTexMan->Load("data/textures/gui/cursor_a.bmp", 0), 32, 32);
+//	m_pkGui->SetCursor(0,0, m_pkTexMan->Load("data/textures/gui/cursor.bmp", 0),
+//		m_pkTexMan->Load("data/textures/gui/cursor_a.bmp", 0), 32, 32);
 
 	// Varde ljus!
 	m_pkLight->SetLighting(true);
@@ -166,7 +166,7 @@ void MistClient::Init()
 
 	m_pkScript->Call(m_pkScriptResHandle, "CreateIntroScene", 0, 0);
 
-	pkGui->SetFocus(GetWnd("IntroWnd")); 
+	m_pkGui->SetFocus(GetWnd("IntroWnd")); 
 
 	// Fulhack så länge för att kunna styra gui:t innan man har kopplat upp mot serven.
 	m_pkFps->m_bClientMode = true;
@@ -210,7 +210,7 @@ void MistClient::OnIdle()
 	m_pkFps->SetCamera(m_pkCamera);		
 	m_pkFps->GetCam()->ClearViewPort();	
 		
-	if(pkGui->m_bHandledMouse == false)
+	if(m_pkGui->m_bHandledMouse == false)
 	{
 		Input();
 	}
@@ -494,7 +494,7 @@ void MistClient::Input()
 	{
 		m_pkTargetObject = GetTargetObject();
 
-		pkGui->SetFocus(GetWnd("MainWnd")); // set focus to main wnd.
+		m_pkGui->SetFocus(GetWnd("MainWnd")); // set focus to main wnd.
 
 		//DVOID här behövs en fix för att sätta menyn i mitten oavset skärmupplösning,samt frigöra musmarkören
 		int mx, my;
@@ -560,7 +560,7 @@ void MistClient::Input()
 		{
 			m_pkAudioSys->StartSound("/data/sound/open_window2.wav");	
 			pkInputWnd->Show();
-			pkGui->SetFocus(GetWnd("InputBox"));
+			m_pkGui->SetFocus(GetWnd("InputBox"));
 		}
 		else
 		{		
@@ -572,7 +572,7 @@ void MistClient::Input()
 			pkTextbox->SetText("");
 
 			pkInputWnd->Hide();
-			pkGui->SetFocus(GetWnd("PanelBkWnd")); // set focus to panel (very importent, crash if not)
+			m_pkGui->SetFocus(GetWnd("PanelBkWnd")); // set focus to panel (very importent, crash if not)
 		}
 	}
 }
@@ -600,7 +600,8 @@ void MistClient::DrawCrossHair()
 	glAlphaFunc(GL_GREATER,0.1);
 	glEnable(GL_ALPHA_TEST);
 
-	m_pkRender->Quad(Vector3(0,0,-1),Vector3(0,0,0),Vector3(.05,.05,.05),pkTexMan->Load("data/textures/crosshair.tga",0));
+	m_pkRender->Quad(Vector3(0,0,-1),Vector3(0,0,0),Vector3(.05,.05,.05),
+		m_pkTexMan->Load("data/textures/crosshair.tga",0));
 
 	glPopAttrib();
 }
@@ -811,7 +812,7 @@ void MistClient::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 				// order itemcontainer to begin gather iteminfo from server
 				if ( GetWnd("BackPackWnd")->IsVisible() )
 				{
-					pkGui->SetFocus(GetWnd("BackPackWnd"));
+					m_pkGui->SetFocus(GetWnd("BackPackWnd"));
 
 					if(m_pkActiveCharacter)
                {
@@ -823,7 +824,7 @@ void MistClient::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
                }
 				}
 				else
-					pkGui->SetFocus(GetWnd("PanelBkWnd"));
+					m_pkGui->SetFocus(GetWnd("PanelBkWnd"));
 
 				// comment out by zeb
             /*CharacterProperty* pkCP = (CharacterProperty*)m_pkActiveCharacter->GetProperty("P_CharStats");
@@ -844,7 +845,7 @@ void MistClient::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 				m_pkScript->Call(m_pkScriptResHandle, "OnClickStats", 0, 0); // create
 
 				if ( GetWnd("StatsWnd")->IsVisible() )
-					pkGui->SetFocus(GetWnd("StatsWnd"));
+					m_pkGui->SetFocus(GetWnd("StatsWnd"));
 
 				if(m_pkActiveCharacter)
 					m_pkStatsDlg->SetCharacterProperty((CharacterProperty*)
@@ -858,7 +859,7 @@ void MistClient::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 				m_pkScript->Call(m_pkScriptResHandle, "OnClickMap", 0, 0);
 
 				if ( GetWnd("MapWnd")->IsVisible() )
-					pkGui->SetFocus(GetWnd("MapWnd"));
+					m_pkGui->SetFocus(GetWnd("MapWnd"));
 			}
 			else
 			if(strClickWndName == "ToggleInputBoxBn")
@@ -867,7 +868,7 @@ void MistClient::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 
 				if ( GetWnd("InputWnd")->IsVisible() )
 				{
-					pkGui->SetFocus(GetWnd("InputBox"));
+					m_pkGui->SetFocus(GetWnd("InputBox"));
 				}
 			}
 			else
@@ -1448,19 +1449,19 @@ void MistClient::CreateGuiInterface()
 
 	CreateWnd(Button, "ScrollPortraitsUp", "MainWnd", "", screen_w-51-9, 4, 8,8, 0);
 
-	pkSkin = new ZGuiSkin(pkTexMan->Load("/data/textures/gui/scrollbar_clicktop_bn_u.bmp", 0), 0);
+	pkSkin = new ZGuiSkin(m_pkTexMan->Load("/data/textures/gui/scrollbar_clicktop_bn_u.bmp", 0), 0);
 	static_cast<ZGuiButton*>(GetWnd("ScrollPortraitsUp"))->SetButtonUpSkin(pkSkin);
 
-	pkSkin = new ZGuiSkin(pkTexMan->Load("/data/textures/gui/scrollbar_clicktop_bn_d.bmp", 0), 0);
+	pkSkin = new ZGuiSkin(m_pkTexMan->Load("/data/textures/gui/scrollbar_clicktop_bn_d.bmp", 0), 0);
 	static_cast<ZGuiButton*>(GetWnd("ScrollPortraitsUp"))->SetButtonDownSkin(pkSkin);
 	static_cast<ZGuiButton*>(GetWnd("ScrollPortraitsUp"))->SetButtonHighLightSkin(pkSkin);
 
 	CreateWnd(Button, "ScrollPortraitsDown", "MainWnd", "", screen_w-51-9, 12, 8,8, 0);
 
-	pkSkin = new ZGuiSkin(pkTexMan->Load("/data/textures/gui/scrollbar_clickbottom_bn_u.bmp", 0), 0);
+	pkSkin = new ZGuiSkin(m_pkTexMan->Load("/data/textures/gui/scrollbar_clickbottom_bn_u.bmp", 0), 0);
 	static_cast<ZGuiButton*>(GetWnd("ScrollPortraitsDown"))->SetButtonUpSkin(pkSkin);
 
-	pkSkin = new ZGuiSkin(pkTexMan->Load("/data/textures/gui/scrollbar_clickbottom_bn_d.bmp", 0), 0);
+	pkSkin = new ZGuiSkin(m_pkTexMan->Load("/data/textures/gui/scrollbar_clickbottom_bn_d.bmp", 0), 0);
 	static_cast<ZGuiButton*>(GetWnd("ScrollPortraitsDown"))->SetButtonDownSkin(pkSkin);
 	static_cast<ZGuiButton*>(GetWnd("ScrollPortraitsDown"))->SetButtonHighLightSkin(pkSkin);
 	
@@ -1484,21 +1485,21 @@ void MistClient::CreateGuiInterface()
 	m_pkContainerDlg = new ContainerDlg(this);
 
 	// give focus to main window
-	pkGui->SetFocus(GetWnd("PanelBkWnd")); 
+	m_pkGui->SetFocus(GetWnd("PanelBkWnd")); 
 
 	// Init tooltip
-	pkGui->GetToolTip()->AddToolTip(GetWnd("MapButton"),"Map");
-	pkGui->GetToolTip()->AddToolTip(GetWnd("BackPackButton"),"Inventory");
-	pkGui->GetToolTip()->AddToolTip(GetWnd("StatsButton"),"Character");
-	pkGui->GetToolTip()->AddToolTip(GetWnd("SelectSpellBn"),"Spellbook");
-	pkGui->GetToolTip()->AddToolTip(GetWnd("SelectSkillBn"),"Skills");
-	pkGui->GetToolTip()->AddToolTip(GetWnd("ToggleInputBoxBn"),"Inputbox on/off");
-	pkGui->GetToolTip()->AddToolTip(GetWnd("ToggleInfoBoxBn"),"Infobox on/off");
+	m_pkGui->GetToolTip()->AddToolTip(GetWnd("MapButton"),"Map");
+	m_pkGui->GetToolTip()->AddToolTip(GetWnd("BackPackButton"),"Inventory");
+	m_pkGui->GetToolTip()->AddToolTip(GetWnd("StatsButton"),"Character");
+	m_pkGui->GetToolTip()->AddToolTip(GetWnd("SelectSpellBn"),"Spellbook");
+	m_pkGui->GetToolTip()->AddToolTip(GetWnd("SelectSkillBn"),"Skills");
+	m_pkGui->GetToolTip()->AddToolTip(GetWnd("ToggleInputBoxBn"),"Inputbox on/off");
+	m_pkGui->GetToolTip()->AddToolTip(GetWnd("ToggleInfoBoxBn"),"Infobox on/off");
 	
-	ZGuiSkin kSkin(pkTexMan->Load("data/textures/gui/sb_bk.bmp", 0), true);
+	ZGuiSkin kSkin(m_pkTexMan->Load("data/textures/gui/sb_bk.bmp", 0), true);
 	kSkin.m_unBorderSize = 1;
 	memset(kSkin.m_afBorderColor, 0, sizeof(float)*3);
-	pkGui->GetToolTip()->SetSkin(kSkin);
+	m_pkGui->GetToolTip()->SetSkin(kSkin);
 }
 
 void MistClient::UpdateObjectList(PlayerInfo* pkPlayerInfo)
@@ -1509,7 +1510,7 @@ void MistClient::UpdateObjectList(PlayerInfo* pkPlayerInfo)
 	if(iNumHenchmanIcons < iNumHenchmans)
 	{
 		m_vkHenchmanIcons.push_back( new HenchmanButton(this, 
-			pkTexMan->Load("/data/textures/gui/portraits/gubbe1.bmp", 0), iNumHenchmanIcons) );
+			m_pkTexMan->Load("/data/textures/gui/portraits/gubbe1.bmp", 0), iNumHenchmanIcons) );
 
 		m_vkHenchmanIcons.back()->Check(true);  
 	}
@@ -1635,9 +1636,12 @@ bool MistClient::OpenActionMenu(int mx, int my)
 		{
 			ZGuiSkin* pkButtonSkins = new ZGuiSkin[3];
 
-			pkButtonSkins[0].m_iBkTexAlphaID = pkTexMan->Load("data/textures/gui/actions/action_a.bmp", 0);
-			pkButtonSkins[1].m_iBkTexAlphaID = pkTexMan->Load("data/textures/gui/actions/action_a.bmp", 0);
-			pkButtonSkins[2].m_iBkTexAlphaID = pkTexMan->Load("data/textures/gui/actions/action_a.bmp", 0);
+			pkButtonSkins[0].m_iBkTexAlphaID = 
+				m_pkTexMan->Load("data/textures/gui/actions/action_a.bmp", 0);
+			pkButtonSkins[1].m_iBkTexAlphaID = 
+				m_pkTexMan->Load("data/textures/gui/actions/action_a.bmp", 0);
+			pkButtonSkins[2].m_iBkTexAlphaID = 
+				m_pkTexMan->Load("data/textures/gui/actions/action_a.bmp", 0);
 
 			pkButtonSkins[2].m_afBkColor[0] = 0.5f;
 			pkButtonSkins[2].m_afBkColor[1] = 0.5f;
@@ -1662,9 +1666,12 @@ bool MistClient::OpenActionMenu(int mx, int my)
 		{
 			char szActionIcon[128];
 			sprintf(szActionIcon, "data/textures/gui/actions/%s.bmp", vkActions[i].c_str());
-			((ZGuiButton*) GetWnd(name))->GetButtonUpSkin()->m_iBkTexID = pkTexMan->Load(szActionIcon, 0);
-			((ZGuiButton*) GetWnd(name))->GetButtonDownSkin()->m_iBkTexID = pkTexMan->Load(szActionIcon, 0);
-			((ZGuiButton*) GetWnd(name))->GetButtonHighLightSkin()->m_iBkTexID = pkTexMan->Load(szActionIcon, 0);
+			((ZGuiButton*) GetWnd(name))->GetButtonUpSkin()->m_iBkTexID = 
+				m_pkTexMan->Load(szActionIcon, 0);
+			((ZGuiButton*) GetWnd(name))->GetButtonDownSkin()->m_iBkTexID = 
+				m_pkTexMan->Load(szActionIcon, 0);
+			((ZGuiButton*) GetWnd(name))->GetButtonHighLightSkin()->m_iBkTexID = 
+				m_pkTexMan->Load(szActionIcon, 0);
 
 			map<ZGuiButton*,string>::iterator res =
 				m_kActionBnTranslator.find(pkButton);
@@ -1679,7 +1686,7 @@ bool MistClient::OpenActionMenu(int mx, int my)
 		{
 			pkButton->Hide();
 			GetWnd(name)->GetSkin()->m_iBkTexID = 
-				pkTexMan->Load("data/textures/gui/actions/noaction.bmp", 0);
+				m_pkTexMan->Load("data/textures/gui/actions/noaction.bmp", 0);
 		}
 
 		x -= int(sin(grad) * fOffset);
@@ -1783,7 +1790,7 @@ void MistClient::OnKeyPress(int iKey, ZGuiWnd *pkWnd)
 				if(strcmp(pkWnd->GetName(), "StatsWnd") == 0)
 				{
 					pkWnd->Hide();
-					pkGui->SetFocus(GetWnd("MainWnd")); 
+					m_pkGui->SetFocus(GetWnd("MainWnd")); 
 					m_pkAudioSys->StartSound("/data/sound/close_window.wav"); 
 				}
 			}
@@ -1828,16 +1835,16 @@ void MistClient::ChangeMode ( eMOUSE_MODES eMode )
 	{
 		case eMOUSE_MODE:
 			m_pkInput->ShowCursor(true);
-			pkGui->ShowCursor(true);
+			m_pkGui->ShowCursor(true);
 			break;
 		case eCAMERA_MODE:
 			m_pkInput->ShowCursor(false);
-			pkGui->ShowCursor(false);
+			m_pkGui->ShowCursor(false);
 			break;
 		case eACTION_MODE:
 			m_pkInputHandle->SetCursorInputPos ( int(m_iWidth/2.f), int(m_iHeight/2.f) );
 			m_pkInput->ShowCursor(true);
-			pkGui->ShowCursor(true);
+			m_pkGui->ShowCursor(true);
 			break;
 	}
 }

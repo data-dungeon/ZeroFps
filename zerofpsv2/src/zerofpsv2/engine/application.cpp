@@ -24,13 +24,13 @@ void Application::SetEnginePointer(ZeroFps* pkZeroFps)
 	m_pkConsole				=	m_pkFps->m_pkConsole;
 	m_pkRender				=	m_pkFps->m_pkRender;
 	m_pkInput				=	m_pkFps->m_pkInput;
-	pkTexMan					=	m_pkFps->m_pkTexMan;
+	m_pkTexMan				=	m_pkFps->m_pkTexMan;
 	m_pkBasicFS				=	m_pkFps->m_pkBasicFS;
 	m_pkLight				=	m_pkFps->m_pkLight;
 	m_pkObjectMan			=	m_pkFps->m_pkObjectMan;
 	m_pkAudioSys			=	m_pkFps->m_pkAudioSystem;
 	m_pkPropertyFactory	=	m_pkFps->m_pkPropertyFactory;
-	pkGui						=	m_pkFps->m_pkGui;
+	m_pkGui					=	m_pkFps->m_pkGui;
 	m_pkGuiMan				=	m_pkFps->m_pkGuiMan;
 	m_pkIni					=	m_pkFps->m_pkIni;
 	m_pkPhysEngine			=	m_pkFps->m_pkPhysEngine;

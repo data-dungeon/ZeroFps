@@ -124,9 +124,9 @@ private:
 	int GetTexID(char* szFile);
 	void InitDefaultSkins(ZFScriptSystem* pkScript);
 
-	ZGui* m_pkGui;
+	ZGui* m_pkGuiSys;
 	ZGuiResourceManager* m_pkResMan;
-	TextureManager* m_pkTexMan;
+	TextureManager* m_pkTextureMan;
 	map<string, ZGuiSkin*> m_kSkins;
 	map<int, ZGuiWnd*> m_kWindows;
 	

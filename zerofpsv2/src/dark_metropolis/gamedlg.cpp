@@ -19,7 +19,7 @@ CGameDlg::~CGameDlg()
 
 int CGameDlg::GetTexID(char* szName)
 {
-	return m_pkDM->pkTexMan->Load(szName, 0);
+	return m_pkDM->m_pkTexMan->Load(szName, 0);
 }
 
 void CGameDlg::ShowWnd(char* szWndResName, bool bShow, bool bToogleCapture) 

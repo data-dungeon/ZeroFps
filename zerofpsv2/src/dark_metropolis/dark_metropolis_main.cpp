@@ -484,7 +484,7 @@ void DarkMetropolis::Input()
 	}
 	else
 	{
-		if(pkGui->m_bUseHardwareMouse == true)
+		if(m_pkGui->m_bUseHardwareMouse == true)
 			m_pkInput->ShowCursor(true);
 	}
 		

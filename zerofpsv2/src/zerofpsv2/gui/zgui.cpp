@@ -390,11 +390,13 @@ void ZGui::ShowFPSCounter(bool bShow)
 
 	if(m_iShowFPSCounter)
 	{
-		m_pkFpsWnd->Show();
+		m_pkFpsWnd->SetPos(800-60,5);
+		//m_pkFpsWnd->Show();
 	}
 	else
 	{
-		m_pkFpsWnd->Hide();
+		m_pkFpsWnd->SetPos(800,5);
+		//m_pkFpsWnd->Hide();
 	}
 }
 

@@ -103,7 +103,7 @@ ZGuiWnd* ZGResEdit::GetWndFromPoint(int x, int y)
 
 		if(pkWnd && ClickInsideWnd(pkWnd, x,y))
 		{
-			//pkGui->SetFocus(pkWnd);
+			//m_pkGui->SetFocus(pkWnd);
 			//m_pkFocusWnd = pkWnd;
 			m_pkMainWnd = pkWnd;
 			if(m_pkMainWnd == NULL) m_pkMainWnd = GetWnd("GuiMainWnd");
@@ -176,7 +176,7 @@ ZGuiWnd* ZGResEdit::DeleteWnd(ZGuiWnd *pkWnd)
 					
 					pkTabCtrl->SetCurrentPage(new_page); 	
 					ZGuiWnd* pkPage = pkTabCtrl->GetPage(new_page);
-					pkGui->SetFocus(pkPage);
+					m_pkGui->SetFocus(pkPage);
 					return pkPage;
 				}
 			}
@@ -186,7 +186,7 @@ ZGuiWnd* ZGResEdit::DeleteWnd(ZGuiWnd *pkWnd)
 			m_pkMainWnd = GetWnd("GuiMainWnd");
 		}
 
-		pkGui->UnregisterWindow(pkWnd);
+		m_pkGui->UnregisterWindow(pkWnd);
 		pkWnd = NULL;
 	}
 	
@@ -242,7 +242,7 @@ void ZGResEdit::OnIdle()
 	//y = m_pkInput->m_iSDLMouseY;
 	m_pkInputHandle->SDLMouseXY(x,y);
 
-//	pkGui->SetLineColor(255,0,0);
+//	m_pkGui->SetLineColor(255,0,0);
 
 	if(!m_pkInputHandle->Pressed(KEY_LSHIFT) && m_eEditMode != SET_MOVE_AREA)
 	{
@@ -253,7 +253,7 @@ void ZGResEdit::OnIdle()
 	{
 		if(m_pkInputHandle->Pressed(KEY_LSHIFT) && m_pkResizeWnd != NULL)
 		{
-//			pkGui->SetLineColor(255,255,0);
+//			m_pkGui->SetLineColor(255,255,0);
 			m_eEditMode = RESIZE;
 		}
 
@@ -332,7 +332,7 @@ void ZGResEdit::OnIdle()
 				
 				ZGuiWnd* pkPage = pkTabCtrl->GetPage(pressed_keynumber);
 
-				pkGui->SetFocus(pkPage);
+				m_pkGui->SetFocus(pkPage);
 				m_pkFocusWnd = pkPage;
 				m_pkMainWnd = pkPage;
 
@@ -342,12 +342,12 @@ void ZGResEdit::OnIdle()
 		}
 	}
 
-	pkGui->SetLineColor(255,255,0);
+	m_pkGui->SetLineColor(255,255,0);
 
 	if(m_pkFocusWnd)
 		DrawSelectionRect(m_pkFocusWnd);
 
-	pkGui->SetLineColor(255,0,0);
+	m_pkGui->SetLineColor(255,0,0);
 
 	if(m_pkMainWnd)
 		DrawSelectionRect(m_pkMainWnd);	
@@ -842,7 +842,7 @@ void ZGResEdit::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 				GetListbox()->GetSelItem()->GetText(), rand()%1000);
 			SetText("NewWndNameTextbox", szNewName);
 
-			pkGui->SetFocus(pkWnd);
+			m_pkGui->SetFocus(pkWnd);
 			pkWnd->Disable(); // Disable wnd (otherwise some ctrls like listoboxes can't be moved easily)
 
 			UpdateViewWnd();
@@ -1005,13 +1005,13 @@ void ZGResEdit::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 	{
 		if(strClickWndName == "DefPropWndCancelBn")
 		{
-			pkGui->ShowMainWindow(m_pkScene->m_pkDefProp, false);
+			m_pkGui->ShowMainWindow(m_pkScene->m_pkDefProp, false);
 		}
 		else
 		if(strClickWndName == "DefPropWndOKBn")
 		{
 			m_bHaveAskedForDefProp = true;
-			pkGui->ShowMainWindow(m_pkScene->m_pkDefProp, false);
+			m_pkGui->ShowMainWindow(m_pkScene->m_pkDefProp, false);
 
 			OnCommand( GetWnd("CreateWndBn")->GetID(), false, m_pkScene->m_pkWorkSpace); // skapa knappen...
 		}
@@ -1056,9 +1056,9 @@ void ZGResEdit::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 void ZGResEdit::OnMouseClick(bool bReleased, int x, int y)
 {
 	if(m_pkInputHandle->Pressed(KEY_A))
-		pkGui->m_bDisableAlphatest = true;
+		m_pkGui->m_bDisableAlphatest = true;
 	else
-		pkGui->m_bDisableAlphatest = false;
+		m_pkGui->m_bDisableAlphatest = false;
 
 	ZGuiWnd* pkWnd = GetWndFromPoint(x,y);
 
@@ -1227,7 +1227,7 @@ bool ZGResEdit::ClickInsideWnd(ZGuiWnd* pkWnd, int x, int y)
 	{
 		if(m_eEditMode == RESIZE)
 			return true;
-		if(pkGui->ClickedWndAlphaTex(x,y,pkWnd)==true)
+		if(m_pkGui->ClickedWndAlphaTex(x,y,pkWnd)==true)
 			return true;
 	}
 
@@ -1449,7 +1449,7 @@ void ZGResEdit::OnClickTreeItem(char *szTreeBox, char *szParentNodeText, char *s
 					{
 						TempSave(true);
 
-						int id = pkTexMan->Load(strFullpath.c_str(), 0);
+						int id = m_pkTexMan->Load(strFullpath.c_str(), 0);
 
 						(*vkSkinDesc[i].first)->m_bTransparent = false; // ändra
 
@@ -1492,21 +1492,21 @@ void ZGResEdit::OnClickTreeItem(char *szTreeBox, char *szParentNodeText, char *s
 						if(strcmp(szSkinType, "child node")==0)
 						{
 							ZGuiSkin* pkNewSkin = new ZGuiSkin();
-							pkNewSkin->m_iBkTexID = pkTexMan->Load(strFullpath.c_str(), 0);
+							pkNewSkin->m_iBkTexID = m_pkTexMan->Load(strFullpath.c_str(), 0);
 							((ZGuiTreebox*) m_pkFocusWnd)->InsertBranchSkin(0,pkNewSkin,true);
 						}
 						else
 						if(strcmp(szSkinType, "closed node")==0)
 						{
 							ZGuiSkin* pkNewSkin = new ZGuiSkin();
-							pkNewSkin->m_iBkTexID = pkTexMan->Load(strFullpath.c_str(), 0);
+							pkNewSkin->m_iBkTexID = m_pkTexMan->Load(strFullpath.c_str(), 0);
 							((ZGuiTreebox*) m_pkFocusWnd)->InsertBranchSkin(1,pkNewSkin,true);
 						}
 						else
 						if(strcmp(szSkinType, "open node")==0)
 						{
 							ZGuiSkin* pkNewSkin = new ZGuiSkin();
-							pkNewSkin->m_iBkTexID = pkTexMan->Load(strFullpath.c_str(), 0);
+							pkNewSkin->m_iBkTexID = m_pkTexMan->Load(strFullpath.c_str(), 0);
 							((ZGuiTreebox*) m_pkFocusWnd)->InsertBranchSkin(2,pkNewSkin,true);
 						}
 					}
@@ -1620,7 +1620,7 @@ void ZGResEdit::OpenDefPropWnd(string strWndType)
 			strcmp((*it)->GetName(),"DefPropWndOKBn") == 0)
 			continue;
 
-		pkGui->UnregisterWindow((*it));
+		m_pkGui->UnregisterWindow((*it));
 	}
 
 	if(strWndType == "Radiobn.group" || strWndType == "Radiobutton")
@@ -1927,7 +1927,7 @@ void ZGResEdit::DrawSelectionRect(ZGuiWnd *pkWnd)
 	{
 		ClipLine(side[s], rects, out);
 		for(i=0; i<out.size(); i++)
-			pkGui->DrawLine(out[i].s, out[i].e); 
+			m_pkGui->DrawLine(out[i].s, out[i].e); 
 
 		out.clear();
 	}
@@ -1958,12 +1958,12 @@ void ZGResEdit::UpdateViewWnd()
 void ZGResEdit::MoveWndToTop(ZGuiWnd *pkWnd)
 {
 	pkWnd->Show();
-	pkGui->SetFocus(pkWnd);
+	m_pkGui->SetFocus(pkWnd);
 }
 
 void ZGResEdit::ExecuteCommand()
 {
-	ZGuiWnd* pkTopWnd = pkGui->GetActiveMainWnd();
+	ZGuiWnd* pkTopWnd = m_pkGui->GetActiveMainWnd();
 	
 	if(pkTopWnd == m_pkScene->m_pkPropertyWnd)
 	{

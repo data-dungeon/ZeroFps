@@ -62,7 +62,7 @@ protected:
 	DarkMetropolis* m_pkDM;
 	ZGui* m_pkGui;
 	ZFAudioSystem* m_pkAudioSys;
-	TextureManager* GetTexMan() { return m_pkDM->Application::pkTexMan; }
+	TextureManager* GetTexMan() { return m_pkDM->Application::m_pkTexMan; }
 
 	int GetTexID(char* szName);
 	

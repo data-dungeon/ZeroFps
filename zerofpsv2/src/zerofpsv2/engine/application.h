@@ -22,7 +22,7 @@ class ENGINE_API Application : public ZFSubSystem {
 	protected:
 		ZFBasicFS*				m_pkBasicFS;
 		ZFVFileSystem*			m_pkZFVFileSystem;
-		TextureManager*		pkTexMan;
+		TextureManager*		m_pkTexMan;
 		Input*					m_pkInput;
 		PropertyFactory*		m_pkPropertyFactory;
 		Light*					m_pkLight;
@@ -31,7 +31,7 @@ class ENGINE_API Application : public ZFSubSystem {
 		EntityManager*			m_pkObjectMan;
 		ZFAudioSystem*			m_pkAudioSys;
 		ZGuiResourceManager*	m_pkGuiMan;
-		ZGui*						pkGui;
+		ZGui*						m_pkGui;
 		ZFIni*					m_pkIni;
 		PhysicsEngine*			m_pkPhysEngine;
 		ZFResourceDB*			m_pkResourceDB;

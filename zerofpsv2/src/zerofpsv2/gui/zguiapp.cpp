@@ -50,7 +50,7 @@ ZGuiApp::~ZGuiApp()
 		// UnregisterWindow själv tar hand om att förstöra alla barn.
 		if(itWnds->first == 10)
 		{
-			m_pkGui->UnregisterWindow(itWnds->second);
+			m_pkGuiSys->UnregisterWindow(itWnds->second);
 		}
 
 		itWnds++;
@@ -93,7 +93,7 @@ ZGuiWnd* ZGuiApp::CreateWnd(GuiType eType, char* szResourceName, char* szText, Z
 		ZGuiWnd* pkWnd = m_pkResMan->Wnd(szResourceName);
 
 		pkWnd->Show();
-		m_pkGui->SetFocus(pkWnd);
+		m_pkGuiSys->SetFocus(pkWnd);
 		
 		return pkWnd;
 	}
@@ -278,9 +278,9 @@ ZGuiWnd* ZGuiApp::CreateWnd(GuiType eType, char* szResourceName, char* szText, Z
 
 	if(eType == Wnd) 
 	{
-		if(!m_pkGui->AddMainWindow(iID, pkWnd, szResourceName, m_oMainWndProc, true))
+		if(!m_pkGuiSys->AddMainWindow(iID, pkWnd, szResourceName, m_oMainWndProc, true))
 		{
-			m_pkGui->SetFocus(pkWnd);
+			m_pkGuiSys->SetFocus(pkWnd);
 			return NULL;
 		}
 	}
@@ -288,7 +288,7 @@ ZGuiWnd* ZGuiApp::CreateWnd(GuiType eType, char* szResourceName, char* szText, Z
 	{
 		if(szResourceName)
 		{
-			m_pkGui->RegisterWindow(pkWnd, szResourceName);
+			m_pkGuiSys->RegisterWindow(pkWnd, szResourceName);
 		}
 	}
 
@@ -299,8 +299,8 @@ ZGuiWnd* ZGuiApp::CreateWnd(GuiType eType, char* szResourceName, char* szText, Z
 
 	m_kWindows.insert(map<int, ZGuiWnd*>::value_type(iID, pkWnd));
 
-	pkWnd->SetGUI(m_pkGui);
-	pkWnd->SetFont(m_pkGui->GetBitmapFont(ZG_DEFAULT_GUI_FONT));  
+	pkWnd->SetGUI(m_pkGuiSys);
+	pkWnd->SetFont(m_pkGuiSys->GetBitmapFont(ZG_DEFAULT_GUI_FONT));  
 
 
 //	pkWnd->Rescale(800,600, GetWidth(),GetHeight());
@@ -450,7 +450,7 @@ ZGuiSkin* ZGuiApp::AddSkinFromScript2(char *szName, ZFScriptSystem *pkScript,
 void ZGuiApp::InitDefaultSkins(ZFScriptSystem* pkScript)
 {
 	// first texture loaded do not show up (?). fulhack fix: load crap texture.
-	int crap = m_pkTexMan->Load("/data/textures/gui/crap.bmp", 0);
+	int crap = m_pkTextureMan->Load("/data/textures/gui/crap.bmp", 0);
 
 	typedef map<string, ZGuiSkin*>::value_type strSkin;
 
@@ -486,15 +486,15 @@ void ZGuiApp::InitGui(ZFScriptSystem* pkScriptSys, char* szFontTexture,
 							 bool bUseHardwareMouse)
 {
 	// Spara undan viktiga pekare till system.
-	m_pkGui = static_cast<ZGui*>(g_ZFObjSys.GetObjectPtr("Gui"));
-	m_pkTexMan = static_cast<TextureManager*>(g_ZFObjSys.GetObjectPtr("TextureManager"));
+	m_pkGuiSys = static_cast<ZGui*>(g_ZFObjSys.GetObjectPtr("Gui"));
+	m_pkTextureMan = static_cast<TextureManager*>(g_ZFObjSys.GetObjectPtr("TextureManager"));
 	m_pkResMan = static_cast<ZGuiResourceManager*>(g_ZFObjSys.GetObjectPtr("ZGuiResourceManager"));
 
-	//	m_pkTexMan->Load("data/textures/gui/slask.bmp", 0); // första misslyckas, vet inte varför..
+	//	m_pkTextureMan->Load("data/textures/gui/slask.bmp", 0); // första misslyckas, vet inte varför..
 
 	ZGuiFont* pkDefaultFont = new ZGuiFont(16,16,0,ZG_DEFAULT_GUI_FONT);				// LEAK - MistServer, Nothing loaded. (FIXED)
 	pkDefaultFont->CreateFromFile(szFontTexture);		
-	m_pkGui->SetDefaultFont(pkDefaultFont);
+	m_pkGuiSys->SetDefaultFont(pkDefaultFont);
 
 	if(m_pkScriptResHandle)
 		delete m_pkScriptResHandle;
@@ -521,22 +521,22 @@ void ZGuiApp::InitGui(ZFScriptSystem* pkScriptSys, char* szFontTexture,
 		CreateMenu(szMenuFile, pkScriptSys);
 
 	// Setup cursor
-	m_pkGui->m_bUseHardwareMouse = bUseHardwareMouse;
+	m_pkGuiSys->m_bUseHardwareMouse = bUseHardwareMouse;
 	
-	if(m_pkGui->m_bUseHardwareMouse == false)
+	if(m_pkGuiSys->m_bUseHardwareMouse == false)
 	{
-		m_pkGui->SetCursor(0,0, m_pkTexMan->Load("data/textures/gui/cursor.bmp", 0),
-			m_pkTexMan->Load("data/textures/gui/cursor_a.bmp", 0), 32, 32);
-		m_pkGui->ShowCursor(true);
+		m_pkGuiSys->SetCursor(0,0, m_pkTextureMan->Load("data/textures/gui/cursor.bmp", 0),
+			m_pkTextureMan->Load("data/textures/gui/cursor_a.bmp", 0), 32, 32);
+		m_pkGuiSys->ShowCursor(true);
 	}
 
 	// Create Fps wnd
-	m_pkGui->m_pkFpsWnd = CreateWnd(Wnd, "zguiapp_fps_wnd", "", "", 800-60, 5, 55, 20, 0);
-	m_pkGui->m_pkFpsWnd->SetSkin(new ZGuiSkin());
-	m_pkGui->m_pkFpsLabel = (ZGuiLabel*) CreateWnd(Label, "zguiapp_fps_label", 
+	m_pkGuiSys->m_pkFpsWnd = CreateWnd(Wnd, "zguiapp_fps_wnd", "", "", 800-60, 5, 55, 20, 0);
+	m_pkGuiSys->m_pkFpsWnd->SetSkin(new ZGuiSkin());
+	m_pkGuiSys->m_pkFpsLabel = (ZGuiLabel*) CreateWnd(Label, "zguiapp_fps_label", 
 		"zguiapp_fps_wnd", "", 0, 0, 55, 20, 0);
-	m_pkGui->m_pkFpsLabel->SetSkin(new ZGuiSkin());
-	m_pkGui->ShowFPSCounter(m_pkGui->m_iShowFPSCounter);
+	m_pkGuiSys->m_pkFpsLabel->SetSkin(new ZGuiSkin());
+	m_pkGuiSys->ShowFPSCounter(m_pkGuiSys->m_iShowFPSCounter);
 	
 }
 
@@ -544,7 +544,7 @@ int ZGuiApp::GetTexID(char *szFile)
 {
 	char szPath[256];
 	sprintf(szPath, "%s%s", "/data/textures/gui/", szFile);
-	return m_pkTexMan->Load(szPath, 0);
+	return m_pkTextureMan->Load(szPath, 0);
 }
 
 
@@ -987,12 +987,12 @@ int ZGuiApp::GetWndID(char* szResName)
 
 int ZGuiApp::GetWidth()
 {
-	return m_pkGui->m_iResX;
+	return m_pkGuiSys->m_iResX;
 }
 
 int ZGuiApp::GetHeight()
 {
-	return m_pkGui->m_iResY;
+	return m_pkGuiSys->m_iResY;
 }
 
 ZFScript* ZGuiApp::GetGuiScript()
@@ -1019,7 +1019,7 @@ bool ZGuiApp::LoadGuiFromScript(ZFScriptSystem* pkScript, char* szFileName)
 /*
 bool ZGuiApp::CreateMenu(char* szFileName, ZFScriptSystem* pkScriptSys)
 {
-	ZGuiFont* pkFont = m_pkGui->GetBitmapFont(ZG_DEFAULT_GUI_FONT);
+	ZGuiFont* pkFont = m_pkGuiSys->GetBitmapFont(ZG_DEFAULT_GUI_FONT);
 	if(pkFont == NULL)
 	{
 		printf("Failed to find font for menu!\n");
@@ -1070,7 +1070,7 @@ bool ZGuiApp::CreateMenu(char* szFileName, ZFScriptSystem* pkScriptSys)
 			ZGuiCombobox* pkMenuCBox = static_cast<ZGuiCombobox*>(GetWnd(
 				(char*)akSections[i].c_str()));
 
-			pkMenuCBox->SetGUI(m_pkGui);
+			pkMenuCBox->SetGUI(m_pkGuiSys);
 			pkMenuCBox->SetLabelText(szTitle);
 			pkMenuCBox->SetNumVisibleRows(1);
 			pkMenuCBox->IsMenu(true);
@@ -1204,7 +1204,7 @@ bool ZGuiApp::CreateMenu(char* szFileName, ZFScriptSystem* pkScriptSys)
 		}
 	}
 
-	pkMenu->ResizeMenu(m_pkGui->GetBitmapFont(ZG_DEFAULT_GUI_FONT));
+	pkMenu->ResizeMenu(m_pkGuiSys->GetBitmapFont(ZG_DEFAULT_GUI_FONT));
 
 	return true;
 }

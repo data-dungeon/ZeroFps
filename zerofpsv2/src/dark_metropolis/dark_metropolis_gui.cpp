@@ -131,7 +131,7 @@ void DarkMetropolis::GUI_Init()
 
 	// Load start sceen.
 	LoadGuiFromScript(m_pkScript, "data/script/gui/dm_start.lua");
-	pkGui->SetFocus(GetWnd("DMStartWnd"));
+	m_pkGui->SetFocus(GetWnd("DMStartWnd"));
 
 	ShowWnd("ContinueGameBn", false);
 	
@@ -152,8 +152,8 @@ void DarkMetropolis::GUI_Init()
 	((CNewGameDlg*) m_pkNewGameDlg)->InitDlg(); 
 	((CNewGameDlg*) m_pkNewGameDlg)->SetFade(0.5f);
 
-	pkGui->SetCursor( 0,0, pkTexMan->Load("data/textures/gui/dm/cursor.bmp", 0),
-		pkTexMan->Load("data/textures/gui/dm/cursor_a.bmp", 0), 32, 32);
+	m_pkGui->SetCursor( 0,0, m_pkTexMan->Load("data/textures/gui/dm/cursor.bmp", 0),
+		m_pkTexMan->Load("data/textures/gui/dm/cursor_a.bmp", 0), 32, 32);
 }
 
 void DarkMetropolis::GUI_OnCommand(int iID, bool bRMouseBnClick, 
@@ -239,13 +239,13 @@ void DarkMetropolis::GUI_OnCommand(int iID, bool bRMouseBnClick,
 	{
 		if(strClickName == "LoadListCancelBn")
 		{
-			pkGui->KillWndCapture();
+			m_pkGui->KillWndCapture();
 			ShowWnd("LoadListWnd", false);
-			pkGui->SetFocus(GetWnd("DMStartWnd"));
+			m_pkGui->SetFocus(GetWnd("DMStartWnd"));
 
 			((CNewGameDlg*) m_pkNewGameDlg)->SetFade(1.0f);
-			pkGui->PlaceWndFrontBack(GetWnd("DMStartWnd"), true); 
-			pkGui->SetCaptureToWnd(GetWnd("DMStartWnd"));
+			m_pkGui->PlaceWndFrontBack(GetWnd("DMStartWnd"), true); 
+			m_pkGui->SetCaptureToWnd(GetWnd("DMStartWnd"));
 		}
 		else
 		if(strClickName == "LoadListOKBn")
@@ -261,7 +261,7 @@ void DarkMetropolis::GUI_OnCommand(int iID, bool bRMouseBnClick,
 
 				if(bSucess)
 				{
-					pkGui->KillWndCapture();
+					m_pkGui->KillWndCapture();
 					ShowWnd("LoadListWnd", false);
 					ShowWnd("DMStartWnd", false);
 					GUI_NewGame(pkMainWnd);		
@@ -273,8 +273,8 @@ void DarkMetropolis::GUI_OnCommand(int iID, bool bRMouseBnClick,
 			else
 			{
 				((CNewGameDlg*) m_pkNewGameDlg)->SetFade(1.0f);
-				pkGui->PlaceWndFrontBack(GetWnd("DMStartWnd"), true); 
-				pkGui->SetCaptureToWnd(GetWnd("DMStartWnd"));
+				m_pkGui->PlaceWndFrontBack(GetWnd("DMStartWnd"), true); 
+				m_pkGui->SetCaptureToWnd(GetWnd("DMStartWnd"));
 			}
 		}
 	}
@@ -593,7 +593,7 @@ void DarkMetropolis::GUI_LoadSave(bool bSave)
 	ZGuiWnd* pkCancel = CreateWnd(Button, "LoadListCancelBn", "LoadListWnd", 
 		"Cacel", 148, 400-60+40, 96, 40, 0);
 
-	pkGui->SetCaptureToWnd(pkLoadListWnd);
+	m_pkGui->SetCaptureToWnd(pkLoadListWnd);
 
 	if(init) // only ones
 	{
@@ -605,9 +605,9 @@ void DarkMetropolis::GUI_LoadSave(bool bSave)
 			new ZGuiSkin(), new ZGuiSkin(), new ZGuiSkin()
 		};
 
-		BnSkins[0]->m_iBkTexID = pkTexMan->Load("data/textures/gui/dm/misc_button_u.bmp", 0);
-		BnSkins[1]->m_iBkTexID = pkTexMan->Load("data/textures/gui/dm/misc_button_d.bmp", 0);
-		BnSkins[2]->m_iBkTexID = pkTexMan->Load("data/textures/gui/dm/misc_button_u.bmp", 0);
+		BnSkins[0]->m_iBkTexID = m_pkTexMan->Load("data/textures/gui/dm/misc_button_u.bmp", 0);
+		BnSkins[1]->m_iBkTexID = m_pkTexMan->Load("data/textures/gui/dm/misc_button_d.bmp", 0);
+		BnSkins[2]->m_iBkTexID = m_pkTexMan->Load("data/textures/gui/dm/misc_button_u.bmp", 0);
 		((ZGuiButton*)pkOK)->SetButtonUpSkin(BnSkins[0]);
 		((ZGuiButton*)pkOK)->SetButtonDownSkin(BnSkins[1]);
 		((ZGuiButton*)pkOK)->SetButtonHighLightSkin(BnSkins[2]);
@@ -618,17 +618,23 @@ void DarkMetropolis::GUI_LoadSave(bool bSave)
 		ZGuiSkin* pkListSkin = new ZGuiSkin();
 		ZGuiSkin* pkTitleSkin = new ZGuiSkin();
 		
-		pkListSkin->m_iBkTexID = pkTexMan->Load("data/textures/gui/dm/final/win_tile.bmp", 0);
+		pkListSkin->m_iBkTexID = m_pkTexMan->Load("data/textures/gui/dm/final/win_tile.bmp", 0);
 		pkListSkin->m_bTileBkSkin = true;
 		pkListSkin->m_unBorderSize = 16;
 		
 		
-		pkTitleSkin->m_iHorzBorderTexID = pkListSkin->m_iHorzBorderTexID = pkTexMan->Load("data/textures/gui/dm/final/window/win_edge_ver.bmp", 0);
-		pkTitleSkin->m_iVertBorderTexID = pkListSkin->m_iVertBorderTexID = pkTexMan->Load("data/textures/gui/dm/final/window/win_edge_hor.bmp", 0);
-		pkTitleSkin->m_iBorderCornerTexID = pkListSkin->m_iBorderCornerTexID = pkTexMan->Load("data/textures/gui/dm/final/window/dm_win_corn.bmp", 0);
-		pkTitleSkin->m_iHorzBorderTexAlphaID = pkListSkin->m_iHorzBorderTexAlphaID = pkTexMan->Load("data/textures/gui/dm/final/window/win_edge_ver_a.bmp", 0);
-		pkTitleSkin->m_iVertBorderTexAlphaID = pkListSkin->m_iVertBorderTexAlphaID = pkTexMan->Load("data/textures/gui/dm/final/window/win_edge_hor_a.bmp", 0);
-		pkTitleSkin->m_iBorderCornerTexAlphaID = pkListSkin->m_iBorderCornerTexAlphaID = pkTexMan->Load("data/textures/gui/dm/final/window/dm_win_corn_a.bmp", 0);
+		pkTitleSkin->m_iHorzBorderTexID = pkListSkin->m_iHorzBorderTexID = 
+			m_pkTexMan->Load("data/textures/gui/dm/final/window/win_edge_ver.bmp", 0);
+		pkTitleSkin->m_iVertBorderTexID = pkListSkin->m_iVertBorderTexID = 
+			m_pkTexMan->Load("data/textures/gui/dm/final/window/win_edge_hor.bmp", 0);
+		pkTitleSkin->m_iBorderCornerTexID = pkListSkin->m_iBorderCornerTexID = 
+			m_pkTexMan->Load("data/textures/gui/dm/final/window/dm_win_corn.bmp", 0);
+		pkTitleSkin->m_iHorzBorderTexAlphaID = pkListSkin->m_iHorzBorderTexAlphaID = 
+			m_pkTexMan->Load("data/textures/gui/dm/final/window/win_edge_ver_a.bmp", 0);
+		pkTitleSkin->m_iVertBorderTexAlphaID = pkListSkin->m_iVertBorderTexAlphaID = 
+			m_pkTexMan->Load("data/textures/gui/dm/final/window/win_edge_hor_a.bmp", 0);
+		pkTitleSkin->m_iBorderCornerTexAlphaID = pkListSkin->m_iBorderCornerTexAlphaID = 
+			m_pkTexMan->Load("data/textures/gui/dm/final/window/dm_win_corn_a.bmp", 0);
 
 		ZGuiListbox* pkList = (ZGuiListbox*) GetWnd("LoadListLB");
 		pkList->SetSkin(pkListSkin);
@@ -744,7 +750,7 @@ void DarkMetropolis::LoadResourcesOnStartup()
 			if(t[i].find(".bmp") != string::npos)
 			{
 				sprintf(complete_path, "%s%s", path_list[j], t[i].c_str());
-				pkTexMan->Load(complete_path, 0);
+				m_pkTexMan->Load(complete_path, 0);
 			}
 
 		t.clear();
