@@ -33,7 +33,7 @@ bool GUIServerInfo::ConvertFromFullName(string strFullName)
 
 void GUIServerInfo::Save(vector<GUIServerInfo>& rkServerAray)
 {
-	FILE* pkFile = pkFile = fopen("serverlist.txt", "wt");
+	FILE* pkFile = pkFile = fopen("serverlist_zeroed.txt", "wt");
 	if(pkFile)
 	{
 		const int servers = rkServerAray.size();
@@ -51,7 +51,7 @@ void GUIServerInfo::Save(vector<GUIServerInfo>& rkServerAray)
 
 void GUIServerInfo::Load(vector<GUIServerInfo>& rkServerAray)
 {
-	FILE* pkFile = fopen("serverlist.txt", "rt");
+	FILE* pkFile = fopen("serverlist_zeroed.txt", "rt");
 
 	if(pkFile)
 	{

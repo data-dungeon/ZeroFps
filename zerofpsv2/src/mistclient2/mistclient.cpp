@@ -602,7 +602,7 @@ bool MistClient::ReadWriteServerList(bool bRead)
    {
       m_kServerList.clear();
 
-      FILE* pkFile = fopen("serverlist.txt", "rt");
+      FILE* pkFile = fopen("serverlist_mistclient.txt", "rt");
       if(pkFile == NULL)
          return false;
 
@@ -628,7 +628,7 @@ bool MistClient::ReadWriteServerList(bool bRead)
    }
    else
    {
-      FILE* pkFile = fopen("serverlist.txt", "wt");
+      FILE* pkFile = fopen("serverlist_mistclient.txt", "wt");
       if(pkFile == NULL)
          return false;
 
