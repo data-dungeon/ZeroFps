@@ -55,6 +55,7 @@ class MistClient :public Application, public ZGuiApp {
 		void ToogleChatWnd(bool bOpen, bool bSetInputFocus=false);
 		void ResizeChatDlg(bool bBigger);      	
 		void LoadInGameGui();
+		void LoadStartScreenGui();
 		void SetupGUI();
 		
 				

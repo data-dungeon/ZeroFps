@@ -30,6 +30,11 @@ void GuiMsgStartScreen( string strMainWnd, string strController,
 				g_kMistClient.LoadGuiFromScript("data/script/gui/ml_option.lua");
 				g_kMistClient.ShowWnd("OptionsWnd",	true,	true,	true);
 			}
+			else
+			if(strController == "ContinueGameBn")
+			{	
+				//g_kMistClient.LoadInGameGui(); 
+			}
 		}
 		else
 		if(strMainWnd == "ConnectWnd")
@@ -197,4 +202,17 @@ bool MistClient::NameIPFromServerList(string& strName, string& strIP)
 	}
 
 	return false;
+}
+
+void MistClient::LoadStartScreenGui()
+{
+	g_kMistClient.ShowWnd("GameGuiToolbar",	false);
+	g_kMistClient.ShowWnd("ChatDlgMainWnd",	false);
+
+	g_kMistClient.ShowWnd("ConnectWnd", false);
+	g_kMistClient.ShowWnd("AddNewServerWnd", false);
+	g_kMistClient.ShowWnd("LoginWnd", false);
+	g_kMistClient.ShowWnd("OptionsWnd", false);
+
+	g_kMistClient.ShowWnd("MLStartWnd", true);
 }
