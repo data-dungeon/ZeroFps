@@ -42,6 +42,9 @@ namespace DMLua
 	int MCOMMON_API FireAtLocationLua(lua_State* pkLua);
 	int MCOMMON_API FireAtCharacterLua(lua_State* pkLua);
 	int MCOMMON_API SetMoveSpeedLua(lua_State* pkLua);
+	int MCOMMON_API AddOffenciveActionQuotLua(lua_State* pkLua);
+	int MCOMMON_API AddDefenciveActionQuotLua(lua_State* pkLua);
+	int MCOMMON_API AddDeathSoundLua(lua_State* pkLua);
 
 	// SI for guns
 	int MCOMMON_API SetGunFireRateLua(lua_State* pkLua);

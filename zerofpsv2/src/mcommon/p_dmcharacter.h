@@ -51,7 +51,6 @@ class MCOMMON_API P_DMCharacter: public Property {
 		bool m_bCharacterIdle;
 		bool m_bPlayWalkSound;
 	
-	
 	public:
 		//item slots
 		DMContainer*		m_pkBackPack;
@@ -62,6 +61,12 @@ class MCOMMON_API P_DMCharacter: public Property {
 		
 		int					m_iTeam;
 		int					m_iState; // dead, crouching, shooting, idle..etc
+
+		vector<string> m_vkMoveSounds;
+		vector<string> m_vkDeathSounds;
+		vector<string> m_vkOffenciveActionQuots;
+		vector<string> m_vkDefenciveActionQuots;
+		vector<string> m_vkPickUpSounds;
 		
 		DMCharacterStats* GetStats() {return &m_kStats;};
 		void Damage(int iType,int iDmg);

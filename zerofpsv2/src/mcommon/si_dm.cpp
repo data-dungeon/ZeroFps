@@ -38,6 +38,9 @@ void DMLua::Init(EntityManager* pkObjMan,ZFScriptSystem* pkScript)
 	pkScript->ExposeFunction("FireAtLocation", DMLua::FireAtLocationLua);
 	pkScript->ExposeFunction("FireAtObject", DMLua::FireAtCharacterLua);
 	pkScript->ExposeFunction("SetMoveSpeed", DMLua::SetMoveSpeedLua);
+	pkScript->ExposeFunction("AddOffenciveActionQuot", DMLua::AddOffenciveActionQuotLua);
+	pkScript->ExposeFunction("AddDefenciveActionQuot", DMLua::AddDefenciveActionQuotLua);
+	pkScript->ExposeFunction("AddDeathSound", DMLua::AddDeathSoundLua);
 
 	// path finding
 	pkScript->ExposeFunction("HavePath", DMLua::HavePathLua);					
@@ -913,6 +916,69 @@ Entity* DMLua::GetHQEntity()
 	for(unsigned int i=0;i<kObjects.size();i++)
 		if( (P_DMHQ*)kObjects[i]->GetProperty("P_DMHQ") != 0 )
 			return kObjects[i];
+
+	return 0;
+}
+
+// ------------------------------------------------------------------------------------------------
+
+int DMLua::AddOffenciveActionQuotLua(lua_State* pkLua)
+{
+	Entity* pkEntity = TestScriptInput (2, pkLua);
+
+	if ( pkEntity == 0)
+		return 0;
+	
+	P_DMCharacter* pkChar = (P_DMCharacter*)pkEntity->GetProperty("P_DMCharacter");
+
+	if ( pkChar == 0 )
+		return 0;
+
+	char szSound[256];
+	g_pkScript->GetArgString(pkLua, 1, szSound);
+	pkChar->m_vkOffenciveActionQuots.push_back( string(szSound) );
+
+	return 0;
+}
+
+// ------------------------------------------------------------------------------------------------
+
+int DMLua::AddDefenciveActionQuotLua(lua_State* pkLua)
+{
+	Entity* pkEntity = TestScriptInput (2, pkLua);
+
+	if ( pkEntity == 0)
+		return 0;
+	
+	P_DMCharacter* pkChar = (P_DMCharacter*)pkEntity->GetProperty("P_DMCharacter");
+
+	if ( pkChar == 0 )
+		return 0;
+
+	char szSound[256];
+	g_pkScript->GetArgString(pkLua, 1, szSound);
+	pkChar->m_vkDefenciveActionQuots.push_back( string(szSound) );
+
+	return 0;
+}
+
+// ------------------------------------------------------------------------------------------------
+
+int DMLua::AddDeathSoundLua(lua_State* pkLua)
+{
+	Entity* pkEntity = TestScriptInput (2, pkLua);
+
+	if ( pkEntity == 0)
+		return 0;
+	
+	P_DMCharacter* pkChar = (P_DMCharacter*)pkEntity->GetProperty("P_DMCharacter");
+
+	if ( pkChar == 0 )
+		return 0;
+
+	char szSound[256];
+	g_pkScript->GetArgString(pkLua, 1, szSound);
+	pkChar->m_vkDeathSounds.push_back( string(szSound) );
 
 	return 0;
 }

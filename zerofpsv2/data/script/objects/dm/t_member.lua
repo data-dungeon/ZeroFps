@@ -17,7 +17,6 @@ end
 
 function Init()
 	SetMoveSpeed (SIGetSelfID(), 6.5);
-	SetMoveSpeed (SIGetSelfID(), 6.5);
 	AddOffenciveActionQuot(SIGetSelfID(), "data/sound/robot/I give him my best.wav");
 	AddOffenciveActionQuot(SIGetSelfID(), "data/sound/robot/If it bleeds, we can kill it.wav");
 	AddOffenciveActionQuot(SIGetSelfID(), "data/sound/robot/he's already dead.wav");

@@ -170,8 +170,13 @@ void P_DMCharacter::Damage(int iType,int iDmg)
 	if(m_kStats.m_iLife <= 0)
 	{
 		cout<<"ARRRGGg *dead*"<<endl;		
-		m_pkAudioSys->StartSound("data/sound/death/death9.wav", 
-			m_pkObject->GetWorldPosV());
+
+		int iNumSounds = m_vkDeathSounds.size();
+		if(iNumSounds > 0)
+		{
+			m_pkAudioSys->StartSound(m_vkDeathSounds[rand() % iNumSounds], 
+				m_pkObject->GetWorldPosV());
+		}
 		
 		if(P_ScriptInterface* pkSi = (P_ScriptInterface*)m_pkObject->GetProperty("P_ScriptInterface"))
 		{
@@ -180,23 +185,40 @@ void P_DMCharacter::Damage(int iType,int iDmg)
 	}
 	else
 	{
-		int slump = rand() % 100;
+		float t = m_pkObjMan->GetSimTime();
+		static float prevSoundPlayTime = 0;
 
-		if(slump < 25)
-			m_pkAudioSys->StartSound("data/sound/damage1.wav", 
-				m_pkObject->GetWorldPosV());
-		else
-		if(slump < 50)
-			m_pkAudioSys->StartSound("data/sound/damage2.wav", 
-				m_pkObject->GetWorldPosV());
-		else
-			m_pkAudioSys->StartSound("data/sound/damage3.wav", 
-				m_pkObject->GetWorldPosV());
+		if(t - prevSoundPlayTime > 2.0f) // spela max 1 ljud varannan sek
+		{
+			int iNumSounds = m_vkDefenciveActionQuots.size();
+			if(iNumSounds > 0)
+			{
+				m_pkAudioSys->StartSound(m_vkDefenciveActionQuots[rand() % iNumSounds], 
+					m_pkObject->GetWorldPosV());
+				prevSoundPlayTime = t;
+			}
+		}
+
 	}
 }
 
 void P_DMCharacter::Shoot (Vector3 kLocation)
 {
+	float t = m_pkObjMan->GetSimTime();
+
+	static float prevSoundPlayTime = 0;
+
+	if(t - prevSoundPlayTime > 2.0f) // spela max 1 ljud varannan sek
+	{
+		int iNumSounds = m_vkOffenciveActionQuots.size();
+		if(iNumSounds > 0)
+		{
+			m_pkAudioSys->StartSound(m_vkOffenciveActionQuots[rand() % iNumSounds], 
+				m_pkObject->GetWorldPosV());
+			prevSoundPlayTime = t;
+		}
+	}
+
 	// check if character is equipped with at weapon
 	int iWeapID;
 	Entity* pkWeapon;
