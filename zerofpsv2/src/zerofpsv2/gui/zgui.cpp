@@ -440,9 +440,7 @@ bool ZGui::OnMouseUpdate(int x, int y, bool bLBnPressed,
 	if( bLeftPressed || bRightPressed )
 	{		
 		if(pkFocusWindow)
-		{
-			printf("%s\n", m_pkActiveMainWin->pkWnd->GetName());
-			
+		{			
 			if(pkFocusWindow->m_bUseAlhpaTest)
 			{
 				if(ClickedWndAlphaTex(x,y,pkFocusWindow) == false)

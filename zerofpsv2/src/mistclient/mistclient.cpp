@@ -359,6 +359,8 @@ void MistClient::OnSystem()
 
 void MistClient::Input()
 {
+	printf("Input\n");
+
 	float speed = 20;
 	
 	int x,z;		
@@ -672,22 +674,38 @@ void MistClient::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 
 				// order itemcontainer to begin gather iteminfo from server
 				if ( GetWnd("BackPackWnd")->IsVisible() )
+				{
+					pkGui->SetFocus(GetWnd("BackPackWnd"));
+
 				   ((P_Item*)m_pkActiveCharacter->GetProperty("P_Item"))->
 						GetAllItemsInContainer(m_pkInventDlg->m_pkAddItemList);
+				}
 				else
 					pkGui->SetFocus(GetWnd("PanelBkWnd")); 
 			}
 			if(strClickWndName == "StatsButton")
+			{
 				pkScript->Call(m_pkScriptResHandle, "OnClickStats", 0, 0);
+
+				if ( GetWnd("StatsWnd")->IsVisible() )
+					pkGui->SetFocus(GetWnd("StatsWnd"));
+			}
 			else
 			if(strClickWndName == "MapButton")
+			{
 				pkScript->Call(m_pkScriptResHandle, "OnClickMap", 0, 0);
+
+				if ( GetWnd("MapWnd")->IsVisible() )
+					pkGui->SetFocus(GetWnd("MapWnd"));
+			}
 			else
 			if(strClickWndName == "ToggleInputBoxBn")
 			{
 				printf("ToggleInputBoxBn\n");
 				pkScript->Call(m_pkScriptResHandle, "OnClickToggleInput", 0, 0);
-				pkGui->SetFocus(GetWnd("InputBox"));
+				//pkGui->SetFocus(GetWnd("InputBox"));
+				if ( GetWnd("InputWnd")->IsVisible() )
+					pkGui->SetFocus(GetWnd("InputWnd"));
 			}
 			else
 			if(strClickWndName == "ToggleInfoBoxBn")

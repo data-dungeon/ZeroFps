@@ -138,7 +138,7 @@ void SpellDlg::Init()
 	m_pkSchoolButtons[1]->SetButtonUncheckedSkin(pkNecromancerSchoolSkinUp);
 	m_pkSchoolButtons[1]->SetButtonCheckedSkin(pkNecromancerSchoolSkinDown);
 
-	m_pkSchoolButtons[0]->CheckButton(); 
+	m_pkSchoolButtons[0]->CheckButton();
 
 	//
 	// Create buttons for changing page in spellbook
@@ -237,12 +237,15 @@ void SpellDlg::ToogleOpen()
 		m_pkAudioSys->StartSound( "/data/sound/close_window.wav",
 				m_pkAudioSys->GetListnerPos(),m_pkAudioSys->GetListnerDir(),false);
 		m_pkDialog->Hide();
+		m_pkGui->SetFocus(m_pkApp->GetWnd("PanelBkWnd") );
 	}
 	else
 	{
 		m_pkAudioSys->StartSound( "/data/sound/open_window.wav",
 				m_pkAudioSys->GetListnerPos(),m_pkAudioSys->GetListnerDir(),false);
 		m_pkDialog->Show();
+
+		m_pkGui->SetFocus(m_pkDialog);
 	}
 }
 
