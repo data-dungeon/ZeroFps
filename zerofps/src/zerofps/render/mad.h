@@ -95,6 +95,44 @@ public:
 	vector<Mad_KeyFrame>	KeyFrame;	
 };
 
+class Mad_BonePos
+{
+public:
+	Vector3	kPosition;
+	Vector3	kRotation;
+};
+
+class Mad_Bone
+{
+public:
+	int			m_iParent;
+	char		m_szName[64];
+	Mad_BonePos	kBindPose;
+};
+
+/*class Mad_CoreKeyFrame
+{
+public:
+
+	Mad_BonePos	m_
+};*/
+
+/*
+class Mad_CoreAnimationTrack
+{
+public:
+	int					m_iBone;
+	vector<KeyFrame>	m_kKeyFrames;
+};*/
+/*
+class Mad_CoreAnimation
+{
+public:
+	vector<Mad_CoreAnimationTrack>	m_kTracks;
+};*/
+
+
+
 class RENDER_API Core
 {
 public:
@@ -131,6 +169,12 @@ public:
 	
 	void Load(const char* MadFileName);
 
+	void LoadSkelleton(const char* MadFileName);
+	void LoadAnimation(const char* MadFileName) {} 
+	void LoadMesh(const char* MadFileName) {} 
+
+	void DrawSkelleton(float x, float y, float z);
+	void SetPosRot(int iChildBone);
 
 	void SetFrameI(int iFrame);
 	/* Sets current frame to use for rendering */
@@ -150,65 +194,9 @@ public:
 	float GetAnimationLengthInS(int iAnim);
 	int GetAnimationTimeInFrames(int iAnim);
 
-
+	vector<Mad_Bone>	kSkelleton;	
 };
 
-/*
-class MadManger
-{
-	public:	
-	bool Load(char* MadFileName);
-	
-	Core* GetCore(char* MadFileName);
-	bool UnLoad(char* MadFileName);
-};*/
-
-/*
-class RENDER_API MadInstans
-{
-private:
-	Core* pkCore;
-
-	int		iActiveAnimation;
-	float	fCurrentTime;
-	float	fLastUpdate;
-
-public:
-	void SetBase(Core* pkModell);	// Väljer vilken bas modell denna instans är.
-
-	void PlayAnimation(int iAnimNum, float fStartTime);
-	void UpdateAnimation(void);
-	void Draw(void);
-
-	
-	void SetNextAnimation(int iAnimNum);
-	
-	void EnableLoopedAnimation(void);
-	void DisableLoopedAnimation(void);
-	bool IsAnimationLooped(void);
-
-
-	void PlayNextAnimations(void);
-
-	void StopAnimation(void);
-	void StartAnimation(void);
-
-	int GetCurrentAnimation();
-	int GetNextAnimation();
-
-	float GetAnimationTimeInS(void);
-
-	float GetAnimationTimeInFrames(void);
-
-	float GetAnimationLengthInS(void);
-
-	MadRender* BeginRendering(void);
-	void EndRendering(void);
-
-	void SetPlayBackSpeedScale(float fScale);
-
-	Vector3	FH_Pos;
-};*/
 
 
 

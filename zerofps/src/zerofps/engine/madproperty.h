@@ -53,6 +53,9 @@ class ENGINE_API MadProperty: public Property {
 		bool	bFlipFace;
 
 		void	SetReplaceTexture(char* szName);
+
+		
+
 /*
 		// NEED TO WRITE
 

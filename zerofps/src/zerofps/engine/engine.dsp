@@ -60,7 +60,7 @@ LINK32=link.exe
 # Begin Special Build Tool
 ProjDir=.
 SOURCE="$(InputPath)"
-PostBuild_Cmds=copy                                       $(ProjDir)\debug\*.lib                                       ..\..\..\bin\ 
+PostBuild_Cmds=copy                                            $(ProjDir)\debug\*.lib                                            ..\..\..\bin\ 
 # End Special Build Tool
 
 !ELSEIF  "$(CFG)" == "engine - Win32 Debug"
@@ -91,7 +91,7 @@ LINK32=link.exe
 # Begin Special Build Tool
 ProjDir=.
 SOURCE="$(InputPath)"
-PostBuild_Cmds=copy                                       $(ProjDir)\debug\*.lib                                       ..\..\..\bin\ 
+PostBuild_Cmds=copy                                            $(ProjDir)\debug\*.lib                                            ..\..\..\bin\ 
 # End Special Build Tool
 
 !ELSEIF  "$(CFG)" == "engine - Win32 Release Profile"
@@ -126,7 +126,7 @@ LINK32=link.exe
 # Begin Special Build Tool
 ProjDir=.
 SOURCE="$(InputPath)"
-PostBuild_Cmds=copy                                       $(ProjDir)\debug\*.lib                                       ..\..\..\bin\ 
+PostBuild_Cmds=copy                                            $(ProjDir)\debug\*.lib                                            ..\..\..\bin\ 
 # End Special Build Tool
 
 !ENDIF 
@@ -339,6 +339,10 @@ SOURCE=..\ogl\extgl.c
 # End Source File
 # Begin Source File
 
+SOURCE=.\fh.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\heightmapobject.cpp
 
 !IF  "$(CFG)" == "engine - Win32 Release"
@@ -539,7 +543,23 @@ SOURCE=.\propertyfactory.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\skyboxobject.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\skyboxrenderproperty.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\soundbuffermanager.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\waterobject.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\waterrenderproperty.cpp
 # End Source File
 # Begin Source File
 
@@ -621,6 +641,10 @@ SOURCE=..\ogl\extgl.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\fh.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\heightmapobject.h
 # End Source File
 # Begin Source File
@@ -685,7 +709,23 @@ SOURCE=.\propertyfactory.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\skyboxobject.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\skyboxrenderproperty.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\soundbuffermanager.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\waterobject.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\waterrenderproperty.h
 # End Source File
 # Begin Source File
 

@@ -148,10 +148,10 @@ void Object::Update(int iType,int iSide){
 	}		
 	
 	//thenupdate propertys
-	for(list<Property*>::iterator it=m_akPropertys.begin();it!=m_akPropertys.end();it++) {
-		if((*it)->m_iType == iType){
-			if((*it)->m_iSide == iSide){
-				(*it)->Update();
+	for(list<Property*>::iterator it2=m_akPropertys.begin();it2!=m_akPropertys.end();it2++) {
+		if((*it2)->m_iType == iType){
+			if((*it2)->m_iSide == iSide){
+				(*it2)->Update();
 			}
 		}
 	}

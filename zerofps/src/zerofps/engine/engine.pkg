@@ -20,6 +20,7 @@ class OpenAlSystem;
 #include "audiomanager.h"
 #include "objectmanager.h"
 #include "collisionmanager.h"
+#include "fh.h"
 
 #include "property.h"
 #include "lightproperty.h"
