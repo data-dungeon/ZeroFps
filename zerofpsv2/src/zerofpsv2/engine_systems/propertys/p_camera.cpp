@@ -15,13 +15,14 @@ P_Camera::P_Camera()
 
 	m_pkFps = static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
 	
-	m_fFov = 90;
-	m_kDynamicIso.Set(0,0,0);
-	m_kInterPos.Set(0,0,0);
-	m_f3PYAngle = 0;
-	m_f3PPAngle = 0;
-	m_f3PDistance = 3;
-	m_kOffset.Set(0,2.5,0);
+	m_kDynamicIso = 			Vector3(0,0,0);
+	m_kInterPos =				Vector3(0,0,0);		
+	m_fFov = 					90;
+	m_f3PYAngle = 				0;
+	m_f3PPAngle = 				0;
+	m_f3PDistance = 			3;
+	m_f3pCurrentDistance = 	3;
+	m_kOffset =					Vector3(0,2.5,0);
 
 } 
 
@@ -79,21 +80,29 @@ void P_Camera::Update()
 				
 				Vector3 kOffset(0,0,-1);				
 				kOffset = kRot.VectorTransform(kOffset);
-				kOffset *= m_f3PDistance;									
+				kOffset *= m_f3pCurrentDistance;									
 	 			kOffset += m_kOffset;
 				
 				//check camera against enviroment so nothing is betwean camera and player				
 				float fD = LineTest(m_pkEntity->GetIWorldPosV() + kOffset,m_pkEntity->GetIWorldPosV() + m_kOffset);				
-				if(fD < m_f3PDistance)
+				static float fZS = 0.2;
+				if(fD < m_f3pCurrentDistance)
 				{
-					m_f3PDistance -= 0.2;
-				
+					m_f3pCurrentDistance -= fZS;
+					
 					kOffset.Set(0,0,-1);				
 					kOffset = kRot.VectorTransform(kOffset);
-					kOffset *= m_f3PDistance;									
+					kOffset *= m_f3pCurrentDistance;									
 		 			kOffset += m_kOffset;
 				}
-				
+				else
+					if(m_f3pCurrentDistance < m_f3PDistance - fZS)
+						m_f3pCurrentDistance += fZS;
+					else
+						if(m_f3pCurrentDistance > m_f3PDistance + fZS)
+							m_f3pCurrentDistance -= fZS;
+
+												
 				LookAt(m_pkEntity->GetIWorldPosV() + kOffset,m_pkEntity->GetIWorldPosV() + m_kOffset,Vector3(0,1,0));
 				
 				

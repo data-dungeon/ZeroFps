@@ -38,7 +38,8 @@ class ENGINE_SYSTEMS_API P_Camera : public Property
 		Vector3	m_kInterPos;
 		float		m_f3PYAngle;
 		float		m_f3PPAngle;
-		float		m_f3PDistance;
+		float		m_f3PDistance;				//wanted distance
+		float		m_f3pCurrentDistance;	//
 		Vector3	m_kOffset;
 
 		void LookAt(Vector3 kCamPosition, Vector3 kCamTarget,Vector3 kCamUp);
