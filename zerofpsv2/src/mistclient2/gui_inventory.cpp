@@ -271,10 +271,10 @@ void InventoryDlg::CreateContainerGrid(char slots_horz, char slots_vert)
 	list<ZGuiWnd*> kChilds;
 	m_pkContainerWnd->GetChildrens(kChilds);
 
-	const int MAX_WIDTH = slots_horz*32;
-	const int MAX_HEIGHT = slots_vert*32;
+	const int MAX_WIDTH = slots_horz*33+1;
+	const int MAX_HEIGHT = slots_vert*33+1;
 
-	m_pkContainerWnd->Resize(MAX_WIDTH+slots_horz/2, MAX_HEIGHT+slots_vert/2);
+	m_pkContainerWnd->Resize(33*slots_horz+1, 33*slots_vert+1);
 
 	int bdsize = m_pkContainerWnd->GetSkin()->m_unBorderSize; 
 	
@@ -286,6 +286,7 @@ void InventoryDlg::CreateContainerGrid(char slots_horz, char slots_vert)
 	g_kMistClient.GetWnd("ContainerCloseButton")->Show();
 
 	int current_slot_x=0, current_slot_y=0;
+	int dx=0, dy=0;
 	
 	for(list<ZGuiWnd*>::iterator it=kChilds.begin(); it!=kChilds.end(); it++)
 	{
@@ -293,11 +294,10 @@ void InventoryDlg::CreateContainerGrid(char slots_horz, char slots_vert)
 
 		if(strName.find("CSlotBkLabel_") != string::npos)
 		{	
-			int x = current_slot_x * 32 + current_slot_x / 3;
-			int y = current_slot_y * 32 + current_slot_y / 3;
-			(*it)->SetPos(x, y, false, true);
+			(*it)->SetPos(dx, dy, false, true);
 
 			current_slot_x += 3;
+			dx += 99;
 
 			if(current_slot_y > slots_vert)
 			{
@@ -323,6 +323,8 @@ void InventoryDlg::CreateContainerGrid(char slots_horz, char slots_vert)
 			{
 				current_slot_x = 0;
 				current_slot_y += 3;
+				dx = 0;
+				dy += 99;
 			}
 		}
 	}
@@ -555,9 +557,6 @@ void InventoryDlg::OnDropItem()
 
 		int x = upper_left.x + slot_x * ICON_WIDTH + slot_x;
 		int y = upper_left.y + slot_y * ICON_HEIGHT + slot_y;
-
-		printf("slot_x = %i\n", slot_x);
-		printf("slot_y = %i\n", slot_y);
 
 		bool bCollision = TestForCollision(m_kMoveSlot.m_iIndex, m_kMoveSlot.bIsInventoryItem);
 
