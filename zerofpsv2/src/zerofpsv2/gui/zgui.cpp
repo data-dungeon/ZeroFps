@@ -81,6 +81,7 @@ bool ZGui::StartUp()
 	m_pkToolTip->SetSkin(new ZGuiSkin(255,255,198, 128,128,128, 1));
 
 	m_bUseHardwareMouse = true;
+	m_bForceGUICapture = false;
 
 	return true; 
 }
@@ -546,8 +547,10 @@ bool ZGui::Update(float fGameTime, int iKeyPressed, bool bLastKeyStillPressed,
 
 			if(bLBnPressed == false && bRBnPressed == false)
 				m_bHandledMouse = false;
-		
 
+			if(m_bForceGUICapture)
+				m_bHandledMouse = true;
+		
 		m_pkToolTip->Update(x,y,(bLBnPressed|bRBnPressed|bMBnPressed),fGameTime);
 	}
 

@@ -197,7 +197,9 @@ void ZGuiTextbox::SetFocus()
 	else
 		m_iCursorPos = 0;
 
-	return; 
+	printf("Set textboxfocus\n");
+	m_pkGUI->m_bForceGUICapture = true;
+
 }
 
 void ZGuiTextbox::KillFocus()
@@ -209,6 +211,8 @@ void ZGuiTextbox::KillFocus()
 	}
 	else
 		m_bBlinkCursor = false;
+
+	m_pkGUI->m_bForceGUICapture = false;
 }
 
 

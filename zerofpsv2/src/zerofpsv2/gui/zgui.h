@@ -176,6 +176,7 @@ public:
 	static int m_iResY;
 
 	bool m_bHandledMouse;		//DVOID WAS HERE =D, litet hack för att veta om guit har hanterat inputen
+	bool m_bForceGUICapture; // Anropas av textboxen
 	int m_iShowFPSCounter;
 
 	void ShowFPSCounter(bool bShow);
