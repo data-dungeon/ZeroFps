@@ -67,6 +67,8 @@ class MistServer :public Application , public ZGuiApp
 			FID_LOCALORDER,
 			FID_LIGHTMODE,
 			FID_TEST_JIDDRA,		// Owned by Vim.
+			
+			FID_SAY,
 		};
 
 		//server stuff
@@ -98,6 +100,8 @@ class MistServer :public Application , public ZGuiApp
 
 		void Input_Camera(float fMouseX, float fMouseY);
 		void DeletePlayerCharacter(int iConID);
+		
+		void SayToClients(const string& strMsg);
 		
 	public:
 		MistServer(char* aName,int iWidth,int iHeight,int iDepth);

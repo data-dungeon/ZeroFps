@@ -36,7 +36,9 @@ void MistClient::OnInit()
 	m_pkZFVFileSystem->AddRootPath( string("../datafiles/mistlands/") ,"data/");
 	m_pkZFVFileSystem->AddRootPath( string("../datafiles/dm/") ,"data/");
 
-
+	//register commands
+	Register_Cmd("say",			FID_SAY);	
+	
 	//initiate our mainview camera
 	m_pkCamera=new Camera(Vector3(0,0,0),Vector3(0,0,0),70,1.333,0.25,250);	
 	m_pkCamera->SetName("Main camera");
@@ -77,7 +79,36 @@ void MistClient::OnInit()
 		m_pkConsole->Printf("No game_autoexec.ini.ini found");	
 }
 
-	
+void MistClient::RunCommand(int cmdid, const CmdArgument* kCommand)
+{
+	switch(cmdid)
+	{
+		case FID_SAY:
+		{
+			if(kCommand->m_kSplitCommand.size() <= 1)
+			{
+				m_pkConsole->Printf("say [message]");
+				break;				
+			}
+			
+			string strMsg;
+			for(int i = 4;i<kCommand->m_strFullCommand.size();i++)
+				strMsg.push_back(kCommand->m_strFullCommand[i]);
+					
+				
+			Say(strMsg);	
+		}
+	}
+}
+
+void MistClient::Say(string strMsg)
+{
+	NetPacket kNp;			
+	kNp.Write((char) MLNM_CS_SAY);
+	kNp.Write_Str(strMsg);
+	kNp.TargetSetClient(0);
+	SendAppMessage(&kNp);									
+}
 
 void MistClient::RegisterResources()
 {
@@ -232,8 +263,6 @@ void MistClient::OnNetworkMessage(NetPacket *PkNetMessage)
 
 	// Read Type of Message.
 	PkNetMessage->Read(ucType);
-	//int iJiddra = ucType;
-	//m_pkConsole->Printf("AppMessageType: %d", iJiddra );
 
 	switch(ucType)
 	{
@@ -247,7 +276,6 @@ void MistClient::OnNetworkMessage(NetPacket *PkNetMessage)
 				{
 					//pkCam->SetType(CAM_TYPEFIRSTPERSON_NON_EA);
 					pkCam->SetCamera(m_pkCamera);
-
 					cout<<"attached camera to client property"<<endl;
 				}
 			}
@@ -262,6 +290,15 @@ void MistClient::OnNetworkMessage(NetPacket *PkNetMessage)
 			break;
 		}
 			
+		case MLNM_SC_SAY:
+		{
+			string strMsg;
+			PkNetMessage->Read_Str(strMsg);
+			m_pkConsole->Printf("Msg> %s",strMsg.c_str());
+						
+			break;
+		}					
+		
 		default:
 			cout << "Error in game packet : " << (int) ucType << endl;
 			PkNetMessage->SetError(true);

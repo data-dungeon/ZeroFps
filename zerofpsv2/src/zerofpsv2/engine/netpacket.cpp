@@ -110,6 +110,23 @@ void NetPacket::WriteNp(NetPacket* pkNp)
 
 }
 
+void NetPacket::Write_Str(const string& strString)
+{
+	Write(strString.size()+1);
+	Write((void*)strString.c_str(),strString.size()+1);
+}
+
+void NetPacket::Read_Str(string& strString)
+{
+	int iSize;
+	Read(iSize);
+	char* czStr = new(char[iSize]);
+	
+	Read(czStr,iSize);	
+	strString = czStr;
+	
+	delete czStr;
+}
 
 void NetPacket::Write_Str(const char* szString)
 {

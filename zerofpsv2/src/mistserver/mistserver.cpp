@@ -53,13 +53,14 @@ MistServer::MistServer(char* aName,int iWidth,int iHeight,int iDepth)
 
 	// Register Commands
 	Register_Cmd("new",			FID_NEW);		
-	Register_Cmd("load",		FID_LOAD);		
-	Register_Cmd("save",		FID_SAVE);
+	Register_Cmd("load",			FID_LOAD);		
+	Register_Cmd("save",			FID_SAVE);
 	Register_Cmd("saveas",		FID_SAVEAS);
 	Register_Cmd("users",		FID_USERS);		
 	Register_Cmd("lo",			FID_LOCALORDER);		
 	Register_Cmd("lightmode",	FID_LIGHTMODE);		
 	Register_Cmd("jiddra",		FID_TEST_JIDDRA);
+	Register_Cmd("say",			FID_SAY);
 
 	m_strWorldDir  = "";
    
@@ -498,6 +499,22 @@ void MistServer::RunCommand(int cmdid, const CmdArgument* kCommand)
 */			
 			break;
 
+		case FID_SAY:
+		{
+			if(kCommand->m_kSplitCommand.size() <= 1)
+			{
+				m_pkConsole->Printf("say [message]");
+				break;				
+			}
+			
+			string strMsg;
+			for(int i = 4;i<kCommand->m_strFullCommand.size();i++)
+				strMsg.push_back(kCommand->m_strFullCommand[i]);
+					
+				
+			SayToClients(string("SERVER: ")+strMsg);	
+		}			
+			
 		case FID_USERS:			
 			m_pkPlayerDB->GetUsers(&kUsers);
 			for(i=0; i<kUsers.size(); i++) 
@@ -642,6 +659,7 @@ void MistServer::OnServerClientJoin(ZFClient* pkClient,int iConID, char* szLogin
 	if(!pkClient->m_pkObject)
 		cout<<"ERROR: client object not created"<<endl;
 
+	//login player
 	m_pkPlayerDB->Login(strPlayer,strPasswd);
 
 	//setup some player info
@@ -651,10 +669,6 @@ void MistServer::OnServerClientJoin(ZFClient* pkClient,int iConID, char* szLogin
 		pkNewPlayer->m_fLoginTime = m_pkFps->GetTicks();	
 	}
 	
-	//add client control to client object
-	//P_ClientControl* pcc = (P_ClientControl*)pkClient->m_pkObject->AddProperty("P_ClientControl");
-	//if(pcc)	
-	//	pcc->m_iClientID = iConID;
 	
 	bool bEditorConnect = bIsEditor;
 	cout << szLogin << " Joined with editmode " << bEditorConnect << endl;
@@ -675,10 +689,11 @@ void MistServer::OnServerClientJoin(ZFClient* pkClient,int iConID, char* szLogin
 void MistServer::SpawnPlayer(int iConID)
 {
 	cout << "MistServer::SpawnPlayer" << endl;
-	if(m_pkFps->m_kClient[iConID].m_strCharacter.size() == 0) {
+	if(m_pkFps->m_kClient[iConID].m_strCharacter.size() == 0) 
+	{
 		m_pkFps->PrintToClient(iConID, "You must select a character before you can join" );
 		return;
-		}
+	}
 
 	//update start locations  
 	UpdateStartLocatons();
@@ -785,17 +800,7 @@ int MistServer::CreatePlayer(const char* csPlayer,const char* csCharacter,const 
 	if(pkObject)
 	{	
 		Vector3 kStartPos = Vector3(0,3,0);
-				
-		/*
-		//try to get recal position from characterstats
-		CharacterProperty* pkCP = (CharacterProperty*)pkObject->GetProperty("P_CharStats");
-      if(pkCP)
-  	   {
-   	   CharacterStats *pkCS = pkCP->GetCharStats();	
-			kStartPos = pkCS->GetRecalPos();		
-		}	
-		*/
-		
+					
 		//make sure position is valid and zone is loaded
 		int zid = m_pkObjectMan->GetZoneIndex(kStartPos,-1,false);
 		if(zid == -1)
@@ -1279,7 +1284,19 @@ void MistServer::OnNetworkMessage(NetPacket *PkNetMessage)
 			break;
 		}
 		
+		case MLNM_CS_SAY:
+		{
+			string strMsg;
+			PkNetMessage->Read_Str(strMsg);
+			m_pkConsole->Printf("Msg> %s",strMsg.c_str());
 			
+			if(PlayerData* pkData = m_pkPlayerDB->GetPlayerData(PkNetMessage->m_iClientID))
+			{				
+				SayToClients(pkData->m_strPlayerName+string(": ")+strMsg);
+			}			
+			
+			break;
+		}			
 			
 		default:
 			cout << "Error in game packet : " << (int) ucType << endl;
@@ -1287,3 +1304,21 @@ void MistServer::OnNetworkMessage(NetPacket *PkNetMessage)
 			return;
 	}
 }
+
+
+
+void MistServer::SayToClients(const string& strMsg)
+{
+	NetPacket kNp;			
+	kNp.Write((char) MLNM_SC_SAY);
+	kNp.Write_Str(strMsg);
+	kNp.TargetSetClient(-2);
+	SendAppMessage(&kNp);	
+}
+
+
+
+
+
+
+

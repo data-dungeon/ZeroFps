@@ -19,7 +19,7 @@ class MistClient :public Application, public ZGuiApp {
 		//console functions
 		enum FuncId_e
 		{
-
+			FID_SAY,
 		};
 
 		Camera*		m_pkCamera;				//main camera
@@ -36,6 +36,8 @@ class MistClient :public Application, public ZGuiApp {
 		void UpdateCharacter();
 		void SendControlInfo();
 		void Input();
+		
+		void Say(string strMsg);
 		
 	public:
 		//application virtuals
@@ -62,6 +64,8 @@ class MistClient :public Application, public ZGuiApp {
       void AddRemoveServer(const char* szName, const char* szSeverIP, bool bAdd=true);
       void UpdateServerListbox();
 
+		void RunCommand(int cmdid, const CmdArgument* kCommand);
+		
       friend bool GUIPROC( ZGuiWnd* win, unsigned int msg, int numparms, void *params );
 		
 };

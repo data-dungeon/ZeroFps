@@ -67,6 +67,10 @@ public:
 
 	void Write_NetStr (const char* szString);
 	void Read_NetStr  (char* szString);
+	
+	void Write_Str(const string& strString);
+	void Read_Str(string& strString);
+	
 
 	template <class Any> 
 	void Write(Any type) {
