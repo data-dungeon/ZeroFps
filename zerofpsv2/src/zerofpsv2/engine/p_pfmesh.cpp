@@ -456,9 +456,9 @@ void P_PfMesh::DrawNaviMesh()
 
 void P_PfMesh::LinkToConnectedCells(NaviMeshCell* pkNavCell)
 {
-	pkNavCell->m_aiLinks[0] = NULL;
-	pkNavCell->m_aiLinks[1] = NULL;
-	pkNavCell->m_aiLinks[2] = NULL;
+	pkNavCell->m_aiLinks[0] = 0;
+	pkNavCell->m_aiLinks[1] = 0;
+	pkNavCell->m_aiLinks[2] = 0;
 
 	for(unsigned int i=1; i<m_NaviMesh.size(); i++)
 	{

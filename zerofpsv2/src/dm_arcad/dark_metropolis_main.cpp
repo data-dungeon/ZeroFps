@@ -121,6 +121,7 @@ void DarkMetropolis::OnInit()
 
 void DarkMetropolis::OnIdle() 
 {
+	
 	m_pkFps->SetCamera(m_pkCamera);		
 	m_pkFps->GetCam()->ClearViewPort();
 
@@ -135,6 +136,8 @@ void DarkMetropolis::OnIdle()
 
 //	m_pkFps->UpdateCamera(); 	
 	GUI_OnIdle();
+
+
 }
 
 void DarkMetropolis::RenderInterface(void)

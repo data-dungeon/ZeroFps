@@ -147,7 +147,7 @@ P_Enviroment::P_Enviroment()
 	m_pkRender=static_cast<Render*>(g_ZFObjSys.GetObjectPtr("Render"));	
 	m_pkMusic=static_cast<OggMusic*>(g_ZFObjSys.GetObjectPtr("OggMusic"));		
 
-	m_iSortPlace	=	10;
+	m_iSortPlace	=	-10;
 	
 	bNetwork =		true;
 	m_bEnabled =	false;
@@ -175,18 +175,6 @@ void P_Enviroment::Update()
 {
 	if(m_bEnabled)
 	{
-		//make rain splashes on ground
-		if(m_iRain != 0)
-		{
-			//update rain splashes
-			if(m_pkFps->GetTicks() - m_fRainUpdateTimer > 0.1)
-			{		
-				m_fRainUpdateTimer = m_pkFps->GetTicks();			
-				MakeRainSplashes();
-			}
-	
-			DrawRainSplashes();
-		}
 			
 		//interpolate light and fog 
 		if(m_pkCurrentLP)
@@ -220,24 +208,36 @@ void P_Enviroment::Update()
 				//setup fog
 				current=m_pkCurrentLP->GetAmbient();
 				interpolated.Lerp(m_kCurrentFogColor,m_kFogColor,fIf);
+				m_kCurrentFogColor=interpolated;
 				
 				m_fCurrentFogStart = m_fCurrentFogStart*(1-fIf) + m_fFogStart*fIf;
 				m_fCurrentFogStop = m_fCurrentFogStop*(1-fIf) + m_fFogStop*fIf;				
-				
-				if( (m_fFogStart < 0) )
-				{
-					m_pkRender->SetFog(interpolated,m_fCurrentFogStart,m_fCurrentFogStop,false);	
-				}
-				else
-					m_pkRender->SetFog(interpolated,m_fCurrentFogStart,m_fCurrentFogStop,true);	
-					
-				m_pkRender->SetClearColor(interpolated);	
-				
-				m_kCurrentFogColor=interpolated;
-
+									
+				m_pkRender->SetClearColor(m_kCurrentFogColor);	
 			
 				m_pkCurrentLP->SetRot(m_kSunPos);
 			}
+			
+			
+			//fog has to be set every frame...it seems, some evil push/pop attrib somewhere that fucks it up =(
+			if( (m_fFogStart < 0) )
+				m_pkRender->SetFog(m_kCurrentFogColor,m_fCurrentFogStart,m_fCurrentFogStop,false);	
+			else
+				m_pkRender->SetFog(m_kCurrentFogColor,m_fCurrentFogStart,m_fCurrentFogStop,true);	
+
+		}
+		
+		//make rain splashes on ground
+		if(m_iRain != 0)
+		{
+			//update rain splashes
+			if(m_pkFps->GetTicks() - m_fRainUpdateTimer > 0.1)
+			{		
+				m_fRainUpdateTimer = m_pkFps->GetTicks();			
+				MakeRainSplashes();
+			}
+	
+			DrawRainSplashes();
 		}
 		
 	}

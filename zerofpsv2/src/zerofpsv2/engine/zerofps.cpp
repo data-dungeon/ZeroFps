@@ -387,6 +387,8 @@ void ZeroFps::Run_Client()
 
 void ZeroFps::Update_System(bool bServer)
 {
+m_pkRender->SetFog(Vector4(1,0,0,1),1,10,true);	
+
 	int iLoops;
 
 	if(m_bLockFps)
@@ -580,12 +582,17 @@ void ZeroFps::RemoveRenderTarget(Camera* pkCamera)
 void ZeroFps::Draw_RenderTargets()
 {
 	for(unsigned int i=0; i<m_kRenderTarget.size(); i++)
+	{
 		Draw_RenderTarget(m_kRenderTarget[i]);
+	}
+
 }
 
 
 void ZeroFps::Draw_RenderTarget(Camera* pkCamera)
 {
+	//is this camera enabled
+	if(pkCamera->IsRenderOn() == false)	return;
 
 	// Save State
 //	glPushAttrib(GL_TEXTURE_BIT | GL_LIGHTING_BIT | GL_FOG_BIT | 
@@ -596,8 +603,6 @@ void ZeroFps::Draw_RenderTarget(Camera* pkCamera)
 	glMatrixMode(GL_MODELVIEW);
 	glPushMatrix();
 
-	//is this camera enabled
-	if(pkCamera->IsRenderOn() == false)	return;
 
 	//set this camera as active
 	SetCamera(pkCamera);
@@ -613,6 +618,7 @@ void ZeroFps::Draw_RenderTarget(Camera* pkCamera)
 		
 	if(m_bRenderOn == 1)
 	{
+		
 		//update all render propertys that shuld be shadowed
 		m_pkObjectMan->Update(PROPERTY_TYPE_RENDER,PROPERTY_SIDE_CLIENT,true);
 

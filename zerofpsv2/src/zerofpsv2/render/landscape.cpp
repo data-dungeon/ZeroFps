@@ -270,10 +270,13 @@ void Render::DrawSimpleWater(Vector3 kPosition,Vector4 kColor,int iSize,int iTex
 	//recomended color  .3,.3,.4,.99;
 	
 	glPushMatrix();
-	
+
+	glPushAttrib(GL_FOG_BIT|GL_LIGHTING_BIT);
+		
 	glDisable(GL_FOG);	
-	glDisable(GL_CULL_FACE);	
 	glDisable(GL_LIGHTING);
+	
+	glDisable(GL_CULL_FACE);	
 	glDepthMask(GL_FALSE);	
 //	glDisable(GL_COLOR_MATERIAL);	
 	glBlendFunc(GL_SRC_ALPHA,GL_ONE);
@@ -307,12 +310,15 @@ void Render::DrawSimpleWater(Vector3 kPosition,Vector4 kColor,int iSize,int iTex
 	glEnd();
 
 
-	if(m_FogEnable)//Disable the fog while drawing the sky box
-		glEnable(GL_FOG);
+	//if(m_FogEnable)//Disable the fog while drawing the sky box
+	//	glEnable(GL_FOG);
+	//glEnable(GL_LIGHTING);
+	
+	
 	glEnable(GL_CULL_FACE);
 	glDisable(GL_BLEND);
-	glEnable(GL_LIGHTING);
 	glDepthMask(GL_TRUE);		
+	glPopAttrib();
 	glPopMatrix();	
 }
 
@@ -592,26 +598,32 @@ void Render::DrawHM(HeightMap *kmap) {
 //void Render::SetFog(Vector4 kFogColor,float FogDensity,float FogStart,float FogStop,bool FogEnabled){
 
 
-void Render::SetFog(Vector4 kFogColor,float FogStart,float FogStop,bool FogEnabled){
-	if(FogEnabled){
+void Render::SetFog(Vector4 kFogColor,float FogStart,float FogStop,bool FogEnabled)
+{
+	if(FogEnabled)
+	{
+		//cout<<"fog enabled"<<endl;
+		
+		m_FogEnable=true;		
+		
 		glEnable(GL_FOG);
-		m_FogEnable=true;
-	} else {
+	
+		glHint(GL_FOG_HINT,GL_NICEST);		
+		glFogi(GL_FOG_MODE,GL_LINEAR);
+		glFogi(FOG_DISTANCE_MODE_NV,EYE_RADIAL_NV);
+		
+		glFogfv(GL_FOG_COLOR,(float*)&kFogColor);
+	//	glFogf(GL_FOG_DENSITY,FogDensity);
+		glFogf(GL_FOG_START,FogStart);
+		glFogf(GL_FOG_END,FogStop);	
+	} 
+	else 
+	{
+		//cout<<"fog disabled"<<endl;
+		
 		glDisable(GL_FOG);
 		m_FogEnable=false;
 	}	
-	
-	glFogi(GL_FOG_MODE,GL_LINEAR);
-	glFogi(FOG_DISTANCE_MODE_NV,EYE_RADIAL_NV);
-	glHint(GL_FOG_HINT,GL_NICEST);	
-	
-	glFogfv(GL_FOG_COLOR,(float*)&kFogColor);
-//	glFogf(GL_FOG_DENSITY,FogDensity);
-	glFogf(GL_FOG_START,FogStart);
-	glFogf(GL_FOG_END,FogStop);	
-	
-	
-	//cout<<"PÅÅ"<<FogStart<<endl;
 }
 
 

@@ -287,14 +287,14 @@ void Render::Polygon4(const Vector3& kP1,const Vector3& kP2,const Vector3& kP3,c
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
 	
-	glDisable(GL_LIGHTING);
+	//glDisable(GL_LIGHTING);
 		
 	m_pkTexMan->BindTexture(iTexture);  
 	
 	glBegin(GL_QUADS);
 				
 	
-	glNormal3f(0,0,1);
+	glNormal3f(0,1,0);
    glTexCoord2f(0.0,1.0);glVertex3fv(&kP1.x);		 
    glTexCoord2f(1.0,1.0);glVertex3fv(&kP2.x);		 
  	glTexCoord2f(1.0,0.0);glVertex3fv(&kP3.x);		 
