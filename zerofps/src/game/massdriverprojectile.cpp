@@ -1,4 +1,5 @@
 #include "massdriverprojectile.h"
+#include "statusproperty.h"
 
 MassDriverProjectile::MassDriverProjectile()
 {
@@ -20,14 +21,13 @@ void MassDriverProjectile::Update()
 
 void MassDriverProjectile::Touch(Object* pkObject)
 {
-	m_pkObjectMan->Delete(m_pkObject);
-//	m_pkObject->GetObjectType()=OBJECT_TYPE_STATIC;
+	StatusProperty* sp=static_cast<StatusProperty*>(pkObject->GetProperty("StatusProperty"));
+	if(sp!=NULL)
+	{
+		sp->Damage(10);
+	}
 	
-//	PhysicProperty* pp = dynamic_cast<PhysicProperty*>(m_pkObject->GetProperty("PhysicProperty"));
-//	pp->SetColShape(new CSSphere(0.2));		
-//	static_cast<CSSphere*>(pp->GetColSphere())->m_fRadius=0.5;
-//	pp->m_bGravity=false;
-//	pp->m_bFloat=false;	
+	m_pkObjectMan->Delete(m_pkObject);	
 }
 
 

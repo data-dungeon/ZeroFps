@@ -17,6 +17,8 @@ PlayerControlProperty::PlayerControlProperty(Input *pkInput,HeightMap *pkMap)
 //	m_pkCollisionMan = static_cast<CollisionManager*>(g_ZFObjSys.GetObjectPtr("CollisionManager"));	
 	m_pkAlSys=static_cast<OpenAlSystem*>(g_ZFObjSys.GetObjectPtr("OpenAlSystem"));		
 
+	m_pkStatusProperty=NULL;
+
 	m_pkInput=pkInput;	
 	strcpy(m_acName,"PlayerControlProperty");
 
@@ -43,21 +45,18 @@ PlayerControlProperty::~PlayerControlProperty()
 	delete walksound;
 }
 
-/*
-class	ClientMoveCommand
-{
-public:
-	Vector3 kTranslate;
-	Vector3 kRotate;
-	int		iJump;
-};
-*/
-
 void PlayerControlProperty::Update() {
-
-
 	m_pkObject->GetObjectType()=OBJECT_TYPE_PLAYER;
 	
+	if(m_pkStatusProperty==NULL)
+	{
+		m_pkStatusProperty=static_cast<StatusProperty*>(m_pkObject->GetProperty("StatusProperty"));
+	}
+	else
+	{
+		if(m_pkStatusProperty->m_fHealth<0)
+			cout<<"DIEEEEEEEEEEEED!"<<endl;
+	}
 
 	float lutning=acos(Vector3(0,1,0).Dot(m_pkMap->Tilt(m_pkObject->GetPos().x,m_pkObject->GetPos().z)))*degtorad;
 //	cout<<"LUTNING:"<<lutning<<endl;

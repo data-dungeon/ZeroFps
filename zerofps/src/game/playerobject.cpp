@@ -7,7 +7,9 @@ PlayerObject::PlayerObject(HeightMap *pkMap,Input *pkInput)
 	m_pkFps = static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
 	AddProperty(new PlayerControlProperty(pkInput,pkMap));
 	
-	AddProperty("MassDriverProperty");
+	AddProperty("StatusProperty");
+	
+	AddProperty("MassDriverProperty");	
 	AddProperty("AutoParentProperty");	
 	
 	AddProperty("PhysicProperty");

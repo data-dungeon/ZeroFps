@@ -392,3 +392,6 @@ ZGuiWnd* Gui::Get(char* strName)
 {
 	return m_pkEdit->pkGuiMan->Wnd(string(strName));
 }
+
+
+

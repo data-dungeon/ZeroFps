@@ -26,8 +26,9 @@ class MassDriverProperty: public Property {
 		int m_iActionFire;
 	
 		float m_fLastShot;
+		float m_fFireRate;
 	
-		Sound *firesound;		
+		Sound *firesound;					
 	
 	public:
 		MassDriverProperty();

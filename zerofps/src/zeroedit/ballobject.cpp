@@ -1,6 +1,7 @@
 #include "ballobject.h"
 #include "../zerofps/engine/cssphere.h"
 #include "../game/teleportproperty.h"
+#include "../game/statusproperty.h"
 
 BallObject::BallObject() {
 	m_pkFps = static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));

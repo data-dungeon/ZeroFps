@@ -6,7 +6,8 @@
 #include "../zerofps/basic/basic.pkg"
 #include <iostream>
 #include "playerobject.h"
-#include "bunnyobject.h"
+//#include "bunnyobject.h"
+#include "statusproperty.h"
 
 using namespace std;
 
@@ -20,6 +21,9 @@ class PlayerControlProperty: public Property {
 	
 		ObjectManager *m_pkObjectMan;
 		CollisionManager *m_pkCollisionMan;
+		
+		StatusProperty* m_pkStatusProperty;
+		
 		int m_iActionForward;
 		int m_iActionStrafeRight;
 		int m_iActionStrafeLeft;

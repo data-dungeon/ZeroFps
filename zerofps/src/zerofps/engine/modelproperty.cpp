@@ -73,11 +73,6 @@ void ModelProperty::Load(ZFMemPackage* pkPackage)
 }
 
 
-Property* Create_ModelProperty()
-{
-	return new ModelProperty;
-}
-
 vector<Property::PropertyValues> ModelProperty::GetPropertyValues()
 {
 	vector<Property::PropertyValues> kReturn(1);
@@ -90,3 +85,8 @@ return kReturn;
 };
 
 
+
+Property* Create_ModelProperty()
+{
+	return new ModelProperty;
+}

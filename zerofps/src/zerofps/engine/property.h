@@ -4,10 +4,12 @@
 #include "../basic/basic.pkg"
 #include <string>
 #include <vector>
+#include <cstdlib>
 #include <iostream>
 //#include "object.h"
 #include "engine_x.h"
 #include "network.h"
+#include <cfloat>
 
 //#include "engine.pkg"
 

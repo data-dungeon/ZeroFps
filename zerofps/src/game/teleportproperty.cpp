@@ -8,6 +8,7 @@ TeleportProperty::TeleportProperty()
 	m_iSide=PROPERTY_SIDE_SERVER;
 
 	m_pkAlSys=static_cast<OpenAlSystem*>(g_ZFObjSys.GetObjectPtr("OpenAlSystem"));	
+	m_pkObjectMan = static_cast<ObjectManager*>(g_ZFObjSys.GetObjectPtr("ObjectManager"));	
 	
 	sound=new Sound();
 	sound->m_acFile="file:../data/sound/beam.wav";
@@ -35,12 +36,23 @@ void TeleportProperty::Update()
 {
 	sound->m_kPos=m_pkObject->GetPos();
 	sound2->m_kPos=m_kToPos;
+	
+	if(m_pkStatusProperty==NULL)
+	{
+		m_pkStatusProperty=static_cast<StatusProperty*>(m_pkObject->GetProperty("StatusProperty"));
+	}
+	else
+	{
+		if(m_pkStatusProperty->m_fHealth < 0)
+			m_pkObjectMan->Delete(m_pkObject);		
+	}
 }
 
 void TeleportProperty::Touch(Object* pkObject)
 {
 	m_pkAlSys->AddSound(sound);
 	m_pkAlSys->AddSound(sound2);	
+	
 	pkObject->GetPos()=m_kToPos;	
 }
 

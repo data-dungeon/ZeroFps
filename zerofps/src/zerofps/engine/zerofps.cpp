@@ -211,7 +211,10 @@ void ZeroFps::MainLoop(void) {
 //			m_pkCollisionMan->Update();				
 
 			//update openal sound system
-			m_pkOpenAlSystem->SetListnerPosition(m_pkCamera->GetPos(),(m_pkCamera->GetRot()+Vector3(0,180,0)).AToU(),(m_pkCamera->GetRot()-Vector3(-90,180,0)).AToU());
+			
+			Vector3 up=(m_pkCamera->GetRot()-Vector3(0,90,0));//.AToU();
+			up.x=90;
+			m_pkOpenAlSystem->SetListnerPosition(m_pkCamera->GetPos(),(m_pkCamera->GetRot()+Vector3(0,90,0)).AToU(),up.AToU());//(m_pkCamera->GetRot()-Vector3(-90,90,0)).AToU());
 			m_pkOpenAlSystem->Update();
 
 			// Describe Active Cam.

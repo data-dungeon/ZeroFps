@@ -96,6 +96,9 @@ void OpenAlSystem::AddSound(Sound* pkSound)
 void OpenAlSystem::RemoveSound(Sound* pkSound) 
 {
 //	cout<<"Removing a sound"<<endl;
+	if(pkSound==NULL)
+		return;
+	
 	
 	bool found=false;
 	for(list<Sound*>::iterator it=m_akSounds.begin();it!=m_akSounds.end();it++)
@@ -104,17 +107,17 @@ void OpenAlSystem::RemoveSound(Sound* pkSound)
 			found=true;	
 	}
 	
-	if(found==false)
-		return;
+	if(found==true)
+	{
 	
-	
-	alSourceStop(m_kSources[pkSound->m_iSource]->m_iSource);
-	if(pkSound->m_iSource!=-1){
-		m_kSources[pkSound->m_iSource]->m_bUsed=false;
-		pkSound->m_iSource=-1;
+		if(pkSound->m_iSource!=-1){
+			alSourceStop(m_kSources[pkSound->m_iSource]->m_iSource);				
+			m_kSources[pkSound->m_iSource]->m_bUsed=false;
+			pkSound->m_iSource=-1;
+		}
+		pkSound->m_iNrOfPlays++;
+		m_akSounds.remove(pkSound);
 	}
-	pkSound->m_iNrOfPlays++;
-	m_akSounds.remove(pkSound);
 }
 
 void OpenAlSystem::Update()
@@ -195,7 +198,7 @@ void OpenAlSystem::Update()
 
 bool OpenAlSystem::Hearable(Sound* pkSound)
 {
-	if(  (pkSound->m_kPos-m_kPos).Length() < 50 ) 
+	if(  (pkSound->m_kPos-m_kPos).Length() < 100 ) 
 		return true;
 	else
 		return false;
@@ -231,7 +234,7 @@ void OpenAlSystem::PlaySound(Sound* pkSound,int iSource)
 	};
 	
   	alSourcei(m_kSources[iSource]->m_iSource, AL_BUFFER, sound);	
-   alSourcef(m_kSources[iSource]->m_iSource, AL_REFERENCE_DISTANCE, 2);
+   alSourcef(m_kSources[iSource]->m_iSource, AL_REFERENCE_DISTANCE, 3.5);
 	alSourcefv(m_kSources[iSource]->m_iSource, AL_POSITION,&pkSound->m_kPos[0]);	
 	alSourcefv(m_kSources[iSource]->m_iSource, AL_VELOCITY,&pkSound->m_kVel[0]);	
    

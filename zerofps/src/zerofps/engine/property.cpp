@@ -106,7 +106,8 @@ string Property::GetValue(string kValueName)
 				switch(kItor->iValueType)
 				{	
 				case VALUETYPE_INT:
-					itoa(*((int*)kItor->pkValue),pk_chBuffer,10); 
+					//itoa(*((int*)kItor->pkValue),pk_chBuffer,10); 
+					IntToChar(pk_chBuffer,*((int*)kItor->pkValue));
 					return (kBuffer=pk_chBuffer);
 					
 				case VALUETYPE_STRING:

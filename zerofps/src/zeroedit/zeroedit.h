@@ -14,6 +14,9 @@
 
 #include "ballobject.h"
 #include "../game/teleportproperty.h"
+#include "../game/statusproperty.h"
+#include "../game/massdriverproperty.h"
+#include "../game/massdriverprojectile.h"
 
 class Gui;
 

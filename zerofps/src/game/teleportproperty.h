@@ -6,12 +6,17 @@
 #include "../zerofps/engine/openalsystem.h"
 #include <iostream>
 
+#include "statusproperty.h"
+
 using namespace std;
 
 class TeleportProperty: public Property {
 	private:
 		Vector3 m_kToPos;
 		OpenAlSystem* m_pkAlSys;
+		ObjectManager *m_pkObjectMan;
+		StatusProperty* m_pkStatusProperty;
+	
 	
 		Sound *sound;
 		Sound *sound2;		

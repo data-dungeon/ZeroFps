@@ -17,6 +17,7 @@ MassDriverProperty::MassDriverProperty()
 		
 	m_iActionFire=m_pkInput->RegisterAction("fire_massdriver");
 	
+	m_fFireRate=2;
 	m_iAmmo=100;
 	m_kAim.Set(0,0,1);
 	
@@ -41,7 +42,7 @@ void MassDriverProperty::Update()
 
 void MassDriverProperty::Fire()
 {
-	if(m_pkFps->GetTicks()-m_fLastShot <1)
+	if(m_pkFps->GetTicks()-m_fLastShot < m_fFireRate)
 		return;		
 	m_fLastShot=m_pkFps->GetTicks();
 

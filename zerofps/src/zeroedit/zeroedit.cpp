@@ -922,10 +922,10 @@ Object* ZeroEdit::GetClosest(Vector3 kPos)
 
 void ZeroEdit::RegisterPropertys()
 {
+	pkPropertyFactory->Register("StatusProperty", Create_StatusProperty);
 	pkPropertyFactory->Register("TeleportProperty", Create_TeleportProperty);
-//	pkPropertyFactory->Register("FloatProperty", Create_FloatProperty);
-//	pkPropertyFactory->Register("GravityProperty", Create_GravityProperty);	
-//	pkPropertyFactory->Register("WorldInfoProperty", Create_WorldInfoProperty);	
+	pkPropertyFactory->Register("MassDriverProperty", Create_MassDriverProperty);	
+	pkPropertyFactory->Register("MassDriverProjectile", Create_MassDriverProjectile);			
 }
 
 void ZeroEdit::ListTemplates()
