@@ -799,15 +799,18 @@ void MistClient::OnNetworkMessage(NetPacket *pkNetMessage)
 		
 		case MLNM_SC_ITEMINFO:
 		{
-			string strInfo;
-			string strImage;
+			ITEM_INFO kInfo;
 			
-			pkNetMessage->Read_Str(strInfo);
-			pkNetMessage->Read_Str(strImage);
+			pkNetMessage->Read_Str(kInfo.strInfo);
+			pkNetMessage->Read_Str(kInfo.strImage);
+
+			kInfo.strName = "Unknown item"; // Dvoid: fixa så att även namnet skickas med.
 		
 			cout<<"-- Got item info --"<<endl;
-			cout<<"IMAGE:"<<strImage<<endl;			
-			cout<<"TEXT:"<<strInfo<<endl;			
+			cout<<"IMAGE:"<<kInfo.strImage<<endl;			
+			cout<<"TEXT:"<<kInfo.strInfo<<endl;		
+
+			m_pkInventoryDlg->OpenItemInfoWnd(true, kInfo);
 			
 			break;
 		}

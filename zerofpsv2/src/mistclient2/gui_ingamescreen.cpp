@@ -74,7 +74,7 @@ void GuiMsgIngameScreen( string strMainWnd, string	strController,
 
 	if(msg == ZGM_SELECTLISTITEM)
 	{
-		if(strMainWnd == "EmoteWnd");
+		if(strMainWnd == "EmoteWnd")
 		{
 			if(strController == "EmoteList")
 			{

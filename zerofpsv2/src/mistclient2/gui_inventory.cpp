@@ -7,6 +7,8 @@
 #include "../zerofpsv2/gui/zguiresourcemanager.h"
 #include "gui_equipwnd.h"
 
+bool g_bDoubleClicked = false;
+
 extern MistClient	g_kMistClient;
 
 void GuiMsgInventoryDlg( string strMainWnd, string strController, 
@@ -14,7 +16,7 @@ void GuiMsgInventoryDlg( string strMainWnd, string strController,
 {
 	if(msg == ZGM_COMMAND)
 	{
-		if(strMainWnd == "InventoryWnd" || strMainWnd == "ContainerWnd" || strMainWnd == "SplitStockWnd")
+		//if(strMainWnd == "InventoryWnd" || strMainWnd == "ContainerWnd" || strMainWnd == "SplitStockWnd")
 			g_kMistClient.m_pkInventoryDlg->OnCommand(strController);
 	}
 	else
@@ -87,6 +89,14 @@ void GuiMsgInventoryDlg( string strMainWnd, string strController,
 				}				
 			}
 		}		
+	}
+	else
+	if(msg == ZGM_LBUTTONDBLCLK)
+	{	
+		g_bDoubleClicked = true;
+		int x = ((int*)params)[0], y = ((int*)params)[1];
+		g_kMistClient.m_pkInventoryDlg->OpenContainer(x,y);		
+		printf("bOOOOLLLLLEEEE\n");
 	}
 
 }
@@ -205,8 +215,15 @@ void InventoryDlg::OnCommand(string strController)
 	else
 	if(strController == "SplitStockOKBn")
 		CloseSplitStockWnd(true);
+	else
 	if(strController == "SplitStockCancelBn")
 		CloseSplitStockWnd(false);
+	else
+	if(strController == "InfoWndCloseButton")
+	{
+		ITEM_INFO kEmpty;
+		OpenItemInfoWnd(false, kEmpty);
+	}
 }
 
 void InventoryDlg::OnMouseMove(bool bLeftButtonPressed, int mx, int my)
@@ -237,8 +254,11 @@ void InventoryDlg::OnMouseMove(bool bLeftButtonPressed, int mx, int my)
 				}
 				else
 				{
-					if(m_kMoveSlot.m_iIndex != -1) // if we have a move slot...
-						OnDropItem(mx, my); // place it somewhere.
+					if(g_bDoubleClicked == false)
+					{
+						if(m_kMoveSlot.m_iIndex != -1) // if we have a move slot...
+							OnDropItem(mx, my); // place it somewhere.
+					}
 
 					m_kMoveSlot.m_iIndex = -1; // mark that we no longer have a moveslot.
 				}	
@@ -248,22 +268,23 @@ void InventoryDlg::OnMouseMove(bool bLeftButtonPressed, int mx, int my)
 				{						
 					s_bRightMouseButtonPressed = true;
 
-					if(m_vkInventoryItemList[i].bIsContainer)
+					if(m_vkInventoryItemList[i].bIsContainer && 
+						m_iActiveContainerID == m_vkInventoryItemList[i].iItemID)	
 					{
-						bool bOpen = true;
-						if(m_iActiveContainerID == m_vkInventoryItemList[i].iItemID) // klickat på samma container
-							bOpen = false;															 // som redan är öppnad?
-
-						OpenContainerItem(bOpen, i, true);				
+						OpenContainerItem(false, i, true);												
 					}
 					else
-					if(m_vkInventoryItemList[i].iStackSize > 1)
 					{
-						m_kSplitSlot.m_iIndex = i;
-						m_kSplitSlot.bIsInventoryItem = true;
-						m_kSplitSlotTarget.m_iIndex = -1;
-						OpenSplitStockWnd();
+						g_kMistClient.RequestItemInfo(m_vkInventoryItemList[i].iItemID);
+						//OpenItemInfoWnd(true);
 					}
+					//if(m_vkInventoryItemList[i].iStackSize > 1)
+					//{
+					//	m_kSplitSlot.m_iIndex = i;
+					//	m_kSplitSlot.bIsInventoryItem = true;
+					//	m_kSplitSlotTarget.m_iIndex = -1;
+					//	OpenSplitStockWnd();
+					//}
 				}
 				else if(!g_kMistClient.m_pkGui->m_bMouseRightPressed)
 					s_bRightMouseButtonPressed = false;
@@ -356,6 +377,9 @@ void InventoryDlg::OnMouseMove(bool bLeftButtonPressed, int mx, int my)
 		if( (m_pkInventoryWnd->IsVisible() && m_pkInventoryWnd->GetScreenRect().Inside(mx,my) ||
 		    (m_pkContainerWnd->IsVisible() && m_pkContainerWnd->GetScreenRect().Inside(mx,my) )) ) 
 			(*m_ppCursorSkin)->m_unBorderSize = 1;
+
+	if(g_bDoubleClicked == true)
+		g_bDoubleClicked = false;
 	
 }
 
@@ -460,6 +484,59 @@ void InventoryDlg::OpenContainerItem(bool bOpen, int iSlotIndex, bool bInventory
 	}
 }
 
+void InventoryDlg::OpenContainer(int iMouseX, int iMouseY)
+{
+	printf("DOUBLE CLICK\n");
+	int temp = m_kMoveSlot.m_iIndex;
+	m_kMoveSlot.m_iIndex = -1;
+
+	pair<int, bool> kTargetSlot = GetItemFromScreenPos(iMouseX, iMouseY);
+
+	bool bTargetIsInventoryItem = (kTargetSlot.second == true) ? true : false;
+
+	if(kTargetSlot.first == -1)
+	{
+		m_kMoveSlot.m_iIndex = temp;
+		return;
+	}
+
+	vector<ITEM_SLOT>* pkVector;
+
+	if(bTargetIsInventoryItem)
+	{
+		pkVector = &m_vkInventoryItemList;
+	}
+	else
+	{
+		pkVector = &m_vkContainerItemList;
+	}
+		
+	if((*pkVector)[kTargetSlot.first].bIsContainer)
+	{
+		OpenContainerItem(true, kTargetSlot.first, 
+			bTargetIsInventoryItem);
+	}
+
+	m_kMoveSlot.m_iIndex = temp;
+
+	if(m_kMoveSlot.m_iIndex != -1)
+	{
+		// Show icon again and move back before split.
+		(*pkVector)[m_kMoveSlot.m_iIndex].pkWnd->Show();
+		(*pkVector)[m_kMoveSlot.m_iIndex].pkWnd->SetPos(m_kItemWndPosBeforeMove.x, 
+			m_kItemWndPosBeforeMove.y, false, true);
+
+		// Show normal cursor again.
+		float w = g_kMistClient.GetScaleX()*64.0f, h = g_kMistClient.GetScaleY()*64.0f ;
+		g_kMistClient.m_pkGui->SetCursor( (int)iMouseX+m_kCursorRangeDiff.x, 
+			(int)iMouseY+m_kCursorRangeDiff.y, 
+			g_kMistClient.LoadGuiTextureByRes("cursor_sword.tga"), -1, w, h);
+
+		m_kMoveSlot.m_iIndex = -1;
+	}
+
+}
+
 void InventoryDlg::OpenContainerWnd(int id, char slots_x, char slots_y)
 {
 	m_iSelItemID = id;
@@ -526,6 +603,11 @@ void InventoryDlg::RebuidContainerGrid(char slots_horz, char slots_vert)
 
 	for(int i=0; i<m_vkContainerGridSlots.size(); i++)
 	{
+		m_vkContainerGridSlots[i]->Hide();
+	}
+
+	for(int i=0; i<m_vkContainerGridSlots.size(); i++)
+	{
 		ZGuiWnd* pkWnd = m_vkContainerGridSlots[i];
 
 		pkWnd->SetPos(dx, dy, false, true);
@@ -535,7 +617,7 @@ void InventoryDlg::RebuidContainerGrid(char slots_horz, char slots_vert)
 		
 		if(current_slot_y >= slots_vert)
 		{			
-			pkWnd->Hide();		
+			//pkWnd->Hide();		
 			break;
 		}
 		else
@@ -1144,4 +1226,41 @@ void InventoryDlg::CloseSplitStockWnd(bool bExecuteSplit)
 
 	g_kMistClient.m_pkGui->SetFocus(m_pkInventoryWnd, false);	
 	g_kMistClient.m_pkGui->KillWndCapture(); 
+}
+
+void InventoryDlg::OpenItemInfoWnd(bool bOpen, ITEM_INFO kInfo)
+{
+	static bool s_bLoaded = false;
+
+	if(s_bLoaded == false)
+	{
+		if(!g_kMistClient.LoadGuiFromScript(g_kMistClient.m_kGuiScrips[GSF_ITEMINFO].c_str()))
+		{
+			printf("Failed to load GUI script!\n");
+			return;
+		}
+
+		((ZGuiTextbox*) g_kMistClient.GetWnd("ItemInfoTextbox"))->ToggleMultiLine(true);
+
+		s_bLoaded = true;
+	}
+
+	if(!bOpen)
+	{
+		g_kMistClient.m_pkGui->PlaceWndFrontBack(g_kMistClient.GetWnd("ItemInfoWnd"), false); 
+		g_kMistClient.GetWnd("ItemInfoWnd")->Hide();
+	}
+	else
+	{
+		g_kMistClient.ShowWnd("ItemInfoWnd", true, true, false);
+		g_kMistClient.SetText("ItemInfoTextbox", (char*)kInfo.strInfo.c_str());
+		g_kMistClient.SetText("ItemLabelTextbox", (char*)kInfo.strName.c_str());
+
+		g_kMistClient.GetWnd("ItemInfoImage")->GetSkin()->m_iBkTexID = 
+			g_kMistClient.LoadGuiTextureByRes(string("item_images/") + kInfo.strImage);
+	}
+
+
+
+
 }

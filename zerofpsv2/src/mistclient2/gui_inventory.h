@@ -22,11 +22,20 @@ enum InventoryDropTarget
 	DropTarget_EquipmentSlot,
 };
 
+struct ITEM_INFO 
+{
+	string strInfo;
+	string strImage;
+	string strName;
+};
+
 class InventoryDlg
 {
 public:
 	InventoryDlg();
 	~InventoryDlg();
+
+	void OpenContainer(int iMouseX, int iMouseY);
 
 	void UpdateInventory(vector<MLContainerInfo>& vkItemList);
 	void UpdateContainer(vector<MLContainerInfo>& vkItemList);
@@ -42,6 +51,7 @@ public:
 		return m_pkInventoryWnd->IsVisible(); 
 	}
 	
+	void OpenItemInfoWnd(bool bOpen, ITEM_INFO kInfo);
 	int GetInventoryContainerID();
 	int GetActiveContainerID();
 	InventoryDropTarget GetDropTargetFromScreenPos(int x, int y);

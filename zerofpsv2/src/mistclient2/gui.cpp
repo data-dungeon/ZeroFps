@@ -55,7 +55,7 @@ bool GUIPROC( ZGuiWnd* win, unsigned int msg, int numparms,	void *params )
 		}
 	}
 	else
-	if(msg == ZGM_MOUSEMOVE)
+	if(msg == ZGM_MOUSEMOVE || msg == ZGM_LBUTTONDBLCLK)
 	{
 		strMainWnd = win->GetName();
 
@@ -64,7 +64,7 @@ bool GUIPROC( ZGuiWnd* win, unsigned int msg, int numparms,	void *params )
 			map<string,msgScreenProg>::iterator itCallback;
 			itCallback = g_kMistClient.m_kGuiMsgProcs.find(strMainWnd);
 			if(itCallback != g_kMistClient.m_kGuiMsgProcs.end())			
-				itCallback->second(strMainWnd, "", ZGM_MOUSEMOVE, numparms, params);
+				itCallback->second(strMainWnd, "", msg, numparms, params);
 		}
 			
 		return true;
@@ -233,7 +233,8 @@ void MistClient::SetupGUI()
 	g_kMistClient.m_kGuiMsgProcs.insert( map<string, msgScreenProg>::value_type("InventoryWnd", GuiMsgInventoryDlg));
 	g_kMistClient.m_kGuiMsgProcs.insert( map<string, msgScreenProg>::value_type("ContainerWnd", GuiMsgInventoryDlg));
 	g_kMistClient.m_kGuiMsgProcs.insert( map<string, msgScreenProg>::value_type("SplitStockWnd", GuiMsgInventoryDlg));
-
+	g_kMistClient.m_kGuiMsgProcs.insert( map<string, msgScreenProg>::value_type("ItemInfoWnd", GuiMsgInventoryDlg));
+	
 	g_kMistClient.m_kGuiMsgProcs.insert( map<string, msgScreenProg>::value_type("EquipWnd", GuiMsgEquipmentDlg));
 
 	GetWnd("ContinueGameBn")->Hide();
@@ -359,6 +360,7 @@ void MistClient::FindGUIScriptsByResSuffix()
 		{ "ml_option_", GSF_OPTION },
 		{ "ml_chargen_", GSF_CHARGEN },
 		{ "ml_start_", GSF_START },
+		{ "ml_iteminfo_", GSF_ITEMINFO },
 	};
 
 	const int NUM_SCRIPS = sizeof(akInfo)/sizeof(akInfo[0]);
@@ -451,5 +453,6 @@ void MistClient::FindGUIScriptsByResSuffix()
 	printf("m_kGuiScrips[GSF_OPTION] = %s\n", m_kGuiScrips[GSF_OPTION].c_str());
 	printf("m_kGuiScrips[GSF_CHARGEN] = %s\n", m_kGuiScrips[GSF_CHARGEN].c_str());
 	printf("m_kGuiScrips[GSF_START] = %s\n", m_kGuiScrips[GSF_START].c_str());
+	printf("m_kGuiScrips[GSF_ITEMINFO] = %s\n", m_kGuiScrips[GSF_ITEMINFO].c_str());
 
 }
