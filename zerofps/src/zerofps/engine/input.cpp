@@ -453,12 +453,12 @@ int Input::RegisterAction(const char *pcAction)
 	{
 		map<const string, pair<const string, int>*>::iterator kIt = m_kPendingActions.find(kAction);
 		
-		if(kIt != m_kButtons.end())
-		{
+//		if(kIt != m_kButtons.end())
+//		{
 			m_aiActionToButton[m_iNrActions]=&(*kIt->second);
 			m_kPendingActions.erase(kIt);
-		}
-		else m_aiActionToButton[m_iNrActions]=NULL;
+//		}
+//		else m_aiActionToButton[m_iNrActions]=NULL;
 		
 	}
 	else m_aiActionToButton[m_iNrActions]=NULL;

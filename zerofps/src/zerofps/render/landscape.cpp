@@ -868,7 +868,7 @@ void Render::DrawPatch(HeightMap* kMap,Vector3 CamPos,int xp,int zp,int iSize)
 	}
 
 	//damn ulgly lod fix
-/*	 
+	 
 	z=zp;	
 	
 	glBegin(GL_TRIANGLE_STRIP);
@@ -932,7 +932,7 @@ void Render::DrawPatch(HeightMap* kMap,Vector3 CamPos,int xp,int zp,int iSize)
 		glVertex3f(x*HEIGHTMAP_SCALE,kMap->verts[z*kMap->m_iHmSize+x].height*HEIGHTMAP_SCALE,z*HEIGHTMAP_SCALE);					
 	}
 	glEnd();	
-*/
+
 
 //	glPolygonMode(GL_FRONT,GL_FILL);
 }
