@@ -34,7 +34,7 @@ ZeroFps::ZeroFps(void) : I_ZeroFps("ZeroFps")
 	m_pkPhysics_Engine		= new Physics_Engine;
 	m_pkResourceDB				= new ZFResourceDB;
 	m_pkPhysEngine				= new PhysicsEngine;
-	m_pkLevelMan				= new LevelManager;
+//	m_pkLevelMan				= new LevelManager;
 	m_pkIni						= new ZFIni;
 	m_pkGui						= new ZGui(Application::pkApp->m_iWidth, Application::pkApp->m_iHeight);
 	m_pkGuiMan					= new ZGuiResourceManager;
@@ -110,7 +110,7 @@ ZeroFps::~ZeroFps()
 	ConfigFileSave();
 
 	delete m_pkPhysEngine;
-	delete m_pkLevelMan;
+//	delete m_pkLevelMan;
 	delete m_pkIni;
 	delete m_pkGui;
 	delete m_pkGuiMan;
@@ -659,6 +659,8 @@ void ZeroFps::DevPrintf(const char* szName, const char *fmt, ...)
 	va_end(ap);									// 
 
 	// Now call our print function.
+	if(strlen(Devformat_text) >= 200)
+		assert(0);
 	page->m_akDevString.push_back(string(Devformat_text));
 }
 

@@ -15,7 +15,7 @@ using namespace std;
 
 class		ObjectManager;
 struct	CollisionData;
-class		LevelManager;
+//class		LevelManager;
 
 enum UpdateStatus 
 {

@@ -72,7 +72,7 @@ void ZeroTank::OnInit()
 	Object* pk12 = pkObjectMan->CreateObjectByArchType("Smoke");
 
 	// Inn
-	Object* pk9 = pkObjectMan->CreateObjectByArchType("Inn_roof");
+	Object* pk9	= pkObjectMan->CreateObjectByArchType("Inn_roof");
 	Object* pk10 = pkObjectMan->CreateObjectByArchType("Inn_walls");
 
 	// PSystem
@@ -113,8 +113,6 @@ void ZeroTank::OnInit()
 	pk12->AttachToClosestZone();
 	pk13->AttachToClosestZone();
 	pkGob->AttachToClosestZone();
-
-
 }
 
 void ZeroTank::Init()
@@ -130,10 +128,10 @@ void ZeroTank::Init()
 	//initiate our camera bös
 	m_pkCamera=new Camera(Vector3(0,10,0),Vector3(0,0,0),70,1.333,0.25,250);	
 //	m_pkCamera->SetViewPort(0,0.24,1,0.76);
-	m_pkCamera=new Camera(Vector3(0,10,0),Vector3(0,0,0),85,1.333,0.25,250);	
+//	m_pkCamera=new Camera(Vector3(0,10,0),Vector3(0,0,0),85,1.333,0.25,250);	
 	
 	//disable zones modells bös
-	pkLevelMan->SetVisibleZones(false);
+//	pkLevelMan->SetVisibleZones(false);
 
 	//register property bös
 	RegisterPropertys();
@@ -241,8 +239,8 @@ void ZeroTank::Input()
 		
 		Matrix4 kRm = m_pkZeroTank_Modify->GetLocalRotM();
 
-		if(m_pkZeroTank_Modify == m_pkCameraObject)
-			/* || m_pkZeroTank_Modify == m_pkZeroTankClientObject) */
+		if(m_pkZeroTank_Modify == m_pkCameraObject ||
+			 m_pkZeroTank_Modify == m_pkZeroTankClientObject) 
 			kRm.Transponse();
 	
 		/*
@@ -470,7 +468,7 @@ void ZeroTank::RunCommand(int cmdid, const CmdArgument* kCommand)
 	int i;
 
 	switch(cmdid) {
-		case FID_LOAD:
+/*		case FID_LOAD:
 			if(kCommand->m_kSplitCommand.size() <= 1)
 			{
 				pkConsole->Printf("load [mapname]");
@@ -490,7 +488,7 @@ void ZeroTank::RunCommand(int cmdid, const CmdArgument* kCommand)
 			break;		
 		
 		case FID_UNLOAD:
-			break;
+			break;*/
 	
 		case FID_MASSSPAWN:
 			for(i=0; i < 64;i++) {
@@ -519,8 +517,8 @@ void ZeroTank::HandleOrders()
 void ZeroTank::ClientInit()
 {
 	cout<<"Client Join granted"<<endl;
-	int mapwidth = pkLevelMan->GetHeightMap()->GetSize();
-	cout<<"Mapsize is :"<<mapwidth<<endl;
+//	int mapwidth = pkLevelMan->GetHeightMap()->GetSize();
+//	cout<<"Mapsize is :"<<mapwidth<<endl;
 //	m_pkMap = pkLevelMan->GetHeightMap();	
 	cout<<"Join Complete"<<endl;
 }

@@ -91,10 +91,10 @@ class ENGINE_API LevelManager : public ZFSubSystem {
 
 //		void DrawZones();
 
-		const string GetMapBaseDir() { return m_kMapBaseDir; }
+		const string GetMapBaseDir()			{ return m_kMapBaseDir; }
 
 		const string GetLogFileFullName();
-		const string GetCurrentMapDir() { return m_kCurrentMapDir; }		
+		const string GetCurrentMapDir()		{ return m_kCurrentMapDir; }		
 
 		bool StartUp();
 		bool ShutDown();

@@ -120,6 +120,7 @@ string Camera::GetCameraDesc()
 
 //	sprintf(desc, "Cam '%s': <%.3f, %.3f, %.3f>, <%.3f, %.3f, %.3f>", m_strName.c_str(), m_kPos.x,m_kPos.y,m_kPos.z,
 //		m_kRot.x,m_kRot.y,m_kRot.z);
+	sprintf(desc, "No Cam Desc");
 	strDesc = desc;
 
 	return strDesc;

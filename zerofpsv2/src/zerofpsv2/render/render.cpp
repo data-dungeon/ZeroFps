@@ -297,7 +297,7 @@ void Render::PrintChar2(char cChar)
 
 void Render::Print(Vector3 kPos,Vector3 kHead,Vector3 kScale,char* aText) {
 	char paText[TEXT_MAX_LENGHT];
-	
+	// VIM: Check for maxlen
 	strcpy(paText,aText);
 	
 	glPushMatrix();

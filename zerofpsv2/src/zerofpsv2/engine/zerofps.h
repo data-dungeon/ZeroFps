@@ -170,7 +170,7 @@ class ENGINE_API ZeroFps : public I_ZeroFps {
 		ZGuiResourceManager*	m_pkGuiMan;					///< Gui - Zeb
 		ZGui*						m_pkGui;						///< Gui - Zeb
 		ZFIni*					m_pkIni;						///< Ini Files - Zeb
-		LevelManager*			m_pkLevelMan;				///< 
+//		LevelManager*			m_pkLevelMan;				///< 
 		PhysicsEngine*			m_pkPhysEngine;			///< 
 		ZFResourceDB*			m_pkResourceDB;			///< Resouce Handler.
 		ZFScript*				m_pkScript;					///< script

@@ -728,6 +728,7 @@ void ObjectManager::PackToClients()
 	m_aiNetDeleteList.clear();
 }
 
+
 // Debug / Help Functions		
 void ObjectManager::DisplayTree()
 {
@@ -1299,7 +1300,7 @@ void ObjectManager::UpdateZones()
 	for(list<Object*>::iterator iT=m_kTrackedObjects.begin();iT!=m_kTrackedObjects.end();iT++) {
 		// Find Active Zone.
 		TrackProperty* pkTrack = dynamic_cast<TrackProperty*>((*iT)->GetProperty("TrackProperty"));
-//		pkTrack->m_iActiveZones.clear();
+		pkTrack->m_iActiveZones.clear();
 
 		// First we check if tracker is in the same zone as last time.,
 		if(m_kZones[pkTrack->m_iLastZoneIndex].IsInside( (*iT)->GetWorldPosV() ))
@@ -1320,7 +1321,7 @@ void ObjectManager::UpdateZones()
 			pkZone = m_kFloodZones.back();
 			m_kFloodZones.pop_back();
 
-//			pkTrack->m_iActiveZones.insert(pkZone->m_iZoneID);
+			pkTrack->m_iActiveZones.insert(pkZone->m_iZoneID);
 
 			pkZone->m_bActive = true;
 			int iRange = pkZone->m_iRange + 1;

@@ -439,6 +439,9 @@ void Object::AttachToZone()
 */
 bool Object::IsNetWork()
 {
+	if(m_strType == "ZoneObject")
+		return true;
+
 	for(list<Property*>::iterator it=m_akPropertys.begin();it!=m_akPropertys.end();it++) {
 		if((*it)->bNetwork == true) {
 			return true;
