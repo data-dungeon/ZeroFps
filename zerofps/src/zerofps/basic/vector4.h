@@ -2,9 +2,8 @@
 #define _Vector4_H_
 
 #include <iostream>
-#include "vector3.h"
-//#include "Matrix4.h"
 #include "basic_x.h"
+#include "vector3.h"
 
 class Matrix4;
 

@@ -2,9 +2,9 @@
 #define _MATRIX_H_
 
 #include <iostream>
+#include "basic_x.h"
 #include "vector3.h"
 #include "vector4.h"
-#include "basic_x.h"
 
 
 class BASIC_API Matrix4 {

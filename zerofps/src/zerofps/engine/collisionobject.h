@@ -1,7 +1,6 @@
 #ifndef _COLOSIONOBJECT_H_
 #define _COLOSIONOBJECT_H_
 
-//#include "basic.pkg"
 #include "engine_x.h"
 
 enum COLLISION_TYPE {

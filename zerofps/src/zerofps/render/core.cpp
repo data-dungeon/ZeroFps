@@ -1,5 +1,5 @@
 #include "mad.h"
-#include "../oglload/zfpsgl.h"
+#include "../ogl/zfpsgl.h"
 
 Core::Core()
 {
@@ -121,7 +121,6 @@ void Core::draw()
 	glDisable(GL_LIGHTING);
 
 	glPushMatrix();
-	int iVIndex;
 	
 	char nisse[256];
 	sprintf(nisse, "%s.bmp", akTextures[0].ucTextureName);

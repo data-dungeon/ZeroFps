@@ -1,15 +1,23 @@
 #ifndef _GLOBALS_H_
 #define _GLOBALS_H_
 
-#include "basic_x.h"
 #include <cstring>
 #include <iostream>
+#include "basic_x.h"
 
 using namespace std;
 
-#define min(a,b) ((a) < (b) ? (a)  : (b))
+#ifndef max
+#define max(a,b)            (((a) > (b)) ? (a) : (b))
+#endif
 
-float const degtorad=57.3248;
+#ifndef min
+#define min(a,b)            (((a) < (b)) ? (a) : (b))
+#endif
+
+//#define min(a,b) ((a) < (b) ? (a)  : (b))
+
+float const degtorad = float(57.3248);
 
 void BASIC_API Gemens(char* aText);
 void BASIC_API IntToChar(char* aText,int iValue);

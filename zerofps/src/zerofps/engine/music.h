@@ -12,10 +12,10 @@
 		
 */
 		
-#include "engine_x.h"
 #include <SDL/SDL_mixer.h>		
 #include <iostream>
 #include "../basic/basic.pkg"
+#include "engine_x.h"
 
 class ENGINE_API Music {
 	private:

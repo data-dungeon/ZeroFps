@@ -1,5 +1,5 @@
 #include "texturemanager.h"
-#include "../oglload/zfpsgl.h"
+#include "../ogl/zfpsgl.h"
 
 
 TextureManager::TextureManager(FileIo* pkFile) {
@@ -58,10 +58,10 @@ bool TextureManager::LoadTexture(GLuint &iNr,char *acFilename,int iOption) {
 }
 
 SDL_Surface *TextureManager::LoadImage(char *acFilename) {
-  Uint8 *rowhi, *rowlo;
-  Uint8 *tmpbuf, tmpch;
+  //Uint8 *rowhi, *rowlo;
+  //Uint8 *tmpbuf, tmpch;
   SDL_Surface *image;
-  int i, j;
+  //int i, j;
 
 
 	image = IMG_Load(m_pkFile->File(acFilename));

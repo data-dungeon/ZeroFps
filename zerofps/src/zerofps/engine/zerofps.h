@@ -1,15 +1,14 @@
 #ifndef _ZEROFPS_H_
 #define _ZEROFPS_H_
 
-#include "engine_x.h"
 #include <iostream>
 #include <cstdlib>
-#include "../oglload/zfpsgl.h"
 #include <SDL/SDL.h>
-
-#include "engine.pkg"
 #include "../basic/basic.pkg"
 #include "../render/render.pkg"
+#include "engine.pkg"
+#include "../ogl/zfpsgl.h"
+
 
 using namespace std;
 

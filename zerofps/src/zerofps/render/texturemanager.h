@@ -1,16 +1,16 @@
 #ifndef _TEXTUREMANAGER_H_
 #define _TEXTUREMANAGER_H_
 
-#include "render_x.h"
-#include "../oglload/zfpsgl.h"
-#include <SDL/SDL.h>
-#include <SDL/SDL_image.h>
 #include <iostream>
 #include <cstdlib>
 #include <cstring>
 #include <vector>
 #include <string>
+#include <SDL/SDL.h>
+#include <SDL/SDL_image.h>
+#include "render_x.h"
 #include "../basic/basic.pkg"
+#include "../ogl/zfpsgl.h"
 
 using namespace std;
 enum OPTIONS {

@@ -76,7 +76,7 @@ Vector3 HeightMap::Tilt(float x,float z) {
 	int lz=int(z);
 	float ox=x-float(lx);
 	float oz=z-float(lz);
-	float bp,xp,zp;
+//	float bp,xp,zp;
 	
 //	return verts[lz*m_iHmSize+lx].normal;
 	
@@ -228,7 +228,7 @@ bool HeightMap::Load(char* acFile) {
 	cout<<"Loading heightmap from file "<<acFile<<endl;
 	
 	//setup fileheader
-	HM_fileheader k_Fh;
+//	HM_fileheader k_Fh;
 	
 	//open file
 	FILE* fp=fopen(m_pkFile->File(acFile),"rb");
@@ -366,7 +366,7 @@ void HeightMap::GenerateTextures() {
 //			GetVert(x,z)->color=Vector3(1,1,1);			
 			if(slope<30) {
 				GetVert(x,z)->texture=3;//stone
-				GetVert(x,z)->color=Vector3(.7,.7,.7);			
+				GetVert(x,z)->color=Vector3(0.7,0.7,0.7);			
 			}
 			else if(slope<50){
 				GetVert(x,z)->texture=2;//slope

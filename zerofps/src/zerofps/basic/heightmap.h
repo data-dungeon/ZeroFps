@@ -3,7 +3,6 @@
 #ifndef _HEIGHTMAP_H_
 #define _HEIGHTMAP_H_
 
-#include "vector3.h"
 #include <cstdlib>
 #include <ctime>
 #include <cmath>

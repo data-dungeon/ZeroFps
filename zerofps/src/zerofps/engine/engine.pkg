@@ -5,6 +5,7 @@ class Application;
 class Console;
 class ObjectManager;
 
+#include "engine_x.h"
 #include "console.h"
 #include "application.h"
 #include "input.h"

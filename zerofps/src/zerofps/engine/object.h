@@ -1,11 +1,11 @@
 #ifndef _OBJECT_H_
 #define _OBJECT_H_
 
-#include "../engine/objects.pkg"
 #include <vector>
 #include <list>
 #include <string.h>
 #include "engine_x.h"
+#include "../engine/objects.pkg"
 #include "objectmanager.h"
 
 using namespace std;
@@ -23,8 +23,6 @@ class ENGINE_API Object {
 
 	public:
 		ObjectManager* m_pkObjectMan; 
-		
-		
 		Object();		
 		~Object();
 		

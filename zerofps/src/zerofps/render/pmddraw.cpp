@@ -1,5 +1,5 @@
 #include "pmddraw.h"
-#include "../oglload/zfpsgl.h"
+#include "../ogl/zfpsgl.h"
 
 PmdDraw::PmdDraw()
 {

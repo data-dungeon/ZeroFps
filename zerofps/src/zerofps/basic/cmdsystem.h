@@ -1,11 +1,10 @@
 #ifndef _CMDSYSTEM_H_
 #define _CMDSYSTEM_H_
 
-#include "basic_x.h"
 #include <vector>
 #include <iostream>
 #include <cstring>
-#include "globals.h"
+#include "basic.pkg"
 
 using namespace std;
 

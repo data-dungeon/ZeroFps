@@ -4,9 +4,9 @@
 #include <iostream>
 #include <vector>
 #include <list>
-#include "../oglload/zfpsgl.h"
-#include "../basic/basic.pkg"
 #include "render_x.h"
+#include "../ogl/zfpsgl.h"
+#include "../basic/basic.pkg"
 
 using namespace std;
 enum LIGHT_TYPE {

@@ -188,7 +188,6 @@ void Render::GetFrustum() {
    Matrix4   proj;
    Matrix4   modl;
    Matrix4   clip;
-   float   t;
    
 	// Get the current PROJECTION matrix from OpenGL 
    glGetFloatv( GL_PROJECTION_MATRIX, (float*)&proj[0] );

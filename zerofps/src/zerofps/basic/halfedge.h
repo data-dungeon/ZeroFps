@@ -1,10 +1,9 @@
 #ifndef _HALFEDGE_H_
 #define _HALFEDGE_H_
 
+#include <vector>
 #include "basic_x.h"
 #include "vector3.h"
-//#include "IoSystem.h"
-#include <vector>
 
 using namespace std;
 

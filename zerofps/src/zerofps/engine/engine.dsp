@@ -83,7 +83,7 @@ LINK32=link.exe
 # Begin Special Build Tool
 ProjDir=.
 SOURCE="$(InputPath)"
-PostBuild_Cmds=copy               $(ProjDir)\debug\*.lib               ..\..\..\bin\ 
+PostBuild_Cmds=copy                  $(ProjDir)\debug\*.lib                  ..\..\..\bin\ 
 # End Special Build Tool
 
 !ENDIF 
@@ -109,6 +109,10 @@ SOURCE=.\collisionpoint.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\collisionproperty.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\collisionsphere.cpp
 # End Source File
 # Begin Source File
@@ -117,7 +121,7 @@ SOURCE=.\console.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\OglLoad\extgl.c
+SOURCE=..\ogl\extgl.c
 # End Source File
 # Begin Source File
 
@@ -173,6 +177,10 @@ SOURCE=.\collisionpoint.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\collisionproperty.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\collisionsphere.h
 # End Source File
 # Begin Source File
@@ -181,11 +189,11 @@ SOURCE=.\console.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\engine_x.h
+SOURCE=.\engine.pkg
 # End Source File
 # Begin Source File
 
-SOURCE=.\halfedge.h
+SOURCE=.\engine_x.h
 # End Source File
 # Begin Source File
 
@@ -194,14 +202,6 @@ SOURCE=.\input.h
 # Begin Source File
 
 SOURCE=.\main.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\matrix4.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\modellmanager.h
 # End Source File
 # Begin Source File
 
@@ -217,19 +217,7 @@ SOURCE=.\objects.pkg
 # End Source File
 # Begin Source File
 
-SOURCE=.\playercontrol.h
-# End Source File
-# Begin Source File
-
 SOURCE=.\property.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\vector3.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\vector4.h
 # End Source File
 # Begin Source File
 

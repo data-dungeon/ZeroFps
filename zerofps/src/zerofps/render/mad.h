@@ -2,9 +2,9 @@
 #define FILE__MAD_H
 
 #include <stdio.h>
+#include <vector>
 #include "render_x.h"
 #include "texturemanager.h"
-#include <vector>
 
 using namespace std;
 

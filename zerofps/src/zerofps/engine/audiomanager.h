@@ -1,13 +1,11 @@
 #ifndef _AUDIOMANAGER_H_
 #define _AUDIOMANAGER_H_
 
-
-#include "engine_x.h"
-#include "engine.pkg"
 #include <iostream>
 #include <SDL/SDL_mixer.h>		
-#include "music.h"
 #include "../basic/basic.pkg"
+#include "engine.pkg"
+#include "music.h"
 
 class Music;
 

@@ -2,9 +2,9 @@
 #define _VECTOR3_H_
 
 #include <iostream>
+#include "basic_x.h"
 
 using namespace std;
-#include "basic_x.h"
 
 class BASIC_API Vector3 {
 	public:

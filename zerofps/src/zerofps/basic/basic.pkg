@@ -6,6 +6,11 @@ class HalfEdge;
 class Vector4;
 class Matrix4;
 
+#include <cassert>
+
+#include "os.h"
+#include "basic_x.h"
+
 #include "heightmap.h"
 #include "cmdsystem.h"
 #include "globals.h"

@@ -6,7 +6,7 @@ class HalfEdge;
 class Vector4;
 class Matrix4;
 
-//#include "heightmap.h"
+#include "heightmap.h"
 #include "cmdsystem.h"
 #include "globals.h"
 #include "fileio.h"

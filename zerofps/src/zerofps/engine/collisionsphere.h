@@ -4,8 +4,6 @@
 
 #include <typeinfo>
 #include "../basic/basic.pkg"
-//#include "objects.pkg"
-//#include "collisionobject.h"
 #include "objects.pkg"
 
 class ENGINE_API CollisionSphere:public CollisionObject{
