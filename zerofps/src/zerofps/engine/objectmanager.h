@@ -2,6 +2,7 @@
 #define _OBJECTMANAGER_H_
 
 #include "object.h"
+#include "property.h"
 #include <vector>
 #include <list>
 #include "../basic/basic.pkg"

@@ -1,5 +1,6 @@
 #include "object.h"
 #include "collisionproperty.h"
+#include "physicsengine.h"
 
 ObjectDescriptor::~ObjectDescriptor()
 {
@@ -649,6 +650,16 @@ void Object::Save(ObjectDescriptor* ObjDesc)
 	}
 	
 }
+
+
+void Object::Touch(CollisionData *pkData)
+{
+	for(list<Property*>::iterator it=m_akPropertys.begin();it!=m_akPropertys.end();it++) 
+	{
+		(*it)->Touch(pkData);
+	}
+}
+
 
 
 /*

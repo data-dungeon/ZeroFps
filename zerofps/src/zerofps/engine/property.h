@@ -4,6 +4,7 @@
 #include "../basic/basic.pkg"
 #include <string>
 #include <iostream>
+//#include "object.h"
 #include "engine_x.h"
 #include "network.h"
 
@@ -11,6 +12,7 @@
 
 using namespace std;
 
+class CollisionData;
 class Object;
 class PropertyFactory;
 
@@ -50,13 +52,15 @@ class ENGINE_API Property
 		
 		Property();
 		virtual ~Property(){};
+		virtual void Touch(CollisionData *pkData){};
 		virtual void Update()=0;			
-		virtual void PackTo(NetPacket* pkNetPacket) ;
-		virtual void PackFrom(NetPacket* pkNetPacket) ;
+		virtual void PackTo(NetPacket* pkNetPacket){} ;
+		virtual void PackFrom(NetPacket* pkNetPacket){} ;
 		virtual void Save(ZFMemPackage* pkPackage);
 		virtual void Load(ZFMemPackage* pkPackage);
 		inline void SetObject(Object* pkObject){m_pkObject=pkObject;};
 		inline Object *GetObject() {return m_pkObject;};
+		
 
 		bool operator<(Property& kOther);
 

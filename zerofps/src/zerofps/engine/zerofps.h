@@ -87,6 +87,7 @@ class ENGINE_API ZeroFps : public ZFObject {
 		GLGuiRender* m_pkGuiRenderer;
 		ZFIni* m_pkIni;
 		LevelManager* m_pkLevelMan;
+		PhysicsEngine* m_pkPhysEngine;
 
 //		vector<Core>		akCoreModells;
 		vector<Mad_Core>	akCoreModells;

@@ -27,6 +27,7 @@ ZeroFps::ZeroFps(void)
 	m_pkGui = new ZGui();
 	m_pkIni = new ZFIni();
 	m_pkLevelMan = new LevelManager();
+	m_pkPhysEngine = new PhysicsEngine();
 
 	m_iFullScreen=0;
 	m_fFrameTime=0;

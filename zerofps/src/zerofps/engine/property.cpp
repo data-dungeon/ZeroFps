@@ -17,6 +17,7 @@ Property::Property()
 	m_bSortDistance=false;
 }
 
+/*
 void Property::PackTo(NetPacket* pkNetPacket) 
 {
 
@@ -26,6 +27,8 @@ void Property::PackFrom(NetPacket* pkNetPacket)
 {  
 
 }
+*/
+
 
 void Property::Save(ZFMemPackage* pkPackage)
 {

@@ -32,6 +32,7 @@ void Application::SetEnginePointer(ZeroFps* pkZeroFps)
 	pkGui=pkFps->m_pkGui;
 	pkIni=pkFps->m_pkIni;
 	pkLevelMan=pkFps->m_pkLevelMan;
+	pkPhysEngine=pkFps->m_pkPhysEngine;
 }
 	
 	

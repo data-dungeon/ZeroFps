@@ -6,14 +6,17 @@
 #include <list>
 #include <string.h>
 #include "engine_x.h"
+//#include "physicsengine.h"
 #include "property.h"
 #include "objectmanager.h"
 #include "propertyfactory.h"
 #include "network.h"
 
+
 using namespace std;
 
 class ObjectManager;
+class CollisionData;
 
 class ENGINE_API PropertyDescriptor{
 	public:
@@ -131,6 +134,9 @@ class ENGINE_API Object {
 		float GetBoundingRadius();
 		
 		virtual void HandleCollision(Object* pkObject,Vector3 kPos,bool bContinue);
+
+		void Touch(CollisionData *pkData);
+
 
 //		void Update();
 //		void Update(int iType,int iSide);		
