@@ -70,6 +70,16 @@ void P_ScriptInterface::SetHeartRate(float blub)
 	m_fTimer += rand() % (int)m_fHeartRate;
 }
 
+void P_ScriptInterface::Touch(int iId)
+{
+	vector<ARG_DATA> args(1);
+	args[0].eType = tINT;
+	args[0].pData = &iId;
+	
+	CallFunction("Collission",&args);	
+}
+
+
 
 void P_ScriptInterface::Save(ZFIoInterface* pkPackage)
 {

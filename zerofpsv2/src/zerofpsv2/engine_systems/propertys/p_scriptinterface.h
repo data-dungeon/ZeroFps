@@ -33,6 +33,7 @@ class ENGINE_SYSTEMS_API P_ScriptInterface: public Property {
 
 		void SetHeartRate(float blub);
 		
+		void Touch(int iId);
 };
 
 Property* Create_P_ScriptInterface();
