@@ -58,6 +58,8 @@ MadView::MadView(char* aName,int iWidth,int iHeight,int iDepth)
 	Register_Cmd("object_rotation_speed", FID_OBJECTROTATIONSPEED);	
 	Register_Cmd("mad_draw_mode", FID_MAD_DRAW_MODE);	
 	Register_Cmd("change_bkcolor_infownd", FID_TOGGLE_BKCOLOR);	
+	Register_Cmd("listjoint", FID_LISTJOINT);	
+
 
 	m_strMadFile = "data/mad/cube.mad";
 	m_bHaveOpenMadFromCmdLine = false;
@@ -234,6 +236,15 @@ void MadView::RunCommand(int cmdid, const CmdArgument* kCommand)
 			else
 				m_pkZeroFps->m_iMadDraw |= mode;
 			break;
+
+		case FID_LISTJOINT:
+			{
+			P_Mad* pkMad = (P_Mad*) m_pkViewObject->GetProperty("P_Mad");
+			Mad_Core* pkCore = static_cast<Mad_Core*>(pkMad->kMadHandle.GetResourcePtr()); 
+			pkCore->GetJointAndChildID("root");
+			}
+			break;
+			
 
 		case FID_TOGGLE_BKCOLOR:
 			static bool toogle = true;

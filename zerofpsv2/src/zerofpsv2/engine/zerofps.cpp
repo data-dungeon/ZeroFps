@@ -367,6 +367,7 @@ void ZeroFps::UpdateDevPages()
 
 	//some devpage stuff
 	DevPrintf("common","ENTITYMAN:");	
+	DevPrintf("common","  Sim Time: %f",m_pkEntityManager->GetSimTime());		
 	DevPrintf("common","  Num Objects     : %d", m_pkEntityManager->GetNumOfEntitys());
 	DevPrintf("common","  NextEntityID    : %d", m_pkEntityManager->GetNextEntityID());
 	DevPrintf("common","  Active Propertys: %d",m_pkEntityManager->GetActivePropertys());		

@@ -29,6 +29,7 @@ class MadView :public Application , public ZGuiApp
 			FID_OBJECTROTATIONSPEED,
 			FID_MAD_DRAW_MODE,
 			FID_TOGGLE_BKCOLOR,
+			FID_LISTJOINT, 
 		};
 
 		enum ObjectRotationMode_e

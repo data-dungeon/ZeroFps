@@ -569,6 +569,7 @@ public:
 	int	GetAnimIndex(const char* szName);
 	string GetAnimationName(int iIndex);
 	void  SetupBonePose();
+	void  GenerateBoneMatris();
 	void  SetUpBindPose();
 	int	  GetNumOfAnimations();
 
@@ -598,6 +599,9 @@ public:
 	void CalculateRadius();
 
 	int GetJointID(const char* szJointName);
+	vector<int> GetJointSelection(const char* szJointNames);
+	vector<int> GetJointAndChildID(const char* szJointName);
+	vector<int> GetAllJointID();
 	Vector3 GetJointPosition(char* szJointName);	// Use NULL to get pos for first root joint.
 
 	void CreateController(char* szName, char* szJoint, ControllAxis eAxis, float fMin, float fMax);

@@ -1,6 +1,7 @@
 #include "mad_core.h"
 #include "../../basic/quaternion.h"
 #include "../../basic/zfassert.h"
+#include "../../basic/zfsystem.h"
 
 Matrix4		g_Madkbonetransform[MAX_BONES];		// Bone transformation matrix
 Matrix4		g_FullBoneTransform[MAX_BONES];		// Bone transformation matrix.
@@ -239,10 +240,10 @@ void Mad_Core::SetupBonePose()
 {
 	unsigned int i;
 
+	for (i = 0; i < m_kSkelleton.size(); i++)
+		g_FullBoneTransform[i].Identity();
+
 	if( iActiveAnimation == MAD_NOANIMINDEX) {
-		for (i = 0; i < m_kSkelleton.size(); i++)
-			g_FullBoneTransform[i].Identity();
-	
 		return;
 		}
 
@@ -255,7 +256,6 @@ void Mad_Core::SetupBonePose()
 		iEndFrame = 0;
 		
 		
-	Matrix4		kMadkBoneMatrix;					
 
 	Vector3 Angles;
 
@@ -285,8 +285,38 @@ void Mad_Core::SetupBonePose()
 
 			g_Madpos[i] = pkStartKey[i].m_kPosition * OneMinusFrameOffs + pkEndKey[i].m_kPosition * fFrameOffs;
 		}
-	
-	for (i = 0; i < m_kSkelleton.size(); i++) {
+
+	GenerateBoneMatris();
+}
+
+
+void Mad_Core::GenerateBoneMatris()
+{
+	Matrix4		kMadkBoneMatrix;					
+
+	//vector<int> kJointId = GetJointSelection("leg_left leg_right neck");;
+	vector<int> kJointId = GetAllJointID();
+
+	for (int i = 0; i < kJointId.size(); i++) 
+	{
+		int iId = kJointId[i];
+
+		kMadkBoneMatrix.Identity();
+		kMadkBoneMatrix = g_Madq[ iId ].Inverse();
+		kMadkBoneMatrix.SetPos(g_Madpos[ iId ]);
+
+		if (m_kSkelleton[ iId ].m_iParent == -1) {
+			g_Madkbonetransform[ iId ] = kMadkBoneMatrix;
+		} 
+		else {
+			g_Madkbonetransform[ iId ] = kMadkBoneMatrix * g_Madkbonetransform[m_kSkelleton[ iId ].m_iParent];
+		}
+
+		g_FullBoneTransform[ iId ] = m_MadkbonetransformI[ iId ] * g_Madkbonetransform[ iId ];
+	}
+
+/*for (i = 0; i < m_kSkelleton.size(); i++) 
+	{
 		kMadkBoneMatrix.Identity();
 		kMadkBoneMatrix = g_Madq[i].Inverse();
 		kMadkBoneMatrix.SetPos(g_Madpos[i]);
@@ -300,6 +330,7 @@ void Mad_Core::SetupBonePose()
 
 		g_FullBoneTransform[i] = m_MadkbonetransformI[i] * g_Madkbonetransform[i];
 	}
+*/
 }
 
 void Mad_Core::ClearReplaceTexture(void)
@@ -713,6 +744,65 @@ int Mad_Core::GetJointID(const char* szJointName)
 
 	return -1;
 }
+
+vector<int> Mad_Core::GetJointAndChildID(const char* szJointName)
+{
+	vector<int>	kRes;
+
+	int iTopID = GetJointID(szJointName);
+	if(iTopID == -1)
+		return kRes;
+
+	vector<int>	kCheck;
+	kCheck.push_back(iTopID);
+
+	while(kCheck.size())
+	{
+		int iCurrParent = kCheck.back();
+		kCheck.pop_back();
+		kRes.push_back(iCurrParent);
+		g_ZFObjSys.Printf("%s", m_kSkelleton[iCurrParent].m_acName);
+
+		for(unsigned int i=0; i<m_kSkelleton.size(); i++) 
+		{
+			if(m_kSkelleton[i].m_iParent == iCurrParent) 
+			{
+				kCheck.push_back(i);
+			}
+		}
+	}
+
+	return kRes;
+}
+
+vector<int> Mad_Core::GetJointSelection(const char* szJointNames)
+{
+	vector<int> kResultat;
+	vector<int> kAdd;
+
+
+	CmdArgument kCommand;
+	kCommand.Set(szJointNames);
+
+	for(int i=0; i<kCommand.m_kSplitCommand.size(); i++)
+	{
+		
+		kAdd = GetJointAndChildID(kCommand.m_kSplitCommand[i].c_str());
+		kResultat.insert(kResultat.end(), kAdd.begin(), kAdd.end());
+	}
+
+	return kResultat;
+}
+
+vector<int> Mad_Core::GetAllJointID()
+{
+	vector<int>	kRes;
+	for(unsigned int i=0; i<m_kSkelleton.size(); i++) 
+			kRes.push_back(i);
+	return kRes;
+}
+
+
 
 Vector3 Mad_Core::GetJointPosition(char* szJointName)
 {

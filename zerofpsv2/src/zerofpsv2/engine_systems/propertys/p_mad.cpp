@@ -244,8 +244,8 @@ void P_Mad::DoAnimationUpdate()
 {
 	if(m_iLastAnimationUpdateFrame != m_pkZeroFps->GetCurrentFrame())
 	{
-		float fCurrentTime = m_pkZeroFps->GetTicks();
-		
+		//float fCurrentTime = m_pkZeroFps->GetTicks();
+		float fCurrentTime = m_pkEntityManager->GetSimTime();
 		UpdateAnimation(fCurrentTime - m_fLastAnimationUpdateTime);
 	
 		m_iLastAnimationUpdateFrame = m_pkZeroFps->GetCurrentFrame();
