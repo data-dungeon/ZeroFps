@@ -1,11 +1,11 @@
 #ifndef _CONSOLE_H_
 #define _CONSOLE_H_
 
-#include "render_x.h"
+#include "engine_x.h"
 #include <iostream>
 #include <vector>
 #include "../basic/basic.pkg"
-#include "render.pkg"
+#include "../render/render.pkg"
 
 using namespace std;
 
@@ -34,7 +34,7 @@ class RENDER_API Console {
 //		void Gemens(char* aTexT);
 		
 		void Update(void);
-		void Draw(void);
+//		void Draw(void);
 		void Execute(char* aText);
 };
 

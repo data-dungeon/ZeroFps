@@ -21,6 +21,8 @@ Console::Console(ZeroFps* pkEngine) {
 }
 
 void Console::Update(void) {
+	m_pkRender->DrawConsole(m_aCommand,&m_kText);	
+	
 	while(SDL_PollEvent(&m_kEvent)) {
 		
 		//press keys
@@ -85,20 +87,6 @@ void Console::Update(void) {
 	}
 }
 
-void Console::Draw(void) {
-	m_pkRender->SetFont("file:../data/textures/text/console.bmp");
-
-	m_pkRender->Quad(Vector3(0,0,-.50),Vector3(0,0,0),Vector3(1,1,1),m_pkTexMan->Load("file:../data/textures/background.bmp"));
-	
-	m_pkRender->Print(Vector3(-0.45,-0.45,-0.499),Vector3(0,0,0),Vector3(.03,.03,.03),m_aCommand);		
-	
-	for(int i=0;i<22;i++) {
-		if(m_kText[i]!=NULL){
-			m_pkRender->Print(Vector3(-0.45,-0.40+i/(float)25,-0.499),Vector3(0,0,0),Vector3(.03,.03,.03),m_kText[i]);		
-		}
-	}
-}
-
 
 
 void Console::Print(char* aText) {
@@ -118,8 +106,110 @@ void Console::Print(char* aText) {
 }
 
 void Console::Execute(char* aText) {
-	m_pkEngine->HandleCommands(aText);
+	string arg[20];		//list of arguments
+	int args;					//number of arguments
+	
+	if(strlen(aText)==0){
+		Print("");
+		return;
+	}
+	
+	
+	//read input parameters 
+	args=0;
+	for(int i=0;i<strlen(aText);i++) {
+		while(int(aText[i])!=32 && i<strlen(aText)){	//loop until space
+			arg[args].append(1,aText[i]);			//add to argument nr args
+			i++;
+		}
+		if(arg[args].size()!=0)//if nothing was added to the argument use it in the next loop
+			args++;
+	}
+	
+	if(arg[0]=="quit"){
+		exit(1);
+		return;
+	}
+	
+	if(arg[0]=="version") {
+		Print("ZeroFps Beta 1.0");
+		return;
+	}
+	
+	if(arg[0]=="help"){
+		Print("");
+		Print("### help ###");
+		Print(" quit         -exit program");
+		Print(" varlist      -list variables");		
+		Print(" set $n $v    -set variable");		
+		return;
+	}
+	
+	if(arg[0]=="set") {
+		char name[256]="";
+		char value[20]="";
+		int i=4;		
 
+		if(arg[1].size()==0){
+			Print("Please Supply a varible name");
+			return;
+		}
+
+		if(arg[2].size()==0) {
+			Print("Please Supply a value");
+			return;
+		}
+		
+		
+		char text[255]="";
+		strcpy(text,"Setting ");
+		strcat(text,arg[1].c_str());
+		strcat(text,"=");
+		strcat(text,arg[2].c_str());
+		Print(text);
+		
+		strcat(name,arg[1].c_str());
+		
+		if(!m_pkCmd->Set(name,atof(arg[2].c_str()))){
+			Print("Variable not found");
+			return;
+		}
+		
+		return;
+	}
+
+	if(arg[0]=="varlist") {
+		Print("");
+		Print("### variable list ###");
+		for(int i=0;i<m_pkCmd->GetList().size();i++){
+			char text[255]="";
+			char value[20]="";
+			strcpy(text,m_pkCmd->GetList()[i]->aName);
+			strcat(text," = ");
+			
+			IntToChar(value,(int)m_pkCmd->GetVar(i));
+			strcat(text,value);
+//			strcat(text,atoi(m_pkCmd->GetVar(i)))
+//			cout<<<<" = "<<m_pkCmd->GetVar(i)<<endl;
+			Print(text);			
+		}
+		return;
+	}
+
+	if(arg[0]=="music") {
+		if(args==1) {
+			Print("Syntax: music 1/0");		
+			return;
+		}
+		if(arg[1]=="1")
+			m_pkEngine->m_pkAudioMan->PlayMusic();
+		if(arg[1]=="0")
+			m_pkEngine->m_pkAudioMan->StopMusic();
+			
+		return;
+	}
+
+	Print("### unknown command ###");
 }
 
 
