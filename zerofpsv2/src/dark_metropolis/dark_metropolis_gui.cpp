@@ -279,6 +279,19 @@ void DarkMetropolis::GUI_OnClick(int x, int y, bool bMouseDown,
 	{
 		m_pkStartDMDlg->OnClick(x, y, bMouseDown, bLeftButton, pkMain);
 	}
+
+	printf("strMainWnd = %s\n", strMainWnd.c_str());
+
+	if(strMainWnd == "ActiveCharacterPortraitBn")
+	{
+		if(GetWnd("ActiveCharacterPortraitLabel") && GetWnd("ActiveCharacterPortraitBn"))
+		{
+			GetWnd("ActiveCharacterPortraitLabel")->m_iZValue = 
+				GetWnd("ActiveCharacterPortraitBn")->m_iZValue + 1;
+
+			GetWnd("ActiveCharacterPortraitLabel")->GetParent()->SortChilds();
+		}
+	}
 	
 }
 

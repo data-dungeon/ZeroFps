@@ -72,6 +72,10 @@ void CGamePlayDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName,
 				UpdateAgentList();
 			}
 		}
+
+	//	ZGuiWnd* pkActiveCharBn = GetWnd("ActiveCharacterPortraitBn");
+	//	GetWnd("ActiveCharacterPortraitLabel")->m_iZValue = pkActiveCharBn->m_iZValue + 1;
+	//	GetWnd("ActiveCharacterPortraitLabel")->GetParent()->SortChilds();
 	}
 	else
 	if(strClickName == "PauseBn")
@@ -248,11 +252,15 @@ bool CGamePlayDlg::InitDlg()
 		ZGuiButton* pkActiveCharBn = (ZGuiButton*) 
 			GetWnd("ActiveCharacterPortraitBn");
 		pkActiveCharBn->Hide();
+		GetWnd("ActiveCharacterPortraitLabel")->Hide();
 
 		((ZGuiTextbox*)GetWnd("MissionInfoLabel"))->ToggleMultiLine(true);
 		((ZGuiTextbox*)GetWnd("MissionInfoLabel"))->SetReadOnly(true);	
 
 		m_pkDM->m_pkGamePlayInfoLabel = GetWnd("GamePlayInfoLabel");
+
+		// Enable the round alpha border to use apha test (labels are disabled by default)
+		GetWnd("ActiveCharacterPortraitLabel")->Enable();
 	}
 
 	GetWnd("GamePlayDlgQuickItem1")->Hide();
@@ -266,6 +274,7 @@ bool CGamePlayDlg::InitDlg()
 		ZGuiButton* pkActiveCharBn = (ZGuiButton*) 
 			GetWnd("ActiveCharacterPortraitBn");
 		pkActiveCharBn->Hide();
+		GetWnd("ActiveCharacterPortraitLabel")->Hide();
 	}
  
 	GetWnd("MissionInfoWnd")->Hide();
@@ -320,6 +329,7 @@ void CGamePlayDlg::SelectAgentGUI(int iAgent, bool bSelectModels)
 
 	ZGuiButton* pkActiveCharBn = (ZGuiButton*) 
 		GetWnd("ActiveCharacterPortraitBn");
+	GetWnd("ActiveCharacterPortraitLabel")->Hide();
 
 	pkActiveCharBn->Hide();
 
@@ -344,8 +354,12 @@ void CGamePlayDlg::SelectAgentGUI(int iAgent, bool bSelectModels)
 			pkCharacterStats->m_strIcon;
 
 		pkActiveCharBn->Show();
+		GetWnd("ActiveCharacterPortraitLabel")->Show();
 
 		SetButtonIcon(pkActiveCharBn, szTexName, false);
+
+		GetWnd("ActiveCharacterPortraitLabel")->m_iZValue = pkActiveCharBn->m_iZValue + 1;
+		GetWnd("ActiveCharacterPortraitLabel")->GetParent()->SortChilds();
 
 		int iItemID;
 

@@ -106,6 +106,10 @@ function GUICreate()
 	Skin27 = { tex1="0", tex2="0", tex3="0", tex4="0", tex1a="0", tex2a="0", tex3a="0", tex4a="0", bkR=92, bkG=92,
 	 bkB=92, borderR=56, borderG=56, borderB=56, bd_size=1, tile=1, trans=0 }
 
+	Skin28 = { tex1="dm/active_agent_border.bmp", tex2="0", tex3="0", tex4="0", 
+	 tex1a="dm/active_agent_border_a.bmp", tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=255,
+	 bkB=255, borderR=0, borderG=0, borderB=0, bd_size=0, tile=0, trans=0 }
+
 	-------------------------------------------------------------------------
 	-- Create all windows in correct order (parents before childrens etc.)
 	-- 0 = Wnd, 1 = Button, 2 = Checkbox, 3 = Combobox, 4 = Label, 5 = Listbox, 6 = Radiobutton,
@@ -290,10 +294,14 @@ function GUICreate()
 
 
 
-	CreateWnd(1,"ActiveCharacterPortraitBn","wind_char","",15,150,92,92,0)
+	CreateWnd(1,"ActiveCharacterPortraitBn","wind_char","",-4+8+4,128+24,96,96,0)
 	ChangeSkin("ActiveCharacterPortraitBn","Skin1","Button up")
 	ChangeSkin("ActiveCharacterPortraitBn","Skin2","Button down")
 	ChangeSkin("ActiveCharacterPortraitBn","Skin3","Button focus")
+
+	CreateWnd(4,"ActiveCharacterPortraitLabel","wind_char","",-4+8+4,128+24,96,96,0)
+	ChangeSkin("ActiveCharacterPortraitLabel","Skin28","Label")
+
 
 
 
