@@ -26,6 +26,8 @@ static bool GUIPROC( ZGuiWnd* win, unsigned int msg, int numparms, void *params 
 		char** pszParams; pszParams = (char**) params;
 		g_kZeroEd.OnClickTreeItem( pszParams[0], pszParams[1], 
 			pszParams[2], pszParams[3][0] == '1' ? true : false);		
+
+		
 		break;
 	}
 	return true;
@@ -208,7 +210,7 @@ void MadView::CreateCamera()
 	m_pkCamProp->SetCamera(m_pkCamera);
 	m_pkCameraObject->SetSave(false);	
 
-	m_pkCameraObject->SetWorldPosV(Vector3(0,-2,-10)); 
+	m_pkCameraObject->SetWorldPosV(Vector3(0,-2,-10)); 	
 }
 
 void MadView::CreateViewObject()
@@ -216,6 +218,7 @@ void MadView::CreateViewObject()
 	m_pkViewObject = m_pkEntityManager->CreateEntity();
 	m_pkViewObject->SetParent( m_pkEntityManager->GetWorldEntity() ); 
 	m_pkViewObject->AddProperty("P_LightUpdate");
+	m_pkViewObject->AddProperty("P_Mad");
 	m_pkViewObject->SetWorldPosV(Vector3(0,0,0));
 }
 

@@ -1,10 +1,6 @@
 #ifndef _MADVIEW_H_
 #define _MADVIEW_H_
 
-#include <iostream>
-#include <cmath>
-#include <list>
-#include <vector>
 #include "../../../zerofpsv2/engine/application.h"
 #include "../../../zerofpsv2/engine_systems/mad/mad_modell.h"
 #include "../../../zerofpsv2/engine_systems/propertys/p_camera.h"
@@ -64,8 +60,7 @@ class MadView :public Application , public ZGuiApp
 		//delay
 		float	m_fDelayTime;
 		
-		//edit sun
-		LightSource	m_kSun;				
+		LightSource	m_kSun;
 		
 		//camera
 		Entity*	m_pkCameraObject;

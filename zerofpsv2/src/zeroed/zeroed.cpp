@@ -94,6 +94,7 @@ ZeroEd::ZeroEd(char* aName,int iWidth,int iHeight,int iDepth)
 	strcpy(szCoolName , "Guldfisk");
    strMasterSmiley = "Vim";
 	m_iSelectFileState = NONE;
+	m_pkPreviewEntity = NULL;
 
 	m_bRemoteEditing	=				false;
 	
@@ -664,6 +665,11 @@ void ZeroEd::OnIdle()
 	{	
 		UpdateObjectMakerPos();
 		//DrawCrossMarker(m_kObjectMarkerPos);		
+	}
+
+	if(IsWndVisible("PreviewWnd"))
+	{
+		UpdatePreviewObject();
 	}
 	
 }
@@ -1375,7 +1381,6 @@ void ZeroEd::UpdateZoneMarkerPos()
 			s_fLastZPos = m_kZoneMarkerPos.z;
 	}	
 }
-
 
 void ZeroEd::UpdateObjectMakerPos()
 {

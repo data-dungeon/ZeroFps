@@ -37,11 +37,14 @@ void ZeroEd::SetupGuiEnviroment()
 	CheckButton("DisableFreeZoneBuildBn", m_bDisableFreeZonePlacement);
 
 	ShowWnd("SelectFileWnd", false);
+	ShowWnd("PreviewWnd", false);
 
 	CreateWnd(Label, "vp1Label", "Perspective", GetWnd("vp1"), 2, 0, 100, 20, 0);
 	CreateWnd(Label, "vp2Label", "Top", GetWnd("vp2"), 2, 0, 100, 20, 0);
 	CreateWnd(Label, "vp3Label", "Left", GetWnd("vp3"), 2, 0, 100, 20, 0);
 	CreateWnd(Label, "vp4Label", "Front", GetWnd("vp4"), 2, 0, 100, 20, 0);
+
+	
 }
 
 void ZeroEd::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
@@ -98,6 +101,7 @@ void ZeroEd::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 					GetWnd("AddNewProperyWnd")->Hide();
 					GetWnd("EditPropertyWnd")->Hide();
 					ShowWnd("SelectFileWnd", false);
+					ShowWnd("PreviewWnd", false);
 				}
 				else 
 				{
@@ -331,6 +335,21 @@ void ZeroEd::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 
 			m_pkIni->Close();
 		}
+		else
+		if(strMainWnd == "PreviewWnd")
+		{
+			if(strWndClicked == "PreviewOKBn")
+			{
+				AddPropertyVal();
+				ShowWnd("SelectFileWnd", false); // close window
+				ShowWnd("PreviewWnd", false); // close window
+			}
+			else
+			if(strWndClicked == "PreviewCancelBn")
+			{
+				ShowWnd("PreviewWnd", false); // close window
+			}
+		}
 	}
 }
 
@@ -491,9 +510,11 @@ void ZeroEd::OnClickTreeItem(char *szTreeBox, char *szParentNodeText,
 
 			SetText("PropertyValEb", (char*) strFullpath.c_str());
 
-			AddPropertyVal();
+			//AddPropertyVal();
 
-			ShowWnd("SelectFileWnd", false); // close window
+			SetupPreviewWnd(strFullpath.c_str());
+
+			//ShowWnd("SelectFileWnd", false); // close window
 
 			break;
 
@@ -534,25 +555,25 @@ void ZeroEd::OnClickTabPage(ZGuiTabCtrl *pkTabCtrl, int iNewPage, int iPrevPage)
 			if(GetWnd("AddNewProperyWnd"))GetWnd("AddNewProperyWnd")->Hide();
 			if(GetWnd("EditPropertyWnd"))GetWnd("EditPropertyWnd")->Hide();
 			ShowWnd("SelectFileWnd", false);
+			ShowWnd("PreviewWnd", false);
 			break;
 		case 1:
 			m_iEditMode = EDIT_OBJECTS;
 			if(GetWnd("AddNewProperyWnd"))GetWnd("AddNewProperyWnd")->Hide();
 			if(GetWnd("EditPropertyWnd"))GetWnd("EditPropertyWnd")->Hide();
 			ShowWnd("SelectFileWnd", false);
-         BuildFileTree("ObjectTree", "data/script/objects/", ".lua");
+         ShowWnd("PreviewWnd", false);
+			BuildFileTree("ObjectTree", "data/script/objects/", ".lua");
 			break;
 		case 2:
 			ShowWnd("SelectFileWnd", false);
+			ShowWnd("PreviewWnd", false);
 			break;
 		case 3:
 			ShowWnd("SelectFileWnd", false);
-			break;
-		case 4:
-			ShowWnd("SelectFileWnd", false);
+			ShowWnd("PreviewWnd", false);
 			if(GetWnd("AddNewProperyWnd"))GetWnd("AddNewProperyWnd")->Hide();
 			if(GetWnd("EditPropertyWnd"))GetWnd("EditPropertyWnd")->Hide();
-			m_iEditMode = EDIT_AMBIENTSOUNDS;
 			break;
 		}
 	}
@@ -569,4 +590,76 @@ char* ZeroEd::GetSelEnviromentString()
 	}
 
 	return NULL;
+}
+
+void ZeroEd::SetupPreviewWnd(const char* szMadFile)
+{
+	static Camera* s_pkCamera;
+
+	if(m_pkPreviewEntity == NULL)
+	{
+		m_pkPreviewEntity = m_pkEntityManager->CreateEntity();
+		m_pkPreviewEntity->SetWorldPosV(Vector3(0,0,0));
+		m_pkPreviewEntity->AddProperty("P_LightUpdate");
+		m_pkPreviewEntity->AddProperty("P_Mad");
+
+		float aspect = (float) GetWnd("PreviewRenderLabel")->GetScreenRect().Width() /
+			(float) GetWnd("PreviewRenderLabel")->GetScreenRect().Height();
+
+		s_pkCamera = new Camera(Vector3(0,0,0),Vector3(0,0,0),70,aspect,0.0025,250);	
+		s_pkCamera->SetClearViewPort(false);  
+		s_pkCamera->SetRootEntityID(m_pkPreviewEntity->GetEntityID());
+		GetWnd("PreviewRenderLabel")->SetRenderTarget(s_pkCamera);
+		GetWnd("PreviewWnd")->SetMoveArea(Rect(0,0,1024,768), true);
+	}
+
+	((P_Mad*)m_pkPreviewEntity->GetProperty("P_Mad"))->SetBase(szMadFile);	
+
+	float r = ((P_Mad*)m_pkPreviewEntity->GetProperty("P_Mad"))->GetRadius(); 
+	s_pkCamera->SetPos(Vector3(0,-r/8900,r*2));
+
+	ShowWnd("PreviewWnd", true, true);
+}
+
+void ZeroEd::UpdatePreviewObject()
+{
+	if(m_pkPreviewEntity == NULL)
+		return;
+
+	static float s_fRotTimer = 0;
+	static float s_fObjRotDelay = 0.009f;
+	static Vector3 kRot(0,0,0);
+	
+	float fTime = (float) SDL_GetTicks() / 1000.0f;
+
+	float fTimeSinceLastFrame = fTime - s_fRotTimer;
+	float dif = fTimeSinceLastFrame / s_fObjRotDelay;
+
+	s_fRotTimer = fTime;
+
+	static int dir=0;
+
+	if(kRot.x >= 360 || kRot.y >= 360 || kRot.z >= 360)
+	{
+		if(dir == 0)
+			kRot.z = 0.0f;
+		if(dir == 1)
+			kRot.y = 0.0f;
+		if(dir == 2)
+			kRot.x = 0.0f;
+
+		dir++;
+
+		if(dir == 3)
+			dir = 0;
+	}
+
+	if(dir == 0)
+		kRot.z += dif;
+	if(dir == 1)
+		kRot.y += dif;
+	if(dir == 2)
+		kRot.x += dif;
+
+	m_pkPreviewEntity->SetWorldRotV(kRot); 
 }

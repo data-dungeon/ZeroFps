@@ -109,6 +109,7 @@ class ZeroEd :public Application , public ZGuiApp {
 
 		// gui stuff
 		int m_iSelectFileState;		
+		Entity* m_pkPreviewEntity;
 		
 		string	m_strWorldDir;						// The current dir for the world. Use for SaveAs and Title.
 
@@ -185,6 +186,8 @@ class ZeroEd :public Application , public ZGuiApp {
 		void FillPropertyValList();
 		bool FillPropertyList();
 		bool UpdatePropertyList(int iID);		
+		void SetupPreviewWnd(const char* szMadFile);
+		void UpdatePreviewObject();
 
 		//camera stuff
 		void  CreateEditCameras();
