@@ -1,6 +1,6 @@
 #define TEXT_MAX_LENGHT 256
 #define FONTWIDTH 32
-#define TEX_SCALE 4
+#define TEX_SCALE 2
 
 #ifndef _RENDER_H_
 #define _RENDER_H_
