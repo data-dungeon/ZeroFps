@@ -92,6 +92,7 @@ void MistServer::Init()
 
 void MistServer::RegisterPropertys()
 {
+	pkPropertyFactory->Register("P_ClientControl", Create_P_ClientControl);
 	pkPropertyFactory->Register("P_ServerInfo", Create_P_ServerInfo);
 	pkPropertyFactory->Register("P_Ml", Create_P_Ml);
 	pkPropertyFactory->Register("P_Event", Create_P_Event);
@@ -298,7 +299,7 @@ void MistServer::OnServerClientJoin(ZFClient* pkClient,int iConID)
 {
 	cout<<"Client "<<iConID<<" Joined"<<endl;
 	
-	
+	pkClient->m_pkObject->AddProperty("P_ClientControl");	
 	pkClient->m_pkObject->AddProperty("P_Primitives3D");	
 	cout << "Now adding tracker to client" << endl;
 	pkClient->m_pkObject->AddProperty("TrackProperty");	
@@ -306,6 +307,8 @@ void MistServer::OnServerClientJoin(ZFClient* pkClient,int iConID)
 
 	if(m_pkServerInfoP)
 		m_pkServerInfoP->AddPlayer(iConID,"UnKnownPlayer");
+		
+		
 }
 
 void MistServer::OnServerClientPart(ZFClient* pkClient,int iConID)

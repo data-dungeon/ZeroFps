@@ -23,6 +23,7 @@
 #include "../mcommon/p_charstats.h"
 #include "../mcommon/si_mistland.h"
 #include "../mcommon/p_serverinfo.h"
+#include "../mcommon/p_clientcontrol.h"
 
 class MistClient :public Application, public ZGuiApp {
 	private:

@@ -114,6 +114,7 @@ void MistClient::RegisterActions()
 
 void MistClient::RegisterPropertys()
 {
+	pkPropertyFactory->Register("P_ClientControl", Create_P_ClientControl);
 	pkPropertyFactory->Register("P_ServerInfo", Create_P_ServerInfo);
 	pkPropertyFactory->Register("P_Ml", Create_P_Ml);
 	pkPropertyFactory->Register("P_Event", Create_P_Event);
@@ -338,6 +339,7 @@ void MistClient::ClientInit()
 
 
 	cout<<"Join Complete"<<endl;
+	
 }
 
 void MistClient::OnServerClientJoin(ZFClient* pkClient,int iConID)
@@ -373,8 +375,6 @@ void MistClient::OnServerStart(void)
 		m_pkTestobj->SetWorldPosV(Vector3(0,0.1,0));
 		MistLandLua::g_iCurrentPCID = m_pkTestobj->iNetWorkID;
 	}
-	//pkObjectMan->Test_CreateZones();
-
 
 
 	if(pkObjectMan->GetNumOfZones() != 0) {
@@ -386,6 +386,7 @@ void MistClient::OnServerStart(void)
 
 void MistClient::OnClientStart(void)
 {
+
 }
 
 bool MistClient::StartUp()	{ return true; }
