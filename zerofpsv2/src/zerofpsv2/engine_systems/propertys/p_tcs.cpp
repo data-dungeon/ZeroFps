@@ -34,6 +34,7 @@ P_Tcs::P_Tcs()
 	m_bOnGround=			false;
 	m_bActiveMoment =		true;
 	m_fBounce =				1;
+	m_fFriction = 			0.2;
 	
 	ResetGroupFlags();
 	ResetWalkGroupFlags();
@@ -132,6 +133,7 @@ void P_Tcs::Save(ZFIoInterface* pkPackage)
 	pkPackage->Write((void*)&m_fLegLength,sizeof(m_fLegLength),1);					
 	
 	pkPackage->Write((void*)&m_fBounce,sizeof(m_fBounce),1);							
+	pkPackage->Write((void*)&m_fFriction,sizeof(m_fFriction),1);							
 	pkPackage->Write((void*)&m_fMass,sizeof(m_fMass),1);						
 	pkPackage->Write((void*)&m_fInertia,sizeof(m_fInertia),1);						
 	pkPackage->Write((void*)&m_fAirFriction,sizeof(m_fAirFriction),1);						
@@ -158,7 +160,8 @@ void P_Tcs::Load(ZFIoInterface* pkPackage)
 	pkPackage->Read((void*)&m_bCharacter,sizeof(m_bCharacter),1);				
 	pkPackage->Read((void*)&m_fLegLength,sizeof(m_fLegLength),1);					
 
-	pkPackage->Read((void*)&m_fBounce,sizeof(m_fBounce),1);						
+	pkPackage->Read((void*)&m_fBounce,sizeof(m_fBounce),1);		
+	pkPackage->Read((void*)&m_fFriction,sizeof(m_fFriction),1);											
 	pkPackage->Read((void*)&m_fMass,sizeof(m_fMass),1);						
 	pkPackage->Read((void*)&m_fInertia,sizeof(m_fInertia),1);						
 	pkPackage->Read((void*)&m_fAirFriction,sizeof(m_fAirFriction),1);						
@@ -174,7 +177,7 @@ void P_Tcs::Load(ZFIoInterface* pkPackage)
 
 vector<PropertyValues> P_Tcs::GetPropertyValues()
 {
-	vector<PropertyValues> kReturn(15);
+	vector<PropertyValues> kReturn(16);
 
 	int dummy;
 
@@ -237,7 +240,11 @@ vector<PropertyValues> P_Tcs::GetPropertyValues()
 	kReturn[14].kValueName="bounce";
 	kReturn[14].iValueType=VALUETYPE_FLOAT;
 	kReturn[14].pkValue=(void*)&m_fBounce;	
-					
+
+	kReturn[15].kValueName="friction";
+	kReturn[15].iValueType=VALUETYPE_FLOAT;
+	kReturn[15].pkValue=(void*)&m_fFriction;	
+						
 	return kReturn;
 }
 
@@ -482,15 +489,30 @@ void P_Tcs::Draw()
 	glPopAttrib();
 }
 
-void P_Tcs::GenerateModelMatrix()
+void P_Tcs::GenerateModelMatrix() 
 {
+//	m_kModelMatrix.Identity();
+//	m_kModelMatrix.Scale(m_fScale,m_fScale,m_fScale);
+//	m_kModelMatrix *= GetObject()->GetWorldOriM();
+
+
 	m_kModelMatrix.Identity();
 	m_kModelMatrix.Scale(m_fScale,m_fScale,m_fScale);
+	
 	Matrix4 kMat;
 	kMat = m_pkObject->GetWorldRotM();
 	m_kModelMatrix *= kMat;	
 	m_kModelMatrix.Translate(m_pkObject->GetWorldPosV());		
 
+}
+
+Matrix4 P_Tcs::GetModelMatrix()
+{
+	Matrix4 kMat;
+	kMat.Identity();
+	kMat.Scale(m_fScale,m_fScale,m_fScale);
+	kMat *= GetObject()->GetWorldOriM();
+	return kMat;
 }
 
 void P_Tcs::ApplyForce(Vector3 kAttachPos,const Vector3& kForce,bool bLocal)
@@ -530,12 +552,26 @@ void P_Tcs::ApplyImpulsForce(Vector3 kAttachPos,const Vector3& kForce,bool bLoca
 			kAttachPos = kAttachPos - GetObject()->GetWorldPosV();
 				
 		m_kRotVelocity += kForce.Cross(kAttachPos) / m_fInertia;
+		
 	}
 }
 
 void P_Tcs::ApplyImpulsForce(const Vector3& kForce)
 {
 	m_kLinearVelocity +=  kForce / m_fMass;
+}
+
+
+Vector3 P_Tcs::GetVel(Vector3 kPos,bool bLocal)
+{
+	//are we using local cordinats or not, if so rotate it
+	if(bLocal)
+		kPos = GetObject()->GetLocalRotM().VectorTransform(kPos);	
+	else
+		kPos = kPos - GetObject()->GetWorldPosV();
+
+
+	return m_kLinearVelocity - m_kRotVelocity.Cross(kPos);
 }
 
 Property* Create_P_Tcs()

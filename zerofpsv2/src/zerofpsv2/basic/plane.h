@@ -18,32 +18,35 @@ class BASIC_API Plane
 // Constructors
 	Plane() { };
     Plane(const Plane& kPlane);
-    Plane(Vector3& kPoint0, Vector3& kPoint1, Vector3& kPoint2);
+    Plane(const Vector3& kPoint0, const Vector3& kPoint1, const Vector3& kPoint2);
 
 // Operators
 	Plane& operator=( const Plane& kIn );
 	
 // Methods
-		void Set(float fX, float fY, float fZ, float fInD) {
+		void Set(const float& fX, const float& fY, const float& fZ, const float& fInD) 
+		{
 			m_kNormal.Set(fX,fY,fZ);
 			m_fD = fInD;
 		}
 
-		void Set(Vector3 kNormal, float fInD) {
+		void Set(const Vector3& kNormal,const float& fInD) 
+		{
 			m_kNormal=kNormal;
 			m_fD = fInD;
 		}	
-		void Set(Vector3& kPoint0, Vector3& kPoint1, Vector3& kPoint2);
-		void Set(Vector3 kNormal, Vector3 kPos);
-	
-		bool PointInside(Vector3 kPoint);
-		bool SphereInside(Vector3 kCenter, float fRadius);
 		
-		float SphereTest(Vector3 kPoint,float fRadius);
-		float PointTest(Vector3 kPoint);
-		bool LineTest(Vector3 kP1,Vector3 kP2,Vector3* kColPos); 
+		void Set(const Vector3& kPoint0, const Vector3& kPoint1, const Vector3& kPoint2);
+		void Set(Vector3 kNormal, const Vector3& kPos);
+	
+		bool PointInside(const Vector3& kPoint);
+		bool SphereInside(const Vector3& kCenter, const float& fRadius);
+		
+		float SphereTest(const Vector3& kPoint,const float& fRadius);
+		float PointTest(const Vector3& kPoint);
+		bool LineTest(const Vector3& kP1,const Vector3& kP2,Vector3* kColPos); 
 
-		float SolveY(float X, float Z);
+		float SolveY(const float& X, const float& Z);
 
 };
 

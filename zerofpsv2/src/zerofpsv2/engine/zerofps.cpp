@@ -295,12 +295,15 @@ void ZeroFps::Run_EngineShell()
 	DevPrintf("common","Num Objects: %d", m_pkObjectMan->GetNumOfObjects());
 	DevPrintf("common","NextObjectID: %d", m_pkObjectMan->GetNextObjectID());
 	DevPrintf("common","Res Size: %d", m_pkResourceDB->GetResSizeInBytes());
-
+	
 	DevPrintf("common","shadows: %d", m_pkZShadow->GetCurrentShadows());
 	DevPrintf("common","active shadows: %d", m_pkZShadow->GetCurrentActiveShadows());
 	DevPrintf("common","shadow verts: %d", m_pkZShadow->GetCurrentVerts());
 	DevPrintf("common","shadow buffert: %d", m_pkZShadow->GetBuffertSize());
 
+	DevPrintf("common","Collissions: %d", m_pkTcs->GetNrOfCollissions());
+	
+	
 	// Update Local Input.
 	m_pkInput->Update();
 
@@ -383,7 +386,7 @@ void ZeroFps::Run_Client()
 	//JAG VET...den borde inte vara här..men för tillfället så får den vara det för jag behöver kunna göra debugutringingar i full FPS
 	//update new super duper rigid body physics engine deluxe
 	//m_pkPhysics_Engine->Update(GetFrameTime());	
-	//m_pkTcs->Update(GetFrameTime());	
+	m_pkTcs->Update(GetFrameTime());	
 
 
 	if(g_iLogRenderPropertys) {
@@ -437,7 +440,7 @@ void ZeroFps::Update_System(bool bServer)
 		
 		//update new super duper rigid body physics engine deluxe
 		m_pkPhysics_Engine->Update(m_pkObjectMan->GetSimDelta());	
-		m_pkTcs->Update(m_pkObjectMan->GetSimDelta());			
+		//m_pkTcs->Update(m_pkObjectMan->GetSimDelta());			
 		
 		//update network for client & server
 		m_pkNetWork->Run();				

@@ -150,7 +150,7 @@ class BASIC_API Vector3 {
 		bool NearlyEquals( const Vector3& v, const float e ) const;	///< True if this is == v within the range of +-e
 		bool NearlyZero( const float e ) const; 					///< True if this is <0,0,0> within the range of +-e
 		
-		Vector3 Proj( Vector3& v );									///< Projects v on this.
+		Vector3 Proj(const Vector3& v );									///< Projects v on this.
 		Vector3 Perp( Vector3& v );									///< Perp v on this.
 		float Angle( Vector3& v );									///< Angle (in rad) between two vectors. 
 		void Abs(void);												///< Do a fabs() on coo of this vectors.

@@ -33,7 +33,7 @@ class ENGINE_SYSTEMS_API Tcs : public ZFSubSystem
 		vector<P_Tcs*>					m_kBodys;		
 		vector<Tcs_collission>		m_kCollissions;		
 		
-		Matrix4				m_kModelMatrix;
+		//Matrix4				m_kModelMatrix;
 		Vector3				m_kLastLineTestColPos;
 		Vector3				m_kLastTestPos;
 		Vector3				m_kLastTestNormal;		
@@ -44,6 +44,8 @@ class ENGINE_SYSTEMS_API Tcs : public ZFSubSystem
 		
 		P_Tcs*				m_pkBodyCopy1;
 		P_Tcs*				m_pkBodyCopy2;		
+		
+		int					m_iNrOfCollissions;
 		
 		//main funktions
 		void UpdateForces();
@@ -65,6 +67,9 @@ class ENGINE_SYSTEMS_API Tcs : public ZFSubSystem
 		void TestSphereVsMesh(P_Tcs* pkBody1,P_Tcs* pkBody2,float fAtime);
 		bool CollideSphereVSMesh(P_Tcs* pkSphere,P_Tcs* pkMesh);			
 
+		void TestMeshVsMesh(P_Tcs* pkBody1,P_Tcs* pkBody2,float fAtime);
+		bool CollideMeshVSMesh(P_Tcs* pkSphere,P_Tcs* pkMesh);			
+		
 		//line tests
 		void UpdateLineTests();		
 		void HandleCharacterCollission(P_Tcs* pkCharacter,P_Tcs* pkBody);
@@ -73,17 +78,16 @@ class ENGINE_SYSTEMS_API Tcs : public ZFSubSystem
 		bool TestLineVSMesh(Vector3 kStart,Vector3 kDir,P_Tcs* pkB);
 		bool TestLineVSSphere(Vector3 kP1,Vector3 kP2,P_Tcs* pkB);
 
-		void GenerateModelMatrix(P_Tcs* pkMesh);		
-		
-		
 		bool TestSphereVSPolygon(Vector3* kVerts,P_Tcs* pkSphere);
 		bool TestSides(Vector3* kVerts,Vector3* pkNormal,Vector3 kPos,float fR);
+		bool TestLineVSPolygon(Vector3* pkPolygon,Vector3* pkPos1,Vector3* pkPos2,Plane* pkPlane);
 		
-		void GenerateModelMatrix();
+		//void GenerateModelMatrix();
+		//void GenerateModelMatrix(P_Tcs* pkMesh);		
 
 		
 		
-	public:
+	public:		
 		
 		Tcs();
 		~Tcs();
@@ -93,6 +97,7 @@ class ENGINE_SYSTEMS_API Tcs : public ZFSubSystem
 		void AddBody(P_Tcs* pkPTcs);
 		void RemoveBody(P_Tcs* pkPTcs);		
 
+		int GetNrOfCollissions() {return m_iNrOfCollissions;};
 
 		bool StartUp();
 		bool ShutDown();
