@@ -258,7 +258,7 @@ void PSystem::ResetParticle (int iParticleIndex, float fTimeOffset)
 	else
 		m_kParticles[iParticleIndex].m_kCenter.z = 0;
 
-	m_kParticles[iParticleIndex].m_kCenter += m_kPosition + m_kPosOffset;
+	m_kParticles[iParticleIndex].m_kCenter += m_kPosition + m_kRotation.VectorRotate(m_kPosOffset);
 
 	// Set current particle to active
 	m_kParticles[iParticleIndex].m_bActive = true;
