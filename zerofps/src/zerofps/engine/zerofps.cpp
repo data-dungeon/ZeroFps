@@ -148,7 +148,7 @@ void ZeroFps::Swap(void) {
 	//count FPS
 	m_fFrameTime=SDL_GetTicks()-m_fLastFrameTime;
 	m_fLastFrameTime=SDL_GetTicks();
-	m_iFps=int(1000/m_fFrameTime);	
+	m_iFps=int(1000.0/m_fFrameTime);	
 
 
 }

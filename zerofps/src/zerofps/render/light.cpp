@@ -10,8 +10,8 @@ LightSource::LightSource() {
 	
 		//light color
 	kDiffuse=Vector4(1,1,1,1);
-	kAmbient=Vector4(0,0,0,0);
-	kSpecular=Vector4(0,0,0,0);
+	kAmbient=Vector4(0,0,0,1);
+	kSpecular=Vector4(0,0,0,1);
 	
 	//spotlight
 	fCutoff=20;
@@ -29,7 +29,7 @@ LightSource::LightSource() {
 Light::Light() {
 	m_iNrOfLights=8;
 	glLightModelf(GL_LIGHT_MODEL_TWO_SIDE,0);
-//	glEnable(GL_LIGHTING);
+	glEnable(GL_LIGHTING);
 }
 
 void Light::SetCamera(Vector3 *kCamPos) {
@@ -52,10 +52,13 @@ void Light::Update() {
 	for(list<LightSource*>::iterator it=m_kLights.begin();it!=m_kLights.end();it++) {
 		
 		//always add light with priority >10
-		if((*it)->iPriority>=10)
-			if(m_kActiveLights.size()<m_iNrOfLights)
+		if((*it)->iPriority>=10){
+			if(m_kActiveLights.size()<m_iNrOfLights){
 				m_kActiveLights.push_back(*it);			
-				
+				continue;
+			}
+		}
+		
 		//if its a directional light add it if there is space
 		if((*it)->iType==DIRECTIONAL_LIGHT){
 			if(m_kActiveLights.size()<m_iNrOfLights)
@@ -75,9 +78,7 @@ void Light::Update() {
 	}
 	
 	//loop trough selected lightsources and enable them
-	int i=0;		
-	for(vector<LightSource*>::iterator itv=m_kActiveLights.begin();itv!=m_kActiveLights.end();itv++) {
- 				
+	for(int i=0;i<m_kActiveLights.size();i++) {
 		GLenum light;				
 		//wich light to change
   		switch(i) {
@@ -106,11 +107,127 @@ void Light::Update() {
 				light=GL_LIGHT7;
 				break; 						
   		}
-//		cout<<"LIGHT: "<<light;
+		glEnable(light);		
+			
+		glLightfv(light,GL_DIFFUSE, &m_kActiveLights[i]->kDiffuse[0]);
+		glLightfv(light,GL_SPECULAR,&m_kActiveLights[i]->kSpecular[0]);  
+		glLightfv(light,GL_AMBIENT, &m_kActiveLights[i]->kAmbient[0]);		
 		
-		glLightfv(light,GL_DIFFUSE,&(*itv)->kDiffuse[0]);
+		Vector4 temp;
+		float spotdir[]={0,0,-1};  		
+  		switch (m_kActiveLights[i]->iType) {
+  			case DIRECTIONAL_LIGHT:
+				temp=(*m_kActiveLights[i]->kRot)+m_kActiveLights[i]->kConstRot;  			
+  				temp[3]=0;			
+				glLightfv(light,GL_POSITION,&temp[0]);	    				
+  				
+  				//seset spot
+				glLightfv(light,GL_SPOT_DIRECTION,spotdir);		  				  		  				
+  				glLightf(light,GL_SPOT_EXPONENT,0);
+  				glLightf(light,GL_SPOT_CUTOFF,180);				  				
+  				
+  				break;
+  			case POINT_LIGHT:
+  				temp=(*m_kActiveLights[i]->kPos)+m_kActiveLights[i]->kConstPos;
+  				temp[3]=1;  						
+				glLightfv(light,GL_POSITION,&temp[0]);	  
+		  		
+  				
+		  		glLightf(light,GL_CONSTANT_ATTENUATION,m_kActiveLights[i]->fConst_Atten);
+		  		glLightf(light,GL_LINEAR_ATTENUATION,m_kActiveLights[i]->fLinear_Atten);
+		  		glLightf(light,GL_QUADRATIC_ATTENUATION,m_kActiveLights[i]->fQuadratic_Atten);
+  				
+  				//seset spot		  		
+				glLightfv(light,GL_SPOT_DIRECTION,spotdir);		  				  		  				
+  				glLightf(light,GL_SPOT_EXPONENT,0);
+  				glLightf(light,GL_SPOT_CUTOFF,180);				
+				  				
+  				break;
+  			case SPOT_LIGHT:
+  				temp=(*m_kActiveLights[i]->kPos)+m_kActiveLights[i]->kConstPos;
+  				temp[3]=1;  						
+				glLightfv(light,GL_POSITION,&temp[0]);	  
+				
+				temp=(*m_kActiveLights[i]->kRot)+m_kActiveLights[i]->kConstRot;
+				glLightfv(light,GL_SPOT_DIRECTION,&temp[0]);
+		  		
+		  		glLightf(light,GL_CONSTANT_ATTENUATION,m_kActiveLights[i]->fConst_Atten);
+		  		glLightf(light,GL_LINEAR_ATTENUATION,m_kActiveLights[i]->fLinear_Atten);
+		  		glLightf(light,GL_QUADRATIC_ATTENUATION,m_kActiveLights[i]->fQuadratic_Atten);
+  				
+  				glLightf(light,GL_SPOT_EXPONENT,m_kActiveLights[i]->fExp);
+  				glLightf(light,GL_SPOT_CUTOFF,m_kActiveLights[i]->fCutoff);  				
+  				
+  				break;  		
+  		}
+  		
+	}
+	
+	
+}
+
+void Light::TurnOffAll() {
+	glDisable(GL_LIGHT0);	
+	glDisable(GL_LIGHT1);	
+	glDisable(GL_LIGHT2);	
+	glDisable(GL_LIGHT3);	
+	glDisable(GL_LIGHT4);	
+	glDisable(GL_LIGHT5);	
+	glDisable(GL_LIGHT6);	
+	glDisable(GL_LIGHT7);		
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+		
+/*	
+	
+	int i=0;		
+	for(vector<LightSource*>::iterator itv=m_kActiveLights.begin();itv!=m_kActiveLights.end();itv++) {
+		GLenum light;				
+		//wich light to change
+  		switch(i) {
+  			case 0:
+				light=GL_LIGHT0;
+				break; 		
+  			case 1:
+				light=GL_LIGHT1;
+				break; 		
+  			case 2:
+				light=GL_LIGHT2;
+				break; 		
+  			case 3:
+				light=GL_LIGHT3;
+				break; 		
+  			case 4:
+				light=GL_LIGHT4;
+				break; 		
+  			case 5:
+				light=GL_LIGHT5;
+				break; 		
+  			case 6:
+				light=GL_LIGHT6;
+				break; 		
+  			case 7:
+				light=GL_LIGHT7;
+				break; 						
+  		}
+		cout<<"LIGHT: "<<light<<endl;
+
+		
+		glLightfv(light,GL_DIFFUSE, &(*itv)->kDiffuse[0]);
 		glLightfv(light,GL_SPECULAR,&(*itv)->kSpecular[0]);  
-  		glLightfv(light,GL_AMBIENT,&(*itv)->kAmbient[0]);		
+		glLightfv(light,GL_AMBIENT, &(*itv)->kAmbient[0]);		
 		
 		
 		Vector4 temp;
@@ -149,31 +266,7 @@ void Light::Update() {
   		}
   		
 		glEnable(light);
-		
-   	i++;	
+   	i++;	 						
+
 	}
-
-}
-
-void Light::TurnOffAll() {
-	glDisable(GL_LIGHT0);	
-	glDisable(GL_LIGHT1);	
-	glDisable(GL_LIGHT2);	
-	glDisable(GL_LIGHT3);	
-	glDisable(GL_LIGHT4);	
-	glDisable(GL_LIGHT5);	
-	glDisable(GL_LIGHT6);	
-	glDisable(GL_LIGHT7);		
-}
-
-
-
-
-
-
-
-
-
-
-
-
+*/

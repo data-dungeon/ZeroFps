@@ -61,6 +61,22 @@ void Test::OnInit(void) {
 		spot->fConst_Atten=0;
 		spot->fQuadratic_Atten=0.001;
 		spot->iType=SPOT_LIGHT;			
+		spot->iPriority=0;
+
+	LightSource *spot2=new LightSource();
+	m_kSpotpos=new Vector3(0,0,0);
+//	Vector3 *spotpos2=new Vector3(55,50,50);
+	Vector3 *spotrot2=new Vector3(0,-1,0);	
+		spot2->kPos=m_kSpotpos;
+		spot2->kRot=spotrot2;
+		spot2->kDiffuse=Vector4(6,0,0,1);
+		spot2->kAmbient=Vector4(0,0,0,0);		
+		spot2->fCutoff=20;	
+		spot2->fExp=20;
+		spot2->fConst_Atten=0;
+		spot2->fQuadratic_Atten=0.001;
+		spot2->iType=SPOT_LIGHT;			
+		spot2->iPriority=0;
 
 
 	LightSource *sol=new LightSource;	
@@ -69,13 +85,17 @@ void Test::OnInit(void) {
 		sol->kRot=solrot;
 		sol->kPos=solpos;		
 		sol->kDiffuse=Vector4(.9,0.9,0.9,1);
-		sol->kAmbient=Vector4(0,0,0,0);
+		sol->kAmbient=Vector4(0.01,0.01,0.01,0.01);
 		sol->iType=POINT_LIGHT;			
 		sol->iPriority=10;
 
-
-	pkLight->Add(spot);
+	pkLight->Add(spot2);			
+	pkLight->Add(spot);	
 	pkLight->Add(sol);
+	
+
+
+
 
 }
 
@@ -87,9 +107,9 @@ void Test::OnIdle(void) {
 	pkRender->DrawHMlod(test,*pkFps->m_kCamPos,pkFps->m_iFps);		
 
 
-//	m_kSolpos->x=sin(SDL_GetTicks()/4000.0)*2000+512;
-//	m_kSolpos->y=cos(SDL_GetTicks()/4000.0)*2000;
-//	m_kSolpos->z=512;
+	m_kSpotpos->x=sin(SDL_GetTicks()/1000.0)*50.0+80;
+	m_kSpotpos->z=cos(SDL_GetTicks()/1000.0)*50.0+80;
+	m_kSpotpos->y=50;
 
 /*	glPushMatrix();
 		glTranslatef(m_kSolpos->x,m_kSolpos->y,m_kSolpos->z);
