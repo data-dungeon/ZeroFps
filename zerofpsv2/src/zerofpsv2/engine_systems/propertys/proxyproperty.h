@@ -13,7 +13,8 @@
 
 using namespace std;
 
-enum PROXYPROPERTY_AKTIONS{
+enum PROXYPROPERTY_AKTIONS
+{
 	UPDATESTATUS,
 	WAKEUP
 };
@@ -44,6 +45,25 @@ class ENGINE_SYSTEMS_API ProxyProperty: public Property {
 };
 
 Property* Create_ProxyProperty();
+
+
+class ENGINE_SYSTEMS_API TrackProperty: public Property {
+	private:
+		ObjectManager*		m_pkOBjM;
+		ZeroFps*				m_pkFps;
+		float					m_fNextMove;
+
+		
+	public:
+		void Update();
+		TrackProperty();
+		~TrackProperty();
+		void CloneOf(Property* pkProperty) { }
+};
+
+Property* Create_TrackProperty();
+
+
 
 #endif
 

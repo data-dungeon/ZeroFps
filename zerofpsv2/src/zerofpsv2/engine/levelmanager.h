@@ -40,16 +40,16 @@ class ENGINE_API LevelManager : public ZFSubSystem {
 		string				m_kCurrentMapDir;
 		WorldInfoProperty m_kWIP;
 
-		list<Object*> 		m_kTrackedObjects;		
-		vector<Object*> 	m_kZones;
+//		list<Object*> 		m_kTrackedObjects;		
+//		vector<Object*> 	m_kZones;
 
 		Object*				CreateHeightMapObject(HeightMap* m_pkMap);
 		
-		bool					m_bDrawZones;
+//		bool					m_bDrawZones;
 
 	public:
 		LevelManager();
-		void CreateZones();
+//		void CreateZones();
 		bool LoadLevel(const char* acName);
 		bool LoadLevelHmapOnly(const char* acFile);
 		bool SaveLevel(const char* acName);
@@ -79,17 +79,17 @@ class ENGINE_API LevelManager : public ZFSubSystem {
 		void SetAmbientColor(Vector3 kColor);
 		void ChangeLandscapeFillMode(PolygonMode eMode);
 		
-		void AddTracker(Object* kObject);
-		void RemoveTracker(Object* kObject);
-		int GetNrOfTrackedObjects();
-		list<Object*>* GetTrackerList();
-		void ClearTrackers();
+//		void AddTracker(Object* kObject);
+//		void RemoveTracker(Object* kObject);
+//		int GetNrOfTrackedObjects();
+//		list<Object*>* GetTrackerList();
+//		void ClearTrackers();
 
-		void UpdateZones();
-		void EnableZone(int xp,int zp,Vector3 &kPos);
-		Object* GetClosestZone(Vector3 &kPos);
+//		void UpdateZones();
+//		void EnableZone(int xp,int zp,Vector3 &kPos);
+//		Object* GetClosestZone(Vector3 &kPos);
 
-		void DrawZones();
+//		void DrawZones();
 
 		const string GetMapBaseDir() { return m_kMapBaseDir; }
 

@@ -8,8 +8,10 @@ class object
 		parent object
 		set MadProperty m_kMadFile /data/mad/rts/unit/ecrew.mad
 	
-
-
+	class TrackObject
+		parent object
+		add P_Primitives3D
+		add TrackProperty
 
 	class ZeroRTSHull
 		parent object
@@ -25,3 +27,4 @@ class object
 		parent object
 		set MadProperty m_kMadFile /data/mad/rts/unit/gun.mad
 	
+

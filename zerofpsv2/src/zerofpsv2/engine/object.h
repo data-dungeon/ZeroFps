@@ -249,6 +249,7 @@ class ENGINE_API Object
 		void DeleteAllChilds();										///< Remove all childs from this object.
 		void GetAllObjects(vector<Object*> *pakObjects);		///< Return this + all childs.
 		void AttachToClosestZone();								///< Attacth to closest ZoneObject.
+		void AttachToZone();											///< Attacth to ZoneObject if inside any.
 
 		// NetWork/Demo/Save/Load Code.
 		bool IsNetWork();												// True if this object has any netactive propertys.

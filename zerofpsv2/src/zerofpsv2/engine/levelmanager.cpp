@@ -19,12 +19,12 @@ LevelManager::LevelManager(): ZFSubSystem("LevelManager")
 	m_iZpr					=	2;
 	m_fZoneDistance		=	64;
 	m_kMapBaseDir			=	"../data/maps";
-	m_bDrawZones			= false;
+//	m_bDrawZones			= false;
 	
 	RegisterVariable("l_zoneradius", &m_fZoneRadius,CSYS_FLOAT);
 	RegisterVariable("l_Showdecorations", &m_iShowDecorations,CSYS_INT);
 	RegisterVariable("l_decorationstep", &m_iDecorationStep,CSYS_INT);
-	RegisterVariable("l_showzones", &m_bDrawZones, CSYS_BOOL);
+//	RegisterVariable("l_showzones", &m_bDrawZones, CSYS_BOOL);
 
 //	m_pkCmd->Add(&m_fZoneRadius,"l_zoneradius",type_float);		
 //	m_pkCmd->Add(&m_iShowDecorations,"l_Showdecorations",type_int);		
@@ -101,9 +101,9 @@ void LevelManager::Clear()
 
 void LevelManager::ClearObjects()
 {
-	ClearTrackers();
+//	ClearTrackers();
 	m_pkObjectMan->Clear();
-	m_kZones.clear();
+//	m_kZones.clear();
 
 //	m_pkHeightMapObject=new HeightMapObject(m_pkMap);		
 	m_pkHeightMapObject=CreateHeightMapObject(m_pkMap);
@@ -124,7 +124,7 @@ void LevelManager::CreateNew(int iSize)
 	
 }
 
-void LevelManager::CreateZones()
+/*void LevelManager::CreateZones()
 {
 	m_kZones.clear();
 	
@@ -164,8 +164,8 @@ void LevelManager::CreateZones()
 			}
 		}
 	}	
-*/	
-}
+	
+}*/
 
 bool LevelManager::LoadLevelHmapOnly(const char* acFile)
 {
@@ -260,7 +260,7 @@ bool LevelManager::LoadLevel(const char* acFile)
 */	
 	
 	//create zoneobjects
-	CreateZones();		
+//	CreateZones();		
 	
 	//load objects
 	if(!m_pkObjectMan->LoadAllObjects(kZolfile .c_str())){
@@ -525,6 +525,8 @@ void LevelManager::SkyBox(const char* acHor,const char* acTop,Vector3 kRotate)
 	
 }
 
+/*
+
 list<Object*>* LevelManager::GetTrackerList()
 {
 	return &m_kTrackedObjects;
@@ -549,7 +551,7 @@ void LevelManager::ClearTrackers()
 {
 	m_kTrackedObjects.clear();
 }
-
+*/
 void LevelManager::SetMoonColor(Vector3 kColor)
 {
 	m_bMoon->kDiffuse=kColor;
@@ -568,7 +570,7 @@ void LevelManager::SetAmbientColor(Vector3 kColor)
 	m_kWIP.m_kAmbientColor=kColor;	
 }
 
-
+/*
 void LevelManager::UpdateZones()
 {
 //	float zpr=m_fZoneRadius/m_iZpr;
@@ -581,7 +583,7 @@ void LevelManager::UpdateZones()
 		return;
 
 	for(unsigned int i=0;i<m_kZones.size();i++)
-		m_kZones[i]->GetUpdateStatus() = /*UPDATE_NONE*/UPDATE_DYNAMIC;	//UPDATE_DYNAMIC | UPDATE_PLAYERS;	
+		m_kZones[i]->GetUpdateStatus() = UPDATE_DYNAMIC;	//UPDATE_DYNAMIC | UPDATE_PLAYERS;	UPDATE_NONE
 
 
 
@@ -648,7 +650,7 @@ Object* LevelManager::GetClosestZone(Vector3 &kPos)
 	return m_kZones[x*tot+z];		
 
 }
-
+*/
 
 Object* LevelManager::CreateHeightMapObject(HeightMap* pkMap)
 {
@@ -670,6 +672,7 @@ Object* LevelManager::CreateHeightMapObject(HeightMap* pkMap)
 	return ob;
 };
 
+/*
 void LevelManager::DrawZones()
 {
 	if(!m_bDrawZones)
@@ -681,7 +684,7 @@ void LevelManager::DrawZones()
 		else 
 			m_pkRender->DrawColorBox(m_kZones[i]->GetWorldPosV(),Vector3::ZERO, Vector3(1,1,1),Vector3(1,0,0));
 		}
-}
+}*/
 
 
 const string LevelManager::GetLogFileFullName()

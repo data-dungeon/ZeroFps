@@ -4,7 +4,9 @@
 #include "netslaveobject.h"
 #include "../basic/zfobjectmanger.h"
 #include "../basic/simplescript.h"
- 
+#include "../engine_systems/common/zoneobject.h"
+#include "fh.h"
+
 ObjectManager::ObjectManager() 
 : ZFSubSystem("ObjectManager") 
 {
@@ -12,10 +14,13 @@ ObjectManager::ObjectManager()
 	m_bUpdate					= true;
 	m_iTotalNetObjectData	= 0;
 	m_iNumOfNetObjects		= 0;
+	m_bDrawZones				= false;
 
 	Register_Cmd("o_logtree",FID_LOGOHTREE);	
 	Register_Cmd("o_dumpp",FID_LOGACTIVEPROPERTYS);	
 	Register_Cmd("sendmsg",FID_SENDMESSAGE, CSYS_FLAG_SRC_ALL, "sendmsg name id",2);	
+
+	RegisterVariable("l_showzones", &m_bDrawZones, CSYS_BOOL);
 }
 
 bool ObjectManager::StartUp()	
@@ -985,5 +990,205 @@ Object* ObjectManager::CloneObject(int iNetID)
 	Object* pkObjClone =	CreateObject();
 	pkObjClone->MakeCloneOf(pkObjOrginal);
 	return pkObjClone;
+}
+
+
+
+void ObjectManager::Test_CreateZones()
+{
+	m_kZones.clear();
+	int y = 0;
+	int iZonesSize = 10;
+	int iZonesSide = 100;
+
+	MazeGen GaaMaze;
+	GaaMaze.Load("maze.bmp");
+
+	for(int x=0; x<iZonesSide; x++) {
+		for(int z=0; z<iZonesSide; z++) {
+			if(GaaMaze.aaiMaze[x][z] == 1) {
+				ZoneObject *object = new ZoneObject();
+				object->SetWorldPosV(Vector3(x*iZonesSize,y,z*iZonesSize));
+				object->SetParent(GetWorldObject());				
+				object->GetUpdateStatus()=UPDATE_DYNAMIC;
+				m_kZones.push_back(object);
+				}
+		}
+	}
+
+	AutoConnectZones();
+	int ispya = 2;
+}
+
+void ObjectManager::Test_DrawZones()
+{
+	if(!m_bDrawZones)
+		return;
+
+	Render* m_pkRender=static_cast<Render*>(GetSystem().GetObjectPtr("Render"));
+
+	for(unsigned int i=0;i<m_kZones.size();i++) {
+		Vector3 kMin = m_kZones[i]->GetWorldPosV() - (m_kZones[i]->m_kSize * 0.5);
+		Vector3 kMax = m_kZones[i]->GetWorldPosV() + (m_kZones[i]->m_kSize * 0.5);
+
+		if(m_kZones[i]->m_bActive)
+			m_pkRender->DrawAABB( kMin,kMax, Vector3(1,0,0) );
+		else 
+			m_pkRender->DrawAABB( kMin,kMax, Vector3(0,1,0) );
+			//m_pkRender->DrawColorBox(m_kZones[i]->GetWorldPosV(),Vector3::ZERO, m_kZones[i]->m_kSize,Vector3(0,1,0));
+
+/*
+		if(m_kZones[i]->GetUpdateStatus() & UPDATE_STATIC)
+			m_pkRender->DrawColorBox(m_kZones[i]->GetWorldPosV(),Vector3::ZERO, m_kZones[i]->m_kSize,Vector3(0,1,0));
+		else 
+			//m_pkRender->DrawColorBox(m_kZones[i]->GetWorldPosV(),Vector3::ZERO, m_kZones[i]->m_kSize,Vector3(1,0,0));
+			m_pkRender->DrawAABB( kMin,kMax, Vector3(1,0,0) );
+*/
+		}
+
+}
+
+void ObjectManager::AutoConnectZones()
+{
+	Vector3 kCenterPos;
+	Vector3 kCheckPos;
+	ZoneObject* pkZone;
+	
+	vector<Vector3>	kAutoConnectDirs;
+	kAutoConnectDirs.push_back(Vector3(10,0,0));
+	kAutoConnectDirs.push_back(Vector3(-10,0,0));
+	kAutoConnectDirs.push_back(Vector3(0,10,0));
+	kAutoConnectDirs.push_back(Vector3(0,-10,0));
+	kAutoConnectDirs.push_back(Vector3(0,0,10));
+	kAutoConnectDirs.push_back(Vector3(0,0,-10));
+
+	// For each Zone.
+	for(unsigned int i=0;i<m_kZones.size();i++) {
+		kCenterPos = m_kZones[i]->GetWorldPosV();
+
+		// For each possible zone around this one.
+		for(int iDir = 0; iDir < kAutoConnectDirs.size(); iDir++) {
+			kCheckPos = kCenterPos + kAutoConnectDirs[iDir];
+			pkZone = GetZone(kCheckPos);
+			// If a zone add a link.
+			if(pkZone && (m_kZones[i] != pkZone)) {
+				cout << "Connecting Zone" << endl;
+				m_kZones[i]->m_kZoneLinks.push_back(pkZone);
+				}
+
+			}
+
+		}
+}
+
+Vector3 ObjectManager::GetZoneCenter(int iZoneNum)
+{
+	return m_kZones[iZoneNum]->GetWorldPosV();
+}
+
+int ObjectManager::GetNumOfZones()
+{
+	return m_kZones.size();
+}
+
+list<Object*>* ObjectManager::GetTrackerList()
+{
+	return &m_kTrackedObjects;
+}
+
+void ObjectManager::AddTracker(Object* kObject)
+{
+	m_kTrackedObjects.push_back(kObject);
+}
+
+void ObjectManager::RemoveTracker(Object* kObject)
+{
+	m_kTrackedObjects.remove(kObject);
+}
+
+int ObjectManager::GetNrOfTrackedObjects()
+{
+	return m_kTrackedObjects.size();
+}
+
+void ObjectManager::ClearTrackers()
+{
+	m_kTrackedObjects.clear();
+}
+
+ZoneObject* ObjectManager::GetZone(Vector3 kPos)
+{
+	// Set All Zones as inactive.
+	for(unsigned int iZ=0;iZ<m_kZones.size();iZ++) {
+		if(m_kZones[iZ]->IsInside(kPos))
+			return m_kZones[iZ];
+		}
+
+	return NULL;
+}
+
+ZoneObject* ObjectManager::GetZone(Object* PkObject)
+{
+	// Set All Zones as inactive.
+	for(unsigned int iZ=0;iZ<m_kZones.size();iZ++) {
+		if(m_kZones[iZ]->IsInside(PkObject->GetWorldPosV()))
+			return m_kZones[iZ];
+		}
+
+	return NULL;
+}
+
+void ObjectManager::UpdateZones()
+{
+	float fTime = m_pkZeroFps->GetGameTime();
+	ZoneObject* pkZone;
+	ZoneObject* pkStartZone;
+
+
+	int iTrackerLOS = 5;
+
+	// Set All Zones as inactive.
+	for(unsigned int iZ=0;iZ<m_kZones.size();iZ++) {
+		m_kZones[iZ]->m_bActive					= false;
+		m_kZones[iZ]->m_fInactiveTime			= fTime;
+		m_kZones[iZ]->m_iRange	= 1000;
+		}
+
+	vector<ZoneObject*>	m_kFloodZones;
+
+	// For each tracker.
+	for(list<Object*>::iterator iT=m_kTrackedObjects.begin();iT!=m_kTrackedObjects.end();iT++) {
+		// Find Active Zone.
+		pkStartZone = GetZone((*iT));
+		if(pkStartZone) {
+			pkStartZone->m_iRange = 0;
+			m_kFloodZones.push_back(pkStartZone);
+			}
+
+		while(m_kFloodZones.size()) {
+			pkZone = m_kFloodZones.back();
+			m_kFloodZones.pop_back();
+
+			pkZone->m_bActive = true;
+			int iRange = pkZone->m_iRange + 1;
+
+			if(iRange < iTrackerLOS) {
+				for(int i=0; i<pkZone->m_kZoneLinks.size(); i++) {
+					if(pkZone->m_kZoneLinks[i]->m_iRange < iRange)	continue;
+					pkZone->m_kZoneLinks[i]->m_iRange = iRange;
+					if(pkZone->m_kZoneLinks[i]->m_iRange < iTrackerLOS)
+						m_kFloodZones.push_back(pkZone->m_kZoneLinks[i]);
+					}
+				}
+			}
+		}
+
+	// Flood Zones in rage to active.
+
+	// Age Inactive Zones.
+
+	// If Inactive Zone to old let it die.
+
+
 }
 

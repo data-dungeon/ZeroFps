@@ -8,10 +8,29 @@ ZoneObject::ZoneObject()
 	
 	m_pkFps = static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
 
-	AddProperty("LightUpdateProperty");
+//	AddProperty("P_Primitives3D");
 
 	m_eRole			= NETROLE_AUTHORITY;
 	m_eRemoteRole	= NETROLE_NONE;
+
+	m_kSize.Set(10,10,10);
+	m_bActive = true;
+}
+
+bool ZoneObject::IsInside(Vector3 kPos)
+{
+	Vector3 kMin = GetWorldPosV() - (m_kSize * 0.5);
+	Vector3 kMax = GetWorldPosV() + (m_kSize * 0.5);
+
+	if(kPos.x < kMin.x)	return false;
+	if(kPos.y < kMin.y)	return false;
+	if(kPos.z < kMin.z)	return false;
+
+	if(kPos.x > kMax.x)	return false;
+	if(kPos.y > kMax.y)	return false;
+	if(kPos.z > kMax.z)	return false;
+
+	return true;
 }
 
 

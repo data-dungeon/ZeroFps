@@ -262,6 +262,7 @@ void ZeroTank::Input()
 	if(pkInput->Pressed(KEY_1))	m_pkZeroTank_Modify = m_pkZeroTankHull;
 	if(pkInput->Pressed(KEY_2))	m_pkZeroTank_Modify = m_pkZeroTankTower;
 	if(pkInput->Pressed(KEY_3))	m_pkZeroTank_Modify = m_pkZeroTankGun;
+	if(pkInput->Pressed(KEY_4))	m_pkZeroTank_Modify = m_pkZeroTankTrack;
 
 	static float fRotate = 0;
 	static Vector3 kRotate(0,0,0); 
@@ -273,6 +274,8 @@ void ZeroTank::Input()
 
 		if(pkInput->Pressed(KEY_H))	newpos.x +=	fSpeedScale;			
 		if(pkInput->Pressed(KEY_F))	newpos.x -=	fSpeedScale;			
+		if(pkInput->Pressed(KEY_R))	newpos.y +=	fSpeedScale;			
+		if(pkInput->Pressed(KEY_Y))	newpos.y -=	fSpeedScale;			
 		if(pkInput->Pressed(KEY_T))	newpos.z +=	fSpeedScale;			
 		if(pkInput->Pressed(KEY_G))	newpos.z -=	fSpeedScale;			
 
@@ -531,8 +534,18 @@ void ZeroTank::OnServerStart(void)
 		m_pkZeroTankGun->SetLocalPosV(Vector3(-1.1,0.4,0));
 	}
 
+	for(int i=0; i<5; i++) {
+		m_pkZeroTankTrack = pkObjectMan->CreateObjectByArchType("TrackObject");
+		if(m_pkZeroTankTrack) {
+			int iRandZone =  rand() % pkObjectMan->GetNumOfZones();
+			m_pkZeroTankTrack->SetWorldPosV( pkObjectMan->GetZoneCenter(iRandZone) );
+			m_pkZeroTankTrack->AttachToClosestZone();
+			pkObjectMan->AddTracker(m_pkZeroTankTrack);
 
+		}
+	}
 
+	pkConsole->Printf("Num of Zones: %d",pkObjectMan->GetNumOfZones());
 
 	//add server info property
 	if(!pkObjectMan->GetObject("A ServerInfoObject"))

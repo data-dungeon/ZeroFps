@@ -73,6 +73,7 @@ class ZeroTank :public Application, public GuiApp {
 		Object*				m_pkZeroTankHull;
 		Object*				m_pkZeroTankTower;
 		Object*				m_pkZeroTankGun;
+		Object*				m_pkZeroTankTrack;			// Owned by Vim
 
 		Object*				m_pkZeroTank_Modify;
 

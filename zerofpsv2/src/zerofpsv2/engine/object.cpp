@@ -389,6 +389,12 @@ void Object::AttachToClosestZone()
 	SetParent(minobject);
 }
 
+void Object::AttachToZone()
+{
+
+}
+
+
 
 // NetWork/Demo/Save/Load Code.
 /* 

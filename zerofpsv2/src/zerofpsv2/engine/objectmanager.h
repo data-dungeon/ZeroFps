@@ -13,6 +13,7 @@ class ObjectDescriptor;
 class ZeroFps;
 class GameMessage;
 class NetWork;
+class ZoneObject;
 
 class ENGINE_API ObjectManager : public ZFSubSystem{
 	private:
@@ -56,6 +57,8 @@ class ENGINE_API ObjectManager : public ZFSubSystem{
 		void TESTVIM_LoadArcheTypes(char* szFileName);
 
 		NetWork*				m_pkNetWork;
+
+		bool					m_bDrawZones;
 
 	public:
 		int	m_iForceNetUpdate;					
@@ -151,9 +154,44 @@ class ENGINE_API ObjectManager : public ZFSubSystem{
 		bool StartUp();
 		bool ShutDown();
 		bool IsValid();
+
+		// Zones
+		vector<ZoneObject*> 	m_kZones;
+		int GetNumOfZones();
+		void Test_CreateZones();
+		void Test_DrawZones();
+		void UpdateZones();
+		ZoneObject* GetZone(Object* PkObject);
+		ZoneObject* GetZone(Vector3 kPos);
+		void AutoConnectZones();
+		Vector3 GetZoneCenter(int iZoneNum);
+
+		// Trackers
+		list<Object*> 			m_kTrackedObjects;	
+
+		void AddTracker(Object* kObject);
+		void RemoveTracker(Object* kObject);
+		int GetNrOfTrackedObjects();
+		list<Object*>* GetTrackerList();
+		void ClearTrackers();
+		
+
 };
 
 #endif
+
+
+//		void AddTracker(Object* kObject);
+//		void RemoveTracker(Object* kObject);
+//		int GetNrOfTrackedObjects();
+//		list<Object*>* GetTrackerList();
+//		void ClearTrackers();
+
+//		void UpdateZones();
+//		void EnableZone(int xp,int zp,Vector3 &kPos);
+//		Object* GetClosestZone(Vector3 &kPos);
+
+//		void DrawZones();
 
 
 

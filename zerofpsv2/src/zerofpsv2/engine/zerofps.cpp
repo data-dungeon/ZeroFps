@@ -161,6 +161,8 @@ bool ZeroFps::StartUp()
 
 	m_kFpsGraph.SetMinMax(0,1000);		
 	m_kFpsGraph.SetSize(100,100,100);
+
+	this->m_pkObjectMan->Test_CreateZones();
 	return true;
 }
 
@@ -295,7 +297,7 @@ void ZeroFps::Run_Client()
 		
 
 	//update zones
-	m_pkLevelMan->UpdateZones();	
+	m_pkObjectMan->UpdateZones();	
 
 	//   _---------------------------------- fulhack deluxe 
 	UpdateCamera();
@@ -307,7 +309,8 @@ void ZeroFps::Run_Client()
 		m_pkObjectMan->DumpActiverPropertysToLog("PROPERTY_TYPE_RENDER,PROPERTY_SIDE_CLIENT,true");
 		g_iLogRenderPropertys = 0;
 		}
-	m_pkLevelMan->DrawZones();
+//	m_pkLevelMan->DrawZones();
+	m_pkObjectMan->Test_DrawZones();
 
 	//update openal sound system			
 	Vector3 up=(m_pkCamera->GetRot()-Vector3(0,90,0));//.AToU();
@@ -1009,6 +1012,7 @@ void ZeroFps::RegisterPropertys()
 	m_pkPropertyFactory->Register("HMRP2",Create_HMRP2);			
 	m_pkPropertyFactory->Register("CameraProperty",Create_CameraProperty);			
 	m_pkPropertyFactory->Register("ProxyProperty",Create_ProxyProperty);				
+	m_pkPropertyFactory->Register("TrackProperty",Create_TrackProperty);				
 	m_pkPropertyFactory->Register("LightUpdateProperty",Create_LightUpdateProperty);					
 	m_pkPropertyFactory->Register("WorldInfoProperty",Create_WorldInfoProperty);						
 	m_pkPropertyFactory->Register("AutoParentProperty",Create_AutoParentProperty);							

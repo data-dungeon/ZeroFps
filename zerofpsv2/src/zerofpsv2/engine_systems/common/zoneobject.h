@@ -7,9 +7,18 @@
 class ENGINE_SYSTEMS_API ZoneObject: public Object {
 	private:
 		ZeroFps *m_pkFps;
+
 		
 	public:
+		vector<ZoneObject*>	m_kZoneLinks;
+
+		Vector3	m_kSize;
+		float		m_fInactiveTime;
+		bool		m_bActive;
+		int		m_iRange;						// Range to tracker i num of zones.
+
 		ZoneObject();
+		bool IsInside(Vector3 kPos);
 		void SetRadius(float fRadius);
 };
 

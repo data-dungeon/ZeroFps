@@ -55,6 +55,29 @@ public:
 	void	SetSampleColor(float fValue);
 };
 
+class MazeGen
+{
+public:
+	int iSizeX, iSizeY;
+	MazeGen();
+	~MazeGen();
+
+	void  SetSize(int x, int y);
+	void  Generate(void);
+	void Clear(void);
+	void Random(void);
+
+	int  aaiMaze[100][100];
+
+	void Set(int iX, int iY, int iValue);
+	void PlaceRoom(int x, int y, int sizex, int sizey);
+	void CreateRooms();
+	void CreatePaths();
+
+	void Load(char* szFileName);
+};
+
+
 /*** End: Vim ***/
 
 

@@ -13,6 +13,7 @@
 #include "fh.h"
 #include "zerofps.h"
 #include "../basic/zfobjectmanger.h"
+#include "../basic/image.h"
 
 /*** Start: Vim ***/
 
@@ -186,5 +187,104 @@ bool AxisAlignedBBox::InContact(Vector3 kCenter, float fRadius)
 	return d <= fRadius * fRadius;
 }
 
-/*** End: Vim ***/
+// Maze Generation Code.
 
+MazeGen::MazeGen()
+{
+//	piaa_Maze = NULL;
+	iSizeX = 100;
+	iSizeY = 100;
+	Clear();
+}
+
+MazeGen::~MazeGen()
+{
+//	if(piaa_Maze)
+//		delete [] piaa_Maze;
+}
+
+void MazeGen::SetSize(int x, int y)
+{
+//	piaa_Maze = new int [x][y];
+	Clear();
+}
+
+void MazeGen::Clear(void)
+{
+	for(int x=0; x < iSizeX; x++) {
+		for(int y=0; y < iSizeY; y++) {
+			aaiMaze[x][y] = 0;
+			}
+		}
+}
+
+void MazeGen::Set(int iX, int iY, int iValue)
+{
+	if(iX < 0)	return;
+	if(iX >= iSizeX)	return;
+	if(iY < 0)	return;
+	if(iY >= iSizeY)	return;
+
+	aaiMaze[iX][iY] = iValue;
+}
+
+void MazeGen::PlaceRoom(int x, int y, int sizex, int sizey)
+{
+	for(int ix = 0; ix < sizex; ix++) {
+		for(int iy = 0; iy < sizey; iy++) {
+			Set(x + ix, y + iy, 1);
+			}
+		}
+}
+
+void MazeGen::CreateRooms()
+{
+	Vector3 kRoomPos;
+	Vector3 kRoomSize;
+
+	for(int i=0; i< 100; i++) {
+		kRoomPos.Set(rand() % 100, rand() % 100,0);
+		kRoomSize.Set(rand() % 5 + 1, rand() % 5 + 1,0);
+		PlaceRoom(kRoomPos.x, kRoomPos.y, kRoomSize.x, kRoomSize.y);
+		}
+}
+
+void MazeGen::CreatePaths()
+{
+}
+
+void MazeGen::Load(char* szFileName)
+{
+	Image kImg;
+	kImg.load(szFileName);
+
+	for(int x=0; x<kImg.width; x++) {
+		for(int y=0; y<kImg.height; y++) {
+			if(kImg.pixels[y*kImg.width+x].r > 128)
+				Set(x,y,1);
+			}
+
+		}
+}
+
+
+void MazeGen::Generate(void)
+{
+	Clear();
+	CreateRooms();
+
+}
+
+void MazeGen::Random(void)
+{
+	for(int x=0; x < iSizeX; x++) {
+		for(int y=0; y < iSizeY; y++) {
+			if((rand() % 100) < 20)
+				aaiMaze[x][y] = 1;
+			}
+		}
+}
+
+
+
+/*** End: Vim ***/

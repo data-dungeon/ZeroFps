@@ -1,4 +1,5 @@
 #include "proxyproperty.h"
+#include "../common/zoneobject.h"
 
 ProxyProperty::ProxyProperty() 
 {
@@ -8,10 +9,10 @@ ProxyProperty::ProxyProperty()
 	m_iType=PROPERTY_TYPE_RENDER;
 	m_iSide=PROPERTY_SIDE_CLIENT;
 
-	m_pkFps=static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));		
-	m_pkLevelMan=static_cast<LevelManager*>(g_ZFObjSys.GetObjectPtr("LevelManager"));			
+	m_pkFps			= static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));		
+	m_pkLevelMan	= static_cast<LevelManager*>(g_ZFObjSys.GetObjectPtr("LevelManager"));			
 	
-	m_pkTrackers=m_pkLevelMan->GetTrackerList();
+//	m_pkTrackers=m_pkLevelMan->GetTrackerList();
 }
 
 void ProxyProperty::Update() 
@@ -19,9 +20,9 @@ void ProxyProperty::Update()
 	float fDistance;
 
 	//if there is no tracked objects ,,track the camera
-	if(m_pkTrackers->size() <= 0)
-		fDistance= abs((m_pkFps->GetCam()->GetPos() - m_pkObject->GetWorldPosV()).Length());
-	else
+//	if(m_pkTrackers->size() <= 0)
+//		fDistance= abs((m_pkFps->GetCam()->GetPos() - m_pkObject->GetWorldPosV()).Length());
+//	else
 		fDistance=GetDistance();
 
 	if(fDistance < m_fRadius){		
@@ -46,12 +47,12 @@ float ProxyProperty::GetDistance()
 	float fShortestDistance=99999999;
 	float fDistance;
 
-	for(list<Object*>::iterator it=m_pkTrackers->begin();it!=m_pkTrackers->end();it++)
+/*	for(list<Object*>::iterator it=m_pkTrackers->begin();it!=m_pkTrackers->end();it++)
 	{
 		fDistance = abs(((*it)->GetWorldPosV() - m_pkObject->GetWorldPosV()).Length());		
 		if(fDistance < fShortestDistance)
 			fShortestDistance = fDistance;
-	}
+	}*/
 
 	return fShortestDistance;
 }
@@ -72,6 +73,53 @@ Property* Create_ProxyProperty()
 
 
 
+
+
+
+
+
+
+
+
+
+
+TrackProperty::TrackProperty() 
+{
+	strcpy(m_acName,"TrackProperty");		
+	m_iType=PROPERTY_TYPE_NORMAL;
+	m_iSide=PROPERTY_SIDE_SERVER;
+
+	m_pkOBjM			= static_cast<ObjectManager*>(g_ZFObjSys.GetObjectPtr("ObjectManager"));	
+	m_pkFps			= static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
+	m_fNextMove = m_pkFps->GetGameTime() + 1.0;
+	
+}
+
+TrackProperty::~TrackProperty() 
+{
+	
+}
+
+void TrackProperty::Update() 
+{
+	if(m_pkFps->GetGameTime() < m_fNextMove)
+		return;
+	m_fNextMove = m_pkFps->GetGameTime() + 1.0;
+
+	ZoneObject* pkZone = m_pkOBjM->GetZone(m_pkObject);
+	if(!pkZone) {
+		return;
+		}
+
+	int iRandDir = rand() % pkZone->m_kZoneLinks.size();
+	m_pkObject->SetWorldPosV(pkZone->m_kZoneLinks[iRandDir]->GetWorldPosV());
+}
+
+
+Property* Create_TrackProperty()
+{
+	return new TrackProperty;
+}
 
 
 
