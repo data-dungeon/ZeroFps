@@ -111,11 +111,11 @@ bool ZFVFileSystem::StartUp()
 	
 	// Add Base / Rip to root also.
 	string strDir;
-	strDir = string(szWorkDir) + string("extdata/bas/");
+	strDir = string(szWorkDir) + string("extdata/zerofps/");
 	AddRootPath(strDir.c_str(),"data/");
-	strDir = string(szWorkDir) + string("extdata/rip/");
-	AddRootPath(strDir.c_str(),"data/");
-	strDir = string(szWorkDir) + string("extdata/dmdata/");
+//	strDir = string(szWorkDir) + string("extdata/mistlands/");
+//	AddRootPath(strDir.c_str(),"data/");
+	strDir = string(szWorkDir) + string("extdata/dm/");
 	AddRootPath(strDir.c_str(),"data/");
 
 //	AddRootPath("h:/");
@@ -144,6 +144,10 @@ ZFVFileSystem::~ZFVFileSystem()
 
 bool ZFVFileSystem::GetRootMerge(int iRootIndex, string strFileName, string& strRootMerge)
 {
+	// If first symbol in filename is a / then remove it.
+	if(strFileName[0] == '/')
+		strFileName.erase(0,1);
+
 	if(m_kRootPath[iRootIndex].m_strVfsPath.length() == 0)
 	{
 		// This is a pure root path that maps to the base of the VFS

@@ -65,7 +65,7 @@ class BASIC_API ZFVFileSystem : public ZFSubSystem
 		friend class ZFIni;
 		
 		ZFBasicFS*				m_pkBasicFS;					
-		vector<string>			m_kstrRootPath;				///< Active Root Paths (Maps dir into our VFS).
+		//vector<string>			m_kstrRootPath;				///< Active Root Paths (Maps dir into our VFS).
 		vector<VfsRootPath>	m_kRootPath;
 		string					m_kCurentDir;
 
