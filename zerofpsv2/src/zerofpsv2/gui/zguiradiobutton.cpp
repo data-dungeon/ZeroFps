@@ -202,6 +202,9 @@ void ZGuiRadiobutton::Resize(int iWidth, int iHeight, bool bChangeMoveArea)
 /*	iHeight = GetScreenRect().Height(); // dont allow vertcal resize
 	iWidth = GetScreenRect().Width(); // dont allow vertcal resize*/
 
+	if(iWidth == -1) iWidth = GetScreenRect().Width();
+	if(iHeight == -1) iHeight = GetScreenRect().Height();
+
 	ZGuiWnd::Resize(iWidth, iHeight, bChangeMoveArea);
 
 /*	printf("%i, %i\n", iWidth, iHeight);*/

@@ -409,6 +409,9 @@ void ZGuiScrollbar::GetWndSkinsDesc(vector<SKIN_DESC>& pkSkinDesc) const
 
 void ZGuiScrollbar::Resize(int iWidth, int iHeight, bool bChangeMoveArea)
 {
+	if(iWidth == -1) iWidth = GetScreenRect().Width();
+	if(iHeight == -1) iHeight = GetScreenRect().Height();
+
 	const int SCROLLBUTTONHEIGHT = 16;
 
 	ZGuiWnd::Resize(iWidth, iHeight, bChangeMoveArea);

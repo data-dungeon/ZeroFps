@@ -654,6 +654,9 @@ void ZGuiTabCtrl::GetWndSkinsDesc(vector<SKIN_DESC>& pkSkinDesc) const
 
 void ZGuiTabCtrl::Resize(int Width, int Height, bool bChangeMoveArea)
 {
+	if(Width == -1) Width = GetScreenRect().Width();
+	if(Height == -1) Height = GetScreenRect().Height();
+
 	int x, y;
 
 	int iParentWidth = Width;
@@ -665,7 +668,6 @@ void ZGuiTabCtrl::Resize(int Width, int Height, bool bChangeMoveArea)
 
 	x = iParentWidth-c_iButtonSize-m_uiMarg-c_iButtonSize-m_uiMarg;
 	m_pkPrevTabBn->SetPos(x,y,false,true);
-
 
 	x = m_uiMarg;
 	y = m_uiTabHeight+5+m_uiMarg;

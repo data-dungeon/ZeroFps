@@ -10,9 +10,9 @@
 #define PREVIEW_SIZE 128
 
 // Remove the console window
-#ifdef WIN32
-	#pragma comment(linker, "/subsystem:\"windows\" /entry:\"mainCRTStartup\"")
-#endif 
+//#ifdef WIN32
+//	#pragma comment(linker, "/subsystem:\"windows\" /entry:\"mainCRTStartup\"")
+//#endif 
 
 class ZGuiEd : public Application, public ZGuiApp
 {
@@ -59,6 +59,7 @@ private:
 	ZGuiWnd* m_pkFocusWnd, *m_pkCopyWnd;
 	int m_iZValueCounter;
 	bool m_bResize;
+	enum ResizeDir { Left, Up } m_eResizeDir;
 	bool m_bTestGUI;
 	bool m_bForceCaptureToSel;
 	float	m_fDelayTime;
@@ -71,10 +72,10 @@ private:
 	ZGuiWnd* GetWndFromPoint(int x, int y);
 	GuiType FormatWndType(string strText);
 	string FormatWndType(GuiType eType);
-	void OnMouseClick(bool bLeft, int x, int y);
-	void OnMouseMove(bool bLeft, int x, int y);
-	bool OnLoadGUI(const char* szFile);
-	bool OnNew(bool bConfirm);
+	void MouseClick(bool bLeft, int x, int y);
+	void MouseMove(bool bLeft, int x, int y);
+	bool LoadGUI(const char* szFile);
+	bool NewGUI(bool bConfirm);
 	void CreateNewWindow(ZGuiWnd* pkCloneTarget=NULL);
 	void DeleteSelWindow(bool bConfirm);
 	bool DelayCommand(float delay=0.3f);
@@ -84,13 +85,13 @@ private:
 	void UpdatePreviewImage(const char* szFileName);
 	bool UpdateTextureList();
 	bool UpdateSkinList();
-	void OnSelNewSkin(int iIndex=-1);
+	void SelNewSkin(int iIndex=-1);
 	void SetTexture(bool bSet);
 	bool GetSelSkin(ZGuiSkin**& ppkSkin);
 	void UpdateWndSkins();
-	void OnTestGUI();
+	void TestGUI();
 	void ResizeWndToImage();
-	void OnOpenSelectFont();
+	void OpenSelectFontDlg();
 	bool SaveScript(const char* szFileName, bool bCreateBackUp=true);
 	bool CreateBackup(const char* szFileName);
 	bool WriteSkins();

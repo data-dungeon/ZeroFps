@@ -445,6 +445,9 @@ void ZGuiListbox::UpdateList()
 
 void ZGuiListbox::Resize(int Width, int Height, bool bChangeMoveArea)
 {
+	if(Width == -1) Width = GetScreenRect().Width();
+	if(Height == -1) Height = GetScreenRect().Height();
+
 	Rect rc = GetWndRect();
 	rc.Bottom = rc.Top + Height;
 	rc.Right = rc.Left + Width;

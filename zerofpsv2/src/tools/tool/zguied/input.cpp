@@ -17,8 +17,8 @@ void ZGuiEd::HandleInput()
 	if(m_pkFocusWnd && !TextboxFocus())
 	{			
 		if(m_pkInputHandle->Pressed(KEY_LEFT) && !DelayCommand()){
-			Rect rc = m_pkFocusWnd->GetScreenRect();
-			m_pkFocusWnd->SetPos(rc.Left-1, rc.Top, true, true); 
+			Rect rc = m_pkFocusWnd->GetScreenRect(); rc.Left--;
+			m_pkFocusWnd->SetPos(rc.Left > 0 ? rc.Left : 0, rc.Top, true, true); 
 			CheckMovement();
 		}
 		if(m_pkInputHandle->Pressed(KEY_RIGHT) && !DelayCommand()) {
@@ -27,8 +27,8 @@ void ZGuiEd::HandleInput()
 			CheckMovement();
 		}
 		if(m_pkInputHandle->Pressed(KEY_UP) && !DelayCommand()) {
-			Rect rc = m_pkFocusWnd->GetScreenRect();
-			m_pkFocusWnd->SetPos(rc.Left, rc.Top-1, true, true); 
+			Rect rc = m_pkFocusWnd->GetScreenRect(); rc.Top--;
+			m_pkFocusWnd->SetPos(rc.Left, rc.Top > 0 ? rc.Top : 0, true, true); 
 			CheckMovement();
 		}
 		if(m_pkInputHandle->Pressed(KEY_DOWN) && !DelayCommand()) {
@@ -51,7 +51,7 @@ void ZGuiEd::HandleInput()
 		m_pkInputHandle->SDLMouseXY(x,y);
 
 		if(!m_pkInputHandle->Pressed(KEY_LCTRL))
-			OnMouseClick(true, x,y);
+			MouseClick(true, x,y);
 		else
 		{
 			CopyWnd();
@@ -69,7 +69,7 @@ void ZGuiEd::HandleInput()
 	{
 		int x,y;
 		m_pkInputHandle->SDLMouseXY(x,y);
-		OnMouseClick(false, x,y);
+		MouseClick(false, x,y);
 		s_bRightMouseButtonPressed = true;
 	}
 	else if(!m_pkInputHandle->Pressed(MOUSERIGHT))
@@ -79,7 +79,7 @@ void ZGuiEd::HandleInput()
 	{
 		int x,y;
 		m_pkInputHandle->SDLMouseXY(x,y);
-		OnMouseMove(true, x,y);
+		MouseMove(true, x,y);
 	}
 
 	if(m_pkInputHandle->Pressed(KEY_LSHIFT) && s_bLShiftPressed == false)
@@ -98,31 +98,30 @@ void ZGuiEd::HandleInput()
 			s_bLShiftPressed = false;
 			SendMessage(GetCtrl(IDC_RESIZE_WND, 1), BM_SETCHECK, BST_UNCHECKED, 0);
 			m_bResize = false;
+			SetCursor(LoadCursor(NULL, IDC_ARROW));
 		}
 	}
 
-	if(m_pkInputHandle->Pressed(KEY_C) && s_bLCPressed == false)
+	if(!TextboxFocus())
 	{
-		s_bLCPressed = true;
-		if(m_pkInputHandle->Pressed(KEY_LCTRL))
-			CopyWnd();
-	}
-	else if(!m_pkInputHandle->Pressed(KEY_C))
-	{
-		s_bLCPressed = false;
-	}
+		if(m_pkInputHandle->Pressed(KEY_C) && s_bLCPressed == false)
+		{
+			s_bLCPressed = true;
+			if(m_pkInputHandle->Pressed(KEY_LCTRL))
+				CopyWnd();
+		}
+		else if(!m_pkInputHandle->Pressed(KEY_C))
+			s_bLCPressed = false;
 
-	if(m_pkInputHandle->Pressed(KEY_V) && s_bLVPressed == false)
-	{
-		s_bLVPressed = true;
-		if(m_pkInputHandle->Pressed(KEY_LCTRL))
-			PasteWnd();
+		if(m_pkInputHandle->Pressed(KEY_V) && s_bLVPressed == false)
+		{
+			s_bLVPressed = true;
+			if(m_pkInputHandle->Pressed(KEY_LCTRL))
+				PasteWnd();
+		}
+		else if(!m_pkInputHandle->Pressed(KEY_V))
+			s_bLVPressed = false;
 	}
-	else if(!m_pkInputHandle->Pressed(KEY_V))
-	{
-		s_bLVPressed = false;
-	}
-
 
 	if(m_pkInputHandle->Pressed(KEY_RETURN) && s_bLShiftPressed == false)
 	{
@@ -133,7 +132,6 @@ void ZGuiEd::HandleInput()
 			HWND kFocusWnd = GetFocus();
 			if(kFocusWnd)
 			{				
-				
 				char text[512];
 				GetWindowText(kFocusWnd, text, 512);				
 
@@ -159,7 +157,7 @@ void ZGuiEd::HandleInput()
 
 					rc.Left = atoi(text);
 
-					m_pkFocusWnd->SetPos(rc.Left, rc.Top, !bChild, true);
+					m_pkFocusWnd->SetPos(rc.Left > 0 ? rc.Left : 0, rc.Top > 0 ? rc.Top : 0, !bChild, true);
 					CheckMovement();
 				}
 				else
@@ -176,7 +174,7 @@ void ZGuiEd::HandleInput()
 
 					rc.Top = atoi(text);
 
-					m_pkFocusWnd->SetPos(rc.Left, rc.Top, !bChild, true);
+					m_pkFocusWnd->SetPos(rc.Left > 0 ? rc.Left : 0, rc.Top > 0 ? rc.Top : 0, !bChild, true);
 					CheckMovement();
 				}
 				else
@@ -259,7 +257,7 @@ bool ZGuiEd::DelayCommand(float delay)
 	return false;
 }
 
-void ZGuiEd::OnMouseClick(bool bLeft, int x, int y)
+void ZGuiEd::MouseClick(bool bLeft, int x, int y)
 {
 	if(x > 800 || y > 600)
 		return;
@@ -289,21 +287,39 @@ void ZGuiEd::OnMouseClick(bool bLeft, int x, int y)
 					pkCombobox->GetListbox()->IsVisible() ? NCODE_RELEASE : NCODE_CLICK_DOWN );
 			}
 
+			Rect rc = pkPickWnd->GetScreenRect();
+			int diff_right = abs(rc.Right-x);
+			int diff_bottom = abs(rc.Bottom-y);
+
+			if(m_bResize)
+			{
+				if(diff_right < diff_bottom)
+				{
+					m_eResizeDir = Left;
+					SetCursor(LoadCursor(NULL, IDC_SIZEWE));
+				}
+				else
+				{
+					m_eResizeDir = Up;
+					SetCursor(LoadCursor(NULL, IDC_SIZENS));
+				}
+			}
+			else
+			{
+				SetCursor(LoadCursor(NULL, IDC_ARROW));				
+			}
 		}
 		else
 		{
-			m_pkFocusWnd = NULL;
-			SendDlgItemMessage(g_kDlgBoxRight, IDC_WINDOW_LIST, LB_SETCURSEL, -1, 0);
-			SendDlgItemMessage(g_kDlgBoxRight, IDC_TEXTURE_LIST, LB_SETCURSEL, -1, 0);
-			SendDlgItemMessage(g_kDlgBoxBottom, IDC_SKINELEMENTS_LIST, LB_SETCURSEL, -1, 0);			
+			m_pkFocusWnd = NULL;	
 		}
 
 		UpdateInfo();
-		OnSelNewSkin(0);
+		SelNewSkin(0);
 	}
 }
 
-void ZGuiEd::OnMouseMove(bool bLeft, int x, int y)
+void ZGuiEd::MouseMove(bool bLeft, int x, int y)
 {
 	if(x > 800 || y > 600)
 		return;
@@ -316,27 +332,19 @@ void ZGuiEd::OnMouseMove(bool bLeft, int x, int y)
 		Rect rc = m_pkFocusWnd->GetScreenRect();
 
 		if(m_bResize == true)
-		{
-			int w, h;
-
-			int diff_right = rc.Right-x;
-			int diff_bottom = rc.Bottom-y;
-
-			Rect rcParent(0,0,800,600);
-			if(m_pkFocusWnd->GetParent())
-				rcParent = m_pkFocusWnd->GetParent()->GetScreenRect();
-
-			if(diff_right < diff_bottom)
-			{
-				h = rc.Height(); w = x- rc.Left;
-				if(w > 0 && w < rcParent.Width()) m_pkFocusWnd->Resize(w, h); 
-			}
-			else
-			{
-				w = rc.Width(); h = y - rc.Top;
-				if(h > 0 && h < rcParent.Height()) m_pkFocusWnd->Resize(w, h); 
+		{					
+			if(m_eResizeDir == Left)
+			{				   
+				int w = x - rc.Left;
+				m_pkFocusWnd->Resize(w > 0 ? w : 0, -1); 
 			}
 
+			if(m_eResizeDir == Up)
+			{
+				int h = y - rc.Top;
+				m_pkFocusWnd->Resize(-1, h > 0 ? h : 0); 
+			}
+	
 			CheckMovement();
 		}
 		else
@@ -350,7 +358,7 @@ void ZGuiEd::OnMouseMove(bool bLeft, int x, int y)
 			if(m_pkInputHandle->Pressed(KEY_X))
 				y = rc.Top;
 
-			m_pkFocusWnd->SetPos(x, y, true, true);
+			m_pkFocusWnd->SetPos(x > 0 ? x : 0, y > 0 ? y : 0, true, true);
 			CheckMovement();
 		}
 	}
@@ -422,7 +430,7 @@ void ZGuiEd::OnCommand(int iCtrlID, int iEvent)
 						{
 							m_pkFocusWnd = pkWnd;						
 							UpdateInfo();
-							OnSelNewSkin(0);
+							SelNewSkin(0);
 						}
 					}					
 				}
@@ -489,7 +497,7 @@ void ZGuiEd::OnCommand(int iCtrlID, int iEvent)
 		case IDC_SKINELEMENTS_LIST:
 			if(iEvent == LBN_SELCHANGE)
 			{
-				OnSelNewSkin();
+				SelNewSkin();
 			}			
 			break;
 
@@ -497,7 +505,7 @@ void ZGuiEd::OnCommand(int iCtrlID, int iEvent)
 		case IDC_SKINTYPE_HORZBORDER_RB:
 		case IDC_SKINTYPE_VERTBORDER_RB:
 		case IDC_SKINTYPE_CORNERBORDER_RB:
-			OnSelNewSkin();
+			SelNewSkin();
 			break;
 
 		case IDC_CREATE_WND_BN:
@@ -602,7 +610,7 @@ void ZGuiEd::OnCommand(int iCtrlID, int iEvent)
 			break;
 
 		case IDC_SELECTFONT_BN:
-			OnOpenSelectFont();
+			OpenSelectFontDlg();
 			break;
 
 		case IDC_SELECTFONT_OK_BN:			

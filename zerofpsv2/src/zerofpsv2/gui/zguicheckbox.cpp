@@ -207,6 +207,9 @@ void ZGuiCheckbox::GetWndSkinsDesc(vector<SKIN_DESC>& pkSkinDesc) const
 
 void ZGuiCheckbox::Resize(int iWidth, int iHeight, bool bChangeMoveArea)
 {
+	if(iWidth == -1) iWidth = GetScreenRect().Width();
+	if(iHeight == -1) iHeight = GetScreenRect().Height();
+
 	iHeight = GetScreenRect().Height(); // dont allow vertcal resize
 	iWidth = GetScreenRect().Width(); // dont allow horizontal resize
 

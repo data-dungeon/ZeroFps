@@ -12,9 +12,9 @@ void ZGuiEd::OnIdle()
 		m_pkGuiMan->GetWindows(kWnds);
 		int size = kWnds.size();
 
-		if(OnNew(size > 1))
+		if(NewGUI(size > 1))
 		{
-			OnLoadGUI(m_strNewFileToLoad.c_str());
+			LoadGUI(m_strNewFileToLoad.c_str());
 		}
 		m_strNewFileToLoad = "";
 	}
@@ -35,7 +35,7 @@ void ZGuiEd::OnIdle()
 		m_pkGuiMan->GetWindows(kWnds);
 		int size = kWnds.size();
 
-		OnNew(size>1); m_iTask = TASK_DO_NOTHING; 
+		NewGUI(size>1); m_iTask = TASK_DO_NOTHING; 
 	}
 	if(m_iTask == TASK_BRING_WND_TO_FRONT) 
 	{ 
@@ -120,7 +120,7 @@ void ZGuiEd::OnIdle()
 	}
 	if(m_iTask == TASK_TEST_GUI)
 	{
-		OnTestGUI();
+		TestGUI();
 		m_iTask = TASK_DO_NOTHING;
 	}
 	if(m_iTask == TASK_COPY_WND)
@@ -214,20 +214,13 @@ void ZGuiEd::DeleteSelWindow(bool bConfirm)
 
 		m_pkGui->UnregisterWindow(m_pkFocusWnd);
 		m_pkFocusWnd = NULL;
-		SetWindowText(GetCtrl(IDC_WINDOW_NAMEID_EB, 0), "");
-		SetWindowText(GetCtrl(IDC_PARENT_WINDOW_NAMEID, 0), "");
-		SetWindowText(GetCtrl(IDC_TEXTLABEL_EB, 0), "");
-		SetWindowText(GetCtrl(IDC_POSX_EB, 0), "");
-		SetWindowText(GetCtrl(IDC_POSY_EB, 0), "");
-		SetWindowText(GetCtrl(IDC_WIDTH_EB, 0), "");
-		SetWindowText(GetCtrl(IDC_HEIGHT_EB, 0), "");
-		SetWindowText(GetCtrl(IDC_WINDOWTYPE_EB, 0), "");
-		SetWindowText(GetCtrl(IDC_ZVALUE_EB, 0), "");		
+
+		UpdateInfo();
 
 		FilterWnd();
 		UpdateSkinList();
 		UpdatePreviewImage("");
-		OnSelNewSkin(0);
+		SelNewSkin(0);
 	}
 }
 
@@ -340,12 +333,10 @@ void ZGuiEd::CreateNewWindow(ZGuiWnd* pkCloneTarget)
 		UpdateInfo();
 
 		if(pkCloneTarget)
-		{
 			CloneSkins(m_pkFocusWnd, pkCloneTarget);
-		}
 
 		if(UpdateSkinList())
-			OnSelNewSkin(0);
+			SelNewSkin(0);
 
 		AddSampleCtrlItem(m_pkFocusWnd);
 	}
@@ -362,39 +353,64 @@ void ZGuiEd::CheckMovement()
 	if(m_pkFocusWnd->GetParent())
 		rcParent = m_pkFocusWnd->GetParent()->GetScreenRect();
 
-	if(rc.Left < rcParent.Left) {rc.Left = rcParent.Left; }
-	if(rc.Top < rcParent.Top) { rc.Top = rcParent.Top; } 
-
-	if(m_bResize)
+	// Resize window if any childs are not inside window
+	if(GetWndType(m_pkFocusWnd) == Wnd)
 	{
-		if(rc.Right > rcParent.Right)		{ m_pkFocusWnd->Resize(rcParent.Right-rc.Left, -1); }
-		if(rc.Bottom > rcParent.Bottom)	{ m_pkFocusWnd->Resize(-1, rcParent.Bottom-rc.Top); }
+		Rect rc = m_pkFocusWnd->GetScreenRect();
+
+		list<ZGuiWnd*> kChilds;
+		m_pkFocusWnd->GetChildrens(kChilds);
+
+		int iBottom=0, iRight=0;
+		
+		for(list<ZGuiWnd*>::iterator it=kChilds.begin(); it!=kChilds.end(); it++)
+		{
+			Rect rcChild = (*it)->GetScreenRect();
+			if(rcChild.Right > iRight)
+				iRight = rcChild.Right;
+			if(rcChild.Bottom > iBottom)
+				iBottom = rcChild.Bottom;
+		}
+
+		if(rc.Right < iRight)
+			m_pkFocusWnd->Resize(iRight-rc.Left, -1);
+
+		if(rc.Bottom < iBottom)
+			m_pkFocusWnd->Resize(-1, iBottom-rc.Top); 
+	}
+
+	rcParent = (m_pkFocusWnd->GetParent()) ? m_pkFocusWnd->GetParent()->GetScreenRect() : Rect(0,0,800,600);
+	rc = m_pkFocusWnd->GetScreenRect();
+
+	if(m_bResize == false)
+	{
+		if(rc.Right > rcParent.Right)
+			rc.Left = rcParent.Right-rc.Width();
+
+		if(rc.Bottom > rcParent.Bottom)
+			rc.Top = rcParent.Bottom-rc.Height();
+
+		if(rc.Left < rcParent.Left) rc.Left = rcParent.Left;
+		if(rc.Top < rcParent.Top) rc.Top = rcParent.Top;
+
+		m_pkFocusWnd->SetPos(rc.Left > 0 ? rc.Left : 0, rc.Top > 0 ? rc.Top : 0, true, true); 
 	}
 	else
 	{
-		if(rc.Right > rcParent.Right)		{ rc.Left = rcParent.Right - rc.Width();	}
-		if(rc.Bottom > rcParent.Bottom)	{ rc.Top = rcParent.Bottom - rc.Height();	}
-	}
-
-	if(m_bResize)
-	{
-		if(rc.Width() > rcParent.Width())
+		if(rc.Right > rcParent.Right)
 		{
-			rc.Left = rcParent.Left;
-			m_pkFocusWnd->Resize(rcParent.Width(), -1);
+			int w = rcParent.Right - rc.Left;
+			m_pkFocusWnd->Resize(w, -1, true); 
 		}
 
-		if(rc.Height() > rcParent.Height())
+		if(rc.Bottom > rcParent.Bottom)
 		{
-			rc.Top = rcParent.Top;
-			m_pkFocusWnd->Resize(-1, rcParent.Height());
+			int h = rcParent.Bottom-rc.Top;
+			m_pkFocusWnd->Resize(-1, h, true); 
 		}
 	}
 
-	m_pkFocusWnd->SetPos(rc.Left, rc.Top, true, true);
-
-	if(m_pkFocusWnd->GetParent())
-		rc = m_pkFocusWnd->GetWndRect(); 
+	rc = (m_pkFocusWnd->GetParent()) ? m_pkFocusWnd->GetWndRect() : m_pkFocusWnd->GetScreenRect();
 
 	char text[50];
 	sprintf(text, "%i", rc.Left); SetWindowText(GetCtrl(IDC_POSX_EB, 0), text);
@@ -403,7 +419,7 @@ void ZGuiEd::CheckMovement()
 	sprintf(text, "%i", rc.Height()); SetWindowText(GetCtrl(IDC_HEIGHT_EB, 0), text);
 }
 
-bool ZGuiEd::OnLoadGUI(const char* szFile)
+bool ZGuiEd::LoadGUI(const char* szFile)
 {
 	map<string, ZGuiWnd*> kWndsBefore;
 	m_pkGuiMan->GetWindows(kWndsBefore);
@@ -500,7 +516,7 @@ bool ZGuiEd::OnLoadGUI(const char* szFile)
 	return true;
 }
 
-bool ZGuiEd::OnNew(bool bConfirm)
+bool ZGuiEd::NewGUI(bool bConfirm)
 {
 	if(bConfirm && MessageBox(GetParent(g_kDlgBoxRight), "Are u sure?", "New?", MB_YESNO) == IDNO)
 		return false;
@@ -594,7 +610,7 @@ bool ZGuiEd::OnNew(bool bConfirm)
 	SendDlgItemMessage(g_kDlgBoxRight, IDC_WINDOW_LIST, LB_RESETCONTENT,  0, 0 );
 
 	UpdateInfo();
-	OnSelNewSkin(0);
+	SelNewSkin(0);
 
 	return true;
 }
@@ -700,6 +716,9 @@ void ZGuiEd::UpdateInfo()
 		SetWindowText(GetCtrl(IDC_HEIGHT_EB, 0), "");
 		SetWindowText(GetCtrl(IDC_WINDOWTYPE_EB, 0), "");
 		SetWindowText(GetCtrl(IDC_ZVALUE_EB, 0), "");		
+		SendDlgItemMessage(g_kDlgBoxRight, IDC_WINDOW_LIST, LB_SETCURSEL, -1, 0);
+		SendDlgItemMessage(g_kDlgBoxRight, IDC_TEXTURE_LIST, LB_SETCURSEL, -1, 0);
+		SendDlgItemMessage(g_kDlgBoxBottom, IDC_SKINELEMENTS_LIST, LB_SETCURSEL, -1, 0);		
 		CheckDlgButton(g_kDlgBoxBottom, IDC_FREE_MOVEMENT_CB, BST_UNCHECKED);
 		UpdateSkinList();
 		return;
@@ -713,7 +732,7 @@ void ZGuiEd::UpdateInfo()
 
 	if(m_pkFocusWnd->GetParent())
 	{
-		rc = m_pkFocusWnd->GetScreenRect();
+		rc = m_pkFocusWnd->GetWndRect();
 		SetWindowText(GetCtrl(IDC_PARENT_WINDOW_NAMEID, 0), m_pkFocusWnd->GetParent()->GetName());
 	}
 	else
@@ -758,7 +777,7 @@ void ZGuiEd::UpdateInfo()
 	UpdateSkinList();
 }
 
-void ZGuiEd::OnTestGUI()
+void ZGuiEd::TestGUI()
 {
 	static map<string, int> s_kZValueInfo;
 
@@ -791,7 +810,7 @@ void ZGuiEd::OnTestGUI()
 	}
 }
 
-void ZGuiEd::OnOpenSelectFont()
+void ZGuiEd::OpenSelectFontDlg()
 {
 	ShowWindow(GetParent(g_kFontDlg), SW_SHOW);
 	ShowWindow(g_kFontDlg, SW_SHOW);

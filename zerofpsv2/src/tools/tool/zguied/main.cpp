@@ -168,7 +168,7 @@ void ZGuiEd::OnInit()
 	hInstance = (HINSTANCE) GetWindowLong(sdl_wnd, GWL_HINSTANCE);
 	SDL_CreateThread(Win32ThreadMain, NULL);
 
-	OnNew(false);
+	NewGUI(false);
 
 	m_iTask = 5; // update texture list
 }

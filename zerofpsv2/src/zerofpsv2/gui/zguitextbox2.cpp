@@ -579,6 +579,9 @@ bool ZGuiTextbox::IsReadOnly()
 
 void ZGuiTextbox::Resize(int Width, int Height, bool bChangeMoveArea)
 {
+	if(Width == -1) Width = GetScreenRect().Width();
+	if(Height == -1) Height = GetScreenRect().Height();
+
 	if(m_pkScrollbarVertical)
 	{
 		m_pkScrollbarVertical->SetPos(m_bLeftAlignedScrollbar ? 0 : Width-16, 0, false, true);

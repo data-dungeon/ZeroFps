@@ -105,7 +105,7 @@ bool ZGuiEd::UpdateSkinList()
 	return true;
 }
 
-void ZGuiEd::OnSelNewSkin(int iIndex)
+void ZGuiEd::SelNewSkin(int iIndex)
 {
 	string strRealName = "";
 

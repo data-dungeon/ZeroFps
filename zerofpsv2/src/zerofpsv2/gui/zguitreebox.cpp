@@ -1023,6 +1023,9 @@ bool ZGuiTreebox::SetPos(int x, int y, bool bScreenSpace, bool bFreeMovement)
 
 void ZGuiTreebox::Resize(int Width, int Height, bool bChangeMoveArea)
 {
+	if(Width == -1) Width = GetScreenRect().Width();
+	if(Height == -1) Height = GetScreenRect().Height();
+
    ZGuiWnd::Resize(Width, Height, bChangeMoveArea);
 
 	Rect rc = GetWndRect();
