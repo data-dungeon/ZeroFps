@@ -19,8 +19,8 @@ P_Light::P_Light()
 	
 	m_pkLightSource=new LightSource();
 
-	m_iType = PROPERTY_TYPE_RENDER_NOSHADOW;
-	m_iSide = PROPERTY_SIDE_CLIENT|PROPERTY_SIDE_SERVER;
+	m_iType = PROPERTY_TYPE_NORMAL;
+	m_iSide = PROPERTY_SIDE_CLIENT;
  
 	m_iMode  = LMODE_DEFAULT;
 	m_fTimer = 0;
@@ -28,7 +28,6 @@ P_Light::P_Light()
 	m_fFlareSize = 0.0;
 	
 	m_pkMaterial = new ZFResourceHandle;
-
 	SetMaterial("data/material/flare-white.zmt");
 	
 }
@@ -48,19 +47,36 @@ void P_Light::Init()
 
 void P_Light::Update() 
 {
-	m_pkLightSource->kPos = m_pkEntity->GetIWorldPosV() + m_pkEntity->GetWorldRotM().VectorTransform(m_kOffset);	
+	if(m_pkEntityManager->IsUpdate(PROPERTY_TYPE_NORMAL))
+	{
+		m_pkLightSource->kPos = m_pkEntity->GetWorldPosV() + m_pkEntity->GetWorldRotM().VectorTransform(m_kOffset);	
 	
-	if(m_pkLightSource->iType == SPOT_LIGHT)	
-		m_pkLightSource->kRot = m_pkEntity->GetWorldRotM().VectorTransform(Vector3(0,0,1));
+		if(m_pkLightSource->iType == SPOT_LIGHT)	
+			m_pkLightSource->kRot = m_pkEntity->GetWorldRotM().VectorTransform(Vector3(0,0,1));
 
-	UpdateLightMode();		
-
-	if(m_pkLightSource->iType == POINT_LIGHT && m_fFlareSize > 0)
+		UpdateLightMode();		
+		
+		if(m_pkLightSource->iType == POINT_LIGHT && m_fFlareSize > 0)
+			m_iType = PROPERTY_TYPE_RENDER_NOSHADOW|PROPERTY_TYPE_NORMAL;
+		else
+			m_iType = PROPERTY_TYPE_NORMAL;
+		
+	}
+	else
+	{
+		m_pkLightSource->kPos = m_pkEntity->GetIWorldPosV() + m_pkEntity->GetWorldRotM().VectorTransform(m_kOffset);			
 		DrawFlare();
+	}
+
+	
 }
 
 void P_Light::DrawFlare()
 {
+	if(!m_pkZeroFps->GetCam()->GetFrustum()->PointInFrustum(m_pkLightSource->kPos))
+		return;
+
+/*
 	static ZMaterial* pkTestMat=NULL;
 	
 	if(!pkTestMat)
@@ -74,7 +90,7 @@ void P_Light::DrawFlare()
 		pkTestMat->GetPass(0)->m_bBlend = 					true;	
 		pkTestMat->GetPass(0)->m_iBlendSrc = 				SRC_ALPHA_BLEND_SRC;
 		pkTestMat->GetPass(0)->m_iBlendDst = 				ONE_MINUS_SRC_ALPHA_BLEND_DST;	
-	}
+	}*/
 
 
 		
@@ -83,7 +99,7 @@ void P_Light::DrawFlare()
 		//do occulusion test	
 		m_pkZShaderSystem->OcculusionBegin();
 		
-		m_pkRender->DrawBillboardQuad(m_pkZeroFps->GetCam()->GetRotM(),m_pkLightSource->kPos,0.1,pkTestMat);		
+		m_pkRender->DrawBillboardQuad(m_pkZeroFps->GetCam()->GetRotM(),m_pkLightSource->kPos,0.1,(ZMaterial*)m_pkMaterial->GetResourcePtr());		
 		//m_pkRender->Line(m_pkLightSource->kPos-0.02,m_pkLightSource->kPos+0.02,Vector3(1,1,1));		
 		int iSamples = m_pkZShaderSystem->OcculusionEnd();
 		
@@ -98,8 +114,7 @@ void P_Light::DrawFlare()
 void P_Light::UpdateLightMode()
 {
 	switch(m_iMode)
-	{
-		
+	{		
 		case LMODE_TORCH:
 		{
 			if(m_pkZeroFps->GetTicks() - m_fTimer > 0.05)

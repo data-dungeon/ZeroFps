@@ -65,9 +65,10 @@ bool Property::operator<(Property& kOther)
 		{
 			if(m_iSortPlace == kOther.m_iSortPlace)
 			{			
-				d1 = (float) abs( (int)m_pkZeroFps->GetCam()->GetPos().DistanceTo(m_pkEntity->GetWorldPosV()) );
-				d2 = (float) abs( (int)m_pkZeroFps->GetCam()->GetPos().DistanceTo(kOther.m_pkEntity->GetWorldPosV()) );
-				return d1<d2;		
+				d1 = m_pkZeroFps->GetCam()->GetPos().DistanceTo(m_pkEntity->GetWorldPosV());
+				d2 = m_pkZeroFps->GetCam()->GetPos().DistanceTo(kOther.m_pkEntity->GetWorldPosV());
+				
+				return d1>d2;		
 			} else 
 			{
 				return false;

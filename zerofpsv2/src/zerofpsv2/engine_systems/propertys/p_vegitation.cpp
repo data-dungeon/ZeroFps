@@ -17,6 +17,7 @@ P_Vegitation::P_Vegitation()
 	m_pkLight=				static_cast<Light*>(g_ZFObjSys.GetObjectPtr("Light")); 
 	
 	m_iSortPlace=2;
+	m_bSortDistance = true;
 	m_bNetwork = true;
 	
 	m_CheckedForHM = false;
