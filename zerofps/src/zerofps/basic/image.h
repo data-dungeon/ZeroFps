@@ -113,7 +113,7 @@ private:
 	
 
 public:
-	bool load_bmp(char* szFileName);
+	bool load_bmp(const char* szFileName);
 	bool load_bmp(FILE* pkFile);
 
 	int width, height;					///< Size of image.

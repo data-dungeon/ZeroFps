@@ -2,7 +2,9 @@
 #include <memory.h> 
 #include <string.h> 
 #include "image.h"
+#include <iostream>
 
+using namespace std;
 
 // Defines
 #define BITMAP_ID				0x4D42	// universal id for a bitmap
@@ -253,6 +255,16 @@ bool Image::load_tga(const char* filename)
 */
 }
 
+#define BIT_0	0x00000001
+#define BIT_1	0x00000002
+#define BIT_2	0x00000004
+#define BIT_3	0x00000008
+#define BIT_4	0x00000010
+#define BIT_5	0x00000020
+#define BIT_6	0x00000040
+#define BIT_7	0x00000080
+#define BIT_8	0x00000100
+
 bool Image::load_tga(FILE *fp)
 {
 	char *data = NULL;
@@ -265,12 +277,12 @@ bool Image::load_tga(FILE *fp)
 	fread(&head,sizeof(tgahead_t),1,fp);
 
 	// Check that it's a tga file and that it is one that we support.
-	if(head.image_type != TGA_IMAGETYPE_URGB)	return false;
+//	if(head.image_type != TGA_IMAGETYPE_URGB)	return false;
 	
 	// Set basic image prop.
-	bHasAlpha = false;
-	width  = head.width;
-	height = head.height;
+	bHasAlpha	= false;
+	width			= head.width;
+	height		= head.height;
 
 	if(head.pixel_depth == 8)	pixelsize = 1;
 	if(head.pixel_depth == 16)	pixelsize = 2;
@@ -278,6 +290,11 @@ bool Image::load_tga(FILE *fp)
 	if(head.pixel_depth == 32)	{
 		pixelsize = 4;
 		bHasAlpha = true;
+		}
+
+	if(head.id_length != 0) {
+		cout << "TGA: Hava ID data" << endl;
+		fseek(fp, head.id_length, SEEK_CUR);
 		}
 
 	// Read color map if there is one.
@@ -294,13 +311,47 @@ bool Image::load_tga(FILE *fp)
 	data = new char [width*height*pixelsize];
 	fread(data,sizeof(char),width * height * pixelsize,fp);
 
-	for(int i=0; i<width * height; i++) {
-		if(head.image_type == TGA_IMAGETYPE_URGB)	read_pixel(&pixels[i], &data[i*pixelsize], head.pixel_depth);
-		if(head.image_type == TGA_IMAGETYPE_UMAP)	{
-			pixels[i] = map [ data[i] ];
+	if(head.image_type == TGA_IMAGETYPE_URGB || head.image_type == TGA_IMAGETYPE_UMAP) {
+		for(int i=0; i<width * height; i++) {
+			if(head.image_type == TGA_IMAGETYPE_URGB)	read_pixel(&pixels[i], &data[i*pixelsize], head.pixel_depth);
+			if(head.image_type == TGA_IMAGETYPE_UMAP)	{
+				pixels[i] = map [ data[i] ];
+
+				}
+			}
+	}
+
+	if(head.image_type == TGA_IMAGETYPE_RLERGB) {
+		int iPixelOffset	= 0;
+		int iDataOffset	= 0;
+		unsigned char ucPacketValue;
+		unsigned int iNumOfRLE;
+		color_rgba		kColor;
+		int i;
+
+		while(iPixelOffset < (width * height)) {
+			ucPacketValue =  data[iDataOffset++];
+			
+			if(ucPacketValue & BIT_7) {	// Rle
+				iNumOfRLE = ucPacketValue - BIT_7;
+				iNumOfRLE += 1;
+				read_pixel(&kColor, &data[iDataOffset], head.pixel_depth);
+				iDataOffset += pixelsize;
+
+				for(i=0; i<iNumOfRLE; i++)
+					pixels[iPixelOffset++] = kColor;
+				}
+			else {	// Raw
+				iNumOfRLE = ucPacketValue + 1;
+				for(i=0; i<iNumOfRLE; i++) {
+					read_pixel(&kColor, &data[iDataOffset], head.pixel_depth);
+					pixels[iPixelOffset++] = kColor;
+					iDataOffset += pixelsize;
+					}
+				}
 			}
 		}
-	
+
 	if(data)	delete [] data;
 	if(map)		delete [] map;
 	return true;
@@ -384,8 +435,17 @@ bool Image::load(const char* filename)
 	char *ext = strrchr( filename, '.');
 	if(ext == NULL)		return false;
 	
-	if(strcmp(ext,".tga") == 0)		return load_tga(filename);
-	if(strcmp(ext,".pcx") == 0)		return load_pcx(filename);
+	if(strcmp(ext,".tga") == 0) {
+		return load_tga(filename);
+		}
+
+	//if(strcmp(ext,".pcx") == 0)		return load_pcx(filename);
+	if(strcmp(ext,".bmp") == 0) {
+		//this->create_empty(64,64);	
+		//this->fill(0,0,this->width,this->height,255,0,0);
+		return load_bmp(filename);
+		}	
+
 	return false;	// Not supported.
 }
 
@@ -615,7 +675,7 @@ void Image::MapColorToAlpha(float fR, float fG, float fB, float fAlpha)
 
 }
 
-bool Image::load_bmp(char* szFileName)
+bool Image::load_bmp(const char* szFileName)
 {
 	FILE *pkFile = fopen(szFileName, "rb");
 	if(pkFile == NULL)
@@ -634,7 +694,7 @@ bool Image::load_bmp(FILE* pkFile)
 	fread(&kBitmap.kFileheader, sizeof(bmpheader_t), 1, pkFile);
 	fread(&kBitmap.kInfoheader, sizeof(bmpinfo_t), 1, pkFile);
 
-	bool bDebug = true;
+	bool bDebug = false;
 
 	if(bDebug)
 	{
@@ -769,6 +829,8 @@ bool Image::load_bmp(FILE* pkFile)
 
 	if(kBitmap.pkData)
 		delete[] kBitmap.pkData;
+
+	flip(false, true);
 
 	return true;
 }

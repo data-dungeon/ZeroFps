@@ -137,8 +137,15 @@ void ZeroEdit::OnInit(void)
 
 	m_iCopyNetWorkID = -1;
 
-
-
+	string kName = "../data/textures/pointer.tga";
+	Image kImg1;
+	if( kImg1.load(kName.c_str()))
+		kImg1.save("imgtest1.tga", false);
+	string kName2 = "../data/textures/text/devstr.bmp";
+	Image kImg2;
+	if( kImg2.load(kName2.c_str()))
+		kImg2.save("imgtest2.tga", false);
+	
 /*
 	pkTexMan->BindTexture("grass2.tga",0);			
 <<<<<<< zeroedit.cpp
@@ -1174,7 +1181,8 @@ void ZeroEdit::DrawMarkers()
 //	glEnable(GL_ALPHA_TEST);
 //	glAlphaFunc(GL_GREATER,0.3);
 	
-	pkRender->DrawBillboard(pkFps->GetCam()->GetModelViewMatrix(),m_kDrawPos,1,pkTexMan->Load("file:../data/textures/pointer.tga",T_NOMIPMAPPING));	
+//	pkRender->DrawBillboard(pkFps->GetCam()->GetModelViewMatrix(),m_kDrawPos,1,pkTexMan->Load("file:../data/textures/pointer.tga",T_NOMIPMAPPING));	
+	pkRender->DrawBillboard(pkFps->GetCam()->GetModelViewMatrix(),m_kDrawPos,1,pkTexMan->Load("../data/textures/pointer.tga",T_NOMIPMAPPING));	
 	
 	
 	if(m_pkCurentParent!=NULL){

@@ -7,7 +7,6 @@
 
 #define ERROR_TEXTURE	"../data/textures/notex.bmp"
 
-
 TextureManager::TextureManager(FileIo* pkFile)
  : ZFObject("TextureManager") {
 
@@ -18,7 +17,7 @@ TextureManager::TextureManager(FileIo* pkFile)
 
 	g_ZFObjSys.Register_Cmd("t_list",FID_LISTTEXTURES,this);
 	g_ZFObjSys.Register_Cmd("t_reload",FID_FORCERELOAD,this);
-
+	g_ZFObjSys.Register_Cmd("t_testload",FID_TESTLOADER,this);
 }	
 
 void TextureManager::SetOptions(texture *pkTex, int iOption)
@@ -40,10 +39,11 @@ void TextureManager::SetOptions(texture *pkTex, int iOption)
 	}
 }
 
+
 bool TextureManager::LoadTexture(texture *pkTex,const char *acFilename) {	
-	GLint iInternalFormat=GL_RGB;
-	GLint iFormat=GL_BGR;
-	GLint iType=GL_UNSIGNED_BYTE;
+	GLint iInternalFormat	=	GL_RGB;
+	GLint iFormat				=	GL_RGB;
+	GLint iType					=	GL_UNSIGNED_BYTE;
 	
 	//make sure the m_pkImage is null for swaping;
 	pkTex->m_pkImage = NULL;	
@@ -52,12 +52,41 @@ bool TextureManager::LoadTexture(texture *pkTex,const char *acFilename) {
 	bool isTga=false;
 	if(strncmp(&acFilename[strlen(acFilename)-4],".tga",4)==0) {
 		iInternalFormat=GL_RGBA4;
-		iFormat=GL_BGRA;
+		iFormat=GL_RGBA;
 	}
 	
-	
-	SDL_Surface *image;
+	Image* pkImage;
+	pkImage = LoadImage2(acFilename);
+	if(!pkImage)
+		return false;
 
+
+
+	glGenTextures(1,&pkTex->index);
+	glBindTexture(GL_TEXTURE_2D,pkTex->index);
+
+	if(pkTex->b_bClamp){
+		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_CLAMP);
+		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_CLAMP);	
+	} else {
+		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_REPEAT);		
+	}
+
+	if(pkTex->m_bMipMapping){
+		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);	
+		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR_MIPMAP_LINEAR);
+		gluBuild2DMipmaps(GL_TEXTURE_2D,iInternalFormat,pkImage->width,pkImage->height,GL_RGBA,GL_UNSIGNED_BYTE,pkImage->pixels);  		
+	}else{
+		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);		
+		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);  
+		glTexImage2D(GL_TEXTURE_2D,0,iInternalFormat,pkImage->width,pkImage->height,0,GL_RGBA,GL_UNSIGNED_BYTE,pkImage->pixels);
+	}
+  glBindTexture(GL_TEXTURE_2D,0);
+  m_iCurrentTexture = NO_TEXTURE;
+	delete pkImage;
+
+/*	SDL_Surface *image;
 	image= LoadImage(acFilename);
 	if(!image) {    
    	return false;
@@ -87,10 +116,35 @@ bool TextureManager::LoadTexture(texture *pkTex,const char *acFilename) {
   
   glBindTexture(GL_TEXTURE_2D,0);
   m_iCurrentTexture = NO_TEXTURE;
-  
   	SDL_FreeSurface(image); 
+*/  
 
   return true;
+}
+
+Image* TextureManager::LoadImage2(const char *filename)
+{
+	Image* kImage = new Image;
+	if(!kImage)
+		return NULL;
+
+	if(! kImage->load(m_pkFile->File(filename))) {
+		delete kImage;
+		fprintf(stderr, "Unable to load %s: \n", filename);
+		return(NULL);
+		}
+
+	return kImage;
+	
+	// VIM
+/*	SDL_Surface *image;
+	image = IMG_Load(m_pkFile->File(acFilename));
+	if ( image == NULL ) {
+		return(NULL);
+	}
+
+   return(image);*/
+
 }
 
 SDL_Surface *TextureManager::LoadImage(const char *acFilename) 
@@ -727,9 +781,19 @@ void TextureManager::RunCommand(int cmdid, const CmdArgument* kCommand)
 	switch(cmdid) {
 		case FID_LISTTEXTURES:	ListTextures();	break;
 		case FID_FORCERELOAD:	ReloadAll();	break;
+		case FID_TESTLOADER:	Debug_TestTexturesLoader();	break;
 		
 
 	};
 }
 
+/*
+	Test Image class by loading diffrent types of images and then saving them again.
+*/
+void TextureManager::Debug_TestTexturesLoader(void)
+{
+	Image kTest1;
+	kTest1.load("../data/textures/test/test.tga");
+	kTest1.save("test.tga", 0);
+}
 

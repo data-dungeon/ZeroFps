@@ -279,8 +279,8 @@ void ZeroFps::Run_Client()
 
 void ZeroFps::Update_System()
 {
-// RROFILE
 /*
+	RROFILE	- VIM
 	float fATime = GetTicks() - m_fSystemUpdateTime; 	
 	int iLoops = int(m_fSystemUpdateFps * fATime);
 
