@@ -494,14 +494,14 @@ void Matrix4::Rotate(float fX, float fY, float fZ)
 	fZ=DegToRad(fZ);	
 
 	
-	float cx = cos(fX);
-	float sx = sin(fX);
+	float cx = float(cos(fX));
+	float sx = float(sin(fX));
 	
-	float cy = cos(fY);
-	float sy = sin(fY);	
+	float cy = float(cos(fY));
+	float sy = float(sin(fY));	
 	
-	float cz = cos(fZ);
-	float sz = sin(fZ);
+	float cz = float(cos(fZ));
+	float sz = float(sin(fZ));
 
 
 	/*

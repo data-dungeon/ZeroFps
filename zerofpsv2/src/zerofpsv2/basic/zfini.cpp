@@ -490,7 +490,7 @@ float ZFIni::GetFloatValue(const char* strSection, char* strKey)
 	if(!str)
 		return 0;
 		
-	return atof(str);
+	return float( atof(str) );
 }
 
 void ZFIni::Close()

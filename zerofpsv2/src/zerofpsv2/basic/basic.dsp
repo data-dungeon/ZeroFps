@@ -164,15 +164,7 @@ SOURCE=.\zfbasicfs_windows.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\zffile.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\zfini.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\zfiofile.cpp
 # End Source File
 # Begin Source File
 
@@ -292,19 +284,11 @@ SOURCE=.\zfbasicfs.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\zffile.h
-# End Source File
-# Begin Source File
-
 SOURCE=.\zfini.h
 # End Source File
 # Begin Source File
 
 SOURCE=.\zfio.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\zfiofile.h
 # End Source File
 # Begin Source File
 

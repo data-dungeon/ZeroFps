@@ -44,7 +44,7 @@ void ProxyProperty::Update()
 float ProxyProperty::GetDistance()
 {
 	float fShortestDistance=99999999;
-	float fDistance;
+//	float fDistance;
 
 /*	for(list<Object*>::iterator it=m_pkTrackers->begin();it!=m_pkTrackers->end();it++)
 	{

@@ -180,9 +180,9 @@ float Clamp(float fValue,float fBotom,float fTop)
 Vector3 RndColor()
 {
 	Vector3 kColor;
-	kColor.x = rand()%255;
-	kColor.y = rand()%255;
-	kColor.z = rand()%255;
+	kColor.x = float( rand()%255 );
+	kColor.y = float( rand()%255 );
+	kColor.z = float( rand()%255 );
 	kColor.Normalize();
 
 	return kColor;

@@ -1165,8 +1165,8 @@ void ObjectManager::Test_CreateZones()
 	int y = 0;
 	int iZonesSize = 10;
 	int iZonesSide = 100;
-	int iNumOfBalls;
-	Object *pkBall;
+//	int iNumOfBalls;
+//	Object *pkBall;
 	Vector3 kPos;
 	Vector3 kRandOffset;
 
