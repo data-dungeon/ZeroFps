@@ -42,7 +42,7 @@ void DoorProperty::OpenDoor()
 
 void DoorProperty::CloseDoor()
 {
-	if(!m_bOpen)
+	if(m_bOpen)
 	{
 		PhysicProperty* kPP = static_cast<PhysicProperty*>(m_pkObject->GetProperty("PhysicProperty"));
 	
@@ -86,6 +86,23 @@ vector<PropertyValues> DoorProperty::GetPropertyValues()
 
 	return kReturn;
 }
+
+bool DoorProperty::HandleSetValue( string kValueName ,string kValue )
+{
+	if(strcmp(kValueName.c_str(), "m_bOpen") == 0) {
+		if(kValue == "true")		
+			OpenDoor();
+		
+		if(kValue == "false")		
+			CloseDoor();
+
+	}
+	
+
+	return false;
+}
+
+
 
 
 Property* Create_DoorProperty()

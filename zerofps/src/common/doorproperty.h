@@ -26,6 +26,7 @@ class COMMON_API DoorProperty: public Property {
 		void RegisterActions();
 		
 		vector<PropertyValues> GetPropertyValues();		
+		bool HandleSetValue( string kValueName ,string kValue );
 		
 	public:
 		bool	m_bOpen;
