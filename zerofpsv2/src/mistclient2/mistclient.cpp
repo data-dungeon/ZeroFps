@@ -109,7 +109,7 @@ void MistClient::OnInit()
 			
 			pkEnt->AddProperty("P_Track");
 			P_Enviroment* pkEnv = (P_Enviroment*)pkEnt->AddProperty("P_Enviroment");	
-			pkEnv->LoadEnviroment("data/enviroments/rain.env");
+			pkEnv->LoadEnviroment("data/enviroments/menu.env");
 			pkEnv->SetEnable(true);	
 		}
 		else
