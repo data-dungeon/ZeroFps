@@ -5,7 +5,7 @@ void Render::DrawSkyBox(Vector3 CamPos) {
 	glDepthMask(GL_FALSE);
 	glTranslatef(CamPos.x,CamPos.y,CamPos.z);
 	
-	int iSize=101;
+	int iSize=801;
 	
 	glDisable(GL_LIGHTING);
 	Quad(Vector3(0,0,-iSize/2),Vector3(0,0,0),Vector3(iSize,iSize,iSize),m_pkTexMan->Load("file:../data/textures/front.bmp"));
