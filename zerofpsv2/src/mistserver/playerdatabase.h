@@ -34,11 +34,19 @@ using namespace std;
 
 class	LoginData
 {
-public:
-	char		szName[128];		// Name of this login.
-	char		szPass[128];		// Password of this login.
+	public:
+		char		szName[128];		// Name of this login.
+		char		szPass[128];		// Password of this login.
+};
 
-
+class PlayerData
+{
+	public:
+		string	m_strPlayerName;
+		string	m_strCharacterName;
+		int		m_iCharacterID;
+		float		m_fLoginTime;
+		int		m_iConnectionID;
 };
 
 class PlayerDatabase
@@ -47,8 +55,10 @@ class PlayerDatabase
 		EntityManager*	m_pkEntityMan;
 		string			m_strPlayerDirectory;	
 
-		vector<string>	m_strActiveUsers;		// Names of loged in users.
+		vector<PlayerData>	m_strActivePlayers;		// Names of loged in users.
 
+		
+		
 	public:
 		PlayerDatabase();
 		
@@ -64,8 +74,11 @@ class PlayerDatabase
 		void Logout(string strPlayer);
 		bool IsOnline(string strLogin);
 
+		PlayerData*	GetPlayerData(string	strPlayer);
+		PlayerData* GetPlayerData(int iConnection);
+		
 		vector<string>	GetLoginCharacters(string strLogin);
-		vector<string>	GetUsers();
+		void	GetUsers(vector<string>* pkUsers);
 
 };
 

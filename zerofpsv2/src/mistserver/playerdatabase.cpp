@@ -73,13 +73,52 @@ bool PlayerDatabase::LoginExist(string strLogin)
 	return true;
 }
 
+PlayerData*	PlayerDatabase::GetPlayerData(string	strPlayer)
+{
+	for(int i = 0 ;i<m_strActivePlayers.size();i++)
+	{
+		if(m_strActivePlayers[i].m_strPlayerName == strPlayer)
+		{
+			return &m_strActivePlayers[i];
+		}
+	}	
+	
+	return NULL;
+}
+
+PlayerData*	PlayerDatabase::GetPlayerData(int iConnection)
+{
+	for(int i = 0 ;i<m_strActivePlayers.size();i++)
+	{
+		if(m_strActivePlayers[i].m_iConnectionID == iConnection)
+		{
+			return &m_strActivePlayers[i];
+		}
+	}	
+	
+	return NULL;
+}
+
 
 bool PlayerDatabase::Login(string strPlayer,string strPassword)
 {
+	//check if player is already connected
+	if(IsOnline(strPlayer))
+		return false;
+
+	//check player password
 	if(VerifyPlayer(strPlayer, strPassword)) 
 	{
-		m_strActiveUsers.push_back( strPlayer );
-
+		//m_strActiveUsers.push_back( strPlayer );
+		PlayerData kNewPlayer;		
+		kNewPlayer.m_strPlayerName = 		strPlayer;
+		kNewPlayer.m_strCharacterName = 	"NONE";
+		kNewPlayer.m_iCharacterID = 		-1;
+		kNewPlayer.m_fLoginTime = 			-1;
+		kNewPlayer.m_iConnectionID = 		-1;
+		
+		m_strActivePlayers.push_back(kNewPlayer);
+		
 		return true;
 	}
 
@@ -88,22 +127,34 @@ bool PlayerDatabase::Login(string strPlayer,string strPassword)
 
 void PlayerDatabase::Logout(string strPlayer)
 {
-	m_strActiveUsers.erase(find(m_strActiveUsers.begin(), m_strActiveUsers.end(), strPlayer));
+	for(vector<PlayerData>::iterator it = m_strActivePlayers.begin();it != m_strActivePlayers.end(); it++)
+	{
+		if( (*it).m_strPlayerName == strPlayer)
+			m_strActivePlayers.erase(it);
+	}
+
+	//m_strActiveUsers.erase(find(m_strActiveUsers.begin(), m_strActiveUsers.end(), strPlayer));
 	cout << "Logout: " << strPlayer << endl;
 }
 
 bool PlayerDatabase::IsOnline(string strLogin)
 {
-	if(  find(m_strActiveUsers.begin(), m_strActiveUsers.end(), strLogin) != m_strActiveUsers.end()  )
-		return true;
+	for(int i = 0 ;i<m_strActivePlayers.size();i++)
+	{
+		if(m_strActivePlayers[i].m_strPlayerName == strLogin)
+			return true;
+	}
 
 	return false;
 }
 
 
-vector<string> PlayerDatabase::GetUsers()
+void PlayerDatabase::GetUsers(vector<string>* pkUsers)
 {
-	return m_strActiveUsers;
+	for(int i = 0 ;i<m_strActivePlayers.size();i++)
+	{
+		pkUsers->push_back(m_strActivePlayers[i].m_strPlayerName);
+	}
 }
 
 bool PlayerDatabase::VerifyPlayer(string strPlayer,string strPassword)

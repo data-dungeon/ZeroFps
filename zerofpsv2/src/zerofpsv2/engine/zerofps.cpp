@@ -1346,27 +1346,34 @@ bool	ZeroFps::PreConnect(IPaddress kRemoteIp, char* szLogin, char* szPass, bool 
 */
 int ZeroFps::Connect(int iConnectionID, char* szLogin, char* szPass, bool bIsEditor)
 {
-	if(!m_bServerMode)
+	if(m_bServerMode)
+	{
+			
+		//reset all netupdate flags in the world
+		m_pkObjectMan->ResetNetUpdateFlags(iConnectionID);
+	
+		//m_pkConsole->Printf("ZeroFps::Connect(%d)", iConnectionID);
+		m_kClient[iConnectionID].m_pkObject = m_pkObjectMan->CreateObject();//m_pkObjectMan->CreateObjectByArchType("ZeroRTSPlayer");
+		m_kClient[iConnectionID].m_pkObject->SetName("A Client Obj");
+		m_kClient[iConnectionID].m_pkObject->SetWorldPosV(Vector3(0,0,2));
+	
+		// Connect all client objects to top level object,
+		m_kClient[iConnectionID].m_pkObject->SetParent(m_pkObjectMan->m_pkClientObject);
+		
+		m_kClient[iConnectionID].m_fConnectTime = GetEngineTime();
+		m_pkApp->OnServerClientJoin(&m_kClient[iConnectionID],iConnectionID, szLogin, szPass,bIsEditor);
+		m_pkObjectMan->m_fEndTimeForceNet = GetEngineTime() + 5.0f;
+	
+		
+	//	m_pkConsole->Printf("Player Object %d", m_kClient[iConnectionID].m_pkObject->GetEntityID());	
+		return m_kClient[iConnectionID].m_pkObject->GetEntityID();
+	}
+	else
+	{
+		m_pkApp->OnClientConnected();
+				
 		return -1;
-
-	//reset all netupdate flags in the world
-	m_pkObjectMan->ResetNetUpdateFlags(iConnectionID);
-
-	//m_pkConsole->Printf("ZeroFps::Connect(%d)", iConnectionID);
-	m_kClient[iConnectionID].m_pkObject = m_pkObjectMan->CreateObject();//m_pkObjectMan->CreateObjectByArchType("ZeroRTSPlayer");
-	m_kClient[iConnectionID].m_pkObject->SetName("A Client Obj");
-	m_kClient[iConnectionID].m_pkObject->SetWorldPosV(Vector3(0,0,2));
-
-	// Connect all client objects to top level object,
-	m_kClient[iConnectionID].m_pkObject->SetParent(m_pkObjectMan->m_pkClientObject);
-	
-	m_kClient[iConnectionID].m_fConnectTime = GetEngineTime();
-	m_pkApp->OnServerClientJoin(&m_kClient[iConnectionID],iConnectionID, szLogin, szPass,bIsEditor);
-	m_pkObjectMan->m_fEndTimeForceNet = GetEngineTime() + 5.0f;
-
-	
-//	m_pkConsole->Printf("Player Object %d", m_kClient[iConnectionID].m_pkObject->GetEntityID());	
-	return m_kClient[iConnectionID].m_pkObject->GetEntityID();
+	}
 }
 
 /**	\brief	Called when a connection is closed down.

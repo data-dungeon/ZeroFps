@@ -24,7 +24,9 @@ MistClient::MistClient(char* aName,int iWidth,int iHeight,int iDepth)
 	: Application(aName,iWidth,iHeight,iDepth), ZGuiApp(GUIPROC)
 { 
 	g_ZFObjSys.Log_Create("mistclient2");
-	m_iViewFrom = -1;
+	
+
+	m_iCharacterID = -1;
 
    RegisterVariable("r_jumpstart", &m_bSkipLoginScreen, CSYS_BOOL);
 } 
@@ -117,27 +119,11 @@ void MistClient::OnHud(void)
 }
 
 
-void MistClient::OnServerClientJoin(ZFClient* pkClient,int iConID, char* szLogin, char* szPass, bool bIsEditor)
-{
-	cout<<"Client "<<iConID<<" Joined"<<endl;
-	
-	cout << "Now adding er to client" << endl;
-}
-
-void MistClient::OnServerClientPart(ZFClient* pkClient,int iConID)
-{
-	cout<<"Client "<<iConID<<" Parted"<<endl;	
-	
-}
-
-
-void MistClient::OnServerStart(void)
-{		
-}
-
 void MistClient::OnClientStart(void)
 {
 	m_pkConsole->Printf("Trying to connect");
+	
+	m_iCharacterID = -1;
 }
 
 void MistClient::OnNetworkMessage(NetPacket *PkNetMessage)
@@ -166,14 +152,34 @@ void MistClient::OnNetworkMessage(NetPacket *PkNetMessage)
 				}
 			}
 
-
 			break;
 
+		case MLNM_SC_CHARACTERID:
+		{
+			cout<<"got character entityID from server"<<endl;
+			PkNetMessage->Read(m_iCharacterID);
+		
+			break;
+		}
+			
 		default:
 			cout << "Error in game packet : " << (int) ucType << endl;
 			PkNetMessage->SetError(true);
 			return;
 	}
+}
+
+void MistClient::OnClientConnected()
+{
+	m_pkConsole->Printf("Successfully connected to server");
+
+	//request character entityID
+	NetPacket kNp;				
+	kNp.Clear();
+	kNp.Write((char) MLNM_CS_REQ_CHARACTERID);
+	kNp.TargetSetClient(0);
+	SendAppMessage(&kNp);	
+	
 }
 
 void MistClient::AddRemoveServer(const char* szName, const char* szSeverIP, bool bAdd)

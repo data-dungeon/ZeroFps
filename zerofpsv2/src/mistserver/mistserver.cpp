@@ -498,11 +498,12 @@ void MistServer::RunCommand(int cmdid, const CmdArgument* kCommand)
 */			
 			break;
 
-		case FID_USERS:
-			kUsers = m_pkPlayerDB->GetUsers();
-			for(i=0; i<kUsers.size(); i++) {
+		case FID_USERS:			
+			m_pkPlayerDB->GetUsers(&kUsers);
+			for(i=0; i<kUsers.size(); i++) 
+			{
 				cout << "User: " << kUsers[i] << endl;
-				}
+			}
 			break;		
 
 		case FID_TEST_JIDDRA:
@@ -643,6 +644,12 @@ void MistServer::OnServerClientJoin(ZFClient* pkClient,int iConID, char* szLogin
 
 	m_pkPlayerDB->Login(strPlayer,strPasswd);
 
+	//setup some player info
+	if(PlayerData* pkNewPlayer = m_pkPlayerDB->GetPlayerData(strPlayer))
+	{
+		pkNewPlayer->m_iConnectionID = iConID;		
+		pkNewPlayer->m_fLoginTime = m_pkFps->GetTicks();	
+	}
 	
 	//add client control to client object
 	//P_ClientControl* pcc = (P_ClientControl*)pkClient->m_pkObject->AddProperty("P_ClientControl");
@@ -684,15 +691,12 @@ void MistServer::SpawnPlayer(int iConID)
 		cout<<"Error creating playercharacter"<<endl;
 	}
 	
-	if(m_pkServerInfoP)
-	{	
-		//wich rights shuld a client have on its player caracter
-		//int playerrights = PR_OWNER|PR_CONTROLS|PR_LOOKAT;
-		
-		m_pkServerInfoP->AddPlayer(iConID, m_pkFps->m_kClient[iConID].m_strLogin.c_str());
-		m_pkServerInfoP->SetCharacterID(iConID,iPlayerID);
-		//m_pkServerInfoP->AddObject(iConID,iPlayerID,playerrights);
-	}
+	
+	//set chracter id in playerdata
+	if(PlayerData* pkNewPlayer = m_pkPlayerDB->GetPlayerData(iConID))
+	{
+		pkNewPlayer->m_iCharacterID = iPlayerID;		
+	}	
 }
 
 
@@ -700,9 +704,6 @@ void MistServer::SpawnPlayer(int iConID)
 void MistServer::OnServerClientPart(ZFClient* pkClient,int iConID)
 {
 	DeletePlayer(iConID);
-
-	if(m_pkServerInfoP)
-		m_pkServerInfoP->RemovePlayer(iConID);	
 	
 	m_pkPlayerDB->Logout(pkClient->m_strLogin);
 	cout<<"Client "<<iConID<<" Parted"<<endl;	
@@ -1216,8 +1217,6 @@ void MistServer::OnNetworkMessage(NetPacket *PkNetMessage)
 
 	// Read Type of Message.
 	PkNetMessage->Read(ucType);
-	//int iJiddra = ucType;
-	//m_pkConsole->Printf("AppMessageType: %d", iJiddra );
 
 	switch(ucType)
 	{
@@ -1227,6 +1226,22 @@ void MistServer::OnNetworkMessage(NetPacket *PkNetMessage)
 			m_pkConsole->Printf(szMsg);
 			break;
 
+		case MLNM_CS_REQ_CHARACTERID:
+		{
+			if(PlayerData* pkData = m_pkPlayerDB->GetPlayerData(PkNetMessage->m_iClientID))
+			{
+				NetPacket kNp;
+				
+				kNp.Clear();
+				kNp.Write((char) MLNM_SC_CHARACTERID);
+				kNp.Write(pkData->m_iCharacterID);
+				kNp.TargetSetClient(PkNetMessage->m_iClientID);
+				SendAppMessage(&kNp);
+			}
+			break;
+		}
+			
+			
 		default:
 			cout << "Error in game packet : " << (int) ucType << endl;
 			PkNetMessage->SetError(true);

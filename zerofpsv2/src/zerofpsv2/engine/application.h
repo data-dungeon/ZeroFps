@@ -57,21 +57,22 @@ class ENGINE_API Application : public ZFSubSystem {
 		
 		Application(char* pName,int iWidth,int iHeight,int iDepth);
 
-		virtual void OnInit(void)=0;
-		virtual void OnIdle(void)=0;
-		virtual void OnHud(void)=0;
-		virtual void OnSystem(void)=0;
+		virtual void OnInit(void)			{};
+		virtual void OnIdle(void)			{};
+		virtual void OnHud(void)			{};
+		virtual void OnSystem(void)		{};
 
-		virtual bool OnPreConnect(IPaddress kRemoteIp, char* szLogin, char* szPass, bool bIsEditor) = 0;
-		virtual void OnServerClientJoin(ZFClient* pkClient,int iConID, char* szLogin, char* szPass, bool bIsEditor)=0;
-		virtual void OnServerClientPart(ZFClient* pkClient,int iConID)=0;
+		virtual bool OnPreConnect(IPaddress kRemoteIp, char* szLogin, char* szPass, bool bIsEditor) 				{return true;};
+		virtual void OnServerClientJoin(ZFClient* pkClient,int iConID, char* szLogin, char* szPass, bool bIsEditor)	{};
+		virtual void OnServerClientPart(ZFClient* pkClient,int iConID)			{};
+		virtual void OnClientConnected()			{};
 
-		virtual void RenderInterface(void)=0;
+		virtual void RenderInterface(void)		{};
 
-		virtual void OnServerStart(void)=0;
-		virtual void OnClientStart(void)=0;
+		virtual void OnServerStart(void)			{};
+		virtual void OnClientStart(void)			{};
 
-		virtual  void OnNetworkMessage(NetPacket *PkNetMessage) = 0;
+		virtual void OnNetworkMessage(NetPacket *PkNetMessage) 			{};
 
 		void SendAppMessage(NetPacket* pkNet);
 };

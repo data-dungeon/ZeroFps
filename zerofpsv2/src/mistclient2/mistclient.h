@@ -23,8 +23,9 @@ class MistClient :public Application, public ZGuiApp {
 		};
 
 		Camera*				m_pkCamera;
-		int					m_iViewFrom;
-      bool              m_bSkipLoginScreen;
+		int					m_iCharacterID;
+      
+		bool              m_bSkipLoginScreen;
 
       vector<pair<string,string> > m_kServerList;
       bool ReadWriteServerList(bool bRead);
@@ -40,15 +41,15 @@ class MistClient :public Application, public ZGuiApp {
 		void OnIdle(void);
 		void OnHud(void);
 		void OnSystem();
-		void RenderInterface(void) { }
-		
-		void OnServerStart(void);
+
+				
 		void OnClientStart(void);
 				
 		//on client join, server runs this
-		bool OnPreConnect(IPaddress kRemoteIp, char* szLogin, char* szPass, bool bIsEditor) { return true; }
-		void OnServerClientJoin(ZFClient* pkClient,int iConID, char* szLogin, char* szPass, bool bIsEditor);
-		void OnServerClientPart(ZFClient* pkClient,int iConID);
+		//bool OnPreConnect(IPaddress kRemoteIp, char* szLogin, char* szPass, bool bIsEditor) { return true; }
+		//void OnServerClientJoin(ZFClient* pkClient,int iConID, char* szLogin, char* szPass, bool bIsEditor);
+		//void OnServerClientPart(ZFClient* pkClient,int iConID);
+		void OnClientConnected();
 		void OnNetworkMessage(NetPacket *PkNetMessage);
 		
 		void RegisterPropertys();
