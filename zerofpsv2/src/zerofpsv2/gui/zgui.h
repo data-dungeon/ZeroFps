@@ -158,6 +158,7 @@ public:
 	
 	bool m_bHaveInputFocus; //! om guit har focus eller inte
 
+	void SetWndForeground(ZGuiWnd* pkWnd);
 	void SetRes(int iResX, int iResY); // should only be called one time before app start!
 	static int m_iResX;
 	static int m_iResY;

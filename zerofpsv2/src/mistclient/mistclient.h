@@ -29,6 +29,7 @@
 #include "../mcommon/p_enviroment.h"
 
 #include "inventorydlg.h"
+#include "quickboard.h"
 #include "henchman_button.h"
 
 class MistClient :public Application, public ZGuiApp {
@@ -91,6 +92,7 @@ class MistClient :public Application, public ZGuiApp {
 		bool PickZones();
 		
 		InventoryDlg*	  m_pkInventDlg;
+		QuickBoard*		  m_pkQuickBoard;
 		void CreateGuiInterface();
 
 		Entity* m_pkActiveCharacter;

@@ -97,6 +97,10 @@ SOURCE=.\inventorydlg.cpp
 
 SOURCE=.\mistclient.cpp
 # End Source File
+# Begin Source File
+
+SOURCE=.\quickboard.cpp
+# End Source File
 # End Group
 # Begin Group "Header Files"
 
@@ -112,6 +116,10 @@ SOURCE=.\inventorydlg.h
 # Begin Source File
 
 SOURCE=.\mistclient.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\quickboard.h
 # End Source File
 # End Group
 # Begin Group "Resource Files"

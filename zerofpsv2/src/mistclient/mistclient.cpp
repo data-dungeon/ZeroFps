@@ -76,12 +76,12 @@ MistClient::MistClient(char* aName,int iWidth,int iHeight,int iDepth)
 	
 	m_fMaxCamDistance			= 8;
 	m_fMinCamDistance			= 2;
+
+	m_bActionMenuIsOpen		= false;
+	m_pkQuickBoard				= NULL;
+	m_pkInventDlg				= NULL;
 	
 	g_ZFObjSys.Log_Create("mistclient");
-
-	m_bActionMenuIsOpen = false;
-
- 
 } 
 
 void MistClient::OnInit() 
@@ -612,6 +612,9 @@ bool MistClient::ShutDown()
 	if(m_pkInventDlg)
 		delete m_pkInventDlg;
 
+	if(m_pkQuickBoard)
+		delete m_pkQuickBoard;
+
 	return true; 
 }
 bool MistClient::IsValid()	{ return true; }
@@ -619,6 +622,8 @@ bool MistClient::IsValid()	{ return true; }
 
 void MistClient::OnCommand(int iID, ZGuiWnd *pkMainWnd)
 {
+	printf("Clicked\n");
+
 	ZGuiWnd* pkWndClicked = GetWnd(iID);
 
 	if(pkWndClicked == NULL)
@@ -666,7 +671,14 @@ void MistClient::OnCommand(int iID, ZGuiWnd *pkMainWnd)
 			}
 			else
 			if(strClickWndName == "ToggleInfoBoxBn")
+			{
 				pkScript->Call(m_pkScriptResHandle, "OnClickToggleInfoBox", 0, 0);
+
+				if ( !GetWnd("InfoBoxWnd")->IsVisible() )
+					GetWnd("ActionWnd")->SetPos(10, GetHeight()-84, true, true); 
+				else
+					GetWnd("ActionWnd")->SetPos(10, GetHeight()-170, true, true); 
+			}
 		}
 	}
 	else
@@ -786,6 +798,11 @@ void MistClient::OnCommand(int iID, ZGuiWnd *pkMainWnd)
 			pkFps->m_pkNetWork->ClientStart(szIpName, szLoginName, szPassName);
 			pkApp->OnClientStart();
 		}
+	}
+	else
+	if(strMainWndName == "QuickItemMainWnd")
+	{
+		m_pkQuickBoard->OnCommand(pkWndClicked);
 	}
 	if(m_pkInventDlg)
 	{
@@ -1090,9 +1107,12 @@ void MistClient::PickUp()
 */
 void MistClient::CreateGuiInterface()
 {
+	int screen_w = GetWidth();
+	int screen_h = GetHeight();
+
 	ZGuiSkin* pkSkin; 
 
-	CreateWnd(Button, "ScrollPortraitsUp", "MainWnd", "", 800-51-9, 4, 8,8, 0);
+	CreateWnd(Button, "ScrollPortraitsUp", "MainWnd", "", screen_w-51-9, 4, 8,8, 0);
 
 	pkSkin = new ZGuiSkin(pkTexMan->Load("/data/textures/gui/scrollbar_clicktop_bn_u.bmp", 0), 0);
 	static_cast<ZGuiButton*>(GetWnd("ScrollPortraitsUp"))->SetButtonUpSkin(pkSkin);
@@ -1101,7 +1121,7 @@ void MistClient::CreateGuiInterface()
 	static_cast<ZGuiButton*>(GetWnd("ScrollPortraitsUp"))->SetButtonDownSkin(pkSkin);
 	static_cast<ZGuiButton*>(GetWnd("ScrollPortraitsUp"))->SetButtonHighLightSkin(pkSkin);
 
-	CreateWnd(Button, "ScrollPortraitsDown", "MainWnd", "", 800-51-9, 12, 8,8, 0);
+	CreateWnd(Button, "ScrollPortraitsDown", "MainWnd", "", screen_w-51-9, 12, 8,8, 0);
 
 	pkSkin = new ZGuiSkin(pkTexMan->Load("/data/textures/gui/scrollbar_clickbottom_bn_u.bmp", 0), 0);
 	static_cast<ZGuiButton*>(GetWnd("ScrollPortraitsDown"))->SetButtonUpSkin(pkSkin);
@@ -1124,10 +1144,9 @@ void MistClient::CreateGuiInterface()
 
 	pkGui->AddKeyCommand(KEY_RETURN, GetWnd("InputBox"), GetWnd("SendInputBoxBn") );
 
-	// tillfällig Fulhack delux (ta bort sen)
-/*	pkFps->DevPrintf("common", "=)");
-	pkFps->DevPrint_FindPage("common")->m_bVisible = true;
-	pkFps->DevPrint_Show(true);*/
+	m_pkQuickBoard = new QuickBoard(this);
+
+	m_pkQuickBoard->AddQuickItem("apple"); 
 }
 
 void MistClient::UpdateObjectList(PlayerInfo* pkPlayerInfo)

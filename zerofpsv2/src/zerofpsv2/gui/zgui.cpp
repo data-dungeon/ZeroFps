@@ -425,10 +425,13 @@ bool ZGui::OnMouseUpdate(int x, int y, bool bLBnPressed,
 	{		
 		if(pkFocusWindow)
 		{
-			if(ClickedWndAlphaTex(x,y,pkFocusWindow) == false)
+			if(pkFocusWindow->m_bUseAlhpaTest)
 			{
-				m_bHaveInputFocus = false;
-				return true;
+				if(ClickedWndAlphaTex(x,y,pkFocusWindow) == false)
+				{
+					m_bHaveInputFocus = false;
+					return true;
+				}
 			}
 
 			ZGuiWnd::m_pkWndClicked = pkFocusWindow;
@@ -1248,4 +1251,11 @@ bool ZGui::ClickedWndAlphaTex(int mx, int my, ZGuiWnd *pkWndClicked)
 	}
 
 	return false;
+}
+
+void ZGui::SetWndForeground(ZGuiWnd *pkWnd)
+{
+/*	m_iHighestZWndValue++;
+	m_pkActiveMainWin->iZValue = m_iHighestZWndValue;
+	m_pkMainWindows.sort(SortZCmp);	*/
 }

@@ -23,6 +23,8 @@ ZGuiWnd* ZGuiWnd::m_pkWndUnderCursor = NULL;
 
 ZGuiWnd::ZGuiWnd(Rect kRectangle, ZGuiWnd* pkParent, bool bVisible, int iID)
 {
+	m_bUseAlhpaTest = true;
+
 	m_iResolutionX = ZGui::m_iResX;
 	m_iResolutionY = ZGui::m_iResY;
 
