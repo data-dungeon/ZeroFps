@@ -259,41 +259,7 @@ bool CGamePlayDlg::InitDlg()
 	}
 	else GetWnd("item_bar")->Hide();
 	
-	vector<Entity*> kMembersInField;
-	GetAllAgentsInField(kMembersInField);
-	
-	for(unsigned int i=0; i<5; i++)
-	{
-		if(kMembersInField.size() > i)
-		{
-			m_akAgetIcons[i].pkButton->Show();
-			m_akAgetIcons[i].pkLifeProgressbar->Show();
-			m_akAgetIcons[i].iAgentObjectID = kMembersInField[i]->GetEntityID();
-
-			string icon = GetAgentStats(kMembersInField[i]->GetEntityID())->m_strIcon;
-			string szTexName = string("data/textures/gui/dm/portraits/") + icon;
-			SetButtonIcon(m_akAgetIcons[i].pkButton, szTexName, false);
-
-			DMCharacterStats* pkStats = GetAgentStats(m_akAgetIcons[i].iAgentObjectID);
-
-			float curr = pkStats->m_iLife <= pkStats->m_iMaxLife ? 
-				pkStats->m_iLife : pkStats->m_iMaxLife;
-			float max = float(pkStats->m_iMaxLife);
-
-			if(curr < 0)
-				curr = 0;
-
-			float procent_av_max = 1 - (float) curr / (float) max;
-			float w = 64.0f - (procent_av_max * 64.f);
-			m_akAgetIcons[i].pkLifeProgressbar->Resize((int)w,16,true); 
-		}
-		else
-		{
-			m_akAgetIcons[i].pkButton->Hide();
-			m_akAgetIcons[i].pkLifeProgressbar->Hide();
-			m_akAgetIcons[i].iAgentObjectID = -1;
-		}
-	}
+	UpdateAgentList();
 
 	if(m_iSelectedAgent != -1)
 	{
@@ -437,3 +403,41 @@ DMCharacterStats* CGamePlayDlg::GetAgentStats(int iAgent)
 	return NULL;
 }
 
+void CGamePlayDlg::UpdateAgentList()
+{
+	vector<Entity*> kMembersInField;
+		GetAllAgentsInField(kMembersInField);
+	
+	for(unsigned int i=0; i<5; i++)
+	{
+		if(kMembersInField.size() > i)
+		{
+			m_akAgetIcons[i].pkButton->Show();
+			m_akAgetIcons[i].pkLifeProgressbar->Show();
+			m_akAgetIcons[i].iAgentObjectID = kMembersInField[i]->GetEntityID();
+
+			string icon = GetAgentStats(kMembersInField[i]->GetEntityID())->m_strIcon;
+			string szTexName = string("data/textures/gui/dm/portraits/") + icon;
+			SetButtonIcon(m_akAgetIcons[i].pkButton, szTexName, false);
+
+			DMCharacterStats* pkStats = GetAgentStats(m_akAgetIcons[i].iAgentObjectID);
+
+			float curr = pkStats->m_iLife <= pkStats->m_iMaxLife ? 
+				pkStats->m_iLife : pkStats->m_iMaxLife;
+			float max = float(pkStats->m_iMaxLife);
+
+			if(curr < 0)
+				curr = 0;
+
+			float procent_av_max = 1 - (float) curr / (float) max;
+			float w = 64.0f - (procent_av_max * 64.f);
+			m_akAgetIcons[i].pkLifeProgressbar->Resize((int)w,16,true); 
+		}
+		else
+		{
+			m_akAgetIcons[i].pkButton->Hide();
+			m_akAgetIcons[i].pkLifeProgressbar->Hide();
+			m_akAgetIcons[i].iAgentObjectID = -1;
+		}
+	}
+}

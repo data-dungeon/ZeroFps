@@ -2,6 +2,7 @@
 #include "hq_dlg.h"
 #include "members_dlg.h"
 #include "itemtransaction_dlg.h"
+#include "gameplay_dlg.h"
 
 CHQDlg::CHQDlg() : CGameDlg("HQWnd", &g_kDM)
 {

@@ -648,6 +648,7 @@ void DarkMetropolis::Input()
 							SelectAgent(m_kSelectedEntitys[i], false, false,false); // remove selection
 							pkHQ->InsertCharacter(m_kSelectedEntitys[i]);
 							((CGamePlayDlg*)m_pkGamePlayDlg)->SelectAgent(-1, false);
+							((CGamePlayDlg*)m_pkGamePlayDlg)->UpdateAgentList();
 						}
 						/*else
 						{

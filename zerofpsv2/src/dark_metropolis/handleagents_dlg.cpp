@@ -2,6 +2,7 @@
 #include "handleagents_dlg.h"
 #include "members_dlg.h"
 #include "itemtransaction_dlg.h"
+#include "gameplay_dlg.h"
 
 CHandleAgents::CHandleAgents() : CGameDlg("AgentsWnd", &g_kDM)
 {
@@ -94,6 +95,8 @@ void CHandleAgents::OnCommand(ZGuiWnd *pkMainWnd, string strClickName)
 
 				if(SendOutAgent(m_vkCharsInBaseBns[i].second))
 					m_vkCharsInBaseBns[i].first->Hide();
+
+				((CGamePlayDlg*)GetGameDlg(GAMEPLAY_DLG))->UpdateAgentList();
 				break;
 			}
 		}

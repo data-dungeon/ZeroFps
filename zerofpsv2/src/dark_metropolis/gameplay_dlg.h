@@ -12,6 +12,7 @@ public:
 	int GetSelAgentObject() { return m_iSelectedAgent; } // object id
 	
 	bool InitDlg();
+	void UpdateAgentList();
 
 protected:
 	

@@ -126,17 +126,27 @@ bool CGameDlg::LoadDlg(char* szScriptName)
 
 void CGameDlg::GetAllAgentsInField(vector<Entity*>& kList)
 {
-	vector<Entity*> kObjects;	
-	m_pkDM->m_pkObjectMan->GetZoneObject()->GetAllEntitys(&kObjects,false);
-	for(unsigned int i=0;i<kObjects.size();i++)
-		if((P_DMCharacter*)kObjects[i]->GetProperty("P_DMCharacter"))
-		{
-			// check if member belongs to players team
-			if ( ((P_DMCharacter*)kObjects[i]->GetProperty("P_DMCharacter"))->m_iTeam == 0 )
-			{
-				kList.push_back(kObjects[i]);	
-			}
-		}
+	//vector<Entity*> kObjects;	
+	//m_pkDM->m_pkObjectMan->GetZoneObject()->GetAllEntitys(&kObjects,false);
+	//for(unsigned int i=0;i<kObjects.size();i++)
+	//	if((P_DMCharacter*)kObjects[i]->GetProperty("P_DMCharacter"))
+	//	{
+	//		// check if member belongs to players team
+	//		if ( ((P_DMCharacter*)kObjects[i]->GetProperty("P_DMCharacter"))->m_iTeam == 0 )
+	//		{
+	//			kList.push_back(kObjects[i]);	
+	//		}
+	//	}
+
+	m_pkDM->UpdateAgentsOnField();
+
+	for(unsigned int i=0;i<m_pkDM->m_kAgentsOnField.size();i++)
+	{
+		kList.push_back(
+			m_pkDM->m_pkObjectMan->GetObjectByNetWorkID(
+				m_pkDM->m_kAgentsOnField[i]));	
+	}
+
 }
 
 // Mycket jobb med att få tag på gubbar från mission skripten sen också... Finns ingen funktionalitet för sånt.
