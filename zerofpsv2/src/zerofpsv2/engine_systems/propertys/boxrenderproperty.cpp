@@ -1,5 +1,5 @@
 #include "boxrenderproperty.h"
-#include "../../basic/zfobjectmanger.h"
+#include "../../basic/zfsystem.h"
 #include "../../engine/object.h"
 #include "../../engine/zerofps.h"
  

@@ -12,7 +12,7 @@
 
 #include "fh.h"
 #include "zerofps.h"
-#include "../basic/zfobjectmanger.h"
+#include "../basic/zfsystem.h"
 #include "../basic/image.h"
 
 /*** Start: Vim ***/

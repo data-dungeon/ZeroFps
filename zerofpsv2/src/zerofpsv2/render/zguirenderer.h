@@ -9,7 +9,7 @@
 #include "../basic/rect.h"
 #include "../basic/zguifont.h"
 #include "../basic/image.h"
-#include "../basic/zfobjectmanger.h"
+#include "../basic/zfsystem.h"
 
 class ZGuiSkin;
 

@@ -3,7 +3,7 @@
 
 #include "zfresource.h"
 #include "basic_x.h"
-#include "zfobject.h"
+#include "zfsubsystem.h"
 #include <list>
 
 using namespace std;

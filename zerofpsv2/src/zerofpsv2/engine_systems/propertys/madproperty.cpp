@@ -1,7 +1,7 @@
 #include "madproperty.h"
 #include "../../engine/object.h"
 #include "../../render/render.h"
-#include "../../basic/zfobjectmanger.h"
+#include "../../basic/zfsystem.h"
  
 extern int g_iMadLODLock;
 extern float g_fMadLODScale;

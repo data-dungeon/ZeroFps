@@ -4,7 +4,7 @@
 #include <vector>
 #include <string>
 #include "basic_x.h"
-#include "zfobject.h"
+#include "zfsubsystem.h"
 
 //linux code
 #ifndef WIN32

@@ -1,5 +1,5 @@
 #include "bodyproperty.h"
-#include "../../basic/zfobjectmanger.h"
+#include "../../basic/zfsystem.h"
 #include "../../engine/object.h"
 #include "madproperty.h"
  

@@ -2,7 +2,7 @@
 #define _ENGINE_SKYBOXRENDERPROPERTY_H_
 
 #include "../../engine/property.h"
-#include "../../basic/zfobjectmanger.h"
+#include "../../basic/zfsystem.h"
 #include <iostream>
 #include "../../engine/zerofps.h"
 #include "../engine_systems_x.h"

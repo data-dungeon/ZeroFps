@@ -3,7 +3,7 @@
 #include "network.h"
 #include "objectmanager.h"
 #include "../render/glguirender.h"
-#include "../basic/zfobjectmanger.h"
+#include "../basic/zfsystem.h"
 #include "../gui/zguiresourcemanager.h"
 #include "application.h"
 #include "../gui/zgui.h"

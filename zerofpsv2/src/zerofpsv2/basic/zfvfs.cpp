@@ -3,8 +3,8 @@
 #include <algorithm>
 #include <functional>
 
-#include "zfobject.h"
-#include "zfobjectmanger.h"
+#include "zfsubsystem.h"
+#include "zfsystem.h"
 #include "zfvfs.h"
 #include "basicconsole.h"
 #include "globals.h"

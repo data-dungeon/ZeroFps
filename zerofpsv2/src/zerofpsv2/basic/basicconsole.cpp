@@ -1,7 +1,7 @@
 #include <cstdio>
 #include <cstdarg>
 #include "basicconsole.h"
-#include "zfobjectmanger.h"
+#include "zfsystem.h"
 #include "globals.h"
 
 extern ZFSystem g_ZFObjSys;

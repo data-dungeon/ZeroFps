@@ -2,7 +2,7 @@
 #include "../engine_systems/propertys/madproperty.h"
 #include "../engine_systems/propertys/lightproperty.h"
 #include "network.h"
-#include "../basic/zfobjectmanger.h"
+#include "../basic/zfsystem.h"
  
 PropertyFactory::PropertyFactory() :
  ZFSubSystem("PropertyFactory") 

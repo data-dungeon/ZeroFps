@@ -1,5 +1,5 @@
 #include "lightupdateproperty.h" 	
-#include "../../basic/zfobjectmanger.h"
+#include "../../basic/zfsystem.h"
   	
 LightUpdateProperty::LightUpdateProperty()
 {

@@ -11,7 +11,7 @@
 #include <vector>
 using namespace std;
 
-#include "zfobject.h"
+#include "zfsubsystem.h"
 #include "basic_x.h"
 
 /// Reads text based INI files (Basic Config Sys of ZeroFps).

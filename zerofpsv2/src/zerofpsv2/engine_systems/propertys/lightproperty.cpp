@@ -2,7 +2,7 @@
 
 #include "lightproperty.h"
 #include "../../engine/object.h"
-#include "../../basic/zfobjectmanger.h"
+#include "../../basic/zfsystem.h"
  
 LightProperty::LightProperty()
 {

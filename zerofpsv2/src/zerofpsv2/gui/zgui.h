@@ -19,7 +19,7 @@
 #include "zguislider.h"
 #include "zguiapp.h"
 
-#include "../basic/zfobjectmanger.h"
+#include "../basic/zfsystem.h"
 #include "../basic/image.h"
 #include "../basic/zguiskin.h"
 #include "../basic/zfassert.h"

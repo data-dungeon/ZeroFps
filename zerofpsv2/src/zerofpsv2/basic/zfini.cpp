@@ -7,7 +7,7 @@
 #include <malloc.h>
 #include <memory.h>
 #include "zfini.h"
-#include "zfobjectmanger.h"
+#include "zfsystem.h"
 #include "zfbasicfs.h"
 #include <iostream>
 #include "zfvfs.h"

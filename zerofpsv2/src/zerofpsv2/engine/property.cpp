@@ -1,5 +1,5 @@
 #include "property.h"
-#include "../basic/zfobjectmanger.h"
+#include "../basic/zfsystem.h"
 
 #include "zerofps.h"
  

@@ -2,7 +2,7 @@
 #include "../engine/zerofps.h"
 #include <cstdio>
 #include <cstdarg>
-#include "../basic/zfobjectmanger.h"
+#include "../basic/zfsystem.h"
  
 using namespace std;
 

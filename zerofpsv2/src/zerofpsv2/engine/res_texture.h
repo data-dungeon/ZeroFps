@@ -3,7 +3,7 @@
 
 #include "../basic/zfresource.h"
 #include "../render/texturemanager.h"
-#include "../basic/zfobjectmanger.h"
+#include "../basic/zfsystem.h"
 #include "engine_x.h"
 
 /// A Texture in the Resource SubSystem.

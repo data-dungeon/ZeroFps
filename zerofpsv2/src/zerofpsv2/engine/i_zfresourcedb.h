@@ -9,7 +9,7 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
-#include "../basic/zfobject.h"
+#include "../basic/zfsubsystem.h"
 #include "engine_x.h"
 #include "../basic/zfresource.h"
 

@@ -1,7 +1,7 @@
 #include "texturemanager.h"
 #include "../ogl/zfpsgl.h"
 #include "../basic/zfvfs.h"
-#include "../basic/zfobjectmanger.h"
+#include "../basic/zfsystem.h"
 #include "../basic/image.h"
 #include "render.h"
 #include "../basic/basicconsole.h"

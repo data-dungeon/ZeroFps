@@ -7,7 +7,7 @@
 #include <list>
 #include "../engine_systems_x.h"
 #include "../../basic/zfresource.h"
-#include "../../basic/zfobject.h"
+#include "../../basic/zfsubsystem.h"
 #include "../../basic/vector3.h"
 #include "../../basic/vector4.h"
 #include "oggmusic.h"

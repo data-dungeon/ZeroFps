@@ -6,7 +6,7 @@
 #include "gui_x.h"
 #include <string>
 #include <map>
-#include "../basic/zfobjectmanger.h"
+#include "../basic/zfsystem.h"
 
 using namespace std;
 

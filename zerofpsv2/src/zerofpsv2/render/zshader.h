@@ -4,7 +4,7 @@
 #include <iostream>
 #include "zmaterial.h"
 #include "render_x.h"
-#include "../basic/zfobjectmanger.h"
+#include "../basic/zfsystem.h"
 #include "../basic/vector3.h"
 #include "../basic/vector4.h"
 #include "../ogl/zfpsgl.h"

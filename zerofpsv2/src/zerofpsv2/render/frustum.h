@@ -6,7 +6,7 @@
 #include "../basic/vector3.h"
 #include "../basic/vector4.h"
 #include "../basic/plane.h"
-#include "../basic/zfobjectmanger.h"
+#include "../basic/zfsystem.h"
 #include "../basic/matrix4.h"
 
 using namespace std;

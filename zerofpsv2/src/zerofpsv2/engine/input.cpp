@@ -1,5 +1,5 @@
 #include "input.h"
-#include "../basic/zfobjectmanger.h"
+#include "../basic/zfsystem.h"
 #include "zerofps.h"
  
 Input::Input() 

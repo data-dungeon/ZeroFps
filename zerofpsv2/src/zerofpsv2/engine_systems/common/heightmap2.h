@@ -7,7 +7,7 @@
 #include <vector>
 #include "../../render/texturemanager.h"
 #include "../../render/frustum.h"
-#include "../../basic/zfobjectmanger.h"
+#include "../../basic/zfsystem.h"
 #include "../../basic/zfresource.h"
 #include "../../engine/zerofps.h"
 #include "../../basic/vector2.h"

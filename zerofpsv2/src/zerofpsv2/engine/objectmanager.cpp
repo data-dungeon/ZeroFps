@@ -2,7 +2,7 @@
 #include "network.h"
 #include "zerofps.h"
 #include "netslaveobject.h"
-#include "../basic/zfobjectmanger.h"
+#include "../basic/zfsystem.h"
 #include "../basic/simplescript.h"
 #include "../engine_systems/common/zoneobject.h"
 #include "../engine_systems/propertys/primitives3d.h"

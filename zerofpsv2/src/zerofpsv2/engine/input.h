@@ -2,7 +2,7 @@
 #define _ENGINE_INPUT_H_
 
 #include "../basic/basicconsole.h"
-#include "../basic/zfobject.h"
+#include "../basic/zfsubsystem.h"
 #include <iostream>
 #include <cstdlib>
 #include <SDL/SDL.h>

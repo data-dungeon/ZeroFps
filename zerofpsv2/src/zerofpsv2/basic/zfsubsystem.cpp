@@ -7,8 +7,8 @@
 
 #include "basic_x.h"
 #include "os.h"
-#include "zfobject.h"
-#include "zfobjectmanger.h"
+#include "zfsubsystem.h"
+#include "zfsystem.h"
 
 using namespace std;
 

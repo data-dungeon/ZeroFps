@@ -3,7 +3,7 @@
 #include <cstdio>
 #include <cstdarg>
 
-#include "zfobjectmanger.h"
+#include "zfsystem.h"
 #include "basicconsole.h"
 #include "globals.h"
 #include "../basic/zfini.h"

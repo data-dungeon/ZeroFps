@@ -2,7 +2,7 @@
 #define _BASIC_BASICCONSOLE_H_
 
 #include "os.h"
-#include "zfobject.h"
+#include "zfsubsystem.h"
 #include "basic_x.h"
 #include <iostream>
 #include <vector>

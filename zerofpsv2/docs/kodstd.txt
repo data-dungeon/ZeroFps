@@ -5,7 +5,6 @@ Filnamn:
 	Alla filer ska skrivas enbart med små bokstäver (HELL Linux).
 	Varje class ska placeras i sin egen fil.
 
-
 Kod
 	All kod skrivs med indentering motsvarande tre blanksteg och tab-tecken 
 	är det som bör användas. Rader bör vara kortare än 80 tecken så att alla 
@@ -106,10 +105,11 @@ Names:
 		Åtkomstblocken i klasser / respektive källkodsfiler anges i ordningen 
 			private, protected och public. Det ska bara finnas en av varje.
 	
-		Class Prefixes:
-			Class name				C			
-			Interface name			I			Abstrakt class.
-			Structure name			S			
+		Prefixes:
+			Class 					C			
+			Interface 				I			Abstrakt class.
+			Structure 				S			
+			Unions					U
 
 	Enums/Const
 		Skrivs i stora bokstäver.
@@ -127,7 +127,7 @@ Names:
 			Pointer to				p			
 			Reference to			r			
 			Array						a			
-			Objekt					k			
+			Objekt					k			Prefix för class, structs, unions och interface object.			
 			Funktionspekare		o			
 			Unsigned 				u	
 
@@ -142,8 +142,8 @@ Names:
 			Double					d
 			Enumeration				e			
 
-			C-String					sz	Null terminated c-stryle string.
-			string (C++)			str	C++ string object.
+			C-String					sz			Null terminated c-stryle string.
+			string (C++)			str		C++ string object.
 
 
 Felhantering

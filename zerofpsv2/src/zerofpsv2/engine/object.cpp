@@ -1,7 +1,7 @@
 #include "object.h"
 
 #include "../engine_systems/physicsengine/physicsengine.h"
-#include "../basic/zfobjectmanger.h"
+#include "../basic/zfsystem.h"
 #include "objectmanager.h"
 #include "../engine_systems/propertys/physicproperty.h"
  

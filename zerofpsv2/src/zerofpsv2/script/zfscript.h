@@ -15,7 +15,7 @@ extern "C"
 using namespace std;
 
 #include "script_x.h"
-#include "../basic/zfobjectmanger.h"
+#include "../basic/zfsystem.h"
 #include "../basic/zfresource.h"
 
 class ZFVFileSystem;

@@ -4,7 +4,7 @@
 #include "../../engine/property.h"
 #include <iostream>
 #include <limits.h>
-#include "../../basic/zfobjectmanger.h"
+#include "../../basic/zfsystem.h"
 #include "../../engine/zerofps.h"
 #include "../../engine/objectmanager.h"
 #include <string.h>

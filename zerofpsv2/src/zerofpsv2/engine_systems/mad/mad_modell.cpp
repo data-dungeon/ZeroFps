@@ -1,6 +1,6 @@
 #include "mad_modell.h"
 #include "../../render/render.h"
-#include "../../basic/zfobjectmanger.h"
+#include "../../basic/zfsystem.h"
 #include "../../engine/res_texture.h"
 
 float fGameTime;

@@ -1,5 +1,5 @@
 #include "autoparentproperty.h"
-#include "../../basic/zfobjectmanger.h"
+#include "../../basic/zfsystem.h"
 #include "../../engine/zerofps.h"
  
 AutoParentProperty::AutoParentProperty()

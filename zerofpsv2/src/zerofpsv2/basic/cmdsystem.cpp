@@ -1,7 +1,7 @@
 #include "basic_x.h"
 #include "os.h"
 #include "cmdsystem.h"
-#include "zfobjectmanger.h"
+#include "zfsystem.h"
 #include "globals.h"
 
 CmdSystem::CmdSystem()

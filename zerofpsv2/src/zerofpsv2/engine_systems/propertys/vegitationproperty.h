@@ -5,7 +5,7 @@
 #include "../../engine/property.h"
 #include <iostream>
 #include <string>
-#include "../../basic/zfobjectmanger.h"
+#include "../../basic/zfsystem.h"
 #include "../../engine/zerofps.h"
 
 using namespace std;

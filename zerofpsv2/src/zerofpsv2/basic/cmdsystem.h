@@ -7,7 +7,7 @@
 #include <string.h>
 #include "basic_x.h"
 #include "os.h"
-#include "zfobject.h"
+#include "zfsubsystem.h"
 #include "basicconsole.h"
 
 using namespace std;

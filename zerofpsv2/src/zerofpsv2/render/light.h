@@ -9,7 +9,7 @@
 #include "../ogl/zfpsgl.h"
 #include "../basic/vector3.h"
 #include "../basic/vector4.h"
-#include "../basic/zfobjectmanger.h"
+#include "../basic/zfsystem.h"
 
 using namespace std;
 enum LIGHT_TYPE {

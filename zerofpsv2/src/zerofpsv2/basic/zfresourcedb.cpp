@@ -2,7 +2,7 @@
 #include <SDL/SDL.h>
 #include "zfresourcedb.h"
 #include "globals.h"
-#include "../basic/zfobjectmanger.h"
+#include "zfsystem.h"
 
 #define	RES_EXPIRE_TIME	5.0
 

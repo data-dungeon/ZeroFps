@@ -5,7 +5,7 @@
 #include "os.h"
 
 #include <vector>
-#include "zfobject.h"
+#include "zfsubsystem.h"
 #include "cstdio"
 
 using namespace std;

@@ -1,7 +1,7 @@
 #include "network.h"
 #include "zerofps.h"
 
-#include "../basic/zfobjectmanger.h"
+#include "../basic/zfsystem.h"
 
 NetWork* g_pkNetWork;
  

@@ -19,7 +19,7 @@
 //#include <sdl.h>
 #include "../engine_systems_x.h"
 //#include "zerofps.h"
-#include "../../basic/zfobjectmanger.h"
+#include "../../basic/zfsystem.h"
 
 /*using std::cout;
 using std::endl;

@@ -1,6 +1,6 @@
 #include "primitives3d.h"
 #include "../../engine/object.h"
-#include "../../basic/zfobjectmanger.h"
+#include "../../basic/zfsystem.h"
  
 P_Primitives3D::P_Primitives3D(PrimType eType) : m_ePrimType(eType)
 {

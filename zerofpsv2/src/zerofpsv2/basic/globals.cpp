@@ -5,7 +5,7 @@
 */
 
 #include "globals.h"
-#include "zfobjectmanger.h"
+#include "zfsystem.h"
 #include <cstdio>
 #include <cstdarg>
 using namespace std;

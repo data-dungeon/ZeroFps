@@ -7,7 +7,7 @@
 #include "../engine_systems/propertys/psproperties/lightpsprop.h"
 #include "../engine_systems/propertys/psproperties/alphatestprop.h"
 
-#include "../basic/zfobjectmanger.h"
+#include "../basic/zfsystem.h"
 #include "../basic/zfini.h"
 #include "../render/texturemanager.h"
 
