@@ -9,7 +9,7 @@ using namespace std;
 
 class ENGINE_API ObjectManager : public ZFObject{
 	struct Property_Less : public binary_function<Property*, Property*, bool> {
-		bool operator()(Property* x, Property* y) { return x < y; };
+		bool operator()(Property* x, Property* y) { return *x < *y; };
 	} Less_Property;
 	
 	

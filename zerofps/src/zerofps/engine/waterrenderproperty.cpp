@@ -11,10 +11,10 @@ WaterRenderProperty::WaterRenderProperty(int iSize,int iStep,const char* acTextu
 	m_iType=PROPERTY_TYPE_RENDER;
 	m_iSide=PROPERTY_SIDE_CLIENT;
 	
-//	m_kPos=kPos;
-//	m_kHead=kHead;
 	m_iSize=iSize;
 	m_iStep=iStep;
+	
+	m_iSortPlace=10;
 	
 	SetTexture(acTexture);
 }

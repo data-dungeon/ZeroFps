@@ -7,6 +7,7 @@
 #include "engine_x.h"
 #include "network.h"
 
+
 using namespace std;
 
 class Object;
@@ -23,14 +24,38 @@ enum PROPERTY_SIDE{
 	PROPERTY_SIDE_SERVER
 };
 
+/*
+class ENGINE_API Property_Sort
+{
+	private:
+	
+	public:
+		int m_iPlace;
+		
+		bool m_bDistance_Sort;
+		
+		bool operator<(Property_Sort kOther&){
+			if(!m_bDistance_Sort)
+			return m_iPlace < kOther.m_iPlace;
+		}
+	
+};
+*/
+
 
 class ENGINE_API Property 
 {
+	private:
+		ZeroFps* m_pkZeroFps;
+
 	protected:
 		Object *m_pkObject;
 
 
 	public:
+		int m_iSortPlace;		//place in update queue
+		bool m_bSortDistance;
+		
 		int m_iType;			//property type
 		int m_iSide;			//server or client property
 		
@@ -44,10 +69,11 @@ class ENGINE_API Property
 		virtual void Update()=0;			
 		virtual void PackTo(NetPacket* pkNetPacket) ;
 		virtual void PackFrom(NetPacket* pkNetPacket) ;
-		
-//		inline int GetType(){ return m_iType ;};
 		inline void SetObject(Object* pkObject){m_pkObject=pkObject;};
 		inline Object *GetObject() {return m_pkObject;};
+
+		bool operator<(Property& kOther);
+
 };
 
 

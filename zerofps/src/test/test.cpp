@@ -140,7 +140,7 @@ void Test::OnInit(void) {
 
 	
 	//water
-	WaterObject *water=new WaterObject(1200,10,"file:../data/textures/water2.bmp");
+	WaterObject *water=new WaterObject(1200,50,"file:../data/textures/water2.bmp");
 	water->GetPos().Set(512,0,512);
 	pkObjectMan->Add(water);	
 	
@@ -210,7 +210,7 @@ void Test::OnIdle(void) {
 
 //		pkRender->DrawSkyBox(pkFps->GetCam()->GetPos());
 //		pkRender->DrawHMlod(test,pkFps->GetCam()->GetPos(),pkFps->m_iFps);			
-		pkObjectMan->Update(PROPERTY_TYPE_RENDER,PROPERTY_SIDE_CLIENT,false);
+		pkObjectMan->Update(PROPERTY_TYPE_RENDER,PROPERTY_SIDE_CLIENT,true);
 
 
 		glEnable(GL_ALPHA_TEST);
