@@ -969,7 +969,7 @@ void ZGui::FormatKey(int &iKey)
 			if(iKey == '-')
 				iKey = '_';
 			else
-			if(iKey == '\\')
+			if(iKey == '\'')
 				iKey = '*';
 			else
 			if(iKey > 48 && iKey < 58)
@@ -980,14 +980,8 @@ void ZGui::FormatKey(int &iKey)
 		}
 		else
 		{
-			if(iKey == '-')
-				iKey = '+';
-			if(iKey == '/')
-				iKey = '-';
-			if(iKey == '\\')
-				iKey = '\'';
-			if(iKey == '=')
-				iKey = '´';
+		
+		
 		}	
 
 	#endif // #ifndef LINUX
