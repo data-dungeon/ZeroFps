@@ -41,11 +41,14 @@ class Vector4 {
 		bool operator==(const Vector4 &kOtherV3)	const;
 		bool operator!=(const Vector4 &kOtherV3)	const;
 
-		float dot( const Vector4& v  )		const; 	
+		float Dot( const Vector4& v  )		const; 	
+
+		void Normalize(void);		
+		float Length(void)const;		
 /*		
 		// Vector operations.
-		float length(void)const;				
-		void normalize(void);						
+				
+
 		float dot( const Vector4& v  )		const; 	
 		Vector4 unit(void)					const;						
 		Vector4 cross( const Vector4& v )	const;	

@@ -71,16 +71,17 @@ void Test::OnIdle(void) {
 	if(pkFps->m_kCamPos->y<test->Height(x,z)+2.4)
 		pkFps->m_kCamPos->y=test->Height(x,z)+2.5;	
 //	pkFps->m_kCamPos->y=test->Height(x,z)+4;	
+	if(pkRender->SphereInFrustum(*pkFps->m_kCamPos,Vector4(x+30,test->Height(x+30,z),z,5)))
+		cout<<"you se it=)"<<endl;
+
 	glPushMatrix();
 		glTranslatef(x+30,test->Height(x+30,z),z);
-		glutSolidSphere(1,10,10);
+		glutSolidSphere(10,10,10);
 	glPopMatrix();
 
-//	pkRender->DrawSimpleWater(Vector3(180,3,200),30);
 	pkRender->DrawWater(*pkFps->m_kCamPos,Vector3(512,0,512),Vector3(0,0,0),1200,30);
 	
-//	pkRender->DrawWater(*pkFps->m_kCamPos,Vector3(180,3,200),Vector3(0,45,0),30,2);	
-//	cout<<pkFps->m_iFps<<endl;
+	cout<<pkFps->m_iFps<<endl;
 }
 
 void Test::OnHud(void) {	
@@ -130,3 +131,4 @@ void Test::input() {
 	pkFps->CamRot().x+=z/5.0;
 	pkFps->CamRot().y+=x/5.0;
 }
+

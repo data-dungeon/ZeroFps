@@ -52,8 +52,9 @@ void ZeroFps::MainLoop(void) {
 	while(m_iState!=state_exit) {		
 		switch(m_iState){
 			case state_normal:{
-//				m_pkApp->OnHud();				
+//				m_pkApp->OnHud();									
 				Camera();
+				m_pkRender->GetFrustum();							
 				m_pkApp->OnIdle();				
 				
 				//this changes mode to console

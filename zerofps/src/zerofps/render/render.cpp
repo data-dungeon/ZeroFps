@@ -9,6 +9,7 @@ Render::Render(TextureManager* pkTexMan) {
 	m_iFpsLock=60;
 	m_iAutoLod=1;
 	m_iLodUpdate=0;
+	
 }
 
 void Render::Quad(Vector3 kPos,Vector3 kHead,Vector3 kScale,int iTexture){
@@ -262,5 +263,101 @@ void Render::GiveTexCor(float &iX,float &iY,int iNr) {
 	
 //	cout<<"X: "<<iX<< "  Y: "<<iY<<endl;
 }
+
+void Render::GetFrustum() {
+   Matrix4   proj;
+   Matrix4   modl;
+   Matrix4   clip;
+   float   t;
+   
+	// Get the current PROJECTION matrix from OpenGL 
+   glGetFloatv( GL_PROJECTION_MATRIX, (float*)&proj[0] );
+
+   // Get the current MODELVIEW matrix from OpenGL 
+   glGetFloatv( GL_MODELVIEW_MATRIX, (float*)&modl[0] );
+
+	clip=modl*proj;
+	
+	// Extract the numbers for the RIGHT plane 
+   m_akFrustum[0][0] = clip[ 3] - clip[ 0];
+   m_akFrustum[0][1] = clip[ 7] - clip[ 4];
+   m_akFrustum[0][2] = clip[11] - clip[ 8];
+   m_akFrustum[0][3] = clip[15] - clip[12];
+   
+   // Extract the numbers for the LEFT plane 
+   m_akFrustum[1][0] = clip[ 3] + clip[ 0];
+   m_akFrustum[1][1] = clip[ 7] + clip[ 4];
+   m_akFrustum[1][2] = clip[11] + clip[ 8];
+   m_akFrustum[1][3] = clip[15] + clip[12];  
+   
+   // Extract the BOTTOM plane 
+   m_akFrustum[2][0] = clip[ 3] + clip[ 1];
+   m_akFrustum[2][1] = clip[ 7] + clip[ 5];
+   m_akFrustum[2][2] = clip[11] + clip[ 9];
+   m_akFrustum[2][3] = clip[15] + clip[13];
+   
+   
+   // Extract the TOP plane 
+   m_akFrustum[3][0] = clip[ 3] - clip[ 1];
+   m_akFrustum[3][1] = clip[ 7] - clip[ 5];
+   m_akFrustum[3][2] = clip[11] - clip[ 9];
+   m_akFrustum[3][3] = clip[15] - clip[13];
+   
+   // Extract the FAR plane 
+   m_akFrustum[4][0] = clip[ 3] - clip[ 2];
+   m_akFrustum[4][1] = clip[ 7] - clip[ 6];
+   m_akFrustum[4][2] = clip[11] - clip[10];
+   m_akFrustum[4][3] = clip[15] - clip[14];
+   
+   
+   // Extract the NEAR plane 
+   m_akFrustum[5][0] = clip[ 3] + clip[ 2];
+   m_akFrustum[5][1] = clip[ 7] + clip[ 6];
+   m_akFrustum[5][2] = clip[11] + clip[10];
+   m_akFrustum[5][3] = clip[15] + clip[14];   
+   
+   for(int i=0;i<6;i++)
+   	if(m_akFrustum[i].Length()>0)
+	   	m_akFrustum[i].Normalize();
+   
+   
+}
+
+
+bool Render::PointInFrustum( Vector3 kPoint)
+{
+   int p;
+
+   for( p = 0; p < 6; p++ ){
+      if( m_akFrustum[p][0] * kPoint.x + m_akFrustum[p][1] * kPoint.y + m_akFrustum[p][2] * kPoint.z + m_akFrustum[p][3] <= 0 ){
+         return false;         
+		}
+//		cout<<"klar"<<endl;
+	}
+	
+   return true;
+}
+
+float Render::SphereInFrustum(Vector3 CamPos, Vector4 kPoint)
+{
+   int p;
+   float d;
+
+   for( p = 0; p < 6; p++ )
+   {
+      d = m_akFrustum[p][0] * kPoint.x + m_akFrustum[p][1] * kPoint.y + m_akFrustum[p][2] * kPoint.z + m_akFrustum[p][3];
+      if( d <= -kPoint.w )
+         return 0;
+   }
+   cout<<d<<endl;
+   return d + kPoint.w;
+}
+
+
+
+
+
+
+
 
 

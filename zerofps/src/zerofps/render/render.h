@@ -24,6 +24,9 @@ class RENDER_API Render {
 
 		int m_iSlicesize;	  //height meens greater detail att longer range
 		int m_iLodUpdate;
+		
+		Vector4 m_akFrustum[6];
+		
 	public:
 		int m_iDetail;			//grid size of lod tiles	
 		int m_iViewDistance;	//how far until we cut the landscape	
@@ -31,6 +34,11 @@ class RENDER_API Render {
 		int m_iAutoLod;
 	
 		Render(TextureManager* pkTexMan);
+		
+		void GetFrustum();
+		bool PointInFrustum(Vector3 kPoint);
+		float SphereInFrustum(Vector3 CamPos,Vector4 kPoint);
+		
 		void Quad(Vector3 kPos,Vector3 kHead,Vector3 kScale,int iTexture);
 		void Pyra(float x,float y,float z);
 		void PrintChar(char cChar);

@@ -18,6 +18,8 @@ class Matrix4 {
 		
 		Matrix4(void);
 						
+		float &operator[](const int i);						
+		
 		Matrix4 operator=(const Matrix4 &kOther);
 		Matrix4 operator*(const float &f) const;
 		Matrix4 operator*(const Matrix4 &kOther) const;

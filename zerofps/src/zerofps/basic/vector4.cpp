@@ -171,21 +171,32 @@ Vector4 Vector4::operator*(const Matrix4 &f) const
 
 
 
-float Vector4::dot( const Vector4& v  ) const	
+float Vector4::Dot( const Vector4& v  ) const	
 {
 	return x*v.x + y*v.y + z*v.z+ w*v.w; 
 }
 
+void Vector4::Normalize(void)						
+{
+	float invlen = Length();
+	assert(invlen != 0.0);
+	invlen = 1 / invlen;
+	x *= invlen;
+	y *= invlen;
+	z *= invlen;
+	w *= invlen;
+}
 
-/*
+
+
 // Vector operations.
-float Vector4::length(void) const
+float Vector4::Length(void) const
 {
 	return (float)sqrt( x*x + y*y + z*z +w*w );  
 
 }
 
-
+/*
 Vector4 Vector4::unit(void) const						
 {
 	float invlen = length();
@@ -195,15 +206,6 @@ Vector4 Vector4::unit(void) const
 	return *this;
 }
 
-void Vector4::normalize(void)						
-{
-	float invlen = length();
-	assert(invlen != 0.0);
-	invlen = 1 / invlen;
-	x *= invlen;
-	y *= invlen;
-	z *= invlen;
-}
 
 Vector4 Vector4::cross( const Vector4& v )	const
 {
