@@ -48,6 +48,7 @@ void P_Light::Update()
 	if(m_pkLightSource->iType == SPOT_LIGHT)	
 		m_pkLightSource->kRot = m_pkObject->GetWorldRotM().VectorTransform(Vector3(0,0,1));
 
+		
 	switch(m_iMode)
 	{
 		case LMODE_TORCH:
