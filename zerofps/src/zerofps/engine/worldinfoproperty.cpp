@@ -9,6 +9,23 @@ WorldInfoProperty::WorldInfoProperty()
 
 	m_iType=PROPERTY_TYPE_NORMAL;
 	m_iSide=PROPERTY_SIDE_SERVER;
+	
+	
+	m_kSkyBoxHor = "";
+	m_kSkyBoxTop = "";
+	m_kSkyBoxRotate.Set(0,0,0);
+	
+	m_kFogColor.Set(0,0,0);
+	m_fFogStart=50;
+	m_fFogStop=200;
+	
+	m_bWater=0;
+	
+	m_kSunColor.Set(1,1,1);
+	m_kMoonColor.Set(0.5,0.5,0.5);
+	m_kAmbientColor.Set(0.2,0.2,0.2);
+	
+	
 }
 
 void WorldInfoProperty::Update()
