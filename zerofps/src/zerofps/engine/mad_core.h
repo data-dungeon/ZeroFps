@@ -141,13 +141,13 @@ struct ENGINE_API Mad_CoreSubMesh
 class ENGINE_API Mad_CoreMesh
 { 
 private:
-	vector<Mad_CoreTexture>			akTextures;				///< Texturers used in mesh.			
-	vector<Mad_TextureCoo>			akTextureCoo;			///< Texture Coo for mesh.
-	vector<Mad_Face>					akFaces;					///< Faces in mesh.
-	vector<Mad_CoreVertexFrame>	akFrames;				///< Vertex frames for mesh.
-	vector<Mad_CoreSubMesh>			akSubMeshes;			///< Submeshes.
-	vector<Mad_CoreMeshAnimation>	akAnimation;			///< Animations.
-	vector<int>							akBoneConnections;	///< Vertex -> Bone index.
+	vector<Mad_CoreTexture>			akTextures;						///< Texturers used in mesh.			
+	vector<Mad_TextureCoo>			akTextureCoo;					///< Texture Coo for mesh.
+	vector<Mad_Face>					akFaces;							///< Faces in mesh.
+	vector<Mad_CoreVertexFrame>	akFrames;						///< Vertex frames for mesh.
+	vector<Mad_CoreSubMesh>			akSubMeshes;					///< Submeshes.
+	vector<Mad_CoreMeshAnimation>	akAnimation;					///< Animations.
+	vector<int>							akBoneConnections;			///< Vertex -> Bone index.
 
 	int									iTextureID[256];				///< Texture ID's Assigned by rendering sys.
 	ZFResourceHandle					akTexturesHandles[256];		// Texture resurs handles

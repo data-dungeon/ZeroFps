@@ -375,7 +375,44 @@ void Mad_Modell::LoadTextures()
 		}
 }
 
+
+void Mad_Modell::SetReplaceTexture(char* szOrgName, char* szNew)
+{
+	Mad_Core* pkCore = dynamic_cast<Mad_Core*>(kMadHandle.GetResourcePtr()); 
+
+	int iNumOfMesh = m_kActiveMesh.size();	//GetNumOfMesh();
+	int iNumOfSubMesh;
+
+	for(int iM = 0; iM <iNumOfMesh; iM++) {
+		SelectMesh(m_kActiveMesh[iM]);		//SelectMesh(iM);
+
+		pkCore->PrepareMesh(pkCore->GetMeshByID(m_kActiveMesh[iM]));
+
+		iNumOfSubMesh = GetNumOfSubMesh(m_kActiveMesh[iM]);
+		
+		for(int iSubM = 0; iSubM < iNumOfSubMesh; iSubM++) {
+			SelectSubMesh(iSubM);
+			Mad_CoreTexture* pkTexInfo = GetTextureInfo();
+
+			if(strcmp(pkTexInfo->ucTextureName, szOrgName) == 0) {
+				sprintf(szFullTexName, "data/textures/%s.bmp", szNew);
+				m_akReplaceTexturesHandles[ m_pkSubMesh->iTextureIndex ].SetRes(szFullTexName);
+				}
+		}
+	}
+}
+
+/*				
 Mad_CoreMesh* g_pkLastMesh;
+
+	int						m_aiReplaceTextures[256];
+	ZFResourceHandle		m_akReplaceTexturesHandles[256];
+
+	ZFResourceHandle* pkRes = m_pkMesh->GetTextureHandle(m_pkSubMesh->iTextureIndex);
+	
+	ResTexture* pkTexture = static_cast<ResTexture*>(pkRes->GetResourcePtr());
+	m_pkTex->BindTexture( pkTexture->m_iTextureID );
+*/
 
 void Mad_Modell::Draw_All(int iDrawFlags)
 {
@@ -435,9 +472,14 @@ void Mad_Modell::Draw_All(int iDrawFlags)
 				//iNumOfFaces = 1;
 
 				Mad_CoreTexture* pkTexInfo = GetTextureInfo();
-				
-				
-				ZFResourceHandle* pkRes = m_pkMesh->GetTextureHandle(m_pkSubMesh->iTextureIndex);
+
+				ZFResourceHandle* pkRes;
+				if(m_akReplaceTexturesHandles[ m_pkSubMesh->iTextureIndex ].IsValid()) {
+					pkRes = &m_akReplaceTexturesHandles[m_pkSubMesh->iTextureIndex];
+					}
+				else {
+					pkRes = m_pkMesh->GetTextureHandle(m_pkSubMesh->iTextureIndex);
+					}
 				
 				ResTexture* pkTexture = static_cast<ResTexture*>(pkRes->GetResourcePtr());
 				m_pkTex->BindTexture( pkTexture->m_iTextureID );

@@ -19,7 +19,7 @@
 class ENGINE_API Mad_Modell 
 {
 private:
-	vector<int>			m_kActiveMesh;
+	vector<int>				m_kActiveMesh;
 	
 	TextureManager*		m_pkTex;
 
@@ -50,6 +50,10 @@ private:
 	Mad_CoreTexture* GetTextureInfo();
 
 	void	Create_GLList(Mad_CoreMesh* pkMesh);
+
+	int						m_aiReplaceTextures[256];
+	ZFResourceHandle		m_akReplaceTexturesHandles[256];
+	
 
 public:
 	string	m_kMadFile;
@@ -94,6 +98,7 @@ public:
 	void SetScale(float fScale);
 
 	void SetReplaceTexture(char* szName);
+	void	SetReplaceTexture(char* szOrgName, char* szNew);
 
 	void Draw_All(int iDrawFlags = MAD_DRAW_MESH);	// Draw modell.
 	

@@ -178,6 +178,14 @@ void P_ClientUnit::PackFrom(NetPacket* pkNetPacket)
 		}
 	}*/	
 		
+	// Set Team Texture.
+
+	MadProperty* pkMad =static_cast<MadProperty*>(m_pkObject->GetProperty("MadProperty"));
+	char szTeamName[16];
+	sprintf(szTeamName, "c_team%d", (int) m_kInfo.m_Info2.m_cTeam );
+	if(pkMad)
+		pkMad->SetReplaceTexture("teamtexture", szTeamName);
+
 }
 
 /*void P_ClientUnit::TestCommand()
