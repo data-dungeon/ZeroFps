@@ -389,8 +389,8 @@ void ZGuiApp::InitializeGui(ZGui* pkGui, TextureManager* pkTexMan,
 
 	m_pkTexMan->Load("data/textures/gui/slask.bmp", 0); // första misslyckas, vet inte varför..
 
-	m_pkGui->SetCursor(0,0, m_pkTexMan->Load("data/textures/gui/cursor.bmp", 0),
-		m_pkTexMan->Load("data/textures/gui/cursor_a.bmp", 0), 32, 32);
+	/*m_pkGui->SetCursor(0,0, m_pkTexMan->Load("data/textures/gui/cursor.bmp", 0),
+		m_pkTexMan->Load("data/textures/gui/cursor_a.bmp", 0), 32, 32);*/
 
 	ZGuiFont* pkDefaultFont = new ZGuiFont(16,16,0,ZG_DEFAULT_GUI_FONT);				// LEAK - MistServer, Nothing loaded. (FIXED)
 

@@ -126,6 +126,9 @@ void MistServer::Init()
 		"data/textures/text/ms_sans_serif8.bmp",
 		"data/script/gui/gui_create_server.lua");
 
+	pkGui->SetCursor(0,0, pkTexMan->Load("data/textures/gui/cursor.bmp", 0),
+		pkTexMan->Load("data/textures/gui/cursor_a.bmp", 0), 32, 32);
+
 	// hide cursor
 	SDL_ShowCursor(SDL_DISABLE);
 
@@ -797,20 +800,49 @@ void MistServer::OnCommand(int iID, ZGuiWnd *pkMainWnd)
 				BuildFileTree("ZoneModelTree", "data/mad/zones");
 				BuildFileTree("ObjectTree", "data/script/objects");
 				//GetWnd("WorkTabWnd")->SetMoveArea(Rect(0,0,800,600), true);
-				AddListItem("EnviromentPresetList", "rain.env");
-				AddListItem("EnviromentPresetList", "sun.env");
+
+				AddListItem("EnviromentPresetList", "Rain");
+				AddListItem("EnviromentPresetList", "Sun");
+				AddListItem("EnviromentPresetList", "Cave");				
+
 			}
 		}
-
+		else
 		if(strName == "RotateZoneModellButton")
 		{
 			RotateActiveZoneObject();
 		}
-
+		else
 		if(strName == "ToogleLight")
 		{
 			ToogleLight( static_cast<ZGuiCheckbox*>(pkWndClicked)->IsChecked() );
 		}
+		else
+		if(strName == "DeleteZoneButton")
+		{
+			int id = pkObjectMan->GetZoneIndex(m_kZoneMarkerPos,-1,false);
+			pkObjectMan->DeleteZone(id);
+		}
+		else
+		if(strName == "DeleteObjectButton")
+		{		
+			Object* pkObj = pkObjectMan->GetObjectByNetWorkID(m_iCurrentObject);		
+			if(pkObj) {
+				pkObjectMan->Delete(pkObj);
+				m_iCurrentObject = -1;
+			}
+		}
+		else
+		if(strName == "PlaceongroundButton")
+		{
+			Object* pkObj = pkObjectMan->GetObjectByNetWorkID(m_iCurrentObject);		
+			if(pkObj) {
+				Vector3 pos = pkObj->GetLocalPosV(); pos.y = 0.0;
+				pkObj->SetLocalPosV(pos); 
+				m_iCurrentObject = -1;
+			}
+		}
+
 	}
 
 }
@@ -899,7 +931,6 @@ void MistServer::RotateActiveZoneObject()
 	if(m_iCurrentMarkedZone != -1)
 	{
 		ZoneData* pkData = pkObjectMan->GetZoneData(m_iCurrentMarkedZone);
-
 		pkData->m_pkZone->RotateLocalRotV( Vector3(0,90.0f,0) ); 
 	}
 }

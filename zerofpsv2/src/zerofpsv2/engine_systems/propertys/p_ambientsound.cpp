@@ -47,7 +47,7 @@ void P_AmbientSound::Update()
 		{
 			if(pkObject && !m_strFileName.empty())//m_szFileName != NULL)
 			{
-				if(m_pkAudioSystem->StartSound(m_strFileName/*m_szFileName*/, pkObject->GetWorldPosV(),
+				if(m_pkAudioSystem->StartSound(m_strFileName, pkObject->GetWorldPosV(),
 					pkObject->GetVel(), m_bLoop))
 				{
 					m_bStarted = true;

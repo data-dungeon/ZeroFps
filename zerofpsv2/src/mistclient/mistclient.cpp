@@ -123,18 +123,19 @@ void MistClient::Init()
 	// create gui script
 	GuiAppLua::Init(&g_kMistClient, pkScript);
 
+	HenchmanButton::s_iHenchemanAlphaTex = pkTexMan->Load("/data/textures/gui/portraits/portrait_a.bmp", 0);
+
 	// init gui
 	InitializeGui(pkGui, pkTexMan, pkScript, pkGuiMan, 
 		"data/textures/text/paternoster8.bmp",
 		"data/script/gui/gui_create_client.lua");
 
-	CreateGuiInterface();
-
 	//init mistland script intreface
 	MistLandLua::Init(pkObjectMan,pkScript);
-
-	HenchmanButton::s_iHenchemanAlphaTex = pkTexMan->Load("/data/textures/gui/portraits/portrait_a.bmp", 0);
 	
+	pkGui->SetCursor(0,0, pkTexMan->Load("data/textures/gui/cursor.bmp", 0),
+		pkTexMan->Load("data/textures/gui/cursor_a.bmp", 0), 32, 32);
+
 	// hide cursor
 	SDL_ShowCursor(SDL_DISABLE);
 
@@ -143,7 +144,7 @@ void MistClient::Init()
 
 	// Varde ljus!
 	pkLight->SetLighting(true);
-	//pkZShader->SetForceLighting(ALWAYS_OFF);
+	pkZShader->SetForceLighting(ALWAYS_OFF);
 	
 }
 
@@ -252,6 +253,15 @@ void MistClient::OnSystem()
 			if(m_pkServerInfo)
 			{
 				pkConsole->Printf("Got server info");
+
+				// Skapa spelar panelen
+				if(GetWnd("PanelBkWnd") == NULL)
+				{
+					pkScript->Call(m_pkScriptResHandle, "CreatePlayerPanel", 0, 0);
+					CreateGuiInterface();
+				}
+
+				printf("Connecting to server\n");
 			}
 		}
 	};
@@ -409,8 +419,7 @@ void MistClient::OnServerClientJoin(ZFClient* pkClient,int iConID)
 	
 	pkClient->m_pkObject->AddProperty("P_Primitives3D");	
 	cout << "Now adding er to client" << endl;
-//	pkClient->m_pkObject->AddProperty("TrackProperty");	
-	
+//	pkClient->m_pkObject->AddProperty("TrackProperty");		
 }
 
 void MistClient::OnServerClientPart(ZFClient* pkClient,int iConID)
@@ -435,13 +444,20 @@ void MistClient::OnServerStart(void)
 	
 		m_pkTestobj->SetWorldPosV(Vector3(0,0.1,0));
 		MistLandLua::g_iCurrentPCID = m_pkTestobj->iNetWorkID;
+
+				// Skapa spelar panelen
+				if(GetWnd("PanelBkWnd") == NULL)
+				{
+					pkScript->Call(m_pkScriptResHandle, "CreatePlayerPanel", 0, 0);
+					CreateGuiInterface();
+				}
+
+				printf("Connecting to server\n");
 	}
 
 
 	if(pkObjectMan->GetNumOfZones() != 0) {
 		pkConsole->Printf("Num of Zones: %d",pkObjectMan->GetNumOfZones());
-
-
 	}
 }
 
