@@ -245,8 +245,6 @@ void P_Item::PackTo(NetPacket* pkNetPacket, int iConnectionID )
             // icon
             pkNetPacket->Write_NetStr( m_pkItemStats->m_szPic[0] );
 
-            cout << "PackedIconName:" << m_pkItemStats->m_szPic[0] << endl;
-
             // icon mask
             pkNetPacket->Write_NetStr( m_pkItemStats->m_szPic[1] );
 
@@ -267,8 +265,6 @@ void P_Item::PackTo(NetPacket* pkNetPacket, int iConnectionID )
             // if object isn't a container, don't send anything
             if ( m_pkItemStats->m_pkContainer )
             {
-               cout << "server sent container info" << endl;
-
                pkNetPacket->Write_NetStr( "cont" );
 
                // get container vector
@@ -331,8 +327,6 @@ void P_Item::PackFrom(NetPacket* pkNetPacket, int iConnectionID )
    }
    else if ( kDataType == "cont" )
    {
-      cout << "Item got container info from server!!! :)" << endl;
-
       // if object isn't a container, better make it one, or it crashes!
       if ( !m_pkItemStats->m_pkContainer )
          m_pkItemStats->MakeContainer();
@@ -362,15 +356,12 @@ void P_Item::PackFrom(NetPacket* pkNetPacket, int iConnectionID )
       for ( list<WaitingFor>::iterator kIte = m_kWaitingForRequest.begin();
             kIte != m_kWaitingForRequest.end(); kIte++ )
       {
-         cout << "waitvector:" << (*kIte).m_pkData << endl;
-
          if ( (*kIte).m_iRequest == eWAITING_FOR_CONT )
          {
             m_pkItemStats->m_pkContainer->GetAllItemsInContainer(
                (vector<Entity*>*)(*kIte).m_pkData );
 
             // we want to update all items in container also
-            cout << "iv'e got a container full of stuff! :)" << endl;
 
             m_kWaitingForRequest.erase ( kIte++ );            
          }
@@ -457,7 +448,6 @@ void P_Item::RequestUpdateFromServer (string kType)
 
          pkCC->AddOrder (kOrder);
 
-         cout << "requested container" << endl;
       }
       // for now, the only data the client need is icon, item name and tooltip
       else if ( kType == "data" )
@@ -500,15 +490,12 @@ void P_Item::GetAllItemsInContainer( vector<Entity*>* pkContainerList )
       WaitingFor kNewWait;
       kNewWait.m_iRequest = eWAITING_FOR_CONT;
       
-      cout << "cont" << pkContainerList << endl;
-
       kNewWait.m_pkData = pkContainerList;
 
       m_kWaitingForRequest.push_back (kNewWait);
 
       RequestUpdateFromServer ( "container" );
 
-      cout << "asked to get stuff in container" << endl;
    }
 
 }
