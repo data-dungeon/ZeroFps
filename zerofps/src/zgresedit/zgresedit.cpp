@@ -200,13 +200,6 @@ bool ZGResEdit::WinProc(ZGuiWnd* pkWnd,unsigned int uiMessage,
 		}
 		break;
 
-/*	case ZGM_MOVING:
-		if( ((int*)pkParams)[0] == ID_RECTWND)
-		{
-			printf("hhe\n");
-		}
-		break;*/
-
 	// Left Mouse Click Down Message
 	case ZGM_LBUTTONDOWN:
 		{				
@@ -361,27 +354,45 @@ bool ZGResEdit::WinProc(ZGuiWnd* pkWnd,unsigned int uiMessage,
 
 					if(pkWnd == m_pkRectWnd )
 					{
-						int bx = pkWnd->GetScreenRect().Left;
-						int by = pkWnd->GetScreenRect().Top;
+						int iOldPosXRectWnd = pkWnd->GetScreenRect().Left;
+						int iOldPosYRectWnd = pkWnd->GetScreenRect().Top;
 
 						if(m_bResizeRectWnd)
 						{
 							int u,v;
 							pkInput->MouseXY(u,v);
-							int sx = u-bx; if(sx<0) sx=0;
-							int sy = v-by; if(sy<0) sy=0;
+							int sx = u-iOldPosXRectWnd; if(sx<0) sx=0;
+							int sy = v-iOldPosYRectWnd; if(sy<0) sy=0;
 							pkWnd->Resize(sx,sy);
 						}
 						else
 						{
 							MoveWnd(pkWnd,x,y);
 
-							int mx = pkWnd->GetScreenRect().Left;
-							int my = pkWnd->GetScreenRect().Top;
+							int iNewPosXRectWnd = pkWnd->GetScreenRect().Left;
+							int iNewPosYRectWnd = pkWnd->GetScreenRect().Top;
+
+							int MoveOffsetX = iNewPosXRectWnd-iOldPosXRectWnd;
+							int MoveOffsetY = iNewPosYRectWnd-iOldPosYRectWnd;
 
 							for(int i=0; i<m_pkMoveWnds.size(); i++)
 							{
-								m_pkMoveWnds[i]->Move(mx-bx, my-by);
+								bool bSkip = false;
+
+								// Flytta inte på ett fönster om dess parent
+								// också skall flyttas (tårta-på-tårta).
+								ZGuiWnd* pkParent = m_pkMoveWnds[i]->GetParent();
+								for(int j=0; j<m_pkMoveWnds.size(); j++)
+									if( m_pkMoveWnds[i] != m_pkMoveWnds[j] &&
+										m_pkMoveWnds[j] == pkParent)
+										{
+											bSkip = true;
+											break;
+										}
+
+								if(bSkip == false)
+									m_pkMoveWnds[i]->Move(
+										MoveOffsetX, MoveOffsetY);
 							}
 
 							return true;
