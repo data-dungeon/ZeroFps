@@ -13,7 +13,7 @@ void Body::Reset()
 	m_bSolid	=				false;
 	m_bGravity =			true;
 	m_bResting =			false;
-	m_fBounce =				0.2;
+	m_fBounce =				0.9;
 	m_fAirFriction =		0.001;
 	
 	m_pkFaces =				NULL;
@@ -26,15 +26,11 @@ void Body::Reset()
 	m_kInertia.m_afData[4] = 1;
 	m_kInertia.m_afData[8] = 1;
 	
-/*	m_kInertia.m_afData[0] = 1.2;
-	m_kInertia.m_afData[4] = 1.2;
-	m_kInertia.m_afData[8] = 1.2;
-*/	
 	
 	m_kInertia.Inverse(m_kInertiaInverse,0.1);
 	
 	m_kInertiaInverse*=10;
-
+	
 	m_kMassCenter.Set(0,0,0);	
 	m_kPosition.Set(0,0,0);
 	m_kVelocity.Set(0,0,0);

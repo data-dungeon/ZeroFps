@@ -217,8 +217,8 @@ P_Sound::~P_Sound()
 
 void P_Sound::Update()
 {
-/*	if(!m_pkFps->m_bServerMode)
-	{*/
+	if(!m_pkFps->m_bServerMode)
+	{
 		if(!m_strFileName.empty())
 		{
 			Entity* pkObject = GetObject();
@@ -228,7 +228,7 @@ void P_Sound::Update()
 
 			m_strFileName = "";
 		}
-//	}
+	}
 }
 
 void P_Sound::Play(string strName) // körs endast på server sidan

@@ -27,7 +27,7 @@ P_Body::~P_Body()
 
 void P_Body::Init()
 {
-	//m_pkObject->RotateLocalRotV(Vector3(15,0,0));
+	m_pkObject->RotateLocalRotV(Vector3(15,0,0));
 	m_pkObject->SetInterpolate(false);
 
 	if(Enable())

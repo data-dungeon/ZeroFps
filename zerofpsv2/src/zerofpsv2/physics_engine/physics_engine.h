@@ -83,8 +83,8 @@ class PHYSICSENGINE_API Physics_Engine : public ZFSubSystem
 		void TestWithPlanes(float fATime);
 		bool TestSphereVSPlane(Body* pkBody,Plane* pkPlane,float fATime);
 		bool TestMeshVSPlane(Body* pkBody,Plane* pkPlane,float fATime);		
-		int CollideSphereVSPlane(Body* pkBody,Plane* pkPlane); 
-		int CollideMeshVSPlane(Body* pkBody,Plane* pkPlane);
+		bool CollideSphereVSPlane(Body* pkBody,Plane* pkPlane); 
+		bool CollideMeshVSPlane(Body* pkBody,Plane* pkPlane);
 
 		void TestBodys(float fATime);
 		bool TestBodyVSBody(Body* pkBody1,Body* pkBody2,float fATime);
