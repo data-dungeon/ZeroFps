@@ -2028,10 +2028,12 @@ void Render::Setup_EditColors()
 	m_kEditColor.push_back( EditColor(string("active/firstentity"),	Vector3(0.263,1.000,0.639) ));	
 
 	// Inactive - Items not selected.
-	m_kEditColor.push_back( EditColor(string("inactive/zonebuild"),	Vector3(0,		1,			1) ));	
-	m_kEditColor.push_back( EditColor(string("inactive/zoneon"),		Vector3(0,		0,			1) ));	
-	m_kEditColor.push_back( EditColor(string("inactive/zoneoff"),		Vector3(0.000, 0.016, 0.376) ));	
-	m_kEditColor.push_back( EditColor(string("inactive/entity"),		Vector3(1,1,1) ));	
+	m_kEditColor.push_back( EditColor(string("inactive/zonebuild"),		Vector3(0,		1,			1) ));	
+	m_kEditColor.push_back( EditColor(string("inactive/zoneon"),			Vector3(0,		1,			0) ));	
+	m_kEditColor.push_back( EditColor(string("inactive/zoneoff"),			Vector3(1,		0,			0) ));	
+	m_kEditColor.push_back( EditColor(string("inactive/zoneunloading"),	Vector3(0,		0,			1) ));	
+	m_kEditColor.push_back( EditColor(string("inactive/zoneloading"),		Vector3(0,		1,			1) ));	
+	m_kEditColor.push_back( EditColor(string("inactive/entity"),			Vector3(1,1,1) ));	
 
 	// Std Colors
 	m_kEditColor.push_back( EditColor(string("black"),		Vector3( 0,0,0) ));	

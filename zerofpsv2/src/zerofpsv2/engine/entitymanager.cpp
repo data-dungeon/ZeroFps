@@ -72,7 +72,9 @@ EntityManager::EntityManager()
 	m_bDrawZoneConnections	= false;
 	m_pScriptFileHandle		= NULL;
 	m_iTrackerLOS				= 3;	
-	m_iObjectDistance			= 50;		
+	m_iObjectDistance			= 50;
+	m_fZoneUnloadTime			= 3;	
+	m_iMaxZoneIO 				= 1;	
 
 	m_pkWorldObject			= NULL;
 	m_pkZoneObject				= NULL;
@@ -81,7 +83,7 @@ EntityManager::EntityManager()
 
 	m_fSimTime					= 0;			
 	m_fSimTimeScale			= 1.0;	
-//	GetSimDelta					= 0;
+//	GetSimDelta					= 0; 
 
 	Register_Cmd("o_logtree",FID_LOGOHTREE);	
 	Register_Cmd("o_dumpp",FID_LOGACTIVEPROPERTYS);	
@@ -100,6 +102,8 @@ EntityManager::EntityManager()
 	RegisterVariable("e_simspeed",	&m_fSimTimeScale,				CSYS_FLOAT);
 	
 	RegisterVariable("l_trackerlos", &m_iTrackerLOS, CSYS_INT);	
+	RegisterVariable("l_zoneunloadtime", &m_fZoneUnloadTime, CSYS_FLOAT);	
+	RegisterVariable("l_maxzoneio", &m_iMaxZoneIO, CSYS_INT);	
 	RegisterVariable("l_objectdistance", &m_iObjectDistance, CSYS_FLOAT);		
 }
 
@@ -1529,20 +1533,15 @@ void EntityManager::Test_DrawZones()
 		Vector3 kMin = m_kZones[i].m_kPos - m_kZones[i].m_kSize/2;
 		Vector3 kMax = m_kZones[i].m_kPos + m_kZones[i].m_kSize/2;
 	
-		//if(m_kZones[i].m_bUnderContruction)
-		//	m_pkRender->DrawAABB( kMin,kMax, m_pkRender->GetEditColor("inactive/zonebuild"), 3 );
-
-		if(m_kZones[i].m_bActive) {
+		if(m_kZones[i].m_bActive && m_kZones[i].m_pkZone)
 			m_pkRender->DrawAABB( kMin,kMax, m_pkRender->GetEditColor("inactive/zoneon") );
-			}
-		else {
+		else if(m_kZones[i].m_bActive)
+			m_pkRender->DrawAABB( kMin,kMax, m_pkRender->GetEditColor("inactive/zoneloading") );				
+		else if(m_kZones[i].m_pkZone)
+			m_pkRender->DrawAABB( kMin,kMax, m_pkRender->GetEditColor("inactive/zoneunloading")  );
+		else
 			m_pkRender->DrawAABB( kMin,kMax, m_pkRender->GetEditColor("inactive/zoneoff")  );
-			}	
-
-/*			if(m_kZones[i].m_bUnderContruction)
-			m_pkRender->DrawAABB( kMin,kMax, Vector3(0,0,1) );
-		else {
-			}*/
+					
 	
 		if(m_bDrawZoneConnections) {
 			Vector3 kConnectColor = m_pkRender->GetEditColor("inactive/zonebuild");
@@ -1738,7 +1737,7 @@ int EntityManager::GetZoneIndex(Vector3 kMyPos,int iCurrentZone,bool bClosestZon
 void EntityManager::UpdateZones()
 {
 
-	float fTime = m_pkZeroFps->m_pkObjectMan->GetGameTime();
+	float fTime = m_pkZeroFps->GetEngineTime();
 	ZoneData* pkZone;
 	ZoneData* pkStartZone;
 	unsigned int iZ;
@@ -1750,7 +1749,7 @@ void EntityManager::UpdateZones()
 	for(iZ=0;iZ<m_kZones.size();iZ++) 
 	{
 		m_kZones[iZ].m_bActive							= false;
-		m_kZones[iZ].m_fInactiveTime					= fTime;
+		//m_kZones[iZ].m_fInactiveTime					= fTime;
 		m_kZones[iZ].m_iRange							 = 10000;
 		m_kZones[iZ].m_fDistance						 = 10000;		
 		
@@ -1836,30 +1835,45 @@ void EntityManager::UpdateZones()
 
 
 	//loop trough all zones and load/unload them
+	
+	int iOperations = 0;
 	ZoneData* pkZoneRefresh;	
 	for(unsigned int i=0; i<m_kZones.size(); i++) 
 	{
 		pkZoneRefresh = &m_kZones[i];
 
-		// Zones that need to load.
-		if(pkZoneRefresh->m_bActive && pkZoneRefresh->m_pkZone == NULL) 
+		//perform max X operations per frame
+		if(iOperations < m_iMaxZoneIO)
 		{
-			LoadZone(pkZoneRefresh->m_iZoneID);
+			// Load / Unload zones.
+			if(pkZoneRefresh->m_bActive && pkZoneRefresh->m_pkZone == NULL) 
+			{
+				iOperations++;			
+				LoadZone(pkZoneRefresh->m_iZoneID);	
+			}
+	
+			// Zones that need to unload
+			if(pkZoneRefresh->m_bActive == false && pkZoneRefresh->m_pkZone) 
+			{
+				//check time since zone was last active, if longer than m_fZoneUnloadTime unload it
+				if( (fTime - pkZoneRefresh->m_fInactiveTime) > m_fZoneUnloadTime)
+				{		
+					iOperations++;
+					UnLoadZone(pkZoneRefresh->m_iZoneID);
+				}
+			}
+		}
+
+		
+		//all active zones 
+		if(pkZoneRefresh->m_bActive && pkZoneRefresh->m_pkZone)
+		{
+			pkZoneRefresh->m_pkZone->SetUpdateStatus(UPDATE_ALL);
 			
-			//cout << "Load Zone: " << pkZoneRefresh->m_iZoneID << endl;
+			//update zone timer
+			pkZoneRefresh->m_fInactiveTime = fTime;
 		}
-
-		// Zones that need to unload
-		if(pkZoneRefresh->m_bActive == false && pkZoneRefresh->m_pkZone) 
-		{
-			UnLoadZone(pkZoneRefresh->m_iZoneID);
-			//cout << "UnLoad Zone: " << pkZoneRefresh->m_iZoneID << endl;
-		}
-
-//		if(pkZoneRefresh->m_bActive)
-//			pkZoneRefresh->m_pkZone->SetUpdateStatus(UPDATE_ALL);
-
-
+/*
 		//dvoid object loding ...eller nått
 		if(pkZoneRefresh->m_bActive)
 		{
@@ -1882,6 +1896,7 @@ void EntityManager::UpdateZones()
 				}
 			}
 		}
+*/		
 	}
 
 
@@ -1904,25 +1919,6 @@ void EntityManager::UpdateZones()
 				//cout<<"reseting zone:"<<endl;
 			}
 		}
-	}
-
-}
-
-void EntityManager::Zones_Refresh()
-{
-	for(unsigned int i=0; i<m_kZones.size(); i++) {
-		// Zones that need to load.
-		if(m_kZones[i].m_bActive && m_kZones[i].m_pkZone == NULL) {
-			LoadZone(m_kZones[i].m_iZoneID);
-			cout << "Load Zone: " << m_kZones[i].m_iZoneID << endl;
-			}
-
-		// Zones that need to unload
-		if(m_kZones[i].m_bActive == false && m_kZones[i].m_pkZone) {
-			UnLoadZone(m_kZones[i].m_iZoneID);
-			cout << "UnLoad Zone: " << m_kZones[i].m_iZoneID << endl;
-			}
-
 	}
 }
 
@@ -2322,6 +2318,7 @@ void EntityManager::UnLoadZone(int iId)
 	
 	Delete(kZData->m_pkZone);
 	kZData->m_pkZone = NULL;
+	
 }
 
 void EntityManager::SaveZone(int iId,string strSaveDir )
@@ -2929,6 +2926,28 @@ void EntityManager::CommitZone(int iId)
 		zd->m_bUnderContruction = false;
 		zd->m_iRevision++;		
 		cout<<"committing zone:"<<iId<<" new revision is:"<<zd->m_iRevision<<" static entitys:"<<nrofstatic<<" dynamic entitys:"<<kEntitys.size()-nrofstatic<<endl;
+	}
+}
+*/
+
+/*
+void EntityManager::Zones_Refresh()
+{
+	for(unsigned int i=0; i<m_kZones.size(); i++) {
+		// Zones that need to load.
+		if(m_kZones[i].m_bActive && m_kZones[i].m_pkZone == NULL) 
+		{
+			LoadZone(m_kZones[i].m_iZoneID);
+			cout << "Load Zone: " << m_kZones[i].m_iZoneID << endl;
+		}
+
+		// Zones that need to unload
+		if(m_kZones[i].m_bActive == false && m_kZones[i].m_pkZone) 
+		{
+			UnLoadZone(m_kZones[i].m_iZoneID);
+			cout << "UnLoad Zone: " << m_kZones[i].m_iZoneID << endl;
+		}
+
 	}
 }
 */

@@ -102,7 +102,8 @@ class ENGINE_API EntityManager : public ZFSubSystem{
 		list<P_Track*>				m_kTrackedObjects;	
 		int							m_iTrackerLOS;												//tracker line of sight
 		float							m_iObjectDistance;											//tracker line of sight		
-
+		float							m_fZoneUnloadTime;
+		int							m_iMaxZoneIO;
 			
 		vector<Property*>			m_akPropertys;												///< List of Active Propertys.	
 		int							m_iNrOfActivePropertys;									///> Size of akProperty list.
@@ -215,7 +216,6 @@ class ENGINE_API EntityManager : public ZFSubSystem{
 
 		// Get Strings.
 		char* GetUpdateStatusName(int eStatus);				
-//		char* GetObjectTypeName(int eType);
 		char* GetPropertyTypeName(int iType);
 		char* GetPropertySideName(int iSide);
 
@@ -241,7 +241,7 @@ class ENGINE_API EntityManager : public ZFSubSystem{
 		int CreateZone(Vector3 kPos,Vector3 kSize);
 		void DeleteZone(int iId);
 		int GetUnusedZoneID();		
-		void Zones_Refresh();
+//		void Zones_Refresh();
 		void ClearZoneLinks(int iId);
 		void SetZoneModel(const char* szName,int iId);
 		bool IsInsideZone(Vector3 kPos,Vector3 kSize);
