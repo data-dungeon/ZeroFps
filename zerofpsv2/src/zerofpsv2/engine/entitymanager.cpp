@@ -39,7 +39,6 @@ ZoneData::ZoneData()
 	m_iZoneObjectID = -1;
 	m_iRange = 0;		
 	m_fDistance = 0;	
-	m_bUnderContruction = false;
 	m_iRevision = 0;
 	
 	m_strEnviroment = "Default";
@@ -92,7 +91,6 @@ EntityManager::EntityManager()
 	Register_Cmd("loadworld",FID_LOADWORLD, CSYS_FLAG_SRC_ALL);	
 	Register_Cmd("saveworld",FID_SAVEWORLD, CSYS_FLAG_SRC_ALL);		
 	Register_Cmd("setworlddir",FID_SETWORLDDIR, CSYS_FLAG_SRC_ALL);		
-	Register_Cmd("settempworlddir",FID_SETTEMPWORLDDIR, CSYS_FLAG_SRC_ALL);			
 	
 	Register_Cmd("loadzones",FID_LOADZONES, CSYS_FLAG_SRC_ALL);	
 	Register_Cmd("savezones",FID_SAVEZONE, CSYS_FLAG_SRC_ALL);	
@@ -110,11 +108,12 @@ bool EntityManager::StartUp()
 	m_pkZeroFps	=	static_cast<ZeroFps*>(GetSystem().GetObjectPtr("ZeroFps"));		
 	m_pkNetWork	= static_cast<NetWork*>(GetSystem().GetObjectPtr("NetWork"));
 	m_pkScript  = static_cast<ZFScriptSystem*>(GetSystem().GetObjectPtr("ZFScriptSystem"));
+	m_pkBasicFS	=	static_cast<ZFBasicFS*>(GetSystem().GetObjectPtr("ZFBasicFS"));		
 
 	m_fEndTimeForceNet		= m_pkZeroFps->GetEngineTime();
 
-	m_kWorldDirectory = "../data/testmap";
-	m_kTempWorldDirectory = "";
+	m_kWorldDirectory = "worldtemp";
+	//m_kTempWorldDirectory = "";
 
 	//create all base objects
 	Clear();
@@ -468,21 +467,6 @@ Entity* EntityManager::CreateObjectFromScriptInZone(const char* acName,Vector3 k
 	
 	if(newobj)
 	{      
-		//check if its a static object, in that case check if the zone is in consturction mode else delete the object 
-/*		if(newobj->GetObjectType() == OBJECT_TYPE_STATIC)
-		{
-			ZoneData* zd = GetZoneData(id);
-			if(zd)
-			{
-				if(!zd->m_bUnderContruction)
-				{
-					Delete(newobj);
-					cout<<"ERROR: You cant add a static entity to a zone that is not underconstruction"<<endl;
-					return NULL;		
-				}
-			}
-		}
-*/	
 		newobj->SetUseZones(true);
 		newobj->SetWorldPosV(kPos);	
 		if(newobj->m_iCurrentZone == -1)
@@ -1355,27 +1339,47 @@ void EntityManager::RunCommand(int cmdid, const CmdArgument* kCommand)
 			break;
 	
 		case FID_LOADWORLD:
+			if(kCommand->m_kSplitCommand.size() <= 1)
+			{
+				GetSystem().Printf("loadworld [load directory]");
+			}
+			else		
+			{
+				if(!LoadWorld(kCommand->m_kSplitCommand[1]))
+				{
+					GetSystem().Printf("Error loading , savegame does not exist?");
+				}				
+			}			
+		
+		/*
 			if(kCommand->m_kSplitCommand.size() > 2)  //is there a temporary directory argument?
 				LoadWorld(kCommand->m_kSplitCommand[1],kCommand->m_kSplitCommand[2]);
 			else
-				LoadWorld(kCommand->m_kSplitCommand[1]);
+				LoadWorld(kCommand->m_kSplitCommand[1]);*/
 			break;
-		
+
 		case FID_SAVEWORLD:
-			ForceSave();
+			if(kCommand->m_kSplitCommand.size() <= 1)
+			{
+				GetSystem().Printf("saveworld [save directory]");
+			}
+			else		
+			{
+				if(!SaveWorld(kCommand->m_kSplitCommand[1]))
+				{
+					GetSystem().Printf("Error saving , directory already exist?");
+				}				
+			}
+		
+			//ForceSave();
 			break;
 		
 		case FID_SETWORLDDIR:
 			SetWorldDir(kCommand->m_kSplitCommand[1].c_str());		
 			SaveZones();
 			break;
-		
-		case FID_SETTEMPWORLDDIR:
-			SetTempWorldDir(kCommand->m_kSplitCommand[1].c_str());		
-			break;
-			
+					
 	}	
-
 }
 
 void EntityManager::OwnerShip_Take(Entity* pkObj)
@@ -1515,8 +1519,8 @@ void EntityManager::Test_DrawZones()
 		Vector3 kMin = m_kZones[i].m_kPos - m_kZones[i].m_kSize/2;
 		Vector3 kMax = m_kZones[i].m_kPos + m_kZones[i].m_kSize/2;
 	
-		if(m_kZones[i].m_bUnderContruction)
-			m_pkRender->DrawAABB( kMin,kMax, m_pkRender->GetEditColor("inactive/zonebuild"), 3 );
+		//if(m_kZones[i].m_bUnderContruction)
+		//	m_pkRender->DrawAABB( kMin,kMax, m_pkRender->GetEditColor("inactive/zonebuild"), 3 );
 
 		if(m_kZones[i].m_bActive) {
 			m_pkRender->DrawAABB( kMin,kMax, m_pkRender->GetEditColor("inactive/zoneon") );
@@ -1939,7 +1943,7 @@ int EntityManager::CreateZone(Vector3 kPos,Vector3 kSize)
 	m_kZones[id].m_iZoneLinks.clear();
 	m_kZones[id].m_fInactiveTime = 0;
 	m_kZones[id].m_iRange = 0;
-	m_kZones[id].m_bUnderContruction = false;
+	//m_kZones[id].m_bUnderContruction = false;
 	m_kZones[id].m_iRevision = 0;
 	m_kZones[id].m_strEnviroment = "Default";
 	m_kZones[id].m_iZoneObjectID = -1;	
@@ -1982,25 +1986,22 @@ void EntityManager::DeleteZone(int iId)
 
 
 
-bool EntityManager::LoadZones()
+bool EntityManager::LoadZones(string strSaveDir )
 {
 	ZFVFile kFile;
 	
-	//if theres a tempworlddirectory try to load zones from there first
-	if(!m_kTempWorldDirectory.empty())
+	if(!strSaveDir.empty())
 	{
-		if(!kFile.Open((m_kTempWorldDirectory + "/zones.dat").c_str(),0,false))
-			if(!kFile.Open((m_kWorldDirectory + "/zones.dat").c_str(),0,false))
-			{
-				cout<<"Error loading zones"<<endl;				
-				return false;
-			}
-	}	
-	else if(!kFile.Open((m_kWorldDirectory + "/zones.dat").c_str(),0,false))
-	{
-		cout<<"Error loading zones"<<endl;						
-		return false;
+		kFile.Open((strSaveDir + "/zones.dat").c_str(),0,false);
 	}
+	else
+	{
+		if(!kFile.Open((m_kWorldDirectory + "/zones.dat").c_str(),0,false))
+		{
+			cout<<"Error loading zones"<<endl;						
+			return false;
+		}
+	}		
 
 	Clear();
 
@@ -2023,7 +2024,7 @@ bool EntityManager::LoadZones()
 
 	for( i=0; i<iNumOfZone; i++) {
 		kFile.Read(&kZData.m_bNew, sizeof(kZData.m_bNew), 1);
-		kFile.Read(&kZData.m_bUnderContruction, sizeof(kZData.m_bUnderContruction), 1);						
+		//kFile.Read(&kZData.m_bUnderContruction, sizeof(kZData.m_bUnderContruction), 1);						
 		kFile.Read(&kZData.m_iRevision, sizeof(kZData.m_iRevision), 1);								
 		kFile.Read(&kZData.m_bUsed, sizeof(kZData.m_bUsed), 1);						
 		kFile.Read(&kZData.m_iZoneID, sizeof(kZData.m_iZoneID), 1);
@@ -2053,17 +2054,17 @@ bool EntityManager::LoadZones()
 	return true;
 }
 
-bool EntityManager::SaveZones()
+bool EntityManager::SaveZones(string strSaveDir)
 {
 	string filename;
 
-	//save in temporary or not?
-	if(!m_kTempWorldDirectory.empty())
-		filename = m_kTempWorldDirectory;
-	else
+	if(strSaveDir.empty())
 		filename = m_kWorldDirectory;	
-		
+	else
+		filename = strSaveDir;
+	
 	filename+="/zones.dat";
+	
 	
 	cout<<"saving to :"<<filename<<endl;
 	
@@ -2085,7 +2086,7 @@ bool EntityManager::SaveZones()
 	{
 
 		kFile.Write(&m_kZones[i].m_bNew, sizeof(m_kZones[i].m_bNew), 1);
-		kFile.Write(&m_kZones[i].m_bUnderContruction, sizeof(m_kZones[i].m_bUnderContruction), 1);								
+		//kFile.Write(&m_kZones[i].m_bUnderContruction, sizeof(m_kZones[i].m_bUnderContruction), 1);								
 		kFile.Write(&m_kZones[i].m_iRevision, sizeof(m_kZones[i].m_iRevision), 1);										
 		kFile.Write(&m_kZones[i].m_bUsed, sizeof(m_kZones[i].m_bUsed), 1);				
 		kFile.Write(&m_kZones[i].m_iZoneID, sizeof(m_kZones[i].m_iZoneID), 1);
@@ -2120,7 +2121,7 @@ ZoneData* EntityManager::GetZoneData(int iID)
 
 }
 
-void EntityManager::LoadZone(int iId)
+void EntityManager::LoadZone(int iId,string strSaveDir)
 {	
 	ZoneData* kZData = GetZoneData(iId);
 	assert(kZData);
@@ -2150,41 +2151,45 @@ void EntityManager::LoadZone(int iId)
 		char nr[10];
 		IntToChar(nr,iId);
 	
-		string tempzonefilename(m_kTempWorldDirectory);
-		tempzonefilename+="/";
-		tempzonefilename+=nr;
-		tempzonefilename+=".dynamic.zone";
-		
-		
-		string zonefilename(m_kWorldDirectory);
-		zonefilename+="/";
-		zonefilename+=nr;
-		zonefilename+=".dynamic.zone";
-	
-
 		kZData->m_bNew = true;
 		
 		
-		//first try to load the temporary zone, if the temporaryworld directory has been set 
-		if(!m_kTempWorldDirectory.empty())
-			if(kFile.Open(tempzonefilename.c_str(),0,false))
-			{
-				cout<<"load from temporary zonefile:"<<tempzonefilename<<endl;				
-				kZData->m_bNew = false;
-			}
+		//load from input directory if any
+		if(!strSaveDir.empty())
+		{
+			string zonefilename(strSaveDir);
+			zonefilename+="/";
+			zonefilename+=nr;
+			zonefilename+=".dynamic.zone";			
 		
-		//if the zone still is not loaded try to load it from the default world directory
-		if(kZData->m_bNew == true)
 			if(kFile.Open(zonefilename.c_str(),0,false))
 			{
-				cout<<"load from zonefile:"<<zonefilename<<endl;								
-				kZData->m_bNew = false;		
+				cout<<"load from zonefile:"<<zonefilename<<endl;				
+				kZData->m_bNew = false;
 			}
+		}
+		else
+		{
+			string zonefilename(m_kWorldDirectory);
+			zonefilename+="/";
+			zonefilename+=nr;
+			zonefilename+=".dynamic.zone";
+			
+			//if the zone still is not loaded try to load it from the default world directory
+			if(kZData->m_bNew == true)
+				if(kFile.Open(zonefilename.c_str(),0,false))
+				{
+					cout<<"load from zonefile:"<<zonefilename<<endl;								
+					kZData->m_bNew = false;		
+				}
+		}
 	}
+
 	
 	//this zone could not be loaded, or we want to create a new zone, either the case we create a new zone =)
 	if(kZData->m_bNew)
 	{	
+	
 		kZData->m_bNew = false;
 		
 		//link zone object
@@ -2229,7 +2234,7 @@ void EntityManager::UnLoadZone(int iId)
 	kZData->m_pkZone = NULL;
 }
 
-void EntityManager::SaveZone(int iId)
+void EntityManager::SaveZone(int iId,string strSaveDir )
 {
 	ZoneData* kZData = GetZoneData(iId);
 	assert(kZData);
@@ -2242,10 +2247,10 @@ void EntityManager::SaveZone(int iId)
 	//setup filename
 	string filename;
 	
-	if(!m_kTempWorldDirectory.empty())
-		filename = m_kTempWorldDirectory;
-	else
+	if(strSaveDir.empty())
 		filename = m_kWorldDirectory;
+	else
+		filename = strSaveDir;
 	
 	filename+="/";
 	filename+=nr;
@@ -2290,17 +2295,6 @@ int EntityManager::GetUnusedZoneID()
 }
 
 
-bool EntityManager::LoadWorld(string strWDir, string strTempWDir)
-{
-	SetWorldDir(strWDir);
-	SetTempWorldDir(strTempWDir);	
-	
-	//clear the world
-	Clear();
-
-	//load zones in acDir
-	return LoadZones();
-}
 
 void EntityManager::ClearZoneLinks(int iId)
 {
@@ -2534,6 +2528,176 @@ void EntityManager::ForceSave()
 	}	
 }
 
+
+
+void EntityManager::ResetNetUpdateFlags(int iConID)
+{
+	for(map<int,Entity*>::iterator it=m_akEntitys.begin();it!=m_akEntitys.end();it++) {
+		(*it).second->ResetAllNetUpdateFlags(iConID);
+	}
+	
+}
+
+
+bool EntityManager::SaveWorld(string strSaveDir,bool bForce)
+{
+	//check if directory exist	
+	if(m_pkBasicFS->DirExist(strSaveDir.c_str()))
+	{
+		//if we dont want to forcesave in that directory we return
+		if(!bForce)
+			return false;
+	}
+	else
+	{
+		//directory does not exist , lets try to create it		
+		if(!m_pkBasicFS->CreateDir(strSaveDir.c_str()))
+		{
+			cout<<"ERROR: could not create save directory"<<endl;
+			return false;
+		}
+	}
+	
+	
+	//first try to save zones
+	if(!SaveZones(strSaveDir))
+	{
+		cout<<"ERROR: could not save zonesdata"<<endl;
+		return false;
+	}
+	
+	
+	//now load zones and then save them in the save directory
+	for(unsigned int i=0;i<m_kZones.size();i++) 
+	{
+		if(!m_kZones[i].m_bUsed)
+			continue;
+	
+		//check if zone is loaded
+		if(m_kZones[i].m_pkZone)
+			SaveZone(i,strSaveDir); //if so save it
+		else
+		{
+			//if zone is not loaded try to load it,
+			LoadZone(i);
+			
+			//was the zone loaded successfully?
+			if(m_kZones[i].m_pkZone)
+			{
+				//if so save it =)
+				SaveZone(i,strSaveDir);
+			}
+		}
+	}	
+
+	return true;
+}
+
+bool EntityManager::LoadWorld(string strLoadDir)
+{
+	//check if directory exist	
+	if(!m_pkBasicFS->DirExist(strLoadDir.c_str()))
+	{
+		cout<<"ERROR: save directory does not exist"<<endl;
+		return false;
+	}
+
+	//check that the worldtempdirectory is clean 
+	m_kWorldDirectory = "worldtemp";
+	
+	//first make sure it does exist
+	if(m_pkBasicFS->DirExist(m_kWorldDirectory.c_str()))
+	{
+		//try to remove all files in the directory
+		
+		//setup a filter, so we dont delete files that shuld not be deleted =)
+		vector<string> kFilter;
+		kFilter.push_back("dynamic.zone");
+		kFilter.push_back("zones.dat");		
+		
+		vector<string> kFiles;
+		m_pkBasicFS->ListDirFilter(&kFiles,kFilter,m_kWorldDirectory.c_str());
+		
+		cout<<"going to remove these files to clean the temp directory, here goes the harddrive ;-)"<<endl;
+		for(int i=0;i<kFiles.size();i++)
+		{
+			string file = m_kWorldDirectory+string("/")+kFiles[i];
+			cout<<file<<endl;
+			
+			if(!m_pkBasicFS->RemoveFile(file.c_str()))
+			{
+				cout<<"ERROR: could not remove file:"<<file<<endl;
+			}			
+		}	
+	}
+	else	
+	{
+		//if the temp directory didt exist create it
+		if(!m_pkBasicFS->CreateDir(m_kWorldDirectory.c_str()))
+		{
+			cout<<"ERROR: could not create tempdirectory "<<m_kWorldDirectory<<endl;
+			return false;
+		}
+	}
+
+
+	//clear the world
+	Clear();
+
+	//now try to load the zone list
+	if(!LoadZones(strLoadDir))
+	{
+		cout<<"ERROR: error loading zonelist"<<endl;
+		return false;
+	}
+	
+	//then save it in the temp directory
+	if(!SaveZones())
+	{
+		cout<<"ERROR: could not save zonelist in temp direcotry"<<endl;
+		return false;
+	}
+
+
+	//now load and save the zones (making a copy of the zones in the loaddirectory to the tempdirecotry)
+	for(unsigned int i=0;i<m_kZones.size();i++) 
+	{
+		if(!m_kZones[i].m_bUsed)
+			continue;
+	
+		//check if zone is loaded
+		if(m_kZones[i].m_pkZone)
+			cout<<"WARNING: this zone is loaded, that shuld not be possible"<<endl;
+		else
+		{
+			//first load the zone from the savegame directory
+			LoadZone(i,strLoadDir);
+						
+			//now unload it again to save it
+			UnLoadZone(i);
+		}
+	}	
+	
+	//observe, all zones are now loaded, but they shuld be unloaded in the next frame
+	
+	return true;
+}
+
+/*
+bool EntityManager::LoadWorld(string strWDir, string strTempWDir)
+{
+	SetWorldDir(strWDir);
+	//SetTempWorldDir(strTempWDir);	
+	
+	//clear the world
+	Clear();
+
+	//load zones in acDir
+	return LoadZones();
+}
+*/
+
+/*
 void EntityManager::SetUnderConstruction(int iId)
 {
 	unsigned int i;
@@ -2586,7 +2750,7 @@ void EntityManager::SetUnderConstruction(int iId)
 				kEntitys[i]->SetParent(zd->m_pkZone);
 				nrofstatic++;
 			}
-*/		
+*	
 		//update zonedata		
 		zd->m_bUnderContruction = true;
 		cout<<"Setting zone:"<<iId<<" in construction mode revision:"<<zd->m_iRevision<< " static entitys:"<<nrofstatic<<" dynamic entitys:"<<kEntitys.size()-nrofstatic<<endl;
@@ -2648,14 +2812,14 @@ void EntityManager::CommitZone(int iId)
 		
 		
 		int nrofstatic=0;		
-/*		//find all static objects and attach them to staticentity
+/		//find all static objects and attach them to staticentity
 		for(i=0;i<kEntitys.size();i++)
 			if(kEntitys[i]->m_iObjectType == OBJECT_TYPE_STATIC)
 			{	
 				kEntitys[i]->SetParent(pkStaticEntity);
 				nrofstatic++;
 			}
-*/	
+*
 	
 		//update zone data
 		zd->m_bUnderContruction = false;
@@ -2663,12 +2827,4 @@ void EntityManager::CommitZone(int iId)
 		cout<<"committing zone:"<<iId<<" new revision is:"<<zd->m_iRevision<<" static entitys:"<<nrofstatic<<" dynamic entitys:"<<kEntitys.size()-nrofstatic<<endl;
 	}
 }
-
-
-void EntityManager::ResetNetUpdateFlags(int iConID)
-{
-	for(map<int,Entity*>::iterator it=m_akEntitys.begin();it!=m_akEntitys.end();it++) {
-		(*it).second->ResetAllNetUpdateFlags(iConID);
-	}
-	
-}
+*/

@@ -163,7 +163,7 @@ bool DarkMetropolis::StartUp()
 
 bool DarkMetropolis::ShutDown()
 {
-	SaveGame();
+	//SaveGame();
 	return true;
 }
 
@@ -236,7 +236,24 @@ void DarkMetropolis::RunCommand(int cmdid, const CmdArgument* kCommand)
 	switch(cmdid) {
 
 		case FID_LOAD:
-		{
+		{		
+			if(kCommand->m_kSplitCommand.size() <= 1)
+			{
+				m_pkConsole->Printf("load [worlddir]");
+				break;				
+			}
+			
+			if(!m_pkObjectMan->LoadWorld(kCommand->m_kSplitCommand[1]))
+			{
+				cout<<"Error loading world"<<endl;
+				break;
+			}				
+		
+			m_pkConsole->Printf("starting server");
+			GetSystem().RunCommand("server Default server",CSYS_SRC_SUBSYS);			
+			
+			
+			/*
 			if(kCommand->m_kSplitCommand.size() <= 2)
 			{
 				m_pkConsole->Printf("load [level] [savegame]");
@@ -247,24 +264,37 @@ void DarkMetropolis::RunCommand(int cmdid, const CmdArgument* kCommand)
 			m_pkConsole->Printf("loading world: %s",kCommand->m_kSplitCommand[1].c_str());						
 			m_pkConsole->Printf("loading savegame: %s",kCommand->m_kSplitCommand[2].c_str());				
 				
+			
+				
 			if(!m_pkObjectMan->LoadWorld(kCommand->m_kSplitCommand[1],kCommand->m_kSplitCommand[2]))
 			{
 				cout<<"Error loading world"<<endl;
 				break;
 			}				
-
+			
 
 			m_pkConsole->Printf("starting server");
 
 			GetSystem().RunCommand("server Default server",CSYS_SRC_SUBSYS);			
-			
+			*/
 			
 			break;		
 		}
 
 			
 		case FID_SAVE:
-			SaveGame();
+			if(kCommand->m_kSplitCommand.size() <= 1)
+			{
+				m_pkConsole->Printf("save [savegame]");
+				break;				
+			}
+			
+			if(!SaveGame(kCommand->m_kSplitCommand[1]))
+			{
+				m_pkConsole->Printf("Error saving game");
+				break;
+			}	
+			
 			break;
 	}
 }
@@ -274,6 +304,7 @@ bool DarkMetropolis::LoadGame(string strClanName)
 {
 	m_kGameInfo.strClanName = strClanName;
 
+/*
 	string strDir = m_strSaveDirectory + string("/") + strClanName;
 	string strBlub = string("load dmworld ") + strDir;
 
@@ -282,8 +313,12 @@ bool DarkMetropolis::LoadGame(string strClanName)
 		cout<<"ERROR clan "<<strClanName<<" does not exist"<<endl;	
 		return false;
 	}
-	
 	GetSystem().RunCommand(strBlub.c_str(),CSYS_SRC_SUBSYS);	
+*/	
+	
+	string strDir = string("load ") + m_strSaveDirectory + string("/") + strClanName;
+	GetSystem().RunCommand(strDir.c_str(),CSYS_SRC_SUBSYS);	
+	
 	
 	return true;
 }
@@ -293,7 +328,7 @@ bool DarkMetropolis::StartNewGame(string strClanName,string strClanColor)
 	m_kGameInfo.strClanName = strClanName;
 	m_kGameInfo.strClanColor = strClanColor;
 	
-	//make sure samegame directory exist
+/*	//make sure samegame directory exist
 	m_pkBasicFS->CreateDir(m_strSaveDirectory.c_str());
 	
 	string strDir = m_strSaveDirectory + string("/") + strClanName;
@@ -308,19 +343,25 @@ bool DarkMetropolis::StartNewGame(string strClanName,string strClanColor)
 	
 
 	GetSystem().RunCommand(strBlub.c_str(),CSYS_SRC_SUBSYS);
+*/
+	GetSystem().RunCommand("load dmworld",CSYS_SRC_SUBSYS);
 
 	return true;
 }
 
-void DarkMetropolis::SaveGame()
+bool DarkMetropolis::SaveGame(string strsavegame)
 {
-	if(!m_kGameInfo.strClanName.empty())
+	m_pkBasicFS->CreateDir(m_strSaveDirectory.c_str());
+
+	return m_pkObjectMan->SaveWorld(m_strSaveDirectory+strsavegame);
+
+/*	if(!m_kGameInfo.strClanName.empty())
 	{
 		m_pkObjectMan->ForceSave();
 		m_pkObjectMan->SaveZones();	
 	
 		cout<<"game "<<m_kGameInfo.strClanName<< " saved"<<endl;
-	}
+	}*/
 }
 
 Vector3 DarkMetropolis::Get3DMousePos(bool m_bMouse=true)

@@ -590,6 +590,7 @@ void MistServer::Input_EditZone()
 		RotateActiveZoneObject();
 	}
 	
+	/*
 	if(m_pkInputHandle->VKIsDown("buildmodeon") && !DelayCommand())
 	{
 		m_iCurrentMarkedZone = m_pkObjectMan->GetZoneIndex(m_kZoneMarkerPos,-1,false);
@@ -601,7 +602,7 @@ void MistServer::Input_EditZone()
 		m_iCurrentMarkedZone = m_pkObjectMan->GetZoneIndex(m_kZoneMarkerPos,-1,false);
 		m_pkObjectMan->CommitZone(m_iCurrentMarkedZone);
 	}	
-
+	*/
 	if(m_pkInputHandle->VKIsDown("selectzone") && !DelayCommand())
 	{	
 		m_iCurrentMarkedZone =  m_pkObjectMan->GetZoneIndex(m_kZoneMarkerPos,-1,false);
@@ -934,13 +935,14 @@ void MistServer::RunCommand(int cmdid, const CmdArgument* kCommand)
 
 	switch(cmdid) {
 		case FID_NEW:
+/*		
 			if(kCommand->m_kSplitCommand.size() <= 1)
 			{
 				m_pkConsole->Printf("new [mapdir]");
 				break;				
 			}
 			
-			m_pkObjectMan->SetWorldDir(kCommand->m_kSplitCommand[1].c_str());
+			m_pkObjectMan->SetWorldDir(kCommand->m_kSplitCommand[1].c_str());*/
 			m_pkObjectMan->Clear();
 			
 			GetSystem().RunCommand("server Default server",CSYS_SRC_SUBSYS);
@@ -948,6 +950,17 @@ void MistServer::RunCommand(int cmdid, const CmdArgument* kCommand)
 		
 		case FID_LOAD:
 			if(kCommand->m_kSplitCommand.size() <= 1)
+			{
+				m_pkConsole->Printf("load [worlddir]");
+				break;				
+			}
+			
+			if(!m_pkObjectMan->LoadWorld(kCommand->m_kSplitCommand[1]))
+			{
+				cout<<"Error loading world"<<endl;
+				break;
+			}				
+/*			if(kCommand->m_kSplitCommand.size() <= 1)
 			{
 				m_pkConsole->Printf("load [mapdir]");
 				break;				
@@ -972,21 +985,31 @@ void MistServer::RunCommand(int cmdid, const CmdArgument* kCommand)
 				break;
 			}				
 			
-						
+*/						
 			cout<<"starting server"<<endl;
 			GetSystem().RunCommand("server Default server",CSYS_SRC_SUBSYS);			
 			
 			break;		
 		
 		case FID_SAVE:
+			if(kCommand->m_kSplitCommand.size() <= 1)
+			{
+				m_pkConsole->Printf("save [worlddir]");
+				break;				
+			}
 			
-			cout<<"saving world:"<<endl;
+			if(!m_pkObjectMan->SaveWorld(kCommand->m_kSplitCommand[1],true))
+			{
+				m_pkConsole->Printf("Error saving world");
+				break;
+			}						
+/*			cout<<"saving world:"<<endl;
 			
 			m_pkObjectMan->ForceSave();
 			m_pkObjectMan->SaveZones();			
 			
 			cout<<"saved"<<endl;
-			
+*/			
 			break;		
 	
 		case FID_USERS:
@@ -1277,6 +1300,7 @@ void MistServer::OnServerClientPart(ZFClient* pkClient,int iConID)
 
 void MistServer::OnServerStart(void)
 {		
+
 	for(int i=0; i<4; i++) {
 		m_pkCameraObject[i] = m_pkObjectMan->CreateObjectFromScript("data/script/objects/t_camedit.lua");
 		if(m_pkCameraObject[i]) {

@@ -113,6 +113,14 @@ bool ZFBasicFS::RemoveDir(const char* acName)
 	return true;
 }
 
+bool ZFBasicFS::RemoveFile(const char* acName)
+{
+	if(unlink(acName)==-1)
+		return false;
+
+	return true;
+}
+
 char* ZFBasicFS::GetCWD()
 {
 	getcwd(m_acDir,2048);

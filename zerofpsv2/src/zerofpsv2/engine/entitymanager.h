@@ -25,7 +25,6 @@ public:
 
 	bool					m_bNew;
 	bool					m_bUsed;
-	bool					m_bUnderContruction;	
 	unsigned int		m_iRevision;		
 	Entity*				m_pkZone;
 	int					m_iZoneObjectID;
@@ -68,8 +67,8 @@ class ENGINE_API EntityManager : public ZFSubSystem{
 			FID_NEWWORLD,
 			FID_LOADWORLD,
 			FID_SETWORLDDIR,
-			FID_SETTEMPWORLDDIR,
 			FID_SAVEWORLD,
+			
 		};
 
 		struct Property_Less : public binary_function<Property*, Property*, bool> {
@@ -80,6 +79,7 @@ class ENGINE_API EntityManager : public ZFSubSystem{
 		ZFScriptSystem* 			m_pkScript;
 		ZFResourceHandle* 		m_pScriptFileHandle;
 		NetWork*						m_pkNetWork;
+		ZFBasicFS*					m_pkBasicFS;
 
 		//base objects
 		Entity*						m_pkWorldObject;											///< Top level entity.
@@ -89,9 +89,7 @@ class ENGINE_API EntityManager : public ZFSubSystem{
 		
 		//current world directory to save/load zone data to 
 		string						m_kWorldDirectory;
-		string						m_kTempWorldDirectory;		//if this is not "" all new zones will be saved and loaded from this directory
 		
-//		list<Entity*>				m_akObjects;												///< List of all objects.
 		map<int,Entity*>			m_akEntitys;
 		
 		// DELETE
@@ -105,7 +103,6 @@ class ENGINE_API EntityManager : public ZFSubSystem{
 		int							m_iTrackerLOS;												//tracker line of sight
 		float							m_iObjectDistance;											//tracker line of sight		
 
-		//list<ObjectDescriptor*> m_akTemplates;											///< List of templates.
 			
 		vector<Property*>			m_akPropertys;												///< List of Active Propertys.	
 		int							m_iNrOfActivePropertys;									///> Size of akProperty list.
@@ -117,7 +114,6 @@ class ENGINE_API EntityManager : public ZFSubSystem{
 
 		void RunCommand(int cmdid, const CmdArgument* kCommand);
 		void GetPropertys(int iType,int iSide);						///< Fill propery list.
-//		void TESTVIM_LoadArcheTypes(char* szFileName);
 
 		NetPacket	m_OutNP;		// Used to create/send updates to clients.
 
@@ -250,23 +246,21 @@ class ENGINE_API EntityManager : public ZFSubSystem{
 		void SetZoneModel(const char* szName,int iId);
 		bool IsInsideZone(Vector3 kPos,Vector3 kSize);
 		void UpdateZoneLinks(int iId);
-		bool NewWorld();		
-		void SetUnderConstruction(int iId);
-		void CommitZone(int iId);
+		
 
-		void SetTempWorldDir(string strDir) {m_kTempWorldDirectory = strDir;};
 		void SetWorldDir(string strDir) {m_kWorldDirectory = strDir;};
 		string GetWorldDir() { return m_kWorldDirectory; };
-		string GetTempWorldDir() { return m_kTempWorldDirectory; };
-		bool LoadWorld(string strWDir, string strTempWDir = "");
 		
-		void ForceUnload();					//forcing unload of all loaded zones
-		void ForceSave();						//forcing save of all loaded zones
-		bool LoadZones();						//load zone info list
-		bool SaveZones();						//save zone info list
-		void LoadZone(int iId);				//load zone
-		void SaveZone(int iId);				//save zone
-		void UnLoadZone(int iId);			//unload zone (saves and deletes)
+		void ForceUnload();												//forcing unload of all loaded zones
+		void ForceSave();													//forcing save of all loaded zones
+		bool LoadZones(string strSaveDir ="");						//load zone info list
+		bool SaveZones(string strSaveDir ="");						//save zone info list
+		void LoadZone(int iId,string strLoadDir = "");			//load zone
+		void SaveZone(int iId,string strSaveDir = "");			//save zone
+		void UnLoadZone(int iId);										//unload zone (saves and deletes)
+
+		bool SaveWorld(string strSaveDir,bool bForce=false);
+		bool LoadWorld(string strLoadDir);
 
 		//trackers
 		void AddTracker(P_Track* kObject);

@@ -33,16 +33,19 @@ class BASIC_API ZFBasicFS : public ZFSubSystem
 		char* GetCWD();		
 		bool CreateDir(const char* acName);
 		bool RemoveDir(const char* acName);
+		bool RemoveFile(const char* acName);
+		
 		bool ListDir(vector<string>* pkFiles, const char* acName, bool bOnlyMaps=false);
 		bool ListDirFilter(vector<string>* pkFiles, vector<string>& pkFilters, 
 			const char* acName, bool bIgnoreMaps=false);
+		
 		bool DirExist(const char* acName);
+		bool FileExist(const char* szFile);
 
 		bool StartUp()	{ return true;	}
 		bool ShutDown()	{ return true;	}
 		bool IsValid()	{ return true;	}
 
-		bool FileExist(const char* szFile);
 };
 
 
