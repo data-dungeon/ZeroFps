@@ -48,7 +48,7 @@ void P_Powerup::Touch(int iID)
 												
 						case 1:
 						{
-							pkGun->m_iDamage = 10;
+							pkGun->m_iDamage = 5;
 							pkGun->m_strDirectHitObject = "/data/script/objects/ybergun-bullethit.lua";
 							pkGun->m_strProjectile = "";
 							pkGun->m_fFireDelay = 0.1;
@@ -60,7 +60,7 @@ void P_Powerup::Touch(int iID)
 						case 2:
 						{
 							pkGun->m_strProjectile = "/data/script/objects/bullet.lua";
-							pkGun->m_fFireDelay = 0.4;
+							pkGun->m_fFireDelay = 0.5;
 							pkGun->m_fBulletVel = 20;
 							pkPlayer->m_strGunName = "Flash Gun";							
 							pkPlayer->SetNetUpdateFlag(true);												

@@ -181,6 +181,8 @@ void P_Walker::Paralize(float fTime )
 
 void P_Walker::Touch(int iID)
 {
+	static int iLastHit = -1;
+	
 	if(Entity* pkEnt = m_pkEntityManager->GetEntityByID(iID))
 	{
 		//collide with other walker
@@ -205,9 +207,13 @@ void P_Walker::Touch(int iID)
 		//hit by bullet
 		if(pkEnt->GetType() == "bullet.lua")
 		{
+			if(iID == iLastHit)
+				return;			
+			iLastHit = iID;
+				
 			int iOwner = pkEnt->GetVarDouble("owner");
 		
-			Damage(50,iOwner);
+			Damage(30,iOwner);
 			m_pkEntityManager->Delete(pkEnt);
 		}
 	}
@@ -216,6 +222,10 @@ void P_Walker::Touch(int iID)
 
 void P_Walker::Damage(int iDmg,int iKiller)
 {
+	//already dead
+	if(m_iLife <= 0)
+		return;
+	
 	//Paralize(0.1);
 	
 	m_iLife-=iDmg;
@@ -241,6 +251,9 @@ void P_Walker::Damage(int iDmg,int iKiller)
 
 void P_Walker::CreateBonus()
 {
+	if( m_pkStopEmUp->GetLevel() < 5)
+		return;
+	
 	int i = Randomi(10);
 
 	if(i <= 0)
