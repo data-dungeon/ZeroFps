@@ -5,7 +5,7 @@
 #include "zfresource.h"
 #include "engine_x.h"
 
-#include <vector>
+#include <list>
 
 using namespace std;
 
@@ -75,7 +75,7 @@ class ENGINE_API ZFResourceDB : public ZFObject {
 	private:
 		int						m_iNextID;
 
-		vector<ZFResourceInfo*>		m_kResources;
+		list<ZFResourceInfo*>		m_kResources;
 		vector<ResourceCreateLink>	m_kResourceFactory;
 
 		ResourceCreateLink*	FindResourceTypeFromFullName(string strResName);
@@ -91,7 +91,7 @@ class ENGINE_API ZFResourceDB : public ZFObject {
 
 		ZFResourceInfo*	GetResourceData(string strResName);
 
-		int	 FindResource(string strResName);
+		ZFResourceInfo* FindResource(string strResName);
 		bool IsResourceLoaded(string strResName);		
 		
 		void GetResource(ZFResourceHandle& kResHandle, string strResName);

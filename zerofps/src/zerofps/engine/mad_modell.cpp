@@ -26,10 +26,9 @@ Mad_Modell::Mad_Modell()
 
 Mad_Modell::Mad_Modell(string strResName)
 {
-	//ZFResourceDB* pkResDB = static_cast<ZFResourceDB*>(g_ZFObjSys.GetObjectPtr("ZFResourceDB"));
-	//kMadHandle = pkResDB->GetResource(strResName);
-	kMadHandle.SetRes(strResName);
 	m_kMadFile = strResName;
+	if(!kMadHandle.SetRes(strResName))
+		return;
 
 	// pkCore = pkModell;
 	// m_kMadFile = pkCore->Name;
@@ -63,12 +62,9 @@ Mad_Modell::Mad_Modell(string strResName)
 
 void Mad_Modell::SetBasePtr(string strResName)
 {
-//	ZFResourceDB* pkResDB = static_cast<ZFResourceDB*>(g_ZFObjSys.GetObjectPtr("ZFResourceDB"));
-//	kMadHandle = pkResDB->GetResource(strResName);
-	kMadHandle.SetRes(strResName);
 	m_kMadFile = strResName;
-//	pkCore = pkModell;
-//	m_kMadFile = pkCore->Name;
+	if(!kMadHandle.SetRes(strResName))
+		return;
 
 	PlayAnimation(0, 0.0);
 	m_fScale = 1.0;
@@ -110,7 +106,11 @@ void Mad_Modell::UpdateAnimation(float fDelta)
 	if(!m_bActive)
 		return;
 
+	if(kMadHandle.IsValid() == false)
+		return;
 	Mad_Core* pkCore = dynamic_cast<Mad_Core*>(kMadHandle.GetResourcePtr()); 
+	if(!pkCore)
+		return;
 
 //	float fDelta = fGameTime - fLastUpdate;
 
@@ -196,27 +196,34 @@ void Mad_Modell::End() {}
 
 int Mad_Modell::GetNumOfMesh() 
 {
+	if(kMadHandle.IsValid() == false)
+		return 0;
+
 	ZFResource* pkres = kMadHandle.GetResourcePtr();
-
-
 	Mad_Core* pkCore = dynamic_cast<Mad_Core*>(pkres); 
  	return pkCore->NumOfMeshes();
 }
 
 int Mad_Modell::GetNumOfSubMesh(int iMeshID)
 {
+	if(kMadHandle.IsValid() == false)
+		return 0;
 	Mad_Core* pkCore = dynamic_cast<Mad_Core*>(kMadHandle.GetResourcePtr()); 
 	return pkCore->GetMeshByID(iMeshID)->kHead.iNumOfSubMeshes;
 }
 
 void Mad_Modell::SelectMesh(int iMeshID)
 {
+	if(kMadHandle.IsValid() == false)
+		return;
 	Mad_Core* pkCore = dynamic_cast<Mad_Core*>(kMadHandle.GetResourcePtr()); 
 	m_pkMesh = pkCore->GetMeshByID(iMeshID);
 }
 
 void Mad_Modell::SelectSubMesh(int iSubMeshID)
 {
+	if(kMadHandle.IsValid() == false)
+		return;
 	m_iSubMesh =  iSubMeshID;
 	m_pkSubMesh = m_pkMesh->GetSubMesh(iSubMeshID);
 }

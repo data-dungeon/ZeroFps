@@ -94,13 +94,13 @@ ZFResourceDB::~ZFResourceDB()
 
 void ZFResourceDB::Refresh()
 {
-	vector<ZFResourceInfo*>::iterator it;
+	list<ZFResourceInfo*>::iterator it;
 
 	for(it = m_kResources.begin(); it != m_kResources.end(); it++ ) {
 		if((*it)->m_iNumOfUsers == 0) {
 			cout << "ResDB: Remove '" << (*it)->m_strName << "'" << endl;
 			delete (*it);
-			m_kResources.erase(it);
+			it = m_kResources.erase(it);
 			}
 		}
 
@@ -115,28 +115,30 @@ void ZFResourceDB::Refresh()
 
 ZFResourceInfo*	ZFResourceDB::GetResourceData(string strResName)
 {
-	int iResID = FindResource(strResName);
-	if(iResID == -1)
+	return FindResource(strResName);
+/*	if(iResID == -1)
 		return NULL;
 
-	return m_kResources[iResID];
+	return m_kResources[iResID];*/
 
 }
 
-int	ZFResourceDB::FindResource(string strResName)
+ZFResourceInfo*	ZFResourceDB::FindResource(string strResName)
 {
-	for(int i=0; i<m_kResources.size(); i++) {
-		if(strResName == m_kResources[i]->m_strName)
-			return i;
+	list<ZFResourceInfo*>::iterator it;
+
+	for(it = m_kResources.begin(); it != m_kResources.end(); it++ ) {
+		if(strResName == (*it)->m_strName)
+			return (*it);
 		}
 
-	return -1;
+	return NULL;
 }
 
 
 bool ZFResourceDB::IsResourceLoaded(string strResName)
 {
-	if(FindResource(strResName) != -1)
+	if(FindResource(strResName) != NULL)
 		return true;
 	
 	return false;
@@ -157,6 +159,14 @@ void ZFResourceDB::GetResource(ZFResourceHandle& kResHandle, string strResName)
 
 	// Create Res Class
 	ZFResource* pkRes = CreateResource(strResName);
+
+	// Failed to crate resource.
+	if(!pkRes) {
+		cout << "Failed to create resource " << strResName.c_str();
+		cout << "\n";
+		return;
+		}
+
 	//Mad_Core* pkCore = new Mad_Core;
 	if(pkRes->Create(strResName.c_str()) == false) {
 		cout << "Failed to Load Resource " << strResName.c_str();
