@@ -34,14 +34,23 @@ OggMusic::OggMusic(unsigned int uiNrOfBuffers, unsigned int uiBufferSize) :
 	{
 		cout<<"error generating sources!" <<endl;
 	}
+
+	if((SDL_Init(SDL_INIT_TIMER)==-1))  
+        cout<<"Could not initialize SDL:"<< SDL_GetError();
+        
+    	
 }
 
 OggMusic::~OggMusic()
 {
-	//	alDeleteBuffers(m_uiNrOfBuffers,m_pALuiBuffers);
-	//	alDeleteSources(1, &m_ALuiSource);
-	delete [] m_pcTempBuffer;
-	delete m_pALuiBuffers;
+	
+	SDL_Quit();
+	Stop();
+	alDeleteBuffers(m_uiNrOfBuffers,m_pALuiBuffers);
+	alDeleteSources(1, &m_ALuiSource);
+	delete m_pcTempBuffer;
+	delete []m_pALuiBuffers;
+	
 	if(m_bFileOK)
 		ov_clear(&m_kOggFile);
 }
@@ -158,7 +167,8 @@ bool OggMusic::Play()
 	{
 		QueueBuffer(&m_pALuiBuffers[index]);
 	}
-	alSourcePlay(m_ALuiSource);	
+	m_uiStartTime = SDL_GetTicks();
+		alSourcePlay(m_ALuiSource);	
 	if (alGetError()!=AL_NO_ERROR)
 	{
 		cout<<"error playing!" <<endl;
@@ -172,6 +182,14 @@ bool OggMusic::Update()
 {
 	if(m_bPlaying)
 	{
+		int iPlaying;
+		alGetSourcei(m_ALuiSource, AL_SOURCE_STATE, &iPlaying);
+		if(iPlaying!=AL_PLAYING)
+		{
+			ov_time_seek(&m_kOggFile, (SDL_GetTicks() - m_uiStartTime)/1000.0 );	
+			alSourcePlay(m_ALuiSource);	
+		}
+
 		int iBuffersInQueue = m_uiNrOfBuffers;
 		int iProcessed = 0;
 		ALuint ALuiBufferID;
@@ -181,7 +199,6 @@ bool OggMusic::Update()
 		{
 			while(iProcessed)
 			{
-				
 				alSourceUnqueueBuffers(m_ALuiSource, 1 , &ALuiBufferID);	
 				if(QueueBuffer(&ALuiBufferID))
 				{
@@ -192,19 +209,24 @@ bool OggMusic::Update()
 					iBuffersInQueue--;
 					if(iBuffersInQueue == 0)
 					{
-						m_bPlaying=false;
+						Stop();
 						return false;
 					}
 				}
 			}
+		return true;
 		}
 	}
-	return true;
+	return false;
 }
 
 bool OggMusic::Stop()
 {
-	alSourceStop(m_ALuiSource);
+	int iPlaying;
+	alGetSourcei(m_ALuiSource, AL_SOURCE_STATE, &iPlaying);
+	if(iPlaying==AL_PLAYING)
+			alSourceStop(m_ALuiSource);
+	m_bPlaying=false;
 	//rewind
 	if (ov_pcm_seek(&m_kOggFile,0) != 0)
 		return false;
@@ -232,12 +254,14 @@ bool OggMusic::QueueBuffer(ALuint *pALuiBuffer)
 		if (alGetError()!=AL_NO_ERROR)
 		{
 			cout<<"error generating bufferDATA!" <<endl;
+			return false;
 		}
 		
 		alSourceQueueBuffers(m_ALuiSource, 1,pALuiBuffer );
 		if (alGetError()!=AL_NO_ERROR)
 		{
 			cout<<"error queuing bufferDATA!" <<endl;
+			return false;
 		}		
 		return true;
 	}
@@ -254,3 +278,4 @@ bool OggMusic::SetVolume(float fVolume)
 	}
 	return false;
 };
+

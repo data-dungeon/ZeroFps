@@ -15,6 +15,7 @@
 #include <string>
 #include <iostream>
 #include <conio.h>
+#include <sdl.h>
 
 using std::cout;
 using std::endl;
@@ -23,7 +24,7 @@ using std::string;
 class OggMusic  
 {
 public:
-	bool QueueBuffer(ALuint *pALuiBuffer);
+	
 	bool Stop();
 	bool Update();
 	OggMusic(); 
@@ -36,7 +37,7 @@ public:
 
 private:
 	//bool InitPlay();
-
+	bool QueueBuffer(ALuint *pALuiBuffer);
 	OggVorbis_File m_kOggFile;
 	bool m_bFileOK;
 	bool m_bPlaying;
@@ -44,6 +45,7 @@ private:
 	unsigned int m_uiNrOfBuffers;
 	unsigned int m_uiBufferSize;
 	unsigned int m_uiSamplingRate;
+	unsigned int m_uiStartTime;
 	char *m_pcTempBuffer;
 	////ALuint* m_pALuiSource;
 	ALuint m_ALuiSource;
