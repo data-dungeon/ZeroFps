@@ -9,12 +9,14 @@
 #include "../zerofps/engine/application.h"
 #include <cstdlib>
 
+#include "ballobject.h"
+
 //#include "normaldrawproperty.h"
 //#include "playercontrolproperty.h"
 //#include "ballobject.h"
 //#include "playerballobject.h"
 //#include "playerobject.h"
-#include "../test/bunnyobject.h"
+//#include "../test/bunnyobject.h"
 
 enum EDIT_MODES{
 	TEXTURE=1,

@@ -9,7 +9,8 @@ ZeroEdit::ZeroEdit(char* aName,int iWidth,int iHeight,int iDepth): Application(a
 
 void ZeroEdit::OnInit(void) 
 {
-	
+	RegisterPropertys();
+		
 	pkRender->SetFog(Vector4(0,0,0,1),8,100,150,true);
 	
 	//register commands
@@ -571,7 +572,8 @@ void ZeroEdit::CreateZones()
 
 void ZeroEdit::RegisterPropertys()
 {
-//	pkPropertyFactory->Register("MadProperty", Create_MadProperty);
+	pkPropertyFactory->Register("FloatProperty", Create_FloatProperty);
+	pkPropertyFactory->Register("GravityProperty", Create_GravityProperty);	
 
 }
 
