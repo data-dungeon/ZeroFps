@@ -16,6 +16,8 @@ class ResourceCreateLink
 public:
 	string		m_strName;			// Resource type name.
 	ZFResource*	(*Create)();		// Create function for resource type.
+	int			m_iActive;			// Num of res of this types active at the moment.
+	int			m_iIndex;			// Index of resource link.
 };
 
 /**	\brief	Data that the Resource manger have about a resource.

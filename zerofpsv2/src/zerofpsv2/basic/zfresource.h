@@ -23,7 +23,9 @@ public:
 
 	int GetSize();										// Returns the size in bytes of this res.
 
-	friend class ZFResourceDB;						
+	friend class ZFResourceDB;
+	
+	int	m_iTypeIndex;							// Index of this resouce type in the resDB
 };
 
 /**	\brief	A Handle to a Resource.

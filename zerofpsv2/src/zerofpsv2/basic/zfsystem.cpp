@@ -4,6 +4,7 @@
 #include <cstdarg>
 
 #include "zfsystem.h"
+#include "cmdsystem.h"
 #include "basicconsole.h"
 #include "globals.h"
 #include "../basic/zfini.h"
@@ -111,10 +112,14 @@ ZFSystem::ZFSystem()
 #ifdef _DEBUG
 	g_Logf("Starting ZeroFps Object System\n");
 #endif
+
+	m_pkCmdSystem = new CmdSystem;
 }
 
 ZFSystem::~ZFSystem()
 {
+	delete m_pkCmdSystem;
+
 #ifdef _DEBUG
 	g_Logf("Closing ZeroFps Object System\n");
 #endif

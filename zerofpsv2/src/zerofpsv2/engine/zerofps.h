@@ -15,7 +15,6 @@
 #include "fh.h"
 #include "entity.h"
 #include "camera.h"
-#include "../basic/cmdsystem.h"
 #include "../engine_systems/audio/zfaudiosystem.h"
 #include "../basic/zfini.h"
 #include "../engine_systems/physicsengine/physicsengine.h"
@@ -171,7 +170,6 @@ class ENGINE_API ZeroFps : public I_ZeroFps {
 		Light*					m_pkLight;					///< Light Engine.
 		Render*					m_pkRender;					///< Renders Graphic primitives
 		Console*					m_pkConsole;				///< ZeroFps Console.
-		CmdSystem*				m_pkCmd;						///< Handles ZeroFps console variables
 		EntityManager*			m_pkObjectMan;				///< In Game Object System.
 		ZFAudioSystem*			m_pkAudioSystem;			///< Sound
 		NetWork*					m_pkNetWork;				///< NetWork Interface.

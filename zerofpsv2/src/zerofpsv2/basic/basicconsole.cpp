@@ -4,13 +4,9 @@
 #include "zfsystem.h"
 #include "globals.h"
 
-extern ZFSystem g_ZFObjSys;
+//extern ZFSystem g_ZFObjSys;
 
 using namespace std;
- 
-
-//char format_text[4096];	
-
 
 BasicConsole::BasicConsole(char* szName)
 : ZFSubSystem(szName)
@@ -30,7 +26,8 @@ BasicConsole::~BasicConsole()
 void BasicConsole::Print(const char* aText) 
 {
 	string strEndLined = string(aText) + "\n";
-	g_ZFObjSys.Log("console", strEndLined.c_str());
+	//g_ZFObjSys.Log("console", strEndLined.c_str());
+	GetSystem().Log("console", strEndLined.c_str());
 
 	delete[] m_kText[m_kText.size()-1];
 	
@@ -59,21 +56,6 @@ void BasicConsole::Printf(const char *fmt, ...)
 	Print(g_szFormatText);
 }
 
-void BasicConsole::RunCommand(int cmdid, const CmdArgument* kCommand)
-{
-/*	switch(cmdid) {
-		case FID_HELP:
-			Print("");
-			Print("### help ###");
-			Print(" quit        -exit program");
-			Print(" varlist     -list variables");		
-			Print(" set $n $v   -set variable");		
-			Print(" music 1/0   -music on/off");
-			Print(" togglegrab  -toggle input grab");
-			Print(" setdisplay  -reinit display");
-			break;
-	}*/
-}
 
 
 

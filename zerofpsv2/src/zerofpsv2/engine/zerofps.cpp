@@ -39,29 +39,27 @@ ZeroFps::ZeroFps(void) : I_ZeroFps("ZeroFps")
 	// Create Engine SubSystems 
 	m_pkAStar					= new AStar;
 	m_pkZShader					= new ZShader;
-	m_pkPhysics_Engine		= new Physics_Engine;
+	m_pkPhysics_Engine			= new Physics_Engine;
 	m_pkObjectMan				= new EntityManager;
 	m_pkResourceDB				= new ZFResourceDB;
 	m_pkPhysEngine				= new PhysicsEngine;
 	m_pkIni						= new ZFIni;
 	m_pkGui						= new ZGui(Application::pkApp->m_iWidth, Application::pkApp->m_iHeight);
 	m_pkGuiMan					= new ZGuiResourceManager;
-	m_pkGuiRenderer			= new GLGuiRender;
+	m_pkGuiRenderer				= new GLGuiRender;
 	m_pkNetWork					= new NetWork;
 	m_pkMusic					= new OggMusic(24,4096);
-	m_pkAudioSystem			= new ZFAudioSystem;
-
-	m_pkCmd						= new CmdSystem;
+	m_pkAudioSystem				= new ZFAudioSystem;
 	m_pkConsole					= new Console;
 	m_pkRender					= new Render;
 	m_pkLight					= new Light;	
 	m_pkFrustum					= new Frustum;	
-	m_pkPropertyFactory		= new PropertyFactory;
+	m_pkPropertyFactory			= new PropertyFactory;
 	m_pkInput					= new Input;		
 	m_pkTexMan					= new TextureManager;
 	m_pkZFVFileSystem			= new ZFVFileSystem;
 	m_pkBasicFS					= new ZFBasicFS;
-	m_pkPSystemManager		= new PSystemManager;
+	m_pkPSystemManager			= new PSystemManager;
 	m_pkScript					= new ZFScriptSystem;
 	m_pkTcs						= new Tcs;	
 
@@ -135,7 +133,6 @@ ZeroFps::~ZeroFps()
 	delete m_pkNetWork;
 	delete m_pkAudioSystem;
 	delete m_pkObjectMan;
-	delete m_pkCmd;
 	delete m_pkConsole;
 	delete m_pkRender;
 	delete m_pkLight;

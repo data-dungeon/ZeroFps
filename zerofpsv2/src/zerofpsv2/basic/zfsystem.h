@@ -67,6 +67,9 @@ There should only be one of this in the program.
 class BASIC_API ZFSystem	/*	ZFSystem	*/
 {
 private:
+	CmdSystem*				m_pkCmdSystem;
+
+
 	vector<ZFCmdData>		m_kCmdDataList;		///< List of all cmd functions/variables.
 	vector<ZFLogFile>		m_kLogFiles;			///< List of all Log files.
 	FILE*						m_pkLogFile;			///< Master Log File (zerofps.txt).

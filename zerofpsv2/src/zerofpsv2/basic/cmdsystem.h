@@ -12,7 +12,8 @@
 
 using namespace std;
 
-
+/**	\brief	Used by ZFSystem to register it's own commands.
+*/
 class BASIC_API CmdSystem : public ZFSubSystem  
 {
 	private:
@@ -34,7 +35,6 @@ class BASIC_API CmdSystem : public ZFSubSystem
 		bool Set(const char* aName,const char* acData);							//set variable aName to dData
 
 		friend class ZFSystem;
-
 
 		bool StartUp();
 		bool ShutDown();

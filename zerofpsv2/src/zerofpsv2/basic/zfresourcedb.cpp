@@ -102,14 +102,13 @@ ZFResourceDB::ZFResourceDB()
 
 bool ZFResourceDB::StartUp()	
 { 
-//	m_pkZeroFps = dynamic_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
-
 	return true; 
 }
 
 bool ZFResourceDB::ShutDown() 
 { 
 	m_bInstantExpire = true;
+
 	printf("Unloading Res: ");
 	do {
 		printf(".");
@@ -131,7 +130,6 @@ bool ZFResourceDB::ShutDown()
 }
 
 bool ZFResourceDB::IsValid()	{ return true; }
-
 
 ZFResourceDB::~ZFResourceDB()
 {
@@ -160,6 +158,8 @@ bool ZFResourceDB::Refresh()
 				// Time to die.
 				g_ZFObjSys.Logf("resdb", "Remove %s\n", (*it)->m_strName.c_str());
 				cout << "Expires: '" << (*it)->m_strName << "'" << endl;
+				
+				m_kResourceFactory[(*it)->m_pkResource->m_iTypeIndex].m_iActive --;
 				delete (*it);
 				it = m_kResources.erase(it);
 				bWasUnloaded = true;
@@ -173,8 +173,6 @@ bool ZFResourceDB::Refresh()
 
 	return bWasUnloaded;
 }
-
-
 
 ZFResourceInfo*	ZFResourceDB::GetResourceData(string strResName)
 {
@@ -289,7 +287,10 @@ ZFResource*	ZFResourceDB::CreateResource(string strName)
 	if(pkLink == NULL)
 		return NULL;
 
+	pkLink->m_iActive ++;
 	ZFResource* pkRes = pkLink->Create();
+	if(pkRes)
+		pkRes->m_iTypeIndex = pkLink->m_iIndex;
 	return pkRes;
 }
 
@@ -298,6 +299,8 @@ void ZFResourceDB::RegisterResource(string strName, ZFResource* (*Create)())
 	ResourceCreateLink kResLink;
 	kResLink.m_strName = strName;
 	kResLink.Create = Create;
+	kResLink.m_iActive = 0;
+	kResLink.m_iIndex = m_kResourceFactory.size();
 
 	m_kResourceFactory.push_back(kResLink);
 }
@@ -335,7 +338,7 @@ void ZFResourceDB::RunCommand(int cmdid, const CmdArgument* kCommand)
 		case FID_LISTTYPES:
 			GetSystem().Printf("Resource types: ");
 			for(unsigned int i=0; i<m_kResourceFactory.size(); i++) {
-				GetSystem().Printf(" [%d] = %s",i, m_kResourceFactory[i].m_strName.c_str());
+				GetSystem().Printf(" [%d] = %s, %d",i, m_kResourceFactory[i].m_strName.c_str(),m_kResourceFactory[i].m_iActive);
 				}
 			break;
 		};
