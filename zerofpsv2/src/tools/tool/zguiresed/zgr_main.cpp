@@ -8,7 +8,7 @@
 
 ZGuiResEd g_kZGuiEd("zguiresed",1024,768,0);
 
-static bool GUIPROC( ZGuiWnd* win, unsigned int msg, int numparms, void *params )
+bool GUIPROC( ZGuiWnd* win, unsigned int msg, int numparms, void *params )
 { 
 	if(win && msg == ZGM_COMMAND || msg == ZGM_SELECTLISTITEM || msg == ZGM_CBN_SELENDOK)
 	{

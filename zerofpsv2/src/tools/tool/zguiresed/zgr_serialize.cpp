@@ -24,8 +24,11 @@ bool ZGuiResEd::CreateBackup(const char* szFileName)
 			}
 		}
 
+#ifdef WIN
 		if(!CopyFile(szFileName, strBackupName.c_str(), TRUE))
 			return false;
+#endif
+
 	}
 	else
 	{
@@ -541,10 +544,11 @@ bool ZGuiResEd::AlreadyInList(vector<ZGuiWnd*>& kList, ZGuiWnd* kWindow)
 	return false;
 }
 
+/*
 bool ZGuiResEd::SearchFiles(vector<string>& vkPathList, const char* szRootPath, 
 								 char* szExtension, bool bSearchForFolders)
 {
-	char searchPath[MAX_PATH];
+	char searchPath[512];
 	WIN32_FIND_DATA finddata;
 	HANDLE hFind;
 	BOOL bMore;
@@ -602,7 +606,7 @@ bool ZGuiResEd::SearchFiles(vector<string>& vkPathList, const char* szRootPath,
 
 				if(!bSearchForFolders)
 				{
-					if( strstr(s, szExtension/*".lua"*/) )
+					if( strstr(s, szExtension) ) //if( strstr(s, ".lua") )
 						vkPathList.push_back(id);
 				}
 
@@ -625,3 +629,5 @@ bool ZGuiResEd::SearchFiles(vector<string>& vkPathList, const char* szRootPath,
 
 	return true;
 }
+
+*/

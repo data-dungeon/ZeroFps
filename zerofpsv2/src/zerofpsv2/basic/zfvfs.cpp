@@ -301,7 +301,8 @@ bool ZFVFileSystem::RemoveFile(const char* acName)
 }
 
 
-void ZFVFileSystem::ListDirRecursive(vector<string>* vkFiles, string strRootPath, vector<string>& szExtensions)
+void ZFVFileSystem::ListDirRecursive(vector<string>* vkFiles, string strRootPath, 
+												 vector<string>& szExtensions, bool bAlsoFolders)
 {
 	if(strRootPath.size() > 1)
 	{
@@ -354,22 +355,26 @@ void ZFVFileSystem::ListDirRecursive(vector<string>* vkFiles, string strRootPath
 				{
 					char *ext = strrchr( strFile.c_str(), '.');
 
+					bool bAdd = false;
+
 					if(ext != NULL)
 					{					
 						for(int i=0; i<szExtensions.size(); i++)
 						{
 							if(strcmp(ext, szExtensions[i].c_str()) == 0)
 							{
+								
 								if(currentFolder.size() > 1)
 								{
-									char last_char[] = { currentFolder[currentFolder.size()-1], '\0' };
-									if(!(last_char[0] == '/' || last_char[0] == '\\'))
-										vkFiles->push_back( currentFolder + "/" + strFile );
-									else
-										vkFiles->push_back( currentFolder + strFile );
+									bAdd = true;
+									//char last_char[] = { currentFolder[currentFolder.size()-1], '\0' };
+									//if(!(last_char[0] == '/' || last_char[0] == '\\'))
+									//	vkFiles->push_back( currentFolder + "/" + strFile );
+									//else
+									//	vkFiles->push_back( currentFolder + strFile );
 
-									// ta bort rotpathen
-									vkFiles->back().erase(0, strRootPath.length());
+									//// ta bort rotpathen
+									//vkFiles->back().erase(0, strRootPath.length());
 
 									//int pp;
 									//if((pp=vkFiles->back().find("//"))!= string::npos)
@@ -377,6 +382,23 @@ void ZFVFileSystem::ListDirRecursive(vector<string>* vkFiles, string strRootPath
 								}								
 							}
 						}
+					}
+					
+					if(bAlsoFolders)
+					{
+						bAdd = true;
+					}
+
+					if(bAdd)
+					{
+						char last_char[] = { currentFolder[currentFolder.size()-1], '\0' };
+						if(!(last_char[0] == '/' || last_char[0] == '\\'))
+							vkFiles->push_back( currentFolder + "/" + strFile );
+						else
+							vkFiles->push_back( currentFolder + strFile );
+
+						// ta bort rotpathen
+						vkFiles->back().erase(0, strRootPath.length());						
 					}
 				}
 

@@ -664,9 +664,18 @@ void ZGuiResEd::OnCommand(string strCtrlID, int iCmdExtra)
 
 			GetWnd("GuiEd_SelectFileWnd")->SetPos(x,y,true,true); 
 		}
+
+		ZFVFileSystem* m_pkFileSys = reinterpret_cast<ZFVFileSystem*>(
+				g_ZFObjSys.GetObjectPtr("ZFVFileSystem"));	
 		
 		vector<string> kFiles;
-		if(SearchFiles(kFiles, "..\\datafiles", ".lua", (strCtrlID == "GuiEd_SaveScript")))
+		vector<string> ext;
+		ext.push_back(".lua"); 
+
+		m_pkFileSys->ListDirRecursive(&kFiles, string("..\\datafiles"), ext, (strCtrlID == "GuiEd_SaveScript"));
+
+		//if(SearchFiles(kFiles, "..\\datafiles", ".lua", (strCtrlID == "GuiEd_SaveScript")))
+		if(1)
 		{
 			printf("Num files found = %i\n", kFiles.size());
 
@@ -678,13 +687,13 @@ void ZGuiResEd::OnCommand(string strCtrlID, int iCmdExtra)
 
 				if(strCtrlID == "GuiEd_SaveScript")
 				{
-					if(kFiles[i].find("\\script\\gui") != string::npos && 
-						kFiles[i].find("\\CVS") == string::npos)
+					if(kFiles[i].find("/script/gui") != string::npos && 
+						kFiles[i].find("/CVS") == string::npos)
 					bAdd = true;
 				}
 				else
 				{
-					if(kFiles[i].find("\\script\\gui") != string::npos)
+					if(kFiles[i].find("/script/gui") != string::npos)
 						bAdd = true;
 				}
 
