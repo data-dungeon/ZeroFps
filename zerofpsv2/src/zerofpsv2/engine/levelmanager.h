@@ -99,7 +99,6 @@ class ENGINE_API LevelManager : public ZFSubSystem {
 		bool StartUp();
 		bool ShutDown();
 		bool IsValid();
-
 };
 
 

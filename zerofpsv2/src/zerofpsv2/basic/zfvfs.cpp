@@ -149,6 +149,26 @@ FILE* ZFVFileSystem::Open(string strFileName, int iOptions, bool bWrite)
 	return NULL;
 }
 
+string ZFVFileSystem::GetFullPath(string strFileName)
+{
+	FILE*	pkFp;
+	string strRootMerge;
+	
+	// Try to open from all active RootPaths.
+	for(unsigned int i=0; i <m_kstrRootPath.size(); i++) {
+		strRootMerge = m_kstrRootPath[i] + strFileName;
+		pkFp = fopen(strRootMerge.c_str(), "rb");
+		if(pkFp) {
+			fclose(pkFp);
+			return strRootMerge;
+			}
+		}
+
+	strRootMerge = "";
+	return strRootMerge;
+}
+
+
 void ZFVFileSystem::AddRootPath(string strRootPath)
 {
 	cout << "Adding to VFS root table: " <<  strRootPath << endl;

@@ -311,10 +311,6 @@ SOURCE=..\engine_systems\propertys\skyboxrenderproperty.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\engine_systems\audio\soundbuffermanager.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=..\engine_systems\propertys\vegitationproperty.cpp
 # End Source File
 # Begin Source File
@@ -540,10 +536,6 @@ SOURCE=.\res_texture.h
 # Begin Source File
 
 SOURCE=..\engine_systems\propertys\skyboxrenderproperty.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\engine_systems\audio\soundbuffermanager.h
 # End Source File
 # Begin Source File
 

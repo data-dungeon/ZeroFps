@@ -7,9 +7,6 @@
 #include "../zerofpsv2/gui/zgui.h"
 
 ZeroTank g_kZeroTank("ZeroTank",0,0,0);
-Object* g_pkTower;
-Object* g_pkGun;
-Vector3 g_kRotTower = Vector3(0,0,0);;
 
 static bool GUIPROC( ZGuiWnd* win, unsigned int msg, int numparms, void *params ) 
 {
@@ -54,12 +51,6 @@ void ZeroTank::OnInit()
 
 void ZeroTank::Init()
 {	
-	//get heightmap pointer bös
-	//	m_pkMap = pkLevelMan->GetHeightMap();	
-
-	//register variables
-//	RegisterVariable("m_iGameType", &m_iGameType,CSYS_INT);
-	
 	//register commmands bös
 	Register_Cmd("load",FID_LOAD);		
 	Register_Cmd("unload",FID_UNLOAD);			
@@ -70,16 +61,9 @@ void ZeroTank::Init()
 	
 	//initiate our camera bös
 	m_pkCamera=new Camera(Vector3(0,10,0),Vector3(0,0,0),85,1.333,0.25,250);	
-//	m_pkCamera->SetViewPort(0,0.24,1,0.76);
 	
 	//disable zones modells bös
 	pkLevelMan->SetVisibleZones(false);
-
-//	m_pkMap2 = new Heightmap2(/*"HeightMap"*/);
-//	m_pkMap2->CreateHMFromImage("/data/textures/hmap.tga");
-		
-	//register actions bös
-//	RegisterActions();
 
 	//register property bös
 	RegisterPropertys();
@@ -103,8 +87,6 @@ void ZeroTank::RegisterPropertys()
 
 void ZeroTank::OnIdle() 
 {
-	
-
 	pkFps->SetCamera(m_pkCamera);		
 	pkFps->GetCam()->ClearViewPort();	
 			
@@ -112,9 +94,6 @@ void ZeroTank::OnIdle()
 	
  	pkFps->UpdateCamera(); 	
 	
-//	m_pkMap2->SetPos(Vector3(0,0,0));
-//	pkRender->DrawHM2(m_pkMap2,pkFps->GetCam()->GetPos());
-
 	//update player possition 
 	if(pkFps->m_bClientMode && !pkFps->m_bServerMode) {
 		if(!m_pkZeroTankClientObject) {
@@ -128,7 +107,6 @@ void ZeroTank::OnIdle()
 		else {
 			m_pkZeroTank_Modify = m_pkZeroTankClientObject;
 			pkObjectMan->OwnerShip_Take( m_pkZeroTankClientObject );
-	//		pkObj->SetWorldPosV(pkFps->GetCam()->GetPos());
 			m_pkZeroTankClientObject->SetWorldPosV(m_pkZeroTankClientObject->GetLocalPosV());	// **************** CLIENT CANT MOVE ERROR VIM ****************
 		}
 	}	
@@ -194,6 +172,7 @@ void ZeroTank::Input()
 		Matrix4 kRm = m_pkZeroTank_Modify->GetLocalRotM();
 
 		if(m_pkZeroTank_Modify == m_pkCameraObject)
+			/* || m_pkZeroTank_Modify == m_pkZeroTankClientObject) */
 			kRm.Transponse();
 	
 		/*

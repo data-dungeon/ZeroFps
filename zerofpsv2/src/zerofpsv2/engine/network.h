@@ -8,8 +8,8 @@
 #include "fh.h"
 
 
-#define MAX_PACKET_SIZE	1024				// Max Bytes in each packet.
-#define MAX_NETWORKNAME	16					
+#define MAX_PACKET_SIZE					1024				// Max Bytes in each packet.
+#define MAX_NETWORKNAME					16					
 
 // Diffrent types of messages the network sends.
 #define ZF_NETTYPE_CONTROL				1	// A Connection controll message
@@ -162,6 +162,8 @@ struct ZFNet_String
 	bool		m_bNeedUpdate;	// True if we need to request a update from server.
 };
 
+
+/*	NetWork SubSystem	*/
 class ENGINE_API NetWork : public ZFSubSystem 
 {
 private:

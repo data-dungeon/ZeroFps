@@ -77,6 +77,7 @@ class BASIC_API ZFVFileSystem : public ZFSubSystem
 	
 		FILE* Open(string strFileName, int iOptions, bool bWrite);	
 
+		string GetFullPath(string strFileName);
 
 		string	GetCurrentWorkingDir();
 		bool CreateDir(string strDir);

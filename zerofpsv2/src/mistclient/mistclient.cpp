@@ -108,10 +108,10 @@ void MistClient::OnIdle()
 	
  	pkFps->UpdateCamera(); 	
 	
-	
-	m_pkMap2->SetPos(Vector3(0,0,0));
-
-	pkRender->DrawHM2(m_pkMap2,pkFps->GetCam()->GetPos());	
+	if(m_pkMap2) {
+		m_pkMap2->SetPos(Vector3(0,0,0));
+		pkRender->DrawHM2(m_pkMap2,pkFps->GetCam()->GetPos());	
+		}
 
 	Vector3 pos = Get3DMousePos();
 	pos+=pkFps->GetCam()->GetPos();

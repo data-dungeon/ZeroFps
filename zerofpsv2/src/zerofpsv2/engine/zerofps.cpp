@@ -75,7 +75,7 @@ ZeroFps::ZeroFps(void) : I_ZeroFps("ZeroFps")
 	m_iRenderOn					= 1;
 
 
-	// Register Commands
+	// Register Variables
 	RegisterVariable("r_maddraw",			&m_iMadDraw,CSYS_INT);
 	RegisterVariable("r_madlod",			&g_fMadLODScale,CSYS_FLOAT);
 	RegisterVariable("r_madlodlock",		&g_iMadLODLock,CSYS_FLOAT);
@@ -84,7 +84,7 @@ ZeroFps::ZeroFps(void) : I_ZeroFps("ZeroFps")
 	RegisterVariable("r_logrp",			&g_iLogRenderPropertys,CSYS_INT);	
 	RegisterVariable("r_render",			&m_iRenderOn,CSYS_INT);	
 
-	// Register Variables
+	// Register Commands
 	Register_Cmd("setdisplay",FID_SETDISPLAY);
 	Register_Cmd("quit",FID_QUIT);
 	Register_Cmd("slist",FID_SLIST);
@@ -99,6 +99,7 @@ ZeroFps::ZeroFps(void) : I_ZeroFps("ZeroFps")
 	Register_Cmd("devhide",FID_DEV_HIDEPAGE, CSYS_FLAG_SRC_ALL, "devhide name", 1);	
 	Register_Cmd("debug",FID_LISTMAD);	
 	Register_Cmd("shot",FID_SCREENSHOOT);	
+
 }
 
 ZeroFps::~ZeroFps()
@@ -174,6 +175,10 @@ bool ZeroFps::StartUp()
 		printf("Failed to set GUI display!\n");
 	}
 	
+	string galla;
+	galla = m_pkZFVFileSystem->GetFullPath("data/mad/orc.mad");
+	cout << "Galla: " << galla.c_str() << endl;
+
 	return true;
 }
 
@@ -746,14 +751,9 @@ void ZeroFps::RunCommand(int cmdid, const CmdArgument* kCommand)
 			else
 				sprintf(g_szIpPort, "%s:4242", kCommand->m_kSplitCommand[1].c_str());
 
-
 			m_pkConsole->Printf("Connect to: %s", g_szIpPort);
+
 			m_pkNetWork->ClientStart(g_szIpPort);
-
-
-			//m_pkNetWork->ClientStart("192.168.0.7:4242"); // hugo
-			//m_pkNetWork->ClientStart("192.168.0.145:4242"); // hugo
-			//m_pkNetWork->ClientStart("192.168.0.111:4242");	// me
 			m_pkConsole->Printf("FID_CONNECT");
 			m_pkApp->OnClientStart();
 			m_bClientMode = true;
@@ -766,11 +766,12 @@ void ZeroFps::RunCommand(int cmdid, const CmdArgument* kCommand)
 				}
 
 			m_pkConsole->Printf("Start a server with name %s", kCommand->m_kSplitCommand[1].c_str());
-			m_pkNetWork->ServerStart();
 
+			m_pkNetWork->ServerStart();
 			m_pkApp->OnServerStart();
+
 			m_bServerMode = true;
-				m_bClientMode = true;
+			m_bClientMode = true;
 			break;
 	
 		case FID_DIR:
