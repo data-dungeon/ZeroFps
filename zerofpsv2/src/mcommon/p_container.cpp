@@ -607,11 +607,14 @@ void P_Container::FindMyItems()
 	{
 		if(P_Item* pkItem = (P_Item*)kEntitys[i]->GetProperty("P_Item"))
 		{
-			if(!AddItem(kEntitys[i]->GetEntityID(),pkItem->m_iInContainerPosX,pkItem->m_iInContainerPosY))
-			{
-				cout<<"item did not find on its last known container position, adding it anywhere"<<endl;
-				AddItem(kEntitys[i]->GetEntityID());
-			}
+			if(!HaveItem(kEntitys[i]->GetEntityID()))
+			{		
+				if(!AddItem(kEntitys[i]->GetEntityID(),pkItem->m_iInContainerPosX,pkItem->m_iInContainerPosY))
+				{
+					cout<<"item did not find on its last known container position, adding it anywhere"<<endl;
+					AddItem(kEntitys[i]->GetEntityID());
+				}
+			}			
 		}
 	}
 }
@@ -629,7 +632,50 @@ using namespace ObjectManagerLua;
 
 namespace SI_P_Container
 {
-
+	int CreateItemInContainerLua(lua_State* pkLua)
+	{
+		if(g_pkScript->GetNumArgs(pkLua) != 2)
+			return 0;		
+		
+		int iContainerID;
+		double dTemp;
+		char czItemName[128];
+		
+		g_pkScript->GetArgNumber(pkLua, 0, &dTemp);
+		iContainerID = (int)dTemp;
+		
+		g_pkScript->GetArgString(pkLua, 1,czItemName);
+	
+		//get cotnainer entity
+		if(Entity* pkContainerEnt = g_pkObjMan->GetEntityByID(iContainerID))
+		{
+			//get container property
+			if(P_Container* pkCP = (P_Container*)pkContainerEnt->GetProperty("P_Container"))
+			{			
+				//create new item
+				if(Entity* pkEnt = g_pkObjMan->CreateEntityFromScript(czItemName))
+				{
+					//try adding it to the container
+					if(pkCP->AddItem(pkEnt->GetEntityID()))
+					{
+						cout<<"created "<<czItemName<<" in container "<<iContainerID<<endl;
+						return 0;
+					}
+					else
+					{
+						cout<<"WARNING: could not create item "<<czItemName<<" in container "<<iContainerID<<endl;
+						g_pkObjMan->Delete(pkEnt);
+						return 0;
+					}
+					
+				}
+				else
+					cout<<"WARNING: CreateItemInContainerLua could not create item "<<czItemName<<endl;
+			}
+		}
+		
+		return 0;
+	}
 }
 
 Property* Create_P_Container()
@@ -644,7 +690,7 @@ void Register_P_Container(ZeroFps* pkZeroFps)
 	pkZeroFps->m_pkPropertyFactory->Register("P_Container", Create_P_Container);					
 
 	// Register Property Script Interface
-	//g_pkScript->ExposeFunction("PickupItem",	SI_P_CharacterProperty::PickupItemLua);
+	g_pkScript->ExposeFunction("CreateItemInContainer",	SI_P_Container::CreateItemInContainerLua);
 	//g_pkScript->ExposeFunction("HaveItem",		SI_P_CharacterProperty::HaveItemLua);
 
 }
