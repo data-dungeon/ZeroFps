@@ -358,8 +358,17 @@ void ZShader::SetupTU(ZMaterialSettings* pkSettings,int iTU)
 
 void ZShader::SetupRenderStates(ZMaterialSettings* pkSettings)
 {
-	//fulhack deluxe
-	glColor4f(1,1,1,1);
+	//enable color material if wanted
+	if(pkSettings->m_bColorMaterial)
+	{
+		glEnable(GL_COLOR_MATERIAL);	
+		glColorMaterial(GL_FRONT_AND_BACK,GL_AMBIENT_AND_DIFFUSE);
+	}
+	else
+		glDisable(GL_COLOR_MATERIAL);	
+	
+	//set vertex color	
+	glColor4fv(&pkSettings->m_kVertexColor.x);
 
 	//polygon mode settings		front
 	switch(pkSettings->m_iPolygonModeFront)

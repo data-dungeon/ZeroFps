@@ -2,7 +2,7 @@
 #include <iostream>
 #include <cstdio>
 #include <SDL/SDL.h>
-#include <GL/gl.h>
+#include <GL/GLee.h>
 #include <vector>
 
 using namespace std;

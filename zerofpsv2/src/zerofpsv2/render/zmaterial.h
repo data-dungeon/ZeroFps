@@ -4,10 +4,12 @@
 #include <iostream>
 #include "render_x.h"
 #include <vector>
+
 #include "../ogl/zfpsgl.h"
 #include "../basic/zfini.h"
-
 #include "../basic/zfresource.h"
+#include "../basic/vector4.h"
+
 
 using namespace std;
 
@@ -20,24 +22,27 @@ class RENDER_API ZMaterialSettings
 		ZFResourceHandle*	m_kTUs[4];	
 		ZFResourceHandle*	m_pkVP;
 		
-		int	m_iTUTexCords[4];
+		Vector4	m_kVertexColor;
+		bool		m_bColorMaterial;
 		
-		int	m_iPolygonModeFront;
-		int	m_iPolygonModeBack;		
+		int		m_iTUTexCords[4];
 		
-		int	m_iDepthFunc;
+		int		m_iPolygonModeFront;
+		int		m_iPolygonModeBack;		
 		
-		bool	m_bLighting;	
-		bool	m_bCullFace;
+		int		m_iDepthFunc;
+		
+		bool		m_bLighting;	
+		bool		m_bCullFace;
 
-		bool	m_bAlphaTest;
+		bool		m_bAlphaTest;
 	
-		bool	m_bBlend;
+		bool		m_bBlend;
 
-		bool m_bDepthTest;
+		bool	m_bDepthTest;
 
-		int	m_iBlendSrc;
-		int	m_iBlendDst;
+		int		m_iBlendSrc;
+		int		m_iBlendDst;
 	
 		ZMaterialSettings();
 		~ZMaterialSettings();

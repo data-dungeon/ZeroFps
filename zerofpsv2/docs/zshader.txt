@@ -39,7 +39,6 @@ settings in [pass-x]
 		rastration vill be alpha tested, all pixels whit alpha below 0.5 vill not be
 		rendered.
 	
-	
 	tu0-3 = texturename   [""]
 		what texture file will this texture unit use.
 	
@@ -103,4 +102,14 @@ settings in [pass-x]
 			5 = ONE_MINUS_SRC_ALPHA_BLEND_DST
 			6 = DST_ALPHA_BLEND_DST
 			7 = ONE_MINUS_DST_ALPHA_BLEND_DST
+	
+	vertexcolor-r = float [1]
+	vertexcolor-g = float [1]
+	vertexcolor-b = float [1]
+	vertexcolor-a = float [1]
+		these are used to set vertexcolors
+		
+	colormaterial = true/false [false]
+		enable diable colormaterial, used together whit vertexcolors.
+		
 	

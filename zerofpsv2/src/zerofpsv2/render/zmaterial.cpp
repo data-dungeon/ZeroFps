@@ -19,6 +19,9 @@ ZMaterialSettings::ZMaterialSettings()
 	m_iPolygonModeFront = LINE_POLYGON;
 	m_iPolygonModeBack =	LINE_POLYGON;			
 	
+	m_kVertexColor.Set(1,1,1,1);
+	
+	m_bColorMaterial = false;
 	m_bLighting =	 true;
 	m_bCullFace = 	true;
 	m_bAlphaTest =	false;
@@ -244,6 +247,21 @@ bool ZMaterial::LoadPass(int iPass)
 	
    if(m_kIni.KeyExist(passname.c_str(),"depthtest"))
       newpass->m_bDepthTest = m_kIni.GetBoolValue(passname.c_str(),"depthtest");
+	
+	if(m_kIni.KeyExist(passname.c_str(),"colormaterial"))
+      newpass->m_bColorMaterial = m_kIni.GetBoolValue(passname.c_str(),"colormaterial");		
+	
+	//get vertexcolor R G B A values
+	if(m_kIni.KeyExist(passname.c_str(),"vertexcolor-r"))
+      newpass->m_kVertexColor.x = m_kIni.GetFloatValue(passname.c_str(),"vertexcolor-r");	
+	if(m_kIni.KeyExist(passname.c_str(),"vertexcolor-g"))
+      newpass->m_kVertexColor.y = m_kIni.GetFloatValue(passname.c_str(),"vertexcolor-g");	
+	if(m_kIni.KeyExist(passname.c_str(),"vertexcolor-b"))
+      newpass->m_kVertexColor.z = m_kIni.GetFloatValue(passname.c_str(),"vertexcolor-b");	
+	if(m_kIni.KeyExist(passname.c_str(),"vertexcolor-a"))
+      newpass->m_kVertexColor.w = m_kIni.GetFloatValue(passname.c_str(),"vertexcolor-a");	
+	
+	
 	
 	return true;
 }
