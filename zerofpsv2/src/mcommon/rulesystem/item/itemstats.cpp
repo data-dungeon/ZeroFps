@@ -233,7 +233,10 @@ void ItemStats::Print()
 
 
    cout << "SkillBonuses:" << endl;
-   for ( map<string, int>::iterator kIte = m_kSkillBonus.begin(); 
+	
+	map<string, int>::iterator kIte;
+   
+   for (kIte = m_kSkillBonus.begin(); 
          kIte != m_kSkillBonus.end(); kIte++ )
       cout << "   " << (*kIte).first << ":" << (*kIte).second << endl;
 
