@@ -1012,14 +1012,14 @@ void ZShaderSystem::CopyVertexData()
 	m_bCopyedData = true;	
 	
 	m_pkBakup2DVertexPointer = m_pk2DVertexPointer;
-	m_pkBakupVertexPointer = m_pkVertexPointer;
-	m_pkBakupNormalPointer = m_pkNormalPointer;	
+	m_pkBakupVertexPointer = 	m_pkVertexPointer;
+	m_pkBakupNormalPointer = 	m_pkNormalPointer;	
 	m_pkBakupTexturePointer0 = m_pkTexturePointer0;
 	m_pkBakupTexturePointer1 = m_pkTexturePointer1;		
 	m_pkBakupTexturePointer2 = m_pkTexturePointer2;		
 	m_pkBakupTexturePointer3 = m_pkTexturePointer3;		
-	m_pkBakupIndexPointer = m_pkIndexPointer;
-	m_pkBakupColorPointer = m_pkColorPointer;
+	m_pkBakupIndexPointer = 	m_pkIndexPointer;
+	m_pkBakupColorPointer = 	m_pkColorPointer;
 	
 	if(m_pk2DVertexPointer)
 		CopyData((void**)&m_pk2DVertexPointer,sizeof(Vector2)*m_iNrOfVertexs);	
