@@ -398,6 +398,7 @@ void Object::PackTo(NetPacket* pkNetPacket)
 	pkNetPacket->Write(m_kPos);
 	pkNetPacket->Write(m_kRot);
 	pkNetPacket->Write(m_fRadius);
+	pkNetPacket->Write_Str(m_kName.c_str());
 	
 	char szPropertyName[256];
 
@@ -431,6 +432,11 @@ void Object::PackFrom(NetPacket* pkNetPacket)
 	SetRot(kVec);
 	pkNetPacket->Read(fFloat);
 	GetRadius() = fFloat;
+
+	char szStr[256];
+	pkNetPacket->Read_Str(szStr);
+	m_kName = szStr;
+
 
 	g_ZFObjSys.Logf("net", "<%f,%f,%f>", m_kPos.x,m_kPos.y,m_kPos.z);
 	g_ZFObjSys.Logf("net", "<%f,%f,%f>\n", m_kRot.x,m_kRot.y,m_kRot.z);
