@@ -2,14 +2,17 @@
 #define _MADVIEW_H_
 
 #include "../../../zerofpsv2/engine/application.h"
-#include "../../../zerofpsv2/engine_systems/mad/mad_modell.h"
-#include "../../../zerofpsv2/engine_systems/propertys/p_camera.h"
 #include "../../../zerofpsv2/gui/zgui.h"
 
 // Remove the console window
 #ifdef WIN32
 	#pragma comment(linker, "/subsystem:\"windows\" /entry:\"mainCRTStartup\"")
 #endif 
+
+
+class Entity;
+class Camera;
+class Mad_CoreSubMesh;
 
 /**	\brief	Da MadView
 		\ingroup MadView

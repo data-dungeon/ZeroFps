@@ -1,6 +1,8 @@
 #include "madview.h"
 #include "../../../zerofpsv2/gui/zgui.h"
 #include "../../../zerofpsv2/basic/zguifont.h"
+#include "../../../zerofpsv2/engine_systems/mad/mad_modell.h"
+#include "../../../zerofpsv2/engine/zerofps.h"
 
 void MadView::SetupGuiEnviroment()
 {
