@@ -50,6 +50,8 @@ PlayerControlProperty::PlayerControlProperty(Input *pkInput,HeightMap *pkMap)
 	m_fCamSwitchTimer = m_pkFps->GetTicks();	
 
 	m_fFov = 90;
+
+	m_pkUseObject = NULL;
 };
 
 PlayerControlProperty::~PlayerControlProperty()
@@ -117,6 +119,8 @@ void PlayerControlProperty::Update() {
 		UseInvItem();	
 	}
 	
+	m_pkUseObject = NULL;
+
 	if(m_pkInput->Action(m_iActionUse))
 	{
 		Object* bla = GetObject();
@@ -125,8 +129,10 @@ void PlayerControlProperty::Update() {
 			ItemProperty* ip = static_cast<ItemProperty*>(bla->GetProperty("ItemProperty"));
 			cout << "OBJECT :"<<ip->m_kItemName<<endl;
 			
-			PickUp(bla);
+			//PickUp(bla);
 		}
+
+		m_pkUseObject = bla;
 	}
 	
 	

@@ -8,6 +8,7 @@
 #include <GL/glut.h>
 #include "../zerofps/engine/application.h"
 #include "itembox.h"
+#include "examinepumenu.h"
 
 #include "../common/common.pkg"
 
@@ -53,6 +54,7 @@ class Game :public Application {
 		void InitGui();
 		void Input();				
 		void SetupLevel();		
+		void PlayerExamineObject();
 //		bool LoadLevel(const char* acFile);				
 
 //		void Clear();		
@@ -73,6 +75,7 @@ class Game :public Application {
 
 		ItemBox* m_pkPlayerInventoryBox;
 		ItemBox* m_pkContainerBox;
+		ExaminePUMenu* m_pkExamineMenu;
 
 		enum FuncId_e
 		{

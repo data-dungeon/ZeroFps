@@ -757,7 +757,7 @@ void EditPropertyDlg::ClearAllFileds()
 	m_pkGui->Get("ObjectPosZEB")->SetText("");
 	m_pkGui->Get("ObjectRotX")->SetText("");
 	m_pkGui->Get("ObjectRotY")->SetText("");
-	m_pkGui->Get("ObjectRo tZ")->SetText("");
+	m_pkGui->Get("ObjectRotZ")->SetText("");
 
 	((ZGuiRadiobutton*)m_pkGui->Get("ObTypeDynamicRb"))->GetButton()->UncheckButton();
 	((ZGuiRadiobutton*)m_pkGui->Get("ObTypeStaticRb"))->GetButton()->UncheckButton();

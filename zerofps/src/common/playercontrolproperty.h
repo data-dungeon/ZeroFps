@@ -14,6 +14,8 @@
 #include "itemproperty.h"
 #include "common_x.h"
 
+class ExaminePUMenu;
+
 using namespace std;
 
 class COMMON_API PlayerControlProperty: public Property {
@@ -51,6 +53,8 @@ class COMMON_API PlayerControlProperty: public Property {
 		
 		float m_fGroundAngle;
 		//Vector3 OldWalkVel;
+
+
 		
 		Sound *walksound;		
 		
@@ -63,8 +67,6 @@ class COMMON_API PlayerControlProperty: public Property {
 		
 		Object* GetObject();
 		
-		bool PickUp(Object* pkObject);
-
 	public:
 
 		
@@ -73,11 +75,15 @@ class COMMON_API PlayerControlProperty: public Property {
 
 		void Update();
 		void Touch(Collision* pkCol);		
+		bool PickUp(Object* pkObject);
 		
 		void AddObject(InventoryProperty* pkProperty);
 		void RemoveObject(InventoryProperty* pkProperty);
 		void NextInvItem();		
 		bool UseInvItem();
+
+		ExaminePUMenu* m_pkExaminePUMenu;
+		Object* m_pkUseObject;
 };
 
 

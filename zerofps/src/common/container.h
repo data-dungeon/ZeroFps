@@ -14,14 +14,14 @@
 using namespace std;
 
 
-struct ItemData
+struct COMMON_API ItemData
 {
 	Object*  pkObject;
 	int		iX;
 	int		iY;
 };
 
-struct GuiData
+struct COMMON_API GuiData
 {
 	Object* 	pkObject;
 	

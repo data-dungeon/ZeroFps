@@ -48,6 +48,7 @@ void DoorProperty::UnRegisterActions()
 
 void DoorProperty::OpenDoor()
 {
+	printf("open door\n");
 	if(!m_bOpen)
 	{
 		PhysicProperty* kPP = static_cast<PhysicProperty*>(m_pkObject->GetProperty("PhysicProperty"));
@@ -55,6 +56,7 @@ void DoorProperty::OpenDoor()
 		if(kPP != NULL)
 		{
 			kPP->m_bSolid = false;
+			m_bOpen = true;
 		}
 		else
 			cout<<"Door has no PhysicProperty"<<endl;
@@ -63,6 +65,7 @@ void DoorProperty::OpenDoor()
 
 void DoorProperty::CloseDoor()
 {
+	printf("close door\n");
 	if(m_bOpen)
 	{
 		PhysicProperty* kPP = static_cast<PhysicProperty*>(m_pkObject->GetProperty("PhysicProperty"));
@@ -70,6 +73,7 @@ void DoorProperty::CloseDoor()
 		if(kPP != NULL)
 		{
 			kPP->m_bSolid = true;
+			m_bOpen = false;
 		}
 		else
 			cout<<"Door has no PhysicProperty"<<endl;

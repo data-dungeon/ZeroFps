@@ -10,6 +10,7 @@ Game::Game(char* aName,int iWidth,int iHeight,int iDepth): Application(aName,iWi
 
 void Game::OnInit() 
 {
+	m_pkExamineMenu = NULL;
 	m_pkPlayerInventoryBox = NULL;
 	m_pkContainerBox = NULL;
 	m_pkPlayer = NULL;
@@ -58,6 +59,24 @@ static bool CONTAINER_BOXPROC( ZGuiWnd* wnd, unsigned int msg, int num, void *pa
 
 	return g_kGame.m_pkContainerBox->DlgProc(wnd,msg,num,parms); 
 }
+
+static bool EXAMINE_BOXPROC( ZGuiWnd* wnd, unsigned int msg, int num, void *parms ) 
+{
+/*	switch(msg)
+	{
+	case ZGM_COMMAND:
+		switch(((int*)parms)[0]) // control id
+		{
+		case ContainerClose:
+			g_kGame.m_pkExamineMenu->OnClose(false);
+			break;
+		}
+		break;
+	}*/
+
+	return g_kGame.m_pkExamineMenu->DlgProc(wnd,msg,num,parms); 
+}
+
 
 void Game::Init()
 {
@@ -126,7 +145,8 @@ void Game::OnIdle(void)
 
 			if(m_pkContainerBox)
 				m_pkContainerBox->Update();
-			
+
+			PlayerExamineObject();
 			break;
 		}
 	}
@@ -241,6 +261,17 @@ void Game::Input()
 			m_pkContainerBox->OnOpen(x,0); 
 		else
 			m_pkContainerBox->OnClose(false);
+	}
+
+	if(iKey == KEY_P)
+	{
+		int x = m_iWidth/2 - m_pkExamineMenu->Width()/2;
+		int y = m_iHeight/2 - m_pkExamineMenu->Height()/2;
+
+		if(m_pkExamineMenu->IsOpen() == false)
+			m_pkExamineMenu->OnOpen(x,y); 
+		else
+			m_pkExamineMenu->OnClose(false);
 	}
 
 	if(pkInput->Action(m_iActionCloseInventory))
@@ -411,6 +442,10 @@ void Game::InitGui()
 	m_pkContainerBox = new ItemBox(pkGui, CONTAINER_BOXPROC, pkTexMan);
 	m_pkContainerBox->Create(400,400,
 		"../data/gui_resource_files/container_rc.txt", "ContainerWnd");
+
+	// Create examine menu
+	m_pkExamineMenu = new ExaminePUMenu(pkGui, EXAMINE_BOXPROC, pkTexMan);
+	m_pkExamineMenu->Create(0,0,NULL,NULL);
 	
 	pkFps->m_bGuiTakeControl = false;
 
@@ -429,4 +464,29 @@ void Game::InitScript()
 
 	m_pkGameScriptInterface = new GameScriptInterface();
 	m_pkScript->ExposeObject("game", m_pkGameScriptInterface, tGame);
+}
+
+void Game::PlayerExamineObject()
+{
+	PlayerControlProperty* m_pkPlayerCtrl = static_cast<PlayerControlProperty*>
+			(m_pkPlayer->GetProperty("PlayerControlProperty"));
+
+	Object* pkObjectTouched = m_pkPlayerCtrl->m_pkUseObject;
+
+	if(pkObjectTouched != NULL)
+	{
+		ItemProperty* ip = static_cast<ItemProperty*>
+			(pkObjectTouched->GetProperty("ItemProperty"));
+
+		if(ip != NULL)
+		{
+			m_pkExamineMenu->SetItemProperty(ip);
+			m_pkExamineMenu->SetPlayerControlProperty(m_pkPlayerCtrl);
+
+			int x = m_iWidth/2 - m_pkExamineMenu->Width()/2;
+			int y = m_iHeight/2 - m_pkExamineMenu->Height()/2;
+			if(m_pkExamineMenu->IsOpen() == false)
+				m_pkExamineMenu->OnOpen(x,y);
+		}
+	}
 }
