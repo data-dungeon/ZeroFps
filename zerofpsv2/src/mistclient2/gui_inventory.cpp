@@ -100,6 +100,8 @@ void InventoryDlg::Open()
 		m_pkContainerWnd = g_kMistClient.GetWnd("ContainerWnd");
 	}
 
+	m_ppCursorSkin = g_kMistClient.m_pkGui->GetCursorSkin();
+
 	// visa inventory fönstret
 	m_pkInventoryWnd->Show();
 
@@ -121,7 +123,6 @@ void InventoryDlg::Open()
 	g_kMistClient.m_pkGui->GetToolTip()->GetWnd()->SetTextColor(255,255,255); 
 
 	g_kMistClient.m_pkGui->GetToolTip()->SetSkin(pkToolTipSkin);
-
 }
 
 void InventoryDlg::Close()
@@ -143,6 +144,8 @@ void InventoryDlg::Close()
 	g_kMistClient.PositionActionButtons();
 
 	m_iItemUnderCursor = -1;
+
+	g_kMistClient.m_pkGui->GetToolTip()->CloseAll();
 }
 
 void InventoryDlg::CloseContainerWnd()
@@ -171,12 +174,15 @@ void InventoryDlg::OnMouseMove(bool bLeftButtonPressed, int mx, int my)
 	if(m_iItemUnderCursor) // the application have found a item 
 		PickUpFromGround(bLeftButtonPressed, mx, my); // test if its time to place it under cursor.
 
+	int iCursorBordeSize = 0;
+	
 	if(m_pkInventoryWnd->IsVisible()) // kolla så att inventory är synligt
 	{
 		for(int i=0; i<m_vkInventoryItemList.size(); i++)
 		{		
 			if(m_vkInventoryItemList[i].pkWnd->GetScreenRect().Inside(mx, my)) // cursor is inside the 
 			{																						 // rectangle of the slot.
+				iCursorBordeSize = 2;
 				SetSelectionBorder(i, true, false);
 
 				if(bLeftButtonPressed)
@@ -222,6 +228,7 @@ void InventoryDlg::OnMouseMove(bool bLeftButtonPressed, int mx, int my)
 		{
 			if(m_vkContainerItemList[i].pkWnd->GetScreenRect().Inside(mx, my))
 			{
+				iCursorBordeSize = 2;
 				SetSelectionBorder(i, false, false);
 
 				if(bLeftButtonPressed)
@@ -266,7 +273,17 @@ void InventoryDlg::OnMouseMove(bool bLeftButtonPressed, int mx, int my)
 			m_vkInventoryItemList[m_kMoveSlot.m_iIndex].pkWnd->SetPos(mx,my, true, true);
 		else
 			m_vkContainerItemList[m_kMoveSlot.m_iIndex].pkWnd->SetPos(mx,my, true, true);
+
+		(*m_ppCursorSkin)->m_unBorderSize = iCursorBordeSize;
 	}
+	
+	(*m_ppCursorSkin)->m_unBorderSize = 0;
+
+	if(m_kMoveSlot.m_iIndex != -1)
+		if( (m_pkInventoryWnd->IsVisible() && m_pkInventoryWnd->GetScreenRect().Inside(mx,my) ||
+		    (m_pkContainerWnd->IsVisible() && m_pkContainerWnd->GetScreenRect().Inside(mx,my) )) ) 
+			(*m_ppCursorSkin)->m_unBorderSize = 1;
+	
 }
 
 void InventoryDlg::PickUpFromGround(bool bLeftButtonPressed, int mx, int my)
@@ -292,7 +309,8 @@ void InventoryDlg::PickUpFromGround(bool bLeftButtonPressed, int mx, int my)
 					int id = m_vkInventoryItemList[i].pkWnd->GetSkin()->m_iBkTexID;
 
 					m_kCursorRangeDiff = Point(0,0);
-					g_kMistClient.m_pkGui->SetCursor( mx, my, id, -1, size.x*32, size.y*32);				
+					g_kMistClient.m_pkGui->SetCursor( mx, my, id, -1, size.x*32, size.y*32);		
+					(*m_ppCursorSkin)->m_unBorderSize = 2;
 					break;
 				}
 
@@ -337,6 +355,7 @@ void InventoryDlg::PickUpFromGrid(int iSlotIndex, bool bInventory, int mx, int m
 
 	int x = mx - m_kCursorRangeDiff.x, y = my - m_kCursorRangeDiff.y;
 	g_kMistClient.m_pkGui->SetCursor( x, y, id, -1, size.x*32, size.y*32);	
+	(*m_ppCursorSkin)->m_unBorderSize = 2;
 	g_kMistClient.m_pkInputHandle->SetCursorInputPos(x,y);  
 }
 
@@ -635,6 +654,7 @@ void InventoryDlg::OnDropItem(int mx, int my)
 	g_kMistClient.m_pkGui->SetCursor((int)mx+m_kCursorRangeDiff.x, (int)my+m_kCursorRangeDiff.y, 
 			m_pkTexMan->Load("data/textures/gui/cursor.bmp", 0),
 			m_pkTexMan->Load("data/textures/gui/cursor_a.bmp", 0), 32, 32);
+	(*m_ppCursorSkin)->m_unBorderSize = 2;
 
 	g_kMistClient.m_pkInputHandle->SetCursorInputPos(mx+m_kCursorRangeDiff.x,my+m_kCursorRangeDiff.y);	
 }

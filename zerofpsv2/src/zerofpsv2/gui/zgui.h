@@ -99,8 +99,10 @@ public:
 	void ShowMainWindow(ZGuiWnd* pkMainWnd, bool bShow);
 	void SetActiveMenu(ZGuiMenu* pkMenu);
 	bool Activate(bool bActive);
+	
 	void SetCursor(int x, int y, int TextureID, int MaskTextureID=-1, int Width=16, int Height=16);
 	void ShowCursor(bool bShow);
+	ZGuiSkin** GetCursorSkin();
 
 	typedef bool (*callback)(ZGuiWnd* pkWnd, unsigned int uiMessage, int iNumParams, void *pParams);
 	typedef list<ZGuiWnd*>::iterator WINit;

@@ -545,6 +545,11 @@ void ZGui::SetFocus(ZGuiWnd* pkWnd, bool bSetCapture)
 	}
 }
 
+ZGuiSkin** ZGui::GetCursorSkin()
+{
+	return &m_pkCursorSkin;
+}
+
 void ZGui::SetCursor(int x, int y, int TextureID,int MaskTextureID,int Width,int Height)
 {
 	m_pkCursorSkin->m_iBkTexID = TextureID;

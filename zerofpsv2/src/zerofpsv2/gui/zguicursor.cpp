@@ -3,6 +3,7 @@
 //////////////////////////////////////////////////////////////////////
 
 #include "../render/zguirenderer.h"
+#include "../basic/zguiskin.h"
 #include "zguicursor.h"
 
 //////////////////////////////////////////////////////////////////////
@@ -42,6 +43,9 @@ void ZGuiCursor::Render()
 		m_pkRenderer->SetSkin(m_pkSkin);
 
 	m_pkRenderer->RenderQuad(m_kRect);	
+
+	if(m_pkSkin->m_unBorderSize > 0)
+		m_pkRenderer->RenderBorder(m_kRect);
 }
 
 void ZGuiCursor::SetSkin(ZGuiSkin *pkSkin)

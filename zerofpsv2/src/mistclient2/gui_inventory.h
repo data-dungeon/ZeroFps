@@ -98,6 +98,8 @@ private:
 	int m_iSlotsHorzContainer;
 	int m_iSlotsVertContainer;
 
+	ZGuiSkin** m_ppCursorSkin;
+
 	Point m_kCursorRangeDiff;
 	
 	Point m_kItemWndPosBeforeMove; // fönster koordinater

@@ -164,6 +164,16 @@ void ZGuiToolTip::AddToolTip(ZGuiWnd* pkWnd, string strText)
 	m_vkWindowList.push_back(ttinfo);
 }
 
+void ZGuiToolTip::CloseAll()
+{
+	for(unsigned int i=0; i<m_vkWindowList.size(); i++)
+		m_vkWindowList[i].pkWnd->Hide();
+
+	m_pkLastToolTipWnd = NULL;
+	m_pkToolTipWnd->Hide();
+	m_fToolTipDisplayTime = 0.0f;
+}
+
 void ZGuiToolTip::RemoveToolTip(ZGuiWnd* pkWnd)
 {
 	vector<TOOLTIP_INFO>::iterator it = m_vkWindowList.begin();
