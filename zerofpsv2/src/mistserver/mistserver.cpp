@@ -1139,7 +1139,17 @@ void MistServer::OnNetworkMessage(NetPacket *PkNetMessage)
 						cout<<"got no position, droping item"<<endl;
 						
 						
-						if(!pkInContainer->DropItem(iItemID,pkCharacter->GetWorldPosV()))
+						Vector3 kOffset(0,0,0);
+						
+						//findout where the ground is
+						if(P_Tcs* pkTcs = (P_Tcs*)pkCharacter->GetProperty("P_Tcs"))
+						{
+							kOffset.y = -(pkTcs->GetLegLength() -0.1);
+						}
+						
+						
+						
+						if(!pkInContainer->DropItem(iItemID,pkCharacter->GetWorldPosV()+kOffset))
 							SayToClients("Could not drop item","Server",-1,PkNetMessage->m_iClientID);																				
 						
 						SendContainer(pkInContainer->GetEntity()->GetEntityID(),PkNetMessage->m_iClientID,false);											
