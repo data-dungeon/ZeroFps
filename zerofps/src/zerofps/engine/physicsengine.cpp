@@ -10,6 +10,31 @@ PhysicsEngine::PhysicsEngine()
 }
 
 
+void PhysicsEngine::Update()
+{
+	list<Property*> kPropertys;	
+	
+	m_pkObjectMan->GetWorldObject()->GetAllPropertys(&kPropertys,PROPERTY_TYPE_PHYSIC,PROPERTY_SIDE_SERVER);
+	
+	
+	//HANDLE ALL COLLISSIONS HERE =)
+	
+	
+	
+	//TO HERE =)
+	
+	kPropertys.clear();
+}
+
+
+
+
+
+
+
+
+
+
 
 
 

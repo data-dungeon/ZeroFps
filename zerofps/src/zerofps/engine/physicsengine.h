@@ -8,6 +8,7 @@
 #include "zerofps.h"
 #include "engine_x.h"
 #include "object.h"
+#include <list>
 
 using namespace std;
 
@@ -34,7 +35,7 @@ class ENGINE_API PhysicsEngine : public ZFObject
 	public:
 		PhysicsEngine();
 		
-		
+		void Update();
 
 };
 

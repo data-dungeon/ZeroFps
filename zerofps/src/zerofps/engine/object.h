@@ -31,6 +31,7 @@ class ENGINE_API ObjectDescriptor{
 		Vector3 m_kPos;
 		Vector3 m_kRot;
 		Vector3 m_kVel;
+		Vector3 m_kAcc;
 		
 		bool m_bSave;
 		int m_iObjectType;
@@ -65,6 +66,7 @@ class ENGINE_API Object {
 		Vector3 m_kPos;
 		Vector3 m_kRot;
 		Vector3 m_kVel;
+		Vector3 m_kAcc;		
 		
 		string m_kName;		
 
@@ -128,6 +130,7 @@ class ENGINE_API Object {
 		inline Vector3 &GetPos(){return m_kPos;};
 		inline Vector3 &GetRot(){return m_kRot;};
 		inline Vector3 &GetVel(){return m_kVel;};		
+		inline Vector3 &GetAcc(){return m_kAcc;};				
 		inline void SetObjectMan(ObjectManager* pkObjectMan) {m_pkObjectMan=pkObjectMan;};		
 		inline ObjectManager *GetObjectMan() {return m_pkObjectMan;};				
 		

@@ -16,6 +16,7 @@ void ObjectDescriptor::Clear()
 	m_kPos.Set(0,0,0);
 	m_kRot.Set(0,0,0);
 	m_kVel.Set(0,0,0);			
+	m_kAcc.Set(0,0,0);				
 	
 	m_bSave=true;
 	
@@ -110,6 +111,8 @@ void ObjectDescriptor::SaveToMem(ZFMemPackage* pkPackage)
 	pkPackage->Write((void*)&m_kPos,12);	
 	pkPackage->Write((void*)&m_kRot,12);	
 	pkPackage->Write((void*)&m_kVel,12);
+	pkPackage->Write((void*)&m_kAcc,12);
+	
 	
 	pkPackage->Write((void*)&m_bSave,4);
 	pkPackage->Write((void*)&m_iObjectType,4);
@@ -199,6 +202,7 @@ void ObjectDescriptor::LoadFromMem(ZFMemPackage* pkPackage)
 	pkPackage->Read((void*)&m_kPos,12);	
 	pkPackage->Read((void*)&m_kRot,12);	
 	pkPackage->Read((void*)&m_kVel,12);
+	pkPackage->Read((void*)&m_kAcc,12);			
 			
 	pkPackage->Read((void*)&m_bSave,4);			
 	pkPackage->Read((void*)&m_iObjectType,4);	
@@ -241,7 +245,8 @@ Object::Object() {
 	m_kPos=Vector3(0,0,0);
 	m_kRot=Vector3(0,0,0);
 	m_kVel=Vector3(0,0,0);
-
+	m_kAcc=Vector3(0,0,0);
+	
 	m_kName="Object";
 		
 //	m_iObjectType=OBJECT_TYPE_DYNAMIC;

@@ -33,6 +33,7 @@ class ENGINE_API ObjectManager : public ZFObject{
 	
 		void RunCommand(int cmdid, const CmdArgument* kCommand) { }
 
+		void GetPropertys(int iType,int iSide);
 
 	public:
 		ObjectManager();
@@ -40,7 +41,7 @@ class ENGINE_API ObjectManager : public ZFObject{
 
 		Object* GetWorldObject() {return m_pkWorldObject;};
 
-		void GetPropertys(int iType,int iSide);
+
 		void Update(int iType,int iSide,bool bSort);
 
 		void Clear();
