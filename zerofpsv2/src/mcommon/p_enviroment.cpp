@@ -122,27 +122,83 @@ P_Enviroment::P_Enviroment()
 {
 	strcpy(m_acName,"P_Enviroment");		
 	m_iType=PROPERTY_TYPE_NORMAL;
-	m_iSide=PROPERTY_SIDE_SERVER;
+	m_iSide=PROPERTY_SIDE_CLIENT;
 	
 	m_pkFps=static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
 	m_pkObjectMan=static_cast<ObjectManager*>(g_ZFObjSys.GetObjectPtr("ObjectManager"));
 	m_pkRender=static_cast<Render*>(g_ZFObjSys.GetObjectPtr("Render"));	
 
-	bNetwork = true;
-
-	m_bEnabled = false;
+	bNetwork =		true;
+	m_bEnabled =	false;
 	
 	m_StrCurrentEnviroment = "Default";
+
+}
+
+void P_Enviroment::Init()
+{
+	ResetEnviroment();
+	m_fTimer=m_pkFps->GetTicks();
+	
+	m_kCurrentFogColor.Set(0,0,0,1);	
+	m_fCurrentFogStart=2;
+	m_fCurrentFogStop=20;	
 }
 
 void P_Enviroment::Update()
 {
-	
-	
+	if(m_bEnabled)
+	{
+		if(m_pkCurrentLP)
+		{
+			if(m_pkFps->GetTicks() - m_fTimer > 0.02)
+			{
+				m_fTimer = m_pkFps->GetTicks();
+		
+				Vector4 current;
+				Vector4 interpolated;
+				Vector3 cur;
+				Vector3 intr;
+			
+				float fIf = 0.04;
+			
+				//interpolate diffuse light
+				current=m_pkCurrentLP->GetDiffuse();
+				interpolated.Lerp(current,m_kSunDiffuseColor,fIf);
+				m_pkCurrentLP->SetDiffuse(interpolated);
+			
+				//interpolate ambient light
+				current=m_pkCurrentLP->GetAmbient();
+				interpolated.Lerp(current,m_kSunAmbientColor,fIf);
+				m_pkCurrentLP->SetAmbient(interpolated);
+			
+				//interpolate lightpos
+				cur=m_pkCurrentLP->GetRot();
+				intr.Lerp(cur,m_kSunPos,fIf);
+				m_pkCurrentLP->SetRot(intr);
+			
+				//setup fog
+				current=m_pkCurrentLP->GetAmbient();
+				interpolated.Lerp(m_kCurrentFogColor,m_kFogColor,fIf);
+				
+				m_fCurrentFogStart = m_fCurrentFogStart*(1-fIf) + m_fFogStart*fIf;
+				m_fCurrentFogStop = m_fCurrentFogStop*(1-fIf) + m_fFogStop*fIf;				
+				
+				m_pkRender->SetFog(interpolated,m_fCurrentFogStart,m_fCurrentFogStop,true);	
+				m_pkRender->SetClearColor(interpolated);	
+				
+				m_kCurrentFogColor=interpolated;
+
+			
+				m_pkCurrentLP->SetRot(m_kSunPos);
+			}
+		}
+	}
 }
 
 void P_Enviroment::ZoneChange(int iCurrent,int iNew)
 {
+	//cout<<"zonechange"<<endl;
 	ZoneData* zd = m_pkObjectMan->GetZoneData(iNew);
 
 	if(zd)	
@@ -187,83 +243,51 @@ void P_Enviroment::SetEnviroment(char* csEnviroment )
 	}
 	
 	//setup light property
-	LightProperty* pl = (LightProperty*)m_pkObject->AddProperty("LightProperty");	
+	
+	LightProperty* pl = (LightProperty*)m_pkObject->GetProperty("LightProperty");		
+	if(!pl)
+		pl = (LightProperty*)m_pkObject->AddProperty("LightProperty");	
+	
 	if(pl)
 	{	
+		m_pkCurrentLP = pl;
+		m_kSunDiffuseColor=es->m_kSunDiffuseColor;
+		m_kSunAmbientColor=es->m_kSunAmbientColor;
+		m_kSunPos=es->m_kSunPos;
+		
 		pl->SetType(DIRECTIONAL_LIGHT);
-		pl->SetRot(es->m_kSunPos);			
-		pl->SetDiffuse(es->m_kSunDiffuseColor);
-		pl->SetAmbient(es->m_kSunAmbientColor);		
 	}
+	
+	m_kFogColor = es->m_kFogColor;
+	m_fFogStart = es->m_fFogStart;
+	m_fFogStop = es->m_fFogStop;
 	
 	//setup fog
-	m_pkRender->SetFog(es->m_kFogColor,es->m_fFogStart,es->m_fFogStop,true);	
+	//m_pkRender->SetFog(es->m_kFogColor,es->m_fFogStart,es->m_fFogStop,true);	
 	
+	//setup clear color
+	//m_pkRender->SetClearColor(es->m_kFogColor);	
 	
-
 	delete pkTempenv;
-
-/*	if(m_StrCurrentEnviroment == "Rain" )
-	{
-		PSystemProperty* ps = (PSystemProperty*)m_pkObject->AddProperty("PSystemProperty");	
-		if(ps)
-			ps->SetPSType("rain");
-			
-			
-		LightProperty* pl = (LightProperty*)m_pkObject->AddProperty("LightProperty");	
-		if(pl)
-		{	
-			pl->SetType(DIRECTIONAL_LIGHT);
-			pl->SetRot(Vector3(0.5,0.5,0));			
-			pl->SetDiffuse(Vector4(.8,.8,.85,1));
-		}
-		
-		//set fog
-		m_pkRender->SetFog(Vector4(0.0,0.0,0.0,1),2,7,true);
-	}
-
-	if(m_StrCurrentEnviroment == "Sun" || m_StrCurrentEnviroment == "Default")
-	{
-		LightProperty* pl = (LightProperty*)m_pkObject->AddProperty("LightProperty");	
-		if(pl)
-		{
-			pl->SetType(DIRECTIONAL_LIGHT);
-			pl->SetRot(Vector3(0.5,0.5,0));
-			pl->SetDiffuse(Vector4(1.6,1.6,1.6,1));		
-			pl->SetAmbient(Vector4(0.8,0.8,0.8,1.0));					
-		}
-	
-		//set fog
-		//m_pkRender->SetFog(Vector4(0.0,0.0,0.0,1),2,6,true);	
-	}
-
-
-	if(m_StrCurrentEnviroment == "Cave" )
-	{
-		LightProperty* pl = (LightProperty*)m_pkObject->AddProperty("LightProperty");	
-		if(pl)
-		{
-			pl->SetType(DIRECTIONAL_LIGHT);
-			pl->SetRot(Vector3(0.5,0.5,0));
-			pl->SetDiffuse(Vector4(0.2,0.2,0.2,1));		
-			pl->SetAmbient(Vector4(0.1,0.1,0.1,1.0));					
-		}
-		
-		//set fog		
-		//m_pkRender->SetFog(Vector4(0.0,0.0,0.0,1),2,6,true);		
-	}
-*/
 
 }
 
 void P_Enviroment::ResetEnviroment()
 {
 	
-	m_pkRender->SetFog(Vector4(0,0,0,0),0,50,false);
+	//m_pkRender->SetFog(Vector4(0,0,0,0),0,50,false);
 	m_pkObject->DeleteProperty("PSystemProperty");
 	m_pkObject->DeleteProperty("P_AmbientSound");
-	m_pkObject->DeleteProperty("LightProperty");
 	
+	m_pkCurrentLP = NULL;
+	m_kSunDiffuseColor.Set(1,1,1,1);
+	m_kSunAmbientColor.Set(0.5,0.5,0.5,1);
+	m_kSunPos.Set(0.5,0.5,0);
+	
+	m_kFogColor.Set(0,0,0,1);	
+	m_fFogStart=2;
+	m_fFogStop=20;
+
 }
 
 void P_Enviroment::PackTo(NetPacket* pkNetPacket, int iConnectionID )
@@ -281,6 +305,7 @@ void P_Enviroment::PackFrom(NetPacket* pkNetPacket, int iConnectionID)
 		SetEnviroment(temp);
 	else
 		SetEnviroment("");
+		
 }
 
 Property* Create_P_Enviroment()

@@ -59,11 +59,25 @@ class MCOMMON_API P_Enviroment: public Property {
 		ObjectManager* m_pkObjectMan;
 		Render*			m_pkRender;
 		
-		bool				m_bEnabled;
+		float				m_fTimer;
 		
+		bool				m_bEnabled;		
 		string			m_StrCurrentEnviroment;
 		
 		
+		LightProperty* m_pkCurrentLP;
+		
+		Vector4			m_kSunDiffuseColor;
+		Vector4			m_kSunAmbientColor;		
+		Vector3			m_kSunPos;
+		
+		Vector4			m_kFogColor;
+		float				m_fFogStart;					
+		float				m_fFogStop;					
+		
+		Vector4			m_kCurrentFogColor;
+		float				m_fCurrentFogStart;					
+		float				m_fCurrentFogStop;					
 		
 		
 	public:
@@ -71,6 +85,8 @@ class MCOMMON_API P_Enviroment: public Property {
 		void CloneOf(Property* pkProperty) { }
 		P_Enviroment();
 		
+		
+		void Init();
 		void Update();
 		void ZoneChange(int iCurrent,int iNew);
 

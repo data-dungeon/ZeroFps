@@ -115,6 +115,7 @@ class BASIC_API Vector4 {
 		float Length(void)const;		
 		void Normalize(void);		
 		float Dot( const Vector4& v  )		const; 	
+		void Lerp(Vector4& from, Vector4& to, float flerp);			///< Linjär interpolering mellan två vectors.
 
 		float PlainLength(void)const;				
 		void PlainNormalize(void);				

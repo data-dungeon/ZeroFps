@@ -130,6 +130,7 @@ class RENDER_API Render : public ZFSubSystem {
 		void Line(Vector3 kPos1,Vector3 kPos2);
 		void Dot(float x,float y,float z);
 		void SetColor(Vector3 kColor);
+		void SetClearColor(Vector4 kColor);
 
 		void DrawHMLodSplat(HeightMap* kmap,Vector3 CamPos,int iFps);
 		void DrawAllHM(HeightMap* kmap,Vector3 CamPos,bool bBorders);

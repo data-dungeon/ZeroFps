@@ -94,7 +94,7 @@ void Render::InitDisplay(int iWidth,int iHeight,int iDepth)
 	glEnable(GL_SCISSOR_TEST);
 
 	glShadeModel(GL_SMOOTH);
-	glClearColor(0, 0, 0, 0);
+	SetClearColor(Vector4(0,0,0,0));
 	glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
 	glMatrixMode(GL_MODELVIEW);
   
@@ -366,6 +366,11 @@ void Render::SetColor(Vector3 kColor)
 	glColor3f(kColor.x,kColor.y,kColor.z);
 }
 
+void Render::SetClearColor(Vector4 kColor)
+{
+	glClearColor(kColor.x, kColor.y,kColor.z, kColor.w);
+
+}
 
 void Render::Dot(float x,float y,float z) 
 {

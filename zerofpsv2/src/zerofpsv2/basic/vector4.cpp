@@ -99,3 +99,9 @@ float Vector4::PlainLength(void) const
 
 }
 
+void Vector4::Lerp(Vector4& from, Vector4& to, float flerp)
+{
+	*this = to - from;
+	*this *= flerp;
+	*this += from;
+}

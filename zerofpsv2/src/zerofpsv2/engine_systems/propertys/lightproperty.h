@@ -54,6 +54,11 @@ class ENGINE_SYSTEMS_API LightProperty: public Property {
 		inline void SetLinear_Atten(float fLinear_Atten) {m_pkLightSource->fLinear_Atten=fLinear_Atten;};
 		inline void SetQuadratic_Atten(float fQuadratic_Atten) {fQuadratic_Atten=fQuadratic_Atten;};	
 
+		inline Vector4 GetDiffuse(){return m_pkLightSource->kDiffuse;};
+		inline Vector4 GetAmbient(){return m_pkLightSource->kAmbient;};		
+		inline Vector3 GetRot(){return m_pkLightSource->kRot;};				
+		
+
 		void	HandleGameMessage(GameMessage& Msg);
 
 };
