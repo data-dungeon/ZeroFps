@@ -39,16 +39,17 @@ void Application::SetEnginePointer(ZeroFps* pkZeroFps)
 	m_pkZFVFileSystem		=	m_pkFps->m_pkZFVFileSystem;
 	m_pkZShader				=	m_pkFps->m_pkZShader;
 	m_pkResourceDB			=	m_pkFps->m_pkResourceDB;
+	m_pkZShadow				=	m_pkFps->m_pkZShadow;
 
 
 	m_pkInputHandle = new InputHandle("Application");
 }
-	
+
 void Application::SetTitle(string strTitle)
 {
 	SDL_WM_SetCaption(strTitle.c_str(), NULL);
 }
 
-	
-	
+
+
 

@@ -641,7 +641,7 @@ void ZShader::CleanCopyedData()
 
 
 void ZShader::Draw()
-{	
+{
 	glPushMatrix();
 
 	glMultMatrixf( &m_kModelMatrix.data[0] );
@@ -665,7 +665,6 @@ void ZShader::Draw()
 			glDrawArrays(m_iDrawMode,0,m_iNrOfVertexs);
 
 
-//		FindSiluetEdges(Vector3(0,0,0));
 
 		glPopMatrix;
 
@@ -675,12 +674,15 @@ void ZShader::Draw()
 	if(m_bCopyedData)
 		CleanCopyedData();
 
-
 	glPopMatrix();
+
+	//make some nice stencile shadows
+	//MakeStencilShadow(Vector3(0,0,0));
+	//ExtrudeSiluet(Vector3(0,0,0));
 
 
 	//strange reason this has to be here, push_attrib does not take it =(
-	glDisable(GL_VERTEX_PROGRAM_ARB);	
+	glDisable(GL_VERTEX_PROGRAM_ARB);
 }
 
 
@@ -717,107 +719,8 @@ void ZShader::SetVertexProgram(int iVPID)
 	m_iCurrentVertexProgram=iVPID;
 }
 
-void ZShader::FindSiluetEdges(Vector3 kSourcePos)
-{
-	Vector3 v[3];
-
-	vector<pair<int,int> > kTowardsEdges;
-
-	if(m_pkIndexPointer && m_pkVertexPointer)
-	{
-		for(int i = 0;i<m_iNrOfIndexes; i+=3)
-		{
-			v[0] = m_pkVertexPointer[m_pkIndexPointer[i]] ;
-			v[1] = m_pkVertexPointer[m_pkIndexPointer[i+1]] ;
-			v[2] = m_pkVertexPointer[m_pkIndexPointer[i+2]] ;
-
-			v[0] = m_kModelMatrix.VectorTransform(v[0]);
-			v[1] = m_kModelMatrix.VectorTransform(v[1]);
-			v[2] = m_kModelMatrix.VectorTransform(v[2]);
-
-			Vector3 Normal = (v[1] - v[0]).Cross(v[2] - v[0]).Unit();
-			//Vector3 RefV = ( kSourcePos - (v[0] + m_kVertexOffset) ).Unit();
-			Vector3 RefV = ( kSourcePos - (v[0]) ).Unit();
-
-			float d = Normal.Dot(RefV);
-			//cout<<"DOT:"<<<<endl;
-
-			if(d > 0)
-			{
-				pair<int,int> p;
-
-				for(int j = 0;j<3;j++)
-				{
-					switch(j)
-					{
-						case 0:
-							p.first = m_pkIndexPointer[i];
-							p.second = m_pkIndexPointer[i+1];
-							break;
-						case 1:
-							p.first = m_pkIndexPointer[i+1];
-							p.second = m_pkIndexPointer[i+2];
-							break;
-						case 2:
-							p.first = m_pkIndexPointer[i+2];
-							p.second = m_pkIndexPointer[i];
-							break;
-
-					}
 
 
-					bool bFound = false;
-					for(vector<pair<int,int> >::iterator it=kTowardsEdges.begin();it!=kTowardsEdges.end();it++)
-					{
-//						if( ( ( (*it).first == p.first ) 	&& ( (*it).second == p.second ) ) ||
-//							 ( ( (*it).second == p.first ) 	&& ( (*it).first == p.second  ) ) )
-						if( ( ( m_pkVertexPointer[(*it).first] == m_pkVertexPointer[p.first] ) 	&&
-							 	( m_pkVertexPointer[(*it).second] == m_pkVertexPointer[p.second] ) ) ||
-							 	( ( m_pkVertexPointer[(*it).second] == m_pkVertexPointer[p.first] ) 	&&
-								( m_pkVertexPointer[(*it).first] == m_pkVertexPointer[p.second]  ) ) )
-						{
-							kTowardsEdges.erase(it);
-							it = kTowardsEdges.begin();
-							bFound =true;
-
-							//cout<<"removing"<<endl;
-							break;
-						}
-					}
-
-					if(!bFound)
-					{
-						kTowardsEdges.push_back(p);
-					}
-				}
-
-
-/*				glBegin(GL_LINES);
-					glVertex3f(v[0].x,v[0].y,v[0].z);
-					glVertex3f(v[0].x+Normal.x,v[0].y+Normal.y,v[0].z+Normal.z);
-				glEnd();
-*/
-
-
-
-			}
-		}
-
-		for( int i = 0;i< kTowardsEdges.size();i++)
-		{
-			v[0] = m_pkVertexPointer[kTowardsEdges[i].first];
-			v[1] = m_pkVertexPointer[kTowardsEdges[i].second];
-
-//				glColor3f(0,0,0);
-//				glLineWidth(10);
-				glBegin(GL_LINES);
-					glVertex3f(v[0].x,v[0].y,v[0].z);
-					glVertex3f(v[1].x,v[1].y,v[1].z);
-				glEnd();
-//				glLineWidth(1);
-		}
-	}
-}
 
 
 // SOFTWARE SHADERS

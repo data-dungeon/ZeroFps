@@ -29,7 +29,7 @@ LightSource::LightSource()
 }
 
 
-Light::Light() 
+Light::Light()
 : ZFSubSystem("Light") 
 {
 	m_iNrOfLights=8;							//this shuld never be greater than 8
@@ -105,34 +105,34 @@ void Light::Update(Vector3 kRefPos)
 
 	//loop trough all lightsources and find wich to view
 	for(it=m_kLights.begin();it!=m_kLights.end();it++) {
-		
+
 		//always add light with priority >10
 		if((*it)->iPriority>=10){
 			(*it)->fIntensity=999999;
-			m_kSorted.push_back(*it);			
+			m_kSorted.push_back(*it);
 			continue;
 		}
-		
+
 		//if its a directional light add it if there is space
 		if((*it)->iType==DIRECTIONAL_LIGHT){
 			(*it)->fIntensity=999999;
-			m_kSorted.push_back(*it);		
+			m_kSorted.push_back(*it);
 		//else add the light if it is bright enough
 		} else {
 			//		opengl LightIntesity equation	min(1, 1 / ((*it)-> + l*d + q*d*d))
-			 
-			Vector3 kPos = (*it)->kPos;		
-			float fDistance = kRefPos.DistanceTo(kPos);		
+
+			Vector3 kPos = (*it)->kPos;
+			float fDistance = kRefPos.DistanceTo(kPos);
 			//float fIntensity = min(1 , 1 / ( (*it)->fConst_Atten + ((*it)->fLinear_Atten*fDistance) + ((*it)->fQuadratic_Atten*(fDistance*fDistance)) ));
 			float fIntensity = 1 / ( (*it)->fConst_Atten + ((*it)->fLinear_Atten*fDistance) + ((*it)->fQuadratic_Atten*(fDistance*fDistance)) );
-			
-			(*it)->fIntensity=fIntensity; 
-			//(*it)->fIntensity=-fDistance; 
-			m_kSorted.push_back(*it);					
-		}  
-	} 
-	
-		
+
+			(*it)->fIntensity=fIntensity;
+			//(*it)->fIntensity=-fDistance;
+			m_kSorted.push_back(*it);
+		}
+	}
+
+
 	sort(m_kSorted.begin(),m_kSorted.end(),More_Light);
 
 	int max = m_kSorted.size();
@@ -141,7 +141,7 @@ void Light::Update(Vector3 kRefPos)
 
 	for(int i=0;i<max;i++)
 	{
-		EnableLight(m_kSorted[i],i);							
+		EnableLight(m_kSorted[i],i);
 		//cout<<"inte: "<<m_kSorted[i]->fIntensity<<endl;
 		
 		/* //draw some debuging graph
@@ -229,7 +229,7 @@ void Light::EnableLight(LightSource* pkLight,int iGlLight)
   				//seset spot		  		
 				glLightfv(light,GL_SPOT_DIRECTION,spotdir);		  				  		  				
   				glLightf(light,GL_SPOT_EXPONENT,0);
-  				glLightf(light,GL_SPOT_CUTOFF,180);				
+  				glLightf(light,GL_SPOT_CUTOFF,180);
 				  				
   				break;
   			case SPOT_LIGHT:
@@ -253,4 +253,40 @@ void Light::EnableLight(LightSource* pkLight,int iGlLight)
 }
 
 
+
+void Light::GetClosestLights(vector<LightSource*>* pkLights,int iNrOfLights,Vector3 kPos,bool bNoDirectional)
+{
+	vector<LightSource*> kSorted;
+
+	for(list<LightSource*>::iterator it=m_kLights.begin();it!=m_kLights.end();it++)
+	{
+		if((*it)->iType==DIRECTIONAL_LIGHT)
+		{
+			if(!bNoDirectional)
+			{
+				(*it)->fIntensity=999999;
+				kSorted.push_back(*it);
+			}
+		}
+		else
+		{
+			float fDistance = kPos.DistanceTo((*it)->kPos);
+
+			(*it)->fIntensity = 1 / ( (*it)->fConst_Atten + ((*it)->fLinear_Atten*fDistance) + ((*it)->fQuadratic_Atten*(fDistance*fDistance)) );
+
+			//cout<< "INT:"<<(*it)->fIntensity<<endl;
+
+			kSorted.push_back(*it);
+		}
+	}
+
+	sort(kSorted.begin(),kSorted.end(),More_Light);
+
+	int max = kSorted.size();
+	if(max>iNrOfLights)
+		max=iNrOfLights;
+
+	for(int i=0;i<max;i++)
+		pkLights->push_back(kSorted[i]);
+}
 

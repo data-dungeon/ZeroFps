@@ -505,3 +505,16 @@ AStarNode* FindNodeInList(vector<AStarNodePtr>& List, int iID)
 	return NULL;
 }
 */
+
+
+
+
+
+
+
+
+
+
+
+
+

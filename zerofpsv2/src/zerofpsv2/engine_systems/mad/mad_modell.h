@@ -16,7 +16,7 @@
 #define MAD_DRAW_NOLIGHT	32
 
 /// A MAD that can play anims.
-class ENGINE_SYSTEMS_API Mad_Modell 
+class ENGINE_SYSTEMS_API Mad_Modell
 {
 private:
 	
@@ -115,6 +115,8 @@ public:
 
 	void ClearAllMesh();
 	virtual bool AddMesh(int iSId);
+
+	friend class P_Mad;
 };
 
 

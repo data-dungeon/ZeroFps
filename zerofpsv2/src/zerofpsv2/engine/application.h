@@ -18,7 +18,7 @@ class ZFClient;
 /** \brief	The application object.
 	 \ingroup Engine
 */
-class ENGINE_API Application : public ZFSubSystem {	
+class ENGINE_API Application : public ZFSubSystem {
 	protected:
 		ZFBasicFS*				m_pkBasicFS;
 		ZFVFileSystem*			m_pkZFVFileSystem;
@@ -27,7 +27,7 @@ class ENGINE_API Application : public ZFSubSystem {
 		PropertyFactory*		m_pkPropertyFactory;
 		Light*					m_pkLight;
 		Render*					m_pkRender;
-		Console*					m_pkConsole;			
+		Console*					m_pkConsole;
 		EntityManager*			m_pkObjectMan;
 		ZFAudioSystem*			m_pkAudioSys;
 		ZGuiResourceManager*	m_pkGuiMan;
@@ -38,7 +38,8 @@ class ENGINE_API Application : public ZFSubSystem {
 		ZFScriptSystem*		m_pkScript;
 		Physics_Engine*		m_pkPhysics_Engine;
 		FileIo*					m_pkFile;
-		ZShader*					m_pkZShader;	
+		ZShader*					m_pkZShader;
+		ZShadow*					m_pkZShadow;
 		ZeroFps*					m_pkFps;
 		
 		

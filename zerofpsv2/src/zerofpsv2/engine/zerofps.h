@@ -19,6 +19,7 @@
 #include "../basic/zfini.h"
 #include "../engine_systems/physicsengine/physicsengine.h"
 #include "../engine_systems/tcs/tcs.h"
+#include "../engine_systems/common/zshadow.h"
 #include "../render/zshader.h"
 #include "i_zerofps.h"
 #include "../engine_systems/mad/mad_core.h"
@@ -47,8 +48,9 @@ class NetPacket;
 class PSystemManager;
 class Tcs;
 class InputHandle;
+class ZShadow;
 
-enum enginestates 
+enum enginestates
 {
 	state_normal,
 	state_exit,
@@ -56,7 +58,7 @@ enum enginestates
 	state_pause
 };
 
-		
+
 #define	ZFGP_OBJECTSTATE		1
 #define	ZFGP_CLIENTSTATE		2
 #define	ZFGP_CLIENTCMD			3
@@ -84,20 +86,19 @@ public:
 class ENGINE_API ZFClient
 {
 public:
-	float		m_fConnectTime;	
+	float		m_fConnectTime;
 	string	m_strLogin;				// Login Name
-	//string	m_strName;				// Name of player.
 	string	m_strCharacter;
 	Entity*	m_pkObject;				// Object used for client.
 	set<int>	m_iActiveZones;		// Activated Zones.
-	set<int>	m_iUnloadZones;		// Activated Zones.	
+	set<int>	m_iUnloadZones;		// Activated Zones.
 };
 
-/** \brief	Main class for the ZeroFps engine. 
+/** \brief	Main class for the ZeroFps engine.
 	 \ingroup Engine
 */
 class ENGINE_API ZeroFps : public I_ZeroFps {
-	private:		
+	private:
 		enum FuncId_e
 		{
 			FID_SETDISPLAY,
@@ -113,11 +114,11 @@ class ENGINE_API ZeroFps : public I_ZeroFps {
 			FID_VERSION,		// Print Version info.
 			FID_CREDITS,		// Print Credits to console.
 			FID_ECHO,
-		
+
 			FID_GLDUMP,
-		
+
 			// DevStrings
-			FID_DEV_SHOWPAGE,	
+			FID_DEV_SHOWPAGE,
 			FID_DEV_HIDEPAGE,
 			FID_DEV_TOGGLE,
 
@@ -128,17 +129,17 @@ class ENGINE_API ZeroFps : public I_ZeroFps {
 
 			FID_POS // dumps x,y,z of camera
 		};
-		
+
 
 		bool		m_bDevPagesVisible;
-		
+
 		float 	m_fLastFrameTime;
 		float 	m_fAvrageFpsTime;
 		int		m_iAvrageFrameCount;
-		
+
 		bool		m_bLockFps;
 		float 	m_fLockFrameTime;
-		
+
 		float 	m_fSystemUpdateFps;				// Number of GameLogic Updates each second.
 		float		m_fSystemUpdateFpsDelta;		// Time between each gamelogic update.
 		float 	m_fSystemUpdateTime;
@@ -202,33 +203,34 @@ class ENGINE_API ZeroFps : public I_ZeroFps {
 		OggMusic*				m_pkMusic;
 		PSystemManager*		m_pkPSystemManager;		///< ParticleSystemManager - Zerom
 		AStar*					m_pkAStar;
-		Tcs*						m_pkTcs;		
+		Tcs*						m_pkTcs;
+		ZShadow*					m_pkZShadow;
 
 		int		m_iState;									//	curent game state see enum enginestates
 		float		m_fFps;										//	curent FPS
 		float		m_fAvrageFps;
 		float		m_fFrameTime;								//	frametime in MS
-		
+
 		bool		m_bServerMode;
 		bool		m_bClientMode;
 		bool		m_bGuiMode, m_bGuiTakeControl;
 		bool		m_bRunWorldSim;
-		
 
-		
+
+
 		int		m_iMadDraw;									//	Flags for what part's of mad's that should be draw.
 		float		m_fMadLod;									//	If not 0 then force this LOD % on every mad.
 
 		InputHandle*	m_pkInputHandle;
 		InputHandle*	m_pkGuiInputHandle;
 
-		vector<ZFClient>		m_kClient;					
+		vector<ZFClient>		m_kClient;
 
-		ZeroFps(void);		
-		~ZeroFps();		
+		ZeroFps(void);
+		~ZeroFps();
 		void SetApp(void);
-		bool Init(int iNrOfArgs, char** paArgs);	
-		void MainLoop(void);		
+		bool Init(int iNrOfArgs, char** paArgs);
+		void MainLoop(void);
 		void Swap(void);											//	swap gl buffers
 		
 		void ToggleFullScreen(void);

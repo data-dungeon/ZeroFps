@@ -63,7 +63,8 @@ ZeroFps::ZeroFps(void) : I_ZeroFps("ZeroFps")
 	m_pkBasicFS					= new ZFBasicFS;
 	m_pkPSystemManager		= new PSystemManager;
 	m_pkScript					= new ZFScriptSystem;
-	m_pkTcs						= new Tcs;	
+	m_pkTcs						= new Tcs;
+	m_pkZShadow					= new ZShadow;
 
 	// Set Default values
 	m_fFrameTime				= 0;
@@ -98,8 +99,8 @@ ZeroFps::ZeroFps(void) : I_ZeroFps("ZeroFps")
 	RegisterVariable("r_madlodlock",		&g_iMadLODLock,			CSYS_FLOAT);
 	RegisterVariable("e_systemfps",		&m_fSystemUpdateFps,		CSYS_FLOAT);	
 	RegisterVariable("e_runsim",			&m_bRunWorldSim,			CSYS_BOOL);	
-	RegisterVariable("r_logrp",			&g_iLogRenderPropertys,	CSYS_INT);	
-	RegisterVariable("r_render",			&m_bRenderOn,				CSYS_BOOL);	
+	RegisterVariable("r_logrp",			&g_iLogRenderPropertys,	CSYS_INT);
+	RegisterVariable("r_render",			&m_bRenderOn,				CSYS_BOOL);
 	RegisterVariable("n_maxplayers",		&m_iMaxPlayers,			CSYS_INT,		CSYS_FLAG_SRC_CMDLINE|CSYS_FLAG_SRC_INITFILE);	
 	RegisterVariable("e_lockfps",			&m_bLockFps,				CSYS_BOOL);	
 	RegisterVariable("r_axis",				&m_bDrawAxisIcon,			CSYS_BOOL);	
@@ -132,7 +133,8 @@ ZeroFps::~ZeroFps()
 	g_ZFObjSys.ShutDown();
 	ConfigFileSave();
 
-	delete m_pkTcs;	
+	delete m_pkZShadow;
+	delete m_pkTcs;
 	delete m_pkPhysEngine;
 	delete m_pkIni;
 	delete m_pkGui;
@@ -384,13 +386,12 @@ void ZeroFps::Run_Client()
 
 	//m_pkObjectMan->Test_DrawZones();
 
-	//update sound system			
-	//m_pkAudioSystem->SetListnerPosition(m_pkCamera->GetPos(),(m_pkCamera->GetRot()+Vector3(0,90,0)).AToU(),up.AToU());//(m_pkCamera->GetRot()-Vector3(-90,90,0)).AToU());
-	m_pkAudioSystem->SetListnerPosition(m_pkCamera->GetPos(),m_pkCamera->GetRotM());//(m_pkCamera->GetRot()-Vector3(-90,90,0)).AToU());	
+	//update sound system
+	m_pkAudioSystem->SetListnerPosition(m_pkCamera->GetPos(),m_pkCamera->GetRotM());
 	m_pkAudioSystem->Update();
 
-	//run application Head On Display 
-	SetCamera(m_pkConsoleCamera);			
+	//run application Head On Display
+	SetCamera(m_pkConsoleCamera);
 	m_pkApp->OnHud();
 	m_pkObjectMan->UpdateDelete();
 
@@ -593,7 +594,14 @@ void ZeroFps::Draw_RenderTarget(Camera* pkCamera)
 	if(m_bDrawAxisIcon)
 		m_pkRender->Draw_AxisIcon(5);
 	if(m_bRenderOn == 1)
+	{
+		//update all render propertys
 		m_pkObjectMan->Update(PROPERTY_TYPE_RENDER,PROPERTY_SIDE_CLIENT,true);
+
+		//update shadow map
+		m_pkZShadow->Update();
+	}
+
 	m_pkObjectMan->Test_DrawZones();
 	m_pkApp->RenderInterface();
 
@@ -1227,7 +1235,7 @@ bool	ZeroFps::PreConnect(IPaddress kRemoteIp, char* szLogin, char* szPass, char*
 	PreConnect returns true. It is called on Clients when they recive connect_yes from server.
 	Return value is the NetID off the client object on the server. It don't matter on the client.
 */
-int ZeroFps::Connect(int iConnectionID, char* szLogin, char* szPass) 
+int ZeroFps::Connect(int iConnectionID, char* szLogin, char* szPass)
 {
 	if(!m_bServerMode)
 		return -1;

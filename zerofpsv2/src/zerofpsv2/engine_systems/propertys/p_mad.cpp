@@ -20,7 +20,8 @@ P_Mad::P_Mad()
 	
 	SetVisible(true);
 	m_bCanBeInvisible = false;
-	
+	m_iShadowGroup = -1;
+
 	m_fScale	 = 1.0;
 }
 
@@ -77,7 +78,7 @@ void P_Mad::Update()
 		if(!m_bIsVisible)
 			m_pkShader->SetForceBlending(BLEND_FORCE_TRANSPARENT);
 
-
+/*
 		m_pkShader->MatrixPush();
 		m_pkShader->Reset();
 
@@ -90,43 +91,25 @@ void P_Mad::Update()
 		Draw_All(m_pkZeroFps->m_iMadDraw);
 
 		m_pkShader->MatrixPop();
+*/
 
 
-/*
 		glPushMatrix();
 			Vector3 pos;
 
 			pos = m_pkObject->GetIWorldPosV();
-
 			m_pkShader->Reset();
-			m_pkShader->MatrixPush();
 
-		m_pkShader->MatrixScale(m_fScale);
-		Matrix4 ori;
-		ori = m_pkObject->GetWorldRotM();
-		m_pkShader->MatrixMult(ori);
-		m_pkShader->MatrixTranslate(m_pkObject->GetIWorldPosV());
-/*			m_pkShader->MatrixTranslate(pos);
-
-			Matrix4 ori;
-			ori = m_pkObject->GetWorldRotM();
-			m_pkShader->MatrixMult(ori);
-
-			m_pkShader->MatrixScale(m_fScale);
-*/
-
-/*
-			//glTranslatef(pos.x,pos.y,pos.z);
+			glTranslatef(pos.x,pos.y,pos.z);
 
 			Matrix4 ori;
 			ori = m_pkObject->GetWorldRotM();
 			glMultMatrixf(&ori[0]);
 			glScalef(m_fScale, m_fScale, m_fScale);
-*
+
 			Draw_All(m_pkZeroFps->m_iMadDraw);
-			m_pkShader->MatrixPop();
 		glPopMatrix();
-*/
+
 
 		if(m_pkZeroFps->m_iMadDraw & MAD_DRAW_SPHERE) {
 			glPushMatrix();
@@ -253,7 +236,7 @@ bool P_Mad::AddMesh(int iSId)
 
 vector<PropertyValues> P_Mad::GetPropertyValues()
 {
-	vector<PropertyValues> kReturn(3);
+	vector<PropertyValues> kReturn(4);
 	
 	kReturn[0].kValueName = "m_fScale";
 	kReturn[0].iValueType = VALUETYPE_FLOAT;
@@ -267,6 +250,9 @@ vector<PropertyValues> P_Mad::GetPropertyValues()
 	kReturn[2].iValueType = VALUETYPE_BOOL;
 	kReturn[2].pkValue    = (void*)&m_bCanBeInvisible;
 
+	kReturn[3].kValueName = "m_iShadowGroup";
+	kReturn[3].iValueType = VALUETYPE_INT;
+	kReturn[3].pkValue    = (void*)&m_iShadowGroup;
 
 	return kReturn;
 }

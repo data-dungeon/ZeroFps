@@ -65,7 +65,7 @@ class RENDER_API Light : public ZFSubSystem {
 	private:
 		Vector3 m_kCamPos;
 
-		list<LightSource*> m_kLights;		
+		list<LightSource*> m_kLights;
 		vector<LightSource*> m_kSorted;
 		vector<LightSource*> m_kActiveLights;
 
@@ -95,9 +95,10 @@ class RENDER_API Light : public ZFSubSystem {
 
 		void SetLighting(bool bOn);
 		void SetStartUpValues();
-		
 
-		bool StartUp();	
+		void GetClosestLights(vector<LightSource*>* pkLights,int iNrOfLights,Vector3 kPos,bool bNoDirectional = false);
+
+		bool StartUp();
 		bool ShutDown();
 		bool IsValid();
 

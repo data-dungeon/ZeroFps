@@ -213,20 +213,18 @@ class RENDER_API ZShader : public ZFSubSystem
 	
 		bool HaveVertexProgramExt();
 
-		void FindSiluetEdges(Vector3 kSourcePos);
-
 
 	public:
 		ZShader();
 		bool StartUp();
-	
+
 		void SetForceLighting(int iMode) { m_iForceLighting = iMode;};
 		int  GetForceLighting() { return m_iForceLighting; }
 		void SetForceBlending(int iMode) { m_iForceBledning = iMode;};
-		void SetMaterial(ZMaterial* pkMaterial);		
+		void SetMaterial(ZMaterial* pkMaterial);
 		void SetPointer(int iType,void* pkPointer);
 		void SetNrOfVertexs(int iNr);
-		void SetNrOfIndexes(int iNr);		
+		void SetNrOfIndexes(int iNr);
 		void SetDrawMode(int iDrawMode);
 
 		void SetVertexProgram(int iVPID);
@@ -245,6 +243,7 @@ class RENDER_API ZShader : public ZFSubSystem
 
 		void Reset();
 		void Draw();
+
 
 		bool ShutDown();
 		bool IsValid();

@@ -19,15 +19,17 @@ class ENGINE_SYSTEMS_API P_Mad : public Property, public Mad_Modell {
 		Render*		m_pkRender;		// Ptr to render sys.
 //		ZShader*	m_pkZShader;	// Ptr to shader sys.
 		ZeroFps*	m_pkZeroFps;	// Ptr to zerofps sys.
-	
+
 		float		m_fLod;
 		bool		m_bIsVisible;
+
+		int		m_iShadowGroup;
 		
 		//linetest stuff
 		Matrix4		m_kModelMatrix;
 		Vector3		m_kColPos;
 		int			m_iColFace;
-		
+
 		bool LineVSSphere(Vector3 &kPos,Vector3 &kDir);
 		bool LineVSMesh(Vector3 &kPos,Vector3 &kDir);		
 		void GenerateModelMatrix();
@@ -52,6 +54,15 @@ class ENGINE_SYSTEMS_API P_Mad : public Property, public Mad_Modell {
 		void Update();
 
 		void SetVisible(bool bVisible);
+		void SetShadowGroup(int iGroup) {m_iShadowGroup = iGroup;};
+		int GetShadowGroup() {return m_iShadowGroup;};
+
+		Mad_TextureCoo* GetTextureCooPtr()	{return Mad_Modell::GetTextureCooPtr();};
+		Vector3* GetNormalsPtr()				{return Mad_Modell::GetNormalsPtr();};
+		int* GetFacesPtr()						{return Mad_Modell::GetFacesPtr();};
+		Vector3* GetVerticesPtr()				{return Mad_Modell::GetVerticesPtr();};
+		int GetNumVertices()						{return Mad_Modell::GetNumVertices();};
+		int GetNumFaces()							{return Mad_Modell::GetNumFaces();};
 
 		Vector3 GetJointPosition(char* szJointName);
 

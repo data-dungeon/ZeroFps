@@ -4,7 +4,8 @@ function Create()
 	InitObject();
 		InitProperty("P_Mad");	
 			InitParameter("m_kMadFile","/data/mad/police.mad");			
-			InitParameter("m_fScale","1");		
+			InitParameter("m_fScale","1");
+			InitParameter("m_iShadowGroup","1");		
 
 		InitProperty("P_PfPath");
 		InitProperty("P_DMCharacter");
