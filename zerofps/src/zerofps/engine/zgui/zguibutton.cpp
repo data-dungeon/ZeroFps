@@ -19,6 +19,7 @@ ZGuiButton::ZGuiButton(Rect kArea, ZGuiWnd* pkParent, bool bVisible, int iID) :
 	m_kSkinDown=NULL;
 	m_kSkinHighLight=NULL;
 	m_iMaskTextureUp = -1;
+	RemoveWindowFlag(WF_CANHAVEFOCUS); // knappar har inte focus by default
 }
 
 ZGuiButton::~ZGuiButton()
@@ -118,6 +119,3 @@ void ZGuiButton::SetButtonHighLightSkin(ZGuiSkin* pkSkin)
 {
 	m_kSkinHighLight = pkSkin;
 }
-
-
-

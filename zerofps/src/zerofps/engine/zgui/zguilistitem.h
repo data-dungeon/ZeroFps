@@ -19,7 +19,7 @@ class ENGINE_API ZGuiListitem
 {
 public:
 	void SetText(char* strText);
-	ZGuiListitem(ZGuiWnd* pkParent,char* strText=0, unsigned int iID=0, 
+	ZGuiListitem(ZGuiWnd* pkParent,char* strText=0, unsigned int iIndex=0, 
 		ZGuiSkin* pkSkin=0, ZGuiSkin* pkSelected=0, ZGuiSkin* pkHighLigtSkin=0);
 	virtual ~ZGuiListitem();
 
@@ -30,12 +30,22 @@ public:
 	void SetPos(int x, int y);
 	void Resize(int w, int h);
 	ZGuiButton* GetButton() { return m_pkButton; }
-	unsigned int GetID();
+	unsigned int GetIndex();
+	void SetIndex(unsigned int iIndex);
 
 	bool m_bMenuItem;
+
+	bool operator < (const ZGuiListitem &I)
+	{         
+	   if(m_iIndex > I.m_iIndex)
+		   return false;
+	   else
+		   return true;
+	}
+
 	
 private:
-	unsigned int m_iID;
+	unsigned int m_iIndex;
 	ZGuiButton* m_pkButton;	
 };
 

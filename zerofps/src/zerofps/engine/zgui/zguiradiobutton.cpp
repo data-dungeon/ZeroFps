@@ -54,7 +54,6 @@ bool ZGuiRadiobutton::Notify(ZGuiWnd* pkWnd, int iCode)
 {
 	if(iCode == NCODE_CLICK_UP && m_iGroupID != -1)
 	{
-//		m_pkGUI->UncheckRadioGroup(m_iGroupID);
 		m_pkCheckbox->CheckButton();
 
 		ZGuiRadiobutton* prev = m_pkPrev;

@@ -33,7 +33,7 @@ Console::Console()
 	g_ZFObjSys.Register_Cmd("help",FID_HELP,this);
 }
 
-void Console::Update(void) {
+/*void Console::Update(void) {
 	m_pkRender->DrawConsole(m_aCommand,&m_kText,m_nStartLine);	
 
 	// Scroll console text
@@ -159,6 +159,119 @@ void Console::Update(void) {
 				strncat(m_aCommand,(char*)&(code),1);
 		}
 	}		
+}*/
+
+void Console::Update(void) {
+	m_pkRender->DrawConsole(m_aCommand,&m_kText,m_nStartLine);	
+
+	// Scroll console text
+	static float PREVTIME = m_pkEngine->GetGameTime();
+	static float TIME = 0.10f;
+	float fCurrTime = m_pkEngine->GetGameTime();
+
+	bool bUpdate = ((fCurrTime-PREVTIME) > TIME);
+
+	if(m_pkInput->Pressed(KEY_PAGEUP))
+	{
+		if(m_nStartLine < m_kText.size() && bUpdate)
+		{
+			m_nStartLine++;
+			PREVTIME = fCurrTime;
+		}
+		m_pkInput->GetQueuedKey(); // remove latest
+		return;
+	}
+	if(m_pkInput->Pressed(KEY_PAGEDOWN) && bUpdate)
+	{
+		if(m_nStartLine > 0)
+		{
+			m_nStartLine--;
+			PREVTIME = fCurrTime;
+		}
+		m_pkInput->GetQueuedKey(); // remove latest
+		return;
+	}
+	
+	int iKey = m_pkInput->GetQueuedKey();
+	if(iKey < 0)
+		return;
+		
+	//press keys
+	if(iKey == KEY_TAB) {
+		glPopAttrib();
+		
+		m_pkEngine->m_bConsoleMode=false;
+		m_pkInput->Reset();
+		return;
+	}
+
+	if(iKey==SDLK_RETURN){
+		Execute(m_aCommand);
+		for(int i=0;i<TEXT_MAX_LENGHT;i++)					//wipe the command buffer
+			m_aCommand[i]=' ';				
+		strcpy(m_aCommand,"");
+		return;
+	}
+	if(iKey==SDLK_BACKSPACE){
+		m_aCommand[strlen(m_aCommand)-1]='\0';
+		return;
+	}
+				
+	if(m_pkInput->Pressed(KEY_RSHIFT) || m_pkInput->Pressed(KEY_LSHIFT)){
+		m_bShift=true;
+	}else{
+		m_bShift=false;
+	}
+
+	if(iKey==KEY_DOWN)
+	{
+		if(m_nLastCommand > 0)
+		{
+			m_nLastCommand--;
+			strcpy(m_aCommand, m_kCommandHistory[m_nLastCommand].c_str());	
+		}
+	}
+	if(iKey==KEY_UP)
+	{
+		if(m_nLastCommand+1 < m_kCommandHistory.size())
+		{
+			m_nLastCommand++;
+			strcpy(m_aCommand, m_kCommandHistory[m_nLastCommand].c_str());		
+		}
+		else
+		{
+			int last = m_kCommandHistory.size()-1;
+			if(last >= 0)
+				strcpy(m_aCommand, m_kCommandHistory[last].c_str());		
+		}
+	}
+	
+	//type text
+	if(strlen(m_aCommand)<COMMAND_LENGHT) 
+	{
+		int code=iKey;
+		
+		//shift?
+		if(m_bShift) {
+			if(code>96 && code<123){
+				code-=32;
+				strncat(m_aCommand,(char*)&(code),1);
+			}
+			if(code=='-'){
+				code='_';
+				strncat(m_aCommand,(char*)&(code),1);
+			}
+			if(code=='.'){
+				code=':';
+				strncat(m_aCommand,(char*)&(code),1);
+			}					
+			if(code=='7'){
+				code='/';
+				strncat(m_aCommand,(char*)&(code),1);
+			}					
+		}else
+			strncat(m_aCommand,(char*)&(code),1);
+	}	
 }
 	
 	

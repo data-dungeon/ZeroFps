@@ -39,15 +39,17 @@ public:
 	string m_szCurrentDir;
 	string m_szCurrentFile;
 
+	
+
 private:
 	bool FillPathList(ZGuiListbox* pkListbox, string strDir);
 	ZGuiWnd* Create(int x, int y, int w, int h);
-
+	ZGuiWnd* m_pkWindow;
 	Gui* m_pkGui;
 	ZGui* m_pkZGui;
 	ZFBasicFS* m_pkBasicFS;
 	callback m_oGuiCallback;
-	ZGuiWnd* m_pkWindow;
+	
 	bitset<16> m_vkBitParams;
 };
 

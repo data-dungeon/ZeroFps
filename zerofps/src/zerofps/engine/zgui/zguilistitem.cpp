@@ -12,19 +12,17 @@
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 
-ZGuiListitem::ZGuiListitem(ZGuiWnd* pkParent, char* strText, unsigned int iID, 
+ZGuiListitem::ZGuiListitem(ZGuiWnd* pkParent, char* strText, unsigned int iIndex, 
 						   ZGuiSkin* pkBkSkin, ZGuiSkin* pkSelected, 
-						   ZGuiSkin* pkHighLigtSkin/*, ZGuiSkin* pkTextSkin,
-						   int iFontMaskTexture*/)
+						   ZGuiSkin* pkHighLigtSkin)
 {	
+	m_iIndex = iIndex;
 	int w = pkParent->GetScreenRect().Width()-20;
-	m_pkButton = new ZGuiButton(Rect(0,0,w,20),pkParent,true, iID);
+	m_pkButton = new ZGuiButton(Rect(0,0,w,20),pkParent,true, iIndex);
 	m_pkButton->SetButtonDownSkin(pkSelected);
 	m_pkButton->SetButtonUpSkin(pkBkSkin);
 	m_pkButton->SetButtonHighLightSkin(pkHighLigtSkin);
-//	m_pkButton->SetTextSkin(pkTextSkin, iFontMaskTexture);
 	m_pkButton->SetText(strText);  
-	m_iID = iID;
 }
 
 ZGuiListitem::~ZGuiListitem()
@@ -70,9 +68,14 @@ void ZGuiListitem::Select()
 	}
 }
 
-unsigned int ZGuiListitem::GetID()
+unsigned int ZGuiListitem::GetIndex()
 {
-	return m_iID;
+	return m_iIndex;
+}
+
+void ZGuiListitem::SetIndex(unsigned int iIndex)
+{
+	m_iIndex = iIndex;
 }
 
 void ZGuiListitem::Move(int dx, int dy)

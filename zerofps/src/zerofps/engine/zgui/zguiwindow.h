@@ -33,6 +33,7 @@ const int NCODE_MOVE		= 83;
 // Window flags
 #define WF_CLOSEABLE		0x0001
 #define WF_CENTER_TEXT		0x0002
+#define WF_CANHAVEFOCUS		0x0003
 
 class ENGINE_API ZGuiWnd  
 {

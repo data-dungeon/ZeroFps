@@ -39,10 +39,10 @@ ZGuiCombobox::ZGuiCombobox(Rect kRectangle, ZGuiWnd* pkParent, bool bVisible, in
 	m_pkListbox = new ZGuiListbox(rc,this,true,LISTBOX_ID,iItemHeight,
 		pkSkinItem, pkSkinItemSelected, pkSkinItemHighLight);
 
-	m_pkListbox->GetScrollbar()->Move(0,-20);
-	int w = m_pkListbox->GetScrollbar()->GetScreenRect().Width();
+//	m_pkListbox->GetScrollbar()->Move(0,-20);
+/*	int w = m_pkListbox->GetScrollbar()->GetScreenRect().Width();
 	int h = m_pkListbox->GetScrollbar()->GetScreenRect().Height();
-	m_pkListbox->GetScrollbar()->Resize(w,h+20*2);
+	m_pkListbox->GetScrollbar()->Resize(w,h+20*2);*/
 
 	m_pkListbox->Hide();
 	Resize(m_pkLabel->GetScreenRect().Width(),
@@ -104,7 +104,7 @@ bool ZGuiCombobox::Notify(ZGuiWnd* pkWnd, int iCode)
 			piParams[0] = GetID(); // Listbox ID
 			if(pkSelItem != NULL)
 			{
-				piParams[1] = pkSelItem->GetID(); // list item ID
+				piParams[1] = pkSelItem->GetIndex(); // list item ID
 				GetGUI()->GetActiveCallBackFunc()(
 					GetGUI()->GetActiveMainWnd(), ZGM_CBN_SELENDOK, 2, piParams);
 			}
@@ -149,10 +149,36 @@ bool ZGuiCombobox::Notify(ZGuiWnd* pkWnd, int iCode)
 	return true;
 }
 
-bool ZGuiCombobox::AddItem(char* strText, unsigned int iID)
+bool ZGuiCombobox::AddItem(char* strText, int iIndex, bool bSelect)
 {
-	m_pkListbox->AddItem(strText, iID);
+	if(iIndex == -1)
+		iIndex = m_pkListbox->GetItemCount()+1;
+
+	bool bSelectItem = bSelect && !m_bIsMenu;
+
+	m_pkListbox->AddItem(strText, iIndex, bSelectItem);
+
+	if(bSelectItem)
+	{
+		if(m_pkListbox->GetSelItem())
+			SetLabelText(m_pkListbox->GetSelItem()->GetText());
+		else
+			SetLabelText(" ");
+	}
+
 	return true;
+}
+
+void ZGuiCombobox::RemoveSelItem(bool bSelectPrev)
+{
+	bool bSelectPrevItem = bSelectPrev && !m_bIsMenu;
+
+	ZGuiListitem* pkSelItem = m_pkListbox->GetSelItem();
+	m_pkListbox->RemoveItem(pkSelItem,bSelectPrevItem);
+	if(m_pkListbox->GetSelItem())
+		SetLabelText(m_pkListbox->GetSelItem()->GetText());
+	else
+		SetLabelText(" ");
 }
 
 void ZGuiCombobox::SetLabelText(char* strText)

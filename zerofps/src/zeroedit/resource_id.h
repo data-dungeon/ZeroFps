@@ -36,13 +36,15 @@ const int ID_ADDPROPERTY_BN				= 9030;
 const int ID_ADDPROPERTY_WND			= 9031;
 const int ID_ADDPROPERTY_CLOSE			= 9032;
 const int ID_ADDPROPERTY_OK				= 9033;
-const int ID_PROPERTY_RADIOGROUP		= 9034;
-const int ID_REMOVEPROPERTY_BN			= 9034;
-const int ID_PROPERTY_VALUES_CB			= 9035;
-const int ID_PROPERTY_NEW_VALUE_EB		= 9036;
-const int ID_PROPERTY_SET_NEW_VALUE_BN	= 9037;
-const int IDM_LOAD_TEMPLATE				= 9038;
-const int IDM_SAVE_TEMPLATE				= 9039;
-const int ID_FILEPATH_WND				= 9040;
+const int ID_REMOVEPROPERTY_BN			= 9035;
+const int ID_PROPERTY_VALUES_CB			= 9036;
+const int ID_PROPERTY_NEW_VALUE_EB		= 9037;
+const int ID_PROPERTY_SET_NEW_VALUE_BN	= 9038;
+const int IDM_LOAD_TEMPLATE				= 9039;
+const int IDM_SAVE_TEMPLATE				= 9040;
+const int ID_FILEPATH_WND				= 9041;
+const int ID_ADDPROPERTY_WND_MAIN		= 9042;
+
+const int ID_PROPERTY_RADIOGROUP		= 10000; // Måste ligga ist
  
 #endif

@@ -46,6 +46,8 @@ ZGuiListbox::ZGuiListbox(Rect kRectangle, ZGuiWnd* pkParent, bool bVisible, int 
 		m_kItemArea.Right -= m_pkScrollbarVertical->GetWndRect().Width(); 
 
 	m_unOriginalHeight = GetScreenRect().Height();
+
+	RemoveWindowFlag(WF_CANHAVEFOCUS); // fönster har focus by default
 }
 
 ZGuiListbox::~ZGuiListbox()
@@ -118,9 +120,9 @@ void ZGuiListbox::CreateInternalControls()
 {
 	Rect rc = GetWndRect();
 	int x = rc.Width()-m_iScrollbarWidth;
-	int y = rc.Top;
+	int y = 0;
 	int w = m_iScrollbarWidth;
-	int h = rc.Height()-rc.Top;
+	int h = rc.Height();
 
 	//h -= (rc.Height() % m_unItemHeight);
 
@@ -130,26 +132,35 @@ void ZGuiListbox::CreateInternalControls()
 	m_pkScrollbarVertical->SetScrollInfo(0,0,1.0f,0); 
 }
 
-bool ZGuiListbox::AddItem(char* strText, unsigned int iID)
+ZGuiListitem* ZGuiListbox::AddItem(char* strText, unsigned int iIndex, bool bSelect)
 {
 	ZGuiListitem* pkNewItem;
 	
 	if(m_bIsMenu == false)
 	{
-		pkNewItem = new ZGuiListitem(this, strText, iID, 
+		pkNewItem = new ZGuiListitem(this, strText, iIndex, 
 			m_pkSkinItem, m_pkSkinItemSelected, m_pkSkinItemHighLight);
 		pkNewItem->GetButton()->SetGUI(GetGUI());
 		pkNewItem->m_bMenuItem = false;
 	}
 	else
 	{
-		pkNewItem = new ZGuiListitem(this, strText, iID, 
+		pkNewItem = new ZGuiListitem(this, strText, iIndex, 
 			m_pkSkinItem, m_pkSkinItem, m_pkSkinItemSelected);
 		pkNewItem->GetButton()->SetGUI(GetGUI());
 		pkNewItem->m_bMenuItem = true;
 	}
 
 	m_pkItemList.push_back(pkNewItem);
+
+	int iElements = m_pkItemList.size();
+	
+	if(iElements > 0)
+	{
+		int y = (iElements - 1) * m_unItemHeight; 
+		m_pkItemList.back()->SetPos(0, y);
+		m_pkItemList.back()->Resize(m_kItemArea.Width(), m_unItemHeight);
+	}
 
 	UpdateList();
 
@@ -171,44 +182,95 @@ bool ZGuiListbox::AddItem(char* strText, unsigned int iID)
 		m_kItemArea.Right = m_kItemArea.Left + iWidth;
 	}
 
-	//Resize( GetScreenRect().Width(), m_pkItemList.size() * m_unItemHeight);
+	if(bSelect)
+		m_pkSelectedItem = pkNewItem;
+
+	return pkNewItem;
+}
+
+bool ZGuiListbox::RemoveItem(ZGuiListitem* pkItemToRemove, bool bSelPrev)
+{
+	// Innehåller listan bara ett (1) alternativ?
+	if(m_pkItemList.size() == 1)
+	{
+		RemoveAllItems();
+		return true;
+	}	
+
+	bool bHaveFoundItem = false;
+	int index_to_select = -1;
+
+	vector<pair<string, int> > temp; // don´t forget the space after '>'!
+	list<ZGuiListitem*>::iterator it;
+	for( it = m_pkItemList.begin();
+		 it != m_pkItemList.end(); it++)
+		 {
+			 if((*it) != pkItemToRemove)
+			 {
+				 temp.push_back(pair<string, int>(string((*it)->GetText()),(*it)->GetIndex()));
+			
+				 if(bHaveFoundItem && index_to_select == -1)
+					index_to_select = (*it)->GetIndex(); 
+			 }
+			 else
+			 {
+				 bHaveFoundItem = true;
+			 }
+		 }
+
+	RemoveAllItems();
+
+	if(bHaveFoundItem && index_to_select == -1)
+		index_to_select = temp.back().second;
+
+	for(unsigned int i=0; i<temp.size(); i++)
+	{
+		bool bSelect = bSelPrev && temp[i].second == index_to_select;
+		AddItem((char*)temp[i].first.c_str(), temp[i].second, bSelect); 
+	}
 
 	return true;
 }
 
-bool ZGuiListbox::RemoveItem(unsigned int iID)
+/*bool ZGuiListbox::RemoveItem(ZGuiListitem* pkItemToRemove)
 {
-	Rect rcRemoveItem, rcSearchItem;
+	printf("items in list: %i", m_pkItemList.size());
 
+	bool bFound=false;
+	int iYPosItemRemoved;
 	list<ZGuiListitem*>::iterator it;
 	list<ZGuiListitem*>::iterator itRemove;
 
 	for( it = m_pkItemList.begin();
 		 it != m_pkItemList.end(); it++)
 		 {
-			 if((*it)->GetID() == iID)
+			 if((*it) == pkItemToRemove)
 			 {
 				 ZGuiButton* pkButton = (*it)->GetButton();
 
 				 if(pkButton)
 				 {
+					 bFound = true;
 					 itRemove = it;
-					 rcRemoveItem = pkButton->GetScreenRect();
+					 iYPosItemRemoved = pkButton->GetScreenRect().Top;
 					 break;
 				 }
 			 }
 		 }
 	
-	if(itRemove != NULL)
+	if(bFound)
 	{
 		ZGuiWnd* pkButton = (*itRemove)->GetButton();
 		ResetStaticClickWnds(pkButton);
 
-		delete (*it);
-		m_pkItemList.erase(it);
+		delete (*itRemove);
+		m_pkItemList.erase(itRemove);
+
+		printf("List item removed\n");
 	}
 	else
 	{
+		printf("Failed to remove list item.\n");
 		return false;
 	}
 
@@ -216,8 +278,8 @@ bool ZGuiListbox::RemoveItem(unsigned int iID)
 	for( it = m_pkItemList.begin();
 		 it != m_pkItemList.end(); it++)
 		 {
-			 rcSearchItem = (*it)->GetButton()->GetScreenRect();
-			 if(rcSearchItem.Top > rcRemoveItem.Top)
+			 Rect rcSearchItem = (*it)->GetButton()->GetScreenRect();
+			 if(rcSearchItem.Top > iYPosItemRemoved)
 			 {
 				 (*it)->Move(0,-m_unItemHeight);
 			 }
@@ -225,12 +287,36 @@ bool ZGuiListbox::RemoveItem(unsigned int iID)
 
 	m_pkSelectedItem = NULL;
 
-	UpdateList();
+	int iElements = m_pkItemList.size();
+	
+	// Får alla elementen plats? Nehe, hur många för mycket är det då?
+	int iElementSize = m_unItemHeight * iElements;
+	int iListboxSize = GetScreenRect().Height() - m_unItemHeight; // lägg på lite extra för att slippa avrundingsfel...
+	if(iElementSize <= 0) iElementSize = 1; // don´t devide by zero
+	float fThumbSize = (float) iListboxSize / (float) iElementSize;
+
+	m_pkScrollbarVertical->SetScrollInfo(0,iElements,fThumbSize,0);
+
+	if(fThumbSize >= 0.99f || iElements == 0)
+	{
+		m_pkScrollbarVertical->Hide();
+	}
+	else
+	{
+		m_pkScrollbarVertical->Show();
+	}
+
 	return true;
-}
+}*/
 
 bool ZGuiListbox::RemoveAllItems()
 {
+	if(m_pkItemList.empty())
+		return true;
+
+	if(m_pkSelectedItem)
+		ResetStaticClickWnds(m_pkSelectedItem->GetButton());
+
 	list<ZGuiListitem*>::iterator it;
 	for( it = m_pkItemList.begin();
 		 it != m_pkItemList.end(); it++)
@@ -242,12 +328,6 @@ bool ZGuiListbox::RemoveAllItems()
 
 	m_pkItemList.clear();
 	UpdateList();
-
-	ZGuiWnd::m_pkPrevWndUnderCursor = NULL;
-	ZGuiWnd::m_pkPrevWndClicked = NULL;
-	ZGuiWnd::m_pkFocusWnd = NULL;
-	ZGuiWnd::m_pkWndUnderCursor = NULL;
-	ZGuiWnd::m_pkWndClicked = NULL;
 
 	return true;
 }
@@ -266,7 +346,7 @@ bool ZGuiListbox::Notify(ZGuiWnd* pkWnd, int iCode)
 		for( it = m_pkItemList.begin();
 			 it != m_pkItemList.end(); it++)
 			 {
-				 if(pkWnd->GetID() == (*it)->GetID())
+				 if(pkWnd == (*it)->GetButton())
 				 {
 					// Change skin on previus selected button
 					if(m_pkSelectedItem)
@@ -278,7 +358,7 @@ bool ZGuiListbox::Notify(ZGuiWnd* pkWnd, int iCode)
 					// Send a scroll message to the main winproc...
 					int* piParams = new int[2];
 					piParams[0] = GetID(); // Listbox ID
-					piParams[1] = m_pkSelectedItem->GetID(); // list item ID
+					piParams[1] = m_pkSelectedItem->GetIndex(); // list item ID
 					GetGUI()->GetActiveCallBackFunc()(
 						GetGUI()->GetActiveMainWnd(), ZGM_SELECTLISTITEM, 2, piParams);
 					delete[] piParams;
@@ -304,7 +384,8 @@ void ZGuiListbox::ScrollItems(ZGuiScrollbar* pkScrollbar)
 			(*it)->Move(0,pkScrollbar->m_iScrollChange*(int)m_unItemHeight);
 
 			Rect rc = (*it)->GetButton()->GetScreenRect();
-			if(rc.Bottom > GetScreenRect().Top && rc.Top < GetScreenRect().Bottom)
+			if( rc.Bottom > m_pkScrollbarVertical->GetScreenRect().Top && 
+				rc.Top < m_pkScrollbarVertical->GetScreenRect().Bottom)
 			{
 				(*it)->GetButton()->Show();
 			}
@@ -323,13 +404,13 @@ ZGuiListitem* ZGuiListbox::GetSelItem()
 	return m_pkSelectedItem;
 }
 
-ZGuiListitem* ZGuiListbox::GetItem(unsigned int iID)
+ZGuiListitem* ZGuiListbox::GetItem(unsigned int iIndex)
 {
 	list<ZGuiListitem*>::iterator it;
 	for( it = m_pkItemList.begin();
 		 it != m_pkItemList.end(); it++)
 		 {
-			 if((*it)->GetID() == iID)
+			 if((*it)->GetIndex() == iIndex)
 				 return (*it);
 		 }
 
@@ -345,16 +426,17 @@ void ZGuiListbox::UpdateList()
 {
 	int iElements = m_pkItemList.size();
 	
-	if(iElements > 0)
+/*	if(iElements > 0)
 	{
 		int y = (iElements - 1) * m_unItemHeight; 
 		m_pkItemList.back()->SetPos(0, y);
 		m_pkItemList.back()->Resize(m_kItemArea.Width(), m_unItemHeight);
-	}
+	}*/
 
 	// Får alla elementen plats? Nehe, hur många för mycket är det då?
 	int iElementSize = m_unItemHeight * iElements;
-	int iListboxSize = GetWndRect().Height() - m_unItemHeight; // lägg på lite extra för att slippa avrundingsfel...
+	int iListboxSize = GetScreenRect().Height() - m_unItemHeight; // lägg på lite extra för att slippa avrundingsfel...
+	if(iElementSize <= 0) iElementSize = 1; // don´t devide by zero
 	float fThumbSize = (float) iListboxSize / (float) iElementSize;
 
 	m_pkScrollbarVertical->SetScrollInfo(0,iElements,fThumbSize,0);

@@ -21,6 +21,7 @@ public:
 	virtual ~ZGuiLabel();
 
 	virtual bool Render( ZGuiRender* renderer );
+	bool Notify(ZGuiWnd* pkWnd, int iCode);
 };
 
 #endif // !defined(AFX_LABEL_H__EE074D36_08D4_4FF6_92EB_70F5A4E756A4__INCLUDED_)

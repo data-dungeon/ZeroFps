@@ -15,6 +15,8 @@ Input::Input()
 	//reset all buttons to false
 	//for(int i =0;i<400;i++) 
 	//	m_akButtonList[i]=false;
+
+	m_bKeyRepeat = true;
 	
 	m_iQueueLength=100;
 	m_fMouseSensitivity=1;	
@@ -27,6 +29,7 @@ Input::Input()
 	g_ZFObjSys.Register_Cmd("listactions",FID_LISTACTIONS,this);		
 	g_ZFObjSys.Register_Cmd("mousesens",FID_MOUSESENS,this);		
 
+	SDL_EnableKeyRepeat(SDL_DEFAULT_REPEAT_DELAY,SDL_DEFAULT_REPEAT_INTERVAL);
 	
 	
 	m_iNrActions=0;
@@ -183,8 +186,7 @@ void Input::Update(void) {
 				m_aPressedKeys.push(m_kEvent.key.keysym.sym);
 				if(m_aPressedKeys.size()>m_iQueueLength)
 					m_aPressedKeys.pop();
-				
-				
+
 				//set button as pressed		
 				m_akButtonList[m_kEvent.key.keysym.sym]=true;					    	
     		break;			

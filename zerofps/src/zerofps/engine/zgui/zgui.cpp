@@ -104,8 +104,11 @@ bool ZGui::AddMainWindow(int iMainWindowID, ZGuiWnd* pkWindow, callback cb, bool
 	m_pkMainWindows.push_back(pkNewMainWindow);
 	//m_pkMainWindows.sort();
 
-	if(bSetAsActive)
+/*	if(bSetAsActive)
+	{
 		m_pkActiveMainWin = pkNewMainWindow;
+		ZGuiWnd::m_pkFocusWnd = m_pkActiveMainWin->pkWin;
+	}*/
 
 	// Gå igenom alla childs och lägg till de till listan.
 	list<ZGuiWnd*> kChildList;
@@ -116,6 +119,13 @@ bool ZGui::AddMainWindow(int iMainWindowID, ZGuiWnd* pkWindow, callback cb, bool
 		w != kChildList.end(); w++)
 	{ 
 		RegisterWindow((*w));
+	}
+
+	if(bSetAsActive)
+	{
+		m_pkActiveMainWin = pkNewMainWindow;
+		//ZGuiWnd::m_pkFocusWnd = m_pkActiveMainWin->pkWin;
+		SetFocus(m_pkActiveMainWin->pkWin);
 	}
 
 	return true;
@@ -388,15 +398,16 @@ bool ZGui::OnMouseUpdate()
 			// Är markören fortfarande innanför fönstrets gränser?
 			if(ZGuiWnd::m_pkWndClicked->GetScreenRect().Inside(x, y))
 			{
+				SetFocus(ZGuiWnd::m_pkWndClicked);
+
+				ZGuiWnd::m_pkWndClicked->Notify(ZGuiWnd::m_pkWndClicked, NCODE_CLICK_UP);
+				
 				// Notify the main window that the window have been clicked
 				int* pkParams = new int[1];
 				pkParams[0] = ZGuiWnd::m_pkWndClicked->GetID(); // control id
 				m_pkActiveMainWin->pkCallback(m_pkActiveMainWin->pkWin, ZGM_COMMAND, 1, pkParams);
 				delete[] pkParams;
 
-				SetFocus(ZGuiWnd::m_pkWndClicked);
-				
-				ZGuiWnd::m_pkWndClicked->Notify(ZGuiWnd::m_pkWndClicked, NCODE_CLICK_UP);
 				ZGuiWnd::m_pkWndClicked = NULL;
 			}
 			else
@@ -435,6 +446,24 @@ bool ZGui::OnKeyUpdate()
 {
 	int iKey = m_pkInput->GetQueuedKey();
 
+	if(iKey < 0)
+		return true;
+
+	// Kolla först om vi skall köra ett keycommand...
+	map<pair<ZGuiWnd*, int>, ZGuiWnd*>::iterator itKey;
+	itKey = m_KeyCommandTable.find(pair<ZGuiWnd*, int>(ZGuiWnd::m_pkFocusWnd, iKey));
+	if(itKey != m_KeyCommandTable.end())
+	{
+		// Skicka ett Command medelande till valt fönster.
+		int* pkParams = new int[1];
+		int id = itKey->second->GetID(); // control id
+		pkParams[0] = id;
+		m_pkActiveMainWin->pkCallback(m_pkActiveMainWin->pkWin, ZGM_COMMAND, 1, pkParams);
+		delete[] pkParams;
+		
+		return true; // avbryt.
+	}
+
 	if(IgnoreKey(iKey))
 		return true;
 
@@ -454,40 +483,13 @@ bool ZGui::OnKeyUpdate()
 				iKey = ':';
 			if(iKey == '-')
 				iKey = '_';
-			
 		}
 
 		if(iKey == KEY_F10)
 		{
 			m_pkZeroFps->ToggleGui();
 		}
-		else
-		if(iKey == KEY_ESCAPE)
-		{
-			if(m_pkActiveMainWin)
-			{
-				if(ZGuiWnd::m_pkFocusWnd)
-				{
-					if(ZGuiWnd::m_pkFocusWnd->GetWindowFlag(WF_CLOSEABLE))
-					{
-						ZGuiWnd::m_pkFocusWnd->Hide();
-						return true;
-					}
-				}
-				
-				if(m_pkActiveMainWin->pkWin->GetWindowFlag(WF_CLOSEABLE))
-				{
-					// Notify the window that it are going to hidden
-					int* pkParams = new int[1];
-					pkParams[0] = false; // window are beeing hidden
-					m_pkActiveMainWin->pkCallback(m_pkActiveMainWin->pkWin, ZGM_SHOWWINDOW, 1, pkParams);
-					delete[] pkParams;
 
-					int id = m_pkActiveMainWin->iID;
-					ShowMainWindow(id, false);
-				}
-			}
-		}
 		if(ZGuiWnd::m_pkFocusWnd != NULL)
 		{
 			ZGuiWnd::m_pkFocusWnd->ProcessKBInput(iKey);
@@ -499,18 +501,20 @@ bool ZGui::OnKeyUpdate()
 
 void ZGui::SetFocus(ZGuiWnd* pkWnd)
 {
-	// Hitta det fönster som tidigare hade fokus och 
-	// ta bort fokuset från denna.
-	if(ZGuiWnd::m_pkFocusWnd)
-	{		
+	// Kolla först om detta fönster kan ha keyboard fokus.
+	if( pkWnd->GetWindowFlag( WF_CANHAVEFOCUS ) )
+	{
+		// Hitta det fönster som tidigare hade fokus och 
+		// ta bort fokuset från denna.
 		if(ZGuiWnd::m_pkFocusWnd)
-			ZGuiWnd::m_pkFocusWnd->KillFocus();
+		{		
+			if(ZGuiWnd::m_pkFocusWnd)
+				ZGuiWnd::m_pkFocusWnd->KillFocus();
+		}
+
+		ZGuiWnd::m_pkFocusWnd = pkWnd;
+		ZGuiWnd::m_pkFocusWnd->SetFocus();
 	}
-
-	m_pkInput->SetInputEnabled(true);
-
-	ZGuiWnd::m_pkFocusWnd = pkWnd;
-	ZGuiWnd::m_pkFocusWnd->SetFocus();
 }
 
 void ZGui::SetCursor(int TextureID, int MaskTextureID, int Width, int Height)
@@ -585,6 +589,8 @@ void ZGui::ShowMainWindow(int iID, bool bShow)
 				break;
 			}
 		 }
+
+	SetFocus(m_pkActiveMainWin->pkWin);
 }
 
 bool ZGui::IgnoreKey(int Key)
@@ -642,4 +648,10 @@ ZGuiFont* ZGui::GetBitmapFont(int iID)
 		return itFont->second;
 	
 	return NULL;
+}
+
+void ZGui::AddKeyCommand(int Key, ZGuiWnd *pkFocusWnd, ZGuiWnd *pkTriggerWnd)
+{
+	m_KeyCommandTable.insert(map< pair<ZGuiWnd*, int>, ZGuiWnd* >
+		::value_type(pair<ZGuiWnd*, int>(pkFocusWnd,Key), pkTriggerWnd) ); 
 }

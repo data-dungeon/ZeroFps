@@ -39,6 +39,8 @@ ZGuiTextbox::ZGuiTextbox(Rect kArea, ZGuiWnd* pkParent, bool bVisible, int iID, 
 
 	if(m_iMaxVisibleRows < 1)
 		m_iMaxVisibleRows = 1;
+
+	SetWindowFlag(WF_CANHAVEFOCUS); // textboxar har focus by default
 }
 
 ZGuiTextbox::~ZGuiTextbox()

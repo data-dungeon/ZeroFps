@@ -29,6 +29,7 @@ public:
 	bool DlgProc( ZGuiWnd* pkWindow, unsigned int uiMessage, int iNumberOfParams, void *pkParams );
 
 private:
+	void UpdateStats();
 	void RemoveProperty();
 	ZGuiWnd* Create(int x, int y, int w, int h);
 
@@ -41,13 +42,15 @@ private:
 	Gui* m_pkGui;
 	ZGui* m_pkZGui;
 	callback m_oGuiCallback;
-	ZGuiWnd* m_pkWindow;
+	ZGuiWnd* m_pkWindow;	
 
 	Object* m_pkCurrentChild;
 	ObjectManager* m_pkObjectManager;
 	PropertyFactory* m_pkPropFactory;
 	Property* m_pkSelProperty;
-	string m_kSelPropValue;
+	
+	string m_szSelProperty;
+	string m_szSelPropValue;
 
 	bool m_bAdd;
 };

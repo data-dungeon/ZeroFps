@@ -54,8 +54,8 @@ private:
 	
 	Rect GetScreenRect() { return Rect(0,0,m_pkEdit->m_iWidth, m_pkEdit->m_iHeight); }
 
-	void AddItemToList(ZGuiWnd *pkWnd, bool bCombobox, const char *item, int id);
-	void AddItemsToList(ZGuiWnd* pkWnd, bool bCombobox, char** items, int Number);
+	void AddItemToList(ZGuiWnd *pkWnd, bool bCombobox, const char *item, int id, bool bSelect);
+	void AddItemsToList(ZGuiWnd* pkWnd, bool bCombobox, char** items, int Number, bool bSelectLast=true);
 	ZGuiWnd* CreateEditPropertyDialog(int x, int y, int Widht, int Height);
 	bool CreateWindows();
 	bool InitSkins();

@@ -65,6 +65,8 @@ ZGuiWnd::ZGuiWnd(Rect kRectangle, ZGuiWnd* pkParent, bool bVisible, int iID)
 	}
 
 	m_kMoveArea = m_kArea;
+
+	SetWindowFlag(WF_CANHAVEFOCUS); // fönster har focus by default
 }
 
 ZGuiWnd::~ZGuiWnd()

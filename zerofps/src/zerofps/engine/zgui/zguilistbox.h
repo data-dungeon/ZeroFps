@@ -30,10 +30,10 @@ public:
 	void Resize(int Width, int Height);
 	void UpdateList();
 	bool RemoveAllItems();
-	bool RemoveItem(unsigned int iID);
+	bool RemoveItem(ZGuiListitem* pkItemToRemove, bool bSelPrev);
 	void IsMenu(bool bMenu=true);
-	ZGuiListitem* GetItem(unsigned int iID);
-	bool AddItem(char* strText, unsigned int iID); 
+	ZGuiListitem* GetItem(unsigned int iIndex);
+	ZGuiListitem* AddItem(char* strText, unsigned int iIndex, bool bSelect); 
 	void SetScrollbarSkin(ZGuiSkin* pkSkinScrollArea, ZGuiSkin* pkSkinThumbButton, 
 		ZGuiSkin* pkSkinThumbButtonHighLight);
 	void SetItemNormalSkin(ZGuiSkin* pkSkin);

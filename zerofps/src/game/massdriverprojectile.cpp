@@ -26,13 +26,13 @@ void MassDriverProjectile::Touch(Object* pkObject)
 //	m_pkObject->DeleteProperty("PhysicProperty");
 	
 	
-	StatusProperty* sp=static_cast<StatusProperty*>(pkObject->GetProperty("StatusProperty"));
+/*	StatusProperty* sp=static_cast<StatusProperty*>(pkObject->GetProperty("StatusProperty"));
 	if(sp!=NULL)
 	{
 		sp->Damage(50);
 	}
 	
-	m_pkObjectMan->Delete(m_pkObject);	
+	m_pkObjectMan->Delete(m_pkObject);	*/
 
 }
 

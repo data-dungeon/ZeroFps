@@ -88,7 +88,11 @@ void ZGuiScrollbar::SetScrollInfo(unsigned int min, unsigned int max, float page
 	else
 	{
 		int bn_width = real_bn_height; 
-		y = ((float) pos / (float) (max - min)) * rc.Height()  - bn_width/2;	
+
+		float size = (max - min);
+		if(size <= 0) size = 1; // don´t devide by zero
+
+		y = ((float) pos / (float) (size)) * rc.Height()  - bn_width/2;	
 	}
 
 	m_pkThumbButton->SetMoveArea(GetScreenRect());

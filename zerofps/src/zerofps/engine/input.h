@@ -157,6 +157,7 @@ class ENGINE_API Input : public ZFObject {
 		unsigned int m_iGrabtime;			
 		int m_iMouseX,m_iMouseY;
 		unsigned int m_iQueueLength;
+		bool m_bKeyRepeat;
 
 		queue<int> m_aPressedKeys;
 	

@@ -38,6 +38,8 @@ FileOpenDlg::FileOpenDlg(Gui* pkGui, ZFBasicFS* pkBasicFS, callback cb, unsigned
 	m_pkBasicFS = pkBasicFS;
 
 	m_pkWindow = Create(100,100,500,500);
+
+	//ZGuiWnd::m_pkFocusWnd = pkMainWindow;
 }
 
 FileOpenDlg::~FileOpenDlg()
@@ -60,7 +62,6 @@ bool FileOpenDlg::DlgProc( ZGuiWnd* pkWindow, unsigned int uiMessage, int iNumbe
 			case ID_FILEPATH_CANCEL_BN:
 				{
 					m_pkZGui->ShowMainWindow(ID_FILEPATH_WND_MAIN, false);
-					printf("hej\n");
 				}
 				break;
 
@@ -196,10 +197,15 @@ ZGuiWnd* FileOpenDlg::Create(int x, int y, int w, int h)
 		strcpy(strTitle, "Open");
 	}
 
-	m_pkGui->CreateButton(pkMainWindow, ID_FILEPATH_WND_CLOSE, w-20, 0, 20, 20, "x")->SetWindowFlag(WF_CENTER_TEXT);
-	m_pkGui->Register(m_pkGui->CreateButton(pkMainWindow, ID_FILEPATH_OPEN_BN, w-80, h-44, 80, 20, strBnName), "FileOpenBN" );
+	ZGuiWnd* pkCloseBn = m_pkGui->CreateButton(pkMainWindow, ID_FILEPATH_WND_CLOSE, w-20, 0, 20, 20, "x");
+	pkCloseBn->SetWindowFlag(WF_CENTER_TEXT);
+
+	ZGuiWnd* pkOKBn = m_pkGui->CreateButton(pkMainWindow, ID_FILEPATH_OPEN_BN, w-80, h-44, 80, 20, strBnName);
+	m_pkGui->Register(pkOKBn, "FileOpenBN" );
 	m_pkGui->Get("FileOpenBN")->SetWindowFlag(WF_CENTER_TEXT);
-	m_pkGui->CreateButton(pkMainWindow, ID_FILEPATH_CANCEL_BN, w-80, h-22, 80, 20, "Cancel")->SetWindowFlag(WF_CENTER_TEXT);
+	ZGuiWnd* pkCancelBn = m_pkGui->CreateButton(pkMainWindow, ID_FILEPATH_CANCEL_BN, 
+		w-80, h-22, 80, 20, "Cancel");
+	pkCancelBn->SetWindowFlag(WF_CENTER_TEXT);
 
 	ZGuiLabel* pkLabel = m_pkGui->CreateLabel(pkMainWindow, 0, 0, 0, w, 22, strTitle);
 	pkLabel->SetSkin(m_pkGui->GetSkin("titlebar"));
@@ -208,6 +214,10 @@ ZGuiWnd* FileOpenDlg::Create(int x, int y, int w, int h)
 	m_pkGui->CreateTextbox(pkMainWindow, ID_FILEPATH_WND_FILE_EB, 0, h-22, w-200, 20);
 
 	m_pkZGui->AddMainWindow(ID_FILEPATH_WND_MAIN, pkMainWindow, OPENFILEPROC, true);
+
+	m_pkZGui->AddKeyCommand(KEY_ESCAPE, pkMainWindow, pkCancelBn);
+	m_pkZGui->AddKeyCommand(KEY_ESCAPE, pkMainWindow, pkCloseBn);
+	m_pkZGui->AddKeyCommand(KEY_RETURN, pkMainWindow, pkOKBn);
 	return pkMainWindow;
 }
 
@@ -248,7 +258,7 @@ bool FileOpenDlg::FillPathList(ZGuiListbox* pkListbox, string strDir)
 	for( unsigned int i=0; i<vkFiles.size(); i++)
 	{
 		sprintf(name, "%s", vkFiles[i].c_str());	
-		pkListbox->AddItem(name, i); 
+		pkListbox->AddItem(name, i, false); 
 	}
 
 	return true;

@@ -2,7 +2,6 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-//#include "zeroedit.h"
 #include "gui.h"
 #include "fileopendlg.h"
 #include "editpropertydlg.h"
@@ -157,6 +156,7 @@ bool Gui::WndProc( ZGuiWnd* pkWindow, unsigned int uiMessage, int iNumberOfParam
 						m_pkEdit->pkPropertyFactory, 
 						m_pkEdit->pkObjectMan, 
 						m_pkEdit->m_pkCurentChild, WINPROC);
+
 					break;
 				}
 			}
@@ -185,11 +185,13 @@ bool Gui::CreateWindows()
 	pkMenuCBox->AddItem("Edit property...", IDM_CREATE_NEW_PROPERTY);
 	pkMenuCBox->AddItem("Quit", IDM_CLOSE);
 
-	ZGuiButton* pkCloseButton = CreateButton(pkMenu, ID_CLOSE_GUI_BN, 
+	ZGuiButton* pkCloseGuiButton = CreateButton(pkMenu, ID_CLOSE_GUI_BN, 
 		m_pkEdit->m_iWidth-20, 0, 20, 20, "x");
 
-	pkCloseButton->SetWindowFlag(WF_CENTER_TEXT);
-	Register( pkCloseButton, "CloseGuiBN");
+	pkCloseGuiButton->SetWindowFlag(WF_CENTER_TEXT);
+	Register( pkCloseGuiButton, "CloseGuiBN");
+
+	m_pkEdit->pkGui->AddKeyCommand(KEY_ESCAPE, pkMenu, pkCloseGuiButton);
 
 	m_pkEdit->pkGui->AddMainWindow(IDM_MENU_WND, pkMenu, WINPROC, true);
 
@@ -329,8 +331,6 @@ void Gui::CreateRadiobuttons(ZGuiWnd* pkParent, vector<string>& vkNames,
 
 ZGuiListbox* Gui::CreateListbox(ZGuiWnd* pkParent, int iID, int x, int y, int w, int h)
 {
-	//h += (20 % h); // avrunda till närmsta 20 tal
-
 	ZGuiListbox* pkListbox = new ZGuiListbox(Rect(x,y,x+w,y+h),pkParent,true,iID,20,
 		GetSkin("menu_item"), GetSkin("menu_item_sel"), GetSkin("menu_item_hl"));
 	pkListbox->SetSkin( GetSkin("dark_blue") );
@@ -341,8 +341,6 @@ ZGuiListbox* Gui::CreateListbox(ZGuiWnd* pkParent, int iID, int x, int y, int w,
 
 ZGuiCombobox* Gui::CreateCombobox(ZGuiWnd* pkParent, int iID, int x, int y, int w, int h, bool bMenu)
 {
-//	h += (20 % h); // avrunda till närmsta 20 tal
-
 	ZGuiCombobox* pkCombobox = new ZGuiCombobox(Rect(x,y,x+w,y+h), pkParent, true, iID, 20,
 		GetSkin("menu"), GetSkin("dark_blue"), GetSkin("dark_blue"), GetSkin("menu"), -1);
 
@@ -356,8 +354,6 @@ ZGuiCombobox* Gui::CreateCombobox(ZGuiWnd* pkParent, int iID, int x, int y, int 
 
 ZGuiTextbox* Gui::CreateTextbox(ZGuiWnd* pkParent, int iID, int x, int y, int w, int h, bool bMulitLine)
 {
-/*	h += (20 % h); // avrunda till närmsta 20 tal*/
-
 	ZGuiTextbox* pkTextbox = new ZGuiTextbox(Rect(x,y,x+w,y+h), pkParent, true, iID, bMulitLine);
 	pkTextbox->SetSkin(GetSkin("white"));
 	pkTextbox->SetScrollbarSkin(GetSkin("menu_item_sel"), 
@@ -368,8 +364,6 @@ ZGuiTextbox* Gui::CreateTextbox(ZGuiWnd* pkParent, int iID, int x, int y, int w,
 
 ZGuiLabel* Gui::CreateLabel(ZGuiWnd* pkParent, int iID, int x, int y, int w, int h, char* strText)
 {
-	//h += (20 % h); // avrunda till närmsta 20 tal
-
 	ZGuiLabel* pkLabel = new ZGuiLabel(Rect(x,y,x+w,y+h), pkParent, true, iID);
 	
 	if(strText)
@@ -378,7 +372,7 @@ ZGuiLabel* Gui::CreateLabel(ZGuiWnd* pkParent, int iID, int x, int y, int w, int
 	return pkLabel;
 }
 
-void Gui::AddItemsToList(ZGuiWnd *pkWnd, bool bCombobox, char **items, int iNumber)
+void Gui::AddItemsToList(ZGuiWnd *pkWnd, bool bCombobox, char **items, int iNumber, bool bSelectLast)
 {
 	int test = 2;
 
@@ -386,27 +380,29 @@ void Gui::AddItemsToList(ZGuiWnd *pkWnd, bool bCombobox, char **items, int iNumb
 	{
 		ZGuiCombobox* pkCombobox = (ZGuiCombobox*) pkWnd;
 		for(int i=0; i<iNumber; i++)
-			pkCombobox->AddItem(items[i], i);
+		{
+			pkCombobox->AddItem(items[i], i, bSelectLast && i==iNumber-1);
+		}
 	}
 	else
 	{
 		ZGuiListbox* pkListbox = (ZGuiListbox*) pkWnd;
 		for(int i=0; i<iNumber; i++)
-			pkListbox->AddItem(items[i], i);
+			pkListbox->AddItem(items[i], i, bSelectLast && i==iNumber-1);
 	}
 }
 
-void Gui::AddItemToList(ZGuiWnd *pkWnd, bool bCombobox, const char *item, int id)
+void Gui::AddItemToList(ZGuiWnd *pkWnd, bool bCombobox, const char *item, int index, bool bSelect)
 {
 	if(bCombobox)
 	{
 		ZGuiCombobox* pkCombobox = (ZGuiCombobox*) pkWnd;
-		pkCombobox->AddItem((char*)item, id);
+		pkCombobox->AddItem((char*)item, index, bSelect);
 	}
 	else
 	{
 		ZGuiListbox* pkListbox = (ZGuiListbox*) pkWnd;
-		pkListbox->AddItem((char*)item, id);
+		pkListbox->AddItem((char*)item, index, bSelect);
 	}
 }
 
@@ -429,6 +425,3 @@ ZGuiWnd* Gui::Get(char* strName)
 {
 	return m_pkEdit->pkGuiMan->Wnd(string(strName));
 }
-
-
-

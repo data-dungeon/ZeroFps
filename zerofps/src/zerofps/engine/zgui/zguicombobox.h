@@ -31,14 +31,13 @@ public:
 		ZGuiSkin* pkSkinThumbButtonHighLight);
 	void SetSkin(ZGuiSkin* pkSkin); // ersätter ZGuiWnd::SetSkin...
 	bool Notify(ZGuiWnd* pkWnd, int iCode);
-	bool AddItem(char* strText, unsigned int iID);
+	bool AddItem(char* strText, int iIndex, bool bSelect=true); // if index is -1 it set index to getitemcount+1
+	void RemoveSelItem(bool bSelectPrev=true);
 	void SetLabelText(char* strText);
 	void SetLabelWidth(int iWidth);
 	void IsMenu(bool bIsMenu);
 	void SetNumVisibleRows(unsigned short iNumVisibleRows);
 	bool RemoveAllItems(); // välj denna istället för den i listboxen annars rensas inte textboxen...
-
-	ZGuiListitem* GetItem(int iID);
 
 	void SetZValue(int iValue); // överlagrad
 	ZGuiListbox* GetListbox() { return m_pkListbox; }

@@ -53,6 +53,7 @@ class ZGuiResourceManager;
 class ENGINE_API ZGui  
 {
 public:	
+	void AddKeyCommand(int Key, ZGuiWnd* pkFocusWnd, ZGuiWnd* pkTriggerWnd);
 	ZGuiFont* AddBitmapFont(char* strBitmapName, char cCharsOneRow, char cCellSize, char cPixelGapBetweenChars, int iID);
 	ZGuiFont* GetBitmapFont(int iID);
 
@@ -88,6 +89,7 @@ public:
 		else
 			return NULL;
 	}
+	void SetFocus(ZGuiWnd* pkWnd);
 
 	struct MAIN_WINDOW
 	{
@@ -101,7 +103,6 @@ private:
 	long m_iHighestZWndValue;
 	bool IgnoreKey(int Key);
 	bool Render(); // Render the active main window
-	void SetFocus(ZGuiWnd* pkWnd);
 	bool OnKeyUpdate();
 	bool OnMouseUpdate();
 	void RearrangeWnds(MAIN_WINDOW* p_iIDWndToSelect);
@@ -127,8 +128,10 @@ private:
 	ZeroFps* m_pkZeroFps;
 
 	map<int, ZGuiFont*> m_pkFonts;
+	//map<int, pair<ZGuiWnd*, ZGuiWnd*>*> m_KeyCommandTable;
 
-	int test;
+	map<pair<ZGuiWnd*, int>, ZGuiWnd*> m_KeyCommandTable;
+
 };
 
 #endif // !defined(AFX_GUI_H__9DDC0983_F616_469F_BDE9_BCC084BEB4BE__INCLUDED_)
