@@ -11,31 +11,21 @@ void GuiMsgInventoryDlg( string strMainWnd, string strController,
 	if(msg == ZGM_COMMAND)
 	{
 		if(strMainWnd == "InventoryWnd" || strMainWnd == "ContainerWnd")
-		{
 			g_kMistClient.m_pkInventoryDlg->OnCommand(strController);
-		}
 	}
-
+	else
 	if(msg == ZGM_MOUSEMOVE)
 	{
-		int pressed = ((int*)params)[0];
-		int x = ((int*)params)[1];
-		int y = ((int*)params)[2];
+		int pressed = ((int*)params)[0], x = ((int*)params)[1], y = ((int*)params)[2];
 		g_kMistClient.m_pkInventoryDlg->OnMouseMove(pressed < 1 ? false : true, x, y);
 	}
-
+	else
 	if(msg == ZGM_KEYPRESS)
 	{
-		if( ((int*)params)[0] == KEY_P)
-		{
-			if(g_kMistClient.m_pkInventoryDlg->IsVisible())
-				g_kMistClient.m_pkInventoryDlg->Close(); 
-			else
-				g_kMistClient.m_pkInventoryDlg->Open(); 
-		}
-		else
-		if( ((int*)params)[0] == KEY_RETURN)
-		{
+		int iKey = ((int*)params)[0];
+		switch(iKey)
+		{		
+		case KEY_RETURN:
 			if( strController	==	"SayTextbox" )
 			{
 				char*	text = g_kMistClient.GetText("SayTextbox");
@@ -51,13 +41,10 @@ void GuiMsgInventoryDlg( string strMainWnd, string strController,
 				g_kMistClient.m_pkGui->m_bHandledMouse = false;
 			}
 			else
-			{
 				g_kMistClient.ToogleChatWnd(true, true);
-			}
-		}
-		else
-		if( ((int*)params)[0] == KEY_ESCAPE)
-		{
+			break;
+		
+		case KEY_ESCAPE:
 			if( strController	==	"SayTextbox" )
 			{
 				((ZGuiTextbox*)g_kMistClient.GetWnd(strController))->KillFocus();
@@ -68,17 +55,14 @@ void GuiMsgInventoryDlg( string strMainWnd, string strController,
 			}
 
 			g_kMistClient.m_pkGui->m_bForceGUICapture = false;
+			break;	
 		}
 	}
 }
 
-const float BD_R = 1;
-const float BD_G = 1;
-const float BD_B = 1;
-
 InventoryDlg::InventoryDlg() : ICON_WIDTH(32), ICON_HEIGHT(32), UPPER_LEFT_INVENTORY(27,87),
 										 SLOTTS_HORZ_INVENTORY(6), SLOTTS_VERT_INVENTORY(12), 
-										 UPPER_LEFT_CONTAINER(0,0)
+										 UPPER_LEFT_CONTAINER(0,0), BD_R(1), BD_G(1), BD_B(1)
 {
 	m_pkInventoryWnd = NULL;
 	m_pkContainerWnd = NULL;
@@ -94,6 +78,7 @@ InventoryDlg::InventoryDlg() : ICON_WIDTH(32), ICON_HEIGHT(32), UPPER_LEFT_INVEN
 
 InventoryDlg::~InventoryDlg()
 {
+	g_kMistClient.m_pkGui->UnregisterWindow(m_pkContainerWnd);
 	g_kMistClient.m_pkGui->UnregisterWindow(m_pkInventoryWnd);
 }
 
@@ -112,24 +97,41 @@ void InventoryDlg::Open()
 		m_pkContainerWnd = g_kMistClient.GetWnd("ContainerWnd");
 	}
 
+	// visa inventory fönstret
 	m_pkInventoryWnd->Show();
 
+	// dölj actionikonen och regruppera dom andra
 	g_kMistClient.GetWnd("OpenInventoryBn")->Hide();
 	g_kMistClient.PositionActionButtons();
-
-	ZGuiWnd::m_pkFocusWnd = m_pkInventoryWnd;
 }
 
 void InventoryDlg::Close()
 {
-	m_pkInventoryWnd->Hide();
+	// Hide inventory window
+	if(m_pkInventoryWnd)
+		m_pkInventoryWnd->Hide();
+
+	// Close contatiner window.
 	CloseContainerWnd();
 
 	// Must set focus on mainwnd to recive SPACE intput for chatbox...
 	g_kMistClient.m_pkGui->SetFocus(g_kMistClient.GetWnd("GuiMainWnd"), false);	
 
+	// Show the button that opens the inventory again.
 	g_kMistClient.GetWnd("OpenInventoryBn")->Show();
+
+	// Reposition action buttons.
 	g_kMistClient.PositionActionButtons();
+}
+
+void InventoryDlg::CloseContainerWnd()
+{
+	if(m_pkContainerWnd)
+	{
+		m_pkContainerWnd->Hide();
+		g_kMistClient.m_pkGui->SetFocus(m_pkInventoryWnd, false);
+		m_iActiveContainerID = -1;
+	}
 }
 
 void InventoryDlg::OnCommand(string strController)
@@ -141,178 +143,89 @@ void InventoryDlg::OnCommand(string strController)
 		CloseContainerWnd();
 }
 
+
+
 void InventoryDlg::OnMouseMove(bool bLeftButtonPressed, int mx, int my)
 {
 	static bool s_bRightMouseButtonPressed = false;
 
-	if(m_iItemUnderCursor)
+	if(m_iItemUnderCursor) // the application have found a item 
+		PickUpFromGround(bLeftButtonPressed, mx, my); // test if its time to place it under cursor.
+
+	if(m_pkInventoryWnd)
 	{
-		const float WAIT_TIME_PICKUP = 0.25f;
-
-		float fTime = (float) SDL_GetTicks() / 1000.0f;
-
-		if(bLeftButtonPressed)
-		{
-			if(fTime - m_fPickUpTimer > WAIT_TIME_PICKUP)
+		for(int i=0; i<m_vkInventoryItemList.size(); i++)
+		{		
+			if(m_vkInventoryItemList[i].pkWnd->GetScreenRect().Inside(mx, my)) // cursor is inside the rectangle of the slot.
 			{
-				for(int i=0; i<m_vkInventoryItemList.size(); i++)
-					if(m_vkInventoryItemList[i].iItemID == m_iItemUnderCursor)
-					{
-						if(bLeftButtonPressed)
-						{
-							m_kMoveSlot.bIsInventoryItem = true;
-							m_kMoveSlot.m_iIndex = i;
-						
-							Point size = SlotSizeFromWnd(m_vkInventoryItemList[i].pkWnd);
-							int id = m_vkInventoryItemList[i].pkWnd->GetSkin()->m_iBkTexID;
-
-							g_kMistClient.m_pkGui->SetCursor( mx, my, id, -1, size.x*32, size.y*32);							
-						}					
-						break;
-					}
-
-				m_iItemUnderCursor = -1;
-			}
-		}
-		else
-		{
-			for(int i=0; i<m_vkInventoryItemList.size(); i++)
-				if(m_vkInventoryItemList[i].iItemID == m_iItemUnderCursor)
-				{
-					m_vkInventoryItemList[i].pkWnd->Show();
-					m_vkInventoryItemList[i].pkWnd->m_iZValue = m_iHighestZ++;
-					m_pkInventoryWnd->SortChilds(); 	
-					m_iItemUnderCursor = -1;
-					break;
-				}
-		}
-	}
-
-	//if(g_kMistClient.m_pkGui->m_bMouseRightPressed)
-	//{
-	//	m_iSelItemID = -1;
-	//}
-
-	for(int i=0; i<m_vkInventoryItemList.size(); i++)
-	{		
-		if(m_vkInventoryItemList[i].pkWnd->GetScreenRect().Inside(mx, my))
-		{
-			if(m_kMoveSlot.m_iIndex == -1)
-				m_vkInventoryItemList[i].pkWnd->GetSkin()->m_unBorderSize = 2;
-
-			if(bLeftButtonPressed)
-			{			
+				// set selection border.
 				if(m_kMoveSlot.m_iIndex == -1)
-				{
-					m_kCursorRangeDiff.x = mx-m_vkInventoryItemList[i].pkWnd->GetScreenRect().Left; 
-					m_kCursorRangeDiff.y = my-m_vkInventoryItemList[i].pkWnd->GetScreenRect().Top;
+					m_vkInventoryItemList[i].pkWnd->GetSkin()->m_unBorderSize = 2;
 
-					m_kItemWndPosBeforeMove.x = m_vkInventoryItemList[i].pkWnd->GetWndRect().Left;
-					m_kItemWndPosBeforeMove.y = m_vkInventoryItemList[i].pkWnd->GetWndRect().Top;
-
-					m_kMoveSlot.bIsInventoryItem = true;
-					m_kMoveSlot.m_iIndex = i; // select new item
-
-					m_vkInventoryItemList[i].pkWnd->Hide();
-
-					Point size = SlotSizeFromWnd(m_vkInventoryItemList[i].pkWnd);
-					int id = m_vkInventoryItemList[i].pkWnd->GetSkin()->m_iBkTexID;
-
-					int x = mx - m_kCursorRangeDiff.x, y = my - m_kCursorRangeDiff.y;
-					g_kMistClient.m_pkGui->SetCursor( x, y, id, -1, size.x*32, size.y*32);	
-					g_kMistClient.m_pkInputHandle->SetCursorInputPos(x,y);  
-				}
-			}
-			else
-			{
-				if(m_kMoveSlot.m_iIndex != -1)
-					OnDropItem();
-
-				m_kMoveSlot.m_iIndex = -1;
-			}	
-			
-			if(g_kMistClient.m_pkGui->m_bMouseRightPressed && s_bRightMouseButtonPressed == false)
-			{	
-				if(m_iActiveContainerID == m_vkInventoryItemList[i].iItemID)
-				{
-					CloseContainerWnd();
-					if(m_iSelItemID == m_vkInventoryItemList[i].iItemID)
-					{
-						m_iSelItemID = -1;
-						m_vkInventoryItemList[i].pkWnd->GetSkin()->m_unBorderSize = 0;
-					}
+				if(bLeftButtonPressed)
+				{			
+					if(m_kMoveSlot.m_iIndex == -1)
+						PickUpFromGrid(i, true, mx, my); // try to find item under cursor and set as move item.
 				}
 				else
 				{
-					g_kMistClient.SendRequestContainer(m_vkInventoryItemList[i].iItemID);
-					m_iSelItemID = m_vkInventoryItemList[i].iItemID;
-					m_vkInventoryItemList[i].pkWnd->GetSkin()->m_unBorderSize = 2;
+					if(m_kMoveSlot.m_iIndex != -1) // if we have a move slot...
+						OnDropItem(); // place it somewhere.
+
+					m_kMoveSlot.m_iIndex = -1; // mark that we no longer have a moveslot.
+				}	
+				
+				// Open or close container in grid.
+				if(g_kMistClient.m_pkGui->m_bMouseRightPressed && s_bRightMouseButtonPressed == false)
+				{	
+					s_bRightMouseButtonPressed = true;
+
+					bool bOpen = true;
+					if(m_iActiveContainerID == m_vkInventoryItemList[i].iItemID)
+						bOpen = false;
+
+					OpenContainerItem(bOpen, i, true);				
 				}
+				else if(!g_kMistClient.m_pkGui->m_bMouseRightPressed)
+					s_bRightMouseButtonPressed = false;
 
-				s_bRightMouseButtonPressed = true;
 			}
-			else if(!g_kMistClient.m_pkGui->m_bMouseRightPressed)
-			{
-				s_bRightMouseButtonPressed = false;
+			else // cursor is not inside the slots rectangle.
+			{		
+				// remove selection border.
+				if( m_vkInventoryItemList[i].iItemID != m_iSelItemID)
+					m_vkInventoryItemList[i].pkWnd->GetSkin()->m_unBorderSize = 0;
 			}
-
-		}
-		else
-		{
-			if( m_vkInventoryItemList[i].iItemID != m_iSelItemID)
-				m_vkInventoryItemList[i].pkWnd->GetSkin()->m_unBorderSize = 0;
 		}
 	}
 
-	for(int i=0; i<m_vkContainerItemList.size(); i++)
+	if(m_pkContainerWnd->IsVisible())
 	{
-		if(m_vkContainerItemList[i].pkWnd->GetScreenRect().Inside(mx, my))
+		for(int i=0; i<m_vkContainerItemList.size(); i++)
 		{
-			if(m_kMoveSlot.m_iIndex == -1)
-				m_vkContainerItemList[i].pkWnd->GetSkin()->m_unBorderSize = 2;
-
-			if(bLeftButtonPressed)
-			{				
+			if(m_vkContainerItemList[i].pkWnd->GetScreenRect().Inside(mx, my))
+			{
 				if(m_kMoveSlot.m_iIndex == -1)
-				{
-					m_kCursorRangeDiff.x = mx-m_vkContainerItemList[i].pkWnd->GetScreenRect().Left; 
-					m_kCursorRangeDiff.y = my-m_vkContainerItemList[i].pkWnd->GetScreenRect().Top;
+					m_vkContainerItemList[i].pkWnd->GetSkin()->m_unBorderSize = 2;
 
-					m_kItemWndPosBeforeMove.x = m_vkContainerItemList[i].pkWnd->GetWndRect().Left;
-					m_kItemWndPosBeforeMove.y = m_vkContainerItemList[i].pkWnd->GetWndRect().Top;
-
-					m_vkContainerItemList[i].pkWnd->Hide();
-
-					m_kMoveSlot.bIsInventoryItem = false;
-					m_kMoveSlot.m_iIndex = i; // select new item
-
-					Point size = SlotSizeFromWnd(m_vkContainerItemList[i].pkWnd);
-					int id = m_vkContainerItemList[i].pkWnd->GetSkin()->m_iBkTexID;
-					
-					int x = mx - m_kCursorRangeDiff.x, y = my - m_kCursorRangeDiff.y;
-					g_kMistClient.m_pkGui->SetCursor( x, y, id, -1, size.x*32, size.y*32);	
-					g_kMistClient.m_pkInputHandle->SetCursorInputPos(x,y);  
-
+				if(bLeftButtonPressed)
+				{				
+					if(m_kMoveSlot.m_iIndex == -1)
+						PickUpFromGrid(i,false,mx,my);
 				}
+				else
+				{
+					if(m_kMoveSlot.m_iIndex != -1)
+						OnDropItem();
+
+					m_kMoveSlot.m_iIndex = -1;
+				}	
 			}
 			else
 			{
-				if(m_kMoveSlot.m_iIndex != -1)
-					OnDropItem();
-
-				m_kMoveSlot.m_iIndex = -1;
-			}	
-
-			//if(g_kMistClient.m_pkGui->m_bMouseRightPressed)
-			//{	
-			//	m_iSelItemID = m_vkContainerItemList[i].iItemID;
-			//}
-		}
-		else
-		{
-			//if( m_vkContainerItemList[i].iItemID != m_iSelItemID)
 				m_vkContainerItemList[i].pkWnd->GetSkin()->m_unBorderSize = 0;
-		}		
+			}		
+		}
 	}
 
 	if(m_kMoveSlot.m_iIndex != -1)
@@ -321,6 +234,94 @@ void InventoryDlg::OnMouseMove(bool bLeftButtonPressed, int mx, int my)
 			m_vkInventoryItemList[m_kMoveSlot.m_iIndex].pkWnd->SetPos(mx,my, true, true);
 		else
 			m_vkContainerItemList[m_kMoveSlot.m_iIndex].pkWnd->SetPos(mx,my, true, true);
+	}
+}
+
+void InventoryDlg::PickUpFromGround(bool bLeftButtonPressed, int mx, int my)
+{
+	const float WAIT_TIME_PICKUP = 0.25f;
+
+	float fTime = (float) SDL_GetTicks() / 1000.0f;
+
+	if(bLeftButtonPressed)
+	{
+		if(fTime - m_fPickUpTimer > WAIT_TIME_PICKUP)
+		{
+			for(int i=0; i<m_vkInventoryItemList.size(); i++)
+				if(m_vkInventoryItemList[i].iItemID == m_iItemUnderCursor)
+				{
+					if(bLeftButtonPressed)
+					{
+						m_kMoveSlot.bIsInventoryItem = true;
+						m_kMoveSlot.m_iIndex = i;
+					
+						Point size = SlotSizeFromWnd(m_vkInventoryItemList[i].pkWnd);
+						int id = m_vkInventoryItemList[i].pkWnd->GetSkin()->m_iBkTexID;
+
+						m_kCursorRangeDiff = Point(0,0);
+						g_kMistClient.m_pkGui->SetCursor( mx, my, id, -1, size.x*32, size.y*32);							
+					}					
+					break;
+				}
+
+			m_iItemUnderCursor = -1;
+		}
+	}
+	else
+	{
+		m_iItemUnderCursor = -1;
+	}
+}
+
+void InventoryDlg::PickUpFromGrid(int iSlotIndex, bool bInventory, int mx, int my)
+{
+	vector<ITEM_SLOT>* pkVector;
+	if(bInventory)
+		pkVector = &m_vkInventoryItemList;
+	else
+		pkVector = &m_vkContainerItemList;
+
+	m_kCursorRangeDiff.x = mx-(*pkVector)[iSlotIndex].pkWnd->GetScreenRect().Left; 
+	m_kCursorRangeDiff.y = my-(*pkVector)[iSlotIndex].pkWnd->GetScreenRect().Top;
+
+	m_kItemWndPosBeforeMove.x = (*pkVector)[iSlotIndex].pkWnd->GetWndRect().Left;
+	m_kItemWndPosBeforeMove.y = (*pkVector)[iSlotIndex].pkWnd->GetWndRect().Top;
+
+	m_kMoveSlot.bIsInventoryItem = bInventory;
+	m_kMoveSlot.m_iIndex = iSlotIndex; // select new item
+
+	(*pkVector)[iSlotIndex].pkWnd->Hide();
+
+	Point size = SlotSizeFromWnd((*pkVector)[iSlotIndex].pkWnd);
+	int id = (*pkVector)[iSlotIndex].pkWnd->GetSkin()->m_iBkTexID;
+
+	int x = mx - m_kCursorRangeDiff.x, y = my - m_kCursorRangeDiff.y;
+	g_kMistClient.m_pkGui->SetCursor( x, y, id, -1, size.x*32, size.y*32);	
+	g_kMistClient.m_pkInputHandle->SetCursorInputPos(x,y);  
+}
+
+void InventoryDlg::OpenContainerItem(bool bOpen, int iSlotIndex, bool bInventory)
+{
+	vector<ITEM_SLOT>* pkVector;
+	if(bInventory)
+		pkVector = &m_vkInventoryItemList;
+	else
+		pkVector = &m_vkContainerItemList;
+
+	if(bOpen)
+	{
+		g_kMistClient.SendRequestContainer((*pkVector)[iSlotIndex].iItemID);
+		m_iSelItemID = (*pkVector)[iSlotIndex].iItemID;
+		(*pkVector)[iSlotIndex].pkWnd->GetSkin()->m_unBorderSize = 2;
+	}
+	else
+	{
+		CloseContainerWnd();
+		if(m_iSelItemID == (*pkVector)[iSlotIndex].iItemID)
+		{
+			m_iSelItemID = -1;
+			(*pkVector)[iSlotIndex].pkWnd->GetSkin()->m_unBorderSize = 0;
+		}
 	}
 }
 
@@ -336,7 +337,6 @@ void InventoryDlg::OpenContainerWnd(int id, char slots_x, char slots_y)
 	CreateContainerGrid(slots_x, slots_y);
 
 	m_pkContainerWnd->SetZValue(22);
-	g_kMistClient.GetWnd("ContainerCloseButton")->SetZValue(44);
 	
 	g_kMistClient.m_pkGui->PlaceWndFrontBack(m_pkContainerWnd, true); 
 	g_kMistClient.m_pkGui->SetFocus(m_pkContainerWnd, false);
@@ -359,7 +359,6 @@ void InventoryDlg::CreateContainerGrid(char slots_horz, char slots_vert)
 		rcInventory.Bottom - MAX_HEIGHT - bdsize  /*no all is opaque*/, true, true);
 
 	g_kMistClient.GetWnd("ContainerCloseButton")->SetPos(MAX_WIDTH, -16, false, true);
-	g_kMistClient.GetWnd("ContainerCloseButton")->Show();
 
 	int current_slot_x=0, current_slot_y=0;
 	int dx=0, dy=0;
@@ -478,9 +477,6 @@ void InventoryDlg::UpdateInventory(vector<MLContainerInfo>& vkItemList)
 
 void InventoryDlg::UpdateContainer(vector<MLContainerInfo>& vkItemList)
 {
-	//m_iHighestZ = 1000;
-	//m_iMoveSlot = -1;
-
 	// Remove all slots.
 	for(int i=0; i<m_vkContainerItemList.size(); i++)
 	{
@@ -768,17 +764,6 @@ void InventoryDlg::OnDropItem()
 
 }
 
-void InventoryDlg::CloseContainerWnd()
-{
-	if(m_pkContainerWnd)
-	{
-		m_pkContainerWnd->Hide();
-		g_kMistClient.GetWnd("ContainerCloseButton")->Hide();
-		g_kMistClient.m_pkGui->SetFocus(m_pkInventoryWnd, false);
-		m_iActiveContainerID = -1;
-	}
-}
-
 bool InventoryDlg::TestForCollision(int iTestSlot, bool bInventory)
 {
 	Point test_slot, test_size;
@@ -898,3 +883,4 @@ pair<int, bool> InventoryDlg::GetItemFromScreenPos(int x, int y)
 
 	return pair<int,bool>(-1,0);
 }
+

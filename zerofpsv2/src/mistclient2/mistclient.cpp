@@ -932,6 +932,9 @@ void MistClient::RequestPlayerList()
 bool MistClient::ShutDown()
 {
    ReadWriteServerList(false);
+	delete m_pkInventoryDlg;
+	delete m_pkActionDlg;
+	delete m_pkOptionsDlg;
    return true;
 }
 

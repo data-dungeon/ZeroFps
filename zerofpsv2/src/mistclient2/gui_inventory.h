@@ -67,6 +67,9 @@ private:
 	pair<int, bool> GetItemFromScreenPos(int x, int y); // Returns a index and a bool, 
 																		 // if the bool is true then its a index 
 																		 // into m_vkInventoryItemList.
+	void PickUpFromGround(bool bLeftButtonPressed, int mx, int my);
+	void PickUpFromGrid(int iSlotIndex, bool bInventory, int mx, int my);
+	void OpenContainerItem(bool bOpen, int iSlotIndex, bool bInventory);
 	
 	TextureManager* m_pkTexMan;
 
@@ -97,6 +100,10 @@ private:
 
 	const Point UPPER_LEFT_INVENTORY;
 	const Point UPPER_LEFT_CONTAINER;
+
+	const float BD_R;
+	const float BD_G;
+	const float BD_B;
 };
 
 #endif
