@@ -306,17 +306,28 @@ void ZeroFps::Run_EngineShell()
 			iInputKey = i; break;
 		}
 
+	
+
 	m_pkGui->Update(GetGameTime(),iInputKey,false,
 		(m_pkGuiInputHandle->Pressed(KEY_RSHIFT) || m_pkGuiInputHandle->Pressed(KEY_LSHIFT)),
 		mx,my,m_pkGuiInputHandle->Pressed(MOUSELEFT),m_pkGuiInputHandle->Pressed(MOUSERIGHT),
 		m_pkGuiInputHandle->Pressed(MOUSEMIDDLE));
 
-/*	 //UNCOMMENT THIS ZEB =)
-	if(m_pkGui->m_bHandledMouse)
+	 //UNCOMMENT THIS ZEB =)
+/*	if(m_pkGui->m_bHandledMouse)
 	{
+		// TO DVOID : Det går inte att göra en Reset av inputkön eftersom GUI:t 
+		// behöver veta både när musknappen trycks ner och när musknappen släpps
+		// (m_bHandledMouse sätts till true när musknappen trycks ner på en widget
+		// och sedan till false när musknappen sedan släpps). Som det är nu så tror
+		// systemet att musknappen har släppts med en gång eftersom det körs en reset
+		// direkt efter att att m_bHandledMouse har blivit satt till true.
+		// Eventuell lösning på problemet: Radera inte mousestate. Måste alltid gå att 
+		// kolla om musknappen är nedtryckt eller upptryckt.
+
 		m_pkGuiInputHandle->Reset();	//resets keys if guit handled the input
-	}
-*/
+	}*/
+
 	//end of console input
 
 	//for debuging the input system

@@ -32,6 +32,8 @@ ZGui::ZGui(int iResX, int iResY) : ZFSubSystem("Gui")
 
 	m_bHaveInputFocus = false;
 
+	m_bHandledMouse = false;
+
 	m_acLineColor[0] = 255;
 	m_acLineColor[1] = 0;
 	m_acLineColor[2] = 0;
@@ -408,6 +410,10 @@ bool ZGui::OnMouseUpdate(int x, int y, bool bLBnPressed,
 						 float fGameTime)
 {
 
+	if(bLBnPressed)
+		printf("nere\n");
+	else
+		printf("uppe\n");
 
 	if(bMBnPressed) // ignorera mitten knappen och ge spelet fokus
 	{
@@ -448,7 +454,6 @@ bool ZGui::OnMouseUpdate(int x, int y, bool bLBnPressed,
 				if(wnd != m_pkActiveMainWin)
 				{
 					SetFocus(wnd->pkWnd);
-					m_bHandledMouse = true;
 					//OnMouseUpdate(x,y, bLBnPressed,bRBnPressed, bMBnPressed, fGameTime);
 					return true;						//DVOID: detta tycks inte vara så bra då man måste klicka två gånger på en widget för att först fokusera och sedan själva klicket, beror på att jag nu resetar musklicket om guit hanterade det
 				}
@@ -498,12 +503,6 @@ bool ZGui::OnMouseUpdate(int x, int y, bool bLBnPressed,
 
 	bool bLeftPressed =  (m_bLeftButtonDown  == false && bLeftButtonDown  == true);
 	bool bRightPressed = (m_bRightButtonDown == false && bRightButtonDown == true);
-
-
-	if(pkFocusWindow && (bLeftButtonDown || bRightButtonDown))
-	{
-		m_bHandledMouse = true;	
-	}
 	
 
 	// Har vänster musknapp klickats (men inte släppt)
@@ -543,6 +542,9 @@ bool ZGui::OnMouseUpdate(int x, int y, bool bLBnPressed,
 					SetInputFocus(ZGuiWnd::m_pkWndClicked, true);
 					ZGuiWnd::m_pkWndClicked->Notify(ZGuiWnd::m_pkWndClicked,
 						NCODE_CLICK_DOWN);
+
+					m_bHandledMouse = true;
+					printf("m_bHandledMouse = true\n");
 				}
 
 				// Send a Left Button Down Message...
@@ -605,6 +607,10 @@ bool ZGui::OnMouseUpdate(int x, int y, bool bLBnPressed,
 	if(bLeftReleased || bRightReleased)
 	{
 		m_bHaveInputFocus = false;
+
+		if(bLeftReleased){
+		m_bHandledMouse = false;
+		printf("m_bHandledMouse = false\n");}
 
 		if(pkFocusWindow && ZGuiWnd::m_pkWndClicked != NULL)
 		{
@@ -808,7 +814,7 @@ bool ZGui::Update(float fGameTime, int iKeyPressed, bool bLastKeyStillPressed,
 {
 	if(m_bActive == true)
 	{
-		m_bHandledMouse = false;
+		m_bHaveInputFocus = false;
 	
 		if(m_pkCursor && m_pkCursor->IsVisible())	
 			OnMouseUpdate(x, y, bLBnPressed, bRBnPressed, bMBnPressed, fGameTime);
