@@ -69,7 +69,8 @@ bool GLGuiRender::StartRender()
 	glMatrixMode(GL_PROJECTION);
 	glPushMatrix();
 	glLoadIdentity();
-	gluOrtho2D(0, m_iScreenWidth + 1, -1, m_iScreenHeight);
+	//gluOrtho2D(0, m_iScreenWidth + 1, -1, m_iScreenHeight);
+	gluOrtho2D(0, m_iScreenWidth , 0, m_iScreenHeight);
 
 	//
 	// Skala om projektions matrisen.
@@ -105,8 +106,8 @@ bool GLGuiRender::StartRender()
 	glPushMatrix();
 	glLoadIdentity();
 
-/*	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);*/
+	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE); // Fuckar upp grafiken!
+	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE); // Fuckar upp grafiken!
 		
 	return true;
 }
@@ -217,6 +218,7 @@ bool GLGuiRender::RenderQuad(Rect rc)
 	if(texture > 0)
 	{
 		glEnable(GL_TEXTURE_2D);
+
 		m_pkTextureManger->BindTexture( texture );
 
 		if(bDrawMasked)
