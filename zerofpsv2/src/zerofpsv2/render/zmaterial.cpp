@@ -32,9 +32,9 @@ ZMaterialSettings::ZMaterialSettings()
 	m_bBlend	= false;
 	m_iBlendSrc = ONE_BLEND_SRC; 
 	m_iBlendDst = ZERO_BLEND_DST; 
-	
-	
+		
 	m_iTextureColorEffect = -1;
+	
 };
 
 ZMaterialSettings::~ZMaterialSettings()
@@ -61,9 +61,14 @@ ZMaterialSettings::~ZMaterialSettings()
 
 ZMaterial::ZMaterial()
 {
+	SetupEnums();
 	Clear();
 
 	ZMaterialSettings* first = AddPass();	
+	
+	
+	//cout<<"bah:"<<GetTranslateEnum("SRC_ALPHA_BLEND_DST")<<endl;;
+	
 }
 
 ZMaterial::~ZMaterial()
@@ -239,28 +244,28 @@ bool ZMaterial::LoadPass(int iPass)
 				
 			
 	if(m_kIni.KeyExist(passname.c_str(),"tutexcords0"))
-		newpass->m_iTUTexCords[0] = m_kIni.GetIntValue(passname.c_str(),"tutexcords0");
+		newpass->m_iTUTexCords[0] = GetTranslateEnum(m_kIni.GetValue(passname.c_str(),"tutexcords0"));
 	if(m_kIni.KeyExist(passname.c_str(),"tutexcords1"))
-		newpass->m_iTUTexCords[1] = m_kIni.GetIntValue(passname.c_str(),"tutexcords1");
+		newpass->m_iTUTexCords[1] = GetTranslateEnum(m_kIni.GetValue(passname.c_str(),"tutexcords1"));
 	if(m_kIni.KeyExist(passname.c_str(),"tutexcords2"))
-		newpass->m_iTUTexCords[2] = m_kIni.GetIntValue(passname.c_str(),"tutexcords2");
+		newpass->m_iTUTexCords[2] = GetTranslateEnum(m_kIni.GetValue(passname.c_str(),"tutexcords2"));
 	if(m_kIni.KeyExist(passname.c_str(),"tutexcords3"))
-		newpass->m_iTUTexCords[3] = m_kIni.GetIntValue(passname.c_str(),"tutexcords3");
+		newpass->m_iTUTexCords[3] = GetTranslateEnum(m_kIni.GetValue(passname.c_str(),"tutexcords3"));
 	
 	
 	if(m_kIni.KeyExist(passname.c_str(),"polygonmodefront"))
-		newpass->m_iPolygonModeFront = m_kIni.GetIntValue(passname.c_str(),"polygonmodefront");
+		newpass->m_iPolygonModeFront = GetTranslateEnum(m_kIni.GetValue(passname.c_str(),"polygonmodefront"));
 	if(m_kIni.KeyExist(passname.c_str(),"polygonmodeback"))
-		newpass->m_iPolygonModeBack = m_kIni.GetIntValue(passname.c_str(),"polygonmodeback");
+		newpass->m_iPolygonModeBack = GetTranslateEnum(m_kIni.GetValue(passname.c_str(),"polygonmodeback"));
 	if(m_kIni.KeyExist(passname.c_str(),"depthfunc"))
-		newpass->m_iDepthFunc = m_kIni.GetIntValue(passname.c_str(),"depthfunc");
+		newpass->m_iDepthFunc =GetTranslateEnum(m_kIni.GetValue(passname.c_str(),"depthfunc"));
 	
 	if(m_kIni.KeyExist(passname.c_str(),"blend"))
 		newpass->m_bBlend = m_kIni.GetBoolValue(passname.c_str(),"blend");
 	if(m_kIni.KeyExist(passname.c_str(),"blendsrc"))
-		newpass->m_iBlendSrc = m_kIni.GetIntValue(passname.c_str(),"blendsrc");
+		newpass->m_iBlendSrc = GetTranslateEnum(m_kIni.GetValue(passname.c_str(),"blendsrc"));
 	if(m_kIni.KeyExist(passname.c_str(),"blenddst"))
-		newpass->m_iBlendDst = m_kIni.GetIntValue(passname.c_str(),"blenddst");
+		newpass->m_iBlendDst = GetTranslateEnum(m_kIni.GetValue(passname.c_str(),"blenddst"));
 	
    if(m_kIni.KeyExist(passname.c_str(),"depthtest"))
       newpass->m_bDepthTest = m_kIni.GetBoolValue(passname.c_str(),"depthtest");
@@ -281,7 +286,7 @@ bool ZMaterial::LoadPass(int iPass)
 	
 	//get effects	
 	if(m_kIni.KeyExist(passname.c_str(),"coloreffect"))
-		newpass->m_iTextureColorEffect = m_kIni.GetIntValue(passname.c_str(),"coloreffect");
+		newpass->m_iTextureColorEffect = GetTranslateEnum(m_kIni.GetValue(passname.c_str(),"coloreffect"));
 	
 	
 	return true;
@@ -300,6 +305,86 @@ int ZMaterial::CalculateSize()
 	// Add Size for all pass.
 	return iSizeInByes;
 
+}
+
+void ZMaterial::SetupEnums()
+{
+	//numbervalues
+	m_kEnums["-1"] = 									-1;	
+	m_kEnums["0"] = 									0;
+	m_kEnums["1"] = 									1;
+	m_kEnums["2"] = 									2;
+	m_kEnums["3"] = 									3;
+	m_kEnums["4"] = 									4;
+	m_kEnums["5"] = 									5;
+	m_kEnums["6"] = 									6;
+	m_kEnums["7"] = 									7;
+	m_kEnums["8"] = 									8;
+	m_kEnums["9"] = 									9;
+	
+	//texture cords
+	m_kEnums["TEX_ARAY_0"] = 						0;
+	m_kEnums["TEX_ARAY_1"] = 						1;
+	m_kEnums["TEX_ARAY_2"] = 						2;
+	m_kEnums["TEX_ARAY_3"] = 						3;
+	m_kEnums["AUTO_OBJLIN"] = 						4;
+	m_kEnums["AUTO_EYELIN"] = 						5;
+	m_kEnums["AUTP_SPHERE"] = 						6;
+	
+	//polygon mode
+	m_kEnums["FILL"] = 								0;
+	m_kEnums["LINE"] = 								1;
+	m_kEnums["POINT"] = 								2;
+	
+	//depth func
+	m_kEnums["NEVER_DEPTH"] = 						0;
+	m_kEnums["LESS_DEPTH"] = 						1;
+	m_kEnums["EQUAL_DEPTH"] = 						2;
+	m_kEnums["LEQUAL_DEPTH"] = 					3;
+	m_kEnums["GREATER_DEPTH"] = 					4;
+	m_kEnums["NOTEQUAL_DEPTH"] = 					5;
+	m_kEnums["GEQUAL_DEPTH"] = 					6;
+	m_kEnums["ALWAYS_DEPTH"] = 					7;
+	
+
+	//blends src
+	m_kEnums["ZERO_BLEND_SRC"] = 						0;
+	m_kEnums["ONE_BLEND_SRC"] = 						1;
+	m_kEnums["DST_COLOR_BLEND_SRC"] = 				2;
+	m_kEnums["ONE_MINUS_DST_COLOR_BLEND_SRC"] = 	3;
+	m_kEnums["SRC_ALPHA_BLEND_SRC"] = 				4;
+	m_kEnums["ONE_MINUS_SRC_ALPHA_BLEND_SRC"] = 	5;
+	m_kEnums["DST_ALPHA_BLEND_SRC"] = 				6;
+	m_kEnums["ONE_MINUS_DST_ALPHA_BLEND_SRC"] = 	7;
+	m_kEnums["SRC_ALPHA_SATURATE_BLEND_SRC"] = 	8;
+
+	//blends dst
+	m_kEnums["ZERO_BLEND_SRC"] = 						0;
+	m_kEnums["ONE_BLEND_SRC"] = 						1;
+	m_kEnums["SRC_COLOR_BLEND_DST"] = 				2;
+	m_kEnums["ONE_MINUS_SRC_COLOR_BLEND_DST"] = 	3;
+	m_kEnums["SRC_ALPHA_BLEND_DST"] = 				4;
+	m_kEnums["ONE_MINUS_SRC_ALPHA_BLEND_DST"] = 	5;
+	m_kEnums["DST_ALPHA_BLEND_DST"] = 				6;
+	m_kEnums["ONE_MINUS_DST_ALPHA_BLEND_DST"] = 	7;
+
+	//color effect
+	m_kEnums["DIABLED"] = 								-1;
+	m_kEnums["FLICKERING"] = 							1;
+	m_kEnums["PULSATING"] = 							2;		
+}
+
+int ZMaterial::GetTranslateEnum(string strEnum)
+{
+	map<string,int> ::iterator it = m_kEnums.find(strEnum);
+	
+	if(it != m_kEnums.end())
+		return (*it).second;
+	else
+	{
+		cout<<"WARNING: could not find shader enum value for: "<<strEnum<<endl;
+		return -1;
+	}
 }
 
 

@@ -4,6 +4,7 @@
 #include <iostream>
 #include "render_x.h"
 #include <vector>
+#include <map>
 
 #include "../ogl/zfpsgl.h"
 #include "../basic/zfini.h"
@@ -64,11 +65,15 @@ to be rendered in the engine.
 class RENDER_API ZMaterial : public ZFResource
 {
 	private:
+		
 		vector<ZMaterialSettings*> m_kPasses;
-		ZFIni		m_kIni;
+		ZFIni								m_kIni;
+		map<string,int> 				m_kEnums;
 		
 		bool LoadGlobalSection();
-		bool LoadPass(int iPass);
+		bool LoadPass(int iPass);		
+		int GetTranslateEnum(string strEnum);
+		void SetupEnums();
 		
 	public:		
 		bool	m_bCopyData;
