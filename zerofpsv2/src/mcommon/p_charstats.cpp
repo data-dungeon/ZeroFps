@@ -9,7 +9,7 @@
 void CharacterProperty::Update()
 {
    if ( m_pkCharStats->m_fReloadTimer > 0 )
-      m_pkCharStats->m_fReloadTimer -= m_pkObject->m_pkFps->GetFrameTime();
+      m_pkCharStats->m_fReloadTimer -= m_pkObject->m_pkFps->GetGameFrameTime();
 }
 
 // ------------------------------------------------------------------------------------------

@@ -20,6 +20,8 @@ struct Order
       m_iTargetID,
       m_iTargetID2;
 
+   bool m_bDynamic;
+
    Vector3 m_kPosition;
    
 };

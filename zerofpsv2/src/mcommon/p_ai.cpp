@@ -52,6 +52,7 @@ void P_AI::Update()
          
          pkMoveOrder->m_kPosition = pkEnemy->GetWorldPosV() + kSlot;
 
+         pkMoveOrder->m_bDynamic = true;
          m_kDynamicOrders.push_front ( pkMoveOrder );
          m_pkCurrentOrder = m_kDynamicOrders.front();         
       }
@@ -103,8 +104,10 @@ void P_AI::Update()
 
       pkMoveOrd->m_kOrderType = "MovingTowards";
       pkMoveOrd->m_kPosition = m_pkCurrentOrder->m_kPosition;
+      pkMoveOrd->m_bDynamic = true;
 
-      m_kDynamicOrders.pop_front();
+      if ( m_pkCurrentOrder->m_bDynamic )
+         m_kDynamicOrders.pop_front();
 
       //NextOrder();
 
@@ -114,9 +117,12 @@ void P_AI::Update()
    }
    else if ( m_pkCurrentOrder->m_kOrderType == "Idle" )
    {
-      
+      if ( m_pkCurrentOrder->m_iTargetID <= 0 )
+         NextOrder();
+      else
+         m_pkCurrentOrder->m_iTargetID -= m_pkZeroFps->GetGameFrameTime();
 
-      NextOrder();
+      cout << "TIME:" << m_pkCurrentOrder->m_iTargetID << endl;
    }
    else if ( m_pkCurrentOrder->m_kOrderType == "Action" )
    {
@@ -141,6 +147,7 @@ void P_AI::Update()
          Order* pkMoveOrder = new Order;
          pkMoveOrder->m_kOrderType = "MoveTo";
          pkMoveOrder->m_kPosition = pkEnt->GetWorldPosV();
+         pkMoveOrder->m_bDynamic = true;
 
          m_kDynamicOrders.push_front ( pkMoveOrder );
          m_pkCurrentOrder = m_kDynamicOrders.front();
@@ -280,6 +287,8 @@ void P_AI::AddStaticOrder ( string kOrderType, int iTargetID1, int iTargetID2, V
    pkNewOrder->m_iTargetID = iTargetID1;
    pkNewOrder->m_iTargetID2 = iTargetID2;
    pkNewOrder->m_kPosition = kPosition;
+   pkNewOrder->m_bDynamic = false;
+
 
    m_kStaticOrders.push_back ( pkNewOrder );
 }
@@ -295,6 +304,7 @@ void P_AI::AddDynamicOrder ( string kOrderType, int iTargetID1, int iTargetID2, 
    pkNewOrder->m_iTargetID = iTargetID1;
    pkNewOrder->m_iTargetID2 = iTargetID2;
    pkNewOrder->m_kPosition = kPosition;
+   pkNewOrder->m_bDynamic = true;
 
    m_kDynamicOrders.push_back ( pkNewOrder );
 

@@ -154,6 +154,7 @@ void MistLandLua::Init(EntityManager* pkObjMan,ZFScriptSystem* pkScript)
 
    // AI stuff
    pkScript->ExposeFunction("AIUseActionOn", MistLandLua::AIUseActionOnLua);
+   pkScript->ExposeFunction("AIIdle", MistLandLua::AIIdleLua);
    pkScript->ExposeFunction("AIAttack", MistLandLua::AIAttackLua);
    pkScript->ExposeFunction("SetAIIsPlayer", MistLandLua::SetAIIsPlayerLua);
    pkScript->ExposeFunction("AIMoveTo", MistLandLua::AIMoveToLua);
@@ -3079,7 +3080,7 @@ int MistLandLua::AIMoveToLua(lua_State* pkLua)
 		double dId;
 		double x,y,z;
       
-      char temp[128] = "dynamic";
+      char temp[128] = "static";
 
 		Vector3 kPos;		
 		vector<TABLE_DATA> vkData;
