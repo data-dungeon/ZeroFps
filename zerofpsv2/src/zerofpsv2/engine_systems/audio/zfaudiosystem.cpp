@@ -9,13 +9,12 @@
 #include "zfaudiosystem.h"
 
 #define NO_SOURCE 999
-#define AUDIO_CACH_SIZE 19021844 // ca. 18 Meg
 				        
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
-//																			 //
-// ZFSoundRes																 //
-//																		     //
+//																									  //
+// ZFSoundRes																					  //
+//																									  //
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -149,9 +148,9 @@ ZFResource* Create__WavSound()
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
-//																			 //
-// ZFSoundInfo																 //
-//																		     //
+//																									  //
+// ZFSoundInfo																					  //
+//																									  //
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -181,17 +180,18 @@ ZFSoundInfo::~ZFSoundInfo()
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
-//																			 //
-// ZFAudioSystem														     //
-//																		     //
+//																									  //
+// ZFAudioSystem																				  //
+//																									  //
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-ZFAudioSystem::ZFAudioSystem() : ZFSubSystem("ZFAudioSystem") 
+ZFAudioSystem::ZFAudioSystem(int uiMaxCachSize) : ZFSubSystem("ZFAudioSystem") 
 {
 	m_pkMusic = NULL;
 	m_bIsValid = false;
 	m_uiCurrentCachSize = 0;
+	m_uiMaxCachSize = uiMaxCachSize;
 }
 
 ZFAudioSystem::~ZFAudioSystem()
@@ -210,12 +210,14 @@ bool ZFAudioSystem::StartSound(string strName, Vector3 pos,
 	
 	if(!InitSound(pkSound))
 	{
-		delete pkSound; // delete sound again
+		delete pkSound; // delete sound again.
 		return false;
 	}
 	
 	// Lägg till ljudet till vektorn med ljud.
 	m_kSoundList.push_back( pkSound );
+
+	printf("Starting sound (priority: %i)\n", GetResHandlePriority(strName));
 
 	return true;
 }
@@ -231,17 +233,6 @@ bool ZFAudioSystem::StopSound(string szName, Vector3 pos)
 	if(pkSound != NULL)
 	{
 		DeleteSound(pkSound, true);
-
-		// Ladda ur resursen om cachen är fylld och om
-		// resursen enbart används av det här ljudet.
-		if(m_uiCurrentCachSize >= AUDIO_CACH_SIZE)
-		{
-			if(ResourceIsUnused(pkSound))
-			{	
-				UnLoadSound(string(pkSound->m_acFile));
-			}
-		}
-
 		return true;
 	}
 
@@ -262,7 +253,17 @@ bool ZFAudioSystem::LoadSound(string strFileName)
 		{
 			int size = pkResHandle->GetResourcePtr()->CalculateSize();
 			
-			m_uiCurrentCachSize += size; // öka på cachen
+			m_uiCurrentCachSize += size; // öka på cachen.
+
+			// Ladda ur den minst använda resursen om cachen är fylld.
+			if(m_uiCurrentCachSize > m_uiMaxCachSize)
+			{
+				string strSoundToRemove;
+
+				if( GetSoundWithLowestPriority(strSoundToRemove) )
+					if(!UnLoadSound(strSoundToRemove))
+						return false;
+			}
 
 			printf("Loaded sound: %s (index:%i, %i bytes), cach size = %i\n", 
 				strFileName.c_str(), 
@@ -274,7 +275,7 @@ bool ZFAudioSystem::LoadSound(string strFileName)
 	}
 	else
 	{
-		// Already exist
+		// Already exist.
 		return true;
 	}
 
@@ -287,17 +288,17 @@ bool ZFAudioSystem::LoadSound(string strFileName)
 ///////////////////////////////////////////////////////////////////////////////
 bool ZFAudioSystem::UnLoadSound(string strFileName)
 {
-	map<string,ZFResourceHandle*>::iterator itRes;
+	map<string,tResPriorHandle>::iterator itRes;
 	itRes = m_mkResHandles.find(strFileName);
 	if(itRes != m_mkResHandles.end())
 	{
-		ZFResourceHandle* pkResHandle = itRes->second;
+		ZFResourceHandle* pkResHandle = itRes->second.first;
 
 		if(pkResHandle->IsValid() == true)
 		{
 			int size = pkResHandle->GetResourcePtr()->CalculateSize();
 				
-			m_uiCurrentCachSize -= size; // minska ner cachen
+			m_uiCurrentCachSize -= size; // minska ner cachen.
 			if(m_uiCurrentCachSize < 0)
 				m_uiCurrentCachSize = 0;
 
@@ -306,17 +307,48 @@ bool ZFAudioSystem::UnLoadSound(string strFileName)
 				((ZFSoundRes*) pkResHandle->GetResourcePtr())->GetBufferIndexName(),
 				size, m_uiCurrentCachSize );
 
-			DeleteSoundsUsingResource((ZFSoundRes*)pkResHandle->GetResourcePtr());
+			// Ta bort alla ljus i systemet som använder resursen
+			vector<ZFSoundInfo*> kSoundsUsingRes;
+			GetSoundsUsingResource((ZFSoundRes*)pkResHandle->GetResourcePtr(), 
+				kSoundsUsingRes);
 
-			m_mkResHandles.erase(itRes);
+			for(unsigned int i=0; i<kSoundsUsingRes.size(); i++)
+				DeleteSound(kSoundsUsingRes[i], true);
 
-			delete pkResHandle; // laddu ur resursen
+			m_mkResHandles.erase(itRes); // remove from map
+
+			delete pkResHandle; // laddu ur resursen.
 
 			return true;
 		}
 	}
 
 	return false;
+}
+
+
+///////////////////////////////////////////////////////////////////////////////
+// Ladda ur alla ljud
+///////////////////////////////////////////////////////////////////////////////
+void ZFAudioSystem::UnloadAll()
+{
+	// Remove resurce files.
+	map<string,tResPriorHandle>::iterator itRes = m_mkResHandles.begin();
+	for( ; itRes != m_mkResHandles.end(); itRes++)
+		if(itRes->second.first)
+		{
+			vector<ZFSoundInfo*> kSoundsUsingRes;
+			GetSoundsUsingResource((ZFSoundRes*)itRes->second.first->GetResourcePtr(), 
+				kSoundsUsingRes);
+
+			for(unsigned int i=0; i<kSoundsUsingRes.size(); i++)
+				DeleteSound(kSoundsUsingRes[i], true);
+
+			delete itRes->second.first; // unload resource.
+		}
+
+	m_uiCurrentCachSize = 0;
+	m_mkResHandles.clear();
 }
 
 
@@ -338,10 +370,8 @@ unsigned int ZFAudioSystem::GetNumActiveChannels()
 
 	list<ZFSoundInfo*>::iterator itSound = m_kSoundList.begin();
 	for( ; itSound != m_kSoundList.end(); itSound++)  
-	{
 		if((*itSound)->m_uiSourceBufferName != NO_SOURCE)
 			uiAntal++;
-	}
 
 	return uiAntal;
 }
@@ -391,14 +421,8 @@ bool ZFAudioSystem::ShutDown()
 	if(m_pkMusic)
 		delete m_pkMusic;
 
-	// Remove resurce files
-	map<string,ZFResourceHandle*>::iterator itRes = m_mkResHandles.begin();
-	for( ; itRes != m_mkResHandles.end(); itRes++)
-		if(itRes->second)
-		{
-			DeleteSoundsUsingResource((ZFSoundRes*)itRes->second->GetResourcePtr());
-		 	delete itRes->second; // unload resource
-		}
+	// Destroy all resources and sounds.
+	UnloadAll();
 
 	// Destroy OpenAL (very, very, fucking importent)
 	alutExit();
@@ -535,16 +559,6 @@ void ZFAudioSystem::Update()
 		if(Restart(kRestart[i]) == false)
 		{
 			DeleteSound(kRestart[i], true);
-
-			// Ladda ur resursen om cachen är fylld och om
-			// resursen enbart används av det här ljudet.
-			if(m_uiCurrentCachSize >= AUDIO_CACH_SIZE)
-			{
-				if(ResourceIsUnused(kRestart[i]))
-				{	
-					UnLoadSound(string(kRestart[i]->m_acFile));
-				}
-			}
 		}
 	}
 
@@ -603,17 +617,83 @@ void ZFAudioSystem::PrintError(ALenum error, char *szDesc)
 ZFResourceHandle* ZFAudioSystem::GetResHandle(string strFileName)
 {	
 	// Check if resource handle exist.
-	map<string,ZFResourceHandle*>::iterator itRes;
+	map<string,tResPriorHandle>::iterator itRes;
 	itRes = m_mkResHandles.find(strFileName);
 	if(itRes != m_mkResHandles.end())
-		return itRes->second; // return if exist.
+		return itRes->second.first; // return if exist.
 
 	// Add resource if not.
 	ZFResourceHandle* pkNewRes = new ZFResourceHandle;
-	m_mkResHandles.insert(map<string,ZFResourceHandle*>::value_type(
-		strFileName, pkNewRes)); 
+	m_mkResHandles.insert(map<string,tResPriorHandle>::value_type(
+		strFileName, tResPriorHandle(pkNewRes,1))); // sätt prioritet till 1
 
 	return pkNewRes;
+}
+
+
+///////////////////////////////////////////////////////////////////////////////
+// Returnerar ett resurshantags prioritets värde.
+///////////////////////////////////////////////////////////////////////////////
+int ZFAudioSystem::GetResHandlePriority(string strFileName)
+{	
+	// Check if resource handle exist.
+	map<string,tResPriorHandle>::iterator itRes;
+	itRes = m_mkResHandles.find(strFileName);
+	if(itRes != m_mkResHandles.end())
+		return itRes->second.second; // return if exist.
+
+	return 0;
+}
+
+
+
+///////////////////////////////////////////////////////////////////////////////
+// Modifiera ett resurshantags prioritet värde.
+///////////////////////////////////////////////////////////////////////////////
+int ZFAudioSystem::ModifyResHandlePriority(string strFileName, int mod)
+{	
+	// Check if resource handle exist.
+	map<string,tResPriorHandle>::iterator itRes;
+	itRes = m_mkResHandles.find(strFileName);
+	if(itRes != m_mkResHandles.end())
+	{
+		itRes->second.second += mod;
+		return itRes->second.second; // return if exist.
+	}
+
+	return 0;
+}
+
+
+
+///////////////////////////////////////////////////////////////////////////////
+// Returnerar ett resurshantags prioritets värde.
+///////////////////////////////////////////////////////////////////////////////
+bool ZFAudioSystem::GetSoundWithLowestPriority(string& strRes)
+{	
+	// Check if resource handle exist.
+	map<string,tResPriorHandle>::iterator it = m_mkResHandles.begin();
+
+	const int DONT_EXIST = 1000000;
+	int iLowestPriority = DONT_EXIST;
+	string strLowest;
+
+	// Loopa igen alla resurser och hitta den resurs som har lägst prioritet (hehe)
+	for( ; it != m_mkResHandles.end(); it++)
+	{
+		if( it->second.second < iLowestPriority )
+		{
+			iLowestPriority = it->second.second;
+			strLowest = it->first;
+		}
+	}
+	
+	if(iLowestPriority == DONT_EXIST)
+		return false;
+
+	strRes = strLowest;
+
+	return true;
 }
 
 
@@ -657,21 +737,17 @@ ZFSoundInfo* ZFAudioSystem::GetClosest(const char* szName, Vector3 kPos)
 }
 
 
-void ZFAudioSystem::DeleteSoundsUsingResource(ZFSoundRes* pkResource)
+void ZFAudioSystem::GetSoundsUsingResource(ZFSoundRes* pkResource, 
+														 vector<ZFSoundInfo*>& vkSounds)
 {
-	vector<ZFSoundInfo*> kRemove;
-
 	list<ZFSoundInfo*>::iterator it = m_kSoundList.begin();
 	for( ; it != m_kSoundList.end(); it++)
 	{
 		ZFSoundInfo* pkSound = (*it);
 
 		if(pkSound->m_pkResource == pkResource)
-			kRemove.push_back(pkSound);
+			vkSounds.push_back(pkSound);
 	}
-
-	for(unsigned int i=0; i<kRemove.size(); i++)
-		DeleteSound(kRemove[i], true);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -682,7 +758,7 @@ void ZFAudioSystem::DeleteSound(ZFSoundInfo *pkSound, bool bRemoveFromSystem)
 {
 	ALenum error;
 
-	// Stoppa ljudet
+	// Stoppa ljudet.
 	alGetError(); // clear
 	alSourceStop(pkSound->m_uiSourceBufferName);
 	if( (error = alGetError()) != AL_NO_ERROR)
@@ -691,13 +767,16 @@ void ZFAudioSystem::DeleteSound(ZFSoundInfo *pkSound, bool bRemoveFromSystem)
 		printf("name = %i\n", pkSound->m_uiSourceBufferName);
 	}
 
-	// Deallokera source pekaren
+	// Deallokera source pekaren.
 	alGetError(); // clear
 	alDeleteSources(1, &pkSound->m_uiSourceBufferName);
 	if( (error = alGetError()) != AL_NO_ERROR)
 		ZFAudioSystem::PrintError(error, "Failed to delete source buffer!"); 
 
 	pkSound->m_uiSourceBufferName = NO_SOURCE;
+
+	// Minska prioritets värdet med 1.
+	ModifyResHandlePriority( string(pkSound->m_acFile), -1);
 
 	// Ta bort ljudet ur systemet.
 	if(bRemoveFromSystem)
@@ -755,7 +834,7 @@ bool ZFAudioSystem::Play(ZFSoundInfo *pkSound)
 		return false;
 	}
 
-	// Set buffer
+	// Set buffer.
 	alGetError();
 	alSourcei(pkSound->m_uiSourceBufferName, AL_BUFFER, buffer );	
 	if( (error = alGetError()) != AL_NO_ERROR)
@@ -764,7 +843,7 @@ bool ZFAudioSystem::Play(ZFSoundInfo *pkSound)
 		return false;
 	}
 	
-	// Set reference distance
+	// Set reference distance.
 	alGetError();
 	alSourcef(pkSound->m_uiSourceBufferName, AL_REFERENCE_DISTANCE, 3.5f);
 	if( (error = alGetError()) != AL_NO_ERROR)
@@ -773,7 +852,7 @@ bool ZFAudioSystem::Play(ZFSoundInfo *pkSound)
 		return false;
 	}
 	
-	// Set gain
+	// Set gain.
 	alGetError();
 	alSourcef(pkSound->m_uiSourceBufferName, AL_GAIN, 1.0f);
 	if( (error = alGetError()) != AL_NO_ERROR)
@@ -782,7 +861,7 @@ bool ZFAudioSystem::Play(ZFSoundInfo *pkSound)
 		return false;
 	}
 	
-	// Set position
+	// Set position.
 	alGetError();
 	alSourcefv(pkSound->m_uiSourceBufferName, AL_POSITION, &pkSound->m_kPos[0]);	
 	if( (error = alGetError()) != AL_NO_ERROR)
@@ -791,7 +870,7 @@ bool ZFAudioSystem::Play(ZFSoundInfo *pkSound)
 		return false;
 	}
 	
-	// Set velocity
+	// Set velocity.
 	alGetError();
 	alSourcefv(pkSound->m_uiSourceBufferName, AL_VELOCITY, &pkSound->m_kDir[0]);
 	if( (error = alGetError()) != AL_NO_ERROR)
@@ -800,7 +879,7 @@ bool ZFAudioSystem::Play(ZFSoundInfo *pkSound)
 		return false;
 	}	
 
-	// Set loop mode
+	// Set loop mode.
 	alGetError();
 	alSourcei(pkSound->m_uiSourceBufferName, AL_LOOPING, pkSound->m_bLoop ? 1 : 0);
 	if( (error = alGetError()) != AL_NO_ERROR)
@@ -809,7 +888,7 @@ bool ZFAudioSystem::Play(ZFSoundInfo *pkSound)
 		return false;
 	}
 
-	// Play
+	// Play.
 	alGetError(); // Clear Error Code
 	alSourcePlay(pkSound->m_uiSourceBufferName);
 	if( (error = alGetError()) != AL_NO_ERROR)
@@ -831,23 +910,13 @@ bool ZFAudioSystem::Play(ZFSoundInfo *pkSound)
 void ZFAudioSystem::Stop(ZFSoundInfo *pkSound)
 {
 	if(pkSound->m_uiSourceBufferName == NO_SOURCE)
-		return; // already stoped
+		return; // already stoped.
 
 	printf("stopping sound\n");
 	if(pkSound->m_bLoop)
 		DeleteSound(pkSound, false);
 	else
 		DeleteSound(pkSound, true);
-
-	// Ladda ur resursen om cachen är fylld och om
-	// resursen enbart används av det här ljudet.
-	if(m_uiCurrentCachSize >= AUDIO_CACH_SIZE)
-	{
-		if(ResourceIsUnused(pkSound))
-		{	
-			UnLoadSound(string(pkSound->m_acFile));
-		}
-	}
 }
 
 
@@ -873,11 +942,16 @@ bool ZFAudioSystem::Restart(ZFSoundInfo *pkSound)
 ///////////////////////////////////////////////////////////////////////////////
 bool ZFAudioSystem::InitSound(ZFSoundInfo *pkSound)
 {
-	ZFResourceHandle* pkResHandle = GetResHandle(string(pkSound->m_acFile));
+	string strName = pkSound->m_acFile;
+
+	ZFResourceHandle* pkResHandle = GetResHandle(strName);
 
 	// Ladda in om det behövs.
 	if(pkResHandle->IsValid() == false)
-		LoadSound(string(pkSound->m_acFile));
+		LoadSound(strName);
+	
+	// Öka prioritets värdet med 1.
+	ModifyResHandlePriority(strName, 1);
 
 	// Sätt resurs pekaren.
 	pkSound->m_pkResource = 
@@ -895,3 +969,5 @@ bool ZFAudioSystem::InitSound(ZFSoundInfo *pkSound)
 
 	return true;
 }
+
+

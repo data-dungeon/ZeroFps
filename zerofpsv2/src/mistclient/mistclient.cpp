@@ -260,13 +260,13 @@ void MistClient::Input()
 	switch(iPressedKey)
 	{
 	case KEY_F1:
-		pkAudioSys->StartSound("data/sound/dummy.wav", pkFps->GetCam()->GetPos());
+		pkAudioSys->StartSound("data/sound/dummy.wav", pkFps->GetCam()->GetPos(), Vector3(0,0,1), true);
 		break;
 	case KEY_F5:
 		pkAudioSys->StopSound("data/sound/dummy.wav", pkFps->GetCam()->GetPos());
 		break;
 	case KEY_F2:
-		pkAudioSys->StartSound("data/sound/walk.wav", pkFps->GetCam()->GetPos());
+		pkAudioSys->StartSound("data/sound/walk.wav", pkFps->GetCam()->GetPos(), Vector3(0,0,1), true);
 		break;
 	case KEY_F6:
 		pkAudioSys->StopSound("data/sound/walk.wav", pkFps->GetCam()->GetPos());
@@ -274,6 +274,9 @@ void MistClient::Input()
 	case KEY_F9:
 		printf("Num sounds in system = %i\nNum active channels = %i\n",
 			pkAudioSys->GetNumSounds(), pkAudioSys->GetNumActiveChannels());
+		break;
+	case KEY_F10:
+		pkAudioSys->UnloadAll();
 		break;
 	}
 

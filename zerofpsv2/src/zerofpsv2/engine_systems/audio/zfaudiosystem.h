@@ -12,7 +12,6 @@
 #include "../../basic/vector4.h"
 #include "oggmusic.h"
 
-
 #define DUMMY_SOUND "/data/sound/dummy.wav"
 
 class ZFAudioSystem;
@@ -70,6 +69,7 @@ class ENGINE_SYSTEMS_API ZFAudioSystem  : public ZFSubSystem
 {
 
 public:
+	void UnloadAll();
 
 	bool StartSound(string strName, Vector3 pos, Vector3 dir=Vector3(0,0,1), bool bLoop=false);
 	bool StopSound(string strName, Vector3 pos);
@@ -111,12 +111,13 @@ public:
 	Vector3 GetListnerDir() { return m_kHead; }
 	static void PrintError(ALenum error, char* szDesc);
 
-	ZFAudioSystem();
+	ZFAudioSystem(int uiMaxCachSize=19021844); // ca. 18 Meg
 	virtual ~ZFAudioSystem();
 
 private:
 
 	unsigned int m_uiCurrentCachSize; // bytes
+	unsigned int m_uiMaxCachSize; // bytes
 
 	bool m_bIsValid;
 	
@@ -124,10 +125,11 @@ private:
 
 	Vector3 m_kPos, m_kHead;
 	Vector4 m_kUp;
-	
-	map<string, ZFResourceHandle*> m_mkResHandles;
-	map<string, unsigned short> m_mkResHandleCounter;
 
+	typedef pair<ZFResourceHandle*, int> tResPriorHandle;
+	
+	map<string, tResPriorHandle> m_mkResHandles;
+	
 	list<ZFSoundInfo*> m_kSoundList;
 
 	// Common
@@ -140,7 +142,10 @@ private:
 	void Stop(ZFSoundInfo* pkSound);
 	bool Play(ZFSoundInfo* pkSound);
 	void DeleteSound(ZFSoundInfo* pkSound, bool bRemoveFromSystem);
-	void DeleteSoundsUsingResource(ZFSoundRes* pkResource);
+	void GetSoundsUsingResource(ZFSoundRes* pkRes, vector<ZFSoundInfo*>& vkSounds);
+	int ModifyResHandlePriority(string strFileName, int mod);
+	int GetResHandlePriority(string strFileName);
+	bool GetSoundWithLowestPriority(string& strRes);
 };
 
 #endif // #ifndef _THE_ZFAUDIOSYSTEM_H_
