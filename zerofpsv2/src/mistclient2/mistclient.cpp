@@ -316,11 +316,7 @@ void MistClient::OnHud(void)
 }
 
 
-void MistClient::OnClientStart(void)
-{
-	m_pkConsole->Printf("Trying to connect");	
-	m_iCharacterID = -1;
-}
+
 
 void MistClient::OnNetworkMessage(NetPacket *PkNetMessage)
 {
@@ -400,6 +396,12 @@ void MistClient::OnNetworkMessage(NetPacket *PkNetMessage)
 			return;
 	}
 } 
+
+void MistClient::OnClientStart(void)
+{
+	m_pkConsole->Printf("Trying to connect");	
+	m_iCharacterID = -1;
+}
 
 void MistClient::OnClientConnected() 
 {

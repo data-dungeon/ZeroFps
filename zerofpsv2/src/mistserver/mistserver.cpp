@@ -869,10 +869,11 @@ void MistServer::OnNetworkMessage(NetPacket *PkNetMessage)
 				bitset<6> kControls;
 				float	fYAngle;
 				float fPAngle;
-				
+								
 				PkNetMessage->Read(kControls);
 				PkNetMessage->Read(fYAngle);
 				PkNetMessage->Read(fPAngle);
+				
 				
 				if(Entity* pkCharacter = m_pkEntityManager->GetEntityByID(pkData->m_iCharacterID))
 				{
@@ -887,6 +888,9 @@ void MistServer::OnNetworkMessage(NetPacket *PkNetMessage)
 				else
 					cout<<"missing player character entity:"<<pkData->m_iCharacterID<<endl;
 			}
+			else
+				cout<<"missting playerdata in plyerDB"<<endl;
+			
 			break;
 		}
 		
