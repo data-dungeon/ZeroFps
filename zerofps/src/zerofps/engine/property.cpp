@@ -139,7 +139,7 @@ string Property::GetValue(string kValueName)
 
 bool Property::SetValue(string kValueName, string kValue)
 {
-	vector<PropertyValues> kTemp= GetPropertyValues();
+vector<PropertyValues> kTemp= GetPropertyValues();
 	if(!kTemp.empty())
 	{
 	
@@ -148,15 +148,29 @@ bool Property::SetValue(string kValueName, string kValue)
 		{
 			if( kValueName == kItor->kValueName)
 			{
-				
+				int iTemp;
+				float fTemp;	
 				
 				switch(kItor->iValueType)
 				{	
 				case VALUETYPE_INT:
-					*((int*)kItor->pkValue)=atoi(kValue.c_str());
+					iTemp=atoi(kValue.c_str());
+					if((kItor->fUpperBound)!=FLT_MAX)
+						if(iTemp>(kItor->fUpperBound))
+							return false;
+					if((kItor->fLowerBound)!=FLT_MIN)
+						if(iTemp<(kItor->fLowerBound))
+							return false;
+					*((int*)kItor->pkValue)=iTemp;
 					return true;
 					
 				case VALUETYPE_STRING:
+					if((kItor->fUpperBound)!=FLT_MAX)
+						if(kValue.size()>(kItor->fUpperBound))
+							return false;
+					if((kItor->fLowerBound)!=FLT_MIN)
+						if(kValue.size()<(kItor->fLowerBound))
+							return false;
 					*(reinterpret_cast<string*>(kItor->pkValue))=kValue;
 					return true;
 					
@@ -170,20 +184,30 @@ bool Property::SetValue(string kValueName, string kValue)
 				
 				case VALUETYPE_FLOAT:
 					char *stop;
-					*((float*)kItor->pkValue) = strtod( kValue.c_str(), &stop );
-					return true;
+					fTemp= strtod( kValue.c_str(), &stop );
 					
-
+					if((kItor->fUpperBound)!=FLT_MAX)
+						if(fTemp>(kItor->fUpperBound))
+							return false;
+					if((kItor->fLowerBound)!=FLT_MIN)
+						if(fTemp<(kItor->fLowerBound))
+							return false;
+					*((float*)kItor->pkValue)=fTemp; 
+					return true;
 				};
-				
 			}	
 		kItor++;
 		};
-
 	};
 	return false;
 }
 
+Property::PropertyValues::PropertyValues()
+{
+	fLowerBound=FLT_MIN;
+	fUpperBound=FLT_MAX;
+		
+}
 
 
 

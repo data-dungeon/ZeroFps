@@ -41,9 +41,12 @@ class ENGINE_API Property
 		PropertyFactory*	m_pkPropertyFactory;
 		struct PropertyValues
 		{
+			PropertyValues();
 			string kValueName;
 			void* pkValue;
 			int iValueType;
+			float fUpperBound;
+			float fLowerBound;
 		};
 	
 		enum ValueTypes
