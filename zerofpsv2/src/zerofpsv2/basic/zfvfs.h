@@ -5,13 +5,14 @@
 #include <string>
 #include "basic_x.h"
 #include "zfsubsystem.h"
-#include "zfbasicfs.h"
+//#include "zfbasicfs.h"
 #include "zfio.h"
 
 using namespace std;
 
 class ZFVFileSystem;
 class ZFIni;
+class ZFBasicFS;
 
 /**	\brief	A Open File in the VFS
 		\ingroup Basic

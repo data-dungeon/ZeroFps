@@ -8,7 +8,7 @@
 #include "zfsubsystem.h"
 #include "cstdio"
 #include <map>
-#include <SDL/SDL.h>
+
 
 using namespace std;
 
@@ -144,7 +144,7 @@ public:
 	void DontUseStopProfileTimer(const char* czName);
 	void ClearProfileTimers();
 	void GetProfileTimers(vector<TimerInfo >* pkTimers);
-	int GetTotalTime()					{	return SDL_GetTicks() - m_iTotalTime;	};
+	int GetTotalTime();					/*{	return SDL_GetTicks() - m_iTotalTime;	};*/
 	bool* GetProfileEnabledPointer()	{	return &m_bProfileEnabled;					};
 	
 	//program arguments

@@ -1,8 +1,8 @@
 #ifndef _BASIC_RESOURCE_H_
 #define _BASIC_RESOURCE_H_
 
-#include "basic_x.h"
 #include <string>
+#include "basic_x.h"
 
 using namespace std;
 

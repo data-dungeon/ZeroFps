@@ -73,7 +73,7 @@ class ENGINE_SYSTEMS_API HeightMap
 {
 	private:			
 		TextureManager*	m_pkTexMan;		
-		ZFBasicFS*			m_pkBasicFS;
+//		ZFBasicFS*			m_pkBasicFS;
 
 		int					m_iID;						// ID Assigned to each Hm in the game. Used for savefile names.
 

@@ -1,6 +1,6 @@
 #ifndef _ENGINE_ZEROFPS_H_
 #define _ENGINE_ZEROFPS_H_
-
+  
 #include <string>
 #include <vector>
 #include <iostream>
@@ -11,6 +11,7 @@
 #include "../ogl/zfpsgl.h"
 #include "network.h"
 #include "../basic/zfresourcedb.h"
+#include "../basic/zfbasicfs.h"
 #include "fh.h"
 #include "entity.h"
 #include "camera.h"

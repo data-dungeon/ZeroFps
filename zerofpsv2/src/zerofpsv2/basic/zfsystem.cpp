@@ -3,6 +3,8 @@
 #include <cstdio>
 #include <cstdarg>
 
+#include <SDL/SDL.h>
+
 #include "zfsystem.h"
 #include "cmdsystem.h"
 #include "basicconsole.h"
@@ -925,5 +927,8 @@ void ZFSystem::GetProfileTimers(vector<TimerInfo >* pkTimers)
 	
 }
 
-
+int ZFSystem::GetTotalTime()			
+{	
+	return SDL_GetTicks() - m_iTotalTime;	
+}
 

@@ -3,9 +3,8 @@
 
 #include <iostream>
 #include "basic_x.h"
-//#include "os.h"
-#include "vector3.h"
 
+class Vector3;
 class Matrix4;
 
 using namespace std;
@@ -20,7 +19,7 @@ class BASIC_API Vector4 {
 		Vector4() { }
 		Vector4(float fX,float fY,float fZ,float fW) : x(fX), y(fY), z(fZ), w(fW) { }; 
 		Vector4(const Vector4 &kOtherV4) : x(kOtherV4.x), y(kOtherV4.y), z(kOtherV4.z), w(kOtherV4.w) { }; 
-		Vector4(const Vector3 &kOtherV3) : x(kOtherV3.x), y(kOtherV3.y), z(kOtherV3.z), w(1.0) { }; 
+		Vector4(const Vector3 &kOtherV3);
 	
 		// Assign
 		Vector4& operator=(const Vector4 &kOtherV4) {
@@ -31,13 +30,7 @@ class BASIC_API Vector4 {
 			return *this;
 			}
 
-		Vector4& operator=(const Vector3 &kOtherV3) {
-			x=kOtherV3.x;
-			y=kOtherV3.y;
-			z=kOtherV3.z;
-			w=1;	
-			return *this;
-			}
+		Vector4& operator=(const Vector3 &kOtherV3);
 
 		void Set(float fX, float fY, float fZ,float fW) {
 			x = fX;

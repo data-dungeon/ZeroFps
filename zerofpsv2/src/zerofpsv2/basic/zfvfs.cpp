@@ -6,9 +6,11 @@
 #include "zfsubsystem.h"
 #include "zfsystem.h"
 #include "zfvfs.h"
-#include "basicconsole.h"
+//#include "basicconsole.h"
 #include "globals.h"
+#include "zfbasicfs.h"
  
+
 using namespace std;
 
 extern ZFSystem g_ZFObjSys;
@@ -450,7 +452,7 @@ string ZFVFileSystem::GetRealName(const string& strName)
 
 void ZFVFileSystem::RunCommand(int cmdid, const CmdArgument* kCommand)
 {
-	BasicConsole* m_pkConsole = static_cast<BasicConsole*>(GetSystem().GetObjectPtr("Console"));		
+//	BasicConsole* m_pkConsole = static_cast<BasicConsole*>(GetSystem().GetObjectPtr("Console"));		
 	unsigned int i;
 	vector<string> kFiles;
 	string strRootMerge;
@@ -460,7 +462,7 @@ void ZFVFileSystem::RunCommand(int cmdid, const CmdArgument* kCommand)
 		{
 			if(kCommand->m_kSplitCommand.size() <= 1) 
 			{
-				m_pkConsole->Printf(m_strCurentDir.c_str());
+				GetSystem().Printf(m_strCurentDir.c_str());
 				return;
 			}
 			
@@ -469,7 +471,7 @@ void ZFVFileSystem::RunCommand(int cmdid, const CmdArgument* kCommand)
 			{
 				if(m_strCurentDir.length() == 0)
 				{
-					m_pkConsole->Printf("Already at the root");
+					GetSystem().Printf("Already at the root");
 					break;
 				}
 					
@@ -482,10 +484,10 @@ void ZFVFileSystem::RunCommand(int cmdid, const CmdArgument* kCommand)
 			if(DirExist(m_strCurentDir+"/"+kCommand->m_kSplitCommand[1]))
 			{
 				m_strCurentDir = m_strCurentDir+"/"+kCommand->m_kSplitCommand[1];				
-				m_pkConsole->Printf(m_strCurentDir.c_str());
+				GetSystem().Printf(m_strCurentDir.c_str());
 			}
 			else
-				m_pkConsole->Printf("%s does not exist",kCommand->m_kSplitCommand[1].c_str());
+				GetSystem().Printf("%s does not exist",kCommand->m_kSplitCommand[1].c_str());
 
 			break;
 		}
@@ -500,15 +502,15 @@ void ZFVFileSystem::RunCommand(int cmdid, const CmdArgument* kCommand)
 	
 			ListDir(&kFiles,m_strCurentDir,bDirOnly);			
 			
-			m_pkConsole->Printf(" ");
-			m_pkConsole->Printf("DIRECTORY %s",m_strCurentDir.c_str());
-			m_pkConsole->Printf(" ");
+			GetSystem().Printf(" ");
+			GetSystem().Printf("DIRECTORY %s",m_strCurentDir.c_str());
+			GetSystem().Printf(" ");
 			for(i=0;i<kFiles.size();i++)
 			{
-				m_pkConsole->Printf("<%s>", kFiles[i].c_str());
+				GetSystem().Printf("<%s>", kFiles[i].c_str());
 			}
-			m_pkConsole->Printf(" ");
-			m_pkConsole->Printf("%d files in directory",kFiles.size());
+			GetSystem().Printf(" ");
+			GetSystem().Printf("%d files in directory",kFiles.size());
 							
 			break;
 		}
@@ -546,11 +548,11 @@ void ZFVFileSystem::RunCommand(int cmdid, const CmdArgument* kCommand)
 		{
 			if(kCommand->m_kSplitCommand.size() != 3)
 			{
-				m_pkConsole->Printf("addrootpath [realdir] [vfsdir]");
+				GetSystem().Printf("addrootpath [realdir] [vfsdir]");
 				break;		
 			}
 			
-			m_pkConsole->Printf("Adding root path: %s at %s",kCommand->m_kSplitCommand[1].c_str(),kCommand->m_kSplitCommand[2].c_str());
+			GetSystem().Printf("Adding root path: %s at %s",kCommand->m_kSplitCommand[1].c_str(),kCommand->m_kSplitCommand[2].c_str());
 			AddRootPath(kCommand->m_kSplitCommand[1],kCommand->m_kSplitCommand[2]);
 		
 			break;

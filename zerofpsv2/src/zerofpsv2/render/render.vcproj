@@ -98,7 +98,8 @@
 				WarningLevel="3"
 				SuppressStartupBanner="TRUE"
 				DebugInformationFormat="4"
-				CompileAs="0"/>
+				CompileAs="0"
+				ShowIncludes="TRUE"/>
 			<Tool
 				Name="VCCustomBuildTool"/>
 			<Tool
