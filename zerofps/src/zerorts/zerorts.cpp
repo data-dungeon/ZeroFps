@@ -362,8 +362,12 @@ void ZeroRTS::Input()
 			// (the commando generated when the user clicks on a button)
 			if(!m_pkUserPanel->PopLastButtonCommand(cmd.m_acCommandName))
 			{
-				// No commando exist. Use move commando instead,
-				strcpy(cmd.m_acCommandName, "Move");
+				// No commando exist. Use a default commando instead,
+				
+				if(info.iObject == -1)
+					strcpy(cmd.m_acCommandName, "Move");
+				else
+					strcpy(cmd.m_acCommandName, "Attack");
 			}
 			
 			for(list<int>::iterator it = m_kSelectedObjects.begin(); it != m_kSelectedObjects.end();it++)
@@ -939,7 +943,7 @@ void ZeroRTS::CreateClientUnits(int iID)
 		for(i=0;i<5;i++)
 		{
 			Object* ob = pkObjectMan->CreateObjectByArchType("ZeroRTSLightTank");	
-			Vector3 pos = m_kSpawnPoints[iID] + (i*3,0,-5);
+			Vector3 pos = m_kSpawnPoints[iID] + ((i*3)-3,0,-5);
 			ob->SetPos(pos);
 			ob->SetPos(pos);		
 			ob->AttachToClosestZone();
@@ -951,7 +955,7 @@ void ZeroRTS::CreateClientUnits(int iID)
 		for(i=0;i<5;i++)
 		{
 			Object* ob = pkObjectMan->CreateObjectByArchType("ZeroRTSHeavyTank");	
-			Vector3 pos = m_kSpawnPoints[iID] + (i*3,0,0);			
+			Vector3 pos = m_kSpawnPoints[iID] + ((i*3)-3,0,0);			
 			ob->SetPos(pos);
 			ob->SetPos(pos);		
 			ob->AttachToClosestZone();
@@ -963,7 +967,7 @@ void ZeroRTS::CreateClientUnits(int iID)
 		for(i=0;i<5;i++)
 		{
 			Object* ob = pkObjectMan->CreateObjectByArchType("ZeroRTSJeep");	
-			Vector3 pos = m_kSpawnPoints[iID] + (i*3,0,5);
+			Vector3 pos = m_kSpawnPoints[iID] + ((i*3)-3,0,5);
 			ob->SetPos(pos);
 			ob->SetPos(pos);		
 			ob->AttachToClosestZone();
