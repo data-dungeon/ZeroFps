@@ -854,19 +854,8 @@ void ZeroFps::RunCommand(int cmdid, const CmdArgument* kCommand)
 			if(kCommand->m_kSplitCommand.size() <= 1) 
 				return;
 		
-
-			/*
-			//local host			
-			if(strcmp(kCommand->m_kSplitCommand[1].c_str(), "lh") == 0) 
-			{
-				strcpy(g_szIpPort, "127.0.0.1:4242");
-			}
-			else
-				sprintf(g_szIpPort, "%s:4242", kCommand->m_kSplitCommand[1].c_str());
-			*/
-
-			string strLogin = "user";
-			string strPass  = "userpass";
+			string strLogin = "anonymous";
+			string strPass  = "nopass";
 							
 			//login
 			if(kCommand->m_kSplitCommand.size() >= 3)
@@ -877,16 +866,9 @@ void ZeroFps::RunCommand(int cmdid, const CmdArgument* kCommand)
 				strPass = kCommand->m_kSplitCommand[3];
 			
 			
-			m_pkConsole->Printf("Connecting: %s, %s, %s", g_szIpPort,strLogin.c_str(), strPass.c_str());
-			
+			m_pkConsole->Printf("Connecting: %s, %s, %s", g_szIpPort,strLogin.c_str(), strPass.c_str());			
 			StartClient(strLogin,strPass,kCommand->m_kSplitCommand[1].c_str(),4242);
-			
-			
-			/*
-			m_pkNetWork->ClientStart(g_szIpPort, strLogin.c_str(), strPass.c_str());
-			m_pkApp->OnClientStart();
-			m_bClientMode = true;
-			*/
+
 			break;
 		}
 			
@@ -901,13 +883,6 @@ void ZeroFps::RunCommand(int cmdid, const CmdArgument* kCommand)
 
 			//start server
 			StartServer(true,true,kCommand->m_kSplitCommand[1].c_str());
-			/*
-			m_pkNetWork->ServerStart();
-			m_pkApp->OnServerStart();
-
-			m_bServerMode = true;
-			m_bClientMode = true;
-			*/
 			break;
 	
 		case FID_DIR:
@@ -1354,9 +1329,8 @@ void ZeroFps::GetEngineCredits(vector<string>& kCreditsStrings)
 	to deny connection. Put reason if any into szWhy256.
 */
 bool	ZeroFps::PreConnect(IPaddress kRemoteIp, char* szLogin, char* szPass, char* szWhy256)
-//bool ZeroFps::PreConnect(IPaddress kRemoteIp, char* szWhy256)
 {
-	m_pkConsole->Printf("ZeroFps::PreConnect()");
+	//m_pkConsole->Printf("ZeroFps::PreConnect()");
 	return m_pkApp->OnPreConnect(kRemoteIp, szLogin, szPass);
 }
 
@@ -1374,29 +1348,20 @@ int ZeroFps::Connect(int iConnectionID, char* szLogin, char* szPass)
 	//reset all netupdate flags in the world
 	m_pkObjectMan->ResetNetUpdateFlags(iConnectionID);
 
-	m_pkConsole->Printf("ZeroFps::Connect(%d)", iConnectionID);
-
-//	char szName[64];
-//	sprintf(szName, "Player%d", iConnectionID);
-//	m_kClient[iConnectionID].m_strName = szName;
-
+	//m_pkConsole->Printf("ZeroFps::Connect(%d)", iConnectionID);
 	m_kClient[iConnectionID].m_pkObject = m_pkObjectMan->CreateObject();//m_pkObjectMan->CreateObjectByArchType("ZeroRTSPlayer");
-	assert(m_kClient[iConnectionID].m_pkObject);	
-	m_kClient[iConnectionID].m_pkObject->GetName() = string("A Client Obj");
+	m_kClient[iConnectionID].m_pkObject->SetName("A Client Obj");
 	m_kClient[iConnectionID].m_pkObject->SetWorldPosV(Vector3(0,0,2));
 
 	// Connect all client objects to top level object,
-	m_kClient[iConnectionID].m_pkObject->SetParent(m_pkObjectMan->m_pkClientObject);	// GetWorldObject()
-	//m_kClient[iConnectionID].m_pkObject->AttachToClosestZone();
-
+	m_kClient[iConnectionID].m_pkObject->SetParent(m_pkObjectMan->m_pkClientObject);
+	
 	m_kClient[iConnectionID].m_fConnectTime = GetEngineTime();
-
-	m_pkConsole->Printf("Player Object %d", m_kClient[iConnectionID].m_pkObject->GetEntityID());
-
 	m_pkApp->OnServerClientJoin(&m_kClient[iConnectionID],iConnectionID, szLogin, szPass);
-
 	m_pkObjectMan->m_fEndTimeForceNet = GetEngineTime() + 5.0f;
 
+	
+//	m_pkConsole->Printf("Player Object %d", m_kClient[iConnectionID].m_pkObject->GetEntityID());	
 	return m_kClient[iConnectionID].m_pkObject->GetEntityID();
 }
 

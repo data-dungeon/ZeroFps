@@ -55,23 +55,23 @@ void MistClient::OnInit()
 	//set window title		
    SetTitle("MistClient - Hacka och slå");
 	
-	//run autoexec script
-	if(!m_pkIni->ExecuteCommands("mistclient_autoexec.ini"))
-		m_pkConsole->Printf("No game_autoexec.ini.ini found");
-		
-	//set client in server mode to show gui etc
-	m_pkFps->StartServer(true,false);
-
    // initialize gui system with default skins, font etc
 	InitGui(m_pkScript, "defguifont", "data/script/gui/defskins.lua", NULL, false, true); 
 
    // load startup screen 
-   LoadGuiFromScript("data/script/gui/ml_start.lua");
+   //LoadGuiFromScript("data/script/gui/ml_start.lua");
 
    // load software cursor
 	m_pkGui->SetCursor( 0,0, m_pkTexMan->Load("data/textures/gui/cursor.bmp", 0),
 		m_pkTexMan->Load("data/textures/gui/cursor_a.bmp", 0), 32, 32);
    m_pkInput->ShowCursor(false);
+
+	//set client in server mode to show gui etc
+	m_pkFps->StartServer(true,false);
+
+	//run autoexec script
+	if(!m_pkIni->ExecuteCommands("mistclient_autoexec.ini"))
+		m_pkConsole->Printf("No game_autoexec.ini.ini found");	
 }
 
 	
@@ -95,8 +95,6 @@ void MistClient::OnIdle()
 
 void MistClient::OnSystem() 
 {
-	//m_pkRender->SetClearColor(Vector4(1,0,0,0));
-
 	if(Entity* pkEnt = m_pkObjectMan->GetObjectByNetWorkID(m_pkFps->GetClientObjectID()))
 	{
 		if(!pkEnt->GetProperty("P_Camera"))
@@ -106,14 +104,6 @@ void MistClient::OnSystem()
 				pkCam->SetCamera(m_pkCamera);
 				cout<<"attached camera to client property"<<endl;
 			}
-			/*
-				// Create and setup the Env on the server.
-			if(P_Enviroment* pe = (P_Enviroment*)pkEnt->AddProperty("P_Enviroment"))
-			{
-				pe->SetEnable(true);		
-				pe->SetEnviroment("data/enviroments/server.env");
-			}
-			*/
 		}
 	}
 }

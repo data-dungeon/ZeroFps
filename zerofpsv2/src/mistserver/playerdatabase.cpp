@@ -19,10 +19,11 @@ PlayerDatabase::PlayerDatabase()
 bool PlayerDatabase::CreatePlayer(string strPlayer,string strPassword)
 {
 	// First check so there is not already a player with this name.
-	if(LoginExist(strPlayer)) {
+	if(LoginExist(strPlayer)) 
+	{
 		cout<< "The Login already '" << strPlayer << "' exist" <<endl;	
 		return false;
-		}
+	}
 	
 	ZFVFile kFile;
 	string strPlayerDataFile = m_strPlayerDirectory + strPlayer + "/playerdata.dat"; 
@@ -75,11 +76,12 @@ bool PlayerDatabase::LoginExist(string strLogin)
 
 bool PlayerDatabase::Login(string strPlayer,string strPassword)
 {
-	if(VerifyPlayer(strPlayer, strPassword)) {
+	if(VerifyPlayer(strPlayer, strPassword)) 
+	{
 		m_strActiveUsers.push_back( strPlayer );
 
 		return true;
-		}
+	}
 
 	return false;
 }
@@ -116,7 +118,7 @@ bool PlayerDatabase::VerifyPlayer(string strPlayer,string strPassword)
 	kFile.Close();
 		
 	//is the password valid ?
-	if(strPassword == kLogin.szName)
+	if(strPassword == kLogin.szPass)
 		return true;
 		
 	return false;

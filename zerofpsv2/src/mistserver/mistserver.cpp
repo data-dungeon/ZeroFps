@@ -539,42 +539,64 @@ void MistServer::ClientInit()
 {
 	cout<<"Client Join granted"<<endl;
 	
-	cout<<"Join Complete"<<endl;
+	//cout<<"Join Complete"<<endl;
 }
 
 bool MistServer::OnPreConnect(IPaddress kRemoteIp, char* szLogin, char* szPass)
 {
-	cout << "MistServer::OnPreConnect" << endl;
 	//dessa skall du fixa till vim =D
 	string strPlayer		= szLogin;
 	string strPasswd		= szPass;
 	string strCharacter	= "mrbad";
-	
+		
 	// Check that this is a valid login.
-	if(m_pkPlayerDB->LoginExist(strPlayer)) {
+	if(m_pkPlayerDB->LoginExist(strPlayer)) 
+	{
 		// Check Password
-		if(!m_pkPlayerDB->Login(strPlayer,strPasswd)) {
+		if(!m_pkPlayerDB->Login(strPlayer,strPasswd)) 
+		{
+			m_pkConsole->Printf("Player %s found, password check FAILED",strPlayer.c_str());
+			//cout<<"Player "<<strPlayer<<" found, password check FAILED"<<endl;
 			return false;
-			}
-		// Login Ok.
-
 		}
-	else {
-		/* Failed to find the login. */
-		cout << "Login not found" << endl;
 
-		if(m_AcceptNewLogins) {
-			if(!m_pkPlayerDB->CreatePlayer(strPlayer,strPasswd)) {
+		m_pkConsole->Printf("Player %s found, password check OK",strPlayer.c_str());
+		//cout<<"Player "<<strPlayer<<" found, password check OK"<<endl;		
+		return true;
+	}
+	else 
+	{
+		if(m_AcceptNewLogins) 
+		{
+			if(!m_pkPlayerDB->CreatePlayer(strPlayer,strPasswd)) 
+			{
+				m_pkConsole->Printf("Failed to create new player %s",strPlayer.c_str());
+				//cout<<"Failed to creacte new player "<<strPlayer<<endl;
 				return false;
-				}
-	
-			m_pkPlayerDB->Login(strPlayer,strPasswd);
 			}
+	
+			if(m_pkPlayerDB->Login(strPlayer,strPasswd))
+			{
+				m_pkConsole->Printf("Player %s created",strPlayer.c_str());
+				//cout<<"Player "<<strPlayer<<" created"<<endl;				
+				return true;
+			}
+			else
+			{
+				m_pkConsole->Printf("Error while creating player %s (this shuld never hapen)",strPlayer.c_str());
+				//cout<<"Something went wrong when creating player "<<strPlayer<<endl;
+				return false;
+			}
+		}
 		else 
+		{
+			m_pkConsole->Printf("Player %s not found, and no new players accepted",strPlayer.c_str());
+			//cout<<"Player not found, and no new players accepted"<<endl;
 			return false;
 		}
+	}
 
-
+/*
 	if(m_pkServerInfoP)
 	{
 		if(m_pkServerInfoP->PlayerExist(strPlayer))
@@ -586,15 +608,14 @@ bool MistServer::OnPreConnect(IPaddress kRemoteIp, char* szLogin, char* szPass)
 			return false;
 		}
 	}
+*/	
 	
-	printf("User %s tried to join with password %s\n", szLogin, szPass);
-	return true;
+	//printf("User %s tried to join with password %s\n", szLogin, szPass);
+	return false;
 }
 
 void MistServer::OnServerClientJoin(ZFClient* pkClient,int iConID, char* szLogin, char* szPass)
 {
-	cout << "MistServer::OnServerClientJoin" << endl;
-	//dessa skall du fixa till vim =D
 	string strPlayer		= szLogin;
 	string strPasswd		= szPass;
 
