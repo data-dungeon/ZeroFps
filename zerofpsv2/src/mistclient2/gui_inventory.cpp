@@ -733,19 +733,26 @@ void InventoryDlg::OnDropItem(int mx, int my)
 			iTarget = iSlotX = iSlotY = -1;
 		else		
 		if(eDropTarget == DropTarget_Inventory)
+		{
+			pkVector = &m_vkInventoryItemList;
 			iTarget = GetInventoryContainerID(); 
+		}
 		else
+		{
+			pkVector = &m_vkContainerItemList;
 			iTarget = m_iActiveContainerID;
+		}
 
 		if((*pkVector)[kTargetSlot.first].bIsContainer)
+		{
 			iSlotX = iSlotY = -1;
+			iTarget = (*pkVector)[kTargetSlot.first].iItemID;
+		}
 		else
 		if(bIsSplitSlot)
 		{
 			if(g_kMistClient.m_pkInputHandle->Pressed(KEY_LCTRL))  
 				bTryExecuteSlplit = true;
-
-
 		
 			m_kSplitSlot.m_iIndex = m_kMoveSlot.m_iIndex;
 			m_kSplitSlot.bIsInventoryItem = m_kMoveSlot.bIsInventoryItem;
@@ -936,7 +943,7 @@ InventoryDlg::InventoryDropTarget InventoryDlg::GetDropTargetFromScreenPos(int m
 
 	int iSlotType = g_kMistClient.m_pkEquipmentDlg->GetSlot(mx, my, true);
 
-	bool bDropInEuipmentDlg = (iSlotType == -1) ? false : true;
+	bool bDropInEuipmentDlg = (iSlotType == EqS_None) ? false : true;
 	
 	if(bDropInInventory == true && bDropInContainer == false)
 		return DropTarget_Inventory;

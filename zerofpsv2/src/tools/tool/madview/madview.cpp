@@ -79,7 +79,7 @@ void MadView::Init()
 		"data/script/gui/menu_madview.txt", true, AUTO_SCALE); 
 
 	SetupGuiEnviroment();
-	SetTitle("MadView");
+	SetTitle("MadView3");
 
 	m_pkInput->ShowCursor(true);
 

@@ -1021,6 +1021,7 @@ bool ZGui::AlphaPixelAtPos(int mx, int my, ZGuiWnd *pkWndClicked)
 	bool bIsTGA = pkSkin->m_iBkTexAlphaID == -1 ? true : false;
 	int alpha_tex;
 
+
 	if(bIsTGA)
 		alpha_tex = pkSkin->m_iBkTexID;
 	else
