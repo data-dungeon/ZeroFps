@@ -190,25 +190,32 @@ void MistClient::Input()
 	{	
 		float fSpeedScale = pkFps->GetFrameTime()*speed;	
 		
-		Vector3 newpos = m_pkME->GetLocalPosV();
+		Vector3 newpos;// = m_pkME->GetLocalPosV();
+		newpos.Set(0,0,0);
 	
 		if(pkInput->Pressed(KEY_D)){
-			newpos.x+=fSpeedScale;			
+			//newpos.x+=fSpeedScale;			
+			newpos.x = 10;
 		}
 		if(pkInput->Pressed(KEY_A)){
-			newpos.x-=fSpeedScale;			
+			//newpos.x-=fSpeedScale;			
+			newpos.x = -10;		
 		}	
 		if(pkInput->Pressed(KEY_W))	{
-			newpos.z+=fSpeedScale;			
+			//newpos.z+=fSpeedScale;			
+			newpos.z = 10;
 		}					
 		if(pkInput->Pressed(KEY_S))	{
-			newpos.z-=fSpeedScale;
+			//newpos.z-=fSpeedScale;
+			newpos.z = -10;
 		}		
 
 		if(pkInput->Pressed(KEY_Q))
-			newpos.y+=2*fSpeedScale;			
+			newpos.y = 10;
+			//newpos.y+=2*fSpeedScale;			
 		if(pkInput->Pressed(KEY_E))
-			newpos.y-=2*fSpeedScale;
+			newpos.y = -10;
+			//newpos.y-=2*fSpeedScale;
 		
 		//gubbe rotation
 
@@ -228,7 +235,9 @@ void MistClient::Input()
 		if(pkInput->Pressed(KEY_L))
 			rot.z-=fSpeedScale*5;
 
-		m_pkME->SetLocalPosV(newpos);
+		//m_pkME->SetLocalPosV(newpos);
+		if(newpos.Length() > 0)
+			m_pkME->GetVel() = newpos;
 		m_pkME->RotateLocalRotV(rot);
 	}
 
