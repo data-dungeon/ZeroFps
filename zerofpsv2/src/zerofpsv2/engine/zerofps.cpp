@@ -440,6 +440,13 @@ void ZeroFps::Draw_EngineShell()
 	DevPrintf("common" , "NumMads/NumMadSurfaces: %d / %d", m_iNumOfMadRender , g_iNumOfMadSurfaces);
 	DevPrintf("common" , "Zone: %d", this->m_pkObjectMan->m_kZones.size());
 
+	DevPrintf("time" , "Ticks: %f", GetTicks());
+	DevPrintf("time" , "GetFrameTime: %f", GetFrameTime());
+	DevPrintf("time" , "GetGameTime: %f", GetGameTime());
+	DevPrintf("time" , "GetGameFrameTime: %f", GetGameFrameTime());
+	DevPrintf("time" , "GetLastGameUpdateTime: %f", GetLastGameUpdateTime());
+	DevPrintf("time" , "GetEngineTime: %f", GetEngineTime());
+
 	m_iNumOfMadRender = 0;
 	g_iNumOfMadSurfaces = 0;
 	

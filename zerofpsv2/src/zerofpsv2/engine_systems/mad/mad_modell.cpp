@@ -3,12 +3,14 @@
 #include "../../basic/zfsystem.h"
 #include "../../engine/res_texture.h"
 
-float fGameTime;
+//float fGameTime;
 char szFullTexName[256];
 extern int g_iNumOfMadSurfaces;
 extern float g_fMadLODScale;
 
- 
+#define MAD_NOANIM	-1
+
+
 /*
 void SetGameTime(void)
 {
@@ -20,17 +22,17 @@ Mad_Modell::Mad_Modell()
 	m_pkTex = static_cast<TextureManager*>(g_ZFObjSys.GetObjectPtr("TextureManager"));
 	m_pkShader = static_cast<ZShader*>(g_ZFObjSys.GetObjectPtr("ZShader"));	
 	
-	fCurrentTime = 0;
-	iActiveAnimation = 0;
-	fLastUpdate = 0;
-	m_bLoop		= 0;
-	m_fScale	= 1.0;
-	m_bActive	= true;
+	fCurrentTime		= 0;
+	iActiveAnimation	= MAD_NOANIM;
+	m_iNextAnimation	= MAD_NOANIM;
 
-	
-
+//	fLastUpdate			= 0;
+	m_bLoop				= false;
+	m_bActive			= true;
+	m_fScale				= 1.0;
 }
 
+/*
 Mad_Modell::Mad_Modell(string strResName)
 {
 	m_kMadFile = strResName;
@@ -44,12 +46,12 @@ Mad_Modell::Mad_Modell(string strResName)
 	m_fScale = 1.0;
 	m_bActive = true;
 	//pkCore->ClearReplaceTexture();
-	fGameTime = 0;
+//	fGameTime = 0;
 
 	TextureManager*	m_pkTex = static_cast<TextureManager*>(g_ZFObjSys.GetObjectPtr("TextureManager"));
 	LoadTextures();
 	AddMesh(0);
-}
+}*/
 
 /*Mad_Modell::Mad_Modell(Mad_Core* pkModell) 
 {
@@ -76,7 +78,7 @@ void Mad_Modell::SetBasePtr(string strResName)
 	if(!kMadHandle.SetRes(strResName))
 		return;
 
-	PlayAnimation(0, 0.0);
+//	PlayAnimation(0, 0.0);
 	m_bActive = true;
 //	pkCore->ClearReplaceTexture();
 	TextureManager*	m_pkTex = static_cast<TextureManager*>(g_ZFObjSys.GetObjectPtr("TextureManager"));
@@ -109,12 +111,40 @@ void Mad_Modell::PlayAnimation(int iAnimNum, float fStartTime)
 
 	iActiveAnimation	=	iAnimNum;
 	fCurrentTime		=	fStartTime;
-	fLastUpdate			=	fGameTime; 
+//	fLastUpdate			=	fGameTime; 
+	m_bActive = true;
+//	SetLoopedStatus(true);
 }
+
+void Mad_Modell::PlayAnimation(char* szName, float fStartTime)
+{
+	if(kMadHandle.IsValid() == false)
+		return;
+	Mad_Core* pkCore = dynamic_cast<Mad_Core*>(kMadHandle.GetResourcePtr()); 
+	if(!pkCore)
+		return;
+
+	int iAnimNum = pkCore->GetAnimIndex(szName);
+	printf("Playing Anim %d %f", iAnimNum, pkCore->GetAnimationLengthInS(iAnimNum));
+
+
+
+	if(iAnimNum == -1)
+		return;
+
+	iActiveAnimation	=	iAnimNum;
+	fCurrentTime		=	fStartTime;
+//	fLastUpdate			=	fGameTime; 
+	m_bActive = true;
+//	SetLoopedStatus(true);
+}
+
 
 void Mad_Modell::UpdateAnimation(float fDelta)
 {
 	if(!m_bActive)
+		return;
+	if(iActiveAnimation == MAD_NOANIM)
 		return;
 
 	if(kMadHandle.IsValid() == false)
@@ -123,17 +153,32 @@ void Mad_Modell::UpdateAnimation(float fDelta)
 	if(!pkCore)
 		return;
 
-//	float fDelta = fGameTime - fLastUpdate;
-
+	// Move Anim forward.
 	fCurrentTime += fDelta;
-
 	float fAnimLength = pkCore->GetAnimationLengthInS(iActiveAnimation);
+	
 
-	if(fCurrentTime >= fAnimLength)
+	// If we pass the end of the anim
+	if(fCurrentTime >= fAnimLength) {
+		// If this is a looping anim we simply wrap around.
+		if(m_bLoop)
+			fCurrentTime -= fAnimLength;
+		else {
+			fCurrentTime = 1.0;
+			m_bActive = false;
 
-		fCurrentTime -= fAnimLength;
+			// We shall not loop so lets try to move on to the next anim if any.
+			//if(m_iNextAnimation != MAD_NOANIM) {
+			//	PlayAnimation(m_iNextAnimation, 0);
+			//	m_iNextAnimation = MAD_NOANIM;
+				}
+			//else {
+				//
+			//	}
+			//}
+		}
 
-	fLastUpdate = fGameTime; 
+	printf("Current time %f\n", fCurrentTime);
 }
 
 void Mad_Modell::SetScale(float fScale)
@@ -145,7 +190,26 @@ void Mad_Modell::SetScale(float fScale)
 void	Mad_Modell::SetNextAnimation(int iAnimNum)
 {
 	m_iNextAnimation = iAnimNum;
+	SetLoopedStatus(false);
 }
+
+void Mad_Modell::SetNextAnimation(char* szName)
+{
+	if(kMadHandle.IsValid() == false)
+		return;
+	Mad_Core* pkCore = dynamic_cast<Mad_Core*>(kMadHandle.GetResourcePtr()); 
+	if(!pkCore)
+		return;
+
+	int iAnimNum = pkCore->GetAnimIndex(szName);
+	printf("Playing Anim %d", iAnimNum);
+
+	if(iAnimNum == -1)
+		return;
+	m_iNextAnimation = iAnimNum;
+	SetLoopedStatus(false);
+}
+
 
 void	Mad_Modell::PlayNextAnimations(void)
 {
@@ -448,7 +512,7 @@ void Mad_Modell::Draw_All(int iDrawFlags)
 
 
 	// Refresh Skelleton Pose.
- 	pkCore->SetBoneAnimationTime(iActiveAnimation, fCurrentTime);
+ 	pkCore->SetBoneAnimationTime(iActiveAnimation, fCurrentTime, m_bLoop);
 	pkCore->SetupBonePose();
 
 	glPushAttrib(GL_FOG_BIT|GL_LIGHTING_BIT | GL_TEXTURE_BIT | GL_COLOR_BUFFER_BIT );

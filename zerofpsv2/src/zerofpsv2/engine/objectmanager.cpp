@@ -344,6 +344,15 @@ void ObjectManager::Update(int iType,int iSide,bool bSort)
 	}
 }
 
+bool ObjectManager::IsUpdate(int iFlags)
+{
+	if(m_iUpdateFlags & iFlags)
+		return true;
+
+	return false;
+}
+
+
 
 
 void ObjectManager::UpdateGameMessages(void)

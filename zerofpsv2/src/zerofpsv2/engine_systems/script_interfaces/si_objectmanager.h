@@ -41,6 +41,9 @@ namespace ObjectManagerLua
 	int ENGINE_SYSTEMS_API SetReturnObjectLua(lua_State* pkLua);	
 	
 	int ENGINE_SYSTEMS_API HaveRelativOriLua(lua_State* pkLua);		
+
+	int ENGINE_SYSTEMS_API PlayAnim(lua_State* pkLua);
+	int ENGINE_SYSTEMS_API SetNextAnim(lua_State* pkLua);
 };
 
 #endif // #ifndef _OBJECTMANAGER_SCRIPTINTERFACE_H_

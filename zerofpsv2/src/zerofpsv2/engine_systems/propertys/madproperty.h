@@ -20,7 +20,7 @@ class ENGINE_SYSTEMS_API MadProperty : public Property, public Mad_Modell {
 
 	public:
 		MadProperty();
-		MadProperty(string strResName);
+		//MadProperty(string strResName);
 		void CloneOf(Property* pkProperty) { }
 		
 		ZeroFps* m_pkZeroFps;

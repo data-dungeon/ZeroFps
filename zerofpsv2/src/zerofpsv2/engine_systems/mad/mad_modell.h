@@ -62,7 +62,7 @@ public:
 
 	int		iActiveAnimation;
 	float	fCurrentTime;
-	float	fLastUpdate;
+//	float	fLastUpdate;
 
 	float	m_fScale;
 
@@ -76,7 +76,7 @@ public:
 	
 	Mad_Modell();
 //	Mad_Modell(Mad_Core* pkModell);
-	Mad_Modell(string strResName);
+//	Mad_Modell(string strResName);
 
 	void SetBasePtr(string strResName);
 
@@ -84,11 +84,13 @@ public:
 	void UpdateAnimation(float dDelta);		// Move all animations forward.
 	
 	void PlayAnimation(int iAnimNum, float fStartTime);
+	void PlayAnimation(char* szName, float fStartTime);
 	int	 GetCurrentAnimation();
 	void SetLoopedStatus(bool bLoop);
 	bool IsLooped();
 
 	void SetNextAnimation(int iAnimNum);
+	void SetNextAnimation(char* szName);
 	void PlayNextAnimations(void);
 	int	 GetNextAnimation();
 

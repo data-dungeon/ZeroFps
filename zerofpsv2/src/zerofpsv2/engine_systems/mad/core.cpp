@@ -192,6 +192,17 @@ int Mad_Core::GetAnimationTimeInFrames(int iAnim)
 	return 0;
 }
 
+int Mad_Core::GetAnimIndex(char* szName)
+{
+	for(int i=0; i<m_kBoneAnim.size(); i++) {
+		printf("Anim Name %s\n",  m_kBoneAnim[i].m_szName);
+		if(strcmp(szName, m_kBoneAnim[i].m_szName) == 0)
+			return i;
+		}
+	
+	return -1;
+}
+	
 void Mad_Core::SetReplaceTexture(char* szFileName)
 {
 /*	char nisse[256];
@@ -291,33 +302,32 @@ void Core::CreateFrame(void)
 
 void Mad_Core::SetupBonePose()
 {
+	unsigned int i;
+
+	if( iActiveAnimation == -1) {
+		for (i = 0; i < m_kSkelleton.size(); i++)
+			g_FullBoneTransform[i].Identity();
+	
+		return;
+		}
+
 	Matrix4		kMadkBoneMatrix;					
 
-	unsigned int i;
 	Vector3 Angles;
 
-	int iNumOfFrame = m_kBoneAnim[iActiveAnimation].m_kBoneKeyFrames.size();
+/*	int iNumOfFrame = m_kBoneAnim[iActiveAnimation].m_kBoneKeyFrames.size();
 	int iStartFrame = int(fActiveAnimationTime / g_fMadFrameTime);
 	int iEndFrame = iStartFrame + 1;
 	if(iStartFrame >= iNumOfFrame) 
 		iStartFrame = 0;
 	if(iEndFrame >= iNumOfFrame) 
-		iEndFrame = 0;
+		iEndFrame = 0;*/
 
 	Mad_CoreBoneKey* pkStartKey = &m_kBoneAnim[iActiveAnimation].m_kBoneKeyFrames[iStartFrame].m_kBonePose[0];
 	Mad_CoreBoneKey* pkEndKey = &m_kBoneAnim[iActiveAnimation].m_kBoneKeyFrames[iEndFrame].m_kBonePose[0];
 
 	ZFAssert(pkStartKey, "Mad_Core::SetupBonePose: No StartKey");
 	ZFAssert(pkEndKey, "Mad_Core::SetupBonePose: No EndKey");
-
-/*	if(strcmp(Name, "/data/mad/goblin.mad") == 0) {
-		cout << "Frame: "<< iStartFrame << "  ";
-		cout << pkStartKey[1].m_kRotation.x << "," 
-			 << pkStartKey[1].m_kRotation.y << ","
-			 << pkStartKey[1].m_kRotation.z << endl;
-
-		}*/
-	
 
 	Quaternion kStart, kEnd;
 
@@ -401,17 +411,41 @@ void Mad_Core::SetAnimationTime( int iAnim, float fTime )
 	SetFrameI(m_kMesh[0].akAnimation[iActiveAnimation].KeyFrame[iFrame].iVertexFrame);
 }
 
-void Mad_Core::SetBoneAnimationTime(int iAnim, float fTime )
+void Mad_Core::SetBoneAnimationTime(int iAnim, float fTime, bool bLoop)
 {
+	iActiveAnimation		= iAnim;
 	fActiveAnimationTime = fTime;
-	iActiveAnimation = iAnim;
 
+	int iNumOfFrame = m_kBoneAnim[iActiveAnimation].m_kBoneKeyFrames.size();
+	
+	// Calc Frame Anim is at as a float.
+	float fFrame = fActiveAnimationTime / g_fMadFrameTime;
+
+	// Get Real Frame before the one above.
+	iStartFrame = int(fFrame);
+	if(iStartFrame >= iNumOfFrame)
+		iStartFrame = iNumOfFrame - 1;
+
+	iEndFrame = iStartFrame + 1;
+	if(iEndFrame >= iNumOfFrame) {
+		if(bLoop) {
+			iEndFrame = 0;
+			}
+		else {
+			iEndFrame = iStartFrame;
+			}
+		}
+
+	fFrameOffs = fFrame - iStartFrame;
+
+/*
 	int iNumOfFrame = m_kBoneAnim[iActiveAnimation].m_kBoneKeyFrames.size();
 	int iFrame = int(fActiveAnimationTime / g_fMadFrameTime);
 	fFrameOffs = (fActiveAnimationTime / g_fMadFrameTime) - iFrame;
 	iBoneFrame = iFrame;
 	if(iBoneFrame >= int(m_kBoneAnim[iActiveAnimation].m_kBoneKeyFrames.size()) )
-		iBoneFrame = 0;
+		iBoneFrame = m_kBoneAnim[iActiveAnimation].m_kBoneKeyFrames.size();
+*/
 }
 
 

@@ -1,6 +1,7 @@
 #include "../../script/zfscript.h"
 #include "si_objectmanager.h"
 #include "../../engine/objectmanager.h"
+#include "../../engine_systems/propertys/madproperty.h"
 #include "../../script/zfscript.h"
 
 ZFScriptSystem* ObjectManagerLua::g_pkScript;
@@ -32,6 +33,9 @@ void ObjectManagerLua::Init(ObjectManager* pkObjMan, ZFScriptSystem* pkScript)
 	pkScript->ExposeFunction("HaveRelativOri",		ObjectManagerLua::HaveRelativOriLua);	
 	pkScript->ExposeFunction("SetParentObject",  	ObjectManagerLua::SetParentObjectLua);
 	pkScript->ExposeFunction("SetReturnObject",  	ObjectManagerLua::SetReturnObjectLua);
+
+	pkScript->ExposeFunction("PlayAnim",				ObjectManagerLua::PlayAnim);
+	pkScript->ExposeFunction("SetNextAnim",			ObjectManagerLua::SetNextAnim);
 
 }
 
@@ -197,3 +201,38 @@ int ObjectManagerLua::SetReturnObjectLua(lua_State* pkLua)
 
 	return 0;
 }
+
+int ObjectManagerLua::PlayAnim(lua_State* pkLua)
+{
+	double dTemp;
+	g_pkScript->GetArgNumber(pkLua, 0, &dTemp);		
+	int iId1 = (int)dTemp;
+
+	char acName[100];
+	g_pkScript->GetArg(pkLua, 1, acName);
+
+	printf("Should Play A Animation '%s' on object %d", acName,  iId1);
+
+	Object* o1 = g_pkObjMan->GetObjectByNetWorkID(iId1);
+	MadProperty* mp = dynamic_cast<MadProperty*>(o1->GetProperty("MadProperty"));
+	mp->PlayAnimation(acName,0);
+	
+	return 1;
+}
+
+int ObjectManagerLua::SetNextAnim(lua_State* pkLua)
+{
+	double dTemp;
+	g_pkScript->GetArgNumber(pkLua, 0, &dTemp);		
+	int iId1 = (int)dTemp;
+
+	char acName[100];
+	g_pkScript->GetArg(pkLua, 1, acName);
+	printf("Next Anim to play is '%s' on object %d", acName,  iId1);
+
+	Object* o1 = g_pkObjMan->GetObjectByNetWorkID(iId1);
+	MadProperty* mp = dynamic_cast<MadProperty*>(o1->GetProperty("MadProperty"));
+	mp->SetNextAnimation(acName);
+	return 1;
+}
+

@@ -387,6 +387,9 @@ private:
 	// Radius from local origo that contain all of modell.
 	float										m_fBoundRadius;
 
+	int										iStartFrame;
+	int										iEndFrame;
+
 public:
 	Mad_Header								kMadHeader;
 
@@ -436,7 +439,7 @@ public:
 	int CalculateSize();
 
 	void SetAnimationTime(int iAnim, float fTime );
-	void SetBoneAnimationTime(int iAnim, float fTime );
+	void SetBoneAnimationTime(int iAnim, float fTime, bool bLoop );
 
 	void ClearReplaceTexture(void);
 	void SetReplaceTexture(char* szFileName);
@@ -456,6 +459,7 @@ public:
 
 	float GetAnimationLengthInS(int iAnim);
 	int	  GetAnimationTimeInFrames(int iAnim);
+	int	GetAnimIndex(char* szName);
 	void  SetupBonePose();
 	void  SetUpBindPose();
 	int	  GetNumOfAnimations();

@@ -1,21 +1,25 @@
 #include "si_std.h"
 #include <cmath>                    // for trigonometry functions
 #include "../../basic/zfvfs.h"
+#include "../../engine/objectmanager.h"
 
 ZFScriptSystem* StdLua::g_pkScript;
 ZFVFileSystem*	StdLua::g_pkVFS;
+
+extern ObjectManager* g_pkObjMan;
 
 void StdLua::Init(ZFScriptSystem* pkScript, ZFVFileSystem* pkVFS)
 {
 	g_pkScript = pkScript;
 	g_pkVFS = pkVFS;
 	
-	pkScript->ExposeFunction("Print",	StdLua::PrintLua);
-	pkScript->ExposeFunction("Sin",	StdLua::SinLua);	
-	pkScript->ExposeFunction("Cos",	StdLua::CosLua);		
-	pkScript->ExposeFunction("Tan",	StdLua::TanLua);
+	pkScript->ExposeFunction("Print",		StdLua::PrintLua);
+	pkScript->ExposeFunction("Sin",			StdLua::SinLua);	
+	pkScript->ExposeFunction("Cos",			StdLua::CosLua);		
+	pkScript->ExposeFunction("Tan",			StdLua::TanLua);
 	pkScript->ExposeFunction("GetFilesInFolder", StdLua::GetFilesInFolderLua);		
 }
+
 
 
 int StdLua::PrintLua(lua_State* pkLua)

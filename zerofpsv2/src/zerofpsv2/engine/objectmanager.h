@@ -147,9 +147,10 @@ class ENGINE_API ObjectManager : public ZFSubSystem{
 
 		// Updates
 		void Update(int iType,int iSide,bool bSort);					///< Run update on selected propertys.
+		bool IsUpdate(int iFlags);											///< Check if the current update is of a selected type
 		void UpdateGameMessages(void);									///< Update game messages.
 		void SetUpdate(bool bUpdate) { m_bUpdate=bUpdate; };		
-
+		
 
 		// Arch types
 		bool IsA(Object* pkObj, string strStringType);

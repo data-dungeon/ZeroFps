@@ -525,6 +525,10 @@ void ModellXXX::ReadExportAD(const char* filename,	const char* szName)
 
 	fclose(fp);
 
+	kNewBoneAnim.PushBack(kNewBoneKeyFrame);
+
+	strcpy(kNewBoneAnim.m_szName, szName);
+	cout << "Anim Size: " << kNewBoneAnim.Size();
 	m_kBoneAnim.push_back(kNewBoneAnim);
 
 /*	kNewAnimation.PrintAnimation();

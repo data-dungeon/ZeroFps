@@ -59,22 +59,22 @@ void Mad_CoreBoneAnimation::Save(ZFVFile* pkZFile)
 
 void Mad_CoreBoneAnimation::Load(ZFVFile* pkZFile)
 {
-	cout << "Now loading: ";
 	Mad_CoreBoneKeyFrame	NewBoneKeyFrame;
 	pkZFile->Read(m_szName,1,MAD_MAX_ANIMATIONNAME);
 	//fread(m_szName,1,MAD_MAX_ANIMATIONNAME,fp);
-	cout << m_szName << endl;
 
 	int iNumOfFrames;
 	pkZFile->Read(&iNumOfFrames,1,sizeof(int));
 	//fread(&iNumOfFrames,1,sizeof(int),fp);
-	cout << "Frames: " << iNumOfFrames<< endl;
+
 	for(int i=0; i<iNumOfFrames; i++) 
 	{
 		NewBoneKeyFrame.Clear();
 		NewBoneKeyFrame.Load(pkZFile);
 		m_kBoneKeyFrames.push_back(NewBoneKeyFrame);
 	}
+
+	printf("Loaded Anim %s - %d Frames\n", m_szName,iNumOfFrames);
 }
 
 int Mad_CoreBoneAnimation::GetSizeInBytes()

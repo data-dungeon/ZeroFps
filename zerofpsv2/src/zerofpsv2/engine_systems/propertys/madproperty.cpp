@@ -13,14 +13,14 @@ MadProperty::MadProperty()
 	strcpy(m_acName,"MadProperty");
 	bNetwork	 = true;
 
-	m_iType = PROPERTY_TYPE_RENDER;
-	m_iSide = PROPERTY_SIDE_CLIENT;
+	m_iType = PROPERTY_TYPE_RENDER | PROPERTY_TYPE_NORMAL;
+	m_iSide = PROPERTY_SIDE_SERVER | PROPERTY_SIDE_CLIENT;
 	
 	m_bIsVisible = true;
 	m_fScale	 = 1.0;
 }
 
-MadProperty::MadProperty(string strResName) 
+/*MadProperty::MadProperty(string strResName) 
 {
 	m_pkZeroFps  =	static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
 
@@ -38,90 +38,62 @@ MadProperty::MadProperty(string strResName)
 	PlayAnimation(0, 0.0);
 	m_fScale  = 1.0;
 	m_bActive = true;
-}
+}*/
 
 void MadProperty::Update() 
 {
-/*	Input* pkInput = static_cast<Input*>(g_ZFObjSys.GetObjectPtr("Input")); 
-	
-	if(strcmp(m_kMadFile.c_str(), "../data/mad/dropship.mad") == 0) {
-		if(pkInput->Pressed(KEY_F7))
-			pkCore->CreateController("lucka", "gunBarrelJoint2",CONTROLL_ANGLE_Z,-90,0);
-		if(pkInput->Pressed(KEY_F8))
-			fTestValue -= 0.1;
-		if(pkInput->Pressed(KEY_F9))
-			fTestValue += 0.1;
-
-		if(fTestValue < 0)
-			fTestValue = 0.0;
-		if(fTestValue > 1.0)
-			fTestValue = 1.0;
-	
-		pkCore->SetControll("lucka",fTestValue);
-		}*/
-	
-//	Vector4 sphere=m_pkObject->GetPos();
-//	sphere.w = GetRadius();
-
-//	if(!m_pkFrustum->SphereInFrustum(sphere))
-//		return;
 	Mad_Core* pkCore = dynamic_cast<Mad_Core*>(kMadHandle.GetResourcePtr()); 
 	if(!pkCore)
 		return;
 
-	UpdateAnimation(m_pkZeroFps->GetFrameTime());
-	if(!m_bIsVisible)
+	if( m_pkObjMan->IsUpdate(PROPERTY_TYPE_NORMAL ) &  m_pkObjMan->IsUpdate(PROPERTY_SIDE_SERVER )) {
+		UpdateAnimation(m_pkZeroFps->GetGameFrameTime());
 		return;
+		}
 	
-	if(!m_pkZeroFps->GetCam()->m_kFrustum.SphereInFrustum(m_pkObject->GetWorldPosV(),GetRadius()))
-		return;
-
-	// Set Object LOD.
-	if(g_iMadLODLock == 0) {
-		Vector3 kDiff = m_pkZeroFps->GetCam()->GetPos() - m_pkObject->GetWorldPosV();
-		float fDist = float( fabs(kDiff.Length()) );
-		m_fLod = 1 - (fDist / 300);
-		//cout << "fDist: " << fDist << " / " << "m_fLod: " << m_fLod << endl;
-		
-		
-		//dvoid yber loding deluxe
-		float blub = GetRadius() / fDist;		
-		if(blub < 0.010)
+	if( m_pkObjMan->IsUpdate(PROPERTY_TYPE_RENDER) ) {
+		if(!m_bIsVisible)
 			return;
 		
-	}
+		if(!m_pkZeroFps->GetCam()->m_kFrustum.SphereInFrustum(m_pkObject->GetWorldPosV(),GetRadius()))
+			return;
+		
+		// Set Object LOD.
+		if(g_iMadLODLock == 0) {
+			Vector3 kDiff = m_pkZeroFps->GetCam()->GetPos() - m_pkObject->GetWorldPosV();
+			float fDist = float( fabs(kDiff.Length()) );
+			m_fLod = 1 - (fDist / 300);
+			//cout << "fDist: " << fDist << " / " << "m_fLod: " << m_fLod << endl;
+			
+			
+			//dvoid yber loding deluxe
+			float blub = GetRadius() / fDist;		
+			if(blub < 0.010)
+				return;
+		}
 
-	g_fMadLODScale = m_fLod;
-
+		g_fMadLODScale = m_fLod;
 		Render* pkRender = static_cast<Render*>(g_ZFObjSys.GetObjectPtr("Render")); 
 
-	glPushMatrix();
-		Matrix4 ori = m_pkObject->GetWorldOriM();
-		
-		glMultMatrixf(&ori[0]);
-	
-		/*Vector3 pos=m_pkObject->GetIPos();
-		Vector3 rot=m_pkObject->GetIRot();
-		glTranslatef(pos.x,pos.y,pos.z);*/
-		glScalef(m_fScale, m_fScale, m_fScale);
-		/*glRotatef(- rot.y ,0,1,0);		
-		glRotatef(- rot.z ,0,0,1);		
-		glRotatef(- rot.x ,1,0,0);*/
-
-//		pkRender->Draw_AxisIcon(5);
-
-		Draw_All(m_pkZeroFps->m_iMadDraw);
-	glPopMatrix();
-
-	if(m_pkZeroFps->m_iMadDraw & MAD_DRAW_SPHERE) {
 		glPushMatrix();
-			glTranslatef(m_pkObject->GetWorldPosV().x,m_pkObject->GetWorldPosV().y,m_pkObject->GetWorldPosV().z);
-			glRotatef(90 ,1,0,0);
-			pkRender->DrawBoundSphere(GetRadius(),Vector3::ZERO);		
+			Matrix4 ori = m_pkObject->GetWorldOriM();
+			glMultMatrixf(&ori[0]);
+			glScalef(m_fScale, m_fScale, m_fScale);
+			Draw_All(m_pkZeroFps->m_iMadDraw);
 		glPopMatrix();
-	}
 
-	m_pkZeroFps->m_iNumOfMadRender++;
+		if(m_pkZeroFps->m_iMadDraw & MAD_DRAW_SPHERE) {
+			glPushMatrix();
+				glTranslatef(m_pkObject->GetWorldPosV().x,m_pkObject->GetWorldPosV().y,m_pkObject->GetWorldPosV().z);
+				glRotatef(90 ,1,0,0);
+				pkRender->DrawBoundSphere(GetRadius(),Vector3::ZERO);		
+			glPopMatrix();
+		}
+
+		m_pkZeroFps->m_iNumOfMadRender++;
+	
+		return;
+		}
 }
 
 void MadProperty::SetBase(const char* acName)
@@ -277,7 +249,7 @@ void LinkToJoint::Update()
 	if(!pkCore)
 		return;
 
- 	pkCore->SetBoneAnimationTime(pkMad->iActiveAnimation, pkMad->fCurrentTime);
+ 	pkCore->SetBoneAnimationTime(pkMad->iActiveAnimation, pkMad->fCurrentTime,pkMad->m_bLoop);
 	pkCore->SetupBonePose();
 	
 	/*
