@@ -100,11 +100,13 @@ void MadProperty::Update()
 
 
 	glPushMatrix();
-		glTranslatef(m_pkObject->GetPos().x,m_pkObject->GetPos().y,m_pkObject->GetPos().z);
+		Vector3 pos=m_pkObject->GetIPos();
+		Vector3 rot=m_pkObject->GetIRot();
+		glTranslatef(pos.x,pos.y,pos.z);
 		glScalef(m_fScale, m_fScale, m_fScale);
-		glRotatef(- m_pkObject->GetRot().y ,0,1,0);		
-		glRotatef(- m_pkObject->GetRot().z ,0,0,1);		
-		glRotatef(- m_pkObject->GetRot().x ,1,0,0);
+		glRotatef(- rot.y ,0,1,0);		
+		glRotatef(- rot.z ,0,0,1);		
+		glRotatef(- rot.x ,1,0,0);
 
 		Draw_All(m_pkZeroFps->m_iMadDraw);
 	glPopMatrix();

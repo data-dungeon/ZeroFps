@@ -80,32 +80,25 @@ void ZeroEdit::OnInit(void)
 		
 	m_kCurentTemplate="null";
 	g_ZFObjSys.RegisterVariable("g_template", &m_kCurentTemplate,CSYS_STRING);
-//	pkFps->m_pkCmd->Add(&m_kCurentTemplate,"g_template",type_string);			
 	
-	m_iPencilSize=4;
+	m_iPencilSize=8;
 	g_ZFObjSys.RegisterVariable("g_PencilSize", &m_iPencilSize,CSYS_INT);
-//	pkFps->m_pkCmd->Add(&m_iPencilSize,"g_PencilSize",type_int);		
 	
 	m_iLandType=1;
 	g_ZFObjSys.RegisterVariable("g_landtype", &m_iLandType,CSYS_INT);
-//	pkFps->m_pkCmd->Add(&m_iLandType,"g_landtype",type_int);		
 	
 	m_iRandom=1;
 	g_ZFObjSys.RegisterVariable("g_Random", &m_iRandom,CSYS_INT);
-//	pkFps->m_pkCmd->Add(&m_iRandom,"g_Random",type_int);		
 	
 	m_fDrawRate=0.1;
 	g_ZFObjSys.RegisterVariable("g_DrawRate", &m_fDrawRate,CSYS_INT);
-//	pkFps->m_pkCmd->Add(&m_fDrawRate,"g_DrawRate",type_float);		
 	
 	m_iMode=ADDOBJECT;		
 	g_ZFObjSys.RegisterVariable("g_mode", &m_iMode,CSYS_INT);
-//	pkFps->m_pkCmd->Add(&m_iMode,"g_mode",type_int);		
 		
 	m_fPointDistance=10;
 	g_ZFObjSys.RegisterVariable("g_PointDistance", &m_fPointDistance,CSYS_INT);
-//	pkFps->m_pkCmd->Add(&m_fPointDistance,"g_PointDistance",type_float);	
-	
+
 	
 	//create a default small world
 	pkLevelMan->CreateEmptyLevel(128);
@@ -651,46 +644,57 @@ void ZeroEdit::Input()
 	}
 	
 	if(m_pkCurentChild!=NULL){	
-		//child movements
+		
+		//child movements		
+		Vector3 pos = m_pkCurentChild->GetPos();		
+
 		if(pkInput->Pressed(KEY_LEFT)) {
-			m_pkCurentChild->GetPos().x-=pkFps->GetFrameTime()*childmovespeed;
+			pos.x-=pkFps->GetFrameTime()*childmovespeed;
 		}
 		if(pkInput->Pressed(KEY_RIGHT)) {
-			m_pkCurentChild->GetPos().x+=pkFps->GetFrameTime()*childmovespeed;	
+			pos.x+=pkFps->GetFrameTime()*childmovespeed;
 		}
 		if(pkInput->Pressed(KEY_UP)) {
-			m_pkCurentChild->GetPos().z-=pkFps->GetFrameTime()*childmovespeed;	
+			pos.z-=pkFps->GetFrameTime()*childmovespeed;	
 		}
 		if(pkInput->Pressed(KEY_DOWN)) {
-			m_pkCurentChild->GetPos().z+=pkFps->GetFrameTime()*childmovespeed;	
+			pos.z+=pkFps->GetFrameTime()*childmovespeed;
 		}
 		if(pkInput->Pressed(KEY_RSHIFT)) {
-			m_pkCurentChild->GetPos().y+=pkFps->GetFrameTime()*childmovespeed;	
+			pos.y+=pkFps->GetFrameTime()*childmovespeed;
 		}
 		if(pkInput->Pressed(KEY_RCTRL)) {
-			m_pkCurentChild->GetPos().y-=pkFps->GetFrameTime()*childmovespeed;	
+			pos.y-=pkFps->GetFrameTime()*childmovespeed;
 		}
+		
+		m_pkCurentChild->SetPos(pos);	
+		
 
 	
 		//child rotation
+		Vector3 rot = m_pkCurentChild->GetRot();		
+		
 		if(pkInput->Pressed(KEY_HOME)) {
-			m_pkCurentChild->GetRot().y+=pkFps->GetFrameTime()*childrotatespeed;
+			rot.y+=pkFps->GetFrameTime()*childrotatespeed;
 		}
 		if(pkInput->Pressed(KEY_END)) {
-			m_pkCurentChild->GetRot().y-=pkFps->GetFrameTime()*childrotatespeed;
+			rot.y-=pkFps->GetFrameTime()*childrotatespeed;
 		}
 		if(pkInput->Pressed(KEY_INSERT)) {
-			m_pkCurentChild->GetRot().x+=pkFps->GetFrameTime()*childrotatespeed;
+			rot.x+=pkFps->GetFrameTime()*childrotatespeed;
 		}
 		if(pkInput->Pressed(KEY_DELETE)) {
-			m_pkCurentChild->GetRot().x-=pkFps->GetFrameTime()*childrotatespeed;
+			rot.x-=pkFps->GetFrameTime()*childrotatespeed;
 		}
 		if(pkInput->Pressed(KEY_PAGEUP)) {
-			m_pkCurentChild->GetRot().z+=pkFps->GetFrameTime()*childrotatespeed;
+			rot.z+=pkFps->GetFrameTime()*childrotatespeed;
 		}
 		if(pkInput->Pressed(KEY_PAGEDOWN)) {
-			m_pkCurentChild->GetRot().z-=pkFps->GetFrameTime()*childrotatespeed;
+			rot.z-=pkFps->GetFrameTime()*childrotatespeed;
 		}
+		
+		m_pkCurentChild->SetRot(rot);	
+		
 		
 		//child delete mohahaha
 		if(pkInput->Pressed(KEY_BACKSPACE)) {
@@ -755,15 +759,15 @@ void ZeroEdit::Input()
 				int texture=m_pkMap->GetVert(int(pos.x),int(pos.z))->texture;
 				Vector3 color=m_pkMap->GetVert(int(pos.x),int(pos.z))->color;
 
-				for(int xp=-2;xp<3;xp++){
-					for(int yp=-2;yp<3;yp++){
+				for(int xp=-(m_iPencilSize/2);xp<=(m_iPencilSize/2);xp++){
+					for(int yp=-(m_iPencilSize/2);yp<=(m_iPencilSize/2);yp++){
 						m_pkMap->GetVert(int(pos.x+xp),int(pos.z+yp))->texture=texture;
 						m_pkMap->GetVert(int(pos.x+xp),int(pos.z+yp))->color=color;//Vector3(.6,.45,0.3);		
 						m_pkMap->GetVert(int(pos.x+xp),int(pos.z+yp))->height=height;				
 					}
 				}
 				
-				m_pkMap->GenerateNormals((int)pos.x-5,(int)pos.z-5,8,8);
+				m_pkMap->GenerateNormals((int)pos.x - (m_iPencilSize/2),(int)pos.z - (m_iPencilSize/2),m_iPencilSize,m_iPencilSize);
 				
 			}
 			break;
@@ -774,7 +778,7 @@ void ZeroEdit::Input()
 				Vector3 pos=m_kDrawPos;
 				m_pkMap->GetMapXZ(pos.x,pos.z);
 			
-				m_pkMap->Smooth(int(pos.x-4),int(pos.z-4),8,8);
+				m_pkMap->Smooth(int(pos.x - (m_iPencilSize/2)),int(pos.z - (m_iPencilSize/2)),m_iPencilSize,m_iPencilSize);
 			
 			}
 			break;
@@ -785,14 +789,32 @@ void ZeroEdit::Input()
 				Vector3 pos=m_kDrawPos;
 				m_pkMap->GetMapXZ(pos.x,pos.z);
 			
-				for(int xp=-2;xp<3;xp++){
-					for(int yp=-2;yp<3;yp++){
+				for(int xp=-(m_iPencilSize/5);xp<=(m_iPencilSize/5);xp++){
+					for(int yp=-(m_iPencilSize/5);yp<=(m_iPencilSize/5);yp++){
 						m_pkMap->GetVert(int(pos.x+xp),int(pos.z+yp))->height+=2;				
 					}
 				}
 			
-				m_pkMap->GenerateNormals((int)pos.x-4,(int)pos.z-4,8,8);
-				m_pkMap->Smooth(int(pos.x-4),int(pos.z-4),8,8);
+
+				m_pkMap->Smooth(int(pos.x-(m_iPencilSize/2)),int(pos.z-(m_iPencilSize/2)),m_iPencilSize,m_iPencilSize);			
+			
+			}
+			break;
+			
+		case LOWER:
+			if(pkInput->Pressed(MOUSELEFT))
+			{
+				Vector3 pos=m_kDrawPos;
+				m_pkMap->GetMapXZ(pos.x,pos.z);
+			
+				for(int xp=-(m_iPencilSize/5);xp<=(m_iPencilSize/5);xp++){
+					for(int yp=-(m_iPencilSize/5);yp<=(m_iPencilSize/5);yp++){
+						m_pkMap->GetVert(int(pos.x+xp),int(pos.z+yp))->height-=2;				
+					}
+				}
+			
+
+				m_pkMap->Smooth(int(pos.x-(m_iPencilSize/2)),int(pos.z-(m_iPencilSize/2)),m_iPencilSize,m_iPencilSize);			
 			
 			}
 			break;
@@ -808,7 +830,8 @@ void ZeroEdit::Input()
 			if(pkInput->Pressed(KEY_LSHIFT)) {
 				// Movment Command
 				if(pkInput->Pressed(MOUSELEFT) &&  m_pkCurentChild) 
-					m_pkCurentChild->GetPos()=m_kDrawPos-Vector3(0,1,0);
+					m_pkCurentChild->SetPos(m_kDrawPos-Vector3(0,1,0));
+					m_pkCurentChild->SetPos(m_kDrawPos-Vector3(0,1,0));					
 				// Rotate Command
 				if(pkInput->Pressed(MOUSERIGHT) &&  m_pkCurentChild) {
 					m_pkCurentChild->GetRot().x += x;
@@ -831,7 +854,8 @@ void ZeroEdit::Input()
 					if(object==NULL)
 						break;
 					
-					object->GetPos()=m_kDrawPos;
+					object->SetPos(m_kDrawPos);
+					object->SetPos(m_kDrawPos);					
 					object->GetVel().Set(0,0,0);
 					
 					if(m_iRandom){
@@ -902,7 +926,8 @@ void ZeroEdit::Input()
 				m_fTimer=pkFps->GetTicks();
 
 				Object *object = new BallObject();					
-				object->GetPos()=m_kDrawPos;	
+				object->SetPos(m_kDrawPos);	
+				object->SetPos(m_kDrawPos);					
 				
 				object->AttachToClosestZone();
 				m_pkCurentChild=object;

@@ -154,8 +154,10 @@ Object* ObjectManager::CreateObject(ObjectDescriptor* pkObjDesc)
 	Object* tempobject=new Object;
 
 	tempobject->GetName()=pkObjDesc->m_kName;
-	tempobject->GetPos()=pkObjDesc->m_kPos;
-	tempobject->GetRot()=pkObjDesc->m_kRot;
+	tempobject->SetPos(pkObjDesc->m_kPos);		//två gånger för interpolering
+	tempobject->SetPos(pkObjDesc->m_kPos);		//två gånger för interpolering
+	tempobject->SetRot(pkObjDesc->m_kRot);		//två gånger för interpolering
+	tempobject->SetRot(pkObjDesc->m_kRot);		//två gånger för interpolering
 	tempobject->GetVel()=pkObjDesc->m_kVel;
 	tempobject->GetAcc()=pkObjDesc->m_kAcc;	
 	

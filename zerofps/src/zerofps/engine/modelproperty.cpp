@@ -31,7 +31,7 @@ void ModelProperty::Update() {
 	
 	glColor3f(m_kColor.x,m_kColor.y,m_kColor.z);
 	glPushMatrix();
-		glTranslatef(m_pkObject->GetPos().x,m_pkObject->GetPos().y,m_pkObject->GetPos().z);
+		glTranslatef(m_pkObject->GetIPos().x,m_pkObject->GetIPos().y,m_pkObject->GetIPos().z);
 		glutSolidSphere(m_fRadius, m_iSlices, m_iStacks);
 	glPopMatrix();
 	glPopAttrib();
