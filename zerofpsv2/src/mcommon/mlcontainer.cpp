@@ -21,7 +21,7 @@ MLContainer::MLContainer(EntityManager* pkEntMan,int iOwnerID,int iX ,int iY ,bo
 		cout<<"ERROR: container could not find its owner entity"<<endl;
 		
 
-	cout<<"Container created with size:"<< iX <<" x "<<iY<<endl;
+	//cout<<"Container created with size:"<< iX <<" x "<<iY<<endl;
 }
 
 void MLContainer::SetSize(int iX,int iY)
@@ -548,7 +548,7 @@ void MLContainer::FindMyItems()
 		vector<Entity*>	kEntitys;
 		pkOwner->GetChilds(&kEntitys);
 	
-		cout<<"parent has :"<<kEntitys.size()<<" childs"<<endl;
+		//cout<<"parent has :"<<kEntitys.size()<<" childs"<<endl;
 		
 		for(int i = 0;i<kEntitys.size();i++)
 		{
