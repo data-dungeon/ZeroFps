@@ -358,8 +358,262 @@ HeightMap* MistServer::SetPointer()
 	//cout << "Local pos: " << kLocalOffset.x << ", " << kLocalOffset.y << ", " << kLocalOffset.z << endl;
 }
 
+void MistServer::HMModifyCommand(float fSize)
+{
+	float fTime = m_pkFps->GetGameFrameTime();
+
+	for(int i=0; i<m_pkObjectMan->GetNumOfZones(); i++) {
+		ZoneData* kZData = m_pkObjectMan->GetZoneData(i);
+		if(kZData == NULL)	continue;
+		P_HMRP2* hmrp = dynamic_cast<P_HMRP2*>(kZData->m_pkZone->GetProperty("P_HMRP2"));
+		if(hmrp == NULL)		continue;
+	
+		Vector3 kLocalOffset = m_kDrawPos - hmrp->m_pkHeightMap->m_kCornerPos;
+
+		m_kSelectedHMVertex = hmrp->m_pkHeightMap->GetSelection(m_kDrawPos,m_fHMInRadius,m_fHMOutRadius);
+		if(m_kSelectedHMVertex.size() > 0) {
+			hmrp->m_pkHeightMap->Raise(m_kSelectedHMVertex, fSize * fTime);
+			m_kSelectedHMVertex.clear();
+			}
+		}
+}
+
+// Handles input for EditMode Terrain.
+void MistServer::Input_EditTerrain()
+{
+	if(m_pkInput->VKIsDown("inrad+"))	m_fHMInRadius += 1 * m_pkFps->GetGameFrameTime();
+	if(m_pkInput->VKIsDown("inrad-"))	m_fHMInRadius -= 1 * m_pkFps->GetGameFrameTime();
+	if(m_pkInput->VKIsDown("outrad+"))	m_fHMOutRadius += 1 * m_pkFps->GetGameFrameTime();
+	if(m_pkInput->VKIsDown("outrad-"))	m_fHMOutRadius -= 1 * m_pkFps->GetGameFrameTime();
+	if(m_fHMInRadius > m_fHMOutRadius)
+		m_fHMInRadius = m_fHMOutRadius;
+
+		if(m_pkInput->VKIsDown("hmraise"))
+			HMModifyCommand(5); 
+		if(m_pkInput->VKIsDown("hmlower"))
+			HMModifyCommand(-5); 
+
+		if(m_pkInput->VKIsDown("hmpaint")) {
+			int id = m_iCurrentMarkedZone;
+			ZoneData* kZData = m_pkObjectMan->GetZoneData(id);
+			P_HMRP2* hmrp = dynamic_cast<P_HMRP2*>(kZData->m_pkZone->GetProperty("P_HMRP2"));
+			Vector3 kLocalOffset = m_kDrawPos - hmrp->m_pkHeightMap->m_kCornerPos;
+			hmrp->m_pkHeightMap->DrawMask(m_kDrawPos, 1,m_fHMInRadius,255,255,255,255);
+			}
+}
+
+// Handles input for EditMode Zones.
+void MistServer::Input_EditZone()
+{
+	if(m_pkInput->Pressed(MOUSELEFT))
+	{
+		AddZone(m_kZoneMarkerPos, m_kZoneSize, m_strActiveZoneName);	
+	}
+	
+	if(m_pkInput->Pressed(KEY_T))
+	{
+		AddZone(m_kZoneMarkerPos, m_kZoneSize, m_strActiveZoneName,true);	
+	}
+
+	if(m_pkInput->VKIsDown("remove"))
+	{
+		int id = m_pkObjectMan->GetZoneIndex(m_kZoneMarkerPos,-1,false);
+		
+		m_pkObjectMan->DeleteZone(id);
+	}
+	
+	if(m_pkInput->VKIsDown("rotate"))
+	{
+		if(m_pkFps->GetTicks() - m_fClickDelay > 0.2)
+		{	
+			
+			m_fClickDelay = m_pkFps->GetTicks();						
+			m_iCurrentMarkedZone = m_pkObjectMan->GetZoneIndex(m_kZoneMarkerPos,-1,false);
+			
+			/*
+			ZoneData* zd = pkObjectMan->GetZoneData(m_iCurrentMarkedZone);
+			if(zd)
+				if(zd->m_bUnderContruction)*/
+			RotateActiveZoneObject();
+		}
+	}
+	
+	if(m_pkInput->VKIsDown("buildmodeon"))
+	{
+		if(m_pkFps->GetTicks() - m_fClickDelay > 0.2)
+		{	
+			m_fClickDelay = m_pkFps->GetTicks();
+			m_iCurrentMarkedZone = m_pkObjectMan->GetZoneIndex(m_kZoneMarkerPos,-1,false);
+			m_pkObjectMan->SetUnderConstruction(m_iCurrentMarkedZone);
+		}
+	}
+	
+	if(m_pkInput->VKIsDown("buildmodeoff"))
+	{
+		if(m_pkFps->GetTicks() - m_fClickDelay > 0.2)
+		{	
+			m_fClickDelay = m_pkFps->GetTicks();
+			m_iCurrentMarkedZone = m_pkObjectMan->GetZoneIndex(m_kZoneMarkerPos,-1,false);
+			m_pkObjectMan->CommitZone(m_iCurrentMarkedZone);
+		}
+	}	
+
+	if(m_pkInput->VKIsDown("selectzone"))
+	{		
+		m_iCurrentMarkedZone =  m_pkObjectMan->GetZoneIndex(m_kZoneMarkerPos,-1,false);
+	}
+
+	if(m_pkInput->Pressed(KEY_1)) m_kZoneSize.Set(4,4,4);
+	if(m_pkInput->Pressed(KEY_2)) m_kZoneSize.Set(8,8,8);
+	if(m_pkInput->Pressed(KEY_3)) m_kZoneSize.Set(16,16,16);	
+	if(m_pkInput->Pressed(KEY_4)) m_kZoneSize.Set(32,16,32);	
+	if(m_pkInput->Pressed(KEY_5)) m_kZoneSize.Set(64,16,64);		
+	if(m_pkInput->Pressed(KEY_9)) m_bUpdateMarker = true;				
+   if(m_pkInput->Pressed(KEY_0)) m_bUpdateMarker = false;
+
+}
+
+// Handles input for EditMode Object.
+void MistServer::Input_EditObject()
+{
+	if(m_pkInput->Pressed(MOUSELEFT))
+	{
+		if(m_pkFps->GetTicks() - m_fClickDelay > 0.2)
+		{	
+			m_fClickDelay = m_pkFps->GetTicks();		
+			m_pkObjectMan->CreateObjectFromScriptInZone(
+				m_strActiveObjectName.c_str(), m_kObjectMarkerPos);
+
+			cout << "Spawning " << m_strActiveObjectName.c_str() << endl;
+		}
+	}
+	
+	if(m_pkInput->Pressed(MOUSEMIDDLE) || (m_pkInput->Pressed(MOUSERIGHT) && m_pkInput->Pressed(KEY_LSHIFT)))
+	{		
+		if(m_pkFps->GetTicks() - m_fClickDelay > 0.2)
+		{	
+			m_fClickDelay = m_pkFps->GetTicks();		
+			
+			Entity* pkObj =  GetTargetObject();
+		
+			if(pkObj)
+			{
+				m_iCurrentObject = pkObj->iNetWorkID;
+			}
+		}
+	}
+	
+	//remove			
+	if(m_pkInput->VKIsDown("remove"))
+	{
+		
+		Entity* pkObj = m_pkObjectMan->GetObjectByNetWorkID(m_iCurrentObject);
+										
+		if(pkObj)
+		{
+			//fulhack deluxe för att inte kunna ta bort statiska entitys i zoner som inte är underconstruction
+		/*	if(pkObj->GetParent()->GetName() == "StaticEntity")
+			{
+				cout<<"zone is not under construction "<<endl;
+				return;
+			}
+		*/						
+			cout<<"Deleting ID:"<<pkObj->iNetWorkID<<" Name:"<<pkObj->GetName()<<" Type:"<<pkObj->GetType()<<endl;
+			
+			m_pkObjectMan->Delete(pkObj);				
+		}
+
+	
+		m_iCurrentObject = -1;
+	}
+
+	Entity* pkObj = m_pkObjectMan->GetObjectByNetWorkID(m_iCurrentObject);								
+	if(!pkObj)
+		return;		
+
+	//return if its a static object
+	if(pkObj->GetParent()->GetName() == "StaticEntity")
+		return;
+		
+		
+	//hack for collisions test
+	if(m_pkInput->VKIsDown("setvel"))		pkObj->SetVel(Vector3(1,0,0));
+
+	// Move Selected Entity
+	Vector3 kMove(0,0,0);
+	kMove.Set(0,0,0);
+	if(m_pkInput->VKIsDown("moveleft"))		kMove += Vector3(-1 * m_pkFps->GetFrameTime(),0,0);			
+	if(m_pkInput->VKIsDown("moveright"))	kMove += Vector3(1 * m_pkFps->GetFrameTime(),0,0);			
+	if(m_pkInput->VKIsDown("movefrw"))		kMove += Vector3(0,0,-1 * m_pkFps->GetFrameTime());			
+	if(m_pkInput->VKIsDown("moveback"))		kMove += Vector3(0,0,1 * m_pkFps->GetFrameTime());			
+	if(m_pkInput->VKIsDown("moveup"))		kMove += Vector3(0,1 * m_pkFps->GetFrameTime(),0);			
+	if(m_pkInput->VKIsDown("movedown"))		kMove += Vector3(0,-1 * m_pkFps->GetFrameTime(),0);
+
+	pkObj->SetLocalPosV(pkObj->GetLocalPosV() + kMove);
+
+	// Rotate Selected Entity
+	if(m_pkInput->VKIsDown("rotx+"))			pkObj->RotateLocalRotV(Vector3(100*m_pkFps->GetFrameTime(),0,0));			
+	if(m_pkInput->VKIsDown("rotx-"))			pkObj->RotateLocalRotV(Vector3(-100*m_pkFps->GetFrameTime(),0,0));			
+	if(m_pkInput->VKIsDown("roty+"))			pkObj->RotateLocalRotV(Vector3(0,100*m_pkFps->GetFrameTime(),0));			
+	if(m_pkInput->VKIsDown("roty-"))			pkObj->RotateLocalRotV(Vector3(0,-100*m_pkFps->GetFrameTime(),0));			
+	if(m_pkInput->VKIsDown("rotz+"))			pkObj->RotateLocalRotV(Vector3(0,0,100*m_pkFps->GetFrameTime()));			
+	if(m_pkInput->VKIsDown("rotz-"))			pkObj->RotateLocalRotV(Vector3(0,0,-100*m_pkFps->GetFrameTime()));			
+
+}
+
+void MistServer::Input_Camera(float fMouseX, float fMouseY)
+{
+	if(m_pkInput->VKIsDown("slow")){
+		m_CamMoveSpeed *= 0.25;
+	}
+
+	float fSpeedScale = m_pkFps->GetFrameTime()*m_CamMoveSpeed;
+
+	Vector3 newpos = m_pkCameraObject->GetLocalPosV();
+	
+	Matrix4 kRm;
+	kRm = m_pkCameraObject->GetLocalRotM();
+
+	kRm.Transponse();
+
+	
+	Vector3 xv = kRm.GetAxis(0);
+	Vector3 zv = kRm.GetAxis(2);
+
+	xv.y = 0;
+	zv.y = 0;
+	
+	xv.Normalize();
+	zv.Normalize();
+
+	if(m_pkInput->VKIsDown("right"))		newpos += xv * fSpeedScale;		
+	if(m_pkInput->VKIsDown("left"))		newpos += xv * -fSpeedScale;		
+	if(m_pkInput->VKIsDown("forward"))	newpos += zv * -fSpeedScale;
+	if(m_pkInput->VKIsDown("back"))		newpos += zv * fSpeedScale;	
+
+	if(m_pkInput->VKIsDown("down"))		newpos.y += fSpeedScale;
+	if(m_pkInput->VKIsDown("up"))			newpos.y -= fSpeedScale;
+			
+
+	Vector3 rot;
+	rot.Set(float(-fMouseY / 5.0),float(-fMouseX / 5.0),0);
+
+	kRm.Transponse();		
+	kRm.Rotate(rot);
+	kRm.Transponse();		
+	Vector3 bla = Vector3(0,0,1);
+	bla = kRm.VectorTransform(bla);
+	kRm.LookDir(bla,Vector3(0,1,0));
+	
+	m_pkCameraObject->SetLocalPosV(newpos);		
+	if(m_pkInput->VKIsDown("pancam"))
+		m_pkCameraObject->SetLocalRotM(kRm);	
+}
+
+
 void MistServer::Input()
 {
+	// *** HANDE Quueued Keys.
 	int iPressedKey = m_pkInput->GetQueuedKey();
 
 	switch(iPressedKey)
@@ -373,325 +627,40 @@ void MistServer::Input()
 		break;
 	}
 
-	float speed = 20;
-	
 	//set speed depending on edit mode
-	if(m_iEditMode == EDIT_HMAP)		speed = 20;
-	if(m_iEditMode == EDIT_ZONES)		speed = 20;
-	if(m_iEditMode == EDIT_OBJECTS)	speed = 5;
+	if(m_iEditMode == EDIT_HMAP)		m_CamMoveSpeed = 20;
+	if(m_iEditMode == EDIT_ZONES)		m_CamMoveSpeed = 20;
+	if(m_iEditMode == EDIT_OBJECTS)	m_CamMoveSpeed = 5;
 	
 	
 	int x,z;		
 	m_pkInput->RelMouseXY(x,z);	
 
-	P_Mad* mp;
-	Entity* pkAnimObj = m_pkObjectMan->GetObjectByNetWorkID(m_iCurrentObject);								
-	if(pkAnimObj)
-		mp = (P_Mad*)pkAnimObj->GetProperty("P_Mad");
-	
 	if(m_pkInput->VKIsDown("makeland")) {
 		int id = m_pkObjectMan->GetZoneIndex(m_kZoneMarkerPos,-1,false);
 		ZoneData* z = m_pkObjectMan->GetZoneData(id);
 		m_pkFps->AddHMProperty(z, z->m_iZoneObjectID,z->m_kSize);
 	}  
 
-
-/*	if(m_pkInput->Pressed(KEY_F5) && mp) {
-		m_pkZeroFps->AddHMProperty();
-		mp->SetAnimationActive(false);
-		} 
-	if(m_pkInput->Pressed(KEY_F6) && mp) {
-		mp->SetAnimationActive(true);
-		} 
-	if(m_pkInput->Pressed(KEY_F7) && mp) {
-		mp->NextCoreAnimation();
-		} */
-	
-/*	if(pkInput->Pressed(KEY_F4)) {
-		vector<Entity*> ents;
-		pkObjectMan->GetAllObjectsInArea(&ents,m_kObjectMarkerPos,2);
-		
-		for(int i = 0;i<ents.size();i++)
-		{
-			cout<<"GOT object:"<<ents[i]->GetName()<<endl;
-		}
-	} 	
-*/	
 	Vector3 kMove(0,0,0);
-	Vector3 kRotate(0,0,0);
-
+//	Vector3 kRotate(0,0,0);
 
 	if(m_pkCameraObject)	
 	{	
-		if(m_pkInput->VKIsDown("slow")){
-			speed*=0.25;
-		}
-	
-		float fSpeedScale = m_pkFps->GetFrameTime()*speed;
-
-		Vector3 newpos = m_pkCameraObject->GetLocalPosV();
-		
-		Matrix4 kRm;
-		kRm = m_pkCameraObject->GetLocalRotM();
-
-		kRm.Transponse();
-	
-		
-		Vector3 xv = kRm.GetAxis(0);
-		Vector3 zv = kRm.GetAxis(2);
-	
-		xv.y = 0;
-		zv.y = 0;
-		
-		xv.Normalize();
-		zv.Normalize();
-	
-		if(m_pkInput->VKIsDown("right"))		newpos += xv * fSpeedScale;		
-		if(m_pkInput->VKIsDown("left"))		newpos += xv * -fSpeedScale;		
-		if(m_pkInput->VKIsDown("forward"))	newpos += zv * -fSpeedScale;
-		if(m_pkInput->VKIsDown("back"))		newpos += zv * fSpeedScale;	
-	
-		if(m_pkInput->VKIsDown("down"))		newpos.y += fSpeedScale;
-		if(m_pkInput->VKIsDown("up"))			newpos.y -= fSpeedScale;
-				
-
-		Vector3 rot;
-		rot.Set(float(-z / 5.0),float(-x / 5.0),0);
-
-		kRm.Transponse();		
-		kRm.Rotate(rot);
-		kRm.Transponse();		
-		Vector3 bla = Vector3(0,0,1);
-		bla = kRm.VectorTransform(bla);
-		kRm.LookDir(bla,Vector3(0,1,0));
-
-		
-		m_pkCameraObject->SetLocalPosV(newpos);		
-		if(m_pkInput->Pressed(MOUSERIGHT))
-			m_pkCameraObject->SetLocalRotM(kRm);	
-	
+		Input_Camera(x,z);
 	
 		if(m_pkInput->VKIsDown("modezone"))			m_iEditMode = EDIT_ZONES;
 		if(m_pkInput->VKIsDown("modeobj"))			m_iEditMode = EDIT_OBJECTS;		
 		if(m_pkInput->VKIsDown("modehmvertex"))	m_iEditMode = EDIT_HMAP;		
+
+		if(m_pkInput->VKIsDown("lighton"))			m_pkZShader->SetForceLighting(LIGHT_ALWAYS_ON);	
+		if(m_pkInput->VKIsDown("lightoff"))			m_pkZShader->SetForceLighting(LIGHT_ALWAYS_OFF);
+		if(m_pkInput->VKIsDown("lightstd"))			m_pkZShader->SetForceLighting(LIGHT_MATERIAL);
 	
-		
-
-		if(m_pkInput->VKIsDown("lighton"))		m_pkZShader->SetForceLighting(LIGHT_ALWAYS_ON);	
-		if(m_pkInput->VKIsDown("lightoff"))		m_pkZShader->SetForceLighting(LIGHT_ALWAYS_OFF);
-		if(m_pkInput->VKIsDown("lightstd"))		m_pkZShader->SetForceLighting(LIGHT_MATERIAL);
-	
-		if(m_iEditMode == EDIT_HMAP) {
-			if(m_pkInput->VKIsDown("inrad+"))	m_fHMInRadius += 1 * m_pkFps->GetGameFrameTime();
-			if(m_pkInput->VKIsDown("inrad-"))	m_fHMInRadius -= 1 * m_pkFps->GetGameFrameTime();
-			if(m_pkInput->VKIsDown("outrad+"))	m_fHMOutRadius += 1 * m_pkFps->GetGameFrameTime();
-			if(m_pkInput->VKIsDown("outrad-"))	m_fHMOutRadius -= 1 * m_pkFps->GetGameFrameTime();
-			if(m_fHMInRadius > m_fHMOutRadius)
-				m_fHMInRadius = m_fHMOutRadius;
-
-			int id = m_iCurrentMarkedZone;
-			if(id!=-1) {
-				ZoneData* kZData = m_pkObjectMan->GetZoneData(id);
-				P_HMRP2* hmrp = dynamic_cast<P_HMRP2*>(kZData->m_pkZone->GetProperty("P_HMRP2"));
-				Vector3 kLocalOffset = m_kDrawPos - hmrp->m_pkHeightMap->m_kCornerPos;
-
-				if(m_pkInput->VKIsDown("hmraise")) {
-					m_kSelectedHMVertex = hmrp->m_pkHeightMap->GetSelection(m_kDrawPos,m_fHMInRadius,m_fHMOutRadius);
-					if(m_kSelectedHMVertex.size() > 0) {
-						hmrp->m_pkHeightMap->Raise(m_kSelectedHMVertex, 5 * m_pkFps->GetGameFrameTime());
-						m_kSelectedHMVertex.clear();
-						}
-					}
-
-				if(m_pkInput->VKIsDown("hmpaint")) {
-					hmrp->m_pkHeightMap->DrawMask(m_kDrawPos, 1,8,255,255,255,255);
-					}
- 
-				if(m_pkInput->VKIsDown("hmlower"))
-					m_kSelectedHMVertex = hmrp->m_pkHeightMap->GetSelection(m_kDrawPos,m_fHMInRadius,m_fHMOutRadius);
-					if(m_kSelectedHMVertex.size() > 0) {
-						hmrp->m_pkHeightMap->Raise(m_kSelectedHMVertex, -5 * m_pkFps->GetGameFrameTime());
-						//hmrp->m_pkHeightMap->Flatten(m_kSelectedHMVertex, m_kDrawPos);
-						m_kSelectedHMVertex.clear();
-						}
-				}	
-			} 
-
-		//edit zone  mode
-		if(m_iEditMode == EDIT_ZONES)
-		{
-			/*if(m_pkInput->Pressed(KEY_B))
-			{
-				int id = m_iCurrentMarkedZone;
-				if(id!=-1) {
-					ZoneData* kZData = m_pkObjectMan->GetZoneData(id);
-					P_HMRP2* hmrp = dynamic_cast<P_HMRP2*>(kZData->m_pkZone->GetProperty("P_HMRP2"));
-					Vector3 kLocalOffset = m_kDrawPos - hmrp->m_pkHeightMap->m_kCornerPos;
-					hmrp->m_pkHeightMap->Raise(kLocalOffset.x,kLocalOffset.z,6,6,true);
-					}
-			}*/
-
-			if(m_pkInput->Pressed(MOUSELEFT))
-			{
-				AddZone(m_kZoneMarkerPos, m_kZoneSize, m_strActiveZoneName);	
-			}
-			
-			if(m_pkInput->Pressed(KEY_T))
-			{
-				AddZone(m_kZoneMarkerPos, m_kZoneSize, m_strActiveZoneName,true);	
-			}
-	
-			if(m_pkInput->VKIsDown("remove"))
-			{
-				int id = m_pkObjectMan->GetZoneIndex(m_kZoneMarkerPos,-1,false);
-				
-				m_pkObjectMan->DeleteZone(id);
-			}
-			
-			if(m_pkInput->VKIsDown("rotate"))
-			{
-				if(m_pkFps->GetTicks() - m_fClickDelay > 0.2)
-				{	
-					
-					m_fClickDelay = m_pkFps->GetTicks();						
-					m_iCurrentMarkedZone = m_pkObjectMan->GetZoneIndex(m_kZoneMarkerPos,-1,false);
-					
-					/*
-					ZoneData* zd = pkObjectMan->GetZoneData(m_iCurrentMarkedZone);
-					if(zd)
-						if(zd->m_bUnderContruction)*/
-					RotateActiveZoneObject();
-				}
-			}
-			
-			if(m_pkInput->VKIsDown("buildmodeon"))
-			{
-				if(m_pkFps->GetTicks() - m_fClickDelay > 0.2)
-				{	
-					m_fClickDelay = m_pkFps->GetTicks();
-					m_iCurrentMarkedZone = m_pkObjectMan->GetZoneIndex(m_kZoneMarkerPos,-1,false);
-					m_pkObjectMan->SetUnderConstruction(m_iCurrentMarkedZone);
-				}
-			}
-			
-			if(m_pkInput->VKIsDown("buildmodeoff"))
-			{
-				if(m_pkFps->GetTicks() - m_fClickDelay > 0.2)
-				{	
-					m_fClickDelay = m_pkFps->GetTicks();
-					m_iCurrentMarkedZone = m_pkObjectMan->GetZoneIndex(m_kZoneMarkerPos,-1,false);
-					m_pkObjectMan->CommitZone(m_iCurrentMarkedZone);
-				}
-			}	
-	
-			if(m_pkInput->VKIsDown("selectzone"))
-			{		
-				m_iCurrentMarkedZone =  m_pkObjectMan->GetZoneIndex(m_kZoneMarkerPos,-1,false);
-			}
-
-
-			 
-
-			if(m_pkInput->Pressed(KEY_1)) m_kZoneSize.Set(4,4,4);
-			if(m_pkInput->Pressed(KEY_2)) m_kZoneSize.Set(8,8,8);
-			if(m_pkInput->Pressed(KEY_3)) m_kZoneSize.Set(16,16,16);	
-			if(m_pkInput->Pressed(KEY_4)) m_kZoneSize.Set(32,16,32);	
-			if(m_pkInput->Pressed(KEY_5)) m_kZoneSize.Set(64,16,64);			
-			if(m_pkInput->Pressed(KEY_9)) m_bUpdateMarker = true;				
-         if(m_pkInput->Pressed(KEY_0)) m_bUpdateMarker = false;
-		}	
-	
-		//edit object mode
-		if(m_iEditMode == EDIT_OBJECTS)
-		{	
-			if(m_pkInput->Pressed(MOUSELEFT))
-			{
-				if(m_pkFps->GetTicks() - m_fClickDelay > 0.2)
-				{	
-					m_fClickDelay = m_pkFps->GetTicks();		
-					m_pkObjectMan->CreateObjectFromScriptInZone(
-						m_strActiveObjectName.c_str(), m_kObjectMarkerPos);
-
-					cout << "Spawning " << m_strActiveObjectName.c_str() << endl;
-				}
-			}
-			
-			if(m_pkInput->Pressed(MOUSEMIDDLE) || (m_pkInput->Pressed(MOUSERIGHT) && m_pkInput->Pressed(KEY_LSHIFT)))
-			{		
-				if(m_pkFps->GetTicks() - m_fClickDelay > 0.2)
-				{	
-					m_fClickDelay = m_pkFps->GetTicks();		
-					
-					Entity* pkObj =  GetTargetObject();
-				
-					if(pkObj)
-					{
-						m_iCurrentObject = pkObj->iNetWorkID;
-					}
-				}
-			}
-			
-			//remove			
-			if(m_pkInput->VKIsDown("remove"))
-			{
-				
-				Entity* pkObj = m_pkObjectMan->GetObjectByNetWorkID(m_iCurrentObject);
-												
-				if(pkObj)
-				{
-					//fulhack deluxe för att inte kunna ta bort statiska entitys i zoner som inte är underconstruction
-				/*	if(pkObj->GetParent()->GetName() == "StaticEntity")
-					{
-						cout<<"zone is not under construction "<<endl;
-						return;
-					}
-				*/						
-					cout<<"Deleting ID:"<<pkObj->iNetWorkID<<" Name:"<<pkObj->GetName()<<" Type:"<<pkObj->GetType()<<endl;
-					
-					m_pkObjectMan->Delete(pkObj);				
-				}
-
-			
-				m_iCurrentObject = -1;
-			}
-		
-			Entity* pkObj = m_pkObjectMan->GetObjectByNetWorkID(m_iCurrentObject);								
-			if(!pkObj)
-				return;		
-		
-			//return if its a static object
-			if(pkObj->GetParent()->GetName() == "StaticEntity")
-				return;
-				
-				
-			//hack for collisions test
-			if(m_pkInput->VKIsDown("setvel"))		pkObj->SetVel(Vector3(1,0,0));
-		
-			// Move Selected Entity
-			kMove.Set(0,0,0);
-			if(m_pkInput->VKIsDown("moveleft"))		kMove += Vector3(-1 * m_pkFps->GetFrameTime(),0,0);			
-			if(m_pkInput->VKIsDown("moveright"))	kMove += Vector3(1 * m_pkFps->GetFrameTime(),0,0);			
-			if(m_pkInput->VKIsDown("movefrw"))		kMove += Vector3(0,0,-1 * m_pkFps->GetFrameTime());			
-			if(m_pkInput->VKIsDown("moveback"))		kMove += Vector3(0,0,1 * m_pkFps->GetFrameTime());			
-			if(m_pkInput->VKIsDown("moveup"))		kMove += Vector3(0,1 * m_pkFps->GetFrameTime(),0);			
-			if(m_pkInput->VKIsDown("movedown"))		kMove += Vector3(0,-1 * m_pkFps->GetFrameTime(),0);
-
-			pkObj->SetLocalPosV(pkObj->GetLocalPosV() + kMove);
-
-			// Rotate Selected Entity
-			if(m_pkInput->VKIsDown("rotx+"))			pkObj->RotateLocalRotV(Vector3(100*m_pkFps->GetFrameTime(),0,0));			
-			if(m_pkInput->VKIsDown("rotx-"))			pkObj->RotateLocalRotV(Vector3(-100*m_pkFps->GetFrameTime(),0,0));			
-			if(m_pkInput->VKIsDown("roty+"))			pkObj->RotateLocalRotV(Vector3(0,100*m_pkFps->GetFrameTime(),0));			
-			if(m_pkInput->VKIsDown("roty-"))			pkObj->RotateLocalRotV(Vector3(0,-100*m_pkFps->GetFrameTime(),0));			
-			if(m_pkInput->VKIsDown("rotz+"))			pkObj->RotateLocalRotV(Vector3(0,0,100*m_pkFps->GetFrameTime()));			
-			if(m_pkInput->VKIsDown("rotz-"))			pkObj->RotateLocalRotV(Vector3(0,0,-100*m_pkFps->GetFrameTime()));			
-		
-			
-		}		
-
-	
+		if(m_iEditMode == EDIT_HMAP)					Input_EditTerrain();
+		if(m_iEditMode == EDIT_ZONES)					Input_EditZone();
+		if(m_iEditMode == EDIT_OBJECTS)				Input_EditObject();
 	}
-				
 };
 
 void MistServer::OnHud(void)

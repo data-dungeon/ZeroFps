@@ -148,9 +148,18 @@ class MistServer :public Application , public ZGuiApp {
 
 		LightSource	m_kSun;
 
+
 		vector<HMSelectVertex>	m_kSelectedHMVertex;
 		float m_fHMInRadius;
 		float m_fHMOutRadius;
+
+		void HMModifyCommand(float fSize);
+
+		float m_CamMoveSpeed;
+		void Input_Camera(float fMouseX, float fMouseY);
+		void Input_EditTerrain();
+		void Input_EditZone();
+		void Input_EditObject();
 
 	public:
 		void OnClickTabPage(ZGuiTabCtrl *pkTabCtrl, int iNewPage, int iPrevPage);

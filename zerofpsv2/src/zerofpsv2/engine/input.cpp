@@ -550,7 +550,9 @@ void Input::SetupMapToKeyState()
 	m_akMapToKeyState[ SDLK_RSHIFT ] = KEY_RSHIFT;
 
 	m_akMapToKeyState[ SDLK_LCTRL ] = KEY_LCTRL;
+	m_akMapToKeyState[ SDLK_LALT ]  = KEY_LALT;
 	m_akMapToKeyState[ SDLK_SPACE ] = KEY_SPACE;
+	m_akMapToKeyState[ SDLK_RALT ]  = KEY_RALT;
 	m_akMapToKeyState[ SDLK_RCTRL ] = KEY_RCTRL;
 
 	m_akMapToKeyState[ SDLK_UP ]		= KEY_UP;
@@ -683,7 +685,9 @@ void Input::SetupMapToKeyState()
 	m_akKeyState[KEY_RSHIFT].m_strName			= "rshift";
 
 	m_akKeyState[KEY_LCTRL].m_strName			= "lctrl";
+	m_akKeyState[KEY_LALT].m_strName				= "lalt";
 	m_akKeyState[KEY_SPACE].m_strName			= "space";
+	m_akKeyState[KEY_RALT].m_strName				= "ralt";
 	m_akKeyState[KEY_RCTRL].m_strName			= "rctrl";
 
 	m_akKeyState[KEY_UP].m_strName				= "up";
