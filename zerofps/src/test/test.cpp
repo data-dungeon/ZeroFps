@@ -26,7 +26,7 @@ void Test::OnInit(void) {
 	test->SetTileSet("file:../data/textures/landbw.bmp");
 	if(!test->LoadImageHmap("file:islands.bmp"))
 		cout<<"Error loading map"<<endl;
-	test->GenerateNormals();
+	test->GenerateNormals(); 
 	test->GenerateTextures();
 
 //	test->Save("blub.hm");
