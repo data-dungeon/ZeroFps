@@ -82,7 +82,7 @@ LINK32=link.exe
 # Begin Special Build Tool
 ProjDir=.
 SOURCE="$(InputPath)"
-PostBuild_Cmds=copy             $(ProjDir)\debug\*.lib             ..\..\..\bin\ 
+PostBuild_Cmds=copy               $(ProjDir)\debug\*.lib               ..\..\..\bin\ 
 # End Special Build Tool
 
 !ENDIF 
@@ -96,7 +96,15 @@ PostBuild_Cmds=copy             $(ProjDir)\debug\*.lib             ..\..\..\bin\
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 # Begin Source File
 
+SOURCE=..\OglLoad\extgl.c
+# End Source File
+# Begin Source File
+
 SOURCE=.\landscape.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\light.cpp
 # End Source File
 # Begin Source File
 
@@ -118,6 +126,10 @@ SOURCE=.\texturemanager.cpp
 # Begin Group "Header Files"
 
 # PROP Default_Filter "h;hpp;hxx;hm;inl"
+# Begin Source File
+
+SOURCE=.\light.h
+# End Source File
 # Begin Source File
 
 SOURCE=.\pmd.h

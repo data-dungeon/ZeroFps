@@ -342,5 +342,11 @@ bool Render::CubeInFrustum( float x, float y, float z, float sizex,float sizey,f
 
 
 
+RENDER_API void RenderDLL_InitExtGL(void)
+{
+	int res = extgl_Initialize();
+	cout << "extgl_Initialize: "<< res << endl;
+}
+
 
 

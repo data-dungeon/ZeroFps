@@ -1,5 +1,5 @@
 #include "pmddraw.h"
-#include <SDL/SDL_opengl.h>
+#include <GL/extgl.h>
 
 PmdDraw::PmdDraw()
 {

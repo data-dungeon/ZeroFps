@@ -66,6 +66,7 @@ class RENDER_API Render {
 		
 };
 
+RENDER_API void RenderDLL_InitExtGL(void);
 
 #endif
 

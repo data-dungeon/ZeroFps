@@ -82,7 +82,7 @@ LINK32=link.exe
 # Begin Special Build Tool
 ProjDir=.
 SOURCE="$(InputPath)"
-PostBuild_Cmds=copy       $(ProjDir)\debug\*.lib       ..\..\..\bin\ 
+PostBuild_Cmds=copy         $(ProjDir)\debug\*.lib         ..\..\..\bin\ 
 # End Special Build Tool
 
 !ENDIF 
@@ -108,15 +108,15 @@ SOURCE=.\console.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\OglLoad\extgl.c
+# End Source File
+# Begin Source File
+
 SOURCE=.\input.cpp
 # End Source File
 # Begin Source File
 
 SOURCE=.\main.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\modellmanager.cpp
 # End Source File
 # Begin Source File
 

@@ -1,4 +1,5 @@
 #include "texturemanager.h"
+#include "GL/glu.h"
 
 
 TextureManager::TextureManager(FileIo* pkFile) {

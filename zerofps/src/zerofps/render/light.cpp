@@ -76,7 +76,7 @@ void Light::Update() {
 	
 	//loop trough selected lightsources and enable them
 	int i=0;		
-	for(vector<LightSource*>::iterator it=m_kActiveLights.begin();it!=m_kActiveLights.end();it++) {
+	for(vector<LightSource*>::iterator itv=m_kActiveLights.begin();itv!=m_kActiveLights.end();itv++) {
  				
 		GLenum light;				
 		//wich light to change
@@ -108,42 +108,42 @@ void Light::Update() {
   		}
 //		cout<<"LIGHT: "<<light;
 		
-		glLightfv(light,GL_DIFFUSE,&(*it)->kDiffuse[0]);
-		glLightfv(light,GL_SPECULAR,&(*it)->kSpecular[0]);  
-  		glLightfv(light,GL_AMBIENT,&(*it)->kAmbient[0]);		
+		glLightfv(light,GL_DIFFUSE,&(*itv)->kDiffuse[0]);
+		glLightfv(light,GL_SPECULAR,&(*itv)->kSpecular[0]);  
+  		glLightfv(light,GL_AMBIENT,&(*itv)->kAmbient[0]);		
 		
 		
 		Vector4 temp;
-  		switch ((*it)->iType) {
+  		switch ((*itv)->iType) {
   			case DIRECTIONAL_LIGHT:
-				temp=(*(*it)->kRot)+(*it)->kConstRot;  			
+				temp=(*(*itv)->kRot)+(*itv)->kConstRot;  			
   				temp[3]=0;			
 				glLightfv(light,GL_POSITION,&temp[0]);	    				
   				break;
   			case POINT_LIGHT:
-  				temp=(*(*it)->kPos)+(*it)->kConstPos;
+  				temp=(*(*itv)->kPos)+(*itv)->kConstPos;
   				temp[3]=1;  						
 				glLightfv(light,GL_POSITION,&temp[0]);	  
 		  		
-		  		glLightf(light,GL_CONSTANT_ATTENUATION,(*it)->fConst_Atten);
-		  		glLightf(light,GL_LINEAR_ATTENUATION,(*it)->fLinear_Atten);
-		  		glLightf(light,GL_QUADRATIC_ATTENUATION,(*it)->fQuadratic_Atten);
+		  		glLightf(light,GL_CONSTANT_ATTENUATION,(*itv)->fConst_Atten);
+		  		glLightf(light,GL_LINEAR_ATTENUATION,(*itv)->fLinear_Atten);
+		  		glLightf(light,GL_QUADRATIC_ATTENUATION,(*itv)->fQuadratic_Atten);
   				
   				break;
   			case SPOT_LIGHT:
-  				temp=(*(*it)->kPos)+(*it)->kConstPos;
+  				temp=(*(*itv)->kPos)+(*itv)->kConstPos;
   				temp[3]=1;  						
 				glLightfv(light,GL_POSITION,&temp[0]);	  
 				
-				temp=(*(*it)->kRot)+(*it)->kConstRot;
+				temp=(*(*itv)->kRot)+(*itv)->kConstRot;
 				glLightfv(light,GL_SPOT_DIRECTION,&temp[0]);
 		  		
-		  		glLightf(light,GL_CONSTANT_ATTENUATION,(*it)->fConst_Atten);
-		  		glLightf(light,GL_LINEAR_ATTENUATION,(*it)->fLinear_Atten);
-		  		glLightf(light,GL_QUADRATIC_ATTENUATION,(*it)->fQuadratic_Atten);
+		  		glLightf(light,GL_CONSTANT_ATTENUATION,(*itv)->fConst_Atten);
+		  		glLightf(light,GL_LINEAR_ATTENUATION,(*itv)->fLinear_Atten);
+		  		glLightf(light,GL_QUADRATIC_ATTENUATION,(*itv)->fQuadratic_Atten);
   				
-  				glLightf(light,GL_SPOT_EXPONENT,(*it)->fExp);
-  				glLightf(light,GL_SPOT_CUTOFF,(*it)->fCutoff);  				
+  				glLightf(light,GL_SPOT_EXPONENT,(*itv)->fExp);
+  				glLightf(light,GL_SPOT_CUTOFF,(*itv)->fCutoff);  				
   				
   				break;  		
   		}

@@ -2,7 +2,7 @@
 #define _TEXTUREMANAGER_H_
 
 #include "render_x.h"
-#include <SDL/SDL_opengl.h>
+#include <GL/extgl.h>
 #include <SDL/SDL.h>
 #include <SDL/SDL_image.h>
 #include <iostream>

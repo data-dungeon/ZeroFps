@@ -4,8 +4,9 @@
 #include <iostream>
 #include <vector>
 #include <list>
-#include <SDL/SDL_opengl.h>
+#include <GL/extgl.h>
 #include "../basic/basic.pkg"
+#include "render_x.h"
 
 using namespace std;
 enum LIGHT_TYPE {
@@ -15,7 +16,7 @@ enum LIGHT_TYPE {
 };
 
 
-class LightSource {
+class RENDER_API LightSource {
 	public:
 		LightSource();
 	
@@ -44,7 +45,7 @@ class LightSource {
 };
 
 
-class Light {
+class RENDER_API Light {
 	private:
 		Vector3 *m_kCamPos;
 		int m_iNrOfLights;

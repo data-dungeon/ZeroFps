@@ -1,4 +1,5 @@
 #include "zerofps.h"
+#include "GL/glu.h"
 
 ZeroFps::ZeroFps(void) {
 	m_pkFile=new FileIo;
@@ -105,6 +106,8 @@ void ZeroFps::InitDisplay(int iWidth,int iHeight,int iDepth) {
 	m_pkScreen= SDL_SetVideoMode(iWidth,iHeight,iDepth,SDL_OPENGL);
 	glViewport(0, 0,iWidth,iHeight);	
 
+	RenderDLL_InitExtGL();
+	extgl_Initialize();
 
 	//setup some opengl stuff =)
 	glEnable(GL_TEXTURE_2D);
