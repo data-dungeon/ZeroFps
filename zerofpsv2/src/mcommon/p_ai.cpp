@@ -20,10 +20,6 @@ void P_AI::Update()
    if(!m_pkSound)
    {
    	m_pkSound = (P_Sound*)m_pkObject->GetProperty ("P_Sound");
-   	if(m_pkSound)
-   		cout<<"Got sound property"<<endl;
-   	else
-   		cout<<"no sound property found"<<endl;
    }
    
    

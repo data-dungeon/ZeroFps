@@ -168,6 +168,8 @@ class ENGINE_API EntityManager : public ZFSubSystem{
 		Entity*	GetObjectByNetWorkID(int iNetID);					///< Get a ptr to object by networkID
 		void	GetArchObjects(vector<string>* pkFiles, string strParentName);
 
+		void SetTrackerLos(int iLos) { m_iTrackerLOS = iLos;};
+		
 		void GetAllObjectsInArea(vector<Entity*> *pkEntitys,Vector3 kPos,float fRadius);
 		void GetZones(set<int>* kZones,int iZone,Vector3 kPos,float fRadius);
 

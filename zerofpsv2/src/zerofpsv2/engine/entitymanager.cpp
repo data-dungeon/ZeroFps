@@ -154,7 +154,13 @@ void EntityManager::Link(Entity* pkObject,int iId)
 	}
 
 	if(iId == -1)
-		pkObject->iNetWorkID = iNextObjectID++;
+	{
+		int newid = iNextObjectID++;
+		//if(GetObjectByNetWorkID(newid))
+		//	cout<<"Error object whit id: "<<newid<<" already exist, this is not good =("<<endl;
+		
+		pkObject->iNetWorkID = newid;
+	}
 	else
 	{
 		if(GetObjectByNetWorkID(iId))
@@ -1888,6 +1894,8 @@ bool EntityManager::LoadZones()
 
    // load latest created entityID
    kFile.Read(&iNextObjectID,sizeof(int),1);
+
+	iNextObjectID+=50;  //evil hack
 
 	cout<<"Nr of zones  : "<<iNumOfZone<<endl;
 	cout<<"Next objectID: "<<iNextObjectID<<endl;

@@ -493,6 +493,9 @@ void MistServer::OnServerStart(void)
 			cout<<"ERROR: No server P_ServerInfo property created, this is no good"<<endl;
 	}
 	
+	
+	//set a realy heigh tracker los
+	pkObjectMan->SetTrackerLos(20);
 }
 
 void MistServer::OnClientStart(void)
