@@ -75,9 +75,12 @@ class MistClient :public Application, public ZGuiApp {
 		Vector3	Get3DMousePos();
 		Object*	GetTargetObject();	
 		
-		InventoryDlg*	  m_pkInventoryDlg;
+		InventoryDlg*	  m_pkInventDlg;
 
 	public:
+		void OnScroll(int iID, int iPos, ZGuiWnd *pkMain);
+		void OnMouseMove(int x, int y, bool bMouseDown, ZGuiWnd* pkWnd);
+		void OnClick(int x, int y, bool bMouseDown, ZGuiWnd* pkMain);
 		void OnCommand(int iID, ZGuiWnd* pkMainWnd);
 		
 		MistClient(char* aName,int iWidth,int iHeight,int iDepth);

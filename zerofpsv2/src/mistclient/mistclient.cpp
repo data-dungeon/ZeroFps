@@ -23,6 +23,24 @@ static bool GUIPROC( ZGuiWnd* win, unsigned int msg, int numparms, void *params 
 	case ZGM_COMMAND:
 		g_kMistClient.OnCommand(((int*)params)[0], win);
 		break;
+
+	case ZGM_LBUTTONDOWN:
+		g_kMistClient.OnClick(((int*)params)[0], ((int*)params)[1], true, win);
+		break;
+
+	case ZGM_LBUTTONUP:
+		g_kMistClient.OnClick(((int*)params)[0], ((int*)params)[1], false, win);
+		break;
+
+	case ZGM_MOUSEMOVE:
+		g_kMistClient.OnMouseMove(((int*)params)[1], ((int*)params)[2], 
+			((int*)params)[0] == 1 ? true : false, win);
+		break;
+
+	case ZGM_SCROLL:
+		g_kMistClient.OnScroll(((int*)params)[0], ((int*)params)[2], win);
+		break;
+
 	}
 	return true;
 }
@@ -38,6 +56,8 @@ MistClient::MistClient(char* aName,int iWidth,int iHeight,int iDepth)
 	m_pkServerInfo				= NULL;
 	
 	g_ZFObjSys.Log_Create("mistclient");
+
+
  
 } 
 
@@ -448,7 +468,15 @@ void MistClient::OnClientStart(void)
 }
 
 bool MistClient::StartUp()	{ return true; }
-bool MistClient::ShutDown()	{ printf("MistClient::ShutDown\n"); return true; }
+bool MistClient::ShutDown()	
+{ 
+	printf("MistClient::ShutDown\n"); 
+
+	if(m_pkInventDlg)
+		delete m_pkInventDlg;
+
+	return true; 
+}
 bool MistClient::IsValid()	{ return true; }
 
 
@@ -456,16 +484,38 @@ void MistClient::OnCommand(int iID, ZGuiWnd *pkMainWnd)
 {
 	ZGuiWnd* pkWndClicked = GetWnd(iID);
 
-	if(pkWndClicked)
-	{
-		string strName = pkWndClicked->GetName();
+	string strName = pkMainWnd->GetName();
 
-		if(strName == "BackPackButton")
-			pkScript->Call(m_pkScriptResHandle, "OnClickBackpack", 0, 0); 
-		if(strName == "StatsButton")
-			pkScript->Call(m_pkScriptResHandle, "OnClickStats", 0, 0);
-		if(strName == "MapButton")
-			pkScript->Call(m_pkScriptResHandle, "OnClickMap", 0, 0);
+	if(strName == "MainWnd")
+	{
+		if(pkWndClicked)
+		{
+			string strName = pkWndClicked->GetName();
+
+			if(strName == "BackPackButton")
+			{
+				bool bExist = GetWnd("BackPackWnd") != NULL;
+
+				pkScript->Call(m_pkScriptResHandle, "OnClickBackpack", 0, 0); 
+
+				if(bExist == false)
+				{
+					m_pkInventDlg = new InventoryDlg();
+					m_pkInventDlg->AddSlot("dagger.bmp", "dagger_a.bmp", Point(0,0) );
+					m_pkInventDlg->AddSlot("spellbook.bmp", "spellbook_a.bmp", Point(4,2) );
+					m_pkInventDlg->AddSlot("gembag1.bmp", "gembag1_a.bmp", Point(3,3) );
+				}
+			}
+			if(strName == "StatsButton")
+				pkScript->Call(m_pkScriptResHandle, "OnClickStats", 0, 0);
+			if(strName == "MapButton")
+				pkScript->Call(m_pkScriptResHandle, "OnClickMap", 0, 0);
+		}
+	}
+	//else
+	//if(strName == "BackPackWnd")
+	{
+		m_pkInventDlg->OnCommand(iID); 
 	}
 }
 
@@ -526,4 +576,34 @@ Object* MistClient::GetTargetObject()
 	}
 	
 	return pkClosest;
+}
+
+void MistClient::OnClick(int x, int y, bool bMouseDown, ZGuiWnd *pkMain)
+{
+	if(pkMain == NULL)
+		return;
+
+	if(strcmp(pkMain->GetName(), "BackPackWnd") == 0)
+	{
+		m_pkInventDlg->OnClick(x,y,bMouseDown);
+	}
+}
+
+void MistClient::OnMouseMove(int x, int y, bool bMouseDown, ZGuiWnd *pkMain)
+{
+	if(pkMain == NULL)
+		return;
+
+	if(strcmp(pkMain->GetName(), "BackPackWnd") == 0)
+	{
+		m_pkInventDlg->OnMouseMove(x,y,bMouseDown);
+	}	
+}
+
+void MistClient::OnScroll(int iID, int iPos, ZGuiWnd *pkMain)
+{
+	if(strcmp(pkMain->GetName(), "BackPackWnd") == 0)
+	{
+		m_pkInventDlg->OnScroll(iID,iPos);
+	}	
 }
