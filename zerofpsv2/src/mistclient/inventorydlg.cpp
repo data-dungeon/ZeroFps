@@ -438,6 +438,25 @@ Point InventoryDlg::MousePosToSpecialSqrPos(int x, int y, EquipmentCategory eCat
 	return Point(-1, -1);
 }
 
+EquipmentCategory InventoryDlg::MousePosToCategory(int x, int y)
+{
+	if(Rect(16,16,16+32,16+32).Inside(x,y)) return Armor;
+	if(Rect(208,64,208+32,64+32).Inside(x,y)) return Weapon;
+	if(Rect(16,64,208+32,64+32).Inside(x,y)) return Weapon;
+	if(Rect(64,16,64+32,16+32).Inside(x,y)) return Cloak;
+	if(Rect(112,16,112+32,16+32).Inside(x,y)) return Helm;
+	if(Rect(160,16,160+32,16+32).Inside(x,y)) return Amulett;
+	if(Rect(208,16,208+32,16+32).Inside(x,y)) return Shield;
+	if(Rect(16,112,16+32,112+32).Inside(x,y)) return Bracer;
+	if(Rect(208,112,208+32,112+32).Inside(x,y)) return Glove;
+	if(Rect(16,160,16+32,160+32).Inside(x,y)) return Ring;
+	if(Rect(208,160,208+32,160+32).Inside(x,y)) return Ring;
+	if(Rect(16,208,16+32,208+32).Inside(x,y)) return Boots;
+	if(Rect(208,208,208+32,208+32).Inside(x,y)) return Belt;
+
+	return Item;
+}
+
 bool InventoryDlg::RemoveSlot(Slot* pkSlot)
 {
 	Point sqr = pkSlot->m_kSqr;
@@ -624,7 +643,7 @@ void InventoryDlg::AddSlot(const char *szPic, Point sqr,
 		sx = sqr.x;
 		sy = sqr.y;
 
-		if(!EquipSpecialSlot(pkItemStats, iNetworkID))
+		if(!EquipSpecialSlot(pkItemStats, iNetworkID, MousePosToCategory(sx, sy)))
 		{
 			printf("Failed to eqip item\n");
 		}
@@ -959,7 +978,7 @@ void InventoryDlg::SetMainContainer(int iContainerID)
 //
 // Equip a special slot on the character
 // 
-bool InventoryDlg::EquipSpecialSlot(ItemStats* pkItemStats, int iNetworkID)
+bool InventoryDlg::EquipSpecialSlot(ItemStats* pkItemStats, int iNetworkID, EquipmentCategory eCategory)
 {
 	if(pkItemStats == NULL)
 		return false;
