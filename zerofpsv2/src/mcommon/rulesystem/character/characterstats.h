@@ -137,6 +137,10 @@ public:
 
    void MakeContainer();
 
+   void GetSkills (map<string, StatDescriber> *pkSkillList)       { pkSkillList = &m_kSkills; }
+   void GetAttributes (map<string, StatDescriber> *pkAttrList)   { pkAttrList = &m_kAttributes; }
+   void GetData (map<string, string> *pkData)                    { pkData = &m_kData; }
+
 
    friend class CharacterProperty;
 };
