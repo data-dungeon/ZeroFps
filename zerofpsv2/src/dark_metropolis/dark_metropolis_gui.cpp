@@ -186,16 +186,42 @@ void DarkMetropolis::GUI_OnCommand(int iID, bool bRMouseBnClick,
 void DarkMetropolis::GUI_OnClick(int x, int y, bool bMouseDown, 
 											bool bLeftButton, ZGuiWnd *pkMain)
 {
+
+	string strClickName;
+	string strMainWnd;
+
+	if(pkMain)
+	{
+		strMainWnd = pkMain->GetName();
+	}
+
+	if(strMainWnd == "MembersWnd")
+	{
+		m_pkMembersDlg->OnClick(x, y, bMouseDown, bLeftButton, pkMain);
+	}
+	
 }
 
 void DarkMetropolis::GUI_OnDoubleClick(int x, int y, bool bLeftButton, 
-											  ZGuiWnd *pkMain)
+													ZGuiWnd *pkMain)
 {
 }
 
 void DarkMetropolis::GUI_OnMouseMove(int x, int y, bool bMouseDown, 
 												 ZGuiWnd *pkMain)
 {
+	string strClickName;
+	string strMainWnd;
+
+	if(pkMain)
+	{
+		strMainWnd = pkMain->GetName();
+	}
+
+	if(strMainWnd == "MembersWnd")
+	{
+		m_pkMembersDlg->OnMouseMove(x, y, bMouseDown, pkMain);
+	}
 }
 
 void DarkMetropolis::GUI_OnScroll(int iID, int iPos, ZGuiWnd *pkMain)

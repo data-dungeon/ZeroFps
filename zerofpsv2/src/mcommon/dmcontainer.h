@@ -36,7 +36,7 @@ class MCOMMON_API DMContainer
 
 		void SetSize(int iX,int iY);
 	
-		int* GetItem(int iX,int iY);
+		
 		bool SetItem(int iID,int iX,int iY,int iW,int iH);
 		bool HaveItem(int iID);
 		bool GetItemPos(int iID,int& iRX,int& iRY);
@@ -46,6 +46,8 @@ class MCOMMON_API DMContainer
 
 		DMContainer(EntityManager* pkEntMan,int iOwnerID,int iX = 4,int iY = 4);		
 		
+		int* GetItem(int iX,int iY); // Zeb: Flytta denna så den blev public..
+
 		bool MoveItem(int iID,DMContainer* pkDest,int iX,int iY);
 		bool MoveItem(int iID,DMContainer* pkDest);
 		

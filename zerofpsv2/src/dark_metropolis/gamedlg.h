@@ -8,13 +8,14 @@ public:
 	CGameDlg(string strMainWndName, DarkMetropolis* pkDM);
 	~CGameDlg(void);
 
+	virtual void OnClick(int x, int y, bool bMouseDown, bool bLeftButton, ZGuiWnd *pkMain) {}
 	virtual void OnCommand(ZGuiWnd *pkMainWnd, string strClickName) {};
+	virtual void OnMouseMove(int x, int y, bool bMouseDown, ZGuiWnd *pkMain) {}
 	virtual bool InitDlg() {return true;}
 	virtual void OpenDlg(){};
 
 	//virtual void OnClick(int x, int y, bool bMouseDown, bool bLeftButton, ZGuiWnd *pkMain);
 	//virtual void OnDoubleClick(int x, int y, bool bLeftButton, ZGuiWnd *pkMain);
-	//virtual void OnMouseMove(int x, int y, bool bMouseDown, ZGuiWnd *pkMain);
 	//virtual void OnScroll(int iID, int iPos, ZGuiWnd *pkMain);
 	//virtual void OnSelectCB(int ListBoxID, int iItemIndex, ZGuiWnd *pkMain);
 	//virtual void OnKeyPress(int iKey, ZGuiWnd *pkWnd);
