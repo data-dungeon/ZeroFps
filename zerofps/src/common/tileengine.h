@@ -46,6 +46,10 @@ class TileEngine
 		bool UnitInTile(int x,int y,int iID);
 		
 		
+		//convertions
+		Point GetSqrFromPos(Vector3 pos);				
+		Vector3 GetPosFromSqr(Point square)				;
+
 };
 
 #endif

@@ -13,10 +13,10 @@ void TileEngine::CreateMap()
 
 	
 	
-	m_iSizeX = m_pkMap->m_iHmSize;
-	m_iSizeY = m_pkMap->m_iHmSize;	
+	m_iSizeX = m_pkMap->m_iHmSize -1;
+	m_iSizeY = m_pkMap->m_iHmSize -1;	
 	
-	cout<<"Creating a tile map of "<<m_iSizeX<<" x "<<m_iSizeY<<" tiles"<<endl;
+	cout<<"Creating a tile map of "<<m_iSizeX-1<<" x "<<m_iSizeY-1<<" tiles"<<endl;
 
 	m_kTiles.reserve(m_iSizeX * m_iSizeY);
 	
@@ -36,14 +36,15 @@ void TileEngine::GenerateHM(int ix,int iy,int iw,int ih)
 
 	if(ix >= 0 &&
 		iy >= 0 && 
-		ix+iw <= m_iSizeX-1 &&
-		iy+ih <= m_iSizeY-1)
+		ix+iw <= m_iSizeX &&
+		iy+ih <= m_iSizeY)
 	{
 
 		for(int y = iy;y<(iy+ih);y++)
 		{
 			for(int x = ix;x<(ix+iw);x++)
 			{
+		
 				//get avrage angle in tile
 				int index1 = (y*m_iSizeX) + x;
 				int index2 = (y*m_iSizeX) + x+1;
@@ -57,14 +58,19 @@ void TileEngine::GenerateHM(int ix,int iy,int iw,int ih)
 				
 				float avrage = degtorad * ((angle1 + angle2 + angle3 + angle4)/4.0);
 				
-				m_kTiles[index1].fAngle = avrage;
+				Tile* t = GetTile(x,y);
+				if(!t)
+					cout<<"Error while generating tile info from heightmap, im gona crash now i think,,,sorry =("<<endl;
+				
+				t->fAngle = avrage;
 				
 				//get type
 				int type = m_pkMap->GetMostVisibleTexture(x + HEIGHTMAP_SCALE/2 ,y + HEIGHTMAP_SCALE/2  ); 
-				m_kTiles[index1].iTerrainType = type;
 				
-				cout<<"angle is "<<avrage<<endl;
-				cout<<"Type:    "<<type<<endl;
+				t->iTerrainType = type;
+				
+				//cout<<"angle is "<<avrage<<endl;
+				//cout<<"Type:    "<<type<<endl;
 			}
 		}
 	}
@@ -122,6 +128,26 @@ bool TileEngine::UnitInTile(int x,int y,int iID)
 	return false;
 }
 
+Point TileEngine::GetSqrFromPos(Vector3 pos)
+{
+	int iSquareX = m_pkMap->m_iHmSize/2+floor(pos.x / HEIGHTMAP_SCALE);
+	int iSquareY = m_pkMap->m_iHmSize/2+floor(pos.z / HEIGHTMAP_SCALE);
+
+	return Point(iSquareX,iSquareY);
+}
+
+Vector3 TileEngine::GetPosFromSqr(Point square)
+{
+	float x = -(m_pkMap->m_iHmSize/2)*HEIGHTMAP_SCALE + square.x*HEIGHTMAP_SCALE;
+	float z = -(m_pkMap->m_iHmSize/2)*HEIGHTMAP_SCALE + square.y*HEIGHTMAP_SCALE;
+
+	x -= HEIGHTMAP_SCALE/2;	// Translate to center 
+	z -= HEIGHTMAP_SCALE/2;	// of square.*/
+
+	float y = m_pkMap->Height(x,z);
+
+	return Vector3(x,y,z);
+}
 
 
 
