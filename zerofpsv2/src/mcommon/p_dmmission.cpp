@@ -149,6 +149,8 @@ void P_DMMission::Update()
 
 				m_pkScriptSys->Call(m_pkCurrentMission->m_pkScriptResHandle, 
 					"OnMissionSuccess", 0, 0);
+
+				RemoveMission(m_pkCurrentMission->m_strScript); 
 			}
 		}
 
@@ -169,9 +171,33 @@ void P_DMMission::Update()
 				printf("\n---------------------------------\n");
 
 				//m_pkScriptSys->Call(m_pkScriptResHandle, "OnMissionSuccess", 0, 0);
+				RemoveMission(m_pkCurrentMission->m_strScript);
 			}
 		}
 	}
+}
+
+bool P_DMMission::RemoveMission(string strMission)
+{
+	bool bSuccess = false;
+
+	vector<DMMissionInfo*>::iterator it = m_vkMissions.begin();
+	for( ; it != m_vkMissions.end(); it++)
+	{
+		if((*it)->m_strScript == strMission)
+		{
+			delete (*it)->m_pkScriptResHandle;
+			delete (*it);
+
+			m_vkMissions.erase(it);
+			m_pkCurrentMission = NULL;
+			bSuccess = true;
+
+			break;
+		}
+	}
+
+	return bSuccess;
 }
 
 bool P_DMMission::SetCurrentMission(string strMissionScript)

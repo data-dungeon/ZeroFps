@@ -45,7 +45,7 @@ class MCOMMON_API P_DMItem: public Property {
 		
 		void Save(ZFIoInterface* pkPackage);
 		void Load(ZFIoInterface* pkPackage);
-		
+
 		
 	friend class DMContainer;
 };

@@ -24,9 +24,8 @@ end
 
 function HeartBeat()
 
-
 	if HavePath(SIGetSelfID()) then
-		return;
+		return
 	end	
 
 	if ( IsDead(SIGetSelfID()) == 1) then
@@ -35,14 +34,14 @@ function HeartBeat()
 		if GetEntityVar(SIGetSelfID(), "deadtime") > 9 then
 			Delete(SIGetSelfID());
 		end
-		
-		return;
+	
+		return
 	end
 
 	local pos = GetObjectPos(SIGetSelfID());
 	pos[1] = pos[1] + Random(12)-6;
 	pos[3] = pos[3] + Random(12)-6;
-	
+
 	MakePathFind(SIGetSelfID(),pos);
 
 end

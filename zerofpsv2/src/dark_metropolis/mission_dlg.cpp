@@ -15,6 +15,13 @@ void CMissionDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName)
 {
 	if(strClickName == "BriefingBn")
 	{
+
+		P_DMMission* pkMissionProperty = (P_DMMission*) 
+			GetDMObject(GAME_INFO)->GetProperty("P_DMMission");
+
+		UpdateMessageboxes(0);
+		return;
+
 		if(!m_strSelMission.empty())
 		{
 			ShowWnd("MissionWnd", false/*, true*/);

@@ -52,14 +52,9 @@ class MCOMMON_API P_DMMission: public Property {
 
 		bool SetCurrentMission(string strMissionScript);
 		void GetPossibleMissions(int iLevel, vector<DMMissionInfo>& vkInfo);
-
-		//string m_strName;
-		//string m_strMissionScript;
-		//int m_iDifficulty;
-		//int m_iXP;
+		bool RemoveMission(string strMissionScript);
 
 		ZFScriptSystem* m_pkScriptSys;
-		//ZFResourceHandle* m_pkScriptResHandle;
 		ZeroFps* m_pkZeroFps;
 };
 

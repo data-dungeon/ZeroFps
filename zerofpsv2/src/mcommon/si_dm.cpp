@@ -524,7 +524,9 @@ int DMLua::HavePathLua(lua_State* pkLua)
 		}
 		
 	}
-	return 0;
+
+	g_pkScript->AddReturnValue(pkLua,0);
+	return 1;
 }
 
 // ------------------------------------------------------------------------------------------------
