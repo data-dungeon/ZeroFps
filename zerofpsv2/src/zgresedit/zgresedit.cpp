@@ -247,7 +247,7 @@ void ZGResEdit::OnInit()
 	//	m_pkTexMan->Load("data/textures/text/syflen16.tga"));
 	//m_pkGuiMan->Add("syflen16", pkNewFont);
 	
-	CreateWnd(Wnd, "TestWnd", "", "", 10, 10, 64, 64, 0);
+//	CreateWnd(Wnd, "TestWnd", "", "", 10, 10, 64, 64, 0);
 
 	//ZGuiTextbox* textbox = (ZGuiTextbox*) CreateWnd(Textbox, "TestTextbox", "TestWnd", "", 45, 45, 550, 350, 0);
 	//textbox->ToggleMultiLine(true);
@@ -277,14 +277,14 @@ void ZGResEdit::OnInit()
 	//	fclose(pkFile);
 	//}
 
-	ZGuiSkin* pkSkin = new ZGuiSkin();
-	pkSkin->m_iBkTexID = m_pkTexMan->Load("data/textures/gui/sysdata_gui.bmp");
+//	ZGuiSkin* pkSkin = new ZGuiSkin();
+//	pkSkin->m_iBkTexID = m_pkTexMan->Load("data/textures/gui/sysdata_gui.bmp");
 	//pkSkin->m_rcBkTile = Rect(0,48,128,128);
 	//pkSkin->m_pkZIFAnimation = new ZIFAnimation("apa.zif"); 
 
-	GetWnd("TestWnd")->SetSkin(pkSkin);
+//	GetWnd("TestWnd")->SetSkin(pkSkin);
 
-	GetWnd("TestWnd")->SetMoveArea(Rect(0,0,800,800),true);
+//	GetWnd("TestWnd")->SetMoveArea(Rect(0,0,800,800),true);
 	
 	//ZGuiFont* pkNewFont = new ZGuiFont("small");
 	//pkNewFont->Create("data/textures/text/small.fnt",

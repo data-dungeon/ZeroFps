@@ -449,8 +449,11 @@ bool Scene::IsSceneWnd(ZGuiWnd* pkWnd)
 		return true;
 	if(pkWnd == NULL)
 		return true;
-	if(pkWnd == GetWnd("TestWnd"))
+	if(pkWnd == GetWnd("zguiapp_fps_wnd"))
 		return true;
+   if(pkWnd == GetWnd("zguiapp_fps_label"))
+		return true;
+   
 	
 	ZGuiWnd* pkParent = pkWnd->GetParent();
 
