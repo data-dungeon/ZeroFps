@@ -435,3 +435,31 @@ bool ZGuiWnd::GetWindowFlag(unsigned long ulValue)
 {
 	return ((m_ulFlags & ulValue) == ulValue) ? true : false;
 }
+
+void ZGuiWnd::Hide()
+{
+/*	for( WINrit w = m_kChildList.rbegin();
+		 w != m_kChildList.rend(); w++)
+		 {
+			if( (*w)->m_bVisible == true)
+			{
+				(*w)->Hide();
+			}
+		 }*/
+
+	m_bVisible = false;
+}
+
+void ZGuiWnd::Show()
+{
+/*	for( WINrit w = m_kChildList.rbegin();
+		 w != m_kChildList.rend(); w++)
+		 {
+			if( (*w)->m_bVisible == false)
+			{
+				(*w)->Show();
+			}
+		 }*/
+
+	m_bVisible = true;  
+}

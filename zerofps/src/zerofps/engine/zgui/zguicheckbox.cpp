@@ -15,7 +15,10 @@ ZGuiCheckbox::ZGuiCheckbox(Rect kRectangle, ZGuiWnd* pkParent, bool bVisible, in
 {
 	m_bChecked = false;
 	m_bEnabled = true;
-	m_iMaskTexUnchecked, m_iMaskTexChecked = -1;
+	m_iMaskTexUnchecked = -1; 
+	m_iMaskTexChecked = -1;
+
+	//Resize(20, 20);
 
 	m_pkLabel = new ZGuiLabel(kRectangle, this, true, 0);
 	m_pkLabel->Move(20,0); 

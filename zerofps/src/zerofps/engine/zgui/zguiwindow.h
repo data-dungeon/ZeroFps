@@ -68,8 +68,8 @@ public:
 	void Enable()	{ m_bEnabled = true;  }
 	void Disable()	{ m_bEnabled = false; }
 
-	void Show()		{ m_bVisible = true;  }
-	void Hide()		{ m_bVisible = false; }
+	void Show();
+	void Hide();
 
 	virtual void SetFocus()	 { m_bHaveFocus = true;  }
 	virtual void KillFocus() { m_bHaveFocus = false; }

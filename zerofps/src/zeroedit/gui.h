@@ -21,11 +21,14 @@ typedef bool (*ZGuiCallBack)(ZGuiWnd*, unsigned int, int, void*);
 class Gui
 {
 private:
+	ZGuiWnd* CreateAddPropertyDlg(int x, int y, int w, int h);
+	bool OnCloseAddProperty(bool bSave);
 	bool OnCloseEditProperty(bool bSave);
 	void OnOpenEditProperty();
 	bool Register(ZGuiFont* pkFont, char* strName);
 	bool Register(ZGuiSkin* pkSkin, char* strName);
 	bool Register(ZGuiWnd* pkWnd, char* strName);
+	void CreateRadiobuttons(ZGuiWnd* pkParent, char** strNames, int antal, int start_id, int x, int y, int w, int h);
 	ZGuiTextbox* CreateTextbox(ZGuiWnd* pkParent, int iID, int x, int y, int w, int h, bool bMulitLine=false);
 	ZGuiCombobox* CreateCombobox(ZGuiWnd* pkParent, int iID, int x, int y, int w, int h, bool bMenu);
 	ZGuiListbox* CreateListbox(ZGuiWnd* pkParent, int iID, int x, int y, int w, int h);

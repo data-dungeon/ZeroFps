@@ -32,5 +32,9 @@ const int ID_PROPERTY_CANCEL			= 9026;
 const int IDM_LOAD_HEIGHTMAP			= 9027;
 const int ID_MAINWND_MENU_CB			= 9028;
 const int ID_CLOSE_GUI_BN				= 9029;
-
+const int ID_ADDPROPERTY_BN				= 9030;
+const int ID_ADDPROPERTY_WND			= 9031;
+const int ID_ADDPROPERTY_CLOSE			= 9032;
+const int ID_ADDPROPERTY_OK				= 9033;
+ 
 #endif

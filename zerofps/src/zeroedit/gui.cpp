@@ -61,6 +61,17 @@ bool Gui::PropertyProc( ZGuiWnd* pkWindow, unsigned int uiMessage, int iNumberOf
 			if(OnCloseEditProperty(true))
 				m_pkEdit->pkGui->ShowMainWindow(ID_PROPERTY_WND_MAIN, false);
 			break;
+		case ID_ADDPROPERTY_BN:
+			CreateAddPropertyDlg(0,0,200,300);
+			break;
+		case ID_ADDPROPERTY_CLOSE:
+			if(OnCloseAddProperty(true))
+				Get("AddPropWnd")->Hide();
+			break;
+		case ID_ADDPROPERTY_OK:
+			if(OnCloseAddProperty(true))
+				Get("AddPropWnd")->Hide();
+			break;
 		}
 		break;
 
@@ -165,7 +176,7 @@ bool Gui::WndProc( ZGuiWnd* pkWindow, unsigned int uiMessage, int iNumberOfParam
 							m_pkFileDlgbox = NULL;
 						}
 
-						m_pkFileDlgbox = new FileOpenDlg(this, m_pkEdit->pkFps->m_pkBasicFS, WINPROC);
+						m_pkFileDlgbox = new FileOpenDlg(this, m_pkEdit->pkFps->m_pkBasicFS, WINPROC, DIRECTORIES_ONLY);
 					}
 					break;
 
@@ -216,11 +227,15 @@ bool Gui::InitSkins()
 	int bn_up = m_pkEdit->pkTexMan->Load("file:../data/textures/button_up.bmp", 0);
 	int bn_down = m_pkEdit->pkTexMan->Load("file:../data/textures/button_down.bmp", 0);
 	int bn_focus = m_pkEdit->pkTexMan->Load("file:../data/textures/button_focus.bmp", 0);
+	int rbn_up = m_pkEdit->pkTexMan->Load("file:../data/textures/radiobn_up.bmp", 0);
+	int rbn_down = m_pkEdit->pkTexMan->Load("file:../data/textures/radiobn_down.bmp", 0);
 
 	m_kSkinMap.insert( map<string, ZGuiSkin*>::value_type(string("main"), 
 		new ZGuiSkin(-1, -1, -1, -1, 255, 255, 255, 255, 0, 0, 8)) ); 
 	m_kSkinMap.insert( map<string, ZGuiSkin*>::value_type(string("blue"), 
 		new ZGuiSkin(-1, -1, -1, -1, 0, 0, 255, 0, 0, 128, 4)) ); 
+	m_kSkinMap.insert( map<string, ZGuiSkin*>::value_type(string("red"), 
+		new ZGuiSkin(-1, -1, -1, -1, 255, 0, 0, 128, 0, 0, 4)) ); 
 	m_kSkinMap.insert( map<string, ZGuiSkin*>::value_type(string("bn_up"), 
 		new ZGuiSkin(bn_up, -1, -1, -1) ) ); 
 	m_kSkinMap.insert( map<string, ZGuiSkin*>::value_type(string("bn_down"), 
@@ -241,6 +256,10 @@ bool Gui::InitSkins()
 		new ZGuiSkin(-1, -1, -1, -1, 255, 255, 255, 0, 0, 0, 0)) ); 
 	m_kSkinMap.insert( map<string, ZGuiSkin*>::value_type(string("titlebar"), 
 		new ZGuiSkin(-1, -1, -1, -1, 64, 64, 128, 0, 0, 0, 0)) ); 
+	m_kSkinMap.insert( map<string, ZGuiSkin*>::value_type(string("rbn_down"), 
+		new ZGuiSkin(rbn_up, -1, -1, -1, 64, 64, 128, 0, 0, 0, 0)) ); 
+	m_kSkinMap.insert( map<string, ZGuiSkin*>::value_type(string("rbn_up"), 
+		new ZGuiSkin(rbn_down, -1, -1, -1, 64, 64, 128, 0, 0, 0, 0)) ); 
 
 	return true;
 }
@@ -293,6 +312,30 @@ ZGuiButton* Gui::CreateButton(ZGuiWnd* pkParent, int iID, int x, int y, int w, i
 	pkButton->SetText(pkName);
 
 	return pkButton;
+}
+
+void Gui::CreateRadiobuttons(ZGuiWnd* pkParent, char** pstrNames, int antal, 
+							 int start_id, int x, int y, int w, int h)
+{
+	int rbn_a = m_pkEdit->pkTexMan->Load("file:../data/textures/radiobn_a.bmp", 0);
+
+	int GroupID = start_id;
+
+	ZGuiRadiobutton* pkPrev = NULL;
+
+	Rect rc = Rect(x,y,x+w,y+h);
+
+	for(int i=1; i<2; i++)
+	{
+		rc = rc.Move(0,i*20);
+		ZGuiRadiobutton* pkGroupbutton = new ZGuiRadiobutton(rc,pkParent,
+			start_id,start_id,pkPrev,true);
+		pkGroupbutton->SetButtonUnselectedSkin(GetSkin("rbn_down"),rbn_a);
+		pkGroupbutton->SetButtonSelectedSkin(GetSkin("rbn_up"),rbn_a);
+		pkGroupbutton->SetText(pstrNames[0]);
+
+		pkPrev = pkGroupbutton;
+	}
 }
 
 ZGuiListbox* Gui::CreateListbox(ZGuiWnd* pkParent, int iID, int x, int y, int w, int h)
@@ -373,18 +416,21 @@ ZGuiWnd* Gui::CreateEditPropertyDialog(int x, int y, int w, int h)
 
 	y_pos = 100;
 
-	ZGuiCombobox* cb;
-
 	CreateLabel(pkMainWindow, 0, 20, y_pos, 16*9-5, 20, "Props:");
 
+	ZGuiCombobox* cb;
 	Register(cb = CreateCombobox(pkMainWindow, ID_PROPERTIES_CB, 16*6, 
 		y_pos, 16*6+16*7*2, h-(y_pos+60), false), "PropertyCB");
-
 	cb->SetNumVisibleRows(20);
-	
+
+	ZGuiButton* bn;
+	Register(bn = CreateButton(pkMainWindow, ID_ADDPROPERTY_BN, 16*6+16*6+16*7*2+10, 
+		y_pos, 50, 20, "Add"), "AddPropertyBN");
+	bn->SetWindowFlag(WF_CENTER_TEXT);
+
 	CreateButton(pkMainWindow, ID_PROPERTY_OK, w-100, h-50, 80, 20, "OK")->SetWindowFlag(WF_CENTER_TEXT);
 	CreateButton(pkMainWindow, ID_PROPERTY_CANCEL, w-100, h-25, 80, 20, "Cancel")->SetWindowFlag(WF_CENTER_TEXT);
-
+	
 	m_pkEdit->pkGui->AddMainWindow(ID_PROPERTY_WND_MAIN, pkMainWindow, PROPERTYPROC, true);
 
 	OnOpenEditProperty();
@@ -495,12 +541,80 @@ void Gui::OnOpenEditProperty()
 
 bool Gui::OnCloseEditProperty(bool bSave)
 {
-	ZGuiWnd* pkNameEB = Get("ObjectNameEB");
+	if(!m_pkEdit->m_pkCurentChild)
+		return true;
 
-/*	if(pkNameEB)
+	ZGuiWnd* pkNameEB = Get("ObjectNameEB");
+	ZGuiWnd* pkXPosEB = Get("ObjectPosXEB");
+	ZGuiWnd* pkYPosEB = Get("ObjectPosYEB");
+	ZGuiWnd* pkZPosEB = Get("ObjectPosZEB");
+
+	if(pkNameEB)
 	{
-		char strText[512];
-		pkNameEB->GetText(strText);
-	}*/
+		char* strName = pkNameEB->GetText();
+		char* strXPos = pkXPosEB->GetText();
+		char* strYPos = pkYPosEB->GetText();
+		char* strZPos = pkZPosEB->GetText();
+
+		if( strName != NULL && strXPos != NULL && 
+			strYPos != NULL && strZPos != NULL)
+		{
+			float x,y,z;
+
+			x = atof(strXPos);
+			y = atof(strYPos);
+			z = atof(strZPos);
+
+			char strText[512];
+			strcpy(strText, pkNameEB->GetText());
+		
+			if(m_pkEdit->m_pkCurentChild)
+			{
+				m_pkEdit->m_pkCurentChild->GetName() = string(strText);
+				m_pkEdit->m_pkCurentChild->GetPos() = Vector3(x,y,z);
+			}
+		}
+	}
+	return true;
+}
+
+ZGuiWnd* Gui::CreateAddPropertyDlg(int x, int y, int w, int h)
+{
+	if( Get("AddPropWnd") )
+	{
+		Get("AddPropWnd")->Show();
+		return false;
+	}
+
+	ZGuiWnd* mamma = m_pkEdit->pkGui->GetMainWindow(ID_PROPERTY_WND_MAIN);
+
+	ZGuiWnd* pkDlg = new ZGuiWnd(Rect(x,y,x+w,y+h),mamma,true,ID_ADDPROPERTY_WND);
+	pkDlg->SetSkin(GetSkin("red"));
+	pkDlg->SetMoveArea(Rect(0,0,m_pkEdit->m_iWidth,m_pkEdit->m_iHeight));
+	//pkDlg->SetWindowFlag(WF_CLOSEABLE);
+
+	Register( pkDlg, "AddPropWnd" );
+
+	CreateButton(pkDlg, ID_ADDPROPERTY_CLOSE, w-20, 0, 20, 20, "x")->SetWindowFlag(WF_CENTER_TEXT);
+	CreateButton(pkDlg, ID_ADDPROPERTY_OK, w-40, h-30, 40, 20, "OK")->SetWindowFlag(WF_CENTER_TEXT);
+	
+	m_pkEdit->pkGui->RegisterWindow(pkDlg);
+	pkDlg->SetZValue(434343);
+	mamma->SortChilds();
+
+	//m_pkEdit->pkGui->AddMainWindow(ID_ADDPROPERTY_WND_MAIN, pkDlg, PROPERTYPROC, true);
+
+	char* names[] =
+	{
+		"apa", "piss", "neger"
+	};
+
+	CreateRadiobuttons(pkDlg, names, 3, 122, 0, 0, 100, 20);
+
+	return pkDlg;
+}
+
+bool Gui::OnCloseAddProperty(bool bSave)
+{
 	return true;
 }

@@ -347,7 +347,7 @@ void ZGuiListbox::UpdateList()
 	m_pkScrollbarVertical->SetScrollInfo(0,iElements,fThumbSize,0);
 	ScrollItems(m_pkScrollbarVertical);
 
-	if(fThumbSize >= 0.99f)
+	if(fThumbSize >= 0.99f || iElements == 0)
 	{
 		m_pkScrollbarVertical->Hide();
 	}
