@@ -271,6 +271,7 @@ void MistServer::RegisterResources()
 
 void MistServer::RegisterPropertys()
 {
+	m_pkPropertyFactory->Register("P_DMCharacter", Create_P_DMCharacter);
 	m_pkPropertyFactory->Register("P_DMHQ", Create_P_DMHQ);
 	m_pkPropertyFactory->Register("P_Spawn", Create_P_Spawn);
 	m_pkPropertyFactory->Register("P_Enviroment", Create_P_Enviroment);
@@ -1815,7 +1816,7 @@ void MistServer::AutoSetZoneSize(string strName)
 	strcpy(szString, &strName.c_str()[iPos + 1]);
 	sscanf(szString,"%dx%dx%d", &x,&y,&z);
 	m_kZoneSize.Set(float(x),float(y),float(z));
-//	cout << "Setting Size " << x << ", " << y << ", "<< z << endl;
+	//cout << "Setting Size " << x << ", " << y << ", "<< z << endl;
 }
 
 

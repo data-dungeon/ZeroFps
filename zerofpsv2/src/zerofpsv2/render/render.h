@@ -129,8 +129,6 @@ class RENDER_API Render : public ZFSubSystem {
 		
 		
 		
-		void Quad(Vector3 kPos,Vector3 kHead,Vector3 kScale,int iTexture);
-		void Sphere(Vector3 kPos,float fRadius,int iRes,Vector3 kColor,bool bSolid);		
 		
 		void PrintChar(unsigned char cChar);
 		void Print(Vector3 kPos,Vector3 kHead,Vector3 kScale,char* aText);
@@ -174,9 +172,14 @@ class RENDER_API Render : public ZFSubSystem {
 		void SetFog(Vector4 kFogColor,float FogStart,float FogStop,bool FogEnable);		
 
 		void GiveTexCor(float &iX,float &iY,int iNr);
+		
+		// primitives and such
 		void DrawCross(Vector3& kPos,Vector3& kHead,Vector3& kScale,int& iTexture1);//,int iTexture2);
 		void DrawBillboard(Matrix4& kModelMatrix,Vector3& kPos,float fSize,int iTexture);
 
+		void Quad(Vector3 kPos,Vector3 kHead,Vector3 kScale,int iTexture);
+		void Sphere(Vector3 kPos,float fRadius,int iRes,Vector3 kColor,bool bSolid);		
+		
 		void DrawCone(Vector3 kPos, float fRadie, float fHeight, Vector3 kColor, bool bSolid, int iNumSegments=20);
 		void DrawPyramid(Vector3 kCenterPos, Vector3 kSize, Vector3 kColor, bool bSolid);
 		void DrawBoundSphere(float fRadius, Vector3);

@@ -33,6 +33,7 @@
 #include "../mcommon/p_ai.h"
 #include "../mcommon/p_spawn.h"
 #include "../mcommon/p_dmhq.h"
+#include "../mcommon/p_dmcharacter.h"
 
 #include "playerdatabase.h"
 

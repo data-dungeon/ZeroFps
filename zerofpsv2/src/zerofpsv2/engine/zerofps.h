@@ -255,6 +255,8 @@ class ENGINE_API ZeroFps : public I_ZeroFps {
 		
 		void QuitEngine();
 
+		void SetSystemFps(int iFps) {m_fSystemUpdateFps = iFps;};
+
 		// Statistik Data
 		int	m_iNumOfMadRender;
 

@@ -17,7 +17,10 @@ using namespace std;
 #include "../mcommon/p_event.h"
 #include "../zerofpsv2/engine_systems/propertys/p_mad.h"
 #include "../mcommon/p_dmhq.h"
+#include "../mcommon/p_dmcharacter.h"
+#include "../zerofpsv2/engine/p_pfpath.h"
 #include "p_dmgameinfo.h"
+
 
 bool GUIPROC(ZGuiWnd* win, unsigned int msg, int numparms, void *params );
 
@@ -36,6 +39,12 @@ class DarkMetropolis : public Application, public ZGuiApp
 			char* szName;
 		};
 		
+		enum Formations
+		{
+			FORMATION_CIRCLE = 0,
+			FORMATION_SQUARE = 1,
+		
+		};
 	
 		vector<StartBaseInfo*> m_vkStartBaseList;
 		vector<StartBaseInfo*>::iterator m_itStartBase;
@@ -53,11 +62,23 @@ class DarkMetropolis : public Application, public ZGuiApp
 		float		m_fMinCamDistance;
 		float		m_fMaxCamDistance;
 		
-		Vector3	m_kPickPos;
+		float		m_fDelayTimer;
 		
+		vector<int>	m_kSelectedEntitys;
+		
+		int			m_iCurrentFormation;
+		
+		Vector3		m_kSelectSquareStart;
+		Vector3		m_kSelectSquareStop;
+		bool			m_bSelectSquare;
+		
+		Vector3	m_kPickPos;		
 		string	m_strSaveDirectory;
 
 		int m_iEnableMusic; // if the music should be played or not
+		
+		
+		Vector3 GetFormationPos(int iType,int iTotal,int iPos);
 		
 		//picking
 		Vector3	Get3DMousePos(bool m_bMouse);		
