@@ -141,7 +141,7 @@ void ZeroRTS::OnIdle()
 			
 	Input();
 	
-	TileEngine::m_pkInstance->Draw();
+//	TileEngine::m_pkInstance->Draw();
 
 /* //COMMENT OUT BY DVOID
 	PickInfo p = Pick();
