@@ -46,10 +46,13 @@ bool ItemBox::DlgProc( ZGuiWnd* pkWnd,unsigned int uiMessage,
 		{
 			if(pkWnd == m_akSlots[i].first)
 			{
+				printf("apa apa apa apa apa apa\n");
 				m_pkMoveItem = &m_akSlots[i];
 				break;
 			}
 		}
+
+		m_pkContainer->PrintContainer();
 		break;
 
 	case ZGM_LBUTTONUP:
@@ -60,7 +63,7 @@ bool ItemBox::DlgProc( ZGuiWnd* pkWnd,unsigned int uiMessage,
 			bool bObjectMoved = false;
 
 			slot_pos kItemCell = GetSlot(((int*)pkParams)[0], ((int*)pkParams)[1]);
-			if(kItemCell.first != -1) // release button inside the grid?
+			if(kItemCell.first != -1) // was the button released inside the grid?
 			{
 				Object* pkObject = m_pkContainer->GetItem(
 					m_pkMoveItem->second.first, m_pkMoveItem->second.second);
@@ -70,12 +73,12 @@ bool ItemBox::DlgProc( ZGuiWnd* pkWnd,unsigned int uiMessage,
 					int prev_x = m_pkMoveItem->second.first;
 					int prev_y = m_pkMoveItem->second.second;
 
-					// Remove button and item
+					// Remove button and item.
+					RemoveSlot(prev_x, prev_y);
 					m_pkContainer->RemoveItem(pkObject);
-					m_pkGui->UnregisterWindow(m_pkMoveItem->first);
-					m_akSlots.erase(m_pkMoveItem);
-
-					if(!m_pkContainer->AddItem(pkObject, kItemCell.first, kItemCell.second))
+					
+					if( m_pkContainer->AddItem(pkObject, kItemCell.first, 
+						kItemCell.second) == false)
 					{
 						if( m_pkContainer->AddItem(pkObject, prev_x, prev_y) == false)
 							printf("Item box: Failed to move object in container\n");
@@ -90,8 +93,6 @@ bool ItemBox::DlgProc( ZGuiWnd* pkWnd,unsigned int uiMessage,
 					printf("[m_pkContainer->GetItem(%i,%i)] failed \n",
 						m_pkMoveItem->second.first,
 						m_pkMoveItem->second.second);
-
-					m_pkContainer->PrintContainer();
 				}
 			}
 			
@@ -104,6 +105,8 @@ bool ItemBox::DlgProc( ZGuiWnd* pkWnd,unsigned int uiMessage,
 			}
 
 			m_pkMoveItem = NULL;
+
+			m_pkContainer->PrintContainer();
 		}
 		break;
 
