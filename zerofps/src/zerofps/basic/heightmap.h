@@ -15,8 +15,6 @@
 
 using namespace std;
 
-struct HM_vert;
-
 struct BASIC_API HM_vert {
 	float height;	//land height
 	Vector3 normal;
@@ -48,7 +46,7 @@ class BASIC_API HeightMap {
 		void Random();
 		bool Load(char* acFile);
 		bool Save(char* avFile);
-		bool LoadImage(char* acFile);
+		bool LoadImageHmap(char* acFile);
 		void GenerateNormals();
 		void GenerateTextures();
 		float Height(int x,int z);

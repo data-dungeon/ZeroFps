@@ -21,7 +21,7 @@ void Test::OnInit(void) {
 	
 //	test->Save("test.hm");
 //	test->Load("file:test.hm");
-	test->LoadImage("file:test.bmp");
+	test->LoadImageHmap("file:test.bmp");
 	test->GenerateNormals();
 	test->GenerateTextures();
 

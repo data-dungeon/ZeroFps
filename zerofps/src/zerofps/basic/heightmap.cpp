@@ -217,15 +217,17 @@ void HeightMap::Random() {
 	int smooth=10;
 
 	srand(time(0));
-		
+	
+	int i;
+
 	int x,y;
-	for(int i=0;i<peaks;i++) {
+	for(i=0;i<peaks;i++) {
 		x=rand()%(m_iHmSize-4)+2;	
 		y=rand()%(m_iHmSize-4)+2;	
 		verts[y*m_iHmSize+x].height=(rand()%height)/10.0;
 	}
 	
-	for(int i=0;i<peaks/4;i++) {
+	for(i=0;i<peaks/4;i++) {
 		x=rand()%(m_iHmSize-4)+2;	
 		y=rand()%(m_iHmSize-4)+2;	
 		verts[y*m_iHmSize+x].height=(rand()%height*4)/10.0;
@@ -296,7 +298,7 @@ void HeightMap::GenerateTextures() {
 	}
 }
 
-bool HeightMap::LoadImage(char* acFile) {
+bool HeightMap::LoadImageHmap(char* acFile) {
 	int smooth=1;
 
 	SDL_Surface *image;
@@ -343,6 +345,7 @@ bool HeightMap::LoadImage(char* acFile) {
 		}
 	}
 	
+	return true;
 }
 
 Uint32 HeightMap::GetPixel(SDL_Surface *surface, int x, int y)
