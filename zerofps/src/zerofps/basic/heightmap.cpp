@@ -156,9 +156,9 @@ bool HeightMap::Save(char* acFile) {
 
 
 void HeightMap::Random() {
-	int height=6000;
-	int peaks=100;
-	int smooth=6;
+	int height=8000;
+	int peaks=3000;
+	int smooth=10;
 
 	srand(time(0));
 		
@@ -210,28 +210,32 @@ HM_vert* HeightMap::GetVert(int x,int z) {
 
 void HeightMap::GenerateTextures() {
 	float slope;
-	float diff;
+	Vector3 diff;
 	for(int z=0;z<m_iHmSize-1;z++) {
 		for(int x=0;x<m_iHmSize-1;x++) {
 			slope=0;
-			
+			diff=Vector3(0,0,0);
 			for(int q=0;q<2;q++){	
 				for(int w=0;w<2;w++){	
-					diff = GetVert(x,z)->height - GetVert(x+q,z+w)->height;
-					if(diff<0)
-						slope-=diff;
-					else
-						slope+=diff;
+					diff+=GetVert(x+w,z+q)->normal;
+//					diff = GetVert(x,z)->height - GetVert(x+q,z+w)->height;
 				}
 			}
+			diff.normalize();
+//			cout<<diff.x<<" "<<diff.y<<" "<<diff.z<<endl;
+			slope=diff.dot(Vector3(0,1,0)) *degtorad;
+						
 //			cout<<"Slope:"<<slope<<endl;
-			if(slope<1)
-				GetVert(x,z)->texture=1;
-			else if(slope<3)				
+			if(slope<30)
+				GetVert(x,z)->texture=3;
+			else if(slope<50)				
 				GetVert(x,z)->texture=2;
 			else 
-				GetVert(x,z)->texture=3;				
+				GetVert(x,z)->texture=1;				
 			
+//			if(GetVert(x,z)->texture==1)
+//				if(slope<40)
+//					cout<<"CP!!!:"<<slope<<endl;
 		}
 	}
 }

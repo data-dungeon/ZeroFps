@@ -195,7 +195,7 @@ void Render::DrawHM(HeightMap *kmap) {
 	glMaterialfv(GL_FRONT,GL_SHININESS,mat_shininess);
 
 	glTexEnvf(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE);
-	SetColor(Vector3(255,255,255));
+	SetColor(Vector3(0,0,0));
 
 //	glPolygonMode(GL_FRONT,GL_LINE);
 
@@ -301,7 +301,7 @@ void Render::Dot(float x,float y,float z) {
 
 void Render::DrawHMlod(HeightMap* kmap,Vector3 CamPos){
 	int slicesize=10;	//grid size of lod tiles
-	int detail=20;//height meens greater detail att longer range
+	int detail=30;//height meens greater detail att longer range
 	
 	glPushMatrix();
 	
@@ -311,13 +311,15 @@ void Render::DrawHMlod(HeightMap* kmap,Vector3 CamPos){
 	m_pkTexMan->BindTexture(kmap->m_acTileSet);
 //	glPolygonMode(GL_FRONT,GL_LINE);	
 	
-	GLfloat mat_specular[]={1,1,1,1};
-	GLfloat mat_shininess[]={10};
+	GLfloat mat_specular[]={0,0,0,0};
+	GLfloat mat_diffuse[]={1,1,1,1};	
+//	GLfloat mat_shininess[]={10};
 	glMaterialfv(GL_FRONT,GL_SPECULAR,mat_specular);
-	glMaterialfv(GL_FRONT,GL_SHININESS,mat_shininess);
+	glMaterialfv(GL_FRONT_AND_BACK,GL_DIFFUSE,mat_diffuse);	
+//	glMaterialfv(GL_FRONT,GL_SHININESS,mat_shininess);
 
 	glTexEnvf(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE);
-	SetColor(Vector3(255,255,255));
+//	SetColor(Vector3(255,255,255));
 
 	Vector3 p1,p2;
 	
@@ -338,12 +340,17 @@ void Render::DrawHMlod(HeightMap* kmap,Vector3 CamPos){
 			float t=0;
 			float s=0;			 //exture cordinats
 			float nt,ns;
-			int times=0;
 			
 			//start going trouh all vertexes in the slice
 			for(int z=sz*slicesize;z<sz*slicesize+slicesize;z+=step){
 				glBegin(GL_TRIANGLE_STRIP);						
-				for(int x=sx*slicesize;x<sx*slicesize+slicesize+step;x+=step){
+				for(int x=sx*slicesize;x<sx*slicesize+slicesize+step+1;x+=step){
+					
+					//fulhack ultradeluxe to make sure that we dont go outside the grid
+					if(x>=kmap->m_iHmSize)
+						break;						
+					if(z>=kmap->m_iHmSize-1)
+						break;
 					
 					//flip texture
 					if(flip==false)

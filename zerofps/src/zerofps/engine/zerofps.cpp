@@ -94,8 +94,9 @@ void ZeroFps::InitDisplay(int iWidth,int iHeight,int iDepth) {
 	//setup some opengl stuff =)
 	glEnable(GL_TEXTURE_2D);
 	glEnable(GL_DEPTH_TEST);
-	glEnable(GL_BLEND);
-	glEnable(GL_COLOR_MATERIAL);	
+	glEnable(GL_NORMALIZE);	
+//	glEnable(GL_BLEND);
+//	glEnable(GL_COLOR_MATERIAL);	
 	glEnable(GL_CULL_FACE);
 
   glShadeModel(GL_SMOOTH);
@@ -110,6 +111,10 @@ void ZeroFps::InitDisplay(int iWidth,int iHeight,int iDepth) {
   SDL_GL_SetAttribute( SDL_GL_DEPTH_SIZE, 16 );
   SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1 );
 	
+  glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();													//
+	glFrustum(-0.10,0.10,-0.10,0.10,0.10,300.0);				//
+	
 	//set camera mode
 	m_iCamMode=cam_look;
 	m_kCamPos=new Vector3(0,10,0);
@@ -120,10 +125,11 @@ void ZeroFps::InitDisplay(int iWidth,int iHeight,int iDepth) {
 void ZeroFps::Swap(void) {
 	SDL_GL_SwapBuffers();  //guess
 	
-	glLoadIdentity();													//
 	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);		// Reset view and clea
-	glFrustum(-0.10,0.10,-0.10,0.10,0.10,300.0);				//
 	
+  glMatrixMode(GL_MODELVIEW);
+ 	glLoadIdentity();													//
+  
 	//count FPS
 	m_fFrameTime=SDL_GetTicks()-m_fLastFrameTime;
 	m_fLastFrameTime=SDL_GetTicks();
@@ -144,7 +150,7 @@ void ZeroFps::Camera(void) {
 			glRotatef(m_kCamRot->z,0,0,1);	
 		
 			//translate the camera
-			glTranslatef(-m_kCamPos->x,-m_kCamPos->y-0.2,-m_kCamPos->z);
+			glTranslatef(-m_kCamPos->x,-m_kCamPos->y,-m_kCamPos->z);
 			break;
 		case cam_target:
 			gluLookAt(m_kCamPos->x,m_kCamPos->y,m_kCamPos->z,

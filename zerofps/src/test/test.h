@@ -13,9 +13,9 @@ class Test :public Application {
 	HeightMap *test;
 	HeightMap *test2;
 
-	GLfloat light_position[];
-	GLfloat white_light[] ;
-	GLfloat lmodel_ambient[];
+	Vector4 light_position;
+	Vector4 white_light;
+	Vector4 lmodel_ambient;
 
 	int fpsupdate;
 	char fps[20];

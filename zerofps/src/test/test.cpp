@@ -22,17 +22,19 @@ void Test::OnInit(void) {
 	IntToChar(fps,pkFps->m_iFps);
 	fpsupdate=0;
 
-	GLfloat light_position[] ={100,200,0,1};
-	GLfloat white_light[] = {0.8,0.8,0.8,1};
-	GLfloat lmodel_ambient[] = {0.6,0.6,0.6,1};
+	light_position=Vector4(0.5,0.5,0,0);
+	white_light = Vector4(1,1,1,1);
+	lmodel_ambient = Vector4(0.5,0.5,0.5,1);
 
-  glColorMaterial(GL_FRONT,GL_AMBIENT_AND_DIFFUSE);
-  glColorMaterial(GL_BACK,GL_AMBIENT_AND_DIFFUSE);
+  
+//  glColorMaterial(GL_FRONT,GL_AMBIENT_AND_DIFFUSE);
+//  glColorMaterial(GL_BACK,GL_AMBIENT_AND_DIFFUSE);
 
-  glLightfv(GL_LIGHT0,GL_DIFFUSE,white_light);
-  glLightfv(GL_LIGHT0,GL_SPECULAR,white_light);  
-  glLightfv(GL_LIGHT0,GL_POSITION,light_position);	  
-  glLightModelfv(GL_LIGHT_MODEL_AMBIENT,lmodel_ambient);
+  glLightfv(GL_LIGHT0,GL_DIFFUSE,&white_light[0]);
+//  glLightfv(GL_LIGHT0,GL_SPECULAR,white_light);  
+  glLightfv(GL_LIGHT0,GL_AMBIENT,&lmodel_ambient[0]);
+  glLightfv(GL_LIGHT0,GL_POSITION,&light_position[0]);	  
+//  glLightModelfv(GL_LIGHT_MODEL_AMBIENT,lmodel_ambient);
   
   glEnable(GL_LIGHTING);
   glEnable(GL_LIGHT0);
@@ -43,9 +45,13 @@ void Test::OnInit(void) {
 void Test::OnIdle(void) {
 	input();
 	
-	glLightfv(GL_LIGHT0,GL_POSITION,light_position);	
+	glLightfv(GL_LIGHT0,GL_POSITION,&light_position[0]);	
 
-	pkRender->DrawHMlod(test,*pkFps->m_kCamPos);		
+	glutSolidSphere(5,20,20);
+
+pkRender->DrawHMlod(test,*pkFps->m_kCamPos);		
+
+
 //	pkRender->DrawHM(test);		
 //	pkRender->Quad(Vector3(0,1,0),Vector3(-90,0,0),Vector3(2000,2000,2000),pkTexMan->Load("file:../data/textures/water.bmp"));
 

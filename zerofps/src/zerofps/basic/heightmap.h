@@ -6,7 +6,9 @@
 #include "vector3.h"
 #include <cstdlib>
 #include <ctime>
+#include <cmath>
 #include <cstring>
+#include "basic.pkg"
 
 using namespace std;
 
