@@ -67,7 +67,9 @@ struct PSystemTypeData
 		m_uiAlphaTest,
 		m_uiDepthMask;
 
-	bool m_bLightOn;
+	bool 
+      m_bLightOn,
+      m_bRemoveParentOnFinish;
 
 	vector<string> m_kProperties;
 };

@@ -13,6 +13,9 @@
 
 void P_AI::Update()
 {
+   // TODO!! damn this...
+   if ( !m_pkCharProp )
+      m_pkCharProp = (CharacterProperty*)m_pkObject->GetProperty ("P_CharStats");
    
    if ( !m_pkCurrentOrder )
    {
@@ -39,9 +42,8 @@ void P_AI::Update()
 
       // if character is to far away, move closer
       Vector3 kPos = m_pkObject->GetWorldPosV();
-      if ( pkEnemy->GetWorldPosV().DistanceXZTo(kPos) > 1 )
+      if ( pkEnemy->GetWorldPosV().DistanceXZTo(kPos) > 2 )
       {
-
          Order* pkMoveOrder = new Order;
          pkMoveOrder->m_kOrderType = "MoveTo";
          pkMoveOrder->m_kPosition = pkEnemy->GetWorldPosV();
@@ -57,12 +59,15 @@ void P_AI::Update()
          // if character has "reloaded", make attack move
          if ( m_pkCharProp->ReadyForAction() )
          {
-            cout << "Bashed the evil monster" << endl;
+            string kWhenHit = ((CharacterProperty*)pkEnemy->GetProperty("P_CharStats"))->GetCharStats()->m_strScriptWhenHit;
+
+            // create splattblood PSystem
+            if ( kWhenHit.size() )
+               m_pkObject->m_pkObjectMan->CreateObjectFromScriptInZone ( kWhenHit.c_str(), pkEnemy->GetWorldPosV() );
 
             // change animation to attack animation
             ((P_Mad*)m_pkObject->GetProperty("P_Mad"))->SetAnimation ("attack", 0);
             ((P_Mad*)m_pkObject->GetProperty("P_Mad"))->SetNextAnimation ("idle");
-
 
             DealDamage( m_pkCharProp->GetCharStats()->GetFightStats(),
                ((CharacterProperty*)pkEnemy->GetProperty("P_CharStats"))->GetCharStats() );
@@ -167,6 +172,9 @@ vector<PropertyValues> P_AI::GetPropertyValues()
 void P_AI::Init()
 {
    m_pkCharProp = (CharacterProperty*)m_pkObject->GetProperty ("P_CharStats");
+
+   if ( !m_pkCharProp )
+      cout << "ERROR!!! P_AI is assigned to a object withour P_CharStats. Crash is certain" << endl;
 }
 
 // ------------------------------------------------------------------------------------------
@@ -178,6 +186,7 @@ P_AI::P_AI()
 	strcpy(m_acName,"P_AI");
 
 	bNetwork = false;
+   m_bAIPlayer = false;
 
    m_pkCurrentOrder = 0;
 }
@@ -187,6 +196,7 @@ P_AI::P_AI()
 P_AI::P_AI( string kName )
 {
 	bNetwork = true;
+   m_bAIPlayer = false;
 
 	strcpy(m_acName,"P_AI");
 }
@@ -226,6 +236,13 @@ void P_AI::PackFrom(NetPacket* pkNetPacket, int iConnectionID )
 
 void P_AI::AddStaticOrder ( string kOrderType, int iTargetID1, int iTargetID2, Vector3 kPosition, string kType )
 {
+   // is AI is player, return. Players can't have static orders
+   if ( m_bAIPlayer )
+   {
+      cout << "Warning! Tried to give player a static order!" << endl;
+      return;
+   }
+
    Order* pkNewOrder = new Order;
 
    pkNewOrder->m_kOrderType = kOrderType;
@@ -249,9 +266,20 @@ void P_AI::AddDynamicOrder ( string kOrderType, int iTargetID1, int iTargetID2, 
    pkNewOrder->m_iTargetID2 = iTargetID2;
    pkNewOrder->m_kPosition = kPosition;
 
-   cout << "Added order:" << kOrderType  << " type:" << kType << endl;
-
    m_kDynamicOrders.push_back ( pkNewOrder );
+
+}
+
+// ------------------------------------------------------------------------------------------
+
+void P_AI::ClearDynamicOrders()
+{
+   for ( int i = 0; i < m_kDynamicOrders.size(); i++ )
+   {
+      delete m_kDynamicOrders.front();
+      m_kDynamicOrders.pop_front();
+   }
+
 }
 
 // ------------------------------------------------------------------------------------------

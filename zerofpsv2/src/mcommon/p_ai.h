@@ -40,6 +40,8 @@ class MCOMMON_API P_AI: public Property
       // pointer to the characters charprop.
       CharacterProperty* m_pkCharProp;
 
+      bool m_bAIPlayer;
+
    public:
 
       void NextOrder();
@@ -64,6 +66,11 @@ class MCOMMON_API P_AI: public Property
 		void PackFrom(NetPacket* pkNetPacket, int iConnectionID );
 
 		bool HandleSetValue( string kValueName, string kValue );
+
+      void ClearDynamicOrders();
+
+      void SetAIIsPlayer (bool bIsPlayer)             { m_bAIPlayer = bIsPlayer; }
+      bool PlayerAI ()                                { return m_bAIPlayer; }
 };
 
 MCOMMON_API Property* Create_P_AI();

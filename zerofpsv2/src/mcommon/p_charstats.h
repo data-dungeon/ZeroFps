@@ -7,6 +7,8 @@
 #include "../zerofpsv2/basic/zfini.h"
 #include "rulesystem/sendtype.h"
 
+enum { eATTRIBUTES, eSKILLS, eDATA };
+
 class MCOMMON_API CharacterProperty: public Property 
 {
 	private:
@@ -21,7 +23,7 @@ class MCOMMON_API CharacterProperty: public Property
       void AddReloadTime ( float fTime )      { m_fReloadTime += fTime; }
       bool ReadyForAction ()                  { return m_fReloadTimer <= 0; }
 
-      vector<SendType> m_kSends;       // the clients to recieve data from this property
+      list<SendType> m_kSends;       // the clients to recieve data from this property
 
       void Init();
 
@@ -44,6 +46,8 @@ class MCOMMON_API CharacterProperty: public Property
 		bool HandleSetValue( string kValueName, string kValue );
 
       void RequestUpdateFromServer( string kData );
+
+      void AddSendsData(SendType kNewSendData);
 
 };
 

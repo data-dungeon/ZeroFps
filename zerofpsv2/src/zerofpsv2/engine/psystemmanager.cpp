@@ -529,6 +529,13 @@ bool PSystemManager::LoadData ( PSystemType *pkPSType )
 	else
 		pkPSType->m_kPSystemBehaviour.m_kCullingTest = "cube";
 
+	// culling test-type
+	if ( m_kIniLoader.KeyExist("remove_on_death", "value") )
+		pkPSType->m_kPSystemBehaviour.m_kCullingTest = m_kIniLoader.GetBoolValue("remove_on_death", "value");
+	else
+		pkPSType->m_kPSystemBehaviour.m_bRemoveParentOnFinish = true;
+   
+
    pkPSType->m_kPSystemBehaviour.m_kPosOffset.x -= pkPSType->m_kParticleBehaviour.m_kStartSize.x;
    pkPSType->m_kPSystemBehaviour.m_kPosOffset.y -= pkPSType->m_kParticleBehaviour.m_kStartSize.y;
    pkPSType->m_kPSystemBehaviour.m_kPosOffset.z -= pkPSType->m_kParticleBehaviour.m_kStartSize.x;

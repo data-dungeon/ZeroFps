@@ -83,6 +83,7 @@ namespace MistLandLua
    int MCOMMON_API AddHpLua (lua_State* pkLua);
    int MCOMMON_API AddMpLua (lua_State* pkLua);
    int MCOMMON_API PrintStatsLua (lua_State* pkLua);
+   int MCOMMON_API SetScriptWhenHitLua (lua_State* pkLua);
 
 	int MCOMMON_API SetRecalPositionLua (lua_State* pkLua);
 	
@@ -174,6 +175,7 @@ namespace MistLandLua
    int MCOMMON_API GetClosestPlayerLua(lua_State* pkLua);
    int MCOMMON_API DistanceToLua(lua_State* pkLua);
    int MCOMMON_API AIAttackLua(lua_State* pkLua);
+   int MCOMMON_API SetAIIsPlayerLua(lua_State* pkLua);
 
 
    

@@ -64,6 +64,7 @@ void MistLandLua::Init(EntityManager* pkObjMan,ZFScriptSystem* pkScript)
    pkScript->ExposeFunction("SetData",			         MistLandLua::SetDataValueLua);			
    pkScript->ExposeFunction("SetAttack",  		      MistLandLua::SetAttackValueLua);			
    pkScript->ExposeFunction("SetDefence",		         MistLandLua::SetDefenceValueLua);			
+   pkScript->ExposeFunction("SetScriptWhenHit",		   MistLandLua::SetScriptWhenHitLua);			
 
    // hp/mp stuff
    pkScript->ExposeFunction("SetHP",      				MistLandLua::SetHPLua);			
@@ -146,6 +147,8 @@ void MistLandLua::Init(EntityManager* pkObjMan,ZFScriptSystem* pkScript)
    // AI stuff
    pkScript->ExposeFunction("AIUseActionOn", MistLandLua::AIUseActionOnLua);
    pkScript->ExposeFunction("AIAttack", MistLandLua::AIAttackLua);
+   pkScript->ExposeFunction("SetAIIsPlayer", MistLandLua::SetAIIsPlayerLua);
+   pkScript->ExposeFunction("AIMoveTo", MistLandLua::AIMoveToLua);
 
    pkScript->ExposeFunction("GetClosestItemOfType", MistLandLua::GetClosestItemOfTypeLua);
    pkScript->ExposeFunction("GetClosestPlayer", MistLandLua::GetClosestPlayerLua);
@@ -1213,6 +1216,33 @@ int MistLandLua::AddMpLua (lua_State* pkLua)
          CharacterStats *pkCS = pkCP->GetCharStats();
 
          pkCS->AddMP ( dTemp );
+      }
+
+   }
+
+   return 0;
+}
+
+// ----------------------------------------------------------------------------------------------
+
+// which script to run when character is hit
+int MistLandLua::SetScriptWhenHitLua (lua_State* pkLua)
+{
+	if( g_pkScript->GetNumArgs(pkLua) == 1 )
+   {
+		Entity* pkObject = g_pkObjMan->GetObjectByNetWorkID(g_iCurrentObjectID);
+
+	   if (pkObject)
+		{
+     		char	acScript[128];
+			g_pkScript->GetArgString(pkLua, 0, acScript);
+
+  			CharacterProperty* pkCP = (CharacterProperty*)pkObject->GetProperty("P_CharStats");
+
+         if ( pkCP )
+            pkCP->GetCharStats()->m_strScriptWhenHit = acScript;
+         else
+            cout << "Warning! Tried to use SetScriptWhenHitLua on a non-character object!" << endl; 
       }
 
    }
@@ -2740,32 +2770,46 @@ int MistLandLua::GetPickedUpByLua (lua_State* pkLua)
 }
 // -----------------------------------------------------------------------------------------------
 
+// 1=event 2=target 3=user
 int MistLandLua::AIUseActionOnLua(lua_State* pkLua) 
 {
-	if( g_pkScript->GetNumArgs(pkLua) == 2 )
+	if( g_pkScript->GetNumArgs(pkLua) == 2 || g_pkScript->GetNumArgs(pkLua) == 3 )
 	{
       // action
      	char acAction[128];
 		g_pkScript->GetArgString(pkLua, 0, acAction);
 
-      double dObjectID;
-      g_pkScript->GetArgNumber(pkLua, 1, &dObjectID);
+      double dTarget;
+      g_pkScript->GetArgNumber(pkLua, 1, &dTarget);
 
-      Entity* pkObj = g_pkObjMan->GetObjectByNetWorkID(g_iCurrentObjectID);
+      double dUser;
+
+      if ( g_pkScript->GetNumArgs(pkLua) == 3 )
+         g_pkScript->GetArgNumber(pkLua, 2, &dUser);
+      else
+         dUser = g_iCurrentObjectID;
+
+      Entity* pkObj = g_pkObjMan->GetObjectByNetWorkID(dUser);
 
       if ( !pkObj )
          return 0;
 
-      Entity* pkTarget = g_pkObjMan->GetObjectByNetWorkID(dObjectID);
+      Entity* pkTarget = g_pkObjMan->GetObjectByNetWorkID(dTarget);
 
       if ( !pkTarget )
          return 0;
 
+      
+      P_AI* pkAI = (P_AI*)pkObj->GetProperty ("P_AI");
+
       // check if user is a Character with AI and target an Item
-      if ( pkObj->GetProperty ("P_CharStats") && pkObj->GetProperty ("P_AI") )
+      if ( pkObj->GetProperty ("P_CharStats") && pkAI )
       {
-         ((P_AI*)pkObj->GetProperty ("P_AI"))->AddDynamicOrder 
-            ("Action", dObjectID, 0, pkTarget->GetWorldPosV(), acAction );
+         // is AI is player, clear all other orders
+         if ( pkAI->PlayerAI() )
+            pkAI->ClearDynamicOrders();
+
+         pkAI->AddDynamicOrder ("Action", dTarget, 0, pkTarget->GetWorldPosV(), acAction );
       }
 
 
@@ -2776,32 +2820,41 @@ int MistLandLua::AIUseActionOnLua(lua_State* pkLua)
 
 // -----------------------------------------------------------------------------------------------
 
+// 1 = target, 2 = user
 int MistLandLua::AIAttackLua(lua_State* pkLua) 
 {
-	if( g_pkScript->GetNumArgs(pkLua) == 1 )
+	if( g_pkScript->GetNumArgs(pkLua) == 1 || g_pkScript->GetNumArgs(pkLua) == 2 )
 	{
+      double dTarget, dAttacker;
 
-      double dObjectID;
-      g_pkScript->GetArgNumber(pkLua, 0, &dObjectID);
+      g_pkScript->GetArgNumber(pkLua, 0, &dTarget);
 
-      Entity* pkObj = g_pkObjMan->GetObjectByNetWorkID(g_iCurrentObjectID);
+      if ( g_pkScript->GetNumArgs(pkLua) == 2 )
+         g_pkScript->GetArgNumber(pkLua, 1, &dAttacker);
+      else
+         dAttacker = g_iCurrentObjectID;
+
+      Entity* pkObj = g_pkObjMan->GetObjectByNetWorkID(dAttacker);
 
       if ( !pkObj )
          return 0;
 
-      Entity* pkTarget = g_pkObjMan->GetObjectByNetWorkID(dObjectID);
+      Entity* pkTarget = g_pkObjMan->GetObjectByNetWorkID(dTarget);
 
       if ( !pkTarget )
          return 0;
 
+      P_AI* pkAI = (P_AI*)pkObj->GetProperty ("P_AI");
+
       // check if user is a Character with AI and target an character
-      if ( pkObj->GetProperty ("P_CharStats") && pkObj->GetProperty ("P_AI") && pkTarget->GetProperty("P_CharStats") )
+      if ( pkObj->GetProperty ("P_CharStats") && pkAI && pkTarget->GetProperty("P_CharStats") )
       {
-         ((P_AI*)pkObj->GetProperty ("P_AI"))->AddDynamicOrder 
-            ("Attack", dObjectID, 0, pkTarget->GetWorldPosV(), "tjoff" );
+         // is AI is player, clear all other orders
+         if ( pkAI->PlayerAI() )
+            pkAI->ClearDynamicOrders();
+
+         pkAI->AddDynamicOrder ("Attack", dTarget, 0, pkTarget->GetWorldPosV(), "tjoff" );
       }
-
-
    }
 
    return 0;
@@ -2811,7 +2864,41 @@ int MistLandLua::AIAttackLua(lua_State* pkLua)
 
 int MistLandLua::AIMoveToLua(lua_State* pkLua) 
 {
-   return 0;
+	if(g_pkScript->GetNumArgs(pkLua) == 2)
+	{
+		double dId;
+		double x,y,z;
+		Vector3 kPos;		
+		vector<TABLE_DATA> vkData;
+		
+		g_pkScript->GetArgNumber(pkLua, 0, &dId);				
+		g_pkScript->GetArgTable(pkLua, 2, vkData);
+/*		g_pkScript->GetArgNumber(pkLua, 1, &x);		
+		g_pkScript->GetArgNumber(pkLua, 2, &y);		
+		g_pkScript->GetArgNumber(pkLua, 3, &z);		
+*/			
+		kPos = Vector3(
+			(float) (*(double*) vkData[0].pData),
+			(float) (*(double*) vkData[1].pData),
+			(float) (*(double*) vkData[2].pData)); 
+		
+		Entity* pkEnt = g_pkObjMan->GetObjectByNetWorkID(dId);
+		if(pkEnt)
+		{
+         // check if object has AI
+         P_AI* pkAI = (P_AI*)pkEnt->GetProperty("P_AI");
+
+         // is AI is player, clear all other orders
+         if ( pkAI->PlayerAI() )
+            pkAI->ClearDynamicOrders();
+
+         if ( pkAI )
+            pkAI->AddDynamicOrder ("MoveTo", 0, 0, kPos, ".");
+		}
+      else
+         cout << "Tried to us AIMoveTo on a object without P_AI" << endl;
+	}
+	return 0;
 }
 
 // -----------------------------------------------------------------------------------------------
@@ -2943,6 +3030,33 @@ int MistLandLua::GetClosestPlayerLua(lua_State* pkLua)
    }
 
    return 0;
+}
+
+// -----------------------------------------------------------------------------------------------
+
+int MistLandLua::SetAIIsPlayerLua(lua_State* pkLua)
+{
+	if( g_pkScript->GetNumArgs(pkLua) == 1 )
+	{
+      Entity* pkObj = g_pkObjMan->GetObjectByNetWorkID(g_iCurrentObjectID);
+
+      if ( !pkObj )
+         return 0;
+
+      P_AI* pkAI = (P_AI*)pkObj->GetProperty("P_AI");
+
+      if ( !pkAI )
+      {
+         cout << "Warning! Tried to use luafunction SetAIIsPlayerLua on a object withour ai" << endl;
+         return 0;
+      }
+
+      double dTemp;
+      g_pkScript->GetArgNumber(pkLua, 0, &dTemp);	
+      
+      pkAI->SetAIIsPlayer ( bool(dTemp) );
+
+   }
 }
 
 // -----------------------------------------------------------------------------------------------

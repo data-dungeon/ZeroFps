@@ -1,5 +1,6 @@
 #include "rulesystem/character/characterfactory.h"
 #include "p_charstats.h"
+#include "p_clientcontrol.h"
 #include "../zerofpsv2/engine/entity.h"
 #include "../zerofpsv2/engine/zerofps.h"
 
@@ -29,6 +30,7 @@ vector<PropertyValues> CharacterProperty::GetPropertyValues()
 
 void CharacterProperty::Init()
 {
+
    m_pkCharStats = new CharacterStats( m_pkObject );
 
    m_pkCharStats->MakeContainer();
@@ -45,7 +47,7 @@ CharacterProperty::CharacterProperty()
 
 	strcpy(m_acName,"P_CharStats");
 
-	bNetwork = false;
+	bNetwork = true;
 
 }
 
@@ -53,7 +55,8 @@ CharacterProperty::CharacterProperty()
 
 CharacterProperty::CharacterProperty( string kName )
 {
-	
+   m_iSide = PROPERTY_SIDE_SERVER;
+   
    m_fReloadTime = 5;
    m_fReloadTimer = 0;
 
@@ -66,7 +69,6 @@ CharacterProperty::CharacterProperty( string kName )
 
 bool CharacterProperty::HandleSetValue( string kValueName, string kValue )
 {
-
 	return false;
 }
 // ------------------------------------------------------------------------------------------
@@ -273,73 +275,91 @@ void CharacterProperty::Load(ZFIoInterface* pkPackage)
 
 void CharacterProperty::PackTo(NetPacket* pkNetPacket, int iConnectionID )
 {
-   /*
-   for (vector<SendType>::iterator kIte = m_kSends.begin(); kIte != m_kSends.end(); kIte++ )
+   int iStuff = -1;
+
+   if ( !m_kSends.size() )
+      pkNetPacket->Write( &iStuff, sizeof(int) );
+
+   for (list<SendType>::iterator kIte = m_kSends.begin(); kIte != m_kSends.end(); kIte++ )
    {
       // get continer data
-      if ( (*kIte).m_iClientID == iConnectionID && (*kIte).m_kSendType == "container" )
+      if ( (*kIte).m_iClientID == iConnectionID && (*kIte).m_kSendType == "skills" )
       {
-         // if object isn't a container, don't send anything
-         if ( m_pkCharStats->m_pkContainer )
+         iStuff = eSKILLS;
+
+         pkNetPacket->Write( &iStuff, sizeof(int) );
+
+         // get container vector
+         map<string, StatDescriber>* pkSkills = &m_pkCharStats->m_kSkills;
+
+         iStuff = pkSkills->size();
+
+         // write number of skills
+         pkNetPacket->Write( &iStuff, sizeof(int) );
+
+         for ( map<string, StatDescriber>::iterator kIte = pkSkills->begin();
+               kIte != pkSkills->end(); kIte++ )
          {
-            pkNetPacket->Write_NetStr( "cont" );
-
-            // get container vector
-            vector<int>* pkItems = m_pkCharStats->m_pkContainer->GetItemsInContainer();
-
-            // size of container
-            pkNetPacket->Write( (void*)pkItems->size(), sizeof(int) );
-
-            // send itemIDs in container
-            for ( int i = 0; i < pkItems->size(); i++ )
-               pkNetPacket->Write( (void*)pkItems->at(i), sizeof(int) );
-
-            cout << "container data is sent" << endl;
+            // skill name
+            pkNetPacket->Write_Str( (*kIte).first.c_str() );
+            // skill value
+            pkNetPacket->Write( &(*kIte).second.m_iValue, sizeof(int) );
          }
 
-         m_kSends.erase ( kIte );
+         cout << "skill data is sent" << endl;
 
       }
 
+      m_kSends.erase ( kIte++ );
+
    }
-*/
-	SetNetUpdateFlag(iConnectionID,false);
+
+  	SetNetUpdateFlag(iConnectionID, false);
 }
 
 // ------------------------------------------------------------------------------------------
 
 void CharacterProperty::PackFrom(NetPacket* pkNetPacket, int iConnectionID )
 {
-/*
-   string kData;
+   if ( iConnectionID != -1 )
+      cout << "iConnectionID wasn't -1 in P_CharStats::PackFrom!!! The end is near!" << endl;
 
-   pkNetPacket->Read_NetStr( (char*)kData.c_str() );
+   // read type of data
+   int iType;
 
-   if ( kData == "cont" )
+	pkNetPacket->Read( &iType, sizeof(int) );
+
+   if ( iType == eSKILLS )
    {
-      int iSize;
+      int iCount, iValue;
 
-      // size of container
-      pkNetPacket->Read( &iSize, sizeof(int) );
+      // write number of skills
+      pkNetPacket->Read( &iCount, sizeof(int) );
 
-      // send itemIDs in container
-      for ( int i = 0; i < iSize; i++ )
+      char caSkillName[128];
+
+      for ( int i = 0; i < iCount; i++ )
       {
-         int iID;
-         pkNetPacket->Read( &iID, sizeof(int) );
-         m_pkCharStats->m_pkContainer->AddObject (iID);
+         // read skill name
+         pkNetPacket->Read_Str( caSkillName );
+         // read skill value
+         pkNetPacket->Read( &iValue, sizeof(int) );
+
+         m_pkCharStats->m_kSkills[string(caSkillName)].m_iValue = iValue;
       }
 
-      cout << "char recieved cont. data!!! :)" << endl;
+      cout << "got skill data from server" << endl;
+
    }
-*/
+
+
 }
 
 // ------------------------------------------------------------------------------------------
 
 void CharacterProperty::RequestUpdateFromServer( string kData )
 {
- /*
+ 
    int iClientObjectID = m_pkZeroFps->GetClientObjectID();
    Entity* pkClientObj = m_pkObjMan->GetObjectByNetWorkID(iClientObjectID);
 
@@ -360,12 +380,51 @@ void CharacterProperty::RequestUpdateFromServer( string kData )
          kOrder.m_iCharacter = pkCP->m_iActiveCaracterObjectID;
 
          // use this useless variabel to send which version of the item this prop. has
-         kOrder.m_iFace = m_pkCharStats->m_pkContainer->m_uiVersion;
+         kOrder.m_iUseLess = m_pkCharStats->m_pkContainer->m_uiVersion;
+
+         pkCP->AddOrder (kOrder);
+      }
+      else if ( kData == "attributes" )
+      {
+         // get client object
+         kOrder.m_sOrderName = "(rq)attr";
+         kOrder.m_iObjectID = m_pkObject->iNetWorkID;
+         kOrder.m_iClientID = m_pkZeroFps->GetConnectionID();
+         kOrder.m_iCharacter = pkCP->m_iActiveCaracterObjectID;
+
+         // use this useless variabel to send which version of the item this prop. has
+         kOrder.m_iUseLess = m_pkCharStats->m_pkContainer->m_uiVersion;
+
+         pkCP->AddOrder (kOrder);
+      }
+      else if ( kData == "skills" )
+      {
+         // get client object
+         kOrder.m_sOrderName = "(rq)skil";
+         kOrder.m_iObjectID = m_pkObject->iNetWorkID;
+         kOrder.m_iClientID = m_pkZeroFps->GetConnectionID();
+         kOrder.m_iCharacter = pkCP->m_iActiveCaracterObjectID;
+
+         // use this useless variabel to send which version of the item this prop. has
+         kOrder.m_iUseLess = m_pkCharStats->m_pkContainer->m_uiVersion;
+
+         pkCP->AddOrder (kOrder);
+      }
+      else if ( kData == "data" )
+      {
+         // get client object
+         kOrder.m_sOrderName = "(rq)data";
+         kOrder.m_iObjectID = m_pkObject->iNetWorkID;
+         kOrder.m_iClientID = m_pkZeroFps->GetConnectionID();
+         kOrder.m_iCharacter = pkCP->m_iActiveCaracterObjectID;
+
+         // use this useless variabel to send which version of the item this prop. has
+         kOrder.m_iUseLess = m_pkCharStats->m_pkContainer->m_uiVersion;
 
          pkCP->AddOrder (kOrder);
       }
       // attribute and skills, change to only skills or attributes?
-      else if ( kData = "charstats" )
+      else if ( kData == "charstats" )
       {
          // get client object
          kOrder.m_sOrderName = "(rq)char";
@@ -374,7 +433,7 @@ void CharacterProperty::RequestUpdateFromServer( string kData )
          kOrder.m_iCharacter = pkCP->m_iActiveCaracterObjectID;
 
          // use this useless variabel to send which version of the item this prop. has
-         kOrder.m_iFace = m_pkCharStats->m_uiVersion;
+         kOrder.m_iUseLess = m_pkCharStats->m_uiVersion;
 
          pkCP->AddOrder (kOrder);
       }
@@ -388,18 +447,26 @@ void CharacterProperty::RequestUpdateFromServer( string kData )
          kOrder.m_iCharacter = pkCP->m_iActiveCaracterObjectID;
 
          // use this useless variabel to send which version of the item this prop. has
-         kOrder.m_iFace = m_pkCharStats->m_uiVersion;
+         kOrder.m_iUseLess = m_pkCharStats->m_uiVersion;
 
          pkCP->AddOrder (kOrder);
       }
    }
    else
       cout << "P_Item::RequestUpdateFromServer(): no client object found!" << endl;
-   */
+
 }
 
 // ------------------------------------------------------------------------------------------
 
+void CharacterProperty::AddSendsData(SendType kNewSendData)
+{
+	SetNetUpdateFlag(true);		
+	
+	m_kSends.push_back(kNewSendData);
+}
+
+// ------------------------------------------------------------------------------------------
 
 Property* Create_P_CharStats()
 {

@@ -1,6 +1,7 @@
 #include "../../engine/psystemmanager.h"
 #include "p_psystem.h"
 #include "../../engine/entity.h"
+#include "../../engine/entitymanager.h"
 
 // ------------------------------------------------------------------------------------------
 
@@ -14,14 +15,16 @@ void P_PSystem::Update()
 		if ( !m_pkPSystem->Update( m_pkObject->GetIWorldPosV(), m_pkObject->GetWorldRotM() ) )
  		   m_pkPSystem->Draw();
       else
-         glPopAttrib();
-//      {
-//         delete m_pkPSystem;
+      {
+         if ( m_pkPSystem->m_pkPSystemType->m_kPSystemBehaviour.m_bRemoveParentOnFinish )
+            m_pkObject->m_pkObjectMan->Delete ( m_pkObject );
 
-         // for now, just remove the property and leave the parent alone
-//         m_pkObject->RemoveProperty(this);
-//         delete this;
-//      }
+         delete m_pkPSystem;
+
+         m_pkPSystem = 0;
+
+         glPopAttrib();
+      }
 	}
 }
 

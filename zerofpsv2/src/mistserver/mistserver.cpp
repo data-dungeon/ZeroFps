@@ -1395,6 +1395,60 @@ void MistServer::HandleOrders()
          }
 
       }
+      // request character skills
+      else if ( order->m_sOrderName == "(rq)skil" )
+      {
+           // type of request
+   		Entity* pkCharObject = pkObjectMan->GetObjectByNetWorkID(order->m_iObjectID);
+
+         if ( pkCharObject  )
+         {
+            CharacterProperty *pkCP = (CharacterProperty*) pkCharObject ->GetProperty("P_CharStats");
+            
+            if ( pkCP )
+            {
+               // if the items is of the same version, no need to send data
+                 if ( pkCP->GetCharStats()->m_uiVersion != order->m_iUseLess )
+                 {
+                     SendType kSendType;
+                     kSendType.m_iClientID = order->m_iClientID;
+                     kSendType.m_kSendType = "skills";
+                  
+                     pkCP->AddSendsData ( kSendType );
+                 }
+
+            }
+            else
+               cout << "Error! Non-P_Charstats_Object requested for updated iteminfo! This should't be possible!!!" << endl;
+         }
+      }  
+      // request character skills
+      else if ( order->m_sOrderName == "(rq)attr" )
+      {
+           // type of request
+   		Entity* pkCharObject = pkObjectMan->GetObjectByNetWorkID(order->m_iObjectID);
+
+         if ( pkCharObject  )
+         {
+            CharacterProperty *pkCP = (CharacterProperty*) pkCharObject ->GetProperty("P_CharStats");
+            
+            if ( pkCP )
+            {
+               // if the items is of the same version, no need to send data
+                 if ( pkCP->GetCharStats()->m_uiVersion != order->m_iUseLess )				//DVOID WAS HERE
+                 {
+                     SendType kSendType;
+                     kSendType.m_iClientID = order->m_iClientID;
+                     kSendType.m_kSendType = "attributes";
+                  
+                     pkCP->AddSendsData ( kSendType );
+                 }
+
+            }
+            else
+               cout << "Error! Non-P_Charstats_Object requested for updated iteminfo! This should't be possible!!!" << endl;
+         }
+      }  
 
 
       // drop item from inventory to ground

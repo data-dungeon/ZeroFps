@@ -64,6 +64,9 @@ private:
 
 public:
    Container* m_pkContainer;
+
+   // which script is to be run when the player is hit
+   string m_strScriptWhenHit;
 	
    unsigned int m_uiVersion; // which version of char the prop. holds. Server always have the latest.
 

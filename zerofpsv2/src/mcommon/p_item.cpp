@@ -28,7 +28,7 @@ vector<PropertyValues> P_Item::GetPropertyValues()
 
 P_Item::P_Item()
 {
-	m_iSide = PROPERTY_SIDE_CLIENT;
+	m_iSide = PROPERTY_SIDE_SERVER;
 
    m_pkItemStats = new ItemStats(this);
 
@@ -45,7 +45,7 @@ P_Item::P_Item()
 
 P_Item::P_Item( string kName )
 {
-	m_iSide = PROPERTY_SIDE_CLIENT;
+	m_iSide = PROPERTY_SIDE_SERVER;
 
    m_pkItemStats = new ItemStats(this);
 

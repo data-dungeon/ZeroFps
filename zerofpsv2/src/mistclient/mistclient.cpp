@@ -681,7 +681,14 @@ void MistClient::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 						GetAllItemsInContainer(m_pkInventDlg->m_pkAddItemList);
 				}
 				else
-					pkGui->SetFocus(GetWnd("PanelBkWnd")); 
+					pkGui->SetFocus(GetWnd("PanelBkWnd"));
+
+            CharacterProperty* pkCP = (CharacterProperty*)m_pkActiveCharacter->GetProperty("P_CharStats");
+
+            if ( pkCP )
+               pkCP->RequestUpdateFromServer("skills");
+            else
+               cout << "Errorrrrrrrrrrrrr!" << endl;
 			}
 			if(strClickWndName == "StatsButton")
 			{
