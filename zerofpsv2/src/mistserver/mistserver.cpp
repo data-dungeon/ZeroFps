@@ -1570,6 +1570,7 @@ bool MistServer::CreateMenu(char* szFileName)
 			pkMenuCBox->SetLabelText(szTitle);
 			pkMenuCBox->SetNumVisibleRows(1);
 			pkMenuCBox->IsMenu(true);
+			pkMenuCBox->SetSkin(new ZGuiSkin());
 			
 			iMenuOffset += iMenuWidth;
 			rcMenu = rcMenu.Move(iMenuOffset,0);

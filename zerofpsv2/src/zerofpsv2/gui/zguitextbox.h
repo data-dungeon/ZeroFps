@@ -50,7 +50,6 @@ private:
 	bool UpdateScrollbar();
 	pair<int,int> GetWordLength(char *text, int offset, int max_width);
 	int GetNumRows(char* szText);
-	bool IgnoreKey(int Key);
 	void ScrollText(ZGuiScrollbar* pkScrollbar);
 	void ScrollText(int row);
 	void ResizeTextBuffer( int nCharacters );

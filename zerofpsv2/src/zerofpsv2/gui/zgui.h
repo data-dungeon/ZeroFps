@@ -92,7 +92,7 @@ public:
 	void ShowMainWindow(ZGuiWnd* pkMainWnd, bool bShow);
 	bool Activate(bool bActive);
 	void SetCursor(int x, int y, int TextureID, int MaskTextureID=-1, int Width=16, int Height=16);
-	void ShowCursor(bool bShow, int x=-1, int y=-1);
+	void ShowCursor(bool bShow);
 
 	typedef bool (*callback)(ZGuiWnd* pkWnd, unsigned int uiMessage, int iNumParams, void *pParams);
 	typedef list<ZGuiWnd*>::iterator WINit;
@@ -113,10 +113,7 @@ public:
 
 	ZGuiWnd* GetWindow(unsigned int iID);
 
-//	bool Resize(int iOldWidth, int iOldHeight, int iNewWidth, int iNewHeight);
 	bool AddMainWindow( int iID, ZGuiWnd* pkWindow, char* szName, callback cb, bool bSetAsActive);		// Add a new main window
-	bool LoadDialog( char* szResourceFile, char* szWndResName, callback cb);
-
 	bool UnregisterWindow(ZGuiWnd* pkWindow);
 	bool RegisterWindow(ZGuiWnd* pkNewWindow, char* szName); // must be called if the window are created after the parent are created...
 	ZGuiWnd* GetMainWindow(int iID);
@@ -166,13 +163,10 @@ public:
 private:
 	void KeyboardInput(int key, bool shift, float time);
 	void SetInputFocus(ZGuiWnd* pkClickWnd, bool bSet);
-	//bool ResizeWnd(ZGuiWnd* pkWnd, int iOldWidth, int iOldHeight, int iNewWidth, int iNewHeight);
 	bool SetSkins(vector<tSkinInf>& kAllSkinsArray, ZGuiWnd* pkWnd);
 	bool RunKeyCommand(int iKey);
-	void CreateDefaultSkins();
 	ZGuiWnd* FindNextTabWnd(ZGuiWnd* pkCurrentWnd, bool bNext);
 	long m_iHighestZWndValue;
-	bool IgnoreKey(int Key);
 	
 	void OnKeyPress(int iKey);
 	bool OnMouseUpdate(int x, int y, bool bLBnPressed, bool bRBnPressed, float fGameTime);

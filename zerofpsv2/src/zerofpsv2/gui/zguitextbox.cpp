@@ -754,35 +754,6 @@ void ZGuiTextbox::GetWndSkinsDesc(vector<SKIN_DESC>& pkSkinDesc) const
 	}
 }
 
-bool ZGuiTextbox::IgnoreKey(int iKey)
-{
-	bool bIgnore = true;
-
-	if(iKey < 32)
-		bIgnore = true;
-
-	if(m_bNumberOnly == true)
-	{
-		if(iKey >= gKEY_0 && iKey <= gKEY_9)
-			bIgnore = false;
-		else
-			bIgnore = true;
-	}
-
-	if( iKey == gKEY_BACKSPACE || iKey == gKEY_DELETE || iKey == gKEY_LEFT || 
-		iKey == gKEY_RIGHT	   || iKey == gKEY_END    || iKey == gKEY_HOME ||
-		iKey == gKEY_RETURN )// || iKey == gKEY_DOWN || iKey == gKEY_UP)
-		bIgnore = false;
-
-	if(m_bNumberOnly == false && (iKey >= 32 && iKey < 256) )
-		bIgnore = false;
-
-	if(iKey == gKEY_LSHIFT || iKey == gKEY_RSHIFT)
-		bIgnore = true;
-
-	return bIgnore;
-}
-
 int ZGuiTextbox::GetNumRows(char* text)
 {
 	if(!m_pkFont)
