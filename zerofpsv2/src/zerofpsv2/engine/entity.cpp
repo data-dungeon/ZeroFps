@@ -2276,10 +2276,18 @@ int SetLocalString(lua_State* pkLua)
 	if(!g_pkScript->VerifyArg(pkLua,3))
 		return 0;
 
-	// Get ObjectID ID
-	double dTemp;
-	g_pkScript->GetArgNumber(pkLua, 0, &dTemp);		
-	int iId1 = (int)dTemp;
+	// Get EntityID
+	int iEntityID;
+	g_pkScript->GetArgInt(pkLua, 0, &iEntityID);
+
+	// Get Entity Ptr
+	Entity* pkEnt = g_pkObjMan->GetEntityByID(iEntityID);
+
+	if(pkEnt == NULL)
+	{
+		g_pkScript->Error(pkLua, "Warning: Non valid Entity %d ", iEntityID);
+		return 0;
+	}
 
 	// Get Variable Name
 	char acName[100];
@@ -2288,9 +2296,8 @@ int SetLocalString(lua_State* pkLua)
 	char acValue[100];
 	g_pkScript->GetArg(pkLua, 2, acValue);
 
-	Entity* o1 = g_pkObjMan->GetEntityByID(iId1);
 	string arne = acName;
-	o1->SetVarString(arne, string(acValue));
+	pkEnt->SetVarString(arne, string(acValue));
 	return 1;	
 }
 
@@ -2597,6 +2604,7 @@ void Register_SIEntityProperty(ZeroFps* pkZeroFps)
 	g_pkScript->ExposeFunction("SetLocalDouble",		SI_Entity::SetLocalDouble);
 	g_pkScript->ExposeFunction("GetLocalString",		SI_Entity::GetLocalString);
 	g_pkScript->ExposeFunction("SetLocalString",		SI_Entity::SetLocalString);
+
 	g_pkScript->ExposeFunction("SetObjectPos",		SI_Entity::SetObjectPosLua);
 	//g_pkScript->ExposeFunction("SetVelTo",				SI_Entity::SetVelToLua);
 	g_pkScript->ExposeFunction("GetObjectPos",		SI_Entity::GetObjectPosLua);

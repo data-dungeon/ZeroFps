@@ -26,7 +26,7 @@ void PropertiesLua::Init(ZFScriptSystem* pkScript, EntityManager* pkObjMan)
 
 //	pkScript->ExposeFunction("RotWithCamYAxis",		PropertiesLua::RotWithCamYAxisLua);
 //	pkScript->ExposeFunction("BindKey",				PropertiesLua::BindKeyLua);
-	pkScript->ExposeFunction("SetMadfile",			PropertiesLua::SetMadfileLua);
+//	pkScript->ExposeFunction("SetMadfile",			PropertiesLua::SetMadfileLua);
 }
 
 // ------------------------------------------------------------------------------------------
@@ -87,6 +87,7 @@ int RotWithCamYAxisLua(lua_State* pkLua)
 // ------------------------------------------------------------------------------------------
 
 // p_mad: changes MadFile: Takes ObjectID, filename
+/*
 int PropertiesLua::SetMadfileLua(lua_State* pkLua)
 {
 	if(g_pkScript->GetNumArgs(pkLua) == 2)
@@ -107,7 +108,7 @@ int PropertiesLua::SetMadfileLua(lua_State* pkLua)
 	}
 	return 0;
 }
-
+*/
 
 
 

@@ -72,27 +72,30 @@ namespace ObjectManagerLua
 	
 	// Position/Orientation.
 	int ENGINE_SYSTEMS_API SetLocalPosLua(lua_State* pkLua);
-	int ENGINE_SYSTEMS_API SetObjectPosLua(lua_State* pkLua);
-	int ENGINE_SYSTEMS_API GetObjectPosLua(lua_State* pkLua);
-	int ENGINE_SYSTEMS_API GetObjectRotLua(lua_State* pkLua);
 
 	// Object Variables
+/*	
+	//int ENGINE_SYSTEMS_API SetObjectPosLua(lua_State* pkLua);
+	//int ENGINE_SYSTEMS_API GetObjectPosLua(lua_State* pkLua);
+	//int ENGINE_SYSTEMS_API GetObjectRotLua(lua_State* pkLua);
+
 	int ENGINE_SYSTEMS_API GetLocalDouble(lua_State* pkLua);		
 	int ENGINE_SYSTEMS_API SetLocalDouble(lua_State* pkLua);		
 	int ENGINE_SYSTEMS_API GetLocalString(lua_State* pkLua);		
 	int ENGINE_SYSTEMS_API SetLocalString(lua_State* pkLua);		
 
 	// Entity Information
-	int ENGINE_SYSTEMS_API GetObjectTypeLua(lua_State* pkLua);				//(int objectid) return the type of the object id
-	int ENGINE_SYSTEMS_API GetObjectNameLua(lua_State* pkLua);				//(int objectid) return the object name
+	//int ENGINE_SYSTEMS_API GetObjectTypeLua(lua_State* pkLua);				//(int objectid) return the type of the object id
+	//int ENGINE_SYSTEMS_API GetObjectNameLua(lua_State* pkLua);				//(int objectid) return the object name
+	// Physics
+	//int ENGINE_SYSTEMS_API SetVelToLua(lua_State* pkLua);
+	//int ENGINE_SYSTEMS_API SetObjectRotVelLua(lua_State* pkLua);
+*/
+
 	int ENGINE_SYSTEMS_API IsEntityValid(lua_State* pkLua);
 
 	// Event
 	int ENGINE_SYSTEMS_API SendEventLua(lua_State* pkLua);					//(int objectid,string event) send event to target object
-
-	// Physics
-	int ENGINE_SYSTEMS_API SetVelToLua(lua_State* pkLua);
-	int ENGINE_SYSTEMS_API SetObjectRotVelLua(lua_State* pkLua);
 	
 	//zone management
 	int ENGINE_SYSTEMS_API GetZoneIDLua(lua_State* pkLua);					//returns the zone id that contains entity id

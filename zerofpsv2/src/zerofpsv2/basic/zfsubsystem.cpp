@@ -62,3 +62,5 @@ void ZFSubSystem::Logf(const char* szName, const char* szMessageFmt,...)
 	// Now call our print function.
 	GetSystem().Log(szName, g_szFormatText);
 }
+
+

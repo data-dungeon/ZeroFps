@@ -160,6 +160,7 @@ public:
 	int GetNumArgs(lua_State* state);
 	bool GetArg(lua_State* state, int iNumber, void* data);
 
+	bool GetArgInt(lua_State* state, int iIndex, int* data);
 	bool GetArgNumber(lua_State* state, int iIndex, double* data);
 	bool GetArgString(lua_State* state, int iIndex, char* data);
 	bool GetArgTable(lua_State* state, int iIndex, vector<TABLE_DATA>& data);
@@ -173,7 +174,7 @@ public:
 	string GetFunctionName(lua_State* pkLua, int iStackPosition);
 	
 	bool VerifyArg(lua_State* pkLua, int iNumOfArgument);
-
+	void Error(lua_State* pkLua, const char* szMessageFmt,...);
 
 	bool StartUp();
 	bool ShutDown();

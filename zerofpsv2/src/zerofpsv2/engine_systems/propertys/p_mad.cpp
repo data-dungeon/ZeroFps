@@ -804,6 +804,27 @@ int AddMesh(lua_State* pkLua)
 	return 1;
 }
 
+// p_mad: changes MadFile: Takes ObjectID, filename
+int SetMadfileLua(lua_State* pkLua)
+{
+	if(g_pkScript->GetNumArgs(pkLua) == 2)
+	{
+		double dId;		
+		g_pkScript->GetArgNumber(pkLua, 0, &dId);				
+		
+		if (Entity* pkEnt = g_pkObjMan->GetEntityByID((int)dId))
+		{
+			if ( P_Mad* pkMad = ((P_Mad*)pkEnt->GetProperty("P_Mad")) )
+			{
+				char acModel[100];
+				g_pkScript->GetArg(pkLua, 1, acModel);
+				pkMad->SetBase(acModel);
+			}
+		}
+		
+	}
+	return 0;
+}
 }
 
 
@@ -821,6 +842,7 @@ void Register_MadProperty(ZeroFps* pkZeroFps)
 	g_pkScript->ExposeFunction("SetNextAnim",	SI_PMad::SetNextAnim);
 	g_pkScript->ExposeFunction("PlayAnim",		SI_PMad::PlayAnim);
 	g_pkScript->ExposeFunction("AddMesh",		SI_PMad::AddMesh);
+	g_pkScript->ExposeFunction("SetMadfile",	SI_PMad::SetMadfileLua);
 }
 
 

@@ -24,8 +24,8 @@
 #include "../mcommon/p_characterproperty.h"
 #include "../mcommon/p_fogplane.h"
 #include "../mcommon/zssmltime.h"
-
 #include "../zerofpsv2/engine_systems/propertys/p_track.h"
+#include "../mcommon/mainmcommon.h"
 
 using namespace ObjectManagerLua;
  
@@ -219,7 +219,9 @@ void MistServer::RegisterScriptFunctions()
 
 void MistServer::RegisterPropertys()
 {
-	m_pkPropertyFactory->Register("P_ArcadeCharacter",	Create_P_ArcadeCharacter);
+	MCommon_RegisterPropertys( m_pkZeroFps, m_pkPropertyFactory );
+
+/*	m_pkPropertyFactory->Register("P_ArcadeCharacter",	Create_P_ArcadeCharacter);
 	m_pkPropertyFactory->Register("P_Enviroment", Create_P_Enviroment);
 	m_pkPropertyFactory->Register("P_ShadowBlob", Create_P_ShadowBlob);
 	m_pkPropertyFactory->Register("P_Item", Create_P_Item);	
@@ -228,8 +230,7 @@ void MistServer::RegisterPropertys()
 	Register_P_Ml(m_pkZeroFps);
 	Register_P_CharacterControl(m_pkZeroFps);
 	Register_P_FogPlane(m_pkZeroFps);
-	Register_P_Container(m_pkZeroFps);
-
+	Register_P_Container(m_pkZeroFps);*/
 }
 
 void MistServer::OnIdle()

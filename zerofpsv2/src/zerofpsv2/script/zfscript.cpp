@@ -227,6 +227,15 @@ void ZFScriptSystem::AddReturnValueTable(lua_State* state, vector<TABLE_DATA>& v
 	DeleteTable(vkData);
 }
 
+bool ZFScriptSystem::GetArgInt(lua_State* state, int iIndex, int* data)
+{
+	double dNumber;
+	bool bRes = GetArgNumber(state, iIndex, &dNumber);		
+	*data = (int)dNumber;
+	return bRes;
+}
+
+
 bool ZFScriptSystem::GetArgNumber(lua_State* state, int iIndex, double* data)
 {
 	int iLuaIndex = iIndex + 1;
@@ -958,4 +967,28 @@ bool ZFScriptSystem::VerifyArg(lua_State* pkLua, int iRequiredNumOfArg)
 	cout << "Error: '" << strName << "' does not take " << iNumOfArg << " arguments. ";
 	cout << strFileLine << endl;
 	return false;
+}
+
+char szText[1024];
+
+void ZFScriptSystem::Error(lua_State* pkLua, const char* szMessageFmt,...)
+{
+	va_list		ap;							// Pointer To List Of Arguments
+
+	// Make sure we got something to work with.
+	if (szMessageFmt == NULL)	return;					
+
+	va_start(ap, szMessageFmt);						// Parses The String For Variables
+		vsprintf(szText, szMessageFmt, ap);		// And Convert Symbols
+	va_end(ap);								// 
+
+	string strError;
+	string strCallA;
+	strCallA = GetCallAdress(pkLua);
+
+	strError = string(szText) + strCallA;
+
+	// Now call our print function.
+	cout << strError << endl;
+
 }

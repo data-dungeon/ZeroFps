@@ -28,11 +28,11 @@ namespace PropertiesLua
 	void ENGINE_SYSTEMS_API Init(ZFScriptSystem* pkScript, EntityManager* pkObjMan);
 	
 	// p_controller
-	int ENGINE_SYSTEMS_API BindKeyLua(lua_State* pkLua);
-	int ENGINE_SYSTEMS_API RotWithCamYAxisLua(lua_State* pkLua);
+	//int ENGINE_SYSTEMS_API BindKeyLua(lua_State* pkLua);
+	//int ENGINE_SYSTEMS_API RotWithCamYAxisLua(lua_State* pkLua);
 
 	// p_mad
-	int ENGINE_SYSTEMS_API SetMadfileLua(lua_State* pkLua);
+	//int ENGINE_SYSTEMS_API SetMadfileLua(lua_State* pkLua);
 
 	// p_path
 

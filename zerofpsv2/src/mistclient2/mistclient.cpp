@@ -20,9 +20,9 @@
 #include "../mcommon/p_container.h"
 #include "../mcommon/p_fogplane.h"
 #include "../mcommon/p_shadowblob.h"
-
 #include "actionmenu.h"
 #include "gui_inventory.h"
+#include "../mcommon/mainmcommon.h"
 
 MistClient g_kMistClient("MistClient",0,0,0);
 
@@ -219,7 +219,9 @@ void MistClient::RegisterResources()
 
 void MistClient::RegisterPropertys()
 {
-	m_pkPropertyFactory->Register("P_ShadowBlob", 			Create_P_ShadowBlob);
+	MCommon_RegisterPropertys( m_pkZeroFps, m_pkPropertyFactory );
+
+	/*m_pkPropertyFactory->Register("P_ShadowBlob", 			Create_P_ShadowBlob);
 	m_pkPropertyFactory->Register("P_CharacterProperty",	Create_P_CharacterProperty);	
 	m_pkPropertyFactory->Register("P_Enviroment", 			Create_P_Enviroment);
 	m_pkPropertyFactory->Register("P_Ml", 						Create_P_Ml);
@@ -228,6 +230,7 @@ void MistClient::RegisterPropertys()
 	Register_P_CharacterControl(m_pkZeroFps);
 	Register_P_FogPlane(m_pkZeroFps);	
 	Register_P_Container(m_pkZeroFps);
+	*/
 }
 
 void MistClient::RenderInterface(void)

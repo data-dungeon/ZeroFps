@@ -36,6 +36,7 @@
 #include "../mcommon/p_fogplane.h"
 #include "../mcommon/p_container.h"
 #include "../zerofpsv2/engine_systems/propertys/p_ambientsound.h"
+#include "../mcommon/mainmcommon.h"
 
 ZeroEd g_kZeroEd("ZeroEd", 0, 0, 0);
 
@@ -429,34 +430,8 @@ void ZeroEd::RegisterResources()
 void ZeroEd::RegisterPropertys()
 {
 	//m_pkPropertyFactory->Register("P_CharacterProperty",	Create_P_CharacterProperty);
-	Register_P_FogPlane(m_pkZeroFps);
-	Register_P_CharacterProperty(m_pkZeroFps);
-	Register_P_Ml(m_pkZeroFps);
-	Register_P_CharacterControl(m_pkZeroFps);	
-	Register_P_Container(m_pkZeroFps);
 	
-	m_pkPropertyFactory->Register("P_Car", Create_P_Car);
-
-	m_pkPropertyFactory->Register("P_DMClickMe", Create_P_DMClickMe);
-	m_pkPropertyFactory->Register("P_DMMission", Create_P_DMMission);
-	m_pkPropertyFactory->Register("P_DMItem", Create_P_DMItem);
-	m_pkPropertyFactory->Register("P_DMGun", Create_P_DMGun);
-	m_pkPropertyFactory->Register("P_ShadowBlob", Create_P_ShadowBlob);
-	m_pkPropertyFactory->Register("P_DMCharacter", Create_P_DMCharacter);
-	m_pkPropertyFactory->Register("P_DMShop", Create_P_DMShop);
-	m_pkPropertyFactory->Register("P_DMHQ", Create_P_DMHQ);
-	m_pkPropertyFactory->Register("P_Spawn", Create_P_Spawn);
-	m_pkPropertyFactory->Register("P_Enviroment", Create_P_Enviroment);
-	m_pkPropertyFactory->Register("P_ClientControl", Create_P_ClientControl);
-	m_pkPropertyFactory->Register("P_ServerInfo", Create_P_ServerInfo);
-	m_pkPropertyFactory->Register("P_CharStats", Create_P_CharStats);
-	m_pkPropertyFactory->Register("P_Item", Create_P_Item);
-	m_pkPropertyFactory->Register("P_Spell", Create_P_Spell);
-	m_pkPropertyFactory->Register("P_AI", Create_P_AI);
-	m_pkPropertyFactory->Register("P_ArcadeCharacter", Create_P_ArcadeCharacter);
-	
-	m_pkPropertyFactory->Register("P_Container", Create_P_Container);
-
+	MCommon_RegisterPropertys( m_pkZeroFps, m_pkPropertyFactory );
 }
 
 
