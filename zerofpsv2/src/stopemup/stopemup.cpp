@@ -149,12 +149,12 @@ void StopEmUp::OnSystem(void)
 		if(LevelComplete() && !bWait)
 		{
 			bWait = true;	
-			fTime = m_pkZeroFps->GetTicks();
+			fTime = m_pkZeroFps->GetEngineTime();
 		}
 			
 		//waiting for next level
 		if(bWait)
-			if(m_pkZeroFps->GetTicks() > fTime + m_fLevelWait)
+			if(m_pkZeroFps->GetEngineTime() > fTime + m_fLevelWait)
 			{
 				m_iLevel++;
 				SetupLevel(m_iLevel);	

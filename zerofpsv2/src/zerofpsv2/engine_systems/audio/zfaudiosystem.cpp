@@ -1686,7 +1686,7 @@ void ZFAudioSystem::RemoveAmbientArea(int iID)
 
 void ZFAudioSystem::FadeGain(AmbientArea* pkArea, bool bOut)
 {
-	float fTime = m_pkZeroFps->GetTicks();
+	float fTime = m_pkZeroFps->GetEngineTime();
 
 	if(pkArea->m_fFadeTimer < 0)
 		pkArea->m_fFadeTimer = fTime;

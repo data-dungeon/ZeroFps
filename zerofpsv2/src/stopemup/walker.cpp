@@ -73,7 +73,7 @@ void P_Walker::Update()
 	//check if paralized
 	if(m_fParaTime != -1)
 	{
-		if(m_pkZeroFps->GetTicks() > m_fParaTime + m_fParaLength)	
+		if(m_pkZeroFps->GetEngineTime() > m_fParaTime + m_fParaLength)	
 			m_fParaTime = -1;	
 		else
 			return;
@@ -112,7 +112,7 @@ void P_Walker::Update()
 			{
 			
 				//reset target every 4 second
-				if(m_pkZeroFps->GetTicks() > m_fFindNewTargetTime + 4)
+				if(m_pkZeroFps->GetEngineTime() > m_fFindNewTargetTime + 4)
 				{
 					m_iTarget = -1;				
 				}
@@ -120,7 +120,7 @@ void P_Walker::Update()
 				//find target if there is none
 				if(m_iTarget == -1)
 				{
-					m_fFindNewTargetTime = m_pkZeroFps->GetTicks();
+					m_fFindNewTargetTime = m_pkZeroFps->GetEngineTime();
 					m_iTarget = ClosestPlayer();
 					
 					//is there a goal,
@@ -199,7 +199,7 @@ void P_Walker::Paralize(float fTime )
 {
 
 	//paralize
-	m_fParaTime = m_pkZeroFps->GetTicks();
+	m_fParaTime = m_pkZeroFps->GetEngineTime();
 	m_fParaLength = fTime;
 
 	if(P_CharacterControl* pkCC = (P_CharacterControl*)GetEntity()->GetProperty("P_CharacterControl"))

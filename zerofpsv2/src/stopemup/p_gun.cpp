@@ -37,7 +37,7 @@ void P_Gun::SetSound(string strSound)
 
 void P_Gun::Update()
 {
-	float fT = m_pkZeroFps->GetTicks();
+	float fT = m_pkZeroFps->GetEngineTime();
 
 	if(m_bFire)
 	{

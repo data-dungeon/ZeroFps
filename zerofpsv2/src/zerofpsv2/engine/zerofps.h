@@ -133,7 +133,6 @@ class ENGINE_API ZeroFps : public I_ZeroFps {
 		int				m_iAvrageFrameCount;
 		unsigned int	m_iCurrentFrame;
 		float				m_fEngineTime;						// Time since engine start.
-		float				m_fCurrentTime;					// this frames time
 		bool				m_bLockFps;
 		float 			m_fLockFrameTime;
 		float 			m_fSystemUpdateFps;				// Number of GameLogic Updates each second.
@@ -294,8 +293,7 @@ class ENGINE_API ZeroFps : public I_ZeroFps {
 		float GetNetworkFps()				{	return m_fNetworkUpdateFps;					}
 		float GetSystemFps()					{	return m_fSystemUpdateFps;						}
 				
-// 		float GetTicks()						{	return float((SDL_GetTicks()/1000.0));		}
- 		float GetTicks()						{	return m_fEngineTime;							}
+		float GetRealTime()					{	return float((SDL_GetTicks()/1000.0));		}
 		float GetFrameTime()					{	return float((m_fFrameTime/1000.0));		}
 		float GetLastGameUpdateTime()		{	return m_fSystemUpdateTime;					}
 		float GetEngineTime()				{	return m_fEngineTime;							}

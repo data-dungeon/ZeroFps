@@ -23,7 +23,7 @@ public:
 	I_ZeroFps(char* szName);
 	virtual ~I_ZeroFps();
 
-	virtual float GetTicks() = 0;
+	virtual float GetRealTime() = 0;
 	virtual float GetFrameTime() = 0;
 	virtual float GetLastGameUpdateTime() = 0;
 	virtual float GetEngineTime() = 0;

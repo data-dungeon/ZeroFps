@@ -36,7 +36,7 @@ P_Mad::P_Mad()
 	m_fScale	 = 1.0;
 	m_kOffset.Set(0,0,0);
 	
-  	m_fLastAnimationUpdateTime = m_pkZeroFps->GetTicks();
+  	m_fLastAnimationUpdateTime = m_pkZeroFps->GetEngineTime();
 //  	m_fLastAnimationUpdateTime = m_pkEntityManager->GetSimTime();
 	m_iLastAnimationUpdateFrame = -1;
 
@@ -130,7 +130,7 @@ void P_Mad::Update()
 			//update AABB 
 			if(!m_bHaveAABB)
 			{
-				if(m_pkZeroFps->GetTicks() - m_fLastAABBTest > 2)
+				if(m_pkZeroFps->GetEngineTime() - m_fLastAABBTest > 2)
 				{
 					if(	GetCurrentAnimation() == MAD_NOANIMINDEX &&
 							m_fScale == m_fOldScale &&
@@ -145,7 +145,7 @@ void P_Mad::Update()
 					else
 					{
 						//update test information
-						m_fLastAABBTest = m_pkZeroFps->GetTicks();
+						m_fLastAABBTest = m_pkZeroFps->GetEngineTime();
 						m_fOldScale = m_fScale;
 						m_kLastRot = kRot;
 					}
@@ -246,7 +246,7 @@ void P_Mad::DoAnimationUpdate()
 	if(m_iLastAnimationUpdateFrame != m_pkZeroFps->GetCurrentFrame())
 	{
 //    		float fCurrentTime = m_pkEntityManager->GetSimTime();		
-  		float fCurrentTime = m_pkZeroFps->GetTicks();
+  		float fCurrentTime = m_pkZeroFps->GetEngineTime();
 				
 		UpdateAnimation(fCurrentTime - m_fLastAnimationUpdateTime);
 	

@@ -89,7 +89,7 @@ ZeroFps::ZeroFps(void) : I_ZeroFps("ZeroFps")
 	m_fFrameTime				= 0;
 	m_fLastFrameTime			= 0;
 	m_iCurrentFrame			= 0;
-	m_fCurrentTime				= 0;
+	m_fEngineTime				= 0;
 	
 	m_fSystemUpdateFps		= 30;
 	m_fSystemUpdateTime		= 0;
@@ -119,7 +119,6 @@ ZeroFps::ZeroFps(void) : I_ZeroFps("ZeroFps")
 	m_iMaxPlayers				= ZF_DEF_PLAYERS;
 	m_bLockFps					= false;
 	m_bDrawAxisIcon			= false;
-	m_fEngineTime				= 0;
 	m_bDebugGraph				= false;
 	m_iClientEntityID			= -1;
 	m_bAlwaysWork				= true;
@@ -326,8 +325,8 @@ bool ZeroFps::Init(int iNrOfArgs, char** paArgs)
 	m_pkRender->Swap();
 	
 	m_fFrameTime		=0;
-	m_fLastFrameTime	= GetTicks();
-	m_fLockFrameTime  = GetTicks();
+	m_fLastFrameTime	= GetEngineTime();
+	m_fLockFrameTime  = GetEngineTime();
 
 	
 	#ifdef _WIN32	
@@ -418,7 +417,7 @@ void ZeroFps::UpdateDevPages()
 	DevPrintf("common" , "Zone: %d", this->m_pkEntityManager->m_kZones.size());
 
 	// TIME
-	DevPrintf("time","Ticks: %f",							GetTicks());
+// 	DevPrintf("time","Ticks: %f",							GetEngineTime());
 	DevPrintf("time","FrameTime: %f",					GetFrameTime());
 	DevPrintf("time","SimTime: %f",						m_pkEntityManager->GetSimTime());
 	DevPrintf("time","SimDelta: %f",						m_pkEntityManager->GetSimDelta());
@@ -471,7 +470,7 @@ void ZeroFps::UpdateGuiInput()
 		m_pkGuiInputHandle->Pressed(MOUSELEFT),
 		m_pkGuiInputHandle->Pressed(MOUSERIGHT),
 		m_pkGuiInputHandle->Pressed(MOUSEMIDDLE), 
-		GetTicks());
+		GetEngineTime());
 
 	vector<ZGui::KEY_INFO> vkKeyInfo;
 
@@ -487,7 +486,7 @@ void ZeroFps::UpdateGuiInput()
 		vkKeyInfo.push_back(kKeyInfo);
 	}
 
-	m_pkGui->UpdateKeys(vkKeyInfo, GetTicks());
+	m_pkGui->UpdateKeys(vkKeyInfo, GetEngineTime());
 
 	//disablar applicationens input om guit har hanterat den	
 	if(m_pkGui->m_bHandledMouse == true)
@@ -571,11 +570,11 @@ void ZeroFps::Update_Network()
 	m_fNetworkUpdateFpsDelta = float(1.0) / m_fNetworkUpdateFps;	
 	
 	//shuld we run a network update
-	if( (GetTicks() - m_fNetworkUpdateTime) > m_fNetworkUpdateFpsDelta)
+	if( (GetEngineTime() - m_fNetworkUpdateTime) > m_fNetworkUpdateFpsDelta)
 	{
 	
 		//update last network update time
-		m_fNetworkUpdateTime = GetTicks();
+		m_fNetworkUpdateTime = GetEngineTime();
 		
 		//pack objects to clients
 		m_pkEntityManager->PackToClients();		
@@ -594,7 +593,7 @@ void ZeroFps::Update_System()
 	m_fSystemUpdateFpsDelta = float(1.0) / m_fSystemUpdateFps;	
 		
 	//time since last update
-	fATime = GetTicks() - m_fSystemUpdateTime; 	
+	fATime = GetEngineTime() - m_fSystemUpdateTime; 	
 	
 	//how many system loops shuld we make?
 	iLoops = int(fATime / m_fSystemUpdateFpsDelta);		
@@ -683,7 +682,7 @@ void ZeroFps::Update_System()
 		m_pkResourceDB->Refresh();
 
 		//save current update time, 
-		m_fSystemUpdateTime = GetTicks();
+		m_fSystemUpdateTime = GetEngineTime();
 	}
 
 	//finaly add rest time
@@ -778,14 +777,14 @@ void ZeroFps::MakeDelay()
 	//make a delay if locked fps or minimized
 	if(m_bLockFps || m_bMinimized  )
 	{
-		float fDelay = m_pkEntityManager->GetSimDelta() - (GetTicks() - m_fLockFrameTime);
+		float fDelay = m_pkEntityManager->GetSimDelta() - (GetEngineTime() - m_fLockFrameTime);
 	
 		if(fDelay < 0)
 			fDelay = 0;
 
 		SDL_Delay((int)(fDelay*1000.0f));	
 		
-		m_fLockFrameTime = GetTicks();
+		m_fLockFrameTime = GetEngineTime();
 
 		//	cout<<"Frametime:"<<fFrameT<<endl;
 		//	cout<<"Frametime shuld be:"<<pkFps->GetGameFrameTime()<<endl;
@@ -860,12 +859,12 @@ void ZeroFps::Swap(void)
 	m_iCurrentFrame++;
 	
 	//each 1 seccond
-	if( (GetTicks() - m_fAvrageFpsTime) >1)
+	if( (GetEngineTime() - m_fAvrageFpsTime) >1)
 	{
 		//update avrage fps
 		m_fAvrageFps = (float) m_iAvrageFrameCount;
 		m_iAvrageFrameCount = 0;
-		m_fAvrageFpsTime = GetTicks();
+		m_fAvrageFpsTime = GetEngineTime();
 				
 		//update profile information
 		#ifndef NOPROFILE

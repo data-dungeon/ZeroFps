@@ -117,9 +117,9 @@ void P_Light::UpdateLightMode()
 	{		
 		case LMODE_TORCH:
 		{
-			if(m_pkZeroFps->GetTicks() - m_fTimer > 0.05)
+			if(m_pkZeroFps->GetEngineTime() - m_fTimer > 0.05)
 			{
-				m_fTimer = m_pkZeroFps->GetTicks();
+				m_fTimer = m_pkZeroFps->GetEngineTime();
 				float fRandLight = float( ((rand() % 1000)/400000.0) ) - float( ((rand() % 1000)/400000.0) );
 	
 				m_pkLightSource->kDiffuse = Vector3(float(fRandLight + 0.04), float(fRandLight + 0.03466) , float(fRandLight + 0.03) );

@@ -211,7 +211,7 @@ int GetTicksLua(lua_State* pkLua)
 		return 0;
 	}
 		
-	g_pkScript->AddReturnValue(pkLua,g_pkZeroFps->GetTicks() );
+	g_pkScript->AddReturnValue(pkLua,g_pkZeroFps->GetEngineTime() );
 	
 	return 1;		
 }

@@ -676,7 +676,7 @@ void MistServer::OnServerClientJoin(ZFClient* pkClient,int iConID, char* szLogin
 	if(PlayerData* pkNewPlayer = m_pkPlayerDB->GetPlayerData(strPlayer))
 	{
 		pkNewPlayer->m_iConnectionID = iConID;		
-		pkNewPlayer->m_fLoginTime = m_pkZeroFps->GetTicks();	
+		pkNewPlayer->m_fLoginTime = m_pkZeroFps->GetEngineTime();	
 	}
 	
 	

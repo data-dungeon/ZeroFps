@@ -397,7 +397,7 @@ void MistClient::RebuildBuffIconList(vector<BUFF_ICON_INFO>* kList)
 			m_kBuffIcons[i].m_strName = (*kList)[i].m_strName;
 			m_kBuffIcons[i].m_cType = (*kList)[i].m_cType;
 			m_kBuffIcons[i].m_fTimeout = (*kList)[i].m_fTimeout;			
-			m_kBuffIcons[i].m_fStartTime = m_pkZeroFps->GetTicks();
+			m_kBuffIcons[i].m_fStartTime = m_pkZeroFps->GetEngineTime();
 			m_kBuffIcons[i].m_pkProgressBar->SetRange(0, m_kBuffIcons[i].m_fTimeout);
 
 			m_kBuffIcons[i].m_fTimeLeft = (*kList)[i].m_fTimeLeft;
@@ -428,7 +428,7 @@ void MistClient::UpdateBuffIconList()
 		if(m_kBuffIcons[i].m_fTimeout == -1)
 			continue;
 		
-		float fDiff = (m_pkZeroFps->GetTicks() - m_kBuffIcons[i].m_fStartTime) + 
+		float fDiff = (m_pkZeroFps->GetEngineTime() - m_kBuffIcons[i].m_fStartTime) + 
 			(m_kBuffIcons[i].m_fTimeout - m_kBuffIcons[i].m_fTimeLeft)  ;		
 		m_kBuffIcons[i].m_pkProgressBar->SetPos((int)fDiff);		
 	}

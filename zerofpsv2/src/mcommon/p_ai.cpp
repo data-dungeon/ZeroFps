@@ -42,7 +42,7 @@ P_AI::~P_AI()
 
 void P_AI::Init()
 {
-	m_fTime = m_pkZeroFps->GetTicks() + Randomf(5);
+	m_fTime = m_pkZeroFps->GetEngineTime() + Randomf(5);
 
 }
 
@@ -108,20 +108,20 @@ void P_AI::Update()
 				m_pkCharacterControl->SetControl(eUP,true);
 				m_pkCharacterControl->SetControl(eCRAWL,true);											
 			
-				if(m_pkZeroFps->GetTicks() > m_fTime + 2)
+				if(m_pkZeroFps->GetEngineTime() > m_fTime + 2)
 				{
 					m_bWalk = false;
-					m_fTime = m_pkZeroFps->GetTicks();
+					m_fTime = m_pkZeroFps->GetEngineTime();
 				}
 			}
 			else
 			{
 				m_pkCharacterControl->SetControl(eUP,false);					
 			
-				if(m_pkZeroFps->GetTicks() > m_fTime + 5)
+				if(m_pkZeroFps->GetEngineTime() > m_fTime + 5)
 				{
 					m_bWalk = true;
-					m_fTime = m_pkZeroFps->GetTicks();					
+					m_fTime = m_pkZeroFps->GetEngineTime();					
 				}			
 			}
 		

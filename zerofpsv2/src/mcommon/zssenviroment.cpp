@@ -274,7 +274,7 @@ void ZSSEnviroment::Update()
 
 void ZSSEnviroment::UpdateEnvLists()
 {
-	float fCurrentTime = m_pkZeroFps->GetTicks();
+	float fCurrentTime = m_pkZeroFps->GetEngineTime();
 
 	//update timeouts
    for ( vector<EnvList*>::iterator kIte = m_kEnvLists.begin(); kIte != m_kEnvLists.end(); kIte++ )
@@ -327,7 +327,7 @@ void ZSSEnviroment::UpdatePEnv(P_Enviroment* pkPEnv)
 	if(EnvList* pkEnvList = GetEnvList(pkPEnv->m_strCurrentZoneEnviroment))
 	{
 		//update last used timer
-		pkEnvList->m_fLastUsed = m_pkZeroFps->GetTicks();
+		pkEnvList->m_fLastUsed = m_pkZeroFps->GetEngineTime();
 	
 		//update property settings if enviroment has changed or p_env has changed to another enviroment
 		if(pkEnvList->m_bChanged || (pkPEnv->m_strLastSetEnviroment != pkPEnv->m_strCurrentZoneEnviroment)  )

@@ -145,7 +145,7 @@ void Light::Update(LightProfile* pkLightProfile,Vector3 kRefPos)
 
 	//static float fTimeDiff	= 1;
 	bool bUpdate 				= false;
-	float fCurrentTime		= m_pkZeroFps->GetTicks();
+	float fCurrentTime		= m_pkZeroFps->GetEngineTime();
 
 	if(pkLightProfile->m_iLastVersion != m_iVersion)
 		bUpdate = true;

@@ -129,7 +129,7 @@ void MistClient::OnInit()
 
 void MistClient::Init()
 {	
-	m_fClickDelay = m_pkZeroFps->GetTicks();
+	m_fClickDelay = m_pkZeroFps->GetEngineTime();
 
 
 
@@ -448,7 +448,7 @@ void MistClient::Input()
 		if(m_bActionMenuIsOpen) 
 			CloseActionMenu();
 
-		if(m_pkZeroFps->GetTicks() - m_fClickDelay > 0.2)
+		if(m_pkZeroFps->GetEngineTime() - m_fClickDelay > 0.2)
 		{	
 			m_pkTargetObject = GetTargetObject();
 			
@@ -492,7 +492,7 @@ void MistClient::Input()
 					} 
 				}			
 			}
-			m_fClickDelay = m_pkZeroFps->GetTicks();					
+			m_fClickDelay = m_pkZeroFps->GetEngineTime();					
 		}
 	}
 	

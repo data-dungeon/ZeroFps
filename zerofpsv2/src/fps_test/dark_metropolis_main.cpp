@@ -548,9 +548,9 @@ void DarkMetropolis::Input()
 		
 		if(m_pkInputHandle->Pressed(MOUSELEFT))
 		{
-			if( (m_pkZeroFps->GetTicks() - m_fDelayTimer) > 0.1)
+			if( (m_pkZeroFps->GetEngineTime() - m_fDelayTimer) > 0.1)
 			{
-				m_fDelayTimer = m_pkZeroFps->GetTicks();
+				m_fDelayTimer = m_pkZeroFps->GetEngineTime();
 								
 				Entity* pkEnt = m_pkEntityManager->CreateEntityFromScriptInZone("data/script/objects/particles/particleball.lua",m_pkPlayerEntity->GetWorldPosV()+Vector3(0,0.5,0) );											
 				if(P_Tcs* pkTcs = (P_Tcs*)pkEnt->GetProperty("P_Tcs"))

@@ -151,20 +151,20 @@ void P_CharacterControl::Update()
 			{
 				if(m_kControls[eCRAWL])
 				{
-					m_fSoundWalkDelay = m_pkZeroFps->GetTicks();
+					m_fSoundWalkDelay = m_pkZeroFps->GetEngineTime();
 					SetCharacterState(eWALKING,true);
 				}
 				else
 				{
-					m_fSoundRunDelay = m_pkZeroFps->GetTicks();
+					m_fSoundRunDelay = m_pkZeroFps->GetEngineTime();
 					SetCharacterState(eRUNNING,true);
 				}
 			}
 					
 			//only stop play walk/run sound when we havent touch the ground for 0.25 sec
-			if(m_pkZeroFps->GetTicks() - m_fSoundWalkDelay > 0.25)
+			if(m_pkZeroFps->GetEngineTime() - m_fSoundWalkDelay > 0.25)
 				SetCharacterState(eWALKING,false);				
-			if(m_pkZeroFps->GetTicks() - m_fSoundRunDelay > 0.25)
+			if(m_pkZeroFps->GetEngineTime() - m_fSoundRunDelay > 0.25)
 				SetCharacterState(eRUNNING,false);				
 			
 			

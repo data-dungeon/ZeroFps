@@ -90,7 +90,7 @@ void MadView::Init()
 
 	ToogleLight(true);
 
-	m_fRotTimer = m_pkZeroFps->GetTicks();
+	m_fRotTimer = m_pkZeroFps->GetEngineTime();
 	m_fDelayTime = m_pkZeroFps->GetEngineTime();
 
 	//open mad from command line
@@ -106,7 +106,7 @@ void MadView::Init()
 
 void MadView::OnIdle()
 {	
-	float fTime = m_pkZeroFps->GetTicks();
+	float fTime = m_pkZeroFps->GetEngineTime();
 
 	if(m_pkGui->m_bHandledMouse == false)
 	{

@@ -508,7 +508,7 @@ void MistClient::DrawTargetMarker()
 			
 			m_pkZShaderSystem->MatrixTranslate(kPos + Vector3(0,-pkCP->GetLegLength()+0.2,0));
 			m_pkZShaderSystem->MatrixScale(pkCP->GetMarkerSize());
-			m_pkZShaderSystem->MatrixRotate(Vector3(0,m_pkZeroFps->GetTicks()*100,0));
+			m_pkZShaderSystem->MatrixRotate(Vector3(0,m_pkZeroFps->GetEngineTime()*100,0));
 			//draw pointer			
 			m_pkZShaderSystem->DrawGeometry(QUADS_MODE);											
 			

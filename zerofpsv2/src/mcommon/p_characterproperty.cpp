@@ -52,7 +52,7 @@ void Skill::Update()
 {
 	if( (m_pkEntityManager->GetSimTime() < m_fLastUpdate) || m_fLastUpdate == -1)
 	{
-		cout<<"skill time dont match"<<endl;				
+// 		cout<<"skill time dont match"<<endl;				
 		m_fLastUpdate =m_pkEntityManager->GetSimTime();
 		return; 
 	}
@@ -96,7 +96,7 @@ void Skill::UpdateFromScript()
 		return;
 	}
 
-	
+/*	
 	//print some nice info
 	cout<<"UPDATED FROM SCRIPT"<<endl;
 	cout<<"script:    "<<m_pkScriptFileHandle->GetRes()<<endl;
@@ -105,7 +105,7 @@ void Skill::UpdateFromScript()
 	cout<<"icon:      "<<m_strIcon<<endl;
 	cout<<"reloadtime:"<<m_fReloadTime<<endl;
 	cout<<"level:     "<<m_iLevel<<endl;
-	cout<<"parent:    "<<m_strParentSkill<<endl;
+	cout<<"parent:    "<<m_strParentSkill<<endl;*/
 }
 
 void Skill::SetLevel(int iLevel)
@@ -256,7 +256,7 @@ void Stats::AddOn(Stats* pkTarget)
 	{
 		pkTarget->ChangeMod(m_kStats[i].m_strName, m_kStats[i].m_fValue + m_kStats[i].m_fMod );
 		
-		cout<<"Applying stat "<<m_kStats[i].m_strName<<" "<<m_kStats[i].m_fValue + m_kStats[i].m_fMod<<endl;
+// 		cout<<"Applying stat "<<m_kStats[i].m_strName<<" "<<m_kStats[i].m_fValue + m_kStats[i].m_fMod<<endl;
 	}
 }
 
@@ -606,7 +606,7 @@ void P_CharacterProperty::UpdateStats()
 	}
 		
 	
-	float fTime = m_pkZeroFps->GetTicks();
+	float fTime = m_pkZeroFps->GetEngineTime();
 	
 	//update stats each seccond	
 	if(fTime > m_fStatTimer + 1.0)
@@ -724,7 +724,7 @@ void P_CharacterProperty::OnDeath()
 
 void P_CharacterProperty::UpdateSkills()
 {
-	float fTime = m_pkZeroFps->GetTicks();
+	float fTime = m_pkZeroFps->GetEngineTime();
 	
 	//update each seccond
 	if( fTime > m_fSkillTimer + 0.1)
@@ -1081,7 +1081,7 @@ void P_CharacterProperty::Update()
 		
 		//CLIENT AND SERVER
 		//reset chat msg
-		if(m_pkZeroFps->GetTicks() > m_fChatTime + 10.0)
+		if(m_pkZeroFps->GetEngineTime() > m_fChatTime + 10.0)
 			m_strChatMsg = "";						
 		
 	}
@@ -1108,7 +1108,7 @@ void P_CharacterProperty::Update()
 void P_CharacterProperty::AddChatMsg(const string& strChatMsg)
 {
 	m_strChatMsg = strChatMsg;
-	m_fChatTime = m_pkZeroFps->GetTicks();	
+	m_fChatTime = m_pkZeroFps->GetEngineTime();	
 }
 
 

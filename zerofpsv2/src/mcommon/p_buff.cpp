@@ -45,8 +45,8 @@ void P_Buff::Update()
 		if(m_fTimeOut != -1)
 		{
 			//decrese timeout
-			m_fTimeLeft -= m_pkZeroFps->GetTicks() - m_fLastTime;
-			m_fLastTime = m_pkZeroFps->GetTicks();
+			m_fTimeLeft -= m_pkZeroFps->GetEngineTime() - m_fLastTime;
+			m_fLastTime = m_pkZeroFps->GetEngineTime();
 		
 			//time has expired,remove buff
 			if(m_fTimeLeft <= 0)
@@ -92,7 +92,7 @@ void P_Buff::Enable(P_CharacterProperty* pkCP)
 	
 	m_pkEntityManager->CallFunction(GetEntity(),"AddBuff",&kParams);
 	
-	m_fLastTime = m_pkZeroFps->GetTicks();
+	m_fLastTime = m_pkZeroFps->GetEngineTime();
 	m_fTimeLeft = m_fTimeOut;
 }
 

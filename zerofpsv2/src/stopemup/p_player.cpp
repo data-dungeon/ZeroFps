@@ -35,9 +35,9 @@ void P_Player::Update()
 		//add box
 		if(m_iStopers > 0)
 		{			
-			if(m_pkZeroFps->GetTicks() > m_fSecondaryTime + 1)
+			if(m_pkZeroFps->GetEngineTime() > m_fSecondaryTime + 1)
 			{			 
-				m_fSecondaryTime = m_pkZeroFps->GetTicks();
+				m_fSecondaryTime = m_pkZeroFps->GetEngineTime();
 					
 				m_pkEntityManager->CreateEntityFromScriptInZone("data/script/objects/stop.lua",GetEntity()->GetWorldPosV()+Vector3(0,-0.6,0),-1);
 			
@@ -56,7 +56,7 @@ void P_Player::Touch(int iID)
 		//check if invunrable
 		if(m_fInv != -1)
 		{
-			if(m_pkZeroFps->GetTicks() > m_fInv + 0.5)
+			if(m_pkZeroFps->GetEngineTime() > m_fInv + 0.5)
 				m_fInv = -1;
 			else
 				return;
@@ -82,7 +82,7 @@ void P_Player::Damage(int iDmg)
 	m_iEnergy-=iDmg;
 
 	//set inv time
-	m_fInv = m_pkZeroFps->GetTicks();
+	m_fInv = m_pkZeroFps->GetEngineTime();
 	
 	if(m_iEnergy <= 0 )
 	{

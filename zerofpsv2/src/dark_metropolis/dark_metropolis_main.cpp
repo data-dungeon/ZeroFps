@@ -401,9 +401,9 @@ void DarkMetropolis::Input()
 		if(Entity* pkEnt = m_pkEntityManager->GetEntityByID(m_iHQID))
 			if(P_DMHQ* pkHQ = (P_DMHQ*)pkEnt->GetProperty("P_DMHQ"))
 			{
-				if(m_pkZeroFps->GetTicks()-m_fDelayTimer > 1)
+				if(m_pkZeroFps->GetEngineTime()-m_fDelayTimer > 1)
 				{
-					m_fDelayTimer = m_pkZeroFps->GetTicks();								
+					m_fDelayTimer = m_pkZeroFps->GetEngineTime();								
 					pkHQ->SpawnNewCharacter(0);
 					
 					cout<<"spawning a new character"<<endl;
@@ -462,7 +462,7 @@ void DarkMetropolis::Input()
 
 		// rotate camera to the left
 		if(m_pkInputHandle->VKIsDown("rotcam_left"))
-			if(m_pkZeroFps->GetTicks()-m_fDelayTimer > 0.3)
+			if(m_pkZeroFps->GetEngineTime()-m_fDelayTimer > 0.3)
 			{
 				m_fDelayTimer = m_pkZeroFps->GetTicks();
 				m_fAngle += PI / 2.f; // 90 degrees in rad
@@ -470,9 +470,9 @@ void DarkMetropolis::Input()
 
 		// rotate camera to the right
 		if(m_pkInputHandle->VKIsDown("rotcam_right"))
-			if(m_pkZeroFps->GetTicks()-m_fDelayTimer > 0.3)
+			if(m_pkZeroFps->GetEngineTime()-m_fDelayTimer > 0.3)
 			{
-				m_fDelayTimer = m_pkZeroFps->GetTicks();
+				m_fDelayTimer = m_pkZeroFps->GetEngineTime();
 				m_fAngle -= PI / 2.f; // 90 degrees in rad
 			}
 
@@ -529,9 +529,9 @@ void DarkMetropolis::Input()
 	//check if we want do do any action
 	if(m_pkInputHandle->VKIsDown("shoot"))
 	{
-		if(m_pkZeroFps->GetTicks()-m_fDelayTimer > 0.1)
+		if(m_pkZeroFps->GetEngineTime()-m_fDelayTimer > 0.1)
 		{
-			m_fDelayTimer = m_pkZeroFps->GetTicks();
+			m_fDelayTimer = m_pkZeroFps->GetEngineTime();
 		
 			if(Entity* pkPickEnt = GetTargetObject())
 			{
@@ -1273,13 +1273,13 @@ void DarkMetropolis::CheckCameraPos()
 // -------------------------------------------------------------------------------------------
 void DarkMetropolis::AddInfoMsg (string strMsg)
 {
-	static float fTimeSinceLastMsg = m_pkZeroFps->GetTicks();
+	static float fTimeSinceLastMsg = m_pkZeroFps->GetEngineTime();
 	static string strLastMsg;
 	
 	// if less than a second has passed since last msg, and the msg is the same, ignore
-	if ( !(strLastMsg == strMsg && m_pkZeroFps->GetTicks() - fTimeSinceLastMsg < 1) )
+	if ( !(strLastMsg == strMsg && m_pkZeroFps->GetEngineTime() - fTimeSinceLastMsg < 1) )
 	{
-		fTimeSinceLastMsg = m_pkZeroFps->GetTicks();
+		fTimeSinceLastMsg = m_pkZeroFps->GetEngineTime();
 		AddListItem("infotext", (char*)strMsg.c_str());
 		strLastMsg = strMsg;
 	}

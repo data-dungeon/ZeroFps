@@ -145,7 +145,7 @@ void P_Vegitation::Update()
 	//setup material	
 	m_pkZShaderSystem->BindMaterial((ZMaterial*)(m_pkMaterial->GetResourcePtr()));		
 	
-	float t=m_pkFps->GetTicks();
+	float t=m_pkFps->GetEngineTime();
 
 	if(iStep == 1)
 	{

@@ -407,7 +407,7 @@ void InventoryDlg::PickUpFromGround(bool bLeftButtonPressed, int mx, int my)
 	{		
 		const float WAIT_TIME_PICKUP = 0.25f; // seconds to wait before item appear under cursor.
 
-		if(g_kMistClient.m_pkZeroFps->GetTicks() - m_fPickUpTimer > WAIT_TIME_PICKUP)
+		if(g_kMistClient.m_pkZeroFps->GetEngineTime() - m_fPickUpTimer > WAIT_TIME_PICKUP)
 		{
 			for(int i=0; i<m_vkInventoryItemList.size(); i++)
 				if(m_vkInventoryItemList[i].iItemID == m_iItemUnderCursor)
@@ -712,7 +712,7 @@ void InventoryDlg::UpdateInventory(vector<MLContainerInfo>& vkItemList)
 			if(g_kMistClient.m_iPickedEntityID == vkItemList[i].m_iItemID)
 			{
 				m_iItemUnderCursor = vkItemList[i].m_iItemID;			
-				m_fPickUpTimer = g_kMistClient.m_pkZeroFps->GetTicks();
+				m_fPickUpTimer = g_kMistClient.m_pkZeroFps->GetEngineTime();
 				pkNewSlot->Hide();
 			}
 		}

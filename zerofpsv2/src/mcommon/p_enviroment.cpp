@@ -530,8 +530,8 @@ void P_Enviroment::DrawSky()
 
 											
 	//UV's for moving clouds
-	float fP = m_pkZeroFps->GetTicks()* 0.01;
-	float fPS = m_pkZeroFps->GetTicks()*0.005;
+	float fP = m_pkZeroFps->GetEngineTime()* 0.01;
+	float fPS = m_pkZeroFps->GetEngineTime()*0.005;
 	
 	float afMUVsF[] = { fP,		1,
 							  fP+1,	1,

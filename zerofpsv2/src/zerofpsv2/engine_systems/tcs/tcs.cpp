@@ -121,8 +121,8 @@ void Tcs::Update(float fAlphaTime)
 	m_iNrOfContacts		= 0;
 
 	
-	fStepSize = m_pkZeroFps->GetTicks() - fLastTime;
-	fLastTime = m_pkZeroFps->GetTicks();
+	fStepSize = m_pkZeroFps->GetEngineTime() - fLastTime;
+	fLastTime = m_pkZeroFps->GetEngineTime();
 	
 	//fStepSize = fAlphaTime;
 	
@@ -217,9 +217,9 @@ void Tcs::Update(float fAlphaTime)
 	
 	//check for resting bodys
  	static float fLastRestFind = 0;	
- 	if(m_pkZeroFps->GetTicks() - fLastRestFind > 0.1)
+ 	if(m_pkZeroFps->GetEngineTime() - fLastRestFind > 0.1)
  	{
- 		fLastRestFind = m_pkZeroFps->GetTicks();
+ 		fLastRestFind = m_pkZeroFps->GetEngineTime();
  		FindRestingBodys();
  	}
 		
@@ -547,9 +547,9 @@ void Tcs::FindRestingBodys()
 	
 	//check for resting bodys
 	static float fLastRestFind = 0;	
-	if(m_pkZeroFps->GetTicks() - fLastRestFind > m_fSleepTime)
+	if(m_pkZeroFps->GetEngineTime() - fLastRestFind > m_fSleepTime)
 	{
-		fLastRestFind = m_pkZeroFps->GetTicks();
+		fLastRestFind = m_pkZeroFps->GetEngineTime();
 	
 		for(int i = 0;i<m_kBodys.size();i++)
 		{
