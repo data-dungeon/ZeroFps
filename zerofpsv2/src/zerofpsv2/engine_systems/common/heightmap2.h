@@ -114,6 +114,9 @@ class ENGINE_SYSTEMS_API Heightmap2 : public I_HeightMap2
 		void UpdateRecLodLevel(Vector3 kCamPos);
 		void UpdateFrustumCulling();
 		
+		float Height(float x,float z);
+		Vector3 Tilt(float x,float z);		
+		
 		bool Loaded() { return m_bLoaded;};
 		Vector3 GetPos() { return m_kPos;};
 		int GetWidth() { return m_iWidth; }

@@ -499,3 +499,83 @@ void Heightmap2::LocalToWorld(Vector3* pkPos)
 	(*pkPos) += m_kPos;
 	(*pkPos) -= Vector3(m_iWidth*m_fScale / 2.0,0,m_iHeight*m_fScale / 2.0);	
 }
+
+float Heightmap2::Height(float x,float z)
+{
+	Vector3 kPos;
+	kPos.Set(x,0,z);
+	
+	WorldToLocal(&kPos);
+
+	x=kPos.x;
+	z=kPos.z;
+
+	
+	if(x<0 || x>=m_iWidth-1 || z<0 || z>=m_iHeight-1) 
+		return 1;
+
+	int lx=int(x);
+	int lz=int(z);
+	float ox=x-float(lx);
+	float oz=z-float(lz);
+	float bp,xp,zp;
+
+	float ry= float((1.0+ox*-1.0));
+
+	if(oz>ry){//over left
+		bp=m_kBasicData[(lz+1)*m_iWidth+(lx+1)].fHeight;
+		xp=m_kBasicData[(lz+1)*m_iWidth+(lx)].fHeight-bp;
+		zp=m_kBasicData[(lz)*m_iWidth+(lx+1)].fHeight-bp;		
+		ox= float(1.0-ox);
+		oz= float(1.0-oz);
+	}else{//under right
+		bp=m_kBasicData[lz*m_iWidth+lx].fHeight;
+		xp=m_kBasicData[(lz)*m_iWidth+(lx+1)].fHeight-bp;
+		zp=m_kBasicData[(lz+1)*m_iWidth+(lx)].fHeight-bp;				
+	}	
+
+	
+
+	return m_kPos.y+(bp+(xp*ox)+(zp*oz))*m_fScale;	
+
+}
+
+
+Vector3 Heightmap2::Tilt(float x,float z) {
+	Vector3 kPos;
+	kPos.Set(x,0,z);
+	
+	WorldToLocal(&kPos);
+
+	x=kPos.x;
+	z=kPos.z;
+
+	
+	if(x<0 || x>=m_iWidth-1 || z<0 || z>=m_iHeight-1) 
+		return Vector3(0,1,0);
+		
+	int lx=int(x);
+	int lz=int(z);
+	float ox=x-float(lx);
+	float oz=z-float(lz);
+	
+	Vector3 v1,v2,n1;
+	
+	float ry= float ((1.0+ox*-1.0));
+	if(oz>ry){
+//		cout<<"UPP"<<endl;		
+		v1=Vector3(1,(m_kBasicData[(lz+1)*m_iWidth+(lx+1)].fHeight)	-(m_kBasicData[(lz+1)*m_iWidth+(lx)].fHeight) ,0);
+		v2=Vector3(0,(m_kBasicData[(lz+1)*m_iWidth+(lx+1)].fHeight)	-(m_kBasicData[(lz)*m_iWidth+(lx+1)].fHeight) ,1);	
+		
+		n1=v2.Cross(v1);			
+	}else {
+//		cout<<"DOWN"<<endl;		
+		v1=Vector3(0,(m_kBasicData[(lz+1)*m_iWidth+(lx)].fHeight)	-(m_kBasicData[(lz)*m_iWidth+(lx)].fHeight) ,1);
+		v2=Vector3(1,(m_kBasicData[(lz)*m_iWidth+(lx+1)].fHeight)	-(m_kBasicData[(lz)*m_iWidth+(lx)].fHeight) ,0);		
+	
+		n1=v1.Cross(v2);			
+	}
+	
+	n1.Normalize();
+	return n1;
+}

@@ -138,10 +138,27 @@ void ZeroTank::OnIdle()
 	m_pkMap2->SetPos(Vector3(0,0,0));
 	pkRender->DrawHM2(m_pkMap2,pkFps->GetCam()->GetPos());
 
-//	m_pkTestMod.PlayAnimation(0,0);
-//	m_pkTestMod.Draw_All();
+
+/*
+	Vector3 pos = pkFps->GetCam()->GetPos();
+	pos.y  = m_pkMap2->Height(pos.x,pos.z) +1;
+	pkFps->GetCam()->SetPos(pos);
 	
+	Vector3 norm = m_pkMap2->Tilt(pos.x,pos.z);
+	float deg=Vector3(0,1,0).Angle(norm);
 	
+	norm.Angels();
+	cout<<"x:"<<norm.x<<endl;
+	cout<<"y:"<<norm.y<<endl;	
+	cout<<"z:"<<norm.z<<endl;	
+	
+	norm.x *= degtorad;
+	norm.y *= degtorad;
+	norm.z *= degtorad;
+	
+	pkFps->GetCam()->SetRot(Vector3(norm.x,pkFps->GetCam()->GetRot().y,norm.z));
+*/	
+
 	
 	//update player possition
 	Object* pkObj = pkObjectMan->GetObjectByNetWorkID( m_iSelfObjectID );

@@ -1,8 +1,8 @@
 class object	
 	class ZeroRTSSpawnPoint
 		parent object
-		set MadProperty m_kMadFile /data/mad/rts/unit/tankh.mad
-		set MadProperty m_fScale 5
+		set MadProperty m_kMadFile /data/mad/Armour.mad
+		set MadProperty m_fScale 1
 	
 	class ZeroRTSTestBox
 		parent object
