@@ -8,9 +8,9 @@
 #include <string.h>
 #include <string>
 #include "soundbuffermanager.h"
+#include "engine_x.h"
 
-
-class Sound{
+class ENGINE_API Sound {
 	public:
 		string m_acFile;			//wav file to play
 		Vector3 m_kPos;			//sounds position
@@ -24,7 +24,7 @@ class Sound{
 };
 
 
-class OpenAlSystem{
+class ENGINE_API OpenAlSystem : public ZFObject {
 	private:
 		struct SourceAlloc{
 			ALuint m_iSource;		

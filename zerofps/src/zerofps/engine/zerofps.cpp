@@ -16,6 +16,8 @@ ZeroFps::ZeroFps(void)
 	m_pkLight=new Light();
 	m_pkObjectMan=new ObjectManager();
 	m_pkCollisionMan=new CollisionManager();	
+	m_pkSBM=new SoundBufferManager(m_pkFile);	
+	m_pkOpenAlSystem= new OpenAlSystem();
 
 	m_iFullScreen=0;
 	m_fFrameTime=0;
@@ -169,6 +171,9 @@ void ZeroFps::MainLoop(void) {
 
 				//update all collisions
 				m_pkCollisionMan->Update();				
+
+				//update openal sound system
+				m_pkOpenAlSystem->Update();
 
 				// Describe Active Cam.
 				string strCamDesc = GetCam()->GetCameraDesc();

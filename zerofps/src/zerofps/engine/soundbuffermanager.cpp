@@ -1,9 +1,9 @@
 #include "soundbuffermanager.h"
 
 
-SoundBufferManager::SoundBufferManager()
-{
-	io=new FileIo();
+SoundBufferManager::SoundBufferManager(FileIo *pkIo)
+: ZFObject("SoundBufferManager"){
+	io=pkIo;
 }
 
 

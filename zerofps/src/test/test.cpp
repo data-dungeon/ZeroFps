@@ -137,15 +137,11 @@ void Test::OnInit(void) {
 	pkCollisionMan->Add(hm);
 
 
-/*	  
-	float fogColor[4] = {0.8f, 0.8f, 0.8f, 1.0f};
+	Sound *welcome=new Sound();
+	welcome->m_acFile="file:../data/sound/welcome.wav";
+	
+	pkAlSys->AddSound(welcome);
 
-  glEnable(GL_FOG);                       // Turn on fog
-  glFogi(GL_FOG_MODE, GL_LINEAR);         // Set the fog mode to LINEAR (Important)
-  glFogfv(GL_FOG_COLOR, fogColor);        // Give OpenGL our fog color
-  glFogf(GL_FOG_START, 0.0);              // Set the start position for the depth at 0
-  glFogf(GL_FOG_END, 50.0);               // Set the end position for the detph at 50
-*/
 }
 
 void Test::OnIdle(void) {

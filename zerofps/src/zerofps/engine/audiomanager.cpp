@@ -32,7 +32,8 @@ void AudioManager::InitAudio(){																//denna funktion initierar ljudet
 	m_iaudio_buffers=		4096;
 	m_baudio_open=			false;
 	
-	/* Open the audio device */
+	
+	//Open the audio device 
 	m_baudio_open = true;
 	if(Mix_OpenAudio(m_iaudio_rate,m_iaudio_format,m_iaudio_channels,m_iaudio_buffers) < 0) {
 		m_pkZeroFps->m_pkConsole->Print("Couldn't open audio");
@@ -46,6 +47,7 @@ void AudioManager::InitAudio(){																//denna funktion initierar ljudet
 			(m_iaudio_channels > 1) ? "stereo" : "mono",
 			m_iaudio_buffers );
 	}
+	
 }
 	
 void AudioManager::RunCommand(int cmdid, const CmdArgument* kCommand)

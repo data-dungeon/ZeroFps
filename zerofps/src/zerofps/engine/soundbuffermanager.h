@@ -1,21 +1,20 @@
 #ifndef _SOUNDBUFFERMANAGER_H_
 #define _SOUNDBUFFERMANAGER_H_ 
 
-//#include "vector3.h"
 #include "../basic/basic.pkg"
 #include <string.h>
 #include <vector>
-//#include "fileio.h"
 #include "AL/al.h"
 #include "AL/alut.h"
+#include "engine_x.h"
 
-class SoundBuffer {
+class ENGINE_API SoundBuffer {
 	public:
 		ALuint m_iIndex;
 		string m_acFile;
 };
 
-class SoundBufferManager{
+class ENGINE_API SoundBufferManager : public ZFObject {
 	private:
 		vector<SoundBuffer*> m_kBuffers;
 				
@@ -26,7 +25,7 @@ class SoundBufferManager{
 
 		
 	public:
-		SoundBufferManager();
+		SoundBufferManager(FileIo * pkIo);
 
 		int LoadSound(char* acFile);
 		void ClearAll();

@@ -25,6 +25,7 @@ class ENGINE_API Application {
 		Light* pkLight;
 		ObjectManager* pkObjectMan;
 		CollisionManager* pkCollisionMan;
+		OpenAlSystem* pkAlSys;
 		
 	public:
 		static Application* pkApp;

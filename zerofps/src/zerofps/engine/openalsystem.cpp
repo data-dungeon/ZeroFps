@@ -12,13 +12,12 @@ Sound::Sound()
 }
 
 
-OpenAlSystem::OpenAlSystem() 
-{
-	sbm=new SoundBufferManager();
+OpenAlSystem::OpenAlSystem()  
+: ZFObject("OpenAlSystem") {
+	sbm= static_cast<SoundBufferManager*>(g_ZFObjSys.GetObjectPtr("SoundBufferManager"));
 
 	Init();
 	GenerateSources(10);
-	
 }
 
 OpenAlSystem::~OpenAlSystem()
@@ -110,6 +109,7 @@ void OpenAlSystem::Update()
 		int status=GetState(Current);
 
 		if(status==-1){
+//			cout<<"sound starting"<<endl;
 			//Sound thats going to be played
 			if(Hearable(Current)){
 				kPlay.push_back(Current);
@@ -142,6 +142,7 @@ void OpenAlSystem::Update()
 		}
 		
 		if(status==AL_STOPPED){
+//			cout<<"sound stoped"<<endl;
 			if(Current->m_bLoop==false){
 			
 				kRemove.push_back(Current);
@@ -210,6 +211,7 @@ void OpenAlSystem::PlaySound(Sound* pkSound,int iSource)
 
 	
 	alSourcePlay(m_kSources[iSource]->m_iSource);
+	cout<<"Staring to play"<<endl;
 }
 
 

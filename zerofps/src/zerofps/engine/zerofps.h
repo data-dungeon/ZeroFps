@@ -69,6 +69,9 @@ class ENGINE_API ZeroFps : public ZFObject {
 		Light* m_pkLight;
 		ObjectManager* m_pkObjectMan;
 		CollisionManager*  m_pkCollisionMan;
+		SoundBufferManager* m_pkSBM;		
+		OpenAlSystem* m_pkOpenAlSystem;
+
 
 		vector<Core>		akCoreModells;
 				
