@@ -240,6 +240,9 @@
 				RelativePath=".\mcommon_x.h">
 			</File>
 			<File
+				RelativePath=".\ml_netmessages.h">
+			</File>
+			<File
 				RelativePath=".\p_ai.h">
 			</File>
 			<File

@@ -25,6 +25,7 @@
 #include "../zerofpsv2/render/glguirender.h"
 #include "../mcommon/si_dm.h"
 #include "../zerofpsv2/engine_systems/propertys/p_scriptinterface.h"
+#include "../mcommon/ml_netmessages.h"
 
 MistServer g_kMistServer("MistServer", 0, 0, 0);
 
@@ -367,6 +368,7 @@ void MistServer::OnHud(void)
 
 void MistServer::RunCommand(int cmdid, const CmdArgument* kCommand)
 {
+	NetPacket kNp;
 	ClientOrder kOrder;
 
 	unsigned int i;
@@ -486,6 +488,12 @@ void MistServer::RunCommand(int cmdid, const CmdArgument* kCommand)
 			break;		
 
 		case FID_TEST_JIDDRA:
+			kNp.Clear();
+			kNp.Write((char) MLNM_SC_MADDRAW);
+			kNp.Write((int) 5);
+			kNp.TargetSetClient(0);
+			SendAppMessage(&kNp);			
+
 			m_pkConsole->Printf("Long Text: ");
 			m_pkConsole->Printf("This is a totaly pointless text that have no other purpose then being long and boring and boring and long. In short, don't fall asleep when you read this");
 			m_pkConsole->Printf("\n");
@@ -1189,14 +1197,24 @@ void MistServer::SendTextToMistClientInfoBox(char *szText)
 
 void MistServer::OnNetworkMessage(NetPacket *PkNetMessage)
 {
-	char cNisse;
-	char szMsg[256];
+	unsigned char ucType;
 
-	PkNetMessage->Read(cNisse);
-	int iJiddra = cNisse;
+	// Read Type of Message.
+	PkNetMessage->Read(ucType);
+	//int iJiddra = ucType;
+	//m_pkConsole->Printf("AppMessageType: %d", iJiddra );
 
-	PkNetMessage->Read_Str(szMsg);
-	m_pkConsole->Printf("GULDFISK %d", iJiddra );
-	m_pkConsole->Printf(szMsg);
+	switch(ucType)
+	{
+		case MLNM_CS_JIDDRA:
+			char szMsg[256];
+			PkNetMessage->Read_Str(szMsg);
+			m_pkConsole->Printf(szMsg);
+			break;
+
+		default:
+			cout << "Error in game packet : " << (int) ucType << endl;
+			PkNetMessage->SetError(true);
+			return;
+	}
 }
-

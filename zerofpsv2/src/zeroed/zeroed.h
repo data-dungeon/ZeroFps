@@ -243,6 +243,8 @@ class ZeroEd :public Application , public ZGuiApp {
 		bool StartUp()	{ return true; }
 		bool ShutDown()	{ return true; }
 		bool IsValid()	{ return true; }
+
+		//void SendAppMessage(NetPacket* pkNet);
 };
 
 

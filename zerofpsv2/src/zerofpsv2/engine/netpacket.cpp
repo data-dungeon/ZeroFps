@@ -100,6 +100,17 @@ void NetPacket::SetTarget(const char* szIp)
 	SDLNet_Write16(hp, &m_kAddress.port);	
 }
 
+void NetPacket::WriteNp(NetPacket* pkNp)
+{
+	unsigned char * add = &m_kData.m_acData[m_iPos];
+
+	memcpy(add, &pkNp->m_kData.m_acData[0], pkNp->m_iLength);
+	m_iPos +=  pkNp->m_iLength;
+	m_iLength += pkNp->m_iLength;
+
+}
+
+
 void NetPacket::Write_Str(const char* szString)
 {
 	ZFAssert((m_iPos + strlen(szString) + 1) < MAX_PACKET_SIZE, "NetPacket::Write_Str");

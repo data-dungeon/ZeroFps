@@ -60,6 +60,8 @@ public:
 	void SetError(bool bError) { m_bReadError = bError;	}
 	bool IsReadError() { return m_bReadError; }
 
+	void WriteNp(NetPacket* pkNp);
+
 	void Write_Str(const char* szString);
 	void Read_Str(char* szString);
 
@@ -87,6 +89,8 @@ public:
 	void Read(void* ptr, int iSize);
 
 	void SetType(int iType);
+
+
 
 	/* Target functions.
 		Decides to who this packet will be sent. This can be one of the following.

@@ -48,6 +48,19 @@ void Application::SetTitle(string strTitle)
 	SDL_WM_SetCaption(strTitle.c_str(), NULL);
 }
 
+void Application::SendAppMessage(NetPacket* pkNet)
+{
+	NetPacket kNp;
+	kNp.Clear();
+	kNp.m_kData.m_kHeader.m_iPacketType = ZF_NETTYPE_UNREL;
+	kNp.Write((char) ZPGP_SS_APP);
+	
+	kNp.WriteNp(pkNet);
+
+	kNp.Write(ZFGP_ENDOFPACKET);
+	kNp.m_iTargetClients = pkNet->m_iTargetClients;
+	m_pkFps->m_pkNetWork->Send2(&kNp);
+}
 
 
 

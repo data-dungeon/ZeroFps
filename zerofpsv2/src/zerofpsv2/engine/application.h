@@ -71,6 +71,8 @@ class ENGINE_API Application : public ZFSubSystem {
 		virtual void OnClientStart(void)=0;
 
 		virtual  void OnNetworkMessage(NetPacket *PkNetMessage) = 0;
+
+		void SendAppMessage(NetPacket* pkNet);
 };
 
 

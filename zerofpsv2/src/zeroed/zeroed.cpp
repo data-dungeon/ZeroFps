@@ -30,6 +30,7 @@
 #include "../zerofpsv2/render/glguirender.h"
 #include "../mcommon/si_dm.h"
 #include "../zerofpsv2/engine_systems/propertys/p_scriptinterface.h"
+#include "../mcommon/ml_netmessages.h"
 
 ZeroEd g_kZeroEd("ZeroEd", 0, 0, 0);
 
@@ -971,14 +972,10 @@ void ZeroEd::RunCommand(int cmdid, const CmdArgument* kCommand)
 
 		case FID_TEST_JIDDRA:
 			kNp.Clear();
-			kNp.m_kData.m_kHeader.m_iPacketType = ZF_NETTYPE_UNREL;
-			kNp.Write((char) ZPGP_SS_APP);
-			kNp.Write((char) 121);
-
+			kNp.Write((char) MLNM_CS_JIDDRA);
 			kNp.Write_Str("This is my voice on TV");
-			kNp.Write(ZFGP_ENDOFPACKET);
 			kNp.TargetSetClient(0);
-			m_pkFps->m_pkNetWork->Send2(&kNp);
+			SendAppMessage(&kNp);
 
 			m_pkConsole->Printf("Long Text: ");
 			m_pkConsole->Printf("This is a totaly pointless text that have no other purpose then being long and boring and boring and long. In short, don't fall asleep when you read this");
@@ -1527,10 +1524,27 @@ void ZeroEd::RebuildZonePosArray()
 
 void ZeroEd::OnNetworkMessage(NetPacket *PkNetMessage)
 {
+	unsigned char ucType;
 
+	// Read Type of Message.
+	PkNetMessage->Read(ucType);
+	//int iJiddra = ucType;
+	//m_pkConsole->Printf("AppMessageType: %d", iJiddra );
+
+	switch(ucType)
+	{
+		case MLNM_SC_MADDRAW:
+			int iDrawMode;
+			PkNetMessage->Read(iDrawMode);
+			GetSystem().RunCommand("r_maddraw 5",CSYS_SRC_SUBSYS);
+			break;
+
+		default:
+			cout << "Error in game packet : " << (int) ucType << endl;
+			PkNetMessage->SetError(true);
+			return;
+	}
 }
-
-
 
 
 
