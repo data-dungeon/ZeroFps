@@ -63,9 +63,8 @@ bool Gui::WndProc( ZGuiWnd* pkWindow, unsigned int uiMessage, int iNumberOfParam
 			char cmd[512];
 			sprintf(cmd, "load %s", m_pkFileDlgbox->m_szCurrentDir.c_str()); 
 			m_pkEdit->pkFps->m_pkConsole->Execute(cmd);
-
 			m_pkEdit->pkGui->ShowMainWindow(ID_FILEPATH_WND_MAIN, false);
-			//m_pkEdit->pkFps->ToggleGui();
+			m_pkEdit->pkFps->ToggleGui();
 			break;
 		}
 		break;
@@ -162,7 +161,7 @@ bool Gui::CreateWindows()
 	pkMenuCBox->SetLabelText("File");
 	pkMenuCBox->IsMenu(true);
 	pkMenuCBox->AddItem("Quit", IDM_CLOSE);
-	pkMenuCBox->AddItem("Load heightmap...", IDM_LOAD_HEIGHTMAP);
+	pkMenuCBox->AddItem("Load map...", IDM_LOAD_HEIGHTMAP);
 	pkMenuCBox->AddItem("Edit property...", IDM_CREATE_NEW_PROPERTY);
 
 	m_pkEdit->pkGui->AddMainWindow(IDM_MENU_WND, pkMenu, WINPROC, true);

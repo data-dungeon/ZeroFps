@@ -16,26 +16,15 @@ extern ZeroEdit Editor;
 static bool OPENFILEPROC( ZGuiWnd* pkWindow, unsigned int uiMessage, int iNumberOfParams, void *pkParams ){
 	return Editor.m_pkGui->m_pkFileDlgbox->DlgProc(pkWindow, uiMessage, iNumberOfParams, pkParams); }
 
-FileOpenDlg::FileOpenDlg(Gui* pkGui, ZFBasicFS* pkBasicFS, string szPath, 
-						 callback cb, bitset<NUMBER_OF_FLAGS> flags)
+FileOpenDlg::FileOpenDlg(Gui* pkGui, ZFBasicFS* pkBasicFS, callback cb, 
+						 bitset<NUMBER_OF_FLAGS> flags)
 {
 	m_vkBitParams = flags;
 
 	m_szSearchPath.reserve(1024);
-	m_szSearchPath.assign(szPath);
-
 	m_szCurrentDir.reserve(128);
 	m_szCurrentFile.reserve(128);
-
 	m_szSearchPath = pkBasicFS->GetCWD();
-	//printf("%s\n", m_szSearchPath.c_str());
-
-	int size = m_szSearchPath.length();  
-	int pos = m_szSearchPath.find_last_of("//");
-	if(string::npos != pos)
-	{
-		//m_szCurrentDir.resize(m_szSearchPath.substr(pos+1, size-pos).size());
-	}
 
 	m_oGuiCallback = cb;
 	m_bListDirOnly = false;
@@ -65,11 +54,6 @@ bool FileOpenDlg::DlgProc( ZGuiWnd* pkWindow, unsigned int uiMessage, int iNumbe
 			case ID_FILEPATH_WND_CLOSE:
 				{
 					m_pkZGui->ShowMainWindow(ID_FILEPATH_WND_MAIN, false);
-					ZGuiWnd* pkWin = m_pkZGui->GetActiveMainWnd();
-					if(pkWin)
-					{
-						printf("%i\n", pkWin->GetID());
-					}
 				}
 				break;
 
@@ -104,7 +88,7 @@ bool FileOpenDlg::DlgProc( ZGuiWnd* pkWindow, unsigned int uiMessage, int iNumbe
 
 					if(szFileName == string("..") /*&& !m_vkBitParams.test(DISALLOW_DIR_CHANGE)*/ )
 					{
-						int new_path_length = m_szSearchPath.find_last_of(char(47)); 
+						int new_path_length = m_szSearchPath.find_last_of("\\"); 
 
 						if(new_path_length != string::npos)
 						{
@@ -122,7 +106,7 @@ bool FileOpenDlg::DlgProc( ZGuiWnd* pkWindow, unsigned int uiMessage, int iNumbe
 						{
 							if(vkDirectories[i] == szFileName)
 							{
-								m_szSearchPath.append("//");
+								m_szSearchPath.append("\\");
 								m_szSearchPath.append(szFileName);
 								bFillPathlist = true;
 								break;
@@ -144,7 +128,7 @@ bool FileOpenDlg::DlgProc( ZGuiWnd* pkWindow, unsigned int uiMessage, int iNumbe
 					{
 
 						int size = m_szSearchPath.length();  
-						int pos = m_szSearchPath.find_last_of("//");
+						int pos = m_szSearchPath.find_last_of("\\");
 						if(string::npos != pos)
 							m_szCurrentDir = m_szSearchPath.substr(pos+1, size-pos);
 
@@ -197,7 +181,7 @@ bool FileOpenDlg::FillPathList(ZGuiListbox* pkListbox, string strDir)
 		const int MAX_LENGTH = 35;
 
 		ZGuiLabel* pkLabel = (ZGuiLabel*) pkWnd;
-/*		
+		
 		int length = m_szSearchPath.length(); 
 		int start = length - MAX_LENGTH;
 		
@@ -209,7 +193,7 @@ bool FileOpenDlg::FillPathList(ZGuiListbox* pkListbox, string strDir)
 			szLabelText = "...";
 
 		szLabelText = m_szSearchPath;
-		szLabelText += start;*/
+		szLabelText += start;
 		
 		pkLabel->SetText((char*)m_szSearchPath.c_str());
 	}

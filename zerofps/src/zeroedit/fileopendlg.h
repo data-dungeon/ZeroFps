@@ -31,7 +31,7 @@ public:
 
 	typedef bool (*callback)(ZGuiWnd* pkWnd, unsigned int uiMessage, int iNumParams, void *pParams);
 
-	FileOpenDlg(Gui* pkGui, ZFBasicFS* pkBasicFS, string szPath, callback cb, 
+	FileOpenDlg(Gui* pkGui, ZFBasicFS* pkBasicFS, callback cb, 
 				bitset<NUMBER_OF_FLAGS> flags = NORMAL);
 	virtual ~FileOpenDlg();
 
