@@ -32,8 +32,7 @@ void HeightMap::Create(int iHmSize)
 	SetTileSet("file:../data/textures/landbw.bmp");
 	
 	ClearSet();
-	AddSet("file:detail1.bmp","FEL");
-	AddSet("file:detail2.bmp","land1.tga");	
+	AddSet("file:../data/textures/detail1.bmp","FEL");
 }
 
 void HeightMap::Zero() {
