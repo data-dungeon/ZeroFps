@@ -16,6 +16,7 @@ class ENGINE_API P_PfPath : public Property
 	private:
 		ZeroFps*				m_pkFps;				
 		AStar*				m_pkAStar;
+		Render*				m_pkRender;
 		
 		vector<Vector3>	m_kPath;				// The path we are following (if any).
 		vector<PathNode>	m_kRawPath;			// The path unoptimized path.
@@ -35,16 +36,10 @@ class ENGINE_API P_PfPath : public Property
 	
 		void Init();
 
-      void ClearPath()                   { m_kPath.clear(); }
-
-		void CloneOf(Property* pkProperty) { }
 		void Update();
 
 		void Save(ZFIoInterface* pkFile);
 		void Load(ZFIoInterface* pkFile);
-
-		void PackTo(NetPacket* pkNetPacket, int iConnectionID )		{ }
-		void PackFrom(NetPacket* pkNetPacket, int iConnectionID )	{ }
 
 		void SetPath(vector<Vector3> kPath);
 		bool MakePathFind(Vector3 kDestination);
@@ -52,14 +47,19 @@ class ENGINE_API P_PfPath : public Property
 	
 		void RenderPath();
 
-		void SetSpeed(float fSpeed) { m_fSpeed = fSpeed;};
-		void SetTilt(bool bTilt) { m_bTilt = bTilt;};
-		
-		bool GetTilt() {return m_bTilt;};
-		float GetSpeed() {return m_fSpeed;};
+		void SetSpeed(float fSpeed)	{	m_fSpeed = fSpeed;	}
+		void SetTilt(bool bTilt)		{	m_bTilt = bTilt;		}
+		bool GetTilt()						{	return m_bTilt;		}
+		float GetSpeed()					{	return m_fSpeed;		}
+      void ClearPath()					{	m_kPath.clear();		}
+
+		void PackTo(NetPacket* pkNetPacket, int iConnectionID )		{ }
+		void PackFrom(NetPacket* pkNetPacket, int iConnectionID )	{ }
 
 	protected:
 		vector<PropertyValues> GetPropertyValues();
+
+		void CloneOf(Property* pkProperty)					{ }
 };
 
 Property* Create_P_PfPath();

@@ -207,7 +207,7 @@ void ZGResEdit::OnInit()
 	InitGui(m_pkScript,
 		"data/textures/text/small.bmp",
 		"data/script/gui/gui_res_edit.lua",
-		NULL);
+		NULL, true);
 
 	SetTitle("GUI Editor Mistlands");
 	m_pkInput->ShowCursor(true);

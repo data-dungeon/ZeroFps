@@ -61,6 +61,7 @@ public:
 
 class AStar;
 struct Mad_Face;
+class Render;
 
 /** \brief	Gives a entity ability to have a mesh used for pathfinding on it. 
 	 \ingroup Engine
@@ -69,23 +70,22 @@ class ENGINE_API P_PfMesh : public Property
 {
 	private:
 		AStar*						m_pkAStar;
+		Render*						m_pkRender;
 
 		vector<NaviMeshCell>		m_NaviMesh;
 		P_Mad*						m_pkMad;
 		NaviMeshCell*				m_pkSelected;
 
+		void SetEdgeColor(int iID);
+	
 	public:
 		P_PfMesh();
 		~P_PfMesh();
 
-		void CloneOf(Property* pkProperty) { }
 		void Update();
 
 		void Save(ZFIoInterface* pkFile);
 		void Load(ZFIoInterface* pkFile);
-
-		void PackTo(NetPacket* pkNetPacket, int iConnectionID );
-		void PackFrom(NetPacket* pkNetPacket, int iConnectionID );
 
 		void BuildNavMesh(bool bWorldCoo, vector<Mad_Face>* pkFace, vector<Vector3>* pkVertex, vector<Vector3>* pkNormal);
 		void SetMad(P_Mad* pkMad);
@@ -105,6 +105,9 @@ class ENGINE_API P_PfMesh : public Property
 		NaviMeshCell* GetCurrentCell(Vector3 kPos);
 		bool LineOfSightTest(NaviMeshCell* pkStartCell, Vector3& kStartPos, NaviMeshCell* pkEndCell, Vector3& kEndPos);
 
+		void PackTo(NetPacket* pkNetPacket, int iConnectionID )		{ }
+		void PackFrom(NetPacket* pkNetPacket, int iConnectionID )	{ }
+		void CloneOf(Property* pkProperty)									{ }
 
 	protected:
 		vector<PropertyValues> GetPropertyValues();

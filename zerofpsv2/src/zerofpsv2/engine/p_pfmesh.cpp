@@ -18,40 +18,46 @@ Vector3 CalcNormal(Vector3 VertA, Vector3 VertB, Vector3 VertC)
 
 bool NaviMeshCell::IsConnected(NaviMeshCell* pkOther, Vector3 kVertexA, Vector3 kVertexB)
 {
-	if( m_kVertex[VERT_A].NearlyEquals(kVertexA,			0.01 )) {
+	if( m_kVertex[VERT_A].NearlyEquals(kVertexA,			0.01 )) 
+	{
 		if( m_kVertex[VERT_B].NearlyEquals(kVertexB,		0.01 ) )		return true;
 		if( m_kVertex[VERT_C].NearlyEquals(kVertexB,		0.01 )  )	return true;
-		}
+	}
 
-	else if( m_kVertex[VERT_B].NearlyEquals(kVertexA,	0.01 ) ) {
+	else if( m_kVertex[VERT_B].NearlyEquals(kVertexA,	0.01 ) ) 
+	{
 		if( m_kVertex[VERT_A].NearlyEquals(kVertexB,		0.01 ) )		return true;
 		if( m_kVertex[VERT_C].NearlyEquals(kVertexB,		0.01 ) )		return true;
-		}
+	}
 
-	else if( m_kVertex[VERT_C].NearlyEquals(kVertexA,	0.01 ) ) {
+	else if( m_kVertex[VERT_C].NearlyEquals(kVertexA,	0.01 ) ) 
+	{
 		if( m_kVertex[VERT_A].NearlyEquals(kVertexB,		0.01 ) )		return true;
 		if( m_kVertex[VERT_B].NearlyEquals(kVertexB,		0.01 ) )		return true;
-		}
+	}
 
 	return false;
 }
 
 void NaviMeshCell::GetEdgeVertex(int iEdge, Vector3& kA, Vector3& kB)
 {
-	if(iEdge == 0) {
+	if(iEdge == 0)
+	{
 		kA = m_kVertex[0];
 		kB = m_kVertex[1];
-		}
+	}
 		
-	if(iEdge == 1) {
+	if(iEdge == 1) 
+	{
 		kA = m_kVertex[1];
 		kB = m_kVertex[2];
-		}
+	}
 
-	if(iEdge == 2) {
+	if(iEdge == 2) 
+	{
 		kA = m_kVertex[2];
 		kB = m_kVertex[0];
-		}
+	}
 }
 
 void NaviMeshCell::RefreshData()
@@ -70,12 +76,13 @@ bool NaviMeshCell::IsPointInCell( Vector2& kPoint)
 {
 	int iInsideCount = 0;
 	
-	for(int i=0; i<3; i++) {
+	for(int i=0; i<3; i++)
+	{
 		Line2D::POINT_CLASSIFICATION eSideResult = m_kEdges[i].ClassifyPoint( kPoint );
 		
 		if(eSideResult != Line2D::LEFT_SIDE) 
 			iInsideCount++;
-		}
+	}
 
 	return (iInsideCount == 3);
 
@@ -132,21 +139,25 @@ NaviMeshCell::PATH_CLASSIFICATION NaviMeshCell::ClassifyPath(Line2D& kPath, int&
 
 	for(int i=0; i<3; i++)
 	{
-		if( m_kEdges[i].ClassifyPoint(kPath.EndPointB()) != Line2D::RIGHT_SIDE) {
-			if( m_kEdges[i].ClassifyPoint(kPath.EndPointA()) != Line2D::LEFT_SIDE) {
+		if( m_kEdges[i].ClassifyPoint(kPath.EndPointB()) != Line2D::RIGHT_SIDE) 
+		{
+			if( m_kEdges[i].ClassifyPoint(kPath.EndPointA()) != Line2D::LEFT_SIDE) 
+			{
 				Line2D::LINE_CLASSIFICATION iInterSect = kPath.Intersection(m_kEdges[i],pkIntersection);
 
-				if(iInterSect == Line2D::SEGMENTS_INTERSECT || iInterSect == Line2D::A_BISECTS_B) {
+				if(iInterSect == Line2D::SEGMENTS_INTERSECT || iInterSect == Line2D::A_BISECTS_B) 
+				{
 					iNextCell = m_aiLinks[i];
 					eSide = (CELL_SIDE)i;
 					return CELL_EXIT;
-					}
 				}
 			}
+		}
 
-		else {
+		else 
+		{
 			iInside++;
-			}
+		}
 	}
 
 	if( iInside == 3)
@@ -154,6 +165,8 @@ NaviMeshCell::PATH_CLASSIFICATION NaviMeshCell::ClassifyPath(Line2D& kPath, int&
 
 	return CELL_NONE;
 }
+
+
 
 
 
@@ -168,7 +181,8 @@ P_PfMesh::P_PfMesh()
 	m_pkMad			= NULL;
 	m_pkSelected	= NULL;
 
-	m_pkAStar = static_cast<AStar*>(g_ZFObjSys.GetObjectPtr("AStar"));	
+	m_pkAStar		= static_cast<AStar*>(g_ZFObjSys.GetObjectPtr("AStar"));	
+	m_pkRender		= static_cast<Render*>(g_ZFObjSys.GetObjectPtr("Render")); 
 }
 
 P_PfMesh::~P_PfMesh()
@@ -178,6 +192,9 @@ P_PfMesh::~P_PfMesh()
 
 void P_PfMesh::Update()
 {
+
+
+
 	if( m_pkObjMan->IsUpdate(PROPERTY_TYPE_NORMAL) ) 
 	{
 		//cout << "P_PfMesh::Update" << endl;
@@ -194,10 +211,11 @@ void P_PfMesh::Update()
 		}
 	}
 
-	if( m_pkObjMan->IsUpdate(PROPERTY_TYPE_RENDER) ) {
+	if( m_pkObjMan->IsUpdate(PROPERTY_TYPE_RENDER) ) 
+	{
 		if(m_pkAStar->m_bDrawNaviMesh)
 			DrawNaviMesh();
-		}
+	}
 }
 
 void P_PfMesh::Save(ZFIoInterface* pkFile)
@@ -208,16 +226,6 @@ void P_PfMesh::Save(ZFIoInterface* pkFile)
 void P_PfMesh::Load(ZFIoInterface* pkFile)
 {
 		
-}
-
-void P_PfMesh::PackTo(NetPacket* pkNetPacket, int iConnectionID )
-{
-
-}
-
-void P_PfMesh::PackFrom(NetPacket* pkNetPacket, int iConnectionID )
-{
-
 }
 
 float GetStepHojd(Vector3 kV1,Vector3 kV2,Vector3 kV3 )
@@ -238,6 +246,7 @@ float GetStepHojd(Vector3 kV1,Vector3 kV2,Vector3 kV3 )
 	return fMaxHojd;
 }
 
+
 void P_PfMesh::BuildNavMesh(bool bWorldCoo, vector<Mad_Face>* pkFace, vector<Vector3>* pkVertex, vector<Vector3>* pkNormal)
 {
 	m_NaviMesh.clear();
@@ -256,7 +265,7 @@ void P_PfMesh::BuildNavMesh(bool bWorldCoo, vector<Mad_Face>* pkFace, vector<Vec
 
 	Matrix4 kMat = m_pkObject->GetWorldOriM();
 
-	//cout << "BuildNavMesh: Create Faces" << endl;
+	cout << "BuildNavMesh: Create Faces" << endl;
 	for(unsigned int i=0; i<pkFace->size(); i++) 
 	{
 			kNaviMesh.m_kVertex[0] = (*pkVertex)[ (*pkFace)[i].iIndex[0] ];
@@ -293,6 +302,7 @@ void P_PfMesh::BuildNavMesh(bool bWorldCoo, vector<Mad_Face>* pkFace, vector<Vec
 	LinkCells();
 }
 
+
 void P_PfMesh::SetMad(P_Mad* pkMad)
 {
 	Mad_Core* pkCore = dynamic_cast<Mad_Core*>(pkMad->kMadHandle.GetResourcePtr()); 
@@ -309,6 +319,7 @@ void P_PfMesh::SetMad(P_Mad* pkMad)
 	BuildNavMesh(false, pkFace, pkVertex, pkNormal);
 //	m_pkSelected = &m_NaviMesh[0];
 }
+
 
 void P_PfMesh::SetHmap(P_HMRP2* pkHmap)
 {
@@ -328,6 +339,7 @@ void P_PfMesh::SetHmap(P_HMRP2* pkHmap)
 	cout << "P_PfMesh::SetHmap " << endl;
 }
 
+
 void P_PfMesh::AutoMakeNaviMesh()
 {
 	// Try to find a Hmap or Mad to build mesh from.
@@ -341,7 +353,6 @@ void P_PfMesh::AutoMakeNaviMesh()
 }
 
 
-
 void P_PfMesh::CalcNaviMesh()
 {
 	P_Mad* pkMad = dynamic_cast<P_Mad*>(m_pkObject->GetProperty("P_Mad"));
@@ -351,13 +362,23 @@ void P_PfMesh::CalcNaviMesh()
 	SetMad(pkMad);
 }
 
-void SetEdgeColor(int iID)
+
+void P_PfMesh::SetEdgeColor(int iID)
 {
-	if(iID > 0 )	glColor3f(0,1,0);
-	if(iID == 0 )	glColor3f(1,0,0);
-	if(iID < 0 )	glColor3f(0,0,1);
+	Vector3 kColor;
+
+	if(iID > 0 )	kColor.Set(0,1,0);
+	if(iID == 0 )	kColor.Set(1,0,0);
+	if(iID < 0 )	kColor.Set(0,0,1);
+
+	glColor3fv( (float*) &kColor);
 }
 
+
+/**	\brief	Draws the pathfind mesh.
+
+	
+*/
 void P_PfMesh::DrawNaviMesh()
 {
 	if(m_NaviMesh.size() == 0)
@@ -368,11 +389,10 @@ void P_PfMesh::DrawNaviMesh()
 	glPushAttrib(GL_DEPTH_BUFFER_BIT );
 	glDisable(GL_LIGHTING );
 	glDisable(GL_TEXTURE_2D);
-//	glDepthFunc(GL_EQUAL);
+	glDepthFunc(GL_LEQUAL);
 	glColor3f(1,1,1);
 	Vector3 kColor;
 
-	Render* pkRender = static_cast<Render*>(g_ZFObjSys.GetObjectPtr("Render")); 
 
 	for(unsigned int i=1; i<m_NaviMesh.size(); i++) {
 //		if(&m_NaviMesh[i] == m_pkSelected)	kColor.Set(0,0,1);
@@ -422,7 +442,6 @@ void P_PfMesh::DrawNaviMesh()
 	glEnable(GL_TEXTURE_2D);
 	glEnable(GL_LIGHTING);
 	glPopAttrib();
-
 	glPopMatrix();
 }
 
@@ -433,27 +452,31 @@ void P_PfMesh::LinkToConnectedCells(NaviMeshCell* pkNavCell)
 	pkNavCell->m_aiLinks[1] = NULL;
 	pkNavCell->m_aiLinks[2] = NULL;
 
-	for(unsigned int i=1; i<m_NaviMesh.size(); i++) {
+	for(unsigned int i=1; i<m_NaviMesh.size(); i++)
+	{
 		if(&m_NaviMesh[i] == pkNavCell)	continue;
 
-		if(m_NaviMesh[i].IsConnected(pkNavCell, pkNavCell->m_kVertex[0], pkNavCell->m_kVertex[1]) ) {
+		if(m_NaviMesh[i].IsConnected(pkNavCell, pkNavCell->m_kVertex[0], pkNavCell->m_kVertex[1]) )
+		{
 			pkNavCell->m_aiLinks[0] = i;
-			}
-
-		if(m_NaviMesh[i].IsConnected(pkNavCell, pkNavCell->m_kVertex[1], pkNavCell->m_kVertex[2]) ) {
-			pkNavCell->m_aiLinks[1] = i;
-			}
-
-		if(m_NaviMesh[i].IsConnected(pkNavCell, pkNavCell->m_kVertex[2], pkNavCell->m_kVertex[0]) ) {
-			pkNavCell->m_aiLinks[2] = i;
-			}
-
 		}
+
+		if(m_NaviMesh[i].IsConnected(pkNavCell, pkNavCell->m_kVertex[1], pkNavCell->m_kVertex[2]) ) 
+		{
+			pkNavCell->m_aiLinks[1] = i;
+		}
+
+		if(m_NaviMesh[i].IsConnected(pkNavCell, pkNavCell->m_kVertex[2], pkNavCell->m_kVertex[0]) ) 
+		{
+			pkNavCell->m_aiLinks[2] = i;
+		}
+	}
 }
+
 
 void P_PfMesh::LinkCells()
 {
-	//cout << "LinkCells: " << m_NaviMesh.size() << endl;
+	cout << "LinkCells: " << m_NaviMesh.size() << endl;
 	int iTest = 0;
 
 	for(unsigned int i=1; i<m_NaviMesh.size(); i++, iTest++) 
@@ -463,11 +486,11 @@ void P_PfMesh::LinkCells()
 			iTest = 0;
 			}
 		LinkToConnectedCells( &m_NaviMesh[i] );
-		
 	}
 
 //	FlagExternalLinks();
 }
+
 
 NaviMeshCell* P_PfMesh::GetCurrentCell(Vector3 kPos)
 {
@@ -476,7 +499,8 @@ NaviMeshCell* P_PfMesh::GetCurrentCell(Vector3 kPos)
 
 	Vector2 kStartPos(kPos.x,kPos.z);
 
-	for(unsigned int i=1; i<m_NaviMesh.size(); i++) {
+	for(unsigned int i=1; i<m_NaviMesh.size(); i++) 
+	{
 		if(m_NaviMesh[i].m_bNonWalkable)
 			continue;
 
@@ -486,11 +510,12 @@ NaviMeshCell* P_PfMesh::GetCurrentCell(Vector3 kPos)
 		Vector3 kDiff = m_NaviMesh[i].m_kCenter - kPos;
 		float fDist = kDiff.Length();
 
-		if(fDist < fClosest) {
+		if(fDist < fClosest) 
+		{
 			iIndex = i;
 			fClosest = fDist;
-			}
 		}
+	}
 
 	if(iIndex == 0)
 		return NULL;
@@ -499,6 +524,7 @@ NaviMeshCell* P_PfMesh::GetCurrentCell(Vector3 kPos)
 	return &m_NaviMesh[iIndex];
 }
 
+
 NaviMeshCell* P_PfMesh::GetCell(Vector3 kPos)
 {
 //	kPos -= m_pkObject->GetWorldPosV();
@@ -506,36 +532,40 @@ NaviMeshCell* P_PfMesh::GetCell(Vector3 kPos)
 	float fClosest = 100000000;
 	int iIndex = 0;
 
-	for(unsigned int i=1; i<m_NaviMesh.size(); i++) {
+	for(unsigned int i=1; i<m_NaviMesh.size(); i++) 
+	{
 		Vector3 kDiff = m_NaviMesh[i].m_kCenter - kPos;
 		float fDist = kDiff.Length();
 
-		if(fDist < fClosest) {
+		if(fDist < fClosest) 
+		{
 			iIndex = i;
 			fClosest = fDist;
-			}
 		}
+	}
 
 	//m_pkSelected = &m_NaviMesh[iIndex];
 	return &m_NaviMesh[iIndex];
 }
+
 
 void P_PfMesh::FlagExternalLinks()
 {
 	NaviMeshCell* pkNavCell;
 
 	// Loop all cells
-	for(unsigned int iNavMesh=1; iNavMesh<m_NaviMesh.size(); iNavMesh++) {
+	for(unsigned int iNavMesh=1; iNavMesh<m_NaviMesh.size(); iNavMesh++) 
+	{
 		pkNavCell = &m_NaviMesh[iNavMesh];
 		
 		// Loop all edges in cell
-		for(int i=0; i<3; i++) {
+		for(int i=0; i<3; i++) 
+		{
 			if(pkNavCell->m_aiLinks[i] > 0)		continue;
 			
 			pkNavCell->m_aiLinks[i] = -1;
-
-			}
 		}
+	}
 }
 
 
@@ -545,22 +575,26 @@ NaviMeshCell* P_PfMesh::GetCell(Vector3 kA, Vector3 kB)
 	NaviMeshCell* pkNavCell;
 
 	// Loop all cells
-	for(unsigned int iNavMesh=1; iNavMesh<m_NaviMesh.size(); iNavMesh++) {
+	for(unsigned int iNavMesh=1; iNavMesh<m_NaviMesh.size(); iNavMesh++) 
+	{
 		pkNavCell = &m_NaviMesh[iNavMesh];
 
 		// Loop all edges in cell
-		for(int i=0; i<3; i++) {
+		for(int i=0; i<3; i++) 
+		{
 			if(pkNavCell->m_aiLinks[i] > 0)		continue;
 
-			if( pkNavCell->IsConnected(NULL, kA, kB)) {
+			if( pkNavCell->IsConnected(NULL, kA, kB)) 
+			{
 				pkNavCell->m_aiLinks[i] = -1;
 				return pkNavCell;
-				}
 			}
 		}
+	}
 
 	return NULL;
 }
+
 
 bool P_PfMesh::LineOfSightTest(NaviMeshCell* pkStartCell, Vector3& kStartPos, NaviMeshCell* pkEndCell, Vector3& kEndPos)
 {
@@ -580,13 +614,12 @@ bool P_PfMesh::LineOfSightTest(NaviMeshCell* pkStartCell, Vector3& kStartPos, Na
 }
 
 
-
-
 vector<PropertyValues> P_PfMesh::GetPropertyValues()
 {
 	vector<PropertyValues> kReturn(2);
 	return kReturn;
 }
+
 
 Property* Create_P_PfMesh()
 {

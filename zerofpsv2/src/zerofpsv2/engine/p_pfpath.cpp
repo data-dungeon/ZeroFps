@@ -4,6 +4,7 @@
 #include "zerofps.h"
 #include "../engine_systems/propertys/p_mad.h"
 
+
 P_PfPath::P_PfPath()
 {
 	strcpy(m_acName,"P_PfPath");
@@ -16,6 +17,7 @@ P_PfPath::P_PfPath()
 
 	m_pkFps		=	static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
 	m_pkAStar	=	static_cast<AStar*>(g_ZFObjSys.GetObjectPtr("AStar"));	
+	m_pkRender	=	static_cast<Render*>(g_ZFObjSys.GetObjectPtr("Render")); 
 
 	m_fSpeed			= 5;
 	m_bTilt			= false;
@@ -26,41 +28,38 @@ P_PfPath::P_PfPath()
 }
 
 
-P_PfPath::~P_PfPath()
-{
-
-}
+P_PfPath::~P_PfPath()		{	}
 
 
-void P_PfPath::Init()
-{
+void P_PfPath::Init()		{	}
 
-}
-
-
+/**	\brief	Renders the path.
+*/
 void P_PfPath::RenderPath()
 {
 	if(!m_pkAStar->m_bDrawPaths) 
 		return;
 
-	Render* pkRender = static_cast<Render*>(g_ZFObjSys.GetObjectPtr("Render")); 
 	unsigned int i;
+	Vector3 kColor;
 
-	glColor3f(1,0,0);
+	kColor = m_pkRender->GetEditColor("ai/rawpath");
+	glColor3f(kColor.x,kColor.y,kColor.z);
 	if(m_kRawPath.size() >= 2) 
 	{
 		for(i=0; i<m_kRawPath.size() - 1; i++) 
 		{
-			pkRender->Line(m_kRawPath[i].kPosition + Vector3(0,0.1,0), m_kRawPath[i+1].kPosition + Vector3(0,0.1,0));
+			m_pkRender->Line(m_kRawPath[i].kPosition + Vector3(0,0.1,0), m_kRawPath[i+1].kPosition + Vector3(0,0.1,0));
 		}	
 	}
-
-	glColor3f(0,1,0);
+	
+	kColor = m_pkRender->GetEditColor("ai/path");
+	glColor3f(kColor.x,kColor.y,kColor.z);
 	if(m_kPath.size() >= 2) 
 	{
 		for(i=0; i < (m_kPath.size() - 1); i++) 
 		{
-			pkRender->Line(m_kPath[i] + Vector3(0,0.1,0), m_kPath[i+1] + Vector3(0,0.1,0));
+			m_pkRender->Line(m_kPath[i] + Vector3(0,0.1,0), m_kPath[i+1] + Vector3(0,0.1,0));
 		}	
 	}
 }
@@ -79,26 +78,25 @@ void P_PfPath::Update()
 
 	Vector3 kPos = m_pkObject->GetWorldPosV();
 
-	ZoneData* pkZone;
-	P_PfMesh* pkMesh;
-//	NaviMeshCell* pkEndCell;
+	// This section are about to be removed, i think, could be, don't know what it is doing... - Vim
+				ZoneData* pkZone;
+				P_PfMesh* pkMesh;
 
-	int iStartZone	= m_pkObjMan->GetZoneIndex(kPos,-1, false);
-	pkZone = m_pkObjMan->GetZoneData(iStartZone);
-	if(!pkZone)
-		return;
-	
-	if(pkZone->m_pkZone == NULL)
-		return ;
-	pkMesh = (P_PfMesh*)pkZone->m_pkZone->GetProperty("P_PfMesh");
-	if(pkMesh == NULL)
-		return ;
+				int iStartZone	= m_pkObjMan->GetZoneIndex(kPos,-1, false);
+				pkZone = m_pkObjMan->GetZoneData(iStartZone);
+				if(!pkZone)
+					return;
+				
+				if(pkZone->m_pkZone == NULL)
+					return ;
+				pkMesh = (P_PfMesh*)pkZone->m_pkZone->GetProperty("P_PfMesh");
+				if(pkMesh == NULL)
+					return ;
 
-	NaviMeshCell* pkStartCell = pkMesh->GetCurrentCell( kPos );
-	if(pkStartCell == NULL) {
-		cout << "No StartCell Found at current position" << endl;
-		return ;
-		}
+				NaviMeshCell* pkStartCell = pkMesh->GetCurrentCell( kPos );
+				if(pkStartCell == NULL) {
+					cout << "No StartCell Found at current position - Lets Ignore it and see what happens" << endl;
+					}
 	
 
 	if(m_kPath.size() == 0)
@@ -212,14 +210,14 @@ bool P_PfPath::MakePathFind(Vector3 kDestination)
 {
 	vector<PathNode> kPath;
 
-	/* Vim Test Path*/
 	Vector3 kPathStart = m_pkObject->GetWorldPosV();
 	Vector3 kPathEnd   = kDestination;
-	cout << "Making PathFind: ";
-	kPathStart.Print();
-	kPathEnd.Print();
-	cout << endl;
-
+	
+	//cout << "Making PathFind: ";
+	//kPathStart.Print();
+	//kPathEnd.Print();
+	//cout << endl;
+	
 	kPath.clear();
 	bool bres = m_pkAStar->GetFullPath(kPathStart,kPathEnd,kPath);
 
@@ -253,8 +251,7 @@ void P_PfPath::SetupOffset()
 		//m_kOffset = pm->GetJointPosition("fem_run_c_root");
 		m_kOffset = Vector3(0,1.1,0);
 		m_bHaveOffset = true;
-		
-		cout<<"Got offset: "<<m_kOffset.x<<" "<<m_kOffset.y<<" "<<m_kOffset.z<<endl;
+		//	cout<<"Got offset: "<<m_kOffset.x<<" "<<m_kOffset.y<<" "<<m_kOffset.z<<endl;
 	}
 }
 

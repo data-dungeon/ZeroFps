@@ -2051,6 +2051,9 @@ void Render::Setup_EditColors()
 	m_kEditColor.push_back( EditColor(string("teal"),		Vector3(0,0.5,0.5) ));	
 	m_kEditColor.push_back( EditColor(string("aqua"),		Vector3(0,1,1) ));	
 	
+	// AI Colors
+	m_kEditColor.push_back( EditColor(string("ai/rawpath"),	Vector3(1,0,0) ));	
+	m_kEditColor.push_back( EditColor(string("ai/path"),		Vector3(0,1,0) ));	
 
 }
 
