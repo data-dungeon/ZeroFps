@@ -449,6 +449,8 @@ bool Scene::IsSceneWnd(ZGuiWnd* pkWnd)
 		return true;
 	if(pkWnd == NULL)
 		return true;
+	if(pkWnd == GetWnd("TestWnd"))
+		return true;
 	
 	ZGuiWnd* pkParent = pkWnd->GetParent();
 

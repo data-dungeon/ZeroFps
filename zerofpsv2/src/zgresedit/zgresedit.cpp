@@ -245,7 +245,7 @@ void ZGResEdit::OnInit()
 	m_pkGuiMan->Add("syflen16", pkNewFont);
 	
 	CreateWnd(Wnd, "TestWnd", "", "", 10, 10, 460, 460, 0);
-	ZGuiTextbox* textbox = (ZGuiTextbox*) CreateWnd(Textbox, "TestTextbox", "TestWnd", "", 5, 5, 450, 450, 0);
+	ZGuiTextbox* textbox = (ZGuiTextbox*) CreateWnd(Textbox, "TestTextbox", "TestWnd", "", 45, 45, 350, 350, 0);
 	textbox->ToggleMultiLine(true);
 	textbox->SetScrollbarSkin(GetSkin("DefSBrBkSkin"),
 			GetSkin("DefSBrNSkin"), GetSkin("DefSBrFSkin"),
@@ -272,6 +272,8 @@ void ZGResEdit::OnInit()
 		textbox->SetText((char*)text.c_str());
 		fclose(pkFile);
 	}
+
+	GetWnd("TestWnd")->SetMoveArea(Rect(0,0,800,800),true);
 	
 	//ZGuiFont* pkNewFont = new ZGuiFont("small");
 	//pkNewFont->Create("data/textures/text/small.fnt",
