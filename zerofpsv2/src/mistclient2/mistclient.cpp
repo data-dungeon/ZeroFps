@@ -44,6 +44,7 @@ MistClient::MistClient(char* aName,int iWidth,int iHeight,int iDepth)
 	m_fDelayTime  = 		0;
 
 	m_iCharacterID = 		-1;
+	m_iTargetID =			-1;
 	m_bFrontView = 		false;
 	m_bShowMenulevel = 	false;
 	m_bQuickStart = 		false;
@@ -326,7 +327,8 @@ void MistClient::RegisterPropertys()
 
 void MistClient::RenderInterface(void)
 {
- 
+	if(m_iTargetID != -1)
+		DrawTargetMarker();
 }
 
 void MistClient::OnIdle() 
@@ -370,6 +372,7 @@ void MistClient::OnHud(void)
 		if(!m_bGuiCapture)
 			if(!m_bFrontView)
 				DrawCrossHair();
+
 }
 
 void MistClient::DrawCrossHair()
@@ -419,7 +422,7 @@ void MistClient::DrawCrossHair()
 	//active or normal pointer											
 	bool bActive = false;																						
 	if(Entity* pkEnt = m_pkEntityManager->GetEntityByID(m_iPickedEntityID))
-		if(pkEnt->GetProperty("P_Ml"))
+		if(pkEnt->GetProperty("P_Ml") || pkEnt->GetProperty("P_CharacterProperty"))
 			bActive = true;
 			
 	//set material					
@@ -431,6 +434,88 @@ void MistClient::DrawCrossHair()
 	//draw pointer
 	m_pkZShaderSystem->DrawGeometry(QUADS_MODE);
 }
+
+void MistClient::DrawTargetMarker()
+{
+	static ZMaterial* pkEnemyMarker = NULL;
+	if(!pkEnemyMarker)
+	{
+		pkEnemyMarker = new ZMaterial;
+		pkEnemyMarker->GetPass(0)->m_kTUs[0]->SetRes("data/textures/enemymarker.tga");	
+		pkEnemyMarker->GetPass(0)->m_bLighting = 	false;
+		pkEnemyMarker->GetPass(0)->m_bFog = 			false;	
+		pkEnemyMarker->GetPass(0)->m_iPolygonModeFront = FILL_POLYGON;		
+				
+		//blending is much nicer thou =)
+		pkEnemyMarker->GetPass(0)->m_bDepthMask = false;
+		pkEnemyMarker->GetPass(0)->m_bBlend = true;
+		pkEnemyMarker->GetPass(0)->m_iBlendSrc = SRC_ALPHA_BLEND_SRC;
+		pkEnemyMarker->GetPass(0)->m_iBlendDst = ONE_MINUS_SRC_ALPHA_BLEND_DST;
+	}
+
+	static ZMaterial* pkFriendMarker = NULL;
+	if(!pkFriendMarker)
+	{
+		pkFriendMarker = new ZMaterial;
+		pkFriendMarker->GetPass(0)->m_kTUs[0]->SetRes("data/textures/friendmarker.tga");	
+		pkFriendMarker->GetPass(0)->m_bLighting = 	false;
+		pkFriendMarker->GetPass(0)->m_bFog = 			false;	
+		pkFriendMarker->GetPass(0)->m_iPolygonModeFront = FILL_POLYGON;		
+				
+		//blending is much nicer thou =)
+		pkFriendMarker->GetPass(0)->m_bDepthMask = false;
+		pkFriendMarker->GetPass(0)->m_bBlend = true;
+		pkFriendMarker->GetPass(0)->m_iBlendSrc = SRC_ALPHA_BLEND_SRC;
+		pkFriendMarker->GetPass(0)->m_iBlendDst = ONE_MINUS_SRC_ALPHA_BLEND_DST;
+	}
+	
+	
+	
+	if(Entity* pkEnt = m_pkEntityManager->GetEntityByID(m_iTargetID))
+	{
+		if(P_CharacterProperty* pkCP = (P_CharacterProperty*)pkEnt->GetProperty("P_CharacterProperty"))
+		{
+			bool bFriend = false;
+			
+			//check if enemy
+			if(P_CharacterProperty* pkPlayer = (P_CharacterProperty*)m_pkEntityManager->GetPropertyFromEntityID(m_iCharacterID,"P_CharacterProperty"))
+			{
+				if(pkPlayer->GetFaction() == pkCP->GetFaction())
+					bFriend = true;	
+			}	
+		
+		
+			Vector3 kPos = pkEnt->GetIWorldPosV();
+		
+
+			if(bFriend)
+				m_pkZShaderSystem->BindMaterial(pkFriendMarker);
+			else
+				m_pkZShaderSystem->BindMaterial(pkEnemyMarker);
+			
+					
+			
+			m_pkZShaderSystem->ClearGeometry();
+			m_pkZShaderSystem->AddQuadV(	Vector3(-0.5,0,-0.5),Vector3(-0.5,0,0.5),
+													Vector3(0.5,0,0.5),	Vector3(0.5,0,-0.5));
+			m_pkZShaderSystem->AddQuadUV(	Vector2(0,0)	,	Vector2(0,1),
+													Vector2(1,1)	,	Vector2(1,0));	
+		
+				
+			m_pkZShaderSystem->MatrixPush();
+			
+			m_pkZShaderSystem->MatrixTranslate(kPos + Vector3(0,-pkCP->GetLegLength()+0.2,0));
+			m_pkZShaderSystem->MatrixScale(pkEnt->GetRadius()*2);
+			//draw pointer			
+			m_pkZShaderSystem->DrawGeometry(QUADS_MODE);											
+			
+			
+			m_pkZShaderSystem->MatrixPop();
+		}
+	}
+
+}
+
 
 bool MistClient::DelayCommand()
 {
@@ -560,7 +645,13 @@ void MistClient::Input()
 					{
 						SendAction(m_iPickedEntityID,kActions[0]);
 					}
-				}			
+				}
+				else
+				//is it a character?
+				if(P_CharacterProperty* pkCP = (P_CharacterProperty*)pkEnt->GetProperty("P_CharacterProperty"))
+				{
+					m_iTargetID = m_iPickedEntityID;				
+				}
 			}
 		}	
 	}	
@@ -1054,8 +1145,9 @@ void MistClient::OnNetworkMessage(NetPacket *pkNetMessage)
 void MistClient::OnClientStart(void)
 {
 	m_pkConsole->Printf("Trying to connect");	
-	m_iCharacterID		= -1;
-	m_bFrontView		= false;
+	m_iCharacterID		=	-1;
+	m_iTargetID 			=	-1;
+	m_bFrontView		=	false;
 }
 
 void MistClient::OnClientConnected() 

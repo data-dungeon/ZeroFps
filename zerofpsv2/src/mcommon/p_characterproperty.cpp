@@ -228,7 +228,7 @@ P_CharacterProperty::P_CharacterProperty()
 	m_fStatTimer			=	0;
 	m_iFaction				=	0;
 	m_bWalkSound			=	true;
-
+	m_fLegLength			=	0;
 	
 	//container id's
 	m_iInventory	= -1;		
@@ -689,7 +689,15 @@ void P_CharacterProperty::Update()
 			if(m_bFirstUpdate)
 			{
 				m_bFirstUpdate = false;
+				
+				//setup containers
 				SetupContainers();
+				
+				//find leg length
+				if(P_Tcs* pkTcs = (P_Tcs*)m_pkEntity->GetProperty("P_Tcs"))
+				{
+					m_fLegLength = pkTcs->GetLegLength();				
+				}				
 			}
 		
 			//update stats
@@ -1019,6 +1027,8 @@ void P_CharacterProperty::PackTo( NetPacket* pkNetPacket, int iConnectionID )
 	pkNetPacket->Write_Str(m_strName);
 	pkNetPacket->Write_Str(m_strOwnedByPlayer);
 	pkNetPacket->Write(m_bIsPlayerCharacter);
+	pkNetPacket->Write(m_fLegLength);
+	pkNetPacket->Write(m_iFaction);
 
 	pkNetPacket->Write(m_bWalkSound);
 	
@@ -1054,7 +1064,9 @@ void P_CharacterProperty::PackFrom( NetPacket* pkNetPacket, int iConnectionID  )
 	pkNetPacket->Read_Str(m_strName);
 	pkNetPacket->Read_Str(m_strOwnedByPlayer);
 	pkNetPacket->Read(m_bIsPlayerCharacter);
-
+	pkNetPacket->Read(m_fLegLength);
+	pkNetPacket->Read(m_iFaction);
+	
 	pkNetPacket->Read(m_bWalkSound);
 	
 	pkNetPacket->Read_Str(m_strWalkSound);

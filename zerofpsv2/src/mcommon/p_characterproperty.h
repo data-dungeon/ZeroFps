@@ -67,6 +67,7 @@ class MCOMMON_API P_CharacterProperty: public Property
 		//stat
 		float			m_fStatTimer;
 		
+		float			m_fLegLength;
 			
 		//over head text
 		ZMaterial*	m_pkTextMaterial;
@@ -152,6 +153,7 @@ class MCOMMON_API P_CharacterProperty: public Property
 		string GetOwnedByPlayer()									{	return m_strOwnedByPlayer;		}
 		bool	 GetIsPlayerCharacter()								{	return m_bIsPlayerCharacter;	}
 		int	 GetFaction()											{	return m_iFaction;				}
+		float  GetLegLength()										{	return m_fLegLength;				}
 		
 		P_Buff* AddBuff(const string& strBuffName);			//creates and adds buff to character 
 		void RemoveBuff(P_Buff* pkBuff);							//removes buffs

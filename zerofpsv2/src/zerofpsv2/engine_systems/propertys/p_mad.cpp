@@ -713,12 +713,14 @@ bool P_Mad::TestSides(Vector3* kVerts,Vector3* pkNormal,Vector3 kPos)
 
 void P_Mad::GenerateModelMatrix()
 {
+	static Matrix4 kMat;
+
 	m_kModelMatrix.Identity();
 	m_kModelMatrix.Scale(m_fScale,m_fScale,m_fScale);
-	Matrix4 kMat;
 	kMat = m_pkEntity->GetWorldRotM();
 	m_kModelMatrix *= kMat;	
 	m_kModelMatrix.Translate(m_pkEntity->GetWorldPosV());		
+	m_kModelMatrix.Translate(m_kOffset);		
 
 }
 

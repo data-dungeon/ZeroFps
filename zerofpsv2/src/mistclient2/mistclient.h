@@ -49,8 +49,9 @@ class MistClient :public Application, public ZGuiApp {
 		int			m_iPickedEntityID;			// Selected entity for use.								
 		bitset<6>	m_kCharacterControls;
 		
-		
+		//game
 		vector<string>	m_kEmotes;					//emote list
+		int			m_iTargetID;
 		
 		
 		//states
@@ -147,6 +148,7 @@ class MistClient :public Application, public ZGuiApp {
 	  
 		//draw
 		void DrawCrossHair();
+		void DrawTargetMarker();
 		
 		//picking
 		Entity* GetTargetObject();
