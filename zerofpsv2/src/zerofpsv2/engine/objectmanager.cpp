@@ -1480,6 +1480,10 @@ void ObjectManager::LoadZone(int iId)
 	pk3d->m_kMax.y = - 4;
 	pk3d->m_kColor = RndColor();
 
+	Object* pkNode = CreateObjectByArchType("Node1");
+	pkNode->SetWorldPosV(kPos - Vector3(0,5,0)); 
+	pkNode->SetParent(object);
+
 	// Create Random Objects.
 /*	Vector3 kRandOffset;
 	Object* pkBall;

@@ -597,9 +597,9 @@ void ZeroTank::OnServerStart(void)
 	m_pkZeroTankTower	= NULL;
 	m_pkZeroTankGun	= NULL;
 
-	m_pkZeroTankHull = pkObjectMan->CreateObjectByArchType("ZeroRTSHull");
+	m_pkZeroTankHull = pkObjectMan->CreateObjectByArchType("Node1");
 	if(m_pkZeroTankHull) {
-		m_pkZeroTankHull->SetWorldPosV(Vector3(8,10,7));
+		m_pkZeroTankHull->SetWorldPosV(Vector3(0,0,0));
 		m_pkZeroTankHull->AttachToClosestZone();
 
 		//m_pkZeroTankHull->AddProperty("CameraProperty");
@@ -607,7 +607,17 @@ void ZeroTank::OnServerStart(void)
 		//cam->SetCamera(m_pkCamera);
 	}
 
-	m_pkZeroTankTower = pkObjectMan->CreateObjectByArchType("ZeroRTSTower");
+/*	m_pkZeroTankHull = pkObjectMan->CreateObjectByArchType("Node1");
+	if(m_pkZeroTankHull) {
+		m_pkZeroTankHull->SetWorldPosV(Vector3(8,10,7));
+		m_pkZeroTankHull->AttachToClosestZone();
+
+		//m_pkZeroTankHull->AddProperty("CameraProperty");
+		//CameraProperty* cam = (CameraProperty*)m_pkZeroTankHull->GetProperty("CameraProperty");
+		//cam->SetCamera(m_pkCamera);
+	}*/
+
+/*	m_pkZeroTankTower = pkObjectMan->CreateObjectByArchType("ZeroRTSTower");
 	if(m_pkZeroTankTower) {
 		m_pkZeroTankTower->SetParent(m_pkZeroTankHull);
 		m_pkZeroTankTower->SetLocalPosV(Vector3(0,0.81,0));
@@ -619,7 +629,7 @@ void ZeroTank::OnServerStart(void)
 		m_pkZeroTankGun->SetParent(m_pkZeroTankTower);
 		m_pkZeroTankGun->SetLocalPosV(Vector3(-1.1,0.4,0));
 		m_pkZeroTankGun->SetRelativeOri(true);
-	}
+	}*/
 
 	if(pkObjectMan->GetNumOfZones() != 0) {
 		pkConsole->Printf("Num of Zones: %d",pkObjectMan->GetNumOfZones());
