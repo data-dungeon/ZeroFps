@@ -36,6 +36,9 @@ void P_AmbientSound::Update()
 
 	if(fDistanceToListener < m_fHearableDistance)
 	{
+		// Eftersom ett P_AmbientSound objekt kan ha förstörts.
+
+
 		// Är ljudet inte redan startat?
 		if(m_bStarted == false)
 		{

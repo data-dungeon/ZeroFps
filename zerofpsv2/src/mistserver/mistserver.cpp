@@ -277,11 +277,9 @@ void MistServer::OnCommand(int iID, ZGuiWnd *pkMainWnd)
 		pkScript->Call(GetGuiScript(), "OnClickBackpack", 0, 0); 
 	if(iID == 5)
 		pkScript->Call(m_pkScriptResHandle, "OnClickBackpack", 0, 0); 
->>>>>>> 1.8
 	if(iID == 6)
 		pkScript->Call(m_pkScriptResHandle, "OnClickStats", 0, 0);
 	if(iID == 4)
-		pkScript->Call(GetGuiScript(), "OnClickMap", 0, 0);
 		pkScript->Call(m_pkScriptResHandle, "OnClickMap", 0, 0);
 */
 }
@@ -345,6 +343,8 @@ Object* MistServer::GetTargetObject()
 
 void MistServer::AddZone()
 {
+//	printf("%f,%f,%f\n", m_kZoneSize.x, m_kZoneSize.y, m_kZoneSize.z);
+
 	if(pkObjectMan->IsInsideZone(m_kZoneMarkerPos,m_kZoneSize))
 		return;
 		
