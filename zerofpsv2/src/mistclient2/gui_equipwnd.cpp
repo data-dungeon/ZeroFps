@@ -365,6 +365,7 @@ void EquipmentDlg::Update(int iContainerID, int iContainerType, vector<MLContain
 		}
 		else
 		{
+			(*pSlot).m_iItemType = vkItemList[0].m_cItemType;
 			(*pSlot).m_iContainerID = iContainerID;
 			(*pSlot).m_iItemID = vkItemList[0].m_iItemID;
 			(*pSlot).m_iStackSize = vkItemList[0].m_iStackSize;
@@ -431,6 +432,8 @@ void EquipmentDlg::PickUpFromSlot(EQUIPMENT_SLOT* pkSlot, int mx, int my)
 		g_kMistClient.GetScaleY()*(float)(size.y*32));	
 	g_kMistClient.m_pkInputHandle->SetCursorInputPos(x,y);  
 
+	HighlightSlot(pkSlot->m_iItemType); 
+
 }
 
 void EquipmentDlg::OnDropItem(int mx, int my)
@@ -484,4 +487,6 @@ void EquipmentDlg::OnDropItem(int mx, int my)
 	g_kMistClient.m_pkInputHandle->SetCursorInputPos(mx+m_kCursorRangeDiff.x,my+m_kCursorRangeDiff.y);	
 
 	(*g_kMistClient.m_pkGui->GetCursorSkin())->m_unBorderSize = 0; 
+
+	HighlightSlot(-1);
 }

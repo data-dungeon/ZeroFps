@@ -41,10 +41,11 @@ private:
 
 	struct EQUIPMENT_SLOT
 	{	
-		EQUIPMENT_SLOT() {m_eSlotType = m_iItemID = m_iStackSize = m_iSlotWidthMax = m_iSlotHeightMax = m_iContainerID = -1; m_pkWnd = NULL; };
-		EQUIPMENT_SLOT(ContainerTypes eType, ZGuiWnd* pkWnd, int iContainerID, int iSlotsX, int iSlotsY, int iItemID, int iStackSize)
+		EQUIPMENT_SLOT() {m_eContainerType = m_iItemType = m_iItemID = m_iStackSize = m_iSlotWidthMax = m_iSlotHeightMax = m_iContainerID = -1; m_pkWnd = NULL; };
+		EQUIPMENT_SLOT(ContainerTypes eContainerType, ZGuiWnd* pkWnd, int iContainerID, int iSlotsX, int iSlotsY, int iItemID, int iStackSize)
 		{
-			m_eSlotType = eType;
+			m_eContainerType = eContainerType;
+			m_iItemType = -1;
 			m_pkWnd = pkWnd;
 			m_iItemID = iItemID;
 			m_iStackSize = iStackSize;
@@ -58,7 +59,8 @@ private:
 
 		Rect m_rcOriginal;
 		ZGuiWnd* m_pkWnd;
-		int m_eSlotType;
+		int m_eContainerType;
+		int m_iItemType;
 		int m_iItemID;
 		int m_iContainerID;
 		int m_iStackSize;
