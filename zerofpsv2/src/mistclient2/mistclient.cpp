@@ -40,12 +40,13 @@ MistClient::MistClient(char* aName,int iWidth,int iHeight,int iDepth)
 	g_ZFObjSys.SetPreLogName("mistclient2");
 	g_ZFObjSys.Log_Create("mistclient2");
 	
-	m_iPickedEntityID = -1;
-	m_fDelayTime  = 0;
+	m_iPickedEntityID = 	-1;
+	m_fDelayTime  = 		0;
 
-	m_iCharacterID = -1;
-	m_bShowMenulevel = true;
-	m_bQuickStart = false;
+	m_iCharacterID = 		-1;
+	m_bFrontView = 		false;
+	m_bShowMenulevel = 	true;
+	m_bQuickStart = 		false;
 	m_strQuickStartAddress = "127.0.0.1:4242";
 
 	m_strLoginName = "Psykosmurfan";
@@ -225,45 +226,11 @@ void MistClient::RegisterPropertys()
 {
 	MCommon_RegisterPropertys( m_pkZeroFps, m_pkPropertyFactory );
 
-	/*m_pkPropertyFactory->Register("P_ShadowBlob", 			Create_P_ShadowBlob);
-	m_pkPropertyFactory->Register("P_CharacterProperty",	Create_P_CharacterProperty);	
-	m_pkPropertyFactory->Register("P_Enviroment", 			Create_P_Enviroment);
-	m_pkPropertyFactory->Register("P_Ml", 						Create_P_Ml);
-	m_pkPropertyFactory->Register("P_Item", 					Create_P_Item);
-
-	Register_P_CharacterControl(m_pkZeroFps);
-	Register_P_FogPlane(m_pkZeroFps);	
-	Register_P_Container(m_pkZeroFps);
-	*/
 }
 
 void MistClient::RenderInterface(void)
 {
-/*	if(m_pkHighlight) 
-	{
-		float fRadius = m_pkHighlight->GetRadius();
-		if(fRadius < 0.1)
-			fRadius = 0.1;
-				
-		Vector3 kMin = m_pkHighlight->GetWorldPosV() - fRadius;
-		Vector3 kMax = m_pkHighlight->GetWorldPosV() + fRadius;
-
-		m_pkRender->DrawAABB( kMin,kMax, m_pkRender->GetEditColor("active/firstentity") );
-	}*/
-	
-	
-	/*
-	if(m_pkCamera)
-	{
-		Vector3 kPos = m_pkCamera->GetPos()+Get3DMouseDir(true);
-		
-		Vector3 kMin = kPos - 0.01;
-		Vector3 kMax = kPos + 0.01;
-
-		m_pkRender->DrawAABB( kMin,kMax, m_pkRender->GetEditColor("active/firstentity") );
-		
-	}
-	*/
+ 
 }
 
 void MistClient::OnIdle() 
@@ -294,7 +261,8 @@ void MistClient::OnHud(void)
 {
 	if(m_iCharacterID != -1)
 		if(!m_bGuiCapture)
-			DrawCrossHair();
+			if(!m_bFrontView)
+				DrawCrossHair();
 }
 
 void MistClient::DrawCrossHair()
@@ -430,6 +398,7 @@ void MistClient::Input()
 	else
 		m_iPickedEntityID = -1;
 	
+		
 	//list actions
 	if ( m_pkInputHandle->VKIsDown("look") )
 	{
@@ -472,7 +441,16 @@ void MistClient::Input()
 			}
 		}	
 	}	
-			
+	
+	//togle front view
+	if(m_pkInputHandle->VKIsDown("frontview") && !DelayCommand())
+	{
+		if(m_bFrontView)
+			m_bFrontView = false;
+		else
+			m_bFrontView = true;
+	}		
+	
 	//check buttons
 	m_kCharacterControls[eUP] = 	m_pkInputHandle->VKIsDown("move_forward");
 	m_kCharacterControls[eDOWN] =	m_pkInputHandle->VKIsDown("move_back");			
@@ -480,7 +458,6 @@ void MistClient::Input()
 	m_kCharacterControls[eRIGHT]= m_pkInputHandle->VKIsDown("move_right");
 	m_kCharacterControls[eJUMP] = m_pkInputHandle->VKIsDown("jump");
 	m_kCharacterControls[eCRAWL] =m_pkInputHandle->VKIsDown("crawl");	
-
 
 
 	//update camera
@@ -499,53 +476,73 @@ void MistClient::Input()
 				if(fAx >= 0.49)
 					pkCam->Set3PYAngle(pkCam->Get3PYAngle() - m_pkZeroFps->GetFrameTime()*100);
 				if(fAx <= -0.49)
-					pkCam->Set3PYAngle(pkCam->Get3PYAngle() + m_pkZeroFps->GetFrameTime()*100);
-			
+					pkCam->Set3PYAngle(pkCam->Get3PYAngle() + m_pkZeroFps->GetFrameTime()*100);			
+
 				if(fAy >= 0.49)
 					pkCam->Set3PPAngle(pkCam->Get3PPAngle() + m_pkZeroFps->GetFrameTime()*100);
 				if(fAy <= -0.49)
 					pkCam->Set3PPAngle(pkCam->Get3PPAngle() - m_pkZeroFps->GetFrameTime()*100);
-					
 			}
 			
 			float fDistance = pkCam->Get3PDistance();
 			
-			if(!m_bGuiCapture)
+			if(m_pkInputHandle->VKIsDown("zoomin")) 	fDistance -= 0.5;
+			if(m_pkInputHandle->VKIsDown("zoomout"))	fDistance += 0.5;
+			
+			if(m_bFrontView)
 			{
-				if(m_pkInputHandle->VKIsDown("zoomin")) 	fDistance -= 0.5;
-				if(m_pkInputHandle->VKIsDown("zoomout"))	fDistance += 0.5;
+				//make sure camera is nto to far away
+				if(fDistance > 3.0)
+					fDistance = 3.0;			
+				//make sure camera is not to close
+				if(fDistance < 0.5)
+					fDistance = 0.5;			
+			}else
+			{
+				//make sure camera is nto to far away
+				if(fDistance > 8.0)
+					fDistance = 8.0;			
+				//make sure camera is not to close
+				if(fDistance < 0.2)
+					fDistance = 0.2;
 			}
 			
-			//make sure camera is nto to far away
-			if(fDistance > 8.0)
-				fDistance = 8.0;
-			
-			//make sure camera is not to close
-			if(fDistance < 0.2)
-				fDistance = 0.2;
-
 				
-			//select first or 3d view camera
-			if(fDistance < 0.3)	
-			{	
-				pkCam->SetType(CAM_TYPEFIRSTPERSON_NON_EA);
-
-				pkCam->SetOffset(Vector3(0,0,0)); 							
-								
-				//disable player model in first person
-				if(P_Mad* pkMad = (P_Mad*)pkCharacter->GetProperty("P_Mad"))
-					pkMad->SetVisible(false);					
-			}
-			else			
+			if(m_bFrontView)
 			{
-				pkCam->SetType(CAM_TYPE3PERSON);
-				pkCam->SetOffset(Vector3(0,0.4,0)); 							
+				pkCam->SetType(CAM_TYPEMLFRONTVIEW);
+				pkCam->SetOffset(Vector3(0,0,0)); 							
 				
 				//enable player model i 3d person
 				if(P_Mad* pkMad = (P_Mad*)pkCharacter->GetProperty("P_Mad"))
 					pkMad->SetVisible(true);				
-			}			 
+			}
+			else
+			{				
+				// first person
+				if(fDistance < 0.3)	
+				{	
+					pkCam->SetType(CAM_TYPEFIRSTPERSON_NON_EA);
+	
+					pkCam->SetOffset(Vector3(0,0,0)); 							
+									
+					//disable player model in first person
+					if(P_Mad* pkMad = (P_Mad*)pkCharacter->GetProperty("P_Mad"))
+						pkMad->SetVisible(false);					
+				}
 				
+				// 3-person view
+				else			
+				{
+					pkCam->SetType(CAM_TYPE3PERSON);
+					pkCam->SetOffset(Vector3(0,0.4,0)); 							
+					
+					//enable player model i 3d person
+					if(P_Mad* pkMad = (P_Mad*)pkCharacter->GetProperty("P_Mad"))
+						pkMad->SetVisible(true);				
+				}			 
+			}
+								
 			pkCam->Set3PDistance(fDistance);
 		
 			//rotate character
@@ -780,7 +777,8 @@ void MistClient::OnNetworkMessage(NetPacket *pkNetMessage)
 void MistClient::OnClientStart(void)
 {
 	m_pkConsole->Printf("Trying to connect");	
-	m_iCharacterID = -1;
+	m_iCharacterID		= -1;
+	m_bFrontView		= false;
 }
 
 void MistClient::OnClientConnected() 

@@ -387,17 +387,24 @@ bool P_Container::AddItemAtPos(P_Item* pkItem,int iX,int iY,int iCount)
 	pkItemEnt->SetParent(GetEntity());				
 	
 	
-	//setup joint
+	//shuld item be linked to joint?
 	if(m_strAttachToJoint.empty())
 	{
+		//remove link to joint if any
+		pkItemEnt->DeleteProperty("P_LinkToJoint");	
+		
+		//disable updates
 		pkItemEnt->SetUpdateStatus(UPDATE_NONE);									
+		
 		//this will also stop the entity from beeing sent to the client, therefore we tell the client to delete it
 		m_pkEntMan->AddEntityToAllClientDeleteQueues(pkItemEnt->GetEntityID());
 	}
 	else
 	{
+		//enable updates
 		pkItemEnt->SetUpdateStatus(UPDATE_ALL);
 	
+		//setup link to joint
 		if(!pkItemEnt->GetProperty("P_LinkToJoint"))
 			pkItemEnt->AddProperty("P_LinkToJoint");
 	

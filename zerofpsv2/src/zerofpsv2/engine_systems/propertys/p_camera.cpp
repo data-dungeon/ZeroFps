@@ -73,6 +73,55 @@ void P_Camera::Update()
 				break;		
 			}
 		
+			case CAM_TYPEMLFRONTVIEW:
+			{
+				float fYAngle = 180;
+				float fPAngle = 0;
+			
+				Vector3 kCamPos;				
+				if(m_bAttachToMadBone)
+				{				
+					if(P_Mad* pkMad = (P_Mad*)m_pkEntity->GetProperty("P_Mad"))
+					{
+						kCamPos = m_pkEntity->GetIWorldPosV() + pkMad->GetJointPosition(m_strBone.c_str()) + m_kOffset;			
+						
+					}
+				}
+				else					
+					kCamPos = m_pkEntity->GetIWorldPosV() + m_kOffset;					
+			
+			
+				Matrix4 kRot;
+				kRot.Identity();
+				
+				kRot.Rotate(fPAngle,m_f3PYAngle - 180 , 0);
+				kRot.Transponse();
+				
+				Vector3 kOffset;				
+				kOffset = kRot.VectorTransform(Vector3(0,0,-1));
+				kOffset *= m_f3PDistance;									
+				
+				//check camera against enviroment so nothing is betwean camera and player				
+				float fD = LineTest(kCamPos,kCamPos+kOffset);				
+				static float fZS = 0.2;
+				
+				if(fD < m_f3PDistance)
+				{
+					float fDist = fD - 0.5;
+					if(fDist <= 0.1)
+						fDist = 0.1;
+					
+					kOffset = kRot.VectorTransform(Vector3(0,0,-1));
+					kOffset *= fDist;	
+				}
+				
+				
+				LookAt(kCamPos + kOffset,kCamPos,Vector3(0,1,0));					
+					
+				strCamName = " 3P ";
+				break;			
+			}
+			
 			case CAM_TYPE3PERSON:
 			{	
 				if(m_f3PPAngle > 85)

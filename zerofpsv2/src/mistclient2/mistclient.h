@@ -31,8 +31,11 @@ class MistClient :public Application, public ZGuiApp {
 		float	m_fDelayTime;
 
 		Camera*		m_pkCamera;						//main camera
+		bool			m_bFrontView;
+		
 		int			m_iCharacterID;				//current active character ID      
-		int			m_iPickedEntityID;			// Selected entity for use.		
+		int			m_iPickedEntityID;			// Selected entity for use.				
+		
 		
 		bitset<6>	m_kCharacterControls;
 		
@@ -46,9 +49,9 @@ class MistClient :public Application, public ZGuiApp {
 	
 		vector<pair<string,string> > m_kServerList;
 		map<string, msgScreenProg> m_kGuiMsgProcs;
-		OptionsDlg* m_pkOptionsDlg;
-		ActionMenu* m_pkActionDlg;
-		InventoryDlg* m_pkInventoryDlg;
+		OptionsDlg* 	m_pkOptionsDlg;
+		ActionMenu* 	m_pkActionDlg;
+		InventoryDlg*	m_pkInventoryDlg;
       		
 		bool ReadWriteServerList(bool bRead);
 
