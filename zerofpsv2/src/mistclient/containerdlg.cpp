@@ -359,6 +359,8 @@ void ContainerDlg::Update()
 		vector<Entity*> vkObjects;
 		m_pkContainer->GetAllItemsInContainer(&vkObjects); 
 
+      cout << "Object form container:" << vkObjects.size() << endl;
+
 		for(unsigned int i=0; i<vkObjects.size(); i++)
 		{
 			// om den inte redan finns, lägg till den
