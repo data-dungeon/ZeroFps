@@ -663,7 +663,7 @@ void MistServer::OnServerClientJoin(ZFClient* pkClient,int iConID, char* szLogin
 	string strPlayer		= szLogin;
 	string strPasswd		= szPass;
 
-	pkClient->m_strCharacter = szLogin;  //anv�der spelar namnet som karakt�s namn s�l�ge..
+	pkClient->m_strCharacter = string("");  //anv�der spelar namnet som karakt�s namn s�l�ge..
 	pkClient->m_strLogin = szLogin;
 
 	if(!pkClient->m_pkObject)
@@ -694,9 +694,15 @@ void MistServer::OnServerClientJoin(ZFClient* pkClient,int iConID, char* szLogin
 		
 		return;
 	}
-	else
+//	else
+//		SpawnPlayer(iConID);
+	if(pkClient->m_bLogin == false)
+	{
+		pkClient->m_strCharacter = szLogin;  //anv�der spelar namnet som karakt�s namn s�l�ge..
 		SpawnPlayer(iConID);
-		
+	}
+
+
 	SendCharacterList(iConID);
 
 	SayToClients(strPlayer + string(" connected"));
@@ -902,6 +908,12 @@ void MistServer::OnNetworkMessage(NetPacket *PkNetMessage)
 
 		case MLNM_CS_REQPLAY:
 		{
+			string strChar;
+			PkNetMessage->Read_Str(strChar);
+			cout << "Play with character: " << strChar << endl;
+
+			m_pkZeroFps->m_kClient[PkNetMessage->m_iClientID].m_strCharacter = strChar;
+			SpawnPlayer( PkNetMessage->m_iClientID );
 			m_pkZeroFps->m_kClient[PkNetMessage->m_iClientID].m_bLogin = false;
 			break;
 		}

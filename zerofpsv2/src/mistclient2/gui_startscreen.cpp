@@ -239,13 +239,17 @@ void GuiMsgStartScreen( string strMainWnd, string strController,
 			
 			if(strController == "CharGen_PlayBn")
 			{
-				NetPacket kNp;
-				kNp.Clear();
-				kNp.Write((char) MLNM_CS_REQPLAY);
-				kNp.TargetSetClient(0);
-				g_kMistClient.SendAppMessage(&kNp);
-				g_kMistClient.LoadInGameGui();
-
+				char*	szSelItem =	g_kMistClient.GetSelItem("CharGen_CharList");
+				if(szSelItem)
+				{
+					NetPacket kNp;
+					kNp.Clear();
+					kNp.Write((char) MLNM_CS_REQPLAY);
+					kNp.Write_Str(string(szSelItem));
+					kNp.TargetSetClient(0);
+					g_kMistClient.SendAppMessage(&kNp);
+					g_kMistClient.LoadInGameGui();
+				}
 
 			/*	string strLogin, strPassword,	strServerName,	strServerIP;
 
