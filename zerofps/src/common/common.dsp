@@ -87,7 +87,7 @@ LINK32=link.exe
 # Begin Special Build Tool
 ProjDir=.
 SOURCE="$(InputPath)"
-PostBuild_Cmds=copy        $(ProjDir)\debug\*.lib        ..\..\bin\ 
+PostBuild_Cmds=copy          $(ProjDir)\debug\*.lib          ..\..\bin\ 
 # End Special Build Tool
 
 !ELSEIF  "$(CFG)" == "common - Win32 Release Profile"
@@ -100,8 +100,8 @@ PostBuild_Cmds=copy        $(ProjDir)\debug\*.lib        ..\..\bin\
 # PROP BASE Target_Dir ""
 # PROP Use_MFC 0
 # PROP Use_Debug_Libraries 0
-# PROP Output_Dir "common___Win32_Release_Profile"
-# PROP Intermediate_Dir "common___Win32_Release_Profile"
+# PROP Output_Dir "ReleaseProfile"
+# PROP Intermediate_Dir "ReleaseProfile"
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MD /W3 /GR /GX /O2 /Ob2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "COMMON_EXPORTS" /FD /c
@@ -118,6 +118,11 @@ BSC32=bscmake.exe
 LINK32=link.exe
 # ADD BASE LINK32 sdl.lib engine.lib basic.lib gui.lib render.lib script.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /machine:I386 /out:"../../bin/common.dll" /libpath:"../../bin"
 # ADD LINK32 sdl.lib engine.lib basic.lib gui.lib render.lib script.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /profile /map /machine:I386 /out:"../../bin/common.dll" /libpath:"../../bin"
+# Begin Special Build Tool
+ProjDir=.
+SOURCE="$(InputPath)"
+PostBuild_Cmds=copy $(ProjDir)\releaseprofile\*.lib ..\..\bin	copy $(ProjDir)\releaseprofile\*.map  ..\..\bin
+# End Special Build Tool
 
 !ENDIF 
 

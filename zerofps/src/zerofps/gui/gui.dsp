@@ -104,8 +104,8 @@ PostBuild_Cmds=copy  $(ProjDir)\debug\*.lib ..\..\..\bin
 # PROP BASE Target_Dir ""
 # PROP Use_MFC 0
 # PROP Use_Debug_Libraries 0
-# PROP Output_Dir "gui___Win32_Release_Profile"
-# PROP Intermediate_Dir "gui___Win32_Release_Profile"
+# PROP Output_Dir "ReleaseProfile"
+# PROP Intermediate_Dir "ReleaseProfile"
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MD /W3 /GR /GX /O2 /Ob2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "GUI_EXPORTS" /FD /c
@@ -125,7 +125,7 @@ LINK32=link.exe
 # Begin Special Build Tool
 ProjDir=.
 SOURCE="$(InputPath)"
-PostBuild_Cmds=copy  $(ProjDir)\release\*.lib ..\..\..\bin
+PostBuild_Cmds=copy  $(ProjDir)\releaseprofile\*.lib ..\..\..\bin	copy $(ProjDir)\releaseprofile\*.map  ..\..\..\bin
 # End Special Build Tool
 
 !ENDIF 
