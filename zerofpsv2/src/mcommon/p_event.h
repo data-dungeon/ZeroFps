@@ -19,9 +19,9 @@ class MCOMMON_API P_Event: public Property {
 		ZFScriptSystem* m_pkScriptSys;
 		ZFResourceHandle* m_pkScriptResHandle;
 
+		bool m_bFirstRun;
 		bool m_bHaveRunInit;
 		float m_fHeartRate;
-
 		float m_fTimer;
 
 	public:
@@ -34,6 +34,9 @@ class MCOMMON_API P_Event: public Property {
 		bool SendObjectClickEvent(const char* acType,int iCallerObject );		
 		bool SendGroudClickEvent(const char* acType,Vector3 kPos,int iCallerObject);
 		void Touch(int iId);					//executet when collision occurs
+
+      void Save(ZFIoInterface* pkPackage);
+      void Load(ZFIoInterface* pkPackage);
 
 		void SetHeartRate(float blub);
 		

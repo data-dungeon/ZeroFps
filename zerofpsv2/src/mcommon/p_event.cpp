@@ -12,6 +12,7 @@ P_Event::P_Event()
 	m_pkScriptResHandle = NULL;
 	
 	m_bHaveRunInit=false;
+	m_bFirstRun=true;
 	m_fHeartRate=-1;
 
 	m_fTimer = m_pkFps->GetGameTime();
@@ -24,6 +25,13 @@ P_Event::~P_Event()
 
 void P_Event::Update()
 {
+	if(m_bFirstRun)
+	{
+		m_bFirstRun=false;
+		
+		SendEvent("FirstRun");
+	}
+
 	if(!m_bHaveRunInit)
 	{
 		m_bHaveRunInit = true;		
@@ -136,6 +144,20 @@ void P_Event::SetHeartRate(float blub)
 	m_fHeartRate = blub;
 	
 	m_fTimer += rand() % (int)m_fHeartRate;
+}
+
+
+void P_Event::Save(ZFIoInterface* pkPackage)
+{
+   pkPackage->Write ( (void*)&m_bFirstRun, sizeof(m_bFirstRun), 1 );
+   pkPackage->Write ( (void*)&m_fHeartRate, sizeof(m_fHeartRate), 1 );
+}
+
+void P_Event::Load(ZFIoInterface* pkPackage)
+{
+   pkPackage->Read ( (void*)&m_bFirstRun, sizeof(m_bFirstRun), 1 );
+   pkPackage->Read ( (void*)&m_fHeartRate, sizeof(m_fHeartRate), 1 );
+
 }
 
 
