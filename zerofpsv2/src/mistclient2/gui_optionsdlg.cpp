@@ -126,8 +126,8 @@ void OptionsDlg::Open()
 	m_kOptionsValues.m_iPrevNetSpeed = m_pkMC->m_pkZeroFps->GetConnectionSpeed(); 
 
 	m_pkMC->CheckButton("NetSpeed1Rb", (m_kOptionsValues.m_iPrevNetSpeed == 3000)  );
-	m_pkMC->CheckButton("NetSpeed2Rb", (m_kOptionsValues.m_iPrevNetSpeed == 6000)  );
-	m_pkMC->CheckButton("NetSpeed3Rb", (m_kOptionsValues.m_iPrevNetSpeed == 20000) );
+	m_pkMC->CheckButton("NetSpeed2Rb", (m_kOptionsValues.m_iPrevNetSpeed == 10000)  );
+	m_pkMC->CheckButton("NetSpeed3Rb", (m_kOptionsValues.m_iPrevNetSpeed == 50000) );
 	
 	for(int i=0; i<pkTabCtrl->GetNumPages(); i++)
 	{
@@ -326,13 +326,13 @@ void GuiMsgOptionsDlg( string strMainWnd, string strController,
 			else
 			if(strController == "NetSpeed2Rb")
 			{
-				sprintf(cmd, "n_netspeed %i", 6000);
+				sprintf(cmd, "n_netspeed %i", 10000);
 				g_kMistClient.m_pkZeroFps->m_pkConsole->Execute(cmd);		
 			}
 			else
 			if(strController == "NetSpeed3Rb")
 			{
-				sprintf(cmd, "n_netspeed %i", 20000);
+				sprintf(cmd, "n_netspeed %i", 50000);
 				g_kMistClient.m_pkZeroFps->m_pkConsole->Execute(cmd);		
 			}
 
