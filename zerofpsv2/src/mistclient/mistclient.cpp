@@ -240,49 +240,39 @@ void MistClient::Input()
 
 	int iPressedKey = pkInput->GetQueuedKey();
 
-	char szFileName[] = "data/sound/walk.wav";
-	ZFResourceHandle* res = pkAudioSys->GetResHandle(szFileName);
-
 	switch(iPressedKey)
 	{
 	case KEY_P:
-		if(res->SetRes(szFileName))
-		{
-			ZFSound* pkSound = static_cast<ZFSound*>(res->GetResourcePtr()); 
-			if(pkSound) {
-				pkSound->m_kPos = Vector3(0,0,0);
-				pkSound->m_kVel = Vector3(0,0,1);
-				pkSound->Create(szFileName);
-				pkSound->m_bLoop = true;
-				pkAudioSys->AddSound(pkSound);
-			}
-			printf("Sound loaded!\n");
-		}
-		else
-			printf("Failed to load sound!\n");
-		break;
+		
+		ZFSound* pkSound1;
+		ZFSound* pkSound2;
+		static ZFResourceHandle res1; 
+		static ZFResourceHandle res2; 
 
-	case KEY_O:
-		if(res->SetRes(szFileName))
+		if(!res1.IsValid())
 		{
-			ZFSound* pkSound = static_cast<ZFSound*>(res->GetResourcePtr()); 
-			if(pkSound) {
-				pkAudioSys->RemoveSound(pkSound);
-				printf("Sound stopped\n");
+			res1.SetRes("data/sound/dummy.wav");
+			pkSound1 = static_cast<ZFSound*>(res1.GetResourcePtr()); 
+			if(pkSound1) {
+				pkSound1->m_kPos = Vector3(0,0,0);
+				pkSound1->m_kVel = Vector3(0,0,1);
+				pkSound1->Create("data/sound/dummy.wav");
+				pkSound1->m_bLoop = true;
+				pkAudioSys->AddSound(pkSound1);
 			}
 		}
-		else
-			printf("Failed to stop sound\n");
-		break;
 
-//	case KEY_L:
-//		{
-		//	ZFResourceHandle test1;
-		//	test1.SetRes("data/script/gui/test1.lua");
-		//	pkScript->Run( (ZFScript*) test1.GetResourcePtr() );
-		//	pkScript->Call( (ZFScript*) test1.GetResourcePtr(), "Test", 0, 0);
-//		}
-//		break;
+		res2.SetRes("data/sound/test.wav");
+		pkSound2 = static_cast<ZFSound*>(res2.GetResourcePtr()); 
+		if(pkSound2) {
+			pkSound2->m_kPos = Vector3(1,0,0);
+			pkSound2->m_kVel = Vector3(0,0,1);
+			pkSound2->Create("data/sound/test.wav");
+			pkSound2->m_bLoop = false;
+			pkAudioSys->AddSound(pkSound2);
+		}
+
+		break;
 	}
 
 }

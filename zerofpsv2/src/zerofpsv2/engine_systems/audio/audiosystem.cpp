@@ -231,17 +231,12 @@ void ZFAudioSystem::AddSound(ZFSound* pkSound)
 			return;
 	
 	m_akSounds.push_back(pkSound);
-	printf("Sound addded to list\n");
-
-	printf("Antal ljud: %i\n", m_akSounds.size());
 }
 
 void ZFAudioSystem::RemoveSound(ZFSound* pkSound) 
 {
 	if(pkSound==NULL)
 		return;
-
-	printf("Antal ljud: %i\n", m_akSounds.size());
 
 	bool found=false;
 	list<ZFSound*>::iterator it;
@@ -250,8 +245,6 @@ void ZFAudioSystem::RemoveSound(ZFSound* pkSound)
 		if( (*it) == pkSound)
 			found=true;	
 	}
-
-	printf("MMMMMMM\n%i\n", found);
 	
 	if(found==true)
 	{
@@ -262,7 +255,7 @@ void ZFAudioSystem::RemoveSound(ZFSound* pkSound)
 			m_kSources[index]->m_bUsed=false;
 			pkSound->m_iSourceIndex=-1;
 		}
-		//pkSound->m_iNrOfPlays++;
+		pkSound->m_iNrOfPlays--;
 		m_akSounds.remove(pkSound);
 	}
 }
@@ -333,9 +326,15 @@ void ZFAudioSystem::Update()
 		if(iSource==-1)
 			break;
 
+		m_kSources[iSource]->m_bUsed = true;
+
+		printf("Playing sound with index %i\n", iSource);
+
 		// Vi har misslyckats att spela upp ljudet så vi tar bor det.
 		if(!kPlay[i]->Start(iSource, m_kSources[iSource]->m_iSource))
+		{
 			kRemove.push_back(kPlay[i]);
+		}
 	}
 
 	// Ta bort misslyckade uppspelade ljud.
