@@ -79,8 +79,8 @@ MistClient::MistClient(char* aName,int iWidth,int iHeight,int iDepth)
 	m_pkActiveCharacter		= NULL;
 	m_pkTargetObject			= NULL;
 	
-	m_fMaxCamDistance			= 8;
-	m_fMinCamDistance			= 2;
+	m_fMaxCamDistance			= 10;
+	m_fMinCamDistance			= 4;
 
 	m_bActionMenuIsOpen		= false;
 	m_pkQuickBoard				= NULL;
