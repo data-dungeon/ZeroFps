@@ -42,8 +42,22 @@ static bool PLAYER_INVENTORYPROC( ZGuiWnd* wnd, unsigned int msg, int num, void 
 	return g_kGame.m_pkPlayerInventoryBox->DlgProc(wnd,msg,num,parms); 
 }
 
-static bool CONTAINER_BOXPROC( ZGuiWnd* wnd, unsigned int msg, int num, void *parms ) {
-	return g_kGame.m_pkContainerBox->DlgProc(wnd,msg,num,parms); }
+static bool CONTAINER_BOXPROC( ZGuiWnd* wnd, unsigned int msg, int num, void *parms ) 
+{
+	switch(msg)
+	{
+	case ZGM_COMMAND:
+		switch(((int*)parms)[0]) // control id
+		{
+		case ContainerClose:
+			g_kGame.m_pkContainerBox->OnClose(false);
+			break;
+		}
+		break;
+	}
+
+	return g_kGame.m_pkContainerBox->DlgProc(wnd,msg,num,parms); 
+}
 
 void Game::Init()
 {
@@ -399,6 +413,13 @@ void Game::InitGui()
 		"../data/gui_resource_files/container_rc.txt", "ContainerWnd");
 	
 	pkFps->m_bGuiTakeControl = false;
+
+	// Show cursor
+	int cursor_tex = pkTexMan->Load("file:../data/textures/cursor.bmp", 0);
+	int cursor_tex_a = pkTexMan->Load("file:../data/textures/cursor_a.bmp", 0);
+	pkGui->SetCursor(cursor_tex, cursor_tex_a, 32, 32);
+	pkGui->ShowCursor(true);
+	SDL_ShowCursor(SDL_DISABLE);
 }
 
 void Game::InitScript()

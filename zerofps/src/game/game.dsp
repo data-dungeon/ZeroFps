@@ -128,6 +128,10 @@ SOURCE=.\dialogbox.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\examinepumenu.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\game.cpp
 
 !IF  "$(CFG)" == "game - Win32 Release"
@@ -163,6 +167,10 @@ SOURCE=.\itembox.cpp
 # Begin Source File
 
 SOURCE=.\dialogbox.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\examinepumenu.h
 # End Source File
 # Begin Source File
 

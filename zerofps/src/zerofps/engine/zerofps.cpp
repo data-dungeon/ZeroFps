@@ -427,7 +427,7 @@ void ZeroFps::ToggleGui(void)
 	if(m_bGuiTakeControl == false)
 		bShowCursor = false;
 
-	m_pkGui->ShowCursor(bShowCursor);
+	//m_pkGui->ShowCursor(bShowCursor);
 }
 
 
