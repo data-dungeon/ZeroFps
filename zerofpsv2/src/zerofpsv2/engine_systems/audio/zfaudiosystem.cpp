@@ -1252,7 +1252,7 @@ void ZFAudioSystem::UpdateAmbientSound()
 				if(m_kAmbientAreas[i]->m_bChangeSound)
 				{
 					m_kAmbientAreas[i]->m_iSoundID = StartSound(
-						m_kAmbientAreas[i]->m_strSound, m_kPos, Vector3(0,0,0), true, 0); // och starta ett nytt.
+						m_kAmbientAreas[i]->m_strSound, m_kPos, m_kHead/*Vector3(0,0,0)*/, true, 0); // och starta ett nytt.
 					m_kAmbientAreas[i]->m_bChangeSound = false;
 				}
 				else
@@ -1267,7 +1267,7 @@ void ZFAudioSystem::UpdateAmbientSound()
 						m_kAmbientAreas[i]->m_fFadeTimer = -1;
 					}
 					
-					MoveSound(m_kAmbientAreas[i]->m_iSoundID, m_kPos, Vector3(0,0,0), m_kAmbientAreas[i]->m_fGain);
+					MoveSound(m_kAmbientAreas[i]->m_iSoundID, m_kPos, m_kHead/*Vector3(0,0,0)*/, m_kAmbientAreas[i]->m_fGain);
 				}
 			}
 			else
@@ -1292,14 +1292,14 @@ void ZFAudioSystem::UpdateAmbientSound()
 	}
 }
 
-int ZFAudioSystem::AddAmbientArea(string strName, vector<Vector2>& kArea)
+int ZFAudioSystem::AddAmbientArea(string strSound, vector<Vector2>& kArea)
 {
 	AmbientArea* pkArea = NULL;
 
 	// Kolla om den redan finns
 	for(int i=0; i<m_kAmbientAreas.size(); i++)
 	{
-		if(m_kAmbientAreas[i]->m_strSound == strName)
+		if(m_kAmbientAreas[i]->m_strSound == strSound)
 			if(m_kAmbientAreas[i]->m_kPolygon.size() == kArea.size())
 			{
 				pkArea = m_kAmbientAreas[i];
@@ -1318,7 +1318,7 @@ int ZFAudioSystem::AddAmbientArea(string strName, vector<Vector2>& kArea)
 	{
 		pkArea = new AmbientArea();
 		pkArea->m_iAmbientAreaID = g_iAmbientAreaIDCounter++;
-		pkArea->m_strSound = strName;
+		pkArea->m_strSound = strSound;
 		pkArea->m_bChangeSound = true;
 		pkArea->m_fGain = 0.0f;
 

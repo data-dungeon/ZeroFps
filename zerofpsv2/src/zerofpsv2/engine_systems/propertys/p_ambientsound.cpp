@@ -18,11 +18,16 @@ P_AmbientSound::P_AmbientSound()
 	m_iSide=PROPERTY_SIDE_CLIENT|PROPERTY_SIDE_SERVER;
 
 	m_strSound = "";
+	m_strPrevSound = "";
 	m_bSoundStarted = false;
 
 	m_iAmbientAreaID = -1;
+	m_bFreeForm = false;
 
 	m_kPrevPos = Vector3(0,0,0);
+	
+	m_fWidth = 8;
+	m_fHeight = 8;	
 }
 
 P_AmbientSound::~P_AmbientSound()
@@ -53,6 +58,11 @@ void P_AmbientSound::SetSound(string strSound)
 		m_pkAudioSystem->ChangeAmbientAreaSound(m_iAmbientAreaID, m_strSound);
 
 	printf("P_AmbientSound::SetSound %s\n", strSound.c_str());
+}
+
+void P_AmbientSound::SetFreeForm(bool bFreeform)
+{
+	m_bFreeForm = bFreeform;
 }
 
 void P_AmbientSound::GetArea(vector<Vector2>& kPolygon)
@@ -86,10 +96,19 @@ void P_AmbientSound::Update()
 		if(m_iAmbientAreaID != -1)
 		{
 			if(m_kPrevPos != GetEntity()->GetWorldPosV())
+			{
 				SetArea(m_kPolygon);
+				m_kPrevPos = GetEntity()->GetWorldPosV();
+			}
+
+			if(m_strPrevSound != m_strSound)
+			{
+				SetSound(m_strSound);
+				m_strPrevSound = m_strSound;
+			}
 		}
 	}
-	
+		
 	if(m_pkZeroFps->GetDebugGraph())
 		m_pkRender->Sphere(m_pkEntity->GetWorldPosV(),0.1,1,Vector3(1,1,0),true);
 
@@ -135,17 +154,62 @@ void P_AmbientSound::PackFrom(NetPacket* pkNetPacket, int iConnectionID )
 
 vector<PropertyValues> P_AmbientSound::GetPropertyValues()
 {
-	vector<PropertyValues> kReturn(1);
+	vector<PropertyValues> kReturn(4);
 
 	kReturn[0].kValueName = "filename";
 	kReturn[0].iValueType = VALUETYPE_STRING; 
 	kReturn[0].pkValue    = (void*)&m_strSound;
 
-	SetNetUpdateFlag(true);
+	kReturn[1].kValueName = "freeform";
+	kReturn[1].iValueType = VALUETYPE_BOOL; 
+	kReturn[1].pkValue    = (void*)&m_bFreeForm;
 
-	SetSound(m_strSound);
+	kReturn[2].kValueName = "width";
+	kReturn[2].iValueType = VALUETYPE_FLOAT; 
+	kReturn[2].pkValue    = (void*)&m_fWidth;
 
-	printf("P_AmbientSound::GetPropertyValues\n");
+	kReturn[3].kValueName = "height";
+	kReturn[3].iValueType = VALUETYPE_FLOAT; 
+	kReturn[3].pkValue    = (void*)&m_fHeight;
+
+	Entity* pkEnt = GetEntity();
+	
+	if(m_bFreeForm == false && pkEnt)
+	{
+		ZoneData* pkData = m_pEntityMan->GetZone( pkEnt->GetWorldPosV() ) ;
+	
+		if(pkData && pkData->m_pkZone != NULL)
+		{
+			Vector3 pos = pkData->m_kPos;
+			Vector3 sz;
+			sz.x = m_fWidth;
+			sz.z = m_fHeight;
+
+			pkEnt->SetWorldPosV(pos);
+
+			pos.x += (sz.x)/2;
+			pos.z -= (sz.z)/2;
+
+			Vector2 Left(pos.x, pos.z); 
+			Vector2 Right(pos.x - sz.x, pos.z + sz.z);
+			Vector2 Top(pos.x, pos.z + sz.z);
+			Vector2 Bottom(pos.x - sz.x, pos.z);
+
+			Left -= Vector2(pkEnt->GetWorldPosV().x, pkEnt->GetWorldPosV().z);
+			Right -= Vector2(pkEnt->GetWorldPosV().x, pkEnt->GetWorldPosV().z);
+			Top -= Vector2(pkEnt->GetWorldPosV().x, pkEnt->GetWorldPosV().z);
+			Bottom -= Vector2(pkEnt->GetWorldPosV().x, pkEnt->GetWorldPosV().z);
+
+			m_kPolygon.clear(); 
+			m_kPolygon.push_back(Left); 
+			m_kPolygon.push_back(Top);
+			m_kPolygon.push_back(Right);
+			m_kPolygon.push_back(Bottom);
+			m_kPolygon.push_back(Left); 
+			
+	//		SetNetUpdateFlag(true);
+		}
+	}
 	
 	return kReturn;
 }
@@ -154,10 +218,12 @@ void P_AmbientSound::Save(ZFIoInterface* pkFile)
 {
 	char temp[128];
 	strcpy(temp,m_strSound.c_str());
+	int iNumPoints = m_kPolygon.size();
 
 	pkFile->Write((void*)temp,128,1);
-
-	int iNumPoints = m_kPolygon.size();
+	pkFile->Write(&m_bFreeForm, sizeof(bool), 1);
+	pkFile->Write(&m_fWidth, sizeof(float), 1);
+	pkFile->Write(&m_fHeight, sizeof(float), 1);
 	pkFile->Write(&iNumPoints, sizeof(int), 1);
 
 	for(int i=0; i<iNumPoints; i++)
@@ -170,10 +236,13 @@ void P_AmbientSound::Save(ZFIoInterface* pkFile)
 void P_AmbientSound::Load(ZFIoInterface* pkFile,int iVersion)
 {
 	char temp[128];
+	int iNumPoints;
+
 	pkFile->Read((void*)temp,128,1);	
 	m_strSound = temp;
-
-	int iNumPoints;
+	pkFile->Read(&m_bFreeForm, sizeof(bool), 1);
+	pkFile->Read(&m_fWidth, sizeof(float), 1);
+	pkFile->Read(&m_fHeight, sizeof(float), 1);
 	pkFile->Read(&iNumPoints, sizeof(int), 1);
 
 	for(int i=0; i<iNumPoints; i++)

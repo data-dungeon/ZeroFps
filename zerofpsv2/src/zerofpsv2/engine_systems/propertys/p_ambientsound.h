@@ -17,6 +17,12 @@ class ENGINE_SYSTEMS_API P_AmbientSound : public Property
 		Render* m_pkRender;
 		ZeroFps* m_pkZeroFps;
 
+		float m_fWidth;
+		float m_fHeight;	
+
+		Vector3 m_kPrevPos;
+		string m_strPrevSound;
+
 	public:
 
 		P_AmbientSound();
@@ -36,6 +42,8 @@ class ENGINE_SYSTEMS_API P_AmbientSound : public Property
 		void SetSound(string strSound);
 		string GetSound();
 
+		void SetFreeForm(bool bFreeform);
+
 	protected:
 
 		int m_iAmbientAreaID;
@@ -43,9 +51,11 @@ class ENGINE_SYSTEMS_API P_AmbientSound : public Property
 		bool m_bSoundStarted;
 		vector<Vector2> m_kPolygon;
 
+		bool m_bFreeForm; // tillåt areor som inte är fyrkantiga
+
 		vector<PropertyValues> GetPropertyValues();
 
-		Vector3 m_kPrevPos;
+		
 };
 
 Property* Create_AmbientSound();

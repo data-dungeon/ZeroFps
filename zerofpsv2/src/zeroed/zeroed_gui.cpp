@@ -206,6 +206,8 @@ void ZeroEd::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 						static int s_iPrevMode = m_iEditMode;
 						if(IsButtonChecked("PropertBn1")) // växla över till att editera ambientarea
 						{
+							pkProp->SetFreeForm(true);
+
 							s_iPrevMode = m_iEditMode;
 							m_iEditMode = EDIT_AMBIENTSOUNDS;
 						}

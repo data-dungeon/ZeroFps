@@ -141,6 +141,10 @@ void ZeroEd::Input_EditObject(float fMouseX, float fMouseY)
 		      if(pkObj->GetCurrentZone() != -1)
 				   PlaceObjectOnGround(pkObj->GetEntityID());
       }
+
+		//Entity* pkEnt ;
+		//if((pkEnt = GetTargetObject()))
+		//	CreateASPDefaultArea(pkEnt);
 		
 	}
 	
@@ -602,12 +606,45 @@ Vector3 ZeroEd::Get3DMousePos(bool m_bMouse=true)
 	return dir;
 }
 
+void ZeroEd::CreateASPDefaultArea(Entity* pkEnt)
+{
+	P_AmbientSound* pkProp = (P_AmbientSound*) pkEnt->GetProperty("P_AmbientSound");
+	if(pkProp == NULL)
+		return;
+	if(pkEnt->GetCurrentZone() == -1)
+		return;
 
+	ZoneData* pkData = m_pkEntityManager->GetZoneData(pkEnt->GetCurrentZone());		
+	if(pkData->m_pkZone != NULL)
+	{
+		int width = 4;
+		int height = 4;
 
+		Vector3 pos = pkData->m_kPos;
+		Vector3 sz = pkData->m_kSize;
+		sz.x *= width;
+		sz.z *= height;
 
+		pos.x += (sz.x)/2;
+		pos.z -= (sz.z)/2;
 
+		Vector2 Left(pos.x, pos.z); 
+		Vector2 Right(pos.x - sz.x, pos.z + sz.z);
+		Vector2 Top(pos.x, pos.z + sz.z);
+		Vector2 Bottom(pos.x - sz.x, pos.z);
 
+		Left -= Vector2(pkEnt->GetWorldPosV().x, pkEnt->GetWorldPosV().z);
+		Right -= Vector2(pkEnt->GetWorldPosV().x, pkEnt->GetWorldPosV().z);
+		Top -= Vector2(pkEnt->GetWorldPosV().x, pkEnt->GetWorldPosV().z);
+		Bottom -= Vector2(pkEnt->GetWorldPosV().x, pkEnt->GetWorldPosV().z);
 
-
-
-
+		vector<Vector2> kArea;
+		kArea.push_back(Left); 
+		kArea.push_back(Top);
+		kArea.push_back(Right);
+		kArea.push_back(Bottom);
+		kArea.push_back(Left); 
+		pkProp->SetArea(kArea);
+		pkProp->SetSound("data/sound/fire.wav");
+	}
+}

@@ -95,6 +95,9 @@ class ZeroEd :public Application , public ZGuiApp {
 			SELECT_SOUND,
 			SELECT_MAD,
 		};
+
+		//ambient sound areas
+		void CreateASPDefaultArea(Entity* pkEnt);
 		
 		//wierd stuff
 		char		szCoolName[256];
@@ -173,16 +176,17 @@ class ZeroEd :public Application , public ZGuiApp {
 								
 		//consolecommand handle
 		void EditRunCommand(FuncId_e eEditCmd);
-		
-		//gui stuff...or something 
+
+		// zone and object edit
 		void RebuildZonePosArray();
 		bool ZoneHaveNeighbour(const Vector3& kPos, const Vector3& kSize);
-		void FillPropertyValList();
-		bool FillPropertyList();
-		bool UpdatePropertyList(int iID);
 		bool PlaceObjectOnGround(int iObjectID, int iZoneID);
 		bool PlaceObjectOnGround(int iObjectID);
 		
+		//gui stuff...or something 
+		void FillPropertyValList();
+		bool FillPropertyList();
+		bool UpdatePropertyList(int iID);		
 
 		//camera stuff
 		void  CreateEditCameras();

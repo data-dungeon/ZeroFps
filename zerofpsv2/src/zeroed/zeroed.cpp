@@ -65,6 +65,7 @@ static bool GUIPROC( ZGuiWnd* win, unsigned int msg, int numparms, void *params 
 			if(strcmp("PropertyValEb", win->GetName()) == 0)
 			{
 				g_kZeroEd.AddPropertyVal();
+				g_kZeroEd.AddPropertyVal();
 			}
          else
          if(strcmp("SaveScriptFileNameEb", win->GetName()) == 0)
@@ -712,6 +713,11 @@ void ZeroEd::RenderInterface(void)
 						m_pkRender->Line(
 							Vector3(pos.x+kPoints[i].x,0,pos.y + kPoints[i].y), 
 							Vector3(pos.x+kPoints[i+1].x,0,pos.y + kPoints[i+1].y), kColor);
+
+						m_pkRender->Line(
+							Vector3(pos.x+kPoints[i].x+0.1f,0,pos.y + kPoints[i].y+0.1f), 
+							Vector3(pos.x+kPoints[i+1].x+0.1f,0,pos.y + kPoints[i+1].y+0.1f), kColor);
+						
 					}
 				}
 			}
@@ -1347,6 +1353,18 @@ void ZeroEd::UpdateZoneMarkerPos()
 void ZeroEd::UpdateObjectMakerPos()
 {
 	m_kObjectMarkerPos = /*m_pkFps->GetCam()*/ m_pkActiveCamera->GetPos() + Get3DMousePos(true)*2;
+
+
+	if(m_pkActiveCameraObject && m_iEditMode == EDIT_AMBIENTSOUNDS)
+	{
+		Vector3 temp = m_pkActiveCamera->GetPos() + Get3DMousePos(false)*15;
+	
+		float fStep = 2.0;
+		
+		m_kObjectMarkerPos.x = round2(temp.x/fStep) * fStep;
+		m_kObjectMarkerPos.y = 0;
+		m_kObjectMarkerPos.z = round2(temp.z/fStep) * fStep;
+	}	
 }
 
 void ZeroEd::AutoSetZoneSize(string strName)
