@@ -41,6 +41,7 @@ class RENDER_API Render {
 //		void DrawHMQT(HeightMap* kmap);		
 //		void DrawQuad(HM_vert* vert,int width);
 		void DrawSkyBox(Vector3 CamPos);
+		void DrawWater(Vector3 kCamPos,Vector3 kPosition,Vector3 kHead,int kSize);
 		void DrawConsole(char* m_aCommand,vector<char*>* m_kText); 
 		
 		void GiveTexCor(float &iX,float &iY,int iNr);

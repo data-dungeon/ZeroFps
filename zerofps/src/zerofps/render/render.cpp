@@ -488,3 +488,38 @@ void Render::DrawSkyBox(Vector3 CamPos) {
 }
 
 
+void Render::DrawWater(Vector3 kCamPos,Vector3 kPosition,Vector3 kHead,int kSize) {
+	glPushMatrix();
+	
+	
+	glRotatef(kHead.x, 1, 0, 0);
+	glRotatef(kHead.y, 0, 1, 0);	
+	glRotatef(kHead.z, 0, 0, 1);
+	glTranslatef(kPosition.x-kSize/2,kPosition.y,kPosition.z-kSize/2);
+	
+	glDisable(GL_LIGHTING);
+	
+	m_pkTexMan->BindTexture("file:../data/textures/water.bmp");
+	int step=30;
+	
+	for(int z=0;z<kSize;z+=step){
+		glBegin(GL_TRIANGLE_STRIP);
+		glNormal3f(0,1,0);		
+		glColor3f(1,1,1);
+		for(int x=0;x<kSize;x+=step) {
+			float y=sin((SDL_GetTicks()+x*300)/1000.0);
+			
+			glNormal3f(1.0,0,0);
+			glTexCoord2f(x/step+SDL_GetTicks()/60000.0,1);
+			glVertex3f(x,y,z);
+			
+			glTexCoord2f(x/step+SDL_GetTicks()/60000.0,0);			
+			glVertex3f(x,y,z+step);
+
+
+		}
+		glEnd();
+	}
+	glEnable(GL_LIGHTING);
+	glPopMatrix();
+}
