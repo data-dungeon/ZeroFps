@@ -20,9 +20,15 @@ class ZMaterialSettings;
 
 enum RENDER_API FORCE_LIGHTING
 {
-	ALWAYS_ON,
-	ALWAYS_OFF,
-	MATERIAL,
+	LIGHT_ALWAYS_ON,
+	LIGHT_ALWAYS_OFF,
+	LIGHT_MATERIAL,
+};
+
+enum RENDER_API FORCE_BLENDING
+{
+	BLEND_FORCE_TRANSPARENT,
+	BLEND_MATERIAL,
 };
 
 enum RENDER_API BLEND_SRC
@@ -156,6 +162,9 @@ class RENDER_API ZShader : public ZFSubSystem
 		//force lighting to this
 		int			m_iForceLighting;		
 		
+		//force blending
+		int			m_iForceBledning;
+		
 		//did we copy the data?
 		bool			m_bCopyedData;
 	
@@ -194,6 +203,7 @@ class RENDER_API ZShader : public ZFSubSystem
 		bool StartUp();
 	
 		void SetForceLighting(int iMode) { m_iForceLighting = iMode;};
+		void SetForceBlending(int iMode) { m_iForceBledning = iMode;};
 		void SetMaterial(ZMaterial* pkMaterial);		
 		void SetPointer(int iType,void* pkPointer);
 		void SetNrOfVertexs(int iNr);

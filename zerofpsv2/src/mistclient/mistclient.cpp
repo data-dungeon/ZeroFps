@@ -1346,7 +1346,7 @@ void MistClient::UpdateCullObjects()
 	//make all old objects visible again
 	for(i =0;i<mads.size();i++)
 	{
-		mads[i]->m_bIsVisible = true;
+		mads[i]->SetVisible(true);
 	}
 	
 	//clear old object
@@ -1368,7 +1368,7 @@ void MistClient::UpdateCullObjects()
 			if((kEntitys[i]->GetWorldPosV() - kStart).Length() < d)
 			{
 				//hide and add to vector
-				pm->m_bIsVisible = false;
+				pm->SetVisible(false);
 				mads.push_back(pm);
 			}
 		}		

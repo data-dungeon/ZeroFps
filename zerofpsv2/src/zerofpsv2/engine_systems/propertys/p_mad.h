@@ -16,8 +16,11 @@ class ENGINE_SYSTEMS_API P_Mad : public Property, public Mad_Modell {
 		vector<PropertyValues> GetPropertyValues();
 		bool HandleSetValue( string kValueName ,string kValue );
 	
+		Render* m_pkRender;
+		ZShader* m_pkZShader;
+	
 		float	m_fLod;
-
+		bool	m_bIsVisible;
 		
 		//linetest stuff
 		Matrix4	m_kModelMatrix;
@@ -38,7 +41,6 @@ class ENGINE_SYSTEMS_API P_Mad : public Property, public Mad_Modell {
 		
 		ZeroFps* m_pkZeroFps;
 
-		bool	m_bIsVisible;
 		bool	m_bCanBeInvisible;
 
 		void SetBase(const char* acName);
@@ -48,6 +50,7 @@ class ENGINE_SYSTEMS_API P_Mad : public Property, public Mad_Modell {
 		void Load(ZFIoInterface* pkPackage);
 
 
+		void SetVisible(bool bVisible);
 		void PackTo(NetPacket* pkNetPacket, int iConnectionID );
 		void PackFrom(NetPacket* pkNetPacket, int iConnectionID );
 

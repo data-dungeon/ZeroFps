@@ -107,7 +107,7 @@ void MistServer::Init()
 
 	//damn "#¤(="%#( lighting fix bös
 	pkLight->SetLighting(true);
-	pkZShader->SetForceLighting(ALWAYS_OFF);	
+	pkZShader->SetForceLighting(LIGHT_ALWAYS_OFF);	
 	
 	//register property bös
 	RegisterPropertys();
@@ -333,11 +333,11 @@ void MistServer::Input()
 			m_iEditMode = EDIT_OBJECTS;		
 	
 		if(pkInput->Pressed(KEY_I))
-			pkZShader->SetForceLighting(ALWAYS_ON);	
+			pkZShader->SetForceLighting(LIGHT_ALWAYS_ON);	
 		if(pkInput->Pressed(KEY_O))
-			pkZShader->SetForceLighting(ALWAYS_OFF);
+			pkZShader->SetForceLighting(LIGHT_ALWAYS_OFF);
 		if(pkInput->Pressed(KEY_P))
-			pkZShader->SetForceLighting(MATERIAL);
+			pkZShader->SetForceLighting(LIGHT_MATERIAL);
 	
 	
 		//edit zone  mode
@@ -1040,9 +1040,9 @@ void MistServer::RotateActiveZoneObject()
 void MistServer::ToogleLight(bool bEnabled)
 {
 	if(bEnabled)
-		pkZShader->SetForceLighting(ALWAYS_ON);
+		pkZShader->SetForceLighting(LIGHT_ALWAYS_ON);
 	else
-		pkZShader->SetForceLighting(ALWAYS_OFF);
+		pkZShader->SetForceLighting(LIGHT_ALWAYS_OFF);
 }
 
 void MistServer::UpdateStartLocatons()

@@ -22,7 +22,8 @@ bool ZShader::StartUp()
 			
 	SetVertexProgram(NO_VPROGRAM);
 			
-	m_iForceLighting = MATERIAL;
+	m_iForceLighting = LIGHT_MATERIAL;
+	m_iForceBledning = BLEND_MATERIAL;	
 			
 	return true;
 } 
@@ -408,97 +409,113 @@ void ZShader::SetupRenderStates(ZMaterialSettings* pkSettings)
 			break;			
 	}
 	
+	
 	//enable /disable blending
-	if(pkSettings->m_bBlend)
+	if(m_iForceBledning == BLEND_MATERIAL)				//default using material settings
+	{	
+		if(pkSettings->m_bBlend)
+		{
+			glEnable(GL_BLEND);
+			//glDepthMask(GL_FALSE);
+		}
+		else
+		{
+			glDisable(GL_BLEND);
+			//glDepthMask(GL_TRUE);
+		}
+		
+		//setup blending factors
+		int blendsrc;
+		int blenddst;
+	
+		//setup src blend factor
+		switch(pkSettings->m_iBlendSrc)
+		{
+			case ZERO_BLEND_SRC:
+				blendsrc = GL_ZERO;
+				break;
+			case ONE_BLEND_SRC:
+				blendsrc = GL_ONE;
+				break;
+			case DST_COLOR_BLEND_SRC:
+				blendsrc = GL_DST_COLOR;
+				break;
+			case ONE_MINUS_DST_COLOR_BLEND_SRC:
+				blendsrc = GL_ONE_MINUS_DST_COLOR;
+				break;	
+			case SRC_ALPHA_BLEND_SRC:
+				blendsrc = GL_SRC_ALPHA;
+				break;
+			case ONE_MINUS_SRC_ALPHA_BLEND_SRC:
+				blendsrc = GL_ONE_MINUS_SRC_ALPHA;
+				break;
+			case DST_ALPHA_BLEND_SRC:
+				blendsrc = GL_DST_ALPHA;
+				break;
+			case ONE_MINUS_DST_ALPHA_BLEND_SRC:
+				blendsrc = GL_ONE_MINUS_DST_ALPHA;
+				break;
+			case SRC_ALPHA_SATURATE_BLEND_SRC:
+				blendsrc = GL_SRC_ALPHA_SATURATE;
+				break;	
+		}
+	
+		//setup dst blend factor	
+		switch(pkSettings->m_iBlendDst)
+		{
+			case ZERO_BLEND_DST:
+				blenddst = GL_ZERO;
+				break;
+			case ONE_BLEND_DST:
+				blenddst = GL_ONE;
+				break;
+			case SRC_COLOR_BLEND_DST:
+				blenddst = GL_SRC_COLOR;
+				break;
+			case ONE_MINUS_SRC_COLOR_BLEND_DST:
+				blenddst = GL_ONE_MINUS_SRC_COLOR;
+				break;	
+			case SRC_ALPHA_BLEND_DST:
+				blenddst = GL_SRC_ALPHA;
+				break;
+			case ONE_MINUS_SRC_ALPHA_BLEND_DST:
+				blenddst = GL_ONE_MINUS_SRC_ALPHA;
+				break;
+			case DST_ALPHA_BLEND_DST:
+				blenddst = GL_DST_ALPHA;
+				break;
+			case ONE_MINUS_DST_ALPHA_BLEND_DST:
+				blenddst = GL_ONE_MINUS_DST_ALPHA;
+				break;
+		}
+	
+		//finaly set opengl blend function
+		glBlendFunc(blendsrc,blenddst);
+	}
+	else if(	m_iForceBledning == BLEND_FORCE_TRANSPARENT)		//force transparent blend
 	{
 		glEnable(GL_BLEND);
-		//glDepthMask(GL_FALSE);
-	}
-	else
-	{
-		glDisable(GL_BLEND);
-		//glDepthMask(GL_TRUE);
-	}
-		
-	//setup blending factors
-	int blendsrc;
-	int blenddst;
-	
-	//setup src blend factor
-	switch(pkSettings->m_iBlendSrc)
-	{
-		case ZERO_BLEND_SRC:
-			blendsrc = GL_ZERO;
-			break;
-		case ONE_BLEND_SRC:
-			blendsrc = GL_ONE;
-			break;
-		case DST_COLOR_BLEND_SRC:
-			blendsrc = GL_DST_COLOR;
-			break;
-		case ONE_MINUS_DST_COLOR_BLEND_SRC:
-			blendsrc = GL_ONE_MINUS_DST_COLOR;
-			break;	
-		case SRC_ALPHA_BLEND_SRC:
-			blendsrc = GL_SRC_ALPHA;
-			break;
-		case ONE_MINUS_SRC_ALPHA_BLEND_SRC:
-			blendsrc = GL_ONE_MINUS_SRC_ALPHA;
-			break;
-		case DST_ALPHA_BLEND_SRC:
-			blendsrc = GL_DST_ALPHA;
-			break;
-		case ONE_MINUS_DST_ALPHA_BLEND_SRC:
-			blendsrc = GL_ONE_MINUS_DST_ALPHA;
-			break;
-		case SRC_ALPHA_SATURATE_BLEND_SRC:
-			blendsrc = GL_SRC_ALPHA_SATURATE;
-			break;	
+		glBlendFunc( GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+		glColor4f(1,1,1,0.3);
+
+		//float black[4]={0.0,0.0,0.0,0.0};
+		//glMaterialfv(GL_FRONT,GL_AMBIENT,black);
+		//glMaterialfv(GL_FRONT,GL_SPECULAR,black);
+		glEnable(GL_COLOR_MATERIAL);				
 	}
 	
-	//setup dst blend factor	
-	switch(pkSettings->m_iBlendDst)
-	{
-		case ZERO_BLEND_DST:
-			blenddst = GL_ZERO;
-			break;
-		case ONE_BLEND_DST:
-			blenddst = GL_ONE;
-			break;
-		case SRC_COLOR_BLEND_DST:
-			blenddst = GL_SRC_COLOR;
-			break;
-		case ONE_MINUS_SRC_COLOR_BLEND_DST:
-			blenddst = GL_ONE_MINUS_SRC_COLOR;
-			break;	
-		case SRC_ALPHA_BLEND_DST:
-			blenddst = GL_SRC_ALPHA;
-			break;
-		case ONE_MINUS_SRC_ALPHA_BLEND_DST:
-			blenddst = GL_ONE_MINUS_SRC_ALPHA;
-			break;
-		case DST_ALPHA_BLEND_DST:
-			blenddst = GL_DST_ALPHA;
-			break;
-		case ONE_MINUS_DST_ALPHA_BLEND_DST:
-			blenddst = GL_ONE_MINUS_DST_ALPHA;
-			break;
-	}
-	
-	//finaly set opengl blend function
-	glBlendFunc(blendsrc,blenddst);				
 	
 	//lighting setting
-	if(m_iForceLighting == MATERIAL)
+	if(m_iForceLighting == LIGHT_MATERIAL)
 	{
 		if(pkSettings->m_bLighting)
 			glEnable(GL_LIGHTING);
 		else
 			glDisable(GL_LIGHTING);
 	}
-	else if(m_iForceLighting == ALWAYS_ON)
+	else if(m_iForceLighting == LIGHT_ALWAYS_ON)
 		glEnable(GL_LIGHTING);
-	else if(m_iForceLighting == ALWAYS_OFF)
+	else if(m_iForceLighting == LIGHT_ALWAYS_OFF)
 		glDisable(GL_LIGHTING);
 		
 		
@@ -512,7 +529,7 @@ void ZShader::SetupRenderStates(ZMaterialSettings* pkSettings)
 	if(pkSettings->m_bAlphaTest)
 	{
 		glEnable(GL_ALPHA_TEST);
-		glAlphaFunc(GL_GEQUAL, 0.5);
+		glAlphaFunc(GL_GEQUAL, 0.1);
 	}
 	else
 		glDisable(GL_ALPHA_TEST);

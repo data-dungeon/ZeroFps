@@ -8,15 +8,17 @@ extern float g_fMadLODScale;
  
 P_Mad::P_Mad()
 {
-	m_pkZeroFps  = static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
-
+	m_pkZeroFps  =		static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
+	m_pkRender =		static_cast<Render*>(g_ZFObjSys.GetObjectPtr("Render")); 
+	m_pkZShader = 		static_cast<ZShader*>(g_ZFObjSys.GetObjectPtr("ZShader")); 
+	
 	strcpy(m_acName,"P_Mad");
 	bNetwork	 = true;
 
 	m_iType = PROPERTY_TYPE_RENDER | PROPERTY_TYPE_NORMAL;
 	m_iSide = PROPERTY_SIDE_SERVER | PROPERTY_SIDE_CLIENT;
 	
-	m_bIsVisible = true;
+	SetVisible(true);
 	m_bCanBeInvisible = false;
 	m_fScale	 = 1.0;
 	
@@ -34,8 +36,8 @@ void P_Mad::Update()
 		}
 	
 	if( m_pkObjMan->IsUpdate(PROPERTY_TYPE_RENDER) ) {
-		if(!m_bIsVisible)
-			return;
+//		if(!m_bIsVisible)
+//			return;
 		
 		if(!m_pkZeroFps->GetCam()->m_kFrustum.SphereInFrustum(m_pkObject->GetWorldPosV(),GetRadius()))
 			return;
@@ -55,7 +57,11 @@ void P_Mad::Update()
 		}
 
 		g_fMadLODScale = m_fLod;
-		Render* pkRender = static_cast<Render*>(g_ZFObjSys.GetObjectPtr("Render")); 
+		
+		//set force transparent if not visible
+		if(!m_bIsVisible)
+			m_pkZShader->SetForceBlending(BLEND_FORCE_TRANSPARENT);
+		
 
 		glPushMatrix();
 			Vector3 pos = m_pkObject->GetIWorldPosV();
@@ -71,11 +77,16 @@ void P_Mad::Update()
 			glPushMatrix();
 				glTranslatef(m_pkObject->GetWorldPosV().x,m_pkObject->GetWorldPosV().y,m_pkObject->GetWorldPosV().z);
 				glRotatef(90 ,1,0,0);
-				pkRender->DrawBoundSphere(GetRadius(),Vector3::ZERO);		
+				m_pkRender->DrawBoundSphere(GetRadius(),Vector3::ZERO);		
 			glPopMatrix();
 		}
 
 		m_pkZeroFps->m_iNumOfMadRender++;
+	
+		//reset blend
+		if(!m_bIsVisible)
+			m_pkZShader->SetForceBlending(BLEND_MATERIAL);
+	
 	
 		return;
 		}
@@ -356,6 +367,16 @@ void P_Mad::GenerateModelMatrix()
 
 }
 
+
+void P_Mad::SetVisible(bool bVisible)
+{
+	m_bIsVisible = bVisible;
+	
+	if(m_bIsVisible)
+		m_iSortPlace = 0;
+	else
+		m_iSortPlace = 10;
+}
 
 Property* Create_MadProperty()
 {
