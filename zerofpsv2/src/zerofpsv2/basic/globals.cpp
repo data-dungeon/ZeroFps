@@ -57,7 +57,10 @@ bool IsSameIgnoreCase(const char* szString1,const char* szString2)
 
 void IntToChar(char* aText,int iValue)
 {
-	strcpy(aText,"");
+	if(iValue == 0)
+		strcpy(aText,"0");
+	else
+		strcpy(aText,"");	
 	bool found=false;
 	
 	for(int i=10000000;i>0;i/=10) {

@@ -232,7 +232,7 @@ void ZShader::Waves()
 {	
 	for(int i=0;i<m_iNrOfVertexs;i++)
 	{
-		int offset = m_pkVertexPointer[i].x + m_pkVertexPointer[i].y + m_pkVertexPointer[i].z;
+		float offset = m_pkVertexPointer[i].x + m_pkVertexPointer[i].y + m_pkVertexPointer[i].z;
 		float bla = sin(SDL_GetTicks()/500.0 + offset)*0.1;
 		m_pkVertexPointer[i] += Vector3(bla,bla,bla);
 
@@ -280,9 +280,62 @@ void ZShader::SetupTU(ZMaterialSettings* pkSettings,int iTU)
 void ZShader::SetupRenderStates(ZMaterialSettings* pkSettings)
 {
 
-	//polygon mode settings	
-	glPolygonMode(GL_FRONT, pkSettings->m_iPolygonModeFront);
-	glPolygonMode(GL_BACK, pkSettings->m_iPolygonModeBack);	
+	//polygon mode settings		front
+	switch(pkSettings->m_iPolygonModeFront)
+	{
+		case FILL_POLYGON:
+			glPolygonMode(GL_FRONT, GL_FILL);
+			break;
+		case LINE_POLYGON:
+			glPolygonMode(GL_FRONT, GL_LINE);
+			break;			
+		case POINT_POLYGON:
+			glPolygonMode(GL_FRONT, GL_POINT);
+			break;						
+	}
+	
+	//polygon mode settings		back	
+	switch(pkSettings->m_iPolygonModeBack)
+	{
+		case FILL_POLYGON:
+			glPolygonMode(GL_BACK, GL_FILL);
+			break;
+		case LINE_POLYGON:
+			glPolygonMode(GL_BACK, GL_LINE);
+			break;			
+		case POINT_POLYGON:
+			glPolygonMode(GL_BACK, GL_POINT);
+			break;							
+	}
+	
+	//depthfunction settings
+	switch(pkSettings->m_iDepthFunc)
+	{
+		case NEVER_DEPTH:
+			glDepthFunc(GL_NEVER);			
+			break;
+		case LESS_DEPTH:
+			glDepthFunc(GL_LESS);			
+			break;	
+		case EQUAL_DEPTH:
+			glDepthFunc(GL_EQUAL);			
+			break;	
+		case LEQUAL_DEPTH:
+			glDepthFunc(GL_LEQUAL);			
+			break;	
+		case GREATER_DEPTH:
+			glDepthFunc(GL_GREATER);			
+			break;	
+		case NOTEQUAL_DEPTH:
+			glDepthFunc(GL_NOTEQUAL);			
+			break;	
+		case GEQUAL_DEPTH:
+			glDepthFunc(GL_GEQUAL);			
+			break;		
+		case ALWAYS_DEPTH:
+			glDepthFunc(GL_ALWAYS);			
+			break;			
+	}
 
 	glDepthFunc(pkSettings->m_iDepthFunc);
 	

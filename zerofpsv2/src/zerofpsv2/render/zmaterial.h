@@ -39,6 +39,9 @@ class RENDER_API ZMaterial
 		vector<ZMaterialSettings> m_kPasses;
 		ZFIni		m_kIni;
 		
+		bool LoadGlobalSection();
+		bool LoadPass(int iPass);
+		
 	public:		
 		bool	m_bCopyData;
 		bool	m_bRandomMovements;

@@ -461,9 +461,36 @@ bool ZFIni::SectionExist(const char* acSection)
 	return false;
 }
 
+bool ZFIni::KeyExist(const char* strSection, char* strKey)
+{
+	if(GetValue(strSection,strKey) == NULL)
+		return false;
+	else
+		return true;
+}
 
 
+bool ZFIni::GetBoolValue(const char* strSection, char* strKey)
+{
+	char* str = GetValue(strSection,strKey);
+	
+	if(!str)
+		return false;
+		
+	if(strcasecmp(str,"true") == 0)
+		return true;
+		
+	return false;
+}
 
-
+int ZFIni::GetIntValue(const char* strSection, char* strKey)
+{
+	char* str = GetValue(strSection,strKey);
+	
+	if(!str)
+		return 0;
+		
+	return atoi(str);
+}
 
 

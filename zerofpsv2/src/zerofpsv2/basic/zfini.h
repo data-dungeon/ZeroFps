@@ -25,11 +25,18 @@ public:
 
 	void RunCommand(int cmdid, const CmdArgument* kCommand);
 	void GetCommandStrings(vector<string>* pkCommands);
+	bool ExecuteCommands(const char* strName);
+	
 	char* GetValue(const char* strSection, char* strKey);
 	void GetSectionNames(vector<string>& kSectionList);
+	bool GetBoolValue(const char* strSection, char* strKey);
+	int GetIntValue(const char* strSection, char* strKey);
+	
 	bool SectionExist(const char* acSection);
+	bool KeyExist(const char* strSection, char* strKey);
+	
 	bool Open(const char* strFileName, bool bCommandFile);
-	bool ExecuteCommands(const char* strName);
+	
 	ZFIni();
 	~ZFIni();
 
