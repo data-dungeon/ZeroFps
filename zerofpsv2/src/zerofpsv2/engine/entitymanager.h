@@ -24,7 +24,7 @@ enum EZoneStatus
 };
 
 /// Data about a Zone in the World.
-class ZoneData
+class ENGINE_API ZoneData
 {
 public:
 

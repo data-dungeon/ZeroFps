@@ -11,6 +11,8 @@
 #include "../script_interfaces/si_audio.h"
 #include "zfaudiosystem.h"
 
+#include "SDL/SDL.h"
+
 #define NO_SOURCE 999
 
 Vector3 ZFAudioSystem::m_kPos = Vector3(0,0,0);
@@ -222,19 +224,20 @@ ZFAudioSystem::~ZFAudioSystem()
 // Skapa ett nytt och lägg till det till systemet.
 ///////////////////////////////////////////////////////////////////////////////
 int ZFAudioSystem::StartSound(string strName, Vector3 pos, 
-							   Vector3 dir, bool bLoop)
+							   Vector3 dir, bool bLoop, float fGain)
 {
 	ZFSoundInfo *pkSound = new ZFSoundInfo(strName.c_str(), pos, dir, bLoop);
 	
 	if(!InitSound(pkSound))
 	{
 		delete pkSound; // delete sound again.
-		printf("Failed to start sound %s\n", strName.c_str());
+	//	printf("Failed to start sound %s\n", strName.c_str());
 		return -1;
 	}
 
 	g_iIDCounter++;
 	pkSound->m_iID = g_iIDCounter;
+	pkSound->m_fGain = fGain;
 	
 	// Lägg till ljudet till vektorn med ljud.
 	m_kSoundList.push_back( pkSound );
@@ -291,7 +294,7 @@ bool ZFAudioSystem::StopSound(int iID)
 		}
 	}
 
-	printf("Failed to stop sound with ID %i\n", iID);
+//	printf("Failed to stop sound with ID %i\n", iID);
 
 	return false;
 }
@@ -615,7 +618,7 @@ void ZFAudioSystem::Update()
 				alSourcefv(pkSound->m_uiSourceBufferName, 
 					AL_VELOCITY,&pkSound->m_kDir[0]);
 				alSourcef(pkSound->m_uiSourceBufferName, 
-					AL_GAIN, m_fVolume);
+					AL_GAIN, /*m_fVolume*/pkSound->m_fGain);
 			}
 			else
 			{
@@ -972,7 +975,7 @@ bool ZFAudioSystem::Play(ZFSoundInfo *pkSound)
 	
 	// Set gain.
 	alGetError();
-	alSourcef(pkSound->m_uiSourceBufferName, AL_GAIN, 1.0f);
+	alSourcef(pkSound->m_uiSourceBufferName, AL_GAIN, pkSound->m_fGain);
 	if( (error = alGetError()) != AL_NO_ERROR)
 	{
 		PrintError(error, "ZFAudioSystem::Play, Failed to set gain!");
@@ -1158,10 +1161,10 @@ bool ZFAudioSystem::MoveSound(const char* szName, Vector3 kOldPos, Vector3 kNewP
 
 
 ///////////////////////////////////////////////////////////////////////////////
-// Leta rätt på det närmsta ljudet med det namnet och flytta på det till ny postion
+// Leta rätt på ljudet med det ID:t och flytta på det till ny postion
 ///////////////////////////////////////////////////////////////////////////////
 
-bool ZFAudioSystem::MoveSound(int iID, Vector3 kNewPos, Vector3 kNewDir)
+bool ZFAudioSystem::MoveSound(int iID, Vector3 kNewPos, Vector3 kNewDir, float fVolume)
 {
 	list<ZFSoundInfo*>::iterator itFind = m_kSoundList.end();
 
@@ -1179,8 +1182,42 @@ bool ZFAudioSystem::MoveSound(int iID, Vector3 kNewPos, Vector3 kNewDir)
 	{
 		(*itFind)->m_kPos = kNewPos;
 		(*itFind)->m_kDir = kNewDir;
+
+		if(fVolume > 0)
+		{
+			(*itFind)->m_fGain = fVolume;
+		}
+
 		return true;
 	}
 
 	return false;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// Leta rätt på ljudet med det ID:t och ändra gaoim på det 
+///////////////////////////////////////////////////////////////////////////////
+
+bool ZFAudioSystem::SetSoundGain(int iID, float fGain)
+{
+	list<ZFSoundInfo*>::iterator itFind = m_kSoundList.end();
+
+	list<ZFSoundInfo*>::iterator itSound = m_kSoundList.begin();
+	for( ; itSound != m_kSoundList.end(); itSound++)  
+	{
+		if((*itSound)->m_iID == iID)
+		{
+			itFind = itSound;
+			break;
+		}
+	}
+
+	if(itFind != m_kSoundList.end())
+	{
+		(*itFind)->m_fGain = fGain;
+		return true;
+	}
+
+	return false;
+
 }

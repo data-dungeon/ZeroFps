@@ -458,7 +458,6 @@ void ZeroFps::Run_Client()
 {
 	if(!m_bServerMode)
 		Update_System();	
-				
 	
 	//update sound system
 	if(m_kRenderCamera.size()  == 1)

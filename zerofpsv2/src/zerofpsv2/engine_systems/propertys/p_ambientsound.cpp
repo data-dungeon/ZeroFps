@@ -3,202 +3,226 @@
 #include "p_ambientsound.h"
 #include "../../engine/entity.h"
 
+const float FADE_TIME_AMBIENT_AREA = 4.0f; // sekunder.
 
 P_AmbientSound::P_AmbientSound()
 {
 	strcpy(m_acName,"P_AmbientSound");
 
 	m_pkAudioSystem = static_cast<ZFAudioSystem*>(g_ZFObjSys.GetObjectPtr("ZFAudioSystem"));
-	m_pkFps = static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
+	m_pEntityMan = static_cast<EntityManager*>(g_ZFObjSys.GetObjectPtr("EntityManager"));
 
-	m_bManagedByAudioSystem = true;
-	m_bStarted = false;
-	m_bSoundHaveBeenSaved = false;
-	SetSound("/data/sound/dummy.wav");
 	bNetwork = true;
 	m_iType=PROPERTY_TYPE_NORMAL;
-	m_iSide=PROPERTY_SIDE_ALL;
+	m_iSide=PROPERTY_SIDE_CLIENT|PROPERTY_SIDE_SERVER;
 
+	m_bDotFileLoaded = false;
+	m_iCurrentAmbientArea = -1;
+
+	m_bChangeSound = false;
+	m_strSound = "";
+	m_iSoundID = -1;
+	m_fGain = 0.0f;
+
+	m_fFadeTimer = -1;
 }
 
 P_AmbientSound::~P_AmbientSound()
 {
-	if(m_bManagedByAudioSystem == false)
-		Stop();
+
 }
 
 void P_AmbientSound::Update()
 {
-//	if(m_pkFps->m_bServerMode)
-//		return;
-
-	Entity* pkObject = GetEntity();
-
-	Vector3 pos = pkObject->GetWorldPosV();
-
-	// Kolla avståndet till lyssnaren, om det är "tillräckligt" kort
-	float fDistanceToListener = float(m_pkAudioSystem->GetListnerPos().DistanceTo(pos));
-
-	if(fDistanceToListener < m_fHearableDistance)
+	if(m_pEntityMan->IsUpdate(PROPERTY_SIDE_SERVER))
 	{
-		// Eftersom ett P_AmbientSound objekt kan ha förstörts.
-
-		// Är ljudet inte redan startat?
-		if(m_bStarted == false)
+		if(m_bDotFileLoaded == false)
 		{
-			if(pkObject && !m_strFileName.empty())
+			if(LoadDotFile("asa.dot"))
 			{
-				if(m_pkAudioSystem->StartSound(m_strFileName, pos,
-					pkObject->GetVel(), m_bLoop))
+				m_bDotFileLoaded = true;
+			}
+		}
+		else
+		{
+			Vector2 pos(GetEntity()->GetIWorldPosV().x, GetEntity()->GetIWorldPosV().z);
+
+			int area = -999;
+
+			for(int i=0; i<m_kDotArray.size(); i++)
+				if(/*m_pkAudioSystem->*/PntInPolygon(&pos, m_kDotArray[i].m_kPolygon))
 				{
-					m_bStarted = true;
+					area = i;
+					break;
 				}
+
+			if(m_iCurrentAmbientArea != area)
+			{
+				m_iCurrentAmbientArea = area;
+				SetNetUpdateFlag(true);
 			}
 		}
 	}
 	else
 	{
-		if(m_bStarted == true)
-		{
-			if(pkObject && !m_strFileName.empty())
-			{
-				// Endast loopade ljud behöver inte stoppas.
-				// OBS! Ignorera varning som kommer ifall motorn misslyckas stoppa ljudet.
-				// Detta eftersom ljudet i så fall redan har stoppats internt i motorn
-				// (dvs. HEARABLE_DISTANCE < fStartDistance)
-				if(m_bLoop == true)
-					m_pkAudioSystem->StopSound(m_strFileName, pkObject->GetWorldPosV());
+		if(m_bChangeSound == false && m_iSoundID != -1) // kvar i samma ambientarea, flytta ljudet
+		{																// och ändra velocity.
+			m_pkAudioSystem->MoveSound(m_iSoundID, GetEntity()->GetIWorldPosV(), Vector3(0,0,0), m_fGain);
 
-				m_bStarted = false;
+			if(m_fGain < 1.0f)
+			{
+				FadeGain(false);
+			}
+			else
+			{
+				m_fGain = 1.0f;
+				m_fFadeTimer = -1;
 			}
 		}
+		else
+		{
+			if(m_iSoundID != -1)
+			{
+				if(m_fGain > 0)
+				{
+					FadeGain(true);
+					m_pkAudioSystem->MoveSound(m_iSoundID, GetEntity()->GetIWorldPosV(), Vector3(0,0,0), m_fGain);
+					return; // Starta inte det nya ljudet föränn det gamla har fadat ut..
+				}
+				else
+				{
+					m_pkAudioSystem->StopSound(m_iSoundID);
+					m_fGain = 0.0f;
+					m_fFadeTimer = -1;
+				}
+			}
+			
+			m_iSoundID = m_pkAudioSystem->StartSound(m_strSound, 
+				GetEntity()->GetIWorldPosV(), Vector3(0,0,0), true, m_fGain); // och starta ett nytt.
+
+			m_bChangeSound = false;
+		}	
 	}
 }
 
-bool P_AmbientSound::SetSound(char *szFileName, bool bPlayOnes, float uiHearableDistance)
+void P_AmbientSound::PackTo(NetPacket* pkNetPacket, int iConnectionID )
 {
-	if(szFileName == NULL)
+	if(m_iCurrentAmbientArea >= 0)
+		pkNetPacket->Write_Str(  m_kDotArray[m_iCurrentAmbientArea].m_strFileName );
+	else
+	{
+		string strNone = "";
+		pkNetPacket->Write_Str(  strNone );
+	}
+
+	SetNetUpdateFlag(iConnectionID,false);
+}
+
+void P_AmbientSound::PackFrom(NetPacket* pkNetPacket, int iConnectionID )
+{
+	string strSound;
+	pkNetPacket->Read_Str( strSound );
+	m_strSound = strSound;
+	m_bChangeSound = true;
+}
+
+bool P_AmbientSound::LoadDotFile(string strFileName)
+{
+	ZFVFile kZFile;
+	if( !kZFile.Open(string(strFileName),0,false) ) {
+		cout << "Failed to load dot file: " << strFileName.c_str() << endl;
 		return false;
+		}
+	
+	int iNumAreas;
+	kZFile.Read(&iNumAreas, sizeof(int), 1);
 
-	m_fHearableDistance = uiHearableDistance;
-	m_strFileName = szFileName;
-	m_bLoop = !bPlayOnes;
+	for(int i=0; i<iNumAreas; i++)
+	{
+		DOTFILE_INFO di;
+		kZFile.Read_Str(di.m_strAreaName);
+		kZFile.Read_Str(di.m_strFileName);
 
-	SetNetUpdateFlag(true);
+		int iNumPoints;
+		kZFile.Read(&iNumPoints, sizeof(int), 1);
+
+		for(int i=0; i<iNumPoints; i++)
+		{
+			float x,y;
+			kZFile.Read(&x, sizeof(float), 1);
+			kZFile.Read(&y, sizeof(float), 1);
+			di.m_kPolygon.push_back(new Vector2(x,y)); 
+		}
+
+		m_kDotArray.push_back(di); 
+	}
 
 	return true;
+}
+
+bool P_AmbientSound::PntInPolygon(Vector2 *pt, vector<Vector2*>& kPolygon)
+{
+	int wn = 0;
+
+	vector<Vector2 *>::iterator it;
+
+	// loop through all edges of the polygon
+	for (it=kPolygon.begin(); it<kPolygon.end()-1; it++)
+	{
+		if ((*(it))->y <= pt->y)
+		{         
+			if ((*(it+1))->y > pt->y) 
+				if (IsLeft( *it, *(it+1), pt) > 0)
+					++wn;
+		}
+		else
+		{                       
+			if ((*(it+1))->y <= pt->y)
+				if (IsLeft( *it, *(it+1), pt) < 0)
+					--wn;
+		}
+	}
+	if (wn==0)
+		return false;
+
+	return true;
+}
+
+void P_AmbientSound::FadeGain(bool bOut)
+{
+	float fTime = m_pEntityMan->GetSimTime();
+
+	if(m_fFadeTimer == -1)
+		m_fFadeTimer = fTime;
+
+	float fTimeSinceLastFrame = fTime - m_fFadeTimer;
+	float dif = fTimeSinceLastFrame / FADE_TIME_AMBIENT_AREA;
+
+	if(bOut)
+		m_fGain -= dif;
+	else
+		m_fGain += dif;
+
+	m_fFadeTimer = fTime;
+}
+
+vector<PropertyValues> P_AmbientSound::GetPropertyValues()
+{
+	vector<PropertyValues> kReturn(1);
+	return kReturn;
+}
+
+void P_AmbientSound::Save(ZFIoInterface* pkFile)
+{
+}
+
+void P_AmbientSound::Load(ZFIoInterface* pkFile,int iVersion)
+{
 }
 
 Property* Create_AmbientSound()
 {
 	return new P_AmbientSound();
 }
-
-vector<PropertyValues> P_AmbientSound::GetPropertyValues()
-{
-	vector<PropertyValues> kReturn(4);
-
-	kReturn[0].kValueName = "FileName";
-	kReturn[0].iValueType = VALUETYPE_STRING; 
-	kReturn[0].pkValue    = (void*)&m_strFileName;
-	
-	kReturn[1].kValueName = "AreaSize";
-	kReturn[1].iValueType = VALUETYPE_FLOAT;
-	kReturn[1].pkValue    = (void*)&m_fHearableDistance;
-
-	kReturn[2].kValueName = "Loop";
-	kReturn[2].iValueType = VALUETYPE_BOOL;
-	kReturn[2].pkValue    = (void*)&m_bLoop;
-
-	kReturn[3].kValueName = "ManagedByAudioSys";
-	kReturn[3].iValueType = VALUETYPE_BOOL;
-	kReturn[3].pkValue    = (void*)&m_bManagedByAudioSystem;
-	
-	return kReturn;
-}
-
-void P_AmbientSound::Save(ZFIoInterface* pkFile)
-{
-	m_bSoundHaveBeenSaved = true;
-
-	pkFile->Write( &m_bSoundHaveBeenSaved,sizeof(bool),1); // have been saved or not
-	
-	unsigned int uiSize = m_strFileName.length();
-	char* szFileName = (char*) m_strFileName.c_str();
-
-	pkFile->Write( &uiSize, sizeof(unsigned int), 1); // number of characters in filename
-	pkFile->Write( szFileName, sizeof(char), m_strFileName.size()); // filename
-	pkFile->Write( &m_fHearableDistance, sizeof(float), 1); // hearable distance
-	pkFile->Write( &m_bLoop, sizeof(bool), 1); // loop
-	pkFile->Write( &m_bManagedByAudioSystem, sizeof(bool), 1); 
-}
-
-void P_AmbientSound::Load(ZFIoInterface* pkFile,int iVersion)
-{
-	char* szFileName = NULL;
-	unsigned int uiFileNameSize;
-	
-	pkFile->Read( &m_bSoundHaveBeenSaved,sizeof(bool),1); // have been saved or not
-	pkFile->Read( &uiFileNameSize, sizeof(int), 1); // number of characters in filename
-
-	szFileName = new char[uiFileNameSize+1];
-
-	pkFile->Read( szFileName, sizeof(char), uiFileNameSize); // filename
-	szFileName[uiFileNameSize] = '\0';
-	
-	m_strFileName = szFileName;
-	
-	pkFile->Read( &m_fHearableDistance, sizeof(float), 1); // hearable distance
-	pkFile->Read( &m_bLoop, sizeof(bool), 1); // loop
-	pkFile->Read( &m_bManagedByAudioSystem, sizeof(bool), 1); 
-	
-	if(szFileName)
-		delete[] szFileName;
-		
-	SetNetUpdateFlag(true);		
-}
-
-void P_AmbientSound::PackTo(NetPacket* pkNetPacket, int iConnectionID )
-{
-   pkNetPacket->Write_Str( m_strFileName.c_str()); // write filename
-	pkNetPacket->Write(&m_fHearableDistance,sizeof(m_fHearableDistance)); // write hearable distance
-	pkNetPacket->Write(&m_bLoop,sizeof(m_bLoop)); // loop or not
-	pkNetPacket->Write(&m_bManagedByAudioSystem, sizeof(m_bManagedByAudioSystem)); 
-	pkNetPacket->Write(&m_bSoundHaveBeenSaved, sizeof(m_bSoundHaveBeenSaved)); 
-	
-	SetNetUpdateFlag(iConnectionID,false);
-}
-
-void P_AmbientSound::PackFrom(NetPacket* pkNetPacket, int iConnectionID )
-{
-	char file_name[128];
-
-   pkNetPacket->Read_Str( file_name); // write filename
-	pkNetPacket->Read(&m_fHearableDistance,sizeof(m_fHearableDistance)); // write hearable distance
-	pkNetPacket->Read(&m_bLoop,sizeof(m_bLoop)); // loop or not
-	pkNetPacket->Read(&m_bManagedByAudioSystem,sizeof(m_bManagedByAudioSystem)); // loop or not
-	pkNetPacket->Read(&m_bSoundHaveBeenSaved, sizeof(m_bSoundHaveBeenSaved)); 
-	
-	m_strFileName = file_name;
-}
-
-void P_AmbientSound::Stop()
-{
-	Entity* pkObject = GetEntity();
-	m_pkAudioSystem->StopSound(m_strFileName, pkObject->GetWorldPosV());
-	m_bStarted = false;
-}
-
-
-
-
-
-
-
-
-
-
-
-
 
 

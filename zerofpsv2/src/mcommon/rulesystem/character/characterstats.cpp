@@ -352,7 +352,7 @@ void CharacterStats::Print()
          kCounterIte != m_kPointStats.end(); kCounterIte++ )
    {
       cout << (*kCounterIte).first << ":" << (*kCounterIte).second.Value() << "/";
-      cout << (*kCounterIte).second.Max() << endl;
+      cout << (*kCounterIte).second.Max2() << endl;
    }
 
 

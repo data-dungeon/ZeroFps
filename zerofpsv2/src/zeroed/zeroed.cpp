@@ -123,6 +123,8 @@ ZeroEd::ZeroEd(char* aName,int iWidth,int iHeight,int iDepth)
 	Register_Cmd("snapsave",	FID_SNAPSAVE);
 	Register_Cmd("snapload",	FID_SNAPLOAD);
 
+	Register_Cmd("toggle_ambientsoundarea",	FID_TOGGLE_AMBIENTSOUNDAREA);
+
 	m_kDrawPos.Set(0,0,0);
 
 	m_fHMInRadius  = 1;
@@ -140,6 +142,8 @@ ZeroEd::ZeroEd(char* aName,int iWidth,int iHeight,int iDepth)
 
 	m_kTestGraph.SetSize(60,60,100);
 	m_kTestGraph.SetMinMax(0,1500);
+
+
 } 
 
 
@@ -257,6 +261,14 @@ void ZeroEd::OnInit()
 
 	//set reference distance
 	m_pkAudioSys->SetReferensDistance(0.5);
+
+	//m_strAmbientAreaEdited = "";
+	//AddListItem("AmbientSoundList", "TestArea");
+	//m_pkAudioSys->CreateNewAmbientArea("TestArea"); 
+	//m_pkAudioSys->SetAmbientSound("TestArea", "data/sound/vind och regn.wav");
+	//m_pkAudioSys->m_bEnableAmbientSS = m_bShowAmbientSoundAreas;
+
+	GetWnd("AddPointsToSounAreaBn")->m_bUseAlhpaTest = false;
 	
 }
 
@@ -347,6 +359,8 @@ void ZeroEd::Init()
 	m_strWorldDir = "";
 
 	m_pkInput->VKBind(string("mus"), string("z"), 0);
+
+	m_pkAmbientSoundAreas = new AmbientSoundAreas();
 
 }
 
@@ -679,10 +693,11 @@ void ZeroEd::OnIdle()
 		//DrawHMEditMarker(pkMap, m_kDrawPos, m_fHMInRadius,m_fHMOutRadius);
 		}
 
-	if(m_iEditMode == EDIT_ZONES)
+	if(m_iEditMode == EDIT_ZONES || m_iEditMode == EDIT_AMBIENTSOUNDS)
 	{
 		UpdateZoneMarkerPos();		
 		//DrawZoneMarker(m_kZoneMarkerPos);		
+
 	}
 	
 	if(m_iEditMode == EDIT_OBJECTS)
@@ -690,6 +705,8 @@ void ZeroEd::OnIdle()
 		UpdateObjectMakerPos();
 		//DrawCrossMarker(m_kObjectMarkerPos);		
 	}
+
+	
 }
 
 
@@ -701,7 +718,7 @@ void ZeroEd::RenderInterface(void)
 		DrawHMEditMarker(pkMap, m_kDrawPos, m_fHMInRadius,m_fHMOutRadius);
 		}
 
-	if(m_iEditMode == EDIT_ZONES)		DrawZoneMarker(m_kZoneMarkerPos);
+	if(m_iEditMode == EDIT_ZONES) DrawZoneMarker(m_kZoneMarkerPos);
 	if(m_iEditMode == EDIT_OBJECTS)	DrawCrossMarker(m_kObjectMarkerPos);		
 	
 	if(m_iEditMode == EDIT_OBJECTS && m_bGrabing)
@@ -709,10 +726,20 @@ void ZeroEd::RenderInterface(void)
 		//m_pkRender->SetColor(Vector3(1,1,1));
 		m_pkRender->Line(m_kGrabPos,m_kGrabCurrentPos);
 	}
+
+	m_pkAmbientSoundAreas->Draw(m_pkRender);
+	
+	if(m_pkAmbientSoundAreas->m_bAddPointsToSoundArea)
+	{
+		Vector3 p = m_kZoneMarkerPos;
+		p.y = 0;
+		p.x+=m_kZoneSize.x/2;
+		p.z-=m_kZoneSize.z/2;
+		m_pkRender->Sphere(p, 0.1f, 4, Vector3(1,0.5,1), true);
+	}
 	
 	//draw zone list if connected to a server
 	DrawZoneList();
-	
 }
 
 HeightMap* ZeroEd::SetPointer()
@@ -921,6 +948,9 @@ void ZeroEd::RunCommand(int cmdid, const CmdArgument* kCommand)
 			m_pkZeroFps->StartServer(true,false);
 			
 			m_bNeedToRebuildZonePosArray = true;
+
+			m_pkAmbientSoundAreas->Load("asa.dot", (ZGuiListbox*) GetWnd("AmbientSoundList"));
+
 			break;		
 		
 		case FID_SAVE:
@@ -942,6 +972,8 @@ void ZeroEd::RunCommand(int cmdid, const CmdArgument* kCommand)
 				m_pkConsole->Printf("Error saving world");
 				break;
 			}	
+
+			m_pkAmbientSoundAreas->Save("asa.dot");
 			break;
 
 		case FID_SAVEAS:
@@ -967,6 +999,8 @@ void ZeroEd::RunCommand(int cmdid, const CmdArgument* kCommand)
 			m_pkEntityManager->SaveZones();			
 			cout<<"saved"<<endl;
 */			
+
+			m_pkAmbientSoundAreas->Save("asa.dot");
 			break;
 
 		case FID_SNAPSAVE:
@@ -1082,24 +1116,30 @@ void ZeroEd::RunCommand(int cmdid, const CmdArgument* kCommand)
 
 
 		case FID_LOCALORDER:
-			string strSo;
-			strSo = kCommand->m_strFullCommand;
-			strSo.erase(0, kCommand->m_kSplitCommand[0].length() + 1);
-			//SendOrder( strSo );	
-			//m_pkConsole->Printf("SO is = %s", strSo.c_str());
+			{
+				string strSo;
+				strSo = kCommand->m_strFullCommand;
+				strSo.erase(0, kCommand->m_kSplitCommand[0].length() + 1);
+				//SendOrder( strSo );	
+				//m_pkConsole->Printf("SO is = %s", strSo.c_str());
 
-			//char szFullCmd[1024];
-			//sprintf(szFullCmd, "addzone %f %f %f %f %f %f %s",m_kZoneMarkerPos.x,m_kZoneMarkerPos.y,m_kZoneMarkerPos.z,
-			//	m_kZoneSize.x,m_kZoneSize.y,m_kZoneSize.z, m_strActiveZoneName.c_str());
-			//cout << "FullCmd " << szFullCmd << endl;
-			
-			P_ClientControl pkClient;
-			string strOrder;
-			kOrder.m_sOrderName = strSo;
-			kOrder.m_iCharacter = -1;
-			cout << "Sending LocalOrder: " << kOrder.m_sOrderName << "\n";
-			pkClient.AddServerOrder(kOrder);
+				//char szFullCmd[1024];
+				//sprintf(szFullCmd, "addzone %f %f %f %f %f %f %s",m_kZoneMarkerPos.x,m_kZoneMarkerPos.y,m_kZoneMarkerPos.z,
+				//	m_kZoneSize.x,m_kZoneSize.y,m_kZoneSize.z, m_strActiveZoneName.c_str());
+				//cout << "FullCmd " << szFullCmd << endl;
+				
+				P_ClientControl pkClient;
+				string strOrder;
+				kOrder.m_sOrderName = strSo;
+				kOrder.m_iCharacter = -1;
+				cout << "Sending LocalOrder: " << kOrder.m_sOrderName << "\n";
+				pkClient.AddServerOrder(kOrder);
+			}
 			break;		
+
+		case FID_TOGGLE_AMBIENTSOUNDAREA:
+			m_pkAmbientSoundAreas->m_bShowAmbientSoundAreas = !m_pkAmbientSoundAreas->m_bShowAmbientSoundAreas;
+			break;
 
 	}
 
@@ -1717,6 +1757,3 @@ void	ZeroEd::SendSetZoneModel(string strModel,int iZoneID)
 	m_pkZeroFps->RouteEditCommand(&kNp);
 
 }
-
-
-

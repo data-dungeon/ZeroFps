@@ -10,6 +10,7 @@
 #include "../engine_systems_x.h"
 #include "../../basic/zfresource.h"
 #include "../../basic/zfsubsystem.h"
+#include "../../basic/vector2.h"
 #include "../../basic/vector3.h"
 #include "../../basic/vector4.h"
 #include "oggmusic.h"
@@ -54,6 +55,7 @@ class ENGINE_SYSTEMS_API ZFSoundInfo
 		char m_acFile[128]; // ändra inte till string, då uppstår en kopiering bugg!!
 
 		long m_iID;
+		float m_fGain;
 			
 	private:
 		ZFSoundRes* m_pkResource;
@@ -84,7 +86,7 @@ public:
 	bool SetVolume(float fVolume);
 	float GetVolume() { return m_fVolume; }
 
-	int StartSound(string strName, Vector3 pos=m_kPos, Vector3 dir=Vector3(0,0,1), bool bLoop=false);
+	int StartSound(string strName, Vector3 pos=m_kPos, Vector3 dir=Vector3(0,0,1), bool bLoop=false, float fGain=1.0f);
 	bool StopSound(string strName, Vector3 pos);
 	bool StopSound(int iID);
 
@@ -92,7 +94,9 @@ public:
 	bool UnLoadSound(string strFileName);
 
 	bool MoveSound(const char* szName, Vector3 kOldPos, Vector3 kNewPos, Vector3 kNewDir=Vector3(0,0,1));
-	bool MoveSound(int iID, Vector3 kNewPos, Vector3 kNewDir = Vector3(0,0,1) );
+	bool MoveSound(int iID, Vector3 kNewPos, Vector3 kNewDir = Vector3(0,0,1), float fVolume = -1 ); // if fVolume is -1 then dont change volume
+
+	bool SetSoundGain(int iID, float fGain);
 
 	unsigned int GetNumSounds();
 	unsigned int GetNumActiveChannels();
@@ -130,7 +134,7 @@ public:
 	static Vector3 GetListnerPos() { return m_kPos;  }
 	Vector3 GetListnerDir() { return m_kHead; }
 	static void PrintError(ALenum error, char* szDesc);
-
+	
 	ZFAudioSystem(int uiMaxCachSize=19021844); // ca. 18 Meg
 	virtual ~ZFAudioSystem();
 
@@ -172,6 +176,7 @@ private:
 	int ModifyResHandlePriority(string strFileName, int mod);
 	int GetResHandlePriority(string strFileName);
 	bool GetSoundWithLowestPriority(string& strRes);
+
 };
 
 #endif // #ifndef _THE_ZFAUDIOSYSTEM_H_

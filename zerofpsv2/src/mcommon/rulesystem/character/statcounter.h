@@ -26,7 +26,7 @@ public:
    void SetMaxValue (int iMax)          { m_iMax = iMax; }
    void SetMinValue (int iMin)          { m_iMin = iMin; }
 
-   int Max()                            { return m_iMax; }
+   int Max2()                            { return m_iMax; }
 
 };
 

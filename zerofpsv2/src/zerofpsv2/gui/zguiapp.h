@@ -84,7 +84,7 @@ public:
 	bool CreateMenu(char* szFileName);
 	int  GetWndID(char* szResName); // returns -1 if no window exist and can be used to check if a window exist from script.
 	void ClearListbox(char* szName);
-	void AddListItem(char* szListboxResName, char* szText);
+	void AddListItem(char* szListboxResName, char* szText, bool bSelect=false);
 //	void AddListItem(int iListboxID, char* szText);
 	bool IsWndVisible(char* szResName);
 	void ResizeWnd(char* szResName, int w, int h);

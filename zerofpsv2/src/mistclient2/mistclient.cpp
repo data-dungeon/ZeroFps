@@ -294,6 +294,7 @@ void MistClient::UpdateCharacter()
 				pkEnv->SetEnviroment("data/enviroments/rain.env");
 			}
 		}		
+
 	}
 }
 
@@ -302,6 +303,7 @@ void MistClient::OnHud(void)
 {	
 
 }
+
 
 
 void MistClient::OnClientStart(void)

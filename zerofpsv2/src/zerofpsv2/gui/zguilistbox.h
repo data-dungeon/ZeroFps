@@ -64,7 +64,8 @@ public:
 	void SetResizeFlags(bool bHorz, bool bVert);
 
 private:
-	
+
+	void SendSelItemMsg();
 	void UpdateList();
 	void ScrollItems(ZGuiScrollbar* pkScrollbar);
 	void CreateInternalControls();

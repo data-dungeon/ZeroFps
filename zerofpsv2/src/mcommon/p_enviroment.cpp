@@ -372,7 +372,7 @@ void P_Enviroment::ResetEnviroment()
 	
 	//m_pkRender->SetFog(Vector4(0,0,0,0),0,50,false);
 	m_pkEntity->DeleteProperty("P_PSystem");
-	m_pkEntity->DeleteProperty("P_AmbientSound");
+//	m_pkEntity->DeleteProperty("P_AmbientSound");
 	m_pkEntity->DeleteProperty("P_SkyBoxRender");	
 	
 	m_pkCurrentLP = NULL;

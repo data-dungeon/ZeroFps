@@ -35,7 +35,6 @@ void ZeroEd::SetupGuiEnviroment()
 
 	CheckButton("PlaceongroundButton", m_bPlaceObjectsOnGround);
 	CheckButton("DisableFreeZoneBuildBn", m_bDisableFreeZonePlacement);
-	
 }
 
 void ZeroEd::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
@@ -192,25 +191,69 @@ void ZeroEd::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 				RemoveSelProperty();
 			}
 		}
-   //   else
-   //   if(strMainWnd == "CustomEntitiesPage")
-   //   {
-			//if(strWndClicked == "AddToScriptBn")
-			//{            
-   //         if(IsWndVisible("SaveScriptFileNameEb"))
-   //            SaveCurrentToScript();
-   //         else
-   //         {
-   //            ShowWnd("SaveScriptFileNameEb",true);
-   //            GetWnd("ObjectTree")->Resize(200, 200-60, false);
-   //         }
-			//}
-   //   }
+      else
+      if(strMainWnd == "AmbientSoundPage")
+      {
+			if(strWndClicked == "AddPointsToSounAreaBn")
+			{            
+				if(IsButtonChecked("AddPointsToSounAreaBn"))
+				{
+					printf("add points\n");
+					m_pkAmbientSoundAreas->m_bAddPointsToSoundArea = true;
+				}
+				else
+				{
+					printf("stop adding points\n");
+					m_pkAmbientSoundAreas->m_bAddPointsToSoundArea = false;
+				}
+			}
+			else
+			if(strWndClicked == "CreateAmbienSounBn")
+			{
+				char* szArea = GetText("NewAsAreaNameEb");
+				char* szFileName = GetText("NewAsFileNameEb");
+
+				if(szArea != NULL && szFileName != NULL)
+				{
+					string strSound = m_pkAmbientSoundAreas->GetAmbientSound(szArea);
+
+					if(strSound.empty())
+					{
+						AddListItem("AmbientSoundList", szArea, false);
+						m_pkAmbientSoundAreas->CreateNewAmbientArea(szArea); 
+						m_pkAmbientSoundAreas->SetAmbientSound(szArea, szFileName);
+					}
+					else
+					{
+						m_pkAmbientSoundAreas->SetAmbientSound(szArea, szFileName);
+					}
+				}
+			}
+			else
+			if(strWndClicked == "RemoveAmbienSounBn")
+			{
+				ZGuiListitem* pkItem = ((ZGuiListbox*)GetWnd("AmbientSoundList"))->GetSelItem();  
+				if(pkItem)
+				{
+					m_pkAmbientSoundAreas->RemoveAmbientArea(string(pkItem->GetText()));
+					((ZGuiListbox*)GetWnd("AmbientSoundList"))->RemoveItem(pkItem, false); 
+					SetText("NewAsAreaNameEb", "");
+					SetText("NewAsFileNameEb", "");
+				}
+			}
+			else
+			if(strWndClicked == "ClearAmbienAreaBn")
+			{
+				char* szArea = GetSelItem("AmbientSoundList");
+				if(szArea)
+					m_pkAmbientSoundAreas->ClearAllPointsInAmbientArea(szArea);
+			}
+      }
 		else
 		if(strMainWnd == "AddNewProperyWnd")
 		{
 			char* item;
-			Entity* pkEnt;
+//			Entity* pkEnt;
 			if(strWndClicked == "AddPropertyBn")
 			{
 				if((item = GetSelItem("AllPropertyList")))
@@ -290,6 +333,21 @@ void ZeroEd::OnClickListbox(int iListBoxID, int iListboxIndex, ZGuiWnd* pkMain)
 				string szFull = "data/enviroments/" + string(szPreset);
 				printf("setting enviroment %s\n", szFull.c_str());
 				SetZoneEnviroment( szFull.c_str()  );  
+			}
+		}
+	}
+	else
+	if(strMainWndName == "AmbientSoundPage")
+	{
+		if(strListBox == "AmbientSoundList")
+		{
+			char *szPreset = static_cast<ZGuiListbox*>(pkListBox)->GetSelItem()->GetText();
+			if(szPreset)
+			{
+				m_pkAmbientSoundAreas->m_strAmbientAreaEdited = szPreset;
+				SetText("NewAsAreaNameEb", (char*)m_pkAmbientSoundAreas->m_strAmbientAreaEdited.c_str());
+				SetText("NewAsFileNameEb", (char*)m_pkAmbientSoundAreas->GetAmbientSound(
+					m_pkAmbientSoundAreas->m_strAmbientAreaEdited).c_str());
 			}
 		}
 	}
@@ -413,6 +471,7 @@ void ZeroEd::OnClickTabPage(ZGuiTabCtrl *pkTabCtrl, int iNewPage, int iPrevPage)
 		case 4:
 			if(GetWnd("AddNewProperyWnd"))GetWnd("AddNewProperyWnd")->Hide();
 			if(GetWnd("EditPropertyWnd"))GetWnd("EditPropertyWnd")->Hide();
+			m_iEditMode = EDIT_AMBIENTSOUNDS;
 			break;
 		}
 	}

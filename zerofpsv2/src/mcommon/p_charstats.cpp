@@ -110,7 +110,7 @@ void CharacterProperty::Save(ZFIoInterface* pkPackage)
       strcpy( temp, (*kPointIte).first.c_str() ); // name
 	   pkPackage->Write((void*)&temp,128,1);        
 
-      fValue = float((*kPointIte).second.Max()); // max value
+      fValue = float((*kPointIte).second.Max2()); // max value
 	   pkPackage->Write((void*)&fValue,sizeof(float),1);        
 
       fValue = float((*kPointIte).second.Value()); // value
@@ -400,7 +400,7 @@ void CharacterProperty::PackTo(NetPacket* pkNetPacket, int iConnectionID )
          pkNetPacket->Write( &iStuff, sizeof(int) );
           
          int iHP = m_pkCharStats->GetHP(); 
-         int iMaxHP = m_pkCharStats->m_kPointStats["hp"].Max();
+         int iMaxHP = m_pkCharStats->m_kPointStats["hp"].Max2();
 
          // send hp
          pkNetPacket->Write( &iHP, sizeof(int) );

@@ -116,9 +116,15 @@ void ZGuiButton::SetButtonHighLightSkin(ZGuiSkin* pkSkin)
 
 void ZGuiButton::GetWndSkinsDesc(vector<SKIN_DESC>& pkSkinDesc) const
 {
+
+	//pkSkinDesc.push_back( SKIN_DESC(&(ZGuiSkin*) m_pkSkinBnUp, string("Button up")) );
+	//pkSkinDesc.push_back( SKIN_DESC(&(ZGuiSkin*) m_pkSkinBnDown, string("Button down")) );
+	//pkSkinDesc.push_back( SKIN_DESC(&(ZGuiSkin*) m_pkSkinBnHLight, string("Button focus")) );
+
 	pkSkinDesc.push_back( SKIN_DESC( (ZGuiSkin**)&m_pkSkinBnUp, string("Button up")) );
 	pkSkinDesc.push_back( SKIN_DESC( (ZGuiSkin**)&m_pkSkinBnDown, string("Button down")) );
 	pkSkinDesc.push_back( SKIN_DESC( (ZGuiSkin**)&m_pkSkinBnHLight, string("Button focus")) );
+
 }
 
 

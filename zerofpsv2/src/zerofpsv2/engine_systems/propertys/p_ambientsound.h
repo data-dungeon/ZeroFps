@@ -4,7 +4,7 @@
 #include "../../engine/property.h"
 #include "../engine_systems_x.h"
 #include "../audio/zfaudiosystem.h"
-#include "../../engine/zerofps.h"
+#include "../../engine/entitymanager.h"
 
 using namespace std;
 
@@ -12,26 +12,40 @@ class ENGINE_SYSTEMS_API P_AmbientSound : public Property
 {
 	private:
 
-		float m_fHearableDistance;
-		//char* m_szFileName;
-		string m_strFileName;
-		bool m_bLoop;
-		bool m_bStarted;
-		bool m_bSoundHaveBeenSaved; ///< when the sound loads
-		bool m_bManagedByAudioSystem; ///< sätt till true om du vill att ljudet 
-												///< skall stoppas/ startas automatiskt av systemet
-
 		ZFAudioSystem* m_pkAudioSystem;
-		ZeroFps* m_pkFps;
+		EntityManager* m_pEntityMan;
+
+		// Clientdata
+		bool m_bChangeSound; // bara på klienten
+		float m_fGain;
+		int m_iSoundID;
+		string m_strSound;
+		float m_fFadeTimer;
+
+		void FadeGain(bool bOut);
+
+		// Serverdata
+		int m_iCurrentAmbientArea;
+		bool m_bDotFileLoaded;
+
+		bool LoadDotFile(string strFileName);
+		bool PntInPolygon(Vector2 *pt, vector<Vector2*>& vPolygon);
+
+		inline int IsLeft( Vector2 *P0, Vector2 *P1, Vector2 *P2 ) 
+		{
+			return ( (P1->x - P0->x) * (P2->y - P0->y) - (P2->x - P0->x) * (P1->y - P0->y) );
+		}
+
+		struct DOTFILE_INFO
+		{
+			string m_strAreaName;
+			string m_strFileName;
+			vector<Vector2*> m_kPolygon;	
+		};
+
+		vector<DOTFILE_INFO> m_kDotArray;
 
 	public:
-		void Stop(); ///< OBS! Ifall detta property har flaggan m_bManagedByAudioSystem satt till true
-						 ///< så måste ett anrop till denna funktion göras innan ett objektet förstörs, annars 
-						 ///< forstätter ljudet att spelas upp! Detta eftersom ljud i normala fall skall
-						 ///< fortsätta spelas (hanteras av audio systmet) efter det att zonsystemet har 
-						 ///< tagit bort objektet.
-
-		bool SetSound(char* szFileName, bool bPlayOnes=false, float fHearableDistance=90.0f);
 
 		P_AmbientSound();
 		~P_AmbientSound();
@@ -44,14 +58,9 @@ class ENGINE_SYSTEMS_API P_AmbientSound : public Property
 		void PackTo(NetPacket* pkNetPacket, int iConnectionID );
 		void PackFrom(NetPacket* pkNetPacket, int iConnectionID );
 
-
-
 	protected:
 
 		vector<PropertyValues> GetPropertyValues();
-
-		
-
 };
 
 Property* Create_AmbientSound();

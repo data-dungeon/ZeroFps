@@ -185,7 +185,10 @@ ZGuiListitem* ZGuiListbox::AddItem(char* strText, unsigned int iIndex, bool bSel
 	}
 
 	if(bSelect)
-		m_pkSelectedItem = pkNewItem;
+	{
+		SelItem(strText);
+		//m_pkSelectedItem = pkNewItem;
+	}
 
 	return pkNewItem;
 }
@@ -293,26 +296,7 @@ bool ZGuiListbox::Notify(ZGuiWnd* pkWnd, int iCode)
 					// Select new item
 					m_pkSelectedItem = (*it);
 
-					// Send a scroll message to the main winproc...
-					int* piParams = new int[2];
-					piParams[0] = GetID(); // Listbox ID
-					piParams[1] = m_pkSelectedItem->GetIndex(); // list item index
-					
-					ZGui* pkGui = GetGUI();
-					if(pkGui == NULL)
-					{
-						pkGui = GetParent()->GetGUI();
-						ZFAssert(pkGui, "ZGuiListbox::Notify, GetGUI = NULL");
-					}
-
-					callbackfunc cb = pkGui->GetActiveCallBackFunc();
-					ZFAssert(cb, "ZGuiListbox::Notify, GetActiveCallBackFunc = NULL");
-
-					ZGuiWnd* pkActivMainWnd = pkWnd->GetParent()->GetParent() ; //pkGui->GetActiveMainWnd();
-					ZFAssert(pkActivMainWnd, "ZGuiListbox::Notify, pkGui->GetActiveMainWnd() = NULL");
-					
-					cb(pkActivMainWnd, ZGM_SELECTLISTITEM, 2, piParams);
-					delete[] piParams;
+					SendSelItemMsg();
 
 					break;
 				 }
@@ -538,6 +522,8 @@ bool ZGuiListbox::SelItem(int iIndex)
 				 if(m_bIsMenu == false)
 					m_pkSelectedItem->Select();
 
+				 SendSelItemMsg();
+
 				 //ZGuiWnd::m_pkFocusWnd = m_pkSelectedItem->GetButton();
 				 break;
 			 }
@@ -568,6 +554,8 @@ bool ZGuiListbox::SelItem(const char* szText)
 
 				 if(m_bIsMenu == false)
 					m_pkSelectedItem->Select();
+
+					SendSelItemMsg();
 
 				 bSuccess = true;
 				 break;
@@ -664,4 +652,30 @@ void ZGuiListbox::SetFont(ZGuiFont* pkFont)
    {
 		(*it)->GetButton()->SetFont(pkFont);
 	}
+}
+
+
+
+
+void ZGuiListbox::SendSelItemMsg()
+{
+	// Send a scroll message to the main winproc...
+	int* piParams = new int[2];
+	piParams[0] = GetID(); // Listbox ID
+	piParams[1] = m_pkSelectedItem->GetIndex(); // list item index
+
+	ZGui* pkGui = GetGUI();
+	if(pkGui == NULL)
+	{
+		pkGui = GetParent()->GetGUI();
+		ZFAssert(pkGui, "ZGuiListbox::Notify, GetGUI = NULL");
+	}
+
+	callbackfunc cb = pkGui->GetActiveCallBackFunc();
+	ZFAssert(cb, "ZGuiListbox::Notify, GetActiveCallBackFunc = NULL");
+
+	ZGuiWnd* pkActivMainWnd = GetParent() ; //pkGui->GetActiveMainWnd();
+	ZFAssert(pkActivMainWnd, "ZGuiListbox::Notify, pkGui->GetActiveMainWnd() = NULL");
+
+	cb(pkActivMainWnd, ZGM_SELECTLISTITEM, 2, piParams);
 }

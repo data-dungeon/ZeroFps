@@ -1579,6 +1579,10 @@ bool ZGui::OnMouseUpdate(int x, int y, bool bLBnPressed,
 							if(pkParent && typeid(*pkParent)==typeid(ZGuiMenu))
 								pkMainWnd = pkParent;
 
+							// Har man klickat på en checkbox via en label så är klickfönstret checkboxen.
+							if(pkParent && typeid(*pkParent)==typeid(ZGuiCheckbox))
+								ZGuiWnd::m_pkWndClicked = pkParent;
+
 							pkParams[0] = ZGuiWnd::m_pkWndClicked->GetID(); // control id
 							pkParams[1] = (pkFocusWindow->m_bAcceptRightClicks && bRightReleased); // höger musknapp har triggat knapp kommandot
 							m_pkActiveMainWin->pkCallback(pkMainWnd, ZGM_COMMAND,2,pkParams);

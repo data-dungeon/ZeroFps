@@ -2,7 +2,7 @@
 #include "../zerofpsv2/basic/zfbasicfs.h"
 
 #include "../mcommon/p_characterproperty.h"
-#include "../zerofpsv2/engine_systems/propertys/p_light.h"1
+#include "../zerofpsv2/engine_systems/propertys/p_light.h"
 
 PlayerDatabase::PlayerDatabase()
 {

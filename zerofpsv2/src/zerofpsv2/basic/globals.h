@@ -11,31 +11,34 @@
 
 using namespace std;
 
-// some god makros
-//#ifndef max
-//#define max(a,b)            (((a) > (b)) ? (a) : (b))
-//#endif
-template <class Any> 
-inline float BASIC_API Max(Any a,Any b)
-{
-	if(a > b)
-		return a;
-	else
-		return b;
-}
+#ifdef WIN32
 
-template <class Any> 
-inline float BASIC_API Min(Any a,Any b)
-{
-	if(a < b)
-		return a;
-	else
-		return b;
-}
+	#define Max(a,b)            (((a) > (b)) ? (a) : (b))
+	#define Min(a,b)            (((a) < (b)) ? (a) : (b))
 
-//#ifndef min
-//#define min(a,b)            (((a) < (b)) ? (a) : (b))
-//#endif
+#endif 
+
+#ifndef WIN32
+
+	template <class Any> 
+	inline float BASIC_API Max(Any a,Any b)
+	{
+		if(a > b)
+			return a;
+		else
+			return b;
+	}
+
+	template <class Any> 
+	inline float BASIC_API Min(Any a,Any b)
+	{
+		if(a < b)
+			return a;
+		else
+			return b;
+	}
+
+#endif 
 
 //some constants
 #define PId2	1.5707963279489

@@ -211,7 +211,7 @@ class ENGINE_API ZeroFps : public I_ZeroFps {
 		Render*					m_pkRender;					///< Renders Graphic primitives
 		Console*					m_pkConsole;				///< ZeroFps Console.
 		EntityManager*			m_pkEntityManager;		///< In Game Object System.
-		ZFAudioSystem*			m_pkAudioSystem;			///< Sound
+		ZFAudioSystem*			m_pkAudioSystem;			///< Soundy
 		NetWork*					m_pkNetWork;				///< NetWork Interface.
 		GLGuiRender*			m_pkGuiRenderer;			///< Gui - Zeb
 		ZGuiResourceManager*	m_pkGuiMan;					///< Gui - Zeb

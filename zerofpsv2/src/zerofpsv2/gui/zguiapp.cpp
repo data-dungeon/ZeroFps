@@ -727,7 +727,7 @@ bool ZGuiApp::CreateNewRadiobuttonGroup(const char *szName, int id)
 	}
 }*/
 
-void ZGuiApp::AddListItem(char *szListboxResName, char *szText)
+void ZGuiApp::AddListItem(char *szListboxResName, char *szText, bool bSelect)
 {
 	ZGuiWnd* pkWnd = m_pkResMan->Wnd(szListboxResName);
 
@@ -751,7 +751,7 @@ void ZGuiApp::AddListItem(char *szListboxResName, char *szText)
 
 		ZGuiListbox* pkListBox = static_cast<ZGuiListbox*>(pkWnd);
 		int iIndex = pkListBox->GetItemCount(); 
-		pkListBox->AddItem(szText, iIndex, false); 
+		pkListBox->AddItem(szText, iIndex, bSelect); 
 	}
 	else
 	{
@@ -764,7 +764,7 @@ void ZGuiApp::AddListItem(char *szListboxResName, char *szText)
 		}
 
 		ZGuiCombobox* pkComboBox = static_cast<ZGuiCombobox*>(pkWnd);
-		pkComboBox->AddItem(szText, -1, false); 
+		pkComboBox->AddItem(szText, -1, bSelect); 
 	}
 }
 

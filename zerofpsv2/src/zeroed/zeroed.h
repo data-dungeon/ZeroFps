@@ -40,6 +40,8 @@
 
 #include "../mcommon/p_arcadecharacter.h"
 
+#include "ambientsoundareas.h"
+
 //const string CREATED_SCRIPTS_DIR = "data/script/custom_scripts/";
 
 /**	\brief	Da ZeroEd
@@ -78,6 +80,8 @@ class ZeroEd :public Application , public ZGuiApp {
 			FID_SNAPSAVE,
 			FID_SNAPLOAD,
 			FID_TEST_JIDDRA,		// Owned by Vim.
+
+			FID_TOGGLE_AMBIENTSOUNDAREA
 		};
 			
 		enum EditMode_e
@@ -85,20 +89,22 @@ class ZeroEd :public Application , public ZGuiApp {
 			EDIT_ZONES,
 			EDIT_OBJECTS,
 			EDIT_HMAP,
-			EDIT_MAX,		
+			EDIT_MAX,
+			EDIT_AMBIENTSOUNDS,		
 		};
-		
 		
 		//wierd stuff
 		char		szCoolName[256];
 		string	strMasterSmiley;
 
-		
+		// zone and object edit
 		bool m_bPlaceObjectsOnGround;
 		bool m_bDisableFreeZonePlacement;
 		vector< pair<Vector3,Vector3> > m_kAddedZonePlacement;
 		bool m_bNeedToRebuildZonePosArray;
 
+		// ambient sound areas
+		AmbientSoundAreas* m_pkAmbientSoundAreas;
 		
 		string	m_strWorldDir;						// The current dir for the world. Use for SaveAs and Title.
 
@@ -210,15 +216,18 @@ class ZeroEd :public Application , public ZGuiApp {
 		void ToogleLight(bool bEnabled);
 		void RotateActive();
 
-		HeightMap* 	SetPointer();
-		void 			DrawHMEditMarker(HeightMap* pkHmap, Vector3 kCenterPos, float fInRadius, float fOutRadius );
-		void 			HMModifyCommand(float fSize);
+		HeightMap* SetPointer();
+
+		void DrawHMEditMarker(HeightMap* pkHmap, Vector3 kCenterPos, float fInRadius, float fOutRadius );
+
+		void HMModifyCommand(float fSize);
 
 		//input
 		void 	Input_Camera(float fMouseX, float fMouseY);
 		void 	Input_EditTerrain();
 		void 	Input_EditZone();
 		void 	Input_EditObject(float fMouseX, float fMouseY);		
+		void Input_EditAmbientSounds();
 		bool	DelayCommand();			//make a delay
 		
 		//network
@@ -272,6 +281,7 @@ class ZeroEd :public Application , public ZGuiApp {
 		bool IsValid()		{ return true; }
 
 		//void SendAppMessage(NetPacket* pkNet);
+
 };
 
 

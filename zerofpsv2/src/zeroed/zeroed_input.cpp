@@ -106,7 +106,9 @@ void ZeroEd::Input_EditZone()
 	if(m_pkInputHandle->Pressed(KEY_3)) m_kZoneSize.Set(16,16,16);	
 	if(m_pkInputHandle->Pressed(KEY_4)) m_kZoneSize.Set(32,16,32);	
 	if(m_pkInputHandle->Pressed(KEY_5)) m_kZoneSize.Set(64,16,64);		
-	if(m_pkInputHandle->Pressed(KEY_6)) m_kZoneSize.Set(1024,32,1024);		
+	if(m_pkInputHandle->Pressed(KEY_6)) m_kZoneSize.Set(1024,32,1024);	
+
+
 }
 
 
@@ -277,6 +279,23 @@ void ZeroEd::Input_EditObject(float fMouseX, float fMouseY)
 	kNp.Write(kMove);
 	m_pkZeroFps->RouteEditCommand(&kNp);
 
+}
+
+// Handles input for Edit Ambient Areas
+void ZeroEd::Input_EditAmbientSounds()
+{
+	if(m_pkInputHandle->Pressed(MOUSELEFT) && !DelayCommand())
+	{
+		if(m_pkAmbientSoundAreas->m_bAddPointsToSoundArea && !m_pkAmbientSoundAreas->m_strAmbientAreaEdited.empty())
+		{
+			Vector3 p = m_kZoneMarkerPos;
+			p.x+=m_kZoneSize.x/2;
+			p.z-=m_kZoneSize.z/2;
+
+			m_pkAmbientSoundAreas->AddPointToAmbientArea(
+				m_pkAmbientSoundAreas->m_strAmbientAreaEdited, Vector2(p.x, p.z));
+		}
+	}
 }
 
 void ZeroEd::Input_Camera(float fMouseX, float fMouseY)
@@ -472,6 +491,7 @@ void ZeroEd::Input()
 		if(m_iEditMode == EDIT_HMAP)				Input_EditTerrain() ;
 		if(m_iEditMode == EDIT_ZONES)				Input_EditZone();
 		if(m_iEditMode == EDIT_OBJECTS)			Input_EditObject(float(x),float(z));
+		if(m_iEditMode == EDIT_AMBIENTSOUNDS)  Input_EditAmbientSounds();
 
 		if(m_pkInputHandle->VKIsDown("solo"))				SoloToggleView();
 	}
@@ -590,11 +610,6 @@ Vector3 ZeroEd::Get3DMousePos(bool m_bMouse=true)
 	
 	return dir;
 }
-
-
-
-
-
 
 
 
