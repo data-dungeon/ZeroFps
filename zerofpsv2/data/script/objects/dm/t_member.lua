@@ -17,16 +17,16 @@ end
 
 function Init()
 	SetMoveSpeed (SIGetSelfID(), 6.5);
-	AddOffenciveActionQuot(SIGetSelfID(), "data/sound/robot/I give him my best.wav");
-	AddOffenciveActionQuot(SIGetSelfID(), "data/sound/robot/If it bleeds, we can kill it.wav");
-	AddOffenciveActionQuot(SIGetSelfID(), "data/sound/robot/he's already dead.wav");
-	AddOffenciveActionQuot(SIGetSelfID(), "data/sound/robot/are you ready to be fucked, man.wav");
-	AddDefenciveActionQuot(SIGetSelfID(), "data/sound/robot/well done, junior.wav");
-	AddDefenciveActionQuot(SIGetSelfID(), "data/sound/robot/what.wav");
-	AddDeathSound(SIGetSelfID(), "data/sound/robot/death1.wav");
-	AddMoveCharSound(SIGetSelfID(), "data/sound/robot/slaving for you.wav");
-	AddMoveCharSound(SIGetSelfID(), "data/sound/robot/my bags are packed.wav");
-	AddSelectCharSound(SIGetSelfID(), "data/sound/robot/yes my lord.wav");
+	AddOffenciveActionQuot(SIGetSelfID(), "data/sound/cyborg/I give him my best.wav");
+	AddOffenciveActionQuot(SIGetSelfID(), "data/sound/cyborg/If it bleeds, we can kill it.wav");
+	AddOffenciveActionQuot(SIGetSelfID(), "data/sound/cyborg/he's already dead.wav");
+	AddOffenciveActionQuot(SIGetSelfID(), "data/sound/cyborg/are you ready to be fucked, man.wav");
+	AddDefenciveActionQuot(SIGetSelfID(), "data/sound/cyborg/well done, junior.wav");
+	AddDefenciveActionQuot(SIGetSelfID(), "data/sound/cyborg/what.wav");
+	AddDeathSound(SIGetSelfID(), "data/sound/cyborg/death1.wav");
+	AddMoveCharSound(SIGetSelfID(), "data/sound/cyborg/slaving for you.wav");
+	AddMoveCharSound(SIGetSelfID(), "data/sound/cyborg/my bags are packed.wav");
+	AddSelectCharSound(SIGetSelfID(), "data/sound/cyborg/yes my lord.wav");
 end
 
 function FirstRun()
