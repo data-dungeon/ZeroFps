@@ -23,6 +23,7 @@ void GuiAppLua::Init(ZGuiApp* pkGuiApp, ZFScriptSystem* pkScript)
 	pkScript->ExposeFunction("IsWndVisible", GuiAppLua::IsWndVisibleLua); 
 	pkScript->ExposeFunction("CloseWnd", GuiAppLua::CloseWndLua); 
 	pkScript->ExposeFunction("SetTextInt", GuiAppLua::SetTextInt); 
+	pkScript->ExposeFunction("SetTextString", GuiAppLua::SetTextStringLua); 
 	pkScript->ExposeFunction("AddTreeItem", GuiAppLua::AddTreeItemLua);
 	pkScript->ExposeFunction("SetMoveArea", GuiAppLua::SetMoveAreaLua);
 
@@ -287,6 +288,29 @@ int GuiAppLua::SetTextInt(lua_State* pkLua)
 	g_pkScript->GetArg(pkLua, 1, &dValue);
 
 	g_pkGuiApp->SetTextInt(szWndName, (int) dValue);
+
+	return 1;
+}
+
+
+// SetText
+// Parameters:
+// (0) char* resName of the Listbox
+// (1) 
+int GuiAppLua::SetTextStringLua(lua_State* pkLua)
+{
+	int iNumArgs = g_pkScript->GetNumArgs(pkLua);
+
+	if(iNumArgs != 2)
+		return 0;
+
+	char szWndName[100];
+	g_pkScript->GetArg(pkLua, 0, szWndName);
+
+	char szText[500];
+	g_pkScript->GetArg(pkLua, 1, szText);
+
+	g_pkGuiApp->SetText(szWndName, szText);
 
 	return 1;
 }

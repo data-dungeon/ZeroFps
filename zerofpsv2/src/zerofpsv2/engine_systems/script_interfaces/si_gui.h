@@ -28,6 +28,7 @@ namespace GuiAppLua
 	int ENGINE_SYSTEMS_API ClearListboxLua(lua_State* pkLua);
 	int ENGINE_SYSTEMS_API GetWndLua(lua_State* pkLua);
 	int ENGINE_SYSTEMS_API SetTextInt(lua_State* pkLua);
+	int ENGINE_SYSTEMS_API SetTextStringLua(lua_State* pkLua);
 	int ENGINE_SYSTEMS_API AddTreeItemLua(lua_State* pkLua);
 	int ENGINE_SYSTEMS_API ShowWndLua(lua_State* pkLua);
 	int ENGINE_SYSTEMS_API SetMoveAreaLua(lua_State* pkLua);

@@ -108,6 +108,11 @@ void DarkMetropolis::GUI_OnCommand(int iID, bool bRMouseBnClick,
 			GetWnd("StartBaseIconLabel")->SetSkin((*m_itStartBase)->pkIcon);
 		}
 		else
+		if(strClickName == "LoadNewGameBn")
+		{
+
+		}
+		else
 		if(strClickName == "QuitBn")
 		{
 			m_pkFps->QuitEngine();
@@ -119,18 +124,32 @@ void DarkMetropolis::GUI_OnCommand(int iID, bool bRMouseBnClick,
 		if(strClickName == "StartNewGameDone")
 		{
 			if(!strlen(GetWnd("ClanNameEB")->GetText()) == 0)
-			{
-			
+			{			
 				//start game
-				if(StartNewGame(GetWnd("ClanNameEB")->GetText(),GetWnd("TeamColorCB")->GetText()))
+				if(StartNewGame(GetWnd("ClanNameEB")->GetText(),
+					GetWnd("TeamColorCB")->GetText()))
 				{				
 					LoadGuiFromScript(m_pkScript,"data/script/gui/dm_ingame.lua");
 					pkMainWnd->Hide();
+
+					char* szWndToHide[] =
+					{
+						"GamePlayChar1Wnd", "GamePlayChar2Wnd", 
+						"GamePlayChar3Wnd", "GamePlayChar4Wnd", 
+						"GamePlayChar5Wnd", "GamePlayPanelWnd",
+						"GamePlayInfoWnd", "MembersWnd",
+						"MissionWnd", "BriefingWnd",
+						"BuyWnd", "SellWnd",
+					};
+
+					for(int i=0; i<sizeof(szWndToHide)/sizeof(szWndToHide[1]); i++)
+						ShowWnd(szWndToHide[i], false);
+					
 				}
 				else
 				{
-					//här fär du gärna lägga till något klagomål på att en clan med det namnet redan fins
-				
+					//här fär du gärna lägga till något klagomål på att en 
+					//clan med det namnet redan fins				
 				}
 			}
 		}
@@ -173,6 +192,106 @@ void DarkMetropolis::GUI_OnCommand(int iID, bool bRMouseBnClick,
 			LoadGuiFromScript(m_pkScript, 
 				"data/script/gui/dm_start.lua");
 			pkMainWnd->Hide();			
+		}
+		else
+		if(strClickName == "MissionsBn")
+		{
+			ShowWnd("MembersWnd", false);
+			ShowWnd("BuyWnd", false);
+			ShowWnd("SellWnd", false);
+
+			ZGuiWnd* pkMissionWnd = GetWnd("MissionWnd");
+			if(pkMissionWnd == NULL || !pkMissionWnd->IsVisible())
+			{
+				LoadGuiFromScript(m_pkScript, 
+					"data/script/gui/dm_mission.lua");
+			}
+			else
+			{
+				pkMissionWnd->Hide();
+			}
+		}
+		else
+		if(strClickName == "MembersBn")
+		{
+			ShowWnd("MissionWnd", false);
+			ShowWnd("BriefingWnd", false);
+			ShowWnd("BuyWnd", false);
+			ShowWnd("SellWnd", false);
+
+			if(IsWndVisible("MembersWnd"))
+				ShowWnd("MembersWnd", false);
+			else
+			{
+				LoadGuiFromScript(m_pkScript, 
+					"data/script/gui/dm_members.lua");	
+			}
+		}
+		else
+		if(strClickName == "ShopBn")
+		{
+			ShowWnd("MissionWnd", false);
+			ShowWnd("MembersWnd", false);
+			ShowWnd("BriefingWnd", false);
+
+			if(IsWndVisible("BuyWnd"))
+			{
+				ShowWnd("BuyWnd", false);
+				ShowWnd("SellWnd", false);
+			}
+			else
+			{
+				LoadGuiFromScript(m_pkScript, 
+					"data/script/gui/dm_shop.lua");	
+			}
+		}
+	}
+	else
+	if(strMainWnd == "MissionWnd")
+	{
+		if(strClickName == "BriefingBn")
+		{
+			LoadGuiFromScript(m_pkScript, 
+				"data/script/gui/dm_briefing.lua");
+			pkMainWnd->Hide();	
+		}
+		else
+		if(strClickName == "MissionCancelBn")
+		{
+			pkMainWnd->Hide();
+		}
+	}
+	else
+	if(strMainWnd == "BriefingWnd")
+	{
+		if(strClickName == "BriefingAcceptBn")
+		{
+			ZGuiWnd* pkInGamePanel = GetWnd("InGamePanelWnd");
+
+			if(pkInGamePanel)
+				pkInGamePanel->Hide();
+
+			GetWnd("ReputationLabel")->Hide();
+			GetWnd("MoneyLabel")->Hide();
+
+			LoadGuiFromScript(m_pkScript, 
+				"data/script/gui/dm_gameplay.lua");
+			pkMainWnd->Hide();	
+		}
+		else
+		if(strClickName == "BriefingCancelBn")
+		{
+			pkMainWnd->Hide();
+		}
+	}
+	else
+	if(strMainWnd == "GamePlayPanelWnd")
+	{
+		if(strClickName == "GamPlayMenuBn")
+		{
+			LoadGuiFromScript(m_pkScript, 
+				"data/script/gui/dm_start.lua");
+			pkMainWnd->Hide();	
 		}
 	}
 }

@@ -1259,3 +1259,20 @@ bool ZGuiApp::SORT_FILES::operator()(string x, string y)
 	//return (y.find(".") == string::npos);
 	return (y > x);
 }
+
+bool ZGuiApp::ShowWnd(char* szWndResName, bool bShow)
+{
+	ZGuiWnd* pkWnd = GetWnd(szWndResName);
+
+	if(pkWnd)
+	{
+		if(bShow)
+			pkWnd->Show();
+		else
+			pkWnd->Hide();
+
+		return true;
+	}
+
+	return false;
+}
