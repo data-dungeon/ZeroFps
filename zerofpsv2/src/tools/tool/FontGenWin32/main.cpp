@@ -1,6 +1,6 @@
 #include <windows.h>
 #include <stdio.h>
-#include "resource.h"
+#include "resource2.h"
 #include "../../../zerofpsv2/basic/image.h"
 
 bool bShowGrid = true;
@@ -445,7 +445,7 @@ static LRESULT CALLBACK WndProc (HWND hwnd, UINT uiMessage, WPARAM wParam, LPARA
 	case WM_COMMAND:
 		switch(LOWORD(wParam))
 		{
-		case ID_FILE_SAVE40001:
+		case ID_FILE_SAVEFONT:
 			SendMessage(hwnd, WM_KEYDOWN, VK_F5, 0);
 			break;
 		case ID_FILE_EXIT:

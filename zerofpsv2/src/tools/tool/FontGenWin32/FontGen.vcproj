@@ -169,7 +169,7 @@
 			Name="Header Files"
 			Filter="h;hpp;hxx;hm;inl">
 			<File
-				RelativePath=".\resource.h">
+				RelativePath=".\resource2.h">
 			</File>
 		</Filter>
 		<Filter
