@@ -183,7 +183,6 @@ void Game::OnIdle(void)
 			if(m_pkPlayerInventoryBox->IsOpen() || m_pkContainerBox->IsOpen() ||
 				m_pkExamineMenu->IsOpen())
 			{
-
 				LockPlayerCamera(true);
 			}
 			else
@@ -530,6 +529,21 @@ void Game::PlayerExamineObject()
 
 void Game::LockPlayerCamera(bool bLock)
 {
+	static int prev_x, prev_y;
+	static bool bSet = true;
+
+	if(bLock == true && bSet == true)
+	{
+		pkInput->MouseXY(prev_x, prev_y);
+		bSet = false;
+	}
+	
+	if(bLock == false && bSet == false)
+	{
+		pkInput->SetCursorInputPos(prev_x, prev_y);
+		bSet = true;
+	}
+
 	PlayerControlProperty* pkPlayerCtrl = static_cast<PlayerControlProperty*>
 		(m_pkPlayer->GetProperty("PlayerControlProperty"));
 
