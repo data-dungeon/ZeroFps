@@ -165,7 +165,7 @@ bool Gui::CreateWindows()
 	CreateMenu(m_pkEdit->pkIni, "../data/gui_resource_files/menu.txt");
 
 	// testing treebox
-	bool bTestingTreeBox = true;
+	bool bTestingTreeBox = false;
 	if(bTestingTreeBox)
 	{
 	CreateTestWnd();
@@ -658,15 +658,19 @@ void Gui::CreateTestWnd()
 	ZGuiTreebox* pkTreebox = new ZGuiTreebox(Rect(50,50,50+300,50+400), 
 		pkWnd, true, id++);
 
-	pkTreebox->InsertBranchSkin(0, GetSkin("treenode_n"));
-	pkTreebox->InsertBranchSkin(1, GetSkin("treenode_c"));
-	pkTreebox->InsertBranchSkin(2, GetSkin("treenode_o"));
+	pkTreebox->InsertBranchSkin(0, GetSkin("treenode_c"));
+	pkTreebox->InsertBranchSkin(1, GetSkin("treenode_o"));
+	pkTreebox->InsertBranchSkin(2, GetSkin("treenode_n"));
 
 	ZGuiTreebox::Node* pkParent = pkTreebox->AddItem(NULL, "Animal", 0, 1, 2);
 	ZGuiTreebox::Node* pkApa = pkTreebox->AddItem(pkParent, "Apa", 0, 1, 2);
 	pkTreebox->AddItem(pkParent, "Kossa", 0, 1, 2);
 	pkTreebox->AddItem(pkApa, "Green apa", 0, 1, 2);
 	pkTreebox->AddItem(pkApa, "Brun apa", 0, 1, 2);
+	ZGuiTreebox::Node* pkParent2 = pkTreebox->AddItem(pkParent, "Weapons", 0, 1, 2);
+	pkTreebox->AddItem(pkParent2, "Ninja", 0, 1, 2);
+	pkTreebox->AddItem(pkParent2, "Scroll", 0, 1, 2);
+	
 
 	pkWnd->SetSkin(new ZGuiSkin(255,255,255,0,0,0,1));
 	pkTreebox->SetSkin(new ZGuiSkin(255,255,255,0,0,0,1));

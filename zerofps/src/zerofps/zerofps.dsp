@@ -90,5 +90,9 @@ SOURCE=.\engine\zfresourcedb.cpp
 
 SOURCE=.\gui\zguitextbox.cpp
 # End Source File
+# Begin Source File
+
+SOURCE=.\gui\zguitreebox.cpp
+# End Source File
 # End Target
 # End Project

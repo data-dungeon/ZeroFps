@@ -59,6 +59,25 @@ void ZGuiTreebox::ShowNode(vector<Node*> itList, bool bShow)
 	}
 }
 
+static void GetNumOpenChilds(ZGuiTreebox::Node* pkNode, bool bShow)
+{	
+	ZGuiTreebox::Node* pkFirst = pkNode;
+	ZGuiTreebox::Node* pkParent = pkNode;
+
+	while(pkFirst != NULL)
+	{
+		pkFirst = pkFirst->pkNext;
+
+		if(pkFirst && pkFirst->pkPrev == pkParent)
+		{
+			if(bShow)
+				pkFirst->pkButton->Show();
+			else
+				pkFirst->pkButton->Hide();
+		}		
+	}
+}
+
 bool ZGuiTreebox::Notify(ZGuiWnd* pkWnd, int iCode)
 {
 	if(iCode == NCODE_CLICK_UP)
@@ -69,8 +88,22 @@ bool ZGuiTreebox::Notify(ZGuiWnd* pkWnd, int iCode)
 				if((*it)->pkButton == pkWnd)
 				{
 					bool bShow = ((ZGuiCheckbox*) pkWnd)->IsChecked();
-					ShowNode((*it)->m_kChilds, bShow);
-					OpenNode((*it),bShow);
+					ShowNode((*it)->m_kChilds, bShow); // Hide/Show childrens
+					//GetNumOpenChilds((*it), bShow);
+					OpenNode((*it), bShow);
+
+					if((*it)->m_kChilds.empty())
+					{
+						(*it)->pkButton->SetButtonCheckedSkin(GetItemSkin((*it)->ucSkinIndexOpen));
+						(*it)->pkButton->SetButtonUncheckedSkin(GetItemSkin((*it)->ucSkinIndexOpen));
+					}
+					else
+					{
+						if(bShow)
+							(*it)->pkButton->SetSkin(GetItemSkin((*it)->ucSkinIndexClosed));
+						else
+							(*it)->pkButton->SetSkin(GetItemSkin((*it)->ucSkinIndexOpen));
+					}
 				}
 			}
 	}
@@ -79,7 +112,7 @@ bool ZGuiTreebox::Notify(ZGuiWnd* pkWnd, int iCode)
 
 void ZGuiTreebox::CreateInternalControls()
 {
-
+	
 }
 
 ZGuiTreebox::Node* ZGuiTreebox::CreateNode( Node* pkParent, char* szText, 
@@ -92,10 +125,12 @@ ZGuiTreebox::Node* ZGuiTreebox::CreateNode( Node* pkParent, char* szText,
 	Node* pkNewItem = new Node;
 
 	int x, y;
-
+	
 	if(pkParent == NULL)
 	{
-		x = y = 0;
+		static int root_top = 0;
+		x = 0; y = root_top;
+		root_top += (BUTTON_SIZE+VERT_ROW_SPACE);
 	}
 	else
 	{
@@ -111,7 +146,13 @@ ZGuiTreebox::Node* ZGuiTreebox::CreateNode( Node* pkParent, char* szText,
 	bool bHaveChilds = false;
 
 	pkNewItem->pkPrev = pkParent;
+	pkNewItem->pkNext = NULL;
 	pkNewItem->bChildListIsOpen = false;
+
+	pkNewItem->ucSkinIndexNormal = uiSkinNormal;
+	pkNewItem->ucSkinIndexClosed = uiSkinClosed;
+	pkNewItem->ucSkinIndexOpen = uiSkinOpen;
+
 	Rect rcButton = Rect(x,y,x+BUTTON_SIZE,y+BUTTON_SIZE);
 	ZGuiCheckbox* pkButton = (pkNewItem->pkButton = 
 		new ZGuiCheckbox(rcButton, this, (pkParent == NULL), m_iID++));
@@ -121,14 +162,17 @@ ZGuiTreebox::Node* ZGuiTreebox::CreateNode( Node* pkParent, char* szText,
 
 	if(bHaveChilds)
 	{
-		pkButton->SetButtonCheckedSkin(GetItemSkin(uiSkinOpen));
-		pkButton->SetButtonUncheckedSkin(GetItemSkin(uiSkinClosed));
+		pkButton->SetButtonCheckedSkin(GetItemSkin(pkNewItem->ucSkinIndexOpen));
+		pkButton->SetButtonUncheckedSkin(GetItemSkin(pkNewItem->ucSkinIndexClosed));
 	}
 	else
 	{
-		pkButton->SetButtonCheckedSkin(GetItemSkin(uiSkinNormal));
-		pkButton->SetButtonUncheckedSkin(GetItemSkin(uiSkinNormal));
+		pkButton->SetButtonCheckedSkin(GetItemSkin(pkNewItem->ucSkinIndexClosed));
+		pkButton->SetButtonUncheckedSkin(GetItemSkin(pkNewItem->ucSkinIndexOpen));
 	}
+
+	if(!m_kNodeList.empty())
+		m_kNodeList.back()->pkNext = pkNewItem;
 
 	m_kNodeList.push_back(pkNewItem);
 
@@ -186,7 +230,7 @@ void ZGuiTreebox::OpenNode(ZGuiTreebox::Node *pkNode, bool bOpen)
 	Node* pkParent = pkNode->pkPrev;
 	if(pkParent != NULL)
 	{
-		int iSize = (pkNode->m_kChilds.size()+1) * (BUTTON_SIZE+VERT_ROW_SPACE);
+		int iSize = (pkNode->m_kChilds.size()) * (BUTTON_SIZE+VERT_ROW_SPACE);
 		int iTop = pkNode->pkButton->GetScreenRect().Top;
 
 		ZGuiCheckbox* pkButton;
@@ -195,11 +239,12 @@ void ZGuiTreebox::OpenNode(ZGuiTreebox::Node *pkNode, bool bOpen)
 			pkButton = pkParent->m_kChilds[i]->pkButton;
 			if(pkButton->GetScreenRect().Top > iTop)
 			{
-				int x = pkButton->GetScreenRect().Left; 
-				int y = iTop + BUTTON_SIZE+VERT_ROW_SPACE;
+				int x = pkButton->GetScreenRect().Left, y=0; 
 
 				if(bOpen == true) 
-					y = iTop + iSize;
+					y = pkButton->GetScreenRect().Top + iSize;
+				else
+					y = pkButton->GetScreenRect().Top - iSize;
 
 				pkButton->SetPos(x, y, true, true);
 				pkButton->SetMoveArea(Rect(x,y,x+BUTTON_SIZE,y+BUTTON_SIZE));
