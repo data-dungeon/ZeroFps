@@ -190,40 +190,50 @@ void Render::DrawHM(HeightMap *kmap) {
 	
 	GLfloat mat_specular[]={1,1,1,1};
 	GLfloat mat_shininess[]={10};
-  glMaterialfv(GL_FRONT,GL_SPECULAR,mat_specular);
-  glMaterialfv(GL_FRONT,GL_SHININESS,mat_shininess);
+	glMaterialfv(GL_FRONT,GL_SPECULAR,mat_specular);
+	glMaterialfv(GL_FRONT,GL_SHININESS,mat_shininess);
 
 	glTexEnvf(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE);
 
 	
 	int x;	
-	glFrontFace(GL_CW);
+	glFrontFace(GL_CW);// jag ritar medsols så d så
 	for(int z=0;z<kmap->m_iHmSize-1;z++){
-			
-//		int z=0;
-		glBegin(GL_TRIANGLE_STRIP);
-	  glNormal3f(0,1,0); //bad normals
 
-		x=0;
+		x=0;		
+		glBegin(GL_TRIANGLE_STRIP);		
 		p1=Vector3(x,kmap->verts[z*kmap->m_iHmSize+x].height,-z);				
-		p2=Vector3(x,kmap->verts[(z+1)*kmap->m_iHmSize+x].height,-z-1);			
-
-		
- 		glTexCoord2f(0.0,0.0);glVertex3fv((float*)&p1);		 		
+	   glNormal3fv((float*)&kmap->verts[z*kmap->m_iHmSize+x].normal);
+ 		glTexCoord2f(0.0,0.0);glVertex3fv((float*)&p1);
+ 		
+		p2=Vector3(x,kmap->verts[(z+1)*kmap->m_iHmSize+x].height,-z-1);			 		
+	   glNormal3fv((float*)&kmap->verts[(z+1)*kmap->m_iHmSize+x].normal);
  		glTexCoord2f(0.0,1.0);glVertex3fv((float*)&p2);		 				
-		for(x=1;x<kmap->m_iHmSize-1;x++) {
-			p3=Vector3(x+1,kmap->verts[z*kmap->m_iHmSize+x+1].height,-z);					
+ 		
+		for(x=1;x<kmap->m_iHmSize-1;x++) {			
+			p3=Vector3(x+1,kmap->verts[z*kmap->m_iHmSize+x+1].height,-z);							
+		   glNormal3fv((float*)&kmap->verts[z*kmap->m_iHmSize+x+1].normal);
+  			glTexCoord2f(x,0.0);glVertex3fv((float*)&p3);    			
+  			
 			p4=Vector3(x+1,kmap->verts[(z+1)*kmap->m_iHmSize+x+1].height,-z-1);
-		
-		
-  		glTexCoord2f(x,0.0);glVertex3fv((float*)&p3);    			
-  		glTexCoord2f(x,1.0);glVertex3fv((float*)&p4);    				
+		   glNormal3fv((float*)&kmap->verts[(z+1)*kmap->m_iHmSize+x+1].normal);  			
+  			glTexCoord2f(x,1.0);glVertex3fv((float*)&p4);    				
 	
 		}
 		glEnd();
 	}
-		glFrontFace(GL_CCW);
-		
+	glFrontFace(GL_CCW);
+	glPopMatrix();		
+	
+	SetColor(Vector3(255,0,0));
+	for(int z=0;z<kmap->m_iHmSize;z++)
+		for(int x=0;x<kmap->m_iHmSize;x++) {
+			p1=Vector3(x,kmap->verts[z*kmap->m_iHmSize+x].height,-z);
+ 			Line(p1,p1+kmap->verts[z*kmap->m_iHmSize+x].normal);
+	
+		}
+	
+	
 	/*
 	for(int z=0;z<HM_SIZE-1;z++){
 		for(int x=0;x<HM_SIZE-1;x++) {
@@ -242,7 +252,7 @@ void Render::DrawHM(HeightMap *kmap) {
 			glEnd();						
 		}		
 	}	*/
-	glPopMatrix();
+
 }
 
 
