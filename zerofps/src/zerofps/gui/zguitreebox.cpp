@@ -18,6 +18,11 @@ const int SCROLLBAR_WIDTH = 16;
 #define print_node(x) { if(x && x->pkButton) printf("%s\n", x->pkButton->GetText()); \
 	else printf("NULL\n"); }
 
+#define node_have_childs(n) !n->kChilds.empty()
+#define first_child(n) n->kChilds.front()
+#define next_node(n) n->pkNext
+#define node_parent(n) n->pkParent
+
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
@@ -555,6 +560,32 @@ bool ZGuiTreebox::DeleteNode(ZGuiTreeboxNode* pkNode, bool bRemoveFromMap)
 		return false;
 	}
 
+	vector<ZGuiTreeboxNode*> akDeleteList; 
+
+	for(itNode n=m_kNodeList.begin(); n!=m_kNodeList.end(); n++)
+	{
+		if((*n) == pkNode) // har vi hittat noden i huvudlistan.
+		{
+		}
+	}
+
+	return true;
+}
+
+/*
+bool ZGuiTreebox::DeleteNode(ZGuiTreeboxNode* pkNode, bool bRemoveFromMap)
+{
+	ZGuiTreeboxNode* pkParent = pkNode->pkParent;
+
+	if(pkNode == NULL)
+		return false;
+
+	if(pkNode->pkParent == NULL)
+	{
+		printf("ZGuiTreebox::DeleteNode, Can't delete the root node!\n");
+		return false;
+	}
+
 	for(itNode n=m_kNodeList.begin(); n!=m_kNodeList.end(); n++)
 		if((*n) == pkNode) // har vi hittat noden i huvudlistan.
 		{
@@ -602,3 +633,4 @@ bool ZGuiTreebox::DeleteNode(ZGuiTreeboxNode* pkNode, bool bRemoveFromMap)
 
 	return true;
 }
+*/
