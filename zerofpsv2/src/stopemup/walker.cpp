@@ -211,16 +211,16 @@ void P_Walker::Damage(int iDmg,int iKiller)
 		//create death object
 		m_pkEntityManager->CreateEntityFromScriptInZone("data/script/objects/walkerdeath.lua",	GetEntity()->GetWorldPosV(),GetEntity()->GetCurrentZone());				
 		
+		//create bouns
+		CreateBonus();
+		
 		//delete walker
 		m_pkEntityManager->Delete(GetEntity());			
 		
 		
 		//find killer and give him some bonus 
 		if(P_Player* pkPlayer = (P_Player*)m_pkEntityManager->GetPropertyFromEntityID(iKiller,"P_Player"))
-		{
 			pkPlayer->AddScore(m_iMaxLife);
-			CreateBonus();
-		}					
 	}
 }
 
