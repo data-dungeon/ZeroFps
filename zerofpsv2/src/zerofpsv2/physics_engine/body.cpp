@@ -29,7 +29,7 @@ void Body::Reset()
 	
 	m_kInertia.Inverse(m_kInertiaInverse,0.1);
 	
-	m_kInertiaInverse*=10;
+//	m_kInertiaInverse*=10;
 	
 	m_kMassCenter.Set(0,0,0);	
 	m_kPosition.Set(0,0,0);

@@ -1016,7 +1016,7 @@ Entity* MistClient::GetTargetObject()
 	
 	//cout<<"nr of targets: "<<kObjects.size()<<endl;
 	
-	float closest = 9999999999;
+	float closest = 999999999;
 	Entity* pkClosest = NULL;	
 	for(unsigned int i=0;i<kObjects.size();i++)
 	{
@@ -1352,7 +1352,7 @@ bool MistClient::PickZones()
 	vector<Entity*> kObjects;	
 	pkObjectMan->GetZoneObject()->GetAllObjects(&kObjects);
 		
-	float closest = 9999999999;
+	float closest = 999999999;
 	
 	for(unsigned int i=0;i<kObjects.size();i++)
 	{
@@ -1380,7 +1380,7 @@ bool MistClient::PickZones()
 		}
 	}
 	
-	if(closest != 9999999999)
+	if(closest != 999999999)
 		return true;
 	
 	return false;

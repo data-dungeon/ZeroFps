@@ -521,6 +521,7 @@ void MistServer::Input()
 					pkObj->SetLocalPosV(pkObj->GetLocalPosV() + Vector3(0,1 * pkFps->GetFrameTime(),0));			
 			if(pkInput->Pressed(KEY_RCTRL))
 					pkObj->SetLocalPosV(pkObj->GetLocalPosV() + Vector3(0,-1 * pkFps->GetFrameTime(),0));			
+			
 			//rotation		
 			if(pkInput->Pressed(KEY_INSERT))
 				pkObj->RotateLocalRotV(Vector3(100*pkFps->GetFrameTime(),0,0));			
@@ -784,7 +785,7 @@ Entity* MistServer::GetTargetObject()
 	pkObjectMan->TestLine(&kObjects,start,dir);
 	
 	
-	float closest = 9999999999;
+	float closest = 99999999;
 	Entity* pkClosest = NULL;	
 	for(unsigned int i=0;i<kObjects.size();i++)
 	{
