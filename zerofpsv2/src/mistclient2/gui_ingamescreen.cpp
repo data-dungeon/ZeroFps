@@ -75,6 +75,7 @@ void GuiMsgIngameScreen( string strMainWnd, string	strController,
 				if(ZGuiWnd::m_pkFocusWnd)
 					ZGuiWnd::m_pkFocusWnd->KillFocus();
 				g_kMistClient.ToggleGuiCapture(0);				
+				g_kMistClient.m_pkGui->m_bHandledMouse = false;
 			}
 
 			g_kMistClient.m_pkGui->m_bForceGUICapture = false;
