@@ -196,7 +196,7 @@ void SpellDlg::OnCommand(ZGuiWnd* pkWndClicked)
 
 				const char* szID = m_pkTexMan->GetFileName(tex_id);
 
-				m_pkQuickBoard->AddQuickItem( (char*) "data/textures/gui/spells/lightingball2.bmp", NULL );
+				m_pkQuickBoard->AddQuickItem( (char*) "data/textures/gui/spells/lightingball.bmp", NULL );
 			}
 		}
 }

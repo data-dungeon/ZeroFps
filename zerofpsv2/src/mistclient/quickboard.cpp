@@ -105,6 +105,8 @@ void QuickBoard::AddQuickItem(char *szIcon, char* szIconAlpha)
 
 	if(szIconAlpha)
 		pkLabelSkin->m_iBkTexAlphaID = m_pkTexMan->Load(szIconAlpha, 0);
+	else
+		pkLabelSkin->m_iBkTexAlphaID = -1;
 }
 
 void QuickBoard::OnCommand(ZGuiWnd* pkWndClicked)

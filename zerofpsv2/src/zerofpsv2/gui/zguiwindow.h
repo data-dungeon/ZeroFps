@@ -139,6 +139,7 @@ public:
 
 	bool m_bUseClipper;
 	bool m_bUseAlhpaTest; ///< true om systemet skall ta hänsyn till om man har klickat på en alpha yta
+	bool m_bAcceptRightClicks;
 
 protected:
 

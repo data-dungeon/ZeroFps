@@ -626,7 +626,7 @@ bool MistClient::IsValid()	{ return true; }
 
 void MistClient::OnCommand(int iID, ZGuiWnd *pkMainWnd)
 {
-	printf("Clicked\n");
+	printf("OnCommand\n");
 
 	ZGuiWnd* pkWndClicked = GetWnd(iID);
 

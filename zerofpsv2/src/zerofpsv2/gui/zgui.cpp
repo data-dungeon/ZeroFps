@@ -368,10 +368,17 @@ bool ZGui::OnMouseUpdate(int x, int y, bool bLBnPressed,
 
 	if(m_pkCapturedWindow == NULL)
 	{
+		bool bClicked = false;
+
+		if( bLeftButtonDown && m_bLeftButtonDown==false)
+			bClicked = true;
+
+		if( bRightButtonDown && m_bRightButtonDown==false)
+			bClicked = true;
+
 		// Skall vi byta main window?
 		MAIN_WINDOW* wnd;
-		if((bLeftButtonDown && m_bLeftButtonDown==false) && 
-			(wnd = FindMainWnd(x,y)))
+		if( bClicked && (wnd = FindMainWnd(x,y)) )
 		{
 			if(wnd != m_pkActiveMainWin)
 			{
@@ -449,7 +456,7 @@ bool ZGui::OnMouseUpdate(int x, int y, bool bLBnPressed,
 				if(pkParent) 
 					pkParent->SortChilds();
 				
-				if(bLeftPressed)
+				if(bLeftPressed || (pkFocusWindow->m_bAcceptRightClicks && bRightPressed) )
 				{
 					SetInputFocus(ZGuiWnd::m_pkWndClicked, true);
 					ZGuiWnd::m_pkWndClicked->Notify(ZGuiWnd::m_pkWndClicked,
@@ -480,11 +487,10 @@ bool ZGui::OnMouseUpdate(int x, int y, bool bLBnPressed,
 	}
 
 	// Är vänster musknapp nertryckt?
-	if(bLeftButtonDown == true && ZGuiWnd::m_pkWndClicked != NULL)
+	if( bLeftButtonDown == true)
 	{	
 		// Skall fönstret flyttas?
-		if(!(ZGuiWnd::m_pkWndClicked->GetMoveArea() == 
-			ZGuiWnd::m_pkWndClicked->GetScreenRect()))
+		if(!(ZGuiWnd::m_pkWndClicked->GetMoveArea() == ZGuiWnd::m_pkWndClicked->GetScreenRect()))
 		{
 			SetInputFocus(ZGuiWnd::m_pkWndClicked, true);
 
@@ -519,7 +525,7 @@ bool ZGui::OnMouseUpdate(int x, int y, bool bLBnPressed,
 			m_bHaveInputFocus = false;
 
 			// Informera fönstret innan att det har tappat fokus.
-			if(ZGuiWnd::m_pkWndUnderCursor && bLeftReleased)
+			if(ZGuiWnd::m_pkWndUnderCursor && (bLeftReleased || (pkFocusWindow->m_bAcceptRightClicks && bRightReleased) ))
 			{
 				if(ZGuiWnd::m_pkPrevWndClicked && 
 					ZGuiWnd::m_pkPrevWndClicked != ZGuiWnd::m_pkWndUnderCursor)
@@ -536,14 +542,14 @@ bool ZGui::OnMouseUpdate(int x, int y, bool bLBnPressed,
 			{
 				//SetFocus(ZGuiWnd::m_pkWndClicked);
 
-				if(bLeftReleased)
+				if(bLeftReleased || (pkFocusWindow->m_bAcceptRightClicks && bRightReleased))
 					ZGuiWnd::m_pkWndClicked->Notify(ZGuiWnd::m_pkWndClicked,
 						NCODE_CLICK_UP);
 
 				int* pkParams = new int[1];
 
 				// Notify the main window that the window have been clicked
-				if(bLeftReleased)
+				if(bLeftReleased || (pkFocusWindow->m_bAcceptRightClicks && bRightReleased))
 				{
 					ZGuiWnd* pkParent = ZGuiWnd::m_pkWndClicked->GetParent();
 
@@ -592,7 +598,7 @@ bool ZGui::OnMouseUpdate(int x, int y, bool bLBnPressed,
 			}
 			else
 			{
-				if(ZGuiWnd::m_pkPrevWndUnderCursor && bLeftReleased)
+				if(ZGuiWnd::m_pkPrevWndUnderCursor && (bLeftReleased || (pkFocusWindow->m_bAcceptRightClicks && bRightReleased)))
 					ZGuiWnd::m_pkWndClicked->Notify(
 						ZGuiWnd::m_pkPrevWndUnderCursor,NCODE_RELEASE);
 
