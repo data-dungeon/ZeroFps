@@ -21,6 +21,7 @@ P_Camera::P_Camera()
 	m_f3PYAngle = 0;
 	m_f3PYPos = 1;
 	m_f3PDistance = 4;
+
 }
 
 

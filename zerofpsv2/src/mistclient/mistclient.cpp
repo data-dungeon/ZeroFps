@@ -312,6 +312,8 @@ void MistClient::OnSystem()
 		PlayerInfo* pi = m_pkServerInfo->GetPlayerInfo(pkFps->GetConnectionID());
 		if(pi)
 		{
+/*				FAN ÄR DETTA FÖR DJÄVLA KRAP KÅD, INTE KONSTIGT ATT KAMERAN CPAR SIG IBLAND		
+
 			int id = pi->kControl[m_iActiveCaracter].first;	
 			Entity* pkObj = pkObjectMan->GetObjectByNetWorkID(id);
 			
@@ -332,7 +334,7 @@ void MistClient::OnSystem()
 
 				m_pkActiveCharacter = pkObj;
 			}	
-			
+*/			
 			//print server messages
 			while(!m_pkServerInfo->m_kMyMessages.empty())
 			{
@@ -1075,6 +1077,7 @@ void MistClient::SetActiveCaracter(int iCaracter)
 	if(m_iActiveCaracter == iCaracter)
 		return;
 		
+	
 	if(m_pkServerInfo)
 	{		
 		PlayerInfo* pi = m_pkServerInfo->GetPlayerInfo(pkFps->GetConnectionID());
@@ -1122,32 +1125,33 @@ void MistClient::SetActiveCaracter(int iCaracter)
 						P_Camera* cp = (P_Camera*)pkObj->GetProperty("P_Camera");
 						P_Enviroment* ep = (P_Enviroment*)pkObj->GetProperty("P_Enviroment");
 				
-						if(!cp)
-							P_Camera* cp = (P_Camera*)pkObj->AddProperty("P_Camera");
+						if(!cp) 
+							cp = (P_Camera*)pkObj->AddProperty("P_Camera");
 		
+						//enable camera
 						if(cp)
 						{
 							cp->SetCamera(m_pkCamera);
 							cp->SetType(CAM_TYPE3PERSON);								
 							m_pkCamProp = cp;
 							
-							//set current active character
-							m_iActiveCaracter = iCaracter;
-							m_iActiveCaracterObjectID = id;
-
-                     // set active character in clientcontrol property also
-                     if ( m_pkClientControlP )
-                        m_pkClientControlP->m_iActiveCaracterObjectID = id;
-
-							cout<<"current character is: "<<m_iActiveCaracter<<endl;
-						}
-					
+						}				
+						
+						//enable enviroment for this caracter
 						if(ep)
 						{
-							//enable enviroment for this caracter
 							ep->SetEnable(true);						
-							cout<<"enabled enviroment"<<endl;
 						}
+						
+						//set current active character
+						m_iActiveCaracter = iCaracter;
+						m_iActiveCaracterObjectID = id;
+                     
+                  // set active character in clientcontrol property also
+                  if ( m_pkClientControlP )
+                  	m_pkClientControlP->m_iActiveCaracterObjectID = id;
+						
+						cout<<"current character is: "<<m_iActiveCaracter<<endl;
 					}
 				}		
 			}

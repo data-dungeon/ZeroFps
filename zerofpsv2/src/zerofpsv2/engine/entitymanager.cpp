@@ -1896,6 +1896,9 @@ void EntityManager::LoadZone(int iId)
 	ZoneData* kZData = GetZoneData(iId);
 	assert(kZData);
 
+	if(!kZData)
+		return;
+
 	// Check if zone is loaded. If soo return.
 	if(kZData->m_pkZone)
 		return;

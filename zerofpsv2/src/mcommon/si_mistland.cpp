@@ -158,6 +158,7 @@ void MistLandLua::Init(EntityManager* pkObjMan,ZFScriptSystem* pkScript)
 
    pkScript->ExposeFunction("GetClosestItemOfType", MistLandLua::GetClosestItemOfTypeLua);
    pkScript->ExposeFunction("GetClosestPlayer", MistLandLua::GetClosestPlayerLua);
+   pkScript->ExposeFunction("GetClosestObjectOfType", MistLandLua::GetClosestObjectOfTypeLua);   
    
 /*
    int MCOMMON_API AIPickUpLua(lua_State* pkLua);
@@ -3141,6 +3142,60 @@ int MistLandLua::GetClosestPlayerLua(lua_State* pkLua)
 
       if ( pkClosestPlayer )
          g_pkScript->AddReturnValue(pkLua, pkClosestPlayer->iNetWorkID);
+      else
+         g_pkScript->AddReturnValue(pkLua, -1);
+
+
+      return 1;
+   }
+
+   return 0;
+}
+
+// -----------------------------------------------------------------------------------------------
+
+int MistLandLua::GetClosestObjectOfTypeLua(lua_State* pkLua) 
+{
+	if( g_pkScript->GetNumArgs(pkLua) == 1 )
+	{
+    	char	acType[128];
+		g_pkScript->GetArgString(pkLua, 0, acType);		
+	
+      Entity* pkObj = g_pkObjMan->GetObjectByNetWorkID(g_iCurrentObjectID);
+
+      if ( !pkObj )
+         return 0;
+
+      Entity* pkClosestObject = 0;
+
+      float fDistance = 99999999;      
+      
+      // TODO!!!: check more than the zone the user is in
+      ZoneData* pkZone = pkObj->GetObjectMan()->GetZone( pkObj->GetWorldPosV() );
+
+      vector<Entity*>* pkList = new vector<Entity*>;
+
+      pkZone->m_pkZone->GetAllDynamicEntitys ( pkList );
+
+      for ( int i = 0; i < pkList->size(); i++ )
+      {
+         // check if object has item property
+         if ( pkList->at(i)->GetType() == acType )
+         {
+            Vector3 kPos = pkList->at(i)->GetWorldPosV();
+            // check if distance is smaller that the previos (if any) found
+            if ( pkObj->GetWorldPosV().DistanceTo(kPos) < fDistance )
+            {
+               fDistance = pkObj->GetWorldPosV().DistanceTo(kPos);
+               pkClosestObject = pkList->at(i);
+            }
+         }
+      }
+
+      delete pkList;
+
+      if ( pkClosestObject )
+         g_pkScript->AddReturnValue(pkLua, pkClosestObject->iNetWorkID);
       else
          g_pkScript->AddReturnValue(pkLua, -1);
 
