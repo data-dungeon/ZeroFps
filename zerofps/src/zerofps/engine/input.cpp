@@ -498,3 +498,8 @@ bool Input::Action(int iAction)
 		return false;
 	}
 }
+
+void Input::SetCursorPos(int x, int y)
+{
+	SDL_WarpMouse(x,y);
+}

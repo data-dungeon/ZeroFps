@@ -187,6 +187,7 @@ class ENGINE_API Input : public ZFObject {
 		BasicConsole* m_pkConsole;
 
 	public:
+		void SetCursorPos(int x, int y);
 		float m_fMouseSensitivity;
 		
 		bool Action(int iAction);

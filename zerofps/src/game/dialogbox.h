@@ -27,6 +27,7 @@ protected:
 
 	virtual bool OnOpen(int x=-1, int y=-1) = 0;
 	virtual bool OnClose(bool bSave) = 0;
+	void CenterCursor();
 
 	ZGuiResourceManager* m_pkGuiMan;
 	ZGui* m_pkGui;

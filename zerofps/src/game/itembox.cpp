@@ -146,12 +146,16 @@ bool ItemBox::OnOpen(int x, int y)
 		m_pkDlgBox->SetPos(x,y,true,true);
 
 	m_pkGui->ShowMainWindow(m_pkDlgBox, true);
+
+	CenterCursor();
+
 	return true;
 }
 
 bool ItemBox::OnClose(bool bSave)
 {
 	m_pkGui->ShowMainWindow(m_pkDlgBox, false);
+	m_pkGui->ShowCursor(false);
 	return true;
 }
 

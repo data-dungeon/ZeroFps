@@ -816,8 +816,13 @@ void ZGui::AddKeyCommand(int Key,ZGuiWnd *pkFocusWnd,ZGuiWnd *pkTriggerWnd)
 		::value_type(pair<ZGuiWnd*,int>(pkFocusWnd,Key),pkTriggerWnd)); 
 }
 
-void ZGui::ShowCursor(bool bShow)
+void ZGui::ShowCursor(bool bShow, int x, int y)
 {
+	if(m_pkInput && !(x==-1 && y==-1) )
+	{
+		m_pkInput->SetCursorPos(x,y); 
+	}
+
 	m_pkCursor->Show(bShow);
 }
 

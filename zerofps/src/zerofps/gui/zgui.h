@@ -69,7 +69,7 @@ public:
 	void ShowMainWindow(ZGuiWnd* pkMainWnd, bool bShow);
 	bool Activate(bool bActive);
 	void SetCursor(int TextureID, int MaskTextureID=-1, int Width=16, int Height=16);
-	void ShowCursor(bool bShow);
+	void ShowCursor(bool bShow, int x=-1, int y=-1);
 
 	typedef bool (*callback)(ZGuiWnd* pkWnd, unsigned int uiMessage, int iNumParams, void *pParams);
 	typedef list<ZGuiWnd*>::iterator WINit;

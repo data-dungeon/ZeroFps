@@ -118,7 +118,8 @@ bool ExaminePUMenu::OnOpen(int x, int y)
 	if(!(x==-1 && y==-1))
 		m_pkDlgBox->SetPos(x,y,true,true);
 
-	m_pkGui->ShowCursor(true);
+	m_pkGui->ShowCursor(true,m_pkDlgBox->GetScreenRect().Left,
+		m_pkDlgBox->GetScreenRect().Top);
 
 	return true;
 }

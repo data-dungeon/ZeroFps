@@ -147,6 +147,9 @@ void Game::OnIdle(void)
 				m_pkContainerBox->Update();
 
 			PlayerExamineObject();
+
+			Input();
+
 			break;
 		}
 	}
@@ -157,8 +160,6 @@ void Game::OnIdle(void)
 			pkCam->NextType((CameraProperty::CamType_e) 0);
 			}
 		}*/
-
-	Input();
 
 }
 
@@ -253,6 +254,11 @@ void Game::Input()
 			m_pkPlayerInventoryBox->OnClose(false);
 	}
 
+	if(iKey == KEY_ESCAPE)
+	{
+		m_pkExamineMenu->OnClose(false);
+	}
+
 	if(iKey == KEY_O)
 	{
 		int x = m_iWidth - m_pkContainerBox->Width();
@@ -261,17 +267,6 @@ void Game::Input()
 			m_pkContainerBox->OnOpen(x,0); 
 		else
 			m_pkContainerBox->OnClose(false);
-	}
-
-	if(iKey == KEY_P)
-	{
-		int x = m_iWidth/2 - m_pkExamineMenu->Width()/2;
-		int y = m_iHeight/2 - m_pkExamineMenu->Height()/2;
-
-		if(m_pkExamineMenu->IsOpen() == false)
-			m_pkExamineMenu->OnOpen(x,y); 
-		else
-			m_pkExamineMenu->OnClose(false);
 	}
 
 	if(pkInput->Action(m_iActionCloseInventory))
@@ -453,7 +448,7 @@ void Game::InitGui()
 	int cursor_tex = pkTexMan->Load("file:../data/textures/cursor.bmp", 0);
 	int cursor_tex_a = pkTexMan->Load("file:../data/textures/cursor_a.bmp", 0);
 	pkGui->SetCursor(cursor_tex, cursor_tex_a, 32, 32);
-	pkGui->ShowCursor(true);
+	pkGui->ShowCursor(false);
 	SDL_ShowCursor(SDL_DISABLE);
 }
 
@@ -486,7 +481,9 @@ void Game::PlayerExamineObject()
 			int x = m_iWidth/2 - m_pkExamineMenu->Width()/2;
 			int y = m_iHeight/2 - m_pkExamineMenu->Height()/2;
 			if(m_pkExamineMenu->IsOpen() == false)
+			{
 				m_pkExamineMenu->OnOpen(x,y);
+			}
 		}
 	}
 }

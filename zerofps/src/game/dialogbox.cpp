@@ -41,3 +41,10 @@ void DlgBox::SetPos(int x, int y)
 {
 	m_pkDlgBox->SetPos(x,y,true,true);
 }
+
+void DlgBox::CenterCursor()
+{
+	int mx = m_pkDlgBox->GetScreenRect().Left + m_pkDlgBox->GetScreenRect().Width() / 2;
+	int my = m_pkDlgBox->GetScreenRect().Top + m_pkDlgBox->GetScreenRect().Height() / 2;
+	m_pkGui->ShowCursor(true,mx,my);
+}
