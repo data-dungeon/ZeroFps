@@ -183,10 +183,10 @@ bool MistServer::SetViewPort(const char* szVpName)
 
 	if(m_pkActiveCamera == pkCam)	return false;
 
-	if(m_pkActiveCamera) m_pkActiveCamera->m_bSelected = false;
+	if(m_pkActiveCamera) m_pkActiveCamera->SetSelected(false);
 	m_pkActiveCameraObject	= m_pkObjectMan->GetObjectByNetWorkID( pkCam->m_iEntity );
 	m_pkActiveCamera			= pkCam;
-	m_pkActiveCamera->m_bSelected = true;
+	m_pkActiveCamera->SetSelected(true);
 
 	m_strActiveViewPort  = szVpName;
 
@@ -769,9 +769,9 @@ void MistServer::Input_EditObject(float fMouseX, float fMouseY)
 		if(m_pkActiveCamera->GetViewMode() != Camera::CAMMODE_PERSP) {
 			// In Ortho mode we keep the old coo for the axis that go into the screen.
 			Vector3 kAxisX, kAxisY, kAxisZ;
-			kAxisX = m_pkActiveCamera->m_kOrthoAxisX;
-			kAxisY = m_pkActiveCamera->m_kOrthoAxisY;
-			kAxisZ = m_pkActiveCamera->m_kOrthoAxisZ;
+			kAxisX = m_pkActiveCamera->GetOrthoAxisX();
+			kAxisY = m_pkActiveCamera->GetOrthoAxisY();
+			kAxisZ = m_pkActiveCamera->GetOrthoAxisZ();
 			kAxisX.Abs();
 			kAxisY.Abs();
 			kAxisZ.Abs();
@@ -1613,8 +1613,8 @@ Vector3 MistServer::Get3DMousePos(bool m_bMouse=true)
 		}
 		else 
 		{
-			dir.x = x* m_pkActiveCamera->m_kOrthoSize.x;
-			dir.y = y* m_pkActiveCamera->m_kOrthoSize.y;
+			dir.x = x* m_pkActiveCamera->GetOrthoSize().x;
+			dir.y = y* m_pkActiveCamera->GetOrthoSize().y;
 			dir.z = -1.5; 
 //			cout << "Cam XY: " << dir.x << "," << dir.y << endl;
 		}

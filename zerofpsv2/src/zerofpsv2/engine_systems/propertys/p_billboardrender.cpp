@@ -35,7 +35,7 @@ void P_BillBoardRender::UpdateSet()
 
 void P_BillBoardRender::Update()
 {
-	if(!m_pkFps->GetCam()->m_kFrustum.SphereInFrustum(m_pkObject->GetWorldPosV(),m_fScale))
+	if(!m_pkFps->GetCam()->GetFrustum()->SphereInFrustum(m_pkObject->GetWorldPosV(),m_fScale))
 		return;
 		
 	Vector3 pos = m_pkObject->GetWorldPosV();

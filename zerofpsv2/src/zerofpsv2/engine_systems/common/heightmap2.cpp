@@ -495,7 +495,7 @@ void Heightmap2::UpdateFrustumCulling()
 		
 			LocalToWorld(&kPos);
 		
-			if(!m_pkFps->GetCam()->m_kFrustum.CubeInFrustum(kPos.x,kPos.y,kPos.z,
+			if(!m_pkFps->GetCam()->GetFrustum()->CubeInFrustum(kPos.x,kPos.y,kPos.z,
 				(float) m_iPatchWidth/2,
 				(pkPatch->fMaxHeight - pkPatch->fMinHeight)/2,
 				(float) m_iPatchHeight/2))

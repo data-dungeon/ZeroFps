@@ -74,7 +74,7 @@ void DarkMetropolis::OnInit()
 	//create camera
 	m_pkCamera=new Camera(Vector3(0,0,0),Vector3(0,0,0),70,1.333,0.25,250);	
 	m_pkFps->SetRenderTarget(m_pkCamera);
-	m_pkCamera->m_bRender = true;
+	m_pkCamera->SetRender(true);
 
 	//init dm script interface (register script functions for gameplay)
 	DMLua::Init(m_pkObjectMan,m_pkScript);

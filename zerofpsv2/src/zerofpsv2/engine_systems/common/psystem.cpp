@@ -433,8 +433,7 @@ void PSystem::TimeoffSet (bool bUseAge)
 
 void PSystem::TestInsideFrustum()
 {
-	Frustum *pkFrustum = &m_pkFps->GetCam()->
-							  m_kFrustum;
+	Frustum *pkFrustum = m_pkFps->GetCam()->GetFrustum();
 
 	// test culling
 	if ( m_pkPSystemType->m_kPSystemBehaviour.m_kCullingTest == "cube" )

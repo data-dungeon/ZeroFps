@@ -39,7 +39,7 @@ void P_CrossRender::UpdateSet()
 void P_CrossRender::Update()
 {
 //	return;
-	if(!m_pkFps->GetCam()->m_kFrustum.SphereInFrustum(m_pkObject->GetWorldPosV(),m_kScale.x))
+	if(!m_pkFps->GetCam()->GetFrustum()->SphereInFrustum(m_pkObject->GetWorldPosV(),m_kScale.x))
 		return;
 		
 	//m_pkRender->DrawCross(m_pkObject->GetWorldPosV(),m_pkObject->GetWorldRotV(),m_kScale,m_iTex1);//,m_iTex2);

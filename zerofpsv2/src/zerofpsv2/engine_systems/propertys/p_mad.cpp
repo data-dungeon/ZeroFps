@@ -54,7 +54,7 @@ void P_Mad::Update()
 	if( m_pkObjMan->IsUpdate(PROPERTY_TYPE_RENDER) ) {
 		UpdateAnimation(m_pkZeroFps->GetFrameTime());
 		
-		if(!m_pkZeroFps->GetCam()->m_kFrustum.SphereInFrustum(m_pkObject->GetWorldPosV(),GetRadius()))
+		if(!m_pkZeroFps->GetCam()->GetFrustum()->SphereInFrustum(m_pkObject->GetWorldPosV(),GetRadius()))
 			return;
 		
 		// Set Object LOD.

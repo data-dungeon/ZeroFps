@@ -77,7 +77,7 @@ void P_Vegitation::Random(P_HMRP2* pkHmrp2)
 void P_Vegitation::Update()
 {
 	//frustum culling
-	if(!m_pkFps->GetCam()->m_kFrustum.SphereInFrustum(m_pkObject->GetWorldPosV(),m_fRadius))
+	if(!m_pkFps->GetCam()->GetFrustum()->SphereInFrustum(m_pkObject->GetWorldPosV(),m_fRadius))
 		return;
 			
 	if(!m_CheckedForHM)

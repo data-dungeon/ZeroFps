@@ -204,8 +204,8 @@ void P_Camera::OrthoMove(Vector3 kMove)
 		return;
 
 	Vector3 kPos = m_pkObject->GetLocalPosV();
-	kPos += m_pkCamera->m_kOrthoAxisX * kMove.x;
-	kPos += m_pkCamera->m_kOrthoAxisY * kMove.y;
+	kPos += m_pkCamera->GetOrthoAxisX() * kMove.x;
+	kPos += m_pkCamera->GetOrthoAxisY() * kMove.y;
 	m_pkObject->SetLocalPosV(kPos);
 }
 

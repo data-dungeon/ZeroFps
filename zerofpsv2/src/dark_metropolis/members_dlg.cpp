@@ -855,8 +855,8 @@ void CMembersDlg::CreateCamera()
 	//create camera
 	m_pkModellCamera=new Camera(Vector3(0,0,0),Vector3(0,0,0),90,1.333,0.25,250);	
 	m_pkModellCamera->SetName("ModellCamera");
-	m_pkModellCamera->m_bRender = true;
-	m_pkModellCamera->m_bSelected = true;
+	m_pkModellCamera->SetRender(true);
+	m_pkModellCamera->SetSelected(true);
 	
 	EntityManager* pkObjectMan = static_cast<EntityManager*>(g_ZFObjSys.GetObjectPtr("EntityManager"));
 	m_pkCameraObject = pkObjectMan->CreateObjectFromScript("data/script/objects/t_camedit.lua");
@@ -881,13 +881,13 @@ void CMembersDlg::UpdateCamera()
 	{
 		if(GetWnd("TestCameraWnd")->IsVisible())
 		{
-			m_pkModellCamera->m_bRender = true;			
+			m_pkModellCamera->SetRender(true);			
 			m_pkModellCamera->ClearViewPort(); 
 			m_pkModellCamera->Update(256, 256);
 		}
 		else
 		{
-			m_pkModellCamera->m_bRender = false;			
+			m_pkModellCamera->SetRender(false);			
 		}
 	}
 }

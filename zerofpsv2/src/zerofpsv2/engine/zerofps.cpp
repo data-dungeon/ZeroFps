@@ -578,7 +578,7 @@ void ZeroFps::Draw_RenderTarget(Camera* pkCamera)
 	glPushMatrix();
 
 
-	if(pkCamera->m_bRender == false)	return;
+	if(pkCamera->IsRenderOn() == false)	return;
 
 	SetCamera(pkCamera);
 	GetCam()->ClearViewPort();	
