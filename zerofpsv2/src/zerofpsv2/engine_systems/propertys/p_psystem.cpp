@@ -82,7 +82,7 @@ bool P_PSystem::HandleSetValue( string kValueName, string kValue )
 {
 	if( strcmp(kValueName.c_str(), "PSType") == 0 ) 
 	{
-		cout << "Setting ParticleSystem:" << kValue.c_str() << endl;
+		//cout << "Setting ParticleSystem:" << kValue.c_str() << endl;
 
 		SetPSType( kValue.c_str() );
 

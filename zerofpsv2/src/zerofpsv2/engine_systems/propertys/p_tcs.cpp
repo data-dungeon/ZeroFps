@@ -130,7 +130,7 @@ bool P_Tcs::HandleSetValue( string kValueName, string kValue )
 	if( strcmp(kValueName.c_str(), "groupflag") == 0 ) 
 	{
 		int flag = atoi(kValue.c_str());
-		cout << "unsetting flag:" << flag << endl;
+		//cout << "unsetting flag:" << flag << endl;
 
 		SetTestGroupFlag(flag,false);
 		
