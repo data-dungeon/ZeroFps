@@ -59,5 +59,9 @@ MTL=midl.exe
 
 # Name "src - Win32 Release"
 # Name "src - Win32 Debug"
+# Begin Source File
+
+SOURCE=.\doxy.cpp
+# End Source File
 # End Target
 # End Project

@@ -37,7 +37,7 @@ enum ObjectType
 	OBJECT_TYPE_STATIC,	
 	OBJECT_TYPE_PLAYER,			// Unused
 	OBJECT_TYPE_STATDYN,	
-	OBJECT_TYPE_DECORATION,
+//	OBJECT_TYPE_DECORATION,
 };
 
 /*
@@ -65,30 +65,6 @@ class ENGINE_API PropertyDescriptor{
 		ZFMemPackage m_kData;
 };
 
-class ENGINE_API ObjectDescriptor{
-	public:
-		string m_kName;
-		
-		Vector3	m_kPos;									// Position of object in world.
-		Vector3	m_kRot;									// Rotation of object in world.
-		Vector3	m_kVel;									// Velocity of object.
-		Vector3	m_kAcc;									// Acc of object.
-		
-		float		m_fRadius;
-		
-		bool		m_bSave;
-		ObjectType	m_iObjectType;
-		
-		list<PropertyDescriptor*> m_acPropertyList;		
-		
-		~ObjectDescriptor();
-		void Clear();
-		bool SaveToFile(ZFVFile* pkFile);
-		bool LoadFromFile(ZFVFile* pkFile);		
-		void SaveToMem(ZFMemPackage* pkPackage);
-		void LoadFromMem(ZFMemPackage* pkPackage);		
-};
-	
 class ENGINE_API PropertyValue
 {
 public:
@@ -154,13 +130,11 @@ are also objects. All objects are handled by the ObjectManger.
 All objects in the game have somethings that are common for all of them. The are all
 stored in the OM, the all have a type, a ID, a name and some other things. The things that make
 each and every object diffrent are the type of properties they have. 
-
-
 */
+
+
 class ENGINE_API Object 
 {
-	friend class Property;
-	
 	private:
 		Object*						m_pkParent;							///< Parent Object. NULL If None
 		vector<GameMessage>		m_kGameMessages;					///< Messages that are waiting to be handled by this object.
@@ -179,14 +153,24 @@ class ENGINE_API Object
 			WORLD_POS_V,		
 		};
 	
-		PropertyFactory*			m_pkPropertyFactory;				// Ptr to property factory.
-		ZeroFps*						m_pkFps;								// Ptr to zerofps. // CHANGE TO ObjectManger?
-	
+		PropertyFactory*			m_pkPropertyFactory;				///< Ptr to property factory.
+		ZeroFps*						m_pkFps;								///< Ptr to zerofps. 
+			
+		ZFResourceHandle*			m_pScriptFileHandle;				///< Handle to script used to create this object if any.
 		
-		ZFResourceHandle*			m_pScriptFileHandle;			//handle for the objects create script if any
+		/**	\brief	Object type name.
+			
+			This is the name of the type of object (defults to Object). For objects created from scripts this is
+			set to the name of the script and for zfoh.txt it sets i to the name of the archobject.
+			*/
+		string						m_strType;							
 		
-		string						m_strName;								///< Object name
-		string						m_strType;							///< Object type name.
+		/**	\brief	Object Name.
+			
+			The name of the object. This is not unik so many objects can (and will) have the same name. The name will
+			be set to 'A' + m_strType by defualt.
+			*/
+		string						m_strName;							
 	
 		bool							m_bSave;								///< True if this object should save to disk.
 	
@@ -198,10 +182,10 @@ class ENGINE_API Object
 		bool							m_bRelativeOri;					///< True if this object transform is in the frame of its parent.
 		bitset<7>					m_kGotData;							
 
-		Vector3						m_kLocalPosV;	//important	///< Local position.
+		Vector3						m_kLocalPosV;						///< Local position. important
 		Vector3						m_kWorldPosV;						///< World position.
 
-		Matrix4						m_kLocalRotM;	//important	///< Local rotation
+		Matrix4						m_kLocalRotM;						///< Local rotation important
 		Matrix4						m_kWorldRotM;
 		Matrix4						m_kWorldOriM;
 		Matrix4						m_kLocalOriM;
@@ -214,9 +198,7 @@ class ENGINE_API Object
 		Vector3						m_kAcc;								///< Acc of object.
 		float							m_fRadius;							///< Radius of object.
 
-		int*							m_piDecorationStep;
-		
-
+		//int*							m_piDecorationStep;
 
 		vector<Object*>			m_akChilds;							///< List of child objects.
 		vector<Property*>			m_akPropertys;						///< List of propertys of object.
@@ -235,42 +217,39 @@ class ENGINE_API Object
 		// Object Type Handling
 		bool IsA(string strStringType);								///< Returns true if this object is based on type.
 
-		// Property Mangement Code.
-
-		Property* AddProperty(Property* pkNewProperty);		///< Add a propyrty by ptr.
-		Property* AddProperty(const char* acName);			///< Create/Add a property by name.
-		void RemoveProperty(Property* pkProp);					///< Remove property by pointer.
-		bool DeleteProperty(const char* acName);				///< Remove property by name.
+		Property* AddProperty(Property* pkNewProperty);			// Add a propyrty by ptr.
+		Property* AddProperty(const char* acName);				// Create/Add a property by name.
+		void RemoveProperty(Property* pkProp);						// Remove property by pointer.
+		bool DeleteProperty(const char* acName);					// Remove property by name.
 		void PropertyLost(Property* pkProp);
 
-		Property* GetProperty(const char* acName);											///< Returns property by name (first one only). 
+		Property* GetProperty(const char* acName);				// Returns property by name (first one only). 
 		void GetPropertys(vector<Property*> *akPropertys,int iType,int iSide);			///< Get all propertys by flags.
 		void GetAllPropertys(vector<Property*> *akPropertys,int iType,int iSide);		///< Used mainly for updates
-
 		Property* AddProxyProperty(const char* acName);		///< Add a property if not exist.
 		bool Update(const char* acName);							///< Run update on property 'name'.
 
 		// Child/Parent object mangement.
-		void AddChild(Object* pkObject);							///< Set a object to be child to this.	
-		void RemoveChild(Object* pkObject);						///< Remove a child from this.
-		void SetParent(Object* pkObject);						///< Set the parent of this object.
+		void AddChild(Object* pkObject);							// Set a object to be child to this.	
+		void RemoveChild(Object* pkObject);						// Remove a child from this.
+		void SetParent(Object* pkObject);						// Set the parent of this object.
 		Object* GetParent(){return m_pkParent;};				///< Get parent of this object.
 		bool HasChild(Object* pkObject);							
 		int NrOfChilds();												///< Return num of childs to this object.
-		void DeleteAllChilds();										///< Remove all childs from this object.
-		void GetAllObjects(vector<Object*> *pakObjects);		///< Return this + all childs.
+		void DeleteAllChilds();										// Remove all childs from this object.
+		void GetAllObjects(vector<Object*> *pakObjects);	// Return this + all childs.
+
 		void AttachToClosestZone();								///< Attacth to closest ZoneObject.
 		void AttachToZone();											///< Attacth to ZoneObject if inside any.
 
 		// NetWork/Demo/Save/Load Code.
 		bool IsNetWork();												// True if this object has any netactive propertys.
-		bool NeedToPack();											///< Returns true if there is any netactive properys in object
-		void PackTo(NetPacket* pkNetPacket);					///< Pack Object.
-		void PackFrom(NetPacket* pkNetPacket);					///< Unpack Object.
-		void Save(ObjectDescriptor* ObjDesc);					///< Save object to object desc.
+		bool NeedToPack();											// Returns true if there is any netactive properys in object
+		void PackTo(NetPacket* pkNetPacket);					// Pack Object.
+		void PackFrom(NetPacket* pkNetPacket);					// Unpack Object.
 
-		void Save(ZFIoInterface* pkFile);
 		void Load(ZFIoInterface* pkFile);		
+		void Save(ZFIoInterface* pkFile);
 
 		// Collision / Shape.
 		float GetBoundingRadius();									///< Get radius of collision object or radius 1.0 if none found.
@@ -278,8 +257,8 @@ class ENGINE_API Object
 
 		// Game Messages
 		void	AddGameMessage(GameMessage& Msg);
-		void	RouteMessage(GameMessage& Msg);
 		void	HandleMessages();
+		void	RouteMessage(GameMessage& Msg);
 
 		// Debug
 		void PrintTree(int pos);									///< Debug: Prints object tree from object.
@@ -330,16 +309,8 @@ class ENGINE_API Object
 		
 		float GetI();
 		
-//		inline Vector3* GetPosPointer()	{	return &m_kPos;	};
-//		inline Vector3* GetRotPointer()	{	return &m_kRot;	};
-//		inline Vector3& GetPos()	{	return m_kPos;		};
-//		inline Vector3 GetRot()	{	return m_kRot;		};
-//		Vector3 GetIPos();
-//		Vector3 GetIRot();
-//		void SetRot(Vector3 kRot);
-//		void SetPos(Vector3 kPos);
-
 		friend class ObjectManager;
+		friend class Property;
 
 		// Force class to be polymorfic.
 		virtual void DoNothing() {}

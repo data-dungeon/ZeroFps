@@ -1,6 +1,13 @@
 #ifndef _MCOMMON_X_H_
 #define _MCOMMON_X_H_
 
+/**
+	\defgroup Common Common
+	\ingroup MistLand
+
+	Common är en common sak :).
+*/
+
 // The following ifdef block is the standard way of creating macros which make exporting 
 // from a DLL simpler. All files within this DLL are compiled with the TESTDLL_EXPORTS
 // symbol defined on the command line. this symbol should not be defined on any project

@@ -8,53 +8,44 @@
 typedef list<Object*>::iterator		itListObject;
 typedef list<Property*>::iterator	itListProperty;
 
-Object::Object() {
+Object::Object() 
+{
 	// Get Ptrs to some usefull objects.
 	m_pkObjectMan			= static_cast<ObjectManager*>(g_ZFObjSys.GetObjectPtr("ObjectManager"));
 	m_pkPropertyFactory	= static_cast<PropertyFactory*>(g_ZFObjSys.GetObjectPtr("PropertyFactory"));	
 	m_pkFps					= static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
 		
-	ZFAssert(m_pkObjectMan, "Object::Object(): Failed to find ObjectManger");
+	ZFAssert(m_pkObjectMan,			"Object::Object(): Failed to find ObjectManger");
 	ZFAssert(m_pkPropertyFactory, "Object::Object(): Failed to find PropertyFactory");
 
 	m_pkObjectMan->Add(this);	// Add ourself to objectmanger and get NetID.
 
-
 	// SetDefault Values.
-//	m_kPos		= Vector3::ZERO;
-//	m_kRot		= Vector3::ZERO;
+	SetLocalPosV(Vector3(0,0,0));
+	SetLocalRotV(Vector3(0,0,0));
 	m_kVel		= Vector3::ZERO;
 	m_kAcc		= Vector3::ZERO;
 	m_fRadius	= 1;
 	
-//	m_kOldPos	= Vector3::ZERO;
-//	m_kOldRot	= Vector3::ZERO;	
-	
 	m_strName	= "A Object";	
 	m_strType	= "Object";
 
-	m_pScriptFileHandle = new ZFResourceHandle;
+	m_pScriptFileHandle	= new ZFResourceHandle;
 
-	m_iNetUpdateFlags = 0;
+	m_iNetUpdateFlags		= 0;
 
-	m_eRole			= NETROLE_AUTHORITY;
-	m_eRemoteRole	= NETROLE_PROXY;
+	m_eRole					= NETROLE_AUTHORITY;
+	m_eRemoteRole			= NETROLE_PROXY;
 
 	m_iObjectType			=	OBJECT_TYPE_DYNAMIC;	
 	m_iUpdateStatus		=	UPDATE_ALL;
-//	m_piDecorationStep 	=	1;//m_pkLevelMan->GetDecorationStepPointer();
 	m_bSave					=	true;
 	m_pkParent				=	NULL;
 	m_akChilds.clear();	
 	
 	m_bRelativeOri	=	false;
 	
-	SetLocalRotV(Vector3(0,0,0));
-	SetLocalPosV(Vector3(0,0,0));
-	
 	ResetGotData();
-
-	//cout << "Object Size " << sizeof(Object) << endl;
 }
 
 Object::~Object() 
@@ -66,12 +57,6 @@ Object::~Object()
 	if(m_pkParent != NULL)
 		m_pkParent->RemoveChild(this);
 	
-	// Remove All our propertys.
-	/*for(itListProperty it = m_akPropertys.begin(); it != m_akPropertys.end(); it++)
-	{
-		(*it)->SetObject(0);
-		delete (*it);
-	}*/
 	while(!m_akPropertys.empty())
 	{
 		Property* TempProperty = m_akPropertys.back();
@@ -82,6 +67,7 @@ Object::~Object()
 	m_pkObjectMan->Remove(this);
 	
 	delete(m_pScriptFileHandle);
+//	m_pkFps->Logf("zerofps", "Object Deleted %d", iNetWorkID);
 }
 
 bool Object::IsA(string strStringType)
@@ -89,7 +75,8 @@ bool Object::IsA(string strStringType)
 	return m_pkObjectMan->IsA(this, strStringType);
 }
 
-// Property Mangement Code.
+/**	\brief	Adds a property to the object.
+*/
 Property* Object::AddProperty(Property* pkNewProperty) 
 {
 	if(pkNewProperty == NULL)
@@ -110,6 +97,8 @@ Property* Object::AddProperty(Property* pkNewProperty)
 	return pkNewProperty;
 }
 
+/**	\brief	Creates and adds a property to the object.
+*/
 Property* Object::AddProperty(const char* acName)
 {
 	ZFAssert(acName, "Object::AddProperty(): acName is NULL");
@@ -125,6 +114,8 @@ Property* Object::AddProperty(const char* acName)
 	return pProp;
 }
 
+/**	\brief	Removes the property from the object.
+*/
 void Object::RemoveProperty(Property* pkProp) 
 {
 	//m_akPropertys.remove(pkProp);
@@ -145,33 +136,12 @@ void Object::RemoveProperty(Property* pkProp)
 	PropertyLost(pkProp);
 }
 
-//EVIL GUBB
-void Object::PropertyLost(Property* pkProp)
-{
-	if(pkProp->m_pkObject == this)
-	{
-		vector<Property*>::iterator kIt = m_akPropertys.begin();
-		while(kIt != m_akPropertys.end())
-		{
-			(*kIt)->PropertyLost(pkProp);
-			++kIt;
-		}
-		pkProp->m_pkObject = 0;
-	}	
-}
-
+/**	\brief	Removes and deletes the property. 
+	
+	Removes a property from the object and then deletes it,
+*/
 bool Object::DeleteProperty(const char* acName) 
 {
-	//for(itListProperty it = m_akPropertys.begin(); it != m_akPropertys.end(); it++) {
-	//	if(strcmp((*it)->m_acName,acName)==0) {
-	//		delete (*it);
-			//EVIL GUBB//////
-			//Property* TempProp = (*it)
-			//m_akPropertys.erase(it);
-			//PropertyLost(TempProp);
-	//		return true;
-	//	}
-	//}
 	if(m_akPropertys.empty())
 		return false;
 	
@@ -193,12 +163,27 @@ bool Object::DeleteProperty(const char* acName)
 	return false;
 }
 
+void Object::PropertyLost(Property* pkProp)
+{
+	if(pkProp->m_pkObject == this)
+	{
+		vector<Property*>::iterator kIt = m_akPropertys.begin();
+		while(kIt != m_akPropertys.end())
+		{
+			(*kIt)->PropertyLost(pkProp);
+			++kIt;
+		}
+		pkProp->m_pkObject = 0;
+	}	
+}
+
+
+/**	\brief	Returns a pointer to the choosen property.
+	
+	Returns a pointer the the property 'name' or NULL if the property is not part of the object.
+*/
 Property* Object::GetProperty(const char* acName) 
 {
-	//for(itListProperty it = m_akPropertys.begin(); it != m_akPropertys.end(); it++) {
-	//	if(strcmp((*it)->m_acName,acName) == 0) 
-	//		return (*it);
-	//}
 	vector<Property*>::iterator kIt = m_akPropertys.begin();
 	while(kIt != m_akPropertys.end())
 	{
@@ -212,6 +197,10 @@ Property* Object::GetProperty(const char* acName)
 	return NULL;
 }
 
+/**	\brief	Returns a vector with propertys.
+	
+	Returns a vector with the the propertys that have the correct type and side flags.
+*/
 void  Object::GetPropertys(vector<Property*> *akPropertys,int iType,int iSide)
 {
 	for(vector<Property*>::iterator it = m_akPropertys.begin(); it != m_akPropertys.end(); it++) {
@@ -220,12 +209,6 @@ void  Object::GetPropertys(vector<Property*> *akPropertys,int iType,int iSide)
 				akPropertys->push_back((*it));			
 			}
 		}	
-
-/*		if((*it)->m_iType == iType || iType == PROPERTY_TYPE_ALL){
-			if((*it)->m_iSide == iSide || iSide == PROPERTY_SIDE_ALL){
-				akPropertys->push_back((*it));			
-			}
-		}	*/
 	}
 }
 
@@ -234,7 +217,6 @@ void Object::GetAllPropertys(vector<Property*> *akPropertys,int iType,int iSide)
 	if(m_iUpdateStatus & UPDATE_NONE)
 		return;
 
-//	int iDecStep=m_pkLevelMan->GetDecorationStep();
 	int iCurDec=0;
 
 	//get this objects propertys
@@ -270,23 +252,13 @@ void Object::GetAllPropertys(vector<Property*> *akPropertys,int iType,int iSide)
 					if(m_iUpdateStatus & UPDATE_STATDYN)		
 						(*it)->GetAllPropertys(akPropertys,iType,iSide);
 					break;
-			
-				case OBJECT_TYPE_DECORATION:
-					if(m_iUpdateStatus & UPDATE_DECORATION)
-					{
-						iCurDec++;
-						if(iCurDec >= *m_piDecorationStep)
-						{
-							iCurDec=0;						
-							(*it)->GetAllPropertys(akPropertys,iType,iSide);
-						}
-					}
-					break;
 			}
 		}
 	}
 }
 
+/**	\brief	Adds a property to an object if it does not have it yet.
+*/
 Property* Object::AddProxyProperty(const char* acName)
 {
 	Property* pProp = GetProperty(acName);
@@ -297,9 +269,12 @@ Property* Object::AddProxyProperty(const char* acName)
 	return pProp;
 }
 
-bool Object::Update(const char* acName){
-	for(vector<Property*>::iterator it=m_akPropertys.begin();it!=m_akPropertys.end();it++) {
-		if(strcmp((*it)->m_acName,acName)==0) {
+bool Object::Update(const char* acName)
+{
+	for(vector<Property*>::iterator it=m_akPropertys.begin();it!=m_akPropertys.end();it++) 
+	{
+		if(strcmp((*it)->m_acName,acName)==0) 
+		{
 			(*it)->Update();
 			return true;
 		}
@@ -307,8 +282,10 @@ bool Object::Update(const char* acName){
 	return false;
 }
 
+/**	\brief	Add a object to be a our child.
 
-// Child/Parent object mangement.
+	Checks that we don't have this object as a child and if not adds it.
+*/
 void Object::AddChild(Object* pkObject) 
 {
 	// Check so we don't have child already.
@@ -317,30 +294,18 @@ void Object::AddChild(Object* pkObject)
 
 	m_akChilds.push_back(pkObject);	
 	pkObject->SetParent(this);
-
-/*	if(m_bLockedChilds)
-		return;
-	//check if this child is already added
-	if(HasChild(pkObject))
-		return;
-	
-	//add child to list
-	m_akChilds.push_back(pkObject);	
-	//tell the child to set its new parent
-	pkObject->SetParent(this);*/
 }
 
+/**	\brief	Remove a object from our list of children.
+
+	Check that we have this object as a child and if so removes it.
+*/
 void Object::RemoveChild(Object* pkObject)
 {
 	// If we don't have object as a child return.
 	if(HasChild(pkObject) == false)
 		return;
 
-/*	for(int i=0; i< m_akChilds.size(); i++) {
-		if(m_akChilds[i] == pkObject)
-			m_akChilds.erase(&m_akChilds[i]);
-	}
-*/
 	//m_akChilds.remove(pkObject);	// Remove object as child.
 	vector<Object*>::iterator kIt = m_akChilds.begin();
 	while(kIt != m_akChilds.end())
@@ -356,16 +321,10 @@ void Object::RemoveChild(Object* pkObject)
 		++kIt;
 	}
 	pkObject->SetParent(NULL);		// Set objects parent to NULL.
-
-/*		if(m_bLockedChilds)
-		return;
-		
-	//remove child from list
-	m_akChilds.remove(pkObject);
-	//tell child to set its parent to null
-	pkObject->SetParent(NULL);*/
 }
 
+/**	\brief	Sets object to be our parent.
+*/
 void Object::SetParent(Object* pkObject) 
 {
 	// Check so we don't try to set ourself to be our own parent.
@@ -390,28 +349,10 @@ void Object::SetParent(Object* pkObject)
 	
 	m_pkParent = pkObject;
 	m_pkParent->AddChild(this);
-
-/*	//dont have a parent
-	if(pkObject==NULL){
-		m_pkParent=NULL;
-		return;
-	}
-	
-	//dont do anything if this parent is already set
-	if(m_pkParent==pkObject)
-		return;
-	
-	//tell the curent parent to remove this child
-	if(m_pkParent!=NULL){
-		m_pkParent->RemoveChild(this);	
-	}
-	
-	//set parent
-	m_pkParent=pkObject;
-	//tell parent to add this child
-	pkObject->AddChild(this);*/
 }
 
+/**	\brief	Returns true if object is our child of this.
+*/
 bool Object::HasChild(Object* pkObject)
 {
 	//check if this object is in the child list
@@ -422,18 +363,20 @@ bool Object::HasChild(Object* pkObject)
 	return false;
 }
 
-
 int Object::NrOfChilds()
 {
 	return m_akChilds.size();
 }
 
+/**	\brief	Delete all children of the choosen object.
+
+	Deletes all children and the children of those object down the the youngest most defenseless object.
+	MOhhahah HAIL AND KILL:
+*/
 void Object::DeleteAllChilds()
 {
 	Object* pkChildObject;
 
-//	m_bLockedChilds=true;
-	
 	while(m_akChilds.size()) {
 		pkChildObject = (*m_akChilds.begin());
 
@@ -442,18 +385,11 @@ void Object::DeleteAllChilds()
 		delete pkChildObject;
 		}
 
-/*for(list<Object*>::iterator it=m_akChilds.begin();it!=m_akChilds.end();it++) {
-		pkChildObject = (*it);
-
-		cout << "Child " << pkChildObject->m_kName << endl; 
-		pkChildObject->DeleteAllChilds();
-		delete pkChildObject;
-	}*/
-
 	m_akChilds.clear();
-//	m_bLockedChilds=false;	
 }
 
+/**	\brief	Adds ourself and all our children to the list of objects.
+*/
 void Object::GetAllObjects(vector<Object*> *pakObjects)
 {
 	pakObjects->push_back(this);	
@@ -462,7 +398,6 @@ void Object::GetAllObjects(vector<Object*> *pakObjects)
 		(*it)->GetAllObjects(pakObjects);
 	}	
 }
-
 
 void Object::AttachToClosestZone()
 {
@@ -495,11 +430,7 @@ void Object::AttachToZone()
 
 }
 
-
-
-// NetWork/Demo/Save/Load Code.
-/* 
-	Returns true if object is one that need to be sent over network.
+/**	\brief	Returns true if object is one that need to be sent over network.
 */
 bool Object::IsNetWork()
 {
@@ -517,7 +448,8 @@ bool Object::IsNetWork()
 	return false;
 }
 
-/*
+/**	\brief	Returns true if there is any netactive properys in object
+
 	Returns true if this object needs to be sent over network (if anything has changed since last
 	net update).
 */
@@ -539,16 +471,11 @@ bool Object::NeedToPack()
 			return true;
 		}
 
-
-/*	for(list<Property*>::iterator it=m_akPropertys.begin();it!=m_akPropertys.end();it++) {
-		if((*it)->bNetwork == true) {
-			return true;
-		}
-	}*/
-
 	return false;
 }
 
+/**	\brief	Pack Object.
+*/
 void Object::PackTo(NetPacket* pkNetPacket)
 {
 	int iParentID	=	-1;
@@ -605,6 +532,8 @@ void Object::PackTo(NetPacket* pkNetPacket)
 	m_iNetUpdateFlags = 0;
 }
 
+/**	\brief	Unpack Object.
+*/
 void Object::PackFrom(NetPacket* pkNetPacket)
 {
 	int iParentID;
@@ -673,6 +602,8 @@ void Object::PackFrom(NetPacket* pkNetPacket)
 	g_ZFObjSys.Logf("net", "\n");
 }
 
+/**	\brief	Load object.
+*/
 void Object::Load(ZFIoInterface* pkFile)
 {
 	Vector3 pos;
@@ -744,7 +675,8 @@ void Object::Load(ZFIoInterface* pkFile)
 	}
 }
 
-
+/**	\brief	Save Object.
+*/
 void Object::Save(ZFIoInterface* pkFile)
 {
 	Vector3 pos = GetLocalPosV();
@@ -806,40 +738,6 @@ void Object::Save(ZFIoInterface* pkFile)
 }
 
 
-
-void Object::Save(ObjectDescriptor* ObjDesc)
-{
-	ObjDesc->Clear();
-	
-	//set name
-	ObjDesc->m_kName = GetName();	
-	 
-	ObjDesc->m_kPos  = GetWorldPosV();
-	ObjDesc->m_kRot  = GetWorldRotV();
-	ObjDesc->m_kVel  = GetVel();
-	ObjDesc->m_kAcc  = GetAcc();	
-	ObjDesc->m_fRadius  = GetRadius();		
-	
-	ObjDesc->m_bSave = m_bSave;
-	ObjDesc->m_iObjectType=m_iObjectType;
-	
-	vector<Property*> pkPropertys;
-	
-	GetPropertys(&pkPropertys,PROPERTY_TYPE_ALL,PROPERTY_SIDE_ALL);
-	
-	for(vector<Property*>::iterator it=pkPropertys.begin();it!=pkPropertys.end();it++) 
-	{
-		if((*it)->m_bSave)
-		{
-			PropertyDescriptor* pkP=new PropertyDescriptor;
-			pkP->m_kName=(*it)->m_acName;
-			(*it)->Save(&pkP->m_kData);
-		
-			ObjDesc->m_acPropertyList.push_back(pkP);
-		}
-	}
-}
-
 // Collision / Shape.
 float Object::GetBoundingRadius()
 {
@@ -857,7 +755,6 @@ void Object::Touch(Collision* pkCol)
 		(*it)->Touch(pkCol);
 	}
 }
-
 
 // Game Messages
 /// Adds a GameMessage to be handled later by object.
@@ -885,10 +782,10 @@ void Object::RouteMessage(GameMessage& Msg)
 		(*it)->HandleGameMessage(Msg);
 }
 
+/**	\brief	Checks parent / Child links.
 
-
-
-// Debug
+	Checks that the parent/child links is ok and returns false if they are not.
+*/
 bool Object::CheckLinks(bool bCheckChilds, int iPos)
 {
 	// Check that our parent link to us.
@@ -913,6 +810,8 @@ void TabIn(int iSpaces)
 		g_ZFObjSys.Logf("fisklins", " " );
 }
 
+/**	\brief	Print Info about a object and all its children to file.
+*/
 void Object::PrintTree(int pos)
 {
 	const char* szValue;
@@ -964,16 +863,11 @@ void Object::MakeCloneOf(Object* pkOrginal)
 {
 	SetParent(m_pkParent);
 
-//	m_kPos		= pkOrginal->m_kPos;
-//	m_kRot		= pkOrginal->m_kRot;
 	m_kVel		= pkOrginal->m_kVel;
-//	m_kOldPos	= pkOrginal->m_kOldPos;
-//	m_kOldRot	= pkOrginal->m_kOldRot;
 	m_strName	= pkOrginal->m_strName;
 	m_strType	= pkOrginal->m_strType;
 	m_iObjectType			= pkOrginal->m_iObjectType;
 	m_iUpdateStatus		= pkOrginal->m_iUpdateStatus;
-	m_piDecorationStep	= pkOrginal->m_piDecorationStep;
 	m_bSave		= pkOrginal->m_bSave;
 	m_kAcc		= pkOrginal->m_kAcc;
 	m_fRadius	= pkOrginal->m_fRadius;	
@@ -983,245 +877,14 @@ void Object::MakeCloneOf(Object* pkOrginal)
 
 	for(vector<Property*>::iterator it = pkOrginal->m_akPropertys.begin(); it != pkOrginal->m_akPropertys.end(); it++) {
 		pkProp = AddProperty((*it)->m_acName);
-		//cout << "Creating '" << (*it)->m_acName << "'\n";
 		
 		// Get Values
 		akPropertyNames = (*it)->GetValueNames();
 
 		for(unsigned int i=0; i < akPropertyNames.size(); i++) {
 			pkProp->SetValue(akPropertyNames[i], (*it)->GetValue(akPropertyNames[i]));
-			//cout << " Setting '" << akPropertyNames[i] << "' to '" << (*it)->GetValue(akPropertyNames[i]) << "'\n";
 			}
-		
-		// *pkProp = (*it);
 		}
-	
-	
-}
-
-/*
-float Object::GetI()
-{
-	float t = m_pkFps->GetGameFrameTime(); 
-	float at = m_pkFps->GetTicks() - m_pkFps->GetLastGameUpdateTime();
-	float i = at/t;				
-	
-	if(i>1)
-		i=1;
-	
-	if(i<0)
-		i=0;
-		
-//	cout<<"I"<<i<<endl;
-		
-	return i;	
-}
-
-Vector3 Object::GetIRot()
-{
-//	float i = GetI();					
-	float t = m_pkFps->GetGameFrameTime(); 
-	float at = m_pkFps->GetTicks() - m_fLastRotSetTime;
-	float i = at/t;				
-	
-	if(i>1)
-		i=1;	
-	if(i<0)
-		i=0;
-
-	Vector3 res;	
-	
-	res.x = (m_kOldRot.x * (1-i)) + (m_kRot.x * i);
-	res.y = (m_kOldRot.y * (1-i)) + (m_kRot.y * i);	
-	res.z = (m_kOldRot.z * (1-i)) + (m_kRot.z * i);	
-		
-	return res;
-}
-
-Vector3 Object::GetIPos()
-{
-//	float i = GetI();
-	float t = m_pkFps->GetGameFrameTime(); 
-	float at = m_pkFps->GetTicks() - m_fLastPosSetTime;
-	float i = at/t;				
-	
-	if(i>1)
-		i=1;	
-	if(i<0)
-		i=0;
-
-
-	Vector3 res;
-	res.Lerp(m_kOldPos,m_kPos,i);
-	return res;
-}
-
-void Object::SetRot(Vector3 kRot)
-{
-	if(kRot != m_kRot) {
-		m_iNetUpdateFlags |= OBJ_NETFLAG_ROT;
-		//cout << "SetRot changed " << endl;
-		}
-
-	m_kOldRot = m_kRot;
-	m_kRot = kRot;
-	
-	m_fLastRotSetTime = m_pkObjectMan->m_pkZeroFps->GetEngineTime();	
-}
-
-void Object::SetPos(Vector3 kPos)
-{
-	if(kPos != m_kPos) {
-		m_iNetUpdateFlags |= OBJ_NETFLAG_POS;
-		//cout << "SetPos changed " << endl;
-		}
-
-	m_kOldPos = m_kPos;
-	m_kPos = kPos;
-	
-	m_fLastPosSetTime = m_pkObjectMan->m_pkZeroFps->GetEngineTime();
-}
-*/
-ObjectDescriptor::~ObjectDescriptor()
-{
-	for(list<PropertyDescriptor*>::iterator it=m_acPropertyList.begin();it!=m_acPropertyList.end();it++)
-	{
-		delete (*it);
-	}
-}
-
-void ObjectDescriptor::Clear()
-{
-	m_kName="";
-	m_kPos.Set(0,0,0);
-	m_kRot.Set(0,0,0);
-	m_kVel.Set(0,0,0);			
-	m_kAcc.Set(0,0,0);	
-	m_fRadius=0.5;
-	
-	m_iObjectType=OBJECT_TYPE_DYNAMIC;
-	m_bSave=true;
-	
-	for(list<PropertyDescriptor*>::iterator it=m_acPropertyList.begin();it!=m_acPropertyList.end();it++)
-	{
-		delete (*it);
-	}
-	
-	m_acPropertyList.clear();
-}
-
-
-bool ObjectDescriptor::SaveToFile(ZFVFile* pkFile)
-{
-	ZFMemPackage temp;
-	
-	SaveToMem(&temp);
-	
-	temp.SaveToFile(pkFile);
-	
-	temp.Clear();
-	
-	return true;
-}
-
-bool ObjectDescriptor::LoadFromFile(ZFVFile* pkFile)
-{
-	ZFMemPackage temp;
-	
-	if(!temp.LoadFromFile(pkFile)){
-		cout<<"Error Loading from file (EOF)"<<endl;
-		return false;
-	}
-		
-	LoadFromMem(&temp);
-
-	temp.Clear();
-
-	return true;
-}
-
-void ObjectDescriptor::SaveToMem(ZFMemPackage* pkPackage)
-{
-	cout<<"saving"<<endl;
-	char namn[50];
-	strcpy(namn,m_kName.c_str());
-	pkPackage->Write((void*)namn,50,1);	
-	
-	
-	pkPackage->Write((void*)&m_kPos,12,1);	
-	pkPackage->Write((void*)&m_kRot,12,1);	
-	pkPackage->Write((void*)&m_kVel,12,1);
-	pkPackage->Write((void*)&m_kAcc,12,1);
-	pkPackage->Write((void*)&m_fRadius,4,1);
-	
-	
-	pkPackage->Write((void*)&m_bSave,4,1);
-	pkPackage->Write((void*)&m_iObjectType,4,1);
-	
-	int iNrOfPropertys=m_acPropertyList.size();
-	pkPackage->Write((void*)&iNrOfPropertys,4,1);
-	
-	for(list<PropertyDescriptor*>::iterator it=m_acPropertyList.begin();it!=m_acPropertyList.end();it++)
-	{
-		//write property name
-		char propertyname[50];
-		strcpy(propertyname,(*it)->m_kName.c_str());
-		pkPackage->Write((void*)propertyname,50,1);
-		
-		//write size
-		int iSize=(*it)->m_kData.GetSize();
-		pkPackage->Write((void*)&iSize,4,1);
-		
-		//write data
-		pkPackage->Write((*it)->m_kData.GetDataPointer(),(*it)->m_kData.GetSize(),1);
-	}
-}
-
-void ObjectDescriptor::LoadFromMem(ZFMemPackage* pkPackage)
-{
-	char namn[50];
-			
-	pkPackage->Read((void*)namn,50,1);
-						
-	m_kName=namn;
-			
-	pkPackage->Read((void*)&m_kPos,12,1);	
-	pkPackage->Read((void*)&m_kRot,12,1);	
-	pkPackage->Read((void*)&m_kVel,12,1);
-	pkPackage->Read((void*)&m_kAcc,12,1);			
-	pkPackage->Read((void*)&m_fRadius,4,1);
-			
-	pkPackage->Read((void*)&m_bSave,4,1);			
-	pkPackage->Read((void*)&m_iObjectType,4,1);	
-			
-	int iNrOfPropertys;
-	pkPackage->Read((void*)&iNrOfPropertys,4,1);
-			
-	for(int i=0;i<iNrOfPropertys;i++)
-	{
-		//create a new propertydescription
-		PropertyDescriptor* newpropdesc=new PropertyDescriptor;
-				
-		//read property name
-		char propertyname[50];
-		pkPackage->Read((void*)propertyname,50,1);				
-		newpropdesc->m_kName=propertyname;
-		
-		//read size
-		int iSize;
-		pkPackage->Read((void*)&iSize,4,1);
-		
-		//read data
-		char data;
-		for(int i=0;i<iSize;i++)
-		{
-			pkPackage->Read((void*)&data,1,1);
-			newpropdesc->m_kData.Write((void*)&data,1,1);
-		}
-		
-		//add property to list
-		m_acPropertyList.push_back(newpropdesc);
-	}
 }
 
 void Object::ResetChildsGotData()

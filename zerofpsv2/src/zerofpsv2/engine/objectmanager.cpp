@@ -113,13 +113,19 @@ ObjectManager::~ObjectManager()
 
 }
 
-// Add/Remove Objects
+/**	\brief	Add's a object to the ObjectManger.
+
+  This function is called by objects as they are created. It assigned a NetWorkID to the object and
+  also put them in the ObjectManger.
+*/
 void ObjectManager::Add(Object* pkObject) 
 {
 	pkObject->iNetWorkID = iNextObjectID++;
 	m_akObjects.push_back(pkObject);
 }
 
+/**	\brief	Dont use this..use Delete instead
+*/
 void ObjectManager::Remove(Object* pkObject) 
 {	
 	// If i own object mark so we remove it on clients.
@@ -128,20 +134,11 @@ void ObjectManager::Remove(Object* pkObject)
 	m_akObjects.remove(pkObject);
 }
 
+/**	\brief	Adds an object to delete qeue
+*/
+
 void ObjectManager::Delete(Object* pkObject) 
 {
-/*
-	for(vector<Object*>::iterator it=m_akDeleteList.begin();it!=m_akDeleteList.end();it++) 
-	{
-		if(pkObject == (*it)) {
-			Logf("net", "Object [%d] already in delete list\n", pkObject->iNetWorkID);
-			cout << "Object already in delete list" << endl;
-			return;
-		}
-	}
-	
-	m_akDeleteList.push_back(pkObject);*/
-
 	for(vector<int>::iterator it=m_aiDeleteList.begin();it!=m_aiDeleteList.end();it++) 
 	{
 		if(pkObject->iNetWorkID == (*it)) {
@@ -154,6 +151,11 @@ void ObjectManager::Delete(Object* pkObject)
 	m_aiDeleteList.push_back(pkObject->iNetWorkID);
 }
 
+/**	\brief	Adds an object to delete qeue
+		\todo	Should delete all zones.
+
+	Clear all data from ObjectManger.
+*/
 void ObjectManager::Clear()
 {
 	for(list<Object*>::iterator it=m_akObjects.begin();it!=m_akObjects.end();it++) {
@@ -183,7 +185,6 @@ void ObjectManager::Update(int iType,int iSide,bool bSort)
 	m_pkZeroFps->DevPrintf("om", "OM::Update(%s, %s,%d) = %d",
 		GetPropertyTypeName(iType),GetPropertySideName(iSide),bSort,m_iNrOfActivePropertys);
 
-
 	if(bSort){
 		sort(m_akPropertys.begin(),m_akPropertys.end(),Less_Property);
 	}
@@ -192,7 +193,6 @@ void ObjectManager::Update(int iType,int iSide,bool bSort)
 	{
 		(*it)->Update();
 	}
-	
 }
 
 void ObjectManager::UpdateDelete()
@@ -258,59 +258,15 @@ void ObjectManager::UpdateGameMessages(void)
 }
 
 
-// Create 
+/**	\brief	Creates a new clean object.
+
+	Creates a basic object without any propertys and all values set to defualt. 
+*/
 Object* ObjectManager::CreateObject()
 {
 	Object* pkObj = new Object;
-//	pkObj->AddProperty("P_Primitives3D");
 	return pkObj;
 }
-
-Object* ObjectManager::CreateObject(const char* acName)
-{	
-	ObjectDescriptor *objtemplate = GetTemplate(acName);
-	
-	//return null if the template does not exist
-	if(objtemplate==NULL)
-		return NULL;
-	
-	return CreateObject(objtemplate);	
-}
-
-Object* ObjectManager::CreateObject(ObjectDescriptor* pkObjDesc)
-{
-//	Object* tempobject=new Object;
-	Object* tempobject	=	CreateObject();
-
-	tempobject->GetName()	=	pkObjDesc->m_kName;
-	tempobject->SetWorldPosV(pkObjDesc->m_kPos);		//två gånger för interpolering
-	tempobject->SetWorldPosV(pkObjDesc->m_kPos);		//två gånger för interpolering
-	tempobject->SetWorldRotV(pkObjDesc->m_kRot);		//två gånger för interpolering
-	tempobject->SetWorldRotV(pkObjDesc->m_kRot);		//två gånger för interpolering
-	tempobject->GetVel()		=	pkObjDesc->m_kVel;
-	tempobject->GetAcc()		=	pkObjDesc->m_kAcc;	
-	tempobject->GetRadius()	=	pkObjDesc->m_fRadius;		
-	
-	tempobject->GetSave()			=	pkObjDesc->m_bSave;
-	tempobject->GetObjectType()	=	pkObjDesc->m_iObjectType;
-	
-	tempobject->m_eRole			= NETROLE_AUTHORITY;
-	tempobject->m_eRemoteRole	= NETROLE_PROXY;
-	
-	for(list<PropertyDescriptor*>::iterator it=pkObjDesc->m_acPropertyList.begin();it!=pkObjDesc->m_acPropertyList.end();it++) 
-	{
-		if(tempobject->AddProperty((*it)->m_kName.c_str()))
-		{
-			//cout<<"Added property "<<(*it)->m_kName.c_str()<<endl;
-			(*it)->m_kData.Seek(0,0);
-			tempobject->GetProperty((*it)->m_kName.c_str())->Load(&(*it)->m_kData);
-			//cout<<"Loaded "<<(*it)->m_kName.c_str()<<endl;
-		}
-	}
-	
-	return tempobject;
-}
-
 
 Object* ObjectManager::CreateObjectByNetWorkID(int iNetID)
 {
@@ -329,6 +285,11 @@ Object* ObjectManager::CreateObjectByNetWorkID(int iNetID)
 	return pkNew;
 }
 
+/**	\brief	Uses a script to create the object.
+
+	Creates a object from a script and use it to set values and propertys. If script file
+	is not found no object will be created. 
+*/
 Object* ObjectManager::CreateObjectFromScript(const char* acName)
 {
 	if(m_pScriptFileHandle)
@@ -365,13 +326,17 @@ Object* ObjectManager::CreateObjectFromScript(const char* acName)
 	return ObjectManagerLua::g_pkReturnObject;
 }
 
+/**	\brief	Creates a object from the zfoh.txt file.
+
+	Creates a object as described in the zfoh.txt file (poor man script). If a object is
+	not found with the choosen name no object will be created.
+*/
 Object* ObjectManager::CreateObjectByArchType(const char* acName)
 {
 	ObjectArcheType* pkAt = GetArcheType(string(acName));
 	if(!pkAt)
 		return false;
 
-//	Object* pkObj			= new Object;
 	Object* pkObj	=	CreateObject();
 	pkObj->m_eRemoteRole	= NETROLE_PROXY;
 	pkObj->m_eRole			= NETROLE_AUTHORITY;
@@ -382,139 +347,6 @@ Object* ObjectManager::CreateObjectByArchType(const char* acName)
 	pkObj->m_strName	= string("A ") + pkObj->m_strType;
 
 	return pkObj;
-}
-
-
-
-
-// Template
-void ObjectManager::AddTemplate(ObjectDescriptor* pkNewTemplate)
-{
-	m_akTemplates.push_back(pkNewTemplate);
-}
-
-int ObjectManager::GetNrOfTemplates() 
-{	
-	return m_akTemplates.size();
-}
-
-
-void ObjectManager::GetTemplateList(vector<string>* paList)
-{
-	for(list<ObjectDescriptor*>::iterator it=m_akTemplates.begin();it!=m_akTemplates.end();it++) 
-	{
-		paList->push_back((*it)->m_kName);	
-	}
-}
-
-bool ObjectManager::MakeTemplate(const char* acName,Object* pkObject, bool bForce)
-{
-	ObjectDescriptor* tempdesc = GetTemplate(acName);
-
-	if(tempdesc == NULL) {
-		tempdesc = new ObjectDescriptor;
-		}
-	else {
-		if(bForce == false)
-			return false;
-		
-		tempdesc->Clear();
-		}
-
-/*
-	ObjectDescriptor* tempdesc = new ObjectDescriptor;
-	
-	//set name
-	tempdesc->m_kName=acName;
-	tempdesc->m_kPos=pkObject->GetPos();
-	tempdesc->m_kRot=pkObject->GetRot();
-	tempdesc->m_kVel=pkObject->GetVel();
-	
-	list<Property*> pkPropertys;
-	
-	pkObject->GetPropertys(&pkPropertys,PROPERTY_TYPE_ALL,PROPERTY_SIDE_ALL);
-	
-	for(list<Property*>::iterator it=pkPropertys.begin();it!=pkPropertys.end();it++) 
-	{
-		PropertyDescriptor* pkP=new PropertyDescriptor;
-		pkP->m_kName=(*it)->m_acName;
-		(*it)->Save(&pkP->m_kData);
-		
-		tempdesc->m_acPropertyList.push_back(pkP);
-	}
-	*/
-	
-	
-	pkObject->Save(tempdesc);	
-	
-	tempdesc->m_kName=acName;
-	
-	AddTemplate(tempdesc);
-	return true;
-}
-
-
-
-
-void ObjectManager::ClearTemplates()
-{
-	for(list<ObjectDescriptor*>::iterator it=m_akTemplates.begin();it!=m_akTemplates.end();it++) 
-	{
-		delete (*it);
-	}
-	
-	m_akTemplates.clear();
-}
-
-
-ObjectDescriptor* ObjectManager::GetTemplate(const char* acName)
-{
-	for(list<ObjectDescriptor*>::iterator it=m_akTemplates.begin();it!=m_akTemplates.end();it++) 
-	{
-		if((*it)->m_kName==acName)
-			return (*it);
-	}
-	
-	return NULL;
-}
-
-bool ObjectManager::LoadTemplate(const char* acFile)
-{
-	cout<<"loading template"<<endl;
-	
-	ZFVFile fil;
-	if(!fil.Open(acFile,0, false)){
-		return false;
-	}
-		
-	ObjectDescriptor* newtemplate=new ObjectDescriptor;	
-
-	newtemplate->LoadFromFile(&fil);
-	
-	AddTemplate(newtemplate);
-	
-	fil.Close();
-
-	return true;
-}
-
-bool ObjectManager::SaveTemplate(const char* acName,const char* acFile)
-{
-	cout<<"saving template "<<acName<<endl;
-	
-	ObjectDescriptor* objtemplate=GetTemplate(acName);
-	if(objtemplate==NULL)
-		return false;
-	
-	ZFVFile kFile;
-	if(!kFile.Open(acFile,0,true))
-		return false;
-	
-	objtemplate->SaveToFile(&kFile);	
-	
-	kFile.Close();
-		
-	return true;
 }
 
 bool ObjectManager::IsA(Object* pkObj, string strStringType)
@@ -539,59 +371,6 @@ bool ObjectManager::IsA(Object* pkObj, string strStringType)
 		}
 
 	return false;
-}
-
-
-// Load/Save Objects
-bool ObjectManager::SaveAllObjects(const char* acFile)
-{
-	ZFVFile kFile;
-	if(!kFile.Open(acFile,0,true))
-		return false;
-	
-	ObjectDescriptor kObd;
-	
-	vector<Object*> kObjectlist;
-	
-	GetAllObjects(&kObjectlist);
-	
-	for(vector<Object*>::iterator it=kObjectlist.begin();it!=kObjectlist.end();it++)
-	{
-		//the the object dont want to save dont save it
-		if(!(*it)->GetSave())
-			continue;
-	
-		(*it)->Save(&kObd);
-				
-		kObd.SaveToFile(&kFile);
-		
-		kObd.Clear();
-	}
-
-	kFile.Close();
-
-	return true;
-}
-
-bool ObjectManager::LoadAllObjects(const char* acFile)
-{
-	ZFVFile kFile;
-	if(!kFile.Open(acFile,0,false))
-		return false;
-	
-	ObjectDescriptor kObd;
-
-	while(kObd.LoadFromFile(&kFile))
-	{		
-		Object* kObject = CreateObject(&kObd);
-		kObject->AttachToClosestZone();
-		
-		kObd.Clear();
-	}
-	
-	kFile.Close();
-	
-	return true;
 }
 
 // Gets
@@ -838,7 +617,7 @@ char* ObjectManager::GetObjectTypeName(int eType)
 		case OBJECT_TYPE_STATIC: 		pkName = "OBJECT_TYPE_STATIC";	break;
 		case OBJECT_TYPE_PLAYER: 		pkName = "OBJECT_TYPE_PLAYER";	break;
 		case OBJECT_TYPE_STATDYN:		pkName = "OBJECT_TYPE_STATDYN";	break;
-		case OBJECT_TYPE_DECORATION: 	pkName = "OBJECT_TYPE_DECORATION";	break;
+//		case OBJECT_TYPE_DECORATION: 	pkName = "OBJECT_TYPE_DECORATION";	break;
 		}
 
 	return pkName;

@@ -1,3 +1,10 @@
+/**
+	\defgroup MistServer MistServer
+	\ingroup MistLand
+
+  MistServer is the Server of the game MistLands.
+*/
+
 #include "mistserver.h"
 #include "../zerofpsv2/engine_systems/common/heightmap.h"
 #include "../zerofpsv2/engine_systems/propertys/madproperty.h"

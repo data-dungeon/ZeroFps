@@ -50,7 +50,22 @@ Källkodsfiler:
 			ned i ett eget kommentar fält.
 
 Kommentarer
-	Klasser, metoder och medlemsvariabler skall kommenteras i headerfilen.
+	///	Doxydoc kommentar.
+	/**	Doxydoc kommentar.	*/
+	///<	Doxydoc kommentar som skrivs på samma rad efter det man vill kommentera.
+
+	Klasser, Structs och Unions skall kommenteras i .h.
+	Medlemsfunktioner ska dokumenteras i .cpp.
+
+	/**	\brief	Kort kommentar.
+
+			Vettigare beskrivning.
+		*/
+
+	/**	\file 
+		Short Desc (One Line only).
+		Long Desc...
+	*/	
 	
 	Bookmarks används för att markera olika platser i källkoden. Alla 
 		bookmarks skrivs som BM-*** där *** är en tag som varierar med vilken
@@ -72,32 +87,6 @@ Kommentarer
 			Detta förhindrar att någon av misstag råkar ta bort kod som i själva verket inte skulle 
 			tas bort utan som bara kommenterats ut så länge (tex. för att testa ny funktionalitet)
 			sammt förenklar för den person som vill rensa undan och snygga upp filer.
-
-	Kommentarer ska anges i format som förstås av DoxyGen. 
-		///	Doxydoc kommentar.
-		/**	Doxydoc kommentar.	*/
-		///<	Doxydoc kommentar som skrivs efter det man vill kommentera.
-
-		Kommentarer skrivs före det man vill kommentera eller på samma rad som 
-		det med ///< (ex klassmedlemar).
-
-		För att dokumentera vad en fil gör så anger man följande högst upp i den.
-		Kommentarer kan ha en brief beskrivning och skrivs då som:
-
-			/**	\brief	Kort kommentar.
-
-					Massa meningslöst sagg.
-				*/
-
-			/**	\file 
-				Short Desc (One Line only).
-				Long Desc...
-			*/
-
-			/** \file file.h
-			* A brief file description.
-			* A more elaborated file description.
-			*/
 
 Names:
 	Klass / Struct / Unions

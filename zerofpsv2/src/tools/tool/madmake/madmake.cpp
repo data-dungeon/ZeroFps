@@ -1,5 +1,12 @@
-// PmdMake.cpp : Defines the entry point for the console application.
-//
+/**
+	\defgroup MadMake MadMake
+	\ingroup Tools
+	\brief	Makes mad's.
+
+	MadMake is the tool to make export 3D modells to be used by the ZeroFPS engine. MadMake takes
+	files in diffrent formats and turn them into the .MAD format that is used by the engine.
+*/
+
 
 #include <cstring>
 #include <iostream>

@@ -1,3 +1,13 @@
+/**
+	\defgroup MadExport MadExport
+	\ingroup Tools
+	\brief	Maya Exporter.
+
+	MadExport is a Maya Plugin that is used to export data to files that can be imported and used by
+	MadMake. 
+*/
+
+
 #include <iostream>
 #include <stdio.h>
 #include <assert.h>

@@ -1,3 +1,10 @@
+/**
+	\defgroup ZeroTank ZeroTank - ZeroFPS Test App
+
+	ZeroTank is the main test application to test ZeroFPS.
+*/
+
+
 #include "zerotank.h"
 #include "../zerofpsv2/engine_systems/script_interfaces/si_gui.h"
 #include "../zerofpsv2/engine_systems/common/heightmap.h"
@@ -34,7 +41,6 @@ ZeroTank::ZeroTank(char* aName,int iWidth,int iHeight,int iDepth)
 	m_pkZeroTank_Modify	= NULL;
 	m_pkZeroTankClientObject = NULL;
 
-	assert(0);
 } 
 
 void ZeroTank::OnInit() 

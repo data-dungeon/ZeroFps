@@ -64,42 +64,43 @@ class ENGINE_API ObjectManager : public ZFSubSystem{
 			bool operator()(Property* x, Property* y) { return *x < *y; };
 		} Less_Property;
 	
-		ZeroFps*						m_pkZeroFps;
-		ZFScriptSystem* 			m_pkScript;
-		ZFResourceHandle* 		m_pScriptFileHandle;
-		NetWork*						m_pkNetWork;
+		ZeroFps*						m_pkZeroFps;										///< Ptr to ZeroFPS SubSystem
+		ZFScriptSystem* 			m_pkScript;											///< Ptr to Script SubSystem
+		NetWork*						m_pkNetWork;										///< Ptr to NetWork SubSystem.
+		ZFResourceHandle* 		m_pScriptFileHandle;								// ???
 
-		Object*						m_pkWorldObject;											///< Top level object.
+		Object*						m_pkWorldObject;									///< Top level object in OM.
 		
-		string						m_kWorldDirectory;
+		string						m_kWorldDirectory;								
 		
 		// Object ArcheTypes
-		list<ObjectArcheType*>	m_akArcheTypes;						///< List of all object Archetypes.
-
-		list<Object*>				m_akObjects;									///< List of all objects.
-		vector<int>					m_aiDeleteList;
-		vector<int>					m_aiNetDeleteList;
+	
+		list<Object*>				m_akObjects;										///< List of all objects.
+		vector<int>					m_aiDeleteList;									// ???
+		vector<int>					m_aiNetDeleteList;								// ???
 		
 		// Zones
-		vector<ZoneData>			m_kZones;
+		vector<ZoneData>			m_kZones;											// ???
 		
 		// Trackers
-		list<Object*> 				m_kTrackedObjects;	
+		list<Object*> 				m_kTrackedObjects;								// ???
 
-		list<ObjectDescriptor*> m_akTemplates;							///< List of templates.
-		vector<Property*>			m_akPropertys;									///< List of Active Propertys.	
-		int							m_iNrOfActivePropertys;						///> Size of akProperty list.
+		list<ObjectDescriptor*> m_akTemplates;										///< List of templates.
+		vector<Property*>			m_akPropertys;										///< List of Active Propertys.	
+		int							m_iNrOfActivePropertys;							///> Size of akProperty list.
 
-		int							iNextObjectID;													///< Next free object ID.
-		bool							m_bUpdate;														///< Disable all updates except RENDER.	
-		bool							m_bDrawZones;
+		int							iNextObjectID;										///< Next free object ID.
+		bool							m_bUpdate;											///< Disable all updates except RENDER.	
+		bool							m_bDrawZones;										///< True if we need to draw Zones.
 
-		void RunCommand(int cmdid, const CmdArgument* kCommand);
-		void GetPropertys(int iType,int iSide);						///< Fill propery list.
+		void RunCommand(int cmdid, const CmdArgument* kCommand);				
+		void GetPropertys(int iType,int iSide);									///< Fill propery list.
+
+		// Remove
+		list<ObjectArcheType*>	m_akArcheTypes;									///< List of all object Archetypes - 
 		void TESTVIM_LoadArcheTypes(char* szFileName);
-		ObjectArcheType* GetArcheType(string strName);				///< Get ptr to AT. NULL if not found.
-		void AddArchPropertys(Object* pkObj, string strName);
-
+		ObjectArcheType* GetArcheType(string strName);							///< Get ptr to AT. NULL if not found.
+		void AddArchPropertys(Object* pkObj, string strName);					
 
 	public:
 		int		m_iForceNetUpdate;					
@@ -113,10 +114,9 @@ class ENGINE_API ObjectManager : public ZFSubSystem{
 
 		ObjectManager();
 		~ObjectManager();
-	
 
 		// Add/Remove Objects
-		void Add(Object* pkNewObject);									///< Add object to the manager
+		void Add(Object* pkNewObject);									// Add object to the manager
 		void Delete(Object* pkNewObject);								///< Adds an object to delete qeue
 		void Remove(Object* pkObject);									///< Dont use this..use Delete instead
 		void Clear();															///< Delete all objects.
@@ -129,28 +129,12 @@ class ENGINE_API ObjectManager : public ZFSubSystem{
 
 			// Create 
 		Object* CreateObject();												///< Create a empty object.
-		Object* CreateObject(const char* acName);						///< Create object from template.
-		Object* CreateObject(ObjectDescriptor* pkObjDesc);			///< Create object from ObjectDescriptor
 		Object* CreateObjectByNetWorkID(int iNetID);					///< Create object with selected NetworkID
 		Object* CreateObjectByArchType(const char* acName);		///< Create object from archtype
 		Object* CreateObjectFromScript(const char* acName);
 
-		// Template
-		void AddTemplate(ObjectDescriptor* pkNewTemplate);
-		int GetNrOfTemplates();
-		void GetTemplateList(vector<string>* paList);
-		bool MakeTemplate(const char* acName,Object* pkObject, bool bForce = false);
-		void ClearTemplates();
-		ObjectDescriptor* GetTemplate(const char* acName);
-		bool LoadTemplate(const char* acFile);
-		bool SaveTemplate(const char* acName,const char* acFile);
-
 		// Arch types
 		bool IsA(Object* pkObj, string strStringType);
-
-		// Load/Save Objects
-		bool SaveAllObjects(const char* acFile);
-		bool LoadAllObjects(const char* acFile);
 
 		// Gets
 		Object* GetWorldObject()	{	return m_pkWorldObject;				};
@@ -194,6 +178,7 @@ class ENGINE_API ObjectManager : public ZFSubSystem{
 		bool ShutDown();
 		bool IsValid();
 
+		// Zones & Trackers.
 		int GetNumOfZones();
 		void Test_CreateZones();
 		void Test_DrawZones();
