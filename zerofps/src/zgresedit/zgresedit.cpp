@@ -126,8 +126,8 @@ void ZGResEdit::OnIdle()
 	pkFps->SetCamera(m_pkCamera);		
 	pkFps->GetCam()->ClearViewPort();
 
-	if(pkFps->m_bConsoleMode == true)
-		pkFps->QuitEngine();
+/*	if(pkFps->m_bConsoleMode == true)
+		pkFps->QuitEngine();*/
 
 	EnableClickWnd();
 }
@@ -293,14 +293,6 @@ bool ZGResEdit::WinProc(ZGuiWnd* pkWnd,unsigned int uiMessage,
 	case ZGM_MOUSEMOVE:
 		if(((bool*)pkParams)[0] == true) // Left button down
 		{
-	/*		if(pkInput->Pressed(KEY_LSHIFT))
-			{
-				int mx, my;
-				pkInput->MouseXY(mx, my);
-				pkGui->SetFocus(m_pkRectWnd);
-				m_pkRectWnd->SetPos(mx, my, true, true);
-			}*/
-
 			switch(m_kMouseState)
 			{
 			case RESIZING_BOTH:
@@ -412,6 +404,30 @@ bool ZGResEdit::WinProc(ZGuiWnd* pkWnd,unsigned int uiMessage,
 		switch(((int*)pkParams)[0]) // key pressed
 		{
 		case KEY_DELETE:
+
+			int i;
+
+			for( i=0; i<m_pkMoveWnds.size(); i++)
+				if(!IsGuiWnd(m_pkMoveWnds[i]))
+				{
+					if(SelectWnd::GetInstance()->m_pkWnd == m_pkMoveWnds[i])
+						SelectWnd::GetInstance()->m_pkWnd = NULL;
+
+					// First, delete skin.
+					ZGuiSkin* pkSkin = m_pkMoveWnds[i]->GetSkin();
+					delete pkSkin;
+					pkSkin = NULL;
+					
+					// Erase the new type from the list in the ControlBox class
+					m_pkControlBox->UnregisterNewType(m_pkMoveWnds[i]);
+
+					if(!pkGui->UnregisterWindow(m_pkMoveWnds[i]))
+						cout << "Failed to unregister window!" << endl;
+
+					if(ZGuiWnd::m_pkFocusWnd && !IsGuiWnd(ZGuiWnd::m_pkFocusWnd))
+						SelectWnd::GetInstance()->m_pkWnd = ZGuiWnd::m_pkFocusWnd;
+				}
+
 			if(!IsGuiWnd(pkWnd))
 			{
 				if(SelectWnd::GetInstance()->m_pkWnd == pkWnd)
@@ -431,6 +447,7 @@ bool ZGResEdit::WinProc(ZGuiWnd* pkWnd,unsigned int uiMessage,
 				if(ZGuiWnd::m_pkFocusWnd && !IsGuiWnd(ZGuiWnd::m_pkFocusWnd))
 					SelectWnd::GetInstance()->m_pkWnd = ZGuiWnd::m_pkFocusWnd;
 			}
+
 			break;
 		case KEY_RETURN:
 			{

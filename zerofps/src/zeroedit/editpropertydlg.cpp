@@ -58,62 +58,74 @@ ZGuiWnd* EditPropertyDlg::Create(int x, int y, int w, int h)
 		return test;
 	}
 
-	ZGuiWnd* pkMainWindow = new ZGuiWnd(Rect(x,y,x+w,y+h),NULL,true,ID_PROPERTY_WND);
+	ZGuiWnd* pkMainWindow = new ZGuiWnd(Rect(x,y,x+w,y+h),
+		NULL,true,ID_PROPERTY_WND);
 	pkMainWindow->SetSkin(m_pkGui->GetSkin("main"));
-	pkMainWindow->SetMoveArea(Rect(0,0,m_pkGui->m_pkEdit->m_iWidth,m_pkGui->m_pkEdit->m_iHeight));
+	pkMainWindow->SetMoveArea(Rect(0,0,m_pkGui->m_pkEdit->m_iWidth,
+		m_pkGui->m_pkEdit->m_iHeight));
 	pkMainWindow->SetWindowFlag(WF_CLOSEABLE);
 
 	int y_pos;
 
-	m_pkGui->CreateButton(pkMainWindow, ID_PROPERTY_WND_CLOSE, w-20, 0, 20, 20, "x")->SetWindowFlag(WF_CENTER_TEXT);
+	m_pkGui->CreateButton(pkMainWindow, ID_PROPERTY_WND_CLOSE, w-20, 0, 20, 
+		20, "x")->SetWindowFlag(WF_CENTER_TEXT);
 	m_pkGui->CreateLabel(pkMainWindow, 0, 20, 20, 16*5, 20, "Name:");
-	m_pkGui->Register( m_pkGui->CreateTextbox(pkMainWindow, ID_NAME_TEXTBOX, 16*6, 20, 
-		16*6+16*7*2, 20), "ObjectNameEB" );
+	m_pkGui->Register( m_pkGui->CreateTextbox(pkMainWindow, ID_NAME_TEXTBOX, 
+		16*6, 20, 16*6+16*7*2, 20), "ObjectNameEB" );
 
 	m_pkGui->CreateLabel(pkMainWindow, 0, 20, 50, 16*4, 20, "Pos:");
-	m_pkGui->Register( m_pkGui->CreateTextbox(pkMainWindow, ID_POSX_TEXTBOX, 16*6, 50, 16*6, 20), "ObjectPosXEB");
-	m_pkGui->Register( m_pkGui->CreateTextbox(pkMainWindow, ID_POSY_TEXTBOX, 16*6+16*7, 50, 16*6, 20), "ObjectPosYEB"); 
-	m_pkGui->Register( m_pkGui->CreateTextbox(pkMainWindow, ID_POSZ_TEXTBOX, 16*6+16*7*2, 50, 16*6, 20), "ObjectPosZEB");
+	m_pkGui->Register( m_pkGui->CreateTextbox(pkMainWindow, ID_POSX_TEXTBOX, 
+		16*6, 50, 16*6, 20), "ObjectPosXEB");
+	m_pkGui->Register( m_pkGui->CreateTextbox(pkMainWindow, ID_POSY_TEXTBOX, 
+		16*6+16*7, 50, 16*6, 20), "ObjectPosYEB"); 
+	m_pkGui->Register( m_pkGui->CreateTextbox(pkMainWindow, ID_POSZ_TEXTBOX, 
+		16*6+16*7*2, 50, 16*6, 20), "ObjectPosZEB");
 
 	y_pos = 80;
 
 	m_pkGui->CreateLabel(pkMainWindow, 0, 20, y_pos, 16*9-5, 20, "Props:");
 
 	ZGuiCombobox* cb;
-	m_pkGui->Register(cb = m_pkGui->CreateCombobox(pkMainWindow, ID_PROPERTIES_CB, 16*6, 
-		y_pos, 16*6+16*7*2, 20, false), "PropertyCB");
+	m_pkGui->Register(cb = m_pkGui->CreateCombobox(pkMainWindow, ID_PROPERTIES_CB, 
+		16*6, y_pos, 16*6+16*7*2, 20, false), "PropertyCB");
 	cb->SetNumVisibleRows(20);
 
 	ZGuiButton* bn;
-	m_pkGui->Register(bn = m_pkGui->CreateButton(pkMainWindow, ID_ADDPROPERTY_BN, 16*6+16*6+16*7*2+10, 
-		y_pos, 70, 20, "Add"), "AddPropertyBN");
+	m_pkGui->Register(bn = m_pkGui->CreateButton(pkMainWindow, ID_ADDPROPERTY_BN, 
+		16*6+16*6+16*7*2+10, y_pos, 70, 20, "Add"), "AddPropertyBN");
 	bn->SetWindowFlag(WF_CENTER_TEXT);
 
-	m_pkGui->Register(bn = m_pkGui->CreateButton(pkMainWindow, ID_REMOVEPROPERTY_BN, 16*6+16*6+16*7*2+10, 
-		y_pos+30, 70, 20, "Remove"), "AddPropertyBN");
+	m_pkGui->Register(bn = m_pkGui->CreateButton(pkMainWindow, ID_REMOVEPROPERTY_BN, 
+		16*6+16*6+16*7*2+10, y_pos+30, 70, 20, "Remove"), "AddPropertyBN");
 	bn->SetWindowFlag(WF_CENTER_TEXT);
 
 	y_pos += 30;
 
 	m_pkGui->CreateLabel(pkMainWindow, 0, 20, y_pos, 16*9-5, 20, "Values:");
 
-	m_pkGui->Register(cb = m_pkGui->CreateCombobox(pkMainWindow, ID_PROPERTY_VALUES_CB, 16*6, 
-		y_pos, 16*6+16*7*2, 20, false), "PropertyValuesCB");
+	m_pkGui->Register(cb = m_pkGui->CreateCombobox(pkMainWindow, 
+		ID_PROPERTY_VALUES_CB, 16*6, y_pos, 16*6+16*7*2, 20, 
+		false), "PropertyValuesCB");
 	cb->SetNumVisibleRows(20);
 
 	y_pos += 30;
 
 	m_pkGui->CreateLabel(pkMainWindow, 0, 20, y_pos, 16*9-5, 20, "Change:");
 	
-	ZGuiWnd* pkPropValSetEB = m_pkGui->CreateTextbox(pkMainWindow, ID_PROPERTY_NEW_VALUE_EB, 16*6, y_pos, 16*6+16*7*2, 20);
+	ZGuiWnd* pkPropValSetEB = m_pkGui->CreateTextbox(pkMainWindow, 
+		ID_PROPERTY_NEW_VALUE_EB, 
+		16*6, y_pos, 16*6+16*7*2, 20);
 	m_pkGui->Register(pkPropValSetEB, "PropertyValueSetEB" );
-	ZGuiWnd* pkSetNewValueBN = m_pkGui->CreateButton(pkMainWindow, ID_PROPERTY_SET_NEW_VALUE_BN, 
+	ZGuiWnd* pkSetNewValueBN = m_pkGui->CreateButton(pkMainWindow, 
+		ID_PROPERTY_SET_NEW_VALUE_BN, 
 		16*6+16*6+16*7*2+10, y_pos, 70, 20, "OK");
 	pkSetNewValueBN->SetWindowFlag(WF_CENTER_TEXT);
 
-	ZGuiWnd* pkPropOKBn = m_pkGui->CreateButton(pkMainWindow, ID_PROPERTY_OK, 16*6+16*6+16*7*2+10, h-50, 70, 20, "OK");
+	ZGuiWnd* pkPropOKBn = m_pkGui->CreateButton(pkMainWindow, ID_PROPERTY_OK, 
+		16*6+16*6+16*7*2+10, h-50, 70, 20, "OK");
 	pkPropOKBn->SetWindowFlag(WF_CENTER_TEXT);
-	ZGuiWnd* pkPropCancelBn = m_pkGui->CreateButton(pkMainWindow, ID_PROPERTY_CANCEL, 16*6+16*6+16*7*2+10, h-25, 70, 20, "Cancel");
+	ZGuiWnd* pkPropCancelBn = m_pkGui->CreateButton(pkMainWindow, ID_PROPERTY_CANCEL, 
+		16*6+16*6+16*7*2+10, h-25, 70, 20, "Cancel");
 	pkPropCancelBn->SetWindowFlag(WF_CENTER_TEXT);
 
 	y_pos += 30;
@@ -127,7 +139,8 @@ ZGuiWnd* EditPropertyDlg::Create(int x, int y, int w, int h)
 	vkObjectTypeNames.push_back("OBJECT_TYPE_STATDYN");
 	vkObjectTypeNames.push_back("OBJECT_TYPE_DECORATION");
 
-	m_pkGui->CreateRadiobuttons(pkMainWindow, vkObjectTypeNames, "ObjecttypeRadioGroup", 
+	m_pkGui->CreateRadiobuttons(pkMainWindow, vkObjectTypeNames, 
+		"ObjecttypeRadioGroup", 
 		ID_OBJECTTYPE_RADIOGROUP, 10, 200, 16); 
 	
 	m_pkZGui->AddMainWindow(ID_PROPERTY_WND_MAIN, pkMainWindow, "PropertyDlg", 

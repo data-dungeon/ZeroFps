@@ -46,7 +46,8 @@ Gui::~Gui()
 
 }
 
-bool Gui::WndProc( ZGuiWnd* pkWindow, unsigned int uiMessage, int iNumberOfParams, void *pkParams )
+bool Gui::WndProc( ZGuiWnd* pkWindow, unsigned int uiMessage, int 
+				   iNumberOfParams, void *pkParams )
 {
 	Rect rc;
 
@@ -99,16 +100,18 @@ bool Gui::WndProc( ZGuiWnd* pkWindow, unsigned int uiMessage, int iNumberOfParam
 				sprintf(cmd, "loadtemplate %s", path); 
 				m_pkEdit->pkFps->m_pkConsole->Execute(cmd);	
 
-				sprintf(cmd, "set g_template %s", m_pkFileDlgbox->m_szCurrentFile.c_str()); 
+				sprintf(cmd, "set g_template %s", 
+					m_pkFileDlgbox->m_szCurrentFile.c_str()); 
 				m_pkEdit->pkFps->m_pkConsole->Execute(cmd);	
 				break;
 
 			case SAVE_TEMPLATE:
 				sprintf(path, "%s", m_pkFileDlgbox->m_szCurrentFile.c_str());
-				sprintf(cmd, "maketemplate %s", m_pkFileDlgbox->m_szCurrentFile.c_str()); 
+				sprintf(cmd,"maketemplate %s",m_pkFileDlgbox->m_szCurrentFile.c_str()); 
 				m_pkEdit->pkFps->m_pkConsole->Execute(cmd);	
 
-				sprintf(cmd, "savetemplate %s %s", path, m_pkFileDlgbox->m_szCurrentFile.c_str()); 
+				sprintf(cmd, "savetemplate %s %s", path, 
+					m_pkFileDlgbox->m_szCurrentFile.c_str()); 
 				m_pkEdit->pkFps->m_pkConsole->Execute(cmd);	
 				break;
 			}
@@ -212,17 +215,19 @@ bool Gui::WndProc( ZGuiWnd* pkWindow, unsigned int uiMessage, int iNumberOfParam
 
 bool Gui::CreateWindows()
 {	
-	ZGuiWnd* pkMenu = new ZGuiWnd(Rect(0,0,m_pkEdit->m_iWidth,20),NULL,true,ID_MAINWND_MENU);
+	ZGuiWnd* pkMenu = new ZGuiWnd(Rect(0,0,m_pkEdit->m_iWidth,20),NULL,
+		true,ID_MAINWND_MENU);
 	pkMenu->SetSkin(GetSkin("menu"));
 	pkMenu->SetZValue(102321);
 
 	Rect rc = Rect(0,0,128,32);
 
 	rc = Rect(0,0,200,20);
-	ZGuiCombobox* pkMenuCBox = new ZGuiCombobox(rc, pkMenu, true, ID_MAINWND_MENU_CB, 20,
+	ZGuiCombobox* pkMenuCBox = new ZGuiCombobox(rc,pkMenu,true,ID_MAINWND_MENU_CB,20,
 		GetSkin("menu"), GetSkin("dark_blue"), GetSkin("dark_blue"), GetSkin("menu"));
 	pkMenuCBox->SetGUI(m_pkEdit->pkGui);
 	pkMenuCBox->SetLabelText("File");
+	pkMenuCBox->SetNumVisibleRows(5);
 	pkMenuCBox->IsMenu(true);
 	pkMenuCBox->AddItem("Load map...", IDM_LOAD_HEIGHTMAP);
 	pkMenuCBox->AddItem("Load template...", IDM_LOAD_TEMPLATE);
@@ -331,7 +336,8 @@ int Gui::GetTexture(char* strName)
 	return fail_texture;
 }
 
-ZGuiButton* Gui::CreateButton(ZGuiWnd* pkParent, int iID, int x, int y, int w, int h, char *pkName)
+ZGuiButton* Gui::CreateButton(ZGuiWnd* pkParent, int iID, int x, int y, int w, 
+							  int h, char *pkName)
 {
 	ZGuiButton* pkButton = new ZGuiButton(Rect(x,y,x+w,y+h),pkParent,true,iID);
 	pkButton->SetButtonHighLightSkin(GetSkin("bn_focus"));
@@ -344,7 +350,8 @@ ZGuiButton* Gui::CreateButton(ZGuiWnd* pkParent, int iID, int x, int y, int w, i
 }
 
 void Gui::CreateRadiobuttons(ZGuiWnd* pkParent, vector<string>& vkNames,
-							 char* strRadioGroupName, int start_id, int x, int y, int size)
+							 char* strRadioGroupName, int start_id, int x, 
+							 int y, int size)
 {
 	int rbn_a = m_pkEdit->pkTexMan->Load("file:../data/textures/radiobn_a.bmp", 0);
 
@@ -383,10 +390,11 @@ ZGuiListbox* Gui::CreateListbox(ZGuiWnd* pkParent, int iID, int x, int y, int w,
 	return pkListbox;
 }
 
-ZGuiCombobox* Gui::CreateCombobox(ZGuiWnd* pkParent, int iID, int x, int y, int w, int h, bool bMenu)
+ZGuiCombobox* Gui::CreateCombobox(ZGuiWnd* pkParent, int iID, int x, int y, int w, 
+								  int h, bool bMenu)
 {
-	ZGuiCombobox* pkCombobox = new ZGuiCombobox(Rect(x,y,x+w,y+h), pkParent, true, iID, 20,
-		GetSkin("menu"), GetSkin("dark_blue"), GetSkin("dark_blue"), GetSkin("menu"));
+	ZGuiCombobox* pkCombobox = new ZGuiCombobox(Rect(x,y,x+w,y+h), pkParent, true, iID, 
+		20,GetSkin("menu"),GetSkin("dark_blue"),GetSkin("dark_blue"),GetSkin("menu"));
 
 	if(bMenu == false)
 	{
@@ -399,9 +407,11 @@ ZGuiCombobox* Gui::CreateCombobox(ZGuiWnd* pkParent, int iID, int x, int y, int 
 	return pkCombobox;
 }
 
-ZGuiTextbox* Gui::CreateTextbox(ZGuiWnd* pkParent, int iID, int x, int y, int w, int h, bool bMulitLine)
+ZGuiTextbox* Gui::CreateTextbox(ZGuiWnd* pkParent, int iID, int x, int y, int w, 
+								int h, bool bMulitLine)
 {
-	ZGuiTextbox* pkTextbox = new ZGuiTextbox(Rect(x,y,x+w,y+h), pkParent, true, iID, bMulitLine);
+	ZGuiTextbox* pkTextbox = new ZGuiTextbox(Rect(x,y,x+w,y+h), pkParent, true, 
+		iID, bMulitLine);
 	pkTextbox->SetSkin(GetSkin("white"));
 	pkTextbox->SetScrollbarSkin(GetSkin("menu_item_sel"), 
 		GetSkin("menu_item_hl"), GetSkin("menu_item_hl"));
@@ -410,7 +420,8 @@ ZGuiTextbox* Gui::CreateTextbox(ZGuiWnd* pkParent, int iID, int x, int y, int w,
 	return pkTextbox;
 }
 
-ZGuiLabel* Gui::CreateLabel(ZGuiWnd* pkParent, int iID, int x, int y, int w, int h, char* strText)
+ZGuiLabel* Gui::CreateLabel(ZGuiWnd* pkParent, int iID, int x, int y, int w, 
+							int h, char* strText)
 {
 	ZGuiLabel* pkLabel = new ZGuiLabel(Rect(x,y,x+w,y+h), pkParent, true, iID);
 	
@@ -422,7 +433,8 @@ ZGuiLabel* Gui::CreateLabel(ZGuiWnd* pkParent, int iID, int x, int y, int w, int
 	return pkLabel;
 }
 
-void Gui::AddItemsToList(ZGuiWnd *pkWnd, bool bCombobox, char **items, int iNumber, bool bSelectLast)
+void Gui::AddItemsToList(ZGuiWnd *pkWnd, bool bCombobox, char **items, int iNumber, 
+						 bool bSelectLast)
 {
 	if(bCombobox)
 	{
@@ -440,7 +452,8 @@ void Gui::AddItemsToList(ZGuiWnd *pkWnd, bool bCombobox, char **items, int iNumb
 	}
 }
 
-void Gui::AddItemToList(ZGuiWnd *pkWnd, bool bCombobox, const char *item, int index, bool bSelect)
+void Gui::AddItemToList(ZGuiWnd *pkWnd, bool bCombobox, const char *item, int index, 
+						bool bSelect)
 {
 	if(bCombobox)
 	{

@@ -60,7 +60,7 @@ bool FileOpenDlg::DlgProc( ZGuiWnd* pkWindow,unsigned int uiMessage,
 			case ID_FILEPATH_WND_CLOSE:
 			case ID_FILEPATH_CANCEL_BN:
 				{
-					m_pkGui->ShowMainWindow(m_pkResMan->Wnd("FOFileOpenDlg"),false);
+					m_pkGui->ShowMainWindow(m_pkResMan->Wnd("FOOpenFileWnd"),false);
 					return m_oMainWndProc(pkWindow,uiMessage,iNumberOfParams,pkParams);
 				}
 				break;
@@ -69,7 +69,7 @@ bool FileOpenDlg::DlgProc( ZGuiWnd* pkWindow,unsigned int uiMessage,
 				{
 					if(m_pkResMan->Wnd("FOFilePathSelFileEB")->GetText())
 						m_szCurrentFile=m_pkResMan->Wnd("FOFilePathSelFileEB")->GetText();
-					m_pkGui->ShowMainWindow(m_pkResMan->Wnd("FOFileOpenDlg"),false);
+					m_pkGui->ShowMainWindow(m_pkResMan->Wnd("FOOpenFileWnd"),false);
 					return m_oMainWndProc(pkWindow,uiMessage,iNumberOfParams,pkParams);
 				}
 				break;
@@ -172,11 +172,11 @@ bool FileOpenDlg::Create(int x,int y,int w,int h,ZGuiWndProc pkDlgProc)
 		"Window69", pkDlgProc);*/
 
 	
-	ZGuiWnd* pkMainWindow=m_pkResMan->Wnd("FOFileOpenDlg");
+	ZGuiWnd* pkMainWindow=m_pkResMan->Wnd("FOOpenFileWnd");
 
 	if( pkMainWindow )
 	{
-		m_pkGui->ShowMainWindow(m_pkResMan->Wnd("FOFileOpenDlg"),true);
+		m_pkGui->ShowMainWindow(m_pkResMan->Wnd("FOOpenFileWnd"),true);
 		FillPathList((ZGuiListbox*)m_pkResMan->Wnd("FOFilePathLB"),
 			m_szSearchPath);
 
@@ -233,7 +233,7 @@ bool FileOpenDlg::Create(int x,int y,int w,int h,ZGuiWndProc pkDlgProc)
 
 	ZGuiLabel* pkLabel=CreateLabel(pkMainWindow,0,0,0,w,22,strTitle);
 	pkLabel->SetSkin(m_pkResMan->Skin(string("DEF_TITLEBAR_SKIN")));
-	m_pkGui->RegisterWindow(pkLabel,"FOFileOpenLabel");
+	m_pkGui->RegisterWindow(pkLabel,"FOFileOpenTitle");
 
 	CreateLabel(pkMainWindow,ID_FILEPATH_WND_LABEL_PATH,0,h-44,w-80,20,
 		NULL)->SetText((char*)m_szCurrentDir.c_str());
@@ -242,7 +242,7 @@ bool FileOpenDlg::Create(int x,int y,int w,int h,ZGuiWndProc pkDlgProc)
 		h-22,w-200,20);
 	m_pkGui->RegisterWindow(pkTextbox,"FOFilePathSelFileEB");
 
-	m_pkGui->AddMainWindow(ID_FILEPATH_WND_MAIN,pkMainWindow,"FOFileOpenDlg",
+	m_pkGui->AddMainWindow(ID_FILEPATH_WND_MAIN,pkMainWindow,"FOOpenFileWnd",
 		pkDlgProc,true);
 
 	m_pkGui->AddKeyCommand(KEY_ESCAPE,pkMainWindow,pkCancelBn);
