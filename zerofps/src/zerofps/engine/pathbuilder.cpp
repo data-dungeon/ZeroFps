@@ -8,6 +8,8 @@
 
 int* PathBuilder::m_piTerrain = NULL;
 
+map< string, int* > PathBuilder::m_akCostMaps;
+
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
@@ -17,15 +19,11 @@ PathBuilder::PathBuilder(HeightMap* pkHeightMap, PathFind** ppkPathFind)
 {
 	m_pkHeightMap = pkHeightMap;
 	m_ppkPathFind = ppkPathFind;
-	m_piTerrain = NULL;
-	m_piCostMap = NULL;
-
 }
 
 PathBuilder::~PathBuilder()
 {
-/*	if(m_piCostMap)
-		delete[] m_piCostMap;*/
+
 }
 
 void PathBuilder::Build(int pkObjectTypeCost[5])
@@ -37,13 +35,15 @@ void PathBuilder::Build(int pkObjectTypeCost[5])
 	{
 		m_piTerrain = new int[iMapSize*iMapSize];
 
+		printf("Building terrain for the first and only time!\n");
+
 		for(y=0; y<iMapSize; y++)
 			for(x=0; x<iMapSize; x++)
 			{
 				HM_vert* pkVert = m_pkHeightMap->GetVert(x,y);
 
 				// Kolla terrängtyp
-				float dx=x, dy=y;
+				float dx=(float)x, dy=(float)y;
 				int texture = m_pkHeightMap->GetMostVisibleTexture(dx, dy); 
 
 				// Kolla vinkeln mot XZ planet
@@ -61,39 +61,59 @@ void PathBuilder::Build(int pkObjectTypeCost[5])
 			}
 	}
 
-	m_piCostMap = new int[iMapSize*iMapSize];
+	int* piCostMap = NULL;
+	
+	string szKey = GenerateKey(pkObjectTypeCost);
+	map<string,int*>::iterator r = m_akCostMaps.find(szKey);
 
-	for(y=0; y<iMapSize; y++)
-		for(x=0; x<iMapSize; x++)
-		{
-			int iIndex = y*iMapSize+x;
-			switch(m_piTerrain[iIndex])
+	// Skapa en ny om kostnadsmappen inte redan finns.
+	if(r == m_akCostMaps.end())
+	{
+		piCostMap = new int[iMapSize*iMapSize];
+
+		for(y=0; y<iMapSize; y++)
+			for(x=0; x<iMapSize; x++)
 			{
-			case 0:
-				m_piCostMap[iIndex] = pkObjectTypeCost[0]; // gräs
-				break;
-			case 1:
-				m_piCostMap[iIndex] = pkObjectTypeCost[1]; // öken
-				break;
-			case 2:
-				m_piCostMap[iIndex] = pkObjectTypeCost[2]; // sten
-				break;
-			case 3:
-				m_piCostMap[iIndex] = pkObjectTypeCost[3]; // väg?
-				break;
-			case 4:
-				m_piCostMap[iIndex] = pkObjectTypeCost[4]; // water
-				break;
-			default:
-				printf("Bad terran type found, terrain not intialized!\n");
-				break;
+				int iIndex = y*iMapSize+x;
+				switch(m_piTerrain[iIndex])
+				{
+				case 0:
+					piCostMap[iIndex] = pkObjectTypeCost[0]; // gräs
+					break;
+				case 1:
+					piCostMap[iIndex] = pkObjectTypeCost[1]; // öken
+					break;
+				case 2:
+					piCostMap[iIndex] = pkObjectTypeCost[2]; // sten
+					break;
+				case 3:
+					piCostMap[iIndex] = pkObjectTypeCost[3]; // väg?
+					break;
+				case 4:
+					piCostMap[iIndex] = pkObjectTypeCost[4]; // water
+					break;
+				default:
+					printf("Bad terran type found, terrain not intialized!\n");
+					break;
+				}
 			}
-		}
 
-	*m_ppkPathFind = new PathFind(m_piCostMap, iMapSize, /*BLOCKED*/999);
+		m_akCostMaps.insert( map<string, int*>::value_type(szKey, piCostMap) );
+	}
+	else
+	{
+		printf("Found identical cost map\n");
+		piCostMap = r->second;
+	}
+
+	*m_ppkPathFind = new PathFind(piCostMap, iMapSize, BLOCKED);
 }
 
-Point PathBuilder::GetMapTile(Vector3 pos)
+string PathBuilder::GenerateKey(int akCosts[])
 {
-	return Point((int)pos.x, (int)pos.y);
+	char szCostMap[20];
+	sprintf(szCostMap, "%i%i%i%i%i", akCosts[0],
+		akCosts[1], akCosts[2], akCosts[3], akCosts[4]);
+
+	return string(szCostMap);
 }

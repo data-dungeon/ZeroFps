@@ -12,22 +12,27 @@
 #include "engine_x.h"
 #include "../basic/basic.pkg"
 
+#include <map>
+#include <string>
+using namespace std;
+
 class HeightMap;
 class PathFind;
 
 class ENGINE_API PathBuilder : public ZFObject
 {
 public:
-	Point GetMapTile(Vector3 pos);
 	void Build(int pkObjectTypeCost[5]);
 	PathBuilder(HeightMap* pkHeightMap, PathFind** m_ppkPathFind);
 	~PathBuilder();
 
 private:
+	string GenerateKey(int akCosts[5]);
 	HeightMap* m_pkHeightMap;
 	PathFind** m_ppkPathFind;
-	int* m_piCostMap;
+
 	static int* m_piTerrain;
+	static map< string, int* > m_akCostMaps;
 };
 
 #endif // !defined(AFX_PATHFINDBUILDER_H__CA733ED4_A7A8_48B7_9A42_DEC57BBA575C__INCLUDED_)
