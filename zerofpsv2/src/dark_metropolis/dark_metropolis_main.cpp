@@ -49,7 +49,7 @@ void DarkMetropolis::OnInit()
 	m_pkFps->m_bClientMode =	true;
 	m_fMinCamDistance =			0.1f;
 	m_fMaxCamDistance =			6;
-	m_fDistance =					0;	
+	m_fDistance =					m_fMaxCamDistance;	
 	m_fAngle =						0;
 	m_strSaveDirectory =			"clans/";
 	m_pkGameInfoProperty = 		NULL;
@@ -292,6 +292,10 @@ void DarkMetropolis::OnServerStart()
 			m_pkCameraProp->SetCamera(m_pkCamera);
 			m_pkCameraProp->SetType(CAM_TYPEBIRDSEYE);
 			m_pkCameraProp->Set3PPAngle(1.04);
+			
+			m_pkCameraProp->Set3PYAngle(m_fAngle);
+			m_pkCameraProp->Set3PDistance(m_fDistance);							
+			
 			m_pkCameraEntity->GetSave() = false;
 		}
 		
@@ -486,7 +490,7 @@ void DarkMetropolis::Input()
 				m_fDistance = m_fMaxCamDistance;				
 		
 			m_pkCameraProp->Set3PYAngle(m_fAngle);
-			m_pkCameraProp->Set3PDistance(m_fDistance);				
+			//m_pkCameraProp->Set3PDistance(m_fDistance);				
 		}
 	}
 	else

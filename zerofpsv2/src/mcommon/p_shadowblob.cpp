@@ -48,7 +48,7 @@ void P_ShadowBlob::Update()
 		glPushAttrib(GL_ENABLE_BIT|GL_LIGHTING_BIT|GL_DEPTH_BUFFER_BIT);
 		glDisable(GL_LIGHTING);
 		glEnable(GL_BLEND);		
-		glBlendFunc(ONE_MINUS_SRC_ALPHA_BLEND_SRC,ONE_BLEND_DST);
+		glBlendFunc(GL_ZERO,GL_SRC_COLOR);
 		glDepthMask(GL_FALSE);
 		
 		m_pkRender->Quad(m_pkObject->GetIWorldPosV()+m_kOffset,Vector3(-90,0,0),m_kScale,iTexture);

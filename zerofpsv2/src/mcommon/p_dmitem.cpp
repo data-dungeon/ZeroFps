@@ -27,7 +27,7 @@ P_DMItem::~P_DMItem()
 
 void P_DMItem::Init()
 {
-	cout<< "New item created :"<<m_iSizeX<<" x "<<m_iSizeY<<endl;
+	//cout<< "New item created :"<<m_iSizeX<<" x "<<m_iSizeY<<endl;
 
 }
 

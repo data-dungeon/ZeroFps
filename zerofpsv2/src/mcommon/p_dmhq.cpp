@@ -218,12 +218,16 @@ void P_DMHQ::Save(ZFIoInterface* pkPackage)
 {	
 	pkPackage->Write(&m_bActiveHQ,sizeof(m_bActiveHQ),1);	
 //	pkPackage->Write(&m_iReputation,sizeof(m_iReputation),1);	
+
+	m_pkStockroom->Save(pkPackage);		
 }
 
 void P_DMHQ::Load(ZFIoInterface* pkPackage)
 {
 	pkPackage->Read(&m_bActiveHQ,sizeof(m_bActiveHQ),1);	
 //	pkPackage->Read(&m_iReputation,sizeof(m_iReputation),1);	
+
+	m_pkStockroom->Load(pkPackage);		
 }
 
 Property* Create_P_DMHQ()

@@ -456,7 +456,7 @@ void DMContainer::Save(ZFIoInterface* pkPackage)
 		pkPackage->Write(&m_kItemTypes[i],sizeof(m_kItemTypes[i]),1);	
 	
 	
-	//cout<<"saved DMContainer"<<endl;
+	cout<<"saved DMContainer "<<GetOwnerID()<<"............................................................"<<endl;
 }
 
 void DMContainer::Load(ZFIoInterface* pkPackage)
@@ -487,5 +487,5 @@ void DMContainer::Load(ZFIoInterface* pkPackage)
 		m_kItemTypes.push_back(iT);
 	}
 	
-	//cout<<"loaded DMContainer"<<endl;
+	cout<<"loaded DMContainer........................................."<<endl;
 }
