@@ -4,6 +4,8 @@
 
 #ifndef WIN32
 
+#include <cstdio>
+
 bool ZFBasicFS::DirExist(const char* acName)
 {
 	vector<string> pkFiles;
@@ -116,6 +118,15 @@ char* ZFBasicFS::GetCWD()
 	getcwd(m_acDir,2048);
 	return m_acDir;
 }
+
+bool ZFBasicFS::FileExist(const char* szFile)
+{
+	bool bOK = false;
+	FILE* f = fopen(szFile, "r"); 
+	if(f) { fclose(f); bOK = true; }
+	return bOK;
+}
+
 
 #endif
 

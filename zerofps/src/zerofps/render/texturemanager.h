@@ -82,6 +82,8 @@ class RENDER_API TextureManager : public ZFObject {
 		bool MakeTextureEditable();
 		bool PsetRGB(int x,int y,int r,int g,int b);
 		bool PsetRGBA(int x,int y,int r,int g,int b,int a);
+		Uint32 GetPixel(int x,int y);
+		bool Blit(SDL_Surface* pkImage,int x,int y);
 		SDL_Surface* GetImage();
 		
 

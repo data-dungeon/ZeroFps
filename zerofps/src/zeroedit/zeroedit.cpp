@@ -129,6 +129,31 @@ void ZeroEdit::OnInit(void)
 		pkConsole->Printf("No zeroedit_autoexec.ini found");
 
 	m_iCopyNetWorkID = -1;
+	
+	
+	
+	
+	pkTexMan->BindTexture("pencil.tga",0);			
+	SDL_Surface* bla=pkTexMan->GetTexture(0);
+	
+	pkTexMan->BindTexture("smily.tga",0);			
+	
+	
+	pkTexMan->Blit(bla,10,20);
+	
+	for(int x=0;x<10;x++)
+		for(int y=0;y<10;y++)
+			pkTexMan->PsetRGB(x,y,255,255,255);
+			
+	for(int x=2;x<5;x++)
+		for(int y=2;y<5;y++)
+			pkTexMan->PsetRGB(x,y,255,0,0);
+			
+			
+			
+			
+	pkTexMan->SwapTexture();				
+	
 }
 
 
@@ -854,6 +879,10 @@ void ZeroEdit::Input()
 		case TEXTURE:
 			if(pkInput->Pressed(MOUSELEFT))
 			{
+				if(pkFps->GetTicks()-m_fTimer < m_fDrawRate)
+					break;			
+				m_fTimer=pkFps->GetTicks();	
+				
 				HeightMapDraw(m_kDrawPos);			
 			}
 			break;
@@ -1256,7 +1285,10 @@ void ZeroEdit::HeightMapDraw(Vector3 kPencilPos)
 	}
 */	
 	
-	
+/*	pkTexMan->BindTexture("pencil.tga",0);
+	SDL_Surface* pencil = pkTexMan->GetTexture(0);	
+*/	
+
 	m_pkMap->GetMapXZ(kPencilPos.x,kPencilPos.z);
 		
 	string map1 = pkLevelMan->GetCurrentMapDir() + "mask1.tga";
@@ -1280,22 +1312,121 @@ void ZeroEdit::HeightMapDraw(Vector3 kPencilPos)
 			
 	}
 
-		
 	if(!pkTexMan->MakeTextureEditable())
 		return;
-		
+
+
+	//SDL_Surface* pen = SDL_ConvertSurface(pencil, pkTexMan->GetImage()->format, SDL_SWSURFACE);
+//	SDL_SetAlpha(pencil,0, 255);
+	
 				
 	float xpos =(kPencilPos.x * HEIGHTMAP_SCALE) * (m_pkMap->GetSize() / pkTexMan->GetImage()->w)  ;
 	float ypos =(kPencilPos.z * HEIGHTMAP_SCALE) * (m_pkMap->GetSize() / pkTexMan->GetImage()->h)  ;
 		
 	//cout<<"pos:"<<xpos<<" "<<ypos<<endl;		
 		
+
 		
+/*		
 	for(int x=0;x<5;x++)
 		for(int y=0;y<5;y++)
 			pkTexMan->PsetRGBA(xpos+x,ypos+y,255,255,255,200);
+*/			
+	
+//	pkTexMan->Blit(pencil,xpos,ypos);
+	
+	
+	
+	int size=m_iPencilSize;
+	int scale=2;
+
+
+
+	for(float i=0;i<size;i+=0.5)
+	{
+		for(int z=0;z<360;z+=10)
+		{
+			int x = int(xpos + sin(z/degtorad)*i);
+			int y = int(ypos + cos(z/degtorad)*i);
+		
+			Uint32 old = pkTexMan->GetPixel(x,y);
 			
+			Uint8 cr,cg,cb,ca;			
+			int pr,pg,pb,pa;
+			
+			SDL_GetRGBA(old,  pkTexMan->GetImage()->format ,&cr,&cg,&cb,&ca);
+					
+			pr=cr;
+			pg=cg;			
+			pb=cb;			
+			pa=ca;			
+			
+			pr+=5;
+			pg+=5;
+			pb+=5;
+			
+			pa+=20;
+			
+			if(pr >255)
+				pr = 255;
+			if(pg >255)
+				pg = 255;
+			if(pb >255)
+				pb = 255;
+			if(pa >255)
+				pa = 255;
+
+
+//			pkTexMan->PsetRGBA(x,y,pr,pg,pb,pa);
+			pkTexMan->PsetRGBA(x,y,255,255,255,pa);
+		}
+	
+	}
+
+
 	pkTexMan->SwapTexture();
+
+/*			cout<<"r:"<<(int)c[0]<<endl;
+			cout<<"g:"<<(int)c[1]<<endl;					
+			cout<<"b:"<<(int)c[2]<<endl;					
+			cout<<"a:"<<(int)a<<endl;					
+*/			
+
+
+/*
+			c[0] += 2;
+			c[1] += 2;			
+			c[2] += 2;			
+					
+/*			if((c[0] + (size*scale-i)) >= 0  && (c[0] + (size*scale-i)) <= 255)
+				c[0] += (size*scale-i);					
+			if((c[1] + (size*scale-i)) >= 0  && (c[1] + (size*scale-i)) <= 255)
+				c[1] += (size*scale-i);					
+			if((c[2] + (size*scale-i)) >= 0  && (c[2] + (size*scale-i)) <= 255)
+				c[2] += (size*scale-i);					*/
+			
+//			a += 10;
+			
+/*			if((c[3] + (size-i)*scale) >= 0  && (c[3] + (size-i)*scale) <= 255)
+				 c[3] += (size-i)*scale;					
+*/			
+			
+	
+	
+	
+	
+	
+/*	
+	SDL_Rect bla;
+	bla.x=xpos;
+	bla.y=ypos;
+	bla.w=10;
+	bla.h=10;
+	
+	SDL_FillRect(pkTexMan->GetImage(), &bla, 0xffff);
+*/	
+	
+
 
 }
 

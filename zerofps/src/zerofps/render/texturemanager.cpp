@@ -493,6 +493,11 @@ bool TextureManager::PsetRGB(int x,int y,int r,int g,int b)
 	if(!MakeTextureEditable())
 		return false;
 
+	if(x < 0 || x >m_iTextures[m_iCurrentTexture]->m_pkImage->w ||
+		y < 0 || y >m_iTextures[m_iCurrentTexture]->m_pkImage->h)
+		return false;
+		
+
 	Uint32 color = SDL_MapRGB(m_iTextures[m_iCurrentTexture]->m_pkImage->format, r, g, b);
 	
 	PutPixel(m_iTextures[m_iCurrentTexture]->m_pkImage,x,y,color);
@@ -505,6 +510,10 @@ bool TextureManager::PsetRGBA(int x,int y,int r,int g,int b,int a)
 	if(!MakeTextureEditable()){
 		return false;
 	}
+	
+	if(x < 0 || x >m_iTextures[m_iCurrentTexture]->m_pkImage->w ||
+		y < 0 || y >m_iTextures[m_iCurrentTexture]->m_pkImage->h)
+		return false;
 	
 	Uint32 color = SDL_MapRGBA(m_iTextures[m_iCurrentTexture]->m_pkImage->format, r, g, b,a);	
 
@@ -549,10 +558,70 @@ void TextureManager::PutPixel(SDL_Surface* surface, int x, int y, Uint32 pixel)
     }
 }
 
+bool TextureManager::Blit(SDL_Surface* pkImage,int x,int y)
+{
+	if(!MakeTextureEditable()){
+		return false;
+	}
+	
+	SDL_Rect temp;
+	temp.x = x;
+	temp.y = y;
+	temp.w = pkImage->w;
+	temp.h = pkImage->h;
+	
+//	SDL_SetAlpha(m_iTextures[m_iCurrentTexture]->m_pkImage,0, 128);
+	SDL_SetAlpha(pkImage,SDL_RLEACCEL|SDL_SRCALPHA, 255);	
+	
+	if(SDL_BlitSurface(pkImage,NULL, m_iTextures[m_iCurrentTexture]->m_pkImage, &temp) != 0)
+	{		
+		cout<<"error while blitting to texture"<<endl;
+		return false;
+	}
+
+
+	return true;
+}
+
+
 SDL_Surface* TextureManager::GetImage()
 {
 	return m_iTextures[m_iCurrentTexture]->m_pkImage;
 }
+
+Uint32 TextureManager::GetPixel(int x,int y)
+{
+	if(!MakeTextureEditable()){
+		return 0;
+	}
+
+	SDL_Surface* surface = m_iTextures[m_iCurrentTexture]->m_pkImage;
+
+	int bpp = surface->format->BytesPerPixel;
+	/* Here p is the address to the pixel we want to retrieve */
+	Uint8 *p = (Uint8 *)surface->pixels + y * surface->pitch + x * bpp;
+
+	switch(bpp) {
+	case 1:
+		return *p;
+
+	case 2:
+		return *(Uint16 *)p;
+
+	case 3:
+		if(SDL_BYTEORDER == SDL_BIG_ENDIAN)
+			return p[0] << 16 | p[1] << 8 | p[2];
+		else
+			return p[0] | p[1] << 8 | p[2] << 16;
+
+	case 4:
+		return *(Uint32 *)p;
+
+	default:
+		return 0;       /* shouldn't happen, but avoids warnings */
+	}
+}
+
 
 void TextureManager::RunCommand(int cmdid, const CmdArgument* kCommand)
 { 

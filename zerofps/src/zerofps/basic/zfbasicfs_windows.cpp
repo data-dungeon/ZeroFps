@@ -7,6 +7,7 @@
 #include <windows.h>
 #include "Shlwapi.h"
 #include <iostream>
+#include <cstdio>
 
 bool ZFBasicFS::ListDir(vector<string>* pkFiles, const char* acName, bool bOnlyMaps)
 {  
@@ -124,7 +125,7 @@ bool ZFBasicFS::DirExist(const char* acName)
 	return true;
 }
 
-#endif
+
 
 bool ZFBasicFS::FileExist(const char* szFile)
 {
@@ -133,3 +134,6 @@ bool ZFBasicFS::FileExist(const char* szFile)
 	if(f) { fclose(f); bOK = true; }
 	return bOK;
 }
+
+#endif
+
