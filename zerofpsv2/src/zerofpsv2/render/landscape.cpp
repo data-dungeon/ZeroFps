@@ -1097,7 +1097,7 @@ void Render::DrawPatch_Vim1(HeightMap* kMap,Vector3 CamPos,int xp,int zp,int iSi
 	Vector3* pkLandTextureCoo1;
 	Vector3* pkLandTextureCoo2;
 
-	I_HeightMap2* pkIMap = dynamic_cast<I_HeightMap2*>(kMap);
+//	I_HeightMap2* pkIMap = dynamic_cast<I_HeightMap2*>(kMap);
 
 	// Get Patch Center
 	Vector3 PatchCenter(kMap->m_kCornerPos.x + (xp + iSize/2)*HEIGHTMAP_SCALE,
@@ -1222,6 +1222,8 @@ void Render::DrawPatch_Vim1(HeightMap* kMap,Vector3 CamPos,int xp,int zp,int iSi
 void Render::DrawHM2(Heightmap2* pkMap,Vector3 kCamPos)
 {
 	I_HeightMap2* pkIMap = dynamic_cast<I_HeightMap2*>(pkMap);
+
+
 
 	if(!pkIMap->Loaded()) 
 		return;
