@@ -226,12 +226,15 @@ class ENGINE_API ObjectManager : public ZFSubSystem{
 		
 		void SetWorldDir(const char* acDir) {m_kWorldDirectory = acDir;};
 		bool LoadWorld(const char* acDir);
+				
+		void ForceUnload();					//forcing unload of all loaded zones
+		void ForceSave();						//forcing save of all loaded zones
 		
-		void ForceUnload();
-		bool LoadZones();
-		bool SaveZones();
-		void LoadZone(int iId);
-		void UnLoadZone(int iId);
+		bool LoadZones();						//load zone info list
+		bool SaveZones();						//save zone info list
+		void LoadZone(int iId);				//load zone
+		void SaveZone(int iId);				//save zone
+		void UnLoadZone(int iId);			//unload zone (saves and deletes)
 		
 		ZoneData*	GetZoneData(int iID);
 		int CreateZone();

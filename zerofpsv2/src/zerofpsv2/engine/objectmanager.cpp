@@ -1178,7 +1178,7 @@ void ObjectManager::RunCommand(int cmdid, const CmdArgument* kCommand)
 			break;
 		
 		case FID_SAVEWORLD:
-			ForceUnload();
+			ForceSave();
 			break;
 		
 		case FID_SETWORLDDIR:
@@ -1807,6 +1807,19 @@ void ObjectManager::UnLoadZone(int iId)
 	ZoneData* kZData = GetZoneData(iId);
 	assert(kZData);
 	if(kZData->m_pkZone == NULL)
+		return;	
+	
+	SaveZone(iId);
+	
+	Delete(kZData->m_pkZone);
+	kZData->m_pkZone = NULL;
+}
+
+void ObjectManager::SaveZone(int iId)
+{
+	ZoneData* kZData = GetZoneData(iId);
+	assert(kZData);
+	if(kZData->m_pkZone == NULL)
 		return;
 
 	char nr[10];
@@ -1831,8 +1844,6 @@ void ObjectManager::UnLoadZone(int iId)
 	
 	kFile.Close();
 
-	Delete(kZData->m_pkZone);
-	kZData->m_pkZone = NULL;
 }
 
 
@@ -2050,6 +2061,21 @@ void ObjectManager::ForceUnload()
 			UnLoadZone(i);		
 	}
 	
+	UpdateDelete();
+	
 	//after unloading , reload 	
 	UpdateZones();
+}
+
+void ObjectManager::ForceSave()
+{
+	//loop trough all loaded zones, and unload em , to make sure that all zones is saved
+	for(unsigned int i=0;i<m_kZones.size();i++) 
+	{
+		if(!m_kZones[i].m_bUsed)
+			continue;
+	
+		if(m_kZones[i].m_pkZone)
+			SaveZone(i);		
+	}	
 }

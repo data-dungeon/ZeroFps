@@ -14,13 +14,15 @@ class MCOMMON_API P_Ml: public Property {
 	private:
 		ZeroFps* m_pkFps;
 
-		bool m_bHaveSetRadius;
 
 	public:
 		void CloneOf(Property* pkProperty) { }
 		P_Ml();
 		
 		void Update();
+		
+		void PackTo(NetPacket* pkNetPacket);
+		void PackFrom(NetPacket* pkNetPacket);
 };
 
 MCOMMON_API Property* Create_P_Ml();

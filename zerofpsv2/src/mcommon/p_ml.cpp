@@ -9,7 +9,8 @@ P_Ml::P_Ml()
 	
 	m_pkFps=static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
 
-	m_bHaveSetRadius=false;
+
+	bNetwork = true;
 }
 
 void P_Ml::Update()
@@ -19,17 +20,17 @@ void P_Ml::Update()
 	pos += Vector3((rand() % 1000)/1000.0 - 0.5,(rand() % 1000)/1000.0-0.5,(rand() % 1000)/1000.0-0.5)*4;
 	m_pkObject->SetLocalPosV(pos);
 */
-	if(!m_bHaveSetRadius)
-	{
-		MadProperty* mp = (MadProperty*)m_pkObject->GetProperty("MadProperty");
-	
-		if(mp)
-		{
-			m_pkObject->GetRadius() = mp->GetRadius();
-			m_bHaveSetRadius=true;
-			//cout<<"setting radius "<<m_pkObject->GetRadius()<<endl;
-		}
-	}
+
+}
+
+void P_Ml::PackTo( NetPacket* pkNetPacket ) 
+{
+
+} 
+
+void P_Ml::PackFrom( NetPacket* pkNetPacket ) 
+{
+
 }
 
 Property* Create_P_Ml()

@@ -502,7 +502,7 @@ void MistServer::RunCommand(int cmdid, const CmdArgument* kCommand)
 			
 			cout<<"saving world:"<<endl;
 			
-			pkObjectMan->ForceUnload();
+			pkObjectMan->ForceSave();
 			pkObjectMan->SaveZones();			
 			
 			cout<<"saved"<<endl;
@@ -890,13 +890,15 @@ int MistServer::CreatePlayer(const char* csName,const char* csLocation,int iConI
 	
 	Object* pkObject = pkObjectMan->CreateObjectFromScriptInZone("data/script/objects/t_player.lua",kStartPos);
 	
-	pkObject->AddProperty("TrackProperty");	
-	TrackProperty* pkTrack = dynamic_cast<TrackProperty*>(pkObject->GetProperty("TrackProperty"));
-	
-	if(pkTrack)
-		pkTrack->SetClient(iConID);	
-	
-	if(!pkObject)
+	if(pkObject)
+	{	
+		pkObject->GetSave() = false;
+		pkObject->AddProperty("TrackProperty");	
+		TrackProperty* pkTrack = dynamic_cast<TrackProperty*>(pkObject->GetProperty("TrackProperty"));	
+		if(pkTrack)
+			pkTrack->SetClient(iConID);	
+	}
+	else
 	{	
 		cout<<"Error creating player caracter"<<endl;
 		return -1;

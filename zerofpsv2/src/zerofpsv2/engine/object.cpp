@@ -727,6 +727,7 @@ void Object::Load(ZFIoInterface* pkFile)
 	//nr of childs
 	int iChilds = 0;		
 	pkFile->Read(&iChilds,sizeof(iChilds),1);		
+	
 	//save all childs
 	for(i = 0;i<iChilds;i++)
 	{
@@ -794,13 +795,25 @@ void Object::Save(ZFIoInterface* pkFile)
 	}
 		
 		
+	//count number of childs to save
+	int iChilds = 0;
+	
+	for( i = 0;i<m_akChilds.size();i++)
+	{
+		if(m_akChilds[i]->GetSave())
+		{	
+			iChilds++;
+		}
+	}		
+
 	//nr of childs
-	int iChilds = m_akChilds.size();		
 	pkFile->Write(&iChilds,sizeof(iChilds),1);		
+	
 	//save all childs
 	for( i = 0;i<iChilds;i++)
 	{
-		m_akChilds[i]->Save(pkFile);
+		if(m_akChilds[i]->GetSave())
+			m_akChilds[i]->Save(pkFile);
 	}
 }
 
