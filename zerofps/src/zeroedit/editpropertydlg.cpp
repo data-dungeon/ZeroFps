@@ -162,7 +162,7 @@ void EditPropertyDlg::OnOpenEditProperty()
 
 	((ZGuiCombobox*) pkPropertysCB)->RemoveAllItems();
 	((ZGuiCombobox*) pkPropertyValuesCB)->RemoveAllItems();
-	((ZGuiTextbox*) m_pkGui->Get("PropertyValueSetEB"))->SetText(" ");
+	((ZGuiTextbox*) m_pkGui->Get("PropertyValueSetEB"))->SetText("");
 
 	if(m_pkCurrentChild)
 	{
@@ -524,7 +524,7 @@ void EditPropertyDlg::RemoveProperty()
 				if(pkPValueCB)	
 					((ZGuiCombobox*) pkPValueCB)->RemoveAllItems();
 
-				((ZGuiTextbox*) m_pkGui->Get("PropertyValueSetEB"))->SetText(" ");
+				((ZGuiTextbox*) m_pkGui->Get("PropertyValueSetEB"))->SetText("");
 			}
 		}
 	}
@@ -557,7 +557,7 @@ void EditPropertyDlg::UpdateStats(int ComboBoxID)
 				counter++;
 			}
 
-			string strPropValue = " ";
+			string strPropValue = "";
 			ZGuiListitem* pkPropValueCBSelItem = pkPValueCB->GetListbox()->GetSelItem();
 
 			if(pkPropValueCBSelItem)
@@ -578,13 +578,13 @@ void EditPropertyDlg::UpdateStats(int ComboBoxID)
 			pkPValueCB->RemoveAllItems();
 
 			// Clear property values textbox
-			m_pkGui->Get("PropertyValueSetEB")->SetText(" ");
+			m_pkGui->Get("PropertyValueSetEB")->SetText("");
 		}
 	}
 	else
 	if(ComboBoxID == ID_PROPERTY_VALUES_CB)
 	{
-		string strPropValue = " ";
+		string strPropValue = "";
 		strPropValue = m_pkSelProperty->GetValue(m_szSelPropValue);
 
 		// Set selected property value in textbox

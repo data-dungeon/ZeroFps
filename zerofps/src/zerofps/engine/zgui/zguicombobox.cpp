@@ -32,22 +32,19 @@ ZGuiCombobox::ZGuiCombobox(Rect kRectangle, ZGuiWnd* pkParent, bool bVisible, in
 	m_pkLabel = new ZGuiLabel(rc,this,true,COMBOBOX_LABEL_ID);
 	m_pkLabel->SetSkin(pkTopItemSkin, iTopItemTextureMask);
 
-	m_unNumVisibleRows = 10;
+	m_unNumVisibleRows = 10; 
 	rc.Top = 20;
 	rc.Bottom = rc.Top+iItemHeight*m_unNumVisibleRows;
 
 	m_pkListbox = new ZGuiListbox(rc,this,true,LISTBOX_ID,iItemHeight,
 		pkSkinItem, pkSkinItemSelected, pkSkinItemHighLight);
 
-//	m_pkListbox->GetScrollbar()->Move(0,-20);
-/*	int w = m_pkListbox->GetScrollbar()->GetScreenRect().Width();
-	int h = m_pkListbox->GetScrollbar()->GetScreenRect().Height();
-	m_pkListbox->GetScrollbar()->Resize(w,h+20*2);*/
-
 	m_pkListbox->Hide();
 	Resize(m_pkLabel->GetScreenRect().Width(),
 		m_pkLabel->GetScreenRect().Height());
 	m_pkListbox->GetItemArea().Top -= 20;
+
+	RemoveWindowFlag(WF_CANHAVEFOCUS);
 }
 
 void ZGuiCombobox::SetZValue(int iValue)
@@ -218,10 +215,3 @@ bool ZGuiCombobox::RemoveAllItems()
 	m_pkLabel->SetText(" ");
 	return true;
 }
-
-
-
-
-
-
-

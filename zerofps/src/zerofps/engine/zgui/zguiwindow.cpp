@@ -325,20 +325,17 @@ void ZGuiWnd::SetText(char* strText)
 	if(strText == NULL)
 		return;
 
-	int iLength = strlen(strText)+1;
+	int iLength = strlen(strText);
 
-	if(iLength > 1)
+	if(m_strText != NULL)
 	{
-		if(m_strText != NULL)
-		{
-			delete[] m_strText;
-			m_iTextLength = 0;
-		}
-
-		m_iTextLength = iLength;
-		m_strText = new char[m_iTextLength];
-		strcpy(m_strText, strText);
+		delete[] m_strText;
+		m_iTextLength = 0;
 	}
+
+	m_iTextLength = iLength;
+	m_strText = new char[m_iTextLength+1];
+	strcpy(m_strText, strText);
 }
 
 // Get the windows area, relative to it´s parent.

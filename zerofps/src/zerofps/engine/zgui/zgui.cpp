@@ -223,6 +223,14 @@ bool ZGui::Render()
 				break;
 	}
 
+	// Render a yellow frame around the window that have focus.
+	if(ZGuiWnd::m_pkFocusWnd)
+	{
+		static ZGuiSkin FOCUS_BORDER(-1,-1,-1,-1,0,0,0,128,128,0,2);
+		m_pkRenderer->SetSkin(&FOCUS_BORDER);
+		m_pkRenderer->RenderBorder(ZGuiWnd::m_pkFocusWnd->GetScreenRect());
+	}
+
 	// Draw cursor
 	if(m_pkCursor->IsVisible())
 		m_pkCursor->Render();
@@ -460,8 +468,6 @@ bool ZGui::OnKeyUpdate()
 		pkParams[0] = id;
 		m_pkActiveMainWin->pkCallback(m_pkActiveMainWin->pkWin, ZGM_COMMAND, 1, pkParams);
 		delete[] pkParams;
-		
-		return true; // avbryt.
 	}
 
 	if(IgnoreKey(iKey))

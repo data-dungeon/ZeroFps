@@ -94,6 +94,13 @@ bool ZGuiTextbox::ProcessKBInput(int nKey)
 		m_iCursorPos--;	
 	}
 
+	if(nKey == KEY_ESCAPE || nKey == KEY_RETURN)
+	{
+		KillFocus();
+		m_pkGUI->SetFocus(GetParent());
+		return true;
+	}
+
 	if(nKey == '\b')
 	{
 		if(m_iCursorPos > 0)
