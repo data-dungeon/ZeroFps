@@ -1,7 +1,7 @@
 SRC=../
 BINARY=dark_metropolis
 BINDIR=$(SRC)../bin/
-LIBS=-L$(BINDIR) -L/usr/X11R6/lib -lengine_systems -lphysics_engine -lbasic -lmcommon -lengine -lrender -lscript -lgui
+LIBS=-L$(BINDIR) -L/usr/X11R6/lib -lengine_systems -lbasic -lmcommon -lengine -lrender -lscript -lgui
 
 OBJS=$(patsubst %.cpp,%.o,$(wildcard *.cpp))
 
