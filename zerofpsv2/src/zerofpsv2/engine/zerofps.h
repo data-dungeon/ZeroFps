@@ -158,6 +158,9 @@ class ENGINE_API ZeroFps : public I_ZeroFps {
 		int				m_iClientEntityID;						
 		int				m_iMaxPlayers;
 				
+		bool				m_bClientLoginState;				// True if loginstate is used for clients.
+
+
 		//profile information
 		vector<TimerInfo > 	m_kProfileData;		
 		int						m_iProfileTotalTime;
@@ -338,6 +341,7 @@ class ENGINE_API ZeroFps : public I_ZeroFps {
 		
 		void HandleEditCommand(NetPacket* pkNetPacket);						
 		void RouteEditCommand(NetPacket* pkNetPacket);						
+		void SetEnableLogin(bool bLogin) { m_bClientLoginState = bLogin; }
 	
 		friend class NetWork;
 		friend class Camera;

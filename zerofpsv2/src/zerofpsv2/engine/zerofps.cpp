@@ -56,6 +56,7 @@ ZeroFps::ZeroFps(void) : I_ZeroFps("ZeroFps")
 	srand(time(0));
 	
    int iScreenWidth=800, iScreenHeight=600;
+	m_bClientLoginState = true;
 
 	// Create Engine SubSystems 
 	m_pkBasicFS					= new ZFBasicFS;	
@@ -219,7 +220,7 @@ bool ZeroFps::StartUp()
 	m_kClient.resize( m_iMaxPlayers );	// Vim - Hard coded for now. Must be same as Network.SetMaxNodes
 	for(int i=0; i<m_iMaxPlayers; i++)
 	{
-		m_kClient[i].m_bLogin = true;
+		m_kClient[i].m_bLogin = m_bClientLoginState;
 		m_kClient[i].m_pkObject = NULL;
 	}
 	m_pkNetWork->SetMaxNodes( m_iMaxPlayers );
@@ -1776,7 +1777,7 @@ int ZeroFps::Connect(int iConnectionID, char* szLogin, char* szPass, bool bIsEdi
 	{			
 	
 		//m_pkConsole->Printf("ZeroFps::Connect(%d)", iConnectionID);
-		m_kClient[iConnectionID].m_bLogin = true; 
+		m_kClient[iConnectionID].m_bLogin = m_bClientLoginState; 
 		m_kClient[iConnectionID].m_pkObject = m_pkEntityManager->CreateEntity();//m_pkEntityManager->CreateObjectByArchType("ZeroRTSPlayer");
 		m_kClient[iConnectionID].m_pkObject->SetName("A Client Obj");
 		m_kClient[iConnectionID].m_pkObject->SetWorldPosV(Vector3(0,0,2));
