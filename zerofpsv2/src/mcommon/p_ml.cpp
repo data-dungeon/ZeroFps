@@ -60,7 +60,7 @@ void P_Ml::Update()
 		if(m_bShowText)
 		{
 			//m_pkRender->PrintBillboard(m_pkZeroFps->GetCam()->GetRotM(),GetEntity()->GetIWorldPosV()+Vector3(0,GetEntity()->GetRadius(),0),1.0,"1M,.m H iklW",pkText,pkFont,false);
-			m_pkRender->PrintBillboard(m_pkZeroFps->GetCam()->GetRotM(),GetEntity()->GetIWorldPosV()+Vector3(0,GetEntity()->GetRadius(),0),1.0,GetEntity()->GetName(),pkText,pkFont,true);
+			m_pkRender->PrintBillboard(m_pkZeroFps->GetCam()->GetRotM(),GetEntity()->GetIWorldPosV()+Vector3(0,GetEntity()->GetRadius(),0),0.3,GetEntity()->GetName(),pkText,pkFont,true);
 			//m_pkRender->Print(GetEntity()->GetIWorldPosV()+Vector3(0,GetEntity()->GetRadius(),0),1.0,"01234abcdABCD",pkText,pkFont);
 			//m_pkZShaderSystem->BindMaterial(pkText);			
 			//m_pkRender->PrintBillboard(m_pkZeroFps->GetCam()->GetRotM(),GetEntity()->GetIWorldPosV()+Vector3(0,GetEntity()->GetRadius(),0),GetEntity()->GetName().c_str(),0.2,true);
