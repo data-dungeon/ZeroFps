@@ -19,6 +19,7 @@ class MCOMMON_API P_Enviroment: public Property {
 	private:
 		ZeroFps* 		m_pkFps;
 		ObjectManager* m_pkObjectMan;
+		Render*			m_pkRender;
 		
 		bool				m_bEnabled;
 		

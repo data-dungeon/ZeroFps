@@ -791,6 +791,7 @@ void MistServer::OnCommand(int iID, ZGuiWnd *pkMainWnd)
 				//GetWnd("WorkTabWnd")->SetMoveArea(Rect(0,0,800,600), true);
 				AddListItem("EnviromentPresetList", "Rain");
 				AddListItem("EnviromentPresetList", "Sun");
+				AddListItem("EnviromentPresetList", "Cave");				
 			}
 		}
 

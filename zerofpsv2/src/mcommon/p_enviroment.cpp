@@ -8,6 +8,7 @@ P_Enviroment::P_Enviroment()
 	
 	m_pkFps=static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
 	m_pkObjectMan=static_cast<ObjectManager*>(g_ZFObjSys.GetObjectPtr("ObjectManager"));
+	m_pkRender=static_cast<Render*>(g_ZFObjSys.GetObjectPtr("Render"));	
 
 	bNetwork = true;
 
@@ -58,6 +59,9 @@ void P_Enviroment::SetEnviroment(char* csEnviroment )
 			pl->SetRot(Vector3(0.5,0.5,0));			
 			pl->SetDiffuse(Vector4(.8,.8,.85,1));
 		}
+		
+		//set fog
+		m_pkRender->SetFog(Vector4(0.0,0.0,0.0,1),2,7,true);
 	}
 
 	if(m_StrCurrentEnviroment == "Sun" || m_StrCurrentEnviroment == "Default")
@@ -70,14 +74,34 @@ void P_Enviroment::SetEnviroment(char* csEnviroment )
 			pl->SetDiffuse(Vector4(1.6,1.6,1.6,1));		
 			pl->SetAmbient(Vector4(0.8,0.8,0.8,1.0));					
 		}
+	
+		//set fog
+		//m_pkRender->SetFog(Vector4(0.0,0.0,0.0,1),2,6,true);	
 	}
 
+
+	if(m_StrCurrentEnviroment == "Cave" )
+	{
+		LightProperty* pl = (LightProperty*)m_pkObject->AddProperty("LightProperty");	
+		if(pl)
+		{
+			pl->SetType(DIRECTIONAL_LIGHT);
+			pl->SetRot(Vector3(0.5,0.5,0));
+			pl->SetDiffuse(Vector4(0.2,0.2,0.2,1));		
+			pl->SetAmbient(Vector4(0.1,0.1,0.1,1.0));					
+		}
+		
+		//set fog		
+		//m_pkRender->SetFog(Vector4(0.0,0.0,0.0,1),2,6,true);		
+	}
 
 
 }
 
 void P_Enviroment::ResetEnviroment()
 {
+	
+	m_pkRender->SetFog(Vector4(0,0,0,0),0,50,false);
 	m_pkObject->DeleteProperty("PSystemProperty");
 	m_pkObject->DeleteProperty("P_AmbientSound");
 	m_pkObject->DeleteProperty("LightProperty");
