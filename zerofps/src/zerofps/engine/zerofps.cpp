@@ -204,11 +204,11 @@ void ZeroFps::MainLoop(void) {
 			//update all normal propertys
 			m_pkObjectMan->Update(PROPERTY_TYPE_NORMAL,PROPERTY_SIDE_ALL,false);
 
-
+			//update physicsengine
 			m_pkPhysEngine->Update();
 
 			//update all collisions
-			m_pkCollisionMan->Update();				
+//			m_pkCollisionMan->Update();				
 
 			//update openal sound system
 			m_pkOpenAlSystem->SetListnerPosition(m_pkCamera->GetPos(),(m_pkCamera->GetRot()+Vector3(0,180,0)).AToU(),(m_pkCamera->GetRot()-Vector3(-90,180,0)).AToU());
@@ -225,6 +225,9 @@ void ZeroFps::MainLoop(void) {
 			// Update GUI
 			if(!m_bConsoleMode)
 				m_pkGui->Update();
+
+			//delete objects
+			m_pkObjectMan->UpdateDelete();
 
 			DevPrintf("Mad's: %d", m_iNumOfMadRender);
 			m_iNumOfMadRender = 0;

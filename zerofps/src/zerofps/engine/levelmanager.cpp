@@ -15,7 +15,7 @@ LevelManager::LevelManager(): ZFObject("LevelManager")
 	m_pkMap=new HeightMap();
 	
 	m_bVisibleZones=true;
-	m_fZoneRadius=64;	
+	m_fZoneRadius=80;	
 	m_iZpr=2;
 	m_fZoneDistance=32;
 	m_kMapBaseDir="../data/maps";
@@ -474,7 +474,7 @@ void LevelManager::UpdateZones()
 		int x=int(((pos.x+m_pkMap->GetSize()/2)+m_fZoneDistance/2)/(m_fZoneDistance));
 		int z=int(((pos.z+m_pkMap->GetSize()/2)+m_fZoneDistance/2)/(m_fZoneDistance));		
 
-		EnableZone(x,z);
+		EnableZone(x,z,pos);
 	}
 
 	if(m_kTrackedObjects.size()==0)
@@ -484,12 +484,12 @@ void LevelManager::UpdateZones()
 		int x=int(((pos.x+m_pkMap->GetSize()/2)+m_fZoneDistance/2)/(m_fZoneDistance));
 		int z=int(((pos.z+m_pkMap->GetSize()/2)+m_fZoneDistance/2)/(m_fZoneDistance));		
 
-		EnableZone(x,z);
+		EnableZone(x,z,pos);
 	}		
 
 }
 
-void LevelManager::EnableZone(int xp,int zp)
+void LevelManager::EnableZone(int xp,int zp,Vector3 &kPos)
 {
 //	float zpr=m_fZoneRadius/m_iZpr;
 	int w=int(m_fZoneRadius/m_fZoneDistance);
@@ -504,7 +504,8 @@ void LevelManager::EnableZone(int xp,int zp)
 			if(x<0 || z<0 || x>=tot || z>=tot)
 				continue;
 			
-			m_kZones[x*tot+z]->GetUpdateStatus()=UPDATE_ALL;		
+			if(( kPos - m_kZones[x*tot+z]->GetPos()).Length()<m_fZoneRadius)			
+				m_kZones[x*tot+z]->GetUpdateStatus()=UPDATE_ALL;		
 		}
 	}
 }

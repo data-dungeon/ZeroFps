@@ -6,6 +6,7 @@
 #include "playercontrolproperty.h"
 //#include "gravityproperty.h"
 #include "ballobject.h"
+#include "massdriverproperty.h"
 //#include "floatproperty.h"
 //#include "heightmapobject.h"
 

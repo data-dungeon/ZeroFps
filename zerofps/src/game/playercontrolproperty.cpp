@@ -63,7 +63,7 @@ void PlayerControlProperty::Update() {
 //	cout<<"LUTNING:"<<lutning<<endl;
 
 	
-	float speed=16;
+	float speed=5;
 	walking=false;
 	Vector3 vel(0,m_pkObject->GetVel().y,0);
 	

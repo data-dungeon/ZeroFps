@@ -78,7 +78,7 @@ class ENGINE_API LevelManager : public ZFObject {
 		void ClearTrackers();
 
 		void UpdateZones();
-		void EnableZone(int x,int z);
+		void EnableZone(int xp,int zp,Vector3 &kPos);
 
 		const string GetMapBaseDir() { return m_kMapBaseDir; }
 };

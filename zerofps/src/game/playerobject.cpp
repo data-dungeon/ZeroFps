@@ -7,6 +7,7 @@ PlayerObject::PlayerObject(HeightMap *pkMap,Input *pkInput)
 	m_pkFps = static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
 	AddProperty(new PlayerControlProperty(pkInput,pkMap));
 	
+	AddProperty("MassDriverProperty");
 	AddProperty("AutoParentProperty");	
 	
 	AddProperty("PhysicProperty");
@@ -14,9 +15,9 @@ PlayerObject::PlayerObject(HeightMap *pkMap,Input *pkInput)
 //	static_cast<CSSphere*>(pp->GetColSphere())->m_fRadius=1;
 
 
-	AddProperty("MadProperty");
-	MadProperty* madp = dynamic_cast<MadProperty*>(GetProperty("MadProperty"));
-	madp->SetBasePtr(m_pkFps->GetMADPtr("../data/mad/player.mad"));
+//	AddProperty("MadProperty");
+//	MadProperty* madp = dynamic_cast<MadProperty*>(GetProperty("MadProperty"));
+//	madp->SetBasePtr(m_pkFps->GetMADPtr("../data/mad/player.mad"));
 
 /*	
 	AddProperty("LightProperty");

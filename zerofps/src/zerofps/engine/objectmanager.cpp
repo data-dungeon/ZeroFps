@@ -30,11 +30,6 @@ void ObjectManager::Clear()
 //	UpdateDelete();
 }
 
-void ObjectManager::Delete(Object* pkObject) {
-//	pkObject->SetObjectMan(NULL);
-	m_akDeleteList.push_back(pkObject);
-}
-
 
 void ObjectManager::Remove(Object* pkObject) {	
 //	pkObject->SetObjectMan(NULL);
@@ -45,40 +40,19 @@ void ObjectManager::Remove(Object* pkObject) {
 }
 
 
-/*
-void ObjectManager::Update(){
-	if(m_bNoUpdate)
-		return;
-	
-	UpdateDelete();
 
-	for(list<Object*>::iterator it=m_akObjects.begin();it!=m_akObjects.end();it++) {
-//		(*it)->ObjectUpdate();	
-		(*it)->Update();		 
-	}
+void ObjectManager::Delete(Object* pkObject) {
+	m_akDeleteList.push_back(pkObject);
 }
 
-void ObjectManager::Update(int iType){
-	UpdateDelete();
 
-	for(list<Object*>::iterator it=m_akObjects.begin();it!=m_akObjects.end();it++) {
-		//if the object is of specified type, then update it
-		if((*it)->GetType()==iType){
-//			(*it)->ObjectUpdate();				
-			(*it)->Update();
-		}
-	}
-}
-*/
 
 void ObjectManager::UpdateDelete(){
 	if(m_akDeleteList.size()==0)
 		return;
 	
-//	cout<<"ANTAL"<<m_akDeleteList.size()<<endl;
 	for(vector<Object*>::iterator it=m_akDeleteList.begin();it!=m_akDeleteList.end();it++) 
 	{
-		m_akObjects.remove(*it);
 		delete (*it);		
 	}
 	
@@ -446,6 +420,41 @@ Object* ObjectManager::GetObject(const char* acName)
 	
 	return NULL;
 }
+
+
+
+
+
+/*
+void ObjectManager::Update(){
+	if(m_bNoUpdate)
+		return;
+	
+	UpdateDelete();
+
+	for(list<Object*>::iterator it=m_akObjects.begin();it!=m_akObjects.end();it++) {
+//		(*it)->ObjectUpdate();	
+		(*it)->Update();		 
+	}
+}
+
+void ObjectManager::Update(int iType){
+	UpdateDelete();
+
+	for(list<Object*>::iterator it=m_akObjects.begin();it!=m_akObjects.end();it++) {
+		//if the object is of specified type, then update it
+		if((*it)->GetType()==iType){
+//			(*it)->ObjectUpdate();				
+			(*it)->Update();
+		}
+	}
+}
+*/
+
+
+
+
+
 
 
 
