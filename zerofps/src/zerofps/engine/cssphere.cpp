@@ -98,14 +98,10 @@ CollisionData* CSSphere::Collide_CSSphere(CSSphere* kOther,float fTime)
 //	movevec.Normalize();
 // movevec*=distance;
 
-//	cout<<"distance:"<<distance<<endl;
-
-//	cout<<"OLD MV:"<<movevec.Length()<<endl;
 
 	float bla = distance / abs(movevec.Length());
 	if(bla<0)
-		return NULL;
-	
+		bla=0;
 	
 //	movevec1.Normalize();
 //	movevec2.Normalize();

@@ -6,7 +6,7 @@
 #include "zguilabel.h"
 #include "zguilistbox.h"
 #include "zgui.h"
-#include <iostream.h>
+#include <iostream>
 #include <cstdio>
 
 const int COMBOBOX_LABEL_ID = 800;

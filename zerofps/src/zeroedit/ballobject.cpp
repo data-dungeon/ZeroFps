@@ -27,7 +27,8 @@ BallObject::BallObject() {
 	pp->m_bGravity=false;
 	pp->m_bFloat=false;
 
-//	m_kAcc.Set(0,-9.82,0);
+
+//	m_kAcc.Set(0,0,0);
 
 	onGround = false;
 }

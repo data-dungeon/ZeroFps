@@ -218,11 +218,13 @@ void PhysicsEngine::HandleCollisions()
 		}				
 		else	//if the collision hapend after a collision with a solid object
 		{			
+					
 			//check so the collision is not already added
 			if(pkCol->m_bAdded==false)
 			{
 			
-				Vector3 kOldNewPos=(*it)->m_pkPP->m_kNewPos;
+				Vector3 kOldNewPos1=pkCol->m_pkPP1->m_kNewPos;
+				Vector3 kOldNewPos2=pkCol->m_pkPP2->m_kNewPos;
 				
 				//set the objects m_kNewPos to the one after a collision with the last solide object
 				if(pkCO->m_pkPP1==(*it)->m_pkPP)
@@ -232,7 +234,7 @@ void PhysicsEngine::HandleCollisions()
 
 	
 				CollisionData* pkCD=NULL;
-				//test collision with the new m_kNewPos that would be after a collision with the first object
+				//test collision with the new m_kNewPos that would be after a collision with the first object				
 				pkCD=DeepTest(pkCol->m_pkPP1,pkCol->m_pkPP2);
 						
 				//if a collision still occurs then update the collision data and puch it in kCols
@@ -248,10 +250,10 @@ void PhysicsEngine::HandleCollisions()
 					
 					delete pkCD;
 				}
-				else //else only reset the objects possition
-				{				
-					(*it)->m_pkPP->m_kNewPos=kOldNewPos;
-				}
+
+				pkCol->m_pkPP1->m_kNewPos=kOldNewPos1;
+				pkCol->m_pkPP2->m_kNewPos=kOldNewPos2;					
+				
 			}
 		}
 	}
