@@ -878,7 +878,7 @@ void Mad_CoreMesh::Load(ZFVFile* pkZFile)
 
 int Mad_CoreMesh::GetSizeInBytes()
 {
-	cout << "Mad_CoreMesh::GetSizeInBytes - NOT DONE" << endl;
+//	cout << "Mad_CoreMesh::GetSizeInBytes - NOT DONE" << endl;
 	return 0;
 
 /*	int iSizeInBytes = 0;

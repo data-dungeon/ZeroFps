@@ -111,8 +111,8 @@ void ZFResourceDB::RunCommand(int cmdid, const CmdArgument* kCommand)
 		case FID_LISTRES:
 
 		for(it = m_kResources.begin(); it != m_kResources.end(); it++ ) {
-			string hora = (*it)->m_strName.c_str();
-			cout << "Hora: " <<  hora << endl;
+			//string hora = (*it)->m_strName.c_str();
+			//cout << "Hora: " <<  hora << endl;
 
 			GetSystem().Printf("- %s - %d - %d",(*it)->m_strName.c_str(),(*it)->m_iNumOfUsers, (*it)->m_pkResource->GetSize());
 			}
@@ -203,13 +203,13 @@ bool ZFResourceDB::Refresh()
 		// No one is using it. Check for expire time.
 		if(m_bInstantExpire == false && (*it)->m_fExpireTimer == 0) {
 			(*it)->m_fExpireTimer = fTime + float(RES_EXPIRE_TIME);
-			cout << "Set Expire: '" << (*it)->m_strName << "'" << endl;
+			//cout << "Set Expire: '" << (*it)->m_strName << "'" << endl;
 			}
 		else {
 			if(m_bInstantExpire == true || (*it)->m_fExpireTimer < fTime) {
 				// Time to die.
 				g_ZFObjSys.Logf("resdb", "Remove %s\n", (*it)->m_strName.c_str());
-				cout << "Expires: '" << (*it)->m_strName << "'" << endl;
+				//cout << "Expires: '" << (*it)->m_strName << "'" << endl;
 				
 				m_kResourceFactory[(*it)->m_pkResource->m_iTypeIndex].m_iActive --;
 				delete (*it);
@@ -220,7 +220,7 @@ bool ZFResourceDB::Refresh()
 		}
 
 	for(it = m_kResources.begin(); it != m_kResources.end(); it++ ) {
-//		m_pkZeroFps->DevPrintf("res", "%s - %d", (*it)->m_strName.c_str(), (*it)->m_iNumOfUsers);
+		//m_pkZeroFps->DevPrintf("res", "%s - %d", (*it)->m_strName.c_str(), (*it)->m_iNumOfUsers);
 		}
 
 	return bWasUnloaded;

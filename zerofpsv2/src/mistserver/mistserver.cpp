@@ -87,7 +87,7 @@ void MistServer::OnInit()
 {
 	m_pkConsole->Printf(" MistServer (mistland dedicated server)");
 	m_pkConsole->Printf("--------------------------------");
-	m_pkConsole->Printf(" Hugga?");
+	m_pkConsole->Printf("");
 
 	Init();
 
@@ -702,7 +702,7 @@ void MistServer::OnServerClientJoin(ZFClient* pkClient,int iConID, char* szLogin
 	string strPlayer		= szLogin;
 	string strPasswd		= szPass;
 
-	pkClient->m_strCharacter = "MrSmile";
+	pkClient->m_strCharacter = "";
 	pkClient->m_strLogin = szLogin;
 
 	//add client control to client object
@@ -723,6 +723,11 @@ void MistServer::OnServerClientJoin(ZFClient* pkClient,int iConID, char* szLogin
 
 void MistServer::SpawnPlayer(int iConID)
 {
+	if(m_pkFps->m_kClient[iConID].m_strCharacter.size() == 0) {
+		m_pkFps->PrintToClient(iConID, "You must select a character before you can join" );
+		return;
+		}
+
 	//update start locations  
 	UpdateStartLocatons();
 
@@ -1131,7 +1136,7 @@ void MistServer::AutoSetZoneSize(string strName)
 	strcpy(szString, &strName.c_str()[iPos + 1]);
 	sscanf(szString,"%dx%dx%d", &x,&y,&z);
 	m_kZoneSize.Set(float(x),float(y),float(z));
-	cout << "Setting Size " << x << ", " << y << ", "<< z << endl;
+//	cout << "Setting Size " << x << ", " << y << ", "<< z << endl;
 }
 
 
@@ -1442,20 +1447,34 @@ void MistServer::HandleOrders()
 			}					
 		}
       
-		// Play Order
-		else if ( order->m_sOrderName == "ccPlay" )
-      {
-			cout << "Player: " << order->m_iConnectID << " wish to start play" << endl;
-			SpawnPlayer(order->m_iConnectID);
-      }
-		else if ( order->m_sOrderName == "ccCharList" )
-      {
-			cout << "Player: " << int(order->m_iConnectID) << " wish to know what char he have." << endl;
-			vector<string> kChars;
-			kChars = m_pkPlayerDB->GetLoginCharacters( m_pkFps->m_kClient[order->m_iConnectID].m_strLogin.c_str() );
-			for(unsigned int i=0; i<kChars.size(); i++)
-				m_pkFps->PrintToClient(order->m_iConnectID, kChars[i].c_str());
-      }
+		// Character Command
+		else if(strncmp(order->m_sOrderName.c_str(),"(CC)",4) == 0) {
+				CmdArgument kcmdargs;
+				kcmdargs.Set(order->m_sOrderName.c_str());
+				
+				cout << "kcmdargs.m_kSplitCommand[1] " << kcmdargs.m_kSplitCommand[1].c_str(); 
+
+				if ( kcmdargs.m_kSplitCommand[1] == string("Play") )
+				{
+					cout << "Player: " << order->m_iConnectID << " wish to start play" << endl;
+					SpawnPlayer(order->m_iConnectID);
+				}
+				else if ( kcmdargs.m_kSplitCommand[1] == string("CharList") )
+				{
+					cout << "Player: " << int(order->m_iConnectID) << " wish to know what char he have." << endl;
+					vector<string> kChars;
+					kChars = m_pkPlayerDB->GetLoginCharacters( m_pkFps->m_kClient[order->m_iConnectID].m_strLogin.c_str() );
+					for(unsigned int i=0; i<kChars.size(); i++)
+						m_pkFps->PrintToClient(order->m_iConnectID, kChars[i].c_str());
+				}
+				else if ( kcmdargs.m_kSplitCommand[1] == string("Select") )
+				{
+					cout << "Player: " << int(order->m_iConnectID) << " wish to use char '" << kcmdargs.m_kSplitCommand[2].c_str()  << "'" << endl;
+					m_pkFps->m_kClient[order->m_iConnectID].m_strCharacter = kcmdargs.m_kSplitCommand[2].c_str();
+				}
+			}
+
+		
 		
 
 

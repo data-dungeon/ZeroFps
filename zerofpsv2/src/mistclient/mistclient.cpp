@@ -108,9 +108,9 @@ MistClient::MistClient(char* aName,int iWidth,int iHeight,int iDepth)
 
 void MistClient::OnInit() 
 {
-	m_pkConsole->Printf(" MistClient , im scarred  =/");
+	m_pkConsole->Printf(" MistClient ");
 	m_pkConsole->Printf("--------------------------------");
-	m_pkConsole->Printf("this program will selfdestruct in 5 seconds");
+	m_pkConsole->Printf("");
 
 	Init();
 
@@ -617,6 +617,8 @@ void MistClient::DrawCrossHair()
 
 void MistClient::RunCommand(int cmdid, const CmdArgument* kCommand)
 {
+	string strSelect;
+
 	switch(cmdid) {
 		case FID_LOAD:
 			if(kCommand->m_kSplitCommand.size() <= 1)
@@ -641,10 +643,20 @@ void MistClient::RunCommand(int cmdid, const CmdArgument* kCommand)
 		case FID_UNLOAD:
 			break;
 	
-		case FID_GETCHAR:			SendOrder(string("ccCharList"));	break;
-		case FID_SELECTCHAR:		SendOrder(string("ccPlay"));	break;
-		case FID_DELETECHAR:		SendOrder(string("ccPlay"));	break;
-		case FID_PLAY:				SendOrder(string("ccPlay"));	break;
+		case FID_GETCHAR:			SendOrder(string("(CC) CharList"));	break;
+		case FID_SELECTCHAR:		
+			if(kCommand->m_kSplitCommand.size() <= 1) {
+				m_pkConsole->Printf("g_selchar CharName");
+				break;				
+				}
+			
+			strSelect = string("(CC) Select ") + kCommand->m_kSplitCommand[1];
+			SendOrder( strSelect );	
+			
+			break;
+
+		case FID_DELETECHAR:		SendOrder(string("(CC) Play"));	break;
+		case FID_PLAY:				SendOrder(string("(CC) Play"));	break;
 
 
 	}
