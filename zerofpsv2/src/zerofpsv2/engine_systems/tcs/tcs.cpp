@@ -67,13 +67,24 @@ void Tcs::Update()
 	if(m_kBodys.empty())
 		return;
 	
-	//first calculate motionspheres and new pos
-	CalcMotionSpheres();
-	
-	UpdateCollissions();
-	UpdateMotion();
+
+	UpdateVel();					//	calculate new vel
+	CalcMotionSpheres();		//calculate motionspheres and new pos	
+	UpdateCollissions();		//check for collissions
+	UpdateMotion();			//move bodys
 }
 
+void Tcs::UpdateVel()
+{
+	for(int i=0;i<m_kBodys.size();i++)
+	{	
+		//apply gravity if enabled
+		if(m_kBodys[i]->m_bGravity)
+		{
+			m_kBodys[i]->GetObject()->GetVel() += Vector3(0,-2,0)*m_pkZeroFps->GetGameFrameTime();
+		}
+	}
+}
 
 void Tcs::UpdateMotion()
 {

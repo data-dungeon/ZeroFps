@@ -19,6 +19,7 @@ class ENGINE_SYSTEMS_API P_Tcs : public Property
 		float	 m_fRadius;						
 		bool	m_bHavePolygonData;
 		bool	m_bStatic;
+		bool	m_bGravity;
 
 		//mesh data
 		int						m_iModelID;
@@ -57,6 +58,7 @@ class ENGINE_SYSTEMS_API P_Tcs : public Property
 		void SetStatic(bool t) {m_bStatic = t;};
 		void SetRadius(float t) {m_fRadius = t;};
 		void SetRefetchPolygonData() {m_bHavePolygonData = false;};
+		void SetGravity(bool t) {m_bGravity = t;};
 		
 		friend class Tcs;
 };

@@ -17,6 +17,7 @@ P_Tcs::P_Tcs()
 	m_bPolygonTest=		false;
 	m_fRadius=				0.5;	
 	m_bStatic=				false;
+	m_bGravity=				false;
 	
 	m_fScale=				1;
 	m_pkFaces =				NULL;
@@ -73,6 +74,7 @@ void P_Tcs::Save(ZFIoInterface* pkPackage)
 	pkPackage->Write((void*)&m_fRadius,sizeof(m_fRadius),1);	
 	pkPackage->Write((void*)&m_bStatic,sizeof(m_bStatic),1);	
 	pkPackage->Write((void*)&m_iModelID,sizeof(m_iModelID),1);		
+	pkPackage->Write((void*)&m_bGravity,sizeof(m_bGravity),1);			
 }
 
 void P_Tcs::Load(ZFIoInterface* pkPackage)
@@ -81,11 +83,12 @@ void P_Tcs::Load(ZFIoInterface* pkPackage)
 	pkPackage->Read((void*)&m_fRadius,sizeof(m_fRadius),1);	
 	pkPackage->Read((void*)&m_bStatic,sizeof(m_bStatic),1);	
 	pkPackage->Read((void*)&m_iModelID,sizeof(m_iModelID),1);		
+	pkPackage->Read((void*)&m_bGravity,sizeof(m_bGravity),1);			
 }
 
 vector<PropertyValues> P_Tcs::GetPropertyValues()
 {
-	vector<PropertyValues> kReturn(4);
+	vector<PropertyValues> kReturn(5);
 
 	kReturn[0].kValueName="polygontest";
 	kReturn[0].iValueType=VALUETYPE_BOOL;
@@ -102,6 +105,11 @@ vector<PropertyValues> P_Tcs::GetPropertyValues()
 	kReturn[3].kValueName="modelid";
 	kReturn[3].iValueType=VALUETYPE_INT;
 	kReturn[3].pkValue=(void*)&m_iModelID;
+	
+	kReturn[4].kValueName="gravity";
+	kReturn[4].iValueType=VALUETYPE_BOOL;
+	kReturn[4].pkValue=(void*)&m_bGravity;
+	
 	
 	return kReturn;
 }

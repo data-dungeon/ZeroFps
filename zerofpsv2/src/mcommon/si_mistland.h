@@ -10,6 +10,7 @@ class PSystemProperty;
 #include <iostream>
 #include "../zerofpsv2/engine/entitymanager.h"
 #include "../zerofpsv2/engine_systems/propertys/p_psystem.h"
+#include "../zerofpsv2/engine_systems/propertys/p_tcs.h"
 #include "p_event.h"
 #include "p_ml.h"
 #include <map>
@@ -139,8 +140,9 @@ namespace MistLandLua
 
 
 	int MCOMMON_API SetPSystemLua(lua_State* pkLua);				//(int objectid,string pssystem) set wich particle effect to use, if none dont send any parameters
-
+	
 	int MCOMMON_API SetVelToLua(lua_State* pkLua);				//(int objectid,int objectid,double speed) set the velocity of and object towards another object
+	int MCOMMON_API BounceLua(lua_State* pkLua);				//(int objectid,int objectid,double speed) set the velocity of and object towards another object
 
    int MCOMMON_API SetPropertyValueLua(lua_State* pkLua);   //which property, data in property and last, value
 

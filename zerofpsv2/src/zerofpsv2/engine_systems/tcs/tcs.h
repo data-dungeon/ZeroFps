@@ -18,7 +18,7 @@ class ENGINE_SYSTEMS_API Tcs : public ZFSubSystem
 		Matrix4				m_kModelMatrix;
 
 
-
+		void UpdateVel();
 		void UpdateMotion();
 		void UpdateCollissions();
 

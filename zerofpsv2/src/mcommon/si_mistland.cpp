@@ -36,8 +36,9 @@ void MistLandLua::Init(EntityManager* pkObjMan,ZFScriptSystem* pkScript)
 	pkScript->ExposeFunction("GetClosestObject",			MistLandLua::GetClosestObjectLua);		
 	pkScript->ExposeFunction("RemoveObject",				MistLandLua::RemoveObjectLua);		
 	pkScript->ExposeFunction("SendEvent",					MistLandLua::SendEventLua);			
-	pkScript->ExposeFunction("SetPSystem",					MistLandLua::SetPSystemLua);		
+	pkScript->ExposeFunction("SetPSystem",					MistLandLua::SetPSystemLua);			
 	pkScript->ExposeFunction("SetVelTo",					MistLandLua::SetVelToLua);			
+	pkScript->ExposeFunction("Bounce",						MistLandLua::BounceLua);				
 
 	pkScript->ExposeFunction("AddAction",					MistLandLua::AddActionLua);			
 	pkScript->ExposeFunction("MessageCaracter",			MistLandLua::MessageCaracterLua);
@@ -483,6 +484,44 @@ int MistLandLua::SetVelToLua(lua_State* pkLua)
 		o1->GetVel() = dir*fVel;
 		
 	}
+	return 0;
+}
+
+int MistLandLua::BounceLua(lua_State* pkLua)
+{
+	if(g_pkScript->GetNumArgs(pkLua) != 1)
+		return 0;
+	
+	double id;	
+	g_pkScript->GetArgNumber(pkLua, 0, &id);		
+
+
+	Entity* ent = g_pkObjMan->GetObjectByNetWorkID((int)id);
+	
+	if(ent)
+	{
+		Vector3 vel = ent->GetVel();
+		
+		if(vel.y > 0)
+			return 0;
+		
+		if(abs(vel.y) < 1)
+		{
+			ent->GetVel()=Vector3(0,0,0);
+			P_Tcs* ts = (P_Tcs*)ent->GetProperty("P_Tcs");			
+			if(ts)
+				ts->SetGravity(false);
+			
+			return 0;
+		}
+		
+		vel.y = abs(vel.y);
+	
+		vel*=0.9;			//dämpnings faktor
+		
+		ent->GetVel() = vel;	
+	}
+	
 	return 0;
 }
 
