@@ -861,7 +861,6 @@ void EntityManager::PackToClients()
 //	int iPacketSize		= 0;
 //	int iEndOfObject	= -1;
 
-	Entity* pkZone;
 	unsigned int iClient;
 
 	// Clear Active Zones for clients.
@@ -935,15 +934,23 @@ void EntityManager::PackToClients()
 		m_pkGlobalObject->GetAllEntitys(&kObjects, true);
 
 		// Loop all zones activated by client.
+		Entity* pkZoneE;
+		ZoneData* pkZoneD;
 		for(set<int>::iterator itActiveZone = m_pkZeroFps->m_kClient[iClient].m_iActiveZones.begin(); itActiveZone != m_pkZeroFps->m_kClient[iClient].m_iActiveZones.end(); itActiveZone++ ) 
 		{
-			// Get Zone and all subobjects.
-			int iZoneID = (*itActiveZone);
-			pkZone = m_kZones[iZoneID].m_pkZone;
-			assert(pkZone);
-
-//			pkZone->GetAllDynamicEntitys(&kObjects);		//add objects to vector
-			pkZone->GetAllEntitys(&kObjects,true,true);
+			pkZoneD = GetZoneData((*itActiveZone));
+			if(pkZoneD)
+			{
+				if(pkZoneD->m_iStatus != EZS_LOADED)
+					continue;
+				
+				// Get Zone and all subobjects.
+				//int iZoneID = (*itActiveZone);
+				pkZoneE = pkZoneD->m_pkZone;
+				assert(pkZoneE);
+	
+				pkZoneE->GetAllEntitys(&kObjects,true,true);
+			}
 		}
 		
 		//send all data
