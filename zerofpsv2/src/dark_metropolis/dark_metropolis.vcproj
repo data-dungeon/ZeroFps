@@ -19,7 +19,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="c:\cppdev\cppdev\"
+				AdditionalIncludeDirectories="C:\Program\codetool\include"
 				PreprocessorDefinitions="WIN32,_DEBUG,_CONSOLE"
 				MinimalRebuild="FALSE"
 				BasicRuntimeChecks="3"
@@ -39,7 +39,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386 /nodefaultlib:msvcrt.lib"
-				AdditionalDependencies="opengl32.lib lua.lib mcommon.lib sdlmain.lib sdl.lib gui.lib render.lib basic.lib script.lib physics_engine.lib odbc32.lib odbccp32.lib"
+				AdditionalDependencies="engine.lib opengl32.lib lua.lib mcommon.lib sdlmain.lib sdl.lib gui.lib render.lib basic.lib script.lib physics_engine.lib odbc32.lib odbccp32.lib"
 				OutputFile="..\..\bin\dark_metropolis.exe"
 				LinkIncremental="2"
 				SuppressStartupBanner="TRUE"

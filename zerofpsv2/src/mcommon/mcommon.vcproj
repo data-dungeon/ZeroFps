@@ -21,7 +21,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="c:\cppdev\cppdev\"
+				AdditionalIncludeDirectories="C:\Program\codetool\include"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;MCOMMON_EXPORTS"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -40,7 +40,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386"
-				AdditionalDependencies="engine.lib render.lib script.lib basic.lib odbc32.lib odbccp32.lib"
+				AdditionalDependencies="glu32.lib opengl32.lib engine.lib render.lib script.lib basic.lib odbc32.lib odbccp32.lib"
 				OutputFile="..\..\bin\mcommon.dll"
 				LinkIncremental="2"
 				SuppressStartupBanner="TRUE"
@@ -182,6 +182,9 @@
 				RelativePath=".\p_serverinfo.cpp">
 			</File>
 			<File
+				RelativePath=".\p_shadowblob.cpp">
+			</File>
+			<File
 				RelativePath=".\p_spawn.cpp">
 			</File>
 			<File
@@ -229,6 +232,9 @@
 			</File>
 			<File
 				RelativePath=".\p_serverinfo.h">
+			</File>
+			<File
+				RelativePath=".\p_shadowblob.h">
 			</File>
 			<File
 				RelativePath=".\p_spawn.h">
