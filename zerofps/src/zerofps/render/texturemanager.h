@@ -76,6 +76,8 @@ class RENDER_API TextureManager : public ZFObject {
 
 		void PutPixel(SDL_Surface* surface, int x, int y, Uint32 pixel);
 
+		int GetOptionsFromFileName(string strName);
+
 	public:
 		void FreeTexture(texture* pkTex);
 

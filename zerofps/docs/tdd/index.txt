@@ -1,5 +1,5 @@
 End User Platform and OS: 
-	Windows (98/2000/ME) och Linux.
+	Windows (98/2000/ME/XP) och Linux.
 	1.5 Ghz, 128 MB RAM.
 	GeForce 2+.
 	OpenGL 1.2
@@ -9,25 +9,28 @@ End User Platform and OS:
 
 Development Platform and OS:
 	Windows:	VC++ 6.0
-	Linux:		
+	Linux:	GCC 3.0
 
 External Code: 
-	STLPort:	Används i windows till VC++ 6.0.
+	STLPort:		Används i windows till VC++ 6.0.
 	SDL Libs:	Används för att utveckla på både windows och linux.
-		SDL:	
-		Mixer:	Ljud mixer för musik. 
-		Image:	Ladda bilder/textures.
-		Net:	Sköter om low level nätverks kod. 
+		SDL:		För basic platforms oberoende och grafik.
+		-Mixer:	Ljud mixer för musik. 
+		-Image:	Ladda bilder/textures.
+		Net:		Sköter om low level nätverks kod. 
 	AponAL:		Spelar upp ljud.
+	OggVorbis:	Spelar upp OGG musik filer.
 	ExtGl:		Laddar opengl 1.2 under windows. Används ej i linux.
-	Lua:		Används flitigt av skriptsystemet.
+	Lua:			Används flitigt av skriptsystemet.
 
 Code Modules:
  Basic:		Grundläggande klasser (math, namnsystem, log files, fil system).
- Render:	Utritning (*opengl). Rendering av modeller och landskap. Textures.
- Engine:	Objectmangement, network, client/server, Input, Physic/Collision, sound.
- App.Exe:	
+ Render:		Utritning (*opengl). Rendering av modeller och landskap. Textures.
+ Engine:		Objectmangement, network, client/server, Input, Physic/Collision, sound.
 
+ ZeroEdit
+ App	
+ 
 Control Loop: 
  Main:
 	Main anropar EngineStart direkt och det är därifrån allt händer.

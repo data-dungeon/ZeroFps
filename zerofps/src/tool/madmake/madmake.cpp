@@ -15,6 +15,12 @@
 //#include "halflife.h"
 //#include "script.h"
 
+ZFResourceHandle::ZFResourceHandle() {	}
+ZFResourceHandle::~ZFResourceHandle() {	}
+bool ZFResourceHandle::SetRes(string strName) { return true;	}
+void ZFResourceHandle::FreeRes(){}
+bool  ZFResourceHandle::IsValid(){return true;}
+ZFResource* ZFResourceHandle::GetResourcePtr() {return NULL;}
 
 using namespace std;
 

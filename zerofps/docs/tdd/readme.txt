@@ -1,11 +1,15 @@
-Denna katalog innehåller den tekniska dokumentationen för
-ZeroFps. Dessa dokument är saker som konstant uppdateras.
+Denna katalog innehåller den tekniska dokumentationen för ZeroFps. 
+Dessa dokument är saker som konstant uppdateras.
+
+Index:
+	Osorterade tankar :).
+
+Do:
+	Lista på saker som ska göras, ändras läggas till i zerofps.
 
 DataFlow:
 	Hur alla resurser fungerar i ZeroFps. Dvs hur dom sparas, laddas och används.
 
-Do:
-	Lista på saker som ska göras, ändras läggas till i zerofps.
 
 Engine Objects:
 	Listar alla större system (render, sound, cosole...) och hur
@@ -21,9 +25,6 @@ Game Objects:
 
 Graphic Engine:
 	Beskriver hur renderingen av spelvärlden fungerar.
-
-Index:
-	Osorterade tankar :).
 
 Mad:
 	Beskeriver hur animerade modeller fungerar.

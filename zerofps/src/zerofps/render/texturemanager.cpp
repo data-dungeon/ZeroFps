@@ -40,6 +40,50 @@ void TextureManager::SetOptions(texture *pkTex, int iOption)
 	}
 }
 
+string GetTextureFlags(string strName)
+{
+	string	strFlags;
+	char		szFlags[256];
+	strFlags = "";
+
+	char szName[256];
+	strcpy(szName, strName.c_str());
+	char* szSOFlags = strrchr(szName, '/');
+	if(!szSOFlags)
+		return strFlags;
+	
+	char* szEOFlags = strchr(szSOFlags, '-');
+	if(!szEOFlags)
+		return strFlags;
+
+	int iNumOfFlags = szEOFlags - szSOFlags;
+	strncpy(szFlags,szSOFlags,iNumOfFlags);
+	szFlags[iNumOfFlags] = 0;
+   strFlags = szFlags;
+	return strFlags;
+}
+
+int TextureManager::GetOptionsFromFileName(string strName)
+{
+	int iOptions = 0;
+	string StrFlags = GetTextureFlags(strName);
+	char		szFlags[256];
+	strcpy(szFlags,StrFlags.c_str());
+	if(strlen(szFlags) == 0)
+		return 0;
+
+	for(int i=0; i<strlen(szFlags); i++) {
+		switch(szFlags[i]) {
+			case 'c':
+				iOptions = iOptions | T_CLAMP;
+				break;
+			}
+		}
+
+	return iOptions;
+}
+
+
 texture*	TextureManager::GetFreeTexture()
 {
 	int iTexID;
@@ -298,6 +342,7 @@ int TextureManager::Load(const char* acFileName,int iOption)
 	temp->file=acFileName;
 	
 	// If texture can't be loaded, Load error texture.
+	iOption |= GetOptionsFromFileName(acFileName);
 	SetOptions(temp, iOption);
 	if(!LoadTexture(temp,acFileName)) {
 		// If error texture fails to load cry a little and return NO_TEXTURE.

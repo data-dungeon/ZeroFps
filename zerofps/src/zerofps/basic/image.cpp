@@ -4,6 +4,8 @@
 #include "image.h"
 #include <iostream>
 
+int g_iFulHack;
+
 using namespace std;
 
 int DEBUG_PRINT = false;			// Sätt till true för att printa bitmap/tga/pcx/whatever loaded.
@@ -926,6 +928,14 @@ bool Image::load_bmp(FILE* pkFile)
 	// check height to see if the image is reversed or not.
 	if(kBitmap.kInfoheader.lHeight > 0)
 		flip(false, true);
+
+/*	Vim: Test code to save all loaded bmp images.
+
+	char szFullHack[256];
+	sprintf(szFullHack, "FulH%d.tga",g_iFulHack);
+	save(szFullHack, false);
+	g_iFulHack++;
+	cout << "Fulhack Name: " << szFullHack << endl;*/
 
 	return true;
 }

@@ -391,8 +391,10 @@ void Mad_CoreMesh::SetTextureFlags(void)
 
 		pkChar = akTextures[i].ucTextureName;
 		while(pkChar < pszFlags) {
-			if(pkChar[0] == 'c') {
+			if(pkChar[0] == 'a') {
 				akTextures[i].bIsAlphaTest = true;
+				}
+			if(pkChar[0] == 'c') {
 				akTextures[i].bClampTexture = true;
 				}
 

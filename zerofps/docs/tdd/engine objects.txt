@@ -5,6 +5,14 @@ att behöva använda globala variabler. Varje object får ett eget namn som man kan
 Detta namn är oftast samma sak som klass namnet för object som det endast finns ett av.
 Detta system används även för att sända messages (kommandon) till object. 
 
+
+
+
+
+
+
+
+
 Math:	Matrix3, Matrix4, Quaternion, Vector3, Vector4.
 
  ZFObject:
