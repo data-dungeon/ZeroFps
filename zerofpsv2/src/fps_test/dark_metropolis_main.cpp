@@ -37,8 +37,8 @@ void DarkMetropolis::OnInit()
 {
 	SetTitle("Dark Metropolis");
 
-	m_pkZFVFileSystem->AddRootPath( string("../data/mistlands/") ,"data/");
-	m_pkZFVFileSystem->AddRootPath( string("../data/dm/") ,"data/");
+	m_pkZFVFileSystem->AddRootPath( string("../datafiles/mistlands/") ,"data/");
+	m_pkZFVFileSystem->AddRootPath( string("../datafiles/dm/") ,"data/");
 	
 
 	//initiate variables

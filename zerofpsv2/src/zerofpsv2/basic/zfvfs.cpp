@@ -107,24 +107,11 @@ bool ZFVFileSystem::StartUp()
 	if(szDiv)
 		szDiv[1] = 0;
 
-	AddRootPath(szWorkDir,"");
+	AddRootPath(szWorkDir,""); 
 
 	// Add Base / Rip to root also.
-	//string strDir;
-	//strDir = string(szWorkDir) + string("extdata/zerofps/");
-	//AddRootPath(strDir.c_str(),"data/");
-	//strDir = string(szWorkDir) + string("extdata/mistlands/");
-	//AddRootPath(strDir.c_str(),"data/");
-
-	//strDir = string(szWorkDir) + string("extdata/dm/");
-	//AddRootPath(strDir.c_str(),"data/");
-
-	AddRootPath( string(szWorkDir) + string("data/sysdata/") ,"data/");
-	AddRootPath( string(szWorkDir) + string("data/extdata/") ,"data/");
-	//AddRootPath("data/extdata","data/");
-
-//	AddRootPath("h:/");
-	////////////////////////////////////////////////// [/zeb]
+	AddRootPath( string(szWorkDir) + string("datafiles/sysdata/") ,"data/");
+	AddRootPath( string(szWorkDir) + string("datafiles/extdata/") ,"data/");
 
 	return true;
 }

@@ -31,8 +31,8 @@ MistClient::MistClient(char* aName,int iWidth,int iHeight,int iDepth)
  
 void MistClient::OnInit() 
 {
-	m_pkZFVFileSystem->AddRootPath( string("../data/mistlands/") ,"data/");
-	m_pkZFVFileSystem->AddRootPath( string("../data/dm/") ,"data/");
+	m_pkZFVFileSystem->AddRootPath( string("../datafiles/mistlands/") ,"data/");
+	m_pkZFVFileSystem->AddRootPath( string("../datafiles/dm/") ,"data/");
 
 
 	//initiate our mainview camera
