@@ -16,7 +16,7 @@ class BASIC_API Vector4 {
 	
 		Vector4(float fX,float fY,float fZ,float fW);
 		Vector4(const Vector3 &kOtherV3);
-		Vector4(void);
+		Vector4() { }
 	
 		// Assign
 		Vector4 operator=(const Vector4 &kOtherV3);		

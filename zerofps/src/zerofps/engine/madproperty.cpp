@@ -38,23 +38,33 @@ MadProperty::MadProperty(Mad_Core* pkModell) {
 
 }
 
+void DrawBoundSphere(float fRadius)
+{
+	glPushAttrib(GL_FOG_BIT|GL_LIGHTING_BIT | GL_TEXTURE_BIT | GL_COLOR_BUFFER_BIT );
+	glColor3f(1,1,1);
+	glDisable(GL_LIGHTING);
+	glDisable(GL_TEXTURE_2D );
 
-void MadProperty::Update() {
+	float x,y;
+	glBegin(GL_LINE_LOOP );
+	for(int i=0; i<360; i+=45) {
+		x = cos(DegToRad(i)) * fRadius;
+		y = sin(DegToRad(i)) * fRadius;
+		glVertex3f(x,y,0);
+		}
+	glEnd();
+
+	glPopAttrib();
+}
+
+void MadProperty::Update() 
+{
+//	return;
 
 	if(!pkCore)
 		return;
 
-	UpdateAnimation(0);
-
-//	int iNumOfFrame = pkCore->GetAnimationTimeInFrames(iActiveAnimation);
-//	int iFrame = int(fCurrentTime / 0.1);
-	
-//	pkCore->SetFrameI(0);
-//	pkCore->SetFrameI(pkCore->akAnimation[iActiveAnimation].KeyFrame[0].iVertexFrame + iFrame);
-//	pkCore->ClearReplaceTexture();
-
-//	if(bFlipFace)
-//		glCullFace(GL_FRONT);
+	UpdateAnimation(0.001);
 
 	glPushMatrix();
 		glTranslatef(m_pkObject->GetPos().x,m_pkObject->GetPos().y,m_pkObject->GetPos().z);
@@ -64,34 +74,30 @@ void MadProperty::Update() {
 		glRotatef(m_pkObject->GetRot().y ,0,1,0);		
 		
 		Vector4 sphere=m_pkObject->GetPos();
-		sphere.w=4;
+		sphere.w = 4;
+//		DrawBoundSphere(sphere.w);
 		if(m_pkFrustum->SphereInFrustum(sphere))
 			Draw_All();
-		//			pkCore->Draw();
 	
 	glPopMatrix();
-
-//	if(bFlipFace)
-//		glCullFace(GL_BACK);
-
 }
 
 void MadProperty::SetBase(const char* acName)
 {
-	SetBase(m_pkZeroFps->GetMADPtr(acName));
+	SetBasePtr(m_pkZeroFps->GetMADPtr(acName));
 	m_kMadFile=acName;
 }
 
-void MadProperty::SetBase(Mad_Core* pkModell)
-{
-	pkCore = pkModell;
+//void MadProperty::SetBase(Mad_Core* pkModell)
+//{
+//	pkCore = pkModell;
 	
-	PlayAnimation(0, 0.0);
-	m_fScale = 1.0;
-	m_bActive = true;
+//	PlayAnimation(0, 0.0);
+//	m_fScale = 1.0;
+//	m_bActive = true;
 //	bFlipFace = false;
-	pkCore->ClearReplaceTexture();
-}
+//	pkCore->ClearReplaceTexture();
+//}
 
 /*
 

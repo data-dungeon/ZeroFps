@@ -20,7 +20,7 @@ class ENGINE_API MadProperty : public Property, public Mad_Modell {
 		string m_kMadFile;
 
 
-		void SetBase(Mad_Core* pkModell);
+//		void SetBase(Mad_Core* pkModell);
 		void SetBase(const char* acName);
 		void Update();
 		void Save(ZFMemPackage* pkPackage);

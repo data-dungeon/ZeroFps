@@ -22,14 +22,6 @@ Vector4::Vector4(float fX,float fY,float fZ,float fW)
 	w=fW;
 }
 
-Vector4::Vector4(void) 
-{
-	x=0;
-	y=0;
-	z=0;
-	w=0;	
-}
-
 Vector4::Vector4(const Vector3 &kOtherV3) 
 {
 	x=kOtherV3.x;
@@ -145,7 +137,9 @@ Vector4 Vector4::operator-()
 
 float &Vector4::operator[](const int i)
 {
-	switch(i){
+	return *((&x) + i);
+
+/*	switch(i){
 		case 0:
 			return x;
 		case 1:
@@ -158,7 +152,7 @@ float &Vector4::operator[](const int i)
 			ZFAssert(0, "Vector4::operator[]: Index out of range");
 			return x;
 		
-	}
+	}*/
 }
 
 Vector4 Vector4::operator*(const Matrix4 &f) const 

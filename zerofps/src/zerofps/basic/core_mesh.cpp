@@ -22,6 +22,9 @@ void Mad_CoreMesh::Clear(void)
 	kHead.iNumOfVertex = 0;
 	kHead.iVersionNum = 0;
 
+	bNotAnimated = false;
+	iDisplayID = -1;
+
 	akTextureCoo.clear();
 	akFaces.clear();
 	akFrames.clear();

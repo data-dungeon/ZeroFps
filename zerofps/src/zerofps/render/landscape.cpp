@@ -825,10 +825,10 @@ void Render::DrawPatch(HeightMap* kMap,Vector3 CamPos,int xp,int zp,int iSize)
 
 
 //	glPolygonMode(GL_FRONT,GL_LINE);
-
+	int z,x;
 	
-	for(int z = zp ; z < zp+iSize; z+=iStep){
-		if(z==kMap->m_iHmSize-iStep)
+	for(z = zp ; z < zp+iSize; z+=iStep){
+		if(z>=kMap->m_iHmSize-iStep)
 			break;			
 			
 		glBegin(GL_TRIANGLE_STRIP);
@@ -848,12 +848,11 @@ void Render::DrawPatch(HeightMap* kMap,Vector3 CamPos,int xp,int zp,int iSize)
 	
 
 	//damn ulgly lod fix
-	
-	int z=zp;	
+	 
+	z=zp;	
 	
 	glBegin(GL_TRIANGLE_STRIP);
-	for(int x=xp;x <=xp+iSize ; x+=iStep)
-	{
+	for( x=xp;x <=xp+iSize ; x+=iStep)	{
 		glMultiTexCoord2fARB(GL_TEXTURE0_ARB,(float)x/kMap->m_iHmSize,(float)z/kMap->m_iHmSize);		 		 			 		
 		glMultiTexCoord2fARB(GL_TEXTURE1_ARB,(float)x/TEX_SCALE,(float)z/TEX_SCALE);						
 		glNormal3fv((float*)&kMap->verts[z*kMap->m_iHmSize+x].normal);			
@@ -869,7 +868,7 @@ void Render::DrawPatch(HeightMap* kMap,Vector3 CamPos,int xp,int zp,int iSize)
 		z-=iStep;	
 	
 	glBegin(GL_TRIANGLE_STRIP);	
-	for(int x=xp;x <=xp+iSize ; x+=iStep)
+	for(x=xp;x <=xp+iSize ; x+=iStep)
 	{
 		glMultiTexCoord2fARB(GL_TEXTURE0_ARB,(float)x/kMap->m_iHmSize,(float)z/kMap->m_iHmSize);		 		 			 		
 		glMultiTexCoord2fARB(GL_TEXTURE1_ARB,(float)x/TEX_SCALE,(float)z/TEX_SCALE);						
@@ -880,9 +879,9 @@ void Render::DrawPatch(HeightMap* kMap,Vector3 CamPos,int xp,int zp,int iSize)
 	}
 	glEnd();	
 
-	int x=xp;	
+	x=xp;	
 	glBegin(GL_TRIANGLE_STRIP);
-	for(int z=zp;z <=zp+iSize ; z+=iStep)
+	for(z=zp;z <=zp+iSize ; z+=iStep)
 	{
 		if(z==kMap->m_iHmSize-iStep)
 			break;
@@ -899,7 +898,7 @@ void Render::DrawPatch(HeightMap* kMap,Vector3 CamPos,int xp,int zp,int iSize)
 	
 	x=xp+iSize;	
 	glBegin(GL_TRIANGLE_STRIP);
-	for(int z=zp;z <=zp+iSize ; z+=iStep)
+	for( z=zp;z <=zp+iSize ; z+=iStep)
 	{
 		if(z==kMap->m_iHmSize-iStep)
 			break;

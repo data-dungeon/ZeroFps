@@ -1,15 +1,15 @@
 #include "ballobject.h"
-
+ 
 BallObject::BallObject() {
 	m_pkFps = static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
-
+  
 //	AddProperty(new CollisionProperty(&m_kPos,new float(1.0)));
 //	AddProperty(new GravityProperty());
 //	AddProperty(new FloatProperty());	
 
 	AddProperty("MadProperty");
 	MadProperty* madp = dynamic_cast<MadProperty*>(GetProperty("MadProperty"));
-	madp->SetBase(m_pkFps->GetMADPtr("../data/mad/tree.mad"));
+	madp->SetBasePtr(m_pkFps->GetMADPtr("../data/mad/tree.mad"));
 //	madp->SetScale(0.02);
 //	madp->bFlipFace = true;
 	onGround = false;

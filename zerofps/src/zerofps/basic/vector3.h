@@ -2,29 +2,35 @@
 #define _BASIC_VECTOR3_H_
 
 #include <iostream>
+#include <cmath>
 #include "basic_x.h"
 #include "os.h"
 
 using namespace std;
 
+
 class BASIC_API Vector3 {
 	public:
-/*	
-		union 
-		{
-		   float data[3];
-		   float x,y,z;                                
-		};
-*/		
-		float x,y,z;												// NC
+		float x,y,z;                                
 	
-		Vector3(float fX,float fY,float fZ);						// NC
+		Vector3(float fX,float fY,float fZ) : x(fX), y(fY), z(fZ) { };
 		Vector3() { /*x=0; y=0; z=0;*/ };												// NC
 
+
 		// Assign
-		Vector3 operator=(const Vector3 &kOtherV3);					// NC
-		void Set(float fXIn, float fYIn, float fZIn);				// NC
-		
+		Vector3& operator=(const Vector3 &kOtherV3) {
+			x=kOtherV3.x;
+			y=kOtherV3.y;
+			z=kOtherV3.z;
+			return *this;
+			}	
+
+		void Set(float fXIn, float fYIn, float fZIn) {
+			x = fXIn;
+			y = fYIn;
+			z = fZIn;
+			}
+
 		// Arithmetic operations
 		Vector3 operator+(const Vector3 &kOtherV3)	const;			// NC
 		Vector3 operator+(const float &fAdd)		const;			// NC
@@ -32,10 +38,10 @@ class BASIC_API Vector3 {
 		Vector3 operator-(const float &fAdd)		const;			// NC
 		Vector3 operator*(const float &fOther)		const;			// NC
 
-		Vector3 operator+=(const Vector3 &kOtherV3);				// NC
-		Vector3 operator-=(const Vector3 &kOtherV3);				// NC
-		Vector3 operator*=(const float &fOther);					// NC
-		Vector3 operator/=(const float fOther);
+		Vector3& operator+=(const Vector3 &kOtherV3);				// NC
+		Vector3& operator-=(const Vector3 &kOtherV3);				// NC
+		Vector3& operator*=(const float &fOther);					// NC
+		Vector3& operator/=(const float fOther);
 		Vector3 operator-();										// NC	
 
 		// Comparison
@@ -43,7 +49,10 @@ class BASIC_API Vector3 {
 		bool operator!=(const Vector3 &kOtherV3)	const;			// NC
 
 		// Vector operations.
-		float Length(void)const;									// NC
+		float Length(void) const {
+			return (float) sqrt( x*x + y*y + z*z );  
+			}
+
 		float LengthSqr(void)const;									// Squared length of vector.
 
 		void Normalize(void);										// NC

@@ -121,8 +121,13 @@ private:
 
 	int								iTextureID[256];
 
-
 public:
+	bool							bNotAnimated;
+	int								iDisplayID;
+	void							SetDisplayID(int iId) { iDisplayID = iId; }
+	int								GetDisplayID() { return iDisplayID; }
+
+	
 	char							m_acName[64];
 	Mad_CoreMeshHeader				kHead;
 
@@ -292,13 +297,23 @@ private:
 	vector<Mad_CoreBone>			m_kSkelleton;
 
 public:
-	Mad_CoreMesh*	GetMeshByID(int iMesh);
-	int	NumOfMeshes();
-	Mad_CoreMesh* CreateCoreMesh(const char* szName);
+	Mad_Header	kMadHeader;
 
+	char		Name[256];
+	float		fFrameOffs;
+	int			iBoneFrame;
+
+	int			iActiveAnimation;
+	int			iActiveFrame;
+	int			iActiveKeyFrame;
+	float		fActiveAnimationTime;
+	
 	Mad_Core();
 	~Mad_Core();
-
+	
+	Mad_CoreMesh*	GetMeshByID(int iMesh);
+	Mad_CoreMesh* CreateCoreMesh(const char* szName);
+	int	NumOfMeshes();
 
 	void Save_SD(FILE* pkFp);
 	void Save_MD(int iMeshId, FILE* pkFp);
@@ -309,31 +324,6 @@ public:
 	void Save_AD(int iMeshId, const char* filename);
 	void Save_MAD(const char* filename);
 
-	
-
-	Mad_Header	kMadHeader;
-
-	char				Name[256];
-	float				fFrameOffs;
-	int	iBoneFrame;
-
-	int			iActiveAnimation;
-	int			iActiveFrame;
-	int			iActiveKeyFrame;
-	float		fActiveAnimationTime;
-
-	void		SetAnimationTime(int iAnim, float fTime );
-	void		SetBoneAnimationTime(int iAnim, float fTime );
-
-	bool		m_bInterpolVertexFrames;
-	bool		m_bDrawNormals;
-
-	int			aiTextureIndex[MAD_MAX_TEXTURES];
-	int			aiReplaceTextureIndex[MAD_MAX_TEXTURES];
-	void		ClearReplaceTexture(void);
-	void		SetReplaceTexture(char* szFileName);
-	
-	
 	void LoadSkelleton(FILE* pkFp);
 	void LoadAnimation(FILE* pkFp); 
 	void LoadMesh(FILE* pkFp);
@@ -342,6 +332,17 @@ public:
 	void LoadAnimation(const char* MadFileName); 
 	void LoadMesh(const char* MDFileName);
 	void LoadMad(const char* MadFileName);
+
+	void SetAnimationTime(int iAnim, float fTime );
+	void SetBoneAnimationTime(int iAnim, float fTime );
+
+	bool m_bInterpolVertexFrames;
+	bool m_bDrawNormals;
+
+	int	 aiTextureIndex[MAD_MAX_TEXTURES];
+	int	 aiReplaceTextureIndex[MAD_MAX_TEXTURES];
+	void ClearReplaceTexture(void);
+	void SetReplaceTexture(char* szFileName);
 
 	void SetFrameI(int iFrame);
 	/* Sets current frame to use for rendering */
@@ -356,24 +357,14 @@ public:
 
 	char* GetName(void);
 
-	float	GetAnimationLengthInS(int iAnim);
-	int		GetAnimationTimeInFrames(int iAnim);
-	void	SetupBonePose();
-	void	SetUpBindPose();
-	int		GetNumOfAnimations();
+	float GetAnimationLengthInS(int iAnim);
+	int	  GetAnimationTimeInFrames(int iAnim);
+	void  SetupBonePose();
+	void  SetUpBindPose();
+	int	  GetNumOfAnimations();
 
 	void SetInterpol(bool bNewInterpol) { m_bInterpolVertexFrames = bNewInterpol; }
 	bool GetInterpol() { return m_bInterpolVertexFrames; }
-
-
-
-	Vector3*  GetVerticesPtr();
-	Vector3* GetNormalsPtr();
-	Mad_TextureCoo* GetTextureCooPtr(Mad_CoreMesh* pkMesh);
-	int* GetFacesPtr(Mad_CoreMesh* pkMesh,Mad_CoreSubMesh* pkSubMesh);
-	int GetTextureID();
-
-	void PrepareMesh(Mad_CoreMesh* pkMesh);
 
 	int GetNumOfBones();
 	Vector3 GetBonePosition(int iBone);
@@ -384,6 +375,15 @@ public:
 	void SetAnimation(vector<Mad_CoreBoneAnimation>	kBoneAnim);
 
 	void PrintCoreInfo();
+
+	// Render Interface
+	Vector3*  GetVerticesPtr();
+	Vector3* GetNormalsPtr();
+	Mad_TextureCoo* GetTextureCooPtr(Mad_CoreMesh* pkMesh);
+	int* GetFacesPtr(Mad_CoreMesh* pkMesh,Mad_CoreSubMesh* pkSubMesh);
+	int GetTextureID();
+	void PrepareMesh(Mad_CoreMesh* pkMesh);
+
 };
 
 #endif

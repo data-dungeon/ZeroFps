@@ -1,6 +1,7 @@
 #include "mad_modell.h"
 
 float fGameTime;
+char szFullTexName[256];
 
 void SetGameTime(void)
 {
@@ -9,12 +10,15 @@ void SetGameTime(void)
  
 Mad_Modell::Mad_Modell()
 {
-//	kMadRender.m_pkMadInstans = this;
+	m_pkTex = static_cast<TextureManager*>(g_ZFObjSys.GetObjectPtr("TextureManager"));
+	this->fCurrentTime = 0;
+	this->iActiveAnimation = 0;
+	this->fLastUpdate = 0;
+	this->m_bLoop = 0;
 }
 
-Mad_Modell::Mad_Modell(Mad_Core* pkModell) {
-//	strcpy(m_acName,"MadProperty");
-
+Mad_Modell::Mad_Modell(Mad_Core* pkModell) 
+{
 	pkCore = pkModell;
 	
 	PlayAnimation(0, 0.0);
@@ -23,9 +27,11 @@ Mad_Modell::Mad_Modell(Mad_Core* pkModell) {
 	pkCore->ClearReplaceTexture();
 	fGameTime = 0;
 
+	TextureManager*	m_pkTex = static_cast<TextureManager*>(g_ZFObjSys.GetObjectPtr("TextureManager"));
+	LoadTextures();
 }
 
-void Mad_Modell::SetBase(Mad_Core* pkModell)
+void Mad_Modell::SetBasePtr(Mad_Core* pkModell)
 {
 	pkCore = pkModell;
 	
@@ -33,6 +39,9 @@ void Mad_Modell::SetBase(Mad_Core* pkModell)
 	m_fScale = 1.0;
 	m_bActive = true;
 	pkCore->ClearReplaceTexture();
+	TextureManager*	m_pkTex = static_cast<TextureManager*>(g_ZFObjSys.GetObjectPtr("TextureManager"));
+	LoadTextures();
+	Create_GLList(pkCore->GetMeshByID(0));
 }
 
 void Mad_Modell::PlayAnimation(int iAnimNum, float fStartTime)
@@ -132,7 +141,8 @@ void Mad_Modell::End() {}
 
 int Mad_Modell::GetNumOfMesh() 
 {
-	return 1;
+//	return 1;
+	return pkCore->NumOfMeshes();
 }
 
 int Mad_Modell::GetNumOfSubMesh(int iMeshID)
@@ -140,12 +150,17 @@ int Mad_Modell::GetNumOfSubMesh(int iMeshID)
 	return pkCore->GetMeshByID(iMeshID)->kHead.iNumOfSubMeshes;
 }
 
-void Mad_Modell::SelectMeshSubMesh(int iMeshID, int iSubMeshID)
+void Mad_Modell::SelectMesh(int iMeshID)
 {
 	m_pkMesh = pkCore->GetMeshByID(iMeshID);
+}
+
+void Mad_Modell::SelectSubMesh(int iSubMeshID)
+{
 	m_iSubMesh =  iSubMeshID;
 	m_pkSubMesh = m_pkMesh->GetSubMesh(iSubMeshID);
 }
+
 
 int Mad_Modell::GetNumVertices()
 {
@@ -193,7 +208,41 @@ Mad_CoreTexture* Mad_Modell::GetTextureInfo()
 
 }
 
-char szFullTexName[256];
+void Mad_Modell::Create_GLList(Mad_CoreMesh* pkMesh)
+{
+	if(pkMesh->bNotAnimated == false)
+		return;
+	
+//	cout << "Creating list for " << pkMesh->m_acName;
+
+	int iListID;
+	iListID = pkMesh->GetDisplayID();
+	if(iListID != -1) {
+//		cout << "List already done" << endl;
+		return;
+		}
+
+	iListID = glGenLists(1);
+
+	iActiveAnimation = 0;
+	fCurrentTime = 0;
+
+	GLenum iError = glGetError();
+	if(iError != GL_NO_ERROR)
+		cout << "Gaa ett error" << endl;
+
+	glNewList(iListID,GL_COMPILE );
+	Draw_All();
+	glEndList();
+
+	iError = glGetError();
+	if(iError != GL_NO_ERROR)
+		cout << "Gaa ett error :(" << endl;
+
+	cout << "List Created: " << iListID << endl;
+	pkMesh->SetDisplayID(iListID);
+
+}
 
 void Mad_Modell::LoadTextures()
 {
@@ -205,17 +254,21 @@ void Mad_Modell::LoadTextures()
 
 
 	for(int iM = 0; iM <iNumOfMesh; iM++) {
+		SelectMesh(iM);
+
 		iNumOfSubMesh = GetNumOfSubMesh(iM);
 		pkCore->PrepareMesh(pkCore->GetMeshByID(iM));
-	
+
 		for(int iSubM = 0; iSubM < iNumOfSubMesh; iSubM++) {
-			SelectMeshSubMesh(iM, iSubM);
+			SelectSubMesh(iSubM);
 
 			Mad_CoreTexture* pkTexInfo = GetTextureInfo();
 			pkTexInfo->bClampTexture	= false;
 			pkTexInfo->bIsAlphaTest		= false;
 			pkTexInfo->bTwoSided		= false;
 			sprintf(szFullTexName, "../data/textures/%s.tga", pkTexInfo->ucTextureName);
+
+			//cout << iM << "/" << iSubM << ": " << szFullTexName << endl;
 
 			if(strcmp("../data/textures/pine_branch_color02.tga",szFullTexName) == 0) {
 				pkTexInfo->bClampTexture	= true;
@@ -233,9 +286,25 @@ void Mad_Modell::LoadTextures()
 		}
 }
 
-void Mad_Modell::Draw_All(void)
+Mad_CoreMesh* g_pkLastMesh;
+
+
+void Mad_Modell::Draw_All(int iDrawFlags)
 {
-	LoadTextures();
+//	return;
+
+	int iListID = pkCore->GetMeshByID(0)->GetDisplayID();
+	if(iListID != -1) {
+		//cout << "Calling list " << iListID << endl;
+		glCallList(iListID);
+		return;
+		}
+
+
+	if(iDrawFlags == 0)
+		return;
+
+	cout << "DRAW";
 
 	// Refresh Skelleton Pose.
  	pkCore->SetBoneAnimationTime(iActiveAnimation, fCurrentTime);
@@ -251,47 +320,55 @@ void Mad_Modell::Draw_All(void)
 	int iNumOfFaces;
 	int iNumOfSubMesh;
 	
-	TextureManager*	pkTex = static_cast<TextureManager*>(g_ZFObjSys.GetObjectPtr("TextureManager"));
-
 	for(int iM = 0; iM <iNumOfMesh; iM++) {
-		iNumOfSubMesh = GetNumOfSubMesh(iM);
-		pkCore->PrepareMesh(pkCore->GetMeshByID(iM));
-	
-		for(int iSubM = 0; iSubM < iNumOfSubMesh; iSubM++) {
-			SelectMeshSubMesh(iM, iSubM);
+		SelectMesh(iM);
+
+//		if(g_pkLastMesh != m_pkMesh) {
+//			g_pkLastMesh = m_pkMesh;
+//			cout << "Swap";
+			pkCore->PrepareMesh(pkCore->GetMeshByID(iM));
 
 			glTexCoordPointer(2,GL_FLOAT,0,GetTextureCooPtr());
 			glVertexPointer(3,GL_FLOAT,0,GetVerticesPtr());
 			glNormalPointer(GL_FLOAT,0,GetNormalsPtr());
 
-			iNumOfFaces = GetNumFaces();
+//			}
 
-			Mad_CoreTexture* pkTexInfo = GetTextureInfo();
-			pkTex->BindTexture( m_pkMesh->GetTextureID(m_pkSubMesh->iTextureIndex));
-			if(pkTexInfo->bIsAlphaTest) {
-				glEnable(GL_ALPHA_TEST);
-				glAlphaFunc(GL_GEQUAL, 0.5);
+		iNumOfSubMesh = GetNumOfSubMesh(iM);
+
+		for(int iSubM = 0; iSubM < iNumOfSubMesh; iSubM++) {
+			SelectSubMesh(iSubM);
+
+			if(iDrawFlags & MAD_DRAW_MESH) {
+				iNumOfFaces = GetNumFaces();
+
+				Mad_CoreTexture* pkTexInfo = GetTextureInfo();
+				m_pkTex->BindTexture( m_pkMesh->GetTextureID(m_pkSubMesh->iTextureIndex));
+				if(pkTexInfo->bIsAlphaTest) {
+					glEnable(GL_ALPHA_TEST);
+					glAlphaFunc(GL_GEQUAL, 0.5);
+					}
+
+				glDrawElements(GL_TRIANGLES,
+					iNumOfFaces * 3,
+					GL_UNSIGNED_INT,
+					GetFacesPtr());
 				}
 
-			glDrawElements(GL_TRIANGLES,
-				iNumOfFaces * 3,
-				GL_UNSIGNED_INT,
-				GetFacesPtr());
-
-//			DrawNormal(GetVerticesPtr(), GetNormalsPtr());
+			if(iDrawFlags & MAD_DRAW_NORMAL)
+				DrawNormal(GetVerticesPtr(), GetNormalsPtr());
 			}
 		}
 
 	glDisable(GL_ALPHA_TEST);
+	if(iDrawFlags & MAD_DRAW_NORMAL)
+		DrawSkelleton();
 
-//	DrawSkelleton();
 	glPopAttrib();
-
-	glEnable(GL_CULL_FACE);
 }
-/*
 
-void Mad_ModellRender::DrawNormal(Vector3* pkVertex, Vector3* pkNormals)
+
+void Mad_Modell::DrawNormal(Vector3* pkVertex, Vector3* pkNormals)
 {
 	glPushAttrib(GL_FOG_BIT|GL_LIGHTING_BIT | GL_TEXTURE_BIT | GL_COLOR_BUFFER_BIT );
 
@@ -299,9 +376,11 @@ void Mad_ModellRender::DrawNormal(Vector3* pkVertex, Vector3* pkNormals)
 	glDisable(GL_LIGHTING);
 	glDisable(GL_TEXTURE_2D );
 
-	glBegin(GL_LINES);
+	int i;
 
-	for(int i=0; i<m_pkMesh->kHead.iNumOfVertex; i++) {
+	// Draw All Normals.
+	glBegin(GL_LINES);
+	for(i=0; i<m_pkMesh->kHead.iNumOfVertex; i++) {
 		Vector3 Vert = pkVertex[i];
 		Vector3 Norm = pkNormals[i];
 		glVertex3f(Vert.x, Vert.y, Vert.z);
@@ -311,37 +390,66 @@ void Mad_ModellRender::DrawNormal(Vector3* pkVertex, Vector3* pkNormals)
 		}
 	glEnd();
 
+	// Mark All Vertices.
+	glPointSize (3.0f);
+	glBegin(GL_POINTS);
+	glColor3f (0, 0.8, 0);	
+	for(i=0; i<m_pkMesh->kHead.iNumOfVertex; i++) {
+		Vector3 Vert = pkVertex[i];
+		glVertex3f(Vert.x, Vert.y, Vert.z);
+		}
+	glEnd();
+	glPointSize (1.0f);
+
+
 	glPopAttrib();
 }
 
-void Mad_ModellRender::DrawSkelleton()
+
+void DrawBone(Vector3 From, Vector3 To, Vector3 Color)
 {
-/*	glPushAttrib(GL_FOG_BIT|GL_LIGHTING_BIT | GL_TEXTURE_BIT | GL_COLOR_BUFFER_BIT );
+	glDisable (GL_TEXTURE_2D);
+	glDisable (GL_DEPTH_TEST);
+	
+	glPointSize (3.0f);
+	glColor3f (Color.x,Color.y,Color.z);
+	glBegin (GL_LINES);
+		glVertex3f(From.x,From.y,From.z);
+		glVertex3f(To.x,To.y,To.z);
+	glEnd ();
+
+	glColor3f (0, 0, 0.8f);	
+	glBegin (GL_POINTS);
+	glVertex3f(From.x,From.y,From.z);
+	glVertex3f(To.x,To.y,To.z);
+	glEnd ();
+
+	glPointSize (1.0f);
+	glEnable (GL_TEXTURE_2D);
+	glEnable (GL_DEPTH_TEST);
+}
+
+void Mad_Modell::DrawSkelleton()
+{
+	glPushAttrib(GL_FOG_BIT|GL_LIGHTING_BIT | GL_TEXTURE_BIT | GL_COLOR_BUFFER_BIT );
 	glDisable(GL_LIGHTING);
 	glDisable(GL_COLOR_MATERIAL);	
 	glDisable(GL_TEXTURE_2D);
 	glDisable (GL_DEPTH_TEST);
 	
-//	SetupBonePose();
 	Vector3 Position;
 
 	glColor3f(1,1,1);
 	for(unsigned int i=0; i<pkCore->GetNumOfBones(); i++) {
 		if (pkCore->GetBoneParent(i) >= 0) {
-//			DrawBone(g_Madkbonetransform[m_kSkelleton[i].m_iParent].GetPos(),
-//				g_Madkbonetransform[i].GetPos(),
 			DrawBone(pkCore->GetBonePosition(pkCore->GetBoneParent(i)),
 				pkCore->GetBonePosition(i),Vector3(1, 0.7f, 0));
-				//g_Madkbonetransform[m_kSkelleton[i].m_iParent].GetPos(),
-				//g_Madkbonetransform[i].GetPos(),
-				//Vector3(1, 0.7f, 0));
 			}
 		else {
 			// Draw marker for parent bone.
 			glPointSize (5.0f);
 			glColor3f (0.8f, 0, 0);
 			glBegin (GL_POINTS);
-//			Position = g_Madkbonetransform[i].GetPos();
 			Position = pkCore->GetBonePosition(i);
 				glVertex3f(Position.x,Position.y,Position.z);
 			glEnd ();
@@ -352,4 +460,4 @@ void Mad_ModellRender::DrawSkelleton()
 	glEnable(GL_DEPTH_TEST);
 	glPopAttrib();
 }
-*/
+

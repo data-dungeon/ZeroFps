@@ -11,7 +11,8 @@ class RENDER_API Frustum : public ZFObject
 {
 	private:
 		Vector4 m_akFrustum[6];
-	
+		Plane	m_akFrustumPlanes[6];
+		
 	public:
 		Frustum();
 		void GetFrustum();

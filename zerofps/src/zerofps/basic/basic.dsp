@@ -60,7 +60,7 @@ LINK32=link.exe
 # Begin Special Build Tool
 ProjDir=.
 SOURCE="$(InputPath)"
-PostBuild_Cmds=copy     $(ProjDir)\release\*.lib                      ..\..\..\bin\ 
+PostBuild_Cmds=copy      $(ProjDir)\release\*.lib                       ..\..\..\bin\ 
 # End Special Build Tool
 
 !ELSEIF  "$(CFG)" == "basic - Win32 Debug"
@@ -206,6 +206,10 @@ SOURCE=.\matrix4.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\plane.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\quaternion.cpp
 # SUBTRACT CPP /YX
 # End Source File
@@ -344,6 +348,10 @@ SOURCE=.\os_linux.h
 # Begin Source File
 
 SOURCE=.\os_win32.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\plane.h
 # End Source File
 # Begin Source File
 

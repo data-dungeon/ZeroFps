@@ -2,7 +2,7 @@
 #include "network.h"
 
 //	extern PFNGLFOGCOORDFEXTPROC glFogCoordfEXT;		//glFogCoordsEXT
-
+int	g_iNumOfFrames;
 
 ZeroFps::ZeroFps(void) 
  : ZFObject("ZeroFps") {
@@ -307,7 +307,13 @@ void ZeroFps::Swap(void) {
 	m_fFrameTime=SDL_GetTicks()-m_fLastFrameTime;
 	m_fLastFrameTime=SDL_GetTicks();
 	m_iFps=int(1000.0/m_fFrameTime);	
+	
+#ifdef RUNPROFILE
+	g_iNumOfFrames++;
+	if(g_iNumOfFrames >= 1000)
+		m_iState = state_exit;
 
+#endif
 }
 
 

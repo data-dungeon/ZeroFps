@@ -55,13 +55,13 @@ void Frustum::GetFrustum() {
    m_akFrustum[0][1] = clip[ 7] - clip[ 4];
    m_akFrustum[0][2] = clip[11] - clip[ 8];
    m_akFrustum[0][3] = clip[15] - clip[12];
-   
+
    // Extract the numbers for the LEFT plane 
    m_akFrustum[1][0] = clip[ 3] + clip[ 0];
    m_akFrustum[1][1] = clip[ 7] + clip[ 4];
    m_akFrustum[1][2] = clip[11] + clip[ 8];
    m_akFrustum[1][3] = clip[15] + clip[12];  
-   
+  
    // Extract the BOTTOM plane 
    m_akFrustum[2][0] = clip[ 3] + clip[ 1];
    m_akFrustum[2][1] = clip[ 7] + clip[ 5];
@@ -88,24 +88,21 @@ void Frustum::GetFrustum() {
    m_akFrustum[5][2] = clip[11] + clip[10];
    m_akFrustum[5][3] = clip[15] + clip[14];   
    
-   for(int i=0;i<6;i++){
-// 	   cout<<"Plain "<<i<< " X:"<<m_akFrustum[i].x<<" Y:"<<m_akFrustum[i].y<<" Z:"<<m_akFrustum[i].z<<" Lenght:"<<m_akFrustum[i].w<<endl;
-   	if(m_akFrustum[i].PlainLength()>0)
-	   	m_akFrustum[i].PlainNormalize();
-	 }
-   
+	for(int i=0;i<6;i++){
+		if(m_akFrustum[i].PlainLength()>0)
+			m_akFrustum[i].PlainNormalize();
+
+		m_akFrustumPlanes[i].Set(m_akFrustum[i][0], m_akFrustum[i][1],m_akFrustum[i][2],
+			m_akFrustum[i][3]);
+	}
 }
 
 
 bool Frustum::PointInFrustum( Vector3 kPoint)
 {
-   int p;
-
-   for( p = 0; p < 6; p++ ){
-      if( m_akFrustum[p][0] * kPoint.x + m_akFrustum[p][1] * kPoint.y + m_akFrustum[p][2] * kPoint.z + m_akFrustum[p][3] <= 0 ){
-         return false;         
-		}
-//		cout<<"klar"<<endl;
+	for(int p = 0; p < 6; p++ ){
+		if( m_akFrustum[p][0] * kPoint.x + m_akFrustum[p][1] * kPoint.y + m_akFrustum[p][2] * kPoint.z + m_akFrustum[p][3] <= 0 )
+			return false;         
 	}
 	
    return true;
@@ -113,22 +110,16 @@ bool Frustum::PointInFrustum( Vector3 kPoint)
 
 bool Frustum::SphereInFrustum(Vector4 kPoint)
 {
-//	kPoint.x+=CamPos.x;
-//	kPoint.z+=CamPos.z;
+	float d;
 
-   int p;
-   float d;
+	for(int p = 0; p < 6; p++ )
+	{
+		d = m_akFrustum[p][0] * kPoint.x + m_akFrustum[p][1] * kPoint.y + m_akFrustum[p][2] * kPoint.z + m_akFrustum[p][3];
+		if( d <= -kPoint.w )
+			return false;
+	}
 
-   for( p = 0; p < 6; p++ )
-   {
-      d = m_akFrustum[p][0] * kPoint.x + m_akFrustum[p][1] * kPoint.y + m_akFrustum[p][2] * kPoint.z + m_akFrustum[p][3];
-      if( d <= -kPoint.w ){
-//      	cout<<"FUCK"<<endl;
-         return false ;//+ kPoint.w;
-      }
-   }
-///   cout<<d<<endl;
-   return true ;//+ kPoint.w;
+	return true;
 }
 
 

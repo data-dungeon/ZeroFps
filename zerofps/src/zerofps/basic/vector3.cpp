@@ -1,4 +1,3 @@
-#include <cmath>
 #include "zfassert.h"
 #include "vector3.h"
 
@@ -9,30 +8,6 @@ const Vector3 Vector3::AXIS_X(1,0,0);
 const Vector3 Vector3::AXIS_Y(0,1,0);
 const Vector3 Vector3::AXIS_Z(0,0,1);
 const float Vector3::degtorad = float(57.3248);
-
-
-Vector3::Vector3(float fX,float fY,float fZ)
-{
-	x=fX;
-	y=fY;
-	z=fZ;
-}
-
-// Assign
-Vector3 Vector3::operator=(const Vector3 &kOtherV3) 
-{
-	x=kOtherV3.x;
-	y=kOtherV3.y;
-	z=kOtherV3.z;
-	return *this;
-}
-
-void Vector3::Set(float fXIn, float fYIn, float fZIn)
-{
-	x = fXIn;
-	y = fYIn;
-	z = fZIn;
-}
 
 // Comparison
 bool Vector3::operator==(const Vector3 &kOtherV3) const
@@ -62,7 +37,7 @@ Vector3 Vector3::operator+(const float &fAdd) const
 	return Vector3(x+fAdd,y+fAdd,z+fAdd);
 }
 
-Vector3 Vector3::operator+=(const Vector3 &kOtherV3) 
+Vector3& Vector3::operator+=(const Vector3 &kOtherV3) 
 {
 	x += kOtherV3.x;
 	y += kOtherV3.y;
@@ -81,7 +56,7 @@ Vector3 Vector3::operator-(const float &fAdd) const
 }
 
 
-Vector3 Vector3::operator-=(const Vector3 &kOtherV3) 
+Vector3& Vector3::operator-=(const Vector3 &kOtherV3) 
 {
 	x -= kOtherV3.x;
 	y -= kOtherV3.y;
@@ -95,7 +70,7 @@ Vector3 Vector3::operator*(const float &fOther)  const
 	return Vector3(x * fOther,y * fOther,z * fOther);
 }
 
-Vector3 Vector3::operator*=(const float &fOther)
+Vector3& Vector3::operator*=(const float &fOther)
 {
 	x *= fOther;
 	y *= fOther;
@@ -103,7 +78,7 @@ Vector3 Vector3::operator*=(const float &fOther)
 	return *this;
 }
 
-Vector3 Vector3::operator/=(const float fOther)
+Vector3& Vector3::operator/=(const float fOther)
 {
     x /= fOther;
     y /= fOther;
@@ -117,11 +92,10 @@ Vector3 Vector3::operator-()
 }
 
 // Vector operations.
-float Vector3::Length(void) const
+/*float Vector3::Length(void) const
 {
 	return (float)sqrt( x*x + y*y + z*z );  
-
-}
+}*/
 
 float Vector3::LengthSqr(void) const
 {

@@ -239,6 +239,53 @@ void Mad_Core::SetUpBindPose()
 	InversTransformMatrix(a,b);*/
 }
 
+/*
+void Core::CreateFrame(void)
+{
+	Mad_CoreMesh* mesh = &m_kMesh[0];
+	g_pkVertex	= &mesh->akFrames[iActiveFrame].akVertex[0];
+	g_pkNormals = &mesh->akFrames[iActiveFrame].akNormal[0];
+
+	if(!m_bInterpolVertexFrames)
+		return;
+
+	Vector3* pkStartFrame;
+	Vector3* pkEndFrame;
+	Vector3* pkFrame;
+	int i;
+
+	int iNumOfFrame = GetAnimationTimeInFrames(iActiveAnimation);
+	int iStartFrame = int(fActiveAnimationTime / 0.1);
+	int iEndFrame = iStartFrame + 1;
+	if(iEndFrame >= iNumOfFrame) 
+		iEndFrame = 0;
+	
+	int iStartVertexFrame = m_kMesh[0].akAnimation[iActiveAnimation].KeyFrame[iStartFrame].iVertexFrame;
+	int iEndVertexFrame = m_kMesh[0].akAnimation[iActiveAnimation].KeyFrame[iEndFrame].iVertexFrame;
+
+	pkStartFrame = &mesh->akFrames[iStartVertexFrame].akVertex[0];
+	pkEndFrame = &mesh->akFrames[iEndVertexFrame].akVertex[0];
+	pkFrame = g_akVertexBuffer;
+
+	for(i=0; i< mesh->kHead.iNumOfVertex; i++) {
+		Vector3 diff = pkEndFrame[i] - pkStartFrame[i];
+		pkFrame[i] = pkStartFrame[i] + diff * fFrameOffs;
+		}
+
+	pkStartFrame = &mesh->akFrames[iStartVertexFrame].akNormal[0];
+	pkEndFrame = &mesh->akFrames[iEndVertexFrame].akNormal[0];
+	pkFrame = g_akNormalBuffer;
+
+	for(i=0; i< mesh->kHead.iNumOfVertex; i++) {
+		Vector3 diff = pkEndFrame[i] - pkStartFrame[i];
+		pkFrame[i] = pkStartFrame[i] + diff * fFrameOffs;
+		}
+
+	g_pkVertex	= g_akVertexBuffer;
+	g_pkNormals = g_akNormalBuffer;
+}*/
+
+
 void Mad_Core::SetupBonePose()
 {
 	unsigned int i;
@@ -246,18 +293,38 @@ void Mad_Core::SetupBonePose()
 
 //	cout << "Size: " << m_kBoneAnim[iActiveAnimation].m_kBoneKeyFrames.size() << endl;
 
-	if(iBoneFrame >= m_kBoneAnim[iActiveAnimation].m_kBoneKeyFrames.size() )
-		iBoneFrame = 0;
+	int iNumOfFrame = m_kBoneAnim[iActiveAnimation].m_kBoneKeyFrames.size();
+	int iStartFrame = int(fActiveAnimationTime / 0.1);
+	int iEndFrame = iStartFrame + 1;
+	if(iEndFrame >= iNumOfFrame) 
+		iEndFrame = 0;
 
-	Mad_CoreBoneKey* pkKey = &m_kBoneAnim[iActiveAnimation].m_kBoneKeyFrames[iBoneFrame].m_kBonePose[0];
+	//if(iBoneFrame >= m_kBoneAnim[iActiveAnimation].m_kBoneKeyFrames.size() )
+	//	iBoneFrame = 0;
+
+	Mad_CoreBoneKey* pkStartKey = &m_kBoneAnim[iActiveAnimation].m_kBoneKeyFrames[iStartFrame].m_kBonePose[0];
+	Mad_CoreBoneKey* pkEndKey = &m_kBoneAnim[iActiveAnimation].m_kBoneKeyFrames[iEndFrame].m_kBonePose[0];
+	
+	Quaternion kStart, kEnd;
+
+	float OneMinusFrameOffs = 1.0 - fFrameOffs;
+
 	for(i=0; i<m_kSkelleton.size(); i++) {
-		Angles = m_kSkelleton[i].m_kRotation;
+//		Angles = m_kSkelleton[i].m_kRotation;
 //		g_Madq[i].AngleQuaternion(Angles);
 //		g_Madpos[i] = m_kSkelleton[i].m_kPosition;
-		g_Madq[i].AngleQuaternion( pkKey[i].m_kRotation);
-		g_Madpos[i] = pkKey[i].m_kPosition;
-		
+	
+		//g_Madq[i].AngleQuaternion( pkStartKey[i].m_kRotation);
+		kStart.AngleQuaternion(pkStartKey[i].m_kRotation); 
+		kEnd.AngleQuaternion(pkEndKey[i].m_kRotation); 
+		g_Madq[i].QuaternionSlerp(&kStart, &kEnd, fFrameOffs);
+		 
+		//g_Madpos[i] = pkStartKey[i].m_kPosition;
+		g_Madpos[i] = pkStartKey[i].m_kPosition * OneMinusFrameOffs +
+			pkEndKey[i].m_kPosition * fFrameOffs;
 		}
+
+
 
 	Quaternion kTestQ;
 	for (i = 0; i < m_kSkelleton.size(); i++) {
@@ -354,7 +421,7 @@ void Mad_Core::LoadMesh(FILE* pkFp)
 	m_kMesh.push_back(kNewMesh);
 
 	// Load Textures
-	char nisse[256];
+//	char nisse[256];
 	Mad_CoreMesh* pkMesh = &m_kMesh[0];
 
 /*		bool	bIsAlphaTest;				// True if needs alpha test.
@@ -449,12 +516,16 @@ void Mad_Core::LoadMad(const char* MadFileName)
 	for(i=0; i<kMadHeader.m_iNumOfAnimations; i++)
 		LoadAnimation(MadFp);
 
-	for(i=0; i<kMadHeader.m_iNumOfAnimations; i++)
+	for(i=0; i<kMadHeader.m_iNumOfMeshes; i++)
 		LoadMesh(MadFp);
 
 	fclose(MadFp);
 	PrintCoreInfo();
 
+	if(m_kSkelleton.size() == 1) {
+		for(i=0; i<m_kMesh.size(); i++)
+			m_kMesh[i].bNotAnimated = true;
+		}
 }
 
 Mad_CoreMesh* Mad_Core::GetMeshByID(int iMesh)
@@ -464,14 +535,18 @@ Mad_CoreMesh* Mad_Core::GetMeshByID(int iMesh)
 
 Vector3*  Mad_Core::GetVerticesPtr()
 {
-//	return g_TransformedVertex;
-	return &g_pkSelectedMesh->akFrames[0].akVertex[0];
+	if(g_pkSelectedMesh->bNotAnimated)
+		return &g_pkSelectedMesh->akFrames[0].akVertex[0];
+
+	return g_TransformedVertex;
 }
 
 Vector3* Mad_Core::GetNormalsPtr()
 {
-//	return g_TransformedNormal;
-	return &g_pkSelectedMesh->akFrames[0].akNormal[0];
+	if(g_pkSelectedMesh->bNotAnimated)
+		return &g_pkSelectedMesh->akFrames[0].akNormal[0];
+
+	return g_TransformedNormal;
 }
 
 
@@ -494,7 +569,10 @@ int Mad_Core::GetTextureID()
 void Mad_Core::PrepareMesh(Mad_CoreMesh* pkMesh)
 {
 	g_pkSelectedMesh = pkMesh;
-	return;
+	if(pkMesh->bNotAnimated)
+		return;
+	
+	//	return;
 	Matrix4 kFullTransform;
 
 	for(int i = 0; i<pkMesh->kHead.iNumOfVertex; i++) {
@@ -503,13 +581,13 @@ void Mad_Core::PrepareMesh(Mad_CoreMesh* pkMesh)
 		g_MadkbonetransformI[pkMesh->akBoneConnections[i]];
 		g_TransformedVertex[i] = pkMesh->akFrames[0].akVertex[i];*/
 
-		/*kFullTransform.Identity();
+		kFullTransform.Identity();
 		kFullTransform = g_FullBoneTransform[ pkMesh->akBoneConnections[i] ];
 		g_TransformedVertex[i] = kFullTransform.VectorTransform(pkMesh->akFrames[0].akVertex[i]);
 		g_TransformedNormal[i] = kFullTransform.VectorRotate(pkMesh->akFrames[0].akNormal[i]);
-		*/
-		g_TransformedVertex[i] = pkMesh->akFrames[0].akVertex[i];
-		g_TransformedNormal[i] = pkMesh->akFrames[0].akNormal[i];
+		
+		//g_TransformedVertex[i] = pkMesh->akFrames[0].akVertex[i];
+		//g_TransformedNormal[i] = pkMesh->akFrames[0].akNormal[i];
 		}
 }
 

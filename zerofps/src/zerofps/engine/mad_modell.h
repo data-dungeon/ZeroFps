@@ -5,82 +5,83 @@
 #include "../render/render.pkg"
 #include "engine_x.h"
 
-class ENGINE_API Mad_Modell {
-	public:
-//		MadRender	kMadRender;
+#define MAD_DRAW_MESH		1
+#define MAD_DRAW_NORMAL		2
+#define MAD_DRAW_BONES		4
 
-		int		iActiveAnimation;
-		float	fCurrentTime;
-		float	fLastUpdate;
 
-		float	m_fScale;
+class ENGINE_API Mad_Modell 
+{
+private:
+	TextureManager*	m_pkTex;
 
-		int		m_iNextAnimation;
-		bool	m_bLoop;
+	void LoadTextures();
 
-		bool	m_bActive;			// True if animation system is active.
+	void DrawNormal(Vector3* pkVertex, Vector3* pkNormals);
+	void DrawSkelleton();
 
-	public:
-		Mad_Core*	pkCore;
-		Mad_Modell();
-		Mad_Modell(Mad_Core* pkModell);
+	// Render Interface
+	Mad_CoreMesh*		m_pkMesh;
+	Mad_CoreSubMesh*	m_pkSubMesh;
+	int					m_iSubMesh;
 
-		void SetBase(Mad_Core* pkModell);			// Set base modell to use.
-		void UpdateAnimation(float dDelta);		// Move all animations forward.
-/*		void Draw();							// Draw modell.
-		void DrawNormal(Vector3* pkVertex, Vector3* pkNormals);
-		void DrawSkelleton();*/
+	void Begin();
+	void End();
+	int GetNumOfMesh();
+	int GetNumOfSubMesh(int iMeshID);
+	void SelectMesh(int iMeshID);
+	void SelectSubMesh(int iSubMeshID);
+	int GetNumVertices();
+	int GetNumFaces();
+	Vector3*  GetVerticesPtr();
+	int* GetFacesPtr();
+	Mad_TextureCoo* GetTextureCooPtr();
+	Vector3* GetNormalsPtr();
+	int GetTextureID();
+	char* GetTextureName();
+	Mad_CoreTexture* GetTextureInfo();
 
-//		MadRender* GetRender();
-		
-		Mad_CoreMesh*		m_pkMesh;
-		Mad_CoreSubMesh*	m_pkSubMesh;
-		int					m_iSubMesh;
+	void	Create_GLList(Mad_CoreMesh* pkMesh);
 
-		void Begin();
-		void End();
+public:
+	int		iActiveAnimation;
+	float	fCurrentTime;
+	float	fLastUpdate;
 
-		int GetNumOfMesh();
-		int GetNumOfSubMesh(int iMeshID);
+	float	m_fScale;
 
-		void SelectMeshSubMesh(int iMeshID, int iSubMeshID);
+	int		m_iNextAnimation;
+	bool	m_bLoop;
 
-		int GetNumVertices();
-		int GetNumFaces();
+	bool	m_bActive;			// True if animation system is active.
 
-		Vector3*  GetVerticesPtr();
-		int* GetFacesPtr();
-		Mad_TextureCoo* GetTextureCooPtr();
-		Vector3* GetNormalsPtr();
-		int GetTextureID();
-		char* GetTextureName();
-		Mad_CoreTexture* GetTextureInfo();
+	Mad_Core*	pkCore;
+	Mad_Modell();
+	Mad_Modell(Mad_Core* pkModell);
 
+	void SetBasePtr(Mad_Core* pkModell);			// Set base modell to use.
+	void UpdateAnimation(float dDelta);		// Move all animations forward.
 	
-		void PlayAnimation(int iAnimNum, float fStartTime);
-		int		GetCurrentAnimation();
-		void	SetLoopedStatus(bool bLoop);
-		bool	IsLooped();
+	void PlayAnimation(int iAnimNum, float fStartTime);
+	int	 GetCurrentAnimation();
+	void SetLoopedStatus(bool bLoop);
+	bool IsLooped();
 
-		void SetNextAnimation(int iAnimNum);
-		void PlayNextAnimations(void);
-		int	 GetNextAnimation();
+	void SetNextAnimation(int iAnimNum);
+	void PlayNextAnimations(void);
+	int	 GetNextAnimation();
 
-		void SetAnimationActive(bool bPause);
-		bool GetAnimationActive();
+	void SetAnimationActive(bool bPause);
+	bool GetAnimationActive();
 
-		void NextCoreAnimation(void);
+	void NextCoreAnimation(void);
 		
-		void SetScale(float fScale);
+	void SetScale(float fScale);
 
+	void SetReplaceTexture(char* szName);
 
-		void SetReplaceTexture(char* szName);
-
-		void Draw_All();							// Draw modell.
-//		void DrawNormal(Vector3* pkVertex, Vector3* pkNormals);
-//		void DrawSkelleton();
+	void Draw_All(int iDrawFlags = MAD_DRAW_MESH);	// Draw modell.
 	
-		void LoadTextures();
 };
 
 
