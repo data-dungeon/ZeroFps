@@ -60,7 +60,7 @@ LINK32=link.exe
 # Begin Special Build Tool
 ProjDir=.
 SOURCE="$(InputPath)"
-PostBuild_Cmds=copy         $(ProjDir)\release\*.lib                          ..\..\..\bin\ 
+PostBuild_Cmds=copy          $(ProjDir)\release\*.lib                           ..\..\..\bin\ 
 # End Special Build Tool
 
 !ELSEIF  "$(CFG)" == "engine - Win32 Debug"
@@ -91,7 +91,7 @@ LINK32=link.exe
 # Begin Special Build Tool
 ProjDir=.
 SOURCE="$(InputPath)"
-PostBuild_Cmds=copy                                                              $(ProjDir)\debug\*.lib                                                              ..\..\..\bin\ 
+PostBuild_Cmds=copy                                                               $(ProjDir)\debug\*.lib                                                               ..\..\..\bin\ 
 # End Special Build Tool
 
 !ELSEIF  "$(CFG)" == "engine - Win32 Release Profile"
@@ -527,6 +527,10 @@ SOURCE=.\openalsystem.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\physicsengine.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\property.cpp
 
 !IF  "$(CFG)" == "engine - Win32 Release"
@@ -802,6 +806,10 @@ SOURCE=.\objects.pkg
 # Begin Source File
 
 SOURCE=.\openalsystem.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\physicsengine.h
 # End Source File
 # Begin Source File
 

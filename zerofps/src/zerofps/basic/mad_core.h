@@ -11,6 +11,7 @@ using namespace std;
 #define MAD_MAX_TEXTURENAME		64
 #define MAD_MAX_TEXTURES		64
 #define MAX_MAD_TEXTURES		256
+#define MAX_BONES	256
 
 #define MAX_MAX_VERTEX			8192	// Max Vertex per mesh.
 
@@ -295,6 +296,8 @@ private:
 	vector<Mad_CoreMesh>			m_kMesh;
 	vector<Mad_CoreBoneAnimation>	m_kBoneAnim;
 	vector<Mad_CoreBone>			m_kSkelleton;
+
+	Matrix4		g_MadkbonetransformI[MAX_BONES];	// Inverse bone transformation matrix for bind pose
 
 public:
 	Mad_Header	kMadHeader;

@@ -141,8 +141,8 @@ void Mad_Modell::End() {}
 
 int Mad_Modell::GetNumOfMesh() 
 {
-//	return 1;
-	return pkCore->NumOfMeshes();
+	return 1;
+//	return pkCore->NumOfMeshes();
 }
 
 int Mad_Modell::GetNumOfSubMesh(int iMeshID)
@@ -304,7 +304,7 @@ void Mad_Modell::Draw_All(int iDrawFlags)
 	if(iDrawFlags == 0)
 		return;
 
-	cout << "DRAW";
+//	cout << "DRAW";
 
 	// Refresh Skelleton Pose.
  	pkCore->SetBoneAnimationTime(iActiveAnimation, fCurrentTime);
@@ -326,11 +326,11 @@ void Mad_Modell::Draw_All(int iDrawFlags)
 //		if(g_pkLastMesh != m_pkMesh) {
 //			g_pkLastMesh = m_pkMesh;
 //			cout << "Swap";
-			pkCore->PrepareMesh(pkCore->GetMeshByID(iM));
+		pkCore->PrepareMesh(pkCore->GetMeshByID(iM));
 
-			glTexCoordPointer(2,GL_FLOAT,0,GetTextureCooPtr());
-			glVertexPointer(3,GL_FLOAT,0,GetVerticesPtr());
-			glNormalPointer(GL_FLOAT,0,GetNormalsPtr());
+		glTexCoordPointer(2,GL_FLOAT,0,GetTextureCooPtr());
+		glVertexPointer(3,GL_FLOAT,0,GetVerticesPtr());
+		glNormalPointer(GL_FLOAT,0,GetNormalsPtr());
 
 //			}
 

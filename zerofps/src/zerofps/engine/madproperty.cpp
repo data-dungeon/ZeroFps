@@ -75,9 +75,11 @@ void MadProperty::Update()
 		
 		Vector4 sphere=m_pkObject->GetPos();
 		sphere.w = 4;
-//		DrawBoundSphere(sphere.w);
-		if(m_pkFrustum->SphereInFrustum(sphere))
+
+		if(m_pkFrustum->SphereInFrustum(sphere)) {
+//			DrawBoundSphere(sphere.w * (1 / m_fScale));
 			Draw_All();
+			}
 	
 	glPopMatrix();
 }

@@ -1,12 +1,11 @@
 #include "mad_core.h"
 
-#define		MAX_BONES	256
+
 Matrix4		g_Madkbonetransform[MAX_BONES];		// bone transformation matrix
-Matrix4		g_MadkbonetransformI[MAX_BONES];	// Inverse bone transformation matrix for bind pose
 Matrix4		g_FullBoneTransform[MAX_BONES];		
-Vector3		g_Madpos[MAX_BONES];
 Matrix4		g_MadkBoneMatrix;
 Quaternion	g_Madq[MAX_BONES];
+Vector3		g_Madpos[MAX_BONES];
 
 Vector3		g_akVertexBuffer[10000];
 Vector3		g_akNormalBuffer[10000];
@@ -310,9 +309,9 @@ void Mad_Core::SetupBonePose()
 	float OneMinusFrameOffs = 1.0 - fFrameOffs;
 
 	for(i=0; i<m_kSkelleton.size(); i++) {
-//		Angles = m_kSkelleton[i].m_kRotation;
-//		g_Madq[i].AngleQuaternion(Angles);
-//		g_Madpos[i] = m_kSkelleton[i].m_kPosition;
+/*		Angles = m_kSkelleton[i].m_kRotation;
+		g_Madq[i].AngleQuaternion(Angles);
+		g_Madpos[i] = m_kSkelleton[i].m_kPosition;*/
 	
 		//g_Madq[i].AngleQuaternion( pkStartKey[i].m_kRotation);
 		kStart.AngleQuaternion(pkStartKey[i].m_kRotation); 
@@ -321,7 +320,7 @@ void Mad_Core::SetupBonePose()
 		 
 		//g_Madpos[i] = pkStartKey[i].m_kPosition;
 		g_Madpos[i] = pkStartKey[i].m_kPosition * OneMinusFrameOffs +
-			pkEndKey[i].m_kPosition * fFrameOffs;
+		pkEndKey[i].m_kPosition * fFrameOffs;
 		}
 
 
@@ -575,6 +574,7 @@ void Mad_Core::PrepareMesh(Mad_CoreMesh* pkMesh)
 	//	return;
 	Matrix4 kFullTransform;
 
+	cout << "pkMesh->kHead.iNumOfVertex" << pkMesh->kHead.iNumOfVertex << endl;
 	for(int i = 0; i<pkMesh->kHead.iNumOfVertex; i++) {
 		/*kFullTransform = g_MadkbonetransformI[0];
 		kFullTransform = g_Madkbonetransform[pkMesh->akBoneConnections[i]] 
@@ -583,6 +583,12 @@ void Mad_Core::PrepareMesh(Mad_CoreMesh* pkMesh)
 
 		kFullTransform.Identity();
 		kFullTransform = g_FullBoneTransform[ pkMesh->akBoneConnections[i] ];
+
+		if(pkMesh->akBoneConnections[i] < 0)
+			cout << "Error in boneconnection: " << pkMesh->akBoneConnections[i] << endl;
+		if(pkMesh->akBoneConnections[i] >= m_kSkelleton.size())
+			cout << "Error in boneconnection: " << pkMesh->akBoneConnections[i] << endl;
+		
 		g_TransformedVertex[i] = kFullTransform.VectorTransform(pkMesh->akFrames[0].akVertex[i]);
 		g_TransformedNormal[i] = kFullTransform.VectorRotate(pkMesh->akFrames[0].akNormal[i]);
 		
