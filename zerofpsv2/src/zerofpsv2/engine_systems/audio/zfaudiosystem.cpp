@@ -442,6 +442,9 @@ bool ZFAudioSystem::StartUp()
 ///////////////////////////////////////////////////////////////////////////////
 bool ZFAudioSystem::ShutDown()
 {
+	if( OggMusic::m_pkThread != NULL)
+		SDL_KillThread(m_pkMusic->m_pkThread);
+
 	if(m_pkMusic)
 		delete m_pkMusic;
 

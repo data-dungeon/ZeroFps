@@ -216,8 +216,7 @@ class ENGINE_API ZeroFps : public I_ZeroFps {
 		bool		m_bGuiMode, m_bGuiTakeControl;
 		bool		m_bRunWorldSim;
 
-
-
+		bool		m_bAlwaysWork;								///< Paramater that should be set if engine should work (ie. Update) no matter if the application is minimized or not.
 		int		m_iMadDraw;									//	Flags for what part's of mad's that should be draw.
 		float		m_fMadLod;									//	If not 0 then force this LOD % on every mad.
 

@@ -93,6 +93,8 @@ ZeroFps::ZeroFps(void) : I_ZeroFps("ZeroFps")
 //	m_fGameTime					= 0;
 //	m_fGameFrameTime			= 0;
 
+	m_bAlwaysWork				= false;
+
 	// Register Variables
 	RegisterVariable("r_maddraw",			&m_iMadDraw,				CSYS_INT);
 	RegisterVariable("r_madlod",			&g_fMadLODScale,			CSYS_FLOAT);
@@ -521,7 +523,7 @@ void ZeroFps::MainLoop(void)
 	while(m_iState!=state_exit) {
 
 		// check if app is iconized
-		if(!(SDL_GetAppState() & SDL_APPACTIVE))
+		if(m_bAlwaysWork && !(SDL_GetAppState() & SDL_APPACTIVE))
 		{
 			SDL_WaitEvent(NULL);
 		}
