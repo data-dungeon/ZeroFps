@@ -9,7 +9,7 @@ class ZGuiButton;
 class ZGuiSkin;
 class ZGuiWnd;
 
-/** \brief	???.
+/** \brief	A button object used by listboxes.
 	 \ingroup Gui
 */
 class GUI_API ZGuiListitem  

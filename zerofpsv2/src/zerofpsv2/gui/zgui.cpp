@@ -1235,11 +1235,7 @@ void ZGui::KeyboardInput(int key, bool shift, float time)
 {
 	if(key != -1)
 	{
-		if(shift)
-		{
-			key = key-32;
-			shift = false;
-		}
+		FormatKey(key, shift);
 	}
 
 	const float REPEAT_DELAY_SEC = 0.5f;
@@ -1446,4 +1442,97 @@ void ZGui::SetLineColor(int r, int g, int b)
 	m_acLineColor[0] = r;
 	m_acLineColor[1] = g;
 	m_acLineColor[2] = b;
+}
+
+void ZGui::FormatKey(int& iKey, bool bShiftIsPressed)
+{
+	#ifdef WIN32
+
+		if(bShiftIsPressed)
+		{/*
+			if(iKey == '7')
+				iKey = '/';
+			else
+			if(iKey == '0')
+				iKey = '=';
+			else
+			if(iKey == ',') 
+				iKey = ';';
+			else
+			if(iKey == '.')
+				iKey = ':';
+			else
+			if(iKey == '/')
+				iKey = '_';
+			else
+			if(iKey == '=')
+				iKey = '`';
+			else
+			if(iKey == '-')
+				iKey = '?';
+			else
+			if(iKey == '\\')
+				iKey = '*';
+			else
+			if(iKey > 48 && iKey < 58)
+				iKey -= 16;
+			else*/
+			if(iKey > 96 && iKey < 123)
+				iKey -= 32;
+		}
+		else
+		{
+			if(iKey == '-')
+				iKey = '+';
+			if(iKey == '/')
+				iKey = '-';
+			if(iKey == '\\')
+				iKey = '\'';
+			if(iKey == '=')
+				iKey = '´';
+		}	
+
+	#endif // #ifdef WIN32
+
+	#ifndef WIN32
+
+		if(bShiftIsPressed)
+		{
+			if(iKey == '7')
+				iKey = '/';
+			else
+			if(iKey == '0')
+				iKey = '=';
+			else
+			if(iKey == ',') 
+				iKey = ';';
+			else
+			if(iKey == '.')
+				iKey = ':';
+			else
+			if(iKey == '/')
+				iKey = '_';
+			else
+			if(iKey == '=')
+				iKey = '`';
+			else
+			if(iKey == '-')
+				iKey = '_';
+			else
+			if(iKey == '\'')
+				iKey = '*';
+			else
+			if(iKey > 48 && iKey < 58)
+				iKey -= 16;
+			else
+			if(iKey > 96 && iKey < 123)
+				iKey -= 32;
+		}
+		else
+		{
+		
+		
+		}	
+
+	#endif // #ifndef LINUX
 }

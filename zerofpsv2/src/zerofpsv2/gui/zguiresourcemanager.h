@@ -15,7 +15,7 @@ class ZGuiFont;
 class ZGuiSkin;
 class ZGui;
 
-/** \brief	???
+/** \brief	A objectmanager for the Gui system to access to windows and other gui object from the application.
 	 \ingroup Gui
 */
 class GUI_API ZGuiResourceManager : public ZFSubSystem

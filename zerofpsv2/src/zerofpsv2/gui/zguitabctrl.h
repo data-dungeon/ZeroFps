@@ -7,7 +7,7 @@
 #include "zguiwindow.h"
 #include "zguibutton.h"
 
-/** \brief	???
+/** \brief	A Gui tab control (a window with multiple pages that the user can select by the corresponding tab).
 	 \ingroup Gui
 */
 class GUI_API ZGuiTabCtrl : public ZGuiWnd 

@@ -12,7 +12,7 @@
 #include <vector>
 using namespace std;
 
-/** \brief	???
+/** \brief	A Gui Tooltip control (a small pop-up window that displays a single line of text describing the purpose of a tool).
 	 \ingroup Gui
 */
 class GUI_API ZGuiToolTip  

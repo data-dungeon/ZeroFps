@@ -16,7 +16,7 @@ class ZGuiSkin;
 #define SCF_SLIDER_BOTTOM	0x0004
 #define SCF_SLIDER_TOP		0x0005
 
-/** \brief	???
+/** \brief	A slider control (lets a user select from a range of values by moving a slider).
 	 \ingroup Gui
 */
 class GUI_API ZGuiSlider : public ZGuiWnd

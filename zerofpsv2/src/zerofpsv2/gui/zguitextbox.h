@@ -9,7 +9,7 @@
 class ZGuiRender;
 class ZGuiScrollbar;
 
-/** \brief	???
+/** \brief	A Gui editbox.
 	 \ingroup Gui
 */
 class GUI_API ZGuiTextbox : public ZGuiWnd

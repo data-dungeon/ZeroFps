@@ -116,7 +116,6 @@ public:
 		void VKList();
 		void Save(string strCfgName);
 		
-		void FormatKey(int& iKey);
 		void SetCursorInputPos(int x, int y);
 		
 		

@@ -11,7 +11,7 @@ class ZGuiCheckbox;
 class ZGuiScrollbar;
 class ZGuiRender;
 
-/** \brief	???
+/** \brief	A node in a ZGuiTreebox.
 	 \ingroup Gui
 */
 struct GUI_API ZGuiTreeboxNode
@@ -31,7 +31,7 @@ struct GUI_API ZGuiTreeboxNode
 	ZGuiTreeboxNode* RemoveNode(ZGuiTreeboxNode* pkNode);
 };
 
-/** \brief	???
+/** \brief	A Gui Tree-view control (a tree view listbox for selecting thins in hierachy node list)
 	 \ingroup Gui
 */
 class GUI_API ZGuiTreebox : public ZGuiWnd

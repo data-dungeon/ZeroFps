@@ -34,7 +34,7 @@ const int NCODE_MOVE		= 83;
 #define WF_CANHAVEFOCUS		0x0003
 #define WF_TOPWINDOW		0x0004	// Kan detta fönster användas som mainwindow?
 
-/** \brief	???
+/** \brief	This is the basetype for all gui controllers and also the mainwnd type used as a parent for all other gui controllers.
 	 \ingroup Gui
 */
 class GUI_API ZGuiWnd  

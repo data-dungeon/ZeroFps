@@ -172,6 +172,7 @@ public:
 	static int m_iResY;
 
 private:
+	void FormatKey(int& iKey, bool bShiftIsPressed);
 	void KeyboardInput(int key, bool shift, float time);
 	void SetInputFocus(ZGuiWnd* pkClickWnd, bool bSet);
 	bool SetSkins(vector<tSkinInf>& kAllSkinsArray, ZGuiWnd* pkWnd);
