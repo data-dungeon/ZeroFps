@@ -124,7 +124,7 @@ void ZeroRTS::OnIdle()
 	Input();
 	
 
-/* DVOID
+/* //DVOID
 	PickInfo p = Pick();
 	
 	Point bla = GetSqrFromPos(p.kHitPos);
@@ -805,12 +805,14 @@ void ZeroRTS::HandleOrders()
 		for(int i=0;i<P_ClientInput::m_kServerCommands.size();i++)
 		{
 			UnitCommand* uc = &P_ClientInput::m_kServerCommands[i];		
-		
+					
+			/*
 			cout<<"Player:    "<< int(uc->m_cPlayerID)<<endl;
 			cout<<"executing: "<<uc->m_acCommandName<<endl;		
 			cout<<"on unit:   "<<uc->m_iUnitID<<endl;
 			cout<<"target:    "<<uc->m_iTarget<<endl;
 			cout<<"targetpos: "<<uc->m_iXDestinaton<< " "<<uc->m_iYDestinaton<<endl;
+			*/
 			
 			Object* ob = pkObjectMan->GetObjectByNetWorkID(uc->m_iUnitID);
 			if(ob != NULL)			

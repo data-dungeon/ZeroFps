@@ -19,7 +19,11 @@ P_UnitMoveAI::P_UnitMoveAI() :m_pkMoveUnitCommand(NULL),m_pkUnit(NULL), m_bTemp(
 	m_iSide=PROPERTY_SIDE_SERVER;
 	
 	m_pkFps = static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));	
+		
+	move.x = -1;
+	move.y = -1;
 	
+	m_iCurrentState = -1;
 }
 
 P_UnitMoveAI::~P_UnitMoveAI()
@@ -59,8 +63,6 @@ bool P_UnitMoveAI::RegisterExternalCommands()
 	{
 		
 		m_pkMoveUnitCommand = new ExternalCommand(this, UNIT_MOVE);
-//		m_pkMoveUnitCommand->m_bNeedDestination = true;
-//		m_pkMoveUnitCommand->m_kUnitCommandInfo.m_bNeedTarget = true;
 		m_pkMoveUnitCommand->m_kUnitCommandInfo.m_bNeedArgument = true;
 		strcpy(m_pkMoveUnitCommand->m_kUnitCommandInfo.m_acCommandName, "Move");
 		strcpy(m_pkMoveUnitCommand->m_kUnitCommandInfo.m_acComments, "kommentar");
@@ -78,14 +80,11 @@ AIBase* P_UnitMoveAI::RunUnitCommand(int iCommandID, int iXDestinaton, int iYDes
 	{
 	case UNIT_MOVE:
 		{
-			float fX = -(m_pkMap->m_iHmSize/2)*HEIGHTMAP_SCALE + iXDestinaton*HEIGHTMAP_SCALE;
-			float fZ = -(m_pkMap->m_iHmSize/2)*HEIGHTMAP_SCALE + iYDestinaton*HEIGHTMAP_SCALE;		
-		
-			if(DoPathFind(m_pkObject->GetPos(),Vector3(fX,0,fZ)))
-				return this;
-			else
-				return NULL;
-				
+			//add a waiting move destination
+			move.x = iXDestinaton;
+			move.y = iYDestinaton;			
+			
+			return this;
 		}
 	}
 	return NULL;
@@ -93,6 +92,12 @@ AIBase* P_UnitMoveAI::RunUnitCommand(int iCommandID, int iXDestinaton, int iYDes
 
 AIBase* P_UnitMoveAI::UpdateAI()
 {
+	//if we are not doint anything check for orders
+	if(m_iCurrentState == -1)
+	{
+		CheckForOrder();	
+	}
+	
 	switch(m_iCurrentState)
 	{
 	case UNIT_MOVE:
@@ -100,7 +105,7 @@ AIBase* P_UnitMoveAI::UpdateAI()
 			
 			if(!MoveTo(m_kCurretDestination))
 			{
-				cout<<"Reached destination"<<endl;
+				//cout<<"Reached destination"<<endl;
 
 				int iX=-1, iY=-1;
 				if(!m_pkPathFind->GetNextStep(iX,iY))
@@ -108,12 +113,22 @@ AIBase* P_UnitMoveAI::UpdateAI()
 					cout<<"no new destination"<<endl;
 					
 					//set pos one finale time to prevent ugly interpolation					
-					m_pkObject->SetPos(m_pkObject->GetPos());					
-					m_pkObject->SetPos(m_pkObject->GetPos());					
+					m_pkObject->SetPos(m_kCurretDestination);					
+					m_pkObject->SetPos(m_kCurretDestination);					
 					
 					m_iCurrentState = -1;
 					return NULL;
 				}		
+				
+				//check if any new move order has been given
+				if(CheckForOrder())
+				{
+					//set pos one finale time to prevent ugly interpolation					
+					m_pkObject->SetPos(m_kCurretDestination);					
+					m_pkObject->SetPos(m_kCurretDestination);					
+					
+					return this;
+				}
 				
 				//cout<<"New destination is "<<iX<<" "<<iY<<endl;
 			
@@ -127,8 +142,8 @@ AIBase* P_UnitMoveAI::UpdateAI()
 					m_iCurrentState = -1;
 					
 					//set pos one finale time to prevent ugly interpolation										
-					m_pkObject->SetPos(m_pkObject->GetPos());					
-					m_pkObject->SetPos(m_pkObject->GetPos());					
+					m_pkObject->SetPos(m_kCurretDestination);					
+					m_pkObject->SetPos(m_kCurretDestination);					
 					return NULL;
 				}						
 						
@@ -221,6 +236,25 @@ bool P_UnitMoveAI::DoPathFind(Vector3 kStart,Vector3 kStop)
 		m_iCurrentState=UNIT_MOVE;
 		return true;
 	}
+}
+
+bool P_UnitMoveAI::CheckForOrder()
+{
+	if(move.x != -1)
+	{
+		float fX = -(m_pkMap->m_iHmSize/2)*HEIGHTMAP_SCALE + move.x*HEIGHTMAP_SCALE;
+		float fZ = -(m_pkMap->m_iHmSize/2)*HEIGHTMAP_SCALE + move.y*HEIGHTMAP_SCALE;		
+		
+		move.x =-1;
+		move.y =-1;
+		
+		if(DoPathFind(m_pkObject->GetPos(),Vector3(fX,0,fZ)))
+		{
+			m_iCurrentState=UNIT_MOVE; 		
+			return true;
+		}
+	}
+	return false;
 }
 
 vector<PropertyValues> P_UnitMoveAI::GetPropertyValues()

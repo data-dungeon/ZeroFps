@@ -30,6 +30,8 @@ using namespace std;
 class COMMON_API P_UnitMoveAI : public Property, public AIBase
 {
 private: 
+	Point move;
+
 	static HeightMap* m_pkMap;
 	ZeroFps*				m_pkFps;
 	PathFind* 			m_pkPathFind;
@@ -63,6 +65,7 @@ public:
 	
 	bool MoveTo(Vector3 kPos);
 	bool DoPathFind(Vector3 kStart,Vector3 kStop);
+	bool CheckForOrder();
 };
 
 COMMON_API Property* Create_P_UnitMoveAI();
