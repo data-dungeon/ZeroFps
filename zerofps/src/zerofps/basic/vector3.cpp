@@ -247,7 +247,33 @@ ostream& operator<<(ostream& os, const Vector3 &v)
 }
 
 
+Vector3 Vector3::Angels(void){
+	Vector3 temp=Vector3(0,0,0);
 
+
+	temp.x=-atan(y/z) * degtorad;	
+	if(z<0)
+		temp.x+=180;
+
+
+	temp.y=atan(x/z) * degtorad;
+	if(z<0)
+		temp.y+=180;
+
+
+//	temp.x=0;
+	
+//	temp.y=0;
+/*	temp.y=atan(x/z) * degtorad;
+	if(z<0)
+		temp.y+=180;*/
+/*	temp.z=atan(x/y) * degtorad;
+	if(y<0)
+		temp.z+=180;
+	*/
+	
+	return temp;
+}
 
 
 

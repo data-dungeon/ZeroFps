@@ -7,6 +7,9 @@
 using namespace std;
 
 class BASIC_API Vector3 {
+	private:
+		static float const degtorad = float(57.3248);
+
 	public:
 		float x,y,z;												// NC
 	
@@ -63,6 +66,8 @@ class BASIC_API Vector3 {
 		void Abs(void);									// Do a fabs() on coo of this vectors.
 		int	AbsMaxCoo(void);	// Returns Index för den coo med > fabs(value).
 		void Lerp(Vector3& from, Vector3& to, float flerp);		// Linjär interpolering mellan två vectors.
+		
+		Vector3 Angels(void);
 
 //		friend void operator<<(ostream& os, const Vector3 &v);
 //		friend Vector3 operator * ( const float& s, const Vector3& v );
