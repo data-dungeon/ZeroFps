@@ -347,6 +347,7 @@ bool HeightMap::LoadImageHmap(char* acFile) {
 		}
 	}
 	
+	delete image;
 	return true;
 }
 

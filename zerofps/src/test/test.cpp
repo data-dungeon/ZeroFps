@@ -1,7 +1,7 @@
 #include "test.h"
 
 
-Test olle("MegaGame",800,600,16);
+Test olle("MegaGame",1024,768,16);
 
 Test::Test(char* aName,int iWidth,int iHeight,int iDepth): Application(aName,iWidth,iHeight,iDepth) {
 

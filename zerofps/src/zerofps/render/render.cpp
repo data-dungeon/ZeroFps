@@ -336,16 +336,19 @@ void Render::DrawHMlod(HeightMap* kmap,Vector3 CamPos){
 			//set lop steps depending on the distance to the center of the lod tile
 			step=int((CamPos-Vector3(kmap->m_kPosition.x+sx*m_iSlicesize+m_iSlicesize/2,
 											//this distance realy sux..
+//	0,
 											kmap->m_kPosition.y+kmap->verts[(sz*m_iSlicesize+m_iSlicesize/2)*kmap->m_iHmSize+(sx*m_iSlicesize+m_iSlicesize/2)].height,
 											kmap->m_kPosition.z+sz*m_iSlicesize+m_iSlicesize/2)
-											).length()/m_iDetail);
-													
-											
+											).length()/m_iDetail);																
+//	cout<<"STEP"<<step<<endl;
+			if(step>12)
+				continue;
+			
 			if(step<1)//step cant be lower than 1
 				step=1;				
 			if(step>7)//if the step get to high it will look realy bad
 				step=7;			
-				
+			
 			bool flip=false;	//texture fliper
 			float t=0;
 			float s=0;			 //texture cordinats

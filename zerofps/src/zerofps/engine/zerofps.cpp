@@ -107,10 +107,10 @@ void ZeroFps::InitDisplay(int iWidth,int iHeight,int iDepth) {
 	glEnable(GL_CULL_FACE);
 
   glShadeModel(GL_SMOOTH);
+//  glShadeModel(GL_FLAT);
   glClearColor(0, 0, 0, 0);
   glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
   glMatrixMode(GL_MODELVIEW);
-
   
   SDL_GL_SetAttribute( SDL_GL_RED_SIZE, 5 );
   SDL_GL_SetAttribute( SDL_GL_GREEN_SIZE, 5 );
