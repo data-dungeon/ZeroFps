@@ -18,7 +18,7 @@ function Click(ID)
 		Heal(ID);
 		PlayAnim(SIGetSelfID(), "open");
 		SetNextAnim(SIGetSelfID(), "idle");
-		SwallowPlayer (SIGetSelfID(), ID, 10);
+		SwallowPlayer (SIGetSelfID(), ID, 5);
 	else
 		PlaySound (SIGetSelfID(), "door_closed.wav");
 	end
