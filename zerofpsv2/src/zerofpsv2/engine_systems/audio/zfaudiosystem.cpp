@@ -613,10 +613,6 @@ bool ZFAudioSystem::StartUp()
 
 	m_bIsValid = true;
 
-	int apa = AL_CHANNELS;
-
-	printf("apa = %i\n", apa);
-
 	return true;
 }
 

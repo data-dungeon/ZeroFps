@@ -85,7 +85,10 @@ void ZeroEd::GUIFillServerList()
 
 	char szMenuText[100];
 
-	ClearListbox("ManageServerList");
+	bool bListboxExist = GetWnd("ManageServerList") != NULL;
+
+	if(bListboxExist)
+		ClearListbox("ManageServerList");
 
 	// Remove menuitems
 	vector<string> kChilds;
@@ -99,7 +102,8 @@ void ZeroEd::GUIFillServerList()
 		sprintf(szMenuText, "To %s as %s", m_vkServerList[i].strServerName.c_str(),
 			m_vkServerList[i].strUserName.c_str());
 
-		AddListItem("ManageServerList", (char*)m_vkServerList[i].FullName().c_str());
+		if(bListboxExist)
+			AddListItem("ManageServerList", (char*)m_vkServerList[i].FullName().c_str());
 
 		pkMenu->AddItem(szMenuText, (char*)m_vkServerList[i].FullName().c_str(), 
 			"Menu_File_Connect", false);	

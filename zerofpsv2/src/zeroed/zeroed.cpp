@@ -235,7 +235,7 @@ void ZeroEd::CreateEditCameras()
 	//create edit cameras
 	for(int i=0; i<4; i++) 
 	{
-		m_pkCameraObject[i] = m_pkEntityManager->CreateEntityFromScript("data/script/objects/t_camedit.lua");
+		m_pkCameraObject[i] = m_pkEntityManager->CreateEntityFromScript("data/script/objects/cameraedit.lua");
 		if(m_pkCameraObject[i]) 
 		{
 			if(i == 0)
@@ -399,7 +399,6 @@ void ZeroEd::OnServerStart(void)
 	SoloToggleView();
 	m_fDelayTime = m_pkZeroFps->GetEngineTime();
 	SoloToggleView();
-	
 	
 	
 }
@@ -744,7 +743,7 @@ void ZeroEd::RenderInterface(void)
 
 	if(m_iEditMode == EDIT_AMBIENTSOUNDS || m_iEditMode == EDIT_OBJECTS)
 	{
-		m_pkRender->Line(m_pkAudioSys->GetListnerPos()+Vector3(0,-100,0),m_pkAudioSys->GetListnerPos()+Vector3(0,100,0));
+	//	m_pkRender->Line(m_pkAudioSys->GetListnerPos()+Vector3(0,-100,0),m_pkAudioSys->GetListnerPos()+Vector3(0,100,0));
 
 		Entity* pkEnt;
 		P_AmbientSound* pkProp;
