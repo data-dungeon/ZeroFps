@@ -41,7 +41,6 @@ void MistLandLua::Init(EntityManager* pkObjMan,ZFScriptSystem* pkScript)
 	pkScript->ExposeFunction("RemoveObject",				MistLandLua::RemoveObjectLua);		
 	pkScript->ExposeFunction("SendEvent",					MistLandLua::SendEventLua);			
 	pkScript->ExposeFunction("SetPSystem",					MistLandLua::SetPSystemLua);			
-	pkScript->ExposeFunction("SetVelTo",					MistLandLua::SetVelToLua);			
 	pkScript->ExposeFunction("Bounce",						MistLandLua::BounceLua);				
 	pkScript->ExposeFunction("MakePathFind",				MistLandLua::MakePathFindLua);					
 	pkScript->ExposeFunction("HavePath",					MistLandLua::HavePathLua);					
@@ -544,77 +543,6 @@ int MistLandLua::SetPSystemLua(lua_State* pkLua)
 		return 0;
 	}
 	return 0;
-}
-
-
-int MistLandLua::SetVelToLua(lua_State* pkLua)
-{
-	if(g_pkScript->GetNumArgs(pkLua) == 3)
-	{
-		double dId;
-			
-		double dVel;
-		Vector3 kPos;		
-		vector<TABLE_DATA> vkData;
-		
-		g_pkScript->GetArgNumber(pkLua, 0, &dId);				
-		g_pkScript->GetArgTable(pkLua, 2, vkData);
-		g_pkScript->GetArgNumber(pkLua, 2, &dVel);	
-
-		kPos = Vector3(
-			(float) (*(double*) vkData[0].pData),
-			(float) (*(double*) vkData[1].pData),
-			(float) (*(double*) vkData[2].pData)); 
-
-//		cout<<"pos is:"<<kPos.x<< " "<<kPos.y<<" "<<kPos.z<<endl;
-//		cout<<"vel is:"<<dVel<<endl;
-
-		Entity* pkEnt = g_pkObjMan->GetObjectByNetWorkID((int)dId);
-			
-		if(pkEnt)
-		{
-			Vector3 dir = (kPos - pkEnt->GetWorldPosV()).Unit();
-			
-			pkEnt->SetVel(dir*(float) dVel);
-		}
-		return 0;
-	}
-/*
-	if(g_pkScript->GetNumArgs(pkLua) == 3)
-	{
-		double dTemp;
-	
-		g_pkScript->GetArgNumber(pkLua, 0, &dTemp);		
-		int iId1 = (int)dTemp;
-		
-		g_pkScript->GetArgNumber(pkLua, 1, &dTemp);		
-		int iId2 = (int)dTemp;
-		
-		g_pkScript->GetArgNumber(pkLua, 2, &dTemp);		
-		float fVel = (float)dTemp;
-		
-		
-		if(iId1 == iId2)
-			return 0;
-		
-		Entity* o1 = g_pkObjMan->GetObjectByNetWorkID(iId1);
-		Entity* o2 = g_pkObjMan->GetObjectByNetWorkID(iId2);
-
-
-		if(o1 && o2)
-		{
-			if(o2->GetWorldPosV() == o1->GetWorldPosV())
-				return 0;
-		
-			Vector3 dir = (o2->GetWorldPosV() - o1->GetWorldPosV()).Unit();
-			
-			o1->SetVel(dir*fVel);
-		
-		}
-		return 0;
-	}
-*/	
-   return 0;
 }
 
 int MistLandLua::MakePathFindLua(lua_State* pkLua)

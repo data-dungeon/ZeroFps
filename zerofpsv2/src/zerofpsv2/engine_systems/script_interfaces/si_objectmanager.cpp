@@ -54,11 +54,15 @@ void Init(EntityManager* pkObjMan, ZFScriptSystem* pkScript)
 
 	// object orientation
 	pkScript->ExposeFunction("GetObjectPos",			ObjectManagerLua::GetObjectPosLua);
+	pkScript->ExposeFunction("GetObjectRot",			ObjectManagerLua::GetObjectRotLua);
 	pkScript->ExposeFunction("SetObjectPos",			ObjectManagerLua::SetObjectPosLua);
 	pkScript->ExposeFunction("DistanceTo",				ObjectManagerLua::DistanceToLua);
 
-   // rotation functions
-   pkScript->ExposeFunction("SetRotVel",			  ObjectManagerLua::SetObjectRotVelLua);
+	// rotation functions
+	pkScript->ExposeFunction("SetRotVel",			  ObjectManagerLua::SetObjectRotVelLua);
+
+	// velocity functions
+	pkScript->ExposeFunction("SetVelTo",			  ObjectManagerLua::SetVelToLua);
 
 	// Common used functions , used together whit P_ScriptInterface
 	pkScript->ExposeFunction("SIGetSelfID",			ObjectManagerLua::SIGetSelfIDLua);		
@@ -526,6 +530,49 @@ int GetObjectPosLua(lua_State* pkLua)
 }
 
 
+int GetObjectRotLua(lua_State* pkLua)
+{
+	if(g_pkScript->GetNumArgs(pkLua) != 1)
+	{
+		printf("Script funtion GetObjectRot failed! Expects 1 arguments.\n");
+		return 0;
+	}
+
+	double dTemp;
+	g_pkScript->GetArgNumber(pkLua, 0, &dTemp);		
+	int iId = (int) dTemp;
+
+	Entity* pkObject = g_pkObjMan->GetObjectByNetWorkID(iId);
+
+	if(pkObject)
+	{
+		Vector3 kRot = pkObject->GetWorldRotV();
+
+		vector<TABLE_DATA> vkData;
+
+		TABLE_DATA temp;
+
+		temp.bNumber = true;
+		temp.pData = new double;
+		(*(double*) temp.pData) = kRot.x;
+		vkData.push_back(temp);
+
+		temp.bNumber = true;
+		temp.pData = new double;
+		(*(double*) temp.pData) = kRot.y;
+		vkData.push_back(temp);
+
+		temp.bNumber = true;
+		temp.pData = new double;
+		(*(double*) temp.pData) = kRot.z;
+		vkData.push_back(temp);
+
+		g_pkScript->AddReturnValueTable(pkLua, vkData);
+	}
+
+	return 1;
+}
+
 int SIGetSelfIDLua(lua_State* pkLua)
 {
 	g_pkScript->AddReturnValue(pkLua,g_iCurrentObjectID);
@@ -587,6 +634,40 @@ int DistanceToLua(lua_State* pkLua)
 	g_pkScript->AddReturnValue(pkLua, 999999);
 
 	return 1;
+}
+
+
+int SetVelToLua(lua_State* pkLua)
+{
+	if(g_pkScript->GetNumArgs(pkLua) == 3)
+	{
+		double dId;
+			
+		double dVel;
+		Vector3 kPos;		
+		vector<TABLE_DATA> vkData;
+		
+		g_pkScript->GetArgNumber(pkLua, 0, &dId);				
+		g_pkScript->GetArgTable(pkLua, 2, vkData);
+		g_pkScript->GetArgNumber(pkLua, 2, &dVel);	
+
+		kPos = Vector3(
+			(float) (*(double*) vkData[0].pData),
+			(float) (*(double*) vkData[1].pData),
+			(float) (*(double*) vkData[2].pData)); 
+
+		Entity* pkEnt = g_pkObjMan->GetObjectByNetWorkID((int)dId);
+			
+		if(pkEnt)
+		{
+			Vector3 dir = (kPos - pkEnt->GetWorldPosV()).Unit();
+			
+			pkEnt->SetVel(dir*(float) dVel);
+		}
+		return 0;
+	}
+
+   return 0;
 }
 
 }

@@ -538,13 +538,42 @@ void P_DMCharacter::UseQuickItem(int iItemIndex, bool bIndexIsItemType)
 		}
 		break;
 
+	// default, run scriptfunction, item itself decides what happens
+	default:
+		Entity* pkQItem = m_pkObject->m_pkEntityMan->GetObjectByNetWorkID(kItemList[iBeltIndex].m_iItemID);
+
+		if ( pkQItem == 0 )
+			break;
+		// get SI
+		P_ScriptInterface* pkSI = (P_ScriptInterface*)pkQItem->GetProperty("P_ScriptInterface");
+
+		if (pkSI)
+		{
+			// send in characterID
+			vector<ARG_DATA> kParams;
+
+			int iValue = m_pkObject->GetEntityID();;
+			
+			ARG_DATA kData;
+			kData.eType = tINT;
+			kData.pData = &iValue;
+
+			kParams.push_back (kData);
+
+			pkSI->CallFunction ( "Use", &kParams );	
+		}
+
+		break;
+	}
+
+/*
 	case DMITEM_MEDKIT:
 		printf("using medkit\n");
 		m_kStats.m_iLife = m_kStats.m_iMaxLife;
 		bSuccess = true;
 		break;
 	}
-
+**/
 	if(m_pkBelt->RemoveItem(kItemList[iBeltIndex].m_iItemX,
 		kItemList[iBeltIndex].m_iItemY))
 	{
