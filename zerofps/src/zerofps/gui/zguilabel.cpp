@@ -42,7 +42,7 @@ bool ZGuiLabel::Render( ZGuiRender* pkRenderer )
 			pkRenderer->SetFont(m_pkFont);
 
 		int iLetters, iRows;
-		pkRenderer->RenderText(m_strText, GetScreenRect(), -1, iLetters, iRows);
+		pkRenderer->RenderText(m_strText, GetScreenRect(), -1, 0, false, iLetters, iRows);
 	}
 	return true;
 } 

@@ -33,8 +33,11 @@ public:
 		ZGuiSkin* pkSkinThumbButton, ZGuiSkin* pkSkinThumbButtonHighLight);
 	void GetWndSkinsDesc(vector<SKIN_DESC>& pkSkinDesc) const; // overloaded
 	void CopyNonUniqueData(const ZGuiWnd* pkSrc);
+	void SetFont(ZGuiFont* pkFont); //överlagrad
 
 private:
+	int m_iRenderDistFromTop;
+	bool UpdateScrollbar();
 	pair<int,int> GetWordLength(char *text, int offset);
 	int GetNumRows(char* szText);
 	bool IgnoreKey(int Key);
@@ -42,12 +45,14 @@ private:
 	void ResizeTextBuffer( int nCharacters );
 	bool m_bBlinkCursor;
 	bool m_bSingleLine;
+	bool m_bScrollbarUpdated;
 	int m_iCursorPos, m_iCurrMaxText;
 	int m_iFontSize;
 	int m_iMaxCharsOneRow;
 	int m_iMaxVisibleRows;
 	int m_iStartrow;
 	int m_iNumRows;
+	int m_iCursorRow;
 
 	ZGuiScrollbar* m_pkScrollbarVertical;
 	bool m_bMultiLine;

@@ -116,8 +116,8 @@ bool Gui::WndProc( ZGuiWnd* pkWindow, unsigned int uiMessage,
 
 		if( ((int*)pkParams)[0] == KEY_L)
 		{
-			ZGuiTextbox* tp = (ZGuiTextbox*) m_pkEdit->pkGuiMan->Wnd("TestWnd");
-			printf("%i\n", tp->GetNumRows());
+			ZGuiTextbox* tp = (ZGuiTextbox*) m_pkEdit->pkGuiMan->Wnd("TestTextBox");
+			printf("antal rader = %i\n", tp->GetNumRows());
 		}
 		break;
 
@@ -575,18 +575,26 @@ void Gui::CreateTestWnd()
 	ZGuiWnd* pkWnd = new ZGuiWnd(Rect(x,y,x+w,y+h),NULL,
 		false,id++);
 
+	m_pkEdit->pkGui->AddMainWindow(id++,pkWnd,"TestWnd",MAINWINPROC,false);
+
 	ZGuiTextbox* pkTextbox = CreateTextbox(pkWnd,id++,0,0,w,h,true);
 
-	const char* word = "maskros ";
-	int words = 20;
+	const char* word = "maskros";
+	int words = 30;
 	string text;
 	for(int i=0; i<words; i++)
+	{
 		text += word;
 
-	char* szText = new char[words*strlen(word)+1];
+		char number[20];
+		sprintf(number, " %i\n", i);
+		text += number;
+	}
+
+	char* szText = new char[1000];
 	sprintf(szText, text.c_str());
 	pkTextbox->SetText(szText);
 	delete[] szText;
 
-	m_pkEdit->pkGui->AddMainWindow(id++,pkWnd,"TestWnd",MAINWINPROC,false);
+	m_pkEdit->pkGui->RegisterWindow(pkTextbox, "TestTextBox");
 }

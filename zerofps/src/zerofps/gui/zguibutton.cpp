@@ -100,7 +100,7 @@ bool ZGuiButton::Render( ZGuiRender* pkRenderer )
 		}
 
 		int iLetters, iRows;
-		pkRenderer->RenderText(m_strText, rcTextRect, -1, iLetters, iRows);
+		pkRenderer->RenderText(m_strText, rcTextRect, -1, 0, false, iLetters, iRows);
 	}
 
 	return true;

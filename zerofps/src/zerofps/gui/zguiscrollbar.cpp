@@ -284,11 +284,8 @@ void ZGuiScrollbar::CopyNonUniqueData(const ZGuiWnd* pkSrc)
 }
 
 
-
-
-
-
-
-
-
-
+void ZGuiScrollbar::SetScrollPos(unsigned int pos)
+{
+	if(pos >= m_nMin && pos <= m_nMax)
+		SetScrollInfo(m_nMin, m_nMax, m_usThumbSize, pos);
+}

@@ -14,6 +14,7 @@ class ZGuiButton;
 class GUI_API ZGuiScrollbar : public ZGuiWnd
 {
 public:
+	void SetScrollPos(unsigned int pos);
 	bool AutoHideOn();
 	void SetAutoHide(bool bActivate);
 	void ToogleHorizontal();

@@ -308,8 +308,8 @@ bool GLGuiRender::RenderBorder(Rect rc)
 ///////////////////////////////////////////////////////////////////////////////
 // Name: RenderText
 //
-void GLGuiRender::RenderText( char *strText, Rect rc, int iCursorPos, 
-							  int& chars_printed, int& rows_printed)
+void GLGuiRender::RenderText( char *strText, Rect rc, int iCursorPos, int iRenderDistFromTop,
+							  bool bMultiLine, int& chars_printed, int& rows_printed)
 {
 	if(m_pkFont == NULL)
 		return; // false;
@@ -337,7 +337,8 @@ void GLGuiRender::RenderText( char *strText, Rect rc, int iCursorPos,
 		glDisable(GL_TEXTURE_2D);
 
 		glColor3f(1,1,1);							
-		PrintRows(strText, rc, iCursorPos, chars_printed, rows_printed);
+		PrintRows(strText, rc, iCursorPos, iRenderDistFromTop, 
+			bMultiLine, chars_printed, rows_printed);
 	}
 
 	int texture = fontTexture;
@@ -356,7 +357,8 @@ void GLGuiRender::RenderText( char *strText, Rect rc, int iCursorPos,
 	}
 
 	glColor3f(1,1,1);
-	bool bFit = PrintRows(strText, rc, iCursorPos, chars_printed, rows_printed);
+	bool bFit = PrintRows(strText, rc, iCursorPos, iRenderDistFromTop,
+		bMultiLine, chars_printed, rows_printed);
 
 	if(bDrawMasked)
 		glDisable(GL_BLEND);
@@ -367,23 +369,18 @@ void GLGuiRender::RenderText( char *strText, Rect rc, int iCursorPos,
 ///////////////////////////////////////////////////////////////////////////////
 // Name: PrintRows
 //
-bool GLGuiRender::PrintRows(char* text, Rect rc, int iCursorPos, 
-							int& chars_printed, int& rows_printed) 
+bool GLGuiRender::PrintRows(char* text, Rect rc, int iCursorPos, int iRenderDistFromTop,
+							bool bMultiLine, int& chars_printed, int& rows_printed) 
 {
-	bool bFit = true;
-
 	unsigned int x = rc.Left;
-	unsigned int y = m_iScreenHeight-rc.Top-m_pkFont->m_cCharCellSize;
+	unsigned int y = m_iScreenHeight-rc.Top-m_pkFont->m_cCharCellSize - iRenderDistFromTop;
 
-	int row=0;
+	int rows=1;
 	unsigned int num_chars = strlen(text);
-	int max_rows = rc.Height() / m_pkFont->m_cCharCellSize;
 
-	int iCursorX = x;
-	int iCursorY = y;
+	int iCursorX = x, iCursorY = y;
 
 	vector<int> row_start_pos;
-
 	pair<int,int> curr_length;
 
 	glBegin(GL_QUADS);	 
@@ -398,7 +395,7 @@ bool GLGuiRender::PrintRows(char* text, Rect rc, int iCursorPos,
 			{
 				x = rc.Left;
 				y -= m_pkFont->m_cCharCellSize;
-				row++;
+				rows++;
 
 				row_start_pos.push_back(i);
 			}
@@ -406,7 +403,7 @@ bool GLGuiRender::PrintRows(char* text, Rect rc, int iCursorPos,
 			for(int j=i; j<i+curr_length.first; j++)
 			{
 				// Print cursor
-				if(iCursorPos != -1 && iCursorPos == j)
+				if(iCursorPos != -1 && iCursorPos == j && (rc.Inside(x,y+2) || !bMultiLine))
 				{
 					iCursorX = x;
 					iCursorY = y;
@@ -451,23 +448,25 @@ bool GLGuiRender::PrintRows(char* text, Rect rc, int iCursorPos,
 					break;
 				}*/
 
-				float tx = (float) fx / m_pkFont->m_iBMPWidth;
-				float ty = (float) fy / m_pkFont->m_iBMPWidth;
-				float tw = (float) fw / m_pkFont->m_iBMPWidth;
-				float th = (float) fh / m_pkFont->m_iBMPWidth;
+				if(rc.Inside(x,y+2) || !bMultiLine)
+				{
+					float tx = (float) fx / m_pkFont->m_iBMPWidth;
+					float ty = (float) fy / m_pkFont->m_iBMPWidth;
+					float tw = (float) fw / m_pkFont->m_iBMPWidth;
+					float th = (float) fh / m_pkFont->m_iBMPWidth;
 
-				glTexCoord2f(tx,ty);		glVertex2i(x,y+fh);		 
-				glTexCoord2f(tx+tw,ty);		glVertex2i(x+fw,y+fh);    
-				glTexCoord2f(tx+tw,ty+th);	glVertex2i(x+fw,y);    
-				glTexCoord2f(tx,ty+th);		glVertex2i(x,y);
+					glTexCoord2f(tx,ty);		glVertex2i(x,y+fh);		 
+					glTexCoord2f(tx+tw,ty);		glVertex2i(x+fw,y+fh);    
+					glTexCoord2f(tx+tw,ty+th);	glVertex2i(x+fw,y);    
+					glTexCoord2f(tx,ty+th);		glVertex2i(x,y);
+				}
 
 				x += iCurrLegth;
 			}
-
-
 		}
 
-		if(iCursorPos == num_chars) // måste ligga utanför loopen eftersom
+		if(iCursorPos == num_chars && (rc.Inside(x,y+2) || !bMultiLine)) 
+									// måste ligga utanför loopen eftersom
 		{							// loopen bara kör till och med num_chars...
 			iCursorX = x;
 			iCursorY = y;
@@ -496,9 +495,9 @@ bool GLGuiRender::PrintRows(char* text, Rect rc, int iCursorPos,
 	glEnd();
 
 	chars_printed = num_chars;
-	rows_printed = row;
+	rows_printed = rows;
 
-	return bFit;
+	return true;
 }
 
 ///////////////////////////////////////////////////////////////////////////////

@@ -82,5 +82,9 @@ SOURCE=.\basic\zfobjectmanger.cpp
 
 SOURCE=.\engine\zfresourcedb.cpp
 # End Source File
+# Begin Source File
+
+SOURCE=.\gui\zguitextbox.cpp
+# End Source File
 # End Target
 # End Project
