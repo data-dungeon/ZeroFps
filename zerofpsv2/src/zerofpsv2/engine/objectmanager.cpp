@@ -1171,7 +1171,7 @@ void ObjectManager::Test_CreateZones()
 	Vector3 kRandOffset;
 
 	MazeGen GaaMaze;
-	GaaMaze.Load("h:/data/maze.bmp");
+	GaaMaze.Load("../data/maze.bmp");
 
 //	ZoneData kZData;
 
@@ -1182,16 +1182,19 @@ void ObjectManager::Test_CreateZones()
 			
 
 			
-				ZoneObject *object = new ZoneObject();
+/*				ZoneObject *object = new ZoneObject();
 				kPos = Vector3(x*iZonesSize,y,z*iZonesSize);
 				object->SetLocalPosV(kPos);
 				object->SetParent(GetWorldObject());				
 				object->GetUpdateStatus()=UPDATE_DYNAMIC;
+*/				
+
+				kPos = Vector3(x*iZonesSize,y,z*iZonesSize);
 				
 				m_kZones[id].m_bActive = false;
-				m_kZones[id].m_pkZone = object;
-				m_kZones[id].m_kMin = - (object->m_kSize * 0.5);
-				m_kZones[id].m_kMax =   (object->m_kSize * 0.5);
+				m_kZones[id].m_pkZone = NULL;
+				m_kZones[id].m_kMin = -Vector3(iZonesSize/2,iZonesSize/2,iZonesSize/2);
+				m_kZones[id].m_kMax =  Vector3(iZonesSize/2,iZonesSize/2,iZonesSize/2);
 				m_kZones[id].m_kPos   = kPos; 
 				
 /*				m_kZones[id].m_bActive = true;	
@@ -1261,14 +1264,14 @@ void ObjectManager::AutoConnectZones()
 
 	// For each Zone.
 	for(unsigned int i=0;i<m_kZones.size();i++) {
-		kCenterPos = m_kZones[i].m_pkZone->GetWorldPosV();
+		kCenterPos = m_kZones[i].m_kPos;
 
 		// For each possible zone around this one.
 		for(unsigned int iDir = 0; iDir < kAutoConnectDirs.size(); iDir++) {
 			kCheckPos = kCenterPos + kAutoConnectDirs[iDir];
 			pkZone = GetZone(kCheckPos);
 			// If a zone add a link.
-			if(pkZone && (m_kZones[i].m_pkZone != pkZone->m_pkZone)) {
+			if(pkZone && (i != pkZone->m_iZoneID)) {
 				m_kZones[i].m_iZoneLinks.push_back(pkZone->m_iZoneID);
 				}
 
