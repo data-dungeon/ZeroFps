@@ -7,7 +7,7 @@ void Render::DrawSkyBox(Vector3 CamPos) {
 	glDisable(GL_FOG);
 	glDisable(GL_LIGHTING);//dont want lighting on the skybox	
 	
-	int iSize=801;	
+	int iSize=501;	
 
 	Quad(Vector3(0,0,-iSize/2),Vector3(0,0,0),Vector3(iSize,iSize,iSize),m_pkTexMan->Load("file:../data/textures/front.bmp"));
 	Quad(Vector3(0,iSize/2,0),Vector3(90,0,0),Vector3(iSize,iSize,iSize),m_pkTexMan->Load("file:../data/textures/top.bmp"));
@@ -168,7 +168,7 @@ void Render::DrawHMlod(HeightMap* kmap,Vector3 CamPos,int iFps){
 	glTexEnvf(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE);
 	
 
-	glColorMaterial(GL_FRONT,GL_DIFFUSE);
+//	glColorMaterial(GL_FRONT,GL_DIFFUSE);
 //	glColorMaterial(GL_FRONT,GL_AMBIENT_AND_DIFFUSE);	
 	float black[4]={0.1,0.1,0.1,0.1};
 	glMaterialfv(GL_FRONT,GL_AMBIENT,black);
@@ -406,7 +406,7 @@ void Render::GiveTexCor(float &iX,float &iY,int iNr) {
 //	cout<<"X: "<<iX<< "  Y: "<<iY<<endl;
 }
 
-void Render::DrawCross(Vector3 kPos,Vector3 kHead,Vector3 kScale,int iTexture) {
+void Render::DrawCross(Vector3 kCamPos,Vector3 kPos,Vector3 kHead,Vector3 kScale,int iTexture1,int iTexture2) {
 	glPushMatrix();
 	
 	glTranslatef(kPos.x,kPos.y,kPos.z);	
@@ -415,31 +415,172 @@ void Render::DrawCross(Vector3 kPos,Vector3 kHead,Vector3 kScale,int iTexture) {
 	glRotatef(kHead.z, 0, 0, 1);
 	glScalef(kScale.x,kScale.y,kScale.z);
 	
-	m_pkTexMan->BindTexture(iTexture);  
-	
-  glLightModeli( GL_LIGHT_MODEL_TWO_SIDE, 1);
-	glDisable(GL_CULL_FACE);	
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA,GL_ONE);
+	glDisable(GL_COLOR_MATERIAL);		
+	glColorMaterial(GL_FRONT,GL_AMBIENT_AND_DIFFUSE);	
 
+	glLightModeli( GL_LIGHT_MODEL_TWO_SIDE, 1);
+	glDisable(GL_CULL_FACE);	
+	
+	GLfloat mat_specular[]={0,0,0,0};
+	
+	GLfloat mat_diffuse[]={.6,.6,.6,.6};	
+	GLfloat mat_ambient[]={.8,.8,.8,.8};
+	GLfloat mat_shininess[]={0};
+	glMaterialfv(GL_FRONT_AND_BACK,GL_SHININESS,mat_shininess);
+	glMaterialfv(GL_FRONT_AND_BACK,GL_SPECULAR,mat_specular);
+	glMaterialfv(GL_FRONT_AND_BACK,GL_DIFFUSE,mat_diffuse);	
+	glMaterialfv(GL_FRONT_AND_BACK,GL_AMBIENT,mat_ambient);		
+	glTexEnvf(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE);	
+	
+//	glEnable(GL_BLEND);
+//	glDepthMask(GL_FALSE);
+	
+//	glBlendFunc(GL_SRC_ALPHA,GL_ONE);
+//	glBlendFunc(GL_ONE,GL_ALPHA); 		
+//	glDepthMask(GL_FALSE);
+	
+	glAlphaFunc(GL_GREATER,0.3);
+   glEnable(GL_ALPHA_TEST);
+	
+	
+//	Quad(Vector3(0,0,0),Vector3(0,0,0),Vector3(1,1,1),iTexture1);
+//	Quad(Vector3(0,0,0),Vector3(0,90,0),Vector3(1,1,1),iTexture1);	
+	
+	
+	m_pkTexMan->BindTexture(iTexture1);  	
 	glBegin(GL_QUADS);
 	
-	glNormal3f(0,0,-1);
+	glNormal3f(0,0,1);
 	glTexCoord2f(0,0);glVertex3f(-0.5,0.5,0); 
 	glTexCoord2f(0,1);glVertex3f(-0.5,-0.5,0); 
 	glTexCoord2f(1,1);glVertex3f(0.5,-0.5,0); 
 	glTexCoord2f(1,0);glVertex3f(0.5,0.5,0); 
 
+	glEnd();
+/*
 	glNormal3f(1,0,0);
-	glTexCoord2f(0,0);glVertex3f(0,0.5,-0.5); 
-	glTexCoord2f(0,1);glVertex3f(0,-0.5,-0.5); 
-	glTexCoord2f(1,1);glVertex3f(0,-0.5,0.5); 
-	glTexCoord2f(1,0);glVertex3f(0,0.5,0.5); 
+	glTexCoord2f(0,0);glVertex3f(0,0.5,0.5); 
+	glTexCoord2f(0,1);glVertex3f(0,-0.5,0.5); 
+	glTexCoord2f(1,1);glVertex3f(0,-0.5,-0.5); 
+	glTexCoord2f(1,0);glVertex3f(0,0.5,-0.5); 	
 	glEnd();
 	
+/*	
+	m_pkTexMan->BindTexture(iTexture2);  	
+	glBegin(GL_QUADS);	
+	glNormal3f(0,1,0);
+	glTexCoord2f(0,0);glVertex3f(-0.5,0,-0.5); 
+	glTexCoord2f(0,1);glVertex3f(-0.5,0,0.5); 
+	glTexCoord2f(1,1);glVertex3f(0.5,0,0.5); 
+	glTexCoord2f(1,0);glVertex3f(0.5,0,-0.5); 
+	glEnd();
 	
-  glLightModeli( GL_LIGHT_MODEL_TWO_SIDE, 0);	
-	glDisable(GL_BLEND);
+	*/
+	
+	glLightModeli( GL_LIGHT_MODEL_TWO_SIDE, 0);	
+//	glDepthMask(GL_TRUE);
+//	glDisable(GL_BLEND);
+	glDisable(GL_ALPHA_TEST);
 	glEnable(GL_CULL_FACE);
 	glPopMatrix();
 }
+
+void Render::DrawGrassPatch(Vector3 kCamPos,Vector3 kPos,Vector3 kScale,int fW,int iNr,HeightMap* kMap,int iTexture,int iFps)
+{
+/*
+	if(m_iAutoLod>0){
+		if(SDL_GetTicks()>(m_iGrassLodUpdate+500)){
+			m_iGrassLodUpdate=SDL_GetTicks();
+			
+			if(iFps<(m_iFpsLock-5) && m_iGrassLod>5){
+				m_iGrassLod--;	
+			} else if(iFps>(m_iFpsLock+5) && m_iGrassLod<50){
+				m_iGrassLod++;		
+			}
+		}
+	}
+	*/
+//	kCamPos=Vector3(150,8,100);
+
+
+
+	if(!CubeInFrustum(kPos.x,kMap->m_kPosition.y+42,kPos.z,fW/2,42,fW/2))
+		return;
+		
+	float fDistance=(kCamPos-Vector3(kPos.x,kCamPos.y,kPos.z)).Length();
+//	cout<<"AVSTÅND:"<<fDistance<<endl;
+	if(fDistance>60)
+		return;		
+//	if(fDistance<fW/2)
+//		fDistance=fW/3;		
+//	fDistance/=m_iGrassLod;		
+//	iNr=int(iNr/fDistance);
+	
+//	cout<<iNr<<endl;
+	
+	glDisable(GL_COLOR_MATERIAL);		
+	glColorMaterial(GL_FRONT,GL_AMBIENT_AND_DIFFUSE);	
+
+	glLightModeli( GL_LIGHT_MODEL_TWO_SIDE, 1);
+	glDisable(GL_CULL_FACE);	
+	
+	GLfloat mat_specular[]={0,0,0,0};	
+	GLfloat mat_diffuse[]={.6,.6,.6,.6};	
+	GLfloat mat_ambient[]={.8,.8,.8,.8};
+	GLfloat mat_shininess[]={0};
+	glMaterialfv(GL_FRONT_AND_BACK,GL_SHININESS,mat_shininess);
+	glMaterialfv(GL_FRONT_AND_BACK,GL_SPECULAR,mat_specular);
+	glMaterialfv(GL_FRONT_AND_BACK,GL_DIFFUSE,mat_diffuse);	
+	glMaterialfv(GL_FRONT_AND_BACK,GL_AMBIENT,mat_ambient);		
+	glTexEnvf(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE);	
+	
+	glAlphaFunc(GL_GREATER,0.3);
+   glEnable(GL_ALPHA_TEST);
+	
+	m_pkTexMan->BindTexture(iTexture); 	
+	
+	srand(1);
+	for(int i=0;i<iNr;i++){
+		float x=rand()%fW + (kPos.x-fW/2);
+		float z=rand()%fW + (kPos.z-fW/2);
+		float y=kMap->Height(x,z)+kScale.y/2;
+	
+		if(kMap->GetVert(int(x-kMap->m_kPosition.x),int(z-kMap->m_kPosition.z))->texture!=1)
+			continue;
+	
+		glPushMatrix();	
+		
+		glTranslatef(x,y,z);					
+		glRotatef(rand()%320, 0, 1, 0);					
+		glScalef(kScale.x,kScale.y,kScale.z);
+		
+		glBegin(GL_QUADS);	
+		glNormal3f(0,0,1);
+		glTexCoord2f(0,0);glVertex3f(-0.5,0.5,0); 
+		glTexCoord2f(0,1);glVertex3f(-0.5,-0.5,0); 
+		glTexCoord2f(1,1);glVertex3f(0.5,-0.5,0); 
+		glTexCoord2f(1,0);glVertex3f(0.5,0.5,0); 
+		
+		glNormal3f(1,0,0);
+		glTexCoord2f(0,0);glVertex3f(0,0.5,0.5); 
+		glTexCoord2f(0,1);glVertex3f(0,-0.5,0.5); 
+		glTexCoord2f(1,1);glVertex3f(0,-0.5,-0.5); 
+		glTexCoord2f(1,0);glVertex3f(0,0.5,-0.5); 	
+		
+		glEnd();
+				
+		glPopMatrix();
+	}
+	
+	glPopMatrix();
+	glLightModeli( GL_LIGHT_MODEL_TWO_SIDE, 0);	
+	glEnable(GL_CULL_FACE);
+//	glPopMatrix();
+	glDisable(GL_ALPHA_TEST);	
+};
+
+
+
+
+
+

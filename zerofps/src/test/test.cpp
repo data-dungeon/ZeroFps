@@ -29,10 +29,12 @@ void Test::OnInit(void) {
 	fpsupdate=0;
 
 	light_position=Vector4(0.5,0.5,0.2,0);
-	float b=1.5;
-	white_light = Vector4(b,b,b,b);
-	lmodel_ambient = Vector4(0.5*b,0.5*b,0.5*b,0.5*b);
+	float b=1.2;
+	white_light = Vector4(b,b,b,b);	
+	lmodel_ambient = Vector4(0.2*b,0.2*b,0.2*b,0.2*b);
 
+	pkFps->m_pkCmd->Add(&speed,"g_speed",type_float);		
+	speed=0.05;
   
 //  glColorMaterial(GL_FRONT,GL_AMBIENT_AND_DIFFUSE);
 //  glColorMaterial(GL_BACK,GL_AMBIENT_AND_DIFFUSE);
@@ -53,25 +55,42 @@ void Test::OnInit(void) {
 
 
 void Test::OnIdle(void) {
-	input();
+
 	
 	glLightfv(GL_LIGHT0,GL_POSITION,&light_position[0]);	
 
 	pkRender->DrawSkyBox(*pkFps->m_kCamPos);
 	pkRender->DrawHMlod(test,*pkFps->m_kCamPos,pkFps->m_iFps);		
 	
+
+			
+//		pkRender->DrawGrassPatch(*pkFps->m_kCamPos,Vector3(int(pkFps->m_kCamPos->x),0,int(pkFps->m_kCamPos->z)),Vector3(2,1,2),20,20,test,pkTexMan->Load("file:../data/textures/grass.tga"));
+
+	for(int ix=0;ix<1000;ix+=60)
+		for(int iy=0;iy<1000;iy+=60)
+			pkRender->DrawGrassPatch(*pkFps->m_kCamPos,Vector3(ix,0,iy),Vector3(4,1.0,4),60,400,test,pkTexMan->Load("file:../data/textures/grass2.tga"),pkFps->m_iFps);
+
+//	cout<<pkFps->m_kCamPos->x<<" "<<pkFps->m_kCamPos->y<<" "<<pkFps->m_kCamPos->z<<endl;
+/*	srand(10);
+	for(int i=0;i<5000;i++) {
+		float x=rand()%500/10.0+290;
+		float z=rand()%500/10.0+350;		
+		float y=test->Height(x,z)+.4;
+		pkRender->DrawCross(*pkFps->m_kCamPos,Vector3(x,y,z),Vector3(0,rand()%320,0),Vector3(3,.8,.8),pkTexMan->Load("file:../data/textures/grass.tga"),pkTexMan->Load("file:../data/textures/tuva-top.tga"));			
+//		pkRender->DrawCross(Vector3(x,y,z),Vector3(rand()%30-15,rand()%320,rand()%30-15),Vector3(.8,.8,.8),pkTexMan->Load("file:../data/textures/tuva.tga"),pkTexMan->Load("file:../data/textures/tuva-top.tga"));	
+//		pkRender->DrawCross(Vector3(x,y,z),Vector3(rand()%30-15,rand()%320,rand()%30-15),Vector3(8,13,8),pkTexMan->Load("file:../data/textures/tree.tga"),pkTexMan->Load("file:../data/textures/tree-top.tga"));			
+	}*/
+	
+	pkRender->DrawWater(*pkFps->m_kCamPos,Vector3(512,0,512),Vector3(0,0,0),1200,30);	
+	
+//	cout<<pkFps->m_iFps<<endl;
+	input();
 	float z=pkFps->m_kCamPos->z;
 	float x=pkFps->m_kCamPos->x;	
 	
-	if(pkFps->m_kCamPos->y<test->Height(x,z)+2.4)
-		pkFps->m_kCamPos->y=test->Height(x,z)+2.5;	
+	if(pkFps->m_kCamPos->y<test->Height(x,z)+1.5)
+		pkFps->m_kCamPos->y=test->Height(x,z)+1.5;	
 
-
-
-	pkRender->DrawWater(*pkFps->m_kCamPos,Vector3(512,0,512),Vector3(0,0,0),1200,30);
-	
-	pkRender->DrawCross(Vector3(0,50,0),Vector3(0,0,0),Vector3(4,4,4),pkTexMan->Load("file:../data/textures/tree.tga"));	
-//	cout<<pkFps->m_iFps<<endl;
 }
 
 void Test::OnHud(void) {	
@@ -87,8 +106,6 @@ void Test::OnHud(void) {
 
 
 void Test::input() {
-	float speed=0.05;
-
 	if(pkInput->Pressed(RIGHT)){
 		pkFps->CamPos().x+=cos((pkFps->CamRot().y)/degtorad) *pkFps->GetFrameTime()*speed;			
 		pkFps->CamPos().z+=sin((pkFps->CamRot().y)/degtorad) *pkFps->GetFrameTime()*speed;				

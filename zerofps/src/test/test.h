@@ -19,6 +19,7 @@ class Test :public Application {
 
 	int fpsupdate;
 	char fps[20];
+	float speed;
 
 	public:
 		Test(char* aName,int iWidth,int iHeight,int iDepth);

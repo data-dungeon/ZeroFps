@@ -5,10 +5,12 @@ Render::Render(TextureManager* pkTexMan) {
 	
 	m_iSlicesize=32;		//grid size of lod tiles
 	m_iDetail=30;				//height meens greater detail att longer range	
+	m_iGrassLod=30;
 	m_iViewDistance=400;
 	m_iFpsLock=60;
 	m_iAutoLod=1;
 	m_iLodUpdate=0;	
+	m_iGrassLodUpdate=0;	
 	m_kOldCamPos=Vector3(0,0,0);
 }
 
@@ -26,8 +28,8 @@ void Render::Quad(Vector3 kPos,Vector3 kHead,Vector3 kScale,int iTexture){
   	m_pkTexMan->BindTexture(iTexture);  
 
 	glBegin(GL_QUADS);			
-	glColor4f(1.0,1.0,1.0,1.0);  	  
-	glNormal3f(1,0,0);
+	glColor4f(1.0,1.0,1.,1.0);  	  
+	glNormal3f(0,0,1);
    glTexCoord2f(0.0,1.0);glVertex3f(-.5,-0.5,0);		 
    glTexCoord2f(1.0,1.0);glVertex3f(.5,-0.5,0);		
  	glTexCoord2f(1.0,0.0);glVertex3f(.5,0.5,0);    
@@ -112,15 +114,15 @@ void Render::PrintChar(char cChar) {
  	m_pkTexMan->BindTexture(aCurentFont);  
 
 	glPushMatrix();
-	  glBegin(GL_QUADS);			
+	glBegin(GL_QUADS);			
 //			glColor4f(1.0,1.0,1.0,1.0);  	  
- 	  	glNormal3f(0,0,1);
+	glNormal3f(0,0,1);
  	  
-	   	glTexCoord2f(x				,y);				glVertex3f(-.5,-0.5,0);		 
-  	 	glTexCoord2f(x+width	,y);				glVertex3f(.5,-0.5,0);		
-	  	glTexCoord2f(x+width	,y-width);	glVertex3f(.5,0.5,0);    
-	  	glTexCoord2f(x				,y-width);	glVertex3f(-0.5,0.5,0);    
-		glEnd();				
+	glTexCoord2f(x,y);				glVertex3f(-.5,-0.5,0);		 
+	glTexCoord2f(x+width,y);		glVertex3f(.5,-0.5,0);		
+	glTexCoord2f(x+width,y-width);glVertex3f(.5,0.5,0);    
+	glTexCoord2f(x,y-width);		glVertex3f(-0.5,0.5,0);    
+	glEnd();				
 	glPopMatrix();
 	
 //	m_pkTexMan->BindTexture(0);

@@ -24,12 +24,14 @@ class RENDER_API Render {
 
 		int m_iSlicesize;	  //height meens greater detail att longer range
 		int m_iLodUpdate;
+		int m_iGrassLodUpdate;		
 		Vector3 m_kOldCamPos;
 		
 		Vector4 m_akFrustum[6];
 		
 	public:
-		int m_iDetail;			//grid size of lod tiles	
+		int m_iDetail;			//grid size of lod tiles for the terran
+		int m_iGrassLod;
 		int m_iViewDistance;	//how far until we cut the landscape	
 		int m_iFpsLock;
 		int m_iAutoLod;
@@ -60,8 +62,9 @@ class RENDER_API Render {
 		void DrawSimpleWater(Vector3 kPosition,int iSize);
 		void SetFog(Vector4 kFogColor,float FogDensity,float FogStart,float FogStop,bool FogEnable);		
 		void GiveTexCor(float &iX,float &iY,int iNr);
-		void DrawCross(Vector3 kPos,Vector3 kHead,Vector3 kScale,int iTexture);
-
+		void DrawCross(Vector3 kCamPos,Vector3 kPos,Vector3 kHead,Vector3 kScale,int iTexture1,int iTexture2);
+		void DrawGrassPatch(Vector3 kCamPos,Vector3 kPos,Vector3 kScale,int fW,int iNr,HeightMap* kMap,int iTexture,int iFps);
+		
 };
 
 
