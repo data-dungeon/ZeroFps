@@ -83,11 +83,11 @@ bool ZFScriptSystem::Open()
 		g_ZFObjSys.GetObjectPtr("ZFVFileSystem"));	
 
 	// Open base lib for access to some useful functions.
-	lua_baselibopen(m_pkLua);
+/*	lua_baselibopen(m_pkLua);
 	lua_strlibopen(m_pkLua);
 	lua_mathlibopen(m_pkLua);
 	lua_iolibopen(m_pkLua);
-	lua_dblibopen(m_pkLua);
+	lua_dblibopen(m_pkLua);*/
 
 	return true;	
 }

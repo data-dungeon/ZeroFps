@@ -48,6 +48,7 @@
 class ZeroEdit :public Application , public ZGuiApp {
 	private:
 
+		bool PlaceObjectOnGround(int iObjectID, int iZoneID);
 		char* GetSelEnviromentString();
 
 		//console funktions
@@ -94,6 +95,7 @@ class ZeroEdit :public Application , public ZGuiApp {
 		void EditRunCommand(FuncId_e eEditCmd);
 
 		bool	m_bEditSun;
+		bool m_bPlaceObjectsOnGround;
 
 		vector<pair<string,Vector3> >	m_kLocations;
 		
@@ -197,9 +199,9 @@ class ZeroEdit :public Application , public ZGuiApp {
 		
 		ZeroEdit(char* aName,int iWidth,int iHeight,int iDepth);
 	 	
-	 	void OnInit(void);
-		void OnIdle(void);
-		void OnHud(void);
+	 	void OnInit();
+		void OnIdle();
+		void OnHud();
 		void OnSystem() {};
 				
 		void RunCommand(int cmdid, const CmdArgument* kCommand);		
@@ -207,8 +209,9 @@ class ZeroEdit :public Application , public ZGuiApp {
 		void RegisterPropertys();
 		void RegisterResources();		
 		void Input();
-		void OnServerStart(void);
-		void OnClientStart(void){};
+		void OnServerStart(){};
+		void OnClientStart(){};
+
 		
 
 

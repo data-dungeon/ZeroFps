@@ -35,22 +35,18 @@ static bool GUIPROC( ZGuiWnd* win, unsigned int msg, int numparms, void *params 
 	case ZGM_COMMAND:
 		g_kMistServer.OnCommand(((int*)params)[0], (((int*)params)[1] == 1) ? true : false, win);
 		break;
-
 	case ZGM_SELECTLISTITEM:
 		g_kMistServer.OnClickListbox(((int*)params)[0],((int*)params)[1],win);
 		break;
-
 	case ZGM_SELECTTREEITEM:
 		char** pszParams; pszParams = (char**) params;
 		g_kMistServer.OnClickTreeItem( pszParams[0], pszParams[1], 
 			pszParams[2], pszParams[3][0] == '1' ? true : false);		
 		break;
-
 	case ZGM_TCN_SELCHANGE:
 		int* data; data = (int*) params; 
 		g_kMistServer.OnClickTabPage((ZGuiTabCtrl*) data[2], data[0], data[1]);// fram med släggan
 		break;
-
 	}
 	return true;
 }
@@ -62,8 +58,9 @@ ZeroEdit::ZeroEdit(char* aName,int iWidth,int iHeight,int iDepth)
 	g_ZFObjSys.Log_Create("zerodit");
 
 	// Set Default values
-	m_bEditSun			= false;
-	m_bSoloMode       = false;
+	m_bEditSun		= false;
+	m_bSoloMode     = true;
+	m_bPlaceObjectsOnGround = true;
 
 	// Register Variables
 	
@@ -130,7 +127,6 @@ int ZeroEdit::GetView(float x, float y)
 
 bool ZeroEdit::SetCamera(int iNum)
 {
-
 	switch(iNum) 
 	{
 		case 0:	return SetViewPort("vp1");	break;
@@ -176,7 +172,6 @@ bool ZeroEdit::SetViewPort(const char* szVpName)
 	Camera* pkCam = pkWnd->GetRenderTarget();
 	if(!pkCam)
 		return false;
-
 
 	if(m_pkActiveCamera == pkCam)	return false;
 
@@ -238,10 +233,14 @@ void ZeroEdit::OnInit()
 	//run autoexec script
 	if(!m_pkIni->ExecuteCommands("mistserver_autoexec.ini"))
 		m_pkConsole->Printf("No mistserver_autoexec.ini found");
+
+	
 }
 
 void ZeroEdit::Init()
 {	
+	m_pkFps->m_bClientMode = true;
+
 	//default edit mode 
 	m_iEditMode = EDIT_ZONES;
 
@@ -303,21 +302,14 @@ void ZeroEdit::Init()
 
 	// Load default texture and create default font and menu (NULL = No menu).
 	InitGui(m_pkScript, 
-		//"data/textures/text/ms_sans_serif8.bmp", 
 		"data/textures/text/ms_sans_serif8.tga", 
 		"data/script/gui/defskins.lua", 
 		"data/script/gui/menu.txt", true); 
-
-	// Create startup GUI for the the server from script.
-	SetupGuiEnviroment();
 
 	//setup caption
 	SetTitle("ZeroEdit");
 	// hide cursor
 	m_pkInput->ShowCursor(true);
-
-//	m_pkInputHandle->ToggleGrab();
-//	m_pkPlayerDB->GetLoginCharacters(string("user"));
 
 	// Setup the Edit Sun that are used for simple lightning in the editor.
 	m_kSun.kRot = Vector3(1,2,1);
@@ -328,8 +320,25 @@ void ZeroEdit::Init()
 	m_kSun.fConst_Atten=1;
 	m_kSun.fLinear_Atten=0;
 	m_kSun.fQuadratic_Atten=0;
-}
 
+	// Create startup GUI for the the server from script.
+	SetupGuiEnviroment();
+
+	CreateEditCameras();
+
+	// Create and setup the Env on the server.
+	P_Enviroment* pe = (P_Enviroment*)m_pkCameraObject[0]->AddProperty("P_Enviroment");
+	pe->SetEnable(true);		
+	pe->SetEnviroment("data/enviroments/server.env");
+
+	SoloToggleView();
+	m_fDelayTime = m_pkFps->GetEngineTime();
+	SoloToggleView();
+	GetWnd("vp1")->SetZValue(0);
+	GetWnd("vp2")->SetZValue(0);
+	GetWnd("vp3")->SetZValue(0);
+	GetWnd("vp4")->SetZValue(0);
+}
 
 void ZeroEdit::SetupGuiEnviroment()
 {
@@ -353,6 +362,8 @@ void ZeroEdit::SetupGuiEnviroment()
 	m_pkGui->GetToolTip()->AddToolTip(GetWnd("ToggleLight"),"Light");
 	m_pkGui->GetToolTip()->AddToolTip(GetWnd("OpenWorkTabButton"),"Worktab");
 	m_pkGui->GetToolTip()->AddToolTip(GetWnd("RotateZoneModellButton"),"Rotate");
+
+	CheckButton("PlaceongroundButton", m_bPlaceObjectsOnGround);
 }
 
 
@@ -360,7 +371,6 @@ void ZeroEdit::RegisterResources()
 {
 	m_pkResourceDB->RegisterResource( string(".env"), Create__EnvSetting	);
 }
-
 
 void ZeroEdit::RegisterPropertys()
 {
@@ -396,7 +406,7 @@ void ZeroEdit::DrawHMEditMarker(HeightMap* pkHmap, Vector3 kCenterPos, float fIn
 	m_pkRender->DrawBillboard(m_pkFps->GetCam()->GetModelViewMatrix(),kCenterPos,1,
 		m_pkTexMan->Load("../data/textures/pointer.tga",T_NOMIPMAPPING));	
 
-	Vector3				kVertex;
+	Vector3	kVertex;
 	vector<Vector3>	kVertexList;
 
 	kCenterPos.y = 0;
@@ -453,7 +463,8 @@ void ZeroEdit::DrawSelectedEntity()
 
 void ZeroEdit::Select_Toggle(int iId, bool bMultiSelect)
 {
-	if(!bMultiSelect && m_iCurrentObject != iId)		Select_None();
+	if(!bMultiSelect && m_iCurrentObject != iId)		
+		Select_None();
 	
 	if(m_SelectedEntitys.find(iId) == m_SelectedEntitys.end())
 	{
@@ -472,7 +483,6 @@ void ZeroEdit::Select_Toggle(int iId, bool bMultiSelect)
 		}
 	}
 }
-
 
 void ZeroEdit::DeleteSelected()
 {
@@ -741,10 +751,13 @@ void ZeroEdit::Input_EditObject(float fMouseX, float fMouseY)
 
 	if(m_pkInputHandle->Pressed(MOUSELEFT) && !DelayCommand())
 	{
-		m_pkObjectMan->CreateObjectFromScriptInZone(
-			m_strActiveObjectName.c_str(), m_kObjectMarkerPos);
+		Entity* pkObj = m_pkObjectMan->CreateObjectFromScript(m_strActiveObjectName.c_str());
+		pkObj->SetWorldPosV(m_kObjectMarkerPos);
+		pkObj->SetParent(m_pkObjectMan->GetObjectByNetWorkID(
+			m_pkObjectMan->GetZoneData(m_iCurrentMarkedZone)->m_iZoneID));
 
-		//cout << "Spawning " << m_strActiveObjectName.c_str() << endl;
+		if(m_bPlaceObjectsOnGround)
+			PlaceObjectOnGround(pkObj->GetEntityID(), m_iCurrentMarkedZone);
 	}
 	
 	if(m_pkInputHandle->VKIsDown("selectzone") && !DelayCommand())
@@ -942,24 +955,12 @@ void ZeroEdit::Input_Camera(float fMouseX, float fMouseY)
 
 void ZeroEdit::Input()
 {
-	// *** HANDE Quueued Keys.
-	int iPressedKey = m_pkInputHandle->GetQueuedKey().m_iKey;
-
-	switch(iPressedKey)
-	{
-	case KEY_F9:
-		printf("smurf\n");
-		break;
-	}
-
 	//set speed depending on edit mode
 	if(m_iEditMode == EDIT_HMAP)		m_CamMoveSpeed = 20;
 	if(m_iEditMode == EDIT_ZONES)		m_CamMoveSpeed = 20;
 	if(m_iEditMode == EDIT_OBJECTS)	m_CamMoveSpeed = 5;
 	
-	
-	int x = 0;
-	int z = 0;		
+	int x = 0, z = 0;		
 	m_pkInputHandle->RelMouseXY(x,z);	
 
 	// First see if we clicked to change view port.
@@ -1043,11 +1044,6 @@ void ZeroEdit::OnHud(void)
 			m_pkActiveCamera->GetViewPortCorner() + m_pkActiveCamera->GetViewPortSize(),
 			Vector3(1,1,1),1);*/
 		}
-
-	m_pkFps->m_bGuiMode = false;
-	m_pkFps->ToggleGui();
-
-
 }
 
 bool ZeroEdit::DelayCommand()
@@ -1419,25 +1415,6 @@ void ZeroEdit::CamFollow(bool bFollowMode)
 	}
 }
 
-
-void ZeroEdit::OnServerStart(void)
-{		
-	CreateEditCameras();
-
-	// Create and setup the Env on the server.
-	P_Enviroment* pe = (P_Enviroment*)m_pkCameraObject[0]->AddProperty("P_Enviroment");
-	pe->SetEnable(true);		
-	pe->SetEnviroment("data/enviroments/server.env");
-
-	SoloToggleView();
-	m_fDelayTime = m_pkFps->GetEngineTime();
-	SoloToggleView();
-	GetWnd("vp1")->SetZValue(0);
-	GetWnd("vp2")->SetZValue(0);
-	GetWnd("vp3")->SetZValue(0);
-	GetWnd("vp4")->SetZValue(0);
-}
-
 bool ZeroEdit::StartUp()	
 { 
 	m_pkAStar	= static_cast<AStar*>(GetSystem().GetObjectPtr("AStar"));
@@ -1635,9 +1612,6 @@ void ZeroEdit::AddZone(Vector3 kPos, Vector3 kSize, string strName, bool bEmpty)
 		//pkObjectMan->SetUnderConstruction(id);
 	}	
 
-	
-	
-	
 	SetZoneEnviroment(m_strActiveEnviroment.c_str());
 }
 
@@ -1727,7 +1701,10 @@ void ZeroEdit::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 		string strParent = "null";
 
 		if(pkWndClicked->GetParent())
+		{
 			strParent = pkWndClicked->GetParent()->GetName();
+			strMainWnd = strParent;
+		}
 
 		if(strMainWnd == "GuiMainWnd")
 		{
@@ -1779,13 +1756,9 @@ void ZeroEdit::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 			else
 			if(strWndClicked == "PlaceongroundButton")
 			{
-				Entity* pkObj = m_pkObjectMan->GetObjectByNetWorkID(m_iCurrentObject);		
-				if(pkObj) 
-				{
-					Vector3 pos = pkObj->GetLocalPosV(); pos.y = 0.0;
-					pkObj->SetLocalPosV(pos); 
-					m_iCurrentObject = -1;
-				}
+				m_bPlaceObjectsOnGround = IsButtonChecked((char*)strWndClicked.c_str());
+				if(m_bPlaceObjectsOnGround)
+					PlaceObjectOnGround(m_iCurrentObject, m_iCurrentMarkedZone);
 			}
 		}
 		else
@@ -2060,3 +2033,27 @@ char* ZeroEdit::GetSelEnviromentString()
 }
 
 
+
+bool ZeroEdit::PlaceObjectOnGround(int iObjectID, int iZoneID)
+{
+	Entity* pkObj = m_pkObjectMan->GetObjectByNetWorkID(iObjectID);		
+	if(pkObj) 
+	{
+		ZoneData* pkData = m_pkObjectMan->GetZoneData(iZoneID);					
+		P_PfMesh* pkMesh = (P_PfMesh*)pkData->m_pkZone->GetProperty("P_PfMesh");
+		if(pkMesh == NULL)
+			return false;
+
+		NaviMeshCell* pkCurrCell = pkMesh->GetCell(pkObj->GetLocalPosV());
+		if(pkCurrCell)
+		{
+			Vector3 pos = pkObj->GetLocalPosV(); pos.y = pkCurrCell->m_kVertex->y;
+			pkObj->SetLocalPosV(pos); 
+			m_iCurrentObject = -1;
+		}
+
+		return true;
+	}
+
+	return false;
+}

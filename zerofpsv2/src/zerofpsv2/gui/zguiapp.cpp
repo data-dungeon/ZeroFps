@@ -662,6 +662,8 @@ void ZGuiApp::InitGui(ZFScriptSystem* pkScriptSys, char* szFontTexture,
 
 	m_pkGuiSys->m_pkFpsLabel->SetSkin(new ZGuiSkin());
 	m_pkGuiSys->ShowFPSCounter(m_pkGuiSys->m_iShowFPSCounter);
+
+	m_pkGuiSys->Activate(true);
 	
 }
 
@@ -929,6 +931,26 @@ bool ZGuiApp::IsButtonChecked(char* szWnd)
 	}
 
 	return false;
+}
+
+void ZGuiApp::CheckButton(char* szWnd, bool bCheck)
+{
+	ZGuiWnd* pkWnd;
+	if((pkWnd = m_pkResMan->Wnd(szWnd)))
+	{
+		if(GetWndType(pkWnd) == Radiobutton)
+		{
+			//return ((ZGuiRadiobutton*)pkWnd)->GetButton()->IsChecked();
+		}
+		else
+		if(GetWndType(pkWnd) == Checkbox)
+		{
+			if(bCheck)
+				((ZGuiCheckbox*)pkWnd)->CheckButton();
+			else
+				((ZGuiCheckbox*)pkWnd)->UncheckButton();
+		}
+	}
 }
 
 GuiType ZGuiApp::GetWndType(ZGuiWnd *pkWnd)
