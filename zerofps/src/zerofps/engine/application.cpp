@@ -4,7 +4,9 @@
 
 Application* Application::pkApp;
 
-Application::Application(char* pName,int iWidth,int iHeight,int iDepth) {
+Application::Application(char* pName,int iWidth,int iHeight,int iDepth) 
+	: ZFObject("Application") 
+{
 	Application::pkApp=this;
 	
 	m_pTitle=pName;

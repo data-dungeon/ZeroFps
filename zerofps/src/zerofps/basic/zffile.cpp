@@ -1,7 +1,7 @@
 #include "zffile.h"
 
 
-ZFFile::ZFFile(char* acName,bool bWritable)
+ZFFile::ZFFile(const char* acName,bool bWritable)
 {
 	SetIo(new ZFIoFile());
 	Open(acName,bWritable);	
@@ -15,7 +15,7 @@ ZFFile::ZFFile()
 }
 
 
-bool ZFFile::Open(char* acName,bool bWritable)
+bool ZFFile::Open(const char* acName,bool bWritable)
 {
 	if(m_kIo->Open(acName,bWritable)){
 		m_acName=acName;

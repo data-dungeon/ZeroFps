@@ -18,9 +18,9 @@ class ZFFile {
 		
 	public:
 		ZFFile();
-		ZFFile(char* acName,bool bWritable);
+		ZFFile(const char* acName,bool bWritable);
 		
-		bool Open(char* acName,bool bWritable);
+		bool Open(const char* acName,bool bWritable);
 		bool Close();
 		
 		bool Read(void* data,int iSize);

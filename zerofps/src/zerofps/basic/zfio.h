@@ -8,7 +8,7 @@ class ZFIo {
 		
 	
 	public:
-		virtual bool Open(char* file,bool bWriteable)=0;
+		virtual bool Open(const char* file,bool bWriteable)=0;
 		virtual bool Close()=0;
 			
 		virtual bool Write(void *data,int iSize)=0;

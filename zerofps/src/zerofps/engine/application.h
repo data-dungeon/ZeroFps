@@ -14,7 +14,7 @@ class Render;
 class Input;
 class FileIo;
 
-class ENGINE_API Application {	
+class ENGINE_API Application : public ZFObject {	
 	protected:
 		ZeroFps* pkFps;
 		Console* pkConsole;			

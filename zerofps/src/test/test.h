@@ -16,27 +16,35 @@
 #include "bunnyobject.h"
 
 class Test :public Application {
-	HeightMap *test;
-	HeightMap *test2;
+	private:
+		HeightMap *test;
+		HeightMap *test2;
 
-	Vector4 light_position;
-	Vector4 white_light;
-	Vector4 lmodel_ambient;
+		Vector4 light_position;
+		Vector4 white_light;
+		Vector4 lmodel_ambient;
 
-	float speed;
-	int m_iGrass;
-	int m_iGrassVolyme;
+		float speed;
+		int m_iGrass;
+		int m_iGrassVolyme;
 
-	Vector3 *m_kSpotpos;
-
-	Camera *cam1;
-	Camera *cam2;
+		Vector3 *m_kSpotpos;
 	
-	PlayerObject *m_pkPlayer;
+		Camera *cam1;
+		Camera *cam2;
 	
+		PlayerObject *m_pkPlayer;
+	
+
 
 
 	public:
+		enum FuncId_e
+		{
+			FID_LOADMAP,
+			FID_SAVEMAP
+		};
+	
 		Test(char* aName,int iWidth,int iHeight,int iDepth);
 		~Test() {};
 	 	void OnInit(void);
@@ -44,6 +52,8 @@ class Test :public Application {
 		void OnHud(void);
 
 		void input();
+		
+		void RunCommand(int cmdid, const CmdArgument* kCommand);
 };
 
 

@@ -1,7 +1,7 @@
 #include "zfiofile.h"
 
 
-bool ZFIoFile::Open(char* file,bool bWritable) 
+bool ZFIoFile::Open(const char* file,bool bWritable) 
 {
 	if(bWritable)
 		m_kFile = fopen(file, "w+");

@@ -138,7 +138,7 @@ void HeightMap::GenerateNormals() {
 }
 
 
-bool HeightMap::Load(char* acFile) {
+bool HeightMap::Load(const char* acFile) {
 	cout<<"Loading heightmap from file "<<acFile<<endl;
 	
 	HM_fileheader k_Fh;
@@ -197,7 +197,7 @@ bool HeightMap::Load(char* acFile) {
 }
 
 
-bool HeightMap::Save(char* acFile) {
+bool HeightMap::Save(const char* acFile) {
 	cout<<"Save heightmap to file "<<acFile<<endl;
 	
 	//setup fileheader

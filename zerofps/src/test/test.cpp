@@ -9,6 +9,10 @@ Test::Test(char* aName,int iWidth,int iHeight,int iDepth): Application(aName,iWi
 
 void Test::OnInit(void) {
 	
+	g_ZFObjSys.Register_Cmd("loadmap",FID_LOADMAP,this);	
+	g_ZFObjSys.Register_Cmd("savemap",FID_SAVEMAP,this);		
+	
+	
 //	pkConsole->Print("MegaUltraSuper Duper Game");
 	pkFps->m_pkAudioMan->LoadMusic("file:../data/music/killer_chin.mod");		
 //	pkFps->m_pkAudioMan->PlayMusic();
@@ -258,6 +262,31 @@ void Test::input() {
 	pkFps->GetCam()->GetRot().y+=x/5.0;
 }
 
+void Test::RunCommand(int cmdid, const CmdArgument* kCommand)
+{
+	switch(cmdid) {
+		case FID_LOADMAP:
+			if(kCommand->m_kSplitCommand.size() <= 1) {
+				pkConsole->Printf("Please Supply a filename");
+				return;
+			}
+			
+			test->Load(kCommand->m_kSplitCommand[1].c_str());
+			break;
+	
+		case FID_SAVEMAP:
+			if(kCommand->m_kSplitCommand.size() <= 1) {
+				pkConsole->Printf("Please Supply a filename");
+				return;
+			}
+			
+			test->Save(kCommand->m_kSplitCommand[1].c_str());
+			break;
+	
+	}
+
+
+}
 
 
 

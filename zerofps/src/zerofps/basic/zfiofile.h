@@ -10,7 +10,7 @@ class ZFIoFile : public ZFIo {
 		FILE *m_kFile;
 
 	public:
-		bool Open(char* file,bool bWritable);
+		bool Open(const char* file,bool bWritable);
 		bool Close();
 			
 		bool Write(void *data,int iSize);

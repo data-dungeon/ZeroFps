@@ -47,8 +47,8 @@ class BASIC_API HeightMap: public ZFObject {
 		HeightMap(FileIo* pkFile);		
 		void Zero();
 		void Random();
-		bool Load(char* acFile);
-		bool Save(char* acFile);
+		bool Load(const char* acFile);
+		bool Save(const char* acFile);
 		bool LoadImageHmap(char* acFile);
 		void GenerateNormals();
 		void GenerateTextures();
