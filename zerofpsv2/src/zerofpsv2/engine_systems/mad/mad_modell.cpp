@@ -467,8 +467,8 @@ void Mad_Modell::Draw_All(int iDrawFlags)
 		m_pkShader->SetPointer(TEXTURE_POINTER0,GetTextureCooPtr());
 		m_pkShader->SetPointer(VERTEX_POINTER,GetVerticesPtr());		
 		m_pkShader->SetPointer(NORMAL_POINTER,GetNormalsPtr());				
-//		m_kDefaultMat.m_bCopyData = true;
-//		m_kDefaultMat.m_bWaves = true;		
+		m_kDefaultMat.m_bCopyData = true;
+		m_kDefaultMat.m_bWaves = true;		
 		
 //		m_kDefaultMat.GetPass(0)->m_iPolygonModeFront = GL_FILL;
 //		m_kDefaultMat.GetPass(0)->m_iPolygonModeBack = GL_FILL;		

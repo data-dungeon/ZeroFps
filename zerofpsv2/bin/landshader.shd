@@ -2,5 +2,7 @@
 
 [pass-0]
 polygonmodefront=0
-tutexcords1=0
-tu0=bla.tga
+tutexcords1=6
+tu0=grass.tga
+tu1=env.tga
+lighting=false

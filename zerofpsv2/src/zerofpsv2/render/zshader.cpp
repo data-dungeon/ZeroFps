@@ -279,6 +279,25 @@ void ZShader::SetupTU(ZMaterialSettings* pkSettings,int iTU)
 				glTexCoordPointer(2,GL_FLOAT,0,m_pkTexturePointer3);						
 				break;			
 		
+			case CORDS_SPHERE_MAP:
+				glTexGeni(GL_S,GL_TEXTURE_GEN_MODE,GL_SPHERE_MAP);
+				glTexGeni(GL_T,GL_TEXTURE_GEN_MODE,GL_SPHERE_MAP);				
+				glEnable(GL_TEXTURE_GEN_S);
+				glEnable(GL_TEXTURE_GEN_T);				
+				break;			
+			case CORDS_EYE_LINEAR:
+				glTexGeni(GL_S,GL_TEXTURE_GEN_MODE,GL_EYE_LINEAR);
+				glTexGeni(GL_T,GL_TEXTURE_GEN_MODE,GL_EYE_LINEAR);				
+				glEnable(GL_TEXTURE_GEN_S);
+				glEnable(GL_TEXTURE_GEN_T);				
+				break;			
+			case CORDS_OBJECT_LINEAR:
+				glTexGeni(GL_S,GL_TEXTURE_GEN_MODE,GL_OBJECT_LINEAR);
+				glTexGeni(GL_T,GL_TEXTURE_GEN_MODE,GL_OBJECT_LINEAR);				
+				glEnable(GL_TEXTURE_GEN_S);
+				glEnable(GL_TEXTURE_GEN_T);				
+				break;			
+		
 		}
 	}
 	else
@@ -288,6 +307,8 @@ void ZShader::SetupTU(ZMaterialSettings* pkSettings,int iTU)
 
 void ZShader::SetupRenderStates(ZMaterialSettings* pkSettings)
 {
+	//ful hack deluxe
+	glColor4f(1,1,1,1);
 
 	//polygon mode settings		front
 	switch(pkSettings->m_iPolygonModeFront)
@@ -541,7 +562,6 @@ void ZShader::CleanCopyedData()
 void ZShader::Draw()
 {	
 	glPushMatrix();
-	glPushAttrib(GL_ALL_ATTRIB_BITS);
 	
 	SetupPrerenderStates();
 
@@ -551,12 +571,16 @@ void ZShader::Draw()
 	//go trough all passes of material
 	for(int i=0;i<m_pkCurentMaterial->GetNrOfPasses();i++)
 	{	
+		glPushAttrib(GL_ALL_ATTRIB_BITS);
+		
 		SetupRenderStates(m_pkCurentMaterial->GetPass(i));		
 		
 		if(m_pkIndexPointer)
 			glDrawElements(m_iDrawMode,m_iNrOfIndexes,GL_UNSIGNED_INT,m_pkIndexPointer);
 		else
 			glDrawArrays(m_iDrawMode,0,m_iNrOfVertexs);	
+	
+		glPopAttrib();	
 	}
 	
 	if(m_bCopyedData)
@@ -564,7 +588,6 @@ void ZShader::Draw()
 	
 	
 	glPopMatrix();
-	glPopAttrib();
 	
 }
 

@@ -16,7 +16,7 @@
 
 #include "../zerofpsv2/engine_systems/mad/mad_modell.h"
 
-#include "guibuilder.h"
+//#include "guibuilder.h"
 
 //#include "../common/common.pkg"
 
@@ -65,7 +65,7 @@ class ZeroTank :public Application {
 
 		Mad_Modell			m_pkTestMod;
 
-		GuiBuilder*			m_pkGuiBuilder;
+//		GuiBuilder*			m_pkGuiBuilder;
 
 	public:
 		

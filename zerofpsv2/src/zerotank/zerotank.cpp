@@ -344,11 +344,11 @@ static bool GUIPROC( ZGuiWnd* win, unsigned int msg, int numparms, void *params 
 
 void ZeroTank::SetupGUI()
 {
-	// Setup Gui system.
+/*	// Setup Gui system.
 	m_pkGuiBuilder = new GuiBuilder(pkGui, pkTexMan, GUIPROC);
 	m_pkGuiBuilder->Initialize();
 
 	m_pkGuiBuilder->Create(Window, "TestWnd",    NULL,   10, -1, 0, 0, 200, 200, 0);
 	m_pkGuiBuilder->Create(Button, "TestButton", "Apa",  11, 10, 0, 0,  40,  20, 0);
-	m_pkGuiBuilder->Create(Label,  "TestLabel",  "Test", 12, 10, 0, 0,  40,  80, 0);
+	m_pkGuiBuilder->Create(Label,  "TestLabel",  "Test", 12, 10, 0, 0,  40,  80, 0);*/
 }
