@@ -1,3 +1,0 @@
-this directory may contain temporary extensions and test data
-more serious projects shuld register its own data directory under "data/[applicationname]"
-
