@@ -7,6 +7,8 @@
 
 #else
 // Sweet Linux.
+	#define GL_GLEXT_PROTOTYPES   //experimental
+	
 	#include <GL/gl.h>
 	#include <GL/glx.h>
 	

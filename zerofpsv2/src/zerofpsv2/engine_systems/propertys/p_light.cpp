@@ -40,7 +40,7 @@ void P_Light::Update()
 {
 	//draw ball on the server
 	if(m_pkZeroFps->m_bServerMode)
-		m_pkRender->Sphere(m_pkObject->GetWorldPosV(),0.1,5,Vector3(1,0,1),true);
+		m_pkRender->Sphere(m_pkObject->GetWorldPosV(),0.1,1,Vector3(1,0,1),true);
 
 
 	m_pkLightSource->kPos = m_pkObject->GetWorldPosV();

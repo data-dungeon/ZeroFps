@@ -13,8 +13,8 @@ P_Primitives3D::P_Primitives3D(PrimType eType) : m_ePrimType(eType)
 	m_iType=PROPERTY_TYPE_RENDER;
 	m_iSide=PROPERTY_SIDE_CLIENT;	
 	m_fRadius = 0.5;
-	m_iSlices = 10;
-	m_iStacks = 10;
+	m_iSlices = 2;
+	m_iStacks = 2;
 	m_kColor.Set(1,1,1);
 
 	m_kMin.Set(-1,-1,-1);

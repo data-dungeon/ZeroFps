@@ -83,6 +83,9 @@ class RENDER_API Render : public ZFSubSystem {
 
 		Vector3		m_kConsoleColor;
    	
+   	void SubDivide(float *v1, float *v2, float *v3, long depth);
+   	void Normalize(float v[3]);
+   	
 	public:
 		int	m_iDetail;				//	grid size of lod tiles for the terran
 		int	m_iViewDistance;		//	how far until we cut the landscape	

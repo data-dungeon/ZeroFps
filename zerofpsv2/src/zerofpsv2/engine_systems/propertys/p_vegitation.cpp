@@ -69,7 +69,7 @@ void P_Vegitation::Update()
 					
 	//draw a ball on the server
 	if(m_pkFps->m_bServerMode)
-		m_pkRender->Sphere(ObjectPos,0.5,5,Vector3(1,1,1),true);
+		m_pkRender->Sphere(ObjectPos,0.5,1,Vector3(1,1,1),true);
 					
 					
 /*	int iStep = int(fDistance / 8.0);
