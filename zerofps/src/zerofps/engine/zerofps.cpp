@@ -11,12 +11,12 @@ static char Devformat_text[4096];	//
 ZeroFps::ZeroFps(void) 
  : ZFObject("ZeroFps") {
 
-	m_pkFile					= new FileIo;
+	m_pkFile						= new FileIo;
 	m_pkBasicFS					= new ZFBasicFS;
 	m_pkZFVFileSystem			= new ZFVFileSystem;
 	m_pkTexMan					= new TextureManager(m_pkFile);
 	m_pkInput					= new Input();		
-	m_pkPropertyFactory			= new PropertyFactory();
+	m_pkPropertyFactory		= new PropertyFactory();
 	m_pkFrustum					= new Frustum;	
 	m_pkLight					= new Light();	
 	m_pkRender					= new Render();
@@ -28,7 +28,7 @@ ZeroFps::ZeroFps(void)
 	m_pkSBM						= new SoundBufferManager(m_pkFile);	
 	m_pkOpenAlSystem			= new OpenAlSystem();
 	m_pkNetWork					= new NetWork;
-	m_pkGuiRenderer				= new GLGuiRender();
+	m_pkGuiRenderer			= new GLGuiRender();
 	m_pkGuiMan					= new ZGuiResourceManager();
 	m_pkGui						= new ZGui();
 	m_pkIni						= new ZFIni();
@@ -36,18 +36,18 @@ ZeroFps::ZeroFps(void)
 	m_pkPhysEngine				= new PhysicsEngine();
 	m_pkResourceDB				= new ZFResourceDB();
 
-	m_iFullScreen=0;
-	m_fFrameTime=0;
-	m_fLastFrameTime=SDL_GetTicks();
-	m_bServerMode = true;
-	m_bClientMode = true;
-	m_bDrawDevList=true;
-	m_bGuiMode=false;
-	m_bGuiTakeControl=true;
-	m_iMadDraw = 1;
-	g_fMadLODScale = 1.0;
-	g_iMadLODLock = 0;
-	m_pkCamera = NULL;
+	m_iFullScreen=			0;
+	m_fFrameTime=			0;
+	m_fLastFrameTime=		SDL_GetTicks();
+	m_bServerMode = 		true;
+	m_bClientMode = 		true;
+	m_bDrawDevList=		true;
+	m_bGuiMode=				false;
+	m_bGuiTakeControl=	true;
+	m_iMadDraw = 			1;
+	g_fMadLODScale = 		1.0;
+	g_iMadLODLock = 		0;
+	m_pkCamera = 			NULL;
 
 	g_ZFObjSys.RegisterVariable("m_Sens", &m_pkInput->m_fMouseSensitivity,CSYS_FLOAT);
 	g_ZFObjSys.RegisterVariable("r_LandLod", &m_pkRender->m_iDetail,CSYS_INT);
@@ -71,6 +71,7 @@ ZeroFps::ZeroFps(void)
 	g_ZFObjSys.Register_Cmd("printobject",FID_PRINTOBJECT,this);	
 	g_ZFObjSys.Register_Cmd("version",FID_VERSION,this);	
 	g_ZFObjSys.Register_Cmd("credits",FID_CREDITS,this);	
+	g_ZFObjSys.Register_Cmd("echo",FID_ECHO,this);	
 	g_ZFObjSys.Register_Cmd("gldump",FID_GLDUMP,this);	
 	g_ZFObjSys.Register_Cmd("devshow",FID_DEV_SHOWPAGE,this, "devshow name", 1);	
 	g_ZFObjSys.Register_Cmd("devhide",FID_DEV_HIDEPAGE,this, "devhide name", 1);	
@@ -666,6 +667,10 @@ void ZeroFps::RunCommand(int cmdid, const CmdArgument* kCommand)
 					
 			kFiles.clear();
 					
+			break;
+
+		case FID_ECHO:
+			m_pkConsole->Print( kCommand->m_strFullCommand.c_str() + kCommand->m_kSplitCommand[0].size() + 1 );
 			break;
 
 		case FID_PRINTOBJECT:

@@ -69,6 +69,7 @@ class ENGINE_API ZeroFps : public ZFObject {
 
 			FID_VERSION,		// Print Version info.
 			FID_CREDITS,		// Print Credits to console.
+			FID_ECHO,
 		
 			FID_GLDUMP,
 		
