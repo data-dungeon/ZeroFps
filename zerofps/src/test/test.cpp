@@ -98,7 +98,7 @@ void Test::OnInit(void) {
 
 
 	
-	
+	/*
 	for(int i=0;i<200;i++) {
 		Object *ball=new BallObject(test);
 //		ball->AddProperty(new PlayerControlProperty(pkInput,pkFps,test));
@@ -111,7 +111,7 @@ void Test::OnInit(void) {
 		pkObjectMan->Add(ball);
 		pkCollisionMan->Add(ball);
 	}
-
+*/
 /*
 	CollisionSphere *sp1=new CollisionSphere(Vector3(0,0,0),8);
 	CollisionSphere *sp2=new CollisionSphere(Vector3(4,0,0),4);

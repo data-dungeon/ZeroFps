@@ -7,7 +7,7 @@ Render::Render(TextureManager* pkTexMan) {
 	m_iDetail=30;				//height meens greater detail att longer range	
 	m_iViewDistance=200;
 	m_iFpsLock=60;
-	m_iAutoLod=0;
+	m_iAutoLod=1;
 	m_iLodUpdate=0;	
 	m_kOldCamPos=Vector3(0,0,0);
 }
