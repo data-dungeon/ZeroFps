@@ -304,62 +304,6 @@ void MistClient::Input()
 	}
 	
 
-	Object* m_pkME = m_pkTestobj;
-	
-	if(m_pkME)	
-	{	
-		float fSpeedScale = pkFps->GetFrameTime()*speed;	
-		
-		Vector3 newpos;// = m_pkME->GetLocalPosV();
-		newpos.Set(0,0,0);
-	
-/*		if(pkInput->Pressed(KEY_D)){
-			//newpos.x+=fSpeedScale;			
-			newpos.x = 10;
-		}
-		if(pkInput->Pressed(KEY_A)){
-			//newpos.x-=fSpeedScale;			
-			newpos.x = -10;		
-		}	
-		if(pkInput->Pressed(KEY_W))	{
-			//newpos.z+=fSpeedScale;			
-			newpos.z = 10;
-		}					
-		if(pkInput->Pressed(KEY_S))	{
-			//newpos.z-=fSpeedScale;
-			newpos.z = -10;
-		}		
-
-		if(pkInput->Pressed(KEY_Q))
-			newpos.y = 10;
-			//newpos.y+=2*fSpeedScale;			
-		if(pkInput->Pressed(KEY_E))
-			newpos.y = -10;
-			//newpos.y-=2*fSpeedScale;*/
-		
-		//gubbe rotation
-
-		Vector3 rot;
-		rot.Set(0,0,0);
-		
-		if(pkInput->Pressed(KEY_U))
-			rot.x+=fSpeedScale*5;
-		if(pkInput->Pressed(KEY_J))
-			rot.x-=fSpeedScale*5;		
-		if(pkInput->Pressed(KEY_I))
-			rot.y+=fSpeedScale*5;
-		if(pkInput->Pressed(KEY_K))
-			rot.y-=fSpeedScale*5;
-		if(pkInput->Pressed(KEY_O))
-			rot.z+=fSpeedScale*5;
-		if(pkInput->Pressed(KEY_L))
-			rot.z-=fSpeedScale*5;
-
-		//m_pkME->SetLocalPosV(newpos);
-		if(newpos.Length() > 0)
-			m_pkME->GetVel() = newpos;
-		m_pkME->RotateLocalRotV(rot);
-	} 
 
 	if(pkInput->Pressed(MOUSELEFT))
 	{

@@ -894,7 +894,7 @@ void MistServer::UpdateStartLocatons()
 {
 	m_kLocations.clear();
 
-	pair<string,Vector3> temp("Start",Vector3(10,1,0));
+	pair<string,Vector3> temp("Start",Vector3(0,1,0));
 	m_kLocations.push_back(temp);
 }
 
