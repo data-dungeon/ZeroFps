@@ -61,7 +61,7 @@ void Render::DrawWater(Vector3 kCamPos,Vector3 kPosition,Vector3 kHead,int iSize
 	
 	glBegin(GL_TRIANGLE_STRIP);		
 	glNormal3f(0,1,0);
-	glColor4f(.6,.6,.9,0.2);
+	glColor4f(.5,.5,.7,0.4);
 	
 	for(int z=0;z<iSize;z+=iStep){	
 		float y=sin((SDL_GetTicks()/1000.0)+(z/iStep)*freq)*amp;

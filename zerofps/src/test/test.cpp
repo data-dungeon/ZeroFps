@@ -29,7 +29,7 @@ void Test::OnInit(void) {
 	fpsupdate=0;
 
 	light_position=Vector4(0.5,0.5,0.2,0);
-	float b=2;
+	float b=1.5;
 	white_light = Vector4(b,b,b,b);
 	lmodel_ambient = Vector4(0.5*b,0.5*b,0.5*b,0.5*b);
 

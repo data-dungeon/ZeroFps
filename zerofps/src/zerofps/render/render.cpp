@@ -280,9 +280,9 @@ void Render::GetFrustum() {
 //		exit(0);
 	
 	 clip=modl*proj;
-//	clip=proj;
+//	clip=proj*modl;
 	
-/*
+/*	
         // Concatenate (Multiply) The Two Matricies
         clip[ 0] = modl[ 0] * proj[ 0] + modl[ 1] * proj[ 4] + modl[ 2] * proj[ 8] + modl[ 3] * proj[12];
         clip[ 1] = modl[ 0] * proj[ 1] + modl[ 1] * proj[ 5] + modl[ 2] * proj[ 9] + modl[ 3] * proj[13];
@@ -305,6 +305,8 @@ void Render::GetFrustum() {
         clip[15] = modl[12] * proj[ 3] + modl[13] * proj[ 7] + modl[14] * proj[11] + modl[15] * proj[15];
 
 */
+	
+
 	
 	// Extract the numbers for the RIGHT plane 
    m_akFrustum[0][0] = clip[ 3] - clip[ 0];
@@ -344,10 +346,11 @@ void Render::GetFrustum() {
    m_akFrustum[5][2] = clip[11] + clip[10];
    m_akFrustum[5][3] = clip[15] + clip[14];   
    
-   for(int i=0;i<6;i++)
+   for(int i=0;i<6;i++){
+// 	   cout<<"Plain "<<i<< " X:"<<m_akFrustum[i].x<<" Y:"<<m_akFrustum[i].y<<" Z:"<<m_akFrustum[i].z<<" Lenght:"<<m_akFrustum[i].w<<endl;
    	if(m_akFrustum[i].PlainLength()>0)
 	   	m_akFrustum[i].PlainNormalize();
-	   
+	 }
    
 }
 

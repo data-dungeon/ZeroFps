@@ -319,18 +319,19 @@ void HeightMap::GenerateTextures() {
 			height=GetVert(x,z)->height;						
 //			cout<<"Slope:"<<slope<<endl;
 
+//			GetVert(x,z)->color=Vector3(1,1,1);			
 			if(slope<30) {
 				GetVert(x,z)->texture=3;//stone
-				GetVert(x,z)->color=Vector3(.33,.33,.33);			
+				GetVert(x,z)->color=Vector3(.7,.7,.7);			
 			}
 			else if(slope<50){
 				GetVert(x,z)->texture=2;//slope
-				GetVert(x,z)->color=Vector3(.5,.4,.0);				
+				GetVert(x,z)->color=Vector3(.6,.45,0.3);				
 			}				
 			else {
 				if(height<6) {  //if we are very low draw nice sand =)
 					GetVert(x,z)->texture=0;
-					GetVert(x,z)->color=Vector3(2,1.7,1.2);
+					GetVert(x,z)->color=Vector3(.80,.70,.60);
 					if(height<0.0001) {
 						GetVert(x,z)->height=-80;
 						GetVert(x,z)->color=Vector3(.001,.001,.51);
@@ -338,10 +339,11 @@ void HeightMap::GenerateTextures() {
 					}
 				} else {//else i like som grass
 					GetVert(x,z)->texture=1;
-					GetVert(x,z)->color=Vector3(.35,.55,.10);				
+//					GetVert(x,z)->color=Vector3(.35,.55,.10);				
+					GetVert(x,z)->color=Vector3(.2,.7,.2);				
 				}
 			}
-			GetVert(x,z)->color.Normalize();
+//			GetVert(x,z)->color.Normalize();
 		}
 	}
 }
