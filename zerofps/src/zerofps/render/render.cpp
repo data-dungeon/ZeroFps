@@ -6,7 +6,7 @@ Render::Render(TextureManager* pkTexMan) {
 	m_iSlicesize=32;		//grid size of lod tiles
 	m_iDetail=30;				//height meens greater detail att longer range	
 	m_iGrassLod=30;
-	m_iViewDistance=400;
+	m_iViewDistance=450;
 	m_iFpsLock=60;
 	m_iAutoLod=1;
 	m_iLodUpdate=0;	

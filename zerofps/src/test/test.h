@@ -20,6 +20,8 @@ class Test :public Application {
 	int fpsupdate;
 	char fps[20];
 	float speed;
+	int m_iGrass;
+	int m_iGrassVolyme;
 
 	public:
 		Test(char* aName,int iWidth,int iHeight,int iDepth);

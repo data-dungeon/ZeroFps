@@ -35,6 +35,12 @@ void Test::OnInit(void) {
 
 	pkFps->m_pkCmd->Add(&speed,"g_speed",type_float);		
 	speed=0.05;
+  	
+  	m_iGrass=0;	
+	pkFps->m_pkCmd->Add(&m_iGrass,"g_grass",type_int);		  	
+  	m_iGrassVolyme=300;	
+	pkFps->m_pkCmd->Add(&m_iGrassVolyme,"g_grassvolyme",type_int);		  	
+
   
 //  glColorMaterial(GL_FRONT,GL_AMBIENT_AND_DIFFUSE);
 //  glColorMaterial(GL_BACK,GL_AMBIENT_AND_DIFFUSE);
@@ -49,7 +55,7 @@ void Test::OnInit(void) {
   glEnable(GL_LIGHTING);
   glEnable(GL_LIGHT0);
   
-  pkRender->SetFog(Vector4(.2,.2,.6,1),0.50,300,400,true);
+  pkRender->SetFog(Vector4(.50,.55,.88,1),2,225,350,true);
 
 }
 
@@ -62,13 +68,12 @@ void Test::OnIdle(void) {
 	pkRender->DrawSkyBox(*pkFps->m_kCamPos);
 	pkRender->DrawHMlod(test,*pkFps->m_kCamPos,pkFps->m_iFps);		
 	
+	if(m_iGrass>0)
+		for(int ix=0;ix<1000;ix+=50)
+			for(int iy=0;iy<1000;iy+=50)
+				pkRender->DrawGrassPatch(*pkFps->m_kCamPos,Vector3(ix,0,iy),Vector3(3.5,.8,3.5),50,m_iGrassVolyme,test,pkTexMan->Load("file:../data/textures/grass2.tga"),pkFps->m_iFps);
 
-			
-//		pkRender->DrawGrassPatch(*pkFps->m_kCamPos,Vector3(int(pkFps->m_kCamPos->x),0,int(pkFps->m_kCamPos->z)),Vector3(2,1,2),20,20,test,pkTexMan->Load("file:../data/textures/grass.tga"));
 
-	for(int ix=0;ix<1000;ix+=60)
-		for(int iy=0;iy<1000;iy+=60)
-			pkRender->DrawGrassPatch(*pkFps->m_kCamPos,Vector3(ix,0,iy),Vector3(4,1.0,4),60,400,test,pkTexMan->Load("file:../data/textures/grass2.tga"),pkFps->m_iFps);
 
 //	cout<<pkFps->m_kCamPos->x<<" "<<pkFps->m_kCamPos->y<<" "<<pkFps->m_kCamPos->z<<endl;
 /*	srand(10);

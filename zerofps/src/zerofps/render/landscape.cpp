@@ -3,7 +3,7 @@
 void Render::DrawSkyBox(Vector3 CamPos) {
 	glPushMatrix();
 	glDepthMask(GL_FALSE);//want the skybox to be faaaaaar away =)
-	glTranslatef(CamPos.x,CamPos.y,CamPos.z);
+	glTranslatef(CamPos.x,CamPos.y+100,CamPos.z);
 	glDisable(GL_FOG);
 	glDisable(GL_LIGHTING);//dont want lighting on the skybox	
 	
@@ -11,11 +11,17 @@ void Render::DrawSkyBox(Vector3 CamPos) {
 
 	Quad(Vector3(0,0,-iSize/2),Vector3(0,0,0),Vector3(iSize,iSize,iSize),m_pkTexMan->Load("file:../data/textures/front.bmp"));
 	Quad(Vector3(0,iSize/2,0),Vector3(90,0,0),Vector3(iSize,iSize,iSize),m_pkTexMan->Load("file:../data/textures/top.bmp"));
-	Quad(Vector3(0,0,iSize/2),Vector3(180,0,180),Vector3(iSize,iSize,iSize),m_pkTexMan->Load("file:../data/textures/back.bmp"));
-	
+	Quad(Vector3(0,0,iSize/2),Vector3(180,0,180),Vector3(iSize,iSize,iSize),m_pkTexMan->Load("file:../data/textures/front.bmp"));	
+	Quad(Vector3(iSize/2,0,0),Vector3(0,-90,0),Vector3(iSize,iSize,iSize),m_pkTexMan->Load("file:../data/textures/front.bmp"));
+	Quad(Vector3(-iSize/2,0,0),Vector3(0,90,0),Vector3(iSize,iSize,iSize),m_pkTexMan->Load("file:../data/textures/front.bmp"));
+
+/*
+	Quad(Vector3(0,0,-iSize/2),Vector3(0,0,0),Vector3(iSize,iSize,iSize),m_pkTexMan->Load("file:../data/textures/front.bmp"));
+	Quad(Vector3(0,iSize/2,0),Vector3(90,0,0),Vector3(iSize,iSize,iSize),m_pkTexMan->Load("file:../data/textures/top.bmp"));
+	Quad(Vector3(0,0,iSize/2),Vector3(180,0,180),Vector3(iSize,iSize,iSize),m_pkTexMan->Load("file:../data/textures/back.bmp"));	
 	Quad(Vector3(iSize/2,0,0),Vector3(0,-90,0),Vector3(iSize,iSize,iSize),m_pkTexMan->Load("file:../data/textures/left.bmp"));
 	Quad(Vector3(-iSize/2,0,0),Vector3(0,90,0),Vector3(iSize,iSize,iSize),m_pkTexMan->Load("file:../data/textures/right.bmp"));
-	
+*/	
 	if(m_FogEnable)//enable the fog again
 		glEnable(GL_FOG);
 	glEnable(GL_LIGHTING);//turn the lighting back on =)
@@ -500,7 +506,7 @@ void Render::DrawGrassPatch(Vector3 kCamPos,Vector3 kPos,Vector3 kScale,int fW,i
 		}
 	}
 	*/
-//	kCamPos=Vector3(150,8,100);
+//CamPos=Vector3(150,8,100);
 
 
 
@@ -509,16 +515,14 @@ void Render::DrawGrassPatch(Vector3 kCamPos,Vector3 kPos,Vector3 kScale,int fW,i
 		
 	float fDistance=(kCamPos-Vector3(kPos.x,kCamPos.y,kPos.z)).Length();
 //	cout<<"AVSTÅND:"<<fDistance<<endl;
-	if(fDistance>60)
-		return;		
-//	if(fDistance<fW/2)
-//		fDistance=fW/3;		
-//	fDistance/=m_iGrassLod;		
-//	iNr=int(iNr/fDistance);
+	if(fDistance>fW)
+		return;			
 	
-//	cout<<iNr<<endl;
+//f(fDistance>fW/2)
+//iNr/=3;
+
 	
-	glDisable(GL_COLOR_MATERIAL);		
+
 	glColorMaterial(GL_FRONT,GL_AMBIENT_AND_DIFFUSE);	
 
 	glLightModeli( GL_LIGHT_MODEL_TWO_SIDE, 1);
@@ -575,6 +579,7 @@ void Render::DrawGrassPatch(Vector3 kCamPos,Vector3 kPos,Vector3 kScale,int fW,i
 	glPopMatrix();
 	glLightModeli( GL_LIGHT_MODEL_TWO_SIDE, 0);	
 	glEnable(GL_CULL_FACE);
+	glDisable(GL_BLEND);	
 //	glPopMatrix();
 	glDisable(GL_ALPHA_TEST);	
 };
