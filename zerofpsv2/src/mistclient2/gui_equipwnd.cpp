@@ -106,6 +106,8 @@ void EquipmentDlg::Open()
 
 	// visa inventory fönstret
 	m_pkMainWnd->Show();
+	g_kMistClient.m_pkGui->PlaceWndFrontBack(g_kMistClient.GetWnd("BuffWnd"),false);
+	g_kMistClient.m_pkGui->PlaceWndFrontBack(m_pkMainWnd,true);
 	g_kMistClient.m_pkGui->SetFocus(m_pkMainWnd, false);	
 
 	if(m_bSkillWndOpen)

@@ -142,10 +142,10 @@ void MistClient::OnInit()
 	GetWnd("MLStartWnd")->GetSkin()->m_bTransparent = false;
 	
 	
-	if(m_bQuickStart)
-	{
-		g_kMistClient.m_pkZeroFps->StartClient(m_strLoginName, m_strLoginPW, m_strQuickStartAddress);		
-	}
+	//if(m_bQuickStart)
+	//{
+	//	g_kMistClient.m_pkZeroFps->StartClient(m_strLoginName, m_strLoginPW, m_strQuickStartAddress);		
+	//}
 
  	if(m_pkIni->GetIntValue("ZFAudioSystem", "a_enablesound") == 0 && 
  		m_pkIni->GetIntValue("ZFAudioSystem", "a_enablemusic") == 0)

@@ -486,6 +486,7 @@ bool MistClient::NameIPFromServerList(string& strName, string& strIP)
 		int pos = (int) strText.find("-");
 		strName = strText.substr(0, pos-1);
 		strIP	= strText.substr(pos+2,	strText.length()-pos);
+		printf("address from gui = %s\n", strIP.c_str());
 		return true;
 	}
 
