@@ -36,6 +36,24 @@ const int NCODE_MOVE		= 83;
 #define WF_CANHAVEFOCUS		4 //0x0003
 #define WF_TOPWINDOW			8 //0x0004	// Kan detta fönster användas som mainwindow?
 
+struct TEXT_TAG
+{
+	TEXT_TAG() 
+	{ 
+		iPos=-1; iNumChars=0; afColor[0]=afColor[1]=afColor[2]=-1; 
+		pkFont=NULL; x=y=0; 
+		iRow=-1;
+	};
+
+	int iRow; // vilken rad texten finns på
+	int iPos; // offset into m_strText
+	int iNumChars; // length of text
+	float afColor[3];
+	ZGuiFont* pkFont;
+	int x,y;
+	int iRowHeight;
+};
+
 /** \brief	This is the basetype for all gui controllers and also the mainwnd type used as a parent for all other gui controllers.
 	 \ingroup Gui
 */

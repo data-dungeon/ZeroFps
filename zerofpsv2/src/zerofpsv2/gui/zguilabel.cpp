@@ -28,31 +28,13 @@ ZGuiLabel::~ZGuiLabel()
 
 bool ZGuiLabel::Render( ZGuiRender* pkRenderer )
 {
-	pkRenderer->SetSkin(m_pkSkin);
+	pkRenderer->SetSkin(m_pkSkin); 
 	pkRenderer->RenderQuad(GetScreenRect()); 
 	pkRenderer->RenderBorder(GetScreenRect()); 
-
-//	if(m_pkGUI)
-//	{
-//		int curr_res_x, curr_res_y;
-//		m_pkGUI->GetResolution(curr_res_x, curr_res_y);
-//		Rescale(m_iResolutionX, m_iResolutionY, curr_res_x, curr_res_y);
-//	}
 
 	if(m_strText != NULL)
 	{
 		Rect r = GetScreenRect();
-
-		//if(m_pkFont)
-		//{
-		//	pkRenderer->SetFont(m_pkFont);
-
-		//	if(m_bCenterTextHorz)
-		//	{
-		//		int tw = m_pkFont->GetLength(m_strText);
-		//		r.Left = r.Left + r.Width()/2 - tw/2;
-		//	}
-		//}
 
 		if(m_pkFont)
 		{
@@ -74,42 +56,32 @@ bool ZGuiLabel::Render( ZGuiRender* pkRenderer )
 					break;
 				}
 			}
+
+			if(m_bMultiLine)
+			{
+  				char text[1024];
+				
+				for(int i=0; i<m_vkMultiLineRows.size(); i++)
+				{
+					TEXT_TAG t = m_vkMultiLineRows[i];
+					
+					unsigned int row_length = t.iNumChars;
+					char* dest  = m_strText + t.iPos;
+					strncpy(text, dest, row_length);
+					if(row_length <= strlen(dest)) 
+						text[row_length] = 0;
+
+					Rect b = r;
+
+					b.Top = r.Top + t.iRow * t.iRowHeight;
+					b.Bottom = b.Top + t.iRowHeight;
+
+					pkRenderer->RenderText(text, b, -1, m_afTextColor);  
+				}
+			}
+			else
+				pkRenderer->RenderText(m_strText, r, -1, m_afTextColor);
 		}
-
-		//pkRenderer->RenderText(m_strText, r, -1, 0, false, iLetters, iRows, m_afTextColor);
-		if(m_pkFont && m_bMultiLine)
-      {
-         int oka=0;
-         int iNumRows = 0;
-         int iCurrentLength=0;
-         int iTextLength = strlen(m_strText);
-         char* temp = new char[iTextLength+1];
-
-         r.Bottom = r.Top + m_pkFont->m_iRowHeight;
-
-         for(int i=0; i<iTextLength; i++)
-         {
-            temp[oka] = m_strText[i];
-            iCurrentLength += m_pkFont->m_aChars[temp[oka]].iSizeX;
-            oka++;
-
-            if(iCurrentLength >= r.Width() || m_strText[i] == '\n' || i == iTextLength-1)
-            {
-               temp[oka] = 0;
-               pkRenderer->RenderText(temp, r, -1, m_afTextColor);      
-               
-               r.Top += m_pkFont->m_iRowHeight;
-               r.Bottom = r.Top + m_pkFont->m_iRowHeight;
-
-               iCurrentLength=0;
-               oka=0;
-            }
-         }
-
-         delete[] temp;
-      }
-      else
-         pkRenderer->RenderText(m_strText, r, -1, m_afTextColor);
 	}
 	return true;
 } 
@@ -125,6 +97,159 @@ bool ZGuiLabel::Notify(ZGuiWnd* pkWnd, int iCode)
 		}
 	}
 	return false;
+}
+
+void ZGuiLabel::SetText(char* strText, bool bResizeWnd)
+{
+	ZGuiWnd::SetText(strText, bResizeWnd);
+
+	if(m_bMultiLine == false)
+		return;
+
+	m_vkMultiLineRows.clear();
+
+	Rect r = GetScreenRect();
+
+	TEXT_TAG t;
+	t.iNumChars =strlen(m_strText);
+	t.iPos = 0;
+	t.iRow = 0;
+	t.iRowHeight = m_pkFont->m_iRowHeight;
+	t.x = r.Left;
+	t.y = r.Top;
+	t.pkFont = m_pkFont;
+	t.afColor[0] = 0;
+	t.afColor[1] = 0;
+	t.afColor[2] = 0;
+
+	vector<TEXT_TAG> m_kTextTags;
+	m_kTextTags.push_back(t);
+
+	map<int,int> mkMaxRowHeight;
+	map<int,int> mkMaxBaselineHeight;
+
+	int LEFT = 0, TOP = 0;
+
+	const int WIDTH = GetWndRect().Width();
+
+	int xPos = LEFT;
+	int iRow = 0;
+
+	int w = 0, row=0, max_row=0, max_baseline=0;
+	int word_break_pos = -1;
+
+	for(int i=0; i<m_kTextTags.size(); i++)
+	{	
+		int start_letter = m_kTextTags[i].iPos;
+		int end_letter = start_letter + m_kTextTags[i].iNumChars;
+		int start=start_letter;
+		int row_width=0;
+
+		if(m_kTextTags[i].pkFont->m_iRowHeight > max_row)
+			max_row = m_kTextTags[i].pkFont->m_iRowHeight;
+		if(m_kTextTags[i].pkFont->m_iPixelsAboveBaseLine > max_baseline)
+			max_baseline = m_kTextTags[i].pkFont->m_iPixelsAboveBaseLine;
+		
+		for(int j=start_letter; j<end_letter; j++)
+		{			
+			int ch = m_strText[j];
+			w += m_kTextTags[i].pkFont->m_aChars[ch].iSizeX;  
+
+			if(w >= WIDTH || j==end_letter-1 || ch == '\n')
+			{
+				int end = word_break_pos;
+				if(j==end_letter-1)
+					end = end_letter;
+				if(ch == '\n')
+					end = j+1;
+
+				TEXT_TAG t = m_kTextTags[i];
+				t.iPos = start;
+				t.iNumChars = end-start;
+				t.x = xPos;
+				t.y = 0;
+				t.iRow = row;
+				m_vkMultiLineRows.push_back(t); 
+
+				bool bStillBiggerLastCharInTag = false;
+
+				if(end == end_letter )
+				{
+					xPos = LEFT + w;
+					w+=row_width;	
+
+					if(xPos > WIDTH)
+					{
+						bStillBiggerLastCharInTag = true;
+					}
+				}
+				else
+				{
+					max_row=t.pkFont->m_iRowHeight;
+					max_baseline=t.pkFont->m_iPixelsAboveBaseLine;
+					
+					xPos = LEFT;
+					row++;		
+				}
+
+				if(ch == '\n')
+				{
+					if(end == end_letter)
+					{
+						xPos = LEFT;
+						row++;
+						max_row=t.pkFont->m_iRowHeight;
+						max_baseline=t.pkFont->m_iPixelsAboveBaseLine;
+					}
+					word_break_pos=j+1;
+					start=j+1;
+					w=0;
+				}
+				else
+				{
+					start=word_break_pos;
+					w-=row_width;	
+				}
+
+				if(bStillBiggerLastCharInTag)
+				{
+					max_row=t.pkFont->m_iRowHeight;
+					max_baseline=t.pkFont->m_iPixelsAboveBaseLine;
+					w=0;	
+					xPos=LEFT;
+					row++;
+				}
+
+				map<int,int>::iterator itRowHeight;
+				itRowHeight = mkMaxRowHeight.find(t.iRow);
+				if(itRowHeight != mkMaxRowHeight.end())
+				{
+					if(itRowHeight->second < max_row)
+						itRowHeight->second = max_row;
+				}
+				else
+					mkMaxRowHeight.insert(map<int,int>::value_type(t.iRow, max_row)); 
+
+				map<int,int>::iterator itBaselineHeight;
+				itBaselineHeight = mkMaxBaselineHeight.find(t.iRow);
+				if(itBaselineHeight != mkMaxBaselineHeight.end())
+				{
+					if(itBaselineHeight->second < max_baseline)
+						itBaselineHeight->second = max_baseline;
+				}
+				else
+					mkMaxBaselineHeight.insert(map<int,int>::value_type(t.iRow, max_baseline)); 
+			}
+			else
+			{
+				if(ch == ' ' || ch == '\t')
+				{
+					word_break_pos = j+1;
+					row_width = w;					
+				}
+			}
+		}
+	}
 }
 
 

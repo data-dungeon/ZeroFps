@@ -505,7 +505,7 @@ void ZGuiEd::OnInit()
 	InitGui(m_pkScript, "defguifont", "data/script/gui/defskins.lua", 
 		NULL, true, DISABLE_SCALE);
 
-	SetTitle("ZeroFps GUI Editor");
+	SetTitle("ZGuiEd");
 
 	m_iZValueCounter = 1;
 	m_bResize = false;

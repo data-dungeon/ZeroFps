@@ -37,7 +37,9 @@ bool Input::StartUp()
 
 	m_fAbsMouseX = 	0;
 	m_fAbsMouseY = 	0;
+
 	m_fRelMouseX =		0;
+
 	m_fRelMouseY =		0;
 	
 	m_bVisibleHWCursor = true;

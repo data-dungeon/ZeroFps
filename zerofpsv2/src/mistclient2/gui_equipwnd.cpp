@@ -184,6 +184,7 @@ EquipmentSlot EquipmentDlg::GetSlot(int mx, int my, bool bScreenPos)
 	if(m_pkEquipmentWnd == NULL)
 		return EqS_None;
 
+
 	Rect rc(0,0,0,0);
 	
 	if(bScreenPos)

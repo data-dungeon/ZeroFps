@@ -126,9 +126,15 @@ bool ZGuiCombobox::Notify(ZGuiWnd* pkWnd,int iCode)
 	if(iCode == NCODE_CLICK_DOWN)
 	{
 		ZGuiListitem* pkSelItem = m_pkListbox->GetSelItem();
- 
+
+		string strSelTextBefore="", strNewText="";
+		
 		if(pkSelItem && m_bIsMenu == false)
+		{
+			strNewText = pkSelItem->GetText();
+			strSelTextBefore = m_pkLabel->GetText();
 			m_pkLabel->SetText(pkSelItem->GetText());
+		}
 
 		if(m_pkListbox->IsVisible())
 		{
@@ -140,18 +146,22 @@ bool ZGuiCombobox::Notify(ZGuiWnd* pkWnd,int iCode)
 			Resize(m_pkLabel->GetScreenRect().Width(),
 				m_pkLabel->GetScreenRect().Height());
 
-			// Send a message to the main winproc...
-			int* piParams = new int[2];
-			piParams[0] = GetID(); // Listbox ID
-			if(pkSelItem != NULL)
+			if(strNewText != strSelTextBefore)
 			{
-				piParams[1] = pkSelItem->GetIndex(); // list item ID
-				GetGUI()->GetActiveCallBackFunc()(
-					//GetGUI()->GetActiveMainWnd(),ZGM_CBN_SELENDOK, // ändrade 9 nov 2004 för att controllers på en tabctrl inte får msg annars.
-					GetParent(), ZGM_CBN_SELENDOK,
-					2,piParams);
+				// Send a message to the main winproc...
+				int* piParams = new int[2];
+				piParams[0] = GetID(); // Listbox ID
+				if(pkSelItem != NULL)
+				{
+					piParams[1] = pkSelItem->GetIndex(); // list item ID
+					GetGUI()->GetActiveCallBackFunc()(
+						//GetGUI()->GetActiveMainWnd(),ZGM_CBN_SELENDOK, // ändrade 9 nov 2004 för att controllers på en tabctrl inte får msg annars.
+						GetParent(), ZGM_CBN_SELENDOK,
+						2,piParams);
+				}
+				delete[] piParams;
+
 			}
-			delete[] piParams;
 		}
 		else
 		{
@@ -397,6 +407,9 @@ void ZGuiCombobox::SetFont(ZGuiFont* pkFont)
 	m_pkFont = pkFont;
 	m_pkListbox->SetFont(m_pkFont);
 	m_pkLabel->SetFont(m_pkFont);
+
+	Rect rc = GetScreenRect();
+	Resize(rc.Width(), rc.Height());
 }
 
 void ZGuiCombobox::SetTextColor(unsigned char ucR, unsigned char ucG, unsigned char ucB)

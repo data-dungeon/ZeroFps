@@ -25,6 +25,7 @@ ZGuiWnd* ZGuiWnd::m_pkWndUnderCursor = NULL;
 
 ZGuiWnd::ZGuiWnd(Rect kRectangle, ZGuiWnd* pkParent, bool bVisible, int iID)
 {
+
 	m_bAcceptRightClicks = false; // om det skall gå att klicka på en knapp med höger musknapp
 	m_bUseAlhpaTest = true;
 	m_bIncludeBorder = false;

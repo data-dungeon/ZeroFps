@@ -204,6 +204,8 @@ ZGuiListitem* ZGuiListbox::AddItem(char* strText, unsigned int iIndex, bool bSel
 
 bool ZGuiListbox::RemoveItem(ZGuiListitem* pkItemToRemove, bool bSelPrev)
 {
+	ZGuiWnd::ResetStaticClickWnds(pkItemToRemove->GetButton());
+
 	// Innehåller listan bara ett (1) alternativ?
 	if(m_pkItemList.size() == 1)
 	{
@@ -214,7 +216,7 @@ bool ZGuiListbox::RemoveItem(ZGuiListitem* pkItemToRemove, bool bSelPrev)
 	bool bHaveFoundItem = false;
 	int index_to_select = -1;
 
-	vector<pair<string, int> > temp; // don´t forget the space after '>'!
+	vector<pair<string, int> > temp; 
 	list<ZGuiListitem*>::iterator it;
 	for( it = m_pkItemList.begin();
 		 it != m_pkItemList.end(); it++)
@@ -263,6 +265,7 @@ bool ZGuiListbox::RemoveAllItems()
 		 it != m_pkItemList.end(); it++)
 		 {
 			ZGuiListitem* pkListItem = (*it);
+			ZGuiWnd::ResetStaticClickWnds(pkListItem->GetButton());
 			delete pkListItem;
 		 }
 
@@ -307,8 +310,9 @@ bool ZGuiListbox::Notify(ZGuiWnd* pkWnd, int iCode)
 					// Select new item
 					m_pkSelectedItem = (*it);
 
-					SendSelItemMsg();
+					printf("pkWnd = %s\n", pkWnd->GetName()); 
 
+					SendSelItemMsg(DoubleClicked());
 					break;
 				 }
 			 }
@@ -520,7 +524,10 @@ int ZGuiListbox::Find(char* strString)
 bool ZGuiListbox::SelItem(int iIndex)
 {
 	if(iIndex < 0 || iIndex > (int) m_pkItemList.size()-1)
+	{
+		if(!m_bIsMenu) SelNone();
 		return false;
+	}
 
 	list<ZGuiListitem*>::iterator it;
 	for( it = m_pkItemList.begin();
@@ -534,9 +541,18 @@ bool ZGuiListbox::SelItem(int iIndex)
 				 m_pkSelectedItem = (*it);
 
 				 if(m_bIsMenu == false)
+				 {
 					m_pkSelectedItem->Select();
+					
+					 int iNumVisibleItems = 0;
 
-				 SendSelItemMsg();
+					 if(!m_pkItemList.empty())
+						iNumVisibleItems = GetScreenRect().Height() / 
+							(*m_pkItemList.begin())->GetButton()->GetScreenRect().Height();
+
+				 }
+
+				 SendSelItemMsg(false);
 
 				 //ZGuiWnd::m_pkFocusWnd = m_pkSelectedItem->GetButton();
 				 break;
@@ -551,7 +567,10 @@ bool ZGuiListbox::SelItem(int iIndex)
 bool ZGuiListbox::SelItem(const char* szText)
 {
 	if(szText == NULL)
+	{
+		if(!m_bIsMenu) SelNone();
 		return false;
+	}
 
 	bool bSuccess = false;
 
@@ -567,14 +586,27 @@ bool ZGuiListbox::SelItem(const char* szText)
 				 m_pkSelectedItem = (*it);
 
 				 if(m_bIsMenu == false)
-					m_pkSelectedItem->Select();
+				 {
+					 m_pkSelectedItem->Select();
 
-					SendSelItemMsg();
+					 int iNumVisibleItems = 0;
+
+					 if(!m_pkItemList.empty())
+						iNumVisibleItems = GetScreenRect().Height() / 
+							(*m_pkItemList.begin())->GetButton()->GetScreenRect().Height();
+
+					 m_pkScrollbarVertical->SetScrollPos(m_pkSelectedItem->GetIndex() - iNumVisibleItems/2);
+					
+				 }
+
+					SendSelItemMsg(false);
 
 				 bSuccess = true;
 				 break;
 			 }
 		 }
+
+	  
 
 	UpdateList();
 
@@ -686,19 +718,32 @@ void ZGuiListbox::SetFont(ZGuiFont* pkFont)
 
 
 
-void ZGuiListbox::SendSelItemMsg()
+void ZGuiListbox::SendSelItemMsg(bool bDoubleClick)
 {
-	// Send a scroll message to the main winproc...
-	int* piParams = new int[2];
-	piParams[0] = GetID(); // Listbox ID
-	piParams[1] = m_pkSelectedItem->GetIndex(); // list item index
 
 	ZGui* pkGui = GetGUI();
 	if(pkGui == NULL)
 	{
-		pkGui = GetParent()->GetGUI();
+		ZGuiWnd* pkParent = GetParent();
+
+		if(pkParent)
+			pkGui = pkParent->GetGUI();
+		else
+			pkGui = GetGUI();
+
 		ZFAssert(pkGui, "ZGuiListbox::Notify, GetGUI = NULL");
+
+		if(pkParent)
+			if(typeid(*pkParent)==typeid(ZGuiCombobox))
+				return;
 	}
+
+	
+	// Send a scroll message to the main winproc...
+	int* piParams = new int[3];
+	piParams[0] = GetID(); // Listbox ID
+	piParams[1] = m_pkSelectedItem->GetIndex(); // list item index
+	piParams[2] = (int) bDoubleClick; // double click or not
 
 	callbackfunc cb = pkGui->GetActiveCallBackFunc();
 	ZFAssert(cb, "ZGuiListbox::Notify, GetActiveCallBackFunc = NULL");
@@ -706,7 +751,7 @@ void ZGuiListbox::SendSelItemMsg()
 	ZGuiWnd* pkActivMainWnd = GetParent() ; //pkGui->GetActiveMainWnd();
 	ZFAssert(pkActivMainWnd, "ZGuiListbox::Notify, pkGui->GetActiveMainWnd() = NULL");
 
-	cb(pkActivMainWnd, ZGM_SELECTLISTITEM, 2, piParams);
+	cb(pkActivMainWnd, ZGM_SELECTLISTITEM, 3, piParams);
 }
 
 
@@ -737,3 +782,26 @@ void ZGuiListbox::SetTextColor(unsigned char ucR, unsigned char ucG, unsigned ch
 		(*it)->GetButton()->SetTextColor(ucR, ucG, ucB);
 }
 
+bool ZGuiListbox::DoubleClicked()
+{
+	ZGui* pkGui = GetGUI();
+	if(pkGui == NULL)
+		return false;
+
+	static bool s_bClickedOnes = false;
+	static float s_fClickTime = pkGui->m_fTime;
+
+	// Test for double click.
+	if(s_bClickedOnes == true && pkGui->m_fTime-s_fClickTime<0.25f)
+	{
+		s_bClickedOnes = false;
+		return true;
+	}
+
+	if(s_bClickedOnes == false)
+		s_bClickedOnes = true;
+
+	s_fClickTime = pkGui->m_fTime;
+
+	return false;
+}

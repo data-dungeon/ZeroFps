@@ -28,10 +28,17 @@ public:
 
 	virtual bool Render( ZGuiRender* renderer );
 	bool Notify(ZGuiWnd* pkWnd, int iCode);
+	void SetText(char* strText, bool bResizeWnd=false); //överlagrad
 
 	ZGuiLabelTextAlignment m_eTextAlignment;
 	bool m_bCenterTextHorz;
    bool m_bMultiLine;
+
+private:
+
+	vector<TEXT_TAG> m_vkMultiLineRows; // only valid if label is a multiline label
+
+
 };
 
 #endif

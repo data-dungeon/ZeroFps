@@ -462,6 +462,8 @@ void InventoryDlg::OpenContainerItem(bool bOpen, int iSlotIndex, bool bInventory
 
 void InventoryDlg::OpenContainerWnd(int id, char slots_x, char slots_y)
 {
+	m_iSelItemID = id;
+
 	m_pkContainerWnd = g_kMistClient.GetWnd("ContainerWnd");
 	m_pkContainerWnd->Show();
 
@@ -629,8 +631,10 @@ void InventoryDlg::UpdateInventory(vector<MLContainerInfo>& vkItemList)
 		kNewSlot.iStackSize = vkItemList[i].m_iStackSize;
 		m_vkInventoryItemList.push_back(kNewSlot);
 
-		SetSelectionBorder(i, true, !(kNewSlot.iItemID == m_iActiveContainerID && 
-			m_pkContainerWnd->IsVisible()));
+		/*SetSelectionBorder(i, true, !(kNewSlot.iItemID == m_iActiveContainerID && 
+			m_pkContainerWnd->IsVisible()));*/
+
+		SetSelectionBorder(i, true, true);
 	}	
 }
 
@@ -683,8 +687,11 @@ void InventoryDlg::UpdateContainer(vector<MLContainerInfo>& vkItemList)
 		kNewSlot.iStackSize = vkItemList[i].m_iStackSize;
 		m_vkContainerItemList.push_back(kNewSlot);
 
-		SetSelectionBorder(i, false, !(kNewSlot.iItemID == m_iActiveContainerID && 
-			m_pkContainerWnd->IsVisible()));
+		//SetSelectionBorder(i, false, !(kNewSlot.iItemID == m_iActiveContainerID && 
+		//	m_pkContainerWnd->IsVisible()));
+
+		SetSelectionBorder(i, false, true);
+
 	}
 
 	m_pkContainerWnd->SortChilds();

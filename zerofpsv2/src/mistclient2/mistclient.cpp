@@ -49,6 +49,7 @@ MistClient::MistClient(char* aName,int iWidth,int iHeight,int iDepth)
 	m_bQuickStart = 		false;
 	m_strQuickStartAddress = "127.0.0.1:4242";
 
+
 	m_strLoginName = "Psykosmurfan";
    m_strLoginPW = "topsecret";
 

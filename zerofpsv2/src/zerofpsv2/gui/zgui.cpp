@@ -12,7 +12,6 @@
 #include "../basic/globals.h"
 #include "../basic/keys.h"
 #include "./zgui.h"
-//#include "../engine/i_zerofps.h"
 #include "../engine/i_camera.h"
 
 //////////////////////////////////////////////////////////////////////
@@ -566,10 +565,10 @@ bool ZGui::IsActive()
 
 bool ZGui::UpdateMouse(int x, int y, bool bLBnPressed, bool bRBnPressed, bool bMBnPressed, float fTime)
 {
+	m_fTime = fTime; // register time
+
 	if(m_bActive == true && m_pkCursor->IsVisible())
 	{
-		m_fTime = fTime;
-
 		bool bMenuOpen = m_pkActiveMenu && m_pkActiveMenu->IsOpen();
 
 		//if(m_pkCursor && m_pkCursor->IsVisible())	
@@ -590,13 +589,13 @@ bool ZGui::UpdateMouse(int x, int y, bool bLBnPressed, bool bRBnPressed, bool bM
 		m_pkToolTip->Update(x,y,(bLBnPressed|bRBnPressed|bMBnPressed),fTime);
 	}
 
-
-
 	return true;
 }
 
 void ZGui::UpdateKeys(vector<KEY_INFO>& kKeysPressed, float time)
 {
+	m_iKeyPressed = -1; // reset keypress
+
    const float REPEAT_DELAY = 0.5f;
    const float REPEAT_RATE = 0.02f;
 
@@ -613,6 +612,8 @@ void ZGui::UpdateKeys(vector<KEY_INFO>& kKeysPressed, float time)
    if(!kKeysPressed.empty())
    {
       KEY_INFO press_key = kKeysPressed.back();
+
+		m_iKeyPressed = press_key.key; // register last key press
 
       if(press_key.pressed)
       {
@@ -1069,6 +1070,7 @@ bool ZGui::AlphaPixelAtPos(int mx, int my, ZGuiWnd *pkWndClicked)
 		if(dx < 0) dx = 0;
 		if(dy < 0) dy = 0;
 
+
 		//unsigned long pixel;
 		color_rgba kColor;
 		if(!pkSurface->get_pixel(int(dx), int(dy), kColor))
@@ -1078,6 +1080,7 @@ bool ZGui::AlphaPixelAtPos(int mx, int my, ZGuiWnd *pkWndClicked)
 		m_pkTexMan->EditEnd( alpha_tex );
 
 		m_pkZShaderSystem->Pop();
+
 
 		if(pkSurface->m_bHasAlpha) 
 		{
@@ -1473,14 +1476,17 @@ bool ZGui::OnMouseUpdate(int x, int y, bool bLBnPressed,
 					ZGuiWnd::m_pkWndClicked->Notify(ZGuiWnd::m_pkWndClicked,
 						NCODE_CLICK_DOWN);
 
-					ZGuiWnd* pkClickDownParent = ZGuiWnd::m_pkWndClicked->GetParent();
-
-					if( pkClickDownParent)
+					if(ZGuiWnd::m_pkWndClicked)
 					{
-						if(typeid(*pkClickDownParent)==typeid(ZGuiMenu))
+						ZGuiWnd* pkClickDownParent = ZGuiWnd::m_pkWndClicked->GetParent();
+
+						if( pkClickDownParent)
 						{
-							m_pkActiveMenu = (ZGuiMenu*) pkClickDownParent;
-							m_bClickedMenu = true;
+							if(typeid(*pkClickDownParent)==typeid(ZGuiMenu))
+							{
+								m_pkActiveMenu = (ZGuiMenu*) pkClickDownParent;
+								m_bClickedMenu = true;
+							}
 						}
 					}
 				}
@@ -1617,12 +1623,19 @@ bool ZGui::OnMouseUpdate(int x, int y, bool bLBnPressed,
 
 					if( pkParent)
 					{
-						if	 ( typeid(*pkParent)!=typeid(ZGuiListbox) && 
-							   typeid(*pkParent)!=typeid(ZGuiTreeboxNode) && 
-								typeid(*pkParent)!=typeid(ZGuiMenu) &&
-								typeid(*pkFocusWindow)!=typeid(ZGuiCheckbox) &&
-								typeid(ZGuiWnd::m_pkWndClicked)!=typeid(ZGuiCheckbox)) // tillfällig ful lösning för att listboxitems inte skall generera COMMAND messages..
+						if( typeid(*ZGuiWnd::m_pkWndClicked) == typeid(ZGuiButton) )
 						{
+						//printf("ZGuiWnd::m_pkWndClicked = %s\n", ZGuiWnd::m_pkWndClicked->GetName());
+
+						//const type_info& parent_type = typeid(*pkParent);
+
+						//if	 ( parent_type!=typeid(ZGuiCombobox) && 
+						//	   parent_type!=typeid(ZGuiListbox) &&
+						//	   parent_type!=typeid(ZGuiTreeboxNode) && 
+						//		parent_type!=typeid(ZGuiMenu) &&
+						//		typeid(*pkFocusWindow)!=typeid(ZGuiCheckbox) &&
+						//		typeid(ZGuiWnd::m_pkWndClicked)!=typeid(ZGuiCheckbox)) // tillfällig ful lösning för att listboxitems inte skall generera COMMAND messages..
+						//{
 							ZGuiWnd* pkMainWnd = pkParent; //m_pkActiveMainWin->pkWnd; // Lade till 9 nov 2004 för att controllers på en tabctrl inte får msg annars.
 
 							// Menyalternativ har sitt egen förälderfönster.
@@ -1786,10 +1799,3 @@ bool ZGui::PlaceWndFrontBack(ZGuiWnd* pkWnd, bool bFront)
 
 	return true;
 }
-
-
-
-
-
-
-

@@ -16,6 +16,7 @@ bool GUIServerInfo::ConvertFromFullName(string strFullName)
 
 	strServerIP.erase(0, strServerName.length()+1);
 	p = strServerIP.find("|"); if(p == string::npos) return false;
+
 	strServerIP.erase(p, strServerIP.length()-p);
 
 	strUserName.erase(0, strServerIP.length()+1+strServerName.length()+1);

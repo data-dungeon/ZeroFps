@@ -76,6 +76,12 @@ enum GuiScaleMode
 	DISABLE_SCALE	= -1
 };
 
+enum MsgBoxType
+{
+	MSGBOX_OK = 0,
+	MSGBOX_YESNO = 1,
+};
+
 /** \brief	ZGuiApp
 	 \ingroup Gui
 */
@@ -143,6 +149,8 @@ public:
 
 	bool SetFont(string strWnd, string strFont, int r=0, int g=0, int b=0, int glyph=0);
 
+	void MsgBox(char* text, char* caption, int type);
+
 	typedef bool (*callback)(ZGuiWnd* pkWnd, unsigned int uiMessage, int iNumParams, void *pParams);
 
 	int GetWidth();
@@ -157,9 +165,11 @@ public:
 
 	bool m_bGuiHaveFocus;
 
-   int m_iScaleMode; // 0 = automaticly, 1 = manually, -1 = none
-
-	const Point DESIGN_RESOLUTION;
+   int m_iScaleMode; ///< the settings to determin the scaling operation of the gui
+							//  if design resolution and screen resolution are not the same.
+						   //  0 = automaticly (scale), 1 = manually (user scaling), -1 = none
+							
+	Point m_kDesignResolution; ///< width and height of the screen that the gui for this app is made for.
 
 	float GetScaleX();
 	float GetScaleY();

@@ -18,10 +18,8 @@
 #include "../zerofpsv2/engine_systems/propertys/p_hmrp2.h"
 #include "../zerofpsv2/engine_systems/propertys/p_ambientsound.h"
 #include "../zerofpsv2/engine/p_pfpath.h"
-
 #include "../zerofpsv2/gui/zgui.h"
 #include "../zerofpsv2/engine_systems/script_interfaces/si_gui.h"
-
 #include "../mcommon/ml_netmessages.h"
 #include "../mcommon/mainmcommon.h"
 
@@ -287,6 +285,7 @@ void ZeroEd::Init()
 	m_pkZeroFps->m_bEditMode = true;
 
 	//default edit mode 
+	
 	m_iEditMode = EDIT_ZONES;
 
 	//object defaults
@@ -351,6 +350,7 @@ void ZeroEd::Init()
 
 	//setup caption
 	SetTitle("ZeroEd");
+
 	// hide cursor
 	m_pkInput->ShowCursor(true);
 	
@@ -359,6 +359,7 @@ void ZeroEd::Init()
 	m_kSun.kRot = Vector3(2,2,1);
 	m_kSun.kDiffuse=Vector4(0.5,0.5,0.5,0);
 	m_kSun.kAmbient=Vector4(0.5,0.5,0.5,0);
+
 	m_kSun.iType=DIRECTIONAL_LIGHT;			
 
 

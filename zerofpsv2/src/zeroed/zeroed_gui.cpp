@@ -15,16 +15,17 @@ void ZeroEd::SetupGuiEnviroment()
 	}
 
 	GetWnd("worktab")->Hide();
-
 	m_pkGui->SetCursor( 0,0, m_pkTexMan->Load("data/textures/gui/blue_cursor.bmp", 0),
 		m_pkTexMan->Load("data/textures/gui/blue_cursor_a.bmp", 0), 32, 32);
 
    char szFontData[512], szFontTex[512];
    sprintf(szFontData, "data/textures/gui/fonts/%s.fnt", "book_antiqua_10_bold_outlined");
-   sprintf(szFontTex, "data/textures/gui/fonts/%s.tga", "book_antiqua_10_bold_outlined");
 
+   sprintf(szFontTex, "data/textures/gui/fonts/%s.tga", "book_antiqua_10_bold_outlined");
    ZGuiFont* pkOutLineFont = new ZGuiFont("OutLineFont");
+
    pkOutLineFont->Create(szFontData, m_pkTexMan->Load(szFontTex, 0), 1);
+
 	m_pkGuiMan->Add("OutLineFont", pkOutLineFont);
 
 	// Fill zone- and object treebox.
@@ -408,6 +409,7 @@ void ZeroEd::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 				else
 				{
 					GetWnd("UserNameTextbox")->Disable();
+
 					GetWnd("PasswordTextbox")->Disable();
 
 					SetText("UserNameTextbox", "anonymous");
@@ -609,7 +611,9 @@ void ZeroEd::OnClickListbox(int iListBoxID, int iListboxIndex, ZGuiWnd* pkMain)
 	if(strListBox == "PropertyList")
 	{
 		ShowWnd("AddNewProperyWnd",false);
+
 		ShowWnd("EditPropertyWnd",true);
+
 		FillPropertyValList();
 		SetText("PropertyValEb", "");
 	}
@@ -617,6 +621,7 @@ void ZeroEd::OnClickListbox(int iListBoxID, int iListboxIndex, ZGuiWnd* pkMain)
 	if(strListBox == "PropertyValList")
 	{
 		char* szProperty, *item;
+
 		Entity* pkEnt;
 		Property* pkProp;
 
@@ -626,6 +631,7 @@ void ZeroEd::OnClickListbox(int iListBoxID, int iListboxIndex, ZGuiWnd* pkMain)
 				{
 					if(string("Variables") == string(szProperty))
 					{
+
 						SetText("PropertyValEb", (char*)pkEnt->GetVarString(item).c_str());
 					}
 					

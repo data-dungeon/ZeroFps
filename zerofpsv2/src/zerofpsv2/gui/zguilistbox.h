@@ -67,7 +67,8 @@ public:
 
 private:
 
-	void SendSelItemMsg();
+	bool DoubleClicked();
+	void SendSelItemMsg(bool bDoubleClick);
 	void UpdateList();
 	void ScrollItems(ZGuiScrollbar* pkScrollbar);
 	void CreateInternalControls();

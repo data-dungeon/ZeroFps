@@ -17,8 +17,11 @@
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 
-ZGuiApp::ZGuiApp(ZGui::callback oMainWndProc) : DESIGN_RESOLUTION(800,600)
+ZGuiApp::ZGuiApp(ZGui::callback oMainWndProc)
 {
+	m_kDesignResolution.x = 800;
+	m_kDesignResolution.y = 600;
+
 	m_bGuiHaveFocus = false;
 	m_uiWindowIDCounter = 1;
 	m_pkScriptResHandle = NULL;
@@ -112,14 +115,14 @@ ZGuiWnd* ZGuiApp::CreateWnd(GuiType eType, char* szResourceName, char* szText,
 
 		if(eResizeType == ResizeWidth || eResizeType == Resize)
 		{
-			width_mod = (float) GetWidth() / (float)DESIGN_RESOLUTION.x;
-			iNewWidth = (int) ((float)DESIGN_RESOLUTION.x*width_mod);
+			width_mod = (float) GetWidth() / (float)m_kDesignResolution.x;
+			iNewWidth = (int) ((float)m_kDesignResolution.x*width_mod);
 		}
 
 		if(eResizeType == ResizeHeight || eResizeType == Resize)
 		{
-			height_mod = (float) GetHeight() / (float)DESIGN_RESOLUTION.y;
-			iNewHeight = (int) ((float)DESIGN_RESOLUTION.y*height_mod);
+			height_mod = (float) GetHeight() / (float)m_kDesignResolution.y;
+			iNewHeight = (int) ((float)m_kDesignResolution.y*height_mod);
 		}
 
 		//if(iNewWidth != -1) w = iNewWidth;
@@ -136,8 +139,8 @@ ZGuiWnd* ZGuiApp::CreateWnd(GuiType eType, char* szResourceName, char* szText,
 		int iResX, iResY;
 		m_pkRenderer->GetScreenSize(iResX, iResY);
 
-		float fResModX =  (float)iResX / DESIGN_RESOLUTION.x;
-		float fResModY =  (float)iResY / DESIGN_RESOLUTION.y;
+		float fResModX =  (float)iResX / m_kDesignResolution.x;
+		float fResModY =  (float)iResY / m_kDesignResolution.y;
 
 		dx = x*fResModX;
 		dy = y*fResModY;
@@ -372,7 +375,7 @@ ZGuiWnd* ZGuiApp::CreateWnd(GuiType eType, char* szResourceName, char* szText,
 
 	if(m_iScaleMode == MANUALLY_SCALE)
 	{
-		float parent_width = DESIGN_RESOLUTION.x, parent_height = DESIGN_RESOLUTION.y;
+		float parent_width = m_kDesignResolution.x, parent_height = m_kDesignResolution.y;
 
 		if(pkWnd->GetParent() != NULL)
 		{
@@ -388,31 +391,31 @@ ZGuiWnd* ZGuiApp::CreateWnd(GuiType eType, char* szResourceName, char* szText,
 			switch(eAlignment)
 			{
 			case BottomRight:
-				new_x = GetWidth() - (DESIGN_RESOLUTION.x-rc.Right) - rc.Width();
-				new_y = GetHeight() - (DESIGN_RESOLUTION.y-rc.Bottom) - rc.Height();
+				new_x = GetWidth() - (m_kDesignResolution.x-rc.Right) - rc.Width();
+				new_y = GetHeight() - (m_kDesignResolution.y-rc.Bottom) - rc.Height();
 				break;
 			case TopRight:
-				new_x = GetWidth() - (DESIGN_RESOLUTION.x-rc.Right) - rc.Width();
+				new_x = GetWidth() - (m_kDesignResolution.x-rc.Right) - rc.Width();
 				new_y = rc.Top;
 				break;
 			case BottomLeft:
 				new_x = rc.Left;
-				new_y = GetHeight() - (DESIGN_RESOLUTION.y-rc.Bottom) - rc.Height();
+				new_y = GetHeight() - (m_kDesignResolution.y-rc.Bottom) - rc.Height();
 				break;
 			case CenterHorz:
-				new_x = (((rc.Left + (rc.Right-rc.Left)/2) / (float) DESIGN_RESOLUTION.x) * 
+				new_x = (((rc.Left + (rc.Right-rc.Left)/2) / (float) m_kDesignResolution.x) * 
 					(float) GetWidth()) - (rc.Right-rc.Left)/2; 
 				new_y = rc.Top;
 				break;
 			case CenterVert:
 				new_x = rc.Left;
-				new_y = (((rc.Top + (rc.Bottom-rc.Top)/2) / (float) DESIGN_RESOLUTION.x) * 
+				new_y = (((rc.Top + (rc.Bottom-rc.Top)/2) / (float) m_kDesignResolution.x) * 
 					(float) GetHeight()) - (rc.Bottom-rc.Top)/2; 
 				break;
 			case Center:
-				new_x = (((rc.Left + (rc.Right-rc.Left)/2) / (float)DESIGN_RESOLUTION.x) * 
+				new_x = (((rc.Left + (rc.Right-rc.Left)/2) / (float)m_kDesignResolution.x) * 
 					(float) GetWidth()) - (rc.Right-rc.Left)/2; 
-				new_y = (((rc.Top + (rc.Bottom-rc.Top)/2) / (float)DESIGN_RESOLUTION.y) * 
+				new_y = (((rc.Top + (rc.Bottom-rc.Top)/2) / (float)m_kDesignResolution.y) * 
 					(float) GetHeight()) - (rc.Bottom-rc.Top)/2; 
 				break;
 			}
@@ -1510,7 +1513,7 @@ float ZGuiApp::GetScaleX()
 	if(m_iScaleMode == MANUALLY_SCALE || m_iScaleMode == DISABLE_SCALE)
 		return 1;
 
-	return ( (float) GetWidth() / (float) DESIGN_RESOLUTION.x );
+	return ( (float) GetWidth() / (float) m_kDesignResolution.x );
 }
 
 float ZGuiApp::GetScaleY()
@@ -1518,5 +1521,99 @@ float ZGuiApp::GetScaleY()
 	if(m_iScaleMode == MANUALLY_SCALE || m_iScaleMode == DISABLE_SCALE)
 		return 1;
 
-	return ( (float) GetHeight() / (float) DESIGN_RESOLUTION.y );
+	return ( (float) GetHeight() / (float) m_kDesignResolution.y );
+}
+
+void ZGuiApp::MsgBox(char* text, char* caption, int type)
+{
+	ZGuiWnd* pkMsgBox = GetWnd("GuiDefMsgBox");
+	
+	if(pkMsgBox == NULL)
+	{
+		const Point mrg(4,4);
+		int w = 300, h = 150;
+
+		pkMsgBox = CreateWnd(Wnd, "GuiDefMsgBox", "", "", 0,0,w,h,0);
+		ZGuiLabel* pkCaption = (ZGuiLabel*) CreateWnd(Label, "DefMsgBoxCaption", "MessageBox", pkMsgBox, mrg.x,mrg.y,w-mrg.x*2,16,0);
+		ZGuiLabel* pkText = (ZGuiLabel*) CreateWnd(Label, "DefMsgBoxText", "Press Me", pkMsgBox, mrg.x,20+mrg.y,w-mrg.x*2,h-20-mrg.y*2-30,0);
+
+		ZGuiButton* pkYes = (ZGuiButton*) CreateWnd(Button, "DefMsgBoxYesBn", "Yes", pkMsgBox, w/2-40/2,h-25,40,20,0);
+		ZGuiButton* pkNo = (ZGuiButton*) CreateWnd(Button, "DefMsgBoxNoBn", "No", pkMsgBox, w/2-40/2,h-25,40,20,0);
+		
+		pkText->m_bMultiLine = true;
+
+		pkYes->Hide();
+		pkNo->Hide();
+
+		ZGuiSkin* pkBkSkin = new ZGuiSkin();
+		pkBkSkin->m_afBkColor[0] = 0.82f;
+		pkBkSkin->m_afBkColor[1] = 0.82f;
+		pkBkSkin->m_afBkColor[2] = 0.82f;
+
+		pkBkSkin->m_afBorderColor[0] = 0;
+		pkBkSkin->m_afBorderColor[1] = 0;
+		pkBkSkin->m_afBorderColor[2] = 0;
+
+		pkBkSkin->m_unBorderSize = 2;
+		pkMsgBox->SetSkin(pkBkSkin);
+
+		ZGuiSkin* pkCaptionSkin = new ZGuiSkin();
+		pkCaptionSkin->m_afBkColor[0] = 0.2f;
+		pkCaptionSkin->m_afBkColor[1] = 0.2f;
+		pkCaptionSkin->m_afBkColor[2] = 1.0f;
+		pkCaptionSkin->m_afBorderColor[0] = 0;
+		pkCaptionSkin->m_afBorderColor[1] = 0;
+		pkCaptionSkin->m_afBorderColor[2] = 0;
+		pkCaptionSkin->m_unBorderSize = 1;
+		pkCaption->SetSkin(pkCaptionSkin);
+		pkCaption->SetTextColor(255,255,255); 
+
+		ZGuiSkin* pkTextSkin = new ZGuiSkin();
+		pkTextSkin->m_bTransparent = true;
+		pkTextSkin->m_afBorderColor[0] = 0;
+		pkTextSkin->m_afBorderColor[1] = 0;
+		pkTextSkin->m_afBorderColor[2] = 0;
+		pkTextSkin->m_unBorderSize = 1;
+
+		pkText->SetSkin(pkTextSkin);
+		pkText->SetTextColor(0,0,0); 
+	}
+
+	Rect rcMsgBox = pkMsgBox->GetScreenRect();
+
+	pkMsgBox->Show();
+	pkMsgBox->SetPos(GetWidth()/2-rcMsgBox.Width()/2,GetHeight()/2-rcMsgBox.Height()/2,true,true);
+
+	SetText("DefMsgBoxCaption", caption);
+	SetText("DefMsgBoxText", text);
+
+	pkMsgBox->SetMoveArea(Rect(0,0,GetWidth(),GetHeight()),true);
+	m_pkGuiSys->SetFocus(pkMsgBox, true);
+	m_pkGuiSys->PlaceWndFrontBack(pkMsgBox, true);
+	m_pkGuiSys->SetCaptureToWnd(pkMsgBox);
+
+	ZGuiButton* pkYes = (ZGuiButton*) GetWnd("DefMsgBoxYesBn");
+	ZGuiButton* pkNo = (ZGuiButton*) GetWnd("DefMsgBoxNoBn");
+
+	if(type == MSGBOX_OK)
+	{
+		pkNo->Hide();
+		pkYes->Show();
+
+		pkYes->SetPos(pkMsgBox->GetScreenRect().Width()/2-40/2,pkMsgBox->GetScreenRect().Height()-25,false,true);
+		pkYes->SetText("OK"); 
+	}
+	else
+	if(type == MSGBOX_YESNO)
+	{
+		pkNo->Show();
+		pkYes->Show();
+
+		pkYes->SetPos(rcMsgBox.Width()/2-40/2-45/2,rcMsgBox.Height()-25,false,true);
+		pkNo->SetPos(rcMsgBox.Width()/2-40/2+45/2,rcMsgBox.Height()-25,false,true);
+
+		pkYes->SetText("Yes");
+		pkNo->SetText("No");
+	}
+	
 }

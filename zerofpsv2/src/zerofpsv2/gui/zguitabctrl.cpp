@@ -672,6 +672,8 @@ void ZGuiTabCtrl::Resize(int Width, int Height, bool bChangeMoveArea)
 	x = m_uiMarg;
 	y = m_uiTabHeight+5+m_uiMarg;
 
+	ZGuiWnd::Resize(Width, Height, bChangeMoveArea); 
+
 	Rect rcPage(x,y,x+GetScreenRect().Width()-x-m_uiMarg,
 		y+GetScreenRect().Height()-y-m_uiMarg);
 
@@ -683,7 +685,7 @@ void ZGuiTabCtrl::Resize(int Width, int Height, bool bChangeMoveArea)
 	}
 
 
-	ZGuiWnd::Resize(Width, Height, bChangeMoveArea); 
+	
 }
 
 void ZGuiTabCtrl::OnChangeWndText(ZGuiWnd *pkWnd)

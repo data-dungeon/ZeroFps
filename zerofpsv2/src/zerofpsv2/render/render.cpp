@@ -9,6 +9,7 @@ FILE* pkGlDumpLog;
 Render::Render()  
 :	ZFSubSystem("Render")
 {
+	m_pkScreen = NULL;
 
 	// Set Our own local variables.
 	m_iDetail					= 30;						//height meens greater detail att longer range	
@@ -138,11 +139,21 @@ void Render::SetDisplay()
 	else
 		m_iSDLVideoModeFlags = SDL_OPENGL;
 
+	if(m_pkScreen)
+		SDL_FreeSurface(m_pkScreen);
+
+
+
+	printf("SDL_SetVideoMode(%i,%i,%i,%i)\n", m_iWidth, m_iHeight, m_iDepth, m_iSDLVideoModeFlags);
+
+
 	if( (m_pkScreen= SDL_SetVideoMode(m_iWidth,m_iHeight,m_iDepth, m_iSDLVideoModeFlags)) == NULL)
 	{
 		cout<<"ERROR: Creating sdl video surface"<<endl;
 		return;
 	}
+
+	printf("SDL_SetVideoMode OK!\n");
 
 	glViewport(0, 0,m_iWidth,m_iHeight);
 

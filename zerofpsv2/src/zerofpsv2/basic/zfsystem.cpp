@@ -256,7 +256,6 @@ bool ZFSystem::StartUp()
 
 	for( int i = (kObjectNames.size() - 1); i >= 0; i--) {
 		g_Logf(" - %s: ",kObjectNames[i].m_strName.c_str());
-
 		pkTestObject = kObjectNames[i].pkObject;
 
 		if(!kObjectNames[i].pkObject->StartUp()) {

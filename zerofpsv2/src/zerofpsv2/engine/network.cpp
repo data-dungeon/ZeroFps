@@ -50,6 +50,7 @@ NetWork::NetWork()
 bool NetWork::StartUp()	
 { 
 	m_pkConsole	= static_cast<Console*>(GetSystem().GetObjectPtr("Console"));
+
 	m_pkZeroFps	= static_cast<ZeroFps*>(GetSystem().GetObjectPtr("ZeroFps"));
 
 	g_pkNetWork  = this;

@@ -53,17 +53,6 @@ ZeroFps::ZeroFps(void) : I_ZeroFps("ZeroFps")
 
    int iScreenWidth=800, iScreenHeight=600;
 
-   // ZGui behöver veta dimensionen på skärmen...
-	// ZFIni kINI;
-   // char szINIFile[256];
-   // sprintf(szINIFile, "%s.ini", Application::m_pkApp->m_pTitle);
-	// if(kINI.Open(szINIFile, false)) 
-   // {
-	//	  iScreenWidth = kINI.GetIntValue("Render", "r_width");
-   //   iScreenHeight = kINI.GetIntValue("Render", "r_height");
-	//	  kINI.Close();
-	// }
-
 	// Create Engine SubSystems 
 	m_pkBasicFS					= new ZFBasicFS;	
 	m_pkAStar					= new AStar;
@@ -265,7 +254,9 @@ void ZeroFps::ConfigFileSave()
 bool ZeroFps::Init(int iNrOfArgs, char** paArgs)
 {	
 	SetApp();									//	setup class pointers	
+
 	ConfigFileRun();
+
 	g_ZFObjSys.HandleArgs(iNrOfArgs,paArgs);	//	handle arguments
 	
 	atexit(SDL_Quit);
@@ -435,7 +426,7 @@ void ZeroFps::UpdateGuiInput()
 			kKeyInfo.ctrl = (kKey.m_iModifiers & MODIFIER_CTRL);
          vkKeyInfo.push_back(kKeyInfo);
       }
-
+	
       m_pkGui->UpdateKeys(vkKeyInfo, GetTicks());
 
 	   //disablar applicationens input om guit har hanterat den	

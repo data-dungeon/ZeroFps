@@ -35,6 +35,7 @@ namespace GuiAppLua
 	int ENGINE_SYSTEMS_API SetFontLua(lua_State* pkLua);
 	int ENGINE_SYSTEMS_API ChangeWndParameterLua(lua_State* pkLua);	
 	int ENGINE_SYSTEMS_API CreateNewRadiobuttonGroupLua(lua_State* pkLua);
+	int ENGINE_SYSTEMS_API SetDesignResolutionLua(lua_State* pkLua);
 };
 
 #endif // #ifndef _SI_GUI_H

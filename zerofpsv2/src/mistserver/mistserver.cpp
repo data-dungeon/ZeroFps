@@ -543,9 +543,11 @@ void MistServer::RunCommand(int cmdid, const CmdArgument* kCommand)
 			m_pkConsole->Printf("\n\n\n");
 			m_pkConsole->Printf("Mult rows with newline at the end.");
 			m_pkConsole->Printf("Rad 1 :(\nRad 2 :|\nRad 3 :)\nRad 4 =)\n");
+
 			break;
 
 		case FID_LIGHTMODE:
+
 			if(kCommand->m_kSplitCommand.size() <= 1)
 				break;
 /*

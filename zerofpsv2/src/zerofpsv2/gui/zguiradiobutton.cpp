@@ -111,6 +111,17 @@ bool ZGuiRadiobutton::Notify(ZGuiWnd* pkWnd, int iCode)
 	if(iCode == NCODE_CLICK_UP && m_iGroupID != -1)
 	{
 		Check();
+
+		ZGui* pkGUI = GetGUI();
+
+		if(m_pkParent && pkGUI) // Lade till 9 nov 2004 för att controllers på en tabctrl inte får msg annars.
+		{
+			int* pkParams = new int[2];
+			pkParams[0] = GetID(); // control id
+			pkParams[1] = m_pkCheckbox->IsChecked(); // control id
+			pkGUI->GetActiveCallBackFunc()(m_pkParent, ZGM_COMMAND,2,pkParams);
+			delete[] pkParams;
+		}
 	}
 
 	return true;

@@ -34,6 +34,7 @@ void GuiAppLua::Init(ZGuiApp* pkGuiApp, ZFScriptSystem* pkScript)
 	pkScript->ExposeFunction("SetFont", GuiAppLua::SetFontLua);
 	pkScript->ExposeFunction("ChangeWndParameter", GuiAppLua::ChangeWndParameterLua);
 	pkScript->ExposeFunction("CreateNewRadiobuttonGroup", GuiAppLua::CreateNewRadiobuttonGroupLua);
+	pkScript->ExposeFunction("SetDesignResolution", GuiAppLua::SetDesignResolutionLua);
 	
 }
 
@@ -252,16 +253,20 @@ int GuiAppLua::AddListboxItemLua(lua_State* pkLua)
 {
 	int iNumArgs = g_pkScript->GetNumArgs(pkLua);
 
-	if(iNumArgs != 2)
+	if(iNumArgs < 2)
 		return 0;
 
 	char szWndName[100];
 	g_pkScript->GetArg(pkLua, 0, szWndName);
 
-	char szItemName[100];
-	g_pkScript->GetArg(pkLua, 1, szItemName);
+	char szItemName[256];
+	g_pkScript->GetArgString(pkLua, 1, szItemName);
 
-	g_pkGuiApp->AddListItem(szWndName, szItemName);
+	double dSelectItem = 0;
+	if(iNumArgs > 2)
+		g_pkScript->GetArg(pkLua, 2, &dSelectItem);
+
+	g_pkGuiApp->AddListItem(szWndName, szItemName, dSelectItem > 0 ? true : false);
 	
 	return 1;
 }
@@ -597,4 +602,33 @@ int GuiAppLua::CreateNewRadiobuttonGroupLua(lua_State* pkLua)
 	g_pkGuiApp->CreateNewRadiobuttonGroup(szName);
 
 	return 1;
+}
+
+
+int GuiAppLua::SetDesignResolutionLua(lua_State* pkLua)
+{
+	int iNumArgs = g_pkScript->GetNumArgs(pkLua);
+
+	if(iNumArgs < 2)
+	{
+		printf("GuiAppLua::SetDesignResolution FAILED, wrong number of arguments!\n");
+		return false;
+	}
+
+	double dWidth, dHeight;
+	g_pkScript->GetArgNumber(pkLua, 0, &dWidth);
+	g_pkScript->GetArgNumber(pkLua, 1, &dHeight);
+
+	g_pkGuiApp->m_kDesignResolution.x = (int) dWidth;
+	g_pkGuiApp->m_kDesignResolution.y = (int) dHeight;
+
+	if(iNumArgs > 2)
+	{
+		double dScaleMode;
+		g_pkScript->GetArgNumber(pkLua, 1, &dScaleMode);
+		g_pkGuiApp->m_iScaleMode = (int) dScaleMode;
+	}
+
+	return true;
+
 }
