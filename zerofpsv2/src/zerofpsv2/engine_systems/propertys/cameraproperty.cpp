@@ -8,7 +8,7 @@ P_Camera::P_Camera()
 {
 	m_pkCamera = NULL;
 	m_eCameraType = CAM_TYPEFIRSTPERSON;
-	strcpy(m_acName,"CameraProperty");	
+	strcpy(m_acName,"P_Camera");	
 
 	m_iType=PROPERTY_TYPE_NORMAL;
 	m_iSide=PROPERTY_SIDE_CLIENT;
@@ -32,7 +32,7 @@ void P_Camera::Update()
 	Vector3		kYawVector;
 	string		strCamName;
 
-	P_Mad* madp = dynamic_cast<P_Mad*>(m_pkObject->GetProperty("MadProperty"));
+	P_Mad* madp = dynamic_cast<P_Mad*>(m_pkObject->GetProperty("P_Mad"));
 
 	if(m_pkCamera!=NULL) {
 		switch(m_eCameraType) {

@@ -2,9 +2,9 @@
 #include "../../engine/zerofps.h"
 //#include "../../engine/levelmanager.h"
 
-HMRP2::HMRP2(HeightMap* pkHeightMap, string strMapName) 
+P_HMRP2::P_HMRP2(HeightMap* pkHeightMap, string strMapName) 
 {
-	strcpy(m_acName,"HMRP2");		
+	strcpy(m_acName,"P_HMRP2");		
 
 	m_pkTexMan	=	static_cast<TextureManager*>(g_ZFObjSys.GetObjectPtr("TextureManager"));	
 	m_pkZeroFps	=	static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));		
@@ -18,7 +18,7 @@ HMRP2::HMRP2(HeightMap* pkHeightMap, string strMapName)
 	bNetwork	=	true;
 }
 
-void HMRP2::SetHeightMap(HeightMap* pkHeightMap, string strMapName)
+void P_HMRP2::SetHeightMap(HeightMap* pkHeightMap, string strMapName)
 {
 	m_pkHeightMap	=	pkHeightMap;	
 	m_strMapName	=	strMapName;
@@ -28,7 +28,7 @@ void HMRP2::SetHeightMap(HeightMap* pkHeightMap, string strMapName)
 }
 
 
-void HMRP2::Update() 
+void P_HMRP2::Update() 
 {	
 	if(m_pkHeightMap!=NULL){
 		m_pkHeightMap->SetPosition(m_pkObject->GetWorldPosV());
@@ -39,12 +39,12 @@ void HMRP2::Update()
 
 }
 
-void HMRP2::PackTo(NetPacket* pkNetPacket, int iConnectionID)
+void P_HMRP2::PackTo(NetPacket* pkNetPacket, int iConnectionID)
 {
 	pkNetPacket->Write_Str(m_strMapName.c_str());
 }
  
-void HMRP2::PackFrom(NetPacket* pkNetPacket, int iConnectionID)
+void P_HMRP2::PackFrom(NetPacket* pkNetPacket, int iConnectionID)
 {
 	char temp[50];
 	pkNetPacket->Read_Str(temp);
@@ -62,10 +62,10 @@ void HMRP2::PackFrom(NetPacket* pkNetPacket, int iConnectionID)
 
 Property* Create_HMRP2()
 {
-	return new HMRP2(NULL, "None");
+	return new P_HMRP2(NULL, "None");
 }
 
-void HMRP2::SetPolyMode(PolygonMode eMode)
+void P_HMRP2::SetPolyMode(PolygonMode eMode)
 {
 	m_pkRender->m_eLandscapePolygonMode = eMode;
 }

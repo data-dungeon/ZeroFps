@@ -214,7 +214,7 @@ int ObjectManagerLua::PlayAnim(lua_State* pkLua)
 //	printf("Should Play A Animation '%s' on object %d", acName,  iId1);
 
 	Object* o1 = g_pkObjMan->GetObjectByNetWorkID(iId1);
-	P_Mad* mp = dynamic_cast<P_Mad*>(o1->GetProperty("MadProperty"));
+	P_Mad* mp = dynamic_cast<P_Mad*>(o1->GetProperty("P_Mad"));
 	mp->PlayAnimation(acName,0);
 	
 	return 1;
@@ -231,7 +231,7 @@ int ObjectManagerLua::SetNextAnim(lua_State* pkLua)
 //	printf("Next Anim to play is '%s' on object %d", acName,  iId1);
 
 	Object* o1 = g_pkObjMan->GetObjectByNetWorkID(iId1);
-	P_Mad* mp = dynamic_cast<P_Mad*>(o1->GetProperty("MadProperty"));
+	P_Mad* mp = dynamic_cast<P_Mad*>(o1->GetProperty("P_Mad"));
 	mp->SetNextAnimation(acName);
 	return 1;
 }

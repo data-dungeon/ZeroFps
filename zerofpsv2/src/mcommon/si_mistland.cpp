@@ -328,7 +328,7 @@ int MistLandLua::SetPSystemLua(lua_State* pkLua)
 		Object* pkObject = g_pkObjMan->GetObjectByNetWorkID(iId);
 		
 		if(pkObject)
-			pkObject->DeleteProperty("PSystemProperty");
+			pkObject->DeleteProperty("P_PSystem");
 
 		return 0;
 	}
@@ -342,10 +342,10 @@ int MistLandLua::SetPSystemLua(lua_State* pkLua)
 		Object* pkObject = g_pkObjMan->GetObjectByNetWorkID(iId);
 		if(pkObject)
 		{
-			PSystemProperty* ps = (PSystemProperty*)pkObject->GetProperty("PSystemProperty");
+			P_PSystem* ps = (P_PSystem*)pkObject->GetProperty("P_PSystem");
 			
 			if(!ps)
-				ps = (PSystemProperty*)pkObject->AddProperty("PSystemProperty");
+				ps = (P_PSystem*)pkObject->AddProperty("P_PSystem");
 			
 			if(ps)
 			{

@@ -10,7 +10,7 @@ P_Mad::P_Mad()
 {
 	m_pkZeroFps  = static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
 
-	strcpy(m_acName,"MadProperty");
+	strcpy(m_acName,"P_Mad");
 	bNetwork	 = true;
 
 	m_iType = PROPERTY_TYPE_RENDER | PROPERTY_TYPE_NORMAL;
@@ -351,7 +351,7 @@ Property* Create_MadProperty()
 
 P_LinkToJoint::P_LinkToJoint() 
 {
-	strcpy(m_acName,"LinkToJoint");		
+	strcpy(m_acName,"P_LinkToJoint");		
 	m_iType = PROPERTY_TYPE_NORMAL;
 	m_iSide = PROPERTY_SIDE_SERVER | PROPERTY_SIDE_CLIENT;
 
@@ -363,7 +363,7 @@ void P_LinkToJoint::Init()		{ }
 
 void P_LinkToJoint::Update() 
 {
-	P_Mad* pkMad = dynamic_cast<P_Mad*>(m_pkObject->GetParent()->GetProperty("MadProperty"));
+	P_Mad* pkMad = dynamic_cast<P_Mad*>(m_pkObject->GetParent()->GetProperty("P_Mad"));
 	if(!pkMad)
 		return;
 

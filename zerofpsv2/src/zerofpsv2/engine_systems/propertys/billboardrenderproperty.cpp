@@ -3,7 +3,7 @@
  
 P_BillBoardRender::P_BillBoardRender()
 {
-	strcpy(m_acName,"BillBoardRenderProperty");		
+	strcpy(m_acName,"P_BillBoardRender");		
 
 	m_pkTexMan=static_cast<TextureManager*>(g_ZFObjSys.GetObjectPtr("TextureManager"));	
 	m_pkRender=static_cast<Render*>(g_ZFObjSys.GetObjectPtr("Render"));		

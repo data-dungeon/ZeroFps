@@ -122,7 +122,7 @@ public:
 
 	PSystemType* GetPSystemType()					{ return m_pkPSystemType; }
 
-   friend class PSystemProperty;
+   friend class P_PSystem;
 };
 
 #endif

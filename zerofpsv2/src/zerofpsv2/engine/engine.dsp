@@ -351,10 +351,6 @@ SOURCE=..\engine_systems\propertys\billboardrenderproperty.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\bodyproperty.h
-# End Source File
-# Begin Source File
-
 SOURCE=..\engine_systems\propertys\bodyproperty.h
 # End Source File
 # Begin Source File

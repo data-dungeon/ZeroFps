@@ -928,30 +928,28 @@ void ZeroFps::RegisterPropertys()
 {
 	// Propertys Used in MistLand
 	m_pkPropertyFactory->Register("P_Primitives3D",		Create_Prim3DProperty);			
-	m_pkPropertyFactory->Register("LightUpdateProperty",Create_LightUpdateProperty);							
-	m_pkPropertyFactory->Register("LightProperty",		Create_LightProperty);					
-	m_pkPropertyFactory->Register("LinkToJoint",		Create_LinkToJoint);										
-	m_pkPropertyFactory->Register("TrackProperty",		Create_TrackProperty);							
+	m_pkPropertyFactory->Register("P_LightUpdate",		Create_LightUpdateProperty);							
+	m_pkPropertyFactory->Register("P_Light",				Create_LightProperty);					
+	m_pkPropertyFactory->Register("P_LinkToJoint",		Create_LinkToJoint);										
+	m_pkPropertyFactory->Register("P_Track",				Create_TrackProperty);							
 
-	m_pkPropertyFactory->Register("MadProperty",		Create_MadProperty);				
+	m_pkPropertyFactory->Register("P_Mad",					Create_MadProperty);				
 	m_pkPropertyFactory->Register("P_AmbientSound",		Create_AmbientSound);			
-	m_pkPropertyFactory->Register("PSystemProperty",	Create_PSystemProperty);											
+	m_pkPropertyFactory->Register("P_PSystem",			Create_PSystemProperty);											
 
 	// Other Propertys.
-	m_pkPropertyFactory->Register("P_Heightmap2", Create_P_Heightmap2);
-	m_pkPropertyFactory->Register("BodyProperty", Create_BodyProperty);
-	m_pkPropertyFactory->Register("VegitationProperty", Create_VegitationProperty);
-	m_pkPropertyFactory->Register("BoxRenderProperty", Create_BoxRenderProperty);
-	m_pkPropertyFactory->Register("BillBoardRenderProperty", Create_BillBoardRenderProperty);
-	m_pkPropertyFactory->Register("CrossRenderProperty", Create_CrossRenderProperty);
-	m_pkPropertyFactory->Register("WaterRenderProperty",Create_WaterRenderProperty);	
-	m_pkPropertyFactory->Register("SkyBoxRenderProperty",Create_SkyBoxRenderProperty);		
-	m_pkPropertyFactory->Register("HeightMapRenderProperty",Create_HeightMapRenderProperty);		
-	m_pkPropertyFactory->Register("HMRP2",Create_HMRP2);			
-	m_pkPropertyFactory->Register("CameraProperty",Create_CameraProperty);			
-//	m_pkPropertyFactory->Register("ProxyProperty",Create_ProxyProperty);				
-	m_pkPropertyFactory->Register("WorldInfoProperty",Create_WorldInfoProperty);						
-	m_pkPropertyFactory->Register("PhysicProperty",Create_PhysicProperty);								
+	m_pkPropertyFactory->Register("P_Heightmap2",		Create_P_Heightmap2);
+	m_pkPropertyFactory->Register("P_Camera",				Create_CameraProperty);			
+	m_pkPropertyFactory->Register("P_WorldInfo",			Create_WorldInfoProperty);						
+	m_pkPropertyFactory->Register("P_Vegitation",		Create_VegitationProperty);
+	m_pkPropertyFactory->Register("P_WaterRender",		Create_WaterRenderProperty);	
+	m_pkPropertyFactory->Register("P_BillBoardRender", Create_BillBoardRenderProperty);
+	m_pkPropertyFactory->Register("P_CrossRender",		Create_CrossRenderProperty);
+	m_pkPropertyFactory->Register("P_SkyBoxRender",		Create_SkyBoxRenderProperty);		
+	m_pkPropertyFactory->Register("P_Physic",				Create_PhysicProperty);								
+	m_pkPropertyFactory->Register("P_Body",				Create_BodyProperty);
+	m_pkPropertyFactory->Register("P_HeightMapRender",	Create_HeightMapRenderProperty);		
+	m_pkPropertyFactory->Register("P_HMRP2",				Create_HMRP2);			
 }
 
 

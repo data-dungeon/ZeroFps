@@ -9,7 +9,7 @@ using namespace std;
 #include "../../engine/zerofps.h"
 #include "../engine_systems_x.h"
 
-class ENGINE_SYSTEMS_API BodyProperty :public Property
+class ENGINE_SYSTEMS_API P_Body :public Property
 {
 	private:
 		Physics_Engine*	m_pkPhysics_Engine;
@@ -24,8 +24,8 @@ class ENGINE_SYSTEMS_API BodyProperty :public Property
 		vector<PropertyValues> GetPropertyValues();
 		
 	public:
-		BodyProperty();		
-		~BodyProperty();
+		P_Body();		
+		~P_Body();
 		void Init();
 		
 		void Update();

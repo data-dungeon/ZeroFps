@@ -191,6 +191,13 @@ void Object::PropertyLost(Property* pkProp)
 */
 Property* Object::GetProperty(const char* acName) 
 {
+	if(strstr(acName, "P_") == NULL) {
+		if(strcmp(acName, "nons") != 0) {
+			printf("REQUEST FOR A PROPERTY WITH OLD NAME %s\n", acName);
+			assert(0);	
+			}
+		}
+
 	vector<Property*>::iterator kIt = m_akPropertys.begin();
 	while(kIt != m_akPropertys.end())
 	{
@@ -832,7 +839,7 @@ void Object::Save(ZFIoInterface* pkFile)
 // Collision / Shape.
 float Object::GetBoundingRadius()
 {
-	Property* pr=GetProperty("PhysicProperty");
+	Property* pr=GetProperty("P_Physic");
 	if(pr==NULL)
 		return 1;
 

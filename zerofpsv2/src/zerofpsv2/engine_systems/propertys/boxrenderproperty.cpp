@@ -3,6 +3,7 @@
 #include "../../engine/object.h"
 #include "../../engine/zerofps.h"
  
+/*
 BoxRenderProperty::BoxRenderProperty()
 {
 	strcpy(m_acName,"BoxRenderProperty");		
@@ -71,7 +72,7 @@ bool BoxRenderProperty::HandleSetValue( string kValueName ,string kValue )
 		SetTexture(m_kTex1.c_str(),kValue.c_str());
 		return false;
 	}
-*/	
+	
 
 	return false;
 }
@@ -119,5 +120,6 @@ Property* Create_BoxRenderProperty()
 	return new BoxRenderProperty;
 
 }
+*/
 
 

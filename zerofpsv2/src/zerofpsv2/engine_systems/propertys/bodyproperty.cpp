@@ -3,9 +3,9 @@
 #include "../../engine/object.h"
 #include "madproperty.h"
  
-BodyProperty::BodyProperty()
+P_Body::P_Body()
 {
-	strcpy(m_acName,"BodyProperty");
+	strcpy(m_acName,"P_Body");
 	
 	m_iType=PROPERTY_TYPE_NORMAL;
 	m_iSide=PROPERTY_SIDE_SERVER;	
@@ -18,21 +18,21 @@ BodyProperty::BodyProperty()
 	m_iMeshID		= 0;
 }
 
-BodyProperty::~BodyProperty()
+P_Body::~P_Body()
 {
 	Disable();
 
 }
 
 
-void BodyProperty::Init()
+void P_Body::Init()
 {
 	if(!Enable())
 		cout<<"Body did not get enabled cos it collides with another body"<<endl;
 
 }
 
-void BodyProperty::Update()
+void P_Body::Update()
 {
 
 	if(!m_bHaveSetBody)
@@ -52,34 +52,34 @@ void BodyProperty::Update()
 		SetBodyToObject();
 }
 
-bool BodyProperty::Enable()
+bool P_Body::Enable()
 {
 	return m_pkPhysics_Engine->AddBody(&m_kBody);
 }
 
-bool BodyProperty::Disable()
+bool P_Body::Disable()
 {
 	return m_pkPhysics_Engine->RemoveBody(&m_kBody);
 }
 
-void BodyProperty::SetBodyToObject()
+void P_Body::SetBodyToObject()
 {
 	m_kBody.SetPos(m_pkObject->GetWorldPosV());
 	m_kBody.SetRot(m_pkObject->GetWorldRotV());	
 }
 
-void BodyProperty::SetObjectToBody()
+void P_Body::SetObjectToBody()
 {
 	m_pkObject->SetWorldPosV(m_kBody.GetPos());
 	m_pkObject->SetWorldRotV(m_kBody.GetRot());	
 }
 
-void BodyProperty::SetBodyPos(Vector3 kPos)
+void P_Body::SetBodyPos(Vector3 kPos)
 {
 	m_kBody.SetPos(kPos);
 }
 
-vector<PropertyValues> BodyProperty::GetPropertyValues()
+vector<PropertyValues> P_Body::GetPropertyValues()
 {
 	vector<PropertyValues> kReturn(7);
 		
@@ -115,9 +115,9 @@ vector<PropertyValues> BodyProperty::GetPropertyValues()
 	return kReturn;
 }
 
-bool BodyProperty::SetUpMesh()
+bool P_Body::SetUpMesh()
 {
-	P_Mad* pkMP = static_cast<P_Mad*>(m_pkObject->GetProperty("MadProperty"));	
+	P_Mad* pkMP = static_cast<P_Mad*>(m_pkObject->GetProperty("P_Mad"));	
 	if(pkMP != NULL)
 	{
 		Mad_Core* pkCore = dynamic_cast<Mad_Core*>(pkMP->kMadHandle.GetResourcePtr());
@@ -133,7 +133,7 @@ bool BodyProperty::SetUpMesh()
 
 Property* Create_BodyProperty()
 {
-	return new BodyProperty;
+	return new P_Body;
 }
 
 

@@ -110,8 +110,8 @@ void ZeroTank::OnIdle()
 			m_pkZeroTankClientObject = pkObjectMan->GetObjectByNetWorkID( m_iSelfObjectID );
 			if(m_pkZeroTankClientObject) {
 				cout << "Create Client Object" << m_iSelfObjectID << endl;
-				m_pkZeroTankClientObject->AddProperty("CameraProperty");
-				P_Camera* cam = (P_Camera*)m_pkZeroTankClientObject->GetProperty("CameraProperty");
+				m_pkZeroTankClientObject->AddProperty("P_Camera");
+				P_Camera* cam = (P_Camera*)m_pkZeroTankClientObject->GetProperty("P_Camera");
 				cam->SetCamera(m_pkCamera);
 				}
 			}
@@ -264,7 +264,7 @@ void ZeroTank::OnHud(void)
 	pkFps->DevPrintf("common","SelfID: %d", m_iSelfObjectID);	
 	
 	if(m_pkZeroTankTrack) {
-		P_Track* pkTrack = dynamic_cast<P_Track*>(m_pkZeroTankTrack->GetProperty("TrackProperty"));
+		P_Track* pkTrack = dynamic_cast<P_Track*>(m_pkZeroTankTrack->GetProperty("P_Track"));
 
 		for(set<int>::iterator it = pkTrack->m_iActiveZones.begin(); it != pkTrack->m_iActiveZones.end(); it++) {
 			pkFps->DevPrintf("common"," %d", (*it));	
@@ -319,7 +319,7 @@ void ZeroTank::OnServerClientJoin(ZFClient* pkClient,int iConID)
 	cout<<"Client "<<iConID<<" Joined"<<endl;
 	pkClient->m_pkObject->AddProperty("P_Primitives3D");	
 	cout << "Now adding tracker to client" << endl;
-	pkClient->m_pkObject->AddProperty("TrackProperty");	
+	pkClient->m_pkObject->AddProperty("P_Track");	
 }
 
 void ZeroTank::OnServerClientPart(ZFClient* pkClient,int iConID)
@@ -340,10 +340,10 @@ void ZeroTank::OnServerStart(void)
 		m_pkCameraObject->SetUseZones(false);
 		//m_pkCameraObject->SetParent(m_pkZeroTankGun);
 		//m_pkCameraObject->SetRelativeOri(true);
-		m_pkCameraObject->AddProperty("TrackProperty");
+		m_pkCameraObject->AddProperty("P_Track");
 		m_pkCameraObject->SetParent(pkObjectMan->GetWorldObject());
 		//m_pkCameraObject->AttachToClosestZone();
-		P_Camera* cam = (P_Camera*)m_pkCameraObject->GetProperty("CameraProperty");
+		P_Camera* cam = (P_Camera*)m_pkCameraObject->GetProperty("P_Camera");
 		cam->SetCamera(m_pkCamera);
 	}
 

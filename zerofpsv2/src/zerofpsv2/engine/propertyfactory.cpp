@@ -38,6 +38,7 @@ Property* PropertyFactory::CreateProperty(const char* szName)
 		
 	}
 
+//	assert(0);
 	return NULL;
 }
 
@@ -67,16 +68,6 @@ void PropertyFactory::Display()
 	}
 	
 }
-
-/*
-void RegisterPropertys(ZeroFps* zfps)
-{
-	zfps->m_kPropertyFactory.Register("MadProperty", Create_MadProperty);
-	zfps->m_kPropertyFactory.Register("P_Primitives3D", Create_Prim3DProperty);
-	zfps->m_kPropertyFactory.Register("LightProperty", Create_LightProperty);
-
-}
-*/
 
 void PropertyFactory::GetAllProperties(vector<string>& vkList)
 {

@@ -1,6 +1,6 @@
 #ifndef _BODYPROPERTY_H_
 #define _BODYPROPERTY_H_
-
+24539478tq9we7rfhoöauiwe46243y5
 #include "iostream"
 
 using namespace std;
@@ -9,7 +9,7 @@ using namespace std;
 #include "property.h"
 #include "zerofps.h"
 
-class ENGINE_API BodyProperty :public Property
+class ENGINE_API P_Body :public Property
 {
 	private:
 		Physics_Engine*	m_pkPhysics_Engine;
@@ -24,8 +24,8 @@ class ENGINE_API BodyProperty :public Property
 		vector<PropertyValues> GetPropertyValues();
 		
 	public:
-		BodyProperty();		
-		~BodyProperty();
+		P_Body();		
+		~P_Body();
 		void Init();
 		
 		void Update();

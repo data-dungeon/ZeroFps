@@ -8,7 +8,7 @@
 
 using namespace std;
 
-
+/*
 class ENGINE_SYSTEMS_API BoxRenderProperty: public Property {
 		TextureManager* m_pkTexMan;
 		Render* m_pkRender;	
@@ -36,10 +36,10 @@ class ENGINE_SYSTEMS_API BoxRenderProperty: public Property {
 		
 		void Save(ZFIoInterface* pkPackage);
 		void Load(ZFIoInterface* pkPackage);
-		
 };
 
 Property* Create_BoxRenderProperty();
+*/
 
 #endif
 

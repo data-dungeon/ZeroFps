@@ -4,7 +4,7 @@
 
 // ------------------------------------------------------------------------------------------
 
-void PSystemProperty::Update()
+void P_PSystem::Update()
 {
 	if ( m_pkPSystem )
 	{
@@ -25,7 +25,7 @@ void PSystemProperty::Update()
 
 // ------------------------------------------------------------------------------------------
 
-vector<PropertyValues> PSystemProperty::GetPropertyValues()
+vector<PropertyValues> P_PSystem::GetPropertyValues()
 {
 	vector<PropertyValues> kReturn(1);
 		
@@ -38,7 +38,7 @@ vector<PropertyValues> PSystemProperty::GetPropertyValues()
 
 // ------------------------------------------------------------------------------------------
 
-PSystemProperty::PSystemProperty()
+P_PSystem::P_PSystem()
 {
    bNetwork = true;
 
@@ -46,14 +46,14 @@ PSystemProperty::PSystemProperty()
 	m_iSide = PROPERTY_SIDE_CLIENT;
 	m_iSortPlace =	9;
 
-	strcpy(m_acName,"PSystemProperty");
+	strcpy(m_acName,"P_PSystem");
 	m_pkPSystem = NULL;
 
 }
 
 // ------------------------------------------------------------------------------------------
 
-PSystemProperty::PSystemProperty( string kPSType )
+P_PSystem::P_PSystem( string kPSType )
 {
    bNetwork = true;
 
@@ -61,13 +61,13 @@ PSystemProperty::PSystemProperty( string kPSType )
 	m_iSide = PROPERTY_SIDE_CLIENT;
 	m_iSortPlace =	9;
 
-	strcpy(m_acName,"PSystemProperty");
+	strcpy(m_acName,"P_PSystem");
 	SetPSType ( kPSType );
 }
 
 // ------------------------------------------------------------------------------------------
 
-bool PSystemProperty::HandleSetValue( string kValueName, string kValue )
+bool P_PSystem::HandleSetValue( string kValueName, string kValue )
 {
 	if( strcmp(kValueName.c_str(), "PSType") == 0 ) 
 	{
@@ -83,7 +83,7 @@ bool PSystemProperty::HandleSetValue( string kValueName, string kValue )
 
 // ------------------------------------------------------------------------------------------
 
-void PSystemProperty::SetPSType( string kName )
+void P_PSystem::SetPSType( string kName )
 {
 	m_pkPSystem = PSystemManager::GetInstance()->GetPSSystem ( kName );
    m_kPSType = kName;
@@ -91,7 +91,7 @@ void PSystemProperty::SetPSType( string kName )
 
 // ------------------------------------------------------------------------------------------
 
-void PSystemProperty::Save(ZFIoInterface* pkPackage)
+void P_PSystem::Save(ZFIoInterface* pkPackage)
 {
 
    // PSType
@@ -108,7 +108,7 @@ void PSystemProperty::Save(ZFIoInterface* pkPackage)
 
 // ------------------------------------------------------------------------------------------
 
-void PSystemProperty::Load(ZFIoInterface* pkPackage)
+void P_PSystem::Load(ZFIoInterface* pkPackage)
 {
 
    // Read PSType
@@ -128,14 +128,14 @@ void PSystemProperty::Load(ZFIoInterface* pkPackage)
 
 // ------------------------------------------------------------------------------------------
 
-void PSystemProperty::PackTo( NetPacket* pkNetPacket, int iConnectionID  ) 
+void P_PSystem::PackTo( NetPacket* pkNetPacket, int iConnectionID  ) 
 {
    pkNetPacket->Write_NetStr( m_kPSType.c_str() );
 }
 
 // ------------------------------------------------------------------------------------------
 
-void PSystemProperty::PackFrom( NetPacket* pkNetPacket, int iConnectionID  ) 
+void P_PSystem::PackFrom( NetPacket* pkNetPacket, int iConnectionID  ) 
 {
 	char temp[128];
 	pkNetPacket->Read_NetStr(temp);
@@ -154,7 +154,7 @@ void PSystemProperty::PackFrom( NetPacket* pkNetPacket, int iConnectionID  )
 
 // ------------------------------------------------------------------------------------------
 
-PSystemProperty::~PSystemProperty()
+P_PSystem::~P_PSystem()
 {
    delete m_pkPSystem;
 }
@@ -163,6 +163,6 @@ PSystemProperty::~PSystemProperty()
 
 Property* Create_PSystemProperty()
 {
-	return new PSystemProperty;
+	return new P_PSystem;
 }
 

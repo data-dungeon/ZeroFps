@@ -2,7 +2,7 @@
 
 P_Vegitation::P_Vegitation()
 {
-	strcpy(m_acName,"VegitationProperty");
+	strcpy(m_acName,"P_Vegitation");
 	
 	m_iType=PROPERTY_TYPE_RENDER;
 	m_iSide=PROPERTY_SIDE_CLIENT;

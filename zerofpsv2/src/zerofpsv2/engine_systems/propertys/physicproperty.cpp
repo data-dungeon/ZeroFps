@@ -9,7 +9,7 @@
 
 P_Physic::P_Physic()
 {
-	strcpy(m_acName,"PhysicProperty");
+	strcpy(m_acName,"P_Physic");
 	
 	m_iType=PROPERTY_TYPE_PHYSIC;
 	m_iSide=PROPERTY_SIDE_SERVER;	
@@ -51,7 +51,7 @@ void P_Physic::Update()
 
 float P_Physic::GetBoundingRadius()
 {
-	P_Mad* mp = static_cast<P_Mad*>(m_pkObject->GetProperty("MadProperty"));
+	P_Mad* mp = static_cast<P_Mad*>(m_pkObject->GetProperty("P_Mad"));
 	if(mp!=NULL)
 	{
 		return mp->GetRadius();	
@@ -63,7 +63,7 @@ float P_Physic::GetBoundingRadius()
 		return mop->m_fRadius;	
 	}
 	
-	HMRP2* hp = static_cast<HMRP2*>(m_pkObject->GetProperty("HMRP2"));
+	P_HMRP2* hp = static_cast<P_HMRP2*>(m_pkObject->GetProperty("P_HMRP2"));
 	if(hp!=NULL)
 	{
 		float k=hp->GetHeightMap()->GetSize()/2;		

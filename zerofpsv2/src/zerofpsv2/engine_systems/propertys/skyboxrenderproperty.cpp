@@ -2,7 +2,7 @@
 
 P_SkyBoxRender::P_SkyBoxRender(const char* acHor,const char* acTop) 
 {
-	strcpy(m_acName,"SkyBoxRenderProperty");		
+	strcpy(m_acName,"P_SkyBoxRender");		
 //	m_pkFrustum=static_cast<Frustum*>(g_ZFObjSys.GetObjectPtr("Frustum"));
 	m_pkTexMan=static_cast<TextureManager*>(g_ZFObjSys.GetObjectPtr("TextureManager"));	
 	m_pkZeroFps=static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));		

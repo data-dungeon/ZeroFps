@@ -5,7 +5,7 @@
 
 P_CrossRender::P_CrossRender()
 {
-	strcpy(m_acName,"CrossRenderProperty");		
+	strcpy(m_acName,"P_CrossRender");		
 
 	m_pkTexMan=static_cast<TextureManager*>(g_ZFObjSys.GetObjectPtr("TextureManager"));	
 	m_pkRender=static_cast<Render*>(g_ZFObjSys.GetObjectPtr("Render"));		

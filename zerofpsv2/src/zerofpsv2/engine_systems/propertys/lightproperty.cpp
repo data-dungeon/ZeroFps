@@ -9,7 +9,7 @@ P_Light::P_Light()
 	m_pkLight	= static_cast<Light*>(g_ZFObjSys.GetObjectPtr("Light"));
 	m_pkZeroFps = static_cast<I_ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
 
-	strcpy(m_acName,"LightProperty");
+	strcpy(m_acName,"P_Light");
 	bNetwork = true;
 	
 	m_pkLightSource=new LightSource();

@@ -428,9 +428,6 @@ bool CharacterStats::Equip ( Object *pkObject, string kSlot )
 
 
       // stick Object to MAD model
-      //m_pkParent->GetProperty ("MadProperty")->
-
-
       return true;
    }
 

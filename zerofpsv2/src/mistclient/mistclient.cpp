@@ -278,10 +278,10 @@ void MistClient::OnSystem()
 			
 			if(pkObj)
 			{
-				P_Camera* cp = (P_Camera*)pkObj->GetProperty("CameraProperty");
+				P_Camera* cp = (P_Camera*)pkObj->GetProperty("P_Camera");
 			
 				if(!cp)
-					P_Camera* cp = (P_Camera*)pkObj->AddProperty("CameraProperty");
+					P_Camera* cp = (P_Camera*)pkObj->AddProperty("P_Camera");
 		
 				if(cp)
 				{
@@ -442,7 +442,6 @@ void MistClient::OnServerClientJoin(ZFClient* pkClient,int iConID)
 	
 	pkClient->m_pkObject->AddProperty("P_Primitives3D");	
 	cout << "Now adding er to client" << endl;
-//	pkClient->m_pkObject->AddProperty("TrackProperty");		
 }
 
 void MistClient::OnServerClientPart(ZFClient* pkClient,int iConID)
@@ -459,9 +458,9 @@ void MistClient::OnServerStart(void)
 	{
 		m_pkTestobj->SetParent(pkObjectMan->GetWorldObject());
 	
-		m_pkTestobj->AddProperty("TrackProperty");	
+		m_pkTestobj->AddProperty("P_Track");	
 
-		m_pkCamProp = (P_Camera*)m_pkTestobj->GetProperty("CameraProperty");
+		m_pkCamProp = (P_Camera*)m_pkTestobj->GetProperty("P_Camera");
 		m_pkCamProp->SetCamera(m_pkCamera);
 		m_pkCamProp->SetType(CAM_TYPE3PERSON);
 		m_pkCamProp->Set3PDistance(m_fMinCamDistance);	
@@ -728,7 +727,7 @@ void MistClient::SetActiveCaracter(int iCaracter)
 				if(pkObj)
 				{
 					//disable camera on old active character 
-					pkObj->DeleteProperty("CameraProperty");
+					pkObj->DeleteProperty("P_Camera");
 					m_pkCamProp = NULL;
 				
 					//get enviroment property for old active character
@@ -758,11 +757,11 @@ void MistClient::SetActiveCaracter(int iCaracter)
 					if(pkObj)
 					{
 						//get camera and enviroment propertys
-						P_Camera* cp = (P_Camera*)pkObj->GetProperty("CameraProperty");
+						P_Camera* cp = (P_Camera*)pkObj->GetProperty("P_Camera");
 						P_Enviroment* ep = (P_Enviroment*)pkObj->GetProperty("P_Enviroment");
 				
 						if(!cp)
-							P_Camera* cp = (P_Camera*)pkObj->AddProperty("CameraProperty");
+							P_Camera* cp = (P_Camera*)pkObj->AddProperty("P_Camera");
 		
 						if(cp)
 						{
@@ -954,7 +953,7 @@ bool MistClient::PickZones()
 		{
 			iNrOfZones++;
 		
-			P_Mad* mp = (P_Mad*)kObjects[i]->GetProperty("MadProperty");
+			P_Mad* mp = (P_Mad*)kObjects[i]->GetProperty("P_Mad");
 			if(mp)
 			{
 				if(mp->TestLine(start,dir))

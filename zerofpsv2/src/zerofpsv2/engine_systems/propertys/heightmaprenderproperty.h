@@ -10,14 +10,14 @@
 using namespace std;
 
 
-class ENGINE_SYSTEMS_API HeightMapRenderProperty: public Property {
+class ENGINE_SYSTEMS_API P_HeightMapRender : public Property {
 		HeightMap* m_pkHeightMap;
 		TextureManager* m_pkTexMan;
 		ZeroFps* m_pkZeroFps;
 		Render* m_pkRender;	
 	
 	public:
-		HeightMapRenderProperty(HeightMap* pkHeightMap);
+		P_HeightMapRender(HeightMap* pkHeightMap);
 		void CloneOf(Property* pkProperty) { }
 		void Update();
 

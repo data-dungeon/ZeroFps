@@ -1,9 +1,9 @@
 #include "heightmaprenderproperty.h"
 #include "../../engine/zerofps.h"
 
-HeightMapRenderProperty::HeightMapRenderProperty(HeightMap* pkHeightMap) 
+P_HeightMapRender::P_HeightMapRender(HeightMap* pkHeightMap) 
 {
-	strcpy(m_acName,"HeightMapRenderProperty");		
+	strcpy(m_acName,"P_HeightMapRender");		
 
 	m_pkTexMan	=static_cast<TextureManager*>(g_ZFObjSys.GetObjectPtr("TextureManager"));	
 	m_pkZeroFps	=static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));		
@@ -16,7 +16,7 @@ HeightMapRenderProperty::HeightMapRenderProperty(HeightMap* pkHeightMap)
 	m_iSide=PROPERTY_SIDE_CLIENT;
 }
 
-void HeightMapRenderProperty::SetHeightMap(HeightMap* pkHeightMap)
+void P_HeightMapRender::SetHeightMap(HeightMap* pkHeightMap)
 {
 	m_pkHeightMap=pkHeightMap;	
 	if(m_pkHeightMap!=NULL)
@@ -24,7 +24,7 @@ void HeightMapRenderProperty::SetHeightMap(HeightMap* pkHeightMap)
 }
 
 
-void HeightMapRenderProperty::Update() 
+void P_HeightMapRender::Update() 
 {	
 	if(m_pkHeightMap!=NULL){
 		m_pkHeightMap->SetPosition(m_pkObject->GetWorldPosV());
@@ -34,7 +34,7 @@ void HeightMapRenderProperty::Update()
 
 Property* Create_HeightMapRenderProperty()
 {
-	return new HeightMapRenderProperty(NULL);
+	return new P_HeightMapRender(NULL);
 }
 
 

@@ -75,8 +75,8 @@ void P_Spell::Update()
             Object *pkNewObject = m_pkObject->m_pkObjectMan->CreateObject();
 
             // create and attach PS to new object
-            pkNewObject->AddProperty ("PSystemProperty");
-            PSystemProperty *pkPSProp = (PSystemProperty*)pkNewObject->GetProperty("PSystemProperty");
+            pkNewObject->AddProperty ("P_PSystem");
+            P_PSystem *pkPSProp = (P_PSystem*)pkNewObject->GetProperty("P_PSystem");
             pkPSProp->SetPSType ( m_pkSpellType->m_kGraphicEffects[m_iPSIndex].m_kPSystemName );
 
             // add PSystem offset
@@ -426,7 +426,7 @@ void P_Spell::DoCollisions()
                {
                   Object *pkNewPSystem = m_pkObject->m_pkObjectMan->CreateObject();
             
-                  PSystemProperty *pkNewPSProp = new PSystemProperty;
+                  P_PSystem *pkNewPSProp = new P_PSystem;
                   kObjects[i]->AddProperty( pkNewPSProp );
                   pkNewPSProp->SetValue ( "PSType", m_pkSpellType->m_kOnHit[1] );
             

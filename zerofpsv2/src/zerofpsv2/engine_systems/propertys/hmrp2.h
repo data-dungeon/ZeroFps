@@ -10,7 +10,7 @@
 using namespace std;
 
 /// Property to add a Hmap to a object.
-class ENGINE_SYSTEMS_API HMRP2: public Property {
+class ENGINE_SYSTEMS_API P_HMRP2: public Property {
 		HeightMap* m_pkHeightMap;
 		TextureManager* m_pkTexMan;
 		ZeroFps* m_pkZeroFps;
@@ -21,7 +21,7 @@ class ENGINE_SYSTEMS_API HMRP2: public Property {
 		string	m_strMapName;
 
 		void SetPolyMode(int iMode);
-		HMRP2(HeightMap* pkHeightMap, string strMapName);
+		P_HMRP2(HeightMap* pkHeightMap, string strMapName);
 		void CloneOf(Property* pkProperty) { }
 		void Update();
 

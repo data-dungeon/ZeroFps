@@ -5,7 +5,7 @@ P_WorldInfo::P_WorldInfo()
 {
 	m_pkFps = static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
 
-	strcpy(m_acName,"WorldInfoProperty");	
+	strcpy(m_acName,"P_WorldInfo");	
 
 	m_iType=PROPERTY_TYPE_NORMAL;
 	m_iSide=PROPERTY_SIDE_SERVER;

@@ -2,7 +2,7 @@
  
 P_WaterRender::P_WaterRender()
 {
-	strcpy(m_acName,"WaterRenderProperty");		
+	strcpy(m_acName,"P_WaterRender");		
 
 //	m_pkFrustum=static_cast<Frustum*>(g_ZFObjSys.GetObjectPtr("Frustum"));
 	m_pkTexMan=static_cast<TextureManager*>(g_ZFObjSys.GetObjectPtr("TextureManager"));	

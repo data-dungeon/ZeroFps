@@ -551,7 +551,6 @@ void MistServer::OnServerClientJoin(ZFClient* pkClient,int iConID)
 	cout<<"Client "<<iConID<<" Joined"<<endl;
 	
 	//pkClient->m_pkObject->AddProperty("P_Primitives3D");	
-	//pkClient->m_pkObject->AddProperty("TrackProperty");	
 	//TrackProperty* pkTrack = dynamic_cast<TrackProperty*>(pkClient->m_pkObject->GetProperty("TrackProperty"));
 	//pkTrack->SetClient(iConID);
 
@@ -603,7 +602,7 @@ void MistServer::OnServerStart(void)
 	if(m_pkCameraObject)
 	{	
 		m_pkCameraObject->SetParent(pkObjectMan->GetWorldObject());
-		P_Camera* m_pkCamProp = (P_Camera*)m_pkCameraObject->GetProperty("CameraProperty");
+		P_Camera* m_pkCamProp = (P_Camera*)m_pkCameraObject->GetProperty("P_Camera");
 		m_pkCamProp->SetCamera(m_pkCamera);
 		
 	}
@@ -982,8 +981,8 @@ int MistServer::CreatePlayer(const char* csName,const char* csLocation,int iConI
 	if(pkObject)
 	{	
 		pkObject->GetSave() = false;
-		pkObject->AddProperty("TrackProperty");	
-		P_Track* pkTrack = dynamic_cast<P_Track*>(pkObject->GetProperty("TrackProperty"));	
+		pkObject->AddProperty("P_Track");	
+		P_Track* pkTrack = dynamic_cast<P_Track*>(pkObject->GetProperty("P_Track"));	
 		if(pkTrack)
 			pkTrack->SetClient(iConID);	
 

@@ -6,7 +6,7 @@
 #include "../common/psystem.h"
 
 /// Property for a particle system.
-class ENGINE_SYSTEMS_API PSystemProperty: public Property {
+class ENGINE_SYSTEMS_API P_PSystem : public Property {
 
 	private:
 		PSystem *m_pkPSystem;
@@ -17,9 +17,9 @@ class ENGINE_SYSTEMS_API PSystemProperty: public Property {
 		void CloneOf(Property* pkProperty) {}
 		vector<PropertyValues> GetPropertyValues();
 
-		PSystemProperty( string kPSType );
-		PSystemProperty();
-      ~PSystemProperty();
+		P_PSystem( string kPSType );
+		P_PSystem();
+      ~P_PSystem();
 		
 		bool HandleSetValue( string kValueName, string kValue );
 

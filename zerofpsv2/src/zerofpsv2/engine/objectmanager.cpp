@@ -615,7 +615,7 @@ void ObjectManager::PackToClient(int iClient, vector<Object*> kObjects)
 	m_pkNetWork->SendToClient(iClient, &NP);
 }
 
-void ObjectManager::PackZoneListToClient(int iClient, set<int>& iZones /*TrackProperty* pkTrack*/)
+void ObjectManager::PackZoneListToClient(int iClient, set<int>& iZones)
 {
 		
 	int iNetID;
@@ -733,7 +733,7 @@ void ObjectManager::PackToClients()
 	
 	// Refresh list of active Zones for each client.
 	for(list<Object*>::iterator iT=m_kTrackedObjects.begin();iT!=m_kTrackedObjects.end();iT++) {
-		P_Track* pkTrack = dynamic_cast<P_Track*>((*iT)->GetProperty("TrackProperty"));
+		P_Track* pkTrack = dynamic_cast<P_Track*>((*iT)->GetProperty("P_Track"));
 		if(pkTrack->m_iConnectID != -1)
 				m_pkZeroFps->m_kClient[pkTrack->m_iConnectID].m_iActiveZones.insert(
 					pkTrack->m_iActiveZones.begin(),pkTrack->m_iActiveZones.end());
@@ -1556,7 +1556,7 @@ void ObjectManager::UpdateZones()
 	// For each tracker.
 	for(list<Object*>::iterator iT=m_kTrackedObjects.begin();iT!=m_kTrackedObjects.end();iT++) {
 		// Find Active Zone.
-		P_Track* pkTrack = dynamic_cast<P_Track*>((*iT)->GetProperty("TrackProperty"));
+		P_Track* pkTrack = dynamic_cast<P_Track*>((*iT)->GetProperty("P_Track"));
 		pkTrack->m_iActiveZones.clear();
 
 		for(iZ=0;iZ<m_kZones.size();iZ++)
@@ -1843,7 +1843,7 @@ void ObjectManager::LoadZone(int iId)
 		Vector3 kPos = kZData->m_kPos;
 		object->SetLocalPosV(kPos);
 		object->GetUpdateStatus()=UPDATE_DYNAMIC;
-		object->AddProperty("LightUpdateProperty");	//always attach a lightupdateproperty to new zones
+		object->AddProperty("P_LightUpdate");	//always attach a lightupdateproperty to new zones
 
 		SetZoneModel("data/mad/zones/emptyzone.mad",iId);
 
@@ -2086,11 +2086,11 @@ void ObjectManager::SetZoneModel(const char* szName,int iId)
 		return;
 	}	
 
-	P_Mad* mp = (P_Mad*)zd->m_pkZone->GetProperty("MadProperty");
+	P_Mad* mp = (P_Mad*)zd->m_pkZone->GetProperty("P_Mad");
 	
 	if(!mp)
 	{
-		mp = (P_Mad*)zd->m_pkZone->AddProperty("MadProperty");
+		mp = (P_Mad*)zd->m_pkZone->AddProperty("P_Mad");
 	}
 		
 	if(mp)

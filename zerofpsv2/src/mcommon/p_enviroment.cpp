@@ -241,16 +241,16 @@ void P_Enviroment::SetEnviroment(char* csEnviroment )
 	//setup particle property
 	if(es->m_strParticles != "")
 	{
-		PSystemProperty* ps = (PSystemProperty*)m_pkObject->AddProperty("PSystemProperty");	
+		P_PSystem* ps = (P_PSystem*)m_pkObject->AddProperty("P_PSystem");	
 		if(ps)
 			ps->SetPSType(es->m_strParticles);
 	}
 	
 	//setup light property
 	
-	P_Light* pl = (P_Light*)m_pkObject->GetProperty("LightProperty");		
+	P_Light* pl = (P_Light*)m_pkObject->GetProperty("P_Light");		
 	if(!pl)
-		pl = (P_Light*)m_pkObject->AddProperty("LightProperty");	
+		pl = (P_Light*)m_pkObject->AddProperty("P_Light");	
 	
 	if(pl)
 	{	
@@ -280,7 +280,7 @@ void P_Enviroment::ResetEnviroment()
 {
 	
 	//m_pkRender->SetFog(Vector4(0,0,0,0),0,50,false);
-	m_pkObject->DeleteProperty("PSystemProperty");
+	m_pkObject->DeleteProperty("P_PSystem");
 	m_pkObject->DeleteProperty("P_AmbientSound");
 	
 	m_pkCurrentLP = NULL;

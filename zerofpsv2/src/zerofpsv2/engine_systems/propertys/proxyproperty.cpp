@@ -88,7 +88,7 @@ P_Track::P_Track()
 	m_pkOBjM			= static_cast<ObjectManager*>(g_ZFObjSys.GetObjectPtr("ObjectManager"));	
 	m_pkFps				= static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
 
-	strcpy(m_acName,"TrackProperty");		
+	strcpy(m_acName,"P_Track");		
 	m_iType = PROPERTY_TYPE_NORMAL;
 	m_iSide = PROPERTY_SIDE_SERVER | PROPERTY_SIDE_CLIENT;
 
