@@ -63,7 +63,7 @@ void MistClient::OnInit()
 	m_pkFps->StartServer(true,false);
 
    // initialize gui system with default skins, font etc
-	InitGui(m_pkScript, "morpheus10", "data/script/gui/defskins.lua", NULL, false, true); 
+	InitGui(m_pkScript, "defguifont", "data/script/gui/defskins.lua", NULL, false, true); 
 
    // load startup screen 
    LoadGuiFromScript("data/script/gui/ml_start.lua");

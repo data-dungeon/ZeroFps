@@ -139,7 +139,7 @@ void MistServer::Init()
 	GuiAppLua::Init(&g_kMistServer, m_pkScript);
 
 	// Load default texture and create default font and menu (NULL = No menu).
-	InitGui(m_pkScript, "ms_sans_serif8", "data/script/gui/defskins.lua", 
+	InitGui(m_pkScript, "defguifont", "data/script/gui/defskins.lua", 
 		"data/script/gui/menu.txt", true, true); 
 
 	// Create startup GUI for the the server from script.

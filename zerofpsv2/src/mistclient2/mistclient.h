@@ -1,11 +1,6 @@
 #ifndef _MISTCLIENT_H_
 #define _MISTCLIENT_H_
 
-#ifndef _DONT_MAIN
-	#define _MAINAPPLICATION_
-	#define _DONT_MAIN
-#endif
-
 #include <iostream>
 #include <cmath>
 #include <list>
