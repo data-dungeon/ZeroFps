@@ -229,7 +229,7 @@ void P_PfMesh::SetMad(P_Mad* pkMad)
 
 	Matrix4 kMat = m_pkObject->GetWorldOriM();
 
-	for(int i=0; i<pkFace->size(); i++) {
+	for(unsigned int i=0; i<pkFace->size(); i++) {
 		kNaviMesh.m_kVertex[0] = (*pkVertex)[ (*pkFace)[i].iIndex[0] ];
 		kNaviMesh.m_kVertex[1] = (*pkVertex)[ (*pkFace)[i].iIndex[1] ];
 		kNaviMesh.m_kVertex[2] = (*pkVertex)[ (*pkFace)[i].iIndex[2] ];
@@ -285,7 +285,7 @@ void P_PfMesh::DrawNaviMesh()
 
 	Render* pkRender = static_cast<Render*>(g_ZFObjSys.GetObjectPtr("Render")); 
 
-	for(int i=1; i<m_NaviMesh.size(); i++) {
+	for(unsigned int i=1; i<m_NaviMesh.size(); i++) {
 		if(&m_NaviMesh[i] == m_pkSelected)	kColor.Set(0,0,1);
 			else										kColor.Set(1,1,1);
 		pkRender->Draw_MarkerCross(m_NaviMesh[i].m_kCenter, kColor, 0.1);
@@ -334,7 +334,7 @@ void P_PfMesh::LinkToConnectedCells(NaviMeshCell* pkNavCell)
 	pkNavCell->m_aiLinks[1] = NULL;
 	pkNavCell->m_aiLinks[2] = NULL;
 
-	for(int i=1; i<m_NaviMesh.size(); i++) {
+	for(unsigned int i=1; i<m_NaviMesh.size(); i++) {
 		if(&m_NaviMesh[i] == pkNavCell)	continue;
 
 		if(m_NaviMesh[i].IsConnected(pkNavCell, pkNavCell->m_kVertex[0], pkNavCell->m_kVertex[1]) ) {
@@ -354,7 +354,7 @@ void P_PfMesh::LinkToConnectedCells(NaviMeshCell* pkNavCell)
 
 void P_PfMesh::LinkCells()
 {
-	for(int i=1; i<m_NaviMesh.size(); i++) {
+	for(unsigned int i=1; i<m_NaviMesh.size(); i++) {
 		LinkToConnectedCells( &m_NaviMesh[i] );
 		}
 
@@ -368,7 +368,7 @@ NaviMeshCell* P_PfMesh::GetCurrentCell(Vector3 kPos)
 
 	Vector2 kStartPos(kPos.x,kPos.z);
 
-	for(int i=1; i<m_NaviMesh.size(); i++) {
+	for(unsigned int i=1; i<m_NaviMesh.size(); i++) {
 		if(m_NaviMesh[i].IsPointInCell(kStartPos) == false )
 			continue;
 
@@ -395,7 +395,7 @@ NaviMeshCell* P_PfMesh::GetCell(Vector3 kPos)
 	float fClosest = 100000000;
 	int iIndex = 0;
 
-	for(int i=1; i<m_NaviMesh.size(); i++) {
+	for(unsigned int i=1; i<m_NaviMesh.size(); i++) {
 		Vector3 kDiff = m_NaviMesh[i].m_kCenter - kPos;
 		float fDist = kDiff.Length();
 
@@ -414,7 +414,7 @@ void P_PfMesh::FlagExternalLinks()
 	NaviMeshCell* pkNavCell;
 
 	// Loop all cells
-	for(int iNavMesh=1; iNavMesh<m_NaviMesh.size(); iNavMesh++) {
+	for(unsigned int iNavMesh=1; iNavMesh<m_NaviMesh.size(); iNavMesh++) {
 		pkNavCell = &m_NaviMesh[iNavMesh];
 		
 		// Loop all edges in cell
@@ -434,7 +434,7 @@ NaviMeshCell* P_PfMesh::GetCell(Vector3 kA, Vector3 kB)
 	NaviMeshCell* pkNavCell;
 
 	// Loop all cells
-	for(int iNavMesh=1; iNavMesh<m_NaviMesh.size(); iNavMesh++) {
+	for(unsigned int iNavMesh=1; iNavMesh<m_NaviMesh.size(); iNavMesh++) {
 		pkNavCell = &m_NaviMesh[iNavMesh];
 
 		// Loop all edges in cell

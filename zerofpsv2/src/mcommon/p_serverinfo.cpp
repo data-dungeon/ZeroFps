@@ -103,7 +103,7 @@ void P_ServerInfo::AddObject(int id,int iObjID,int iRights)
 	{
 		if((*it).iId == id)
 		{
-			for(int i = 0;i<(*it).kControl.size();i++)
+			for(unsigned int i = 0;i<(*it).kControl.size();i++)
 			{
 				if((*it).kControl[i].first == iObjID)
 					return;
@@ -143,7 +143,7 @@ void P_ServerInfo::PackTo( NetPacket* pkNetPacket, int iConnectionID  )
 	int players = m_kPlayers.size();	
 	pkNetPacket->Write(&players,sizeof(players));
 	
-	for(int i=0;i<m_kPlayers.size();i++)
+	for(unsigned int i=0;i<m_kPlayers.size();i++)
 	{
 		pkNetPacket->Write(&m_kPlayers[i].iId,sizeof(m_kPlayers[i].iId));
 		pkNetPacket->Write_Str(m_kPlayers[i].sPlayerName.c_str());		
@@ -266,7 +266,7 @@ void P_ServerInfo::PackFrom( NetPacket* pkNetPacket, int iConnectionID  )
 
 PlayerInfo* P_ServerInfo::GetPlayerInfo(int id)
 {
-	for(int i=0;i<m_kPlayers.size();i++)
+	for(unsigned int i=0;i<m_kPlayers.size();i++)
 	{
 		if(m_kPlayers[i].iId == id)
 			return &m_kPlayers[i];
@@ -282,11 +282,11 @@ void P_ServerInfo::MessageCharacter(int iObjectID,string strMessage)
 	cout<<"number of players"<<m_kPlayers.size()<<endl;
 	
 
-	for(int i =0 ;i< m_kPlayers.size();i++)
+	for(unsigned int i =0 ;i< m_kPlayers.size();i++)
 	{	
 		cout<<"player "<<i<<" controls "<<m_kPlayers[i].kControl.size()<<"characters"<<endl;
 		
-		for(int j=0;j<m_kPlayers[i].kControl.size();j++)
+		for(unsigned int j=0;j<m_kPlayers[i].kControl.size();j++)
 		{	
 			
 			//check for object in player kontrol list
@@ -309,7 +309,7 @@ void P_ServerInfo::MessagePlayer(const char* czName,string strMessage)
 {
 	SetNetUpdateFlag(true);	
 	
-	for(int i =0 ;i< m_kPlayers.size();i++)
+	for(unsigned int i =0 ;i< m_kPlayers.size();i++)
 	{	
 		if(m_kPlayers[i].sPlayerName == czName)
 		{	
@@ -327,7 +327,7 @@ void P_ServerInfo::MessagePlayer(int id,string strMessage)
 	//if target connection id is -1 send to everyone
 	if(id == -1)
 	{
-		for(int i =0 ;i< m_kPlayers.size();i++)
+		for(unsigned int i =0 ;i< m_kPlayers.size();i++)
 		{	
 			m_kPlayers[i].kMessages.push(strMessage);			
 		}
@@ -357,9 +357,9 @@ void P_ServerInfo::AddPrivateSoundToPlayer(int iPlayerObjectID, int iObjectGenSo
 {
 	SetNetUpdateFlag(true);	
 	
-	for(int i =0 ;i< m_kPlayers.size();i++)
+	for(unsigned int i =0 ;i< m_kPlayers.size();i++)
 	{	
-		for(int j=0;j<m_kPlayers[i].kControl.size();j++)
+		for(unsigned int j=0;j<m_kPlayers[i].kControl.size();j++)
 		{	
 			//check for object in player kontrol list
 			if(m_kPlayers[i].kControl[j].first == iPlayerObjectID)
@@ -380,9 +380,9 @@ void P_ServerInfo::AddSound(int iObjectGenSoundID, char *szFileName)
 	SetNetUpdateFlag(true);
 	
 	
-	for(int i =0 ;i< m_kPlayers.size();i++)
+	for(unsigned int i =0 ;i< m_kPlayers.size();i++)
 	{	
-		for(int j=0;j<m_kPlayers[i].kControl.size();j++)
+		for(unsigned int j=0;j<m_kPlayers[i].kControl.size();j++)
 		{	
 			//check rights 
 			if(m_kPlayers[i].kControl[j].second & PR_CONTROLS) 

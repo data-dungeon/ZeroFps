@@ -644,18 +644,18 @@ Vector3 Matrix4::GetRotVector()
 	float ftry;
 	
 	
-	angle_y = D = -asin( data[2]);
-	C           =  cos( angle_y );
+	angle_y = D = float(-asin( data[2]));
+	C           =  float(cos( angle_y ));
 	angle_y    *= degtorad;
     
 //	if ( fabs( angle_y ) > 0.0005 )
 //   {
 		ftrx      =  data[9] / C;
 		ftry      = -data[8]  / C;
-		angle_x  = atan2( ftry, ftrx ) * degtorad;
+		angle_x  = float(atan2( ftry, ftrx ) * degtorad);
 		ftrx      =  data[0] / C;
 		ftry      = -data[1] / C;
-   	angle_z  = atan2( ftry, ftrx ) * degtorad;
+   	angle_z  = float(atan2( ftry, ftrx ) * degtorad);
 /*   }
 	else
 	{

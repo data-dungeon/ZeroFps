@@ -152,7 +152,7 @@ bool ZFResourceDB::Refresh()
 
 		// No one is using it. Check for expire time.
 		if(m_bInstantExpire == false && (*it)->m_fExpireTimer == 0) {
-			(*it)->m_fExpireTimer = fTime + RES_EXPIRE_TIME;
+			(*it)->m_fExpireTimer = fTime + float(RES_EXPIRE_TIME);
 			cout << "Set Expire: '" << (*it)->m_strName << "'" << endl;
 			}
 		else {

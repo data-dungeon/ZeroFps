@@ -810,7 +810,7 @@ void	Property::SetNrOfConnections(int iConNR)
 
 void	Property::ResetAllNetUpdateFlags()
 {
-	for(int i = 0;i<m_kNetUpdateFlags.size();i++)
+	for(unsigned int i = 0;i<m_kNetUpdateFlags.size();i++)
 	{
 		m_kNetUpdateFlags[i]=true;
 	}
@@ -818,7 +818,7 @@ void	Property::ResetAllNetUpdateFlags()
 
 void Property::SetNetUpdateFlag(bool bValue)
 {
-	for(int i = 0;i<m_kNetUpdateFlags.size();i++)
+	for(unsigned int i = 0;i<m_kNetUpdateFlags.size();i++)
 	{
 		m_kNetUpdateFlags[i] = bValue;
 	}

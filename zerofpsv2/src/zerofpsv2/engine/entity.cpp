@@ -80,7 +80,7 @@ Entity::~Entity()
 	// Add our Net.DeleteList to our parent.
 	if(m_pkParent != NULL)
 	{
-		for(int i=0;i<m_aiNetDeleteList.size();i++)
+		for(unsigned int i=0;i<m_aiNetDeleteList.size();i++)
 		{
 			m_pkParent->AddToDeleteList(m_aiNetDeleteList[i]);
 		}
@@ -641,7 +641,7 @@ void Entity::PackTo(NetPacket* pkNetPacket, int iConnectionID)
 		
 		pkNetPacket->Write((int) m_aiNetDeleteList.size() );
 
-		for(int i=0; i<m_aiNetDeleteList.size(); i++)
+		for(unsigned int i=0; i<m_aiNetDeleteList.size(); i++)
 			pkNetPacket->Write((int) m_aiNetDeleteList[i] );
 	}
 
@@ -1538,7 +1538,7 @@ Entity* Entity::GetStaticEntity()
 	vector<Entity*> kEntitys;				
 	GetAllObjects(&kEntitys);
 	
-	for(int i=0;i<kEntitys.size();i++)
+	for(unsigned int i=0;i<kEntitys.size();i++)
 	{
 		if(kEntitys[i]->GetName()=="StaticEntity")
 		{
@@ -1559,14 +1559,14 @@ void	Entity::SetNrOfConnections(int iConNR)
 
 void	Entity::ResetAllNetUpdateFlags()
 {
-	for(int i = 0;i<m_kNetUpdateFlags.size();i++)
+	for(unsigned int i = 0;i<m_kNetUpdateFlags.size();i++)
 	{
 		m_kNetUpdateFlags[i].reset();	//reset all bits to false
 		m_kNetUpdateFlags[i].flip();  //flip all bits to true
 	}
 
 	//reset all propertys
-	for(int j = 0;j<m_akPropertys.size();j++)
+	for(unsigned int j = 0;j<m_akPropertys.size();j++)
 	{
 		m_akPropertys[j]->ResetAllNetUpdateFlags();
 	}
@@ -1580,7 +1580,7 @@ void	Entity::ResetAllNetUpdateFlags(int iConID)
 	
 
 	//reset all propertys
-	for(int j = 0;j<m_akPropertys.size();j++)
+	for(unsigned int j = 0;j<m_akPropertys.size();j++)
 	{
 		m_akPropertys[j]->SetNetUpdateFlag(iConID,true);
 	}	
@@ -1592,13 +1592,13 @@ void	Entity::ResetAllNetUpdateFlagsAndChilds(int iConID)
 	m_kNetUpdateFlags[iConID].flip();  //flip all bits to true
 	
 	//reset all propertys
-	for(int j = 0;j<m_akPropertys.size();j++)
+	for(unsigned int j = 0;j<m_akPropertys.size();j++)
 	{
 		m_akPropertys[j]->SetNetUpdateFlag(iConID,true);
 	}	
 	
 	//reset all childs
-	for(int i = 0;i<m_akChilds.size();i++)
+	for(unsigned int i = 0;i<m_akChilds.size();i++)
 	{
 		m_akChilds[i]->ResetAllNetUpdateFlagsAndChilds(iConID);
 	}	
@@ -1625,7 +1625,7 @@ bool	Entity::IsAnyNetUpdateFlagTrue(int iConID)
 
 void Entity::SetNetUpdateFlag(int iFlagID,bool bValue)
 {
-	for(int i = 0;i<m_kNetUpdateFlags.size();i++)
+	for(unsigned int i = 0;i<m_kNetUpdateFlags.size();i++)
 	{
 		m_kNetUpdateFlags[i][iFlagID] = bValue;
 	}
@@ -1634,7 +1634,7 @@ void Entity::SetNetUpdateFlag(int iFlagID,bool bValue)
 void Entity::SetNetUpdateFlagAndChilds(int iFlagID,bool bValue)
 {
 
-	int i;
+	unsigned int i;
 
 	for(i = 0;i<m_kNetUpdateFlags.size();i++)
 	{
@@ -1681,7 +1681,7 @@ void Entity::UpdateDeleteList()
 		return;
 		
 	//make sure that all clients have gotten the delete list
-	for(int i = 0;i < m_kNetUpdateFlags.size();i++)
+	for(unsigned int i = 0;i < m_kNetUpdateFlags.size();i++)
 	{
 		if(m_pkObjectMan->m_pkNetWork->IsConnected(i))
 		{
@@ -1701,7 +1701,7 @@ void Entity::GetAllVarNames(vector<string>& vkList)
 {
 	vkList.reserve( m_kVariables.size() + 1 );
 
-	for(int i=0; i<m_kVariables.size(); i++) {
+	for(unsigned int i=0; i<m_kVariables.size(); i++) {
 		vkList.push_back( m_kVariables[i].m_strName ); 
 		}	
 }
@@ -1721,7 +1721,7 @@ EntityVariable* Entity::CreateVar(string& strName, EntityVariableType eType)
 
 EntityVariable* Entity::GetVar(string& strName)
 {
-	for(int i=0; i<m_kVariables.size(); i++) {
+	for(unsigned int i=0; i<m_kVariables.size(); i++) {
 		if(strName == m_kVariables[i].m_strName) 
 			return &m_kVariables[i];
 		}	

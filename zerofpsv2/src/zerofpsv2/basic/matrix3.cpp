@@ -195,6 +195,25 @@ void Matrix3::Identity()
 						0,0,1);
 }
 
+void Matrix3::Transponse()
+{
+	swap(m_aafRowCol[0][1], m_aafRowCol[1][0]);
+	swap(m_aafRowCol[0][2], m_aafRowCol[2][0]);
+	swap(m_aafRowCol[0][3], m_aafRowCol[3][0]);
+	
+	swap(m_aafRowCol[1][2], m_aafRowCol[2][1]);
+	swap(m_aafRowCol[1][3], m_aafRowCol[3][1]);
+
+	swap(m_aafRowCol[2][3], m_aafRowCol[3][2]);
+}
+
+Matrix3 Matrix3::GetTransponse() const
+{
+	Matrix3 kMat3 = *this;
+	kMat3.Transponse();
+	return kMat3;
+}
+
 bool Matrix3::Inverse (Matrix3& inv, float tolerance) const
 {
 	float det = Determinant();
@@ -279,18 +298,18 @@ Vector3 Matrix3::GetRotVector()
 	float ftry;
 	
 	
-	angle_y = D = -asin( m_afData[2]);
-	C           =  cos( angle_y );
+	angle_y = D = float(-asin( m_afData[2]));
+	C           = float(cos( angle_y ));
 	angle_y    *= degtorad;
     
 //	if ( fabs( angle_y ) > 0.0005 )
 //   {
 		ftrx      =  m_afData[7] / C;
 		ftry      = -m_afData[6]  / C;
-		angle_x  = atan2( ftry, ftrx ) * degtorad;
+		angle_x  = float( atan2( ftry, ftrx ) * degtorad );
 		ftrx      =  m_afData[0] / C;
 		ftry      = -m_afData[1] / C;
-   	angle_z  = atan2( ftry, ftrx ) * degtorad;
+   	angle_z  = float(atan2( ftry, ftrx ) * degtorad );
 /*   }
 	else
 	{

@@ -24,9 +24,9 @@ class BASIC_API Vector3 {
 		float x,y,z;                                
 	
 // Metoder
+		Vector3() {	};											
 		Vector3(float fX,float fY,float fZ) : x(fX), y(fY), z(fZ) { };
 
-		Vector3() {	};											
 
 		// Assign
 		Vector3& operator=(const Vector3 &kOtherV3) {
@@ -162,6 +162,8 @@ class BASIC_API Vector3 {
       double DistanceXZTo (Vector3 &to);
 
 		void Print(void);
+
+
 
 };
 

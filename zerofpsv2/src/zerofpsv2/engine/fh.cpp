@@ -165,7 +165,7 @@ void DebugGraph::DrawGraph(int x, int y)
 void DebugGraph::DrawAvgLine()
 {
 	float fAvg = 0;
-	for(int i=0; i<m_kValues.size(); i++)
+	for(unsigned int i=0; i<m_kValues.size(); i++)
 		fAvg += m_kValues[i];
 
 	fAvg /= m_kValues.size();

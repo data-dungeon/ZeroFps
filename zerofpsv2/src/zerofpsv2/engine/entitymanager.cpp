@@ -10,7 +10,7 @@
 #include "fh.h"
 #include "../engine_systems/script_interfaces/si_objectmanager.h"
 #include "p_pfmesh.h"
-
+ 
 ZoneData& ZoneData::operator=(const ZoneData &kOther) 
 {
 	m_pkZone				= kOther.m_pkZone;
@@ -824,7 +824,7 @@ void EntityManager::PackToClients()
 	int iEndOfObject	= -1;
 
 	Entity* pkZone;
-	int iClient;
+	unsigned int iClient;
 
 	// Clear Active Zones for clients.
 	for(iClient=0; iClient < m_pkZeroFps->m_kClient.size(); iClient++)
@@ -1425,7 +1425,7 @@ void EntityManager::Test_DrawZones()
 			}*/
 	
 		if(m_bDrawZoneConnections) {
-			for(int j = 0 ;j< m_kZones[i].m_iZoneLinks.size();j++)
+			for(unsigned int j = 0 ;j< m_kZones[i].m_iZoneLinks.size();j++)
 			{	
 				glColor4f(0,0,1,0);
 				m_pkRender->Line(m_kZones[i].m_kPos,m_kZones[m_kZones[i].m_iZoneLinks[j]].m_kPos);
@@ -1552,7 +1552,7 @@ int EntityManager::GetZoneIndex(Vector3 kMyPos,int iCurrentZone,bool bClosestZon
 	
 				//check zones connected to the last visited zone
 				ZoneData* pkZone = GetZoneData(iCurrentZone);
-				for(int i = 0;i < pkZone->m_iZoneLinks.size();i++)
+				for(unsigned int i = 0;i < pkZone->m_iZoneLinks.size();i++)
 				{
 					if(m_kZones[pkZone->m_iZoneLinks[i]].IsInside(kMyPos))
 					{	
@@ -2046,7 +2046,7 @@ void EntityManager::SaveZone(int iId)
 
 int EntityManager::GetUnusedZoneID()
 {
-	for(int i=0;i<m_kZones.size();i++)
+	for(unsigned int i=0;i<m_kZones.size();i++)
 	{
 		if(!m_kZones[i].m_bUsed)
 		{	
@@ -2080,7 +2080,7 @@ bool EntityManager::LoadWorld(const char* acDir)
 void EntityManager::ClearZoneLinks(int iId)
 {
 	//loop trough all connected zones
-	for(int i = 0;i < m_kZones[iId].m_iZoneLinks.size();i++)
+	for(unsigned int i = 0;i < m_kZones[iId].m_iZoneLinks.size();i++)
 	{
 		ZoneData* zone = GetZoneData( m_kZones[iId].m_iZoneLinks[i] );
 		
@@ -2184,7 +2184,7 @@ bool EntityManager::BoxVSBox(Vector3 kPos1,Vector3 kSize1,Vector3 kPos2,Vector3 
 	kTestDirs2.push_back(Vector3(x2,-y2,-z2));
 	kTestDirs2.push_back(Vector3(-x2,-y2,-z2));
 
-	int i;
+	unsigned int i;
 	// box1 vs box2
 	for( i = 0 ;i<kTestDirs1.size();i++)
 	{
@@ -2302,7 +2302,7 @@ void EntityManager::ForceSave()
 
 void EntityManager::SetUnderConstruction(int iId)
 {
-	int i;
+	unsigned int i;
 
 	ZoneData* zd = GetZoneData(iId);	
 	if(zd)
@@ -2362,7 +2362,7 @@ void EntityManager::SetUnderConstruction(int iId)
 
 void EntityManager::CommitZone(int iId)
 {
-	int i;
+	unsigned int i;
 
 	ZoneData* zd = GetZoneData(iId);	
 	if(zd)

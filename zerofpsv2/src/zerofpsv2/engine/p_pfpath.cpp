@@ -41,7 +41,7 @@ void P_PfPath::RenderPath()
 		return;
 
 	Render* pkRender = static_cast<Render*>(g_ZFObjSys.GetObjectPtr("Render")); 
-	int i;
+	unsigned int i;
 
 	glColor3f(1,0,0);
 	if(m_kRawPath.size() >= 2) {
@@ -73,7 +73,7 @@ void P_PfPath::Update()
 
 	ZoneData* pkZone;
 	P_PfMesh* pkMesh;
-	NaviMeshCell* pkEndCell;
+//	NaviMeshCell* pkEndCell;
 
 	int iStartZone	= m_pkObjMan->GetZoneIndex(kPos,-1, false);
 	pkZone = m_pkObjMan->GetZoneData(iStartZone);

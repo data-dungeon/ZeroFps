@@ -354,7 +354,7 @@ void P_AI::AddDynamicOrder ( string kOrderType, int iTargetID1, int iTargetID2, 
 
 void P_AI::ClearDynamicOrders()
 {
-   for ( int i = 0; i < m_kDynamicOrders.size(); i++ )
+   for (unsigned int i = 0; i < m_kDynamicOrders.size(); i++ )
    {
       delete m_kDynamicOrders.front();
       m_kDynamicOrders.pop_front();
@@ -367,7 +367,7 @@ void P_AI::ClearDynamicOrders()
 
 P_AI::~P_AI()
 {
-   int i;
+   unsigned int i;
 
    for ( i=0; i < m_kDynamicOrders.size(); i++ )
       delete m_kDynamicOrders.at(i);

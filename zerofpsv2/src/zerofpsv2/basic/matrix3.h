@@ -57,6 +57,9 @@ class BASIC_API Matrix3
 		void Zero();								// Set whole matrix to zero.
 		void Identity();							// Set matrix to the identity matrix.
 
+		void Transponse();
+		Matrix3 GetTransponse() const;
+
 		bool Inverse (Matrix3& inv, float tolerance) const;
 		float Determinant(void)	 const;
 
@@ -75,9 +78,19 @@ class BASIC_API Matrix3
 
 // Accessors 
 		Vector3 GetColumn (int iCol) const;
+		
+		inline Vector3 Row1() const { return Vector3 (m_aafRowCol[0][0], m_aafRowCol[0][1], m_aafRowCol[0][2]); }
+		inline Vector3 Row2() const { return Vector3 (m_aafRowCol[1][0], m_aafRowCol[1][1], m_aafRowCol[1][2]); }
+		inline Vector3 Row3() const { return Vector3 (m_aafRowCol[2][0], m_aafRowCol[2][1], m_aafRowCol[2][2]); }
+
+		inline Vector3 Col1() const { return Vector3 (m_aafRowCol[0][0], m_aafRowCol[1][0], m_aafRowCol[2][0]); }
+		inline Vector3 Col2() const { return Vector3 (m_aafRowCol[0][1], m_aafRowCol[1][1], m_aafRowCol[2][1]); }
+		inline Vector3 Col3() const { return Vector3 (m_aafRowCol[0][2], m_aafRowCol[1][2], m_aafRowCol[2][2]); }
 
 // Other
 		void Print();
+
+
 };
 
 

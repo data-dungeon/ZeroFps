@@ -75,7 +75,7 @@ ZMaterialSettings* ZMaterial::AddPass()
 
 void ZMaterial::Clear()
 {
-	for(int i=0;i<m_kPasses.size();i++)
+	for(unsigned int i=0;i<m_kPasses.size();i++)
 	{
 		if(m_kPasses[i])
 			delete m_kPasses[i];	

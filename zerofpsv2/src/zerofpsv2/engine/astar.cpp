@@ -201,7 +201,7 @@ AStarCellNode* AStar::GetConnectedZone(ZoneData* pkZoneData, Vector3 kA, Vector3
 	Vector3 kEdgeCenter = (kA + kB) / 2;
 
 	// loop all connected zones
-	for(int i=0; i<pkZoneData->m_iZoneLinks.size(); i++) {
+	for(unsigned int i=0; i<pkZoneData->m_iZoneLinks.size(); i++) {
 		pkOtherZone = m_pkObjectManger->GetZoneData(pkZoneData->m_iZoneLinks[i]);
 		if(pkOtherZone == NULL)					continue;
 		if(pkOtherZone->m_pkZone == NULL)	continue;	
@@ -221,7 +221,7 @@ AStarCellNode* AStar::GetConnectedZone(ZoneData* pkZoneData, Vector3 kA, Vector3
 
 void AStar::Reset()
 {
-	int i;
+	unsigned int i;
 
 	if(kOpenList.size()) {
 		for(i=0; i<kOpenList.size(); i++) {
@@ -409,7 +409,7 @@ P_PfMesh* AStar::GetPathFindMesh(Vector3 kPos)
 
 vector<Vector3> AStar::OptimizePath(vector<PathNode>& kInPath)
 {
-	int i;
+	unsigned int i;
 	vector<Vector3> kResult;
 /*	for( i=0; i<kInPath.size(); i++) 
 		kResult.push_back( kInPath[i].kPosition );

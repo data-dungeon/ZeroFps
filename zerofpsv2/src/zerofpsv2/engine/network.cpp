@@ -405,7 +405,7 @@ bool NetWork::Send2(NetPacket* pkNetPacket)
 {
 	// If we have any clients to send to.
 	if(pkNetPacket->m_iTargetClients.size()) {
-		for(int i=0; i<pkNetPacket->m_iTargetClients.size(); i++) {
+		for(unsigned int i=0; i<pkNetPacket->m_iTargetClients.size(); i++) {
 			if(m_RemoteNodes[ pkNetPacket->m_iTargetClients[i] ].m_eConnectStatus != NETSTATUS_CONNECTED)
 				continue;
 			
@@ -831,7 +831,7 @@ void NetWork::RunCommand(int cmdid, const CmdArgument* kCommand)
 			
 			float fMax = atoi(kCommand->m_kSplitCommand[1].c_str());
 
-			for(int i=0;i<m_RemoteNodes.size(); i++)
+			for(unsigned int i=0;i<m_RemoteNodes.size(); i++)
 				m_RemoteNodes[i].m_kRecvGraph.SetMinMax(0, fMax);
 			break;
 	
