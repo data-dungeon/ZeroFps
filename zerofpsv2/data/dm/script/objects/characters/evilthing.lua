@@ -46,7 +46,8 @@ function Create()
 end
 
 function FirstRun()
-
+	local Life = 25
+	SetEntityVar(SIGetSelfID(), "g_MechLife", Life)
 end
 
 function Collission(Other)
@@ -79,8 +80,8 @@ function Init()
 	PlayAnim(SIGetSelfID(), "idle");
 	SetTeam (SIGetSelfID(), 1);
 
-	local Life = 25
-	SetEntityVar(SIGetSelfID(), "g_MechLife", Life)
+--	local Life = 25
+--	SetEntityVar(SIGetSelfID(), "g_MechLife", Life)
 end
 
 function HeartBeat()

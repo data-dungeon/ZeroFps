@@ -751,7 +751,7 @@ void DarkMetropolis::Input()
 								if ( m_iSelectedEntity == m_iMainAgent )
 								{
 									m_kInfoTextBox.append("Not close enough");
-									SetText("infotext", (char*)m_kInfoTextBox.c_str());
+									//SetText("infotext", (char*)m_kInfoTextBox.c_str());
 								}																		
 
 								pkCh->ClearOrders();
