@@ -5,7 +5,7 @@ export templdpath=$LD_LIBRARY_PATH
 export LD_LIBRARY_PATH=./:$LD_LIBRARY_PATH
 
 cd `dirname $0`
-./dark_metropolis $2 $3 $4 $5 $6 $7 $8 $9
+./dark_metropolis.bin $2 $3 $4 $5 $6 $7 $8 $9
 
 export LD_LIBRARY_PATH=$templdpath
 

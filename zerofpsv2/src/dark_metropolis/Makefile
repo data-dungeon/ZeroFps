@@ -1,5 +1,5 @@
 SRC=../
-BINARY=dark_metropolis
+BINARY=dark_metropolis.bin
 BINDIR=$(SRC)../bin/
 LIBS=-L$(BINDIR) -L/usr/X11R6/lib -lengine_systems -lbasic -lmcommon -lengine -lrender -lscript -lgui
 

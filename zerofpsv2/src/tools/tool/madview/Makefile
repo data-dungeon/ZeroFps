@@ -1,5 +1,5 @@
 SRC=../../../
-BINARY=madview
+BINARY=madview.bin
 BINDIR=$(SRC)../bin/
 LIBS=-L$(BINDIR) -L/usr/X11R6/lib -lengine_systems -lbasic -lengine -lrender -lscript -lgui -lmcommon
 

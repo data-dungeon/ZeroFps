@@ -1,5 +1,5 @@
 SRC=../
-BINARY=zeroed
+BINARY=zeroed.bin
 BINDIR=$(SRC)../bin/
 LIBS=-L$(BINDIR) -L/usr/X11R6/lib -lengine_systems -lbasic -lengine -lmcommon -lrender -lscript -lgui
 
