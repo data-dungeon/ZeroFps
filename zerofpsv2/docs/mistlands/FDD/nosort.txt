@@ -84,10 +84,4 @@ dom måste skapas av Gods eller en builder med rättigheter.
 Gods:
 Är namnet på en användare som kontrollerar och administrerar spelets server.
 
-Regel System:
-Regel systemet till ZeroRPG är i grunden enkelt och möjligt att utöka. Det finns en del 
-grundläggande element som Egenskaper, Färdigheter, Förmågor, Fördelar, Nackdelar och 
-dessa kan man sedan utöka. Samma system används för att beskriva alla saker i spelet.
-
-
 

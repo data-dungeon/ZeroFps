@@ -491,19 +491,19 @@ void Matrix4::Rotate(float fX, float fY, float fZ)
 	fY=DegToRad(fY);
 	fZ=DegToRad(fZ);	
 
-	Matrix4 rotatez=Matrix4(cos(fZ)	,-sin(fZ)  ,0				,0,
-									sin(fZ)	,cos(fZ)	,0				,0,
+	Matrix4 rotatez=Matrix4(float(cos(fZ))	,float(-sin(fZ))  ,0				,0,
+									float(sin(fZ))	,float(cos(fZ))	,0				,0,
 									0			,0			,1				,0,
 									0			,0			,0				,1);	
 	
 	Matrix4 rotatex=Matrix4(1			,0			,0				,0,
-									0			,cos(fX)	,-sin(fX)	,0,
-									0			,sin(fX)	,cos(fX)		,0,
+									0			,float(cos(fX))	,float(-sin(fX))	,0,
+									0			,float(sin(fX)) ,float(cos(fX))		,0,
 									0			,0			,0				,1);	
 												 
-	Matrix4 rotatey=Matrix4(cos(fY)	,0			,sin(fY)		,0,
+	Matrix4 rotatey=Matrix4(float(cos(fY))	,0			,float(sin(fY))		,0,
 									0			,1			,0				,0,
-									-sin(fY)	 ,0			,cos(fY)		,0,
+									float(-sin(fY))	 ,0			,float(cos(fY))		,0,
 									0			,0			,0				,1);	
 												 
 						 
