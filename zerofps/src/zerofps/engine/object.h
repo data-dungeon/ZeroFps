@@ -162,6 +162,8 @@ class ENGINE_API Object
 	public:
 		int					iNetWorkID;							///< ID used by network state code.
 
+		void PPRot(bool bSave);
+
 		Object();		
 		~Object();
 		

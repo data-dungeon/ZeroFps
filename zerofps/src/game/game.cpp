@@ -190,8 +190,7 @@ void Game::OnIdle(void)
 
 			PlayerExamineObject();
 
-			if(m_pkPlayerInventoryBox->IsOpen() || m_pkContainerBox->IsOpen() ||
-				m_pkExamineMenu->IsOpen() || m_pkLogBox->IsOpen())
+			if( DlgBox::GetNumVisibleDialogs() > 0)
 				LockPlayerCamera(true);
 			else
 				LockPlayerCamera(false);
@@ -300,16 +299,7 @@ void Game::Input()
 		break;
 
 	case KEY_ESCAPE:
-
-		if(DlgBox::s_pkOpenStack.size() > 0)
-		{
-			DlgBox* pkTop = DlgBox::s_pkOpenStack.top();
-
-			if(pkTop->IsOpen())
-				pkTop->Close(false);
-		}
-
-		
+		DlgBox::CloseFocusDlg();
 		break;
 	}
 }
@@ -563,9 +553,7 @@ void Game::PlayerExamineObject()
 			(pkObjectTouched->GetProperty("ItemProperty"));
 
 		if(ip != NULL)
-		{
 			OpenExamineMenu(ip, NORMALUSE);
-		}
 
 		LogProperty* lp = static_cast<LogProperty*>
 			(pkObjectTouched->GetProperty("LogProperty"));
@@ -578,7 +566,6 @@ void Game::PlayerExamineObject()
 void Game::LockPlayerCamera(bool bLock)
 {
 	static int prev_x, prev_y;
-
 	PlayerControlProperty* pkPlayerCtrl = static_cast<PlayerControlProperty*>
 		(m_pkPlayer->GetProperty("PlayerControlProperty"));
 
@@ -589,16 +576,16 @@ void Game::LockPlayerCamera(bool bLock)
 
 	if(bLock == true)
 	{
-		pkInput->MouseXY(prev_x, prev_y);
 		cout << "Locking camera: Storing cursor pos (" 
 			 << prev_x << "," << prev_y << ")" << endl;
+		pkInput->MouseXY(prev_x, prev_y);
 	}
 	
 	if(bLock == false)
 	{
 		cout << "Unlocking camera: Setting cursor pos back to pos (" 
 			 << prev_x << "," << prev_y << ")" << endl;
-		pkInput->SetCursorInputPos(prev_x, prev_y);
+		pkInput->SetCursorInputPos(DlgBox::prev_x, DlgBox::prev_y);
 	}
 
 	if(pkPlayerCtrl)
@@ -621,15 +608,15 @@ void Game::OpenContainer()
 
 void Game::OpenExamineMenu(ItemProperty* ip, Action_Type eActionType, int x, int y)
 {
-	PlayerControlProperty* pkPlayerCtrl = static_cast<PlayerControlProperty*>
-		(m_pkPlayer->GetProperty("PlayerControlProperty"));
-
-	m_pkExamineMenu->SetUseState(eActionType);
-	m_pkExamineMenu->SetItemProperty(ip);
-	m_pkExamineMenu->SetPlayerControlProperty(pkPlayerCtrl);
-
 	if(m_pkExamineMenu->IsOpen() == false)
 	{
+		PlayerControlProperty* pkPlayerCtrl = static_cast<PlayerControlProperty*>
+			(m_pkPlayer->GetProperty("PlayerControlProperty"));
+
+		m_pkExamineMenu->SetUseState(eActionType);
+		m_pkExamineMenu->SetItemProperty(ip);
+		m_pkExamineMenu->SetPlayerControlProperty(pkPlayerCtrl);
+
 		if(x == -1 && y== -1)
 		{
 			x = m_iWidth/2; 

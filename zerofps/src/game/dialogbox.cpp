@@ -5,7 +5,10 @@
 #include "dialogbox.h"
 #include "../zerofps/engine/input.h"
 
-stack<DlgBox*> DlgBox::s_pkOpenStack;
+std::vector<DlgBox*> DlgBox::s_kTopDlgQueue;
+
+int DlgBox::prev_x = 0;
+int DlgBox::prev_y = 0;
 
 ///////////////////////////////////////////////////////////////////////////////
 // Construction/Destruction
@@ -57,6 +60,8 @@ void DlgBox::GetPos(int& x, int& y)
 
 void DlgBox::CenterCursor()
 {
+	m_pkInput->MouseXY(prev_x, prev_y);
+
 	int mx = m_pkDlgBox->GetScreenRect().Left + m_pkDlgBox->GetScreenRect().Width() / 2;
 	int my = m_pkDlgBox->GetScreenRect().Top + m_pkDlgBox->GetScreenRect().Height() / 2;
 	m_pkInput->SetCursorInputPos(mx,my);
@@ -82,8 +87,8 @@ bool DlgBox::Open(int x, int y)
 
 	CenterCursor();
 
-	s_pkOpenStack.push(this);
-
+	s_kTopDlgQueue.push_back(this);
+	
 	return OnOpen(x,y);
 }
 
@@ -92,8 +97,29 @@ bool DlgBox::Close(bool bSave)
 	m_pkGui->ShowMainWindow(m_pkDlgBox, false);
 	KillFocus();
 
-	if(s_pkOpenStack.empty() == false)
-		s_pkOpenStack.pop();
+	if(s_kTopDlgQueue.size() > 0)
+	{
+		for(std::vector<DlgBox*>::iterator it = s_kTopDlgQueue.begin(); 
+			it != s_kTopDlgQueue.end(); it++)
+		{
+			if((*it) == this)
+			{
+				s_kTopDlgQueue.erase(it);
+				break;
+			}
+		}
+	}
 
 	return OnClose(bSave);
+}
+
+void DlgBox::CloseFocusDlg()
+{
+	if(!s_kTopDlgQueue.empty())
+		s_kTopDlgQueue.back()->Close(false);
+}
+
+int DlgBox::GetNumVisibleDialogs()
+{
+	return s_kTopDlgQueue.size();
 }

@@ -1024,4 +1024,6 @@ bool ZGuiTextbox::SetCursorRow(int row, bool bUpdate)
 	
 	if(bUpdate)
 		ScrollText(m_iCursorRow);
+
+	return true;
 }

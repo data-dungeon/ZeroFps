@@ -65,7 +65,8 @@ PlayerControlProperty::~PlayerControlProperty()
 //	m_kInventory.clear();
 }
 
-void PlayerControlProperty::Update() {
+void PlayerControlProperty::Update() 
+{
 	m_pkObject->GetObjectType()=OBJECT_TYPE_PLAYER;
 	
 	if(m_pkStatusProperty==NULL)
@@ -199,8 +200,8 @@ void PlayerControlProperty::Update() {
 				}
 			}
 	}
-	else	
-		m_pkObject->SetRot(m_pkObject->GetRot());
+/*	else	
+		m_pkObject->SetRot(m_pkObject->GetRot());*/
 	
 	//update sound possition
 	walksound->m_kPos=m_pkObject->GetPos();

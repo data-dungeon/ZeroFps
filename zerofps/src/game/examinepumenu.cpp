@@ -85,24 +85,30 @@ bool ExaminePUMenu::OnOpen(int x, int y)
 	vector<string> akNames;
 	m_pkItemProperty->GetUses(m_eActionType, &akNames);
 
-	bool bPickable = m_pkItemProperty->m_bPickable && (m_eActionType == NORMALUSE);
+	bool bPickable = m_pkItemProperty->m_bPickable;
 	int iNumItems = akNames.size();
 
-	if(bPickable)
+	if(m_eActionType == INVENTORYUSE)
+		bPickable = false;
+
+	if(bPickable == true)
 		iNumItems++;
 
-	if(iNumItems == 0)
-		return false;
+	// Add new items to listbox.
+	m_kListbox->RemoveAllItems();
 
 	// Resize windows to fit all items.
 	m_iHeight = iNumItems*20;
 
 	m_pkDlgBox->Resize(m_iWidth, m_iHeight);
 	m_kListbox->Resize(m_iWidth, m_iHeight);
-	
-	// Add new items to listbox.
-	m_kListbox->RemoveAllItems();
 
+	if(iNumItems == 0)
+	{
+		Close(false);
+		return false;
+	}
+	
 	int counter = 0, i=0;
 
 	if(bPickable)

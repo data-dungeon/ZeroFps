@@ -1004,3 +1004,22 @@ void Object::HandleCollision(Object* pkObject,Vector3 kPos,bool bContinue){
   För närvarande sparas allt ned hela tiden. Vilka propertys som tas med
   anges genom Propery::bNetwork;
 */
+
+void Object::PPRot(bool bSave)
+{
+	static Vector3 akSave[6] =
+	{
+		m_kPos, m_kRot, m_kVel, m_kAcc, m_kOldPos, m_kOldRot
+	};
+
+	if(bSave)
+	{
+		akSave[0] = m_kPos;  akSave[1] = m_kRot;     akSave[2] = m_kVel;
+		akSave[3] = m_kAcc;  akSave[4] = m_kOldPos;  akSave[5] = m_kOldRot;
+	}
+	else
+	{
+		m_kPos = akSave[0];  m_kRot    = akSave[1];  m_kVel    = akSave[2];
+		m_kAcc = akSave[3];  m_kOldPos = akSave[4];  m_kOldRot = akSave[5];
+	}
+}

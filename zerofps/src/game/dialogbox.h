@@ -8,12 +8,13 @@
 
 class Input;
 
-#include <stack>
-using namespace std;
+#include <vector>
 
 class DlgBox  
 {
 public:
+	static int GetNumVisibleDialogs();
+	static void CloseFocusDlg();
 	const ZGuiWnd* GetWnd();
 	void KillFocus();
 	void SetPos(int x, int y);
@@ -34,7 +35,8 @@ public:
 	bool Open(int x=-1, int y=-1);
 	bool Close(bool bSave);
 
-	static stack<DlgBox*> s_pkOpenStack;
+	static int prev_x;
+	static int prev_y;
 
 protected:
 
@@ -47,6 +49,9 @@ protected:
 	ZGuiWnd* m_pkDlgBox;
 	ZGuiWndProc m_oMainWndProc;
 	Input* m_pkInput;
+	static std::vector<DlgBox*> s_kTopDlgQueue;
+
+	
 };
 
 #endif // #ifndef _DLGBOX_H

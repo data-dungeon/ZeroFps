@@ -113,22 +113,20 @@ bool GameScript::GetLogText(const char *szFileName, const char *szKey,
 
 		int iIconLineLength = 0;
 		if(szString[0] == '#')
-			while(szString[1+iIconLineLength++] != '\n') {}
+			while(szString[iIconLineLength++] != '\n') {}
 		
 		int length = strlen(szString)-iIconLineLength;
 		*pszText = new char[length+1];
-		strncpy(*pszText, szString+iIconLineLength, length);
-
-		// terminate
-		if(length < strlen(szString+iIconLineLength))
-			(*pszText)[length] = '\0';
+		char* dest = (char*) szString+iIconLineLength;
+		strncpy(*pszText, dest, length);
+		(*pszText)[length] = '\0';
 
 		if(iIconLineLength > 0)
 		{
 			int offset_to_collon = 0;
 			while(szString[offset_to_collon++] != '=') {}
 
-			int length = iIconLineLength-offset_to_collon;
+			int length = iIconLineLength-offset_to_collon-1;
 
 			*pszIcon = new char[length+1];
 			strncpy(*pszIcon, szString+offset_to_collon, length);

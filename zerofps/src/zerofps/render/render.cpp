@@ -46,6 +46,7 @@ void Render::Quad(Vector3 kPos,Vector3 kHead,Vector3 kScale,int iTexture){
 }
 
 void Render::PrintChar(char cChar) {
+
 	int texwidth=FONTWIDTH*16;	
 	int pos=int(cChar)*FONTWIDTH;		
 	float glu=1.0/texwidth;				//opengl texture cordinats is 0-1
@@ -131,29 +132,31 @@ void Render::Dot(float x,float y,float z) {
 
 
 
-void Render::DrawConsole(char* m_aCommand,vector<char*>* m_kText,int iStartLine) {
+void Render::DrawConsole(char* m_aCommand,vector<char*>* m_kText,int iStartLine) 
+{
 	SetFont("file:../data/textures/text/console.tga");
 
 	glEnable(GL_BLEND);	
 	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
 	glDepthMask(GL_FALSE);	
 		
-	Quad(Vector3(0,0,-.5),Vector3(0,0,0),Vector3(1.2,.9,1),m_pkTexMan->Load("file:../data/textures/background.tga",0));
+	Quad(Vector3(0,0,-.5),Vector3(0,0,0),Vector3(1.2,.9,1),
+		m_pkTexMan->Load("file:../data/textures/background.tga",0));
 	
 	glDepthMask(GL_TRUE);
 	glDisable(GL_BLEND);
-	
-	
 	
 	Print(Vector3(-.65,-.5,-.6),Vector3(0,0,0),Vector3(.04,.04,.04),m_aCommand);		
 	
 	if(iStartLine < 0)
 		iStartLine = 0;
 	
-	for(int i=iStartLine;i<iStartLine+23;i++) {
-		if((*m_kText)[i]!=NULL){
-			Print(Vector3(-0.65,-0.40+(i-iStartLine)/(float)25,-.6),Vector3(0,0,0),Vector3(0.03,0.03,0.03),(*m_kText)[i]);		
-		
+	for(int i=iStartLine;i<iStartLine+23;i++) 
+	{
+		if((*m_kText)[i]!=NULL)
+		{
+			Print(Vector3(-0.65,-0.40+(i-iStartLine)/(float)25,-.6),
+				Vector3(0,0,0),Vector3(0.03,0.03,0.03),(*m_kText)[i]);
 		}
 	}
 }

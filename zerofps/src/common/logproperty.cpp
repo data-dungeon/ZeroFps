@@ -60,7 +60,7 @@ void LogProperty::HandleGameMessage(GameMessage& Msg)
 
 void LogProperty::ReadLog()
 {
-	cout<<"LOG SAYS: "<<m_sLog<<endl;
+//	cout<<"LOG SAYS: "<<m_sLog<<endl;
 
 }
 
