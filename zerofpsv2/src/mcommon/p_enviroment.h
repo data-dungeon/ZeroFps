@@ -40,6 +40,8 @@ class MCOMMON_API EnvSetting : public ZFResource
 		float		m_fFogStart;
 		float		m_fFogStop;		
 		Vector4	m_kFogColor;
+		
+		int 		m_iRain;
 	
 	public:
 		EnvSetting();
@@ -66,6 +68,8 @@ class MCOMMON_API P_Enviroment: public Property {
 		OggMusic*		m_pkMusic;		
 		
 		float				m_fTimer;
+		float				m_fRainUpdateTimer;
+		
 		
 		bool				m_bEnabled;		
 		string			m_StrCurrentEnviroment;
@@ -85,7 +89,14 @@ class MCOMMON_API P_Enviroment: public Property {
 		float				m_fCurrentFogStart;					
 		float				m_fCurrentFogStop;					
 		
+		int				m_iRainTextureID;
+		int				m_iRain;
 		
+		vector<Vector3> m_kDrops;
+		void MakeRainSplashes();
+		void DrawRainSplashes();		
+
+				
 	public:
 
 		void CloneOf(Property* pkProperty) { }

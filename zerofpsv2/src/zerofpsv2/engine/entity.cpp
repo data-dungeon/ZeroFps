@@ -468,6 +468,25 @@ void Entity::ZoneChange(int iCurrent,int iNew)
 	}
 }
 
+bool Entity::GetZoneNeighbours(vector<Entity*>* pkZones)
+{
+	if(!IsZone())
+		return false;
+		
+	if(ZoneData* pkZD = m_pkEntityMan->GetZone(this))
+	{
+		pkZones->push_back(this);
+		
+		for(int i = 0;i<pkZD->m_iZoneLinks.size();i++)
+			if(ZoneData* pkZD2 =	m_pkEntityMan->GetZoneData(pkZD->m_iZoneLinks[i]))
+				pkZones->push_back(pkZD2->m_pkZone);
+				
+		return true;
+	}
+	
+	return false;
+}
+
 /**	\brief	return entity + childs , fForceAll = always send all entitys, bCheckSendStatus = check m_bSendChilds
 */
 

@@ -25,7 +25,11 @@ bool EnvSetting::LoadEnviroment(const char* czName)
 		if(m_kIni.KeyExist("enviroment","music"))
 			m_strMusic = m_kIni.GetValue("enviroment","music");
 
-
+		//---------------RAIN SPLASHES
+		if(m_kIni.KeyExist("enviroment","rain"))
+			m_iRain = m_kIni.GetIntValue("enviroment","rain");
+		
+			
 		//---------------PARTICLES
 		//particle effect
 		if(m_kIni.KeyExist("enviroment","particles"))
@@ -106,6 +110,7 @@ void EnvSetting::Clear()
 	m_kSunDiffuseColor.Set(1.6,1.6,1.6,1);					
 	m_kSunAmbientColor.Set(0.8,0.8,0.8,1.0);		
 	m_kSunPos.Set(0.5,0.5,0);		
+	m_iRain = 0;
 	
 	m_fFogStart = 2;
 	m_fFogStop = 10;	
@@ -142,6 +147,8 @@ P_Enviroment::P_Enviroment()
 	m_pkRender=static_cast<Render*>(g_ZFObjSys.GetObjectPtr("Render"));	
 	m_pkMusic=static_cast<OggMusic*>(g_ZFObjSys.GetObjectPtr("OggMusic"));		
 
+	m_iSortPlace	=	10;
+	
 	bNetwork =		true;
 	m_bEnabled =	false;
 	
@@ -153,16 +160,35 @@ void P_Enviroment::Init()
 {
 	ResetEnviroment();
 	m_fTimer=m_pkFps->GetTicks();
+	m_fRainUpdateTimer = m_pkFps->GetTicks();
 	
 	m_kCurrentFogColor.Set(0,0,0,1);	
 	m_fCurrentFogStart=2;
 	m_fCurrentFogStop=20;	
+	
+	m_iRain = 0;
+	
+	m_iRainTextureID = m_pkObject->m_pkZeroFps->m_pkTexMan->Load("data/textures/rainsplash.tga", 0);
 }
 
 void P_Enviroment::Update()
 {
 	if(m_bEnabled)
 	{
+		//make rain splashes on ground
+		if(m_iRain != 0)
+		{
+			//update rain splashes
+			if(m_pkFps->GetTicks() - m_fRainUpdateTimer > 0.1)
+			{		
+				m_fRainUpdateTimer = m_pkFps->GetTicks();			
+				MakeRainSplashes();
+			}
+	
+			DrawRainSplashes();
+		}
+			
+		//interpolate light and fog 
 		if(m_pkCurrentLP)
 		{
 			if(m_pkFps->GetTicks() - m_fTimer > 0.02)
@@ -213,6 +239,7 @@ void P_Enviroment::Update()
 				m_pkCurrentLP->SetRot(m_kSunPos);
 			}
 		}
+		
 	}
 }
 
@@ -252,6 +279,8 @@ void P_Enviroment::SetEnviroment(const char* csEnviroment )
 	//get enviroment pointer
 	EnvSetting* es = (EnvSetting*)pkTempenv->GetResourcePtr();
 
+	//set rain 
+	m_iRain = es->m_iRain;
 
 	//setup music
 	if(es->m_strMusic == "")
@@ -372,6 +401,60 @@ void P_Enviroment::SetEnable(bool bNew)
 		SetEnviroment("");
 	}
 }
+
+void P_Enviroment::MakeRainSplashes()
+{
+	m_kDrops.clear();
+
+	vector<Entity*> kObjects;		
+	if(ZoneData* pkZD = m_pkObjectMan->GetZone(m_pkObject->GetWorldPosV()))
+	{
+		if(pkZD->m_pkZone)
+		{
+			if(!pkZD->m_pkZone->GetZoneNeighbours(&kObjects))
+			{
+				cout<<"not attacthed to a zone"<<endl;
+				return;
+			}		
+		}
+		else
+			return;
+	}
+	else
+		return;
+	
+	
+	for(int j = 0;j < m_iRain;j++)
+	{
+		Vector3 kDropStart = m_pkObject->GetWorldPosV() + Vector3( ( (rand()%2000)/100.0)-10.0,20,((rand()%2000)/100.0)-10.0);
+		
+		for(int i = 0;i < kObjects.size() ;i++)
+		{
+			if(P_Mad* pkMad = (P_Mad*)kObjects[i]->GetProperty("P_Mad"))
+			{	
+				if(pkMad->TestLine(kDropStart,Vector3(0,-1,0)))
+				{	
+					m_kDrops.push_back(pkMad->GetLastColPos()+Vector3(0,1,0));	
+					break;
+				}
+			}
+		}
+	}
+}
+
+void P_Enviroment::DrawRainSplashes()
+{
+	for(int i = 0 ;i<m_kDrops.size();i++)
+	{
+		m_pkRender->Polygon4(m_kDrops[i] + Vector3(-0.1,0,0.1),
+									m_kDrops[i] + Vector3( 0.1,0,0.1),
+									m_kDrops[i] + Vector3( 0.1,0,-0.1),
+									m_kDrops[i] + Vector3(-0.1,0,-0.1),
+									m_iRainTextureID);
+		//m_pkRender->Quad(m_kDrops[i],Vector3(-90,0,0),Vector3(0.3,0.3,0.3),m_iRainTextureID);
+	}
+}
+
 
 Property* Create_P_Enviroment()
 {

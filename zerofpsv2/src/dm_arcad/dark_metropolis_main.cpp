@@ -1078,7 +1078,7 @@ bool DarkMetropolis::CreatePlayer()
 	{
 		if(m_kEntitys[i]->GetType() == "t_playerstart.lua")
 		{
-			ZoneData* dat = m_pkObjectMan->GetZone(m_kEntitys[i]->GetParent());
+/*			ZoneData* dat = m_pkObjectMan->GetZone(m_kEntitys[i]->GetParent());
 			if(dat)
 			{
 				cout<<"ID:"<<dat->m_iZoneID<<endl;
@@ -1089,7 +1089,7 @@ bool DarkMetropolis::CreatePlayer()
 				if(m_kEntitys[i]->GetParent()->GetUpdateStatus() == UPDATE_ALL)
 					cout<<"CSSSSSSSSSSNNNNNNNNNZZZZZZZZZZZZZZ!#¤"<<endl;
 			}
-		
+*/		
 		
 			Vector3 kStartPos = m_kEntitys[i]->GetWorldPosV();		
 			m_pkObjectMan->Delete(m_kEntitys[i]);

@@ -279,7 +279,9 @@ class ENGINE_API Entity
 
 		bool AttachToZone();		
 		bool AttachToZone(Vector3 kPos);		
-
+		bool GetZoneNeighbours(vector<Entity*>* pkZones);
+		
+		
 		void MakeCloneOf(Entity* pkOrginal);
 
 
