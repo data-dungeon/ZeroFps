@@ -1837,4 +1837,5 @@ void ZGResEdit::UpdateSkinList(ZGuiWnd *pkFocusWnd)
 			SetTextInt("BdSizeTextbox", (*vkSkinDesc[i].first)->m_unBorderSize);
 			break;
 		}
+
 }
