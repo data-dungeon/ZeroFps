@@ -65,7 +65,7 @@ void MadProperty::Update() {
 		
 		Vector4 sphere=m_pkObject->GetPos();
 		sphere.w=4;
-//		if(m_pkFrustum->SphereInFrustum(sphere))
+		if(m_pkFrustum->SphereInFrustum(sphere))
 			Draw_All();
 		//			pkCore->Draw();
 	

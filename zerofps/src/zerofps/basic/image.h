@@ -7,8 +7,10 @@ Image class for OpenGl (mostly).
 #include <cstdio>
 #include "basic_x.h"
 
-#pragma pack( push )
-#pragma pack( 1 )
+#ifdef WIN32
+	#pragma pack( push )
+	#pragma pack( 1 )
+#endif
 
 struct color_rgb {
 	unsigned char r,g,b;
@@ -68,7 +70,9 @@ struct pcx_header_s
 	char	filler[58];
 } ;
 
-#pragma pack( pop )
+#ifdef WIN32
+	#pragma pack( pop )
+#endif
 
 enum IMG_FORMAT {
 	IMG_FORMAT_RGB,
