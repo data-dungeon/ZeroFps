@@ -6,7 +6,7 @@ Tcs::Tcs(): ZFSubSystem("Tcs")
 {
 	Logf("zerofps","Tiny Collission system created");
 
- 	m_fMaxDelay = 		0.05;
+ 	m_fMaxDelay = 		0.04;
 	m_fAlmostZero = 	0.001;
 	m_fMinForce = 		0.2;	
 	m_fSleepVel = 		0.3;
@@ -130,8 +130,8 @@ void Tcs::Update(float fAlphaTime)
 			m_iNrOfCollissions++;
 		
 			//get next closest collission	
-			Tcs_collission* pkCol = FindNextCollission();			
-			
+			Tcs_collission* pkCol = FindNextCollission();
+						
 			//update all objects up to current time
 			UpdateAllVelnPos(pkCol->fAtime);			
 			
@@ -153,6 +153,7 @@ void Tcs::Update(float fAlphaTime)
 		{
 			UpdateAllVelnPos(fRTime);	
 			fRTime = 0;
+			break;
 		}	
 	}
 	
@@ -208,7 +209,7 @@ void Tcs::UpdateLineTests(float fAlphaTime)
 
 void Tcs::HandleCollission(Tcs_collission* pkCol)
 {	
-	//if nocolrespons is set in any body just touch them and continue
+/*	//if nocolrespons is set in any body just touch them and continue
 	if(pkCol->pkBody1->m_bNoColRespons || pkCol->pkBody2->m_bNoColRespons)
 	{
 		//touch objects
@@ -217,7 +218,7 @@ void Tcs::HandleCollission(Tcs_collission* pkCol)
 		
 		return;
 	}
-
+*/
 	
 	//wake up bodys
 	pkCol->pkBody1->Wakeup();
