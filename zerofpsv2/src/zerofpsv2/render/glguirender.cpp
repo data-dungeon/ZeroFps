@@ -208,6 +208,13 @@ bool GLGuiRender::RenderBorder(Rect rc)
 	if(!m_pkSkin)
 		return false;
 
+	if(m_bClipperEnabled)
+	{
+		if(m_rcClipperArea.Left > rc.Left || m_rcClipperArea.Right < rc.Right || 
+			m_rcClipperArea.Top > rc.Top || m_rcClipperArea.Bottom < rc.Bottom)
+			return true;
+	}
+
 	unsigned short sz = m_pkSkin->m_unBorderSize;
 
 	if(sz == 0)

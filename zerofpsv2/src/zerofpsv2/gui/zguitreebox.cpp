@@ -471,6 +471,12 @@ void ZGuiTreebox::CreateInternalControls()
 	pkSelLabelSkin->m_afBorderColor[2] = 0;
 
 	m_pkSelLabel->SetSkin(pkSelLabelSkin);
+
+	Rect rcClipper = GetScreenRect();
+	rcClipper.Right -= SCROLL_BUTTON_HEIGHT;
+	rcClipper.Bottom -= SCROLL_BUTTON_HEIGHT;
+	m_pkSelLabel->SetClipperArea(rcClipper); 
+	m_pkSelLabel->m_bUseClipper = true;
 }
 
 void ZGuiTreebox::ChangeScrollbarRange(int width, int height, bool bVerticalScrollbar)
