@@ -35,6 +35,7 @@ public:
 	void CopyNonUniqueData(const ZGuiWnd* pkSrc);
 
 private:
+	pair<int,int> GetWordLength(char *text, int offset);
 	int GetNumRows(char* szText);
 	bool IgnoreKey(int Key);
 	void ScrollText(ZGuiScrollbar* pkScrollbar);

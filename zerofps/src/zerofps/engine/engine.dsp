@@ -55,12 +55,12 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /machine:I386
-# ADD LINK32 tolua.lib lua.lib sdl_net.lib OpenAL32.lib ALut.lib render.lib basic.lib glu32.lib opengl32.lib sdl_mixer.lib sdl.lib sdlmain.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /machine:I386 /out:"..\..\..\bin\engine.dll" /libpath:"..\..\..\bin"
+# ADD LINK32 ogg_static.lib vorbis_static.lib vorbisfile_static.lib tolua.lib lua.lib sdl_net.lib OpenAL32.lib ALut.lib render.lib basic.lib glu32.lib opengl32.lib sdl_mixer.lib sdl.lib sdlmain.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /machine:I386 /out:"..\..\..\bin\engine.dll" /libpath:"..\..\..\bin"
 # SUBTRACT LINK32 /profile
 # Begin Special Build Tool
 ProjDir=.
 SOURCE="$(InputPath)"
-PostBuild_Cmds=copy                                     $(ProjDir)\release\*.lib                                                      ..\..\..\bin\ 
+PostBuild_Cmds=copy                                      $(ProjDir)\release\*.lib                                                       ..\..\..\bin\ 
 # End Special Build Tool
 
 !ELSEIF  "$(CFG)" == "engine - Win32 Debug"
@@ -92,7 +92,7 @@ LINK32=link.exe
 # Begin Special Build Tool
 ProjDir=.
 SOURCE="$(InputPath)"
-PostBuild_Cmds=copy                                                                                          $(ProjDir)\debug\*.lib                                                                                          ..\..\..\bin\ 
+PostBuild_Cmds=copy                                                                                           $(ProjDir)\debug\*.lib                                                                                           ..\..\..\bin\ 
 # End Special Build Tool
 
 !ELSEIF  "$(CFG)" == "engine - Win32 Release Profile"
@@ -486,6 +486,10 @@ SOURCE=.\objectmanager.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\OggMusic.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\openalsystem.cpp
 # End Source File
 # Begin Source File
@@ -761,6 +765,10 @@ SOURCE=.\objectmanager.h
 # Begin Source File
 
 SOURCE=.\objects.pkg
+# End Source File
+# Begin Source File
+
+SOURCE=.\oggmusic.h
 # End Source File
 # Begin Source File
 

@@ -498,36 +498,76 @@ int ZGuiTextbox::GetNumRows(char* szText)
 		return -1;
 	}
 
-/*	int iLength = m_pkFont->GetLength(szText);
-	int iWidth = GetScreenRect().Width();
-	return iLength/iWidth + 1;*/
-
-	ZGuiFont::CHARINFO* font = m_pkFont->m_aChars;
-	int gap = (int) m_pkFont->m_cPixelGapBetweenChars;
-	int row_height = (int) m_pkFont->m_cCharCellSize;
-
+	int characters_totalt = strlen(szText);
 	int width = GetScreenRect().Width();
-	int xpos=0, ypos=0;
+	int xpos=0, ypos=0, row_height = m_pkFont->m_cCharCellSize;
+	int offset = 0;
+	pair<int,int> kLength; // first = character, second = pixels.
+	int rows = 0;
 
-	for(int i=0; i<strlen(szText); i++)
+	while(1) // antal ord
 	{
-		xpos += font[i].iSizeX;
+		kLength = GetWordLength(szText, offset);
+		xpos += kLength.second;
 		
-		if(szText[i] != ' ')
-			xpos += gap;
-
-		if(xpos > width)
+		if(xpos > width || szText[offset] == '\n')
 		{
 			xpos = 0;
 			ypos += row_height;
+			rows++;
 		}
+
+		offset += kLength.first;
+
+		if(kLength.first == 0 || offset >= characters_totalt)
+			break;
 	}
 
+	return rows;
+}
+
+pair<int,int> ZGuiTextbox::GetWordLength(char *text, int offset)
+{
+	int char_counter = 0;
+	int length_counter = 0;
+
+	int iLength = strlen(text);
+	for(int i=offset; i<iLength; i++)
+	{
+		if(text[i] == ' ' || text[i] == '\n')
+		{
+			char_counter++; // lägg till ett så att sluttecknet får plats.
+
+			int index = text[i];
+			if(index < 0 || index > 255)
+				continue;
+
+			length_counter += m_pkFont->m_aChars[index].iSizeX;
+
+			if(text[i] != ' ')
+				length_counter += m_pkFont->m_cPixelGapBetweenChars;
+
+			return pair<int,int>(char_counter, length_counter); // break
+		}
+
+		int index = text[i];
+		if(index < 0 || index > 255)
+			continue;
+
+		length_counter += m_pkFont->m_aChars[index].iSizeX;
+
+		if(text[i] != ' ')
+			length_counter += m_pkFont->m_cPixelGapBetweenChars;
+
+		char_counter++;
+	}
+
+	return pair<int,int>(char_counter, length_counter);
 }
 
 int ZGuiTextbox::GetNumRows()
 {
-	return m_iNumRows; //GetNumRows(m_strText);
+	return GetNumRows(m_strText);
 }
 
 
