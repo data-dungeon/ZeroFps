@@ -694,7 +694,7 @@ bool ZFScriptSystem::Call(ZFResourceHandle* pkResHandle, char* szFuncName,
 
 	bool bSuccess = (lua_call(pkScript->m_pkLuaState, iNumParams, iNumResults) == 0);
 
-	lua_pop(pkScript->m_pkLuaState, 1);
+//	lua_pop(pkScript->m_pkLuaState, 1);
 
 	return bSuccess;
 }
