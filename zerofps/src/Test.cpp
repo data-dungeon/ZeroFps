@@ -1,17 +1,17 @@
 #include "Test.h"
 
 
-Test olle("ollespelet");
+Test olle("MegaGame",640,480,16);
 
 
-Test::Test(char* aName): Application(aName) {
+Test::Test(char* aName,int iWidth,int iHeight,int iDepth): Application(aName,iWidth,iHeight,iDepth) {
 
 
 }
 
 
 void Test::OnInit(void) {
-	cout<<"Ollespelet e har =)"<<endl;
+	cout<<"HEllo =)"<<endl;
 	
 }
 

@@ -1,0 +1,129 @@
+#include "Primitives.h"
+
+Primitives::Primitives(TextureManager* pkTexMan) {
+	m_pkTexMan=pkTexMan;
+	
+}
+
+void Primitives::Quad(Vector3 kPos,Vector3 kHead,Vector3 kScale,int iTexture){
+	glPushMatrix();
+		
+		glTranslatef(kPos.x,kPos.y,kPos.z);	
+		glRotatef(kHead.x, 1, 0, 0);
+		glRotatef(kHead.y, 0, 1, 0);	
+		glRotatef(kHead.z, 0, 0, 1);
+		glScalef(kScale.x,kScale.y,kScale.z);
+
+ 		glBlendFunc(GL_ONE,GL_ZERO);
+ 		
+  	m_pkTexMan->BindTexture(iTexture);  
+
+    glBegin(GL_QUADS);			
+			glColor4f(1.0,1.0,1.0,1.0);  	  
+  	  glNormal3f(0,1,0);
+    	glTexCoord2f(0.0,0.0);glVertex3f(-.5,-0.5,0);		 
+    	glTexCoord2f(1.0,0.0);glVertex3f(.5,-0.5,0);		
+ 		  glTexCoord2f(1.0,1.0);glVertex3f(.5,0.5,0);    
+	  	glTexCoord2f(0.0,1.0);glVertex3f(-0.5,0.5,0);    
+		glEnd();			
+
+	glPopMatrix();
+}
+
+void Primitives::Pyra(float x,float y,float z) {
+//		glDepthMask(GL_FALSE);
+		GLfloat mat_specular[]={1,1,1,1};
+		GLfloat mat_shininess[]={10};
+		GLfloat mat_ambient[]={1,0,0,0};
+  	glMaterialfv(GL_FRONT,GL_SPECULAR,mat_specular);
+	  glMaterialfv(GL_FRONT,GL_SHININESS,mat_shininess);
+	  glMaterialfv(GL_FRONT,GL_AMBIENT,mat_ambient);
+
+		glPushMatrix();
+		glTranslatef(x,y,z);
+// 		glRotatef(i*1, 0.0, 0.1, 0.0);
+
+//		glBlendFunc(GL_SRC_ALPHA,GL_ONE);
+		glBegin(GL_TRIANGLES);				// start drawing a polygon
+			glColor4f(0,0,0,1.0);
+
+			glNormal3f(0.0,0.5,0.5);
+			glColor3f(1.0,0.0,0.0);
+			glVertex3f( 0.0f, .5f, 0.0f);		// Top
+			glColor3f(0.0,1.0,0.0);
+			glVertex3f( 0.5f,-.5f, .5f);		// Bottom Right
+			glColor3f(0.0,0.0,1.0);
+			glVertex3f(-.5f,-.5f,.5f);		// Bottom Left
+
+
+			glNormal3f(0.5,0.5,0.0);
+			glColor3f(1.0,0.0,0.0);
+			glVertex3f( 0.0f, .5f, 0.0f);		// Top
+			glColor3f(0.0,1.0,0.0);
+			glVertex3f( .5f,-.5f, .5f);		// Bottom Right
+			glColor3f(0.0,0.0,1.0);
+			glVertex3f(.5f,-.5f, -.5f);		// Bottom Left
+
+			glNormal3f(0.0,0.5,-0.5);
+			glColor3f(1.0,0.0,0.0);
+			glVertex3f( 0.0f, .5f, 0.0f);		// Top
+			glColor3f(0.0,0.0,1.0);
+			glVertex3f( .5f,-.5f, -.5f);		// Bottom Right
+			glColor3f(0.0,1.0,0.0);
+			glVertex3f(-.5f,-.5f, -.5f);		// Bottom Left
+
+			glNormal3f(-0.5,0.5,0.0);
+		  glColor3f(1.0,0.0,0.0);
+			glVertex3f( 0.0f, .5f, 0.0f);		// Top
+			glColor3f(0.0,1.0,0.0);
+			glVertex3f(-.5f,-.5f, -.5f);		// Bottom Right
+			glColor3f(0.0,0.0,1.0);
+			glVertex3f(-.5f,-.5f, .5f);		// Bottom Left
+
+		glEnd();					// we're done with the polygon
+		glPopMatrix();
+//		glDepthMask(GL_TRUE);
+}
+
+void Primitives::PrintChar(char cChar) {
+	char* aTexture;
+	
+	switch(cChar) {
+	
+		case '1':
+			aTexture="data/textures/text/1.bmp";break;
+		case '2':
+			aTexture="data/textures/text/2.bmp";break;
+		case '3':
+			aTexture="data/textures/text/3.bmp";break;
+	}
+			
+			
+	Quad(Vector3(0,0,-.499),Vector3(0,0,0),Vector3(.05,.05,.05),m_pkTexMan->Load(aTexture));
+
+
+}
+
+void Primitives::Print(Vector3 kPos,Vector3 kHead,Vector3 kScale,char* aText) {
+	glPushMatrix();
+		
+		glTranslatef(kPos.x,kPos.y,kPos.z);	
+		glRotatef(kHead.x, 1, 0, 0);
+		glRotatef(kHead.y, 0, 1, 0);	
+		glRotatef(kHead.z, 0, 0, 1);
+		glScalef(kScale.x,kScale.y,kScale.z);
+		
+		cout<<"printing ";
+	
+		int i=0;
+		while(aText[i]!='\0') {
+			cout<<aText[i];
+			PrintChar(aText[i]);
+//			glTranslatef(0.5,0,0);
+		
+			i++;
+		}
+		cout<<endl;
+
+	glPopMatrix();
+}

@@ -5,7 +5,7 @@ CmdSystem::CmdSystem(void) {
 }
 
 
-void CmdSystem::add(void* pAddress,char* aName,int iType) {
+void CmdSystem::Add(void* pAddress,char* aName,int iType) {
 //	cout<<"adding "<<aName<<" "<<iType<<" : "<<pAddress<<endl;
 	
 	
@@ -18,7 +18,7 @@ void CmdSystem::add(void* pAddress,char* aName,int iType) {
 	kVars.push_back(kNy);
 }
 
-void CmdSystem::get(char* aName) {
+void CmdSystem::Get(char* aName) {
 	for(int i=0;i<kVars.size();i++) {
 		if(strcmp(kVars[i]->aName,aName)==0){
 			cout<<aName<<" = "<<GetVar(i)<<endl;			
@@ -26,7 +26,7 @@ void CmdSystem::get(char* aName) {
 	}
 }
 
-void CmdSystem::list(void) {
+void CmdSystem::List(void) {
 	for(int i=0;i<kVars.size();i++) {
 		cout<<kVars[i]->aName<<" = "<<GetVar(i)<<endl;
 	}
@@ -49,7 +49,7 @@ double CmdSystem::GetVar(int i) {
 	return pdData;
 }
 
-void CmdSystem::set(char* aName,double dData) {
+void CmdSystem::Set(char* aName,double dData) {
 	for(int i=0;i<kVars.size();i++) {
 		if(strcmp(kVars[i]->aName,aName)==0){
 			switch(kVars[i]->iType) {

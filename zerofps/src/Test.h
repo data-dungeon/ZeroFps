@@ -11,7 +11,7 @@ class Test :public Application {
 
 
 	public:
-		Test(char* aName);
+		Test(char* aName,int iWidth,int iHeight,int iDepth);
 	 	void OnInit(void);
 		void OnIdle(void);
 

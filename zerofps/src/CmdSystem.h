@@ -30,10 +30,10 @@ class CmdSystem {
 	public:
 		CmdSystem(void);
 		
-		void add(void* pAddress,char* aName,int iType);		
-		void get(char* aName);
-		void list(void);
-		void set(char* aName,double);
+		void Add(void* pAddress,char* aName,int iType);		
+		void Get(char* aName);
+		void List(void);
+		void Set(char* aName,double);
 
 };
 

@@ -3,14 +3,18 @@
 
 #include <iostream>
 #include <cstdlib>
+#include <SDL/SDL_opengl.h>
+#include <SDL/SDL.h>
+
 #include "Globals.h"
 #include "Vector3.h"
 #include "Application.h"
 #include "CmdSystem.h"
+#include "TextureManager.h"
+#include "Console.h"
+#include "Primitives.h"
 
 class Application;
-
-#define pkCmd m_pkCmdSystem
 
 enum enginestates {
 	state_normal,
@@ -21,20 +25,27 @@ enum enginestates {
 
 class ZeroFps {
 	private:
-		Application* m_pkApp;		
-		CmdSystem* m_pkCmdSystem;
 		
+		SDL_Surface* m_pkScreen;		
 		int m_iState;
 		void HandleArgs(int iNrOfArgs, char** paArgs);
 
 	public:
+		Application* m_pkApp;		
+		CmdSystem* m_pkCmd;
+		TextureManager* m_pkTexMan;
+		Primitives* m_pkPrims;
+		Console* m_pkConsole;	
+	
 		ZeroFps(void);
 		
 		void SetApp(void);
 		void Init(int iNrOfArgs, char** paArgs);	
 		void MainLoop(void);
 		
-		void Error(char* aText);
+		void InitDisplay(int iWidth,int iHeight,int iDepth);		
+		void Swap(void);
+		
 		
 };
 
