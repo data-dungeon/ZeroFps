@@ -1,4 +1,4 @@
-Adding /home/dvoid/program/onefps/ to VFS root table
+Adding /home/dvoid/shitt/c/zerofpsv2/ to VFS root table
 Adding h:/ to VFS root table
 Start Engine SubSystems: 
 Ok

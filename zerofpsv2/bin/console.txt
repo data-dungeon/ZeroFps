@@ -6,18 +6,3 @@ ZeroFps (C) Dvoid & Vim
 --------------------------------
  Can we shoot yet?
 No game_autoexec.ini.ini found
-Command Not Found
-DIRECTORY 
-
-<.>
-<.>
-<ZeroRTSMail>
-<ZeroRTSMail>
-<bin>
-<data>
-<data>
-<docs>
-<doxydoc>
-<memman>
-<memman>
-<src>

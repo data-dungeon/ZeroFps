@@ -10,8 +10,8 @@
 #include <cmath>
 #include <GL/glut.h>
 #include <list>
-#include "../onefps/engine/application.h"
-#include "../onefps/engine/levelmanager.h"
+#include "../zerofpsv2/engine/application.h"
+#include "../zerofpsv2/engine/levelmanager.h"
 
 //#include "../common/common.pkg"
 

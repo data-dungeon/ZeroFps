@@ -1,5 +1,5 @@
 #include "zerotank.h"
-#include "../onefps/engine_systems/common/heightmap.h"
+#include "../zerofpsv2/engine_systems/common/heightmap.h"
 
 ZeroTank g_kZeroTank("ZeroTank",800,600,16);
 
