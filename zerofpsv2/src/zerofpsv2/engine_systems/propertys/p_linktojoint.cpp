@@ -10,7 +10,9 @@ P_LinkToJoint::P_LinkToJoint()
 	m_iType = PROPERTY_TYPE_NORMAL;
 	m_iSide = PROPERTY_SIDE_SERVER | PROPERTY_SIDE_CLIENT;
 
-	m_strToJoint = "joint0";
+	SetJoint("joint0");
+	
+	bNetwork = true;
 }
 
 P_LinkToJoint::~P_LinkToJoint()	
@@ -38,13 +40,20 @@ void P_LinkToJoint::Update()
  	pkCore->SetBoneAnimationTime(pkMad->iActiveAnimation, pkMad->fCurrentTime,pkMad->m_bLoop);
 	pkCore->SetupBonePose();
 	
+	
+	//dvoid ultra hax deluxe  ..dont mess whit this code
 	Matrix4 kMat;
 	Vector3 kPos;
 	kMat = pkCore->GetBoneTransform(pkCore->GetJointID(m_strToJoint.c_str()));
 	kPos = kMat.GetPos() * pkMad->m_fScale;
 	kMat.SetPos(Vector3(0,0,0));
+	kMat *= m_pkObject->GetParent()->GetWorldRotM();	//add parents rotation , cos where not using realtive orientation anymore
 	m_pkObject->SetLocalRotM(kMat);
-	m_pkObject->SetLocalPosV( kPos );
+	
+	kPos = m_pkObject->GetParent()->GetWorldRotM().VectorRotate(kPos);	//apply object rotation to joint offset
+	kPos += m_pkObject->GetParent()->GetIWorldPosV();							//apply interpolatet parent position 
+	
+	m_pkObject->SetLocalPosV(kPos);
 }
 
 vector<PropertyValues> P_LinkToJoint::GetPropertyValues()
@@ -57,6 +66,17 @@ vector<PropertyValues> P_LinkToJoint::GetPropertyValues()
 
 	return kReturn;
 }
+
+bool P_LinkToJoint::HandleSetValue( string kValueName ,string kValue )
+{
+	if(strcmp(kValueName.c_str(), "m_strToJoint") == 0) {
+		SetJoint(kValue.c_str());
+		return true;
+	}
+	
+	return false;
+}
+
 
 void P_LinkToJoint::Save(ZFIoInterface* pkPackage)
 {	
@@ -73,8 +93,31 @@ void P_LinkToJoint::Load(ZFIoInterface* pkPackage)
 	m_strToJoint = temp;
 }
 
+void P_LinkToJoint::PackTo(NetPacket* pkNetPacket, int iConnectionID )
+{
+	pkNetPacket->Write_Str(m_strToJoint.c_str());
+	
+	SetNetUpdateFlag(iConnectionID,false);
+}
+ 
+void P_LinkToJoint::PackFrom(NetPacket* pkNetPacket, int iConnectionID )
+{
+	char temp[128];
+	pkNetPacket->Read_Str(temp);
+	SetJoint(temp);
+	
+	
+}
 
+void P_LinkToJoint::SetJoint(const char* czJoint)
+{
+	if(m_strToJoint == czJoint)
+		return;
 
+	m_strToJoint = czJoint;
+
+	SetNetUpdateFlag(true);
+}
 
 Property* Create_LinkToJoint()
 {

@@ -16,9 +16,11 @@ class ENGINE_SYSTEMS_API P_LinkToJoint : public Property
 {
 	private:
 		vector<PropertyValues> GetPropertyValues();
+		bool HandleSetValue( string kValueName ,string kValue );
 
-	public:
 		string	m_strToJoint;
+		
+	public:
 
 		P_LinkToJoint();
 		~P_LinkToJoint();
@@ -29,6 +31,12 @@ class ENGINE_SYSTEMS_API P_LinkToJoint : public Property
 		
 		void Save(ZFIoInterface* pkPackage);
 		void Load(ZFIoInterface* pkPackage);
+
+		void PackTo(NetPacket* pkNetPacket, int iConnectionID );
+		void PackFrom(NetPacket* pkNetPacket, int iConnectionID );
+
+		void SetJoint(const char* czJoint);
+
 };
 
 Property* Create_LinkToJoint();
