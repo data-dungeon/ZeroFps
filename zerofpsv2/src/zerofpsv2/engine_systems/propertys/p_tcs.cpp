@@ -2,6 +2,8 @@
 #include "../script_interfaces/si_objectmanager.h" 
 #include "../common/heightmap.h"
 
+#include "p_hmrp2.h"
+
 using namespace ObjectManagerLua;
 
 

@@ -11,7 +11,8 @@
 #include "../engine_systems/script_interfaces/si_objectmanager.h"
 #include "../engine_systems/script_interfaces/si_properties.h"
 #include "p_pfmesh.h"
- 
+#include "../basic/zfbasicfs.h"
+
 
 
 ZoneData::ZoneData()

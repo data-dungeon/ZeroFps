@@ -11,6 +11,8 @@
 
 using namespace std;
 
+class P_HMRP2;
+
 /// Property to create bushes / trees.
 class ENGINE_SYSTEMS_API P_Vegitation : public Property {
 	private:

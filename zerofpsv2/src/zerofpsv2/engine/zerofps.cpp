@@ -11,6 +11,19 @@
 #include "inputhandle.h" 
 #include "../engine_systems/common/heightmap.h"
 #include "../engine_systems/propertys/propertys.pkg"
+#include "network.h"
+#include "../basic/zfbasicfs.h"
+#include "astar.h"
+
+//#include "../basic/zfresourcedb.h"
+
+//#include "../engine_systems/audio/zfaudiosystem.h"
+//#include "../basic/zfini.h"
+//#include "../render/zshadersystem.h"
+
+
+// #include "../engine_systems/common/zshadow.h"
+// #include "../engine_systems/tcs/tcs.h"
 
 #define	ZF_MIN_PLAYERS	1
 #define	ZF_DEF_PLAYERS	8

@@ -2270,8 +2270,11 @@ int SetLocalVector(lua_State* pkLua)
 	char acName[100];
 	g_pkScript->GetArg(pkLua, 1, acName);
 
+	Vector3 kPos;
+	kPos = GetVectorArg(pkLua, 2);
+
 	Entity* o1 = g_pkObjMan->GetEntityByID(iId1);
-	o1->SetVarVector(acName, Vector3(0,0,10));
+	o1->SetVarVector(acName, kPos);
 	return 1;	
 }
 

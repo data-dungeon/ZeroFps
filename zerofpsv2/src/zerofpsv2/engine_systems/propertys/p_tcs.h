@@ -1,17 +1,17 @@
 #ifndef _P_TCS_H_
 #define _P_TCS_H_
-
+  
 #include "../../engine/property.h"
 #include <vector>
 #include "../engine_systems_x.h"
-
-//#include "../tcs/tcs.h"
 #include "p_mad.h"
-#include "p_hmrp2.h"
+ 
+//#include "../tcs/tcs.h"
 
 #define TCS_GROUPS 10
 
 using namespace std;
+
 class Tcs;
 class P_Mad;
 

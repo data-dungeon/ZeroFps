@@ -1,4 +1,5 @@
 #include "zeroed.h"
+#include "../zerofpsv2/basic/zfbasicfs.h"
 
 bool ZeroEd::UpdatePropertyList(int iID)
 {

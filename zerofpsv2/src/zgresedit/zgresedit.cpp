@@ -9,6 +9,7 @@
 #include "../zerofpsv2/render/zguirenderer.h"
 #include "../zerofpsv2/engine/inputhandle.h"
 #include "../zerofpsv2/basic/zguifont.h"
+#include "../zerofpsv2/basic/zfbasicfs.h"
 
 bool bPlayAnimation = false;
 FILE* pkAnimationFile = NULL;

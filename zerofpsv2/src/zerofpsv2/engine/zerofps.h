@@ -9,23 +9,17 @@
 #include <cstdarg>
 #include <SDL/SDL.h>
 #include "../ogl/zfpsgl.h"
-#include "network.h"
-#include "../basic/zfresourcedb.h"
-#include "../basic/zfbasicfs.h"
 #include "fh.h"
 #include "entity.h"
 #include "camera.h"
-#include "../engine_systems/audio/zfaudiosystem.h"
-#include "../basic/zfini.h"
-#include "../engine_systems/tcs/tcs.h"
-#include "../engine_systems/common/zshadow.h"
-#include "../render/zshadersystem.h"
 #include "i_zerofps.h"
-#include "../engine_systems/mad/mad_core.h"
 #include "res_texture.h"
 #include "../script/zfscript.h"
 #include "../engine_systems/script_interfaces/si_std.h"
-#include "astar.h"
+
+//#include "../engine_systems/mad/mad_core.h"
+//#include "../engine_systems/tcs/tcs.h"
+//#include "../engine_systems/common/zshadow.h"
 //#include "inputhandle.h"
 
 
@@ -48,6 +42,9 @@ class PSystemManager;
 class Tcs;
 class InputHandle;
 class ZShadow;
+class ZFAudioSystem;
+class Network;
+class AStar;
 
 enum enginestates
 {
