@@ -39,8 +39,14 @@ void MassDriverProperty::Fire()
 		return;		
 	m_fLastShot=m_pkFps->GetTicks();
 
+	if(m_iAmmo<=0)
+	{
+		cout<<"klick"<<endl;
+		return;
+	}
 	
-//	cout<<"BANG!!"<<endl;
+	m_iAmmo--;
+
 	
 	Object* Bullet=new Object;
 	Bullet->GetName()="MassDriver_Bullet";
