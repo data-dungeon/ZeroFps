@@ -102,14 +102,14 @@ P_Track::P_Track()
 
 P_Track::~P_Track() 
 {
-	m_pkOBjM->RemoveTracker(m_pkObject);
+	m_pkOBjM->RemoveTracker(this);
 }
 
 
 void P_Track::Init() 
 {
 	//cout << "Trackerproperty Init" << endl;
-	m_pkOBjM->AddTracker(m_pkObject);
+	m_pkOBjM->AddTracker(this);
 }
 
 void P_Track::SetClient(int iId)

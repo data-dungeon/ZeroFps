@@ -678,14 +678,14 @@ void Entity::PackTo(NetPacket* pkNetPacket, int iConnectionID)
 		{
 			if((*it)->GetNetUpdateFlag(iConnectionID))
 			{	
-				pkNetPacket->Write_NetStr((*it)->m_acName);
+				pkNetPacket->Write_Str((*it)->m_acName);
 				(*it)->PackTo(pkNetPacket,iConnectionID);
 			}
 		}
 	}
 	
 	//end whit and empty property name so that client knows theres no more propertys
-	pkNetPacket->Write_NetStr("");
+	pkNetPacket->Write_Str("");
 	
 /*
 	// Force Pos Updates
@@ -856,7 +856,7 @@ void Entity::PackFrom(NetPacket* pkNetPacket, int iConnectionID)
 	char szProperty[256];
 	
 	//read first property name
-	pkNetPacket->Read_NetStr(szProperty);
+	pkNetPacket->Read_Str(szProperty);
 
 	while(strcmp(szProperty,"") != 0) 
 	{
@@ -872,7 +872,7 @@ void Entity::PackFrom(NetPacket* pkNetPacket, int iConnectionID)
 		}
 
 		//get next property name
-		pkNetPacket->Read_NetStr(szProperty);
+		pkNetPacket->Read_Str(szProperty);
 	}	
 
 	int iEnd = pkNetPacket->m_iPos;

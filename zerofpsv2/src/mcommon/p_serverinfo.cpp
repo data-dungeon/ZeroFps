@@ -181,6 +181,7 @@ void P_ServerInfo::PackTo( NetPacket* pkNetPacket, int iConnectionID  )
 
 void P_ServerInfo::PackFrom( NetPacket* pkNetPacket, int iConnectionID  ) 
 {   
+	
 	char tm[120];
    pkNetPacket->Read_Str( tm );
 	m_sServerName = tm;

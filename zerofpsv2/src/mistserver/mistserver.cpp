@@ -799,7 +799,7 @@ void MistServer::AddZone()
 	{
 		pkObjectMan->SetZoneModel(m_strActiveZoneName.c_str(),id);
 	
-		pkObjectMan->SetUnderConstruction(id);
+		//pkObjectMan->SetUnderConstruction(id);
 	}	
 
 	

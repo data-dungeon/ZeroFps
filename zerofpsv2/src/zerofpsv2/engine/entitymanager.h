@@ -91,11 +91,11 @@ class ENGINE_API EntityManager : public ZFSubSystem{
 		vector<ZoneData>			m_kZones;
 		
 		// Trackers
-		list<Entity*> 				m_kTrackedObjects;	
+		list<P_Track*>				m_kTrackedObjects;	
 		int							m_iTrackerLOS;												//tracker line of sight
 
 		//list<ObjectDescriptor*> m_akTemplates;											///< List of templates.
-		
+			
 		vector<Property*>			m_akPropertys;												///< List of Active Propertys.	
 		int							m_iNrOfActivePropertys;									///> Size of akProperty list.
 
@@ -233,10 +233,10 @@ class ENGINE_API EntityManager : public ZFSubSystem{
 
 
 		//trackers
-		void AddTracker(Entity* kObject);
-		void RemoveTracker(Entity* kObject);
+		void AddTracker(P_Track* kObject);
+		void RemoveTracker(P_Track* kObject);
 		int GetNrOfTrackedObjects();
-		list<Entity*>* GetTrackerList();
+		list<P_Track*>* GetTrackerList();
 		void ClearTrackers();
 		vector<int>	GetActiveZoneIDs(int iTracker);	// Returns a list with zones that the tracked activates,
 		

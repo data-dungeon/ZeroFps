@@ -272,7 +272,9 @@ void MistClient::OnSystem()
 		{
 			Entity* pkServerI = pkObjectMan->GetObject("A t_serverinfo.lua");
 			if(pkServerI)
+			{
 				m_pkServerInfo = (P_ServerInfo*)pkServerI->GetProperty("P_ServerInfo");
+			}
 				
 			if(m_pkServerInfo)
 			{
