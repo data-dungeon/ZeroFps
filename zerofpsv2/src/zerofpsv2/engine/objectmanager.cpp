@@ -70,6 +70,7 @@ ObjectManager::ObjectManager()
 	m_iNumOfNetObjects		= 0;
 	m_bDrawZones				= false;
 	m_pScriptFileHandle		= NULL;
+	m_iTrackerLOS				= 3;	
 
 	Register_Cmd("o_logtree",FID_LOGOHTREE);	
 	Register_Cmd("o_dumpp",FID_LOGACTIVEPROPERTYS);	
@@ -84,6 +85,7 @@ ObjectManager::ObjectManager()
 	Register_Cmd("savezones",FID_SAVEZONE, CSYS_FLAG_SRC_ALL);	
 
 	RegisterVariable("l_showzones", &m_bDrawZones, CSYS_BOOL);
+	RegisterVariable("l_trackerlos", &m_iTrackerLOS, CSYS_INT);	
 }
 
 bool ObjectManager::StartUp()	
@@ -1503,7 +1505,7 @@ void ObjectManager::UpdateZones()
 	unsigned int iZ;
 
 
-	int iTrackerLOS = 3;
+	//int iTrackerLOS = 3;
 
 	// Set All Zones as inactive.
 	for(iZ=0;iZ<m_kZones.size();iZ++) {
@@ -1546,13 +1548,13 @@ void ObjectManager::UpdateZones()
 			pkZone->m_bActive = true;
 			int iRange = pkZone->m_iRange + 1;
 
-			if(iRange < iTrackerLOS) {
+			if(iRange < m_iTrackerLOS) {
 				for(unsigned int i=0; i<pkZone->m_iZoneLinks.size(); i++) {
 					ZoneData* pkOtherZone = GetZoneData(pkZone->m_iZoneLinks[i]); //				pkZone->m_pkZoneLinks[i];	//GetZoneData(pkZone->m_iZoneLinks[i]);				
 
 					if(pkOtherZone->m_iRange < iRange)	continue;
 					pkOtherZone->m_iRange = iRange;
-					if(pkOtherZone->m_iRange < iTrackerLOS)
+					if(pkOtherZone->m_iRange < m_iTrackerLOS)
 						m_kFloodZones.push_back(pkOtherZone);
 					}
 				}

@@ -94,6 +94,7 @@ class ENGINE_API ObjectManager : public ZFSubSystem{
 		
 		// Trackers
 		list<Object*> 				m_kTrackedObjects;	
+		int							m_iTrackerLOS;					//tracker line of sight
 
 		list<ObjectDescriptor*> m_akTemplates;							///< List of templates.
 		
