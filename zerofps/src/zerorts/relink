@@ -1,1 +1,0 @@
-g++ *.o -o ../../bin/zerorts -L../../bin/ -lcommon -lphysics_engine -lbasic -lengine -lrender -lscript -lgui -lglut -L/usr/X11R6/lib
