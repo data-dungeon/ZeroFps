@@ -133,6 +133,9 @@ bool CharacterStats::RollSkillDice ( string kSkill, float fDifficulty )
 
    if ( kIte != m_kSkills.end() )
    {
+      if ( m_kSkills[kSkill].m_iValue < 1 )
+         return false;
+
       int iRoll = rand()%m_kSkills[kSkill].m_iValue;
 
       if ( iRoll <= m_kSkills[kSkill].m_iValue - fDifficulty )
@@ -195,14 +198,19 @@ void CharacterStats::RecieveSkillExp ( StatDescriber *pkStat, float fDifficulty,
       TestLevelUp ( &m_kSkills [ (*kIte).first ] );
    }
 
+
+   // recieve group exps
+   for ( kIte = g_kSkillExps[kName].m_kGroupExp.begin();
+         kIte != g_kSkillExps[kName].m_kGroupExp.end(); kIte++ )
+      for ( int i = 0; i < g_kSkillGroups[(*kIte).first].size(); i++ )
+      {
+         m_kSkills[ g_kSkillGroups[(*kIte).first].at(i) ].m_fExp += (*kIte).second;
+         TestLevelUp ( &m_kSkills[ g_kSkillGroups[(*kIte).first].at(i) ] );
+      }
+
+
    TestLevelUp ( pkStat );
 
-   // Levelup?
-   if ( pkStat->m_fExp > 10 )
-   {
-      pkStat->m_iValue++;
-      pkStat->m_fExp -= 10;
-   }
 }
 
 // ------------------------------------------------------------------------------------------
@@ -410,7 +418,6 @@ bool CharacterStats::Equip ( Object *pkObject, string kSlot )
       pkP_Item->GetItemStats()->EquipOn ( this );
 
       // check if the slot already is taken, if so, switch objects...somehow!?
-
       m_kEquipment[kSlot] = pkObject;
 
 

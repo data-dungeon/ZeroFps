@@ -24,6 +24,7 @@
 #include "../mcommon/si_mistland.h"
 #include "../mcommon/p_ml.h"
 #include "../mcommon/p_charstats.h"
+#include "../mcommon/p_item.h"
 #include "../mcommon/p_serverinfo.h"
 #include "../mcommon/p_clientcontrol.h"
 

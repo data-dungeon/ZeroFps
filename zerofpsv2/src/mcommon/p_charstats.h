@@ -22,6 +22,12 @@ class MCOMMON_API CharacterProperty: public Property
 		CharacterProperty( string kName );
 		CharacterProperty();
 
+      void Save(ZFIoInterface* pkPackage);
+      void Load(ZFIoInterface* pkPackage);
+
+      void PackTo(NetPacket* pkNetPacket);
+		void PackFrom(NetPacket* pkNetPacket);
+
 		bool HandleSetValue( string kValueName, string kValue );
 
 };

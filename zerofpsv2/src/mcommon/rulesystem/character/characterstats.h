@@ -119,8 +119,7 @@ public:
 
 
 
-   friend class CharacterFactory;
-
+   friend class CharacterProperty;
 };
 
 #endif

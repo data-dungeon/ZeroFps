@@ -127,11 +127,12 @@ void MistServer::Init()
 
 void MistServer::RegisterPropertys()
 {
-	pkPropertyFactory->Register("P_ClientControl",	Create_P_ClientControl);
-	pkPropertyFactory->Register("P_ServerInfo",		Create_P_ServerInfo);
-	pkPropertyFactory->Register("P_Ml",				Create_P_Ml);
-	pkPropertyFactory->Register("P_Event",			Create_P_Event);
-	pkPropertyFactory->Register("P_CharStats",		Create_P_CharStats);
+	pkPropertyFactory->Register("P_ClientControl", Create_P_ClientControl);
+	pkPropertyFactory->Register("P_ServerInfo", Create_P_ServerInfo);
+	pkPropertyFactory->Register("P_Ml", Create_P_Ml);
+	pkPropertyFactory->Register("P_Event", Create_P_Event);
+	pkPropertyFactory->Register("P_CharStats", Create_P_CharStats);
+   pkPropertyFactory->Register("P_Item", Create_P_Item);
 }
 
 
@@ -152,7 +153,7 @@ void MistServer::OnIdle()
 
 	for(int iPath = 0; iPath < kPath.size(); iPath++)
 		pkRender->Draw_MarkerCross(kPath[iPath],Vector3(1,1,1),1);
-	
+   
 	if(m_pkServerInfoP)
 	{
 		pkFps->DevPrintf("server","ServerName: %s", m_pkServerInfoP->m_sServerName.c_str());

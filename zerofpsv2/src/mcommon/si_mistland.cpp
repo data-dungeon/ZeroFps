@@ -1653,7 +1653,7 @@ int MistLandLua::EquipLua (lua_State* pkLua)
             ZFScriptSystem* pkZFScriptSys = g_pkScript;
 
             // create the new object
-            Object* pkNewObj = g_pkObjMan->CreateObjectFromScript(acItem);
+            Object* pkNewObj = g_pkObjMan->CreateObjectFromScriptInZone(acItem, pkObject->GetWorldPosV() );
 
             if ( pkNewObj )
             {
@@ -1661,14 +1661,14 @@ int MistLandLua::EquipLua (lua_State* pkLua)
                if ( pkNewObj->GetProperty ("P_Event") )
                   // run the INIT function in the script
                   pkNewObj->GetProperty("P_Event")->Update();
- 
+
                // equip the new, nice object
                if ( !pkChar->GetCharStats()->Equip ( pkNewObj, string(acSlot) ) )
                   // if we couln't equip the object, delete it.
                   delete pkNewObj;
             }
 
-            // return everything the way it was
+            // return everything the way it was before calling the script
             g_iCurrentObjectID = iOldObject;
             g_pkScript = pkZFScriptSys;
             

@@ -106,6 +106,8 @@ public:
 
    bool operator== ( ItemStats &kItemStats );
 
+   friend class P_Item;
+
 };
 
 #endif

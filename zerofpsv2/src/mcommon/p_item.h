@@ -21,6 +21,12 @@ class MCOMMON_API P_Item: public Property
 		P_Item( string kName );
 		P_Item();
 
+      void Save(ZFIoInterface* pkPackage);
+      void Load(ZFIoInterface* pkPackage);
+
+      void PackTo(NetPacket* pkNetPacket);
+		void PackFrom(NetPacket* pkNetPacket);
+
 		bool HandleSetValue( string kValueName, string kValue );
 };
 
