@@ -100,7 +100,7 @@ Collision* CSBox::Collide_CSSphere(CSSphere* kOther,float fTime)
 
 		if(TestInside(O2->GetPos() , kOther->m_pkPP->m_kNewPos , kOther->m_fRadius))
 		{
-			cout<<"inside a box"<<endl;
+//			cout<<"inside a box"<<endl;
 			HitPos=m_kColPos;
 			hit=true;
 			inside=true;
@@ -408,11 +408,15 @@ bool CSBox::TestInside(Vector3 kPos1,Vector3 kPos2,float fR)
 	if(inside)
 	{
 		fDist=abs(fDist);
-		cout<<"dist:"<<fDist<<" Plane:"<<iPlane<<endl;
-		cout<<"moving "<<fDist<<" along "<<side[iPlane].m_kNormal.x<<" "<<side[iPlane].m_kNormal.y<<" "<<side[iPlane].m_kNormal.z<<endl;
+//		cout<<"dist:"<<fDist<<" Plane:"<<iPlane<<endl;
+//		cout<<"moving "<<fDist<<" along "<<side[iPlane].m_kNormal.x<<" "<<side[iPlane].m_kNormal.y<<" "<<side[iPlane].m_kNormal.z<<endl;
 		
 		m_kColPos=kPos2+side[iPlane].m_kNormal*(fDist+coloffset);
-	
+//		Vector3 cola = kPos2-m_pkPP->GetObject()->GetPos();
+//		Vector3 jolt = side[iPlane].m_kNormal.Proj(cola);
+		
+//		m_kColPos = m_pkPP->GetObject()->GetPos() +(cola-jolt) +  (side[iPlane].m_kNormal*(m_kScale/2 + fR + coloffset));
+//		cout<<"NewPos: "<<m_kColPos.x<<" "<<m_kColPos.y<<" "<<m_kColPos.z<<endl;
 	}
 	
 	return inside;

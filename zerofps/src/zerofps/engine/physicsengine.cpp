@@ -185,8 +185,8 @@ void PhysicsEngine::HandleCollisions()
 
 	m_kCPs.sort(SortCollision);
 
-	if(m_kCPs.size()/2>1)
-		cout<<"nr Of tests: "<<m_kCPs.size()/2<<endl;
+//	if(m_kCPs.size()/2>1)
+//		cout<<"nr Of tests: "<<m_kCPs.size()/2<<endl;
 
 	PhysicProperty* pkSPP=NULL;
 	Collision* pkCO=NULL;
