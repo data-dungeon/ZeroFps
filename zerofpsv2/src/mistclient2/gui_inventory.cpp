@@ -39,7 +39,7 @@ void GuiMsgInventoryDlg( string strMainWnd, string strController,
 InventoryDlg::InventoryDlg() : ICON_WIDTH(32), ICON_HEIGHT(32), UPPER_LEFT(27,87),
 										 SLOTTS_HORZ(6), SLOTTS_VERT(12)
 {
-	m_pkMainWnd = NULL;
+	m_pkInventoryWnd = NULL;
 	m_pkTexMan = g_kMistClient.m_pkTexMan;
 	m_iMoveSlot = -1;
 	m_iSelItemID = -1;
@@ -48,7 +48,7 @@ InventoryDlg::InventoryDlg() : ICON_WIDTH(32), ICON_HEIGHT(32), UPPER_LEFT(27,87
 
 InventoryDlg::~InventoryDlg()
 {
-	g_kMistClient.m_pkGui->UnregisterWindow(m_pkMainWnd);
+	g_kMistClient.m_pkGui->UnregisterWindow(m_pkInventoryWnd);
 }
 
 MLContainer* InventoryDlg::GetContainer()
@@ -72,33 +72,35 @@ MLContainer* InventoryDlg::GetContainer()
 void InventoryDlg::Open()
 {	
 	//send iventory request to server
-	g_kMistClient.SendRequestIventory();			
+	g_kMistClient.SendRequestIventory();		
 
 	m_bGuiCaptureBeforOpen = g_kMistClient.m_bGuiCapture; // rembember privius gui capture mode
 
 	// load inventory
-	if(m_pkMainWnd == NULL)
+	if(m_pkInventoryWnd == NULL)
 	{
-		if(!g_kMistClient.LoadGuiFromScript("data/script/gui/inventory.lua"))
+		if(!g_kMistClient.LoadGuiFromScript("data/script/gui/inventory2.lua"))
 		{
 			printf("Error loading inventory script!\n");
 			return;
 		}
 
-		m_pkMainWnd = g_kMistClient.GetWnd("InventoryWnd");
+		m_pkInventoryWnd = g_kMistClient.GetWnd("InventoryWnd");
 	}
 
-	m_pkMainWnd->Show();
+	OpenContainerWnd(4,4);
+
+	m_pkInventoryWnd->Show();
 
 	g_kMistClient.GetWnd("OpenInventoryBn")->Hide();
 	g_kMistClient.PositionActionButtons();
 
-	ZGuiWnd::m_pkFocusWnd = m_pkMainWnd;
+	ZGuiWnd::m_pkFocusWnd = m_pkInventoryWnd;
 }
 
 void InventoryDlg::Close()
 {
-	m_pkMainWnd->Hide();
+	m_pkInventoryWnd->Hide();
 
 	// Must set focus on mainwnd to recive SPACE intput for chatbox...
 	g_kMistClient.m_pkGui->SetFocus(g_kMistClient.GetWnd("GuiMainWnd"), false);	
@@ -137,7 +139,7 @@ void InventoryDlg::OnMouseMove(bool bLeftButtonPressed, int mx, int my)
 
 					m_iMoveSlot = i; // select new item
 					m_vkItemList[i].pkWnd->m_iZValue = m_iHighestZ++;
-					m_pkMainWnd->SortChilds(); 
+					m_pkInventoryWnd->SortChilds(); 
 				}
 			}
 			else
@@ -193,7 +195,7 @@ void InventoryDlg::Update(vector<MLContainerInfo>& vkItemList)
 		h = vkItemList[i].m_cItemH * ICON_HEIGHT;
 
 		ZGuiWnd* pkNewSlot = g_kMistClient.CreateWnd(Label, 
-			szItemName, "", m_pkMainWnd, x, y, w, h, 0);
+			szItemName, "", m_pkInventoryWnd, x, y, w, h, 0);
 		pkNewSlot->Show();
 
 		pkNewSlot->SetSkin(new ZGuiSkin());
@@ -259,5 +261,79 @@ void InventoryDlg::OnDropItem()
 	{
 		m_vkItemList[m_iMoveSlot].pkWnd->SetPos(m_kPosBeforeMove.x, 
 			m_kPosBeforeMove.y, false, true);		
+	}
+}
+
+void InventoryDlg::CloseContainerWnd()
+{
+	if(m_pkContainerWnd)
+	{
+		m_pkContainerWnd->Hide();
+		g_kMistClient.GetWnd("ContainerCloseButton")->Hide();
+	}
+}
+
+void InventoryDlg::OpenContainerWnd(int slots_horz, int slots_vert)
+{
+	m_pkContainerWnd = g_kMistClient.GetWnd("ContainerWnd");
+	m_pkContainerWnd->Show();
+
+	list<ZGuiWnd*> kChilds;
+	m_pkContainerWnd->GetChildrens(kChilds);
+
+	const int MAX_WIDTH = slots_horz*32;
+	const int MAX_HEIGHT = slots_vert*32;
+
+	m_pkContainerWnd->Resize(MAX_WIDTH, MAX_HEIGHT);
+
+	int bdsize = m_pkContainerWnd->GetSkin()->m_unBorderSize; 
+	
+	Rect rcInventory = m_pkInventoryWnd->GetScreenRect();
+	m_pkContainerWnd->SetPos(rcInventory.Left - MAX_WIDTH - bdsize, 
+		rcInventory.Top + bdsize, true, true);
+
+	g_kMistClient.GetWnd("ContainerCloseButton")->SetPos(
+		rcInventory.Left - MAX_WIDTH - bdsize + MAX_WIDTH, 
+		rcInventory.Top + bdsize-20,true,true);
+
+	int current_slot_x=0, current_slot_y=0;
+	
+	for(list<ZGuiWnd*>::iterator it=kChilds.begin(); it!=kChilds.end(); it++)
+	{
+		string strName = (*it)->GetName();
+
+		if(strName.find("CSlotBkLabel_") != string::npos)
+		{	
+			int x = current_slot_x * 32;
+			int y = current_slot_y * 32;
+			(*it)->SetPos(x, y, false, true);
+
+			current_slot_x += 3;
+
+			if(current_slot_y > slots_vert)
+			{
+				(*it)->Hide();
+			}
+			else
+			{
+				(*it)->Show();
+
+				Rect rc = (*it)->GetWndRect();
+
+				int w = rc.Width();
+				int h = rc.Height();
+
+				if(rc.Right > MAX_WIDTH)  w = MAX_WIDTH-rc.Left;
+				if(rc.Bottom > MAX_HEIGHT) h = MAX_HEIGHT-rc.Top;
+
+				(*it)->Resize(w, h);
+			}
+
+			if(current_slot_x > slots_horz)
+			{
+				current_slot_x = 0;
+				current_slot_y += 3;
+			}
+		}
 	}
 }
