@@ -335,7 +335,10 @@ void Render::DrawHMlod(HeightMap* kmap,Vector3 CamPos){
 				step=6;
 				
 			bool flip=false;	//texture fliper
-			float t,s;   			//texture cordinats
+			float t=0;
+			float s=0;			 //exture cordinats
+			float nt,ns;
+			int times=0;
 			
 			//start going trouh all vertexes in the slice
 			for(int z=sz*slicesize;z<sz*slicesize+slicesize;z+=step){
@@ -348,8 +351,34 @@ void Render::DrawHMlod(HeightMap* kmap,Vector3 CamPos){
 					else
 						flip=false;
 					
-					GiveTexCor(t,s,1);//caculate texture cordinats
+					if(flip){//change texturecordinats only on flip
+				 		
+				 		
+				 		//Get New texture cordinats
+						GiveTexCor(nt,ns,kmap->verts[z*kmap->m_iHmSize+x].texture);//caculate texture cordinats						
 					
+						//if the cordinats is the same as last time
+						if(nt==t && ns==s){
+							//dont do anything =)
+						}else  {
+							//else put a new polygon with old texture cordinat
+
+//							cout<<"changing texture "<<times++<<endl;
+							
+							//draw the the new polygons with old cordinat
+							p1=Vector3(x,kmap->verts[z*kmap->m_iHmSize+x].height,z);									
+							glNormal3fv((float*)&kmap->verts[z*kmap->m_iHmSize+x].normal);						
+							glTexCoord2f(t+0.01,s-0.01);						
+					 		glVertex3fv((float*)&p1);
+				 			
+							p2=Vector3(x,kmap->verts[(z+step)*kmap->m_iHmSize+x].height,z+step);			 		
+						 	glNormal3fv((float*)&kmap->verts[(z+step)*kmap->m_iHmSize+x].normal);				 		
+					 		glTexCoord2f(t+0.01,s-0.24);				
+							glVertex3fv((float*)&p2); 
+							
+							t=nt;s=ns;//set the new cordinats
+						}
+					}
 					
 					//vertex down
 					p1=Vector3(x,kmap->verts[z*kmap->m_iHmSize+x].height,z);				

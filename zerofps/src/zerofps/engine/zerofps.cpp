@@ -120,7 +120,7 @@ void ZeroFps::Swap(void) {
 	
 	glLoadIdentity();													//
 	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);		// Reset view and clea
-	glFrustum(-0.25,0.25,-0.25,0.25,0.25,100.0);				//
+	glFrustum(-0.10,0.10,-0.10,0.10,0.10,300.0);				//
 	
 	//count FPS
 	m_fFrameTime=SDL_GetTicks()-m_fLastFrameTime;

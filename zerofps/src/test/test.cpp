@@ -31,8 +31,8 @@ void Test::OnInit(void) {
 //s	exit(1);
 
 
-	GLfloat light_position[] ={0,60,0,1};
-	GLfloat white_light[] = {0.6,0.6,0.6,0.6};
+	GLfloat light_position[] ={100,100,0,1};
+	GLfloat white_light[] = {0.2,0.2,0.2,0.6};
 	GLfloat lmodel_ambient[] = {0.6,0.6,0.6,0.6};
 
   glColorMaterial(GL_FRONT,GL_AMBIENT_AND_DIFFUSE);
@@ -52,25 +52,13 @@ void Test::OnInit(void) {
 void Test::OnIdle(void) {
 	input();
 	
-	float x,z;
-	x=sin(pkFps->GetTicks()/1000.0)*400;
-	z=cos(pkFps->GetTicks()/1000.0)*400;
-//  light_position[0]=x;
-//  light_position[2]=z;
-  glLightfv(GL_LIGHT0,GL_POSITION,light_position);	
+	glLightfv(GL_LIGHT0,GL_POSITION,light_position);	
 
 	pkRender->DrawHMlod(test,*pkFps->m_kCamPos);		
 //	pkRender->DrawHMlod(test2,*pkFps->m_kCamPos);			
 //	pkRender->DrawHM(test);		
-	pkRender->SetFont("file:../data/textures/text/console.bmp");	
-	pkRender->Print(Vector3(x,20,z),Vector3(0,0,0),Vector3(5,5,5),"HEJ JULLE");
 
 	cout<<pkFps->m_iFps<<endl;
-	
-//	for(int i=2;i<60;i++)
-//		pkRender->Pyra(sin(pkFps->GetTicks()/1000.0*i/2)*2,cos(pkFps->GetTicks()/1000.0*i/2)*2,-i/2);
-
-
 }
 
 
