@@ -529,6 +529,8 @@ void Tcs::FindRestingBodys()
 	
 		for(int i = 0;i<m_kBodys.size();i++)
 		{
+			if(m_kBodys[i]->m_bStatic ||  m_kBodys[i]->m_bSleeping)
+				continue;
 			
 			//check if body has moved less then fRestMaxDist since last check
 			if(m_kBodys[i]->m_fMoveDistance <= fRestMaxDist)
