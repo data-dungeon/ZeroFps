@@ -2193,78 +2193,6 @@ bool MistServer::CheckValidOrder(ClientOrder* pkOrder)
 	return false;
 }
 
-bool MistServer::BuildFileTree(char* szTreeBoxName, char* szRootPath)
-{
-	// kolla inparametrar
-	if(szRootPath == NULL || szTreeBoxName == NULL)
-		return false;
-
-	// sista tecknet får inte vara ett '/' tecken
-	if(szRootPath[strlen(szRootPath)] == '/')
-		szRootPath[strlen(szRootPath)] = '\0';
-
-	set<string> kSearchedFiles;
-	list<string> dir_list;
-	string strPrevNode;
-
-	dir_list.push_back(string(szRootPath));
-	strPrevNode = "RootNode";
-	
-	while(1)
-	{
-		list<string> vkFileNames;
-		string currentFolder = dir_list.back();
-
-		// Hämta filerna i den aktuella katalogen och sortera listan.
-		vector<string> t;
-		m_pkZFVFileSystem->ListDir(&t, currentFolder);
-		for(unsigned int i=0; i<t.size(); i++)
-			vkFileNames.push_back(t[i]); 
-		t.clear(); vkFileNames.sort(SortFiles);
-
-		// Lägg till alla filer
-		for(list<string>::iterator it = vkFileNames.begin(); it != vkFileNames.end(); it++)  
-		{
-			string strLabel = (*it);
-			string id = currentFolder + string("/") + strLabel;
-
-			bool bIsFolder = strLabel.find(".") == string::npos;
-
-			if(kSearchedFiles.find(id) == kSearchedFiles.end())
-			{			
-				if(bIsFolder)
-				{
-					string d = currentFolder + string("/") + strLabel;
-					dir_list.push_back(d);
-
-					AddTreeItem(szTreeBoxName, id.c_str(), 
-						strPrevNode.c_str(), (char*) strLabel.c_str(), 1, 2);
-				}
-				else
-					AddTreeItem(szTreeBoxName, id.c_str(), 
-						strPrevNode.c_str(), (char*) strLabel.c_str(), 0, 1);
-
-				kSearchedFiles.insert(id);
-			}
-		}
-
-		// ej klivit in i ett nytt dir? gå tillbaks
-		if(dir_list.back() == currentFolder)
-		{
-			// sista?
-			if(currentFolder == szRootPath)
-				break;
-
-			dir_list.pop_back();
-		}
-
-		strPrevNode = dir_list.back();
-	}
-
-	return true;
-
-}
-
 void MistServer::SendTextToMistClientInfoBox(char *szText)
 {
 	  
@@ -2311,7 +2239,5 @@ char* MistServer::GetSelEnviromentString()
 
 	return NULL;
 }
-
-
 
 

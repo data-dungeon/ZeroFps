@@ -43,6 +43,7 @@ enum GuiType
 class GUI_API ZGuiApp
 {
 public:
+	bool BuildFileTree(char* szTreeBoxName, char* szRootPath);
 	bool CreateMenu(char* szFileName, ZFScriptSystem* pkScriptSys);
 	int  GetWndID(char* szResName); // returns -1 if no window exist and can be used to check if a window exist from script.
 	void ClearListbox(char* szName);
@@ -129,6 +130,11 @@ private:
 	char* m_szLastRadioBGroup;
 	int m_iLastRadioBGroup;
 	char m_szTexName[250];
+
+	struct SORT_FILES : public binary_function<string, string, bool> {
+		bool operator()(string x, string y);
+	} SortFiles;
+
 };
 
 #endif // #ifndef _GUIBUILDER_H
