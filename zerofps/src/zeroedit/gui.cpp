@@ -172,6 +172,25 @@ bool Gui::WorkPanelProc( ZGuiWnd* pkWindow, unsigned int uiMessage,
 		case ID_PENCILSIZE_RADIOGROUP+3:
 			m_pkEdit->m_iPencilSize = 20; // extra-large
 			break;
+		case ID_LOADMADFILE:
+			Object* pkCurObject;
+			if((pkCurObject=m_pkEdit->m_pkCurentChild) != NULL)
+			{
+				Property* pkMadProp;
+				if((pkMadProp=pkCurObject->GetProperty("MadProperty")) == NULL)
+					if((pkMadProp=pkCurObject->AddProperty("MadProperty")) == NULL)
+						break;
+				string szMadFile = ((ZGuiListbox*)Get(
+					"MadFileList"))->GetSelItem()->GetText();
+				pkMadProp->SetValue("m_kMadFile", "../data/mad/" + szMadFile);
+
+				// Plocka bort bollen.
+				Property* pkModelProp;
+				if((pkModelProp=pkCurObject->GetProperty("ModelProperty")) != NULL)
+					pkCurObject->RemoveProperty(pkModelProp);
+
+			}
+			break;
 		}
 		break;
 	}
@@ -917,6 +936,7 @@ bool Gui::CreateWorkPanel()
 	pkPage = m_pkWorkPanel->GetPage(0);
 	CreateLabel(pkPage, 0, 5, 5, 50, 20, "MAD objects");
 	ZGuiListbox* pkMadList = CreateListbox(pkPage, ID_MADOBJECTS_LB, 5, 25, 209, 140);
+	Register(pkMadList, "MadFileList");
 	
 	m_pkEdit->pkBasicFS->ListDir(&vkNames, "../data/mad", false);
 	for(unsigned int i=1; i<vkNames.size(); i++)

@@ -4,7 +4,7 @@
 
 char* pkTempObjectTemplate = "ZfEditTempObject";
 
-ZeroEdit Editor("ZeroEdit",1024,768,24);
+ZeroEdit Editor("ZeroEdit",1024,768,16);
 //ZeroEdit Editor("ZeroEdit",800,600,24);
 //ZeroEdit Editor("ZeroEdit",640,480,24);
 //ZeroEdit Editor("ZeroEdit",320,240,24);
