@@ -13,6 +13,12 @@ Parent=NULL
 OpenSubMenu=1
 Cmd=NULL
 
+[Menu_FileNew]
+Title=New
+Parent=Menu_File
+OpenSubMenu=0
+Cmd=new
+
 [Menu_Loadmap]
 Title=Load
 Parent=Menu_File

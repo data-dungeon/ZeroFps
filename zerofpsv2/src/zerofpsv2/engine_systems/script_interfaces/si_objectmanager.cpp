@@ -4,7 +4,7 @@
 #include "../../engine_systems/propertys/p_mad.h"
 #include "../../script/zfscript.h"
 #include "../propertys/p_tcs.h"
-#include "../propertys/p_scriptinterface.h"
+//#include "../propertys/p_scriptinterface.h" <- FINNS EJ!
 
 namespace ObjectManagerLua
 {
@@ -549,7 +549,8 @@ int SIGetSelfIDLua(lua_State* pkLua)
 
 int SISetHeartRateLua(lua_State* pkLua)
 {
-	if(g_pkScript->GetNumArgs(pkLua) == 2)
+	// <- RESULTAT AV ATT EN FIL INTE FINNS!
+/*	if(g_pkScript->GetNumArgs(pkLua) == 2)
 	{
 		double dId;	
 		double dHeartRate;
@@ -566,7 +567,7 @@ int SISetHeartRateLua(lua_State* pkLua)
 		}
 	}
 	else
-		cout<<"SetHeartRate[ObjectID, HeartRate] {HeartRate = -1}"<<endl;	
+		cout<<"SetHeartRate[ObjectID, HeartRate] {HeartRate = -1}"<<endl;	*/ 
 	
 	return 0;
 }

@@ -202,7 +202,7 @@ void DarkMetropolis::GUI_OnCommand(int iID, bool bRMouseBnClick,
 				"data/script/gui/dm_start.lua");
 			pkMainWnd->Hide();		
 
-			StartSong("data/music/dm_menu.ogg");
+			StartSong("data/music/dm menu.ogg");
 		}
 		else
 		if(strClickName == "MissionsBn")
@@ -418,7 +418,7 @@ bool DarkMetropolis::GUI_NewGame(ZGuiWnd *pkMainWnd)
 		for(int i=0; i<sizeof(szWndToHide)/sizeof(szWndToHide[1]); i++)
 			ShowWnd(szWndToHide[i], false);	
 
-		StartSong("data/music/dm_ingame.ogg");
+		StartSong("data/music/dm ingame.ogg");
 		
 		return true;
 /*	}

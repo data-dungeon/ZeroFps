@@ -31,6 +31,7 @@ void DarkMetropolis::OnHud()
 
 void DarkMetropolis::OnInit() 
 {
+
 	SetTitle("Dark Metropolis");
 	
 	//initiate variables
@@ -68,7 +69,8 @@ void DarkMetropolis::OnInit()
 
 	LoadGuiFromScript(m_pkScript, "data/script/gui/dm_start.lua");
 	
-	StartSong("data/music/dm_menu.ogg");
+	StartSong("data/music/dm menu.ogg");
+
 
 	m_pkInput->ShowCursor(true);
 	
@@ -89,6 +91,8 @@ void DarkMetropolis::OnInit()
 	
 	if(!m_pkIni->ExecuteCommands("dark_metropolis_autoexec.ini"))
 		m_pkConsole->Printf("No dark_metropolis_autoexec.ini found");
+
+	m_pkBasicFS->RemoveDir("Apa"); 
 	
 }
 
@@ -434,8 +438,7 @@ Entity* DarkMetropolis::GetTargetObject()
 					m_kPickPos = mp->GetLastColPos();
 				}				
 			}
-		}		
-		
+		}				
 	}
 	
 	return pkClosest;

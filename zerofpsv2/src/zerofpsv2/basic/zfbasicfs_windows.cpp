@@ -151,5 +151,10 @@ bool ZFBasicFS::FileExist(const char* szFile)
 	return bOK;
 }
 
+bool ZFBasicFS::RemoveFile(const char* acName)
+{
+	return DeleteFile(acName);
+}
+
 #endif
 
