@@ -1,5 +1,5 @@
-#ifndef _P_EVENT_H_
-#define _P_EVENT_H_
+#ifndef _P_SI_H_
+#define _P_SI_H_
 
 #include "../../engine/property.h"
 #include "../../engine/zerofps.h"
@@ -26,6 +26,8 @@ class ENGINE_SYSTEMS_API P_ScriptInterface: public Property {
 		
 		void Update();				
 		//bool CallFunction(const char* acFunction,vector<ARG_DATA>* pkParams = NULL);
+		bool SendObjectClickEvent(const char* acType,int iCallerObject );		
+		bool SendGroudClickEvent(const char* acType,Vector3 kPos,int iCallerObject);
 
 		void OnEvent(GameMessage& Msg);
 

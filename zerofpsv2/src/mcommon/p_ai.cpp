@@ -6,6 +6,7 @@
 #include "../zerofpsv2/engine_systems/propertys/p_mad.h"
 #include "../zerofpsv2/engine/entity.h"
 #include "../zerofpsv2/engine/zerofps.h"
+#include "../zerofpsv2/engine_systems/propertys/p_scriptinterface.h"
 #include <iostream>
    using namespace std;
 
@@ -202,7 +203,7 @@ void P_AI::Update()
 
          // check if object still exists!!
          if ( pkEnt )
-            ((P_Event*)pkEnt->GetProperty("P_Event"))->SendObjectClickEvent( "PickUp", m_pkObject->GetEntityID() );
+            ((P_ScriptInterface*)pkEnt->GetProperty("P_ScriptInterface"))->SendObjectClickEvent( "PickUp", m_pkObject->GetEntityID() );
          
          NextOrder();
       }

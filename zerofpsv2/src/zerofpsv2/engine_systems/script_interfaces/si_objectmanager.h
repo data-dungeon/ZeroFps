@@ -31,6 +31,7 @@ namespace ObjectManagerLua
 	extern ENGINE_SYSTEMS_API	Entity*		g_pkReturnObjectBak;
 
 	extern ENGINE_SYSTEMS_API	int			g_iCurrentObjectID;
+	extern ENGINE_SYSTEMS_API 	int			g_iCurrentPCID;
 
 	//create funktions  --- these are only used inside the create funktion
 	int ENGINE_SYSTEMS_API InitObjectLua(lua_State* pkLua);

@@ -65,6 +65,7 @@ bool P_Event::SendEvent(const char* acEvent)
 	return false;
 }
 
+/*
 bool P_Event::SendObjectClickEvent(const char* acType,int iCallerObject )	
 {
 	if(m_pkObject->GetEntityScript() && acType != NULL)
@@ -124,9 +125,7 @@ bool P_Event::SendGroudClickEvent(const char* acType,Vector3 kPos,int iCallerObj
 	}
 
 	return false;
-
-
-}
+}*/
 
 void P_Event::Touch(int iId)
 {

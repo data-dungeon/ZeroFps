@@ -20,7 +20,7 @@ P_ServerInfo*		  		MistLandLua::g_pkServerInfo;
 
 //int							MistLandLua::ObjectManagerLua::g_iCurrentObjectID;
 int							MistLandLua::g_iLastCollidedID;
-int							MistLandLua::g_iCurrentPCID = -1;
+//int							MistLandLua::g_iCurrentPCID = -1;
 map<string,LogInInfo* >	MistLandLua::g_kServerList;
 string						MistLandLua::g_kDefServer;
 
@@ -50,7 +50,7 @@ void MistLandLua::Init(EntityManager* pkObjMan,ZFScriptSystem* pkScript)
 	pkScript->ExposeFunction("AddAction",					MistLandLua::AddActionLua);			
 	pkScript->ExposeFunction("MessageCaracter",			MistLandLua::MessageCaracterLua);
 	
-	pkScript->ExposeFunction("SetHeartRate",				MistLandLua::SetHeartRateLua);
+//	pkScript->ExposeFunction("SetHeartRate",				MistLandLua::SetHeartRateLua);
 	
 	pkScript->ExposeFunction("StartPrivateSound",		MistLandLua::StartPrivateSoundLua);
 	pkScript->ExposeFunction("StartSound",					MistLandLua::StartSoundLua);
@@ -182,7 +182,7 @@ int MistLandLua::GetSelfIDLua(lua_State* pkLua)
 
 int MistLandLua::GetCurrentPCIDLua(lua_State* pkLua)
 {
-	g_pkScript->AddReturnValue(pkLua,g_iCurrentPCID);
+	g_pkScript->AddReturnValue(pkLua,ObjectManagerLua::g_iCurrentPCID);
 	
 	return 1;
 }

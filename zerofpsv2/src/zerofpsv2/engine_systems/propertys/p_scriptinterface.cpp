@@ -64,6 +64,69 @@ bool P_ScriptInterface::CallFunction(const char* acFunction,vector<ARG_DATA>* pk
 		return m_pkScriptSys->Call(m_pkObject->GetEntityScript(), (char*)acFunction,0,0);	
 }*/
 
+bool P_ScriptInterface::SendObjectClickEvent(const char* acType,int iCallerObject )	
+{
+	if(m_pkObject->GetEntityScript() && acType != NULL)
+	{
+		//set self id before calling the funktion
+		ObjectManagerLua::g_iCurrentObjectID = m_pkObject->GetEntityID();
+		
+		//set caller id
+		ObjectManagerLua::g_iCurrentPCID = iCallerObject;
+
+
+		vector<ARG_DATA> args(1);
+		args[0].eType = tSTRING;
+		args[0].pData = new char[strlen(acType)+1];
+		strcpy((char*)args[0].pData, acType);
+		
+		bool bSuccess = m_pkScriptSys->Call(m_pkObject->GetEntityScript(), "Use", args);
+
+		delete[] args[0].pData;
+		
+		return bSuccess;
+	}
+
+   return false;
+
+}
+
+
+bool P_ScriptInterface::SendGroudClickEvent(const char* acType,Vector3 kPos,int iCallerObject)
+{
+	if(m_pkObject->GetEntityScript() && acType != NULL)
+	{
+		//set self id before calling the funktion
+		ObjectManagerLua::g_iCurrentObjectID = m_pkObject->GetEntityID();
+		
+		//set caller id
+		ObjectManagerLua::g_iCurrentPCID = iCallerObject;
+
+		vector<ARG_DATA> args(4);
+		args[0].eType = tSTRING;
+		args[0].pData = new char[strlen(acType)+1];
+		strcpy((char*)args[0].pData, acType);
+		
+		args[1].eType = tFLOAT;
+		args[1].pData = &kPos.x;
+		args[2].eType = tFLOAT;
+		args[2].pData = &kPos.y;
+		args[3].eType = tFLOAT;
+		args[3].pData = &kPos.z;
+		
+		
+		bool bSuccess = m_pkScriptSys->Call( m_pkObject->GetEntityScript(), "GroundClick", args);
+
+		delete[] args[0].pData;
+		
+		return bSuccess;
+	}
+
+	return false;
+
+
+}
+
 void P_ScriptInterface::SetHeartRate(float blub) 
 {
 	m_fHeartRate = blub;

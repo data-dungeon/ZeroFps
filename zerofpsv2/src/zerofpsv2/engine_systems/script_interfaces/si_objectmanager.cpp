@@ -21,6 +21,7 @@ Property*		 g_pkLastPropertyBak;
 Entity*			 g_pkReturnObjectBak;
 
 int				g_iCurrentObjectID;
+int				g_iCurrentPCID;
 
 void Init(EntityManager* pkObjMan, ZFScriptSystem* pkScript)
 {
@@ -28,7 +29,8 @@ void Init(EntityManager* pkObjMan, ZFScriptSystem* pkScript)
 	g_pkScript = pkScript;
 	
 	g_iCurrentObjectID = -1;
-	
+	g_iCurrentPCID     = -1;
+
 	Reset();
 		
 	//create

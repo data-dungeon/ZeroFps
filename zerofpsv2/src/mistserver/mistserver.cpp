@@ -24,6 +24,7 @@
 #include "../zerofpsv2/gui/zguiresourcemanager.h"
 #include "../zerofpsv2/render/glguirender.h"
 #include "../mcommon/si_dm.h"
+#include "../zerofpsv2/engine_systems/propertys/p_scriptinterface.h"
 
 MistServer g_kMistServer("MistServer", 0, 0, 0);
 
@@ -2419,7 +2420,7 @@ void MistServer::HandleOrders()
 		
 			if(ob)
 			{
-				P_Event* pe = (P_Event*)ob->GetProperty("P_Event");
+				P_ScriptInterface* pe = (P_ScriptInterface*)ob->GetProperty("P_ScriptInterface");
 				if(pe)
 					pe->SendGroudClickEvent(order->m_sOrderName.c_str(), order->m_kPos,order->m_iCharacter);
 			}					
@@ -2602,7 +2603,7 @@ void MistServer::HandleOrders()
 			if(ob)
 			{
 			
-				P_Event* pe = (P_Event*)ob->GetProperty("P_Event");
+				P_ScriptInterface* pe = (P_ScriptInterface*)ob->GetProperty("P_ScriptInterface");
 				if(pe)
 				{	
 					pe->SendObjectClickEvent(order->m_sOrderName.c_str(), order->m_iCharacter);				
