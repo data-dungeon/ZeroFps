@@ -36,8 +36,7 @@ bool PathFind::Rebuild(int iStartPosX, int iStartPosY, int iDestPosX, int iDestP
 {
 	m_bGoToClosest = bGoToClosest;
 
-	vector<Tile>* pkTiles = TileEngine::m_pkInstance->GetTilesPointer();
-	int array_size = pkTiles->size();
+//	vector<Tile>* pkTiles = TileEngine::m_pkInstance->GetTilesPointer();
 
 	// Börja med att tömma kön.
 	while(m_kqClosestPath.size())
@@ -340,14 +339,6 @@ PathFind::SEARCH_STATE PathFind::SearchStep()
 				{
 					m_kqClosestPath.push(Point(m_pkClosestNode->m_kSqrPos.x, 
 						m_pkClosestNode->m_kSqrPos.y));
-				}
-			}
-
-			for(int i=0; i<m_kvClosedList.size(); i++)
-			{
-				if(m_kvClosedList[i]->m_kSqrPos == pkNode->m_kSqrPos)
-				{
-					printf("apa\n");
 				}
 			}
 
