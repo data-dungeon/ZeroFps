@@ -566,6 +566,31 @@ char* ZGuiApp::GetText(char* szWnd)
 	return NULL;
 }
 
+char* ZGuiApp::GetSelItem(char* szWnd)
+{
+	ZGuiWnd* pkWnd;
+	if((pkWnd = m_pkResMan->Wnd(szWnd)))
+	{
+		if(GetType(pkWnd) == Listbox)
+		{
+			ZGuiListitem* pkItem = ((ZGuiListbox*) pkWnd)->GetSelItem();
+
+			if(pkItem)
+				return pkItem->GetText();
+		}
+		else
+		if(GetType(pkWnd) == Combobox)
+		{
+			ZGuiListitem* pkItem = ((ZGuiCombobox*) pkWnd)->GetListbox()->GetSelItem();
+
+			if(pkItem)
+				return pkItem->GetText();
+		}
+	}
+	
+	return NULL;
+}
+
 int ZGuiApp::GetTextInt(char* szWnd, bool* pkSuccess)
 {
 	ZGuiWnd* pkWnd;
@@ -613,7 +638,14 @@ bool ZGuiApp::IsButtonChecked(char* szWnd)
 	if((pkWnd = m_pkResMan->Wnd(szWnd)))
 	{
 		if(GetType(pkWnd) == Radiobutton)
-			return true;
+		{
+			return ((ZGuiRadiobutton*)pkWnd)->GetButton()->IsChecked();
+		}
+		else
+		if(GetType(pkWnd) == Checkbox)
+		{
+			return ((ZGuiCheckbox*)pkWnd)->IsChecked();
+		}
 	}
 
 	return false;

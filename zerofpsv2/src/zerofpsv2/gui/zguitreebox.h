@@ -64,6 +64,8 @@ public:
 
 	bool Rescale(int iOldWidth, int iOldHeight, int iNewWidth, int iNewHeight);
 
+	bool SetPos(int x, int y, bool bScreenSpace, bool bFreeMovement); // overloaded
+
 protected:
 	bool Notify(ZGuiWnd* pkWnd, int iCode);
 	

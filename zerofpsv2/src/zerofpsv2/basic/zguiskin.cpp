@@ -263,5 +263,27 @@ const ZGuiSkin& ZGuiSkin::operator=(const ZGuiSkin& pkSkinSrc )
 	return *this;
 }
 
+ZGuiSkin::ZGuiSkin(ZGuiSkin* pkCopy)
+{
+	m_iBkTexID						= pkCopy->m_iBkTexID;
+	m_iHorzBorderTexID			= pkCopy->m_iHorzBorderTexID;
+	m_iVertBorderTexID			= pkCopy->m_iVertBorderTexID;
+	m_iBorderCornerTexID			= pkCopy->m_iBorderCornerTexID;
 
+	m_iBkTexAlphaID				= pkCopy->m_iBkTexAlphaID;
+	m_iHorzBorderTexAlphaID		= pkCopy->m_iHorzBorderTexAlphaID;
+	m_iVertBorderTexAlphaID		= pkCopy->m_iVertBorderTexAlphaID;
+	m_iBorderCornerTexAlphaID	= pkCopy->m_iBorderCornerTexAlphaID;
 
+	m_afBkColor[0]					= pkCopy->m_afBkColor[0];
+	m_afBkColor[1] 				= pkCopy->m_afBkColor[1];
+	m_afBkColor[2] 				= pkCopy->m_afBkColor[2];
+
+	m_afBorderColor[0] 			= pkCopy->m_afBorderColor[0];
+	m_afBorderColor[1] 			= pkCopy->m_afBorderColor[1];
+	m_afBorderColor[2] 			= pkCopy->m_afBorderColor[2];
+
+	m_unBorderSize					= pkCopy->m_unBorderSize;
+	m_bTileBkSkin					= pkCopy->m_bTileBkSkin;
+	m_bTransparent					= pkCopy->m_bTransparent;	
+}

@@ -1852,6 +1852,7 @@ void MistServer::CreateGuiInterface()
 
 	pkWnd = CreateWnd(TabControl, "WorkTabWnd", "MainWnd", "", w-10-256, h-50-256, 256, 256, 0);
 	pkWnd->Hide();
+	pkWnd->SetMoveArea(Rect(0,0,800,600),true);
 
 	AddTabPage("WorkTabWnd", "ZonePage", "Zone");
 	AddTabPage("WorkTabWnd", "ObjectPage", "Object");

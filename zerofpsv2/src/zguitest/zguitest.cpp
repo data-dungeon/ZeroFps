@@ -34,6 +34,20 @@ static bool GUIPROC( ZGuiWnd* win, unsigned int msg, int numparms, void *params 
 		g_kGuiTest.OnKeyDown(((int*)params)[0], win);
 		break;
 
+	case ZGM_SELECTTREEITEM:
+		char** pszParams; pszParams = (char**) params;
+		g_kGuiTest.OnClickTreeItem( pszParams[0], pszParams[1], 
+			pszParams[2], pszParams[3][0] == '1' ? true : false);		
+		if(pszParams[0])
+			delete[] pszParams[0];
+		if(pszParams[1])
+			delete[] pszParams[1];
+		if(pszParams[2])
+			delete[] pszParams[2];
+		if(pszParams[3])
+			delete[] pszParams[3];
+		break;
+
 	}
 	return true;
 }
@@ -71,7 +85,6 @@ void ZGuiTest::OnInit()
 	CreateUI();
 
 	pkFps->m_bClientMode = true;
-
 }
 
 void ZGuiTest::OnIdle()
@@ -125,7 +138,7 @@ void ZGuiTest::OnIdle()
 	if(!m_vkMoveWnds.empty() && m_eEditMode == MOVE && 
 		pkInput->Pressed(MOUSELEFT) && m_kClickPos != Point(-1,-1))
 	{
-		for(int i=0; i<m_vkMoveWnds.size(); i++)
+		for(unsigned int i=0; i<m_vkMoveWnds.size(); i++)
 		{
 
 			Rect rc = m_vkMoveWnds[i].pkWnd->GetScreenRect();
@@ -238,7 +251,7 @@ void ZGuiTest::OnIdle()
 		}
 	}
 
-	for(int i=0; i<m_vkMoveWnds.size(); i++)
+	for(unsigned int i=0; i<m_vkMoveWnds.size(); i++)
 	{
 		Rect rc = m_vkMoveWnds[i].pkWnd->GetScreenRect();
 
@@ -276,7 +289,7 @@ void ZGuiTest::CreateUI()
 	// Create edit bar
 	//
 
-	CreateWnd(Wnd, "Editbar", "", "", 800-204, 8, 200, 400, 0);
+	CreateWnd(Wnd, "Editbar", "", "", 800-204, 8, 200, 500, 0);
 	(m_pkEditbar = GetWnd("Editbar"))->SetMoveArea(Rect(0,0,800,600),true);
 
 	CreateWnd(Checkbox, "ToogleEditMode", "Editbar", "", 0, 0, 24, 22, 0);
@@ -328,9 +341,22 @@ void ZGuiTest::CreateUI()
 	((ZGuiButton*)GetWnd("CreateWndBn"))->GetButtonDownSkin()->
 		m_iBkTexID = pkTexMan->Load("data/textures/gui/bn_d.bmp", 0);
 
-	CreateWnd(Treebox, "ZoneModelTree", "Editbar", "", 8,105,200-16,250,0);
+	CreateWnd(Treebox, "TextureTree", "Editbar", "", 8,105,200-16,250,0);
 
-	BuildFileTree("ZoneModelTree", "data/textures/gui");
+	BuildFileTree("TextureTree", "data/textures/gui");
+
+	CreateWnd(Radiobutton, "TextureBK", "Editbar", "Background", 2, 367, 100, 16, 0);
+	CreateWnd(Radiobutton, "TextureBdH", "Editbar", "Border, horz", 2, 385, 100, 16, 0);
+	CreateWnd(Radiobutton, "TextureBdV", "Editbar", "Border, vert", 2, 403, 100, 16, 0);
+	CreateWnd(Radiobutton, "TextureBdC", "Editbar", "Border, corner", 2, 421, 100, 16, 0);
+
+	CreateWnd(Radiobutton, "TextureAlphaBK", "Editbar", "(A)", 122, 367, 100, 16, 0);
+	CreateWnd(Radiobutton, "TextureAlphaBdH", "Editbar", "(A)", 122, 385, 100, 16, 0);
+	CreateWnd(Radiobutton, "TextureAlphaBdV", "Editbar", "(A)", 122, 403, 100, 16, 0);
+	CreateWnd(Radiobutton, "TextureAlphaBdC", "Editbar", "(A)", 122, 421, 100, 16, 0);
+
+	CreateWnd(Label, "SkinTypeCBLabel",  "Editbar",  "Skin type", 2,  440, 190, 19, 0);
+	CreateWnd(Combobox, "SkinTypeCB", "Editbar", "Skin type", 2, 460, 190, 20, 0);
 
 	//
 	// Create toolbar
@@ -467,12 +493,25 @@ void ZGuiTest::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 			else
 				strcpy(szlabel, "");
 
-
+			if(eWndType == Wnd)
+				strcpy(szParent,"");
+	
 			CreateWnd( eWndType, szName,  szParent, szlabel, m_iXPos,  m_iYPos, m_iWidth, m_iHeight, 0);
 
 			if(eWndType == Wnd)
 			{
 				m_pkMainWnd = GetWnd(szName);
+			}
+
+			// Skapa nya texturer och kopiera de gamla mot nya unika...
+			ZGuiWnd* pkWnd = GetWnd(szName);
+			vector<ZGuiWnd::SKIN_DESC> vkSkinDesc;
+			pkWnd->GetWndSkinsDesc(vkSkinDesc);
+			for(unsigned int i=0; i<vkSkinDesc.size(); i++)
+			{
+				ZGuiSkin* pkPrevSkin = *vkSkinDesc[i].first; 
+				ZGuiSkin* pkNewSkin = new ZGuiSkin(pkPrevSkin);
+				*vkSkinDesc[i].first = pkNewSkin;
 			}
 
 /*			SetTextInt("PosXTextbox", m_iXPos, false);
@@ -530,6 +569,11 @@ void ZGuiTest::OnMouseClick(bool bReleased, int x, int y)
 		{
 			if(!IsResWnd(pkClickWnd))
 			{
+				if(GetType(pkClickWnd) == Wnd)
+				{
+					m_pkMainWnd = pkClickWnd;
+				}
+
 				if(m_pkResizeWnd != NULL)
 				{
 					m_pkResizeWnd = pkClickWnd;
@@ -538,6 +582,8 @@ void ZGuiTest::OnMouseClick(bool bReleased, int x, int y)
 
 				m_pkFocusWnd = pkClickWnd;
 				m_pkResizeWnd = pkClickWnd;
+
+				OnSelectWnd(m_pkFocusWnd);
 				
 				Rect rc = pkClickWnd->GetScreenRect();
 
@@ -880,4 +926,56 @@ bool ZGuiTest::BuildFileTree(char* szTreeBoxName, char* szRootPath)
 
 	return true;
 
+}
+
+void ZGuiTest::OnClickTreeItem(char *szTreeBox, char *szParentNodeText, 
+										 char *szClickNodeText, bool bHaveChilds)
+{
+	//
+	// Byt textur på vald kontroll typ
+	//
+	if(strcmp(szTreeBox, "TextureTree") == 0)
+	{
+		if(szClickNodeText && bHaveChilds == false)
+		{
+			string strFullpath = string("data/textures/gui/");
+
+			if(szParentNodeText)
+				strFullpath += string(szParentNodeText);
+
+			if(szClickNodeText)
+				strFullpath += string(szClickNodeText);
+
+			if(IsButtonChecked("TextureBK"))
+			{
+				char* szSkinType = GetSelItem("SkinTypeCB");
+
+				ZGuiSkin* pkSkin = NULL;
+
+				vector<ZGuiWnd::SKIN_DESC> vkSkinDesc;
+				m_pkFocusWnd->GetWndSkinsDesc(vkSkinDesc);
+
+				for(unsigned int i=0; i<vkSkinDesc.size(); i++)
+					if(strcmp(szSkinType, vkSkinDesc[i].second.c_str()) == 0)
+					{
+						pkSkin = *vkSkinDesc[i].first;
+						break;
+					}
+
+				if(pkSkin)
+					pkSkin->m_iBkTexID = pkTexMan->Load(strFullpath.c_str(), 0);
+			}
+		}
+	}
+}
+
+void ZGuiTest::OnSelectWnd(ZGuiWnd *pkWnd)
+{
+	// Fyll listan med olika skin typer...
+	ZGuiCombobox* pkCBox = (ZGuiCombobox*)GetWnd("SkinTypeCB");
+	pkCBox->RemoveAllItems();
+	vector<ZGuiWnd::SKIN_DESC> vkSkinDesc;
+	pkWnd->GetWndSkinsDesc(vkSkinDesc);
+	for(unsigned int i=0; i<vkSkinDesc.size(); i++)
+		pkCBox->AddItem((char*)vkSkinDesc[i].second.c_str(), i);
 }

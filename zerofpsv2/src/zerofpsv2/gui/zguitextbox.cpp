@@ -735,7 +735,7 @@ void ZGuiTextbox::ScrollText(int row)
 
 void ZGuiTextbox::GetWndSkinsDesc(vector<SKIN_DESC>& pkSkinDesc) const
 {
-	pkSkinDesc.push_back( SKIN_DESC(m_pkSkin, string("Textbox")) );
+	pkSkinDesc.push_back( SKIN_DESC(&(ZGuiSkin*)m_pkSkin, string("Textbox")) );
 
 	if(m_pkScrollbarVertical) // only multiline textbox have scrollbars
 	{

@@ -1024,7 +1024,7 @@ bool ZGui::SetSkins(vector<tSkinInf>& kAllSkinsTempArray, ZGuiWnd* pkWnd)
 	// Loopa igenom alla skins som detta fönster har
 	for(unsigned int i=0; i<skins_this_wnd; i++)
 	{
-		ZGuiSkin* pkSkin = kSkinList[i].first;
+		ZGuiSkin* pkSkin = *(&kSkinList[i])->first;
 		string strDesc = kSkinList[i].second;
 
 		// Loopa igenom alla skins som finns och välj ut ett som passar.

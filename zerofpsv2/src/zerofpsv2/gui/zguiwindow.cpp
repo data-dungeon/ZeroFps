@@ -325,6 +325,21 @@ void ZGuiWnd::SetSkin(ZGuiSkin* pkSkin)
 	m_pkSkin = pkSkin;
 }
 
+void ZGuiWnd::SetSkin(const char* szSkinType, ZGuiSkin* pkSkin)
+{
+
+/*	vector<SKIN_DESC> vkSkinDesc;
+	GetWndSkinsDesc(vkSkinDesc);
+
+	for(unsigned int i=0; i<vkSkinDesc.size(); i++)
+		if(strcmp(szSkinType, vkSkinDesc[i].second.c_str()) == 0)
+		{
+			pkSkin = vkSkinDesc[i].first;
+			break;
+		}*/
+
+}
+
 void ZGuiWnd::SetFont(ZGuiFont* pkFont)
 {
 	m_pkFont = pkFont;
@@ -596,7 +611,7 @@ void ZGuiWnd::GetWndSkinsDesc(vector<SKIN_DESC>& pkSkinDesc) const
 	if(t==typeid(ZGuiCombobox))
 		strType = "ComboBox";
 
-	pkSkinDesc.push_back( SKIN_DESC(m_pkSkin, strType) );
+	pkSkinDesc.push_back( SKIN_DESC(&(ZGuiSkin*)m_pkSkin, strType) );
 }
 
 void ZGuiWnd::Enable()

@@ -50,6 +50,7 @@ public:
 	virtual void Resize(int Width, int Height, bool bChangeMoveArea=true);
 	ZGuiSkin* GetSkin() { return m_pkSkin; }
 	virtual void SetSkin(ZGuiSkin* pkSkin);
+	void SetSkin(const char* szSkinType, ZGuiSkin* pkSkin); // namnet som skickas in är ett av de namn som finns i SKIN_DESC vektorn...
 	
 	typedef bool (*callbackfunc)(ZGuiWnd* pkWnd, unsigned int uiMessage, 
 		int iNumParams, void *pParams);
@@ -62,7 +63,7 @@ public:
 	bool AddChild(ZGuiWnd *pkWindow);					// Add a new childwindow
 	bool SetParent(ZGuiWnd *pkWindow);					// Set the parent window
 	ZGuiWnd* GetParent(bool bRootParent=false);		// Get the parent window
-	bool SetPos(int x, int y, bool bScreenSpace=false, bool bFreeMovement=false);	// Move the window and change the size
+	virtual bool SetPos(int x, int y, bool bScreenSpace=false, bool bFreeMovement=false);	// Move the window and change the size
 	virtual bool Render(ZGuiRender* pkRender);			// Render this window
 	virtual bool Notify(ZGuiWnd* pkWnd, int iCode) {return false;}
 	unsigned int GetID() {return m_iID;}
@@ -132,7 +133,7 @@ public:
 		};
 	} SortZCmp;
 
-	typedef pair<ZGuiSkin*, string> SKIN_DESC;
+	typedef pair<ZGuiSkin**, string> SKIN_DESC;
 
 	virtual void GetWndSkinsDesc(vector<SKIN_DESC>& pkSkinDesc) const;
 	void SetClipperArea(Rect rc, bool bEnable=true);

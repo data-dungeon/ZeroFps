@@ -53,6 +53,7 @@ public:
 	float GetTextFloat(char* szWnd, bool* pkSuccess);
 	int GetTextInt(char* szWnd, bool* pkSuccess);
 	char* GetText(char* szWnd);
+	char* GetSelItem(char* szWnd);
 
 	void SetTextFloat(char* szWndResName, float fNumber, bool bResize=false);
 	void SetTextInt(char* szWndResName, int iNumber, bool bResize=false);

@@ -17,6 +17,7 @@
 class ZGuiTest :public Application, public ZGuiApp 
 {
 	public:
+		void OnClickTreeItem(char *szTreeBox, char *szParentNodeText, char *szClickNodeText, bool bHaveChilds);
 		void OnSelectCB(int ListBoxID, int iItemIndex, ZGuiWnd *pkMain);
 		void OnMouseClick(bool bReleased, int x, int y);
 		void OnKeyDown(int iKey, ZGuiWnd* pkWnd);
@@ -40,6 +41,7 @@ class ZGuiTest :public Application, public ZGuiApp
 		ZGuiTest(char* aName,int iWidth,int iHeight,int iDepth);
 
 	private:
+		void OnSelectWnd(ZGuiWnd* pkWnd);
 		void DeleteWnd(ZGuiWnd* pkWnd);
 		
 		bool BuildFileTree(char* szTreeBoxName, char* szRootPath);

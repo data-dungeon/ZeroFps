@@ -305,7 +305,7 @@ bool ZGuiCombobox::RemoveAllItems()
 //
 void ZGuiCombobox::GetWndSkinsDesc(vector<SKIN_DESC>& pkSkinDesc) const
 {
-	pkSkinDesc.push_back( SKIN_DESC(m_pkSkin,string("Combobox")) );
+	pkSkinDesc.push_back( SKIN_DESC(&(ZGuiSkin*)m_pkSkin,string("Combobox")) );
 
 	int iStart = pkSkinDesc.size(); 
 	m_pkLabel->GetWndSkinsDesc(pkSkinDesc);

@@ -897,3 +897,22 @@ bool ZGuiTreebox::Rescale(int iOldWidth, int iOldHeight, int iNewWidth, int iNew
 	
 	return true;
 }
+
+bool ZGuiTreebox::SetPos(int x, int y, bool bScreenSpace, bool bFreeMovement)
+{	
+	ZGuiWnd::SetPos(x,y,bScreenSpace,bFreeMovement); 
+
+	Rect rcClipper = GetScreenRect();
+	rcClipper.Right -= m_pkVertScrollbar->GetScreenRect().Width();
+	rcClipper.Bottom -= m_pkHorzScrollbar->GetScreenRect().Height();
+	
+	for(itNode it = m_kNodeList.begin(); it != m_kNodeList.end(); it++)
+	{
+		ZGuiCheckbox* pkWnd = (*it)->pkButton;
+		pkWnd->SetClipperArea(rcClipper); 
+	}		
+
+	m_pkSelLabel->SetClipperArea(rcClipper);
+
+	return true;
+}
