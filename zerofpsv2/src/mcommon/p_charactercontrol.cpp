@@ -15,7 +15,7 @@ P_CharacterControl::P_CharacterControl()
 	m_fSoundWalkDelay = 	0;
 	m_fSoundRunDelay = 	0;
 	
-	m_fSpeed = 				75.0;
+	m_fSpeed = 				40.0;
 	m_fJumpForce = 		7.0; 	
 	m_bHaveJumped = 		false;	
 	m_iDirection = 		eMOVE_NONE;
@@ -75,7 +75,7 @@ void P_CharacterControl::Update()
 			
 			//check if where crawling
 			if(m_kControls[eCRAWL])
-				kVel *= 0.5;
+				kVel *= 0.45;
 				
 			//character moves slower while in the air
 			if(!pkTcs->GetOnGround())

@@ -496,17 +496,21 @@ void ZeroFps::Run_Client()
 void ZeroFps::Update_System()
 {
 	int iLoops;
+	float fRestTime = 0;
 
-	if(m_bLockFps)
-	{	
-		iLoops = 1;				//if fps is locked, there is no need to calculate number of loops, i shuld always be 1
-	}
-	else
-	{
-		float fATime = GetTicks() - m_fSystemUpdateTime; 	
-		iLoops = int(m_fSystemUpdateFps * fATime);
-	}
+	//calculate new system delta time
+	m_fSystemUpdateFpsDelta = float(1.0) / m_fSystemUpdateFps;	
+		
+	//time since last update
+	float fATime = GetTicks() - m_fSystemUpdateTime; 	
 	
+	//how many system loops shuld we make?
+	iLoops = int(fATime / m_fSystemUpdateFpsDelta);		
+			
+	//save rest time to add it att end of function
+	fRestTime = fATime - (iLoops * m_fSystemUpdateFpsDelta);				
+
+			
 	//if no loops are to be done, just return
 	if(iLoops<=0)
 		return;
@@ -518,11 +522,26 @@ void ZeroFps::Update_System()
 		iLoops = 10;
 	}
 	
-	//calculate new system delta time
-	m_fSystemUpdateFpsDelta = float(1.0) / m_fSystemUpdateFps;
-	
+
+	/*
+	static float time = GetTicks();
+	static float tStart = GetTicks();
+	static int frames = 0;
+	time =GetTicks();	
+	if(time -tStart >= 1.0)
+	{
+		cout<<"frames:"<<frames<<endl;
+		frames = 0;
+		tStart = time;
+			
+	}
+	frames+=iLoops;
+	/*
+		
 	for(int i=0;i<iLoops;i++)
 	{	
+		
+	
 		//update sim time for this systemupdate
 		m_pkEntityManager->UpdateSimTime();
 		
@@ -583,6 +602,8 @@ void ZeroFps::Update_System()
 		m_fSystemUpdateTime = GetTicks();
 	}
 
+	//finaly add rest time
+	m_fSystemUpdateTime -= fRestTime;
 }
 
 void ZeroFps::Draw_EngineShell()
@@ -663,7 +684,7 @@ void ZeroFps::MainLoop(void)
 void ZeroFps::MakeDelay()
 {
 	//make a delay if locked fps or minimized
-	if(m_bLockFps || (!(SDL_GetAppState() & SDL_APPACTIVE) ) )
+	if(m_bLockFps || m_bMinimized  )
 	{
 		float fDelay = m_pkEntityManager->GetSimDelta() - (GetTicks() - m_fLockFrameTime);
 	
