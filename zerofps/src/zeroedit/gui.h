@@ -73,7 +73,10 @@ private:
 	ZGui* GetGUI() { return m_pkEdit->pkGui; }
 	ZGuiTabCtrl* CreateTabbedDialog(char* szName, int iWndID, int iMainWndID, 
 		int x, int y, int w, int h, vector<string> kNames, ZGuiCallBack pkProc);
-	
+	ZGuiTreebox* CreateTreebox(ZGuiWnd* pkParent, int iID, int x, int y, int w,
+		int h, vector<ZGuiSkin*> akSkins, 
+		Vector3 kBkColorRGB = Vector3(255.0f,255.0f,255.0f), 
+		char* szRegName=NULL);	
 	ZeroEdit* m_pkEdit;
 	ZGui* m_pkGui;
 	

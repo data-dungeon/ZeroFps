@@ -45,10 +45,39 @@ ZGuiTreebox::~ZGuiTreebox()
 
 ZGuiTreeboxNode* ZGuiTreebox::AddItem(ZGuiTreeboxNode* pkParent, 
 									  char* szText, unsigned char ucSkinIndex,
-									  unsigned char ucSkinIndexSelected)
+									  unsigned char ucSkinIndexSelected,
+									  const char* szIDName)
 {
 	ZGuiTreeboxNode* pkNewBranch = CreateNode(pkParent, szText, ucSkinIndex,
 		ucSkinIndexSelected);
+
+	if(szIDName != NULL)
+	{
+		m_kNodeMap.insert( map<string, ZGuiTreeboxNode*>::value_type(
+			string(szIDName), pkNewBranch));
+	}
+	return pkNewBranch;
+}
+
+ZGuiTreeboxNode* ZGuiTreebox::AddItem(string szParent,
+									  char* szText, unsigned char ucSkinIndex,
+									  unsigned char ucSkinIndexSelected,
+									  const char* szIDName)
+{
+	ZGuiTreeboxNode* pkNewBranch = NULL;
+	ZGuiTreeboxNode* pkParent = Node(szParent.c_str());
+
+	if(pkParent)
+	{
+		pkNewBranch = CreateNode(pkParent, szText, ucSkinIndex,
+			ucSkinIndexSelected);
+
+		if(szIDName != NULL)
+		{
+			m_kNodeMap.insert( map<string, ZGuiTreeboxNode*>::value_type(
+				string(szIDName), pkNewBranch));
+		}
+	}
 	return pkNewBranch;
 }
 
@@ -107,10 +136,10 @@ ZGuiTreeboxNode* ZGuiTreebox::CreateNode(ZGuiTreeboxNode* pkParent, char* szText
 	// Sätt denna nods next pekare till att den nya noden.
 	if(pkParent && pkParent->kChilds.size() > 1)
 	{
-		for(itChild it = pkParent->kChilds.begin();
+		for(itNode it = pkParent->kChilds.begin();
 			it != pkParent->kChilds.end(); it++)
 			{
-				itChild next = it; 
+				itNode next = it; 
 				next++;
 
 				if(next != pkParent->kChilds.end())
@@ -126,42 +155,46 @@ ZGuiTreeboxNode* ZGuiTreebox::CreateNode(ZGuiTreeboxNode* pkParent, char* szText
 	m_kNodeList.push_back(pkNewItem);
 
 	// Öppna noden om dess parent är root noden (så att den syns från början).
-	if(pkParent == GetRoot())
+	if(pkParent == Root())
 		OpenNode(pkParent, true);
 
 	return pkNewItem;
 }
 
-void ZGuiTreebox::OpenChilds(vector<ZGuiTreeboxNode*> kChilds, bool bOpen)
+void ZGuiTreebox::OpenChilds(list<ZGuiTreeboxNode*> kChilds, bool bOpen)
 {
+	int iCounter=0;
 	int iNumChilds = (int) kChilds.size(); 
-	for(int i=0; i<iNumChilds; i++)
+	for(itNode n=kChilds.begin(); n!=kChilds.end(); n++)  
 	{
-		int x = kChilds[i]->pkParent->pkButton->GetScreenRect().Right + HORZ_ROW_SPACE;
-		int y = kChilds[i]->pkParent->pkButton->GetScreenRect().Bottom + VERT_ROW_SPACE;
+		int x = (*n)->pkParent->pkButton->GetScreenRect().Right + HORZ_ROW_SPACE;
+		int y = (*n)->pkParent->pkButton->GetScreenRect().Bottom + VERT_ROW_SPACE;
 
-		y += (bOpen) ? i * (BUTTON_SIZE+VERT_ROW_SPACE) : -i * (BUTTON_SIZE+VERT_ROW_SPACE);
+		y += (bOpen) ? iCounter * (BUTTON_SIZE+VERT_ROW_SPACE) : 
+			-iCounter * (BUTTON_SIZE+VERT_ROW_SPACE);
 
-		kChilds[i]->pkButton->SetPos(x,y,true,true);
-		kChilds[i]->pkButton->SetMoveArea(Rect(x,y,x+BUTTON_SIZE,y+BUTTON_SIZE));
+		(*n)->pkButton->SetPos(x,y,true,true);
+		(*n)->pkButton->SetMoveArea(Rect(x,y,x+BUTTON_SIZE,y+BUTTON_SIZE));
 		
 		if(bOpen)
 		{
-			kChilds[i]->bIsOpen = true;
-			kChilds[i]->pkButton->Show();
-			kChilds[i]->bChildListIsOpen = true;
+			(*n)->bIsOpen = true;
+			(*n)->pkButton->Show();
+			(*n)->bChildListIsOpen = true;
 		}
 		else
 		{
 			// Stäng ner alla barn på samma gren.
-			if(!kChilds[i]->kChilds.empty() && kChilds[i]->bChildListIsOpen)
-				OpenChilds(kChilds[i]->kChilds, false);
+			if(!(*n)->kChilds.empty() && (*n)->bChildListIsOpen)
+				OpenChilds((*n)->kChilds, false);
 
-			kChilds[i]->bIsOpen = false;
-			kChilds[i]->pkButton->Hide();
-			kChilds[i]->bChildListIsOpen = false;
-			kChilds[i]->pkButton->UncheckButton();
+			(*n)->bIsOpen = false;
+			(*n)->pkButton->Hide();
+			(*n)->bChildListIsOpen = false;
+			(*n)->pkButton->UncheckButton();
 		}
+
+		iCounter++;
 	}
 }
 
@@ -202,7 +235,7 @@ void ZGuiTreebox::OpenNode(ZGuiTreeboxNode *pkClickNode, bool bOpen)
 			if(rc.Top > pkClickNode->pkButton->GetScreenRect().Top)
 			{
 				bool bMoveItem = true;
-				for(itChild c=pkClickNode->kChilds.begin();
+				for(itNode c=pkClickNode->kChilds.begin();
 					c!=pkClickNode->kChilds.end(); c++)
 					{
 						if((*it) == (*c))
@@ -321,7 +354,7 @@ void ZGuiTreebox::CreateInternalControls()
 	m_pkHorzScrollbar->SetScrollInfo(0,1,1.0f,0); 
 
 	// Create root node.
-	ZGuiTreeboxNode* pkRoot = AddItem(NULL, "Root", 1, 1);
+	ZGuiTreeboxNode* pkRoot = AddItem(NULL, "Root", 1, 1, NULL);
 	pkRoot->bIsOpen = true;
 }
 
@@ -438,10 +471,10 @@ ZGuiSkin* ZGuiTreebox::GetItemSkin(unsigned int uiIndex)
 	return NULL;
 }
 
-void ZGuiTreebox::PrintChilds(vector<ZGuiTreeboxNode*> kList)
+void ZGuiTreebox::PrintChilds(list<ZGuiTreeboxNode*> kList)
 {
-	for(unsigned int i=0; i<kList.size(); i++)
-		PrintNode(kList[i]);
+	for(itNode it=kList.begin(); it!=kList.end(); it++)
+		PrintNode((*it));
 }
 
 void ZGuiTreebox::PrintNode(ZGuiTreeboxNode* pkNode)
@@ -464,13 +497,9 @@ void ZGuiTreebox::PrintNode(ZGuiTreeboxNode* pkNode)
 
 void ZGuiTreebox::PrintHierarchy()
 {
-	printf("-----------------------------------------------------\n");
+	printf("------------ZGuiTreebox::PrintHierarchy()------------\n");
 	PrintNode(m_kNodeList.front());
-}
-
-ZGuiTreeboxNode* ZGuiTreebox::GetRoot()
-{
-	return m_kNodeList.front();
+	printf("-----------------------------------------------------\n");
 }
 
 void ZGuiTreebox::SetSelColor(ZGuiTreeboxNode* pkNode)
@@ -478,3 +507,98 @@ void ZGuiTreebox::SetSelColor(ZGuiTreeboxNode* pkNode)
 
 }
 
+ZGuiTreeboxNode* ZGuiTreebox::Root()
+{
+	return m_kNodeList.front();
+}
+
+ZGuiTreeboxNode* ZGuiTreebox::Node(string strName)
+{
+	map<string, ZGuiTreeboxNode* >::iterator it;
+	it = m_kNodeMap.find(strName);
+	if(it != m_kNodeMap.end())
+		return it->second;
+	return NULL;
+}
+
+bool ZGuiTreebox::DeleteNode(string strName)
+{
+	map<string, ZGuiTreeboxNode* >::iterator it;
+	it = m_kNodeMap.find(strName);
+	if(it != m_kNodeMap.end())
+	{
+		ZGuiTreeboxNode* pkNode = it->second;
+		if(DeleteNode(pkNode,false))
+		{
+			m_kNodeMap.erase(it);
+			return true;
+		}
+	}
+	else
+	{
+		printf("ZGuiTreebox::DeleteNode, Failed to find node!\n");
+	}
+
+	return false;
+}
+
+bool ZGuiTreebox::DeleteNode(ZGuiTreeboxNode* pkNode, bool bRemoveFromMap)
+{
+	ZGuiTreeboxNode* pkParent = pkNode->pkParent;
+
+	if(pkNode == NULL)
+		return false;
+
+	if(pkNode->pkParent == NULL)
+	{
+		printf("ZGuiTreebox::DeleteNode, Can't delete the root node!\n");
+		return false;
+	}
+
+	for(itNode n=m_kNodeList.begin(); n!=m_kNodeList.end(); n++)
+		if((*n) == pkNode) // har vi hittat noden i huvudlistan.
+		{
+			if(!pkNode->kChilds.empty())
+				DeleteNode(pkNode->kChilds.back(), bRemoveFromMap);
+
+			ZGuiTreeboxNode* pkParent = pkNode->pkParent; // (finns alltid en root node)
+			for(itNode c=pkParent->kChilds.begin(); c!=pkParent->kChilds.end(); c++)
+				if((*c) == pkNode)
+				{
+					if(bRemoveFromMap)
+					{
+						map<string, ZGuiTreeboxNode* >::iterator m;
+						for(m=m_kNodeMap.begin(); m!=m_kNodeMap.end(); m++)
+							if(m->second == pkNode)
+							{
+								m_kNodeMap.erase(m);
+								break;
+							}
+					}
+
+					// Koppla om pekarna som används för att söka genom listan.
+					if(pkNode != pkParent->kChilds.front())
+					{
+						itNode prev = c; prev--;
+						(*prev)->pkNext = (*c)->pkNext;
+					}
+
+					printf("Removing node named %s\n", pkNode->pkButton->GetText());  
+					delete pkNode->pkButton; pkNode->pkButton = NULL;
+					delete pkNode; pkNode = NULL;
+					pkParent->kChilds.erase(c);
+					break;
+				}
+
+			m_kNodeList.erase(n);
+			break;
+		}
+
+	if(pkNode)
+	{
+		if(pkNode->kChilds.empty() == false)
+			DeleteNode(pkNode->kChilds.front(), bRemoveFromMap);
+	}
+
+	return true;
+}

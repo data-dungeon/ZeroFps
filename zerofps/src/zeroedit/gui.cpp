@@ -118,7 +118,7 @@ bool Gui::WndProc( ZGuiWnd* pkWindow, unsigned int uiMessage,
 		break;
 
 	case ZGM_RBUTTONDOWN:
-		//((ZGuiTreebox*)Get("TestTreeBox"))->PrintHierarchy();
+		((ZGuiTreebox*)Get("TestTreeBox"))->DeleteNode("PNODE_PHYSICS");
 		break;
 	}
 	return true;
@@ -186,7 +186,7 @@ bool Gui::CreateWindows()
 	bla->Open(); 
 	
 	// testing treebox
-	bool bTestingTreeBox = false;
+	bool bTestingTreeBox = true;
 	if(bTestingTreeBox)
 	{
 		CreateTestWnd();
@@ -661,41 +661,32 @@ void Gui::CreateTestWnd()
 	int x = m_pkEdit->m_iWidth - w;
 	int y = m_pkEdit->m_iHeight - h;
 
-	ZGuiWnd* pkWnd = new ZGuiWnd(Rect(x,y,x+w,y+h),NULL,
-		false,id++);
-
+	ZGuiWnd* pkWnd = new ZGuiWnd(Rect(x,y,x+w,y+h),NULL,false,id++);
 	m_pkGui->AddMainWindow(id++,pkWnd,"TestWnd",MAINWINPROC,false);
 
-	ZGuiTreebox* pkTreebox = new ZGuiTreebox(Rect(0,0,w,h), 
-		pkWnd, true, id++);
+	vector<ZGuiSkin*> akNodeSkins;
+	akNodeSkins.push_back(GetSkin("treenode_c"));
+	akNodeSkins.push_back(GetSkin("treenode_pc"));
+	akNodeSkins.push_back(GetSkin("treenode_po"));
+	ZGuiTreebox* pkTreebox = CreateTreebox(pkWnd,id++,0,0,w,h,
+		akNodeSkins, Vector3(255,255,255), "TestTreeBox");
 
-	pkTreebox->InsertBranchSkin(0, GetSkin("treenode_c"));
-	pkTreebox->InsertBranchSkin(1, GetSkin("treenode_pc"));
-	pkTreebox->InsertBranchSkin(2, GetSkin("treenode_po"));
-
-	ZGuiTreeboxNode* pkRoot = pkTreebox->GetRoot();
-
-	ZGuiTreeboxNode* pkObject = pkTreebox->AddItem(pkRoot, "Objects", 1, 2);
-	ZGuiTreeboxNode* pkPhysics = pkTreebox->AddItem(pkObject, "Physics", 1, 2);
+	ZGuiTreeboxNode* pkRoot = pkTreebox->Root();
+	ZGuiTreeboxNode* pkObject = pkTreebox->AddItem(pkRoot, "Objects", 1, 2, "PNODE_OBJECTS");
+	ZGuiTreeboxNode* pkPhysics = pkTreebox->AddItem(pkObject, "Physics", 1, 2, "PNODE_PHYSICS");
 	ZGuiTreeboxNode* pkShips = pkTreebox->AddItem(pkPhysics, "Ships", 1, 2);
 	pkTreebox->AddItem(pkShips, "Playership", 0, 1);
-	ZGuiTreeboxNode* pkByggnad = pkTreebox->AddItem(pkPhysics, "Buildings", 1, 2);
+	ZGuiTreeboxNode* pkByggnad = pkTreebox->AddItem(pkPhysics, "Buildings", 1, 2, "PNODE_BUILDINGS");
 	pkTreebox->AddItem(pkByggnad, "az3", 0, 1);
 	ZGuiTreeboxNode* pkBall = pkTreebox->AddItem(pkPhysics, "Balls", 1, 2);
 	pkTreebox->AddItem(pkBall, "Ball1", 0, 1);
 	pkTreebox->AddItem(pkBall, "Ball2", 0, 1);
 	pkTreebox->AddItem(pkBall, "Ball3", 0, 1);
 	pkTreebox->AddItem(pkPhysics, "Tree", 0, 1);
-	ZGuiTreeboxNode* pkWeapons = pkTreebox->AddItem(pkObject, "Weapons", 0, 1);
+	ZGuiTreeboxNode* pkWeapons = pkTreebox->AddItem(pkObject, "Weapons", 1, 2, "PNODE_WEAPONS");
 	ZGuiTreeboxNode* pkProjectiles = pkTreebox->AddItem(pkObject, "Projectiles", 1, 2);
-	pkTreebox->AddItem(pkProjectiles, "Torpedo", 0, 1);
-	pkTreebox->AddItem(pkProjectiles, "Homingmissile", 0, 1);
-	
-	pkTreebox->SetSkin(new ZGuiSkin(255,255,255,0,0,0,1));
-	pkTreebox->SetScrollbarSkin(GetSkin("menu_item_sel"), 
-		GetSkin("menu_item_hl"), GetSkin("menu_item_hl"));
-
-	m_pkGui->RegisterWindow(pkTreebox, "TestTreeBox");
+	pkTreebox->AddItem(pkProjectiles, "Torpedo", 0, 1, "PNODE_TORPEDO");
+	pkTreebox->AddItem(pkProjectiles, "Homingmissile", 0, 1, "PNODE_HOMINGMISSILE");	
 }
 
 bool Gui::CreateMenu(ZFIni* pkIni, char* szFileName)
@@ -968,4 +959,24 @@ ZGuiSlider* Gui::CreateSlider(ZGuiWnd *pkParent, int iID, int x, int y, int w, i
 	return pkSlider;
 }
 
+ZGuiTreebox* Gui::CreateTreebox(ZGuiWnd *pkParent, int iID, int x, int y, 
+								int w, int h, vector<ZGuiSkin*> akNodeSkins,
+								Vector3 kBkColorRGB, char *szRegName)
+{
+	ZGuiTreebox* pkTreebox = new ZGuiTreebox(Rect(x,y,x+w,y+h), 
+		pkParent, true, iID);
 
+	if(szRegName)
+		m_pkGui->RegisterWindow(pkTreebox, szRegName);
+
+	pkTreebox->SetSkin(new ZGuiSkin(kBkColorRGB[0],kBkColorRGB[1],
+		kBkColorRGB[2],0,0,0,1));
+
+	for(unsigned int i=0; i<akNodeSkins.size(); i++)
+		pkTreebox->InsertBranchSkin(i, akNodeSkins[i]);
+
+	pkTreebox->SetScrollbarSkin(GetSkin("menu_item_sel"), 
+		GetSkin("menu_item_hl"), GetSkin("menu_item_hl"));
+
+	return pkTreebox;
+}

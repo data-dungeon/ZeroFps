@@ -934,8 +934,8 @@ bool Image::load_bmp(FILE* pkFile)
 				if(bZeroSize)
 				{
 					pixels[i].r = kBitmap.pkData[j++]; //r
-					pixels[i].g = kBitmap.pkData[j++]; //b
-					pixels[i].b = kBitmap.pkData[j++]; //g
+					pixels[i].b = kBitmap.pkData[j++]; //b
+					pixels[i].g = kBitmap.pkData[j++]; //g
 					pixels[i++].a = 0;
 				}
 				else
