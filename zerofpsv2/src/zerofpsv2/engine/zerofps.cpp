@@ -53,7 +53,7 @@ ZeroFps::ZeroFps(void) : I_ZeroFps("ZeroFps")
 	// Create Engine SubSystems 
 	m_pkAStar					= new AStar;
 	m_pkZShaderSystem			= new ZShaderSystem;
-	m_pkEntityManager				= new EntityManager;
+	m_pkEntityManager			= new EntityManager;
 	m_pkResourceDB				= new ZFResourceDB;
 	m_pkIni						= new ZFIni;
 	m_pkGui						= new ZGui(iScreenWidth, iScreenHeight);
@@ -94,6 +94,7 @@ ZeroFps::ZeroFps(void) : I_ZeroFps("ZeroFps")
 	m_fAvrageFpsTime			= 0;
 	m_iAvrageFrameCount		= 0;
 	m_bRenderOn					= true;
+	m_bMinimized 				= false;
 	m_iServerConnection		= -1;
 	m_iMaxPlayers				= ZF_DEF_PLAYERS;
 	m_bLockFps					= false;
@@ -599,9 +600,12 @@ void ZeroFps::MainLoop(void)
 			m_fEngineTime = GetTicks();
 			Swap();											//swap buffers n calculate fps
 			 			 
-			//handle locked fps delay
-			MakeDelay();
-			  
+			//check if application is minimized
+			m_bMinimized = ( !(SDL_GetAppState() & SDL_APPACTIVE) );	
+
+			//handle locked fps delay						
+			MakeDelay();			
+			
 			Run_EngineShell();
 
 			if(m_bServerMode)
@@ -618,6 +622,7 @@ void ZeroFps::MainLoop(void)
 
 void ZeroFps::MakeDelay()
 {
+	//make a delay if locked fps or minimized
 	if(m_bLockFps || (!(SDL_GetAppState() & SDL_APPACTIVE) ) )
 	{
 		float fDelay = m_pkEntityManager->GetSimDelta() - (GetTicks() - m_fLockFrameTime);
@@ -634,13 +639,6 @@ void ZeroFps::MakeDelay()
 		//	cout<<"Delaying:"<<fDelay<<endl;		
 		//end of delay code ---				
 	}
-	
-	/*
-	if(!(SDL_GetAppState() & SDL_APPACTIVE))
-		m_bRenderOn = false;
-	else
-		m_bRenderOn = true;
-	*/
 }
 
 void ZeroFps::AddRenderCamera(Camera* pkCamera)
@@ -693,7 +691,7 @@ Camera* ZeroFps::GetRenderCamera(string strName)
 void ZeroFps::Draw_RenderCamera(Camera* pkCamera)
 {
 	//if render is disable just clear the viewport (looks better)
-	if(!m_bRenderOn)
+	if(!m_bRenderOn || m_bMinimized)
 	{
 		pkCamera->InitView();		
 		return;

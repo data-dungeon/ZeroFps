@@ -82,7 +82,7 @@ void P_Tcs::Disable()
 
 void P_Tcs::Update()
 {	
-	if( m_pkEntityManager->IsUpdate(PROPERTY_TYPE_RENDER) ) {
+	if( m_pkEntityManager->IsUpdate(PROPERTY_TYPE_NORMAL) ) {
 		if(m_bPolygonTest)
 		{
 			if(!m_bHavePolygonData)
@@ -100,6 +100,7 @@ void P_Tcs::Update()
 			}
 		}
 	}
+	
 	if( m_pkEntityManager->IsUpdate(PROPERTY_TYPE_RENDER) ) 
 	{
 		if(m_pkTcs->GetDebugGraph() != 0)

@@ -143,6 +143,7 @@ class ENGINE_API ZeroFps : public I_ZeroFps {
 		float 	m_fSystemUpdateTime;
 		float		m_fEngineTime;						// Time since engine start.
 		bool		m_bRenderOn;
+		bool		m_bMinimized;
 		bool		m_bDrawAxisIcon;
 		bool		m_bDebugGraph;						//shuld we show debug graphics, like spheres where theres lights etc
 				

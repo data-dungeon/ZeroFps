@@ -33,17 +33,16 @@ MistClient::MistClient(char* aName,int iWidth,int iHeight,int iDepth)
 	m_strLoginName = "Psykosmurfan";
    m_strLoginPW = "topsecret";
 
-   RegisterVariable("r_jumpstart", &m_bSkipLoginScreen, CSYS_BOOL);
-
-   RegisterVariable("r_loginname", &m_strLoginName, CSYS_STRING);
-   RegisterVariable("r_loginpw", &m_strLoginPW, CSYS_STRING);
+   RegisterVariable("r_jumpstart", 	&m_bSkipLoginScreen, CSYS_BOOL);
+   RegisterVariable("r_loginname", 	&m_strLoginName, CSYS_STRING);
+   RegisterVariable("r_loginpw", 	&m_strLoginPW, CSYS_STRING);
    
 } 
  
 void MistClient::OnInit() 
 {
+	//m_pkZFVFileSystem->AddRootPath( string("../datafiles/dm") ,"/data");	
 	m_pkZFVFileSystem->AddRootPath( string("../datafiles/mistlands") ,"/data");
-	//m_pkZFVFileSystem->AddRootPath( string("../datafiles/dm") ,"/data");
 
 	//register commands
 	Register_Cmd("say",			FID_SAY);	
