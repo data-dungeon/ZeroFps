@@ -22,7 +22,7 @@ LevelManager::LevelManager(): ZFObject("LevelManager")
 	m_fZoneDistance		=	64;
 	m_kMapBaseDir			=	"../data/maps";
 	
-	g_ZFObjSys.RegisterVariable("l_zoneradius", &m_fZoneRadius,CSYS_INT);
+	g_ZFObjSys.RegisterVariable("l_zoneradius", &m_fZoneRadius,CSYS_FLOAT);
 	g_ZFObjSys.RegisterVariable("l_Showdecorations", &m_iShowDecorations,CSYS_INT);
 	g_ZFObjSys.RegisterVariable("l_decorationstep", &m_iDecorationStep,CSYS_INT);
 
@@ -30,8 +30,7 @@ LevelManager::LevelManager(): ZFObject("LevelManager")
 //	m_pkCmd->Add(&m_iShowDecorations,"l_Showdecorations",type_int);		
 //	m_pkCmd->Add(&m_iDecorationStep,"l_decorationstep",type_int);			
 	
-	
-	
+
 	//default light
 	m_bSun=new LightSource;	
 		m_bSun->kRot=new Vector3(1,2,1);
@@ -505,7 +504,7 @@ void LevelManager::UpdateZones()
 	{
 		Camera* pkCam = m_pkZeroFps->GetCam();
 		if(pkCam) {
-			Vector3 pos=m_pkZeroFps->GetCam()->GetPos();
+			Vector3 pos = pkCam->GetPos();
 	
 			int x=int(((pos.x+m_pkMap->GetSize()/2)+m_fZoneDistance/2)/(m_fZoneDistance));
 			int z=int(((pos.z+m_pkMap->GetSize()/2)+m_fZoneDistance/2)/(m_fZoneDistance));			
