@@ -51,6 +51,9 @@ MistServer::MistServer(char* aName,int iWidth,int iHeight,int iDepth)
 	// Register Variables
 	RegisterVariable("s_newlogins",				&m_AcceptNewLogins,			CSYS_BOOL);	
 
+	m_bStartMinimized = false;
+	RegisterVariable("r_startminimized", 	&m_bStartMinimized, CSYS_BOOL);
+
 	// Register Commands
 	Register_Cmd("new",			FID_NEW);		
 	Register_Cmd("load",			FID_LOAD);		
@@ -162,10 +165,8 @@ void MistServer::Init()
 //	m_pkInputHandle->ToggleGrab();
 //	m_pkPlayerDB->GetLoginCharacters(string("user"));
 
-	bool bMinimizeFromStart = true;
-
 	#ifdef WIN32
-		if(bMinimizeFromStart)
+		if(m_bStartMinimized)
 			ShowWindow(GetFocus(), SW_MINIMIZE);
 	#endif 
 }

@@ -79,6 +79,7 @@ class MistServer :public Application , public ZGuiApp
 		
 		PlayerDatabase*					m_pkPlayerDB;
 		bool									m_AcceptNewLogins;
+		bool									m_bStartMinimized;
 
 		//edit stuff
 		Entity*	m_pkCameraObject;
