@@ -3,7 +3,6 @@
 //////////////////////////////////////////////////////////////////////
 
 #include "examinepumenu.h"
-#include "../common/itemproperty.h"
 #include "../common/playercontrolproperty.h"
 
 int ExaminePUMenu::s_iExamineMainWndID = 5000;
@@ -28,7 +27,7 @@ ExaminePUMenu::ExaminePUMenu(ZGui* pkGui, Input* pkInput,
 	m_iWidth = 150;
 	m_iHeight = 300;
 	m_iPickedListIndex = -1;
-	m_eCurrActionType = NORMALUSE;
+	m_eActionType = NORMALUSE;
 }
 
 ExaminePUMenu::~ExaminePUMenu()
@@ -84,9 +83,9 @@ bool ExaminePUMenu::OnOpen(int x, int y)
 		return false;
 
 	vector<string> akNames;
-	m_pkItemProperty->GetUses(m_eCurrActionType, &akNames);
+	m_pkItemProperty->GetUses(m_eActionType, &akNames);
 
-	bool bPickable = m_pkItemProperty->m_bPickable && (m_eCurrActionType == NORMALUSE);
+	bool bPickable = m_pkItemProperty->m_bPickable && (m_eActionType == NORMALUSE);
 	int iNumItems = akNames.size();
 
 	if(bPickable)
@@ -136,7 +135,7 @@ bool ExaminePUMenu::OnClose(bool bSave)
 	{
 		if(m_iPickedListIndex != -1 && m_pkItemProperty)
 		{
-			m_pkItemProperty->Use( m_eCurrActionType, 
+			m_pkItemProperty->Use( m_eActionType, 
 				m_kListbox->GetItem(m_iPickedListIndex)->GetText());
 		}
 
@@ -190,5 +189,5 @@ char* ExaminePUMenu::GetUseString(int index)
 
 void ExaminePUMenu::SetUseState(Action_Type eNewActionType)
 {
-	m_eCurrActionType = eNewActionType;
+	m_eActionType = eNewActionType;
 }

@@ -90,6 +90,7 @@ static bool EXAMINE_BOXPROC( ZGuiWnd* wnd, unsigned int msg, int num, void *parm
 		if(szUseString && strcmp(szUseString, "Open container") == 0)
 		{
 			g_kGame.m_pkExamineMenu->OnClose(true);
+
 			g_kGame.OpenContainer();
 			return true;
 		}
@@ -492,6 +493,11 @@ void Game::PlayerExamineObject()
 	PlayerControlProperty* pkPlayerCtrl = static_cast<PlayerControlProperty*>
 			(m_pkPlayer->GetProperty("PlayerControlProperty"));
 
+	// Om kameran är låst är gui't uppe och då skall 
+	// det inte gå att undersöka object.
+	if(pkPlayerCtrl->m_bLockCamera == true)
+		return;
+
 	Object* pkObjectTouched = pkPlayerCtrl->m_pkUseObject;
 
 	if(pkObjectTouched != NULL)
@@ -506,30 +512,16 @@ void Game::PlayerExamineObject()
 		}
 
 		OpenExamineMenu(pkObjectTouched, NORMALUSE);
-
-/*		ItemProperty* ip = static_cast<ItemProperty*>
-			(pkObjectTouched->GetProperty("ItemProperty"));
-
-		if(ip != NULL)
-		{
-			m_pkExamineMenu->SetItemProperty(ip);
-			m_pkExamineMenu->SetPlayerControlProperty(pkPlayerCtrl);
-
-			if(m_pkExamineMenu->IsOpen() == false)
-			{
-				m_pkExamineMenu->OnOpen(m_iWidth/2,m_iHeight/2);
-			}
-		}*/
 	}
 }
 
 void Game::LockPlayerCamera(bool bLock)
 {
-	PlayerControlProperty* m_pkPlayerCtrl = static_cast<PlayerControlProperty*>
+	PlayerControlProperty* pkPlayerCtrl = static_cast<PlayerControlProperty*>
 		(m_pkPlayer->GetProperty("PlayerControlProperty"));
 
-	if(m_pkPlayerCtrl)
-		m_pkPlayerCtrl->m_bLockCamera = bLock;
+	if(pkPlayerCtrl)
+		pkPlayerCtrl->m_bLockCamera = bLock;
 
 	pkGui->ShowCursor(bLock);
 }

@@ -102,6 +102,7 @@ void ContainerProperty::RegisterActions()
 	if(pkIP != NULL)
 	{
 		pkIP->RegisterAction(NORMALUSE,"Open container","OpenContainer");
+		pkIP->RegisterAction(INVENTORYUSE,"Open container","OpenContainer");
 	}
 }	
 
@@ -112,6 +113,7 @@ void ContainerProperty::UnRegisterActions()
 	if(pkIP != NULL)
 	{
 		pkIP->UnRegisterAction(NORMALUSE,"Open container");
+		pkIP->UnRegisterAction(INVENTORYUSE,"Open container");
 	}
 }
 

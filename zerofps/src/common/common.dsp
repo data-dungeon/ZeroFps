@@ -55,7 +55,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /machine:I386
-# ADD LINK32 sdl.lib engine.lib basic.lib gui.lib render.lib script.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /machine:I386 /out:"../../bin/common.dll" /libpath:"../../bin"
+# ADD LINK32 sdl.lib engine.lib basic.lib render.lib script.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /machine:I386 /out:"../../bin/common.dll" /libpath:"../../bin"
 
 !ELSEIF  "$(CFG)" == "common - Win32 Debug"
 
@@ -87,7 +87,7 @@ LINK32=link.exe
 # Begin Special Build Tool
 ProjDir=.
 SOURCE="$(InputPath)"
-PostBuild_Cmds=copy          $(ProjDir)\debug\*.lib          ..\..\bin\ 
+PostBuild_Cmds=copy           $(ProjDir)\debug\*.lib           ..\..\bin\ 
 # End Special Build Tool
 
 !ELSEIF  "$(CFG)" == "common - Win32 Release Profile"
@@ -165,6 +165,10 @@ SOURCE=.\doorproperty.cpp
 # Begin Source File
 
 SOURCE=.\itemproperty.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\logproperty.cpp
 # End Source File
 # Begin Source File
 
@@ -249,6 +253,10 @@ SOURCE=.\inventoryproperty.h
 # Begin Source File
 
 SOURCE=.\itemproperty.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\logproperty.h
 # End Source File
 # Begin Source File
 

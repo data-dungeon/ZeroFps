@@ -16,10 +16,9 @@ ZGuiSkin* ItemBox::s_kStaticGridSkinNormal = NULL;
 ZGuiSkin* ItemBox::s_kStaticGridSkinUnused = NULL;
 
 ItemBox::ItemBox(ZGui* pkGui, ZGuiWndProc oMainWndProc, TextureManager* pkTexMan,
-				 Input* pkInput, int iCols, int iRows, int iSlotSize, 
-				 int iTopX, int iTopY) 
-	:	DlgBox(pkGui, pkInput, oMainWndProc), m_ciSlotSize(iSlotSize), m_ciTopX(iTopX), 
-		m_ciTopY(iTopY), m_ciCols(iCols), m_ciRows(iRows)
+				 Input* pkInput, int iCols, int iRows, int iSlotSize, int iTopX, int iTopY) 
+	:	DlgBox( pkGui, pkInput, oMainWndProc), m_ciSlotSize(iSlotSize), m_ciTopX(iTopX), 
+				m_ciTopY(iTopY), m_ciCols(iCols), m_ciRows(iRows)
 {
 	m_iGridIDCounterStart = s_iStaticGridIDCounter;
 	m_pkPlayerProp = NULL;
@@ -70,11 +69,11 @@ bool ItemBox::DlgProc( ZGuiWnd* pkWnd,unsigned int uiMessage,
 						m_pkMoveItem->second.first, 
 						m_pkMoveItem->second.second);
 
-		/*			RemoveSlot(m_pkMoveItem->second.first, 
+					RemoveSlot(m_pkMoveItem->second.first, 
 						m_pkMoveItem->second.second);
-					m_pkContainer->RemoveItem(pkObject);*/
-					//m_pkPlayerProp->Drop(pkObject);
-		/*			m_pkMoveItem = NULL;*/
+					m_pkContainer->RemoveItem(pkObject);
+					m_pkPlayerProp->Drop(pkObject);
+					m_pkMoveItem = NULL;
 					return true;
 				}
 			}
@@ -386,6 +385,12 @@ Object* ItemBox::GetItemObject(int mx, int my)
 		return NULL;
 
 	if(m_pkContainer == NULL)
+		return NULL;
+
+	int sx, sy;
+	m_pkContainer->GetSize(sx,sy);
+
+	if(sx > kSlot.first || sy > kSlot.second)
 		return NULL;
 
 	Object* pkObject = m_pkContainer->GetItem(kSlot.first, kSlot.second);

@@ -10,16 +10,14 @@
 #endif // _MSC_VER > 1000
 
 #include "dialogbox.h"
-class TextureManager;
-class ItemProperty;
-class PlayerControlProperty;
 
-extern enum Action_Type;
+class TextureManager;
+class PlayerControlProperty;
+#include "../common/itemproperty.h"
 
 class ExaminePUMenu : public DlgBox  
 {
 public:
-	void SetUseState(Action_Type eNewActionType);
 	char* GetUseString(int index);
 	void SetPlayerControlProperty(PlayerControlProperty *pkPlayerProp);
 	void SetItemProperty(ItemProperty* pkItemProp);
@@ -33,7 +31,10 @@ public:
 	bool OnOpen(int x=-1, int y=-1);
 	bool OnClose(bool bSave);
 
+	void SetUseState(Action_Type eNewActionType);
+
 private:
+
 	char* GenMainWndName();
 	TextureManager* m_pkTexMan;
 	static ZGuiSkin* s_pkMainWndSkin;
@@ -48,7 +49,8 @@ private:
 
 	ItemProperty* m_pkItemProperty;
 	PlayerControlProperty* m_pkPlayerProp;
-	Action_Type m_eCurrActionType;
+
+	Action_Type m_eActionType;
 
 };
 
