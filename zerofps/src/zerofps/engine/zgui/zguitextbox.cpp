@@ -2,13 +2,13 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#include "..\basic\zguiskin.h"
+#include "../../basic/zguiskin.h"
 #include "zguilabel.h"
-#include "..\render\zguirenderer.h"
+#include "../../render/zguirenderer.h"
 #include "zguitextbox.h"
 #include "zgui.h"
 #include "zguiscrollbar.h"
-#include "..\Engine\Input.h"
+#include "../../engine/input.h"
 #include <stdio.h>
 
 #define VERT_SCROLLBAR_TEXBOX_ID 22
@@ -268,3 +268,7 @@ void ZGuiTextbox::ScrollText(ZGuiScrollbar* pkScrollbar)
 	// Reset parameter
 	pkScrollbar->m_iScrollChange = 0;
 }
+
+
+
+

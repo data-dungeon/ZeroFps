@@ -55,3 +55,6 @@ Rect Rect::Move(int dx, int dy) const
 	res.Bottom += dy;
 	return res;
 }
+
+
+

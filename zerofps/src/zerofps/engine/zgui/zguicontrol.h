@@ -9,7 +9,7 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
-#include "..\engine_x.h"
+#include "../engine_x.h"
 #include "zguiwindow.h"
 
 class ZGuiRender;
@@ -29,3 +29,8 @@ public:
 };
 
 #endif // !defined(AFX_GUICONTROL_H__850E9039_B50F_4D02_AB7E_866310E576E2__INCLUDED_)
+
+
+
+
+

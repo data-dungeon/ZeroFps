@@ -10,7 +10,7 @@
 #endif // _MSC_VER > 1000
 
 #include "render_x.h"
-#include "..\basic\rect.h"
+#include "../basic/rect.h"
 
 class ZGuiSkin;
 
@@ -32,3 +32,8 @@ public:
 #endif // !defined(AFX_GUIRENDER_H__689588FE_E416_482A_9654_617B1E478E48__INCLUDED_)
 
 //Kan man säga till OpenGL att den skall rendera ens punkter i 2D-fönster koordinater?
+
+
+
+
+

@@ -9,8 +9,8 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
-#include "..\engine_x.h"
-#include "ZGuiCheckbox.h"
+#include "../engine_x.h"
+#include "zguicheckbox.h"
 
 class ENGINE_API ZGuiRadiobutton : public ZGuiControl
 {
@@ -46,3 +46,9 @@ private:
 };
 
 #endif // !defined(AFX_ZGUIRADIOBUTTON_H__34742515_ACF4_4DF6_AB10_9A11E2DC881F__INCLUDED_)
+
+
+
+
+
+

@@ -3,7 +3,7 @@
 //////////////////////////////////////////////////////////////////////
 
 #include "zguicheckbox.h"
-#include "..\render\zguirenderer.h"
+#include "../../render/zguirenderer.h"
 #include "zguilabel.h"
 
 //////////////////////////////////////////////////////////////////////
@@ -98,3 +98,7 @@ void ZGuiCheckbox::SetText(char* strText)
 {
 	m_pkLabel->SetText( strText);
 }
+
+
+
+

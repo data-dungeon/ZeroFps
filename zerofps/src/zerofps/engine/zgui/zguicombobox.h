@@ -9,8 +9,8 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
-#include "..\engine_x.h"
-#include "..\..\basic\rect.h"
+#include "../engine_x.h"
+#include "../../basic/rect.h"
 #include "zguicontrol.h"
 
 class ZGuiRender;
@@ -40,3 +40,6 @@ private:
 };
 
 #endif // !defined(AFX_COMBOBOX_H__942928D7_8B6B_421F_B821_742984902F7D__INCLUDED_)
+
+
+

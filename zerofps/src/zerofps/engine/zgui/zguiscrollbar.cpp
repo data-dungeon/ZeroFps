@@ -4,7 +4,7 @@
 
 #include "zguiscrollbar.h"
 #include "zguibutton.h"
-#include "..\render\zguirenderer.h"
+#include "../../render/zguirenderer.h"
 #include "zgui.h"
 
 // Static internal IDs for the scrollbar button
@@ -139,3 +139,6 @@ void ZGuiScrollbar::CreateInternalControls()
 
 	SetScrollInfo(0,100,0.15f,0);
 }
+
+
+

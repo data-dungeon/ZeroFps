@@ -9,8 +9,8 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
-#include "..\engine_x.h"
-#include "..\..\basic\rect.h"
+#include "../engine_x.h"
+#include "../../basic/rect.h"
 
 #pragma warning( disable : 4786) // truncate long names, who gives a shit...
 #include <list>
@@ -100,3 +100,5 @@ private:
 };
 
 #endif // !defined(AFX_WINDOW_H__C9899268_8A6F_4E75_A4D7_60CADB518415__INCLUDED_)
+
+

@@ -4,7 +4,7 @@
 
 #include "zguilistitem.h"
 #include "zguibutton.h"
-#include "..\basic\rect.h"
+#include "../../basic/rect.h"
 #include "zguiwindow.h"
 
 //////////////////////////////////////////////////////////////////////
@@ -74,3 +74,9 @@ char* ZGuiListitem::GetText()
 { 
 	return m_pkButton->GetText(); 
 }
+
+
+
+
+
+

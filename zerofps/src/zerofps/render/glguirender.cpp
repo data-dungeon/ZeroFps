@@ -3,7 +3,7 @@
 //////////////////////////////////////////////////////////////////////
 #include "../ogl/zfpsgl.h"
 #include "glguirender.h"
-#include "..\basic\zguiskin.h"
+#include "../basic/zguiskin.h"
 #include "texturemanager.h"
 
 #define FONTWIDTH 32

@@ -3,8 +3,8 @@
 //////////////////////////////////////////////////////////////////////
 
 #include "zguiwindow.h"
-#include "..\render\zguirenderer.h"
-#include "..\basic\zguiskin.h"
+#include "../../render/zguirenderer.h"
+#include "../../basic/zguiskin.h"
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
@@ -362,3 +362,8 @@ ZGui* ZGuiWnd::GetGUI()
 
 	return pkGui;
 }
+
+
+
+
+

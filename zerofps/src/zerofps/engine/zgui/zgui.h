@@ -9,8 +9,8 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
-#include "..\engine_x.h"
-#include "..\..\basic\zguiskin.h"
+#include "../engine_x.h"
+#include "../../basic/zguiskin.h"
 #include "zguiwindow.h"
 #include "zguibutton.h"
 #include "zguicheckbox.h"
@@ -101,3 +101,5 @@ private:
 };
 
 #endif // !defined(AFX_GUI_H__9DDC0983_F616_469F_BDE9_BCC084BEB4BE__INCLUDED_)
+
+

@@ -2,9 +2,9 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#include "..\basic\zguiskin.h"
+#include "../../basic/zguiskin.h"
 #include "zguibutton.h"
-#include "..\render\zguirenderer.h"
+#include "../../render/zguirenderer.h"
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
@@ -100,3 +100,7 @@ void ZGuiButton::SetButtonHighLightSkin(ZGuiSkin* pkSkin)
 {
 	m_kSkinHighLight = pkSkin;
 }
+
+
+
+

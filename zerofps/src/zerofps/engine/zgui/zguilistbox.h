@@ -9,8 +9,8 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
-#include "..\engine_x.h"
-#include "..\..\basic\rect.h"
+#include "../engine_x.h"
+#include "../../basic/rect.h"
 #include "zguicontrol.h"
 #include "zguilistitem.h"
 
@@ -50,3 +50,5 @@ private:
 };
 
 #endif // !defined(AFX_LISTBOX_H__F667D216_3A7B_4606_907F_E48FFD386301__INCLUDED_)
+
+

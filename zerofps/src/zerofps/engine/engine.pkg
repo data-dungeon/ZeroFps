@@ -26,4 +26,4 @@ class ZGui;
 #include "propertyfactory.h"
 #include "property.h"
 #include "lightproperty.h"
-
+#include "zgui/zgui.h"

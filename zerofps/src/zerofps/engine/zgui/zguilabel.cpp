@@ -2,9 +2,9 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#include "..\basic\zguiskin.h"
+#include "../../basic/zguiskin.h"
 #include "zguilabel.h"
-#include "..\render\zguirenderer.h"
+#include "../../render/zguirenderer.h"
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
@@ -43,3 +43,8 @@ bool ZGuiLabel::Render( ZGuiRender* pkRenderer )
 	}
 	return true;
 } 
+
+
+
+
+

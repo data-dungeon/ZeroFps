@@ -9,8 +9,8 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
-#include "..\engine_x.h"
-#include "..\..\basic\rect.h"
+#include "../engine_x.h"
+#include "../../basic/rect.h"
 #include "zguicontrol.h"
 
 class ZGuiRender;
@@ -35,3 +35,5 @@ protected:
 };
 
 #endif // !defined(AFX_BUTTON_H__1656E751_9931_4A8F_A55D_907CEEA8E99F__INCLUDED_)
+
+

@@ -9,8 +9,8 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
-#include "..\engine_x.h"
-#include "..\..\basic\rect.h"
+#include "../engine_x.h"
+#include "../../basic/rect.h"
 #include "zguicontrol.h"
 
 class ZGuiButton;
@@ -36,3 +36,6 @@ private:
 };
 
 #endif // !defined(AFX_ZGUISCROLLBAR_H__88D34F0A_573C_468B_8090_219A2AD24315__INCLUDED_)
+
+
+

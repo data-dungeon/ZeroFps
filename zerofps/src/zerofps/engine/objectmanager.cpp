@@ -352,11 +352,31 @@ bool ObjectManager::SaveTemplate(const char* acName,const char* acFile)
 	return true;
 }
 
-bool SaveAllObjects(const char* acFile)
+bool ObjectManager::SaveAllObjects(const char* acFile)
 {
+	ZFFile kFile;
+	if(!kFile.Open(acFile,true))
+		return false;
+	
+	ObjectDescriptor obd;
+	ZFMemPackage mpkg;
+	
+	list<Object*> objectlist;
+	
+	GetAllObjects(&objectlist);
+	
+
+
 
 	return true;
 }
+
+void ObjectManager::GetAllObjects(list<Object*> *pakObjects)
+{
+	m_pkWorldObject->GetAllObjects(pakObjects);
+}
+
+
 
 
 

@@ -9,8 +9,8 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
-#include "..\engine_x.h"
-#include "..\..\basic\rect.h"
+#include "../engine_x.h"
+#include "../../basic/rect.h"
 #include "zguicontrol.h"
 
 class ZGuiRender;
@@ -45,3 +45,6 @@ protected:
 };
 
 #endif // !defined(AFX_CHECKBOX_H__03DB5F8B_D30C_489B_8732_689D12D1B549__INCLUDED_)
+
+
+

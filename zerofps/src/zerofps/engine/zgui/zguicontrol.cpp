@@ -4,7 +4,7 @@
 
 #include "zguicontrol.h"
 //#include "../basic/basic.pkg"
-#include "..\render\zguirenderer.h"
+#include "../../render/zguirenderer.h"
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
@@ -27,3 +27,5 @@ bool ZGuiControl::Render(ZGuiRender* pkRender)
 		pkRender->RenderBorder(GetScreenRect());*/
 	return true;
 }
+
+

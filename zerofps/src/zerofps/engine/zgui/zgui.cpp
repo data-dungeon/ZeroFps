@@ -2,10 +2,10 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#include "..\basic\rect.h"
+#include "../../basic/rect.h"
 #include "zgui.h"
 #include "zguiwindow.h"
-#include "..\render\zguirenderer.h"
+#include "../../render/zguirenderer.h"
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
@@ -330,3 +330,8 @@ void ZGui::RearrangeWnds(MAIN_WINDOW* p_iIDWndToSelect)
 	// Sätt z-order till max på det fönster som har valts.
 	m_pkActiveMainWin->iZValue = m_pkMainWindows.size()-1;
 }
+
+
+
+
+

@@ -1,6 +1,6 @@
 #include "test.h"
 #include "walker.h"
-#include <windows.h>
+
 
 #define ID_MAINWND1 100
 #define ID_CLOSE_BUTTON 102
@@ -184,7 +184,7 @@ void Test::OnInit(void)
 
 
 	// Gui
-	//InitUI();
+	InitUI();
 
 
 
@@ -263,7 +263,8 @@ void Test::OnIdle(void) {
 	
 	int mx, my;
 	pkInput->MouseXY(mx, my);
-//	m_pkGui->OnMouseUpdate(mx, my, pkInput->Pressed(MOUSELEFT), pkInput->Pressed(MOUSERIGHT));
+	
+	m_pkGui->OnMouseUpdate(mx, my, pkInput->Pressed(MOUSELEFT), pkInput->Pressed(MOUSERIGHT));
 }
 
 void Test::OnHud(void) 
@@ -289,7 +290,7 @@ void Test::OnHud(void)
 	
 	glPopAttrib();
 
-//	m_pkGui->Render();
+	m_pkGui->Render();
 
 	
 }
@@ -374,7 +375,7 @@ void Test::RunCommand(int cmdid, const CmdArgument* kCommand)
 
 
 
-/*bool ZGWinProc( ZGuiWnd* pkWindow, unsigned int uiMessage, int iNumberOfParams, void *pkParams )
+bool ZGWinProc( ZGuiWnd* pkWindow, unsigned int uiMessage, int iNumberOfParams, void *pkParams )
 {
 	Rect rc;
 
@@ -385,12 +386,12 @@ void Test::RunCommand(int cmdid, const CmdArgument* kCommand)
 		break;
 	}
 	return false;
-}*/
+}
 
 
 bool Test::InitUI()
 {
-/*	ZGuiWnd* pkMainWindow = new ZGuiWnd(Rect(1024/2-500/2,768/2-500/2,1024/2+500/2,768/2+500/2));
+	ZGuiWnd* pkMainWindow = new ZGuiWnd(Rect(1024/2-500/2,768/2-500/2,1024/2+500/2,768/2+500/2));
 	ZGuiWnd* pkMainWindow2 = new ZGuiWnd(Rect(1024/2-200/2,768/2-200/2,1024/2+200/2,768/2+200/2));
 
 	int bk_image1 = pkRender->GetTexMangager()->Load("file:../data/textures/Image1.bmp", 0);
@@ -407,7 +408,7 @@ bool Test::InitUI()
 
 	m_pkGui = new ZGui(1024, 768, pkInput);
 	m_pkGuiRender = new GLGuiRender(1024, 768, pkRender->GetTexMangager(), font);
-	m_pkGui->SetRenderer(m_pkGuiRender);*/
+	m_pkGui->SetRenderer(m_pkGuiRender);
 
 /*	ZGuiSkin( const long iBkTexID=-1, 
 			  const long iHorzBorderTex=-1, 
@@ -422,7 +423,7 @@ bool Test::InitUI()
 			  const unsigned short unBorderSize=0, 
 			  const bool bTileBkSkin = false); */
 
-/*	ZGuiSkin* sk_main = new ZGuiSkin(bk_image1, -1, -1, -1, 255, 255, 255, 255, 0, 0, 5);
+	ZGuiSkin* sk_main = new ZGuiSkin(bk_image1, -1, -1, -1, 255, 255, 255, 255, 0, 0, 5);
 	ZGuiSkin* sk_bn1_up = new ZGuiSkin(bn1_up, -1, -1, -1, 255, 255, 255, 0, 0, 0, 0);
 	ZGuiSkin* sn_bn1_down = new ZGuiSkin(bn1_down, -1, -1, -1, 255, 255, 255, 0, 0, 0, 0);
 	ZGuiSkin* sn_bn1_focus = new ZGuiSkin(bn1_focus, -1, -1, -1, 255, 255, 255, 0, 0, 0, 0);
@@ -465,7 +466,7 @@ bool Test::InitUI()
 	}
 	
 	m_pkGui->AddMainWindow(ID_MAINWND1, pkMainWindow, ZGWinProc, true);
-	m_pkGui->AddMainWindow(ID_MAINWND1+1, pkMainWindow2, ZGWinProc, true);*/
+	m_pkGui->AddMainWindow(ID_MAINWND1+1, pkMainWindow2, ZGWinProc, true);
 
 	return true;
 }
