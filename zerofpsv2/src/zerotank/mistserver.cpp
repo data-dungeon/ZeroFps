@@ -25,40 +25,6 @@ MistServer g_kMistServer("MistDemo",0,0,0);
 
 static bool GUIPROC( ZGuiWnd* win, unsigned int msg, int numparms, void *params ) 
 {
-	switch(msg)
-	{
-	case ZGM_COMMAND:
-		g_kMistServer.OnCommand(((int*)params)[0], (((int*)params)[1] == 1) ? true : false, win);
-		break;
-
-	case ZGM_SELECTLISTITEM:
-		g_kMistServer.OnClickListbox(
-			//g_kMistServer.GetWnd(((int*)params)[0]), 
-			((int*)params)[0],
-			((int*)params)[1],win);
-		break;
-
-	case ZGM_SELECTTREEITEM:
-		char** pszParams; pszParams = (char**) params;
-		g_kMistServer.OnClickTreeItem( pszParams[0], pszParams[1], 
-			pszParams[2], pszParams[3][0] == '1' ? true : false);		
-
-		if(pszParams[0])
-			delete[] pszParams[0];
-		if(pszParams[1])
-			delete[] pszParams[1];
-		if(pszParams[2])
-			delete[] pszParams[2];
-		if(pszParams[3])
-			delete[] pszParams[3];
-
-		break;
-
-	case ZGM_TCN_SELCHANGE:
-		int* data; data = (int*) params; 
-		g_kMistServer.OnClickTabPage((ZGuiTabCtrl*) data[2], data[0], data[1]);// fram med släggan
-		break;
-	}
 	return true;
 }
 
@@ -128,16 +94,16 @@ void MistServer::Init()
 	MistLandLua::Init(pkObjectMan,pkScript);
 	
 	// create gui script funktions
-	GuiAppLua::Init(&g_kMistServer, pkScript);
+/*	GuiAppLua::Init(&g_kMistServer, pkScript);*/
 
 	// init gui
-	InitializeGui(pkGui, pkTexMan, pkScript, pkGuiMan, 
+/*	InitializeGui(pkGui, pkTexMan, pkScript, pkGuiMan, 
 		"data/textures/text/ms_sans_serif8.bmp",
 		"data/script/gui/gui_create_server.lua");
-		//"data/script/gui/test2s.lua");
+		//"data/script/gui/test2s.lua");*/
 
-	pkGui->SetCursor(0,0, pkTexMan->Load("data/textures/gui/cursor.bmp", 0),
-	pkTexMan->Load("data/textures/gui/cursor_a.bmp", 0), 32, 32);
+/*	pkGui->SetCursor(0,0, pkTexMan->Load("data/textures/gui/cursor.bmp", 0),
+	pkTexMan->Load("data/textures/gui/cursor_a.bmp", 0), 32, 32);*/
 
 	// hide cursor
 	SDL_ShowCursor(SDL_DISABLE);
@@ -147,16 +113,16 @@ void MistServer::Init()
 	//CreateMenu("data/script/gui/menu.txt");
 
 	// give focus to main window
-	pkGui->SetFocus(GetWnd("MainWnd")); 
+/*	pkGui->SetFocus(GetWnd("MainWnd")); */
 
 	// Init tooltip
-	pkGui->GetToolTip()->SetToolTip(GetWnd("ToogleLight"),"Light");
-	pkGui->GetToolTip()->SetToolTip(GetWnd("OpenWorkTabButton"),"Worktab");
+/*	pkGui->GetToolTip()->SetToolTip(GetWnd("ToogleLight"),"Light");
+	pkGui->GetToolTip()->SetToolTip(GetWnd("OpenWorkTabButton"),"Worktab");*/
 	
-	ZGuiSkin kSkin(pkTexMan->Load("data/textures/gui/sb_bk.bmp", 0), true);
+/*	ZGuiSkin kSkin(pkTexMan->Load("data/textures/gui/sb_bk.bmp", 0), true);
 	kSkin.m_unBorderSize = 1;
 	memset(kSkin.m_afBorderColor, 0, sizeof(float)*3);
-	pkGui->GetToolTip()->SetSkin(kSkin);
+	pkGui->GetToolTip()->SetSkin(kSkin);*/
 	
 	pkInput->ToggleGrab(true);
 
@@ -666,6 +632,9 @@ void MistServer::UpdateObjectMakerPos()
 
 void MistServer::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 {
+
+	return;
+
 	ZGuiWnd* pkWndClicked = GetWnd(iID);
 
 	if(pkWndClicked)
@@ -753,6 +722,8 @@ void MistServer::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 
 void MistServer::OnClickListbox(int iListBoxID, int iListboxIndex, ZGuiWnd* pkMain)
 {
+	return;
+
 	if(pkMain == NULL)
 		return;
 
@@ -822,6 +793,8 @@ void MistServer::OnClickListbox(int iListBoxID, int iListboxIndex, ZGuiWnd* pkMa
 void MistServer::OnClickTreeItem(char *szTreeBox, char *szParentNodeText, 
 											char *szClickNodeText, bool bHaveChilds)
 {
+	return;
+
 	if(strcmp(szTreeBox, "ZoneModelTree") == 0)
 	{
 		if(szClickNodeText && bHaveChilds == false)
@@ -868,6 +841,8 @@ void MistServer::OnClickTreeItem(char *szTreeBox, char *szParentNodeText,
 
 void MistServer::OnClickTabPage(ZGuiTabCtrl *pkTabCtrl, int iNewPage, int iPrevPage)
 {
+	return;
+
 	string strTabCtrlName = pkTabCtrl->GetName();
 
 	if(strTabCtrlName == "WorkTabWnd")
@@ -1333,6 +1308,8 @@ bool MistServer::CheckValidOrder(ClientOrder* pkOrder)
 
 bool MistServer::BuildFileTree(char* szTreeBoxName, char* szRootPath)
 {
+	return true;
+
 	// kolla inparametrar
 	if(szRootPath == NULL || szTreeBoxName == NULL)
 		return false;
@@ -1456,6 +1433,8 @@ char* MistServer::GetSelEnviromentString()
 
 bool MistServer::CreateMenu(char* szFileName)
 {
+	return true;
+
 	ZGuiFont* pkFont = pkGui->GetBitmapFont(ZG_DEFAULT_GUI_FONT);
 	if(pkFont == NULL)
 	{
