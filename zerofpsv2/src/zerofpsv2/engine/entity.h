@@ -194,7 +194,7 @@ class ENGINE_API Entity
 	
 		// Rotation & Position.
 		bool							m_bRelativeOri;					///< True if this entity transform is in the frame of its parent.
-		bitset<7>					m_kGotData;							
+		bitset<8>					m_kGotData;							
 
 		/*	This is the Position and rotation of the Entity. It is stored as a Vector for position and a Matrix for
 			rotation. Local contains the objects transform and World is to total transform including any parent. */
