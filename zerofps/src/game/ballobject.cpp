@@ -7,16 +7,11 @@ BallObject::BallObject() {
 //	AddProperty(new GravityProperty());
 //	AddProperty(new FloatProperty());	
 
-
 	AddProperty("MadProperty");
 	MadProperty* madp = dynamic_cast<MadProperty*>(GetProperty("MadProperty"));
-//	madp->SetBase(m_pkFps->GetMADPtr("../data/mad/tree.mad"));
-	madp->SetBase("../data/mad/tree.mad");
-	madp->SetScale(0.5);
-
-//	AddProperty("ModelProperty");
-//	AddProperty("LightProperty");
-
+	madp->SetBase(m_pkFps->GetMADPtr("../data/mad/tree.mad"));
+//	madp->SetScale(0.02);
+//	madp->bFlipFace = true;
 	onGround = false;
 }
 
@@ -35,5 +30,18 @@ void BallObject::HandleCollision(Object* pkOther,Vector3 kPos,bool bContinue){
 		pkOther->HandleCollision(this,kPos,false);
 	}
 
+}
+
+bool BallObject::Save(void *pkData,int iSize) {
+	struct data{
+		Vector3 kPos;
+		Vector3 kRot;
+	};
+
+//	pkData=new data;
+	
+//	pkData->kPos=m_kPos
+
+	return true;
 }
 

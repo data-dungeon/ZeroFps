@@ -14,6 +14,7 @@ void Test::OnInit(void)
 	
 	g_ZFObjSys.Register_Cmd("loadmap",FID_LOADMAP,this);	
 	g_ZFObjSys.Register_Cmd("savemap",FID_SAVEMAP,this);		
+	g_ZFObjSys.Register_Cmd("load",FID_LOAD,this);		
 	
 	pkConsole->Printf(" ZeroFps test program =) ");
 	pkConsole->Printf("--------------------------------");
@@ -25,12 +26,14 @@ void Test::OnInit(void)
 
           
 //------------Map---------
-	test=new HeightMap();
-	test->SetTileSet("file:../data/textures/landbw.bmp");
-	if(!test->LoadImageHmap("file:islands.bmp"))
+/*
+	m_pkMap=new HeightMap();
+	m_pkMap->SetTileSet("file:../data/textures/landbw.bmp");
+	if(!m_pkMap->LoadImageHmap("file:islands.bmp"))
 		cout<<"Error loading map"<<endl;
-	test->GenerateNormals(); 
-	test->GenerateTextures();
+	m_pkMap->GenerateNormals(); 
+	m_pkMap->GenerateTextures();
+*/
 
 //	test->Save("blub.hm");
 //	test->Load("blub.hm");
@@ -38,8 +41,14 @@ void Test::OnInit(void)
 	// Detta är ett test
 	int apa = 2;
 
-	test->SetPosition(Vector3(0,-4,0));
+//	test->SetPosition(Vector3(0,-4,0));
 //----------------------------
+	
+	Clear();
+//LoadLevel("forest");
+	
+	
+	m_kMapBaseDir="../data/maps";	
 	
 	pkFps->m_pkCmd->Add(&speed,"g_speed",type_float);		
 	speed=30; 
@@ -123,8 +132,10 @@ void Test::OnInit(void)
 			}
 	}
 */
-	CreateZones();
-	pkObjectMan->LoadAllObjects("forest2.zol");
+
+
+//	CreateZones();
+//	pkObjectMan->LoadAllObjects("forest2.zol");
 
 
 	glEnable(GL_LIGHTING );
@@ -133,45 +144,37 @@ void Test::OnInit(void)
 	cam2=new Camera(Vector3(5,50,5),Vector3(0,0,0),85,1.333,0.25,250);	
 	cam2->SetViewPort(0.7,0.7,0.29,0.29);
 
-
+/*
 	//Heightmap
 	HeightMapObject *hm=new HeightMapObject(test);
 	hm->SetParent(pkObjectMan->GetWorldObject());
 	hm->GetPos().Set(0,-4,0);			
 	pkObjectMan->Add(hm);	
 	pkCollisionMan->Add(hm);
+*/
 
-
-
+/*
 	//camera rabit
 	Object *sussi = new BunnyObject();
 	float x=300 + rand()%100;
 	float y=750 + rand()%100;
-	sussi->GetPos()=Vector3(x,test->Height(x,y),y);
+	sussi->GetPos()=Vector3(x,m_pkMap->Height(x,y),y);
 	sussi->AddProperty(new CameraProperty(cam2));
 	sussi->SetParent(hm);
 	pkObjectMan->Add(sussi);	
 	pkCollisionMan->Add(sussi);
-
+*/
+/*
 	//player
-	m_pkPlayer=new PlayerObject(test,pkInput);
+	m_pkPlayer=new PlayerObject(m_pkMap,pkInput);
 	m_pkPlayer->GetPos().Set(227,42,190);		
 	m_pkPlayer->AddProperty(new CameraProperty(cam1));
-	m_pkPlayer->SetParent(hm);	
-	pkObjectMan->Add(m_pkPlayer);
+//	m_pkPlayer->SetParent(hm);	
+	m_pkPlayer->AttachToClosestZone();
+//	pkObjectMan->Add(m_pkPlayer);
 	pkCollisionMan->Add(m_pkPlayer);
+*/	
 	
-	//skybox
-	SkyBoxObject *sky=new SkyBoxObject("file:../data/textures/skybox-hor.bmp","file:../data/textures/skybox-topbotom.bmp");
-	sky->SetParent(hm);	
-	sky->SetRotate(Vector3(.5,0,0));
-	pkObjectMan->Add(sky);	
-
-	//water
-	WaterObject *water=new WaterObject(1200,50,"file:../data/textures/water2.bmp");
-	water->GetPos().Set(512,0,512);
-	water->SetParent(hm);
-	pkObjectMan->Add(water);	
 
 	Sound *welcome=new Sound();
 	welcome->m_acFile="file:../data/sound/welcome.wav";
@@ -194,7 +197,7 @@ void Test::OnServerStart(void)
 		sussi = new BunnyObject();
 		float x=300 + rand()%100;
 		float y=750 + rand()%100;
-		sussi->GetPos()=Vector3(x,test->Height(x,y),y);
+		sussi->GetPos()=Vector3(x,m_pkMap->Height(x,y),y);
 		
 		pkObjectMan->Add(sussi);
 		pkCollisionMan->Add(sussi);
@@ -251,8 +254,8 @@ void Test::OnIdle(void) {
 	float z=pkFps->GetCam()->GetPos().z;
 	float x=pkFps->GetCam()->GetPos().x;	
 	
-	if(pkFps->GetCam()->GetPos().y<test->Height(x,z)+1)
-		pkFps->GetCam()->GetPos().y=test->Height(x,z)+1;
+	if(pkFps->GetCam()->GetPos().y<m_pkMap->Height(x,z)+1)
+		pkFps->GetCam()->GetPos().y=m_pkMap->Height(x,z)+1;
 	
 /*	int mx, my;
 	pkInput->MouseXY(mx, my);
@@ -340,7 +343,7 @@ void Test::RunCommand(int cmdid, const CmdArgument* kCommand)
 				return;
 			}
 			
-			if(!test->Load(kCommand->m_kSplitCommand[1].c_str()))
+			if(!m_pkMap->Load(kCommand->m_kSplitCommand[1].c_str()))
 				pkConsole->Printf("Could not load map =(");
 			break;
 	
@@ -350,13 +353,24 @@ void Test::RunCommand(int cmdid, const CmdArgument* kCommand)
 				return;
 			}
 			
-			if(!test->Save(kCommand->m_kSplitCommand[1].c_str()))
+			if(!m_pkMap->Save(kCommand->m_kSplitCommand[1].c_str()))
 				pkConsole->Printf("Could not save map =(");			
 			break;
-	
+		case FID_LOAD:
+			if(kCommand->m_kSplitCommand.size() <= 1) {
+				pkConsole->Printf("load [mapname]");
+				break;				
+			}
+			if(!LoadLevel(kCommand->m_kSplitCommand[1].c_str()))	
+			{
+				pkConsole->Printf("Error loading level");
+				break;			
+			}		
+			
+			pkConsole->Printf("Level loaded");
+			
+			break;		
 	}
-
-
 }
 
 
@@ -433,7 +447,7 @@ void Test::CreateZones()
 {
 	int radius=250;
 
-	HeightMap *m_pkMap=test;
+//	HeightMap *m_pkMap=test;
 //	cout<<"SIZE"<<m_pkMap->m_iHmSize<<endl;
 
 	for(int x=0;x<m_pkMap->m_iHmSize;x+=radius/3){
@@ -458,3 +472,102 @@ void Test::RegisterPropertys()
 }
 
 
+
+bool Test::LoadLevel(const char* acFile)
+{
+	for(int i=0;acFile[i]!='\0';i++)
+	{
+		if(acFile[i]=='\\' || acFile[i]=='/')
+		{
+			pkConsole->Print("Bad filename");
+			return false;
+		}
+	}
+		
+	string kHmfile;
+	string kZolfile;
+
+	kHmfile=m_kMapBaseDir;
+	kHmfile+="/";
+	kHmfile+=acFile;
+	kHmfile+="/";	
+	kHmfile+="heightmap.hm";
+
+	kZolfile=m_kMapBaseDir;
+	kZolfile+="/";
+	kZolfile+=acFile;
+	kZolfile+="/";	
+	kZolfile+="objects.zol";
+
+	Clear();
+	
+	if(!m_pkMap->Load(kHmfile.c_str())){
+		pkConsole->Printf("Error loading heightmap");
+		return false;
+	};
+	
+	cout<<"heightmap loaded"<<endl;
+	
+	//create zoneobjects
+	CreateZones();		
+	
+	if(!pkObjectMan->LoadAllObjects(kZolfile .c_str())){
+		pkConsole->Printf("Error loading objects");
+		return false;
+	}	
+	
+	cout<<"objects loaded"<<endl;
+
+	return true;
+}
+
+void Test::Clear() 
+{
+	CreateNew(100);
+}
+
+void Test::CreateNew(int iSize) 
+{
+	delete m_pkMap;
+	m_pkMap=new HeightMap();	
+	
+	pkObjectMan->Clear();
+//	m_pkCurentChild=NULL;
+
+	m_pkHeightMapObject=new HeightMapObject(m_pkMap);		
+	m_pkHeightMapObject->SetParent(pkObjectMan->GetWorldObject());
+	
+//	pkObjectMan->Add(m_pkHeightMapObject);	
+	pkCollisionMan->Add(m_pkHeightMapObject);
+
+//	m_pkCurentParent=m_pkHeightMapObject;
+	
+	m_pkMap->Create(iSize);
+	m_pkMap->GenerateNormals(); 
+	m_pkMap->GenerateTextures();
+
+	m_pkHeightMapObject->GetPos().Set(0,-4,0);				
+	m_pkMap->SetPosition(Vector3(0,-4,0));
+
+
+
+	
+	//player
+	m_pkPlayer=new PlayerObject(m_pkMap,pkInput);
+	m_pkPlayer->GetPos().Set(227,42,190);		
+	m_pkPlayer->AddProperty(new CameraProperty(cam1));
+	m_pkPlayer->AttachToClosestZone();
+	pkCollisionMan->Add(m_pkPlayer);
+
+	//skybox
+	SkyBoxObject *sky=new SkyBoxObject("file:../data/textures/skybox-hor.bmp","file:../data/textures/skybox-topbotom.bmp");
+	sky->SetParent(pkObjectMan->GetWorldObject());	
+	sky->SetRotate(Vector3(.5,0,0));
+
+	//water
+	WaterObject *water=new WaterObject(1200,50,"file:../data/textures/water2.bmp");
+	water->GetPos().Set(512,0,512);
+	water->SetParent(pkObjectMan->GetWorldObject());
+
+	cout<<"new map"<<endl;
+}

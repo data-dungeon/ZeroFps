@@ -81,8 +81,8 @@ void ZeroEdit::OnInit(void)
 	Vector3 *solpos=new Vector3(1000,1000,1000);
 		sol->kRot=solrot;
 		sol->kPos=solpos;		
-//		sol->kDiffuse=Vector4(.1,.1,.1,1);	//Dag
-		sol->kDiffuse=Vector4(.01,.01,.01,1);	//Dag
+		sol->kDiffuse=Vector4(.8,.8,.8,1);	//Dag
+//		sol->kDiffuse=Vector4(.01,.01,.01,1);	//Dag
 //		sol->kAmbient=Vector4(0.01,0.01,0.01,0.01);
 		sol->iType=POINT_LIGHT;			
 		sol->iPriority=10;
