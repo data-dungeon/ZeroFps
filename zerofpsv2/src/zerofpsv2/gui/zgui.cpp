@@ -1001,14 +1001,14 @@ void ZGui::OnKeyPress(int iKey)
 {
 	if(ZGuiWnd::m_pkFocusWnd && iKey != -1)
 	{	
-		m_bHaveInputFocus = false;
-
 		bool bIsTextbox = typeid(*ZGuiWnd::m_pkFocusWnd) == 
 			typeid(ZGuiTextbox) ? true : false;
 
 		bool bMultiLine = false;
 		if(bIsTextbox)
 			bMultiLine = ((ZGuiTextbox*) ZGuiWnd::m_pkFocusWnd)->IsMultiLine();
+		else
+			m_bHaveInputFocus = false;
 
 		if((iKey==gKEY_DOWN || iKey==gKEY_UP) && !(bIsTextbox && bMultiLine))
 		{
