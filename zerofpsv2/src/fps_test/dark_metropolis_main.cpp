@@ -29,13 +29,8 @@ DarkMetropolis::DarkMetropolis(char* aName,int iWidth,int iHeight,int iDepth)
 
 void DarkMetropolis::OnHud() 
 {	
-	m_pkFps->DevPrintf("common","Active Propertys: %d",
-		m_pkObjectMan->GetActivePropertys());	
-	m_pkFps->DevPrintf("common", "Fps: %f",m_pkFps->m_fFps);	
-	m_pkFps->DevPrintf("common","Avrage Fps: %f",m_pkFps->m_fAvrageFps);			
-		
-	m_pkFps->m_bGuiMode = false;
-	m_pkFps->ToggleGui();
+	//m_pkFps->m_bGuiMode = false;
+	//m_pkFps->ToggleGui();
 }
 
 void DarkMetropolis::OnInit()
