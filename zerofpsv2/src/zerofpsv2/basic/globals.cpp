@@ -321,6 +321,27 @@ ERROR_RESULT ZFADisplayError(char* szErrorTitle, char* szErrorText, char* szErro
 //	return ZFA_ABORT; 040701: 	return ZFA_ABORT;
 }
 
+bool GetClipboardText(string& r_strText)
+{
+	LPTSTR    lptstr; 
+	HGLOBAL   hglb;
+
+	if(!IsClipboardFormatAvailable(CF_TEXT) || !OpenClipboard(NULL))
+		return false;
+
+	hglb = (char*) GetClipboardData(CF_TEXT);
+	if (hglb != NULL)
+	{
+		lptstr = (LPTSTR)GlobalLock(hglb);
+      GlobalUnlock(hglb);
+      CloseClipboard();
+      r_strText = lptstr;
+		return true;
+	}
+
+	return false;
+}
+
 #endif // Win32
 
 
@@ -339,6 +360,14 @@ ERROR_RESULT ZFADisplayError(char* szErrorTitle, char* szErrorText, char* szErro
 	exit(-1);
 	return ZFA_ABORT;
 }
+
+bool GetClipboardText(string& r_strText)
+{
+	// zeb: Dvoid kan du skriva en funktion som hämtar clipboard datat i Linux miljö
+	// och sparar ner det i r_strText? Returnera true om texten gick att få.
+	return false;
+}
+
 #endif // !WIN32
 
 

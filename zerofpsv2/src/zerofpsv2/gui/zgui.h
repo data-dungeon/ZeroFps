@@ -113,7 +113,7 @@ public:
 
 	bool UpdateMouse(int x, int y, bool bLBnPressed, bool bRBnPressed, bool bMBnPressed, float fTime);
 
-   struct KEY_INFO { int key; bool pressed; bool shift; };
+   struct KEY_INFO { int key; bool pressed; bool shift; bool ctrl; };
    void UpdateKeys( vector<KEY_INFO>& kKeysPressed, float time);
 
 	bool IsActive();

@@ -630,7 +630,19 @@ void ZGui::UpdateKeys(vector<KEY_INFO>& kKeysPressed, float time)
             int fkey = last_key.key;
             FormatKey(fkey, last_key.shift);
             if(fkey != 0)
-               ZGuiWnd::m_pkFocusWnd->ProcessKBInput(fkey);
+				{
+					if(fkey == KEY_V && last_key.ctrl)
+					{
+						if(bIsTextbox)
+						{
+							string text;
+							if(GetClipboardText(text))
+								ZGuiWnd::m_pkFocusWnd->SetText((char*)text.c_str());
+						}
+					}
+					else
+						ZGuiWnd::m_pkFocusWnd->ProcessKBInput(fkey);
+				}
          }
          else
          {

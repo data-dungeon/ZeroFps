@@ -574,6 +574,11 @@ void ZeroEd::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 					LoadGuiFromScript("data/script/gui/manageconnection.lua");
 					m_pkGui->SetFocus( GetWnd("ServerNameTextbox")   ); 
 					GUIFillServerList();
+					
+					string text;
+					if(GetClipboardText(text))
+						SetText("ServerNameTextbox", (char*)text.c_str());
+
 				}
 				else
 				if(pkParentItem && !strcmp(pkParentItem->szNameID, "Menu_File_Connect"))

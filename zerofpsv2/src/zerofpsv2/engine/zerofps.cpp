@@ -430,6 +430,7 @@ void ZeroFps::UpdateGuiInput()
          kKeyInfo.key = kKey.m_iKey;
          kKeyInfo.pressed = kKey.m_bPressed;
          kKeyInfo.shift = (kKey.m_iModifiers & MODIFIER_SHIFT);
+			kKeyInfo.ctrl = (kKey.m_iModifiers & MODIFIER_CTRL);
          vkKeyInfo.push_back(kKeyInfo);
       }
 

@@ -100,4 +100,7 @@ Vector3 BASIC_API RndColor();												//randomize a colorvector...i think
 
 
 
+bool BASIC_API GetClipboardText(string& r_strText);
+
+
 #endif
