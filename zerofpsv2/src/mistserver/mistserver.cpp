@@ -1269,8 +1269,14 @@ void MistServer::HandleOrders()
 			Entity* ob = pkObjectMan->GetObjectByNetWorkID(order->m_iCharacter);			
 			if(ob)
 			{
-
-				/* Vim Test Path*/
+				P_PfPath* pm = (P_PfPath*)ob->GetProperty("P_PfPath");
+				if(pm)
+				{
+					pm->MakePathFind(order->m_kPos);
+				}
+			}
+		}
+/*				/* Vim Test Path*
 				kPathStart = ob->GetWorldPosV();
 				kPathEnd   = order->m_kPos;
 				kPath.clear();
@@ -1291,7 +1297,7 @@ void MistServer::HandleOrders()
 
 			}
 		}
-		
+*/		
 	  // request orders
       else if ( order->m_sOrderName == "(rq)item" )    
       {
