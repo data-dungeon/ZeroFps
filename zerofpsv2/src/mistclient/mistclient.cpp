@@ -127,161 +127,59 @@ void MistClient::OnSystem()
 
 void MistClient::Input()
 {
-	const int PRESSED_KEY = pkInput->GetQueuedKey();
-
-	int mx,my;
-	pkInput->MouseXY(mx,my);
-
-	static int s_iCursorTex=-1; 
-	static int s_iCursorTex_a=-1;
-	int iNewCursorTex=0;
-	int iNewCursorTex_a=0;
-
-
-	if(pkInput->Action(m_iActionPrintServerInfo))
-	{
-	}
-
 	float speed = 20;
-
-	//camera movements
-	if(pkInput->Pressed(KEY_X)){
-		speed*=0.25;
-	}
 	
-	Vector3 newpos = m_pkCamera->GetPos();
-	Vector3 rot;// = m_pkCamera->GetRot();
-	rot.Set(0,0,0);// = m_pkCamera->GetRot();
-	
-	Matrix4 rt = m_pkCamera->GetRotM();
-	rt.Transponse();
-	Vector3 bla = Vector3(0,0,1);
-	bla.Normalize();
-	bla = rt.VectorRotate(bla);
-		
-	//cout<<"B: "<<bla.x<<" "<<bla.y<<" "<<bla.z<<endl;
-	
-	if(pkInput->Pressed(KEY_D)){
-		newpos-=rt.VectorRotate(Vector3(-1,0,0));		
-	}
-	if(pkInput->Pressed(KEY_A)){
-		newpos-=rt.VectorRotate(Vector3(1,0,0));		
-	}	
-	if(pkInput->Pressed(KEY_W))	{
-		newpos-=rt.VectorRotate(Vector3(0,0,1));
-	}					
-	if(pkInput->Pressed(KEY_S))	{
-		newpos-=rt.VectorRotate(Vector3(0,0,-1));	
-	}		
-	
-/*	if(pkInput->Pressed(KEY_Q))
-		newpos.y+=2*pkFps->GetFrameTime()*speed;			
-	if(pkInput->Pressed(KEY_E))
-		newpos.y-=2*pkFps->GetFrameTime()*speed;
-*/
 	int x,z;		
 	pkInput->RelMouseXY(x,z);	
-	
-	rot.x+=z/5.0;
-	rot.y-=x/5.0;	
-	
-	if(pkInput->Pressed(KEY_Q))
-		rot.z+= 5 * pkFps->GetFrameTime()*speed;
-	if(pkInput->Pressed(KEY_E))
-		rot.z-= 5 * pkFps->GetFrameTime()*speed;
-
-	float fSpeedScale = pkFps->GetFrameTime()*speed;
-
-	//m_pkCamera->SetPos(newpos);
-	//m_pkCamera->RotateV(rot);
-	//m_pkCamera->SetRot(rot);
-	m_fAngle +=x/100.0;
-	m_fDistance += z/10.0;
-	
-	if(m_fDistance < 10)
-		m_fDistance = 10;
-	
-	if(m_fDistance > 50)
-		m_fDistance = 50;
 		
+	if(pkInput->Pressed(MOUSEMIDDLE))
+	{
+		if(m_pkCamProp)
+		{
+			m_fAngle +=x/100.0;
+			m_fDistance += z/10.0;
 	
-	m_pkCamProp->Set3PYAngle(m_fAngle);
-	m_pkCamProp->Set3PDistance(m_fDistance);
+			if(m_fDistance < 10)
+				m_fDistance = 10;
+		
+			if(m_fDistance > 35)
+				m_fDistance = 35;
+		
+		
+			m_pkCamProp->Set3PYAngle(m_fAngle);
+			m_pkCamProp->Set3PDistance(m_fDistance);
+		}
+	}
+	
 
-	static float fRotate = 0;
-	static Vector3 kRotate(0,0,0); 
-	
-	
-
-	
 	Object* m_pkME = m_pkTestobj;
 	
 	if(m_pkME)	
 	{	
-		newpos = m_pkME->GetLocalPosV();
-		//rot.Set(0,0,0);// = m_pkME->GetLocalRotV();
+		float fSpeedScale = pkFps->GetFrameTime()*speed;	
+		
+		Vector3 newpos = m_pkME->GetLocalPosV();
 	
-	if(pkInput->Pressed(KEY_H)){
-		newpos.x+=pkFps->GetFrameTime()*speed;			
-	}
-	if(pkInput->Pressed(KEY_F)){
-		newpos.x-=pkFps->GetFrameTime()*speed;			
-	}	
-	if(pkInput->Pressed(KEY_T))	{
-		newpos.z+=pkFps->GetFrameTime()*speed;			
-	}					
-	if(pkInput->Pressed(KEY_G))	{
-		newpos.z-=pkFps->GetFrameTime()*speed;
-	}		
+		if(pkInput->Pressed(KEY_D)){
+			newpos.x+=fSpeedScale;			
+		}
+		if(pkInput->Pressed(KEY_A)){
+			newpos.x-=fSpeedScale;			
+		}	
+		if(pkInput->Pressed(KEY_W))	{
+			newpos.z+=fSpeedScale;			
+		}					
+		if(pkInput->Pressed(KEY_S))	{
+			newpos.z-=fSpeedScale;
+		}		
 
-/*	if(pkInput->Pressed(KEY_H)){
-		newpos.x+=cos((rot.y)/degtorad) *pkFps->GetFrameTime()*speed;			
-		newpos.z+=sin((rot.y)/degtorad) *pkFps->GetFrameTime()*speed;				
-	}
-	if(pkInput->Pressed(KEY_F)){
-		newpos.x+=cos((rot.y+180)/degtorad)*pkFps->GetFrameTime()*speed;			
-		newpos.z+=sin((rot.y+180)/degtorad)*pkFps->GetFrameTime()*speed;				
-	}	
-	if(pkInput->Pressed(KEY_T))	{
-		newpos.x+=cos((rot.y-90)/degtorad)*pkFps->GetFrameTime()*speed;			
-		newpos.z+=sin((rot.y-90)/degtorad)*pkFps->GetFrameTime()*speed;			
-	}					
-	if(pkInput->Pressed(KEY_G))	{
-		newpos.x+=cos((rot.y-90-180)/degtorad)*pkFps->GetFrameTime()*speed;			
-		newpos.z+=sin((rot.y-90-180)/degtorad)*pkFps->GetFrameTime()*speed;
-	}		
-*/	
-	if(pkInput->Pressed(KEY_R))
-		newpos.y+=2*pkFps->GetFrameTime()*speed;			
-	if(pkInput->Pressed(KEY_Y))
-		newpos.y-=2*pkFps->GetFrameTime()*speed;
+		if(pkInput->Pressed(KEY_Q))
+			newpos.y+=2*fSpeedScale;			
+		if(pkInput->Pressed(KEY_E))
+			newpos.y-=2*fSpeedScale;
 		
 
-	if(pkInput->Pressed(KEY_U))
-		rot.x += pkFps->GetFrameTime()*speed*10;	
-	if(pkInput->Pressed(KEY_J))	
-		rot.x -= pkFps->GetFrameTime()*speed*10;
-	
-	if(pkInput->Pressed(KEY_I))
-		rot.y += pkFps->GetFrameTime()*speed*10;	
-	if(pkInput->Pressed(KEY_K))	
-		rot.y -= pkFps->GetFrameTime()*speed*10;
-		 
-	if(pkInput->Pressed(KEY_O))
-		rot.z += pkFps->GetFrameTime()*speed*10;	
-	if(pkInput->Pressed(KEY_L))	
-		rot.z -= pkFps->GetFrameTime()*speed*10;
-
-  m_pkME->SetLocalPosV(newpos);				
-		//rot.Set(SDL_GetTicks()/50.0,SDL_GetTicks()/50.0,SDL_GetTicks()/50.0);
-		
-//	m_pkME->SetLocalPosV(newpos);		
-	//rot.y+=0.1;
-
-  //rot.Set(SDL_GetTicks()/50.0,SDL_GetTicks()/50.0,SDL_GetTicks()/50.0);
-		//m_pkME->RotateLocalRotV(rot);
-	
-
+		m_pkME->SetLocalPosV(newpos);				
 	}
 
 }
