@@ -55,7 +55,7 @@ P_Controller::P_Controller()
     m_pkInputHandle = m_pkZeroFps->m_pkApp->m_pkInputHandle;
 
 	m_bCameraRotation = false;
-
+	m_iUsedCamera = -1;
 }
 
 // ------------------------------------------------------------------------------------------
@@ -150,10 +150,13 @@ void P_Controller::SpringTrigger (int iAxis, float fValue)
 			break;
 	}
 
-
 	// check if force should be rotated
 	if ( m_bCameraRotation )
-		if ( Entity* pkEnt = (m_pkObjMan->GetObjectByNetWorkID(m_pkZeroFps->GetCam()->m_iEntity)) )
+	{
+		if (m_pkZeroFps->GetCam()->m_iEntity != -1)
+			m_iUsedCamera = m_pkZeroFps->GetCam()->m_iEntity;
+
+		if (Entity* pkEnt = (m_pkObjMan->GetObjectByNetWorkID(m_iUsedCamera)) )
 		{
 			Vector3 kTemp = kVel;
 
@@ -162,9 +165,14 @@ void P_Controller::SpringTrigger (int iAxis, float fValue)
 
 			kTemp.x = ( kVel.x * cos(fAngle) ) + ( kVel.z * sin(fAngle) );
 			kTemp.z = ( kVel.z * cos(-fAngle) ) + ( kVel.x * sin(-fAngle) );
-			
+
 			kVel = kTemp;
+
+			kVel.x = int(kVel.x);
+			kVel.z = int(kVel.z);
 		}	
+
+	}
 
 	pkTcs->ApplyForce(Vector3(0,0,0), kVel);// SetWalkVel(kVel);
 }

@@ -465,7 +465,7 @@ void DarkMetropolis::Input()
 			if(m_pkFps->GetTicks()-m_fDelayTimer > 0.3)
 			{
 				m_fDelayTimer = m_pkFps->GetTicks();
-				m_fAngle += PI / 2.f; // 90 degrees in rad
+				m_fAngle += PI / 4.f; // 90 degrees in rad
 			}
 
 		// rotate camera to the right
@@ -473,7 +473,7 @@ void DarkMetropolis::Input()
 			if(m_pkFps->GetTicks()-m_fDelayTimer > 0.3)
 			{
 				m_fDelayTimer = m_pkFps->GetTicks();
-				m_fAngle -= PI / 2.f; // 90 degrees in rad
+				m_fAngle -= PI / 4.f; // 90 degrees in rad
 			}
 
 		m_pkCameraProp->Set3PYAngle(m_fAngle);
@@ -492,7 +492,7 @@ void DarkMetropolis::Input()
 			{
 				// check if character is on your team
 				if ( ((P_DMCharacter*)pkEnt->GetProperty("P_DMCharacter"))->m_iTeam == 0 )
-					SelectAgent(pkEnt->GetEntityID(), false,false, false);
+					SelectAgent(pkEnt->GetEntityID(), true, false, false);
 			}
 			else if(pkEnt->GetProperty("P_DMHQ"))		//selected a HQ , 
 			{
@@ -518,6 +518,8 @@ void DarkMetropolis::Input()
 				////////////////////////////////////////////////////////
 
 			}
+
+			// TODO: (maybe) if ground is pressed, select mainagant
 		}
 
 		// Uppdatera GUI:t med den nya agenten i fokus.
@@ -662,7 +664,6 @@ void DarkMetropolis::Input()
 							kOrder.m_iOrderType = eEnterHQ;
 							kOrder.m_iEntityID = pkPickEnt->GetEntityID();
 							pkCh->AddOrder(kOrder);							
-							
 						}
 					}
 				}				
@@ -727,7 +728,7 @@ void DarkMetropolis::Input()
 				cout << "ItemClick" << endl;
 				//for(unsigned int i = 0;i < m_kSelectedEntitys.size();i++)
 				//{
-					if(Entity* pkEnt = m_pkObjectMan->GetObjectByNetWorkID(m_iMainAgent))				
+					if(Entity* pkEnt = m_pkObjectMan->GetObjectByNetWorkID(m_iSelectedEntity))				
 					{
 						if(P_DMCharacter* pkCh = (P_DMCharacter*)pkEnt->GetProperty("P_DMCharacter"))
 						{																
