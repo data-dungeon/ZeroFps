@@ -8,7 +8,9 @@
 void P_PSystem::Update()
 {
 	m_pkZShaderSystem->Push("P_PSystem::Update");
-
+	
+	glDisable(GL_STENCIL_TEST);
+	
 	glPushAttrib(GL_ALL_ATTRIB_BITS);
 
 	if ( m_pkPSystem )

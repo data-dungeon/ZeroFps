@@ -111,16 +111,16 @@ enum RENDER_API POLYGON_MODES
 	POINT_POLYGON	= 2,
 };
 
-enum RENDER_API DEPTH_FUNC
+enum RENDER_API DEPTHFUNC
 {
-	NEVER_DEPTH		=0,
-	LESS_DEPTH		=1,		
-	EQUAL_DEPTH		=2,
-	LEQUAL_DEPTH	=3,
-	GREATER_DEPTH	=4,
-	NOTEQUAL_DEPTH =5,
-	GEQUAL_DEPTH	=6,
-	ALWAYS_DEPTH	=7,
+	DEPTHFUNC_NEVER	=0,
+	DEPTHFUNC_LESS		=1,		
+	DEPTHFUNC_EQUAL	=2,
+	DEPTHFUNC_LEQUAL	=3,
+	DEPTHFUNC_GREATER	=4,
+	DEPTHFUNC_NOTEQUAL=5,
+	DEPTHFUNC_GEQUAL	=6,
+	DEPTHFUNC_ALWAYS	=7,
 };
 
 enum RENDER_API TU_TEXCORDS
@@ -328,6 +328,16 @@ class RENDER_API ZShaderSystem : public ZFSubSystem
 		void MatrixPop()										{glPopMatrix();};
 		void MatrixPush()										{glPushMatrix();};
 		
+		void MatrixGenerateOrtho(	const float& fLeft,const float& fRight,const float& fBottom,
+											const float& fTop,const float& fNear,const float& fFar)
+																	{
+																		glOrtho(fLeft,fRight,fBottom,fTop,fNear,fFar);
+																	};
+		void MatrixGeneratePerspective(	const float& fLeft,const float& fRight,const float& fBottom,
+													const float& fTop,const float& fNear,const float& fFar)
+																	{
+																		glFrustum(fLeft,fRight,fBottom,fTop,fNear,fFar);
+																	};
 		
 		friend class ZFProgram;
 		friend class ZVProgram;

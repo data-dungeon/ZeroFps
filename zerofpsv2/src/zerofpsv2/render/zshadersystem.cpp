@@ -374,28 +374,28 @@ void ZShaderSystem::SetupPass(int iPass)
 		//depthfunction settings
 		switch(pkSettings->m_iDepthFunc)
 		{
-			case NEVER_DEPTH:
+			case DEPTHFUNC_NEVER:
 				glDepthFunc(GL_NEVER);			
 				break;
-			case LESS_DEPTH:
+			case DEPTHFUNC_LESS:
 				glDepthFunc(GL_LESS);			
 				break;	
-			case EQUAL_DEPTH:
+			case DEPTHFUNC_EQUAL:
 				glDepthFunc(GL_EQUAL);			
 				break;	
-			case LEQUAL_DEPTH:
+			case DEPTHFUNC_LEQUAL:
 				glDepthFunc(GL_LEQUAL);			
 				break;	
-			case GREATER_DEPTH:
+			case DEPTHFUNC_GREATER:
 				glDepthFunc(GL_GREATER);			
 				break;	
-			case NOTEQUAL_DEPTH:
+			case DEPTHFUNC_NOTEQUAL:
 				glDepthFunc(GL_NOTEQUAL);			
 				break;	
-			case GEQUAL_DEPTH:
+			case DEPTHFUNC_GEQUAL:
 				glDepthFunc(GL_GEQUAL);			
 				break;		
-			case ALWAYS_DEPTH:
+			case DEPTHFUNC_ALWAYS:
 				glDepthFunc(GL_ALWAYS);			
 				break;			
 		}	

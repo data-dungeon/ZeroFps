@@ -21,8 +21,8 @@ ZMaterialSettings::ZMaterialSettings()
 	m_iTUTexCords[2] = CORDS_FROM_ARRAY_2;	
 	m_iTUTexCords[3] = CORDS_FROM_ARRAY_3;	
 	
-	m_iPolygonModeFront = LINE_POLYGON;
-	m_iPolygonModeBack =	LINE_POLYGON;			
+	m_iPolygonModeFront = FILL_POLYGON;
+	m_iPolygonModeBack =	FILL_POLYGON;			
 	
 	m_kVertexColor.Set(1,1,1,1);
 	
@@ -33,7 +33,7 @@ ZMaterialSettings::ZMaterialSettings()
 	m_bAlphaTest =		false;
    m_bDepthTest = 	true;
 	m_bStencilTest=	false;
-	m_iDepthFunc =		LESS_DEPTH;
+	m_iDepthFunc =		DEPTHFUNC_LESS;
 	m_bFog=				true;
 	
 	m_iStencilOpFail=		STENCILOP_KEEP;
@@ -394,14 +394,14 @@ void ZMaterial::SetupEnums()
 	m_kEnums["POINT"] = 								2;
 	
 	//depth func
-	m_kEnums["NEVER_DEPTH"] = 						0;
-	m_kEnums["LESS_DEPTH"] = 						1;
-	m_kEnums["EQUAL_DEPTH"] = 						2;
-	m_kEnums["LEQUAL_DEPTH"] = 					3;
-	m_kEnums["GREATER_DEPTH"] = 					4;
-	m_kEnums["NOTEQUAL_DEPTH"] = 					5;
-	m_kEnums["GEQUAL_DEPTH"] = 					6;
-	m_kEnums["ALWAYS_DEPTH"] = 					7;
+	m_kEnums["DEPTHFUNC_NEVER"] = 				0;
+	m_kEnums["DEPTHFUNC_LESS"] = 					1;
+	m_kEnums["DEPTHFUNC_EQUAL"] = 				2;
+	m_kEnums["DEPTHFUNC_LEQUAL"] = 				3;
+	m_kEnums["DEPTHFUNC_GREATER"] = 				4;
+	m_kEnums["DEPTHFUNC_NOTEQUAL"] = 			5;
+	m_kEnums["DEPTHFUNC_GEQUAL"] = 				6;
+	m_kEnums["DEPTHFUNC_ALWAYS"] = 				7;
 	
 
 	//blends src

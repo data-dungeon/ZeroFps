@@ -71,7 +71,6 @@ bool ShadowMesh::Equals(P_Mad* pkMad,LightSource* pkLightSource,int iShadowMode)
 //------- ZShadow
 
 
-bool ZShadow::ShutDown()	{ return true; }
 bool ZShadow::IsValid()		{ return true; }
 
 
@@ -107,9 +106,61 @@ bool ZShadow::StartUp()
 	//EnableShadowGroup(0); 
 	//EnableShadowGroup(1); 	
 	EnableShadowGroup(2);
+	
+	
+	//the material for drawing the shadow models	
+	m_pkShadowModel = new ZMaterial();
+	m_pkShadowModel->GetPass(0)->m_bStencilTest = 		true;
+	m_pkShadowModel->GetPass(0)->m_iStencilFunc = 		STENCILFUNC_ALWAYS;
+	m_pkShadowModel->GetPass(0)->m_iStencilFuncRef = 	0;
+	m_pkShadowModel->GetPass(0)->m_iStencilFuncMask = 	255;
+	m_pkShadowModel->GetPass(0)->m_bDepthTest = 			true;
+	m_pkShadowModel->GetPass(0)->m_bColorMask = 			false;
+	m_pkShadowModel->GetPass(0)->m_bDepthMask = 			false;
+	m_pkShadowModel->GetPass(0)->m_iPolygonModeBack = 	FILL_POLYGON;
+	m_pkShadowModel->GetPass(0)->m_iPolygonModeFront = FILL_POLYGON;
+	m_pkShadowModel->GetPass(0)->m_bLighting = 			false;
+	
+	
+	//the material for drawing the shadow models	
+	m_pkShadowMap = new ZMaterial();
+	m_pkShadowMap->GetPass(0)->m_iCullFace = 			CULL_FACE_BACK;
+	m_pkShadowMap->GetPass(0)->m_bDepthTest = 		false;
+	m_pkShadowMap->GetPass(0)->m_bStencilTest =		true;
+	m_pkShadowMap->GetPass(0)->m_iStencilFunc = 		STENCILFUNC_NOTEQUAL;
+	m_pkShadowMap->GetPass(0)->m_iStencilFuncRef = 	0;
+	m_pkShadowMap->GetPass(0)->m_iStencilFuncMask = 255;
+	m_pkShadowMap->GetPass(0)->m_iStencilOpFail = 	STENCILOP_KEEP;
+	m_pkShadowMap->GetPass(0)->m_iStencilOpZFail = 	STENCILOP_KEEP;
+	m_pkShadowMap->GetPass(0)->m_iStencilOpZPass = 	STENCILOP_KEEP;
+	m_pkShadowMap->GetPass(0)->m_bBlend = 				true;
+	m_pkShadowMap->GetPass(0)->m_iBlendSrc = 			SRC_ALPHA_BLEND_SRC;
+	m_pkShadowMap->GetPass(0)->m_iBlendDst = 			ONE_MINUS_SRC_ALPHA_BLEND_DST;
+	m_pkShadowMap->GetPass(0)->m_kVertexColor.Set(0,0,0,0.3);
+	m_pkShadowMap->GetPass(0)->m_bLighting = 			false;
+	m_pkShadowMap->GetPass(0)->m_bColorMaterial =	true;
+	
+	//material for debug drawings
+	m_pkDebug = new ZMaterial();
+	m_pkDebug->GetPass(0)->m_iCullFace = 			CULL_FACE_NONE;
+	m_pkDebug->GetPass(0)->m_iPolygonModeBack = 	LINE_POLYGON;
+	m_pkDebug->GetPass(0)->m_iPolygonModeFront =	LINE_POLYGON;
+	m_pkDebug->GetPass(0)->m_kVertexColor.Set(1,0,0,0);
+	m_pkDebug->GetPass(0)->m_bColorMaterial =		true;
+	m_pkDebug->GetPass(0)->m_bLighting = 			false;
+	
+	return true;
+}
+
+bool ZShadow::ShutDown()	
+{
+	delete m_pkDebug;
+	delete m_pkShadowMap;
+	delete m_pkShadowModel;
 
 	return true;
 }
+
 
 void ZShadow::Update()
 {
@@ -117,24 +168,19 @@ void ZShadow::Update()
 	if( (m_iNrOfShadows == 0) || m_bDisabled)
 		return;
 
-	m_pkZShaderSystem->Push("ZShadow::Update");
-		
 	//setup stencil buffert
 	if(!m_bHaveCheckedBits)
 		SetupStencilBuffer();
 
-	//push attribs
-	glPushAttrib(GL_ALL_ATTRIB_BITS);
-
-	//setup gl states for shadows rendering
-	SetupGL();
+	//clear stencil buffert
+	m_pkZShaderSystem->ClearBuffer(STENCIL_BUFFER);
 
 	//set all shadow meshs ass unused
 	SetUnusedMeshs();
 
 	//get all render propertys
 	vector<Property*>	kRenderPropertys;
-	m_pkEntityMan->GetWorldObject()->GetAllPropertys(&kRenderPropertys,PROPERTY_TYPE_RENDER,PROPERTY_SIDE_CLIENT);
+	m_pkEntityMan->GetZoneObject()->GetAllPropertys(&kRenderPropertys,PROPERTY_TYPE_RENDER,PROPERTY_SIDE_CLIENT);
 
 	m_iCurrentShadows = 0;
 	m_iCurrentVerts = 0;
@@ -183,13 +229,7 @@ void ZShadow::Update()
 	if(m_iCurrentShadows != 0)
 	{
 		DrawShadow(m_fShadowIntensity);
-	}
-
-	
-	glPopAttrib();
-
-	
-	m_pkZShaderSystem->Pop();
+	}	
 }
 
 bool ZShadow::SetupMesh(P_Mad* pkMad)
@@ -248,36 +288,21 @@ bool ZShadow::SetupMesh(P_Mad* pkMad)
 
 void ZShadow::DrawCapings(ShadowMesh* pkShadowMesh)
 {
-	//draw front caping
-	glVertexPointer(3,GL_FLOAT,0,&pkShadowMesh->m_kFrontCaping[0].x);
-	glDrawArrays(GL_TRIANGLES,0,pkShadowMesh->m_kFrontCaping.size());
+	m_pkZShaderSystem->SetPointer(VERTEX_POINTER,&(pkShadowMesh->m_kFrontCaping[0].x));
+	m_pkZShaderSystem->SetNrOfVertexs(pkShadowMesh->m_kFrontCaping.size());
+	m_pkZShaderSystem->DrawArray(TRIANGLES_MODE);
 
-	//draw back caping
-	glVertexPointer(3,GL_FLOAT,0,&pkShadowMesh->m_kBackCaping[0].x);
-	glDrawArrays(GL_TRIANGLES,0,pkShadowMesh->m_kBackCaping.size());
+	m_pkZShaderSystem->SetPointer(VERTEX_POINTER,&(pkShadowMesh->m_kBackCaping[0].x));
+	m_pkZShaderSystem->SetNrOfVertexs(pkShadowMesh->m_kBackCaping.size());
+	m_pkZShaderSystem->DrawArray(TRIANGLES_MODE);
+		
 }
 
 void ZShadow::DrawExtrudedSiluet(ShadowMesh* pkShadowMesh)
 {
-	glVertexPointer(3,GL_FLOAT,0,&pkShadowMesh->m_kExtrudedSiluet[0].x);
-	glDrawArrays(GL_QUADS,0,pkShadowMesh->m_kExtrudedSiluet.size());
-
-
-	//debug stuff
-	if(m_iDebug != 0)
-	{
-		glPushAttrib(GL_ALL_ATTRIB_BITS);
-			glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
-			glDisable(GL_STENCIL_TEST);
-			glDisable(GL_TEXTURE_2D);
-			glColor4f(1,0,0,0);
-			glDisable(GL_LIGHTING);
-			glPolygonMode(GL_FRONT_AND_BACK,GL_LINE);
-
-			glVertexPointer(3,GL_FLOAT,0,&pkShadowMesh->m_kExtrudedSiluet[0].x);
-			glDrawArrays(GL_QUADS,0,pkShadowMesh->m_kExtrudedSiluet.size());
-		glPopAttrib();
-	}
+	m_pkZShaderSystem->SetPointer(VERTEX_POINTER,&pkShadowMesh->m_kExtrudedSiluet[0].x);
+	m_pkZShaderSystem->SetNrOfVertexs(pkShadowMesh->m_kExtrudedSiluet.size());
+	m_pkZShaderSystem->DrawArray(QUADS_MODE);
 }
 
 
@@ -292,22 +317,38 @@ void ZShadow::MakeStencilShadow(P_Mad* pkMad,LightSource* pkLightSource)
 		return;
 	}
 
+	//bind material
+	if(m_iDebug == 0)
+		m_pkZShaderSystem->BindMaterial(m_pkShadowModel);			
+	else
+		m_pkZShaderSystem->BindMaterial(m_pkDebug);			
+	
+	//reset all pointers
+	m_pkZShaderSystem->ResetPointers();
+	
 	switch(m_iShadowMode)
 	{
 		case ezFail:
 		{
 			//carmac inverse (zfail)
-			//back
-			glCullFace(GL_FRONT);
-			glStencilOp(GL_KEEP, GL_INCR, GL_KEEP);
+			//back			
+			m_pkShadowModel->GetPass(0)->m_iCullFace = 			CULL_FACE_FRONT;
+			m_pkShadowModel->GetPass(0)->m_iStencilOpFail = 	STENCILOP_KEEP;
+			m_pkShadowModel->GetPass(0)->m_iStencilOpZFail = 	STENCILOP_INCR;
+			m_pkShadowModel->GetPass(0)->m_iStencilOpZPass = 	STENCILOP_KEEP;	
+			m_pkZShaderSystem->ReloadMaterial();
 			DrawExtrudedSiluet(pkShadowMesh);
 			DrawCapings(pkShadowMesh);
 
 			//front
- 			glCullFace(GL_BACK);
-			glStencilOp(GL_KEEP, GL_DECR, GL_KEEP);
+			m_pkShadowModel->GetPass(0)->m_iCullFace = 			CULL_FACE_BACK;
+			m_pkShadowModel->GetPass(0)->m_iStencilOpFail = 	STENCILOP_KEEP;
+			m_pkShadowModel->GetPass(0)->m_iStencilOpZFail = 	STENCILOP_DECR;
+			m_pkShadowModel->GetPass(0)->m_iStencilOpZPass = 	STENCILOP_KEEP;	
+			m_pkZShaderSystem->ReloadMaterial();			
 			DrawExtrudedSiluet(pkShadowMesh);
 			DrawCapings(pkShadowMesh);
+
 		break;
 		}
 
@@ -315,13 +356,19 @@ void ZShadow::MakeStencilShadow(P_Mad* pkMad,LightSource* pkLightSource)
 		{
 			//the other one ;)
 			//draw front
-			glCullFace(GL_BACK);
-			glStencilOp(GL_KEEP, GL_KEEP, GL_INCR);
+			m_pkShadowModel->GetPass(0)->m_iCullFace = 			CULL_FACE_BACK;
+			m_pkShadowModel->GetPass(0)->m_iStencilOpFail = 	STENCILOP_KEEP;
+			m_pkShadowModel->GetPass(0)->m_iStencilOpZFail = 	STENCILOP_KEEP;
+			m_pkShadowModel->GetPass(0)->m_iStencilOpZPass = 	STENCILOP_INCR;	
+			m_pkZShaderSystem->ReloadMaterial();			
 			DrawExtrudedSiluet(pkShadowMesh);
 
 			//draw back
-			glCullFace(GL_FRONT);
-			glStencilOp(GL_KEEP, GL_KEEP, GL_DECR);
+			m_pkShadowModel->GetPass(0)->m_iCullFace = 			CULL_FACE_FRONT;
+			m_pkShadowModel->GetPass(0)->m_iStencilOpFail = 	STENCILOP_KEEP;
+			m_pkShadowModel->GetPass(0)->m_iStencilOpZFail = 	STENCILOP_KEEP;
+			m_pkShadowModel->GetPass(0)->m_iStencilOpZPass = 	STENCILOP_DECR;	
+			m_pkZShaderSystem->ReloadMaterial();			
 			DrawExtrudedSiluet(pkShadowMesh);
 
 		break;
@@ -333,8 +380,6 @@ void ZShadow::SetupStencilBuffer()
 {
 	m_iStencilBits = m_pkZShaderSystem->GetStencilBits();
 
-	//glGetIntegerv(GL_STENCIL_BITS, &m_iStencilBits);
-
 	if(m_iStencilBits == 0)
 	{
 		cout<<"WARNING: No stencil buffer found, disabling shadows"<<endl;
@@ -344,101 +389,38 @@ void ZShadow::SetupStencilBuffer()
 	m_bHaveCheckedBits = true;
 }
 
-void ZShadow::SetupGL()
-{
-	//clear stencil buffert
-	glClear(GL_STENCIL_BUFFER_BIT);
 
-	//setop
-	glEnable(GL_STENCIL_TEST);
-	glStencilFunc(GL_ALWAYS, 0, 255);
-	glEnable(GL_DEPTH_TEST);
-	glDepthFunc(GL_LESS);
-
-	glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
-	glDepthMask(GL_FALSE);
-	glEnable(GL_CULL_FACE);
-	
-	glPolygonMode(GL_FRONT, GL_FILL);
-	glPolygonMode(GL_BACK, GL_FILL);
-	glDisable(GL_ALPHA_TEST);
-	
-
-	glDisable(GL_TEXTURE_2D);
-	glDisable(GL_LIGHTING);
-	glColor4f(0,0,0,0);
-
-	//client states
-	glDisableClientState(GL_NORMAL_ARRAY);
-	glDisableClientState(GL_INDEX_ARRAY);
-	glDisableClientState(GL_COLOR_ARRAY);
-	glDisableClientState(GL_EDGE_FLAG_ARRAY);
-
-	glEnableClientState(GL_VERTEX_ARRAY);
-}
 
 void ZShadow::DrawShadow(float fItensity)
 {
-	glPushAttrib(GL_ENABLE_BIT);
+	static float fQuad[] = {0,0,0,0,1,0,1,1,0,1,0,0};
 
-	//colormas
-	glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
-
-	//culling
-	glCullFace(GL_BACK);
-
-	//depth buffer settings
-	glDepthMask(GL_TRUE);
-	//glDepthFunc(GL_LEQUAL);
-	//glDepthFunc(GL_EQUAL);
-	glDisable(GL_DEPTH_TEST);
-
-	//stencil buffer settings
-	glEnable(GL_STENCIL_TEST);
-	//glStencilFunc(GL_EQUAL, 0, 255);
-	//glStencilFunc(GL_ALWAYS, 0, 255);
-	glStencilFunc(GL_NOTEQUAL, 0, 255);
-	//glStencilFunc(GL_GREATER, 1, 255);			//inverse1
-
-	glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
-
-	//blending
-	glEnable(GL_BLEND);
-	//glBlendFunc(GL_ONE, GL_ZERO);
-	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
-	glColor4f(0.0f, 0.0f, 0.0f, fItensity);
-
-	//disable lighting
-	glDisable(GL_LIGHTING);
-
-
-	//draw
-	glPushMatrix();
-	glLoadIdentity();
-	glMatrixMode(GL_PROJECTION);
-	glPushMatrix();
-	glLoadIdentity();
-	glOrtho(0, 1, 1, 0, 0, 1);
-
-	glBegin(GL_QUADS);
-				glVertex2i(0, 0);
-				glVertex2i(0, 1);
-				glVertex2i(1, 1);
-				glVertex2i(1, 0);
-	glEnd();
-
-	glPopMatrix();
-	glMatrixMode(GL_MODELVIEW);
-	glPopMatrix();
-
-
-	glPopAttrib();
+		
+	m_pkShadowMap->GetPass(0)->m_kVertexColor.Set(0,0,0,fItensity);
+	m_pkZShaderSystem->BindMaterial(m_pkShadowMap);
+	
+	m_pkZShaderSystem->ResetPointers();
+	m_pkZShaderSystem->SetPointer(VERTEX_POINTER,fQuad);
+	m_pkZShaderSystem->SetNrOfVertexs(4);
+	
+	m_pkZShaderSystem->MatrixPush();
+		m_pkZShaderSystem->MatrixIdentity();
+		m_pkZShaderSystem->MatrixMode(MATRIX_MODE_PROJECTION);
+		m_pkZShaderSystem->MatrixPush();
+			m_pkZShaderSystem->MatrixIdentity();
+			m_pkZShaderSystem->MatrixGenerateOrtho(0,1,1,0,0,1);
+			
+			m_pkZShaderSystem->DrawArray(QUADS_MODE);
+			
+		m_pkZShaderSystem->MatrixPop();
+		m_pkZShaderSystem->MatrixMode(MATRIX_MODE_MODEL);
+	m_pkZShaderSystem->MatrixPop();
 
 }
 
 void ZShadow::DrawGradedShadow(float fItensity,Vector3 kPos,Vector3 kDir)
 {	
-	glPushAttrib(GL_ENABLE_BIT);
+/*	glPushAttrib(GL_ENABLE_BIT);
 
 	//colormas
 	glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
@@ -512,14 +494,14 @@ void ZShadow::DrawGradedShadow(float fItensity,Vector3 kPos,Vector3 kDir)
 				glVertex2i(1, 1);
 				glVertex2i(1, 0);
 	glEnd();
-*/
+*
 	glPopMatrix();
 	glMatrixMode(GL_MODELVIEW);
 	glPopMatrix();
 
 
 	glPopAttrib();	
-
+*/
 }
 
 
@@ -632,6 +614,7 @@ void ZShadow::GenerateShadowMesh(ShadowMesh* pkShadowMesh)
 				pkShadowMesh->m_kBackCaping.push_back(v[2] + ev[2] * m_fExtrudeDistance);
 				pkShadowMesh->m_kBackCaping.push_back(v[1] + ev[1] * m_fExtrudeDistance);
 				pkShadowMesh->m_kBackCaping.push_back(v[0] + ev[0] * m_fExtrudeDistance);
+			
 			}
 
 
@@ -941,3 +924,93 @@ void ZShadow::FindSiluetEdges(Vector3 kSourcePos)
 }
 
 */
+
+/*
+void ZShadow::SetupGL()
+{
+	//clear stencil buffert
+	glClear(GL_STENCIL_BUFFER_BIT);
+
+	//setop
+	glEnable(GL_STENCIL_TEST);
+	glStencilFunc(GL_ALWAYS, 0, 255);
+	glEnable(GL_DEPTH_TEST);
+	glDepthFunc(GL_LESS);
+
+	glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
+	glDepthMask(GL_FALSE);
+	glEnable(GL_CULL_FACE);
+	
+	glPolygonMode(GL_FRONT, GL_FILL);
+	glPolygonMode(GL_BACK, GL_FILL);
+	glDisable(GL_ALPHA_TEST);
+	
+
+	glDisable(GL_TEXTURE_2D);
+	glDisable(GL_LIGHTING);
+	glColor4f(0,0,0,0);
+
+	//client states
+	glDisableClientState(GL_NORMAL_ARRAY);
+	glDisableClientState(GL_INDEX_ARRAY);
+	glDisableClientState(GL_COLOR_ARRAY);
+	glDisableClientState(GL_EDGE_FLAG_ARRAY);
+
+	glEnableClientState(GL_VERTEX_ARRAY);
+}
+*/
+
+/*	glPushAttrib(GL_ENABLE_BIT);
+
+	//colormas
+	glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
+
+	//culling
+	glCullFace(GL_BACK);
+
+	//depth buffer settings
+	glDepthMask(GL_TRUE);
+	//glDepthFunc(GL_LEQUAL);
+	//glDepthFunc(GL_EQUAL);
+	glDisable(GL_DEPTH_TEST);
+
+	//stencil buffer settings
+	glEnable(GL_STENCIL_TEST);
+	//glStencilFunc(GL_EQUAL, 0, 255);
+	//glStencilFunc(GL_ALWAYS, 0, 255);
+	glStencilFunc(GL_NOTEQUAL, 0, 255);
+	//glStencilFunc(GL_GREATER, 1, 255);			//inverse1
+
+	glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
+
+	//blending
+	glEnable(GL_BLEND);
+	//glBlendFunc(GL_ONE, GL_ZERO);
+	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+	glColor4f(0.0f, 0.0f, 0.0f, fItensity);
+
+	//disable lighting
+	glDisable(GL_LIGHTING);
+
+*/
+
+	/*
+	//draw
+	glPushMatrix();
+	glLoadIdentity();
+	glMatrixMode(GL_PROJECTION);
+	glPushMatrix();
+	glLoadIdentity();
+	glOrtho(0, 1, 1, 0, 0, 1);
+
+	glBegin(GL_QUADS);
+				glVertex2i(0, 0);
+				glVertex2i(0, 1);
+				glVertex2i(1, 1);
+				glVertex2i(1, 0);
+	glEnd();
+
+	glPopMatrix();
+	glMatrixMode(GL_MODELVIEW);
+	glPopMatrix();
+	*/

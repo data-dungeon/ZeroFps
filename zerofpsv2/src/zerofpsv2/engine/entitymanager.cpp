@@ -1492,6 +1492,7 @@ void EntityManager::Test_DrawZones()
 	{
 		pkLine = new ZMaterial;
 		pkLine->GetPass(0)->m_iPolygonModeFront = LINE_POLYGON;
+		pkLine->GetPass(0)->m_iPolygonModeBack = LINE_POLYGON;
 		pkLine->GetPass(0)->m_iCullFace = CULL_FACE_BACK;		
 		pkLine->GetPass(0)->m_bLighting = false;
 		pkLine->GetPass(0)->m_bColorMaterial = true;
@@ -1503,6 +1504,7 @@ void EntityManager::Test_DrawZones()
 	{
 		pkMatZoneOn = new ZMaterial;
 		pkMatZoneOn->GetPass(0)->m_iPolygonModeFront = LINE_POLYGON;
+		pkMatZoneOn->GetPass(0)->m_iPolygonModeBack = LINE_POLYGON;
 		pkMatZoneOn->GetPass(0)->m_iCullFace = CULL_FACE_NONE;		
 		pkMatZoneOn->GetPass(0)->m_bLighting = false;
 		pkMatZoneOn->GetPass(0)->m_bFog = false;
@@ -1515,6 +1517,7 @@ void EntityManager::Test_DrawZones()
 	{
 		pkMatZoneOff = new ZMaterial;
 		pkMatZoneOff->GetPass(0)->m_iPolygonModeFront = LINE_POLYGON;
+		pkMatZoneOff->GetPass(0)->m_iPolygonModeBack = LINE_POLYGON;
 		pkMatZoneOff->GetPass(0)->m_iCullFace = CULL_FACE_NONE;			
 		pkMatZoneOff->GetPass(0)->m_bLighting = false;
 		pkMatZoneOff->GetPass(0)->m_bFog = false;
@@ -1527,6 +1530,7 @@ void EntityManager::Test_DrawZones()
 	{
 		pkMatZoneCache = new ZMaterial;
 		pkMatZoneCache->GetPass(0)->m_iPolygonModeFront = LINE_POLYGON;
+		pkMatZoneCache->GetPass(0)->m_iPolygonModeBack = LINE_POLYGON;
 		pkMatZoneCache->GetPass(0)->m_iCullFace = CULL_FACE_NONE;			
 		pkMatZoneCache->GetPass(0)->m_bFog = false;
 		pkMatZoneCache->GetPass(0)->m_bLighting = false;

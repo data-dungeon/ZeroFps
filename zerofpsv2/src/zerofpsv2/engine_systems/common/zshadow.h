@@ -47,6 +47,11 @@ class ENGINE_SYSTEMS_API ZShadow  : public ZFSubSystem
 		Render*			m_pkRender;
 		ZShaderSystem*	m_pkZShaderSystem;
 		EntityManager*	m_pkEntityMan;
+		
+		
+		ZMaterial*		m_pkShadowModel;
+		ZMaterial*		m_pkShadowMap;
+		ZMaterial*		m_pkDebug;
 
 		bool						m_bHaveMesh;
 		int*						m_pkFaces;
@@ -90,12 +95,11 @@ class ENGINE_SYSTEMS_API ZShadow  : public ZFSubSystem
 		void SetUnusedMeshs();
 		void ClearUnusedMeshs();
 
-		void MakeStencilShadow(P_Mad* pkMad,LightSource* pkLightSource);
-
-		void SetupGL();
+		void MakeStencilShadow(P_Mad* pkMad,LightSource* pkLightSource);		
 		void SetupStencilBuffer();
 
 
+		//void SetupGL();
 		//void FindCapings(Vector3 kSourcePos);
 		//void ExtrudeSiluet(Vector3 kSourcePos);
 		//void FindSiluetEdges(Vector3 kSourcePos);
