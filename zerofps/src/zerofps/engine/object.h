@@ -151,7 +151,6 @@ class ENGINE_API Object
 		int*						m_piDecorationStep;
 		bool						m_bSave;								///< True if this object should save to disk.
 		
-		ObjectManager*			m_pkObjectMan;						///< Ptr to object manger.
 		LevelManager* 			m_pkLevelMan;		
 		PropertyFactory*		m_pkPropertyFactory;	
 		ZeroFps*					m_pkFps;
@@ -160,7 +159,8 @@ class ENGINE_API Object
 		list<Property*>		m_akPropertys;						///< List of propertys of object.
 		
 	public:
-		int					iNetWorkID;								///< ID used by network state code.
+		int						iNetWorkID;								///< ID used by network state code.
+		ObjectManager*			m_pkObjectMan;						///< Ptr to object manger.
 
 		Object();		
 		~Object();

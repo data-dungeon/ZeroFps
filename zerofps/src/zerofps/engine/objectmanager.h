@@ -57,6 +57,9 @@ class ENGINE_API ObjectManager : public ZFObject{
 		void TESTVIM_LoadArcheTypes(char* szFileName);
 
 	public:
+		int	m_iUpdateFlags;												///< Flags of active update.
+		int	m_iRole;															///< I'm i a server or a client or both.
+
 		ObjectManager();
 		~ObjectManager();
 	
@@ -68,7 +71,6 @@ class ENGINE_API ObjectManager : public ZFObject{
 		void Clear();															///< Delete all objects.
 
 		// Updates
-		int	m_iUpdateFlags;
 		void Update(int iType,int iSide,bool bSort);					///< Run update on selected propertys.
 		void UpdateDelete();													///< Deletes objects in delete qeue	
 		void UpdateGameMessages(void);									///< Update game messages.

@@ -68,7 +68,7 @@ void ObjectManager::Clear()
 // Updates
 void ObjectManager::Update(int iType,int iSide,bool bSort)
 {
-	m_iUpdateFlags = iType & iSide;
+	m_iUpdateFlags = iType | iSide;
 
 	if(!m_bUpdate)
 		if(iType!=PROPERTY_TYPE_RENDER)

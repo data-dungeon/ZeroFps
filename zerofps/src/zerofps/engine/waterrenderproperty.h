@@ -16,13 +16,15 @@ using namespace std;
 class ENGINE_API WaterRenderProperty: public Property {
 		TextureManager* m_pkTexMan;
 		ZeroFps* m_pkZeroFps;
-		Render* m_pkRender;	
+		Render*	m_pkRender;	
 	
-		int m_iTexture;		
-		string m_sTexture;
-	
-		int m_iSize;
-		int m_iStep;
+		int		m_iTexture;		
+		string	m_sTexture;
+		int		m_iSize;
+		int		m_iStep;
+
+		float		m_fBlendValue;
+		bool		m_bBlendDirUp;
 		
 		vector<PropertyValues> GetPropertyValues();
 		bool HandleSetValue( string kValueName ,string kValue );		

@@ -196,7 +196,7 @@ void Render::DrawSkyBox(Vector3 CamPos,Vector3 kHead,int iHor,int iTop) {
 }
 
 
-void Render::DrawWater(Vector3 kCamPos,Vector3 kPosition,Vector3 kHead,int iSize,int iStep,int iTexture) {
+void Render::DrawWater(Vector3 kCamPos,Vector3 kPosition,Vector3 kHead,int iSize,int iStep,int iTexture, float fBlendValue) {
 
 	float freq=500.0;
 	float amp=0.5;
@@ -236,7 +236,7 @@ void Render::DrawWater(Vector3 kCamPos,Vector3 kPosition,Vector3 kHead,int iSize
 		glBegin(GL_TRIANGLE_STRIP);
 		glNormal3f(0,1,0);
 //		glColor4f(.5,.5,.7,0.5);	
-		glColor4f(1,1,1,0.5);	
+		glColor4f(1,1,1, fBlendValue);	
 	
 		for(int z=0;z<iSize;z+=iStep) {
 			float y= float(sin((SDL_GetTicks()/1000.0)+(z/iStep)*freq)*amp);		

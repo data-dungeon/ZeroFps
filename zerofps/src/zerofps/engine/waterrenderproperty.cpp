@@ -9,11 +9,14 @@ WaterRenderProperty::WaterRenderProperty()
 	m_pkZeroFps=static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));		
 	m_pkRender=static_cast<Render*>(g_ZFObjSys.GetObjectPtr("Render"));		
 
-	m_iType=PROPERTY_TYPE_RENDER;
-	m_iSide=PROPERTY_SIDE_CLIENT;
+	m_iType = PROPERTY_TYPE_RENDER | PROPERTY_TYPE_NORMAL ;
+	m_iSide = PROPERTY_SIDE_CLIENT;
 	
 	SetProperty(100,10,"file:../data/textures/water2.bmp");
-	m_iSortPlace=10;
+	m_iSortPlace	=	10;
+	m_fBlendValue	=	1;
+	m_bBlendDirUp	=  false;
+
 	bNetwork	=	true;
 }
 
@@ -42,7 +45,21 @@ void WaterRenderProperty::SetTexture(const char* acTexture)
 
 void WaterRenderProperty::Update() 
 {	
-	m_pkRender->DrawWater(m_pkZeroFps->GetCam()->GetPos(),m_pkObject->GetPos(),m_pkObject->GetRot(),m_iSize,m_iStep,m_iTexture);
+//	cout << "m_iUpdateFlags: "<< m_pkObject->m_pkObjectMan->m_iUpdateFlags << endl;
+	if(m_pkObject->m_pkObjectMan->m_iUpdateFlags & PROPERTY_TYPE_NORMAL) {
+		if(m_bBlendDirUp) {
+			m_fBlendValue += 0.05;
+			if(m_fBlendValue > 1.0)
+				m_bBlendDirUp = false;
+			}
+		else {
+			m_fBlendValue -= 0.05;
+			if(m_fBlendValue < 0.0)
+				m_bBlendDirUp = true;
+			}
+		}
+	else
+		m_pkRender->DrawWater(m_pkZeroFps->GetCam()->GetPos(),m_pkObject->GetPos(),m_pkObject->GetRot(),m_iSize,m_iStep,m_iTexture,m_fBlendValue);
 }
 
 void WaterRenderProperty::PackTo(NetPacket* pkNetPacket)

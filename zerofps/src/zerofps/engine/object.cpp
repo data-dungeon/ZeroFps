@@ -120,11 +120,17 @@ Property* Object::GetProperty(const char* acName)
 void  Object::GetPropertys(vector<Property*> *akPropertys,int iType,int iSide)
 {
 	for(itListProperty it = m_akPropertys.begin(); it != m_akPropertys.end(); it++) {
-		if((*it)->m_iType == iType || iType == PROPERTY_TYPE_ALL){
-			if((*it)->m_iSide == iSide || iSide == PROPERTY_SIDE_ALL){
+		if((*it)->m_iType & iType || iType == PROPERTY_TYPE_ALL){
+			if((*it)->m_iSide & iSide || iSide == PROPERTY_SIDE_ALL){
 				akPropertys->push_back((*it));			
 			}
 		}	
+
+/*		if((*it)->m_iType == iType || iType == PROPERTY_TYPE_ALL){
+			if((*it)->m_iSide == iSide || iSide == PROPERTY_SIDE_ALL){
+				akPropertys->push_back((*it));			
+			}
+		}	*/
 	}
 }
 
