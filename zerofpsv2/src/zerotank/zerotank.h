@@ -14,6 +14,8 @@
 #include "../zerofpsv2/engine/levelmanager.h"
 #include "../zerofpsv2/engine_systems/common/heightmap2.h"
 
+#include "../zerofpsv2/engine_systems/mad/mad_modell.h"
+
 //#include "../common/common.pkg"
 
 
@@ -58,6 +60,8 @@ class ZeroTank :public Application {
 
 
 		Heightmap2*			m_pkMap2;
+
+		Mad_Modell			m_pkTestMod;
 
 	public:
 		

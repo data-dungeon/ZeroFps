@@ -71,7 +71,7 @@ class RENDER_API ZShader : public ZFSubSystem
 		Light*				m_pkLight;		
 		
 		//curent material in use
-		ZMaterial*	m_pkCurentMaterial;	
+		ZMaterial*		m_pkCurentMaterial;	
 		
 		//pointer to geometry data
 		Vector3*			m_pkVertexPointer;
@@ -83,8 +83,19 @@ class RENDER_API ZShader : public ZFSubSystem
 		unsigned int*	m_pkIndexPointer;
 		Vector4*			m_pkColorPointer;
 		
+		//bakup pointes, used when copying data
+		Vector3*			m_pkBakupVertexPointer;
+		Vector3*			m_pkBakupNormalPointer;	
+		Vector2*			m_pkBakupTexturePointer0;
+		Vector2*			m_pkBakupTexturePointer1;		
+		Vector2*			m_pkBakupTexturePointer2;		
+		Vector2*			m_pkBakupTexturePointer3;		
+		unsigned int*	m_pkBakupIndexPointer;
+		Vector4*			m_pkBakupColorPointer;
+		
 		//nr of vertexs
 		int			m_iNrOfVertexs;				
+		int			m_iNrOfIndexes;						
 		
 		//mode to use (depending on underlying system , etc this may be opengl types)
 		int			m_iDrawMode;
@@ -118,9 +129,10 @@ class RENDER_API ZShader : public ZFSubSystem
 		ZShader();
 		bool StartUp();
 	
-		void BindMaterial(ZMaterial* pkMaterial);		
+		void SetMaterial(ZMaterial* pkMaterial);		
 		void SetPointer(int iType,void* pkPointer);
 		void SetNrOfVertexs(int iNr);
+		void SetNrOfIndexes(int iNr);		
 		void SetDrawMode(int iDrawMode);
 		void Reset();
 		void Draw();

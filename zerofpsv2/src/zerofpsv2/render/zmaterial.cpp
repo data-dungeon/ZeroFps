@@ -18,6 +18,7 @@ ZMaterialSettings::ZMaterialSettings()
 	
 	m_bLighting = false;
 	m_bCullFace = true;
+	m_bAlphaTest = false;
 	m_iDepthFunc = GL_LESS;
 };
 
@@ -29,6 +30,7 @@ ZMaterial::ZMaterial()
 
 	m_bCopyData = false;
 	m_bRandomMovements = false;
+	m_bWaves = false;	
 }
 
 ZMaterialSettings* ZMaterial::GetPass(int iPass)

@@ -1,0 +1,10 @@
+class object	
+	class ZeroRTSSpawnPoint
+		parent object
+		set MadProperty m_kMadFile /data/mad/bush1.mad
+		set MadProperty m_fScale 5
+	
+	class ZeroRTSTestBox
+		parent object
+		set MadProperty m_kMadFile /data/mad/adaptor.mad
+	

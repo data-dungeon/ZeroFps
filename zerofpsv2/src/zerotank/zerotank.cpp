@@ -11,7 +11,7 @@ ZeroTank::ZeroTank(char* aName,int iWidth,int iHeight,int iDepth)
 	m_iGameType						= 1;
 	
 	g_ZFObjSys.Log_Create("zerorts");
-
+ 
 } 
 
 void ZeroTank::OnInit() 
@@ -26,6 +26,23 @@ void ZeroTank::OnInit()
 	if(!pkIni->ExecuteCommands("zerotank_autoexec.ini"))
 		pkConsole->Printf("No game_autoexec.ini.ini found");
 		
+
+//	m_pkTestMod.SetBasePtr("data/mad/rts/unit/tankl.mad");
+	
+	
+	
+	Object* pk0 = pkObjectMan->CreateObjectByArchType("ZeroRTSSpawnPoint");
+	pk0->SetPos(Vector3(0,0,0));
+	pk0->AttachToClosestZone();
+
+/*	Object* pk1 = pkObjectMan->CreateObjectByArchType("ZeroRTSSpawnPoint");
+	pk1->SetPos(Vector3(30,0,0));
+	pk1->AttachToClosestZone();
+
+	Object* pk2 = pkObjectMan->CreateObjectByArchType("ZeroRTSSpawnPoint");
+	pk2->SetPos(Vector3(60,0,0));
+	pk2->AttachToClosestZone();
+*/
 }
 
 void ZeroTank::Init()
@@ -108,8 +125,12 @@ void ZeroTank::OnIdle()
  	pkFps->UpdateCamera(); 	
 	
 	m_pkMap2->SetPos(Vector3(0,-5,-10));
-	pkRender->DrawHM2(m_pkMap2,pkFps->GetCam()->GetPos());
+//	pkRender->DrawHM2(m_pkMap2,pkFps->GetCam()->GetPos());
 
+//	m_pkTestMod.PlayAnimation(0,0);
+//	m_pkTestMod.Draw_All();
+	
+	
 	
 	//update player possition
 	Object* pkObj = pkObjectMan->GetObjectByNetWorkID( m_iSelfObjectID );

@@ -24,6 +24,7 @@ class RENDER_API ZMaterialSettings
 		bool	m_bLighting;	
 		bool	m_bCullFace;
 
+		bool	m_bAlphaTest;
 	
 		ZMaterialSettings();
 

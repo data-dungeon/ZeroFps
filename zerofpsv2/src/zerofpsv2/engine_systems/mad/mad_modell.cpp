@@ -17,13 +17,16 @@ void SetGameTime(void)
 Mad_Modell::Mad_Modell()
 {
 	m_pkTex = static_cast<TextureManager*>(g_ZFObjSys.GetObjectPtr("TextureManager"));
+	m_pkShader = static_cast<ZShader*>(g_ZFObjSys.GetObjectPtr("ZShader"));	
+	
 	fCurrentTime = 0;
 	iActiveAnimation = 0;
 	fLastUpdate = 0;
 	m_bLoop		= 0;
 	m_fScale	= 1.0;
 	m_bActive	= true;
-//	pkCore = NULL;
+
+
 }
 
 Mad_Modell::Mad_Modell(string strResName)
@@ -458,14 +461,27 @@ void Mad_Modell::Draw_All(int iDrawFlags)
 		//if(g_fMadLODScale == 1)
 			pkCore->PrepareMesh(pkCore->GetMeshByID(m_kActiveMesh[iM]));
 
-		glTexCoordPointer(2,GL_FLOAT,0,GetTextureCooPtr());
+		m_pkShader->Reset();
+		m_pkShader->SetPointer(TEXTURE_POINTER0,GetTextureCooPtr());
+		m_pkShader->SetPointer(VERTEX_POINTER,GetVerticesPtr());		
+		m_pkShader->SetPointer(NORMAL_POINTER,GetNormalsPtr());				
+		m_kDefaultMat.m_bCopyData = false;
+		m_kDefaultMat.m_bWaves = false;		
+		
+		m_kDefaultMat.GetPass(0)->m_iPolygonModeFront = GL_FILL;
+		m_kDefaultMat.GetPass(0)->m_iPolygonModeBack = GL_FILL;		
+		m_pkShader->SetDrawMode(TRIANGLES_MODE);
+		m_pkShader->SetNrOfVertexs(GetNumVertices());
+		
+/*		glTexCoordPointer(2,GL_FLOAT,0,GetTextureCooPtr());
 		glVertexPointer(3,GL_FLOAT,0,GetVerticesPtr());
 		glNormalPointer(GL_FLOAT,0,GetNormalsPtr());
-
+*/
 		iNumOfSubMesh = GetNumOfSubMesh(m_kActiveMesh[iM]);
 		
-
 		for(int iSubM = 0; iSubM < iNumOfSubMesh; iSubM++) {
+			
+			
 			SelectSubMesh(iSubM);
 
 			if(iDrawFlags & MAD_DRAW_MESH) {
@@ -483,22 +499,31 @@ void Mad_Modell::Draw_All(int iDrawFlags)
 					}
 				
 				ResTexture* pkTexture = static_cast<ResTexture*>(pkRes->GetResourcePtr());
-				m_pkTex->BindTexture( pkTexture->m_iTextureID );
-				
+				//m_pkTex->BindTexture( pkTexture->m_iTextureID );				
 				//m_pkTex->BindTexture( m_pkMesh->GetTextureID(m_pkSubMesh->iTextureIndex));
-
-
 				//m_pkTex->BindTexture("../data/textures/c_red.tga",0);
-				if(pkTexInfo->bIsAlphaTest) {
+				
+/*				if(pkTexInfo->bIsAlphaTest) {
 					glEnable(GL_ALPHA_TEST);
 					glAlphaFunc(GL_GEQUAL, 0.5);
-					}
-
+					}*/
+				
+				m_kDefaultMat.GetPass(0)->m_bAlphaTest = pkTexInfo->bIsAlphaTest;				
+				m_kDefaultMat.GetPass(0)->m_bCullFace= !pkTexInfo->bIsAlphaTest;				
+					
+				m_pkShader->SetMaterial(&m_kDefaultMat);
+				
+				m_kDefaultMat.GetPass(0)->m_iTUs[0] =  pkTexture->m_iTextureID;
+				m_pkShader->SetPointer(INDEX_POINTER,GetFacesPtr());				
+				m_pkShader->SetNrOfIndexes(iNumOfFaces * 3);
+				
+				m_pkShader->Draw();
+/*
 				glDrawElements(GL_TRIANGLES,
 					iNumOfFaces * 3,
 					GL_UNSIGNED_INT,
 					GetFacesPtr());
-				
+*/				
 				g_iNumOfMadSurfaces += iNumOfFaces;
 				}
 

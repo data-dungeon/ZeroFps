@@ -20,6 +20,7 @@ void ZShader::Reset()
 {
 	m_pkCurentMaterial = NULL;
 	m_iNrOfVertexs = 		0;
+	m_iNrOfIndexes = 		0;	
 	
 	m_pkVertexPointer =	NULL;
 	m_pkNormalPointer =	NULL;	
@@ -30,11 +31,19 @@ void ZShader::Reset()
 	m_pkIndexPointer = 	NULL;
 	m_pkColorPointer = 	NULL;	
 
+	m_pkBakupVertexPointer = NULL;
+	m_pkBakupNormalPointer = NULL;	
+	m_pkBakupTexturePointer0 = NULL;
+	m_pkBakupTexturePointer1 = NULL;		
+	m_pkBakupTexturePointer2 = NULL;		
+	m_pkBakupTexturePointer3 = NULL;		
+	m_pkBakupIndexPointer = NULL;
+	m_pkBakupColorPointer = NULL;
+				
 	m_bCopyedData =		false;
 	
 	SetDrawMode(POLYGON_MODE);
 	
-	SetupClientStates();
 }
 
 void ZShader::SetPointer(int iType,void* pkPointer)
@@ -68,12 +77,16 @@ void ZShader::SetPointer(int iType,void* pkPointer)
 			
 	}
 	
-	SetupClientStates();
 }
 
 void ZShader::SetNrOfVertexs(int iNr)
 {
 	m_iNrOfVertexs = iNr;
+}
+
+void ZShader::SetNrOfIndexes(int iNr)
+{
+	m_iNrOfIndexes = iNr;
 }
 
 void ZShader::SetDrawMode(int iDrawMode)
@@ -119,6 +132,9 @@ void ZShader::SetupClientStates()
 {
 	glDisableClientState(GL_VERTEX_ARRAY);	
 	glDisableClientState(GL_NORMAL_ARRAY);	
+	glDisableClientState(GL_INDEX_ARRAY);	
+	glDisableClientState(GL_COLOR_ARRAY);
+	glDisableClientState(GL_EDGE_FLAG_ARRAY);	
 	
 	glClientActiveTextureARB(GL_TEXTURE3_ARB);	
 		glDisableClientState(GL_TEXTURE_COORD_ARRAY);	
@@ -129,9 +145,6 @@ void ZShader::SetupClientStates()
 	glClientActiveTextureARB(GL_TEXTURE0_ARB);	
 		glDisableClientState(GL_TEXTURE_COORD_ARRAY);		
 	
-	glDisableClientState(GL_INDEX_ARRAY);	
-	glDisableClientState(GL_COLOR_ARRAY);
-	glDisableClientState(GL_EDGE_FLAG_ARRAY);	
 	
 	if(m_pkVertexPointer)
 	{
@@ -187,7 +200,7 @@ void ZShader::SetupClientStates()
 }
 
 
-void ZShader::BindMaterial(ZMaterial* pkMaterial)
+void ZShader::SetMaterial(ZMaterial* pkMaterial)
 {
 	m_pkCurentMaterial = pkMaterial;
 }
@@ -195,8 +208,7 @@ void ZShader::BindMaterial(ZMaterial* pkMaterial)
 void ZShader::SetupPrerenderStates()
 {
 	if(m_pkCurentMaterial->m_bCopyData)
-		CopyVertexData();
-		
+		CopyVertexData();		
 		
 	if(m_pkCurentMaterial->m_bRandomMovements)
 		RandomVertexMovements();
@@ -220,15 +232,19 @@ void ZShader::Waves()
 {	
 	for(int i=0;i<m_iNrOfVertexs;i++)
 	{
-		//m_pkVertexPointer[i].y += sin(SDL_GetTicks()/500.0 + i*0.1);
-		m_pkTexturePointer0[i].x += sin(SDL_GetTicks()/500.0 + i*0.1);
-		m_pkTexturePointer0[i].y += sin(SDL_GetTicks()/500.0 + i*0.1);		
+		int offset = m_pkVertexPointer[i].x + m_pkVertexPointer[i].y + m_pkVertexPointer[i].z;
+		float bla = sin(SDL_GetTicks()/500.0 + offset)*0.1;
+		m_pkVertexPointer[i] += Vector3(bla,bla,bla);
+
+
+//		m_pkTexturePointer0[i].x += sin(SDL_GetTicks()/500.0 + i*0.1);
+//		m_pkTexturePointer0[i].y += sin(SDL_GetTicks()/500.0 + i*0.1);		
 	}
 }
 
 void ZShader::SetupTU(ZMaterialSettings* pkSettings,int iTU)
 {
-	if(pkSettings->m_iTUs[iTU] > 0)
+	if(pkSettings->m_iTUs[iTU] >= 0)
 	{	
 		glEnable(GL_TEXTURE_2D);
 		m_pkTexMan->BindTexture(pkSettings->m_iTUs[iTU]);
@@ -280,7 +296,17 @@ void ZShader::SetupRenderStates(ZMaterialSettings* pkSettings)
 	if(pkSettings->m_bCullFace)
 		glEnable(GL_CULL_FACE);
 	else
-		glDisable(GL_CULL_FACE);	
+		glDisable(GL_CULL_FACE);
+	
+	//alphatest setting
+	if(pkSettings->m_bAlphaTest)
+	{
+		glEnable(GL_ALPHA_TEST);
+		glAlphaFunc(GL_GEQUAL, 0.5);
+	}
+	else
+		glDisable(GL_ALPHA_TEST);
+		
 	
 	//setup TU 3
 	glActiveTextureARB(GL_TEXTURE3_ARB);	
@@ -309,13 +335,29 @@ void ZShader::SetupRenderStates(ZMaterialSettings* pkSettings)
 
 void ZShader::CopyVertexData()
 {
-	m_bCopyedData = true;
+	m_bCopyedData = true;	
+	
+	m_pkBakupVertexPointer = m_pkVertexPointer;
+	m_pkBakupNormalPointer = m_pkNormalPointer;	
+	m_pkBakupTexturePointer0 = m_pkTexturePointer0;
+	m_pkBakupTexturePointer1 = m_pkTexturePointer1;		
+	m_pkBakupTexturePointer2 = m_pkTexturePointer2;		
+	m_pkBakupTexturePointer3 = m_pkTexturePointer3;		
+	m_pkBakupIndexPointer = m_pkIndexPointer;
+	m_pkBakupColorPointer = m_pkColorPointer;
 	
 	if(m_pkVertexPointer)
 		CopyData((void**)&m_pkVertexPointer,sizeof(Vector3)*m_iNrOfVertexs);
 
 	if(m_pkNormalPointer)
 		CopyData((void**)&m_pkNormalPointer,sizeof(Vector3)*m_iNrOfVertexs);
+	
+	if(m_pkIndexPointer)
+		CopyData((void**)&m_pkIndexPointer,sizeof(unsigned int)*m_iNrOfVertexs);
+	
+	if(m_pkColorPointer)
+		CopyData((void**)&m_pkColorPointer,sizeof(Vector4)*m_iNrOfVertexs);
+	
 	
 	if(m_pkTexturePointer0)
 		CopyData((void**)&m_pkTexturePointer0,sizeof(Vector2)*m_iNrOfVertexs);
@@ -326,14 +368,6 @@ void ZShader::CopyVertexData()
 	if(m_pkTexturePointer3)
 		CopyData((void**)&m_pkTexturePointer3,sizeof(Vector2)*m_iNrOfVertexs);
 	
-	if(m_pkIndexPointer)
-		CopyData((void**)&m_pkIndexPointer,sizeof(unsigned int)*m_iNrOfVertexs);
-	
-	if(m_pkColorPointer)
-		CopyData((void**)&m_pkColorPointer,sizeof(Vector4)*m_iNrOfVertexs);
-
-	//we have to reset opengls data pointers
-	SetupClientStates();
 }
 
 void ZShader::CopyData(void** pkData,int iSize)
@@ -356,16 +390,17 @@ void ZShader::CleanCopyedData()
 	delete m_pkIndexPointer;		
 	delete m_pkColorPointer;		
 	
-	m_pkVertexPointer =	NULL;	
-	m_pkNormalPointer =	NULL;		
-	m_pkTexturePointer0 = NULL;		
-	m_pkTexturePointer1 = NULL;			
-	m_pkTexturePointer2 = NULL;			
-	m_pkTexturePointer3 = NULL;			
-	m_pkIndexPointer =	NULL;		
-	m_pkColorPointer =	NULL;		
+	m_pkVertexPointer =	m_pkBakupVertexPointer;	
+	m_pkNormalPointer =	m_pkBakupNormalPointer;		
+	m_pkTexturePointer0 = m_pkBakupTexturePointer0;		
+	m_pkTexturePointer1 = m_pkBakupTexturePointer1;			
+	m_pkTexturePointer2 = m_pkBakupTexturePointer2;			
+	m_pkTexturePointer3 = m_pkBakupTexturePointer3;			
+	m_pkIndexPointer =	m_pkBakupIndexPointer;		
+	m_pkColorPointer =	m_pkBakupColorPointer;		
 	
 	m_bCopyedData = false;
+	
 }
 
 
@@ -375,14 +410,17 @@ void ZShader::Draw()
 	glPushAttrib(GL_ALL_ATTRIB_BITS);
 	
 	SetupPrerenderStates();
-	
+
+	//we have to reset opengls data pointers
+	SetupClientStates();
+
 	//go trough all passes of material
 	for(int i=0;i<m_pkCurentMaterial->GetNrOfPasses();i++)
-	{
+	{	
 		SetupRenderStates(m_pkCurentMaterial->GetPass(i));		
 		
 		if(m_pkIndexPointer)
-			glDrawElements(m_iDrawMode,m_iNrOfVertexs,GL_UNSIGNED_INT,m_pkIndexPointer);
+			glDrawElements(m_iDrawMode,m_iNrOfIndexes,GL_UNSIGNED_INT,m_pkIndexPointer);
 		else
 			glDrawArrays(m_iDrawMode,0,m_iNrOfVertexs);	
 	}
@@ -393,6 +431,7 @@ void ZShader::Draw()
 	
 	glPopMatrix();
 	glPopAttrib();
+	
 }
 
 bool ZShader::ShutDown() { return true; }

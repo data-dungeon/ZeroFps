@@ -1230,7 +1230,8 @@ void Render::DrawHM2(Heightmap2* pkMap,Vector3 kCamPos)
 	m_kHeightmapMaterial.GetPass(0)->m_iTUs[0] = m_pkTexMan->Load("bla.tga",0);		
 	m_kHeightmapMaterial.GetPass(0)->m_iTUs[1] = m_pkTexMan->Load("mask.tga",0);			
 		
-	m_pkZShader->BindMaterial(&m_kHeightmapMaterial);
+	m_pkZShader->Reset();
+	m_pkZShader->SetMaterial(&m_kHeightmapMaterial);
 	m_pkZShader->SetDrawMode(TRIANGLESTRIP_MODE);
 	
 	for(int y = 0;y<py;y++)

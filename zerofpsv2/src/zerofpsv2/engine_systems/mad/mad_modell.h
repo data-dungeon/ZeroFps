@@ -6,6 +6,7 @@
 #include "mad_core.h"
 #include <vector>
 #include "../../render/texturemanager.h"
+#include "../../render/zshader.h"
 
 #define MAD_DRAW_MESH		1
 #define MAD_DRAW_NORMAL		2
@@ -21,17 +22,23 @@ private:
 	vector<int>				m_kActiveMesh;
 	
 	TextureManager*		m_pkTex;
-
-	void LoadTextures();
-
-	void DrawNormal(Vector3* pkVertex, Vector3* pkNormals);
-	void DrawSkelleton();
+	ZShader*					m_pkShader;
 
 	// Render Interface
 	Mad_CoreMesh*		m_pkMesh;
 	Mad_CoreSubMesh*	m_pkSubMesh;
 	int					m_iSubMesh;
 
+	ZMaterial			m_kDefaultMat;
+
+	int						m_aiReplaceTextures[256];
+	ZFResourceHandle		m_akReplaceTexturesHandles[256];
+
+
+	void LoadTextures();
+	void DrawNormal(Vector3* pkVertex, Vector3* pkNormals);
+	void DrawSkelleton();
+	
 	void Begin();
 	void End();
 	int GetNumOfMesh();
@@ -50,8 +57,6 @@ private:
 
 	void	Create_GLList(Mad_CoreMesh* pkMesh);
 
-	int						m_aiReplaceTextures[256];
-	ZFResourceHandle		m_akReplaceTexturesHandles[256];
 	
 
 public:
