@@ -56,14 +56,14 @@ float HeightMap::Height(float x,float z) {
 
 	
 	//are we on the over or under polygon in the tile   gillar min fina engelska =)
-	float ry=(1.0+ox*-1.0);
+	float ry= float((1.0+ox*-1.0));
 
 	if(oz>ry){//over left
 		bp=verts[(lz+1)*m_iHmSize+(lx+1)].height;
 		xp=verts[(lz+1)*m_iHmSize+(lx)].height-bp;
 		zp=verts[(lz)*m_iHmSize+(lx+1)].height-bp;		
-		ox=1.0-ox;
-		oz=1.0-oz;
+		ox= float(1.0-ox);
+		oz= float(1.0-oz);
 	}else{//under right
 		bp=verts[lz*m_iHmSize+lx].height;
 		xp=verts[(lz)*m_iHmSize+(lx+1)].height-bp;
@@ -91,7 +91,7 @@ Vector3 HeightMap::Tilt(float x,float z) {
 	
 	Vector3 v1,v2,n1;
 	
-	float ry=(1.0+ox*-1.0);
+	float ry= float ((1.0+ox*-1.0));
 	if(oz>ry){
 //		cout<<"UPP"<<endl;		
 		v1=Vector3(1,(verts[(lz+1)*m_iHmSize+(lx+1)].height)	-(verts[(lz+1)*m_iHmSize+(lx)].height) ,0);
@@ -326,13 +326,13 @@ void HeightMap::Random() {
 	for(i=0;i<peaks;i++) {
 		x=rand()%(m_iHmSize-4)+2;	
 		y=rand()%(m_iHmSize-4)+2;	
-		verts[y*m_iHmSize+x].height=(rand()%height)/10.0;
+		verts[y*m_iHmSize+x].height = float((rand()%height)/10.0);
 	}
 	
 	for(i=0;i<peaks/4;i++) {
 		x=rand()%(m_iHmSize-4)+2;	
 		y=rand()%(m_iHmSize-4)+2;	
-		verts[y*m_iHmSize+x].height=(rand()%height*4)/10.0;
+		verts[y*m_iHmSize+x].height = float((rand()%height*4)/10.0);
 	}
 	
 	float med;
@@ -432,7 +432,7 @@ bool HeightMap::LoadImageHmap(const char* acFile) {
 			pixel=GetPixel(image,x,y);			
 		
 			SDL_GetRGB(pixel, image->format, &data,&data, &data);
-			verts[y*m_iHmSize+x].height=data/3;			
+			verts[y*m_iHmSize+x].height = data/3;			
 		}
 			
 

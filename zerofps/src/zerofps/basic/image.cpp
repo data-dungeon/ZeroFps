@@ -588,7 +588,7 @@ void Image::MapColorToAlpha(float fR, float fG, float fB, float fAlpha)
 				pixels[(y)*width + (x)].g > (fG*255) &&
 				pixels[(y)*width + (x)].b > (fB*255))
 
-				pixels[(y)*width + (x)].a = (fAlpha*255);
+				pixels[(y)*width + (x)].a = (unsigned char)(fAlpha*255);
 		}
 	}
 

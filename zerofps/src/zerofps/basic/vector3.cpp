@@ -213,12 +213,14 @@ Vector3 Vector3::Perp( Vector3& v )
 
 float Vector3::Angle( Vector3& v )				
 {
-	return acos( Dot(v) ); 
+	return float(acos( Dot(v) )); 
 }
 
 void Vector3::Abs(void)								
 {
-	x = fabs(x);	y = fabs(y);	z = fabs(z); 
+	x = float(fabs(x));
+	y = float(fabs(y));
+	z = float(fabs(z)); 
 }
 
 int	Vector3::AbsMaxCoo(void)	
@@ -259,11 +261,7 @@ ostream& operator<<(ostream& os, const Vector3 &v)
 Vector3 Vector3::Angels(void){
 	Vector3 temp=Vector3(0,0,0);
 
-
-
-
-
-	temp.x=-atan(y/z) * degtorad;	
+	temp.x= float(-atan(y/z) * degtorad);	
 /*	if(z<0)
 		temp.x+=180;
 */
@@ -277,7 +275,7 @@ Vector3 Vector3::Angels(void){
 
 
 
-	temp.y=atan(x/z) * degtorad;
+	temp.y = float(atan(x/z) * degtorad);
 	
 	if(z<0)
 		temp.y+=180;

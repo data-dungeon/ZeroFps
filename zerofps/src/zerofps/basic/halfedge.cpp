@@ -47,7 +47,7 @@ void HalfEdge::add(Polygon3* kPoly) {
 	//this part sux..i should put this in a seperate funktion  to be called only once when
 	//all edges is loaded
 	for( i=0;i<3;i++) {
-		for(int j=0;j<m_kEdges.size();j++) {	
+		for(unsigned int j=0;j<m_kEdges.size();j++) {	
 			if(e[i]->vert->point==m_kEdges[j]->vert->point){
 				if(e[i]->prev->vert->point==m_kEdges[j]->next->vert->point){
 					e[i]->pair=m_kEdges[j]->next;		//set pair this one

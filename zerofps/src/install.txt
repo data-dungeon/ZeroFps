@@ -5,7 +5,7 @@ How to - ZeroFps
 
  B: Glut			3.7	  - http://www.opengl.org/developers/documentation/glut.html
 
- C: Simple DirectMedia Layer - http://www.libsdl.org
+ C: Simple DirectMedia Layer 	- http://www.libsdl.org
 	C1:	SDL			1.2.5 - http://www.libsdl.org
 	C2: SDL_image	1.2.2 - http://www.libsdl.org/projects/SDL_image/
 	C3: SDL_mixer	1.2.4 - http://www.libsdl.org/projects/SDL_mixer/

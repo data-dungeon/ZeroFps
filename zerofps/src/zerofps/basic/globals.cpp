@@ -41,10 +41,10 @@ void IntToChar(char* aText,int iValue)
 	
 float BASIC_API DegToRad(float fAngle)
 {
-	return (fAngle * NRRAD_IN_ONE_DEG);
+	return float((fAngle * NRRAD_IN_ONE_DEG));
 }
 
 float BASIC_API RadToDeg(float fAngle)
 {
-	return (fAngle * NRDEG_IN_ONE_RAD);
+	return float((fAngle * NRDEG_IN_ONE_RAD));
 }

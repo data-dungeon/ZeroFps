@@ -198,7 +198,7 @@ bool Matrix3::inverse (Matrix3& inv, float tolerance) const
 	inv.m_aafRowCol[2][1] = -(m_aafRowCol[0][0] * m_aafRowCol[2][1] - m_aafRowCol[2][0] * m_aafRowCol[0][1]);
 	inv.m_aafRowCol[2][2] =   m_aafRowCol[0][0] * m_aafRowCol[1][1] - m_aafRowCol[0][1] * m_aafRowCol[1][0];
 
-	float invd = 1.0 / det;
+	float invd = float(1.0 / det);
 	for(int i=0; i<9; i++)	inv.m_afData[i] *= invd;
 	return true;
 }

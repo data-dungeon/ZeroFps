@@ -35,7 +35,7 @@ bool ZFMemPackage::Read(void* pData,int iSize)
 {
 	char* datapointer=(char*)pData;
 	
-	if(m_acData.size() < m_iPos+iSize){
+	if(m_acData.size() < (unsigned int)(m_iPos+iSize)){
 		cout<<"ERROR: Trying to read outside of mempackage"<<endl;
 		return false;
 	}
@@ -55,7 +55,7 @@ bool ZFMemPackage::Write(void* pData,int iSize)
 	char* datapointer=(char*)pData;	
 	
 	//make the vector bigger if the data dont fit
-	if(m_acData.size() < m_iPos+iSize)
+	if(m_acData.size() < (unsigned int)(m_iPos+iSize))
 		m_acData.resize(m_iPos+iSize);
 	
 	for(int i=0;i<iSize;i++)

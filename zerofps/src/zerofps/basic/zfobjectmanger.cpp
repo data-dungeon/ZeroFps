@@ -49,9 +49,9 @@ void CmdArgument::Set(const char* szCmdArgs)
 	int args = 0;	// Number of arguments
 	kNewArg = "";
 
-	for(int i=0; i<strlen(szCmdArgs); i++) {
+	for(unsigned int i=0; i<strlen(szCmdArgs); i++) {
 
-		while(int(szCmdArgs[i]) != 32 && i < strlen(szCmdArgs) ) {	//loop until space
+		while(unsigned int(szCmdArgs[i]) != 32 && i < strlen(szCmdArgs) ) {	//loop until space
 			kNewArg.append(1,szCmdArgs[i]);						//add to argument nr args
 			i++;
 		}
@@ -151,7 +151,7 @@ ZFObject* ZFObjectManger::GetObjectPtr(char* acName)
 {
 	string Test(acName);
 
-	for(int i=0; i < kObjectNames.size();i++) {
+	for(unsigned int i=0; i < kObjectNames.size();i++) {
 		if(kObjectNames[i].m_strName == Test) {
 			kObjectNames[i].m_iNumOfRequests ++;
 			return kObjectNames[i].pkObject;
@@ -182,7 +182,7 @@ void ZFObjectManger::PrintObjects(void)
 {
 	cout << "OBJECTS: "<< endl;
 
-	for(int i=0; i < kObjectNames.size();i++) {
+	for(unsigned int i=0; i < kObjectNames.size();i++) {
 		cout << kObjectNames[i].m_strName << " , " << kObjectNames[i].m_iNumOfRequests <<  endl;
 	}
 
@@ -192,7 +192,7 @@ void ZFObjectManger::PrintObjectsHer(void)
 {
 	cout << "OBJECTS: "<< endl;
 
-	for(int i=0; i < kObjectNames.size();i++) {
+	for(unsigned int i=0; i < kObjectNames.size();i++) {
 		if(kObjectNames[i].pkObject->m_pkParent == NULL) {
 			kObjectNames[i].pkObject->PrintChilds("");
 		}
@@ -202,7 +202,7 @@ void ZFObjectManger::PrintObjectsHer(void)
 
 ZFCmdData* ZFObjectManger::FindArea(const char* szName)
 {
-	for(int i=0; i<m_kCmdDataList.size(); i++) {
+	for(unsigned int i=0; i<m_kCmdDataList.size(); i++) {
 		if(m_kCmdDataList[i].m_strName == szName)
 			return &m_kCmdDataList[i];
 	}

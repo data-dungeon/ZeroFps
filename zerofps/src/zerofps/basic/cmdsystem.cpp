@@ -46,13 +46,13 @@ void CmdSystem::Get(const char* aName) {
 */
 
 void CmdSystem::List() {
-	for(int i=0;i<kVars.size();i++) {		//loop trough variable vector
+	for(unsigned int i=0;i<kVars.size();i++) {		//loop trough variable vector
 		cout<<kVars[i]->aName<<" = "<<GetVar(i)<<endl;	//print all elements
 	}
 }
 
 void* CmdSystem::GetVar(int i) {
-	double pdData;
+//	double pdData;
 	string pkData;
 	
 	/*
@@ -82,7 +82,7 @@ bool CmdSystem::Set(const char* acName,const char* acData)
 	Gemens(aName);
 	
 	//loop trough variable vector 
-	for(int i=0;i<kVars.size();i++) {
+	for(unsigned int i=0;i<kVars.size();i++) {
 		if(strcmp(kVars[i]->aName,aName)==0){	//if we find the right variable
 			if(kVars[i]->iType == type_string) {
 				SetString(i,acData);											
@@ -100,7 +100,7 @@ bool CmdSystem::Set(const char* acName,const char* acData)
 
 void CmdSystem::SetValue(int i,const char* acData) {
 	
-	float dData = atof(acData);
+	float dData = float(atof(acData));
 	
 		switch(kVars[i]->iType) {		//set it depending on what type it is
 			case type_int:
@@ -154,7 +154,7 @@ void CmdSystem::RunCommand(int cmdid, const CmdArgument* kCommand)
 		case FID_VARLIST:
 			m_pkCon->Printf("### variable list ###");
 
-			for(int i=0;i<kVars.size();i++)
+			for(unsigned int i=0;i<kVars.size();i++)
 			{
 				switch(kVars[i]->iType)
 				{

@@ -42,7 +42,7 @@ void ZFObject::PrintChilds(const char* szParentName)
 	string FullName = string(szParentName) + "/" + m_strZFpsName;
 	cout << FullName << endl;
 
-	for(int i=0; i < m_akChild.size(); i++) {
+	for(unsigned int i=0; i < m_akChild.size(); i++) {
 		m_akChild[i]->PrintChilds(FullName.c_str());
 		}
 }
@@ -64,7 +64,7 @@ void ZFObject::RemoveChild(ZFObject* pkObject)
 
 int ZFObject::GetChildIndex(ZFObject* pkChild)
 {
-	for(int i=0; i < m_akChild.size(); i++) {
+	for(unsigned int i=0; i < m_akChild.size(); i++) {
 		if(pkChild == m_akChild[i])
 			return i;
 		}
@@ -76,7 +76,7 @@ int ZFObject::GetChildIndex(char* szName)
 {
 	string strName(szName);
 
-	for(int i=0; i < m_akChild.size(); i++) {
+	for(unsigned int i=0; i < m_akChild.size(); i++) {
 		if(strName == m_akChild[i]->m_strZFpsName)
 			return i;
 		}
@@ -97,7 +97,7 @@ ZFObject* ZFObject::GetChildPtr(char* szName)
 {
 	string strName(szName);
 
-	for(int i=0; i < m_akChild.size(); i++) {
+	for(unsigned int i=0; i < m_akChild.size(); i++) {
 		if(strName == m_akChild[i]->m_strZFpsName)
 			return m_akChild[i];
 		}
