@@ -719,7 +719,7 @@ void Render::DrawHMLodSplat(HeightMap* kMap,Vector3 CamPos,int iFps)
 	glPushMatrix();
 	glPushAttrib(GL_DEPTH_BUFFER_BIT);
 		
-	glTranslatef(kMap->m_kPosition.x,kMap->m_kPosition.y,kMap->m_kPosition.z);
+	glTranslatef(kMap->m_kPosition.x-kMap->GetSize()/2,kMap->m_kPosition.y,kMap->m_kPosition.z-kMap->GetSize()/2);
 	glColor4f(1,1,1,1);
 
 //	if(m_iHmTempList==0)
@@ -797,9 +797,9 @@ void Render::DrawPatch(HeightMap* kMap,Vector3 CamPos,int xp,int zp,int iSize)
 	int iStep;
 	float fDistance;
 	
-	Vector3 PatchCenter(kMap->m_kPosition.x + (xp + iSize/2)*HEIGHTMAP_SCALE,
+	Vector3 PatchCenter(kMap->m_kPosition.x-(kMap->GetSize()/2) + (xp + iSize/2)*HEIGHTMAP_SCALE,
 							  kMap->m_kPosition.y + 34*HEIGHTMAP_SCALE,
-							  kMap->m_kPosition.z + (zp + iSize/2)*HEIGHTMAP_SCALE);
+							  kMap->m_kPosition.z-(kMap->GetSize()/2) + (zp + iSize/2)*HEIGHTMAP_SCALE);
 		
 	fDistance=(CamPos-PatchCenter).Length();
 		
@@ -818,7 +818,7 @@ void Render::DrawPatch(HeightMap* kMap,Vector3 CamPos,int xp,int zp,int iSize)
 //	cout<<iStep<<endl;
 		
 	glPushMatrix();			
-		glTranslatef(-kMap->m_kPosition.x,-kMap->m_kPosition.y,-kMap->m_kPosition.z);
+		glTranslatef(-kMap->m_kPosition.x+kMap->GetSize()/2,-kMap->m_kPosition.y,-kMap->m_kPosition.z+kMap->GetSize()/2);
 		m_pkLight->Update(PatchCenter);
 	glPopMatrix();
 

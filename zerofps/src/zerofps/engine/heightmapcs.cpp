@@ -27,7 +27,7 @@ CollisionData* HeightMapCS::Collide_CSSphere(CSSphere* kOther,float fTime)
 {
 
 
-	return false;
+	return NULL;
 }
 
 

@@ -1,6 +1,6 @@
 #include "zeroedit.h"
 #include "gui.h"
-#include "fh.h"
+//#include "../zerofps/engine/fh.h"
 
 ZeroEdit Editor("ZeroEdit",1024,768,16);
 
@@ -467,6 +467,7 @@ void ZeroEdit::RunCommand(int cmdid, const CmdArgument* kCommand)
 			
 			break;
 		case FID_VIEWMAD:
+			/*
 			if(kCommand->m_kSplitCommand.size() <= 1) {
 				pkConsole->Printf("madview [filename]");
 				break;
@@ -477,6 +478,7 @@ void ZeroEdit::RunCommand(int cmdid, const CmdArgument* kCommand)
 			Object *pkmad = new FHObject(kCommand->m_kSplitCommand[1].c_str());
 			pkmad->GetPos()=m_kDrawPos;
 			pkmad->AttachToClosestZone();
+			*/
 			break;
 	}
 }

@@ -34,11 +34,18 @@ void PhysicsEngine::Update()
 		PP->Update();
 		
 		Object* pkObject=PP->GetObject();		
+		
+//		cout<<"radius "<<PP->GetColSphere()->m_fRadius<<endl;
+		
+		glDisable(GL_CULL_FACE);
+		glPolygonMode(GL_FRONT_AND_BACK,GL_LINE);
+		glColor3f(1,1,1);		
 		glPushMatrix();
 			glTranslatef(pkObject->GetPos().x,pkObject->GetPos().y,pkObject->GetPos().z);
 			glutSolidSphere(static_cast<CSSphere*>(PP->GetColSphere())->m_fRadius, 10,10);
 		glPopMatrix();
-	
+		glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);		
+		glEnable(GL_CULL_FACE);
 		
 
 		MoveObject(PP);

@@ -52,8 +52,8 @@ float HeightMap::Height(float x,float z) {
 	x/=HEIGHTMAP_SCALE;
 	z/=HEIGHTMAP_SCALE;
 	
-	x-=m_kPosition.x;
-	z-=m_kPosition.z;
+	x-=m_kPosition.x-m_iHmSize/2;
+	z-=m_kPosition.z-m_iHmSize/2;
 
 	if(x<0 || x>m_iHmSize || z<0 || z>m_iHmSize) 
 		return 1;
@@ -85,8 +85,8 @@ float HeightMap::Height(float x,float z) {
 
 Vector3 HeightMap::Tilt(float x,float z) {
 	
-	x-=m_kPosition.x;
-	z-=m_kPosition.z;
+	x-=m_kPosition.x-m_iHmSize/2;
+	z-=m_kPosition.z-m_iHmSize/2;
 
 	if(x<0 || x>m_iHmSize || z<0 || z>m_iHmSize) 
 		return Vector3(1,1,1);

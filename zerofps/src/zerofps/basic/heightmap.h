@@ -65,7 +65,8 @@ class BASIC_API HeightMap: public ZFObject {
 		float Height(float x,float z);
 		Vector3 Tilt(float x,float z);		
 		void SetTileSet(char* acTileSet);
-		void SetPosition(Vector3 kNewPos);		
+		void SetPosition(Vector3 kNewPos);
+		Vector3 &GetPos(){return m_kPosition;};
 		HM_vert* GetVert(int x,int z);		
 		
 		int GetSize(){return m_iHmSize*HEIGHTMAP_SCALE;};

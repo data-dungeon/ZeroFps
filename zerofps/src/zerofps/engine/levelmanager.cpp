@@ -53,8 +53,8 @@ void LevelManager::CreateNew(int iSize)
 
 void LevelManager::CreateZones()
 {
-	for(float x=0;x< (float)m_pkMap->GetSize();x+=m_fZoneRadius/2){
-		for(float z=0;z< (float)m_pkMap->GetSize();z+=m_fZoneRadius/2){
+	for(float x=(m_pkMap->GetPos().x-m_pkMap->GetSize()/2);x< (float)(m_pkMap->GetPos().x+m_pkMap->GetSize()/2);x+=m_fZoneRadius/2){
+		for(float z=(m_pkMap->GetPos().z-m_pkMap->GetSize()/2);z< (float)(m_pkMap->GetPos().z+m_pkMap->GetSize()/2);z+=m_fZoneRadius/2){
 			if(m_pkMap->Height(x,z)>-1){
 				ZoneObject *object = new ZoneObject();
 				object->GetPos()=Vector3(x,m_pkMap->Height(x,z),z);

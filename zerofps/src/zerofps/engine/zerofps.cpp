@@ -168,11 +168,16 @@ void ZeroFps::MainLoop(void) {
 		{
 			if(m_bConsoleMode)
 				m_pkInput->SetInputEnabled(false);
-			else
-				m_pkInput->SetInputEnabled(true);
-
-			if(m_bConsoleMode == false)
+			else 
 			{
+				m_pkInput->SetInputEnabled(true);						
+				
+				if(m_pkInput->Pressed(KEY_TAB))
+				{			
+					m_bConsoleMode=true;		
+					m_pkInput->Reset();
+				}
+				
 				if(m_bGuiMode)
 					m_pkInput->SetInputEnabled(false);
 				else
@@ -182,28 +187,6 @@ void ZeroFps::MainLoop(void) {
 			//run application main loop
 			m_pkApp->OnIdle();				
 			
-			if(m_pkInput->Pressed(KEY_TAB))
-			{			
-				m_bConsoleMode=true;		
-				m_pkInput->Reset();
-			}
-						
-/*			
-			//this changes mode to console
-			if(m_pkInput->Pressed(TAB)){
-				glPushAttrib(GL_LIGHTING_BIT);
-				glDisable(GL_LIGHTING);
-//				m_iState=state_console;
-				m_bClientMode=false;
-				m_bConsoleMode=true;
-				m_pkInput->Reset();
-//					m_pkTempCamera=m_pkCamera;										
-					
-					
-				SetCamera(m_pkConsoleCamera);					
-//				break;
-			}
-*/				
 				
 			//toggle keyboard/mouse grabing
 			if(m_pkInput->Pressed(KEY_F12))
@@ -214,9 +197,8 @@ void ZeroFps::MainLoop(void) {
 				ToggleFullScreen();		
 			
 			//update all normal propertys
-//				m_pkObjectMan->Update(PROPERTY_TYPE_ALL,PROPERTY_SIDE_ALL,false);
 			m_pkObjectMan->Update(PROPERTY_TYPE_NORMAL,PROPERTY_SIDE_ALL,false);
-//				m_pkObjectMan->Update(PROPERTY_TYPE_RENDER,PROPERTY_SIDE_ALL,false);				
+
 			DevPrintf("Num Objects: %d", m_pkObjectMan->GetNumOfObjects());
 
 			m_pkPhysEngine->Update();
@@ -237,7 +219,8 @@ void ZeroFps::MainLoop(void) {
 			m_pkApp->OnHud();
 
 			// Update GUI
-			m_pkGui->Update();
+			if(!m_bConsoleMode)
+				m_pkGui->Update();
 
 			DevPrintf("Mad's: %d", m_iNumOfMadRender);
 			m_iNumOfMadRender = 0;

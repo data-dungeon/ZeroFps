@@ -25,7 +25,7 @@ class ENGINE_API HMRP2: public Property {
 		void Update();
 
 		void SetHeightMap(HeightMap* pkHeightMap);
-
+		HeightMap* GetHeightMap() {return m_pkHeightMap;};
 };
 
 Property* Create_HMRP2();

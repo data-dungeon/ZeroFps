@@ -492,7 +492,8 @@ void GLGuiRender::PrintRows(char* text, unsigned int iXPos, unsigned int iYPos,
 			chars_to_print = strlen(text) - iPrintedChars;
 
 		bool skip = false;
-		for(int i=0; i<iCharsOneRow; i++)
+		int i;
+		for(i=0; i<iCharsOneRow; i++)
 		{
 			if(text[iPrintedChars]=='\r')
 			{
@@ -517,3 +518,10 @@ void GLGuiRender::PrintRows(char* text, unsigned int iXPos, unsigned int iYPos,
 			break;
 	}
 }
+
+
+
+
+
+
+

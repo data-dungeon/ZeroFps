@@ -40,23 +40,21 @@ float PhysicProperty::GetBoundingRadius()
 	if(mp!=NULL)
 	{
 //		cout<<"Got radius from madproperty"<<endl;
-		cout<<"fan"<<endl;		
 		return mp->pkCore->GetRadius();	
 	}
 	
 	ModelProperty* mop = static_cast<ModelProperty*>(m_pkObject->GetProperty("ModelProperty"));
 	if(mop!=NULL)
 	{
-		cout<<"hora"<<endl;
 //		cout<<"Got radius from Modelproperty"<<endl;	
 		return mop->m_fRadius;	
 	}
 	
-	HeightMapRenderProperty* hp = static_cast<HeightMapRenderProperty*>(m_pkObject->GetProperty("HeightMapRenderProperty"));
+	HMRP2* hp = static_cast<HMRP2*>(m_pkObject->GetProperty("HMRP2"));
 	if(hp!=NULL)
 	{
-		cout<<"Got radius from heightmap"<<endl;	
-		float k=hp->GetHeightMap()->m_iHmSize/2;
+//		cout<<"Got radius from heightmap"<<endl;	
+		float k=hp->GetHeightMap()->GetSize()/2;
 		
 		return sqrt((k*k)+(k*k));
 	}
