@@ -159,7 +159,7 @@ int Modell3DS::Read3DSChunk(FILE *fp, Chunk3DS &chunk)
 
 	int chunkid = chunk.id;
 	int lengd = chunk.len;
-	PrintChunkInfo(chunkid, lengd);
+//	PrintChunkInfo(chunkid, lengd);
 	return true;
 }
 
@@ -216,7 +216,6 @@ int Modell3DS::Chunk_CHUNK3DS_FACE_ARRAY(FILE *fp, long FileStart, long FileLen,
 	int			chunkid;
 	facemat_c	FaceMat;
 	unsigned short value;
-
 
 	while( ChunkStart < (FileStart+FileLen) &&  Read3DSChunk(fp, chunk)) {
 		switch(chunk.id) {
@@ -590,10 +589,6 @@ bool Modell3DS::Export(MadExporter* mad)
 	mad->kHead.iNumOfTextures	= part3DS.Material.size();
 
 	mad->akFrames.resize(1);
-//	to->frames = new pmd_vertexframe [to->head.num_of_frames];
-//	to->frames[0].vertex = new Vector3 [to->head.num_of_vertex];
-//*	to->triangle	= new pmd_triangle_s [to->head.num_of_triangles];
-//*	to->texture_coo = new pmd_texcoo_s [to->head.num_of_vertex];
 
 	// Copy texture names
 	vector<material_c>::iterator mi;
@@ -602,9 +597,9 @@ bool Modell3DS::Export(MadExporter* mad)
 	{
 		strcpy(mad->akTextures[i].ucTextureName, mi->Texture.File_name);
 		mi->print();
-/*		char* extpos = strchr(to->textures[i].texname,'.');
+		char* extpos = strchr(mad->akTextures[i].ucTextureName,'.');
 		if(extpos)
-			extpos[0] = 0;*/
+			extpos[0] = 0;
 	}
 
 	mad->akFrames[0].akVertex.resize(mad->kHead.iNumOfVertex);
@@ -630,28 +625,6 @@ bool Modell3DS::Export(MadExporter* mad)
 		mad->akFaces[i].iIndex[0] = part3DS.surface[i].index[0];
 		mad->akFaces[i].iIndex[1] = part3DS.surface[i].index[1];
 		mad->akFaces[i].iIndex[2] = part3DS.surface[i].index[2];
-/*		to->triangle[i].vertex_index[0] = part3DS.surface[i].index[0];
-		to->triangle[i].texcoo_index[0] = part3DS.surface[i].index[0];
-		to->triangle[i].vertex_index[1] = part3DS.surface[i].index[1];
-		to->triangle[i].texcoo_index[1] = part3DS.surface[i].index[1];
-		to->triangle[i].vertex_index[2] = part3DS.surface[i].index[2];
-		to->triangle[i].texcoo_index[2] = part3DS.surface[i].index[2];
-		to->triangle[i].texture_num = 0;*/
-
-		//to->set_surface(i,3,vertexidx,&color);
-		/*if(part3DS.mapcoo)	{
-			to->triangle[i].texture_coo[0].s = part3DS.mapcoo[part3DS.surface[i].index[0]].x;
-			to->triangle[i].texture_coo[0].t = part3DS.mapcoo[part3DS.surface[i].index[0]].y;
-
-			to->triangle[i].texture_coo[1].s = part3DS.mapcoo[part3DS.surface[i].index[1]].x;
-			to->triangle[i].texture_coo[1].t = part3DS.mapcoo[part3DS.surface[i].index[1]].y;
-
-			to->triangle[i].texture_coo[2].s = part3DS.mapcoo[part3DS.surface[i].index[2]].x;
-			to->triangle[i].texture_coo[2].t = part3DS.mapcoo[part3DS.surface[i].index[2]].y;
-
-			//to->triangle[i].texture_coo[1] = part3DS.mapcoo[vertexidx[1]];
-			//to->triangle[i].texture_coo[2] = part3DS.mapcoo[vertexidx[2]];
-			}*/
 		}
 
 /*	vector<facemat_c>::iterator fmi;
@@ -678,9 +651,7 @@ bool Modell3DS::Export(MadExporter* mad)
 	return 0;
 }
 
-// Returns 0 on succ, !0 annars.
 void Modell3DS::Read( char* filename )
-//int Read3DS(char *filename, pmd_c* to)
 {
 	FILE *fp;
 	long FileSize;
@@ -712,9 +683,6 @@ void Modell3DS::Read( char* filename )
 			}
  
 	fclose(fp);
-
-//	part3DS.clear();
-//	to->create_vertexnormals();
 
 	return;
 }

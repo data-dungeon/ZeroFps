@@ -1,5 +1,6 @@
 #include <iostream>
 #include "mdl.h"
+#include "qpack.h"
 
 // Returns mdl version for quake mdl (1-3) or 0 if not a quake series mdl.
 int GetQuakeModellVersion(PAKFileFp *mdlfp, char* filename)
@@ -54,6 +55,9 @@ void SplitAnimNumAndFrameNum(int AnimAndFrame, int& Anim, int& Frame)
 
 void ModellMD2::Read( char* filename )
 {
+	g_PakFileSystem.RegisterPak("c:\\spel\\quake2\\baseq2\\pak0.pak");
+	g_PakFileSystem.RegisterPak("c:\\spel\\quake2\\baseq2\\pak1.pak");
+
 	md2fp.Open(filename);
 	if(md2fp.pkFp == NULL)	return;
 

@@ -6,7 +6,6 @@
 #include "mad.h"
 #include "mdl.h"
 #include "3ds.h"
-#include "qpack.h"
 
 using namespace std;
 
@@ -58,8 +57,6 @@ IMadImport* GetImportObject(char *filename)
 	
 	if(strcmp(ext, ".md2") == 0)
 	{
-		g_PakFileSystem.RegisterPak("c:\\spel\\quake2\\baseq2\\pak0.pak");
-		g_PakFileSystem.RegisterPak("c:\\spel\\quake2\\baseq2\\pak1.pak");
 		pkImport = new ModellMD2;
 	}
 
@@ -77,7 +74,7 @@ int main(int argc, char* argv[])
 	int FirstParameterIndex = 0;
 
     // Parse commandline options
-/*    int iCurArg;
+    int iCurArg;
     for( iCurArg = 1; iCurArg < argc; ++iCurArg ) {
 		// Check if its a option switch.
         if( *argv[ iCurArg ] == '-' ) 
@@ -120,10 +117,9 @@ int main(int argc, char* argv[])
 
 	strcpy(ucaInFile, argv[iCurArg]);
 	strcpy(ucaOutFile, argv[iCurArg + 1]);
-*/
 	
-	strcpy(ucaInFile, "ship.3ds");
-	strcpy(ucaOutFile, "ship.mad");
+//	strcpy(ucaInFile, "ship.3ds");
+//	strcpy(ucaOutFile, "ship.mad");
 	strcpy(ucaTextureNames, "testtex.tga");
 
 	cout << "InFile: " << ucaInFile << endl;
