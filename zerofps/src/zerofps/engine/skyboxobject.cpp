@@ -1,9 +1,12 @@
 #include "skyboxobject.h"
 
-SkyBoxObject::SkyBoxObject() {
-//	m_pkHeightMap=pkMap;
-//	m_bStatic=true;
-//	AddProperty(new SkyBoxRenderProperty());
-//	AddProperty(new HeightMapRenderProperty(pkMap));
+SkyBoxObject::SkyBoxObject(const char* acHor,const char* acTop) {
+	m_bStatic=true;
+	AddProperty(new SkyBoxRenderProperty(acHor,acTop));
 }
 
+void SkyBoxObject::SetTexture(const char* acHor,const char* acTop)
+{
+	SkyBoxRenderProperty *sky = static_cast<SkyBoxRenderProperty*>(GetProperty("SkyBoxRenderProperty"));
+	sky->SetTexture(acHor,acTop);
+}

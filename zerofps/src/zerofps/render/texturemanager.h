@@ -15,8 +15,8 @@
 using namespace std;
 enum OPTIONS {
 	T_NOMIPMAPPING=1,
-	T_COMPRESSION=8
-
+	T_COMPRESSION=8,
+	T_CLAMP=16
 
 };
 
@@ -38,18 +38,18 @@ class RENDER_API TextureManager : public ZFObject {
 		int m_iCurrentTexture;
 		vector<texture*> m_iTextures;
 		FileIo* m_pkFile;			
-		SDL_Surface *LoadImage(char *filename);	
-		bool LoadTexture(GLuint &iNr,char* acFilename,int iOption);	
+		SDL_Surface *LoadImage(const char *filename);	
+		bool LoadTexture(GLuint &iNr,const char* acFilename,int iOption);	
 		void RunCommand(int cmdid, const CmdArgument* kCommand) { }
 
 	public:
 		TextureManager(FileIo* pkFile);
-		int Load(char* acFileName,int iOption);		
+		int Load(const char* acFileName,int iOption);		
 		void BindTexture(int iTexture);
-		void BindTexture(char* acFileName,int iOption);
+		void BindTexture(const char* acFileName,int iOption);
 		void ClearAll();
 
-		int GetIndex(char* szFileName);
+		int GetIndex(const char* szFileName);
 };
 
 

@@ -4,11 +4,13 @@ class ModelProperty;
 class CameraProperty;
 class CollisionProperty;
 class HeightMapRenderProperty;
+class SkyBoxRenderProperty;
 class CollisionObject;
 class CollisionSphere;
 class CollisionPoint;
 class CollisionHeightMap;
 class HeightMapObject;
+class SkyBoxObject;
 
 #include "object.h"
 #include "property.h"
@@ -22,3 +24,12 @@ class HeightMapObject;
 #include "collisionheightmap.h"
 #include "heightmapobject.h"
 #include "heightmaprenderproperty.h"
+#include "skyboxobject.h"
+#include "skyboxrenderproperty.h"
+
+
+
+
+
+
+

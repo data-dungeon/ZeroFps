@@ -11,7 +11,7 @@ class BASIC_API FileIo {
 		char fil[256];
 
 	public:
-		char* File(char* aFile);
+		char* File(const char* aFile);
 
 };
 

@@ -126,15 +126,19 @@ void Test::OnInit(void) {
 
 	//player
 	m_pkPlayer=new PlayerObject(test,pkInput);
-	m_pkPlayer->GetPos()=Vector3(289,25,828);		
+	m_pkPlayer->GetPos()=Vector3(400,25,705);		
 	m_pkPlayer->AddProperty(new CameraProperty(cam1));
 	pkObjectMan->Add(m_pkPlayer);
 	pkCollisionMan->Add(m_pkPlayer);
 	
+	
+	//skybox
+	SkyBoxObject *sky=new SkyBoxObject("file:../data/textures/skybox-hor.bmp","file:../data/textures/skybox-topbotom.bmp");
+	pkObjectMan->Add(sky);	
+	pkCollisionMan->Add(sky);
+	
 	//add a collisionproperty for our heightmap
 	HeightMapObject *hm=new HeightMapObject(test);
-//	hm->AddProperty(new FloatProperty());
-//	hm->AddProperty(new GravityProperty());
 	hm->GetPos()=Vector3(0,-4,0);			
 	pkObjectMan->Add(hm);	
 	pkCollisionMan->Add(hm);
@@ -194,7 +198,7 @@ void Test::OnIdle(void) {
 	pkFps->SetCamera(cam1);		
 		pkFps->GetCam()->ClearViewPort();	
 
-		pkRender->DrawSkyBox(pkFps->GetCam()->GetPos());
+//		pkRender->DrawSkyBox(pkFps->GetCam()->GetPos());
 //		pkRender->DrawHMlod(test,pkFps->GetCam()->GetPos(),pkFps->m_iFps);			
 
 		glEnable(GL_ALPHA_TEST);

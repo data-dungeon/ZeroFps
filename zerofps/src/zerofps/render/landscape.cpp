@@ -1,24 +1,69 @@
 #include "render.h"
 
-void Render::DrawSkyBox(Vector3 CamPos) {
+void Render::DrawSkyBox(Vector3 CamPos,int iHor,int iTop) {
 	glPushMatrix();
-	glPushAttrib(GL_LIGHTING_BIT|GL_FOG_BIT);
+	glPushAttrib(GL_LIGHTING_BIT|GL_FOG_BIT|GL_TEXTURE_BIT);
 	
 	glDisable(GL_FOG);
 	glDisable(GL_LIGHTING);//dont want lighting on the skybox		
 	glDepthMask(GL_FALSE);//want the skybox to be faaaaaar away =)
 	
-
-	
-	
-	int iSize=200;	
 	glTranslatef(CamPos.x,CamPos.y,CamPos.z);
+	glScalef(200,200,200);
+	
+	glColor4f(1,1,1,1);
+	
+	m_pkTexMan->BindTexture(iHor);	
+	glBegin(GL_QUAD_STRIP);		
+		//FRONT
+		glNormal3f(0,0,-1);
+		glTexCoord2f(0	,0);glVertex3f(-.5,.5  ,-.5);
+		glTexCoord2f(0	,1);glVertex3f(-.5,-.5	,-.5);
+		
+		glTexCoord2f(.25,0);glVertex3f(.5 ,.5	,-.5);		
+		glTexCoord2f(.25,1);glVertex3f(.5 ,-.5  ,-.5);		
 
+
+		//Right
+		glNormal3f(-1,0,0);
+		glTexCoord2f(.50,0);glVertex3f(.5 ,.5	,.5);		
+		glTexCoord2f(.50,1);glVertex3f(.5 ,-.5  ,.5);		
+
+		//Back
+		glNormal3f(0,0,1);
+		glTexCoord2f(.75,0);glVertex3f(-.5 ,.5	,.5);		
+		glTexCoord2f(.75,1);glVertex3f(-.5 ,-.5  ,.5);		
+		
+		//Left
+		glNormal3f(1,0,0);		
+		glTexCoord2f(1,0);glVertex3f(-.5 ,.5	,-.5);		
+		glTexCoord2f(1,1);glVertex3f(-.5 ,-.5  ,-.5);		
+	glEnd();
+
+	m_pkTexMan->BindTexture(iTop);	
+	glBegin(GL_QUADS);
+		//top
+		glNormal3f(0,-1,0);
+		glTexCoord2f(0	,0);		 glVertex3f(-.5,.5	,-.5);
+		glTexCoord2f(1	,0);		 glVertex3f(.5,.5	,-.5);		
+		glTexCoord2f(1	,.49);	glVertex3f(.5 ,.5	,.5);		
+		glTexCoord2f(0	,.49);	glVertex3f(-.5 ,.5	,.5);		
+		
+		//bottom
+		glNormal3f(0,1,0);
+		glTexCoord2f(0	,.51);	glVertex3f(-.5,-.5	,-.5);
+		glTexCoord2f(0	,1);		 glVertex3f(-.5,-.5	,.5);		
+		glTexCoord2f(1	,1);		 glVertex3f(.5 ,-.5	,.5);		
+		glTexCoord2f(1	,.51);	glVertex3f(.5 ,-.5	,-.5);		
+	glEnd();
+
+/*
 	Quad(Vector3(0,0,-iSize/2),Vector3(0,0,0),Vector3(iSize,iSize,iSize),m_pkTexMan->Load("file:../data/textures/front.bmp",0));
 	Quad(Vector3(0,iSize/2,0),Vector3(90,0,0),Vector3(iSize,iSize,iSize),m_pkTexMan->Load("file:../data/textures/top.bmp",0));
 	Quad(Vector3(0,0,iSize/2),Vector3(180,0,180),Vector3(iSize,iSize,iSize),m_pkTexMan->Load("file:../data/textures/front.bmp",0));	
 	Quad(Vector3(iSize/2,0,0),Vector3(0,-90,0),Vector3(iSize,iSize,iSize),m_pkTexMan->Load("file:../data/textures/front.bmp",0));
 	Quad(Vector3(-iSize/2,0,0),Vector3(0,90,0),Vector3(iSize,iSize,iSize),m_pkTexMan->Load("file:../data/textures/front.bmp",0));
+*/
 
 /*
 	Quad(Vector3(0,0,-iSize/2),Vector3(0,0,0),Vector3(iSize,iSize,iSize),m_pkTexMan->Load("file:../data/textures/front.bmp"));

@@ -13,10 +13,11 @@ TextureManager::TextureManager(FileIo* pkFile)
 }	
 
 
-bool TextureManager::LoadTexture(GLuint &iNr,char *acFilename,int iOption) {	
+bool TextureManager::LoadTexture(GLuint &iNr,const char *acFilename,int iOption) {	
 	bool isTga=false;
 	bool MipMapping=true;
 	bool Compression=false;
+	bool Clamp=false;
 	GLint iInternalFormat=GL_RGB;
 	GLint iFormat=GL_BGR;
 	
@@ -29,6 +30,9 @@ bool TextureManager::LoadTexture(GLuint &iNr,char *acFilename,int iOption) {
 //			cout<<"COMPRESSION"<<endl;
 			Compression=true;
 		}
+		if((iOption & T_CLAMP)) {
+			Clamp=true;
+		}	
 	}
 	
 	//is this a tga?
@@ -49,12 +53,20 @@ bool TextureManager::LoadTexture(GLuint &iNr,char *acFilename,int iOption) {
   glGenTextures(1,&iNr);
   glBindTexture(GL_TEXTURE_2D,iNr);
 
+	if(Clamp){
+		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_CLAMP);
+		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_CLAMP);	
+	} else {
+		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_REPEAT);		
+	}
+
 	if(MipMapping){
-	  glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);	
+		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);	
 		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR_MIPMAP_LINEAR);
 		gluBuild2DMipmaps(GL_TEXTURE_2D,iInternalFormat,image->w,image->h,iFormat,GL_UNSIGNED_BYTE,image->pixels);  		
 	}else{
-	  glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);		
+		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);		
 		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);  
 		glTexImage2D(GL_TEXTURE_2D,0,iInternalFormat,image->w,image->h,0,iFormat,GL_UNSIGNED_BYTE,image->pixels);
 	}
@@ -65,7 +77,7 @@ bool TextureManager::LoadTexture(GLuint &iNr,char *acFilename,int iOption) {
   return true;
 }
 
-SDL_Surface *TextureManager::LoadImage(char *acFilename) {
+SDL_Surface *TextureManager::LoadImage(const char *acFilename) {
   //Uint8 *rowhi, *rowlo;
   //Uint8 *tmpbuf, tmpch;
   SDL_Surface *image;
@@ -107,7 +119,7 @@ SDL_Surface *TextureManager::LoadImage(char *acFilename) {
   return(image);
 };
 
-int TextureManager::Load(char* acFileName,int iOption)
+int TextureManager::Load(const char* acFileName,int iOption)
 {
 	int iTexture;
 	iTexture = GetIndex(acFileName);
@@ -147,7 +159,7 @@ void TextureManager::BindTexture(int iTexture) {
 	}
 }
 
-void TextureManager::BindTexture(char* acFileName,int iOption) {
+void TextureManager::BindTexture(const char* acFileName,int iOption) {
 	int iTexture=Load(acFileName,iOption);
 	m_iCurrentTexture = NO_TEXTURE;
 	BindTexture(iTexture);
@@ -164,7 +176,7 @@ void TextureManager::ClearAll()
 	m_iTextures.clear();
 }
 
-int TextureManager::GetIndex(char* szFileName)
+int TextureManager::GetIndex(const char* szFileName)
 {
 	for(int i=0; i<m_iTextures.size(); i++){
 		if(m_iTextures[i]->file == szFileName) {

@@ -9,8 +9,8 @@ class ENGINE_API SkyBoxObject: public Object {
 //		HeightMap *m_pkHeightMap;
 
 	public:
-		SkyBoxObject();
-//		HeightMap *GetHeightMap(){return m_pkHeightMap;};
+		SkyBoxObject(const char* acHor,const char* acTop);
+		void SetTexture(const char* acHor,const char* acTop);
 };
 
 

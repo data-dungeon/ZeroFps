@@ -57,7 +57,7 @@ class RENDER_API Render : public ZFObject {
 		
 		void DrawHM(HeightMap* kmap);
 		void DrawHMlod(HeightMap* kmap,Vector3 CamPos,int iFps);		
-		void DrawSkyBox(Vector3 CamPos);
+		void DrawSkyBox(Vector3 CamPos,int iHor,int iTop);
 		void DrawWater(Vector3 kCamPos,Vector3 kPosition,Vector3 kHead,int iSize,int iStep);
 		void DrawSimpleWater(Vector3 kPosition,Vector4 kColor,int iSize,int iTexture);
 		void SetFog(Vector4 kFogColor,float FogDensity,float FogStart,float FogStop,bool FogEnable);		

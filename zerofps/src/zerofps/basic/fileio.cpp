@@ -1,7 +1,7 @@
 #include "fileio.h"
 
 
-char* FileIo::File(char* acFile) {
+char* FileIo::File(const char* acFile) {
 	//default only load the file acfile
 	strcpy(fil,acFile);				
 
