@@ -49,6 +49,8 @@ function InitPoliceData()
 	for x = 2, num_civilians+1, 1
 	do
 		local civilian_pos = GetEntityPos(civilian_list[x])
+		civilian_pos[1] = civilian_pos[1] + Random(3)
+		civilian_pos[3] = civilian_pos[3] + Random(3)
 		AddPatrolPoint(SIGetSelfID(), civilian_pos)
 	end
 

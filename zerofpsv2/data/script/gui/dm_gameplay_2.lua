@@ -118,6 +118,11 @@ function GUICreate()
 	 tex1a="0", tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=255,
 	 bkB=255, borderR=255, borderG=0, borderB=0, bd_size=0, tile=0, trans=0 }
 
+
+	Skin31 = { tex1="dm/map.bmp", tex2="0", tex3="0", tex4="0", 
+	 tex1a="dm/map_a.bmp", tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=255,
+	 bkB=255, borderR=255, borderG=0, borderB=0, bd_size=0, tile=0, trans=0 }
+
 	-------------------------------------------------------------------------
 	-- Create all windows in correct order (parents before childrens etc.)
 	-- 0 = Wnd, 1 = Button, 2 = Checkbox, 3 = Combobox, 4 = Label, 5 = Listbox, 6 = Radiobutton,
@@ -299,6 +304,10 @@ function GUICreate()
 	ChangeSkin("PauseBn","Skin30","Button down")
 	ChangeSkin("PauseBn","Skin29","Button focus")
 
+	CreateWnd(1,"MapBn","wind_map","Map",160,200+24,68,20,0)
+	ChangeSkin("MapBn","Skin1","Button up")
+	ChangeSkin("MapBn","Skin2","Button down")
+	ChangeSkin("MapBn","Skin1","Button focus")
 
 
 
@@ -323,6 +332,12 @@ function GUICreate()
 	ChangeSkin("MissionInfoOK","Skin1","Button up")
 	ChangeSkin("MissionInfoOK","Skin2","Button down")
 	ChangeSkin("MissionInfoOK","Skin1","Button focus")
+
+
+	CreateWnd(0,"MapWnd","GamePlayScreen","",200,0,600,448,0)
+	ChangeSkin("MapWnd","Skin31","Window")
+
+	
 
 end
 

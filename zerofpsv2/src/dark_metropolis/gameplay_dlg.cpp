@@ -33,6 +33,11 @@ void CGamePlayDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName,
 		m_pkDM->PauseGame(true); 
 	}	
 	else
+	if(strClickName == "MapBn")
+	{
+		GetWnd("MapWnd")->Show();
+	}
+	else
 	if(strClickName == "HQBn")
 	{
 		if(IsWndVisible("HQWnd"))
@@ -263,6 +268,8 @@ bool CGamePlayDlg::InitDlg()
 
 		// Enable the round alpha border to use apha test (labels are disabled by default)
 		GetWnd("ActiveCharacterPortraitLabel")->Enable();
+
+		ShowWnd("MapWnd", false);
 	}
 
 	GetWnd("GamePlayDlgQuickItem1")->Hide();

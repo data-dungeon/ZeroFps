@@ -278,12 +278,19 @@ void DarkMetropolis::GUI_OnCommand(int iID, bool bRMouseBnClick,
 void DarkMetropolis::GUI_OnClick(int x, int y, bool bMouseDown, 
 											bool bLeftButton, ZGuiWnd *pkMain)
 {
-	string strClickName;
 	string strMainWnd;
 
 	if(pkMain)
 	{
 		strMainWnd = pkMain->GetName();
+	}
+
+	if(strMainWnd != "MapBn")
+	{
+		if(GetWnd("MapWnd") && GetWnd("MapWnd")->IsVisible())
+		{
+			GetWnd("MapWnd")->Hide();
+		}
 	}
 
 	if(strMainWnd == "MembersWnd")
@@ -307,6 +314,8 @@ void DarkMetropolis::GUI_OnClick(int x, int y, bool bMouseDown,
 			GetWnd("ActiveCharacterPortraitLabel")->GetParent()->SortChilds();
 		}
 	}
+
+
 	
 }
 

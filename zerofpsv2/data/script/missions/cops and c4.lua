@@ -24,7 +24,10 @@ HQPos = {}
 
 function OnMissionStart()
 
+	-----------------------------------------------------------------------
 	-- Lägg till Da bomb till spelarens hq
+	-----------------------------------------------------------------------
+
 	local hq = GetDMObject(0)
 	AddItem(hq, "data/script/objects/dm/t_bomb.lua", 0)
 
@@ -35,6 +38,19 @@ function OnMissionStart()
 	Print( "PoliceStationID = ", PoliceStationID)
 
 	HQPos = GetEntityPos(hq)
+
+	-----------------------------------------------------------------------
+	-- Skapa lite poliser
+	-----------------------------------------------------------------------
+	
+	for i=0, 6, 1
+	do
+		local police = RunScript("data/script/objects/dm/t_police.lua")
+		local pos = GetObjectPos(PoliceStationID)
+		pos[1] = pos[1] + Random(3)
+		pos[3] = pos[3] + Random(3)
+		SetObjectPos(police, pos)
+	end
 
 end
 
