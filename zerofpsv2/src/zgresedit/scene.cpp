@@ -433,6 +433,9 @@ bool Scene::BuildFileTree(char* szTreeBoxName, char* szRootPath, char* szExtensi
 
 bool Scene::IsSceneWnd(ZGuiWnd* pkWnd)
 {
+   if(pkWnd == NULL)
+      return false;
+
 	if(pkWnd == m_pkPropertyWnd)
 		return true;
 	if(pkWnd == m_pkWorkSpace)

@@ -253,7 +253,7 @@ bool Serialization::LoadGUI(const char* szFileName, Scene* pkScene)
 
 		if(pkWnd)
 		{
-			if(pkWnd->m_iZValue >= 0)
+		//	if(pkWnd->m_iZValue >= 0)
 			{
 				if(pkWnd != pkMainWnd && pkScene->IsSceneWnd(pkWnd) == false)
 				{

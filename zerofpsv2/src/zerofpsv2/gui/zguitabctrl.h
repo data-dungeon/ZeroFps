@@ -47,7 +47,7 @@ protected:
 	bool Notify(ZGuiWnd* pkWnd, int iCode);
 
 private:
-	bool SendNotifyMessage(int iType, int iParams, void* pMsg);
+	bool SendNotifyMessageTabCtrl(int iType, int iParams, void* pMsg);
 	void CreateInternalControls();
 	bool SetButtonSkin(ZGuiButton* pkButton, unsigned int index);
 	void ShowPage(unsigned int index, bool bVisible);

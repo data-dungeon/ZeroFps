@@ -546,6 +546,11 @@ void ZGResEdit::OnKeyDown(int iKey)
 		EnableWnds(false);
 		break;
 
+   case KEY_TAB:
+      m_pkGui->PlaceWndFrontBack(m_pkScene->m_pkWorkSpace, true); 
+      m_pkGui->PlaceWndFrontBack(m_pkScene->m_pkPropertyWnd, true); 
+      break;
+
 	case KEY_DELETE:
 		if(m_eEditMode != VIEW)
 		{
@@ -1089,14 +1094,17 @@ void ZGResEdit::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 					map<string, ZGuiWnd*>::iterator it2;
 					for( it2 = kWindows.begin(); it2 != kWindows.end(); it2++)
 					{
-						if(m_pkScene->IsSceneWnd(it2->second) == false && it2->second != pkMainWnd)
-						{
-							ZGuiWnd* pkNewMain = /*m_pkScene->*/DeleteWnd(it2->second);
-							m_pkFocusWnd = pkNewMain;
-							m_pkMainWnd = pkNewMain;
+                  if(GetWnd(it2->first))
+                  {
+						   if(m_pkScene->IsSceneWnd(it2->second) == false && it2->second != pkMainWnd)
+						   {
+							   ZGuiWnd* pkNewMain = /*m_pkScene->*/DeleteWnd(it2->second);
+							   m_pkFocusWnd = pkNewMain;
+							   m_pkMainWnd = pkNewMain;
 
-							if(m_pkMainWnd == NULL) m_pkMainWnd = GetWnd("GuiMainWnd");
-						}
+							   if(m_pkMainWnd == NULL) m_pkMainWnd = GetWnd("GuiMainWnd");
+						   }
+                  }
 					}
 
 					kSerialize.LoadGUI(strLoadName.c_str(), m_pkScene);

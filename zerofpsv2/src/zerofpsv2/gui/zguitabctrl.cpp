@@ -385,7 +385,7 @@ void ZGuiTabCtrl::SetCurrentPage(unsigned int index)
 			piParams[0] = m_uiCurrentPage;
 			piParams[1] = m_iPrevCurrentPage;
 			piParams[2] = (int) this;
-			SendNotifyMessage(ZGM_TCN_SELCHANGE, 3, piParams);
+			SendNotifyMessageTabCtrl(ZGM_TCN_SELCHANGE, 3, piParams);
 			delete[] piParams;
 		}
 		else
@@ -555,7 +555,7 @@ void ZGuiTabCtrl::SetFont(ZGuiFont* pkFont)
 	m_pkFont = pkFont;
 }
 
-bool ZGuiTabCtrl::SendNotifyMessage(int iType, int iParams, void *pMsg)
+bool ZGuiTabCtrl::SendNotifyMessageTabCtrl(int iType, int iParams, void *pMsg)
 {
 	ZGui* pkGui = GetGUI();
 	if(pkGui)
