@@ -7,7 +7,6 @@
 class FloatProperty: public Property {
 	private:
 		ZeroFps *m_pkFps;
-		HeightMap *m_pkMap;
 		
 	public:
 		float m_fGravity;		
