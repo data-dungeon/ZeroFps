@@ -50,6 +50,7 @@ void MadView::Input()
 		}		
 	}
 
+	// Rotate object with Left mouse button...
 	static float prev_x = 0, prev_y = 0;
 	static Point press_pos;
 	static bool pressed = false;
@@ -74,6 +75,7 @@ void MadView::Input()
 		prev_y = m_fObjRotY;
 	}
 
+	// Move in and out (Z) or Left and Right (X) with Right button...
 	static float prev_x2 = 0, prev_y2 = 0;
 	static Point press_pos2;
 	static bool pressed2 = false;
@@ -100,6 +102,7 @@ void MadView::Input()
 		prev_y2 = kCamerPos.z;
 	}
 
+	// Move Up and Down (Y) with 3rd Mouse button...
 	static float prev_x3 = 0, prev_y3 = 0;
 	static Point press_pos3;
 	static bool pressed3 = false;
@@ -123,15 +126,12 @@ void MadView::Input()
 		prev_y3 = kCamerPos.z;
 	}
 
-
-
 	m_pkCameraObject->SetWorldPosV(kCamerPos);
 	
 	char szText[100];
 	sprintf(szText, "Camera: X:%.2f, Y:%.2f, Z:%.2f", kCamerPos.x, kCamerPos.y, kCamerPos.z);
 
 	SetText("CameraPosLabel", szText);
-
 };
 
 //	Return 3D postion of mouse in world.
