@@ -10,13 +10,13 @@ using namespace std;
 
 class ZeroFps;
 class Console;
-class Primitives;
+class Render;
 
 class ENGINE_API Application {	
 	protected:
 		ZeroFps* pkFps;
 		Console* pkConsole;			
-		Primitives* pkPrims;
+		Render* pkRender;
 		
 	public:
 		static Application* pkApp;

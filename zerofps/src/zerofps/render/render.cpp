@@ -1,11 +1,11 @@
-#include "primitives.h"
+#include "render.h"
 
-Primitives::Primitives(TextureManager* pkTexMan) {
+Render::Render(TextureManager* pkTexMan) {
 	m_pkTexMan=pkTexMan;
 	
 }
 
-void Primitives::Quad(Vector3 kPos,Vector3 kHead,Vector3 kScale,int iTexture){
+void Render::Quad(Vector3 kPos,Vector3 kHead,Vector3 kScale,int iTexture){
 	glPushMatrix();
 		
 		glTranslatef(kPos.x,kPos.y,kPos.z);	
@@ -30,7 +30,7 @@ void Primitives::Quad(Vector3 kPos,Vector3 kHead,Vector3 kScale,int iTexture){
 	glPopMatrix();
 }
 
-void Primitives::Pyra(float x,float y,float z) {
+void Render::Pyra(float x,float y,float z) {
 //		glDepthMask(GL_FALSE);
 		GLfloat mat_specular[]={1,1,1,1};
 		GLfloat mat_shininess[]={10};
@@ -85,7 +85,7 @@ void Primitives::Pyra(float x,float y,float z) {
 //		glDepthMask(GL_TRUE);
 }
 
-void Primitives::PrintChar(char cChar) {
+void Render::PrintChar(char cChar) {
 //	cout<<"CHAR: "<<cChar<<endl;
 	
 	int texwidth=FONTWIDTH*16;	
@@ -134,7 +134,7 @@ void Primitives::PrintChar(char cChar) {
 
 }
 
-void Primitives::Print(Vector3 kPos,Vector3 kHead,Vector3 kScale,char* aText) {
+void Render::Print(Vector3 kPos,Vector3 kHead,Vector3 kScale,char* aText) {
 	char paText[TEXT_MAX_LENGHT];
 	
 	strcpy(paText,aText);
@@ -159,7 +159,7 @@ void Primitives::Print(Vector3 kPos,Vector3 kHead,Vector3 kScale,char* aText) {
 }
 
 
-void Primitives::SetFont(char* aFont) {
+void Render::SetFont(char* aFont) {
 	strcpy(aCurentFont,aFont);
 
 }

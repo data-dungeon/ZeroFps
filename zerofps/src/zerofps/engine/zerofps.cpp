@@ -4,7 +4,7 @@ ZeroFps::ZeroFps(void) {
 	m_pkFile=new FileIo;
 	m_pkCmd=new CmdSystem;
 	m_pkTexMan=new TextureManager(m_pkFile);
-	m_pkPrims=new Primitives(m_pkTexMan);
+	m_pkRender=new Render(m_pkTexMan);
 	m_pkConsole=new Console(this);	
 	m_pkInput=new Input();
 	m_pkModMan=new ModellManager(m_pkFile);

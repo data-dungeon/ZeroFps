@@ -1,8 +1,8 @@
 #define TEXT_MAX_LENGHT 256
 #define FONTWIDTH 32
 
-#ifndef _PRIMITIVES_H_
-#define _PRIMITIVES_H_
+#ifndef _RENDER_H_
+#define _RENDER_H_
 
 #include "render_x.h"
 #include <cstring>
@@ -12,13 +12,13 @@
 
 using namespace std;
 
-class RENDER_API Primitives {
+class RENDER_API Render {
 	private:
 		TextureManager* m_pkTexMan;
 		char aCurentFont[256];
 
 	public:
-		Primitives(TextureManager* pkTexMan);
+		Render(TextureManager* pkTexMan);
 		void Quad(Vector3 kPos,Vector3 kHead,Vector3 kScale,int iTexture);
 		void Pyra(float x,float y,float z);
 		void PrintChar(char cChar);

@@ -1,9 +1,9 @@
 class Console;
-class Primitives;
+class Render;
 class TextureManager;
 
 #include "console.h"
-#include "primitives.h"
+#include "render.h"
 #include "texturemanager.h"
 
 

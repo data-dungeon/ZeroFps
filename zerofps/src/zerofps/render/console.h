@@ -18,7 +18,7 @@ class RENDER_API Console {
 	private:
 		ZeroFps* m_pkEngine;		
 		CmdSystem* m_pkCmd;
-		Primitives* m_pkPrims;
+		Render* m_pkRender;
 		TextureManager* m_pkTexMan;
 		
 		SDL_Event m_kEvent;

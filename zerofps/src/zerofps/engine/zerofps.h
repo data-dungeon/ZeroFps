@@ -36,7 +36,7 @@ class ZeroFps {
 		TextureManager* m_pkTexMan;			//texture manager
 		ModellManager* m_pkModMan;			//model manager
 		Input* m_pkInput;								//keyboard mouse input
-		Primitives* m_pkPrims;					//graphic primitives
+		Render* m_pkRender;					//graphic primitives
 		Console* m_pkConsole;						//console handler
 		FileIo* m_pkFile;								//file io
 	
