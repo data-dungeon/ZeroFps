@@ -49,11 +49,7 @@ void ZShaderSystem::SetupOpenGL()
 	glFogi(GL_FOG_MODE,GL_LINEAR);
 	glFogi(FOG_DISTANCE_MODE_NV,EYE_RADIAL_NV);
 	
-	//setup some opengl stuff =)
-	//glEnable(GL_TEXTURE_2D);
-	//glEnable(GL_DEPTH_TEST);
 	glEnable(GL_NORMALIZE);
-	//glEnable(GL_CULL_FACE);
 	glEnable(GL_SCISSOR_TEST);
 
 	glShadeModel(GL_SMOOTH);

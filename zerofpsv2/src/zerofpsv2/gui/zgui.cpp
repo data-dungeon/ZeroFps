@@ -52,6 +52,10 @@ ZGui::ZGui(int iResX, int iResY) : ZFSubSystem("Gui")
 
 bool ZGui::StartUp()	
 { 
+	m_bRenderEnabled = true;
+
+	RegisterVariable("r_drawgui",			&m_bRenderEnabled,				CSYS_BOOL);	
+	
 	m_pkRenderer = static_cast<ZGuiRender*>(
 		g_ZFObjSys.GetObjectPtr("ZGuiRender"));
 	m_pkResManager = static_cast<ZGuiResourceManager*>(
@@ -303,6 +307,9 @@ int ZGui::GetMainWindowID(char* strWindow)
 // Rendera det aktiva fönstret (och alla dess childs)
 bool ZGui::Render(int fps)
 {
+	if(!m_bRenderEnabled)
+		return true;
+
 
 	m_pkRenderer->StartRender();
 	

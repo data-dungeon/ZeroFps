@@ -229,6 +229,8 @@ private:
 	ZGuiSkin* m_pkFocusBorderSkin;
 	bool m_bActive;
 
+	bool		m_bRenderEnabled;
+	
 	map<pair<ZGuiWnd*, int>, ZGuiWnd*> m_KeyCommandTable;
 
 	ZGuiWnd* m_pkCapturedWindow;
