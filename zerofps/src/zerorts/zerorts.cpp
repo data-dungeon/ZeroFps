@@ -425,6 +425,8 @@ void ZeroRTS::Input()
 		{
 			if(pkInput->Pressed(KEY_B))
 				m_pkConstructMan->Build("ZeroRTSFactory", info.kSquare); 
+
+			m_pkUserPanel->HideAllUnitButtons();
 		}
 	}
 	

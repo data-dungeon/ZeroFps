@@ -45,7 +45,8 @@ bool UserPanel::Create(int x, int y, char* szResourceFile, char* szDlgName)
 	Rect rc(m_pkZeroRts->m_iWidth-200,10,0,0);
 	rc.Right = rc.Left + CMD_BN_SIZE; rc.Bottom = rc.Top + CMD_BN_SIZE;
 
-	for(int i=0; i<MAX_NUM_CMD_BNS; i++)
+	int i=0;
+	for(i=0; i<MAX_NUM_CMD_BNS; i++)
 	{
 		if(i%3==0 && i!=0)
 		{
@@ -63,6 +64,30 @@ bool UserPanel::Create(int x, int y, char* szResourceFile, char* szDlgName)
 
 		m_akCommandBns.push_back(pkButton);
 		rc = rc.Move(CMD_BN_SIZE+2,0);
+	}
+
+	int sx = 335, sy = 15;
+	rc = Rect(sx,sy,sx+CMD_BN_SIZE,sy+CMD_BN_SIZE);
+	for(y=0; y<3; y++)
+	{
+		for(x=0; x<5; x++)
+		{
+			ZGuiButton* pkButton = new ZGuiButton(rc,m_pkDlgBox,true,ID_UNIT_BUTTONS_START+(y*5+x));
+
+			pkButton->SetMoveArea(pkButton->GetScreenRect());
+			pkButton->SetButtonUpSkin(new ZGuiSkin());
+			pkButton->SetButtonDownSkin(new ZGuiSkin());
+			pkButton->SetButtonHighLightSkin(new ZGuiSkin());
+			pkButton->Hide();
+			m_akUnitBns.push_back(pkButton); 
+
+			rc = rc.Move(CMD_BN_SIZE+2,0);
+		}
+
+		rc.Left = sx;
+		rc.Right = sx + CMD_BN_SIZE;
+
+		rc = rc.Move(0,CMD_BN_SIZE+2);
 	}
 
 	// Button tooltip
@@ -239,6 +264,83 @@ void UserPanel::UpdateCmdButtons()
 	}
 }
 
+void UserPanel::UpdateUnitButtons()
+{
+	ObjectManager* pkObjMan = m_pkZeroRts->pkObjectMan;
+	Object* pkObject;
+
+	printf("apapapapapapap\n");
+
+	HideAllUnitButtons();
+
+	int oka = 0;
+
+	int iName = -1;
+	char* szNames[] =
+	{
+		"rocket infantery_",
+		"powerplant_",
+		"supplycenter_",
+		"command_center_",
+	};
+
+	for(list<int>::iterator it = m_pkZeroRts->m_kSelectedObjects.begin();
+		it != m_pkZeroRts->m_kSelectedObjects.end();it++)		
+	{
+		pkObject = pkObjMan->GetObjectByNetWorkID((*it));
+		P_ClientUnit* pkClientUnit = m_pkZeroRts->GetClientUnit((*it));
+
+		if(pkClientUnit)
+		{
+			if(oka < MAX_NUM_UNIT_BNS)
+			{
+		/*		if(strcmp(pkClientUnit->m_kInfo.m_cName, "ZeroRTSHeavyTank") == 0)
+					iName = 0;
+				else
+				if(strcmp(pkClientUnit->m_kInfo.m_cName, "ZeroRTSLightTank") == 0)
+					iName = 1;
+				else
+				if(strcmp(pkClientUnit->m_kInfo.m_cName, "ZeroRTSEngineringCrew") == 0)
+					iName = 2;
+				else
+				if(strcmp(pkClientUnit->m_kInfo.m_cName, "ZeroRTSJeep") == 0)
+					iName = 3;
+				else*/
+					iName = 0;
+
+			//	printf("%s\n", pkClientUnit->m_kInfo.m_cName);
+
+				if(iName != -1)
+				{
+					ZGuiButton* pkButton = m_akUnitBns[oka++];
+
+					ZGuiSkin* pkSkin = pkButton->GetButtonUpSkin();
+
+					string szFileName = "file:../data/textures/cmdbuttons/";
+					szFileName += szNames[iName];
+					szFileName += "bnu.bmp";
+					pkSkin->m_iBkTexID = m_pkZeroRts->pkTexMan->Load(szFileName.c_str(), 0);
+					pkButton->SetButtonUpSkin(pkSkin);
+
+					szFileName = "file:../data/textures/cmdbuttons/";
+					szFileName += szNames[iName];
+					szFileName += "bnd.bmp";
+					pkSkin->m_iBkTexID = m_pkZeroRts->pkTexMan->Load(szFileName.c_str(), 0);
+					pkButton->SetButtonDownSkin(pkSkin);
+
+					szFileName = "file:../data/textures/cmdbuttons/";
+					szFileName += szNames[iName];
+					szFileName += "bnf.bmp";
+					pkSkin->m_iBkTexID = m_pkZeroRts->pkTexMan->Load(szFileName.c_str(), 0);
+					pkButton->SetButtonHighLightSkin(pkSkin);
+
+					pkButton->Show();
+				}
+			}
+		}
+	}
+}
+
 ZGuiButton* UserPanel::SetCmdButtonIcon(int iButtonIndex, int iIconIndex, bool bShow)
 {
 	if(iButtonIndex < 0 || iButtonIndex > MAX_NUM_CMD_BNS)
@@ -368,6 +470,17 @@ void UserPanel::HideAllCmdButtons()
 	}
 }
 
+void UserPanel::HideAllUnitButtons()
+{
+	ZGuiButton* pkButton;
+	for(int i=0; i<MAX_NUM_UNIT_BNS; i++)
+	{
+		pkButton = (ZGuiButton*) m_pkGuiBuilder->GetChild(m_pkDlgBox, 
+			ID_UNIT_BUTTONS_START+i);
+		pkButton->Hide();
+	}
+}
+
 bool UserPanel::PopLastButtonCommand(char* szCommand)
 {
 	if(m_pkLastCmd != NULL)
@@ -383,6 +496,7 @@ bool UserPanel::PopLastButtonCommand(char* szCommand)
 void UserPanel::OnSelectObjects(Object* pkObjectInFocus)
 {
 	UpdateCmdButtons();
+	UpdateUnitButtons();
 
 	P_ClientUnit* pkClientUnit = (P_ClientUnit*) pkObjectInFocus->GetProperty("P_ClientUnit");
 

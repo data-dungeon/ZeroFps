@@ -19,7 +19,9 @@ struct UnitCommandInfo;
 class Object;
 
 const int CMD_BN_SIZE = 48;
+
 const int MAX_NUM_CMD_BNS = 18;
+const int MAX_NUM_UNIT_BNS = 15;
 
 class UserPanel : public DlgBox
 {
@@ -38,9 +40,12 @@ public:
 
 	map<int, string> m_kCmdIconNameMap;
 	map<string, int> m_kCmdIconIDMap;
+
+	void HideAllUnitButtons();
 	
 private:
 	void UpdateCmdButtons();
+	void UpdateUnitButtons();
 	void HideAllCmdButtons();
 	int GetNumVisibleCmdButtons();
 	void OnClickMinimap(int x, int y);
@@ -53,6 +58,8 @@ private:
 	GuiBuilder* m_pkGuiBuilder;
 
 	vector<ZGuiButton*> m_akCommandBns;
+	vector<ZGuiButton*> m_akUnitBns;
+
 	map<ZGuiButton*, UnitCommandInfo*> m_kClickInfoMap;
 	UnitCommandInfo* m_pkLastCmd; // command when the user presses a button.
 
