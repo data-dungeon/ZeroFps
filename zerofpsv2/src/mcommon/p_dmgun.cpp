@@ -12,9 +12,9 @@ P_DMGun::P_DMGun()
 	
 	m_fTimeBulletFired = 0;
 	m_fTimeFired = 		0;
-	m_fBurstLength = 		1;
+	m_fBurstLength = 		0.5;
 	m_bFireing =			false;
-	
+	m_bFirstUpdateSinceFireing = false;
 	m_kGunOffset.Set(0,0,0);
 	
 	//default gun
@@ -27,6 +27,7 @@ P_DMGun::P_DMGun()
 	m_kDir.Set(0,0,-1);
 	m_fRandom = 	0.5;
 	m_fDamage =		25;
+	m_iBulletsPerAmmo = 1;
 
 	m_pkAudioSys = static_cast<ZFAudioSystem*>(g_ZFObjSys.GetObjectPtr("ZFAudioSystem"));
 }
@@ -45,17 +46,19 @@ void P_DMGun::Init()
 
 bool P_DMGun::Fire(Vector3 kTarget)
 {	
+	float t = m_pkObjMan->GetSimTime();
+
 	if(!m_bFireing)
-		m_fTimeBulletFired = m_pkObjMan->GetSimTime();
+	{
+		m_bFirstUpdateSinceFireing = true;
+	}
 	
 	
-	m_fTimeFired = m_pkObjMan->GetSimTime();
+	m_fTimeFired = t;
 	m_bFireing = true;
 	m_kDir = kTarget - (m_pkObject->GetWorldPosV() + m_kGunOffset);
 
-	m_pkAudioSys->StartSound(m_strSound.c_str(),
 
-	m_pkObject->GetWorldPosV(), m_kDir, false);
 	
 	return true;
 }
@@ -113,15 +116,36 @@ void P_DMGun::Update()
 
 
 	//how many bullets to fire?	
-	int iBulletsToFire = int((t - m_fTimeBulletFired) * m_fFireRate);
+	int iAmmoToFire = int((t - m_fTimeBulletFired) * m_fFireRate);
+	
+	//has the trigger just been pressed, if so make sure we only fire one round
+	if(m_bFirstUpdateSinceFireing)
+	{
+		//cout<<"tried to fire:"<<iAmmoToFire<<endl;
+		m_bFirstUpdateSinceFireing = false;
+		iAmmoToFire = 1;		
+	}
+	
+	//check that we have enough ammo
+	if(iAmmoToFire > m_iAmmo)
+		iAmmoToFire = m_iAmmo;	
 	
 	//if no bullets are to be fired, we return
-	if(iBulletsToFire <= 0)
+	if(iAmmoToFire <= 0)
 		return;
 	
 	m_fTimeBulletFired = t;
 	
-	FireBullets(iBulletsToFire);
+	//play sound
+	m_pkAudioSys->StartSound(m_strSound,	m_pkObject->GetWorldPosV(), m_kDir, false);
+	
+	FireBullets(iAmmoToFire * m_iBulletsPerAmmo);
+
+	//remove ammo
+	m_iAmmo-=iAmmoToFire;	
+
+	if(m_iAmmo <= 0)
+		cout<<"IM OUT OF AMMO"<<endl;
 }
 
 bool P_DMGun::FireBullets(int iAmount)
@@ -135,7 +159,7 @@ bool P_DMGun::FireBullets(int iAmount)
 
 	for(int i =0;i<iAmount;i++)
 	{
-		Vector3 kDir = m_kDir + Vector3( rand() % int(m_fRandom*1000) / 1000.0, rand() % int(m_fRandom*1000) / 1000.0,rand() % int(m_fRandom*1000) / 1000.0);
+		Vector3 kDir = (m_kDir +  Vector3( rand() % int(m_fRandom*1000) / 1000.0, rand() % int(m_fRandom*1000) / 1000.0,rand() % int(m_fRandom*1000) / 1000.0)).Unit();
 	
 		float d;	
 		Vector3 cp;

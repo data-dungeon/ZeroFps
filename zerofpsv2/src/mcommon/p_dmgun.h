@@ -25,6 +25,7 @@ class MCOMMON_API P_DMGun: public Property {
 		float		m_fTimeBulletFired;
 		float		m_fBurstLength;
 		bool		m_bFireing;
+		bool		m_bFirstUpdateSinceFireing;
 		
 		Vector3	m_kGunOffset;
 		
@@ -39,7 +40,7 @@ class MCOMMON_API P_DMGun: public Property {
 		int		m_iMaxAmmo;		
 		Vector3	m_kDir;
 		float		m_fRandom;
-
+		int		m_iBulletsPerAmmo;
 		
 		bool		FireBullets(int iAmount);
 
