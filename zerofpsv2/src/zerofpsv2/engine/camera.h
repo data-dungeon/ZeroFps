@@ -121,7 +121,8 @@ class ENGINE_API Camera : public I_Camera
 		
 		//shadow hack
 		unsigned int	m_iShadowTexture;
-		int				m_iShadowSize;
+		int				m_iShadowTexWidth;
+		int				m_iShadowTexHeight;
 		float				m_fShadowArea;
 		int				m_iCurrentRenderMode;
 		
@@ -132,6 +133,7 @@ class ENGINE_API Camera : public I_Camera
 		
 		void		MakeShadowTexture(const Vector3& kLightPos,const Vector3& kCenter, unsigned int iTexture);
 		void		DrawShadowedScene();
+		int		GetMaxSize(int iRes);
 		
 		void		DrawGrid();
 		

@@ -59,20 +59,17 @@ Camera::Camera(Vector3 kPos,Vector3 kRot,float fFov,float fAspect,float fNear,fl
 	//SHADOW HACK
 	
 	//find shadowtexture size
-	int iMaxSize = Min(m_pkRender->GetWidth(),m_pkRender->GetHeight());
-	m_iShadowSize = 256;
-	if(iMaxSize >= 1024 )
-		m_iShadowSize = 1024;
-	else if(iMaxSize >= 512 )
-		m_iShadowSize = 512;
-	
+	m_iShadowTexWidth = GetMaxSize(m_pkRender->GetWidth());
+	m_iShadowTexHeight = GetMaxSize(m_pkRender->GetHeight());
 		
+	cout<<"Using shadow texture size:"<<	m_iShadowTexWidth<<" "<<m_iShadowTexHeight<<endl;
+	
 	m_iShadowTexture = -1;
 	m_fShadowArea = 30;
 	
 	glGenTextures(1, &m_iShadowTexture);
 	glBindTexture(GL_TEXTURE_2D, m_iShadowTexture);
-	glTexImage2D( GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, m_iShadowSize, m_iShadowSize, 0, GL_DEPTH_COMPONENT, GL_UNSIGNED_BYTE, NULL);
+	glTexImage2D( GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, m_iShadowTexWidth, m_iShadowTexHeight, 0, GL_DEPTH_COMPONENT, GL_UNSIGNED_BYTE, NULL);
 /*	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);*/
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -95,26 +92,31 @@ Camera::~Camera()
 
 }
 
+int Camera::GetMaxSize(int iRes)
+{
+	if(iRes >= 2048 )
+		return(2048);
+	else if(iRes >= 1024 )
+		return(1024);
+	else if(iRes >= 512 )
+		return(512);
+	else if(iRes >= 256 )
+		return(256);
+	
+	return 128;
+}
+
+
 void Camera::MakeShadowTexture(const Vector3& kLightPos,const Vector3& kCenter,unsigned int iTexture)
 {
-
-	//setup light matrises
-	
 	//modelview matrix
 	m_pkZShaderSystem->MatrixMode(MATRIX_MODE_MODEL);	
 	m_pkZShaderSystem->MatrixIdentity();
-	//glLoadIdentity();					
 	gluLookAt( kLightPos.x, kLightPos.y, kLightPos.z,
 					kCenter.x,kCenter.y,kCenter.z,
 					0.0f, 1.0f, 0.0f);
 					
 	m_pkZShaderSystem->MatrixSave(&m_kLightViewMatrix);								
-	
-	
-	//glGetFloatv(GL_MODELVIEW_MATRIX, &m_kLightViewMatrix[0]);
-/*	gluLookAt( kLightPos.x, kLightPos.y, kLightPos.z,
-					0,0,0,
-					0.0f, 1.0f, 0.0f);		*/			
 					
 
 	
@@ -136,8 +138,8 @@ void Camera::MakeShadowTexture(const Vector3& kLightPos,const Vector3& kCenter,u
 			
 	
 	
-	glViewport(0, 0, m_iShadowSize, m_iShadowSize);
-	glScissor(0, 0, m_iShadowSize, m_iShadowSize);
+	glViewport(0, 0, m_iShadowTexWidth, m_iShadowTexHeight);
+	glScissor(0, 0, m_iShadowTexWidth, m_iShadowTexHeight);
 
 	//Draw back faces into the shadow map
 	
@@ -159,7 +161,8 @@ void Camera::MakeShadowTexture(const Vector3& kLightPos,const Vector3& kCenter,u
 	
 	
 	glBindTexture(GL_TEXTURE_2D, m_iShadowTexture);
-	glCopyTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 0, 0, m_iShadowSize, m_iShadowSize);
+	glCopyTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 0, 0, m_iShadowTexWidth, m_iShadowTexHeight);
+	//glCopyTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, 0, 0, 1024,1024,0);
 	
 	
 	glDepthRange (0.0, 1.0);
