@@ -38,7 +38,8 @@ void P_AI::Update()
       }
 
       // if character is to far away, move closer
-      if ( pkEnemy->GetWorldPosV().DistanceXZTo(m_pkObject->GetWorldPosV()) > 1 )
+      Vector3 kPos = m_pkObject->GetWorldPosV();
+      if ( pkEnemy->GetWorldPosV().DistanceXZTo(kPos) > 1 )
       {
 
          Order* pkMoveOrder = new Order;
