@@ -104,7 +104,7 @@ class MistClient :public Application, public ZGuiApp {
 		void FindGUIScriptsByResSuffix();
 		bool NameIPFromServerList(string& strName, string& strIP);
 		void ToogleChatWnd(bool bOpen, bool bSetInputFocus=false);
-		void ResizeChatDlg(bool bBigger);      	
+		//void ResizeChatDlg(bool bBigger);      	
 		void LoadInGameGui();
 		void LoadStartScreenGui(bool bShowSplashImage);
 		void SetGuiCapture(bool bSet, bool bMoveCursorToCenter=true);

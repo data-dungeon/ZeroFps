@@ -233,8 +233,7 @@ void MistClient::SetupGUI()
 	GetWnd("ContinueGameBn")->Hide();
 
    // load software cursor
-	g_kMistClient.m_pkGui->SetCursor( 0,0, m_pkTexMan->Load("data/textures/gui/cursor.bmp", 0),
-		m_pkTexMan->Load("data/textures/gui/cursor_a.bmp", 0), 32, 32);
+	g_kMistClient.m_pkGui->SetCursor( 0,0, m_pkTexMan->Load("data/textures/gui/cursor_sword.tga", 0), -1, 64, 64);
 	g_kMistClient.m_pkGui->ShowCursor(false); 
    g_kMistClient.m_pkInput->ShowCursor(false);
 	SetGuiCapture(true);

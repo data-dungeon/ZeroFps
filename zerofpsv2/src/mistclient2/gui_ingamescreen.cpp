@@ -51,16 +51,16 @@ void GuiMsgIngameScreen( string strMainWnd, string	strController,
 			{
 				g_kMistClient.ToogleChatWnd(false);
 			}
-			else
-			if(strController == "ChangeSizeUpChatButton")
-			{
-				g_kMistClient.ResizeChatDlg(true);
-			}
-			else
-			if(strController == "ChangeSizeDownChatButton")
-			{
-				g_kMistClient.ResizeChatDlg(false);
-			}
+			//else
+			//if(strController == "ChangeSizeUpChatButton")
+			//{
+			//	g_kMistClient.ResizeChatDlg(true);
+			//}
+			//else
+			//if(strController == "ChangeSizeDownChatButton")
+			//{
+			//	g_kMistClient.ResizeChatDlg(false);
+			//}
 		}
 	}
 
@@ -158,16 +158,16 @@ void MistClient::AddStringToChatBox(string strMsg)
 			strText.erase(0, pos+1);
 	}
 
-	if(rows < MAX_NUM_VISIBLE_ROWS)
-	{
-		int saybox_h = GetWnd("SayTextbox")->GetScreenRect().Height();
-		int h = (rows+1) * pkChatEb->GetFont()->m_iRowHeight;
-		pkChatEb->SetPos(0, pkChatEb->GetParent()->GetScreenRect().Height()-h-saybox_h, false, true);
-	}
-	else
-	{
-		pkChatEb->SetPos(0, 0, false, true);
-	}
+	//if(rows < MAX_NUM_VISIBLE_ROWS)
+	//{
+	//	int saybox_h = GetWnd("SayTextbox")->GetScreenRect().Height();
+	//	int h = (rows+1) * pkChatEb->GetFont()->m_iRowHeight;
+	//	pkChatEb->SetPos(0, pkChatEb->GetParent()->GetScreenRect().Height()-h-saybox_h, false, true);
+	//}
+	//else
+	//{
+	//	pkChatEb->SetPos(0, 0, false, true);
+	//}
 
 	SetText("ChatTextbox",(char*) strText.c_str());
 
@@ -178,7 +178,7 @@ void MistClient::AddStringToChatBox(string strMsg)
 	m_pkAudioSys->PlayAudio("data/sound/gui/turn_page.wav", Vector3(), Vector3(), ZFAUDIO_2D);	
 }
 
-void MistClient::ResizeChatDlg(bool	bMakeBigger)
+/*void MistClient::ResizeChatDlg(bool	bMakeBigger)
 {
 	static unsigned char	s_byCurrenSize	= 0;
 
@@ -233,7 +233,7 @@ void MistClient::ResizeChatDlg(bool	bMakeBigger)
 
 	((ZGuiTextbox*)GetWnd("ChatTextbox"))->ScrollRowIntoView(
 		((ZGuiTextbox*)GetWnd("ChatTextbox"))->GetRowCount());
-}
+}*/
 
 void MistClient::LoadInGameGui()
 {

@@ -231,8 +231,7 @@ void InventoryDlg::OnMouseMove(bool bLeftButtonPressed, int mx, int my)
 				SetSelectionBorder(i, true, false);
 
 				if(bLeftButtonPressed)
-				{							
-					printf("pushing mouse\n");
+				{												
 					if(m_kMoveSlot.m_iIndex == -1)
 						PickUpFromGrid(i, true, mx, my); // try to find item under cursor and set as move item.
 				}
@@ -592,7 +591,7 @@ void InventoryDlg::UpdateInventory(vector<MLContainerInfo>& vkItemList)
 		y = UPPERLEFT_INVENTORY.y + vkItemList[i].m_cItemY * ICON_HEIGHT + vkItemList[i].m_cItemY;
 		w = vkItemList[i].m_cItemW * (ICON_WIDTH) + vkItemList[i].m_cItemW-1;
 		h = vkItemList[i].m_cItemH * (ICON_HEIGHT) + vkItemList[i].m_cItemH-1;
-
+		
 		char text[20] = "";
 		if(vkItemList[i].m_iStackSize > 1)
 			sprintf(text, "%i", vkItemList[i].m_iStackSize);
@@ -797,9 +796,12 @@ void InventoryDlg::OnDropItem(int mx, int my)
 	}
 
 	// Show normal cursor again.
-	g_kMistClient.m_pkGui->SetCursor((int)mx+m_kCursorRangeDiff.x, (int)my+m_kCursorRangeDiff.y, 
-			m_pkTexMan->Load("data/textures/gui/cursor.bmp", 0),
-			m_pkTexMan->Load("data/textures/gui/cursor_a.bmp", 0), 32, 32);
+	//g_kMistClient.m_pkGui->SetCursor((int)mx+m_kCursorRangeDiff.x, (int)my+m_kCursorRangeDiff.y, 
+	//		m_pkTexMan->Load("data/textures/gui/cursor.bmp", 0),
+	//		m_pkTexMan->Load("data/textures/gui/cursor_a.bmp", 0), 32, 32);
+
+	g_kMistClient.m_pkGui->SetCursor( (int)mx+m_kCursorRangeDiff.x, (int)my+m_kCursorRangeDiff.y, 
+		m_pkTexMan->Load("data/textures/gui/cursor_sword.tga", 0), -1, 64, 64);
 
 	g_kMistClient.m_pkInputHandle->SetCursorInputPos(mx+m_kCursorRangeDiff.x,my+m_kCursorRangeDiff.y);	
 
