@@ -67,7 +67,9 @@ void P_FogRender::Explore(float x,float y,float r)
 			
 			m_pkTexMan->PsetRGBA((int)xx,(int)yy,0,0,0,0);
 
-			m_bExploredSqrs[(int)yy][(int)xx] = true;
+			if(xx >= 0 && xx <255 &&
+				yy >= 0 && yy <255)
+				m_bExploredSqrs[(int)yy][(int)xx] = true;
 		}
 	}
 	
@@ -100,7 +102,9 @@ void P_FogRender::UnExplore(float x,float y,float r)
 			
 			m_pkTexMan->PsetRGBA((int)xx,(int)yy,0,0,0,255);
 
-			m_bExploredSqrs[(int)yy][(int)xx] = false;
+			if(xx >= 0 && xx <255 &&
+				yy >= 0 && yy <255)
+				m_bExploredSqrs[(int)yy][(int)xx] = false;
 		}
 	}
 	

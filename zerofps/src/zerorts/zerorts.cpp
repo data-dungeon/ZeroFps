@@ -18,6 +18,7 @@ ZeroRTS::ZeroRTS(char* aName,int iWidth,int iHeight,int iDepth)
 	m_pkEnd = Point(-1,-1);
 	m_iSelfObjectID = -1;
 
+	m_HaveFoundHMapObject = false;
 }
 
 void ZeroRTS::OnInit() 
@@ -46,7 +47,10 @@ void ZeroRTS::Init()
 	//register commmands bös
 	g_ZFObjSys.Register_Cmd("load",FID_LOAD,this);		
 	g_ZFObjSys.Register_Cmd("unload",FID_UNLOAD,this);			
+	g_ZFObjSys.Register_Cmd("massspawn",FID_MASSSPAWN,this);			
+
 	
+
 	//damn "#¤(="%#( lighting fix bös
 	glEnable(GL_LIGHTING );
 	
@@ -167,20 +171,40 @@ void ZeroRTS::OnSystem()
 		{
 			if(m_iSelfObjectID != -1)
 			{
-				m_pkClientInput = (P_ClientInput*)pkObjectMan->GetObjectByNetWorkID(m_iSelfObjectID)->GetProperty("P_ClientInput");
-				
-				if(m_pkClientInput != NULL)
-				{
-					cout<<"Found client input property"<<endl;					
-					cout<<"Assuming that server has started,executing client init"<<endl;
-					
-					//run client init
-					ClientInit();
+				Object* pkClientObj = pkObjectMan->GetObjectByNetWorkID(m_iSelfObjectID);
+				if(pkClientObj) {
+					m_pkClientInput = (P_ClientInput*)pkClientObj->GetProperty("P_ClientInput");
+
+					if(m_pkClientInput != NULL)
+					{
+						cout<<"Found client input property"<<endl;					
+						cout<<"Assuming that server has started,executing client init"<<endl;
+						
+						//run client init
+						cout << "My Num: " << m_pkClientInput->m_iPlayerID;
+						//ClientInit();
+						
+					}
 				}
 			}
 		}
+
+		if(m_pkClientInput && m_HaveFoundHMapObject == false) {
+			Object* pkHmap = pkObjectMan->GetObject("HeightMapObject");
+	
+			if(pkHmap) {
+				m_HaveFoundHMapObject = true;
+				ClientInit();
+				cout << "UGH =)" << endl;
+				}
+			}
+
+		
+		
 	};
 	
+	
+
 	//if server is running
 	if(pkFps->m_bServerMode)	
 		HandleOrders();
@@ -262,12 +286,21 @@ void ZeroRTS::Input()
 		
 		if(m_pkClientInput)
 		{
+			PickInfo info2 = Pick();
+			//PickInfo info2;
+
 			for(list<int>::iterator it = m_kSelectedObjects.begin();it != m_kSelectedObjects.end();it++)
 			{
 				UnitCommand bla;
 				strcpy(bla.m_acCommandName,"Move");
-				bla.m_iXDestinaton = 100;
-				bla.m_iYDestinaton = 100;			
+
+				//bla.m_iXDestinaton = 100;
+				//bla.m_iYDestinaton = 100;			
+				//info2.kSquare.x = 100;
+				//info2.kSquare.y = 100;
+
+				bla.m_iXDestinaton = info2.kSquare.x;
+				bla.m_iYDestinaton = info2.kSquare.y;			
 				bla.m_iUnitID = (*it);
 				m_pkClientInput->AddOrder(bla);
 			}
@@ -400,6 +433,8 @@ void ZeroRTS::OnClientStart(void)
 
 void ZeroRTS::RunCommand(int cmdid, const CmdArgument* kCommand)
 {
+	Object* pkmad;
+
 	switch(cmdid) {
 		case FID_LOAD:
 			if(kCommand->m_kSplitCommand.size() <= 1)
@@ -423,6 +458,28 @@ void ZeroRTS::RunCommand(int cmdid, const CmdArgument* kCommand)
 		
 		case FID_UNLOAD:
 			break;
+
+		case FID_MASSSPAWN:
+			pkConsole->Printf("Die FPS, DIE.");				
+			int x,y;
+			x = y = 0;
+			int iAntal = 0;
+			for( x=-200; x < 200; x+=10) {
+				for(y=-200; y < 200; y+=10) {
+					pkmad = pkObjectMan->CreateObjectByArchType("ZeroRTSTestBox");
+					if(pkmad) {
+						Vector3 kPos = Vector3(x,0,y);
+						pkmad->SetPos(kPos);
+						pkmad->SetPos(kPos);
+						pkmad->AttachToClosestZone();
+						}
+					iAntal++;
+					}
+				}
+			
+			pkConsole->Printf("Spawned %d",iAntal);				
+			break;
+	
 	}
 }
 
@@ -724,6 +781,8 @@ void ZeroRTS::ClientInit()
 
 	cout<<"Mapsize is :"<<mapwidth<<endl;
 	
+	m_pkMap = pkLevelMan->GetHeightMap();	
+
 	//Set fog size
 	m_pkFogRender->SetScale(mapwidth);
 	

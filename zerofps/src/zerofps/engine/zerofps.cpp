@@ -318,8 +318,7 @@ void ZeroFps::Update_System()
 	{
 		//calculate current game time
 		m_fGameTime = m_fLU + (i * m_fGameFrameTime);
-		
-		
+	
 		//client & server code
 		
 		//update network for client & server
@@ -356,7 +355,6 @@ void ZeroFps::Update_System()
 		
 		//pack objects to clients
 		m_pkObjectMan->PackToClients();		
-
 
 		//delete objects
 		m_pkObjectMan->UpdateDelete();

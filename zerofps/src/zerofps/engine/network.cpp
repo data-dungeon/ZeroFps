@@ -579,6 +579,8 @@ void NetWork::TEST_KeepAliveALL()
 
 void NetWork::RTS_RequestClientObjectID()
 {
+	g_ZFObjSys.Log("net", "RTS_RequestClientObjectID()\n");
+
 	NetPacket NPacket;
 	NPacket.Clear();
 	NPacket.Write((unsigned char) ZF_NETTYPE_CONTROL);

@@ -3,8 +3,11 @@ class object
 		parent object
 		set ModelProperty Radius	1
 		
-		add P_ClientInput
-		
+	
+	class ZeroRTSTestBox
+		parent object
+		set MadProperty m_kMadFile /data/mad/adaptor.mad
+	
 	class ServerInfoObject
 		parent object
 		add P_ServerInfo

@@ -52,12 +52,14 @@ class ZeroRTS :public Application {
 		int			m_iActionUnExploreAll;		
 		int			m_iActionPrintServerInfo;				
 		
+		bool			m_HaveFoundHMapObject;
 		
 		//console funktions
 		enum FuncId_e
 		{
 			FID_LOAD,
 			FID_UNLOAD,
+			FID_MASSSPAWN,
 		};
 
 		//list containin network ID of all selected units
