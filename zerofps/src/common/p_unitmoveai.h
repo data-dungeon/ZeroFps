@@ -19,7 +19,7 @@
 #include "aibase.h"
 
 #include "p_serverunit.h"
-//#include "unitcommandinfo.h"
+#include "unitcommandinfo.h"
 
 using namespace std;
 
@@ -39,10 +39,15 @@ public:
 private: 
 	P_ServerUnit* m_pkUnit;
 	ExternalCommand* m_pkMoveUnitCommand;
+	int m_iCurrentState;
 	bool m_bTemp;
 	enum 
-	{ UNIT_MOVE };
+	{ UNIT_MOVE, TEMP };
 
+	static HeightMap* m_pkMap;
+//	PathBuilder* m_pkPathBuilder;
+	PathFind* m_pkPathFind;
+	Point m_kStartPoint, m_kEndPoint;
 };
 COMMON_API Property* Create_P_UnitMoveAI();
 

@@ -183,6 +183,8 @@ void P_ServerUnit::HandleGameMessage(GameMessage& Msg)
 	{
 	UnitCommand Temp;
 	strcpy(Temp.m_acCommandName,"Move");
+	Temp.m_iXDestinaton=100;
+	Temp.m_iYDestinaton=100;
 	RunExternalCommand(&Temp);
 		
 	}
