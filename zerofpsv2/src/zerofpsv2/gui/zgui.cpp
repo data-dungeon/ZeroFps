@@ -535,7 +535,8 @@ bool ZGui::OnMouseUpdate(int x, int y, bool bLBnPressed,
 				if(bLeftReleased)
 				{
 					if( ZGuiWnd::m_pkWndClicked->GetParent() && 
-						 typeid(*ZGuiWnd::m_pkWndClicked->GetParent())!=typeid(ZGuiListbox) ) // tillfällig ful lösning för att listboxitems inte skall generera COMMAND messages..
+						 ( typeid(*ZGuiWnd::m_pkWndClicked->GetParent())!=typeid(ZGuiListbox) || 
+						   typeid(*ZGuiWnd::m_pkWndClicked->GetParent())!=typeid(ZGuiTreeboxNode)) ) // tillfällig ful lösning för att listboxitems inte skall generera COMMAND messages..
 					{
 						pkParams[0] = ZGuiWnd::m_pkWndClicked->GetID(); // control id
 						m_pkActiveMainWin->pkCallback(m_pkActiveMainWin->pkWnd,
