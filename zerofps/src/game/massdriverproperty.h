@@ -18,7 +18,7 @@ class MassDriverProperty: public Property {
 		Input *m_pkInput;
 		ObjectManager *m_pkObjectMan;
 		ZeroFps *m_pkFps;
-				
+		OpenAlSystem* m_pkAlSys;		
 				
 		int m_iAmmo;
 		Vector3 m_kAim;
@@ -26,6 +26,8 @@ class MassDriverProperty: public Property {
 		int m_iActionFire;
 	
 		float m_fLastShot;
+	
+		Sound *firesound;		
 	
 	public:
 		MassDriverProperty();

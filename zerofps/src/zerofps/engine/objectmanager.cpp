@@ -26,7 +26,7 @@ void ObjectManager::Clear()
 //	}
 	
 	m_pkWorldObject->DeleteAllChilds();
-	cout << "ObjectManager::Clear" << endl;
+//	cout << "ObjectManager::Clear" << endl;
 //	UpdateDelete();
 }
 
@@ -35,7 +35,7 @@ void ObjectManager::Remove(Object* pkObject) {
 //	pkObject->SetObjectMan(NULL);
 	m_akObjects.remove(pkObject);
 //	delete pkObject;
-	cout << "ObjectManager::Remove" << endl;
+//	cout << "ObjectManager::Remove" << endl;
 	
 }
 

@@ -278,7 +278,7 @@ Object::~Object() {
 	
 	m_pkObjectMan->Remove(this);
 
-	cout<<"Object Destroyed"<<endl;
+//	cout<<"Object Destroyed"<<endl;
 }
 
 Property* Object::GetProperty(const char* acName) {

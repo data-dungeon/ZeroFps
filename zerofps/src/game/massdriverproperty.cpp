@@ -13,6 +13,7 @@ MassDriverProperty::MassDriverProperty()
 	m_pkInput= static_cast<Input*>(g_ZFObjSys.GetObjectPtr("Input"));
 	m_pkObjectMan = static_cast<ObjectManager*>(g_ZFObjSys.GetObjectPtr("ObjectManager"));	
 	m_pkFps = static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
+	m_pkAlSys=static_cast<OpenAlSystem*>(g_ZFObjSys.GetObjectPtr("OpenAlSystem"));				
 		
 	m_iActionFire=m_pkInput->RegisterAction("fire_massdriver");
 	
@@ -20,6 +21,11 @@ MassDriverProperty::MassDriverProperty()
 	m_kAim.Set(0,0,1);
 	
 	m_fLastShot=m_pkFps->GetTicks();
+	
+	firesound=new Sound();
+	firesound->m_acFile="file:../data/sound/massdriver_fire.wav";
+	firesound->m_bLoop=false;
+
 }
 
 
@@ -35,7 +41,7 @@ void MassDriverProperty::Update()
 
 void MassDriverProperty::Fire()
 {
-	if(m_pkFps->GetTicks()-m_fLastShot <0.01)
+	if(m_pkFps->GetTicks()-m_fLastShot <1)
 		return;		
 	m_fLastShot=m_pkFps->GetTicks();
 
@@ -46,7 +52,9 @@ void MassDriverProperty::Fire()
 	}
 	
 //	m_iAmmo--;
-
+	//play sound
+	firesound->m_kPos=m_pkObject->GetPos();
+	m_pkAlSys->AddSound(firesound);
 	
 	Object* Bullet=new Object;
 	Bullet->GetName()="MassDriver_Bullet";
