@@ -51,15 +51,12 @@ ZGui::ZGui(int iResX, int iResY) : ZFSubSystem("Gui")
 	m_iShowFPSCounter = 1;
 	m_bRenderEnabled = true;
 	
-	//RegisterVariable("r_showfpscounter",&m_iShowFPSCounter,CSYS_INT);
-   RegisterVariable("r_drawgui",			&m_bRenderEnabled,				CSYS_BOOL);
+	RegisterVariable("g_showfpscounter",&m_iShowFPSCounter,CSYS_INT);
+   RegisterVariable("g_drawgui",			&m_bRenderEnabled, CSYS_BOOL);
 }
 
 bool ZGui::StartUp()	
-{ 
-
-	//RegisterVariable("r_drawgui",			&m_bRenderEnabled,				CSYS_BOOL);	
-	
+{ 	
 	m_pkRenderer = static_cast<ZGuiRender*>(
 		g_ZFObjSys.GetObjectPtr("ZGuiRender"));
 	m_pkResManager = static_cast<ZGuiResourceManager*>(

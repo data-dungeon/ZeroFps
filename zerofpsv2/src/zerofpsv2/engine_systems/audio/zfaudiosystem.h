@@ -156,7 +156,8 @@ private:
 	unsigned int m_uiCurrentCachSize; // bytes
 	unsigned int m_uiMaxCachSize; // bytes
 	
-	int m_iEnableSound; // enable/disable
+	bool m_bEnableSound; // enable/disable sound
+	bool m_bEnableMusic; // enable/disable music
 	float m_fReferenceDistance; // ReferenceDistance (ljud styrka)
 
 	bool m_bIsValid;

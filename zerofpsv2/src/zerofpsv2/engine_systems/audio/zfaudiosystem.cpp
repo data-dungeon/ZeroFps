@@ -210,10 +210,12 @@ ZFAudioSystem::ZFAudioSystem(int uiMaxCachSize) : ZFSubSystem("ZFAudioSystem")
 	m_uiCurrentCachSize = 0;
 	m_uiMaxCachSize = uiMaxCachSize;
 	m_fReferenceDistance = 1.0f;
-	m_iEnableSound = 1;
+	m_bEnableSound = true;
+	m_bEnableMusic = true;
 
-	RegisterVariable("r_enablesound",&m_iEnableSound,CSYS_INT);
-	RegisterVariable("r_ReferenceDistance",&m_fReferenceDistance,CSYS_FLOAT);
+	RegisterVariable("a_enablesound",&m_bEnableSound,CSYS_BOOL);
+	RegisterVariable("a_enablemusic",&m_bEnableMusic,CSYS_BOOL);
+	RegisterVariable("a_soundrefdist",&m_fReferenceDistance,CSYS_FLOAT);
 
 	m_pEntityMan = static_cast<EntityManager*>(g_ZFObjSys.GetObjectPtr("EntityManager"));
 }
@@ -596,9 +598,10 @@ void ZFAudioSystem::Update()
 		m_pkMusic->m_pkThread = SDL_CreateThread(OggMusic::ThreadMain, m_pkMusic);
 	}
 */
-	m_pkMusic->Update(m_kPos);
+	if(m_bEnableMusic == true)
+		m_pkMusic->Update(m_kPos);
 
-	if(m_iEnableSound == 0)
+	if(m_bEnableSound == false)
 		return;
 
 	UpdateAmbientSound();
