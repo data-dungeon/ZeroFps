@@ -11,14 +11,14 @@ void PSystemProperty::Update()
       // returns true if the PSystem is finished
 		if ( !m_pkPSystem->Update( m_pkObject->GetWorldPosV(), m_pkObject->GetWorldRotM() ) )
  		   m_pkPSystem->Draw();
-      else
-      {
-         delete m_pkPSystem;
+//      else
+//      {
+//         delete m_pkPSystem;
 
          // for now, just remove the property and leave the parent alone
-         m_pkObject->RemoveProperty(this);
-         delete this;
-      }
+//         m_pkObject->RemoveProperty(this);
+//         delete this;
+//      }
 	}
 }
 

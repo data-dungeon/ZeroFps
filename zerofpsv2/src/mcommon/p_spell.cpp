@@ -25,7 +25,7 @@ P_Spell::~P_Spell()
 
 P_Spell::P_Spell()
 {
-	m_iSide = PROPERTY_SIDE_CLIENT;
+	m_iSide = PROPERTY_SIDE_SERVER;
 
    m_pkSpellType = 0;
    m_fDamageTimer = 0;
@@ -34,20 +34,23 @@ P_Spell::P_Spell()
 
    m_fAge = 0;
    m_iPSIndex = 0;
+
+   bNetwork = false;
+
 }
 
 // -----------------------------------------------------------------------------------------------
 
 void P_Spell::Update()
 {
+
    // if spelltype hasn't been given, do nothing
    if ( m_pkSpellType )
    {
 
       // update lived time if spell isn't permanent
       if ( m_pkSpellType->m_fLifeTime != -1 )
-	      m_fAge += m_pkZeroFps->GetFrameTime();      
-
+	      m_fAge += m_pkZeroFps->GetFrameTime();
 
 
       // TODO!!! Only test for damage if spell MAKES damage and is stuck on CharacterObject
@@ -100,14 +103,15 @@ void P_Spell::Update()
       if ( m_fAge >= m_pkSpellType->m_fLifeTime )
       {
          // remove&delete PSystems spell used
-         for ( unsigned int i = 0; i < m_kPSystems.size(); i++ )
-            m_pkObject->m_pkObjectMan->Delete( m_kPSystems[i] );
+//         for ( unsigned int i = 0; i < m_kPSystems.size(); i++ )
+//            m_pkObject->m_pkObjectMan->Delete( m_kPSystems[i] );
 
          // delete spell-object or property
-         if ( m_pkSpellType->m_iOnDestruction == eKILL_SELF )
-            m_pkObject->RemoveProperty ( this );
-         else
-            m_pkObject->m_pkObjectMan->Delete( m_pkObject ); 
+//         if ( m_pkSpellType->m_iOnDestruction == eKILL_SELF )
+//            m_pkObject->RemoveProperty ( this );
+//         else
+
+         m_pkObject->m_pkObjectMan->Delete( m_pkObject ); 
       }
 
 

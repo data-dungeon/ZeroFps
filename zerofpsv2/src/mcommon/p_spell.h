@@ -10,6 +10,7 @@
 class MCOMMON_API P_Spell: public Property 
 {
 	private:
+
 		float 
          m_fAge,
          m_fDamageTimer;
