@@ -13,12 +13,29 @@
 #include "light.h"
 
 using namespace std;
+class ZMaterial;
+class ZMaterialSettings;
+
+enum RENDER_API TU_TEXCORDS
+{
+	CORDS_FROM_ARRAY_0,
+	CORDS_FROM_ARRAY_1,	
+	CORDS_FROM_ARRAY_2,	
+	CORDS_FROM_ARRAY_3,	
+
+	CORDS_OBJECT_LINEAR,
+	CORDS_EYE_LINEAR,
+	CORDS_SPHERE_MAP,
+};
 
 enum RENDER_API POINTER_TYPE
 {
 	VERTEX_POINTER,
 	NORMAL_POINTER,
-	TEXTURE_POINTER,	
+	TEXTURE_POINTER0,	
+	TEXTURE_POINTER1,	
+	TEXTURE_POINTER2,		
+	TEXTURE_POINTER3,		
 	INDEX_POINTER,	
 	COLOR_POINTER,
 	
@@ -59,7 +76,10 @@ class RENDER_API ZShader : public ZFObject
 		//pointer to geometry data
 		Vector3*		m_pkVertexPointer;
 		Vector3*		m_pkNormalPointer;	
-		Vector2*		m_pkTexturePointer;
+		Vector2*		m_pkTexturePointer0;
+		Vector2*		m_pkTexturePointer1;		
+		Vector2*		m_pkTexturePointer2;		
+		Vector2*		m_pkTexturePointer3;		
 		int*			m_pkIndexPointer;
 		Vector4*		m_pkColorPointer;
 		
@@ -83,11 +103,12 @@ class RENDER_API ZShader : public ZFObject
 		//configure render states/pass
 		void SetupRenderStates(ZMaterialSettings* pkSettings);
 		
+		void SetupTU(ZMaterialSettings* pkSettings,int iTU);
+		
 		//makes a memcopy of all none null pointers data, and sets the pointers to the new location
 		void CopyVertexData();
 		void CopyData(void** pkData,int iSize);
 		void CleanCopyedData();
-	
 		
 		//effects
 		void RandomVertexMovements();

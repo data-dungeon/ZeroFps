@@ -23,7 +23,10 @@ void ZShader::Reset()
 	
 	m_pkVertexPointer =	NULL;
 	m_pkNormalPointer =	NULL;	
-	m_pkTexturePointer = NULL;
+	m_pkTexturePointer0 = NULL;
+	m_pkTexturePointer1 = NULL;	
+	m_pkTexturePointer2 = NULL;	
+	m_pkTexturePointer3 = NULL;	
 	m_pkIndexPointer = 	NULL;
 	m_pkColorPointer = 	NULL;	
 
@@ -43,9 +46,18 @@ void ZShader::SetPointer(int iType,void* pkPointer)
 		case NORMAL_POINTER:
 			m_pkNormalPointer = (Vector3*)pkPointer;
 			break;
-		case TEXTURE_POINTER:
-			m_pkTexturePointer = (Vector2*)pkPointer;
+		case TEXTURE_POINTER0:
+			m_pkTexturePointer0 = (Vector2*)pkPointer;
 			break;
+		case TEXTURE_POINTER1:
+			m_pkTexturePointer1 = (Vector2*)pkPointer;
+			break;
+		case TEXTURE_POINTER2:
+			m_pkTexturePointer2 = (Vector2*)pkPointer;
+			break;
+		case TEXTURE_POINTER3:
+			m_pkTexturePointer3 = (Vector2*)pkPointer;
+			break;		
 		case INDEX_POINTER:
 			m_pkIndexPointer = (int*)pkPointer;
 			break;
@@ -106,7 +118,16 @@ void ZShader::SetupClientStates()
 {
 	glDisableClientState(GL_VERTEX_ARRAY);	
 	glDisableClientState(GL_NORMAL_ARRAY);	
-	glDisableClientState(GL_TEXTURE_COORD_ARRAY);	
+	
+	glClientActiveTextureARB(GL_TEXTURE3_ARB);	
+		glDisableClientState(GL_TEXTURE_COORD_ARRAY);	
+	glClientActiveTextureARB(GL_TEXTURE2_ARB);	
+		glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+	glClientActiveTextureARB(GL_TEXTURE1_ARB);	
+		glDisableClientState(GL_TEXTURE_COORD_ARRAY);	
+	glClientActiveTextureARB(GL_TEXTURE0_ARB);	
+		glDisableClientState(GL_TEXTURE_COORD_ARRAY);		
+	
 	glDisableClientState(GL_INDEX_ARRAY);	
 	glDisableClientState(GL_COLOR_ARRAY);
 	glDisableClientState(GL_EDGE_FLAG_ARRAY);	
@@ -121,11 +142,6 @@ void ZShader::SetupClientStates()
 		glEnableClientState(GL_NORMAL_ARRAY);
 		glNormalPointer(GL_FLOAT,0,m_pkNormalPointer);		
 	}
-	if(m_pkTexturePointer)
-	{
-		glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-		glTexCoordPointer(2,GL_FLOAT,0,m_pkTexturePointer);		
-	}
 	if(m_pkIndexPointer)
 	{
 		glEnableClientState(GL_INDEX_ARRAY);
@@ -136,6 +152,37 @@ void ZShader::SetupClientStates()
 		glEnableClientState(GL_COLOR_ARRAY);
 		glColorPointer(4,GL_FLOAT,0,m_pkColorPointer);
 	}
+	
+/*	//tus
+	if(m_pkTexturePointer0)
+	{
+		glActiveTextureARB(GL_TEXTURE0_ARB);	
+			glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+			glTexCoordPointer(2,GL_FLOAT,0,m_pkTexturePointer0);		
+	}
+	if(m_pkTexturePointer1)
+	{
+		glActiveTextureARB(GL_TEXTURE1_ARB);	
+			glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+			glTexCoordPointer(2,GL_FLOAT,0,m_pkTexturePointer1);		
+		glActiveTextureARB(GL_TEXTURE0_ARB);				
+	}
+	if(m_pkTexturePointer2)
+	{
+		glActiveTextureARB(GL_TEXTURE2_ARB);	
+			glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+			glTexCoordPointer(2,GL_FLOAT,0,m_pkTexturePointer2);		
+		glActiveTextureARB(GL_TEXTURE0_ARB);							
+	}
+	if(m_pkTexturePointer3)
+	{
+		glActiveTextureARB(GL_TEXTURE3_ARB);	
+			glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+			glTexCoordPointer(2,GL_FLOAT,0,m_pkTexturePointer3);		
+		glActiveTextureARB(GL_TEXTURE0_ARB);					
+	}
+	// -- tus
+*/
 }
 
 
@@ -177,6 +224,40 @@ void ZShader::Waves()
 	}
 }
 
+void ZShader::SetupTU(ZMaterialSettings* pkSettings,int iTU)
+{
+	if(pkSettings->m_iTUs[iTU] > 0)
+	{	
+		glEnable(GL_TEXTURE_2D);
+		m_pkTexMan->BindTexture(pkSettings->m_iTUs[iTU]);
+		
+		glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE);	
+			
+		switch(pkSettings->m_iTUTexCords[iTU])
+		{
+			case CORDS_FROM_ARRAY_0:
+				glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+				glTexCoordPointer(2,GL_FLOAT,0,m_pkTexturePointer0);						
+				break;						
+			case CORDS_FROM_ARRAY_1:
+				glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+				glTexCoordPointer(2,GL_FLOAT,0,m_pkTexturePointer1);						
+				break;			
+			case CORDS_FROM_ARRAY_2:
+				glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+				glTexCoordPointer(2,GL_FLOAT,0,m_pkTexturePointer2);						
+				break;			
+			case CORDS_FROM_ARRAY_3:
+				glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+				glTexCoordPointer(2,GL_FLOAT,0,m_pkTexturePointer3);						
+				break;			
+		
+		}
+	}
+	else
+		glDisable(GL_TEXTURE_2D);	
+
+}
 
 void ZShader::SetupRenderStates(ZMaterialSettings* pkSettings)
 {
@@ -194,39 +275,34 @@ void ZShader::SetupRenderStates(ZMaterialSettings* pkSettings)
 		glDisable(GL_LIGHTING);
 		
 	//cullface setting
-	if(pkSettings->m_bLighting)
+	if(pkSettings->m_bCullFace)
 		glEnable(GL_CULL_FACE);
 	else
 		glDisable(GL_CULL_FACE);	
 	
-	//setup TU 1
-	glActiveTextureARB(GL_TEXTURE0_ARB);
-	if(pkSettings->m_iTUs[0] > 0)
-	{	
-		glEnable(GL_TEXTURE_2D);
-		m_pkTexMan->BindTexture(pkSettings->m_iTUs[0]);
-		
-		glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE);	
-			
-	}
-	else
-		glDisable(GL_TEXTURE_2D);
+	//setup TU 3
+	glActiveTextureARB(GL_TEXTURE3_ARB);	
+	glClientActiveTextureARB(GL_TEXTURE3_ARB);
+	SetupTU(pkSettings,3);
 	
 	//setup TU 2
-	glActiveTextureARB(GL_TEXTURE1_ARB);
-	if(pkSettings->m_iTUs[1] > 0)
-	{	
-		glEnable(GL_TEXTURE_2D);
-		m_pkTexMan->BindTexture(pkSettings->m_iTUs[1]);
+	glActiveTextureARB(GL_TEXTURE2_ARB);		
+	glClientActiveTextureARB(GL_TEXTURE2_ARB);
+	SetupTU(pkSettings,2);
 	
-		glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE);		
-	}
-	else
-		glDisable(GL_TEXTURE_2D);
-
+	//setup TU 1
+	glActiveTextureARB(GL_TEXTURE1_ARB);		
+	glClientActiveTextureARB(GL_TEXTURE1_ARB);
+	SetupTU(pkSettings,1);
+	
+	//setup TU 0
+	glActiveTextureARB(GL_TEXTURE0_ARB);		
+	glClientActiveTextureARB(GL_TEXTURE0_ARB);
+	SetupTU(pkSettings,0);
+	
 
 	//want TU 0 to be active when exiting
-	glActiveTextureARB(GL_TEXTURE0_ARB);
+
 }
 
 void ZShader::CopyVertexData()
@@ -239,8 +315,14 @@ void ZShader::CopyVertexData()
 	if(m_pkNormalPointer)
 		CopyData((void**)&m_pkNormalPointer,sizeof(Vector3)*m_iNrOfVertexs);
 	
-	if(m_pkTexturePointer)
-		CopyData((void**)&m_pkTexturePointer,sizeof(Vector2)*m_iNrOfVertexs);
+	if(m_pkTexturePointer0)
+		CopyData((void**)&m_pkTexturePointer0,sizeof(Vector2)*m_iNrOfVertexs);
+	if(m_pkTexturePointer1)
+		CopyData((void**)&m_pkTexturePointer1,sizeof(Vector2)*m_iNrOfVertexs);
+	if(m_pkTexturePointer2)
+		CopyData((void**)&m_pkTexturePointer2,sizeof(Vector2)*m_iNrOfVertexs);
+	if(m_pkTexturePointer3)
+		CopyData((void**)&m_pkTexturePointer3,sizeof(Vector2)*m_iNrOfVertexs);
 	
 	if(m_pkIndexPointer)
 		CopyData((void**)&m_pkIndexPointer,sizeof(int)*m_iNrOfVertexs);
@@ -265,13 +347,19 @@ void ZShader::CleanCopyedData()
 {
 	delete m_pkVertexPointer;	
 	delete m_pkNormalPointer;		
-	delete m_pkTexturePointer;		
+	delete m_pkTexturePointer0;		
+	delete m_pkTexturePointer1;			
+	delete m_pkTexturePointer2;			
+	delete m_pkTexturePointer3;			
 	delete m_pkIndexPointer;		
 	delete m_pkColorPointer;		
 	
 	m_pkVertexPointer =	NULL;	
 	m_pkNormalPointer =	NULL;		
-	m_pkTexturePointer = NULL;		
+	m_pkTexturePointer0 = NULL;		
+	m_pkTexturePointer1 = NULL;			
+	m_pkTexturePointer2 = NULL;			
+	m_pkTexturePointer3 = NULL;			
 	m_pkIndexPointer =	NULL;		
 	m_pkColorPointer =	NULL;		
 	

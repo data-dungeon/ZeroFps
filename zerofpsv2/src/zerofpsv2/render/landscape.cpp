@@ -1223,7 +1223,7 @@ void Render::DrawHM2(Heightmap2* pkMap,Vector3 kCamPos)
 	
 	vector<HM2_patch>* m_kRenderData = &pkMap->m_kRenderData;
 		
-	m_kHeightmapMaterial.GetPass(0)->m_iTUs[0] = m_pkTexMan->Load("grass.tga",0);		
+	m_kHeightmapMaterial.GetPass(0)->m_iTUs[0] = m_pkTexMan->Load("bla.tga",0);		
 	m_kHeightmapMaterial.GetPass(0)->m_iTUs[1] = m_pkTexMan->Load("mask.tga",0);			
 		
 	m_pkZShader->BindMaterial(&m_kHeightmapMaterial);
@@ -1243,7 +1243,7 @@ void Render::DrawHM2(Heightmap2* pkMap,Vector3 kCamPos)
 		
 			m_pkZShader->SetPointer(VERTEX_POINTER,&pkLevel->kVertex[0]);
 			m_pkZShader->SetPointer(NORMAL_POINTER,&pkLevel->kNormal[0]);
-			m_pkZShader->SetPointer(TEXTURE_POINTER,&pkLevel->kTexCor[0]);
+			m_pkZShader->SetPointer(TEXTURE_POINTER0,&pkLevel->kTexCor[0]);
 			
 			m_pkZShader->SetNrOfVertexs(pkLevel->kVertex.size());
 			

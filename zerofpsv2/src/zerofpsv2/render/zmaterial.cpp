@@ -1,4 +1,5 @@
 #include "zmaterial.h"
+#include "zshader.h"
 
 ZMaterialSettings::ZMaterialSettings()
 {
@@ -7,11 +8,16 @@ ZMaterialSettings::ZMaterialSettings()
 	m_iTUs[2] = -1;			
 	m_iTUs[3] = -1;			
 	
+	m_iTUTexCords[0] = CORDS_FROM_ARRAY_0;
+	m_iTUTexCords[1] = CORDS_FROM_ARRAY_1;	
+	m_iTUTexCords[2] = CORDS_FROM_ARRAY_2;	
+	m_iTUTexCords[3] = CORDS_FROM_ARRAY_3;	
+	
 	m_iPolygonModeFront = GL_LINE;
 	m_iPolygonModeBack = GL_LINE;			
 	
 	m_bLighting = false;
-	m_bCullFace = false;
+	m_bCullFace = true;
 	m_iDepthFunc = GL_LESS;
 };
 
