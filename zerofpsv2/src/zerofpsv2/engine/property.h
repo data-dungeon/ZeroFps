@@ -227,6 +227,7 @@ class ENGINE_API Property
 
 		// Virtuals
 		virtual void Touch(Collision* pkCol) {};					//executet when collision occurs
+		virtual void ZoneChange(int iCurrent,int iNew) {};
 		virtual void Init() {};											//executet when property is added to an object
 		virtual void Update() {};										//executet once every game loop
 		virtual void PackTo(NetPacket* pkNetPacket) {} ;

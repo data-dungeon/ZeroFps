@@ -29,6 +29,8 @@ class MCOMMON_API P_Event: public Property {
 		P_Event();
 		~P_Event();
 		
+		//void ZoneChange(int iCurrent,int iNew);
+		
 		void Update();				
 		bool SendEvent(const char* acEvent, const char* acType="NoName",int iCallerObject = -1);
 		void Touch(Collision* pkCol);					//executet when collision occurs

@@ -790,7 +790,7 @@ void NetWork::Run()
 	
 			// Else give it to zerofps.
 			case ZF_NETTYPE_UNREL:
-				Logf("net", "Recv: ZF_NETTYPE_UNREL: Order = %d\n", NetP.m_kData.m_kHeader.m_iOrder);
+				//Logf("net", "Recv: ZF_NETTYPE_UNREL: Order = %d\n", NetP.m_kData.m_kHeader.m_iOrder);
 				m_pkZeroFps->HandleNetworkPacket(&NetP);
 				break;
 
@@ -801,8 +801,6 @@ void NetWork::Run()
 					NetP.m_kData.m_kHeader.m_iPacketType,
 					NetP.m_iLength);
 
-
-				cout << "Recv: Something :)" << endl;
 			}
 		}
 

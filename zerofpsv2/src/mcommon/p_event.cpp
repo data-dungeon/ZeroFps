@@ -75,7 +75,13 @@ void P_Event::Touch(Collision* pkCol)
 		
 	SendEvent("Collission");	
 }
+/*
+void P_Event::ZoneChange(int iCurrent,int iNew)
+{
+	cout<<"changed zone from "<<iCurrent<<" to "<<iNew<<endl;
 
+}
+*/
 
 Property* Create_P_Event()
 {

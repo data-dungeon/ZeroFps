@@ -851,20 +851,20 @@ void ZeroFps::HandleNetworkPacket(NetPacket* pkNetPacket)
 				break;*/
 
 			case ZFGP_OBJECTSTATE: 
-				Logf("net", "HandleNetworkPacket(ZFGP_OBJECTSTATE)\n");
+				//Logf("net", "HandleNetworkPacket(ZFGP_OBJECTSTATE)\n");
 				m_pkObjectMan->UpdateState(pkNetPacket);
 				break;
 
 			case ZFGP_CLIENTSTATE: 
-				Logf("net", "HandleNetworkPacket(ZFGP_CLIENTSTATE)\n");
+				//Logf("net", "HandleNetworkPacket(ZFGP_CLIENTSTATE)\n");
 				break;
 		
 			case ZFGP_CLIENTCMD: 
-				Logf("net", "HandleNetworkPacket(ZFGP_CLIENTCMD)\n");
+				//Logf("net", "HandleNetworkPacket(ZFGP_CLIENTCMD)\n");
 				break;
 			
 			case ZFGP_PRINT: 
-				Logf("net", "HandleNetworkPacket(ZFGP_PRINT)\n");
+				//Logf("net", "HandleNetworkPacket(ZFGP_PRINT)\n");
 				break;
 
 			case ZFGP_REQOWNOBJECT: 
@@ -878,7 +878,7 @@ void ZeroFps::HandleNetworkPacket(NetPacket* pkNetPacket)
 				break;
 
 			case ZFGP_ZONELIST: 
-				Logf("net", "HandleNetworkPacket(ZFGP_ZONELIST)\n");
+				//Logf("net", "HandleNetworkPacket(ZFGP_ZONELIST)\n");
 				m_pkObjectMan->UpdateZoneList(pkNetPacket);
 				break;
 

@@ -25,6 +25,7 @@
 #include "../mcommon/si_mistland.h"
 #include "../mcommon/p_serverinfo.h"
 #include "../mcommon/p_clientcontrol.h"
+#include "../mcommon/p_enviroment.h"
 
 #include "inventorydlg.h"
 #include "henchman_button.h"

@@ -434,6 +434,10 @@ bool Object::AttachToZone(Vector3 kPos)
 				return  false;
 			}
 	
+			if(nZ == m_iCurrentZone)
+				return true;
+			
+			ZoneChange(m_iCurrentZone,nZ);
 			m_iCurrentZone = nZ;
 			SetParent((Object*)cz->m_pkZone);				
 			return true;
@@ -442,6 +446,15 @@ bool Object::AttachToZone(Vector3 kPos)
 	
 	return false;
 }
+
+void Object::ZoneChange(int iCurrent,int iNew)
+{
+	for(vector<Property*>::iterator it=m_akPropertys.begin();it!=m_akPropertys.end();it++) 
+	{
+		(*it)->ZoneChange(iCurrent,iNew);
+	}
+}
+
 
 /**	\brief	Adds ourself and all our children to the list of objects.
 */

@@ -27,6 +27,7 @@
 #include "../mcommon/p_item.h"
 #include "../mcommon/p_serverinfo.h"
 #include "../mcommon/p_clientcontrol.h"
+#include "../mcommon/p_enviroment.h"
 
 class MistServer :public Application , public ZGuiApp {
 	private:
