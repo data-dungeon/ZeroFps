@@ -54,12 +54,10 @@ bool GUIPROC( ZGuiWnd* win, unsigned int msg, int numparms,	void *params )
 
 		if(win->IsVisible())
 		{
-
-		map<string,msgScreenProg>::iterator itCallback;
-		itCallback = g_kMistClient.m_kGuiMsgProcs.find(strMainWnd);
-		if(itCallback != g_kMistClient.m_kGuiMsgProcs.end())			
-			itCallback->second(strMainWnd, "", ZGM_MOUSEMOVE, numparms, params);
-
+			map<string,msgScreenProg>::iterator itCallback;
+			itCallback = g_kMistClient.m_kGuiMsgProcs.find(strMainWnd);
+			if(itCallback != g_kMistClient.m_kGuiMsgProcs.end())			
+				itCallback->second(strMainWnd, "", ZGM_MOUSEMOVE, numparms, params);
 		}
 		
 		return true;

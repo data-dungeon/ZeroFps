@@ -93,8 +93,11 @@ void GuiMsgIngameScreen( string strMainWnd, string	strController,
 		else
 		if( ((int*)params)[0] == KEY_P)
 		{
-			if(!g_kMistClient.m_pkInventoryDlg->IsVisible())
-				g_kMistClient.m_pkInventoryDlg->Open(); 
+			if( strController	!=	"SayTextbox" )
+			{
+				if(!g_kMistClient.m_pkInventoryDlg->IsVisible())
+					g_kMistClient.m_pkInventoryDlg->Open(); 
+			}
 		}
 	}
 }

@@ -385,9 +385,7 @@ void MistClient::Input()
 		else
 			m_pkInventoryDlg->Open(); 
 	}
-	
-
-		
+			
 	// taunts
 	if ( m_pkInputHandle->VKIsDown("taunt1") || m_pkInputHandle->VKIsDown("taunt2")|| 
 		m_pkInputHandle->VKIsDown("taunt3") || m_pkInputHandle->VKIsDown("taunt4") || 
