@@ -7,7 +7,6 @@ ZeroFps::ZeroFps(void) {
 	m_pkRender=new Render(m_pkTexMan);
 	m_pkConsole=new Console(this);	
 	m_pkInput=new Input();
-	m_pkModMan=new ModellManager(m_pkFile);
 	m_pkAudioMan=new AudioManager(this);
 	m_pkLight=new Light();
 	
@@ -108,23 +107,20 @@ void ZeroFps::InitDisplay(int iWidth,int iHeight,int iDepth) {
 	glEnable(GL_TEXTURE_2D);
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_NORMALIZE);	
-//	glEnable(GL_BLEND);
-//	glEnable(GL_COLOR_MATERIAL);	
 	glEnable(GL_CULL_FACE);
 
-  glShadeModel(GL_SMOOTH);
-//  glShadeModel(GL_FLAT);
-  glClearColor(0, 0, 0, 0);
-  glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
-  glMatrixMode(GL_MODELVIEW);
+	glShadeModel(GL_SMOOTH);
+	glClearColor(0, 0, 0, 0);
+	glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
+	glMatrixMode(GL_MODELVIEW);
   
-  SDL_GL_SetAttribute( SDL_GL_RED_SIZE, 5 );
-  SDL_GL_SetAttribute( SDL_GL_GREEN_SIZE, 5 );
-  SDL_GL_SetAttribute( SDL_GL_BLUE_SIZE, 5 );
-  SDL_GL_SetAttribute( SDL_GL_DEPTH_SIZE, 24 );
-  SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1 );
+	SDL_GL_SetAttribute( SDL_GL_RED_SIZE, 5 );
+	SDL_GL_SetAttribute( SDL_GL_GREEN_SIZE, 5 );
+	SDL_GL_SetAttribute( SDL_GL_BLUE_SIZE, 5 );
+	SDL_GL_SetAttribute( SDL_GL_DEPTH_SIZE, 24 );
+	SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1 );
 	
-  glMatrixMode(GL_PROJECTION);
+	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();													//
 	glFrustum(-.5,.5,-.5,.5,.5,500.0);				//
 	
@@ -140,8 +136,6 @@ void ZeroFps::Swap(void) {
 	SDL_GL_SwapBuffers();  //guess
 	
 	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
-	
-
  	glLoadIdentity();													
   
 	//count FPS

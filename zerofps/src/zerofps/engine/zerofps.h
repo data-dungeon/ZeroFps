@@ -41,7 +41,6 @@ class ZeroFps {
 		CmdSystem* m_pkCmd;							//realtime variable handler
 		AudioManager* m_pkAudioMan;			//audio manager (sfx,music)		
 		TextureManager* m_pkTexMan;			//texture manager
-		ModellManager* m_pkModMan;			//model manager
 		Input* m_pkInput;								//keyboard mouse input
 		Render* m_pkRender;					//graphic primitives
 		Console* m_pkConsole;						//console handler

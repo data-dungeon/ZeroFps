@@ -22,6 +22,7 @@ void Light::Update() {
 	m_kActiveLights.clear();
 	TurnOffAll();
 
+	//loop trough all lightsources and find wich to view
 	for(list<LightSource*>::iterator it=m_kLights.begin();it!=m_kLights.end();it++) {
 		
 		//always add light with priority >10
@@ -33,29 +34,21 @@ void Light::Update() {
 		if((*it)->iType==DIRECTIONAL_LIGHT){
 			if(m_kActiveLights.size()<m_iNrOfLights)
 				m_kActiveLights.push_back(*it);		
-			cout<<"direct"<<endl;
 		//else add the light if it is bright enough
 		} else {
+			//		opengl LightIntesity equation	min(1, 1 / ((*it)-> + l*d + q*d*d))
+			
 			Vector3 kPos = (*(*it)->kPos)+(*it)->kConstPos;		
 			float fDistance = (*m_kCamPos-kPos).Length();		
 			float fIntensity = min(1, 1 / ((*it)->fConst_Atten + (*it)->fLinear_Atten*fDistance + (*it)->fQuadratic_Atten*fDistance*fDistance));
 		
-			cout<<"INT: "<<fIntensity<<endl;
-			
 			if(fIntensity>0.05)
 				if(m_kActiveLights.size()<m_iNrOfLights)
 					m_kActiveLights.push_back(*it);					
 		}
-		
-		
-//			min(1, 1 / ((*it)-> + l*d + q*d*d))
-//		if(kDistance<100){
-//			if(m_kActiveLights.size()<m_iNrOfLights)
-//				m_kActiveLights.push_back(*it);		
-//		}
-		
 	}
 	
+	//loop trough selected lightsources and enable them
 	int i=0;		
 	for(vector<LightSource*>::iterator it=m_kActiveLights.begin();it!=m_kActiveLights.end();it++) {
  				
