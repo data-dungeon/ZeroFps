@@ -101,6 +101,7 @@ void ZeroTank::Init()
 	//SDL_WM_SetCaption("Mistland, the land of mist", NULL);
 
 	pkScript->ExposeFunction("CreateWnd", GuiAppLua::CreateWndLua);
+	pkScript->ExposeFunction("AddTabPage", GuiAppLua::AddTabPageLua);
 	
 	InitializeGui(pkGui, pkTexMan, pkScript);
 

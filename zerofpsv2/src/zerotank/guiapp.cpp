@@ -212,12 +212,59 @@ bool GuiApp::CreateWnd(GuiType eType, char* szResourceName, char* szText, int iI
 		pkParent, x, y, w, h, uiFlags);
 }
 
-char* GuiApp::GetTexName(ZFScript* pkScript, char* szName)
+ZGuiSkin* GuiApp::AddSkinFromScript(char *szName, ZFScript *pkScript)
 {
-	if(!pkScript->GetGlobal(NULL, szName, m_szTexName))
-		strcpy(m_szTexName, "\0");
+	ZGuiSkin* pkNewSkin = new ZGuiSkin();
 
-	return m_szTexName;
+	char szData[250];
+	double dData;
+	double dColMult = 1.0 / 255.0;
+
+	// Textures
+	if(pkScript->GetGlobal(NULL, szName, "tex1", szData))
+		pkNewSkin->m_iBkTexID = GetTexID(szData);
+	if(pkScript->GetGlobal(NULL, szName, "tex2", szData))
+		pkNewSkin->m_iHorzBorderTexID = GetTexID(szData);
+	if(pkScript->GetGlobal(NULL, szName, "tex3", szData))
+		pkNewSkin->m_iVertBorderTexID = GetTexID(szData);
+	if(pkScript->GetGlobal(NULL, szName, "tex4", szData))
+		pkNewSkin->m_iBorderCornerTexID = GetTexID(szData);
+
+	// Alpha maps
+	if(pkScript->GetGlobal(NULL, szName, "tex1a", szData))
+		pkNewSkin->m_iBkTexAlphaID = GetTexID(szData);
+	if(pkScript->GetGlobal(NULL, szName, "tex2a", szData))
+		pkNewSkin->m_iHorzBorderTexAlphaID = GetTexID(szData);
+	if(pkScript->GetGlobal(NULL, szName, "tex3a", szData))
+		pkNewSkin->m_iVertBorderTexAlphaID = GetTexID(szData);
+	if(pkScript->GetGlobal(NULL, szName, "tex4a", szData))
+		pkNewSkin->m_iBorderCornerTexAlphaID = GetTexID(szData);
+
+	// Color Bk
+	if(pkScript->GetGlobal(NULL, szName, "bkR", dData))
+		pkNewSkin->m_afBkColor[0] = dColMult * dData;
+	if(pkScript->GetGlobal(NULL, szName, "bkG", dData))
+		pkNewSkin->m_afBkColor[1] = dColMult * dData;
+	if(pkScript->GetGlobal(NULL, szName, "bkB", dData))
+		pkNewSkin->m_afBkColor[2] = dColMult * dData;
+
+	// Color Border
+	if(pkScript->GetGlobal(NULL, szName, "borderR", dData))
+		pkNewSkin->m_afBorderColor[0] = dColMult * dData;
+	if(pkScript->GetGlobal(NULL, szName, "borderG", dData))
+		pkNewSkin->m_afBorderColor[1] = dColMult * dData;
+	if(pkScript->GetGlobal(NULL, szName, "borderB", dData))
+		pkNewSkin->m_afBorderColor[2] = dColMult * dData;
+
+	// Border size, Tile texture, Transparency
+	if(pkScript->GetGlobal(NULL, szName, "bd_size", dData))
+		pkNewSkin->m_unBorderSize = (unsigned short) dData;
+	if(pkScript->GetGlobal(NULL, szName, "tile", dData))
+		pkNewSkin->m_bTileBkSkin = dData > 0 ? true : false;
+	if(pkScript->GetGlobal(NULL, szName, "trans", dData))
+		pkNewSkin->m_bTransparent = dData > 0 ? true : false;
+
+	return pkNewSkin;
 }
 
 void GuiApp::InitTextures(ZFScript* pkScript)
@@ -227,75 +274,29 @@ void GuiApp::InitTextures(ZFScript* pkScript)
 
 	typedef map<string, ZGuiSkin*>::value_type strSkin;
 
-	ZGuiSkin* skin;
+	char* szDefNames[] =
+	{
+		"DefWndSkin",						"DefBnUSkin",
+		"DefBnDSkin",						"DefBnFSkin",
+		"DefRBnUSkin",						"DefRBnDSkin",
+		"DefCBnUSkin",						"DefCBnDSkin",
+		"DefSBrNSkin",						"DefSBrFSkin",
+		"DefSBrBkSkin",					"DefSliderSkin",
+		"DefSliderBkSkin",				"DefLBitemUSkin",
+		"DefLBitemDSkin",					"DefLBitemFSkin",
+		"DefLBBkSkin",						"DefCBitemUSkin",
+		"DefCBitemDSkin",					"DefCBitemFSkin",
+		"DefCBBkSkin",						"DefCBTopItemSkin",
+		"DefTextboxSkin",					"DefTreeboxBkSkin",
+		"DefTreeNodeChildSkin",			"DefTreeNodeParentClosedSkin",
+		"DefTreeNodeParentOpenSkin",  "DefTabCtrlBkSkin",
+		"DefTabBnPrevUSkin",				"DefTabBnPrevDSkin",
+		"DefTabBnNextUSkin",				"DefTabBnNextDSkin",
+		"DefTabPageBackSkin",			"DefTabPageFrontSkin",
+	};
 
-	m_kSkins.insert(strSkin("DefWndSkin", new ZGuiSkin(GetTexID(GetTexName(pkScript, "DefWndSkin")),0)));
-	m_kSkins.insert(strSkin("DefBnUSkin", new ZGuiSkin(GetTexID(GetTexName(pkScript, "DefBnUSkin")),0)));
-	m_kSkins.insert(strSkin("DefBnDSkin", new ZGuiSkin(GetTexID(GetTexName(pkScript, "DefBnDSkin")),0)));
-	m_kSkins.insert(strSkin("DefBnFSkin", new ZGuiSkin(GetTexID(GetTexName(pkScript, "DefBnFSkin")),0)));
-	m_kSkins.insert(strSkin("DefRBnUSkin", new ZGuiSkin(GetTexID(GetTexName(pkScript, "DefRBnUSkin")),GetTexID("rbn_a.bmp"),0)));
-	m_kSkins.insert(strSkin("DefRBnDSkin", new ZGuiSkin(GetTexID(GetTexName(pkScript, "DefRBnDSkin")),GetTexID("rbn_a.bmp"),0)));
-	m_kSkins.insert(strSkin("DefCBnUSkin", new ZGuiSkin(GetTexID(GetTexName(pkScript, "DefCBnUSkin")),0)));
-	m_kSkins.insert(strSkin("DefCBnDSkin", new ZGuiSkin(GetTexID(GetTexName(pkScript, "DefCBnDSkin")),0)));
-	m_kSkins.insert(strSkin("DefSBrNSkin", new ZGuiSkin(GetTexID(GetTexName(pkScript, "DefSBrNSkin")),0)));
-	m_kSkins.insert(strSkin("DefSBrFSkin", new ZGuiSkin(GetTexID(GetTexName(pkScript, "DefSBrFSkin")),0)));
-	m_kSkins.insert(strSkin("DefSBrBkSkin", new ZGuiSkin(GetTexID(GetTexName(pkScript, "DefSBrBkSkin")),1)));
-	m_kSkins.insert(strSkin("DefSliderSkin", new ZGuiSkin(GetTexID(GetTexName(pkScript, "DefSliderSkin")),
-		GetTexID("slider_a.bmp"), 0)));
-	m_kSkins.insert(strSkin("DefSliderBkSkin", new ZGuiSkin(255,0,0,  0,0,255, 0)));
-
-	m_kSkins.insert(strSkin("DefLBitemUSkin", new ZGuiSkin(GetTexID("lb_u.bmp"),0)));
-	m_kSkins.insert(strSkin("DefLBitemDSkin", new ZGuiSkin(GetTexID("lb_d.bmp"),0)));
-	
-	skin = new ZGuiSkin(GetTexID("lb_f.bmp"),1);
-	skin->m_afBorderColor[0] = 0.22f; skin->m_afBorderColor[1] = 0.22f;
-	skin->m_afBorderColor[2] = 0.22f; skin->m_unBorderSize = 1;
-	m_kSkins.insert(strSkin("DefLBitemFSkin", skin));
-
-	skin = new ZGuiSkin(GetTexID("lb_bk.bmp"),1);
-	skin->m_afBorderColor[0] = 0.22f; skin->m_afBorderColor[1] = 0.22f;
-	skin->m_afBorderColor[2] = 0.22f; skin->m_unBorderSize = 1;
-	m_kSkins.insert(strSkin("DefLBBkSkin", skin));
-
-	m_kSkins.insert(strSkin("DefCBitemUSkin", new ZGuiSkin(GetTexID("cb_u.bmp"),0)));
-	m_kSkins.insert(strSkin("DefCBitemDSkin", new ZGuiSkin(GetTexID("cb_d.bmp"),0)));
-	
-	skin = new ZGuiSkin(GetTexID("cb_f.bmp"),1);
-	skin->m_afBorderColor[0] = 0.22f; skin->m_afBorderColor[1] = 0.22f;
-	skin->m_afBorderColor[2] = 0.22f; skin->m_unBorderSize = 1;
-	m_kSkins.insert(strSkin("DefCBitemFSkin", skin));
-
-	skin = new ZGuiSkin(GetTexID("cb_bk.bmp"),1);
-	skin->m_afBorderColor[0] = 0.22f; skin->m_afBorderColor[1] = 0.22f;
-	skin->m_afBorderColor[2] = 0.22f; skin->m_unBorderSize = 1;
-	m_kSkins.insert(strSkin("DefCBBkSkin", skin));
-
-	m_kSkins.insert(strSkin("DefCBTopItemSkin", new ZGuiSkin(GetTexID("cb_topItem.bmp"),1)));
-
-	skin = new ZGuiSkin(GetTexID("textbox.bmp"),1);
-	skin->m_afBorderColor[0] = 0.22f; skin->m_afBorderColor[1] = 0.22f;
-	skin->m_afBorderColor[2] = 0.22f; skin->m_unBorderSize = 1;
-	m_kSkins.insert(strSkin("DefTextboxSkin", skin));
-
-	skin = new ZGuiSkin(GetTexID("treebox_bk.bmp"),1);
-	skin->m_afBorderColor[0] = 0.22f; skin->m_afBorderColor[1] = 0.22f;
-	skin->m_afBorderColor[2] = 0.22f; skin->m_unBorderSize = 1;
-	m_kSkins.insert(strSkin("DefTreeboxBkSkin", skin));
-
-	m_kSkins.insert(strSkin("DefTreeNodeChildSkin", new ZGuiSkin(GetTexID("tn_c.bmp"),0)));
-	m_kSkins.insert(strSkin("DefTreeNodeParentClosedSkin", new ZGuiSkin(GetTexID("tn_pc.bmp"),0)));
-	m_kSkins.insert(strSkin("DefTreeNodeParentOpenSkin", new ZGuiSkin(GetTexID("tn_po.bmp"),0)));
-
-	m_kSkins.insert(strSkin("DefTabCtrlBkSkin", new ZGuiSkin(128, 128, 128, 92, 92, 92, 1)));
-
-	m_kSkins.insert(strSkin("DefTabBnPrevUSkin", new ZGuiSkin(GetTexID("tab_bnPrev_u.bmp"),0)));
-	m_kSkins.insert(strSkin("DefTabBnPrevDSkin", new ZGuiSkin(GetTexID("tab_bnPrev_d.bmp"),0)));
-
-	m_kSkins.insert(strSkin("DefTabBnNextUSkin", new ZGuiSkin(GetTexID("tab_bnNext_u.bmp"),0)));
-	m_kSkins.insert(strSkin("DefTabBnNextDSkin", new ZGuiSkin(GetTexID("tab_bnNext_d.bmp"),0)));
-
-	m_kSkins.insert(strSkin("DefTabPageBackSkin", new ZGuiSkin(128,128,128,92,92,92,1)));
-	m_kSkins.insert(strSkin("DefTabPageFrontSkin", new ZGuiSkin(214,211,206,0,0,0,0)));
+	for(int i=0; i<sizeof(szDefNames)/sizeof(szDefNames[0]); i++) 
+		m_kSkins.insert( strSkin(szDefNames[i], AddSkinFromScript(szDefNames[i], pkScript) ) );
 }
 
 void GuiApp::InitializeGui(ZGui* pkGui, TextureManager* pkTexMan, ZFScript* pkScript)
@@ -351,7 +352,6 @@ void GuiApp::AddListItem(int iListboxID, char *szText, bool bCombobox)
 		ZGuiCombobox* pkComboBox = static_cast<ZGuiCombobox*>(GetWnd(iListboxID));
 		pkComboBox->AddItem(szText, -1, false); 
 	}
-
 }
 
 void GuiApp::AddTreeItem(int iTreeboxID, const char* szID, const char* szIDParent, char* szText,
@@ -521,3 +521,5 @@ GuiType GuiApp::GetType(ZGuiWnd *pkWnd)
 
 	return GuiType_Error;
 }
+
+

@@ -40,6 +40,8 @@ class SCRIPT_API ZFScript
 public:
 
 	bool GetGlobal(lua_State* state, char* szName, double& data);
+	bool GetGlobal(lua_State* state, char* szTable, char* szVar, char* data);
+	bool GetGlobal(lua_State* state, char* szTable, char* szVar, double& data);
 	bool GetGlobal(lua_State* state, char* szName, char* data);
 
 	int GetNumArgs(lua_State* state);

@@ -10,6 +10,7 @@
 namespace GuiAppLua
 {
 	int CreateWndLua(lua_State* pkLua);
+	int AddTabPageLua(lua_State* pkLua);
 };
 
 #endif // #ifndef _SCRIPTINTERFACES_H

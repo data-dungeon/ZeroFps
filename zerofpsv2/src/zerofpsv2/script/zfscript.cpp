@@ -279,8 +279,11 @@ bool ZFScript::GetGlobal(lua_State* state, char* szName, double& data)
 	if(lua_isnumber(state, 1))
 	{
 		data = lua_tonumber(state, 1);
+		lua_pop (state, 1);
 		return true;
 	}
+
+	lua_pop (state, 1);
 
 	return false;
 }
@@ -294,13 +297,77 @@ bool ZFScript::GetGlobal(lua_State* state, char* szName, char* data)
 
 	if(lua_isstring(state, 1))
 	{
+		strcpy(data, "\0");
 		const char* d = lua_tostring(state, 1);
 		if(d)
 		{
 			strcpy(data, d);
+			lua_pop(state, 1);  // remove variable szName from the stack (VERY IMPORTENT)           
 			return true;
 		}
 	}
 
+	//printf("Failed to get global %s from script!\n", szName);
+	lua_pop (state, 1);
+
 	return false;
+}
+
+bool ZFScript::GetGlobal(lua_State* state, char* szTable, char* szVar, char* data)
+{
+	if(state == NULL)
+		state = m_pkLua;
+
+	lua_getglobal(state, szTable);
+
+	if(!lua_istable(state, -1))
+	{
+		//printf("Failed to get global %s from script!\n. Is not a table", szTable);
+		return false;
+	}
+
+	lua_pushstring (state, szVar);
+	lua_gettable (state, -2);
+	if (!lua_isstring (state, -1)) {
+		//printf("Failed to get global %s from script!\n", szTable);
+		//printf("data in %s is not a string\n", szVar);
+		lua_pop (state, 1);
+		return false;
+	}
+       
+	const char* d = lua_tostring(state, -1);
+	strcpy(data, d);
+
+	lua_pop (state, 1);
+
+	return true;
+}
+
+bool ZFScript::GetGlobal(lua_State* state, char* szTable, char* szVar, double& data)
+{
+	if(state == NULL)
+		state = m_pkLua;
+
+	lua_getglobal(state, szTable);
+
+	if(!lua_istable(state, -1))
+	{
+		//printf("Failed to get global %s from script!\n. Is not a table", szTable);
+		return false;
+	}
+
+	lua_pushstring (state, szVar);
+	lua_gettable (state, -2);
+	if (!lua_isnumber (state, -1)) {
+		//printf("Failed to get global %s from script!\n", szTable);
+		//printf("data in %s is not a string\n", szVar);
+		lua_pop (state, 1);
+		return false;
+	}
+        
+	data = lua_tonumber(state, -1);
+
+	lua_pop (state, 1);
+
+	return true;
 }

@@ -9,7 +9,6 @@
 
 extern ZeroTank g_kZeroTank;
 
-
 // Name: CreateWndLua
 // Parameters:
 // (0) int iType, (1) char* szResourceName, (2) char* szText, (3) int iID, 
@@ -75,6 +74,29 @@ int GuiAppLua::CreateWndLua(lua_State* pkLua)
 	}
 
 	g_kZeroTank.CreateWnd(eType, szResName, szText, dID, dParentID, x, y, w, h, f);
+
+	return 1;
+}
+
+// Name: AddTabPageLua
+// Parameters:
+// (0) int iParentID, (1) int iID
+int GuiAppLua::AddTabPageLua(lua_State* pkLua)
+{
+	ZFScript* pkScript = g_kZeroTank.GetScript();
+
+	int iNumArgs = pkScript->GetNumArgs(pkLua);
+
+	if(iNumArgs != 2)
+		return 0;
+
+	double dType;
+	pkScript->GetArg(pkLua, 0, &dType);
+
+	char szResName[100];
+	pkScript->GetArg(pkLua, 1, szResName);
+
+	g_kZeroTank.AddTabPage((int)dType, szResName);
 
 	return 1;
 }

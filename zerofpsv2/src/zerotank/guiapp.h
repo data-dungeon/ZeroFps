@@ -34,6 +34,7 @@ enum GuiType
 class GuiApp
 {
 public:
+	ZGuiSkin* AddSkinFromScript(char* szName, ZFScript* pkScript);
 	bool IsButtonChecked(int iWndID);
 	float GetTextFloat(int iWndID, bool* pkSuccess);
 	int GetTextInt(int iWndID, bool* pkSuccess);
@@ -58,7 +59,6 @@ public:
 	~GuiApp();
 
 private:
-	char* GetTexName(ZFScript* pkScript, char* szName);
 	GuiType GetType(ZGuiWnd* pkWnd);
 	int GetTexID(char* szFile);
 	void InitTextures(ZFScript* pkScript);
