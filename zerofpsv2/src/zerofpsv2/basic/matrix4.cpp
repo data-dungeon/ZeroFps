@@ -43,13 +43,6 @@ void Matrix4::Set( float v1,float v2,float v3 ,float v4,
 
 	
 // Operators	-	Assignment
-Matrix4 Matrix4::operator=(const Matrix4 &kOther)
-{
-	memcpy(data,kOther.data,sizeof(data));
-		
-	return *this;
-}
-
 void Matrix4::operator=(const Matrix3 &rkMatrix)
 {
 
@@ -77,20 +70,6 @@ void Matrix4::operator= (const Quaternion& rkQuaternion)
 	*this = mat3;
 }
 
-
-// Operators	-	Comparison
-bool Matrix4::operator== (const Matrix4& rkMatrix) const
-{
-	if(memcmp(data,rkMatrix.data,sizeof(data)) == 0)
-		return true;
-
-	return false;
-}
-
-bool Matrix4::operator!= (const Matrix4& rkMatrix) const
-{
-    return !operator==(rkMatrix);
-}
 
 // Operators	-	Arithmetic operations
 Matrix4 Matrix4::operator+ (const Matrix4& rkMatrix) const

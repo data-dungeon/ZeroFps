@@ -36,7 +36,12 @@ class BASIC_API Matrix4
 					
 // Operators
 		// Assignment 
-		Matrix4 operator=(const Matrix4 &kOther);
+		Matrix4 operator=(const Matrix4 &kOther)
+			{
+				memcpy(data,kOther.data,sizeof(data));		
+				return *this;
+			}
+
 		void operator=(const Matrix3 &rkMatrix);
 		void operator= (const Quaternion& rkQuaternion);
 		float &operator[](const int i);				
@@ -46,8 +51,14 @@ class BASIC_API Matrix4
 				 	float v13,float v14,float v15 ,float v16);		
 		
 		// Comparison
-		bool operator== (const Matrix4& rkMatrix) const;
-		bool operator!= (const Matrix4& rkMatrix) const;
+		bool operator== (const Matrix4& rkMatrix) const
+			{
+				return (memcmp(data,rkMatrix.data,sizeof(data)) == 0);
+			}			
+		bool operator!= (const Matrix4& rkMatrix) const
+			{
+				return !operator==(rkMatrix);
+			}
 		
 		// Arithmetic operations
 		Matrix4 operator+ (const Matrix4& rkMatrix) const;

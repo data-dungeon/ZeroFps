@@ -36,7 +36,11 @@ class BASIC_API Matrix3
 		
 // Operators
 		// assignment and comparison
-		Matrix3& operator= (const Matrix3& rkMatrix);
+		Matrix3& operator= (const Matrix3& rkMatrix)
+			{
+				memcpy(m_afData,rkMatrix.m_afData,sizeof(m_afData));
+				return *this;
+			}
 		void operator= (const Matrix4& rkMatrix);
 		void operator= (const Quaternion& rkQuaternion);
 		void Set(float f00,float f01,float f02,
@@ -46,8 +50,14 @@ class BASIC_API Matrix3
 		
 		
 		// Comparison
-		bool operator== (const Matrix3& rkMatrix) const;
-		bool operator!= (const Matrix3& rkMatrix) const;
+		bool operator== (const Matrix3& rkMatrix) const
+			{
+				return (memcmp(m_afData,rkMatrix.m_afData,sizeof(m_afData)) == 0);
+			}
+		bool operator!= (const Matrix3& rkMatrix) const
+			{
+				return !operator==(rkMatrix);
+			}
 
 		// Arithmetic operations
 		Matrix3 operator+ (const Matrix3& rkMatrix) const;

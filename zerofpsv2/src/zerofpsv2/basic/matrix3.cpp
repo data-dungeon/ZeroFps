@@ -60,11 +60,6 @@ Vector3 Matrix3::GetAxis(int iAxisNum)
 
 
 // Operators	-	Assignment
-Matrix3& Matrix3::operator= (const Matrix3& rkMatrix)
-{
-    memcpy(m_aafRowCol,rkMatrix.m_aafRowCol,sizeof(m_afData));
-    return *this;
-}
 
 void Matrix3::operator= (const Matrix4& rkMatrix)
 {
@@ -86,30 +81,6 @@ void Matrix3::operator= (const Quaternion& rkQuaternion)
 	rkQuaternion.ToRotationMatrix(*this);
 }
 
-// Operators	-	Comparison
-bool Matrix3::operator== (const Matrix3& rkMatrix) const
-{
-	if(memcmp(m_afData,rkMatrix.m_afData,sizeof(m_afData)) == 0)
-		return true;
-
-	return false;	
-
-//     for (int iRow = 0; iRow < 3; iRow++)
-//     {
-//         for (int iCol = 0; iCol < 3; iCol++)
-//         {
-//             if ( m_aafRowCol[iRow][iCol] != rkMatrix.m_aafRowCol[iRow][iCol] )
-//                 return false;
-//         }
-//     }
-
-    return true;
-}
-
-bool Matrix3::operator!= (const Matrix3& rkMatrix) const
-{
-    return !operator==(rkMatrix);
-}
 
 // Operators	-	Arithmetic operations
 Matrix3 Matrix3::operator+ (const Matrix3& rkMatrix) const
