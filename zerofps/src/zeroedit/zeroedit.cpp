@@ -934,6 +934,7 @@ LandType ZeroEdit::GetLandType(int iNr)
 	
 	for(list<LandType>::iterator it=m_kLandTypes.begin();it!=m_kLandTypes.end();it++)
 	{	
+		i++;
 		if(i == iNr){
 			return (*it);
 		}

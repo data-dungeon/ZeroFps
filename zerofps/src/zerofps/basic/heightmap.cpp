@@ -12,6 +12,7 @@ HeightMap::HeightMap()
  	m_pkFile=static_cast<FileIo*>(g_ZFObjSys.GetObjectPtr("FileIo"));		
 	m_iError=10;
 	
+	verts=NULL;
 	Create(100);
 //	m_kPosition=Vector3(0,0,0);
 //	verts=new HM_vert[(m_iHmSize+m_iError)*m_iHmSize];
@@ -22,7 +23,8 @@ HeightMap::HeightMap()
 void HeightMap::Create(int iHmSize)
 {
 	m_iHmSize=iHmSize;
-	m_kPosition.Set(0,0,0);	
+	m_kPosition.Set(0,0,0);
+	delete[] verts;
 	verts=new HM_vert[(m_iHmSize+m_iError)*m_iHmSize];	
 	Zero();
 	SetTileSet("file:../data/textures/landbw.bmp");
