@@ -1189,7 +1189,8 @@ bool Gui::CreateWorkPanel()
 	ZGuiCombobox* pkTextureCB = CreateCombobox(pkPage, ID_TERRAINTEXTURE_CB, 
 		50, 5, 150, 20, false);
 
-	for(unsigned int i=0; i<m_pkEdit->m_pkMap->m_kSets.size(); i++)
+	unsigned int i;
+	for(i=0; i<m_pkEdit->m_pkMap->m_kSets.size(); i++)
 		pkTextureCB->AddItem(m_pkEdit->m_pkMap->m_kSets[i].m_acMask, 0);
 	
 	CreateLabel(pkPage, 0, 5,  50, 10, 16, "R");
@@ -1242,7 +1243,7 @@ bool Gui::CreateWorkPanel()
 	
 	vkNames.clear(); 
 	m_pkEdit->pkBasicFS->ListDir(&vkNames, "../data/mad", false);
-	for( i=1; i<vkNames.size(); i++)
+	for(i=1; i<vkNames.size(); i++)
 		AddItemToList(pkMadList, false, vkNames[i].c_str(), i, false);
 
 	CreateButton(pkPage, ID_LOADMADFILE_BN, 5, 170, 50, 20, "Change");
