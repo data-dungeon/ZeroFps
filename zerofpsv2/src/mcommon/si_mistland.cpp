@@ -43,6 +43,8 @@ void MistLandLua::Init(EntityManager* pkObjMan,ZFScriptSystem* pkScript)
 	pkScript->ExposeFunction("Bounce",						MistLandLua::BounceLua);				
 	pkScript->ExposeFunction("MakePathFind",				MistLandLua::MakePathFindLua);					
 	pkScript->ExposeFunction("HavePath",					MistLandLua::HavePathLua);					
+	pkScript->ExposeFunction("RotateTowards",				MistLandLua::RotateTowardsLua);					
+	
 	
 	pkScript->ExposeFunction("AddAction",					MistLandLua::AddActionLua);			
 	pkScript->ExposeFunction("MessageCaracter",			MistLandLua::MessageCaracterLua);
@@ -670,6 +672,41 @@ int MistLandLua::HavePathLua(lua_State* pkLua)
 	}
 	return 0;
 }
+
+int MistLandLua::RotateTowardsLua(lua_State* pkLua)
+{
+	if(g_pkScript->GetNumArgs(pkLua) == 2)
+	{
+		double dId;			
+		double x,y,z;
+		Vector3 kPos;		
+		vector<TABLE_DATA> vkData;
+		
+		g_pkScript->GetArgNumber(pkLua, 0, &dId);				
+		g_pkScript->GetArgTable(pkLua, 2, vkData);
+
+		kPos = Vector3(
+			(float) (*(double*) vkData[0].pData),
+			(float) (*(double*) vkData[1].pData),
+			(float) (*(double*) vkData[2].pData)); 
+
+
+		Entity* pkEnt = g_pkObjMan->GetObjectByNetWorkID((int)dId);
+			
+		if(pkEnt)
+		{
+			Matrix4 kRot;
+			kRot.LookDir(kPos - pkEnt->GetWorldPosV(),Vector3(0,1,0));			
+			kRot.Transponse();
+			
+			pkEnt->SetLocalRotM(kRot);
+		}
+		return 0;
+		
+	}
+	return 0;
+}
+
 
 int MistLandLua::BounceLua(lua_State* pkLua)
 {

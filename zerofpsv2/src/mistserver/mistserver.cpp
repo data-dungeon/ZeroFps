@@ -335,6 +335,7 @@ void MistServer::Input()
 		bla = kRm.VectorTransform(bla);
 		kRm.LookDir(bla,Vector3(0,1,0));
 
+		
 		m_pkCameraObject->SetLocalPosV(newpos);		
 		if(pkInput->Pressed(MOUSERIGHT))
 			m_pkCameraObject->SetLocalRotM(kRm);	

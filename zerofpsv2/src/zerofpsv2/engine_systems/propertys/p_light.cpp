@@ -3,11 +3,13 @@
 #include "p_light.h"
 #include "../../engine/entity.h"
 #include "../../basic/zfsystem.h"
+
  
 P_Light::P_Light()
 {
 	m_pkLight	= static_cast<Light*>(g_ZFObjSys.GetObjectPtr("Light"));
-	m_pkZeroFps = static_cast<I_ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
+	m_pkZeroFps = static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
+	m_pkRender=static_cast<Render*>(g_ZFObjSys.GetObjectPtr("Render"));			
 
 	strcpy(m_acName,"P_Light");
 	bNetwork = true;
@@ -15,7 +17,7 @@ P_Light::P_Light()
 	m_pkLightSource=new LightSource();
 
 	m_iType = PROPERTY_TYPE_RENDER;
-	m_iSide = PROPERTY_SIDE_CLIENT;
+	m_iSide = PROPERTY_SIDE_CLIENT|PROPERTY_SIDE_SERVER;
  
 	m_iMode  = LMODE_DEFAULT;
 	m_fTimer = m_pkZeroFps->GetTicks();
@@ -36,6 +38,10 @@ void P_Light::Init()
 
 void P_Light::Update() 
 {
+	//draw ball on the server
+	if(m_pkZeroFps->m_bServerMode)
+		m_pkRender->Sphere(m_pkObject->GetWorldPosV(),0.3,5,Vector3(1,0,1),true);
+
 
 	m_pkLightSource->kPos = m_pkObject->GetWorldPosV();
 

@@ -168,8 +168,11 @@ namespace MistLandLua
 	int MCOMMON_API MakePathFindLua(lua_State* pkLua);				//(int objectid,table (x,y,z)) do a pathfind for the object
 	int MCOMMON_API HavePathLua(lua_State* pkLua);				//(int objectid) returns 1 if object has a path to walk
 	
+	int MCOMMON_API RotateTowardsLua(lua_State* pkLua);				//(int objectid) returns 1 if object has a path to walk
+	
+	
 	//set particle system
-	int MCOMMON_API SetPSystemLua(lua_State* pkLua);				//(int objectid,string pssystem) set wich particle effect to use, if none dont send any parameters
+	int MCOMMON_API SetPSystemLua(lua_State* pkLua);				//(int objectid,vector pos) rotate object so that it faces pos
 
       
    // AI stuff
