@@ -285,25 +285,28 @@ void ZeroFps::Run_EngineShell()
 	}
 
 	//some devpage stuff
-	DevPrintf("common","Num Objects: %d", m_pkObjectMan->GetNumOfObjects());
+	DevPrintf("common","Num Objects : %d", m_pkObjectMan->GetNumOfObjects());
 	DevPrintf("common","NextObjectID: %d", m_pkObjectMan->GetNextObjectID());
-	DevPrintf("common","Res Size: %d", m_pkResourceDB->GetResSizeInBytes());
+	DevPrintf("common","Res Size    : %d", m_pkResourceDB->GetResSizeInBytes());
 	
-	DevPrintf("common","shadows: %d", m_pkZShadow->GetCurrentShadows());
-	DevPrintf("common","active shadows: %d", m_pkZShadow->GetCurrentActiveShadows());
-	DevPrintf("common","shadow verts: %d", m_pkZShadow->GetCurrentVerts());
-	DevPrintf("common","shadow buffert: %d", m_pkZShadow->GetBuffertSize());
+	DevPrintf("common","ZSHADOW:");
+	DevPrintf("common","  shadows       : %d", m_pkZShadow->GetCurrentShadows());
+	DevPrintf("common","  active shadows: %d", m_pkZShadow->GetCurrentActiveShadows());
+	DevPrintf("common","  shadow verts  : %d", m_pkZShadow->GetCurrentVerts());
+	DevPrintf("common","  shadow buffert: %d", m_pkZShadow->GetBuffertSize());
 
-	DevPrintf("common","Collissions: %d", m_pkTcs->GetNrOfCollissions());
-	DevPrintf("common","Tests: %d", m_pkTcs->GetNrOfTests());
-	DevPrintf("common","ActiveBodies: %d", m_pkTcs->GetNrOfActiveBodies());
+	DevPrintf("common","TCS:");
+	DevPrintf("common","  Collissions : %d", m_pkTcs->GetNrOfCollissions());
+	DevPrintf("common","  Tests       : %d", m_pkTcs->GetNrOfTests());
+	DevPrintf("common","  ActiveBodies: %d", m_pkTcs->GetNrOfActiveBodies());
 	
-	DevPrintf("common","MaterialBinds  : %d", m_pkZShaderSystem->GetMaterialBinds());
-	DevPrintf("common","MaterialReloads: %d", m_pkZShaderSystem->GetMaterialReloads());
-	DevPrintf("common","SavedReloads   : %d", m_pkZShaderSystem->GetSavedReloads());
-	DevPrintf("common","GLUpdates      : %d", m_pkZShaderSystem->GetGLupdates());
-	DevPrintf("common","Total Vertises : %d", m_pkZShaderSystem->GetTotalVertises());
-	DevPrintf("common","Vertises/Sec   : %d", int(m_pkZShaderSystem->GetTotalVertises() * m_fAvrageFps) );
+	DevPrintf("common","ZSHADER:");
+	DevPrintf("common","  MaterialBinds  : %d", m_pkZShaderSystem->GetMaterialBinds());
+	DevPrintf("common","  MaterialReloads: %d", m_pkZShaderSystem->GetMaterialReloads());
+	DevPrintf("common","  SavedReloads   : %d", m_pkZShaderSystem->GetSavedReloads());
+	DevPrintf("common","  GLUpdates      : %d", m_pkZShaderSystem->GetGLupdates());
+	DevPrintf("common","  Total Vertises : %d", m_pkZShaderSystem->GetTotalVertises());
+	DevPrintf("common","  Vertises/Sec   : %d", int(m_pkZShaderSystem->GetTotalVertises() * m_fAvrageFps) );
 	
 	m_pkZShaderSystem->ResetStatistics();
 	
