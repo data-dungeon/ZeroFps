@@ -118,11 +118,12 @@ void P_AI::Update()
    else if ( m_pkCurrentOrder->m_kOrderType == "Idle" )
    {
       if ( m_pkCurrentOrder->m_iTargetID <= 0 )
+      {
+         m_pkCurrentOrder->m_iTargetID = m_pkCurrentOrder->m_iTargetID2;
          NextOrder();
+      }
       else
-         m_pkCurrentOrder->m_iTargetID -= m_pkZeroFps->GetGameFrameTime();
-
-      cout << "TIME:" << m_pkCurrentOrder->m_iTargetID << endl;
+         m_pkCurrentOrder->m_iTargetID -= m_pkZeroFps->GetGameFrameTime() * 10000;
    }
    else if ( m_pkCurrentOrder->m_kOrderType == "Action" )
    {

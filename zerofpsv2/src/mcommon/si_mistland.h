@@ -180,6 +180,8 @@ namespace MistLandLua
 	int MCOMMON_API AIMoveToLua(lua_State* pkLua);
    int MCOMMON_API AIIdleLua(lua_State* pkLua);
    int MCOMMON_API AIAttackLua(lua_State* pkLua);
+   int MCOMMON_API AIFaceDirectionLua(lua_State* pkLua);
+   int MCOMMON_API AIFaceObjectLua(lua_State* pkLua);
 
    int MCOMMON_API AISetCommander(lua_State* pkLua);
    int MCOMMON_API AISetSlave(lua_State* pkLua);

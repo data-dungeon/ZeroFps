@@ -155,6 +155,8 @@ void MistLandLua::Init(EntityManager* pkObjMan,ZFScriptSystem* pkScript)
    // AI stuff
    pkScript->ExposeFunction("AIUseActionOn", MistLandLua::AIUseActionOnLua);
    pkScript->ExposeFunction("AIIdle", MistLandLua::AIIdleLua);
+   pkScript->ExposeFunction("AIFaceDirection", MistLandLua::AIFaceDirectionLua);
+   pkScript->ExposeFunction("AIFaceObject", MistLandLua::AIFaceObjectLua);
    pkScript->ExposeFunction("AIAttack", MistLandLua::AIAttackLua);
    pkScript->ExposeFunction("SetAIIsPlayer", MistLandLua::SetAIIsPlayerLua);
    pkScript->ExposeFunction("AIMoveTo", MistLandLua::AIMoveToLua);
@@ -162,16 +164,6 @@ void MistLandLua::Init(EntityManager* pkObjMan,ZFScriptSystem* pkScript)
    pkScript->ExposeFunction("GetClosestItemOfType", MistLandLua::GetClosestItemOfTypeLua);
    pkScript->ExposeFunction("GetClosestPlayer", MistLandLua::GetClosestPlayerLua);
    pkScript->ExposeFunction("GetClosestObjectOfType", MistLandLua::GetClosestObjectOfTypeLua);   
-   
-/*
-   int MCOMMON_API AIPickUpLua(lua_State* pkLua);
-	int MCOMMON_API AIUseItemLua(lua_State* pkLua);
-	int MCOMMON_API AIMoveToLua(lua_State* pkLua);
-   int MCOMMON_API AISetCommander(lua_State* pkLua);
-   int MCOMMON_API AISetSlave(lua_State* pkLua);
-	int MCOMMON_API GetClosestItemOfTypeLua(lua_State* pkLua);
-   int MCOMMON_API DistanceToLua(lua_State* pkLua);
-*/	
 
 }
 
@@ -3063,11 +3055,53 @@ int MistLandLua::AIIdleLua(lua_State* pkLua)
          }
 
          if ( pkAI )
-            pkAI->AddStaticOrder ("Idle", dWaitTime, 0, Vector3::ZERO, ".");
+            pkAI->AddStaticOrder ("Idle", dWaitTime*10000, dWaitTime*10000, Vector3::ZERO, ".");
 		}
       else
          cout << "Tried to us AIMoveTo on a object without P_AI" << endl;
 	}
+	return 0;
+}
+
+// -----------------------------------------------------------------------------------------------
+int MistLandLua::AIFaceDirectionLua(lua_State* pkLua) 
+{
+   return 0;
+}
+// -----------------------------------------------------------------------------------------------
+
+int MistLandLua::AIFaceObjectLua(lua_State* pkLua) 
+{/*
+	if( g_pkScript->GetNumArgs(pkLua) == 2 )
+	{
+		double dId;      
+
+		g_pkScript->GetArgNumber(pkLua, 0, &dId);
+		g_pkScript->GetArgNumber(pkLua, 1, &dObjectFaceID);
+		
+		Entity* pkObj = g_pkObjMan->GetObjectByNetWorkID(dId);
+      Entity* pkFaceObj = g_pkObjMan->GetObjectByNetWorkID(dId);
+
+      if(pkEnt)
+		{
+         // check if object has AI
+         P_AI* pkAI = (P_AI*)pkEnt->GetProperty("P_AI");
+
+         // is AI is player, clear all other orders
+         if ( pkAI->PlayerAI() )
+            pkAI->ClearDynamicOrders();
+         else if ( pkAI->PlayerAI() )
+         {
+            cout << "Warning! Tried to add static order to player" << endl;
+            return 0;
+         }
+
+         if ( pkAI )
+            pkAI->AddStaticOrder ("Idle", dWaitTime*10000, dWaitTime*10000, Vector3::ZERO, ".");
+		}
+      else
+         cout << "Tried to us AIMoveTo on a object without P_AI" << endl;
+	}*/
 	return 0;
 }
 
@@ -3080,7 +3114,7 @@ int MistLandLua::AIMoveToLua(lua_State* pkLua)
 		double dId;
 		double x,y,z;
       
-      char temp[128] = "static";
+      char temp[128] = "dynamic";
 
 		Vector3 kPos;		
 		vector<TABLE_DATA> vkData;
