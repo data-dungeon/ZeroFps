@@ -5,7 +5,9 @@
 #define IDD_DIALOGLEFT                  102
 #define IDD_DIALOGBOTTOM                103
 #define IDD_SELECTFONT_DLGBOX           104
-#define IDI_ICON1                       105
+#define IDD_SELECTSCRIPT                105
+#define IDI_ICON1                       106
+#define IDD_SELECTFONT                  107
 #define IDC_WINDOW_NAMEID_EB            1002
 #define IDC_TEXTLABEL_EB                1003
 #define IDC_NEWCNTRL_CB                 1004
@@ -41,6 +43,7 @@
 #define IDC_VISIBLE_CHECK               1034
 #define IDC_ONLY_OF_WND_TYPE_CB         1035
 #define IDC_BUTTON1                     1036
+#define IDC_PICK_COLOR_BN               1036
 #define IDC_COPY_WND_BN                 1037
 #define IDC_SELECTFONT_OK_BN            1038
 #define IDC_BRING_TO_FRONT              1039
@@ -114,6 +117,13 @@
 #define IDC_PBTEXTORIENT_RB4            1106
 #define IDC_PBTEXTORIENT_RB5            1107
 #define IDC_PBTEXTORIENT_RB6            1108
+#define IDC_SELECTSCRIPT_CANCEL         1109
+#define IDC_SELECTSCRIPT_OK             1110
+#define IDC_SELECTFILE_LIST             1111
+#define IDC_SELEC_SCRIPT_LABEL          1112
+#define IDC_SAVEFILE_NAME_EB            1113
+#define IDC_EDIT1                       1114
+#define IDC_CURRENT_PATH_EB             1114
 #define ID_SDSD_DSFSD                   40001
 #define ID_SDFSDF_SDF                   40002
 #define ID_SDF_SDF                      40003
@@ -139,7 +149,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        106
 #define _APS_NEXT_COMMAND_VALUE         40022
-#define _APS_NEXT_CONTROL_VALUE         1108
+#define _APS_NEXT_CONTROL_VALUE         1115
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

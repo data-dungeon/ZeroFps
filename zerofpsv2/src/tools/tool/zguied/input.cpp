@@ -2,6 +2,7 @@
 #include "resource.h"
 #include "shellapi.h"
 
+
 void ZGuiEd::HandleInput()
 {
 	static bool s_bLeftMouseButtonPressed = false;
@@ -150,30 +151,7 @@ void ZGuiEd::HandleInput()
 				else
 				if(kFocusWnd == GetCtrl(IDC_WINDOW_NAMEID_EB, 0))
 				{
-					SPECIAL_WND_INFO* pkInfo = NULL;
-					
-					// Copy special window info and remove from list
-					// because the window have changed name and have a diffrent key now.
-					map<string,SPECIAL_WND_INFO>::iterator it;
-					it = m_kSpecialWndInfo.find(m_pkFocusWnd->GetName());
-					if(it != m_kSpecialWndInfo.end())
-					{
-						pkInfo = new SPECIAL_WND_INFO;
-						memcpy(pkInfo, &it->second, sizeof(SPECIAL_WND_INFO));
-						m_kSpecialWndInfo.erase(it);
-					}
-
-					m_pkGui->ChangeWndRegName(m_pkFocusWnd, text);
-					FilterWnd();
-
-					// Insert special window information.
-					if(pkInfo != NULL)
-					{
-						m_kSpecialWndInfo.insert(
-							map<string,SPECIAL_WND_INFO>::value_type(
-								m_pkFocusWnd->GetName(), *pkInfo)); 
-						delete pkInfo;
-					}
+					RenameSelWnd(text);
 				}
 				else
 				if(kFocusWnd == GetCtrl(IDC_POSX_EB, 0))
@@ -388,7 +366,19 @@ void ZGuiEd::MouseMove(bool bLeft, int x, int y)
 				y = rc.Top;
 
 			if(!bParentIsTabControl)
-				m_pkFocusWnd->SetPos(x > 0 ? x : 0, y > 0 ? y : 0, true, true);
+			{
+				map<string,SPECIAL_WND_INFO>::iterator itWndInfo = 
+					m_kSpecialWndInfo.find(m_pkFocusWnd->GetName());
+				if(itWndInfo != m_kSpecialWndInfo.end())
+				{
+					if(itWndInfo->second.bFreemovement)
+						m_pkFocusWnd->SetPos(x, y, true, true);
+					else
+						m_pkFocusWnd->SetPos(x > 0 ? x : 0, y > 0 ? y : 0, true, true);
+				}
+				else
+					m_pkFocusWnd->SetPos(x > 0 ? x : 0, y > 0 ? y : 0, true, true);
+			}
 
 			CheckMovement();
 		}
@@ -423,6 +413,14 @@ void ZGuiEd::OnCommand(int iCtrlID, int iEvent)
 
 	switch(iCtrlID)
 	{	
+		case IDC_PICK_COLOR_BN:
+			m_bPickedColor = true;
+			SelectAColor(m_ucaPickColor[0],m_ucaPickColor[1],m_ucaPickColor[2]);
+			SetDlgItemInt(g_kFontDlg, IDC_FONT_COLOR_R_EB, m_ucaPickColor[0], FALSE);
+			SetDlgItemInt(g_kFontDlg, IDC_FONT_COLOR_G_EB, m_ucaPickColor[1], FALSE);
+			SetDlgItemInt(g_kFontDlg, IDC_FONT_COLOR_B_EB, m_ucaPickColor[2], FALSE);
+			break;
+
 		case IDC_HIDDEN_FROM_START_CB:
 			if(m_pkFocusWnd)
 			{
@@ -545,9 +543,9 @@ void ZGuiEd::OnCommand(int iCtrlID, int iEvent)
 				UpdateScriptList();
 			break;
 
-		case IDC_SAVE_SCRIPT:
-			m_iTask = TASK_SAVE_SCRIPT;
-			break;
+		//case IDC_SAVE_SCRIPT:
+		//	m_iTask = TASK_SAVE_SCRIPT;
+		//	break;
 
 		case IDC_NEWCNTRL_CB:
 			if(iEvent == CBN_SELENDOK)
@@ -636,6 +634,7 @@ void ZGuiEd::OnCommand(int iCtrlID, int iEvent)
 								if( m_strCurrTexDir != "data/textures/gui" ) // dont allow browsing lower then gui texture folder
 								{
 									m_strCurrTexDir.erase(slash, m_strCurrTexDir.size()-slash);									
+									SetDlgItemText(g_kDlgBoxRight, IDC_CURRENT_PATH_EB, m_strCurrTexDir.c_str());
 									SendDlgItemMessage(g_kDlgBoxRight, IDC_TEXTURE_LIST, LB_RESETCONTENT, 0, 0);
 									AddFilesInFolderToListbox(m_strCurrTexDir.c_str());
 								}
@@ -645,6 +644,7 @@ void ZGuiEd::OnCommand(int iCtrlID, int iEvent)
 						if(strrchr(szTexName, '.') == NULL)
 						{
 							m_strCurrTexDir += string("/") + string(szTexName);							
+							SetDlgItemText(g_kDlgBoxRight, IDC_CURRENT_PATH_EB, m_strCurrTexDir.c_str());
 							SendDlgItemMessage(g_kDlgBoxRight, IDC_TEXTURE_LIST, LB_RESETCONTENT, 0, 0);
 							AddFilesInFolderToListbox(m_strCurrTexDir.c_str());
 						}					
@@ -718,17 +718,115 @@ void ZGuiEd::OnCommand(int iCtrlID, int iEvent)
 			break;
 
 		case IDC_LOADGUI:
-			//sel = SendDlgItemMessage(g_kDlgBoxRight, IDC_FILELIST_CB, CB_GETCURSEL, 0, 0);
-			//if(sel != CB_ERR)
-			//{
-			//	char text[100];
-			//	SendDlgItemMessage(g_kDlgBoxRight, IDC_FILELIST_CB, CB_GETLBTEXT, sel, (LPARAM) (LPTSTR) text);
-			//	m_strNewFileToLoad = string("data/script/gui/") + string(text);
-			//}
+		case IDC_SAVE_SCRIPT:
+			{
+				ShowWindow(GetParent(g_kOpenScriptDlg), SW_SHOW);
 
-			strText = GetSelItemText(IDC_FILELIST_CB, true);
-			if(strText != "")
-				m_strNewFileToLoad = string("data/script/gui/") + strText;
+				char buffer[512];
+				GetCurrentDirectory(512, buffer);
+
+				printf("buffer = %s\n", buffer);
+				
+				vector<string> kFiles;
+				if(SearchFiles(kFiles, "..\\datafiles", ".lua", (iCtrlID == IDC_SAVE_SCRIPT)))
+				{
+					printf("Num files found = %i\n", kFiles.size());
+
+					SendDlgItemMessage(g_kOpenScriptDlg, IDC_SELECTFILE_LIST, LB_RESETCONTENT, 0, 0);
+
+					for(int i=0; i<kFiles.size(); i++) 
+					{		
+						bool bAdd = false;
+
+						if(iCtrlID == IDC_SAVE_SCRIPT)
+						{
+							if(kFiles[i].find("\\script\\gui") != string::npos && 
+								kFiles[i].find("\\CVS") == string::npos)
+								bAdd = true;
+						}
+						else
+						{
+							if(kFiles[i].find("\\script\\gui") != string::npos)
+								bAdd = true;
+						}
+
+						if(bAdd)
+							SendDlgItemMessage(g_kOpenScriptDlg, IDC_SELECTFILE_LIST, LB_ADDSTRING,  
+								0, (LPARAM) (LPCSTR) kFiles[i].c_str() );
+					}
+				}
+
+				if(iCtrlID == IDC_SAVE_SCRIPT)
+				{
+					m_bSelectScriptSave = true;
+					ShowWindow(GetDlgItem(g_kOpenScriptDlg, IDC_SAVEFILE_NAME_EB), SW_SHOW);
+					SetDlgItemText(g_kOpenScriptDlg, IDC_SELEC_SCRIPT_LABEL, "Please select a folder and a file name:");
+				}
+				else
+				{
+					m_bSelectScriptSave = false;
+					ShowWindow(GetDlgItem(g_kOpenScriptDlg, IDC_SAVEFILE_NAME_EB), SW_HIDE);
+					SetDlgItemText(g_kOpenScriptDlg, IDC_SELEC_SCRIPT_LABEL, "Please select the file you want to load.");
+				}
+
+			}
+
+
+			//strText = GetSelItemText(IDC_FILELIST_CB, true);
+			//if(strText != "")
+			//	m_strNewFileToLoad = string("data/script/gui/") + strText;
+			break;
+
+		case IDC_SELECTSCRIPT_CANCEL:
+			ShowWindow(GetParent(g_kOpenScriptDlg), SW_HIDE);
+			break;
+
+		case IDC_SELECTSCRIPT_OK:
+		
+			int sel; 
+			sel = SendDlgItemMessage(g_kOpenScriptDlg, IDC_SELECTFILE_LIST, LB_GETCURSEL, 0, 0);
+			if(sel != LB_ERR)
+			{
+				char szText[200];
+				if(SendDlgItemMessage(g_kOpenScriptDlg, IDC_SELECTFILE_LIST, LB_GETTEXT, sel, 
+					(LPARAM) (LPCSTR) szText) != LB_ERR)
+				{
+					for(int i=0; i<strlen(szText); i++)
+						if(szText[i] == '\\')
+							szText[i] = '/';
+
+					string strFile = szText;
+					strFile.erase(0,strFile.find("/script/"));
+					strFile = string("data") + strFile;
+					
+					if(m_bSelectScriptSave)
+					{
+						string strFullName;
+						char szFileName[512];
+						if(GetDlgItemText(g_kOpenScriptDlg, IDC_SAVEFILE_NAME_EB, szFileName, 512)>0)
+						{
+							strFullName = string(szText) + string("/") + string(szFileName);
+
+							char *ext = strrchr( strFullName.c_str(), '.');
+							if(strcmp(ext,".lua") != 0) 
+							{
+								strFullName += ".lua";
+							}								
+
+							m_strNewFileToLoad = strFullName;
+							m_iTask = TASK_SAVE_SCRIPT;
+						}
+					}
+					else
+					{
+						m_strNewFileToLoad = strFile;
+					}
+
+					ShowWindow(GetParent(g_kOpenScriptDlg), SW_HIDE);
+				}
+			}
+
+			
 			break;
 
 		case IDC_RESIZE_WND:
@@ -749,16 +847,51 @@ void ZGuiEd::OnCommand(int iCtrlID, int iEvent)
 			break;
 
 		case IDC_FREE_MOVEMENT_CB:
-			if(m_pkFocusWnd && GetWndType(m_pkFocusWnd) == Wnd) 
+			if(m_pkFocusWnd) 
 			{
 				bool bFreeMovement = IsDlgButtonChecked(g_kDlgBoxBottom, IDC_FREE_MOVEMENT_CB);
-				if(bFreeMovement)
-					m_pkFocusWnd->SetMoveArea(Rect(0,0,800,600), true);
+
+				if(GetWndType(m_pkFocusWnd) == Wnd)
+				{					
+					if(bFreeMovement)
+						m_pkFocusWnd->SetMoveArea(Rect(0,0,800,600), true);
+					else
+					{
+						Rect rc = m_pkFocusWnd->GetScreenRect();
+						m_pkFocusWnd->SetMoveArea(rc, true);					
+					}
+				}
+
+				//string id = m_pkFocusWnd->GetName();
+				//set<string>::iterator it = m_kFreemovementWnds.find(id);
+
+				//if(bFreeMovement)
+				//{
+				//	if(it == m_kFreemovementWnds.end())				
+				//		m_kFreemovementWnds.insert(id);		
+				//}
+				//else
+				//{				
+				//	if(it != m_kFreemovementWnds.end())
+				//		m_kFreemovementWnds.erase(it);
+				//}
+
+
+				map<string,SPECIAL_WND_INFO>::iterator itWndInfo;
+				itWndInfo = m_kSpecialWndInfo.find(m_pkFocusWnd->GetName());
+				if(itWndInfo != m_kSpecialWndInfo.end())
+				{
+					itWndInfo->second.bFreemovement = bFreeMovement;
+				}
 				else
 				{
-					Rect rc = m_pkFocusWnd->GetScreenRect();
-					m_pkFocusWnd->SetMoveArea(rc, true);					
+					SPECIAL_WND_INFO info;
+					info.bFreemovement = bFreeMovement;
+					m_kSpecialWndInfo.insert(
+						map<string,SPECIAL_WND_INFO>::value_type(
+							m_pkFocusWnd->GetName(), info)); 
 				}
+
 			}
 			break;
 
@@ -775,6 +908,7 @@ void ZGuiEd::OnCommand(int iCtrlID, int iEvent)
 			break;
 
 		case IDC_SELECTFONT_BN:
+			m_bPickedColor = false;
 			OpenSelectFontDlg();
 			break;
 

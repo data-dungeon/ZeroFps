@@ -8,14 +8,20 @@ void ZGuiEd::OnIdle()
 
 	if(m_strNewFileToLoad != "")
 	{
-		map<string, ZGuiWnd*> kWnds;
-		m_pkGuiMan->GetWindows(kWnds);
-		int size = kWnds.size();
+		if(m_iTask != TASK_SAVE_SCRIPT)
+		{
+			map<string, ZGuiWnd*> kWnds;
+			m_pkGuiMan->GetWindows(kWnds);
+			int size = kWnds.size();
 
-		if(NewGUI(size > 1))
-			LoadGUI(m_strNewFileToLoad.c_str());
+			if(NewGUI(size > 1))
+			{
+				if(LoadGUI(m_strNewFileToLoad.c_str()))
+					SetTitle(string("ZeroFps GUI Editor - ") + m_strNewFileToLoad);
+			}
 
-		m_strNewFileToLoad = "";
+			m_strNewFileToLoad = "";
+		}
 	}
 
 	if(m_iTask == TASK_CREATE_NEW_WINDOW) 
@@ -61,10 +67,18 @@ void ZGuiEd::OnIdle()
 				if(SendDlgItemMessage(g_kFontDlg, IDC_FONT_LIST, LB_GETTEXT, sel, 
 					(LPARAM) (LPCSTR) szName) != LB_ERR)
 				{
-					SetFont(m_pkFocusWnd->GetName(), szName, 						
-						GetDlgItemInt(g_kFontDlg, IDC_FONT_COLOR_R_EB, NULL, FALSE), 				
-						GetDlgItemInt(g_kFontDlg, IDC_FONT_COLOR_G_EB, NULL, FALSE),			
-						GetDlgItemInt(g_kFontDlg, IDC_FONT_COLOR_B_EB, NULL, FALSE));				
+					if(m_bPickedColor == false)
+					{
+						SetFont(m_pkFocusWnd->GetName(), szName, 						
+							GetDlgItemInt(g_kFontDlg, IDC_FONT_COLOR_R_EB, NULL, FALSE), 				
+							GetDlgItemInt(g_kFontDlg, IDC_FONT_COLOR_G_EB, NULL, FALSE),			
+							GetDlgItemInt(g_kFontDlg, IDC_FONT_COLOR_B_EB, NULL, FALSE));				
+					}
+					else
+					{
+						SetFont(m_pkFocusWnd->GetName(), szName, 						
+							m_ucaPickColor[0], m_ucaPickColor[1], m_ucaPickColor[2]);	
+					}
 				}
 			}			
 		}	
@@ -73,49 +87,16 @@ void ZGuiEd::OnIdle()
 	}
 	if(m_iTask == TASK_SAVE_SCRIPT) 
 	{ 
-		if(!IsWindowVisible(GetCtrl(IDC_SELECT_SCRIPT_FOLDER_LIST, 1)))
-		{			
-			ShowWindow(GetCtrl(IDC_NEWCNTRL_CB, 1), SW_HIDE);
-			ShowWindow(GetCtrl(IDC_CREATE_WND_BN, 1), SW_HIDE);
-			ShowWindow(GetCtrl(IDC_DELETE_WND_BN, 1), SW_HIDE);
-			ShowWindow(GetCtrl(IDC_ONLY_OF_WND_TYPE_CB, 1), SW_HIDE);
-			ShowWindow(GetCtrl(IDC_SELECT_SCRIPT_FOLDER_LIST, 1), SW_SHOW);
-
-			SendDlgItemMessage(g_kDlgBoxRight, IDC_SELECT_SCRIPT_FOLDER_LIST, LB_RESETCONTENT, 0, 0);
-			SendDlgItemMessage(g_kDlgBoxRight, IDC_SELECT_SCRIPT_FOLDER_LIST, LB_ADDSTRING, 0, 
-					(LPARAM) (LPCSTR) "../datafiles/mistlands/script/gui/" );
-			SendDlgItemMessage(g_kDlgBoxRight, IDC_SELECT_SCRIPT_FOLDER_LIST, LB_ADDSTRING, 0, 
-					(LPARAM) (LPCSTR) "../datafiles/sysdata/script/gui/" );
-			SendDlgItemMessage(g_kDlgBoxRight, IDC_SELECT_SCRIPT_FOLDER_LIST, LB_ADDSTRING, 0, 
-					(LPARAM) (LPCSTR) "../datafiles/dm/script/gui/" );
-		}
-		else
+		if(SaveScript(m_strNewFileToLoad.c_str()))
 		{
-			int sel = SendDlgItemMessage(g_kDlgBoxRight, IDC_SELECT_SCRIPT_FOLDER_LIST, LB_GETCURSEL, 0, 0);
-			if(sel != LB_ERR)
-			{
-				char szWndName[200];
-				if(SendDlgItemMessage(g_kDlgBoxRight, IDC_SELECT_SCRIPT_FOLDER_LIST, LB_GETTEXT, sel, 
-					(LPARAM) (LPCSTR) szWndName) != LB_ERR)
-				{
-					char input_text[100];
-					SendDlgItemMessage(g_kDlgBoxRight, IDC_FILELIST_CB, WM_GETTEXT, 99, (LPARAM) (LPTSTR) input_text);
-
-					string strFileName = string(szWndName) + string(input_text);
-				
-					if(SaveScript(strFileName.c_str()))
-						UpdateScriptList();
-				}
-			}
-
-			ShowWindow(GetCtrl(IDC_NEWCNTRL_CB, 1), SW_SHOW);
-			ShowWindow(GetCtrl(IDC_CREATE_WND_BN, 1), SW_SHOW);
-			ShowWindow(GetCtrl(IDC_DELETE_WND_BN, 1), SW_SHOW);
-			ShowWindow(GetCtrl(IDC_ONLY_OF_WND_TYPE_CB, 1), SW_SHOW);
-			ShowWindow(GetCtrl(IDC_SELECT_SCRIPT_FOLDER_LIST, 1), SW_HIDE);
+			UpdateScriptList();
+			char msg[512];
+			sprintf(msg, "Script file: \r\n\"%s\"\r\nsaved successfully!\r\n", m_strNewFileToLoad.c_str());
+			MessageBox(GetParent(g_kDlgBoxRight), msg, "Message", MB_OK);
 		}
 
 		m_iTask = TASK_DO_NOTHING;
+		m_strNewFileToLoad = "";
 	}
 	if(m_iTask == TASK_TEST_GUI)
 	{
@@ -241,8 +222,18 @@ ZGuiWnd* ZGuiEd::GetWndFromPoint(int x, int y)
 				{
 					int value = pkWnd->m_iZValue;
 
-					Vector2 dist = Vector2(x,y) - Vector2(pkWnd->GetScreenRect().Left,pkWnd->GetScreenRect().Top);					
+					Vector2 dist = Vector2(x,y) - Vector2(pkWnd->GetScreenRect().Left, pkWnd->GetScreenRect().Top);					
 					float length = dist.Length();
+
+					if(pkWnd->GetParent())
+					{
+						Vector2 dist_to_parent = Vector2(x,y) - Vector2(
+										pkWnd->GetParent()->GetScreenRect().Left, 
+										pkWnd->GetParent()->GetScreenRect().Top);					
+
+						if(dist_to_parent.Length() < length)
+							length = dist_to_parent.Length();
+					}
 
 					value -= length;
 
@@ -276,6 +267,18 @@ void ZGuiEd::DeleteSelWindow(bool bConfirm)
 	{
 		if(bConfirm && MessageBox(GetParent(g_kDlgBoxRight), "Are u sure?", "Delete?", MB_YESNO) == IDNO)
 			return;
+
+		//string id = m_pkFocusWnd->GetName();
+		//set<string>::iterator it = m_kFreemovementWnds.find(id);
+		//if(it != m_kFreemovementWnds.end())
+		//	m_kFreemovementWnds.erase(it);
+
+		map<string,SPECIAL_WND_INFO>::iterator itWndInfo;
+		itWndInfo = m_kSpecialWndInfo.find(m_pkFocusWnd->GetName());
+		if(itWndInfo != m_kSpecialWndInfo.end())
+		{
+			m_kSpecialWndInfo.erase(itWndInfo);
+		}
 
 		if(m_pkCopyWnd == m_pkFocusWnd)
 			m_pkCopyWnd = NULL;
@@ -469,66 +472,87 @@ void ZGuiEd::CheckMovement()
 	if(m_pkFocusWnd == NULL)
 		return;
 
+	bool bFreeMovement = false;
+
+	map<string,SPECIAL_WND_INFO>::iterator itWndInfo = 
+		m_kSpecialWndInfo.find(m_pkFocusWnd->GetName());
+	if(itWndInfo != m_kSpecialWndInfo.end())
+	{
+		if(itWndInfo->second.bFreemovement)
+			bFreeMovement = true;
+	}
+
 	Rect rc = m_pkFocusWnd->GetScreenRect();
-	Rect rcParent = Rect(0,0,800,600);
 
-	if(m_pkFocusWnd->GetParent())
-		rcParent = m_pkFocusWnd->GetParent()->GetScreenRect();
-
-	// Resize window if any childs are not inside window
-	if(GetWndType(m_pkFocusWnd) == Wnd)
+	if(bFreeMovement == false)
 	{
-		Rect rc = m_pkFocusWnd->GetScreenRect();
+		Rect rcParent = Rect(0,0,800,600);
 
-		list<ZGuiWnd*> kChilds;
-		m_pkFocusWnd->GetChildrens(kChilds);
+		if(m_pkFocusWnd->GetParent())
+			rcParent = m_pkFocusWnd->GetParent()->GetScreenRect();
 
-		int iBottom=0, iRight=0;
-		
-		for(list<ZGuiWnd*>::iterator it=kChilds.begin(); it!=kChilds.end(); it++)
+		// Resize window if any childs are not inside window
+		if(GetWndType(m_pkFocusWnd) == Wnd)
 		{
-			Rect rcChild = (*it)->GetScreenRect();
-			if(rcChild.Right > iRight)
-				iRight = rcChild.Right;
-			if(rcChild.Bottom > iBottom)
-				iBottom = rcChild.Bottom;
+			Rect rc = m_pkFocusWnd->GetScreenRect();
+
+			list<ZGuiWnd*> kChilds;
+			m_pkFocusWnd->GetChildrens(kChilds);
+
+			int iBottom=0, iRight=0;
+			
+			for(list<ZGuiWnd*>::iterator it=kChilds.begin(); it!=kChilds.end(); it++)
+			{
+				//string id = (*it)->GetName();
+				//if(m_kFreemovementWnds.find(id) == m_kFreemovementWnds.end())
+				map<string,SPECIAL_WND_INFO>::iterator itWndInfo = 
+					m_kSpecialWndInfo.find((*it)->GetName());
+				if(itWndInfo == m_kSpecialWndInfo.end())
+				{
+					Rect rcChild = (*it)->GetScreenRect();
+					if(rcChild.Right > iRight)
+						iRight = rcChild.Right;
+					if(rcChild.Bottom > iBottom)
+						iBottom = rcChild.Bottom;
+				}
+			}
+
+			if(rc.Right < iRight)
+				m_pkFocusWnd->Resize(iRight-rc.Left, -1);
+
+			if(rc.Bottom < iBottom)
+				m_pkFocusWnd->Resize(-1, iBottom-rc.Top); 
 		}
 
-		if(rc.Right < iRight)
-			m_pkFocusWnd->Resize(iRight-rc.Left, -1);
+		rcParent = (m_pkFocusWnd->GetParent()) ? m_pkFocusWnd->GetParent()->GetScreenRect() : Rect(0,0,800,600);
+		rc = m_pkFocusWnd->GetScreenRect();
 
-		if(rc.Bottom < iBottom)
-			m_pkFocusWnd->Resize(-1, iBottom-rc.Top); 
-	}
-
-	rcParent = (m_pkFocusWnd->GetParent()) ? m_pkFocusWnd->GetParent()->GetScreenRect() : Rect(0,0,800,600);
-	rc = m_pkFocusWnd->GetScreenRect();
-
-	if(m_bResize == false)
-	{
-		if(rc.Right > rcParent.Right)
-			rc.Left = rcParent.Right-rc.Width();
-
-		if(rc.Bottom > rcParent.Bottom)
-			rc.Top = rcParent.Bottom-rc.Height();
-
-		if(rc.Left < rcParent.Left) rc.Left = rcParent.Left;
-		if(rc.Top < rcParent.Top) rc.Top = rcParent.Top;
-
-		m_pkFocusWnd->SetPos(rc.Left > 0 ? rc.Left : 0, rc.Top > 0 ? rc.Top : 0, true, true); 
-	}
-	else
-	{
-		if(rc.Right > rcParent.Right)
+		if(m_bResize == false)
 		{
-			int w = rcParent.Right - rc.Left;
-			m_pkFocusWnd->Resize(w, -1, true); 
+			if(rc.Right > rcParent.Right)
+				rc.Left = rcParent.Right-rc.Width();
+
+			if(rc.Bottom > rcParent.Bottom)
+				rc.Top = rcParent.Bottom-rc.Height();
+
+			if(rc.Left < rcParent.Left) rc.Left = rcParent.Left;
+			if(rc.Top < rcParent.Top) rc.Top = rcParent.Top;
+
+			m_pkFocusWnd->SetPos(rc.Left > 0 ? rc.Left : 0, rc.Top > 0 ? rc.Top : 0, true, true); 
 		}
-
-		if(rc.Bottom > rcParent.Bottom)
+		else
 		{
-			int h = rcParent.Bottom-rc.Top;
-			m_pkFocusWnd->Resize(-1, h, true); 
+			if(rc.Right > rcParent.Right)
+			{
+				int w = rcParent.Right - rc.Left;
+				m_pkFocusWnd->Resize(w, -1, true); 
+			}
+
+			if(rc.Bottom > rcParent.Bottom)
+			{
+				int h = rcParent.Bottom-rc.Top;
+				m_pkFocusWnd->Resize(-1, h, true); 
+			}
 		}
 	}
 
@@ -548,10 +572,7 @@ bool ZGuiEd::LoadGUI(const char* szFile)
 
 	if(!LoadGuiFromScript((char*)szFile))
 		return false;				
-
-	string strRealName = m_pkZFVFileSystem->GetRealName(string(szFile));
-	SetTitle(string("ZeroFps GUI Editor - ") + strRealName);
-
+	
 	map<string, ZGuiWnd*> kWndsAfter;
 	m_pkGuiMan->GetWindows(kWndsAfter);
 
@@ -628,17 +649,35 @@ bool ZGuiEd::LoadGUI(const char* szFile)
 	{
 		if(addlist[k] != GetWnd("GuiMainWnd"))
 		{
+			ZGuiWnd* pkParent = addlist[k]->GetParent();
+
 			addlist[k]->m_iZValue = m_iZValueCounter++;
 			AddSampleCtrlItem(addlist[k]);			
 
 			SPECIAL_WND_INFO info;			
-			info.bHiddenFromStart = (addlist[k]->IsVisible(false) == false);				
+			info.bHiddenFromStart = (addlist[k]->IsVisible(false) == false);		
+			info.bFreemovement = false;
+
+			if(pkParent == NULL)
+			{
+				if(addlist[k]->GetMoveArea() != addlist[k]->GetScreenRect())
+					info.bFreemovement = true;
+			}
+			else
+			{
+				Rect rc = addlist[k]->GetScreenRect();
+				Rect rcParent = pkParent->GetScreenRect();
+
+				if(rc.Left < rcParent.Left || rc.Right > rcParent.Right ||
+					rc.Top < rcParent.Top || rc.Bottom > rcParent.Bottom)
+					info.bFreemovement = true;
+			}
 			
 			m_kSpecialWndInfo.insert(
 				map<string,SPECIAL_WND_INFO>::value_type(
 					addlist[k]->GetName(), info)); 
 
-			if(addlist[k]->GetParent() && GetWndType(addlist[k]->GetParent()) != TabControl)
+			if(pkParent && GetWndType(pkParent) != TabControl)
 				addlist[k]->Show();
 		}
 	}
@@ -726,6 +765,7 @@ bool ZGuiEd::NewGUI(bool bConfirm)
 	m_pkCopySkin = NULL;
 	m_vCopySkinDesc.clear();
 	m_kSpecialWndInfo.clear();
+	//m_kFreemovementWnds.clear();
 
 	SetWindowText(GetCtrl(IDC_WINDOW_NAMEID_EB, 0), "");
 	SetWindowText(GetCtrl(IDC_PARENT_WINDOW_NAMEID, 0), "");
@@ -945,17 +985,20 @@ void ZGuiEd::UpdateInfo()
 	if(m_pkFocusWnd->m_iResizeType == Resize)
 		CheckRadioButton(g_kDlgBoxBottom, IDC_RESIZETYPE_DONT, IDC_RESIZETYPE_BOTH, IDC_RESIZETYPE_BOTH);
 
-
 	map<string,SPECIAL_WND_INFO>::iterator itWndInfo;
 	itWndInfo = m_kSpecialWndInfo.find(m_pkFocusWnd->GetName());
 	if(itWndInfo != m_kSpecialWndInfo.end())
 	{
 		CheckDlgButton(g_kDlgBoxBottom, IDC_HIDDEN_FROM_START_CB, 
 			itWndInfo->second.bHiddenFromStart ? BST_CHECKED : BST_UNCHECKED);
+
+		CheckDlgButton(g_kDlgBoxBottom, IDC_FREE_MOVEMENT_CB, 
+			itWndInfo->second.bFreemovement ? BST_CHECKED : BST_UNCHECKED);
 	}
 	else
 	{
 		CheckDlgButton(g_kDlgBoxBottom, IDC_HIDDEN_FROM_START_CB, BST_UNCHECKED);
+		CheckDlgButton(g_kDlgBoxBottom, IDC_FREE_MOVEMENT_CB, BST_UNCHECKED);
 	}
 
 	
@@ -1295,5 +1338,50 @@ void ZGuiEd::ShowSpecialControls()
 				IDC_PBTEXTORIENT_RB6, IDC_PBTEXTORIENT_RB6);
 		
 	}
+
+}
+
+
+void ZGuiEd::RenameSelWnd(char* text)
+{
+	bool bFreeMovement = false;
+	SPECIAL_WND_INFO* pkInfo = NULL;
+	
+	// Copy special window info and remove from list
+	// because the window have changed name and have a diffrent key now.
+	map<string,SPECIAL_WND_INFO>::iterator it;
+	it = m_kSpecialWndInfo.find(m_pkFocusWnd->GetName());
+	if(it != m_kSpecialWndInfo.end())
+	{
+		pkInfo = new SPECIAL_WND_INFO;
+		memcpy(pkInfo, &it->second, sizeof(SPECIAL_WND_INFO));
+		m_kSpecialWndInfo.erase(it);
+	}
+
+	//string id = m_pkFocusWnd->GetName();
+	//set<string>::iterator itFreeMove = m_kFreemovementWnds.find(id);
+	//if(itFreeMove != m_kFreemovementWnds.end())
+	//{
+	//	bFreeMovement = true;
+	//	m_kFreemovementWnds.erase(itFreeMove);
+	//}
+
+	m_pkGui->ChangeWndRegName(m_pkFocusWnd, text);
+	FilterWnd();
+
+	// Insert special window information.
+	if(pkInfo != NULL)
+	{
+		m_kSpecialWndInfo.insert(
+			map<string,SPECIAL_WND_INFO>::value_type(
+				m_pkFocusWnd->GetName(), *pkInfo)); 
+		delete pkInfo;
+	}
+
+	//if(bFreeMovement)
+	//{
+	//	id = m_pkFocusWnd->GetName();
+	//	m_kFreemovementWnds.insert(id);
+	//}
 
 }

@@ -364,12 +364,12 @@ bool ZGuiEd::WriteSpecialProperties()
 			}
 		}
 
-		Rect rc;
-		if((rc=pkWnd->GetMoveArea()) != pkWnd->GetScreenRect())
-		{
-			fprintf(m_pkSaveFile, "\tSetMoveArea(\"%s\",%i,%i,%i,%i)\n", 
-				pkWnd->GetName(), 0, 0, 1600, 1200);
-		}
+		//Rect rc;
+		//if((rc=pkWnd->GetMoveArea()) != pkWnd->GetScreenRect())
+		//{
+		//	fprintf(m_pkSaveFile, "\tSetMoveArea(\"%s\",%i,%i,%i,%i)\n", 
+		//		pkWnd->GetName(), 0, 0, 1600, 1200);
+		//}
 
 		GuiType eType = GetWndType(pkWnd);
 
@@ -440,6 +440,16 @@ bool ZGuiEd::WriteSpecialProperties()
 		{
 			if(it->second.bHiddenFromStart)
 				fprintf(m_pkSaveFile, "\tShowWnd(\"%s\",0,0)\n", pkWnd->GetName());
+			if(it->second.bFreemovement)
+			{
+				Rect rc;
+				if((rc=pkWnd->GetMoveArea()) != pkWnd->GetScreenRect())
+				{
+					fprintf(m_pkSaveFile, "\tSetMoveArea(\"%s\",%i,%i,%i,%i)\n", 
+						pkWnd->GetName(), 0, 0, 1600, 1200);
+				}
+			}
+
 		}
 	}
 
@@ -481,4 +491,89 @@ bool ZGuiEd::AlreadyInList(vector<ZGuiWnd*>& kList, ZGuiWnd* kWindow)
 			return true;
 
 	return false;
+}
+
+bool ZGuiEd::SearchFiles(vector<string>& vkPathList, const char* szRootPath, 
+								 char* szExtension, bool bSearchForFolders)
+{
+	char searchPath[MAX_PATH];
+	WIN32_FIND_DATA finddata;
+	HANDLE hFind;
+	BOOL bMore;
+	set<string> kSearchedFiles;
+	list<string> dir_list;
+	list<string> vkFileNames;
+
+	dir_list.push_back(string(szRootPath));
+
+	while(1)
+	{
+		vkFileNames.clear();
+		string currentFolder = dir_list.back();
+		strcpy(searchPath, currentFolder.c_str());
+
+		if(strnicmp("\\*",searchPath+strlen(searchPath)-2,2))
+			strcat(searchPath, "\\*");
+
+		hFind = FindFirstFile(searchPath, &finddata);         
+		bMore = (hFind != (HANDLE) -1);   
+		
+		while (bMore) 
+		{                  
+			if (strcmp (finddata.cFileName, ".") && strcmp (finddata.cFileName, ".."))
+			{
+				vkFileNames.push_back(string(finddata.cFileName));
+			}
+             
+			bMore = FindNextFile(hFind, &finddata);         
+		} 
+
+		// Lägg till alla filer
+		for(list<string>::iterator it = vkFileNames.begin(); it != vkFileNames.end(); it++)  
+		{
+			string strLabel = (*it);
+			string id = currentFolder + string("\\") + strLabel;
+
+			// formatera filnamnet till lowercase.
+			int length = id.length();
+			for(int i=0; i<length; i++)
+				if(id[i] > 64 && id[i] < 91)
+					id[i] += 32;
+
+			if(kSearchedFiles.find(id) == kSearchedFiles.end())
+			{			
+				if(strLabel.find(".") == string::npos) // är katalog
+				{
+					dir_list.push_back(currentFolder + string("\\") + strLabel);
+
+					if(bSearchForFolders)
+						vkPathList.push_back(currentFolder + string("\\") + strLabel);
+				}
+
+				const char* s = id.c_str();
+
+				if(!bSearchForFolders)
+				{
+					if( strstr(s, szExtension/*".lua"*/) )
+						vkPathList.push_back(id);
+				}
+
+				kSearchedFiles.insert(id);
+			}
+		}
+
+		// ej klivit in i ett nytt dir? gå tillbaks
+		if(dir_list.back() == currentFolder)
+		{
+			// sista?
+			if(currentFolder == szRootPath)
+				break;
+
+			dir_list.pop_back();
+		}
+	}
+
+	FindClose(hFind);
+
+	return true;
 }

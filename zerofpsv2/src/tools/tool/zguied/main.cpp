@@ -17,7 +17,23 @@ HWND sdl_wnd = NULL;
 HWND g_kDlgBoxRight;
 HWND g_kDlgBoxBottom;
 HWND g_kFontDlg;
+HWND g_kOpenScriptDlg;
 HINSTANCE hInstance = NULL;
+
+HFONT m_hStandardFont = CreateFont( 16, 0, 0, 0, FW_NORMAL, FALSE,
+				  FALSE, FALSE, DEFAULT_CHARSET, OUT_DEFAULT_PRECIS,
+				  CLIP_DEFAULT_PRECIS, ANTIALIASED_QUALITY,
+				  VARIABLE_PITCH, "Verdana" );
+
+HFONT m_hImageListFont = CreateFont( 14, 0, 0, 0, FW_NORMAL, FALSE,
+				  FALSE, FALSE, DEFAULT_CHARSET, OUT_DEFAULT_PRECIS,
+				  CLIP_DEFAULT_PRECIS, ANTIALIASED_QUALITY,
+				  VARIABLE_PITCH, "Arial" );
+
+HFONT m_hWndListFont = CreateFont( 12, 0, 0, 0, FW_NORMAL, FALSE,
+				  FALSE, FALSE, DEFAULT_CHARSET, OUT_DEFAULT_PRECIS,
+				  CLIP_DEFAULT_PRECIS, ANTIALIASED_QUALITY,
+				  VARIABLE_PITCH, "Verdana" );
 
 vector<HWND> g_vkToolTips;
 
@@ -27,6 +43,7 @@ void CreateTooltip (HWND hwnd, char* text);
 void DrawBitmap (HDC hdc, int x, int y, int sw, int sh, HBITMAP hBitmap);
 void ActivateHelp(bool bActivate);
 int GetWindowSize(int iID, bool bRightPanel, bool bWidth);
+void SelectAColor(unsigned char& r, unsigned char& g, unsigned char& b);
 static bool GUIPROC( ZGuiWnd* win, unsigned int msg, int numparms, void *params ){ return true; };
 
 ZGuiEd::ZGuiEd(char* aName,int iWidth,int iHeight,int iDepth) 
@@ -43,6 +60,12 @@ LRESULT CALLBACK WndProc (HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 	RECT rcParent;
 	GetWindowRect(GetParent(GetCtrl(IDC_SET_TEXTURE_BN,1)), &rcParent);
 
+	static COLORREF wnd_listcolor = RGB(27,105,41);
+	static COLORREF image_listcolor = RGB(255,128,128);
+	static COLORREF skin_listcolor = RGB(255,255,128);
+	static COLORREF font_listcolor = RGB(255,255,0);
+	static COLORREF script_listcolor = RGB(128,128,0);
+
 	switch(message)
 	{
 	case WM_COMMAND:
@@ -58,6 +81,58 @@ LRESULT CALLBACK WndProc (HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 			}
 		EndPaint (hwnd, &ps) ;
 		break;
+
+/*	case WM_CTLCOLORLISTBOX:
+
+		if((HWND)lParam == GetDlgItem(g_kOpenScriptDlg, IDC_SELECTFILE_LIST))
+		{
+			LOGBRUSH LogBrush; 
+			LogBrush.lbStyle = BS_SOLID;       
+			LogBrush.lbColor = script_listcolor;       
+			LogBrush.lbHatch = (LONG) NULL;      
+
+			SetTextColor( (HDC) wParam, RGB(0,0,0) );       
+			SetBkColor( (HDC) wParam, script_listcolor);        
+			return( (LPARAM) CreateBrushIndirect( &LogBrush ) ); 
+		}
+
+		if((HWND)lParam == GetDlgItem(g_kDlgBoxRight, IDC_TEXTURE_LIST))
+		{
+			LOGBRUSH LogBrush; 
+			LogBrush.lbStyle = BS_SOLID;       
+			LogBrush.lbColor = image_listcolor;       
+			LogBrush.lbHatch = (LONG) NULL;      
+
+			SetTextColor( (HDC) wParam, RGB(0,0,0) );       
+			SetBkColor( (HDC) wParam, image_listcolor);        
+			return( (LPARAM) CreateBrushIndirect( &LogBrush ) ); 
+		}
+
+		if((HWND)lParam == GetDlgItem(g_kDlgBoxBottom, IDC_SKINELEMENTS_LIST))
+		{
+			LOGBRUSH LogBrush; 
+			LogBrush.lbStyle = BS_SOLID;       
+			LogBrush.lbColor = skin_listcolor;       
+			LogBrush.lbHatch = (LONG) NULL;      
+
+			SetTextColor( (HDC) wParam, RGB(0,0,255) );       
+			SetBkColor( (HDC) wParam, skin_listcolor);        
+			return( (LPARAM) CreateBrushIndirect( &LogBrush ) ); 
+		}
+
+		if((HWND)lParam == GetDlgItem(g_kDlgBoxRight, IDC_WINDOW_LIST))
+		{
+			LOGBRUSH LogBrush; 
+			LogBrush.lbStyle = BS_SOLID;       
+			LogBrush.lbColor = wnd_listcolor;       
+			LogBrush.lbHatch = (LONG) NULL;      
+
+			SetTextColor( (HDC) wParam, RGB(255,255,255) );       
+			SetBkColor( (HDC) wParam, wnd_listcolor);        
+			return( (LPARAM) CreateBrushIndirect( &LogBrush ) ); 
+		}
+
+		break;*/
 	}
 	return DefWindowProc (hwnd, message, wParam, lParam) ;
 }
@@ -95,17 +170,33 @@ int Win32ThreadMain(void *v)
 	HWND h3 = CreateWindowEx(WS_EX_PALETTEWINDOW, "GUIToolbox", "GUIToolbox3", 
 		WS_VISIBLE | WS_CHILD, 0, 0, 248, 228, sdl_wnd, NULL, hInstance, NULL) ;
 
+	HWND h4 = CreateWindowEx(WS_EX_PALETTEWINDOW, "GUIToolbox", "GUIToolbox3", 
+		WS_VISIBLE | WS_CHILD, 0, 0, 248, 228, sdl_wnd, NULL, hInstance, NULL) ;
+
 	SetParent(m_khWnd, sdl_wnd);
 	SetParent(m_khWnd2, sdl_wnd);
 
 	g_kDlgBoxRight = CreateDialog(hInstance, MAKEINTRESOURCE(IDD_DIALOGLEFT), m_khWnd, (DLGPROC) WndProc);
 	g_kDlgBoxBottom = CreateDialog(hInstance, MAKEINTRESOURCE(IDD_DIALOGBOTTOM), m_khWnd2, (DLGPROC) WndProc);
-	g_kFontDlg = CreateDialog(hInstance, MAKEINTRESOURCE(IDD_SELECTFONT_DLGBOX), h3, (DLGPROC) WndProc);
+	g_kFontDlg = CreateDialog(hInstance, MAKEINTRESOURCE(IDD_SELECTFONT), h3, (DLGPROC) WndProc);
+	g_kOpenScriptDlg = CreateDialog(hInstance, MAKEINTRESOURCE(IDD_SELECTSCRIPT), h4, (DLGPROC) WndProc);
 
 	ShowWindow(h3, SW_HIDE);
 
 	SetWindowPos(g_kDlgBoxRight, 0, 0, 0, 1024-800, 768, SWP_NOZORDER);
 	SetWindowPos(g_kDlgBoxBottom, 0, 0, 0, 800, 1024-768, SWP_NOZORDER);
+	SetWindowPos(h4, 0, 800-650, 0, 650, 400, SWP_NOZORDER);
+
+	ShowWindow(h4, SW_HIDE);
+
+	SendDlgItemMessage( g_kOpenScriptDlg, IDC_SELECTFILE_LIST, WM_SETFONT, 
+		(WPARAM) m_hStandardFont, MAKELPARAM(TRUE,0) );
+
+	SendDlgItemMessage( g_kDlgBoxRight, IDC_TEXTURE_LIST, WM_SETFONT, 
+		(WPARAM) m_hImageListFont, MAKELPARAM(TRUE,0) );
+
+	SendDlgItemMessage( g_kDlgBoxRight, IDC_WINDOW_LIST, WM_SETFONT, 
+		(WPARAM) m_hWndListFont, MAKELPARAM(TRUE,0) );
 
 	HWND cbox = GetDlgItem(g_kDlgBoxRight, IDC_NEWCNTRL_CB);
 
@@ -376,6 +467,8 @@ int Win32ThreadMain(void *v)
 
 	if( GetDeviceCaps(GetDC(NULL), HORZRES) <= 1024 || GetDeviceCaps(GetDC(NULL), VERTRES) <= 768)
 		ShowWindow(GetDlgItem(g_kDlgBoxRight, IDC_CLOSE_BUTTON), SW_SHOW);
+
+	
 	
 	while (GetMessage (&msg, NULL, 0, 0))
 	{
@@ -392,6 +485,7 @@ void ZGuiEd::OnInit()
 
 	m_strNewFileToLoad = "";
 
+	m_pkZFVFileSystem->AddRootPath( "../datafiles/dm/",	"/data");
 	m_pkZFVFileSystem->AddRootPath( "../datafiles/mistlands/",	"/data");
 	
   	//create camera
@@ -420,6 +514,7 @@ void ZGuiEd::OnInit()
 	sdl_wnd = GetFocus();
 
 	m_strCurrTexDir = "data/textures/gui/";
+	SetDlgItemText(g_kDlgBoxRight, IDC_CURRENT_PATH_EB, m_strCurrTexDir.c_str());
 	
 	m_pkGui->Activate(false);
 
@@ -639,4 +734,28 @@ int GetWindowSize(int iID, bool bRightPanel, bool bWidth)
 	}
 
 	return -1;
+}
+
+void SelectAColor(unsigned char& r, unsigned char& g, unsigned char& b)
+{
+	static COLORREF defcolor = RGB(0,0,0);
+	static CHOOSECOLOR cc ;
+	static COLORREF    crCustColors[16] ;
+	static HBRUSH bkBrush = CreateSolidBrush(defcolor);
+
+	cc.lStructSize    = sizeof (CHOOSECOLOR) ;
+	cc.hwndOwner      = NULL ;
+	cc.hInstance      = NULL ;
+	cc.rgbResult      = defcolor ;
+	cc.lpCustColors   = crCustColors ;
+	cc.Flags          = CC_RGBINIT | CC_FULLOPEN ;
+	cc.lCustData      = 0 ;
+	cc.lpfnHook       = NULL;
+	cc.lpTemplateName = NULL ;
+
+	ChooseColor(&cc);
+
+	r = GetRValue(cc.rgbResult);
+	g = GetGValue(cc.rgbResult);
+	b = GetBValue(cc.rgbResult);
 }

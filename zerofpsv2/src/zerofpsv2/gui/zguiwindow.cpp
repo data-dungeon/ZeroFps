@@ -164,17 +164,17 @@ bool ZGuiWnd::SetPos(int x, int y, bool bScreenSpace, bool bFreeMovement)
 	ZGuiWnd* pkParent = GetParent();
 	if(pkParent && bScreenSpace == false)
 	{
-		if(x != -1) x += pkParent->m_kArea.Left;
-		if(y != -1) y += pkParent->m_kArea.Top;
+		/*if(x != -1) */x += pkParent->m_kArea.Left;
+		/*if(y != -1) */y += pkParent->m_kArea.Top;
 	}
 
 	int w = m_kArea.Width();
 	int h = m_kArea.Height();
 
-	if(x != -1) m_kArea.Left = x;
-	if(y != -1) m_kArea.Top = y;
-	if(x != -1) m_kArea.Right = x+w;
-	if(y != -1) m_kArea.Bottom = y+h;
+	/*if(x != -1) */m_kArea.Left = x;
+	/*if(y != -1)*/ m_kArea.Top = y;
+	/*if(x != -1)*/ m_kArea.Right = x+w;
+	/*if(y != -1) */m_kArea.Bottom = y+h;
 
 	UpdatePos(iPrevPosX, iPrevPosY, w, h, bFreeMovement);
 

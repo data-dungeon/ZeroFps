@@ -162,7 +162,25 @@ void ZGuiEd::SelNewSkin(int iIndex)
 			char *name = strrchr( strRealName.c_str(), '/');
 			if(name)
 			{
-				name++;
+				name++; // m_strCurrTexDir
+
+				string strNewDirs = strRealName;
+				int p = strNewDirs.find(name);
+				if(p != string::npos)
+				{
+					strNewDirs.erase(p);
+					int p2 = strNewDirs.find("/textures/gui/");
+					if(p2 != string::npos)
+					{
+						p2 += strlen("/textures/gui/");
+						strNewDirs.erase(0,p2);
+
+						m_strCurrTexDir = string("data/textures/gui/") + strNewDirs;
+						SetDlgItemText(g_kDlgBoxRight, IDC_CURRENT_PATH_EB, m_strCurrTexDir.c_str());
+						UpdateTextureList();
+					}
+				}
+
 				SendDlgItemMessage(g_kDlgBoxRight, IDC_TEXTURE_LIST,  LB_SELECTSTRING, -1, 
 					(LPARAM) (LPCSTR) name);
 			}
@@ -246,8 +264,7 @@ void ZGuiEd::SetTexture(bool bSet)
 					pSkin->m_iVertBorderTexID = bSet ? m_pkTexMan->Load(strFileName.c_str()) : -1;
 				else
 				if(IsDlgButtonChecked(g_kDlgBoxRight, IDC_SKINTYPE_CORNERBORDER_RB))
-					pSkin->m_iBorderCornerTexID = bSet ? m_pkTexMan->Load(strFileName.c_str()) : -1;
-				
+					pSkin->m_iBorderCornerTexID = bSet ? m_pkTexMan->Load(strFileName.c_str()) : -1;				
 			}
 		}
 	}

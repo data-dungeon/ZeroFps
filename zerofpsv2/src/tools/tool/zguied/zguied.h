@@ -11,7 +11,7 @@
 
 // Remove the console window
 #ifdef WIN32
-	#pragma comment(linker, "/subsystem:\"windows\" /entry:\"mainCRTStartup\"")
+//	#pragma comment(linker, "/subsystem:\"windows\" /entry:\"mainCRTStartup\"")
 #endif 
 
 class ZGuiEd : public Application, public ZGuiApp
@@ -65,20 +65,26 @@ private:
 	enum ResizeDir { Left, Up } m_eResizeDir;
 	bool m_bTestGUI;
 	bool m_bForceCaptureToSel;
+	bool m_bFreeMovement;
 	float	m_fDelayTime;
+	bool m_bSelectScriptSave;
+	unsigned char m_ucaPickColor[3];
+	bool m_bPickedColor;
 
 	struct SPECIAL_WND_INFO
 	{
 		bool bHiddenFromStart;
+		bool bFreemovement;
 	};
 
 	map<string,SPECIAL_WND_INFO> m_kSpecialWndInfo;
+	//set<string> m_kFreemovementWnds;
 
 	vector< pair<ZGuiSkin, string> > m_kSkinTable; // used while saving
 
 	string m_strNewFileToLoad;
 	string m_strCurrTexDir;
-
+	
 	ZGuiWnd* GetWndFromPoint(int x, int y);
 	GuiType FormatWndType(string strText);
 	string FormatWndType(GuiType eType);
@@ -120,6 +126,9 @@ private:
 	void HandleInput();
 	bool AlreadyInList(vector<ZGuiWnd*>& kList, ZGuiWnd* kWindow);
 	void ShowSpecialControls();
+	bool SearchFiles(vector<string>& vkPathList, const char* szRootPath, 
+		char* szExtension, bool bSearchForFolders);
+	void RenameSelWnd(char* text);
 
 	Point m_kCursorRangeDiff;
 };
@@ -129,11 +138,13 @@ extern bool TextboxFocus();
 extern string GetSelItemText(int iID, bool bRightPanel);
 void ActivateHelp(bool bActivate);
 extern int GetWindowSize(int iID, bool bRightPanel, bool bWidth);
+extern void SelectAColor(unsigned char& r, unsigned char& g, unsigned char& b);
 extern HWND g_kDlgBoxRight;
 extern HWND g_kDlgBoxBottom;
 extern HINSTANCE hInstance;
 extern HBITMAP preview_bitmap;
 extern HWND g_kFontDlg;
+extern HWND g_kOpenScriptDlg;
 extern vector<HWND> g_vkToolTips;
 
 #endif // #ifndef _ZGUIED_H_
