@@ -6,6 +6,7 @@
 #include "../engine/engine.pkg"
 #include "property.h"
 #include <iostream>
+#include <limits.h>
 
 #include <string.h>
 //#include "GL/glut.h"
@@ -20,14 +21,19 @@ enum PROXYPROPERTY_AKTIONS{
 
 class ENGINE_API ProxyProperty: public Property {
 	private:
+		ZeroFps* m_pkFps;
+		LevelManager* m_pkLevelMan;
+		
+		list<Object*>* m_pkTrackers;
+		
 		float m_fRadius;	
 		int m_iAktion;
-			
-		ZeroFps* m_pkFps;
 			
 	public:
 		ProxyProperty();
 		void Update();
+		
+		float GetDistance();
 		
 		void SetRadius(float fRadius) {m_fRadius= fRadius;};
 		float GetRadius() {return m_fRadius;};

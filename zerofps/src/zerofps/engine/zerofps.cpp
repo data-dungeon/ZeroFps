@@ -44,6 +44,8 @@ ZeroFps::ZeroFps(void)
 	m_pkCmd->Add(&m_pkRender->m_iViewDistance,"r_ViewDistance",type_int);	
 	m_pkCmd->Add(&m_pkRender->m_iAutoLod,"r_AutoLod",type_int);		
 	m_pkCmd->Add(&m_pkRender->m_iFpsLock,"r_FpsLock",type_int);		
+	m_pkCmd->Add(&m_pkLight->m_iNrOfLights,"r_MaxLights",type_int);		
+	
 	
 	m_pkCmd->Add(&m_iWidth,"r_Width",type_int);			
 	m_pkCmd->Add(&m_iHeight,"r_Height",type_int);		
@@ -88,7 +90,6 @@ void ZeroFps::SetApp() {
 	
 	
 }
-
 
 void ZeroFps::HandleArgs(int iNrOfArgs, char** paArgs) {
 	string strArg;

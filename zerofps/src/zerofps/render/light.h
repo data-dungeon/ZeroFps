@@ -47,29 +47,22 @@ class RENDER_API LightSource {
 		
 		float fIntensity;
 		
-		
-//		bool operator<(const LightSource& l) const;
-
 };
 
 
 class RENDER_API Light : public ZFObject {
 	private:
-
-
-		
-		
 		Vector3 m_kCamPos;
-		int m_iNrOfLights;
+
 		list<LightSource*> m_kLights;		
 		list<LightSource*> m_kSorted;
 		vector<LightSource*> m_kActiveLights;
 
 		void TurnOffAll();
 
-		void RunCommand(int cmdid, const CmdArgument* kCommand) { }
-
 	public:
+		int m_iNrOfLights;
+		
 		struct Less_LightSource : public binary_function<LightSource*, LightSource*, bool> {
 			bool operator()(LightSource* x, LightSource* y) { return x->fIntensity < y->fIntensity; };
 		} Less_Light;
@@ -85,7 +78,8 @@ class RENDER_API Light : public ZFObject {
 		void SetCamera(Vector3 kCamPos);
 		void Update();
 		void Update(Vector3 kPos);
-//		bool Comp(LightSource* l1,LightSource* l2);
+		void RunCommand(int cmdid, const CmdArgument* kCommand) { }
+
 };
 
 

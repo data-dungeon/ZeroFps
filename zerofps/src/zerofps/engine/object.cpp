@@ -381,7 +381,10 @@ bool Object::DeleteProperty(const char* acName) {
 	return false;
 }
 
-bool Object::RemoveProperty(Property* pkProp) {
+void Object::RemoveProperty(Property* pkProp) {
+	m_akPropertys.remove(pkProp);
+	
+/*	
 	for(list<Property*>::iterator it=m_akPropertys.begin();it!=m_akPropertys.end();it++) {
 		if((*it) == pkProp) {
 			m_akPropertys.erase(it);
@@ -389,6 +392,7 @@ bool Object::RemoveProperty(Property* pkProp) {
 		}
 	}
 	return false;
+*/
 }
 
 

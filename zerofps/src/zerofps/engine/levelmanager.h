@@ -36,6 +36,7 @@ class ENGINE_API LevelManager : public ZFObject {
 		string m_kMapBaseDir;
 		WorldInfoProperty m_kWIP;
 
+		list<Object*> m_kTrackedObjects;
 
 	public:
 		LevelManager();
@@ -58,6 +59,12 @@ class ENGINE_API LevelManager : public ZFObject {
 		void Fog(Vector3 kColor,float fStart,float fStop);
 		void Water(bool bWater);
 		void SkyBox(const char* acHor,const char* acTop,Vector3 kRotate);
+		
+		void AddTracker(Object* kObject);
+		void RemoveTracker(Object* kObject);
+		int GetNrOfTrackedObjects();
+		list<Object*>* GetTrackerList();
+		void ClearTrackers();
 };
 
 

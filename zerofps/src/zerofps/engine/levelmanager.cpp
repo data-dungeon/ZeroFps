@@ -34,6 +34,7 @@ void LevelManager::Clear()
 
 void LevelManager::CreateNew(int iSize) 
 {
+	ClearTrackers();
 	m_pkObjectMan->Clear();
 	
 	m_pkHeightMapObject=new HeightMapObject(m_pkMap);		
@@ -234,8 +235,8 @@ bool LevelManager::RemoveWorldInfoObject()
 		return false;
 		
 	//detach worldinfoproperty from the object (so it wont be deleted)
-	if(!pkInfoObject->RemoveProperty(&m_kWIP))
-		cout<<"no worldinfopropery when deleting worldinfoobject =/"<<endl;
+	pkInfoObject->RemoveProperty(&m_kWIP);
+//		cout<<"no worldinfopropery when deleting worldinfoobject =/"<<endl;
 	
 	//delete the worldinfoobject
 	delete pkInfoObject;
@@ -358,6 +359,30 @@ void LevelManager::SkyBox(const char* acHor,const char* acTop,Vector3 kRotate)
 	
 }
 
+list<Object*>* LevelManager::GetTrackerList()
+{
+	return &m_kTrackedObjects;
+}
+
+void LevelManager::AddTracker(Object* kObject)
+{
+	m_kTrackedObjects.push_back(kObject);
+}
+
+void LevelManager::RemoveTracker(Object* kObject)
+{
+	m_kTrackedObjects.remove(kObject);
+}
+
+int LevelManager::GetNrOfTrackedObjects()
+{
+	return m_kTrackedObjects.size();
+}
+
+void LevelManager::ClearTrackers()
+{
+	m_kTrackedObjects.clear();
+}
 
 
 

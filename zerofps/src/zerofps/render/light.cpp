@@ -380,38 +380,6 @@ void Light::TurnOffAll() {
 	glDisable(GL_LIGHT7);		
 }
 
-/*
-bool Light::Comp(LightSource* l1,LightSource* l2){
-	if( (*l1) < (*l2) )
-		return true;
-	else
-		return false;
-
-
-}
-*/
-
-/*
-void Light::Sort() 
-{
-	for(list<LightSource*>::iterator it=m_kSorted.begin();it!=m_kSorted.end();it++) {
-
-
-	}
-}
-
-*/
-
-
-
-
-
-
-
-
-
-
-
 		
 /*	
 	
