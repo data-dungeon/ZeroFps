@@ -1,8 +1,8 @@
 [ParticleSystem]
 
 [start_size]
-width=0.03
-height=0.03
+width=0.1
+height=0.1
 random=10
 
 [end_size]
@@ -18,7 +18,7 @@ src=1
 dst=1
 
 [speed]
-startspeed=3.5
+startspeed=2.5
 
 [particles_persecond]
 time=300
