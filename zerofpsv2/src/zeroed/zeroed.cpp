@@ -262,12 +262,6 @@ void ZeroEd::OnInit()
 	//set reference distance
 	m_pkAudioSys->SetReferensDistance(0.5);
 
-	//m_strAmbientAreaEdited = "";
-	//AddListItem("AmbientSoundList", "TestArea");
-	//m_pkAudioSys->CreateNewAmbientArea("TestArea"); 
-	//m_pkAudioSys->SetAmbientSound("TestArea", "data/sound/vind och regn.wav");
-	//m_pkAudioSys->m_bEnableAmbientSS = m_bShowAmbientSoundAreas;
-
 	GetWnd("AddPointsToSounAreaBn")->m_bUseAlhpaTest = false;
 	
 }
@@ -727,15 +721,18 @@ void ZeroEd::RenderInterface(void)
 		m_pkRender->Line(m_kGrabPos,m_kGrabCurrentPos);
 	}
 
-	m_pkAmbientSoundAreas->Draw(m_pkRender);
-	
-	if(m_pkAmbientSoundAreas->m_bAddPointsToSoundArea)
+	if(m_iEditMode == EDIT_AMBIENTSOUNDS)
 	{
-		Vector3 p = m_kZoneMarkerPos;
-		p.y = 0;
-		p.x+=m_kZoneSize.x/2;
-		p.z-=m_kZoneSize.z/2;
-		m_pkRender->Sphere(p, 0.1f, 4, Vector3(1,0.5,1), true);
+		m_pkAmbientSoundAreas->Draw(m_pkRender);
+		
+		if(m_pkAmbientSoundAreas->m_bAddPointsToSoundArea)
+		{
+			Vector3 p = m_kZoneMarkerPos;
+			p.y = 0;
+			p.x+=m_kZoneSize.x/2;
+			p.z-=m_kZoneSize.z/2;
+			m_pkRender->Sphere(p, 0.1f, 4, Vector3(1,0.5,1), true);
+		}
 	}
 	
 	//draw zone list if connected to a server
@@ -894,6 +891,9 @@ void ZeroEd::RunCommand(int cmdid, const CmdArgument* kCommand)
 			m_strWorldDir = "";
 			SetTitle("ZeroEd");
 			m_kAddedZonePlacement.clear(); 
+			m_pkAmbientSoundAreas->RemoveAllAmbientAreas();
+			((ZGuiListbox*) GetWnd("AmbientSoundList"))->RemoveAllItems();
+			SetText("NewAsAreaNameEb", ""); SetText("NewAsFileNameEb", "");
 			break;
 		
 		case FID_LOAD:
@@ -949,7 +949,8 @@ void ZeroEd::RunCommand(int cmdid, const CmdArgument* kCommand)
 			
 			m_bNeedToRebuildZonePosArray = true;
 
-			m_pkAmbientSoundAreas->Load("asa.dot", (ZGuiListbox*) GetWnd("AmbientSoundList"));
+			
+			m_pkAmbientSoundAreas->Load(m_strWorldDir + string("/asa.dot"), (ZGuiListbox*) GetWnd("AmbientSoundList"));
 
 			break;		
 		
@@ -973,7 +974,7 @@ void ZeroEd::RunCommand(int cmdid, const CmdArgument* kCommand)
 				break;
 			}	
 
-			m_pkAmbientSoundAreas->Save("asa.dot");
+			m_pkAmbientSoundAreas->Save(m_strWorldDir + string("/asa.dot"));
 			break;
 
 		case FID_SAVEAS:
@@ -1000,7 +1001,7 @@ void ZeroEd::RunCommand(int cmdid, const CmdArgument* kCommand)
 			cout<<"saved"<<endl;
 */			
 
-			m_pkAmbientSoundAreas->Save("asa.dot");
+			m_pkAmbientSoundAreas->Save(m_strWorldDir + string("/asa.dot"));
 			break;
 
 		case FID_SNAPSAVE:
@@ -1136,10 +1137,6 @@ void ZeroEd::RunCommand(int cmdid, const CmdArgument* kCommand)
 				pkClient.AddServerOrder(kOrder);
 			}
 			break;		
-
-		case FID_TOGGLE_AMBIENTSOUNDAREA:
-			m_pkAmbientSoundAreas->m_bShowAmbientSoundAreas = !m_pkAmbientSoundAreas->m_bShowAmbientSoundAreas;
-			break;
 
 	}
 

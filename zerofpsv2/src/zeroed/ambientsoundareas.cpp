@@ -3,7 +3,6 @@
 AmbientSoundAreas::AmbientSoundAreas()
 {
 	m_bAddPointsToSoundArea = false;
-	m_bShowAmbientSoundAreas = true;
 }
 
 AmbientSoundAreas::~AmbientSoundAreas()
@@ -13,9 +12,6 @@ AmbientSoundAreas::~AmbientSoundAreas()
 
 void AmbientSoundAreas::Draw(Render* pkRender)
 {
-	if(!m_bShowAmbientSoundAreas)
-		return;
-
 	for(int i=0; i<m_kAmbientAreas.size(); i++)
 	{
 		vector<Vector3> kPoints;

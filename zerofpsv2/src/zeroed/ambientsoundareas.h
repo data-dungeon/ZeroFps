@@ -29,7 +29,6 @@ public:
 	void CreateNewAmbientArea(string strArea);
 	string GetAmbientSound(string strArea);
 
-	bool m_bShowAmbientSoundAreas;
 	bool m_bAddPointsToSoundArea;
 	string m_strAmbientAreaEdited;
 
