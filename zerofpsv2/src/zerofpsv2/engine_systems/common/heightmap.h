@@ -1,5 +1,3 @@
-//#define HM_SIZE 200
-
 #ifndef _BASIC_HEIGHTMAP_H_
 #define _BASIC_HEIGHTMAP_H_
 
@@ -12,33 +10,32 @@
 #include "../../basic/zfsystem.h"
 #include "../../render/texturemanager.h"
 
-//#include "../../basic/globals.h"
-//#include "../engine_systems_x.h"
-
 #define HEIGHTMAP_SCALE 1
+
+struct Mad_Face;
 
 struct ENGINE_SYSTEMS_API HM_vert 
 {
 	float			height;	
 	Vector3		normal;
-//	int			texture;	
-//	Vector3		color;
 };
 
-struct HM_fileheader {
-	int m_iHmSize;
+struct HM_fileheader 
+{
+	int	m_iHmSize;
 };
 
-struct TileSet{
-	char m_acTexture[256];
-	char m_acDetailTexture[256];
-	char m_acMask[256];
+struct TileSet
+{
+	char	m_acTexture[256];
+	char	m_acDetailTexture[256];
+	char	m_acMask[256];
 };
 
 struct TerrainBlock
 {
-	Vector3 kAABB_Min;
-	Vector3 kAABB_Max;
+	Vector3	kAABB_Min;
+	Vector3	kAABB_Max;
 };
 
 class ENGINE_SYSTEMS_API HMSelectVertex
@@ -48,76 +45,71 @@ public:
 	float		m_fValue;
 };
 
-
-struct Mad_Face;
-
-class ENGINE_SYSTEMS_API HeightMap /*: public ZFSubSystem */
+class ENGINE_SYSTEMS_API HeightMap
 {
 	private:			
-		TextureManager*	m_pkTexMan;
+		TextureManager*	m_pkTexMan;		
 		ZFBasicFS*			m_pkBasicFS;
-		Uint32 GetPixel(SDL_Surface* surface,int x,int y);
-		bool	AllocHMMemory(int iSize);
+
+		int m_iTilesSide;					// The number of edges/tiles on each side.
+		int m_iVertexSide;				// The number of vertex on each side (tiles + 1)
+		int m_iNumOfHMVertex;			// Total number of HMVertex that are in this map.
 
 		HM_vert* verts;	
+		vector<TileSet>		m_kSets;
+		//vector<TerrainBlock>	m_kTerrainBlocks;
 
-		
+		int		m_iHmScaleSize;
+		Vector3	m_kPosition;			// Position of Center of HMAP
+
+		Uint32 GetPixel(SDL_Surface* surface, int x, int y);
+		bool AllocHMMemory(int iSize);
 
 	public:
+		Vector3	m_kCornerPos;			// Position for Corner for rendering.
+
+		// Construct & Destruct
+		HeightMap();		
+		~HeightMap();		
+
+		// Init
+		void Create(int iTilesSide);
+		void Zero();
+		bool IsAllZero();
+		void Random();
+		void GenerateNormals();
+		void GenerateNormals(int iPosX,int iPosZ,int iWidth,int iHeight);		
+
+		// Load/Save
+		bool Load(const char* acFile);
+		bool Save(const char* acFile);
+		//bool LoadImageHmap(const char* acFile);
+
+
 		vector<HMSelectVertex> GetSelection(Vector3 kCenter, float fInRadius, float fOutRadius);
-
-		vector<TileSet>		m_kSets;
-		vector<TerrainBlock>	m_kTerrainBlocks;
-	
-			void CreateBlocks();
-
-
+		//void CreateBlocks();
 		
-		Vector3* m_pkVertex;	// Precalc vertex coo. Created at load time.
+		Vector3* m_pkVertex;			// Precalc vertex coo. Created at load time.
 		void RebuildVertex();
-
-		int m_iHmSize;
-		int m_iHmScaleSize;
-		char m_acTileSet[256];
-		Vector3 m_kPosition;			// Position of Center of HMAP
-		Vector3 m_kCornerPos;		// Position for corner for rendering.
-		int m_iError;
-		
 		HM_vert* GetHMVertex()	{	return verts;	}
 		bool	IsIndexOutOfMap(int iIndex);
 
-		HeightMap();		
-		~HeightMap();		
-		//void RunCommand(int cmdid, const CmdArgument* kCommand);		
-		void Create(int iHmSize);
-		void Zero();
-		void Random();
-		bool Load(const char* acFile);
-		bool Save(const char* acFile);
-		bool LoadImageHmap(const char* acFile);
-		void GenerateNormals();
-		void GenerateNormals(int iPosX,int iPosZ,int iWidth,int iHeight);		
 		float Height(float x,float z);
 		Vector3 Tilt(float x,float z);		
-		void SetTileSet(char* acTileSet);
 		void SetPosition(Vector3 kNewPos);
 		Vector3 &GetPos(){return m_kPosition;};
 		HM_vert* GetVert(int x,int z);		
 		void GetMapXZ(float& x,float& z);
 		
 		void Smooth(int fStartx,int fStartz,int fWidth,int fHeight);
-		//void Flatten(int iPosx,int iPosy,int iSize);
-		//void Raise(int iPosx,int iPosy,int iMode,int iSize,bool bSmooth);
 		void Flatten(vector<HMSelectVertex> kSelected, Vector3 kPos);
 		void Raise(vector<HMSelectVertex> kSelected, float fSize);		// Raise or lower a selection.
 		
 		void DrawMask(Vector3 kPos,int iMode,int iSize,int r,int g,int b,int a);
 		
-		int GetSize(){return m_iHmSize*HEIGHTMAP_SCALE;};
+		int GetSize(){return m_iTilesSide*HEIGHTMAP_SCALE;};				// Return the size of one side of the Hm.
 		void AddSet(const char* acTexture,const char* acDetailTexture,const char* acMask);
 		void ClearSet();
-
-		bool IsAllZero();
 
 
 		HM_vert* LinePick(Vector3 kPos,Vector3 kDir,Vector3 kCenterPos,int iWidth,Vector3& kHitPos);		

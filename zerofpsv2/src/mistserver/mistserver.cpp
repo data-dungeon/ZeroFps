@@ -210,7 +210,7 @@ void MistServer::DrawHMEditMarker(HeightMap* pkHmap, Vector3 kCenterPos, float f
 	Vector3				kVertex;
 	vector<Vector3>	kVertexList;
 
-	float x,z;
+//	float x,z;
 	kCenterPos.y = 0;
 	Vector3 kPos;
 

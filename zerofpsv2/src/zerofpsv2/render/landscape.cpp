@@ -848,33 +848,19 @@ void Render::DrawHMLodSplat(HeightMap* kMap,Vector3 CamPos,int iFps)
 
 void Render::DrawAllHM(HeightMap* kMap,Vector3 CamPos,bool bBorders)
 {
-/*	int iBlockSize = 17;
-
-	TerrainBlock kBlock;
-
-	for(int z=0; z<kMap->m_iHmSize; z += iBlockSize) {
-		for(int x=0; x<kMap->m_iHmSize; x += iBlockSize) {
-			DrawPatch_Vim1(kMap,CamPos,x,z,iBlockSize);		
-		}
-	}*/
-
 	int iPatchSize = 4;
 	
-
 	//glDisable(GL_TEXTURE_2D);
 	glColor3f(1,1,1);
 	//glDisable(GL_LIGHTING);
 
-	for(int z=0;z<kMap->m_iHmSize;z+=iPatchSize)
+	for(int z=0;z<kMap->m_iTilesSide;z+=iPatchSize)
 	{
-		for(int x=0;x<kMap->m_iHmSize;x+=iPatchSize)
+		for(int x=0;x<kMap->m_iTilesSide;x+=iPatchSize)
 		{
 			DrawPatch(kMap,CamPos,x,z,iPatchSize,bBorders);		
-			//DrawPatch_Vim1(kMap,CamPos,x,z,iPatchSize);	
 		}
 	}
-
-
 }
 
 void Render::DrawHMVertex(HeightMap* kMap)
@@ -886,11 +872,11 @@ void Render::DrawHMVertex(HeightMap* kMap)
 	glColor3f(1,1,1);
 
 	glBegin(GL_POINTS);
-	for(int z=0;z<kMap->m_iHmSize;z++)
+	for(int z=0;z<kMap->m_iTilesSide;z++)
 	{
-		for(int x=0;x<kMap->m_iHmSize;x++)
+		for(int x=0;x<kMap->m_iTilesSide;x++)
 		{
-			int iVertexIndex = z*kMap->m_iHmSize+x;
+			int iVertexIndex = z*kMap->m_iTilesSide+x;
 			float fScaleX = float(x * HEIGHTMAP_SCALE);
 			float fScaleZ = float(z * HEIGHTMAP_SCALE);
 			glVertex3f(fScaleX ,pkHmVertex[iVertexIndex].height*HEIGHTMAP_SCALE, fScaleZ);
@@ -916,11 +902,11 @@ void Render::DrawNormals(HeightMap* kMap,Vector3 CamPos,int iFps)
 	
 	HM_vert* pkHmVertex = kMap->verts;
 
-	for(int z = 0 ; z < kMap->m_iHmSize; z++){
-		for(int x = 0 ; x < kMap->m_iHmSize ; x++){	
+	for(int z = 0 ; z < kMap->m_iTilesSide; z++){
+		for(int x = 0 ; x < kMap->m_iTilesSide ; x++){	
 			float	fScaleX = float(x * HEIGHTMAP_SCALE);
 			float fScaleZ = float(z * HEIGHTMAP_SCALE);
-			int iVertexIndex = z*kMap->m_iHmSize+x;
+			int iVertexIndex = z*kMap->m_iTilesSide+x;
 
 			kVertex.Set(fScaleX ,pkHmVertex[iVertexIndex].height*HEIGHTMAP_SCALE, fScaleZ);
 			kVertex += (CamPos + kMap->m_kCornerPos);
@@ -954,7 +940,7 @@ void Render::GetMinMax(HeightMap* kMap, float& fMin, float& fMax, int xp,int zp,
 	//	fMin = 
 	for(int z = zp ; z < zp+iSize; z++){
 		for(int x = xp ; x <= xp+iSize ; x++){	
-			int iVertexIndex = (z)*kMap->m_iHmSize+x;
+			int iVertexIndex = (z)*kMap->m_iTilesSide+x;
 			fHojd = float(pkHmVertex[iVertexIndex].height*HEIGHTMAP_SCALE);
 			
 			if(fHojd < fMin)
@@ -967,8 +953,7 @@ void Render::GetMinMax(HeightMap* kMap, float& fMin, float& fMax, int xp,int zp,
 
 void Render::DrawPatch(HeightMap* kMap,Vector3 CamPos,int xp,int zp,int iSize,bool bBorders)
 {
-
-	int iStep;
+	int	iStep;
 	float fDistance;
 	
 	// See if we can Cull away this patch...this is optimized for zeroRTS at the moment..Dvoid  assuming max height of 30
@@ -976,8 +961,7 @@ void Render::DrawPatch(HeightMap* kMap,Vector3 CamPos,int xp,int zp,int iSize,bo
 							  kMap->m_kCornerPos.y + 7.5f*HEIGHTMAP_SCALE,
 							  kMap->m_kCornerPos.z + (zp + iSize/2)*HEIGHTMAP_SCALE);
 		
-	fDistance=(CamPos-PatchCenter).Length() ;
-		
+	fDistance = (CamPos-PatchCenter).Length() ;
 	if(fDistance > m_iViewDistance)
 		return;
 		
@@ -988,55 +972,47 @@ void Render::DrawPatch(HeightMap* kMap,Vector3 CamPos,int xp,int zp,int iSize,bo
 	iStep=PowerOf2(int(fDistance / m_iDetail));
 	iStep = 1;
 
-/*	glPushMatrix();			
-		glTranslatef( -kMap->m_kCornerPos.x, -kMap->m_kCornerPos.y, -kMap->m_kCornerPos.z );
-		//m_pkLight->Update(PatchCenter);
-		//DrawAABB(PatchCenter.x,PatchCenter.y,PatchCenter.z,
-		//	(iSize/2)*HEIGHTMAP_SCALE,54*HEIGHTMAP_SCALE,(iSize/2)*HEIGHTMAP_SCALE, Vector3(1,0,0));
-	glPopMatrix();*/
-
-//	glPolygonMode(GL_FRONT,GL_LINE);
-	
 	// Draw the Terrain Patch.
 	float fXDivTexScale;
 	float fZDivTexScale;
 	float fXDivHmSize;
 	float fZDivHmSize;
-	int	  iVertexIndex;
+	int	iVertexIndex;
 	float fScaleX, fScaleZ;
 
 	HM_vert* pkHmVertex = kMap->verts;
 	int z;
-	
-//	DumpGLState("fisk.txt");
+	//int iTestX = kMap->m_iTilesSide;
+	int iTestX = kMap->m_iVertexSide;
+
 	for(z = zp ; z < zp+iSize; z+=iStep){
 		//if(z >= kMap->m_iHmSize-iStep)
 		//	break;			
 			
 		fZDivTexScale	= (float) z / TEX_SCALE;
-		fZDivHmSize		= (float) z / kMap->m_iHmSize;
+		fZDivHmSize		= (float) z / iTestX;
 
 		glBegin(GL_TRIANGLE_STRIP);
 		for(int x = xp ; x <= xp+iSize ; x+=iStep){	
 			fXDivTexScale	= (float) x / TEX_SCALE;
-			fXDivHmSize		= (float) x / kMap->m_iHmSize;
+			fXDivHmSize		= (float) x / iTestX;
 
 			fScaleX = float(x * HEIGHTMAP_SCALE);
 			fScaleZ = float(z * HEIGHTMAP_SCALE);
 
-			float fZStepDivHmSize = ((float)z+iStep) / kMap->m_iHmSize;
+			float fZStepDivHmSize = ((float)z+iStep) / iTestX;
 			float fZStepDivTexScale = ((float)z+iStep) / TEX_SCALE;
 
 			glMultiTexCoord2fARB(GL_TEXTURE0_ARB, fXDivHmSize , fZDivHmSize);		 		 			 		
 			glMultiTexCoord2fARB(GL_TEXTURE1_ARB, fXDivTexScale , fZDivTexScale);
-			iVertexIndex = z*kMap->m_iHmSize+x;
+			iVertexIndex = z*iTestX +x;
 			glNormal3fv((float*)&pkHmVertex[ iVertexIndex ].normal);			
 			glVertex3f(fScaleX ,pkHmVertex[iVertexIndex].height*HEIGHTMAP_SCALE, fScaleZ);					
 			
 			glMultiTexCoord2fARB(GL_TEXTURE0_ARB, fXDivHmSize, fZStepDivHmSize);		 		 			 			 		
 			glMultiTexCoord2fARB(GL_TEXTURE1_ARB, fXDivTexScale ,fZStepDivTexScale);		
 			
-			iVertexIndex = (z+iStep)*kMap->m_iHmSize+x;
+			iVertexIndex = (z+iStep)*iTestX + x;
 			glNormal3fv((float*)&pkHmVertex[iVertexIndex].normal);			
 			glVertex3f( fScaleX ,float(pkHmVertex[iVertexIndex].height*HEIGHTMAP_SCALE) , float((z+iStep)*HEIGHTMAP_SCALE));			
 		}		
@@ -1117,6 +1093,7 @@ void Render::DrawPatch(HeightMap* kMap,Vector3 CamPos,int xp,int zp,int iSize,bo
 
 int iPatchIndex[4096];
 
+/*
 void Render::DrawBlocks(HeightMap* kmap)
 {
 	for(unsigned int i=0; i<kmap->m_kTerrainBlocks.size(); i++) {
@@ -1141,7 +1118,7 @@ void Render::DrawPatch_Vim1(HeightMap* kMap,Vector3 CamPos,int xp,int zp,int iSi
 							  kMap->m_kCornerPos.z + (zp + iSize/2)*HEIGHTMAP_SCALE);
 /*	Vector3 PatchCenter(kMap->GetPos().x-(kMap->GetScale()/2) + (xp + iSize/2)*HEIGHTMAP_SCALE,
 							  kMap->GetPos().y + 34*HEIGHTMAP_SCALE,
-							  kMap->GetPos().z-(kMap->GetScale()/2) + (zp + iSize/2)*HEIGHTMAP_SCALE);*/
+							  kMap->GetPos().z-(kMap->GetScale()/2) + (zp + iSize/2)*HEIGHTMAP_SCALE);
 
 
 	//DrawCross(PatchCenter,Vector3::ZERO, Vector3(1,1,1),-1);
@@ -1156,7 +1133,7 @@ void Render::DrawPatch_Vim1(HeightMap* kMap,Vector3 CamPos,int xp,int zp,int iSi
 /*	if(!m_pkFrustum->CubeInFrustum(PatchCenter.x,PatchCenter.y,PatchCenter.z,
 		(iSize/2)*HEIGHTMAP_SCALE,54*HEIGHTMAP_SCALE,(iSize/2)*HEIGHTMAP_SCALE))
 		return;
-		*/
+		
 	// Min/Max	AABB
 	float fMin,fMax;
 	GetMinMax(kMap,fMin,fMax,xp,zp,iSize);
@@ -1202,7 +1179,7 @@ void Render::DrawPatch_Vim1(HeightMap* kMap,Vector3 CamPos,int xp,int zp,int iSi
 	int iPatchIndex = 0;
 	for( z = zp ; z < zp+iSize; z++){
 		for( x = xp ; x < xp+iSize ; x++){	
-			int iVertexIndex = (z)*kMap->m_iHmSize+x;
+			int iVertexIndex = (z)*kMap->m_iTilesSide+x;
 			fScaleX = float(x * HEIGHTMAP_SCALE);
 			fScaleZ = float(z * HEIGHTMAP_SCALE);
 			
@@ -1243,7 +1220,7 @@ void Render::DrawPatch_Vim1(HeightMap* kMap,Vector3 CamPos,int xp,int zp,int iSi
 		for(int i=0; i<iNumOfPatchVertex; i++)
 			glVertex3f(pkLandVertex[i].x, pkLandVertex[i].y, pkLandVertex[i].z);
 	glEnd();
-	glPointSize(1);*/
+	glPointSize(1);
 
 	// Fill Holes.
 
@@ -1251,7 +1228,7 @@ void Render::DrawPatch_Vim1(HeightMap* kMap,Vector3 CamPos,int xp,int zp,int iSi
 	delete [] pkLandNormals;
 	delete [] pkLandTextureCoo1;
 	delete [] pkLandTextureCoo2;
-}
+}*/
 
 
 
