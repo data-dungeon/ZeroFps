@@ -160,6 +160,8 @@ void MistClient::Init()
 	pkMusic->LoadFile("data/music/ambient_loops/grotta3_fx_120bpm.ogg");
 	pkMusic->Play();
 */
+	// give focus to main window
+//	pkGui->SetFocus(GetWnd("MainWnd")); 
 }
 
 void MistClient::RegisterResources()

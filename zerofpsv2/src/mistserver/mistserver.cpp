@@ -141,6 +141,9 @@ void MistServer::Init()
 	SDL_WM_SetCaption("MistServer", NULL);
 
 	CreateMenu("data/script/gui/menu.txt");
+
+	// give focus to main window
+	pkGui->SetFocus(GetWnd("MainWnd")); 
 }
 
 void MistServer::RegisterResources()
