@@ -71,6 +71,9 @@ class MistServer :public Application , public ZGuiApp {
 		
 		PlayerDatabase*	m_pkPlayerDB;
 
+		float fFrameTime;
+		int	m_iLockFps;
+
 		//edit stuff
 		int		m_iEditMode;
 

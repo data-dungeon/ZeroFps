@@ -68,7 +68,11 @@ MistServer::MistServer(char* aName,int iWidth,int iHeight,int iDepth)
 	g_ZFObjSys.Log_Create("mistserver");
 
 	m_pkServerInfoP = NULL;
-	
+	m_iLockFps = false;
+
+	//register variables
+	RegisterVariable("g_lockfps",			&m_iLockFps,				CSYS_INT);
+
 } 
 
 void MistServer::OnInit() 
@@ -110,6 +114,7 @@ void MistServer::Init()
 	Register_Cmd("load",FID_LOAD);		
 	Register_Cmd("save",FID_SAVE);		
 
+	
 	//damn "#¤(="%#( lighting fix bös
 	pkLight->SetLighting(true);
 	pkZShader->SetForceLighting(LIGHT_ALWAYS_OFF);	
@@ -146,6 +151,8 @@ void MistServer::Init()
 
 	// give focus to main window
 	pkGui->SetFocus(GetWnd("MainWnd")); 
+	
+	fFrameTime = pkFps->GetTicks();
 }
 
 void MistServer::RegisterResources()
@@ -171,6 +178,23 @@ void MistServer::RegisterPropertys()
 
 void MistServer::OnIdle()
 {
+
+	if(m_iLockFps)
+	{
+		//server delay code ---		
+		float fDelay = pkFps->GetGameFrameTime() - (pkFps->GetTicks() - fFrameTime);
+		if(fDelay < 0)
+			fDelay = 0;
+	
+		SDL_Delay(fDelay*1000.0);	
+		fFrameTime = pkFps->GetTicks();
+	
+		//	cout<<"Frametime:"<<fFrameT<<endl;
+		//	cout<<"Frametime shuld be:"<<pkFps->GetGameFrameTime()<<endl;
+		//	cout<<"Delaying:"<<fDelay<<endl;		
+		//end of delay code ---	
+	}	
+	
 	pkFps->SetCamera(m_pkCamera);		
 	pkFps->GetCam()->ClearViewPort();	
 
@@ -238,6 +262,8 @@ void MistServer::OnIdle()
 void MistServer::OnSystem()
 {
 	HandleOrders();
+	
+
 }
 
 
