@@ -63,6 +63,7 @@ class DarkMetropolis : public Application, public ZGuiApp
 		float		m_fMaxCamDistance;
 		
 		float		m_fDelayTimer;
+		bool		m_bActionPressed;
 		
 		vector<int>	m_kSelectedEntitys;
 		

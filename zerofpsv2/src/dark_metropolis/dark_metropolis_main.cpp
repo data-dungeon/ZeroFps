@@ -48,6 +48,7 @@ void DarkMetropolis::OnInit()
 	m_bSelectSquare = false;
 	m_fDelayTimer = 0;
 	m_iCurrentFormation = FORMATION_CIRCLE;
+	m_bActionPressed = false;
 	
 	//register commands
 	Register_Cmd("load",FID_LOAD);			
@@ -209,8 +210,9 @@ void DarkMetropolis::OnServerStart()
 	}
 			
 	m_kSelectedEntitys.clear();
-	m_bSelectSquare = false;
-	m_iCurrentFormation = FORMATION_CIRCLE;
+	m_bSelectSquare = 		false;
+	m_iCurrentFormation =	FORMATION_CIRCLE;
+	m_bActionPressed =		false;
 }
 
 void DarkMetropolis::OnClientStart()
@@ -358,32 +360,32 @@ void DarkMetropolis::Input()
 
 	//check if we want do do any action
 	if(m_pkInputHandle->VKIsDown("action"))
+		m_bActionPressed = true;
+	else if(m_bActionPressed)
 	{
-		if(m_pkFps->GetTicks() - m_fDelayTimer > 0.2)
-		{	m_fDelayTimer = m_pkFps->GetTicks();
+		m_bActionPressed = false;
 	
-			Entity* pkEnt = GetTargetObject();	
-			if(pkEnt)
+		Entity* pkEnt = GetTargetObject();	
+		if(pkEnt)
+		{
+			if(pkEnt->GetName() == "ZoneObject")	//we clicked on a zone
 			{
-				if(pkEnt->GetName() == "ZoneObject")	//we clicked on a zone
+				for(int i = 0;i < m_kSelectedEntitys.size();i++)
 				{
-					for(int i = 0;i < m_kSelectedEntitys.size();i++)
+					Entity* pkEnt = m_pkObjectMan->GetObjectByNetWorkID(m_kSelectedEntitys[i]);
+					if(pkEnt)
 					{
-						Entity* pkEnt = m_pkObjectMan->GetObjectByNetWorkID(m_kSelectedEntitys[i]);
-						if(pkEnt)
-						{
-							P_PfPath* pkPF = (P_PfPath*)pkEnt->GetProperty("P_PfPath");
-							if(pkPF)//we have selected an entity whit a pathfind property, lets take a walk =)
-							{					
-							
-								//randomize position a bit if theres many characters selected
-								if(m_kSelectedEntitys.size() > 1)
-									pkPF->MakePathFind(m_kPickPos + GetFormationPos(m_iCurrentFormation,m_kSelectedEntitys.size(),i));								
-								else
-									pkPF->MakePathFind(m_kPickPos);
-							}
-						}	
-					}
+						P_PfPath* pkPF = (P_PfPath*)pkEnt->GetProperty("P_PfPath");
+						if(pkPF)//we have selected an entity whit a pathfind property, lets take a walk =)
+						{					
+						
+							//randomize position a bit if theres many characters selected
+							if(m_kSelectedEntitys.size() > 1)
+								pkPF->MakePathFind(m_kPickPos + GetFormationPos(m_iCurrentFormation,m_kSelectedEntitys.size(),i));								
+							else
+								pkPF->MakePathFind(m_kPickPos);
+						}
+					}	
 				}
 			}
 		}
