@@ -1,7 +1,7 @@
 #include "light.h"
 #include <algorithm>
 #include "../basic/globals.h"
-
+ 
 #include "render.h"
  
 LightSource::LightSource() 

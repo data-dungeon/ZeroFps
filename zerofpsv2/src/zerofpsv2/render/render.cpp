@@ -5,7 +5,7 @@
 #include "../engine/psystemmanager.h"
  
 FILE* pkGlDumpLog;
-
+ 
 Render::Render()  
 :	ZFSubSystem("Render") , m_eLandscapePolygonMode(FILL) 
 {
@@ -228,7 +228,7 @@ void Render::Sphere(Vector3 kPos,float fRadius,int iRes,Vector3 kColor,bool bSol
 }
 
 void Render::Normalize(float v[3]) {    
-   float d = sqrt(v[0]*v[0]+v[1]*v[1]+v[2]*v[2]); 
+   float d = float( sqrt(v[0]*v[0]+v[1]*v[1]+v[2]*v[2]) ); 
    
    if (d == 0.0) {  
 
@@ -408,7 +408,7 @@ void Render::Print(Vector3 kPos,Vector3 kScale,char* aText) {
 		
 		//center text
 		int offset = strlen(paText)/2;		
-		glTranslatef(-offset,0,0);
+		glTranslatef(float(-offset),0,0);
 		
 		
 		int i=0;

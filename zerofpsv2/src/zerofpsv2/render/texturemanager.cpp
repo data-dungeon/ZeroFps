@@ -5,7 +5,7 @@
 #include "../basic/image.h"
 #include "render.h"
 #include "../basic/basicconsole.h"
-
+ 
 #define ERROR_TEXTURE	"data/textures/notex.bmp"
 
 TextureManager::TextureManager()

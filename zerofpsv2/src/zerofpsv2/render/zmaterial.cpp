@@ -1,7 +1,7 @@
 #include "zmaterial.h"
 #include "zshader.h"
 #include "../basic/globals.h"
-
+ 
 ZMaterialSettings::ZMaterialSettings()
 {
 	m_kTUs[0] = new ZFResourceHandle();				// LEAK - MistClient, Level loaded.

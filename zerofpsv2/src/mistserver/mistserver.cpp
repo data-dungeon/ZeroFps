@@ -360,7 +360,7 @@ void MistServer::Input()
 				
 
 		Vector3 rot;
-		rot.Set(-z / 5.0,-x / 5.0,0);
+		rot.Set(float(-z / 5.0),float(-x / 5.0),0);
 
 		kRm.Transponse();		
 		kRm.Rotate(rot);
@@ -582,7 +582,7 @@ void MistServer::OnHud(void)
 
 void MistServer::RunCommand(int cmdid, const CmdArgument* kCommand)
 {
-	int i;
+	unsigned int i;
 	vector<string>	kUsers;
 
 	switch(cmdid) {
@@ -1102,7 +1102,7 @@ void MistServer::OnClickListbox(int iListBoxID, int iListboxIndex, ZGuiWnd* pkMa
 			m_pkIni->GetSectionNames(akSections);
 
 			// Run Menu command
-			for(int i=0; i<akSections.size(); i++)
+			for(unsigned int i=0; i<akSections.size(); i++)
 			{
 				char* title = m_pkIni->GetValue(akSections[i].c_str(), "Title");
 
@@ -1131,7 +1131,7 @@ void MistServer::AutoSetZoneSize(string strName)
 	char szString[256];
 	strcpy(szString, &strName.c_str()[iPos + 1]);
 	sscanf(szString,"%dx%dx%d", &x,&y,&z);
-	m_kZoneSize.Set(x,y,z);
+	m_kZoneSize.Set(float(x),float(y),float(z));
 	cout << "Setting Size " << x << ", " << y << ", "<< z << endl;
 }
 
@@ -1247,7 +1247,7 @@ Vector3 MistServer::GetPlayerStartLocation(const char* csName)
 		if(m_kLocations[i].first == csName)
 		{	
 			cout<<"found location: "<<csName<<endl;
-			return m_kLocations[i].second+Vector3((rand()%1000)/1000.0,0,(rand()%1000)/1000.0);
+			return m_kLocations[i].second+Vector3( float((rand()%1000)/1000.0),  0,  float((rand()%1000)/1000.0));
 		}
 	
 	return Vector3(0,0,0);
@@ -1454,7 +1454,7 @@ void MistServer::HandleOrders()
 			cout << "Player: " << order->m_iClientID << " wish to know what char he have." << endl;
 			vector<string> kChars;
 			kChars = m_pkPlayerDB->GetLoginCharacters(string("vim"));
-			for(int i=0; i<kChars.size(); i++)
+			for(unsigned int i=0; i<kChars.size(); i++)
 				m_pkFps->PrintToClient(order->m_iClientID, kChars[i].c_str());
       }
 		
@@ -2004,7 +2004,7 @@ void MistServer::CreateGuiInterface()
 	vector<string> vkFileNames;
 	m_pkZFVFileSystem->ListDir(&vkFileNames, "/data/enviroments", false);
 
-	for(int i=0; i<vkFileNames.size(); i++)
+	for(unsigned int i=0; i<vkFileNames.size(); i++)
 		AddListItem("EnviromentPresetList", (char*) vkFileNames[i].c_str());
 
 	// 

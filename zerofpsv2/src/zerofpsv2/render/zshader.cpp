@@ -4,7 +4,7 @@ ZShader::ZShader() : ZFSubSystem("ZShader")
 {
 	
 }
-
+ 
 bool ZShader::StartUp()
 {
  	m_pkTexMan	= static_cast<TextureManager*>(GetSystem().GetObjectPtr("TextureManager"));
@@ -253,7 +253,9 @@ void ZShader::RandomVertexMovements()
 {
 	for(int i=0;i<m_iNrOfVertexs;i++)
 	{
-		m_pkVertexPointer[i] += Vector3( (rand()%500 /1000.0) -0.25,(rand()%500 /1000.0) -0.25,(rand()%500 /1000.0) -0.25);
+		m_pkVertexPointer[i] += Vector3( float((rand()%500 /1000.0) -0.25), 
+			float((rand()%500 /1000.0) -0.25),
+			float((rand()%500 /1000.0) -0.25));
 
 	}
 	
@@ -264,7 +266,7 @@ void ZShader::Waves()
 	for(int i=0;i<m_iNrOfVertexs;i++)
 	{
 		float offset = Clamp(m_pkVertexPointer[i].x + m_pkVertexPointer[i].y + m_pkVertexPointer[i].z,0,4);
-		float bla = cos(SDL_GetTicks()/500.0 + offset)*0.1;
+		float bla = float( cos(SDL_GetTicks()/500.0 + offset)*0.1 );
 		m_pkVertexPointer[i] += Vector3(bla,bla,bla);
 
 	}

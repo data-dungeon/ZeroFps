@@ -1,9 +1,9 @@
 #include "render.h" 
-  
+   
 #include "../engine_systems/common/heightmap.h" 
 #include "../engine_systems/common/heightmap2.h"
 #include "../engine_systems/common/i_heightmap2.h"
-  
+    
 void Render::DrawSkyBox_SixSided(Vector3 CamPos,Vector3 kHead,int* aiSideTextures)
 {
 	glPushMatrix();
@@ -735,11 +735,12 @@ void Render::DrawCross(Vector3& kPos,Vector3& kHead,Vector3& kScale,int& iTextur
 
 void Render::DrawHMLodSplat(HeightMap* kMap,Vector3 CamPos,int iFps)
 {
+
 	if(!m_iDrawLandscape)
 		return;
 
 
-	if(m_iAutoLod>0){
+  if(m_iAutoLod>0){
 		if(SDL_GetTicks()>(m_iLodUpdate+500)){
 			m_iLodUpdate=SDL_GetTicks();
 			
@@ -750,7 +751,6 @@ void Render::DrawHMLodSplat(HeightMap* kMap,Vector3 CamPos,int iFps)
 			}
 		}
 	}
-
 	
 	glPushMatrix();
 	glPushAttrib(GL_DEPTH_BUFFER_BIT);
@@ -925,6 +925,7 @@ void Render::GetMinMax(HeightMap* kMap, float& fMin, float& fMax, int xp,int zp,
 
 void Render::DrawPatch(HeightMap* kMap,Vector3 CamPos,int xp,int zp,int iSize,bool bBorders)
 {
+/*
 	int iStep;
 	float fDistance;
 	
@@ -940,8 +941,8 @@ void Render::DrawPatch(HeightMap* kMap,Vector3 CamPos,int xp,int zp,int iSize,bo
 		
 /*	if(!m_pkFrustum->CubeInFrustum(PatchCenter.x,PatchCenter.y,PatchCenter.z,
 		(iSize/2)*HEIGHTMAP_SCALE,15*HEIGHTMAP_SCALE,(iSize/2)*HEIGHTMAP_SCALE))
-		return;
-*/		
+		return; **
+	
 	iStep=PowerOf2(int(fDistance / m_iDetail));
 		
 	glPushMatrix();			
@@ -1067,7 +1068,7 @@ void Render::DrawPatch(HeightMap* kMap,Vector3 CamPos,int xp,int zp,int iSize,bo
 		glEnd();	
 	};
 
-
+*/
 }
 
 int iPatchIndex[4096];
@@ -1221,7 +1222,10 @@ void Render::DrawHM2(Heightmap2* pkMap,Vector3 kCamPos)
 
 	glPushMatrix();
 
-	Vector3 kPos = pkMap->GetPos() - Vector3(pkMap->m_iWidth*pkMap->m_fScale / 2.0,0,pkMap->m_iHeight*pkMap->m_fScale / 2.0);
+	Vector3 kPos = pkMap->GetPos() - 
+		Vector3(float(pkMap->m_iWidth*pkMap->m_fScale / 2.0),
+		0,
+		float(pkMap->m_iHeight*pkMap->m_fScale / 2.0));
 	glTranslatef(kPos.x,kPos.y,kPos.z);
 
 

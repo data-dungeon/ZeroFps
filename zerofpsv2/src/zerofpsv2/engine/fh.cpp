@@ -172,8 +172,8 @@ void DebugGraph::DrawAvgLine()
 
 	glColor3f(0, 1, 0);
 	glBegin(GL_LINES);
-		glVertex3i(0,GetSampleHeight(fAvg),0);
-		glVertex3i(m_iWidth, GetSampleHeight(fAvg) ,0);
+		glVertex3i(0,int(GetSampleHeight(fAvg)),0);
+		glVertex3i(m_iWidth, int(GetSampleHeight(fAvg)) ,0);
 	glEnd();
 }
 
@@ -280,9 +280,9 @@ void MazeGen::CreateRooms()
 	Vector3 kRoomSize;
 
 	for(int i=0; i< 100; i++) {
-		kRoomPos.Set(rand() % 100, rand() % 100,0);
-		kRoomSize.Set(rand() % 5 + 1, rand() % 5 + 1,0);
-		PlaceRoom(kRoomPos.x, kRoomPos.y, kRoomSize.x, kRoomSize.y);
+		kRoomPos.Set(float((rand() % 100)), float((rand() % 100)),0);
+		kRoomSize.Set(float((rand() % 5 + 1)), float((rand() % 5 + 1)),0);
+		PlaceRoom(int(kRoomPos.x), int(kRoomPos.y), int(kRoomSize.x), int(kRoomSize.y));
 		}
 }
 

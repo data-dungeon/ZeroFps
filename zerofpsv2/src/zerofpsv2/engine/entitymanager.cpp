@@ -2300,9 +2300,9 @@ bool EntityManager::BoxVSBox(Vector3 kPos1,Vector3 kSize1,Vector3 kPos2,Vector3 
 {
 	
 	//box 1
-	float x1 = (kSize1.x/2.0);
-	float y1 = (kSize1.y/2.0);
-	float z1 = (kSize1.z/2.0);
+	float x1 = float(kSize1.x/2.0);
+	float y1 = float(kSize1.y/2.0);
+	float z1 = float(kSize1.z/2.0);
 	
 	vector<Vector3>	kTestDirs1;
 	kTestDirs1.push_back(Vector3(-x1,y1,z1));
@@ -2316,9 +2316,9 @@ bool EntityManager::BoxVSBox(Vector3 kPos1,Vector3 kSize1,Vector3 kPos2,Vector3 
 	kTestDirs1.push_back(Vector3(-x1,-y1,-z1));
 	
 	//box 2
-	float x2 = (kSize2.x/2.0);
-	float y2 = (kSize2.y/2.0);
-	float z2 = (kSize2.z/2.0);
+	float x2 = float(kSize2.x/2.0);
+	float y2 = float(kSize2.y/2.0);
+	float z2 = float(kSize2.z/2.0);
 	
 	vector<Vector3>	kTestDirs2;
 	kTestDirs2.push_back(Vector3(-x2,y2,z2));
