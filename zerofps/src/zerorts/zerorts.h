@@ -59,25 +59,29 @@ class ZeroRTS :public Application {
 		float			m_fClickTimer;
 		float			m_fClickDelay;
 
-		PathFind* m_pkTestPath;
-		void BuildPath();
-
 	public:
+
 		Vector3 GetPosFromSqr(Point square);
 		Point GetSqrFromPos(Vector3 pos);
-		void SetObjDstPos(int sqr_x, int sqr_y);
-		//void DrawMinimap();
 		
 		GuiBuilder* m_pkGuiBuilder;
 		UserPanel*	m_pkUserPanel;
 		
-
 		ZeroRTS(char* aName,int iWidth,int iHeight,int iDepth);
 		~ZeroRTS() {};
 	 	
 	 	void OnInit(void);
 		void OnIdle(void);
 		void OnHud(void);
+
+		/* Pathfind test */////////////////////////////////////
+		PathFind* m_pkTestPath;
+		Point m_pkStart, m_pkEnd;
+		Object* m_pkMoveObject;
+		void BuildPath();
+		bool MovePath(Object* pkObject);
+		void SetObjDstPos(int sqr_x, int sqr_y, Object* pkObject);
+		//////////////////////////////////////////////////////
 		
 		void RunCommand(int cmdid, const CmdArgument* kCommand);		
 		void Init();

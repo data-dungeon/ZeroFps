@@ -12,6 +12,8 @@ ZeroRTS::ZeroRTS(char* aName,int iWidth,int iHeight,int iDepth)
 {
 	m_pkMiniMap = NULL;
 	m_pkTestPath = NULL;
+	m_pkStart = Point(-1,-1);
+	m_pkEnd = Point(-1,-1);
 }
 
 void ZeroRTS::OnInit() 
@@ -29,30 +31,29 @@ void ZeroRTS::OnInit()
 
 void ZeroRTS::Init()
 {	
-	//get heightmap pointer 
+	//get heightmap pointer bös
 	m_pkMap = pkLevelMan->GetHeightMap();	
 
-	//register commmands
+	//register commmands bös
 	g_ZFObjSys.Register_Cmd("load",FID_LOAD,this);		
 	g_ZFObjSys.Register_Cmd("unload",FID_UNLOAD,this);			
 	
-	
-	//damn "#¤(="%#( lighting fix
+	//damn "#¤(="%#( lighting fix bös
 	glEnable(GL_LIGHTING );
 	
-	//initiate our camera
+	//initiate our camera bös
 	m_pkCamera=new Camera(Vector3(0,CAMERA_HEIGHT,0),Vector3(70,0,0),90,1.333,0.25,250);	
 	
-	//disable zones modells
+	//disable zones modells bös
 	pkLevelMan->SetVisibleZones(false);
 
-	//register actions
+	//register actions bös
 	RegisterActions();
 
-	//register property
+	//register property bös
 	RegisterPropertys();
 	
-	//set clicktimer
+	//set clicktimer bös
 	m_fClickTimer = pkFps->GetTicks();
 	m_fClickDelay = 0.2;
 	
@@ -105,10 +106,14 @@ void ZeroRTS::OnIdle(void)
 		pkRender->Sphere(mpos,1,20,Vector3(1,0,0),false);
 	glEnable(GL_LIGHTING);
 */
+	// tassa
+	if(m_pkMoveObject)
+		MovePath(m_pkMoveObject);
 }
 
 void ZeroRTS::Input()
 {
+	// have clicked on userpanel, skip (gui bös)
 	if(m_pkUserPanel->Click())
 		return;
 
@@ -184,10 +189,23 @@ void ZeroRTS::Input()
 	
 		PickInfo info = Pick();
 
-		printf("Picked square: (%i,%i)\n", info.kSquare.x, info.kSquare.y);  
+		// Test pathfind
+		if(info.iObject != -1)
+		{
+			m_pkMoveObject = pkObjectMan->GetObjectByNetWorkID(info.iObject);
+			m_pkEnd = m_pkStart = GetSqrFromPos(m_pkMoveObject->GetPos());
+			m_pkTestPath->Reset();
+		}
+		else
+		{
+			if(m_pkStart != Point(-1,-1))
+			{
+				m_pkEnd = info.kSquare;
+				m_pkStart = GetSqrFromPos(m_pkMoveObject->GetPos());
+				m_pkTestPath->Rebuild(m_pkStart.x, m_pkStart.y, m_pkEnd.x, m_pkEnd.y);
+			}
+		}
 
-		SetObjDstPos(info.kSquare.x, info.kSquare.y);
-		
 		//do we want to clear?
 		if(!pkInput->Action(m_iActionSelectManyModifier))
 			ClearSelected();
@@ -344,12 +362,7 @@ PickInfo ZeroRTS::Pick()
 	PickInfo temp;
 	
 	temp.pkVert = PickMap(temp.kHitPos);
-/*	temp.kSquare.x = m_pkMap->m_iHmSize/2+ceil(temp.kHitPos.x / HEIGHTMAP_SCALE);
-	temp.kSquare.y = m_pkMap->m_iHmSize/2+ceil(temp.kHitPos.z / HEIGHTMAP_SCALE);*/
-
 	temp.kSquare = GetSqrFromPos(temp.kHitPos);
-
-	printf("%f\n", temp.kHitPos.x);
 	
 	Object* pkPicked = PickObject();	
 	
@@ -381,8 +394,6 @@ void ZeroRTS::SetCamPos(Vector3 kPos)
 
 	m_pkCamera->GetPos().x = kPos.x;
 	m_pkCamera->GetPos().z = kPos.z;
-	
-	
 }
 
 Vector3 ZeroRTS::GetCamPos()
@@ -445,18 +456,8 @@ P_ClientUnit* ZeroRTS::GetClientUnit(int iID)
 }
 
 
-void ZeroRTS::SetObjDstPos(int sqr_x, int sqr_y)
-{
-	static int ob;
-
-	if(m_kSelectedObjects.empty() && ob == -1)
-		return;
-	
-	if(!m_kSelectedObjects.empty())
-		ob = m_kSelectedObjects.front();
-
-	Object* pkObject = pkObjectMan->GetObjectByNetWorkID(ob);
-	
+void ZeroRTS::SetObjDstPos(int sqr_x, int sqr_y, Object* pkObject)
+{	
 	if(pkObject == NULL)
 		return;
 
@@ -470,9 +471,9 @@ void ZeroRTS::BuildPath()
 {
 	int aiCost[5];
 	aiCost[GRASS] = 1;
-	aiCost[WOOD]  = 1000;
+	aiCost[WOOD]  = BLOCKED;
 	aiCost[SWAMP] = 500;
-	aiCost[WATER] = 1000;
+	aiCost[WATER] = BLOCKED;
 	aiCost[ROAD]  = 1;
 
 	PathBuilder kPathBuilder(m_pkMap, &m_pkTestPath);
@@ -498,4 +499,25 @@ Vector3 ZeroRTS::GetPosFromSqr(Point square)
 	float y = m_pkMap->Height(x,z);
 
 	return Vector3(x,y,z);
+}
+
+bool ZeroRTS::MovePath(Object* pkObject)
+{
+	static float prev_time = 0;
+
+	float time = pkFps->GetGameTime();
+
+	if(time - prev_time > 0.125f)
+	{
+		int x=-1, y=-1;
+		if(!m_pkTestPath->GetNextStep(x,y))
+			return true; // do nothing
+		
+		if(!(x==-1&&y==-1))
+			SetObjDstPos(x, y, pkObject);
+
+		prev_time = time;
+	}
+
+	return true;
 }

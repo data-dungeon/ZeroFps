@@ -25,7 +25,7 @@ public:
 
 private:
 	HeightMap* m_pkHeightMap;
-	PathFind* m_pkPathFind;
+	PathFind** m_ppkPathFind;
 	int* m_piCostMap;
 	static int* m_piTerrain;
 };

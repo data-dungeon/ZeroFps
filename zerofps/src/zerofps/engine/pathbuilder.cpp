@@ -12,18 +12,19 @@ int* PathBuilder::m_piTerrain = NULL;
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 
-PathBuilder::PathBuilder(HeightMap* pkHeightMap, PathFind** m_ppkPathFind) 
+PathBuilder::PathBuilder(HeightMap* pkHeightMap, PathFind** ppkPathFind) 
 	: ZFObject("PathBuilder")
 {
 	m_pkHeightMap = pkHeightMap;
-	m_pkPathFind = *m_ppkPathFind;
+	m_ppkPathFind = ppkPathFind;
+	m_piTerrain = NULL;
 	m_piCostMap = NULL;
 }
 
 PathBuilder::~PathBuilder()
 {
-	if(m_piCostMap)
-		delete[] m_piCostMap;
+/*	if(m_piCostMap)
+		delete[] m_piCostMap;*/
 }
 
 void PathBuilder::Build(int pkObjectTypeCost[5])
@@ -40,8 +41,12 @@ void PathBuilder::Build(int pkObjectTypeCost[5])
 			{
 				HM_vert* pkVert = m_pkHeightMap->GetVert(x,z);
 
+				int texture = 0; 
+				if(pkVert->height <= 2.0f)
+					texture = 1;
+
 				int iIndex = z*iMapSize+x;
-				switch(pkVert->texture)
+				switch(texture)
 				{
 				case 0: // slättland
 					m_piTerrain[iIndex] = GRASS;
@@ -88,7 +93,7 @@ void PathBuilder::Build(int pkObjectTypeCost[5])
 			}
 		}
 
-	m_pkPathFind = new PathFind(m_piCostMap, iMapSize, BLOCKED);
+	*m_ppkPathFind = new PathFind(m_piCostMap, iMapSize, BLOCKED);
 }
 
 Point PathBuilder::GetMapTile(Vector3 pos)

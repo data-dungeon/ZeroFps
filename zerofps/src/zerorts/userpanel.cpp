@@ -5,6 +5,7 @@
 #include "userpanel.h"
 #include "zerorts.h"
 #include "resource_id.h"
+#include "minimap.h"
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
@@ -139,6 +140,11 @@ bool UserPanel::DlgProc( ZGuiWnd* pkWnd,unsigned int uiMessage,
 						(char*)r->second.c_str());
 				break;
 			}
+		}
+
+		if(pkWnd == m_pkGuiBuilder->Get("MinMapWnd"))
+		{
+			OnClickMinimap(x,y);
 		}
 		break;
 
