@@ -153,8 +153,10 @@ function BlowupPoliceStation()
 	Delete(BombEntID)
 	Delete(PoliceStationID)
 
---	zonid = GetZoneIDAtPos(HQPos)
---	SetZoneModel(zonid, "data/mad/zones/dm/zon_asfalt.mad")
+	bomb_loc = GetEntityPos(BombEntID)
+
+	zonid = GetZoneIDAtPos(bomb_loc)
+	SetZoneModel(zonid, "data/mad/zones/dm/zon_ruin.mad")
 
 	----------------------------------------------------
 	-- Nu går poliserna till attack
