@@ -175,7 +175,7 @@ void Tcs::UpdateLineTests(float fAlphaTime)
 				distance = m_kBodys[i]->m_kNewPos.DistanceTo(m_kLastTestPos);
 				if(distance < m_kBodys[i]->m_fLegLength)
 				{
-					m_kBodys[i]->m_kNewPos = m_kLastTestPos + Vector3(0,m_kBodys[i]->m_fLegLength,0);
+					m_kBodys[i]->m_kNewPos = m_kLastTestPos + Vector3(0,m_kBodys[i]->m_fLegLength*0.9,0);
 					m_kBodys[i]->m_bOnGround = true;
 					m_kBodys[i]->m_kLinearVelocity.y= 0;
 				
