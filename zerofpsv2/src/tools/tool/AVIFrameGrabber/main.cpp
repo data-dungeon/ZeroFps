@@ -398,7 +398,7 @@ void Rebuild(HWND hwnd)
 	for(int y=0; y<rows; y++)
 		for(int x=0; x<cols; x++)
 		{
-			if(frame < max)
+			if(startframe+frame < max)
 			{
 				MakeFrame(startframe+frame, NULL);
 				frame++;
