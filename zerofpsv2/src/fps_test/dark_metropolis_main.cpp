@@ -322,11 +322,16 @@ void DarkMetropolis::OnServerClientPart(ZFClient* pkClient,int iConID)
 
 void DarkMetropolis::OnServerStart()
 {
+
+	
 	if(!CreatePlayer())
 	{
 		cout<<"ERROR: PLAYER NOT CREATED"<<endl;
 		exit(1);	
 	}
+	
+		
+
 	
 	/*
 	m_kSelectedEntitys.clear();
@@ -611,6 +616,12 @@ void DarkMetropolis::RunCommand(int cmdid, const CmdArgument* kCommand)
 
 bool DarkMetropolis::StartNewGame(string strClanName,string strClanColor)
 {
+	/*
+	float t = m_pkFps->GetTicks();
+	while( (m_pkFps->GetTicks() - t )  < 2.0)
+		int i = 0;
+	*/
+		
 	//load world
 	if(!m_pkObjectMan->LoadWorld("dmworld"))
 	{
@@ -618,6 +629,7 @@ bool DarkMetropolis::StartNewGame(string strClanName,string strClanColor)
 		return false;
 	
 	}
+	
 	
 	//start server
 	GetSystem().RunCommand("server Default server",CSYS_SRC_SUBSYS);			
@@ -643,7 +655,7 @@ bool DarkMetropolis::LoadGame(string strClanName)
 		cout<<"could not load world from savegame"<<endl;
 		return false;	
 	}
-
+	
 	//create a new gameinfo entity
 	m_pkGameInfoEntity = m_pkObjectMan->CreateObject();
 	m_pkGameInfoEntity->SetParent(m_pkObjectMan->GetGlobalObject());
@@ -1115,7 +1127,7 @@ bool DarkMetropolis::CreatePlayer()
 	{
 		if(m_kEntitys[i]->GetType() == "t_playerstart.lua")
 		{		
-			/*	
+			
 			if(ZoneData* dat = m_pkObjectMan->GetZone(m_kEntitys[i]->GetParent()))
 			{
 				cout<<"ID:"<<dat->m_iZoneID<<endl;
@@ -1123,11 +1135,13 @@ bool DarkMetropolis::CreatePlayer()
 				if(!dat->m_pkZone)
 					cout<<"rövhålE"<<endl;
 				
+					
 				if(dat->m_iStatus != EZS_LOADED)
 					cout<<"WHAT THE FUCK!!!!!!!!!!"<<endl;
 
 			}
-			*/		
+			else
+				cout<<"nu har du skitit i d blå skåpet"<<endl;
 			
 		
 

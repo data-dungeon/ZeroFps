@@ -1956,7 +1956,9 @@ bool EntityManager::LoadTrackers(string strSaveDir)
 		
 		//load the zone in wich theres suppose to be a tracker
 		LoadZone(iZone);
-			
+		
+		//if(m_kZones[iZone].m_pkZone)
+		//	m_kZones[iZone].m_pkZone->SetUpdateStatus(UPDATE_ALL);
 		//cout<<"loaded tracked zone "<<iZone<<endl;
 		
 	}

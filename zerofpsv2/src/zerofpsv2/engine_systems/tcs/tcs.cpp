@@ -100,8 +100,9 @@ void Tcs::Update(float fAlphaTime)
 		fAlphaTime = 0.033; 
 	}
 */			
-//		cout<<"slow:"<<fAlphaTime<<endl;
-	
+	//	cout<<"slow:"<<fAlphaTime<<endl;
+		
+
 		
 	float fStartTime = m_pkZeroFps->GetTicks();
 	float fRTime = fAlphaTime;

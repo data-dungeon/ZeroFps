@@ -387,6 +387,10 @@ void ZeroFps::Run_Client()
 
 void ZeroFps::Update_System(bool bServer)
 {
+/*	//ugly startuptime fix
+	if(m_fSystemUpdateTime == 0)
+		m_fSystemUpdateTime = GetTicks();
+*/
 
 	int iLoops;
 
@@ -400,11 +404,17 @@ void ZeroFps::Update_System(bool bServer)
 		iLoops = int(m_fSystemUpdateFps * fATime);
 	}
 	
+	//if no loops are to be done, just return
 	if(iLoops<=0)
 		return;
-
+	
+	//set maximum number of loops, dont know if this is realy that good...but what the hell
+	if(iLoops > 10)
+		iLoops = 10;
+	
+		
 	//m_pkObjectMan->m_fGameFrameTime = m_fSystemUpdateFpsDelta;	// 1/m_fSystemUpdateFps;//(fATime / iLoops);		
-//	float m_fLU = m_fSystemUpdateTime;
+	//	float m_fLU = m_fSystemUpdateTime;
  	
 	m_fSystemUpdateFpsDelta = float(1.0) / m_fSystemUpdateFps;
 	m_pkObjectMan->m_fSimTimeDelta = m_pkObjectMan->m_fSimTimeScale * m_fSystemUpdateFpsDelta;  
@@ -413,6 +423,7 @@ void ZeroFps::Update_System(bool bServer)
 	{	
 		//calculate current game time
 		m_pkObjectMan->m_fSimTime += /*m_fLU + (i * */ m_pkObjectMan->GetSimDelta();
+		
 		//client & server code
 
 						
@@ -426,7 +437,6 @@ void ZeroFps::Update_System(bool bServer)
 		if(m_bServerMode)
 		{
 			//update zones
-			//m_pkObjectMan->UpdateZones();	
 			m_pkObjectMan->UpdateZoneSystem();
 		
 			if(m_bRunWorldSim)
@@ -438,11 +448,12 @@ void ZeroFps::Update_System(bool bServer)
 				else
 					m_pkObjectMan->Update(PROPERTY_TYPE_NORMAL,PROPERTY_SIDE_CLIENT,false);
 				
+				//update game message system
 				m_pkObjectMan->UpdateGameMessages();
 
 				
 				//update new super duper rigid body physics engine deluxe
-//				m_pkPhysics_Engine->Update(m_pkObjectMan->GetSimDelta());	
+				//m_pkPhysics_Engine->Update(m_pkObjectMan->GetSimDelta());	
 				
 	
 				//update Tiny Collission system
