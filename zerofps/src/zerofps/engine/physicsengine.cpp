@@ -107,7 +107,31 @@ bool PhysicsEngine::TestSphere(Sphere* S1,Sphere* S2)
 
 void PhysicsEngine::DeepTest(Sphere* S1,Sphere* S2)
 {
-//	cout<<"DOING A DEEEEEPER TEST"<<endl;
+//	cout<<"deep testing "<<endl;
+
+	CollisionData* pkCD;
+	
+	CollisionShape* CS1=S1->m_pkPP->GetColShape();
+	CollisionShape* CS2=S2->m_pkPP->GetColShape();
+	
+	CollisionShape* CSP1=S1->m_pkPP->GetColSphere();
+	CollisionShape* CSP2=S2->m_pkPP->GetColSphere();
+	
+	
+	if(CS1!=NULL && CS2!=NULL)	
+		pkCD=CS1->Test(CS2,true);
+	else if(CS1!=NULL && CS2==NULL)	
+		pkCD=CS1->Test(CSP2,true);
+	else if(CS1==NULL && CS2!=NULL)	
+		pkCD=CSP1->Test(CS2,true);
+	else if(CS1==NULL & CS2==NULL)
+		pkCD=CSP1->Test(CSP2,true);
+
+	if(pkCD==NULL)
+		cout<<"NO Collission"<<endl;
+	else	
+		cout<<"Collision"<<endl;
+	
 
 }
 

@@ -12,6 +12,9 @@ PhysicProperty::PhysicProperty()
 	m_bGravity=true;
 	m_bMove=true;
 
+	m_pkColSphere=NULL;
+	m_pkColObject=NULL;
+
 	m_pkColSphere=new CSSphere(1);
 	m_pkColSphere->SetPPPointer(this);
 
