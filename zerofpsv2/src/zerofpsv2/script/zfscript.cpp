@@ -226,9 +226,9 @@ bool ZFScriptSystem::ExposeFunction(const char *szName, lua_CFunction o_Function
 
 	if(pkState == m_pkLua)
 	{
-		GlobalFuncInfo* func_info = new GlobalFuncInfo;
+		GlobalFuncInfo* func_info = new GlobalFuncInfo;			// LEAK - MistServer, Nothing loaded.		
 		func_info->pkFunction = o_Function;
-		func_info->szName = new char[ strlen(szName) + 1 ];
+		func_info->szName = new char[ strlen(szName) + 1 ];	// LEAK - MistServer, Nothing loaded.
 		strcpy(func_info->szName, szName);
 		m_vkGlobalFunctions.push_back(func_info);
 
@@ -649,7 +649,7 @@ bool ZFScript::Create(string strName)
 		return false;
 	}
 
-	m_szScriptName = new char[strName.size()+1];
+	m_szScriptName = new char[strName.size()+1];				// LEAK - MistServer, Nothing loaded.
 	strcpy(m_szScriptName, strName.c_str());
 
 	ZFScriptSystem* pkScriptSys = static_cast<ZFScriptSystem*>(g_ZFObjSys.GetObjectPtr("ZFScriptSystem"));
@@ -662,7 +662,7 @@ bool ZFScript::Create(string strName)
 
 ZFResource* Create__ZFScript()
 {
-	return new ZFScript;
+	return new ZFScript;							// LEAK - MistServer, Nothing loaded.
 }
 
 int ZFScript::CalculateSize()

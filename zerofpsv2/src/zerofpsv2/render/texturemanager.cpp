@@ -117,7 +117,7 @@ texture*	TextureManager::GetFreeTexture()
 		pkTex->TexID = iTexID;
 		}
 	else {
-		pkTex = new texture;
+		pkTex = new texture;									// LEAK - MistServer, Nothing loaded.		
 		m_iTextures.push_back(pkTex);
 		pkTex->TexID = m_iTextures.size() - 1;
 		}

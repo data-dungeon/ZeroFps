@@ -224,7 +224,7 @@ void ZFResourceDB::GetResource(ZFResourceHandle& kResHandle, string strResName)
 
 	g_ZFObjSys.Logf("resdb", "Resource %s loaded\n", strResName.c_str());
 
-	ZFResourceInfo* kResInfo = new ZFResourceInfo;
+	ZFResourceInfo* kResInfo = new ZFResourceInfo;			// LEAK - MistServer, Nothing loaded.
 	kResInfo->m_iID			= m_iNextID++;
 	kResInfo->m_iNumOfUsers	= 1;
 	kResInfo->m_strName		= strResName;
