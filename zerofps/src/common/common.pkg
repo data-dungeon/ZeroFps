@@ -18,6 +18,7 @@
 #include "itemproperty.h"
 #include "containerproperty.h"
 #include "doorproperty.h"
+#include "logproperty.h"
 
 
 

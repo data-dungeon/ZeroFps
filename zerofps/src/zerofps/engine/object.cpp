@@ -507,6 +507,7 @@ float Object::GetI()
 	float t = m_pkFps->GetGameFrameTime(); 
 	float at = m_pkFps->GetTicks() - m_pkFps->GetLastGameUpdateTime();
 	float i = at/t;				
+	
 	if(i>1)
 		i=1;
 		

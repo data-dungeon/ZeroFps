@@ -269,11 +269,13 @@ void ZeroFps::Update_System()
 	if(iLoops<=0)
 		return;
 
-	m_fGameFrameTime = (fATime / iLoops);	
+	m_fGameFrameTime = 1/m_fSystemUpdateFps;//(fATime / iLoops);	
+	
+	float m_fLU = m_fSystemUpdateTime;
 	
 	for(int i=0;i<iLoops;i++)
 	{
-		m_fGameTime = m_fSystemUpdateTime + (i * m_fGameFrameTime);
+		m_fGameTime = m_fLU + (i * m_fGameFrameTime);
 		
 		//update all normal propertys
 		m_pkObjectMan->Update(PROPERTY_TYPE_NORMAL,PROPERTY_SIDE_ALL,false);

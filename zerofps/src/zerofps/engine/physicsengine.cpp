@@ -55,7 +55,7 @@ Vector3 PhysicsEngine::GetNewVel(PhysicProperty* pkPP)
 	Vector3 Vel=pkObject->GetVel();
 	
 	if(pkPP->m_bGravity)
-		Acc+=Vector3(0,-11,0);
+		Acc+=Vector3(0,-15,0);
 	
 	if(pkPP->m_bFloat)
 		if(pkObject->GetPos().y < 0) 
@@ -304,7 +304,8 @@ void PhysicsEngine::HandleCollisions()
 
 	for(list<Property*>::iterator it=m_kPropertys.begin();it!=m_kPropertys.end();it++) 
 	{	
-		(*it)->GetObject()->GetPos() = static_cast<PhysicProperty*>(*it)->m_kOldPos;
+//		(*it)->GetObject()->GetPos() = static_cast<PhysicProperty*>(*it)->m_kOldPos;
+		(*it)->GetObject()->SetPos(static_cast<PhysicProperty*>(*it)->m_kOldPos);	
 		(*it)->GetObject()->SetPos(static_cast<PhysicProperty*>(*it)->m_kNewPos);	
 //		(*it)->GetObject()->GetPos()=static_cast<PhysicProperty*>(*it)->m_kNewPos;
 		(*it)->GetObject()->GetVel()=static_cast<PhysicProperty*>(*it)->m_kNewVel;

@@ -307,6 +307,7 @@ void Game::RunCommand(int cmdid, const CmdArgument* kCommand)
 
 void Game::RegisterPropertys()
 {
+	pkPropertyFactory->Register("LogProperty", Create_LogProperty);
 	pkPropertyFactory->Register("DoorProperty", Create_DoorProperty);
 	pkPropertyFactory->Register("ContainerProperty", Create_ContainerProperty);
 	pkPropertyFactory->Register("ItemProperty", Create_ItemProperty);
