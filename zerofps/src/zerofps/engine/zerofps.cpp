@@ -78,6 +78,7 @@ ZeroFps::ZeroFps(void)
 	g_ZFObjSys.Register_Cmd("printobject",FID_PRINTOBJECT,this);	
 	g_ZFObjSys.Register_Cmd("version",FID_VERSION,this);	
 	g_ZFObjSys.Register_Cmd("credits",FID_CREDITS,this);	
+	g_ZFObjSys.Register_Cmd("gldump",FID_GLDUMP,this);	
 
 
 	m_kCurentDir=m_pkBasicFS->GetCWD();
@@ -597,6 +598,10 @@ void ZeroFps::RunCommand(int cmdid, const CmdArgument* kCommand)
 			break;
 
 		
+		case FID_GLDUMP:
+			m_pkRender->DumpGLState();
+			break;
+
 		case FID_LISTMAD:
 			int iSize = akCoreModells.size();
 			m_pkConsole->Printf("Loaded Mads: ");
@@ -604,6 +609,8 @@ void ZeroFps::RunCommand(int cmdid, const CmdArgument* kCommand)
 				m_pkConsole->Printf(" %d: %s", i, akCoreModells[i]->Name);
 				}
 			break;
+
+			
 	}	
 }
 

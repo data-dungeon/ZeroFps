@@ -363,13 +363,16 @@ void Mad_Modell::Draw_All(int iDrawFlags)
 	glPushAttrib(GL_FOG_BIT|GL_LIGHTING_BIT | GL_TEXTURE_BIT | GL_COLOR_BUFFER_BIT );
 
 	glColor3f(1,1,1);
-	glEnable(GL_LIGHTING);
+//	glEnable(GL_LIGHTING);
 	glEnable(GL_TEXTURE_2D );
 
 	int iNumOfMesh = m_kActiveMesh.size();	//GetNumOfMesh();
 	int iNumOfFaces;
 	int iNumOfSubMesh;
-	
+
+//	Render* m_pkRender=static_cast<Render*>(g_ZFObjSys.GetObjectPtr("Render"));		
+//	m_pkRender->DumpGLState();
+
 	if(iDrawFlags &	MAD_DRAW_LINES)
 		glPolygonMode(GL_FRONT, GL_LINE);
 
@@ -395,6 +398,7 @@ void Mad_Modell::Draw_All(int iDrawFlags)
 
 				Mad_CoreTexture* pkTexInfo = GetTextureInfo();
 				m_pkTex->BindTexture( m_pkMesh->GetTextureID(m_pkSubMesh->iTextureIndex));
+				//m_pkTex->BindTexture("../data/textures/c_red.tga",0);
 				if(pkTexInfo->bIsAlphaTest) {
 					glEnable(GL_ALPHA_TEST);
 					glAlphaFunc(GL_GEQUAL, 0.5);
@@ -422,6 +426,7 @@ void Mad_Modell::Draw_All(int iDrawFlags)
 	glPolygonMode(GL_FRONT, GL_FILL );
 
 	glPopAttrib();
+
 }
 
 

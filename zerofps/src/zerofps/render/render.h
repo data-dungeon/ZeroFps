@@ -87,6 +87,8 @@ class RENDER_API Render : public ZFObject {
 
 		void DrawBoundSphere(float fRadius, Vector3);
 		void DrawBox(Vector3 kPos,Vector3 kRot,Vector3 kScale,int iTexture);
+
+		void DumpGLState(void);
 };
 
 RENDER_API void RenderDLL_InitExtGL(void);

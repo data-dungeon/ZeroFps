@@ -9,10 +9,10 @@ ZoneObject::ZoneObject()
 
 	AddProperty("LightUpdateProperty");
 
-	AddProperty("MadProperty");
+/*	AddProperty("MadProperty");
 	MadProperty* madp = dynamic_cast<MadProperty*>(GetProperty("MadProperty"));
 	madp->SetBasePtr(m_pkFps->GetMADPtr("../data/mad/zoneobject.mad"));
-
+*/
 
 //	AddProperty("ProxyProperty");
 

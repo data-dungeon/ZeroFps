@@ -310,7 +310,170 @@ void Render::DrawBox(Vector3 kPos,Vector3 kRot,Vector3 kScale,int iTexture)
 
 }
 
-/*
+char* BoolStr(bool bFlag)
+{
+	if(bFlag)
+		return "True";
+	else
+		return "False";
+}
+
+void GlDump_IsEnabled(int iGlEnum, char* szName)
+{
+	cout << szName << " : " << BoolStr(glIsEnabled(iGlEnum))	<< endl;
+
+}
+void GlDump_GetFloatv(int iGlEnum, char* szName, int iValues)
+{
+	float afValues[16];
+	glGetFloatv(iGlEnum, afValues);	
+
+	cout << szName << " : ";
+	for(int i=0; i<iValues; i++) {
+		cout << afValues[i] << " ";
+		}
+	cout << endl;
+}
+
+void Render::DumpGLState(void)
+{
+	// Get and Dump OpenGL State to log.
+	cout << "-------------------------------------------------------------------" << endl;
+	cout << "Render::DumpGLSTate" << endl;
+
+	GlDump_IsEnabled(GL_AUTO_NORMAL , "GL_AUTO_NORMAL");
+	GlDump_IsEnabled(GL_COLOR_MATERIAL , "GL_COLOR_MATERIAL");
+	GlDump_IsEnabled(GL_CULL_FACE , "GL_CULL_FACE");
+	GlDump_IsEnabled(GL_DEPTH_TEST , "GL_DEPTH_TEST");
+	GlDump_IsEnabled(GL_DITHER , "GL_DITHER");
+	GlDump_IsEnabled(GL_LIGHTING , "GL_LIGHTING");
+	GlDump_IsEnabled(GL_LINE_SMOOTH , "GL_LINE_SMOOTH");
+	GlDump_IsEnabled(GL_LINE_STIPPLE , "GL_LINE_STIPPLE");
+	GlDump_IsEnabled(GL_LOGIC_OP , "GL_LOGIC_OP");
+	GlDump_IsEnabled(GL_MAP1_COLOR_4 , "GL_MAP1_COLOR_4");
+	GlDump_IsEnabled(GL_MAP1_INDEX , "GL_MAP1_INDEX");
+	GlDump_IsEnabled(GL_MAP1_NORMAL , "GL_MAP1_NORMAL");
+	GlDump_IsEnabled(GL_MAP1_TEXTURE_COORD_1 , "GL_MAP1_TEXTURE_COORD_1");
+	GlDump_IsEnabled(GL_MAP1_TEXTURE_COORD_2 , "GL_MAP1_TEXTURE_COORD_2");
+	GlDump_IsEnabled(GL_MAP1_TEXTURE_COORD_3 , "GL_MAP1_TEXTURE_COORD_3");
+	GlDump_IsEnabled(GL_MAP1_TEXTURE_COORD_4 , "GL_MAP1_TEXTURE_COORD_4");
+	GlDump_IsEnabled(GL_MAP1_VERTEX_3 , "GL_MAP1_VERTEX_3");
+	GlDump_IsEnabled(GL_MAP1_VERTEX_4 , "GL_MAP1_VERTEX_4");
+	GlDump_IsEnabled(GL_MAP2_COLOR_4 , "GL_MAP2_COLOR_4");
+	GlDump_IsEnabled(GL_MAP2_INDEX , "GL_MAP2_INDEX");
+	GlDump_IsEnabled(GL_MAP2_NORMAL , "GL_MAP2_NORMAL");
+	GlDump_IsEnabled(GL_MAP2_NORMAL , "GL_MAP2_NORMAL");
+	GlDump_IsEnabled(GL_MAP2_TEXTURE_COORD_1 , "GL_MAP2_TEXTURE_COORD_1");
+	GlDump_IsEnabled(GL_MAP2_TEXTURE_COORD_2 , "GL_MAP2_TEXTURE_COORD_2");
+	GlDump_IsEnabled(GL_MAP2_TEXTURE_COORD_3 , "GL_MAP2_TEXTURE_COORD_3");
+	GlDump_IsEnabled(GL_MAP2_TEXTURE_COORD_4 , "GL_MAP2_TEXTURE_COORD_4");
+	GlDump_IsEnabled(GL_MAP2_VERTEX_3 , "GL_MAP2_VERTEX_3");
+	GlDump_IsEnabled(GL_MAP2_VERTEX_4 , "GL_MAP2_VERTEX_4");
+	GlDump_IsEnabled(GL_NORMALIZE , "GL_NORMALIZE");
+	GlDump_IsEnabled(GL_POINT_SMOOTH , "GL_POINT_SMOOTH");
+	GlDump_IsEnabled(GL_POLYGON_SMOOTH , "GL_POLYGON_SMOOTH");
+	GlDump_IsEnabled(GL_POLYGON_STIPPLE , "GL_POLYGON_STIPPLE");
+	GlDump_IsEnabled(GL_SCISSOR_TEST , "GL_SCISSOR_TEST");
+	GlDump_IsEnabled(GL_STENCIL_TEST , "GL_STENCIL_TEST");
+
+	cout << "Texture:" << endl;
+	GlDump_IsEnabled(GL_TEXTURE_1D , "GL_TEXTURE_1D");
+	GlDump_IsEnabled(GL_TEXTURE_2D , "GL_TEXTURE_2D");
+	GlDump_IsEnabled(GL_TEXTURE_GEN_Q , "GL_TEXTURE_GEN_Q");
+	GlDump_IsEnabled(GL_TEXTURE_GEN_R , "GL_TEXTURE_GEN_R");
+	GlDump_IsEnabled(GL_TEXTURE_GEN_S , "GL_TEXTURE_GEN_S");
+	GlDump_IsEnabled(GL_TEXTURE_GEN_T , "GL_TEXTURE_GEN_T");
+
+	cout << "Accumulation:" << endl;
+	GlDump_GetFloatv(GL_ACCUM_CLEAR_VALUE,		"GL_ACCUM_CLEAR_VALUE", 1);
+	GlDump_GetFloatv(GL_ACCUM_RED_BITS,			"GL_ACCUM_RED_BITS", 1);
+	GlDump_GetFloatv(GL_ACCUM_GREEN_BITS,		"GL_ACCUM_GREEN_BITS", 1);
+	GlDump_GetFloatv(GL_ACCUM_BLUE_BITS,		"GL_ACCUM_BLUE_BITS", 1);
+	GlDump_GetFloatv(GL_ACCUM_ALPHA_BITS,		"GL_ACCUM_ALPHA_BITS", 1);
+
+	cout << "Alpha:" << endl;
+	GlDump_IsEnabled(GL_ALPHA_TEST ,			"GL_ALPHA_TEST");
+	GlDump_GetFloatv(GL_ALPHA_TEST_REF,			"GL_ALPHA_TEST_REF", 1);
+
+	cout << "Blend:" << endl;
+	GlDump_IsEnabled(GL_BLEND , "GL_BLEND");
+	GlDump_GetFloatv(GL_BLEND_DST,				"GL_BLEND_DST", 1);
+	GlDump_GetFloatv(GL_BLEND_SRC,				"GL_BLEND_SRC", 1);
+
+	
+	GlDump_GetFloatv(GL_ATTRIB_STACK_DEPTH,		"GL_ATTRIB_STACK_DEPTH", 1);
+	GlDump_GetFloatv(GL_AUX_BUFFERS,			"GL_AUX_BUFFERS", 1);
+	GlDump_GetFloatv(GL_COLOR_CLEAR_VALUE,		"GL_COLOR_CLEAR_VALUE", 4);
+	GlDump_GetFloatv(GL_COLOR_MATERIAL_FACE,	"GL_COLOR_MATERIAL_FACE", 1);
+	GlDump_GetFloatv(GL_COLOR_MATERIAL_PARAMETER, "GL_COLOR_MATERIAL_PARAMETER", 1);
+	GlDump_GetFloatv(GL_CULL_FACE_MODE,			"GL_CULL_FACE_MODE", 1);
+	GlDump_GetFloatv(GL_CURRENT_INDEX,			"GL_CURRENT_INDEX", 1);
+	GlDump_GetFloatv(GL_CURRENT_RASTER_DISTANCE, "GL_CURRENT_RASTER_DISTANCE", 1);
+	GlDump_GetFloatv(GL_CURRENT_RASTER_INDEX,	"GL_CURRENT_RASTER_INDEX", 1);
+	GlDump_GetFloatv(GL_DEPTH_CLEAR_VALUE,		"GL_DEPTH_CLEAR_VALUE", 1);
+	GlDump_GetFloatv(GL_DEPTH_FUNC,				"GL_DEPTH_FUNC", 1);
+	GlDump_GetFloatv(GL_DEPTH_SCALE,			"GL_DEPTH_SCALE", 1);
+	GlDump_GetFloatv(GL_DRAW_BUFFER,			"GL_DRAW_BUFFER", 1);
+	GlDump_GetFloatv(GL_FRONT_FACE,				"GL_FRONT_FACE", 1);
+	GlDump_GetFloatv(GL_INDEX_BITS,				"GL_INDEX_BITS", 1);
+	GlDump_GetFloatv(GL_INDEX_CLEAR_VALUE,		"GL_INDEX_CLEAR_VALUE", 1);
+	GlDump_GetFloatv(GL_LINE_WIDTH,				"GL_LINE_WIDTH", 1);
+	GlDump_GetFloatv(GL_LIST_BASE,				"GL_LIST_BASE", 1);
+	GlDump_GetFloatv(GL_LIST_INDEX,				"GL_LIST_INDEX", 1);
+	GlDump_GetFloatv(GL_LIST_MODE,				"GL_LIST_MODE", 1);
+	GlDump_GetFloatv(GL_TEXTURE_ENV_MODE,		"GL_TEXTURE_ENV_MODE", 1);
+	GlDump_GetFloatv(GL_TEXTURE_ENV_COLOR,		"GL_TEXTURE_ENV_COLOR", 4);
+	GlDump_GetFloatv(GL_COLOR_WRITEMASK,		"GL_COLOR_WRITEMASK", 1);
+	GlDump_GetFloatv(GL_CURRENT_COLOR,			"GL_CURRENT_COLOR", 1);
+	GlDump_GetFloatv(GL_CURRENT_RASTER_COLOR,	"GL_CURRENT_RASTER_COLOR", 1);
+	GlDump_GetFloatv(GL_CURRENT_RASTER_POSITION, "GL_CURRENT_RASTER_POSITION", 1);
+	GlDump_GetFloatv(GL_CURRENT_RASTER_TEXTURE_COORDS, "GL_CURRENT_RASTER_TEXTURE_COORDS", 1);
+	GlDump_GetFloatv(GL_CURRENT_TEXTURE_COORDS, "GL_CURRENT_TEXTURE_COORDS", 1);
+	GlDump_GetFloatv(GL_LIGHT_MODEL_AMBIENT,	"GL_LIGHT_MODEL_AMBIENT", 1);
+	GlDump_GetFloatv(GL_DEPTH_RANGE,			"GL_DEPTH_RANGE", 2);
+	GlDump_GetFloatv(GL_VIEWPORT,				"GL_VIEWPORT", 4);
+
+	GlDump_GetFloatv(GL_ALPHA_BITS,				"GL_ALPHA_BITS", 1);
+	GlDump_GetFloatv(GL_RED_BITS,				"GL_RED_BITS", 1);
+	GlDump_GetFloatv(GL_GREEN_BITS,				"GL_GREEN_BITS", 1);
+	GlDump_GetFloatv(GL_BLUE_BITS,				"GL_BLUE_BITS", 1);
+	GlDump_GetFloatv(GL_DEPTH_BITS,				"GL_DEPTH_BITS", 1);
+
+	cout << "PixelTransfer:" << endl;
+	GlDump_GetFloatv(GL_ALPHA_BIAS,				"GL_ALPHA_BIAS", 1);
+	GlDump_GetFloatv(GL_ALPHA_SCALE,			"GL_ALPHA_SCALE", 1);
+	GlDump_GetFloatv(GL_RED_BIAS,				"GL_RED_BIAS", 1);
+	GlDump_GetFloatv(GL_RED_SCALE,				"GL_RED_SCALE", 1);
+	GlDump_GetFloatv(GL_BLUE_BIAS,				"GL_BLUE_BIAS", 1);
+	GlDump_GetFloatv(GL_BLUE_SCALE,				"GL_BLUE_SCALE", 1);
+	GlDump_GetFloatv(GL_GREEN_BIAS,				"GL_GREEN_BIAS", 1);
+	GlDump_GetFloatv(GL_GREEN_SCALE,			"GL_GREEN_SCALE", 1);
+	GlDump_GetFloatv(GL_DEPTH_BIAS,				"GL_DEPTH_BIAS", 1);
+
+	cout << "Matrix:" << endl;
+	GlDump_GetFloatv(GL_MATRIX_MODE,			"GL_MATRIX_MODE", 1);
+	GlDump_GetFloatv(GL_PROJECTION_STACK_DEPTH, "GL_PROJECTION_STACK_DEPTH", 1);
+	GlDump_GetFloatv(GL_MODELVIEW_STACK_DEPTH,	"GL_MODELVIEW_STACK_DEPTH", 1);
+
+	cout << "Fog:" << endl;
+	GlDump_IsEnabled(GL_FOG , "GL_FOG");
+	GlDump_GetFloatv(GL_FOG_DENSITY,			"GL_FOG_DENSITY", 1);
+	GlDump_GetFloatv(GL_FOG_END,				"GL_FOG_END", 1);
+	GlDump_GetFloatv(GL_FOG_HINT,				"GL_FOG_HINT", 1);
+	GlDump_GetFloatv(GL_FOG_INDEX,				"GL_FOG_INDEX", 1);
+	GlDump_GetFloatv(GL_FOG_MODE,				"GL_FOG_MODE", 1);
+	GlDump_GetFloatv(GL_FOG_START,				"GL_FOG_START", 1);
+	GlDump_GetFloatv(GL_FOG_COLOR,				"GL_FOG_COLOR", 4);
+
+	cout << "Limits:" << endl;
+	GlDump_GetFloatv(GL_MAX_TEXTURE_SIZE,		"GL_MAX_TEXTURE_SIZE", 1);
+
+//	glGetFloatv(XXX, afValues);			cout << "XXX: " << afValues[0] << endl;
+//	glGetFloatv(XXX, afValues);		cout << "XXX: " << afValues[0] <<"," << afValues[1] << "," << afValues[2] << "," << afValues[3] << endl;
+
+}
+
+
 RENDER_API char* GetOpenGLErrorName(GLenum id )
 {
 	switch(id) 
@@ -318,16 +481,16 @@ RENDER_API char* GetOpenGLErrorName(GLenum id )
 		case GL_NO_ERROR:			return "GL_NO_ERROR";				break;
 		case GL_INVALID_ENUM:		return "GL_INVALID_ENUM ";			break;
 		case GL_INVALID_VALUE :		return "GL_INVALID_VALUE ";			break;
-		case GL_INVALID_OPERATION:	return "GL_INVALID_OPERATION";			break;
-		case GL_STACK_OVERFLOW :	return "GL_STACK_OVERFLOW ";			break;
-		case GL_STACK_UNDERFLOW :	return "GL_STACK_UNDERFLOW ";			break;
+		case GL_INVALID_OPERATION:	return "GL_INVALID_OPERATION";		break;
+		case GL_STACK_OVERFLOW :	return "GL_STACK_OVERFLOW ";		break;
+		case GL_STACK_UNDERFLOW :	return "GL_STACK_UNDERFLOW ";		break;
 		case GL_OUT_OF_MEMORY :		return "GL_OUT_OF_MEMORY ";			break;
 		//case XXX:		return "XXX";			break;
 	}
 
 	return "*** --- ***";
 }
-*/
+
 
 
 
