@@ -201,6 +201,8 @@ void P_Mad::PackTo(NetPacket* pkNetPacket, int iConnectionID )
 	pkNetPacket->Write( iActiveAnimation );
 	pkNetPacket->Write( m_iNextAnimation );
 	pkNetPacket->Write( m_kOffset );
+	pkNetPacket->Write( m_iShadowGroup );
+	
 	
 	unsigned char ucNumOfMesh = m_kActiveMesh.size();
 	int iMesh;
@@ -232,7 +234,8 @@ void P_Mad::PackFrom(NetPacket* pkNetPacket, int iConnectionID )
 	pkNetPacket->Read( iNewNextAnim );	
 	Mad_Modell::SetNextAnimation(iNewNextAnim);
 
-	pkNetPacket->Read( m_kOffset );	
+	pkNetPacket->Read( m_kOffset );
+	pkNetPacket->Read( m_iShadowGroup );
 	
 	unsigned char ucNumOfMesh;
 	int iMesh;
