@@ -10,6 +10,17 @@ bool ZShader::StartUp()
  	m_pkTexMan	= static_cast<TextureManager*>(GetSystem().GetObjectPtr("TextureManager"));
  	m_pkLight	= static_cast<Light*>(GetSystem().GetObjectPtr("Light")); 		
 			
+	//check if we have arb_vertex_program support
+	if(HaveVertexProgramExt())
+		m_bVertexProgram = true;
+	else
+	{
+		cout<<"ARB Vertex program not supported"<<endl;
+		m_bVertexProgram = false;
+	}		
+			
+			
+			
 	return true;
 } 
 
@@ -578,24 +589,9 @@ void ZShader::Draw()
 	//go trough all passes of material
 	for(int i=0;i<m_pkCurentMaterial->GetNrOfPasses();i++)
 	{	
-		/*
-		if(!m_pkCurentMaterial->GetPass(i))
-			cout<<"HORA"<<endl;*/
-/*		cout<<"pass: "<<i<<endl;
-		ResTexture*  bla = (ResTexture*)m_pkCurentMaterial->GetPass(i)->m_kTUs[0].GetResourcePtr();
-		if(bla)
-			cout<<"tu0: "<<bla->strTextureName<<endl;
-		
-		if(m_pkCurentMaterial->GetPass(i)->m_bLighting)
-			cout<<"lighting is enabled:"<<endl;
-		else
-			cout<<"no light"<<endl;
-		*/
-
 		glPushAttrib(GL_ALL_ATTRIB_BITS);
 		
 		SetupRenderStates(m_pkCurentMaterial->GetPass(i));		
-		
 		
 		if(m_pkIndexPointer)
 			glDrawElements(m_iDrawMode,m_iNrOfIndexes,GL_UNSIGNED_INT,m_pkIndexPointer);
@@ -610,7 +606,18 @@ void ZShader::Draw()
 	
 	
 	glPopMatrix();
-	
+
 }
 
+
+bool ZShader::HaveVertexProgramExt()
+{
+	unsigned char* pcExt1 = const_cast<unsigned char*>(glGetString(GL_EXTENSIONS));		
+
+
+	printf("Extensions: %s \n",pcExt1);
+	//strcmp("
+	
+	return true;
+}
 

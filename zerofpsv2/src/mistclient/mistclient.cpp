@@ -45,7 +45,6 @@ void MistClient::OnInit()
 
 void MistClient::Init()
 {	
-
 	//register commmands bös
 	Register_Cmd("load",FID_LOAD);		
 	Register_Cmd("unload",FID_UNLOAD);			
@@ -66,17 +65,24 @@ void MistClient::Init()
 	m_pkMap2 = new Heightmap2(/*"HeightMap"*/);
 	m_pkMap2->CreateHMFromImage("/data/textures/hmap.tga");
 
+
+
 	// set caption
 	SDL_WM_SetCaption("Mistland", NULL);
+	
+	cout<<"blahop 1"<<endl;
 	
 	// create gui script
 	GuiAppLua::Init(&g_kMistClient, GetScript());
 
+	cout<<"blahop 2"<<endl;
 	// init gui
 	InitializeGui(pkGui, pkTexMan, pkScript, pkGuiMan);
 
+	cout<<"blahop 3"<<endl;
 	// hide cursor
 	SDL_ShowCursor(SDL_DISABLE);
+
 
 }
 
@@ -103,7 +109,6 @@ void MistClient::RegisterPropertys()
 
 void MistClient::OnIdle() 
 {
-		
 	pkFps->SetCamera(m_pkCamera);		
 	pkFps->GetCam()->ClearViewPort();	
 			
@@ -130,8 +135,6 @@ void MistClient::OnSystem()
 	if(pkFps->m_bClientMode && !pkFps->m_bServerMode)
 	{
 		GetSystem().Logf("net","??? m_iSelfObjectID %d\n", m_iSelfObjectID);
-
-
 
 
 		//try to get self id
@@ -279,25 +282,6 @@ void MistClient::RunCommand(int cmdid, const CmdArgument* kCommand)
 		case FID_UNLOAD:
 			break;
 	
-		case FID_MASSSPAWN:
-			for(i=0; i < 1;i++) {
-			}
-
-
-			
-/*		for(int i=0; i<5; i++) {
-			m_pkZeroTankTrack = pkObjectMan->CreateObjectByArchType("TrackObject");
-			if(m_pkZeroTankTrack) {
-				int iRandZone =  rand() % pkObjectMan->GetNumOfZones();
-				m_pkZeroTankTrack->SetWorldPosV( pkObjectMan->GetZoneCenter(iRandZone) );
-				m_pkZeroTankTrack->AttachToClosestZone();
-				pkObjectMan->AddTracker(m_pkZeroTankTrack);
-
-			}
-		}*/
-			break;
-
-
 	}
 }
 
@@ -308,8 +292,6 @@ void MistClient::ClientInit()
 	cout<<"Client Join granted"<<endl;
 
 
-	cout<<"Mapsize is :"<<endl;
-	
 	cout<<"Join Complete"<<endl;
 }
 
@@ -322,10 +304,6 @@ void MistClient::OnServerClientJoin(ZFClient* pkClient,int iConID)
 	pkClient->m_pkObject->AddProperty("TrackProperty");	
 	pkObjectMan->AddTracker(pkClient->m_pkObject);
 	
-	//setup client input
-	pkClient->m_pkObject->AddProperty("P_ClientInput");
-
-
 }
 
 void MistClient::OnServerClientPart(ZFClient* pkClient,int iConID)
@@ -355,18 +333,7 @@ void MistClient::OnServerStart(void)
 	if(pkObjectMan->GetNumOfZones() != 0) {
 		pkConsole->Printf("Num of Zones: %d",pkObjectMan->GetNumOfZones());
 
-/*		for(int i=0; i<5; i++) {
-			m_pkZeroTankTrack = pkObjectMan->CreateObjectByArchType("TrackObject");
-			if(m_pkZeroTankTrack) {
-				int iRandZone =  rand() % pkObjectMan->GetNumOfZones();
-				m_pkZeroTankTrack->SetWorldPosV( pkObjectMan->GetZoneCenter(iRandZone) );
-				m_pkZeroTankTrack->AttachToClosestZone();
-				pkObjectMan->AddTracker(m_pkZeroTankTrack);
 
-			}
-		}*/
-
-	
 	}
 
 

@@ -51,7 +51,6 @@ ZeroFps::ZeroFps(void) : I_ZeroFps("ZeroFps")
 	m_pkScript					= new ZFScript;
 
 	// Set Default values
-	m_iFullScreen				= 0;
 	m_fFrameTime				= 0;
 	m_fLastFrameTime			= 0;
 	m_fSystemUpdateFps		= 25;
@@ -64,22 +63,13 @@ ZeroFps::ZeroFps(void) : I_ZeroFps("ZeroFps")
 	g_iMadLODLock				= 0;
 	m_pkCamera					= NULL;
 	m_bRunWorldSim				= true;
-	m_bCapture					= false;
 	g_iLogRenderPropertys	= 0;
 	m_fAvrageFpsTime			= 0;
 	m_iAvrageFrameCount		= 0;
 	m_iRenderOn					= 1;
 
-	// The default graphics mode.
-	m_iWidth						= 640;
-	m_iHeight					= 480;
-	m_iDepth						= 16;
 
 	// Register Commands
-	RegisterVariable("r_width",			&m_iWidth,CSYS_INT);
-	RegisterVariable("r_height",			&m_iHeight,CSYS_INT);
-	RegisterVariable("r_depth",			&m_iDepth,CSYS_INT);
-	RegisterVariable("r_fullscreen",		&m_iFullScreen,CSYS_INT);
 	RegisterVariable("r_maddraw",			&m_iMadDraw,CSYS_INT);
 	RegisterVariable("r_madlod",			&g_fMadLODScale,CSYS_FLOAT);
 	RegisterVariable("r_madlodlock",		&g_iMadLODLock,CSYS_FLOAT);
@@ -133,6 +123,7 @@ ZeroFps::~ZeroFps()
 	delete m_pkBasicFS;
 	delete m_pkPhysics_Engine;
 	delete m_pkResourceDB;		//d krashar om denna ligger där uppe =(, Dvoid
+	delete m_pkZShader;
 }
 
 bool ZeroFps::StartUp()	
@@ -165,6 +156,7 @@ bool ZeroFps::StartUp()
 	m_kFpsGraph.SetSize(100,100,100);
 
 //	m_pkObjectMan->Test_CreateZones();
+
 	return true;
 }
 
@@ -221,11 +213,11 @@ bool ZeroFps::Init(int iNrOfArgs, char** paArgs)
 
 	m_iState=state_normal;									// init gamestate to normal		
 
-
 	m_pkApp->OnInit();										// call the applications oninit funktion
 	
 	m_fFrameTime=0;
 	m_fLastFrameTime = SDL_GetTicks();
+
 
 	return true;
 }
@@ -497,68 +489,22 @@ void ZeroFps::RemoveRenderTarget(Camera* pkCamera)
 
 void ZeroFps::InitDisplay(int iWidth,int iHeight,int iDepth) 
 {
-	// Anything sent from app overrides default and ini files.
-	if(iWidth || iHeight || iDepth) {
-		m_iWidth	= iWidth;
-		m_iHeight= iHeight;
-		m_iDepth	= iDepth;
-		}
+	m_pkRender->InitDisplay(iWidth,iHeight,iDepth);
 
 	// Must call set res again or else GUI doesnt work..
-	m_pkGui->SetRes(m_iWidth, m_iHeight);
+	m_pkGui->SetRes(m_pkRender->GetWidth(), m_pkRender->GetHeight());
 
-	SetDisplay();
+	m_pkApp->m_iWidth = m_pkRender->GetWidth();
+	m_pkApp->m_iHeight = m_pkRender->GetHeight();
 
-	// Set w and h for appliction
-	m_pkApp->m_iWidth = m_iWidth;
-	m_pkApp->m_iHeight = m_iHeight;
-
-#ifdef _WIN32
-	RenderDLL_InitExtGL();
-	extgl_Initialize();
-#endif
-
-	//setup some opengl stuff =)
-	glEnable(GL_TEXTURE_2D);
-	glEnable(GL_DEPTH_TEST);
-	glEnable(GL_NORMALIZE);	
-	glEnable(GL_CULL_FACE);
-	glEnable(GL_SCISSOR_TEST);
-
-	glShadeModel(GL_SMOOTH);
-	glClearColor(0, 0, 0, 0);
-	glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
-	glMatrixMode(GL_MODELVIEW);
-  
-	SDL_GL_SetAttribute( SDL_GL_RED_SIZE, 5 );
-	SDL_GL_SetAttribute( SDL_GL_GREEN_SIZE, 5 );
-	SDL_GL_SetAttribute( SDL_GL_BLUE_SIZE, 5 );
-	SDL_GL_SetAttribute( SDL_GL_DEPTH_SIZE, 16 );
-	SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1 );
-	
-//	m_pkDefaultCamera=new Camera(Vector3(0,0,0),Vector3(0,0,0),90,1.333,0.25,250);
 	m_pkConsoleCamera=new Camera(Vector3(0,0,0),Vector3(0,0,0),84,1.333,0.3,250);	
-  
-	glMatrixMode(GL_MODELVIEW);
-
-	
-	glEnableClientState(GL_VERTEX_ARRAY);
-	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-	glEnableClientState(GL_NORMAL_ARRAY);
 }
 
 void ZeroFps::Swap(void) {
 	DrawDevStrings();
 
-	SDL_GL_SwapBuffers();  //guess
+	m_pkRender->Swap();
 
-	if(m_bCapture) {
-		m_bCapture = false;
-		m_pkRender->CaptureScreenShoot(m_iWidth, m_iHeight);
-		}
-
-	glLoadIdentity();
-  
 	//count FPS
 	m_fFrameTime=SDL_GetTicks()-m_fLastFrameTime;
 	m_fLastFrameTime=SDL_GetTicks();
@@ -582,14 +528,15 @@ void ZeroFps::Swap(void) {
 //		m_iState = state_exit;
 
 #endif
-	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);	
+
+
 
 }
 
 
 void ZeroFps::ToggleFullScreen(void)
 {
-	SDL_WM_ToggleFullScreen(m_pkScreen);
+	m_pkRender->ToggleFullScreen();
 }
 
 void ZeroFps::ToggleGui(void)
@@ -609,33 +556,18 @@ void ZeroFps::ToggleGui(void)
 
 void ZeroFps::SetDisplay(int iWidth,int iHeight,int iDepth)
 {
-	m_iWidth=iWidth;
-	m_iHeight=iHeight;
-	m_iDepth=iDepth;
+	m_pkRender->SetDisplay(iWidth,iHeight,iDepth);
 
-	SetDisplay();
 }
 
 
 void ZeroFps::SetDisplay()
 {
-	m_pkTexMan->ClearAll();
+	DrawDevStrings();
 
-	//turn of opengl 
-	SDL_QuitSubSystem(SDL_OPENGL);
+	m_pkRender->SetDisplay();
 
-	
-	//reinit opengl with the new configuration
-	SDL_InitSubSystem(SDL_OPENGL);
-
-	if(m_iFullScreen > 0)
-		m_pkScreen= SDL_SetVideoMode(m_iWidth,m_iHeight,m_iDepth,SDL_OPENGL|SDL_FULLSCREEN);	
-	else
-		m_pkScreen= SDL_SetVideoMode(m_iWidth,m_iHeight,m_iDepth,SDL_OPENGL);
-
-	glViewport(0, 0,m_iWidth,m_iHeight);
-	
-	if(m_pkGuiRenderer->SetDisplay(m_iWidth,m_iHeight) == false)
+	if(m_pkGuiRenderer->SetDisplay(m_pkRender->GetWidth(),m_pkRender->GetHeight()) == false)
 	{
 		printf("Failed to set GUI display!\n");
 	}
@@ -648,7 +580,7 @@ void ZeroFps::SetCamera(Camera* pkCamera)
 	m_pkCamera=pkCamera;		
 	
 	//call updateall so that the camera updates viewport and realoads projectionmatrix
-	m_pkCamera->UpdateAll(m_iWidth,m_iHeight);
+	m_pkCamera->UpdateAll(m_pkRender->GetWidth(),m_pkRender->GetHeight());
 	
 	UpdateCamera();
 }
@@ -656,7 +588,8 @@ void ZeroFps::SetCamera(Camera* pkCamera)
 void ZeroFps::UpdateCamera()
 {
 	//update camera
-	m_pkCamera->Update(m_iWidth,m_iHeight);
+//	m_pkCamera->Update(m_pkRender->GetWidth()m_iWidth,m_iHeight);
+	m_pkCamera->Update(m_pkRender->GetWidth(),m_pkRender->GetHeight());
 	
 	//get the frustrum for frustum culling
 	//m_pkFrustum->GetFrustum();				
@@ -929,7 +862,7 @@ void ZeroFps::RunCommand(int cmdid, const CmdArgument* kCommand)
 				page->m_bVisible = false;
 			break;
 
-		case FID_SCREENSHOOT:	m_bCapture = true;	break;
+		case FID_SCREENSHOOT:	m_pkRender->ScreenShot();	break;
 
 /*			
 		case FID_SENDMESSAGE:

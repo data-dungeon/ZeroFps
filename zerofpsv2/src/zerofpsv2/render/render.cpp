@@ -19,7 +19,14 @@ Render::Render()
 	m_iScreenShootNum			= 0;
 	m_iHmTempList				= 0;
 	m_kConsoleColor.Set(1,1,1);
+	m_bCapture					= false;
 
+	// The default graphics mode.
+	m_iWidth						= 640;
+	m_iHeight					= 480;
+	m_iDepth						= 16;
+	m_iFullScreen				= 0;
+	
 	// Register Our Own variables.
 	RegisterVariable("r_maxlayers",		&m_iMaxLandscapeLayers,CSYS_INT);
 	RegisterVariable("r_drawland",		&m_iDrawLandscape,CSYS_INT);
@@ -28,10 +35,16 @@ Render::Render()
 	RegisterVariable("r_autolod",			&m_iAutoLod,CSYS_INT);
 	RegisterVariable("r_fpslock",			&m_iFpsLock,CSYS_INT);
 
+	// Register Commands
+	RegisterVariable("r_width",			&m_iWidth,CSYS_INT);
+	RegisterVariable("r_height",			&m_iHeight,CSYS_INT);
+	RegisterVariable("r_depth",			&m_iDepth,CSYS_INT);
+	RegisterVariable("r_fullscreen",		&m_iFullScreen,CSYS_INT);
 
 	// Register Our Own commands.
 	Register_Cmd("glinfo",FID_GLINFO);	
 	Register_Cmd("ccolor",FID_CONSOLECOLOR);	
+	
 	
 }
 
@@ -44,8 +57,112 @@ bool Render::StartUp()
  	m_pkZShader = static_cast<ZShader*>(GetSystem().GetObjectPtr("ZShader")); 	 	
  	m_pkConsole = static_cast<BasicConsole*>(GetSystem().GetObjectPtr("Console")); 	 	
 
+
 	return true;
 }
+
+void Render::InitDisplay(int iWidth,int iHeight,int iDepth) 
+{
+	// Anything sent from app overrides default and ini files.
+	if(iWidth || iHeight || iDepth) {
+		m_iWidth	= iWidth;
+		m_iHeight= iHeight;
+		m_iDepth	= iDepth;
+		}
+
+
+	SetDisplay();
+
+	// Set w and h for appliction
+	//m_pkApp->m_iWidth = m_iWidth;
+	//m_pkApp->m_iHeight = m_iHeight;
+
+#ifdef _WIN32
+	RenderDLL_InitExtGL();
+	extgl_Initialize();
+#endif
+
+	//setup some opengl stuff =)
+	glEnable(GL_TEXTURE_2D);
+	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_NORMALIZE);	
+	glEnable(GL_CULL_FACE);
+	glEnable(GL_SCISSOR_TEST);
+
+	glShadeModel(GL_SMOOTH);
+	glClearColor(0, 0, 0, 0);
+	glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
+	glMatrixMode(GL_MODELVIEW);
+  
+	SDL_GL_SetAttribute( SDL_GL_RED_SIZE, 5 );
+	SDL_GL_SetAttribute( SDL_GL_GREEN_SIZE, 5 );
+	SDL_GL_SetAttribute( SDL_GL_BLUE_SIZE, 5 );
+	SDL_GL_SetAttribute( SDL_GL_DEPTH_SIZE, 16 );
+	SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1 );
+	
+	//m_pkDefaultCamera=new Camera(Vector3(0,0,0),Vector3(0,0,0),90,1.333,0.25,250);
+	//m_pkConsoleCamera=new Camera(Vector3(0,0,0),Vector3(0,0,0),84,1.333,0.3,250);	
+  
+	glMatrixMode(GL_MODELVIEW);
+
+	
+	glEnableClientState(GL_VERTEX_ARRAY);
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+	glEnableClientState(GL_NORMAL_ARRAY);
+}
+
+void Render::ToggleFullScreen(void)
+{
+	SDL_WM_ToggleFullScreen(m_pkScreen);
+}
+
+void Render::SetDisplay(int iWidth,int iHeight,int iDepth)
+{
+	m_iWidth=iWidth;
+	m_iHeight=iHeight;
+	m_iDepth=iDepth;
+
+	SetDisplay();
+}
+
+
+void Render::SetDisplay()
+{
+	m_pkTexMan->ClearAll();
+
+	//turn of opengl 
+	SDL_QuitSubSystem(SDL_OPENGL);
+
+	
+	//reinit opengl with the new configuration
+	SDL_InitSubSystem(SDL_OPENGL);
+
+//	m_pkScreen= SDL_SetVideoMode(800,600,16,SDL_OPENGL);
+	if(m_iFullScreen > 0)
+		m_pkScreen= SDL_SetVideoMode(m_iWidth,m_iHeight,m_iDepth,SDL_OPENGL|SDL_FULLSCREEN);	
+	else
+		m_pkScreen= SDL_SetVideoMode(m_iWidth,m_iHeight,m_iDepth,SDL_OPENGL);
+
+
+	glViewport(0, 0,m_iWidth,m_iHeight);
+	
+}
+
+void Render::Swap(void) {
+	SDL_GL_SwapBuffers();  //guess
+
+	if(m_bCapture) {
+		m_bCapture = false;
+		CaptureScreenShoot(m_iWidth, m_iHeight);
+		}
+
+	glLoadIdentity();
+	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);	
+
+}
+
+
+
 
 void Render::Sphere(Vector3 kPos,float fRadius,int iRes,Vector3 kColor,bool bSolid)
 {

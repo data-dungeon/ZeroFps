@@ -148,7 +148,8 @@ class RENDER_API ZShader : public ZFSubSystem
 		//did we copy the data?
 		bool			m_bCopyedData;
 	
-	
+		//do we have vertex program support
+		bool			m_bVertexProgram;
 	
 		//this enable/diable client states if pointers have been set
 		void SetupClientStates();			
@@ -169,6 +170,8 @@ class RENDER_API ZShader : public ZFSubSystem
 		//effects
 		void RandomVertexMovements();
 		void Waves();		
+	
+		bool HaveVertexProgramExt();
 	
 	public:
 		ZShader();

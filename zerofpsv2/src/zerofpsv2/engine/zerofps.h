@@ -109,7 +109,7 @@ class ENGINE_API ZeroFps : public I_ZeroFps {
 			FID_SCREENSHOOT,
 		};
 		
-		SDL_Surface* m_pkScreen;		
+
 		bool		m_bDevPagesVisible;
 		
 		float 		m_fLastFrameTime;
@@ -118,11 +118,11 @@ class ENGINE_API ZeroFps : public I_ZeroFps {
 		DebugGraph	m_kFpsGraph;
 
 		
-
+/*		SDL_Surface* m_pkScreen;
 		int		m_iWidth,m_iHeight,m_iDepth;
 		int		m_iFullScreen;
 		bool  	m_bCapture;							// True if we should capture this frame
-
+*/
 		float 	m_fSystemUpdateFps;
 		float 	m_fSystemUpdateTime;
 		float 	m_fGameTime;
@@ -245,9 +245,9 @@ class ENGINE_API ZeroFps : public I_ZeroFps {
 		void SetRenderTarget(Camera* pkCamera);
 		void RemoveRenderTarget(Camera* pkCamera);
 		
-		int GetWidth(){return m_iWidth;}
-		int GetHeight(){return m_iHeight;};		
-		int GetDepth(){return m_iDepth;};		
+		int GetWidth(){return m_pkRender->GetWidth();}
+		int GetHeight(){return m_pkRender->GetHeight();};		
+		int GetDepth(){return m_pkRender->GetDepth();};		
 
 
 		// Called by network.

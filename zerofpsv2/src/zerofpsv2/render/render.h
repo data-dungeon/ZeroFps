@@ -49,7 +49,6 @@ class RENDER_API Render : public ZFSubSystem {
 			FID_CONSOLECOLOR,
 		};
 
-//		Frustum*				m_pkFrustum;
 		TextureManager*	m_pkTexMan;
 		Light*				m_pkLight;
 		ZShader*				m_pkZShader;
@@ -68,7 +67,10 @@ class RENDER_API Render : public ZFSubSystem {
 
 		int			m_iScreenShootNum;
 		
-//		ZFResourceHandle	m_kConsoleText;
+		SDL_Surface* m_pkScreen;			
+		int			m_iWidth,m_iHeight,m_iDepth;
+		int			m_iFullScreen;
+		bool  		m_bCapture;							
 		
 		void		GlInfo();						// Print info about opengl driver to console.
 		
@@ -90,7 +92,20 @@ class RENDER_API Render : public ZFSubSystem {
 		bool IsValid()		{ return true;	}
 		Render();
 
+		//display functions		
+		void InitDisplay(int iWidth,int iHeight,int iDepth);		
+		void SetDisplay(int iWidth,int iHeight,int iDepth);
+		void SetDisplay();
+		void Swap(void);			
+		void ToggleFullScreen(void);
+		void ScreenShot() { m_bCapture = true;};
+		
+		int GetWidth(){return m_iWidth;}
+		int GetHeight(){return m_iHeight;};		
+		int GetDepth(){return m_iDepth;};		
+
 		TextureManager* GetTexMangager()		{	return m_pkTexMan; }		///< Get ptr to texture manger.
+		
 		
 		
 		void Quad(Vector3 kPos,Vector3 kHead,Vector3 kScale,int iTexture);
