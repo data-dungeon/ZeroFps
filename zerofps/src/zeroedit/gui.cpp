@@ -111,14 +111,8 @@ bool Gui::WndProc( ZGuiWnd* pkWindow, unsigned int uiMessage,
 		break;
 
 	case ZGM_KEYDOWN:
-		if( ((int*)pkParams)[0] == KEY_SPACE)
-			m_pkEdit->pkGuiMan->Wnd("TestWnd")->Show();
-
-		if( ((int*)pkParams)[0] == KEY_L)
-		{
-			ZGuiTextbox* tp = (ZGuiTextbox*) m_pkEdit->pkGuiMan->Wnd("TestTextBox");
-			printf("antal rader = %i\n", tp->GetNumRows());
-		}
+/*		if( ((int*)pkParams)[0] == KEY_SPACE)
+			m_pkEdit->pkGuiMan->Wnd("TestWnd")->Show();*/
 		break;
 
 	case ZGM_CBN_SELENDOK:

@@ -38,8 +38,7 @@ public:
 private:
 	void MoveDownOneRow();
 	void MoveUpOneRow();
-	vector<int> m_kRowOffsets;
-	int m_iRenderDistFromTop;
+	
 	bool UpdateScrollbar();
 	pair<int,int> GetWordLength(char *text, int offset, int max_width);
 	int GetNumRows(char* szText);
@@ -47,19 +46,22 @@ private:
 	void ScrollText(ZGuiScrollbar* pkScrollbar);
 	void ScrollText(int row);
 	void ResizeTextBuffer( int nCharacters );
+	
+	vector<int> m_kRowOffsets;
+	
+	bool m_bMultiLine;
 	bool m_bBlinkCursor;
-	bool m_bSingleLine;
 	bool m_bScrollbarUpdated;
-	int m_iCursorPos, m_iCurrMaxText;
-	int m_iFontSize;
-	int m_iMaxCharsOneRow;
-	int m_iMaxVisibleRows;
+	bool m_bTextFit;
+
+	int m_iCursorPos; 
+	int m_iCurrMaxText;
 	int m_iStartrow;
 	int m_iNumRows;
 	int m_iCursorRow;
+	int m_iRenderDistFromTop;
 
 	ZGuiScrollbar* m_pkScrollbarVertical;
-	bool m_bMultiLine;
 };
 
 #endif 

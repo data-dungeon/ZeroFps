@@ -544,7 +544,7 @@ bool GLGuiRender::PrintRows(char* text, Rect rc, int iCursorPos, int iRenderDist
 			y = m_iScreenHeight-rc.Top-m_pkFont->m_cCharCellSize -
 				ypos - iRenderDistFromTop;
 
-			//if(rc.Inside(x,y+2) || !bMultiLine)
+			if(rc.Inside(x,y+2) || !bMultiLine)
 				PrintWord(x, y, text, offset, kLength.first);
 
 			bool bRowBreak = false;
@@ -680,7 +680,6 @@ void GLGuiRender::PrintWord(int x, int y, char *szWord,
 {
 	for(int i=offset; i<offset+length; i++)
 	{
-
 		// Print cursor
 		if(i == m_iCursorPos)
 		{
@@ -709,7 +708,9 @@ void GLGuiRender::PrintWord(int x, int y, char *szWord,
 
 		int pos = szWord[i]-32;
 		if(pos < 0 || pos > 255)
+		{
 			continue;
+		}
 
 		if(szWord[i] == '\n')
 			return;
@@ -732,5 +733,31 @@ void GLGuiRender::PrintWord(int x, int y, char *szWord,
 		glTexCoord2f(tx,ty+th);		glVertex2i(x,y);
 
 		x+=iCurrLegth;
+	}
+
+	// Print cursor if last
+	if(i == m_iCursorPos)
+	{
+		int iCursorX = x;
+		int iCursorY = y;
+
+		int index = '|'-32;
+		int fx = m_pkFont->m_aChars[index].iPosX;
+		int fy = m_pkFont->m_aChars[index].iPosY;
+		int fw = m_pkFont->m_aChars[index].iSizeX;
+		int fh = m_pkFont->m_aChars[index].iSizeY;
+
+		float tx = (float) fx / m_pkFont->m_iBMPWidth;
+		float ty = (float) fy / m_pkFont->m_iBMPWidth;
+		float tw = (float) fw / m_pkFont->m_iBMPWidth;
+		float th = (float) fh / m_pkFont->m_iBMPWidth;
+
+		iCursorX -= 2;	// minska markörens xpos ytterligare 2 pixlar.
+						// som en kompensation för tecknets egen storlek.
+
+		glTexCoord2f(tx,ty);		glVertex2i(iCursorX,iCursorY+fh);		 
+		glTexCoord2f(tx+tw,ty);		glVertex2i(iCursorX+fw,iCursorY+fh);    
+		glTexCoord2f(tx+tw,ty+th);	glVertex2i(iCursorX+fw,iCursorY);    
+		glTexCoord2f(tx,ty+th);		glVertex2i(iCursorX,iCursorY);
 	}
 }

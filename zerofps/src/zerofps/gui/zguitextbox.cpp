@@ -32,18 +32,10 @@ ZGuiTextbox::ZGuiTextbox(Rect kArea, ZGuiWnd* pkParent, bool bVisible,
 	m_iCursorPos = 0;
 	m_bBlinkCursor = false;
 	m_iCurrMaxText = 0;
-	m_iFontSize = 12;
 
 	CreateInternalControls();
 
-	int Width = kArea.Width() - m_iFontSize;
-	int Height = kArea.Height() - 10;
-
-	m_iMaxCharsOneRow = 1; 
-	m_iMaxVisibleRows = Height / m_iFontSize;
-
-	if(m_iMaxVisibleRows < 1)
-		m_iMaxVisibleRows = 1;
+	m_bTextFit = true; 
 
 	SetWindowFlag(WF_CANHAVEFOCUS); // textboxar har focus by default
 
@@ -99,12 +91,12 @@ bool ZGuiTextbox::Render( ZGuiRender* pkRenderer )
 		m_iNumRows = iRows;
 
 		if(m_bMultiLine == false && iLetters < strlen(m_strText))
-			m_iMaxCharsOneRow = 0;
+			m_bTextFit = false;
 		else
-			m_iMaxCharsOneRow = 1;
+			m_bTextFit = true;
 	}
 
-	if(m_bMultiLine)
+	if(m_pkScrollbarVertical)
 		m_pkScrollbarVertical->Render(pkRenderer);
 
 	if(!m_bEnabled)
@@ -128,17 +120,6 @@ bool ZGuiTextbox::ProcessKBInput(int nKey)
 	if(nKey == KEY_RETURN && m_bMultiLine == true)
 	{
 		nKey = '\n';
-	}
-
-	if(nKey == KEY_SPACE)
-	{
-		printf("--------------\n");
-		for(int x=0; x<10; x++)
-		{
-			printf("%i\n", m_kRowOffsets[x]);
-		}
-		printf("--------------\n");
-		return true;
 	}
 
 	if( (nKey == KEY_DOWN && m_bMultiLine == true) ||
@@ -170,7 +151,9 @@ bool ZGuiTextbox::ProcessKBInput(int nKey)
 	if(nKey == KEY_LEFT)
 	{
 		if(m_iCursorPos > 0)
-			m_iCursorPos--;	
+			m_iCursorPos--;
+		else
+			return false;
 
 		int cursor_row = GetCursorRow();
 
@@ -186,6 +169,8 @@ bool ZGuiTextbox::ProcessKBInput(int nKey)
 	{
 		if((unsigned)m_iCursorPos < strlen(m_strText))
 			m_iCursorPos++;	
+		else
+			return false;
 
 		int cursor_row = GetCursorRow();
 
@@ -194,23 +179,28 @@ bool ZGuiTextbox::ProcessKBInput(int nKey)
 		if(y_pos >= GetScreenRect().Height()-m_pkFont->m_cCharCellSize)
 			ScrollText( cursor_row );
 
-		printf("%i\n", m_iCursorPos);
 		return true;
 	}
 
 	if(nKey == KEY_END && m_strText)
 	{
 		m_iCursorPos = strlen(m_strText);
-		unsigned int min,max,pos;
-		m_pkScrollbarVertical->GetScrollInfo(min,max,pos);
-		m_pkScrollbarVertical->SetScrollPos(max-1);
+		
+		if(m_pkScrollbarVertical)
+		{
+			unsigned int min,max,pos;
+			m_pkScrollbarVertical->GetScrollInfo(min,max,pos);
+			m_pkScrollbarVertical->SetScrollPos(max-1);
+		}
 		return true;
 	}
 
 	if(nKey == KEY_HOME)
 	{
 		m_iCursorPos = 0;
-		m_pkScrollbarVertical->SetScrollPos(0);
+
+		if(m_pkScrollbarVertical)
+			m_pkScrollbarVertical->SetScrollPos(0);
 		return true;
 	}
 
@@ -277,7 +267,7 @@ bool ZGuiTextbox::ProcessKBInput(int nKey)
 	if( uiSzLength >= m_iCurrMaxText-2 || uiSzLength == 0)
 		ResizeTextBuffer(10);
 
-	if(m_iMaxCharsOneRow == 1)
+	if(m_bTextFit == true)
 	{
 		if((unsigned)m_iCursorPos == strlen(m_strText))
 		{
@@ -294,36 +284,15 @@ bool ZGuiTextbox::ProcessKBInput(int nKey)
 		}
 	}
 
-	// Scroll scrollbar
-	if(m_bMultiLine == false)
+	int iRows = GetNumRows(m_strText);
+
+	if(iRows > 1 && m_bMultiLine == false && m_iCursorPos != 0)
 	{
-/*		if(m_iCursorPos > m_iMaxCharsOneRow)
-			m_iCursorPos = m_iMaxCharsOneRow;*/
-	}
-	else
-	if(m_pkScrollbarVertical)
-	{
-		int iCurrRow = m_iCursorPos / m_iMaxCharsOneRow;
-		if(iCurrRow >= m_iMaxVisibleRows-1)
-		{
-			m_iStartrow = iCurrRow;
-			if(m_iStartrow < 0)
-				m_iStartrow = 0;
-
-			Rect kRect = GetScreenRect();
-			kRect.Right -= m_pkScrollbarVertical->GetScreenRect().Width();
-			kRect.Top += 5;
-			kRect.Bottom -= 5;
-
-			int iMax = iCurrRow;
-			int iMin = 0;
-			int iElementSize = m_iFontSize * iMax;
-			int iEditboxSize = kRect.Height() - m_iFontSize; // lägg på lite extra för att 
-															 // slippa avrundingsfel...
-			float fThumbSize = (float) iEditboxSize / (float) iElementSize;
-
-			m_pkScrollbarVertical->SetScrollInfo(iMin,iMax,fThumbSize,iMax); 
-		}
+		// Remove last character put.
+		string strLazy = m_strText;
+		strLazy.erase(m_iCursorPos-1,1);
+		strcpy(m_strText, strLazy.c_str());
+		m_iCursorPos--;
 	}
 
 	// Send a message to the main winproc...
@@ -336,7 +305,9 @@ bool ZGuiTextbox::ProcessKBInput(int nKey)
 		delete[] piParams;
 	}
 	
-	return UpdateScrollbar();
+	UpdateScrollbar();
+
+	return true;
 }
 
 void ZGuiTextbox::SetFocus()
@@ -394,7 +365,12 @@ void ZGuiTextbox::SetFocus()
 
 void ZGuiTextbox::KillFocus()
 {
-	if(ZGuiWnd::m_pkWndClicked != m_pkScrollbarVertical->GetButton())
+	if(m_pkScrollbarVertical)
+	{
+		if(ZGuiWnd::m_pkWndClicked != m_pkScrollbarVertical->GetButton())
+			m_bBlinkCursor = false;
+	}
+	else
 		m_bBlinkCursor = false;
 
 /*	// Send a message to the main winproc...
@@ -541,6 +517,9 @@ bool ZGuiTextbox::Notify(ZGuiWnd* pkWnd, int iCode)
 
 void ZGuiTextbox::ScrollText(ZGuiScrollbar* pkScrollbar)
 {	
+	if(pkScrollbar == NULL)
+		return;
+
 	m_iStartrow = pkScrollbar->GetPos();
 	if(m_iStartrow < 0)
 		m_iStartrow = 0;
@@ -558,6 +537,9 @@ void ZGuiTextbox::ScrollText(ZGuiScrollbar* pkScrollbar)
 
 void ZGuiTextbox::ScrollText(int row)
 {	
+	if(m_pkScrollbarVertical == NULL)
+		return;
+
 	unsigned int min,max,pos;
 	m_pkScrollbarVertical->GetScrollInfo(min,max,pos);
 	float fPos = (float)(max-min) * ((float)row / m_iNumRows);
@@ -607,13 +589,13 @@ int ZGuiTextbox::GetNumRows(char* text)
 {
 	if(!m_pkFont)
 	{
-		printf("Can't get num rows because szTextbox have no font!\n");
+		//printf("Can't get num rows because szTextbox have no font!\n");
 		return -1;
 	}
 
 	if(text == NULL || strlen(text) < 1)
 	{
-		printf("Can't get num rows because string is bad!\n");
+		//printf("Can't get num rows because string is bad!\n");
 		return -1;
 	}
 
@@ -694,102 +676,6 @@ int ZGuiTextbox::GetNumRows(char* text)
 	return rows;
 }
 
-/*int ZGuiTextbox::GetNumRows(char* szText)
-{
-	if(!m_pkFont)
-	{
-		printf("Can't get num rows because textbox have no font!\n");
-		return -1;
-	}
-
-	if(szText == NULL || strlen(szText) < 1)
-	{
-		printf("Can't get num rows because string is bad!\n");
-		return -1;
-	}
-
-	int characters_totalt = strlen(szText);
-	int width = GetScreenRect().Width();
-	int xpos=0, ypos=0, row_height = m_pkFont->m_cCharCellSize;
-	int rows = 0, offset = 0, max_widht = width;
-
-	pair<int,int> kLength; // first = character, second = pixels.
-
-	static bool apa = true;
-
-	while(1) // antal ord
-	{
-		kLength = GetWordLength(szText, offset, max_widht);
-		
-		offset += kLength.first;
-		xpos += kLength.second;
-		
-		if(xpos >= width || szText[offset-1] == '\n')
-		{
-			// Registrera offset in i texten för första tecknet
-			// på varje rad.
-			rows++;
-
-			if(rows > m_kRowOffsets.size())
-				m_kRowOffsets.reserve(rows+100);
-
-			m_kRowOffsets[rows] = offset;
-
-			if(m_iCursorPos < m_kRowOffsets[rows] &&
-			   m_iCursorPos >= m_kRowOffsets[rows-1])
-			   m_iCursorRow = rows-1;
-
-			ypos += row_height;	
-
-			if(xpos >= width)
-			{
-				m_kRowOffsets[rows] -= kLength.first;
-			}
-			
-			if(szText[offset-1] != '\n')
-				xpos = kLength.second;
-			else
-				xpos = 0;
-		}
-
-		if(offset >= characters_totalt)
-			break;
-	}
-
-	printf("antal rader: %i\n", rows);
-
-	apa = false;
-
-	return rows;
-}*/
-
-/*pair<int,int> ZGuiTextbox::GetWordLength(char *text, int offset)
-{
-	int char_counter = 0;
-	int length_counter = 0;
-
-	int iLength = strlen(text);
-	for(int i=offset; i<iLength; i++)
-	{
-		int index = text[i];
-		if(index < 0 || index > 255)
-			continue;
-
-		if(text[i] != '\n')
-			length_counter += m_pkFont->m_aChars[index].iSizeX;
-
-		if(text[i] != ' ' && text[i] != '\n')
-			length_counter += m_pkFont->m_cPixelGapBetweenChars;
-
-		char_counter++;
-
-		if(text[i] == ' ' || text[i] == '\n')
-			break;
-	}
-
-	return pair<int,int>(char_counter, length_counter);
-}*/
-
 pair<int,int> ZGuiTextbox::GetWordLength(char *text, int offset, int max_width)
 {
 	int char_counter = 0;
@@ -853,17 +739,19 @@ bool ZGuiTextbox::IsMultiLine()
 
 bool ZGuiTextbox::UpdateScrollbar()
 {
-	if(m_bMultiLine == false)
+	if(m_bMultiLine == false || m_pkScrollbarVertical == NULL)
 		return true;
 
+	int max_visible_row;
+
 	if(m_pkFont != NULL)
-		m_iMaxVisibleRows = GetScreenRect().Height() / m_pkFont->m_cCharCellSize;
+		max_visible_row = GetScreenRect().Height() / m_pkFont->m_cCharCellSize;
 
 	int rows = GetNumRows();
 	if(rows == -1)
 		return false;
 
-	int rows_to_much = rows-m_iMaxVisibleRows;
+	int rows_to_much = rows-max_visible_row;
 
 	int iRows = rows;
 	
