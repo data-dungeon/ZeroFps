@@ -23,8 +23,6 @@ class Test :public Application {
 	Vector4 white_light;
 	Vector4 lmodel_ambient;
 
-	int fpsupdate;
-	char fps[20];
 	float speed;
 	int m_iGrass;
 	int m_iGrassVolyme;

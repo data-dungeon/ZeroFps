@@ -11,10 +11,13 @@ WalkerObject::WalkerObject() {
 
 	AddProperty("MadProperty");
 	MadProperty* madp = dynamic_cast<MadProperty*>(GetProperty("MadProperty"));
-/*	madp->SetBase(m_pkFps->GetMADPtr("../data/mad/golem.mad"));
-	madp->SetScale(0.01);
-	madp->bFlipFace = true;
-	madp->PlayAnimation(0,0);*/
+
+	/*	
+		madp->SetBase(m_pkFps->GetMADPtr("../data/mad/golem.mad"));
+		madp->SetScale(0.01);
+		madp->bFlipFace = true;
+		madp->PlayAnimation(0,0);
+	*/
 
 	int iRndMad = rand() % 4;
 	int iRndColor = rand() % 4;
@@ -50,7 +53,6 @@ WalkerObject::~WalkerObject()
 
 
 void WalkerObject::HandleCollision(Object* pkOther,Vector3 kPos,bool bContinue){
-	
 	//if a ball colides with the player destroy it
 	if(typeid(*pkOther)==typeid(HeightMapObject)){
 		HeightMapObject *kO=dynamic_cast<HeightMapObject*>(pkOther);

@@ -113,8 +113,8 @@ void Test::OnInit(void) {
 	Object *sussi;
 	for(i=0;i<500;i++) {
 		sussi=new BunnyObject();
-		float x=340 + rand()%10;
-		float y=780 + rand()%10;
+		float x=300 + rand()%100;
+		float y=750 + rand()%100;
 		sussi->GetPos()=Vector3(x,test->Height(x,y),y);
 		pkObjectMan->Add(sussi);
 		pkCollisionMan->Add(sussi);
