@@ -24,8 +24,7 @@ bool Container::AddObject ( int iAddToContainer )
 
       m_kContainedObjects.push_back ( iAddToContainer );
 
-      Entity *pkEntity = 
-         m_pkParent->GetObject()->m_pkObjectMan->GetObjectByNetWorkID ( iAddToContainer );
+      Entity *pkEntity = m_pkParent->GetObject()->m_pkObjectMan->GetObjectByNetWorkID ( iAddToContainer );
 
       // objects in containers doesn't need to be updated
       pkEntity->SetUpdateStatus (UPDATE_NONE);

@@ -129,8 +129,8 @@ void Mad_Modell::PlayAnimation(char* szName, float fStartTime)
 
 
 
-	if(iAnimNum == -1)
-		return;
+//	if(iAnimNum == -1)
+//		return;
 
 	iActiveAnimation	=	iAnimNum;
 	fCurrentTime		=	fStartTime;

@@ -779,7 +779,7 @@ void InventoryDlg::DropItems()
          kOrder.m_iCharacter = pkCC->m_iActiveCaracterObjectID;
          kOrder.m_iUseLess = 0;
 
-         RemoveSlot ( (it) );
+
 
          pkCC->AddOrder (kOrder);
       }

@@ -254,7 +254,7 @@ int ObjectManagerLua::PlayAnim(lua_State* pkLua)
 
 	Entity* o1 = g_pkObjMan->GetObjectByNetWorkID(iId1);
 	P_Mad* mp = dynamic_cast<P_Mad*>(o1->GetProperty("P_Mad"));
-	mp->PlayAnimation(acName,0);
+	mp->SetAnimation(acName,0);
 	
 	return 1;
 }

@@ -2,6 +2,7 @@
 #include "entity.h"
 #include "astar.h"
 #include "zerofps.h"
+#include "../engine_systems/propertys/p_mad.h"
 
 P_PfPath::P_PfPath()
 {
@@ -83,7 +84,25 @@ void P_PfPath::Update()
 		m_pkObject->SetWorldPosV(kGoal);
 		m_iNextGoal++;
 		if(m_iNextGoal == m_kPath.size()) 
+		{
 			m_kPath.clear();
+			
+			
+			//play idle
+			P_Mad* pm = (P_Mad*)m_pkObject->GetProperty("P_Mad");
+			if(pm)
+				pm->SetAnimation("idle",0);
+		}
+		else
+		{
+			//play run animation
+			P_Mad* pm = (P_Mad*)m_pkObject->GetProperty("P_Mad");
+			if(pm)
+				pm->SetAnimation("run",0);
+
+			
+
+		}
 
 		return;
 		}

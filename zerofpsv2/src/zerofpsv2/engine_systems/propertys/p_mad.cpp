@@ -97,6 +97,12 @@ void P_Mad::SetBase(const char* acName)
 	SetNetUpdateFlag(true);
 }
 
+void P_Mad::SetAnimation(char* szName, float fStartTime)
+{
+	PlayAnimation(szName,fStartTime);
+	SetNetUpdateFlag(true);	
+}
+
 void P_Mad::Save(ZFIoInterface* pkPackage)
 {	
 	char temp[128];

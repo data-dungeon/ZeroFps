@@ -44,6 +44,7 @@ class ENGINE_SYSTEMS_API P_Mad : public Property, public Mad_Modell {
 		bool	m_bCanBeInvisible;
 
 		void SetBase(const char* acName);
+		void SetAnimation(char* szName, float fStartTime);
 		void Update();
 
 		void Save(ZFIoInterface* pkPackage);

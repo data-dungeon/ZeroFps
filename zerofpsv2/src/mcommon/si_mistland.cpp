@@ -2574,6 +2574,7 @@ int MistLandLua::PutInContainerLua (lua_State* pkLua)
 // takes ObjectID (want a Entity with characterproperty with a container)
 int MistLandLua::GetPickedUpByLua (lua_State* pkLua)
 {
+	
 	if( g_pkScript->GetNumArgs(pkLua) == 1 )
 	{
       // the ID if the object who has the container
@@ -2581,7 +2582,10 @@ int MistLandLua::GetPickedUpByLua (lua_State* pkLua)
 
       g_pkScript->GetArgNumber(pkLua, 0, &dChar);
 
-      Entity* pkCharObj = g_pkObjMan->GetObjectByNetWorkID(dChar);
+      Entity* pkCharObj = g_pkObjMan->GetObjectByNetWorkID((int)dChar);
+      if(!pkCharObj)
+      	return 0;
+      
       
       /*
 

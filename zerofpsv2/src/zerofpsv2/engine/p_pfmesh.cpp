@@ -112,7 +112,8 @@ Vector3 NaviMeshCell::GetEdgeCenter(int iSide)
 P_PfMesh::P_PfMesh()
 {
 	strcpy(m_acName,"P_PfMesh");
-	m_iType = PROPERTY_TYPE_RENDER;
+//	m_iType = PROPERTY_TYPE_RENDER | PROPERTY_TYPE_NORMAL;
+	m_iType = PROPERTY_TYPE_NORMAL;
 	m_iSide = PROPERTY_SIDE_SERVER | PROPERTY_SIDE_CLIENT;
 
 	m_pkMad			= NULL;
@@ -132,7 +133,7 @@ void P_PfMesh::Update()
 			SetMad(m_pkMad);
 		}
 
-	DrawNaviMesh();
+//	DrawNaviMesh();
 }
 
 void P_PfMesh::Save(ZFIoInterface* pkFile)
