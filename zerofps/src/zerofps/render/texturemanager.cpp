@@ -32,7 +32,7 @@ SDL_Surface *TextureManager::LoadImage(char *acFilename) {
   int i, j;
 
 
-	image = SDL_LoadBMP(m_pkFile->File(acFilename));
+	image = IMG_Load(m_pkFile->File(acFilename));
     if ( image == NULL ) {
     //  fprintf(stderr, "Unable to load %s: %s\n", acFilename, SDL_GetError());
       return(NULL);

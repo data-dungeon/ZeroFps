@@ -101,7 +101,7 @@ void Primitives::PrintChar(char cChar) {
 	
 	
 	
-	glBlendFunc(GL_ONE,GL_ZERO); 		
+	glBlendFunc(GL_ONE,GL_ALPHA); 		
  	m_pkTexMan->BindTexture(aCurentFont);  
 
 	glPushMatrix();
