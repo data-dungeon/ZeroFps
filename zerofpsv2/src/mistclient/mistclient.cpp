@@ -1341,8 +1341,10 @@ void MistClient::UpdateCullObjects()
 	vector<Entity*> kEntitys;
 	pkObjectMan->TestLine(&kEntitys,kStart,kDir);
 	
+   int i;
+
 	//make all old objects visible again
-	for(int i =0;i<mads.size();i++)
+	for(i =0;i<mads.size();i++)
 	{
 		mads[i]->m_bIsVisible = true;
 	}
@@ -1351,7 +1353,7 @@ void MistClient::UpdateCullObjects()
 	mads.clear();
 	
 	//find objects to hide
-	for(int i=0;i<kEntitys.size();i++)
+	for(i=0;i<kEntitys.size();i++)
 	{
 		//kEntitys[i]->DeleteProperty("P_Mad");
 		P_Mad* pm = (P_Mad*)kEntitys[i]->GetProperty("P_Mad");
@@ -1374,7 +1376,7 @@ void MistClient::UpdateCullObjects()
 	
 	
 	
-	cout<<"Nrof object betwen camera and player:"<<mads.size()<<endl;
+//	cout<<"Nrof object betwen camera and player:"<<mads.size()<<endl;
 	
 	
 }

@@ -15,7 +15,7 @@ P_ClientControl::P_ClientControl()
 	
 	m_pkFps=static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
 
-	m_iMaxOrders = 4;
+	m_iMaxOrders = 1;
 
    m_iActiveCaracterObjectID = -1; // I guess -1 equals no character...// Zerom
 }
@@ -36,8 +36,8 @@ void P_ClientControl::PackTo( NetPacket* pkNetPacket, int iConnectionID  )
 	
 	pkNetPacket->Write(&iNrOO,sizeof(iNrOO));	
 
-	while(!m_kClientOrders.empty())
-	{
+   for ( int i = 0; i < iNrOO; i++ )
+   {
 		pkNetPacket->Write_Str(m_kClientOrders.front().m_sOrderName.c_str());		
 		pkNetPacket->Write(&m_kClientOrders.front().m_iObjectID,sizeof(m_kClientOrders.front().m_iObjectID));		
 		pkNetPacket->Write(&m_kClientOrders.front().m_iClientID,sizeof(m_kClientOrders.front().m_iClientID));				

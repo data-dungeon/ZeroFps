@@ -8,7 +8,7 @@
 Container::Container( Property* pkParent )
 {
    m_pkParent = pkParent;
-   m_iCapacity = 5;
+   m_iCapacity = 50;
 
    m_uiVersion = 0;
 }
@@ -100,9 +100,6 @@ void Container::GetAllItemsInContainer( vector<Entity*>* pkItemList )
 
          // get itemstats property
          P_Item *pkItem = (P_Item*)pkEntity->GetProperty("P_Item");
-
-         // request for a update at the same time
-         pkItem->RequestUpdateFromServer ("data");
 
          // add item to container list
          pkItemList->push_back ( pkEntity );

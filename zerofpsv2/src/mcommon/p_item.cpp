@@ -339,18 +339,18 @@ void P_Item::PackFrom(NetPacket* pkNetPacket, int iConnectionID )
       // clear container first, so we don't get double versions of the items
       m_pkItemStats->m_pkContainer->Clear();
 
-      // send itemIDs in container
+      // read itemIDs in container
       for ( int i = 0; i < iContSize; i++ )
       {
          pkNetPacket->Read( &iObjID, sizeof(int) );
          m_pkItemStats->m_pkContainer->AddObject ( iObjID );
+
+         // request for a update of the item at the same time
+         ((P_Item*)m_pkObjMan->GetObjectByNetWorkID( iObjID )->GetProperty("P_Item"))->RequestUpdateFromServer ("data");
       }
 
       // version
       pkNetPacket->Read( &m_pkItemStats->m_pkContainer->m_uiVersion, sizeof(unsigned int) );
-
-      // temp ful stuff
-      m_pkItemStats->m_pkContainer->m_uiVersion=1000;
 
       // if a container was requested for, update the given vector
       for ( list<WaitingFor>::iterator kIte = m_kWaitingForRequest.begin();
@@ -360,8 +360,6 @@ void P_Item::PackFrom(NetPacket* pkNetPacket, int iConnectionID )
          {
             m_pkItemStats->m_pkContainer->GetAllItemsInContainer(
                (vector<Entity*>*)(*kIte).m_pkData );
-
-            // we want to update all items in container also
 
             m_kWaitingForRequest.erase ( kIte++ );            
          }

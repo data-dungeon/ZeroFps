@@ -1232,14 +1232,14 @@ void MistServer::HandleOrders()
             if ( pkItProp )
             {
                // if the items is of the same version, no need to send data
-               //if ( pkItProp->m_pkItemStats->m_uiVersion != order->m_iFace )
-               //{
+                 if ( pkItProp->m_pkItemStats->m_uiVersion != order->m_iFace )
+                 {
                   SendType kSendType;
                   kSendType.m_iClientID = order->m_iClientID;
                   kSendType.m_kSendType = "itemdata";
                   
                   pkItProp->m_kSends.push_back ( kSendType );
-               //}
+                 }
 
             }
             else
@@ -1271,7 +1271,11 @@ void MistServer::HandleOrders()
                   kSend.m_iClientID = order->m_iClientID;
                   kSend.m_kSendType = "container";
                   pkItProp->m_kSends.push_back ( kSend );
+
+                  cout << "Sent container" << endl;
                }
+               else
+                  cout << "same version container" << endl;
             }
 
             // if characters wanter updated container
@@ -1287,6 +1291,8 @@ void MistServer::HandleOrders()
 
                   cout << "server if preparing to send cont. data" << endl;
                }
+               else
+                  cout << "Same version" << endl;
             }
             else
                cout << "Error! Non-P_Item_Object requested for updated containerinfo!" << endl;
