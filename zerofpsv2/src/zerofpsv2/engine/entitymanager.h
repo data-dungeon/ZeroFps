@@ -125,14 +125,15 @@ class ENGINE_API EntityManager : public ZFSubSystem{
 		bool IsValid();
 	
 		// Add/Remove Objects
-		void Link(Entity* pkNewObject);									///< Link this to the Object manager
+		void Link(Entity* pkNewObject,int iId = -1);									///< Link this to the Object manager
 		void UnLink(Entity* pkObject);									///< UnLink this from Object Manger.
+		bool IsLinked(Entity* pkObject);
 		void Clear();															///< Delete all objects.
 		void CreateBaseObjects();											/// create all base objects	
 
 
 		// Create 
-		Entity* CreateObject();												///< Create a empty object.
+		Entity* CreateObject(bool bLink = true);												///< Create a empty object.
 		Entity* CreateObjectByNetWorkID(int iNetID);					///< Create object with selected NetworkID
 		Entity* CreateObjectFromScript(const char* acName);
 		Entity* CreateObjectFromScriptInZone(const char* acName,Vector3 kPos,int iCurrentZone = -1);
@@ -153,8 +154,9 @@ class ENGINE_API EntityManager : public ZFSubSystem{
 		Entity* GetClientObject()	{	return m_pkClientObject;				};		
 		Entity* GetGlobalObject()	{	return m_pkGlobalObject;				};				
 		
+		int	GetNextObjectID()		{	return iNextObjectID;					};
 		int	GetNumOfObjects()		{	return m_akObjects.size();			}
-		int	GetActivePropertys() {	return m_iNrOfActivePropertys;	};
+		int	GetActivePropertys() {	return m_iNrOfActivePropertys;		};
 		void GetAllObjects(vector<Entity*> *pakObjects);
 		Entity* GetObject(const char* acName);							///< Get a ptr to object by name
 		Entity*	GetObjectByNetWorkID(int iNetID);					///< Get a ptr to object by networkID

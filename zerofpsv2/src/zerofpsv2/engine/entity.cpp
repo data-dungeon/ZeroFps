@@ -20,7 +20,7 @@ Entity::Entity()
 	ZFAssert(m_pkPropertyFactory,	"Entity::Entity(): Failed to find PropertyFactory");
 	ZFAssert(m_pkFps,				   "Entity::Entity(): Failed to find ZeroFps");
 
-	m_pkObjectMan->Link(this);		// Add ourself to objectmanger and get a NetID.
+//	m_pkObjectMan->Link(this);		// Add ourself to objectmanger and get a NetID.
 
 	// SetDefault Values.
 	m_kLocalRotM.Identity();
@@ -1012,8 +1012,11 @@ void Entity::Load(ZFIoInterface* pkFile,bool bLoadID)
 	int iNewID;
 	pkFile->Read(&iNewID,sizeof(iNewID),1);	
 	if(bLoadID)
-		iNetWorkID = iNewID;
-	
+	{
+		m_pkObjectMan->Link(this,iNewID);
+	}
+	else
+		m_pkObjectMan->Link(this,iNewID);	
 
 	pkFile->Read(&m_bRelativeOri,sizeof(m_bRelativeOri),1);	
 	
@@ -1094,7 +1097,7 @@ void Entity::Load(ZFIoInterface* pkFile,bool bLoadID)
 	//load all childs
 	for( i = 0; i < iChilds; i++ )
 	{
-		Entity* newobj = m_pkObjectMan->CreateObject();
+		Entity* newobj = m_pkObjectMan->CreateObject(false);
 		newobj->SetParent(this);
 		newobj->Load(pkFile,bLoadID);		
 	}

@@ -127,7 +127,7 @@ Entity* PlayerDatabase::CreateCharacter(string strPlayer, string strCharacter)
 		return false;
 	}	
 	
-	Entity* pkEntity = m_pkEntityMan->CreateObject();
+	Entity* pkEntity = m_pkEntityMan->CreateObject(false);
 	pkEntity->Load(&kFile,false);
 	kFile.Close();
 	

@@ -142,10 +142,38 @@ EntityManager::~EntityManager()
   This function is called by objects as they are created. It assigned a NetWorkID to the object and
   also put them in the ObjectManger.
 */
-void EntityManager::Link(Entity* pkObject) 
+void EntityManager::Link(Entity* pkObject,int iId) 
 {
-	pkObject->iNetWorkID = iNextObjectID++;
+	if(IsLinked(pkObject))
+	{
+		cout<<"Error Object is already linked"<<endl;
+		return;
+	
+	}
+
+	if(iId == -1)
+		pkObject->iNetWorkID = iNextObjectID++;
+	else
+	{
+		if(GetObjectByNetWorkID(iId))
+		{
+			cout<<"Entity whit id:"<<iId<<" already exist"<<" setting new id"<<endl;
+			pkObject->iNetWorkID = iNextObjectID++;			
+		}
+		else	
+			pkObject->iNetWorkID = iId;
+	}
+		
 	m_akObjects.push_back(pkObject);
+}
+
+bool EntityManager::IsLinked(Entity* pkObject)
+{
+	for(list<Entity*>::iterator it=m_akObjects.begin();it!=m_akObjects.end();it++)
+		if((*it) == pkObject)
+			return true;
+		
+	return false;
 }
 
 /**	\brief	UnLink this from Object Manger.
@@ -185,27 +213,27 @@ void EntityManager::CreateBaseObjects()
 	iNextObjectID = 0;
 	
 	//top world object parent to all objects
-	m_pkWorldObject						=	new Entity();	
+	m_pkWorldObject						=	CreateObject();	
 	m_pkWorldObject->SetName("WorldObject");
 	m_pkWorldObject->m_eRole			= NETROLE_AUTHORITY;
 	m_pkWorldObject->m_eRemoteRole	= NETROLE_NONE;
 
 	//object that is parent to all zones
-	m_pkZoneObject							=	new Entity();	
+	m_pkZoneObject							=	CreateObject();	
 	m_pkZoneObject->SetParent(m_pkWorldObject);
 	m_pkZoneObject->SetName("ZoneObject");
 	m_pkZoneObject->m_eRole				= NETROLE_AUTHORITY;
 	m_pkZoneObject->m_eRemoteRole		= NETROLE_NONE;
 
 	//object that is parent to all client objects
-	m_pkClientObject						=	new Entity();	
+	m_pkClientObject						=	CreateObject();	
 	m_pkClientObject->SetParent(m_pkWorldObject);
 	m_pkClientObject->SetName("ClientObject");
 	m_pkClientObject->m_eRole			= NETROLE_AUTHORITY;
 	m_pkClientObject->m_eRemoteRole	= NETROLE_NONE;
 
 	//object that is parent to all global objects (server information etc)
-	m_pkGlobalObject						=	new Entity();	
+	m_pkGlobalObject						=	CreateObject();	
 	m_pkGlobalObject->SetParent(m_pkWorldObject);
 	m_pkGlobalObject->SetName("GlobalObject");
 	m_pkGlobalObject->m_eRole			= NETROLE_AUTHORITY;
@@ -220,9 +248,13 @@ void EntityManager::CreateBaseObjects()
 
 	Creates a basic object without any propertys and all values set to defualt. 
 */
-Entity* EntityManager::CreateObject()
+Entity* EntityManager::CreateObject(bool bLink)
 {
 	Entity* pkObj = new Entity;
+	
+	if(bLink)
+		Link(pkObj);
+	
 	return pkObj;
 }
 
@@ -1799,6 +1831,7 @@ bool EntityManager::SaveZones()
 	kFile.Write(&iNumOfZone,sizeof(int),1);
    
    // save latest created entityID
+   cout<<"Next id is:"<<iNextObjectID<<endl;
    kFile.Write(&iNextObjectID,sizeof(int),1);
 	
 	for(int i=0; i<iNumOfZone; i++) 
@@ -1850,7 +1883,7 @@ void EntityManager::LoadZone(int iId)
 		return;
 
 	// Create Object.
-	Entity* object = new Entity;//ZoneObject;
+	Entity* object = CreateObject(false);
 	object->m_bZone = true;
 	kZData->m_pkZone = object;
 	kZData->m_pkZone->SetParent(GetZoneObject());	
@@ -1879,6 +1912,9 @@ void EntityManager::LoadZone(int iId)
 	{	
 		kZData->m_bNew = false;
 		
+		//link zone object
+		Link(object);
+		
 		//cout<<"error loading zone, creating a new template zone"<<endl;
 		
 		Vector3 kPos = kZData->m_kPos;
@@ -1890,10 +1926,12 @@ void EntityManager::LoadZone(int iId)
 		SetZoneModel("data/mad/zones/emptyzone.mad",iId);
 
 		//add static entity
-		Entity* staticentity = new Entity;
+		Entity* staticentity = CreateObject();
 		staticentity->SetName("StaticEntity");
 		staticentity->SetParent(kZData->m_pkZone);
 		staticentity->GetObjectType() = OBJECT_TYPE_STATIC;
+
+
 
 		return;
 	}
