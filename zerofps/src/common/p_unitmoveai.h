@@ -18,7 +18,7 @@
 #include "externalcommand.h"
 #include "aibase.h"
 
-
+#include "p_serverunit.h"
 //#include "unitcommandinfo.h"
 
 using namespace std;

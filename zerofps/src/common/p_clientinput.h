@@ -7,17 +7,14 @@
 #include <iostream>
 #include "common_x.h"
 
-#include "../zerorts/zerorts.h"
 #include "unitcommand.h"
 #include <vector>
 using namespace std;
 
-class ZeroRTS;
-
 class COMMON_API P_ClientInput: public Property {
 	private:
-		vector<UnitCommand>	m_kCommands;
-		ZeroRTS*					 m_kZeroRts;
+		vector<UnitCommand>		m_kCommands;
+		static vector<UnitCommand>	m_kServerCommands;		//all orders
 		ZeroFps*					 m_pkFps;
 
 	public:
@@ -30,6 +27,7 @@ class COMMON_API P_ClientInput: public Property {
 		void PackTo(NetPacket* pkNetPacket);
 		void PackFrom(NetPacket* pkNetPacket);
 
+	friend class ZeroRTS;
 };
 
 COMMON_API Property* Create_P_ClientInput();

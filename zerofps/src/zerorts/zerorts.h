@@ -16,7 +16,7 @@
 
 class UserPanel;
 class MiniMap;
-class P_ClientInput;
+//class P_ClientInput;
 #include "guibuilder.h"
 
 
@@ -62,10 +62,7 @@ class ZeroRTS :public Application {
 
 		//list containin network ID of all selected units
 		list<int>	m_kSelectedObjects;
-		
-		//list of commands that is going to be executed on the server
-		vector<UnitCommand>	m_kServerCommands;
-		
+			
 		//client delay
 		float			m_fClickTimer;
 		float			m_fClickDelay;
@@ -134,7 +131,6 @@ class ZeroRTS :public Application {
 
 	//Palls (friends) =)
 	friend class UserPanel;
-	friend class P_ClientInput;
 };
 
 

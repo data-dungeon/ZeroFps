@@ -1,5 +1,8 @@
 #include "p_clientinput.h"
 
+
+vector<UnitCommand>	P_ClientInput::m_kServerCommands;		//all orders
+		
 P_ClientInput::P_ClientInput()
 {
 	strcpy(m_acName,"P_ClientInput");		
@@ -9,7 +12,7 @@ P_ClientInput::P_ClientInput()
 
 	bNetwork = true;
 	
-	m_kZeroRts = static_cast<ZeroRTS*>(g_ZFObjSys.GetObjectPtr("Application"));		
+//	m_kZeroRts = static_cast<ZeroRTS*>(g_ZFObjSys.GetObjectPtr("Application"));		
 	m_pkFps = static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));			
 }
 
@@ -51,7 +54,7 @@ void P_ClientInput::PackFrom(NetPacket* pkNetPacket)
 		
 		//only add commands if its a server
 		if(m_pkFps->m_bServerMode)
-			m_kZeroRts->m_kServerCommands.push_back(tempcommand);
+			m_kServerCommands.push_back(tempcommand);
 	}
 	
 }

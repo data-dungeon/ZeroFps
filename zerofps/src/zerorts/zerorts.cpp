@@ -176,16 +176,16 @@ void ZeroRTS::OnSystem()
 	//if server is running
 	if(pkFps->m_bServerMode)
 	{
-		if(m_kServerCommands.size() > 0)
+		if(P_ClientInput::m_kServerCommands.size() > 0)
 		{
-			cout<<"GOT "<<m_kServerCommands.size()<<" Commands"<<endl;
+			cout<<"GOT "<<P_ClientInput::m_kServerCommands.size()<<" Commands"<<endl;
 			
-			for(int i=0;i<m_kServerCommands.size();i++)
+			for(int i=0;i<P_ClientInput::m_kServerCommands.size();i++)
 			{
-				cout<<"executing "<<m_kServerCommands[i].m_acCommandName<<endl;		
+				cout<<"executing "<<P_ClientInput::m_kServerCommands[i].m_acCommandName<<endl;		
 			}
 		
-			m_kServerCommands.clear();
+			P_ClientInput::m_kServerCommands.clear();
 		}
 	}
 }
