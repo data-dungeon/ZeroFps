@@ -50,7 +50,7 @@ void Test::OnInit(void) {
   glEnable(GL_LIGHTING);
   glEnable(GL_LIGHT0);
   
-  pkRender->SetFog(Vector4(.2,.2,.6,1),0.25,200,300,true);
+  pkRender->SetFog(Vector4(.2,.2,.6,1),0.50,200,300,true);
   
 
 }

@@ -303,7 +303,7 @@ void HeightMap::GenerateTextures() {
 					}
 				} else {//else i like som grass
 					GetVert(x,z)->texture=1;
-					GetVert(x,z)->color=Vector3(.35,.65,.0);				
+					GetVert(x,z)->color=Vector3(.35,.55,.10);				
 				}
 			}
 			GetVert(x,z)->color.Normalize();
