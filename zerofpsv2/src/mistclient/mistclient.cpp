@@ -1341,7 +1341,7 @@ void MistClient::UpdateCullObjects()
 	vector<Entity*> kEntitys;
 	pkObjectMan->TestLine(&kEntitys,kStart,kDir);
 	
-   int i;
+	int i;
 
 	//make all old objects visible again
 	for(i =0;i<mads.size();i++)
@@ -1374,9 +1374,6 @@ void MistClient::UpdateCullObjects()
 		}		
 	}
 	
-	
-	
 //	cout<<"Nrof object betwen camera and player:"<<mads.size()<<endl;
-	
-	
+		
 }

@@ -6,7 +6,7 @@ HenchmanButton::HenchmanButton(ZGuiApp* pkApp, int iIconID, int iPos)
 {
 	char szName[25];
 	sprintf(szName, "HenchManBn0%i", iPos);
-	pkApp->CreateWnd(Checkbox, szName, "MainWnd", "", 800-51, 4+iPos*56, 48, 48, 0);
+	pkApp->CreateWnd(Checkbox, szName, "MainWnd", "", pkApp->GetWidth()-51, 4+iPos*56, 48, 48, 0);
 
 	m_pkClickIcon = static_cast<ZGuiCheckbox*>(pkApp->GetWnd(szName));
 
