@@ -127,7 +127,7 @@ int ZFIni::GetKeyNamePos(int row)
 	for(int i=0; i<length; i++)
 	{
 		if( m_pstrLines[row][i] == '='  || m_pstrLines[row][i] == ';' || 
-			m_pstrLines[row][i] == '\r' || m_pstrLines[row][i] == '\n')
+			 m_pstrLines[row][i] == '\r' || m_pstrLines[row][i] == '\n')
 			return -1;
 		else
 		if( m_pstrLines[row][i] == ' '  || m_pstrLines[row][i] == '\t')
@@ -152,8 +152,7 @@ int ZFIni::GetKeyValuePos(int row)
 			continue;
 		}
 		else
-		if(bFoundValue && (m_pstrLines[row][i] != ' ' 
-			&& m_pstrLines[row][i] != '\t'))
+		if(bFoundValue && (m_pstrLines[row][i] != ' ' && m_pstrLines[row][i] != '\t'))
 			return i;
 	}
 
@@ -616,8 +615,9 @@ bool ZFIni::GetKeyNames(const char* strSection, vector<string>& kSectionList)
 		if ( (pFindSec = strstr(m_pstrSections[sec], strSection) ) != NULL)
 		{
 			if(strcmp(pFindSec, strSection) == 0)
-	   		for(int key=0; key<m_pkSectionData[sec].iNumKeys; key++)
-   	         kSectionList.push_back(m_pkSectionData[sec].strKeyName[key]);
+				if(strlen(m_pstrSections[sec]) == strlen(strSection)) // lade till 28 okt 2004
+	   			for(int key=0; key<m_pkSectionData[sec].iNumKeys; key++)
+   					kSectionList.push_back(m_pkSectionData[sec].strKeyName[key]);
 		}
    }
 

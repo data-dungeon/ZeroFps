@@ -55,6 +55,14 @@ void ZeroEd::SetupGuiEnviroment()
 	GetWnd("ZeroEdInfoLabel")->SetFont(pkOutLineFont);
 	GetWnd("ZeroEdInfoLabel")->SetTextClr(255,255,255); 
 
+	
+	
+
+	
+
+	
+			
+
 }
 
 void ZeroEd::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
@@ -340,8 +348,8 @@ void ZeroEd::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 				if(strWndClicked == string(akSections[i].c_str()))
 				{
 					char* cmd = m_pkIni->GetValue(akSections[i].c_str(), "Cmd");
-					m_pkZeroFps->m_pkConsole->Execute(cmd);
-
+					if(cmd)
+						m_pkZeroFps->m_pkConsole->Execute(cmd);
 					break;
 				}
 			}

@@ -750,6 +750,19 @@ void ZeroFps::ToggleGui(void)
 	}
 }
 
+bool ZeroFps::DevPrintPageVisible(const char* szName)
+{
+	for(unsigned int i=0; i<m_DevStringPage.size(); i++) 
+	{
+		if(string(szName) == m_DevStringPage[i].m_kName) 
+		{
+			return m_DevStringPage[i].m_bVisible;
+		}
+	}
+
+	return false;
+}
+
 DevStringPage*	ZeroFps::DevPrint_FindPage(const char* szName)
 {
 	for(unsigned int i=0; i<m_DevStringPage.size(); i++) 

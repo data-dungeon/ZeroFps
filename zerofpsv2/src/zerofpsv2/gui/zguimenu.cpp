@@ -35,6 +35,17 @@ ZGuiMenu::ZGuiMenu(Rect kArea, ZGuiWnd* pkParent, bool bVisible, int iID, bool b
 		ResizeMenu();
 		m_bNeedToResize = false;
 	}
+
+	TextureManager* pkTexMan = static_cast<TextureManager*>(
+		g_ZFObjSys.GetObjectPtr("TextureManager"));
+
+	int tex = pkTexMan->Load("data/textures/gui/mark.tga",0);
+	m_vkMenuIcons.push_back(new ZGuiSkin(tex, false));
+
+	tex = pkTexMan->Load("data/textures/gui/open_submenu.tga",0);
+	m_vkMenuIcons.push_back(new ZGuiSkin(tex, false));
+	
+
 }
 
 ZGuiMenu::~ZGuiMenu()
@@ -70,6 +81,27 @@ bool ZGuiMenu::Notify(ZGuiWnd* pkWindow, int iCode)
 					pkParams[1] = 0;
 
 					GetGUI()->GetActiveCallBackFunc()(this, ZGM_COMMAND, 2, pkParams);
+
+					// Bocka av kryss alternativ
+					if(m_vkItems[i]->iCheckMarkGroup == -1)
+					{
+						if(m_vkItems[i]->bUseCheckMark)
+							m_vkItems[i]->bChecked = !m_vkItems[i]->bChecked;
+					}
+					else
+					{
+						m_vkItems[i]->bChecked = true;
+
+						for(int j=0; j<m_vkItems.size(); j++)
+						{
+							if(i != j)
+							{
+								if(m_vkItems[j]->iCheckMarkGroup == m_vkItems[i]->iCheckMarkGroup)
+									m_vkItems[j]->bChecked = false;
+							}
+						}
+					}
+
 
 					delete[] pkParams;
 				}
@@ -138,9 +170,43 @@ bool ZGuiMenu::Render( ZGuiRender* pkRenderer )
  		m_vkItems[0]->pkButton->Hide();
 	}
 
+	static ZGuiLabel* pkArrow = pkArrow;
+	if(pkArrow == NULL)
+	{
+		pkArrow = new ZGuiLabel(Rect(0,0,16,16), this, false);
+		ZGuiSkin* pkSkin = new ZGuiSkin();
+		pkSkin->m_afBkColor[0] = 0;
+		pkArrow->SetSkin(pkSkin);
+	}
+
 	for(int i=0; i<m_vkItems.size(); i++)
 	{
-		m_vkItems[i]->pkButton->Render(pkRenderer); 
+		if(m_vkItems[i]->pkButton->IsVisible())
+		{
+			m_vkItems[i]->pkButton->Render(pkRenderer); 
+
+			if(m_vkItems[i]->pkParent != NULL)
+			{
+				Rect rc = m_vkItems[i]->pkButton->GetScreenRect();
+				
+				if(m_vkItems[i]->bOpenSubMenu)
+				{
+					pkArrow->SetPos(rc.Right - 17, rc.Top+2, true, true);
+					pkArrow->SetSkin(m_vkMenuIcons[1]);
+					pkArrow->Render(pkRenderer);
+				}
+				else
+				if(m_vkItems[i]->bUseCheckMark)
+				{
+					if(m_vkItems[i]->bChecked)
+					{
+						pkArrow->SetPos(rc.Right - 17, rc.Top+2, true, true);
+						pkArrow->SetSkin(m_vkMenuIcons[0]);
+						pkArrow->Render(pkRenderer);
+					}
+				}
+			}
+		}
 	}
 
 	return true;
@@ -316,6 +382,23 @@ bool ZGuiMenu::AddItem(const char* szText, const char* szNameID,
 		OpenSubMenu(m_vkItems[0], true);
 	}
 
+	string blank_space;
+	const int laps = 1+17/new_item->pkButton->GetFont()->m_iSpaceWidth;
+	for(int i=0; i<laps; i++)
+		blank_space += string(" ");
+
+	string t = string(" ") + string(new_item->pkButton->GetText());
+
+	if(new_item->pkParent != NULL)
+	{
+		t += blank_space;
+	}
+
+	new_item->pkButton->SetText((char*)t.c_str(), false); 
+	new_item->bUseCheckMark = false;
+	new_item->bChecked = false;
+	new_item->iCheckMarkGroup = -1;
+	
 	return true;
 }
 
@@ -578,7 +661,7 @@ void ZGuiMenu::ResizeMenu()
 			if(m_vkItems[j]->pkParent == it->first || m_bPopup)
 			{
 				ZGuiButton* pkButton = m_vkItems[j]->pkButton;
-				pkButton->Resize(kMaxWidths[iIndex], MENU_ITEM_HEIGHT);
+				pkButton->Resize(kMaxWidths[iIndex] /*+ 25*/, MENU_ITEM_HEIGHT);
 			}
 		}
 
@@ -609,6 +692,66 @@ void ZGuiMenu::ResizeMenu()
 	}
 }
 
+void ZGuiMenu::SetCheckMark(char* szItemNameID, bool bSet)
+{
+	for(int i=0; i<m_vkItems.size(); i++)
+	{
+		if(!strcmp(m_vkItems[i]->szNameID, szItemNameID))
+		{
+			m_vkItems[i]->bChecked = bSet;
+			break;
+		}
+	}
+}
+
+void ZGuiMenu::SetCheckMarkGroup(char* szItemNameID, int iGroup)
+{
+	for(int i=0; i<m_vkItems.size(); i++)
+	{
+		if(!strcmp(m_vkItems[i]->szNameID, szItemNameID))
+		{
+			m_vkItems[i]->iCheckMarkGroup = iGroup;
+			break;
+		}
+	}
+}
+
+void ZGuiMenu::UseCheckMark(char* szItemNameID, bool bUse)
+{
+	for(int i=0; i<m_vkItems.size(); i++)
+	{
+		if(!strcmp(m_vkItems[i]->szNameID, szItemNameID))
+		{
+			m_vkItems[i]->bUseCheckMark = bUse;
+			break;
+		}
+	}
+}
+
+void ZGuiMenu::SetItemIcon(char* szItemNameID, char* szIconFile)
+{
+	for(int i=0; i<m_vkItems.size(); i++)
+	{
+		if(!strcmp(m_vkItems[i]->szNameID, szItemNameID))
+		{
+			//m_vkItems[i]->iIconIndex
+			break;
+		}
+	}
+}
+
+void ZGuiMenu::SetItemText(char* szItemNameID, char* szText)
+{
+	for(int i=0; i<m_vkItems.size(); i++)
+	{
+		if(!strcmp(m_vkItems[i]->szNameID, szItemNameID))
+		{
+			m_vkItems[i]->pkButton->SetText(szText);
+			break;
+		}
+	}
+}
+
 bool ZGuiMenu::IsOpen()
 {
 	for(int i=0; i<m_vkItems.size(); i++)
@@ -619,7 +762,6 @@ bool ZGuiMenu::IsOpen()
 	}
 
 	return false;
-	//return m_bIsOpen;
 }	
 
 bool ZGuiMenu::IsMenuItem(ZGuiWnd* pkButton)

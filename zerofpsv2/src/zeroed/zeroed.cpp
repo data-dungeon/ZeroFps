@@ -266,6 +266,14 @@ void ZeroEd::OnInit()
 	m_pkAudioSys->SetReferensDistance(0.5);
 
 //	GetWnd("AddPointsToSounAreaBn")->m_bUseAlhpaTest = false;
+
+	ZGuiMenu* pkMenu = ((ZGuiMenu*)GetWnd("MainMenu"));
+	pkMenu->SetCheckMark("Menu_PageCommon", m_pkZeroFps->DevPrintPageVisible("common"));
+	pkMenu->SetCheckMark("Menu_PageConn", m_pkZeroFps->DevPrintPageVisible("conn"));
+	pkMenu->SetCheckMark("Menu_PageOm", m_pkZeroFps->DevPrintPageVisible("om"));
+	pkMenu->SetCheckMark("Menu_PageServer", m_pkZeroFps->DevPrintPageVisible("server"));
+	pkMenu->SetCheckMark("Menu_PageTime", m_pkZeroFps->DevPrintPageVisible("time"));	
+	pkMenu->SetCheckMark("Menu_PageEditor", m_pkZeroFps->DevPrintPageVisible("editor"));	
 	
 }
 
@@ -620,6 +628,9 @@ void ZeroEd::OnSystem()
 
 void ZeroEd::OnIdle()
 {	
+
+
+
 	// FULHACK Tm Vim
 	m_pkEntityManager->OwnerShip_Take( m_pkEntityManager->GetEntityByID( m_pkZeroFps->GetClientObjectID() ) );
 

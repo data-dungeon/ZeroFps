@@ -17,9 +17,13 @@ class ZGuiRender;
 struct ZGuiMenuItem
 {
 	char* szNameID;
+	int iIconIndex;
+	bool bChecked;
 	ZGuiButton* pkButton;
 	ZGuiMenuItem* pkParent; // NULL if no parent
 	bool bOpenSubMenu;
+	bool bUseCheckMark;
+	int iCheckMarkGroup;
 };
 
 /** \brief	A Menu in the gui.
@@ -51,6 +55,12 @@ public:
 
 	char* GetItemName(int iID);
 
+	void UseCheckMark(char* szItemNameID, bool bUse);
+	void SetCheckMark(char* szItemNameID, bool bSet);
+	void SetItemIcon(char* szItemNameID, char* szIconFile);
+	void SetItemText(char* szItemNameID, char* szName);
+	void SetCheckMarkGroup(char* szItemNameID, int iGroup);
+
 protected:
 	bool Notify(ZGuiWnd* pkWnd, int iCode);
 
@@ -80,6 +90,7 @@ private:
 	bool m_bIsOpen;
 	bool m_bPopup;
 
+	vector<ZGuiSkin*> m_vkMenuIcons;
 };
 
 #endif 

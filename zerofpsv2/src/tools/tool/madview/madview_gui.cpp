@@ -24,6 +24,11 @@ void MadView::SetupGuiEnviroment()
 
 	GetWnd("MaterialFileTree")->Hide();
 	GetWnd("AnimationFileTree")->Hide();
+
+	((ZGuiMenu*)GetWnd("MainMenu"))->SetCheckMark("Menu_Show_Mesh", m_pkZeroFps->m_iMadDraw & MAD_DRAW_MESH);
+	((ZGuiMenu*)GetWnd("MainMenu"))->SetCheckMark("Menu_Show_Normals", m_pkZeroFps->m_iMadDraw & MAD_DRAW_NORMAL);
+	((ZGuiMenu*)GetWnd("MainMenu"))->SetCheckMark("Menu_Show_Bones", m_pkZeroFps->m_iMadDraw & MAD_DRAW_BONES);
+	((ZGuiMenu*)GetWnd("MainMenu"))->SetCheckMark("Menu_Show_Sphere", m_pkZeroFps->m_iMadDraw & MAD_DRAW_SPHERE);
 }
 
 void MadView::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
@@ -85,7 +90,20 @@ void MadView::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 				if(strWndClicked == string(akSections[i].c_str()))
 				{
 					char* cmd = m_pkIni->GetValue(akSections[i].c_str(), "Cmd");
-					m_pkZeroFps->m_pkConsole->Execute(cmd);
+					if(cmd)
+					{
+						m_pkZeroFps->m_pkConsole->Execute(cmd);
+					}
+					else
+					{
+						vector<string> list;
+						m_pkIni->GetKeyNames(strWndClicked.c_str(), list);
+
+						printf("---------\n");
+						
+						for(int i=0; i<list.size(); i++)
+							printf("%s\n", list[i].c_str());
+					}
 					break;
 				}
 			}

@@ -196,7 +196,6 @@ class ENGINE_API ZeroFps : public I_ZeroFps {
 		void DevPrint_Show(bool bVisible);
 		DevStringPage*	DevPrint_FindPage(const char* szName);		
 		
-		
 		//zeroed network stuff
 		void SendZoneList(bool bRemove,int iClientID,int iZoneID = -1);
 		
@@ -302,6 +301,7 @@ class ENGINE_API ZeroFps : public I_ZeroFps {
 				
 		//devpage
 		void DevPrintf(const char* szName, const char *fmt, ...);
+		bool DevPrintPageVisible(const char* szName);
 
 		//graphs
 		bool GetMinimized()					{	return m_bMinimized;		}

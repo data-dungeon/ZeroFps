@@ -194,8 +194,6 @@ void MadView::RunCommand(int cmdid, const CmdArgument* kCommand)
 	switch(cmdid) 
 	{
 		case FID_OPENMAD:
-			printf("FID_OPENMAD\n");
-			
 			if(m_iSelFileMode != SEL_MAD)
 				BuildFileTree("SelectFileTree", "data/mad", ".mad");
 
@@ -204,7 +202,6 @@ void MadView::RunCommand(int cmdid, const CmdArgument* kCommand)
 			break;
 
 		case FID_OBJECTROTATIONMODE:
-			printf("FID_OBJECTROTATIONMODE\n");
 			m_iObjRotMode = atoi(kCommand->m_kSplitCommand[1].c_str());
 
 			if(m_iObjRotMode != 0)
@@ -216,6 +213,7 @@ void MadView::RunCommand(int cmdid, const CmdArgument* kCommand)
 				m_iCurrRotAngle = m_iObjRotMode-1;
 			else
 				m_iCurrRotAngle = 0;
+
 			break;
 
 		case FID_OBJECTROTATIONSPEED:
@@ -237,9 +235,6 @@ void MadView::RunCommand(int cmdid, const CmdArgument* kCommand)
 			break;
 
 		case FID_TOGGLE_BKCOLOR:
-
-			printf("FID_TOGGLE_BKCOLOR\n");
-			
 			static bool toogle = true;
 
 			if(toogle)

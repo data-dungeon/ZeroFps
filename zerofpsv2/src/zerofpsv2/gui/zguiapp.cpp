@@ -1247,10 +1247,20 @@ bool ZGuiApp::CreateMenu(char* szFileName, char* szName, bool bPopup)
 	// Skapa alla menyalternativ
 	for(i=0; i<uiNumSections; i++)
 	{
+		if( strcmp( akSections[i].c_str(), "Menu_Edit_ObjectRotation_Mode_RotY") == 0)
+		{
+			vector<string> seklist;
+			kINI.GetKeyNames( akSections[i].c_str(), seklist);
+
+			for(int i=0; i<seklist.size(); i++)
+				printf("seklist[i] = %s\n", seklist[i].c_str());
+
+		}
+		
 		char* parent = kINI.GetValue(akSections[i].c_str(), "OpenSubMenu");
 		if(parent != NULL && strcmp(parent, "1") == 0) 
 			continue;
-
+	
 		if(parent == NULL || strcmp(parent, "0") == 0)
 		{
 			char szTitle[50];
@@ -1261,6 +1271,23 @@ bool ZGuiApp::CreateMenu(char* szFileName, char* szName, bool bPopup)
 				szParent = NULL;
 
 			pkMenu->AddItem(szTitle, (char*)akSections[i].c_str(), szParent);
+
+			char* val;
+			if((val=kINI.GetValue(akSections[i].c_str(), "UseCheckMark")))
+			{
+				if(strcmp(val,"1") == 0)
+					pkMenu->UseCheckMark((char*)akSections[i].c_str(), true);
+			}
+			if((val=kINI.GetValue(akSections[i].c_str(), "SetCheckMark")))
+			{
+				if(strcmp(val,"1") == 0)
+					pkMenu->SetCheckMark((char*)akSections[i].c_str(), true);
+			}
+			if((val=kINI.GetValue(akSections[i].c_str(), "CheckMarkGroup")))
+			{
+				pkMenu->SetCheckMarkGroup((char*)akSections[i].c_str(), atoi(val));
+			}
+				
 		}
 	}
 
