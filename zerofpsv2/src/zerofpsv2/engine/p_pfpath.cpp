@@ -8,12 +8,12 @@ P_PfPath::P_PfPath()
 {
 	strcpy(m_acName,"P_PfPath");
 	m_iType = PROPERTY_TYPE_NORMAL;// | PROPERTY_TYPE_RENDER;
-	m_iSide = PROPERTY_SIDE_SERVER | PROPERTY_SIDE_CLIENT;
+	m_iSide = PROPERTY_SIDE_SERVER;// | PROPERTY_SIDE_CLIENT;
 
 	m_pkFps=static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
 	m_pkAStar=static_cast<AStar*>(g_ZFObjSys.GetObjectPtr("AStar"));	
 
-	m_fSpeed = 3;
+	m_fSpeed = 5;
 	m_bTilt = false;
 	m_iNavMeshCell = 0;
 	
@@ -35,6 +35,7 @@ void P_PfPath::Update()
 {
 //	if(!m_bHaveOffset)
 //		SetupOffset();
+		
 		
 	Vector3 kPos = m_pkObject->GetWorldPosV();
 
@@ -93,7 +94,7 @@ void P_PfPath::Update()
 
 	Vector3 kdiff = kGoal - kPos;
 	float fdist = kdiff.Length();
-	if(fdist < 0.2) 
+	if(fdist < 0.4) 
 	{
 		m_pkObject->SetWorldPosV(kGoal);
 		m_iNextGoal++;
@@ -116,7 +117,7 @@ void P_PfPath::Update()
 	}
 
 	kdiff.Normalize();
-	kPos += (kdiff * m_fSpeed) * m_pkFps->GetFrameTime();
+	kPos += (kdiff * m_fSpeed) * m_pkFps->GetGameFrameTime();
 	m_pkObject->SetWorldPosV(kPos);
 
 

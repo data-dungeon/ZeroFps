@@ -121,6 +121,9 @@ class ENGINE_API ZeroFps : public I_ZeroFps {
 		float 	m_fAvrageFpsTime;
 		int		m_iAvrageFrameCount;
 		
+		int		m_iLockFps;
+		float 	m_fLockFrameTime;
+		
 		float 	m_fSystemUpdateFps;
 		float 	m_fSystemUpdateTime;
 		float 	m_fGameTime;

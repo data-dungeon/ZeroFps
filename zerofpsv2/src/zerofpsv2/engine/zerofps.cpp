@@ -85,6 +85,9 @@ ZeroFps::ZeroFps(void) : I_ZeroFps("ZeroFps")
 	m_iServerConnection		= -1;
 	m_iMaxPlayers				= ZF_DEF_PLAYERS;
 
+	m_iLockFps					= false;
+	
+
 	// Register Variables
 	RegisterVariable("r_maddraw",			&m_iMadDraw,				CSYS_INT);
 	RegisterVariable("r_madlod",			&g_fMadLODScale,			CSYS_FLOAT);
@@ -94,7 +97,8 @@ ZeroFps::ZeroFps(void) : I_ZeroFps("ZeroFps")
 	RegisterVariable("r_logrp",			&g_iLogRenderPropertys,	CSYS_INT);	
 	RegisterVariable("r_render",			&m_bRenderOn,				CSYS_BOOL);	
 	RegisterVariable("n_maxplayers",		&m_iMaxPlayers,			CSYS_INT,		CSYS_FLAG_SRC_CMDLINE|CSYS_FLAG_SRC_INITFILE);	
-
+	RegisterVariable("e_lockfps",		&m_iLockFps,			CSYS_INT);	
+	
 	// Register Commands
 	Register_Cmd("setdisplay",FID_SETDISPLAY);
 	Register_Cmd("quit",FID_QUIT);
@@ -237,8 +241,9 @@ bool ZeroFps::Init(int iNrOfArgs, char** paArgs)
 	m_iState=state_normal;									// init gamestate to normal		
 	m_pkApp->OnInit();										// call the applications oninit funktion
 	
-	m_fFrameTime=0;
-	m_fLastFrameTime = SDL_GetTicks();
+	m_fFrameTime		=0;
+	m_fLastFrameTime	= GetTicks();
+	m_fLockFrameTime  = GetTicks();
 
 	return true;
 }
@@ -374,14 +379,24 @@ void ZeroFps::Run_Client()
 
 void ZeroFps::Update_System()
 {
-	float fATime = GetTicks() - m_fSystemUpdateTime; 	
-	int iLoops = int(m_fSystemUpdateFps * fATime);
+	int iLoops;
 
+	if(m_iLockFps)
+	{	
+		iLoops = 1;				//if fps is locked, there is no need to calculate number of loops, i shuld always be 1
+	}
+	else
+	{
+		float fATime = GetTicks() - m_fSystemUpdateTime; 	
+		iLoops = int(m_fSystemUpdateFps * fATime);
+	}
+	
 	if(iLoops<=0)
 		return;
 
 	m_fGameFrameTime = 1/m_fSystemUpdateFps;//(fATime / iLoops);		
 	float m_fLU = m_fSystemUpdateTime;
+	
 	
 	for(int i=0;i<iLoops;i++)
 	{
@@ -478,6 +493,25 @@ void ZeroFps::MainLoop(void) {
 		m_fEngineTime = GetTicks();
 
 		Swap();											//swap buffers n calculate fps
+		 
+		 
+		//handle locked fps delay
+		if(m_iLockFps)
+		{
+			float fDelay = GetGameFrameTime() - (GetTicks() - m_fLockFrameTime);
+		
+			if(fDelay < 0)
+				fDelay = 0;
+	
+			SDL_Delay(fDelay*1000.0);	
+			
+			m_fLockFrameTime = GetTicks();
+	
+			//	cout<<"Frametime:"<<fFrameT<<endl;
+			//	cout<<"Frametime shuld be:"<<pkFps->GetGameFrameTime()<<endl;
+			//	cout<<"Delaying:"<<fDelay<<endl;		
+			//end of delay code ---				
+		}
 		 
 		Run_EngineShell();
 
