@@ -189,6 +189,9 @@ LRESULT CALLBACK WndProc (HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 				bitmapinfo.bmiHeader.biWidth = g_kAVIGrabber.GetWidth();
 				bitmapinfo.bmiHeader.biXPelsPerMeter = 0;
 				bitmapinfo.bmiHeader.biYPelsPerMeter = 0;
+
+				InvalidateRect(hwnd, NULL, TRUE);
+				UpdateWindow(hwnd);
 			}
 
 			break;
@@ -198,7 +201,7 @@ LRESULT CALLBACK WndProc (HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 	case WM_PAINT:
 		hdc = BeginPaint (hwnd, &ps) ;
 
-		if(g_kAVIGrabber.GetNumFrames() > 0 /*&& bRedraw == true*/)
+		if(g_kAVIGrabber.GetNumFrames() > 0)
 		{
 			SetStretchBltMode(hdc, HALFTONE);
 
@@ -213,13 +216,10 @@ LRESULT CALLBACK WndProc (HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 			int frame = startframe;
 			int max = g_kAVIGrabber.GetNumFrames();
-			char text[20];
-
+			
 			for(int y=0; y<rows; y++)
-			{
 				for(int x=0; x<cols; x++)
-				{
-					if( x*dw < rcWindow.right && (y*dh < rcWindow.bottom) && frame < max)
+					if(frame < max)
 					{
 						char* pixels = g_kAVIGrabber.GetFramePixels(frame);
 						StretchDIBits (hdc, x*dw, y*dh, dw, dh, 0, 0, 
@@ -227,23 +227,16 @@ LRESULT CALLBACK WndProc (HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 							pixels, &bitmapinfo, DIB_RGB_COLORS, SRCCOPY) ;
 						frame++;
 					}
-				}
-			}
 
-			frame=0;
-			for(int y=0; y<rows; y++)
+			if(print_frame)
 			{
-				for(int x=0; x<cols; x++)
-				{
-					if( x*dw < rcWindow.right && (y*dh < rcWindow.bottom) && frame < max)
+				char text[20];
+				for(int y=0; y<rows; y++)
+					for(int x=0; x<cols; x++)
 					{
-						if(print_frame)
-						{
-							sprintf(text, "%i", startframe+(cols*y)+x);
-							TextOut(hdc,x*dw,y*dw, text, strlen(text));
-						}
+						sprintf(text, "%i", startframe+(cols*y)+x);
+						TextOut(hdc,x*dw,y*dh, text, (int) strlen(text));
 					}
-				}
 			}
 
 			bRedraw = false;
@@ -272,8 +265,7 @@ BOOL CALLBACK SettingsDlg (HWND hDlg, UINT message,
 		SetDlgItemInt(hDlg, IDC_STARTFRAME, startframe, FALSE);
 		SetDlgItemInt(hDlg, IDC_ANIMATIONSTART, animationstart, 0);
 		SetDlgItemInt(hDlg, IDC_ANIMATIONEND, animationend, 0);
-		SetDlgItemInt(hDlg, IDC_FRAMES_TOTAL, g_kAVIGrabber.GetNumFrames(), FALSE); 
-
+		
 		khWndProgressBar = GetDlgItem(hDlg, IDC_PROGRESS1);
 
 		SendDlgItemMessage(hDlg, IDC_PREVIEW_SIZE_CB, CB_ADDSTRING, 0, (LPARAM)"400%");
@@ -285,6 +277,8 @@ BOOL CALLBACK SettingsDlg (HWND hDlg, UINT message,
 		SendDlgItemMessage(hDlg, IDC_PREVIEW_SIZE_CB, CB_ADDSTRING, 0, (LPARAM)"15%");
 		SendDlgItemMessage(hDlg, IDC_PREVIEW_SIZE_CB, CB_ADDSTRING, 0, (LPARAM)"10%");
 		SendDlgItemMessage(hDlg, IDC_PREVIEW_SIZE_CB, CB_SETCURSEL, 4, 0);
+
+		CheckDlgButton(hDlg,IDC_FORMAT0, BST_CHECKED);
 
 		return TRUE ;
 
@@ -311,7 +305,6 @@ BOOL CALLBACK SettingsDlg (HWND hDlg, UINT message,
 
 			startframe = fr;
 			
-			bRedraw = true;
 			InvalidateRect(hwnd, NULL, TRUE);
 			UpdateWindow(hwnd);
 			
@@ -330,7 +323,9 @@ BOOL CALLBACK SettingsDlg (HWND hDlg, UINT message,
 
 			break;
 
-		case IDC_FORMAT8:
+		case IDC_FORMAT0:
+		case IDC_FORMAT1:
+		case IDC_FORMAT2:
 			PrintSize();
 			break;
 		}
@@ -378,45 +373,46 @@ bool CreateAnimation(int animationstart, int animationend, HWND hwnd)
 {
 	int num_frames = animationend-animationstart;
 
-	strcpy(szAVIFileName, "st.avi");
+	if(num_frames > g_kAVIGrabber.GetNumFrames())
+		return false;
 
-	if(num_frames > 0 && g_kAVIGrabber.OpenAVI(szAVIFileName))
+	if(animationstart < 0 || animationend > g_kAVIGrabber.GetNumFrames())
+		return false;
+
+	FILE* pkFile = fopen(szFileName, "wb");
+
+	int frames_per_second = g_kAVIGrabber.GetFramesPerSecond();
+	
+	unsigned char by8bitsFormat;
+
+	if(IsDlgButtonChecked(ctrlWnd, IDC_FORMAT0) == BST_CHECKED)
+		by8bitsFormat = 0;
+	if(IsDlgButtonChecked(ctrlWnd, IDC_FORMAT1) == BST_CHECKED)
+		by8bitsFormat = 1;
+	if(IsDlgButtonChecked(ctrlWnd, IDC_FORMAT2) == BST_CHECKED)
+		by8bitsFormat = 2;
+
+	int w = g_kAVIGrabber.GetWidth();
+	int h = g_kAVIGrabber.GetHeight();
+
+	fwrite(&w, sizeof(int), 1, pkFile);
+	fwrite(&h, sizeof(int), 1, pkFile);
+	fwrite(&frames_per_second, sizeof(int), 1, pkFile);
+	fwrite(&num_frames, sizeof(int), 1, pkFile);
+	fwrite(&by8bitsFormat, sizeof(unsigned char), 1, pkFile);
+
+	int starTime = timeGetTime();
+
+	for(int i=animationstart; i<animationend; i++)
 	{
-		if(num_frames > g_kAVIGrabber.GetNumFrames())
-			return false;
-		if(animationstart < 0 || animationend > g_kAVIGrabber.GetNumFrames())
-			return false;
-
-		FILE* pkFile = fopen(szFileName, "wb");
-
-		int frames_per_second = g_kAVIGrabber.GetFramesPerSecond();
-		
-		unsigned char by8bitsFormat = 
-			(IsDlgButtonChecked(ctrlWnd, IDC_FORMAT8) == BST_CHECKED) ? 1 : 0;
-
-		int w = g_kAVIGrabber.GetWidth();
-		int h = g_kAVIGrabber.GetHeight();
-
-		fwrite(&w, sizeof(int), 1, pkFile);
-		fwrite(&h, sizeof(int), 1, pkFile);
-		fwrite(&frames_per_second, sizeof(int), 1, pkFile);
-		fwrite(&num_frames, sizeof(int), 1, pkFile);
-		fwrite(&by8bitsFormat, sizeof(unsigned char), 1, pkFile);
-
-		int starTime = timeGetTime();
-
-		for(int i=animationstart; i<animationend; i++)
-		{
-			char* pixels = g_kAVIGrabber.GetFramePixels(i);
-			g_kBitmapManager.SaveFile(pkFile, pixels, w, h, by8bitsFormat == 1 ? true : false);
-			SendMessage(hwnd, PBM_STEPIT, 0, 0);
-		}
-
-		fclose(pkFile);
-		return true;
+		char* pixels = g_kAVIGrabber.GetFramePixels(i);
+		g_kBitmapManager.SaveFile(pkFile, pixels, w, h, ImageFormat(by8bitsFormat) );
+		SendMessage(hwnd, PBM_STEPIT, 0, 0);
 	}
 
-	return false;
+	fclose(pkFile);
+	return true;
+
 }
 
 void PrintSize()
@@ -425,8 +421,6 @@ void PrintSize()
 
 	if(frames_per_sec == 0)
 		return;
-
-//	int apa = INT_MAX;
 
 	int start = GetDlgItemInt(ctrlWnd, IDC_ANIMATIONSTART, NULL, FALSE);
 	int end = GetDlgItemInt(ctrlWnd, IDC_ANIMATIONEND, NULL, FALSE);
@@ -441,9 +435,10 @@ void PrintSize()
 
 	if(frames < 10000)
 	{
-		if(IsDlgButtonChecked(ctrlWnd, IDC_FORMAT8) == BST_CHECKED)
+		if(IsDlgButtonChecked(ctrlWnd, IDC_FORMAT1) == BST_CHECKED)
 			size_in_meg = (double)(frames*w*h+32) / 1048576.0;
 		else
+		if(IsDlgButtonChecked(ctrlWnd, IDC_FORMAT0) == BST_CHECKED)
 			size_in_meg = (double)(frames*w*h*3+16) / 1048576.0;
 
 		sprintf(text, "%.02f", size_in_meg);
@@ -457,10 +452,10 @@ void PrintSize()
 		apa = apa*(_int64)w;
 		apa = apa*(_int64)h;
 
-		if(IsDlgButtonChecked(ctrlWnd, IDC_FORMAT8) != BST_CHECKED)
+		if(IsDlgButtonChecked(ctrlWnd, IDC_FORMAT0) == BST_CHECKED)
 			apa = apa*3;
 
-		if(IsDlgButtonChecked(ctrlWnd, IDC_FORMAT8) != BST_CHECKED)
+		if(IsDlgButtonChecked(ctrlWnd, IDC_FORMAT0) == BST_CHECKED)
 			apa = apa + 16;
 		else
 			apa = apa + 32;
