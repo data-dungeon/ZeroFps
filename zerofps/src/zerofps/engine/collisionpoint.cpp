@@ -14,7 +14,7 @@ bool CollisionPoint::Collide(CollisionObject *kOther,bool bContinue) {
 		return CollidePoint(kCp);
 		
 	} else if(bContinue){
-		cout<<"Unhandled Collision,Asking kOther"<<endl;	
+//		cout<<"Unhandled Collision,Asking kOther"<<endl;	
 		return kOther->Collide(this,false);
 	
 	}

@@ -16,7 +16,7 @@ bool CollisionHeightMap::Collide(CollisionObject *kOther,bool bContinue)
 		return CollidePoint(kCp);
 		
 	} else if(bContinue){
-		cout<<"Unhandled Collision,Asking kOther"<<endl;	
+//		cout<<"Unhandled Collision,Asking kOther"<<endl;	
 		return kOther->Collide(this,false);
 	
 	}
@@ -35,7 +35,7 @@ bool CollisionHeightMap::CollidePoint(CollisionPoint *pkCp){
 		if( pkCp->m_kPos->z >= m_pkHM->m_kPosition.z  &&  pkCp->m_kPos->z <= m_pkHM->m_kPosition.z+m_pkHM->m_iHmSize )
 		{
 			cout<<"on heightmap"<<endl;
-		
+			
 
 		}
 	}
