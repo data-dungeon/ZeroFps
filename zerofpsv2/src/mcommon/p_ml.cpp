@@ -4,11 +4,12 @@
 P_Ml::P_Ml()
 {
 	strcpy(m_acName,"P_Ml");		
-	m_iType=PROPERTY_TYPE_NORMAL;
-	m_iSide=PROPERTY_SIDE_SERVER;
+	m_iType=PROPERTY_TYPE_NORMAL|PROPERTY_TYPE_RENDER;
+	m_iSide=PROPERTY_SIDE_SERVER|PROPERTY_SIDE_CLIENT;
 	
 	m_pkFps=static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
 	m_pkEntityMan=static_cast<EntityManager*>(g_ZFObjSys.GetObjectPtr("EntityManager"));
+	m_pkRender=static_cast<Render*>(g_ZFObjSys.GetObjectPtr("Render"));			
 
 	bNetwork = true;
 	
@@ -72,8 +73,18 @@ void P_Ml::Update()
 	if(m_pkObject != pkEnt)
 		cout<<"SOMETHING IS FUCKING WRONG!!!!"<<endl;
 */
-	m_bJustSaved = false;
-
+	
+	
+	if(m_pkFps->m_bServerMode)
+		if(m_pkObjMan->IsUpdate(PROPERTY_TYPE_NORMAL))
+			m_bJustSaved = false;
+	
+	
+	if(m_pkObjMan->IsUpdate(PROPERTY_TYPE_RENDER))
+	{
+		m_pkRender->Print(m_pkObject->GetWorldPosV()+Vector3(0,m_pkObject->GetRadius()+0.2,0),Vector3(.1,.1,.1),(char*)m_pkObject->GetName().c_str());				
+	
+	}
 }
 
 void P_Ml::AddAction(const char* csAction)

@@ -75,8 +75,7 @@ void P_Spell::Update()
             Entity *pkNewObject = m_pkObject->m_pkObjectMan->CreateObject();
 
             // create and attach PS to new object
-            pkNewObject->AddProperty ("P_PSystem");
-            P_PSystem *pkPSProp = (P_PSystem*)pkNewObject->GetProperty("P_PSystem");
+            P_PSystem *pkPSProp =  (P_PSystem*)pkNewObject->AddProperty ("P_PSystem");
             pkPSProp->SetPSType ( m_pkSpellType->m_kGraphicEffects[m_iPSIndex].m_kPSystemName );
 
             // add PSystem offset

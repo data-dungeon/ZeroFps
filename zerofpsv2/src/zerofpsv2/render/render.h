@@ -120,6 +120,7 @@ class RENDER_API Render : public ZFSubSystem {
 		
 		void PrintChar(unsigned char cChar);
 		void Print(Vector3 kPos,Vector3 kHead,Vector3 kScale,char* aText);
+		void Print(Vector3 kPos,Vector3 kScale,char* aText);		
 
 		void Mode2D_Start();
 		void Mode2D_End();

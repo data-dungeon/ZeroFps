@@ -370,6 +370,55 @@ void Render::PrintChar2(char cChar)
 	glEnd();				
 }
 
+
+void Render::Print(Vector3 kPos,Vector3 kScale,char* aText) {
+	char paText[TEXT_MAX_LENGHT];
+	// VIM: Check for maxlen
+	strcpy(paText,aText);
+	
+	glPushMatrix();
+		
+		glTranslatef(kPos.x,kPos.y,kPos.z);	
+
+		//make billboard		
+		Matrix4 kModelMatrix;
+		glGetFloatv(GL_MODELVIEW_MATRIX, &kModelMatrix[0]);		
+		
+		kModelMatrix.data[0] = 1;
+		kModelMatrix.data[4] = 0;		
+		kModelMatrix.data[8] = 0;		
+		
+		kModelMatrix.data[1] = 0;		
+		kModelMatrix.data[5] = 1;		
+		kModelMatrix.data[9] = 0;				
+		
+		kModelMatrix.data[2] = 0;		
+		kModelMatrix.data[6] = 0;		
+		kModelMatrix.data[10] = 1;				
+				
+		glLoadMatrixf(&kModelMatrix[0]);		
+		//blub
+		
+		//scale
+		glScalef(kScale.x,kScale.y,kScale.z);
+		
+		//center text
+		int offset = strlen(paText)/2;		
+		glTranslatef(-offset,0,0);
+		
+		
+		int i=0;
+		while(paText[i]!='\0') {
+			PrintChar(paText[i]);
+			glTranslatef(1,0,0);
+		
+			i++;
+		}
+
+	glPopMatrix();
+}
+
+
 void Render::Print(Vector3 kPos,Vector3 kHead,Vector3 kScale,char* aText) {
 	char paText[TEXT_MAX_LENGHT];
 	// VIM: Check for maxlen
