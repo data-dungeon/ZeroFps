@@ -597,7 +597,7 @@ bool ZFAudioSystem::StartUp()
 	alGetError();
 	alListenerf(AL_GAIN, 1.0f);
 	alDopplerFactor(0.0f);
-	//alDopplerVelocity(343); 
+	alDopplerVelocity(343); 
 
 	SetListnerPosition(Vector3(0,0,0),Vector3(0,1,0),Vector3(0,1,0));
 
@@ -612,7 +612,9 @@ bool ZFAudioSystem::StartUp()
 
 	m_bIsValid = true;
 
+	int apa = AL_CHANNELS;
 
+	printf("apa = %i\n", apa);
 
 	return true;
 }

@@ -1595,6 +1595,8 @@ void ZeroEd::SendRotateEntity(int iEntityID,const Vector3& kRot)
 
 void ZeroEd::ToogleLight()
 {
+	m_bEditSun = !m_bEditSun;
+
 	if(!m_bEditSun)
 	{	
 		m_bEditSun = true;	
