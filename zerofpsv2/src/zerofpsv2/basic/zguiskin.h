@@ -6,6 +6,7 @@
 #define _BASIC_ZGUISKIN_H_
 
 #include "basic_x.h"
+#include "rect.h"
 
 class BASIC_API ZGuiSkin  
 {
@@ -59,6 +60,8 @@ public:
 	ZGuiSkin();								
 
 	~ZGuiSkin() {}
+
+	Rect m_rcBkTile; // Right = Width, Bottom = Height. U
 
 	long m_iBkTexID;			// -1 innebär att det inte finns nån textur.
 	long m_iHorzBorderTexID;	// -1 innebär att det inte finns nån textur.

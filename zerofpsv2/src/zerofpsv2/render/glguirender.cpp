@@ -194,13 +194,27 @@ bool GLGuiRender::RenderQuad(Rect rc)
 
 	int texture = m_pkSkin->m_iBkTexID;
 
+	if(m_pkSkin->m_rcBkTile != Rect(0,0,0,0) && texture > 0)
+	{
+		glEnable(GL_TEXTURE_2D);
+		m_pkTextureManger->BindTexture( texture );
+
+		int iTextureWidth, iTextureHeight;
+		glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_WIDTH, &iTextureWidth);
+		glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_HEIGHT, &iTextureHeight);
+
+		tw = (float) m_pkSkin->m_rcBkTile.Right / (float) iTextureWidth;
+		tx = (float) m_pkSkin->m_rcBkTile.Left / (float) iTextureWidth;
+		th = (float) m_pkSkin->m_rcBkTile.Top / (float) iTextureHeight;
+		ty = ((float) m_pkSkin->m_rcBkTile.Bottom / (float) iTextureHeight) + th;
+	}
+	else
 	if(m_pkSkin->m_bTileBkSkin == true && texture > 0)
 	{
 		glEnable(GL_TEXTURE_2D);
 		m_pkTextureManger->BindTexture( texture );
 
 		int iTextureWidth, iTextureHeight;
-
 		glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_WIDTH, &iTextureWidth);
 		glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_HEIGHT, &iTextureHeight);
 

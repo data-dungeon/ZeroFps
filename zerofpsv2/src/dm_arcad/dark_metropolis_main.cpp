@@ -467,7 +467,7 @@ void DarkMetropolis::Input()
 			float x;
 			float y;
 			m_pkInputHandle->UnitMouseXY(x,y);	
-			pkChar->m_kDir.Set(x,0,y);
+			//pkChar->m_kDir.Set(x,0,y);
 		}
 		
 		
