@@ -55,12 +55,12 @@ void PlayerControlProperty::Update() {
 	
 	if(m_pkInput->Pressed(KEY_E))
 	{
-//		float height=m_pkMap->GetVert(int(m_pkObject->GetPos().x),int(m_pkObject->GetPos().z))->height;
+		float height=m_pkMap->GetVert(int(m_pkObject->GetPos().x),int(m_pkObject->GetPos().z))->height;
 		for(int xp=-1;xp<2;xp++){
 			for(int yp=-1;yp<2;yp++){
 				m_pkMap->GetVert(int(m_pkObject->GetPos().x+xp),int(m_pkObject->GetPos().z+yp))->texture=2;
 				m_pkMap->GetVert(int(m_pkObject->GetPos().x+xp),int(m_pkObject->GetPos().z+yp))->color=Vector3(.6,.45,0.3);		
-//				m_pkMap->GetVert(int(m_pkObject->GetPos().x+xp),int(m_pkObject->GetPos().z+yp))->height=height;				
+				m_pkMap->GetVert(int(m_pkObject->GetPos().x+xp),int(m_pkObject->GetPos().z+yp))->height=height;				
 			}
 		}
 	}

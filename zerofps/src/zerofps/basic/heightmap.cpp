@@ -152,6 +152,8 @@ bool HeightMap::Load(const char* acFile) {
 	
 	m_iHmSize=k_Fh.m_iHmSize;
 	
+	cout<<"MAP SIZE IS:"<<m_iHmSize<<endl;
+	
 	delete[] verts;
 	verts=new HM_vert[(m_iHmSize+m_iError)*m_iHmSize];
 	
