@@ -1711,6 +1711,7 @@ void ZeroFps::Disconnect(int iConnectionID)
 	
 	m_pkEntityManager->Delete( m_kClient[iConnectionID].m_pkObject );
 	m_kClient[iConnectionID].m_pkObject = NULL;
+	m_kClient[iConnectionID].m_strLogin = "";
 }
 
 

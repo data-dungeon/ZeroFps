@@ -420,6 +420,7 @@ void MistServer::RunCommand(int cmdid, const CmdArgument* kCommand)
 				break;				
 			}
 			
+			m_pkZeroFps->StopAll();
 			if(!m_pkEntityManager->LoadWorld(kCommand->m_kSplitCommand[1]))
 			{
 				cout<<"Error loading world"<<endl;
