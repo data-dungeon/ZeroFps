@@ -748,22 +748,55 @@ void ZeroEdit::Input()
 		case FLATTEN:
 			if(pkInput->Pressed(MOUSELEFT))
 			{
-				cout<<"bhoa"<<endl;
-				float height=m_pkMap->GetVert(int(m_kDrawPos.x),int(m_kDrawPos.z))->height;
-				int texture=m_pkMap->GetVert(int(m_kDrawPos.x),int(m_kDrawPos.z))->texture;
-				Vector3 color=m_pkMap->GetVert(int(m_kDrawPos.x),int(m_kDrawPos.z))->color;
-//				float height=m_pkMap->Height(m_kDrawPos.x,m_kDrawPos.z);
+				Vector3 pos=m_kDrawPos;
+				m_pkMap->GetMapXZ(pos.x,pos.z);
+			
+				float height=m_pkMap->GetVert(int(pos.x),int(pos.z))->height;
+				int texture=m_pkMap->GetVert(int(pos.x),int(pos.z))->texture;
+				Vector3 color=m_pkMap->GetVert(int(pos.x),int(pos.z))->color;
+
 				for(int xp=-2;xp<3;xp++){
 					for(int yp=-2;yp<3;yp++){
-						m_pkMap->GetVert(int(m_kDrawPos.x+xp),int(m_kDrawPos.z+yp))->texture=texture;
-						m_pkMap->GetVert(int(m_kDrawPos.x+xp),int(m_kDrawPos.z+yp))->color=color;//Vector3(.6,.45,0.3);		
-						m_pkMap->GetVert(int(m_kDrawPos.x+xp),int(m_kDrawPos.z+yp))->height=height;				
+						m_pkMap->GetVert(int(pos.x+xp),int(pos.z+yp))->texture=texture;
+						m_pkMap->GetVert(int(pos.x+xp),int(pos.z+yp))->color=color;//Vector3(.6,.45,0.3);		
+						m_pkMap->GetVert(int(pos.x+xp),int(pos.z+yp))->height=height;				
 					}
 				}
-				m_pkMap->GenerateNormals((int)m_kDrawPos.x-4,(int)m_kDrawPos.z-4,8,8);
+				
+				m_pkMap->GenerateNormals((int)pos.x-5,(int)pos.z-5,8,8);
 				
 			}
 			break;
+			
+		case SMOOTH:
+			if(pkInput->Pressed(MOUSELEFT))
+			{
+				Vector3 pos=m_kDrawPos;
+				m_pkMap->GetMapXZ(pos.x,pos.z);
+			
+				m_pkMap->Smooth(int(pos.x-4),int(pos.z-4),8,8);
+			
+			}
+			break;
+			
+		case RAISE:
+			if(pkInput->Pressed(MOUSELEFT))
+			{
+				Vector3 pos=m_kDrawPos;
+				m_pkMap->GetMapXZ(pos.x,pos.z);
+			
+				for(int xp=-2;xp<3;xp++){
+					for(int yp=-2;yp<3;yp++){
+						m_pkMap->GetVert(int(pos.x+xp),int(pos.z+yp))->height+=2;				
+					}
+				}
+			
+				m_pkMap->GenerateNormals((int)pos.x-4,(int)pos.z-4,8,8);
+				m_pkMap->Smooth(int(pos.x-4),int(pos.z-4),8,8);
+			
+			}
+			break;
+			
 			
 		case TEXTURE:
 			if(pkInput->Pressed(MOUSELEFT))
@@ -792,8 +825,8 @@ void ZeroEdit::Input()
 						break;			
 					m_fTimer=pkFps->GetTicks();
 				
-					//Object *object=pkObjectMan->CreateObject(m_kCurentTemplate.c_str());
-					Object *object = pkObjectMan->CreateObjectByArchType(m_kCurentTemplate.c_str());
+					Object *object=pkObjectMan->CreateObject(m_kCurentTemplate.c_str());
+					//Object *object = pkObjectMan->CreateObjectByArchType(m_kCurentTemplate.c_str());
 
 					if(object==NULL)
 						break;

@@ -33,7 +33,8 @@ enum EDIT_MODES{
 	LOWER=2,
 	RAISE=3,
 	FLATTEN=4,
-	ADDOBJECT=5
+	ADDOBJECT=5,
+	SMOOTH=6,
 };
 
 class LandType{

@@ -13,7 +13,7 @@ HeightMap::HeightMap()
 	m_iError=4;
 	
 	verts =NULL;
-	m_pkVertex = NULL;
+//	m_pkVertex = NULL;
 
 	Create(128);
 	
@@ -32,8 +32,8 @@ void HeightMap::Create(int iHmSize)
 
 	delete[] verts;
 	verts=new HM_vert[(m_iHmSize+m_iError)*m_iHmSize];	
-	delete[] m_pkVertex;
-	m_pkVertex =new Vector3[(m_iHmSize+m_iError)*m_iHmSize];	
+//	delete[] m_pkVertex;
+//	m_pkVertex =new Vector3[(m_iHmSize+m_iError)*m_iHmSize];	
 
 	Zero();
 	SetTileSet("file:../data/textures/landbw.bmp");
@@ -46,7 +46,7 @@ void HeightMap::Zero() {
 	for(int i=0;i<(m_iHmSize+m_iError)*m_iHmSize;i++){
 		verts[i].height=5;
 		verts[i].texture=0;
-		m_pkVertex[i].Set(0,0,0);
+//		m_pkVertex[i].Set(0,0,0);
 	}
 }
 
@@ -166,22 +166,44 @@ void HeightMap::GenerateNormals() {
 	}
 }
 
-void HeightMap::GenerateNormals(int iPosX,int iPosZ,int iWidth,int iHeight)
+void HeightMap::GenerateNormals(int iStartx,int iStartz,int iWidth,int iHeight)
 {
 	Vector3 med;
 	Vector3 v1,v2,v3,n1,n2;
 	
-	if(iPosX>m_iHmSize || iPosZ>m_iHmSize)
+	
+	int lx,rx;
+	int tz,bz;
+
+	lx = iStartx;
+	rx = iStartx+iWidth;
+	
+	tz = iStartz;
+	bz = iStartz+iHeight;
+
+	if(lx < 1)
+		lx = 1;
+		
+	if(tz < 1)
+		tz = 1;
+
+	if(rx > m_iHmSize)
+		rx = m_iHmSize;
+		
+	if(bz > m_iHmSize)
+		bz = m_iHmSize;	
+	
+/*	if(iPosX>m_iHmSize || iPosZ>m_iHmSize)
 		return;
 	if(iPosX<0 || iPosZ <0)
 		return;	
 	if(iPosX+iWidth>m_iHmSize || iPosZ+iHeight>m_iHmSize){
 		iWidth=iWidth-(iPosX+iWidth-m_iHmSize);
 		iHeight=iHeight-(iPosZ+iHeight-m_iHmSize);
-	}
+	}*/
 	
-	for(int z=iPosZ;z<iPosZ+iHeight-1;z++){
-		for(int x=iPosX;x<iPosX+iWidth-1;x++) {
+	for(int z=tz;z<bz-1;z++){
+		for(int x=lx;x<rx-1;x++) {
 			med=Vector3(0,0,0);  //reset medium vector
 			for(int q=-1;q<1;q++){
 				for(int w=-1;w<1;w++){
@@ -227,55 +249,19 @@ bool HeightMap::Load(const char* acFile) {
 	
 	delete[] verts;
 	verts=new HM_vert[(m_iHmSize+m_iError)*m_iHmSize];
-	delete[] m_pkVertex;
-	m_pkVertex =new Vector3[(m_iHmSize+m_iError)*m_iHmSize];	
+//	delete[] m_pkVertex;
+//	m_pkVertex =new Vector3[(m_iHmSize+m_iError)*m_iHmSize];	
 
 	cout<<"SIZE:"<<sizeof(HM_vert)<<endl;
 	
 	int i;
 	for(i=0;i<(m_iHmSize*m_iHmSize);i++) 
 	{
-//		HM_vert hora;
-//		savefile.Read((void*)&verts[i],sizeof(HM_vert));	
 		savefile.Read((void*)&verts[i],sizeof(HM_vert));
-//		savefile.Read(hora);
-//		cout<<i<<"  "<<hora.height<<endl;
-//		if(hora.height==0) {
-//			break;
-//		}
 	}
 	
 	savefile.Close();
 	
-	
-	
-	
-	//setup fileheader
-//	HM_fileheader k_Fh;
-/*	
-	//open file	
-	FILE* fp=fopen(m_pkFile->File(acFile),"rb");
-	if(fp==NULL)
-		return false;
-	
-	//write header
-	fwrite(&m_iHmSize,sizeof(float),1,fp);	
-//	m_iHmSize=k_Fh.m_iHmSize;
-	cout<<"Size is:"<<m_iHmSize<<endl;
-	
-	
-	delete[] verts;
-	verts=new HM_vert[(m_iHmSize+m_iError)*m_iHmSize];
-		
-	for(int i=0;i<m_iHmSize*m_iHmSize;i++) {
-		fread(&verts[i].height,sizeof(float),1,fp);
-	}
-
-//	fread(&verts[0],sizeof(HM_vert),m_iHmSize*m_iHmSize,fp);
-	
-	
-	fclose(fp);
-*/		
 	
 	return true;
 }
@@ -293,44 +279,14 @@ bool HeightMap::Save(const char* acFile) {
 		cout<<"Could not save heightmap"<<endl;
 		return false;
 	}
-//	savefile.Write((void*)&k_Fh,sizeof(HM_fileheader));
 	savefile.Write((void*)&k_Fh, sizeof(HM_fileheader));
 	
-//	cout<<"SIZE:"<<sizeof(HM_vert)<<endl;
-
 	for(int i=0;i<(m_iHmSize*m_iHmSize);i++) 
 	{
-//		savefile.Write((void*)&verts[i],sizeof(HM_vert));	
 		savefile.Write((void*)&verts[i],sizeof(HM_vert));
-//		cout<<verts[i].height<<endl;
-//		cout<<verts[i].texture<<endl;
 	}
 	
 	savefile.Close();
-	
-	
-	/*
-	//open file
-	FILE* fp=fopen(m_pkFile->File(acFile),"wb");
-	if(fp==NULL)
-		return false;
-	
-	//write header
-	fwrite(&m_iHmSize,sizeof(float),1,fp);
-	
-	//write heightmap data
-	for(int i=0;i<m_iHmSize*m_iHmSize;i++) {
-		fwrite(&verts[i].height,sizeof(float),1,fp);
-	}
-*/
-//		fwrite(&verts[0],sizeof(HM_vert),m_iHmSize*m_iHmSize,fp);
-
-//	}
-	
-	
-	
-	//close file
-//	fclose(fp);
 	
 	return true;
 }
@@ -381,7 +337,6 @@ void HeightMap::Random() {
 
 
 HM_vert* HeightMap::GetVert(int x,int z) {
-//	cout<<"hora:"<<z*m_iHmSize+x<<endl;
 	return &verts[z*m_iHmSize+x];
 }
 
@@ -451,8 +406,8 @@ bool HeightMap::LoadImageHmap(const char* acFile) {
 	
 	delete[] verts;
 	verts=new HM_vert[(m_iHmSize+m_iError)*m_iHmSize];	
-	delete[] m_pkVertex;
-	m_pkVertex=new Vector3[(m_iHmSize+m_iError)*m_iHmSize];	
+//	delete[] m_pkVertex;
+//	m_pkVertex=new Vector3[(m_iHmSize+m_iError)*m_iHmSize];	
 	 
 	for(int y=0;y<m_iHmSize;y++)
 		for(int x=0;x<m_iHmSize;x++){						
@@ -537,10 +492,62 @@ void HeightMap::ClearSet()
 void HeightMap::RebuildVertex()
 {
 	for(int i=0;i<(m_iHmSize+m_iError)*m_iHmSize;i++){
-		m_pkVertex[i].Set(0,0,0);
+//		m_pkVertex[i].Set(0,0,0);
 	}
 
 }
 
+void HeightMap::GetMapXZ(float& x,float& z)
+{
+	x/=HEIGHTMAP_SCALE;
+	z/=HEIGHTMAP_SCALE;
+	
+	x-=m_kPosition.x-m_iHmSize/2;
+	z-=m_kPosition.z-m_iHmSize/2;
 
+}
 
+void HeightMap::Smooth(int iStartx,int iStartz,int iWidth,int iHeight)
+{
+	int lx,rx;
+	int tz,bz;
+
+	lx = iStartx;
+	rx = iStartx+iWidth;
+	
+	tz = iStartz;
+	bz = iStartz+iHeight;
+
+	if(lx < 1)
+		lx = 1;
+		
+	if(tz < 1)
+		tz = 1;
+
+	if(rx > m_iHmSize)
+		rx = m_iHmSize;
+		
+	if(bz > m_iHmSize)
+		bz = m_iHmSize;
+		
+
+	for(int z=tz; z<bz-1; z++) {
+		for(int x=lx; x<rx-1; x++) {
+			float med=0;
+			for(int q=-1;q<2;q++)
+				for(int w=-1;w<2;w++){
+					if(q==0 && w==0) 
+					{							
+					} else 
+					{
+						med+=verts[(z+q)*m_iHmSize+(x+w)].height;							
+					}
+				}
+			med=med/8;
+			
+			verts[z*m_iHmSize+x].height=med;
+		}
+	}
+	
+	GenerateNormals(iStartx,iStartz,iWidth,iHeight);
+}

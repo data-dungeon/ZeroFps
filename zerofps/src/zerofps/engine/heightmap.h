@@ -6,13 +6,6 @@
 #include <SDL/SDL.h>
 #include <SDL/SDL_image.h>
 #include "engine_x.h"
-//#include "os.h"
-//#include "vector3.h"
-//#include "fileio.h"
-//#include "globals.h"
-//#include "zffile.h"
-//#include "zfobject.h"
-//#include "zfobjectmanger.h"
 #include <vector>
 #include <string>
 
@@ -78,6 +71,8 @@ class ENGINE_API HeightMap: public ZFObject {
 		void SetPosition(Vector3 kNewPos);
 		Vector3 &GetPos(){return m_kPosition;};
 		HM_vert* GetVert(int x,int z);		
+		void GetMapXZ(float& x,float& z);
+		void Smooth(int fStartx,int fStartz,int fWidth,int fHeight);
 		
 		int GetSize(){return m_iHmSize*HEIGHTMAP_SCALE;};
 		void AddSet(const char* acTexture,const char* acDetailTexture,const char* acMask);
