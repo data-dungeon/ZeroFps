@@ -59,7 +59,7 @@ LINK32=link.exe
 # Begin Special Build Tool
 ProjDir=.
 SOURCE="$(InputPath)"
-PostBuild_Cmds=copy            $(ProjDir)\release\*.lib            ..\..\bin\ 
+PostBuild_Cmds=copy             $(ProjDir)\release\*.lib             ..\..\bin\ 
 # End Special Build Tool
 
 !ELSEIF  "$(CFG)" == "common - Win32 Debug"
@@ -92,7 +92,7 @@ LINK32=link.exe
 # Begin Special Build Tool
 ProjDir=.
 SOURCE="$(InputPath)"
-PostBuild_Cmds=copy                        $(ProjDir)\debug\*.lib                        ..\..\bin\ 
+PostBuild_Cmds=copy                         $(ProjDir)\debug\*.lib                         ..\..\bin\ 
 # End Special Build Tool
 
 !ELSEIF  "$(CFG)" == "common - Win32 Release Profile"
@@ -209,6 +209,10 @@ SOURCE=.\p_clientunit.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\p_fogrender.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\p_renderselection.cpp
 # End Source File
 # Begin Source File
@@ -322,6 +326,10 @@ SOURCE=.\p_clientinput.h
 # Begin Source File
 
 SOURCE=.\p_clientunit.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\p_fogrender.h
 # End Source File
 # Begin Source File
 

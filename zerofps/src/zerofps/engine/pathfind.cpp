@@ -458,13 +458,13 @@ bool PathFind::FillQueue()
 
 	SEARCH_STATE uiSearchState;
 
-	static int it=0, max=(m_siMapWidth/6)*(m_siMapWidth/6);
+	static int counter=0, max=(m_siMapWidth/6)*(m_siMapWidth/6);
 
 	do
 	{
-		if(it++ > max)
+		if(counter++ > max)
 		{
-			it=0;
+			counter=0;
 			Reset();
 			return false;
 		}

@@ -209,9 +209,14 @@ void ZeroRTS::Input()
 				if(m_pkTestPath->Rebuild(m_pkStart.x, m_pkStart.y, m_pkEnd.x, m_pkEnd.y) == false)
 				{
 					m_pkEnd = m_pkStart;
-					printf("Rebuild Failed\n");
+					printf("Pathfinding Failed\n");
 				}
+
+				float fx=m_pkEnd.x, fy=m_pkEnd.y;
+				int tex = m_pkMap->GetMostVisibleTexture(fx,fy);
+				printf("Texture=%i\n", tex);
 			}
+			
 		}
 
 		//do we want to clear?
@@ -241,6 +246,8 @@ void ZeroRTS::Input()
 		static bool s_bToggle = true;
 		m_pkMiniMap->Show((s_bToggle=!s_bToggle));
 	}
+
+
 			
 }
 
@@ -474,12 +481,18 @@ void ZeroRTS::SetObjDstPos(int sqr_x, int sqr_y, Object* pkObject)
 
 void ZeroRTS::BuildPath()
 {
+	static bool bDone = false;
+	if(bDone == false)
+		bDone = true;
+	else
+		return;
+
 	int aiCost[5];
-	aiCost[GRASS] = 1;
-	aiCost[WOOD]  = BLOCKED;
-	aiCost[SWAMP] = 500;
-	aiCost[WATER] = BLOCKED;
-	aiCost[ROAD]  = 1;
+	aiCost[0] = 15; // gräs (grön nyans)
+	aiCost[1] = 1; // väg (röd nyans)
+	aiCost[2] = 7; // sten (blå nyans)
+	aiCost[3] = 10; // öken (röd nyans)
+	aiCost[4] = 999; // vatten
 
 	PathBuilder kPathBuilder(m_pkMap, &m_pkTestPath);
 	kPathBuilder.Build(aiCost);

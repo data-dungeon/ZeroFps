@@ -42,29 +42,14 @@ void PathBuilder::Build(int pkObjectTypeCost[5])
 			{
 				HM_vert* pkVert = m_pkHeightMap->GetVert(x,y);
 
-				int texture = 0; 
+				float dx=x, dy=y;
+				int texture = m_pkHeightMap->GetMostVisibleTexture(dx, dy); 
+
 				if(pkVert->height <= 2.0f)
-					texture = 1;
+					texture = 4;
 
 				int iIndex = y*iMapSize+x;
-				switch(texture)
-				{
-				case 0: // slättland
-					m_piTerrain[iIndex] = GRASS;
-					break;
-				case 1: // vatten
-					m_piTerrain[iIndex] = 999;//WATER;
-					break;
-				case 2: // träsk
-					m_piTerrain[iIndex] = SWAMP;
-					break;
-				case 3: // väg
-					m_piTerrain[iIndex] = ROAD;
-					break;
-				case 4: // skog
-					m_piTerrain[iIndex] = WOOD;
-					break;
-				}
+				m_piTerrain[iIndex] = texture;					
 			}
 	}
 
@@ -76,20 +61,23 @@ void PathBuilder::Build(int pkObjectTypeCost[5])
 			int iIndex = y*iMapSize+x;
 			switch(m_piTerrain[iIndex])
 			{
-			case GRASS:
-				m_piCostMap[iIndex] = pkObjectTypeCost[GRASS];
+			case 0:
+				m_piCostMap[iIndex] = pkObjectTypeCost[0]; // gräs
 				break;
-			case WOOD:
-				m_piCostMap[iIndex] = pkObjectTypeCost[WOOD];
+			case 1:
+				m_piCostMap[iIndex] = pkObjectTypeCost[1]; // öken
 				break;
-			case SWAMP:
-				m_piCostMap[iIndex] = pkObjectTypeCost[SWAMP];
+			case 2:
+				m_piCostMap[iIndex] = pkObjectTypeCost[2]; // sten
 				break;
-			case WATER:
-				m_piCostMap[iIndex] = pkObjectTypeCost[WATER];
+			case 3:
+				m_piCostMap[iIndex] = pkObjectTypeCost[3]; // väg?
 				break;
-			case ROAD:
-				m_piCostMap[iIndex] = pkObjectTypeCost[ROAD];
+			case 4:
+				m_piCostMap[iIndex] = pkObjectTypeCost[4]; // water
+				break;
+			default:
+				printf("Bad terran type found, terrain not intialized!\n");
 				break;
 			}
 		}
