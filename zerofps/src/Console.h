@@ -27,6 +27,7 @@ class Console {
 		Console(ZeroFps* pkEngine);
 		
 		void Print(char* aText);
+		void Gemens(char* aTexT);
 		
 		void Update(void);
 		void Draw(void);
@@ -36,6 +37,8 @@ class Console {
 
 
 #endif
+
+
 
 
 

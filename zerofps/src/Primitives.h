@@ -7,10 +7,12 @@
 #include "Vector3.h"
 
 #define TEXT_MAX_LENGHT 256
+#define FONTWIDTH 32
 
 class Primitives {
 	private:
 		TextureManager* m_pkTexMan;
+		char aCurentFont[256];
 
 	public:
 		Primitives(TextureManager* pkTexMan);
@@ -18,6 +20,7 @@ class Primitives {
 		void Pyra(float x,float y,float z);
 		void PrintChar(char cChar);
 		void Print(Vector3 kPos,Vector3 kHead,Vector3 kScale,char* aText);
+		void SetFont(char* aFont);
 };
 
 

@@ -17,7 +17,6 @@ bool TextureManager::LoadTexture(GLuint &iNr,char *acFilename) {
   glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR_MIPMAP_LINEAR);
 
 //  glTexImage2D(GL_TEXTURE_2D,0,GL_RGB,image->w,image->h,0,GL_RGB,GL_UNSIGNED_BYTE,image->pixels);
-//  gluBuild2DMipmaps
   gluBuild2DMipmaps(GL_TEXTURE_2D,GL_RGB,image->w,image->h,GL_RGB,GL_UNSIGNED_BYTE,image->pixels);
   glBindTexture(GL_TEXTURE_2D,0);
   return true;
@@ -79,6 +78,7 @@ int TextureManager::Load(char* acFileName) {
 	//if the texture cant be loaded then complain and return 0 
 	if(!LoadTexture(temp->index,acFileName)){
 		cout<<"Error Loading texture: "<<temp->file<<endl;
+		exit(1);
 		return 0;
 	}
 	//add the texture to the loaded textures vector

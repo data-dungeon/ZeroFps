@@ -86,7 +86,37 @@ void Primitives::Pyra(float x,float y,float z) {
 }
 
 void Primitives::PrintChar(char cChar) {
-	char aTexture[255]="data/textures/text/ .bmp";
+//	cout<<"CHAR: "<<cChar<<endl;
+	
+	int texwidth=FONTWIDTH*16;	
+	int pos=int(cChar)*FONTWIDTH;		
+	float glu=1.0/texwidth;				//opengl texture cordinats is 0-1
+	float width=glu*16;
+	
+	float y=1.0-(float(int(pos/texwidth)*FONTWIDTH)*glu+width*2+glu);
+	float x=float(pos%texwidth)*glu+width/2;
+	
+	
+//	cout<<"Att texture position:"<<pos<<" "<<x<<" "<<y<<endl;
+	
+	
+	glBlendFunc(GL_ONE,GL_ZERO); 		
+ 	m_pkTexMan->BindTexture(aCurentFont);  
+
+  glBegin(GL_QUADS);			
+		glColor4f(1.0,1.0,1.0,1.0);  	  
+ 	  glNormal3f(0,1,0);
+ 	  
+   	glTexCoord2f(x			,y);				glVertex3f(-.5,-0.5,0);		 
+   	glTexCoord2f(x+width,y);				glVertex3f(.5,-0.5,0);		
+	  glTexCoord2f(x+width,y+width*2);	glVertex3f(.5,0.5,0);    
+  	glTexCoord2f(x			,y+width*2);	glVertex3f(-0.5,0.5,0);    
+	glEnd();			
+	
+	
+	
+	
+/*	char aTexture[255]="data/textures/text/ .bmp";
 		
 	aTexture[19]=cChar;
 				
@@ -97,7 +127,7 @@ void Primitives::PrintChar(char cChar) {
 		
 				
 	if(aTexture[19]!=' ')
-		Quad(Vector3(0,0,0),Vector3(0,0,0),Vector3(1,1,1),m_pkTexMan->Load(aTexture));
+		Quad(Vector3(0,0,0),Vector3(0,0,0),Vector3(1,1,1),m_pkTexMan->Load(aTexture));*/
 
 
 }
@@ -126,3 +156,13 @@ void Primitives::Print(Vector3 kPos,Vector3 kHead,Vector3 kScale,char* aText) {
 
 	glPopMatrix();
 }
+
+
+void Primitives::SetFont(char* aFont) {
+	strcpy(aCurentFont,aFont);
+
+}
+
+
+
+
