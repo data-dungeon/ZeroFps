@@ -130,10 +130,10 @@ bool MistServer::IsValid()	{ return true; }
 void MistServer::OnCommand(int iID, ZGuiWnd *pkMainWnd)
 {
 	if(iID == 5)
-		pkScript->Call(GetGuiScript(), "OnClickBackpack", 0, 0); 
+		pkScript->Call(m_pkScriptResHandle, "OnClickBackpack", 0, 0); 
 	if(iID == 6)
-		pkScript->Call(GetGuiScript(), "OnClickStats", 0, 0);
+		pkScript->Call(m_pkScriptResHandle, "OnClickStats", 0, 0);
 	if(iID == 4)
-		pkScript->Call(GetGuiScript(), "OnClickMap", 0, 0);
+		pkScript->Call(m_pkScriptResHandle, "OnClickMap", 0, 0);
 
 }
