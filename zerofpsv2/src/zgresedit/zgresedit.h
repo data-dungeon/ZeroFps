@@ -50,6 +50,7 @@ class ZGResEdit : public Application, public ZGuiApp
 		ZGResEdit(char* aName,int iWidth,int iHeight,int iDepth);
 
 	private:
+		void OpenWnd(ZGuiWnd* pkWnd, bool bOpen=true);
 		void UpdateSkinList(ZGuiWnd* pkFocusWnd);
 		void UpdatePropertyData();
 		void ExecuteCommand();

@@ -148,16 +148,14 @@ void SkillDlg::ToogleOpen()
 	{
 		m_pkCharProperty->RequestUpdateFromServer("skills"); 
 
-		m_pkAudioSys->StartSound( "/data/sound/open_window.wav",
-				m_pkAudioSys->GetListnerPos(),Vector3(0,0,0),false);
+		m_pkAudioSys->StartSound( "/data/sound/open_window.wav");
 		m_pkDialog->Show();
 		m_pkDialog->SetFocus();
 		m_pkGui->SetFocus( m_pkDialog);
 	}
 	else
 	{
-		m_pkAudioSys->StartSound( "/data/sound/close_window.wav",
-				m_pkAudioSys->GetListnerPos(),Vector3(0,0,0),false);
+		m_pkAudioSys->StartSound( "/data/sound/close_window.wav");
 		m_pkDialog->Hide();
 		m_pkGui->SetFocus(m_pkApp->GetWnd("PanelBkWnd") );
 	}

@@ -165,8 +165,7 @@ void QuickBoard::OnCommand(ZGuiWnd* pkWndClicked, bool bRightMBnClicked)
 				// Right button pressed
 				RemoveSlot(i);
 
-				m_pkAudioSys->StartSound( "/data/sound/click1.wav",
-						m_pkAudioSys->GetListnerPos(),m_pkAudioSys->GetListnerDir(),false);
+				m_pkAudioSys->StartSound( "/data/sound/click1.wav");
 			}
 	
 			break;

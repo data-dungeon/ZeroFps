@@ -9,6 +9,8 @@
 #include "zfaudiosystem.h"
 
 #define NO_SOURCE 999
+
+Vector3 ZFAudioSystem::m_kPos = Vector3(0,0,0);
 				        
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
@@ -60,6 +62,9 @@ bool ZFSoundRes::Create(string strName)
 	ZFVFileSystem* pkFileSys;
 	pkFileSys = static_cast<ZFVFileSystem*>(g_ZFObjSys.GetObjectPtr("ZFVFileSystem"));		
 	string strFull = pkFileSys->GetFullPath(strName.c_str());
+
+	if(strFull.empty())
+		return false;
 
 	m_szFileName = new char[strFull.size()+1];
 	strcpy(m_szFileName, strFull.c_str());
@@ -282,6 +287,9 @@ bool ZFAudioSystem::LoadSound(string strFileName)
 		// Already exist.
 		return true;
 	}
+
+	// Vi har misslyckats ladda in ljudet så vi tar bor resurshantaget... 031205
+	UnLoadSound(strFileName);
 
 	return false;
 }
@@ -969,7 +977,10 @@ bool ZFAudioSystem::InitSound(ZFSoundInfo *pkSound)
 
 	// Ladda in om det behövs.
 	if(pkResHandle->IsValid() == false)
-		LoadSound(strName);
+	{
+		if(!LoadSound(strName))
+			return false;
+	}
 	
 	// Öka prioritets värdet med 1.
 	ModifyResHandlePriority(strName, 1);

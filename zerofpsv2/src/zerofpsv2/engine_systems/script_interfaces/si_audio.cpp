@@ -134,9 +134,6 @@ int AudioLua::PlaySoundLua(lua_State* pkLua)
 //		(1) loop = 1, do not loop = 0 (int)
 int AudioLua::PlayGuiSoundLua(lua_State* pkLua)
 {
-	Vector3 pos = g_pAudioSys->GetListnerPos();
-	Vector3 dir = g_pAudioSys->GetListnerDir();
-
 	int iNumArgs = g_pkScript->GetNumArgs(pkLua);
 
 	if(iNumArgs != 2)
@@ -158,7 +155,7 @@ int AudioLua::PlayGuiSoundLua(lua_State* pkLua)
 	string strFileName = "data/sound/";
 	strFileName.append(szFileName);
 
-	g_pAudioSys->StartSound(strFileName, pos, dir, false);
+	g_pAudioSys->StartSound(strFileName);
 
 	return 1;
 }

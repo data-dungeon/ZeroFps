@@ -567,8 +567,7 @@ void MistClient::Input()
 
 		if( pkInputWnd->IsVisible() == false)
 		{
-			m_pkAudioSys->StartSound("/data/sound/open_window2.wav",m_pkAudioSys->GetListnerPos());
-			
+			m_pkAudioSys->StartSound("/data/sound/open_window2.wav");	
 			pkInputWnd->Show();
 			pkGui->SetFocus(GetWnd("InputBox"));
 		}
@@ -576,8 +575,8 @@ void MistClient::Input()
 		{		
 			ZGuiWnd* pkTextbox = GetWnd("InputBox");
 
-			m_pkAudioSys->StartSound("/data/sound/close_window2.wav",m_pkAudioSys->GetListnerPos());
-			
+			m_pkAudioSys->StartSound("/data/sound/close_window2.wav");
+
 			OnClientInputSend(pkTextbox->GetText());
 			pkTextbox->SetText("");
 
@@ -986,7 +985,7 @@ void MistClient::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 		{
 			ZGuiWnd* pkInputWnd = GetWnd("InputWnd");		
 			pkInputWnd->Hide();
-			m_pkAudioSys->StartSound("/data/sound/close_window2.wav",m_pkAudioSys->GetListnerPos());
+			m_pkAudioSys->StartSound("/data/sound/close_window2.wav");
 			
 			pkInputWnd = GetWnd("InputBox");			
 			OnClientInputSend(pkInputWnd->GetText());
@@ -1774,7 +1773,7 @@ void MistClient::OnKeyPress(int iKey, ZGuiWnd *pkWnd)
 				{
 					pkWnd->Hide();
 					pkGui->SetFocus(GetWnd("MainWnd")); 
-					m_pkAudioSys->StartSound("/data/sound/close_window.wav",m_pkAudioSys->GetListnerPos()); 
+					m_pkAudioSys->StartSound("/data/sound/close_window.wav"); 
 				}
 			}
 		}

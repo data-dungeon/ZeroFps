@@ -210,8 +210,7 @@ void InventoryDlg::OnClick(int x, int y, bool bMouseDown, bool bLeftButton)
 
 					AddSlot(szPic, sqr, UNDER_MOUSE, pkStats, iContID, iNetworkID, m_iCurrentContainer);
 
-					m_pkAudioSys->StartSound("/data/sound/open_window.wav",
-						m_pkAudioSys->GetListnerPos(),m_pkAudioSys->GetListnerDir(),false);
+					m_pkAudioSys->StartSound("/data/sound/open_window.wav");
 
 					m_kClickOffset.x = 32;//x-pkSlot->m_pkLabel->GetScreenRect().Left; //(264+sqr.x*SLOT_SIZE); 
 					m_kClickOffset.y = 32;//y-pkSlot->m_pkLabel->GetScreenRect().Top;  //(16+sqr.y*SLOT_SIZE);
@@ -302,8 +301,7 @@ void InventoryDlg::OnClick(int x, int y, bool bMouseDown, bool bLeftButton)
 				if(m_kDragSlots.empty())
 					m_pkGui->KillWndCapture(); // remove capture
 
-				m_pkAudioSys->StartSound("/data/sound/close_window.wav",
-					m_pkAudioSys->GetListnerPos(),m_pkAudioSys->GetListnerDir(),false);			
+				m_pkAudioSys->StartSound("/data/sound/close_window.wav");			
 			}
 		}
 	}
@@ -338,8 +336,7 @@ void InventoryDlg::OnDClick(int x, int y, bool bLeftButton)
 
 				m_kContainerStack.push(new_container);
 
-				m_pkAudioSys->StartSound("/data/sound/WoodenPanelClose.wav",
-					m_pkAudioSys->GetListnerPos(),m_pkAudioSys->GetListnerDir(),false);
+				m_pkAudioSys->StartSound("/data/sound/WoodenPanelClose.wav");
 				
 				printf("going in to container %i\n", new_container);
 			}
@@ -562,8 +559,7 @@ void InventoryDlg::OnCommand(int iID)
 
 			SwitchContainer(new_container);		
 
-			m_pkAudioSys->StartSound("/data/sound/PickUpRusty.wav",
-				m_pkAudioSys->GetListnerPos(),m_pkAudioSys->GetListnerDir(),false);
+			m_pkAudioSys->StartSound("/data/sound/PickUpRusty.wav");
 		}
 	}
 }

@@ -74,7 +74,7 @@ class ENGINE_SYSTEMS_API ZFAudioSystem  : public ZFSubSystem
 public:
 	void UnloadAll();
 
-	bool StartSound(string strName, Vector3 pos, Vector3 dir=Vector3(0,0,1), bool bLoop=false);
+	bool StartSound(string strName, Vector3 pos=m_kPos, Vector3 dir=Vector3(0,0,1), bool bLoop=false);
 	bool StopSound(string strName, Vector3 pos);
 
 	bool LoadSound(string strFileName);
@@ -127,7 +127,8 @@ private:
 	
 	OggMusic* m_pkMusic;
 
-	Vector3 m_kPos, m_kHead;
+	static Vector3 m_kPos;
+	Vector3 m_kHead;
 	Vector4 m_kUp;
 
 	typedef pair<ZFResourceHandle*, int> tResPriorHandle;

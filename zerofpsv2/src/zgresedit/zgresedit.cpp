@@ -318,14 +318,14 @@ void ZGResEdit::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 		if(strClickWndName == "OpenBn")
 		{
 			m_bSaveFile = false;
-			MoveWndToTop(m_pkScene->m_pkSelectFileWnd);
+			OpenWnd(m_pkScene->m_pkSelectFileWnd, true);
 			SetText("OwerwriteWarning", "", true);
 		}
 		else
 		if(strClickWndName == "SaveBn")
 		{
 			m_bSaveFile = true;
-			MoveWndToTop(m_pkScene->m_pkSelectFileWnd);
+			OpenWnd(m_pkScene->m_pkSelectFileWnd, true);
 			m_bOverwriteWarning = true;
 			SetText("OwerwriteWarning", "", true);
 		}
@@ -337,13 +337,15 @@ void ZGResEdit::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 		}
 		else
 		if(strClickWndName == "ToogleViewWnd")
-		{
+		{	
 			if(m_pkScene->m_pkViewWindow->IsVisible())
-				m_pkScene->m_pkViewWindow->Hide();
+			{
+				OpenWnd(m_pkScene->m_pkViewWindow, false);
+			}
 			else
 			{
 				UpdateViewWnd();
-				MoveWndToTop(m_pkScene->m_pkViewWindow);
+				OpenWnd(m_pkScene->m_pkViewWindow, true);
 			}
 		}
 		else
@@ -635,7 +637,7 @@ void ZGResEdit::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 		else
 		if(strClickWndName == "CloseViewWnd")
 		{
-			m_pkScene->m_pkViewWindow->Hide();
+			OpenWnd(m_pkScene->m_pkViewWindow, false);
 		}
 	}
 	else
@@ -643,7 +645,7 @@ void ZGResEdit::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 	{
 		if(strClickWndName == "SelectedFileCancel")
 		{
-			pkGui->ShowMainWindow(m_pkScene->m_pkSelectFileWnd, false);
+			OpenWnd(m_pkScene->m_pkSelectFileWnd, false);
 		}
 		else
 		if(strClickWndName == "SelectedFileOK")
@@ -668,7 +670,7 @@ void ZGResEdit::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 				return;
 			}
 
-			pkGui->ShowMainWindow(m_pkScene->m_pkSelectFileWnd, false);
+			OpenWnd(m_pkScene->m_pkSelectFileWnd, false);
 
 			if(szFileName && strlen(szFileName) > 0)
 			{
@@ -1394,7 +1396,7 @@ void ZGResEdit::OpenDefPropWnd(string strWndType)
 		CreateWnd(Textbox, "NewRadiogroupNameEB", "DefPropWnd", "", 10, 40, 150, 22, 0);
 	}
 
-	MoveWndToTop(m_pkScene->m_pkDefProp);
+	OpenWnd(m_pkScene->m_pkDefProp, true);
 }
 
 void ZGResEdit::OnReleaseButton(int mx, int my)
@@ -1840,4 +1842,18 @@ void ZGResEdit::UpdateSkinList(ZGuiWnd *pkFocusWnd)
 			break;
 		}
 
+}
+
+void ZGResEdit::OpenWnd(ZGuiWnd *pkWnd, bool bOpen)
+{
+	if(bOpen)
+	{
+		m_pkAudioSys->StartSound("/data/sound/open_door1.wav");
+		MoveWndToTop(pkWnd);
+	}
+	else
+	{
+		m_pkAudioSys->StartSound("/data/sound/close_door1.wav");
+		pkWnd->Hide();
+	}
 }

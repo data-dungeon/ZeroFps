@@ -221,8 +221,7 @@ void SpellDlg::OnCommand(ZGuiWnd* pkWndClicked)
 
 					m_pkQuickBoard->AddSlot( QuickBoard::Spell, "lightingball" );
 
-					m_pkAudioSys->StartSound( "/data/sound/turn_page.wav",
-							m_pkAudioSys->GetListnerPos(),m_pkAudioSys->GetListnerDir(),false);
+					m_pkAudioSys->StartSound( "/data/sound/turn_page.wav");
 
 					if(m_bAutoCloseWnd == true)
 						ToogleOpen();
@@ -237,8 +236,7 @@ void SpellDlg::ToogleOpen()
 {
 	if(m_pkDialog->IsVisible())
 	{
-		m_pkAudioSys->StartSound( "/data/sound/close_window.wav",
-				m_pkAudioSys->GetListnerPos(),m_pkAudioSys->GetListnerDir(),false);
+		m_pkAudioSys->StartSound( "/data/sound/close_window.wav");
 		m_pkDialog->Hide();
 		m_pkGui->SetFocus(m_pkApp->GetWnd("PanelBkWnd") );
 	}
