@@ -125,5 +125,9 @@ SOURCE=.\madexport.h
 
 # PROP Default_Filter "ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe"
 # End Group
+# Begin Source File
+
+SOURCE="..\..\..\..\..\Documents and Settings\jima02\My Documents\maya\scripts\MadExportOptions.mel"
+# End Source File
 # End Target
 # End Project

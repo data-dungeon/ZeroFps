@@ -55,7 +55,7 @@ typedef map<char *, int, struct lstr>	NameIntMap;
 typedef vector<MadExpBone *>			BoneList;
 typedef map<int, int>					PtLookupMap;
 
-class MadExport : public MPxCommand
+class MadExport : public MPxFileTranslator
 {
 private:
  	NameIntMap		m_kJointMap;
@@ -83,10 +83,10 @@ private:
 	MStatus			CreateFile(char* filename);
 	MStatus			ShowHelp(void);
 
-	MStatus			Export_SX(char* filename);
-	MStatus			Export_AX(char* filename);
-	MStatus			Export_MX(char* filename);
-	MStatus			Export_FX(char* filename);
+	MStatus			Export_SX(const char* filename);
+	MStatus			Export_AX(const char* filename);
+	MStatus			Export_MX(const char* filename);
+	MStatus			Export_FX(const char* filename);
 
 	MStatus			ExportBoneGeometry();
 
@@ -100,9 +100,25 @@ private:
 	void			PrintSelection();
 
 public:
-    MStatus			doIt( const MArgList& args );
+	MadExport();
+	~MadExport();
+
+//    MStatus			doIt( const MArgList& args );
     static void*	creator();
 
+	MStatus reader( const MFileObject& file, const MString& options, FileAccessMode mode);
+	MStatus writer( const MFileObject& file, const MString& options, FileAccessMode mode);
+
+	bool haveReadMethod() const;
+    bool haveWriteMethod() const;
+	bool canBeOpened () const;
+
+	MString		defaultExtension() const;
+
+	MPxFileTranslator::MFileKind identifyFile( const MFileObject& kFIleName, const char* pcData, short iSize) const;
+
+
 };
+
 
 #endif

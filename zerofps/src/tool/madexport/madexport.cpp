@@ -886,7 +886,7 @@ MStatus MadExport::UpdateBoneList (void)
 	}
 	return MS::kSuccess;	
 }
-
+ 
 MStatus	MadExport::WriteBoneList(void)
 {
 	BoneList::iterator itBone;
@@ -912,7 +912,7 @@ MStatus	MadExport::WriteBonePose(void)
 }
 
 
-MStatus	MadExport::Export_SX(char* filename)
+MStatus	MadExport::Export_SX(const char* filename)
 {
 	m_pkOutFile = fopen(filename, "w+");
 	if (!m_pkOutFile) {
@@ -946,7 +946,7 @@ MStatus	MadExport::Export_SX(char* filename)
 	return MStatus::kSuccess;
 }
 
-MStatus	MadExport::Export_AX(char* filename)
+MStatus	MadExport::Export_AX(const char* filename)
 {
 	m_pkOutFile = fopen(filename, "w+");
 	if (!m_pkOutFile) {
@@ -987,7 +987,7 @@ MStatus	MadExport::Export_AX(char* filename)
 	return MStatus::kSuccess;
 }
   
-MStatus	MadExport::Export_MX(char* filename)
+MStatus	MadExport::Export_MX(const char* filename)
 {
 	cout << "Exporting Mesh\n";
 	
@@ -1017,7 +1017,7 @@ MStatus	MadExport::Export_MX(char* filename)
 	return MStatus::kSuccess;
 }
  
-MStatus	MadExport::Export_FX(char* filename)
+MStatus	MadExport::Export_FX(const char* filename)
 {
 	m_bIsAnimation	= true;
 	m_bIsBaseData	= false;
@@ -1063,12 +1063,22 @@ void MadExport::PrintSelection()
 }
 
 
+MadExport::MadExport()
+{
+
+}
+
+MadExport::~MadExport()
+{
+
+}
+
 // PUBLIC / Interface
 
 void* MadExport::creator() {
     return new MadExport;
 }
-
+/*
 MStatus MadExport::doIt( const MArgList& args ) 
 {
 	m_bIsAnimation	= false;
@@ -1097,22 +1107,161 @@ MStatus MadExport::doIt( const MArgList& args )
 	cout << "DONE\n";
 
 	return MS::kSuccess;
+}*/
+
+
+MStatus MadExport::reader( const MFileObject& file, const MString& options, FileAccessMode mode)
+{
+	return MS::kSuccess;
 }
 
+#define EXPORT_NONE		0
 
+#define EXPORT_BONES	1
+#define EXPORT_MESH		2
+#define EXPORT_ANIM		3
+ 
+MStatus MadExport::writer( const MFileObject& file, const MString& options, FileAccessMode mode)
+{
+	MString FullPathName = file.fullName();
+	MString FileExt;
+
+	cout << "FileName " << FullPathName.asChar() << "\n";
+	cout << "Options: " << options.asChar() << "\n";
+
+	int iExportFlag = EXPORT_NONE;
+
+	if (options.length() > 0) {
+		// Start parsing.
+		MStringArray optionList;
+		MStringArray theOption;
+		options.split(';', optionList);	// break out all the options.
+		
+		for( int i = 0; i < optionList.length(); ++i ){
+			theOption.clear();
+			optionList[i].split( '=', theOption );
+			
+			cout << theOption[0].asChar() << " / " << theOption[1].asChar() << "\n";
+			/*
+			if( theOption[0] == MString("madtype") && theOption.length() > 1 ) {
+				if( theOption[1].asInt() > 0 ){
+					showPositions = true;
+				}else{
+					showPositions = false;
+				}
+			}
+			*/
+
+			if( theOption[0] == MString("madType") && theOption.length() > 1 ) {
+				cout << "fgkh\n";
+
+				if( theOption[1] == MString("s"))
+					iExportFlag = EXPORT_BONES;
+				if( theOption[1] == MString("m"))
+					iExportFlag = EXPORT_MESH;
+				if( theOption[1] == MString("a"))
+					iExportFlag = EXPORT_ANIM;
+			}
+		}
+	}
+
+	m_bIsAnimation	= false;
+	m_bIsBaseData	= false;
+
+	m_rgWeights = NULL;
+
+	switch(iExportFlag) {
+		case EXPORT_BONES:
+			FileExt = ".sx";
+			FullPathName += FileExt;
+			Export_SX(FullPathName.asChar());
+			break;
+		case EXPORT_MESH:
+			FileExt = ".mx";
+			FullPathName += FileExt;
+			Export_MX(FullPathName.asChar());
+			break;
+	
+		case EXPORT_ANIM:
+			FileExt = ".ax";
+			FullPathName += FileExt;
+			Export_AX(FullPathName.asChar());
+			break;
+
+		case EXPORT_NONE:
+			cout << "Exporting Nothing\n";
+			ShowHelp();
+			break;
+		}
+
+	cout << "Real FileName " << FullPathName.asChar();
+
+	/*
+	if(strcmp(args.asString( 0 ).asChar(), "f") == 0)
+	return Export_FX("c:\\test.fx");
+	return MS::kSuccess;
+	*/
+
+	return MS::kSuccess;
+}
+ 
+
+bool MadExport::haveReadMethod() const
+{
+	return false;
+}
+ 
+bool MadExport::haveWriteMethod() const
+{
+	return true;
+}
+
+MString	MadExport::defaultExtension() const
+{
+	return "mad";
+}
+
+bool MadExport::canBeOpened () const
+{
+	return true;
+}
+ 
+MPxFileTranslator::MFileKind MadExport::identifyFile( const MFileObject& kFIleName, const char* pcData, short iSize) const
+{
+    return kCouldBeMyFileType;
+
+	const char* name = kFIleName.name().asChar();
+	int iLen = strlen(name);
+
+	if((iLen > 4) && strcmp( name + iLen - 4, ".mad") == 0 )
+        return kCouldBeMyFileType;
+    else
+        return kNotMyFileType;
+}
+ 
 // DLL Startup / Shutdown
-
 MStatus initializePlugin( MObject obj )
 { 
+	MStatus   status;
+
     MFnPlugin plugin( obj, "ZeroFps", "1.0", "Any" );
-    plugin.registerCommand( "madexport", MadExport::creator );
+//    plugin.registerCommand( "madexport", MadExport::creator );
+    status = plugin.registerFileTranslator( "madus" , "none", MadExport::creator,
+		"MadExportOptions", "madType=m", true );
+
+	if (!status) {
+		cout << "ERROOOOR\n";
+		return status;
+	}
+
     return MS::kSuccess;
 }
 
 MStatus uninitializePlugin( MObject obj )
 {
     MFnPlugin plugin( obj );
-    plugin.deregisterCommand( "madexport" );
-
+ //   plugin.deregisterCommand( "madexport" );
+	plugin.deregisterFileTranslator( "madus" );
     return MS::kSuccess;
 }
+ 
