@@ -125,6 +125,14 @@ vector<PropertyValues> P_Primitives3D::GetPropertyValues()
 	return kReturn;
 };
 
+bool P_Primitives3D::HandleSetValue( string kValueName ,string kValue )
+{
+	if(strcmp(kValueName.c_str(), "color") == 0) 
+		SetNetUpdateFlag(true);
+
+	return false;
+}
+
 Property* Create_Prim3DProperty()
 {
 	return new P_Primitives3D;

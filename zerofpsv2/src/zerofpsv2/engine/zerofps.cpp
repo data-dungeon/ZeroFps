@@ -1286,9 +1286,18 @@ void ZeroFps::HandleEditCommand(NetPacket* pkNetPacket)
 	if( szCmd == string("use"))
 	{
 		pkNetPacket->Read(iEntId);
+
+		int iCharID = -1;
+		string strAction("Use");
+
+		vector<ScriptFuncArg> args(2);
+		args[0].m_kType.m_eType = tINT;
+		args[0].m_pData = &(iCharID);
+		args[1].m_kType.m_eType = tSTLSTRING;
+		args[1].m_pData = &strAction;
 		
 		if(Entity* pkObj = m_pkEntityManager->GetEntityByID(iEntId))
-			m_pkEntityManager->CallFunction(pkObj, "Useit",NULL);;
+			m_pkEntityManager->CallFunction(pkObj, "Useit",&args);;
 	}
 
 
