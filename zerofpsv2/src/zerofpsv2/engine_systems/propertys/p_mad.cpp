@@ -595,7 +595,10 @@ Vector3 P_Mad::GetJointPosition(const char* szJointName)
 		
 		kMat = pkMc->GetBoneTransform(pkMc->GetJointID(szJointName));
 		kPos = kMat.GetPos() * m_fScale;
-				
+		
+		//rotate joint with entity rotation
+		kPos = m_pkEntity->GetWorldRotM().VectorTransform(kPos);
+		
 		//kPos = -pkMc->GetJointPosition(szJointName);
 		
 		return kPos + m_kOffset;	
