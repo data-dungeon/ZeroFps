@@ -399,12 +399,14 @@ bool Image::load_tga(FILE *fp)
 	m_iHeight		= head.height;
 
 	if(head.pixel_depth == 8)	m_pkPixelsize = 1;
-	if(head.pixel_depth == 16)	m_pkPixelsize = 2;
-	if(head.pixel_depth == 24)	m_pkPixelsize = 3;
-	if(head.pixel_depth == 32)	{
+	else if(head.pixel_depth == 16)	m_pkPixelsize = 2;
+	else if(head.pixel_depth == 24)	m_pkPixelsize = 3;
+	else if(head.pixel_depth == 32)	{
 		m_pkPixelsize = 4;
 		m_bHasAlpha = true;
 		}
+	else
+		return false; // 040701: m_pkPixelsize = what?
 
 	if(head.id_length != 0) {
 		fseek(fp, head.id_length, SEEK_CUR);

@@ -387,7 +387,7 @@ Matrix3 Matrix4::submat(int i, int j)
 {
 	Matrix3 b;
 	
-	int ti, tj, idst, jdst;
+	int ti, tj, idst=0, jdst=0;
 	
 	for(ti = 0; ti < 4; ti++) {
 		if( ti < i)	idst = ti;

@@ -291,7 +291,7 @@ bool ZFVFileSystem::ListDir(vector<string>* pkFiles, string strName, bool bOnlyM
 {
 	string	strRootMerge;
 
-	int iSize = m_kRootPath.size();
+//	int iSize = m_kRootPath.size();
 
 	// Try to open from all active RootPaths.
 	for(unsigned int i=0; i <m_kRootPath.size(); i++) {

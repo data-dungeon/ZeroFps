@@ -107,7 +107,7 @@ bool ZFIni::Open(const char *strFileName, bool bCommandFile)
 
 int ZFIni::GetNumKeysInSection(int iSection, int iStartRow, int iEndRow)
 {
-	int iKeys=0, start=0, end=0;
+	int iKeys=0;//, start=0, end=0;
 
 	for(int i=iStartRow; i<iEndRow; i++)
 	{

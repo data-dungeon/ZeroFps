@@ -31,7 +31,7 @@ ZGuiSkin::ZGuiSkin( int t1,int t2,int t3,int t4,	// Textures
 	m_afBorderColor[1] 			= (1.0f/255)*g2;
 	m_afBorderColor[2] 			= (1.0f/255)*b2;
 
-	m_unBorderSize				= bsz; 
+	m_unBorderSize				= (unsigned short) bsz; 
 	m_bTileBkSkin				= tile_texture;
 	m_bTransparent				= transparent;
 
@@ -62,7 +62,7 @@ ZGuiSkin::ZGuiSkin( int t1,int t2,int t3,int t4,	// Textures
 	m_afBorderColor[1] 			= 1;
 	m_afBorderColor[2] 			= 1;
 
-	m_unBorderSize				= bsz; 
+	m_unBorderSize				= (unsigned short) bsz; 
 	m_bTileBkSkin				= tile_texture;
 	m_bTransparent				= false;
 
@@ -94,7 +94,7 @@ ZGuiSkin::ZGuiSkin( int r1,int g1,int b1,			// Background color
 	m_afBorderColor[1] 			= (1.0f/255)*g2;
 	m_afBorderColor[2] 			= (1.0f/255)*b2;
 
-	m_unBorderSize				= bsz; 
+	m_unBorderSize				= (unsigned short) bsz; 
 	m_bTileBkSkin				= false;
 	m_bTransparent				= bTransparent;
 	m_ucRots90Degree		= 0;
@@ -124,7 +124,7 @@ ZGuiSkin::ZGuiSkin( int r1,int g1,int b1,			// Background color
 	m_afBorderColor[1] 			= (1.0f/255)*g2;
 	m_afBorderColor[2] 			= (1.0f/255)*b2;
 
-	m_unBorderSize				= bsz; 
+	m_unBorderSize				= (unsigned short) bsz; 
 	m_bTileBkSkin				= false;
 	m_bTransparent				= false;
 

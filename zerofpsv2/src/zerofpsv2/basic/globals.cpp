@@ -94,7 +94,7 @@ int BASIC_API PowerOf2(int iVal)
 	int list[] = {1,2,4,8,16,32,64,128};
 
 	int smalest=999999999;
-	int tal;
+	int tal=0; // 040701: int tal;
 	int blub;
 
 	for(int i=0;i<7;i++)
@@ -280,7 +280,7 @@ ERROR_RESULT ZFADisplayError(char* szErrorTitle, char* szErrorText, char* szErro
 		return ZFA_BREAKPOINT;
 
 	exit(-1);
-	return ZFA_ABORT;
+//	return ZFA_ABORT; 040701: 	return ZFA_ABORT;
 }
 
 #endif // Win32

@@ -234,7 +234,7 @@ bool ZFSystem::StartUp()
 {
 	g_Logf("Start ZeroFps Engine SubSystems: \n");
 
-	int iSize = kObjectNames.size();
+//	int iSize = kObjectNames.size();
 	ZFSubSystem* pkTestObject;
 
 	for( int i = (kObjectNames.size() - 1); i >= 0; i--) {
