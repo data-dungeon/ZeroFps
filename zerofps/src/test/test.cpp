@@ -1,7 +1,7 @@
 #include "test.h"
 
 
-Test olle("MegaGame",640,480,16);
+Test olle("MegaGame",1024,768,16);
 
 Test::Test(char* aName,int iWidth,int iHeight,int iDepth): Application(aName,iWidth,iHeight,iDepth) {
 
@@ -12,7 +12,7 @@ void Test::OnInit(void) {
 	
 	pkConsole->Print("MegaUltraSuper Duper Game");
 	pkFps->m_pkAudioMan->LoadMusic("file:../data/music/killer_chin.mod");		
-	pkFps->m_pkAudioMan->PlayMusic();
+//	pkFps->m_pkAudioMan->PlayMusic();
 
 
 //------------Map---------

@@ -105,7 +105,7 @@ void Light::Update() {
 	//Put the first 8 in m_kActiveLights
 	int i=0;
 // BM-NOTE: Vim: Vrווווווווווווווווlll hata ljus.
-	//m_kSorted.sort(More_Light);
+	m_kSorted.sort(More_Light);
 
 	for( it=m_kSorted.begin();it!=m_kSorted.end();it++) {
 		if(i >= m_iNrOfLights)

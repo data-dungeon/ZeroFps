@@ -224,11 +224,12 @@ void ZeroFps::InitDisplay(int iWidth,int iHeight,int iDepth) {
 
 //	glFogCoordfEXT = NULL;	
 //	glFogCoordfEXT  =  (PFNGLFOGCOORDFEXTPROC) glXGetProcAddressARB((const GLubyte *)"glFogCoordfEXT");
-	
+/*	
 	if(!glFogCoordfEXT){
 		cout<<"No glFogCoordEXT support =("<<endl;
 		exit(1);	
 	}
+*/
 
 	//setup some opengl stuff =)
 	glEnable(GL_TEXTURE_2D);
