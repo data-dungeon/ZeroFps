@@ -503,7 +503,7 @@ void ZGuiEd::OnInit()
 	// create gui script
 	GuiAppLua::Init(&g_kZGuiEd, m_pkScript);
 	InitGui(m_pkScript, "defguifont", "data/script/gui/defskins.lua", 
-		NULL, true, MANUALLY_SCALE);
+		NULL, true, DISABLE_SCALE);
 
 	SetTitle("ZeroFps GUI Editor");
 

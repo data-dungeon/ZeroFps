@@ -92,11 +92,11 @@ void GuiMsgInventoryDlg( string strMainWnd, string strController,
 }
 
 InventoryDlg::InventoryDlg() : SLOTTS_HORZ_INVENTORY(6), 
-										 SLOTTS_VERT_INVENTORY(12), 
+										 SLOTTS_VERT_INVENTORY(9), 
 										 BD_R(1), BD_G(1), BD_B(1),
 										 ICON_WIDTH(32), // in pixels
 										 ICON_HEIGHT(32), // in pixels
-										 UPPERLEFT_INVENTORY(27, 87), // in pixels
+										 UPPERLEFT_INVENTORY(35,193), // in pixels
 										 UPPERLEFT_CONTAINER( 0,  0) // in pixels
 {
 	m_pkInventoryWnd = NULL;
@@ -468,7 +468,7 @@ void InventoryDlg::OpenContainerWnd(int id, char slots_x, char slots_y)
 	m_iSlotsVertContainer = slots_y;
 	m_iActiveContainerID = id;
 
-	RebuidContainerGrid(8,8);//slots_x, slots_y);
+	RebuidContainerGrid(slots_x, slots_y);
 
 	m_pkContainerWnd->SetZValue(22);
 	
@@ -481,8 +481,12 @@ void InventoryDlg::OpenContainerWnd(int id, char slots_x, char slots_y)
 
 void InventoryDlg::CreateContainerGrid()
 {
-	const float MAX_SLOTS_X = 15;
-	const float MAX_SLOTS_Y = 15;
+	const int MAX_SLOTS_X = 8;
+	const int MAX_SLOTS_Y = 8;
+	const int iNumOfLabelsNeeded = MAX_SLOTS_X*MAX_SLOTS_Y;
+
+	char szSlotBkLabelName[50];
+	ZGuiWnd* pkLabel;
 
 	static ZGuiSkin* pkSlotBkSkin = NULL;
 	
@@ -497,17 +501,11 @@ void InventoryDlg::CreateContainerGrid()
 		pkSlotBkSkin->m_unBorderSize = 1;
 	}
 
-	ZGuiWnd* pkLabel;
-
-	const int iNumOfLabelsNeeded = 8*8;//(MAX_SLOTS_X / 3 ) * (MAX_SLOTS_Y / 3 ) + 
-		//(((MAX_SLOTS_X+MAX_SLOTS_Y)/2+1) / 3);
-
 	for(int i=0; i<iNumOfLabelsNeeded; i++)
 	{
-		char szSlotBkLabelName[50];
 		sprintf(szSlotBkLabelName, "CSlotBkLabel_%i", i);
 		pkLabel = g_kMistClient.CreateWnd(Label, szSlotBkLabelName, "ContainerWnd", 
-			"", 0, 0, 32, 32, 0, TopLeft, eNone);
+			"", 0, 0, ICON_WIDTH, ICON_HEIGHT, 0, TopLeft, eNone);
 		pkLabel->SetSkin(pkSlotBkSkin);
 		m_vkContainerGridSlots.push_back(pkLabel);
 	}	
@@ -516,22 +514,13 @@ void InventoryDlg::CreateContainerGrid()
 // Skapa bakgrundsbilden genom att klistra samman massa labels som har skapats från skript.
 void InventoryDlg::RebuidContainerGrid(char slots_horz, char slots_vert)
 {
-	//const int MAX_WIDTH = (float)(slots_horz-1)*g_kMistClient.GetScaleX() + 
-	//	(int)(((float)slots_horz*(float)(ICON_WIDTH))*g_kMistClient.GetScaleX());
-
-	//const int MAX_HEIGHT = (float)(slots_vert-1)*g_kMistClient.GetScaleY() + 
-	//	(int)(((float)slots_vert*(float)(ICON_HEIGHT))*g_kMistClient.GetScaleY());
-
-
-	int max_width = 0, max_height = 0;
+	int max_width = 0;
 	int current_slot_x=0, current_slot_y=0;
-	/*float dx=0, dy=0, xmod = ((float)(ICON_WIDTH)*g_kMistClient.GetScaleX());
-	float ymod = ((float)(ICON_HEIGHT+1)*g_kMistClient.GetScaleY());*/
-
 	int dx = 0, dy = 0;
 	int iSlotWidth = m_vkContainerGridSlots[0]->GetScreenRect().Width();
-	int iSlotHeight = m_vkContainerGridSlots[0]->GetScreenRect().Width();
-		
+	int iSlotHeight = m_vkContainerGridSlots[0]->GetScreenRect().Height();
+	Rect rcInventory = m_pkInventoryWnd->GetScreenRect();
+
 	for(int i=0; i<m_vkContainerGridSlots.size(); i++)
 	{
 		ZGuiWnd* pkWnd = m_vkContainerGridSlots[i];
@@ -540,7 +529,7 @@ void InventoryDlg::RebuidContainerGrid(char slots_horz, char slots_vert)
 
 		current_slot_x += 1;
 		dx += iSlotWidth;
-
+		
 		if(current_slot_y >= slots_vert)
 		{			
 			pkWnd->Hide();		
@@ -555,24 +544,19 @@ void InventoryDlg::RebuidContainerGrid(char slots_horz, char slots_vert)
 		if(current_slot_x >= slots_horz)
 		{
 			max_width = dx;
-
 			current_slot_x = 0;
 			current_slot_y += 1;
 			dx = 0;
 			dy += iSlotHeight;
 		}		
-
-		
-		max_height = dy;
 	}
 
-	m_pkContainerWnd->Resize(max_width, max_height);
+	m_pkContainerWnd->Resize(max_width, dy);
 
-	int bdsize = m_pkContainerWnd->GetSkin()->m_unBorderSize; 
+	int top = m_pkInventoryWnd->GetScreenRect().Top + 
+		(int) ((float) UPPERLEFT_INVENTORY.y * g_kMistClient.GetScaleY()); 
 	
-	Rect rcInventory = m_pkInventoryWnd->GetScreenRect();
-	m_pkContainerWnd->SetPos(rcInventory.Left - max_width - bdsize + 16, 
-		rcInventory.Bottom - max_height - bdsize  /*no all is opaque*/, true, true);
+	m_pkContainerWnd->SetPos(rcInventory.Left - max_width, top, true, true);
 
 	g_kMistClient.GetWnd("ContainerCloseButton")->SetPos(max_width, -16, false, true);
 }
@@ -668,10 +652,10 @@ void InventoryDlg::UpdateContainer(vector<MLContainerInfo>& vkItemList)
 	for(int i=0; i<vkItemList.size(); i++)
 	{
 		sprintf(szItemName, "ContainerItemLabel%i", i);
-		x = 1+ UPPERLEFT_CONTAINER.x + vkItemList[i].m_cItemX * ICON_WIDTH + vkItemList[i].m_cItemX;
-		y = 1+ UPPERLEFT_CONTAINER.y + vkItemList[i].m_cItemY * ICON_HEIGHT + vkItemList[i].m_cItemY;
-		w = vkItemList[i].m_cItemW * (ICON_WIDTH) + vkItemList[i].m_cItemW-1;
-		h = vkItemList[i].m_cItemH * (ICON_HEIGHT) + vkItemList[i].m_cItemH-1;
+		x = UPPERLEFT_CONTAINER.x + vkItemList[i].m_cItemX * ICON_WIDTH;
+		y = UPPERLEFT_CONTAINER.y + vkItemList[i].m_cItemY * ICON_HEIGHT;
+		w = vkItemList[i].m_cItemW * ICON_WIDTH ;
+		h = vkItemList[i].m_cItemH * ICON_HEIGHT;
 
 		char text[20] = "";
 		if(vkItemList[i].m_iStackSize > 1)

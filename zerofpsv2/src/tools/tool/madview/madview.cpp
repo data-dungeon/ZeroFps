@@ -168,6 +168,7 @@ void MadView::CreateCamera()
 	m_pkCamera=new Camera(Vector3(0,0,0),Vector3(0,0,0),70,1.333,0.01,200);	
 	m_pkCamera->m_bForceFullScreen = false;
 	m_pkCamera->SetName("persp");
+	m_pkCamera->SetDebugGraphs(false);
 	m_pkZeroFps->AddRenderCamera(m_pkCamera);
 	
 	m_pkCameraObject = m_pkEntityManager->CreateEntityFromScript("data/script/objects/cameraedit.lua");
