@@ -97,6 +97,7 @@ bool P_PSystem::HandleSetValue( string kValueName, string kValue )
 
 void P_PSystem::SetPSType( string kName )
 {
+
 	m_pkPSystem = PSystemManager::GetInstance()->GetPSSystem ( kName );
    m_kPSType = kName;
    

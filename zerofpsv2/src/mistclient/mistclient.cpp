@@ -1565,11 +1565,11 @@ void MistClient::OnKeyPress(int iKey, ZGuiWnd *pkWnd)
 		}
 		break;
 
-	case KEY_SPACE:
+/*	case KEY_SPACE:
 		if ( m_pkContainerDlg )
          m_pkContainerDlg->ToggleOpen(!m_pkContainerDlg->IsOpen());
 
-		break;
+		break;*/
 	}
 
 }
