@@ -111,6 +111,7 @@ private:
 	SOURCE_POOL m_akSourcePool[SOURCE_POOL_SIZE];
 
 	map<string, ZFResourceHandle*> m_mkResHandles;
+	map<string, unsigned short> m_mkResHandleCounter;
 
 	list<SoundInfo*> m_kActiveSounds;
 
@@ -120,6 +121,8 @@ private:
 	bool Hearable(SoundInfo* pkSound);
 	bool RestartLoopSound(SoundInfo* pkSound);
 	bool LoadRes(SoundInfo* pkSound);
+	bool UnLoadRes(SoundInfo* pkSound);
+	unsigned short ChangeResCounter(string strFileName, unsigned short modification);
 };
 
 #endif // #ifndef _THE_ZFAUDIOSYSTEM_H_

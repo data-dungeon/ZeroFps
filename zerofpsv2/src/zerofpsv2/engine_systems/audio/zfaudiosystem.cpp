@@ -20,6 +20,8 @@ ZFSoundRes::ZFSoundRes()
 
 ZFSoundRes::~ZFSoundRes()
 {
+	printf("ZFSoundRes::~ZFSoundRes()\n");
+
 	if(m_szFileName != NULL)
 	{
 		delete[] m_szFileName;
@@ -135,11 +137,11 @@ SoundInfo::SoundInfo(const char* c_szFile, Vector3 pos, Vector3 dir, bool bLoop)
 
 SoundInfo::~SoundInfo()
 {
-	if(m_pkResource != NULL)
+/*	if(m_pkResource != NULL)
 	{
 		delete m_pkResource;
 		m_pkResource = NULL;
-	}
+	}*/
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -508,9 +510,17 @@ bool ZFAudioSystem::RemoveSound(SoundInfo kSound, float fMaxSearchRange)
 				
 				printf("removing\n");
 
+				// Minska antalet laddade resurser och ladda ur resursen
+				// om vi inga ljud använder den.
+				if( ChangeResCounter(string(pkRemoveSound->m_szFile),-1) == 0)
+				{
+					UnLoadRes( pkRemoveSound );
+				}
+
 				// Ta bort ljudet ur listan.
 				m_kActiveSounds.remove( pkRemoveSound ) ;
 				delete pkRemoveSound; // radera	
+				pkRemoveSound = NULL;
 
 				return true;
 			}
@@ -554,6 +564,46 @@ ZFResourceHandle* ZFAudioSystem::GetResHandle(string strFileName)
 		strFileName, pkNewRes)); 
 	
 	return pkNewRes;
+}
+
+//
+// Öka på eller minska antalet aktiva resurser
+//
+unsigned short ZFAudioSystem::ChangeResCounter(string strFileName, 
+															unsigned short modification)
+{
+	unsigned short num;
+
+	// Check if resource handle exist.
+	map<string,unsigned short>::iterator itCounter;
+	itCounter = m_mkResHandleCounter.find(strFileName);
+
+	if(itCounter != m_mkResHandleCounter.end())
+	{
+		// exist, increase..
+		unsigned short number = itCounter->second;
+
+		number+=modification;
+		
+		if(number <= 0)
+		{
+			m_mkResHandleCounter.erase(itCounter);
+			num = 0;
+		}
+		else
+		{
+			num = itCounter->second = number;
+		}
+	}
+	else
+	{
+		// do not exist, add 1
+		m_mkResHandleCounter.insert(map<string,int>::value_type(
+			strFileName, 1)); 
+		num = 1;
+	}
+	
+	return num;
 }
 
 bool ZFAudioSystem::Hearable(SoundInfo* pkSound)
@@ -616,6 +666,9 @@ bool ZFAudioSystem::LoadRes(SoundInfo* pkSound)
 	// Hämta ett resurshantag.
 	ZFResourceHandle* pkResHandle = GetResHandle(string(pkSound->m_szFile));
 
+	// Öka på antalet laddade resurser
+	ChangeResCounter(string(pkSound->m_szFile),1);
+
 	// Är resursen ej inladdad?
 	if(pkResHandle->IsValid() == false)
 	{
@@ -625,10 +678,29 @@ bool ZFAudioSystem::LoadRes(SoundInfo* pkSound)
 			printf("ZFAudioSystem::ActivateSound: SetRes failed!\n");
 			return false;
 		}
+		else
+		{
+			printf("Sound %s loaded\n", pkSound->m_szFile);
+		}
 	}
 
 	// Sätt resurspekaren.
 	pkSound->m_pkResource = (ZFSoundRes*) pkResHandle->GetResourcePtr();
 
 	return true;
+}
+
+bool ZFAudioSystem::UnLoadRes(SoundInfo* pkSound)
+{
+	// Check if resource handle exist.
+	map<string,ZFResourceHandle*>::iterator itRes;
+	itRes = m_mkResHandles.find(pkSound->m_szFile);
+	if(itRes != m_mkResHandles.end())
+	{
+		delete itRes->second;
+		m_mkResHandles.erase( itRes );
+		return true;
+	}
+
+	return false;
 }

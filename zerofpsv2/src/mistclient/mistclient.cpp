@@ -267,9 +267,9 @@ void MistClient::Input()
 			if(COUNTER==0)
 			{
 				strcpy(kSound.m_szFile, "data/sound/dummy.wav");
-				COUNTER++;
+		//		COUNTER++;
 			}
-			else
+/*			else
 			if(COUNTER==1)
 			{
 				strcpy(kSound.m_szFile, "data/sound/test.wav");
@@ -280,7 +280,7 @@ void MistClient::Input()
 			{
 				strcpy(kSound.m_szFile, "data/sound/walk.wav");
 				COUNTER = 0;
-			}
+			}*/
 			
 			pkAudioSys->StartSound(kSound);
 		}
