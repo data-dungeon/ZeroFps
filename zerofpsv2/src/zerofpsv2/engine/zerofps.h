@@ -62,9 +62,7 @@ enum enginestates
 #define	ZFGP_REQOWNOBJECT		6
 #define	ZFGP_GIVEOWNOBJECT		7
 #define	ZFGP_ZONELIST			8	// LIst of active zones sent to client.
-
-
-#define	ZFGP_ENDOFPACKET	128
+#define	ZFGP_ENDOFPACKET		128
 
 class DevStringPage
 {
@@ -83,7 +81,6 @@ public:
 	string		m_strName;			// Name of player.
 	Object*		m_pkObject;			// Object used for client.
 	set<int>	m_iActiveZones;		// Activated Zones.
-
 };
 
 /// Main class for the ZeroFps engine. 
@@ -120,7 +117,7 @@ class ENGINE_API ZeroFps : public I_ZeroFps {
 		float 		m_fLastFrameTime;
 		float 		m_fAvrageFpsTime;
 		int			m_iAvrageFrameCount;
-		DebugGraph	m_kFpsGraph;
+		// DebugGraph	m_kFpsGraph;
 
 		
 /*		SDL_Surface* m_pkScreen;

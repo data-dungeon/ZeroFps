@@ -233,14 +233,21 @@ void ObjectManager::Clear()
 }
 
 
-// Updates
+/**	\brief	Run update on selected propertys.
+
+	This function collects all propertys that fit the selected flags, sorts them if it needs to
+	and then runs the update function of each of this propertys.
+
+	
+*/
+
 void ObjectManager::Update(int iType,int iSide,bool bSort)
 {
 	m_iUpdateFlags = iType | iSide;
 
-	if(!m_bUpdate)
-		if(iType!=PROPERTY_TYPE_RENDER)
-			return;
+/*	if(!m_bUpdate)
+		if(iType != PROPERTY_TYPE_RENDER)
+			return;*/
 
 	GetPropertys(iType,iSide);
 	
@@ -937,9 +944,9 @@ char* ObjectManager::GetUpdateStatusName(int eStatus)
 		case UPDATE_ALL: 		pkName = "UPDATE_ALL";	break;
 		case UPDATE_STATIC: 	pkName = "UPDATE_STATIC";	break;
 		case UPDATE_DYNAMIC: 	pkName = "UPDATE_DYNAMIC";	break;
-		case UPDATE_PLAYERS: 	pkName = "UPDATE_PLAYERS";	break;
-		case UPDATE_DECORATION: pkName = "UPDATE_DECORATION";	break;
-		case UPDATE_LIGHT: 		pkName = "UPDATE_LIGHT";	break;
+//		case UPDATE_PLAYERS: 	pkName = "UPDATE_PLAYERS";	break;
+//		case UPDATE_DECORATION: pkName = "UPDATE_DECORATION";	break;
+//		case UPDATE_LIGHT: 		pkName = "UPDATE_LIGHT";	break;
 		}
 
 	return pkName;
@@ -952,9 +959,9 @@ char* ObjectManager::GetObjectTypeName(int eType)
 	switch(eType) {
 		case OBJECT_TYPE_DYNAMIC: 		pkName = "OBJECT_TYPE_DYNAMIC";	break;
 		case OBJECT_TYPE_STATIC: 		pkName = "OBJECT_TYPE_STATIC";	break;
-		case OBJECT_TYPE_PLAYER: 		pkName = "OBJECT_TYPE_PLAYER";	break;
+/*		case OBJECT_TYPE_PLAYER: 		pkName = "OBJECT_TYPE_PLAYER";	break;
 		case OBJECT_TYPE_STATDYN:		pkName = "OBJECT_TYPE_STATDYN";	break;
-//		case OBJECT_TYPE_DECORATION: 	pkName = "OBJECT_TYPE_DECORATION";	break;
+//		case OBJECT_TYPE_DECORATION: 	pkName = "OBJECT_TYPE_DECORATION";	break;*/
 		}
 
 	return pkName;

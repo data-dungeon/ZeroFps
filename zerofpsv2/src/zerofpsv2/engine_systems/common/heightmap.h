@@ -4,17 +4,15 @@
 #define _BASIC_HEIGHTMAP_H_
 
 #include <SDL/SDL.h>
-//#include <SDL/SDL_image.h>
 #include "../engine_systems_x.h"
 #include <vector>
 #include <string>
 #include "../../basic/vector3.h"
 #include "../../basic/rect.h"
-#include "../engine_systems_x.h"
+//#include "../engine_systems_x.h"
 #include "../../basic/zfsystem.h"
 #include "../../render/texturemanager.h"
 #include "../../render/frustum.h"
-//#include "../../basic/zffile.h"
 #include "../../basic/globals.h"
 
 #define HEIGHTMAP_SCALE 2

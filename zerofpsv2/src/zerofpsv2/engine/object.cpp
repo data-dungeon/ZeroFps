@@ -12,13 +12,14 @@ Object::Object()
 {
 	// Get Ptrs to some usefull objects.
 	m_pkObjectMan			= static_cast<ObjectManager*>(g_ZFObjSys.GetObjectPtr("ObjectManager"));
-	m_pkPropertyFactory	= static_cast<PropertyFactory*>(g_ZFObjSys.GetObjectPtr("PropertyFactory"));	
+	m_pkPropertyFactory		= static_cast<PropertyFactory*>(g_ZFObjSys.GetObjectPtr("PropertyFactory"));	
 	m_pkFps					= static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
 		
 	ZFAssert(m_pkObjectMan,			"Object::Object(): Failed to find ObjectManger");
-	ZFAssert(m_pkPropertyFactory, "Object::Object(): Failed to find PropertyFactory");
+	ZFAssert(m_pkPropertyFactory,	"Object::Object(): Failed to find PropertyFactory");
+	ZFAssert(m_pkFps,				"Object::Object(): Failed to find ZeroFps");
 
-	m_pkObjectMan->Add(this);	// Add ourself to objectmanger and get NetID.
+	m_pkObjectMan->Add(this);		// Add ourself to objectmanger and get a NetID.
 
 	// SetDefault Values.
 	m_kLocalRotM.Identity();
@@ -37,16 +38,16 @@ Object::Object()
 	m_eRole					= NETROLE_AUTHORITY;
 	m_eRemoteRole			= NETROLE_PROXY;
 
-	m_iObjectType			=	OBJECT_TYPE_DYNAMIC;	
-	m_iUpdateStatus		=	UPDATE_ALL;
-	m_bZone					=	false;
-	m_iCurrentZone			=	-1;
-	m_bUseZones				=	false;
-	m_bSave					=	true;	
-	m_pkParent				=	NULL;
-	m_akChilds.clear();	
+	m_iObjectType			= OBJECT_TYPE_DYNAMIC;	
+	m_iUpdateStatus			= UPDATE_ALL;
+	m_bZone					= false;
+	m_iCurrentZone			= -1;
+	m_bUseZones				= false;
+	m_bSave					= true;	
+	m_pkParent				= NULL;
+	m_bRelativeOri			=	false;
 	
-	m_bRelativeOri	=	false;
+	m_akChilds.clear();	
 	
 	ResetGotData();
 }
@@ -66,11 +67,11 @@ Object::~Object()
 		m_akPropertys.pop_back();
 		delete TempProperty;
 	}
+
 	// Tell object manger that we are no more.
 	m_pkObjectMan->Remove(this);
 	
 	delete(m_pScriptFileHandle);
-//	m_pkFps->Logf("zerofps", "Object Deleted %d", iNetWorkID);
 }
 
 bool Object::IsA(string strStringType)
@@ -206,14 +207,19 @@ Property* Object::GetProperty(const char* acName)
 void  Object::GetPropertys(vector<Property*> *akPropertys,int iType,int iSide)
 {
 	for(vector<Property*>::iterator it = m_akPropertys.begin(); it != m_akPropertys.end(); it++) {
-		if((*it)->m_iType & iType || iType == PROPERTY_TYPE_ALL){
-			if((*it)->m_iSide & iSide || iSide == PROPERTY_SIDE_ALL){
+		if((*it)->m_iType & iType /*|| iType & PROPERTY_TYPE_ALL*/ ){
+			if((*it)->m_iSide & iSide /*|| iSide == PROPERTY_SIDE_ALL*/ ){
 				akPropertys->push_back((*it));			
 			}
 		}	
 	}
 }
 
+/**	\brief	Returns a vector with propertys for the object and child objects.
+	
+	Returns a vector with the the propertys that have the correct type and side flags.
+	Walks child objects of selected object.
+*/
 void Object::GetAllPropertys(vector<Property*> *akPropertys,int iType,int iSide)
 {
 	if(m_iUpdateStatus & UPDATE_NONE)
@@ -245,7 +251,7 @@ void Object::GetAllPropertys(vector<Property*> *akPropertys,int iType,int iSide)
 						(*it)->GetAllPropertys(akPropertys,iType,iSide);
 					break;
 			
-				case OBJECT_TYPE_PLAYER:
+				/*case OBJECT_TYPE_PLAYER:
 					if(m_iUpdateStatus & UPDATE_PLAYERS)		
 						(*it)->GetAllPropertys(akPropertys,iType,iSide);
 					break;
@@ -253,7 +259,7 @@ void Object::GetAllPropertys(vector<Property*> *akPropertys,int iType,int iSide)
 				case OBJECT_TYPE_STATDYN:
 					if(m_iUpdateStatus & UPDATE_STATDYN)		
 						(*it)->GetAllPropertys(akPropertys,iType,iSide);
-					break;
+					break;*/
 			}
 		}
 	}

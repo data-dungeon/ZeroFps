@@ -12,55 +12,53 @@
  
 int		g_iNumOfFrames;
 int		g_iNumOfMadSurfaces;
-float		g_fMadLODScale;
+float	g_fMadLODScale;
 int		g_iMadLODLock;
 int		g_iLogRenderPropertys;
+char g_szIpPort[256];
 
 static char Devformat_text[4096];	//
 
 ZeroFps::ZeroFps(void) : I_ZeroFps("ZeroFps") 
 {
-
 	// StartUp SDL
-	if(SDL_Init(SDL_OPENGL | SDL_INIT_NOPARACHUTE )<0){
+	if(SDL_Init(SDL_OPENGL | SDL_INIT_NOPARACHUTE )<0)
+	{
 		g_Logf("Error: Failed to StartUp SDL\n");
 	}	
 
-	/* Create Engine SubSystems 
-		*/
-
-	m_pkAStar				=	new AStar;
+	// Create Engine SubSystems 
+	m_pkAStar					= new AStar;
 	m_pkZShader					= new ZShader;
-	m_pkPhysics_Engine		= new Physics_Engine;
+	m_pkPhysics_Engine			= new Physics_Engine;
 	m_pkResourceDB				= new ZFResourceDB;
 	m_pkPhysEngine				= new PhysicsEngine;
 	m_pkIni						= new ZFIni;
 	m_pkGui						= new ZGui(Application::pkApp->m_iWidth, Application::pkApp->m_iHeight);
 	m_pkGuiMan					= new ZGuiResourceManager;
-	m_pkGuiRenderer			= new GLGuiRender;
+	m_pkGuiRenderer				= new GLGuiRender;
 	m_pkNetWork					= new NetWork;
 	m_pkMusic					= new OggMusic(24,4096);
-	m_pkAudioSystem			= new ZFAudioSystem;
+	m_pkAudioSystem				= new ZFAudioSystem;
 	m_pkObjectMan				= new ObjectManager;
 	m_pkCmd						= new CmdSystem;
 	m_pkConsole					= new Console;
 	m_pkRender					= new Render;
 	m_pkLight					= new Light;	
 	m_pkFrustum					= new Frustum;	
-	m_pkPropertyFactory		= new PropertyFactory;
+	m_pkPropertyFactory			= new PropertyFactory;
 	m_pkInput					= new Input;		
 	m_pkTexMan					= new TextureManager;
 	m_pkZFVFileSystem			= new ZFVFileSystem;
 	m_pkBasicFS					= new ZFBasicFS;
-	m_pkPSystemManager		= new PSystemManager;
-
+	m_pkPSystemManager			= new PSystemManager;
 	m_pkScript					= new ZFScriptSystem;
 
 	// Set Default values
 	m_fFrameTime				= 0;
 	m_fLastFrameTime			= 0;
-	m_fSystemUpdateFps		= 25;
-	m_fSystemUpdateTime		= 0;
+	m_fSystemUpdateFps			= 25;
+	m_fSystemUpdateTime			= 0;
 	m_bServerMode				= false;
 	m_bClientMode				= false;
 	m_bGuiMode					= false;
@@ -69,11 +67,10 @@ ZeroFps::ZeroFps(void) : I_ZeroFps("ZeroFps")
 	g_iMadLODLock				= 0;
 	m_pkCamera					= NULL;
 	m_bRunWorldSim				= true;
-	g_iLogRenderPropertys	= 0;
+	g_iLogRenderPropertys		= 0;
 	m_fAvrageFpsTime			= 0;
-	m_iAvrageFrameCount		= 0;
+	m_iAvrageFrameCount			= 0;
 	m_iRenderOn					= 1;
-
 
 	// Register Variables
 	RegisterVariable("r_maddraw",			&m_iMadDraw,CSYS_INT);
@@ -99,7 +96,6 @@ ZeroFps::ZeroFps(void) : I_ZeroFps("ZeroFps")
 	Register_Cmd("devhide",FID_DEV_HIDEPAGE, CSYS_FLAG_SRC_ALL, "devhide name", 1);	
 	Register_Cmd("debug",FID_LISTMAD);	
 	Register_Cmd("shot",FID_SCREENSHOOT);	
-
 }
 
 ZeroFps::~ZeroFps()
@@ -109,15 +105,12 @@ ZeroFps::~ZeroFps()
 	ConfigFileSave();
 
 	delete m_pkPhysEngine;
-//	delete m_pkLevelMan;
 	delete m_pkIni;
 	delete m_pkGui;
 	delete m_pkGuiMan;
 	delete m_pkGuiRenderer;
 	delete m_pkNetWork;
 	delete m_pkAudioSystem;
-//	delete m_pkAudioSystem2;
-//	delete m_pkSBM;
 	delete m_pkObjectMan;
 	delete m_pkCmd;
 	delete m_pkConsole;
@@ -164,8 +157,10 @@ bool ZeroFps::StartUp()
 
 	m_bDevPagesVisible = true;
 
+	/*	Vim
 	m_kFpsGraph.SetMinMax(0,1000);		
 	m_kFpsGraph.SetSize(100,100,100);
+	*/
 
 	//setup default console camera
 	m_pkConsoleCamera=new Camera(Vector3(0,0,0),Vector3(0,0,0),84,1.333,0.3,250);	
@@ -180,22 +175,20 @@ bool ZeroFps::StartUp()
 		printf("Failed to set GUI display!\n");
 	}
 	
+	/* Vim
 	string galla;
 	galla = m_pkZFVFileSystem->GetFullPath("data/mad/orc.mad");
 	cout << "Galla: " << galla.c_str() << endl;
+	*/
 
 	return true;
 }
 
-bool ZeroFps::ShutDown() 
+bool ZeroFps::ShutDown()	{	return true;	}
+bool ZeroFps::IsValid()		{	return true;	}
+	
+void ZeroFps::SetApp() 
 {
-	return true; 
-}
-
-bool ZeroFps::IsValid()	{ return true; }
-
-
-void ZeroFps::SetApp() {
 	m_pkApp=Application::pkApp;
 	m_pkApp->SetEnginePointer(this);
 }
@@ -212,15 +205,11 @@ void ZeroFps::ConfigFileSave()
 	g_ZFObjSys.Config_Save(CfgName);
 }
 
-
 bool ZeroFps::Init(int iNrOfArgs, char** paArgs)
 {	
-	SetApp();												//	setup class pointers	
+	SetApp();									//	setup class pointers	
 	ConfigFileRun();
-	g_ZFObjSys.HandleArgs(iNrOfArgs,paArgs);		//	handle arguments
-
-
-
+	g_ZFObjSys.HandleArgs(iNrOfArgs,paArgs);	//	handle arguments
 	
 	atexit(SDL_Quit);
 
@@ -231,17 +220,14 @@ bool ZeroFps::Init(int iNrOfArgs, char** paArgs)
 
 	if(!g_ZFObjSys.StartUp())
 		return false;
-	
-	
+
 	//InitDisplay(m_pkApp->m_iWidth,m_pkApp->m_iHeight,m_pkApp->m_iDepth);
 
 	m_iState=state_normal;									// init gamestate to normal		
-
 	m_pkApp->OnInit();										// call the applications oninit funktion
 	
 	m_fFrameTime=0;
 	m_fLastFrameTime = SDL_GetTicks();
-
 
 	return true;
 }
@@ -471,12 +457,8 @@ void ZeroFps::Draw_EngineShell()
 	}		
 	else 
 	{
-
-	
 		m_pkGui->Render();
 	}
-
-
 }
 
 void ZeroFps::MainLoop(void) {
@@ -487,9 +469,10 @@ void ZeroFps::MainLoop(void) {
 		 
 		Run_EngineShell();
 
-		if(m_bServerMode)	{
+		/*if(m_bServerMode)	{
 			Run_Server();
-			}
+			}*/
+
 		if(m_bClientMode)	{
 			Run_Client();
 			}
@@ -530,7 +513,7 @@ void ZeroFps::Swap(void) {
 	m_fFps=1000.0/m_fFrameTime;	
 
 //	m_kFpsGraph.PushValue( m_fFps);
-	m_kFpsGraph.PushValue( 500 );
+//	m_kFpsGraph.PushValue( 500 );
 	
 	m_iAvrageFrameCount++;
 	
@@ -547,9 +530,6 @@ void ZeroFps::Swap(void) {
 //		m_iState = state_exit;
 
 #endif
-
-
-
 }
 
 
@@ -720,8 +700,6 @@ void ZeroFps::DevPrint_Show(bool bVisible)
 {
 	m_bDevPagesVisible = bVisible;
 }
-
-char g_szIpPort[256];
 
 void ZeroFps::RunCommand(int cmdid, const CmdArgument* kCommand)
 {

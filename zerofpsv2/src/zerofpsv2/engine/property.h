@@ -21,17 +21,23 @@ class GameMessage;
 /*	When property should be updated. 
 */enum PROPERTY_TYPES
 {
+	/*
 	PROPERTY_TYPE_ALL		= 1,		// Run on all.
 	PROPERTY_TYPE_NORMAL	= 2,		// Run at normal update.
-	PROPERTY_TYPE_RENDER = 4,		// Run at render update.
-	PROPERTY_TYPE_PHYSIC = 8,		// Run at physics update.
+	PROPERTY_TYPE_RENDER	= 4,		// Run at render update.
+	PROPERTY_TYPE_PHYSIC	= 8,		// Run at physics update.
+	*/
+	PROPERTY_TYPE_NORMAL	= 1,		// Run at normal update.
+	PROPERTY_TYPE_RENDER	= 2,		// Run at render update.
+	PROPERTY_TYPE_PHYSIC	= 4,		// Run at physics update.
+	PROPERTY_TYPE_ALL		= 7,		// Run on all.
 };
 
 /* On wich side the propertys should update. */
 enum PROPERTY_SIDE
 {	
 	PROPERTY_SIDE_CLIENT	= 16,		// Run on client
-	PROPERTY_SIDE_SERVER = 32,		// Run on server
+	PROPERTY_SIDE_SERVER	= 32,		// Run on server
 	PROPERTY_SIDE_ALL		= 48,		// Run on both client/server
 };
 
@@ -127,12 +133,13 @@ private:
 /////END OF GUBB ULTRACLASS!!/// 
 
 /**	\brief	A property of a object.
-A Property is the things that make the objects in the world diffrent. 
+
+  A Property is the things that make the objects in the world diffrent. 
 */
 class ENGINE_API Property 
 {
 	private:
-		ZeroFps*					m_pkZeroFps;
+		ZeroFps*				m_pkZeroFps;			// Vim - Change To ObjectManger
 
 		///beware of the the code /Gubb  //////////////
 		string ValueToString(void *pkValue, PropertyValues *pkPropertyValue); 
@@ -144,7 +151,7 @@ class ENGINE_API Property
 		///////////////////////////////////////////
 	protected:
 		Object*					m_pkObject;
-		PropertyFactory*		m_pkPropertyFactory;
+		//PropertyFactory*		m_pkPropertyFactory;	// Vim - Removes
 	
 
 		virtual vector<PropertyValues> GetPropertyValues();
@@ -183,15 +190,15 @@ class ENGINE_API Property
 		Property();
 		virtual ~Property();
 
-		int	m_iSortPlace;		//	place in update queue
+		int		m_iSortPlace;			//	place in update queue
 		bool	m_bSortDistance;
 		
-		int	m_iType;				// property type
-		int	m_iSide;				// server or client property
+		int		m_iType;				// property type
+		int		m_iSide;				// server or client property
 		
-		bool	bNetwork;		
-		bool	m_bSave;
-		char	m_acName[50];		
+		bool	bNetwork;				// True if property needs to be sent o network.
+		bool	m_bSave;				// True if propertys should be saved with object.
+		char	m_acName[50];			// Name of Property. Set when property is created.	
 
 
 		// Property Edit Interface
