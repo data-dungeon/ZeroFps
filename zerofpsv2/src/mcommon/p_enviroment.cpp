@@ -160,7 +160,7 @@ void P_Enviroment::Update()
 				Vector3 cur;
 				Vector3 intr;
 			
-				float fIf = 0.04;
+				float fIf = 0.01;
 			
 				//interpolate diffuse light
 				current=m_pkCurrentLP->GetDiffuse();
