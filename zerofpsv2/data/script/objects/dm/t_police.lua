@@ -44,6 +44,8 @@ function InitPoliceData()
 	local civilian_list = GetCharsByFraction(1)
 	local num_civilians = civilian_list[1]
 
+	Print ( "Antal civila : ", num_civilians)
+
 	for x = 2, num_civilians+1, 1
 	do
 		local civilian_pos = GetEntityPos(civilian_list[x])
@@ -62,10 +64,10 @@ function HeartBeat()
 	-- skapa en lista över alla civila.
 	-----------------------------------------------------------------------
 	local cc = GetEntityVar(SIGetSelfID(), "CreateCounter")
-	if cc == 1 then
+	if cc == 2 then
 		InitPoliceData()
 	end
-	if cc < 2 then
+	if cc < 10 then
 		cc = cc + 1
 		SetEntityVar(SIGetSelfID(), "CreateCounter", cc)
 		return
