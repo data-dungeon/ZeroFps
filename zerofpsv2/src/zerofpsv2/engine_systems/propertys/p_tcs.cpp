@@ -244,7 +244,7 @@ bool P_Tcs::SetupMeshData()
 		}	
 	}
 	
-	//cout<<"TCS: error mech NOT found"<<endl;
+	cout<<"TCS: error mech NOT found"<<endl;
 	return false;
 }
 

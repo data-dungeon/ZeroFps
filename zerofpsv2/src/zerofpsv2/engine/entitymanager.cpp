@@ -2306,6 +2306,7 @@ void EntityManager::SetZoneModel(const char* szName,int iId)
 		zd->m_pkZone->DeleteProperty("P_Mad");
 		zd->m_pkZone->DeleteProperty("P_Tcs");
 		zd->m_pkZone->DeleteProperty("P_PfMesh");		
+		return;
 	}
 
 	//setup mad
