@@ -12,31 +12,40 @@ using namespace std;
 class Object;
 
 enum PROPERTY_TYPES{
-	PROPERTY_TYPE_NORMAL=0,
-	PROPERTY_TYPE_STATIC=10,
-	PROPERTY_TYPE_DYNAMIC=20
+	PROPERTY_TYPE_ALL,
+	PROPERTY_TYPE_NORMAL,
+	PROPERTY_TYPE_RENDER
 };
+
+enum PROPERTY_SIDE{
+	PROPERTY_SIDE_ALL,
+	PROPERTY_SIDE_CLIENT,
+	PROPERTY_SIDE_SERVER
+};
+
 
 class ENGINE_API Property 
 {
 	protected:
 		Object *m_pkObject;
-		int m_iType;			//property type, can be used when running update to update only selected types
 
 
 	public:
+		int m_iType;			//property type
+		int m_iSide;			//server or client property
+		
+		bool	bNetwork;		
+		char m_acName[50];		
+		
+		
+		
 		Property();
-		
-		bool	bNetwork;
-		
-		char m_acName[50];
-			
 		virtual ~Property(){};
 		virtual void Update()=0;			
 		virtual void PackTo(NetPacket* pkNetPacket) ;
 		virtual void PackFrom(NetPacket* pkNetPacket) ;
 		
-		inline int GetType(){ return m_iType ;};
+//		inline int GetType(){ return m_iType ;};
 		inline void SetObject(Object* pkObject){m_pkObject=pkObject;};
 		inline Object *GetObject() {return m_pkObject;};
 };

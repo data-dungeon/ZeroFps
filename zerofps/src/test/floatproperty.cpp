@@ -7,7 +7,8 @@ FloatProperty::FloatProperty() {
 	m_fGravity=-13;
 	strcpy(m_acName,"GravityProperty");	
 	
-
+	m_iType=PROPERTY_TYPE_NORMAL;
+	m_iSide=PROPERTY_SIDE_SERVER;
 }
 
 void FloatProperty::Update() {

@@ -8,6 +8,10 @@ PlayerControlProperty::PlayerControlProperty(Input *pkInput,HeightMap *pkMap) {
 	//m_pkFps=pkFps;
 	m_pkInput=pkInput;	
 	strcpy(m_acName,"PlayerControlProperty");
+
+	m_iType=PROPERTY_TYPE_NORMAL;
+	m_iSide=PROPERTY_SIDE_SERVER;
+
 };
 
 /*

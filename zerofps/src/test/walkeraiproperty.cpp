@@ -11,6 +11,9 @@ WalkerAIProperty::WalkerAIProperty()
 
 	m_iState = AIWALKER_IDLE;
 	m_kWaitTime = m_pkFps->GetGameTime() + rand() % 10 + 2;
+
+	m_iType=PROPERTY_TYPE_NORMAL;
+	m_iSide=PROPERTY_SIDE_SERVER;
 }
 
 Vector3 GetYawVector(float fAngleDeg)

@@ -8,7 +8,8 @@ SkyBoxRenderProperty::SkyBoxRenderProperty(const char* acHor,const char* acTop)
 	m_pkZeroFps=static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));		
 	m_pkRender=static_cast<Render*>(g_ZFObjSys.GetObjectPtr("Render"));		
 
-	m_iType=PROPERTY_TYPE_STATIC;
+	m_iType=PROPERTY_TYPE_RENDER;
+	m_iSide=PROPERTY_SIDE_CLIENT;
 	
 	m_kRotateSpd.Set(0,0,0);
 	m_kHead.Set(0,0,0);

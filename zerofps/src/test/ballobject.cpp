@@ -24,7 +24,7 @@ void BallObject::HandleCollision(Object* pkOther,Vector3 kPos,bool bContinue){
 		GetPos()=kPos+Vector3(0,.5,0);
 		m_kVel.y=0;
 		onGround=true;
-		GetStatic()=true;
+//		GetStatic()=true;
 		
 	} else if(bContinue){
 		pkOther->HandleCollision(this,kPos,false);

@@ -11,9 +11,12 @@ void SetGameTime(void)
 
 MadProperty::MadProperty()
 {
+	
 	bNetwork = true;
 	strcpy(m_acName,"MadProperty");
-	m_iType=PROPERTY_TYPE_STATIC;
+	m_iType=PROPERTY_TYPE_RENDER;
+	m_iSide=PROPERTY_SIDE_CLIENT;
+
 }
 
 MadProperty::MadProperty(Core* pkModell) {

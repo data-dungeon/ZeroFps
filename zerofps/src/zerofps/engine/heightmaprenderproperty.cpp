@@ -18,7 +18,8 @@ HeightMapRenderProperty::HeightMapRenderProperty(HeightMap* pkHeightMap)
 	m_iLodUpdate=0;	
 //	m_kOldCamPos=Vector3(0,0,0);
 */
-	m_iType=PROPERTY_TYPE_STATIC;
+	m_iType=PROPERTY_TYPE_RENDER;
+	m_iSide=PROPERTY_SIDE_CLIENT;
 }
 
 

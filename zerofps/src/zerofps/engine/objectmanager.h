@@ -8,9 +8,15 @@ using namespace std;
 
 
 class ENGINE_API ObjectManager : public ZFObject{
+	struct Property_Less : public binary_function<Property*, Property*, bool> {
+		bool operator()(Property* x, Property* y) { return x < y; };
+	} Less_Property;
+	
+	
 	
 	list<Object*>	m_akObjects;
 	vector<Object*> m_akDeleteList;
+	list<Property*> m_akPropertys;
 
 	void RunCommand(int cmdid, const CmdArgument* kCommand) { }
 
@@ -19,6 +25,10 @@ class ENGINE_API ObjectManager : public ZFObject{
 	public:
 		ObjectManager();
 		~ObjectManager() { }
+
+
+		void GetPropertys(int iType,int iSide);
+		void Update(int iType,int iSide,bool bSort);
 
 		void Add(Object* pkNewObject);				//add object to the manager
 		void Delete(Object* pkNewObject);			//adds an object to delete qeue

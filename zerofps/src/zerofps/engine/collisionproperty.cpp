@@ -44,6 +44,9 @@ CollisionProperty::~CollisionProperty() {
 void CollisionProperty::Init(){
 	strcpy(m_acName,"CollisionProperty");		
 	m_pkCollisionMan=NULL;
+
+	m_iType=PROPERTY_TYPE_NORMAL;
+	m_iSide=PROPERTY_SIDE_SERVER;
 }
 
 void CollisionProperty::Update() {

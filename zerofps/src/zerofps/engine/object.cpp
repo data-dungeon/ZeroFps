@@ -1,7 +1,7 @@
 #include "object.h"
 
 Object::Object() {
-	m_bStatic=false;
+//	m_bStatic=false;
 	m_pkObjectMan=NULL;
 	m_kPos=Vector3(0,0,0);
 	m_kRot=Vector3(0,0,0);
@@ -23,9 +23,6 @@ Object::~Object() {
 	}
 }
 
-
-
-
 Property* Object::GetProperty(char* acName) {
 	for(list<Property*>::iterator it=m_akPropertys.begin();it!=m_akPropertys.end();it++) {
 		if(strcmp((*it)->m_acName,acName)==0) {
@@ -35,6 +32,24 @@ Property* Object::GetProperty(char* acName) {
 	}
 	return NULL;
 }
+
+
+int Object::GetPropertys(list<Property*> *akPropertys,int iType,int iSide)
+{
+	int iNrOProps=0;
+	
+	for(list<Property*>::iterator it=m_akPropertys.begin();it!=m_akPropertys.end();it++) {
+		if((*it)->m_iType == iType || iType == PROPERTY_TYPE_ALL){
+			if((*it)->m_iSide == iSide || iSide == PROPERTY_SIDE_ALL){
+				akPropertys->push_back((*it));			
+//				cout<<"NAME "<<(*it)->m_acName<<endl;
+				iNrOProps++;
+			}
+		}	
+	}
+	return iNrOProps;
+}
+
 
 void Object::AddProperty(Property* pkNewProperty) {
 	pkNewProperty->SetObject(this);
@@ -79,20 +94,22 @@ bool Object::RemoveProperty(char* acName) {
 void Object::Update(){
 
 	//if the object is static then only update those propertys that are static propertys
-	if(m_bStatic){
-		Update(PROPERTY_TYPE_STATIC);
-		return;
-	}
+//	if(m_bStatic){
+//		Update(PROPERTY_TYPE_STATIC);
+//		return;
+//	}
 
 	for(list<Property*>::iterator it=m_akPropertys.begin();it!=m_akPropertys.end();it++) {
 		(*it)->Update();
 	}
 }
 
-void Object::Update(int iType){
+void Object::Update(int iType,int iSide){
 	for(list<Property*>::iterator it=m_akPropertys.begin();it!=m_akPropertys.end();it++) {
-		if((*it)->GetType() == iType){
-			(*it)->Update();
+		if((*it)->m_iType == iType){
+			if((*it)->m_iSide == iSide){
+				(*it)->Update();
+			}
 		}
 	}
 }
@@ -211,6 +228,7 @@ bool Object::NeedToPack()
 
 	return false;
 }
+
 
 
 

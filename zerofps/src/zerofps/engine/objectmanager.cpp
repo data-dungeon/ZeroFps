@@ -144,8 +144,45 @@ Object* ObjectManager::CreateObjectByNetWorkID(int iNetID)
 	return pkNew;
 }
 
-int	ObjectManager::GetNumOfObjects()
+int ObjectManager::GetNumOfObjects()
 {
 	return m_akObjects.size();
 }
+
+
+void ObjectManager::GetPropertys(int iType,int iSide)
+{
+	m_akPropertys.clear();
+
+	for(list<Object*>::iterator it=m_akObjects.begin();it!=m_akObjects.end();it++) {
+		(*it)->GetPropertys(&m_akPropertys,iType,iSide);		
+	}
+	
+//	cout<<"TOTAL propertys: "<<m_akPropertys.size()<<endl;
+	
+}
+
+void ObjectManager::Update(int iType,int iSide,bool bSort)
+{
+	GetPropertys(iType,iSide);
+	
+	if(bSort){
+		m_akPropertys.sort(Less_Property);	
+	}
+	
+	for(list<Property*>::iterator it=m_akPropertys.begin();it!=m_akPropertys.end();it++) 
+	{
+		(*it)->Update();
+	}
+}
+
+
+
+
+
+
+
+
+
+
 

@@ -22,7 +22,9 @@ class ENGINE_API Object {
 		Vector3 m_kPos;
 		Vector3 m_kRot;
 		Vector3 m_kVel;
-		bool m_bStatic;	
+//		bool m_bStatic;	
+//		bool m_
+		
 		int m_iType;
 		
 		list<Property*> m_akPropertys;
@@ -34,6 +36,7 @@ class ENGINE_API Object {
 		~Object();
 		
 		void Remove();
+		int GetPropertys(list<Property*> *akPropertys,int iType,int iSide);
 		Property* GetProperty(char* acName);
 //		void SetPropertyFactory(PropertyFactory* pkPropFactory) { m_pkPropFactory = pkPropFactory; }
 		void AddProperty(Property* pkNewProperty);
@@ -41,7 +44,7 @@ class ENGINE_API Object {
 		Property* AddProxyProperty(char* acName);
 		bool RemoveProperty(char* acName);
 		void Update();
-		void Update(int iType);		
+		void Update(int iType,int iSide);		
 		bool Update(char* acName);
 		
 		bool NeedToPack();				// Returns true if there is any netactive properys in object
@@ -52,7 +55,7 @@ class ENGINE_API Object {
 		inline Vector3 &GetRot(){return m_kRot;};
 		inline Vector3 &GetVel(){return m_kVel;};		
 		inline int &GetType(){return m_iType;};
-		inline bool &GetStatic(){return m_bStatic;};		
+//		inline bool &GetStatic(){return m_bStatic;};		
 		inline void SetObjectMan(ObjectManager* pkObjectMan) {m_pkObjectMan=pkObjectMan;};		
 		inline ObjectManager *GetObjectMan() {return m_pkObjectMan;};				
 		

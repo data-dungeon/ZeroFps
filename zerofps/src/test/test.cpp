@@ -135,7 +135,7 @@ void Test::OnInit(void) {
 	
 	//skybox
 	SkyBoxObject *sky=new SkyBoxObject("file:../data/textures/skybox-hor.bmp","file:../data/textures/skybox-topbotom.bmp");
-	sky->SetRotate(Vector3(10,10,0));
+	sky->SetRotate(Vector3(.5,0,0));
 	pkObjectMan->Add(sky);	
 	pkCollisionMan->Add(sky);
 	
@@ -153,6 +153,9 @@ void Test::OnInit(void) {
 	pkAlSys->AddSound(welcome);
 
 	ZFObjectManger::GetInstance()->PrintObjects();
+
+	pkObjectMan->GetPropertys(PROPERTY_TYPE_RENDER,PROPERTY_SIDE_CLIENT);
+
 }
 
 void Test::OnServerStart(void)
@@ -202,6 +205,8 @@ void Test::OnIdle(void) {
 
 //		pkRender->DrawSkyBox(pkFps->GetCam()->GetPos());
 //		pkRender->DrawHMlod(test,pkFps->GetCam()->GetPos(),pkFps->m_iFps);			
+		pkObjectMan->Update(PROPERTY_TYPE_RENDER,PROPERTY_SIDE_CLIENT,false);
+
 
 		glEnable(GL_ALPHA_TEST);
 		glAlphaFunc(GL_GREATER,0.3);

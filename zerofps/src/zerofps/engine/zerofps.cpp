@@ -164,8 +164,10 @@ void ZeroFps::MainLoop(void) {
 				//handle input
 				m_pkInput->Update();
 						
-				//update all objects
-				m_pkObjectMan->Update();
+				//update all normal propertys
+//				m_pkObjectMan->Update(PROPERTY_TYPE_ALL,PROPERTY_SIDE_ALL,false);
+				m_pkObjectMan->Update(PROPERTY_TYPE_NORMAL,PROPERTY_SIDE_ALL,false);
+//				m_pkObjectMan->Update(PROPERTY_TYPE_RENDER,PROPERTY_SIDE_ALL,false);				
 				DevPrintf("Num Objects: %d", m_pkObjectMan->GetNumOfObjects());
 
 

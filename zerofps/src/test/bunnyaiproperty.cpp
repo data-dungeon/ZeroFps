@@ -9,6 +9,9 @@ BunnyAIProperty::BunnyAIProperty()
 	m_iState=0;
 
 	strcpy(m_acName,"BunnyAIProperty");	
+
+	m_iType=PROPERTY_TYPE_NORMAL;
+	m_iSide=PROPERTY_SIDE_SERVER;
 }
 
 
