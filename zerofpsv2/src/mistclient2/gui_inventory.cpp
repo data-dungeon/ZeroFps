@@ -35,10 +35,12 @@ void GuiMsgInventoryDlg( string strMainWnd, string strController, unsigned int m
 	}
 }
 
-InventoryDlg::InventoryDlg() : ICON_WIDTH(32), ICON_HEIGHT(32)
+InventoryDlg::InventoryDlg() : ICON_WIDTH(32), ICON_HEIGHT(32), UPPER_LEFT(27,87),
+										 SLOTTS_HORZ(6), SLOTTS_VERT(12)
 {
 	m_pkMainWnd = NULL;
 	m_pkTexMan = g_kMistClient.m_pkTexMan;
+	m_pkSelectedWnd = NULL;
 }
 
 InventoryDlg::~InventoryDlg()
@@ -93,22 +95,61 @@ void InventoryDlg::OnCommand(string strController)
 
 void InventoryDlg::OnMouseMove(bool bLeftButtonPressed, int mx, int my)
 {
+	for(int i=0; i<m_vkItemList.size(); i++)
+	{		
+		if(m_vkItemList[i].pkWnd->GetScreenRect().Inside(mx, my))
+		{
+			m_vkItemList[i].pkWnd->GetSkin()->m_unBorderSize = 2;
 
+			if(bLeftButtonPressed)
+			{
+				m_vkItemList[i].pkWnd->GetSkin()->m_afBorderColor[0] = 1;
+				m_vkItemList[i].pkWnd->GetSkin()->m_afBorderColor[1] = 0;
+				m_vkItemList[i].pkWnd->GetSkin()->m_afBorderColor[2] = 0;
+
+				if(m_pkSelectedWnd == NULL)
+					m_pkSelectedWnd = m_vkItemList[i].pkWnd; // set new selection window
+			}
+			else
+			{
+				m_vkItemList[i].pkWnd->GetSkin()->m_afBorderColor[0] = 1;
+				m_vkItemList[i].pkWnd->GetSkin()->m_afBorderColor[1] = 1;
+				m_vkItemList[i].pkWnd->GetSkin()->m_afBorderColor[2] = 1;
+
+				if(m_pkSelectedWnd)
+				{
+					OnDropItem();
+				}
+
+				m_pkSelectedWnd = NULL;
+			}
+
+		}
+		else
+		{
+			m_vkItemList[i].pkWnd->GetSkin()->m_unBorderSize = 0;
+		}
+	}
+
+	if(m_pkSelectedWnd)
+	{
+		m_pkSelectedWnd->SetPos(mx,my, true, true);
+	}
 }
 
 void InventoryDlg::Update(vector<MLContainerInfo>& vkItemList)
 {
 	printf("size of item list = %i\n", vkItemList.size());
 
+	m_pkSelectedWnd = NULL;
+
 	// Ta bort alla gamla items
 	for(int i=0; i<m_vkItemList.size(); i++)
 	{
-		ZGuiWnd* pkWnd = g_kMistClient.GetWnd(m_vkItemList[i].strWndName);
+		ZGuiWnd* pkWnd = m_vkItemList[i].pkWnd;
 		delete pkWnd->GetSkin();
 		g_kMistClient.m_pkGui->UnregisterWindow( pkWnd );
 	}
-
-	const Point kUpperLef(27,87);
 
 	m_vkItemList.clear();
 
@@ -117,8 +158,8 @@ void InventoryDlg::Update(vector<MLContainerInfo>& vkItemList)
 	for(int i=0; i<vkItemList.size(); i++)
 	{
 		sprintf(szItemName, "InventoryItemLabel%i", i);
-		x = kUpperLef.x + vkItemList[i].m_cItemX * ICON_WIDTH + vkItemList[i].m_cItemX;
-		y = kUpperLef.y + vkItemList[i].m_cItemY * ICON_HEIGHT + vkItemList[i].m_cItemY;
+		x = UPPER_LEFT.x + vkItemList[i].m_cItemX * ICON_WIDTH + vkItemList[i].m_cItemX;
+		y = UPPER_LEFT.y + vkItemList[i].m_cItemY * ICON_HEIGHT + vkItemList[i].m_cItemY;
 		w = vkItemList[i].m_cItemW * ICON_WIDTH;
 		h = vkItemList[i].m_cItemH * ICON_HEIGHT;
 
@@ -130,7 +171,33 @@ void InventoryDlg::Update(vector<MLContainerInfo>& vkItemList)
 			string(string("data/textures/gui/items/") + vkItemList[i].m_strIcon).c_str(), 0) ;	
 
 		ITEM_SLOT kNewSlot;
-		kNewSlot.strWndName = string(szItemName);
+		kNewSlot.pkWnd = pkNewSlot;
 		m_vkItemList.push_back(kNewSlot);
 	}
+}
+
+void InventoryDlg::OnDropItem()
+{
+	Rect rcMain = m_pkMainWnd->GetWndRect();
+	Rect rc = m_pkSelectedWnd->GetWndRect();
+
+	if(rc.Left < UPPER_LEFT.x)
+		rc.Left = UPPER_LEFT.x;
+
+	if(rc.Top < UPPER_LEFT.y)
+		rc.Top = UPPER_LEFT.y;
+
+	int slot_w = rc.Width() / ICON_WIDTH;
+	int slot_h = rc.Height() / ICON_HEIGHT;
+
+	int slot_x = (rc.Left - UPPER_LEFT.x) / ICON_WIDTH;
+	int slot_y = (rc.Top  - UPPER_LEFT.y) / ICON_HEIGHT;
+
+	if(slot_x > SLOTTS_HORZ-slot_w) slot_x = SLOTTS_HORZ-slot_w;
+	if(slot_y > SLOTTS_VERT-slot_h) slot_y = SLOTTS_VERT-slot_h;
+
+	int x = UPPER_LEFT.x + slot_x * ICON_WIDTH + slot_x;
+	int y = UPPER_LEFT.y + slot_y * ICON_HEIGHT + slot_y;
+
+	m_pkSelectedWnd->SetPos(x, y, false, true);
 }

@@ -29,18 +29,27 @@ public:
 	bool IsVisible() { if(m_pkMainWnd == NULL) return false; return m_pkMainWnd && m_pkMainWnd->IsVisible(); }
 
 private:
+
+	void OnDropItem();
+
 	TextureManager* m_pkTexMan;
 
 	ZGuiWnd* m_pkMainWnd;
+	ZGuiWnd* m_pkSelectedWnd;
 	
 	bool m_bGuiCaptureBeforOpen;
 
 	const int ICON_WIDTH;
 	const int ICON_HEIGHT;
 
+	const int SLOTTS_HORZ;
+	const int SLOTTS_VERT;
+
+	const Point UPPER_LEFT;
+
 	struct ITEM_SLOT
 	{
-		string strWndName;
+		ZGuiWnd* pkWnd;
 	};
 
 	vector<ITEM_SLOT> m_vkItemList;
