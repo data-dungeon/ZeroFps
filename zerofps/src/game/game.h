@@ -8,6 +8,9 @@
 #include <GL/glut.h>
 #include "../zerofps/engine/application.h"
 
+#include "../common/common.pkg"
+
+/*
 #include "playercontrolproperty.h"
 #include "ballobject.h"
 #include "playerobject.h"
@@ -15,6 +18,7 @@
 #include "teleportproperty.h"
 #include "adaptorsniper.h"
 #include "treeidleproperty.h"
+*/
 
 class ZFScript;
 

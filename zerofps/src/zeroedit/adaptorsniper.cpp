@@ -1,4 +1,0 @@
-#include "../game/adaptorsniper.cpp"
-
-
-

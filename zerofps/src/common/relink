@@ -1,0 +1,1 @@
+g++ *.o -o ../../bin/libcommon.so --shared -L../../bin/ -lbasic -lengine -lrender -lscript

@@ -1,4 +1,0 @@
-#include "../game/statusproperty.cpp"
-
-
-

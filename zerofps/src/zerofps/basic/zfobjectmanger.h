@@ -6,6 +6,7 @@
 
 #include <vector>
 #include "zfobject.h"
+#include "cstdio"
 
 using namespace std;
 

@@ -12,7 +12,9 @@
 #include "../zerofps/engine/application.h"
 #include <cstdlib>
 
+#include "../common/common.pkg"
 
+/*
 #include "ballobject.h"
 #include "../game/teleportproperty.h"
 #include "../game/statusproperty.h"
@@ -20,6 +22,8 @@
 #include "../game/massdriverprojectile.h"
 #include "../game/adaptorsniper.h"
 #include "../game/treeidleproperty.h"
+*/
+
 class Gui;
 class GameScript;
 
