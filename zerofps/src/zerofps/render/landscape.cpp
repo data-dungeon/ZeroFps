@@ -715,6 +715,9 @@ void Render::DrawCross(Vector3 kPos,Vector3 kHead,Vector3 kScale,int iTexture1) 
 
 void Render::DrawHMLodSplat(HeightMap* kMap,Vector3 CamPos,int iFps)
 {
+	if(!m_iDrawLandscape)
+		return;
+
 	if(m_iAutoLod>0){
 		if(SDL_GetTicks()>(m_iLodUpdate+500)){
 			m_iLodUpdate=SDL_GetTicks();
@@ -766,6 +769,9 @@ void Render::DrawHMLodSplat(HeightMap* kMap,Vector3 CamPos,int iFps)
 	
 	for(int i=1;i<kMap->m_kSets.size();i++)
 	{	
+		if(i >= m_iMaxLandscapeLayers)
+			break;
+
 		glActiveTextureARB(GL_TEXTURE0_ARB);	
 		m_pkTexMan->BindTexture(kMap->m_kSets[i].m_acMask,0);	
 		

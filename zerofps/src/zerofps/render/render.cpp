@@ -16,7 +16,14 @@ Render::Render()
 	m_iAutoLod = 1;
 	m_iLodUpdate = 0;	
 	m_kOldCamPos = Vector3(0,0,0);
-	
+
+	m_iMaxLandscapeLayers	= 4;
+	m_iDrawLandscape			= 1;
+
+	g_ZFObjSys.RegisterVariable("r_maxlayers", &m_iMaxLandscapeLayers,CSYS_INT);
+	g_ZFObjSys.RegisterVariable("r_drawland", &m_iDrawLandscape,CSYS_INT);
+
+
 	m_iHmTempList=0;
 }
 

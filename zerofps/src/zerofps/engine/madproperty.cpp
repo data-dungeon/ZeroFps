@@ -149,7 +149,7 @@ void MadProperty::Load(ZFMemPackage* pkPackage)
 	pkPackage->Read((void*)&scale,4);
 	SetScale(scale);
 
-	g_ZFObjSys.Logf("net", "Mad: %s, Scale: %f", temp, scale);
+//	g_ZFObjSys.Logf("net", "Mad: %s, Scale: %f", temp, scale);
 	
 }
 

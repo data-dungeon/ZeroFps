@@ -6,7 +6,6 @@
 #include <vector>
 #include <cstdlib>
 #include <iostream>
-//#include "object.h"
 #include "engine_x.h"
 #include "network.h"
 #include <cfloat>
@@ -35,17 +34,28 @@ enum PROPERTY_SIDE
 	PROPERTY_SIDE_SERVER			// Run on server
 };
 
+enum ValueTypes
+{
+	VALUETYPE_INT,
+	VALUETYPE_FLOAT,
+	VALUETYPE_BOOL,
+	VALUETYPE_STRING,
+	VALUETYPE_VECTOR3,
+	VALUETYPE_VECTOR4,
+};
+
 class ENGINE_API PropertyValues
 {
 public:
-	string kValueName;
-	void* pkValue;
-	int iValueType;
-	float fUpperBound;
-	float fLowerBound;
-	int iNumberOfValues;
-	bool bResize;
-	bool bVector;
+	string	kValueName;
+	void*		pkValue;
+	int		iValueType;
+	float		fUpperBound;
+	float		fLowerBound;
+	int		iNumberOfValues;
+	bool		bResize;
+	bool		bVector;
+
 	inline PropertyValues() : 
 			fLowerBound(FLT_MIN),
 			fUpperBound(FLT_MAX),
@@ -54,11 +64,14 @@ public:
 			bVector(false) {} 
 };
 
+
+
 /// A property of a object.
 class ENGINE_API Property 
 {
 	private:
 		ZeroFps* m_pkZeroFps;
+
 		///beware of the the code /Gubb  //////////////
 		string ValueToString(void *pkValue, PropertyValues *pkPropertyValue); 
 		bool StringToValue(string kValue, void *pkValue, PropertyValues *pkPropertyValue);
@@ -67,33 +80,27 @@ class ENGINE_API Property
 	protected:
 		Object *m_pkObject;
 		PropertyFactory*	m_pkPropertyFactory;
-		/*ENGINE_API struct PropertyValues
-		{
-			PropertyValues();
-			string kValueName;
-			void* pkValue;
-			int iValueType;
-			float fUpperBound;
-			float fLowerBound;
-		};*/
 	
-		enum ValueTypes
-		{
-			VALUETYPE_INT,
-			VALUETYPE_FLOAT,
-			VALUETYPE_BOOL,
-			VALUETYPE_STRING,
-			VALUETYPE_VECTOR3,
-			VALUETYPE_VECTOR4,
-
-		};
 
 		virtual vector<PropertyValues> GetPropertyValues();
 		virtual bool HandleSetValue( string kValueName ,string kValue );
 		virtual bool HandleGetValue( string kValueName );
 
 	public:
+		Property();
+		virtual ~Property() { };
+
+		int	m_iSortPlace;		//	place in update queue
+		bool	m_bSortDistance;
 		
+		int	m_iType;				// property type
+		int	m_iSide;				// server or client property
+		
+		bool	bNetwork;		
+		char	m_acName[50];		
+
+
+		// Property Edit Interface
 		//evil gubb code! haha/////////////////////////////////////////7
 		bool SetValue(string kValueName ,string kValue);
 		bool SetValue(string kValueName, unsigned int iIndex ,string kValue);
@@ -111,34 +118,25 @@ class ENGINE_API Property
 		//string GetValue(string kValueName);
 		//vector<string> GetValueNames();
 		/////////////////////////////////////////////////////////7
+		
+		// Game Messages
+		virtual void HandleGameMessage(GameMessage& Msg);
 
-		int m_iSortPlace;		//place in update queue
-		bool m_bSortDistance;
+		// Virtuals
+		virtual void Touch(Collision* pkCol) {};					//executet when collision occurs
+		virtual void Init() {};											//executet when property is added to an object
+		virtual void Update() {};										//executet once every game loop
+		virtual void PackTo(NetPacket* pkNetPacket) {} ;
+		virtual void PackFrom(NetPacket* pkNetPacket) {} ;
 		
-		int m_iType;			//property type
-		int m_iSide;			//server or client property
-		
-		bool	bNetwork;		
-		char m_acName[50];		
-		
-		
-		
-		Property();
-		virtual ~Property(){};
-		virtual void Touch(Collision* pkCol){};					//executet when collision occurs
-		virtual void Init(){};											//executet when property is added to an object
-		virtual void Update(){};										//executet once every game loop
-		virtual void PackTo(NetPacket* pkNetPacket){} ;
-		virtual void PackFrom(NetPacket* pkNetPacket){} ;
+		// Save / Load
 		virtual void Save(ZFMemPackage* pkPackage);				//save property
 		virtual void Load(ZFMemPackage* pkPackage);				//load property
 		virtual void CloneOf(Property* pkProperty) = 0;
 
-
-		virtual void HandleGameMessage(GameMessage& Msg);
-
-		inline void SetObject(Object* pkObject){m_pkObject=pkObject;};
-		inline Object *GetObject() {return m_pkObject;};
+		// Inlines
+		inline void SetObject(Object* pkObject)	{	m_pkObject=pkObject;	};
+		inline Object *GetObject()						{	return m_pkObject;	};
 
 		bool operator<(Property& kOther);
 

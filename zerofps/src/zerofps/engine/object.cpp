@@ -6,251 +6,6 @@
 typedef list<Object*>::iterator		itListObject;
 typedef list<Property*>::iterator	itListProperty;
 
-ObjectDescriptor::~ObjectDescriptor()
-{
-	for(list<PropertyDescriptor*>::iterator it=m_acPropertyList.begin();it!=m_acPropertyList.end();it++)
-	{
-		delete (*it);
-	}
-}
-
-void ObjectDescriptor::Clear()
-{
-	m_kName="";
-	m_kPos.Set(0,0,0);
-	m_kRot.Set(0,0,0);
-	m_kVel.Set(0,0,0);			
-	m_kAcc.Set(0,0,0);	
-	
-	m_iObjectType=OBJECT_TYPE_DYNAMIC;
-	m_bSave=true;
-	
-	for(list<PropertyDescriptor*>::iterator it=m_acPropertyList.begin();it!=m_acPropertyList.end();it++)
-	{
-		delete (*it);
-	}
-	
-	m_acPropertyList.clear();
-}
-
-
-bool ObjectDescriptor::SaveToFile(ZFFile* pkFile)
-{
-	ZFMemPackage temp;
-	
-	SaveToMem(&temp);
-	
-	temp.SaveToFile(pkFile);
-	
-	temp.Clear();
-	
-	return true;
-}
-
-bool ObjectDescriptor::LoadFromFile(ZFFile* pkFile)
-{
-	ZFMemPackage temp;
-	
-	if(!temp.LoadFromFile(pkFile)){
-		cout<<"Error Loading from file (EOF)"<<endl;
-		return false;
-	}
-		
-	LoadFromMem(&temp);
-
-	temp.Clear();
-
-	return true;
-}
-
-/*
-void ObjectDescriptor::SaveToMem(ZFMemPackage* pkPackage)
-{
-	cout<<"saving"<<endl;
-	char namn[50];
-	strcpy(namn,m_kName.c_str());
-	pkPackage->Write((void*)namn,50);	
-		
-		
-	pkPackage->Write(m_kPos);	
-	pkPackage->Write(m_kRot);	
-	pkPackage->Write(m_kVel);
-
-	
-	
-//	pkPackage->Write((void*)&m_kPos,12);	
-//	pkPackage->Write((void*)&m_kRot,12);	
-//	pkPackage->Write((void*)&m_kVel,12);
-	
-	
-	
-	int iNrOfPropertys=m_acPropertyList.size();
-	pkPackage->Write(iNrOfPropertys);
-	
-	
-	for(list<PropertyDescriptor*>::iterator it=m_acPropertyList.begin();it!=m_acPropertyList.end();it++)
-	{
-		//write property name
-		char propertyname[50];
-		strcpy(propertyname,(*it)->m_kName.c_str());
-		pkPackage->Write((void*)propertyname,50);
-		
-		//write size
-		int iSize=(*it)->m_kData.GetSize();
-		pkPackage->Write(iSize);
-		
-		//write data
-		pkPackage->Write((*it)->m_kData.GetDataPointer(),(*it)->m_kData.GetSize());
-	}
-}
-*/
-
-void ObjectDescriptor::SaveToMem(ZFMemPackage* pkPackage)
-{
-	cout<<"saving"<<endl;
-	char namn[50];
-	strcpy(namn,m_kName.c_str());
-	pkPackage->Write((void*)namn,50);	
-	
-	
-	pkPackage->Write((void*)&m_kPos,12);	
-	pkPackage->Write((void*)&m_kRot,12);	
-	pkPackage->Write((void*)&m_kVel,12);
-	pkPackage->Write((void*)&m_kAcc,12);
-	
-	
-	pkPackage->Write((void*)&m_bSave,4);
-	pkPackage->Write((void*)&m_iObjectType,4);
-	
-	
-	int iNrOfPropertys=m_acPropertyList.size();
-//pkPackage->Write(iNrOfPropertys);
-	pkPackage->Write((void*)&iNrOfPropertys,4);
-	
-	for(list<PropertyDescriptor*>::iterator it=m_acPropertyList.begin();it!=m_acPropertyList.end();it++)
-	{
-		//write property name
-		char propertyname[50];
-		strcpy(propertyname,(*it)->m_kName.c_str());
-		pkPackage->Write((void*)propertyname,50);
-		
-		//write size
-		int iSize=(*it)->m_kData.GetSize();
-		pkPackage->Write((void*)&iSize,4);
-		
-		//write data
-		pkPackage->Write((*it)->m_kData.GetDataPointer(),(*it)->m_kData.GetSize());
-	}
-}
-
-/*
-void ObjectDescriptor::LoadFromMem(ZFMemPackage* pkPackage)
-{
-	cout<<"loading"<<endl;
-	char namn[50];
-			
-	pkPackage->Read((void*)namn,50);
-						
-	m_kName=namn;
-	cout<<"NAMN:"<<namn<<endl;
-			
-	pkPackage->Read(m_kPos);	
-	pkPackage->Read(m_kRot);	
-	pkPackage->Read(m_kVel);
-			
-	int iNrOfPropertys;
-	pkPackage->Read(iNrOfPropertys);
-			
-	cout<<"propertys "<<iNrOfPropertys<<endl;
-		
-	for(int i=0;i<iNrOfPropertys;i++)
-	{
-		//create a new propertydescription
-		PropertyDescriptor* newpropdesc=new PropertyDescriptor;
-				
-		//read property name
-		char propertyname[50];
-		pkPackage->Read((void*)propertyname,50);				
-		cout<<"property name "<<propertyname<<endl;
-		newpropdesc->m_kName=propertyname;
-		
-		//read size
-		int iSize;
-		pkPackage->Read(iSize);
-		
-		cout<<iSize<<endl;
-		
-		//read data
-		char data;
-		for(int i=0;i<iSize;i++)
-		{
-			pkPackage->Read(data);
-			newpropdesc->m_kData.Write(data);
-		}
-		
-//		newpropdesc->m_kData.Write((void*)((char*)pkPackage->GetDataPointer())[pkPackage->GetPos()],iSize);
-		
-		//add property to list
-		m_acPropertyList.push_back(newpropdesc);
-	}
-}
-*/
-
-void ObjectDescriptor::LoadFromMem(ZFMemPackage* pkPackage)
-{
-	char namn[50];
-			
-	pkPackage->Read((void*)namn,50);
-						
-	m_kName=namn;
-			
-	pkPackage->Read((void*)&m_kPos,12);	
-	pkPackage->Read((void*)&m_kRot,12);	
-	pkPackage->Read((void*)&m_kVel,12);
-	pkPackage->Read((void*)&m_kAcc,12);			
-			
-	pkPackage->Read((void*)&m_bSave,4);			
-	pkPackage->Read((void*)&m_iObjectType,4);	
-			
-	int iNrOfPropertys;
-	pkPackage->Read((void*)&iNrOfPropertys,4);
-			
-	for(int i=0;i<iNrOfPropertys;i++)
-	{
-		//create a new propertydescription
-		PropertyDescriptor* newpropdesc=new PropertyDescriptor;
-				
-		//read property name
-		char propertyname[50];
-		pkPackage->Read((void*)propertyname,50);				
-		newpropdesc->m_kName=propertyname;
-		
-		//read size
-		int iSize;
-		pkPackage->Read((void*)&iSize,4);
-		
-		//read data
-		char data;
-		for(int i=0;i<iSize;i++)
-		{
-			pkPackage->Read((void*)&data,1);
-			newpropdesc->m_kData.Write((void*)&data,1);
-		}
-		
-		//add property to list
-		m_acPropertyList.push_back(newpropdesc);
-	}
-}
-
-
-
-
-
-
-
-
-
-
 Object::Object() {
 	// Get Ptrs to some usefull objects.
 	m_pkObjectMan			= static_cast<ObjectManager*>(g_ZFObjSys.GetObjectPtr("ObjectManager"));
@@ -272,7 +27,8 @@ Object::Object() {
 	m_kOldPos  = Vector3::ZERO;
 	m_kOldRot  = Vector3::ZERO;	
 	
-	m_kName = "Object";			
+	m_kName		= "Object";	
+	m_strType	= "Object";	
 
 	m_iObjectType			=	OBJECT_TYPE_DYNAMIC;	
 	m_iUpdateStatus		=	UPDATE_ALL;
@@ -281,7 +37,6 @@ Object::Object() {
 	m_pkParent				=	NULL;
 	m_akChilds.clear();	
 }
-
 
 Object::~Object() 
 {
@@ -300,44 +55,7 @@ Object::~Object()
 	m_pkObjectMan->Remove(this);
 }
 
-void Object::MakeCloneOf(Object* pkOrginal)
-{
-	SetParent(m_pkParent);
-
-	m_kPos		= pkOrginal->m_kPos;
-	m_kRot		= pkOrginal->m_kRot;
-	m_kVel		= pkOrginal->m_kVel;
-	m_kOldPos	= pkOrginal->m_kOldPos;
-	m_kOldRot	= pkOrginal->m_kOldRot;
-	m_kName		= pkOrginal->m_kName;
-	m_strType	= pkOrginal->m_strType;
-	m_iObjectType			= pkOrginal->m_iObjectType;
-	m_iUpdateStatus		= pkOrginal->m_iUpdateStatus;
-	m_piDecorationStep	= pkOrginal->m_piDecorationStep;
-	m_bSave		= pkOrginal->m_bSave;
-	m_kAcc		= pkOrginal->m_kAcc;
-
-	Property* pkProp;
-	vector<string> akPropertyNames;
-
-	for(itListProperty it = pkOrginal->m_akPropertys.begin(); it != pkOrginal->m_akPropertys.end(); it++) {
-		pkProp = AddProperty((*it)->m_acName);
-		cout << "Creating '" << (*it)->m_acName << "'\n";
-		
-		// Get Values
-		akPropertyNames = (*it)->GetValueNames();
-
-		for(int i=0; i < akPropertyNames.size(); i++) {
-			pkProp->SetValue(akPropertyNames[i], (*it)->GetValue(akPropertyNames[i]));
-			cout << " Setting '" << akPropertyNames[i] << "' to '" << (*it)->GetValue(akPropertyNames[i]) << "'\n";
-			}
-		
-		//*pkProp = (*it);
-		}
-	
-	
-}
-	
+// Property Mangement Code.
 Property* Object::AddProperty(Property* pkNewProperty) 
 {
 	if(pkNewProperty == NULL)
@@ -382,7 +100,6 @@ bool Object::DeleteProperty(const char* acName)
 
 	return false;
 }
-
 
 Property* Object::GetProperty(const char* acName) 
 {
@@ -462,65 +179,6 @@ void Object::GetAllPropertys(list<Property*> *akPropertys,int iType,int iSide)
 		}
 	}
 }
-/*	
-
-//	switch(m_iUpdateStatus)
-//	{
-		//if UPDATE_NONE dont return any child propertys
-//		case UPDATE_NONE:
-//			return;
-
-		if(iType == OBJECT_TYPE_DYNAMIC)	
-			if(m_iUpdateStatus & UPDATE_DYNAMIC)		
-				(*it)->GetAllPropertys(akPropertys,iType,iSide);
-		
-		if(iType == OBJECT_TYPE_STATIC)	
-			if(m_iUpdateStatus & UPDATE_STATIC)		
-				(*it)->GetAllPropertys(akPropertys,iType,iSide);
-	
-	
-	
-	
-	}
-		
-	if(m_iUpdateStatus & UPDATE_DYNAMIC)
-	{
-		
-	
-	}
-		
-		//update both players and dynamic objects
-		case UPDATE_DYNAMIC:{
-			for(list<Object*>::iterator it=m_akChilds.begin();it!=m_akChilds.end();it++) {
-				if((*it)->GetObjectType() == OBJECT_TYPE_DYNAMIC || (*it)->GetObjectType() == OBJECT_TYPE_PLAYER)
-					(*it)->GetAllPropertys(akPropertys,iType,iSide);
-			}
-			break;
-		}
-		case UPDATE_STATIC:{
-			for(list<Object*>::iterator it=m_akChilds.begin();it!=m_akChilds.end();it++) {
-				if((*it)->GetObjectType() == OBJECT_TYPE_STATIC)
-					(*it)->GetAllPropertys(akPropertys,iType,iSide);
-			}			
-			break;
-		}
-		case UPDATE_PLAYERS:{
-			for(list<Object*>::iterator it=m_akChilds.begin();it!=m_akChilds.end();it++) {
-				if((*it)->GetObjectType() == OBJECT_TYPE_PLAYER)
-					(*it)->GetAllPropertys(akPropertys,iType,iSide);
-			}			
-			break;
-		}			
-		case UPDATE_ALL:{
-			for(list<Object*>::iterator it=m_akChilds.begin();it!=m_akChilds.end();it++) {
-				(*it)->GetAllPropertys(akPropertys,iType,iSide);
-			}			
-			break;
-		}
-	}
-
-}
-*/
 
 Property* Object::AddProxyProperty(const char* acName)
 {
@@ -543,55 +201,7 @@ bool Object::Update(const char* acName){
 }
 
 
-float Object::GetI()
-{
-	float t = m_pkFps->GetGameFrameTime(); 
-	float at = m_pkFps->GetTicks() - m_pkFps->GetLastGameUpdateTime();
-	float i = at/t;				
-	
-	if(i>1)
-		i=1;
-		
-//	cout<<"I"<<i<<endl;
-		
-	return i;	
-}
-
-Vector3 Object::GetIRot()
-{
-	float i = GetI();					
-
-	Vector3 res;	
-	
-	res.x = (m_kOldRot.x * (1-i)) + (m_kRot.x * i);
-	res.y = (m_kOldRot.y * (1-i)) + (m_kRot.y * i);	
-	res.z = (m_kOldRot.z * (1-i)) + (m_kRot.z * i);	
-		
-	return res;
-}
-
-Vector3 Object::GetIPos()
-{
-	float i = GetI();
-
-	Vector3 res;
-	res.Lerp(m_kOldPos,m_kPos,i);
-	return res;
-}
-
-void Object::SetRot(Vector3 kRot)
-{
-	m_kOldRot = m_kRot;
-	m_kRot = kRot;
-}
-
-void Object::SetPos(Vector3 kPos)
-{
-	m_kOldPos = m_kPos;
-	m_kPos = kPos;
-}
-
-
+// Child/Parent object mangement.
 void Object::AddChild(Object* pkObject) 
 {
 	// Check so we don't have child already.
@@ -672,24 +282,6 @@ void Object::SetParent(Object* pkObject)
 	pkObject->AddChild(this);*/
 }
 
-bool Object::CheckLinks(bool bCheckChilds, int iPos)
-{
-	// Check that our parent link to us.
-	if(m_pkParent) {
-		if(m_pkParent->HasChild(this) == false) {
-			return false;
-			}
-		}
-	
-	for(list<Object*>::iterator it=m_akChilds.begin();it!=m_akChilds.end();it++) {
-		if((*it)->m_pkParent != this)
-			return false;
-	}
-
-	return true;
-}
-
-
 bool Object::HasChild(Object* pkObject)
 {
 	//check if this object is in the child list
@@ -741,38 +333,34 @@ void Object::GetAllObjects(list<Object*> *pakObjects)
 	}	
 }
 
-void Object::PrintTree(int pos)
+
+void Object::AttachToClosestZone()
 {
-	int i;
-	for(i=0;i<pos;i++)	cout<<" ";
+	list<Object*> temp;
+	float mindistance=999999999;
+	Object* minobject=m_pkObjectMan->GetWorldObject();
 
-	cout << "Obj[" << iNetWorkID << "] '" << m_kName << "'" << endl;
-	for(i=0;i<pos;i++)	cout<<" ";
-	cout << "{" << endl;
+	m_pkObjectMan->GetWorldObject()->GetAllObjects(&temp);
 
-	vector<string> akPropertyNames;
-	
-	for(list<Property*>::iterator it2=m_akPropertys.begin();it2!=m_akPropertys.end();it2++) {
-		for(i=0;i<(pos+1);i++)
-			cout<<" ";
-		cout << (*it2)->m_acName << endl;
-		
-		akPropertyNames = (*it2)->GetValueNames();
-
-		for(unsigned int iValue = 0; iValue < akPropertyNames.size(); iValue++) {
-			cout << akPropertyNames[iValue] << ",";
+	for(list<Object*>::iterator it=temp.begin();it!=temp.end();it++) {
+		if((*it)->GetName()=="ZoneObject"){
+			//dont attach this object to this object ;)
+			if((*it)==this)
+				continue;
+			float distance = abs(((*it)->GetPos() - m_kPos).Length());
+			if(distance<mindistance){
+				mindistance=distance;
+				minobject=(*it);
 			}
-	}
-
-	for(list<Object*>::iterator it=m_akChilds.begin();it!=m_akChilds.end();it++) {
-		(*it)->PrintTree(pos+1);
-	}
-
-	for(i=0;i<pos;i++)	cout<<" ";
-	cout << "}" << endl;
-
+		}
+	}		
+	
+	temp.clear();
+	
+	SetParent(minobject);
 }
 
+// NetWork/Demo/Save/Load Code.
 bool Object::NeedToPack()
 {
 	for(list<Property*>::iterator it=m_akPropertys.begin();it!=m_akPropertys.end();it++) {
@@ -828,31 +416,6 @@ void Object::PackFrom(NetPacket* pkNetPacket)
 		}	
 }
 
-void Object::AttachToClosestZone()
-{
-	list<Object*> temp;
-	float mindistance=999999999;
-	Object* minobject=m_pkObjectMan->GetWorldObject();
-
-	m_pkObjectMan->GetWorldObject()->GetAllObjects(&temp);
-
-	for(list<Object*>::iterator it=temp.begin();it!=temp.end();it++) {
-		if((*it)->GetName()=="ZoneObject"){
-			//dont attach this object to this object ;)
-			if((*it)==this)
-				continue;
-			float distance = abs(((*it)->GetPos() - m_kPos).Length());
-			if(distance<mindistance){
-				mindistance=distance;
-				minobject=(*it);
-			}
-		}
-	}		
-	
-	temp.clear();
-	
-	SetParent(minobject);
-}
 
 
 
@@ -889,6 +452,7 @@ void Object::Save(ObjectDescriptor* ObjDesc)
 	}
 }
 
+// Collision / Shape.
 float Object::GetBoundingRadius()
 {
 	Property* pr=GetProperty("PhysicProperty");
@@ -906,6 +470,8 @@ void Object::Touch(Collision* pkCol)
 	}
 }
 
+
+// Game Messages
 /// Adds a GameMessage to be handled later by object.
 void Object::AddGameMessage(GameMessage& Msg)
 {
@@ -931,63 +497,167 @@ void Object::RouteMessage(GameMessage& Msg)
 		(*it)->HandleGameMessage(Msg);
 }
 
-/*
-void Object::Update(int iType,int iSide){
 
-	//first update all childs
-	if(m_bUpdateChilds){
-		for(list<Object*>::iterator it=m_akChilds.begin();it!=m_akChilds.end();it++) {
-			(*it)->Update(iType,iSide);
-		}		
-	}	
-	
-	//thenupdate propertys
-	for(list<Property*>::iterator it2=m_akPropertys.begin();it2!=m_akPropertys.end();it2++) {
-		if((*it2)->m_iType == iType){
-			if((*it2)->m_iSide == iSide){
-				(*it2)->Update();
+
+
+// Debug
+bool Object::CheckLinks(bool bCheckChilds, int iPos)
+{
+	// Check that our parent link to us.
+	if(m_pkParent) {
+		if(m_pkParent->HasChild(this) == false) {
+			return false;
 			}
 		}
+	
+	for(list<Object*>::iterator it=m_akChilds.begin();it!=m_akChilds.end();it++) {
+		if((*it)->m_pkParent != this)
+			return false;
 	}
+
+	return true;
 }
-*/
 
+void TabIn(int iSpaces)
+{
+	int i;
+	for(i=0;i<iSpaces;i++)	
+		g_ZFObjSys.Logf("fisklins", " " );
+}
 
-/*
-void Object::Remove() {
-	if(m_pkObjectMan!=NULL) {
-		m_pkObjectMan->Delete(this);	
+void Object::PrintTree(int pos)
+{
+	const char* szValue;
+	string strValue;
+
+	g_ZFObjSys.Logf("fisklins", "" );
+
+	TabIn(pos);
+
+	TabIn(pos);			g_ZFObjSys.Logf("fisklins", "Object[%d]\n", iNetWorkID);
+	TabIn(pos);			g_ZFObjSys.Logf("fisklins", "{\n" );
+
+	TabIn(pos + 3);	g_ZFObjSys.Logf("fisklins", "Name = %s\n", GetName().c_str() );
+	TabIn(pos + 3);	g_ZFObjSys.Logf("fisklins", "ObjType = %s\n", m_strType.c_str() );
+	TabIn(pos + 3);	g_ZFObjSys.Logf("fisklins", "Pos = <%f,%f,%f>\n", m_kPos.x, m_kPos.y, m_kPos.z );
+	TabIn(pos + 3);	g_ZFObjSys.Logf("fisklins", "Rot = <%f,%f,%f>\n", m_kRot.x, m_kRot.y, m_kRot.z );
+	TabIn(pos + 3);	g_ZFObjSys.Logf("fisklins", "Vel = <%f,%f,%f>\n", m_kVel.x, m_kVel.y, m_kVel.z );
+	TabIn(pos + 3);	g_ZFObjSys.Logf("fisklins", "m_kAcc = <%f,%f,%f>\n", m_kAcc.x, m_kAcc.y, m_kAcc.z );
+	TabIn(pos + 3);	g_ZFObjSys.Logf("fisklins", "Name = %s\n", m_strType.c_str() );
+
+	TabIn(pos + 3);	g_ZFObjSys.Logf("fisklins", "Type = %d\n", m_iObjectType );
+	TabIn(pos + 3);	g_ZFObjSys.Logf("fisklins", "UpdateStatus = %d\n", m_iUpdateStatus );
+	TabIn(pos + 3);	g_ZFObjSys.Logf("fisklins", "Save = %d\n", m_bSave );
+
+	vector<string> akPropertyNames;
+	
+	for(itListProperty it = m_akPropertys.begin(); it != m_akPropertys.end(); it++) {
+		TabIn(pos + 3);	g_ZFObjSys.Logf("fisklins", "%s\n" ,(*it)->m_acName);
+		akPropertyNames = (*it)->GetValueNames();
+
+		for(int i=0; i < akPropertyNames.size(); i++) {
+			strValue = (*it)->GetValue(akPropertyNames[i]);
+			szValue = strValue.c_str();
+
+			TabIn(pos + 6);
+				g_ZFObjSys.Logf("fisklins", "%s = ",akPropertyNames[i].c_str());
+				g_ZFObjSys.Logf("fisklins", "%s\n",szValue );
+			}
+		}
+
+	for(list<Object*>::iterator it2=m_akChilds.begin();it2!=m_akChilds.end();it2++) {
+		(*it2)->PrintTree(pos+1);
 	}
-}
-*/
 
-/*
-void Object::ObjectUpdate() {
+	TabIn(pos);	g_ZFObjSys.Logf("fisklins", "}\n" );
+}
+
+void Object::MakeCloneOf(Object* pkOrginal)
+{
+	SetParent(m_pkParent);
+
+	m_kPos		= pkOrginal->m_kPos;
+	m_kRot		= pkOrginal->m_kRot;
+	m_kVel		= pkOrginal->m_kVel;
+	m_kOldPos	= pkOrginal->m_kOldPos;
+	m_kOldRot	= pkOrginal->m_kOldRot;
+	m_kName		= pkOrginal->m_kName;
+	m_strType	= pkOrginal->m_strType;
+	m_iObjectType			= pkOrginal->m_iObjectType;
+	m_iUpdateStatus		= pkOrginal->m_iUpdateStatus;
+	m_piDecorationStep	= pkOrginal->m_piDecorationStep;
+	m_bSave		= pkOrginal->m_bSave;
+	m_kAcc		= pkOrginal->m_kAcc;
+
+	Property* pkProp;
+	vector<string> akPropertyNames;
+
+	for(itListProperty it = pkOrginal->m_akPropertys.begin(); it != pkOrginal->m_akPropertys.end(); it++) {
+		pkProp = AddProperty((*it)->m_acName);
+		cout << "Creating '" << (*it)->m_acName << "'\n";
+		
+		// Get Values
+		akPropertyNames = (*it)->GetValueNames();
+
+		for(int i=0; i < akPropertyNames.size(); i++) {
+			pkProp->SetValue(akPropertyNames[i], (*it)->GetValue(akPropertyNames[i]));
+			cout << " Setting '" << akPropertyNames[i] << "' to '" << (*it)->GetValue(akPropertyNames[i]) << "'\n";
+			}
+		
+		//*pkProp = (*it);
+		}
+	
 	
 }
 
-*/
 
-/*
-void Object::HandleCollision(Object* pkObject,Vector3 kPos,bool bContinue){
-//	cout<<"This Object Has not Collision handler"<<endl;
-	if(bContinue)
-		pkObject->HandleCollision(this,kPos,false);
-
-/*	EXAMPLE of how the collisionhandler may look like in a subclass of Object
-			
-
-	//if a ball colides with the player destroy it
-	if(typeid(*pkOther)==typeid(PlayerBallObject)){
-		PlayerBallObject *kO=dynamic_cast<PlayerBallObject*>(pkOther);
-		Remove();	
+float Object::GetI()
+{
+	float t = m_pkFps->GetGameFrameTime(); 
+	float at = m_pkFps->GetTicks() - m_pkFps->GetLastGameUpdateTime();
+	float i = at/t;				
+	
+	if(i>1)
+		i=1;
 		
-	} else if(bContinue){
-		pkOther->HandleCollision(this,false);
-	}
+//	cout<<"I"<<i<<endl;
+		
+	return i;	
+}
 
-}*/
+Vector3 Object::GetIRot()
+{
+	float i = GetI();					
 
+	Vector3 res;	
+	
+	res.x = (m_kOldRot.x * (1-i)) + (m_kRot.x * i);
+	res.y = (m_kOldRot.y * (1-i)) + (m_kRot.y * i);	
+	res.z = (m_kOldRot.z * (1-i)) + (m_kRot.z * i);	
+		
+	return res;
+}
+
+Vector3 Object::GetIPos()
+{
+	float i = GetI();
+
+	Vector3 res;
+	res.Lerp(m_kOldPos,m_kPos,i);
+	return res;
+}
+
+void Object::SetRot(Vector3 kRot)
+{
+	m_kOldRot = m_kRot;
+	m_kRot = kRot;
+}
+
+void Object::SetPos(Vector3 kPos)
+{
+	m_kOldPos = m_kPos;
+	m_kPos = kPos;
+}
 
 
 /*
@@ -1004,6 +674,153 @@ void Object::HandleCollision(Object* pkObject,Vector3 kPos,bool bContinue){
   För närvarande sparas allt ned hela tiden. Vilka propertys som tas med
   anges genom Propery::bNetwork;
 */
+ObjectDescriptor::~ObjectDescriptor()
+{
+	for(list<PropertyDescriptor*>::iterator it=m_acPropertyList.begin();it!=m_acPropertyList.end();it++)
+	{
+		delete (*it);
+	}
+}
+
+void ObjectDescriptor::Clear()
+{
+	m_kName="";
+	m_kPos.Set(0,0,0);
+	m_kRot.Set(0,0,0);
+	m_kVel.Set(0,0,0);			
+	m_kAcc.Set(0,0,0);	
+	
+	m_iObjectType=OBJECT_TYPE_DYNAMIC;
+	m_bSave=true;
+	
+	for(list<PropertyDescriptor*>::iterator it=m_acPropertyList.begin();it!=m_acPropertyList.end();it++)
+	{
+		delete (*it);
+	}
+	
+	m_acPropertyList.clear();
+}
+
+
+bool ObjectDescriptor::SaveToFile(ZFFile* pkFile)
+{
+	ZFMemPackage temp;
+	
+	SaveToMem(&temp);
+	
+	temp.SaveToFile(pkFile);
+	
+	temp.Clear();
+	
+	return true;
+}
+
+bool ObjectDescriptor::LoadFromFile(ZFFile* pkFile)
+{
+	ZFMemPackage temp;
+	
+	if(!temp.LoadFromFile(pkFile)){
+		cout<<"Error Loading from file (EOF)"<<endl;
+		return false;
+	}
+		
+	LoadFromMem(&temp);
+
+	temp.Clear();
+
+	return true;
+}
+
+void ObjectDescriptor::SaveToMem(ZFMemPackage* pkPackage)
+{
+	cout<<"saving"<<endl;
+	char namn[50];
+	strcpy(namn,m_kName.c_str());
+	pkPackage->Write((void*)namn,50);	
+	
+	
+	pkPackage->Write((void*)&m_kPos,12);	
+	pkPackage->Write((void*)&m_kRot,12);	
+	pkPackage->Write((void*)&m_kVel,12);
+	pkPackage->Write((void*)&m_kAcc,12);
+	
+	
+	pkPackage->Write((void*)&m_bSave,4);
+	pkPackage->Write((void*)&m_iObjectType,4);
+	
+	int iNrOfPropertys=m_acPropertyList.size();
+	pkPackage->Write((void*)&iNrOfPropertys,4);
+	
+	for(list<PropertyDescriptor*>::iterator it=m_acPropertyList.begin();it!=m_acPropertyList.end();it++)
+	{
+		//write property name
+		char propertyname[50];
+		strcpy(propertyname,(*it)->m_kName.c_str());
+		pkPackage->Write((void*)propertyname,50);
+		
+		//write size
+		int iSize=(*it)->m_kData.GetSize();
+		pkPackage->Write((void*)&iSize,4);
+		
+		//write data
+		pkPackage->Write((*it)->m_kData.GetDataPointer(),(*it)->m_kData.GetSize());
+	}
+}
+
+void ObjectDescriptor::LoadFromMem(ZFMemPackage* pkPackage)
+{
+	char namn[50];
+			
+	pkPackage->Read((void*)namn,50);
+						
+	m_kName=namn;
+			
+	pkPackage->Read((void*)&m_kPos,12);	
+	pkPackage->Read((void*)&m_kRot,12);	
+	pkPackage->Read((void*)&m_kVel,12);
+	pkPackage->Read((void*)&m_kAcc,12);			
+			
+	pkPackage->Read((void*)&m_bSave,4);			
+	pkPackage->Read((void*)&m_iObjectType,4);	
+			
+	int iNrOfPropertys;
+	pkPackage->Read((void*)&iNrOfPropertys,4);
+			
+	for(int i=0;i<iNrOfPropertys;i++)
+	{
+		//create a new propertydescription
+		PropertyDescriptor* newpropdesc=new PropertyDescriptor;
+				
+		//read property name
+		char propertyname[50];
+		pkPackage->Read((void*)propertyname,50);				
+		newpropdesc->m_kName=propertyname;
+		
+		//read size
+		int iSize;
+		pkPackage->Read((void*)&iSize,4);
+		
+		//read data
+		char data;
+		for(int i=0;i<iSize;i++)
+		{
+			pkPackage->Read((void*)&data,1);
+			newpropdesc->m_kData.Write((void*)&data,1);
+		}
+		
+		//add property to list
+		m_acPropertyList.push_back(newpropdesc);
+	}
+}
+
+
+
+
+
+
+
+
+
 
 void Object::PPRot(bool bSave)
 {
@@ -1023,3 +840,4 @@ void Object::PPRot(bool bSave)
 		m_kAcc = akSave[3];  m_kOldPos = akSave[4];  m_kOldRot = akSave[5];
 	}
 }
+

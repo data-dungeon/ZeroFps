@@ -23,7 +23,7 @@ void ModelProperty::Update() {
 	
 	if(!m_pkFrustum->SphereInFrustum(m_pkObject->GetPos(),m_fRadius))
 		return;
-	
+
 	glPushAttrib(GL_FOG_BIT|GL_LIGHTING_BIT | GL_TEXTURE_BIT | GL_COLOR_BUFFER_BIT );
 //	glDisable(GL_LIGHTING);
 	glDisable(GL_COLOR_MATERIAL);	

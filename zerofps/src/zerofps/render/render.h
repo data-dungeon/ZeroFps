@@ -41,7 +41,10 @@ class RENDER_API Render : public ZFObject {
 		bool m_FogEnable;		
 		int m_iSlicesize;	  //height meens greater detail att longer range		
 		int m_iLodUpdate;		
-		Vector3 m_kOldCamPos;		
+		Vector3 m_kOldCamPos;	
+		
+		int	m_iMaxLandscapeLayers;
+		int	m_iDrawLandscape;
 
 		GLuint m_iHmTempList;
 

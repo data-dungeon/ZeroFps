@@ -16,61 +16,68 @@ class GameMessage;
 
 class ENGINE_API ObjectManager : public ZFObject{
 	private:
+		enum FuncId_e
+		{
+			FID_LOGOHTREE,
+			FID_LOGACTIVEPROPERTYS,
+			FID_SENDMESSAGE,
+		};
+
 		struct Property_Less : public binary_function<Property*, Property*, bool> {
 			bool operator()(Property* x, Property* y) { return *x < *y; };
 		} Less_Property;
 	
-		Object*			m_pkWorldObject;		
-	
-		list<ObjectArcheType*>	m_akArcheTypes;						// List of all object Archetypes.
-		ObjectArcheType*	GetArcheType(string strName);				// Get ptr to AT. NULL if not found.
+		ZeroFps*	m_pkZeroFps;
+
+		Object*	m_pkWorldObject;											///< Top level object.
+		
+		// Object ArcheTypes
+		list<ObjectArcheType*>	m_akArcheTypes;						///< List of all object Archetypes.
+		ObjectArcheType*	GetArcheType(string strName);				///< Get ptr to AT. NULL if not found.
 		void AddArchPropertys(Object* pkObj, string strName);
 
-		list<Object*>	m_akObjects;					// List of all objects.
-		vector<Object*> m_akDeleteList;				// List of objects that will be destroyed at end of frame.
+		list<Object*>		m_akObjects;									///< List of all objects.
+		vector<Object*>	m_akDeleteList;								///< List of objects that will be destroyed at end of frame.
 
-		list<Property*> m_akPropertys;				// List of Active Propertys.	
-		int m_iNrOfActivePropertys;					// Size of akProperty list.
+		list<Property*>	m_akPropertys;									///< List of Active Propertys.	
+		int					m_iNrOfActivePropertys;						///> Size of akProperty list.
 
-		list<ObjectDescriptor*> m_akTemplates;		// List of templates.
+		list<ObjectDescriptor*> m_akTemplates;							///< List of templates.
 
 
-		int	iNextObjectID;							// Next avil object ID.
-		bool m_bUpdate;							// Disable all updates except RENDER.
+		int	iNextObjectID;													///< Next free object ID.
+		bool	m_bUpdate;														///< Disable all updates except RENDER.
 	
-		void RunCommand(int cmdid, const CmdArgument* kCommand) { }
+		void RunCommand(int cmdid, const CmdArgument* kCommand);
 
-		void GetPropertys(int iType,int iSide);		// Fill propery list.
-
-		ZeroFps*	m_pkZeroFps;
+		void GetPropertys(int iType,int iSide);						///< Fill propery list.
 
 		void TESTVIM_SpawnArcheTypes();
 		void TESTVIM_LoadArcheTypes(char* szFileName);
 
 	public:
 		ObjectManager();
-		~ObjectManager() { }
+		~ObjectManager();
 	
-		void DumpActiverPropertysToLog(char* szMsg);
 
 		// Add/Remove Objects
-		void Add(Object* pkNewObject);				// Add object to the manager
-		void Delete(Object* pkNewObject);			// Adds an object to delete qeue
-		void Remove(Object* pkObject);				// Dont use this..use Delete instead
-		void Clear();								// Delete all objects.
+		void Add(Object* pkNewObject);									///< Add object to the manager
+		void Delete(Object* pkNewObject);								///< Adds an object to delete qeue
+		void Remove(Object* pkObject);									///< Dont use this..use Delete instead
+		void Clear();															///< Delete all objects.
 
 		// Updates
-		void Update(int iType,int iSide,bool bSort);					// Update selected propertys.
-		void SetUpdate(bool bUpdate) { m_bUpdate=bUpdate; };
-		void UpdateDelete();											// Deletes objects in delete qeue	
-		void UpdateGameMessages(void);
+		void Update(int iType,int iSide,bool bSort);					///< Run update on selected propertys.
+		void UpdateDelete();													///< Deletes objects in delete qeue	
+		void UpdateGameMessages(void);									///< Update game messages.
+		void SetUpdate(bool bUpdate) { m_bUpdate=bUpdate; };		
 
 			// Create 
-		Object* CreateObject(const char* acName);
-		Object* CreateObject(ObjectDescriptor* pkObjDesc);
-		Object* CreateObjectByNetWorkID(int iNetID);	
-		Object* CreateObjectByArchType(const char* acName);
-		Object* CloneObject(int iNetID);
+		Object* CreateObject(const char* acName);						///< Create object from template.
+		Object* CreateObject(ObjectDescriptor* pkObjDesc);			///< Create object from ObjectDescriptor
+		Object* CreateObjectByNetWorkID(int iNetID);					///< Create object with selected NetworkID
+		Object* CreateObjectByArchType(const char* acName);		///< Create object from archtype
+//		Object* CloneObject(int iNetID);									
 
 		// Template
 		void AddTemplate(ObjectDescriptor* pkNewTemplate);
@@ -82,44 +89,39 @@ class ENGINE_API ObjectManager : public ZFObject{
 		bool LoadTemplate(const char* acFile);
 		bool SaveTemplate(const char* acName,const char* acFile);
 
-		void Create_OT(int iID);
-		void Destory_OT(int iID);
-		void LoadGameObjects(const char* szFileName);
-		void SaveGameObjects(const char* szFileName);
-
 		// Load/Save Objects
 		bool SaveAllObjects(const char* acFile);
 		bool LoadAllObjects(const char* acFile);
 
 		// Gets
-		Object* GetWorldObject() {return m_pkWorldObject;};
+		Object* GetWorldObject()	{	return m_pkWorldObject;				};
+		int	GetNumOfObjects()		{	return m_akObjects.size();			}
+		int	GetActivePropertys() {	return m_iNrOfActivePropertys;	};
 		void GetAllObjects(list<Object*> *pakObjects);
-		Object* GetObject(const char* acName);
-		Object*	GetObjectByNetWorkID(int iNetID);
-		int	GetNumOfObjects() { return m_akObjects.size(); }
-		int	GetActivePropertys() {return m_iNrOfActivePropertys;};
+		Object* GetObject(const char* acName);							///< Get a ptr to object by name
+		Object*	GetObjectByNetWorkID(int iNetID);					///< Get a ptr to object by networkID
 
 		// NetWork
-		void UpdateState(NetPacket* pkNetPacket);	//Updates objects.
-		void PackToClients();						//Packs and Sends to ALL clients.
+		void UpdateState(NetPacket* pkNetPacket);						//Updates objects.
+		void PackToClients();												//Packs and Sends to ALL clients.
 
 		// Debug / Help Functions		
 		void DisplayTree();
+		void DumpActiverPropertysToLog(char* szMsg);					///< Log all propertys in m_akPropertys.
 
+		// Message System.
 		void SendMsg();
 		void RouteMessage(GameMessage& Msg);
 
-		char* GetUpdateStatusName(int eStatus);
+		// Get Strings.
+		char* GetUpdateStatusName(int eStatus);				
 		char* GetObjectTypeName(int eType);
-
 		char* GetPropertyTypeName(int iType);
 		char* GetPropertySideName(int iSide);
 
+		Object* ObjectManager::CloneObject(int iNetID);
+
 };
-
-//		void Update();								//update all objects in manager
-//		void Update(int iType);						//update all objects of specified type
-
 
 #endif
 

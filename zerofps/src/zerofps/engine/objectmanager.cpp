@@ -3,55 +3,30 @@
 #include "zerofps.h"
 #include "netslaveobject.h"
 
-void ObjectManager::GetPropertys(int iType,int iSide)
-{
-	m_akPropertys.clear();
-	m_pkWorldObject->GetAllPropertys(&m_akPropertys,iType,iSide);
-
-/*
-	for(list<Object*>::iterator it=m_akObjects.begin();it!=m_akObjects.end();it++) {
-		(*it)->GetPropertys(&m_akPropertys,iType,iSide);		
-	}
-*/
-//	cout<<"TOTAL propertys: "<<m_akPropertys.size()<<endl;
-}
-
-void ObjectManager::DumpActiverPropertysToLog(char* szMsg)
-{
-	g_ZFObjSys.Logf("net", "%s : %d\n", szMsg, m_akPropertys.size() );
-
-	for(list<Property*>::iterator it=m_akPropertys.begin();it!=m_akPropertys.end();it++) 
-	{
-		g_ZFObjSys.Logf("net", "%s", (*it)->m_acName );
-		if((*it)->GetObject()->m_pkParent)
-			g_ZFObjSys.Logf("net", " Parent Obj: %s\n", (*it)->GetObject()->m_pkParent->m_kName.c_str() );
-
-
-		//cout << (*it)->m_acName << endl;
-	}
-	
-}
-
-
-
-
-
-
-
 ObjectManager::ObjectManager() 
 : ZFObject("ObjectManager") 
 {
-	iNextObjectID	= 0;
-	m_bUpdate		= true;
+	iNextObjectID		= 0;
+	m_bUpdate			= true;
 	
 	m_pkWorldObject	=	new Object();	
 	m_pkWorldObject->GetName() = "WorldObject";
 
 	m_pkZeroFps=static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));		
-//	TESTVIM_SpawnArcheTypes();
 	TESTVIM_LoadArcheTypes("zfoh.txt");
+
+	g_ZFObjSys.Register_Cmd("o_logtree",FID_LOGOHTREE,this);	
+	g_ZFObjSys.Register_Cmd("o_dumpp",FID_LOGACTIVEPROPERTYS,this);	
+	g_ZFObjSys.Register_Cmd("sendmsg",FID_SENDMESSAGE,this, "sendmsg name id",2);	
+
 }
 
+ObjectManager::~ObjectManager() 
+{
+
+}
+
+// Add/Remove Objects
 void ObjectManager::Add(Object* pkObject) 
 {
 	pkObject->iNetWorkID = iNextObjectID++;
@@ -89,9 +64,9 @@ void ObjectManager::Clear()
 }
 
 
+// Updates
 void ObjectManager::Update(int iType,int iSide,bool bSort)
 {
-//	UpdateDelete();
 	if(!m_bUpdate)
 		if(iType!=PROPERTY_TYPE_RENDER)
 			return;
@@ -139,7 +114,6 @@ void ObjectManager::UpdateDelete()
 	m_akDeleteList.clear();
 }
 
-
 void ObjectManager::UpdateGameMessages(void)
 {
 	// Let Objects/Propertys handle messages
@@ -149,11 +123,7 @@ void ObjectManager::UpdateGameMessages(void)
 }
 
 
-
-
-
-
-
+// Create 
 Object* ObjectManager::CreateObject(const char* acName)
 {	
 	ObjectDescriptor *objtemplate = GetTemplate(acName);
@@ -206,6 +176,25 @@ Object* ObjectManager::CreateObjectByNetWorkID(int iNetID)
 	return pkNew;
 }
 
+Object* ObjectManager::CreateObjectByArchType(const char* acName)
+{
+	ObjectArcheType* pkAt = GetArcheType(string(acName));
+	if(!pkAt)
+		return false;
+
+	Object* pkObj =	new Object;
+	AddArchPropertys(pkObj, string(acName));
+
+	pkObj->m_strType	= acName;
+	pkObj->m_kName		= string("A ") + pkObj->m_strType;
+
+	return pkObj;
+}
+
+
+
+
+// Template
 void ObjectManager::AddTemplate(ObjectDescriptor* pkNewTemplate)
 {
 	m_akTemplates.push_back(pkNewTemplate);
@@ -336,17 +325,7 @@ bool ObjectManager::SaveTemplate(const char* acName,const char* acFile)
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
+// Load/Save Objects
 bool ObjectManager::SaveAllObjects(const char* acFile)
 {
 	ZFFile kFile;
@@ -398,7 +377,7 @@ bool ObjectManager::LoadAllObjects(const char* acFile)
 	return true;
 }
 
-
+// Gets
 void ObjectManager::GetAllObjects(list<Object*> *pakObjects)
 {
 	m_pkWorldObject->GetAllObjects(pakObjects);
@@ -430,8 +409,7 @@ Object*	ObjectManager::GetObjectByNetWorkID(int iNetID)
 }
 
 
-
-
+// NetWork
 void ObjectManager::UpdateState(NetPacket* pkNetPacket)
 {
 	Object* pkNetSlave;
@@ -509,55 +487,32 @@ void ObjectManager::PackToClients()
 	net->SendToAllClients(&NP);
 }
 
+// Debug / Help Functions		
+
 void ObjectManager::DisplayTree()
 {
+	g_ZFObjSys.Log_Create("fisklins");
 	m_pkWorldObject->PrintTree(0);
 }
 
 
-
-
-
-
-
-
-
-
-//vector<ObjectTemplate*>	m_ObjectTemplates;
-void ObjectManager::Create_OT(int iID)
+void ObjectManager::DumpActiverPropertysToLog(char* szMsg)
 {
-	Console* pkConsole;
-	pkConsole = dynamic_cast<Console*>(g_ZFObjSys.GetObjectPtr("Console"));
+	g_ZFObjSys.Logf("net", "%s : %d\n", szMsg, m_akPropertys.size() );
 
-	if(iID >= 0) {
-		pkConsole->Printf("Object template ID must be below zero.");
-		return;
-		}
+	for(list<Property*>::iterator it=m_akPropertys.begin();it!=m_akPropertys.end();it++) 
+	{
+		g_ZFObjSys.Logf("net", "%s", (*it)->m_acName );
+		if((*it)->GetObject()->m_pkParent)
+			g_ZFObjSys.Logf("net", " Parent Obj: %s\n", (*it)->GetObject()->m_pkParent->m_kName.c_str() );
 
-	// Check if ID already create.
-	ObjectTemplate* pkOT = new ObjectTemplate;
-//	pkOT->m_iArvFrom = 0;
 
-//	m_ObjectTemplates.push_back( pkOT );
-//	pkConsole->Printf("Object template (%d) created.", iID);
-
+		//cout << (*it)->m_acName << endl;
+	}
+	
 }
 
-void ObjectManager::Destory_OT(int iID)
-{
-
-}
-
-void ObjectManager::LoadGameObjects(const char* szFileName)
-{
-
-}
-
-void ObjectManager::SaveGameObjects(const char* szFileName)
-{
-
-}
-
+// Message System.
 void ObjectManager::SendMsg()
 {
 
@@ -575,48 +530,8 @@ void ObjectManager::RouteMessage(GameMessage& Msg)
 	pkObject->AddGameMessage(Msg);
 }
 
-/*
-Object*	ObjectManager::GetObjectByNetWorkID(int iNetID)
-{
-	for(list<Object*>::iterator it=m_akObjects.begin();it!=m_akObjects.end();it++) {
-		if((*it)->iNetWorkID == iNetID)
-			return (*it);
-	}
 
-	return NULL;
-}*/
-
-
-
-/*
-void ObjectManager::Update(){
-	if(m_bNoUpdate)
-		return;
-	
-	UpdateDelete();
-
-	for(list<Object*>::iterator it=m_akObjects.begin();it!=m_akObjects.end();it++) {
-//		(*it)->ObjectUpdate();	
-		(*it)->Update();		 
-	}
-}
-
-void ObjectManager::Update(int iType){
-	UpdateDelete();
-
-	for(list<Object*>::iterator it=m_akObjects.begin();it!=m_akObjects.end();it++) {
-		//if the object is of specified type, then update it
-		if((*it)->GetType()==iType){
-//			(*it)->ObjectUpdate();				
-			(*it)->Update();
-		}
-	}
-}
-*/
-
-
-
-
+// Get Strings.
 char* ObjectManager::GetUpdateStatusName(int eStatus)
 {
 	char* pkName = "";
@@ -679,7 +594,14 @@ char* ObjectManager::GetPropertySideName(int iSide)
 
 }
 
- 
+
+
+
+
+
+
+// Object ArcheTypes
+
 ObjectArcheType*	ObjectManager::GetArcheType(string strName)
 {
 	for(list<ObjectArcheType*>::iterator it=m_akArcheTypes.begin();it!=m_akArcheTypes.end();it++) {
@@ -688,6 +610,28 @@ ObjectArcheType*	ObjectManager::GetArcheType(string strName)
 		}
 
 	return NULL;
+	
+}
+
+void ObjectManager::AddArchPropertys(Object* pkObj, string strName)
+{
+	ObjectArcheType* pkAt = GetArcheType(strName);
+	if(!pkAt)
+		return;
+
+	Property* pkProperty;
+
+	AddArchPropertys(pkObj, pkAt->m_strParentName);
+	for(int i=0; i<pkAt->m_kArchPropertys.size(); i++) {
+		pkProperty = pkObj->AddProxyProperty(pkAt->m_kArchPropertys[i].m_strName.c_str());
+
+		for(int j=0; j<pkAt->m_kArchPropertys[i].m_kVariables.size(); j++) {
+			pkProperty = pkObj->GetProperty(pkAt->m_kArchPropertys[i].m_strName.c_str());
+	
+			pkProperty->SetValue(pkAt->m_kArchPropertys[i].m_kVariables[j].m_strVariable.c_str(),
+				pkAt->m_kArchPropertys[i].m_kVariables[j].m_strValue.c_str());
+			}
+		}
 	
 }
 
@@ -762,6 +706,136 @@ void ObjectManager::TESTVIM_LoadArcheTypes(char* szFileName)
 		pkAt = NULL;
 		}
 }
+
+void ObjectManager::GetPropertys(int iType,int iSide)
+{
+	m_akPropertys.clear();
+	m_pkWorldObject->GetAllPropertys(&m_akPropertys,iType,iSide);
+
+/*
+	for(list<Object*>::iterator it=m_akObjects.begin();it!=m_akObjects.end();it++) {
+		(*it)->GetPropertys(&m_akPropertys,iType,iSide);		
+	}
+*/
+//	cout<<"TOTAL propertys: "<<m_akPropertys.size()<<endl;
+}
+
+
+
+void ObjectManager::RunCommand(int cmdid, const CmdArgument* kCommand) 
+{ 
+
+	switch(cmdid) {
+		case FID_LOGOHTREE:
+			DisplayTree();
+			break;
+
+		case FID_LOGACTIVEPROPERTYS:
+			DumpActiverPropertysToLog("Active propertys");
+			break;
+
+		case FID_SENDMESSAGE:
+/*			gm.m_FromObject = -1;
+			gm.m_ToObject	= atoi(kCommand->m_kSplitCommand[2].c_str());
+			gm.m_Name		= kCommand->m_kSplitCommand[1].c_str();*/
+//			m_pkConsole->Printf("Sending Msg '%s' to %d from %d", gm.m_Name.c_str(), gm.m_ToObject, gm.m_FromObject);
+			//RouteMessage(gm);
+			break;
+	}	
+
+}
+
+
+
+
+
+
+
+
+
+
+
+//vector<ObjectTemplate*>	m_ObjectTemplates;
+/*void ObjectManager::Create_OT(int iID)
+{
+	Console* pkConsole;
+	pkConsole = dynamic_cast<Console*>(g_ZFObjSys.GetObjectPtr("Console"));
+
+	if(iID >= 0) {
+		pkConsole->Printf("Object template ID must be below zero.");
+		return;
+		}
+
+	// Check if ID already create.
+	ObjectTemplate* pkOT = new ObjectTemplate;
+//	pkOT->m_iArvFrom = 0;
+
+//	m_ObjectTemplates.push_back( pkOT );
+//	pkConsole->Printf("Object template (%d) created.", iID);
+
+}
+
+void ObjectManager::Destory_OT(int iID)
+{
+
+}
+
+void ObjectManager::LoadGameObjects(const char* szFileName)
+{
+
+}
+
+void ObjectManager::SaveGameObjects(const char* szFileName)
+{
+
+}
+*/
+
+
+/*
+Object*	ObjectManager::GetObjectByNetWorkID(int iNetID)
+{
+	for(list<Object*>::iterator it=m_akObjects.begin();it!=m_akObjects.end();it++) {
+		if((*it)->iNetWorkID == iNetID)
+			return (*it);
+	}
+
+	return NULL;
+}*/
+
+
+
+/*
+void ObjectManager::Update(){
+	if(m_bNoUpdate)
+		return;
+	
+	UpdateDelete();
+
+	for(list<Object*>::iterator it=m_akObjects.begin();it!=m_akObjects.end();it++) {
+//		(*it)->ObjectUpdate();	
+		(*it)->Update();		 
+	}
+}
+
+void ObjectManager::Update(int iType){
+	UpdateDelete();
+
+	for(list<Object*>::iterator it=m_akObjects.begin();it!=m_akObjects.end();it++) {
+		//if the object is of specified type, then update it
+		if((*it)->GetType()==iType){
+//			(*it)->ObjectUpdate();				
+			(*it)->Update();
+		}
+	}
+}
+*/
+
+
+
+ 
+
+
 
 
 /*	string strFileName;
@@ -876,42 +950,9 @@ void ObjectManager::TESTVIM_SpawnArcheTypes()
 		m_akArcheTypes.push_back(pkAt);*/
 }
 
-void ObjectManager::AddArchPropertys(Object* pkObj, string strName)
-{
-	ObjectArcheType* pkAt = GetArcheType(strName);
-	if(!pkAt)
-		return;
 
-	Property* pkProperty;
 
-	AddArchPropertys(pkObj, pkAt->m_strParentName);
-	for(int i=0; i<pkAt->m_kArchPropertys.size(); i++) {
-		pkProperty = pkObj->AddProxyProperty(pkAt->m_kArchPropertys[i].m_strName.c_str());
 
-		for(int j=0; j<pkAt->m_kArchPropertys[i].m_kVariables.size(); j++) {
-			pkProperty = pkObj->GetProperty(pkAt->m_kArchPropertys[i].m_strName.c_str());
-	
-			pkProperty->SetValue(pkAt->m_kArchPropertys[i].m_kVariables[j].m_strVariable.c_str(),
-				pkAt->m_kArchPropertys[i].m_kVariables[j].m_strValue.c_str());
-			}
-		}
-	
-}
-
-Object* ObjectManager::CreateObjectByArchType(const char* acName)
-{
-	ObjectArcheType* pkAt = GetArcheType(string(acName));
-	if(!pkAt)
-		return false;
-
-	Object* pkObj =	new Object;
-	AddArchPropertys(pkObj, string(acName));
-
-	pkObj->m_strType	= acName;
-	pkObj->m_kName		= string("A ") + pkObj->m_strType;
-
-	return pkObj;
-}
 
 Object* ObjectManager::CloneObject(int iNetID)
 {

@@ -17,20 +17,19 @@ Property::Property()
 	m_bSortDistance=false;
 }
 
-
-/*
-void Property::PackTo(NetPacket* pkNetPacket) 
-{
-
-  }
-  
-	 void Property::PackFrom(NetPacket* pkNetPacket) 
-	 {  
-	 
-		}
-*/
+// Game Messages
+void Property::HandleGameMessage(GameMessage& Msg)	
+{	
+	cout << "[Property]: Recv GM: " << m_acName << ", ";
+	cout << Msg.m_ToObject << ", ";
+	cout << Msg.m_FromObject << ", ";
+	cout << Msg.m_Name;
+	cout << endl;
+	
+}
 
 
+// Virtuals
 void Property::Save(ZFMemPackage* pkPackage)
 {
 	int i=1234;
@@ -46,7 +45,8 @@ void Property::Load(ZFMemPackage* pkPackage)
 		cout<<"ERROR Loading property"<<endl;
 }
 
-bool Property::operator<(Property& kOther){
+bool Property::operator<(Property& kOther)
+{
 	float d1,d2;	
 	
 	if(!m_bSortDistance){
@@ -66,8 +66,6 @@ bool Property::operator<(Property& kOther){
 	}
 }
 
-
-
 bool Property::HandleSetValue( string kValueName ,string kValue )
 {
 	return false;
@@ -78,23 +76,13 @@ bool Property::HandleGetValue( string kValueName )
 	return false;
 }
 
-void Property::HandleGameMessage(GameMessage& Msg)	
-{	
-	cout << "[Property]: Recv GM: " << m_acName << ", ";
-	cout << Msg.m_ToObject << ", ";
-	cout << Msg.m_FromObject << ", ";
-	cout << Msg.m_Name;
-	cout << endl;
-	
-}
-
 vector<PropertyValues> Property::GetPropertyValues()
 {
 	vector<PropertyValues> kReturn;
 	return kReturn;
 };
 
-
+// Property Edit Interface
 vector<string> Property::GetValueNames()
 {
 	vector<PropertyValues> kTemp= GetPropertyValues();

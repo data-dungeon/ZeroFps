@@ -73,8 +73,6 @@ class ENGINE_API ZeroFps : public ZFObject {
 		
 			FID_GLDUMP,
 		
-			FID_SENDMESSAGE,
-
 			// DevStrings
 			FID_DEV_SHOWPAGE,	
 			FID_DEV_HIDEPAGE,

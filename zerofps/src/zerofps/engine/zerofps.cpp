@@ -83,7 +83,6 @@ ZeroFps::ZeroFps(void)
 	g_ZFObjSys.Register_Cmd("gldump",FID_GLDUMP,this);	
 	g_ZFObjSys.Register_Cmd("devshow",FID_DEV_SHOWPAGE,this, "devshow name", 1);	
 	g_ZFObjSys.Register_Cmd("devhide",FID_DEV_HIDEPAGE,this, "devhide name", 1);	
-	g_ZFObjSys.Register_Cmd("sendmsg",FID_SENDMESSAGE,this,	 "sendmsg name id",2);	
 	g_ZFObjSys.Register_Cmd("debug",FID_LISTMAD,this);	
 
 	m_kCurentDir = m_pkBasicFS->GetCWD();
@@ -270,7 +269,7 @@ void ZeroFps::Run_Client()
 
 void ZeroFps::Update_System()
 {
-	float fATime = GetTicks() - m_fSystemUpdateTime; 	
+	/*float fATime = GetTicks() - m_fSystemUpdateTime; 	
 	int iLoops = int(m_fSystemUpdateFps * fATime);
 
 
@@ -279,11 +278,13 @@ void ZeroFps::Update_System()
 
 	m_fGameFrameTime = 1/m_fSystemUpdateFps;//(fATime / iLoops);	
 	
-	float m_fLU = m_fSystemUpdateTime;
+	float m_fLU = m_fSystemUpdateTime;*/
 	
-	for(int i=0;i<iLoops;i++)
-	{
-		m_fGameTime = m_fLU + (i * m_fGameFrameTime);
+	m_fGameTime = GetTicks();
+
+//	for(int i=0;i<iLoops;i++)
+//	{
+//		m_fGameTime = m_fLU + (i * m_fGameFrameTime);
 		
 		if(m_bRunWorldSim) {
 			//update all normal propertys
@@ -301,7 +302,7 @@ void ZeroFps::Update_System()
 		m_pkResourceDB->Refresh();
 
 		m_fSystemUpdateTime = GetTicks();
-	}
+//	}
 	
 
 }
@@ -784,14 +785,14 @@ void ZeroFps::RunCommand(int cmdid, const CmdArgument* kCommand)
 				page->m_bVisible = false;
 			break;
 
-			
+/*			
 		case FID_SENDMESSAGE:
 			gm.m_FromObject = -1;
 			gm.m_ToObject	= atoi(kCommand->m_kSplitCommand[2].c_str());
 			gm.m_Name		= kCommand->m_kSplitCommand[1].c_str();
 			m_pkConsole->Printf("Sending Msg '%s' to %d from %d", gm.m_Name.c_str(), gm.m_ToObject, gm.m_FromObject);
 			m_pkObjectMan->RouteMessage(gm);
-			break;
+			break;*/
 	}	
 }
 
