@@ -69,7 +69,6 @@ class COMMON_API PlayerControlProperty: public Property {
 		
 	public:
 
-		
 		PlayerControlProperty(Input *pkInput,HeightMap *pkMap);
 		~PlayerControlProperty();		
 
@@ -84,6 +83,8 @@ class COMMON_API PlayerControlProperty: public Property {
 
 		ExaminePUMenu* m_pkExaminePUMenu;
 		Object* m_pkUseObject;
+
+		bool m_bLockCameraRot;
 };
 
 

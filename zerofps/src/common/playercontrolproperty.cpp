@@ -52,6 +52,7 @@ PlayerControlProperty::PlayerControlProperty(Input *pkInput,HeightMap *pkMap)
 	m_fFov = 90;
 
 	m_pkUseObject = NULL;
+	m_bLockCameraRot = false;
 };
 
 PlayerControlProperty::~PlayerControlProperty()
@@ -177,7 +178,7 @@ void PlayerControlProperty::Update() {
 
 	m_pkCameraProperty	=	static_cast<CameraProperty*>(m_pkObject->GetProperty("CameraProperty"));
 	
-	if(m_pkInput->Pressed(KEY_X) == false){
+	if(m_pkInput->Pressed(KEY_X) == false && m_bLockCameraRot == false){
 		// Rrotate the camera and scale with fov.		
 		m_pkObject->GetRot().x += z / (180 / m_fFov);
 		m_pkObject->GetRot().y += x / (180 / m_fFov);
@@ -406,6 +407,4 @@ bool PlayerControlProperty::PickUp(Object* pkObject)
 
 	return true;
 }
-
-
 

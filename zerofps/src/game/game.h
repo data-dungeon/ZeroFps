@@ -70,6 +70,7 @@ class Game :public Application {
 		int m_iActionOpenInventory, m_iActionCloseInventory;
 
 	public:
+		void LockPlayerCamera(bool bTrue);
 		
 //		Core	m_kTestCore;
 

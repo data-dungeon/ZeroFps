@@ -34,6 +34,7 @@ static bool PLAYER_INVENTORYPROC( ZGuiWnd* wnd, unsigned int msg, int num, void 
 		switch(((int*)parms)[0]) // control id
 		{
 		case InventCloseBN:
+			g_kGame.LockPlayerCamera(false);
 			g_kGame.m_pkPlayerInventoryBox->OnClose(false);
 			break;
 		}
@@ -51,6 +52,7 @@ static bool CONTAINER_BOXPROC( ZGuiWnd* wnd, unsigned int msg, int num, void *pa
 		switch(((int*)parms)[0]) // control id
 		{
 		case ContainerClose:
+			g_kGame.LockPlayerCamera(false);
 			g_kGame.m_pkContainerBox->OnClose(false);
 			break;
 		}
@@ -62,17 +64,13 @@ static bool CONTAINER_BOXPROC( ZGuiWnd* wnd, unsigned int msg, int num, void *pa
 
 static bool EXAMINE_BOXPROC( ZGuiWnd* wnd, unsigned int msg, int num, void *parms ) 
 {
-/*	switch(msg)
+	switch(msg)
 	{
-	case ZGM_COMMAND:
-		switch(((int*)parms)[0]) // control id
-		{
-		case ContainerClose:
-			g_kGame.m_pkExamineMenu->OnClose(false);
-			break;
-		}
+	// Command Messages
+	case ZGM_SELECTLISTITEM:
+		g_kGame.LockPlayerCamera(false); 
 		break;
-	}*/
+	}
 
 	return g_kGame.m_pkExamineMenu->DlgProc(wnd,msg,num,parms); 
 }
@@ -249,13 +247,20 @@ void Game::Input()
 	{
 		// Open/Close inventory window
 		if(m_pkPlayerInventoryBox->IsOpen() == false)
+		{
+			LockPlayerCamera(true);
 			m_pkPlayerInventoryBox->OnOpen(-1,-1); 
+		}
 		else
+		{
+			LockPlayerCamera(false);
 			m_pkPlayerInventoryBox->OnClose(false);
+		}
 	}
 
 	if(iKey == KEY_ESCAPE)
 	{
+		LockPlayerCamera(false);
 		m_pkExamineMenu->OnClose(false);
 	}
 
@@ -264,16 +269,25 @@ void Game::Input()
 		int x = m_iWidth - m_pkContainerBox->Width();
 
 		if(m_pkContainerBox->IsOpen() == false)
+		{
+			LockPlayerCamera(true);
 			m_pkContainerBox->OnOpen(x,0); 
+		}
 		else
+		{
+			LockPlayerCamera(false);
 			m_pkContainerBox->OnClose(false);
+		}
 	}
 
 	if(pkInput->Action(m_iActionCloseInventory))
 	{
 		// Open/Close inventory window
 		if(m_pkPlayerInventoryBox->IsOpen())
+		{
 			m_pkPlayerInventoryBox->OnClose(false);
+			LockPlayerCamera(false);
+		}
 	}
 }
 
@@ -482,8 +496,18 @@ void Game::PlayerExamineObject()
 			int y = m_iHeight/2 - m_pkExamineMenu->Height()/2;
 			if(m_pkExamineMenu->IsOpen() == false)
 			{
+				LockPlayerCamera(true);
 				m_pkExamineMenu->OnOpen(x,y);
 			}
 		}
 	}
+}
+
+void Game::LockPlayerCamera(bool bTrue)
+{
+	PlayerControlProperty* m_pkPlayerCtrl = static_cast<PlayerControlProperty*>
+		(m_pkPlayer->GetProperty("PlayerControlProperty"));
+
+	if(m_pkPlayerCtrl)
+		m_pkPlayerCtrl->m_bLockCameraRot = bTrue;
 }
