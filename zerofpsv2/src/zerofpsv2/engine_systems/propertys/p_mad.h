@@ -16,50 +16,64 @@ class ENGINE_SYSTEMS_API P_Mad : public Property, public Mad_Modell {
 		vector<PropertyValues> GetPropertyValues();
 		bool HandleSetValue( string kValueName ,string kValue );
 	
-		Render*		m_pkRender;		// Ptr to render sys.
-//		ZShader*	m_pkZShader;	// Ptr to shader sys.
+		Render*	m_pkRender;		// Ptr to render sys.
 		ZeroFps*	m_pkZeroFps;	// Ptr to zerofps sys.
 
 		float		m_fLod;
 		bool		m_bIsVisible;
-
 		int		m_iShadowGroup;
+		
+		float		m_fLastAnimationUpdateTime;
 		
 		//linetest stuff
 		Matrix4		m_kModelMatrix;
 		Vector3		m_kColPos;
 		int			m_iColFace;
 
+		//line test
 		bool LineVSSphere(Vector3 &kPos,Vector3 &kDir);
 		bool LineVSMesh(Vector3 &kPos,Vector3 &kDir);		
-		void GenerateModelMatrix();
-		
+		void GenerateModelMatrix();		
 		bool TestSides(Vector3* kVerts,Vector3* pkNormal,Vector3 kPos);		
 		bool TestPolygon(Vector3* kVerts,Vector3 kPos,Vector3 kDir);
 
 	public:
+		bool	m_bCanBeInvisible;	// True if this Mad fades away if it gets between the cam and the player.		
+		
+		//base funktions
 		P_Mad();
-
+		void Update();
 		void Save(ZFIoInterface* pkPackage);
 		void Load(ZFIoInterface* pkPackage);
 		void PackTo(NetPacket* pkNetPacket, int iConnectionID );
 		void PackFrom(NetPacket* pkNetPacket, int iConnectionID );
 		void CloneOf(Property* pkProperty) { }
-		
-		bool	m_bCanBeInvisible;	// True if this Mad fades away if it gets between the cam and the player.
 
+		//model handling
 		void SetBase(const char* acName);
+		bool AddMesh(int iSId);
+		
+		//animation
 		void SetAnimation(char* szName, float fStartTime);
 		void SetNextAnimation(char* szName);		
-		void Update();
-
 		int GetCurrentAnimation();
 		string GetCurrentAnimationName();
 		
 		void SetVisible(bool bVisible);
-		void SetShadowGroup(int iGroup) {m_iShadowGroup = iGroup;};
-		int GetShadowGroup() {return m_iShadowGroup;};
+		
+		//shadow groups
+		void SetShadowGroup(int iGroup)		{m_iShadowGroup = iGroup;};
+		int GetShadowGroup() 					{return m_iShadowGroup;};	
 
+		//get joint position
+		Vector3 GetJointPosition(char* szJointName);
+
+		//line test
+		bool TestLine(Vector3 kPos,Vector3 kDir);
+		Vector3 GetLastColPos() 				{return m_kColPos;};
+		int GetLastColFace() 					{ return m_iColFace;};		
+				
+		//vertex data	
 		Mad_TextureCoo* GetTextureCooPtr()	{return Mad_Modell::GetTextureCooPtr();};
 		Vector3* GetNormalsPtr()				{return Mad_Modell::GetNormalsPtr();};
 		int* GetFacesPtr()						{return Mad_Modell::GetFacesPtr();};
@@ -67,12 +81,6 @@ class ENGINE_SYSTEMS_API P_Mad : public Property, public Mad_Modell {
 		int GetNumVertices()						{return Mad_Modell::GetNumVertices();};
 		int GetNumFaces()							{return Mad_Modell::GetNumFaces();};
 
-		Vector3 GetJointPosition(char* szJointName);
-
-		bool TestLine(Vector3 kPos,Vector3 kDir);
-		Vector3 GetLastColPos() {return m_kColPos;};
-		int GetLastColFace() { return m_iColFace;};
-		bool AddMesh(int iSId);
 };
 
 Property* Create_MadProperty();

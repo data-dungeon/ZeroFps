@@ -390,6 +390,9 @@ void P_DMCharacter::Update()
 {
 	UpdateOrders();
 
+	
+	
+	
 	if(P_PfPath* pkPF = (P_PfPath*)m_pkObject->GetProperty("P_PfPath"))
 	{
 		if(pkPF->HavePath() == false)

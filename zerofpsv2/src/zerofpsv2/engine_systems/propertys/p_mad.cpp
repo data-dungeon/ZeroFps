@@ -23,6 +23,9 @@ P_Mad::P_Mad()
 	m_iShadowGroup = 0;
 
 	m_fScale	 = 1.0;
+	
+	
+	m_fLastAnimationUpdateTime = 0;
 }
 
 void P_Mad::Update()
@@ -51,8 +54,18 @@ void P_Mad::Update()
    }
 */
 
-	if( m_pkObjMan->IsUpdate(PROPERTY_TYPE_RENDER) ) {
-		UpdateAnimation(m_pkZeroFps->GetFrameTime());
+	if( m_pkObjMan->IsUpdate(PROPERTY_TYPE_RENDER) ) 
+	{		
+		
+	 	//make sure theres only one animation update per frame		
+		//float fCurrentTime = m_pkObjMan->GetSimTime();
+		float fCurrentTime = m_pkZeroFps->GetEngineTime();
+		if(m_fLastAnimationUpdateTime != fCurrentTime)
+		{
+			m_fLastAnimationUpdateTime = fCurrentTime;
+			//UpdateAnimation(m_pkObjMan->GetSimDelta());
+			UpdateAnimation(m_pkZeroFps->GetFrameTime());
+		}
 		
 		if(!m_pkZeroFps->GetCam()->GetFrustum()->SphereInFrustum(m_pkObject->GetWorldPosV(),GetRadius()))
 			return;
@@ -63,12 +76,6 @@ void P_Mad::Update()
 			float fDist = float( fabs(kDiff.Length()) );
 			//m_fLod = 1 - (fDist / 300);
 			//cout << "fDist: " << fDist << " / " << "m_fLod: " << m_fLod << endl;
-			
-
-			//dvoid yber loding deluxe
-			//float blub = GetRadius() / fDist;
-			//if(blub < 0.020)
-			//	return;
 		}
 
 		g_fMadLODScale = m_fLod;
@@ -126,9 +133,7 @@ void P_Mad::Update()
 		if(!m_bIsVisible)
 			m_pkShader->SetForceBlending(BLEND_MATERIAL);
 	
-	
-		return;
-		}
+	}
 }
 
 void P_Mad::SetBase(const char* acName)

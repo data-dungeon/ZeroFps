@@ -175,6 +175,7 @@ void ZShadow::Update()
 		DrawShadow(m_fShadowIntensity);
 	}
 
+	
 	glPopAttrib();
 
 }
@@ -332,7 +333,6 @@ void ZShadow::SetupStencilBuffer()
 
 void ZShadow::SetupGL()
 {
-
 	//clear stencil buffert
 	glClear(GL_STENCIL_BUFFER_BIT);
 
