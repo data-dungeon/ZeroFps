@@ -72,7 +72,7 @@ class Game :public Application {
 //		Core	m_kTestCore;
 
 		ItemBox* m_pkPlayerInventoryBox;
-		ItemBox* m_pkStatueInventoryBox;
+		ItemBox* m_pkContainerBox;
 
 		enum FuncId_e
 		{

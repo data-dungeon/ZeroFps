@@ -9,6 +9,7 @@
 class DlgBox  
 {
 public:
+	void SetPos(int x, int y);
 	bool IsOpen();
 	int Height();
 	int Width();
@@ -18,7 +19,7 @@ public:
 	DlgBox(ZGui* pkGui, ZGuiWndProc oMainWndProc);
 	virtual ~DlgBox();
 
-	virtual bool Create(int x, int y, int w, int h, ZGuiWndProc pkWndProc) = 0;
+	virtual bool Create(int x, int y, char* szResourceFile, char* szDlgName)=0;
 	virtual bool DlgProc( ZGuiWnd* pkWnd,unsigned int uiMessage,
 		int iNumberOfParams,void *pkParams ) = 0;
 

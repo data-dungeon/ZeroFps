@@ -1,6 +1,8 @@
 #include "game.h"
 #include "gamescript.h"
 #include "gamescriptinterface.h"
+#include "../../data/gui_resource_files/inventary_id.h"
+#include "../../data/gui_resource_files/container_id.h"
 
 Game g_kGame("ZeroFPS game",1024,768,24);
 
@@ -9,6 +11,7 @@ Game::Game(char* aName,int iWidth,int iHeight,int iDepth): Application(aName,iWi
 void Game::OnInit() 
 {
 	m_pkPlayerInventoryBox = NULL;
+	m_pkContainerBox = NULL;
 	m_pkPlayer = NULL;
 	Init();
 	
@@ -22,11 +25,25 @@ void Game::OnInit()
 static bool WINPROC( ZGuiWnd* pkWindow, unsigned int uiMessage, int iNumberOfParams, void *pkParams ) {
 	return true; }
 
-static bool PLAYER_INVENTORYPROC( ZGuiWnd* wnd, unsigned int msg, int num, void *parms ) {
-	return g_kGame.m_pkPlayerInventoryBox->DlgProc(wnd,msg,num,parms); }
+static bool PLAYER_INVENTORYPROC( ZGuiWnd* wnd, unsigned int msg, int num, void *parms ) 
+{
+	switch(msg)
+	{
+	case ZGM_COMMAND:
+		switch(((int*)parms)[0]) // control id
+		{
+		case InventCloseBN:
+			g_kGame.m_pkPlayerInventoryBox->OnClose(false);
+			break;
+		}
+		break;
+	}
 
-static bool STATUE_INVENTORYPROC( ZGuiWnd* wnd, unsigned int msg, int num, void *parms ) {
-	return g_kGame.m_pkStatueInventoryBox->DlgProc(wnd,msg,num,parms); }
+	return g_kGame.m_pkPlayerInventoryBox->DlgProc(wnd,msg,num,parms); 
+}
+
+static bool CONTAINER_BOXPROC( ZGuiWnd* wnd, unsigned int msg, int num, void *parms ) {
+	return g_kGame.m_pkContainerBox->DlgProc(wnd,msg,num,parms); }
 
 void Game::Init()
 {
@@ -91,9 +108,10 @@ void Game::OnIdle(void)
 			pkFps->DevPrintf("common","Active Propertys: %d",pkObjectMan->GetActivePropertys());
 			
 			if(m_pkPlayerInventoryBox->IsOpen())
-			{
 				m_pkPlayerInventoryBox->Update();
-			}
+
+			if(m_pkContainerBox)
+				m_pkContainerBox->Update();
 			
 			break;
 		}
@@ -189,20 +207,26 @@ void Game::Input()
 				printf("Failed to run script %s.\n", szFile);
 		}
 		break;
-
 	}
 	
 	if(iKey == KEY_I)
 	//if(pkInput->Action(m_iActionOpenInventory))
 	{
-		int Width = m_pkPlayerInventoryBox->Width();
-		int Height = m_pkPlayerInventoryBox->Width();
-
 		// Open/Close inventory window
 		if(m_pkPlayerInventoryBox->IsOpen() == false)
-			m_pkPlayerInventoryBox->OnOpen(m_iWidth/2-Width/2,m_iHeight/2-Height/2); 
+			m_pkPlayerInventoryBox->OnOpen(-1,-1); 
 		else
 			m_pkPlayerInventoryBox->OnClose(false);
+	}
+
+	if(iKey == KEY_O)
+	{
+		int x = m_iWidth - m_pkContainerBox->Width();
+
+		if(m_pkContainerBox->IsOpen() == false)
+			m_pkContainerBox->OnOpen(x,0); 
+		else
+			m_pkContainerBox->OnClose(false);
 	}
 
 	if(pkInput->Action(m_iActionCloseInventory))
@@ -211,8 +235,6 @@ void Game::Input()
 		if(m_pkPlayerInventoryBox->IsOpen())
 			m_pkPlayerInventoryBox->OnClose(false);
 	}
-
-
 }
 
 void Game::RunCommand(int cmdid, const CmdArgument* kCommand)
@@ -308,6 +330,7 @@ void Game::SetupLevel()
 			pkPlayerContainerProp->m_kContainer.SetSize(5,5);
 
 			m_pkPlayerInventoryBox->SetContainer(&pkPlayerContainerProp->m_kContainer);
+			m_pkContainerBox->SetContainer(&pkPlayerContainerProp->m_kContainer);
 		}		
 	}
 	
@@ -368,8 +391,13 @@ void Game::InitGui()
 	m_iActionCloseInventory = pkInput->RegisterAction("inventory_close");
 
 	m_pkPlayerInventoryBox = new ItemBox(pkGui, PLAYER_INVENTORYPROC, pkTexMan);
-	//m_pkStatueInventoryBox = new ItemBox(pkGui, STATUE_INVENTORYPROC, pkTexMan);
+	m_pkPlayerInventoryBox->Create(0,0,
+		"../data/gui_resource_files/inventary_rc.txt", "InventoryWnd");
 
+	m_pkContainerBox = new ItemBox(pkGui, CONTAINER_BOXPROC, pkTexMan);
+	m_pkContainerBox->Create(400,400,
+		"../data/gui_resource_files/container_rc.txt", "ContainerWnd");
+	
 	pkFps->m_bGuiTakeControl = false;
 }
 

@@ -3,22 +3,26 @@
 //////////////////////////////////////////////////////////////////////
 
 #include "itembox.h"
-#include "gui_resource_files/inventary_id.h"
 #include "../common/container.h"
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 
+int ItemBox::s_iButtonSlotIDCounter = 10000;
+int ItemBox::s_iStaticGridIDCounter = 100000;
+ZGuiSkin* ItemBox::s_kStaticGridSkinNormal = NULL;
+ZGuiSkin* ItemBox::s_kStaticGridSkinUnused = NULL;
+
 ItemBox::ItemBox(ZGui* pkGui, ZGuiWndProc oMainWndProc, TextureManager* pkTexMan,
 				 int iCols, int iRows, int iSlotSize, int iTopX, int iTopY) 
 	:	DlgBox(pkGui, oMainWndProc), m_ciSlotSize(iSlotSize), m_ciTopX(iTopX), 
 		m_ciTopY(iTopY), m_ciCols(iCols), m_ciRows(iRows)
 {
+	m_iGridIDCounterStart = s_iStaticGridIDCounter;
 	m_pkMoveItem = NULL;
 	m_pkContainer = NULL;
 	m_pkTexMan = pkTexMan;
-	Create(0,0,0,0,oMainWndProc);
 }
 
 ItemBox::~ItemBox()
@@ -32,14 +36,14 @@ bool ItemBox::DlgProc( ZGuiWnd* pkWnd,unsigned int uiMessage,
 	switch(uiMessage)
 	{
 	// Command Messages
-	case ZGM_COMMAND:
+/*	case ZGM_COMMAND:
 		switch(((int*)pkParams)[0]) // control id
 		{
 		case InventCloseBN:
 			OnClose(false);
 			break;
 		}
-		break;
+		break;*/
 
 	case ZGM_LBUTTONDOWN:
 		unsigned int i;
@@ -113,16 +117,20 @@ bool ItemBox::DlgProc( ZGuiWnd* pkWnd,unsigned int uiMessage,
 	return true;
 }
 
-bool ItemBox::Create(int x, int y, int w, int h, ZGuiWndProc pkWndProc)
+bool ItemBox::Create(int x, int y, char* szResourceFile, char* szDlgName)
 {
-	if(m_pkGui->LoadDialog("../src/game/gui_resource_files/inventary_rc.txt", 
-		"InventoryWnd", pkWndProc) == false)
+	if(m_pkGui->LoadDialog(szResourceFile, szDlgName, m_oMainWndProc) == false)
 		return false;
 
-	m_pkDlgBox = m_pkGuiMan->Wnd("InventoryWnd");
+	m_pkDlgBox = m_pkGuiMan->Wnd(szDlgName);
 
 	if(m_pkDlgBox == NULL)
 		return false;
+
+	if(!(x==-1 && y==-1))
+		m_pkDlgBox->SetPos(x,y,true,true);
+
+	CreateStaticGrid();
 
 	m_pkGui->ShowMainWindow(m_pkDlgBox, false);
 	return true;
@@ -134,7 +142,9 @@ bool ItemBox::OnOpen(int x, int y)
 	m_pkContainer->GetSize(sx,sy);
 	PaintStaticSlots(sx,sy);
 
-	m_pkDlgBox->SetPos(x,y,true,true);
+	if(!(x==-1 && y==-1))
+		m_pkDlgBox->SetPos(x,y,true,true);
+
 	m_pkGui->ShowMainWindow(m_pkDlgBox, true);
 	return true;
 }
@@ -189,14 +199,14 @@ void ItemBox::SetContainer(Container* pkContainer)
 
 void ItemBox::AddSlot(GuiData* pkData)
 {
-	static int s_iID = 10000;
 	Rect rc(pkData->iPosX*m_ciSlotSize, pkData->iPosY*m_ciSlotSize,
 		pkData->iPosX*m_ciSlotSize + pkData->iSizeX*m_ciSlotSize, 
 		pkData->iPosY*m_ciSlotSize + pkData->iSizeY*m_ciSlotSize);
 
 	rc = rc.Move(m_ciTopX, m_ciTopY);
 
-	ZGuiButton* pkButton = new ZGuiButton(rc, m_pkDlgBox, true, s_iID++);
+	ZGuiButton* pkButton = new ZGuiButton(rc, m_pkDlgBox, true, 
+		s_iButtonSlotIDCounter++);
 
 	ZGuiSkin* pkSkin = new ZGuiSkin();
 	char szTexpath[512];
@@ -207,13 +217,13 @@ void ItemBox::AddSlot(GuiData* pkData)
 	pkButton->SetButtonDownSkin(pkSkin);
 	pkButton->SetButtonHighLightSkin(pkSkin);
 	
-	char* name = GetSlotName(s_iID);
+	char* name = GetSlotName(s_iButtonSlotIDCounter);
 	m_pkGui->RegisterWindow(pkButton, name);
 	delete[] name;
 
 	// Must sort all window again so that the the static grid picture
 	// doesn´t cover the new button.
-	pkButton->SetZValue(s_iID);
+	pkButton->SetZValue(s_iButtonSlotIDCounter);
 	m_pkDlgBox->SortChilds();
 
 	// Add the slot to the vector
@@ -276,11 +286,8 @@ pair<int,int> ItemBox::GetSlot(int x, int y)
 
 void ItemBox::PaintStaticSlots(int container_size_x, int container_size_y)
 {
-	const float fStaticColor[] = {
-		(1.0f/255)*132,(1.0f/255)*130,(1.0f/255)*132 };
-
 	char szSearchName[50];
-	for(int y=0, counter=1; y<m_ciRows; y++)
+	for(int y=0, counter=m_iGridIDCounterStart; y<m_ciRows; y++)
 		for(int x=0; x<m_ciCols; x++, counter++)
 		{
 			sprintf(szSearchName, "ItemboxSlotGridST%i", counter);
@@ -289,10 +296,55 @@ void ItemBox::PaintStaticSlots(int container_size_x, int container_size_y)
 			{
 				slot_pos cell = GetSlot(pkWnd->GetScreenRect().Left, 
 					pkWnd->GetScreenRect().Top);
+
+				ZGuiSkin* pkSkin = pkWnd->GetSkin();
 				
 				if(cell.first>=container_size_x || cell.second>=container_size_y)
-					memcpy(pkWnd->GetSkin()->m_afBkColor, 
-						fStaticColor, sizeof(float) * 3);
+					pkSkin = s_kStaticGridSkinUnused;
+				else
+					pkSkin = s_kStaticGridSkinNormal;
+
+				pkWnd->SetSkin(pkSkin);
 			}
+		}
+}
+
+void ItemBox::CreateStaticGrid()
+{
+	if(s_kStaticGridSkinNormal == NULL)
+	{
+		const float fStaticColor[] = {
+			(1.0f/255)*132,(1.0f/255)*130,(1.0f/255)*132 };
+
+		s_kStaticGridSkinNormal = new ZGuiSkin();
+		s_kStaticGridSkinUnused = new ZGuiSkin();
+
+		char szTexpath[512];
+		strcpy(szTexpath, "file:../data/textures/itemslots.bmp");
+		s_kStaticGridSkinNormal->m_iBkTexID = m_pkTexMan->Load(szTexpath, 0);
+		s_kStaticGridSkinUnused->m_iBkTexID = m_pkTexMan->Load(szTexpath, 0);
+
+		memcpy(s_kStaticGridSkinUnused->m_afBkColor, fStaticColor, 
+			sizeof(float) * 3);
+	}
+
+	ZGuiLabel* pkLabel;
+	char szName[50];
+	Rect rc;
+
+	for(int y=0; y<m_ciRows; y++)
+		for(int x=0; x<m_ciCols; x++)
+		{
+			rc = Rect(x*m_ciSlotSize, y*m_ciSlotSize,
+				x*m_ciSlotSize+m_ciSlotSize, y*m_ciSlotSize+m_ciSlotSize);
+			rc = rc.Move(m_ciTopX, m_ciTopY);
+
+			pkLabel = new ZGuiLabel(rc, m_pkDlgBox, true, s_iStaticGridIDCounter);
+			pkLabel->SetSkin(s_kStaticGridSkinNormal);
+
+			sprintf(szName, "ItemboxSlotGridST%i", s_iStaticGridIDCounter);
+			m_pkGui->RegisterWindow(pkLabel, szName);
+
+			s_iStaticGridIDCounter++;
 		}
 }

@@ -19,7 +19,6 @@ struct GuiData;
 class ItemBox : public DlgBox 
 {
 public:
-	
 	void SetContainer(Container* pkContainer);
 	void Update();
 	ItemBox(ZGui* pkGui, ZGuiWndProc oMainWndProc, TextureManager* pkTexMan,
@@ -29,7 +28,7 @@ public:
 	bool DlgProc( ZGuiWnd* pkWnd,unsigned int uiMessage,
 		int iNumberOfParams,void *pkParams );
 
-	bool Create(int x, int y, int w, int h, ZGuiWndProc pkWndProc);
+	bool Create(int x, int y, char* szResourceFile, char* szDlgName);
 	bool OnClose(bool bSave);
 	bool OnOpen(int x, int y);
 
@@ -38,7 +37,7 @@ private:
 
 	typedef pair<int,int > slot_pos;
 
-	
+	void CreateStaticGrid();
 	bool ButtonSlotExist(int grid_x, int grid_y);
 	void RemoveSlot(int grid_x, int grid_y);
 	void AddSlot(GuiData* pkData);
@@ -53,6 +52,12 @@ private:
 	
 	/// size of the slots in pixels
 	const int m_ciSlotSize;
+
+	int m_iGridIDCounterStart;
+	static int s_iStaticGridIDCounter;
+	static int s_iButtonSlotIDCounter;
+	static ZGuiSkin* s_kStaticGridSkinNormal;
+	static ZGuiSkin* s_kStaticGridSkinUnused;
 
 	TextureManager* m_pkTexMan;
 	Container* m_pkContainer;

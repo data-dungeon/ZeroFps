@@ -36,3 +36,8 @@ bool DlgBox::IsOpen()
 	
 	return false;
 }
+
+void DlgBox::SetPos(int x, int y)
+{
+	m_pkDlgBox->SetPos(x,y,true,true);
+}
