@@ -41,13 +41,17 @@ MistClient::MistClient(char* aName,int iWidth,int iHeight,int iDepth)
 
 	m_iCharacterID = -1;
 	m_bShowMenulevel = true;
+	m_bQuickStart = false;
+	m_strQuickStartAddress = "127.0.0.1:4242";
 
 	m_strLoginName = "Psykosmurfan";
    m_strLoginPW = "topsecret";
 
-   RegisterVariable("ap_loginname", 			&m_strLoginName, CSYS_STRING);
-   RegisterVariable("ap_loginpw", 			&m_strLoginPW, CSYS_STRING);
-	RegisterVariable("ap_showmenulevel", 	&m_bShowMenulevel, CSYS_BOOL);
+   RegisterVariable("ap_loginname", 		 &m_strLoginName,				CSYS_STRING);
+   RegisterVariable("ap_loginpw", 			 &m_strLoginPW,				CSYS_STRING);
+	RegisterVariable("ap_showmenulevel", 	 &m_bShowMenulevel,			CSYS_BOOL);
+	RegisterVariable("ap_quickstart",		 &m_bQuickStart,				CSYS_BOOL);
+	RegisterVariable("ap_quickstartadress", &m_strQuickStartAddress,	CSYS_STRING);
 
 	m_bGuiCapture = false;
 } 
@@ -129,6 +133,11 @@ void MistClient::OnInit()
 		pkEnv->LoadEnviroment("data/enviroments/rain.env");
 	}
 	*/
+
+	if(m_bQuickStart)
+	{
+		g_kMistClient.m_pkZeroFps->StartClient(m_strLoginName, m_strLoginPW, m_strQuickStartAddress);
+	}
 }
 
 void MistClient::RunCommand(int cmdid, const CmdArgument* kCommand)

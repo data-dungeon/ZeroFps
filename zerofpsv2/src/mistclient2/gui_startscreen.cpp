@@ -152,6 +152,7 @@ void GuiMsgStartScreen( string strMainWnd, string strController,
 						g_kMistClient.m_pkZeroFps->StartClient(strLogin, strPassword, strServerIP);
 						g_kMistClient.m_strLoginName = strLogin;
 						g_kMistClient.m_strLoginPW	= strPassword;
+						g_kMistClient.m_strQuickStartAddress = strServerIP;
 					}
 					else
 						printf("Input error,	failed to connect.");
