@@ -244,8 +244,8 @@ void ZGResEdit::OnInit()
 		m_pkTexMan->Load("data/textures/text/syflen16.tga"));
 	m_pkGuiMan->Add("syflen16", pkNewFont);
 	
-	CreateWnd(Wnd, "TestWnd", "", "", 10, 10, 460, 460, 0);
-	ZGuiTextbox* textbox = (ZGuiTextbox*) CreateWnd(Textbox, "TestTextbox", "TestWnd", "", 45, 45, 350, 350, 0);
+	CreateWnd(Wnd, "TestWnd", "", "", 10, 10, 660, 460, 0);
+	ZGuiTextbox* textbox = (ZGuiTextbox*) CreateWnd(Textbox, "TestTextbox", "TestWnd", "", 45, 45, 550, 350, 0);
 	textbox->ToggleMultiLine(true);
 	textbox->SetScrollbarSkin(GetSkin("DefSBrBkSkin"),
 			GetSkin("DefSBrNSkin"), GetSkin("DefSBrFSkin"),

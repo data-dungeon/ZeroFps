@@ -55,6 +55,7 @@ private:
 	void MoveUpOneRow();
 	
 	bool UpdateScrollbar();
+	void UpdateDisplayList();
 	
 	//int GetNumRows(char* szText);
 	void ScrollText(ZGuiScrollbar* pkScrollbar);
@@ -79,6 +80,9 @@ private:
 	
 	int m_kHorzOffset;
 	int m_iTotalTextHeight;
+
+	bool m_bUseDisplayList;
+	int m_iDisplayListID;
 
 	ZGuiScrollbar* m_pkScrollbarVertical;
 	ZGuiRender* m_pkGuiRender;
@@ -105,6 +109,8 @@ private:
 	vector<TEXT_TAG> m_kTextTags;
 	
 	void BuildTextStrings();
+
+	Rect m_rcOldScreenRect;
 };
 
 #endif // #ifndef _GUI_ZGUITEXTBOX_H

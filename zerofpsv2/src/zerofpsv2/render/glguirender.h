@@ -49,9 +49,12 @@ public:
 	void RenderText( char *stText, Rect kScreenRect, int iCursorPos, 
 		float afTextcolor[3], MULTI_LINE_TEXT_INFO* pkMultiLineInfo=NULL);
 
-	void StartDrawText();
+	int StartDrawText(bool bCreateDisplayList=false);
 	void DrawString(const char* text, const int length, int x, int y, 
 		const float color[3], const ZGuiFont* font);
+	void DrawStringDisplayList(int iDisplayListID);
+	void EndDrawText();
+	void DeleteStringDisplayList(int iDisplayListID);
 	
 private:
 
@@ -86,6 +89,8 @@ private:
 	string m_strSyntax;
 
 	GUIScaleMode m_eGUIScaleMode;
+
+	bool m_bDrawList;
 };
 
 #endif

@@ -27,6 +27,8 @@ ZGuiTextbox::ZGuiTextbox(Rect kArea, ZGuiWnd* pkParent, bool bVisible,
 						 int iID, bool bMultiLine) : 
 	ZGuiWnd(kArea, pkParent, bVisible, iID)
 {
+	m_bUseDisplayList = true;
+	m_iDisplayListID = -1;
 	m_kHorzOffset = 0;
 	m_bNumberOnly = false;
 	m_bReadOnly = false;
@@ -39,6 +41,7 @@ ZGuiTextbox::ZGuiTextbox(Rect kArea, ZGuiWnd* pkParent, bool bVisible,
 	m_bBlinkCursor = false;
 	m_iCurrMaxText = 0;
 	m_pkScrollbarVertical = NULL;
+	m_rcOldScreenRect = Rect(-1,-1,-1,-1);
 
 	CreateInternalControls();
 
@@ -99,47 +102,57 @@ bool ZGuiTextbox::Render( ZGuiRender* pkRenderer )
 			int px = GetScreenRect().Left;
 			int py = top;
 
-			pkRenderer->StartDrawText(); 
-
-			for(int i=0; i<m_kTextTags.size(); i++)
+			if(m_iDisplayListID == -1 || m_bUseDisplayList == false)
 			{
-				top = GetScreenRect().Top - m_kTextTags[i].iRowHeight;
-				bottom = GetScreenRect().Bottom;
-
-				yPos = py + m_kTextTags[i].y+m_iRenderDistFromTop;
-				if(yPos > bottom)
-					break;
-
-				if(yPos >= top && yPos < bottom)
+				m_iDisplayListID = pkRenderer->StartDrawText(m_bUseDisplayList); 
+			
+				for(int i=0; i<m_kTextTags.size(); i++)
 				{
-					if(yPos < top + m_kTextTags[i].iRowHeight)
-					{
-						Rect rc;
-						rc.Top = GetScreenRect().Top;
-						rc.Bottom = -1;
-						pkRenderer->SetClipperArea(rc); 
-						pkRenderer->EnableClipper(true);
-					}
-					else
-					if(yPos + m_kTextTags[i].iRowHeight > bottom)
-					{
-						Rect rc;
-						rc.Bottom = GetScreenRect().Bottom;
-						rc.Top = -1;
-						pkRenderer->SetClipperArea(rc); 
-						pkRenderer->EnableClipper(true);
-					}
-					else
-						pkRenderer->EnableClipper(false);
+					top = GetScreenRect().Top - m_kTextTags[i].iRowHeight;
+					bottom = GetScreenRect().Bottom;
 
-					pkRenderer->DrawString(
-						m_strText+m_kTextTags[i].iPos, m_kTextTags[i].iNumChars, 
-						px + m_kTextTags[i].x, yPos, 
-						m_kTextTags[i].afColor, m_kTextTags[i].pkFont);
+					yPos = py + m_kTextTags[i].y+m_iRenderDistFromTop;
+					if(yPos > bottom)
+						break;
+
+					if(yPos >= top && yPos < bottom)
+					{
+						if(yPos < top + m_kTextTags[i].iRowHeight)
+						{
+							Rect rc;
+							rc.Top = GetScreenRect().Top;
+							rc.Bottom = -1;
+							pkRenderer->SetClipperArea(rc); 
+							pkRenderer->EnableClipper(true);
+						}
+						else
+						if(yPos + m_kTextTags[i].iRowHeight > bottom)
+						{
+							Rect rc;
+							rc.Bottom = GetScreenRect().Bottom;
+							rc.Top = -1;
+							pkRenderer->SetClipperArea(rc); 
+							pkRenderer->EnableClipper(true);
+						}
+						else
+							pkRenderer->EnableClipper(false);
+
+						pkRenderer->DrawString(
+							m_strText+m_kTextTags[i].iPos, m_kTextTags[i].iNumChars, 
+							px + m_kTextTags[i].x, yPos, 
+							m_kTextTags[i].afColor, m_kTextTags[i].pkFont);
+					}
 				}
-			}
 
-			pkRenderer->EnableClipper(false);
+				pkRenderer->EnableClipper(false);
+
+				if(m_bUseDisplayList)
+					pkRenderer->EndDrawText();
+			}
+			else
+			{
+				pkRenderer->DrawStringDisplayList(m_iDisplayListID);
+			}
 		}
 		else
 		{
@@ -165,6 +178,12 @@ bool ZGuiTextbox::Render( ZGuiRender* pkRenderer )
 
 	if(m_pkScrollbarVertical)
 		m_pkScrollbarVertical->Render(pkRenderer);
+
+	if(m_rcOldScreenRect != GetScreenRect())
+	{
+		UpdateDisplayList();
+		m_rcOldScreenRect = GetScreenRect();
+	}
 
 	return true;
 }
@@ -324,6 +343,10 @@ bool ZGuiTextbox::Notify(ZGuiWnd* pkWnd, int iCode)
 			if(m_pkScrollbarVertical)
 			{
 				ScrollText(m_pkScrollbarVertical);
+
+				// Kör inte med dispaylists nu eftersom det blir för slött när man 
+				// scrollar texten.
+				m_bUseDisplayList = false;
 			}
 			return true;
 		}
@@ -346,6 +369,14 @@ bool ZGuiTextbox::Notify(ZGuiWnd* pkWnd, int iCode)
 			int prev_cursor_pos = m_iCursorPos;
 			pkGui->SetFocus(this);
 			m_iCursorPos = prev_cursor_pos;
+		}
+
+		// Markera att dispaylists nu skall användas och att displaylistan 
+		// skall byggas om (genom att m_iDisplayListID sätts till -1)
+		if(iCode == NCODE_RELEASE || iCode == NCODE_CLICK_UP)
+		{
+			m_bUseDisplayList = true;
+			m_iDisplayListID = -1;
 		}
 	}
 
@@ -377,7 +408,8 @@ void ZGuiTextbox::ScrollText(ZGuiScrollbar* pkScrollbar)
 	pkScrollbar->m_iScrollChange = 0;
 
 	m_iCursorRow = m_iStartrow;
-	
+
+	UpdateDisplayList();
 }
 
 void ZGuiTextbox::ScrollText(int row)
@@ -1368,5 +1400,15 @@ void ZGuiTextbox::BuildTextStrings()
 	else
 	{
 		m_iTotalTextHeight = 0;
+	}
+}
+
+void ZGuiTextbox::UpdateDisplayList()
+{
+	if(m_iDisplayListID != -1)
+	{
+		m_pkGuiRender->DeleteStringDisplayList(m_iDisplayListID);
+		m_iDisplayListID = -1;
+	//	printf("Updating displaylist for textbox\n");
 	}
 }

@@ -50,7 +50,7 @@ public:
 
 	inline bool Rect::operator!=(Rect d) 
 	{   
-		return (Left!=d.Left || Top==d.Top
+		return (Left!=d.Left || Top!=d.Top
 			|| Right!=d.Right || Bottom!=d.Bottom); 
 	} 
 

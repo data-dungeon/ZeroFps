@@ -56,9 +56,12 @@ public:
 	virtual void RenderText( char *stText, Rect kScreenRect, int iCursorPos, 
 		float afTextcolor[3], MULTI_LINE_TEXT_INFO* pkMultiLineInfo=NULL) = 0;
 	
-	virtual void StartDrawText() = 0;
+	virtual int StartDrawText(bool bCreateDisplayList=false) = 0;
 	virtual void DrawString(const char* text, const int length, int x, int y, 
 		const float color[3], const ZGuiFont* font) = 0;
+	virtual void DrawStringDisplayList(int iDisplayListID) = 0;
+	virtual void EndDrawText() = 0;
+	virtual void DeleteStringDisplayList(int iDisplayListID) = 0;
 
 	virtual pair<int,int> GetWordLength(char *text, int offset, int max_width) = 0;
 	virtual bool SetDisplay(int w, int h) = 0;

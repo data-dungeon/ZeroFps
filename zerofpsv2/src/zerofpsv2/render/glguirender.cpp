@@ -14,6 +14,7 @@
   
 GLGuiRender::GLGuiRender()
 {
+	m_bDrawList = false;
 	m_pkFont = NULL;
 	m_pkSkin = NULL;
 	m_iScreenWidth = 800;
@@ -1017,13 +1018,45 @@ pair<int,int> GLGuiRender::GetWordLength(char *text, int offset, int max_width)
 }
 
 
-void GLGuiRender::StartDrawText()
+int GLGuiRender::StartDrawText(bool bCreateDisplayList)
 {
+	int iListID = 0;
+
+	if(bCreateDisplayList)
+	{
+		iListID = glGenLists(1);
+		glNewList(iListID,GL_COMPILE );
+		m_bDrawList = true;
+	}
+	else
+	{
+		m_bDrawList = false;
+	}
+
 	glColor4f(0.0f,0.0f,0.0f,1);		
 	glAlphaFunc(GL_GREATER,0.1f);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glEnable(GL_BLEND);			
 	glEnable(GL_ALPHA_TEST);
+
+	return iListID;
+}
+
+void GLGuiRender::EndDrawText()
+{
+	if(m_bDrawList)
+		glEndList();
+}
+
+void GLGuiRender::DrawStringDisplayList(int iDisplayListID)
+{
+	int apa[] = { iDisplayListID };
+	glCallLists(1,GL_INT,apa);
+}
+
+void GLGuiRender::DeleteStringDisplayList(int iDisplayListID)
+{
+	glDeleteLists(iDisplayListID, 1);
 }
 
 //void GLGuiRender::DrawString(const char* text, const int length, int x, int y, 
