@@ -1346,6 +1346,12 @@ bool ZGui::ClickedWndAlphaTex(int mx, int my, ZGuiWnd *pkWndClicked)
 
 		SDL_Surface* pkSurface = m_pkTexMan->GetImage();
 
+		if(pkSurface == NULL)
+		{
+			printf("Failed to call GetImage from texturemanager!\n");
+			return false;
+		}
+
 		float tex_w = (float) pkSurface->w;
 		float tex_h = (float) pkSurface->h;
 
