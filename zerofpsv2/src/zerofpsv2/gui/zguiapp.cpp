@@ -574,13 +574,17 @@ ZGuiSkin* ZGuiApp::AddSkinFromScript2(char *szName, lua_State* pkLuaState,
 
 	// Textures
 	if(m_pkScriptSystem->GetGlobal(pkLuaState, szName, "tex1", szData))
-	{
+	{		
+		string strFullName = "data/textures/gui/" + string(szData);
+		map<string, string>::iterator res = m_kGuiImagePaths.find(string(szData));
+		if(res != m_kGuiImagePaths.end())
+			strFullName = res->second;
+
 		pkNewSkin->m_iBkTexID = strcmp(szData, "0") != 0 ? GetTexID(szData) : -1;
-		string strImageFile = string("/data/textures/gui/") + string(szData);
 		if(pkNewSkin->m_iBkTexID != -1)
 		{
-			m_pkGuiSys->CreatePickMapForImage(pkNewSkin->m_iBkTexID, strImageFile);
-			char *ext = strrchr( strImageFile.c_str(), '.');
+			m_pkGuiSys->CreatePickMapForImage(pkNewSkin->m_iBkTexID, strFullName);
+			char *ext = strrchr( strFullName.c_str(), '.');
 			if(ext != NULL && strcmp(ext,".tga") == 0)		
 				bHaveAlpha = true;
 		}
