@@ -1,0 +1,29 @@
+#include <iostream>
+#include <string>
+#include "Korv.h"
+#include <stdlib.h>
+#include <vector>
+
+using namespace std;
+int main( int argc, char* argv[] )
+{
+Korv Nisse;
+
+
+	vector<string> hej = Nisse.GetValueNames();
+	vector<string>::iterator i = hej.begin();
+		while (i != hej.end())
+		{
+			cout<< *i <<endl;
+			i++;
+		
+		}
+	cout<< endl;
+	if(!Nisse.SetValue("Vek","1.0 7.87 9.434 ")) cout<<"fel vid tilldelning!";
+	cout<<Nisse.GetValue("Vek")<<endl;
+
+
+					
+return 0;
+};
+
