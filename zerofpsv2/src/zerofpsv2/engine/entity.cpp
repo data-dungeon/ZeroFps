@@ -523,41 +523,39 @@ bool Entity::HaveSomethingToSend(int iConnectionID)
 {
 	if( m_eRole != NETROLE_AUTHORITY)		return false;
 	
-	if( m_eRemoteRole	== NETROLE_NONE )
-	{
-		if(m_ucIcon && m_pkZeroFps->m_kClient[iConnectionID].m_bIsEditor )
-			return true;
-		else
-			return false;
-	}
 	
 	bool bNeedUpdate = false;
 	bool bHasNetPropertys = false;
 
+	//check if theres any networked propertys and if any property wants to send data
 	for(vector<Property*>::iterator it=m_akPropertys.begin();it!=m_akPropertys.end();it++) 
 	{
 		if((*it)->bNetwork) 
 		{
 			bHasNetPropertys = true;
-			bNeedUpdate |= (*it)->GetNetUpdateFlag(iConnectionID);
-			
-			/*
-			if((*it)->GetNetUpdateFlag(iConnectionID))
-			{
-				cout<<"property wants to send:"<<(*it)->m_acName<<endl;
-			
-			}
-			*/
+			bNeedUpdate |= (*it)->GetNetUpdateFlag(iConnectionID);			
 		}
 	}
 
+	//no propertys to send
 	if(!bHasNetPropertys)
 	{
 		m_eRemoteRole = NETROLE_NONE;
+		
+		
+		//check if this entity has any value to an editor, if so send it if client is an editor
+		if(m_ucIcon && m_pkZeroFps->m_kClient[iConnectionID].m_bIsEditor )
+			if(IsAnyNetUpdateFlagTrue(iConnectionID))
+				return true;
+				
 		return false;
 	}
 
+	
+	
+	//is there any entity data to send?
 	bNeedUpdate |= IsAnyNetUpdateFlagTrue(iConnectionID);
+	
 	
 	return bNeedUpdate;
 }
@@ -569,6 +567,7 @@ void Entity::PackTo(NetPacket* pkNetPacket, int iConnectionID)
 {	
 	SetExistOnClient(iConnectionID,true);
 
+	
 	//send update flags
 	pkNetPacket->Write(m_kNetUpdateFlags[iConnectionID]);
 
@@ -1353,7 +1352,7 @@ void Entity::SetLocalPosV(const Vector3& kPos)
 		if(!AttachToZone(kPos))
 			return;
 	}
-
+	
 	//return if pos is the same
 	if(kPos == m_kLocalPosV)
 		return;
@@ -1658,7 +1657,6 @@ bool	Entity::IsAnyNetUpdateFlagTrue(int iConID)
 	for(int i = 0; i<MAX_NETUPDATEFLAGS; i++)
 	{
 		bValue |= m_kNetUpdateFlags[iConID][i];
-		
 	}
 	
 	return bValue;
@@ -1685,7 +1683,8 @@ void Entity::SetNetUpdateFlagAndChilds(int iFlagID,bool bValue)
 	//reset all childs
 	for(i = 0;i<m_akChilds.size();i++)
 	{
-		m_akChilds[i]->SetNetUpdateFlagAndChilds(iFlagID,bValue);
+		if( ((iFlagID == NETUPDATEFLAG_POS) || (iFlagID == NETUPDATEFLAG_ROT)) && m_akChilds[i]->m_bRelativeOri )
+			m_akChilds[i]->SetNetUpdateFlagAndChilds(iFlagID,bValue);
 	}	
 	
 }
@@ -2397,6 +2396,7 @@ int SetObjectPosLua(lua_State* pkLua)
  	\relates SIEntity
    \brief Sets velocity of entity
 */
+/*
 int SetVelToLua(lua_State* pkLua)
 {
 	if(g_pkScript->GetNumArgs(pkLua) == 3)
@@ -2429,6 +2429,7 @@ int SetVelToLua(lua_State* pkLua)
 
    return 0;
 }
+*/
 
 /**	\fn GetObjectPos( Entity)
  	\relates SIEntity
@@ -2564,7 +2565,7 @@ void Register_SIEntityProperty(ZeroFps* pkZeroFps)
 	g_pkScript->ExposeFunction("GetLocalString",		SI_Entity::GetLocalString);
 	g_pkScript->ExposeFunction("SetLocalString",		SI_Entity::SetLocalString);
 	g_pkScript->ExposeFunction("SetObjectPos",		SI_Entity::SetObjectPosLua);
-	g_pkScript->ExposeFunction("SetVelTo",				SI_Entity::SetVelToLua);
+	//g_pkScript->ExposeFunction("SetVelTo",				SI_Entity::SetVelToLua);
 	g_pkScript->ExposeFunction("GetObjectPos",		SI_Entity::GetObjectPosLua);
 	g_pkScript->ExposeFunction("GetObjectRot",		SI_Entity::GetObjectRotLua);
 

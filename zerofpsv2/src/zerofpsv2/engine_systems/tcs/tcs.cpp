@@ -531,7 +531,7 @@ void Tcs::SyncEntitys()
 				m_pkRender->Sphere(m_kBodys[i]->m_kNewPos,m_kBodys[i]->m_fRadius ,1,Vector3(0,1,0),false);					
 		
 		m_kBodys[i]->GetEntity()->SetWorldPosV(m_kBodys[i]->m_kNewPos);
-		m_kBodys[i]->GetEntity()->SetVel(m_kBodys[i]->m_kLinearVelocity);
+		//m_kBodys[i]->GetEntity()->SetVel(m_kBodys[i]->m_kLinearVelocity);
 		m_kBodys[i]->GetEntity()->SetLocalRotM(m_kBodys[i]->m_kNewRotation);
 	}
 }

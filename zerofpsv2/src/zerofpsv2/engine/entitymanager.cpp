@@ -730,10 +730,11 @@ void EntityManager::PackEntityToClient(int iClient, vector<Entity*> kObjects,boo
 
 		if(!pkPackObj->HaveSomethingToSend(iClient))  
 		{
-			//cout << "No need to send object" << endl;
+			//cout << "No need to send object " <<pkPackObj->GetEntityID()<< endl;
 			continue;
 		}
 		
+				
 		kEntityNp.Clear();
 
 		kEntityNp.Write(pkPackObj->m_iEntityID);
