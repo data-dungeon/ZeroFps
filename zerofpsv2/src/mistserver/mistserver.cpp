@@ -55,6 +55,7 @@ MistServer::MistServer(char* aName,int iWidth,int iHeight,int iDepth)
 	g_ZFObjSys.Log_Create("mistserver");
 
 	m_pkServerInfoP = NULL;
+	m_strActiveObjectName = "data/script/objects/t_test.lua";
 } 
 
 void MistServer::OnInit() 
@@ -312,7 +313,8 @@ void MistServer::Input()
 				if(pkFps->GetTicks() - m_fClickDelay > 0.2)
 				{	
 					m_fClickDelay = pkFps->GetTicks();		
-					pkObjectMan->CreateObjectFromScriptInZone("data/script/objects/t_test.lua",m_kObjectMarkerPos);
+					pkObjectMan->CreateObjectFromScriptInZone(
+						m_strActiveObjectName.c_str(), m_kObjectMarkerPos);
 				}
 			}
 			
@@ -693,27 +695,38 @@ void MistServer::OnClickListbox(ZGuiWnd *pkListBox, int iListboxIndex)
 void MistServer::OnClickTreeItem(char *szTreeBox, char *szParentNodeText, 
 											char *szClickNodeText, bool bHaveChilds)
 {
-	if(szClickNodeText && bHaveChilds == false)
+	if(strcmp(szTreeBox, "ZoneModelTree") == 0)
 	{
-		string strFullpath = string("data/mad/zones/");
-
-		if(szParentNodeText)
-			strFullpath += string(szParentNodeText);
-
-		if(szClickNodeText)
-			strFullpath += string(szClickNodeText);
-
-		m_strActiveZoneName = strFullpath;
-		
-		if(m_iCurrentMarkedZone != -1)
+		if(szClickNodeText && bHaveChilds == false)
 		{
-			//force loading of this zone
-			pkObjectMan->LoadZone(m_iCurrentMarkedZone);
+			string strFullpath = string("data/mad/zones/");
 
-		
-			pkObjectMan->SetZoneModel(strFullpath.c_str(),m_iCurrentMarkedZone);
+			if(szParentNodeText)
+				strFullpath += string(szParentNodeText);
 
-			printf("Setting new zone modell to %s\n", strFullpath.c_str());
+			if(szClickNodeText)
+				strFullpath += string(szClickNodeText);
+
+			m_strActiveZoneName = strFullpath;
+			
+			if(m_iCurrentMarkedZone != -1)
+			{
+				//force loading of this zone
+				pkObjectMan->LoadZone(m_iCurrentMarkedZone);
+
+				pkObjectMan->SetZoneModel(strFullpath.c_str(),m_iCurrentMarkedZone);
+
+				printf("Setting new zone modell to %s\n", strFullpath.c_str());
+			}
+		}
+	}
+	else
+	if(strcmp(szTreeBox, "ObjectTree") == 0)
+	{
+		if(szClickNodeText && bHaveChilds == false)
+		{
+			m_strActiveObjectName = string("data/script/objects/");
+			m_strActiveObjectName += szClickNodeText;
 		}
 	}
 }

@@ -1997,6 +1997,7 @@ bool ObjectManager::BoxVSBox(Vector3 kPos1,Vector3 kSize1,Vector3 kPos2,Vector3 
 		return true;
 	}
 
+	//printf("ObjectManager::BoxVSBox failed\n");
 
 	return false;
 }
