@@ -376,6 +376,8 @@ void ZeroFps::DrawDevStrings()
 
 }
 
+char g_szIpPort[256];
+
 void ZeroFps::RunCommand(int cmdid, const CmdArgument* kCommand)
 {
 	switch(cmdid) {
@@ -397,7 +399,11 @@ void ZeroFps::RunCommand(int cmdid, const CmdArgument* kCommand)
 				return;
 
 			m_pkConsole->Printf("Connect to %s", kCommand->m_kSplitCommand[1].c_str());
-			m_pkNetWork->ClientStart(kCommand->m_kSplitCommand[1].c_str());
+			//m_pkNetWork->ClientStart(kCommand->m_kSplitCommand[1].c_str());
+			sprintf(g_szIpPort, "%s:4242", kCommand->m_kSplitCommand[1].c_str());
+			m_pkConsole->Printf("Connect to: %s", g_szIpPort);
+			m_pkNetWork->ClientStart(g_szIpPort);
+			
 			//m_pkNetWork->ClientStart("192.168.0.7:4242"); // hugo
 			//m_pkNetWork->ClientStart("192.168.0.145:4242"); // hugo
 			//m_pkNetWork->ClientStart("192.168.0.111:4242");	// me
