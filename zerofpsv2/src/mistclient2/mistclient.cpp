@@ -35,7 +35,7 @@ MistClient::MistClient(char* aName,int iWidth,int iHeight,int iDepth)
 	g_ZFObjSys.SetPreLogName("mistclient2");
 	g_ZFObjSys.Log_Create("mistclient2");
 	
-	m_pkHighlight = NULL;
+	m_iPickedEntityID = -1;
 	m_fDelayTime  = 0;
 
 	m_iCharacterID = -1;
@@ -183,7 +183,7 @@ void MistClient::RegisterPropertys()
 
 void MistClient::RenderInterface(void)
 {
-	if(m_pkHighlight) 
+/*	if(m_pkHighlight) 
 	{
 		float fRadius = m_pkHighlight->GetRadius();
 		if(fRadius < 0.1)
@@ -193,7 +193,21 @@ void MistClient::RenderInterface(void)
 		Vector3 kMax = m_pkHighlight->GetWorldPosV() + fRadius;
 
 		m_pkRender->DrawAABB( kMin,kMax, m_pkRender->GetEditColor("active/firstentity") );
+	}*/
+	
+	
+	/*
+	if(m_pkCamera)
+	{
+		Vector3 kPos = m_pkCamera->GetPos()+Get3DMouseDir(true);
+		
+		Vector3 kMin = kPos - 0.01;
+		Vector3 kMax = kPos + 0.01;
+
+		m_pkRender->DrawAABB( kMin,kMax, m_pkRender->GetEditColor("active/firstentity") );
+		
 	}
+	*/
 }
 
 void MistClient::OnIdle() 
@@ -216,6 +230,69 @@ void MistClient::OnIdle()
 			pkCompass->GetSkin()->m_fRotDegree = (1.0f/57.5f) * fAngle; 
 		}
 	}
+	
+
+}
+
+void MistClient::OnHud(void) 
+{
+	if(m_iCharacterID != -1)
+		if(!m_bGuiCapture)
+			DrawCrossHair();
+}
+
+void MistClient::DrawCrossHair()
+{
+	static ZMaterial* pkNormalPointer = NULL;
+	if(!pkNormalPointer)
+	{
+		pkNormalPointer = new ZMaterial;
+		pkNormalPointer->GetPass(0)->m_kTUs[0]->SetRes("data/textures/crosshair.tga");	
+		pkNormalPointer->GetPass(0)->m_bLighting = 	false;
+		pkNormalPointer->GetPass(0)->m_bFog = 			false;	
+		pkNormalPointer->GetPass(0)->m_iPolygonModeFront = FILL_POLYGON;		
+		//for alpha instead
+		pkNormalPointer->GetPass(0)->m_bAlphaTest = true;
+				
+		//blending is much nicer thou =)
+/*		pkNormalPointer->GetPass(0)->m_bDepthMask = false;
+		pkNormalPointer->GetPass(0)->m_bBlend = true;
+		pkNormalPointer->GetPass(0)->m_iBlendSrc = SRC_ALPHA_BLEND_SRC;
+		pkNormalPointer->GetPass(0)->m_iBlendDst = ONE_MINUS_SRC_ALPHA_BLEND_DST;	*/		
+	}
+
+	static ZMaterial* pkActivePointer = NULL;
+	if(!pkActivePointer)
+	{
+		pkActivePointer = new ZMaterial;
+		pkActivePointer->GetPass(0)->m_kTUs[0]->SetRes("data/textures/crosshair-active.tga");	
+		pkActivePointer->GetPass(0)->m_bLighting = 	false;
+		pkActivePointer->GetPass(0)->m_bFog = 			false;	
+		pkActivePointer->GetPass(0)->m_iPolygonModeFront = FILL_POLYGON;
+		pkActivePointer->GetPass(0)->m_bAlphaTest = true;
+	}	
+
+	//add geometry
+	m_pkZShaderSystem->ClearGeometry();
+	m_pkZShaderSystem->AddQuadV(	Vector3(-0.05,0.05,-1),Vector3(-0.05,-0.05,-1),
+											Vector3(0.05,-0.05,-1),Vector3(0.05,0.05,-1));
+	m_pkZShaderSystem->AddQuadUV(	Vector2(0,0)	,	Vector2(0,1),
+											Vector2(1,1)	,	Vector2(1,0));
+	
+	//active or normal pointer											
+	bool bActive = false;																						
+	if(Entity* pkEnt = m_pkEntityManager->GetEntityByID(m_iPickedEntityID))
+		if(pkEnt->GetProperty("P_Ml"))
+			bActive = true;
+	
+	//set material					
+	if(bActive)
+		m_pkZShaderSystem->BindMaterial(pkActivePointer);
+	else
+		m_pkZShaderSystem->BindMaterial(pkNormalPointer);
+		
+	//draw pointer
+	m_pkZShaderSystem->DrawGeometry(QUADS_MODE);
 }
 
 bool MistClient::DelayCommand()
@@ -234,14 +311,6 @@ void MistClient::Input()
 		ToggleGuiCapture();
 
 	
-	/*	
-	if(m_bGuiCapture)
-	{
-		memset(&m_kCharacterControls, 0, sizeof(m_kCharacterControls));
-		return;
-	}
-	*/
-	
 	//get relative mouse
 	float x=0;
 	float z=0;		
@@ -252,15 +321,22 @@ void MistClient::Input()
 	float fAy=0;
 	m_pkInputHandle->UnitMouseXY(fAx,fAy);
 	
-	
-	//check buttons
-	m_kCharacterControls[eUP] = 	m_pkInputHandle->VKIsDown("move_forward");
-	m_kCharacterControls[eDOWN] =	m_pkInputHandle->VKIsDown("move_back");			
-	m_kCharacterControls[eLEFT] = m_pkInputHandle->VKIsDown("move_left");			
-	m_kCharacterControls[eRIGHT]= m_pkInputHandle->VKIsDown("move_right");
-	m_kCharacterControls[eJUMP] = m_pkInputHandle->VKIsDown("jump");
-	m_kCharacterControls[eCRAWL] =m_pkInputHandle->VKIsDown("crawl");
+	//gui stuff
+	if(m_pkInputHandle->Pressed(KEY_ESCAPE) && !DelayCommand())
+	{
+		if(IsWndVisible("ChatDlgMainWnd"))
+			LoadStartScreenGui(false);
+	}
 
+	if(m_pkInputHandle->Pressed(KEY_ESCAPE) && !DelayCommand())
+	{
+		if(IsWndVisible("OptionsWnd"))
+			ShowWnd("OptionsWnd", 0,0,0);
+		else
+		if(IsWndVisible("MLStartWnd"))
+			LoadInGameGui();
+	}
+		
 	// taunts
 	if ( m_pkInputHandle->VKIsDown("taunt1") || m_pkInputHandle->VKIsDown("taunt2")|| 
 		m_pkInputHandle->VKIsDown("taunt3") || m_pkInputHandle->VKIsDown("taunt4") || 
@@ -291,24 +367,40 @@ void MistClient::Input()
 		}
 	}
 
-	m_pkHighlight = GetTargetObject();
+	//update picked object	
+	if(Entity* pkPickedEnt = GetTargetObject())	
+		m_iPickedEntityID = pkPickedEnt->GetEntityID();
+	else
+		m_iPickedEntityID = -1;
 	
-	if ( m_pkInputHandle->VKIsDown("use") )
+	
+	if ( m_pkInputHandle->VKIsDown("look") )
 	{
 		if(!DelayCommand())
 		{
-			if(m_pkHighlight)
+			if(Entity* pkEnt = m_pkEntityManager->GetEntityByID(m_iPickedEntityID))
+				if(P_Ml* pkMl = (P_Ml*)pkEnt->GetProperty("P_Ml"))
+				{
+					vector<string>	kActions;
+					pkMl->GetActions(kActions);
+					
+					cout<<"actions:"<<endl;
+					for(int i =0;i<kActions.size();i++)
+						cout<<i<<" "<<kActions[i]<<endl;
+				}
+		
+/*			if(m_pkHighlight)
 			{
 				NetPacket kNp;			
 				kNp.Write((char) MLNM_CS_USE);
 				kNp.Write(m_pkHighlight->GetEntityID());
 				kNp.TargetSetClient(0);
 				SendAppMessage(&kNp);		
-			}
+			}*/
 		}
 	}
 
-	if ( m_pkInputHandle->VKIsDown("look") )
+/*	if ( m_pkInputHandle->VKIsDown("look") )
 	{
 		if(!DelayCommand())
 		{
@@ -322,23 +414,17 @@ void MistClient::Input()
 			}
 		}
 	}
-
+	*/
 	
+	//check buttons
+	m_kCharacterControls[eUP] = 	m_pkInputHandle->VKIsDown("move_forward");
+	m_kCharacterControls[eDOWN] =	m_pkInputHandle->VKIsDown("move_back");			
+	m_kCharacterControls[eLEFT] = m_pkInputHandle->VKIsDown("move_left");			
+	m_kCharacterControls[eRIGHT]= m_pkInputHandle->VKIsDown("move_right");
+	m_kCharacterControls[eJUMP] = m_pkInputHandle->VKIsDown("jump");
+	m_kCharacterControls[eCRAWL] =m_pkInputHandle->VKIsDown("crawl");	
 
-	if(m_pkInputHandle->Pressed(KEY_F1) && !DelayCommand())
-	{
-		if(IsWndVisible("ChatDlgMainWnd"))
-			LoadStartScreenGui(false);
-	}
 
-	if(m_pkInputHandle->Pressed(KEY_ESCAPE) && !DelayCommand())
-	{
-		if(IsWndVisible("OptionsWnd"))
-			ShowWnd("OptionsWnd", 0,0,0);
-		else
-		if(IsWndVisible("MLStartWnd"))
-			LoadInGameGui();
-	}
 
 	//update camera
 	if(Entity* pkCharacter = m_pkEntityManager->GetEntityByID(m_iCharacterID))
@@ -365,8 +451,6 @@ void MistClient::Input()
 					
 			}
 			
-			pkCam->SetOffset(Vector3(0,0,0)); 
-
 			float fDistance = pkCam->Get3PDistance();
 			
 			if(!m_bGuiCapture)
@@ -388,7 +472,9 @@ void MistClient::Input()
 			if(fDistance < 0.3)	
 			{	
 				pkCam->SetType(CAM_TYPEFIRSTPERSON_NON_EA);
-				
+
+				pkCam->SetOffset(Vector3(0,0,0)); 							
+								
 				//disable player model in first person
 				if(P_Mad* pkMad = (P_Mad*)pkCharacter->GetProperty("P_Mad"))
 					pkMad->SetVisible(false);					
@@ -396,6 +482,7 @@ void MistClient::Input()
 			else			
 			{
 				pkCam->SetType(CAM_TYPE3PERSON);
+				pkCam->SetOffset(Vector3(0,0.4,0)); 							
 				
 				//enable player model i 3d person
 				if(P_Mad* pkMad = (P_Mad*)pkCharacter->GetProperty("P_Mad"))
@@ -484,10 +571,7 @@ void MistClient::UpdateCharacter()
 }
 
 
-void MistClient::OnHud(void) 
-{	
 
-}
 
 
 
@@ -725,7 +809,7 @@ Entity* MistClient::GetTargetObject()
 {
 	Vector3 start = m_pkCamera->GetPos();
 	Vector3 dir;
-	dir = Get3DMousePos(true);
+	dir = Get3DMouseDir(m_bGuiCapture);
 
 	vector<Entity*> kObjects;
 	kObjects.clear();
@@ -790,20 +874,24 @@ Vector3 MistClient::Get3DMouseDir(bool bMouse)
 	{
 		// Zeb was here! Nu kör vi med operativsystemets egna snabba musmarkör
 		// alltså måste vi använda den position vi får därifrån.
-		//	m_pkInputHandle->UnitMouseXY(x,y);
+		m_pkInputHandle->UnitMouseXY(x,y);
 		//x = -0.5f + (float) m_pkInputHandle->m_iSDLMouseX / (float) m_pkApp->m_iWidth;
 		//y = -0.5f + (float) m_pkInputHandle->m_iSDLMouseY / (float) m_pkApp->m_iHeight;
+		
+		
+		/*
 		int mx;		
 		int my;
 		
-		m_pkInputHandle->SDLMouseXY(mx,my);
+		//m_pkInputHandle->SDLMouseXY(mx,my);
 		
 		x = -0.5f + (float) (mx - kViewCorner.x) / (float) kViewSize.x;
 		y = -0.5f + (float) ((m_pkApp->m_iHeight - my) - kViewCorner.y) / (float) kViewSize.y;
-
+		*/
+		
 		if(m_pkCamera->GetViewMode() == Camera::CAMMODE_PERSP)
 		{
-			dir.Set(x*xp,y*yp,-1.5);
+			dir.Set(x*xp,-y*yp,-2.15);
 			dir.Normalize();
 		}
 		else

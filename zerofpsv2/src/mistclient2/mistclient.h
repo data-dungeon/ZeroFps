@@ -33,10 +33,10 @@ class MistClient :public Application, public ZGuiApp {
 		//delay
 		float	m_fDelayTime;
 
-		Camera*		m_pkCamera;				//main camera
-		int			m_iCharacterID;		//current active character ID
-      Entity*		m_pkHighlight;			// Selected entity for use.		
-
+		Camera*		m_pkCamera;						//main camera
+		int			m_iCharacterID;				//current active character ID      
+		int			m_iPickedEntityID;			// Selected entity for use.		
+		
 		bitset<6>	m_kCharacterControls;
 		
 		bool			m_bGuiCapture;
@@ -70,6 +70,9 @@ class MistClient :public Application, public ZGuiApp {
 		void RegisterPropertys();
 		void RegisterResources();
 	  
+		void DrawCrossHair();
+		
+		
 	public:
 		//application virtuals
 		MistClient(char* aName,int iWidth,int iHeight,int iDepth);
