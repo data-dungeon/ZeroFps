@@ -86,6 +86,7 @@ void DarkMetropolis::OnInit()
 
 	//create camera
 	m_pkCamera=new Camera(Vector3(0,0,0),Vector3(0,0,0),70,1.333,0.25,250);	
+	m_pkCamera->SetName("AppView");
 	m_pkFps->SetRenderTarget(m_pkCamera);
 	m_pkCamera->SetRender(true);
 

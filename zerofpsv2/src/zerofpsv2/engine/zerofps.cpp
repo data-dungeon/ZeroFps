@@ -590,9 +590,18 @@ void ZeroFps::Draw_RenderTargets()
 	{
 		Draw_RenderTarget(m_kRenderTarget[i]);
 	}
-
 }
 
+Camera* ZeroFps::GetRenderTarget(string strName)
+{
+	for(unsigned int i=0; i<m_kRenderTarget.size(); i++)
+	{
+		if(m_kRenderTarget[i]->GetName() == strName)
+			return m_kRenderTarget[i];
+	}
+
+	return NULL;
+}
 
 void ZeroFps::Draw_RenderTarget(Camera* pkCamera)
 {
