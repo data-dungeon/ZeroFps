@@ -13,6 +13,7 @@ P_PfPath::P_PfPath()
 	m_pkAStar=static_cast<AStar*>(g_ZFObjSys.GetObjectPtr("AStar"));	
 
 	m_fSpeed = 3;
+	m_iNavMeshCell = 0;
 }
 
 P_PfPath::~P_PfPath()
@@ -22,6 +23,28 @@ P_PfPath::~P_PfPath()
 
 void P_PfPath::Update()
 {
+	Vector3 kPos = m_pkObject->GetWorldPosV();
+
+	ZoneData* pkZone;
+	P_PfMesh* pkMesh;
+	NaviMeshCell* pkEndCell;
+
+	
+
+	int iStartZone	= m_pkObjMan->GetZoneIndex(kPos,-1, false);
+	pkZone = m_pkObjMan->GetZoneData(iStartZone);
+	if(pkZone->m_pkZone == NULL)
+		return ;
+	pkMesh = (P_PfMesh*)pkZone->m_pkZone->GetProperty("P_PfMesh");
+	if(pkMesh == NULL)
+		return ;
+
+	NaviMeshCell* pkStartCell = pkMesh->GetCurrentCell( kPos );
+	if(pkStartCell == NULL) {
+		cout << "No StartCell Found at current position" << endl;
+		return ;
+		}
+	
 	if( m_pkObjMan->IsUpdate(PROPERTY_TYPE_RENDER) ) {
 		Render* pkRender = static_cast<Render*>(g_ZFObjSys.GetObjectPtr("Render")); 
 
@@ -48,11 +71,10 @@ void P_PfPath::Update()
 		return;
 		}
 
-	static Vector3 kOffset = Vector3(0,1,0);;
+	static Vector3 kOffset = Vector3(0,0,0);;
 	
 
 	// Get Distance to next goal.
-	Vector3 kPos = m_pkObject->GetWorldPosV();
 	Vector3 kGoal = m_kPath[m_iNextGoal] + kOffset;
 
 	Vector3 kdiff = kGoal - kPos;
@@ -69,6 +91,7 @@ void P_PfPath::Update()
 	kdiff.Normalize();
 	kPos += (kdiff * m_fSpeed) * m_pkFps->GetFrameTime();
 	m_pkObject->SetWorldPosV(kPos);
+
 }
 
 void P_PfPath::Save(ZFIoInterface* pkFile)
@@ -88,7 +111,6 @@ void P_PfPath::PackTo(NetPacket* pkNetPacket, int iConnectionID )
 
 void P_PfPath::PackFrom(NetPacket* pkNetPacket, int iConnectionID )
 {
-
 }
 
 vector<PropertyValues> P_PfPath::GetPropertyValues()

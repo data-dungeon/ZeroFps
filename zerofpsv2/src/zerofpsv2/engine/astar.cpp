@@ -273,7 +273,8 @@ bool AStar::GetFullPath(Vector3 kStart, Vector3 kEnd, vector<Vector3>& kPath)
 	pkMesh = (P_PfMesh*)pkZone->m_pkZone->GetProperty("P_PfMesh");
 	if(pkMesh == NULL)
 		return false;
-	pkEndCell = pkMesh->GetCell(m_kGoal);
+	//pkEndCell = pkMesh->GetCell(m_kGoal);
+	pkEndCell = pkMesh->GetCurrentCell(m_kGoal);
 	if(pkEndCell == NULL) {
 		printf("No End Cell Was Found :(\n");
 		return false;
@@ -286,8 +287,14 @@ bool AStar::GetFullPath(Vector3 kStart, Vector3 kEnd, vector<Vector3>& kPath)
 	pkMesh = (P_PfMesh*)pkZone->m_pkZone->GetProperty("P_PfMesh");
 	if(pkMesh == NULL)
 		return false;
+
+	NaviMeshCell* pkStartCell = pkMesh->GetCurrentCell( kStart );
+	if(pkStartCell == NULL) {
+		cout << "No StartCell Found at current position" << endl;
+		return false;
+		}
 	
-	pkNewNode = new AStarCellNode(pkZone, pkMesh, pkMesh->GetCell(kStart));
+	pkNewNode = new AStarCellNode(pkZone, pkMesh, pkStartCell);	// pkMesh->GetCell(kStart)
 
 	// 2: Assign f,g and h values to P.
 	pkNewNode->m_pParent = NULL;

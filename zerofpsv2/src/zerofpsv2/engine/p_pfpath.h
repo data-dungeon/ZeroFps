@@ -11,13 +11,15 @@ using namespace std;
 class ENGINE_API P_PfPath : public Property 
 {
 	private:
-		ZeroFps*				m_pkFps;
+		ZeroFps*				m_pkFps;			
 		AStar*				m_pkAStar;
 		
-		vector<Vector3>	m_kPath;
-		int					m_iNextGoal;
+		vector<Vector3>	m_kPath;				// The path we are following (if any).
+		int					m_iNextGoal;		// The point we are going to.
 		
-		float					m_fSpeed;
+		float					m_fSpeed;			// Our walking speed.
+
+		int					m_iNavMeshCell;	// The cell we are in. 0 if unknown.
 
 	public:
 		P_PfPath();

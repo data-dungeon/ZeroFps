@@ -120,6 +120,10 @@ SOURCE=.\image.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\line2d.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\matrix3.cpp
 # End Source File
 # Begin Source File
@@ -225,6 +229,10 @@ SOURCE=.\globals.h
 # Begin Source File
 
 SOURCE=.\image.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\line2d.h
 # End Source File
 # Begin Source File
 

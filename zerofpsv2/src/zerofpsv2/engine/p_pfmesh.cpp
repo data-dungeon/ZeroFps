@@ -14,8 +14,6 @@ Vector3 CalcNormal(Vector3 VertA, Vector3 VertB, Vector3 VertC)
 	return kNorm;
 }
 
-
-
 bool NaviMeshCell::IsConnected(NaviMeshCell* pkOther, Vector3 kVertexA, Vector3 kVertexB)
 {
 	if( m_kVertex[VERT_A].NearlyEquals(kVertexA,			0.01 )) {
@@ -32,7 +30,6 @@ bool NaviMeshCell::IsConnected(NaviMeshCell* pkOther, Vector3 kVertexA, Vector3 
 		if( m_kVertex[VERT_A].NearlyEquals(kVertexB,		0.01 ) )		return true;
 		if( m_kVertex[VERT_B].NearlyEquals(kVertexB,		0.01 ) )		return true;
 		}
-
 
 	return false;
 }
@@ -54,6 +51,62 @@ void NaviMeshCell::GetEdgeVertex(int iEdge, Vector3& kA, Vector3& kB)
 		kB = m_kVertex[0];
 		}
 }
+
+void NaviMeshCell::RefreshData()
+{
+	m_kEdges[0].SetPoints( m_kVertex[0].x,m_kVertex[0].z, m_kVertex[1].x,m_kVertex[1].z );
+	m_kEdges[1].SetPoints( m_kVertex[1].x,m_kVertex[1].z, m_kVertex[2].x,m_kVertex[2].z );
+	m_kEdges[2].SetPoints( m_kVertex[2].x,m_kVertex[2].z, m_kVertex[0].x,m_kVertex[0].z );
+}
+
+
+bool NaviMeshCell::IsPointInCell( Vector2& kPoint)
+{
+	int iInsideCount = 0;
+	
+	for(int i=0; i<3; i++) {
+		Line2D::POINT_CLASSIFICATION eSideResult = m_kEdges[i].ClassifyPoint( kPoint );
+		
+		if(eSideResult != Line2D::LEFT_SIDE) 
+			iInsideCount++;
+		}
+
+	return (iInsideCount == 3);
+
+}
+
+Vector3 NaviMeshCell::GetEdgeCenter(int iSide)
+{
+	Vector3 kCenter(0,0,0);
+	Vector3 kDiff;
+
+	Vector3 kA, kB;
+	GetEdgeVertex(iSide, kA, kB);
+	kDiff = kB - kA;
+	kDiff *= 0.5;
+	kCenter = kA + kDiff; 
+
+/*	switch(eSide) {
+		case SIDE_AB:
+			kDiff = ( m_kVertex[VERT_B] - m_kVertex[VERT_A] ) * 0.5;
+			kCenter = m_kVertex[VERT_A] + kDiff; 
+			break;
+		case SIDE_BC:
+			kDiff = ( m_kVertex[VERT_C] - m_kVertex[VERT_B] ) * 0.5;
+			kCenter = m_kVertex[VERT_B] + kDiff; 
+			break;
+		case SIDE_CA:
+			kDiff = ( m_kVertex[VERT_C] - m_kVertex[VERT_A] ) * 0.5;
+			kCenter = m_kVertex[VERT_C] + kDiff; 
+			break;
+	}*/
+
+	return kCenter;
+}
+
+
+
+
 
 
 P_PfMesh::P_PfMesh()
@@ -128,7 +181,6 @@ void P_PfMesh::SetMad(P_Mad* pkMad)
 	kNaviMesh.m_aiLinks[2] = 0;
 	m_NaviMesh.push_back( kNaviMesh );
 
-	//printf("Vertex/Normals: %d,%d\n",(*pkVertex).size(),(*pkNormal).size());
 	Vector3 kNormal;
 
 	Matrix4 kMat = m_pkObject->GetWorldOriM();
@@ -145,22 +197,17 @@ void P_PfMesh::SetMad(P_Mad* pkMad)
 		kNormal = CalcNormal(kNaviMesh.m_kVertex[0], kNaviMesh.m_kVertex[1], kNaviMesh.m_kVertex[2]);
 		if(kNormal.y <= 0.8)	continue;
 
-		//kNormal.Set(0,0,0);
-		//kNormal += (*pkNormal)[ (*pkFace)[i].iIndex[0] ];
-		//kNormal += (*pkNormal)[ (*pkFace)[i].iIndex[1] ];
-		//kNormal += (*pkNormal)[ (*pkFace)[i].iIndex[2] ];
-		//kNormal.Normalize();
-
-		kNaviMesh.m_kCenter = (kNaviMesh.m_kVertex[0] + kNaviMesh.m_kVertex[1] + kNaviMesh.m_kVertex[2]) / 3;
+		kNaviMesh.m_kCenter = (	kNaviMesh.m_kVertex[0] + kNaviMesh.m_kVertex[1] + kNaviMesh.m_kVertex[2]) / 3;
 		kNaviMesh.m_aiLinks[0] = 0;
 		kNaviMesh.m_aiLinks[1] = 0;
 		kNaviMesh.m_aiLinks[2] = 0;
+		kNaviMesh.RefreshData();
 
 		m_NaviMesh.push_back( kNaviMesh );
 		}
 
 	LinkCells();
-	m_pkSelected = &m_NaviMesh[0];
+//	m_pkSelected = &m_NaviMesh[0];
 }
 
 void P_PfMesh::CalcNaviMesh()
@@ -188,7 +235,6 @@ void P_PfMesh::DrawNaviMesh()
 
 	glDisable(GL_LIGHTING );
 	glDisable(GL_TEXTURE_2D);
-	glLineWidth(3.0);
 
 	glColor3f(1,1,1);
 	Vector3 kColor;
@@ -200,6 +246,7 @@ void P_PfMesh::DrawNaviMesh()
 			else										kColor.Set(1,1,1);
 		pkRender->Draw_MarkerCross(m_NaviMesh[i].m_kCenter, kColor, 0.1);
 
+		glLineWidth(3.0);
 		glBegin(GL_LINES);
 			SetEdgeColor(m_NaviMesh[i].m_aiLinks[0]);
 			glVertex3fv( (float*) &m_NaviMesh[i].m_kVertex[0] );		glVertex3fv( (float*) &m_NaviMesh[i].m_kVertex[1] );
@@ -210,9 +257,26 @@ void P_PfMesh::DrawNaviMesh()
 			SetEdgeColor(m_NaviMesh[i].m_aiLinks[2]);
 			glVertex3fv( (float*) &m_NaviMesh[i].m_kVertex[2] );		glVertex3fv( (float*) &m_NaviMesh[i].m_kVertex[0] );
 		glEnd();
+		glLineWidth(1.0);
+
+		kColor.Set(1,0,0);
+		for(int e=0; e<3; e++) {
+			//Vector2 kCen2 = m_NaviMesh[i].m_kEdges[e].GetMidPoint( );
+			//Vector3 kCenter(kCen2.x,-1,kCen2.y);
+			Vector3 kCenter = m_NaviMesh[i].GetEdgeCenter(e);
+			kCenter.y += 0.1;
+			pkRender->Draw_MarkerCross(kCenter, kColor, 0.1);
+			Vector2 kNormal = m_NaviMesh[i].m_kEdges[e].GetNormal();
+			kNormal = kNormal * 0.4;
+
+			glBegin(GL_LINES);
+				glVertex3fv( (float*) &kCenter );	
+				glVertex3f( kCenter.x + kNormal.x, kCenter.y, kCenter.z + kNormal.y);
+			glEnd();
+			
+			}
 		}
 
-	glLineWidth(1.0);
 	glEnable(GL_TEXTURE_2D);
 	glEnable(GL_LIGHTING);
 
@@ -253,6 +317,33 @@ void P_PfMesh::LinkCells()
 //	FlagExternalLinks();
 }
 
+NaviMeshCell* P_PfMesh::GetCurrentCell(Vector3 kPos)
+{
+	float fClosest = 100000000;
+	int iIndex = 0;
+
+	Vector2 kStartPos(kPos.x,kPos.z);
+
+	for(int i=1; i<m_NaviMesh.size(); i++) {
+		if(m_NaviMesh[i].IsPointInCell(kStartPos) == false )
+			continue;
+
+		Vector3 kDiff = m_NaviMesh[i].m_kCenter - kPos;
+		float fDist = kDiff.Length();
+
+		if(fDist < fClosest) {
+			iIndex = i;
+			fClosest = fDist;
+			}
+		}
+
+	if(iIndex == 0)
+		return NULL;
+	
+	m_pkSelected = &m_NaviMesh[iIndex];
+	return &m_NaviMesh[iIndex];
+}
+
 NaviMeshCell* P_PfMesh::GetCell(Vector3 kPos)
 {
 //	kPos -= m_pkObject->GetWorldPosV();
@@ -270,7 +361,7 @@ NaviMeshCell* P_PfMesh::GetCell(Vector3 kPos)
 			}
 		}
 
-	m_pkSelected = &m_NaviMesh[iIndex];
+	//m_pkSelected = &m_NaviMesh[iIndex];
 	return &m_NaviMesh[iIndex];
 }
 

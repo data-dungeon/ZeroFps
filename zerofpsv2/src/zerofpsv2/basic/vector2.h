@@ -31,7 +31,26 @@ class BASIC_API Vector2 {
 			y = fYIn;
 			}
 
+		// Arithmetic operations
+		Vector2 operator+(const Vector2 &kOtherV3)	const {
+			return Vector2(x+kOtherV3.x,y+kOtherV3.y);
+			}
 	
+		Vector2 operator-(const Vector2 &kOtherV3)	const {
+			return Vector2(x-kOtherV3.x,y-kOtherV3.y);
+			}
+
+
+		float Dot( const Vector2& v  ); 					///< Return dot product between this vec and another one.
+		void Normalize(void);										///< Normalize this to unit vector.
+
+		float Length(void) const {
+			return (float) sqrt( x*x + y*y );  
+			}
+
+		Vector2 operator*(const float &fOther)		const {
+			return Vector2(x * fOther,y * fOther);
+			}
 
 };
 
