@@ -1,5 +1,6 @@
 #include "../../p_item.h"
 #include "../../../zerofpsv2/engine_systems/propertys/p_mad.h"
+#include "../../../zerofpsv2/engine_systems/propertys/p_linktojoint.h"
 #include "characterstats.h"
 #include "../item/itemstats.h"
 #include <iostream>
