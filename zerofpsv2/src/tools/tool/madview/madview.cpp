@@ -38,7 +38,6 @@ MadView::MadView(char* aName,int iWidth,int iHeight,int iDepth)
 	g_ZFObjSys.Log_Create("madview");
 
 	m_bIsEditor = true;
-	
 	m_fDelayTime   = 0.0;
 
 	m_iObjRotMode = OBJ_ROT_NONE;
@@ -53,7 +52,6 @@ MadView::MadView(char* aName,int iWidth,int iHeight,int iDepth)
 	m_pkSelMesh = NULL;
 
 	Register_Cmd("open_mad", FID_OPENMAD);	
-
 	Register_Cmd("object_rotation_mode", FID_OBJECTROTATIONMODE);	
 	Register_Cmd("object_rotation_speed", FID_OBJECTROTATIONSPEED);	
 	Register_Cmd ("mad_draw_mode", FID_MAD_DRAW_MODE);	

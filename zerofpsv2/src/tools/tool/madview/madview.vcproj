@@ -86,6 +86,7 @@
 				OutputFile="../../../../bin/madview.exe"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="../../../../bin"
+				IgnoreDefaultLibraryNames="msvcrt.lib"
 				GenerateDebugInformation="TRUE"
 				SubSystem="1"
 				OptimizeReferences="2"

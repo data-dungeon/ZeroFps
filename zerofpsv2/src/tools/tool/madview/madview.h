@@ -69,6 +69,7 @@ class MadView :public Application , public ZGuiApp
 		Entity*	m_pkCameraObject;
 		Camera*	m_pkCamera;
 		float 	m_CamMoveSpeed;		
+		bool m_bHaveOpenMadFromCmdLine;
 										
 		//camera stuff
 		void  CreateCamera();
