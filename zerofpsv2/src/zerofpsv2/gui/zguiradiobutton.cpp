@@ -274,3 +274,11 @@ void ZGuiRadiobutton::Check()
 
 	SetFocus();
 }
+
+void ZGuiRadiobutton::SetTextColor(unsigned char ucR, unsigned char ucG, unsigned char ucB)
+{
+	m_pkCheckbox->SetTextColor(ucR, ucG, ucB);
+	m_afTextColor[0] = ucR;
+	m_afTextColor[1] = ucG;
+	m_afTextColor[2] = ucB;
+}

@@ -43,6 +43,8 @@ public:
 
    ZGuiButton* GetTabButton(bool bNextTabBn) { if(bNextTabBn) return m_pkNextTabBn; else return m_pkPrevTabBn; }
 
+	void SetTabColor(float afColor[3], bool bSelTab);
+
 protected:
 	bool Notify(ZGuiWnd* pkWnd, int iCode);
 
@@ -56,6 +58,9 @@ private:
 	list<ZGuiWnd*> m_kPageList;
 	list<ZGuiButton*> m_kTabList;
 	list<ZGuiSkin*> m_kTabSkinList;
+
+	float m_afSelTabTextColor[3];
+	float m_afUnSelTabTextColor[3];
 
 	ZGuiButton* m_pkNextTabBn, *m_pkPrevTabBn;
 	ZGuiSkin* m_pkNextEndSkin, *m_pkPrevEndSkin;

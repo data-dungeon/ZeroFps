@@ -30,7 +30,6 @@ void GuiAppLua::Init(ZGuiApp* pkGuiApp, ZFScriptSystem* pkScript)
 	pkScript->ExposeFunction("AddTreeItem", GuiAppLua::AddTreeItemLua);
 	pkScript->ExposeFunction("SetMoveArea", GuiAppLua::SetMoveAreaLua);		
 	pkScript->ExposeFunction("SetFont", GuiAppLua::SetFontLua);
-	pkScript->ExposeFunction("SetFont", GuiAppLua::SetFontLua);
 	pkScript->ExposeFunction("ChangeWndParameter", GuiAppLua::ChangeWndParameterLua);
 	pkScript->ExposeFunction("CreateNewRadiobuttonGroup", GuiAppLua::CreateNewRadiobuttonGroupLua);
 	

@@ -1091,7 +1091,7 @@ bool ZGuiApp::ChangeSkin(lua_State* pkLuaState, char* szID,
 
 	GuiType eType = GetWndType(pkWnd);
 
-	if( eType == Button || eType == Checkbox || eType == Scrollbar)
+	if( eType == Button || eType == Checkbox || eType == Scrollbar || eType == Slider)
 	{
 		if(strcmp(szSkinType, "Button up") == 0)
 			pkWnd->SetSkin(pkSkin);
@@ -1103,6 +1103,9 @@ bool ZGuiApp::ChangeSkin(lua_State* pkLuaState, char* szID,
 			((ZGuiScrollbar*)pkWnd)->SetScrollButtonUpSkins(pkSkin, pkSkin);
 		if(strcmp(szSkinType, "Scrollbar: Bottom: Button up") == 0)
 			((ZGuiScrollbar*)pkWnd)->SetScrollButtonDownSkins(pkSkin, pkSkin);
+
+		if(strcmp(szSkinType, "Slider: Button up") == 0)
+			((ZGuiSlider*)pkWnd)->GetButton()->SetSkin(pkSkin);
 	}
 
 	return true;

@@ -23,18 +23,18 @@ void GuiMsgIngameScreen( string strMainWnd, string	strController,
 		else
 		if(strMainWnd == "ChatDlgMainWnd")
 		{
-			if(strController == "SayButton")
-			{
-				char*	text = g_kMistClient.GetText("SayTextbox");
-				if(text != NULL && strlen(text) > 0)
-				{
-					g_kMistClient.Say(text);
-					g_kMistClient.SetText("SayTextbox",	"");
-					ZGuiWnd::m_pkFocusWnd->KillFocus();
-					g_kMistClient.m_pkGui->SetFocus(g_kMistClient.GetWnd("GuiMainWnd"));
-				}
-			}
-			else
+			//if(strController == "SayButton")
+			//{
+			//	char*	text = g_kMistClient.GetText("SayTextbox");
+			//	if(text != NULL && strlen(text) > 0)
+			//	{
+			//		g_kMistClient.Say(text);
+			//		g_kMistClient.SetText("SayTextbox",	"");
+			//		ZGuiWnd::m_pkFocusWnd->KillFocus();
+			//		g_kMistClient.m_pkGui->SetFocus(g_kMistClient.GetWnd("GuiMainWnd"));
+			//	}
+			//}
+			//else
 			if(strController == "CloseChatButton")
 			{
 				g_kMistClient.ToogleChatWnd(false);

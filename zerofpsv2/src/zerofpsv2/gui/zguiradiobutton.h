@@ -25,6 +25,7 @@ public:
 	ZGuiCheckbox* GetButton() { return m_pkCheckbox; }
 	bool Notify(ZGuiWnd* pkWnd, int iCode);
 	void SetText(char* strText, bool bResizeWnd=false); // överlagrad
+	void SetTextColor(unsigned char ucR, unsigned char ucG, unsigned char ucB);
 	ZGuiRadiobutton* GetNext() { return m_pkNext; }
 	char* GetText();// overloaded
 	void Resize(int Width, int Height, bool bChangeMoveArea=true); // overloaded

@@ -34,6 +34,12 @@ ZGuiTabCtrl::ZGuiTabCtrl(Rect kRect, ZGuiWnd* pkParent, bool bVisible, int iID)
 	m_iPrevCurrentPage = -1;
 	CreateInternalControls();
 	SetWindowFlag(WF_TOPWINDOW);
+
+	float selColor[]  = {0.25f,0,0};
+	float unslColor[] = {0.25f,0.25f,0.25f};
+
+	SetTabColor(selColor, true);
+	SetTabColor(unslColor, false);
 }
 
 ZGuiTabCtrl::~ZGuiTabCtrl()
@@ -113,6 +119,18 @@ bool ZGuiTabCtrl::InsertPage(char* szResWndName, unsigned int uiIndex,
 		pkNewTab = m_kTabList.back();
 
 		pkNewPage->SetText(szTabText); 
+
+		if(uiIndex == 0)
+			pkNewPage->SetTextColor(
+				m_afSelTabTextColor[0]*255,
+				m_afSelTabTextColor[1]*255,
+				m_afSelTabTextColor[2]*255);
+		else
+			pkNewPage->SetTextColor(
+				m_afUnSelTabTextColor[0]*255,
+				m_afUnSelTabTextColor[1]*255,
+				m_afUnSelTabTextColor[2]*255);
+
 		OnChangeWndText(pkNewPage);
 	}
 	else
@@ -381,6 +399,8 @@ void ZGuiTabCtrl::SetCurrentPage(unsigned int index)
 			SetButtonSkin((*itButton), 1);
 			(*itPage)->Show();
 
+			(*itButton)->SetTextColor(m_afSelTabTextColor[0]*255,m_afSelTabTextColor[1]*255,m_afSelTabTextColor[2]*255);
+
 			int* piParams = new int[3];
 			piParams[0] = m_uiCurrentPage;
 			piParams[1] = m_iPrevCurrentPage;
@@ -392,6 +412,7 @@ void ZGuiTabCtrl::SetCurrentPage(unsigned int index)
 		{
 			SetButtonSkin((*itButton), 0);
 			(*itPage)->Hide();
+			(*itButton)->SetTextColor(m_afUnSelTabTextColor[0]*255,m_afUnSelTabTextColor[1]*255,m_afUnSelTabTextColor[2]*255);
 		}
 
 		// Lower the previus selected tab back again.
@@ -553,6 +574,12 @@ bool ZGuiTabCtrl::MoveTabs(bool bLeft)
 void ZGuiTabCtrl::SetFont(ZGuiFont* pkFont)
 {
 	m_pkFont = pkFont;
+
+	//list<ZGuiButton*>::iterator itButton = m_kTabList.begin();
+	//for( ; itButton != m_kTabList.end(); itButton++)
+	//{
+	//	(*itButton)->SetTextColor(255,255,255);
+	//}
 }
 
 bool ZGuiTabCtrl::SendNotifyMessageTabCtrl(int iType, int iParams, void *pMsg)
@@ -753,12 +780,31 @@ ZGuiButton* ZGuiTabCtrl::GetTabFromPage(ZGuiWnd* pkPage)
 	return NULL;
 }
 
+void ZGuiTabCtrl::SetTabColor(float afColor[3], bool bSelTab)
+{
+	if(bSelTab)
+		memcpy(m_afSelTabTextColor, afColor, sizeof(float)*3);
+	else
+		memcpy(m_afUnSelTabTextColor, afColor, sizeof(float)*3);
 
-
-
-
-
-
-
-
-
+	int index=0;
+	list<ZGuiButton*>::iterator itButton = m_kTabList.begin();
+	for( ; itButton != m_kTabList.end(); itButton++)
+	{
+		if(index == m_uiCurrentPage)
+		{
+		(*itButton)->SetTextColor( 
+			m_afSelTabTextColor[0]*255.0f,
+			m_afSelTabTextColor[1]*255.0f,
+			m_afSelTabTextColor[2]*255.0f);
+		}
+		else
+		{
+		(*itButton)->SetTextColor( 
+			m_afUnSelTabTextColor[0]*255.0f,
+			m_afUnSelTabTextColor[1]*255.0f,
+			m_afUnSelTabTextColor[2]*255.0f);
+		}
+		index++;
+	}	
+}

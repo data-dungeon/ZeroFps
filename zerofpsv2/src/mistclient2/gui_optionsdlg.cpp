@@ -27,6 +27,25 @@ OptionsDlg::~OptionsDlg()
 
 void OptionsDlg::Open()
 {
+	ZGuiTabCtrl* pkTabCtrl = (ZGuiTabCtrl*)m_pkMC->GetWnd("OptionsTabCtlr");
+	pkTabCtrl->SetFont(m_pkMC->m_pkGuiMan->Font("defguifont"));
+	
+	float unslColor[] = {0.7f,0.7f,0.7f};
+	float selColor[]  = {1,1,1};
+	
+	pkTabCtrl->SetTabColor(unslColor,false);
+	pkTabCtrl->SetTabColor(selColor,true);
+	
+	for(int i=0; i<pkTabCtrl->GetNumPages(); i++)
+	{
+		list<ZGuiWnd*> kChilds;
+		pkTabCtrl->GetPage(i)->GetChildrens(kChilds);
+		for(list<ZGuiWnd*>::iterator it = kChilds.begin(); it!=kChilds.end(); it++) 
+		{
+			(*it)->SetTextColor(255,255,255); 
+		}
+	}
+
 	char szText[50];
 
 	((ZGuiSlider*)m_pkMC->GetWnd("GammaSliderRed"))->SetRange(0,100);
@@ -94,8 +113,7 @@ void OptionsDlg::Open()
 
 	m_pkMC->CheckButton("EnableShadowGroup", m_kOptionsValues.m_abEnabledShadowGroups[
 		m_kOptionsValues.m_iCurrentShadowGroup]);	
-
-	ZGuiTabCtrl* pkTabCtrl = (ZGuiTabCtrl*)m_pkMC->GetWnd("OptionsTabCtlr");
+	
 	for(int i=0; i<pkTabCtrl->GetNumPages(); i++)
 	{
 		if(i!=m_kOptionsValues.m_iCurrentPage)
@@ -119,6 +137,17 @@ void OptionsDlg::Open()
 	m_kOptionsValues.m_fPrevSoundVolume = m_pkAudioSys->GetSoundVolume();
 	m_kOptionsValues.m_fPrevMusicVolume = m_pkAudioSys->GetMusicVolume();
 	m_kOptionsValues.m_fPrevMouseSens = m_pkInput->GetMouseSens();
+
+	char* szWnds[] =
+	{
+		"ScreenSize1024x768Rb", "ScreenSize1280x1024Rb",
+		"ScreenSize1600x1200Rb", "ScreenSize800x600Rb",
+	};
+
+	for(int i=0; i<4; i++)
+	{
+		m_pkMC->GetWnd(szWnds[i])->SetTextColor(255,255,255); 
+	}
 }
 
 void OptionsDlg::Close(bool bSave)
@@ -290,46 +319,51 @@ void GuiMsgOptionsDlg( string strMainWnd, string strController,
 	{
 		if(strMainWnd == "OptionsPageVideo")
 		{
-			const char* szGammaSliders[3] = {
-				"GammaSliderRed","GammaSliderGreen","GammaSliderBlue"
-			};
-
-			char* szGammaLabels[3] = {
-				"GammaRedLabel","GammaGreenLabel","GammaBlueLabel"
-			};
-
-			char szText[10];
-			float pos = (float)((ZGuiSlider*)
-				g_kMistClient.GetWnd(strController))->ZGuiSlider::GetPos();
-
-			for(int i=0; i<3; i++)
+			if(strController == "GammaSliderBlue" || 
+				strController == "GammaSliderGreen" ||
+				strController == "GammaSliderRed")
 			{
-				if( strController	==	szGammaSliders[i]	)
-				{
-					float fGamma = 5.0f * (pos / 100.0f);
-					sprintf(szText, "%.2f", fGamma);
-					
-					g_kMistClient.SetText(szGammaLabels[i], szText);
-				}
-			}
+				const char* szGammaSliders[3] = {
+					"GammaSliderRed","GammaSliderGreen","GammaSliderBlue"
+				};
 
-			if(g_kMistClient.IsButtonChecked("LockGammaColorsCheckbox"))
-			{
+				char* szGammaLabels[3] = {
+					"GammaRedLabel","GammaGreenLabel","GammaBlueLabel"
+				};
+
+				char szText[10];
+				float pos = (float)((ZGuiSlider*)
+					g_kMistClient.GetWnd(strController))->ZGuiSlider::GetPos();
+
 				for(int i=0; i<3; i++)
 				{
-					if( strController	!=	szGammaSliders[i] )
+					if( strController	==	szGammaSliders[i]	)
 					{
-						((ZGuiSlider*)g_kMistClient.GetWnd(
-							szGammaSliders[i]))->SetPos(pos,false,true);
+						float fGamma = 5.0f * (pos / 100.0f);
+						sprintf(szText, "%.2f", fGamma);
+						
 						g_kMistClient.SetText(szGammaLabels[i], szText);
 					}
 				}
-			}
 
-			g_kMistClient.m_pkZShaderSystem->SetGamma(
-				(float)atof(g_kMistClient.GetText("GammaRedLabel")),
-				(float)atof(g_kMistClient.GetText("GammaGreenLabel")), 
-				(float)atof(g_kMistClient.GetText("GammaBlueLabel")));
+				if(g_kMistClient.IsButtonChecked("LockGammaColorsCheckbox"))
+				{
+					for(int i=0; i<3; i++)
+					{
+						if( strController	!=	szGammaSliders[i] )
+						{
+							((ZGuiSlider*)g_kMistClient.GetWnd(
+								szGammaSliders[i]))->SetPos(pos,false,true);
+							g_kMistClient.SetText(szGammaLabels[i], szText);
+						}
+					}
+				}
+
+				g_kMistClient.m_pkZShaderSystem->SetGamma(
+					(float)atof(g_kMistClient.GetText("GammaRedLabel")),
+					(float)atof(g_kMistClient.GetText("GammaGreenLabel")), 
+					(float)atof(g_kMistClient.GetText("GammaBlueLabel")));
+			}
 
 		}
 		else

@@ -49,13 +49,16 @@ void ZGuiSlider::CreateInternalControls()
 			int iBkAreaHeight = iHeight / 3;
 			rcBkArea.Left = 0;
 			rcBkArea.Right = iWidth;
-			rcBkArea.Top = iHeight/2 - iBkAreaHeight/2;
-			rcBkArea.Bottom = iHeight/2 + iBkAreaHeight/2;
+			rcBkArea.Top = 0;//iHeight/2 - iBkAreaHeight/2;
+			rcBkArea.Bottom = iHeight;//iHeight/2 + iBkAreaHeight/2;
 
 			rcSlider.Left = 0;
-			rcSlider.Right = iHeight/2;
+			rcSlider.Right = iHeight;//iHeight/2;
 			rcSlider.Top = 0;
 			rcSlider.Bottom = iHeight;
+
+			rcSliderMoveArea.Left += 20;
+			rcSliderMoveArea.Right -= 20;
 		}
 		else
 		if(GetCtrlStyle(SCF_SLIDER_BOTTOM)) // markören är under labeln
