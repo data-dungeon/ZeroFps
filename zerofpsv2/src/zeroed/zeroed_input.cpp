@@ -404,11 +404,6 @@ void ZeroEd::Input_Camera(float fMouseX, float fMouseY)
 	if(!m_pkActiveCameraObject)
 		return;
 
-//	if(m_pkInputHandle->Pressed(KEY_Z))		SetCamera(0);
-//	if(m_pkInputHandle->Pressed(KEY_X))		SetCamera(1);
-//	if(m_pkInputHandle->Pressed(KEY_C))		SetCamera(0);
-//	if(m_pkInputHandle->Pressed(KEY_V))		SetCamera(1);
-
 
 	if(m_pkInputHandle->Pressed(KEY_Z))		SetViewPort("vp1");
 	if(m_pkInputHandle->Pressed(KEY_X))		SetViewPort("vp2");

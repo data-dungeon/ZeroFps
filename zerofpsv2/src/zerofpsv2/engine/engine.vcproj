@@ -490,28 +490,10 @@
 				Name="PSProperties"
 				Filter="">
 				<File
-					RelativePath="..\engine_systems\propertys\psproperties\alphatestprop.cpp">
-				</File>
-				<File
-					RelativePath="..\engine_systems\propertys\psproperties\alphatestprop.h">
-				</File>
-				<File
-					RelativePath="..\engine_systems\propertys\psproperties\blendpsprop.cpp">
-				</File>
-				<File
-					RelativePath="..\engine_systems\propertys\psproperties\blendpsprop.h">
-				</File>
-				<File
 					RelativePath="..\engine_systems\propertys\psproperties\colorpsprop.cpp">
 				</File>
 				<File
 					RelativePath="..\engine_systems\propertys\psproperties\colorpsprop.h">
-				</File>
-				<File
-					RelativePath="..\engine_systems\propertys\psproperties\lightpsprop.cpp">
-				</File>
-				<File
-					RelativePath="..\engine_systems\propertys\psproperties\lightpsprop.h">
 				</File>
 				<File
 					RelativePath="..\engine_systems\propertys\psproperties\movepsprop.cpp">
@@ -527,12 +509,6 @@
 				</File>
 				<File
 					RelativePath="..\engine_systems\propertys\psproperties\sizepsprop.h">
-				</File>
-				<File
-					RelativePath="..\engine_systems\propertys\psproperties\texturepsprop.cpp">
-				</File>
-				<File
-					RelativePath="..\engine_systems\propertys\psproperties\texturepsprop.h">
 				</File>
 			</Filter>
 		</Filter>

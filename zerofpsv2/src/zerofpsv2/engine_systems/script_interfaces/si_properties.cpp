@@ -5,6 +5,7 @@
 #include "../../basic/zfvfs.h"
 #include "../../engine/entitymanager.h"
 #include "../../engine_systems/propertys/p_controller.h"
+#include "../../engine_systems/propertys/p_mad.h"
 
 ZFScriptSystem* PropertiesLua::g_pkScript;
 EntityManager*  PropertiesLua::g_pkObjMan;
@@ -12,10 +13,8 @@ EntityManager*  PropertiesLua::g_pkObjMan;
 
 // ------------------------------------------------------------------------------------------
 
-namespace PropertiesLua
-{
 
-void Init(ZFScriptSystem* pkScript, EntityManager* pkObjMan)
+void PropertiesLua::Init(ZFScriptSystem* pkScript, EntityManager* pkObjMan)
 {
 	cout << "Add SI: Properties" << endl;
 
@@ -27,6 +26,7 @@ void Init(ZFScriptSystem* pkScript, EntityManager* pkObjMan)
 
 //	pkScript->ExposeFunction("RotWithCamYAxis",		PropertiesLua::RotWithCamYAxisLua);
 //	pkScript->ExposeFunction("BindKey",				PropertiesLua::BindKeyLua);
+	pkScript->ExposeFunction("SetMadfile",			PropertiesLua::SetMadfileLua);
 }
 
 // ------------------------------------------------------------------------------------------
@@ -84,6 +84,30 @@ int RotWithCamYAxisLua(lua_State* pkLua)
 }
 */
 
+// ------------------------------------------------------------------------------------------
 
-
+// p_mad: changes MadFile: Takes ObjectID, filename
+int PropertiesLua::SetMadfileLua(lua_State* pkLua)
+{
+	if(g_pkScript->GetNumArgs(pkLua) == 2)
+	{
+		double dId;		
+		g_pkScript->GetArgNumber(pkLua, 0, &dId);				
+		
+		if (Entity* pkEnt = g_pkObjMan->GetEntityByID((int)dId))
+		{
+			if ( P_Mad* pkMad = ((P_Mad*)pkEnt->GetProperty("P_Mad")) )
+			{
+				char acModel[100];
+				g_pkScript->GetArg(pkLua, 1, acModel);
+				pkMad->SetBase(acModel);
+			}
+		}
+		
+	}
+	return 0;
 }
+
+
+
+

@@ -4,22 +4,10 @@
 #include "../engine_systems/common/psystem.h"
 #include "../basic/vector3.h"
 #include "../basic/zfini.h"
-#include "../ogl/zfpsgl.h"
 
 #include <string>
 #include <map>
 	using namespace std;
-
-
-const int GL_BlendSRC[8] = {0, GL_ZERO, GL_ONE, GL_DST_COLOR, GL_ONE_MINUS_DST_COLOR, GL_SRC_ALPHA,
-						   GL_ONE_MINUS_SRC_ALPHA, GL_DST_ALPHA};
-
-const int GL_BlendDST[8] = {0, GL_ZERO, GL_ONE, GL_SRC_COLOR, GL_ONE_MINUS_SRC_COLOR, GL_SRC_ALPHA, 
-							GL_ONE_MINUS_SRC_ALPHA, GL_DST_ALPHA};
-	
-const unsigned int ui_aGLTest[8] = { GL_NEVER, GL_LESS, GL_EQUAL, GL_LEQUAL, GL_GREATER,
-											 GL_NOTEQUAL, GL_GEQUAL, GL_ALWAYS };
-//
 
 struct rgba {
 	float r, g, b, a;
@@ -51,9 +39,6 @@ struct PSystemTypeData
 		m_fParticlesPerSec;
 	
 	int 
-		m_iBlendSRC,
-		m_iBlendDST,
-		m_iDepthTest,
 		m_iMaxParticles,
 		m_iPartCreateRand;
 
@@ -62,13 +47,7 @@ struct PSystemTypeData
 		m_kCullingTest,
 		m_kCreateStyle;
 
-	unsigned int 
-		m_uiTexture,
-		m_uiAlphaTest,
-		m_uiDepthMask;
-
 	bool 
-      m_bLightOn,
       m_bRemoveParentOnFinish;
 
 	vector<string> m_kProperties;
@@ -79,8 +58,10 @@ struct PSystemTypeData
 struct ParticleTypeData
 {
 	string 
-		m_kTexture;
-	
+		m_strMaterialFile;
+
+	ZFResourceHandle* m_pkMaterial;	
+
 	rgba 
 		m_kStartColor,
 		m_kEndColor;

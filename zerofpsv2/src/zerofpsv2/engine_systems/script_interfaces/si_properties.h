@@ -32,6 +32,7 @@ namespace PropertiesLua
 	int ENGINE_SYSTEMS_API RotWithCamYAxisLua(lua_State* pkLua);
 
 	// p_mad
+	int ENGINE_SYSTEMS_API SetMadfileLua(lua_State* pkLua);
 
 	// p_path
 

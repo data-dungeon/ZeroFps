@@ -1,15 +1,10 @@
 #include "psystemmanager.h"
 #include "../engine_systems/propertys/psproperties/colorpsprop.h"
-#include "../engine_systems/propertys/psproperties/texturepsprop.h"
 #include "../engine_systems/propertys/psproperties/movepsprop.h"
-#include "../engine_systems/propertys/psproperties/blendpsprop.h"
 #include "../engine_systems/propertys/psproperties/sizepsprop.h"
-#include "../engine_systems/propertys/psproperties/lightpsprop.h"
-#include "../engine_systems/propertys/psproperties/alphatestprop.h"
 
 #include "../basic/zfsystem.h"
 #include "../basic/zfini.h"
-#include "../render/texturemanager.h"
 
 #include <iostream>
 	using namespace std;
@@ -57,41 +52,20 @@ PSystem* PSystemManager::GetPSSystem ( string kPSName )
 			pkPS->SetColors (  CreateVerticeColors ( m_kPSystemTypes[kPSName].m_kPSystemBehaviour.m_iMaxParticles )  );
 		}
 
-		// Texture property
-		if ( m_kPSystemTypes[kPSName].m_kPSystemBehaviour.m_kProperties[i] == "Texture" )
-		{
-			pkPS->AddPSProperty ( new TexturePSProp ( pkPS, 
-										 m_kPSystemTypes[kPSName].m_kPSystemBehaviour.m_uiTexture) );
-			// Add texture coordinates
-			pkPS->SetTexCoords( CreateTexCoords(m_kPSystemTypes[kPSName].m_kPSystemBehaviour.m_iMaxParticles) );
-
-		}
-
-		// Blending property
-		if ( m_kPSystemTypes[kPSName].m_kPSystemBehaviour.m_kProperties[i] == "Blend" )
-			pkPS->AddPSProperty ( new BlendPSProp ( 
-										 m_kPSystemTypes[kPSName].m_kPSystemBehaviour.m_iBlendDST,
-										 m_kPSystemTypes[kPSName].m_kPSystemBehaviour.m_iBlendSRC) );
-
 		// Change Size property
 		if ( m_kPSystemTypes[kPSName].m_kPSystemBehaviour.m_kProperties[i] == "Size" )
 			pkPS->AddPSProperty ( new SizePSProp ( pkPS ) );
-
-		// Alphatest property
-		if ( m_kPSystemTypes[kPSName].m_kPSystemBehaviour.m_kProperties[i] == "AlphaTest" )
-			pkPS->AddPSProperty ( new AlphaTestPSProp ( m_kPSystemTypes[kPSName].m_kPSystemBehaviour.m_uiAlphaTest ) );
-
-
 	}
 
-	// Light property
-	pkPS->AddPSProperty ( new LightPSProp ( m_kPSystemTypes[kPSName].m_kPSystemBehaviour.m_bLightOn ) );
+	// Add texture coordinates
+	pkPS->SetTexCoords( CreateTexCoords(m_kPSystemTypes[kPSName].m_kPSystemBehaviour.m_iMaxParticles) );
 
 	// Move property
 	pkPS->AddPSProperty ( new MovePSProp ( pkPS ) );	
 
 	// Create vertices for PS
 	pkPS->SetVertices( CreateVertices(&m_kPSystemTypes[kPSName]) );
+
 	// Create indices for PS
 	pkPS->SetIndices ( CreateIndices(m_kPSystemTypes[kPSName].m_kPSystemBehaviour.m_iMaxParticles) );
 
@@ -249,17 +223,6 @@ bool PSystemManager::LoadData ( PSystemType *pkPSType )
 	else
 		pkPSType->m_kParticleBehaviour.m_iLifeTimeRandom = 1;
 
-	
-	// Blending
-	if( m_kIniLoader.KeyExist("blend", "src") )
-		pkPSType->m_kPSystemBehaviour.m_iBlendSRC = GL_BlendSRC[m_kIniLoader.GetIntValue("blend", "src")];
-	else
-		pkPSType->m_kPSystemBehaviour.m_iBlendSRC = 0;
-	
-	if( m_kIniLoader.KeyExist("blend", "dst") )
-		pkPSType->m_kPSystemBehaviour.m_iBlendDST = GL_BlendDST[m_kIniLoader.GetIntValue("blend", "dst")];
-	else
-		pkPSType->m_kPSystemBehaviour.m_iBlendDST = 0;
 
 	// Start RGBA
 	if( m_kIniLoader.KeyExist("start_color", "r") )
@@ -389,23 +352,16 @@ bool PSystemManager::LoadData ( PSystemType *pkPSType )
 	else
 		pkPSType->m_kPSystemBehaviour.m_fParticlesPerSec = 0.2f;
 
-	// Light
-	if( m_kIniLoader.KeyExist("light", "on") )
-		pkPSType->m_kPSystemBehaviour.m_bLightOn = m_kIniLoader.GetBoolValue("light", "on");
-	else
-		pkPSType->m_kPSystemBehaviour.m_bLightOn = false;
-
-
-	// texture
-	if ( m_kIniLoader.KeyExist("texture", "file") )
+	// material
+	if ( m_kIniLoader.KeyExist("material", "file") )
 	{
-		TextureManager* m_pkTexMan = static_cast<TextureManager*>(g_ZFObjSys.GetObjectPtr("TextureManager"));	
+		pkPSType->m_kParticleBehaviour.m_pkMaterial = new ZFResourceHandle;
 
-		pkPSType->m_kPSystemBehaviour.m_uiTexture = m_pkTexMan->Load( m_kIniLoader.GetValue("texture", "file"), 16); // 16 = clamp
-		//pkPSType->m_kPSystemBehaviour.m_uiTexture = m_pkTexMan->GetTextureID (pkPSType->m_kPSystemBehaviour.m_uiTexture);
-	} 
+		pkPSType->m_kParticleBehaviour.m_strMaterialFile = m_kIniLoader.GetValue("material", "file");
+		pkPSType->m_kParticleBehaviour.m_pkMaterial->SetRes(pkPSType->m_kParticleBehaviour.m_strMaterialFile.c_str());
+	}
 	else
-		pkPSType->m_kPSystemBehaviour.m_uiTexture = 0;
+		pkPSType->m_kParticleBehaviour.m_pkMaterial = 0;
 
 
 	// PSystem lifetime
@@ -494,19 +450,6 @@ bool PSystemManager::LoadData ( PSystemType *pkPSType )
 	else
 		pkPSType->m_kParticleBehaviour.m_bBillBoardY = true;
 
-
-	// Alphatest
-	if ( m_kIniLoader.KeyExist("alphatest", "type") )
-		pkPSType->m_kPSystemBehaviour.m_uiAlphaTest = ui_aGLTest[m_kIniLoader.GetIntValue("alphatest", "type")];
-	else
-		pkPSType->m_kPSystemBehaviour.m_uiAlphaTest = 0;
-
-	// Depthtest
-	if ( m_kIniLoader.KeyExist("depthmask", "type") )
-		pkPSType->m_kPSystemBehaviour.m_uiDepthMask = ui_aGLTest[m_kIniLoader.GetIntValue("depthmask", "type")];
-	else
-		pkPSType->m_kPSystemBehaviour.m_uiDepthMask = ui_aGLTest[GL_LEQUAL];
-
 	// Position offset
 	if ( m_kIniLoader.KeyExist("position_offset", "x") )
 		pkPSType->m_kPSystemBehaviour.m_kPosOffset.x = m_kIniLoader.GetFloatValue("position_offset", "x");
@@ -551,12 +494,6 @@ bool PSystemManager::LoadData ( PSystemType *pkPSType )
 
 void PSystemManager::SetProperties ( PSystemType *pkPSType )
 {
-
-	// check if PSType uses blending
-	if ( pkPSType->m_kPSystemBehaviour.m_iBlendSRC ||
-		pkPSType->m_kPSystemBehaviour.m_iBlendDST )
-		pkPSType->m_kPSystemBehaviour.m_kProperties.push_back ("Blend");
-
 	// color
 	if ( pkPSType->m_kParticleBehaviour.m_kStartColor.r != 1 || 
 		  pkPSType->m_kParticleBehaviour.m_kEndColor.r   != 1 ||
@@ -574,15 +511,6 @@ void PSystemManager::SetProperties ( PSystemType *pkPSType )
 		pkPSType->m_kParticleBehaviour.m_kStartSize.y !=
 		pkPSType->m_kParticleBehaviour.m_kEndSize.y )
 		pkPSType->m_kPSystemBehaviour.m_kProperties.push_back ("Size");
-
-	// Texture
-	if ( pkPSType->m_kPSystemBehaviour.m_uiTexture )
-		pkPSType->m_kPSystemBehaviour.m_kProperties.push_back ("Texture");
-
-	
-	// Alphatest
-	if ( pkPSType->m_kPSystemBehaviour.m_uiAlphaTest )
-		pkPSType->m_kPSystemBehaviour.m_kProperties.push_back ("AlphaTest");
 }
 
 // ------------------------------------------------------------------------------------------

@@ -112,10 +112,6 @@ public:
 	// Make PSystem have particles from start
 	void TimeoffSet ( bool bUseAge = false );
    
-
-	unsigned int GetAlphaTestValue();
-	unsigned int GetDepthValue();
-
 	PSystem(PSystemType* pkPSystemType);
 	~PSystem();
 

@@ -1,20 +1,13 @@
 #include "../../render/render.h"
 #include "../../engine/psystemmanager.h"
 #include "psystem.h"
-#include "../../ogl/zfpsgl.h"
 
 // ------------------------------------------------------------------------------------------
 
 bool PSystem::Draw()
 {
 	if ( m_bInsideFrustum )
-	{
-		// Set depthmask
-		glDepthFunc ( m_pkPSystemType->m_kPSystemBehaviour.m_uiDepthMask );
 		m_pkRender->DrawPSystem (this);
-
-		//glPopAttrib();
-	}
 
 	return m_bInsideFrustum;
 }
@@ -34,11 +27,6 @@ bool PSystem::Update( Vector3 kNewPosition, Matrix4 kNewRotation )
 	// don't update live-forevever psystems if not inside frustum
 	if ( m_pkPSystemType->m_kPSystemBehaviour.m_fLifeTime == -9999999 && !m_bInsideFrustum )
 		return false;
-
-	glDisable (GL_BLEND);
-	glDisable (GL_ALPHA_TEST);
-	glEnable (GL_DEPTH_TEST);
-	glDepthMask(GL_FALSE);	
 
 		// if PSystem loops in infinity, make it have particles from start
 	if ( m_pkPSystemType->m_kPSystemBehaviour.m_fLifeTime == -9999999 && m_bFirstRun )
@@ -395,20 +383,6 @@ void PSystem::DisableParticle ( int iParticleIndex )
 			m_uiFirstParticle++;
 		else
 			break;
-}
-
-// ------------------------------------------------------------------------------------------
-
-unsigned int PSystem::GetAlphaTestValue()
-{ 
-	return m_pkPSystemType->m_kPSystemBehaviour.m_uiAlphaTest; 
-}
-
-// ------------------------------------------------------------------------------------------
-
-unsigned int PSystem::GetDepthValue()
-{
-	return m_pkPSystemType->m_kPSystemBehaviour.m_uiDepthMask; 
 }
 
 // ------------------------------------------------------------------------------------------

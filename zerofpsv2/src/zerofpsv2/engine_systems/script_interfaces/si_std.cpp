@@ -18,6 +18,7 @@ void Init(ZFScriptSystem* pkScript, ZFVFileSystem* pkVFS)
 	g_pkScript = pkScript;
 	g_pkVFS = pkVFS;
 	
+	pkScript->ExposeFunction("Normalize",	StdLua::NormalizeLua);
 	pkScript->ExposeFunction("Print",		StdLua::PrintLua);
 	pkScript->ExposeFunction("Sin",			StdLua::SinLua);	
 	pkScript->ExposeFunction("Cos",			StdLua::CosLua);		
@@ -30,6 +31,47 @@ void Init(ZFScriptSystem* pkScript, ZFVFileSystem* pkVFS)
 	\brief Print text to std out device.
 	\param szText Text to print.
 */
+
+int NormalizeLua(lua_State* pkLua)
+{
+	if(g_pkScript->GetNumArgs(pkLua) == 1)
+	{
+		vector<TABLE_DATA> vkData;
+		g_pkScript->GetArgTable(pkLua, 1, vkData);
+
+		Vector3 kPos = Vector3(
+			(float) (*(double*) vkData[0].pData),
+			(float) (*(double*) vkData[1].pData),
+			(float) (*(double*) vkData[2].pData));
+
+		kPos.Normalize();
+
+		TABLE_DATA temp;
+
+		temp.bNumber = true;
+		temp.pData = new double;
+		(*(double*) temp.pData) = kPos.x;
+		vkData.push_back(temp);
+
+		temp.bNumber = true;
+		temp.pData = new double;
+		(*(double*) temp.pData) = kPos.y;
+		vkData.push_back(temp);
+
+		temp.bNumber = true;
+		temp.pData = new double;
+		(*(double*) temp.pData) = kPos.z;
+		vkData.push_back(temp);
+
+		g_pkScript->AddReturnValueTable(pkLua, vkData);
+
+		cout<< "YEAH! :)" << endl;
+
+		return 1;
+	}
+	return 0;
+}
+
 int PrintLua(lua_State* pkLua)
 {
 	for(int i=0;i<g_pkScript->GetNumArgs(pkLua);i++)

@@ -2115,11 +2115,14 @@ void Render::DrawPSystem( PSystem *pkPSystem )
 {
 	glPushMatrix();
 
-   glDisable (GL_LIGHTING);
-
    glDisableClientState (GL_NORMAL_ARRAY);
 
-   glDisable (GL_FOG);
+	// bind material
+	if (pkPSystem->GetPSystemType()->m_kParticleBehaviour.m_pkMaterial)
+	{
+		ZMaterial* pkMaterial = (ZMaterial*)(pkPSystem->GetPSystemType()->m_kParticleBehaviour.m_pkMaterial->GetResourcePtr());			
+		m_pkZShaderSystem->BindMaterial(pkMaterial);
+	}
 
 	// PSystem uses color&alpha values
 	if ( pkPSystem->GetColors() )
@@ -2136,20 +2139,10 @@ void Render::DrawPSystem( PSystem *pkPSystem )
 		glDisable (GL_COLOR_MATERIAL);
 	}
 
-	
-	// if PS uses texture
-	if ( pkPSystem->GetTexCoords() )
-	{
-		// Turn on the texture coordinate state
-		glEnable (GL_TEXTURE_2D);
-		glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-		glTexCoordPointer( 2, GL_FLOAT, 0, pkPSystem->GetTexCoords() + pkPSystem->Start() * 6 );
-	}
-	else
-	{
-		glDisableClientState (GL_TEXTURE_COORD_ARRAY);
-		glDisable (GL_TEXTURE_2D);
-	}
+	// Turn on the texture coordinate state
+	glEnable (GL_TEXTURE_2D);
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+	glTexCoordPointer( 2, GL_FLOAT, 0, pkPSystem->GetTexCoords() + pkPSystem->Start() * 6 );
 
 	// Turn on the vertex array state
 	glEnableClientState(GL_VERTEX_ARRAY);
@@ -2176,7 +2169,7 @@ void Render::DrawPSystem( PSystem *pkPSystem )
 	DrawBox(kPos, pkPSystem->GetPSystemType()->m_kPSystemBehaviour.m_kCullPosOffset, 
 			  pkPSystem->GetRotation(), kScale, 1);
 	*/
-
+	//glPopAttrib();
 	glPopMatrix();
 }
 

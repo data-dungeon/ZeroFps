@@ -127,6 +127,7 @@ bool AStar::GetFullPath(Vector3 kStart, Vector3 kEnd, vector<PathNode>& kPath)
 
 	m_kStart			= kStart;
 	m_kGoal			= kEnd;
+
 	m_iStartZone	= m_pkEntityManager->GetZoneIndex(m_kStart,-1, false);
 	m_iEndZone		= m_pkEntityManager->GetZoneIndex(m_kGoal,-1, false);
 
