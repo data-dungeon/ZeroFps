@@ -92,6 +92,7 @@ void MistServer::Init()
 	m_iCurrentMarkedZone = -1;
 	m_strActiveZoneName = "data/mad/zones/emptyzone.mad";
 	m_strActiveObjectName = "data/script/objects/t_test.lua";
+	m_strActiveEnviroment = "Default";
 
 	//click delay
 	m_fClickDelay = pkFps->GetTicks();
