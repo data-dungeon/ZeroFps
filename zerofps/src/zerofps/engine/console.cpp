@@ -37,19 +37,31 @@ void Console::Update(void) {
 	m_pkRender->DrawConsole(m_aCommand,&m_kText,m_nStartLine);	
 
 	// Scroll console text
+	static float PREVTIME = m_pkEngine->GetGameTime();
+	static float TIME = 0.10f;
+	float fCurrTime = m_pkEngine->GetGameTime();
+
 	if(m_pkEngine->m_bConsoleMode)
 	{
-		if(m_pkInput->Pressed(KEY_PAGEDOWN))
+		bool bUpdate = ((fCurrTime-PREVTIME) > TIME);
+
+		if(m_pkInput->Pressed(KEY_PAGEUP))
 		{
-			if(m_nStartLine < m_kText.size())
+			if(m_nStartLine < m_kText.size() && bUpdate)
+			{
 				m_nStartLine++;
+				PREVTIME = fCurrTime;
+			}
 			m_pkInput->GetQueuedKey(); // remove latest
 			return;
 		}
-		if(m_pkInput->Pressed(KEY_PAGEUP))
+		if(m_pkInput->Pressed(KEY_PAGEDOWN) && bUpdate)
 		{
 			if(m_nStartLine > 0)
+			{
 				m_nStartLine--;
+				PREVTIME = fCurrTime;
+			}
 			m_pkInput->GetQueuedKey(); // remove latest
 			return;
 		}
