@@ -150,7 +150,10 @@ AIBase* P_UnitMoveAI::UpdateAI()
 				fZ -= HEIGHTMAP_SCALE/2;	// of square.*/
 
 				float fY = m_pkMap->Height(fX,fZ);
+				
+				//OSERVERA det skall vara två för att undvika interpolerings problemen,,temporär lösning
 				m_pkObject->SetPos(Vector3(fX,fY,fZ));
+				m_pkObject->SetPos(Vector3(fX,fY,fZ));				
 							
 				TileEngine::m_pkInstance->AddUnit(m_pkObject->GetPos(),
 					(P_ServerUnit*)m_pkObject->GetProperty("P_ServerUnit"));				
