@@ -10,6 +10,9 @@ function Create()
 			InitParameter("texture","data/textures/fireball.tga");
 			InitParameter("scale",0.5);
 			
+		InitProperty("P_Light");
+			InitParameter("Diffuse","0.05 0.05 0 1");
+			
 		InitProperty("P_ScriptInterface");
 		InitProperty("P_PSystem");
 			InitParameter("PSType", "fireball");

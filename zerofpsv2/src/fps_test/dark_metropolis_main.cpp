@@ -1084,12 +1084,12 @@ bool DarkMetropolis::CreatePlayer()
 				
 				//m_pkPlayerEntity->DeleteProperty("P_Enviroment");
 				
-				
+				/*
 				if(P_Light* pkL = (P_Light*)m_pkCameraEntity->AddProperty("P_Light"))
 				{	
 					//pkL->SetRot(Vector3(0,0,1));
 				}
-				
+				*/
 			
 								
 				m_pkCameraEntity->SetInterpolate(true);
