@@ -44,7 +44,7 @@ void Mad_Modell::SetBasePtr(Mad_Core* pkModell)
 	pkCore->ClearReplaceTexture();
 	TextureManager*	m_pkTex = static_cast<TextureManager*>(g_ZFObjSys.GetObjectPtr("TextureManager"));
 	LoadTextures();
-	Create_GLList(pkCore->GetMeshByID(0));
+//	Create_GLList(pkCore->GetMeshByID(0));
 }
 
 void Mad_Modell::PlayAnimation(int iAnimNum, float fStartTime)
@@ -295,12 +295,12 @@ void Mad_Modell::Draw_All(int iDrawFlags)
 {
 //	return;
 
-	int iListID = pkCore->GetMeshByID(0)->GetDisplayID();
+/*	int iListID = pkCore->GetMeshByID(0)->GetDisplayID();
 	if(iListID != -1) {
 		//cout << "Calling list " << iListID << endl;
 		glCallList(iListID);
 		return;
-		}
+		}*/
 
 
 	if(iDrawFlags == 0)

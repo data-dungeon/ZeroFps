@@ -196,6 +196,7 @@ void ZeroFps::MainLoop(void) {
 			if(m_pkInput->Pressed(KEY_F11))
 				ToggleFullScreen();		
 			
+
 			//update all normal propertys
 			m_pkObjectMan->Update(PROPERTY_TYPE_NORMAL,PROPERTY_SIDE_ALL,false);
 

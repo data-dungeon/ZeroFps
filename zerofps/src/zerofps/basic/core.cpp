@@ -1,5 +1,6 @@
 #include "mad_core.h"
-
+#include "zfassert.h"
+#include "globals.h"
 
 Matrix4		g_Madkbonetransform[MAX_BONES];		// bone transformation matrix
 Matrix4		g_FullBoneTransform[MAX_BONES];		
@@ -197,7 +198,7 @@ void Mad_Core::SetUpBindPose()
 		if (m_kSkelleton[i].m_iParent == -1) {
 			g_Madkbonetransform[i] = g_MadkBoneMatrix;
 		} 
-		else {
+	 	else {
 			g_Madkbonetransform[i] = g_MadkBoneMatrix * g_Madkbonetransform[m_kSkelleton[i].m_iParent];
 		}
 	}
@@ -264,12 +265,18 @@ void Mad_Core::SetupBonePose()
 	int iNumOfFrame = m_kBoneAnim[iActiveAnimation].m_kBoneKeyFrames.size();
 	int iStartFrame = int(fActiveAnimationTime / 0.1);
 	int iEndFrame = iStartFrame + 1;
+	if(iStartFrame >= iNumOfFrame) 
+		iStartFrame = 0;
 	if(iEndFrame >= iNumOfFrame) 
 		iEndFrame = 0;
 
 	Mad_CoreBoneKey* pkStartKey = &m_kBoneAnim[iActiveAnimation].m_kBoneKeyFrames[iStartFrame].m_kBonePose[0];
 	Mad_CoreBoneKey* pkEndKey = &m_kBoneAnim[iActiveAnimation].m_kBoneKeyFrames[iEndFrame].m_kBonePose[0];
-	
+
+	ZFAssert(pkStartKey, "Mad_Core::SetupBonePose: No StartKey");
+	ZFAssert(pkEndKey, "Mad_Core::SetupBonePose: No EndKey");
+
+
 	Quaternion kStart, kEnd;
 
 	float OneMinusFrameOffs = 1.0 - fFrameOffs;
@@ -283,6 +290,32 @@ void Mad_Core::SetupBonePose()
 		g_Madq[i].QuaternionSlerp(&kStart, &kEnd, fFrameOffs);
 		g_Madpos[i] = pkStartKey[i].m_kPosition * OneMinusFrameOffs + pkEndKey[i].m_kPosition * fFrameOffs;
 		}
+
+	// Controllers
+	/*
+	Vector3	kBindAngle;
+	Vector3 kBindPos;
+
+	for(i=0; i<m_kControllers.size(); i++) {
+		float fNew = m_kControllers[i].m_fMin + (m_kControllers[i].m_fMax - m_kControllers[i].m_fMin) * m_kControllers[i].m_fValue;
+		cout << "fNew:  " << fNew << endl;
+		
+		kBindAngle = m_kSkelleton[m_kControllers[i].m_iJointID].m_kRotation;
+		kBindPos = m_kSkelleton[m_kControllers[i].m_iJointID].m_kPosition;
+
+		switch(m_kControllers[i].m_eAxis) {
+			case CONTROLL_ANGLE_X:	kBindAngle.x = fNew;		break;
+			case CONTROLL_ANGLE_Y:	kBindAngle.y = fNew;	 break;
+			case CONTROLL_ANGLE_Z:	kBindAngle.z = fNew;	 break;
+			case CONTROLL_MOVE_X:	kBindPos.x = fNew;		 break;
+			case CONTROLL_MOVE_Y:	kBindPos.y = fNew;	 	 break;
+			case CONTROLL_MOVE_Z:	kBindPos.z = fNew;		 break;
+			}
+
+		g_Madq[m_kControllers[i].m_iJointID].AngleQuaternion(kBindAngle);
+		g_Madpos[m_kControllers[i].m_iJointID] = kBindPos;
+		}
+	*/
 
 	for (i = 0; i < m_kSkelleton.size(); i++) {
 		g_MadkBoneMatrix.Identity();
@@ -567,6 +600,11 @@ void Mad_Core::PrintCoreInfo()
 */
 void Mad_Core::CalculateRadius()
 {
+	if(m_kMesh.size() <= 0) {
+		m_fBoundRadius = 0;
+		return;
+		}
+
 	Mad_CoreMesh* pkMesh = &m_kMesh[0];		
 	Vector3* pkVertex = &pkMesh->akFrames[0].akVertex[0];		
 
@@ -613,4 +651,61 @@ float Mad_Core::GetRadius()
 {
 	return m_fBoundRadius;
 }
+
+int Mad_Core::GetJointID(char* szJointName)
+{
+	for(int i=0; i<m_kSkelleton.size(); i++) {
+		if(strcmp(m_kSkelleton[i].m_acName, szJointName) == 0) 
+			return i;
+		}
+
+	return -1;
+}
+
+
+void Mad_Core::CreateController(char* szName, char* szJoint, ControllAxis eAxis, float fMin, float fMax)
+{
+	for(int i=0; i<m_kControllers.size(); i++) {
+		if(strcmp(szName,m_kControllers[i].m_szName) == 0) {
+			return;
+			}
+		}
+
+
+	Controller	kNewControll;
+	
+	strcpy(kNewControll.m_szName, szName);
+	strcpy(kNewControll.m_szJointName, szJoint);
+	kNewControll.m_iJointID = GetJointID(szJoint);
+	kNewControll.m_eAxis = eAxis;
+	kNewControll.m_fMin = DegToRad(fMin);
+	kNewControll.m_fMax = DegToRad(fMax);
+	kNewControll.m_fValue = 0.0;
+
+	if(kNewControll.m_iJointID == -1) {
+		cout << "Failed to add jointcontroller " << szName << "to joint " << szJoint << endl;
+		}
+
+	m_kControllers.push_back(kNewControll);
+
+	cout << "Controller createt for bone" << kNewControll.m_iJointID << endl;
+}
+
+void Mad_Core::SetControll(char* szName, float fValue)
+{
+	if(fValue < 0.0)
+		fValue = 0.0;
+	if(fValue > 1.0)
+		fValue = 1.0;
+
+	for(int i=0; i<m_kControllers.size(); i++) {
+		if(strcmp(szName,m_kControllers[i].m_szName) == 0) {
+			m_kControllers[i].m_fValue = fValue;
+			return;
+			}
+		}
+
+	cout << "Controller not found" << endl;
+}
+
 

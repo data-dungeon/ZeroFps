@@ -8,11 +8,12 @@ using namespace std;
 #include "basic_x.h"
 
 #define MAD_MAX_ANIMATIONNAME	256
+#define MAD_MAX_NAME			64
 #define MAD_MAX_TEXTURENAME		64
 #define MAD_MAX_TEXTURES		64
 #define MAX_MAD_TEXTURES		256
 #define MAX_BONES	256
-
+#define MAX_JOINTNAME			32
 #define MAX_MAX_VERTEX			8192	// Max Vertex per mesh.
 
 #define MAD_VERSION				1
@@ -276,9 +277,30 @@ public:
 	void Resize(int iNewSize);
 	void PushBack(Mad_CoreBoneKeyFrame kBoneKeyFrame);
 	friend class Mad_Core;
-
-
 };
+
+enum ControllAxis
+{
+	CONTROLL_ANGLE_X,
+	CONTROLL_ANGLE_Y,
+	CONTROLL_ANGLE_Z,
+	CONTROLL_MOVE_X,
+	CONTROLL_MOVE_Y,
+	CONTROLL_MOVE_Z
+};
+
+struct Controller
+{
+	char			m_szName[MAD_MAX_NAME];
+	char			m_szJointName[MAX_JOINTNAME];
+	int				m_iJointID;
+	ControllAxis	m_eAxis;
+	float			m_fMin;
+	float			m_fMax;
+	float			m_fValue;
+};
+
+
 
 // MAD File 
 struct BASIC_API Mad_Header
@@ -392,12 +414,14 @@ public:
 
 	float GetRadius();
 	void CalculateRadius();
+
+	int GetJointID(char* szJointName);
+	vector<Controller>	m_kControllers;
+	void CreateController(char* szName, char* szJoint, ControllAxis eAxis, float fMin, float fMax);
+	void SetControll(char* szName, float fValue);
 };
 
 #endif
-
-
-
 
 
 

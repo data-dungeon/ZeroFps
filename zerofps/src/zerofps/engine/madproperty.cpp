@@ -58,8 +58,24 @@ void DrawBoundSphere(float fRadius)
 	glPopAttrib();
 }
 
+float fTestValue;
+
 void MadProperty::Update() 
 {
+	m_pkFrustum=static_cast<Frustum*>(g_ZFObjSys.GetObjectPtr("Frustum"));
+/*	Input* pkInput = static_cast<Input*>(g_ZFObjSys.GetObjectPtr("Input")); 
+	
+	if(strcmp(m_kMadFile.c_str(), "../data/mad/dropship.mad") == 0) {
+		if(pkInput->Pressed(KEY_F7))
+			pkCore->CreateController("lucka", "joint6",CONTROLL_ANGLE_Y,95-84,0-84);
+		if(pkInput->Pressed(KEY_F8))
+			fTestValue -= 0.1;
+		if(pkInput->Pressed(KEY_F9))
+			fTestValue += 0.1;
+	
+		pkCore->SetControll("lucka",fTestValue);
+		}*/
+
 //	return;
 	float fRadius = pkCore->GetRadius();
  

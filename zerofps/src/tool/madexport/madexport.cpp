@@ -860,22 +860,22 @@ MStatus MadExport::UpdateBoneList (void)
 		}
 
 		// Get rotation/translation from the transformation matrix
-		MTransformationMatrix::RotationOrder rotOrder = MTransformationMatrix::kXYZ;
+		//MTransformationMatrix::RotationOrder rotOrder = MTransformationMatrix::kXYZ;
 
-		double adRotateAxis[3];
-		double adRotate[3];
-		double adJointOrient[3];
-		fnJoint.getScaleOrientation ( adRotateAxis, rotOrder );
-		fnJoint.getRotation ( adRotate, rotOrder );
-		fnJoint.getRotation ( adJointOrient, rotOrder );
+		//double adRotateAxis[3];
+		//double adRotate[3];
+		//double adJointOrient[3];
+		//fnJoint.getScaleOrientation ( adRotateAxis, rotOrder );
+		//fnJoint.getRotation ( adRotate, rotOrder );
+		//fnJoint.getRotation ( adJointOrient, rotOrder );
 	
-		MTransformationMatrix Local;
-		Local.addRotation (adRotateAxis, MTransformationMatrix::kXYZ, MSpace::kTransform); 
-		Local.addRotation (adRotate, MTransformationMatrix::kXYZ, MSpace::kTransform); 
-		Local.addRotation (adJointOrient, MTransformationMatrix::kXYZ, MSpace::kTransform); 
+		//MTransformationMatrix Local;
+		//Local.addRotation (adRotateAxis, MTransformationMatrix::kXYZ, MSpace::kTransform); 
+		//Local.addRotation (adRotate, MTransformationMatrix::kXYZ, MSpace::kTransform); 
+		//Local.addRotation (adJointOrient, MTransformationMatrix::kXYZ, MSpace::kTransform); 
+		//kRot = Local.eulerRotation();
 		
 		MEulerRotation kRot;
-		//kRot = Local.eulerRotation();
 		MTransformationMatrix mat = fnJoint.transformationMatrix(&status);
 		kRot = mat.eulerRotation();
 	  

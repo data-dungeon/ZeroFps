@@ -197,12 +197,12 @@ void PhysicsEngine::HandleCollisions()
 
 	PhysicProperty* pkSPP=NULL;
 	Collision* pkCO=NULL;
-	for(list<CP*>::iterator it=m_kCPs.begin();it!=m_kCPs.end();it++) 
+	for(list<CP*>::iterator itCp=m_kCPs.begin();itCp!=m_kCPs.end();itCp++) 
 	{
-		Collision* pkCol=(*it)->m_pkCol;		
+		Collision* pkCol=(*itCp)->m_pkCol;		
 		
 		
-		if((*it)->m_pkPP != pkSPP)
+		if((*itCp)->m_pkPP != pkSPP)
 		{
 			if(pkCol->m_bAdded==false)
 			{
@@ -212,7 +212,7 @@ void PhysicsEngine::HandleCollisions()
 	
 			if(pkCol->m_pkPP1->m_bSolid && pkCol->m_pkPP2->m_bSolid)
 			{
-				pkSPP=(*it)->m_pkPP;	
+				pkSPP=(*itCp)->m_pkPP;	
 				pkCO=pkCol;
 			}
 		}				
@@ -227,10 +227,10 @@ void PhysicsEngine::HandleCollisions()
 				Vector3 kOldNewPos2=pkCol->m_pkPP2->m_kNewPos;
 				
 				//set the objects m_kNewPos to the one after a collision with the last solide object
-				if(pkCO->m_pkPP1==(*it)->m_pkPP)
-					(*it)->m_pkPP->m_kNewPos=pkCO->m_kPos1;
+				if(pkCO->m_pkPP1==(*itCp)->m_pkPP)
+					(*itCp)->m_pkPP->m_kNewPos=pkCO->m_kPos1;
 				else
-					(*it)->m_pkPP->m_kNewPos=pkCO->m_kPos1;
+					(*itCp)->m_pkPP->m_kNewPos=pkCO->m_kPos1;
 
 	
 				CollisionData* pkCD=NULL;
@@ -259,8 +259,8 @@ void PhysicsEngine::HandleCollisions()
 	}
 	
 	
-
-	for(int i=0;i<kCols.size();i++) 
+	int i;
+	for( i=0;i<kCols.size();i++) 
 	{	
 		if(kCols[i]->m_pkPP1->m_bSolid && kCols[i]->m_pkPP2->m_bSolid)
 		{
@@ -281,7 +281,7 @@ void PhysicsEngine::HandleCollisions()
 		(*it)->GetObject()->GetAcc()=static_cast<PhysicProperty*>(*it)->m_kNewAcc;		
 	}
 
-	for(int i=0;i<kCols.size();i++) 
+	for(i=0;i<kCols.size();i++) 
 	{	
 		kCols[i]->m_pkPP1->GetObject()->Touch(kCols[i]->m_pkPP2->GetObject());
 		kCols[i]->m_pkPP2->GetObject()->Touch(kCols[i]->m_pkPP1->GetObject());
