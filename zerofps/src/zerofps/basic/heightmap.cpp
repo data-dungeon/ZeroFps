@@ -148,7 +148,8 @@ bool HeightMap::Load(const char* acFile) {
 		cout<<"Could not Load heightmap"<<endl;
 		return false;
 	}
-	savefile.Read((void*)&k_Fh,sizeof(k_Fh));
+//	savefile.Read((void*)&k_Fh,sizeof(k_Fh));
+	savefile.Read(k_Fh);
 	
 	m_iHmSize=k_Fh.m_iHmSize;
 	
@@ -160,7 +161,8 @@ bool HeightMap::Load(const char* acFile) {
 	
 	for(int i=0;i<m_iHmSize*m_iHmSize;i++) 
 	{
-		savefile.Read((void*)&verts[i],sizeof(HM_vert));	
+//		savefile.Read((void*)&verts[i],sizeof(HM_vert));	
+		savefile.Read(verts[i]);
 	}
 	
 	savefile.Close();
@@ -211,11 +213,13 @@ bool HeightMap::Save(const char* acFile) {
 		cout<<"Could not save heightmap"<<endl;
 		return false;
 	}
-	savefile.Write((void*)&k_Fh,sizeof(HM_fileheader));
+//	savefile.Write((void*)&k_Fh,sizeof(HM_fileheader));
+	savefile.Write(k_Fh);
 	
 	for(int i=0;i<m_iHmSize*m_iHmSize;i++) 
 	{
-		savefile.Write((void*)&verts[i],sizeof(HM_vert));	
+//		savefile.Write((void*)&verts[i],sizeof(HM_vert));	
+		savefile.Write(verts[i]);
 	}
 	
 	savefile.Close();

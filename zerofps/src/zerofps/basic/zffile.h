@@ -27,10 +27,16 @@ class ZFFile {
 		bool Write(void* data,int iSize);
 
 		template <class Any> 
-		bool Read(Any data);
+		bool Read(Any &data)
+		{
+			return m_kIo->Read((void*)&data,sizeof(Any));
+		};
+		
 		template <class Any> 
-		bool Write(Any data);
-
+		bool Write(Any &data)
+		{
+			return m_kIo->Write((void*)&data,sizeof(Any));
+		};
 
 		int GetPos();
 		bool SetPos(int iPos);
