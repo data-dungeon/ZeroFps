@@ -577,7 +577,8 @@ int DistanceToLua(lua_State* pkLua)
 
 	if( pkObject1 != 0 && pkObject2!= 0 )
 	{
-		double dDistance = pkObject1->GetWorldPosV().DistanceTo(pkObject2->GetWorldPosV());
+		Vector3 kTemp = pkObject2->GetWorldPosV();
+		double dDistance = pkObject1->GetWorldPosV().DistanceTo(kTemp);
 		g_pkScript->AddReturnValue(pkLua, dDistance);
 
 		return 1;
