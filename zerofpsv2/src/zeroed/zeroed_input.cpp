@@ -55,8 +55,7 @@ void ZeroEd::Input_EditZone()
 {
 	if(m_pkInputHandle->Pressed(KEY_L) && !DelayCommand())
 	{
-		SendZoneListRequest();
-	
+		SendZoneListRequest();	
 	}
 
 	if(m_pkInputHandle->Pressed(MOUSELEFT) && !DelayCommand())
@@ -67,9 +66,11 @@ void ZeroEd::Input_EditZone()
 		kNp.Write_Str("create_zone");
 		kNp.Write_Str(m_strActiveZoneName);
 		kNp.Write(m_kZoneMarkerPos);
-		kNp.Write(m_kZoneSize);
-		
+		kNp.Write(m_kZoneSize);		
 		m_pkZeroFps->RouteEditCommand(&kNp);					
+	
+		//request a new zone list
+		SendZoneListRequest();	
 	}
 	
 	if(m_pkInputHandle->Pressed(MOUSEMIDDLE) && !DelayCommand())
@@ -79,36 +80,42 @@ void ZeroEd::Input_EditZone()
 		kNp.Write_Str("create_zone");
 		kNp.Write_Str(string(""));
 		kNp.Write(m_kZoneMarkerPos);
-		kNp.Write(m_kZoneSize);
-		
+		kNp.Write(m_kZoneSize);		
 		m_pkZeroFps->RouteEditCommand(&kNp);						
-		//AddZone(m_kZoneMarkerPos, m_kZoneSize, m_strActiveZoneName,true);	
+	
+		//request a new zone list
+		SendZoneListRequest();
 	}	
 	
-	if(m_pkInputHandle->VKIsDown("remove"))	DeleteSelected();
+	if(m_pkInputHandle->VKIsDown("remove"))	
+	{	
+		//delete selected entity ( the server cheks if its a zone or an normal entity)
+		DeleteSelected();
+		SendZoneListRequest();
+	}
 		
 	if(m_pkInputHandle->VKIsDown("rotate") && !DelayCommand())
 	{
-		m_iCurrentMarkedZone = m_pkEntityManager->GetZoneIndex(m_kZoneMarkerPos,-1,false);		
-		RotateActive();
+		m_iCurrentMarkedZone = GetZoneID(m_kZoneMarkerPos);
+		SendRotateZoneModel(m_iCurrentMarkedZone);		
 	}
 	
 	if(m_pkInputHandle->VKIsDown("selectzone") && !DelayCommand())
 	{	
-		m_iCurrentMarkedZone =  m_pkEntityManager->GetZoneIndex(m_kZoneMarkerPos,-1,false);
-		ZoneData* pkData = m_pkEntityManager->GetZoneData(m_iCurrentMarkedZone);
-		if(pkData && pkData->m_pkZone)
-			Select_Toggle(pkData->m_pkZone->GetEntityID(), m_pkInputHandle->Pressed(KEY_LSHIFT));
+		m_iCurrentMarkedZone = GetZoneID(m_kZoneMarkerPos);
+		
+		if(ZoneData* pkData = GetZoneData(m_iCurrentMarkedZone))
+			Select_Toggle(pkData->m_iZoneObjectID, m_pkInputHandle->Pressed(KEY_LSHIFT));
 	}
 
+	
+	//some default zone sizes, a hack kind of =D
 	if(m_pkInputHandle->Pressed(KEY_1)) m_kZoneSize.Set(4,4,4);
 	if(m_pkInputHandle->Pressed(KEY_2)) m_kZoneSize.Set(8,8,8);
 	if(m_pkInputHandle->Pressed(KEY_3)) m_kZoneSize.Set(16,16,16);	
 	if(m_pkInputHandle->Pressed(KEY_4)) m_kZoneSize.Set(32,16,32);	
 	if(m_pkInputHandle->Pressed(KEY_5)) m_kZoneSize.Set(64,16,64);		
 	if(m_pkInputHandle->Pressed(KEY_6)) m_kZoneSize.Set(1024,32,1024);	
-
-
 }
 
 

@@ -848,6 +848,7 @@ void EntityManager::UpdateZoneList(NetPacket* pkNetPacket)
 
 void EntityManager::PackToClients()
 {
+
 	int iMaxSendSize = m_pkNetWork->GetNetSpeed() / m_pkZeroFps->GetSystemFps();
 	m_pkNetWork->SetMaxSendSize(iMaxSendSize);
 
@@ -858,25 +859,11 @@ void EntityManager::PackToClients()
 	//Logf("net", " *** EntityManager::PackToClients() *** \n");
 
 
-/*	if(m_pkZeroFps->GetEngineTime() < m_fEndTimeForceNet) {
-		m_iForceNetUpdate = 0xFFFFFFFF;
-		cout << "Forcing Object network updates" << endl;
-		}
-	else {
-		m_iForceNetUpdate  = 0x0;					
-		}*/
-
 	vector<Entity*>	kObjects;
 	m_iForceNetUpdate = 0xFFFFFFFF;
-//	NetPacket NP;
 	
-	// Keep it alive.
-//	int iNumOfObjects	= (int) m_akEntitys.size();
-//	int iPacketSize		= 0;
-//	int iEndOfObject	= -1;
 
 	unsigned int iClient;
-
 	// Clear Active Zones for clients.
 	for(iClient=0; iClient < m_pkZeroFps->m_kClient.size(); iClient++)
 	{
@@ -933,7 +920,9 @@ void EntityManager::PackToClients()
 		for(set<int>::iterator itActiveZone = m_pkZeroFps->m_kClient[iClient].m_iUnloadZones.begin(); itActiveZone != m_pkZeroFps->m_kClient[iClient].m_iUnloadZones.end(); itActiveZone++ ) 
 		{
 			int iZoneID = (*itActiveZone);
-			m_kZones[iZoneID].m_pkZone->ResetAllNetUpdateFlagsAndChilds( iClient );
+			
+			if(m_kZones[iZoneID].m_pkZone)
+				m_kZones[iZoneID].m_pkZone->ResetAllNetUpdateFlagsAndChilds( iClient );
 		}
 
 		//send all tracked object first =)
@@ -970,6 +959,7 @@ void EntityManager::PackToClients()
 				pkZoneE = pkZoneD->m_pkZone;
 				assert(pkZoneE);
 	
+				
 				pkZoneE->GetAllEntitys(&kObjects,true,true);
 			}
 		}
@@ -980,7 +970,6 @@ void EntityManager::PackToClients()
 		m_OutNP.Write(ZFGP_ENDOFPACKET);
 		m_pkNetWork->Send2(&m_OutNP);
 	}
-		
 		
 
 	for(map<int,Entity*>::iterator it = m_akEntitys.begin(); it != m_akEntitys.end(); it++) 
@@ -1705,8 +1694,7 @@ void EntityManager::DeleteZone(int iId)
 		return;
 	
 	//clear links
-	ClearZoneLinks(iId);	
-	
+	ClearZoneLinks(iId);		
 		
 	//set as unused	
 	m_kZones[iId].m_iStatus = EZS_UNUSED;

@@ -117,6 +117,9 @@ class ZeroEd :public Application , public ZGuiApp {
 		
 		string	m_strWorldDir;						// The current dir for the world. Use for SaveAs and Title.
 
+		//
+		bool	m_bRemoteEditing;
+		
 		//delay
 		float	m_fDelayTime;
 		
@@ -195,54 +198,58 @@ class ZeroEd :public Application , public ZGuiApp {
 
 
 		// Selection of Entitys.
-		void Select_None(	)				{ m_SelectedEntitys.clear(); }
-		void Select_Add( int iId )		{ m_SelectedEntitys.insert(iId); }
-		void Select_Remove( int iId )	{ m_SelectedEntitys.erase(iId); }
-		void DrawSelectedEntity();
-		void Select_Toggle(int iId, bool bMultiSelect);
+		void	Select_None(	)				{ m_SelectedEntitys.clear(); }
+		void	Select_Add( int iId )		{ m_SelectedEntitys.insert(iId); }
+		void	Select_Remove( int iId )	{ m_SelectedEntitys.erase(iId); }
+		void	DrawSelectedEntity();
+		void	Select_Toggle(int iId, bool bMultiSelect);
 
-		void 		DeleteSelected();			// Removes selected entitys.
+		void	DeleteSelected();			// Removes selected entitys.
 
 		//picking
 		Vector3	Get3DMousePos(bool m_bMouse);
 		Vector3	Get3DMouseDir(bool bMouse);
 		Entity*	GetTargetObject();		
 		int		GetTargetTCS(Vector3* pkPos);		
-		
+				
+		int			GetZoneID(const Vector3& kPos);
+		ZoneData*	GetZoneData(int iZoneID);
+		ZoneData*	GetZoneByEntityID(int iEntityID);
 		
 		//enviroment
 		void 		SetZoneEnviroment(const char* szEnviroment);
 		string 	GetZoneEnviroment();
 		char* 	GetSelEnviromentString();
 		
-		void UpdateZoneMarkerPos();
-		void UpdateObjectMakerPos();
-		void DrawZoneMarker(Vector3 kPos);
-		void DrawCrossMarker(Vector3 kPos);
-		void AddZone(Vector3 kPos, Vector3 kSize, string strName, bool bEmpty=false);
+		void	UpdateZoneMarkerPos();
+		void	UpdateObjectMakerPos();
+		void	DrawZoneMarker(Vector3 kPos);
+		void	DrawCrossMarker(Vector3 kPos);
+		void	AddZone(Vector3 kPos, Vector3 kSize, string strName, bool bEmpty=false);
 
-		void SetupGuiEnviroment();
-		void ToogleLight(bool bEnabled);
-		void RotateActive();
+		void	SetupGuiEnviroment();
+		void	ToogleLight(bool bEnabled);
+		void	RotateActive();
 
-		HeightMap* SetPointer();
-
-		void DrawHMEditMarker(HeightMap* pkHmap, Vector3 kCenterPos, float fInRadius, float fOutRadius );
-
-		void HMModifyCommand(float fSize);
+		//heightmap
+		HeightMap*	SetPointer();
+		void			DrawHMEditMarker(HeightMap* pkHmap, Vector3 kCenterPos, float fInRadius, float fOutRadius );
+		void			HMModifyCommand(float fSize);
 
 		//input
 		void 	Input_Camera(float fMouseX, float fMouseY);
 		void 	Input_EditTerrain();
 		void 	Input_EditZone();
 		void 	Input_EditObject(float fMouseX, float fMouseY);		
-		void Input_EditAmbientSounds();
+		void	Input_EditAmbientSounds();
 		bool	DelayCommand();			//make a delay
 		
 		//network
 		void	SendSetZoneModel(string strModel,int iZoneID);
+		void	SendRotateZoneModel(int iZoneID);
 		void	SendZoneListRequest();
 		void	DrawZoneList();
+		
 		
 	public:
 		bool SetViewPort(const char* szVpName);
@@ -267,6 +274,7 @@ class ZeroEd :public Application , public ZGuiApp {
 		void Input();
 		void OnServerStart();
 		void OnClientStart();
+		void OnClientConnected();
 
 		void AddPropertyVal();
 		void AddProperty(int iEntityID,const string& strProperty);

@@ -603,11 +603,12 @@ void Entity::PackTo(NetPacket* pkNetPacket, int iConnectionID)
 		}
 	}
 	
-	if(GetNetUpdateFlag(iConnectionID,NETUPDATEFLAG_RELPOS) || GetNetUpdateFlag(iConnectionID,NETUPDATEFLAG_INTERPOLATE))
+	if(GetNetUpdateFlag(iConnectionID,NETUPDATEFLAG_RELPOS) || GetNetUpdateFlag(iConnectionID,NETUPDATEFLAG_INTERPOLATE) || GetNetUpdateFlag(iConnectionID,NETUPDATEFLAG_ISZONE))
 	{
 		unsigned char ucEntityFlags = 0;
       if(m_bRelativeOri)	ucEntityFlags |= 1;
       if(m_bInterpolate)	ucEntityFlags |= 2;
+		if(m_bZone)				ucEntityFlags |= 4;
 		pkNetPacket->Write((unsigned char) ucEntityFlags );
 	}
 
@@ -762,7 +763,7 @@ void Entity::PackFrom(NetPacket* pkNetPacket, int iConnectionID)
 		pkNetPacket->Read((unsigned char&) ucEntityFlags );
 		if(GetNetUpdateFlag(0,NETUPDATEFLAG_RELPOS))			m_bRelativeOri = ucEntityFlags & 1;
 		if(GetNetUpdateFlag(0,NETUPDATEFLAG_INTERPOLATE))	m_bInterpolate = ucEntityFlags & 2;
-
+		if(GetNetUpdateFlag(0,NETUPDATEFLAG_ISZONE))			m_bZone 			= ucEntityFlags & 4;
 	}
 	
 /*	//get rel position flag

@@ -83,16 +83,18 @@ ZeroEd::ZeroEd(char* aName,int iWidth,int iHeight,int iDepth)
 { 
 	g_ZFObjSys.Log_Create("zeroed");
 
-	// Set Default values
-	m_bEditSun		= 				false;
-	m_bSoloMode     = 			true;
-	m_bPlaceObjectsOnGround = 	false;
+	// Set Default values	
+	m_bEditSun		= 					false;
+	m_bSoloMode     = 				true;
+	m_bPlaceObjectsOnGround = 		false;
 	m_bDisableFreeZonePlacement = false;
-	m_bIsEditor =  true;
+	m_bIsEditor =  					true;
 	strcpy(szCoolName , "Guldfisk");
    strMasterSmiley = "Vim";
 	m_iSelectFileState = NONE;
 
+	m_bRemoteEditing	=				false;
+	
 	// Register Variables
 	RegisterVariable("coolname",				&strMasterSmiley,			CSYS_STRING);	
 	
@@ -469,14 +471,12 @@ void ZeroEd::DrawSelectedEntity()
 {
 	for(set<int>::iterator itEntity = m_SelectedEntitys.begin(); itEntity != m_SelectedEntitys.end(); itEntity++ ) 
 	{
-		Entity* pkEnt = m_pkEntityManager->GetEntityByID((*itEntity));
-	
-		if(pkEnt) 
+		if(Entity* pkEnt = m_pkEntityManager->GetEntityByID((*itEntity))) 
 		{
 			//zone selected
 			if(pkEnt->IsZone())
 			{
-				if(ZoneData* pkZone = m_pkEntityManager->GetZone(pkEnt))
+				if(ZoneData* pkZone = GetZoneByEntityID((*itEntity)))
 				{
 					Vector3 kMin = pkZone->m_kPos - (pkZone->m_kSize/2.0) - pkZone->m_kSize.Unit() *0.2;
 					Vector3 kMax = pkZone->m_kPos + (pkZone->m_kSize/2.0) + pkZone->m_kSize.Unit() *0.2;
@@ -485,8 +485,7 @@ void ZeroEd::DrawSelectedEntity()
 					if(m_iCurrentObject == (*itEntity))
 						m_pkRender->DrawAABB( kMin,kMax, m_pkRender->GetEditColor("active/firstentity") );
 					else
-						m_pkRender->DrawAABB( kMin,kMax, m_pkRender->GetEditColor("active/entity") );
-							
+						m_pkRender->DrawAABB( kMin,kMax, m_pkRender->GetEditColor("active/entity") );							
 				}
 			}
 			else //object selected
@@ -564,41 +563,11 @@ void ZeroEd::DeleteSelected()
 		int iId = (*itEntity);
 		kNp.Write((int)iId);
 
-	/*	Entity* pkEntity = m_pkEntityManager->GetObjectByNetWorkID((*itEntity));
-		if(!pkEntity)	continue;
-	
-		cout << " " << pkEntity->GetEntityID() << " - '" << pkEntity->GetType() << "' - '" << pkEntity->GetName() << "'" <<endl;
-		if(pkEntity->GetName() == string("ZoneObject"))
-		{
-			int iZoneID = m_pkEntityManager->GetZoneIndex( pkEntity->GetEntityID() );
-
-			// Remove zoneplacement element in array
-			ZoneData* pkData = m_pkEntityManager->GetZoneData(iZoneID);
-			vector< pair<Vector3,Vector3> >::iterator it = m_kAddedZonePlacement.begin();
-			for( ; it != m_kAddedZonePlacement.end(); it++)
-				if(it->first == pkData->m_kPos && it->second == pkData->m_kSize) {
-					m_kAddedZonePlacement.erase(it);
-					break;
-				}
-
-			m_pkEntityManager->DeleteZone(iZoneID);
-			cout << "Delete zone " << iZoneID << endl;
-		}
-		else
-			m_pkEntityManager->Delete(pkEntity->GetEntityID());		*/
 	}
 	m_pkZeroFps->RouteEditCommand(&kNp);
 
 	m_SelectedEntitys.clear();
 	m_iCurrentObject = -1;
-
-			//fulhack deluxe för att inte kunna ta bort statiska entitys i zoner som inte är underconstruction
-		/*	if(pkObj->GetParent()->GetName() == "StaticEntity")
-			{
-				cout<<"zone is not under construction "<<endl;
-				return;
-			}
-		*/	
 }
 
 void ZeroEd::OnSystem()
@@ -740,7 +709,8 @@ void ZeroEd::RenderInterface(void)
 	}
 	
 	//draw zone list if connected to a server
-	DrawZoneList();
+	if(m_bRemoteEditing)
+		DrawZoneList();
 }
 
 HeightMap* ZeroEd::SetPointer()
@@ -1139,6 +1109,7 @@ void ZeroEd::RunCommand(int cmdid, const CmdArgument* kCommand)
 				kOrder.m_iCharacter = -1;
 				cout << "Sending LocalOrder: " << kOrder.m_sOrderName << "\n";
 				pkClient.AddServerOrder(kOrder);
+				
 			}
 			break;		
 
@@ -1631,6 +1602,7 @@ void ZeroEd::OnNetworkMessage(NetPacket *PkNetMessage)
 			while(kTemp.m_iStatus != -1)
 			{
 				PkNetMessage->Read(kTemp.m_iZoneID);
+				PkNetMessage->Read(kTemp.m_iZoneObjectID);
 				PkNetMessage->Read(kTemp.m_kPos);
 				PkNetMessage->Read(kTemp.m_kSize);						
 
@@ -1732,6 +1704,7 @@ void	ZeroEd::DrawZoneList()
 
 void ZeroEd::OnDisconnect(int iConnectionID)
 {
+	m_bRemoteEditing = false;
 	cout << "NOOOOOOOOOOOO im disconnected" << endl;
 }
 
@@ -1745,6 +1718,16 @@ void	ZeroEd::SendZoneListRequest()
 	m_pkZeroFps->RouteEditCommand(&kNp);
 }
 
+void	ZeroEd::SendRotateZoneModel(int iZoneID)
+{
+	NetPacket kNp;
+	kNp.Clear();
+	kNp.Write((char) ZFGP_EDIT);
+	kNp.Write_Str("rotatezonemodel");
+	kNp.Write(iZoneID);
+	
+	m_pkZeroFps->RouteEditCommand(&kNp);
+}
 
 void	ZeroEd::SendSetZoneModel(string strModel,int iZoneID)
 {
@@ -1757,4 +1740,72 @@ void	ZeroEd::SendSetZoneModel(string strModel,int iZoneID)
 	
 	m_pkZeroFps->RouteEditCommand(&kNp);
 
+}
+
+void ZeroEd::OnClientConnected() 
+{
+	m_bRemoteEditing = true;
+	cout<<"connected"<<endl;
+	
+	SendZoneListRequest();
+}
+
+int ZeroEd::GetZoneID(const Vector3& kPos)
+{
+	if(m_bRemoteEditing)
+	{
+		for(int i = 0;i<m_kNetworkZones.size();i++)
+		{
+			if(m_kNetworkZones[i].IsInside(kPos))
+				return m_kNetworkZones[i].m_iZoneID;	
+		}	
+		return -1;	
+	}
+	else
+	{
+		return m_pkEntityManager->GetZoneIndex(m_kZoneMarkerPos,-1,false);		
+	}
+}
+
+ZoneData* ZeroEd::GetZoneData(int iZoneID)
+{
+	if(m_bRemoteEditing)
+	{
+		for(int i = 0;i<m_kNetworkZones.size();i++)
+		{
+			if(m_kNetworkZones[i].m_iZoneID == iZoneID)
+				return &m_kNetworkZones[i];
+		}	
+		
+		return NULL;
+	}
+	else
+	{
+		return m_pkEntityManager->GetZoneData(iZoneID);
+	}
+}
+
+ZoneData* ZeroEd::GetZoneByEntityID(int iEntityID)
+{
+	if(Entity* pkEnt = m_pkEntityManager->GetEntityByID(iEntityID))
+	{
+		if(m_bRemoteEditing)
+		{
+			for(int i = 0;i<m_kNetworkZones.size();i++)
+			{
+				if(m_kNetworkZones[i].m_iZoneObjectID == iEntityID)
+				{
+					return &m_kNetworkZones[i];
+				}
+			}
+			
+			return NULL;
+		}
+		else
+		{				
+			return m_pkEntityManager->GetZone(pkEnt);
+		}	
+	}
+	
+	return NULL;
 }

@@ -476,7 +476,9 @@ void ZeroEd::OnClickTreeItem(char *szTreeBox, char *szParentNodeText,
 
 			m_strActiveZoneName = strFullpath;
 
-			m_iCurrentMarkedZone = m_pkEntityManager->GetZoneIndex(m_kZoneMarkerPos,-1,false);
+			//m_iCurrentMarkedZone = m_pkEntityManager->GetZoneIndex(m_kZoneMarkerPos,-1,false);
+			m_iCurrentMarkedZone = GetZoneID(m_kZoneMarkerPos);
+			
 			// Setting new zone modell
 			if(m_iCurrentMarkedZone != -1)	// ÄR någon zon markerad?
 			{

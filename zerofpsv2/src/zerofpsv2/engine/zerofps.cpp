@@ -1158,25 +1158,26 @@ void ZeroFps::HandleEditCommand(NetPacket* pkNetPacket)
 	{
 		int iNumOfId;
 		pkNetPacket->Read(iNumOfId);
-//		Entity* pkObj = m_pkEntityManager->GetObjectByNetWorkID(iEntId);								
-//		if(!pkObj)
-//			return;	
-		iEntId = 0;
 
 		for(int i=0; i<iNumOfId; i++) 
 		{
 			pkNetPacket->Read(iEntId);
-			Entity* pkEntity = m_pkEntityManager->GetEntityByID(iEntId);
-			if(!pkEntity)	continue;
-			cout << " " << pkEntity->GetEntityID() << " - '" << pkEntity->GetType() << "' - '" << pkEntity->GetName() << "'" <<endl;
-			if(pkEntity->GetName() == string("ZoneObject"))
+			
+			if(Entity* pkEntity = m_pkEntityManager->GetEntityByID(iEntId))
 			{
-				int iZoneID = m_pkEntityManager->GetZoneIndex( pkEntity->GetEntityID() );
-				m_pkEntityManager->DeleteZone(iZoneID);
-				cout << "Delete zone " << iZoneID << endl;
+				cout << " " << pkEntity->GetEntityID() << " - '" << pkEntity->GetType() << "' - '" << pkEntity->GetName() << "'" <<endl;				
+				//remove zone entity or normal entity
+				if(pkEntity->IsZone())
+				{
+					int iZoneID = m_pkEntityManager->GetZoneIndex( pkEntity->GetEntityID() );
+					m_pkEntityManager->DeleteZone(iZoneID);
+					cout << "Delete zone " << iZoneID << endl;
+				}
+				else
+				{					
+					m_pkEntityManager->Delete(iEntId);	
+				}
 			}
-			else
-				m_pkEntityManager->Delete(pkEntity->GetEntityID());	
 		}
 	}
 	
@@ -1301,6 +1302,7 @@ void ZeroFps::HandleEditCommand(NetPacket* pkNetPacket)
 			{
 				kNp.Write(m_pkEntityManager->m_kZones[i].m_iStatus);
 				kNp.Write(m_pkEntityManager->m_kZones[i].m_iZoneID);
+				kNp.Write(m_pkEntityManager->m_kZones[i].m_iZoneObjectID);				
 				kNp.Write(m_pkEntityManager->m_kZones[i].m_kPos);
 				kNp.Write(m_pkEntityManager->m_kZones[i].m_kSize);			
 			}			
@@ -1322,6 +1324,25 @@ void ZeroFps::HandleEditCommand(NetPacket* pkNetPacket)
 		
 		m_pkEntityManager->SetZoneModel(strModel.c_str(),iZoneID);
 	}	
+	
+	if( szCmd == string("rotatezonemodel") )	
+	{	
+		int 		iZoneID;
+		
+		pkNetPacket->Read(iZoneID);
+				
+		if(ZoneData* pkData = m_pkEntityManager->GetZoneData(iZoneID)) 
+		{
+			if(pkData->m_pkZone)
+			{
+				pkData->m_pkZone->RotateLocalRotV( Vector3(0,90.0f,0) ); 
+		
+				// Update PFind Mesh				
+				if(P_PfMesh* pkMesh = (P_PfMesh*)pkData->m_pkZone->GetProperty("P_PfMesh"))
+					pkMesh->CalcNaviMesh();
+			}		
+		}		
+	}		
 }
 
 
