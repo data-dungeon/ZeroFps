@@ -5,7 +5,7 @@ FloatProperty::FloatProperty() {
 //	m_pkFps=pkFps;
 	
 	m_fGravity=-13;
-	strcpy(m_acName,"GravityProperty");	
+	strcpy(m_acName,"FloatProperty");	
 	
 	m_iType=PROPERTY_TYPE_NORMAL;
 	m_iSide=PROPERTY_SIDE_SERVER;
@@ -21,6 +21,14 @@ void FloatProperty::Update() {
 		m_pkObject->GetVel().y*=0.99;
 	}
 }
+
+Property* Create_FloatProperty()
+{
+	return new FloatProperty();
+}
+
+
+
 
 
 

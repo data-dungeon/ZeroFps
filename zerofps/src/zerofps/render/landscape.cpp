@@ -76,6 +76,7 @@ void Render::DrawSkyBox(Vector3 CamPos,Vector3 kHead,int iHor,int iTop) {
 	Quad(Vector3(-iSize/2,0,0),Vector3(0,90,0),Vector3(iSize,iSize,iSize),m_pkTexMan->Load("file:../data/textures/right.bmp"));
 */	
 	
+//	glEnable(GL_FOG);
 	glPopAttrib();
 	glDepthMask(GL_TRUE);	
 	glPopMatrix();

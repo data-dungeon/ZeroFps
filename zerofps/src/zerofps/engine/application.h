@@ -22,12 +22,13 @@ class ENGINE_API Application : public ZFObject {
 		Input* pkInput;
 		TextureManager* pkTexMan;
 		FileIo* pkFile;
+		ZFBasicFS* pkBasicFS;
 		Light* pkLight;
 		ObjectManager* pkObjectMan;
 		PropertyFactory* pkPropertyFactory;
 		CollisionManager* pkCollisionMan;
 		OpenAlSystem* pkAlSys;
-		ZGui* pkGui;
+		ZGui* pkGui;		
 		
 	public:
 		static Application* pkApp;

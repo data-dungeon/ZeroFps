@@ -18,5 +18,7 @@ class FloatProperty: public Property {
 
 };
 
+Property* Create_FloatProperty();
+
 #endif
 

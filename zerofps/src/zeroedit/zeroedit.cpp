@@ -9,6 +9,13 @@ ZeroEdit::ZeroEdit(char* aName,int iWidth,int iHeight,int iDepth): Application(a
 
 void ZeroEdit::OnInit(void) 
 {
+	vector<string> blub;
+
+	pkBasicFS->ListDirectory(&blub,".");
+
+	for(int i=0;i<blub.size();i++)
+		cout<<blub[i]<<endl;
+
 	RegisterPropertys();
 		
 	pkRender->SetFog(Vector4(0,0,0,1),8,100,150,true);

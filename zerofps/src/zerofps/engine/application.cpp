@@ -17,12 +17,13 @@ Application::Application(char* pName,int iWidth,int iHeight,int iDepth)
 	
 void Application::SetEnginePointer(ZeroFps* pkZeroFps) 
 {
-	pkFps=pkZeroFps;
+	pkFps=pkZeroFps;	
 	pkConsole=pkFps->m_pkConsole;
 	pkRender=pkFps->m_pkRender;
 	pkInput=pkFps->m_pkInput;
 	pkTexMan=pkFps->m_pkTexMan;
 	pkFile=pkFps->m_pkFile;
+	pkBasicFS=pkFps->m_pkBasicFS;
 	pkLight=pkFps->m_pkLight;
 	pkObjectMan=pkFps->m_pkObjectMan;
 	pkCollisionMan=pkFps->m_pkCollisionMan;

@@ -20,6 +20,12 @@ void GravityProperty::Update() {
 }
 
 
+Property* Create_GravityProperty()
+{
+	return new GravityProperty();
+}
+
+
 
 
 

@@ -10,6 +10,7 @@ Test::Test(char* aName,int iWidth,int iHeight,int iDepth): Application(aName,iWi
 
 void Test::OnInit(void) 
 {
+	RegisterPropertys();
 	
 	g_ZFObjSys.Register_Cmd("loadmap",FID_LOADMAP,this);	
 	g_ZFObjSys.Register_Cmd("savemap",FID_SAVEMAP,this);		
@@ -89,7 +90,7 @@ void Test::OnInit(void)
 		sol->kRot=solrot;
 		sol->kPos=solpos;		
 //		sol->kDiffuse=Vector4(1.8,1.8,1.8,1);	//Dag
-		sol->kDiffuse=Vector4(1,1,1,1);	//natt
+		sol->kDiffuse=Vector4(.7,.7,.7,1);	//natt
 		sol->kAmbient=Vector4(0.01,0.01,0.01,0.01);
 //		sol->kAmbient=Vector4(0,0,0,0);		
 		sol->iType=POINT_LIGHT;			
@@ -456,12 +457,19 @@ void Test::CreateZones()
 				ZoneObject *object = new ZoneObject();
 				object->GetPos()=Vector3(x,m_pkMap->Height(x,z),z);
 				object->SetRadius(radius);
-				object->SetParent(pkObjectMan->GetWorldObject());			
+				object->SetParent(pkObjectMan->GetWorldObject());
+				object->RemoveProperty("MadProperty");
 			}
 		}
 	}
 }
 
 
+void Test::RegisterPropertys()
+{
+	pkPropertyFactory->Register("FloatProperty", Create_FloatProperty);
+	pkPropertyFactory->Register("GravityProperty", Create_GravityProperty);	
+
+}
 
 

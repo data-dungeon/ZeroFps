@@ -39,8 +39,10 @@ class Test :public Application {
 
 		//ZGui* m_pkGui;
 //		GLGuiRender* m_pkGuiRender; // gui render*/
-	
-
+		void RegisterPropertys();	
+		void CreateZones();
+		void input();		
+		
 	public:
 		Core	m_kTestCore;
 
@@ -49,6 +51,8 @@ class Test :public Application {
 			FID_LOADMAP,
 			FID_SAVEMAP
 		};
+	
+		
 	
 		Test(char* aName,int iWidth,int iHeight,int iDepth);
 		~Test() {};
@@ -60,8 +64,8 @@ class Test :public Application {
 		void OnServerStart(void);
 		void OnClientStart(void);
 		
-		void input();
-		void CreateZones();
+
+
 		void RunCommand(int cmdid, const CmdArgument* kCommand);
 };
 

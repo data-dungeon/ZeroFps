@@ -11,6 +11,8 @@ SkyBoxRenderProperty::SkyBoxRenderProperty(const char* acHor,const char* acTop)
 	m_iType=PROPERTY_TYPE_RENDER;
 	m_iSide=PROPERTY_SIDE_CLIENT;
 	
+	m_iSortPlace=-100;
+	
 	m_kRotateSpd.Set(0,0,0);
 	m_kHead.Set(0,0,0);
 	SetTexture(acHor,acTop);

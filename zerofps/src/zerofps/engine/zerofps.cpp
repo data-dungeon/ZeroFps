@@ -8,6 +8,7 @@ ZeroFps::ZeroFps(void)
  : ZFObject("ZeroFps") {
 
 	m_pkFile=new FileIo;
+	m_pkBasicFS=new ZFBasicFS;
 	m_pkTexMan=new TextureManager(m_pkFile);
 	m_pkInput=new Input();		
 	m_pkPropertyFactory=new PropertyFactory();

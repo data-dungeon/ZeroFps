@@ -73,6 +73,7 @@ class ENGINE_API ZeroFps : public ZFObject {
 	public:
 		Application* m_pkApp;						//application
 		CmdSystem* m_pkCmd;							//realtime variable handler
+		ZFBasicFS* m_pkBasicFS;					//basic filesystem funktions
 		AudioManager* m_pkAudioMan;			//audio manager (sfx,music)		
 		TextureManager* m_pkTexMan;			//texture manager
 		PropertyFactory* m_pkPropertyFactory;		

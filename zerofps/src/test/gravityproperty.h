@@ -18,6 +18,9 @@ class GravityProperty: public Property {
 
 };
 
+
+Property* Create_GravityProperty();
+
 #endif
 
 

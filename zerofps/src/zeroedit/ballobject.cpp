@@ -3,9 +3,9 @@
 BallObject::BallObject() {
 	m_pkFps = static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
 
-	AddProperty(new CollisionProperty(&m_kPos,new float(1.0)));
-	AddProperty(new GravityProperty());
-	AddProperty(new FloatProperty());	
+//	AddProperty(new CollisionProperty(&m_kPos,new float(1.0)));
+//	AddProperty(new GravityProperty());
+//	AddProperty(new FloatProperty());	
 
 	AddProperty("MadProperty");
 	MadProperty* madp = dynamic_cast<MadProperty*>(GetProperty("MadProperty"));

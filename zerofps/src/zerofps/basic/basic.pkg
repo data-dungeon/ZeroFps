@@ -14,6 +14,7 @@ class ZGuiSkin;
 class ZFIo;
 class ZFIoFile;
 class ZFFile;
+class ZFBasicFS;
 
 class ZFMemPackage;
 
@@ -41,6 +42,7 @@ class ZFMemPackage;
 #include "zfio.h"
 #include "zfiofile.h"
 #include "zffile.h"
+#include "zfbasicfs.h"
 
 #include "zfmempackage.h"
 #include "rect.h"
