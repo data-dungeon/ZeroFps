@@ -350,8 +350,9 @@ ZGui::MAIN_WINDOW* ZGui::FindMainWnd(int x,int y)
 	for(list<MAIN_WINDOW*>::iterator it = m_pkMainWindows.begin();
 		 it != m_pkMainWindows.end(); it++)
 		 {
-			if((*it)->pkWnd->IsVisible() && 
-				(*it)->pkWnd->GetScreenRect().Inside(x,y))
+			 ZGuiWnd* pkWnd = (*it)->pkWnd;
+
+			if(pkWnd->IsVisible() && pkWnd->GetScreenRect().Inside(x,y))
 			{
 				if(best->pkWnd->GetScreenRect().Inside(x,y))
 				{
@@ -564,6 +565,8 @@ bool ZGui::OnMouseUpdate(int x, int y, bool bLBnPressed,
 							pkParams[0] = ZGuiWnd::m_pkWndClicked->GetID(); // control id
 							m_pkActiveMainWin->pkCallback(m_pkActiveMainWin->pkWnd,
 								ZGM_COMMAND,1,pkParams);
+
+							m_bHaveInputFocus = true;
 						}
 					}
 					delete[] pkParams;
