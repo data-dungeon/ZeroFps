@@ -253,7 +253,7 @@ void TileEngine::RemoveUnit(Vector3 kPos,P_ServerUnit* kSu)
 }
 
 
-void TeleEngine::Draw()
+void TileEngine::Draw()
 {
 	for(int y = 0;y<m_iSizeY;y++)
 	{

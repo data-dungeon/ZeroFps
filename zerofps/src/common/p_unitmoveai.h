@@ -68,7 +68,7 @@ public:
 	vector<PropertyValues> GetPropertyValues();
 	
 	bool MoveTo(Vector3 kPos);
-	bool DoPathFind(Vector3 kStart,Vector3 kStop);
+	bool DoPathFind(Vector3 kStart,Vector3 kStop,bool exact);
 	bool CheckForOrder();
 };
 

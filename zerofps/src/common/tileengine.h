@@ -28,6 +28,7 @@ class COMMON_API TileEngine
 		HeightMap*		m_pkMap;
 		LevelManager*	m_pkLevelMan;
 		ObjectManager* m_pkObjectMan;
+		Render*	m_pkRender;		
 		
 		vector<Tile>	m_kTiles;
 		
@@ -58,6 +59,7 @@ class COMMON_API TileEngine
 		Point GetSqrFromPos(Vector3 pos);				
 		Vector3 GetPosFromSqr(Point square);
 
+		void Draw();
 };
 
 

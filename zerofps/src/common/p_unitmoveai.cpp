@@ -146,10 +146,9 @@ AIBase* P_UnitMoveAI::UpdateAI()
 					m_pkObject->SetPos(m_kCurretDestination);										
 					m_pkObject->SetPos(m_kCurretDestination);					
 					
-					m_iCurrentState = UNIT_WAIT;
-										
+					m_iCurrentState = UNIT_WAIT;										
 					m_kCurretDestination = m_pkObject->GetPos();
-					m_fWaitTime = m_pkFps->GetGameTime() + ((rand() % 2000)/1000.0);
+					m_fWaitTime = m_pkFps->GetGameTime() + ((rand() % 4000)/1000.0);
 					m_iRetries = 0;
 							
 					return this;
@@ -185,20 +184,20 @@ AIBase* P_UnitMoveAI::UpdateAI()
 		{
 			CheckForOrder();
 			
-			if(m_iRetries >= 20)
+			if(m_iRetries >= 2)
 			{
 				return NULL;
 			
 			}
 			
-			if( (m_pkFps->GetGameTime() - m_fWaitTime) > 1.0)
+			if( (m_pkFps->GetGameTime() - m_fWaitTime) > 2.0)
 			{
-				//cout<<"trying again " <<m_iRetries<<endl;				
+				cout<<"trying again " <<m_iRetries<<endl;				
 				m_iRetries++;
 				
 				m_fWaitTime = m_pkFps->GetGameFrameTime();
 				
-				if(!DoPathFind(m_kCurretDestination,m_kEndPos))
+				if(!DoPathFind(m_kCurretDestination,m_kEndPos,false))
 					return this;
 			}
 			
@@ -252,7 +251,7 @@ bool P_UnitMoveAI::MoveTo(Vector3 kPos)
 	return true;
 }
 
-bool P_UnitMoveAI::DoPathFind(Vector3 kStart,Vector3 kStop)
+bool P_UnitMoveAI::DoPathFind(Vector3 kStart,Vector3 kStop,bool exact)
 {
 	m_kStartPos = kStart;
 	m_kEndPos = kStop;
@@ -266,14 +265,16 @@ bool P_UnitMoveAI::DoPathFind(Vector3 kStart,Vector3 kStop)
 	//temporary remove this unit so path finding
 	TileEngine::m_pkInstance->RemoveUnit(m_pkObject->GetPos(),(P_ServerUnit*)m_pkObject->GetProperty("P_ServerUnit"));								
 	
-	if(m_pkPathFind->Rebuild(m_kStartPoint.x, m_kStartPoint.y, m_kEndPoint.x, m_kEndPoint.y) == false)
+	if(m_pkPathFind->Rebuild(m_kStartPoint.x, m_kStartPoint.y, m_kEndPoint.x, m_kEndPoint.y,exact) == false)
 	{
 		//put this unit back
 		TileEngine::m_pkInstance->AddUnit(m_pkObject->GetPos(),(P_ServerUnit*)m_pkObject->GetProperty("P_ServerUnit"));								
 		
 		m_kEndPoint = m_kStartPoint;
 		printf("Pathfinding Failed\n");
-		return false;
+		
+		
+		return true;
 	} 
 	else
 	{
@@ -297,7 +298,7 @@ bool P_UnitMoveAI::CheckForOrder()
 		move.x =-1;
 		move.y =-1;
 		
-		if(DoPathFind(m_pkObject->GetPos(),Vector3(fX,0,fZ)))
+		if(DoPathFind(m_pkObject->GetPos(),Vector3(fX,0,fZ),true))
 		{
 			m_iCurrentState=UNIT_MOVE; 		
 			return true;

@@ -560,8 +560,10 @@ bool PathFind::FillQueue()
 		printf("Unit have not found end node, going to closest one..\n");
 
 		if(m_bGoToClosest == false)
+		{
+			Reset();
 			return false;
-
+		}
 /*		while(m_kqClosestPath.size())
 		{
 			m_kqPath.push(m_kqClosestPath.front());
@@ -602,8 +604,8 @@ bool PathFind::FillQueue()
 			m_kqPath.push(sqr); 
 		}
 
-		FreeAllNodes();
-
+//		FreeAllNodes();
+		
 		return true;
 	}
 
@@ -698,3 +700,9 @@ void PathFind::ReversePath()
 
 	m_bPathIsReversed = false;
 }
+
+
+
+
+
+
