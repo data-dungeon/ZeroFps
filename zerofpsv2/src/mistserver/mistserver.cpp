@@ -25,8 +25,6 @@
 #include "../zerofpsv2/engine/inputhandle.h"
 
 #include "../mcommon/mainmcommon.h"
-#include "rulesystem.h"
-
 
 using namespace ObjectManagerLua;
  
@@ -43,9 +41,14 @@ static bool GUIPROC( ZGuiWnd* win, unsigned int msg, int numparms, void *params 
 MistServer::MistServer(char* aName,int iWidth,int iHeight,int iDepth) 
 	: Application(aName,iWidth,iHeight,iDepth), ZGuiApp(GUIPROC)
 { 
+	
 	g_ZFObjSys.SetPreLogName("mistserver");
 	g_ZFObjSys.Log_Create("mistserver");
 
+	//register mcommon systems
+	MCommon_RegisterSystems();
+	
+	
 	m_pkEnviroment =	new ZSSEnviroment;
 	m_pkTime = 			new ZSSMLTime;
 	
@@ -142,7 +145,6 @@ void MistServer::Init()
 {	
 	//create player database
 	m_pkPlayerDB = new PlayerDatabase();
-	m_pkRuleSystem = new RuleSystem();
 
 	//m_pkZShaderSystem->SetForceLighting(LIGHT_ALWAYS_OFF);	
 	//m_pkZeroFps->SetSystemFps(30);
@@ -236,8 +238,6 @@ void MistServer::RegisterScriptFunctions()
 {
 	g_pkScript->ExposeFunction("SayToCharacter",	SI_MistServer::SayToCharacterLua);
 	g_pkScript->ExposeFunction("OpenContainer",	SI_MistServer::OpenContainerLua);
-	
-	g_pkScript->ExposeFunction("Damage",	SI_MistServer::DamageLua);
 	
 }
 
@@ -1164,6 +1164,25 @@ Vector3 MistServer::GetPlayerStartPos()
 	}
 }
 
+void MistServer::OnSystemMessage(const string& strType,void* pkData)
+{
+	if(strType == "PointText")
+	{
+		static struct pointdatatext
+		{
+			string	strText;
+			Vector3	kPos;
+			Vector3	kVel;
+			float		fTTL;
+			int		iType;
+		} *pkPointTextData;
+		 
+		pkPointTextData = (pointdatatext*)pkData;
+	
+		SendPointText(pkPointTextData->strText,pkPointTextData->kPos,pkPointTextData->kVel,pkPointTextData->fTTL,pkPointTextData->iType);		
+	}
+
+}
 
 
 //--------- script interface for mistserver
@@ -1215,19 +1234,7 @@ namespace SI_MistServer
 	}
 	
 	
-	int DamageLua(lua_State* pkLua)
-	{
-		if(g_pkScript->GetNumArgs(pkLua) != 2)
-			return 0;			
-			
-		int iCharacter;
-		double dDamage;
-		
-		g_pkScript->GetArgInt(pkLua, 0, &iCharacter);		
-		g_pkScript->GetArgNumber(pkLua, 1, &dDamage);
 
-		g_kMistServer.m_pkRuleSystem->Damage(iCharacter,float(dDamage));
-
-		return 0;
-	}	
 }
+
+

@@ -1435,7 +1435,7 @@ bool P_CharacterProperty::AddSkill(const string& strSkillScript,const string& st
 	pkNewSkill->SetLevel(0);
 
 	
-	cout<<"Added skill "<<strSkillScript<<endl;
+// 	cout<<"Added skill "<<strSkillScript<<endl;
 	return true;
 }
 
@@ -1854,7 +1854,7 @@ namespace SI_P_CharacterProperty
 				pkSkill->m_iSkillType =		iSkillType;
 				pkSkill->m_fRange =			float(dRange);
 				
-				cout<<"skill setup complete"<<endl;
+				//cout<<"skill setup complete"<<endl;
 			}
 			else
 			{

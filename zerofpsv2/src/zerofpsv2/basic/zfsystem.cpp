@@ -54,10 +54,7 @@ void ZFSystem::PrintCommands()
 
 void ZFSystem::PrintObjects(void)
 {
-// 	for(unsigned int i=0; i < kObjectNames.size();i++) {
-// 		g_Logf(" %s, %d\n", kObjectNames[i].m_strName.c_str(), kObjectNames[i].m_iNumOfRequests );
-// 	}
-		for(hash_map<const char*,NameObject ,hash<const char*>, eqstr>::iterator it = m_kObjectNames.begin();it != m_kObjectNames.end();it++)
+		for(map<string,NameObject>::iterator it = m_kObjectNames.begin();it != m_kObjectNames.end();it++)
 		{
 			g_Logf(" %s, %d\n",(*it).second.m_strName.c_str(), (*it).second.m_iNumOfRequests );
 		}
@@ -142,7 +139,6 @@ ZFSystem::~ZFSystem()
 
 	// Check that we don't have any objects left.
  	if(m_kObjectNames.size() > 0) {
-// 	if(kObjectNames.size() > 0) {
 		g_Logf("WARNING: Some Engine Systems have not been closed down\n");
 		PrintObjects();
 		}
@@ -193,7 +189,6 @@ void ZFSystem::Register(ZFSubSystem* pkObject, char* acName)
 	//increse register order
 	iRegisterOrder++;
 	
-// 	kObjectNames.push_back(kObjName);	
 	m_kObjectNames.insert(map<const char*,NameObject>::value_type(kObjName.m_strName.c_str(),kObjName));
 	
 	pkObject->m_strZFpsName		= string(acName);
@@ -217,7 +212,7 @@ void ZFSystem::UnRegister(ZFSubSystem* pkObject)
 
 	cout<<"unregistering "<<pkObject->m_strZFpsName.c_str()<<endl;
 
-	hash_map<const char*,NameObject ,hash<const char*>, eqstr>::iterator itNames;
+	map<string,NameObject>::iterator itNames;
 	for(itNames = m_kObjectNames.begin(); itNames != m_kObjectNames.end(); itNames++)
 	{
 		if((*itNames).second.pkObject == pkObject) 
@@ -232,18 +227,6 @@ void ZFSystem::UnRegister(ZFSubSystem* pkObject)
 	}
 
 
-// 	vector<NameObject>::iterator itNames;
-// 	for(itNames = kObjectNames.begin(); itNames != kObjectNames.end(); )
-// 	{
-// 		if(itNames->pkObject == pkObject) {
-// 			itNames = kObjectNames.erase(itNames);
-// #ifdef _DEBUG
-// 			g_Logf(".");
-// #endif
-// 			}
-// 		else
-// 			itNames++;
-// 	}
 
 	UnRegister_Cmd(pkObject);
 
@@ -256,38 +239,25 @@ void ZFSystem::UnRegister(ZFSubSystem* pkObject)
 
 	Get a Ptr to the SubSystem with the choosen name. Null if no SubSystem found with this name.
 */
-ZFSubSystem* ZFSystem::GetObjectPtr(char* acName,bool bWarning)
+ZFSubSystem* ZFSystem::GetObjectPtr(const char* acName,bool bWarning)
 {
 // cout<<"requesting:"<<acName<<endl;
-	static hash_map<const char*,NameObject ,hash<const char*>, eqstr>::iterator it;
+	static map<string,NameObject>::iterator it;
 	
 	it = m_kObjectNames.find(acName);
 	
 	if(it == m_kObjectNames.end())
 	{
 		if(bWarning)
+		{
 			cout<<"WARNING: Requested system pointer not found:"<<acName<<endl;
-	
+		}
+				
 		return NULL;
 	}
 
 	return it->second.pkObject;
-	
-// 	for(unsigned int i=0; i < kObjectNames.size();i++) 
-// 	{
-// 		if(kObjectNames[i].m_strName == acName) 
-// 		{
-// 			kObjectNames[i].m_iNumOfRequests ++;
-// 			return kObjectNames[i].pkObject;
-// 		}
-// 	}
-// 
-// 	if(bWarning)
-// 		cout<<"WARNING: Requested system pointer not found:"<<acName<<endl;
-// 		
-	
-		
-	return NULL;
+
 }
 
 /**	\brief	Startup all SubSystems.
@@ -300,7 +270,7 @@ bool ZFSystem::StartUp()
 
 	for(int i = m_kObjectNames.size()-1;i >= 0;i--)
 	{
-		for(hash_map<const char*,NameObject ,hash<const char*>, eqstr>::iterator it = m_kObjectNames.begin();it != m_kObjectNames.end();it++)
+		for(map<string,NameObject>::iterator it = m_kObjectNames.begin();it != m_kObjectNames.end();it++)
 		{
 			if(it->second.m_iRegisterOrder == i)
 			{
@@ -322,17 +292,6 @@ bool ZFSystem::StartUp()
 		}
 	}
 	
-// 	for( int i = (kObjectNames.size() - 1); i >= 0; i--) {
-// 		g_Logf(" - %s: ",kObjectNames[i].m_strName.c_str());
-// 
-// 		if(!kObjectNames[i].pkObject->StartUp()) {
-// 			g_Logf("Fail\n");
-// 			return false;
-// 			}
-// 
-// 		kObjectNames[i].m_bStarted = true;
-// 		g_Logf("Ok\n");
-// 	}
 	
 	return true;
 }
@@ -348,7 +307,7 @@ bool ZFSystem::ShutDown()
 	// Engine Systems Shutdown backwards.
 	for(int i = 0;i < m_kObjectNames.size();i++)
 	{
-		for(hash_map<const char*,NameObject ,hash<const char*>, eqstr>::iterator it = m_kObjectNames.begin();it != m_kObjectNames.end();it++)
+		for(map<string,NameObject>::iterator it = m_kObjectNames.begin();it != m_kObjectNames.end();it++)
 		{
 			if(it->second.m_iRegisterOrder == i)
 			{
@@ -368,19 +327,6 @@ bool ZFSystem::ShutDown()
 			}	
 		}
 	}	
-	
-// 	for(unsigned int i=0; i < kObjectNames.size();i++) {
-// 		strcpy(szName, kObjectNames[i].m_strName.c_str());
-// 		if(kObjectNames[i].m_bStarted == false)	continue;
-// 
-// 		g_Logf(" -  %s: ",kObjectNames[i].m_strName.c_str());
-// 		if(!kObjectNames[i].pkObject->ShutDown()) {
-// 			g_Logf("Fail\n");
-// 			return false;
-// 			}
-// 		g_Logf("Ok\n");
-// 	}
-
 
 	
 	return true;
@@ -388,11 +334,7 @@ bool ZFSystem::ShutDown()
 
 bool ZFSystem::IsValid()
 {
-// 	for(unsigned int i=0; i < kObjectNames.size();i++) {
-// 		if(!kObjectNames[i].pkObject->IsValid())
-// 			return false;
-// 	}
-	for(hash_map<const char*,NameObject ,hash<const char*>, eqstr>::iterator it = m_kObjectNames.begin();it != m_kObjectNames.end();it++)
+	for(map<string,NameObject>::iterator it = m_kObjectNames.begin();it != m_kObjectNames.end();it++)
 		if(!it->second.pkObject->IsValid())
 			return false;
 	
@@ -868,7 +810,7 @@ void ZFSystem::Config_Save(string strFileName)
 	string strVar;
 	FILE* fp = fopen(strFileName.c_str(), "wt");
 
-	for(hash_map<const char*,NameObject ,hash<const char*>, eqstr>::iterator it = m_kObjectNames.begin(); it != m_kObjectNames.end();it++)
+	for(map<string,NameObject>::iterator it = m_kObjectNames.begin(); it != m_kObjectNames.end();it++)
 	{
 		// Write Header to config
 		fprintf(fp,"\n\n[%s]\n", it->second.m_strName.c_str());
@@ -886,25 +828,7 @@ void ZFSystem::Config_Save(string strFileName)
 			}
 		}
 	}
-		
-// 	for(unsigned int SubIndex=0; SubIndex < kObjectNames.size();SubIndex++) 
-// 	{
-// 		// Write Header to config
-// 		fprintf(fp,"\n\n[%s]\n", kObjectNames[SubIndex].m_strName.c_str());
-// 
-// 		for(unsigned int i=0; i<m_kCmdDataList.size(); i++) 
-// 		{
-// 			if(m_kCmdDataList[i].m_eType == CSYS_NONE)		continue; // We don't save none valid data.
-// 			if(m_kCmdDataList[i].m_eType == CSYS_FUNCTION)	continue; // We don't save functions.
-// 			
-// 			// Check so this variable is owned by the current section.
-// 			if(m_kCmdDataList[i].m_pkObject == kObjectNames[SubIndex].pkObject) 
-// 			{
-// 				strVar = GetVarValue(&m_kCmdDataList[i]);
-// 				fprintf(fp,"%s=%s\n",m_kCmdDataList[i].m_strName.c_str(), strVar.c_str());
-// 			}
-// 		}
-// 	}
+
 
 	fclose(fp);
 }
@@ -920,7 +844,7 @@ void ZFSystem::Config_Load(string strFileName)
 
 	char* pkVal;
 
-	for(hash_map<const char*,NameObject ,hash<const char*>, eqstr>::iterator it = m_kObjectNames.begin(); it != m_kObjectNames.end();it++)
+	for(map<string,NameObject>::iterator it = m_kObjectNames.begin(); it != m_kObjectNames.end();it++)
 	{
 		//cout << "[section] : " << kObjectNames[SubIndex].m_strName << endl;
 
@@ -938,23 +862,7 @@ void ZFSystem::Config_Load(string strFileName)
 			}
 		}
 	}	
-	
-// 	for(unsigned int SubIndex=0; SubIndex < kObjectNames.size();SubIndex++) 
-// 	{
-// 		//cout << "[section] : " << kObjectNames[SubIndex].m_strName << endl;
-// 
-// 		for(unsigned int i=0; i<m_kCmdDataList.size(); i++) {
-// 			if(m_kCmdDataList[i].m_eType == CSYS_NONE)		continue; // We don't save none valid data.
-// 			if(m_kCmdDataList[i].m_eType == CSYS_FUNCTION)	continue; // We don't save functions.
-// 			
-// 			pkVal = m_kIni.GetValue(kObjectNames[SubIndex].m_strName.c_str(), m_kCmdDataList[i].m_strName.c_str());
-// 			if(pkVal) {
-// 				//cout << "Setting " << m_kCmdDataList[i].m_strName.c_str();
-// 				//cout << " " << pkVal << endl;
-// 				SetVariable(m_kCmdDataList[i].m_strName.c_str(),pkVal);
-// 				}
-// 			}
-// 	}
+
 }
 
 void ZFSystem::Printf(const char* szMessageFmt,...)
@@ -1076,4 +984,125 @@ int ZFSystem::GetTotalTime()
 {	
 	return SDL_GetTicks() - m_iTotalTime;	
 }
+
+
+bool ZFSystem::SendSystemMessage(const string& strSystem,const string& strType,void* pkData)
+{
+	if(ZFSubSystem* pkSystem = GetObjectPtr(strSystem.c_str(),false))
+	{
+		pkSystem->OnSystemMessage(strType,pkData);		
+		return true;
+	}
+	
+	return false;
+}
+
+
+
+
+
+
+
+// graveyard
+
+// 	for(unsigned int i=0; i < kObjectNames.size();i++) {
+// 		g_Logf(" %s, %d\n", kObjectNames[i].m_strName.c_str(), kObjectNames[i].m_iNumOfRequests );
+// 	}
+
+
+
+// 	vector<NameObject>::iterator itNames;
+// 	for(itNames = kObjectNames.begin(); itNames != kObjectNames.end(); )
+// 	{
+// 		if(itNames->pkObject == pkObject) {
+// 			itNames = kObjectNames.erase(itNames);
+// #ifdef _DEBUG
+// 			g_Logf(".");
+// #endif
+// 			}
+// 		else
+// 			itNames++;
+// 	}
+
+	
+// 	for(unsigned int i=0; i < kObjectNames.size();i++) 
+// 	{
+// 		if(kObjectNames[i].m_strName == acName) 
+// 		{
+// 			kObjectNames[i].m_iNumOfRequests ++;
+// 			return kObjectNames[i].pkObject;
+// 		}
+// 	}
+// 
+// 	if(bWarning)
+// 		cout<<"WARNING: Requested system pointer not found:"<<acName<<endl;
+// 		
+//	return NULL;
+
+// 	for( int i = (kObjectNames.size() - 1); i >= 0; i--) {
+// 		g_Logf(" - %s: ",kObjectNames[i].m_strName.c_str());
+// 
+// 		if(!kObjectNames[i].pkObject->StartUp()) {
+// 			g_Logf("Fail\n");
+// 			return false;
+// 			}
+// 
+// 		kObjectNames[i].m_bStarted = true;
+// 		g_Logf("Ok\n");
+// 	}
+
+// 	for(unsigned int SubIndex=0; SubIndex < kObjectNames.size();SubIndex++) 
+// 	{
+// 		//cout << "[section] : " << kObjectNames[SubIndex].m_strName << endl;
+// 
+// 		for(unsigned int i=0; i<m_kCmdDataList.size(); i++) {
+// 			if(m_kCmdDataList[i].m_eType == CSYS_NONE)		continue; // We don't save none valid data.
+// 			if(m_kCmdDataList[i].m_eType == CSYS_FUNCTION)	continue; // We don't save functions.
+// 			
+// 			pkVal = m_kIni.GetValue(kObjectNames[SubIndex].m_strName.c_str(), m_kCmdDataList[i].m_strName.c_str());
+// 			if(pkVal) {
+// 				//cout << "Setting " << m_kCmdDataList[i].m_strName.c_str();
+// 				//cout << " " << pkVal << endl;
+// 				SetVariable(m_kCmdDataList[i].m_strName.c_str(),pkVal);
+// 				}
+// 			}
+// 	}
+
+		
+// 	for(unsigned int SubIndex=0; SubIndex < kObjectNames.size();SubIndex++) 
+// 	{
+// 		// Write Header to config
+// 		fprintf(fp,"\n\n[%s]\n", kObjectNames[SubIndex].m_strName.c_str());
+// 
+// 		for(unsigned int i=0; i<m_kCmdDataList.size(); i++) 
+// 		{
+// 			if(m_kCmdDataList[i].m_eType == CSYS_NONE)		continue; // We don't save none valid data.
+// 			if(m_kCmdDataList[i].m_eType == CSYS_FUNCTION)	continue; // We don't save functions.
+// 			
+// 			// Check so this variable is owned by the current section.
+// 			if(m_kCmdDataList[i].m_pkObject == kObjectNames[SubIndex].pkObject) 
+// 			{
+// 				strVar = GetVarValue(&m_kCmdDataList[i]);
+// 				fprintf(fp,"%s=%s\n",m_kCmdDataList[i].m_strName.c_str(), strVar.c_str());
+// 			}
+// 		}
+// 	}
+
+// 	for(unsigned int i=0; i < kObjectNames.size();i++) {
+// 		if(!kObjectNames[i].pkObject->IsValid())
+// 			return false;
+// 	}
+
+	
+// 	for(unsigned int i=0; i < kObjectNames.size();i++) {
+// 		strcpy(szName, kObjectNames[i].m_strName.c_str());
+// 		if(kObjectNames[i].m_bStarted == false)	continue;
+// 
+// 		g_Logf(" -  %s: ",kObjectNames[i].m_strName.c_str());
+// 		if(!kObjectNames[i].pkObject->ShutDown()) {
+// 			g_Logf("Fail\n");
+// 			return false;
+// 			}
+// 		g_Logf("Ok\n");
+// 	}
 

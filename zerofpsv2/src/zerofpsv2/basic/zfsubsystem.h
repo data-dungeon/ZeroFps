@@ -127,6 +127,10 @@ public:
 	/**	\brief	Check if SubSystem is Ok.
 	*/
 	virtual bool IsValid()  = 0;
+	
+	/**	\brief	Recive a system message.
+	*/	
+	virtual void OnSystemMessage(const string& strType,void* pkData)	{};
 };
 
 #endif

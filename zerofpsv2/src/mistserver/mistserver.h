@@ -19,7 +19,7 @@ class ZSSEnviroment;
 class ZSSMLTime;
 class Entity;
 class P_ServerInfo;
-class RuleSystem;
+//class RuleSystem;
 
 /**	\brief	Da MistServer
 		\ingroup MistServer
@@ -97,7 +97,7 @@ class MistServer :public Application , public ZGuiApp
 						
 	public:
 		PlayerDatabase*	m_pkPlayerDB;				
-		RuleSystem*			m_pkRuleSystem;
+// 		RuleSystem*			m_pkRuleSystem;
 		
 		
 		MistServer(char* aName,int iWidth,int iHeight,int iDepth);	 	
@@ -115,6 +115,8 @@ class MistServer :public Application , public ZGuiApp
 		void Input();
 		void OnServerStart(void);
 		void OnClientStart(void);
+		
+		void OnSystemMessage(const string& strType,void* pkData);
 		
 		//init client
 		void ClientInit();
@@ -141,9 +143,7 @@ namespace SI_MistServer
 {
 	int SayToCharacterLua(lua_State* pkLua);
 	int OpenContainerLua(lua_State* pkLua);
-	
-	//rule system
-	int DamageLua(lua_State* pkLua);
+
 };
 
 

@@ -18,6 +18,9 @@
 #include "p_fogplane.h"
 #include "p_container.h"
 #include "p_projectile.h"
+
+#include "rulesystem.h"
+
 /*
 #include "p_dmclickme.h"
 #include "p_dmgun.h"
@@ -29,6 +32,12 @@
 
 
 void MCommon_RegisterResources() { }
+
+void MCommon_RegisterSystems()
+{
+	RuleSystem*	m_pkRuleSystem = new RuleSystem();
+
+}
 
 void MCommon_RegisterPropertys(ZeroFps* pkZeroFps, PropertyFactory*	pkPropertyFactory)
 {

@@ -7,9 +7,6 @@
 #include <vector>
 #include "zfsubsystem.h"
 #include "cstdio"
-
-
-#include <hash_map.h> 
 #include <map> 
 
 
@@ -137,8 +134,8 @@ protected:
 	BasicConsole*			m_pkConsole;			///< Ptr to ZeroFps Console.
 
 public:
-//	vector<NameObject>	kObjectNames;			///< List of all object names/ptrs.
- 	hash_map<const char*,NameObject ,hash<const char*>, eqstr> m_kObjectNames;
+	//vector<NameObject>		kObjectNames;			///< List of all object names/ptrs.
+	map<string,NameObject>	m_kObjectNames;			///< List of all object names/ptrs.
 
 	void HandleArgs(int iNrOfArgs, char** paArgs);
 
@@ -150,7 +147,7 @@ public:
 
 	void Register(ZFSubSystem* pkObject, char* acName /*, ZFSubSystem* pkParent*/);		// Register a SubSystem.
 	void UnRegister(ZFSubSystem* pkObject);													// UnRegister a objects.
-	ZFSubSystem* GetObjectPtr(char* acName,bool bWarning = true);													// Get pointer to SubSystem by name.
+	ZFSubSystem* GetObjectPtr(const char* acName,bool bWarning = true);													// Get pointer to SubSystem by name.
 	bool StartUp();
 	bool ShutDown();
 	bool IsValid();
@@ -170,6 +167,9 @@ public:
 	//program arguments
 	int GetNumberOfArguments()			{	return m_kRawArguments.size();			};
 	string GetArgument(int iArg)		{	return m_kRawArguments[iArg];				};
+	
+	//message system
+	bool SendSystemMessage(const string& strSystem,const string& strType,void* pkData);
 	
 	// Cmd / Functions.
 	ZFCmdData* FindArea(const char* szName);	// GALLA

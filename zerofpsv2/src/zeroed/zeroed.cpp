@@ -55,9 +55,14 @@ static bool GUIPROC( ZGuiWnd* win, unsigned int msg, int numparms, void *params 
 ZeroEd::ZeroEd(char* aName,int iWidth,int iHeight,int iDepth) 
 	: Application(aName,iWidth,iHeight,iDepth), ZGuiApp(GUIPROC)
 { 
+
 	g_ZFObjSys.SetPreLogName("zeroed");
 	g_ZFObjSys.Log_Create("zeroed");
 
+	//register mcommon systems
+	MCommon_RegisterSystems();
+	
+	
 	// Set Default values	
 	m_bEditSun					=	false;
 	m_bSoloMode					=	true;

@@ -775,7 +775,7 @@ void ZeroFps::MainLoop(void)
 			
 			//swap buffers n calculate fps
 			Swap();	
-
+			
 		}		
 	}
 }
