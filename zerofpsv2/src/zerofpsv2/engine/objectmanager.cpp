@@ -595,7 +595,7 @@ void ObjectManager::PackToClients()
 	Object* pkZone;
 //	Object* pkPackObj;
 
-	if(m_pkZeroFps->m_bClientMode) {
+	if(m_pkZeroFps->m_bClientMode && !m_pkZeroFps->m_bServerMode) {
 		m_pkWorldObject->GetAllObjects(&kObjects);
 		PackToClient(0, kObjects);
 		return;

@@ -29,7 +29,7 @@
 #define MAX_NET_CLIENTS					4	// Max number of clients (nodes).
 #define ZF_NET_NOCLIENT					-1	// ID for a non client.
 
-#define ZF_NET_CONNECTION_TIMEOUT	15	// Timeout connection if no message from a client after this time (sec).
+#define ZF_NET_CONNECTION_TIMEOUT	45	// Timeout connection if no message from a client after this time (sec).
 
 // Status of a remote node.
 enum ClientConnectStatus
