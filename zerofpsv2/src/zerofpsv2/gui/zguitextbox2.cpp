@@ -377,7 +377,7 @@ void ZGuiTextbox::ScrollText(ZGuiScrollbar* pkScrollbar)
 	pkScrollbar->m_iScrollChange = 0;
 
 	m_iCursorRow = m_iStartrow;
-	printf("m_iCursorRow = %i\n", m_iCursorRow);
+	
 }
 
 void ZGuiTextbox::ScrollText(int row)
@@ -1252,17 +1252,25 @@ void ZGuiTextbox::BuildTextStrings()
 				t.iRow = row;
 				kFinal.push_back(t); 
 
-				if(end == end_letter)
+				bool bStillBiggerLastCharInTag = false;
+
+				if(end == end_letter )
 				{
 					xPos = LEFT + w;
 					w+=row_width;	
+
+					if(xPos > WIDTH)
+					{
+						bStillBiggerLastCharInTag = true;
+					}
 				}
 				else
 				{
 					max_row=t.pkFont->m_iRowHeight;
 					max_baseline=t.pkFont->m_iPixelsAboveBaseLine;
+					
 					xPos = LEFT;
-					row++;					
+					row++;		
 				}
 
 				if(ch == '\n')
@@ -1280,8 +1288,18 @@ void ZGuiTextbox::BuildTextStrings()
 				}
 				else
 				{
+					printf("word_break_pos = %i\n" ,word_break_pos);
 					start=word_break_pos;
 					w-=row_width;	
+				}
+
+				if(bStillBiggerLastCharInTag)
+				{
+					max_row=t.pkFont->m_iRowHeight;
+					max_baseline=t.pkFont->m_iPixelsAboveBaseLine;
+					w=0;	
+					xPos=LEFT;
+					row++;
 				}
 
 				map<int,int>::iterator itRowHeight;
@@ -1339,8 +1357,8 @@ void ZGuiTextbox::BuildTextStrings()
 		int font_diff = mkMaxBaselineHeight[iRow] - m_kTextTags[j].pkFont->m_iPixelsAboveBaseLine;
 		m_kTextTags[j].y = yPos + font_diff;
 		
-		if(iRow > m_iNumRows)
-			m_iNumRows = m_kTextTags[j].iRow;
+		if(iRow+1 > m_iNumRows)
+			m_iNumRows = iRow+1;
 	}
 
 	if(m_kTextTags.empty() == false)
@@ -1352,4 +1370,6 @@ void ZGuiTextbox::BuildTextStrings()
 	{
 		m_iTotalTextHeight = 0;
 	}
+
+	printf("%i\n", m_iNumRows);
 }
