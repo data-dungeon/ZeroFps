@@ -99,7 +99,8 @@ private:
 	EQUIPMENT_SLOT m_kBoots;
 
 	EQUIPMENT_SLOT* m_pkMoveSlot; 
-	EQUIPMENT_SLOT* m_pkHighLightslot; 
+	//EQUIPMENT_SLOT* m_pkHighLightslot; 
+	vector<EQUIPMENT_SLOT*> m_vkHighLightslots;
 };
 
 #endif // _GUI_EQUIPMENTDLG_H_

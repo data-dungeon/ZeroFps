@@ -6,7 +6,7 @@
 #include "../zerofpsv2/gui/zgui.h"
 #include "../zerofpsv2/engine/inputhandle.h"
 #include "../zerofpsv2/gui/zguiresourcemanager.h"
-
+#include "../mcommon/p_item.h"
 
 extern MistClient	g_kMistClient;
 
@@ -69,7 +69,7 @@ EquipmentDlg::EquipmentDlg()
 {
 	m_pkMainWnd = NULL;
 	m_pkMoveSlot = NULL;
-	m_pkHighLightslot = NULL;
+
 	m_pkTexMan = g_kMistClient.m_pkTexMan;
 	m_bSkillWndOpen = false;
 	m_bStatsWndOpen = false;
@@ -208,26 +208,45 @@ void EquipmentDlg::OnMouseMove(bool bLeftButtonPressed, int mx, int my)
 	}
 }
 
-void EquipmentDlg::HighlightSlot(int iContainerType)
+void EquipmentDlg::HighlightSlot(int iItemType)
 {
 	if(m_pkMainWnd == NULL)
 		return;
 
-	EQUIPMENT_SLOT* pSlot;
-	GetEquipmentSlotFromContainerType(iContainerType, pSlot);
-
-	if(m_pkHighLightslot)
+	if(!m_vkHighLightslots.empty()) 
 	{
-		m_pkHighLightslot->m_pkWnd->GetSkin()->m_unBorderSize = 0;  
+		for(int i=0; i<m_vkHighLightslots.size(); i++)
+			m_vkHighLightslots[i]->m_pkWnd->GetSkin()->m_unBorderSize = 0;  
 	}
 
-	m_pkHighLightslot = NULL;
+	m_vkHighLightslots.clear(); 
 
-	if(pSlot != NULL)
+	switch(iItemType)
 	{
-		m_pkHighLightslot = pSlot;
-		m_pkHighLightslot->m_pkWnd->Show();
-		pSlot->m_pkWnd->GetSkin()->m_unBorderSize = 4;  
+		case MLITEM_HEAD: m_vkHighLightslots.push_back(&m_kHead); break;
+		case MLITEM_BODY: m_vkHighLightslots.push_back(&m_kBody); break;
+		case MLITEM_HAND: 
+			m_vkHighLightslots.push_back(&m_kRightHand); 
+			m_vkHighLightslots.push_back(&m_kLeftHand); 
+			break;
+		case MLITEM_RING:
+			m_vkHighLightslots.push_back(&m_kRing1); 
+			m_vkHighLightslots.push_back(&m_kRing2); 
+			m_vkHighLightslots.push_back(&m_kRing3); 
+			m_vkHighLightslots.push_back(&m_kRing4);
+			break;
+		case MLITEM_NECKLACE: m_vkHighLightslots.push_back(&m_kAmulett); break;
+		case MLITEM_BRACERS: m_vkHighLightslots.push_back(&m_kBracers); break;
+		case MLITEM_GLOVES: m_vkHighLightslots.push_back(&m_kGloves); break;
+		case MLITEM_BELT: m_vkHighLightslots.push_back(&m_kBelt); break;
+		case MLITEM_FEETS: m_vkHighLightslots.push_back(&m_kBoots); break;
+		case MLITEM_CAPE:  m_vkHighLightslots.push_back(&m_kCloak); break;
+	}	
+
+	for(int i=0; i<m_vkHighLightslots.size(); i++)
+	{
+		m_vkHighLightslots[i]->m_pkWnd->Show();
+		m_vkHighLightslots[i]->m_pkWnd->GetSkin()->m_unBorderSize = 4;  
 	}
 }
 
@@ -303,6 +322,7 @@ int EquipmentDlg::GetSlotContainerID(int mx, int my)
 
 	return -1;	
 }
+
 
 void EquipmentDlg::GetEquipmentSlotFromContainerType(int iContainerType, EquipmentDlg::EQUIPMENT_SLOT*& ppSlot)
 {
