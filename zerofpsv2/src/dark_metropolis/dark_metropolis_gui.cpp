@@ -313,7 +313,8 @@ void DarkMetropolis::GUI_OnClick(int x, int y, bool bMouseDown,
 		}
 	}
 
-	if(strMainWnd == "MapWnd")
+	// Klickat på kartan?
+	if(strMainWnd == "MapWnd" && bLeftButton == false)
 	{
 		if(m_kSelectedEntitys.empty() == false)
 		{
