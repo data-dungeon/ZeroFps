@@ -32,6 +32,10 @@ function Init()
 	AddDeathSound(SIGetSelfID(), "data/sound/mechanic/death/death1.wav")
 	AddDeathSound(SIGetSelfID(), "data/sound/mechanic/death/death2.wav")
 
+	--set life
+	SetCharStats(SIGetSelfID(), 0, 20);
+	SetCharStats(SIGetSelfID(), 1, 20);
+
 	PlayAnim(SIGetSelfID(), "idle");
 	SetTeam (SIGetSelfID(), 1);
 end

@@ -24,7 +24,7 @@ end
 
 function Init()
 	SetState(SIGetSelfID(), 0);
-	SetMoveSpeed (SIGetSelfID(), 2.5);
+	SetMoveSpeed (SIGetSelfID(), 3.3);
 	AddDefenciveActionQuot(SIGetSelfID(), "data/sound/mechanic/defensive/daq_ahh_that_fuckin_hurt.wav")
 	AddDefenciveActionQuot(SIGetSelfID(), "data/sound/mechanic/defensive/daq_careful.wav")
 	AddDefenciveActionQuot(SIGetSelfID(), "data/sound/mechanic/defensive/daq_damn.wav")

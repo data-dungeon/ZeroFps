@@ -61,6 +61,7 @@ function HeartBeat()
 
 	if GetEntityVar(SelfID, "Waypoint") == 4 then
 		AddToVar("MobSuccess", 1);
+		RunScript("data/script/objects/dm/t_explosion.lua",SIGetSelfID());
 		Delete (SelfID);	
 	else
 		MakePathFind(SelfID, GetNextWaypoint());

@@ -19,8 +19,8 @@ end
 function Init()
 	SetGunSound (SIGetSelfID(), "data/sound/hit.wav");
 	SetGunFireRate (SIGetSelfID(), 1);
-	SetGunDamage (SIGetSelfID(), 10);
-	SetGunRange (SIGetSelfID(), 2);
+	SetGunDamage (SIGetSelfID(), 20);
+	SetGunRange (SIGetSelfID(), 2.5);
 	SetGunRandom (SIGetSelfID(), 1);
 	SetGunMaxAmmo (SIGetSelfID(), 9999999);
 	SetGunAmmo (SIGetSelfID(), 9999999);

@@ -44,6 +44,10 @@ function Init()
 	AddDeathSound(SIGetSelfID(), "data/sound/citizen_woman/death/nooo4.wav");
 	AddDeathSound(SIGetSelfID(), "data/sound/citizen_woman/death/nooo5.wav");
 
+	-- set life
+	SetCharStats(SIGetSelfID(), 0, 20);
+	SetCharStats(SIGetSelfID(), 1, 20);
+
 	PlayAnim(SIGetSelfID(), "idle");
 end
 

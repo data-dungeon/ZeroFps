@@ -40,6 +40,10 @@ function Init()
 
 	AddItem(SIGetSelfID(), "data/script/objects/dm/t_shotgun.lua", 1);
 	PlayAnim(SIGetSelfID(), "idle");
+
+	-- set life
+	SetCharStats(SIGetSelfID(), 0, 160);
+	SetCharStats(SIGetSelfID(), 1, 160);
 end
 
 
