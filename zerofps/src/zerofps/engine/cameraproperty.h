@@ -16,6 +16,8 @@ class ENGINE_API CameraProperty:public Property{
 		{
 			CAM_TYPEFIRSTPERSON,
 			CAM_TYPETOPDOWN,
+			CAM_TYPEISO,
+			CAM_TYPESIDE,
 			CAM_TYPEMAX,
 		};
 

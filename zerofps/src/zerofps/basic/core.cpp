@@ -292,7 +292,7 @@ void Mad_Core::SetupBonePose()
 		}
 
 	// Controllers
-	/*
+	
 	Vector3	kBindAngle;
 	Vector3 kBindPos;
 
@@ -315,7 +315,7 @@ void Mad_Core::SetupBonePose()
 		g_Madq[m_kControllers[i].m_iJointID].AngleQuaternion(kBindAngle);
 		g_Madpos[m_kControllers[i].m_iJointID] = kBindPos;
 		}
-	*/
+	
 
 	for (i = 0; i < m_kSkelleton.size(); i++) {
 		g_MadkBoneMatrix.Identity();

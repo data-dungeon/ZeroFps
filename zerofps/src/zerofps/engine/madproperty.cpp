@@ -14,8 +14,14 @@ MadProperty::MadProperty()
 	m_pkZeroFps = static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
 }
 
-MadProperty::MadProperty(Mad_Core* pkModell) {
+MadProperty::MadProperty(Mad_Core* pkModell) 
+{
+	bNetwork = true;
 	strcpy(m_acName,"MadProperty");
+	m_iType=PROPERTY_TYPE_RENDER;
+	m_iSide=PROPERTY_SIDE_CLIENT;
+	m_pkFrustum=static_cast<Frustum*>(g_ZFObjSys.GetObjectPtr("Frustum"));
+	m_pkZeroFps = static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
 
 	pkCore = pkModell;
 	
@@ -26,10 +32,28 @@ MadProperty::MadProperty(Mad_Core* pkModell) {
 }
 
 
+float fTestValue;
+
 void MadProperty::Update() 
 {
-//	Render* spya = static_cast<Render*>(g_ZFObjSys.GetObjectPtr("Render"));
+	Input* pkInput = static_cast<Input*>(g_ZFObjSys.GetObjectPtr("Input")); 
+	
+	if(strcmp(m_kMadFile.c_str(), "../data/mad/dropship.mad") == 0) {
+		if(pkInput->Pressed(KEY_F7))
+			pkCore->CreateController("lucka", "gunBarrelJoint2",CONTROLL_ANGLE_Z,-90,0);
+		if(pkInput->Pressed(KEY_F8))
+			fTestValue -= 0.1;
+		if(pkInput->Pressed(KEY_F9))
+			fTestValue += 0.1;
 
+		if(fTestValue < 0)
+			fTestValue = 0.0;
+		if(fTestValue > 1.0)
+			fTestValue = 1.0;
+	
+		pkCore->SetControll("lucka",fTestValue);
+		}
+	
 	if(!pkCore)
 		return;
 
@@ -46,9 +70,9 @@ void MadProperty::Update()
 //		glScalef(m_fScale,m_fScale,m_fScale);
 		glScalef(0.01,0.01,0.01);
 		glRotatef(m_pkObject->GetRot().z ,0,0,1);		
-		glRotatef(m_pkObject->GetRot().x ,1,0,0);
-		glRotatef(m_pkObject->GetRot().y ,0,1,0);	
-//		spya->DrawBoundSphere(sphere.w *100, m_pkObject->GetPos());
+		//glRotatef(m_pkObject->GetRot().x ,1,0,0);
+		// FH's Föreningens årsmöte.
+			glRotatef(- (m_pkObject->GetRot().y - 90) ,0,1,0);
 		Draw_All();
 	glPopMatrix();
 

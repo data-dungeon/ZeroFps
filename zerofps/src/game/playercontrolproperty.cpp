@@ -3,9 +3,9 @@
 Vector3 GetYawVector(float fAngleDeg)
 {
 	Vector3 kYaw;
-	kYaw.x = sin(DegToRad(fAngleDeg));	
+	kYaw.x = cos(DegToRad(fAngleDeg));	
 	kYaw.y = 0;
-	kYaw.z = cos(DegToRad(fAngleDeg));	
+	kYaw.z = sin(DegToRad(fAngleDeg));	
 	return kYaw;
 }
 
@@ -81,26 +81,30 @@ void PlayerControlProperty::Update() {
 	if(m_pkInput->Action(m_iActionStrafeRight)){
 		walking=true;		
 		
-		vel.x+=cos((m_pkObject->GetRot().y)/degtorad)*speed;
-		vel.z+=sin((m_pkObject->GetRot().y)/degtorad)*speed;
+		//vel.x+=cos((m_pkObject->GetRot().y+90)/degtorad)*speed;
+		//vel.z+=sin((m_pkObject->GetRot().y+90)/degtorad)*speed;
+		vel += GetYawVector(m_pkObject->GetRot().y + 90) * speed;
 	}
 	if(m_pkInput->Action(m_iActionStrafeLeft)){
 		walking=true;		
 		
-		vel.x+=cos((m_pkObject->GetRot().y+180)/degtorad)*speed;
-		vel.z+=sin((m_pkObject->GetRot().y+180)/degtorad)*speed;		
+		//vel.x+=cos((m_pkObject->GetRot().y-90)/degtorad)*speed;
+		//vel.z+=sin((m_pkObject->GetRot().y-90)/degtorad)*speed;		
+		vel += GetYawVector(m_pkObject->GetRot().y - 90) * speed;
 	}
 	if(m_pkInput->Action(m_iActionForward)){
 		walking=true;
 		
-		vel.x+=cos((m_pkObject->GetRot().y-90)/degtorad)*speed;
-		vel.z+=sin((m_pkObject->GetRot().y-90)/degtorad)*speed;		
+		//vel.x+=cos((m_pkObject->GetRot().y)/degtorad)*speed;
+		//vel.z+=sin((m_pkObject->GetRot().y)/degtorad)*speed;	
+		vel += GetYawVector(m_pkObject->GetRot().y) * speed;
 	}
 	if(m_pkInput->Action(m_iActionBack)){
 		walking=true;
 		
-		vel.x+=cos((m_pkObject->GetRot().y-270)/degtorad)*speed;
-		vel.z+=sin((m_pkObject->GetRot().y-270)/degtorad)*speed;		
+		//vel.x+=cos((m_pkObject->GetRot().y+180)/degtorad)*speed;
+		//vel.z+=sin((m_pkObject->GetRot().y+180)/degtorad)*speed;		
+		vel += GetYawVector(m_pkObject->GetRot().y + 180) * speed;
 	}
 	if(m_pkInput->Pressed(MOUSERIGHT) ){
 		if(onGround){
@@ -137,9 +141,9 @@ void PlayerControlProperty::Update() {
 	if(m_pkObject->GetRot().x<-90)
 		m_pkObject->GetRot().x=-90;
 	
-	Vector3 kShowDirYaw = GetYawVector(m_pkObject->GetRot().y - 180);
+	Vector3 kShowDirYaw = GetYawVector(m_pkObject->GetRot().y);
 	Render *pkRender = static_cast<Render*>(g_ZFObjSys.GetObjectPtr("Render"));
-	pkRender->Line(m_pkObject->GetPos() + Vector3(0,0.7,0), (m_pkObject->GetPos() + kShowDirYaw * 5) + Vector3(0,0.7,0));
+	pkRender->Line(m_pkObject->GetPos(), (m_pkObject->GetPos() + kShowDirYaw * 2));
 	
 	//update sound possition
 	walksound->m_kPos=m_pkObject->GetPos();

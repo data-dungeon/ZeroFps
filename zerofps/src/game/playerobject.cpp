@@ -11,13 +11,13 @@ PlayerObject::PlayerObject(HeightMap *pkMap,Input *pkInput)
 	
 	AddProperty("PhysicProperty");
 	PhysicProperty* pp=static_cast<PhysicProperty*>(GetProperty("PhysicProperty"));
-	static_cast<CSSphere*>(pp->GetColSphere())->m_fRadius=2;
+//	static_cast<CSSphere*>(pp->GetColSphere())->m_fRadius=1;
 
-/*
+
 	AddProperty("MadProperty");
 	MadProperty* madp = dynamic_cast<MadProperty*>(GetProperty("MadProperty"));
 	madp->SetBasePtr(m_pkFps->GetMADPtr("../data/mad/player.mad"));
-*/
+
 /*	
 	AddProperty("LightProperty");
 	LightProperty* pkJumpLight = dynamic_cast<LightProperty*>(GetProperty("LightProperty"));
