@@ -9,7 +9,6 @@
 #include "../../../zerofpsv2/engine_systems/mad/mad_modell.h"
 #include "../../../zerofpsv2/engine_systems/propertys/p_camera.h"
 #include "../../../zerofpsv2/gui/zgui.h"
-#include "../../../mcommon/p_enviroment.h"
 
 /**	\brief	Da MadView
 		\ingroup MadView
@@ -18,6 +17,7 @@ class MadView :public Application , public ZGuiApp
 {
 	private:
 
+
 		//console funktions
 		enum FuncId_e
 		{
@@ -25,7 +25,7 @@ class MadView :public Application , public ZGuiApp
 			FID_OBJECTROTATIONMODE,
 			FID_OBJECTROTATIONSPEED,
 			FID_MAD_DRAW_MODE,
-			FID_CHANGE_BKCOLOR_INFOWND,
+			FID_TOGGLE_BKCOLOR,
 		};
 
 		enum ObjectRotationMode_e
@@ -39,7 +39,6 @@ class MadView :public Application , public ZGuiApp
 
 		int m_iObjRotMode;
 		float m_fObjRotDelay;
-				
 		float m_fRotTimer;
 		float m_fObjRotX, m_fObjRotY, m_fObjRotZ;
 		int m_iCurrRotAngle;
@@ -99,24 +98,13 @@ class MadView :public Application , public ZGuiApp
 		
 	 	void OnInit();
 		void OnIdle();
-		void OnHud(){};
-		void OnSystem(){};
-			
+
 		void Init();
 		void Input();
-		void RegisterPropertys();
-		void RegisterResources();		
 
 		bool StartUp()		{ return true; }
 		bool ShutDown()	{ return true; }
 		bool IsValid()		{ return true; }
-
-		// Network (unused)
-		void OnServerStart(){};
-		void OnClientStart(){};
-		bool OnPreConnect(IPaddress, char*, char*, bool bIsEditor, string& strWhy){return true;}
-		void OnServerClientJoin(ZFClient*,int, char*, char*, bool bIsEditor){};
-		void OnServerClientPart(ZFClient* pkClient,int iConID){};
 };
 
 #endif // _MADVIEW_H_

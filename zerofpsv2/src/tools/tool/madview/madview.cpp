@@ -8,7 +8,6 @@
 #include "../../../zerofpsv2/engine_systems/propertys/p_mad.h"
 #include "../../../zerofpsv2/engine_systems/propertys/p_mad.h"
 #include "../../../zerofpsv2/engine_systems/script_interfaces/si_gui.h"
-#include "../../../mcommon/p_enviroment.h"
 
 MadView g_kZeroEd("MadView", 0, 0, 0);
 
@@ -57,7 +56,7 @@ MadView::MadView(char* aName,int iWidth,int iHeight,int iDepth)
 	Register_Cmd("object_rotation_mode", FID_OBJECTROTATIONMODE);	
 	Register_Cmd("object_rotation_speed", FID_OBJECTROTATIONSPEED);	
 	Register_Cmd("mad_draw_mode", FID_MAD_DRAW_MODE);	
-	Register_Cmd("change_bkcolor_infownd", FID_CHANGE_BKCOLOR_INFOWND);	
+	Register_Cmd("change_bkcolor_infownd", FID_TOGGLE_BKCOLOR);	
 
 	m_strMadFile = "data/mad/cube.mad";
 	RegisterVariable("r_madfile", &m_strMadFile, CSYS_STRING);
@@ -86,9 +85,6 @@ void MadView::OnInit()
 
 void MadView::Init()
 {		
-	RegisterPropertys();
-	RegisterResources();
-
 	GuiAppLua::Init(&g_kZeroEd, m_pkScript);
 
 	InitGui(m_pkScript, "defguifont", "data/script/gui/defskins.lua", 
@@ -103,28 +99,11 @@ void MadView::Init()
 	CreateCamera();
 	CreateViewObject();
 	
-	/*
-	P_Enviroment* pe = (P_Enviroment*)m_pkCameraObject->AddProperty("P_Enviroment");
-	pe->SetEnable(true);		
-	pe->SetEnviroment("data/enviroments/sun.env");
-	*/
-
 	m_fDelayTime = m_pkZeroFps->GetEngineTime();
 	
-
 	ToogleLight(true);
 
 	m_fRotTimer = (float) SDL_GetTicks() / 1000.0f;
-}
-
-void MadView::RegisterResources()
-{
-	m_pkResourceDB->RegisterResource( string(".env"), Create__EnvSetting	);
-}
-
-void MadView::RegisterPropertys()
-{
-	m_pkPropertyFactory->Register("P_Enviroment", Create_P_Enviroment);
 }
 
 void MadView::OnIdle()
@@ -255,7 +234,7 @@ void MadView::RunCommand(int cmdid, const CmdArgument* kCommand)
 				m_pkZeroFps->m_iMadDraw |= mode;
 			break;
 
-		case FID_CHANGE_BKCOLOR_INFOWND:
+		case FID_TOGGLE_BKCOLOR:
 			
 			static bool toogle = true;
 

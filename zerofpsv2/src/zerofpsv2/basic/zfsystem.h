@@ -14,6 +14,8 @@ class ZFSubSystem;
 class BasicConsole;
 class CmdSystem;
 
+#pragma warning(disable: 4267) // disable warning C4267: possible loss of data, okay to ignore
+
 /// A Log File.
 class ZFLogFile
 {
