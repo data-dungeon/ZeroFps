@@ -3,6 +3,7 @@ class Property;
 class ModelProperty;
 class CameraProperty;
 class CollisionProperty;
+class HeightMapRenderProperty;
 class CollisionObject;
 class CollisionSphere;
 class CollisionPoint;
@@ -20,4 +21,4 @@ class HeightMapObject;
 #include "collisionpoint.h"
 #include "collisionheightmap.h"
 #include "heightmapobject.h"
-
+#include "heightmaprenderproperty.h"

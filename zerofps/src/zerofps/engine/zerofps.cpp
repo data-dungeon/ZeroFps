@@ -9,6 +9,7 @@ ZeroFps::ZeroFps(void)
 
 	m_pkFile=new FileIo;
 	m_pkTexMan=new TextureManager(m_pkFile);
+	m_pkFrustum = new Frustum;	
 	m_pkRender=new Render();
 	m_pkConsole=new Console();	
 	m_pkCmd=new CmdSystem;
@@ -20,6 +21,7 @@ ZeroFps::ZeroFps(void)
 	m_pkSBM=new SoundBufferManager(m_pkFile);	
 	m_pkOpenAlSystem= new OpenAlSystem();
 	m_pkNetWork = new NetWork;
+
 
 	m_iFullScreen=0;
 	m_fFrameTime=0;
@@ -333,7 +335,8 @@ void ZeroFps::SetCamera(Camera* pkCamera)
 	}
 	
 	//get the frustrum for frustum culling
-	m_pkRender->GetFrustum();				
+//	m_pkRender->GetFrustum();				
+	m_pkFrustum->GetFrustum();				
 	//Lighting needs camera position for light calculation
 	m_pkLight->SetCamera(m_pkCamera->GetPos());				
 	//update all lights

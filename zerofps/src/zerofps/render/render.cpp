@@ -4,6 +4,7 @@ Render::Render()
  :	ZFObject("Render") {
  
  	m_pkTexMan = static_cast<TextureManager*>(g_ZFObjSys.GetObjectPtr("TextureManager"));
+ 	m_pkFrustum = static_cast<Frustum*>(g_ZFObjSys.GetObjectPtr("Frustum"));
 //	m_pkTexMan=pkTexMan;
 	
 	m_iSlicesize=32;		//grid size of lod tiles
@@ -188,7 +189,7 @@ void Render::DrawConsole(char* m_aCommand,vector<char*>* m_kText) {
 	}
 }
 
-
+/*
 void Render::GetFrustum() {
    Matrix4   proj;
    Matrix4   modl;
@@ -228,7 +229,7 @@ void Render::GetFrustum() {
         clip[14] = modl[12] * proj[ 2] + modl[13] * proj[ 6] + modl[14] * proj[10] + modl[15] * proj[14];
         clip[15] = modl[12] * proj[ 3] + modl[13] * proj[ 7] + modl[14] * proj[11] + modl[15] * proj[15];
 
-*/
+/
 	
 
 	
@@ -340,6 +341,7 @@ bool Render::CubeInFrustum( float x, float y, float z, float sizex,float sizey,f
 	}
 	return true;
 }
+*/
 
 void Render::DrawBillboard(Matrix4 kModelMatrix,Vector3 kPos,int iSize,int iTexture){
 	Vector3 x;

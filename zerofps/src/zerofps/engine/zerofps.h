@@ -83,6 +83,7 @@ class ENGINE_API ZeroFps : public ZFObject {
 		SoundBufferManager* m_pkSBM;		
 		OpenAlSystem* m_pkOpenAlSystem;
 		NetWork* m_pkNetWork;
+		Frustum* m_pkFrustum;
 
 
 		vector<Core>		akCoreModells;

@@ -5,7 +5,7 @@ AudioManager::AudioManager(ZeroFps* pkZeroFps)
 	m_pkFile = pkZeroFps->m_pkFile;	
 	m_pkZeroFps =pkZeroFps;
 	m_pkMusic= new Music(m_pkFile);
-	InitAudio();
+//	InitAudio();
 
 	g_ZFObjSys.Register_Cmd("music",FID_MUSICSET,this);
 }

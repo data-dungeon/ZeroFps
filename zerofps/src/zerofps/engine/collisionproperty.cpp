@@ -48,7 +48,6 @@ void CollisionProperty::Init(){
 
 void CollisionProperty::Update() {
 
-
 }
 
 

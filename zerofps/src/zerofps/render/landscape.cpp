@@ -228,9 +228,9 @@ void Render::DrawHMlod(HeightMap* kmap,Vector3 CamPos,int iFps){
 	
 	for(int sz=0;sz<slices;sz++) {
 		for(int sx=0;sx<slices;sx++) {
-			if(!CubeInFrustum(kmap->m_kPosition.x+sx*m_iSlicesize+m_iSlicesize/2,
-									kmap->m_kPosition.y+34,
-									kmap->m_kPosition.z+sz*m_iSlicesize+m_iSlicesize/2,m_iSlicesize/2,54,m_iSlicesize/2))
+			if(!m_pkFrustum->CubeInFrustum(kmap->m_kPosition.x+sx*m_iSlicesize+m_iSlicesize/2,
+													kmap->m_kPosition.y+34,
+													kmap->m_kPosition.z+sz*m_iSlicesize+m_iSlicesize/2,m_iSlicesize/2,54,m_iSlicesize/2))
 				continue;
 		
 			//set lop steps depending on the distance to the center of the lod tile
@@ -562,7 +562,7 @@ void Render::DrawGrassPatch(Vector3 kCamPos,Vector3 kPos,Vector3 kScale,int fW,i
 
 //	glPushAttrib();
 
-	if(!CubeInFrustum(kPos.x,kMap->m_kPosition.y+42,kPos.z,fW/2,42,fW/2))
+	if(!m_pkFrustum->CubeInFrustum(kPos.x,kMap->m_kPosition.y+42,kPos.z,fW/2,42,fW/2))
 		return;
 		
 	float fDistance=(kCamPos-Vector3(kPos.x,kCamPos.y,kPos.z)).Length();

@@ -1,13 +1,13 @@
 class Light;
 class Render;
 class TextureManager;
-
+class Frustum;
 
 #include "light.h"
 #include "render.h"
 #include "texturemanager.h"
 #include "mad.h"
-
+#include "frustum.h"
 
 
 

@@ -85,7 +85,7 @@ void Test::OnInit(void) {
 	Vector3 *solpos=new Vector3(1000,1000,1000);
 		sol->kRot=solrot;
 		sol->kPos=solpos;		
-		sol->kDiffuse=Vector4(1,1,1,1);
+		sol->kDiffuse=Vector4(1.8,1.8,1.8,1);
 		sol->kAmbient=Vector4(0.01,0.01,0.01,0.01);
 //		sol->kAmbient=Vector4(0,0,0,0);		
 		sol->iType=POINT_LIGHT;			
@@ -133,6 +133,7 @@ void Test::OnInit(void) {
 	
 	//add a collisionproperty for our heightmap
 	HeightMapObject *hm=new HeightMapObject(test);
+	pkObjectMan->Add(hm);	
 	pkCollisionMan->Add(hm);
 
 
@@ -189,7 +190,7 @@ void Test::OnIdle(void) {
 		pkFps->GetCam()->ClearViewPort();	
 
 		pkRender->DrawSkyBox(pkFps->GetCam()->GetPos());
-		pkRender->DrawHMlod(test,pkFps->GetCam()->GetPos(),pkFps->m_iFps);			
+//		pkRender->DrawHMlod(test,pkFps->GetCam()->GetPos(),pkFps->m_iFps);			
 
 		glEnable(GL_ALPHA_TEST);
 		glAlphaFunc(GL_GREATER,0.3);
@@ -199,19 +200,6 @@ void Test::OnIdle(void) {
 	
 
 	
-	pkFps->SetCamera(cam2);		
-		pkFps->GetCam()->ClearViewPort();	
-	
-		pkRender->DrawSkyBox(pkFps->GetCam()->GetPos());
-		pkRender->DrawHMlod(test,pkFps->GetCam()->GetPos(),pkFps->m_iFps);			
-
-		glEnable(GL_ALPHA_TEST);
-		glAlphaFunc(GL_GREATER,0.3);
-			pkRender->DrawBillboard(pkFps->GetCam()->GetModelMatrix(),Vector3(140,50,450),20,pkTexMan->Load("file:../data/textures/star.tga",T_NOMIPMAPPING));	
-	
-		pkRender->DrawWater(pkFps->GetCam()->GetPos(),Vector3(512,0,512),Vector3(0,0,0),1200,50);	
-	
-	pkFps->SetCamera(cam1);			
 	
 	
 	input();

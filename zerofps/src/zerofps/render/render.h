@@ -9,6 +9,7 @@
 #include <iostream>
 #include <vector>
 #include <cmath>
+#include "frustum.h"
 #include "render_x.h"
 //#include "../engine/engine.pkg"
 #include "texturemanager.h"
@@ -18,13 +19,14 @@ using namespace std;
 
 class RENDER_API Render : public ZFObject {
 	private:
+		Frustum* m_pkFrustum;
 		TextureManager* m_pkTexMan;
 		char aCurentFont[256];
 		bool m_FogEnable;		
 		int m_iSlicesize;	  //height meens greater detail att longer range		
 		int m_iLodUpdate;		
 		Vector3 m_kOldCamPos;		
-		Vector4 m_akFrustum[6];
+//		Vector4 m_akFrustum[6];
 
 		void RunCommand(int cmdid, const CmdArgument* kCommand) { }
 
@@ -36,11 +38,12 @@ class RENDER_API Render : public ZFObject {
 	
 		Render();
 		
+/*		
 		void GetFrustum();
 		bool PointInFrustum(Vector3 kPoint);
 		bool SphereInFrustum(Vector4 kPoint);
 		bool CubeInFrustum( float x, float y, float z, float sizex,float sizey,float sizez );
-		
+*/		
 		void Quad(Vector3 kPos,Vector3 kHead,Vector3 kScale,int iTexture);
 		void PrintChar(char cChar);
 		void Print(Vector3 kPos,Vector3 kHead,Vector3 kScale,char* aText);
