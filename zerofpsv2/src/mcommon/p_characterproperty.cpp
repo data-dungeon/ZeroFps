@@ -2,8 +2,10 @@
 #include "p_charactercontrol.h"
 #include "p_container.h"
 #include "p_item.h"
+#include "p_buff.h"
 
 #include "../zerofpsv2/engine_systems/script_interfaces/si_objectmanager.h" 
+
 
 P_CharacterProperty::P_CharacterProperty()
 {
@@ -182,8 +184,7 @@ void P_CharacterProperty::SetupContainers()
 				pkCon->SetSize(6,9);
 				pkCon->SetContainerType(eInventory);
 				pkCon->SetOwnerID(GetEntity()->GetEntityID());
-				pkCon->SetStaticOwner(true);
-			//	pkCon->SetJoint("hand_left");
+				pkCon->SetStaticOwner(true);			
 				
 		//body	
 		pkContainer = m_pkEntityMan->CreateEntity();
@@ -196,6 +197,7 @@ void P_CharacterProperty::SetupContainers()
 				pkCon->SetStaticOwner(true);
 				pkCon->SetMaxItems(1);
 				pkCon->AddItemType(MLITEM_BODY);
+				pkCon->SetEqip(true);
 				
 		//head
 		pkContainer = m_pkEntityMan->CreateEntity();
@@ -208,6 +210,7 @@ void P_CharacterProperty::SetupContainers()
 				pkCon->SetStaticOwner(true);
 				pkCon->SetMaxItems(1);
 				pkCon->AddItemType(MLITEM_HEAD);
+				pkCon->SetEqip(true);
 				
 		//left hand
 		pkContainer = m_pkEntityMan->CreateEntity();
@@ -221,6 +224,7 @@ void P_CharacterProperty::SetupContainers()
 				pkCon->SetMaxItems(1);
 				pkCon->AddItemType(MLITEM_HAND);
 				pkCon->SetJoint("hand_left");
+				pkCon->SetEqip(true);
 				
 		//right hand
 		pkContainer = m_pkEntityMan->CreateEntity();
@@ -234,6 +238,7 @@ void P_CharacterProperty::SetupContainers()
 				pkCon->SetMaxItems(1);
 				pkCon->AddItemType(MLITEM_HAND);
 				pkCon->SetJoint("hand_right");
+				pkCon->SetEqip(true);
 				
 		//eGloves
 		pkContainer = m_pkEntityMan->CreateEntity();
@@ -246,6 +251,7 @@ void P_CharacterProperty::SetupContainers()
 				pkCon->SetStaticOwner(true);
 				pkCon->SetMaxItems(1);
 				pkCon->AddItemType(MLITEM_GLOVES);
+				pkCon->SetEqip(true);
 				
 		//eCape
 		pkContainer = m_pkEntityMan->CreateEntity();
@@ -258,6 +264,7 @@ void P_CharacterProperty::SetupContainers()
 				pkCon->SetStaticOwner(true);
 				pkCon->SetMaxItems(1);
 				pkCon->AddItemType(MLITEM_CAPE);																					
+				pkCon->SetEqip(true);
 		
 		//eNecklace
 		pkContainer = m_pkEntityMan->CreateEntity();
@@ -270,6 +277,7 @@ void P_CharacterProperty::SetupContainers()
 				pkCon->SetStaticOwner(true);
 				pkCon->SetMaxItems(1);
 				pkCon->AddItemType(MLITEM_NECKLACE);																					
+				pkCon->SetEqip(true);
 		
 		//eBracers
 		pkContainer = m_pkEntityMan->CreateEntity();
@@ -282,6 +290,7 @@ void P_CharacterProperty::SetupContainers()
 				pkCon->SetStaticOwner(true);
 				pkCon->SetMaxItems(1);
 				pkCon->AddItemType(MLITEM_BRACERS);					
+				pkCon->SetEqip(true);
 
 		//eBelt
 		pkContainer = m_pkEntityMan->CreateEntity();
@@ -294,6 +303,7 @@ void P_CharacterProperty::SetupContainers()
 				pkCon->SetStaticOwner(true);
 				pkCon->SetMaxItems(1);
 				pkCon->AddItemType(MLITEM_BELT);					
+				pkCon->SetEqip(true);
 								
 		//eFeets
 		pkContainer = m_pkEntityMan->CreateEntity();
@@ -306,6 +316,7 @@ void P_CharacterProperty::SetupContainers()
 				pkCon->SetStaticOwner(true);
 				pkCon->SetMaxItems(1);
 				pkCon->AddItemType(MLITEM_FEETS);									
+				pkCon->SetEqip(true);
 				
 		//eRing1
 		pkContainer = m_pkEntityMan->CreateEntity();
@@ -318,6 +329,7 @@ void P_CharacterProperty::SetupContainers()
 				pkCon->SetStaticOwner(true);
 				pkCon->SetMaxItems(1);
 				pkCon->AddItemType(MLITEM_RING);					
+				pkCon->SetEqip(true);
 
 		//eRing2
 		pkContainer = m_pkEntityMan->CreateEntity();
@@ -330,6 +342,7 @@ void P_CharacterProperty::SetupContainers()
 				pkCon->SetStaticOwner(true);
 				pkCon->SetMaxItems(1);
 				pkCon->AddItemType(MLITEM_RING);	
+				pkCon->SetEqip(true);
 				
 		//eRing3
 		pkContainer = m_pkEntityMan->CreateEntity();
@@ -342,6 +355,7 @@ void P_CharacterProperty::SetupContainers()
 				pkCon->SetStaticOwner(true);
 				pkCon->SetMaxItems(1);
 				pkCon->AddItemType(MLITEM_RING);		
+				pkCon->SetEqip(true);
 
 		//eRing4
 		pkContainer = m_pkEntityMan->CreateEntity();
@@ -354,6 +368,7 @@ void P_CharacterProperty::SetupContainers()
 				pkCon->SetStaticOwner(true);
 				pkCon->SetMaxItems(1);
 				pkCon->AddItemType(MLITEM_RING);	
+				pkCon->SetEqip(true);
 				
 																															
 		//cout<<"done"<<endl;
@@ -503,6 +518,29 @@ void P_CharacterProperty::PlayCharacterMovementSounds()
 	}
 }
 
+
+P_Buff* P_CharacterProperty::AddBuff(const string& strBuffName)
+{
+	const string strBuffDir = "data/script/objects/buffs/";
+
+	if(Entity* pkEnt = m_pkEntityManager->CreateEntityFromScript((strBuffDir+strBuffName).c_str()))	
+	{	
+		pkEnt->SetParent(GetEntity());
+		
+		cout<<"added buff "<<strBuffName<<endl;
+		return (P_Buff*)pkEnt->GetProperty("P_Buff");
+	}
+		
+		
+	cout<<"WARNING: could not add buff "<<strBuffName<<endl;
+	return NULL;
+}
+
+void P_CharacterProperty::RemoveBuff(P_Buff* pkBuff)
+{
+	if(pkBuff->GetCharacter() == this)
+		m_pkEntityManager->Delete(pkBuff->GetEntity());
+}
 
 
 void P_CharacterProperty::Save(ZFIoInterface* pkPackage)

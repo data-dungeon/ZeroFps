@@ -14,6 +14,7 @@
 #include "p_enviroment.h"
 #include "p_charactercontrol.h"
 #include "p_characterproperty.h"
+#include "p_buff.h"
 #include "p_fogplane.h"
 #include "p_container.h"
 /*
@@ -33,6 +34,7 @@ void MCommon_RegisterPropertys(ZeroFps* pkZeroFps, PropertyFactory*	pkPropertyFa
 	pkPropertyFactory->Register("P_AI",						Create_P_AI);
 	//pkPropertyFactory->Register("P_ArcadeCharacter",	Create_P_ArcadeCharacter);
 	//pkPropertyFactory->Register("P_Car",					Create_P_Car);
+	Register_P_Buff(pkZeroFps);	
 	Register_P_CharacterControl(pkZeroFps);	
 	Register_P_CharacterProperty(pkZeroFps);
 	pkPropertyFactory->Register("P_CharStats",			Create_P_CharStats);

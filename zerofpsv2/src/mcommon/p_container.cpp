@@ -19,7 +19,7 @@ P_Container::P_Container()
 	m_iSide=PROPERTY_SIDE_SERVER;
 
 	m_bNetwork = 	false;
-	m_iVersion = 	3;
+	m_iVersion = 	4;
 
 	m_bFirstUpdate = true;
 	
@@ -28,6 +28,7 @@ P_Container::P_Container()
 	m_bStaticOwner			= false;
 	m_iMaxItems 			= 0;
 	m_iContainerType		= eNormal;
+	m_bEquip					= false;
 	m_kItemTypes.clear();
 	
 	SetSize(4,4);		
@@ -394,6 +395,10 @@ bool P_Container::AddItemAtPos(P_Item* pkItem,int iX,int iY,int iCount)
 		
 	//setup item ----------------------------------
 	
+	//remove old  stuff
+	pkItem->UnEquip();
+	
+	
 	//set item's owned by setting
 	pkItem->m_iInContainerID = GetEntity()->GetEntityID();	
 	
@@ -401,6 +406,12 @@ bool P_Container::AddItemAtPos(P_Item* pkItem,int iX,int iY,int iCount)
 	pkItemEnt->SetUseZones(false);				
 	pkItemEnt->SetParent(GetEntity());				
 	
+	
+	//shuld items in this container be eqiped
+	if(m_bEquip)
+	{
+		pkItem->Equip(m_iOwnerID);
+	}
 	
 	//shuld item be linked to joint?
 	if(m_strAttachToJoint.empty())
@@ -429,6 +440,7 @@ bool P_Container::AddItemAtPos(P_Item* pkItem,int iX,int iY,int iCount)
 			pkLTJ->SetJoint(m_strAttachToJoint);
 		}					
 	}
+
 	
 	//set container owner setting
 	if(P_Container* pkCon = (P_Container*)pkItemEnt->GetProperty("P_Container"))
@@ -669,6 +681,7 @@ void P_Container::Save(ZFIoInterface* pkPackage)
 	
 	pkPackage->Write(m_iContainerType);
 	pkPackage->Write(m_bStaticOwner);	
+	pkPackage->Write(m_bEquip);	
 	
 	pkPackage->Write_Str(m_strAttachToJoint);	
 	
@@ -683,7 +696,33 @@ void P_Container::Save(ZFIoInterface* pkPackage)
 
 void P_Container::Load(ZFIoInterface* pkPackage,int iVersion)
 {
-	if(iVersion == 3)
+	if(iVersion == 4)
+	{
+		pkPackage->Read(&m_iMaxItems,sizeof(m_iMaxItems),1);	
+		
+		pkPackage->Read(&m_iSizeX,sizeof(m_iSizeX),1);
+		pkPackage->Read(&m_iSizeY,sizeof(m_iSizeY),1);
+	
+		SetSize(m_iSizeX,m_iSizeY);
+	
+		pkPackage->Read(m_iContainerType);
+		pkPackage->Read(m_bStaticOwner);
+		pkPackage->Read(m_bEquip);
+		
+		pkPackage->Read_Str(m_strAttachToJoint);
+	
+		//load types
+		int iTypes;
+		pkPackage->Read(&iTypes,sizeof(iTypes),1);		
+		m_kItemTypes.clear();
+		for(int i = 0 ;i < iTypes;i++)
+		{
+			int iT;
+			pkPackage->Read(&iT,sizeof(iT),1);				
+			m_kItemTypes.push_back(iT);
+		}				
+	}
+	else if(iVersion == 3)
 	{
 		pkPackage->Read(&m_iMaxItems,sizeof(m_iMaxItems),1);	
 		

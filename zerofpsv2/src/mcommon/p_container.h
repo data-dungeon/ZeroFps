@@ -70,6 +70,7 @@ class MCOMMON_API P_Container: public Property
 		string			m_strAttachToJoint;	//want items in container to be attached to any coint on the container owner
 		bool				m_bFirstUpdate;		//first update, hack to load items
 		
+		bool				m_bEquip;
 				
 		bool StackItem(P_Item* pkItem,int iX,int iY,int iCount);		
 		bool SetItem(P_Item* pkItem,int iX,int iY);
@@ -100,6 +101,7 @@ class MCOMMON_API P_Container: public Property
 		void FindMyItems();					//must be called after loading, and after childs has been created
 		
 		//set/get's
+		void SetEqip(bool bEquip)					{m_bEquip = bEquip;};
 		void SetSize(int iX,int iY);
 		char GetSizeX()								{return char(m_iSizeX);};
 		char GetSizeY()								{return char(m_iSizeY);};

@@ -1,5 +1,7 @@
 #include "p_item.h"
-
+#include "../zerofpsv2/engine/entitymanager.h"
+#include "p_characterproperty.h"
+#include "p_buff.h"
 
 P_Item::P_Item()
 {
@@ -8,8 +10,9 @@ P_Item::P_Item()
 	m_iSide=PROPERTY_SIDE_SERVER;
 	
 	m_bNetwork = true;
-	m_iVersion = 3;
+	m_iVersion = 4;
 
+	// ITEM STUFF
 	m_strName = "Unnamed Item";
 	m_strIcon = "default.bmp";
 	m_iSizeX = 1;	
@@ -22,6 +25,12 @@ P_Item::P_Item()
 	m_iInContainerID = -1;
 	m_iInContainerPosX = 0;
 	m_iInContainerPosY = 0;
+	
+	
+	
+	m_strBuffName = "";
+	m_iBuffEntityID = -1;
+	
 }
 
 P_Item::~P_Item()
@@ -34,6 +43,40 @@ void P_Item::Init()
 
 
 }
+
+void P_Item::Equip(int iEntity)
+{
+	if(m_strBuffName.empty())
+		return;
+
+	if(m_iBuffEntityID != -1)
+	{
+		cout<<"item already eqiped"<<endl;
+		return;
+	}
+		
+	if(Entity* pkEnt = m_pkEntityManager->GetEntityByID(iEntity))
+	{
+		if(P_CharacterProperty* pkCP = (P_CharacterProperty*)pkEnt->GetProperty("P_CharacterProperty"))
+		{
+			if(P_Buff* pkBuff = pkCP->AddBuff(m_strBuffName))
+				m_iBuffEntityID = pkBuff->GetEntity()->GetEntityID();
+		}
+	}
+}
+
+void P_Item::UnEquip()
+{
+	if(m_iBuffEntityID == -1)
+	{
+		cout<<"Item not eqiped"<<endl;
+		return;
+	}
+
+	m_pkEntityManager->Delete(m_iBuffEntityID);
+	m_iBuffEntityID = -1;
+}
+
 
 void P_Item::Save(ZFIoInterface* pkPackage)
 {
@@ -50,6 +93,9 @@ void P_Item::Save(ZFIoInterface* pkPackage)
 	pkPackage->Write(m_iInContainerID);
 	pkPackage->Write(m_iInContainerPosX);
 	pkPackage->Write(m_iInContainerPosY);
+	
+	
+	pkPackage->Write_Str(m_strBuffName);
 }
 
 void P_Item::Load(ZFIoInterface* pkPackage,int iVersion)
@@ -85,11 +131,30 @@ void P_Item::Load(ZFIoInterface* pkPackage,int iVersion)
 		pkPackage->Read(m_iInContainerPosY);		
 	}
 	
+	if(iVersion == 4)
+	{
+		pkPackage->Read_Str(m_strName);
+		pkPackage->Read_Str(m_strIcon);
+		
+		pkPackage->Read(m_iSizeX);
+		pkPackage->Read(m_iSizeY);		
+		pkPackage->Read(m_iType);
+		
+		pkPackage->Read(m_iStackSize);
+		pkPackage->Read(m_iStackMax);		
+		
+		pkPackage->Read(m_iInContainerID);		
+		pkPackage->Read(m_iInContainerPosX);
+		pkPackage->Read(m_iInContainerPosY);	
+	
+		pkPackage->Read_Str(m_strBuffName);
+	
+	}
 }
 
 vector<PropertyValues> P_Item::GetPropertyValues()
 {
-	vector<PropertyValues> kReturn(7);
+	vector<PropertyValues> kReturn(8);
 	
 		
 	kReturn[0].kValueName = "name";
@@ -119,6 +184,10 @@ vector<PropertyValues> P_Item::GetPropertyValues()
 	kReturn[6].kValueName = "itemtype";
 	kReturn[6].iValueType = VALUETYPE_INT;
 	kReturn[6].pkValue    = &m_iType;			
+	
+	kReturn[7].kValueName = "buffname";
+	kReturn[7].iValueType = VALUETYPE_STRING;
+	kReturn[7].pkValue    = &m_strBuffName;	
 	
 	return kReturn;
 }

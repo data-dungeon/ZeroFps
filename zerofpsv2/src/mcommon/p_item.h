@@ -38,6 +38,10 @@ public:
 	int			m_iMinDamage;
 	int			m_iMaxDamage;	
 	
+	float			m_fSlashingDamage;
+	float			m_fCrushingDamage;
+	float			m_fPiercingDamage;
+	
 	//armor
 	string		m_strArmorType;
 	int			m_iArmorClass;
@@ -66,6 +70,12 @@ class MCOMMON_API P_Item: public Property
 		int		m_iInContainerPosX;				//last known position in a container this item had
 		int		m_iInContainerPosY;
  		
+		
+		
+		string	m_strBuffName;
+		int		m_iBuffEntityID;
+		
+		
 		vector<PropertyValues> GetPropertyValues();
 			
 	public:
@@ -79,10 +89,15 @@ class MCOMMON_API P_Item: public Property
 		void Save(ZFIoInterface* pkPackage);
 		void Load(ZFIoInterface* pkPackage,int iVersion);
 
-		string 	GetIcon() 			{ return m_strIcon; 				}
-		int 		GetType() 			{ return m_iType;					}
-		string 	GetName() 			{ return m_strName; 				}
-		int		GetInContainerID(){ return m_iInContainerID;	};
+		string 	GetIcon() 				{ return m_strIcon; 				}
+		int 		GetType() 				{ return m_iType;					}
+		string 	GetName() 				{ return m_strName; 				}
+		int		GetInContainerID()	{ return m_iInContainerID;		};
+		
+		
+		void		Equip(int iEntity);
+		void		UnEquip();
+		
 		
 		friend class MLContainer;
 		friend class P_Container;

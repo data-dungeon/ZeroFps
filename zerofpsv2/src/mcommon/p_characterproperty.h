@@ -9,6 +9,8 @@
 
 using namespace std;
 
+class P_Buff;
+
 class MCOMMON_API P_CharacterProperty: public Property
 {
 	private:
@@ -90,6 +92,11 @@ class MCOMMON_API P_CharacterProperty: public Property
 		string GetName()												{	return m_strName;					}
 		string GetOwnedByPlayer()									{	return m_strOwnedByPlayer;		}
 		bool	 GetIsPlayerCharacter()								{	return m_bIsPlayerCharacter;	}
+		
+		
+		P_Buff* AddBuff(const string& strBuffName);
+		void RemoveBuff(P_Buff* pkBuff);
+		
 		
 		//client code
 		void AddChatMsg(const string& strChatMsg);
