@@ -97,7 +97,7 @@ class ENGINE_SYSTEMS_API P_Mad : public Property, public Mad_Modell {
 		int GetNumFaces()							{return Mad_Modell::GetNumFaces();};
 
 		
-		//bool operator<(Property& kOther);
+		bool operator<(Property& kOther);
 };
 
 namespace SI_PMad

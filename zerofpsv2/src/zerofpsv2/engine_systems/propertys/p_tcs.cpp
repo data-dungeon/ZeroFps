@@ -12,8 +12,8 @@ P_Tcs::P_Tcs()
 {
 	strcpy(m_acName,"P_Tcs");
 	
-	//m_iType=PROPERTY_TYPE_NORMAL;
-	m_iType = PROPERTY_TYPE_RENDER | PROPERTY_TYPE_NORMAL;
+	m_iType=PROPERTY_TYPE_NORMAL;
+	//m_iType = PROPERTY_TYPE_RENDER | PROPERTY_TYPE_NORMAL;
 	m_iSide=PROPERTY_SIDE_SERVER | PROPERTY_SIDE_CLIENT;	
 		
 	m_bNetwork		= false;
@@ -117,11 +117,15 @@ void P_Tcs::Update()
 				//m_bHavePolygonData = SetupMeshData();
 			}
 		}
+		
+		if(m_pkTcs->GetDebugGraph() != 0)		
+			m_iType = PROPERTY_TYPE_RENDER | PROPERTY_TYPE_NORMAL;
+		else
+			m_iType = PROPERTY_TYPE_NORMAL;
 	}
 	else if( m_pkEntityManager->IsUpdate(PROPERTY_TYPE_RENDER) ) 
 	{
-		if(m_pkTcs->GetDebugGraph() != 0)
-			Draw();
+		Draw();
 	}
 }
 

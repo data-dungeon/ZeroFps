@@ -18,7 +18,9 @@ Mad_Modell::Mad_Modell()
 
 	m_bLoop				= true;
 	m_bActive			= true;
-	m_fScale			= 1.0;
+	m_fScale				= 1.0;
+	
+	m_iFirstMaterialID= -1;
 }
 
 void Mad_Modell::SetBasePtr(string strResName)
@@ -459,6 +461,12 @@ void Mad_Modell::Draw_All(int iDrawFlags)
 				
 				//setup material
 				ZMaterial* pkMaterial = (ZMaterial*)(pkRes->GetResourcePtr());		
+				
+				if(iNumOfSubMesh == 1)
+					m_iFirstMaterialID = pkMaterial->GetID();
+				else
+					m_iFirstMaterialID = -1;
+				
 				m_pkShader->BindMaterial(pkMaterial);				
 				m_pkShader->SetPointer(INDEX_POINTER,GetFacesPtr());				
 				m_pkShader->SetNrOfIndexes(iNumOfFaces * 3);

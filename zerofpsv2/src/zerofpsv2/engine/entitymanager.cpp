@@ -421,8 +421,26 @@ void EntityManager::Update(int iType,int iSide,bool bSort,Entity* pkRootEntity,b
 	
 		//sort all propertys
 		if(bSort)
-			stable_sort(m_akPropertys.begin(),m_akPropertys.end(),Less_Property);
+		{
+ 			//stable_sort(m_akPropertys.begin(),m_akPropertys.end(),Less_Property);
+			sort(m_akPropertys.begin(),m_akPropertys.end(),Less_Property);
+			//sort(m_akPropertys.begin(),m_akPropertys.end());
 
+// 			if(iType == PROPERTY_TYPE_RENDER)
+// 			{
+// 				cout<<"Updateing render:"<<m_akPropertys.size()<<endl;
+// 				for(int i = 0;i<m_akPropertys.size();i++)
+// 				{
+// 					if(P_Mad* pkMad = dynamic_cast<P_Mad*>(m_akPropertys[i]))
+// 					{
+// 						cout<<"mad:"<<pkMad->m_iFirstMaterialID<<endl;
+// 					}
+// 					else
+// 						cout<<"other"<<endl;
+// 				
+// 				}
+// 			}
+		}
 	}
 		
 	//run update in all propertys

@@ -586,11 +586,6 @@ void Camera::RenderView()
 	if((m_bShadowMap && m_pkZeroFps->GetShadowMap()))
 	{	
 		//scene center (use entity pos if any)
-/*		Vector3 kCenter;			
-		if(Entity* pkEnt = m_pkEntityMan->GetEntityByID(m_iEntity))
-			kCenter = pkEnt->GetIWorldPosV();		
-		else
-			kCenter = m_kPos;*/
 		Matrix4 kTrans = m_kRotM;
 		kTrans.Transponse();	
 		Vector3 kCenter = m_kPos + kTrans.VectorTransform(Vector3(0,0,-1))*m_fShadowArea;			
@@ -655,7 +650,7 @@ void Camera::RenderView()
 		m_pkEntityMan->Update(PROPERTY_TYPE_RENDER,PROPERTY_SIDE_CLIENT,true,pkRootEntity,m_bRootOnly);
 	
 		//update shadow map
-		//m_pkZShadow->Update();
+		m_pkZShadow->Update();
 	
 		//update all render propertys that shuld NOT be shadowed
 		m_iCurrentRenderMode = RENDER_NOSHADOWED;

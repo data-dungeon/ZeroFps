@@ -60,16 +60,13 @@ public:
 	string	m_kMadFile;
 
 	int		iActiveAnimation;
-	float	fCurrentTime;
-//	float	fLastUpdate;
-
-	float	m_fScale;
-
+	float		fCurrentTime;
+	float		m_fScale;
 	int		m_iNextAnimation;
-	bool	m_bLoop;
-
-	bool	m_bActive;			// True if animation system is active.
-
+	bool		m_bLoop;
+	bool		m_bActive;			// True if animation system is active.
+	int		m_iFirstMaterialID;
+	
 	//	Mad_Core*	pkCore;
 	ZFResourceHandle	kMadHandle;
 	
