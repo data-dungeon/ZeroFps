@@ -5,6 +5,7 @@
 #include "../zerofpsv2/engine_systems/propertys/primitives3d.h"
 #include "../zerofpsv2/engine_systems/propertys/proxyproperty.h"
 #include "../zerofpsv2/gui/zgui.h"
+#include "../mcommon/si_mistland.h"
  
 MistClient g_kMistClient("MistClient",0,0,0);
 
@@ -266,21 +267,28 @@ void MistClient::Input()
 	{
 	case KEY_P:
 		{
-			ZFSound* pkSound1 = pkAudioSys->GetFreeSound("data/sound/dummy.wav");
-			pkSound1->m_kPos = Vector3(0,0,0);
-			pkSound1->m_kVel = Vector3(0,0,1);
-			pkSound1->m_bLoop = false;
-			pkAudioSys->AddSound(pkSound1);
-		}
-		break;
+			static int COUNTER = 0;
 
-	case KEY_O:
-		{
-			ZFSound* pkSound2 = pkAudioSys->GetFreeSound("data/sound/test.wav");
-			pkSound2->m_kPos = Vector3(0,0,0);
-			pkSound2->m_kVel = Vector3(0,0,1);
-			pkSound2->m_bLoop = false;
-			pkAudioSys->AddSound(pkSound2);
+			if(COUNTER != 20)
+			{
+				static ZFActiveSound kSound[21];
+
+				kSound[COUNTER].m_bLoop = false;
+				kSound[COUNTER].m_kDir = Vector3(0,0,1);
+				kSound[COUNTER].m_kPos = Vector3(0,0,0);
+				kSound[COUNTER].m_szFileName = new char[100];
+
+				if(COUNTER==0)
+					strcpy(kSound[COUNTER].m_szFileName, "data/sound/dummy.wav");
+				else
+					strcpy(kSound[COUNTER].m_szFileName, "data/sound/test.wav");
+				
+				pkAudioSys->ActivateSound(&kSound[COUNTER]);
+				
+				COUNTER++;
+				printf("COUNTER = %i\n", COUNTER);
+			}
+			
 		}
 		break;
 	}
@@ -371,7 +379,9 @@ void MistClient::OnServerStart(void)
 	
 		m_pkTestobj->SetWorldPosV(Vector3(0,0.1,0));
 		
-		MistLandLua::g_iCurrentPCID = m_pkTestobj->iNetWorkID;
+		// Comment out by Zeb: Funkar inte att accessa variabeln.
+		// får felet: mistclient.obj : error LNK2001: unresolved external symbol "int  MistLandLua::g_iCurrentPCID" 
+		//MistLandLua::g_iCurrentPCID = m_pkTestobj->iNetWorkID;
 	}
 	pkObjectMan->Test_CreateZones();
 

@@ -102,7 +102,7 @@ class ENGINE_SYSTEMS_API ZFSound : public ZFResource
 		friend class ZFAudioSystem;	
 };
 
-ENGINE_SYSTEMS_API ZFResource* Create__WavSound();
+/*ENGINE_SYSTEMS_API ZFResource* Create__WavSound();*/
 
 #endif
 

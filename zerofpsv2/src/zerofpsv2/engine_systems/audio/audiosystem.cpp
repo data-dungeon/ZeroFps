@@ -130,10 +130,10 @@ bool ZFSound::Start(int iSourceIndex, int iSourceName)
 	return true;
 }
 
-ZFResource* Create__WavSound()
+/*ZFResource* Create__WavSound()
 {
 	return new ZFSound;
-}
+}*/
 
 ZFAudioSystem::ZFAudioSystem() : ZFSubSystem("ZFAudioSystem") 
 {
