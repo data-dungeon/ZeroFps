@@ -1,0 +1,1 @@
+g++ *.cpp -o ../../bin/zeroedit -L../../bin/ -lbasic -lengine -lrender -lglut -L/usr/X11R6/lib
