@@ -277,6 +277,8 @@ const ZGuiSkin& ZGuiSkin::operator=(const ZGuiSkin& pkSkinSrc )
 
 	m_ucRots90Degree		= pkSkinSrc.m_ucRots90Degree;
 
+	m_rcBkTile				= pkSkinSrc.m_rcBkTile;
+
 	return *this;
 }
 
@@ -305,6 +307,8 @@ ZGuiSkin::ZGuiSkin(ZGuiSkin* pkCopy)
 	m_bTransparent					= pkCopy->m_bTransparent;	
 
 	m_ucRots90Degree		= pkCopy->m_ucRots90Degree;
+
+	m_rcBkTile				= pkCopy->m_rcBkTile;
 }
 
 bool ZGuiSkin::operator==(ZGuiSkin d) 
@@ -332,6 +336,8 @@ bool ZGuiSkin::operator==(ZGuiSkin d)
 	if(m_bTransparent					!= d.m_bTransparent) return false;
 
 	if(m_ucRots90Degree			!= d.m_ucRots90Degree) return false;
+
+	if(m_rcBkTile					!= d.m_rcBkTile) return false;
 
 	return true;
 } 

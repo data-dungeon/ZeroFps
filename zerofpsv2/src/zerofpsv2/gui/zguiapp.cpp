@@ -464,6 +464,40 @@ ZGuiSkin* ZGuiApp::AddSkinFromScript(char *szName, ZGuiSkin* pkSkin)
 	if(m_pkScriptSystem->GetGlobal(pkLuaState, szName, "rots90deg", dData))
 		pkNewSkin->m_ucRots90Degree = dData;
 
+	// Spritemap rect
+	if(m_pkScriptSystem->GetGlobal(pkLuaState, szName, "rcBkTile", szData))
+	{
+		char szFormatet[128];
+		strcpy(szFormatet, szData);
+
+		// Ta bort alla skräptecken ur datat
+		char temp[128], c=0, l=strlen(szFormatet);
+		for(int j=0; j<l; j++)
+			if(szFormatet[j] != ' ')
+				temp[c++] = szFormatet[j];
+		temp[c] = 0;
+		strcpy(szFormatet, temp);
+
+		// Hämta x,y,w,h från textdatat
+		char x[5] = "\0\0\0\0", y[5] = "\0\0\0\0", w[5]= "\0\0\0\0", h[5]= "\0\0\0\0";
+		char* rect[] = { x, y, w, h };
+
+		int a=0, b=0;
+		for(int j=0; j<strlen(szFormatet); j++)
+			if(szFormatet[j] != ',')
+				rect[a][b++] = szFormatet[j];
+			else
+			{
+				a++;
+				b=0;
+			}
+
+		pkNewSkin->m_rcBkTile.Left   = atoi(rect[0]);
+		pkNewSkin->m_rcBkTile.Top    = atoi(rect[1]);
+		pkNewSkin->m_rcBkTile.Right  = atoi(rect[2]);
+		pkNewSkin->m_rcBkTile.Bottom = atoi(rect[3]);
+	}
+
 	return pkNewSkin;
 }
 
