@@ -583,44 +583,45 @@ void MistServer::OnServerClientJoin(ZFClient* pkClient,int iConID)
 {
 	cout<<"Client "<<iConID<<" Joined"<<endl;
 	
-	//pkClient->m_pkObject->AddProperty("P_Primitives3D");	
-	//TrackProperty* pkTrack = dynamic_cast<TrackProperty*>(pkClient->m_pkObject->GetProperty("TrackProperty"));
-	//pkTrack->SetClient(iConID);
-
+	//add client control to client object
 	P_ClientControl* pcc = (P_ClientControl*)pkClient->m_pkObject->AddProperty("P_ClientControl");
 	if(pcc)	
 		pcc->m_iClientID = iConID;
 		
+	//update start locations  
 	UpdateStartLocatons();
-	
-	// moget ;)
-	vector<string> kNames;
-	kNames.push_back("vim");	
-	kNames.push_back("zeb");	
-	kNames.push_back("dvoid");
-	kNames.push_back("zerom");	
-	kNames.push_back("player1");	
-	kNames.push_back("player2");	
-	kNames.push_back("player3");	
-	
-	
+		
+	//dessa skall du fixa till vim =D
 	string strPlayer  = "Kalle";
 	string strPasswd = "hubba";
 	string strCharacter = "mrbad";
 	
-	
 	//check valid password
-	if(!m_pkPlayerDB->VerifyPlayer(strPlayer,"blahop"))
+	if(!m_pkPlayerDB->VerifyPlayer(strPlayer,strPasswd))
 	{
-		cout<<"Wrong password or player dont exist"<<endl;
-		cout<<"trying to create a new player"<<endl;
-		if(!m_pkPlayerDB->CreatePlayer(strPlayer,"blahop"))
+		cout<<"WARNING: player "<<strPlayer<< " typed wrong password or player dont exist"<<endl;
+		cout<<"         trying to create a new player"<<endl;
+		if(!m_pkPlayerDB->CreatePlayer(strPlayer,strPasswd))
 		{
-			cout<<"error creating player "<<strPlayer<<endl;
+			cout<<"ERROR: creating player"<<strPlayer<<endl;
+			
+			//KICKA O DÖDA SPELAREN!!! HÄRR!! FÖR HAN SKREV FAN FEL JÄVLA LÖSEEN DÖÖÖÖÖ!!!
+			
 			return;
 		}
 	}
 	
+	if(m_pkServerInfoP)
+	{
+		if(m_pkServerInfoP->PlayerExist(strPlayer))
+		{
+			cout<<"Player "<<strPlayer<< " is already connected"<<endl;
+		
+			//KICKA O DÖDA SPELARJÄVELN HÄR OCKSÅ FÖR HAN FÅR FAN INTE CONNECTA TVÅ GÅNGER!!!!
+		
+			return;
+		}
+	}
 	
 	//create player object
 	int iPlayerID  = CreatePlayer(strPlayer.c_str(),strCharacter.c_str(),"Start",iConID);
@@ -672,7 +673,6 @@ void MistServer::OnServerStart(void)
 		m_pkServerInfoP = (P_ServerInfo*)m_pkServerInfo->GetProperty("P_ServerInfo");		
 		if(m_pkServerInfoP)
 		{
-			cout<<"Server info created"<<endl;
 			m_pkServerInfoP->m_sServerName = "Test Server";
 		}
 		else
@@ -1129,7 +1129,7 @@ int MistServer::CreatePlayer(const char* csPlayer,const char* csCharacter,const 
 		return -1;
 	}
 			
-	cout<<"created character entity"<<csPlayer<<" -> "<<csCharacter<<endl;
+	cout<<"created character entity "<<csPlayer<<" -> "<<csCharacter<<endl;
 			
 	return pkObject->iNetWorkID;
 }
