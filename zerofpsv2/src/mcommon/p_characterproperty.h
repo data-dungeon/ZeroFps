@@ -32,6 +32,17 @@ class MCOMMON_API Skill
 		void UpdateFromScript();			
 
 	public:
+		enum SkillType
+		{
+			ePASSIVE				=	0,
+			eCHARACTER_TARGET =	1,
+			eGROUND_TARGET 	=	2,
+			eDIRECTION 			=	3,						
+			eITEM_TARGET		=	4,
+			eSELF					=	5,
+		};
+		
+		
 		string	m_strInGameName;
 		string	m_strSchool;
 		string	m_strIcon;
@@ -40,12 +51,13 @@ class MCOMMON_API Skill
 		float		m_fReloadTime;
 		float		m_fTimeLeft;
 		float		m_fLastUpdate;
+		int		m_iType;;
 		
 		Skill(const string& strScriptFile,const string& strParent, int iOwnerID);
 		~Skill();
 		
 		void Update();
-		void Use(int iTargetID,const Vector3& kPos,const Vector3& kDir);
+		int Use(int iTargetID,const Vector3& kPos,const Vector3& kDir);
 		
 		//sets
 		void SetLevel(int iLevel);
@@ -227,7 +239,7 @@ class MCOMMON_API P_CharacterProperty: public Property
 		bool ChangeSkill(const string& strSkillScript,int iValue);
 		void SetSkill(const string& strSkillScript,int iLevel);
 		Skill* GetSkillPointer(const string& strSkillName);
-		void UseSkill(const string& strSkillScript,int iTarget,const Vector3& kPos,const Vector3& kDir);
+		int UseSkill(const string& strSkillScript,int iTarget,const Vector3& kPos,const Vector3& kDir);
 		void RemoveAllSkills();
 		
 		void UpdateSkills();

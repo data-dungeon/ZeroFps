@@ -26,16 +26,17 @@ Skill::Skill(const string& strScriptFile,const string& strParent, int iOwnerID)
 	m_pkScriptFileHandle->SetRes(string("data/script/objects/game objects/skills/") + strScriptFile);
 	
 	
-	m_strParentSkill=		strParent;	
-	m_iOwnerID = 			iOwnerID;
+	m_strParentSkill	=	strParent;	
+	m_iOwnerID 			=	iOwnerID;
 		
-	m_strInGameName =		"UnkownSkill";
-	m_strIcon = 			"default.tga";	
-	m_iLevel = 				0;	
-	m_fReloadTime =		1;
-	m_fTimeLeft =			1;
-	m_fLastUpdate = 		-1;
-	m_strSchool =			"UnkownSchool";
+	m_strInGameName 	=	"UnkownSkill";
+	m_strIcon 			= 	"default.tga";	
+	m_iLevel 			= 	0;	
+	m_fReloadTime 		=	1;
+	m_fTimeLeft 		=	1;
+	m_fLastUpdate 		= 	-1;
+	m_strSchool 		=	"UnkownSchool";
+	m_iType				=	0;
 	
 }
 
@@ -118,29 +119,39 @@ void Skill::SetLevel(int iLevel)
 }
 
 
-void Skill::Use(int iTargetID,const Vector3& kPos,const Vector3& kDir)
+int Skill::Use(int iTargetID,const Vector3& kPos,const Vector3& kDir)
 {
 // 	cout<<"using skill "<<m_pkScriptFileHandle->GetRes()<<endl;
 
 	if(!m_pkScriptFileHandle->IsValid())
 	{
 		cout<<"WARNING: skill script "<<m_pkScriptFileHandle->GetRes()<<" not loaded"<<endl;
-		return;	
+		return 1;	
 	}
 	
 	//check reload
 	if(m_fTimeLeft != 0)
 	{
 		cout<<"skill not reloaded yet"<<endl;
-		return;	
+		return 2;	
 	}
 	
 	if(m_iLevel < 1)
 	{
 		cout<<"got to have at least level 1 of a skill to use it"<<endl;
-		return;	
+		return 3;	
 	}
 	
+	
+	//character target  check if a character is targeted
+	if(m_iType == eCHARACTER_TARGET && !m_pkEntityManager->GetPropertyFromEntityID(iTargetID,"P_CharacterProperty")) 
+		return 4;
+	
+	//item target  check that an item is targeted
+	if(m_iType == eITEM_TARGET && !m_pkEntityManager->GetPropertyFromEntityID(iTargetID,"P_Item")) 
+		return 5;
+		
+		
 	
 	static Vector3 kPosCopy,kDirCopy;
 	kPosCopy = kPos;
@@ -174,12 +185,14 @@ void Skill::Use(int iTargetID,const Vector3& kPos,const Vector3& kDir)
 	if(!m_pkScript->Call(m_pkScriptFileHandle, "Use",args))
 	{
 		cout<<"WARNING: could not call update function for skill script "<<m_pkScriptFileHandle->GetRes()<<" level "<<m_iLevel<<endl;
-		return;
+		return 6;
 	}			
 	
 	//reset reload timer
 	m_fTimeLeft = m_fReloadTime;
 	m_fLastUpdate = m_pkEntityManager->GetSimTime();
+	
+	return 0;
 }
 
 
@@ -1212,18 +1225,19 @@ void P_CharacterProperty::SendBuffList()
 	m_pkApp->SendAppMessage(&kNp);		
 }
 
-void P_CharacterProperty::UseSkill(const string& strSkillScript,int iTarget,const Vector3& kPos,const Vector3& kDir)
+int P_CharacterProperty::UseSkill(const string& strSkillScript,int iTarget,const Vector3& kPos,const Vector3& kDir)
 {
 	if(m_bDead)
-		return;
+		return -2;
 
 	if(Skill* pkSkill = GetSkillPointer(strSkillScript))
 	{
-		pkSkill->Use(iTarget,kPos,kDir);	
+		return pkSkill->Use(iTarget,kPos,kDir);	
 	}
 	else
 	{
-		cout<<"WARNING: skill "<<strSkillScript<<" not found"<<endl;	
+		cout<<"WARNING: skill "<<strSkillScript<<" not found"<<endl;			
+		return -1;
 	}
 }
 
@@ -1697,7 +1711,7 @@ namespace SI_P_CharacterProperty
 	
 	int SetupSkillLua(lua_State* pkLua)
 	{
-		if(g_pkScript->GetNumArgs(pkLua) != 6)
+		if(g_pkScript->GetNumArgs(pkLua) != 7)
 			return 0;		
 
 			
@@ -1707,6 +1721,7 @@ namespace SI_P_CharacterProperty
 		string strSchool;
 		string strIcon;
 		double dReloadTime;
+		int	iSkillType;
 		
 		g_pkScript->GetArgInt(pkLua, 0, &iCharcterID);		
 		
@@ -1715,6 +1730,7 @@ namespace SI_P_CharacterProperty
 		g_pkScript->GetArgString(pkLua, 3, strSchool);		
 		g_pkScript->GetArgString(pkLua, 4, strIcon);		
 		g_pkScript->GetArgNumber(pkLua, 5, &dReloadTime);		
+		g_pkScript->GetArgInt(pkLua, 6, &iSkillType);		
 		
 		if(P_CharacterProperty* pkCP = (P_CharacterProperty*)g_pkObjMan->GetPropertyFromEntityID(iCharcterID,"P_CharacterProperty"))
 		{
@@ -1724,6 +1740,7 @@ namespace SI_P_CharacterProperty
 				pkSkill->m_strSchool = 		strSchool;
 				pkSkill->m_strIcon = 		strIcon;
 				pkSkill->m_fReloadTime = 	float(dReloadTime);
+				pkSkill->m_iType =			iSkillType;
 				//pkSkill->m_fTimeLeft = 		float(dReloadTime);
 				
 				cout<<"skill setup complete"<<endl;
