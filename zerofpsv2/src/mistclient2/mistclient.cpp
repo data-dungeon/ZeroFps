@@ -135,11 +135,11 @@ void MistClient::Input()
 	m_pkInputHandle->RelMouseXY(x,z);	
 	
 	//check buttons
-	m_kCharacterControls[eUP] = 	m_pkInputHandle->Pressed(KEY_W);
-	m_kCharacterControls[eDOWN] =	m_pkInputHandle->Pressed(KEY_S);			
-	m_kCharacterControls[eLEFT] = m_pkInputHandle->Pressed(KEY_A);			
-	m_kCharacterControls[eRIGHT]= m_pkInputHandle->Pressed(KEY_D);
-	m_kCharacterControls[eJUMP] = m_pkInputHandle->Pressed(MOUSERIGHT);
+	m_kCharacterControls[eUP] = 	m_pkInputHandle->VKIsDown("move_forward");
+	m_kCharacterControls[eDOWN] =	m_pkInputHandle->VKIsDown("move_back");			
+	m_kCharacterControls[eLEFT] = m_pkInputHandle->VKIsDown("move_left");			
+	m_kCharacterControls[eRIGHT]= m_pkInputHandle->VKIsDown("move_right");
+	m_kCharacterControls[eJUMP] = m_pkInputHandle->VKIsDown("jump");
 	
 	//update camera
 	if(Entity* pkCharacter = m_pkEntityManager->GetEntityByID(m_iCharacterID))
@@ -151,8 +151,8 @@ void MistClient::Input()
 			pkCam->SetOffset(Vector3(0,0.9,0)); 
 
 			float fDistance = pkCam->Get3PDistance();
-			if(m_pkInputHandle->Pressed(MOUSEWUP)) 	fDistance -= 0.5;
-			if(m_pkInputHandle->Pressed(MOUSEWDOWN))	fDistance += 0.5;
+			if(m_pkInputHandle->VKIsDown("zoomin")) 	fDistance -= 0.5;
+			if(m_pkInputHandle->VKIsDown("zoomout"))	fDistance += 0.5;
 			
 			//make sure camera is nto to far away
 			if(fDistance > 8.0)
