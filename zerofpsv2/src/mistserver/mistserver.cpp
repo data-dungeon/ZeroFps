@@ -1294,10 +1294,11 @@ void MistServer::OnNetworkMessage(NetPacket *PkNetMessage)
 		{
 			string strMsg;
 			PkNetMessage->Read_Str(strMsg);
-			m_pkConsole->Printf("Msg> %s",strMsg.c_str());
 			
 			if(PlayerData* pkData = m_pkPlayerDB->GetPlayerData(PkNetMessage->m_iClientID))
 			{				
+				m_pkConsole->Printf("Msg> %s: %s",pkData->m_strPlayerName.c_str(),strMsg.c_str());
+				
 				SayToClients(pkData->m_strPlayerName+string(": ")+strMsg);
 			}			
 			

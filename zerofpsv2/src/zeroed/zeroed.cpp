@@ -344,6 +344,7 @@ void ZeroEd::OnServerStart(void)
 {		
 	CreateEditCameras();
 
+	
 	// Create and setup the Env on the server.
 	P_Enviroment* pe = (P_Enviroment*)m_pkCameraObject[0]->AddProperty("P_Enviroment");
 	pe->SetEnable(true);		
