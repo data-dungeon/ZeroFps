@@ -33,24 +33,26 @@ namespace MistLandLua
 	extern EntityManager*		g_pkObjMan;
 	extern P_ServerInfo*			g_pkServerInfo;
 
-//	extern int						g_iCurrentObjectID;
 	extern int						g_iLastCollidedID;
+//	extern int						g_iCurrentObjectID;
 //	extern int MCOMMON_API 		g_iCurrentPCID;
+//int MCOMMON_API GetObjectTypeLua(lua_State* pkLua);				//(int objectid) return the type of the object id
+//int MCOMMON_API GetObjectNameLua(lua_State* pkLua);				//(int objectid) return the object name
+//int MCOMMON_API SendEventLua(lua_State* pkLua);					//(int objectid,string event) send event to target object
+//	int MCOMMON_API SetHeartRateLua(lua_State* pkLua);				//(int objectid,float delay) will enable the 1s update function on this object
+
+
 
 	void MCOMMON_API Init(EntityManager* pkObjMan,ZFScriptSystem* pkScript);	
 	
-	int MCOMMON_API GetSelfIDLua(lua_State* pkLua);					//() return the callers object id
-	int MCOMMON_API GetCurrentPCIDLua(lua_State* pkLua);					//() return the callers object id	
-	int MCOMMON_API GetObjectTypeLua(lua_State* pkLua);				//(int objectid) return the type of the object id
-	int MCOMMON_API GetObjectNameLua(lua_State* pkLua);				//(int objectid) return the object name
+	int MCOMMON_API GetSelfIDLua(lua_State* pkLua);						//() return the callers object id
+	int MCOMMON_API GetCurrentPCIDLua(lua_State* pkLua);				//() return the callers object id	
 	int MCOMMON_API GetLastCollidedObjectLua(lua_State* pkLua);	
-	int MCOMMON_API GetClosestObjectLua(lua_State* pkLua);		//(int objectid) return the closest object to the caller or a parameter id
-	int MCOMMON_API RemoveObjectLua(lua_State* pkLua);				//(int objectid) removes the caller or a parameter id
-	int MCOMMON_API SendEventLua(lua_State* pkLua);					//(int objectid,string event) send event to target object
-	int MCOMMON_API AddActionLua(lua_State* pkLua);				//(int objectid,string action) add action to action list of object
+	int MCOMMON_API GetClosestObjectLua(lua_State* pkLua);			//(int objectid) return the closest object to the caller or a parameter id
+	int MCOMMON_API RemoveObjectLua(lua_State* pkLua);					//(int objectid) removes the caller or a parameter id
+	int MCOMMON_API AddActionLua(lua_State* pkLua);						//(int objectid,string action) add action to action list of object
 	int MCOMMON_API MessageCaracterLua(lua_State* pkLua);				//(int objectid,string message) send a message to caracters controling player
 
-//	int MCOMMON_API SetHeartRateLua(lua_State* pkLua);				//(int objectid,float delay) will enable the 1s update function on this object
 
 	// sound crap
 	int MCOMMON_API StartPrivateSoundLua(lua_State* pkLua);

@@ -10,6 +10,8 @@ class Entity;
 class Property;
 
 /**	Script Functions for ObjectManger.
+
+	This namespace contains functions that are exported from the entitymanger to the script system.
 */
 namespace ObjectManagerLua
 {
@@ -35,46 +37,47 @@ namespace ObjectManagerLua
 	extern ENGINE_SYSTEMS_API	int			g_iCurrentObjectID;
 	extern ENGINE_SYSTEMS_API 	int			g_iCurrentPCID;
 
-	//create funktions  --- these are only used inside the create funktion
-	int ENGINE_SYSTEMS_API InitObjectLua(lua_State* pkLua);
-	int ENGINE_SYSTEMS_API InitPropertyLua(lua_State* pkLua);
-	int ENGINE_SYSTEMS_API InitParameterLua(lua_State* pkLua);
+	// Create/Destory Entitys
+	int ENGINE_SYSTEMS_API CreateEntityLua(lua_State* pkLua);							// (strName, kPosition)
+	int ENGINE_SYSTEMS_API DeleteLua(lua_State* pkLua);									// (Object)	-	Delete entity.
 
-	int ENGINE_SYSTEMS_API AttachToParent(lua_State* pkLua);
+	// Create funktions  --- these are only used inside the create funktion
+	int ENGINE_SYSTEMS_API InitObjectLua(lua_State* pkLua);								
+	int ENGINE_SYSTEMS_API InitPropertyLua(lua_State* pkLua);							
+	int ENGINE_SYSTEMS_API InitParameterLua(lua_State* pkLua);							
 
+	int ENGINE_SYSTEMS_API AttachToParent(lua_State* pkLua);								
 	int ENGINE_SYSTEMS_API SetParentObjectLua(lua_State* pkLua);
-	int ENGINE_SYSTEMS_API SetLocalPosLua(lua_State* pkLua);
 	int ENGINE_SYSTEMS_API SetReturnObjectLua(lua_State* pkLua);
-
 	int ENGINE_SYSTEMS_API HaveRelativOriLua(lua_State* pkLua);
-	//---
-
-	// entity management
-	int ENGINE_SYSTEMS_API CreateEntityLua(lua_State* pkLua);
-	int ENGINE_SYSTEMS_API DeleteLua(lua_State* pkLua);
+	
+	// Position/Orientation.
+	int ENGINE_SYSTEMS_API SetLocalPosLua(lua_State* pkLua);
+	int ENGINE_SYSTEMS_API SetObjectPosLua(lua_State* pkLua);
+	int ENGINE_SYSTEMS_API GetObjectPosLua(lua_State* pkLua);
+	int ENGINE_SYSTEMS_API GetObjectRotLua(lua_State* pkLua);
 
 	// Object Variables
 	int ENGINE_SYSTEMS_API GetLocalDouble(lua_State* pkLua);		
 	int ENGINE_SYSTEMS_API SetLocalDouble(lua_State* pkLua);		
+
+	// Entity Information
+	int ENGINE_SYSTEMS_API GetObjectTypeLua(lua_State* pkLua);				//(int objectid) return the type of the object id
+	int ENGINE_SYSTEMS_API GetObjectNameLua(lua_State* pkLua);				//(int objectid) return the object name
+
+	// Event
+	int ENGINE_SYSTEMS_API SendEventLua(lua_State* pkLua);						//(int objectid,string event) send event to target object
+
+
 
 	// Animations
 	int ENGINE_SYSTEMS_API PlayAnim(lua_State* pkLua);
 	int ENGINE_SYSTEMS_API SetNextAnim(lua_State* pkLua);
 	int ENGINE_SYSTEMS_API AddMesh(lua_State* pkLua);
 
-	// Orientation
-	int ENGINE_SYSTEMS_API SetObjectPosLua(lua_State* pkLua);
-	int ENGINE_SYSTEMS_API GetObjectPosLua(lua_State* pkLua);
-	int ENGINE_SYSTEMS_API GetObjectRotLua(lua_State* pkLua);
-	int ENGINE_SYSTEMS_API DistanceToLua(lua_State* pkLua);
-
-	// Rotation
-	int ENGINE_SYSTEMS_API SetObjectRotVelLua(lua_State* pkLua);
-
-	// velocity
+	// Physics
 	int ENGINE_SYSTEMS_API SetVelToLua(lua_State* pkLua);
-
-	// TCS
+	int ENGINE_SYSTEMS_API SetObjectRotVelLua(lua_State* pkLua);
 	int ENGINE_SYSTEMS_API ApplyImpulsLua(lua_State* pkLua);
 	
 	//zone management
@@ -85,6 +88,9 @@ namespace ObjectManagerLua
 	// Common used functions , used together whit P_ScriptInterface
 	int ENGINE_SYSTEMS_API SIGetSelfIDLua(lua_State* pkLua);					//() return the callers object id	
 	int ENGINE_SYSTEMS_API SISetHeartRateLua(lua_State* pkLua);				//(int objectid,float delay) will enable the 1s update function on this object	
+
+	int ENGINE_SYSTEMS_API DistanceToLua(lua_State* pkLua);
+
 };
 
 #endif // #ifndef _OBJECTMANAGER_SCRIPTINTERFACE_H_

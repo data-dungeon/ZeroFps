@@ -25,6 +25,19 @@ int				g_iCurrentObjectID;
 int				g_iCurrentPCID;
 int				g_iCurrentObjectBak;
 
+Vector3 GetVectorArg(lua_State* pkLua, int iIndex)
+{
+	Vector3 kPos;
+	vector<TABLE_DATA> vkData;
+	g_pkScript->GetArgTable(pkLua, iIndex, vkData);
+	kPos = Vector3(
+		(float) (*(double*) vkData[0].pData),
+		(float) (*(double*) vkData[1].pData),
+		(float) (*(double*) vkData[2].pData));
+	g_pkScript->DeleteTable(vkData);
+	return kPos;
+}
+
 void Init(EntityManager* pkObjMan, ZFScriptSystem* pkScript)
 {
 	g_pkObjMan = pkObjMan;
@@ -84,6 +97,11 @@ void Init(EntityManager* pkObjMan, ZFScriptSystem* pkScript)
 	// Common used functions , used together whit P_ScriptInterface
 	pkScript->ExposeFunction("SIGetSelfID",			ObjectManagerLua::SIGetSelfIDLua);		
 	pkScript->ExposeFunction("SISetHeartRate",		ObjectManagerLua::SISetHeartRateLua);
+
+	pkScript->ExposeFunction("GetObjectType",				ObjectManagerLua::GetObjectTypeLua);		
+	pkScript->ExposeFunction("GetObjectName",				ObjectManagerLua::GetObjectNameLua);		
+	pkScript->ExposeFunction("SendEvent",					ObjectManagerLua::SendEventLua);			
+
 }
 
 void Reset()
@@ -113,6 +131,59 @@ void Pop()
 	g_pkReturnObject		= g_pkReturnObjectBak;
 	g_pkLastObject			= g_pkLastObjectBak;
 }
+
+/**	\fn Delete( Template, Position)
+ 		\relates MistLandScript
+		\param Template Name of template script used to create entity.
+		\param Position Position to create new entity at.
+		\return Return id of new entity or -1 if no one was created.
+		\brief Delete the object given as a parameter.
+*/
+int CreateEntityLua (lua_State* pkLua)
+{
+	if( g_pkScript->GetNumArgs(pkLua) == 2)
+	{
+     	char	acType[128];
+		g_pkScript->GetArgString(pkLua, 0, acType);
+
+		Vector3 kPos;
+		kPos = GetVectorArg(pkLua, 2);
+
+		if(Entity* pkEntity = g_pkObjMan->CreateObjectFromScriptInZone(acType,kPos))
+		{
+			g_pkScript->AddReturnValue( pkLua, pkEntity->GetEntityID() );
+			return 1;
+		}
+		else
+			cout<<"Error CreateEntityLua ,while creating entity from script"<<acType<<endl;
+	}
+
+	g_pkScript->AddReturnValue( pkLua, -1 );
+	return 0;
+}
+
+/**	\fn Delete( Object )
+ 		\relates MistLandScript
+		\param Object ID of entity to delete.
+		\brief Delete the object given as a parameter.
+*/
+int DeleteLua(lua_State* pkLua)
+{
+	if(g_pkScript->GetNumArgs(pkLua) != 1)
+		return 0;
+	
+	double dTemp;
+	g_pkScript->GetArgNumber(pkLua, 0, &dTemp);
+	
+	Entity* pkObject = g_pkObjMan->GetObjectByNetWorkID((int)dTemp);	
+	if(pkObject)
+		g_pkObjMan->Delete(pkObject);
+	return 0;
+}
+
+
+
+
 
 
 /**	\fn InitObject(ScripName)
@@ -144,41 +215,6 @@ int InitObjectLua(lua_State* pkLua)
 	//set return object of there is none	
 	if(!g_pkReturnObject)
 		g_pkReturnObject = g_pkLastObject;
-	
-	return 1;
-}	
-
-/**	\fn SetParentObject()
- 	\relates MistLandScript
-	\brief Sets the last created object to be the active parent object.
-*/
-int SetParentObjectLua(lua_State* pkLua)
-{
-	if(!g_pkLastObject)
-		return 0;
-	
-	g_pkLastParent = g_pkLastObject;
-
-	//cout<<"setting parent"<<endl;
-
-	return 1;
-}
-
-/**	\fn AttachToParent()
- 	\relates MistLandScript
-	\brief Sets the last created object to be a child to the active parent object,
-*/
-int AttachToParent(lua_State* pkLua)
-{
-	if(!g_pkLastObject)
-		return 0;
-		
-	if(!g_pkLastParent)
-		return 0;
-
-	g_pkLastObject->SetParent(g_pkLastParent);
-	
-	//cout<<"Attaching object to parent"<<endl;
 	
 	return 1;
 }	
@@ -232,6 +268,73 @@ int InitParameterLua(lua_State* pkLua)
 	return 0;
 }	
 
+/**	\fn AttachToParent()
+ 	\relates MistLandScript
+	\brief Sets the last created object to be a child to the active parent object,
+*/
+int AttachToParent(lua_State* pkLua)
+{
+	if(!g_pkLastObject)
+		return 0;
+		
+	if(!g_pkLastParent)
+		return 0;
+
+	g_pkLastObject->SetParent(g_pkLastParent);
+	
+	//cout<<"Attaching object to parent"<<endl;
+	
+	return 1;
+}	
+
+/**	\fn SetParentObject()
+ 	\relates MistLandScript
+	\brief Sets the last created object to be the active parent object.
+*/
+int SetParentObjectLua(lua_State* pkLua)
+{
+	if(!g_pkLastObject)
+		return 0;
+	
+	g_pkLastParent = g_pkLastObject;
+
+	//cout<<"setting parent"<<endl;
+
+	return 1;
+}
+
+/**	\fn SetReturnObject(x,y,z)
+ 	\relates MistLandScript
+	\brief Sets the last object to be the object to be returned as the new created object.
+*/
+int SetReturnObjectLua(lua_State* pkLua)
+{
+	if(g_pkLastObject == NULL)
+		return 0;
+	
+	g_pkReturnObject = g_pkLastObject;
+
+	return 0;
+}
+/**	\fn HaveRelativOri()
+ 	\relates MistLandScript
+	\brief Sets the last object to have relative orientation.
+*/
+
+int HaveRelativOriLua(lua_State* pkLua)
+{
+	if(g_pkLastObject == NULL)
+		return 0;
+	
+	g_pkLastObject->SetRelativeOri(true);
+	return 0;
+}
+//----end of create
+
+
+// Position/Rotations.
+
+
 /**	\fn SetLocalPos(x,y,z)
  	\relates MistLandScript
 	\brief Sets the local pos of the last object.
@@ -255,57 +358,135 @@ int SetLocalPosLua(lua_State* pkLua)
 	return 0;
 }
 
-/**	\fn HaveRelativOri()
- 	\relates MistLandScript
-	\brief Sets the last object to have relative orientation.
-*/
-
-int HaveRelativOriLua(lua_State* pkLua)
+int SetObjectPosLua(lua_State* pkLua)
 {
-	if(g_pkLastObject == NULL)
+	int iNrArgs = g_pkScript->GetNumArgs(pkLua);
+
+	if(iNrArgs != 2)
+	{
+		printf("Script funtion SetObjectPosLua failed! Expects 2 arguments.\n");
 		return 0;
-	
-	g_pkLastObject->SetRelativeOri(true);
-	return 0;
+	}
+
+	double dID;
+	g_pkScript->GetArgNumber(pkLua, 0, &dID);		
+
+	Entity* pkObject = g_pkObjMan->GetObjectByNetWorkID((int)dID);
+
+	if(pkObject)
+	{
+		Vector3 kPos;
+		kPos = GetVectorArg(pkLua, 2);
+		/*vector<TABLE_DATA> vkData;
+		g_pkScript->GetArgTable(pkLua, 2, vkData); // första argumetet startar på 1
+
+		pkObject->SetWorldPosV( Vector3(
+			(float) (*(double*) vkData[0].pData),
+			(float) (*(double*) vkData[1].pData),
+			(float) (*(double*) vkData[2].pData)) );*/
+		pkObject->SetWorldPosV(kPos);
+		//g_pkScript->DeleteTable(vkData);
+	}
+
+	return 1;
 }
 
-
-/**	\fn SetReturnObject(x,y,z)
- 	\relates MistLandScript
-	\brief Sets the last object to be the object to be returned as the new created object.
-*/
-int SetReturnObjectLua(lua_State* pkLua)
-{
-	if(g_pkLastObject == NULL)
-		return 0;
-	
-	g_pkReturnObject = g_pkLastObject;
-
-	return 0;
-}
-//----end of create
-
-/**	\fn Delete( Object )
- 	\relates MistLandScript
-	\brief Delete the object given as a parameter.
-*/
-int DeleteLua(lua_State* pkLua)
+int GetObjectPosLua(lua_State* pkLua)
 {
 	if(g_pkScript->GetNumArgs(pkLua) != 1)
+	{
+		printf("Script funtion GetObjectPos failed! Expects 1 arguments.\n");
 		return 0;
-	
+	}
+
 	double dTemp;
-	g_pkScript->GetArgNumber(pkLua, 0, &dTemp);
-	
-	
-	Entity* pkObject = g_pkObjMan->GetObjectByNetWorkID((int)dTemp);	
+	g_pkScript->GetArgNumber(pkLua, 0, &dTemp);		
+	int iId = (int) dTemp;
+
+	Entity* pkObject = g_pkObjMan->GetObjectByNetWorkID(iId);
+
 	if(pkObject)
-		g_pkObjMan->Delete(pkObject);
-	
-	//cout << "Delet Entity: "<< dTemp << "," << pkObject << endl;
-	
-	return 0;
+	{
+		Vector3 pos = pkObject->GetWorldPosV();
+
+		vector<TABLE_DATA> vkData;
+
+		TABLE_DATA temp;
+
+		temp.bNumber = true;
+		temp.pData = new double;
+		(*(double*) temp.pData) = pos.x;
+		vkData.push_back(temp);
+
+		temp.bNumber = true;
+		temp.pData = new double;
+		(*(double*) temp.pData) = pos.y;
+		vkData.push_back(temp);
+
+		temp.bNumber = true;
+		temp.pData = new double;
+		(*(double*) temp.pData) = pos.z;
+		vkData.push_back(temp);
+
+		g_pkScript->AddReturnValueTable(pkLua, vkData);
+	}
+
+	return 1;
 }
+
+
+int GetObjectRotLua(lua_State* pkLua)
+{
+	if(g_pkScript->GetNumArgs(pkLua) != 1)
+	{
+		printf("Script funtion GetObjectRot failed! Expects 1 arguments.\n");
+		return 0;
+	}
+
+	double dTemp;
+	g_pkScript->GetArgNumber(pkLua, 0, &dTemp);		
+	int iId = (int) dTemp;
+
+	Entity* pkObject = g_pkObjMan->GetObjectByNetWorkID(iId);
+
+	if(pkObject)
+	{
+		Vector3 kRot = pkObject->GetWorldRotV();
+
+		vector<TABLE_DATA> vkData;
+
+		TABLE_DATA temp;
+
+		temp.bNumber = true;
+		temp.pData = new double;
+		(*(double*) temp.pData) = kRot.x;
+		vkData.push_back(temp);
+
+		temp.bNumber = true;
+		temp.pData = new double;
+		(*(double*) temp.pData) = kRot.y;
+		vkData.push_back(temp);
+
+		temp.bNumber = true;
+		temp.pData = new double;
+		(*(double*) temp.pData) = kRot.z;
+		vkData.push_back(temp);
+
+		g_pkScript->AddReturnValueTable(pkLua, vkData);
+	}
+
+	return 1;
+}
+
+
+
+
+
+
+
+
+
+
 
 /**	\fn PlayAnim(ObjectID, AnimName)
  	\relates MistLandScript
@@ -475,129 +656,11 @@ int SetObjectRotVelLua (lua_State* pkLua)
 	return 1;
 }
 
-int SetObjectPosLua(lua_State* pkLua)
-{
-	int iNrArgs = g_pkScript->GetNumArgs(pkLua);
 
-	if(iNrArgs != 2)
-	{
-		printf("Script funtion SetObjectPosLua failed! Expects 2 arguments.\n");
-		return 0;
-	}
-
-	double dID;
-	g_pkScript->GetArgNumber(pkLua, 0, &dID);		
-
-	Entity* pkObject = g_pkObjMan->GetObjectByNetWorkID((int)dID);
-
-	if(pkObject)
-	{
-		vector<TABLE_DATA> vkData;
-		g_pkScript->GetArgTable(pkLua, 2, vkData); // första argumetet startar på 1
-
-		pkObject->SetWorldPosV( Vector3(
-			(float) (*(double*) vkData[0].pData),
-			(float) (*(double*) vkData[1].pData),
-			(float) (*(double*) vkData[2].pData)) );
-
-		g_pkScript->DeleteTable(vkData);
-	}
-
-	return 1;
-}
-
-int GetObjectPosLua(lua_State* pkLua)
-{
-	if(g_pkScript->GetNumArgs(pkLua) != 1)
-	{
-		printf("Script funtion GetObjectPos failed! Expects 1 arguments.\n");
-		return 0;
-	}
-
-	double dTemp;
-	g_pkScript->GetArgNumber(pkLua, 0, &dTemp);		
-	int iId = (int) dTemp;
-
-	Entity* pkObject = g_pkObjMan->GetObjectByNetWorkID(iId);
-
-	if(pkObject)
-	{
-		Vector3 pos = pkObject->GetWorldPosV();
-
-		vector<TABLE_DATA> vkData;
-
-		TABLE_DATA temp;
-
-		temp.bNumber = true;
-		temp.pData = new double;
-		(*(double*) temp.pData) = pos.x;
-		vkData.push_back(temp);
-
-		temp.bNumber = true;
-		temp.pData = new double;
-		(*(double*) temp.pData) = pos.y;
-		vkData.push_back(temp);
-
-		temp.bNumber = true;
-		temp.pData = new double;
-		(*(double*) temp.pData) = pos.z;
-		vkData.push_back(temp);
-
-		g_pkScript->AddReturnValueTable(pkLua, vkData);
-	}
-
-	return 1;
-}
-
-
-int GetObjectRotLua(lua_State* pkLua)
-{
-	if(g_pkScript->GetNumArgs(pkLua) != 1)
-	{
-		printf("Script funtion GetObjectRot failed! Expects 1 arguments.\n");
-		return 0;
-	}
-
-	double dTemp;
-	g_pkScript->GetArgNumber(pkLua, 0, &dTemp);		
-	int iId = (int) dTemp;
-
-	Entity* pkObject = g_pkObjMan->GetObjectByNetWorkID(iId);
-
-	if(pkObject)
-	{
-		Vector3 kRot = pkObject->GetWorldRotV();
-
-		vector<TABLE_DATA> vkData;
-
-		TABLE_DATA temp;
-
-		temp.bNumber = true;
-		temp.pData = new double;
-		(*(double*) temp.pData) = kRot.x;
-		vkData.push_back(temp);
-
-		temp.bNumber = true;
-		temp.pData = new double;
-		(*(double*) temp.pData) = kRot.y;
-		vkData.push_back(temp);
-
-		temp.bNumber = true;
-		temp.pData = new double;
-		(*(double*) temp.pData) = kRot.z;
-		vkData.push_back(temp);
-
-		g_pkScript->AddReturnValueTable(pkLua, vkData);
-	}
-
-	return 1;
-}
 
 int SIGetSelfIDLua(lua_State* pkLua)
 {
-	cout << "SIGetSelfIDLua: " << g_iCurrentObjectID;
 	g_pkScript->AddReturnValue(pkLua,g_iCurrentObjectID);
-	
 	return 1;
 }
 
@@ -752,14 +815,13 @@ int GetZoneIDAtPosLua(lua_State* pkLua)
 	if(g_pkScript->GetNumArgs(pkLua) == 1)
 	{
 		Vector3 kPos;
-		vector<TABLE_DATA> vkData;
-
-		g_pkScript->GetArgTable(pkLua, 1, vkData);
-
-		kPos = Vector3(
+		//vector<TABLE_DATA> vkData;
+		//g_pkScript->GetArgTable(pkLua, 1, vkData);
+		/*kPos = Vector3(
 			(float) (*(double*) vkData[0].pData),
 			(float) (*(double*) vkData[1].pData),
-			(float) (*(double*) vkData[2].pData));
+			(float) (*(double*) vkData[2].pData));*/
+		kPos = GetVectorArg(pkLua, 1);
 
 		if(ZoneData* pkZone = g_pkObjMan->GetZone(kPos))
 		{
@@ -790,33 +852,74 @@ int SetZoneModelLua(lua_State* pkLua)
    return 0;
 }
 
-int CreateEntityLua (lua_State* pkLua)
+int GetObjectTypeLua(lua_State* pkLua)
 {
-	if( g_pkScript->GetNumArgs(pkLua) == 2)
+	int iId = ObjectManagerLua::g_iCurrentObjectID;
+	
+	//get id
+	if(g_pkScript->GetNumArgs(pkLua) == 1)
 	{
-     	char	acType[128];
-		g_pkScript->GetArgString(pkLua, 0, acType);
-
-		Vector3 kPos;
-		vector<TABLE_DATA> vkData;
-		g_pkScript->GetArgTable(pkLua, 2, vkData);
-		kPos = Vector3(
-			(float) (*(double*) vkData[0].pData),
-			(float) (*(double*) vkData[1].pData),
-			(float) (*(double*) vkData[2].pData));
-
-		if(Entity* pkEntity = g_pkObjMan->CreateObjectFromScriptInZone(acType,kPos))
-		{
-			g_pkScript->AddReturnValue( pkLua, pkEntity->GetEntityID() );
-			return 1;
-		}
-		else
-			cout<<"Error CreateEntityLua ,while creating entity from script"<<acType<<endl;
+		double dTemp;
+		g_pkScript->GetArgNumber(pkLua, 0, &dTemp);
+		iId = (int)dTemp;
 	}
+	
+	//get object
+	Entity*	pkObj = g_pkObjMan->GetObjectByNetWorkID(iId);
+	
+	if(pkObj)
+		g_pkScript->AddReturnValue(pkLua,(char*)pkObj->GetType().c_str(),pkObj->GetType().size());
+	
+	return 1;
+}
 
-	g_pkScript->AddReturnValue( pkLua, -1 );
+int GetObjectNameLua(lua_State* pkLua)
+{
+	int iId = ObjectManagerLua::g_iCurrentObjectID;
+	
+	//get id
+	if(g_pkScript->GetNumArgs(pkLua) == 1)
+	{
+		double dTemp;
+		g_pkScript->GetArgNumber(pkLua, 0, &dTemp);
+		iId = (int)dTemp;
+	}
+	
+	//get object
+	Entity*	pkObj = g_pkObjMan->GetObjectByNetWorkID(iId);
+	
+	if(pkObj)
+		g_pkScript->AddReturnValue(pkLua,(char*)pkObj->GetName().c_str(),pkObj->GetName().size());
+	
+	return 1;
+}
+
+int SendEventLua(lua_State* pkLua)
+{
+	if(g_pkScript->GetNumArgs(pkLua) != 2)
+		return 0;
+	
+	int id;
+	double dTemp;
+	g_pkScript->GetArgNumber(pkLua, 0, &dTemp);
+	id = (int)dTemp;
+	
+	Entity* pkObject = g_pkObjMan->GetObjectByNetWorkID(id);
+	if(pkObject)
+	{
+		P_ScriptInterface* pe = (P_ScriptInterface*)pkObject->GetProperty("P_ScriptInterface");	
+		
+		if(pe)
+		{
+			char	acEvent[128];
+			g_pkScript->GetArgString(pkLua, 1, acEvent);
+		
+			pe->SendEvent(acEvent);
+			return 0;
+		}
+	}
+	
 	return 0;
-
 }
 
 }

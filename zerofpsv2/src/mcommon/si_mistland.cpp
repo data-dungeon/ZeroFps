@@ -35,12 +35,9 @@ void MistLandLua::Init(EntityManager* pkObjMan,ZFScriptSystem* pkScript)
 	
 	pkScript->ExposeFunction("GetSelfID",					MistLandLua::GetSelfIDLua);	
 	pkScript->ExposeFunction("GetCurrentPCID",			MistLandLua::GetCurrentPCIDLua);		
-	pkScript->ExposeFunction("GetObjectType",				MistLandLua::GetObjectTypeLua);		
-	pkScript->ExposeFunction("GetObjectName",				MistLandLua::GetObjectNameLua);		
 	pkScript->ExposeFunction("GetLastCollidedObject",	MistLandLua::GetLastCollidedObjectLua);		
 	pkScript->ExposeFunction("GetClosestObject",			MistLandLua::GetClosestObjectLua);		
 	pkScript->ExposeFunction("RemoveObject",				MistLandLua::RemoveObjectLua);		
-	pkScript->ExposeFunction("SendEvent",					MistLandLua::SendEventLua);			
 	pkScript->ExposeFunction("SetPSystem",					MistLandLua::SetPSystemLua);			
 	pkScript->ExposeFunction("Bounce",						MistLandLua::BounceLua);				
 	pkScript->ExposeFunction("MakePathFind",				MistLandLua::MakePathFindLua);					
@@ -196,47 +193,7 @@ int MistLandLua::GetLastCollidedObjectLua(lua_State* pkLua)
 	return 1;
 }
 
-int MistLandLua::GetObjectTypeLua(lua_State* pkLua)
-{
-	int iId = ObjectManagerLua::g_iCurrentObjectID;
-	
-	//get id
-	if(g_pkScript->GetNumArgs(pkLua) == 1)
-	{
-		double dTemp;
-		g_pkScript->GetArgNumber(pkLua, 0, &dTemp);
-		iId = (int)dTemp;
-	}
-	
-	//get object
-	Entity*	pkObj = g_pkObjMan->GetObjectByNetWorkID(iId);
-	
-	if(pkObj)
-		g_pkScript->AddReturnValue(pkLua,(char*)pkObj->GetType().c_str(),pkObj->GetType().size());
-	
-	return 1;
-}
 
-int MistLandLua::GetObjectNameLua(lua_State* pkLua)
-{
-	int iId = ObjectManagerLua::g_iCurrentObjectID;
-	
-	//get id
-	if(g_pkScript->GetNumArgs(pkLua) == 1)
-	{
-		double dTemp;
-		g_pkScript->GetArgNumber(pkLua, 0, &dTemp);
-		iId = (int)dTemp;
-	}
-	
-	//get object
-	Entity*	pkObj = g_pkObjMan->GetObjectByNetWorkID(iId);
-	
-	if(pkObj)
-		g_pkScript->AddReturnValue(pkLua,(char*)pkObj->GetName().c_str(),pkObj->GetName().size());
-	
-	return 1;
-}
 
 int MistLandLua::RemoveObjectLua(lua_State* pkLua)
 {
@@ -316,33 +273,7 @@ int MistLandLua::GetClosestObjectLua(lua_State* pkLua)
 }
 
 
-int MistLandLua::SendEventLua(lua_State* pkLua)
-{
-	if(g_pkScript->GetNumArgs(pkLua) != 2)
-		return 0;
-	
-	int id;
-	double dTemp;
-	g_pkScript->GetArgNumber(pkLua, 0, &dTemp);
-	id = (int)dTemp;
-	
-	Entity* pkObject = g_pkObjMan->GetObjectByNetWorkID(id);
-	if(pkObject)
-	{
-		P_ScriptInterface* pe = (P_ScriptInterface*)pkObject->GetProperty("P_ScriptInterface");	
-		
-		if(pe)
-		{
-			char	acEvent[128];
-			g_pkScript->GetArgString(pkLua, 1, acEvent);
-		
-			pe->SendEvent(acEvent);
-			return 0;
-		}
-	}
-	
-	return 0;
-}
+
 
 int MistLandLua::AddActionLua(lua_State* pkLua)
 {
