@@ -47,8 +47,8 @@ static bool GUIPROC( ZGuiWnd* win, unsigned int msg, int numparms, void *params 
 		break;
 
 	case ZGM_TCN_SELCHANGE:
-		int* data; data = (int*) params;
-		g_kMistServer.OnClickTabPage((ZGuiTabCtrl*) data[2], data[0], data[1]);
+		int* data; data = (int*) params; 
+		g_kMistServer.OnClickTabPage((ZGuiTabCtrl*) data[2], data[0], data[1]);// fram med släggan
 		break;
 	}
 	return true;
@@ -60,7 +60,7 @@ MistServer::MistServer(char* aName,int iWidth,int iHeight,int iDepth)
 	g_ZFObjSys.Log_Create("mistserver");
 
 	m_pkServerInfoP = NULL;
-	m_strActiveObjectName = "data/script/objects/t_test.lua";
+	
 } 
 
 void MistServer::OnInit() 
@@ -88,7 +88,8 @@ void MistServer::Init()
 	m_kZoneSize.Set(8,8,8);
 	m_iCurrentMarkedZone = -1;
 	m_strActiveZoneName = "data/mad/zones/emptyzone.mad";
-	
+	m_strActiveObjectName = "data/script/objects/t_test.lua";
+
 	//click delay
 	m_fClickDelay = pkFps->GetTicks();
 	
@@ -381,17 +382,6 @@ void MistServer::Input()
 				pkObj->RotateLocalRotV(Vector3(0,0,-100*pkFps->GetFrameTime()));			
 				
 		}		
-	}
-
-	int key = pkInput->GetQueuedKey();
-
-	if(key == KEY_F1)
-	{
-		float a = 33.99f;
-
-		float s = round2(a);
-
-		printf("%mamma = %f\n", s);
 	}
 };
 
