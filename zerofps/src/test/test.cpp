@@ -96,10 +96,6 @@ void Test::OnInit(void) {
 	pkLight->Add(sol);
 	
 	
-	PlayerBallObject *kul=new PlayerBallObject(test,pkInput,pkFps);
-	kul->GetPos()=Vector3(5,5,5);		
-	pkObjectMan->Add(kul);
-	pkCollisionMan->Add(kul);
 
 /*
 	for(int i=0;i<20;i++) {
@@ -122,39 +118,39 @@ void Test::OnInit(void) {
 	cam2=new Camera(Vector3(50,50,100),Vector3(0,0,0),90,1.333,0.25,400);
 	cam2->SetViewPort(0.6,0,.4,.4);
 	
-//	cam3=new Camera(Vector3(50,50,100),Vector3(0,0,0),90,1.333,0.25,400);
-//	pkFps->SetCamera(cam1);
-//	pkFps->SetCamera(cam2);	
+	
+	PlayerBallObject *kul=new PlayerBallObject(test,pkInput,pkFps);
+	kul->AddProperty(new CameraProperty(cam2));
+	kul->GetPos()=Vector3(5,5,5);		
+	pkObjectMan->Add(kul);
+	pkCollisionMan->Add(kul);
+	
+	
 
 }
 
 
 void Test::OnIdle(void) {
-//	pkFps->SetCamera(cam2);	
-	pkFps->GetCam()->ClearViewPort();	
-	OnHud();
-	pkFps->SetCamera(cam1);		
-//	pkFps->GetCam()->ClearViewPort();
-	
 	m_kSpotpos->x=sin(SDL_GetTicks()/1000.0)*50.0+80;
 	m_kSpotpos->z=cos(SDL_GetTicks()/1000.0)*50.0+80;
 	m_kSpotpos->y=50;
 
 
+	
+	pkFps->SetCamera(cam1);		
+	pkFps->GetCam()->ClearViewPort();	
+//	OnHud();
+//	pkFps->SetCamera(cam1);		
 
 
+//	pkFps->SetCamera(cam1);
 	pkRender->DrawSkyBox(pkFps->GetCam()->GetPos());
 	pkRender->DrawHMlod(test,pkFps->GetCam()->GetPos(),pkFps->m_iFps);			
 	
 
-//	pkFps->SetCamera(cam2);
-//	pkRender->DrawSkyBox(pkFps->GetCam()->GetPos());
-	
-//	pkRender->DrawHMlod(test,pkFps->GetCam()->GetPos(),pkFps->m_iFps);			
-	pkFps->SetCamera(cam1);
-	
-	
-	
+
+
+
 	if(m_iGrass>0){
 		for(int ix=0;ix<1000;ix+=30)
 			for(int iy=0;iy<1000;iy+=30){
@@ -175,6 +171,17 @@ void Test::OnIdle(void) {
 	
 	if(pkFps->GetCam()->GetPos().y<test->Height(x,z)+1)
 		pkFps->GetCam()->GetPos().y=test->Height(x,z)+1;	
+
+
+
+
+
+
+	pkFps->SetCamera(cam2);
+	cam2->ClearViewPort();	
+	pkRender->DrawSkyBox(pkFps->GetCam()->GetPos());
+	pkRender->DrawHMlod(test,pkFps->GetCam()->GetPos(),pkFps->m_iFps);			
+
 
 }
 

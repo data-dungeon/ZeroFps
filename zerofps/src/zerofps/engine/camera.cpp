@@ -30,7 +30,11 @@ void Camera::Update(int iWidth,int iHeight) {
 	if(m_bViewPortChange){	
 		m_bViewPortChange=false;
 		
-
+		glScissor(	int(iWidth*m_fX),
+						int(iHeight*m_fY),
+						int(iWidth*m_fWidth),
+						int(iHeight*m_fHeight));
+		
 		glViewport( int(iWidth*m_fX), 
 						int(iHeight*m_fY),
 						int(iWidth*m_fWidth),

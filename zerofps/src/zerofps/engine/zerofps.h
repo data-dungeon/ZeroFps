@@ -22,12 +22,6 @@ enum enginestates
 	state_pause
 };
 
-enum CamMode
-{
-	cam_look,
-	cam_target,
-};
-
 class ZeroFps {
 	private:		
 		SDL_Surface* m_pkScreen;		
@@ -37,7 +31,6 @@ class ZeroFps {
 
 		int m_iWidth,m_iHeight,m_iDepth;
 		
-
 		Camera *m_pkTempCamera;
 		Camera *m_pkCamera;
 		Camera *m_pkConsoleCamera;
@@ -62,13 +55,7 @@ class ZeroFps {
 		int m_iFps;											//curent FPS
 		float m_fFrameTime;							//frametime in MS
 		
-//		Vector3 *m_kCamPos;
-//		Vector3 *m_kCamRot;
-//		int m_iCamMode;
-		
-					
-		ZeroFps(void);
-		
+		ZeroFps(void);		
 		void SetApp(void);
 		void Init(int iNrOfArgs, char** paArgs);	
 		void MainLoop(void);		
