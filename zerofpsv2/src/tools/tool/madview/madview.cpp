@@ -60,8 +60,7 @@ MadView::MadView(char* aName,int iWidth,int iHeight,int iDepth)
 	Register_Cmd("change_bkcolor_infownd", FID_TOGGLE_BKCOLOR);	
 
 	m_strMadFile = "data/mad/cube.mad";
-
-	RegisterVariable("r_madfile", &m_strMadFile, CSYS_STRING); // Ta inte bort denna dvoid, tack.
+	m_bHaveOpenMadFromCmdLine = false;
 } 
 
 void MadView::OnInit() 
@@ -71,6 +70,7 @@ void MadView::OnInit()
 	{
 		cout<<"open mad file:"<<g_ZFObjSys.GetArgument(1)<<endl;
 		m_strMadFile = g_ZFObjSys.GetArgument(1);
+		m_bHaveOpenMadFromCmdLine = true;
 	}
 
 	if(!m_pkIni->ExecuteCommands("/madview_autoexec.ini"))
@@ -102,12 +102,17 @@ void MadView::Init()
 
 		char szMadFile[128];
 		if(!kFile.Read(szMadFile, sizeof(char), 128))
-			m_strMadFile = "data/mad/cube.mad";
+		{
+			if(!m_bHaveOpenMadFromCmdLine)
+				m_strMadFile = "data/mad/cube.mad";
+		}
 
-		m_strMadFile = szMadFile;
-
-		if(m_strMadFile.find(".mad") == string::npos)
-			m_strMadFile = "data/mad/cube.mad";
+		if(!m_bHaveOpenMadFromCmdLine)
+		{
+			m_strMadFile = szMadFile;
+			if(m_strMadFile.find(".mad") == string::npos)
+				m_strMadFile = "data/mad/cube.mad";
+		}
 
 		kFile.Read(&kCamerPos, sizeof(kCamerPos), 1);
 		kFile.Read(&kObjectPos, sizeof(kCamerPos), 1);
