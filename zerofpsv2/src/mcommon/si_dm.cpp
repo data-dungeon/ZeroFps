@@ -54,7 +54,7 @@ void DMLua::Init(EntityManager* pkObjMan,ZFScriptSystem* pkScript)
 	pkScript->ExposeFunction("SetTeam", DMLua::SetTeamLua);
 	pkScript->ExposeFunction("GetCharStats", DMLua::GetCharStatsLua);
 	pkScript->ExposeFunction("SetCharStats", DMLua::SetCharStatsLua);
-	pkScript->ExposeFunction("Equip", DMLua::EquipLua);
+	pkScript->ExposeFunction("AddItem", DMLua::AddItemLua);
 	
 	// character behaviours
 	pkScript->ExposeFunction("PanicArea", DMLua::PanicAreaLua);
@@ -1213,4 +1213,98 @@ int DMLua::GetDMObjectLua(lua_State* pkLua)
 
 	g_pkScript->AddReturnValue( pkLua, dEntID );
 	return 1;
+}
+
+// ------------------------------------------------------------------------------------------------
+
+// Tar ett object id, en string som anger objektet som skall skapas och läggas till
+// sammt ett id nummer som anger vilken container som den skall läggas i.
+int DMLua::AddItemLua(lua_State* pkLua)
+{
+	double dEntityID = -1;
+	double dContainerType = -1;
+	char acScript[256] = "";
+
+	if ( g_pkScript->GetNumArgs(pkLua) == 3 )
+	{
+		g_pkScript->GetArgNumber(pkLua, 0, &dEntityID);
+		g_pkScript->GetArgString(pkLua, 1, acScript);
+		g_pkScript->GetArgNumber(pkLua, 2, &dContainerType);
+	}
+
+	if(strlen(acScript) < 1 || dEntityID == -1)
+	{
+		cout << "DMLua::EquipLua failed, wrong arguments\n";
+		return 0;
+	}
+
+	Entity* pkEnt = g_pkObjMan->GetObjectByNetWorkID( int(dEntityID) );
+	if ( pkEnt == NULL )
+	{
+		cout << "Warning! DMLua::EquipLua: ObjectID not found." << endl;
+		return 0;
+	}
+
+   // create the new object
+	Entity* pkNewObj = g_pkObjMan->CreateObjectFromScriptInZone(acScript,
+		pkEnt->GetWorldPosV() );
+
+	if(pkNewObj == NULL)
+	{
+		cout << "Error! DMLua::EquipLua: Failed to create object!" << endl;
+		return 0;
+	}
+
+	P_DMItem* pkItemProperty = (P_DMItem*)pkNewObj->GetProperty("P_DMItem");
+
+	if(pkItemProperty == NULL)
+	{
+		cout << "Error! DMLua::EquipLua: Object have no P_DMItem!" << endl;
+		return 0;
+	}
+
+	P_DMCharacter* pkChar = (P_DMCharacter*)pkEnt->GetProperty("P_DMCharacter");
+	if ( pkChar != NULL )
+	{
+		switch((int)dContainerType)
+		{
+		case 0:
+			pkChar->m_pkBackPack->AddItem(pkNewObj->GetEntityID());
+			break;
+		case 1:
+			pkChar->m_pkHand->AddItem(pkNewObj->GetEntityID());
+
+			// equip weapon
+			
+			// Get owner object
+			Entity* pkOwner = pkEnt; 
+			pkNewObj->SetLocalPosV ( Vector3(0,0,0) );
+
+			P_LinkToJoint* pkLink = (P_LinkToJoint*)pkNewObj->AddProperty ("P_LinkToJoint");      
+			pkLink->SetJoint( "righthand" );
+			
+			break;
+		}
+
+		return 0;
+	}
+
+	vector<Entity*> kObjs;
+	g_pkObjMan->GetAllObjects(&kObjs);
+
+	for ( int i = 0; i < kObjs.size(); i++ )
+	{
+		P_DMHQ* pkHQProperty = (P_DMHQ*)kObjs[i]->GetProperty("P_DMHQ");
+		if(pkHQProperty && pkHQProperty->GetActive())
+		{
+			// Equipa till högkvarteret
+			if(int(dEntityID) == kObjs[i]->GetEntityID())
+			{
+				pkHQProperty->m_pkStockroom->AddItem(pkNewObj->GetEntityID());
+				break;
+			}
+		}
+	}
+
+	return 0;
 }
