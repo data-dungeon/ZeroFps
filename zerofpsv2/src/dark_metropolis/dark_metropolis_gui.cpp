@@ -39,6 +39,9 @@ bool GUIPROC(ZGuiWnd* win, unsigned int msg, int numparms, void *params )
 	case ZGM_CBN_SELENDOK:
 		g_kDM.GUI_OnSelectCB(((int*)params)[0], ((int*)params)[1], win);
 		break;
+	case ZGM_SELECTLISTITEM:
+		g_kDM.GUI_OnSelectLB(((int*)params)[0], ((int*)params)[1], win);
+		break;
 	case ZGM_KEYPRESS:
 		g_kDM.GUI_OnKeyPress(((int*)params)[0], win);		
 		break;
@@ -110,7 +113,12 @@ void DarkMetropolis::GUI_OnCommand(int iID, bool bRMouseBnClick,
 		else
 		if(strClickName == "LoadNewGameBn")
 		{
-			GUI_CreateLoadMenu();
+			GUI_LoadSave(false);
+		}
+		else
+		if(strClickName == "SaveNewGameBn")
+		{
+			GUI_LoadSave(true);
 		}
 		else
 		if(strClickName == "QuitBn")
@@ -129,22 +137,19 @@ void DarkMetropolis::GUI_OnCommand(int iID, bool bRMouseBnClick,
 		else
 		if(strClickName == "LoadListOKBn")
 		{
-			char* szClanName = GetSelItem("LoadListLB");
-
+			char* szClanName = GetText("SaveLoadFileNameEB");
 			if(szClanName && strlen(szClanName) > 0)
 			{
-			
-				
-				if(LoadGame(szClanName))
+				bool bSucess = m_bSaveGame ? SaveGame(szClanName) : 
+					LoadGame(szClanName);
+
+				if(bSucess)
 				{
 					pkGui->KillWndCapture();
 					ShowWnd("LoadListWnd", false);
 					ShowWnd("DMStartWnd", false);
-					
-					GUI_NewGame(pkMainWnd);
-					
+					GUI_NewGame(pkMainWnd);				
 				}
-
 			}
 		}
 	}
@@ -337,11 +342,41 @@ void DarkMetropolis::GUI_OnSelectCB(int ListBoxID, int iItemIndex,
 {
 }
 
+void DarkMetropolis::GUI_OnSelectLB(int iID, int iIndex, ZGuiWnd* pkMainWnd)
+{
+	string strClickName;
+	string strMainWnd;
+
+	if(pkMainWnd)
+	{
+		strMainWnd = pkMainWnd->GetName();
+
+		list<ZGuiWnd*> kChilds;
+		pkMainWnd->GetChildrens(kChilds);
+
+		for(list<ZGuiWnd*>::iterator it=kChilds.begin(); it!=kChilds.end(); it++)
+			if((*it)->GetID() == iID)
+				strClickName = (*it)->GetName();
+	}
+
+	if(strClickName.empty())
+		return;
+
+	if(strMainWnd == "LoadListWnd")
+	{
+		if(strClickName == "LoadListLB")
+		{
+			char* szText = GetSelItem("LoadListLB");
+			SetText("SaveLoadFileNameEB", szText);
+		}
+	}
+}
+
 void DarkMetropolis::GUI_OnKeyPress(int iKey, ZGuiWnd *pkWnd)
 {
 }
 
-void DarkMetropolis::GUI_CreateLoadMenu()
+void DarkMetropolis::GUI_LoadSave(bool bSave)
 {
 	bool init = GetWnd("LoadListWnd") == NULL;
 
@@ -351,10 +386,12 @@ void DarkMetropolis::GUI_CreateLoadMenu()
 		"Select your clan", 0, 0, 300, 20, 0);
 	ZGuiWnd* pkLoadList = CreateWnd(Listbox, "LoadListLB", "LoadListWnd", 
 		"", 8, 28, 300-16, 400-60-28, 0);
+	ZGuiWnd* pkSaveNameEB = CreateWnd(Textbox, "SaveLoadFileNameEB", "LoadListWnd", 
+		"New Game", 0, 400-60+10, 300, 20, 0);
 	ZGuiWnd* pkOK = CreateWnd(Button, "LoadListOKBn", "LoadListWnd", 
-		"OK", 50, 400-60+20, 60, 20, 0);
+		"OK", 50, 400-60+40, 60, 20, 0);
 	ZGuiWnd* pkCancel = CreateWnd(Button, "LoadListCancelBn", "LoadListWnd", 
-		"Cacel", 200, 400-60+20, 60, 20, 0);
+		"Cacel", 200, 400-60+40, 60, 20, 0);
 
 	pkGui->SetCaptureToWnd(pkLoadListWnd);
 
@@ -381,52 +418,45 @@ void DarkMetropolis::GUI_CreateLoadMenu()
 		((ZGuiButton*)pkCancel)->SetButtonUpSkin(BnSkins[0]);
 		((ZGuiButton*)pkCancel)->SetButtonDownSkin(BnSkins[1]);
 		((ZGuiButton*)pkCancel)->SetButtonHighLightSkin(BnSkins[2]);
-
-		ClearListbox("LoadListLB");
-
-		vector<string> files;
-		if(m_pkBasicFS->ListDir(&files, m_strSaveDirectory.c_str(), true))
-		{
-			for(int i=0; i<files.size(); i++)
-				if(files[i] != string(".."))
-					AddListItem("LoadListLB", (char*)files[i].c_str());
-		}
 	}
+
+	ClearListbox("LoadListLB");
+
+	vector<string> files;
+	if(m_pkBasicFS->ListDir(&files, m_strSaveDirectory.c_str(), true))
+	{
+		for(int i=0; i<files.size(); i++)
+			if(files[i] != string(".."))
+				AddListItem("LoadListLB", (char*)files[i].c_str());
+	}
+
+	((ZGuiTextbox*) GetWnd("SaveLoadFileNameEB"))->SetReadOnly(!bSave);
+
+	m_bSaveGame = bSave;
+
 }
 
-//bool DarkMetropolis::GUI_NewGame(char* szClanName, char* szTeamColor,ZGuiWnd *pkMainWnd)
 bool DarkMetropolis::GUI_NewGame(ZGuiWnd *pkMainWnd)
-{
-	//start game
-//	if(StartNewGame(szClanName, szTeamColor))
-//	{				
-		pkMainWnd->Hide();
-		
-		LoadGuiFromScript(m_pkScript,"data/script/gui/dm_ingame.lua");
-		
-		char* szWndToHide[] =
-		{
-			"GamePlayChar1Wnd", "GamePlayChar2Wnd", 
-			"GamePlayChar3Wnd", "GamePlayChar4Wnd", 
-			"GamePlayChar5Wnd", "GamePlayPanelWnd",
-			"GamePlayInfoWnd", "MembersWnd",
-			"MissionWnd", "BriefingWnd",
-			"BuyWnd", "SellWnd", 
-			"GamePlayInfoWnd",
-		};
-
-		for(int i=0; i<sizeof(szWndToHide)/sizeof(szWndToHide[1]); i++)
-			ShowWnd(szWndToHide[i], false);	
-
-		StartSong("data/music/dm ingame.ogg");
-		
-		return true;
-/*	}
-	else
-	{
-		//här fär du gärna lägga till något klagomål på att en 
-		//clan med det namnet redan fins				
-	}
+{			
+	pkMainWnd->Hide();
 	
-	return false;*/
+	LoadGuiFromScript(m_pkScript,"data/script/gui/dm_ingame.lua");
+	
+	char* szWndToHide[] =
+	{
+		"GamePlayChar1Wnd", "GamePlayChar2Wnd", 
+		"GamePlayChar3Wnd", "GamePlayChar4Wnd", 
+		"GamePlayChar5Wnd", "GamePlayPanelWnd",
+		"GamePlayInfoWnd", "MembersWnd",
+		"MissionWnd", "BriefingWnd",
+		"BuyWnd", "SellWnd", 
+		"GamePlayInfoWnd",
+	};
+
+	for(int i=0; i<sizeof(szWndToHide)/sizeof(szWndToHide[1]); i++)
+		ShowWnd(szWndToHide[i], false);	
+
+	StartSong("data/music/dm ingame.ogg");
+	
+	return true;
 }

@@ -71,9 +71,9 @@ class DarkMetropolis : public Application, public ZGuiApp
 		bool LoadGame(string strClanName);
 		bool SaveGame(string strsavegame);
 
-		void GUI_CreateLoadMenu();
-		//bool GUI_NewGame(char* szClanName, char* szTeamColorm,ZGuiWnd *pkMainWnd);
+		void GUI_LoadSave(bool bSave);
 		bool GUI_NewGame(ZGuiWnd *pkMainWnd);
+		bool m_bSaveGame; // gui state variable
 		
 		void StartSong(char* szName);
 	
@@ -106,6 +106,7 @@ class DarkMetropolis : public Application, public ZGuiApp
 		void GUI_OnScroll(int iID, int iPos, ZGuiWnd *pkMain);
 		void GUI_OnSelectCB(int ListBoxID, int iItemIndex, ZGuiWnd *pkMain);
 		void GUI_OnKeyPress(int iKey, ZGuiWnd *pkWnd);
+		void GUI_OnSelectLB(int iID, int iIndex, ZGuiWnd* pkMainWnd);
 };
 
 extern DarkMetropolis g_kDM;
