@@ -175,6 +175,10 @@ SOURCE=.\rulesystem\character\statcounter.h
 # PROP Default_Filter ""
 # Begin Source File
 
+SOURCE=.\rulesystem\item\itemdatabase.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\rulesystem\item\itemdatabase.h
 # End Source File
 # Begin Source File

@@ -241,6 +241,8 @@ bool CharacterStats::SetCurrentSkill ( string kNewCurrentSkill )
 
 void CharacterStats::Print()
 {
+   cout << "-o~O~o--o~O~o--o~O~o--o~O~o--o~O~o--o~O~o--o~O~o--o~O~o--o~O~o-" << endl;
+
    // print data
    cout << endl << "Data:" << endl;
    cout << "-----" << endl;
@@ -248,12 +250,26 @@ void CharacterStats::Print()
    for ( map<string, string>::iterator kIte = m_kData.begin(); kIte != m_kData.end(); kIte++ )
       cout << (*kIte).first << ":" << (*kIte).second << endl;
 
+   // print hp/mp
+   cout << endl << "Stuff:" << endl;
+   cout << "-----------" << endl;
+   for ( map<string, StatCounter>::iterator kCounterIte = m_kPointStats.begin(); 
+         kCounterIte != m_kPointStats.end(); kCounterIte++ )
+   {
+      cout << (*kCounterIte).first << ":" << (*kCounterIte).second.Value() << "/";
+      cout << (*kCounterIte).second.Max() << endl;
+   }
+
+
    // Print attributes
    cout << endl << "Attributes:" << endl;
    cout << "-----------" << endl;
    for ( map<string, StatDescriber>::iterator kAttIte = m_kAttributes.begin(); 
          kAttIte != m_kAttributes.end(); kAttIte++ )
-      cout << (*kAttIte).first << ":" << (*kAttIte).second.m_iValue << endl;
+   {
+      cout << (*kAttIte).first << ":" << (*kAttIte).second.m_iValue;
+      cout << "  exp:" << (*kAttIte).second.m_fExp << endl;
+   }
 
   
    // print skills
@@ -261,8 +277,12 @@ void CharacterStats::Print()
    cout << "-------" << endl;
    for ( map<string, StatDescriber>::iterator kSklIte = m_kSkills.begin(); 
          kSklIte != m_kSkills.end(); kSklIte++ )
-      cout << (*kSklIte).first << ":" << (*kSklIte).second.m_iValue << endl;
+   {
+      cout << (*kSklIte).first << ":" << (*kSklIte).second.m_iValue;
+      cout << "  exp:" << (*kSklIte).second.m_fExp << endl;
+   }
 
+   cout << endl << "-o~O~o--o~O~o--o~O~o--o~O~o--o~O~o--o~O~o--o~O~o--o~O~o--o~O~o-" << endl;
 
 }
 
@@ -296,6 +316,13 @@ void CharacterStats::AddMP( int iValue )
 
 // ------------------------------------------------------------------------------------------
 
+void CharacterStats::SetCounter( string kName, float fValue )
+{
+   m_kPointStats[kName] = fValue;
+   m_kPointStats[kName].SetMaxValue(fValue);
+}
+
+// ------------------------------------------------------------------------------------------
 
 // temp rulez:
 

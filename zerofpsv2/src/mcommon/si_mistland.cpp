@@ -47,6 +47,7 @@ void MistLandLua::Init(ObjectManager* pkObjMan,ZFScriptSystem* pkScript)
    pkScript->ExposeFunction("MPPercent", 			      MistLandLua::GetMpPercentLua);			
    pkScript->ExposeFunction("AddHP",		            MistLandLua::AddHpLua);			
    pkScript->ExposeFunction("AddMP",			         MistLandLua::AddMpLua);			
+   pkScript->ExposeFunction("PrintStats",			      MistLandLua::PrintStatsLua);	
 
 }
 
@@ -724,3 +725,24 @@ int MistLandLua::AddMpLua (lua_State* pkLua)
 
 // ----------------------------------------------------------------------------------------------
 
+int MistLandLua::PrintStatsLua (lua_State* pkLua)
+{
+	if( g_pkScript->GetNumArgs(pkLua) == 0 )
+   {
+		Object* pkObject = g_pkObjMan->GetObjectByNetWorkID(g_iCurrentObjectID);
+
+	   if (pkObject)
+		{
+  			CharacterProperty* pkCP = (CharacterProperty*)pkObject->GetProperty("P_CharStats");
+         CharacterStats *pkCS = pkCP->GetCharStats();
+
+         pkCS->Print();
+      }
+
+   }
+
+   return 0;
+
+}
+
+// ----------------------------------------------------------------------------------------------

@@ -52,6 +52,7 @@ namespace MistLandLua
    int MCOMMON_API GetMpPercentLua (lua_State* pkLua);
    int MCOMMON_API AddHpLua (lua_State* pkLua);
    int MCOMMON_API AddMpLua (lua_State* pkLua);
+   int MCOMMON_API PrintStatsLua (lua_State* pkLua);
 
 
 	

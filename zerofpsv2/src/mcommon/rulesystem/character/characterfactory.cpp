@@ -52,8 +52,8 @@ CharacterStats* CharacterFactory::GetCharacterData(string kCharacterName)
             // set exp
             g_kCharacters[kCharacterName].SetSkillExp(  (char*)pkData->at(i).c_str(), 0 );
          }
-			else
-				g_kCharacters[kCharacterName].SetSkill((char*)pkData->at(i).c_str(), 0);
+			//else
+			//	g_kCharacters[kCharacterName].SetSkill((char*)pkData->at(i).c_str(), 0);
 		}
 
 
@@ -70,8 +70,24 @@ CharacterStats* CharacterFactory::GetCharacterData(string kCharacterName)
             // set exp
                g_kCharacters[kCharacterName].SetAttributeExp(  (char*)pkData->at(i).c_str(), 0 );
          }
+			//else
+			//	g_kCharacters[kCharacterName].SetAttribute((char*)pkData->at(i).c_str(), 0);
+		}
+
+
+      // Load counters (hp/mp)
+      pkData = &g_kCounters;
+
+		for ( i = 0; i < pkData->size(); i++ )
+		{
+			if( m_kIniLoader.KeyExist("counters", (char*)pkData->at(i).c_str() ) )
+         {
+            // set value
+				g_kCharacters[kCharacterName].SetCounter(  (char*)pkData->at(i).c_str(), 
+					m_kIniLoader.GetFloatValue("counters", (char*)pkData->at(i).c_str() )  );
+         }
 			else
-				g_kCharacters[kCharacterName].SetAttribute((char*)pkData->at(i).c_str(), 0);
+				g_kCharacters[kCharacterName].SetCounter(  (char*)pkData->at(i).c_str(), 0 );
 		}
 
       // load character data (name, sex...)
@@ -125,16 +141,16 @@ void CharacterFactory::LoadStatTypes()
 		}
 
       // Load counters
-	/*	kLoadName = "/data/stats/counters.zs";
+		kLoadName = "/data/stats/counters.zs";
 
 		if( !m_kIniLoader.Open(kLoadName.c_str(), 0) )		
 			cout << "Error! Couldn't find counters.zs!!!" << endl;
 		else
 		{
-			m_kIniLoader.GetSectionNames ( g_kData );
+			m_kIniLoader.GetSectionNames ( g_kCounters );
 
          cout << "Attributes loaded!!" << endl;
-		}*/
+		}
 
       // Load skills
 		kLoadName = "/data/stats/skills.zs";

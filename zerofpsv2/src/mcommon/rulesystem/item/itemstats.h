@@ -3,14 +3,13 @@
 #ifndef _RULESYSTEM_ITEMSTATS_H_
 #define _RULESYSTEM_ITEMSTATS_H_
 
-//#include "../rulesystemx.h"
-
+#include "../../mcommon_x.h"
 #include "itemdatabase.h"
 #include <map>
 #include <string>
 	using namespace std;
 
-class ItemStats
+class MCOMMON_API ItemStats
 {
 private:
 	float m_fQuality;

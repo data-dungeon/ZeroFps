@@ -24,6 +24,7 @@ extern MCOMMON_API map<string, SkillType> g_kSkillExps;
 extern MCOMMON_API vector<string> g_kSkills;
 extern MCOMMON_API vector<string> g_kAttributes;
 extern MCOMMON_API vector<string> g_kData;
+extern MCOMMON_API vector<string> g_kCounters;
 
 class MCOMMON_API CharacterStats
 {
@@ -90,6 +91,8 @@ public:
 	vector<string>* GetDataStats()							{ return &g_kData; }
 
    void Print();
+
+   void SetCounter( string kName, float fValue );
 
 };
 

@@ -17,12 +17,15 @@ public:
    void operator+= (float fValue);
    void operator- (float fValue);
    void operator= (string kValue);
+   void operator= (float fValue);
 
    float Value()                          { return m_fValue; }
    float Percent()                        { return m_fValue / m_fMax; }
 
    void SetMaxValue (float fMax)          { m_fMax = fMax; }
    void SetMinValue (float fMin)          { m_fMin = fMin; }
+
+   float Max()                            { return m_fMax; }
 
 };
 

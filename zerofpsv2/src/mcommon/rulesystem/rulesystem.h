@@ -22,6 +22,7 @@ extern MCOMMON_API vector<string> g_kSkills;
 extern MCOMMON_API map<string, SkillType> g_kSkillExps;
 extern MCOMMON_API vector<string> g_kAttributes;
 extern MCOMMON_API vector<string> g_kData;
+extern MCOMMON_API vector<string> g_kCounters;
 
 #endif
 

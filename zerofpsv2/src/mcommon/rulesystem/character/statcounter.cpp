@@ -42,7 +42,18 @@ void StatCounter::operator= (string kValue)
    }
 
 }
+// ----------------------------------------------------------------------------------------------
 
+void StatCounter::operator= (float fValue)
+{
+   m_fValue = fValue;
+
+   if ( m_fValue > m_fMax )
+      m_fMax = m_fValue;
+
+   if ( m_fValue < m_fMin )
+      m_fValue = m_fMin;
+}
 // ----------------------------------------------------------------------------------------------
 
 StatCounter::StatCounter()
