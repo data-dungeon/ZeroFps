@@ -203,6 +203,12 @@ void Mad_RawMesh::Clear(void)
 	akBoneConnections.clear();
 }
 
+Mad_RawMesh::Mad_RawMesh(const Mad_RawMesh& kOther)
+{
+	*this = kOther;
+}
+
+
 void Mad_RawMesh::operator=(const Mad_RawMesh& kOther)
 {
 	kHead.iNumOfAnimation	= kOther.kHead.iNumOfAnimation;
@@ -213,11 +219,12 @@ void Mad_RawMesh::operator=(const Mad_RawMesh& kOther)
 	kHead.iNumOfVertex		= kOther.kHead.iNumOfVertex;
 	kHead.iVersionNum		= kOther.kHead.iVersionNum;
 
-	akTextureCoo = kOther.akTextureCoo;
-	akFaces = kOther.akFaces;
-	akFrames = kOther.akFrames;
-	akSubMeshes = kOther.akSubMeshes;
-	akAnimation = kOther.akAnimation;
+	akTextures			= kOther.akTextures; 
+	akTextureCoo		= kOther.akTextureCoo;
+	akFaces				= kOther.akFaces;
+	akFrames				= kOther.akFrames;
+	akSubMeshes			= kOther.akSubMeshes;
+	akAnimation			= kOther.akAnimation;
 	akBoneConnections = kOther.akBoneConnections;
 }
 

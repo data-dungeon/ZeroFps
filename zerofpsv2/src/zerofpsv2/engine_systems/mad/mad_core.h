@@ -168,6 +168,7 @@ private:
 
 public:
 	Mad_RawMesh();
+	Mad_RawMesh(const Mad_RawMesh& kOther);
 
 	Mad_CoreMeshHeader				kHead;
 

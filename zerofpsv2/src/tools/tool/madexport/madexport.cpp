@@ -9,11 +9,6 @@
 
 
 //#include <iostream>
-#include <stdio.h>
-#include <assert.h>
-#include <map> 
-#include <vector> 
-using namespace std;
 
 #define EXPORT_NONE		0
 #define EXPORT_BONES	1
@@ -22,6 +17,7 @@ using namespace std;
 #define EXPORT_ALL		4
 
 #include "madexport.h"
+using namespace std;
 
 #define NRDEG_IN_ONE_RAD	57.29577951
 #define NRRAD_IN_ONE_DEG	0.0174532952
