@@ -121,10 +121,9 @@ class ENGINE_API ZeroFps : public ZFObject {
 
 		Application*			m_pkApp;					///< Application object.
 			
+
 		vector<Mad_Core*>		akCoreModells;
-				
-/*		
-		int LoadMAD(const char* filename);
+/*		int LoadMAD(const char* filename);
 		void ClearMAD(void);
 		int GetMADIndex(const char* filename);
 		Mad_Core* GetMADPtr(const char* filename);
