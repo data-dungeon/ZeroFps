@@ -523,6 +523,10 @@ ZGuiTreeboxNode* ZGuiTreebox::Node(string strName)
 	it = m_kNodeMap.find(strName);
 	if(it != m_kNodeMap.end())
 		return it->second;
+
+	if(strName == "RootNode")
+		return Root();
+
 	return NULL;
 }
 

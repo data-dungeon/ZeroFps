@@ -22,6 +22,7 @@ void GuiAppLua::Init(ZGuiApp* pkGuiApp, ZFScriptSystem* pkScript)
 	pkScript->ExposeFunction("GetScreenHeight", GuiAppLua::GetScreenHeightLua); 
 	pkScript->ExposeFunction("IsWndVisible", GuiAppLua::IsWndVisibleLua); 
 	pkScript->ExposeFunction("SetTextInt", GuiAppLua::SetTextInt); 
+	pkScript->ExposeFunction("AddTreeItem", GuiAppLua::AddTreeItemLua); 
 }
 
 // Name: CreateWndLua
@@ -276,6 +277,32 @@ int GuiAppLua::SetTextInt(lua_State* pkLua)
 	g_pkScript->GetArg(pkLua, 1, &dValue);
 
 	g_pkGuiApp->SetTextInt(szWndName, (int) dValue);
+
+	return 1;
+}
+
+// AddTreeItemLua
+// Parameters:
+// (0) [szTreeboxName] char* name of the Treebox
+// (1) [szParentName] char* name of the Parent
+// (2) [szNodeName] char* name of the Node
+// (3) [szNodeLabel] char* label of the Node
+int GuiAppLua::AddTreeItemLua(lua_State* pkLua)
+{	
+	int iNumArgs = g_pkScript->GetNumArgs(pkLua);
+
+	if(iNumArgs != 4)
+		return 0;
+
+	char szTreeboxName[100], szParentName[100], 
+		  szNodeName[100], szNodeLabel[100];
+
+	g_pkScript->GetArg(pkLua, 0, szTreeboxName);
+	g_pkScript->GetArg(pkLua, 1, szParentName);
+	g_pkScript->GetArg(pkLua, 2, szNodeName);
+	g_pkScript->GetArg(pkLua, 3, szNodeLabel);
+
+	g_pkGuiApp->AddTreeItem(szTreeboxName, szNodeName, szParentName, szNodeLabel, 1, 2);
 
 	return 1;
 }
