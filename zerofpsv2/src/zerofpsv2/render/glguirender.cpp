@@ -901,17 +901,17 @@ bool GLGuiRender::PrintRow(char *text, Rect rc, int iCursorPos,
 			if(x < rc.Left + 2)
 				x = rc.Left + 2;
 			
-			float prevcolor[3] = {
-				m_afTextColor[0], m_afTextColor[1], m_afTextColor[2]
-			};
+			//float prevcolor[3] = {
+			//	m_afTextColor[0], m_afTextColor[1], m_afTextColor[2]
+			//};
 
-			m_afTextColor[0]=m_afTextColor[1]=m_afTextColor[2]=0;
+			//m_afTextColor[0]=m_afTextColor[1]=m_afTextColor[2]=0;
 
 			PrintWord(x, y, "|", 0, 1);
 
-			m_afTextColor[0]=prevcolor[0];
-			m_afTextColor[1]=prevcolor[1];
-			m_afTextColor[2]=prevcolor[2];
+			//m_afTextColor[0]=prevcolor[0];
+			//m_afTextColor[1]=prevcolor[1];
+			//m_afTextColor[2]=prevcolor[2];
 		}
 
 	glEnd();

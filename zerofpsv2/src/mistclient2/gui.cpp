@@ -46,29 +46,20 @@ bool GUIPROC( ZGuiWnd* win, unsigned int msg, int numparms, void *params )
 	  else
 		if( ((int*)params)[0] == KEY_RETURN)
 		{
-			if( g_kMistClient.IsWndVisible("ToggleChatWnd") )
+			if( strWnd == "SayTextbox" )
 			{
-				if( strWnd != "SayTextbox" )
-				{
-					g_kMistClient.ToogleChatWnd(!g_kMistClient.IsWndVisible("SayTextbox"));
+            char* text = g_kMistClient.GetText("SayTextbox");
 
-					if(g_kMistClient.IsWndVisible("SayTextbox"))
-					{
-						g_kMistClient.m_pkGui->SetFocus( g_kMistClient.GetWnd("SayTextbox") ); 
-					}
-				}
-				else
+				if(text == NULL || strlen(text) < 1)
 				{
-					if( g_kMistClient.GetText("SayTextbox") != NULL && 
-							strlen(g_kMistClient.GetText("SayTextbox")) > 0 )
-					{
-						string strMsg = string(g_kMistClient.GetText("SayTextbox"));	
-						g_kMistClient.AddStringToChatBox(strMsg);
-						g_kMistClient.Say(strMsg);
-						g_kMistClient.SetText("SayTextbox", "");
-						g_kMistClient.m_pkGui->SetFocus( g_kMistClient.GetWnd("SayTextbox") ); 
-					}
+              g_kMistClient.ToogleChatWnd();
 				}
+            else
+            {
+               g_kMistClient.Say(text);
+               g_kMistClient.SetText("SayTextbox", "");
+			      g_kMistClient.m_pkGui->SetFocus( g_kMistClient.GetWnd("SayTextbox") );
+            }
 			}
 		}
 		else
@@ -78,7 +69,7 @@ bool GUIPROC( ZGuiWnd* win, unsigned int msg, int numparms, void *params )
 			{
 				if(g_kMistClient.IsWndVisible("SayTextbox"))
 				{
-					g_kMistClient.ToogleChatWnd(false);
+					g_kMistClient.ToogleChatWnd();
 					if(ZGuiWnd::m_pkFocusWnd)
 						ZGuiWnd::m_pkFocusWnd->KillFocus();
 				}
@@ -244,7 +235,7 @@ bool GUIPROC( ZGuiWnd* win, unsigned int msg, int numparms, void *params )
 
 				  ((ZGuiTextbox*) g_kMistClient.GetWnd("ChatTextbox"))->ToggleMultiLine(true);
 				  ((ZGuiTextbox*) g_kMistClient.GetWnd("ChatTextbox"))->SetReadOnly(true); 
-			//	  g_kMistClient.SetText("ChatTextbox", text);
+				//  g_kMistClient.SetText("ChatTextbox", text);
 
 				  ((ZGuiTextbox*) g_kMistClient.GetWnd("ChatTextbox"))->SetScrollbarSkin(
 					  g_kMistClient.GetSkin("DefSBrBkSkin"),
@@ -258,6 +249,7 @@ bool GUIPROC( ZGuiWnd* win, unsigned int msg, int numparms, void *params )
 				  ((ZGuiTextbox*) g_kMistClient.GetWnd("ChatTextbox"))->GetScrollbar()->SetAutoHide(true); 
 
 				  g_kMistClient.GetWnd("ChatTextbox")->SetTextClr(255,255,255); 
+              g_kMistClient.GetWnd("SayTextbox")->SetTextClr(255,255,255); 
 				  g_kMistClient.GetWnd("SayTextbox")->SetFont( 
 					  g_kMistClient.m_pkGui->GetResMan()->Font("listboxfont") );
 
@@ -267,14 +259,9 @@ bool GUIPROC( ZGuiWnd* win, unsigned int msg, int numparms, void *params )
                   g_kMistClient.m_strLoginPW = strPassword;
 
 				  g_kMistClient.GetWnd("ChatDlgMainWnd")->m_bUseAlhpaTest = false; // eftersom tex1a är helvit (för att kunna ändra trasparens med färgvärdet)
+              g_kMistClient.GetWnd("SayTextbox")->m_bUseAlhpaTest = false;
 
-				  g_kMistClient.ShowWnd("SayTextbox", false);
-				  g_kMistClient.ShowWnd("SayButton", false);
-
-		/*		  g_kMistClient.m_pkGui->AddKeyCommand(KEY_RETURN, 
-					  g_kMistClient.GetWnd("SayTextbox"), 
-					  g_kMistClient.GetWnd("SayButton"));*/
-
+              g_kMistClient.ShowWnd("ChatDlgMainWnd", false);
                }
                else
                   printf("Input error, failed to connect.");
@@ -289,11 +276,12 @@ bool GUIPROC( ZGuiWnd* win, unsigned int msg, int numparms, void *params )
 	  else
 	  if(strMainWnd == "GameGuiToolbar")
 	  {
-		  if(strController == "ToggleChatWnd")
+		  if(strController == "OpenChatButton")
 		  {
 			//if(g_kMistClient.IsWndVisible("SayTextbox") == true) // stänga ner Saybox?
 			{
-				g_kMistClient.ToogleChatWnd(!g_kMistClient.IsWndVisible("SayTextbox"));
+            g_kMistClient.SetText("SayTextbox", "");
+				g_kMistClient.ToogleChatWnd();
 			}
 	/*		else
 			{
@@ -307,11 +295,26 @@ bool GUIPROC( ZGuiWnd* win, unsigned int msg, int numparms, void *params )
 		if(strController == "SayButton")
 		{
 			string szMsg = string(g_kMistClient.GetText("SayTextbox"));
-			g_kMistClient.AddStringToChatBox(szMsg);
+
 			g_kMistClient.Say(szMsg);
 			g_kMistClient.SetText("SayTextbox", "");
 			g_kMistClient.m_pkGui->SetFocus( g_kMistClient.GetWnd("SayTextbox") ); 
 		}
+      else
+      if(strController == "CloseChatButton")
+      {
+         g_kMistClient.ToogleChatWnd();
+      }
+      else
+      if(strController == "ChangeSizeUpChatButton")
+      {
+         g_kMistClient.ResizeChatDlg(true);
+      }
+      else
+      if(strController == "ChangeSizeDownChatButton")
+      {
+         g_kMistClient.ResizeChatDlg(false);
+      }
 	  }
    }
 
@@ -335,26 +338,26 @@ bool MistClient::NameIPFromServerList(string& strName, string& strIP)
    return false;
 }
 
-void MistClient::ToogleChatWnd(bool bOpen)
+void MistClient::ToogleChatWnd(bool bSetInputFocus)
 {
+   bool bOpen = !g_kMistClient.IsWndVisible("SayTextbox");
+
 	if(bOpen == false)
 	{
-		Rect rc = g_kMistClient.GetWnd("ChatDlgMainWnd")->GetScreenRect();
-		rc = rc.Move(0,24); // flytta ner fönstret
-		g_kMistClient.GetWnd("ChatDlgMainWnd")->SetPos(rc.Left, rc.Top, true, true);
-
-		g_kMistClient.ShowWnd("SayTextbox", false);
-		g_kMistClient.ShowWnd("SayButton", false);
+		g_kMistClient.ShowWnd("ChatDlgMainWnd", false);
+      g_kMistClient.ShowWnd("OpenChatButton", true);
 	}
 	else
 	{
-		Rect rc = g_kMistClient.GetWnd("ChatDlgMainWnd")->GetScreenRect();
-		rc = rc.Move(0,-24); // flytta upp fönstret
-		g_kMistClient.GetWnd("ChatDlgMainWnd")->SetPos(rc.Left, rc.Top, true, true);
-
-		g_kMistClient.ShowWnd("SayTextbox", true);
-		g_kMistClient.ShowWnd("SayButton", true);
+		g_kMistClient.ShowWnd("ChatDlgMainWnd", true);
+      g_kMistClient.ShowWnd("OpenChatButton", false);
 	}
+
+   if(bSetInputFocus)
+   {
+      g_kMistClient.SetText("SayTextbox", "");
+      g_kMistClient.m_pkGui->SetFocus( g_kMistClient.GetWnd("SayTextbox") ); 
+   }
 }
 
 void MistClient::AddStringToChatBox(string strMsg)
@@ -367,6 +370,60 @@ void MistClient::AddStringToChatBox(string strMsg)
 	pkScrollbar->GetScrollInfo(min,max,pos);
 	pkScrollbar->SetScrollPos(max-1);
 
-	Rect rc = pkScrollbar->GetArrowButton(false)->GetScreenRect();
-	pkScrollbar->GetButton()->SetPos(rc.Left,rc.Top-20,true,true);
+	//Rect rc = pkScrollbar->GetArrowButton(false)->GetScreenRect();
+	//pkScrollbar->GetButton()->SetPos(rc.Left,rc.Top-20,true,true);
+}
+
+void MistClient::ResizeChatDlg(bool bBigger)
+{
+   static unsigned char s_byCurrenSize = 0;
+
+   if(bBigger)
+   {
+      if(s_byCurrenSize == 2)
+         return;
+
+      s_byCurrenSize++;
+   }
+   else
+   {
+      if(s_byCurrenSize == 0)
+         return;
+
+      s_byCurrenSize--;
+   }
+
+   Rect rcChatDlgMainWnd = g_kMistClient.GetWnd("ChatDlgMainWnd")->GetScreenRect();
+   Rect rcChatTextbox = g_kMistClient.GetWnd("ChatTextbox")->GetScreenRect();
+
+   const int RESIZE_VALUE = 150;
+   int iVerticalOffset = 0;
+
+   if(bBigger)
+   {
+      rcChatDlgMainWnd.Top -= RESIZE_VALUE;
+      rcChatTextbox.Top -= RESIZE_VALUE;
+      iVerticalOffset = RESIZE_VALUE;
+   }
+   else
+   {
+      rcChatDlgMainWnd.Top += RESIZE_VALUE;
+      rcChatTextbox.Top += RESIZE_VALUE;
+      iVerticalOffset = -RESIZE_VALUE;
+   }
+
+   g_kMistClient.GetWnd("ChatDlgMainWnd")->Resize(512, rcChatDlgMainWnd.Height());
+   g_kMistClient.GetWnd("ChatTextbox")->Resize(512, rcChatTextbox.Height());
+
+   g_kMistClient.GetWnd("ChatDlgMainWnd")->SetPos(rcChatDlgMainWnd.Left, rcChatDlgMainWnd.Top, true, true);
+   g_kMistClient.GetWnd("ChatTextbox")->SetPos(rcChatTextbox.Left, rcChatTextbox.Top, true, true);
+
+   g_kMistClient.GetWnd("SayTextbox")->Move(0,iVerticalOffset);
+   g_kMistClient.GetWnd("SayButton")->Move(0,iVerticalOffset);
+
+	unsigned int min,max,pos;
+	ZGuiScrollbar* pkScrollbar = ((ZGuiTextbox*)g_kMistClient.GetWnd("ChatTextbox"))->GetScrollbar();
+	pkScrollbar->GetScrollInfo(min,max,pos);
+	pkScrollbar->SetScrollPos(max-1);
+
 }

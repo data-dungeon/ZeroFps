@@ -539,7 +539,7 @@ void ZGuiTextbox::Resize(int Width, int Height, bool bChangeMoveArea)
 {
 	if(m_pkScrollbarVertical)
 	{
-		m_pkScrollbarVertical->SetPos(Width, 0, false, true);
+		m_pkScrollbarVertical->SetPos(Width-20, 0, false, true);
 		m_pkScrollbarVertical->Resize(20,Height);
 	}
 

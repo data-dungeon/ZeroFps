@@ -36,8 +36,6 @@ MistClient::MistClient(char* aName,int iWidth,int iHeight,int iDepth)
    RegisterVariable("r_loginname", &m_strLoginName, CSYS_STRING);
    RegisterVariable("r_loginpw", &m_strLoginPW, CSYS_STRING);
    
-
-   
 } 
  
 void MistClient::OnInit() 
@@ -170,6 +168,18 @@ void MistClient::Input()
 	//get mouse
 	int x,z;		
 	m_pkInputHandle->RelMouseXY(x,z);	
+
+   // check gui input
+   static bool s_bReturnPressed = false;
+
+   if(m_pkInputHandle->Pressed(KEY_RETURN))
+      s_bReturnPressed = true;
+   else
+      if(s_bReturnPressed)
+      {
+         s_bReturnPressed = false,
+         g_kMistClient.ToogleChatWnd(true);
+      }
 	
 	//check buttons
 	m_kCharacterControls[eUP] = 	m_pkInputHandle->Pressed(KEY_W);

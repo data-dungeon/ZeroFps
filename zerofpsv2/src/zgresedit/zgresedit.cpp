@@ -15,6 +15,8 @@ FILE* pkAnimationFile = NULL;
 
 ZGResEdit g_kResEdit("ZGResEdit",0,0,0);
 
+string CURRENT_PROJECT_PATH = "../datafiles/mistlands/"; // Ändra till aktuellt proejkt för att spara i rätt folder.
+
 static bool GUIPROC( ZGuiWnd* win, unsigned int msg, int numparms, void *params ) 
 {
 	switch(msg)
@@ -1169,7 +1171,8 @@ void ZGResEdit::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 
 				if(m_bSaveFile)
 				{
-					kSerialize.SaveGUI(szFileName, m_pkScene);
+               string strSavePath = CURRENT_PROJECT_PATH + string(szFileName).erase(0,8);
+					kSerialize.SaveGUI((char*)strSavePath.c_str(), m_pkScene);
 				}
 				else
 				{
@@ -1871,6 +1874,8 @@ void ZGResEdit::OnClickListbox(int iListBoxID, int iListboxIndex, ZGuiWnd* pkMai
 					m_pkFocusWnd = pkNewActiveWnd;
 					m_pkMainWnd = pkNewActiveWnd;
 					if(m_pkMainWnd == NULL) m_pkMainWnd = GetWnd("GuiMainWnd");
+
+               OnSelectWnd(pkNewActiveWnd);
 				}
 				else
 					((ZGuiCheckbox*)GetWnd("ShowHideWndCB"))->UncheckButton();
