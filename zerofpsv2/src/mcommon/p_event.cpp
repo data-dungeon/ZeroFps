@@ -25,25 +25,15 @@ void P_Event::Update()
 
 bool P_Event::SendEvent(const char* acEvent)
 {
-	if(m_pkScriptResHandle)
-		delete m_pkScriptResHandle;
+	if(m_pkObject->GetObjectScript())
+	{
+		//ZFScript* pkScriptRes = (ZFScript*)m_pkObject->GetObjectScript()->GetResourcePtr();
 
-	m_pkScriptResHandle = new ZFResourceHandle;
-	if(!m_pkScriptResHandle->SetRes(m_pkObject->GetType()))
-		printf("Failed to load event script %s\n", m_pkObject->GetType().c_str());
-	
-//	ZFScript* pkScriptRes = (ZFScript*)m_pkScriptResHandle->GetResourcePtr();
+		if(!m_pkScriptSys->Call(m_pkObject->GetObjectScript(), (char*)acEvent, 0, 0))
+			return false;
 
-//	cout<<"ba"<<endl;
-//	cout<<"SCRIPT:"<<(char*)m_pkObject->GetType().c_str()<<endl;
-	if(!m_pkScriptSys->Run(m_pkScriptResHandle))
-		return false;
-		
-//	cout<<"bla"<<endl;
-	if(!m_pkScriptSys->Call(m_pkScriptResHandle, (char*)acEvent, 0, 0))
-		return false;
-
-	return true;
+		return true;
+	}
 }
 
 Property* Create_P_Event()

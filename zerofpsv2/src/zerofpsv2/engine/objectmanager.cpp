@@ -339,9 +339,6 @@ Object* ObjectManager::CreateObjectFromScript(const char* acName)
 	
 	ObjectManagerLua::Reset();
 
-	if(!m_pkScript->Run(m_pScriptFileHandle))
-		return NULL;
-		
 	if(!m_pkScript->Call(m_pScriptFileHandle, "Create", 0, 0))
 		return NULL;
 	
@@ -1546,8 +1543,3 @@ void ObjectManager::UnLoadZone(int iId)
 	kZData->m_pkZone = NULL;
 }
 
-
-ZFScript* ObjectManager::GetObjectManagerScript()
-{
-	return (ZFScript*) m_pScriptFileHandle->GetResourcePtr();  
-}

@@ -303,7 +303,7 @@ class ENGINE_API Object
 		inline bool& GetSave()						{	return m_bSave;			};
 		inline string& GetName()					{	return m_strName;			};
 		inline string& GetType()					{	return m_strType;			};
-		//const char* GetType(){return m_strType.c_str();}
+		inline ZFResourceHandle* GetObjectScript()  { return m_pScriptFileHandle;};
 
 		inline Vector3& GetVel()					{	return m_kVel;				};		
 		inline Vector3& GetAcc()					{	return m_kAcc;				};
