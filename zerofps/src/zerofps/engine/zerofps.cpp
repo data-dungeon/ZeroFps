@@ -160,30 +160,24 @@ string ZeroFps::GetArg(int iArgIndex)
 
 void ZeroFps::Init(int iNrOfArgs, char** paArgs)
 {	
-
 	HandleArgs(iNrOfArgs,paArgs);					//handle arguments
-	SetApp();										//setup class pointers	
+	SetApp();											//setup class pointers	
 
 	InitDisplay(m_pkApp->m_iWidth,m_pkApp->m_iHeight,m_pkApp->m_iDepth);
 
+	m_iState=state_normal;							//init gamestate to normal		
 
-	m_iState=state_normal;								//init gamestate to normal		
-//	m_pkGameCamera=m_pkDefaultCamera;		
-//	m_pkCamera=m_pkGameCamera;
-
-//	SetCamera(m_pkDefaultCamera);	
-
-	m_pkApp->OnInit();										//call the applications oninit funktion
+	m_pkApp->OnInit();								//call the applications oninit funktion
 	m_fFrameTime=0;
 	m_fLastFrameTime = SDL_GetTicks();
-	MainLoop();														//jump to mainloop
+	MainLoop();											//jump to mainloop
 }
 
 void ZeroFps::MainLoop(void) {
 
 	while(m_iState!=state_exit) {
 
-		Swap();				//swap buffers n calculate fps
+		Swap();											//swap buffers n calculate fps
 		m_pkNetWork->Run();
 		m_pkObjectMan->PackToClients();
 		DevPrintf("Num of Clients: %d", m_pkNetWork->GetNumOfClients());
@@ -210,16 +204,7 @@ void ZeroFps::MainLoop(void) {
 					m_bConsoleMode=true;		
 					m_pkInput->Reset();
 				}
-				
-        /*        if(m_bGuiTakeControl)
-				{
-					if(m_bGuiMode)
-						m_pkInput->SetInputEnabled(false);
-					else
-						m_pkInput->SetInputEnabled(true);
-                }*/
-			}
-			
+			}			
 				
 			//toggle keyboard/mouse grabing
 			if(m_pkInput->Pressed(KEY_F12))
@@ -652,64 +637,6 @@ void ZeroFps::RunCommand(int cmdid, const CmdArgument* kCommand)
 	}	
 }
 
-void ZeroFps::ClearLevelData()
-{
-	
-}
-
-/*
-int ZeroFps::LoadMAD(const char* filename)
-{
-	int iMadId = GetMADIndex(filename);
-
-	if(iMadId != -1)
-		return iMadId;
-
-	Mad_Core* CoreAdd = new Mad_Core;
-	if(CoreAdd->LoadMad(filename)) {
-		akCoreModells.push_back(CoreAdd);
-		return (akCoreModells.size() - 1);
-		}
-	else {
-		delete CoreAdd;
-		CoreAdd = new Mad_Core;
-		CoreAdd->LoadMad("../data/mad/zoneobject.mad");
-		akCoreModells.push_back(CoreAdd);
-		return (akCoreModells.size() - 1);
-		}
-
-	return -1;
-}
-
-void ZeroFps::ClearMAD(void)
-{
-	for(int i=0; i< akCoreModells.size(); i++)
-		delete akCoreModells[i];
-
-	akCoreModells.clear();
-}
-
-int ZeroFps::GetMADIndex(const char* filename)
-{
-	for(unsigned int i=0; i < akCoreModells.size(); i++)
-	{
-		if(strcmp(akCoreModells[i]->GetName(),filename) == 0)
-			return i;
-	}
-
-	return -1;
-}
-
-Mad_Core* ZeroFps::GetMADPtr(const char* filename)
-{
-	int iMadId = LoadMAD(filename);
-
-	if(iMadId != -1)
-		return akCoreModells[iMadId];
-
-	return NULL;
-}
-*/
 
 void ZeroFps::HandleNetworkPacket(NetPacket* pkNetPacket)
 {
