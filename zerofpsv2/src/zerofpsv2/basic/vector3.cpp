@@ -49,6 +49,7 @@ void Vector3::Normalize(void)
 {
 	float invlen = Length();
 	ZFAssert(invlen != 0.0, "Vector3::Normalize: Vector has zero length");
+
 	
 	invlen = 1 / invlen;
 	x *= invlen;
