@@ -4,8 +4,8 @@ echo Running in workdirectory, and setting LD_LIBRARY_PATH to curent direcotry
 export templdpath=$LD_LIBRARY_PATH
 export LD_LIBRARY_PATH=./:$LD_LIBRARY_PATH
 
-cd "`dirname "./mistclient"`"
-./"`basename "./mistclient"`" $2 $3 $4 $5 $6 $7 $8 $9
+cd `dirname $0`
+./mistclient $2 $3 $4 $5 $6 $7 $8 $9
 
 export LD_LIBRARY_PATH=$templdpath
 
