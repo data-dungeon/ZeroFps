@@ -26,6 +26,8 @@ class ENGINE_API CSMech : public CollisionShape
 		bool Closer(Vector3& kCurPos,Vector3& OPos1,Vector3& OPos2);
 		
 		bool TestPolygon(Vector3* kVerts,Vector3 kPos1,Vector3 kPos2,float fR);
+		bool TestSides(Vector3* kVerts,Vector3* pkNormal,Vector3 kPos,float fR);
+		
 };
 
 
