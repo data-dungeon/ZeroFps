@@ -182,8 +182,7 @@ bool OggMusic::LoadFile(string kFileName)
 
 
 bool OggMusic::Play()
-{
-	
+{	
 	if(m_bPlaying)
 		Stop();
 	if(!m_bFileOK)

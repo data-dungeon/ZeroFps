@@ -58,7 +58,6 @@ public:
 
 	static int OggMusic::ThreadMain(void *);
 	static SDL_Thread* m_pkThread;
-
 	
 private:
 	//bool InitPlay();

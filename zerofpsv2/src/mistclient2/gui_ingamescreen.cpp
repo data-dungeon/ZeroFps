@@ -23,18 +23,6 @@ void GuiMsgIngameScreen( string strMainWnd, string	strController,
 		else
 		if(strMainWnd == "ChatDlgMainWnd")
 		{
-			//if(strController == "SayButton")
-			//{
-			//	char*	text = g_kMistClient.GetText("SayTextbox");
-			//	if(text != NULL && strlen(text) > 0)
-			//	{
-			//		g_kMistClient.Say(text);
-			//		g_kMistClient.SetText("SayTextbox",	"");
-			//		ZGuiWnd::m_pkFocusWnd->KillFocus();
-			//		g_kMistClient.m_pkGui->SetFocus(g_kMistClient.GetWnd("GuiMainWnd"));
-			//	}
-			//}
-			//else
 			if(strController == "CloseChatButton")
 			{
 				g_kMistClient.ToogleChatWnd(false);
@@ -180,7 +168,6 @@ void MistClient::ResizeChatDlg(bool	bMakeBigger)
 	GetWnd("ChatTextbox")->Resize(512, rcChatTextbox.Height());
 
 	GetWnd("SayTextbox")->Move(0,iVerticalOffset);
-	GetWnd("SayButton")->Move(0,iVerticalOffset);
 
 	unsigned	int min,max,pos;
 	ZGuiScrollbar*	pkScrollbar	= ((ZGuiTextbox*)GetWnd("ChatTextbox"))->GetScrollbar();
