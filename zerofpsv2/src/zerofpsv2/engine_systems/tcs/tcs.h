@@ -59,9 +59,9 @@ class ENGINE_SYSTEMS_API Tcs : public ZFSubSystem
 		P_Tcs*				m_pkBodyCopy1;
 		P_Tcs*				m_pkBodyCopy2;		
 				
-		int					m_iNrOfCollissions;
-		int					m_iNrOfTests;
-		int					m_iNrOfActiveBodies;
+		int					m_iNrOfCollissions;			//nr of collisions last frame
+		int					m_iNrOfTests;					//nr of tests last frame
+		int					m_iNrOfActiveBodies;			//nr of active bodies last frame
 		
 		//settings
 		int 					m_iHandleCollission;

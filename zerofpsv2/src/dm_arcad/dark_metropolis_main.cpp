@@ -449,20 +449,23 @@ void DarkMetropolis::Input()
 			pkChar->m_kActions.reset();
 					
 			//movement
-			if(m_pkInputHandle->VKIsDown("cam_up"))
+			if(m_pkInputHandle->VKIsDown("move_up"))
 				pkChar->m_kActions[0] = true;;
-			if(m_pkInputHandle->VKIsDown("cam_down"))
+			if(m_pkInputHandle->VKIsDown("move_down"))
 				pkChar->m_kActions[1] = true;;
-			if(m_pkInputHandle->VKIsDown("cam_left"))
+			if(m_pkInputHandle->VKIsDown("move_left"))
 				pkChar->m_kActions[2] = true;;
-			if(m_pkInputHandle->VKIsDown("cam_right"))
+			if(m_pkInputHandle->VKIsDown("move_right"))
 				pkChar->m_kActions[3] = true;;
 
 			//fUre
-			if(m_pkInputHandle->VKIsDown("select"))
+			if(m_pkInputHandle->VKIsDown("shoot"))
+			{
 				pkChar->m_kActions[4] = true;;
-				
+			}	
 
+			
+				
 			//sett camera rotation
 			//pkChar->m_kCameraRotation = m_pkFps->GetCam()->GetRotM();				
 							

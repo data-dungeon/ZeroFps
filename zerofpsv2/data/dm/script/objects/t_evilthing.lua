@@ -16,6 +16,15 @@ function Create()
 			InitParameter("team",1)
 		InitProperty("P_ScriptInterface");
 
+		InitProperty("P_Tcs");		
+			InitParameter("polygontest","false");
+			InitParameter("radius",-1);			
+			InitParameter("group",2);
+			InitParameter("groupflag",3);
+			InitParameter("activemoment","false");
+		
+			
+			
 --		InitProperty("P_Tcs");		
 --			InitParameter("polygontest","false");
 --			InitParameter("gravity","true");
@@ -38,6 +47,12 @@ end
 
 function FirstRun()
 
+end
+
+function Collission(Other)
+	--Print("Bah");
+	Delete(Other);
+	Dead();
 end
 
 function Init()
@@ -93,21 +108,21 @@ function HeartBeat()
 end
 
 function Dead()
+
 --	Print("DIIIIIIIIE");
 	
 --	PlaySound(SIGetSelfID(),"deaths/trolldie.wav");
 	
 	p = GetObjectPos(SIGetSelfID());
 	p[2] = p[2] + 0.5;
-	
+		
 	CreateEntity("data/script/objects/spiderflesh.lua",p);	
 	CreateEntity("data/script/objects/spiderflesh.lua",p);	
 	CreateEntity("data/script/objects/spiderflesh.lua",p);	
 	CreateEntity("data/script/objects/spiderflesh.lua",p);	
 	
+--	CreateEntity("data/script/objects/t_evilthing.lua",p);	
+
 
 	Delete(SIGetSelfID());
-
-	
-	
 end

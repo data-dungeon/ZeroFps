@@ -402,10 +402,6 @@ void ZeroFps::Run_Client()
 
 void ZeroFps::Update_System(bool bServer)
 {
-/*	//ugly startuptime fix
-	if(m_fSystemUpdateTime == 0)
-		m_fSystemUpdateTime = GetTicks();
-*/
 
 	int iLoops;
 
@@ -429,7 +425,7 @@ void ZeroFps::Update_System(bool bServer)
 		cout<<"engine runs to slow (try kicking your computer and punching your screen for better performance)"<<endl;
 		iLoops = 10;
 	}
-		
+	
 	//calculate new system delta time
 	m_fSystemUpdateFpsDelta = float(1.0) / m_fSystemUpdateFps;
 	
@@ -461,6 +457,7 @@ void ZeroFps::Update_System(bool bServer)
 					m_pkObjectMan->Update(PROPERTY_TYPE_NORMAL,PROPERTY_SIDE_SERVER,false);
 				else
 					m_pkObjectMan->Update(PROPERTY_TYPE_NORMAL,PROPERTY_SIDE_CLIENT,false);
+				
 				
 				//update game message system
 				m_pkObjectMan->UpdateGameMessages();

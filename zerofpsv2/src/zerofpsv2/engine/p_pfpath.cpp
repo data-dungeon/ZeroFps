@@ -83,7 +83,7 @@ void P_PfPath::Update()
 		return;
 
 	//TCS TEST
-	P_Tcs* pkTcs = (P_Tcs*)m_pkObject->GetProperty("P_Tcs");
+	P_Tcs* pkTcs = NULL;//(P_Tcs*)m_pkObject->GetProperty("P_Tcs");
 		
 		
 	Vector3 kPos = m_pkObject->GetWorldPosV();

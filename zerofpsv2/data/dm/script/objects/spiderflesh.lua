@@ -13,7 +13,7 @@ function Create()
 			InitParameter("radius",0.3);
 			InitParameter("gravity","true");
 			InitParameter("group",4);
-			InitParameter("groupflag",0);
+--			InitParameter("groupflag",0);
 			InitParameter("airfriction",0.5);
 			InitParameter("mass",1);			
 			InitParameter("inertia",2);
@@ -30,9 +30,9 @@ end
 function Init()
 	--p = GetObjectPos(SIGetSelfID());
 	local p = {};
-	p[1] = Random(10)-5;
-	p[2] = 8;	
-	p[3] = Random(10)-5;
+	p[1] = Random(8)-4;
+	p[2] = Random(8)+1;	
+	p[3] = Random(8)-4;
 
 	ApplyImpuls(SIGetSelfID(),p);
 --SetVelTo(SIGetSelfID(),p,20);
@@ -43,7 +43,8 @@ function Init()
 
 --	SetRotVel (SIGetSelfID(),p);
 
---	Print("TAAAAAAAAAA");
+	--p = GetObjectPos(SIGetSelfID());	
+	--Print("spiderflesh Pos:",p[1],"  ",p[2],"  ",p[3]);
 	
 end
 

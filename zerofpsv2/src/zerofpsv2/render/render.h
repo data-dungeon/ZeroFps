@@ -128,7 +128,7 @@ class RENDER_API Render : public ZFSubSystem {
 		TextureManager* GetTexMangager()		{	return m_pkTexMan; }		///< Get ptr to texture manger.
 		
 		
-		
+		bool HaveExtension(string strExt);										//check if thers support for a specefic opengl extension
 		
 		void PrintChar(unsigned char cChar);
 		void Print(Vector3 kPos,Vector3 kHead,Vector3 kScale,char* aText);

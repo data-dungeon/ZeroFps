@@ -66,7 +66,6 @@ EntityManager::EntityManager()
 	m_iNumOfNetObjects		= 0;
 	m_bDrawZones				= false;
 	m_bDrawZoneConnections	= false;
-	m_pScriptFileHandle		= NULL;
 	m_iTrackerLOS				= 3;	
 	m_iObjectDistance			= 50;
 	m_fZoneUnloadTime			= 3;	
@@ -443,10 +442,9 @@ Entity* EntityManager::CreateObjectFromScriptInZone(const char* acName,Vector3 k
 	//force loading of this zone
 	LoadZone(id);
 	
-	if(!m_kZones[id].m_pkZone)
+	if(m_kZones[id].m_iStatus != EZS_LOADED)
 		return NULL;
-		
-		
+	
 	Entity* newobj = CreateObjectFromScript(acName);
 	
 	if(newobj)
@@ -457,31 +455,37 @@ Entity* EntityManager::CreateObjectFromScriptInZone(const char* acName,Vector3 k
 			cout<<"Error! Tried to create a object outside zones."<<endl;
 	}
 
+	
 	return newobj;
 }
 
 Entity* EntityManager::CreateObjectFromScript(const char* acName)
 {
-	if(m_pScriptFileHandle)
-		delete m_pScriptFileHandle;
-
-	m_pScriptFileHandle = new ZFResourceHandle;
-	if(!m_pScriptFileHandle->SetRes(acName))
+	ZFResourceHandle	kScriptFileHandle;
+	
+	if(!kScriptFileHandle.SetRes(acName))
 	{
-		printf("Failed to load object script %s\n", acName);
+		cout<<"WARNING: Failed to load entityscript script "<<acName<<endl;;
 		return NULL;
 	}
 	
 	//push all pointers
 	ObjectManagerLua::Push();
-
-	if(!m_pkScript->Call(m_pScriptFileHandle, "Create", 0, 0))
+	
+	if(!m_pkScript->Call(&kScriptFileHandle, "Create", 0, 0))
 	{	
+		cout<<"WARNING: Failed to call Create funktion in entity script "<<acName<<endl;
 		//pop pointers and return
-		ObjectManagerLua::Pop();		
+		ObjectManagerLua::Pop();	
 		return NULL;
 	}
 	
+	
+	//copy return entity pointer
+	Entity* pkReturnObj = ObjectManagerLua::g_pkReturnObject;
+	
+	//pop pointers
+	ObjectManagerLua::Pop();
 	
 	//find last /
 	int len = strlen(acName);
@@ -495,20 +499,14 @@ Entity* EntityManager::CreateObjectFromScript(const char* acName)
 		}
 	}
 	
-	ObjectManagerLua::g_pkReturnObject->m_strType	= &acName[pos];
-	ObjectManagerLua::g_pkReturnObject->m_strName	= string("A ") + &acName[pos];
-	ObjectManagerLua::g_pkReturnObject->m_pScriptFileHandle->SetRes(acName);
-	
-	Entity* pkReturnObj = ObjectManagerLua::g_pkReturnObject;
-	
-
+	//setup entity
+	pkReturnObj->m_strType	= &acName[pos];
+	pkReturnObj->m_strName	= string("A ") + &acName[pos];
+	pkReturnObj->m_pScriptFileHandle->SetRes(acName);
    pkReturnObj->m_strCreatedFromScript = acName;
 	
 	CallFunction(pkReturnObj, "FirstRun");
-
-	//pop pointers
-	ObjectManagerLua::Pop();
-
+	
 	return pkReturnObj;
 }
 

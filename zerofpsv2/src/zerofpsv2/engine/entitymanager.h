@@ -82,7 +82,6 @@ class ENGINE_API EntityManager : public ZFSubSystem{
 		//some system pointers
 		ZeroFps*						m_pkZeroFps;
 		ZFScriptSystem* 			m_pkScript;
-		ZFResourceHandle* 		m_pScriptFileHandle;
 		NetWork*						m_pkNetWork;
 		ZFBasicFS*					m_pkBasicFS;
 

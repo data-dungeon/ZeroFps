@@ -38,19 +38,19 @@ void P_BillBoardRender::Update()
 	if(!m_pkFps->GetCam()->GetFrustum()->SphereInFrustum(m_pkObject->GetWorldPosV(),m_fScale))
 		return;
 		
-	Vector3 pos = m_pkObject->GetWorldPosV();
+	Vector3 pos = m_pkObject->GetIWorldPosV();
 	m_pkRender->DrawBillboard(m_pkFps->GetCam()->GetModelViewMatrix(),pos,m_fScale,m_iTexture);
 }
 
 vector<PropertyValues> P_BillBoardRender::GetPropertyValues()
 {
 	vector<PropertyValues> kReturn(2);
-
-	kReturn[0].kValueName = "m_kTexture";
+ 
+	kReturn[0].kValueName = "texture";
 	kReturn[0].iValueType = VALUETYPE_STRING;
 	kReturn[0].pkValue    = (void*)&m_kTexture;
 
-	kReturn[1].kValueName = "m_fScale";
+	kReturn[1].kValueName = "scale";
 	kReturn[1].iValueType = VALUETYPE_FLOAT;
 	kReturn[1].pkValue    = (void*)&m_fScale;
 	return kReturn;
@@ -58,7 +58,8 @@ vector<PropertyValues> P_BillBoardRender::GetPropertyValues()
 
 bool P_BillBoardRender::HandleSetValue( string kValueName ,string kValue )
 {
-	if(strcmp(kValueName.c_str(), "m_kTexture") == 0) {
+	if(strcmp(kValueName.c_str(), "texture") == 0) 
+	{
 		SetTexture(kValue.c_str());
 		return true;
 	}

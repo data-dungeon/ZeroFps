@@ -176,6 +176,18 @@ void Render::Swap(void) {
 }
 
 
+bool Render::HaveExtension(string strExt)
+{
+	unsigned char* pcExt = const_cast<unsigned char*>(glGetString(GL_EXTENSIONS));		
+
+	if(strstr((const char*)pcExt,strExt.c_str()) != NULL)
+	{
+		return true;	
+	}
+	
+	return false;
+}
+
 
 
 void Render::Sphere(Vector3 kPos,float fRadius,int iRes,Vector3 kColor,bool bSolid)

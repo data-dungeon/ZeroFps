@@ -724,8 +724,6 @@ bool ZShader::HaveVertexProgramExt()
 {
 	unsigned char* pcExt = const_cast<unsigned char*>(glGetString(GL_EXTENSIONS));		
 
-	//cout<<"extensions: "<<pcExt<<endl;
-
 	if(strstr((const char*)pcExt,"GL_ARB_vertex_program") != NULL)
 	{
 		return true;	

@@ -61,12 +61,13 @@ void DMCharacterStats::Randomize()
 		}
 	}
 
-	if(!(kNames.empty() || kSNames.empty()))
+	if( (kNames.size()>2) && (kSNames.size()>2))
 	{
 		int iFirstName = rand()%kNames.size();
 		int iSureName = rand()%kSNames.size();
-		kNames[iFirstName].erase(kNames[iFirstName].size()-1);
-		kSNames[iSureName].erase(kSNames[iSureName].size()-1);
+		//detta fuckar ur sig när listan tar slut..eller nått sånt..krashar ialf //dvoid
+		//kNames[iFirstName].erase(kNames[iFirstName].size()-1);
+		//kSNames[iSureName].erase(kSNames[iSureName].size()-1);
 		m_strName = kNames[iFirstName] + string(" ") + kSNames[iSureName];
 	}
 	else
@@ -74,15 +75,14 @@ void DMCharacterStats::Randomize()
 		m_strName = "hoda";
 	}
 
+	
 	m_strIcon =			"portrait1.bmp";
 
 	m_iMaxLife = 		rand()%20 + 80;
 	m_iLife = 			m_iMaxLife;
-
 	m_fSpeed = 			float(rand()%5);
 	m_fArmour = 		0;
 	m_fWage =			10;
-	
 	m_fExperience = 	0;
 	m_fNextLevel = 	1000;
 	m_iLevel = 			1;
@@ -143,6 +143,7 @@ P_DMCharacter::P_DMCharacter()
 	m_kStats.Randomize();
 
 	m_pkAudioSys = static_cast<ZFAudioSystem*>(g_ZFObjSys.GetObjectPtr("ZFAudioSystem"));
+	
 }
 
 P_DMCharacter::~P_DMCharacter()
@@ -367,13 +368,17 @@ void P_DMCharacter::Load(ZFIoInterface* pkPackage)
 
 void P_DMCharacter::Update()
 {
+
 	UpdateOrders();
 
+	
 	// if stopped shooting, change to idle (TODO: hmm, not sure if this is a good way.. :/)
 	if ( P_DMGun* pkGun = GetGun() )
 		if ( pkGun->ReadyToFire() )
 			ChangeState (IDLE);
 
+			
+			
 	
 	if(P_PfPath* pkPF = (P_PfPath*)m_pkObject->GetProperty("P_PfPath"))
 	{
