@@ -607,7 +607,7 @@ void ZFSystem::PrintCommands()
 
 bool ZFSystem::StartUp()
 {
-	cout<<"hora"<<endl;
+	cout << "Start ZeroFps Engine SubSystems:" << endl;
 	g_Logf("Start ZeroFps Engine SubSystems: \n");
 
 	int iSize = kObjectNames.size();

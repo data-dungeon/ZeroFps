@@ -154,8 +154,7 @@ void ZeroTank::OnIdle()
 
 	
 	m_pkMap2->SetPos(Vector3(0,0,0));
-
-	pkRender->DrawHM2(m_pkMap2,pkFps->GetCam()->GetPos());
+//	pkRender->DrawHM2(m_pkMap2,pkFps->GetCam()->GetPos());
 
 
 /*
@@ -456,7 +455,7 @@ void ZeroTank::RunCommand(int cmdid, const CmdArgument* kCommand)
 			break;
 	
 		case FID_MASSSPAWN:
-			for(i=0; i < 1;i++) {
+			for(i=0; i < 64;i++) {
 				m_pkZeroTankTrack = pkObjectMan->CreateObjectByArchType("TrackObject");
 				if(m_pkZeroTankTrack) {
 					int iRandZone = rand() % pkObjectMan->GetNumOfZones();

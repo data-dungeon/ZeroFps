@@ -47,6 +47,7 @@ bool ZoneData::IsInside(Vector3 kPoint)
 ObjectManager::ObjectManager() 
 : ZFSubSystem("ObjectManager") 
 {
+
 	iNextObjectID				= 0;
 	m_bUpdate					= true;
 	m_iTotalNetObjectData	= 0;
@@ -1260,7 +1261,7 @@ void ObjectManager::UpdateZones()
 	ZoneData* pkStartZone;
 
 
-	int iTrackerLOS = 3;
+	int iTrackerLOS = 5;
 
 	// Set All Zones as inactive.
 	for(unsigned int iZ=0;iZ<m_kZones.size();iZ++) {
@@ -1278,7 +1279,7 @@ void ObjectManager::UpdateZones()
 	for(list<Object*>::iterator iT=m_kTrackedObjects.begin();iT!=m_kTrackedObjects.end();iT++) {
 		// Find Active Zone.
 		TrackProperty* pkTrack = dynamic_cast<TrackProperty*>((*iT)->GetProperty("TrackProperty"));
-		pkTrack->m_iActiveZones.clear();
+//		pkTrack->m_iActiveZones.clear();
 
 		// First we check if tracker is in the same zone as last time.,
 		if(m_kZones[pkTrack->m_iLastZoneIndex].IsInside( (*iT)->GetWorldPosV() ))
@@ -1291,7 +1292,7 @@ void ObjectManager::UpdateZones()
 			pkStartZone = &m_kZones[iZoneIndex];
 			pkStartZone->m_iRange = 0;
 			m_kFloodZones.push_back(pkStartZone);
-			cout << "pkStartZone: " << pkStartZone->m_iZoneID << endl;
+			//cout << "pkStartZone: " << pkStartZone->m_iZoneID << endl;
 			}
 
 		// Flood Zones in rage to active.
@@ -1299,7 +1300,7 @@ void ObjectManager::UpdateZones()
 			pkZone = m_kFloodZones.back();
 			m_kFloodZones.pop_back();
 
-			pkTrack->m_iActiveZones.insert(pkZone->m_iZoneID);
+//			pkTrack->m_iActiveZones.insert(pkZone->m_iZoneID);
 
 			pkZone->m_bActive = true;
 			int iRange = pkZone->m_iRange + 1;
@@ -1329,13 +1330,13 @@ void ObjectManager::UpdateZones()
 		// Zones that need to load.
 		if(pkZoneRefresh->m_bActive && pkZoneRefresh->m_pkZone == NULL) {
 			LoadZone(pkZoneRefresh->m_iZoneID);
-			cout << "Load Zone: " << pkZoneRefresh->m_iZoneID << endl;
+			//cout << "Load Zone: " << pkZoneRefresh->m_iZoneID << endl;
 			}
 
 		// Zones that need to unload
 		if(pkZoneRefresh->m_bActive == false && pkZoneRefresh->m_pkZone) {
 			UnLoadZone(pkZoneRefresh->m_iZoneID);
-			cout << "UnLoad Zone: " << pkZoneRefresh->m_iZoneID << endl;
+			//cout << "UnLoad Zone: " << pkZoneRefresh->m_iZoneID << endl;
 			}
 
 		if(pkZoneRefresh->m_bActive)
@@ -1469,23 +1470,28 @@ void ObjectManager::LoadZone(int iId)
 	object->SetLocalPosV(kPos);
 	object->SetParent(GetWorldObject());				
 	object->GetUpdateStatus()=UPDATE_DYNAMIC;
+	object->AddProperty("LightUpdateProperty");
+
+
 
 	kZData->m_pkZone = object;
 
 	// Create Ground Box.
-	object->AddProperty(new P_Primitives3D(SOLIDBBOX));
+/*	object->AddProperty(new P_Primitives3D(SOLIDBBOX));
 	P_Primitives3D* pk3d = dynamic_cast<P_Primitives3D*>(object->GetProperty("P_Primitives3D"));
 	pk3d->m_kMin =  - (object->m_kSize * 0.5);
 	pk3d->m_kMax =  (object->m_kSize * 0.5);
 	pk3d->m_kMax.y = - 4;
-	pk3d->m_kColor = RndColor();
+	pk3d->m_kColor = RndColor();*/
 
-	Object* pkNode = CreateObjectByArchType("Node1");
+	// Create Ground Object
+	Object* pkNode;
+	pkNode = CreateObjectByArchType("Node4x");
 	pkNode->SetWorldPosV(kPos - Vector3(0,5,0)); 
 	pkNode->SetParent(object);
 
 	// Create Random Objects.
-/*	Vector3 kRandOffset;
+	Vector3 kRandOffset;
 	Object* pkBall;
 	int iNumOfBalls = rand() % 5;
 	for(i=0; i<iNumOfBalls; i++) {
@@ -1493,7 +1499,7 @@ void ObjectManager::LoadZone(int iId)
 		pkBall = CreateObjectByArchType("TVimBollus");
 		pkBall->SetLocalPosV(kPos + kRandOffset);
 		pkBall->SetParent(object);				
-		}*/
+		}
 }
 
 void ObjectManager::UnLoadZone(int iId)

@@ -11,18 +11,27 @@ class object
 	class TVimBollus
 		parent object
 		set MadProperty m_kMadFile /data/mad/Monster.mad
-		set MadProperty m_fScale 0.1
-
+		set MadProperty m_fScale 0.05
 
 	class TrackObject
 		parent object
 		set MadProperty m_kMadFile /data/mad/orc.mad
 		set MadProperty m_fScale 0.1
 		add TrackProperty
+		add LightProperty
+		
 
-	class Node1
+	class Node4x
 		parent object
 		set MadProperty m_kMadFile /data/mad/base4x.mad
+
+	class Nodecx
+		parent object
+		set MadProperty m_kMadFile /data/mad/corrx.mad
+
+	class Nodecz
+		parent object
+		set MadProperty m_kMadFile /data/mad/corrx.mad
 
 	class ZeroRTSHull
 		parent object

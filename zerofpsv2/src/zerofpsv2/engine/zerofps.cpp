@@ -68,6 +68,7 @@ ZeroFps::ZeroFps(void) : I_ZeroFps("ZeroFps")
 	g_iLogRenderPropertys	= 0;
 	m_fAvrageFpsTime			= 0;
 	m_iAvrageFrameCount		= 0;
+	m_iRenderOn					= 1;
 
 	// The default graphics mode.
 	m_iWidth						= 640;
@@ -85,6 +86,7 @@ ZeroFps::ZeroFps(void) : I_ZeroFps("ZeroFps")
 	RegisterVariable("e_systemfps",		&m_fSystemUpdateFps,CSYS_FLOAT);	
 	RegisterVariable("e_runsim",			&m_bRunWorldSim,CSYS_BOOL);	
 	RegisterVariable("r_logrp",			&g_iLogRenderPropertys,CSYS_INT);	
+	RegisterVariable("r_render",			&m_iRenderOn,CSYS_INT);	
 
 	// Register Variables
 	Register_Cmd("setdisplay",FID_SETDISPLAY);
@@ -304,7 +306,10 @@ void ZeroFps::Run_Client()
 	
 	m_pkRender->Draw_AxisIcon(5);
 
-	m_pkObjectMan->Update(PROPERTY_TYPE_RENDER,PROPERTY_SIDE_CLIENT,true);
+	if(m_iRenderOn == 1)
+		m_pkObjectMan->Update(PROPERTY_TYPE_RENDER,PROPERTY_SIDE_CLIENT,true);
+	
+
 	if(g_iLogRenderPropertys) {
 		m_pkObjectMan->DumpActiverPropertysToLog("PROPERTY_TYPE_RENDER,PROPERTY_SIDE_CLIENT,true");
 		g_iLogRenderPropertys = 0;

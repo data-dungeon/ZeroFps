@@ -45,7 +45,6 @@ LightProperty::~LightProperty()
 
 void LightProperty::Init()
 {
-	
 //	m_pkLightSource->kPos= m_pkObject->GetPosPointer();
 //	m_pkLightSource->kRot= m_pkObject->GetRotPointer();
 }
