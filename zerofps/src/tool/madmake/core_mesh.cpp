@@ -1,5 +1,5 @@
 #include "../../zerofps/basic/basicmath.pkg"
-#include "mad.h"
+#include "madexport.h"
 
 
 Mad_CoreMesh::Mad_CoreMesh()
@@ -53,7 +53,7 @@ void Mad_CoreMesh::operator=(const Mad_CoreMesh& kOther)
 void Mad_CoreMesh::CreateRigidBoneConnections(int iBoneId)
 {
 	akBoneConnections.resize(kHead.iNumOfVertex);
-	for(int i=0; i<akBoneConnections.size(); i++)
+	for(unsigned int i=0; i<akBoneConnections.size(); i++)
 		akBoneConnections[i] = iBoneId;
 
 }
@@ -68,7 +68,7 @@ void Mad_CoreMesh::ShowInfo(void)
 	cout << "SubMesh: " << kHead.iNumOfSubMeshes << endl;
 	cout << "Animations: " << kHead.iNumOfAnimation << endl;
 
-	for (int i=0; i<akAnimation.size(); i++) 
+	for (unsigned int i=0; i<akAnimation.size(); i++) 
 	{
 		cout << " " << i << " : " << akAnimation[i].Name << " : Frames = " << akAnimation[i].KeyFrame.size() << endl;
 	}
@@ -89,10 +89,10 @@ void Mad_CoreMesh::Save(FILE* fp)
 
 
 	// Write Textures
-	fwrite((void *)&akTextures[0],sizeof(Mad_Texture),kHead.iNumOfTextures,fp);
+	fwrite((void *)&akTextures[0],sizeof(Mad_CoreTexture),kHead.iNumOfTextures,fp);
 
 	// Write Texture Coo
-	fwrite((void *)&akTextureCoo[0],sizeof(MadTextureCoo),kHead.iNumOfVertex,fp);
+	fwrite((void *)&akTextureCoo[0],sizeof(Mad_TextureCoo),kHead.iNumOfVertex,fp);
 
 	// Write Bone Vikter
 	fwrite((void *)&this->akBoneConnections[0],sizeof(int),kHead.iNumOfVertex,fp);
@@ -107,14 +107,14 @@ void Mad_CoreMesh::Save(FILE* fp)
 		}
 
 	// Write triangles.
-	fwrite(&akFaces[0],sizeof(MadFace),kHead.iNumOfFaces,fp);
+	fwrite(&akFaces[0],sizeof(Mad_Face),kHead.iNumOfFaces,fp);
 
 	// Write Animations.
 	int iNumOfAnimations = this->akAnimation.size();
 	fwrite(&iNumOfAnimations,sizeof(int), 1 ,fp);
 
 	vector<Mad_CoreMeshAnimation>::iterator		itAnim;
-	vector<Mad_KeyFrame>::iterator		itKeyF;
+	vector<Mad_CoreKeyFrame>::iterator		itKeyF;
 
 	for(itAnim = akAnimation.begin(); itAnim != akAnimation.end(); itAnim++)
 	{
@@ -146,16 +146,16 @@ void Mad_CoreMesh::Load(FILE* fp)
 
 	// Read textures
 	for(i = 0; i<kHead.iNumOfTextures; i++) {
-		Mad_Texture	kTexture;
-		fread(&kTexture,sizeof(Mad_Texture),1,fp);
+		Mad_CoreTexture	kTexture;
+		fread(&kTexture,sizeof(Mad_CoreTexture),1,fp);
 		akTextures.push_back(kTexture);
 		}
 //	fread((void *)akTextures,sizeof(Mad_Texture),kHead.iNumOfTextures,fp);
 
 	// Read Texture Coo
 	for(i = 0; i<kHead.iNumOfVertex; i++) {
-		MadTextureCoo	kTexCoo;
-		fread(&kTexCoo,sizeof(MadTextureCoo),1,fp);
+		Mad_TextureCoo	kTexCoo;
+		fread(&kTexCoo,sizeof(Mad_TextureCoo),1,fp);
 		akTextureCoo.push_back(kTexCoo);
 		}
 
@@ -170,7 +170,7 @@ void Mad_CoreMesh::Load(FILE* fp)
 	// Read Alla vertex Frames.
 	Vector3* pkVector = new Vector3 [kHead.iNumOfVertex];
 	for(i = 0; i<kHead.iNumOfFrames; i++) {
-		Mad_VertexFrame	kVertexFrame;
+		Mad_CoreVertexFrame	kVertexFrame;
 
 		fread(pkVector,sizeof(Vector3),kHead.iNumOfVertex,fp);
 		for(j=0; j<kHead.iNumOfVertex; j++)
@@ -187,8 +187,8 @@ void Mad_CoreMesh::Load(FILE* fp)
 
 	// Read triangles.
 	for(i = 0; i<kHead.iNumOfFaces; i++) {
-		MadFace	kFace;
-		fread(&kFace, sizeof(MadFace),1,fp);
+		Mad_Face	kFace;
+		fread(&kFace, sizeof(Mad_Face),1,fp);
 		akFaces.push_back(kFace);
 
 		}
@@ -198,7 +198,7 @@ void Mad_CoreMesh::Load(FILE* fp)
 	fread(&iNumOfAnimations,sizeof(int), 1 ,fp);
 
 	Mad_CoreMeshAnimation kNyAnim;
-	Mad_KeyFrame kNyKey;
+	Mad_CoreKeyFrame kNyKey;
 
 	for(int iA = 0; iA < iNumOfAnimations; iA++)
 	{
@@ -255,7 +255,7 @@ void Mad_CoreMesh::CreateVertexNormals()
 	vector<Vector3> kSurfNormals;
 	kSurfNormals.resize(kHead.iNumOfFaces);
 
-	for(int i=0; i<this->akFrames.size(); i++) {
+	for(unsigned int i=0; i<this->akFrames.size(); i++) {
 		// Clear all normals.
 		for( v = 0; v<kHead.iNumOfVertex; v++)
 			akFrames[i].akNormal[v].Set(0,0,0);
@@ -299,7 +299,7 @@ void Mad_CoreMesh::OptimizeSubMeshes()
 	newsub.iNumOfTriangles	= 1;
 	newsub.iTextureIndex	= akOldSubMesh[0].iTextureIndex;
 
-	int i;
+	unsigned int i;
 
 	for(i=1; i<akOldSubMesh.size(); i++) {
 		if(newsub.iTextureIndex != akOldSubMesh[i].iTextureIndex) {
@@ -331,7 +331,7 @@ void Mad_CoreMesh::OptimizeSubMeshes()
 
 int	Mad_CoreMesh::AddTexture(char* ucpTextureName)
 {
-	vector<Mad_Texture>::iterator itTexture;
+	vector<Mad_CoreTexture>::iterator itTexture;
 	int iTextureIndex = 0;
 
 	char* ext = strstr(ucpTextureName, ".");
@@ -346,7 +346,7 @@ int	Mad_CoreMesh::AddTexture(char* ucpTextureName)
 		iTextureIndex++;
 	}
 
-	Mad_Texture madtex;
+	Mad_CoreTexture madtex;
 	strcpy(madtex.ucTextureName, ucpTextureName);
 	akTextures.push_back(madtex);
 

@@ -1,15 +1,15 @@
 #include "../../zerofps/basic/basicmath.pkg"
-#include "mad.h"
+#include "madexport.h"
 
 
 
-void Mad_KeyFrame::Clear(void)
+void Mad_CoreKeyFrame::Clear(void)
 {
 	iVertexFrame = 0;
 	fFrameTime = 0;
 }
 
-void Mad_KeyFrame::operator=(const Mad_KeyFrame& kOther)
+void Mad_CoreKeyFrame::operator=(const Mad_CoreKeyFrame& kOther)
 {
 	iVertexFrame = kOther.iVertexFrame;
 	fFrameTime = kOther.fFrameTime;

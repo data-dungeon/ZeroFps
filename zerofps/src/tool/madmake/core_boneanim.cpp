@@ -1,21 +1,5 @@
 #include "../../zerofps/basic/basicmath.pkg"
-#include "mad.h"
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+#include "madexport.h"
 
 Mad_CoreBoneAnimation::Mad_CoreBoneAnimation()
 {
@@ -54,14 +38,14 @@ void Mad_CoreBoneAnimation::Save(FILE* fp)
 	int iNumOfFrames = m_kBoneKeyFrames.size();
 	fwrite(&iNumOfFrames,1,sizeof(int),fp);
 
-	for(int i=0; i<m_kBoneKeyFrames.size(); i++) 
+	for(unsigned int i=0; i<m_kBoneKeyFrames.size(); i++) 
 		m_kBoneKeyFrames[i].Save(fp);
 }
 
 void Mad_CoreBoneAnimation::Load(FILE* fp)
 {
 	cout << "Now loading: ";
-	Mad_BoneKeyFrame	NewBoneKeyFrame;
+	Mad_CoreBoneKeyFrame	NewBoneKeyFrame;
 	fread(m_szName,1,MAD_MAX_ANIMATIONNAME,fp);
 	cout << m_szName << endl;
 
@@ -78,18 +62,18 @@ void Mad_CoreBoneAnimation::Load(FILE* fp)
 
 
 
-void Mad_BoneKeyFrame::Save(FILE* fp)
+void Mad_CoreBoneKeyFrame::Save(FILE* fp)
 {
 	int iNumOfBones = m_kBonePose.size();
 	fwrite(&iNumOfBones,1,sizeof(int),fp);
 
-	for(int i=0; i<m_kBonePose.size(); i++)
+	for(unsigned int i=0; i<m_kBonePose.size(); i++)
 		m_kBonePose[i].Save(fp);
 }
 
-void Mad_BoneKeyFrame::Load(FILE* fp)
+void Mad_CoreBoneKeyFrame::Load(FILE* fp)
 {
-	Mad_BoneKey	NewBoneKey;
+	Mad_CoreBoneKey	NewBoneKey;
 
 	int iNumOfBones;
 	fread(&iNumOfBones,1,sizeof(int),fp);
@@ -103,13 +87,13 @@ void Mad_BoneKeyFrame::Load(FILE* fp)
 }
 
 
-void Mad_BoneKey::Save(FILE* fp)
+void Mad_CoreBoneKey::Save(FILE* fp)
 {
 	fwrite(&m_kPosition, 1, sizeof(Vector3), fp);
 	fwrite(&m_kRotation, 1, sizeof(Vector3), fp);
 }
 
-void Mad_BoneKey::Load(FILE* fp)
+void Mad_CoreBoneKey::Load(FILE* fp)
 {
 	fread(&m_kPosition, 1, sizeof(Vector3), fp);
 	fread(&m_kRotation, 1, sizeof(Vector3), fp);

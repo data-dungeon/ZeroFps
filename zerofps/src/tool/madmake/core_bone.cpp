@@ -1,5 +1,5 @@
 #include "../../zerofps/basic/basicmath.pkg"
-#include "mad.h"
+#include "madexport.h"
 
 Mad_CoreBone::Mad_CoreBone()
 {
@@ -13,7 +13,6 @@ Mad_CoreBone::~Mad_CoreBone()
 {
 
 }
-
 
 void Mad_CoreBone::Clear(void)
 {
@@ -35,17 +34,17 @@ void Mad_CoreBone::operator=(const Mad_CoreBone& kOther)
 
 
 
-Mad_VertexFrame::Mad_VertexFrame()
+Mad_CoreVertexFrame::Mad_CoreVertexFrame()
 {
 
 }
 
-Mad_VertexFrame::~Mad_VertexFrame()
+Mad_CoreVertexFrame::~Mad_CoreVertexFrame()
 {
 
 }
 
-void Mad_VertexFrame::operator=(const Mad_VertexFrame& kOther)
+void Mad_CoreVertexFrame::operator=(const Mad_CoreVertexFrame& kOther)
 {
 	akVertex = kOther.akVertex;
 	akNormal = kOther.akNormal;
