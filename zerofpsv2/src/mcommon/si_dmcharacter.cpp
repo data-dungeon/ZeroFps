@@ -745,3 +745,26 @@ int DMLua::SetCharStatsLua(lua_State* pkLua)
 	return 0;
 }
 
+// ------------------------------------------------------------------------------------------
+
+int DMLua::SetLeaderOfTeamLua(lua_State* pkLua)
+{
+	Entity* pkEntity = TestScriptInput (2, pkLua);
+
+	if ( pkEntity == 0 )
+		return 0;
+	
+	P_DMCharacter* pkChar = (P_DMCharacter*)pkEntity->GetProperty("P_DMCharacter");
+
+	if ( pkChar == 0 )
+		return 0;
+
+	double dTeam;
+	g_pkScript->GetArgNumber(pkLua, 1, &dTeam);
+
+	pkChar->m_iLeaderOfTeam = dTeam;
+
+	return 0;
+}
+
+// ------------------------------------------------------------------------------------------

@@ -138,6 +138,7 @@ P_DMCharacter::P_DMCharacter()
 	
 	
 	m_iTeam =		0;
+	m_iLeaderOfTeam = -1;
 	
 	m_kStats.Randomize();
 

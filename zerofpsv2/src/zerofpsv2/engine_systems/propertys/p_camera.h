@@ -52,6 +52,8 @@ class ENGINE_SYSTEMS_API P_Camera : public Property
 
 		void SetCamera(Camera *pkCamera);
 		
+		float Get3PYAngle ()		{ return m_f3PYAngle; }
+
 		void Set3PYAngle(float fA) { m_f3PYAngle = fA;};
 		void Set3PPAngle(float fP) { m_f3PPAngle = fP;};
 		void Set3PDistance(float fD) { m_f3PDistance = fD;};

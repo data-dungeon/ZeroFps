@@ -60,6 +60,7 @@ void DarkMetropolis::OnInit()
 	m_bActionPressed = 			false;
 	m_iHQID = 						-1;
 	m_iActiveHQ = 					-1;
+	m_iMainAgent =					-1;
 	m_eGameMode	=					ACTIVE;
 	m_fBulletTime =				-1;
 	m_pkGamePlayInfoLabel =		NULL;
@@ -197,6 +198,7 @@ void DarkMetropolis::RenderInterface(void)
 	
 	}
 	
+	// TODO: only one entity can be selected
 	//draw markers for selected entitys
 	for(unsigned int i = 0;i< m_kSelectedEntitys.size();i++)
 	{
@@ -223,9 +225,10 @@ void DarkMetropolis::RenderInterface(void)
 		}
 	}
 	
+	// TODO: no select square
 	//draw select square
-	if(m_bSelectSquare)
-		m_pkRender->DrawAABB(m_kSelectSquareStart,Vector3(m_kSelectSquareStop.x, m_kSelectSquareStart.y+0.2, m_kSelectSquareStop.z),Vector3(0,1,0));
+	//if(m_bSelectSquare)
+	//	m_pkRender->DrawAABB(m_kSelectSquareStart,Vector3(m_kSelectSquareStop.x, m_kSelectSquareStart.y+0.2, m_kSelectSquareStop.z),Vector3(0,1,0));
 }
 
 void DarkMetropolis::OnSystem()
@@ -240,6 +243,14 @@ void DarkMetropolis::OnSystem()
 		m_iActiveHQ = FindActiveHQ();
 		if(m_iActiveHQ != -1)
 		cout<<"Found Active HQ :"<<m_iActiveHQ<<endl;
+	}
+
+	// if main agent hasn't been found, find him
+	if (m_iMainAgent == -1)
+	{
+		m_iMainAgent = FindMainAgent();
+		if (m_iMainAgent != -1)
+			cout << "Found Main agent:" << m_iMainAgent << endl;
 	}
 
 	//do line test
@@ -283,7 +294,7 @@ void DarkMetropolis::OnServerStart()
 		m_pkCameraEntity->AddProperty("P_Camera");	
 	
 		m_pkCameraEntity->SetParent( m_pkObjectMan->GetWorldObject() );
-		m_pkCameraEntity->SetWorldPosV(Vector3(0,5,0));
+		m_pkCameraEntity->SetWorldPosV(Vector3(0,6,0));
 		
 		m_pkCameraProp = (P_Camera*)m_pkCameraEntity->GetProperty("P_Camera");		
 		if(m_pkCameraProp)
@@ -306,8 +317,6 @@ void DarkMetropolis::OnServerStart()
 			pkEnv->SetEnviroment("data/enviroments/dm.env");			
 		}
 		
-		//add tracker to camera
-		//m_pkCameraEntity->AddProperty("P_Track");
 	}
 			
 	//m_kAgentsOnField.clear();			
@@ -347,7 +356,6 @@ void DarkMetropolis::RegisterPropertys()
 	m_pkPropertyFactory->Register("P_DMMission",			Create_P_DMMission);
 	m_pkPropertyFactory->Register("P_DMItem", 			Create_P_DMItem);
 	m_pkPropertyFactory->Register("P_DMGun", 				Create_P_DMGun);
-//	m_pkPropertyFactory->Register("P_Event",				Create_P_Event);
 	m_pkPropertyFactory->Register("P_Enviroment",		Create_P_Enviroment);
 	m_pkPropertyFactory->Register("P_DMShop",				Create_P_DMShop);	
 	m_pkPropertyFactory->Register("P_DMHQ", 				Create_P_DMHQ);
@@ -364,6 +372,8 @@ void DarkMetropolis::MoveCamera(Vector3 pos)
 	m_pkCameraEntity->SetWorldPosV(pos);
 }
 
+
+// TODO: Inget kommando ska göra en pathfind. Avståndscheck ska istället göras bara.
 void DarkMetropolis::Input()
 {
 	//get mouse
@@ -450,28 +460,31 @@ void DarkMetropolis::Input()
 		fMy = 0;
 	}
 
+	// Rotate camera: default = q & e
 	if(m_pkCameraEntity)
 	{
-		Vector3 pos = m_pkCameraEntity->GetWorldPosV();
+		Vector3 kRot = m_pkCameraEntity->GetWorldRotV();
 
-		float s = m_pkFps->GetFrameTime() * 10;
+		// rotate camera to the left
+		if(m_pkInputHandle->VKIsDown("rotcam_left"))
+			if(m_pkFps->GetTicks()-m_fDelayTimer > 0.3)
+			{
+				m_fDelayTimer = m_pkFps->GetTicks();
+				m_fAngle += 1.570796327; // 90 degrees in rad
+			}
 
-		if(m_pkInputHandle->VKIsDown("cam_up") || (fMy == -0.5) )
-			pos += Vector3(-1 * sin(m_fAngle), 0, -1 * cos(m_fAngle)) * s;
-		
-		if(m_pkInputHandle->VKIsDown("cam_down") || (fMy ==  0.5) )
-			pos += Vector3(1 * sin(m_fAngle), 0, 1 * cos(m_fAngle)) * s;
-		
-		if(m_pkInputHandle->VKIsDown("cam_left") || (fMx == -0.5) )
-			pos += Vector3(-1 * cos((PI*2)-m_fAngle), 0, -1 * sin((PI*2)-m_fAngle)) * s;
-		
-		if(m_pkInputHandle->VKIsDown("cam_right") || (fMx ==  0.5) )
-			pos += Vector3(1 * cos((PI*2)-m_fAngle), 0, 1 * sin((PI*2)-m_fAngle)) * s;
-		
-		m_pkCameraEntity->SetWorldPosV(pos);
+		// rotate camera to the right
+		if(m_pkInputHandle->VKIsDown("rotcam_right"))
+			if(m_pkFps->GetTicks()-m_fDelayTimer > 0.3)
+			{
+				m_fDelayTimer = m_pkFps->GetTicks();
+				m_fAngle -= 1.570796327; // 90 degrees in rad
+			}
+
+		m_pkCameraProp->Set3PYAngle(m_fAngle);
 	}
 
-
+/*
 	//setup player controls
 	if(m_pkInputHandle->VKIsDown("camera"))	//do we want to zoom?
 	{
@@ -497,10 +510,10 @@ void DarkMetropolis::Input()
 		if(m_pkGui->m_bUseHardwareMouse == true)
 			m_pkInput->ShowCursor(true);
 	}
-		
-		
-		
+*/		
+	// TODO: change to shoot
 	//check for selection
+	/*
 	if(m_pkInputHandle->VKIsDown("select"))
 	{
 		if(!m_bSelectSquare)
@@ -616,67 +629,54 @@ void DarkMetropolis::Input()
 		}
 
 	}
-
+*/
 	//check if we want do do any action
-	if(m_pkInputHandle->VKIsDown("action"))
+	if(m_pkInputHandle->VKIsDown("shoot"))
 	{
-		//FIRE GUN
-		if(m_pkInputHandle->VKIsDown("multiselect"))			
+		if(m_pkFps->GetTicks()-m_fDelayTimer > 0.1)
 		{
-			if(m_pkFps->GetTicks()-m_fDelayTimer > 0.1)
-			{
-				m_fDelayTimer = m_pkFps->GetTicks();
+			m_fDelayTimer = m_pkFps->GetTicks();
 		
-				if(Entity* pkPickEnt = GetTargetObject())
+			if(Entity* pkPickEnt = GetTargetObject())
+			{
+				//if targeting a character...aim for the center of it
+				if((P_DMCharacter*)pkPickEnt->GetProperty("P_DMCharacter"))
+					m_kPickPos = pkPickEnt->GetWorldPosV() + Vector3(0,1,0);				
+
+				if(Entity* pkEnt = m_pkObjectMan->GetObjectByNetWorkID(m_iMainAgent))
 				{
-					//if targeting a character...aim for the center of it
-					if((P_DMCharacter*)pkPickEnt->GetProperty("P_DMCharacter"))
-						m_kPickPos = pkPickEnt->GetWorldPosV() + Vector3(0,1,0);
-					
-					for(unsigned int i = 0;i < m_kSelectedEntitys.size();i++)
+					if(P_DMCharacter* pkCharacter = (P_DMCharacter*)pkEnt->GetProperty("P_DMCharacter"))
 					{
-						if(Entity* pkEnt = m_pkObjectMan->GetObjectByNetWorkID(m_kSelectedEntitys[i]))
+						m_fBulletTime = m_pkFps->m_pkObjectMan->GetSimTime();
+
+						int* pGunID; // Start action music only if a bullet have been shoot.
+						if(*(pGunID = pkCharacter->m_pkHand->GetItem(0,0)) != -1)
 						{
-							if(P_DMCharacter* pkCharacter = (P_DMCharacter*)pkEnt->GetProperty("P_DMCharacter"))
-							{
-								m_fBulletTime = m_pkFps->m_pkObjectMan->GetSimTime();
-
-								int* pGunID; // Start action music only if a bullet have been shoot.
-								if(*(pGunID = pkCharacter->m_pkHand->GetItem(0,0)) != -1)
-								{
-									Entity* gun = m_pkObjectMan->GetObjectByNetWorkID(*pGunID);
-									P_DMGun* pkGun = (P_DMGun*) gun->GetProperty("P_DMGun"); 
-									if(pkGun && pkGun->HasAmmo() )
-										StartSong("data/music/dm action.ogg");	
-								}
-
-								//pkCharacter->Shoot (m_kPickPos);
-								
-								DMOrder kOrder;
-								kOrder.m_iOrderType = eAttack;
-								kOrder.m_kPosition = m_kPickPos;							 
-								
-								pkCharacter->ClearOrders();
-								pkCharacter->AddOrder(kOrder);									
-								
-							}
+							Entity* gun = m_pkObjectMan->GetObjectByNetWorkID(*pGunID);
+							P_DMGun* pkGun = (P_DMGun*) gun->GetProperty("P_DMGun"); 
+							if(pkGun && pkGun->HasAmmo() )
+								StartSong("data/music/dm action.ogg");	
 						}
+
+						DMOrder kOrder;
+						kOrder.m_iOrderType = eAttack;
+						kOrder.m_kPosition = m_kPickPos;							 
+						
+						pkCharacter->ClearOrders();
+						pkCharacter->AddOrder(kOrder);									
+						
 					}
 				}
-			}	
+
+			}
 		}
-		else
-		{
-			m_bActionPressed = true;
-		}
-	}
-	else if(m_bActionPressed)
-	{
-		m_bActionPressed = false;
+	}	
 	
+	if( m_pkInputHandle->VKIsDown("action") )
+	{
 		if(Entity* pkPickEnt = GetTargetObject())
 		{
-		
+			/*
 			//walk
 			if(pkPickEnt->IsZone())	//we clicked on a zone , lets tae a walk
 			{
@@ -714,7 +714,7 @@ void DarkMetropolis::Input()
 				}
 				return;
 			}
-			
+			*/
 			//enter HQ
 			if(P_DMHQ* pkHQ = (P_DMHQ*)pkPickEnt->GetProperty("P_DMHQ"))
 			{				
@@ -738,19 +738,7 @@ void DarkMetropolis::Input()
 							((CGamePlayDlg*)m_pkGamePlayDlg)->SelectAgentGUI(-1, false);
 							
 						}
-						/*else
-						{
-							P_PfPath* pkPF = (P_PfPath*)pkEnt->GetProperty("P_PfPath");
-							if(pkPF)//we have selected an entity whit a pathfind property, lets take a walk =)
-							{					
-						
-								//randomize position a bit if theres many characters selected
-								if(m_kSelectedEntitys.size() > 1)
-									pkPF->MakePathFind(m_kPickPos + GetFormationPos(m_iCurrentFormation,m_kSelectedEntitys.size(),i));								
-								else
-									pkPF->MakePathFind(m_kPickPos);
-								}
-*/
+
 						if(P_DMCharacter* pkCh = (P_DMCharacter*)pkEnt->GetProperty("P_DMCharacter"))
 						{
 							if( pkPickEnt->GetWorldPosV().DistanceTo(pkEnt->GetWorldPosV()) < 1) 
@@ -1200,7 +1188,23 @@ int DarkMetropolis::FindActiveHQ()
 	return -1;
 }
 
+int DarkMetropolis::FindMainAgent()
+{
+	vector<Entity*> kObjects;	
+	m_pkObjectMan->GetZoneObject()->GetAllEntitys(&kObjects,false);
 
+	for(unsigned int i = 0;i<kObjects.size();i++)
+	{
+		if(P_DMCharacter* pkMainAgent = (P_DMCharacter*)kObjects[i]->GetProperty("P_DMCharacter"))
+		{
+			// leader of team0 = Main character
+			if( pkMainAgent->m_iLeaderOfTeam == 0 )
+				return kObjects[i]->GetEntityID();		
+		}
+	}
+	
+	return -1;
+}
 
 //
 // Har markerat en agent.
@@ -1280,6 +1284,7 @@ void DarkMetropolis::ValidateSelection()
 				cout<<"avmarkerad"<<endl;
 				SelectAgent(m_kSelectedEntitys[i], true, false,false);
 
+				// TODO: alltid en agent i fokus
 				// Uppdatera GUI:t och berätta att ingen agent är i fokus.
 				if(m_pkGamePlayDlg)
 					((CGamePlayDlg*)m_pkGamePlayDlg)->SelectAgentGUI(-1, false);
@@ -1360,63 +1365,18 @@ void DarkMetropolis::UpdateAgentsOnField()
 	}
 }
 
-
+// Center camera on maincharacter
 void DarkMetropolis::CheckCameraPos()
 {
-	if(!m_pkCameraEntity)
+	if (!m_pkCameraEntity || m_iMainAgent == -1)
 		return;
 
-	//first check wich object is closest to the camera
+	// Get mainAgent object
+	Entity* pkEnt = m_pkObjectMan->GetObjectByNetWorkID(m_iMainAgent);
 
-
-	float dist = 999999999;
-	Vector3 kCamPos = m_pkCameraEntity->GetWorldPosV();
-	kCamPos.y = 0;
-	Entity* pkClosestEnt = NULL;
+	Vector3 kNewPos = pkEnt->GetWorldPosV();// kTemp + kDir;
 	
-	Vector3 kPos;
-	float d = 0;
-
-	if(Entity* pkEnt = m_pkObjectMan->GetObjectByNetWorkID(m_iActiveHQ))
-	{
-		kPos = pkEnt->GetWorldPosV();
-		kPos.y = 0;
-		dist = kCamPos.DistanceTo(kPos);	
-		pkClosestEnt = pkEnt;
-	}
+	kNewPos.y = m_pkCameraEntity->GetWorldPosV().y;
 	
-	for(int i = 0;i < m_kAgentsOnField.size(); i++)
-	{
-		if(Entity* pkEnt = m_pkObjectMan->GetObjectByNetWorkID(m_kAgentsOnField[i]))
-		{
-			kPos = pkEnt->GetWorldPosV();
-			kPos.y = 0;			
-			d = kCamPos.DistanceTo(kPos);
-			if( d < dist )
-			{
-				dist = d;
-				pkClosestEnt = pkEnt;				
-			}
-		}
-	}
-
-
-	if(!pkClosestEnt)
-		return;
-		
-	
-	if(dist > m_fCameraMaxDistanceFromAgent)
-	{
-		//cout<<"camera to far away"<<endl;		
-		Vector3 kTemp = pkClosestEnt->GetIWorldPosV();
-		kTemp.y = 0;
-		Vector3 kDir = (kCamPos - kTemp).Unit() * m_fCameraMaxDistanceFromAgent;
-		Vector3 kNewPos = kTemp + kDir;
-		kNewPos.y = m_pkCameraEntity->GetWorldPosV().y;
-		
-//		kNewCamPos += kDir * m_pkObjectMan->GetSimDelta() * (dist * 3) ;
-//		kNewCamPos += kDir * m_pkFps->GetFrameTime() * dist  ;
-		//kNewCamPos += kDir;
-		m_pkCameraEntity->SetWorldPosV(kNewPos);
-	}
+	m_pkCameraEntity->SetWorldPosV(kNewPos);
 }

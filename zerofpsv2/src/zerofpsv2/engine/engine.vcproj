@@ -235,6 +235,9 @@
 				RelativePath="..\engine_systems\propertys\p_camera.cpp">
 			</File>
 			<File
+				RelativePath="..\engine_systems\propertys\p_controller.cpp">
+			</File>
+			<File
 				RelativePath="..\engine_systems\propertys\p_crossrender.cpp">
 			</File>
 			<File
@@ -393,6 +396,9 @@
 			</File>
 			<File
 				RelativePath="..\engine_systems\propertys\p_clientinput.h">
+			</File>
+			<File
+				RelativePath="..\engine_systems\propertys\p_controller.h">
 			</File>
 			<File
 				RelativePath="..\engine_systems\propertys\p_crossrender.h">
@@ -561,6 +567,12 @@
 			</File>
 			<File
 				RelativePath="..\engine_systems\script_interfaces\si_objectmanager.h">
+			</File>
+			<File
+				RelativePath="..\engine_systems\script_interfaces\si_properties.cpp">
+			</File>
+			<File
+				RelativePath="..\engine_systems\script_interfaces\si_properties.h">
 			</File>
 			<File
 				RelativePath="..\engine_systems\script_interfaces\si_std.cpp">

@@ -1304,6 +1304,7 @@ void ZeroFps::RegisterPropertys()
 	m_pkPropertyFactory->Register("P_WorldInfo",			Create_WorldInfoProperty);						
 	m_pkPropertyFactory->Register("P_Body",				Create_BodyProperty);	
 	m_pkPropertyFactory->Register("P_ScriptInterface",	Create_P_ScriptInterface);
+	m_pkPropertyFactory->Register("P_Controller",		Create_P_Controller);
 }
 
 

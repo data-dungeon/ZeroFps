@@ -83,22 +83,23 @@ class DarkMetropolis : public Application, public ZGuiApp
 		
 		int			m_iCurrentPickedEntity;
 		
-		vector<int> m_kAgentsOnField;						//list of agents active in the field
+		vector<int> m_kAgentsOnField;					//list of agents active in the field
 		vector<int> m_kSelectedEntitys;					//list of selected entitys		
-		int			m_iCurrentFormation;					//what formation to use when moving characters
+		int			m_iCurrentFormation;				//what formation to use when moving characters
 		
-		int			m_iActiveHQ;							//id of the active HQ, used by the gui etc		
-		int			m_iHQID;									//network id of current selected hq, if any
-		
-		Vector3		m_kSelectSquareStart;				//start of selection square
-		Vector3		m_kSelectSquareStop;					//stop/current pos of selection square
-		bool			m_bSelectSquare;						//are we currently drawing a selection square
-		
-		Vector3		m_kPickPos;									//exact possition of last cursor pick operation
-		string		m_strSaveDirectory;						//directory in wich savegames are stored
+		int			m_iActiveHQ;						//id of the active HQ, used by the gui etc		
+		int			m_iHQID;							//network id of current selected hq, if any
+		int			m_iMainAgent;						// the "player", the one you control directly
 
-		int 			m_iEnableMusic; 									//if the music should be played or not
-		float			m_fMusicVolume;						// Music volume for Ogg
+		Vector3		m_kSelectSquareStart;				//start of selection square
+		Vector3		m_kSelectSquareStop;				//stop/current pos of selection square
+		bool			m_bSelectSquare;				//are we currently drawing a selection square
+		
+		Vector3		m_kPickPos;							//exact possition of last cursor pick operation
+		string		m_strSaveDirectory;					//directory in wich savegames are stored
+
+		int 			m_iEnableMusic; 				//if the music should be played or not
+		float			m_fMusicVolume;					// Music volume for Ogg
 		float			m_fBulletTime;
 
 
@@ -116,6 +117,7 @@ class DarkMetropolis : public Application, public ZGuiApp
 		bool LoadGame(string strClanName);
 		bool SaveGame(string strsavegame);
 
+		int FindMainAgent();
 		int FindActiveHQ();
 		void ValidateSelection();
 		void ValidateAgentsOnField();

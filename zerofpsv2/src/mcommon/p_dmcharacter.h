@@ -41,7 +41,6 @@ class MCOMMON_API DMCharacterStats
 		int		m_fExperience;
 		int		m_fNextLevel;
 		int		m_iLevel;
-			
 
 		DMCharacterStats();
 		
@@ -94,7 +93,8 @@ class MCOMMON_API P_DMCharacter: public Property {
 		DMContainer*		m_pkBelt;
 		DMContainer*		m_pkHand;
 		DMContainer*		m_pkImplants;
-		
+
+		int					m_iLeaderOfTeam; // value is leader of that team. -1 is no leader and is def.
 		int					m_iTeam;
 		int					m_iState; // dead, crouching, shooting, idle..etc
 
