@@ -270,11 +270,62 @@ int Gui::GetTexture(char* strName)
 	return fail_texture;
 }
 
-int Gui::CreateFilePathDialog(int x, int y, int w, int h)
+ZGuiButton* Gui::CreateButton(ZGuiWnd* pkParent, int iID, int x, int y, char *pkName)
+{
+	int w = strlen(pkName) * 16;
+	w += (20 % w); // avrunda till närmsta 20 tal
+	int h = 20;
+
+	ZGuiButton* pkButton = new ZGuiButton(Rect(x,y,x+w,y+h),pkParent,true,iID);
+	pkButton->SetButtonHighLightSkin(GetSkin("bn_focus"));
+	pkButton->SetButtonDownSkin(GetSkin("bn_down"));
+	pkButton->SetButtonUpSkin(GetSkin("bn_up"));
+	pkButton->SetTextSkin(GetSkin("font"), GetTexture("font_a"));
+	pkButton->SetText(pkName);
+	return pkButton;
+}
+
+ZGuiListbox* Gui::CreateListbox(ZGuiWnd* pkParent, int iID, int x, int y, int w, int h)
+{
+	h += (20 % h); // avrunda till närmsta 20 tal
+
+	ZGuiListbox* pkListbox = new ZGuiListbox(Rect(x,y,x+w,y+h),pkParent,true,iID,20,
+		GetSkin("font"), GetTexture("font_a"), GetSkin("menu_item"), GetSkin("menu_item_sel"), 
+		GetSkin("menu_item_hl"));
+	pkListbox->SetScrollbarSkin(GetSkin("menu_item_sel"), 
+		GetSkin("menu_item_hl"), GetSkin("menu_item_hl"));
+	return pkListbox;
+}
+
+ZGuiTextbox* Gui::CreateTextbox(ZGuiWnd* pkParent, int iID, int x, int y, int w, int h)
+{
+	h += (20 % h); // avrunda till närmsta 20 tal
+
+	ZGuiTextbox* pkTextbox = new ZGuiTextbox(Rect(x,y,x+w,y+h), pkParent, true, iID);
+	pkTextbox->SetSkin(GetSkin("dark_blue"));
+	pkTextbox->SetTextSkin(GetSkin("font"), GetTexture("font_a"));
+
+	return pkTextbox;
+}
+
+ZGuiLabel* Gui::CreateLabel(ZGuiWnd* pkParent, int iID, int x, int y, int w, int h, char* strText)
+{
+	h += (20 % h); // avrunda till närmsta 20 tal
+
+	ZGuiLabel* pkLabel = new ZGuiLabel(Rect(x,y,x+w,y+h), pkParent, true, iID);
+	pkLabel->SetSkin(GetSkin("dark_blue"));
+	pkLabel->SetTextSkin(GetSkin("font"), GetTexture("font_a"));
+
+	if(strText)
+		pkLabel->SetText(strText);
+
+	return pkLabel;
+}
+
+ZGuiWnd* Gui::CreateFilePathDialog(int x, int y, int w, int h)
 {
 	if( m_pkEdit->pkGui->GetMainWindow(ID_FILEPATH_WND_MAIN))
 	{
-		//m_pkEdit->pkGui->SetActiveMainWindow(ID_PROPERTY_WND_MAIN);
 		m_pkEdit->pkGui->ShowMainWindow(ID_FILEPATH_WND_MAIN, true);
 		return false;
 	}
@@ -283,37 +334,36 @@ int Gui::CreateFilePathDialog(int x, int y, int w, int h)
 	pkMainWindow->SetSkin(GetSkin("blue"));
 	pkMainWindow->SetMoveArea(Rect(0,0,m_pkEdit->m_iWidth,m_pkEdit->m_iHeight));
 
-	int iID = ID_FILEPATH_WND;
+	ZGuiListbox* pkListbox = CreateListbox(pkMainWindow, ID_FILEPATH_WND, 0, 20, w, h-50);
+	FillPathList(pkListbox, m_szSearchBoxPath);
 
-	ZGuiListbox* pkListbox = new ZGuiListbox(Rect(0,20,w,h-50),pkMainWindow,true,iID,20,
-		GetSkin("font"), GetTexture("font_a"), GetSkin("menu_item"), GetSkin("menu_item_sel"), 
-		GetSkin("menu_item_hl"));
-	pkListbox->SetScrollbarSkin(GetSkin("menu_item_sel"), 
-		GetSkin("menu_item_hl"), GetSkin("menu_item_hl"));
-
-	iID = ID_FILEPATH_WND_LABEL_PATH;
-	ZGuiLabel* pkLabel = new ZGuiLabel(Rect(0,0,w-20,20), pkMainWindow, true, iID);
-	pkLabel->SetSkin(GetSkin("dark_blue"));
-	pkLabel->SetTextSkin(GetSkin("font"), GetTexture("font_a"));
-
-	iID = ID_FILEPATH_WND_LABEL_FILE;
-	ZGuiLabel* pkLabel2 = new ZGuiLabel(Rect(0,h,w,h-20), pkMainWindow, true, iID);
-	pkLabel2->SetSkin(GetSkin("dark_blue"));
-	pkLabel2->SetTextSkin(GetSkin("font"), GetTexture("font_a"));
-
-	iID = ID_FILEPATH_WND_CLOSE;
-	ZGuiButton* pkCloseButton = new ZGuiButton(Rect(w-20,0,w,20),pkMainWindow,true,iID);
-	pkCloseButton->SetButtonHighLightSkin(GetSkin("bn_focus"));
-	pkCloseButton->SetButtonDownSkin(GetSkin("bn_down"));
-	pkCloseButton->SetButtonUpSkin(GetSkin("bn_up"));
-	pkCloseButton->SetTextSkin(GetSkin("font"), GetTexture("font_a"));
-	pkCloseButton->SetText("x");
+	CreateLabel(pkMainWindow, ID_FILEPATH_WND_LABEL_PATH, 0, 0, w-20, 20, NULL);
+	CreateLabel(pkMainWindow, ID_FILEPATH_WND_LABEL_FILE, 0, h-20, w-20, 20, NULL);
+	CreateButton(pkMainWindow, ID_FILEPATH_WND_CLOSE, w-20, 0, "x");
 
 	m_pkEdit->pkGui->AddMainWindow(ID_FILEPATH_WND_MAIN, pkMainWindow, m_pkWndProc, true);
 
-	FillPathList(pkListbox, m_szSearchBoxPath);
+	return pkMainWindow;
+}
 
-	return iID;
+ZGuiWnd* Gui::CreatePropertyDialog(int x, int y, int w, int h)
+{
+	if( m_pkEdit->pkGui->GetMainWindow(ID_PROPERTY_WND_MAIN))
+	{
+		m_pkEdit->pkGui->ShowMainWindow(ID_PROPERTY_WND_MAIN, true);
+		return false;
+	}
+
+	ZGuiWnd* pkMainWindow = new ZGuiWnd(Rect(x,y,x+w,y+h),NULL,true,ID_PROPERTY_WND);
+	pkMainWindow->SetSkin(GetSkin("blue"));
+	pkMainWindow->SetMoveArea(Rect(0,0,m_pkEdit->m_iWidth,m_pkEdit->m_iHeight));
+
+	CreateButton(pkMainWindow, ID_PROPERTY_WND_CLOSE, w-20, 0, "x");
+	CreateLabel(pkMainWindow, 0, 20, 20, 100, 20, "apa");
+
+	m_pkEdit->pkGui->AddMainWindow(ID_PROPERTY_WND_MAIN, pkMainWindow, m_pkWndProc, true);
+
+	return pkMainWindow;
 }
 
 bool Gui::FillPathList(ZGuiListbox* pkListbox, string strDir)
@@ -364,28 +414,4 @@ bool Gui::FillPathList(ZGuiListbox* pkListbox, string strDir)
 	return true;
 }
 
-int Gui::CreatePropertyDialog(int x, int y, int w, int h)
-{
-	if( m_pkEdit->pkGui->GetMainWindow(ID_PROPERTY_WND_MAIN))
-	{
-		//m_pkEdit->pkGui->SetActiveMainWindow(ID_PROPERTY_WND_MAIN);
-		m_pkEdit->pkGui->ShowMainWindow(ID_PROPERTY_WND_MAIN, true);
-		return false;
-	}
 
-	ZGuiWnd* pkMainWindow = new ZGuiWnd(Rect(x,y,x+w,y+h),NULL,true,ID_PROPERTY_WND);
-	pkMainWindow->SetSkin(GetSkin("blue"));
-	pkMainWindow->SetMoveArea(Rect(0,0,m_pkEdit->m_iWidth,m_pkEdit->m_iHeight));
-
-	m_pkEdit->pkGui->AddMainWindow(ID_PROPERTY_WND_MAIN, pkMainWindow, m_pkWndProc, true);
-
-	int iID = ID_PROPERTY_WND_CLOSE;
-	ZGuiButton* pkCloseButton = new ZGuiButton(Rect(w-20,0,w,20),pkMainWindow,true,iID);
-	pkCloseButton->SetButtonHighLightSkin(GetSkin("bn_focus"));
-	pkCloseButton->SetButtonDownSkin(GetSkin("bn_down"));
-	pkCloseButton->SetButtonUpSkin(GetSkin("bn_up"));
-	pkCloseButton->SetTextSkin(GetSkin("font"), GetTexture("font_a"));
-	pkCloseButton->SetText("x");
-
-	return 0;
-}

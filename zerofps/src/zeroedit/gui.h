@@ -20,6 +20,11 @@ typedef bool (*ZGuiCallBack)(ZGuiWnd*, unsigned int, int, void*);
 class Gui
 {
 private:
+	ZGuiTextbox* CreateTextbox(ZGuiWnd* pkParent, int iID, int x, int y, int w, int h);
+	ZGuiListbox* CreateListbox(ZGuiWnd* pkParent, int iID, int x, int y, int w, int h);
+	ZGuiButton* CreateButton(ZGuiWnd* pkParent, int iID, int pos_x, int pos_y, char* pkName);
+	ZGuiLabel* CreateLabel(ZGuiWnd* pkParent, int iID, int x, int y, int w, int h, char* strText);
+	
 	ZeroEdit* m_pkEdit;
 	map<string, ZGuiSkin*> m_kSkinMap;
 	map<string, int> m_kTextureMap;
@@ -31,8 +36,8 @@ private:
 	int m_iScreenCX;
 	int m_iScreenCY;
 	
-	int CreatePropertyDialog(int x, int y, int Widht, int Height);
-	int  CreateFilePathDialog(int x, int y, int Widht, int Height);
+	ZGuiWnd* CreatePropertyDialog(int x, int y, int Widht, int Height);
+	ZGuiWnd* CreateFilePathDialog(int x, int y, int Widht, int Height);
 	bool FillPathList(ZGuiListbox* pkListbox, string pkDir);
 	bool CreateWindows(/*ZGuiCallBack*/);
 	bool InitSkins();
