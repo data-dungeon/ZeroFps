@@ -837,3 +837,15 @@ bool	Property::GetNetUpdateFlag(int iConID)
 {
 	return m_kNetUpdateFlags[iConID];
 }
+
+bool Property::AllNetUpdateFlagsFalse()
+{
+	for(unsigned int i = 0;i<m_kNetUpdateFlags.size();i++)
+	{
+		if(m_pkZeroFps->m_pkNetWork->IsConnected(i))
+			if(m_kNetUpdateFlags[i] == true)
+				return false;
+	}
+	
+	return true;
+}
