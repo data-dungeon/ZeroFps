@@ -36,5 +36,3 @@ Property* Create_P_Ml()
 {
 	return new P_Ml;
 }
-
-

@@ -673,6 +673,7 @@ void MistServer::OnCommand(int iID, ZGuiWnd *pkMainWnd)
 		if(strName == "OpenWorkTabButton")
 		{
 			pkScript->Call(m_pkScriptResHandle, "OpenWorkPad", 0, 0);
+			GetWnd("WorkTabWnd")->SetMoveArea(Rect(0,0,800,600), true);
 		}
 
 		if(strName == "RotateZoneModellButton")

@@ -26,6 +26,8 @@
 #include "../mcommon/p_serverinfo.h"
 #include "../mcommon/p_clientcontrol.h"
 
+#include "inventorydlg.h"
+
 class MistClient :public Application, public ZGuiApp {
 	private:
 		
@@ -68,7 +70,9 @@ class MistClient :public Application, public ZGuiApp {
 		float 				m_fClickDelay;
 		
 		Vector3	Get3DMousePos();
-		Object*	GetTargetObject();		
+		Object*	GetTargetObject();	
+		
+		InventoryDlg*	  m_pkInventoryDlg;
 
 	public:
 		void OnCommand(int iID, ZGuiWnd* pkMainWnd);
