@@ -97,8 +97,7 @@ bool Gui::WndProc( ZGuiWnd* pkWindow, unsigned int uiMessage, int iNumberOfParam
 						}
 
 						m_pkFileDlgbox = new FileOpenDlg(this, m_pkEdit->pkFps->m_pkBasicFS,
-							m_pkEdit->pkFps->m_pkLevelMan->GetMapBaseDir(), WINPROC,
-							DIRECTORIES_ONLY | DISALLOW_DIR_CHANGE);
+							WINPROC, DIRECTORIES_ONLY | DISALLOW_DIR_CHANGE);
 					}
 					break;
 
