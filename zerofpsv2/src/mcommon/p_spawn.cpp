@@ -22,7 +22,7 @@ P_Spawn::P_Spawn()
 	m_fSpawnRadius = 5;
 	m_strTemplate = "";
 	
-	m_fTimer  = m_pkFps->m_pkObjectMan->GetGameTime();
+	m_fTimer  = m_pkFps->m_pkObjectMan->GetSimTime();
 }
 
 
@@ -46,22 +46,22 @@ void P_Spawn::Update()
 	{
 		case POINT_SPAWN:
 		{
-			if(m_pkFps->m_pkObjectMan->GetGameTime() - m_fTimer >= m_fSpawnDelay)
+			if(m_pkFps->m_pkObjectMan->GetSimTime() - m_fTimer >= m_fSpawnDelay)
 			{				
 				//dont do anything if spawnded objects is at max
 				if(m_iEntityCounter < m_iMaxEntitys)
 					SpawnEntity(m_pkObject->GetLocalPosV());				
 			
-				m_fTimer  = m_pkFps->m_pkObjectMan->GetGameTime();			
+				m_fTimer  = m_pkFps->m_pkObjectMan->GetSimTime();			
 			}
 		
 			break;
 		}
 		case AREA_SPAWN:
 		{			
-			float fAtime = m_pkFps->m_pkObjectMan->GetGameTime() - m_fTimer;
+			float fAtime = m_pkFps->m_pkObjectMan->GetSimTime() - m_fTimer;
 			if(fAtime < 0)
-				m_fTimer = m_pkFps->m_pkObjectMan->GetGameTime();
+				m_fTimer = m_pkFps->m_pkObjectMan->GetSimTime();
 			
 			if(fAtime >= m_fSpawnDelay)
 			{				
@@ -84,7 +84,7 @@ void P_Spawn::Update()
 						SpawnEntity(kPos);				
 					}
 				}				
-				m_fTimer  = m_pkFps->m_pkObjectMan->GetGameTime();				
+				m_fTimer  = m_pkFps->m_pkObjectMan->GetSimTime();				
 			}
 		
 			break;

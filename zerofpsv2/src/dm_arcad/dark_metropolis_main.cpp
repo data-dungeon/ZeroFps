@@ -78,7 +78,7 @@ void DarkMetropolis::OnInit()
 
 	//setup system speed
 	m_pkFps->SetSystemFps(30);
-	m_pkObjectMan->m_fSimTimeScale = 0.5;
+	m_pkObjectMan->SetTimeScale(0.5);
 	
 	//set tracker los
 	m_pkObjectMan->SetTrackerLos(5);

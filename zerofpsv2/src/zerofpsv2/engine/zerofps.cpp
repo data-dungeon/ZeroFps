@@ -307,7 +307,7 @@ void ZeroFps::Run_EngineShell()
 			iInputKey = i; break;
 		}
 
-	m_pkGui->Update(m_pkObjectMan->GetGameTime(),iInputKey,false,
+	m_pkGui->Update(m_pkObjectMan->GetSimTime(),iInputKey,false,
 		(m_pkGuiInputHandle->Pressed(KEY_RSHIFT) || m_pkGuiInputHandle->Pressed(KEY_LSHIFT)),
 		mx,my,m_pkGuiInputHandle->Pressed(MOUSELEFT),m_pkGuiInputHandle->Pressed(MOUSERIGHT),
 		m_pkGuiInputHandle->Pressed(MOUSEMIDDLE));
@@ -412,17 +412,13 @@ void ZeroFps::Update_System(bool bServer)
 	if(iLoops > 10)
 		iLoops = 10;
 	
-		
-	//m_pkObjectMan->m_fGameFrameTime = m_fSystemUpdateFpsDelta;	// 1/m_fSystemUpdateFps;//(fATime / iLoops);		
-	//	float m_fLU = m_fSystemUpdateTime;
- 	
+	//calculate new system delta time
 	m_fSystemUpdateFpsDelta = float(1.0) / m_fSystemUpdateFps;
-	m_pkObjectMan->m_fSimTimeDelta = m_pkObjectMan->m_fSimTimeScale * m_fSystemUpdateFpsDelta;  
 	
 	for(int i=0;i<iLoops;i++)
 	{	
-		//calculate current game time
-		m_pkObjectMan->m_fSimTime += /*m_fLU + (i * */ m_pkObjectMan->GetSimDelta();
+		//update sim time for this systemupdate
+		m_pkObjectMan->UpdateSimTime();
 		
 		//client & server code
 

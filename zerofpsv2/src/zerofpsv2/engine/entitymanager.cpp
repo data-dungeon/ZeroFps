@@ -143,6 +143,18 @@ EntityManager::~EntityManager()
 
 }
 
+
+void EntityManager::UpdateSimTime()
+{
+	//calculate new scaled sim time delta
+	m_fSimTimeDelta = m_fSimTimeScale * m_pkZeroFps->GetSystemUpdateFpsDelta();
+	
+	//add sim time delta to current sim time
+	m_fSimTime += m_fSimTimeDelta;
+}
+
+
+
 /**	\brief	Link this to the Object manager
 
   This function is called by objects as they are created. It assigned a NetWorkID to the object and

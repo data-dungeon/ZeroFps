@@ -14,7 +14,7 @@ P_ScriptInterface::P_ScriptInterface()
 	m_bFirstRun=true;
 	m_fHeartRate=-1;
 
-	m_fTimer = m_pkFps->m_pkObjectMan->GetGameTime();
+	m_fTimer = m_pkFps->m_pkObjectMan->GetSimTime();
 	
 	
 	//cout<<"P_ScriptInterface created"<<endl;
@@ -43,11 +43,11 @@ void P_ScriptInterface::Update()
 	}
 
 	if(m_fHeartRate != -1)
-		if(m_pkFps->m_pkObjectMan->GetGameTime() - m_fTimer > m_fHeartRate)
+		if(m_pkFps->m_pkObjectMan->GetSimTime() - m_fTimer > m_fHeartRate)
 		{
 			m_pkObjMan->CallFunction(m_pkObject, "HeartBeat");
 			
-			m_fTimer = m_pkFps->m_pkObjectMan->GetGameTime();
+			m_fTimer = m_pkFps->m_pkObjectMan->GetSimTime();
 		}
 }
 

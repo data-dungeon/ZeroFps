@@ -163,7 +163,7 @@ void P_DMMission::Update()
 		// Kolla om uppdraget har slutförts 1 gång var 3:e sekund
 		// 
 
-		float fTimeCheck = m_pkZeroFps->m_pkObjectMan->GetGameTime();
+		float fTimeCheck = m_pkZeroFps->m_pkObjectMan->GetSimTime();
 
 		if(fTimeCheck - m_fMissionDoneCheckTime > 3.0f)
 		{

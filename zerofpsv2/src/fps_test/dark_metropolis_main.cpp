@@ -78,7 +78,7 @@ void DarkMetropolis::OnInit()
 
 	//setup system speed
 	m_pkFps->SetSystemFps(30);
-	m_pkObjectMan->m_fSimTimeScale = 1.0;
+	m_pkObjectMan->SetTimeScale(1.0);
 	
 	//set tracker los
 	m_pkObjectMan->SetTrackerLos(5);
@@ -278,7 +278,7 @@ void DarkMetropolis::OnSystem()
 {	
 /*
 
-	float t = m_pkFps->m_pkObjectMan->GetGameTime();
+	float t = m_pkFps->m_pkObjectMan->GetSimTime();
 
 	//if no hq has been found, try to find it
 	if(m_iActiveHQ == -1)

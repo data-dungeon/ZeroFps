@@ -38,8 +38,8 @@ void P_WaterRender::Update()
 {	
 	m_fBlendValue = 1.0f; // Disable blend effect...
 
-	if(m_pkObject->m_pkEntityMan->m_iUpdateFlags & PROPERTY_TYPE_NORMAL &&
-		m_pkObject->m_pkEntityMan->m_iUpdateFlags & PROPERTY_SIDE_CLIENT) {
+	if(m_pkObject->m_pkEntityMan->GetCurrentUpdateFlags() & PROPERTY_TYPE_NORMAL &&
+		m_pkObject->m_pkEntityMan->GetCurrentUpdateFlags() & PROPERTY_SIDE_CLIENT) {
 		if(m_bBlendDirUp) {
 			m_fBlendValue += 0.05;
 			if(m_fBlendValue > 1.0)

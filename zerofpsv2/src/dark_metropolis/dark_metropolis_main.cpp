@@ -72,7 +72,7 @@ void DarkMetropolis::OnInit()
 
 	//setup system speed
 	m_pkFps->SetSystemFps(30);
-	m_pkObjectMan->m_fSimTimeScale = 1.0;
+	m_pkObjectMan->SetTimeScale(1.0);
 	
 	//set tracker los
 	m_pkObjectMan->SetTrackerLos(5);
@@ -232,7 +232,7 @@ void DarkMetropolis::OnSystem()
 {	
 
 
-	float t = m_pkFps->m_pkObjectMan->GetGameTime();
+	float t = m_pkFps->m_pkObjectMan->GetSimTime();
 
 	//if no hq has been found, try to find it
 	if(m_iActiveHQ == -1)
@@ -372,7 +372,7 @@ void DarkMetropolis::Input()
 
 	// Byt tillbaks till bakgrundsmusik om det har gått 10 sek efter det 
 	// att ingen kula har avlossats.
-	if(m_pkFps->m_pkObjectMan->GetGameTime() - m_fBulletTime > 10 &&
+	if(m_pkFps->m_pkObjectMan->GetSimTime() - m_fBulletTime > 10 &&
 		m_fBulletTime != -1)
 	{
 		m_fBulletTime = -1;
@@ -558,7 +558,7 @@ void DarkMetropolis::Input()
 						
 						// Test for double click and in that case open HQ dlg.
 						////////////////////////////////////////////////////////
-						float fGameTime = m_pkFps->m_pkObjectMan->GetGameTime();
+						float fGameTime = m_pkFps->m_pkObjectMan->GetSimTime();
 						static bool s_bClickedOnes = false;
 						static float s_fClickTime = fGameTime;
 
@@ -639,7 +639,7 @@ void DarkMetropolis::Input()
 						{
 							if(P_DMCharacter* pkCharacter = (P_DMCharacter*)pkEnt->GetProperty("P_DMCharacter"))
 							{
-								m_fBulletTime = m_pkFps->m_pkObjectMan->GetGameTime();
+								m_fBulletTime = m_pkFps->m_pkObjectMan->GetSimTime();
 
 								int* pGunID; // Start action music only if a bullet have been shoot.
 								if(*(pGunID = pkCharacter->m_pkHand->GetItem(0,0)) != -1)
