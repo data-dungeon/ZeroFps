@@ -689,7 +689,7 @@ string TextureManager::GetTextureNameFromOpenGlIndex(int iGlObject)
 		if(m_iTextures[i] == NULL)
 			continue;
 		
-		if(m_iTextures[i]->index == iGlObject) {
+		if((int)m_iTextures[i]->index == iGlObject) { // 040701 : if(m_iTextures[i]->index == iGlObject) {
 			return m_iTextures[i]->file;		
 		}		
 	}	

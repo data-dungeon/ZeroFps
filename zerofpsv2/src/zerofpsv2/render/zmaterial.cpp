@@ -57,7 +57,7 @@ ZMaterial::ZMaterial()
 {
 	Clear();
 
-	ZMaterialSettings* first = AddPass();	
+//	ZMaterialSettings* first = AddPass();	
 }
 
 ZMaterial::~ZMaterial()

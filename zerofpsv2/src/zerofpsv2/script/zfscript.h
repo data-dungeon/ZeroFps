@@ -9,7 +9,8 @@ extern "C"
 //	#include <lualib.h>
 }
 
-#pragma warning (disable :4786)
+#pragma warning( disable : 4512) // 'class' : assignment operator could not be generated 
+#pragma warning (disable : 4786)
 #include <set>
 #include <map>
 #include <string>

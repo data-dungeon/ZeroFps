@@ -864,7 +864,7 @@ string ZFScriptSystem::FormatMultiLineTextFromLua(string strLuaText)
 	// Lägg sedan till radtecken där ett '\n' finns.
 	for(int j=0; j<strLuaText.size(); j++)
 	{
-		if(j!=strLuaText.size()-1 && j!=0)
+		if(j!=(int)strLuaText.size()-1 && j!=0)
 		{
 			if(strLuaText[j] == '\\' && strLuaText[j+1] == 'n')
 				temp.push_back('\n');
