@@ -47,8 +47,6 @@ void ZeroTank::OnInit()
 	//run autoexec script
 	if(!pkIni->ExecuteCommands("zerotank_autoexec.ini"))
 		pkConsole->Printf("No game_autoexec.ini.ini found");
-	
-
 
 }
 
@@ -614,8 +612,10 @@ bool ZeroTank::IsValid()	{ return true; }
 void ZeroTank::OnCommand(int iID, ZGuiWnd *pkMainWnd)
 {
 	if(iID == 5)
+		pkScript->Call(m_pkScriptResHandle , "OnClickBackpack", 0, 0); 
 		pkScript->Call(m_pkScriptResHandle, "OnClickBackpack", 0, 0); 
 	if(iID == 6)
+		pkScript->Call(m_pkScriptResHandle , "OnClickStats", 0, 0);
 		pkScript->Call(m_pkScriptResHandle, "OnClickStats", 0, 0);
 	if(iID == 4)
 		pkScript->Call(m_pkScriptResHandle, "OnClickMap", 0, 0);

@@ -42,7 +42,8 @@ struct PSystemTypeData
 		m_kEnd_OuterStartArea,
 		m_kEnd_InnerStartArea,
 		m_kPosOffset,
-		m_kMaxSize;
+		m_kMaxSize,
+		m_kCullPosOffset;
 
 	bool m_bCirkularStart;
 		
@@ -100,7 +101,8 @@ struct ParticleTypeData
 	int
 		m_iLifeTimeRandom,
 		m_iStartSizeRandom,
-		m_iEndSizeRandom;
+		m_iEndSizeRandom,
+		m_iStartSpeedRand;
 	
 
 	v2 

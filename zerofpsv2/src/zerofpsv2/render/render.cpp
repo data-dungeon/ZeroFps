@@ -2,6 +2,7 @@
 #include "../ogl/zfpsgl.h"
 #include "../basic/basicconsole.h"
 #include "../engine_systems/common/psystem.h"
+#include "../engine/psystemmanager.h"
  
 Render::Render()  
 :	ZFSubSystem("Render") , m_eLandscapePolygonMode(FILL) 
@@ -1337,6 +1338,15 @@ void Render::DrawPSystem( PSystem *pkPSystem )
 	glDrawElements(GL_TRIANGLES, pkPSystem->Particles() * 3, 
 					   GL_UNSIGNED_INT, pkPSystem->GetIndices() );
 
+
+	// For debugging cullingbox
+	/*
+	glEnable (GL_CULL_FACE);
+	glDisable (GL_FOG);
+	glDisable (GL_LIGHTING);
+	glDepthMask(GL_FALSE);
+	DrawBox(kPos, Vector3(0,0,0), kScale, 2);
+	*/
 
 	glPopMatrix();
 }

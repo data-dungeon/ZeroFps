@@ -68,9 +68,14 @@ private:
 
 	unsigned int* m_pfIndices;
 
+	bool 
+		m_bFirstRun,
+		m_bInsideFrustum;
+
 	PSystemType* m_pkPSystemType;
 
 public:
+	void TestInsideFrustum();
 	void Draw();
 	void Update( Vector3 kNewPosition, Matrix4 kNewRotation );
 	void AddPSProperty ( ParticleProperty *pkPSProperty );
@@ -108,6 +113,8 @@ public:
 	friend class MovePSProp;
 	friend class ColorPSProp;
 	friend class SizePSProp;
+
+	PSystemType* GetPSystemType()					{ return m_pkPSystemType; }
 };
 
 #endif

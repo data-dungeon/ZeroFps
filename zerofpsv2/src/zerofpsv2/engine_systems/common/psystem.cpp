@@ -8,11 +8,13 @@
 
 void PSystem::Draw()
 {
+	if ( m_bInsideFrustum )
+	{
+		// Set depthmask
+		glDepthFunc ( m_pkPSystemType->m_kPSystemBehaviour.m_uiDepthMask );
 
-	// Set depthmask
-	glDepthFunc ( m_pkPSystemType->m_kPSystemBehaviour.m_uiDepthMask );
-
-	m_pkRender->DrawPSystem (this);
+		m_pkRender->DrawPSystem (this);
+	}
 
 	glPopAttrib();
 }
@@ -21,22 +23,32 @@ void PSystem::Draw()
 
 void PSystem::Update( Vector3 kNewPosition, Matrix4 kNewRotation )
 {
+	TestInsideFrustum();
+
+	// don't update live-forevever psystems if not inside frustum
+	if ( m_pkPSystemType->m_kPSystemBehaviour.m_fLifeTime == -1 && !m_bInsideFrustum )
+		return;
+
 	glPushAttrib(GL_ALL_ATTRIB_BITS);
 
 	glDisable (GL_BLEND);
 	glDisable (GL_ALPHA_TEST);
 	glEnable (GL_DEPTH_TEST);
+	glDepthMask(GL_FALSE);	
 
-	glDisable(		GL_BLEND					);
-	glDisable(		GL_LIGHTING				);
-	glDisable(		GL_ALPHA_TEST			);
-	glDepthMask(	GL_FALSE					);	
-	glDisable(		GL_CULL_FACE			);
-	glDisable(		GL_COLOR_MATERIAL 	);
-	glDisable(		GL_FOG					);
-	glDisable(GL_LIGHTING);
-	glDisable(GL_COLOR_MATERIAL);	
- 	glDisable(GL_TEXTURE_2D);
+	// Inherit position from parent
+	m_kPosition = kNewPosition;
+
+	// Inherit rotation from parent
+	m_kRotation = kNewRotation;
+
+		// if PSystem loops in infinity, make it have particles from start
+	if ( m_pkPSystemType->m_kPSystemBehaviour.m_fLifeTime == -1 && m_bFirstRun )
+	{
+		TimeoffSet();
+		m_bFirstRun = false;
+	}
+
 
 	// Get Frametime
 	m_fFrameTime = static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"))->GetFrameTime();
@@ -47,12 +59,6 @@ void PSystem::Update( Vector3 kNewPosition, Matrix4 kNewRotation )
 
 	// Update age life percent
 	m_fAgePercent = m_fAge / m_pkPSystemType->m_kPSystemBehaviour.m_fLifeTime;
-
-	// Inherit position from parent
-	m_kPosition = kNewPosition;
-
-	// Inherit rotation from parent
-	m_kRotation = kNewRotation;
 
 	// If all particles hasn't been created...
 	if ( m_kParticles.size() < m_uiParticles )
@@ -167,12 +173,16 @@ PSystem::PSystem(PSystemType* pkPSystemType)
 
 	m_fAgePercent = 1;
 
+	m_bFirstRun = true;
+
 }
 
 // ------------------------------------------------------------------------------------------
 
 void PSystem::ResetParticle (int iParticleIndex, float fTimeOffset)
 {
+	//cout << m_kParticles[iParticleIndex].m_kCenter.y << endl;
+
 	// set size of particle array stuff
 	if ( iParticleIndex > m_uiLastParticle )
 		m_uiLastParticle = iParticleIndex;
@@ -238,10 +248,26 @@ void PSystem::ResetParticle (int iParticleIndex, float fTimeOffset)
 	if ( m_pfColors )
 		for ( int i = 0; i < 12; i += 4 )
 		{
-			m_pfColors[iClrIndex + i    ]	= m_pkPSystemType->m_kParticleBehaviour.m_kStartColor.r;
-			m_pfColors[iClrIndex + i + 1] = m_pkPSystemType->m_kParticleBehaviour.m_kStartColor.g;
-			m_pfColors[iClrIndex + i + 2] = m_pkPSystemType->m_kParticleBehaviour.m_kStartColor.b;
-			m_pfColors[iClrIndex + i + 3] = m_pkPSystemType->m_kParticleBehaviour.m_kStartColor.a;
+			m_pfColors[iClrIndex + i    ]	= m_pkPSystemType->m_kParticleBehaviour.m_kStartColor.r + 
+													  (( m_pkPSystemType->m_kParticleBehaviour.m_kEndColor.r - 
+													  m_pkPSystemType->m_kParticleBehaviour.m_kStartColor.r ) /
+													  m_pkPSystemType->m_kParticleBehaviour.m_fLifeTime * fTimeOffset);
+
+			m_pfColors[iClrIndex + i + 1] = m_pkPSystemType->m_kParticleBehaviour.m_kStartColor.g + 
+													  (( m_pkPSystemType->m_kParticleBehaviour.m_kEndColor.g - 
+													  m_pkPSystemType->m_kParticleBehaviour.m_kStartColor.g ) /
+													  m_pkPSystemType->m_kParticleBehaviour.m_fLifeTime * fTimeOffset);
+
+			m_pfColors[iClrIndex + i + 2] = m_pkPSystemType->m_kParticleBehaviour.m_kStartColor.b + 
+													  (( m_pkPSystemType->m_kParticleBehaviour.m_kEndColor.b - 
+													  m_pkPSystemType->m_kParticleBehaviour.m_kStartColor.b ) /
+													  m_pkPSystemType->m_kParticleBehaviour.m_fLifeTime * fTimeOffset);
+
+			m_pfColors[iClrIndex + i + 3] = m_pkPSystemType->m_kParticleBehaviour.m_kStartColor.a + 
+													  (( m_pkPSystemType->m_kParticleBehaviour.m_kEndColor.a - 
+													  m_pkPSystemType->m_kParticleBehaviour.m_kStartColor.a ) /
+													  m_pkPSystemType->m_kParticleBehaviour.m_fLifeTime * fTimeOffset);
+		
 		}
 
 
@@ -253,6 +279,9 @@ void PSystem::ResetParticle (int iParticleIndex, float fTimeOffset)
 
 	// Set age to max lifetime
 	m_kParticles[iParticleIndex].m_fAge = m_kParticles[iParticleIndex].m_fLifeTime - fTimeOffset;
+
+	// Randomize lifetime
+	m_kParticles[iParticleIndex].m_fAge *= 1 - (((rand()%m_pkPSystemType->m_kParticleBehaviour.m_iLifeTimeRandom)/100.f));
 
 	m_kParticles[iParticleIndex].m_kForce = m_pkPSystemType->m_kParticleBehaviour.m_kForce;
 	
@@ -270,7 +299,13 @@ void PSystem::ResetParticle (int iParticleIndex, float fTimeOffset)
 						m_pkPSystemType->m_kParticleBehaviour.m_kDirection.z;
 
 //	m_kParticles[iParticleIndex].m_kVelocity = m_kRotation.VectorRotate(kRandomDir * m_pkPSystemType->m_kParticleBehaviour.m_fStartSpeed);
-	m_kParticles[iParticleIndex].m_kVelocity = kRandomDir * m_pkPSystemType->m_kParticleBehaviour.m_fStartSpeed;
+
+	// Startspeed
+	float fStartSpeedRand = ((rand()%100) / 100.f) * ((rand()%2) * 2 - 1);
+	float fStartSpeed = m_pkPSystemType->m_kParticleBehaviour.m_fStartSpeed * 
+							  (1 + (fStartSpeedRand * (m_pkPSystemType->m_kParticleBehaviour.m_iStartSpeedRand/100.f)));
+
+	m_kParticles[iParticleIndex].m_kVelocity = kRandomDir * fStartSpeed;
 
 	m_kParticles[iParticleIndex].m_kStartSize.x = m_pkPSystemType->m_kParticleBehaviour.m_kStartSize.x;
 	m_kParticles[iParticleIndex].m_kStartSize.y = m_pkPSystemType->m_kParticleBehaviour.m_kStartSize.y;
@@ -304,8 +339,10 @@ void PSystem::ResetParticle (int iParticleIndex, float fTimeOffset)
 	m_kParticles[iParticleIndex].m_kSize.y = m_kParticles[iParticleIndex].m_kStartSize.y;
 
 	// Update startposition
+	m_kParticles[iParticleIndex].m_kCenter += m_kParticles[iParticleIndex].m_kVelocity * fTimeOffset + 
+															m_kParticles[iParticleIndex].m_kForce * pow(fTimeOffset,2)/2.f;
+
 	m_kParticles[iParticleIndex].m_kVelocity += m_kParticles[iParticleIndex].m_kForce * fTimeOffset;
-	m_kParticles[iParticleIndex].m_kCenter += m_kParticles[iParticleIndex].m_kVelocity * fTimeOffset;
 
 }
 
@@ -363,3 +400,20 @@ void PSystem::TimeoffSet ()
 }
 
 // ------------------------------------------------------------------------------------------
+
+void PSystem::TestInsideFrustum()
+{
+	// test culling
+	Vector3 kScale = GetPSystemType()->m_kPSystemBehaviour.m_kMaxSize;
+
+	Vector3 kPos = GetPosition() + 
+						GetPSystemType()->m_kPSystemBehaviour.m_kPosOffset + 
+						GetPSystemType()->m_kPSystemBehaviour.m_kCullPosOffset;
+
+	// if PSystem is inside frustum
+	if ( static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"))->GetCam()->
+			m_kFrustum.CubeInFrustum ( kPos.x, kPos.y, kPos.z, kScale.x, kScale.y, kScale.z ) )
+		m_bInsideFrustum = true;
+	else
+		m_bInsideFrustum = false;
+}

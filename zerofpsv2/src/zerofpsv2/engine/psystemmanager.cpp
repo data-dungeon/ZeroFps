@@ -98,10 +98,6 @@ PSystem* PSystemManager::GetPSSystem ( string kPSName )
 	// Set max nr of particles in ParticleSystem
 	pkPS->SetParticles ( m_kPSystemTypes[kPSName].m_kPSystemBehaviour.m_iMaxParticles );
 
-	// if PSystem loops in infinity, make it have particles from start
-	if ( m_kPSystemTypes[kPSName].m_kPSystemBehaviour.m_fLifeTime == -1 )
-		pkPS->TimeoffSet();
-
 	return pkPS;
 
 }
@@ -247,9 +243,9 @@ bool PSystemManager::LoadData ( PSystemType *pkPSType )
 		pkPSType->m_kParticleBehaviour.m_fLifeTime = 1;
 
 	if ( m_kIniLoader.KeyExist("particle_lifetime", "random") )
-		pkPSType->m_kParticleBehaviour.m_iLifeTimeRandom = m_kIniLoader.GetFloatValue("particle_lifetime", "random");
+		pkPSType->m_kParticleBehaviour.m_iLifeTimeRandom = m_kIniLoader.GetIntValue("particle_lifetime", "random");
 	else
-		pkPSType->m_kParticleBehaviour.m_iLifeTimeRandom = 0;
+		pkPSType->m_kParticleBehaviour.m_iLifeTimeRandom = 1;
 
 	
 	// Blending
@@ -267,7 +263,7 @@ bool PSystemManager::LoadData ( PSystemType *pkPSType )
 	if( m_kIniLoader.KeyExist("start_color", "r") )
 		pkPSType->m_kParticleBehaviour.m_kStartColor.r = m_kIniLoader.GetFloatValue("start_color", "r");
 	else
-		pkPSType->m_kParticleBehaviour.m_kStartColor.r =1;
+		pkPSType->m_kParticleBehaviour.m_kStartColor.r = 1;
 
 	if( m_kIniLoader.KeyExist("start_color", "g") )
 		pkPSType->m_kParticleBehaviour.m_kStartColor.g = m_kIniLoader.GetFloatValue("start_color", "g");
@@ -421,6 +417,11 @@ bool PSystemManager::LoadData ( PSystemType *pkPSType )
 	else
 		pkPSType->m_kParticleBehaviour.m_fStartSpeed = 0;
 
+	if ( m_kIniLoader.KeyExist("speed", "random") )
+		pkPSType->m_kParticleBehaviour.m_iStartSpeedRand = m_kIniLoader.GetIntValue("speed", "random");
+	else
+		pkPSType->m_kParticleBehaviour.m_iStartSpeedRand = 0;
+
 
 	// Force
 	if ( m_kIniLoader.KeyExist("force", "x") )
@@ -464,17 +465,17 @@ bool PSystemManager::LoadData ( PSystemType *pkPSType )
 
 	// Wideness
 	if ( m_kIniLoader.KeyExist("wideness", "x") )
-		pkPSType->m_kParticleBehaviour.m_kWideness.x = m_kIniLoader.GetFloatValue("wideness", "x");
+		pkPSType->m_kParticleBehaviour.m_kWideness.x = m_kIniLoader.GetFloatValue("wideness", "x") / 2.f;
 	else
 		pkPSType->m_kParticleBehaviour.m_kWideness.x = 1;
 
 	if ( m_kIniLoader.KeyExist("wideness", "y") )
-		pkPSType->m_kParticleBehaviour.m_kWideness.y = m_kIniLoader.GetFloatValue("wideness", "y");
+		pkPSType->m_kParticleBehaviour.m_kWideness.y = m_kIniLoader.GetFloatValue("wideness", "y") / 2.f;
 	else
 		pkPSType->m_kParticleBehaviour.m_kWideness.y = 1;
 
 	if ( m_kIniLoader.KeyExist("wideness", "z") )
-		pkPSType->m_kParticleBehaviour.m_kWideness.z = m_kIniLoader.GetFloatValue("wideness", "z");
+		pkPSType->m_kParticleBehaviour.m_kWideness.z = m_kIniLoader.GetFloatValue("wideness", "z") / 2.f;
 	else
 		pkPSType->m_kParticleBehaviour.m_kWideness.z = 1;
 
@@ -582,11 +583,273 @@ void PSystemManager::CalculateMaxSize ( PSystemType *pkPSType )
 	else
 		kOuterCircle.z = pkPSType->m_kPSystemBehaviour.m_kStart_OuterStartArea.z;
 
+	float fLifeTime = pkPSType->m_kParticleBehaviour.m_fLifeTime * 
+							(1 + (pkPSType->m_kParticleBehaviour.m_iLifeTimeRandom/100.f));
+
+	float fWidth  = (pkPSType->m_kParticleBehaviour.m_kEndSize.x * 
+						 (1 + (pkPSType->m_kParticleBehaviour.m_iEndSizeRandom/100.f)) ) / 2;
+	float fHeight = (pkPSType->m_kParticleBehaviour.m_kEndSize.y * 
+						 (1 + (pkPSType->m_kParticleBehaviour.m_iEndSizeRandom/100.f)) ) / 2;
+
+
+	kOuterCircle = kOuterCircle / 2.f;
+
+	pkPSType->m_kPSystemBehaviour.m_kCullPosOffset = Vector3(0,0,0);
+
+	Vector3 kRandomDir, kRandomDir2, kRandomDir3, kRandomDir4;
+
+	kRandomDir = kRandomDir2 = kRandomDir3 = kRandomDir4 =
+					 pkPSType->m_kParticleBehaviour.m_kDirection;
+
+
+	float fMaxWidthX, fMaxHeightX, fMaxWidthZ, fMaxHeightZ;
+
+	// Max widthX
+	if ( 90%int(pkPSType->m_kParticleBehaviour.m_kWideness.x*2) == 90 )
+		fMaxWidthX = 90;
+	else
+		fMaxWidthX = pkPSType->m_kParticleBehaviour.m_kWideness.x;
+
+	// Max widthZ
+	if ( 90%int(pkPSType->m_kParticleBehaviour.m_kWideness.z*2) == 90 )
+		fMaxWidthZ = 90;
+	else
+		fMaxWidthZ = pkPSType->m_kParticleBehaviour.m_kWideness.z;
+
+	// Max heightX
+	if ( 180%int(pkPSType->m_kParticleBehaviour.m_kWideness.x*2) == 180 )
+		fMaxHeightX = 180;
+	else
+		fMaxHeightX = pkPSType->m_kParticleBehaviour.m_kWideness.x;
+
+	// Max heightZ
+	if ( 180%int(pkPSType->m_kParticleBehaviour.m_kWideness.z*2) == 180)
+		fMaxHeightZ = 180;
+	else
+		fMaxHeightZ = pkPSType->m_kParticleBehaviour.m_kWideness.z;
+
+
+
+	kRandomDir.x = fMaxWidthX;
+	kRandomDir.z = fMaxWidthZ;
+
+	kRandomDir2.x = fMaxHeightX;
+	kRandomDir2.z = fMaxHeightZ;
+
+
+	kRandomDir3.x = -fMaxWidthX;
+	kRandomDir3.z = -fMaxWidthZ;
+
+	kRandomDir4.x = -fMaxHeightX;
+	kRandomDir4.z = -fMaxHeightZ;
+
+
 	
-	pkPSType->m_kPSystemBehaviour.m_kMaxSize = (pkPSType->m_kParticleBehaviour.m_kDirection * pkPSType->m_kParticleBehaviour.m_fStartSpeed) *  
-							 pkPSType->m_kParticleBehaviour.m_fLifeTime + 
-							 pkPSType->m_kParticleBehaviour.m_kForce * 
-							 pow(pkPSType->m_kParticleBehaviour.m_fLifeTime, 2) / 2.f + kOuterCircle;
+	kRandomDir.y *= cos(kRandomDir.x / degtorad) * cos(kRandomDir.z / degtorad);
+	kRandomDir.x = sin(kRandomDir.x / degtorad) + 
+						pkPSType->m_kParticleBehaviour.m_kDirection.x;
+	kRandomDir.z = sin(kRandomDir.z / degtorad) + 
+						pkPSType->m_kParticleBehaviour.m_kDirection.z;
+
+	kRandomDir2.y *= cos(kRandomDir2.x / degtorad) * cos(kRandomDir2.z / degtorad);
+	kRandomDir2.x = sin(kRandomDir2.x / degtorad) + 
+						pkPSType->m_kParticleBehaviour.m_kDirection.x;
+	kRandomDir2.z = sin(kRandomDir2.z / degtorad) + 
+						pkPSType->m_kParticleBehaviour.m_kDirection.z;
+
+	kRandomDir3.y *= -cos(kRandomDir3.x / degtorad) * cos(kRandomDir3.z / degtorad);
+	kRandomDir3.x = sin(kRandomDir3.x / degtorad) + 
+						pkPSType->m_kParticleBehaviour.m_kDirection.x;
+	kRandomDir3.z = sin(kRandomDir3.z / degtorad) + 
+						pkPSType->m_kParticleBehaviour.m_kDirection.z;
+
+	kRandomDir4.y *= -cos(kRandomDir4.x / degtorad) * cos(kRandomDir4.z / degtorad);
+	kRandomDir4.x = sin(kRandomDir4.x / degtorad) + 
+						pkPSType->m_kParticleBehaviour.m_kDirection.x;
+	kRandomDir4.z = sin(kRandomDir4.z / degtorad) + 
+						pkPSType->m_kParticleBehaviour.m_kDirection.z;
+
+
+	Vector3 kSize1, kSize2, kSize3, kSize4, kSize5;
+
+	// x
+	kSize1.x = ((pkPSType->m_kParticleBehaviour.m_kDirection.x * 
+				  pkPSType->m_kParticleBehaviour.m_fStartSpeed ) +
+				  pkPSType->m_kParticleBehaviour.m_kForce.x * 
+				  pow(fLifeTime, 2) / 2.f + kOuterCircle.x) * 
+				  fLifeTime + fWidth;
+
+	kSize2.x = ((kRandomDir.x * 
+				  pkPSType->m_kParticleBehaviour.m_fStartSpeed ) +
+				  pkPSType->m_kParticleBehaviour.m_kForce.x * 
+				  pow(fLifeTime, 2) / 2.f + kOuterCircle.x) * 
+				  fLifeTime + fWidth;
+
+	kSize3.x = ((kRandomDir2.x * 
+				  pkPSType->m_kParticleBehaviour.m_fStartSpeed ) +
+				  pkPSType->m_kParticleBehaviour.m_kForce.x * 
+				  pow(fLifeTime, 2) / 2.f + kOuterCircle.x) * 
+				  fLifeTime + fWidth;
+
+	kSize4.x = ((kRandomDir3.x * 
+				  pkPSType->m_kParticleBehaviour.m_fStartSpeed ) +
+				  pkPSType->m_kParticleBehaviour.m_kForce.x * 
+				  pow(fLifeTime, 2) / 2.f - kOuterCircle.x) * 
+				  fLifeTime - fWidth;
+
+	kSize5.x = ((kRandomDir4.x * 
+				  pkPSType->m_kParticleBehaviour.m_fStartSpeed ) +
+				  pkPSType->m_kParticleBehaviour.m_kForce.x * 
+				  pow(fLifeTime, 2) / 2.f - kOuterCircle.x) * 
+				  fLifeTime - fWidth;
+	// y
+	kSize1.y = (pkPSType->m_kParticleBehaviour.m_kDirection.y *
+				  pkPSType->m_kParticleBehaviour.m_fStartSpeed) * fLifeTime + 
+				  pkPSType->m_kParticleBehaviour.m_kForce.y * 
+				  pow(fLifeTime, 2) / 2.f + kOuterCircle.y
+				  + (fHeight/2.f);
+ 
+	kSize2.y = (kRandomDir.y *
+				  pkPSType->m_kParticleBehaviour.m_fStartSpeed) * fLifeTime + 
+				  pkPSType->m_kParticleBehaviour.m_kForce.y * 
+				  pow(fLifeTime, 2) / 2.f + kOuterCircle.y
+				  + (fHeight/2.f);
+
+	kSize3.y = (kRandomDir2.y *
+				  pkPSType->m_kParticleBehaviour.m_fStartSpeed) * fLifeTime + 
+				  pkPSType->m_kParticleBehaviour.m_kForce.y * 
+				  pow(fLifeTime, 2) / 2.f + kOuterCircle.y
+				  + (fHeight/2.f);
+
+	kSize4.y = (kRandomDir3.y *
+				  pkPSType->m_kParticleBehaviour.m_fStartSpeed) * fLifeTime + 
+				  pkPSType->m_kParticleBehaviour.m_kForce.y * 
+				  pow(fLifeTime, 2) / 2.f + kOuterCircle.y
+				  + (fHeight/2.f);
+
+	kSize5.y = (kRandomDir4.y *
+				  pkPSType->m_kParticleBehaviour.m_fStartSpeed) * fLifeTime + 
+				  pkPSType->m_kParticleBehaviour.m_kForce.y * 
+				  pow(fLifeTime, 2) / 2.f + kOuterCircle.y
+				  + (fHeight/2.f);
+	// z
+	kSize1.z = ((pkPSType->m_kParticleBehaviour.m_kDirection.z * 
+				  pkPSType->m_kParticleBehaviour.m_fStartSpeed ) +
+				  pkPSType->m_kParticleBehaviour.m_kForce.z * 
+				  pow(fLifeTime, 2) / 2.f + kOuterCircle.z) * 
+				  fLifeTime + (fHeight/2.f);
+
+	kSize2.z = ((kRandomDir.z * 
+				  pkPSType->m_kParticleBehaviour.m_fStartSpeed ) +
+				  pkPSType->m_kParticleBehaviour.m_kForce.z * 
+				  pow(fLifeTime, 2) / 2.f + kOuterCircle.z) * 
+				  fLifeTime + (fHeight/2.f);
+
+	kSize3.z = ((kRandomDir2.z * 
+				  pkPSType->m_kParticleBehaviour.m_fStartSpeed ) +
+				  pkPSType->m_kParticleBehaviour.m_kForce.z * 
+				  pow(fLifeTime, 2) / 2.f + kOuterCircle.z) * 
+				  fLifeTime + (fHeight/2.f);
+	kSize4.z = ((kRandomDir3.z * 
+				  pkPSType->m_kParticleBehaviour.m_fStartSpeed ) +
+				  pkPSType->m_kParticleBehaviour.m_kForce.z * 
+				  pow(fLifeTime, 2) / 2.f - kOuterCircle.z) * 
+				  fLifeTime - (fHeight/2.f);
+
+	kSize5.z = ((kRandomDir4.z * 
+				  pkPSType->m_kParticleBehaviour.m_fStartSpeed ) +
+				  pkPSType->m_kParticleBehaviour.m_kForce.z * 
+				  pow(fLifeTime, 2) / 2.f - kOuterCircle.z) * 
+				  fLifeTime - (fHeight/2.f);
+	//
+
+	pkPSType->m_kPSystemBehaviour.m_kCullPosOffset = Vector3(0,0,0);
+
+	Vector3 kMaxValues, kMinValues;
+
+	kMaxValues = kMinValues = Vector3(0,0,0);
+
+
+	// X-Max
+	if ( kSize1.x >= kSize2.x && kSize1.x >= kSize3.x && kSize1.x >= kSize4.x && kSize1.x >= kSize5.x && kSize1.x > 0)
+		kMaxValues.x = kSize1.x;
+	else if ( kSize2.x >= kSize1.x && kSize2.x >= kSize3.x && kSize2.x >= kSize4.x && kSize2.x >= kSize5.x && kSize2.x > 0)
+		kMaxValues.x = kSize2.x;
+	else if ( kSize3.x >= kSize1.x && kSize3.x >= kSize2.x && kSize3.x >= kSize4.x && kSize3.x >= kSize5.x && kSize3.x > 0)
+		kMaxValues.x = kSize3.x;
+	else if ( kSize4.x >= kSize1.x && kSize4.x >= kSize3.x && kSize4.x >= kSize2.x && kSize4.x >= kSize5.x && kSize4.x > 0)
+		kMaxValues.x = kSize4.x;
+	else if ( kSize5.x >= kSize1.x && kSize5.x >= kSize3.x && kSize5.x >= kSize2.x && kSize5.x >= kSize4.x && kSize5.x > 0)
+		kMaxValues.x = kSize5.x;
+
+	// Y-Max
+	if ( kSize1.y >= kSize2.y && kSize1.y >= kSize3.y && kSize1.y >= kSize4.y && kSize1.y >= kSize5.y && kSize1.y > 0)
+		kMaxValues.y = kSize1.y;
+	else if ( kSize2.y >= kSize1.y && kSize2.y >= kSize3.y && kSize2.y >= kSize4.y && kSize2.y >= kSize5.y && kSize2.y > 0)
+		kMaxValues.y = kSize2.y;
+	else if ( kSize3.y >= kSize1.y && kSize3.y >= kSize2.y && kSize3.y >= kSize4.y && kSize3.y >= kSize5.y && kSize3.y > 0)
+		kMaxValues.y = kSize3.y;
+	else if ( kSize4.y >= kSize1.y && kSize4.y >= kSize3.y && kSize4.y >= kSize2.y && kSize4.y >= kSize5.y && kSize4.y > 0)
+		kMaxValues.y = kSize4.y;
+	else if ( kSize5.y >= kSize1.y && kSize5.y >= kSize3.y && kSize5.y >= kSize2.y && kSize5.y >= kSize4.y && kSize5.y > 0)
+		kMaxValues.y = kSize5.y;
+
+	// Z-Max
+	if ( kSize1.z >= kSize2.z && kSize1.z >= kSize3.z && kSize1.z >= kSize4.z && kSize1.z >= kSize5.z && kSize1.z > 0)
+		kMaxValues.z = kSize1.z;
+	else if ( kSize2.z >= kSize1.z && kSize2.z >= kSize3.z && kSize2.z >= kSize4.z && kSize2.z >= kSize5.z && kSize2.z > 0)
+		kMaxValues.z = kSize2.z;
+	else if ( kSize3.z >= kSize1.z && kSize3.z >= kSize2.z && kSize3.z >= kSize4.z && kSize3.z >= kSize5.z && kSize3.z > 0)
+		kMaxValues.z = kSize3.z;
+	else if ( kSize4.z >= kSize1.z && kSize4.z >= kSize3.z && kSize4.z >= kSize2.z && kSize4.z >= kSize5.z && kSize4.z > 0)
+		kMaxValues.z = kSize4.z;
+	else if ( kSize5.z >= kSize1.z && kSize5.z >= kSize3.z && kSize5.z >= kSize2.z && kSize5.z >= kSize4.z && kSize5.z > 0)
+		kMaxValues.z = kSize5.z;
+
+
+	// X-Min
+	if ( kSize1.x <= kSize2.x && kSize1.x <= kSize3.x && kSize1.x <= kSize4.x && kSize1.x <= kSize5.x && kSize1.x < 0 )
+		kMinValues.x = kSize1.x;
+	else if ( kSize2.x <= kSize1.x && kSize2.x <= kSize3.x && kSize2.x <= kSize4.x && kSize2.x <= kSize5.x && kSize2.x < 0 )
+		kMinValues.x = kSize2.x;
+	else if ( kSize3.x <= kSize1.x && kSize3.x <= kSize2.x && kSize3.x <= kSize4.x && kSize3.x <= kSize5.x && kSize3.x < 0 )
+		kMinValues.x = kSize3.x;
+	else if ( kSize4.x <= kSize1.x && kSize4.x <= kSize3.x && kSize4.x <= kSize2.x && kSize4.x <= kSize5.x && kSize4.x < 0 )
+		kMinValues.x = kSize4.x;
+	else if ( kSize5.x <= kSize1.x && kSize5.x <= kSize3.x && kSize5.x <= kSize2.x && kSize5.x <= kSize4.x && kSize5.x < 0 )
+		kMinValues.x = kSize5.x;
+
+	// Y-Min
+	if ( kSize1.y <= kSize2.y && kSize1.y <= kSize3.y && kSize1.y <= kSize4.y && kSize1.y <= kSize5.y && kSize1.y < 0)
+		kMinValues.y = kSize1.y;
+	else if ( kSize2.y <= kSize1.y && kSize2.y <= kSize3.y && kSize2.y <= kSize4.y && kSize2.y <= kSize5.y && kSize2.y < 0)
+		kMinValues.y = kSize2.y;
+	else if ( kSize3.y <= kSize1.y && kSize3.y <= kSize2.y && kSize3.y <= kSize4.y && kSize3.y <= kSize5.y && kSize3.y < 0)
+		kMinValues.y = kSize3.y;
+	else if ( kSize4.y <= kSize1.y && kSize4.y <= kSize3.y && kSize4.y <= kSize2.y && kSize4.y <= kSize5.y && kSize4.y < 0)
+		kMinValues.y = kSize4.y;
+	else if ( kSize5.y <= kSize1.y && kSize5.y <= kSize3.y && kSize5.y <= kSize2.y && kSize5.y <= kSize4.y && kSize5.y < 0)
+		kMinValues.y = kSize5.y;
+
+	// Z-Min
+	if ( kSize1.z <= kSize2.z && kSize1.z <= kSize3.z && kSize1.z <= kSize4.z && kSize1.z <= kSize5.z && kSize1.z < 0)
+		kMinValues.z = kSize1.z;
+	else if ( kSize2.z <= kSize1.z && kSize2.z <= kSize3.z && kSize2.z <= kSize4.z && kSize2.z <= kSize5.z && kSize2.z < 0)
+		kMinValues.z = kSize2.z;
+	else if ( kSize3.z <= kSize1.z && kSize3.z <= kSize2.z && kSize3.z <= kSize4.z && kSize3.z <= kSize5.z && kSize3.z < 0)
+		kMinValues.z = kSize3.z;
+	else if ( kSize4.z <= kSize1.z && kSize4.z <= kSize3.z && kSize4.z <= kSize2.z && kSize4.z <= kSize5.z && kSize4.z < 0)
+		kMinValues.z = kSize4.z;
+	else if ( kSize5.z <= kSize1.z && kSize5.z <= kSize3.z && kSize5.z <= kSize2.z && kSize5.z <= kSize4.z && kSize5.z < 0)
+		kMinValues.z = kSize5.z;
+
+	pkPSType->m_kPSystemBehaviour.m_kCullPosOffset += (kMaxValues + kMinValues) / 2.f;
+	pkPSType->m_kPSystemBehaviour.m_kCullPosOffset.y -= fHeight;
+
+
+	pkPSType->m_kPSystemBehaviour.m_kMaxSize = (kMaxValues - kMinValues) / 2.f;
+
+
 }
 
 // ------------------------------------------------------------------------------------------

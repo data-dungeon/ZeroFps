@@ -26,12 +26,12 @@ void MovePSProp::Update()
 		else
 			m_pkParent->m_kParticles[i].m_kVelocity += m_pkParent->m_kParticles[i].m_kForce * fFrameTime;
 	}
- 
+
 	// Update position
 	for ( i = m_pkParent->Start(); i < m_pkParent->End(); i++ )
-		m_pkParent->m_kParticles[i].m_kCenter += m_pkParent->m_kParticles[i].m_kVelocity * fFrameTime;
-
-
+		m_pkParent->m_kParticles[i].m_kCenter += m_pkParent->m_kParticles[i].m_kVelocity * fFrameTime + 
+															  m_pkParent->m_kParticles[i].m_kForce * pow(fFrameTime,2)/2.f;
+ 
 	// get modelviewmatrix
 	float *afM = new float[16];
 
@@ -78,6 +78,7 @@ void MovePSProp::Update()
 		pfVertices[i + 5] = pkParticles->at(iPartIndex).m_kCenter.z + c.z * fWidth;
 	}
 	
+	delete [] afM;
 }
 
 // ------------------------------------------------------------------------------------------
