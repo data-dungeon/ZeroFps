@@ -167,10 +167,10 @@ function GUICreate()
 
 
 
-	CreateWnd(1,"MembersEquipBn","MembersWnd","Equip",20,156,64,20,0)
-	ChangeSkin("MembersEquipBn","Skin23","Button up")
-	ChangeSkin("MembersEquipBn","Skin24","Button down")
-	ChangeSkin("MembersEquipBn","Skin24","Button focus")
+--	CreateWnd(1,"MembersEquipBn","MembersWnd","Equip",20,156,64,20,0)
+--	ChangeSkin("MembersEquipBn","Skin23","Button up")
+--	ChangeSkin("MembersEquipBn","Skin24","Button down")
+--	ChangeSkin("MembersEquipBn","Skin24","Button focus")
 
 	CreateWnd(1,"MembersDropItemBn","MembersWnd","Drop",20,156,64,20,0)
 	ChangeSkin("MembersDropItemBn","Skin23","Button up")

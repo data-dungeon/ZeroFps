@@ -91,6 +91,9 @@ namespace DMLua
 	int MCOMMON_API SwallowPlayerLua(lua_State* pkLua);
 	int MCOMMON_API IsHouseLua(lua_State* pkLua);
 
+	// shop functions
+	int MCOMMON_API AddItemToShopLua(lua_State* pkLua);
+
 
 };
 

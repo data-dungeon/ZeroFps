@@ -185,6 +185,9 @@
 				RelativePath=".\p_dmmission.cpp">
 			</File>
 			<File
+				RelativePath=".\p_dmshop.cpp">
+			</File>
+			<File
 				RelativePath=".\p_enviroment.cpp">
 			</File>
 			<File
@@ -256,6 +259,9 @@
 			</File>
 			<File
 				RelativePath=".\p_dmmission.h">
+			</File>
+			<File
+				RelativePath=".\p_dmshop.h">
 			</File>
 			<File
 				RelativePath=".\p_enviroment.h">

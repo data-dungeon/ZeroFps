@@ -5,6 +5,7 @@
 #include "p_dmmission.h"
 #include "p_dmclickme.h"
 #include "p_dmcharacter.h"
+#include "p_dmshop.h"
 #include "../zerofpsv2/engine/p_pfpath.h" 
 
 ZFScriptSystem*				DMLua::g_pkScript;
@@ -83,6 +84,9 @@ void DMLua::Init(EntityManager* pkObjMan,ZFScriptSystem* pkScript)
 	// SI for houses
 	pkScript->ExposeFunction("SwallowPlayer", DMLua::SwallowPlayerLua);
 	pkScript->ExposeFunction("SetIsHouse", DMLua::IsHouseLua);
+
+	// shop functions
+	pkScript->ExposeFunction("AddItemToShop", DMLua::AddItemToShopLua);
 
 	cout << "DM LUA Scripts Loaded" << endl;
 
@@ -1413,3 +1417,76 @@ int DMLua::IsHouseLua(lua_State* pkLua)
 }
 
 // ------------------------------------------------------------------------------------------------
+
+// 1:st arg = Self object ID
+// 2:nd arg = Name of the scriptobject to spawn
+// 3:rd arg = Price of the new object
+
+int DMLua::AddItemToShopLua(lua_State* pkLua)
+{
+	Entity* pkShop = TestScriptInput (3, pkLua);
+
+	if ( pkShop == 0 )
+	{
+		cout << "Warning! DMLua::AddItemToShopLua: Wrong number of arguments" << endl;
+		return 0;
+	}
+
+	P_DMShop* pkProperty = (P_DMShop*)pkShop->GetProperty("P_DMShop");
+
+	if ( pkProperty == NULL )
+	{
+		cout << "Error! DMLua::AddItemToShopLua: Shop doesn't have a P_DMShop!" << endl;
+		return 0;
+	}
+
+   char	acScript[128];
+	g_pkScript->GetArgString(pkLua, 1, acScript);
+
+   double dPrice;
+	g_pkScript->GetArgNumber(pkLua, 2, &dPrice);
+
+   // create the new object
+	Entity* pkNewObj = g_pkObjMan->CreateObjectFromScript(acScript );
+
+	if(pkNewObj == NULL)
+	{
+		cout << "Error! DMLua::AddItemToShopLua: Failed to create object!" << endl;
+		return 0;
+	}
+
+	int iNewItemID = pkNewObj->GetEntityID();
+
+	if(pkProperty->m_pkItems == NULL)
+	{
+		printf("DMLua::AddItemToShopLua failed! Shop have no contatiner.\n");
+		return 0;
+	}
+
+	if(pkProperty->m_pkItems->AddItem(iNewItemID) == false)
+	{
+		printf("DMLua::AddItemToShopLua failed! Shop is full.\n");
+		return 0;
+	}
+
+	vector<ContainerInfo> kItemList;
+	pkProperty->m_pkItems->GetItemList(&kItemList);
+
+	for(int i=0; i<kItemList.size(); i++)
+	{
+		int id = *pkProperty->m_pkItems->GetItem(
+			kItemList[i].m_iItemX, kItemList[i].m_iItemY);
+
+		if(id == iNewItemID)
+		{
+			printf("Creating new item (%i) and adding to shop at pos (%i,%i)\n",
+				iNewItemID, kItemList[i].m_iItemX, kItemList[i].m_iItemY);
+
+			pkProperty->SetPrice( kItemList[i].m_iItemX, 
+				kItemList[i].m_iItemY, dPrice);
+			break;
+		}
+	}
+
+	return 0;
+}

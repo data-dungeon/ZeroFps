@@ -11,7 +11,7 @@
 #include "hq_dlg.h"
 #include "../mcommon/si_dm.h"
 #include "../mcommon/p_dmclickme.h"
-#include "../zerofpsv2/engine_systems/propertys/p_ambientsound.h"
+#include "../mcommon/p_dmshop.h"
 
 DarkMetropolis g_kDM("DarkMetropolis",0,0,0);
 
@@ -254,11 +254,12 @@ void DarkMetropolis::RegisterPropertys()
 	m_pkPropertyFactory->Register("P_DMGun", 				Create_P_DMGun);
 	m_pkPropertyFactory->Register("P_Event",				Create_P_Event);
 	m_pkPropertyFactory->Register("P_Enviroment",		Create_P_Enviroment);
+	m_pkPropertyFactory->Register("P_DMShop",				Create_P_DMShop);	
 	m_pkPropertyFactory->Register("P_DMHQ", 				Create_P_DMHQ);
 	m_pkPropertyFactory->Register("P_DMGameInfo",		Create_P_DMGameInfo);	
 	m_pkPropertyFactory->Register("P_DMCharacter",		Create_P_DMCharacter);
 	m_pkPropertyFactory->Register("P_ShadowBlob",		Create_P_ShadowBlob);	
-	m_pkPropertyFactory->Register("P_DMClickMe",		Create_P_DMClickMe);	
+	m_pkPropertyFactory->Register("P_DMClickMe",			Create_P_DMClickMe);	
 }
 
 void DarkMetropolis::Input()
