@@ -44,6 +44,7 @@ public:
 	bool	bIsTokenReady;
 
 	bool	SkipWhiteSpaces(void);
+	bool  SkipLine();
 
 };
 

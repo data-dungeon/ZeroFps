@@ -85,6 +85,23 @@ bool SimpleScriptFile::SkipWhiteSpaces(void)
 	return true;
 }
 
+bool SimpleScriptFile::SkipLine()
+{
+	while(*ucpScript != '\n')	
+	{
+		ucpScript++;
+		if(ucpScript >= ucpScriptEnd)
+			return false;
+	}
+
+	ucpScript++;
+	iLine++;
+	if(ucpScript >= ucpScriptEnd)
+		return false;
+
+	return true;
+}
+
 
 char* SimpleScriptFile::GetToken(void)
 {

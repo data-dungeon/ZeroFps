@@ -19,6 +19,7 @@
 //#include "mdl.h"
 //#include "3ds.h"
 #include "xxx.h"
+#include "obj.h"
 //#include "halflife.h"
 //#include "script.h"
 
@@ -129,6 +130,8 @@ IMadImport* MadMake::GetImportObject(string FileName)
 
 	if( strExt == ".mm" )
 		pkImport = new ModellXXX;
+	if( strExt == ".obj" )
+		pkImport = new ModellObj;
 	
 	return pkImport;
 }
@@ -189,7 +192,15 @@ bool MadMake::Parse_CmdLine(int argc, char* argv[])
 	if((iCurArg + 1) < argc)
 		ucaOutFile = argv[iCurArg + 1];
 	else
-		ucaOutFile = "test.mad";
+	{
+		// Take infile name.
+		char	szName[128];
+		strcpy(szName, ucaInFile.c_str());
+		char* ext = strstr(szName, ".");
+		ext[0] = 0;
+		//strcpy(ext, ".mad");
+		ucaOutFile = szName;
+	}
 	
 	if((iCurArg + 2) < argc)
 		ucaTextureNames = argv[iCurArg + 2];

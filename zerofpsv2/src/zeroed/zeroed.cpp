@@ -347,7 +347,7 @@ void ZeroEd::Init()
 
 	// Load default texture and create default font and menu (NULL = No menu).
 	InitGui(m_pkScript, "defguifont", "data/script/gui/defskins.lua", 
-		"data/script/gui/menu.txt", true, MANUALLY_SCALE); 
+		"data/script/gui/menu.txt", true, MANUALLY_SCALE ); 
 
 	//setup caption
 	SetTitle("ZeroEd");

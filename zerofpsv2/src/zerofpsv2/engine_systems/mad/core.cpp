@@ -634,19 +634,22 @@ void Mad_Core::SetAnimation(vector<Mad_CoreBoneAnimation>	kBoneAnim)
 	m_kBoneAnim = kBoneAnim;
 } 
 
+// Print All forms of info on this MAD.
 void Mad_Core::PrintCoreInfo()
 {
-	
+	// Skelleton
+	cout << "Num Of Bones: " << m_kSkelleton.size() << endl;
+
+	// Animation
 	unsigned int i;
 	cout << "Num Of Animations: " << m_kBoneAnim.size() << endl;
 	for(i=0; i<m_kBoneAnim.size(); i++)
 		cout << " [" << i << "]: " << m_kBoneAnim[i].m_szName << endl;
 
+	// Mesh
 	cout << "Num Of Mesh: " << m_kMesh.size() << endl;
 	for(i=0; i<m_kMesh.size(); i++)
 		cout << " [" << i << "]: " << m_kMesh[i].m_acName << endl;
-
-	cout << "Num Of Bones: " << m_kSkelleton.size() << endl;
 }
 
 /*

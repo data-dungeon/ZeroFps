@@ -207,6 +207,9 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\obj.cpp">
+			</File>
+			<File
 				RelativePath=".\qpack.cpp">
 			</File>
 			<File
@@ -242,6 +245,9 @@
 			</File>
 			<File
 				RelativePath=".\mdl.h">
+			</File>
+			<File
+				RelativePath=".\obj.h">
 			</File>
 			<File
 				RelativePath=".\qpack.h">
