@@ -202,6 +202,7 @@ ZFAudioSystem::ZFAudioSystem(int uiMaxCachSize) : ZFSubSystem("ZFAudioSystem")
 	m_uiMaxCachSize = uiMaxCachSize;
 
 	RegisterVariable("r_enablesound",&m_iEnableSound,CSYS_INT);
+	RegisterVariable("r_ReferenceDistance",&m_fReferenceDistance,CSYS_FLOAT);
 }
 
 ZFAudioSystem::~ZFAudioSystem()
@@ -902,7 +903,7 @@ bool ZFAudioSystem::Play(ZFSoundInfo *pkSound)
 	
 	// Set reference distance.
 	alGetError();
-	alSourcef(pkSound->m_uiSourceBufferName, AL_REFERENCE_DISTANCE, 1.0f);
+	alSourcef(pkSound->m_uiSourceBufferName, AL_REFERENCE_DISTANCE, m_fReferenceDistance);
 	if( (error = alGetError()) != AL_NO_ERROR)
 	{
 		PrintError(error, "ZFAudioSystem::Play, Failed to set reference distance!");
