@@ -98,7 +98,7 @@ int GuiAppLua::CreateWndLua(lua_State* pkLua)
 
 	GuiType eType = GuiType_Error;
 	WndAlignent eWndAlignent = TopLeft;
-	WndResizeType eWndResizeType = None;
+	WndResizeType eWndResizeType = eNone;
 
 	switch( (int) dType )
 	{
@@ -139,7 +139,7 @@ int GuiAppLua::CreateWndLua(lua_State* pkLua)
 
 	switch( (int) wndresizetype )
 	{
-		case 0:  eWndResizeType = None;				break;
+		case 0:  eWndResizeType = eNone;				break;
 		case 1:  eWndResizeType = ResizeWidth;	   break;
 		case 2:  eWndResizeType = ResizeHeight;	break;
 		case 3:  eWndResizeType = Resize;			break;

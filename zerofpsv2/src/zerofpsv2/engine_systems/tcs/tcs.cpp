@@ -209,7 +209,7 @@ void Tcs::HandleCollission(Tcs_collission* pkCol)
 			
 	//bounce
 	float fBounce = pkCol->pkBody1->m_fBounce * pkCol->pkBody2->m_fBounce;
-	//fBounce = 1;
+	fBounce = 0;
 	
 	//friction
 	float fFriction = pkCol->pkBody1->m_fFriction * pkCol->pkBody2->m_fFriction;
@@ -252,8 +252,8 @@ void Tcs::HandleCollission(Tcs_collission* pkCol)
 		//	continue;					  					  
 		//j = fabs(j);	
 						  					  
-		if(j < 0)
-			cout<<"negativ force"<<endl;
+		//if(j < 0)
+		//	cout<<"negativ force"<<endl;
 		
 				  
 		//make sure the impact force is not to small					  
@@ -1178,6 +1178,12 @@ bool Tcs::CollideMeshVSMesh(P_Tcs* pkBody1,P_Tcs* pkBody2,Tcs_collission* pkTemp
 			verts2[1] = kModelMatrix2.VectorTransform((*pkBody2->m_pkVertex)[(*pkBody2->m_pkFaces)[g].iIndex[1]]);		
 			verts2[2] = kModelMatrix2.VectorTransform((*pkBody2->m_pkVertex)[(*pkBody2->m_pkFaces)[g].iIndex[2]]);		
 			
+			if(verts2[0] == verts2[1])
+				continue;		
+			if(verts2[0] == verts2[2])
+				continue;
+			if(verts2[1] == verts2[2])
+				continue;			
 			
 			if(m_iDebugGraph)
 			{
@@ -1199,7 +1205,11 @@ bool Tcs::CollideMeshVSMesh(P_Tcs* pkBody1,P_Tcs* pkBody2,Tcs_collission* pkTemp
 				
 				
 				pkTempCol->kPositions.push_back(m_kLastTestPos);
-				pkTempCol->kNormals.push_back(m_kLastTestNormal);
+				
+				if(m_kLastTestNormal.Length() == 0)
+					pkTempCol->kNormals.push_back( (pkBody1->m_kNewPos - m_kLastTestPos).Unit() );
+				else
+					pkTempCol->kNormals.push_back(m_kLastTestNormal);
 				
 				bHaveColided = true;	
 
@@ -1215,7 +1225,11 @@ bool Tcs::CollideMeshVSMesh(P_Tcs* pkBody1,P_Tcs* pkBody2,Tcs_collission* pkTemp
 				}
 				
 				pkTempCol->kPositions.push_back(m_kLastTestPos);
-				pkTempCol->kNormals.push_back(m_kLastTestNormal);
+				
+				if(m_kLastTestNormal.Length() == 0)
+					pkTempCol->kNormals.push_back( (pkBody1->m_kNewPos - m_kLastTestPos).Unit() );
+				else
+					pkTempCol->kNormals.push_back(m_kLastTestNormal);
 				
 				bHaveColided = true;	
 			}
@@ -1231,7 +1245,11 @@ bool Tcs::CollideMeshVSMesh(P_Tcs* pkBody1,P_Tcs* pkBody2,Tcs_collission* pkTemp
 			
 			
 				pkTempCol->kPositions.push_back(m_kLastTestPos);
-				pkTempCol->kNormals.push_back(m_kLastTestNormal);
+				
+				if(m_kLastTestNormal.Length() == 0)
+					pkTempCol->kNormals.push_back( (pkBody1->m_kNewPos - m_kLastTestPos).Unit() );
+				else
+					pkTempCol->kNormals.push_back(m_kLastTestNormal);
 				
 				bHaveColided = true;	
 			}				
@@ -1430,13 +1448,17 @@ bool Tcs::TestLineVSPolygon(Vector3* pkPolygon,Vector3* pkPos1,Vector3* pkPos2,P
 			}
 			else
 			{
+				//m_kLastTestNormal = -pkPlane->m_kNormal;
+				m_kLastTestNormal.Set(0,0,0);
+				
 				//cout<<"EDGE:"<<endl;
+				//m_kLastTestNormal = -( *pkPos1 - *pkPos2).Cross(pkPolygon[0] - pkPolygon[1]).Unit();
 				
 				//m_kLastTestNormal = ( *pkPos1 - *pkPos2).Cross(pkPolygon[0] - pkPolygon[1]).Unit();
-				m_kLastTestNormal = -(pkPolygon[0] - pkPolygon[1]).Cross( *pkPos1 - *pkPos2).Unit();
+				//m_kLastTestNormal = -(pkPolygon[0] - pkPolygon[1]).Cross( *pkPos1 - *pkPos2).Unit();
 				//m_kLastTestNormal = -(pkPolygon[0] - pkPolygon[1]).Cross( *pkPos1 - *pkPos2).Unit();
 			
-				return false;
+				return true;
 			}
 		}
 	}
