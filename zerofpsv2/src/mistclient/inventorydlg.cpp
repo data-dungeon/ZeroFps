@@ -3,6 +3,7 @@
 //////////////////////////////////////////////////////////////////////
 
 #include "inventorydlg.h"
+#include "../mcommon/p_item.h"
 //#include "../zerofpsv2/basic/zfsystem.h"
 
 //////////////////////////////////////////////////////////////////////
@@ -31,6 +32,8 @@ InventoryDlg::InventoryDlg(ZGuiWnd* pkDlgWnd)// : ZFSubSystem("InventoryDlg")
 
 	m_kContainerStack.push(m_iCurrentContainer); 
 
+   m_pkAddItemList = new vector<Entity*>;
+
 	static_cast<ZGuiScrollbar*>(m_pkResMan->Wnd(
 		"SlotListScrollbar"))->SetScrollInfo(0,100,0.15f,0);
 }
@@ -40,7 +43,7 @@ InventoryDlg::~InventoryDlg()
    delete m_pkAddItemList;
 }
 
-bool InventoryDlg::AddItem(ItemStats* pkItemStats)
+bool InventoryDlg::AddItem(Entity* pkEntity)
 {
 	Point sqr;
 
@@ -49,9 +52,11 @@ bool InventoryDlg::AddItem(ItemStats* pkItemStats)
 		printf("Failed to find free slot!\n");
 		return false;
 	}
-			
-	AddSlot(pkItemStats->m_szPic[0], pkItemStats->m_szPic[1], sqr, 
-		CONTAINTER_SLOTS, pkItemStats, MAIN_CONTAINER);
+
+   P_Item* pkItemProp = (P_Item*)pkEntity->GetProperty ("P_Item");
+   			
+	AddSlot(pkItemProp->m_pkItemStats->m_szPic[0], pkItemProp->m_pkItemStats->m_szPic[1], sqr, 
+		CONTAINTER_SLOTS, pkItemProp->m_pkItemStats, pkEntity->iNetWorkID, MAIN_CONTAINER);
 
 	ScrollItems(m_iCurrentScrollPos+1);
 	ScrollItems(m_iCurrentScrollPos-1);
@@ -59,9 +64,9 @@ bool InventoryDlg::AddItem(ItemStats* pkItemStats)
 	return true;
 }
 
-bool InventoryDlg::AddItems(vector<ItemStats*> &vkItems)
+bool InventoryDlg::AddItems(vector<Entity*> &vkItems)
 {
-	vector<ItemStats*>::iterator it = vkItems.begin(); 
+	vector<Entity*>::iterator it = vkItems.begin(); 
 
 	for( ; it != vkItems.end(); it++)
 	{
@@ -73,17 +78,15 @@ bool InventoryDlg::AddItems(vector<ItemStats*> &vkItems)
 			return false;
 		}
 
-		ItemStats* stats = (*it);
+		P_Item* pkItemProp = (P_Item*)(*it)->GetProperty ("P_Item");
 
-      cout << stats->m_szPic[0] << endl;
-
-		AddSlot(stats->m_szPic[0], stats->m_szPic[1], 
-			sqr, CONTAINTER_SLOTS, stats, MAIN_CONTAINER);
+		AddSlot(pkItemProp->m_pkItemStats->m_szPic[0], pkItemProp->m_pkItemStats->m_szPic[1], 
+			sqr, CONTAINTER_SLOTS, pkItemProp->m_pkItemStats, (*it)->iNetWorkID, MAIN_CONTAINER);
 	}
 
 	ScrollItems(m_iCurrentScrollPos+1);
 	ScrollItems(m_iCurrentScrollPos-1);
-	
+
 	return true;
 }
 
@@ -110,6 +113,7 @@ void InventoryDlg::OnClick(int x, int y, bool bMouseDown, bool bLeftButton)
 				strcpy(szPicA, pkSlot->m_szPic[1]);
 				ItemStats* pkStats = pkSlot->m_pkItemStats;
 				SlotType prev_type = pkSlot->m_eType;
+            int iNetworkID = pkSlot->m_iNetWorkID;
 
 				if(RemoveSlot(pkSlot))
 				{
@@ -119,7 +123,7 @@ void InventoryDlg::OnClick(int x, int y, bool bMouseDown, bool bLeftButton)
 						sqr.y = -y;					
 					}
 
-					AddSlot(szPic, szPicA, sqr, UNDER_MOUSE, pkStats, m_iCurrentContainer);
+					AddSlot(szPic, szPicA, sqr, UNDER_MOUSE, pkStats, iNetworkID, m_iCurrentContainer);
 
 					m_pkAudioSys->StartSound("/data/sound/open_window.wav",
 						m_pkAudioSys->GetListnerPos(),m_pkAudioSys->GetListnerDir(),false);
@@ -129,6 +133,7 @@ void InventoryDlg::OnClick(int x, int y, bool bMouseDown, bool bLeftButton)
 
 					m_pkGui->SetCaptureToWnd( m_pkDlgWnd ); // set capture
 				}
+            
 			}
 			else
 			{
@@ -208,7 +213,7 @@ void InventoryDlg::OnClick(int x, int y, bool bMouseDown, bool bLeftButton)
 					type = CONTAINTER_SLOTS;					
 				}
 		
-				AddSlot(szPic, szPicA, sqr, type, pkStats, m_iCurrentContainer);
+				AddSlot(szPic, szPicA, sqr, type, pkStats, kSlotToAdd.m_iNetWorkID, m_iCurrentContainer);
 
 				if(m_kDragSlots.empty())
 					m_pkGui->KillWndCapture(); // remove capture
@@ -543,8 +548,27 @@ bool InventoryDlg::GetFreeSlotPos(Point& refSqr, int iContainer)
 }
 
 void InventoryDlg::AddSlot(const char *szPic, const char *szPicA, Point sqr, 
-						   SlotType eType, ItemStats* pkItemStats, int iContainer)
+						   SlotType eType, ItemStats* pkItemStats, int iNetworkID, int iContainer)
 {
+
+   // check if the item already exists, if so, just update it
+   for ( vector<Slot>::iterator kIte = m_kItemSlots.begin(); 
+         kIte != m_kItemSlots.end(); kIte++ )
+   {
+      // if the item was found, update it and exit function
+      if ( (*kIte).m_iNetWorkID == iNetworkID )
+      {
+         (*kIte).m_pkItemStats = pkItemStats;
+
+         // check if a new icon must be loaded
+         if ( strcmp((*kIte).m_szPic[0], szPic) )
+         {
+            cout << "Changed icon to:" << szPic << endl;
+         }
+         return;
+      }
+   }
+   
 	int sx, sy;
 
 	if(eType == SPECIAL_SLOTS)
@@ -600,6 +624,7 @@ void InventoryDlg::AddSlot(const char *szPic, const char *szPicA, Point sqr,
 	kNewSlot.m_eType = eType;
 	kNewSlot.m_pkItemStats = pkItemStats;
 	kNewSlot.m_pkItemStats->PlaceInContainer(iContainer);
+   kNewSlot.m_iNetWorkID = iNetworkID;
 
 	switch(eType)
 	{
@@ -716,7 +741,7 @@ void InventoryDlg::DropItems()
 				Slot s = (*it);
 
 				AddSlot( s.m_szPic[0], s.m_szPic[1], sqr, CONTAINTER_SLOTS, 
-					s.m_pkItemStats, iNewContainer);
+					s.m_pkItemStats, s.m_iNetWorkID, iNewContainer);
 			}
 		}
 		else
@@ -749,7 +774,7 @@ void InventoryDlg::DropItemsToContainer(int iContainer)
 			Slot s = (*it);
 
 			AddSlot( s.m_szPic[0], s.m_szPic[1], sqr, CONTAINTER_SLOTS, 
-				s.m_pkItemStats, iNewContainer);
+				s.m_pkItemStats, s.m_iNetWorkID, iNewContainer);
 
 			m_pkGui->UnregisterWindow((*it).m_pkLabel);
 			kRemoveList.push_back(it);
@@ -796,10 +821,6 @@ void InventoryDlg::Update()
       {
          AddItems ( *m_pkAddItemList );
          m_pkAddItemList->clear();
-
-         cout << "Found some shit!" << endl;
-
       }
    }
-
 }

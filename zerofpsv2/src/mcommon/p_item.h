@@ -26,7 +26,7 @@ class MCOMMON_API P_Item: public Property
                                   // needed when splitting items
       
       // stuff to get info from network..not very nice...
-      vector<WaitingFor> m_kWaitingForRequest;
+      list<WaitingFor> m_kWaitingForRequest;
    
    public:
       list<SendType> m_kSends;       // the clients to recieve data from this property
@@ -53,7 +53,7 @@ class MCOMMON_API P_Item: public Property
 
       void RequestUpdateFromServer (string kType);
 
-      void GetAllItemsInContainer( vector<ItemStats*>* pkContainerList );
+      void GetAllItemsInContainer( vector<Entity*>* pkContainerList );
 
       friend class Container;
 };

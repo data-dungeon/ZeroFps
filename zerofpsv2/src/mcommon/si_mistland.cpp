@@ -1224,16 +1224,19 @@ int MistLandLua::SetIconLua (lua_State* pkLua)
 
 	   if (pkObject)
 		{
-     		char	acPic[128];
+     		char	acPic[50];
 			g_pkScript->GetArgString(pkLua, 0, acPic);
 
-     		char	acPicMask[128];
+     		char	acPicMask[50];
 			g_pkScript->GetArgString(pkLua, 1, acPicMask);
 
   			P_Item* pkIP = (P_Item*)pkObject->GetProperty("P_Item");
 
          if ( pkIP )
-            pkIP->m_pkItemStats->LoadIcons ( acPic, acPicMask );
+         {
+            strcpy(pkIP->m_pkItemStats->m_szPic[0], acPic);
+            strcpy(pkIP->m_pkItemStats->m_szPic[1], acPicMask);
+         }
          else
             cout << "Warning! Tried to use a item function on a non-item object!" << endl;
  

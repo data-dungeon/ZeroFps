@@ -1189,6 +1189,7 @@ void MistServer::HandleOrders()
 			Entity* ob = pkObjectMan->GetObjectByNetWorkID(order->m_iCharacter);			
 			if(ob)
 			{
+
 				/* Vim Test Path*/
 				kPathStart = ob->GetWorldPosV();
 				kPathEnd   = order->m_kPos;
@@ -1231,14 +1232,14 @@ void MistServer::HandleOrders()
             if ( pkItProp )
             {
                // if the items is of the same version, no need to send data
-               if ( pkItProp->m_pkItemStats->m_uiVersion != order->m_iFace )
-               {
+               //if ( pkItProp->m_pkItemStats->m_uiVersion != order->m_iFace )
+               //{
                   SendType kSendType;
                   kSendType.m_iClientID = order->m_iClientID;
                   kSendType.m_kSendType = "itemdata";
                   
                   pkItProp->m_kSends.push_back ( kSendType );
-               }
+               //}
 
             }
             else

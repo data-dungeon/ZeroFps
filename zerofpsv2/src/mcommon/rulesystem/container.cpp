@@ -90,7 +90,7 @@ void Container::Empty()
 
 // -----------------------------------------------------------------------------------------------
 
-void Container::GetAllItemsInContainer( vector<ItemStats*>* pkItemList )
+void Container::GetAllItemsInContainer( vector<Entity*>* pkItemList )
 {
    if ( pkItemList )
       for ( int i = 0; i < m_kContainedObjects.size(); i++ )
@@ -105,7 +105,7 @@ void Container::GetAllItemsInContainer( vector<ItemStats*>* pkItemList )
          pkItem->RequestUpdateFromServer ("data");
 
          // add item to container list
-         pkItemList->push_back ( pkItem->m_pkItemStats );
+         pkItemList->push_back ( pkEntity );
 
          // if item in container is a container itself, request update to that container...
    //      if ( pkItem->m_pkItemStats->m_pkContainer )

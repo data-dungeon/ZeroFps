@@ -596,10 +596,7 @@ void MistClient::OnCommand(int iID, ZGuiWnd *pkMainWnd)
 				pkScript->Call(m_pkScriptResHandle, "OnClickBackpack", 0, 0); 
 
 				if(bExist == false)
-				{
 					m_pkInventDlg = new InventoryDlg(GetWnd("BackPackWnd"));
-
-            }
 
 			/*		const int ANTAL = 5;
 
@@ -630,12 +627,10 @@ void MistClient::OnCommand(int iID, ZGuiWnd *pkMainWnd)
 					kItems[4].second->RegisterAsContainer(); 
 					*/
 
-               if ( !m_pkInventDlg->m_pkAddItemList )
-                  m_pkInventDlg->m_pkAddItemList = new vector<ItemStats*>;
 
-               // tell itemcontainer to begin gather iteminfo from server
-               ((P_Item*)m_pkActiveCharacter->GetProperty("P_Item"))->GetAllItemsInContainer(m_pkInventDlg->m_pkAddItemList);
-			
+            // tell itemcontainer to begin gather iteminfo from server
+            ((P_Item*)m_pkActiveCharacter->GetProperty("P_Item"))->GetAllItemsInContainer(m_pkInventDlg->m_pkAddItemList);
+		
 			}
 			if(strClickWndName == "StatsButton")
 				pkScript->Call(m_pkScriptResHandle, "OnClickStats", 0, 0);
@@ -1028,7 +1023,7 @@ void MistClient::SetActiveCaracter(int iCaracter)
 	} 
 }	
 
-
+/* Zerom...pickup happens on server
 void MistClient::PickUp()
 {
 	if(m_pkActiveCharacter)
@@ -1065,7 +1060,7 @@ void MistClient::PickUp()
 		}
 	}
 }
-
+*/
 void MistClient::CreateGuiInterface()
 {
 	ZGuiSkin* pkSkin; 

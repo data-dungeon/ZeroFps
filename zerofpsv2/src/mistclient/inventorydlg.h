@@ -24,13 +24,19 @@ using namespace std;
 
 const int MAIN_CONTAINER = 0;
 
+struct InvType
+{
+   ItemStats* m_pkItemStats;
+   int m_iNetWorkID;
+};
+
 class InventoryDlg// : public ZFSubSystem  
 {
 public:
-	typedef pair<pair<string, string>,ItemStats*> itItem;
+	typedef pair<pair<string, string>, InvType> itItem;
 
-	bool AddItems(vector<ItemStats*>&vkItems);
-	bool AddItem(ItemStats* pkItemStats);
+	bool AddItems(vector<Entity*>&vkItems);
+	bool AddItem(Entity* pkItemStats);
 	void OnScroll(int iID, int iPos);
 	void OnCommand(int iID);
 	void OnMouseMove(int x, int y, bool bMouseDown);
@@ -49,6 +55,7 @@ public:
 		~Slot() {};
 
 		ItemStats* m_pkItemStats;
+      int m_iNetWorkID;
 		ZGuiLabel* m_pkLabel;
 		
 		char m_szPic[2][75];
@@ -62,8 +69,8 @@ public:
 	void OnDClick(int x, int y, bool bLeftButton);
 
    // if this vector contain objects, the objects is added to the inventory
-   // the vector is checked for items every frame
-   vector<ItemStats*>* m_pkAddItemList;
+   // the vector is checked for new items every frame
+   vector<Entity*>* m_pkAddItemList;
 
    void Update();
 	
@@ -76,7 +83,7 @@ private:
 	void DropItems();
 	void SwitchContainer(int iNewContainer);
 	void AddSlot(const char *szPic, const char *szPicA, Point sqr, 
-		SlotType eType, ItemStats* pkItemStats, int iContainer);
+		SlotType eType, ItemStats* pkItemStats, int iNetworkID, int iContainer);
 	bool RemoveSlot(/*Point sqr,*/ Slot* pkSlot); //bool bDragItem=false);
 	bool GetFreeSlotPos(Point& refSqr, int iContainer);
 	bool SlotExist(int sx, int sy);

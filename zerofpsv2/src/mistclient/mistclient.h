@@ -106,7 +106,7 @@ class MistClient :public Application, public ZGuiApp {
 		void OnClientInputSend(char* szText);
 		void OnSelectCB(int ListBoxID, int iItemIndex, ZGuiWnd* pkWnd);
 		void PrintInfoBox(const char* strText);
-		void PickUp();
+		// void PickUp(); // zerom: pickup happens on server
 		void OnScroll(int iID, int iPos, ZGuiWnd *pkMain);
 		void OnMouseMove(int x, int y, bool bMouseDown, ZGuiWnd* pkWnd);
 		void OnClick(int x, int y, bool bMouseDown, bool bLeftButton, ZGuiWnd* pkMain);

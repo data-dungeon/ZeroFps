@@ -155,13 +155,17 @@ void P_Camera::SetFpFov(float fFov)
 }
 
 
-void P_Camera::LookAt(Vector3 kCamPosition, Vector3 kCamTarget,Vector3 kCamUp) {
+void P_Camera::LookAt(Vector3 kCamPosition, Vector3 kCamTarget,Vector3 kCamUp) 
+{
 	Vector3 kLookDir = kCamPosition - kCamTarget;
 	Look(kCamPosition, kLookDir, kCamUp);
 }
 
 void P_Camera::Look(Vector3 kCamPosition, Vector3 kLookDir,Vector3 kCamUp) {
 	Matrix4 kCamera;
+
+   if ( kLookDir == kLookDir.ZERO )
+      return;
 
 	kCamera.LookDir(kLookDir,kCamUp);
 

@@ -318,8 +318,6 @@ ItemStats::ItemStats(P_Item* pkProperty)
    m_iContainerID = -1;
 	strcpy(m_szPic[0], "dummy.bmp");
 	strcpy(m_szPic[1], "dummy_a.bmp");
-   m_iIconID[0] = 0;
-   m_iIconID[1] = 0;
    m_uiVersion = 0;
    
    m_pkContainer = 0;//new Container (this);
@@ -467,25 +465,6 @@ ItemStats& ItemStats::operator= ( ItemStats &kItemStats )
 	m_iCurrentContainer = kItemStats.m_iCurrentContainer;
 	
 	return *this;
-}
-
-// ---------------------------------------------------------------------------------------------
-
-bool ItemStats::LoadIcons ( char *cpIcon, char *cpIconMask )
-{
-   // TODO: load as resources
-
-   // load icon
-	TextureManager* m_pkTexMan = static_cast<TextureManager*>(g_ZFObjSys.GetObjectPtr("TextureManager"));	
-
-	m_iIconID[0] = m_pkTexMan->Load( cpIcon, 0 );
-   m_iIconID[0] = m_pkTexMan->GetTextureID (m_iIconID[0]);
-   
-   // load iconmask   
-	m_iIconID[1] = m_pkTexMan->Load( cpIconMask, 0 );
-   m_iIconID[1] = m_pkTexMan->GetTextureID (m_iIconID[1]);
-
-   return true;
 }
 
 // ---------------------------------------------------------------------------------------------

@@ -259,6 +259,7 @@ void CharacterProperty::Load(ZFIoInterface* pkPackage)
 
 void CharacterProperty::PackTo(NetPacket* pkNetPacket, int iConnectionID )
 {
+   /*
    for (vector<SendType>::iterator kIte = m_kSends.begin(); kIte != m_kSends.end(); kIte++ )
    {
       // get continer data
@@ -287,13 +288,14 @@ void CharacterProperty::PackTo(NetPacket* pkNetPacket, int iConnectionID )
       }
 
    }
-
+*/
 }
 
 // ------------------------------------------------------------------------------------------
 
 void CharacterProperty::PackFrom(NetPacket* pkNetPacket, int iConnectionID )
 {
+/*
    string kData;
 
    pkNetPacket->Read_NetStr( (char*)kData.c_str() );
@@ -315,6 +317,7 @@ void CharacterProperty::PackFrom(NetPacket* pkNetPacket, int iConnectionID )
 
       cout << "char recieved cont. data!!! :)" << endl;
    }
+*/
 }
 
 // ------------------------------------------------------------------------------------------

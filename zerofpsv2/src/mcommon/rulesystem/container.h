@@ -40,7 +40,7 @@ public:
 
    Container( Property* pkParent );
 
-   void GetAllItemsInContainer( vector<ItemStats*>* kObjectIDs );
+   void GetAllItemsInContainer( vector<Entity*>* kObjectIDs );
 
 };
 
