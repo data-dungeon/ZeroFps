@@ -58,6 +58,16 @@ bool Gui::WndProc( ZGuiWnd* pkWindow, unsigned int uiMessage, int
 
 	switch(uiMessage)
 	{
+	case ZGM_MOUSEMOVE:
+		{
+			// Fulhack...
+			if(((int*)pkParams)[2] < 20)
+				CaptureInput(true);
+			else
+				CaptureInput(false);
+		}
+		break;
+
 	case ZGM_SETFOCUS:
 		if(pkWindow)
 		{

@@ -124,6 +124,8 @@ public:
 	enum ZndInfo {WNDPROC};
 	void* GetSpecialWndData(ZGuiWnd* pkWnd, ZndInfo type);
 
+	MAIN_WINDOW* FindMainWnd(int x, int y);
+
 private:
 	bool SetSkins(vector<tSkinInf>& kAllSkinsArray, ZGuiWnd* pkWnd);
 	bool RunKeyCommand(int iKey);
@@ -136,7 +138,7 @@ private:
 	void OnKeyPress(int iKey);
 	bool OnKeyUpdate();
 	bool OnMouseUpdate();
-	MAIN_WINDOW* FindMainWnd(int x, int y);
+	
 	ZGuiRender* m_pkRenderer;		// Pointer to the gui render object
 	ZGuiCursor* m_pkCursor;
 	ZGuiResourceManager* m_pkResManager;
