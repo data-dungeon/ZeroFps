@@ -23,11 +23,11 @@ class ZFResourceInfo
 {
 private:
 	string	m_strName;				// Name of the resource.
-	int		m_iID;
-	int		m_iNumOfUsers;
-	float		m_fExpireTimer;
+	int		m_iID;					
+	int		m_iNumOfUsers;			// Num of handles that use resource.
+	float		m_fExpireTimer;		// Time when res expires (if no users).
 	
-	ZFResource*		m_pkResource;
+	ZFResource*		m_pkResource;	// ptr to resource.
 
 public:
 
@@ -89,6 +89,7 @@ class BASIC_API ZFResourceDB : public ZFSubSystem {
 		bool ShutDown();
 		bool IsValid();
 
+		int	GetResSizeInBytes();
 };
 
 #endif

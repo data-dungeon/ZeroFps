@@ -1,16 +1,16 @@
 //#include "../engine/zerofps.h"
+#include <SDL/SDL.h>
 #include "zfresourcedb.h"
 #include "globals.h"
 #include "../basic/zfobjectmanger.h"
 
-//ZFResource* Create__Mad_Core();
-//ZFResource* Create__ResTexture();
+#define	RES_EXPIRE_TIME	5.0
 
 int	g_iResourceHandleID;
 
 ZFResourceInfo::ZFResourceInfo()
 {
-	m_iID			= -1;
+	m_iID				= -1;
 	m_iNumOfUsers	= 0;
 	m_fExpireTimer	= 0.0;
 	m_pkResource	= NULL;
@@ -122,13 +122,27 @@ ZFResourceDB::~ZFResourceDB()
 
 void ZFResourceDB::Refresh()
 {
+	float fTime = float(SDL_GetTicks()/1000.0);
+
 	list<ZFResourceInfo*>::iterator it;
 
 	for(it = m_kResources.begin(); it != m_kResources.end(); it++ ) {
-		if((*it)->m_iNumOfUsers == 0) {
-			g_ZFObjSys.Logf("resdb", "Remove %s\n", (*it)->m_strName.c_str());
-			delete (*it);
-			it = m_kResources.erase(it);
+		// If someone still using this res.
+		if((*it)->m_iNumOfUsers != 0)	continue;
+
+		// No one is using it. Check for expire time.
+		if((*it)->m_fExpireTimer == 0) {
+			(*it)->m_fExpireTimer = fTime + RES_EXPIRE_TIME;
+			cout << "Set Expire: '" << (*it)->m_strName << "'" << endl;
+			}
+		else {
+			if((*it)->m_fExpireTimer < fTime) {
+				// Time to die.
+				g_ZFObjSys.Logf("resdb", "Remove %s\n", (*it)->m_strName.c_str());
+				cout << "Expires: '" << (*it)->m_strName << "'" << endl;
+				delete (*it);
+				it = m_kResources.erase(it);
+				}
 			}
 		}
 
@@ -304,6 +318,17 @@ void ZFResourceDB::RunCommand(int cmdid, const CmdArgument* kCommand)
 		};
 }
 
+int ZFResourceDB::GetResSizeInBytes()
+{
+	int iTotalBytes = 0;
+
+	list<ZFResourceInfo*>::iterator it;
+
+	for(it = m_kResources.begin(); it != m_kResources.end(); it++ )
+		iTotalBytes += (*it)->m_pkResource->GetSize();
+
+	return iTotalBytes;
+}
 
 
 

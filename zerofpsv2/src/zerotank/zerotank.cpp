@@ -145,7 +145,9 @@ void ZeroTank::Init()
 	GuiAppLua::Init(&g_kZeroTank, GetScript());
 	InitializeGui(pkGui, pkTexMan, pkScript, pkGuiMan);
 
+	// Set SDL Options.
 	SDL_ShowCursor(SDL_DISABLE);
+	SDL_WM_SetCaption("ZeroFps", NULL);
 }
 
 void ZeroTank::RegisterPropertys()
@@ -269,8 +271,8 @@ void ZeroTank::Input()
 
 	if(pkInput->Pressed(KEY_C) && m_pkZeroTankHull) {
 		pkObjectMan->Delete(m_pkZeroTankHull);
-		m_pkZeroTankHull		= NULL;
-		m_pkZeroTank_Modify	= NULL;
+		//m_pkZeroTankHull		= NULL;
+		//m_pkZeroTank_Modify	= NULL;
 		}
 
 	

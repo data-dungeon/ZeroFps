@@ -10,6 +10,7 @@
 using namespace std;
 
 class ZFVFileSystem;
+class ZFIni;
 
 /**	\brief	A Open File in the VFS
 
@@ -26,16 +27,16 @@ public:
 	~ZFVFile();
 
 	FILE*			m_pkFilePointer;
-	
-	bool Open(string strFileName, int iOptions, bool bWrite );
-	bool Close();
 
-	bool Read  (void* pkData, int iSize, int iCount);
-	bool Write (void* pkData, int iSize, int iCount);
+	bool Open(string strFileName, int iOptions, bool bWrite );		// Open File.
+	bool Close();																	// Close File.
 
-	void Seek(int iPos, int iOrigin);
-	int Tell();
-	int GetSize();
+	bool Read  (void* pkData, int iSize, int iCount);					// Read data from file.
+	bool Write (void* pkData, int iSize, int iCount);					// Write data to file.
+
+	void Seek(int iPos, int iOrigin);										// Seek to part of file.
+	int Tell();																		// Tell current file pointer pos.
+	int GetSize();																	// Get Size of file in bytes.
 };
 
 /**	\brief	ZeroFps Virtual File Systems.
@@ -49,9 +50,21 @@ The VFS can be set to many root paths. The base one is one step above the exe fi
 class BASIC_API ZFVFileSystem : public ZFSubSystem 
 {
 	private:
+		friend ZFVFile;
+		friend ZFIni;
+		
 		ZFBasicFS*		m_pkBasicFS;					
 		vector<string>	m_kstrRootPath;				///< Active Root Paths (Maps dir into our VFS).
 		string			m_kCurentDir;
+
+		enum FuncId_e
+			{
+			FID_CD,
+			FID_DIR,
+			FID_LISTROOT
+			};
+
+		FILE* Open(string strFileName, int iOptions, bool bWrite);	
 
 	public:
 		ZFVFileSystem();
@@ -59,12 +72,12 @@ class BASIC_API ZFVFileSystem : public ZFSubSystem
 
 		void AddRootPath(string strRootPath);		///< Add path to list of active roots
 		void RemoveRootPath(string strRootPath);	///< Remove a rootpath.
-		void GetNumOfRootPaths();					///< Get num of active rootpaths
+		void GetNumOfRootPaths();						///< Get num of active rootpaths
 
 		string GetRootPath(int iIndex);				///< Get path with index (0 to NumOfPaths - 1). "" if not found.
 
-		void Flush();								///< Close all unused archives.
-		bool Exists(string strFileName);			///< Returns true if a file was found.
+		void Flush();										///< Close all unused archives.
+		bool Exists(string strFileName);				///< Returns true if a file was found.
 		
 
 		// Open / Close
@@ -75,24 +88,15 @@ class BASIC_API ZFVFileSystem : public ZFSubSystem
 		void ArchiveUnpack()  { }
 		void ArchivePack()  { }
 	
-		FILE* Open(string strFileName, int iOptions, bool bWrite);	
-
 		string GetFullPath(string strFileName);
 
-		string	GetCurrentWorkingDir();
+		string GetCurrentWorkingDir();
 		bool CreateDir(string strDir);
 		bool RemoveDir(string strDir);
 		bool ListDir(vector<string>* pkFiles, string strName, bool bOnlyMaps=false);
 		bool ListDirFilter(vector<string>* pkFiles, vector<string>& pkFilters, 
 			string strName, bool bIgnoreMaps = false);
 		bool DirExist(string strName);
-
-		enum FuncId_e
-			{
-			FID_CD,
-			FID_DIR,
-			FID_LISTROOT
-			};
 
 		void RunCommand(int cmdid, const CmdArgument* kCommand);
 

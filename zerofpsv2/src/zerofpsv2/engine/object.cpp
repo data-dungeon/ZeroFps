@@ -327,8 +327,13 @@ void Object::RemoveChild(Object* pkObject)
 	if(HasChild(pkObject) == false)
 		return;
 
+	for(int i=0; i< m_akChilds.size(); i++) {
+		if(m_akChilds[i] == pkObject)
+			m_akChilds.erase(&m_akChilds[i]);
+	}
+
 	//m_akChilds.remove(pkObject);	// Remove object as child.
-	vector<Object*>::iterator kIt = m_akChilds.begin();
+/*	vector<Object*>::iterator kIt = m_akChilds.begin();
 	while(kIt != m_akChilds.end())
 	{
 		if((*kIt) == pkObject)
@@ -338,7 +343,7 @@ void Object::RemoveChild(Object* pkObject)
 			kIt = m_akChilds.end();
 		}
 		++kIt;
-	}
+	}*/
 	pkObject->SetParent(NULL);		// Set objects parent to NULL.
 
 /*		if(m_bLockedChilds)

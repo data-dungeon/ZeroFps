@@ -43,8 +43,9 @@ Render::Render()
 	RegisterVariable("r_fullscreen",		&m_iFullScreen,CSYS_INT);
 
 	// Register Our Own commands.
-	Register_Cmd("glinfo",FID_GLINFO);	
-	Register_Cmd("ccolor",FID_CONSOLECOLOR);	
+	Register_Cmd("glinfo",	FID_GLINFO);	
+	Register_Cmd("ccolor",	FID_CONSOLECOLOR);	
+	Register_Cmd("shot",		FID_SHOT);	
 	
 	
 }
@@ -1286,6 +1287,7 @@ void Render::RunCommand(int cmdid, const CmdArgument* kCommand)
 	switch(cmdid) {
 		case FID_GLINFO:	GlInfo();	break;
 		case FID_CONSOLECOLOR:	m_kConsoleColor.Set(1,0,0);	break;
+		case FID_SHOT:				m_bCapture = true;				break;
 		}
 }
 

@@ -49,6 +49,7 @@ class RENDER_API Render : public ZFSubSystem {
 		{
 			FID_GLINFO,
 			FID_CONSOLECOLOR,
+			FID_SHOT,
 		};
 
 		TextureManager*	m_pkTexMan;

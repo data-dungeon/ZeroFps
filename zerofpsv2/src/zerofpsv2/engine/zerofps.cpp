@@ -267,6 +267,7 @@ void ZeroFps::Run_EngineShell()
 		}
 	
 	DevPrintf("common","Num Objects: %d", m_pkObjectMan->GetNumOfObjects());
+	DevPrintf("common","Res Size: %d", m_pkResourceDB->GetResSizeInBytes());
 
 	// Update Local Input.
 	m_pkInput->Update();
