@@ -300,13 +300,13 @@ bool ZGui::Render()
 	 }
 
 	// Draw points
-/*	m_pkRenderer->RenderPoints(m_kPointsToDraw); 
+	m_pkRenderer->RenderPoints(m_kPointsToDraw); 
 
 	// Draw rects
 	m_pkRenderer->RenderRects(m_kRectsToDraw); 
 
 	// Draw lines
-	m_pkRenderer->RenderLines(m_kLinesToDraw,255,0,0,1.0f);*/
+	m_pkRenderer->RenderLines(m_kLinesToDraw,255,0,0,1.0f);
 
 	 if(m_pkToolTip)
 	 {
@@ -752,9 +752,9 @@ bool ZGui::Update(float fGameTime, int iKeyPressed, bool bLastKeyStillPressed,
 
 	
 
-/*	m_kPointsToDraw.clear();
+	m_kPointsToDraw.clear();
 	m_kRectsToDraw.clear(); 
-	m_kLinesToDraw.clear(); */
+	m_kLinesToDraw.clear(); 
 
 	return true;
 }

@@ -17,7 +17,9 @@
 class ZGuiTest :public Application, public ZGuiApp 
 {
 	public:
-		ZGuiTest(char* aName,int iWidth,int iHeight,int iDepth);
+		void OnMouseClick(bool bReleased, int x, int y);
+		void OnKeyDown(int iKey, ZGuiWnd* pkWnd);
+		void OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd);
 
 		void OnInit(void);
 		void OnIdle(void);
@@ -34,11 +36,26 @@ class ZGuiTest :public Application, public ZGuiApp
 		void OnServerClientJoin(ZFClient* pkClient,int iConID, char* szLogin, char* szPass) {};
 		void OnServerClientPart(ZFClient* pkClient,int iConID) {};
 
-	private:
-		void OnScreenSizeChange(Point kPrevSize, Point kNewSize);
-		void CreateUI();
+		ZGuiTest(char* aName,int iWidth,int iHeight,int iDepth);
 
-		Camera*				m_pkCamera;
+	private:
+		
+		bool IsResWnd(ZGuiWnd* pkWnd);
+		ZGuiWnd* GetWndFromPoint(int x, int y);
+		void CreateUI();
+		
+		Camera*	m_pkCamera;
+
+		ZGuiWnd* m_pkToolbar;
+		ZGuiWnd* m_pkEditbar;
+
+		ZGuiWnd*	m_pkMoveWnd;
+		ZGuiWnd* m_pkFocusWnd;
+		ZGuiWnd* m_pkResizeWnd;
+		enum ResizeType { RightSide, BottomSide, LeftSide, TopSide } m_eCurrentResizeType;
+		enum EditMode { Move, Resize } m_eEditMode;
+
+		int m_iCursorRangeDiffX, m_iCursorRangeDiffY;
 };
 
 #endif // #ifndef _ZGUITEST_H_
