@@ -1267,8 +1267,7 @@ void ZeroFps::HandleEditCommand(NetPacket* pkNetPacket)
 			
 		if(Entity* pkEnt = m_pkEntityManager->GetEntityByID(iEntityID))
 		{
-			if(Property* pkProp = pkEnt->GetProperty(strPropertyName.c_str()))
-				pkEnt->RemoveProperty(pkProp);							
+			pkEnt->DeleteProperty(strPropertyName.c_str());							
 		}
 	}	
 }

@@ -180,6 +180,9 @@ bool Entity::DeleteProperty(const char* acName)
 			m_akPropertys.pop_back();
 			delete (TempProp);
 			
+			//add property to entity's delete list
+			AddToDeletePropertyList(string(acName));
+			
 			return true;
 		}
 		++kIt;
@@ -546,6 +549,8 @@ bool Entity::HaveSomethingToSend(int iConnectionID)
 */
 void Entity::PackTo(NetPacket* pkNetPacket, int iConnectionID)
 {	
+	SetExistOnClient(iConnectionID,true);
+
 	//send update flags
 	pkNetPacket->Write(m_kNetUpdateFlags[iConnectionID]);
 	
@@ -577,9 +582,27 @@ void Entity::PackTo(NetPacket* pkNetPacket, int iConnectionID)
 		pkNetPacket->Write((int) m_aiNetDeleteList.size() );
 
 		for(unsigned int i=0; i<m_aiNetDeleteList.size(); i++)
+		{
 			pkNetPacket->Write((int) m_aiNetDeleteList[i] );
+			
+			if(Entity* pkEnt = m_pkEntityManager->GetEntityByID(m_aiNetDeleteList[i]))
+				pkEnt->SetExistOnClient(iConnectionID,false);
+		}
 	}
 
+	//send deleteproperty list
+	if(GetNetUpdateFlag(iConnectionID,NETUPDATEFLAG_DELETEPROPLIST))
+	{
+		SetNetUpdateFlag(iConnectionID,NETUPDATEFLAG_DELETEPROPLIST,false);
+	
+		pkNetPacket->Write((int) m_kNetDeletePropertyList.size() );
+
+		for(unsigned int i=0; i<m_kNetDeletePropertyList.size(); i++)
+		{
+			pkNetPacket->Write_Str(	m_kNetDeletePropertyList[i]);
+		}
+	}
+	
 	//send rel position flag
 	if(GetNetUpdateFlag(iConnectionID,NETUPDATEFLAG_RELPOS))
 	{
@@ -707,6 +730,23 @@ void Entity::PackFrom(NetPacket* pkNetPacket, int iConnectionID)
 		}
 	}
 
+	//get deleteproperty list
+	if(GetNetUpdateFlag(0,NETUPDATEFLAG_DELETEPROPLIST))
+	{
+		int iSize; 
+		string strPropertyName;
+		
+		pkNetPacket->Read(iSize );
+
+		for(unsigned int i=0; i<iSize; i++)
+		{
+			pkNetPacket->Read_Str(strPropertyName);
+			
+			cout<<"deleting property:"<<strPropertyName<<" from entity "<<m_strName<<endl;
+			DeleteProperty(strPropertyName.c_str());
+		}
+	}	
+	
 	//get rel position flag
 	if(GetNetUpdateFlag(0, NETUPDATEFLAG_RELPOS))
 	{
@@ -1497,10 +1537,32 @@ void	Entity::SetNrOfConnections(int iConNR)
 {
 	m_kNetUpdateFlags.resize(iConNR);
 	ResetAllNetUpdateFlags();
+	
+	m_kExistOnClient.resize(iConNR);
+}
+
+void	Entity::SetExistOnClient(int iConID,bool bStatus)
+{
+	if(iConID < 0 || iConID >= m_kExistOnClient.size())
+		return;
+		
+	m_kExistOnClient[iConID] = bStatus;
+}
+
+bool	Entity::GetExistOnClient(int iConID)
+{
+	if(iConID < 0 || iConID >= m_kExistOnClient.size())
+		return false;
+
+	return m_kExistOnClient[iConID];
 }
 
 void	Entity::ResetAllNetUpdateFlags()
 {
+	for(int i = 0;i<m_kExistOnClient.size();i++)
+		m_kExistOnClient[i] = false;
+
+
 	for(unsigned int i = 0;i<m_kNetUpdateFlags.size();i++)
 	{
 		m_kNetUpdateFlags[i].reset();	//reset all bits to false
@@ -1612,11 +1674,18 @@ void Entity::AddToDeleteList(int iId)
 
 }
 
+void	Entity::AddToDeletePropertyList(const string& strName)
+{
+	m_kNetDeletePropertyList.push_back(strName);
+	SetNetUpdateFlag(NETUPDATEFLAG_DELETEPROPLIST,true);
+}
+
 void Entity::UpdateDeleteList()
 {	
 	if(m_aiNetDeleteList.empty())
 		return;
-		
+	
+	/*	
 	//make sure that all clients have gotten the delete list
 	for(unsigned int i = 0;i < m_kNetUpdateFlags.size();i++)
 	{
@@ -1629,9 +1698,49 @@ void Entity::UpdateDeleteList()
 			}
 		}
 	}
+	*/
+	
+	for(int i = 0;i<m_kExistOnClient.size();i++)
+	{
+		if(m_kExistOnClient[i])
+		{
+			if(!m_pkEntityManager->m_pkNetWork->IsConnected(i))
+				cout<<"WARNING: stuff existed on an unconnectet client...bad"<<endl;
+		
+			//if this client has not gotten the delete list , return
+			if(m_kNetUpdateFlags[i][NETUPDATEFLAG_DELETE] == true)
+			{	
+				return;
+			}			
+		}
+	}
+	
 	
 	//clear delete list 
 	m_aiNetDeleteList.clear();
+}
+
+void	Entity::UpdateDeletePropertyList()
+{
+	if(m_kNetDeletePropertyList.empty())
+		return;
+
+	for(int i = 0;i<m_kExistOnClient.size();i++)
+	{
+		if(m_kExistOnClient[i])
+		{
+			if(!m_pkEntityManager->m_pkNetWork->IsConnected(i))
+				cout<<"WARNING: stuff existed on an unconnectet client...bad"<<endl;
+		
+			//if this client has not gotten the delete list , return
+			if(m_kNetUpdateFlags[i][NETUPDATEFLAG_DELETEPROPLIST] == true)
+			{	
+				return;
+			}			
+		}
+	}
+	
+	m_kNetDeletePropertyList.clear();	
 }
 
 void Entity::GetAllVarNames(vector<string>& vkList)

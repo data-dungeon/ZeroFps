@@ -44,7 +44,8 @@ enum NetUpdateFlags
 	NETUPDATEFLAG_DELETE =			8,		
 	NETUPDATEFLAG_RELPOS =			9,		
 	NETUPDATEFLAG_INTERPOLATE =	10,			
-	NETUPDATEFLAG_ACC =				11,				
+	NETUPDATEFLAG_ACC =				11,
+	NETUPDATEFLAG_DELETEPROPLIST=	12,					
 };
 
 /*
@@ -88,11 +89,11 @@ public:
 
 
 // Net Flags for Network updates
-#define OBJ_NETFLAG_POS		1
-#define OBJ_NETFLAG_ROT		2
-#define OBJ_NETFLAG_DEL		4
+//#define OBJ_NETFLAG_POS		1
+//#define OBJ_NETFLAG_ROT		2
+//#define OBJ_NETFLAG_DEL		4
 
-#define MAX_NETUPDATEFLAGS	12
+#define MAX_NETUPDATEFLAGS	13
 
 #define MAX_ENTITY_VARIABLENAME	64
 
@@ -142,7 +143,8 @@ class ENGINE_API Entity
 		Entity*						m_pkParent;							///< Parent Entity. NULL If None
 		vector<GameMessage>		m_kGameMessages;					///< Messages that are waiting to be handled by this Entity.
 		vector<int>					m_aiNetDeleteList;				
-
+		vector<string>				m_kNetDeletePropertyList;
+		
 		vector<EntityVariable>  m_kVariables;
 		int							m_iEntityID;						///< Uniq ID for every entiy in the world
 
@@ -219,6 +221,7 @@ class ENGINE_API Entity
 		
 		//network
 		vector<bitset <MAX_NETUPDATEFLAGS> >	m_kNetUpdateFlags;
+		vector<bool>									m_kExistOnClient;
 					
 		Entity();				
 		void	SetNetUpdateFlag(int iFlagID,bool bValue);
@@ -230,7 +233,11 @@ class ENGINE_API Entity
 		void	ResetAllNetUpdateFlags(int iConID);									// reset all update flags to true		
 		void	ResetAllNetUpdateFlagsAndChilds(int iConID);						// reset all update flags to true				
 		void	SetNrOfConnections(int iConNR);
+
 		
+		void 	PropertyLost(Property* pkProp);
+		
+				
 	public:
 
 		EntityManager*				m_pkEntityManager;				///< Ptr to Entity manger.
@@ -246,16 +253,16 @@ class ENGINE_API Entity
 		bool IsA(string strStringType);									///< Returns true if this Entity is based on type.
 
 		// Property Mangment
-		Property* AddProperty(Property* pkNewProperty);				// Add a propyrty by ptr.
-		Property* AddProperty(const char* acName);					// Create/Add a property by name.
-		void 	RemoveProperty(Property* pkProp);						// Remove property by pointer.
-		bool 	DeleteProperty(const char* acName);						// Remove property by name.
-		void 	PropertyLost(Property* pkProp);
-		Property* GetProperty(const char* acName);					// Returns property by name (first one only). 
-		void 	GetPropertys(vector<Property*> *akPropertys,int iType,int iSide);			///< Get all propertys by flags.
-		void 	GetAllPropertys(vector<Property*> *akPropertys,int iType,int iSide);		///< Used mainly for updates
-		Property* AddProxyProperty(const char* acName);				///< Add a property if not exist.
-		bool 	Update(const char* acName);								///< Run update on property 'name'.
+		Property* 	AddProperty(Property* pkNewProperty);				// Add a propyrty by ptr.
+		void 			RemoveProperty(Property* pkProp);						// Remove property by pointer.
+		
+		Property* 	AddProperty(const char* acName);					// Create/Add a property by name.
+		bool 			DeleteProperty(const char* acName);						// Remove property by name.
+		Property* 	GetProperty(const char* acName);					// Returns property by name (first one only). 
+		void 			GetPropertys(vector<Property*> *akPropertys,int iType,int iSide);			///< Get all propertys by flags.
+		void 			GetAllPropertys(vector<Property*> *akPropertys,int iType,int iSide);		///< Used mainly for updates
+		Property* 	AddProxyProperty(const char* acName);				///< Add a property if not exist.
+		bool 			Update(const char* acName);								///< Run update on property 'name'.
 
 		// Child/Parent Entity mangement.
 		void 	AddChild(Entity* pkEntity);								// Set a Entity to be child to this.	
@@ -269,6 +276,9 @@ class ENGINE_API Entity
 		
 		void 	AddToDeleteList(int iId);
 		void 	UpdateDeleteList();
+		
+		void	AddToDeletePropertyList(const string& strName);
+		void	UpdateDeletePropertyList();
 
 
 		bool AttachToZone();		
@@ -280,8 +290,10 @@ class ENGINE_API Entity
 		bool HaveSomethingToSend(int iConnectionID);						// Returns true if there is anything to send for selected connection,
 		void PackTo(NetPacket* pkNetPacket, int iConnectionID);		// Pack Entity.
 		void PackFrom(NetPacket* pkNetPacket, int iConnectionID);	// Unpack Entity.
-
 		
+		//exist on client flags
+		void	SetExistOnClient(int iConID,bool bStatus);
+		bool	GetExistOnClient(int iConID);
 
 		void Load(ZFIoInterface* pkFile,bool bLoadID = true,bool bLoadChilds = true);
 		void Save(ZFIoInterface* pkFile);

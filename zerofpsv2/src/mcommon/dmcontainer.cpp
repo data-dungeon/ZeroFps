@@ -262,8 +262,10 @@ bool DMContainer::DropItem(int iID)
 				ClearItem(iID);
 
 				// check for joint stuff...
-				if ( pkItem->GetProperty("P_LinkToJoint") )
-					pkItem->RemoveProperty (pkItem->GetProperty("P_LinkToJoint"));
+				//if ( pkItem->GetProperty("P_LinkToJoint") )
+				//	pkItem->RemoveProperty (pkItem->GetProperty("P_LinkToJoint"));
+				pkItem->DeleteProperty("P_LinkToJoint");
+					
 
 				// reset rotation
 				pkItem->SetWorldRotV (Vector3(0,pkItem->GetWorldRotV().y,0));

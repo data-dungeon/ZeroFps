@@ -657,7 +657,7 @@ void EntityManager::SendDeleteEntity(int iClient,int iEntityID)
 	m_OutNP.Write((char) ZFGP_DELETEOBJECT);
 	m_OutNP.Write(iEntityID);
 	
-	m_OutNP.Write(ZFGP_ENDOFPACKET);
+	//m_OutNP.Write(ZFGP_ENDOFPACKET);
 	m_pkNetWork->Send2(&m_OutNP);
 
 
@@ -666,6 +666,7 @@ void EntityManager::SendDeleteEntity(int iClient,int iEntityID)
 	{
 		pkEnt->ResetAllNetUpdateFlagsAndChilds(iClient);
 	
+		pkEnt->SetExistOnClient(iClient,false);
 	}
 }
 
