@@ -245,35 +245,38 @@ void MistServer::Input()
 			m_iEditMode = EDIT_OBJECTS;		
 	
 		//edit zone  mode
-		if(m_iEditMode == EDIT_ZONES)
+/*		if(m_iEditMode == EDIT_ZONES)
 		{
-			if(pkInput->Pressed(MOUSELEFT))
-			{
-				AddZone();	
-			}
-		
-			if(pkInput->Pressed(KEY_R))
-			{
-				int id = pkObjectMan->GetZoneIndex(m_kZoneMarkerPos,-1,false);
-				pkObjectMan->DeleteZone(id);
-			}
-		
-			if(pkInput->Pressed(MOUSEMIDDLE))
-			{		
-				m_iCurrentMarkedZone =  pkObjectMan->GetZoneIndex(m_kZoneMarkerPos,-1,false);
-			}
-		
-			if(pkInput->Pressed(KEY_1)) m_kZoneSize.Set(4,4,4);
-			if(pkInput->Pressed(KEY_2)) m_kZoneSize.Set(8,8,8);
-			if(pkInput->Pressed(KEY_3)) m_kZoneSize.Set(16,16,16);	
-			if(pkInput->Pressed(KEY_4)) m_kZoneSize.Set(32,16,32);	
-			if(pkInput->Pressed(KEY_5)) m_kZoneSize.Set(64,16,64);			
-			if(pkInput->Pressed(KEY_6)) m_kZoneSize.Set(16,8,8);		
-			if(pkInput->Pressed(KEY_7)) m_kZoneSize.Set(8,8,16);		
-			if(pkInput->Pressed(KEY_8)) m_kZoneSize.Set(4,8,16);				
-			if(pkInput->Pressed(KEY_9)) m_kZoneSize.Set(16,8,4);						
-		
+			AddZone();	
+		}*/
+
+		if(pkInput->Pressed(MOUSELEFT))
+		{
+			AddZone();	
 		}
+	
+		if(pkInput->Pressed(KEY_R))
+		{
+			int id = pkObjectMan->GetZoneIndex(m_kZoneMarkerPos,-1,false);
+			pkObjectMan->DeleteZone(id);
+		}
+	
+		if(pkInput->Pressed(MOUSEMIDDLE))
+		{		
+			m_iCurrentMarkedZone =  pkObjectMan->GetZoneIndex(m_kZoneMarkerPos,-1,false);
+		}
+
+	
+		if(pkInput->Pressed(KEY_1)) m_kZoneSize.Set(4,4,4);
+		if(pkInput->Pressed(KEY_2)) m_kZoneSize.Set(8,8,8);
+		if(pkInput->Pressed(KEY_3)) m_kZoneSize.Set(16,16,16);	
+		if(pkInput->Pressed(KEY_4)) m_kZoneSize.Set(32,16,32);	
+		if(pkInput->Pressed(KEY_5)) m_kZoneSize.Set(64,16,64);			
+		if(pkInput->Pressed(KEY_6)) m_kZoneSize.Set(16,8,8);		
+		if(pkInput->Pressed(KEY_7)) m_kZoneSize.Set(8,8,16);		
+		if(pkInput->Pressed(KEY_8)) m_kZoneSize.Set(4,8,16);				
+		if(pkInput->Pressed(KEY_9)) m_kZoneSize.Set(16,8,4);						
+	
 	
 		//edit object mode
 		if(m_iEditMode == EDIT_OBJECTS)
@@ -512,7 +515,7 @@ void MistServer::AddZone()
 		return;
 		
 	int id = pkObjectMan->CreateZone(m_kZoneMarkerPos,m_kZoneSize);
-	
+
 	//force loading of this zone
 	pkObjectMan->LoadZone(id);
 
@@ -524,6 +527,9 @@ void MistServer::AddZone()
 	{
 		pkObjectMan->SetZoneModel(strFullPath.c_str(),id);
 	}	
+
+	//set to active
+	m_iCurrentMarkedZone = id;
 	
 }
 
@@ -581,25 +587,14 @@ void MistServer::OnCommand(int iID, ZGuiWnd *pkMainWnd)
 	{
 		string strName = pkWndClicked->GetName();
 
-		printf("%s\n", pkMainWnd->GetName());
-
 		if(strName == "OpenWorkTabButton")
 		{
-			if(m_bGuiHaveFocus == false)
-				m_bGuiHaveFocus = true;
-			else
-				m_bGuiHaveFocus = false;
+			pkScript->Call(m_pkScriptResHandle, "OpenWorkPad", 0, 0);
+		}
 
-			pkScript->Call(m_pkScriptResHandle, "OpenWorkPad", 0, 0); 
-/*
-			if( IsWndVisible( "WorkTabWnd" ) )
-			{
-				m_bGuiHaveFocus = true;
-			}
-			else
-			{
-				m_bGuiHaveFocus = false;
-			}*/
+		if(strName == "RotateZoneModellButton")
+		{
+			RotateActiveZoneObject();
 		}
 	}
 
@@ -629,3 +624,15 @@ void MistServer::OnClickListbox(ZGuiWnd *pkListBox, int iListboxIndex)
 	}
 }
 
+
+void MistServer::RotateActiveZoneObject()
+{
+	//int id = pkObjectMan->GetZoneIndex(m_kZoneMarkerPos,-1,false);	
+
+	if(m_iCurrentMarkedZone != -1)
+	{
+		ZoneData* pkData = pkObjectMan->GetZoneData(m_iCurrentMarkedZone);
+
+		pkData->m_pkZone->RotateLocalRotV( Vector3(0,90.0f,0) ); 
+	}
+}

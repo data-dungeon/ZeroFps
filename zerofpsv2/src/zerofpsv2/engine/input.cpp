@@ -84,7 +84,6 @@ void Input::Update(void) {
    	 	case SDL_MOUSEBUTTONDOWN:
     			switch(m_kEvent.button.button){
     				case SDL_BUTTON_LEFT:
-						printf("SDL_BUTTON_LEFT\n");
     					m_akButtonList[MOUSELEFT]=true;
 	    			break;
    	 			case SDL_BUTTON_MIDDLE:

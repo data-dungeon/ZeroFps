@@ -26,6 +26,7 @@
 
 class MistServer :public Application , public ZGuiApp {
 	private:
+		void RotateActiveZoneObject();
 		//console funktions
 		enum FuncId_e
 		{
