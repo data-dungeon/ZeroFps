@@ -1200,9 +1200,9 @@ void ZGui::FormatKey(int& iKey, bool bShiftIsPressed)
 			if(iKey > 96 && iKey < 123)
 				iKey -= 32;
 
-         if(iKey == 39) // �            iKey = 'A';
+       /*  if(iKey == 39) // �            iKey = 'A';
          if(iKey == 91) // �            iKey = 'A';
-         if(iKey == 59) // �            iKey = 'O';
+         if(iKey == 59) // �            iKey = 'O';*/
 		}
 		else
 		{
@@ -1212,11 +1212,11 @@ void ZGui::FormatKey(int& iKey, bool bShiftIsPressed)
 				iKey = '-';
 			if(iKey == '\\')
 				iKey = '\'';
-			if(iKey == '=')
-				iKey = '';
-         if(iKey == 39) // �            iKey = 'a';
+//			if(iKey == '=')
+//				iKey = '';
+/*         if(iKey == 39) // �            iKey = 'a';
          if(iKey == 91) // �            iKey = 'a';
-         if(iKey == 59) // �            iKey = 'o';
+         if(iKey == 59) // �            iKey = 'o';*/
 		}	
 
 	#endif // #ifdef WIN32

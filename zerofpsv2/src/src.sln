@@ -92,6 +92,10 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "zguiresed", "tools\tool\zgu
 		{16A13C60-A6BF-4D63-A961-A4323F2CDCDE} = {16A13C60-A6BF-4D63-A961-A4323F2CDCDE}
 	EndProjectSection
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "stopemup", "stopemup\stopemup.vcproj", "{F5A6A158-540F-4DA0-857A-95B1A015FE70}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfiguration) = preSolution
 		Debug = Debug
@@ -149,6 +153,10 @@ Global
 		{AFDB48F5-FB5C-4A0A-9196-07B7152C609F}.Debug.Build.0 = Debug|Win32
 		{AFDB48F5-FB5C-4A0A-9196-07B7152C609F}.Release.ActiveCfg = Release|Win32
 		{AFDB48F5-FB5C-4A0A-9196-07B7152C609F}.Release.Build.0 = Release|Win32
+		{F5A6A158-540F-4DA0-857A-95B1A015FE70}.Debug.ActiveCfg = Debug|Win32
+		{F5A6A158-540F-4DA0-857A-95B1A015FE70}.Debug.Build.0 = Debug|Win32
+		{F5A6A158-540F-4DA0-857A-95B1A015FE70}.Release.ActiveCfg = Release|Win32
+		{F5A6A158-540F-4DA0-857A-95B1A015FE70}.Release.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 	EndGlobalSection
