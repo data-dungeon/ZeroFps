@@ -59,6 +59,10 @@ class COMMON_API P_ServerUnit: public Property {
 		UnitInfo				m_kInfo;
 		Point					m_kTile;		
 	
+		int					m_iMaxHealth;
+		int					m_iHealth;
+	
+	
 		P_ServerUnit();
 		void Init();		
 		void CloneOf(Property* pkProperty) { }
@@ -78,7 +82,7 @@ class COMMON_API P_ServerUnit: public Property {
 		bool RemoveExternalCommand(string kCommandName);
 		AIBase* RunExternalCommand(UnitCommand* kCommand);
 
-
+		void Damage(int iDamage);
 };
 
 COMMON_API Property* Create_P_ServerUnit();

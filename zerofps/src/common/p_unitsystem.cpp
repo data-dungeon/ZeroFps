@@ -44,15 +44,15 @@ void P_UnitSystem::SetupSystems()
 
 	Armor LightArmor;
 		LightArmor.sName =			"LightArmor";
-		LightArmor.fModifier = 		0.5;
+		LightArmor.fModifier = 		1;
 	
 	Armor HeavyArmor;
 		HeavyArmor.sName =			"HeavyArmor";
-		HeavyArmor.fModifier = 		0.3;
+		HeavyArmor.fModifier = 		1;
 	
 	Armor BuildingArmor;
 		BuildingArmor.sName =		"BuildingArmor";
-		BuildingArmor.fModifier = 	0.6;
+		BuildingArmor.fModifier = 	1;
 	
 	m_kBaseSystems.kArmors.push_back(BodyArmor);	
 	m_kBaseSystems.kArmors.push_back(LightArmor);		
@@ -69,6 +69,74 @@ Weapon* P_UnitSystem::GetWeaponPointer(int iPlayer,int iWeapon)
 		return NULL;
 
 	return &(m_kPlayerSystems[iPlayer].kWeapons[iWeapon]);
+}
+
+Armor* P_UnitSystem::GetArmorPointer(int iPlayer,int iArmor)
+{
+	if(iPlayer >= m_iPlayers)
+		return NULL;
+		
+	if(iArmor >= m_kPlayerSystems[iPlayer].kArmors.size())
+		return NULL;
+
+	return &(m_kPlayerSystems[iPlayer].kArmors[iArmor]);
+}
+
+
+void P_UnitSystem::FireWeapon(P_ServerUnit* pkSu,Point kTarget,int iWeapon)
+{
+	Weapon* pkWeapon = GetWeaponPointer((int)pkSu->m_kInfo.m_Info2.m_cTeam,iWeapon);
+	if(!pkWeapon)
+		return;
+	
+	cout<<"Fireing weapon "<<pkWeapon->sName<<endl;
+	
+	
+	Tile* tg = TileEngine::m_pkInstance->GetTile(kTarget.x,kTarget.y);
+	
+	if(!tg)
+		return;
+
+	
+	switch(pkWeapon->iType)
+	{
+		case WT_DIRECT:
+		{
+			if(tg->kUnits.empty())
+			{		
+				cout<<"boom..miss"<<endl;
+				return;
+			}
+			
+			for(list<int>::iterator it = tg->kUnits.begin();it != tg->kUnits.end();it++)		
+			{
+				Object* ob = m_pkObject->m_pkObjectMan->GetObjectByNetWorkID(*it);
+				if(ob)				
+				{
+					P_ServerUnit* pkTarget = (P_ServerUnit*)ob->GetProperty("P_ServerUnit");
+			
+					if(pkTarget)
+					{
+						Armor* pkArmor = GetArmorPointer((int)pkTarget->m_kInfo.m_Info2.m_cTeam,(int)pkTarget->m_kInfo.m_Info2.m_cArmor);
+						if(!pkArmor)					
+							return;
+					
+						int iDamage = int(pkWeapon->iDamage * pkWeapon->afModifiers[pkTarget->m_kInfo.m_Info2.m_cArmor] * pkArmor->fModifier);
+						pkTarget->Damage(iDamage);
+					
+					}
+				}
+			}	
+		
+	
+			break;
+		}
+	
+	
+	}
+
+
+
 }
 
 COMMON_API Property* Create_P_UnitSystem()

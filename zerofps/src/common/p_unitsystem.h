@@ -12,8 +12,10 @@
 #include "../zerofps/basic/basic.pkg"
 #include <iostream>
 #include "common_x.h"
-
 #include <vector>
+
+#include "p_serverunit.h"
+#include "tileengine.h"
 
 using namespace std;
 
@@ -75,6 +77,9 @@ class COMMON_API P_UnitSystem: public Property {
 		void SetupSystems();
 		
 		Weapon* GetWeaponPointer(int iPlayer,int iWeapon);
+		Armor* GetArmorPointer(int iPlayer,int iArmor);		
+		
+		void FireWeapon(P_ServerUnit* pkSu,Point kTarget,int iWeapon);
 };
 
 COMMON_API Property* Create_P_UnitSystem();

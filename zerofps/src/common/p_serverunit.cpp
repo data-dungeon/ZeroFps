@@ -18,6 +18,11 @@ P_ServerUnit::P_ServerUnit() : m_bUpdateCommands(true), m_pkCurrentAIState(NULL)
 	m_kInfo.m_Info2.m_cHeight =		1;	
 	strcpy(m_kInfo.m_cName,"NoName");
 	
+	m_iMaxHealth = 1000;
+	m_iHealth = 	1000;
+	
+	
+	
 	m_pkClientUnit = NULL;
 	m_bHaveSetRadius = false;
 
@@ -26,6 +31,9 @@ P_ServerUnit::P_ServerUnit() : m_bUpdateCommands(true), m_pkCurrentAIState(NULL)
 	
 	m_kTile.x = -1;
 	m_kTile.y = -1;
+	
+	
+	
 }
 
 void P_ServerUnit::Init()
@@ -52,17 +60,6 @@ void P_ServerUnit::Update()
 		TileEngine::m_pkInstance->AddUnit(m_pkObject->GetPos(),this);						
 		m_bHaveSetPos = true;
 	}
-		
-	//cout<<"external com:" <<m_kExternalCommands.size() <<endl;
-	/*if(!m_pkClientUnit->m_kCommandsPending.empty())
-	{
-		cout<<"commands pendeing" <<endl;
-		while(!m_pkClientUnit->m_kCommandsPending.empty())
-		{
-			RunExternalCommand(&m_pkClientUnit->m_kCommandsPending.front());
-			m_pkClientUnit->m_kCommandsPending.pop();
-		}
-	}*/
 }
 
 
@@ -91,6 +88,11 @@ void P_ServerUnit::GetClientUnitP()
 
 void P_ServerUnit::UpdateClient()
 {
+	//calculate client health bar
+	m_kInfo.m_Info2.m_cHealth = int((m_iHealth/m_iMaxHealth)*255);
+
+
+
 	if(m_pkClientUnit != NULL)
 	{
 		m_pkClientUnit->m_kInfo = m_kInfo;
@@ -230,16 +232,19 @@ void P_ServerUnit::HandleGameMessage(GameMessage& Msg)
 	
 	if(Msg.m_Name == "fisk")
 	{
-	UnitCommand Temp;
-	strcpy(Temp.m_acCommandName,"Move");
-	Temp.m_iXDestinaton=100;
-	Temp.m_iYDestinaton=100;
-	RunExternalCommand(&Temp);
-		
+		UnitCommand Temp;
+		strcpy(Temp.m_acCommandName,"Move");
+		Temp.m_iXDestinaton=100;
+		Temp.m_iYDestinaton=100;
+		RunExternalCommand(&Temp);
 	}
-		
 }
 
-
+void P_ServerUnit::Damage(int iDamage)
+{
+	m_iHealth -= iDamage;
+	cout<<"Damaging unit "<<iDamage<<endl;
+	cout<<"Unit Got "<<m_iHealth<<" health left"<<endl;
+}
 
 
