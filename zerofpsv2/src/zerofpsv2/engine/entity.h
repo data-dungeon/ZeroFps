@@ -45,7 +45,7 @@ enum NetUpdateFlags
 	NETUPDATEFLAG_UPDATESTATUS =	7,			
 	NETUPDATEFLAG_DELETE =			8,		
 	NETUPDATEFLAG_RELPOS =			9,		
-	
+	NETUPDATEFLAG_INTERPOLATE =			10,			
 };
 
 /*
@@ -92,7 +92,7 @@ public:
 #define OBJ_NETFLAG_ROT		2
 #define OBJ_NETFLAG_DEL		4
 
-#define MAX_NETUPDATEFLAGS	10
+#define MAX_NETUPDATEFLAGS	11
 
 #define MAX_ENTITY_VARIABLENAME	64
 
@@ -207,6 +207,7 @@ class ENGINE_API Entity
 		Vector3						m_kILocalPosV;
 
 		bool							m_bFirstSetPos;		
+		bool							m_bInterpolate;					//if this is false, GetIWorldPos vill return non inpterpolatet cordinats
 
 		Vector3						m_kVel;								///< Velocity of object.
 		Vector3						m_kAcc;								///< Acc of object.
@@ -345,6 +346,8 @@ class ENGINE_API Entity
 		void			SetType(string strType);		
 		void			SetRadius(float fRadius);
 
+		void			SetInterpolate(bool bInterpolate);
+		
 		// Inlines
 		inline int &GetUpdateStatus()				{	return m_iUpdateStatus;	};
 		inline ObjectType &GetObjectType()		{	return m_iObjectType;	};

@@ -13,8 +13,15 @@ P_LinkToJoint::P_LinkToJoint()
 	m_strToJoint = "joint0";
 }
 
-P_LinkToJoint::~P_LinkToJoint()	{	}
-void P_LinkToJoint::Init()			{	}
+P_LinkToJoint::~P_LinkToJoint()	
+{	
+	m_pkObject->SetInterpolate(true);
+}
+void P_LinkToJoint::Init()			
+{	
+	//turn off interpolation of current objects mad
+	m_pkObject->SetInterpolate(false);
+}
 
 void P_LinkToJoint::Update() 
 {
@@ -25,6 +32,8 @@ void P_LinkToJoint::Update()
 	Mad_Core* pkCore = dynamic_cast<Mad_Core*>(pkMad->kMadHandle.GetResourcePtr()); 
 	if(!pkCore)
 		return;
+
+
 
  	pkCore->SetBoneAnimationTime(pkMad->iActiveAnimation, pkMad->fCurrentTime,pkMad->m_bLoop);
 	pkCore->SetupBonePose();

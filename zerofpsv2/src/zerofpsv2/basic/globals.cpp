@@ -8,7 +8,7 @@
 #include "zfsystem.h"
 #include <cstdio>
 #include <cstdarg>
-#include <conio.h>
+//#include <conio.h>
 using namespace std;
 
 
@@ -225,7 +225,7 @@ void ZFError(const char *fmt, ...)
 
 	// Now call our print function.
 	cout << "ERROR: " <<  g_szFormatText << endl;
-	getch();
+//	getch();
 	exit(1);
 
 }

@@ -48,7 +48,7 @@ Entity::Entity()
 	m_pkParent				= NULL;
 	m_bRelativeOri			= false;
 	m_bFirstSetPos			= true;
-	
+	m_bInterpolate			= true;
 //	m_kVariables.clear();
 
 	//clear child list
@@ -638,6 +638,14 @@ void Entity::PackTo(NetPacket* pkNetPacket, int iConnectionID)
 		pkNetPacket->Write((int) m_bRelativeOri );
 	}
 
+	//send interpolate flag
+	if(GetNetUpdateFlag(iConnectionID,NETUPDATEFLAG_INTERPOLATE))
+	{
+		SetNetUpdateFlag(iConnectionID,NETUPDATEFLAG_INTERPOLATE,false);
+		pkNetPacket->Write((int) m_bInterpolate );
+	}
+
+
 	//send position
 	if(GetNetUpdateFlag(iConnectionID,NETUPDATEFLAG_POS))
 	{
@@ -807,11 +815,18 @@ void Entity::PackFrom(NetPacket* pkNetPacket, int iConnectionID)
 		}
 	}
 
-	//send rel position flag
+	//get rel position flag
 	if(GetNetUpdateFlag(0, NETUPDATEFLAG_RELPOS))
 	{
 		pkNetPacket->Read((int&) m_bRelativeOri );
 	}
+
+	//get interpolation flag
+	if(GetNetUpdateFlag(0, NETUPDATEFLAG_INTERPOLATE))
+	{
+		pkNetPacket->Read((int&) m_bInterpolate );
+	}
+
 
 	//get position
 	if(GetNetUpdateFlag(0,NETUPDATEFLAG_POS))
@@ -1020,6 +1035,7 @@ void Entity::Load(ZFIoInterface* pkFile,bool bLoadID)
 		m_pkObjectMan->Link(this);	
 
 	pkFile->Read(&m_bRelativeOri,sizeof(m_bRelativeOri),1);	
+	pkFile->Read(&m_bInterpolate,sizeof(m_bInterpolate),1);	
 	
 	pkFile->Read(&pos,sizeof(pos),1);	
 	pkFile->Read(&rot,sizeof(rot),1);	
@@ -1116,6 +1132,8 @@ void Entity::Save(ZFIoInterface* pkFile)
 	pkFile->Write(&iNetWorkID,sizeof(iNetWorkID),1);	
 	
 	pkFile->Write(&m_bRelativeOri,sizeof(m_bRelativeOri),1);	
+	pkFile->Write(&m_bInterpolate,sizeof(m_bInterpolate),1);	
+	
 	pkFile->Write(&pos,sizeof(pos),1);	
 	pkFile->Write(&rot,sizeof(rot),1);	
 	
@@ -1536,7 +1554,14 @@ Vector3 Entity::GetIWorldPosV()
 	if(m_bFirstSetPos)
 		return GetWorldPosV();
 
-	m_kILocalPosV += (GetWorldPosV() - m_kILocalPosV) * (m_pkFps->GetFrameTime()*5);
+	if(m_bInterpolate)
+		m_kILocalPosV += (GetWorldPosV() - m_kILocalPosV) * (m_pkFps->GetFrameTime()*5);
+	else
+	{
+		//still calculate the interpolatet position, but return non interpolatet position
+		m_kILocalPosV += (GetWorldPosV() - m_kILocalPosV) * (m_pkFps->GetFrameTime()*5);
+		return GetWorldPosV();
+	}
 
 	return m_kILocalPosV;
 }
@@ -1878,4 +1903,14 @@ void	 Entity::SetVarString(string& strName, string strValue)
 		pkVar = CreateVar(strName, EVAR_STRING);
 
 	pkVar->m_strValue = strValue;
+}
+
+void Entity::SetInterpolate(bool bInterpolate)
+{
+	if(m_bInterpolate == bInterpolate)
+		return;
+
+	m_bInterpolate = bInterpolate;
+
+	SetNetUpdateFlag(NETUPDATEFLAG_INTERPOLATE,true);	
 }

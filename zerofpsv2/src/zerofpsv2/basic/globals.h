@@ -1,7 +1,7 @@
 #ifndef _BASIC_GLOBALS_H_
 #define _BASIC_GLOBALS_H_
 
-#include <cstring>
+//#include <cstring>
 #include <iostream>
 #include "basic_x.h"
 #include "os.h"

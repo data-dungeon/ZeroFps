@@ -20,6 +20,7 @@ P_Mad::P_Mad()
 	
 	SetVisible(true);
 	m_bCanBeInvisible = false;
+	
 	m_fScale	 = 1.0;
 }
 
@@ -62,7 +63,10 @@ void P_Mad::Update()
 		
 
 		glPushMatrix();
-			Vector3 pos = m_pkObject->GetIWorldPosV();
+			Vector3 pos; 
+			
+			pos = m_pkObject->GetIWorldPosV();
+				
 			glTranslatef(pos.x,pos.y,pos.z);
 		
 			Matrix4 ori = m_pkObject->GetWorldRotM();
@@ -423,6 +427,7 @@ void P_Mad::SetVisible(bool bVisible)
 	else
 		m_iSortPlace = 10;
 }
+
 
 Vector3 P_Mad::GetJointPosition(char* szJointName)
 {
