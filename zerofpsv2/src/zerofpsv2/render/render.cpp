@@ -5,26 +5,24 @@
 #include "../engine/psystemmanager.h"
   
 FILE* pkGlDumpLog;
- 
+  
 Render::Render()  
 :	ZFSubSystem("Render") , m_eLandscapePolygonMode(FILL) 
 {
 
 	// Set Our own local variables.
-	m_iSlicesize				= 32;						//grid size of lod tiles
 	m_iDetail					= 30;						//height meens greater detail att longer range	
 	m_iViewDistance			= 300;
 	m_iFpsLock					= 60;
 	m_iAutoLod					= 1;
 	m_iLodUpdate				= 0;	
-	m_kOldCamPos				= Vector3(0,0,0);
+
 	m_iMaxLandscapeLayers	= 4;
 	m_iDrawLandscape			= 1;
 	m_iScreenShootNum			= 0;
-	m_iHmTempList				= 0;
+
 	m_kConsoleColor.Set(1,1,1);
 	m_bCapture					= false;
-	m_bShowInputToken			= false;
 
 	// The default graphics mode.
 	m_iWidth						= 800;
@@ -148,10 +146,11 @@ void Render::Swap(void)
 {
 	SDL_GL_SwapBuffers();  //guess
 
-	if(m_bCapture) {
+	if(m_bCapture) 
+	{
 		m_bCapture = false;
 		CaptureScreenShoot(m_iWidth, m_iHeight);
-		}
+	}
 
 	glLoadIdentity();	
 	
@@ -163,19 +162,6 @@ void Render::Swap(void)
 	
 */	
 	//glClear(GL_DEPTH_BUFFER_BIT);	
-}
-
-
-bool Render::HaveExtension(string strExt)
-{
-	unsigned char* pcExt = const_cast<unsigned char*>(glGetString(GL_EXTENSIONS));		
-
-	if(strstr((const char*)pcExt,strExt.c_str()) != NULL)
-	{
-		return true;	
-	}
-	
-	return false;
 }
 
 
@@ -405,12 +391,6 @@ void Render::Print(Vector3 kPos,const char* aText,float fScale)
 	m_pkZShaderSystem->MatrixPop();		
 }
 
-/*
-void Render::SetFont(char* aFont) {
-	strcpy(aCurentFont,aFont);
-// RES	m_kConsoleText.SetRes(aFont);
-}
-*/
 
 void Render::Line(const Vector3& kPos1,const Vector3& kPos2,const Vector3& kColor)
 {
@@ -549,13 +529,13 @@ void Render::DrawConsole(char* m_aCommand,vector<char*>* m_kText,int iStartLine,
 	Print(Vector3(8,8,0),m_aCommand,8.0);		
 	
 	char kMarker[3];
-	if(iMarker >= 0) {
+	if(iMarker >= 0) 
+	{
 		kMarker[0] = iMarker;
 		kMarker[1] = 0;
-		//if(m_bShowInputToken)
-		Print(Vector3( float(8+iMarkerPos*8), float(8), 0), kMarker,8.0);		
-		//m_bShowInputToken = !m_bShowInputToken;
-		}
+		
+		Print(Vector3( float(8+iMarkerPos*8), float(8), 0), kMarker,8.0);				
+	}
 
 	if(iStartLine < 0)
 		iStartLine = 0;
@@ -2273,3 +2253,12 @@ void Render::SetClearColor(Vector4 kColor)
 	m_pkZShaderSystem->SetClearColor(kColor);
 }
 */
+
+/*
+void Render::SetFont(char* aFont) {
+	strcpy(aCurentFont,aFont);
+// RES	m_kConsoleText.SetRes(aFont);
+}
+*/
+
+

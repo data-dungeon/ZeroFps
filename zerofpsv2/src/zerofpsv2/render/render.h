@@ -69,49 +69,50 @@ class RENDER_API Render : public ZFSubSystem {
 		BasicConsole*		m_pkConsole;
 		ZShaderSystem*		m_pkZShaderSystem;
 		
-		char			aCurentFont[256];
-		bool			m_FogEnable;		
-		int			m_iSlicesize;					//	height meens greater detail att longer range		
-		int			m_iLodUpdate;		
-		Vector3		m_kOldCamPos;	
-		
+				
+		//heightmap stuff
+		int			m_iLodUpdate;				
 		int			m_iMaxLandscapeLayers;
 		int			m_iDrawLandscape;
 
-		GLuint		m_iHmTempList;
-
+		int			m_iDetail;				//	grid size of lod tiles for the terran
+		int			m_iViewDistance;		//	how far until we cut the landscape	
+		int			m_iFpsLock;
+		int			m_iAutoLod;
+		
+		
+		//screenshot stuff
 		int			m_iScreenShootNum;
-		
-		SDL_Surface* m_pkScreen;			
-		int			m_iWidth,m_iHeight,m_iDepth;
-		int			m_iFullScreen;
-		bool  		m_bCapture;		
-		int			m_iSDLVideoModeFlags;
-		
-		void		GlInfo();						// Print info about opengl driver to console.
-		
+		bool  		m_bCapture;									//shuld a screenshot be made this frame?
 
-		void RunCommand(int cmdid, const CmdArgument* kCommand);
-
+		//screen info
+		SDL_Surface* 	m_pkScreen;								//main sdl screen surface
+		int				m_iWidth,m_iHeight,m_iDepth;
+		int				m_iFullScreen;
+		int				m_iSDLVideoModeFlags;
+		
+		//console color
 		Vector3		m_kConsoleColor;
-   	
+
+		//colors...or something
+		vector<EditColor>	m_kEditColor;
+
+		
+						
+		void 	RunCommand(int cmdid, const CmdArgument* kCommand);
+		void	GlInfo();										// Print info about opengl driver to console.
    	void SubDivide(float *v1, float *v2, float *v3, long depth);
    	void Normalize(float v[3]);
-   	
-		bool	m_bShowInputToken;
+		void CaptureScreenShoot( int m_iWidth, int m_iHeight );							///< Take a screenshoot and save it as a TGA.		
 
 	public:
-		int	m_iDetail;				//	grid size of lod tiles for the terran
-		int	m_iViewDistance;		//	how far until we cut the landscape	
-		int	m_iFpsLock;
-		int	m_iAutoLod;
-
 		PolygonMode m_eLandscapePolygonMode;
-	
+
+		Render();	
 		bool StartUp();
 		bool ShutDown()	{ return true;	}
 		bool IsValid()		{ return true;	}
-		Render();
+
 
 		//display functions		
 		void InitDisplay(int iWidth,int iHeight,int iDepth);		
@@ -119,27 +120,26 @@ class RENDER_API Render : public ZFSubSystem {
 		void SetDisplay();
 		void Swap(void);			
 		void ToggleFullScreen(void);
-		void ScreenShot() { m_bCapture = true;};
+		void ScreenShot() 	{	m_bCapture = true;}
 		
-		int GetWidth(){return m_iWidth;}
-		int GetHeight(){return m_iHeight;};		
-		int GetDepth(){return m_iDepth;};		
+		int GetWidth()			{	return m_iWidth;	}
+		int GetHeight()		{	return m_iHeight;	}		
+		int GetDepth()			{	return m_iDepth;	}		
 
-		TextureManager* GetTexMangager()		{	return m_pkTexMan; }		///< Get ptr to texture manger.
+		void DumpGLState(char* szFileName);
 		
 		
-		bool HaveExtension(string strExt);										//check if thers support for a specefic opengl extension
-		
-		
+		//strange stuff
 		void Mode2D_Start();
 		void Mode2D_End();
 
 
-		
+		//printing and console
 		void PrintChar(char cChar,float fPos,float fScale = 1.0);
 		void Print(Vector3 kPos, const char* aText,float fScale = 1.0);
 		void DrawConsole(char* m_aCommand,vector<char*>* m_kText, int iStartLine, int iMarkerPos, int iMarker); 
 
+		//draw line
 		void Line(const Vector3& kPos1,const Vector3& kPos2,const Vector3& kColor);
 		void Line(const Vector3& kPos1,const Vector3& kPos2);
 
@@ -171,6 +171,7 @@ class RENDER_API Render : public ZFSubSystem {
 		void Quad(Vector3 kPos,Vector3 kHead,Vector3 kScale,int iTexture, Vector3 kColor = Vector3(1,1,1));
 		void Polygon4(const Vector3& kP1,const Vector3& kP2,const Vector3& kP3,const Vector3& kP4,const int& iTexture);
 		void Sphere(Vector3 kPos,float fRadius,int iRes,Vector3 kColor,bool bSolid);		
+		void DrawCircle(vector<Vector3> kCircel, Vector3 kColor);
 		
 		void DrawCone(Vector3 kPos, float fRadie, float fHeight, Vector3 kColor, bool bSolid, int iNumSegments=20);
 		void DrawPyramid(Vector3 kCenterPos, Vector3 kSize, Vector3 kColor, bool bSolid);
@@ -184,21 +185,13 @@ class RENDER_API Render : public ZFSubSystem {
 		void DrawAABB(const Vector3& kMin,const Vector3& kMax);
 		void DrawSolidAABB( const Vector3& kMin,const Vector3& kMax, const Vector3& kColor );
 
-		void DrawCircle(vector<Vector3> kCircel, Vector3 kColor);
-
-		void GetMinMax(HeightMap* kMap, float& fMin, float& fMax, int xp,int zp,int iSize);
-
-		void DumpGLState(char* szFileName);
-
 		void Draw_AxisIcon(float scale = 1.0);													///< Draw axis lines.
 		void Draw_MarkerCross(Vector3 kPos, Vector3 Color, float fScale = 1.0);		///< Draw a cross made up of lines.
 
-		void CaptureScreenShoot( int m_iWidth, int m_iHeight );							///< Take a screenshoot and save it as a TGA.		
 
 		void DrawPSystem( PSystem *pkPSystem );
 
-		vector<EditColor>	m_kEditColor;
-		void Setup_EditColors();
+		void 		Setup_EditColors();
 		Vector3	GetEditColor(string strName);
 
 		
@@ -206,8 +199,8 @@ class RENDER_API Render : public ZFSubSystem {
 		//old stuff
 		//void SetClearColor(Vector4 kColor);
 		//void SetFog(Vector4 kFogColor,float FogStart,float FogStop,bool FogEnable);		
-		
-		
+
+		//void GetMinMax(HeightMap* kMap, float& fMin, float& fMax, int xp,int zp,int iSize);
 		//void DrawHM2(Heightmap2* pkMap,Vector3 kCamPos);
 		//void Dot(float x,float y,float z);
 		//void SetColor(Vector3 kColor);

@@ -709,13 +709,18 @@ void Render::DrawHMLodSplat(HeightMap* kMap,Vector3 CamPos,int iFps)
 	if(!m_iDrawLandscape)
 		return;
 
-  if(m_iAutoLod>0){
-		if((int)SDL_GetTicks()>(m_iLodUpdate+500)){
+  if(m_iAutoLod>0)
+  {
+		if((int)SDL_GetTicks()>(m_iLodUpdate+500))
+		{
 			m_iLodUpdate=SDL_GetTicks();
 			
-			if(iFps<(m_iFpsLock-5) && m_iDetail>20){
+			if(iFps<(m_iFpsLock-5) && m_iDetail>20)
+			{
 				m_iDetail--;	
-			} else if(iFps>(m_iFpsLock+5) && m_iDetail<100){
+			} 
+			else if(iFps>(m_iFpsLock+5) && m_iDetail<100)
+			{
 				m_iDetail++;		
 			}
 		}
@@ -911,27 +916,7 @@ void Render::DrawHMSelected(HeightMap* kmap, vector<HMSelectVertex> kSelected)
 		}
 }
 
-// Returns Min/Max hojd i vald patch
-void Render::GetMinMax(HeightMap* kMap, float& fMin, float& fMax, int xp,int zp,int iSize)
-{
-	fMin = 100000;
-	fMax = -100000;
-	HM_vert* pkHmVertex = kMap->verts;
-	float fHojd;
-	
-	//	fMin = 
-	for(int z = zp ; z < zp+iSize; z++){
-		for(int x = xp ; x <= xp+iSize ; x++){	
-			int iVertexIndex = (z)*kMap->m_iTilesSide+x;
-			fHojd = float(pkHmVertex[iVertexIndex].height*kMap->m_fTileSize);
-			
-			if(fHojd < fMin)
-				fMin = fHojd;
-			if(fHojd > fMax)
-				fMax = fHojd;
-		}
-	}
-}
+
 
 void Render::GetData(HeightMap* kMap, float x, float z, Vector3& kPos, Vector3& kNormal, Vector3& kTex1, Vector3& kTex2 )
 {
@@ -1453,6 +1438,30 @@ void Render::SetFog(Vector4 kFogColor,float FogStart,float FogStop,bool FogEnabl
 
 
 
+
+/*
+// Returns Min/Max hojd i vald patch
+void Render::GetMinMax(HeightMap* kMap, float& fMin, float& fMax, int xp,int zp,int iSize)
+{
+	fMin = 100000;
+	fMax = -100000;
+	HM_vert* pkHmVertex = kMap->verts;
+	float fHojd;
+	
+	//	fMin = 
+	for(int z = zp ; z < zp+iSize; z++){
+		for(int x = xp ; x <= xp+iSize ; x++){	
+			int iVertexIndex = (z)*kMap->m_iTilesSide+x;
+			fHojd = float(pkHmVertex[iVertexIndex].height*kMap->m_fTileSize);
+			
+			if(fHojd < fMin)
+				fMin = fHojd;
+			if(fHojd > fMax)
+				fMax = fHojd;
+		}
+	}
+}
+*/
 
 
 	
