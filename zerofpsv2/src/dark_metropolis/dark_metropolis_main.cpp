@@ -623,7 +623,7 @@ void DarkMetropolis::Input()
 			// Clicked a ClickMe object :)
 			if(P_DMClickMe* pkClick = (P_DMClickMe*)pkPickEnt->GetProperty("P_DMClickMe"))
 			{
-				pkClick->Click();
+				pkClick->Click( m_kSelectedEntitys.at(0) );
 			}
 			
 			//pick item

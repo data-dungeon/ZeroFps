@@ -39,6 +39,7 @@
 #include "../mcommon/p_dmgun.h"
 #include "../mcommon/p_dmitem.h"
 #include "../mcommon/p_dmmission.h"
+#include "../mcommon/p_dmclickme.h"
 
 #include "playerdatabase.h"
 

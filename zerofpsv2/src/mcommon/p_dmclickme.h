@@ -10,21 +10,37 @@
 
 using namespace std;
 
+class Visiter
+{
+public:
+	int m_iVisiter;
+	float m_fVisitTime; // finished when 0 reached
+};
+
+
 class MCOMMON_API P_DMClickMe: public Property {
 	private:
 		vector<PropertyValues> GetPropertyValues();
+
+		// house stuff
+		list<Visiter> m_kVisiters;
 
 		void *m_pkScript;
 	
 	public:
 		void Click();
+		void Click(int iObjID);
+
+		// house stuff
+		void AddVisiter ( int iObjID, float fVisitTime );
+
 
 		P_DMClickMe();
 		~P_DMClickMe();
 
 		void CloneOf(Property* pkProperty) { }
 		
-//		void Update();
+		void Update();
 		void Init();	
 	
 		void Save(ZFIoInterface* pkPackage);

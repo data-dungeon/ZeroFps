@@ -78,6 +78,9 @@ void DMLua::Init(EntityManager* pkObjMan,ZFScriptSystem* pkScript)
 	pkScript->ExposeFunction("SetItemSpeedBonus", DMLua::SetItemSpeedLua);
 	pkScript->ExposeFunction("SetItemAimBonus", DMLua::SetItemAimLua);
 
+	// SI for houses
+	pkScript->ExposeFunction("SwallowPlayer", DMLua::SwallowPlayerLua);
+
 	cout << "DM LUA Scripts Loaded" << endl;
 
 }
@@ -1271,6 +1274,41 @@ int DMLua::SetItemSpeedLua(lua_State* pkLua)
 	}
 	else
 		cout << "Warning! DMLua::SetItemSpeedLua: Tried to set Item value on a non-item entity." << endl;
+
+	return 0;
+}
+
+// ------------------------------------------------------------------------------------------------
+// Takes HouseID, PlayerID, Time before spitting out again, -1 = never
+int DMLua::SwallowPlayerLua(lua_State* pkLua)
+{
+	Entity* pkHouse = TestScriptInput (3, pkLua);
+
+	double dTime, dInhabID;
+
+	if ( pkHouse == 0 )
+	{
+		cout << "Warning! DMLua::SwallowPlayerLua: Wrong number of arg (HouseID, PlayerId, Time) or entityID not found." << endl;
+		return 0;
+	}
+
+	g_pkScript->GetArgNumber(pkLua, 1, &dInhabID);
+	g_pkScript->GetArgNumber(pkLua, 2, &dTime);
+
+	Entity* pkInhabit = g_pkObjMan->GetObjectByNetWorkID( int(dInhabID) );
+
+	if ( pkInhabit == 0 )
+	{
+		cout << "Warning! DMLua::SwallowPlayerLua: ObjectID not found." << endl;
+		return 0;
+	}
+
+	cout << "InhabID:" << dInhabID << " entered house." << endl;
+
+	// turn off inhabitant
+	pkInhabit->SetUpdateStatus (UPDATE_NONE);
+	pkInhabit->SetParent ( pkHouse );
+	pkInhabit->SetUseZones (false);
 
 	return 0;
 }

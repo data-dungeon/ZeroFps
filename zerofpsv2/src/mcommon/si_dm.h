@@ -86,6 +86,10 @@ namespace DMLua
 	Entity* TestScriptInput (int iArgs, lua_State* pkLua);
 	Entity* GetHQEntity ();
 
+	// SI for houses
+	int MCOMMON_API SwallowPlayerLua(lua_State* pkLua);
+
+
 };
 
 #endif
