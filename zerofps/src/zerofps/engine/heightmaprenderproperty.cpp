@@ -6,7 +6,9 @@ HeightMapRenderProperty::HeightMapRenderProperty(HeightMap* pkHeightMap)
 	m_pkFrustum=static_cast<Frustum*>(g_ZFObjSys.GetObjectPtr("Frustum"));
 	m_pkTexMan=static_cast<TextureManager*>(g_ZFObjSys.GetObjectPtr("TextureManager"));	
 	m_pkZeroFps=static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));		
+	m_pkRender=static_cast<Render*>(g_ZFObjSys.GetObjectPtr("Render"));		
 
+/*
 	m_iSlicesize=32;		//grid size of lod tiles
 	m_iDetail=30;				//height meens greater detail att longer range	
 	m_iViewDistance=250;
@@ -14,7 +16,7 @@ HeightMapRenderProperty::HeightMapRenderProperty(HeightMap* pkHeightMap)
 	m_iAutoLod=1;
 	m_iLodUpdate=0;	
 //	m_kOldCamPos=Vector3(0,0,0);
-
+*/
 	m_iType=PROPERTY_TYPE_STATIC;
 }
 
@@ -22,10 +24,10 @@ HeightMapRenderProperty::HeightMapRenderProperty(HeightMap* pkHeightMap)
 void HeightMapRenderProperty::Update() 
 {	
 	m_pkHeightMap->SetPosition(m_pkObject->GetPos());
-	DrawHMlod(m_pkHeightMap,m_pkZeroFps->GetCam()->GetPos(),m_pkZeroFps->m_iFps);
+	m_pkRender->DrawHMlod(m_pkHeightMap,m_pkZeroFps->GetCam()->GetPos(),m_pkZeroFps->m_iFps);
 }
 
-
+/*
 void HeightMapRenderProperty::DrawHMlod(HeightMap* kmap,Vector3 CamPos,int iFps){
 	if(m_iAutoLod>0){
 		if(SDL_GetTicks()>(m_iLodUpdate+500)){
@@ -196,7 +198,7 @@ void HeightMapRenderProperty::DrawHMlod(HeightMap* kmap,Vector3 CamPos,int iFps)
  			Line(p1,p1+kmap->verts[z*kmap->m_iHmSize+x].normal);
 	
 		}
-	*/
+	*
 	glDisable(GL_COLOR_MATERIAL);	
 //	glPolygonMode(GL_FRONT,GL_FILL);
 	glPopMatrix();
@@ -213,6 +215,9 @@ void HeightMapRenderProperty::GiveTexCor(float &iX,float &iY,int iNr) {
 	
 //	cout<<"X: "<<iX<< "  Y: "<<iY<<endl;
 }
+
+*/
+
 
 
 

@@ -24,7 +24,7 @@ void Test::OnInit(void) {
 //------------Map---------
 	test=new HeightMap(pkFile);
 	test->SetTileSet("file:../data/textures/landbw.bmp");
-	if(!test->LoadImageHmap("file:blub.bmp"))
+	if(!test->LoadImageHmap("file:islands.bmp"))
 		cout<<"Error loading map"<<endl;
 	test->GenerateNormals(); 
 	test->GenerateTextures();
