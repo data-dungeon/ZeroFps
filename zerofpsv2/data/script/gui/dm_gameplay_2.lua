@@ -275,11 +275,11 @@ function GUICreate()
 
 
 
-	CreateWnd(0,"fps_wnd","GamePlayScreen","",2,2,50,20,0)
-	ChangeSkin("fps_wnd","Skin4","Window")
+--	CreateWnd(0,"fps_wnd","","",2,2,50,20,0)
+--	ChangeSkin("fps_wnd","Skin4","Window")
 
-	CreateWnd(4,"fps_label","fps_wnd","fps: 240",0,0,50,20,0)
-	ChangeSkin("fps_label","Skin19","Label")
+--	CreateWnd(4,"fps_label","fps_wnd","fps: 240",0,0,50,20,0)
+--	ChangeSkin("fps_label","Skin19","Label")
 
 
 

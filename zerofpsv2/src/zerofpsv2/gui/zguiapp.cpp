@@ -531,7 +531,7 @@ void ZGuiApp::InitGui(ZFScriptSystem* pkScriptSys, char* szFontTexture,
 	}
 
 	// Create Fps wnd
-	ZGuiWnd* pkFpsWnd = CreateWnd(Wnd, "fps_wnd", "", "", 2, 2, 50, 20, 0);
+	ZGuiWnd* pkFpsWnd = CreateWnd(Wnd, "fps_wnd", "", "", 800-55, 5, 50, 20, 0);
 	ZGuiSkin* fps_skin = new ZGuiSkin();
 	pkFpsWnd->SetSkin(fps_skin);
 
