@@ -27,8 +27,6 @@ P_Spell::P_Spell()
 {
 	m_iSide = PROPERTY_SIDE_CLIENT;
 
-	bNetwork = true;
-
    m_pkSpellType = 0;
    m_fDamageTimer = 0;
 
@@ -387,8 +385,7 @@ void P_Spell::DoCollisions()
                      pkNewSpell->AttachToZone();
                      
                      // It's annoying to hit the new spell with the spell just casted so....
-                     m_kAttackedObjects.push_back (pkNewSpell->iNetWorkID);
-  
+                     m_kAttackedObjects.push_back (pkNewSpell->iNetWorkID);  
                   }
 
                }

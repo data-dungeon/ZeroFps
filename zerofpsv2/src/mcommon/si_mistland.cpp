@@ -4,6 +4,7 @@
 #include "rulesystem/item/itemstats.h"
 #include "p_charstats.h"
 #include "p_item.h"
+#include "p_spell.h"
 #include "../zerofpsv2/script/zfscript.h"
 #include <cmath>                    // for trigonometry functions
 
@@ -2040,23 +2041,30 @@ int MistLandLua::SetPropertyValueLua(lua_State* pkLua)
 // spell
 int MistLandLua::CastSpellLua (lua_State* pkLua)
 {
-	if( g_pkScript->GetNumArgs(pkLua) == 1 )
+	if( g_pkScript->GetNumArgs(pkLua) == 3 )
    {
 		Object* pkObject = g_pkObjMan->GetObjectByNetWorkID(g_iCurrentObjectID);
 
 	   if (pkObject)
 		{
+         //spell
      		char acValue[128];
 			g_pkScript->GetArgString(pkLua, 0, acValue);
+
+         // caster
+         double dCaster;
+         g_pkScript->GetArgNumber(pkLua, 1, &dCaster);
+
+         // target
+         double dTarget;
+         g_pkScript->GetArgNumber(pkLua, 2, &dTarget);
 
 
          Object* pkSpell = 
                  g_pkObjMan->CreateObjectFromScriptInZone (acValue, pkObject->GetWorldPosV() );
 
-         
-
-
-
+         P_Spell* pkSpellProp = (P_Spell*)pkSpell->GetProperty("P_Spell");
+         pkSpellProp->SetCaster ( dCaster );
        }
 
    }

@@ -31,6 +31,8 @@ class MCOMMON_API P_Spell: public Property
 
 		bool CastOn ( Object *pkObject ); // which object the spell is cast upon
 
+      void SetCaster ( int iNetWorkID )            { m_kAttackedObjects.push_back(iNetWorkID); }
+
       P_Spell( string kName );
 		P_Spell();
       ~P_Spell();
