@@ -1114,17 +1114,17 @@ void Entity::HandleMessages()
 
 	for(unsigned int i=0; i<m_kGameMessages.size(); i++) {
 		Msg = m_kGameMessages[i];
-		RouteMessage(Msg);
+		PublishEvent(Msg);
 		}
 
 	m_kGameMessages.clear();
 }
 
 /// Send a GameMessage to all Entity propertys.
-void Entity::RouteMessage(GameMessage& Msg)
+void Entity::PublishEvent(GameMessage& Msg)
 {
 	for(vector<Property*>::iterator it=m_akPropertys.begin();it!=m_akPropertys.end();it++) 
-		(*it)->HandleGameMessage(Msg);
+		(*it)->OnEvent(Msg);
 }
 
 /**	\brief	Checks parent / Child links.

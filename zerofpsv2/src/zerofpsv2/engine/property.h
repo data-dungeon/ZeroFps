@@ -226,7 +226,7 @@ class ENGINE_API Property
 		/////////////////////////////////////////////////////////7
 		
 		// Game Messages
-		virtual void HandleGameMessage(GameMessage& Msg);
+		virtual void OnEvent(GameMessage& Msg);
 
 		// Virtuals
 		virtual void Touch(Collision* pkCol) {};					//executet when collision occurs

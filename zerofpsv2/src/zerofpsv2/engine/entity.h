@@ -310,7 +310,7 @@ class ENGINE_API Entity
 		// Game Messages
 		void	AddGameMessage(GameMessage& Msg);
 		void	HandleMessages();
-		void	RouteMessage(GameMessage& Msg);
+		void	PublishEvent(GameMessage& Msg);
 
 		// Debug
 		void PrintTree(int pos);									///< Debug: Prints object tree from object.

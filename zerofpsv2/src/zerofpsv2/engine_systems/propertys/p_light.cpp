@@ -176,7 +176,7 @@ void P_Light::TurnOff()
 	m_pkLight->Remove(m_pkLightSource);
 }
 
-void P_Light::HandleGameMessage(GameMessage& Msg)
+void P_Light::OnEvent(GameMessage& Msg)
 {
 	if(Msg.m_Name == "on")
 		TurnOn();

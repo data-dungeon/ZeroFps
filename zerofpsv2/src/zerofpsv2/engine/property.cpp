@@ -39,7 +39,7 @@ Property::~Property()
 }
 
 // Game Messages
-void Property::HandleGameMessage(GameMessage& Msg)	
+void Property::OnEvent(GameMessage& Msg)	
 {	
 	cout << "[Property]: Recv GM: " << m_acName << ", ";
 	cout << Msg.m_ToObject << ", ";

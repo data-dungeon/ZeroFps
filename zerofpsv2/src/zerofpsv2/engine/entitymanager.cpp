@@ -1151,7 +1151,7 @@ void EntityManager::RouteMessage(GameMessage& Msg)
 		}
 
 //			m_pkConsole->Printf("Sending Msg '%s' to %d from %d", gm.m_Name.c_str(), gm.m_ToObject, gm.m_FromObject);
-	pkObject->RouteMessage(Msg);
+	pkObject->PublishEvent(Msg);
 }
 
 

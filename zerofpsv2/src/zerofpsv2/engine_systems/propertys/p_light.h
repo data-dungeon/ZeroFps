@@ -61,7 +61,7 @@ class ENGINE_SYSTEMS_API P_Light : public Property {
 		inline Vector3 GetRot(){return m_pkLightSource->kRot;};				
 		
 
-		void	HandleGameMessage(GameMessage& Msg);
+		void	OnEvent(GameMessage& Msg);
 
 };
 
