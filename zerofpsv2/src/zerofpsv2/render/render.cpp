@@ -2013,6 +2013,7 @@ void Render::DrawPSystem( PSystem *pkPSystem )
 void Render::Setup_EditColors()
 {
 	m_kEditColor.push_back( EditColor(string("3dview/background"),		Vector3(0.631, 0.631, 0.631)));	
+	m_kEditColor.push_back( EditColor(string("3dview/selbackground"),	Vector3(0.731, 0.731, 0.731)));	
 	m_kEditColor.push_back( EditColor(string("grid/line"),				Vector3(0.250, 0.250, 0.250)));	
 	m_kEditColor.push_back( EditColor(string("grid/axis"),				Vector3(0,0,0)));	
 

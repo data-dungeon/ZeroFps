@@ -57,7 +57,7 @@ class ENGINE_API Camera
 
 		void	DrawGrid();
 		
-
+	
 
 	public:
 		Frustum m_kFrustum;
@@ -68,7 +68,10 @@ class ENGINE_API Camera
 
 		Vector3	m_kOrthoSize;
 		bool		m_bRender;			// False if no need to render from this camera (not visible on screen).
-		
+		bool		m_bSelected;
+
+		int		m_iEntity;			// ID Of entity that this camera is connected to.
+
 		Camera(Vector3 kPos,Vector3 kRot,float fFov,float fAspect,float fNear,float fFar);
 		void Update(int iWidth,int iHeight);
 		void UpdateAll(int iWidth,int iHeight);

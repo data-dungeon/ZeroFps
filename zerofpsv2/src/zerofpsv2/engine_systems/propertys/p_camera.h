@@ -50,7 +50,7 @@ class ENGINE_SYSTEMS_API P_Camera : public Property
 	
 		void Update();
 
-		void SetCamera(Camera *pkCamera) { m_pkCamera = pkCamera; };
+		void SetCamera(Camera *pkCamera);
 		
 		void Set3PYAngle(float fA) { m_f3PYAngle = fA;};
 		void Set3PPAngle(float fP) { m_f3PPAngle = fP;};

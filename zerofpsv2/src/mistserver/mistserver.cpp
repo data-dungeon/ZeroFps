@@ -85,6 +85,7 @@ MistServer::MistServer(char* aName,int iWidth,int iHeight,int iDepth)
 	Register_Cmd("gridsize", FID_GRIDSIZE);
 	Register_Cmd("gridsnap", FID_GRIDSNAP);
 	Register_Cmd("camfollow", FID_CAMFOLLOW);
+	Register_Cmd("camnofollow", FID_CAMNOFOLLOW);
 
 
 	m_kDrawPos.Set(0,0,0);
@@ -98,10 +99,33 @@ MistServer::MistServer(char* aName,int iWidth,int iHeight,int iDepth)
 	m_pkActiveCamera			= NULL;
 } 
 
-void MistServer::SetCamera(int iNum)
+int MistServer::GetView(float x, float y)
 {
+	Vector3 kMin, kMax;
+
+	for(int i=0; i<4; i++) 
+	{
+		kMin = m_pkCamera[i]->GetViewPortCorner();
+		kMax = m_pkCamera[i]->GetViewPortCorner() + m_pkCamera[i]->GetViewPortSize();
+		if(x < kMin.x)	continue;
+		if(y < kMin.y)	continue;
+		if(x > kMax.x)	continue;
+		if(y > kMax.y)	continue;
+		return i;
+	}
+
+	return -1;
+}
+
+bool MistServer::SetCamera(int iNum)
+{
+	if(iNum == -1)	return false;
+	if(m_pkActiveCamera == m_pkCamera[iNum])	return false;
+
+	if(m_pkActiveCamera) m_pkActiveCamera->m_bSelected = false;
 	m_pkActiveCameraObject	= m_pkCameraObject[iNum];
 	m_pkActiveCamera			= m_pkCamera[iNum];
+	m_pkActiveCamera->m_bSelected = true;
 
 	if(m_bSoloMode) 
 	{
@@ -112,6 +136,8 @@ void MistServer::SetCamera(int iNum)
 		m_pkActiveCamera->SetViewPort(0,0,1,1);
 		m_pkActiveCamera->m_bRender = true;
 	}
+
+	return true;
 }
 
 void MistServer::OnInit() 
@@ -312,20 +338,30 @@ void MistServer::DrawSelectedEntity()
 	}
 }
 
-void MistServer::Select_Toggle(int iId)
+void MistServer::Select_Toggle(int iId, bool bMultiSelect)
 {
 	cout << "Select_Toggle: " << iId;
-	if(m_SelectedEntitys.find(iId) == m_SelectedEntitys.end() ) {
+	
+	if(!bMultiSelect && m_iCurrentObject != iId)		Select_None();
+	
+	if(m_SelectedEntitys.find(iId) == m_SelectedEntitys.end())
+	{
 		cout << "Add " << endl;
 		Select_Add(iId);
 		m_iCurrentObject = iId;
-		}
-	else {
+	}
+	else 
+	{
 		cout << "Remove " << endl;
 		Select_Remove(iId);
 		if(iId == m_iCurrentObject)
-			m_iCurrentObject = -1;
+		{
+			if(m_SelectedEntitys.size())
+				m_iCurrentObject = (*m_SelectedEntitys.begin());
+			else
+				m_iCurrentObject = -1;
 		}
+	}
 }
 
 
@@ -504,7 +540,7 @@ void MistServer::Input_EditTerrain()
 // Handles input for EditMode Zones.
 void MistServer::Input_EditZone()
 {
-	if(m_pkInputHandle->Pressed(MOUSELEFT))
+	if(m_pkInputHandle->Pressed(MOUSELEFT) && !DelayCommand())
 	{
 		AddZone(m_kZoneMarkerPos, m_kZoneSize, m_strActiveZoneName);	
 	}
@@ -549,7 +585,7 @@ void MistServer::Input_EditZone()
 		m_iCurrentMarkedZone =  m_pkObjectMan->GetZoneIndex(m_kZoneMarkerPos,-1,false);
 		ZoneData* pkData = m_pkObjectMan->GetZoneData(m_iCurrentMarkedZone);
 		if(pkData && pkData->m_pkZone)
-			Select_Toggle(pkData->m_pkZone->iNetWorkID);
+			Select_Toggle(pkData->m_pkZone->iNetWorkID, m_pkInputHandle->Pressed(KEY_LSHIFT));
 	}
 
 	if(m_pkInputHandle->Pressed(KEY_1)) m_kZoneSize.Set(4,4,4);
@@ -571,18 +607,11 @@ void MistServer::Input_EditObject(float fMouseX, float fMouseY)
 		cout << "Spawning " << m_strActiveObjectName.c_str() << endl;
 	}
 	
-	if(m_pkInputHandle->VKIsDown("selectzone") || (m_pkInputHandle->Pressed(MOUSERIGHT) && m_pkInputHandle->Pressed(KEY_LSHIFT))   )
+	if(m_pkInputHandle->VKIsDown("selectzone") && !DelayCommand())
 	{		
-		if(!DelayCommand())
-		{	
-			Entity* pkObj =  GetTargetObject();
-		
-			if(pkObj)
-			{
-				m_iCurrentObject = pkObj->iNetWorkID;
-				Select_Toggle(m_iCurrentObject);
-			}
-		}
+		Entity* pkObj =  GetTargetObject();
+		if(pkObj)
+			Select_Toggle(pkObj->iNetWorkID, m_pkInputHandle->Pressed(KEY_LSHIFT));
 	}
 	
 	//remove			
@@ -666,10 +695,10 @@ void MistServer::Input_EditObject(float fMouseX, float fMouseY)
 		pkObj->SetLocalPosV(pkObj->GetLocalPosV() + kMove);
 	}
 
-	if(m_pkInputHandle->VKIsDown("rotent")) 
+/*	if(m_pkInputHandle->VKIsDown("rotent")) 
 	{
 		pkObj->RotateLocalRotV( Vector3(0, fMouseX,0));
-	}
+	}*/
 
 	// Rotate Selected Entity
 	if(m_pkInputHandle->VKIsDown("rotx+"))			pkObj->RotateLocalRotV(Vector3(100*m_pkFps->GetFrameTime(),0,0));			
@@ -749,6 +778,12 @@ void MistServer::Input_Camera(float fMouseX, float fMouseY)
 		if(m_pkInputHandle->VKIsDown("down"))		m_pkActiveCamera->OrthoZoom(0.9);
 		if(m_pkInputHandle->VKIsDown("up"))			m_pkActiveCamera->OrthoZoom(1.1);
 
+		if(m_pkInputHandle->VKIsDown("pancam"))
+		{
+			kMove += Vector3(-fMouseX * fSpeedScale,fMouseY * fSpeedScale,0);
+		}
+
+
 		if(m_pkCameraObject[1]->GetParent() == m_pkCameraObject[0])
 		{
 			// If Cameras are linked.
@@ -786,6 +821,18 @@ void MistServer::Input()
 	
 	int x,z;		
 	m_pkInputHandle->RelMouseXY(x,z);	
+
+	// First see if we clicked to change view port.
+	if(m_pkInputHandle->Pressed(MOUSELEFT))
+	{
+		int mx,my;
+		m_pkInputHandle->SDLMouseXY(mx,my);
+		my = 768 - my; 
+		cout << "Mus: " << mx << ", " << my << endl;
+		int iClickedViewPort = GetView(mx, my);
+		if(SetCamera(iClickedViewPort))
+			m_fDelayTime = m_pkFps->GetEngineTime() + 0.5;
+	}
 
 	if(m_pkInputHandle->VKIsDown("makeland")) {
 		Entity* pkObj = m_pkObjectMan->GetObjectByNetWorkID(m_iCurrentObject);								
@@ -850,7 +897,9 @@ void MistServer::OnHud(void)
 		m_pkFps->DevPrintf("editor","Grid Size: %f", m_pkActiveCamera->m_fGridSpace);			
 		m_pkFps->DevPrintf("editor","Grid Snap: %i", m_pkActiveCamera->m_bGridSnap);			
 		m_pkFps->DevPrintf("editor","View: %s", m_pkActiveCamera->GetName().c_str());			
-
+		/*m_pkRender->DrawAABB(m_pkActiveCamera->GetViewPortCorner(),
+			m_pkActiveCamera->GetViewPortCorner() + m_pkActiveCamera->GetViewPortSize(),
+			Vector3(1,1,1),1);*/
 		}
 
 	m_pkFps->m_bGuiMode = false;
@@ -989,8 +1038,10 @@ void MistServer::RunCommand(int cmdid, const CmdArgument* kCommand)
 
 				break;
 
-		case FID_CAMSOLO:		SoloToggleView();	break;
-		case FID_CAMFOLLOW:	CamFollow();		break;
+		case FID_CAMSOLO:			SoloToggleView();		break;
+		case FID_CAMFOLLOW:		CamFollow(true);		break;
+		case FID_CAMNOFOLLOW:	CamFollow(false);		break;
+			
 		case FID_CAMGRID:		Camera::m_bDrawOrthoGrid = !Camera::m_bDrawOrthoGrid;		break;
 		case FID_GRIDSNAP:	Camera::m_bGridSnap = !Camera::m_bGridSnap;		break;
 		case FID_SELNONE:		Select_None();		break;
@@ -1053,22 +1104,43 @@ void MistServer::SoloToggleView()
 		}
 }
 
-void MistServer::CamFollow()
+void MistServer::CamFollow(bool bFollowMode)
 {
-	Entity* pkObj = m_pkObjectMan->GetObjectByNetWorkID(m_iCurrentObject);		
-	if(!pkObj)
-		return;
+	if(bFollowMode)
+	{
+		// Start Follow mode.
+		Entity* pkObj = m_pkObjectMan->GetObjectByNetWorkID(m_iCurrentObject);		
+		if(!pkObj)
+			return;
 
-	P_Camera* m_pkCamProp;
+		P_Camera* m_pkCamProp;
 
-	// Remov old
-	m_pkCamProp = (P_Camera*)m_pkActiveCameraObject->GetProperty("P_Camera");
-	m_pkCamProp->SetCamera(NULL);
+		// Remov old
+		m_pkCamProp = (P_Camera*)m_pkActiveCameraObject->GetProperty("P_Camera");
+		m_pkCamProp->SetCamera(NULL);
 
-	// Add new.
-	pkObj->AddProperty("P_Camera");
-	m_pkCamProp = (P_Camera*)pkObj->GetProperty("P_Camera");
-	m_pkCamProp->SetCamera(m_pkCamera[1]);
+		// Add new.
+		pkObj->AddProperty("P_Camera");
+		m_pkCamProp = (P_Camera*)pkObj->GetProperty("P_Camera");
+		m_pkCamProp->SetCamera(m_pkActiveCamera);
+	}
+	else
+	{
+		// End Follow Mode
+		Entity* pkObj = m_pkObjectMan->GetObjectByNetWorkID( m_pkActiveCamera->m_iEntity );		
+		if(!pkObj)
+			return;	// Hey we are not following anyone.
+
+		// Remov old
+		P_Camera* m_pkCamProp;
+		m_pkCamProp = (P_Camera*)pkObj->GetProperty("P_Camera");
+		m_pkCamProp->SetCamera(NULL);
+
+		m_pkCamProp = (P_Camera*)m_pkActiveCameraObject->GetProperty("P_Camera");
+		m_pkCamProp->SetCamera(m_pkActiveCamera);
+		
+		m_pkActiveCameraObject->SetWorldPosV(pkObj->GetWorldPosV());
+	}
 }
 
 

@@ -68,61 +68,77 @@ Parent=NULL
 OpenSubMenu=1
 Cmd=NULL
 
-[Menu_ViewLightOn]
-Title=Light On
+[Menu_View_Light]
+Title=Light Mode >
 Parent=Menu_View
+OpenSubMenu=1
+Cmd=NULL
+
+[Menu_View_Light_On]
+Title=Light On
+Parent=Menu_View_Light
 Cmd=lightmode 0
 
-[Menu_ViewLightOff]
+[Menu_View_Light_Off]
 Title=Light Off
-Parent=Menu_View
-OpenSubMenu=0
+Parent=Menu_View_Light
 Cmd=lightmode 1
 
-[Menu_ViewLightMat]
+[Menu_View_Light_Mat]
 Title=Light Mat
-Parent=Menu_View
+Parent=Menu_View_Light
 Cmd=lightmode 2
 
-[Menu_ViewCamPersp]
-Title=Cam - Persp
+[Menu_View_CamMode]
+Title=Camera Mode >
 Parent=Menu_View
+OpenSubMenu=1
+Cmd=NULL
+
+[Menu_View_CamMode_Persp]
+Title=Cam - Persp
+Parent=Menu_View_CamMode
 Cmd=setcam persp
 
-[Menu_ViewCamTop]
+[Menu_View_CamMode_Top]
 Title=Cam - Top
-Parent=Menu_View
+Parent=Menu_View_CamMode
 Cmd=setcam top
 
-[Menu_ViewCamFront]
+[Menu_View_CamMode_Front]
 Title=Cam - Front
-Parent=Menu_View
+Parent=Menu_View_CamMode
 Cmd=setcam front
 
-[Menu_ViewCamLeft]
+[Menu_View_CamMode_Left]
 Title=Cam - Left
-Parent=Menu_View
+Parent=Menu_View_CamMode
 Cmd=setcam left
 
-[Menu_ViewCamBot]
+[Menu_View_CamMode_Bot]
 Title=Cam - Bot
-Parent=Menu_View
+Parent=Menu_View_CamMode
 Cmd=setcam bot
 
-[Menu_ViewCamBack]
+[Menu_View_CamMode_Back]
 Title=Cam - Back
-Parent=Menu_View
+Parent=Menu_View_CamMode
 Cmd=setcam back
 
-[Menu_ViewCamRight]
+[Menu_View_CamMode_Right]
 Title=Cam - Right
-Parent=Menu_View
+Parent=Menu_View_CamMode
 Cmd=setcam right
 
 [Menu_ViewFollow]
 Title=Cam - Follow (T)
 Parent=Menu_View
 Cmd=camfollow
+
+[Menu_ViewNoFollow]
+Title=Cam - UnFollow (T)
+Parent=Menu_View
+Cmd=camnofollow
 
 [Menu_ViewLink]
 Title=Cam - Link (T)
@@ -152,44 +168,50 @@ Title=Snap (T)
 Parent=Menu_Grid
 Cmd=gridsnap
 
-[Menu_GridSize01]
-Title=Size 0.1
+[Menu_Grid_Size]
+Title=Grid Size >
 Parent=Menu_Grid
+OpenSubMenu=1
+Cmd=NULL
+
+[Menu_Grid_Size_01]
+Title=Size 0.1
+Parent=Menu_Grid_Size
 Cmd=gridsize 0.1
 
-[Menu_GridSize025]
+[Menu_Grid_Size_025]
 Title=Size 0.25
-Parent=Menu_Grid
+Parent=Menu_Grid_Size
 Cmd=gridsize 0.25
 
-[Menu_GridSize05]
+[Menu_Grid_Size_05]
 Title=Size 0.5
-Parent=Menu_Grid
+Parent=Menu_Grid_Size
 Cmd=gridsize 0.5
 
-[Menu_GridSize1]
+[Menu_Grid_Size_1]
 Title=Size 1
-Parent=Menu_Grid
+Parent=Menu_Grid_Size
 Cmd=gridsize 1
 
-[Menu_GridSize2]
+[Menu_Grid_Size_2]
 Title=Size 2
-Parent=Menu_Grid
+Parent=Menu_Grid_Size
 Cmd=gridsize 2
 
-[Menu_GridSize5]
+[Menu_Grid_Size_5]
 Title=Size 5
-Parent=Menu_Grid
+Parent=Menu_Grid_Size
 Cmd=gridsize 5
 
-[Menu_GridSize10]
+[Menu_Grid_Size_10]
 Title=Size 10
-Parent=Menu_Grid
+Parent=Menu_Grid_Size
 Cmd=gridsize 10
 
-[Menu_GridSize100]
+[Menu_Grid_Size_100]
 Title=Size 100
-Parent=Menu_Grid
+Parent=Menu_Grid_Size
 Cmd=gridsize 100
 
 ; ------------- SYSTEM MENU -------------
@@ -215,29 +237,35 @@ Title=Sim (T)
 Parent=Menu_Sys
 Cmd=set e_runsim toggle
 
-[Menu_SysSimSpeed0]
-Title=SimSpeed 0
+[Menu_Sys_Speed]
+Title=Sim Speed >
 Parent=Menu_Sys
+OpenSubMenu=1
+Cmd=NULL
+
+[Menu_Sys_Speed_0]
+Title=SimSpeed 0
+Parent=Menu_Sys_Speed
 Cmd=set e_simspeed 0.0
 
-[Menu_SysSimSpeed05]
+[Menu_Sys_Speed_05]
 Title=SimSpeed 0.5
-Parent=Menu_Sys
+Parent=Menu_Sys_Speed
 Cmd=set e_simspeed 0.5
 
-[Menu_SysSimSpeed1]
+[Menu_Sys_Speed_1]
 Title=SimSpeed 1
-Parent=Menu_Sys
+Parent=Menu_Sys_Speed
 Cmd=set e_simspeed 1
 
-[Menu_SysSimSpeed2]
+[Menu_Sys_Speed_2]
 Title=SimSpeed 2
-Parent=Menu_Sys
+Parent=Menu_Sys_Speed
 Cmd=set e_simspeed 2
 
-[Menu_SysSimSpeed8]
+[Menu_Sys_Speed_8]
 Title=SimSpeed 8
-Parent=Menu_Sys
+Parent=Menu_Sys_Speed
 Cmd=set e_simspeed 8
 
 ; ------------- DEBUG MENU -------------

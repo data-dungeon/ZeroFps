@@ -209,12 +209,21 @@ void P_Camera::Look(Vector3 kCamPosition, Vector3 kLookDir,Vector3 kCamUp) {
 
 void P_Camera::OrthoMove(Vector3 kMove)
 {
+	if(!m_pkCamera)	
+		return;
+
 	Vector3 kPos = m_pkObject->GetLocalPosV();
 	kPos += m_pkCamera->m_kOrthoAxisX * kMove.x;
 	kPos += m_pkCamera->m_kOrthoAxisY * kMove.y;
 	m_pkObject->SetLocalPosV(kPos);
 }
 
+void P_Camera::SetCamera(Camera *pkCamera) 
+{
+	if(m_pkCamera)		m_pkCamera->m_iEntity = -1;
+	m_pkCamera = pkCamera; 
+	if(m_pkCamera)		m_pkCamera->m_iEntity = m_pkObject->iNetWorkID;
+}
 
 
 Property* Create_CameraProperty()

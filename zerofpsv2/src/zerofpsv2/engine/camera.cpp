@@ -19,7 +19,9 @@ Camera::Camera(Vector3 kPos,Vector3 kRot,float fFov,float fAspect,float fNear,fl
 	m_strName = "A Camera";
 	
 	m_kOrthoSize.Set(15,15,0);	// Defualt Size is 50 x 50 meters
-	m_bRender = true;
+	m_bRender	= true;
+	m_bSelected = false;
+	m_iEntity	= -1;
 
 	m_eMode = CAMMODE_PERSP; //just initiating it
 	m_fGridSpace = 1.0;
@@ -333,7 +335,11 @@ Vector3 Camera::SnapToGrid(Vector3 kPos)
 
 void Camera::ClearViewPort() 
 {
-	glClearColor(0.631, 0.631, 0.631,0.0);
+	if(m_bSelected)
+		glClearColor(0.680, 0.631, 0.631,0.0);
+	else
+		glClearColor(0.631, 0.631, 0.631,0.0);
+	
 	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);	
 	DrawGrid();
 }

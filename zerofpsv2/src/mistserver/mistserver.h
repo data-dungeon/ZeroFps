@@ -64,6 +64,7 @@ class MistServer :public Application , public ZGuiApp {
 			FID_GRIDSIZE,
 			FID_GRIDSNAP,
 			FID_CAMFOLLOW,
+			FID_CAMNOFOLLOW,
 
 		};
 
@@ -114,8 +115,9 @@ class MistServer :public Application , public ZGuiApp {
 
 		Entity*	GetTargetObject();		
 
-		void SetCamera(int iNum);
-		void CamFollow();
+		bool	SetCamera(int iNum);
+		int	GetView(float x, float y);
+		void CamFollow(bool bFollowMode);
 
 		// Selection of Entitys.
 		set<int>	m_SelectedEntitys;
@@ -123,7 +125,7 @@ class MistServer :public Application , public ZGuiApp {
 		void Select_Add( int iId )		{ m_SelectedEntitys.insert(iId); }
 		void Select_Remove( int iId )	{ m_SelectedEntitys.erase(iId); }
 		void DrawSelectedEntity();
-		void Select_Toggle(int iId);
+		void Select_Toggle(int iId, bool bMultiSelect);
 
 		void SetZoneEnviroment(const char* szEnviroment);
 		string GetZoneEnviroment();
