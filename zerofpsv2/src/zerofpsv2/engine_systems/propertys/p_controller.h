@@ -29,8 +29,8 @@ class ENGINE_SYSTEMS_API P_Controller : public Property {
 	public:
 
 		void SetCameraRotation (bool bTrue);
-		void AddTrigger (string strKey, int iStuff, float fValue);
-		void SpringTrigger (int iStuff, float fValue);
+		void AddTrigger (string strKey, int iAxis, float fValue);
+		void SpringTrigger (int iAxis, float fValue);
 
 		void Update();
 		vector<PropertyValues> GetPropertyValues();

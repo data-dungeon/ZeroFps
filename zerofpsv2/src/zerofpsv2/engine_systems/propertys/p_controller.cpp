@@ -44,7 +44,7 @@ vector<PropertyValues> P_Controller::GetPropertyValues()
 
 P_Controller::P_Controller()
 {
-   bNetwork = true;
+	bNetwork = true;
 
 	m_iType = PROPERTY_TYPE_RENDER_NOSHADOW|PROPERTY_TYPE_NORMAL;
 	m_iSide = PROPERTY_SIDE_CLIENT|PROPERTY_SIDE_SERVER;
@@ -54,19 +54,17 @@ P_Controller::P_Controller()
 
     m_pkInputHandle = m_pkZeroFps->m_pkApp->m_pkInputHandle;
 
-   //	m_iRotateParent = 0; zeb 4:e aug 2004 - variabeln är undeclared.
+	m_bCameraRotation = false;
 
-	// temp: add some controller stuff
-	AddTrigger ("move_up", VEL_Z, -47);
-	AddTrigger ("move_down", VEL_Z, 47);
-	AddTrigger ("move_left", VEL_X, -47);
-	AddTrigger ("move_right", VEL_X, 47);
 }
 
 // ------------------------------------------------------------------------------------------
 
 bool P_Controller::HandleSetValue( string kValueName, string kValue )
 {
+
+
+
 	return false;
 }
 
@@ -114,12 +112,12 @@ void P_Controller::SetCameraRotation (bool bTrue)
 
 // ------------------------------------------------------------------------------------------
 
-void P_Controller::AddTrigger(string strKey, int iStuff, float fValue)
+void P_Controller::AddTrigger(string strKey, int iAxis, float fValue)
 {
 	sTrigger kNewTrigger;
 
 	kNewTrigger.m_eControlType = eKEYBOARD;
-	kNewTrigger.m_iInputTrigger = iStuff;
+	kNewTrigger.m_iInputTrigger = iAxis;
 	kNewTrigger.m_strKey = strKey;
 	kNewTrigger.m_fValue = fValue;
 	
@@ -128,7 +126,7 @@ void P_Controller::AddTrigger(string strKey, int iStuff, float fValue)
 
 // ------------------------------------------------------------------------------------------
 
-void P_Controller::SpringTrigger (int iStuff, float fValue)
+void P_Controller::SpringTrigger (int iAxis, float fValue)
 {
 	// if object hasn't got physic_prop, it can't be moved with controller...yet
 	P_Tcs* pkTcs = (P_Tcs*)GetObject()->GetProperty("P_Tcs");
@@ -139,7 +137,7 @@ void P_Controller::SpringTrigger (int iStuff, float fValue)
 	Vector3 kVel = Vector3(0,0,0);
 	//pkTcs->GetVel(kVel);
 
-	switch (iStuff)
+	switch (iAxis)
 	{
 		case VEL_X:
 			kVel.x = fValue;

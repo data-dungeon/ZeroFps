@@ -1,3 +1,10 @@
+//  ______________________________________________________________________
+// /																	  \
+// | si_properties.h:                                                     |
+// | A place to put common property functions in instead of rewritning    |
+// | them for every new game.											  |
+// \______________________________________________________________________/
+
 #ifndef _SI_PROPERTIES_H_
 #define _SI_PROPERTIES_H_
 
@@ -10,16 +17,25 @@ class ZFScriptSystem;
 using namespace std;
 
 class ZFVFileSystem;
+class EntityManager;
 
 namespace PropertiesLua
 {
 
 	extern ZFScriptSystem* 		g_pkScript;
-	extern ZFVFileSystem*		g_pkVFS;
+	extern EntityManager*		g_pkObjMan;
+
+	void ENGINE_SYSTEMS_API Init(ZFScriptSystem* pkScript, EntityManager* pkObjMan);
 	
-	void ENGINE_SYSTEMS_API Init(ZFScriptSystem* pkScript, ZFVFileSystem* pkBasicFS);
-	
-	int ENGINE_SYSTEMS_API BindKeyLua(lua_State* pkLua);	
+	// p_controller
+	int ENGINE_SYSTEMS_API BindKeyLua(lua_State* pkLua);
+	int ENGINE_SYSTEMS_API RotWithCamYAxisLua(lua_State* pkLua);
+
+	// p_mad
+
+	// p_path
+
+	// p_...
 
 };
 

@@ -35,4 +35,9 @@ end
 function Init()
 	SetLeaderOfTeam(SIGetSelfID(), 0);
 	AddItem(SIGetSelfID(), "data/script/objects/dm/t_rifle.lua", 1);
+	BindKey(SIGetSelfID(), "move_left", 0, -50);
+	BindKey(SIGetSelfID(), "move_right", 0, 50);
+	BindKey(SIGetSelfID(), "move_up", 2, -50);
+	BindKey(SIGetSelfID(), "move_down", 2, 50);			RotWithCamYAxis(SIGetSelfID(), 1);
+
 end

@@ -10,6 +10,7 @@
 //#include "../engine_systems/propertys/p_physic.h"
 #include "fh.h"
 #include "../engine_systems/script_interfaces/si_objectmanager.h"
+#include "../engine_systems/script_interfaces/si_properties.h"
 #include "p_pfmesh.h"
  
 
@@ -115,6 +116,7 @@ bool EntityManager::StartUp()
 
 	//setup script interface
 	ObjectManagerLua::Init(this,m_pkScript);
+	PropertiesLua::Init(m_pkScript, this);
 	
 	return true; 
 }
