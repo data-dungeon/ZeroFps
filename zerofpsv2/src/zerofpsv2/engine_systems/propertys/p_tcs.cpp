@@ -902,6 +902,7 @@ namespace SI_PTcs
 		return 0;	
 	
 	}
+
 	
 	int SetObjectRotVelLua (lua_State* pkLua)
 	{
@@ -1027,8 +1028,8 @@ void ENGINE_SYSTEMS_API Register_PTcs(ZeroFps* pkZeroFps)
 	pkZeroFps->m_pkPropertyFactory->Register("P_Tcs", Create_P_Tcs);					
 
 	// Register Property Script Interface
-	g_pkScript->ExposeFunction("ApplyImpuls",	SI_PTcs::ApplyImpulsLua);
-	g_pkScript->ExposeFunction("SetRotVel",	SI_PTcs::SetObjectRotVelLua);
-	g_pkScript->ExposeFunction("SetLinVel",	SI_PTcs::SetObjectLinVelLua);	
-	g_pkScript->ExposeFunction("Bounce",		SI_PTcs::BounceLua);				
+	g_pkScript->ExposeFunction("ApplyImpuls",			SI_PTcs::ApplyImpulsLua);
+	g_pkScript->ExposeFunction("SetRotVel",			SI_PTcs::SetObjectRotVelLua);
+	g_pkScript->ExposeFunction("SetLinVel",			SI_PTcs::SetObjectLinVelLua);	
+	g_pkScript->ExposeFunction("Bounce",				SI_PTcs::BounceLua);				
 }

@@ -151,8 +151,7 @@ class ENGINE_SYSTEMS_API P_Tcs : public Property
 		
 		//sets 
       void SetRotVel (Vector3 kRotVel)			{Wakeup();m_kRotVelocity = kRotVel; }		
-		void SetLinVel (Vector3 kLinVel)			{Wakeup();m_kLinearVelocity = kLinVel; }		
-		//void SetPolygonTest(bool t) 				{m_bPolygonTest = t;};
+		void SetLinVel (Vector3 kLinVel)			{Wakeup();m_kLinearVelocity = kLinVel; }				
 		void SetTestType(int iTest)				{m_iTestType = iTest;};
 		void SetRadius(float t) 					{m_fRadius = t;};
 		void SetStatic(bool bStatic) 				{m_bStatic = bStatic;};		
