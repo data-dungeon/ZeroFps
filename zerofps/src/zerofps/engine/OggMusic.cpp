@@ -82,9 +82,10 @@ bool OggMusic::LoadFile(string kFileName)
 	if(m_bFileOK)
 		ov_clear(&m_kOggFile);
 	
-	FILE* File;
-	File = fopen(kFileName.c_str() , "rb" );
-	if(File==NULL)
+	ZFVFile File;
+	//FILE* File;
+	//File = fopen(kFileName.c_str() , "rb" );
+	if(!File.Open(kFileName,0, false))
 	{
 		cout<<"error opening file: " <<kFileName <<endl;
 		return false;
@@ -92,14 +93,17 @@ bool OggMusic::LoadFile(string kFileName)
 	
 	else
 	{
-		if(ov_open(File,&m_kOggFile ,NULL,0)<0)
+		if(ov_open(File.m_pkFilePointer,&m_kOggFile ,NULL,0)<0)
 		{
 			cout<<"File not valid ogg:" <<kFileName <<endl;
-			fclose(File);
+			//fclose(File);
 			return false;
 		}
 		else
 		{
+			//NULLing the filepointer so it doesent get closed when 
+			//the fileobject goes out of scope. its the OGGs file now! muahaha!
+			File.m_pkFilePointer = NULL;
 			//displaying some Ogg file info.. 
 			cout<<"------------------------" <<endl  
 				<<"File info for: " <<kFileName <<endl;
@@ -162,10 +166,9 @@ bool OggMusic::Play()
 	if (alGetError()!=AL_NO_ERROR)
 	{
 		cout<<"error playing!" <<endl;
-	}		
-	
+		return false;
+	} 
 	m_bPlaying=true;
-
 	ov_pcm_seek(&m_kOggFile,0);
 	
 	return true;
