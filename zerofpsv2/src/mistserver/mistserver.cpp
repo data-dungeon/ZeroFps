@@ -442,16 +442,16 @@ void MistServer::Input()
 			{
 				
 				Entity* pkObj = pkObjectMan->GetObjectByNetWorkID(m_iCurrentObject);
-								
+												
 				if(pkObj)
 				{
 					//fulhack deluxe för att inte kunna ta bort statiska entitys i zoner som inte är underconstruction
-					if(pkObj->GetParent()->GetName() == "StaticEntity")
+				/*	if(pkObj->GetParent()->GetName() == "StaticEntity")
 					{
 						cout<<"zone is not under construction "<<endl;
 						return;
 					}
-						
+				*/						
 					cout<<"Deleting object:"<<m_iCurrentObject<<endl;					
 					pkObjectMan->Delete(pkObj);				
 				}

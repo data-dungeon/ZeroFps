@@ -395,7 +395,7 @@ Entity* EntityManager::CreateObjectFromScriptInZone(const char* acName,Vector3 k
 	if(newobj)
 	{      
 		//check if its a static object, in that case check if the zone is in consturction mode else delete the object 
-		if(newobj->GetObjectType() == OBJECT_TYPE_STATIC)
+/*		if(newobj->GetObjectType() == OBJECT_TYPE_STATIC)
 		{
 			ZoneData* zd = GetZoneData(id);
 			if(zd)
@@ -408,7 +408,7 @@ Entity* EntityManager::CreateObjectFromScriptInZone(const char* acName,Vector3 k
 				}
 			}
 		}
-	
+*/	
 		newobj->SetUseZones(true);
 		newobj->SetWorldPosV(kPos);	
 		if(newobj->m_iCurrentZone == -1)
