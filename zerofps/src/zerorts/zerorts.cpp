@@ -36,7 +36,19 @@ void ZeroRTS::Init()
 
 	//register actions
 	RegisterActions();
+
+	// Show cursor
+	int cursor_tex = pkTexMan->Load("file:../data/textures/cursor.bmp", 0);
+	int cursor_tex_a = pkTexMan->Load("file:../data/textures/cursor_a.bmp", 0);
 	
+	int mx,my;
+	pkInput->MouseXY(mx,my);
+	pkGui->SetCursor(mx, my, cursor_tex, cursor_tex_a, 32, 32);
+	pkGui->ShowCursor(true);
+	SDL_ShowCursor(SDL_DISABLE);	
+
+	pkFps->m_bGuiMode = false;
+	pkFps->ToggleGui();
 	
 }
 
@@ -84,7 +96,8 @@ void ZeroRTS::Input()
 
 void ZeroRTS::OnHud(void) 
 {	
-
+	pkFps->m_bGuiMode = false;
+	pkFps->ToggleGui();
 }
 
 void ZeroRTS::OnServerStart(void)
@@ -99,7 +112,8 @@ void ZeroRTS::RunCommand(int cmdid, const CmdArgument* kCommand)
 {
 	switch(cmdid) {
 		case FID_LOAD:
-			if(kCommand->m_kSplitCommand.size() <= 1) {
+			if(kCommand->m_kSplitCommand.size() <= 1)
+			{
 				pkConsole->Printf("load [mapname]");
 				break;				
 			}
@@ -107,7 +121,7 @@ void ZeroRTS::RunCommand(int cmdid, const CmdArgument* kCommand)
 			{
 				pkConsole->Printf("Error loading level");
 				break;			
-			}		
+			}
 			
 			pkConsole->Printf("Level loaded");
 			
