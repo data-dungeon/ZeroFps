@@ -138,6 +138,9 @@ ZeroEd::ZeroEd(char* aName,int iWidth,int iHeight,int iDepth)
 	m_strActiveViewPort = "none";
 	
 	m_bGrabing = false;
+
+	m_kTestGraph.SetSize(60,60,100);
+	m_kTestGraph.SetMinMax(0,1500);
 } 
 
 
@@ -779,6 +782,8 @@ void ZeroEd::OnHud(void)
 {
 	if(m_pkActiveCamera) 
 	{
+		//m_kTestGraph.PushValue(m_pkZeroFps->m_fFps);
+		m_kTestGraph.DrawGraph(10,10);
 		m_pkZeroFps->DevPrintf("editor","Grid Size: %f", m_pkActiveCamera->m_fGridSpace);			
 		m_pkZeroFps->DevPrintf("editor","Grid Snap: %i", m_pkActiveCamera->m_bGridSnap);			
 		m_pkZeroFps->DevPrintf("editor","View: %s", m_pkActiveCamera->GetName().c_str());			

@@ -13,6 +13,7 @@
 #ifndef _ENGINE_FH_H_
 #define _ENGINE_FH_H_
 //#include "zfresource.h"
+#include "engine_x.h"
 
 #pragma warning( disable : 4512) // 'class' : assignment operator could not be generated 
 
@@ -25,7 +26,7 @@ using namespace std;
 /*** Start: Vim ***/
 void ENGINE_API DrawTest(float x, float y, float z);
 
-class DebugGraph
+class ENGINE_API DebugGraph
 {
 public:
 	DebugGraph();

@@ -372,7 +372,7 @@ void MistClient::Input()
 {
 	//get mouse
 	int x,z;		
-	m_pkInputHandle->RelMouseXY(x,z);	
+//	m_pkInputHandle->RelMouseXY(x,z);	
 		
 	//setup player controls
 	if(m_pkInputHandle->Pressed(MOUSEMIDDLE))	//do we want to zoom?
@@ -504,14 +504,14 @@ void MistClient::Input()
 		int mx, my;
 
 		// use mouse pointer as center of action menu
-		if ( m_iMouseMode == eMOUSE_MODE)
-			m_pkInputHandle->MouseXY(mx,my);
-		else
-		{
+		//if ( m_iMouseMode == eMOUSE_MODE)
+			//m_pkInputHandle->MouseXY(mx,my);
+		//else
+		//{
 			// use middle of screen as center of action menu
 			mx = int(m_iWidth  / 2.f);
 			my = int(m_iHeight / 2.f);
-		}
+		//}
 
 		if ( OpenActionMenu(mx, my) && m_iMouseMode == eCAMERA_MODE )
 			ChangeMode ( eACTION_MODE );

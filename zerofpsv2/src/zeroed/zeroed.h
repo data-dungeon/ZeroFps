@@ -36,6 +36,7 @@
 #include "../mcommon/p_dmclickme.h"
 #include "../mcommon/p_dmshop.h"
 #include "../mcommon/p_car.h"
+#include "../zerofpsv2/engine/fh.h"
 
 #include "../mcommon/p_arcadecharacter.h"
 
@@ -198,7 +199,7 @@ class ZeroEd :public Application , public ZGuiApp {
 
 		bool PlaceObjectOnGround(int iObjectID);
 
-
+		DebugGraph m_kTestGraph;
 		
 		
 	public:
