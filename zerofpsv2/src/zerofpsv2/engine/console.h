@@ -63,6 +63,9 @@ class ENGINE_API Console : public BasicConsole
 
 		InputHandle*			m_pkInputHandle;
 
+		int						m_iNextAutoComplete;				// Index of next autocomplete name.
+		bool						m_bAutoCompleteOn;				// True if autocomplete is on progress
+
 		//void FormatKey(int& r_iKey);
 		char FormatKey(QueuedKeyInfo& kKey);
 		void InsertKey(unsigned char ucKey);

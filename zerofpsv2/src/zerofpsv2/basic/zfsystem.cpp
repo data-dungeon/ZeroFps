@@ -396,6 +396,7 @@ bool ZFSystem::RunCommand(const char* szCmdArg, ZFCmdSource iCmdSource)
 	CmdArgument kcmdargs;
 	kcmdargs.Set(szCmdArg);
 	kcmdargs.m_eSource = iCmdSource;
+	string strValue;
 
 	if(kcmdargs.m_kSplitCommand.size() == 0)
 		return false;
@@ -418,6 +419,25 @@ bool ZFSystem::RunCommand(const char* szCmdArg, ZFCmdSource iCmdSource)
 				kCmdData->m_pkObject->RunCommand(kCmdData->m_iCmdID, &kcmdargs);
 				}
 			break;
+
+		default:
+			if(kCmdData->m_eType == CSYS_NONE)
+				break;
+
+			if(kcmdargs.m_kSplitCommand.size() == 1)
+			{
+				strValue = GetVarValue(kCmdData);
+				BasicConsole* con = static_cast<BasicConsole*>(g_ZFObjSys.GetObjectPtr("Console"));
+				con->Printf(" %s = [ %s]",kCmdData->m_strName.c_str(), strValue.c_str());
+			}
+			
+			if(kcmdargs.m_kSplitCommand.size() >= 3 && kcmdargs.m_kSplitCommand[1] == string("=") )
+			{
+				SetVariable(kcmdargs.m_kSplitCommand[0].c_str(),kcmdargs.m_kSplitCommand[2].c_str());
+			}
+			
+			break;
+
 	}
 
 	return true;

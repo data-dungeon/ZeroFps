@@ -41,6 +41,9 @@ bool Console::StartUp()
 	m_bShowMarker			= true;
 	m_fMarkerToggleTime	= 0;
 
+	m_iNextAutoComplete  = 0;
+	m_bAutoCompleteOn    = false;
+
 	m_pkInputHandle = new InputHandle("Console");
 
 	return true; 
@@ -60,8 +63,16 @@ void Console::AutoComplete()
 {
 	vector<string> kFoundCommands;
 
-	if( m_pkSystem->AutoComplete(m_aCommand,&kFoundCommands ,0) ) 
+	// Run acomplete on text from start to input caret
+	char szAutoComplete[256];
+	strncpy(szAutoComplete,m_aCommand, m_iInputPos);
+	szAutoComplete[m_iInputPos] = 0;
+	
+	if( m_pkSystem->AutoComplete(szAutoComplete,&kFoundCommands ,0) ) 
 	{
+		if(kFoundCommands.size() == 0)
+			return;
+
 		if(kFoundCommands.size() == 1) 
 		{
 			strcpy(m_aCommand, kFoundCommands[0].c_str());
@@ -71,12 +82,25 @@ void Console::AutoComplete()
 		}
 		else 
 		{
-			for(int i=0; i<kFoundCommands.size(); i++)
-				Printf("    %s", kFoundCommands[i].c_str());
+			if(m_bAutoCompleteOn)
+			{
+				if(m_iNextAutoComplete >= kFoundCommands.size())
+					m_iNextAutoComplete = 0;
+				strcpy(m_aCommand, kFoundCommands[ m_iNextAutoComplete ].c_str());
+				m_iNextAutoComplete++;
+				if(m_iNextAutoComplete >= kFoundCommands.size())
+					m_iNextAutoComplete = 0;
+			}
+			else
+			{
+				m_bAutoCompleteOn		= true;
+				m_iNextAutoComplete	= 0;
+				for(int i=0; i<kFoundCommands.size(); i++)
+					Printf("    %s", kFoundCommands[i].c_str());
+			}
 		}
 	}
 }
-
 
 void Console::InsertKey(unsigned char ucKey)
 {
@@ -157,6 +181,9 @@ void Console::Draw(void)
 
 void Console::ConsoleCmd(CON_CMD eCmd)
 {
+	// Any command turns of autocomplete
+	m_bAutoCompleteOn = false;
+
 	switch(eCmd) {
 		case CONCMD_TOGGLE:			
 			glPopAttrib();
@@ -167,6 +194,7 @@ void Console::ConsoleCmd(CON_CMD eCmd)
 			break;
 
 		case CONCMD_RUN:			
+			m_bAutoCompleteOn = false;
 			Execute(m_aCommand);
 			for(int i=0;i<TEXT_MAX_LENGHT;i++)					//wipe the command buffer
 				m_aCommand[i]=' ';				
@@ -286,19 +314,6 @@ void Console::Update(void)
 			kKey.m_iKey = 0;
 		}
 
-		
-	/*
-	if(m_pkInput->Pressed(KEY_PAGEUP))		eCmd = CONCMD_SCROLLUP;
-	if(m_pkInput->Pressed(KEY_PAGEDOWN))	eCmd = CONCMD_SCROLLDOWN;
-	if(m_pkInput->Pressed(KEY_UP))			eCmd = CONCMD_HISTORYUP;
-	if(m_pkInput->Pressed(KEY_DOWN))			eCmd = CONCMD_HISTORYDOWN;
-	if(m_pkInput->Pressed(KEY_LEFT))			eCmd = CONCMD_MARKERLEFT;
-	if(m_pkInput->Pressed(KEY_RIGHT))		eCmd = CONCMD_MARKERRIGHT;
-	if(m_pkInput->Pressed(KEY_INSERT))		eCmd = CONCMD_TOGGLEINSERT;
-	if(m_pkInput->Pressed(KEY_TAB))			eCmd = CONCMD_TOGGLE;
-	if(m_pkInput->Pressed(KEY_RETURN))		eCmd = CONCMD_RUN;
-	*/
-
 		//if a function-key was pressed, execute function and return
 		if(eCmd != CONCMD_NONE)
 		{
@@ -370,56 +385,6 @@ void Console::Update(void)
 			s_fLastRepeatTime = m_pkEngine->GetEngineTime();		//GetGameTime();
 		}			
 	}
-
-/*		// Registrera senast knappnedtryck.
-		if(iKeyPressed != -1 &&  !(iKeyPressed == KEY_LSHIFT || iKeyPressed == KEY_RSHIFT))
-		{
-	
-			// Formatera bokstaven.
-			FormatKey(iKeyPressed);
-
-			if(s_iLastKeyPressed != iKeyPressed)
-				s_bKeyrepeatActivated = false;
-
-			s_iLastKeyPressed = iKeyPressed; // registrera
-			InsertKey(s_iLastKeyPressed);
-		}
-		
-		// Kolla om den sist nedtryckta knappen fortfarande är nedtryckt...
-		if(m_pkInput->Pressed((Buttons) s_iLastKeyPressed))
-		{
-			float fCurrTime = m_pkEngine->GetEngineTime();	//GetGameTime();
-
-			const float REPEAT_DELAY = 0.50f, REPEAT_RATE = 0.05f;
-
-			if(s_bKeyrepeatActivated == false)
-			{
-				// Är det dags att aktivera Key Repeat?
-				if(fCurrTime - s_fKeyrepeatCheckTime > REPEAT_DELAY)
-				{
-					s_bKeyrepeatActivated = true;
-					s_fKeyrepeatCheckTime = fCurrTime;
-					s_fLastRepeatTime = fCurrTime;
-				}
-			}
-			else
-			{
-				// Är det dags att skriva ett nytt tecken?
-				if(fCurrTime - s_fLastRepeatTime > REPEAT_RATE)
-				{
-					InsertKey(s_iLastKeyPressed);
-					s_fLastRepeatTime = fCurrTime;
-				}
-			}
-		}
-		// ... i annat fall nollställ statiska variabler.
-		else
-		{
-			s_bKeyrepeatActivated = false;
-			s_fKeyrepeatCheckTime = m_pkEngine->GetEngineTime();	//GetGameTime();
-			s_fLastRepeatTime = m_pkEngine->GetEngineTime();		//GetGameTime();
-		}	
-	}*/	
 }
 
 
@@ -466,26 +431,6 @@ bool Console::Execute(char* aText)
 	return true;
 }
 
-/*void Console::FormatKey(int& r_iKey)
-{
-	if(m_pkInput->Pressed(KEY_RSHIFT) || m_pkInput->Pressed(KEY_LSHIFT)) 
-	{
-		cout << "Formating Key" << endl;
-		if(r_iKey>96 && r_iKey<123){
-			r_iKey-=32;
-		}
-		if(r_iKey=='-'){
-			r_iKey='_';
-		}
-		if(r_iKey=='.'){
-			r_iKey=':';
-		}					
-		if(r_iKey=='7'){
-			r_iKey='/';
-		}
-	}
-}*/
-
 char Console::FormatKey(QueuedKeyInfo& kKey)
 {
 	if(kKey.m_iModifiers & MODIFIER_SHIFT) 
@@ -529,212 +474,3 @@ void Console::Toggle()
 		m_pkInput->AddActiveInputHandle("Application");			
 	}
 }
-
-
-
-	
-/*	
-	while(SDL_PollEvent(&m_kEvent)) {
-		
-		//press keys
-		if(m_kEvent.type==SDL_KEYDOWN){
-
-			if(m_kEvent.key.keysym.sym==SDLK_TAB) {
-				glPopAttrib();
-//				m_pkEngine->m_iState=state_normal;
-//				m_pkEngine->m_bClientMode=false;
-				m_pkEngine->m_bConsoleMode=false;
-
-				return;
-			}
-
-			if(m_kEvent.key.keysym.sym==SDLK_RETURN){
-				Execute(m_aCommand);
-				for(int i=0;i<TEXT_MAX_LENGHT;i++)					//wipe the command buffer
-					m_aCommand[i]=' ';				
-				strcpy(m_aCommand,"");
-				break;
-			}
-			if(m_kEvent.key.keysym.sym==SDLK_BACKSPACE){
-				m_aCommand[strlen(m_aCommand)-1]='\0';
-				break;
-			}
-						
-			if(m_kEvent.key.keysym.sym==SDLK_LSHIFT || m_kEvent.key.keysym.sym==SDLK_RSHIFT){
-				m_bShift=true;
-				break;
-			}
-
-			
-			//type text
-			if(strlen(m_aCommand)<COMMAND_LENGHT) {
-				int code=m_kEvent.key.keysym.sym;
-				
-				//shift?
-				if(m_bShift) {
-					if(code>96 && code<123){
-						code-=32;
-						strncat(m_aCommand,(char*)&(code),1);
-						break;
-					}
-					if(code=='-'){
-						code='_';
-						strncat(m_aCommand,(char*)&(code),1);
-						break;
-					}
-					if(code=='.'){
-						code=':';
-						strncat(m_aCommand,(char*)&(code),1);
-						break;
-					}					
-					if(code=='7'){
-						code='/';
-						strncat(m_aCommand,(char*)&(code),1);
-						break;
-					}					
-				}
-				strncat(m_aCommand,(char*)&(code),1);
-			}
-		}
-		
-		//release keys
-		if(m_kEvent.type==SDL_KEYUP){									
-			if(m_kEvent.key.keysym.sym==SDLK_LSHIFT || m_kEvent.key.keysym.sym==SDLK_RSHIFT){
-				m_bShift=false;
-				break;
-			}		
-		}
-	}
-}
-
-*/
-
-
-
-/*void Console::Update(void) {
-	m_pkRender->DrawConsole(m_aCommand,&m_kText,m_nStartLine);	
-
-	// Scroll console text
-	static float PREVTIME = m_pkEngine->GetGameTime();
-	static float TIME = 0.10f;
-	float fCurrTime = m_pkEngine->GetGameTime();
-
-	if(m_pkEngine->m_bConsoleMode)
-	{
-		bool bUpdate = ((fCurrTime-PREVTIME) > TIME);
-
-		if(m_pkInput->Pressed(KEY_PAGEUP))
-		{
-			if(m_nStartLine < m_kText.size() && bUpdate)
-			{
-				m_nStartLine++;
-				PREVTIME = fCurrTime;
-			}
-			m_pkInput->GetQueuedKey(); // remove latest
-			return;
-		}
-		if(m_pkInput->Pressed(KEY_PAGEDOWN) && bUpdate)
-		{
-			if(m_nStartLine > 0)
-			{
-				m_nStartLine--;
-				PREVTIME = fCurrTime;
-			}
-			m_pkInput->GetQueuedKey(); // remove latest
-			return;
-		}
-	}
-	
-	int iKey;
-	while(m_pkInput->SizeOfQueue() > 0) {
-		iKey = m_pkInput->GetQueuedKey();
-		
-		//press keys
-		if(iKey == KEY_TAB) {
-			glPopAttrib();
-			
-			m_pkEngine->m_bConsoleMode=false;
-			m_pkInput->Reset();
-				
-			return;
-		}
-
-
-		if(iKey==SDLK_RETURN){
-			Execute(m_aCommand);
-			for(int i=0;i<TEXT_MAX_LENGHT;i++)					//wipe the command buffer
-				m_aCommand[i]=' ';				
-			strcpy(m_aCommand,"");
-			continue;
-		}
-		if(iKey==SDLK_BACKSPACE){
-			m_aCommand[strlen(m_aCommand)-1]='\0';
-			continue;
-		}
-					
-		if(m_pkInput->Pressed(KEY_RSHIFT) || m_pkInput->Pressed(KEY_LSHIFT)){
-			m_bShift=true;
-		}else{
-			m_bShift=false;
-		}
-
-		if(iKey==KEY_DOWN)
-		{
-			if(m_nLastCommand > 0)
-			{
-				m_nLastCommand--;
-				strcpy(m_aCommand, m_kCommandHistory[m_nLastCommand].c_str());	
-			}
-			continue;
-		}
-		if(iKey==KEY_UP)
-		{
-			if(m_nLastCommand+1 < m_kCommandHistory.size())
-			{
-				m_nLastCommand++;
-				strcpy(m_aCommand, m_kCommandHistory[m_nLastCommand].c_str());		
-			}
-			else
-			{
-				int last = m_kCommandHistory.size()-1;
-				if(last >= 0)
-					strcpy(m_aCommand, m_kCommandHistory[last].c_str());		
-			}
-			continue;
-		}
-		
-//		if(iKey==RSHIFT || iKey==LSHIFT)
-//			continue;
-		
-		
-		//type text
-		if(strlen(m_aCommand)<COMMAND_LENGHT) {
-			int code=iKey;
-			
-			//shift?
-			if(m_bShift) {
-				if(code>96 && code<123){
-					code-=32;
-					strncat(m_aCommand,(char*)&(code),1);
-					break;
-				}
-				if(code=='-'){
-					code='_';
-					strncat(m_aCommand,(char*)&(code),1);
-					break;
-				}
-				if(code=='.'){
-					code=':';
-					strncat(m_aCommand,(char*)&(code),1);
-					break;
-				}					
-				if(code=='7'){
-					code='/';
-					strncat(m_aCommand,(char*)&(code),1);
-					break;
-				}					
-			}else
-				strncat(m_aCommand,(char*)&(code),1);
-		}
-	}		
-}*/
