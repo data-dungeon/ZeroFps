@@ -9,7 +9,7 @@
 HeightMap::HeightMap(FileIo* pkFile) 
  : ZFObject("HeightMap") {
 	m_pkFile=pkFile;
-	m_iHmSize=500;	
+	m_iHmSize=100;	
 //	m_iBoxTresh=2;
 //	m_iMaxSteps=5;
 	m_iError=10;

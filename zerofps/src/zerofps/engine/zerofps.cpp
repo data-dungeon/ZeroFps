@@ -395,10 +395,11 @@ void ZeroFps::RunCommand(int cmdid, const CmdArgument* kCommand)
 		case FID_CONNECT:
 			if(kCommand->m_kSplitCommand.size() <= 1)
 				return;
+
 			m_pkConsole->Printf("Connect to %s", kCommand->m_kSplitCommand[1].c_str());
-			//m_pkNetWork->ClientStart(kCommand->m_kSplitCommand[1].c_str());
+			m_pkNetWork->ClientStart(kCommand->m_kSplitCommand[1].c_str());
 			//m_pkNetWork->ClientStart("192.168.0.7:4242"); // hugo
-			m_pkNetWork->ClientStart("192.168.0.145:4242"); // hugo
+			//m_pkNetWork->ClientStart("192.168.0.145:4242"); // hugo
 			//m_pkNetWork->ClientStart("192.168.0.111:4242");	// me
 			m_pkConsole->Printf("FID_CONNECT");
 			m_pkApp->OnClientStart();
