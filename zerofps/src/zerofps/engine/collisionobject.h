@@ -13,6 +13,7 @@ class ENGINE_API CollisionObject {
 		// pkPos   : pointer where the collision funktion stores the exact collision point
 		// bContinue:  if true and the object could not handle the collision sen collision test to kOther
 		virtual bool Collide(CollisionObject *kOther,Vector3 *pkPos,bool bContinue)=0;
+		virtual float GetBoundingRadius()=0;
 };
 
 #endif

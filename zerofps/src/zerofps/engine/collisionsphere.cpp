@@ -65,4 +65,3 @@ bool CollisionSphere::CollidePoint(CollisionPoint *kCp,Vector3 *pkPos) {
 
 
 
-

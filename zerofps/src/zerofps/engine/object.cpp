@@ -1,4 +1,5 @@
 #include "object.h"
+#include "collisionproperty.h"
 
 Object::Object() {
 //	m_bStatic=false;
@@ -7,6 +8,9 @@ Object::Object() {
 	m_kRot=Vector3(0,0,0);
 	m_kVel=Vector3(0,0,0);
 	m_iType=0;
+	
+	m_pkParent=NULL;
+	m_akChilds.clear();
 }
 
 
@@ -105,6 +109,12 @@ void Object::Update(){
 }
 
 void Object::Update(int iType,int iSide){
+	//first update all childs
+	for(list<Object*>::iterator it=m_akChilds.begin();it!=m_akChilds.end();it++) {
+		(*it)->Update(iType,iSide);
+	}		
+	
+	//thenupdate propertys
 	for(list<Property*>::iterator it=m_akPropertys.begin();it!=m_akPropertys.end();it++) {
 		if((*it)->m_iType == iType){
 			if((*it)->m_iSide == iSide){
@@ -230,5 +240,65 @@ bool Object::NeedToPack()
 }
 
 
+void Object::AddChild(Object* pkObject) 
+{
+	//check if this child is already added
+	if(HasChild(pkObject))
+		return;
+	
+	//add child to list
+	m_akChilds.push_back(pkObject);	
+	//tell the child to set its new parent
+	pkObject->SetParent(this);
+}
+
+void Object::RemoveChild(Object* pkObject)
+{
+	//remove child from list
+	m_akChilds.remove(pkObject);
+	//tell child to set its parent to null
+	pkObject->SetParent(NULL);
+}
+
+void Object::SetParent(Object* pkObject) 
+{
+	//dont have a parent
+	if(pkObject==NULL){
+		m_pkParent=NULL;
+		return;
+	}
+	
+	//dont do anything if this parent is already set
+	if(m_pkParent==pkObject)
+		return;
+	
+	//tell the curent parent to remove this child
+	if(m_pkParent!=NULL){
+		m_pkParent->RemoveChild(this);	
+	}
+	
+	//set parent
+	m_pkParent=pkObject;
+	//tell parent to add this child
+	pkObject->AddChild(this);
+}
+
+bool Object::HasChild(Object* pkObject)
+{
+	//check if this object is in the child list
+	for(list<Object*>::iterator it=m_akChilds.begin();it!=m_akChilds.end();it++) {
+		if((*it)==pkObject) return true;
+	}
+	
+	return false;
+}
 
 
+float Object::GetBoundingRadius()
+{
+	Property* pr=GetProperty("CollisionProperty");
+	if(pr==NULL)
+		return 1;
+
+	return (static_cast<CollisionProperty*>(pr))->GetBoundingRadius();
+}

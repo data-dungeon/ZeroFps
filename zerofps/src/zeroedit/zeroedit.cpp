@@ -9,6 +9,9 @@ ZeroEdit::ZeroEdit(char* aName,int iWidth,int iHeight,int iDepth): Application(a
 
 void ZeroEdit::OnInit(void) 
 {
+	m_pkMap=new HeightMap();	
+	HeightMapObject *m_pkHeightMapObject=new HeightMapObject(m_pkMap);	
+	
 	//register commands
 	g_ZFObjSys.Register_Cmd("loadmap",FID_LOADMAP,this);	
 	g_ZFObjSys.Register_Cmd("loadimagemap",FID_LOADIMAGEMAP,this);		
@@ -21,28 +24,36 @@ void ZeroEdit::OnInit(void)
 	pkConsole->Printf("--------------------------------");
 
 	//init
-	m_pkCamera=new Camera(Vector3(0,10,0),Vector3(0,0,0),85,1.333,0.25,400);	
+	m_pkCamera=new Camera(Vector3(0,10,0),Vector3(0,0,0),85,1.333,0.25,250);	
 
 	glEnable(GL_LIGHTING);
 	
-	m_iMode=FLATTEN;	
+
 	m_kDrawPos.Set(0,0,0);
+	pkObjectMan->SetNoUpdate(true);
+	
+	m_pkCurentParent=m_pkHeightMapObject;
+	m_pkCurentChild=NULL;
+	
+	m_iMode=FLATTEN;		
+	pkFps->m_pkCmd->Add(&m_iMode,"g_mode",type_int);		
+	
+	m_iTexture=1;	
+	pkFps->m_pkCmd->Add(&m_iTexture,"g_texture",type_int);		
+	
 	m_fPointDistance=10;
-	pkFps->m_pkCmd->Add(&m_fPointDistance,"g_fPointDistance",type_float);	
+	pkFps->m_pkCmd->Add(&m_fPointDistance,"g_PointDistance",type_float);	
 	
 	//Heightmap		
-	m_pkMap=new HeightMap();
-
 	m_pkMap->GenerateNormals(); 
 	m_pkMap->GenerateTextures();
 
-	HeightMapObject *hm=new HeightMapObject(m_pkMap);
-	hm->GetPos().Set(0,-4,0);			
-	pkObjectMan->Add(hm);	
-	pkCollisionMan->Add(hm);
+	m_pkHeightMapObject->GetPos().Set(0,-4,0);			
+	pkObjectMan->Add(m_pkHeightMapObject);	
+	pkCollisionMan->Add(m_pkHeightMapObject);
 
 
-//default light
+	//default light
 	LightSource *sol=new LightSource;	
 	Vector3 *solrot=new Vector3(.4,.4,.2);	
 	Vector3 *solpos=new Vector3(1000,1000,1000);
@@ -68,18 +79,8 @@ void ZeroEdit::OnIdle(void)
 
 	pkObjectMan->Update(PROPERTY_TYPE_RENDER,PROPERTY_SIDE_CLIENT,true);
 		
-	float degtorad=57.3248;
-	Vector3 kPos=pkFps->GetCam()->GetPos();
-	Vector3 kHead=pkFps->GetCam()->GetRot();
-	m_fPointDistance=-(sin((kHead.x-90)/degtorad)/(sin((180-90-(kHead.x-90))/degtorad)/kPos.y));
-	m_kDrawPos.Set(pkFps->GetCam()->GetPos().x,0,pkFps->GetCam()->GetPos().z);	
-	m_kDrawPos.x+=cos((pkFps->GetCam()->GetRot().y-90)/degtorad)*m_fPointDistance;			
-	m_kDrawPos.z+=sin((pkFps->GetCam()->GetRot().y-90)/degtorad)*m_fPointDistance;			
-	m_kDrawPos.y = 1+m_pkMap->Height(m_kDrawPos.x,m_kDrawPos.z);
-		
-	glEnable(GL_ALPHA_TEST);
-	glAlphaFunc(GL_GREATER,0.3);
-		pkRender->DrawBillboard(pkFps->GetCam()->GetModelMatrix(),m_kDrawPos,1,pkTexMan->Load("file:../data/textures/pointer.tga",0));	
+	SetPointer();
+	DrawMarkers();
 
 	
 	Input();
@@ -88,6 +89,24 @@ void ZeroEdit::OnIdle(void)
 
 void ZeroEdit::OnHud(void) 
 {
+	glPushAttrib(GL_LIGHTING_BIT);
+	
+	glDisable(GL_LIGHTING);
+
+	pkRender->SetFont("file:../data/textures/text/console.tga");
+	//pkRender->Print(Vector3(-1.1,.85,-1),Vector3(0,0,0),Vector3(0.06,0.06,0.06),"FPS:");	
+	//pkRender->Print(Vector3(-.9,.85,-1),Vector3(0,0,0),Vector3(0.06,0.06,0.06),fps);
+
+	pkFps->DevPrintf("Fps: %d",pkFps->m_iFps);
+
+	glAlphaFunc(GL_GREATER,0.3);
+	glEnable(GL_ALPHA_TEST);
+
+	pkRender->Quad(Vector3(.8,.8,-1),Vector3(0,0,pkFps->GetCam()->GetRot().y),Vector3(0.2,0.2,0.2),pkTexMan->Load("file:../data/textures/compas.tga",0));
+	
+	glDisable(GL_ALPHA_TEST);
+	
+	glPopAttrib();
 
 
 }
@@ -194,7 +213,6 @@ void ZeroEdit::Input()
 
 	switch(m_iMode){
 		case FLATTEN:
-		
 			if(pkInput->Pressed(MOUSELEFT))
 			{
 				float height=m_pkMap->GetVert(int(m_kDrawPos.x),int(m_kDrawPos.z))->height;
@@ -211,12 +229,39 @@ void ZeroEdit::Input()
 				m_pkMap->GenerateNormals((int)m_kDrawPos.x-4,(int)m_kDrawPos.z-4,8,8);
 				
 			}
+			break;
+			
+		case TEXTURE:
+			if(pkInput->Pressed(MOUSELEFT))
+			{
+				for(int xp=-2;xp<3;xp++){
+					for(int yp=-2;yp<3;yp++){
+						m_pkMap->GetVert(int(m_kDrawPos.x+xp),int(m_kDrawPos.z+yp))->texture=m_iTexture;
+						m_pkMap->GetVert(int(m_kDrawPos.x+xp),int(m_kDrawPos.z+yp))->color=Vector3(.6,.45,0.3);		
+					}
+				}
+			}
+			break;
+		case ADDOBJECT:
+			if(pkInput->Pressed(MOUSELEFT))
+			{
+				Object *object = new BunnyObject();
+				object->GetPos()=m_kDrawPos;
+				pkObjectMan->Add(object);
+				m_pkCurentChild=object;
+//				pkCollisionMan->Add(object);
+	
+			}
+			break;
+			
 	}
 }
 
 
 void ZeroEdit::CreateNew(int iSize) 
 {
+	pkObjectMan->Clear();
+
 	m_pkMap->Create(iSize);
 	m_pkMap->GenerateNormals(); 
 	m_pkMap->GenerateTextures();
@@ -225,9 +270,38 @@ void ZeroEdit::CreateNew(int iSize)
 
 
 
+void ZeroEdit::SetPointer()
+{
+//	float degtorad=57.3248;
+	Vector3 kPos=pkFps->GetCam()->GetPos();
+	Vector3 kHead=pkFps->GetCam()->GetRot();
+	
+	m_fPointDistance=-(sin((kHead.x-90)/degtorad)/(sin((180-90-(kHead.x-90))/degtorad)/kPos.y));
+	m_kDrawPos.Set(pkFps->GetCam()->GetPos().x,0,pkFps->GetCam()->GetPos().z);	
+	m_kDrawPos.x+=cos((pkFps->GetCam()->GetRot().y-90)/degtorad)*m_fPointDistance;			
+	m_kDrawPos.z+=sin((pkFps->GetCam()->GetRot().y-90)/degtorad)*m_fPointDistance;			
+	m_kDrawPos.y = 1+m_pkMap->Height(m_kDrawPos.x,m_kDrawPos.z);
+}
 
 
+void ZeroEdit::DrawMarkers()
+{
+	glEnable(GL_ALPHA_TEST);
+	glAlphaFunc(GL_GREATER,0.3);
+	
+	pkRender->DrawBillboard(pkFps->GetCam()->GetModelMatrix(),m_kDrawPos,1,pkTexMan->Load("file:../data/textures/pointer.tga",T_NOMIPMAPPING));	
+	
+	if(m_pkCurentParent!=NULL)
+		pkRender->DrawBillboard(pkFps->GetCam()->GetModelMatrix(),m_pkCurentParent->GetPos(),m_pkCurentParent->GetBoundingRadius()*2,pkTexMan->Load("file:../data/textures/parentmarker.tga",T_NOMIPMAPPING));	
+	
+	if(m_pkCurentChild!=NULL){
+		float size=m_pkCurentChild->GetBoundingRadius();
+		if(size < .5)
+			size=.5;
+		pkRender->DrawBillboard(pkFps->GetCam()->GetModelMatrix(),m_pkCurentChild->GetPos(),size*2,pkTexMan->Load("file:../data/textures/childmarker.tga",T_NOMIPMAPPING));	
+	cout<<"SIZE"<<m_pkCurentChild->GetBoundingRadius()<<endl;	
+	}
 
-
+}
 
 

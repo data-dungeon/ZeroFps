@@ -32,6 +32,7 @@ class ENGINE_API CollisionProperty:public Property{
 
 		
 		void Update();
+		float GetBoundingRadius() {return m_pkColObject->GetBoundingRadius();};
 
 };
 

@@ -22,14 +22,18 @@ class ENGINE_API Object {
 		Vector3 m_kPos;
 		Vector3 m_kRot;
 		Vector3 m_kVel;
-//		bool m_bStatic;	
-//		bool m_
 		
 		int m_iType;
 		
 		list<Property*> m_akPropertys;
 		ObjectManager* m_pkObjectMan; 
+	
+
+		list<Object*> m_akChilds;
+		Object* m_pkParent;	
+	
 	public:
+
 		int		iNetWorkID;		// ID used by network state code.
 
 		Object();		
@@ -40,12 +44,17 @@ class ENGINE_API Object {
 		Property* GetProperty(char* acName);
 //		void SetPropertyFactory(PropertyFactory* pkPropFactory) { m_pkPropFactory = pkPropFactory; }
 		void AddProperty(Property* pkNewProperty);
-		void AddProperty(char* acName);
+		void AddProperty(char* acName);		
 		Property* AddProxyProperty(char* acName);
 		bool RemoveProperty(char* acName);
 		void Update();
 		void Update(int iType,int iSide);		
 		bool Update(char* acName);
+		
+		void AddChild(Object* pkObject);
+		void RemoveChild(Object* pkObject);
+		void SetParent(Object* pkObject);				
+		bool HasChild(Object* pkObject);
 		
 		bool NeedToPack();				// Returns true if there is any netactive properys in object
 		void PackTo(NetPacket* pkNetPacket);
@@ -58,6 +67,8 @@ class ENGINE_API Object {
 //		inline bool &GetStatic(){return m_bStatic;};		
 		inline void SetObjectMan(ObjectManager* pkObjectMan) {m_pkObjectMan=pkObjectMan;};		
 		inline ObjectManager *GetObjectMan() {return m_pkObjectMan;};				
+		
+		float GetBoundingRadius();
 		
 		virtual void HandleCollision(Object* pkObject,Vector3 kPos,bool bContinue);
 		virtual bool Save(void *pkData,int iSize);

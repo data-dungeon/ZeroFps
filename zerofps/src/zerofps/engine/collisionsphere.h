@@ -21,6 +21,8 @@ class ENGINE_API CollisionSphere:public CollisionObject{
 		bool CollideSphere(CollisionSphere *kCs,Vector3 *pkPos);
 		bool CollidePoint(CollisionPoint *kCp,Vector3 *pkPos);
 
+		float GetBoundingRadius() {return *m_fRadius;};
+
 };
 
 #endif

@@ -343,8 +343,10 @@ bool Render::CubeInFrustum( float x, float y, float z, float sizex,float sizey,f
 }
 */
 
-void Render::DrawBillboard(Matrix4 kModelMatrix,Vector3 kPos,int iSize,int iTexture){
+void Render::DrawBillboard(Matrix4 kModelMatrix,Vector3 kPos,float iSize,int iTexture){
 //	kPos=kPos/2;
+	
+	iSize/=2;
 	
 	Vector3 x;
 	Vector3 y;

@@ -14,14 +14,14 @@
 //#include "ballobject.h"
 //#include "playerballobject.h"
 //#include "playerobject.h"
-//#include "bunnyobject.h"
+#include "../test/bunnyobject.h"
 
 enum EDIT_MODES{
-	TEXTURE,
-	LOWER,
-	RAISE,
-	FLATTEN,
-	ADDOBJECT
+	TEXTURE=1,
+	LOWER=2,
+	RAISE=3,
+	FLATTEN=4,
+	ADDOBJECT=5
 };
 
 class ZeroEdit :public Application {
@@ -37,12 +37,16 @@ class ZeroEdit :public Application {
 		Camera *m_pkCamera;
 
 		HeightMap *m_pkMap;
+		HeightMapObject *m_pkHeightMapObject;
 		
 		int m_iMode;
 
+		int m_iTexture;
 		Vector3 m_kDrawPos;
 		float m_fPointDistance;
 
+		Object* m_pkCurentParent;
+		Object* m_pkCurentChild;
 
 	public:
 		ZeroEdit(char* aName,int iWidth,int iHeight,int iDepth);
@@ -56,6 +60,9 @@ class ZeroEdit :public Application {
 		void RunCommand(int cmdid, const CmdArgument* kCommand);
 		
 		void CreateNew(int iSize);
+		void SetPointer();	
+		void DrawMarkers();
+	
 };
 
 

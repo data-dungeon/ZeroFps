@@ -112,8 +112,8 @@ void Test::OnInit(void) {
 
 	glEnable(GL_LIGHTING );
 	
-	cam1=new Camera(Vector3(5,50,5),Vector3(0,0,0),85,1.333,0.25,400);	
-	cam2=new Camera(Vector3(5,50,5),Vector3(0,0,0),85,1.333,0.25,400);	
+	cam1=new Camera(Vector3(5,50,5),Vector3(0,0,0),85,1.333,0.25,250);	
+	cam2=new Camera(Vector3(5,50,5),Vector3(0,0,0),85,1.333,0.25,250);	
 	cam2->SetViewPort(0.7,0.7,0.29,0.29);
 
 	//camera rabit

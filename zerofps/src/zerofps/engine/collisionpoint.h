@@ -17,6 +17,7 @@ class ENGINE_API CollisionPoint:public CollisionObject{
 		bool Collide(CollisionObject *kOther,Vector3 *pkPos,bool bContinue);		
 		bool CollidePoint(CollisionPoint *kCp,Vector3 *pkPos);
 
+		float GetBoundingRadius() {return 0;};
 };
 
 #endif

@@ -7,12 +7,20 @@ ObjectManager::ObjectManager()
 : ZFObject("ObjectManager") 
 {
 	iNextObjectID = 0;
+	m_bNoUpdate=false;
 }
 
 void ObjectManager::Add(Object* pkObject) {
 	pkObject->iNetWorkID = iNextObjectID++;
 	pkObject->SetObjectMan(this);	
 	m_akObjects.push_back(pkObject);
+}
+
+void ObjectManager::Clear()
+{
+	for(list<Object*>::iterator it=m_akObjects.begin();it!=m_akObjects.end();it++) {
+		Delete(*it);
+	}
 }
 
 void ObjectManager::Delete(Object* pkObject) {
@@ -29,6 +37,9 @@ void ObjectManager::Remove(Object* pkObject) {
 
 
 void ObjectManager::Update(){
+	if(m_bNoUpdate)
+		return;
+	
 	UpdateDelete();
 
 	for(list<Object*>::iterator it=m_akObjects.begin();it!=m_akObjects.end();it++) {
@@ -164,6 +175,10 @@ void ObjectManager::GetPropertys(int iType,int iSide)
 
 void ObjectManager::Update(int iType,int iSide,bool bSort)
 {
+	if(m_bNoUpdate)
+		if(iType!=PROPERTY_TYPE_RENDER)
+			return;
+
 	GetPropertys(iType,iSide);
 	
 	if(bSort){

@@ -4,6 +4,7 @@
 #include "../basic/basic.pkg"
 #include "property.h"
 #include <iostream>
+#include "../render/render.pkg"
 
 #include "GL/glut.h"
 
@@ -12,6 +13,9 @@ using namespace std;
 
 
 class ENGINE_API ModelProperty: public Property {
+	private:
+		Frustum *m_pkFrustum;
+
 	public:
 		float	m_fRadius;
 		int		m_iSlices;
