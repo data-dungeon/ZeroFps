@@ -10,6 +10,7 @@ P_DMGun::P_DMGun()
 	
 	bNetwork = true;
 	
+	m_iSortPlace	=	10;
 	
 	m_fTimeBulletFired = 			0;
 	m_fTimeFired = 					0;
