@@ -62,8 +62,7 @@ void Game::OnIdle(void) {
 
 	pkFps->m_bGuiMode = true;
 	pkFps->ToggleGui();
-	//pkGui->ShowCursor(false);
-
+	
 	switch(m_iGameState)
 	{
 		case GAME_STATE_MENU:
@@ -73,8 +72,7 @@ void Game::OnIdle(void) {
 			
 			pkObjectMan->Update(PROPERTY_TYPE_RENDER, PROPERTY_SIDE_CLIENT, true);
 			pkFps->DevPrintf("Active Propertys: %d",pkObjectMan->GetActivePropertys());
-		
-			
+	
 			break;
 		}
 	
@@ -138,16 +136,20 @@ void Game::OnHud(void)
 			const int max_width = 100;
 			float fMod = (float) pkGuiMan->Wnd("helthbar_bk")->GetScreenRect().Width() / max_width;
 
-			pkGuiMan->Wnd("helthbar")->Resize((int)(fMod*(*m_pfPlayerHealth)),10);
-			pkGuiMan->Wnd("armorbar")->Resize((int)(fMod*(*m_pfPlayerArmor)),10);
+			if(*m_pfPlayerHealth >= 0)
+				pkGuiMan->Wnd("helthbar")->Resize((int)(fMod*(*m_pfPlayerHealth)),10);
+			if(*m_pfPlayerArmor >= 0)
+				pkGuiMan->Wnd("armorbar")->Resize((int)(fMod*(*m_pfPlayerArmor)),10);
+
+			pkFps->m_bGuiMode = false;
+			pkFps->ToggleGui();
 		}
 	}
 
 	glEnable(GL_LIGHTING);		
 	glPopAttrib();
 
-	pkFps->m_bGuiMode = false;
-	pkFps->ToggleGui();
+
 }
 
 
