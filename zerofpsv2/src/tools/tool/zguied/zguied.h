@@ -118,10 +118,12 @@ private:
 extern HWND GetCtrl(int iID, bool bRightPanel);
 extern bool TextboxFocus();
 extern string GetSelItemText(int iID, bool bRightPanel);
+void ActivateHelp(bool bActivate);
 extern HWND g_kDlgBoxRight;
 extern HWND g_kDlgBoxBottom;
 extern HINSTANCE hInstance;
 extern HBITMAP preview_bitmap;
 extern HWND g_kFontDlg;
+extern vector<HWND> g_vkToolTips;
 
 #endif // #ifndef _ZGUIED_H_

@@ -1015,19 +1015,17 @@ void ZGuiEd::AddSampleCtrlItem(ZGuiWnd* pkWnd)
 		pkTreebox = (ZGuiTreebox*) pkWnd;
 
 		ClearListbox((char*)pkWnd->GetName());
-		AddTreeItem((char*)pkWnd->GetName(), "SampleIDTreebox", NULL, "Sample treebox", 1, 2);
-		AddTreeItem((char*)pkWnd->GetName(), "SampleIDTreebox1", NULL, "Sample treebox", 2, 1);
-		AddTreeItem((char*)pkWnd->GetName(), "SampleIDTreebox2", NULL, "Sample treebox", 0, 1);
-		AddTreeItem((char*)pkWnd->GetName(), "SampleIDTreebox2", "SampleIDTreebox", "Sample treebox", 0, 1);
 		
-		pkTreebox->GetScrollbar(true)->Show();
-		pkTreebox->GetScrollbar(true)->GetArrowButton(true)->Show();
-		pkTreebox->GetScrollbar(true)->GetArrowButton(false)->Show();
-		pkTreebox->GetScrollbar(false)->GetArrowButton(true)->Show();
-		pkTreebox->GetScrollbar(false)->GetArrowButton(false)->Show();
-		pkTreebox->GetScrollbar(true)->GetButton()->Show();
-		pkTreebox->GetScrollbar(true)->GetButton()->Resize(-1,16,false);
-		pkTreebox->GetScrollbar(true)->GetButton()->Resize(16,-1,false);		
+		AddTreeItem((char*)pkWnd->GetName(), "SampleIDTreebox", NULL, "Sample treebox Sample treebox Sample treebox Sample treebox", 1, 2);
+		AddTreeItem((char*)pkWnd->GetName(), "SampleIDTreebox1", NULL, "Sample treebox Sample treebox Sample treebox Sample treebox", 2, 1);
+
+		for(int i=0; i<20; i++)
+		{
+			char szNameID[50];
+			sprintf(szNameID, "SampleIDTreebox%i", i+3);
+			AddTreeItem((char*)pkWnd->GetName(), szNameID, NULL, "Sample treebox Sample treebox Sample treebox Sample treebox", 0, 1);
+		}
+		
 		break;
 	}
 }

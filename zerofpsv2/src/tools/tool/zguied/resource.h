@@ -40,6 +40,7 @@
 #define IDC_VISIBLE_CHECK               1034
 #define IDC_ONLY_OF_WND_TYPE_CB         1035
 #define IDC_BUTTON1                     1036
+#define IDC_SHOW_KEYS_BN                1036
 #define IDC_COPY_WND_BN                 1037
 #define IDC_SELECTFONT_OK_BN            1038
 #define IDC_BRING_TO_FRONT              1039
@@ -75,8 +76,9 @@
 #define IDC_FONT_COLOR_G_EB             1069
 #define IDC_FONT_COLOR_B_EB             1070
 #define IDC_COPY_SKIN                   1071
-#define IDC_COPY_SKIN2                  1072
 #define IDC_COPY_ALL_SKINS              1072
+#define IDC_CHECK1                      1073
+#define IDC_ACTIVATE_HELP_CB            1074
 #define ID_SDSD_DSFSD                   40001
 #define ID_SDFSDF_SDF                   40002
 #define ID_SDF_SDF                      40003
@@ -102,7 +104,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        105
 #define _APS_NEXT_COMMAND_VALUE         40022
-#define _APS_NEXT_CONTROL_VALUE         1072
+#define _APS_NEXT_CONTROL_VALUE         1073
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

@@ -33,7 +33,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="engine_debug.lib mcommon_debug.lib sdlmain.lib sdl.lib gui_debug.lib render_debug.lib basic_debug.lib script_debug.lib odbc32.lib odbccp32.lib"
+				AdditionalDependencies="comctl32.lib engine_debug.lib mcommon_debug.lib sdlmain.lib sdl.lib gui_debug.lib render_debug.lib basic_debug.lib script_debug.lib odbc32.lib odbccp32.lib"
 				OutputFile="../../../../bin/zguied_debug.exe"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="../../../../bin"

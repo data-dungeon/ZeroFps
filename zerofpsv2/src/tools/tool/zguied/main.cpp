@@ -8,6 +8,7 @@
 #include "../../../zerofpsv2/engine_systems/script_interfaces/si_gui.h"
 #include <windows.h>
 #include <Commdlg.h>
+#include <commctrl.h>
 
 HBITMAP preview_bitmap;
 
@@ -18,9 +19,13 @@ HWND g_kDlgBoxBottom;
 HWND g_kFontDlg;
 HINSTANCE hInstance = NULL;
 
+vector<HWND> g_vkToolTips;
+
 ZGuiEd g_kZGuiEd("zguied",1024,768,0);
 
+void CreateTooltip (HWND hwnd, char* text);
 void DrawBitmap (HDC hdc, int x, int y, int sw, int sh, HBITMAP hBitmap);
+void ActivateHelp(bool bActivate);
 static bool GUIPROC( ZGuiWnd* win, unsigned int msg, int numparms, void *params ){ return true; };
 
 ZGuiEd::ZGuiEd(char* aName,int iWidth,int iHeight,int iDepth) 
@@ -52,6 +57,11 @@ LRESULT CALLBACK WndProc (HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 int Win32ThreadMain(void *v)
 {
+	INITCOMMONCONTROLSEX iccex; 
+	iccex.dwICC = ICC_WIN95_CLASSES;
+	iccex.dwSize = sizeof(INITCOMMONCONTROLSEX);
+	InitCommonControlsEx(&iccex);
+
 	MSG msg ;
 
 	WNDCLASS wndclass ;
@@ -111,6 +121,172 @@ int Win32ThreadMain(void *v)
 
 	CheckDlgButton(g_kDlgBoxBottom, IDC_SKINTYPE_BACKGROUND_RB, BST_CHECKED);
 
+	CreateTooltip(GetDlgItem(g_kDlgBoxRight, IDC_LOADGUI), 
+		"To open a GUI file, select it from the combobox and press this button\r\n");
+
+	CreateTooltip(GetDlgItem(g_kDlgBoxRight, IDC_SAVE_SCRIPT), 
+		"To Save a File\r\n\r\n" \
+		"1) Type a filename in the combobox\r\n" \
+		"2) Press this button\r\n" \
+	   "3) Select a path in the listbox that shows up\r\n" \
+		"4) Press the button again to save. Or press Esc to cancel.\r\n" \
+		"(When you save a backup file will be created with the same name but with another extension (*.bak%i).");
+
+	CreateTooltip(GetDlgItem(g_kDlgBoxRight, IDC_SET_TEXTURE_BN), 
+		"Press this button to change texture on the selected element in the SkinList.\r\n\r\n" \
+		"You must first select a element in the SkinList. Select one of the border " \
+		"buttons if you want to change image of the border.");
+
+	CreateTooltip(GetDlgItem(g_kDlgBoxRight, IDC_REMOVE_TEXTURE_BN), 
+		"Press this button to remove texture (only use colors) on the selected " \
+		"element in the SkinList.\r\n\r\n" \
+		"You must first select a element in the SkinList. Select one of the border " \
+		"buttons if you want to change image of the border.");
+
+	CreateTooltip(GetDlgItem(g_kDlgBoxRight, IDC_RESIZE_TO_IMAGE), 
+		"Press this button to resize selected widget to same size as background image.");
+
+	CreateTooltip(GetDlgItem(g_kDlgBoxBottom, IDC_SKINELEMENTS_LIST), "Skin List\r\n\r\n" \
+		"Select the element of the widget that you want to change the appearance of.");
+
+	CreateTooltip(GetDlgItem(g_kDlgBoxRight, IDC_TEXTURE_LIST), 
+		"Texture List\r\n\r\nDouble click on folders " \
+		"to open them. Double click on \"..\" to go to previus folder.\r\n\r\n" \
+		"It list compatible image files (bmp, tga and jpg). Root path is " \
+		"\"..data/textures/gui\", you cant browse further then that.");
+
+	CreateTooltip(GetDlgItem(g_kDlgBoxRight, IDC_FILELIST_CB), 
+		"File List\r\n\r\n" \
+		"It list all GUI script files (*.Lua) in \"..data/script/gui\".\r\n" \
+		"To save, type in a name here and press the Save button");
+
+	CreateTooltip(GetDlgItem(g_kDlgBoxRight, IDC_FORCE_CAPTURE_TO_SEL_CB), 
+		"Press this button to only affect the current widget.\r\n" \
+		"Use this to prevent clicking on other widgets that are on top.");
+
+	CreateTooltip(GetDlgItem(g_kDlgBoxRight, IDC_ONLY_OF_WND_TYPE_CB), 
+		"Press this button to affect only widgets of the current type.\r\n" \
+		"Select the current type in the Widget Type List.\r\n" \
+		"Use this to prevent clicking on other widgets that are on top.\r\n" \
+		"The Widget List will only display widgets of that type and only " \
+		"widgets of that type will respond to mouse input.");
+
+	CreateTooltip(GetDlgItem(g_kDlgBoxRight, IDC_WINDOW_LIST), 
+		"Widget List\r\n\r\n" \
+		"By selecting a item in the list, you select a widget. Sometimes this is " \
+		"easier then working with mouse.\r\n" \
+		"This is also the only way to select a page in a Tab Control.");
+
+	CreateTooltip(GetDlgItem(g_kDlgBoxRight, IDC_COPY_WND_BN), 
+		"Press this button to create a copy of a widget.\r\n" \
+		"You can also do this by pressing Ctrl + C or by holding Ctrl while clicking on a widget.");
+
+	CreateTooltip(GetDlgItem(g_kDlgBoxRight, IDC_PASTE_WND_BN), 
+		"Press this button to paste a copy of a widget.\r\n" \
+		"You can also do this by pressing Ctrl + V.");
+
+	CreateTooltip(GetDlgItem(g_kDlgBoxBottom, IDC_WINDOW_NAMEID_EB), 
+		"The resource name of the widget.\r\n" \
+		"Use a long name that describe the widget. The name must be unique.\r\n" \
+		"Press Enter to set.");
+
+	CreateTooltip(GetDlgItem(g_kDlgBoxBottom, IDC_TEXTLABEL_EB), 
+		"The text displayed on the widget.\r\n" \
+		"Press Enter to set.");
+
+	CreateTooltip(GetDlgItem(g_kDlgBoxBottom, IDC_PARENT_WINDOW_NAMEID2), 
+		"The resource name of the parent window. You can't change this.");
+
+	CreateTooltip(GetDlgItem(g_kDlgBoxBottom, IDC_WINDOWTYPE_EB), 
+		"The widget type. You can't change this.");
+
+	CreateTooltip(GetDlgItem(g_kDlgBoxBottom, IDC_SKINTYPE_BACKGROUND_RB), 
+		"Select the background element of the widget to be affected.");
+
+	CreateTooltip(GetDlgItem(g_kDlgBoxBottom, IDC_SKINTYPE_HORZBORDER_RB), 
+		"Select the horizontal border element of the widget to be affected.");
+
+	CreateTooltip(GetDlgItem(g_kDlgBoxBottom, IDC_SKINTYPE_VERTBORDER_RB), 
+		"Select the vertical border element of the widget to be affected.");
+
+	CreateTooltip(GetDlgItem(g_kDlgBoxBottom, IDC_SKINTYPE_CORNERBORDER_RB), 
+		"Select the corner element of the widget to be affected.");
+
+	CreateTooltip(GetDlgItem(g_kDlgBoxBottom, IDC_ROTATION_EB), 
+		"Degree Rotation (0-360) on background image.");
+
+	CreateTooltip(GetDlgItem(g_kDlgBoxBottom, IDC_TRANSPARENT_CB), 
+		"Selected skin element will be invisible and will not recive input.");
+
+	CreateTooltip(GetDlgItem(g_kDlgBoxBottom, IDC_TILE_CB), 
+		"Repeat background image if checked or stretch otherwise.");
+
+	CreateTooltip(GetDlgItem(g_kDlgBoxBottom, IDC_RGB_COLOR_R_EB), 
+		"Red color element (0-255) for either background image or border. Press Enter to set.");
+
+	CreateTooltip(GetDlgItem(g_kDlgBoxBottom, IDC_RGB_COLOR_G_EB), 
+		"Green color element (0-255) for either background image or border. Press Enter to set.");
+
+	CreateTooltip(GetDlgItem(g_kDlgBoxBottom, IDC_RGB_COLOR_B_EB), 
+		"Blue color element (0-255) for either background image or border. Press Enter to set.");
+	
+	CreateTooltip(GetDlgItem(g_kDlgBoxBottom, IDC_FREE_MOVEMENT_CB), 
+		"Check this button to enable free movement of window. Only work for Windows.");
+
+	CreateTooltip(GetDlgItem(g_kDlgBoxBottom, IDC_COPY_ALL_SKINS), 
+		"Copy all skins in list to a buffer. Then you can select another widget and paste " \
+		"the same skins onto that. Only works if both have the same skin elments (i.e a Button " \
+		"Up skin can be pasted to a Listbox, but not to slider).");
+
+	CreateTooltip(GetDlgItem(g_kDlgBoxBottom, IDC_COPY_SKIN), 
+		"Copy selected skin to a buffer. Then you can select another widget and paste " \
+		"it to its selected element. Works on all skins.");
+
+	CreateTooltip(GetDlgItem(g_kDlgBoxBottom, IDC_PASTE_SKIN), 
+		"Paste selected skins to another window.");
+
+	CreateTooltip(GetDlgItem(g_kDlgBoxBottom, IDC_POSX_EB), 
+		"Position of widget. If widget is a window then coordinate is in screenspace (0-800). " \
+		"Else (0,0) is at TopLeft corner. Press Enter to set.");
+
+	CreateTooltip(GetDlgItem(g_kDlgBoxBottom, IDC_POSY_EB), 
+		"Position of widget. If widget is a window then coordinate is in screenspace (0-600). " \
+		"Else (0,0) is at TopLeft corner. Press Enter to set.");
+
+	CreateTooltip(GetDlgItem(g_kDlgBoxBottom, IDC_BORDER_EB), 
+		"Size of border (in pixels) for the selected skin element. Buttons have its border inside " \
+		"and all other have the border outside the clicking rectangle. Press Enter to set.");
+
+	CreateTooltip(GetDlgItem(g_kDlgBoxRight, IDC_CREATE_WND_BN), 
+		"Press this button to create a new widget. The widgets will be a child to the selected " \
+		"window. If the selected widget is a Tab Control, you can add pages to it by selecting it " \
+		"as a parent and then creating a new Wnd.");
+
+	CreateTooltip(GetDlgItem(g_kDlgBoxRight, IDC_TESTGUI_BN), 
+		"Press this button to test the GUI. Press it again to stop testing.");
+
+	CreateTooltip(GetDlgItem(g_kDlgBoxRight, IDC_NEWGUI_BN), 
+		"Press this button to clear all widgets and skins and create a new GUI screen.");
+
+	CreateTooltip(GetDlgItem(g_kDlgBoxRight, IDC_DISABLE_MOVE_CB), 
+		"Press this button to disable movement of widgets. Use this to avoid moving things by mistake " \
+		"(if you only want to select or resize widgets for example).");
+
+	CreateTooltip(GetDlgItem(g_kDlgBoxRight, IDC_RESIZE_WND), 
+		"Press this button active resize mode so you can resize widgets more easly. " \
+		"You can also resize widgets by pressing Left Shift.");
+
+	CreateTooltip(GetDlgItem(g_kDlgBoxRight, IDC_VISIBLE_CHECK), 
+		"Press this button to temporary toggle visibility of a widget in the editor.");
+
+	CreateTooltip(GetDlgItem(g_kDlgBoxBottom, IDC_VISIBLE_FROM_START_CB), 
+		"Press this button to toogle visibility of a widget.");
+
+	CreateTooltip(GetDlgItem(g_kDlgBoxRight, IDC_BRING_TO_FRONT), 
+		"Press this button to place a widget in front of all other. Use it to bring up windows " \
+		"that are hidden behind other windows. Not neccesery to set this for every window, the " \
+		"editor will rearrange all widgets automatically anyway on save.");
+	
 	while (GetMessage (&msg, NULL, 0, 0))
 	{
 		TranslateMessage (&msg) ;
@@ -256,4 +432,48 @@ string GetSelItemText(int iID, bool bRightPanel)
 	}
 
 	return string(szText);
+}
+
+
+
+void CreateTooltip (HWND hwnd, char* text)
+{	
+	HWND hwndTT = CreateWindowEx(WS_EX_TOPMOST,
+		TOOLTIPS_CLASS, NULL,
+		WS_POPUP | TTS_NOPREFIX | TTS_BALLOON,		
+		CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT,
+		hwnd, NULL, hInstance, NULL);
+
+	SetWindowPos(hwndTT, HWND_TOPMOST, 0, 0, 0, 0,
+		SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
+
+	RECT rect; 
+	GetClientRect (hwnd, &rect);
+
+	TOOLINFO ti;
+	ti.cbSize = sizeof(TOOLINFO);
+	ti.uFlags = TTF_SUBCLASS;
+	ti.hwnd = hwnd;
+	ti.hinst = hInstance;
+	ti.uId = 0;
+	ti.lpszText = text;
+	ti.rect.left = rect.left;    
+	ti.rect.top = rect.top;
+	ti.rect.right = rect.right;
+	ti.rect.bottom = rect.bottom;
+
+	SendMessage(hwndTT, TTM_ADDTOOL, 0, (LPARAM) (LPTOOLINFO) &ti);	
+	SendMessage(hwndTT, TTM_SETMAXTIPWIDTH, 0, 300);
+	SendMessage(hwndTT, TTM_SETDELAYTIME, TTDT_AUTOPOP, (LPARAM) MAKELONG(1000*20, 0));
+	SendMessage(hwndTT, TTM_ACTIVATE, FALSE, 0);	
+
+	g_vkToolTips.push_back(hwndTT);	
+} 
+
+void ActivateHelp(bool bActivate)
+{
+	for(int i=0; i<g_vkToolTips.size(); i++)
+	{
+		SendMessage(g_vkToolTips[i], TTM_ACTIVATE, bActivate ? TRUE : FALSE, 0);	
+	}
 }

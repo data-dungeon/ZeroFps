@@ -399,6 +399,10 @@ void ZGuiEd::OnCommand(int iCtrlID, int iEvent)
 
 	switch(iCtrlID)
 	{
+		case IDC_ACTIVATE_HELP_CB:
+			ActivateHelp(IsDlgButtonChecked(g_kDlgBoxRight, iCtrlID));
+			break;
+
 		case IDC_FILELIST_CB:
 			if(iEvent == CBN_DROPDOWN)
 				UpdateScriptList();
@@ -603,7 +607,7 @@ void ZGuiEd::OnCommand(int iCtrlID, int iEvent)
 			break;
 
 		case IDC_FREE_MOVEMENT_CB:
-			if(m_pkFocusWnd) 
+			if(m_pkFocusWnd && GetWndType(m_pkFocusWnd) == Wnd) 
 			{
 				bool bFreeMovement = IsDlgButtonChecked(g_kDlgBoxBottom, IDC_FREE_MOVEMENT_CB);
 				if(bFreeMovement)
@@ -639,5 +643,21 @@ void ZGuiEd::OnCommand(int iCtrlID, int iEvent)
 		case IDC_SELECTFONT_CANCEL_BN:			
 			ShowWindow(GetParent(g_kFontDlg), SW_HIDE);				
 			break;		
+
+		case IDC_SHOW_KEYS_BN:
+			{
+				char text[] =
+				{
+					"Copy & Paste\r\n" \
+					"Hold Left Ctrl and click on a widget or press Left Ctrl + C and then Left Ctrl + V.\r\n" \
+					"\r\n" \
+					"Resize\r\n" \
+					"Press Left Shift and click close to right side to resize the widget horizontally \r\n" \
+					"or close to bottom side to resize the widget vertically.\r\n" \
+				};
+			
+				MessageBox(GetParent(g_kDlgBoxRight), text, "Keyboard Info", MB_OK);
+			}
+			break;
 	}
 }
