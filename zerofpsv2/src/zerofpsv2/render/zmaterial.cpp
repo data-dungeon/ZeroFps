@@ -516,7 +516,7 @@ int ZMaterial::GetTranslateEnum(string strEnum)
 		return (*it).second;
 	else
 	{
-		cout<<"WARNING: could not find shader enum value for: "<<strEnum<<endl;
+		cout<<"WARNING: could not find shader enum value for: "<<strEnum<<" in material: "<<m_strName<<endl;
 		return -1;
 	}
 }
