@@ -6,6 +6,7 @@
 #include "../zerofpsv2/basic/zfassert.h"
 #include "../zerofpsv2/engine/res_texture.h"
 #include "../zerofpsv2/render/texturemanager.h"
+#include <typeinfo>
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
@@ -40,7 +41,7 @@ ZGuiSkin* GuiApp::GetSkin(string strName)
 }
 
 bool GuiApp::CreateWnd(GuiType eType, char* szResourceName, char* szText, int iID, 
-						int parentID, int x, int y, int w, int h, unsigned long uiFlags)
+					   ZGuiWnd* pkParent, int x, int y, int w, int h, unsigned long uiFlags)
 {
 	ZFAssert(GetWnd(iID) == NULL, "GuiApp::CreateWnd: WindowID already exist"); 
 	ZGuiWnd* pkWnd;
@@ -51,41 +52,44 @@ bool GuiApp::CreateWnd(GuiType eType, char* szResourceName, char* szText, int iI
 	switch(eType)
 	{
 	case Wnd:
-		pkWnd = new ZGuiWnd( Rect(x,y,x+w,y+h), GetWnd(parentID), true, iID);
+		pkWnd = new ZGuiWnd( Rect(x,y,x+w,y+h), pkParent, true, iID);
 		break;
 	case Button:
-		pkWnd = new ZGuiButton( Rect(x,y,x+w,y+h), GetWnd(parentID), true, iID);
+		pkWnd = new ZGuiButton( Rect(x,y,x+w,y+h), pkParent, true, iID);
 		break;
 	case Label:
-		pkWnd = new ZGuiLabel( Rect(x,y,x+w,y+h), GetWnd(parentID), true, iID);
+		pkWnd = new ZGuiLabel( Rect(x,y,x+w,y+h), pkParent, true, iID);
 		break;
 	case Radiobutton:
-		pkWnd = new ZGuiRadiobutton( Rect(x,y,x+w,y+h), GetWnd(parentID), iID, 
+		pkWnd = new ZGuiRadiobutton( Rect(x,y,x+w,y+h), pkParent, iID, 
 			m_iLastRadioBGroup, m_szLastRadioBGroup, NULL, true);
 		break;
 	case Checkbox:
-		pkWnd = new ZGuiCheckbox( Rect(x,y,x+w,y+h), GetWnd(parentID), true, iID);
+		pkWnd = new ZGuiCheckbox( Rect(x,y,x+w,y+h), pkParent, true, iID);
 		break;
 	case Scrollbar:
-		pkWnd = new ZGuiScrollbar( Rect(x,y,x+w,y+h), GetWnd(parentID), true, iID);
+		pkWnd = new ZGuiScrollbar( Rect(x,y,x+w,y+h), pkParent, true, iID);
 		break;
 	case Slider:
-		pkWnd = new ZGuiSlider( Rect(x,y,x+w,y+h), GetWnd(parentID), true, iID);
+		pkWnd = new ZGuiSlider( Rect(x,y,x+w,y+h), pkParent, true, iID);
 		break;
 	case Listbox:
-		pkWnd = new ZGuiListbox( Rect(x,y,x+w,y+h), GetWnd(parentID), true, iID, 
+		pkWnd = new ZGuiListbox( Rect(x,y,x+w,y+h), pkParent, true, iID, 
 			LISTBOX_ITEM_HEIGHT, NULL, NULL, NULL);
 		break;
 	case Combobox:
-		pkWnd = new ZGuiCombobox( Rect(x,y,x+w,y+h), GetWnd(parentID), true, iID,
+		pkWnd = new ZGuiCombobox( Rect(x,y,x+w,y+h), pkParent, true, iID,
 			COMBOBOX_ITEM_HEIGHT, NULL, NULL, NULL, GetSkin("DefCBTopItemSkin"));
 		break;
 	case Textbox:
-		pkWnd = new ZGuiTextbox( Rect(x,y,x+w,y+h), GetWnd(parentID), true, iID, 
+		pkWnd = new ZGuiTextbox( Rect(x,y,x+w,y+h), pkParent, true, iID, 
 			uiFlags & EB_IS_MULTILINE);
 		break;
 	case Treebox:
-		pkWnd = new ZGuiTreebox( Rect(x,y,x+w,y+h), GetWnd(parentID), true, iID);
+		pkWnd = new ZGuiTreebox( Rect(x,y,x+w,y+h), pkParent, true, iID);
+		break;
+	case TabControl:
+		pkWnd = new ZGuiTabCtrl( Rect(x,y,x+w,y+h), pkParent, true, iID);
 		break;
 	}
 	
@@ -147,6 +151,15 @@ bool GuiApp::CreateWnd(GuiType eType, char* szResourceName, char* szText, int iI
 		static_cast<ZGuiTreebox*>(pkWnd)->InsertBranchSkin(1, GetSkin("DefTreeNodeParentClosedSkin"));
 		static_cast<ZGuiTreebox*>(pkWnd)->InsertBranchSkin(2, GetSkin("DefTreeNodeParentOpenSkin"));
 		break;
+	case TabControl:
+		static_cast<ZGuiTabCtrl*>(pkWnd)->SetSkin(GetSkin("DefTabCtrlBkSkin"));	
+		static_cast<ZGuiTabCtrl*>(pkWnd)->SetNextButtonSkin( GetSkin("DefTabBnNextUSkin"), 
+			GetSkin("DefTabBnNextDSkin"), GetSkin("DefTabBnNextUSkin"));
+		static_cast<ZGuiTabCtrl*>(pkWnd)->SetPrevButtonSkin( GetSkin("DefTabBnPrevUSkin"), 
+			GetSkin("DefTabBnPrevDSkin"), GetSkin("DefTabBnPrevUSkin"));
+		static_cast<ZGuiTabCtrl*>(pkWnd)->InsertTabSkin(0, GetSkin("DefTabPageBackSkin"));
+		static_cast<ZGuiTabCtrl*>(pkWnd)->InsertTabSkin(1, GetSkin("DefTabPageFrontSkin"));
+		break;
 	}
 
 	if(eType == Wnd)
@@ -163,6 +176,15 @@ bool GuiApp::CreateWnd(GuiType eType, char* szResourceName, char* szText, int iI
 	m_kWindows.insert(map<int, ZGuiWnd*>::value_type(iID, pkWnd));
 	
 	return true;
+}
+
+bool GuiApp::CreateWnd(GuiType eType, char* szResourceName, char* szText, int iID, 
+					   int parentID, int x, int y, int w, int h, unsigned long uiFlags)
+{
+	ZGuiWnd* pkParent = GetWnd(parentID);
+
+	return CreateWnd(eType, szResourceName, szText, iID, 
+		pkParent, x, y, w, h, uiFlags);
 }
 
 void GuiApp::InitTextures()
@@ -231,9 +253,16 @@ void GuiApp::InitTextures()
 	m_kSkins.insert(strSkin("DefTreeNodeParentClosedSkin", new ZGuiSkin(GetTexID("tn_pc.bmp"),0)));
 	m_kSkins.insert(strSkin("DefTreeNodeParentOpenSkin", new ZGuiSkin(GetTexID("tn_po.bmp"),0)));
 
-	
+	m_kSkins.insert(strSkin("DefTabCtrlBkSkin", new ZGuiSkin(128, 128, 128, 92, 92, 92, 1)));
 
-	
+	m_kSkins.insert(strSkin("DefTabBnPrevUSkin", new ZGuiSkin(GetTexID("tab_bnPrev_u.bmp"),0)));
+	m_kSkins.insert(strSkin("DefTabBnPrevDSkin", new ZGuiSkin(GetTexID("tab_bnPrev_d.bmp"),0)));
+
+	m_kSkins.insert(strSkin("DefTabBnNextUSkin", new ZGuiSkin(GetTexID("tab_bnNext_u.bmp"),0)));
+	m_kSkins.insert(strSkin("DefTabBnNextDSkin", new ZGuiSkin(GetTexID("tab_bnNext_d.bmp"),0)));
+
+	m_kSkins.insert(strSkin("DefTabPageBackSkin", new ZGuiSkin(128,128,128,92,92,92,1)));
+	m_kSkins.insert(strSkin("DefTabPageFrontSkin", new ZGuiSkin(214,211,206,0,0,0,0)));
 }
 
 void GuiApp::InitializeGui(ZGui* pkGui, TextureManager* pkTexMan)
@@ -243,10 +272,8 @@ void GuiApp::InitializeGui(ZGui* pkGui, TextureManager* pkTexMan)
 
 	InitTextures();
 
-	// Load gui cursor and hide the os cursor.
 	m_pkGui->SetCursor(0,0, m_pkTexMan->Load("/data/textures/gui/cursor.bmp", 0),
 		m_pkTexMan->Load("/data/textures/gui/cursor_a.bmp", 0), 32, 32);
-
 	SDL_ShowCursor(SDL_DISABLE);
 }
 
@@ -292,7 +319,32 @@ void GuiApp::AddTreeItem(int iTreeboxID, const char* szID, const char* szIDParen
 {
 	ZGuiTreebox* pkTreeBox = static_cast<ZGuiTreebox*>(GetWnd(iTreeboxID));
 
-	string strParent = string(szIDParent);
+	if(szIDParent != NULL)
+	{
+		string strParent = string(szIDParent);
+		pkTreeBox->AddItem(strParent, szText, iNodeSkinNormal, iNodeSkinSelected, szID);
+	}
+	else
+	{
+		pkTreeBox->AddItem(pkTreeBox->Root(), szText, iNodeSkinNormal, iNodeSkinSelected, szID);
+	}
+}
 
-	pkTreeBox->AddItem(strParent, szText, iNodeSkinNormal, iNodeSkinSelected, szID);
+void GuiApp::AddTabPage(int iTabCtrlID, char* szName)
+{
+	ZGuiTabCtrl* pkTreeBox = static_cast<ZGuiTabCtrl*>(GetWnd(iTabCtrlID)); 
+	pkTreeBox->InsertPage(pkTreeBox->GetNumPages(), szName, 0);
+	pkTreeBox->SetCurrentPage(0); 
+}
+
+ZGuiWnd* GuiApp::GetTabPage(int iTabCtrlID, int iPage)
+{
+	ZGuiWnd* pkTabCtrl = GetWnd(iTabCtrlID);
+
+	bool bIsTabCtrl = typeid(*pkTabCtrl) == 
+		typeid(ZGuiTabCtrl) ? true : false;
+
+	ZFAssert(bIsTabCtrl, "GuiApp::GetTabPage: Window is not a tab control!");
+
+	return static_cast<ZGuiTabCtrl*>(pkTabCtrl)->GetPage(iPage);	
 }

@@ -11,27 +11,29 @@ using namespace std;
 
 class TextureManager;
 
-#define EB_IS_MULTILINE 0x1
+#define EB_IS_MULTILINE   0x1
 
 enum GuiType
 {
-	Wnd,//
-	Button,//
-	Checkbox,//
-	Combobox,//
-	Label,//
-	Listbox,//
-	Radiobutton,//
-	Scrollbar,//
-	Slider,//
+	Wnd,
+	Button,
+	Checkbox,
+	Combobox,
+	Label,
+	Listbox,
+	Radiobutton,
+	Scrollbar,
+	Slider,
 	TabControl,
-	Textbox,//
-	Treebox, 
+	Textbox,
+	Treebox,
 };
 
 class GuiApp  
 {
 public:
+	ZGuiWnd* GetTabPage(int iTabCtrlID, int iPage);
+	void AddTabPage(int iTabCtrlID, char* szName);
 	void AddTreeItem(int iTreeboxID, const char* szID, const char* szIDParent, char* szText,
 		unsigned char iNodeSkinNormal, unsigned char iNodeSkinSelected);
 	void AddListItem(int iListboxID, char* szText, bool bCombobox=false);
@@ -39,6 +41,8 @@ public:
 	void InitializeGui(ZGui* pkGui, TextureManager* pkTexMan);
 	bool CreateWnd(GuiType eType, char* szResourceName, char* szText,
 		int iID, int parentID, int x, int y, int w, int h, unsigned long uiFlags);
+	bool GuiApp::CreateWnd(GuiType eType, char* szResourceName, char* szText, int iID, 
+		ZGuiWnd* pkParent, int x, int y, int w, int h, unsigned long uiFlags);
 
 	GuiApp(ZGui::callback oMainWndProc);
 	~GuiApp();

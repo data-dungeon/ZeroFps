@@ -348,9 +348,10 @@ bool ZeroTank::IsValid()	{ return true; }
 
 void ZeroTank::SetupGUI()
 {
-	CreateWnd(Wnd, "TestWnd",    NULL,  10, -1, 0, 0, 300, 300, 0);
+	CreateWnd(Wnd, "TestWnd", NULL,  10, -1, 0, 0, 300, 300, 0);
+	CreateWnd(TabControl, "TestTabControl", NULL, 11, 10, 0, 0, 150, 150, 0);
 
-	CreateWnd(Treebox, "TestTreebox", NULL, 11, 10, 0, 0, 150, 150, 0);
-	//AddTreeItem(11, "Apa", "Mamma", "Test", 0, 1);
-
+	AddTabPage(11, "Page1");
+	AddTabPage(11, "Page2");
+	CreateWnd(Button, "TestBn", "Test", 13, GetTabPage(11, 1), 50, 50, 40, 20, 0);
 }
