@@ -68,8 +68,12 @@ namespace ObjectManagerLua
 	int ENGINE_SYSTEMS_API SetObjectRotVelLua(lua_State* pkLua);
 
 	// velocity
-	int ENGINE_SYSTEMS_API SetVelToLua(lua_State* pkLua);	
-	
+	int ENGINE_SYSTEMS_API SetVelToLua(lua_State* pkLua);
+
+	//zone management
+	int ENGINE_SYSTEMS_API GetZoneIDLua(lua_State* pkLua);					//returns the zone id that contains entity id
+	int ENGINE_SYSTEMS_API SetZoneModelLua(lua_State* pkLua);				//sets the zonemodel of zone id
+
 	// Common used functions , used together whit P_ScriptInterface
 	int ENGINE_SYSTEMS_API SIGetSelfIDLua(lua_State* pkLua);					//() return the callers object id	
 	int ENGINE_SYSTEMS_API SISetHeartRateLua(lua_State* pkLua);				//(int objectid,float delay) will enable the 1s update function on this object	

@@ -62,7 +62,12 @@ void Init(EntityManager* pkObjMan, ZFScriptSystem* pkScript)
 	pkScript->ExposeFunction("SetRotVel",			  ObjectManagerLua::SetObjectRotVelLua);
 
 	// velocity functions
-	pkScript->ExposeFunction("SetVelTo",			  ObjectManagerLua::SetVelToLua);
+	pkScript->ExposeFunction("SetVelTo",				ObjectManagerLua::SetVelToLua);
+
+	//zone management
+	pkScript->ExposeFunction("GetZoneID",				ObjectManagerLua::GetZoneIDLua);
+	pkScript->ExposeFunction("SetZoneModel",			ObjectManagerLua::SetZoneModelLua);
+
 
 	// Common used functions , used together whit P_ScriptInterface
 	pkScript->ExposeFunction("SIGetSelfID",			ObjectManagerLua::SIGetSelfIDLua);		
@@ -642,29 +647,71 @@ int SetVelToLua(lua_State* pkLua)
 	if(g_pkScript->GetNumArgs(pkLua) == 3)
 	{
 		double dId;
-			
+
 		double dVel;
-		Vector3 kPos;		
+		Vector3 kPos;
 		vector<TABLE_DATA> vkData;
-		
-		g_pkScript->GetArgNumber(pkLua, 0, &dId);				
+
+		g_pkScript->GetArgNumber(pkLua, 0, &dId);
 		g_pkScript->GetArgTable(pkLua, 2, vkData);
-		g_pkScript->GetArgNumber(pkLua, 2, &dVel);	
+		g_pkScript->GetArgNumber(pkLua, 2, &dVel);
 
 		kPos = Vector3(
 			(float) (*(double*) vkData[0].pData),
 			(float) (*(double*) vkData[1].pData),
-			(float) (*(double*) vkData[2].pData)); 
+			(float) (*(double*) vkData[2].pData));
 
 		Entity* pkEnt = g_pkObjMan->GetObjectByNetWorkID((int)dId);
-			
+
 		if(pkEnt)
 		{
 			Vector3 dir = (kPos - pkEnt->GetWorldPosV()).Unit();
-			
+
 			pkEnt->SetVel(dir*(float) dVel);
 		}
 		return 0;
+	}
+
+   return 0;
+}
+
+int GetZoneIDLua(lua_State* pkLua)
+{
+	if(g_pkScript->GetNumArgs(pkLua) == 1)
+	{
+		double dId;
+
+		g_pkScript->GetArgNumber(pkLua, 0, &dId);
+
+		if(Entity* pkEnt = g_pkObjMan->GetObjectByNetWorkID((int)dId))
+		{
+			Vector3 kPos = pkEnt->GetWorldPosV();
+
+			if(ZoneData* pkZone = g_pkObjMan->GetZone(kPos))
+			{
+				g_pkScript->AddReturnValue(pkLua,pkZone->m_iZoneID);
+				return 1;
+			}
+		}
+	}
+
+
+	g_pkScript->AddReturnValue(pkLua,-1);
+
+   return 0;
+}
+
+int SetZoneModelLua(lua_State* pkLua)
+{
+	if(g_pkScript->GetNumArgs(pkLua) == 2)
+	{
+		double dId;
+		char acModel[100];
+
+		g_pkScript->GetArgNumber(pkLua, 0, &dId);
+		g_pkScript->GetArg(pkLua, 1, acModel);
+
+		g_pkObjMan->SetZoneModel(acModel,(int)dId);
 	}
 
    return 0;

@@ -69,34 +69,35 @@ function FirstRun()
 end
 
 function HeartBeat()
+	--SetZoneModel(GetZoneID(SIGetSelfID()),"data/mad/zones/dm/zon_asfalt.mad")
+
 	if ( IsDead(SIGetSelfID()) == 1) then
 		AddToEntityVar (SIGetSelfID(), "deadtime", 1);
 
 		if GetEntityVar(SIGetSelfID(), "deadtime") > 9 then
 			Delete(SIGetSelfID());
 		end
-	
+
 		return
 	end
 
 	if HavePath(SIGetSelfID()) == 1 then
 		return
-	end	
+	end
 
 	-- Spela upp en liten kommentar då och då när personen står still och inte har blivit skadad
 	if Random(100) > 85 then
-			
-		talk_sound = 
+
+		talk_sound =
 		{
 		  "agent/talking/i want to do something for humanity.wav",
 		  "agent/talking/one man alone cant fight the future.wav",
 		  "agent/talking/i'm extremely nervous right now.wav",
-		}		
+		}
 		PlaySound (SIGetSelfID(), talk_sound[Random(3)+1] );
-		
+
 	end
 
-	
 end
 
 function Dead()
