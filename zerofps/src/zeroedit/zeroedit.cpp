@@ -1,7 +1,7 @@
 #include "zeroedit.h"
 #include "gui.h"
 
-ZeroEdit Editor("ZeroEdit",1024,768,16);
+ZeroEdit Editor("ZeroEdit",800,600,16);
 
 static bool g_ZGWinProc( ZGuiWnd* pkWindow, unsigned int uiMessage, int iNumberOfParams, void *pkParams )
 {

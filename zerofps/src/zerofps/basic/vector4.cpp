@@ -6,58 +6,6 @@
 
 using namespace std;
 
-/*
-const Vector4 Vector4::ZERO(0,0,0,0);
-const Vector4 Vector4::AXIS_X(1,0,0,0);
-const Vector4 Vector4::AXIS_Y(0,1,0,0);
-const Vector4 Vector4::AXIS_Z(0,0,1,0);
-const Vector4 Vector4::AXIS_Z(0,0,0,1);
-*/
-
-Vector4::Vector4(float fX,float fY,float fZ,float fW)
-{
-	x=fX;
-	y=fY;
-	z=fZ;
-	w=fW;
-}
-
-Vector4::Vector4(const Vector3 &kOtherV3) 
-{
-	x=kOtherV3.x;
-	y=kOtherV3.y;
-	z=kOtherV3.z;
-	w=1;	
-}
-
-
-// Assign
-Vector4 Vector4::operator=(const Vector4 &kOtherV3) 
-{
-	x=kOtherV3.x;
-	y=kOtherV3.y;
-	z=kOtherV3.z;
-	w=kOtherV3.w;	
-	return *this;
-}
-Vector4 Vector4::operator=(const Vector3 &kOtherV3) 
-{
-	x=kOtherV3.x;
-	y=kOtherV3.y;
-	z=kOtherV3.z;
-	w=1;	
-	return *this;
-}
-
-
-void Vector4::Set(float nx, float ny, float nz,float nw)
-{
-	x = nx;
-	y = ny;
-	z = nz;
-	w = nw;	
-}
-
 // Comparison
 bool Vector4::operator==(const Vector4 &kOtherV3) const
 {
@@ -76,83 +24,10 @@ bool Vector4::operator!=(const Vector4 &kOtherV3) const
 	return !(kOtherV3 == *this); 
 }
 
-// Arithmetic operations
-Vector4 Vector4::operator+(const Vector4 &kOtherV3) const
-{
-	return Vector4(x+kOtherV3.x,y+kOtherV3.y,z+kOtherV3.z,w+kOtherV3.w);
-}
-
-Vector4 Vector4::operator+(const float &fAdd) const
-{
-	return Vector4(x+fAdd,y+fAdd,z+fAdd,w+fAdd);
-}
-
-Vector4 Vector4::operator+=(const Vector4 &kOtherV3) 
-{
-	x += kOtherV3.x;
-	y += kOtherV3.y;
-	z += kOtherV3.z;
-	w += kOtherV3.w;	
-	return *this;
-}
-
-Vector4 Vector4::operator-(const Vector4 &kOtherV3)  const
-{
-	return Vector4(x-kOtherV3.x,y-kOtherV3.y,z-kOtherV3.z,w-kOtherV3.w);
-}
-
-Vector4 Vector4::operator-(const float &fAdd) const
-{
-	return Vector4(x-fAdd,y-fAdd,z-fAdd,w-fAdd);
-}
-
-
-Vector4 Vector4::operator-=(const Vector4 &kOtherV3) 
-{
-	x -= kOtherV3.x;
-	y -= kOtherV3.y;
-	z -= kOtherV3.z;
-	w -= kOtherV3.w;
-	return *this;
-}
-
-Vector4 Vector4::operator*(const float &fOther)  const
-{
-	return Vector4(x * fOther,y * fOther,z * fOther,w * fOther);
-}
-
-Vector4 Vector4::operator*=(const float &fOther)
-{
-	x *= fOther;
-	y *= fOther;
-	z *= fOther;
-	w *= fOther;	
-	return *this;
-}
-
-Vector4 Vector4::operator-()
-{
-	return Vector4(-x,-y,-z,-w);
-}
-
 float &Vector4::operator[](const int i)
 {
 	return *((&x) + i);
-
-/*	switch(i){
-		case 0:
-			return x;
-		case 1:
-			return y;		
-		case 2:
-			return z;
-		case 3:
-			return w;
-		default:
-			ZFAssert(0, "Vector4::operator[]: Index out of range");
-			return x;
-		
-	}*/
+//	ZFAssert(0, "Vector4::operator[]: Index out of range");
 }
 
 Vector4 Vector4::operator*(const Matrix4 &f) const 
@@ -221,22 +96,4 @@ float Vector4::PlainLength(void) const
 	return (float)sqrt( x*x + y*y + z*z );  
 
 }
-
-/*
-Vector4 Vector4::unit(void) const						
-{
-	float invlen = length();
-	assert(invlen != 0.0);
-	invlen = 1 / invlen;
-	return Vector4(x * invlen, y * invlen, z * invlen);
-	return *this;
-}
-
-
-Vector4 Vector4::cross( const Vector4& v )	const
-{
-	return Vector4( y*v.z - z*v.y, z*v.x - x*v.z, x*v.y - y*v.x ); 
-}
-
-*/
 

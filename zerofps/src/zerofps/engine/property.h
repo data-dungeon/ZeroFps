@@ -12,7 +12,7 @@
 
 using namespace std;
 
-class CollisionData;
+struct CollisionData;
 class Object;
 class PropertyFactory;
 

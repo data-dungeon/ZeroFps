@@ -16,7 +16,7 @@
 using namespace std;
 
 class ObjectManager;
-class CollisionData;
+struct CollisionData;
 
 class ENGINE_API PropertyDescriptor{
 	public:
