@@ -101,7 +101,7 @@ class MistServer :public Application , public ZGuiApp
 		void Input_Camera(float fMouseX, float fMouseY);
 		void DeletePlayerCharacter(int iConID);		
 		
-		void SayToClients(const string& strMsg);		
+		void SayToClients(const string& strMsg,int iClientID = -2);		
 		void SendPlayerListToClient(int iClient);				
 		Vector3 GetPlayerStartPos();
 		

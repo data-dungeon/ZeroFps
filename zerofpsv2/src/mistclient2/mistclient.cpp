@@ -373,12 +373,13 @@ void MistClient::Input()
 	else
 		m_iPickedEntityID = -1;
 	
-	
+	//list actions
 	if ( m_pkInputHandle->VKIsDown("look") )
 	{
 		if(!DelayCommand())
 		{
 			if(Entity* pkEnt = m_pkEntityManager->GetEntityByID(m_iPickedEntityID))
+			{
 				if(P_Ml* pkMl = (P_Ml*)pkEnt->GetProperty("P_Ml"))
 				{
 					vector<string>	kActions;
@@ -388,18 +389,29 @@ void MistClient::Input()
 					for(int i =0;i<kActions.size();i++)
 						cout<<i<<" "<<kActions[i]<<endl;
 				}
-		
-/*			if(m_pkHighlight)
-			{
-				NetPacket kNp;			
-				kNp.Write((char) MLNM_CS_USE);
-				kNp.Write(m_pkHighlight->GetEntityID());
-				kNp.TargetSetClient(0);
-				SendAppMessage(&kNp);		
-			}*/
+			}
 		}
 	}
 
+	//perform the forst action in the action list
+	if( m_pkInputHandle->VKIsDown("use") )
+	{
+		if(!DelayCommand())
+		{
+			if(Entity* pkEnt = m_pkEntityManager->GetEntityByID(m_iPickedEntityID))
+			{
+				if(P_Ml* pkMl = (P_Ml*)pkEnt->GetProperty("P_Ml"))
+				{
+					vector<string>	kActions;
+					pkMl->GetActions(kActions);
+					
+					if(!kActions.empty())
+						SendAction(m_iPickedEntityID,kActions[0]);
+				}			
+			}
+		}	
+	}	
+	
 /*	if ( m_pkInputHandle->VKIsDown("look") )
 	{
 		if(!DelayCommand())
@@ -914,46 +926,6 @@ Vector3 MistClient::Get3DMouseDir(bool bMouse)
 	return dir;
 }
 
-/*	Returns 3D dir of mouse click in world. */
-Vector3 MistClient::Get3DMousePos(bool m_bMouse)
-{
-	Vector3 dir;
-//	float x,y;		
-	
-	//screen propotions
-	float xp=4;
-	float yp=3;
-	float fovshit=-2.15;
-	
-	if(m_bMouse)
-	{
-		// Zeb was here! Nu kör vi med operativsystemets egna snabba musmarkör
-		// alltså måste vi använda det inputsystemet.
-		//	m_pkInputHandle->UnitMouseXY(x,y); 
-		// Dvoid was here to . måste o måste, vill man ha lite kontroll över saker o ting så =D
-		int x;
-		int y;
-		
-		m_pkInputHandle->SDLMouseXY(x,y);
-		
-		x = int( -0.5f + (float) x / (float) m_pkApp->m_iWidth );
-		y = int( -0.5f + (float) y / (float) m_pkApp->m_iHeight );
-		
-		dir.Set(x*xp,-y*yp,fovshit);
-		dir.Normalize();
-	}
-	else
-	{
-		dir.Set(0,0,fovshit);
-		dir.Normalize();
-	}	
-	
-	Matrix4 rm = m_pkCamera->GetRotM();
-	rm.Transponse();
-	dir = rm.VectorTransform(dir);
-	
-	return dir;
-}
 
 void MistClient::ToggleGuiCapture(int iForce)
 {
@@ -972,3 +944,16 @@ void MistClient::ToggleGuiCapture(int iForce)
 		m_pkGui->ShowCursor(false);
 	}
 }
+
+void MistClient::SendAction(int iEntityID,const string& strAction)
+{
+	NetPacket kNp;			
+	kNp.Write((char) MLNM_CS_USE);
+	
+	kNp.Write(iEntityID);
+	kNp.Write_Str(strAction);
+	
+	kNp.TargetSetClient(0);
+	SendAppMessage(&kNp);			
+}
+

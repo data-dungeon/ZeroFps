@@ -958,19 +958,33 @@ void MistServer::OnNetworkMessage(NetPacket *PkNetMessage)
 		case MLNM_CS_USE:
 		{
 			int iEntity;
+			string strAction;
 			PkNetMessage->Read(iEntity);
-
+			PkNetMessage->Read_Str(strAction);
+			
 			if(Entity* pkObj = m_pkEntityManager->GetEntityByID(iEntity))
 			{
 				// Get EntityID for client doing stuff.
-            PlayerData* pkData = m_pkPlayerDB->GetPlayerData(PkNetMessage->m_iClientID);
-				//Entity* pkCharacter = m_pkEntityManager->GetEntityByID(pkData->m_iCharacterID);
-				vector<ScriptFuncArg> args(1);
-				args[0].m_kType.m_eType = tINT;
-				args[0].m_pData = &pkData->m_iCharacterID;
-
-				//m_pkEntityManager->CallFunction(pkObj, "Useit",NULL);;
-				m_pkEntityManager->CallFunction(pkObj, "Useit",&args);	
+            if(PlayerData* pkData = m_pkPlayerDB->GetPlayerData(PkNetMessage->m_iClientID))
+				{
+					//distance check
+					if(Entity* pkChar = m_pkEntityManager->GetEntityByID(pkData->m_iCharacterID))
+						if(pkObj->GetWorldPosV().DistanceTo(pkChar->GetWorldPosV()) > 2.0)
+						{
+							SayToClients("You are to far away",PkNetMessage->m_iClientID);
+							break;
+						}
+				
+					cout<<"character: "<<	pkData->m_strCharacterName<<" doint action: "<<strAction<<" on "<<iEntity<<endl;
+				
+					vector<ScriptFuncArg> args(2);
+					args[0].m_kType.m_eType = tINT;
+					args[0].m_pData = &pkData->m_iCharacterID;
+					args[1].m_kType.m_eType = tSTLSTRING;
+					args[1].m_pData = &strAction;
+					
+					m_pkEntityManager->CallFunction(pkObj, "Useit",&args);	
+				}
 			}
 			break;
 		}
@@ -1029,14 +1043,15 @@ void MistServer::SendPlayerListToClient(int iClient)
 	SendAppMessage(&kNp);	
 }
 
-void MistServer::SayToClients(const string& strMsg)
+void MistServer::SayToClients(const string& strMsg,int iClientID)
 {
 	NetPacket kNp;			
 	kNp.Write((char) MLNM_SC_SAY);
 	kNp.Write_Str(strMsg);
-	kNp.TargetSetClient(-2);
+	kNp.TargetSetClient(iClientID);
 	SendAppMessage(&kNp);	
 }
+
 
 Vector3 MistServer::GetPlayerStartPos()
 {

@@ -45,6 +45,8 @@ class MistClient :public Application, public ZGuiApp {
 		vector<string>	m_kPlayerList;		//list of players since last playerlist update
 	
 		vector<pair<string,string> > m_kServerList;
+		map<string, msgScreenProg> m_kGuiMsgProcs;
+		OptionsDlg* m_pkOptionsDlg;
       		
 		bool ReadWriteServerList(bool bRead);
 
@@ -58,7 +60,9 @@ class MistClient :public Application, public ZGuiApp {
 		void SendMessage(string strMsg,int iChannel,string strToWho);
 		void RequestPlayerList();
 		void RequestKillMe();
-		
+
+		void SendAction(int iEntityID,const string& strAction);
+				
 		bool NameIPFromServerList(string& strName, string& strIP);
 		void ToogleChatWnd(bool bOpen, bool bSetInputFocus=false);
 		void ResizeChatDlg(bool bBigger);      	
@@ -72,7 +76,11 @@ class MistClient :public Application, public ZGuiApp {
 	  
 		void DrawCrossHair();
 		
-		
+		// This is a temporaty hack... sooo SHOOT ME .... BAAAAAAAANG!!! ;)
+		Entity* GetTargetObject();
+		Vector3 Get3DMouseDir(bool bMouse);
+
+				
 	public:
 		//application virtuals
 		MistClient(char* aName,int iWidth,int iHeight,int iDepth);
@@ -85,7 +93,6 @@ class MistClient :public Application, public ZGuiApp {
 		void OnHud(void);
 		void OnSystem();
 		void RenderInterface(void);
-
 
 		void RunCommand(int cmdid, const CmdArgument* kCommand);
 				
@@ -105,14 +112,6 @@ class MistClient :public Application, public ZGuiApp {
 		friend void GuiMsgIngameScreen( string strMainWnd, string strController, unsigned int msg, int numparms, void *params );
 		friend void GuiMsgOptionsDlg( string strMainWnd, string strController, unsigned int msg, int numparms, void *params );
 
-		map<string, msgScreenProg> m_kGuiMsgProcs;
-
-		OptionsDlg* m_pkOptionsDlg;
-
-		// This is a temporaty hack... sooo SHOOT ME 
-		Entity* GetTargetObject();
-		Vector3 Get3DMousePos(bool m_bMouse=true);
-		Vector3 Get3DMouseDir(bool bMouse);
 
 		friend class OptionsDlg;
 };
