@@ -64,7 +64,7 @@ float BASIC_API RadToDeg(float fAngle)
 
 int BASIC_API PowerOf2(int iVal)
 {
-	int list[] = {2,4,8,16,32,64,128};
+	int list[] = {1,2,4,8,16,32,64,128};
 
 	int smalest=999999999;
 	int tal;

@@ -136,7 +136,7 @@ void OpenAlSystem::Update()
 {
 
 	//Gubb was here
-	m_pkMusic->Update();
+//	m_pkMusic->Update();
 	
 	vector<Sound*> kPlay;
 	vector<Sound*> kRemove;

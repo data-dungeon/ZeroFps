@@ -46,9 +46,11 @@ void VegitationProperty::Update()
 	if(fDistance > 50)
 		return;
 					
-	int iStep = int(fDistance / 11.0);
+	int iStep = int(fDistance / 5.0);
 	if(iStep < 1)
 		iStep = 1;
+
+	iStep = PowerOf2(iStep);
 
 //	cout<<"step "<<iStep<<endl;
 //	cout<<"grass "<<m_akPositions.size()<<endl;
@@ -58,16 +60,10 @@ void VegitationProperty::Update()
 	
 
 	for(int i=0;i<m_akPositions.size();i += iStep){
-//		if(m_fWind == 0)
-//			m_pkRender->DrawCross(m_akPositions[i].kPos + ObjectPos,m_akPositions[i].kRot,m_kScale,m_iTexture);
-//		else
-//		{
-			Vector3 rot = m_akPositions[i].kRot; 
-			rot.x = sin(t + m_akPositions[i].fWindStart) * m_fWind;
-			m_pkRender->DrawCross(m_akPositions[i].kPos + ObjectPos,rot,m_kScale,m_iTexture);			
-//		}
+		Vector3 rot = m_akPositions[i].kRot; 
+		rot.x = sin(t + m_akPositions[i].fWindStart) * m_fWind;
+		m_pkRender->DrawCross(m_akPositions[i].kPos + ObjectPos,rot,m_kScale,m_iTexture);			
 	}
-
 }
 
 vector<PropertyValues> VegitationProperty::GetPropertyValues()

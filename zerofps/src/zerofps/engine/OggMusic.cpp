@@ -36,6 +36,13 @@ OggMusic::OggMusic(unsigned int uiNrOfBuffers, unsigned int uiBufferSize) :
 		cout<< "error generating buffers!" <<endl;
 	}
 	alGenSources(1, &m_ALuiSource);
+	
+	
+	
+	Vector3 pos(0,0,0);
+	alSourcefv(m_ALuiSource, AL_POSITION,&pos[0]);		
+	alSourcefv(m_ALuiSource,  AL_VELOCITY,&pos[0]);	
+	
 	if (alGetError()!=AL_NO_ERROR)
 	{
 		cout<<"error generating sources!" <<endl;
@@ -144,29 +151,37 @@ bool OggMusic::Play()
 	if(!m_bFileOK)
 		return false;
 	
+	
 	for(unsigned int index = 0; index<m_uiNrOfBuffers; index++)
 	{
 		QueueBuffer(&m_pALuiBuffers[index]);
 	}
 	m_fStartTime = GetTicks();
-		alSourcePlay(m_ALuiSource);	
+	alSourcePlay(m_ALuiSource);	
+	
 	if (alGetError()!=AL_NO_ERROR)
 	{
 		cout<<"error playing!" <<endl;
 	}		
 	
 	m_bPlaying=true;
+
+	ov_pcm_seek(&m_kOggFile,0);
+	
 	return true;
 }
 
 bool OggMusic::Update()
 {
+
+	
 	if(m_bPlaying)
 	{
-		int iPlaying;
+		int iPlaying=AL_PLAYING;
 		alGetSourcei(m_ALuiSource, AL_SOURCE_STATE, &iPlaying);
 		if(iPlaying!=AL_PLAYING)
 		{
+
 			ov_time_seek(&m_kOggFile, (GetTicks() - m_fStartTime));	
 			alSourcePlay(m_ALuiSource);	
 		}
