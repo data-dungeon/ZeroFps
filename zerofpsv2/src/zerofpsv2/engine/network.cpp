@@ -388,7 +388,7 @@ bool NetWork::Recv(NetPacket* pkNetPacket)
 		return true;
 		}
 
-/*
+
 	for(int i=0; i<m_RemoteNodes.size(); i++)
 	{
 		if(m_RemoteNodes[i].m_eConnectStatus == NETSTATUS_DISCONNECT)
@@ -404,7 +404,7 @@ bool NetWork::Recv(NetPacket* pkNetPacket)
 			return true;
 		}
 	}
-*/
+
 	
 	return false;
 }

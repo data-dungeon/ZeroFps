@@ -105,7 +105,7 @@ int RemoteNode::GetFreeRelRecv()
 int RemoteNode::GetRelRecv(int iID)
 {
 	for(int i=0; i<ZF_NET_MAXREL; i++) {
-		if(m_akRelPackRecv[i].m_kHeader.m_iOrder == iID)
+		if(m_akRelPackRecv[i].m_kHeader.m_iPacketType != ZF_NETTYPE_NONE && m_akRelPackRecv[i].m_kHeader.m_iOrder == iID)
 			return i;
 		}
 
