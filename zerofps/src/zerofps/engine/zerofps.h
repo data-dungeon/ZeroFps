@@ -85,15 +85,17 @@ class ENGINE_API ZeroFps : public ZFObject {
 
 
 	public:
-		Application* m_pkApp;						//application
-		CmdSystem* m_pkCmd;							//realtime variable handler
-		ZFBasicFS* m_pkBasicFS;					//basic filesystem funktions
-		AudioManager* m_pkAudioMan;			//audio manager (sfx,music)		
-		TextureManager* m_pkTexMan;			//texture manager
-		PropertyFactory* m_pkPropertyFactory;		
+		Application*		m_pkApp;					//application
+		CmdSystem*			m_pkCmd;					//realtime variable handler
+		ZFBasicFS*			m_pkBasicFS;				//basic filesystem funktions
+		ZFVFileSystem*		m_pkZFVFileSystem;
+
+		AudioManager*		m_pkAudioMan;				//audio manager (sfx,music)		
+		TextureManager*		m_pkTexMan;					//texture manager
+		PropertyFactory*	m_pkPropertyFactory;		
 		Input* m_pkInput;								//keyboard mouse input
-		Render* m_pkRender;					//graphic primitives
-		Console* m_pkConsole;						//console handler
+		Render* m_pkRender;								//graphic primitives
+		Console* m_pkConsole;							//console handler
 		FileIo* m_pkFile;								//file io
 		Light* m_pkLight;
 		ObjectManager* m_pkObjectMan;

@@ -17,6 +17,7 @@ class ZFIoFile;
 class ZFFile;
 class ZFBasicFS;
 
+
 class ZFMemPackage;
 class ZFIni;
 
@@ -47,6 +48,8 @@ class ZFIni;
 #include "zfiofile.h"
 #include "zffile.h"
 #include "zfbasicfs.h"
+
+#include "zfvfs.h"
 
 #include "zfmempackage.h"
 #include "rect.h"

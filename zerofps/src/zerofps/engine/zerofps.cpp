@@ -13,6 +13,7 @@ ZeroFps::ZeroFps(void)
 
 	m_pkFile=new FileIo;
 	m_pkBasicFS=new ZFBasicFS;
+	m_pkZFVFileSystem = new ZFVFileSystem;
 	m_pkTexMan=new TextureManager(m_pkFile);
 	m_pkInput=new Input();		
 	m_pkPropertyFactory=new PropertyFactory();
