@@ -168,6 +168,7 @@ public:
 
 	int m_iMouseX, m_iMouseY;
 	bool m_bMouseLeftPressed;
+	bool m_bMouseRightPressed;
 
 	bool m_bDisableAlphatest;
 	bool m_bUseHardwareMouse;  // true = snabb, go mus

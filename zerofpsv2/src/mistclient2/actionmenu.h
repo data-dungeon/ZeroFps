@@ -21,7 +21,7 @@ public:
 	void Open();
 	void Close();
 	void OnCommand(string strController);
-	void OnMouseMove();
+	void OnMouseMove(bool bLeftButtonPressed, int x, int y);
 	void SetEntity(Entity* pkEnt);
 
 private:

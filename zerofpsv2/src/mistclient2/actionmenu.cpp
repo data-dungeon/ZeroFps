@@ -17,7 +17,10 @@ void GuiMsgActionDlg( string strMainWnd, string strController, unsigned int msg,
 
 	if(msg == ZGM_MOUSEMOVE)
 	{
-		g_kMistClient.m_pkActionDlg->OnMouseMove();
+		int pressed = ((int*)params)[0];
+		int x = ((int*)params)[1];
+		int y = ((int*)params)[2];
+		g_kMistClient.m_pkActionDlg->OnMouseMove(pressed < 1 ? false : true, x, y);
 	}
 }
 
@@ -31,7 +34,7 @@ ActionMenu::ActionMenu() : ICON_WIDTH(64), ICON_HEIGHT(64)
 	m_pkMainWnd->Hide();
 	m_pkMainWnd->SetSkin(new ZGuiSkin());
 	m_pkMainWnd->GetSkin()->m_bTransparent = true; 
-
+	
 	m_pkEntity = NULL;
 
 	for(int i=0; i<75; i++)
@@ -82,6 +85,7 @@ void ActionMenu::Open()
 
 	char szIcon[512];
 
+//	g_kMistClient.m_pkGui->SetCaptureToWnd(m_pkMainWnd);
 	g_kMistClient.SetGuiCapture(true);
 
 	ResetIconSkins();
@@ -193,6 +197,7 @@ void ActionMenu::Close()
 
 	m_pkEntity = NULL;
 	m_pkMainWnd->Hide();
+//	g_kMistClient.m_pkGui->KillWndCapture(); 
 	g_kMistClient.SetGuiCapture(false);
 }
 
@@ -220,19 +225,36 @@ void ActionMenu::ResetIconSkins()
 
 void ActionMenu::OnCommand(string strController)
 {
-	ZGuiWnd* pkClickWnd = g_kMistClient.GetWnd(strController);
 
-	if(pkClickWnd)
+}
+
+void ActionMenu::OnMouseMove(bool bLeftButtonPressed, int mx, int my)
+{
+	ZGuiWnd* pkWndButtonCursor = NULL;
+
+	list<ZGuiWnd*> kChilds;
+	m_pkMainWnd->GetChildrens(kChilds);
+	for(list<ZGuiWnd*>::iterator it = kChilds.begin(); it!=kChilds.end(); it++) 
 	{
-		m_pkIconSelection->SetZValue(pkClickWnd->m_iZValue+1);
-		m_pkMainWnd->SortChilds(); 
+		if((*it) != m_pkIconSelection)
+		{
+			Rect rc = (*it)->GetScreenRect();
+			if(rc.Inside(mx,my))
+			{
+				pkWndButtonCursor = (*it);
+				m_pkIconSelection->SetPos(rc.Left,rc.Top,true,true);
+				break;
+			}
+		}
+	}
 
-		GuiType eType = g_kMistClient.GetWndType(pkClickWnd);
-
-		if(eType == Button)
-		{			
+	if(g_kMistClient.m_pkGui->m_bMouseRightPressed == false) 
+	{
+		if(pkWndButtonCursor != NULL)
+		{
 			if(m_pkEntity != NULL && !m_kActions.empty())
 			{
+				string strController = pkWndButtonCursor->GetName();
 				int p = strController.find("_");
 				if(p != string::npos)
 				{
@@ -241,30 +263,7 @@ void ActionMenu::OnCommand(string strController)
 					g_kMistClient.SendAction(m_pkEntity->GetEntityID(),m_kActions[iAction]);
 				}
 			}
-
-			Close();
 		}
-	}
-}
-
-void ActionMenu::OnMouseMove()
-{
-	float mx, my;
-	g_kMistClient.m_pkInputHandle->MouseXY(mx, my);
-
-	list<ZGuiWnd*> kChilds;
-	m_pkMainWnd->GetChildrens(kChilds);
-	for(list<ZGuiWnd*>::iterator it = kChilds.begin(); it!=kChilds.end(); it++) 
-	{
-		Rect rc = (*it)->GetScreenRect();
-		if(rc.Inside(mx,my))
-		{
-			m_pkIconSelection->SetPos(rc.Left,rc.Top,true,true);
-		}
-	}
-
-	if(g_kMistClient.m_pkInputHandle->Pressed(MOUSELEFT)) 
-	{
 		Close();
 	}
 }

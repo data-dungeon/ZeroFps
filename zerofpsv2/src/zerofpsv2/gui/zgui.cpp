@@ -1298,6 +1298,7 @@ bool ZGui::OnMouseUpdate(int x, int y, bool bLBnPressed,
 	// Register public variables needed by the editbox.
 	m_iMouseX = x; m_iMouseY = y;
 	m_bMouseLeftPressed = bLBnPressed;
+	m_bMouseRightPressed = bRBnPressed;
 
 	if(m_bUseHardwareMouse == false)
 		m_pkCursor->SetPos(x,y);
@@ -1429,17 +1430,17 @@ bool ZGui::OnMouseUpdate(int x, int y, bool bLBnPressed,
 	ZGuiWnd::m_pkWndUnderCursor = pkFocusWindow;
 
 	// Send a Mouse Move Message...
-	static int s_iPrevX=-1;
-	static int s_iPrevY=-1;
-	if((s_iPrevX != x || s_iPrevY != y) && ZGuiWnd::m_pkFocusWnd != NULL)
+	//static int s_iPrevX=-1;
+	//static int s_iPrevY=-1;
+	if(/*(s_iPrevX != x || s_iPrevY != y) && */ZGuiWnd::m_pkFocusWnd != NULL)
 	{
 		int* pkParams = new int[3];
-		pkParams[0] = (int) bLeftButtonDown; pkParams[1] = x; pkParams[2] = y;
+		pkParams[0] = (int) bLBnPressed; pkParams[1] = x; pkParams[2] = y;
 		m_pkActiveMainWin->pkCallback(ZGuiWnd::m_pkFocusWnd,
 			ZGM_MOUSEMOVE,3,pkParams);
 		delete[] pkParams;
-		s_iPrevX = x;
-		s_iPrevY = y;
+		//s_iPrevX = x;
+		//s_iPrevY = y;
 	}
 
 	bool bLeftPressed =  (m_bLeftButtonDown  == false && bLeftButtonDown  == true);

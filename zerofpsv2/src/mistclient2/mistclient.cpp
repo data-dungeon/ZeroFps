@@ -115,6 +115,10 @@ void MistClient::OnInit()
 		else
 			cout<<"WARNING: could not find menulevel"<<endl;	
 	}
+	else
+	{
+		GetWnd("MLStartWnd")->GetSkin()->m_bTransparent = false;
+	}
 
 	/*
 	if(m_bShowMenulevel)
@@ -344,6 +348,9 @@ void MistClient::Input()
 		bool bSet = !m_bGuiCapture;
 		SetGuiCapture(bSet);
 	}
+
+	//if(m_bGuiCapture)
+	//	return;
 
 	//get relative mouse
 	float x=0;
@@ -977,6 +984,7 @@ void MistClient::SetGuiCapture(bool bCapture)
 	
 	if(m_bGuiCapture == true)
 	{
+		g_kMistClient.m_pkGui->m_bHandledMouse = false;
 		m_pkInputHandle->SetCursorInputPos(m_pkRender->GetWidth()/2,m_pkRender->GetHeight()/2);
 		m_pkGui->ShowCursor(true);
 	}

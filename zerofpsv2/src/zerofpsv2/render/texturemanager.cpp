@@ -501,7 +501,7 @@ const char* TextureManager::GetFileName(unsigned int uiIndex)
 	 {
 		if(m_iTextures[i] == NULL)		continue;
 
-		if(m_iTextures[i]->index == uiIndex/*+1*/)		// måste lägga till 1!
+		if(m_iTextures[i]->index == uiIndex+1)		// måste lägga till 1!
 			return m_iTextures[i]->file.c_str();        
 	}
 
