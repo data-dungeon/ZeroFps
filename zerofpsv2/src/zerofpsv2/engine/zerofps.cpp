@@ -67,7 +67,7 @@ ZeroFps::ZeroFps(void) : I_ZeroFps("ZeroFps")
 	// Set Default values
 	m_fFrameTime				= 0;
 	m_fLastFrameTime			= 0;
-	m_fSystemUpdateFps		= 10;
+	m_fSystemUpdateFps		= 20;
 	m_fSystemUpdateTime		= 0;
 	m_bServerMode				= false;
 	m_bClientMode				= false;

@@ -126,6 +126,8 @@ ZFResource* Create__EnvSetting()
 
 P_Enviroment::P_Enviroment()
 {
+	cout<<"HORA"<<endl;
+
 	strcpy(m_acName,"P_Enviroment");		
 	m_iType=PROPERTY_TYPE_RENDER;
 	m_iSide=PROPERTY_SIDE_CLIENT;
@@ -205,14 +207,13 @@ void P_Enviroment::Update()
 
 void P_Enviroment::ZoneChange(int iCurrent,int iNew)
 {
-	//cout<<"zonechange"<<endl;
+	cout<<"zonechange"<<endl;
 	ZoneData* zd = m_pkObjectMan->GetZoneData(iNew);
 
 	if(zd)	
 	{	
 		m_StrCurrentEnviroment = zd->m_strEnviroment;
 		SetNetUpdateFlag(true);
-
 	}
 }
 
