@@ -569,6 +569,9 @@ void ZeroFps::RemoveRenderTarget(Camera* pkCamera)
 
 void ZeroFps::Draw_RenderTarget(Camera* pkCamera)
 {
+//	cout << "DrawCam: " << pkCamera->GetName();
+//	cout << endl;
+
 	// Save State
 	glPushAttrib(GL_TEXTURE_BIT | GL_LIGHTING_BIT | GL_FOG_BIT | 
 		GL_DEPTH_BUFFER_BIT | GL_ENABLE_BIT | GL_CURRENT_BIT | GL_VIEWPORT_BIT | GL_SCISSOR_BIT );

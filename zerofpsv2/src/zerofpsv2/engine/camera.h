@@ -27,9 +27,10 @@ class ENGINE_API Camera
 			CAMMODE_ORTHO_RIGHT,
 		};
 	
-		ZGuiWnd*	m_pkWnd;
 
 	private:	
+		ZGuiWnd*	m_pkWnd;
+
 		Render*	m_pkRender;
 
 		Matrix4	m_kCamProjectionMatrix;
@@ -128,6 +129,8 @@ class ENGINE_API Camera
 		static bool		m_bDrawOrthoGrid;
 		static float	m_fGridSpace;
 		static bool		m_bGridSnap;
+
+		friend			ZGuiWnd;
 
 		//float m_fX;
 		//float m_fY;

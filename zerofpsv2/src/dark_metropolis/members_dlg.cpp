@@ -943,12 +943,12 @@ void CMembersDlg::UpdateCamera()
 		if(GetWnd("TestCameraWnd")->IsVisible())
 		{
 			m_pkModellCamera->SetRender(true);			
-			m_pkModellCamera->ClearViewPort(); 
-			m_pkModellCamera->Update(256, 256);
+			//m_pkModellCamera->ClearViewPort(); 
+			//m_pkModellCamera->UpdateAll(256, 256);
 		}
 		else
 		{
-			m_pkModellCamera->SetRender(false);			
+			//m_pkModellCamera->SetRender(false);			
 		}
 	}
 }
