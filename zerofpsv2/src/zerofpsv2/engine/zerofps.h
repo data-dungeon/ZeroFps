@@ -11,7 +11,6 @@
 #include "../ogl/zfpsgl.h"
 #include "network.h"
 #include "../basic/zfresourcedb.h"
-//#include "mad_core.h"
 #include "../physics_engine/physics_engine.h"
 #include "fh.h"
 #include "object.h"
@@ -117,14 +116,7 @@ class ENGINE_API ZeroFps : public I_ZeroFps {
 		float 		m_fLastFrameTime;
 		float 		m_fAvrageFpsTime;
 		int			m_iAvrageFrameCount;
-		// DebugGraph	m_kFpsGraph;
-
 		
-/*		SDL_Surface* m_pkScreen;
-		int		m_iWidth,m_iHeight,m_iDepth;
-		int		m_iFullScreen;
-		bool  	m_bCapture;							// True if we should capture this frame
-*/
 		float 	m_fSystemUpdateFps;
 		float 	m_fSystemUpdateTime;
 		float 	m_fGameTime;
@@ -183,50 +175,44 @@ class ENGINE_API ZeroFps : public I_ZeroFps {
 		ZShader*					m_pkZShader;				///< zerofps shader system
 		OggMusic*				m_pkMusic;
 		PSystemManager*		m_pkPSystemManager;		///< ParticleSystemManager - Zerom
-		AStar*				m_pkAStar;
+		AStar*					m_pkAStar;
 
 		int		m_iState;									//	curent game state see enum enginestates
 		float		m_fFps;										//	curent FPS
 		float		m_fAvrageFps;
-		float		m_fFrameTime;									//	frametime in MS
+		float		m_fFrameTime;								//	frametime in MS
 		
 		bool		m_bServerMode;
 		bool		m_bClientMode;
-		//bool	m_bDrawDevList;
 		bool		m_bGuiMode, m_bGuiTakeControl;
 		bool		m_bRunWorldSim;
-
 		
 		int		m_iMadDraw;									//	Flags for what part's of mad's that should be draw.
-		float		m_fMadLod;										//	If not 0 then force this LOD % on every mad.
+		float		m_fMadLod;									//	If not 0 then force this LOD % on every mad.
 
-		vector<ZFClient>		m_kClient;
+		vector<ZFClient>		m_kClient;					
 
 		ZeroFps(void);		
 		~ZeroFps();		
 		void SetApp(void);
 		bool Init(int iNrOfArgs, char** paArgs);	
 		void MainLoop(void);		
-/*		void InitDisplay(int iWidth,int iHeight,int iDepth);		
-		void SetDisplay(int iWidth,int iHeight,int iDepth);
-		void SetDisplay();*/
 		void Swap(void);											//	swap gl buffers
 		
 		void ToggleFullScreen(void);
 		void ToggleGui(void);
 		
-		float GetTicks() {return float((SDL_GetTicks()/1000.0));};
-		float GetFrameTime() {return float((m_fFrameTime/1000.0));};
-		float GetGameTime() {return m_fGameTime;};
-		float GetGameFrameTime() {return m_fGameFrameTime;};
-		float GetLastGameUpdateTime(){return m_fSystemUpdateTime;};
-		float GetEngineTime() { return m_fEngineTime; }
+		// Timer Functions.
+		float GetTicks()					{	return float((SDL_GetTicks()/1000.0));};
+		float GetFrameTime()				{	return float((m_fFrameTime/1000.0));};
+		float GetGameTime()				{	return m_fGameTime;};
+		float GetGameFrameTime()		{	return m_fGameFrameTime;};
+		float GetLastGameUpdateTime()	{	return m_fSystemUpdateTime;};
+		float GetEngineTime()			{	return m_fEngineTime; }
 
 		void SetCamera(Camera* pkCamera);	
 		void UpdateCamera();
 		Camera *GetCam() {return m_pkCamera;};		
-		//int	NumberOfArgs(void);										// Return num of arg to app.
-		//string GetArg(int iArgIndex);
 	
 		vector<DevStringPage>	m_DevStringPage;					
 		DevStringPage*	DevPrint_FindPage(const char* szName);		
@@ -255,25 +241,12 @@ class ENGINE_API ZeroFps : public I_ZeroFps {
 		int GetHeight(){return m_pkRender->GetHeight();};		
 		int GetDepth(){return m_pkRender->GetDepth();};		
 
-
 		// Called by network.
-		/* PreConnect is called when a connection is about to be made. It's after a Connect message
-			for a server Node that accepts connections. Never called on a client node. Return false
-			to deny connection. Put reason if any into szWhy256. */
-		bool PreConnect(IPaddress kRemoteIp, char* szWhy256);
-		/* Connect is called when a connection have been made. It is called after PreConnect on server if
-			PreConnect returns true. It is called on Clients when they recive connect_yes from server.
-			Return value is the NetID off the client object on the server. It don't matter on the client. */
-		int Connect(int iConnectionID);
-		/*	Called when a connection is closed down by the other side. */
-		void Disconnect(int iConnectionID);
-
-
-		// ZeroRTS - 
-		/* Returns ID of of object Client use to send data to server. Returns -1 if object is unknown at the moment.
-			Keep asking :).*/
-		int GetClientObjectID();
-		int GetConnectionID() {return m_iServerConnection;};
+		bool	PreConnect(IPaddress kRemoteIp, char* szWhy256);
+		int	Connect(int iConnectionID);
+		void	Disconnect(int iConnectionID);
+		int	GetClientObjectID();
+		int	GetConnectionID() {	return m_iServerConnection;	};		///< Return our Connection Num on the Server.
 		
 		bool StartUp();
 		bool ShutDown();

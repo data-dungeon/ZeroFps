@@ -84,8 +84,10 @@ class ENGINE_API ObjectManager : public ZFSubSystem{
 		list<ObjectArcheType*>	m_akArcheTypes;						///< List of all object Archetypes.
 
 		list<Object*>				m_akObjects;									///< List of all objects.
+		
+		// DELETE
 		vector<int>					m_aiDeleteList;
-		vector<int>					m_aiNetDeleteList;
+//		vector<int>					m_aiNetDeleteList;
 		
 		// Zones
 		vector<ZoneData>			m_kZones;
@@ -127,13 +129,16 @@ class ENGINE_API ObjectManager : public ZFSubSystem{
 
 		// Add/Remove Objects
 		void Add(Object* pkNewObject);									///< Add object to the manager
+		void Clear();															///< Delete all objects.
+
+		// DELETE
 		void Delete(Object* pkNewObject);								///< Adds an object to delete qeue
 		void Remove(Object* pkObject);									///< Dont use this..use Delete instead
-		void Clear();															///< Delete all objects.
+		void UpdateDelete();													///< Deletes objects in delete qeue	
+		void UpdateDeleteList(NetPacket* pkNetPacket);
 
 		// Updates
 		void Update(int iType,int iSide,bool bSort);					///< Run update on selected propertys.
-		void UpdateDelete();													///< Deletes objects in delete qeue	
 		void UpdateGameMessages(void);									///< Update game messages.
 		void SetUpdate(bool bUpdate) { m_bUpdate=bUpdate; };		
 
@@ -165,7 +170,6 @@ class ENGINE_API ObjectManager : public ZFSubSystem{
 		void UpdateZoneList(NetPacket* pkNetPacket);
 		void PackZoneListToClient(int iClient, set<int>& iZones /* TrackProperty* pkTrack*/ );
 		void UpdateState(NetPacket* pkNetPacket);						//Updates objects.
-		void UpdateDeleteList(NetPacket* pkNetPacket);
 		void PackToClient(int iClient, vector<Object*> kObjects);
 		void PackToClients();												//Packs and Sends to ALL clients.
 

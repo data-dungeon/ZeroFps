@@ -180,8 +180,8 @@ void ObjectManager::Add(Object* pkObject)
 void ObjectManager::Remove(Object* pkObject) 
 {	
 	// If i own object mark so we remove it on clients.
-	if(pkObject->m_eRole == NETROLE_AUTHORITY && pkObject->m_eRemoteRole == NETROLE_PROXY)
-		m_aiNetDeleteList.push_back(pkObject->iNetWorkID);
+//	if(pkObject->m_eRole == NETROLE_AUTHORITY && pkObject->m_eRemoteRole == NETROLE_PROXY)
+//		m_aiNetDeleteList.push_back(pkObject->iNetWorkID);
 	m_akObjects.remove(pkObject);
 }
 
@@ -193,13 +193,54 @@ void ObjectManager::Delete(Object* pkObject)
 	for(vector<int>::iterator it=m_aiDeleteList.begin();it!=m_aiDeleteList.end();it++) 
 	{
 		if(pkObject->iNetWorkID == (*it)) {
-			//Logf("net", "Object [%d] already in delete list\n", pkObject->iNetWorkID);
+			Logf("net", "Object [%d] already in delete list\n", pkObject->iNetWorkID);
 			//cout << "Object already in delete list" << endl;
 			return;
 		}
 	}
 	
 	m_aiDeleteList.push_back(pkObject->iNetWorkID);
+}
+
+void ObjectManager::UpdateDelete()
+{
+	int iSize = m_aiDeleteList.size();
+
+	if(m_aiDeleteList.size()==0)
+		return;
+	
+	for(vector<int>::iterator it=m_aiDeleteList.begin();it!=m_aiDeleteList.end();it++) 
+	{
+		Object* pkObject = GetObjectByNetWorkID((*it));
+
+		if(pkObject) { // If i own object mark so we remove it on clients.
+			/*if(pkObject->m_eRole == NETROLE_AUTHORITY && pkObject->m_eRemoteRole == NETROLE_PROXY)
+				m_aiNetDeleteList.push_back((*it));*/
+			delete pkObject;		
+			}
+	}
+
+	m_aiDeleteList.clear();
+
+}
+
+void ObjectManager::UpdateDeleteList(NetPacket* pkNetPacket)
+{
+	Object* pkNetSlave;
+	int iObjectID;
+	pkNetPacket->Read(iObjectID);
+
+	while(iObjectID != -1) {
+		//Logf("net", "Delete: Object %d\n", iObjectID);
+		pkNetSlave = GetObjectByNetWorkID(iObjectID);
+		if(pkNetSlave == NULL) {
+			//Logf("net", " Object '%d' not found.\n", iObjectID);	
+			}
+		else {
+			Delete(pkNetSlave);
+			}
+		pkNetPacket->Read(iObjectID);
+		}	
 }
 
 /**	\brief	Adds an object to delete qeue
@@ -266,59 +307,7 @@ void ObjectManager::Update(int iType,int iSide,bool bSort)
 	}
 }
 
-void ObjectManager::UpdateDelete()
-{
-/*	int i=0;
-	for(vector<Object*>::iterator it2=m_akDeleteList.begin();it2!=m_akDeleteList.end();it2++) 
-	{
-		Object* pkObject = (*it2);
-		//cout << "[" << i << "]:" << pkObject->GetName() << "," << pkObject->iNetWorkID << endl;
-		i++;
-	}
 
-	int iSize = m_akDeleteList.size();
-
-	if(m_akDeleteList.size()==0)
-		return;
-	
-	for(vector<Object*>::iterator it=m_akDeleteList.begin();it!=m_akDeleteList.end();it++) 
-	{
-		Object* pkObject = (*it);
-		// If i own object mark so we remove it on clients.
-		if(pkObject->m_eRole == NETROLE_AUTHORITY && pkObject->m_eRemoteRole == NETROLE_PROXY)
-			m_aiNetDeleteList.push_back((*it)->iNetWorkID);
-		delete (*it);		
-	}
-
-	m_akDeleteList.clear();*/
-
-/*	int i=0;
-	for(vector<int>::iterator it2=m_aiDeleteList.begin();it2!=m_aiDeleteList.end();it2++) 
-	{
-		
-		Object* pkObject = GetObjectByNetWorkID((*it2));
-		//cout << "[" << i << "]:" << pkObject->GetName() << "," << pkObject->iNetWorkID << endl;
-		i++;
-	}*/
-
-	int iSize = m_aiDeleteList.size();
-
-	if(m_aiDeleteList.size()==0)
-		return;
-	
-	for(vector<int>::iterator it=m_aiDeleteList.begin();it!=m_aiDeleteList.end();it++) 
-	{
-		Object* pkObject = GetObjectByNetWorkID((*it));
-		if(pkObject) { // If i own object mark so we remove it on clients.
-			if(pkObject->m_eRole == NETROLE_AUTHORITY && pkObject->m_eRemoteRole == NETROLE_PROXY)
-				m_aiNetDeleteList.push_back((*it));
-			delete pkObject;		
-			}
-	}
-
-	m_aiDeleteList.clear();
-
-}
 
 void ObjectManager::UpdateGameMessages(void)
 {
@@ -522,24 +511,7 @@ Object*	ObjectManager::GetObjectByNetWorkID(int iNetID)
 
 
 // NetWork
-void ObjectManager::UpdateDeleteList(NetPacket* pkNetPacket)
-{
-	Object* pkNetSlave;
-	int iObjectID;
-	pkNetPacket->Read(iObjectID);
 
-	while(iObjectID != -1) {
-		//Logf("net", "Delete: Object %d\n", iObjectID);
-		pkNetSlave = GetObjectByNetWorkID(iObjectID);
-		if(pkNetSlave == NULL) {
-			//Logf("net", " Object '%d' not found.\n", iObjectID);	
-			}
-		else {
-			Delete(pkNetSlave);
-			}
-		pkNetPacket->Read(iObjectID);
-		}	
-}
 
 void ObjectManager::UpdateState(NetPacket* pkNetPacket)
 {
@@ -765,7 +737,11 @@ void ObjectManager::PackToClients()
 			}
 		}
 
-	if(m_aiNetDeleteList.size() == 0)
+	for(list<Object*>::iterator it = m_akObjects.begin(); it != m_akObjects.end(); it++) {
+		(*it)->m_aiNetDeleteList.clear();
+		}
+
+/*	if(m_aiNetDeleteList.size() == 0)
 		return;
 
 	// Pack delete data.
@@ -796,7 +772,7 @@ void ObjectManager::PackToClients()
 	NP.Write(ZFGP_ENDOFPACKET);
 	m_pkNetWork->SendToAllClients(&NP);
 
-	m_aiNetDeleteList.clear();
+	m_aiNetDeleteList.clear();*/
 }
 
 
@@ -1515,12 +1491,13 @@ void ObjectManager::UpdateZones()
 	float fTime = m_pkZeroFps->GetGameTime();
 	ZoneData* pkZone;
 	ZoneData* pkStartZone;
+	unsigned int iZ;
 
 
 	int iTrackerLOS = 5;
 
 	// Set All Zones as inactive.
-	for(unsigned int iZ=0;iZ<m_kZones.size();iZ++) {
+	for(iZ=0;iZ<m_kZones.size();iZ++) {
 		m_kZones[iZ].m_bActive							= false;
 		m_kZones[iZ].m_fInactiveTime					= fTime;
 		m_kZones[iZ].m_iRange							= 1000;
@@ -1537,6 +1514,9 @@ void ObjectManager::UpdateZones()
 		// Find Active Zone.
 		TrackProperty* pkTrack = dynamic_cast<TrackProperty*>((*iT)->GetProperty("TrackProperty"));
 		pkTrack->m_iActiveZones.clear();
+
+		for(iZ=0;iZ<m_kZones.size();iZ++)
+			m_kZones[iZ].m_iRange							= 1000;
 		
 		//get current zone
 		iZoneIndex = GetZoneIndex((*iT),(*iT)->m_iCurrentZone,pkTrack->m_bClosestZone);

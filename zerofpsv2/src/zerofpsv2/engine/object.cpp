@@ -57,6 +57,12 @@ Object::~Object()
 	// First we remove all childs
 	DeleteAllChilds();
 
+	// Add Ourself to our Net.DeletList
+	m_aiNetDeleteList.push_back(iNetWorkID);
+	// Add our Net.DeleteList to our parent.
+	if(m_pkParent != NULL)
+		m_pkParent->m_aiNetDeleteList.insert(m_pkParent->m_aiNetDeleteList.begin(), m_aiNetDeleteList.begin(), m_aiNetDeleteList.end());
+
 	// Then we remove ourself from our master.
 	if(m_pkParent != NULL)
 		m_pkParent->RemoveChild(this);
@@ -496,6 +502,7 @@ bool Object::NeedToPack()
 }
 
 
+
 /**	\brief	Pack Object.
 */
 void Object::PackTo(NetPacket* pkNetPacket)
@@ -508,9 +515,19 @@ void Object::PackTo(NetPacket* pkNetPacket)
 
 	// Force Pos Updates
 	m_iNetUpdateFlags |= (OBJ_NETFLAG_POS | OBJ_NETFLAG_ROT);
+	if(m_aiNetDeleteList.size())
+		m_iNetUpdateFlags |= OBJ_NETFLAG_DEL;
 
 	// Write Object Update Flags.
 	pkNetPacket->Write( m_iNetUpdateFlags );
+
+	// Write Delete List
+	if(m_iNetUpdateFlags & OBJ_NETFLAG_DEL) {
+		pkNetPacket->Write((int) m_aiNetDeleteList.size() );
+
+		for(int i=0; i<m_aiNetDeleteList.size(); i++)
+			pkNetPacket->Write((int) m_aiNetDeleteList[i] );
+		}
 
 	//	Write Pos, Rotation, radius and name.
 	Vector3 kPos;
@@ -559,6 +576,8 @@ void Object::PackTo(NetPacket* pkNetPacket)
 */
 void Object::PackFrom(NetPacket* pkNetPacket)
 {
+	int iDelObjectID;
+
 	int iParentID;
 	pkNetPacket->Read(iParentID);
 //	m_pkParent = ;
@@ -571,6 +590,20 @@ void Object::PackFrom(NetPacket* pkNetPacket)
 	float	  fFloat;
 
 	pkNetPacket->Read( m_iNetUpdateFlags );
+
+	if(m_iNetUpdateFlags & OBJ_NETFLAG_DEL) {
+		int iNumDelObjects;
+		Object* pkNetSlave;
+
+		pkNetPacket->Read(iNumDelObjects);
+
+		for(int i=0; i<iNumDelObjects; i++) {
+			pkNetPacket->Read(iDelObjectID );
+			pkNetSlave = m_pkObjectMan->GetObjectByNetWorkID(iDelObjectID);
+			m_pkObjectMan->Delete(pkNetSlave);
+			}
+		}
+
 	if(m_iNetUpdateFlags & OBJ_NETFLAG_POS) {
 		pkNetPacket->Read(kVec);
 		SetLocalPosV(kVec);

@@ -118,6 +118,7 @@ public:
 // Net Flags for Network updates
 #define OBJ_NETFLAG_POS		1
 #define OBJ_NETFLAG_ROT		2
+#define OBJ_NETFLAG_DEL		4
 
 
 /**	\brief	Game Object for things in game 
@@ -137,7 +138,8 @@ class ENGINE_API Object
 {
 	private:
 		Object*						m_pkParent;							///< Parent Object. NULL If None
-		vector<GameMessage>			m_kGameMessages;					///< Messages that are waiting to be handled by this object.
+		vector<GameMessage>		m_kGameMessages;					///< Messages that are waiting to be handled by this object.
+		vector<int>					m_aiNetDeleteList;				
 
 	protected:
 		enum HAVE_DATA				//used in m_kGotData

@@ -479,10 +479,6 @@ void ZeroFps::MainLoop(void) {
 			}
 
 		Draw_EngineShell();
-
-//		m_kFpsGraph.DrawGraph(0,200);
-//		m_pkNetWork->DrawConnectionGraphs();
-
 	}
 }
 
@@ -513,9 +509,6 @@ void ZeroFps::Swap(void) {
 	m_fLastFrameTime=SDL_GetTicks();
 	m_fFps=1000.0/m_fFrameTime;	
 
-//	m_kFpsGraph.PushValue( m_fFps);
-//	m_kFpsGraph.PushValue( 500 );
-	
 	m_iAvrageFrameCount++;
 	
 	if( (GetTicks() - m_fAvrageFpsTime) >1)
@@ -552,42 +545,6 @@ void ZeroFps::ToggleGui(void)
 		m_pkGui->Activate(m_bGuiMode);
 	}
 }
-
-/*
-void ZeroFps::InitDisplay(int iWidth,int iHeight,int iDepth) 
-{
-	//m_pkRender->InitDisplay(iWidth,iHeight,iDepth);
-
-	// Must call set res again or else GUI doesnt work..
-	m_pkGui->SetRes(m_pkRender->GetWidth(), m_pkRender->GetHeight());
-
-	m_pkApp->m_iWidth = m_pkRender->GetWidth();
-	m_pkApp->m_iHeight = m_pkRender->GetHeight();
-
-	m_pkConsoleCamera=new Camera(Vector3(0,0,0),Vector3(0,0,0),84,1.333,0.3,250);	
-}
-*/
-
-/*
-void ZeroFps::SetDisplay(int iWidth,int iHeight,int iDepth)
-{
-	m_pkRender->SetDisplay(iWidth,iHeight,iDepth);
-
-}
-
-
-void ZeroFps::SetDisplay()
-{
-	DrawDevStrings();
-
-	m_pkRender->SetDisplay();
-
-	if(m_pkGuiRenderer->SetDisplay(m_pkRender->GetWidth(),m_pkRender->GetHeight()) == false)
-	{
-		printf("Failed to set GUI display!\n");
-	}
-}
-*/
 
 void ZeroFps::SetCamera(Camera* pkCamera)
 {
@@ -1013,12 +970,24 @@ void ZeroFps::GetEngineCredits(vector<string>& kCreditsStrings)
 	kCreditsStrings.push_back( string("   Magnus 'Zerom' ?			") );
 }
 
+/**	\brief	Called before someone would like to connect.
+
+	PreConnect is called when a connection is about to be made. It's after a Connect message
+	for a server Node that accepts connections. Never called on a client node. Return false
+	to deny connection. Put reason if any into szWhy256.
+*/
 bool ZeroFps::PreConnect(IPaddress kRemoteIp, char* szWhy256)
 {
 	m_pkConsole->Printf("ZeroFps::PreConnect()");
 	return true; 
 }
 
+/**	\brief	Called when someone have been connected.
+
+	Connect is called when a connection have been made. It is called after PreConnect on server if
+	PreConnect returns true. It is called on Clients when they recive connect_yes from server.
+	Return value is the NetID off the client object on the server. It don't matter on the client.
+*/
 int ZeroFps::Connect(int iConnectionID) 
 {
 	if(!m_bServerMode)
@@ -1050,6 +1019,8 @@ int ZeroFps::Connect(int iConnectionID)
 	return m_kClient[iConnectionID].m_pkObject->iNetWorkID;
 }
 
+/**	\brief	Called when a connection is closed down.
+*/
 void ZeroFps::Disconnect(int iConnectionID)
 {
 	if(!m_bServerMode)
@@ -1064,15 +1035,22 @@ void ZeroFps::Disconnect(int iConnectionID)
 	m_kClient[iConnectionID].m_pkObject = NULL;
 }
 
+
+/**	\brief	Returns ID of of object Client use to send data to server.	
+
+	Returns ID of of object Client use to send data to server. Returns -1 if object is unknown at the moment.
+	Keep asking :)
+*/
 int ZeroFps::GetClientObjectID()
 {
-	if(m_iRTSClientObject == -1) {
-		//m_pkNetWork->RTS_RequestClientObjectID();
-		}
+/*	if(m_iRTSClientObject == -1) {
+		m_pkNetWork->RTS_RequestClientObjectID();
+		}*/
 
 	return m_iRTSClientObject;
-
 }
+
+		/* .*/
 
 /*Object* ZeroFps::CreateScriptObject(const char *szName)
 {
