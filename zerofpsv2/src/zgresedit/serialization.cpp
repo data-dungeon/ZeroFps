@@ -33,9 +33,6 @@ Serialization::~Serialization()
 
 bool Serialization::SaveGUI(char* szFileName, Scene* pkScene)
 {
-//	return false; // TEST VC7!!!
-
-
 	m_kSavedWnds.clear();
 	
 	string strFileName = ChangeExtension(szFileName); // byt ändelse till .lua
@@ -47,7 +44,7 @@ bool Serialization::SaveGUI(char* szFileName, Scene* pkScene)
 		printf("Failed to save file! Another application may use the file\n");
 	}
 
-	printf("Saving file %s\n", strFileName.c_str());
+	//printf("Saving file %s\n", strFileName.c_str());
 
 	fprintf(pkFile, "-- Mistlands GUI Resource file, START\n\n");
 
@@ -112,7 +109,7 @@ bool Serialization::SaveGUI(char* szFileName, Scene* pkScene)
 
 	vector< pair<ZGuiSkin, string> > kSkinTable;
 
-	char name[50], tex[8][150], szSkin[255];
+	char name[1024], tex[8][1024], szSkin[1024];
 	int r, g, b, r2, g2, b2, bds, tile, trans;
 
 	for(unsigned int i=0; i<vkSkins.size(); i++)
