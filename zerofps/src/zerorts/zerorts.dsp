@@ -92,6 +92,10 @@ SOURCE=.\guibuilder.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\minimap.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\userpanel.cpp
 # End Source File
 # Begin Source File
@@ -105,6 +109,10 @@ SOURCE=.\zerorts.cpp
 # Begin Source File
 
 SOURCE=.\guibuilder.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\minimap.h
 # End Source File
 # Begin Source File
 
