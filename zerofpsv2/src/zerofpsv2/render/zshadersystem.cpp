@@ -249,11 +249,6 @@ void ZShaderSystem::SetupPass(int iPass)
 			break;							
 	}
 
-	//depthtest
-   if ( pkSettings->m_bDepthTest )
-      glEnable (GL_DEPTH_TEST);
-   else
-      glDisable (GL_DEPTH_TEST);
 	
 	//enable/disable stenciltest
    if ( pkSettings->m_bStencilTest )
@@ -371,34 +366,43 @@ void ZShaderSystem::SetupPass(int iPass)
       glDisable (GL_STENCIL_TEST);		
 		
 		
-	//depthfunction settings
-	switch(pkSettings->m_iDepthFunc)
-	{
-		case NEVER_DEPTH:
-			glDepthFunc(GL_NEVER);			
-			break;
-		case LESS_DEPTH:
-			glDepthFunc(GL_LESS);			
-			break;	
-		case EQUAL_DEPTH:
-			glDepthFunc(GL_EQUAL);			
-			break;	
-		case LEQUAL_DEPTH:
-			glDepthFunc(GL_LEQUAL);			
-			break;	
-		case GREATER_DEPTH:
-			glDepthFunc(GL_GREATER);			
-			break;	
-		case NOTEQUAL_DEPTH:
-			glDepthFunc(GL_NOTEQUAL);			
-			break;	
-		case GEQUAL_DEPTH:
-			glDepthFunc(GL_GEQUAL);			
-			break;		
-		case ALWAYS_DEPTH:
-			glDepthFunc(GL_ALWAYS);			
-			break;			
+	//depthtest
+   if ( pkSettings->m_bDepthTest )
+	{      
+		glEnable (GL_DEPTH_TEST);
+	
+		//depthfunction settings
+		switch(pkSettings->m_iDepthFunc)
+		{
+			case NEVER_DEPTH:
+				glDepthFunc(GL_NEVER);			
+				break;
+			case LESS_DEPTH:
+				glDepthFunc(GL_LESS);			
+				break;	
+			case EQUAL_DEPTH:
+				glDepthFunc(GL_EQUAL);			
+				break;	
+			case LEQUAL_DEPTH:
+				glDepthFunc(GL_LEQUAL);			
+				break;	
+			case GREATER_DEPTH:
+				glDepthFunc(GL_GREATER);			
+				break;	
+			case NOTEQUAL_DEPTH:
+				glDepthFunc(GL_NOTEQUAL);			
+				break;	
+			case GEQUAL_DEPTH:
+				glDepthFunc(GL_GEQUAL);			
+				break;		
+			case ALWAYS_DEPTH:
+				glDepthFunc(GL_ALWAYS);			
+				break;			
+		}	
 	}
+   else
+      glDisable (GL_DEPTH_TEST);
+		
 	
 	//enable /disable blending
 	if(pkSettings->m_bFog)
@@ -421,80 +425,83 @@ void ZShaderSystem::SetupPass(int iPass)
 	
 	//enable /disable blending
 	if(pkSettings->m_bBlend)
+	{
+		//enable blending
 		glEnable(GL_BLEND);
+		
+		//setup blending factors
+		int iblendsrc;
+		int iblenddst;
+		//setup src blend factor
+		switch(pkSettings->m_iBlendSrc)
+		{
+			case ZERO_BLEND_SRC:
+				iblendsrc = GL_ZERO;
+				break;
+			case ONE_BLEND_SRC:
+				iblendsrc = GL_ONE;
+				break;
+			case DST_COLOR_BLEND_SRC:
+				iblendsrc = GL_DST_COLOR;
+				break;
+			case ONE_MINUS_DST_COLOR_BLEND_SRC:
+				iblendsrc = GL_ONE_MINUS_DST_COLOR;
+				break;	
+			case SRC_ALPHA_BLEND_SRC:
+				iblendsrc = GL_SRC_ALPHA;
+				break;
+			case ONE_MINUS_SRC_ALPHA_BLEND_SRC:
+				iblendsrc = GL_ONE_MINUS_SRC_ALPHA;
+				break;
+			case DST_ALPHA_BLEND_SRC:
+				iblendsrc = GL_DST_ALPHA;
+				break;
+			case ONE_MINUS_DST_ALPHA_BLEND_SRC:
+				iblendsrc = GL_ONE_MINUS_DST_ALPHA;
+				break;
+			case SRC_ALPHA_SATURATE_BLEND_SRC:
+				iblendsrc = GL_SRC_ALPHA_SATURATE;
+				break;
+			default:
+				iblendsrc = GL_ONE;
+		}
+	
+		//setup dst blend factor	
+		switch(pkSettings->m_iBlendDst)
+		{
+			case ZERO_BLEND_DST:
+				iblenddst = GL_ZERO;
+				break;
+			case ONE_BLEND_DST:
+				iblenddst = GL_ONE;
+				break;
+			case SRC_COLOR_BLEND_DST:
+				iblenddst = GL_SRC_COLOR;
+				break;
+			case ONE_MINUS_SRC_COLOR_BLEND_DST:
+				iblenddst = GL_ONE_MINUS_SRC_COLOR;
+				break;	
+			case SRC_ALPHA_BLEND_DST:
+				iblenddst = GL_SRC_ALPHA;
+				break;
+			case ONE_MINUS_SRC_ALPHA_BLEND_DST:
+				iblenddst = GL_ONE_MINUS_SRC_ALPHA;
+				break;
+			case DST_ALPHA_BLEND_DST:
+				iblenddst = GL_DST_ALPHA;
+				break;
+			case ONE_MINUS_DST_ALPHA_BLEND_DST:
+				iblenddst = GL_ONE_MINUS_DST_ALPHA;
+				break;
+			default:
+				iblenddst = GL_ZERO;
+		}	
+		//finally set opengl blend function
+		glBlendFunc(iblendsrc, iblenddst);		
+	}
 	else
 		glDisable(GL_BLEND);
 		
-	//setup blending factors
-	int iblendsrc;
-	int iblenddst;
-	//setup src blend factor
-	switch(pkSettings->m_iBlendSrc)
-	{
-		case ZERO_BLEND_SRC:
-			iblendsrc = GL_ZERO;
-			break;
-		case ONE_BLEND_SRC:
-			iblendsrc = GL_ONE;
-			break;
-		case DST_COLOR_BLEND_SRC:
-			iblendsrc = GL_DST_COLOR;
-			break;
-		case ONE_MINUS_DST_COLOR_BLEND_SRC:
-			iblendsrc = GL_ONE_MINUS_DST_COLOR;
-			break;	
-		case SRC_ALPHA_BLEND_SRC:
-			iblendsrc = GL_SRC_ALPHA;
-			break;
-		case ONE_MINUS_SRC_ALPHA_BLEND_SRC:
-			iblendsrc = GL_ONE_MINUS_SRC_ALPHA;
-			break;
-		case DST_ALPHA_BLEND_SRC:
-			iblendsrc = GL_DST_ALPHA;
-			break;
-		case ONE_MINUS_DST_ALPHA_BLEND_SRC:
-			iblendsrc = GL_ONE_MINUS_DST_ALPHA;
-			break;
-		case SRC_ALPHA_SATURATE_BLEND_SRC:
-			iblendsrc = GL_SRC_ALPHA_SATURATE;
-			break;
-		default:
-			iblendsrc = GL_ONE;
-	}
-
-	//setup dst blend factor	
-	switch(pkSettings->m_iBlendDst)
-	{
-		case ZERO_BLEND_DST:
-			iblenddst = GL_ZERO;
-			break;
-		case ONE_BLEND_DST:
-			iblenddst = GL_ONE;
-			break;
-		case SRC_COLOR_BLEND_DST:
-			iblenddst = GL_SRC_COLOR;
-			break;
-		case ONE_MINUS_SRC_COLOR_BLEND_DST:
-			iblenddst = GL_ONE_MINUS_SRC_COLOR;
-			break;	
-		case SRC_ALPHA_BLEND_DST:
-			iblenddst = GL_SRC_ALPHA;
-			break;
-		case ONE_MINUS_SRC_ALPHA_BLEND_DST:
-			iblenddst = GL_ONE_MINUS_SRC_ALPHA;
-			break;
-		case DST_ALPHA_BLEND_DST:
-			iblenddst = GL_DST_ALPHA;
-			break;
-		case ONE_MINUS_DST_ALPHA_BLEND_DST:
-			iblenddst = GL_ONE_MINUS_DST_ALPHA;
-			break;
-		default:
-			iblenddst = GL_ZERO;
-	}
-
-	//finally set opengl blend function
-	glBlendFunc(iblendsrc, iblenddst);
 
 	
 	//lighting setting

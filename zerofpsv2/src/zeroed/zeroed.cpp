@@ -480,7 +480,10 @@ void ZeroEd::Select_Toggle(int iId, bool bMultiSelect)
 	}
  
    if(m_iCurrentObject != -1)
-      sprintf(szInfoText, "Object selected: %s", m_pkObjectMan->GetObjectByNetWorkID(m_iCurrentObject)->GetName());
+	{
+		if(Entity* pkEnt = m_pkObjectMan->GetObjectByNetWorkID(m_iCurrentObject))
+      	sprintf(szInfoText, "Object selected: %s", pkEnt->GetName().c_str());
+	}
    else
       sprintf(szInfoText, "");
 
