@@ -26,6 +26,8 @@ void P_ClientInput::Update()
 
 void P_ClientInput::AddOrder(UnitCommand kCommand)
 {
+	cout << "Jag hatar fisk" << endl;
+
 	if(m_bGod)	//if server's input
 	{
 		cout<<"GOD says"<<endl;

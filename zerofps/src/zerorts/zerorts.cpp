@@ -200,13 +200,14 @@ void ZeroRTS::OnIdle()
 	// tassa
 	if(m_pkMoveObject)
 		MovePath(m_pkMoveObject);
+<<<<<<< zerorts.cpp
+
 */
-	
+
 	if(pkFps->m_bServerMode == false) {
 		int iObjID = pkFps->GetClientObjectID();
 		m_iSelfObjectID = iObjID;
 		}
-
 
 	//update player possition
 	Object* pkObj = pkObjectMan->GetObjectByNetWorkID( m_iSelfObjectID );

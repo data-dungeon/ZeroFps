@@ -408,6 +408,7 @@ void NetWork::HandleControlMessage(NetPacket* pkNetPacket)
 			break;
 
 		case ZF_NETCONTROL_REQCLIENTID:
+			g_ZFObjSys.Log("net", "*** *** ZF_NETCONTROL_REQCLIENTID *** ***\n");
 			iClientID = GetClientNumber( &pkNetPacket->m_kAddress );
 			if(iClientID != ZF_NET_NOCLIENT) {
 				kNetPRespons.Write((unsigned char) ZF_NETTYPE_CONTROL);
@@ -420,6 +421,7 @@ void NetWork::HandleControlMessage(NetPacket* pkNetPacket)
 			break;
 
 		case ZF_NETCONTROL_CLIENTID:
+			g_ZFObjSys.Log("net", "*** *** ZF_NETCONTROL_CLIENTID *** ***\n");
 			int iObjId;
 			pkNetPacket->Read(iObjId);
 			m_pkZeroFps->m_iRTSClientObject = iObjId;
