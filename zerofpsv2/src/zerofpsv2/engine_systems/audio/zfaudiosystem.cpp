@@ -178,6 +178,7 @@ ZFSoundInfo::ZFSoundInfo(const char* c_szFile, Vector3 pos,
 
 	m_pkResource = NULL;
 	m_bLoopingNoLongerHearable = false;
+	m_fReferenceDistance = 1.0f;
 }
 
 ZFSoundInfo::~ZFSoundInfo()

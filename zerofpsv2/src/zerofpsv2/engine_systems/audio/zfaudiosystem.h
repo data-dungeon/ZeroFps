@@ -131,6 +131,7 @@ private:
 	unsigned int m_uiMaxCachSize; // bytes
 	
 	int m_iEnableSound; // enable/disable
+	float m_fReferenceDistance; // ReferenceDistance (ljud styrka)
 
 	bool m_bIsValid;
 	float m_fVolume;
