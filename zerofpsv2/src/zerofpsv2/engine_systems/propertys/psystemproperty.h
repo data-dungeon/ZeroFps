@@ -3,26 +3,25 @@
 
 #include "../../engine/property.h"
 #include "../engine_systems_x.h"
+#include "../common/psystem.h"
 
 class ENGINE_SYSTEMS_API PSystemProperty: public Property {
 
-#include "../common/psystem.h"
+	private:
+		PSystem *m_pkPSystem;
+		string m_kPSType;
 
-private:
-	PSystem *m_pkPSystem;
-	string m_kPSType;
+	public:
+		void Update();
+		void CloneOf(Property* pkProperty) {}
+		vector<PropertyValues> GetPropertyValues();
 
-public:
-	void Update();
-	void CloneOf(Property* pkProperty) {}
-	vector<PropertyValues> GetPropertyValues();
+		PSystemProperty( string kPSType );
+		PSystemProperty();
 
-	PSystemProperty( string kPSType );
-	PSystemProperty();
+		bool HandleSetValue( string kValueName, string kValue );
 
-	bool HandleSetValue( string kValueName, string kValue );
-
-	void SetPSType ( string kName );
+		void SetPSType ( string kName );
 };
 
 Property* Create_PSystemProperty();

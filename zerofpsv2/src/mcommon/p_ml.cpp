@@ -22,7 +22,7 @@ void P_Ml::Update()
 		{
 			m_pkObject->GetRadius() = mp->GetRadius();
 			m_bHaveSetRadius=true;
-			cout<<"setting radius "<<m_pkObject->GetRadius()<<endl;
+			//cout<<"setting radius "<<m_pkObject->GetRadius()<<endl;
 		}
 	}
 }

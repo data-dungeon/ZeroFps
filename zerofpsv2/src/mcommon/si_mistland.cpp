@@ -1,6 +1,7 @@
 #include "si_mistland.h"
 #include <cmath>                    // for trigonometry functions
 
+
 ZFScriptSystem*	MistLandLua::g_pkScript;
 ObjectManager*		MistLandLua::g_pkObjMan;
 int					MistLandLua::g_iCurrentObjectID;
@@ -11,9 +12,13 @@ void MistLandLua::Init(ObjectManager* pkObjMan,ZFScriptSystem* pkScript)
 	g_pkScript = pkScript;
 	g_iCurrentObjectID = -1;
 	
-	pkScript->ExposeFunction("GetSelfID",	MistLandLua::GetSelfIDLua);	
-	pkScript->ExposeFunction("GetClosestObject",	MistLandLua::GetClosestObjectLua);		
-	pkScript->ExposeFunction("RemoveObject",	MistLandLua::RemoveObjectLua);		
+	pkScript->ExposeFunction("GetSelfID",				MistLandLua::GetSelfIDLua);	
+	pkScript->ExposeFunction("GetClosestObject",		MistLandLua::GetClosestObjectLua);		
+	pkScript->ExposeFunction("RemoveObject",			MistLandLua::RemoveObjectLua);		
+	pkScript->ExposeFunction("SendEvent",				MistLandLua::SendEventLua);		
+	
+	pkScript->ExposeFunction("SetPSystem",				MistLandLua::SetPSystemLua);		
+
 
 }
 
@@ -103,3 +108,78 @@ int MistLandLua::GetClosestObjectLua(lua_State* pkLua)
 	return 0;
 }
 
+
+int MistLandLua::SendEventLua(lua_State* pkLua)
+{
+	if(g_pkScript->GetNumArgs(pkLua) != 2)
+		return 0;
+	
+	int id;
+	double dTemp;
+	g_pkScript->GetArgNumber(pkLua, 0, &dTemp);
+	id = (int)dTemp;
+	
+	Object* pkObject = g_pkObjMan->GetObjectByNetWorkID(id);
+	if(pkObject)
+	{
+		P_Event* pe = (P_Event*)pkObject->GetProperty("P_Event");	
+		
+		if(pe)
+		{
+			char	acEvent[128];
+			g_pkScript->GetArgString(pkLua, 1, acEvent);
+		
+			pe->SendEvent(acEvent);
+			return 0;
+		}
+	}
+}
+
+
+int MistLandLua::SetPSystemLua(lua_State* pkLua)
+{
+	if(g_pkScript->GetNumArgs(pkLua) == 0)
+		return 0;
+
+	if(g_pkScript->GetNumArgs(pkLua) == 1)
+	{
+		double dTemp;
+		g_pkScript->GetArgNumber(pkLua, 0, &dTemp);		
+		int iId = (int)dTemp;
+		
+		Object* pkObject = g_pkObjMan->GetObjectByNetWorkID(iId);
+		
+		if(pkObject)
+			pkObject->DeleteProperty("PSystemProperty");
+
+		return 0;
+	}
+	
+	if(g_pkScript->GetNumArgs(pkLua) == 2)
+	{
+		double dTemp;
+		g_pkScript->GetArgNumber(pkLua, 0, &dTemp);		
+		int iId = (int)dTemp;
+		
+		Object* pkObject = g_pkObjMan->GetObjectByNetWorkID(iId);
+		if(pkObject)
+		{
+			PSystemProperty* ps = (PSystemProperty*)pkObject->GetProperty("PSystemProperty");
+			
+			if(!ps)
+				ps = (PSystemProperty*)pkObject->AddProperty("PSystemProperty");
+			
+			if(ps)
+			{
+				char	acType[128];
+				g_pkScript->GetArgString(pkLua, 1, acType);
+				
+				ps->SetPSType((string)acType);
+				return 0;
+			}
+		}
+
+		
+		return 0;
+	}
+}

@@ -57,7 +57,7 @@ class MistClient :public Application, public ZGuiApp {
 		float					m_fAngle;
 		float					m_fDistance;
 		
-		
+		float 				m_fClickDelay;
 		
 		Vector3	Get3DMousePos();
 		Object*	GetTargetObject();		

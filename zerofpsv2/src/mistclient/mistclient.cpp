@@ -47,6 +47,9 @@ void MistClient::OnInit()
 		for(int y=0;y<5;y++)
 		{*/
 			Object* test = pkObjectMan->CreateObjectFromScript("data/script/objects/t_test.lua");
+			test->SetLocalPosV(Vector3(10,0,0));
+			test = pkObjectMan->CreateObjectFromScript("data/script/objects/t_test.lua");
+			test->SetLocalPosV(Vector3(-10,0,0));			
 //			if(test)
 //				test->SetLocalPosV(Vector3(x*4,0,y*4));
 //		}
@@ -55,6 +58,8 @@ void MistClient::OnInit()
 
 void MistClient::Init()
 {	
+	m_fClickDelay = pkFps->GetTicks();
+
 	//register commmands bös
 	Register_Cmd("load",FID_LOAD);		
 	Register_Cmd("unload",FID_UNLOAD);			
@@ -227,16 +232,21 @@ void MistClient::Input()
 
 	if(pkInput->Pressed(MOUSELEFT))
 	{
-		Object* pkObject = GetTargetObject();
-		
-		if(pkObject)
-		{
-			P_Event* pe = (P_Event*)pkObject->GetProperty("P_Event");
-			if(pe)
-			{	
-				pe->SendEvent("Use");
-			}
-		} 
+		if(pkFps->GetTicks() - m_fClickDelay > 0.2)
+		{	
+	
+			Object* pkObject = GetTargetObject();
+			
+			if(pkObject)
+			{
+				P_Event* pe = (P_Event*)pkObject->GetProperty("P_Event");
+				if(pe)
+				{	
+					pe->SendEvent("Use");
+				}
+			} 
+			m_fClickDelay = pkFps->GetTicks();		
+		}
 	}
 
 	int iPressedKey = pkInput->GetQueuedKey();
@@ -430,6 +440,8 @@ Object* MistClient::GetTargetObject()
 	kObjects.clear();
 	
 	pkObjectMan->TestLine(&kObjects,start,dir);
+	
+	//cout<<"nr of targets: "<<kObjects.size()<<endl;
 	
 	float closest = 9999999999;
 	Object* pkClosest = NULL;	

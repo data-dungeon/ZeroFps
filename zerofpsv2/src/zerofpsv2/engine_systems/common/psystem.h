@@ -8,7 +8,8 @@
 #include "../../basic/vector2.h"
 
 #include <vector>
-	using namespace std;
+
+using namespace std;
 
 
 class Render;

@@ -17,16 +17,23 @@ P_Event::P_Event()
 	m_fTimer = m_pkFps->GetGameTime();
 }
 
+P_Event::~P_Event()
+{
+	SendEvent("Destroy");	
+}
+
 void P_Event::Update()
 {
-	if(!m_bHaveRunInit)	
-		m_bHaveRunInit = SendEvent("Init");
-
+	if(!m_bHaveRunInit)
+	{
+		m_bHaveRunInit = true;		
+		SendEvent("Init");
+	}
 
 	if(m_bRun1SUpdate)
 		if(m_pkFps->GetGameTime() - m_fTimer > 1.0)
 		{
-			m_bHaveRunInit = SendEvent("Update1S");
+			SendEvent("Update1S");
 			
 			m_fTimer = m_pkFps->GetGameTime();
 		}
@@ -41,8 +48,11 @@ bool P_Event::SendEvent(const char* acEvent)
 		MistLandLua::g_iCurrentObjectID = m_pkObject->iNetWorkID;
 		
 		if(!m_pkScriptSys->Call(m_pkObject->GetObjectScript(), (char*)acEvent, 0, 0))
+		{
+			//cout<<"error calling "<<acEvent<<endl;
 			return false;
-
+		}
+		
 		return true;
 	}
 

@@ -1,3 +1,5 @@
+bla = {};
+
 function Create()
 	
 	InitObject();
@@ -5,9 +7,35 @@ function Create()
 			InitParameter("Radius","1");
 		InitProperty("PSystemProperty");
 			InitParameter("PSType","Smoke");
-		SetLocalPos(x,0,x);
+		InitProperty("P_Event");
+		InitProperty("P_Ml");		
+		
 		AttachToClosestZone();
 	
 end
 
+function Init()
+	Print("im a ball");
+end
+
+function Destroy()
+	Print("im dieing");
+	bla[GetSelfID()] = nil;
+end
+
+
+function Use()
+	id = GetSelfID();
+	
+	if bla[id] == nil then
+		bla[id] = 1;
+		SetPSystem(GetSelfID());
+		--Print("Disabling SmokE");
+	else	
+		bla[id] = nil;
+		SetPSystem(GetSelfID(),"Smoke");
+		--Print("Enabling SmokE");
+	end
+
+end
 

@@ -172,6 +172,9 @@ bool Object::DeleteProperty(const char* acName)
 	//		return true;
 	//	}
 	//}
+	if(m_akPropertys.empty())
+		return false;
+	
 	vector<Property*>::iterator kIt = m_akPropertys.begin();
 	while(kIt != m_akPropertys.end())
 	{
@@ -180,7 +183,8 @@ bool Object::DeleteProperty(const char* acName)
 			Property* TempProp = (*kIt);
 			(*kIt) = m_akPropertys.back();
 			m_akPropertys.pop_back();
-			delete (*kIt);
+			delete (TempProp);
+			
 			return true;
 		}
 		++kIt;

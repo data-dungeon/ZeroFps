@@ -6,18 +6,19 @@ function Create()
 			InitParameter("m_fScale","1");
 		InitProperty("CameraProperty");
 		InitProperty("P_Event");
+		InitProperty("P_Ml");		
 		SetParentObject();
 		SetReturnObject();
 	
-	for x = 0,360,45
-	do
-		InitObject(); 
-			InitProperty("PSystemProperty");
-				InitParameter("PSType","Smoke");				
-			SetLocalPos(Sin(x)*5,5,Cos(x)*5);	
-			AttachToParent();			
-			HaveRelativOri();
-	end
+--	for x = 0,360,45
+--	do
+--		InitObject(); 
+--			InitProperty("PSystemProperty");
+--				InitParameter("PSType","Smoke");				
+--			SetLocalPos(Sin(x)*5,5,Cos(x)*5);	
+--			AttachToParent();			
+--			HaveRelativOri();
+--	end
 
 	InitObject();
 		InitProperty("PSystemProperty");
@@ -41,7 +42,7 @@ function Update1S()
 --		Print("My Closest object is: ",die);
 --		Print("Die :",die);
 			
-		RemoveObject(die);
+--		RemoveObject(die);
 	else
 --		Print("I have no friends");
 	end
@@ -51,4 +52,5 @@ end
 function Use()
 	Print("U clicked on me");
 
+	PlaySound("test.wav",GetSelfID());
 end

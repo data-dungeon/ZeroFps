@@ -26,6 +26,7 @@ class MCOMMON_API P_Event: public Property {
 	public:
 		void CloneOf(Property* pkProperty) { }
 		P_Event();
+		~P_Event();
 		
 		void Update();				
 		bool SendEvent(const char* acEvent);

@@ -3,11 +3,14 @@
 #define _SI_MISTLAND_H_
 
 class ZFScriptSystem;
+class PSystemProperty;
 
 #include "mcommon_x.h"
 #include "../zerofpsv2/script/zfscript.h"
 #include <iostream>
 #include "../zerofpsv2/engine/objectmanager.h"
+#include "../zerofpsv2/engine_systems/propertys/psystemproperty.h"
+#include "p_event.h"
 
 using namespace std;
 
@@ -20,9 +23,12 @@ namespace MistLandLua
 
 	void MCOMMON_API Init(ObjectManager* pkObjMan,ZFScriptSystem* pkScript);	
 	
-	int MCOMMON_API GetSelfIDLua(lua_State* pkLua);					//return the callers object id
-	int MCOMMON_API GetClosestObjectLua(lua_State* pkLua);		//return the closest object to the caller or a parameter id
-	int MCOMMON_API RemoveObjectLua(lua_State* pkLua);				//removes the caller or a parameter id
+	int MCOMMON_API GetSelfIDLua(lua_State* pkLua);					//() return the callers object id
+	int MCOMMON_API GetClosestObjectLua(lua_State* pkLua);		//(int objectid) return the closest object to the caller or a parameter id
+	int MCOMMON_API RemoveObjectLua(lua_State* pkLua);				//(int objectid) removes the caller or a parameter id
+	int MCOMMON_API SendEventLua(lua_State* pkLua);					//(int objectid,string event) send event to target object
+	int MCOMMON_API SetPSystemLua(lua_State* pkLua);				//(int objectid,string pssystem) set wich particle effect to use, if none dont send any parameters
+
 };
 
 #endif
