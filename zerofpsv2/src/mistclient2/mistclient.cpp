@@ -5,8 +5,8 @@
   MistClient is the Client of the game MistLands.
 */
 
-#ifndef _DONT_MAIN					// <- OBS! Flytta inte på denna. Måste ligga i
-	#define _MAINAPPLICATION_		// just denna fil och inte på flera ställen.
+#ifndef _DONT_MAIN					// <- OBS! Flytta inte pï¿½denna. Mï¿½te ligga i
+	#define _MAINAPPLICATION_		// just denna fil och inte pï¿½flera stï¿½len.
 	#define _DONT_MAIN
 #endif
  
@@ -77,7 +77,7 @@ void MistClient::OnInit()
 	m_pkCamera->SetName("Main camera");
 	m_pkZeroFps->AddRenderCamera(m_pkCamera);
 
-	//register property bös
+	//register property bï¿½
 	RegisterPropertys();
 
 	//register resources
@@ -93,7 +93,7 @@ void MistClient::OnInit()
 	GuiAppLua::Init(&g_kMistClient, m_pkScript);
 
 	//set window title		
-   SetTitle("MistClient - Banka och slå");
+   SetTitle("MistClient - Banka och sl");
 	
 	//set client in server mode to show gui etc
 	m_pkZeroFps->StartServer(true,false);
@@ -146,7 +146,7 @@ void MistClient::OnInit()
 
 	if(m_pkIni->GetIntValue("ZFAudioSystem", "a_enablesound") == 0 && 
 		m_pkIni->GetIntValue("ZFAudioSystem", "a_enablemusic") == 0)
-		m_pkAudioSys->SetMainVolume(0); // tempgrej för att stänga av all audio, finns inget vettigt sett för tillfället
+		m_pkAudioSys->SetMainVolume(0); // tempgrej fï¿½ att stï¿½ga av all audio, finns inget vettigt sett fï¿½ tillfï¿½let
 
 }
 
@@ -653,21 +653,11 @@ void MistClient::UpdateCharacter()
 		if(P_CharacterProperty* pkCP = (P_CharacterProperty*)pkEnt->GetProperty("P_CharacterProperty"))
 			pkCP->SetOverHeadText(false);					
 		
-		//setup enviroment
-/*		if(!pkEnt->GetProperty("P_Enviroment"))
-		{
-			if(P_Enviroment* pkEnv = (P_Enviroment*)pkEnt->AddProperty("P_Enviroment"))
-			{
-				pkEnv->SetEnable(true);				
-				pkEnv->SetEnviroment("data/enviroments/sun.env");
-			}
-		}*/
 		
 		if(P_Enviroment* pkEnv = (P_Enviroment*)pkEnt->GetProperty("P_Enviroment"))
 		{
-			static bool bOnes = 0; if(!bOnes) { pkEnv->LoadEnviroment("data/enviroments/sun.env"); bOnes = true; } // evil code by zeb.. temporary hack to avoid total darkness :)
 			pkEnv->SetEnable(true);				
-		}		
+		}	
 	}
 }
 
@@ -1064,8 +1054,8 @@ Vector3 MistClient::Get3DMouseDir(bool bMouse)
 	
 	if(bMouse)
 	{
-		// Zeb was here! Nu kör vi med operativsystemets egna snabba musmarkör
-		// alltså måste vi använda den position vi får därifrån.
+		// Zeb was here! Nu kï¿½ vi med operativsystemets egna snabba musmarkï¿½
+		// alltsï¿½mï¿½te vi anvï¿½da den position vi fï¿½ dï¿½ifrï¿½.
 		m_pkInputHandle->UnitMouseXY(x,y);
 		//x = -0.5f + (float) m_pkInputHandle->m_iSDLMouseX / (float) m_pkApp->m_iWidth;
 		//y = -0.5f + (float) m_pkInputHandle->m_iSDLMouseY / (float) m_pkApp->m_iHeight;

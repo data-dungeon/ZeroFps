@@ -10,6 +10,9 @@ Property* Create_P_Enviroment()
 
 P_Enviroment::P_Enviroment()
 {
+	cout<<"CREATING P_ENVIROMENT"<<endl;
+
+
 	strcpy(m_acName,"P_Enviroment");		
 	
 	m_iType=			PROPERTY_TYPE_RENDER;
@@ -80,8 +83,6 @@ void P_Enviroment::Update()
 	{
 		DrawSky();
 		UpdateEnviroment();
-	
-
 	}
 }
 
@@ -134,7 +135,7 @@ void P_Enviroment::UpdateEnviroment()
 	//particles
 	//setup particle property
 	static string strCurrentParticles;
-	if(m_kCurrentEnvSetting.m_strParticles != "")
+	if(!m_kCurrentEnvSetting.m_strParticles.empty())
 	{	
 		if(m_kCurrentEnvSetting.m_strParticles != strCurrentParticles)
 		{	
@@ -307,6 +308,9 @@ void P_Enviroment::PackFrom(NetPacket* pkNetPacket, int iConnectionID)
 	pkNetPacket->Read_Str(m_kCurrentEnvSetting.m_strCloudHi);
 	pkNetPacket->Read_Str(m_kCurrentEnvSetting.m_strCloudLow);
 	
+	//cout<<"music:"<<m_kCurrentEnvSetting.m_strMusic<<" particles:"<<m_kCurrentEnvSetting.m_strParticles<<" space:"<<m_kCurrentEnvSetting.m_strSpace<<
+	//		" sky:"<<m_kCurrentEnvSetting.m_strSky<<" cloud:"<<m_kCurrentEnvSetting.m_strCloudHi<<" "<<m_kCurrentEnvSetting.m_strCloudLow<<endl;
+	
 
 	pkNetPacket->Read(m_kCurrentEnvSetting.m_kSunDiffuseColor);	
 	pkNetPacket->Read(m_kCurrentEnvSetting.m_kSunAmbientColor);	
@@ -321,6 +325,8 @@ void P_Enviroment::PackFrom(NetPacket* pkNetPacket, int iConnectionID)
 	//time
 	pkNetPacket->Read(m_iCurrentSecond);
 	pkNetPacket->Read(m_fTimeScale);
+	
+
 }
 
 void P_Enviroment::SetEnable(bool bNew)
@@ -464,7 +470,7 @@ void P_Enviroment::DrawSky()
 	m_pkZShaderSystem->SetNrOfVertexs(4);
 
 	//space
-	if(m_kCurrentEnvSetting.m_strSpace.length() != 0)
+	if(!m_kCurrentEnvSetting.m_strSpace.empty())
 	{
 		m_pkZShaderSystem->SetPointer(TEXTURE_POINTER0,afUvs);
 		m_pkZShaderSystem->SetPointer(TEXTURE_POINTER1,afSpaceUvs);
@@ -474,7 +480,7 @@ void P_Enviroment::DrawSky()
 	}
 
 	//sky
-	if(m_kCurrentEnvSetting.m_strSky.length() != 0)
+	if(!m_kCurrentEnvSetting.m_strSky.empty())
 	{			
 		m_pkZShaderSystem->SetPointer(TEXTURE_POINTER0,afUvs);				
 		m_pkZShaderSystem->BindMaterial(pkSkyMat);												
@@ -482,7 +488,7 @@ void P_Enviroment::DrawSky()
 	}
 
 	//cloud HI (moving faster
-	if(m_kCurrentEnvSetting.m_strCloudHi.length() != 0)
+	if(!m_kCurrentEnvSetting.m_strCloudHi.empty())
 	{	
 		m_pkZShaderSystem->SetPointer(TEXTURE_POINTER0,afUvs);						
 		m_pkZShaderSystem->SetPointer(TEXTURE_POINTER1,afMUVsS);	
@@ -491,7 +497,7 @@ void P_Enviroment::DrawSky()
 	}
 	
 	//cloud LOW (moving slower
-	if(m_kCurrentEnvSetting.m_strCloudLow.length() != 0)
+	if(!m_kCurrentEnvSetting.m_strCloudLow.empty())
 	{	
 		m_pkZShaderSystem->SetPointer(TEXTURE_POINTER0,afUvs);								
 		m_pkZShaderSystem->SetPointer(TEXTURE_POINTER1,afMUVsF);	
