@@ -131,12 +131,16 @@ private:
 class ContainerDlg
 {
 public:
+	void Create();
 
 	ContainerDlg();
 	~ContainerDlg();
 
 private:
 	ZGuiWnd* m_pkDlgWnd;
+
+	ZGui* m_pkGui;
+	TextureManager* m_pkTexMan;
 };
 
 #endif // !defined(AFX_INVENTORYDLG_H__E2EC300C_10CF_4D5C_B948_2FD7FCAB2686__INCLUDED_)

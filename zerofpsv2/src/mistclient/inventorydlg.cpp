@@ -1005,13 +1005,27 @@ bool InventoryDlg::EquipSpecialSlot(ItemStats* pkItemStats, int iNetworkID, Equi
 	return true;
 }
 
+///////////////////////////////////////////////////////////////////////////////
+//ContainerDlg
+///////////////////////////////////////////////////////////////////////////////
 
 ContainerDlg::ContainerDlg()
 {
-
+	Create();
 }
 
 ContainerDlg::~ContainerDlg()
 {
+
+}
+
+void ContainerDlg::Create()
+{
+	m_pkGui = static_cast<ZGui*>(g_ZFObjSys.GetObjectPtr("Gui"));
+	m_pkTexMan = static_cast<TextureManager*>(g_ZFObjSys.GetObjectPtr("TextureManager"));
+
+	m_pkDlgWnd = new ZGuiWnd( Rect(512,0,512+256,256), NULL, true, 88883);
+
+//	m_pkDlgWnd->SetSkin(new ZGuiSkin( m_pkTexMan->Load("data/, 0) ); 
 
 }
