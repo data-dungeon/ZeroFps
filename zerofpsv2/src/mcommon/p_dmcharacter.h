@@ -68,6 +68,7 @@ class MCOMMON_API P_DMCharacter: public Property {
 
 		// Set right animation and calls shoot function i p_dmgun
 		void Shoot (Vector3 kLocation);
+		bool WalkSoundIsPlaying() { return m_bPlayWalkSound; }
 		
 		
 		void Init();		

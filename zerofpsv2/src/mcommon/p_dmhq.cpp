@@ -97,8 +97,19 @@ bool P_DMHQ::InsertCharacter(int iID)
 	Entity* pkEnt = m_pkObjMan->GetObjectByNetWorkID(iID);
 	if(pkEnt)
 	{
-		if(pkEnt->GetProperty("P_DMCharacter"))
+		P_DMCharacter* pkCharProp;
+		if((pkCharProp = (P_DMCharacter*) pkEnt->GetProperty("P_DMCharacter")))
 		{
+			// Stoppa eventuellt walksound
+			if(pkCharProp->WalkSoundIsPlaying())
+			{
+				ZFAudioSystem* pkAudioSys = 
+					static_cast<ZFAudioSystem*>(g_ZFObjSys.GetObjectPtr("ZFAudioSystem"));
+
+				pkAudioSys->StopSound("/data/sound/walk_zombie.wav", 
+					m_pkObject->GetIWorldPosV()); 
+			}
+
 			cout<<"character entering HQ"<<endl;
 			
 			pkEnt->SetParent(m_pkObject);
