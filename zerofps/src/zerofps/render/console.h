@@ -1,6 +1,7 @@
 #ifndef _CONSOLE_H_
 #define _CONSOLE_H_
 
+#include "render_x.h"
 #include <iostream>
 #include <vector>
 #include "../basic/basic.pkg"
@@ -10,7 +11,7 @@ using namespace std;
 
 class ZeroFps;
 
-class Console {
+class RENDER_API Console {
 	private:
 		ZeroFps* m_pkEngine;		
 		CmdSystem* m_pkCmd;

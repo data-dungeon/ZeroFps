@@ -21,7 +21,7 @@ bool ModellManager::LoadModell(modell *mod,char* acFileName){
 bool ModellManager::LoadPmd(modell *mod,char* acFileName) {
 //	mod->data=new HalfEdge;
 	
-
+	return false;
 
 }
 

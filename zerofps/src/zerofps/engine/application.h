@@ -1,6 +1,7 @@
 #ifndef _APPLICATION_H_
 #define _APPLICATION_H_
 
+#include "engine_x.h"
 #include "../basic/basic.pkg"
 #include "../engine/engine.pkg"
 #include "../render/render.pkg"
@@ -11,7 +12,7 @@ class ZeroFps;
 class Console;
 class Primitives;
 
-class Application {	
+class ENGINE_API Application {	
 	protected:
 		ZeroFps* pkFps;
 		Console* pkConsole;			
@@ -34,6 +35,7 @@ class Application {
 };
 
 
+int ENGINE_API EngineStart(int iNrOfArgs, char* paArgs[]);
 
 
 #endif

@@ -2,6 +2,7 @@
 #define _AUDIOMANAGER_H_
 
 
+#include "engine_x.h"
 #include "engine.pkg"
 #include <iostream>
 #include <SDL/SDL_mixer.h>		
@@ -10,7 +11,7 @@
 
 class Music;
 
-class AudioManager {
+class ENGINE_API AudioManager {
 	private:
 		Music		*m_pkMusic;
 		FileIo	*m_pkFile;

@@ -4,6 +4,7 @@
 #ifndef _PRIMITIVES_H_
 #define _PRIMITIVES_H_
 
+#include "render_x.h"
 #include <cstring>
 #include <iostream>
 #include "texturemanager.h"
@@ -11,7 +12,7 @@
 
 using namespace std;
 
-class Primitives {
+class RENDER_API Primitives {
 	private:
 		TextureManager* m_pkTexMan;
 		char aCurentFont[256];

@@ -1,6 +1,7 @@
 #ifndef _INPUT_H_
 #define _INPUT_H_
 
+#include "engine_x.h"
 #include <SDL/SDL.h>
 #include <iostream>
 #include <cstdlib>

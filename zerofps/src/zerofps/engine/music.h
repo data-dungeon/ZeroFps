@@ -12,11 +12,12 @@
 		
 */
 		
+#include "engine_x.h"
 #include <SDL/SDL_mixer.h>		
 #include <iostream>
 #include "../basic/basic.pkg"
 
-class Music {
+class ENGINE_API Music {
 	private:
 		Mix_Music *mus;				//pekare till den laddade musiken
 		char *musicfile;

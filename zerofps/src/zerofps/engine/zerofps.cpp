@@ -41,9 +41,11 @@ void ZeroFps::HandleArgs(int iNrOfArgs, char** paArgs) {
 
 }
 
-void ZeroFps::Init(int iNrOfArgs, char** paArgs){	
+void ZeroFps::Init(int iNrOfArgs, char** paArgs)
+{	
+
 	HandleArgs(iNrOfArgs,paArgs);					//handle arguments
-	SetApp();															//setup class pointers	
+	SetApp();										//setup class pointers	
 	InitDisplay(m_pkApp->m_iWidth,m_pkApp->m_iHeight,m_pkApp->m_iDepth);
 	
 	m_iState=state_normal;								//init gamestate to normal		
@@ -65,7 +67,7 @@ void ZeroFps::MainLoop(void) {
 					m_pkInput->Reset();
 				}
 				m_pkApp->OnIdle();			
-				Swap();								
+				Swap();
 				break;			
 			
 			case state_console:
@@ -75,7 +77,7 @@ void ZeroFps::MainLoop(void) {
 				Swap();
 				break;
 		}
-	};
+	}
 }
 
 
@@ -83,11 +85,13 @@ void ZeroFps::MainLoop(void) {
 void ZeroFps::InitDisplay(int iWidth,int iHeight,int iDepth) {
 
 	//initiera sdl med opengl
-	if(SDL_Init(SDL_OPENGL)<0){
+	if(SDL_Init(SDL_OPENGL | SDL_INIT_NOPARACHUTE )<0){
 		cout<<"Sdl_Graphic didt want to work right now =("<<endl;
 		exit(1);
 	}	
 	
+	atexit(SDL_Quit);
+
 	//create sdl surface
 	m_pkScreen= SDL_SetVideoMode(iWidth,iHeight,iDepth,SDL_OPENGL);
 	glViewport(0, 0,iWidth,iHeight);	

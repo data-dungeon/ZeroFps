@@ -9,7 +9,6 @@ Input::Input() {
 		cout<<"Sdl_Input dont want to work =("<<endl;
 		exit(1);
 	}
-	atexit(SDL_Quit);
 	
 	//reset all buttons to false
 	for(int i =0;i<400;i++) 

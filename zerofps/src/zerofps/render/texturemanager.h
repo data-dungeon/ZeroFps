@@ -1,6 +1,7 @@
 #ifndef _TEXTUREMANAGER_H_
 #define _TEXTUREMANAGER_H_
 
+#include "render_x.h"
 #include <SDL/SDL_opengl.h>
 #include <SDL/SDL.h>
 #include <iostream>
@@ -12,7 +13,7 @@
 
 using namespace std;
 
-class TextureManager {
+class RENDER_API TextureManager {
 	private:
 		struct texture{
 			string file;

@@ -1,6 +1,7 @@
 #ifndef _MODELMANAGER_H_
 #define _MODELMANAGER_H_
 
+#include "engine_x.h"
 #include <iostream>
 #include <vector>
 #include <cstring>

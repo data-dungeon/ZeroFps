@@ -1,6 +1,7 @@
 #ifndef _ZEROFPS_H_
 #define _ZEROFPS_H_
 
+#include "engine_x.h"
 #include <iostream>
 #include <cstdlib>
 #include <SDL/SDL_opengl.h>
