@@ -37,6 +37,7 @@ void P_Mad::Update()
 	if(!pkCore)
 		return;
 
+		
 	
 	if( m_pkEntityManager->IsUpdate(PROPERTY_TYPE_RENDER) ) 
 	{		

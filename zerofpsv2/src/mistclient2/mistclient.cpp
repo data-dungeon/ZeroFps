@@ -364,9 +364,9 @@ void MistClient::OnNetworkMessage(NetPacket *PkNetMessage)
 			PkNetMessage->SetError(true);
 			return;
 	}
-}
+} 
 
-void MistClient::OnClientConnected()
+void MistClient::OnClientConnected() 
 {
 	m_pkConsole->Printf("Successfully connected to server");
 
@@ -376,7 +376,9 @@ void MistClient::OnClientConnected()
 	kNp.Write((char) MLNM_CS_REQ_CHARACTERID);
 	kNp.TargetSetClient(0);
 	SendAppMessage(&kNp);	
-	
+
+	//load ingame gui	
+	LoadInGameGui();
 }
 
 void MistClient::AddRemoveServer(const char* szName, const char* szSeverIP, bool bAdd)

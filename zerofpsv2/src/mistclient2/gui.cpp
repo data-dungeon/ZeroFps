@@ -196,74 +196,10 @@ bool GUIPROC( ZGuiWnd* win, unsigned int msg, int numparms, void *params )
                {
                   g_kMistClient.m_pkZeroFps->StartClient(strLogin, strPassword, strServerIP);
                
-                  g_kMistClient.ShowWnd("MLStartWnd", false);
-                  g_kMistClient.ShowWnd("ConnectWnd", false);
-                  g_kMistClient.ShowWnd("AddNewServerWnd", false);
-                  g_kMistClient.ShowWnd("LoginWnd", false);
-
-				  g_kMistClient.LoadGuiFromScript("data/script/gui/ml_gamegui2.lua");
-
-				  char text[] =
-				  {
-					"<clr:255,255,255>" \
-					"0000: Starting ZeroFps Object System\n" \
-					"0001: Register 'CmdSystem'ok\n" \
-					"<clr:255,0,0>" \
-					"0002: Register 'Application'ok\n" \
-					"0003: Register 'ZeroFps'ok\n" \
-					"0004: Register 'AStar'ok\n" \
-					"0005: Register 'ZShader'ok\n" \
-					"<clr:0,62,255>" \
-					"<fnt:listboxfont>" \
-					"0006: Register 'ZShaderSystem'ok\n" \
-					"0007: Register 'EntityManager'ok\n" \
-					"0008: Register 'ZFResourceDB'ok\n" \
-					"0009: Register 'Gui'ok\n" \
-					"0010: Register 'ZGuiResourceManager'ok\n" \
-					"0011: Register 'ZGuiRender'ok\n" \
-					"0012: Register 'NetWork'ok\n" \
-					"0013: Register 'OggMusic'ok\n" \
-					"0014: Register 'ZFAudioSystem'ok\n" \
-					"0015: Register 'Console'ok\n" \
-					"0016: Register 'Render'ok\n" \
-					"0017: Register 'Light'ok\n" \
-					"0018: Register 'PropertyFactory'ok\n" \
-					"0019: Register 'Input'ok\n" \
-					"0020: Register 'TextureManager'ok\n" \
-					"0021: Register 'ZFVFileSystem'ok\n" \
-					"0022: Register 'ZFBasicFS'ok\n" \
-					"0023: Register 'ZFScriptSystem'ok\n"
-				  };
-
-				  ((ZGuiTextbox*) g_kMistClient.GetWnd("ChatTextbox"))->ToggleMultiLine(true);
-				  ((ZGuiTextbox*) g_kMistClient.GetWnd("ChatTextbox"))->SetReadOnly(true); 
-				//  g_kMistClient.SetText("ChatTextbox", text);
-
-				  ((ZGuiTextbox*) g_kMistClient.GetWnd("ChatTextbox"))->SetScrollbarSkin(
-					  g_kMistClient.GetSkin("DefSBrBkSkin"),
-					  g_kMistClient.GetSkin("DefSBrNSkin"), 
-					  g_kMistClient.GetSkin("DefSBrFSkin"),
-					  g_kMistClient.GetSkin("DefSBrScrollUpSkin_u"), 
-					  g_kMistClient.GetSkin("DefSBrScrollUpSkin_d"),
-					  g_kMistClient.GetSkin("DefSBrScrollDownSkin_u"), 
-					  g_kMistClient.GetSkin("DefSBrScrollDownSkin_d"));
-
-				  ((ZGuiTextbox*) g_kMistClient.GetWnd("ChatTextbox"))->GetScrollbar()->SetAutoHide(true); 
-
-				  g_kMistClient.GetWnd("ChatTextbox")->SetTextClr(255,255,255); 
-              g_kMistClient.GetWnd("SayTextbox")->SetTextClr(255,255,255); 
-				  g_kMistClient.GetWnd("SayTextbox")->SetFont( 
-					  g_kMistClient.m_pkGui->GetResMan()->Font("listboxfont") );
-
-				  printf("%s connecting to %s.", strLogin.c_str(), strServerIP.c_str());
-
+      				printf("%s connecting to %s.", strLogin.c_str(), strServerIP.c_str());
                   g_kMistClient.m_strLoginName = strLogin;
                   g_kMistClient.m_strLoginPW = strPassword;
 
-				  g_kMistClient.GetWnd("ChatDlgMainWnd")->m_bUseAlhpaTest = false; // eftersom tex1a är helvit (för att kunna ändra trasparens med färgvärdet)
-              g_kMistClient.GetWnd("SayTextbox")->m_bUseAlhpaTest = false;
-
-              g_kMistClient.ShowWnd("ChatDlgMainWnd", false);
                }
                else
                   printf("Input error, failed to connect.");
@@ -363,14 +299,10 @@ void MistClient::ToogleChatWnd(bool bSetInputFocus)
 }
 
 void MistClient::AddStringToChatBox(string strMsg)
-{
+{ 
 	string strText = string(g_kMistClient.GetText("ChatTextbox")) + strMsg + string("\n");
 	g_kMistClient.SetText("ChatTextbox",(char*) strText.c_str());
 
-   if(g_kMistClient.GetText("ChatTextbox"))
-      printf("test = %s\n", g_kMistClient.GetText("ChatTextbox"));
-   else
-      printf("test = %s\n", "bad string");
  
 	//unsigned int min,max,pos;
 	//ZGuiScrollbar* pkScrollbar = ((ZGuiTextbox*)g_kMistClient.GetWnd("ChatTextbox"))->GetScrollbar();
@@ -380,6 +312,8 @@ void MistClient::AddStringToChatBox(string strMsg)
    ((ZGuiTextbox*)g_kMistClient.GetWnd("ChatTextbox"))->ScrollRowIntoView(
       ((ZGuiTextbox*)g_kMistClient.GetWnd("ChatTextbox"))->GetRowCount());
 
+	//cout<<"blub:"<<min<< " "<<max<<" "<<pos<<endl;
+		
 	//Rect rc = pkScrollbar->GetArrowButton(false)->GetScreenRect();
 	//pkScrollbar->GetButton()->SetPos(rc.Left,rc.Top-20,true,true);
 }
@@ -435,5 +369,74 @@ void MistClient::ResizeChatDlg(bool bBigger)
 	ZGuiScrollbar* pkScrollbar = ((ZGuiTextbox*)g_kMistClient.GetWnd("ChatTextbox"))->GetScrollbar();
 	pkScrollbar->GetScrollInfo(min,max,pos);
 	pkScrollbar->SetScrollPos(max-1);
+
+}
+
+void MistClient::LoadInGameGui()
+{
+	g_kMistClient.ShowWnd("MLStartWnd", false);
+	g_kMistClient.ShowWnd("ConnectWnd", false);
+	g_kMistClient.ShowWnd("AddNewServerWnd", false);
+	g_kMistClient.ShowWnd("LoginWnd", false);
+
+	g_kMistClient.LoadGuiFromScript("data/script/gui/ml_gamegui2.lua");
+
+	char text[] =
+	{
+	"<clr:255,255,255>" \
+	"0000: Starting ZeroFps Object System\n" \
+	"0001: Register 'CmdSystem'ok\n" \
+	"<clr:255,0,0>" \
+	"0002: Register 'Application'ok\n" \
+	"0003: Register 'ZeroFps'ok\n" \
+	"0004: Register 'AStar'ok\n" \
+	"0005: Register 'ZShader'ok\n" \
+	"<clr:0,62,255>" \
+	"<fnt:listboxfont>" \
+	"0006: Register 'ZShaderSystem'ok\n" \
+	"0007: Register 'EntityManager'ok\n" \
+	"0008: Register 'ZFResourceDB'ok\n" \
+	"0009: Register 'Gui'ok\n" \
+	"0010: Register 'ZGuiResourceManager'ok\n" \
+	"0011: Register 'ZGuiRender'ok\n" \
+	"0012: Register 'NetWork'ok\n" \
+	"0013: Register 'OggMusic'ok\n" \
+	"0014: Register 'ZFAudioSystem'ok\n" \
+	"0015: Register 'Console'ok\n" \
+	"0016: Register 'Render'ok\n" \
+	"0017: Register 'Light'ok\n" \
+	"0018: Register 'PropertyFactory'ok\n" \
+	"0019: Register 'Input'ok\n" \
+	"0020: Register 'TextureManager'ok\n" \
+	"0021: Register 'ZFVFileSystem'ok\n" \
+	"0022: Register 'ZFBasicFS'ok\n" \
+	"0023: Register 'ZFScriptSystem'ok\n"
+	};
+
+	((ZGuiTextbox*) g_kMistClient.GetWnd("ChatTextbox"))->ToggleMultiLine(true);
+	((ZGuiTextbox*) g_kMistClient.GetWnd("ChatTextbox"))->SetReadOnly(true); 
+//  g_kMistClient.SetText("ChatTextbox", text);
+
+	((ZGuiTextbox*) g_kMistClient.GetWnd("ChatTextbox"))->SetScrollbarSkin(
+		g_kMistClient.GetSkin("DefSBrBkSkin"),
+		g_kMistClient.GetSkin("DefSBrNSkin"), 
+		g_kMistClient.GetSkin("DefSBrFSkin"),
+		g_kMistClient.GetSkin("DefSBrScrollUpSkin_u"), 
+		g_kMistClient.GetSkin("DefSBrScrollUpSkin_d"),
+		g_kMistClient.GetSkin("DefSBrScrollDownSkin_u"), 
+		g_kMistClient.GetSkin("DefSBrScrollDownSkin_d"));
+
+	((ZGuiTextbox*) g_kMistClient.GetWnd("ChatTextbox"))->GetScrollbar()->SetAutoHide(true); 
+
+	g_kMistClient.GetWnd("ChatTextbox")->SetTextClr(255,255,255); 
+	g_kMistClient.GetWnd("SayTextbox")->SetTextClr(255,255,255); 
+	g_kMistClient.GetWnd("SayTextbox")->SetFont( 
+		g_kMistClient.m_pkGui->GetResMan()->Font("listboxfont") );
+
+
+	g_kMistClient.GetWnd("ChatDlgMainWnd")->m_bUseAlhpaTest = false; // eftersom tex1a är helvit (för att kunna ändra trasparens med färgvärdet)
+	g_kMistClient.GetWnd("SayTextbox")->m_bUseAlhpaTest = false;
+
+	g_kMistClient.ShowWnd("ChatDlgMainWnd", false);
 
 }
