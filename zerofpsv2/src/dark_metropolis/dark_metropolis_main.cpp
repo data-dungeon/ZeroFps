@@ -93,7 +93,14 @@ bool DarkMetropolis::IsValid()
 	return true;
 }
 
+void DarkMetropolis::RegisterPropertys()
+{
+	m_pkPropertyFactory->Register("P_ClientControl", Create_P_ClientControl);
+	m_pkPropertyFactory->Register("P_ServerInfo", Create_P_ServerInfo);
+	m_pkPropertyFactory->Register("P_Event", Create_P_Event);
+}
+
 void DarkMetropolis::Input()
 {
-
 }
+

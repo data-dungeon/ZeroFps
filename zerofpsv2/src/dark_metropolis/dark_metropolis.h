@@ -10,6 +10,10 @@
 #include "../zerofpsv2/engine/application.h"
 #include "../zerofpsv2/gui/zgui.h"
 
+#include "../mcommon/p_clientcontrol.h"
+#include "../mcommon/p_serverinfo.h"
+#include "../mcommon/p_event.h"
+
 bool GUIPROC(ZGuiWnd* win, unsigned int msg, int numparms, void *params );
 
 /**	\brief	Daz DaaaaarkMetropolis
@@ -21,6 +25,7 @@ class DarkMetropolis : public Application, public ZGuiApp
 	private:
 		Camera*	m_pkCamera;
 		void Input();
+		void RegisterPropertys();
 
 	public:
 		DarkMetropolis(char* aName,int iWidth,int iHeight,int iDepth);
