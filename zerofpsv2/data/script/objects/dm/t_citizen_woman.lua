@@ -127,7 +127,6 @@ function Dead()
 		RunScript ("data/script/objects/dm/t_money.lua", SIGetSelfID());
 	end
 
-	SISetHeartRate(SIGetSelfID(),-1);
 end
 
 function Panic()
