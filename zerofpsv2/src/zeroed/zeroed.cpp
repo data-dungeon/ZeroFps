@@ -462,8 +462,8 @@ void ZeroEd::Select_Toggle(int iId, bool bMultiSelect)
 		Select_Add(iId);
 		m_iCurrentObject = iId;
 
-      if(m_iEditMode == EDIT_OBJECTS)
-         ((ZGuiTabCtrl*)GetWnd("WorkTabWnd"))->SetCurrentPage(2);
+      //if(m_iEditMode == EDIT_OBJECTS)
+        // ((ZGuiTabCtrl*)GetWnd("WorkTabWnd"))->SetCurrentPage(2);
 	}
 	else 
 	{
