@@ -175,12 +175,17 @@ void Tcs::UpdateLineTests(float fAlphaTime)
 	{				
 		if(m_kBodys[i]->m_bCharacter)
 		{	
-			if(TestLine(m_kBodys[i]->m_kNewPos,Vector3(0,-1,0),m_kBodys[i]))
-			{
-				distance = m_kBodys[i]->m_kNewPos.DistanceTo(m_kLastTestPos);
+			//if(TestLine(m_kBodys[i]->m_kNewPos,Vector3(0,-1,0),m_kBodys[i]))
+			if(CharacterLineTest(m_kBodys[i]->m_kNewPos,Vector3(0,-1,0),m_kBodys[i]))
+			{		
+				//make sure thers no x/z movement (some tests are not exact
+				m_kLastLineTestColPos.x = m_kBodys[i]->m_kNewPos.x;
+				m_kLastLineTestColPos.z = m_kBodys[i]->m_kNewPos.z;
+				
+				distance = m_kBodys[i]->m_kNewPos.DistanceTo(m_kLastLineTestColPos);
 				if(distance < m_kBodys[i]->m_fLegLength)
 				{
-					m_kBodys[i]->m_kNewPos = m_kLastTestPos + Vector3(0,m_kBodys[i]->m_fLegLength*0.9,0);
+					m_kBodys[i]->m_kNewPos = m_kLastLineTestColPos + Vector3(0,m_kBodys[i]->m_fLegLength*0.9,0);
 					m_kBodys[i]->m_bOnGround = true;
 					m_kBodys[i]->m_kLinearVelocity.y= 0;
 				
@@ -581,33 +586,44 @@ bool Tcs::TestSides(Vector3* kVerts,Vector3* pkNormal,const Vector3& kPos)
 	
 }
 
-P_Tcs Tcs::TestLine2(Vector3 kStart,Vector3 kDir,P_Tcs* pkTester)
+P_Tcs* Tcs::CharacterLineTest(Vector3 kStart,Vector3 kDir,P_Tcs* pkTester)
 {
-	m_kLastTestPos = kStart;		
+	m_kLastLineTestColPos =	kStart;		
+	float fClosest = 			999999999;
+	P_Tcs* pkClosest =		NULL;	
+	float d;
 	
+	Vector3 kPos2 = kStart + kDir*10;
+		
 	for(unsigned int i=0;i<m_kBodys.size();i++)
 	{		
-		if( (m_kBodys[i] == pkTester) || (!pkTester->m_akWalkableGroups[m_kBodys[i]->m_iGroup]) )
+		if(	(m_kBodys[i] == pkTester) || 
+				(!pkTester->m_akWalkableGroups[m_kBodys[i]->m_iGroup]) || 
+				(!m_kBodys[i]->m_bHavePolygonData)	)
 			continue;
 			
-/*		if(TestLineVSSphere2(Vector3 kStart,Vector3 kDir,P_Tcs* pkBody)
-		{
-			
-		}
-	*/	
-/*		if(TestLineVSMesh(kStart,kDir,m_kBodys[i]))
-		{
-
-		}	*/
+		if(CharacterTestLineVSSphere(kStart,kPos2,m_kBodys[i]))
+		{						
+			if(CharacterTestLineVSMesh(kStart,kDir,m_kBodys[i]))
+			{
+				d = kStart.DistanceTo(m_kLastTestPos);				
+				if(d < fClosest)
+				{						
+					m_kLastLineTestColPos = m_kLastTestPos;
+					fClosest = d;
+					pkClosest = m_kBodys[i];
+				}													
+			}					
+		}			
 	}
-	P_Tcs tjoff;
+	
 
-	return tjoff;
+	return pkClosest;
 }
 
 P_Tcs* Tcs::TestLine(Vector3 kStart,Vector3 kDir,P_Tcs* pkTester)
 {
-	m_kLastTestPos = kStart;		
+	m_kLastLineTestColPos = kStart;		
 	float closest = 999999999;
 	P_Tcs* pkClosest = NULL;	
 	float d;
@@ -623,11 +639,11 @@ P_Tcs* Tcs::TestLine(Vector3 kStart,Vector3 kDir,P_Tcs* pkTester)
 		
 		if(TestLineVSMesh(kStart,kDir,m_kBodys[i]))
 		{
-			d = kStart.DistanceTo(m_kLastLineTestColPos);				
+			d = kStart.DistanceTo(m_kLastTestPos);				
 			if(d < closest)
 			{
 				
-				m_kLastTestPos = m_kLastLineTestColPos;
+				m_kLastLineTestColPos = m_kLastTestPos;
 				closest = d;
 				pkClosest = m_kBodys[i];
 			}				
@@ -637,13 +653,89 @@ P_Tcs* Tcs::TestLine(Vector3 kStart,Vector3 kDir,P_Tcs* pkTester)
 	return pkClosest;
 }
 
+bool Tcs::CharacterTestLineVSMesh(Vector3 kStart,Vector3 kDir,P_Tcs* pkMesh)
+{
+	Matrix4 kModelMatrix = pkMesh->GetModelMatrix();
+
+	
+	float closest = 		99999999;
+	bool bHaveColided = 	false;	
+	Vector3 kClosestNormal;
+	Vector3 kClosestPos;
+	
+	Vector3 kPoint2 = kStart + kDir * 1000;
+	Vector3 verts[3];	
+	float d;
+	
+	for(unsigned int f=0;f<pkMesh->m_pkFaces->size();f++)
+	{		 
+		verts[0] = kModelMatrix.VectorTransform((*pkMesh->m_pkVertex)[(*pkMesh->m_pkFaces)[f].iIndex[0]]);
+		verts[1] = kModelMatrix.VectorTransform((*pkMesh->m_pkVertex)[(*pkMesh->m_pkFaces)[f].iIndex[1]]);		
+		verts[2] = kModelMatrix.VectorTransform((*pkMesh->m_pkVertex)[(*pkMesh->m_pkFaces)[f].iIndex[2]]);		
+		
+		/*
+		if(m_iDebugGraph == 2)
+		{
+			//debug stuff
+			m_pkRender->Line(verts[0],verts[1]);
+			m_pkRender->Line(verts[1],verts[2]);		
+			m_pkRender->Line(verts[2],verts[0]);				
+		}	*/	
+		
+		if(TestLineVSPolygon(verts,&kStart,&kPoint2))
+		{	
+			d = kStart.DistanceTo(m_kLastTestPos);
+		
+			if( d < closest)
+			{
+				closest = d;
+				bHaveColided = true;
+				kClosestPos = m_kLastTestPos;
+				kClosestNormal = m_kLastTestNormal;
+			}		
+		}		
+	}
+	
+	if(bHaveColided)
+	{
+		m_kLastTestPos = kClosestPos;		
+		m_kLastTestNormal = kClosestNormal;	
+		return true;
+	}
+	
+	return false;	
+}
+
+bool Tcs::TestLineVSPolygon(Vector3* pkVerts,Vector3* pkPos1,Vector3* pkPos2)
+{
+	static Plane P;
+	static Vector3 V1,V2,Normal;
+
+	V1 = pkVerts[1] - pkVerts[0];
+	V2 = pkVerts[2] - pkVerts[0];		
+	Normal= V1.Cross(V2);
+	
+	if(Normal.Length() == 0)
+		return false;
+	
+	Normal.Normalize();
+	P.m_fD = -Normal.Dot(pkVerts[0]);	
+	P.m_kNormal = Normal;
+
+	if(P.LineTest(*pkPos1 , *pkPos2 ,&m_kLastTestPos))
+		if(TestSides(pkVerts,&Normal,m_kLastTestPos))
+			return true;
+	
+	return false;	
+}
+
 bool Tcs::TestLineVSMesh(Vector3 kStart,Vector3 kDir,P_Tcs* pkB)
 {
 	if(pkB->m_pkMad)
 	{	
 		if(pkB->m_pkMad->TestLine(kStart,kDir))
 		{
-			m_kLastLineTestColPos = pkB->m_pkMad->GetLastColPos();
+			m_kLastTestPos = pkB->m_pkMad->GetLastColPos();
 			return true;
 		}
 	}
@@ -651,12 +743,41 @@ bool Tcs::TestLineVSMesh(Vector3 kStart,Vector3 kDir,P_Tcs* pkB)
 	{
 		if(pkB->LineVSMesh(kStart,kDir))
 		{
-			m_kLastLineTestColPos = pkB->m_kColPos;
+			m_kLastTestPos = pkB->m_kColPos;
 			return true;
 		}
 	}
 
 	return false;	
+}
+
+bool Tcs::CharacterTestLineVSSphere(Vector3 kP1,Vector3 kP2,P_Tcs* pkB)
+{
+	Vector3 kDir = kP2 - kP1;
+
+	Vector3 c=pkB->m_kNewPos - kP1;		
+
+	float d = kDir.Unit().Dot(c);
+
+	
+	kDir.Normalize();		
+	Vector3 k=kDir.Proj(c);		
+	float cdis=c.Length();
+	float kdis=k.Length();
+	float Distance = (float) sqrt((cdis*cdis)-(kdis*kdis));
+	
+
+	if(Distance < pkB->m_fRadius)
+	{			
+		m_kLastTestPos = pkB->m_kNewPos - c.Unit() * pkB->m_fRadius; //kP1 + k;
+		//m_kLastTestPos.x = kP1.x;
+		//m_kLastTestPos.z = kP1.z;
+		//m_kLastTestPos = kP1 + k;
+		
+		return true;
+	}		
+	
+	return false;
 }
 
 bool Tcs::TestLineVSSphere(Vector3 kP1,Vector3 kP2,P_Tcs* pkB)
@@ -680,7 +801,11 @@ bool Tcs::TestLineVSSphere(Vector3 kP1,Vector3 kP2,P_Tcs* pkB)
 
 	if(Distance < pkB->m_fRadius)
 	{			
+		//m_kLastTestPos = pkB->m_kNewPos - c.Unit() * pkB->m_fRadius; //kP1 + k;
+		//m_kLastTestPos.x = kP1.x;
+		//m_kLastTestPos.z = kP1.z;
 		m_kLastTestPos = kP1 + k;
+		
 		return true;
 	}		
 	
