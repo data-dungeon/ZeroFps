@@ -482,10 +482,16 @@ void DarkMetropolis::Input()
 		
 		if(m_pkInputHandle->VKIsDown("action"))
 		{
-			if( (m_pkFps->GetTicks() - m_fDelayTimer) > 1)
+			if( (m_pkFps->GetTicks() - m_fDelayTimer) > 0.15)
 			{
 				m_fDelayTimer = m_pkFps->GetTicks();
-				m_pkObjectMan->CreateObjectFromScriptInZone("data/script/objects/r_box.lua",m_pkPlayerEntity->GetWorldPosV() + Vector3(2,2,0));			
+								
+				Entity* pkEnt = m_pkObjectMan->CreateObjectFromScriptInZone("data/script/objects/t_particleball.lua",m_pkPlayerEntity->GetWorldPosV() );											
+				if(P_Tcs* pkTcs = (P_Tcs*)pkEnt->GetProperty("P_Tcs"))
+				{
+					Vector3 kDir = m_pkPlayerEntity->GetWorldRotM().VectorTransform(Vector3(0,0,1));					
+					pkTcs->ApplyImpulsForce(kDir*10);				
+				} 								
 			}
 		}
 	}

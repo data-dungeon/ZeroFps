@@ -1320,79 +1320,28 @@ void Tcs::ClearCollissions()
 
 void Tcs::TryToSleep(P_Tcs* pkBody1,P_Tcs* pkBody2)
 {
-/*
-	bool bSleep1 = false;
-	bool bSleep2 = false;
-
-	if(pkBody1->m_bStatic || pkBody1->m_bSleeping)
-		if(pkBody2->m_kLinearVelocity.Length() < m_fSleepVel)
-			if(pkBody2->m_kRotVelocity.Length() <  m_fSleepVel/2)		
-				bSleep2 = true;
-
-	if(pkBody2->m_bStatic || pkBody2->m_bSleeping)
-		if(pkBody1->m_kLinearVelocity.Length() < m_fSleepVel)
-			if(pkBody1->m_kRotVelocity.Length() <  m_fSleepVel/2)		
-				bSleep1 = true;
-
-	if(bSleep1)
-	{
-		pkBody1->Sleep();
-		pkBody2->AddRestingBody(pkBody1);
-	}
-	else
-		pkBody1->Wakeup();
-		
-	if(bSleep2)
-	{
-		pkBody2->Sleep();
-		pkBody1->AddRestingBody(pkBody2);		
-	}	
-	else
-		pkBody2->Wakeup();				
-		
-*/		
 	if((pkBody1->m_kLinearVelocity.Length() < m_fSleepVel) &&
 		(pkBody1->m_kRotVelocity.Length() <  m_fSleepVel/2) &&
 		(pkBody2->m_kLinearVelocity.Length() < m_fSleepVel) &&
 		(pkBody2->m_kRotVelocity.Length() <  m_fSleepVel/2) )		
-		{
-			pkBody1->Sleep();
-			pkBody2->Sleep();
-			
-			if(pkBody1->m_bSleeping)
-				if(pkBody1->m_bDisableOnSleep)
-				{
-					pkBody1->Disable();
-					pkBody1->GetObject()->DeleteProperty("P_Tcs");;
-				}
+	{
+		pkBody1->Sleep();
+		pkBody2->Sleep();
+		
+		if(pkBody1->m_bSleeping)
+			if(pkBody1->m_bDisableOnSleep)
+			{
+				pkBody1->Disable();
+				pkBody1->GetObject()->DeleteProperty("P_Tcs");;
+			}
 
-			if(pkBody2->m_bSleeping)
-				if(pkBody2->m_bDisableOnSleep)
-				{
-					pkBody2->Disable();
-					pkBody2->GetObject()->DeleteProperty("P_Tcs");
-				}
-					
-								
-			//pkBody1->AddRestingBody(pkBody2);
-			//pkBody2->AddRestingBody(pkBody1);
-			/*
-			pkBody1->m_kLinearVelocity.Set(0,0,0);
-			pkBody1->m_kRotVelocity.Set(0,0,0);		
-			pkBody1->m_bSleeping = true;
-			
-			pkBody2->m_kLinearVelocity.Set(0,0,0);
-			pkBody2->m_kRotVelocity.Set(0,0,0);		
-			pkBody2->m_bSleeping = true;
-			*/
-			
-			//cout<<"body going to sleep "<<m_kLinearForce.Length()<<endl;
-		}
-/*		else
-		{
-			pkBody1->Wakeup();				
-			pkBody2->Wakeup();				
-		}				*/
+		if(pkBody2->m_bSleeping)
+			if(pkBody2->m_bDisableOnSleep)
+			{
+				pkBody2->Disable();
+				pkBody2->GetObject()->DeleteProperty("P_Tcs");
+			}
+	}
 }
 
 

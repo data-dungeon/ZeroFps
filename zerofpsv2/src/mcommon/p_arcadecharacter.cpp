@@ -30,13 +30,39 @@ void P_ArcadeCharacter::Update()
 {
 	if(P_Tcs* pkTcs = (P_Tcs*)GetObject()->GetProperty("P_Tcs"))
 	{
+		Vector3 kCurrentDir = GetObject()->GetWorldRotM().VectorTransform(Vector3(0,0,1));	
+		Vector3 kSide = kCurrentDir.Cross(Vector3(0,1,0));
+
+		if(m_kDir.Length() == 0)
+			m_kDir = Vector3(0,0,-1);		
+		
+		m_kDir.Normalize();				
+		kCurrentDir.Normalize();
+		
+		float fS = m_kDir.Dot(kSide);		
+		float fAng = kCurrentDir.Angle(m_kDir);
+
+	//	cout<<fAng<<"  "<<kCurrentDir.Length()<<endl;
+		
+		
+		if(fS > 0)
+			GetObject()->RotateLocalRotV(Vector3(0, 10 *fAng,0));
+		else
+			GetObject()->RotateLocalRotV(Vector3(0,-10 *fAng,0));
+/*		
+		Vector3 kNewDir = (m_kDir  )+ kCurrentDir;
+		if(kNewDir.Length() == 0)
+			kNewDir.Set(0,0,-1);
+			
+		kNewDir.Normalize();
+		
 		//rotate player
 		Matrix4 kRot;		
 		kRot = GetObject()->GetWorldRotM();
-		kRot.LookDir(m_kDir,Vector3(0,1,0));		
+		kRot.LookDir(kNewDir,Vector3(0,1,0));		
 		kRot.Transponse();
 		GetObject()->SetLocalRotM(kRot);
-		
+*/		
 			
 		//move character
 		Vector3 kVel(0,0,0);	
@@ -54,7 +80,7 @@ void P_ArcadeCharacter::Update()
 			pkTcs->SetWalkVel(Vector3(0,0,0));
 		else
 		{
-			float fWalkRatio = (kVel.Unit().Dot(m_kDir.Unit()) / 2.0) + 0.5 ;
+			float fWalkRatio = (kVel.Unit().Dot(kCurrentDir.Unit()) / 2.0) + 0.5 ;
 			
 			kVel.Normalize();
 			kVel *= ( (m_fSpeed/2.0)*fWalkRatio) + (m_fSpeed/2.0);					
@@ -76,7 +102,9 @@ void P_ArcadeCharacter::Fire()
 {
 	if(P_DMGun* pkGun = (P_DMGun*)GetObject()->GetProperty ("P_DMGun"))
 	{
-		pkGun->Fire( GetObject()->GetWorldPosV()+Vector3(0,-0.4,0) + m_kDir.Unit());
+		Vector3 kDir = GetObject()->GetWorldRotM().VectorTransform(Vector3(0,0,1));	
+	
+		pkGun->Fire( GetObject()->GetWorldPosV()+Vector3(0,-0.4,0) + kDir.Unit());
 	}
 	else
 		cout<<"missing P_DMGun"<<endl;

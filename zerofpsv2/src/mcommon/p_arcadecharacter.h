@@ -18,7 +18,8 @@ class MCOMMON_API P_ArcadeCharacter : public Property
 		float 		m_fSpeed;		
 		bitset<6>	m_kActions;
 		Vector3		m_kDir;
-	
+
+		
 		P_ArcadeCharacter();
 		~P_ArcadeCharacter();
 
