@@ -248,16 +248,11 @@ bool LevelManager::ExtractWorldInfoObject()
 	list<Object*> kObjects;	
 	ZFMemPackage pkg;	
 	Object* pkInfoObject=NULL;
-	int iSize;
 	WorldInfoProperty* pkWi=NULL;	
 	
 	//get objects
 	m_pkObjectMan->GetAllObjects(&kObjects);
 	
-	//find out what package size to expect
-	m_kWIP.Save(&pkg);
-	iSize=pkg.GetSize();	
-	pkg.Clear();
 	
 	for(list<Object*>::iterator it=kObjects.begin();it!=kObjects.end();it++) {
 		if((*it)->GetName()=="WorldInfoObject")
@@ -288,14 +283,6 @@ bool LevelManager::ExtractWorldInfoObject()
 	//save to a zfmempackage
 	pkWi->Save(&pkg);
 			
-	//size do not match
-	if(pkg.GetSize() != iSize)
-	{
-		m_pkConsole->Printf("Info size missmatch (map from a different version?)");
-		return false;
-	}
-	
-
 	//load the info 
 	pkg.SetPos(0);	
 	m_kWIP.Load(&pkg);
@@ -311,6 +298,8 @@ void LevelManager::SetupWorld()
 	Fog(m_kWIP.m_kFogColor,m_kWIP.m_fFogStart,m_kWIP.m_fFogStop);
 	
 	Water(m_kWIP.m_bWater);
+	
+	SkyBox(m_kWIP.m_kSkyBoxHor.c_str(),m_kWIP.m_kSkyBoxTop.c_str(),m_kWIP.m_kSkyBoxRotate);
 }
 
 void LevelManager::Fog(Vector3 kColor,float fStart,float fStop)
@@ -344,21 +333,29 @@ void LevelManager::Water(bool bWater)
 	} else
 	{
 		delete m_pkObjectMan->GetObject("WorldWaterObject");
-/*	
-		list<Object*> kObjects;		
-		m_pkObjectMan->GetAllObjects(&kObjects);
-	
-		for(list<Object*>::iterator it=kObjects.begin();it!=kObjects.end();it++) {
-			if((*it)->GetName()=="WorldWaterObject")
-			{
-				delete (*it);
-				break;
-			}
-		}	
-	
-		kObjects.clear();
-*/
 	}
+}
+
+void LevelManager::SkyBox(const char* acHor,const char* acTop,Vector3 kRotate)
+{
+	m_kWIP.m_kSkyBoxHor=acHor;
+	m_kWIP.m_kSkyBoxTop=acTop;
+	m_kWIP.m_kSkyBoxRotate=kRotate;
+	
+	SkyBoxObject* skybox;
+	
+	//check if there already is a SkyBoxObject else create one
+	if(m_pkObjectMan->GetObject("SkyBoxObject") == NULL)
+	{	
+		skybox=new SkyBoxObject(acHor,acTop);
+		skybox->SetParent(m_pkObjectMan->GetWorldObject());	
+	}else {
+		skybox=static_cast<SkyBoxObject*>(m_pkObjectMan->GetObject("SkyBoxObject"));
+	}
+	
+	skybox->SetTexture(acHor,acTop);
+	skybox->SetRotate(kRotate);			
+	
 }
 
 

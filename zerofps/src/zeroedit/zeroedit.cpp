@@ -39,6 +39,7 @@ void ZeroEdit::OnInit(void)
 	g_ZFObjSys.Register_Cmd("load",FID_LOAD,this);		
 	g_ZFObjSys.Register_Cmd("fog",FID_FOG,this);		
 	g_ZFObjSys.Register_Cmd("water",FID_WATER,this);		
+	g_ZFObjSys.Register_Cmd("skybox",FID_SKYBOX,this);		
 
 
 	//start text =)
@@ -156,6 +157,27 @@ void ZeroEdit::OnHud(void)
 void ZeroEdit::RunCommand(int cmdid, const CmdArgument* kCommand)
 {
 	switch(cmdid) {
+		case FID_SKYBOX:{
+			if(kCommand->m_kSplitCommand.size() < 3) {
+				pkConsole->Printf("skybox [Horizontal texture] [top,botom texture] (rot[x][y][z])");
+				break;
+			}
+			
+			if(kCommand->m_kSplitCommand.size() < 6)
+			{
+				Vector3 kRot(0,0,0);
+				pkLevelMan->SkyBox(kCommand->m_kSplitCommand[1].c_str(),kCommand->m_kSplitCommand[2].c_str(),kRot);
+			} else{
+				Vector3 kRot(atof(kCommand->m_kSplitCommand[3].c_str()),
+								 atof(kCommand->m_kSplitCommand[4].c_str()),
+								 atof(kCommand->m_kSplitCommand[5].c_str()));
+								 
+				pkLevelMan->SkyBox(kCommand->m_kSplitCommand[1].c_str(),kCommand->m_kSplitCommand[2].c_str(),kRot);
+			}
+			
+			break;	
+		}
+		
 		case FID_WATER:
 			if(kCommand->m_kSplitCommand.size() <= 1) {
 				pkConsole->Printf("water 1(on) / 0 (off)");

@@ -6,6 +6,7 @@
 #include "os.h"
 #include "vector3.h"
 #include "vector4.h"
+#include <algorithm>
 
 class Matrix3;
 class Quaternion;

@@ -565,12 +565,10 @@ int Object::NrOfChilds()
 
 void Object::DeleteAllChilds()
 {
-	cout << "Fisk";
 	m_bLockedChilds=true;
 	for(list<Object*>::iterator it=m_akChilds.begin();it!=m_akChilds.end();it++) {
 		delete (*it);
 	}
-	cout << "Lins" << endl;
 
 	m_akChilds.clear();
 	m_bLockedChilds=false;	

@@ -57,8 +57,7 @@ class ENGINE_API LevelManager : public ZFObject {
 		
 		void Fog(Vector3 kColor,float fStart,float fStop);
 		void Water(bool bWater);
-		void SkyBoxTexture(const char* acHor,const char* acTop);
-		void SkyBox(bool bSkyBox);
+		void SkyBox(const char* acHor,const char* acTop,Vector3 kRotate);
 };
 
 

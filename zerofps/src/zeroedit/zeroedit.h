@@ -48,6 +48,7 @@ class ZeroEdit :public Application {
 			FID_LOAD,
 			FID_FOG,
 			FID_WATER,
+			FID_SKYBOX,
 		};	
 	
 		Camera* m_pkCamera;

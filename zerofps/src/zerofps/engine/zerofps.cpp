@@ -126,7 +126,7 @@ void ZeroFps::Init(int iNrOfArgs, char** paArgs)
 
 	HandleArgs(iNrOfArgs,paArgs);					//handle arguments
 	SetApp();										//setup class pointers	
-	cout << "0" << endl;
+
 	InitDisplay(m_pkApp->m_iWidth,m_pkApp->m_iHeight,m_pkApp->m_iDepth);
 
 	// Init Gui
@@ -253,21 +253,17 @@ void ZeroFps::InitDisplay(int iWidth,int iHeight,int iDepth) {
 	m_iHeight=iHeight;
 	m_iDepth=iDepth;
 
-	cout << "6" << endl;
 
 	//initiera sdl med opengl
 	if(SDL_Init(SDL_OPENGL | SDL_INIT_NOPARACHUTE )<0){
 		cout<<"Sdl_Graphic didt want to work right now =("<<endl;
 		exit(1);
 	}	
-	cout << "8" << endl;
 	
 	atexit(SDL_Quit);
-	cout << "9" << endl;
 
 
 	SetDisplay();
-	cout << "568545" << endl;
 
 #ifdef _WIN32
 	RenderDLL_InitExtGL();
@@ -347,7 +343,6 @@ void ZeroFps::SetDisplay(int iWidth,int iHeight,int iDepth)
 void ZeroFps::SetDisplay()
 {
 	m_pkTexMan->ClearAll();
-	cout << "50" << endl;
 
 	//turn of opengl 
 	SDL_QuitSubSystem(SDL_OPENGL);
@@ -355,21 +350,14 @@ void ZeroFps::SetDisplay()
 	
 	//reinit opengl with the new configuration
 	SDL_InitSubSystem(SDL_OPENGL);
-	cout << "51" << endl;
-	cout << "m_iFullScreen" << m_iFullScreen << endl;
-	cout << "m_iHeight" << m_iWidth << endl;
-	cout << "m_iDepth" << m_iDepth << endl;
-	cout << "m_iHeight" << m_iHeight << endl;
 
 	if(m_iFullScreen > 0)
 		m_pkScreen= SDL_SetVideoMode(m_iWidth,m_iHeight,m_iDepth,SDL_OPENGL|SDL_FULLSCREEN);	
 	else
 		m_pkScreen= SDL_SetVideoMode(m_iWidth,m_iHeight,m_iDepth,SDL_OPENGL);
 
-	cout << "52" << endl;
 	glViewport(0, 0,m_iWidth,m_iHeight);	
 
-	cout << "54" << endl;
 	if(m_pkGuiRenderer->SetDisplay(m_iWidth,m_iHeight) == false)
 	{
 		printf("Failed to set GUI display!\n");
