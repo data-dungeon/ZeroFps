@@ -55,10 +55,12 @@ void StopEmUp::OnInit()
 	InitGui(m_pkScript, "defguifont", "data/script/gui/defskins.lua", 
 				NULL, true, DISABLE_SCALE);
 	
+	
 	//add vfs root
+	m_pkZFVFileSystem->AddRootPath( string("../datafiles/dm") ,"/data");	
 	m_pkZFVFileSystem->AddRootPath( string("../datafiles/mistlands") ,"/data");
 	m_pkZFVFileSystem->AddRootPath( string("../datafiles/stopemup") ,"/data");
-	m_pkZFVFileSystem->AddRootPath( string("../datafiles/dm") ,"/data");
+
 
 	//register mcommon
 	MCommon_RegisterPropertys( m_pkZeroFps, m_pkPropertyFactory );
