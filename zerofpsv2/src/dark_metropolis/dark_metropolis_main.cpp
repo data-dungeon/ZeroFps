@@ -44,8 +44,8 @@ void DarkMetropolis::OnInit()
 	m_pkCameraProp	= 				NULL;
 	m_pkCameraEntity = 			NULL;
 	m_pkFps->m_bClientMode =	true;
-	m_fMinCamDistance =			4;
-	m_fMaxCamDistance =			13;
+	m_fMinCamDistance =			0.1f;
+	m_fMaxCamDistance =			6;
 	m_fDistance =					0;	
 	m_fAngle =						0;
 	m_strSaveDirectory =			"clans/";
@@ -85,7 +85,7 @@ void DarkMetropolis::OnInit()
 	m_pkFps->SetRenderTarget(m_pkCamera);
 	m_pkCamera->SetRender(true);
 
-//	LoadResourcesOnStartup();
+	LoadResourcesOnStartup();
 
 	//init dm script interface (register script functions for gameplay)
 	DMLua::Init(m_pkObjectMan,m_pkScript,m_pkGuiMan);
@@ -278,7 +278,7 @@ void DarkMetropolis::OnServerStart()
 		m_pkCameraEntity->AddProperty("P_Camera");	
 	
 		m_pkCameraEntity->SetParent( m_pkObjectMan->GetWorldObject() );
-		m_pkCameraEntity->SetWorldPosV(Vector3(0,0,0));
+		m_pkCameraEntity->SetWorldPosV(Vector3(0,5,0));
 		
 		m_pkCameraProp = (P_Camera*)m_pkCameraEntity->GetProperty("P_Camera");		
 		if(m_pkCameraProp)

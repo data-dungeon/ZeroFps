@@ -122,6 +122,7 @@ ZeroFps::ZeroFps(void) : I_ZeroFps("ZeroFps")
 	Register_Cmd("shot",FID_SCREENSHOOT);	
 	Register_Cmd("mass",FID_MASSSPAWN);	
 	Register_Cmd("sc",FID_SERVERCOMMAND);	
+	Register_Cmd("pos",FID_POS);	
 	
 }
 
@@ -1026,6 +1027,14 @@ void ZeroFps::RunCommand(int cmdid, const CmdArgument* kCommand)
 		case FID_SERVERCOMMAND:
 			cout << "Servercommand" << endl;
 			PrintToClient(0, "Yooo liksom");
+			break;
+
+		case FID_POS:
+			Vector3 kCamPos = m_pkCamera->GetPos();
+			cout << "Position - x:" << kCamPos.x << 
+				" y:" << kCamPos.y <<
+				" z:" << kCamPos.z << endl;
+			m_pkCamera->SetPos(kCamPos);
 			break;
 /*			
 		case FID_SENDMESSAGE:

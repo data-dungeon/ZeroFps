@@ -5,25 +5,24 @@
 
 // ------------------------------------------------------------------------------------------
 
-void PSystem::Draw()
+bool PSystem::Draw()
 {
-	
 	if ( m_bInsideFrustum )
 	{
 		// Set depthmask
 		glDepthFunc ( m_pkPSystemType->m_kPSystemBehaviour.m_uiDepthMask );
-
 		m_pkRender->DrawPSystem (this);
+
+		//glPopAttrib();
 	}
 
-	glPopAttrib();
+	return m_bInsideFrustum;
 }
 
 // ------------------------------------------------------------------------------------------
 
 bool PSystem::Update( Vector3 kNewPosition, Matrix4 kNewRotation )
 {
-
 	// Inherit position from parent
 	m_kPosition = kNewPosition;
 
@@ -35,8 +34,6 @@ bool PSystem::Update( Vector3 kNewPosition, Matrix4 kNewRotation )
 	// don't update live-forevever psystems if not inside frustum
 	if ( m_pkPSystemType->m_kPSystemBehaviour.m_fLifeTime == -9999999 && !m_bInsideFrustum )
 		return false;
-
-	glPushAttrib(GL_ALL_ATTRIB_BITS);
 
 	glDisable (GL_BLEND);
 	glDisable (GL_ALPHA_TEST);

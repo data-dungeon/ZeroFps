@@ -1946,12 +1946,11 @@ void Render::RunCommand(int cmdid, const CmdArgument* kCommand)
 
 void Render::DrawPSystem( PSystem *pkPSystem )
 {
-
 	glPushMatrix();
 
    glDisable (GL_LIGHTING);
 
-	glDisableClientState (GL_NORMAL_ARRAY);
+   glDisableClientState (GL_NORMAL_ARRAY);
 
    glDisable (GL_FOG);
 
@@ -2010,7 +2009,6 @@ void Render::DrawPSystem( PSystem *pkPSystem )
 	DrawBox(kPos, pkPSystem->GetPSystemType()->m_kPSystemBehaviour.m_kCullPosOffset, 
 			  pkPSystem->GetRotation(), kScale, 1);
 	*/
-
 
 	glPopMatrix();
 }

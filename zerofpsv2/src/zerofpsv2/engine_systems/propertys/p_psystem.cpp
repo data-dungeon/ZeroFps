@@ -7,6 +7,8 @@
 
 void P_PSystem::Update()
 {
+	glPushAttrib(GL_ALL_ATTRIB_BITS);
+
 	if ( m_pkPSystem )
 	{
 		Matrix4 kMat;
@@ -19,8 +21,6 @@ void P_PSystem::Update()
  		   {
 	 		   m_pkPSystem->Draw();
 			}
-	 		else
-		 		glPopAttrib();
  		}
       else
       {
@@ -33,9 +33,11 @@ void P_PSystem::Update()
 
          m_pkPSystem = 0;
 
-         glPopAttrib();
+//         glPopAttrib();
       }
 	}
+
+	glPopAttrib();
 }
 
 // ------------------------------------------------------------------------------------------

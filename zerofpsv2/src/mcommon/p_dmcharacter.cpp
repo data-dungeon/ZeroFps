@@ -415,7 +415,7 @@ void P_DMCharacter::Update()
 			{
 				m_bCharacterIdle = false;
 
-				if(m_bPlayWalkSound == false)
+				if(m_bPlayWalkSound == false && m_iTeam != 1 && m_iTeam != 2 )
 				{
 					m_pkAudioSys->StartSound("/data/sound/walk_zombie.wav", 
 						m_pkObject->GetIWorldPosV(), 

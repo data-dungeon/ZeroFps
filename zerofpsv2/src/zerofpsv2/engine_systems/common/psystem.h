@@ -80,7 +80,7 @@ public:
 	Vector3 m_kPosOffset;
 
 	void TestInsideFrustum();
-	void Draw();
+	bool Draw();
 	bool Update( Vector3 kNewPosition, Matrix4 kNewRotation );
 	void AddPSProperty ( ParticleProperty *pkPSProperty );
 
