@@ -393,6 +393,25 @@ void DarkMetropolis::Input()
 					{
 						m_kSelectedEntitys.clear();		//clear all selected entitys if a hq is selected
 						m_iHQID = pkEnt->GetEntityID();
+						
+						// Test for double click and in that case open HQ dlg.
+						////////////////////////////////////////////////////////
+						float fGameTime = m_pkFps->m_pkObjectMan->GetGameTime();
+						static bool s_bClickedOnes = false;
+						static float s_fClickTime = fGameTime;
+
+						if(s_bClickedOnes == true && fGameTime-s_fClickTime<0.25f)
+						{
+							m_pkHQDlg->OpenDlg(); // Open the HQ dialog and Pause game
+							s_bClickedOnes = false;
+						}
+
+						if(s_bClickedOnes == false)
+							s_bClickedOnes = true;
+
+						s_fClickTime = fGameTime; 
+						////////////////////////////////////////////////////////
+
 					}
 			}
 			else  //else check for entitys inside the selection square
@@ -508,7 +527,6 @@ void DarkMetropolis::Input()
 							cout<<"entering hq"<<endl;
 							SelectAgent(m_kSelectedEntitys[i], true, false,false); // remove selection
 							pkHQ->InsertCharacter(m_kSelectedEntitys[i]);
-							m_pkHQDlg->OpenDlg(); // Open the HQ dialog and Pause game
 						}
 						else
 						{
