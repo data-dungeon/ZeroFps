@@ -95,7 +95,9 @@ bool PSystem::Update( Vector3 kNewPosition, Matrix4 kNewRotation )
 			if ( m_kParticles[i].m_fAge < 0 )
 				// is particle system finished, don't reset particle
 				if ( m_fAge > 0 || m_fAge == -9999999)
-					ResetParticle( i, -m_kParticles[i].m_fAge );
+				{
+					ResetParticle( i, ((-m_kParticles[i].m_fAge/m_kParticles[i].m_fLifeTime)-int(-m_kParticles[i].m_fAge/m_kParticles[i].m_fLifeTime))*m_kParticles[i].m_fLifeTime );
+				}
 				else
 					DisableParticle ( i );
 		}
@@ -180,7 +182,6 @@ void PSystem::ResetParticle (int iParticleIndex, float fTimeOffset)
 	if ( iParticleIndex < m_uiFirstParticle )
 		m_uiFirstParticle = iParticleIndex;
 
-//	int iIndex = (iParticleIndex) * 9;
 	int iClrIndex = iParticleIndex * 12;
 
 	m_fTimeSinceLastCreatedParticle = 0;
@@ -314,13 +315,12 @@ void PSystem::ResetParticle (int iParticleIndex, float fTimeOffset)
 	m_kParticles[iParticleIndex].m_kEndSize.y = m_pkPSystemType->m_kParticleBehaviour.m_kEndSize.y;
 
 	m_kParticles[iParticleIndex].m_kStartSize.x = m_pkPSystemType->m_kParticleBehaviour.m_kStartSize.x
-		+ (( m_kParticles[iParticleIndex].m_kEndSize.x - m_kParticles[iParticleIndex].m_kStartSize.x) / 
+		+ (( m_kParticles[iParticleIndex].m_kEndSize.x - m_pkPSystemType->m_kParticleBehaviour.m_kStartSize.x) / 
 		m_pkPSystemType->m_kParticleBehaviour.m_fLifeTime * fTimeOffset);
 	m_kParticles[iParticleIndex].m_kStartSize.y = m_pkPSystemType->m_kParticleBehaviour.m_kStartSize.y
-		+ (( m_kParticles[iParticleIndex].m_kEndSize.y - m_kParticles[iParticleIndex].m_kStartSize.y) / 
+		+ (( m_kParticles[iParticleIndex].m_kEndSize.y - m_pkPSystemType->m_kParticleBehaviour.m_kStartSize.y) / 
 		m_pkPSystemType->m_kParticleBehaviour.m_fLifeTime * fTimeOffset);
 
-	
 	// Randomize size startvalues
 	if ( m_pkPSystemType->m_kParticleBehaviour.m_iStartSizeRandom )
 	{
@@ -390,7 +390,7 @@ void PSystem::DisableParticle ( int iParticleIndex )
 
 // ------------------------------------------------------------------------------------------
 
-void PSystem::TimeoffSet (bool bUseAge)
+void PSystem::TimeoffSet ()
 {
 	// create particles
 	for ( int i = 0; i < m_pkPSystemType->m_kPSystemBehaviour.m_iMaxParticles; i++ )
@@ -399,7 +399,7 @@ void PSystem::TimeoffSet (bool bUseAge)
 
 		m_kParticles.push_back ( kNewParticle );
 
-		ResetParticle ( m_kParticles.size() - 1, i * m_pkPSystemType->m_kPSystemBehaviour.m_fParticlesPerSec );
+		ResetParticle ( i, i * m_pkPSystemType->m_kPSystemBehaviour.m_fParticlesPerSec );
 	}
 
 }

@@ -110,7 +110,7 @@ public:
 	void DisableParticle ( int iParticleIndex );
 
 	// Make PSystem have particles from start
-	void TimeoffSet ( bool bUseAge = false );
+	void TimeoffSet ();
    
 	PSystem(PSystemType* pkPSystemType);
 	~PSystem();
