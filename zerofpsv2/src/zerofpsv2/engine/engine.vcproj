@@ -100,7 +100,6 @@
 				AssemblerListingLocation=".\Release/"
 				ObjectFile=".\Release/"
 				ProgramDataBaseFileName=".\Release/"
-				WarningLevel="3"
 				SuppressStartupBanner="TRUE"/>
 			<Tool
 				Name="VCCustomBuildTool"/>
@@ -112,6 +111,7 @@
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"
 				AdditionalLibraryDirectories="..\..\..\bin"
+				IgnoreDefaultLibraryNames="LIBCMT.lib"
 				ProgramDatabaseFile=".\Release/engine.pdb"
 				ImportLibrary=".\Release/engine.lib"/>
 			<Tool

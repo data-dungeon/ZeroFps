@@ -82,10 +82,8 @@
 				StringPooling="TRUE"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="TRUE"
-				UsePrecompiledHeader="2"
-				WarningLevel="3"
-				Detect64BitPortabilityProblems="TRUE"
-				DebugInformationFormat="3"/>
+				RuntimeTypeInfo="TRUE"
+				UsePrecompiledHeader="2"/>
 			<Tool
 				Name="VCCustomBuildTool"/>
 			<Tool
@@ -94,7 +92,6 @@
 				OutputFile="..\..\bin\dark_metropolis.exe"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="..\..\bin"
-				GenerateDebugInformation="TRUE"
 				SubSystem="1"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
