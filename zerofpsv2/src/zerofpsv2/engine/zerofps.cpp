@@ -9,6 +9,7 @@
 #include "../gui/zgui.h"
 #include "../engine_systems/propertys/propertys.pkg"
 #include "../basic/zfini.h"
+#include "inputhandle.h" 
  
 #define	ZF_MIN_PLAYERS	1
 #define	ZF_DEF_PLAYERS	8
@@ -40,27 +41,27 @@ ZeroFps::ZeroFps(void) : I_ZeroFps("ZeroFps")
 	// Create Engine SubSystems 
 	m_pkAStar					= new AStar;
 	m_pkZShader					= new ZShader;
-	m_pkPhysics_Engine			= new Physics_Engine;
+	m_pkPhysics_Engine		= new Physics_Engine;
 	m_pkObjectMan				= new EntityManager;
 	m_pkResourceDB				= new ZFResourceDB;
 	m_pkPhysEngine				= new PhysicsEngine;
 	m_pkIni						= new ZFIni;
 	m_pkGui						= new ZGui(Application::m_pkApp->m_iWidth, Application::m_pkApp->m_iHeight);
 	m_pkGuiMan					= new ZGuiResourceManager;
-	m_pkGuiRenderer				= new GLGuiRender;
+	m_pkGuiRenderer			= new GLGuiRender;
 	m_pkNetWork					= new NetWork;
 	m_pkMusic					= new OggMusic(24,4096);
-	m_pkAudioSystem				= new ZFAudioSystem;
+	m_pkAudioSystem			= new ZFAudioSystem;
 	m_pkConsole					= new Console;
 	m_pkRender					= new Render;
 	m_pkLight					= new Light;	
 	m_pkFrustum					= new Frustum;	
-	m_pkPropertyFactory			= new PropertyFactory;
+	m_pkPropertyFactory		= new PropertyFactory;
 	m_pkInput					= new Input;		
 	m_pkTexMan					= new TextureManager;
 	m_pkZFVFileSystem			= new ZFVFileSystem;
 	m_pkBasicFS					= new ZFBasicFS;
-	m_pkPSystemManager			= new PSystemManager;
+	m_pkPSystemManager		= new PSystemManager;
 	m_pkScript					= new ZFScriptSystem;
 	m_pkTcs						= new Tcs;	
 
@@ -161,6 +162,12 @@ bool ZeroFps::StartUp()
 	
 	m_kCurentDir = m_pkBasicFS->GetCWD();
 	 
+	m_pkGuiInputHandle = new InputHandle("Gui");
+	m_pkInputHandle = new InputHandle("Zerofps");
+	m_pkInput->SetActiveInputHandle("Zerofps");
+	m_pkInput->AddActiveInputHandle("Gui");
+	m_pkInput->AddActiveInputHandle("Application");	
+	 
 	/* [zeb] ////////////////////////////////////////////////
 	cout << "m_kCurentDir: " << m_kCurentDir.c_str() << endl;
 	char szWorkDir[256];
@@ -257,7 +264,7 @@ bool ZeroFps::Init(int iNrOfArgs, char** paArgs)
 /* Code that need to run on both client/server. */
 void ZeroFps::Run_EngineShell()
 {
-	m_pkInput->SetInputEnabled(true);
+	//m_pkInput->SetInputEnabled(true);
 
 	/*
 	m_pkObjectMan->PackToClients();
@@ -284,39 +291,46 @@ void ZeroFps::Run_EngineShell()
 	// Update Local Input.
 	m_pkInput->Update();
 
-	m_pkInput->SetInputEnabled(false);			
-	if(m_pkConsole->IsActive()) {		
-		m_pkInput->SetInputEnabled(true);			
+	if(m_pkConsole->IsActive()) 
+	{		
 		m_pkConsole->Update();
-		}
-
-	m_pkInput->SetInputEnabled(true);			
+	}
 
 	// Updata Gui input
 	int mx, my;
-	mx = m_pkInput->m_iSDLMouseX;
-	my = m_pkInput->m_iSDLMouseY;
+	m_pkGuiInputHandle->SDLMouseXY(mx,my);
 
 	int iInputKey = -1;
 	for(int i=0; i<256; i++)
-		if(m_pkInput->Pressed((Buttons) i)) {
+		if(m_pkGuiInputHandle->Pressed((Buttons) i)) {
 			iInputKey = i; break;
 		}
 
 	m_pkGui->Update(GetGameTime(),iInputKey,false,
-		(m_pkInput->Pressed(KEY_RSHIFT) || m_pkInput->Pressed(KEY_LSHIFT)),
-		mx,my,m_pkInput->Pressed(MOUSELEFT),m_pkInput->Pressed(MOUSERIGHT),
-		m_pkInput->Pressed(MOUSEMIDDLE));
+		(m_pkGuiInputHandle->Pressed(KEY_RSHIFT) || m_pkGuiInputHandle->Pressed(KEY_LSHIFT)),
+		mx,my,m_pkGuiInputHandle->Pressed(MOUSELEFT),m_pkGuiInputHandle->Pressed(MOUSERIGHT),
+		m_pkGuiInputHandle->Pressed(MOUSEMIDDLE));
 
-	if(m_pkInput->VKIsDown("shot"))	GetSystem().RunCommand("shot",CSYS_SRC_SUBSYS);	
-	if(m_pkInput->Pressed(KEY_F10))	m_pkInput->ToggleGrab();
-	if(m_pkInput->Pressed(KEY_F11))	ToggleFullScreen();		
+/*	 //UNCOMMENT THIS ZEB =)
+	if(m_pkGui->m_bHandledMouse)
+	{
+		m_pkGuiInputHandle->Reset();	//resets keys if guit handled the input
+	}
+*/
+	//end of console input
+
+	//for debuging the input system
+	if(m_pkInputHandle->Pressed(KEY_F6))
+		m_pkInput->PrintInputHandlers();
+
+	if(m_pkInputHandle->VKIsDown("shot"))	GetSystem().RunCommand("shot",CSYS_SRC_SUBSYS);	
+	if(m_pkInputHandle->Pressed(KEY_F10))	m_pkInput->ToggleGrab();
+	if(m_pkInputHandle->Pressed(KEY_F11))	ToggleFullScreen();		
 
 	// TAB Always handle console.
-	if(m_pkInput->Pressed(KEY_TAB))
+	if(m_pkInputHandle->Pressed(KEY_TAB))
 	{		
 		m_pkConsole->Toggle();
-		m_pkInput->Reset();
 	}
 
 }
@@ -333,11 +347,11 @@ void ZeroFps::Run_Server()
 
 void ZeroFps::Run_Client()
 {
-	if(m_pkConsole->IsActive())
-		m_pkInput->SetInputEnabled(false);
+/*	if(m_pkConsole->IsActive())
+		m_pkInputHandle->SetInputEnabled(false);
 	else 
 		m_pkInput->SetInputEnabled(true);						
-		
+*/		
 	//run application main loop
 	m_pkApp->OnIdle();
 

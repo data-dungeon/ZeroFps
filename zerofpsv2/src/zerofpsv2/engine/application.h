@@ -40,11 +40,14 @@ class ENGINE_API Application : public ZFSubSystem {
 		ZShader*					m_pkZShader;	
 		ZeroFps*					m_pkFps;
 		
+		
 	public:
 		static Application*	m_pkApp;												///< The one and Only App Instance.
 		
 		int m_iWidth,m_iHeight,m_iDepth;
 		char* m_pTitle;																///< Windows Title.
+		
+		InputHandle*	m_pkInputHandle;
 		
 		void SetEnginePointer(ZeroFps* pkZeroFps);							///< Set pointer to ZeroFps Engine.
 		void SetTitle(string strTitle);		

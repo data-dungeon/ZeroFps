@@ -407,6 +407,8 @@ bool ZGui::OnMouseUpdate(int x, int y, bool bLBnPressed,
 						 bool bRBnPressed, bool bMBnPressed, 
 						 float fGameTime)
 {
+
+
 	if(bMBnPressed) // ignorera mitten knappen och ge spelet fokus
 	{
 		m_bHaveInputFocus = false;
@@ -446,7 +448,9 @@ bool ZGui::OnMouseUpdate(int x, int y, bool bLBnPressed,
 				if(wnd != m_pkActiveMainWin)
 				{
 					SetFocus(wnd->pkWnd);
-					return true;
+					m_bHandledMouse = true;
+					//OnMouseUpdate(x,y, bLBnPressed,bRBnPressed, bMBnPressed, fGameTime);
+					return true;						//DVOID: detta tycks inte vara så bra då man måste klicka två gånger på en widget för att först fokusera och sedan själva klicket, beror på att jag nu resetar musklicket om guit hanterade det
 				}
 			}
 		}
@@ -462,6 +466,7 @@ bool ZGui::OnMouseUpdate(int x, int y, bool bLBnPressed,
 	if(!m_pkActiveMainWin->pkWnd) 
 		return false; 
 
+	
 	ZGuiWnd* pkFocusWindow;
 	
 	if(m_pkCapturedWindow == NULL)
@@ -493,6 +498,13 @@ bool ZGui::OnMouseUpdate(int x, int y, bool bLBnPressed,
 
 	bool bLeftPressed =  (m_bLeftButtonDown  == false && bLeftButtonDown  == true);
 	bool bRightPressed = (m_bRightButtonDown == false && bRightButtonDown == true);
+
+
+	if(pkFocusWindow && (bLeftButtonDown || bRightButtonDown))
+	{
+		m_bHandledMouse = true;	
+	}
+	
 
 	// Har vänster musknapp klickats (men inte släppt)
 	if( bLeftPressed || bRightPressed )
@@ -539,6 +551,7 @@ bool ZGui::OnMouseUpdate(int x, int y, bool bLBnPressed,
 				m_pkActiveMainWin->pkCallback(ZGuiWnd::m_pkWndClicked,
 					bLeftPressed ? ZGM_LBUTTONDOWN : ZGM_RBUTTONDOWN, 2,pkParams);
 				delete[] pkParams;
+				
 			}
 			else
 			{
@@ -548,6 +561,7 @@ bool ZGui::OnMouseUpdate(int x, int y, bool bLBnPressed,
 		}
 		else
 		{
+			
 			if(ZGuiWnd::m_pkFocusWnd)
 				ZGuiWnd::m_pkFocusWnd->KillFocus();
 
@@ -558,7 +572,7 @@ bool ZGui::OnMouseUpdate(int x, int y, bool bLBnPressed,
 
 	// Är vänster musknapp nertryckt?
 	if( bLeftButtonDown == true && ZGuiWnd::m_pkWndClicked)
-	{	
+	{		
 		// Skall fönstret flyttas?
 		if(!(ZGuiWnd::m_pkWndClicked->GetMoveArea() == ZGuiWnd::m_pkWndClicked->GetScreenRect()))
 		{
@@ -794,8 +808,11 @@ bool ZGui::Update(float fGameTime, int iKeyPressed, bool bLastKeyStillPressed,
 {
 	if(m_bActive == true)
 	{
+		m_bHandledMouse = false;
+	
 		if(m_pkCursor && m_pkCursor->IsVisible())	
 			OnMouseUpdate(x, y, bLBnPressed, bRBnPressed, bMBnPressed, fGameTime);
+
 
 		KeyboardInput(iKeyPressed, bShiftIsPressed, fGameTime);
 

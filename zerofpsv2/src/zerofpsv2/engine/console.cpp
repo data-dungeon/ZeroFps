@@ -3,6 +3,7 @@
 #include <cstdio>
 #include <cstdarg>
 #include "../basic/zfsystem.h"
+#include "inputhandle.h" 
  
 using namespace std;
 
@@ -37,11 +38,15 @@ bool Console::StartUp()
 	m_bShowMarker			= true;
 	m_fMarkerToggleTime	= 0;
 
+	m_pkInputHandle = new InputHandle("Console");
+
 	return true; 
 }
 
 bool Console::ShutDown() 
 { 
+	delete m_pkInputHandle;
+
 	return true; 
 }
 
@@ -133,7 +138,8 @@ void Console::ConsoleCmd(CON_CMD eCmd)
 			glPopAttrib();
 			
 			Toggle();
-			m_pkInput->Reset();
+
+			//m_pkInputHandle->Reset();
 			break;
 
 		case CONCMD_RUN:			
@@ -150,7 +156,7 @@ void Console::ConsoleCmd(CON_CMD eCmd)
 				m_nStartLine++;
 				//PREVTIME = fCurrTime;
 			}
-			m_pkInput->GetQueuedKey(); // remove latest
+			m_pkInputHandle->GetQueuedKey(); // remove latest
 			
 			break;
 
@@ -160,7 +166,7 @@ void Console::ConsoleCmd(CON_CMD eCmd)
 				m_nStartLine--;
 				//PREVTIME = fCurrTime;
 			}
-			m_pkInput->GetQueuedKey(); // remove latest
+			m_pkInputHandle->GetQueuedKey(); // remove latest
 
 			break;
 
@@ -233,10 +239,10 @@ void Console::Update(void)
 
 	
 	//loop while theres keys to handle
-	while(m_pkInput->SizeOfQueue() > 0)
+	while(m_pkInputHandle->SizeOfQueue() > 0)
 	{
 		//get next queued key
-		QueuedKeyInfo kKey = m_pkInput->GetQueuedKey();
+		QueuedKeyInfo kKey = m_pkInputHandle->GetQueuedKey();
 
 		CON_CMD eCmd = CONCMD_NONE;		// We assume we don't need to do any console cmd.
 
@@ -300,7 +306,7 @@ void Console::Update(void)
 	//fixar keyrepeat
 	if(s_kLastKeyPressed.m_iKey != -1)//ingen repeat om ingen knapp tryckts
 	{
-		if(m_pkInput->Pressed((Buttons)s_kLastKeyPressed.m_iKey))
+		if(m_pkInputHandle->Pressed((Buttons)s_kLastKeyPressed.m_iKey))
 		{
 	
 		float fCurrTime = m_pkEngine->GetEngineTime();	//GetGameTime();
@@ -479,6 +485,18 @@ void Console::Toggle()
 
 	m_bActive = !m_bActive;
 	m_fToggleTime = fTime += 0.2;
+	
+	if(m_bActive)
+	{
+		m_pkInput->SetActiveInputHandle("Zerofps");	
+		m_pkInput->AddActiveInputHandle("Console");
+	}
+	else
+	{
+		m_pkInput->SetActiveInputHandle("Zerofps");
+		m_pkInput->AddActiveInputHandle("Gui");	
+		m_pkInput->AddActiveInputHandle("Application");			
+	}
 }
 
 

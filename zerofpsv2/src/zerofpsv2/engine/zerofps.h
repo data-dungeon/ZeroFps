@@ -26,6 +26,8 @@
 #include "../script/zfscript.h"
 #include "../engine_systems/script_interfaces/si_std.h"
 #include "astar.h"
+//#include "inputhandle.h"
+
 
 #define ZF_VERSION_NUM		"ZF 0.01"
 
@@ -44,6 +46,7 @@ class Application;
 class NetPacket;
 class PSystemManager;
 class Tcs;
+class InputHandle;
 
 enum enginestates 
 {
@@ -147,6 +150,7 @@ class ENGINE_API ZeroFps : public I_ZeroFps {
 		
 		int		m_iMaxPlayers;
 
+
 		Camera *m_pkCamera;
 		Camera *m_pkConsoleCamera;
 		string m_kCurentDir;
@@ -209,6 +213,9 @@ class ENGINE_API ZeroFps : public I_ZeroFps {
 		
 		int		m_iMadDraw;									//	Flags for what part's of mad's that should be draw.
 		float		m_fMadLod;									//	If not 0 then force this LOD % on every mad.
+
+		InputHandle*	m_pkInputHandle;
+		InputHandle*	m_pkGuiInputHandle;
 
 		vector<ZFClient>		m_kClient;					
 

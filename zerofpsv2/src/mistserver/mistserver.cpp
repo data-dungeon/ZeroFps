@@ -21,6 +21,7 @@
 #include <set> 
 #include <algorithm>
 
+#include "../zerofpsv2/engine/inputhandle.h"
 #include "../zerofpsv2/gui/zguiresourcemanager.h"
 
 MistServer g_kMistServer("MistServer",0,0,0);
@@ -196,7 +197,7 @@ void MistServer::Init()
 	// hide cursor
 	m_pkInput->ShowCursor(true);
 
-//	m_pkInput->ToggleGrab();
+//	m_pkInputHandle->ToggleGrab();
 
 //	m_pkPlayerDB->GetLoginCharacters(string("user"));
 
@@ -456,18 +457,18 @@ void MistServer::HMModifyCommand(float fSize)
 // Handles input for EditMode Terrain.
 void MistServer::Input_EditTerrain()
 {
-	if(m_pkInput->VKIsDown("inrad+"))		m_fHMInRadius += 1 * m_pkFps->GetGameFrameTime();
-	if(m_pkInput->VKIsDown("inrad-"))		m_fHMInRadius -= 1 * m_pkFps->GetGameFrameTime();
-	if(m_pkInput->VKIsDown("outrad+"))		m_fHMOutRadius += 1 * m_pkFps->GetGameFrameTime();
-	if(m_pkInput->VKIsDown("outrad-"))		m_fHMOutRadius -= 1 * m_pkFps->GetGameFrameTime();
+	if(m_pkInputHandle->VKIsDown("inrad+"))		m_fHMInRadius += 1 * m_pkFps->GetGameFrameTime();
+	if(m_pkInputHandle->VKIsDown("inrad-"))		m_fHMInRadius -= 1 * m_pkFps->GetGameFrameTime();
+	if(m_pkInputHandle->VKIsDown("outrad+"))		m_fHMOutRadius += 1 * m_pkFps->GetGameFrameTime();
+	if(m_pkInputHandle->VKIsDown("outrad-"))		m_fHMOutRadius -= 1 * m_pkFps->GetGameFrameTime();
 	if(m_fHMInRadius > m_fHMOutRadius)
 		m_fHMInRadius = m_fHMOutRadius;
 
-	if(m_pkInput->VKIsDown("hmraise"))		HMModifyCommand(5); 
-	if(m_pkInput->VKIsDown("hmlower"))		HMModifyCommand(-5);
-	if(m_pkInput->VKIsDown("hmsm") ) 		HMModifyCommand(0.0); 
+	if(m_pkInputHandle->VKIsDown("hmraise"))		HMModifyCommand(5); 
+	if(m_pkInputHandle->VKIsDown("hmlower"))		HMModifyCommand(-5);
+	if(m_pkInputHandle->VKIsDown("hmsm") ) 		HMModifyCommand(0.0); 
 
-	if(m_pkInput->VKIsDown("hmpaint")) 
+	if(m_pkInputHandle->VKIsDown("hmpaint")) 
 	{
 		for(set<int>::iterator itEntity = m_SelectedEntitys.begin(); itEntity != m_SelectedEntitys.end(); itEntity++ ) 
 		{
@@ -480,34 +481,34 @@ void MistServer::Input_EditTerrain()
 			}
 		}
 
-	if(m_pkInput->Pressed(KEY_1)) m_iEditLayer = 1;		
-	if(m_pkInput->Pressed(KEY_2)) m_iEditLayer = 2;			
-	if(m_pkInput->Pressed(KEY_3)) m_iEditLayer = 3;			
+	if(m_pkInputHandle->Pressed(KEY_1)) m_iEditLayer = 1;		
+	if(m_pkInputHandle->Pressed(KEY_2)) m_iEditLayer = 2;			
+	if(m_pkInputHandle->Pressed(KEY_3)) m_iEditLayer = 3;			
 
-//	if(m_pkInput->Pressed(KEY_4) && hmrp) hmrp->m_pkHeightMap->Invert();			
+//	if(m_pkInputHandle->Pressed(KEY_4) && hmrp) hmrp->m_pkHeightMap->Invert();			
 }
 
 // Handles input for EditMode Zones.
 void MistServer::Input_EditZone()
 {
-	if(m_pkInput->Pressed(MOUSELEFT))
+	if(m_pkInputHandle->Pressed(MOUSELEFT))
 	{
 		AddZone(m_kZoneMarkerPos, m_kZoneSize, m_strActiveZoneName);	
 	}
 	
-	if(m_pkInput->Pressed(KEY_T))
+	if(m_pkInputHandle->Pressed(KEY_T))
 	{
 		AddZone(m_kZoneMarkerPos, m_kZoneSize, m_strActiveZoneName,true);	
 	}
 
-	if(m_pkInput->VKIsDown("remove"))
+	if(m_pkInputHandle->VKIsDown("remove"))
 	{
 		int id = m_pkObjectMan->GetZoneIndex(m_kZoneMarkerPos,-1,false);
 		
 		m_pkObjectMan->DeleteZone(id);
 	}
 	
-	if(m_pkInput->VKIsDown("rotate") && !DelayCommand())
+	if(m_pkInputHandle->VKIsDown("rotate") && !DelayCommand())
 	{
 		m_iCurrentMarkedZone = m_pkObjectMan->GetZoneIndex(m_kZoneMarkerPos,-1,false);
 		
@@ -518,19 +519,19 @@ void MistServer::Input_EditZone()
 		RotateActiveZoneObject();
 	}
 	
-	if(m_pkInput->VKIsDown("buildmodeon") && !DelayCommand())
+	if(m_pkInputHandle->VKIsDown("buildmodeon") && !DelayCommand())
 	{
 		m_iCurrentMarkedZone = m_pkObjectMan->GetZoneIndex(m_kZoneMarkerPos,-1,false);
 		m_pkObjectMan->SetUnderConstruction(m_iCurrentMarkedZone);
 	}
 	
-	if(m_pkInput->VKIsDown("buildmodeoff") && !DelayCommand())
+	if(m_pkInputHandle->VKIsDown("buildmodeoff") && !DelayCommand())
 	{
 		m_iCurrentMarkedZone = m_pkObjectMan->GetZoneIndex(m_kZoneMarkerPos,-1,false);
 		m_pkObjectMan->CommitZone(m_iCurrentMarkedZone);
 	}	
 
-	if(m_pkInput->VKIsDown("selectzone") && !DelayCommand())
+	if(m_pkInputHandle->VKIsDown("selectzone") && !DelayCommand())
 	{	
 		m_iCurrentMarkedZone =  m_pkObjectMan->GetZoneIndex(m_kZoneMarkerPos,-1,false);
 		ZoneData* pkData = m_pkObjectMan->GetZoneData(m_iCurrentMarkedZone);
@@ -538,18 +539,18 @@ void MistServer::Input_EditZone()
 			Select_Toggle(pkData->m_pkZone->iNetWorkID);
 	}
 
-	if(m_pkInput->Pressed(KEY_1)) m_kZoneSize.Set(4,4,4);
-	if(m_pkInput->Pressed(KEY_2)) m_kZoneSize.Set(8,8,8);
-	if(m_pkInput->Pressed(KEY_3)) m_kZoneSize.Set(16,16,16);	
-	if(m_pkInput->Pressed(KEY_4)) m_kZoneSize.Set(32,16,32);	
-	if(m_pkInput->Pressed(KEY_5)) m_kZoneSize.Set(64,16,64);		
-	if(m_pkInput->Pressed(KEY_6)) m_kZoneSize.Set(1024,32,1024);		
+	if(m_pkInputHandle->Pressed(KEY_1)) m_kZoneSize.Set(4,4,4);
+	if(m_pkInputHandle->Pressed(KEY_2)) m_kZoneSize.Set(8,8,8);
+	if(m_pkInputHandle->Pressed(KEY_3)) m_kZoneSize.Set(16,16,16);	
+	if(m_pkInputHandle->Pressed(KEY_4)) m_kZoneSize.Set(32,16,32);	
+	if(m_pkInputHandle->Pressed(KEY_5)) m_kZoneSize.Set(64,16,64);		
+	if(m_pkInputHandle->Pressed(KEY_6)) m_kZoneSize.Set(1024,32,1024);		
 }
 
 // Handles input for EditMode Object.
 void MistServer::Input_EditObject(float fMouseX, float fMouseY)
 {
-	if(m_pkInput->Pressed(MOUSELEFT) && !DelayCommand())
+	if(m_pkInputHandle->Pressed(MOUSELEFT) && !DelayCommand())
 	{
 		m_pkObjectMan->CreateObjectFromScriptInZone(
 			m_strActiveObjectName.c_str(), m_kObjectMarkerPos);
@@ -557,7 +558,7 @@ void MistServer::Input_EditObject(float fMouseX, float fMouseY)
 		cout << "Spawning " << m_strActiveObjectName.c_str() << endl;
 	}
 	
-	if(m_pkInput->VKIsDown("selectzone") || (m_pkInput->Pressed(MOUSERIGHT) && m_pkInput->Pressed(KEY_LSHIFT))   )
+	if(m_pkInputHandle->VKIsDown("selectzone") || (m_pkInputHandle->Pressed(MOUSERIGHT) && m_pkInputHandle->Pressed(KEY_LSHIFT))   )
 	{		
 		if(!DelayCommand())
 		{	
@@ -572,7 +573,7 @@ void MistServer::Input_EditObject(float fMouseX, float fMouseY)
 	}
 	
 	//remove			
-	if(m_pkInput->VKIsDown("remove"))
+	if(m_pkInputHandle->VKIsDown("remove"))
 	{
 		
 		Entity* pkObj = m_pkObjectMan->GetObjectByNetWorkID(m_iCurrentObject);
@@ -605,14 +606,14 @@ void MistServer::Input_EditObject(float fMouseX, float fMouseY)
 		
 		
 	//hack for collisions test
-	if(m_pkInput->VKIsDown("setvel"))		pkObj->SetVel(Vector3(1,0,0));
+	if(m_pkInputHandle->VKIsDown("setvel"))		pkObj->SetVel(Vector3(1,0,0));
 
 	// Move Selected Entity
 	Vector3 kMove(0,0,0);
 	Vector3 kClick(0,0,0);
 
 
-	if(m_pkInput->VKIsDown("reposent")) 
+	if(m_pkInputHandle->VKIsDown("reposent")) 
 	{
 		kMove = pkObj->GetLocalPosV();
 		kMove = m_pkActiveCamera->GetPos() + Get3DMousePos(true) * 2;
@@ -637,14 +638,14 @@ void MistServer::Input_EditObject(float fMouseX, float fMouseY)
 	else 
 	{
 		kMove.Set(0,0,0);
-		if(m_pkInput->VKIsDown("moveleft"))		kMove += Vector3(-1 * m_pkFps->GetFrameTime(),0,0);			
-		if(m_pkInput->VKIsDown("moveright"))	kMove += Vector3(1 * m_pkFps->GetFrameTime(),0,0);			
-		if(m_pkInput->VKIsDown("movefrw"))		kMove += Vector3(0,0,-1 * m_pkFps->GetFrameTime());			
-		if(m_pkInput->VKIsDown("moveback"))		kMove += Vector3(0,0,1 * m_pkFps->GetFrameTime());			
-		if(m_pkInput->VKIsDown("moveup"))		kMove += Vector3(0,1 * m_pkFps->GetFrameTime(),0);			
-		if(m_pkInput->VKIsDown("movedown"))		kMove += Vector3(0,-1 * m_pkFps->GetFrameTime(),0);
+		if(m_pkInputHandle->VKIsDown("moveleft"))		kMove += Vector3(-1 * m_pkFps->GetFrameTime(),0,0);			
+		if(m_pkInputHandle->VKIsDown("moveright"))	kMove += Vector3(1 * m_pkFps->GetFrameTime(),0,0);			
+		if(m_pkInputHandle->VKIsDown("movefrw"))		kMove += Vector3(0,0,-1 * m_pkFps->GetFrameTime());			
+		if(m_pkInputHandle->VKIsDown("moveback"))		kMove += Vector3(0,0,1 * m_pkFps->GetFrameTime());			
+		if(m_pkInputHandle->VKIsDown("moveup"))		kMove += Vector3(0,1 * m_pkFps->GetFrameTime(),0);			
+		if(m_pkInputHandle->VKIsDown("movedown"))		kMove += Vector3(0,-1 * m_pkFps->GetFrameTime(),0);
 
-		if(m_pkInput->VKIsDown("moveent")) 
+		if(m_pkInputHandle->VKIsDown("moveent")) 
 		{
 			kMove += m_pkActiveCamera->GetOrthoMove( Vector3(fMouseX, fMouseY,0) );
 		}
@@ -652,28 +653,28 @@ void MistServer::Input_EditObject(float fMouseX, float fMouseY)
 		pkObj->SetLocalPosV(pkObj->GetLocalPosV() + kMove);
 	}
 
-	if(m_pkInput->VKIsDown("rotent")) 
+	if(m_pkInputHandle->VKIsDown("rotent")) 
 	{
 		pkObj->RotateLocalRotV( Vector3(0, fMouseX,0));
 	}
 
 	// Rotate Selected Entity
-	if(m_pkInput->VKIsDown("rotx+"))			pkObj->RotateLocalRotV(Vector3(100*m_pkFps->GetFrameTime(),0,0));			
-	if(m_pkInput->VKIsDown("rotx-"))			pkObj->RotateLocalRotV(Vector3(-100*m_pkFps->GetFrameTime(),0,0));			
-	if(m_pkInput->VKIsDown("roty+"))			pkObj->RotateLocalRotV(Vector3(0,100*m_pkFps->GetFrameTime(),0));			
-	if(m_pkInput->VKIsDown("roty-"))			pkObj->RotateLocalRotV(Vector3(0,-100*m_pkFps->GetFrameTime(),0));			
-	if(m_pkInput->VKIsDown("rotz+"))			pkObj->RotateLocalRotV(Vector3(0,0,100*m_pkFps->GetFrameTime()));			
-	if(m_pkInput->VKIsDown("rotz-"))			pkObj->RotateLocalRotV(Vector3(0,0,-100*m_pkFps->GetFrameTime()));			
+	if(m_pkInputHandle->VKIsDown("rotx+"))			pkObj->RotateLocalRotV(Vector3(100*m_pkFps->GetFrameTime(),0,0));			
+	if(m_pkInputHandle->VKIsDown("rotx-"))			pkObj->RotateLocalRotV(Vector3(-100*m_pkFps->GetFrameTime(),0,0));			
+	if(m_pkInputHandle->VKIsDown("roty+"))			pkObj->RotateLocalRotV(Vector3(0,100*m_pkFps->GetFrameTime(),0));			
+	if(m_pkInputHandle->VKIsDown("roty-"))			pkObj->RotateLocalRotV(Vector3(0,-100*m_pkFps->GetFrameTime(),0));			
+	if(m_pkInputHandle->VKIsDown("rotz+"))			pkObj->RotateLocalRotV(Vector3(0,0,100*m_pkFps->GetFrameTime()));			
+	if(m_pkInputHandle->VKIsDown("rotz-"))			pkObj->RotateLocalRotV(Vector3(0,0,-100*m_pkFps->GetFrameTime()));			
 }
 
 void MistServer::Input_Camera(float fMouseX, float fMouseY)
 {
-	if(m_pkInput->Pressed(KEY_Z))		SetCamera(0);
-	if(m_pkInput->Pressed(KEY_X))		SetCamera(1);
-	if(m_pkInput->Pressed(KEY_C))		SetCamera(2);
-	if(m_pkInput->Pressed(KEY_V))		SetCamera(3);
+	if(m_pkInputHandle->Pressed(KEY_Z))		SetCamera(0);
+	if(m_pkInputHandle->Pressed(KEY_X))		SetCamera(1);
+	if(m_pkInputHandle->Pressed(KEY_C))		SetCamera(2);
+	if(m_pkInputHandle->Pressed(KEY_V))		SetCamera(3);
 
-	if(m_pkInput->VKIsDown("slow")){
+	if(m_pkInputHandle->VKIsDown("slow")){
 		m_CamMoveSpeed *= 0.25;
 	}
 
@@ -699,13 +700,13 @@ void MistServer::Input_Camera(float fMouseX, float fMouseY)
 		xv.Normalize();
 		zv.Normalize();
 
-		if(m_pkInput->VKIsDown("right"))		newpos += xv * fSpeedScale;		
-		if(m_pkInput->VKIsDown("left"))		newpos += xv * -fSpeedScale;		
-		if(m_pkInput->VKIsDown("forward"))	newpos += zv * -fSpeedScale;
-		if(m_pkInput->VKIsDown("back"))		newpos += zv * fSpeedScale;	
+		if(m_pkInputHandle->VKIsDown("right"))		newpos += xv * fSpeedScale;		
+		if(m_pkInputHandle->VKIsDown("left"))		newpos += xv * -fSpeedScale;		
+		if(m_pkInputHandle->VKIsDown("forward"))	newpos += zv * -fSpeedScale;
+		if(m_pkInputHandle->VKIsDown("back"))		newpos += zv * fSpeedScale;	
 
-		if(m_pkInput->VKIsDown("down"))		newpos.y += fSpeedScale;
-		if(m_pkInput->VKIsDown("up"))			newpos.y -= fSpeedScale;
+		if(m_pkInputHandle->VKIsDown("down"))		newpos.y += fSpeedScale;
+		if(m_pkInputHandle->VKIsDown("up"))			newpos.y -= fSpeedScale;
 				
 
 		Vector3 rot;
@@ -719,24 +720,24 @@ void MistServer::Input_Camera(float fMouseX, float fMouseY)
 		kRm.LookDir(bla,Vector3(0,1,0));
 		
 		m_pkActiveCameraObject->SetLocalPosV(newpos);		
-		if(m_pkInput->VKIsDown("pancam"))
+		if(m_pkInputHandle->VKIsDown("pancam"))
 			m_pkActiveCameraObject->SetLocalRotM(kRm);	
 
-		if(m_pkInput->Pressed(KEY_F6))	m_pkActiveCamera->SetViewMode(Camera::CAMMODE_ORTHO_FRONT);	
-		if(m_pkInput->Pressed(KEY_F7))	m_pkActiveCamera->SetViewMode(Camera::CAMMODE_PERSP);	
+		if(m_pkInputHandle->Pressed(KEY_F6))	m_pkActiveCamera->SetViewMode(Camera::CAMMODE_ORTHO_FRONT);	
+		if(m_pkInputHandle->Pressed(KEY_F7))	m_pkActiveCamera->SetViewMode(Camera::CAMMODE_PERSP);	
 	}
 
 	else 
 	{
 		Vector3 kMove = Vector3::ZERO;
 
-		if(m_pkInput->VKIsDown("forward"))	kMove.y += fSpeedScale;
-		if(m_pkInput->VKIsDown("back"))		kMove.y -= fSpeedScale;
-		if(m_pkInput->VKIsDown("right"))		kMove.x += fSpeedScale;
-		if(m_pkInput->VKIsDown("left"))		kMove.x -= fSpeedScale;	
+		if(m_pkInputHandle->VKIsDown("forward"))	kMove.y += fSpeedScale;
+		if(m_pkInputHandle->VKIsDown("back"))		kMove.y -= fSpeedScale;
+		if(m_pkInputHandle->VKIsDown("right"))		kMove.x += fSpeedScale;
+		if(m_pkInputHandle->VKIsDown("left"))		kMove.x -= fSpeedScale;	
 		
-		if(m_pkInput->VKIsDown("down"))		m_pkActiveCamera->OrthoZoom(0.9);
-		if(m_pkInput->VKIsDown("up"))			m_pkActiveCamera->OrthoZoom(1.1);
+		if(m_pkInputHandle->VKIsDown("down"))		m_pkActiveCamera->OrthoZoom(0.9);
+		if(m_pkInputHandle->VKIsDown("up"))			m_pkActiveCamera->OrthoZoom(1.1);
 
 		if(m_pkCameraObject[1]->GetParent() == m_pkCameraObject[0])
 		{
@@ -757,7 +758,7 @@ void MistServer::Input_Camera(float fMouseX, float fMouseY)
 void MistServer::Input()
 {
 	// *** HANDE Quueued Keys.
-	int iPressedKey = m_pkInput->GetQueuedKey().m_iKey;
+	int iPressedKey = m_pkInputHandle->GetQueuedKey().m_iKey;
 
 	switch(iPressedKey)
 	{
@@ -773,9 +774,9 @@ void MistServer::Input()
 	
 	
 	int x,z;		
-	m_pkInput->RelMouseXY(x,z);	
+	m_pkInputHandle->RelMouseXY(x,z);	
 
-	if(m_pkInput->VKIsDown("makeland")) {
+	if(m_pkInputHandle->VKIsDown("makeland")) {
 		Entity* pkObj = m_pkObjectMan->GetObjectByNetWorkID(m_iCurrentObject);								
 		if(!pkObj)
 			return;		
@@ -788,26 +789,26 @@ void MistServer::Input()
 	Vector3 kMove(0,0,0);
 //	Vector3 kRotate(0,0,0);
 
-	if(m_pkInput->Pressed(KEY_H))	m_pkRender->DumpGLState("zzz.txt");			
+	if(m_pkInputHandle->Pressed(KEY_H))	m_pkRender->DumpGLState("zzz.txt");			
 
 
 	if(m_pkCameraObject)	
 	{	
 		Input_Camera(x,z);
 	
-		if(m_pkInput->VKIsDown("modezone"))			m_iEditMode = EDIT_ZONES;
-		if(m_pkInput->VKIsDown("modeobj"))			m_iEditMode = EDIT_OBJECTS;		
-		if(m_pkInput->VKIsDown("modehmvertex"))		m_iEditMode = EDIT_HMAP;		
+		if(m_pkInputHandle->VKIsDown("modezone"))			m_iEditMode = EDIT_ZONES;
+		if(m_pkInputHandle->VKIsDown("modeobj"))			m_iEditMode = EDIT_OBJECTS;		
+		if(m_pkInputHandle->VKIsDown("modehmvertex"))		m_iEditMode = EDIT_HMAP;		
 
-		if(m_pkInput->VKIsDown("lighton"))			m_pkZShader->SetForceLighting(LIGHT_ALWAYS_ON);	
-		if(m_pkInput->VKIsDown("lightoff"))			m_pkZShader->SetForceLighting(LIGHT_ALWAYS_OFF);
-		if(m_pkInput->VKIsDown("lightstd"))			m_pkZShader->SetForceLighting(LIGHT_MATERIAL);
+		if(m_pkInputHandle->VKIsDown("lighton"))			m_pkZShader->SetForceLighting(LIGHT_ALWAYS_ON);	
+		if(m_pkInputHandle->VKIsDown("lightoff"))			m_pkZShader->SetForceLighting(LIGHT_ALWAYS_OFF);
+		if(m_pkInputHandle->VKIsDown("lightstd"))			m_pkZShader->SetForceLighting(LIGHT_MATERIAL);
 	
 		if(m_iEditMode == EDIT_HMAP)				Input_EditTerrain();
 		if(m_iEditMode == EDIT_ZONES)				Input_EditZone();
 		if(m_iEditMode == EDIT_OBJECTS)			Input_EditObject(x,z);
 
-		if(m_pkInput->VKIsDown("solo"))				SoloToggleView();
+		if(m_pkInputHandle->VKIsDown("solo"))				SoloToggleView();
 	}
 };
 
@@ -1248,11 +1249,16 @@ Vector3 MistServer::Get3DMouseDir(bool bMouse)
 	{
 		// Zeb was here! Nu kör vi med operativsystemets egna snabba musmarkör
 		// alltså måste vi använda den position vi får därifrån.
-		//	m_pkInput->UnitMouseXY(x,y);
-		//x = -0.5f + (float) m_pkInput->m_iSDLMouseX / (float) m_pkApp->m_iWidth;
-		//y = -0.5f + (float) m_pkInput->m_iSDLMouseY / (float) m_pkApp->m_iHeight;
-		x = -0.5f + (float) (m_pkInput->m_iSDLMouseX - kViewCorner.x) / (float) kViewSize.x;
-		y = -0.5f + (float) ((m_pkApp->m_iHeight - m_pkInput->m_iSDLMouseY) - kViewCorner.y) / (float) kViewSize.y;
+		//	m_pkInputHandle->UnitMouseXY(x,y);
+		//x = -0.5f + (float) m_pkInputHandle->m_iSDLMouseX / (float) m_pkApp->m_iWidth;
+		//y = -0.5f + (float) m_pkInputHandle->m_iSDLMouseY / (float) m_pkApp->m_iHeight;
+		int mx;		
+		int my;
+		
+		m_pkInputHandle->SDLMouseXY(mx,my);
+		
+		x = -0.5f + (float) (mx - kViewCorner.x) / (float) kViewSize.x;
+		y = -0.5f + (float) ((m_pkApp->m_iHeight - my) - kViewCorner.y) / (float) kViewSize.y;
 
 		if(m_pkActiveCamera->GetViewMode() == Camera::CAMMODE_PERSP)
 		{
@@ -1297,13 +1303,18 @@ Vector3 MistServer::Get3DMousePos(bool m_bMouse=true)
 	{
 		// Zeb was here! Nu kör vi med operativsystemets egna snabba musmarkör
 		// alltså måste vi använda den position vi får därifrån.
-		//	m_pkInput->UnitMouseXY(x,y);
+		//	m_pkInputHandle->UnitMouseXY(x,y);
 		/*
-			x = -0.5f + (float) m_pkInput->m_iSDLMouseX / (float) m_pkApp->m_iWidth;
-			y = -0.5f + (float) m_pkInput->m_iSDLMouseY / (float) m_pkApp->m_iHeight;
+			x = -0.5f + (float) m_pkInputHandle->m_iSDLMouseX / (float) m_pkApp->m_iWidth;
+			y = -0.5f + (float) m_pkInputHandle->m_iSDLMouseY / (float) m_pkApp->m_iHeight;
 		*/
-		x = -0.5f + (float) (m_pkInput->m_iSDLMouseX - kViewCorner.x) / (float) kViewSize.x;
-		y = -0.5f + (float) ((m_pkApp->m_iHeight - m_pkInput->m_iSDLMouseY) - kViewCorner.y) / (float) kViewSize.y;
+		int mx;		
+		int my;
+		
+		m_pkInputHandle->SDLMouseXY(mx,my);		
+		
+		x = -0.5f + (float) (mx - kViewCorner.x) / (float) kViewSize.x;
+		y = -0.5f + (float) ((m_pkApp->m_iHeight - my) - kViewCorner.y) / (float) kViewSize.y;
 		
 
 		if(m_pkActiveCamera->GetViewMode() == Camera::CAMMODE_PERSP) 

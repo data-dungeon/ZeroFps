@@ -17,6 +17,8 @@
 #include "../zerofpsv2/basic/zguifont.h"
 #include <typeinfo>
  
+#include "../zerofpsv2/engine/inputhandle.h" 
+ 
 MistClient g_kMistClient("MistClient",0,0,0);
 
 static bool GUIPROC( ZGuiWnd* win, unsigned int msg, int numparms, void *params ) 
@@ -366,10 +368,10 @@ void MistClient::Input()
 {
 	//get mouse
 	int x,z;		
-	m_pkInput->RelMouseXY(x,z);	
+	m_pkInputHandle->RelMouseXY(x,z);	
 		
 	//setup player controls
-	if(m_pkInput->Pressed(MOUSEMIDDLE))	//do we want to zoom?
+	if(m_pkInputHandle->Pressed(MOUSEMIDDLE))	//do we want to zoom?
 	{
 
 		if(m_pkCamProp)
@@ -387,10 +389,10 @@ void MistClient::Input()
 	}
 	else if(m_pkClientControlP)			//else rotate camera
 	{
-		m_pkClientControlP->m_kControls.m_akControls[CTRL_UP]		= m_pkInput->VKIsDown("forward");
-		m_pkClientControlP->m_kControls.m_akControls[CTRL_DOWN]	= m_pkInput->VKIsDown("back");
-		m_pkClientControlP->m_kControls.m_akControls[CTRL_LEFT]	= m_pkInput->VKIsDown("left");
-		m_pkClientControlP->m_kControls.m_akControls[CTRL_RIGHT] = m_pkInput->VKIsDown("right");
+		m_pkClientControlP->m_kControls.m_akControls[CTRL_UP]		= m_pkInputHandle->VKIsDown("forward");
+		m_pkClientControlP->m_kControls.m_akControls[CTRL_DOWN]	= m_pkInputHandle->VKIsDown("back");
+		m_pkClientControlP->m_kControls.m_akControls[CTRL_LEFT]	= m_pkInputHandle->VKIsDown("left");
+		m_pkClientControlP->m_kControls.m_akControls[CTRL_RIGHT] = m_pkInputHandle->VKIsDown("right");
 
 		if(m_pkCamProp && m_iMouseMode == eCAMERA_MODE)
 		{
@@ -435,7 +437,7 @@ void MistClient::Input()
 		}	
 	}
 */
-	if(m_pkInput->Pressed(MOUSELEFT))
+	if(m_pkInputHandle->Pressed(MOUSELEFT))
 	{
 		if(m_bActionMenuIsOpen) 
 			CloseActionMenu();
@@ -488,7 +490,7 @@ void MistClient::Input()
 		}
 	}
 	
-	if(m_pkInput->Pressed(MOUSERIGHT))			//if no shift is pressed bring up action menu
+	if(m_pkInputHandle->Pressed(MOUSERIGHT))			//if no shift is pressed bring up action menu
 	{
 		m_pkTargetObject = GetTargetObject();
 
@@ -499,7 +501,7 @@ void MistClient::Input()
 
 		// use mouse pointer as center of action menu
 		if ( m_iMouseMode == eMOUSE_MODE)
-			m_pkInput->MouseXY(mx,my);
+			m_pkInputHandle->MouseXY(mx,my);
 		else
 		{
 			// use middle of screen as center of action menu
@@ -540,7 +542,7 @@ void MistClient::Input()
 
 
 
-	int pressed_key = m_pkInput->GetQueuedKey().m_iKey;
+	int pressed_key = m_pkInputHandle->GetQueuedKey().m_iKey;
 
 	if(pressed_key == KEY_F1)
 	{
@@ -1081,9 +1083,15 @@ Vector3 MistClient::Get3DMousePos(bool m_bMouse=true)
 	{
 		// Zeb was here! Nu kör vi med operativsystemets egna snabba musmarkör
 		// alltså måste vi använda det inputsystemet.
-		//	m_pkInput->UnitMouseXY(x,y);
-		x = -0.5f + (float) m_pkInput->m_iSDLMouseX / (float) m_pkApp->m_iWidth;
-		y = -0.5f + (float) m_pkInput->m_iSDLMouseY / (float) m_pkApp->m_iHeight;
+		//	m_pkInputHandle->UnitMouseXY(x,y); 
+		// Dvoid was here to . måste o måste, vill man ha lite kontroll över saker o ting så =D
+		int x;
+		int y;
+		
+		m_pkInputHandle->SDLMouseXY(x,y);
+		
+		x = -0.5f + (float) x / (float) m_pkApp->m_iWidth;
+		y = -0.5f + (float) y / (float) m_pkApp->m_iHeight;
 		
 		dir.Set(x*xp,-y*yp,fovshit);
 		dir.Normalize();
@@ -1829,7 +1837,7 @@ void MistClient::ChangeMode ( eMOUSE_MODES eMode )
 			pkGui->ShowCursor(false);
 			break;
 		case eACTION_MODE:
-			m_pkInput->SetCursorInputPos ( int(m_iWidth/2.f), int(m_iHeight/2.f) );
+			m_pkInputHandle->SetCursorInputPos ( int(m_iWidth/2.f), int(m_iHeight/2.f) );
 			m_pkInput->ShowCursor(true);
 			pkGui->ShowCursor(true);
 			break;

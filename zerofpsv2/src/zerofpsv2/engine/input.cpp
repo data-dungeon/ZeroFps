@@ -1,6 +1,12 @@
 #include "input.h"
 #include "../basic/zfsystem.h"
 #include "zerofps.h"
+#include "inputhandle.h"
+
+ 
+/*        START OF INPUT CLASS
+*/ 
+
  
 Input::Input() 
  : ZFSubSystem("Input") {
@@ -37,13 +43,9 @@ bool Input::StartUp()
 	m_bKeyRepeat	= true;
 	m_iQueueLength	= 100;
 	m_iGrabtime		= SDL_GetTicks();
-	m_bInputEnabled= true;
 
 	SDL_EnableKeyRepeat(SDL_DEFAULT_REPEAT_DELAY,SDL_DEFAULT_REPEAT_INTERVAL);
 	
-//	m_iNrActions=0;
-
-	m_bInputEnabled = true;
 	m_iAbsMouseX = 0;
 	m_iAbsMouseY = 0;
 	
@@ -64,6 +66,130 @@ bool Input::ShutDown()
 }
 
 bool Input::IsValid()	{ return true;	}
+
+void Input::ClearActiveInputHandles()
+{
+	//reset input
+	Reset();
+
+	//deactivate all inputhandles
+	for(int i = 0;i<m_kInputHandles.size();i++)
+	{
+		m_kInputHandles[i]->m_bActive = false;
+	}
+}
+
+bool Input::AddActiveInputHandle(string strName)
+{
+	InputHandle* pkHandle = GetInputHandle(strName);
+	
+	if(pkHandle)
+	{
+		pkHandle->m_bActive = true;		
+		//cout<<"Activating inputhandle "<<strName<<endl;		
+		
+		return true;
+	}
+	else
+	{
+		cout<<"Input handle "<<strName<<" not registered"<<endl;
+	}
+	
+	return false;
+}
+
+bool Input::RemoveActiveInputHandle(string strName)
+{
+	InputHandle* pkHandle = GetInputHandle(strName);
+	
+	if(pkHandle)
+	{	
+		pkHandle->m_bActive = false;
+		//cout<<"Removing activ input handle "<<strName<<endl;
+		return true;
+	}
+	else
+		cout<<"Input handle "<<strName<<" not registered"<<endl;
+	
+	return false;
+}
+
+bool Input::SetActiveInputHandle(string strName)
+{
+	
+	InputHandle* pkHandle = GetInputHandle(strName);
+	
+	if(pkHandle)
+	{
+		ClearActiveInputHandles();	
+		pkHandle->m_bActive = true;
+		
+		//cout<<"Setting active input handle "<<strName<<endl;
+		
+		return true;
+	}
+	else
+	{
+		cout<<"Input handle "<<strName<<" not registered"<<endl;
+	}
+	
+	return false;
+}
+
+bool Input::RegisterInputHandle(InputHandle* pkInputHandle)
+{
+	if(GetInputHandle(pkInputHandle->m_strHandleName))
+	{
+		cout<<"WARNING: A handle whit the name "<<pkInputHandle->m_strHandleName<<" is already registered"<<endl;
+	}
+	else
+	{
+		m_kInputHandles.push_back(pkInputHandle);
+		cout<<"InputHandle "<<pkInputHandle->m_strHandleName<<" registered"<<endl;
+	}
+}
+
+bool Input::UnregisterInputHandle(InputHandle* pkInputHandle)
+{
+   for ( vector<InputHandle*>::iterator kIte = m_kInputHandles.begin(); kIte != m_kInputHandles.end(); kIte++ )	
+	{	
+		if((*kIte) == pkInputHandle)
+		{
+			
+			m_kInputHandles.erase(kIte);
+			cout<<"InputHandle "<<pkInputHandle->m_strHandleName<<" unregistered"<<endl;			
+			return true;
+		}		
+	}
+	
+	return false;	
+}
+
+InputHandle* Input::GetInputHandle(string strName)
+{
+	for(int i = 0;i<m_kInputHandles.size();i++)
+	{
+		if(m_kInputHandles[i]->m_strHandleName == strName)
+			return m_kInputHandles[i];
+	}
+	
+	return NULL;
+}
+
+void Input::PrintInputHandlers()
+{
+	cout<<"Registered input handles"<<endl;
+
+	for(int i = 0;i<m_kInputHandles.size();i++)
+	{
+		cout<<m_kInputHandles[i]->m_strHandleName;
+	
+		if(m_kInputHandles[i]->m_bActive)
+			cout<<"  Active";
+			
+		cout<<endl;
+	}
+}
 
 void Input::Update(void) 
 {
@@ -282,19 +408,25 @@ void Input::UpdateMousePos()
 		
 }
 
-void Input::RelMouseXY(int &iX,int &iY) {		
-	if(m_bInputEnabled) {
+void Input::SDLMouseXY(int &iX,int &iY)
+{
+
+		iX = m_iSDLMouseX;
+		iY = m_iSDLMouseY;
+}
+
+void Input::RelMouseXY(int &iX,int &iY) 
+{		
+
 		if(m_iMouseX==-1)
 			SDL_GetRelativeMouseState(&m_iMouseX, &m_iMouseY);		
 		iX=int(float(m_iMouseX)*m_fMouseSensitivity);	
 		iY=int(float(m_iMouseY)*m_fMouseSensitivity);		
-	} else {
-		iX=0;	
-		iY=0;				
-	}
+
 }
 
-void Input::ToggleGrab(void) {	
+void Input::ToggleGrab(void) 
+{	
 	if(SDL_GetTicks()-m_iGrabtime>200) {
 		m_iGrabtime=SDL_GetTicks();
 		if(SDL_WM_GrabInput(SDL_GRAB_QUERY)==SDL_GRAB_OFF) {
@@ -316,13 +448,11 @@ void Input::ToggleGrab(bool bGrab) {
 void Input::GrabInput(void) 
 {
 	SDL_WM_GrabInput(SDL_GRAB_ON);
-// 	SDL_ShowCursor(SDL_DISABLE);
 }
 
 void Input::ReleaseInput(void) 
 {
 	SDL_WM_GrabInput(SDL_GRAB_OFF);
- //	SDL_ShowCursor(SDL_ENABLE);
 }
 	
 
@@ -417,11 +547,11 @@ void Input::Save(string strCfgName)
 QueuedKeyInfo Input::GetQueuedKey()
 {
 	QueuedKeyInfo kKey(-1,0);	
-	
-	if(m_bInputEnabled){
-		if(!m_aPressedKeys.empty()){
-			kKey = m_aPressedKeys.front();
-			m_aPressedKeys.pop();
+
+	if(!m_aPressedKeys.empty())
+	{
+		kKey = m_aPressedKeys.front();
+		m_aPressedKeys.pop();
 
 /*			if(value < 0)
 			{
@@ -431,7 +561,6 @@ QueuedKeyInfo Input::GetQueuedKey()
 			//cout << "GetQueuedKey: " << value << endl;
 
 			return kKey;
-		}
 	}
 	
 	return kKey;
@@ -444,15 +573,7 @@ int Input::SizeOfQueue()
 
 bool Input::Pressed(Buttons eButton)
 {
-	if(m_bInputEnabled) 
-	{	
-
-		return m_akKeyState[eButton].m_bDown;
-	} 
-	else 
-	{
-		return false;
-	}
+	return m_akKeyState[eButton].m_bDown;
 }
 
 

@@ -61,6 +61,8 @@ class ENGINE_API Console : public BasicConsole
 		bool						m_bShowMarker;						// True if cursor is to be displayed when rendering console.
 		float						m_fMarkerToggleTime;				// Next time when cursor toggle visible state (for blinking).
 
+		InputHandle*			m_pkInputHandle;
+
 		//void FormatKey(int& r_iKey);
 		char FormatKey(QueuedKeyInfo& kKey);
 		void InsertKey(unsigned char ucKey);

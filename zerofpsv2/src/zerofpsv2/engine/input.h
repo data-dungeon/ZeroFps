@@ -13,8 +13,9 @@
 #include <string>
 #include "engine_x.h"
 
-//#include "console.h"
+
 class ZeroFps;
+class InputHandle;
 
 using namespace std;
 
@@ -59,18 +60,22 @@ class QueuedKeyInfo
 class Console;
 
 
+
 /** \brief	Engine Systems that handles input (keyb, mouse, joystick).
 	 \ingroup Engine
 */
 class ENGINE_API Input : public ZFSubSystem {
 	private:
-		vector<VKData>		m_VirtualKeys;
+		BasicConsole*			m_pkConsole;
+		ZeroFps*					m_pkZeroFps;	
+		
+		vector<VKData>			m_VirtualKeys;
+		vector<InputHandle*>	m_kInputHandles;
+		
+		InputKey					m_akKeyState[MAX_KEYS];
+		int						m_akMapToKeyState[MAX_SDLKEYS];
 
-		InputKey				m_akKeyState[MAX_KEYS];
-		int					m_akMapToKeyState[MAX_SDLKEYS];
-
-		void SetupMapToKeyState();
-		int  SDLToZeroFpsKey(int iSdlSym);		
+		queue<QueuedKeyInfo>	m_aPressedKeys;
 
 		enum FuncId_e
 		{
@@ -85,10 +90,7 @@ class ENGINE_API Input : public ZFSubSystem {
 			//FID_LISTACTIONS,
 		};		
 		
-		BasicConsole*	m_pkConsole;
-		ZeroFps*			m_pkZeroFps;
 			
-		bool				m_bInputEnabled;
 		SDL_Event		m_kEvent;
 		unsigned int	m_iGrabtime;			
 		int				m_iMouseX,m_iMouseY;
@@ -96,19 +98,21 @@ class ENGINE_API Input : public ZFSubSystem {
 		unsigned int	m_iQueueLength;
 		bool 				m_bKeyRepeat;
 
-		//queue<int>		m_aPressedKeys;
-		queue<QueuedKeyInfo>		m_aPressedKeys;
+		int				m_iSDLMouseX, m_iSDLMouseY;
+		
 	
+		void SetupMapToKeyState();
+		int  SDLToZeroFpsKey(int iSdlSym);		
 		void RunCommand(int cmdid, const CmdArgument* kCommand);
 		void GrabInput(void);
 		void ReleaseInput(void);
-		
 		void AddQueuedKey(SDL_keysym* kKey);
-		
-		//int m_iNrActions;
-		
 		bool GetConsole();
 		
+		void UpdateMousePos();
+
+		
+		//int m_iNrActions;		
 		//map<const string, pair<const string, int>**>		m_kActions;
 		//map<const string, pair<const string, int>*>		m_kPendingActions;
 		//map<const string, int>									m_kButtons;
@@ -117,8 +121,23 @@ class ENGINE_API Input : public ZFSubSystem {
 		//bool Bind(const string kKey, const string kAction);
 		//void SetupButtons();
 
+
+		//input fuctions , called by inputhandles 
+		QueuedKeyInfo GetQueuedKey();
+		int SizeOfQueue();
+
+		void MouseXY(int &iX,int &iY);
+		void UnitMouseXY(float &fX,float &fY);
+		void SDLMouseXY(int &iX,int &iY);
+		void RelMouseXY(int &iX,int &iY);
+		void SetCursorInputPos(int x, int y);
+		
+		bool Pressed(Buttons eButton);
+		
+		bool VKIsDown(string strName);		
+		void Reset(void);		
+		
 public:
-		int		m_iSDLMouseX, m_iSDLMouseY;
 		float		m_fMouseSensitivity;
 		
 		Input();
@@ -128,45 +147,43 @@ public:
 	
 		void Update(void);
 
-		bool Pressed(Buttons eButton);
+		
 		
 		VKData*	GetVKByName(string strName);
 		bool VKBind(string strName, Buttons kKey, int iIndex );
 		bool VKBind(string strName, string strKeyName);
-		bool VKIsDown(string strName);
 		
 		void VKList();
 		void Save(string strCfgName);
-		
-		void SetCursorInputPos(int x, int y);
-		
-		
-		QueuedKeyInfo GetQueuedKey();
-		int SizeOfQueue();
-		void UpdateMousePos();
-		void MouseXY(int &iX,int &iY);
-		void UnitMouseXY(float &fX,float &fY);
-		void RelMouseXY(int &iX,int &iY);
+				
+				
+		void ShowCursor(bool bShow);
+				
 		void ToggleGrab(void);
 		void ToggleGrab(bool bGrab);		
-		void Reset(void);
-		void SetInputEnabled(bool bInputEnabled) { m_bInputEnabled=bInputEnabled ;};
-		bool GetInputEnabled() { return m_bInputEnabled;};
-
-		void ShowCursor(bool bShow);
-
-
 
 		string  GetKeyName(Buttons eKey);
 		Buttons GetNameByKey(string strName);
 		Buttons GetKeyCode(string strName);
 
 
+		//input handling
+		bool RegisterInputHandle(InputHandle* pkInputHandle);
+		bool UnregisterInputHandle(InputHandle* pkInputHandle);
+		InputHandle* GetInputHandle(string strName);
+
+		bool SetActiveInputHandle(string strName);
+		bool AddActiveInputHandle(string strName);
+		bool RemoveActiveInputHandle(string strName);
+		void ClearActiveInputHandles();
+
+		void PrintInputHandlers();
 
 		//map<int,int> m_kGlobalKeyTranslator;
 		//bool Action(int iAction);
 		//int RegisterAction(const char* pcAction);
 
+		friend class InputHandle;
 };
 
 #endif

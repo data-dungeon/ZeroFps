@@ -171,6 +171,8 @@ public:
 	static int m_iResX;
 	static int m_iResY;
 
+	bool m_bHandledMouse;		//DVOID WAS HERE =D, litet hack för att veta om guit har hanterat inputen
+
 private:
 	void FormatKey(int& iKey, bool bShiftIsPressed);
 	void KeyboardInput(int key, bool shift, float time);
@@ -218,6 +220,8 @@ private:
 	bool StartUp();
 	bool ShutDown();
 	bool IsValid();
+
+
 
 };
 
