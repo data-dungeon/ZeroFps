@@ -491,7 +491,6 @@ bool ZGui::OnKeyUpdate()
 			else
 			if(iKey > 96 && iKey < 123)
 				iKey -= 32;
-
 		}
 
 		if(iKey == KEY_F10)

@@ -420,6 +420,8 @@ bool GLGuiRender::PrintRows(char* text, Rect rc, int iCursorPos)
 	unsigned int num_chars = strlen(text);
 	int max_rows = rc.Height() / m_pkFont->m_cCharCellSize;
 
+	int iCursorScreenPos = rc.Left;
+
 	glBegin(GL_QUADS);	 
 
 		for(unsigned int i=0; i<num_chars; i++)
@@ -443,10 +445,15 @@ bool GLGuiRender::PrintRows(char* text, Rect rc, int iCursorPos)
 			glTexCoord2f(tx+tw,ty+th);	glVertex2i(x+fw,y);    
 			glTexCoord2f(tx,ty+th);		glVertex2i(x,y);
 
+			int iCurrLegth = fw;
+
 			if(text[i] != ' ')
-				x += (fw + m_pkFont->m_cPixelGapBetweenChars);
-			else
-				x += fw;
+				iCurrLegth = (fw + m_pkFont->m_cPixelGapBetweenChars);
+
+			x += iCurrLegth;
+
+			if(i <= iCursorPos)
+				iCursorScreenPos += iCurrLegth;
 
 			if(x > rc.Right-m_pkFont->m_cCharCellSize)
 			{
@@ -461,6 +468,26 @@ bool GLGuiRender::PrintRows(char* text, Rect rc, int iCursorPos)
 				break;
 			}
 		}
+
+	// Print cursor
+	if(iCursorPos != -1)
+	{
+		int pos = '|'-32;
+		int fx = m_pkFont->m_aChars[pos].iPosX;
+		int fy = m_pkFont->m_aChars[pos].iPosY;
+		int fw = m_pkFont->m_aChars[pos].iSizeX;
+		int fh = m_pkFont->m_aChars[pos].iSizeY;
+
+		float tx = (float) fx / m_pkFont->m_iBMPWidth;
+		float ty = (float) fy / m_pkFont->m_iBMPWidth;
+		float tw = (float) fw / m_pkFont->m_iBMPWidth;
+		float th = (float) fh / m_pkFont->m_iBMPWidth;
+
+		glTexCoord2f(tx,ty);		glVertex2i(iCursorScreenPos,y+fh);		 
+		glTexCoord2f(tx+tw,ty);		glVertex2i(iCursorScreenPos+fw,y+fh);    
+		glTexCoord2f(tx+tw,ty+th);	glVertex2i(iCursorScreenPos+fw,y);    
+		glTexCoord2f(tx,ty+th);		glVertex2i(iCursorScreenPos,y);
+	}
 		
 	glEnd();
 

@@ -67,7 +67,9 @@ bool ZGuiTextbox::Render( ZGuiRender* pkRenderer )
 		int dd = m_iStartrow-m_iMaxVisibleRows+1;
 		if(dd<0) dd=0;
 
-		if(!pkRenderer->RenderText(m_strText, kRect, m_iCursorPos, false))
+		int cursor_pos = m_bBlinkCursor ? m_iCursorPos : -1;
+
+		if(!pkRenderer->RenderText(m_strText, kRect, cursor_pos, false))
 		{
 			m_iMaxCharsOneRow = 0;
 		}
