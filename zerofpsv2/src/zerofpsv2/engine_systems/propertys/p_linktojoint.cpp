@@ -21,7 +21,7 @@ P_LinkToJoint::~P_LinkToJoint()
 }
 void P_LinkToJoint::Init()			
 {	
-	//turn off interpolation of current objects mad
+	//turn off interpolation of current objects madss
 	m_pkObject->SetInterpolate(false);
 }
 
@@ -34,7 +34,6 @@ void P_LinkToJoint::Update()
 	Mad_Core* pkCore = dynamic_cast<Mad_Core*>(pkMad->kMadHandle.GetResourcePtr()); 
 	if(!pkCore)
 		return;
-
 
 
  	pkCore->SetBoneAnimationTime(pkMad->iActiveAnimation, pkMad->fCurrentTime,pkMad->m_bLoop);
@@ -54,6 +53,10 @@ void P_LinkToJoint::Update()
 	kPos += m_pkObject->GetParent()->GetIWorldPosV();							//apply interpolatet parent position 
 	
 	m_pkObject->SetLocalPosV(kPos);
+	
+	
+//	m_pkObject->SetNetUpdateFlag(NETUPDATEFLAG_POS,false);
+//	m_pkObject->SetNetUpdateFlag(NETUPDATEFLAG_ROT,false);	
 }
 
 vector<PropertyValues> P_LinkToJoint::GetPropertyValues()

@@ -2400,7 +2400,7 @@ int MistLandLua::EquipFromScriptLua (lua_State* pkLua)
             g_iCurrentObjectID = iOldObject;
             g_pkScript = pkZFScriptSys;
 
-            pkNewObj->AttachToZone();
+            //pkNewObj->AttachToZone();
 
            
          }

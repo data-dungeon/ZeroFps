@@ -26,7 +26,7 @@ class ENGINE_SYSTEMS_API P_LinkToJoint : public Property
 		~P_LinkToJoint();
 		void Init();
 
-		void CloneOf(Property* pkProperty) { }
+		void CloneOf(Property* pkProperty) { };
 		void Update();
 		
 		void Save(ZFIoInterface* pkPackage);
