@@ -148,7 +148,7 @@ void P_ServerInfo::PackTo( NetPacket* pkNetPacket, int iConnectionID  )
 			}
 
 			 //----------------------------------------------------------------------- zeb
-			int sounds = m_kPlayers[i].kSounds.size();
+/*			int sounds = m_kPlayers[i].kSounds.size();
 			pkNetPacket->Write(&sounds,sizeof(sounds)); // write nr of sounds
 			while(!m_kPlayers[i].kSounds.empty())
 			{
@@ -156,7 +156,7 @@ void P_ServerInfo::PackTo( NetPacket* pkNetPacket, int iConnectionID  )
 				pkNetPacket->Write(&gen_id,sizeof(gen_id)); // write obj id
 				pkNetPacket->Write_Str(m_kPlayers[i].kSounds.front().second.c_str()); // write sound name
 				m_kPlayers[i].kSounds.pop();		
-			}
+			}*/
 			//----------------------------------------------------------------------- zeb 
 		}
 		else  //else send a dummy messages
@@ -217,7 +217,7 @@ void P_ServerInfo::PackFrom( NetPacket* pkNetPacket, int iConnectionID  )
 
 		 //----------------------------------------------------------------------- zeb
 
-		// read sounds
+/*		// read sounds
 		while(!temp.kSounds.empty())			//clean sound queue
 			temp.kSounds.pop();
 
@@ -233,7 +233,7 @@ void P_ServerInfo::PackFrom( NetPacket* pkNetPacket, int iConnectionID  )
 			pkNetPacket->Read_Str(tempstr);
 
 			temp.kSounds.push(pair<int,string>(object_gen_sound,string(tempstr)));	// read sound name 	
-		}
+		}*/
 
 		//----------------------------------------------------------------------- zeb 
 		
