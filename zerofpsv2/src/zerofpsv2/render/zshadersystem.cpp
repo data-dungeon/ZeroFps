@@ -96,24 +96,7 @@ void ZShaderSystem::Pop()
 	m_iPushPop--;
 }
 
-void ZShaderSystem::MatrixMode(const int& iMode)
-{
-	switch(iMode)
-	{
-		case MATRIX_MODE_MODEL:
-			glMatrixMode(GL_MODELVIEW);
-			return;
-		case MATRIX_MODE_PROJECTION:
-			glMatrixMode(GL_PROJECTION);
-			return;
-		case MATRIX_MODE_TEXTURE:
-			glMatrixMode(GL_TEXTURE);
-			return;
-		case MATRIX_MODE_COLOR:
-			glMatrixMode(GL_COLOR);
-			return;	
-	}
-}
+
 
 
 void ZShaderSystem::BindMaterial(ZMaterial* pkMaterial)
@@ -1201,5 +1184,57 @@ void ZShaderSystem::ClearBuffer(const int& iBuffer)
 		case STENCIL_BUFFER:			
 			glClear(GL_STENCIL_BUFFER_BIT);			
 			break;
+	}
+} 
+
+
+void ZShaderSystem::MatrixSave(Matrix4* pkMatrix)
+{
+	int iMatrixMode;
+	glGetIntegerv(GL_MATRIX_MODE,&iMatrixMode);
+	
+	switch(iMatrixMode)
+	{
+		case GL_MODELVIEW:
+			glGetFloatv(GL_MODELVIEW_MATRIX,pkMatrix->data);
+			return;
+		case GL_PROJECTION:
+			glGetFloatv(GL_PROJECTION_MATRIX,pkMatrix->data);
+			return;
+		case GL_TEXTURE:
+			glGetFloatv(GL_TEXTURE_MATRIX,pkMatrix->data);
+			return;	
+		case GL_COLOR:
+			glGetFloatv(GL_COLOR_MATRIX,pkMatrix->data);
+			return;
+			
+		default:
+			cout<<"ERROR: ZShaderSystem::MatrixSave : illigal matrix mode"<<endl;
+			return;			
+	}
+}
+
+void ZShaderSystem::MatrixLoad(Matrix4* pkMatrix)
+{
+	glLoadMatrixf(pkMatrix->data);
+}
+
+
+void ZShaderSystem::MatrixMode(const int& iMode)
+{
+	switch(iMode)
+	{
+		case MATRIX_MODE_MODEL:
+			glMatrixMode(GL_MODELVIEW);
+			return;
+		case MATRIX_MODE_PROJECTION:
+			glMatrixMode(GL_PROJECTION);
+			return;
+		case MATRIX_MODE_TEXTURE:
+			glMatrixMode(GL_TEXTURE);
+			return;
+		case MATRIX_MODE_COLOR:
+			glMatrixMode(GL_COLOR);
+			return;	
 	}
 }

@@ -7,6 +7,7 @@
 #include "../render/frustum.h"
 #include "engine_x.h"
 #include "../gui/zguiwindow.h"
+#include "../render/zshadersystem.h"
 
 class Render;
 
@@ -31,7 +32,8 @@ class ENGINE_API Camera
 	private:	
 		ZGuiWnd*	m_pkWnd;
 
-		Render*	m_pkRender;
+		Render*			m_pkRender;
+		ZShaderSystem*	m_pkZShaderSystem;
 
 		Matrix4	m_kCamProjectionMatrix;
 		Matrix4	m_kCamModelViewMatrix;

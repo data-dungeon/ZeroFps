@@ -152,6 +152,10 @@ class ENGINE_API ZeroFps : public I_ZeroFps {
 		int		m_iClientEntityID;						
 		int		m_iMaxPlayers;
 
+		//materials
+		ZMaterial*	m_pkDevPageMaterial;
+		
+		
 		vector<Camera*>	m_kRenderTarget;
 		
 
@@ -174,6 +178,7 @@ class ENGINE_API ZeroFps : public I_ZeroFps {
 		void Swap(void);											//	swap gl buffers		
 		void HandleNetworkPacket(NetPacket* pkNetPacket);
 	
+		void CreateMaterials();
 		void RegisterPropertys();
 		void RegisterResources();
 		void GetEngineCredits(vector<string>& kCreditsStrings);
@@ -230,6 +235,7 @@ class ENGINE_API ZeroFps : public I_ZeroFps {
 		int		m_iMadDraw;									//	Flags for what part's of mad's that should be draw.
 		float		m_fMadLod;									//	If not 0 then force this LOD % on every mad.
 		int		m_iNumOfMadRender;
+		
 		
 		
 		InputHandle*	m_pkInputHandle;

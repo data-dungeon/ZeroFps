@@ -140,6 +140,8 @@ ZeroFps::ZeroFps(void) : I_ZeroFps("ZeroFps")
 
 ZeroFps::~ZeroFps()
 {
+	delete m_pkDevPageMaterial;
+
 	m_pkNetWork->ServerEnd();
 	g_ZFObjSys.ShutDown();
 	ConfigFileSave();
@@ -211,6 +213,9 @@ bool ZeroFps::StartUp()
 		printf("Failed to set GUI display!\n");
 	}
 	
+	//create materials
+	CreateMaterials();
+	
 	return true;
 }
 
@@ -261,6 +266,20 @@ bool ZeroFps::Init(int iNrOfArgs, char** paArgs)
 	m_fLockFrameTime  = GetTicks();
 
 	return true;
+}
+
+void ZeroFps::CreateMaterials()
+{
+	//devpage material
+	m_pkDevPageMaterial = new ZMaterial;
+	m_pkDevPageMaterial->GetPass(0)->m_kTUs[0]->SetRes("data/textures/text/devstr.bmp");
+	m_pkDevPageMaterial->GetPass(0)->m_iPolygonModeFront = 	FILL_POLYGON;
+	m_pkDevPageMaterial->GetPass(0)->m_iCullFace = 				CULL_FACE_BACK;		
+	m_pkDevPageMaterial->GetPass(0)->m_bLighting = 				false;		
+	m_pkDevPageMaterial->GetPass(0)->m_bColorMaterial = 		false;
+	m_pkDevPageMaterial->GetPass(0)->m_bFog = 					false;		
+	
+
 }
 
 /* Code that need to run on both client/server. */
@@ -796,55 +815,37 @@ void ZeroFps::DevPrintf(const char* szName, const char *fmt, ...)
 void ZeroFps::DrawDevStrings()
 {
 	unsigned int page;
-
-	if(!m_bDevPagesVisible) {
+	if(!m_bDevPagesVisible) 
+	{
+		//no visible page, just clear the pages
 		for(page = 0; page <m_DevStringPage.size(); page++ )
 			m_DevStringPage[page].m_akDevString.clear();
 		return;
-		}
+	}
+	
 
+	//bind materail
+	m_pkZShaderSystem->BindMaterial(m_pkDevPageMaterial);
+
+	//loop all pages and print em
 	string strPageName;
-	
-	m_pkZShaderSystem->Push("ZeroFps::DrawDevStrings");
-	
-		
-	glPushAttrib(GL_LIGHTING_BIT | GL_COLOR_BUFFER_BIT |GL_DEPTH_BUFFER_BIT );
-	glDisable(GL_LIGHTING);
-	glDisable(GL_ALPHA_TEST);
-	glDisable(GL_DEPTH_TEST);
- 	glEnable(GL_TEXTURE_2D);
-	glPolygonMode(GL_FRONT, GL_FILL);
-	glDisable(GL_FOG);
-	glDisable(GL_BLEND);
-	
-	m_pkRender->SetFont("data/textures/text/devstr.bmp");
-
-	glColor3f(1,1,1);
-
 	float fYOffset = 0.75;
-
-	for(page = 0; page <m_DevStringPage.size(); page++ ) {
-		if(m_DevStringPage[page].m_bVisible == true) {
+	for(page = 0; page <m_DevStringPage.size(); page++ ) 
+	{
+		if(m_DevStringPage[page].m_bVisible == true) 
+		{
 			strPageName = "[" + m_DevStringPage[page].m_kName + "]";
-
-			m_pkRender->Print(Vector3(-1.1,fYOffset,-1),Vector3(0,0,0),Vector3(0.02,0.02,0.02), 
-				const_cast<char*>(strPageName.c_str()));	
+			m_pkRender->Print2(Vector3(-1.1,fYOffset,-1),strPageName.c_str(),0.02);
 			fYOffset -= 0.02;
 
 			for(unsigned int i=0; i<m_DevStringPage[page].m_akDevString.size(); i++) 
 			{
-				m_pkRender->Print(Vector3(-1.1,fYOffset,-1),Vector3(0,0,0),Vector3(0.02,0.02,0.02), 
-					const_cast<char*>(m_DevStringPage[page].m_akDevString[i].c_str()));	
+				m_pkRender->Print2(Vector3(-1.1,fYOffset,-1),m_DevStringPage[page].m_akDevString[i].c_str(),0.02);
 				fYOffset -= 0.02;
-			}
+			}		
 		}
-
 		m_DevStringPage[page].m_akDevString.clear();
 	}
-
-	glPopAttrib();
-	
-	m_pkZShaderSystem->Pop();
 }
 
 void ZeroFps::DevPrint_Show(bool bVisible)

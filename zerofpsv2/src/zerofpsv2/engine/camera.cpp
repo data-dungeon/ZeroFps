@@ -9,6 +9,7 @@ bool Camera::m_bGridSnap(false);
 Camera::Camera(Vector3 kPos,Vector3 kRot,float fFov,float fAspect,float fNear,float fFar)
 {
 	m_pkRender = dynamic_cast<Render*>(g_ZFObjSys.GetObjectPtr("Render"));
+	m_pkZShaderSystem = dynamic_cast<ZShaderSystem*>(g_ZFObjSys.GetObjectPtr("ZShaderSystem"));
 
 	SetView(fFov,fAspect,fNear,fFar);
 	SetViewPort( 0, 0, float(m_pkRender->GetWidth()), float(m_pkRender->GetHeight()));
@@ -123,6 +124,14 @@ void Camera::SetView(float fFov,float fAspect,float fNear,float fFar)
 	m_fNear		= fNear;
 	m_fFar		= fFar;
 	
+	m_pkZShaderSystem->MatrixMode(MATRIX_MODE_PROJECTION);
+	m_pkZShaderSystem->MatrixPush();
+	m_pkZShaderSystem->MatrixGeneratePerspective(fFov, fAspect,fNear,fFar);
+	m_pkZShaderSystem->MatrixSave(&m_kCamProjectionMatrix);
+	m_pkZShaderSystem->MatrixPop();
+	m_pkZShaderSystem->MatrixMode(MATRIX_MODE_MODEL);
+	
+/*	
 	glMatrixMode(GL_PROJECTION);	
 	glPushMatrix();
 	 	glLoadIdentity();													
@@ -130,6 +139,7 @@ void Camera::SetView(float fFov,float fAspect,float fNear,float fFar)
 		glGetFloatv(GL_PROJECTION_MATRIX,(float*)&m_kCamProjectionMatrix.data);
 	glPopMatrix();
 	glMatrixMode(GL_MODELVIEW);	
+*/	
 }
 
 
@@ -137,6 +147,14 @@ void Camera::SetOrthoView()
 {
 	m_bViewChange	= true;
 
+	m_pkZShaderSystem->MatrixMode(MATRIX_MODE_PROJECTION);
+	m_pkZShaderSystem->MatrixPush();
+	m_pkZShaderSystem->MatrixGenerateOrtho(-m_kOrthoSize.x, m_kOrthoSize.x, -m_kOrthoSize.y, m_kOrthoSize.y, -500, 500);
+	m_pkZShaderSystem->MatrixSave(&m_kCamProjectionMatrix);
+	m_pkZShaderSystem->MatrixPop();
+	m_pkZShaderSystem->MatrixMode(MATRIX_MODE_MODEL);
+	
+/*	
 	glMatrixMode(GL_PROJECTION);	
 	glPushMatrix();
 		glLoadIdentity();													
@@ -144,6 +162,7 @@ void Camera::SetOrthoView()
 		glGetFloatv(GL_PROJECTION_MATRIX,(float*)&m_kCamProjectionMatrix.data);
 	glPopMatrix();
 	glMatrixMode(GL_MODELVIEW);	
+*/	
 }
 
 

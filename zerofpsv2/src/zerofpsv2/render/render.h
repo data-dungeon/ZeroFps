@@ -139,8 +139,8 @@ class RENDER_API Render : public ZFSubSystem {
 
 
 		void SetFont(char* aFont);
-		void PrintChar2(char cChar,float fPos);
-		void Print2(Vector3 kPos, char* aText);
+		void PrintChar2(char cChar,float fPos,float fScale = 1.0);
+		void Print2(Vector3 kPos, const char* aText,float fScale = 1.0);
 		void DrawConsole(char* m_aCommand,vector<char*>* m_kText, int iStartLine, int iMarkerPos, int iMarker); 
 
 		void Line(Vector3 kPos1,Vector3 kPos2);

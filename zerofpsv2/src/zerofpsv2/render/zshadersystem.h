@@ -328,15 +328,20 @@ class RENDER_API ZShaderSystem : public ZFSubSystem
 		void MatrixPop()										{glPopMatrix();};
 		void MatrixPush()										{glPushMatrix();};
 		
+		void MatrixSave(Matrix4* pkMatrix);
+		void MatrixLoad(Matrix4* pkMatrix);
+		
 		void MatrixGenerateOrtho(	const float& fLeft,const float& fRight,const float& fBottom,
 											const float& fTop,const float& fNear,const float& fFar)
 																	{
+																		glLoadIdentity();
 																		glOrtho(fLeft,fRight,fBottom,fTop,fNear,fFar);
 																	};
-		void MatrixGeneratePerspective(	const float& fLeft,const float& fRight,const float& fBottom,
-													const float& fTop,const float& fNear,const float& fFar)
+		void MatrixGeneratePerspective(	const float& fFov,const float& fAspect,const float& fNear,
+													const float& fFar)
 																	{
-																		glFrustum(fLeft,fRight,fBottom,fTop,fNear,fFar);
+																		glLoadIdentity();
+																		gluPerspective(fFov,fAspect,fNear,fFar);
 																	};
 		
 		friend class ZFProgram;

@@ -6,8 +6,8 @@ all:
 	cd mcommon/; $(MAKE) $@
 	cd mistclient/; $(MAKE) $@
 	cd mistserver/; $(MAKE) $@
-	cd dark_metropolis/; $(MAKE) $@
-	cd dm_arcad/; $(MAKE) $@
+#	cd dark_metropolis/; $(MAKE) $@
+#	cd dm_arcad/; $(MAKE) $@
 	cd zeroed/; $(MAKE) $@
 	cd fps_test/; $(MAKE) $@
 	./gengdbinit.sh
@@ -16,7 +16,7 @@ clean:
 	cd mcommon/; $(MAKE) $@
 	cd mistclient/; $(MAKE) $@
 	cd mistserver/; $(MAKE) $@
-	cd dark_metropolis/; $(MAKE) $@
-	cd dm_arcad/; $(MAKE) $@
+#	cd dark_metropolis/; $(MAKE) $@
+#	cd dm_arcad/; $(MAKE) $@
 	cd zeroed/; $(MAKE) $@
 	cd fps_test/; $(MAKE) $@

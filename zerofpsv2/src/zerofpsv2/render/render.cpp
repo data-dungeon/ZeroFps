@@ -410,7 +410,7 @@ void Render::PrintChar(unsigned char cChar)
 	glPopAttrib();
 }
 
-void Render::PrintChar2(char cChar,float fPos)
+void Render::PrintChar2(char cChar,float fPos,float fScale)
 {
 	int texwidth	=	FONTWIDTH*16;	
 	int pos			=	int(cChar)*FONTWIDTH;		
@@ -423,8 +423,8 @@ void Render::PrintChar2(char cChar,float fPos)
 	float iFontSize = 8;
 
 	
-	m_pkZShaderSystem->AddQuadV(	Vector3(fPos,0,0),						Vector3(fPos + iFontSize,0,0),
-											Vector3(fPos + iFontSize,iFontSize,0),	Vector3(fPos,iFontSize,0));
+	m_pkZShaderSystem->AddQuadV(	Vector3(fPos,0,0),						Vector3(fPos + 1,0,0),
+											Vector3(fPos + 1,1,0),	Vector3(fPos,1,0));
 												
 	m_pkZShaderSystem->AddQuadUV(	Vector2(x,y),							Vector2(x+width,y),
 											Vector2(x+width,y-width),			Vector2(x,y-width));
@@ -504,22 +504,22 @@ void Render::Print(Vector3 kPos,Vector3 kHead,Vector3 kScale,char* aText) {
 	glPopMatrix();
 }
 
-void Render::Print2(Vector3 kPos,char* aText) 
+void Render::Print2(Vector3 kPos,const char* aText,float fScale) 
 {
-	float fSize = 8;
+	float fSize = 1;
 	
 	char paText[TEXT_MAX_LENGHT];	
 	strcpy(paText,aText);
 	
 	m_pkZShaderSystem->MatrixPush();
 	m_pkZShaderSystem->MatrixTranslate(kPos);
-	
+	m_pkZShaderSystem->MatrixScale(fScale);
 	m_pkZShaderSystem->ClearGeometry();
 		
 	int i=0;
 	while(aText[i]!='\0') 
 	{
-		PrintChar2(aText[i],float(i*8.0));
+		PrintChar2(aText[i],float(i*1.0));
 		i++;
 	}
 
@@ -668,14 +668,14 @@ void Render::DrawConsole(char* m_aCommand,vector<char*>* m_kText,int iStartLine,
 	//glClear(GL_COLOR_BUFFER_BIT);	
 	//glPolygonMode(GL_FRONT, GL_FILL);
 	
-	Print2(Vector3(8,8,0),m_aCommand);		
+	Print2(Vector3(8,8,0),m_aCommand,8.0);		
 	
 	char kMarker[3];
 	if(iMarker >= 0) {
 		kMarker[0] = iMarker;
 		kMarker[1] = 0;
 		//if(m_bShowInputToken)
-		Print2(Vector3( float(8+iMarkerPos*8), float(8), 0), kMarker);		
+		Print2(Vector3( float(8+iMarkerPos*8), float(8), 0), kMarker,8.0);		
 		//m_bShowInputToken = !m_bShowInputToken;
 		}
 
@@ -690,7 +690,7 @@ void Render::DrawConsole(char* m_aCommand,vector<char*>* m_kText,int iStartLine,
 	{
 		if((*m_kText)[i] != NULL)
 		{
-			Print2(Vector3( 8.0, float(16.0 + 8.0 * float(i) ),0),(*m_kText)[i]);		
+			Print2(Vector3( 8.0, float(16.0 + 8.0 * float(i) ),0),(*m_kText)[i],8.0);		
 		}
 	}
 	
