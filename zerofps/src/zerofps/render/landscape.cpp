@@ -177,17 +177,15 @@ void Render::DrawHMlod(HeightMap* kmap,Vector3 CamPos,int iFps){
 	
 	for(int sz=0;sz<slices;sz++) {
 		for(int sx=0;sx<slices;sx++) {
-//			if(!PointInFrustum(Vector3(kmap->m_kPosition.x+sx*m_iSlicesize+m_iSlicesize/2,kmap->m_kPosition.y,
-//											kmap->m_kPosition.z+sz*m_iSlicesize+m_iSlicesize/2)))
-//				continue;
+			if(!CubeInFrustum(kmap->m_kPosition.x+sx*m_iSlicesize+m_iSlicesize/2,
+									kmap->m_kPosition.y,
+									kmap->m_kPosition.z+sz*m_iSlicesize+m_iSlicesize/2,m_iSlicesize/2))
+				continue;
 		
 			//set lop steps depending on the distance to the center of the lod tile
 			step=int((CamPos-Vector3(kmap->m_kPosition.x+sx*m_iSlicesize+m_iSlicesize/2,
-											//this distance realy sux..
-											CamPos.y,//this is nice =)
-//											kmap->m_kPosition.y+kmap->verts[(sz*m_iSlicesize+m_iSlicesize/2)*kmap->m_iHmSize+(sx*m_iSlicesize+m_iSlicesize/2)].height,
-											kmap->m_kPosition.z+sz*m_iSlicesize+m_iSlicesize/2)
-											).Length());///m_iDetail);																
+     										 CamPos.y,
+										    kmap->m_kPosition.z+sz*m_iSlicesize+m_iSlicesize/2)).Length());																
 //	cout<<"STEP"<<step<<endl;
 			if(step>m_iViewDistance)
 				continue;

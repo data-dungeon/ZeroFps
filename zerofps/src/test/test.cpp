@@ -52,7 +52,7 @@ void Test::OnInit(void) {
   glEnable(GL_LIGHTING);
   glEnable(GL_LIGHT0);
   
-  pkRender->SetFog(Vector4(.2,.2,.6,1),0.50,200,300,true);
+  pkRender->SetFog(Vector4(.2,.2,.6,1),0.50,300,400,true);
 
 }
 
@@ -74,7 +74,10 @@ void Test::OnIdle(void) {
 //	if(pkRender->SphereInFrustum(*pkFps->m_kCamPos,Vector4(x+50,0,200,0.1)))
 //		cout<<"HORA"<<endl;
 	
-	cout<<">>>> "<<pkRender->SphereInFrustum(*pkFps->m_kCamPos,Vector4(100,0,100,0))<<endl;	
+//	if(pkRender->CubeInFrustum(100,0,100,5))
+//		cout<<"HORA"<<endl;
+	
+//	cout<<">>>> "<<pkRender->SphereInFrustum(*pkFps->m_kCamPos,Vector4(100,0,100,0))<<endl;	
 
 //		cout<<"you se it=)"<<endl;
 
@@ -85,7 +88,7 @@ void Test::OnIdle(void) {
 
 	pkRender->DrawWater(*pkFps->m_kCamPos,Vector3(512,0,512),Vector3(0,0,0),1200,30);
 	
-//	cout<<pkFps->m_iFps<<endl;
+	cout<<pkFps->m_iFps<<endl;
 }
 
 void Test::OnHud(void) {	

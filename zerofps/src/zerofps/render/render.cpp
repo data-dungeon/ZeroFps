@@ -5,7 +5,7 @@ Render::Render(TextureManager* pkTexMan) {
 	
 	m_iSlicesize=32;	//grid size of lod tiles
 	m_iDetail=30;//height meens greater detail att longer range	
-	m_iViewDistance=300;
+	m_iViewDistance=400;
 	m_iFpsLock=60;
 	m_iAutoLod=1;
 	m_iLodUpdate=0;
@@ -385,7 +385,32 @@ float Render::SphereInFrustum(Vector3 CamPos, Vector4 kPoint)
 }
 
 
+bool Render::CubeInFrustum( float x, float y, float z, float size )
+{
+	int p;
 
+	for( p = 0; p < 6; p++ )
+	{
+		if( m_akFrustum[p][0] * (x - size) + m_akFrustum[p][1] * (y - size) + m_akFrustum[p][2] * (z - size) + m_akFrustum[p][3] > 0 )
+			continue;
+		if( m_akFrustum[p][0] * (x + size) + m_akFrustum[p][1] * (y - size) + m_akFrustum[p][2] * (z - size) + m_akFrustum[p][3] > 0 )
+			continue;
+		if( m_akFrustum[p][0] * (x - size) + m_akFrustum[p][1] * (y + size) + m_akFrustum[p][2] * (z - size) + m_akFrustum[p][3] > 0 )
+			continue;
+		if( m_akFrustum[p][0] * (x + size) + m_akFrustum[p][1] * (y + size) + m_akFrustum[p][2] * (z - size) + m_akFrustum[p][3] > 0 )
+			continue;
+		if( m_akFrustum[p][0] * (x - size) + m_akFrustum[p][1] * (y - size) + m_akFrustum[p][2] * (z + size) + m_akFrustum[p][3] > 0 )
+			continue;
+		if( m_akFrustum[p][0] * (x + size) + m_akFrustum[p][1] * (y - size) + m_akFrustum[p][2] * (z + size) + m_akFrustum[p][3] > 0 )
+			continue;
+		if( m_akFrustum[p][0] * (x - size) + m_akFrustum[p][1] * (y + size) + m_akFrustum[p][2] * (z + size) + m_akFrustum[p][3] > 0 )
+			continue;
+		if( m_akFrustum[p][0] * (x + size) + m_akFrustum[p][1] * (y + size) + m_akFrustum[p][2] * (z + size) + m_akFrustum[p][3] > 0 )
+			continue;
+		return false;
+	}
+	return true;
+}
 
 
 

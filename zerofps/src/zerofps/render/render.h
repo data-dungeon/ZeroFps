@@ -38,6 +38,7 @@ class RENDER_API Render {
 		void GetFrustum();
 		bool PointInFrustum(Vector3 kPoint);
 		float SphereInFrustum(Vector3 CamPos,Vector4 kPoint);
+		bool CubeInFrustum( float x, float y, float z, float size );
 		
 		void Quad(Vector3 kPos,Vector3 kHead,Vector3 kScale,int iTexture);
 		void Pyra(float x,float y,float z);
