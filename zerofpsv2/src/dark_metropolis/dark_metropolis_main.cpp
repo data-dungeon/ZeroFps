@@ -91,7 +91,6 @@ void DarkMetropolis::OnInit()
 	
 	if(!m_pkIni->ExecuteCommands("dark_metropolis_autoexec.ini"))
 		m_pkConsole->Printf("No dark_metropolis_autoexec.ini found");
-
 }
 
 void DarkMetropolis::OnIdle() 

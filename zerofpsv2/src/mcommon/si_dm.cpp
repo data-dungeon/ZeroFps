@@ -6,18 +6,19 @@
 
 ZFScriptSystem*			DMLua::g_pkScript;
 EntityManager*				DMLua::g_pkObjMan;
-int							DMLua::g_iCurrentMission;
+int							DMLua::g_iMissionStatus;
 
 void DMLua::Init(EntityManager* pkObjMan,ZFScriptSystem* pkScript)
 {
 	g_pkObjMan = pkObjMan;
 	g_pkScript = pkScript;
-	g_iCurrentMission = 0;
+	g_iMissionStatus = 0; // 0 = active/inactive, 1 = success, -1 = failed
 	
+	pkScript->ExposeFunction("GetNumOfLivingAgents", DMLua::GetNumOfLivingAgentsLua);
 	pkScript->ExposeFunction("GetDMCharacterByName", DMLua::GetDMCharacterByNameLua);
 	pkScript->ExposeFunction("GetDMCharacterClosest", DMLua::GetDMCharacterClosestLua);
 	pkScript->ExposeFunction("SetNewMission", DMLua::SetNewMissionLua);
-	pkScript->ExposeVariable("CurrentMission", (int*)&DMLua::g_iCurrentMission, tINT); 
+	pkScript->ExposeVariable("CurrentMission", (int*)&DMLua::g_iMissionStatus, tINT); 
 }
 
 int DMLua::GetDMCharacterByNameLua(lua_State* pkLua) 
@@ -75,14 +76,12 @@ int DMLua::GetDMCharacterClosestLua(lua_State* pkLua)
 
 int DMLua::SetNewMissionLua(lua_State* pkLua)
 {
-	if( g_pkScript->GetNumArgs(pkLua) == 2 )
+	if( g_pkScript->GetNumArgs(pkLua) == 1 )
 	{
 		char szName[256];
-		double dDifficulty;
 		P_DMMission* pkMissionProp = NULL;
-		
+	
 		g_pkScript->GetArgString(pkLua, 0, szName);
-		g_pkScript->GetArgNumber(pkLua, 1, &dDifficulty);
 
 		vector<Entity*> kObjects;		
 		g_pkObjMan->GetAllObjects(&kObjects);
@@ -100,8 +99,34 @@ int DMLua::SetNewMissionLua(lua_State* pkLua)
 			return 0;
 		}
 
-		pkMissionProp->SetCurrentMission( szName, (int) dDifficulty );
+		pkMissionProp->SetCurrentMission( szName);
 	}
 
-	return 0;
+	return 0; // this function returns zero (0) argument
 }
+
+int DMLua::GetNumOfLivingAgentsLua(lua_State* pkLua)
+{
+	double dNumAgents = 0;
+	P_DMCharacter* pkCharacter;
+
+	vector<Entity*> kObjects;		
+	g_pkObjMan->GetAllObjects(&kObjects);
+
+	for(unsigned int i=0;i<kObjects.size();i++)
+		if((pkCharacter=(P_DMCharacter*)kObjects[i]->GetProperty("P_DMCharacter")))
+		{
+			//////////////////////////////////////////////////////////////
+			// TODO: Kolla om det är en agent eller en fiende
+			// (kanske se om det finns ett HQ objekt property)
+			//////////////////////////////////////////////////////////////
+
+			dNumAgents += 1;
+			break;
+		}
+
+	g_pkScript->AddReturnValue(pkLua, dNumAgents);
+
+	return 1; // this function returns one (1) arguments
+}
+

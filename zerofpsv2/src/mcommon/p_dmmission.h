@@ -29,20 +29,22 @@ class MCOMMON_API P_DMMission: public Property {
 		void Save(ZFIoInterface* pkPackage);
 		void Load(ZFIoInterface* pkPackage);
 
-		bool SetCurrentMission(string strMissionScript, int iDifficulty);
+		bool SetCurrentMission(string strMissionScript);
 
 		string m_strName;
 		string m_strMissionScript;
-
 		int m_iDifficulty;
 
 		ZFScriptSystem* m_pkScriptSys;
 		ZFResourceHandle* m_pkScriptResHandle;
+		ZeroFps* m_pkZeroFps;
 
 private:
 
-	bool m_bMissionIsChanged;
-	int m_iMission; // om detta nummer inte är samma som DMLua::g_iCurrentMission så har uppdraget lyckats
+	float m_fMissionDoneCheckTime;
+	float m_fMissionFailedCheckTime;
+
+	bool GetMissionInfoFromScript();
 
 };
 

@@ -10,13 +10,14 @@ P_DMMission::P_DMMission()
 	m_strName = "Unnamed mission";
 	m_strMissionScript = "";
 	m_iDifficulty = 0;
-	m_bMissionIsChanged = false;
 	
 	bNetwork = true;
 
 	m_pkScriptSys = static_cast<ZFScriptSystem*>(g_ZFObjSys.GetObjectPtr("ZFScriptSystem"));
+	m_pkZeroFps = static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
 	m_pkScriptResHandle = NULL;
-	m_iMission = 0;
+	m_fMissionDoneCheckTime=0;
+	m_fMissionFailedCheckTime=0;
 }
 
 P_DMMission::~P_DMMission()
@@ -81,46 +82,85 @@ void P_DMMission::Update()
 {
 	if(m_pkScriptResHandle != NULL)
 	{
-		m_pkScriptSys->Call(m_pkScriptResHandle, "IsMissionDone", 0, 0);
+		//
+		// Kolla om uppdraget har slutförts 1 gång var 3:e sekund
+		// 
 
-		if(DMLua::g_iCurrentMission > m_iMission)
+		float fTimeCheck = m_pkZeroFps->m_pkObjectMan->GetGameTime();
+
+		if(fTimeCheck - m_fMissionDoneCheckTime > 3.0f)
 		{
-			printf("\n---------------------------------\n");
-			printf("Mission \"%s\" (%i) sucess!\n", m_strMissionScript.c_str(), 
-				m_iMission);
-			printf("\n---------------------------------\n");
+			m_pkScriptSys->Call(m_pkScriptResHandle, "IsMissionDone", 0, 0);
+			m_fMissionDoneCheckTime = fTimeCheck;
 
-			m_iMission = DMLua::g_iCurrentMission;
-			m_pkScriptSys->Call(m_pkScriptResHandle, "OnMissionSuccess", 0, 0);
+			if(DMLua::g_iMissionStatus == 1)
+			{
+				printf("\n---------------------------------\n");
+				printf("Mission \"%s\" sucess!\n", m_strMissionScript.c_str());
+				printf("\n---------------------------------\n");
+
+				m_pkScriptSys->Call(m_pkScriptResHandle, "OnMissionSuccess", 0, 0);
+			}
 		}
-	}
-	else
-	if((!m_strMissionScript.empty() && m_pkScriptResHandle == NULL) 
-		|| m_bMissionIsChanged)
-	{
-		m_pkScriptResHandle = new ZFResourceHandle;
-		if(!m_pkScriptResHandle->SetRes(m_strMissionScript))
+
+		//
+		// Kolla om uppdraget har misslyckats 1 gång var 3:e sekund
+		// 
+
+		if(fTimeCheck - m_fMissionFailedCheckTime > 3.0f)
 		{
-			printf("Failed to load lua script: %s, for P_DMMission\n", 
-				m_strMissionScript.c_str());
-			return;
+			m_pkScriptSys->Call(m_pkScriptResHandle, "IsMissionFailed", 0, 0);
+			m_fMissionFailedCheckTime = fTimeCheck;
+
+			if(DMLua::g_iMissionStatus == -1)
+			{
+				printf("\n---------------------------------\n");
+				printf("Mission \"%s\" failed!\n", m_strMissionScript.c_str());
+				printf("\n---------------------------------\n");
+
+				//m_pkScriptSys->Call(m_pkScriptResHandle, "OnMissionSuccess", 0, 0);
+			}
 		}
 	}
 }
 
-bool P_DMMission::SetCurrentMission(string strMissionScript, int iDifficulty)
+bool P_DMMission::SetCurrentMission(string strMissionScript)
 {
 	m_strMissionScript = strMissionScript;
-	m_iDifficulty = iDifficulty;
-	m_bMissionIsChanged = true;
+	
+	if(m_pkScriptResHandle)
+	{
+		delete m_pkScriptResHandle;
+		m_pkScriptResHandle = NULL;
+	}
 
-	delete m_pkScriptResHandle;
-	m_pkScriptResHandle = NULL;
+	m_pkScriptResHandle = new ZFResourceHandle;
+	if(!m_pkScriptResHandle->SetRes(m_strMissionScript))
+	{
+		printf("Failed to load lua script: %s, for P_DMMission\n", 
+			m_strMissionScript.c_str());
+		return false;
+	}
 
 	printf("\n---------------------------------\n");
-	printf("Changing mission to \"%s\" (%i)\n", strMissionScript.c_str(), 
-		DMLua::g_iCurrentMission);
+	printf("Starting mission \"%s\"\n", strMissionScript.c_str());
 	printf("\n---------------------------------\n");
+
+	return GetMissionInfoFromScript();
+}
+
+bool P_DMMission::GetMissionInfoFromScript()
+{
+	ZFScript* pkScript = (ZFScript*) m_pkScriptResHandle->GetResourcePtr();
+
+	char szName[128];
+	double dDifficulty;
+
+	m_pkScriptSys->GetGlobal(pkScript->m_pkLuaState, "MissionInfo", "name", szName);
+	m_strName = szName;
+
+	m_pkScriptSys->GetGlobal(pkScript->m_pkLuaState, "MissionInfo", "difficulty", dDifficulty);
+	m_iDifficulty = dDifficulty;
 
 	return true;
 }

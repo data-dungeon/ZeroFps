@@ -19,12 +19,13 @@ namespace DMLua
 	extern ZFScriptSystem* 		g_pkScript;
 	extern EntityManager*		g_pkObjMan;
 
-	extern int g_iCurrentMission;
+	extern int g_iMissionStatus;
 
 	void MCOMMON_API Init(EntityManager* pkObjMan,ZFScriptSystem* pkScript);
 	int MCOMMON_API GetDMCharacterByNameLua(lua_State* pkLua);
 	int MCOMMON_API GetDMCharacterClosestLua(lua_State* pkLua);
 	int MCOMMON_API SetNewMissionLua(lua_State* pkLua);
+	int MCOMMON_API GetNumOfLivingAgentsLua(lua_State* pkLua);
 };
 
 #endif

@@ -1,5 +1,6 @@
 #include "dark_metropolis.h"
 #include "briefing_dlg.h"
+#include "../mcommon/si_dm.h"
 
 CBriefingDlg::CBriefingDlg() : CGameDlg("BriefingWnd", &g_kDM)
 {
@@ -19,6 +20,21 @@ void CBriefingDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName)
 		pkMainWnd->Hide();	
 		m_pkGui->KillWndCapture();
 		m_pkDM->PauseGame(false); 
+
+		//
+		// Starta första uppdraget
+		//
+
+		Entity* pkHQ = GetDMObject(HQ);
+
+		if(pkHQ)
+		{
+			P_DMMission* pkMissionProperty = (P_DMMission*) 
+				pkHQ->GetProperty("P_DMMission");
+
+			pkMissionProperty->SetCurrentMission(
+				"data/script/missions/first_mission.lua");
+		}
 	}
 	else
 	if(strClickName == "BriefingCancelBn")
