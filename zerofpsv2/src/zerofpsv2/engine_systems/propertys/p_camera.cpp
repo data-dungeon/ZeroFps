@@ -56,8 +56,8 @@ void P_Camera::Update()
 				
 				
 				strCamName = " 3P ";
-				if(madp)
-					madp->m_bIsVisible = true;
+				/*if(madp)
+					madp->m_bIsVisible = true;*/
 				m_pkCamera->SetFov(m_fFov);				
 				break;
 			}	
@@ -70,8 +70,8 @@ void P_Camera::Update()
 				m_pkCamera->SetRotM(m_pkObject->GetWorldRotM());
 				
 				strCamName = " 1P ";
-				if(madp)
-					madp->m_bIsVisible = false;
+	/*			if(madp)
+					madp->m_bIsVisible = false;*/
 				m_pkCamera->SetFov(m_fFov);
 				break;
 			}
@@ -79,8 +79,8 @@ void P_Camera::Update()
 				m_pkCamera->SetPos(m_pkObject->GetWorldPosV() + Vector3(0,10,0));
 				m_pkCamera->SetRot(Vector3(90,0,0));
 				strCamName = " TD ";
-				if(madp)
-					madp->m_bIsVisible = true;
+/*				if(madp)
+					madp->m_bIsVisible = true;*/
 				m_pkCamera->SetFov(90);
 				break;
 
@@ -88,8 +88,8 @@ void P_Camera::Update()
 				m_pkCamera->SetPos(m_pkObject->GetWorldPosV() + Vector3(10,10,10));
 				m_pkCamera->SetRot(Vector3(45,-45,0));
 				strCamName = " ISO ";
-				if(madp)
-					madp->m_bIsVisible = true;
+	/*			if(madp)
+					madp->m_bIsVisible = true;*/
 				m_pkCamera->SetFov(m_fFov);
 				break;
 
@@ -101,8 +101,8 @@ void P_Camera::Update()
 					Vector3(0,CHASE_CAM_DISTANCE,0));
 				m_pkCamera->SetRot(Vector3(m_pkObject->GetWorldRotV() + Vector3(0,90,0)));
 				strCamName = " Chase ";
-				if(madp)
-					madp->m_bIsVisible = true;
+/*				if(madp)
+					madp->m_bIsVisible = true;*/
 				m_pkCamera->SetFov(m_fFov);
 				break;
 
@@ -113,8 +113,8 @@ void P_Camera::Update()
 					Vector3(0,CHASE_CAM_DISTANCE,0));
 				m_pkCamera->SetRot(Vector3(m_kDynamicIso + Vector3(0,90,0)));
 				strCamName = " Dyn ISO ";
-				if(madp)
-					madp->m_bIsVisible = true;
+/*				if(madp)
+					madp->m_bIsVisible = true;*/
 				m_pkCamera->SetFov(m_fFov);
 				break;
 				
@@ -122,8 +122,8 @@ void P_Camera::Update()
 				strCamName = " Side ";
 				m_pkCamera->SetPos(m_pkObject->GetWorldPosV() + Vector3(0,0,10));
 				m_pkCamera->SetRot(Vector3(0,20,0));
-				if(madp)
-					madp->m_bIsVisible = true;
+	/*			if(madp)
+					madp->m_bIsVisible = true;*/
 				m_pkCamera->SetFov(90);
 				break;
 		
