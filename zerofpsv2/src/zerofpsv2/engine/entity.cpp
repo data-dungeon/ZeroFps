@@ -628,11 +628,18 @@ void Entity::PackTo(NetPacket* pkNetPacket, int iConnectionID)
 			pkNetPacket->Write((int) m_aiNetDeleteList[i] );
 	}
 
+	//send rel position flag
+	if(GetNetUpdateFlag(iConnectionID,NETUPDATEFLAG_RELPOS))
+	{
+		SetNetUpdateFlag(iConnectionID,NETUPDATEFLAG_RELPOS,false);
+		pkNetPacket->Write((int) m_bRelativeOri );
+	}
+
 	//send position
 	if(GetNetUpdateFlag(iConnectionID,NETUPDATEFLAG_POS))
 	{
 		SetNetUpdateFlag(iConnectionID,NETUPDATEFLAG_POS,false);		
-		pkNetPacket->Write(GetWorldPosV());
+		pkNetPacket->Write(GetLocalPosV());
 	}
 	
 	//send rotation
@@ -795,6 +802,12 @@ void Entity::PackFrom(NetPacket* pkNetPacket, int iConnectionID)
 			pkNetSlave = m_pkObjectMan->GetObjectByNetWorkID(iDelObjectID);
 			m_pkObjectMan->Delete(pkNetSlave);
 		}
+	}
+
+	//send rel position flag
+	if(GetNetUpdateFlag(0, NETUPDATEFLAG_RELPOS))
+	{
+		pkNetPacket->Read((int&) m_bRelativeOri );
 	}
 
 	//get position
@@ -1348,6 +1361,11 @@ void Entity::SetVel(Vector3 kVel)
 	SetNetUpdateFlag(NETUPDATEFLAG_VEL,true);
 }
 
+void Entity::SetRelativeOri(bool bRO)
+{	
+	m_bRelativeOri = bRO;		
+	SetNetUpdateFlag(NETUPDATEFLAG_RELPOS, true);
+};
 
 void Entity::ResetChildsGotData()
 {
@@ -1675,7 +1693,7 @@ bool	Entity::IsAnyNetUpdateFlagTrue(int iConID)
 {
 	bool bValue = false;
 
-	for(int i = 0; i<9; i++)
+	for(int i = 0; i<MAX_NETUPDATEFLAGS; i++)
 	{
 		bValue |= m_kNetUpdateFlags[iConID][i];
 	}

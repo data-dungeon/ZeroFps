@@ -43,7 +43,9 @@ enum NetUpdateFlags
 	NETUPDATEFLAG_NAME =				5,		
 	NETUPDATEFLAG_TYPE =				6,			
 	NETUPDATEFLAG_UPDATESTATUS =	7,			
-	NETUPDATEFLAG_DELETE =			8,				
+	NETUPDATEFLAG_DELETE =			8,		
+	NETUPDATEFLAG_RELPOS =			9,		
+	
 };
 
 /*
@@ -103,6 +105,7 @@ stored in the OM, the all have a type, a ID, a name and some other things. The t
 each and every object diffrent are the type of properties they have. 
 */
 
+#define MAX_NETUPDATEFLAGS	10
 
 class ENGINE_API Entity 
 {
@@ -181,7 +184,7 @@ class ENGINE_API Entity
 		vector<Property*>			m_akPropertys;						///< List of propertys of object.
 		
 		//network
-		vector<bitset<9> >			m_kNetUpdateFlags;
+		vector<bitset <MAX_NETUPDATEFLAGS> >	m_kNetUpdateFlags;
 					
 		Entity();				
 		void	SetNetUpdateFlag(int iFlagID,bool bValue);
@@ -277,7 +280,7 @@ class ENGINE_API Entity
 
 		// Orientation  
 		bool			GetRelativeOri()				{	return m_bRelativeOri;		};
-		void			SetRelativeOri(bool bRO)	{	m_bRelativeOri = bRO;		};
+		void			SetRelativeOri(bool bRO);
 		
 		Matrix4		GetLocalRotM();					
 		Matrix4		GetWorldRotM();
