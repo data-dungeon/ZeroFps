@@ -717,7 +717,25 @@ Vector3 Matrix4::GetAxis(int iAxisNum)
 	return Vector3(RowCol[iAxisNum][0], RowCol[iAxisNum][1], RowCol[iAxisNum][2]);
 }
 
+void Matrix4::LookDir(Vector3 kDir,Vector3 kUp)
+{
+	Vector3 kRight;
+	
+	kDir.Normalize();
+	kUp.Normalize();
 
+	kRight = kUp.Cross(kDir);
+	kRight.Normalize();
+	kUp = kDir.Cross(kRight);
+	kUp.Normalize();
+
+	Identity();
+	SetAxis(0,kRight);
+	SetAxis(1,kUp);
+	SetAxis(2,kDir);
+	Transponse();
+
+}
 
 
 

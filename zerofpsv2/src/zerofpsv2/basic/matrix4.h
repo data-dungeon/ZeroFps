@@ -66,6 +66,8 @@ class BASIC_API Matrix4 {
 		void Translate(float fX, float fY, float fZ);
 		void Translate(Vector3 kPos);
 		
+		void LookDir(Vector3 kDir,Vector3 kUp);
+		
 		Vector3 GetRotVector();
 		Vector3 GetPosVector();
 		

@@ -77,10 +77,11 @@ void MistServer::OnIdle()
 	pkFps->SetCamera(m_pkCamera);		
 	pkFps->GetCam()->ClearViewPort();	
 
-
-	Input();
-	
+	Input();	
  	pkFps->UpdateCamera(); 		
+
+	UpdateZoneMarkerPos();
+	DrawZoneMarker(m_kZoneMarkerPos);
 }
 
 void MistServer::OnSystem() 
@@ -104,27 +105,47 @@ void MistServer::Input()
 		float fSpeedScale = pkFps->GetFrameTime()*speed;
 
 		Vector3 newpos = m_pkCameraObject->GetLocalPosV();
-		Vector3 rot;
-		rot.Set(0,0,0);
 		
 		Matrix4 kRm = m_pkCameraObject->GetLocalRotM();
 
 		kRm.Transponse();
 	
-		if(pkInput->Pressed(KEY_D))	newpos += kRm.GetAxis(0) * fSpeedScale;		
-		if(pkInput->Pressed(KEY_A))	newpos += kRm.GetAxis(0) * -fSpeedScale;		
-		if(pkInput->Pressed(KEY_W))	newpos += kRm.GetAxis(2) * -fSpeedScale;
-		if(pkInput->Pressed(KEY_S))	newpos += kRm.GetAxis(2) * fSpeedScale;	
-	
-		if(pkInput->Pressed(KEY_Q))	rot.z += 5 * fSpeedScale;
-		if(pkInput->Pressed(KEY_E))	rot.z -= 5 * fSpeedScale;
 		
-		rot.x += z / 5.0;
-		rot.y -= x / 5.0;	
+		Vector3 xv = kRm.GetAxis(0);
+		Vector3 zv = kRm.GetAxis(2);
+	
+		xv.y = 0;
+		zv.y = 0;
+		
+		xv.Normalize();
+		zv.Normalize();
+	
+		if(pkInput->Pressed(KEY_D))	newpos += xv * fSpeedScale;		
+		if(pkInput->Pressed(KEY_A))	newpos += xv * -fSpeedScale;		
+		if(pkInput->Pressed(KEY_W))	newpos += zv * -fSpeedScale;
+		if(pkInput->Pressed(KEY_S))	newpos += zv * fSpeedScale;	
+	
+		if(pkInput->Pressed(KEY_Q))	newpos.y += fSpeedScale;
+		if(pkInput->Pressed(KEY_E))	newpos.y -= fSpeedScale;
+				
+
+		Vector3 rot;
+		rot.Set(-z / 5.0,-x / 5.0,0);
+
+		kRm.Transponse();		
+		kRm.Rotate(rot);
+
+		kRm.Transponse();		
+
+		Vector3 bla = Vector3(0,0,1);
+		bla = kRm.VectorTransform(bla);
+		
+		kRm.LookDir(bla,Vector3(0,1,0));
+
 
 		m_pkCameraObject->SetLocalPosV(newpos);
-		m_pkCameraObject->RotateLocalRotV(rot);	
-	
+//		m_pkCameraObject->RotateLocalRotV(rot);	
+		m_pkCameraObject->SetLocalRotM(kRm);	
 	
 	
 		if(pkInput->Pressed(KEY_SPACE))
@@ -243,7 +264,7 @@ void MistServer::OnCommand(int iID, ZGuiWnd *pkMainWnd)
 */
 }
 
-Vector3 MistServer::Get3DMousePos()
+Vector3 MistServer::Get3DMousePos(bool m_bMouse=true)
 {
 	Vector3 dir;
 	float x,y;		
@@ -252,9 +273,17 @@ Vector3 MistServer::Get3DMousePos()
 	float xp=4;
 	float yp=3;
 	
-	pkInput->UnitMouseXY(x,y);	
-	dir.Set(x*xp,-y*yp,-1.5);
-	dir.Normalize();
+	if(m_bMouse)
+	{
+		pkInput->UnitMouseXY(x,y);	
+		dir.Set(x*xp,-y*yp,-1.5);
+		dir.Normalize();
+	}
+	else
+	{
+		dir.Set(0,0,-1.5);
+		dir.Normalize();	
+	}
 	
 	Matrix4 rm = m_pkCamera->GetRotM();
 	rm.Transponse();
@@ -300,20 +329,28 @@ void MistServer::AddZone(Vector3 kPos )
 	kSnap.y = round(kPos.y/4.0) * 4.0;
 	kSnap.z = round(kPos.z/4.0) * 4.0;
 
-
-
-	if(pkObjectMan->IsInsideZone(kSnap,m_kZoneSize))
+	if(pkObjectMan->IsInsideZone(m_kZoneMarkerPos,m_kZoneSize))
 		return;
 		
-	
-	int id = pkObjectMan->CreateZone(kSnap,m_kZoneSize);
+	int id = pkObjectMan->CreateZone(m_kZoneMarkerPos,m_kZoneSize);
 //	pkObjectMan->UpdateZoneLinks(id);
-	
-
 }
 
 
+void MistServer::DrawZoneMarker(Vector3 kPos)
+{
+	Vector3 bla = m_kZoneSize / 2;
+	pkRender->DrawAABB(kPos-bla,kPos+bla,Vector3(1,1,1));
+}
 
+void MistServer::UpdateZoneMarkerPos()
+{
+	Vector3 temp = pkFps->GetCam()->GetPos() + Get3DMousePos(false)*20;
 
+	m_kZoneMarkerPos.x = round(temp.x/4.0) * 4.0;
+	m_kZoneMarkerPos.y = round(temp.y/4.0) * 4.0;
+	m_kZoneMarkerPos.z = round(temp.z/4.0) * 4.0;
+
+}
 
 

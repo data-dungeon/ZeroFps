@@ -62,6 +62,7 @@ void CameraProperty::Update()
 				break;
 			}	
 			case CAM_TYPEFIRSTPERSON:
+			{
 //				m_pkCamera->SetPos(m_pkObject->GetPos() + Vector3(0,0.95,0));
 //				m_pkCamera->SetRot(m_pkObject->GetRot() + Vector3(0,90,0));
 				m_pkCamera->SetPos(m_pkObject->GetWorldPosV() + Vector3(0,0.95,0));
@@ -73,7 +74,7 @@ void CameraProperty::Update()
 					madp->m_bIsVisible = false;
 				m_pkCamera->SetFov(m_fFov);
 				break;
-
+			}
 			case CAM_TYPETOPDOWN:
 				m_pkCamera->SetPos(m_pkObject->GetWorldPosV() + Vector3(0,10,0));
 				m_pkCamera->SetRot(Vector3(90,0,0));
@@ -161,7 +162,10 @@ void CameraProperty::LookAt(Vector3 kCamPosition, Vector3 kCamTarget,Vector3 kCa
 
 void CameraProperty::Look(Vector3 kCamPosition, Vector3 kLookDir,Vector3 kCamUp) {
 	Matrix4 kCamera;
-	Vector3 kRight;
+
+	kCamera.LookDir(kLookDir,kCamUp);
+
+/*	Vector3 kRight;
 	
 	kLookDir.Normalize();
 	kCamUp.Normalize();
@@ -176,7 +180,7 @@ void CameraProperty::Look(Vector3 kCamPosition, Vector3 kLookDir,Vector3 kCamUp)
 	kCamera.SetAxis(1,kCamUp);
 	kCamera.SetAxis(2,kLookDir);
 	kCamera.Transponse();
-
+*/
 	m_pkCamera->SetRotM(kCamera);
 	m_pkCamera->SetPos(kCamPosition);
 }
