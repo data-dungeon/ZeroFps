@@ -329,7 +329,6 @@ void ZeroFps::Update_System()
 		m_pkApp->OnSystem();
 		
 		
-		
 		//server only code
 		if(m_bServerMode)
 		{
@@ -352,8 +351,12 @@ void ZeroFps::Update_System()
 		
 		}
 
+		
+		//client & server code
+		
 		//pack objects to clients
 		m_pkObjectMan->PackToClients();		
+
 
 		//delete objects
 		m_pkObjectMan->UpdateDelete();

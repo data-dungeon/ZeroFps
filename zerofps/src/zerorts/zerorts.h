@@ -49,6 +49,8 @@ class ZeroRTS :public Application {
 		int 			m_iActionSelectManyModifier;		
 		int			m_iActionExploreAll;
 		int			m_iActionUnExploreAll;		
+		int			m_iActionPrintServerInfo;				
+		
 		
 		//console funktions
 		enum FuncId_e

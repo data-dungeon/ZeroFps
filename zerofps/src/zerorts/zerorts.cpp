@@ -88,6 +88,7 @@ void ZeroRTS::Init()
 
 void ZeroRTS::RegisterActions()
 {
+	m_iActionPrintServerInfo=pkInput->RegisterAction("PrintServerInfo");
 	m_iActionUnExploreAll=pkInput->RegisterAction("UnExploreAll");
 	m_iActionExploreAll=pkInput->RegisterAction("ExploreAll");
 	m_iActionCamLeft=pkInput->RegisterAction("CamLeft");
@@ -104,6 +105,7 @@ void ZeroRTS::RegisterPropertys()
 	pkPropertyFactory->Register("P_FogRender", Create_P_FogRender);	
 	pkPropertyFactory->Register("P_RenderSelection", Create_P_RenderSelection);	
 	pkPropertyFactory->Register("P_ClientUnit", Create_P_ClientUnit);
+	pkPropertyFactory->Register("P_ServerInfo", Create_P_ServerInfo);		
 	pkPropertyFactory->Register("P_ServerUnit", Create_P_ServerUnit);	
 }
 
@@ -229,7 +231,7 @@ void ZeroRTS::Input()
 	
 	if(pkInput->Action(m_iActionUnExploreAll))
 		m_pkFogRender->UnExploreAll();
-
+	
 	if(pkInput->Action(m_iActionSelect))
 	{
 		if(pkFps->GetTicks() - m_fClickTimer < m_fClickDelay)
@@ -286,6 +288,23 @@ void ZeroRTS::Input()
 		MoveCam(Vector3(x*10,0,y*10));		
 	}
 
+	if(pkInput->Action(m_iActionPrintServerInfo))
+	{
+		P_ServerInfo* si = (P_ServerInfo*)pkObjectMan->GetWorldObject()->GetProperty("P_ServerInfo");	
+		
+		if(si != NULL)
+		{
+			pkConsole->Printf("Server Name: %s",si->m_kSInfo.m_acServerName);
+			
+		}
+		else
+		{
+			pkConsole->Printf("No server info found");		
+		}
+	}
+
+
+
 	if(pkInput->Pressed(KEY_W))
 		pkLevelMan->ChangeLandscapeFillMode(LINE);
 	if(pkInput->Pressed(KEY_F))
@@ -317,6 +336,12 @@ void ZeroRTS::OnHud(void)
 
 void ZeroRTS::OnServerStart(void)
 {	
+	//add server info property
+	if(!pkObjectMan->GetWorldObject()->GetProperty("P_ServerInfo"))
+	{
+		pkObjectMan->GetWorldObject()->AddProperty("P_ServerInfo");
+	}
+	
 }
 
 void ZeroRTS::OnClientStart(void)
