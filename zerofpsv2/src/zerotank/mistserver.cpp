@@ -102,11 +102,11 @@ void MistServer::Init()
 		"data/script/gui/gui_create_server.lua");
 		//"data/script/gui/test2s.lua");*/
 
-/*	pkGui->SetCursor(0,0, pkTexMan->Load("data/textures/gui/cursor.bmp", 0),
-	pkTexMan->Load("data/textures/gui/cursor_a.bmp", 0), 32, 32);*/
+//	pkGui->SetCursor(0,0, pkTexMan->Load("data/textures/gui/cursor.bmp", 0),
+//	pkTexMan->Load("data/textures/gui/cursor_a.bmp", 0), 32, 32);
 
 	SDL_WM_SetCaption("MistServer", NULL);
-	pkGui->ShowCursor(false);
+	pkGui->ShowCursor(true);
 
 	//CreateMenu("data/script/gui/menu.txt");
 

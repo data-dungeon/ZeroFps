@@ -324,8 +324,8 @@ bool ZGui::Render()
 	 }
 
 	// Draw cursor
-	if(m_pkCursor->IsVisible())
-		m_pkCursor->Render();
+//	if(m_pkCursor->IsVisible())
+//		m_pkCursor->Render();
 
 	m_pkRenderer->EndRender(); 
 

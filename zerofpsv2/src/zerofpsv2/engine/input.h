@@ -225,6 +225,8 @@ class ENGINE_API Input : public ZFSubSystem {
 		bool IsValid();
 
 		map<int,int> m_kGlobalKeyTranslator;
+
+		int				m_iSDLMouseX, m_iSDLMouseY;
 };
 
 #endif

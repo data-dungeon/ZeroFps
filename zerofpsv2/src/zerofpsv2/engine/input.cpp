@@ -60,6 +60,8 @@ void Input::Update(void) {
 	m_iMouseY=-1;
 	
 	UpdateMousePos();
+
+	SDL_GetMouseState(&m_iSDLMouseX,&m_iSDLMouseY);
 	
 	while(SDL_PollEvent(&m_kEvent)) {
 		switch(m_kEvent.type) {
@@ -186,13 +188,13 @@ void Input::ToggleGrab(bool bGrab) {
 void Input::GrabInput(void) 
 {
 	SDL_WM_GrabInput(SDL_GRAB_ON);
- 	SDL_ShowCursor(SDL_DISABLE);
+// 	SDL_ShowCursor(SDL_DISABLE);
 }
 
 void Input::ReleaseInput(void) 
 {
 	SDL_WM_GrabInput(SDL_GRAB_OFF);
- 	SDL_ShowCursor(SDL_ENABLE);
+ //	SDL_ShowCursor(SDL_ENABLE);
 }
 	
 

@@ -144,13 +144,13 @@ void MistServer::Init()
 
 	CreateGuiInterface();
 
-	pkGui->SetCursor(0,0, pkTexMan->Load("data/textures/gui/cursor.bmp", 0),
-		pkTexMan->Load("data/textures/gui/cursor_a.bmp", 0), 32, 32);
+//	pkGui->SetCursor(0,0, pkTexMan->Load("data/textures/gui/cursor.bmp", 0),
+//		pkTexMan->Load("data/textures/gui/cursor_a.bmp", 0), 32, 32);
 
 	//setup caption
 	SetTitle("MistServer");
 	// hide cursor
-	m_pkInput->ShowCursor(false);
+	m_pkInput->ShowCursor(true);
 
 	// give focus to main window
 	//pkGui->SetFocus(GetWnd("MainWnd")); 

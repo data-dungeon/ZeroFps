@@ -156,12 +156,8 @@ void MistClient::Init()
 	//init mistland script intreface
 	MistLandLua::Init(m_pkObjectMan,m_pkScript);
 	
-	pkGui->SetCursor(0,0, pkTexMan->Load("data/textures/gui/cursor.bmp", 0),
-		pkTexMan->Load("data/textures/gui/cursor_a.bmp", 0), 32, 32);
-
-	// hide cursor
-	m_pkInput->ShowCursor(false);
-//	SDL_ShowCursor(SDL_DISABLE);
+//	pkGui->SetCursor(0,0, pkTexMan->Load("data/textures/gui/cursor.bmp", 0),
+//		pkTexMan->Load("data/textures/gui/cursor_a.bmp", 0), 32, 32);
 
 	// Varde ljus!
 	m_pkLight->SetLighting(true);
@@ -1816,13 +1812,16 @@ void MistClient::ChangeMode ( eMOUSE_MODES eMode )
 	switch ( eMode )
 	{
 		case eMOUSE_MODE:
+			m_pkInput->ShowCursor(true);
 			pkGui->ShowCursor(true);
 			break;
 		case eCAMERA_MODE:
+			m_pkInput->ShowCursor(false);
 			pkGui->ShowCursor(false);
 			break;
 		case eACTION_MODE:
 			m_pkInput->SetCursorInputPos ( int(m_iWidth/2.f), int(m_iHeight/2.f) );
+			m_pkInput->ShowCursor(true);
 			pkGui->ShowCursor(true);
 			break;
 	}

@@ -72,6 +72,8 @@ class ENGINE_SYSTEMS_API ZFAudioSystem  : public ZFSubSystem
 {
 
 public:
+	void ReverbTest();
+
 	void UnloadAll();
 
 	bool StartSound(string strName, Vector3 pos=m_kPos, Vector3 dir=Vector3(0,0,1), bool bLoop=false);

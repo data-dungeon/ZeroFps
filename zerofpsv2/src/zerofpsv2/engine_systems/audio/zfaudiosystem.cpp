@@ -3,6 +3,7 @@
 //////////////////////////////////////////////////////////////////////
 
 #include <AL/al.h>
+#include "AL/alc.h"
 #include <AL/alut.h>
 #include "../../basic/zfvfs.h"
 #include "../script_interfaces/si_audio.h"
@@ -11,6 +12,7 @@
 #define NO_SOURCE 999
 
 Vector3 ZFAudioSystem::m_kPos = Vector3(0,0,0);
+
 				        
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
@@ -1025,5 +1027,3 @@ bool ZFAudioSystem::InitSound(ZFSoundInfo *pkSound)
 
 	return true;
 }
-
-
