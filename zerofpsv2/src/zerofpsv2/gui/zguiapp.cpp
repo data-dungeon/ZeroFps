@@ -367,6 +367,8 @@ void ZGuiApp::InitializeGui(ZGui* pkGui, TextureManager* pkTexMan,
 	m_pkTexMan = pkTexMan;
 	m_pkResMan = pkResMan;
 
+	m_pkTexMan->Load("data/textures/gui/slask.bmp", 0); // första misslyckas, vet inte varför..
+
 	m_pkGui->SetCursor(0,0, m_pkTexMan->Load("data/textures/gui/cursor.bmp", 0),
 		m_pkTexMan->Load("data/textures/gui/cursor_a.bmp", 0), 32, 32);
 

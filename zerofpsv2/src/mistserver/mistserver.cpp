@@ -25,6 +25,7 @@ static bool GUIPROC( ZGuiWnd* win, unsigned int msg, int numparms, void *params 
 	}
 	return true;
 }
+
 MistServer::MistServer(char* aName,int iWidth,int iHeight,int iDepth) 
 	: Application(aName,iWidth,iHeight,iDepth), ZGuiApp(GUIPROC)
 { 
@@ -323,19 +324,6 @@ bool MistServer::StartUp()	{ return true; }
 bool MistServer::ShutDown()	{ return true; }
 bool MistServer::IsValid()	{ return true; }
 
-void MistServer::OnCommand(int iID, ZGuiWnd *pkMainWnd)
-{
-/*	if(iID == 5)
-		pkScript->Call(GetGuiScript(), "OnClickBackpack", 0, 0); 
-	if(iID == 5)
-		pkScript->Call(m_pkScriptResHandle, "OnClickBackpack", 0, 0); 
-	if(iID == 6)
-		pkScript->Call(m_pkScriptResHandle, "OnClickStats", 0, 0);
-	if(iID == 4)
-		pkScript->Call(m_pkScriptResHandle, "OnClickMap", 0, 0);
-*/
-}
-
 Vector3 MistServer::Get3DMousePos(bool m_bMouse=true)
 {
 	Vector3 dir;
@@ -445,4 +433,15 @@ void MistServer::UpdateZoneMarkerPos()
 
 }
 
+void MistServer::OnCommand(int iID, ZGuiWnd *pkMainWnd)
+{
+	ZGuiWnd* pkWndClicked = GetWnd(iID);
 
+	if(pkWndClicked)
+	{
+		string strName = pkWndClicked->GetName();
+
+		if(strName == "OpenWorkTabButton")
+			pkScript->Call(m_pkScriptResHandle, "OpenWorkPad", 0, 0); 
+	}
+}
