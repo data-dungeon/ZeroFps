@@ -5,6 +5,7 @@
 #include "engine_x.h"
 #include "console.h"
 #include "entitymanager.h"
+#include "p_pfmesh.h"
 
 class NaviMeshCell;
 
@@ -52,11 +53,15 @@ public:
 	float m_fHValue;			// heuristic estimate of distance to goal
 	float m_fFValue;			// sum of cumulative cost of predecessors and self and heuristic
 
+	P_PfMesh*		m_pkNaviMesh;
 	NaviMeshCell*	pkNaviCell;
+	ZoneData*		m_pkZoneData;
 	AStarCellNode*	m_pParent;
 
-	AStarCellNode(NaviMeshCell* pkCell)
+	AStarCellNode(ZoneData*	pkZoneData, P_PfMesh* pkNaviMesh, NaviMeshCell* pkCell)
 	{
+		m_pkZoneData = pkZoneData;
+		m_pkNaviMesh = pkNaviMesh;
 		pkNaviCell	= pkCell;
 		m_fGValue	= 0;
 		m_fHValue	= 0;
@@ -92,6 +97,9 @@ private:
 	int		m_iStartZone;
 	int		m_iEndZone;
 
+	vector<AStarCellNode*>	kOpenList;
+	vector<AStarCellNode*>	kClosedList;
+
 public:
 	AStar();
 	virtual ~AStar() {}
@@ -102,13 +110,15 @@ public:
 	
 	
 	bool GetFullPath(Vector3 kStart, Vector3 kEnd, vector<Vector3>& kPath);
-
+	
+	void Reset();
 	
 //	void CalcCoset(AStarNode* pkNode);
 //	void MakePath(AStarNode* pkNode, vector<Vector3>& kPath);
 
 	void CalcCoset(AStarCellNode* pkNode);
 	void MakePath(AStarCellNode* pkNode, vector<Vector3>& kPath);
+	AStarCellNode* GetConnectedZone(ZoneData*	pkZoneData, Vector3 kA, Vector3 kB);
 
 
 	bool StartUp();

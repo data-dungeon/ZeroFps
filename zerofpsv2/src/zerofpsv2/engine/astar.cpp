@@ -180,8 +180,60 @@ void AStar::CalcCoset(AStarCellNode* pkNode)
 
 }
 
+AStarCellNode* AStar::GetConnectedZone(ZoneData* pkZoneData, Vector3 kA, Vector3 kB)
+{
+	ZoneData*		pkOtherZone;
+	P_PfMesh*		pkMesh;
+	NaviMeshCell*  pkCell;
+
+	Vector3 kEdgeCenter = (kA + kB) / 2;
+
+	// loop all connected zones
+	for(int i=0; i<pkZoneData->m_iZoneLinks.size(); i++) {
+		pkOtherZone = m_pkObjectManger->GetZoneData(pkZoneData->m_iZoneLinks[i]);
+		if(pkOtherZone == NULL)					continue;
+		if(pkOtherZone->m_pkZone == NULL)	continue;	
+
+		pkMesh = (P_PfMesh*)pkOtherZone->m_pkZone->GetProperty("P_PfMesh");
+		if(pkMesh == NULL)						continue;	
+
+		pkCell = pkMesh->GetCell(kA,kB);
+		if(pkCell) {
+			printf("Found a connected Cell");
+			return new AStarCellNode(pkOtherZone, pkMesh, pkCell);
+
+			}
+		}
+
+	return NULL;
+}
+
+void AStar::Reset()
+{
+	int i;
+
+	if(kOpenList.size()) {
+		for(i=0; i<kOpenList.size(); i++) {
+			delete kOpenList[i];
+			}
+
+		kOpenList.clear();
+		}
+
+	if(kClosedList.size()) {
+		for(i=0; i<kClosedList.size(); i++) {
+			delete kClosedList[i];
+			}
+
+		kClosedList.clear();
+		}
+}
+
+
 bool AStar::GetFullPath(Vector3 kStart, Vector3 kEnd, vector<Vector3>& kPath)
 {
+	Reset();
+
 	printf("Creating full path");
 
 	kPath.clear();
@@ -191,16 +243,26 @@ bool AStar::GetFullPath(Vector3 kStart, Vector3 kEnd, vector<Vector3>& kPath)
 	m_iStartZone	= m_pkObjectManger->GetZoneIndex(m_kStart,-1, false);
 	m_iEndZone		= m_pkObjectManger->GetZoneIndex(m_kGoal,-1, false);
 
-	if(m_iStartZone < 0)		// No path found.
-		return false;
-	if(m_iEndZone < 0)		// No path found.
-		return false;
-	if(m_iStartZone != m_iEndZone)
-		return false;
+	Vector3 kA, kB;
 
-	if(m_pkObjectManger->GetZoneData(m_iStartZone) == NULL)	return false;
-	if(m_pkObjectManger->GetZoneData(m_iEndZone) == NULL)	return false;
+	if(m_iStartZone < 0) {		// No path found.
+		printf("No Start Zone Was Found\n");
+		return false;
+		}
 
+	if(m_iEndZone < 0) {
+		printf("No Start Zone Was Found\n");
+		return false;
+		}
+
+	if(m_pkObjectManger->GetZoneData(m_iStartZone) == NULL) {
+		printf("Failed to get data for start zone\n");
+		return false;
+		}
+	if(m_pkObjectManger->GetZoneData(m_iEndZone) == NULL)	{
+		printf("Failed to get data for end zone\n");
+		return false;
+		}
 
 	AStarCellNode* pkNewNode;
 	NaviMeshCell* pkEndCell;
@@ -220,9 +282,6 @@ bool AStar::GetFullPath(Vector3 kStart, Vector3 kEnd, vector<Vector3>& kPath)
 		return false;
 		}
 
-	vector<AStarCellNode*>	kOpenList;
-	vector<AStarCellNode*>	kClosedList;
-
 	// 1: Let P = the starting point.
 	pkZone = m_pkObjectManger->GetZoneData(m_iStartZone);
 	if(pkZone->m_pkZone == NULL)
@@ -231,7 +290,7 @@ bool AStar::GetFullPath(Vector3 kStart, Vector3 kEnd, vector<Vector3>& kPath)
 	if(pkMesh == NULL)
 		return false;
 	
-	pkNewNode = new AStarCellNode(pkMesh->GetCell(kStart));
+	pkNewNode = new AStarCellNode(pkZone, pkMesh, pkMesh->GetCell(kStart));
 
 	// 2: Assign f,g and h values to P.
 	pkNewNode->m_pParent = NULL;
@@ -247,10 +306,13 @@ bool AStar::GetFullPath(Vector3 kStart, Vector3 kEnd, vector<Vector3>& kPath)
 
 	// 4: Let B be the best node from the open list.
 	while(kOpenList.size()) {
+		cout << "kOpenList " << kOpenList.size() << endl;
+
 		// Get best node from open list
 		AStarCellNode* pkNode = kOpenList.front();
 		pop_heap( kOpenList.begin(), kOpenList.end(), HeapCellComp() );
 		kOpenList.pop_back();
+		kClosedList.push_back(pkNode);
 
 		// 4:a	If B is the goal node.
 		if(pkNode->pkNaviCell == pkEndCell) {
@@ -263,10 +325,22 @@ bool AStar::GetFullPath(Vector3 kStart, Vector3 kEnd, vector<Vector3>& kPath)
 
 		// 5: Let C be a node connected to B.
 		for(unsigned int i=0; i<3; i++) {
-			if(pkCell->m_apkLinks[i] == NULL)	continue;
+			pkNewNode = NULL;
+
+			if(pkCell->m_aiLinks[i] < 0) {
+				pkCell->GetEdgeVertex(i, kA, kB);
+				pkNewNode = GetConnectedZone( pkNode->m_pkZoneData, kA, kB);
+				}
+			else {
+				if(pkCell->m_aiLinks[i] > 0)	
+					pkNewNode = new AStarCellNode( pkNode->m_pkZoneData, pkNode->m_pkNaviMesh, &pkNode->m_pkNaviMesh->m_NaviMesh [ pkCell->m_aiLinks[i] ]);
+			}
+
+			//if(pkCell->m_aiLinks[i] > 0)	
+			//	pkNewNode = new AStarCellNode( pkNode->m_pkZoneData, pkNode->m_pkNaviMesh, &pkNode->m_pkNaviMesh->m_NaviMesh [ pkCell->m_aiLinks[i] ]);
+			if(pkNewNode == NULL)	continue;
 
 			// 5:a Assign f,g and h values to C.
-			pkNewNode = new AStarCellNode( pkCell->m_apkLinks[i]);
 			pkNewNode->m_pParent = pkNode;
 			CalcCoset(pkNewNode);
 
