@@ -166,12 +166,13 @@ bool Gui::CreateWindows()
 	CreateMenu(m_pkEdit->pkIni, "../data/gui_resource_files/menu.txt");
 
 	// testing treebox
-	bool bTestingTreeBox = false;
+	bool bTestingTreeBox = true;
 	if(bTestingTreeBox)
 	{
-	CreateTestWnd();
-	Get("TestWnd")->Show();
-	m_pkEdit->pkInput->ToggleGrab();
+		CreateTestWnd();
+		Get("TestWnd")->Show();
+		m_pkEdit->pkInput->ToggleGrab();
+		m_pkEdit->m_eCameraMode = Precision;
 	}
 
 	m_kDialogs.insert(map<string,DlgBox*>::value_type(
@@ -212,10 +213,8 @@ bool Gui::InitSkins()
 	int cbox_on = m_pkEdit->pkTexMan->Load("file:../data/textures/checkbox_on.bmp",0);
 	int slider = m_pkEdit->pkTexMan->Load("file:../data/textures/slider.bmp",0);
 	int slider_a = m_pkEdit->pkTexMan->Load("file:../data/textures/slider_a.bmp",0);
-
-/*	int treenode_c = m_pkEdit->pkTexMan->Load("file:../data/textures/treenode_closed.bmp",0);
-	int treenode_o = m_pkEdit->pkTexMan->Load("file:../data/textures/treenode_open.bmp",0);
-	int treenode_n = m_pkEdit->pkTexMan->Load("file:../data/textures/treenode_normal.bmp",0);*/
+	int treenode = m_pkEdit->pkTexMan->Load("file:../data/textures/treenode.bmp",0);
+	int treenode_s = m_pkEdit->pkTexMan->Load("file:../data/textures/treenode_s.bmp",0);
 
 	m_kSkinMap.insert( map<string, ZGuiSkin*>::value_type(string("main"), 
 		new ZGuiSkin(bk1,bd1,bd2,bd3,-1,-1,-1,bda,16,true) ) ); 
@@ -273,12 +272,10 @@ bool Gui::InitSkins()
 		new ZGuiSkin(0, 0, 255, 0, 0, 0, 1)) ); 
 	m_kSkinMap.insert( map<string, ZGuiSkin*>::value_type(string("slider_bk_a"), 
 		new ZGuiSkin(255, 0, 255, 0, 0, 0, 1)) ); 
-/*	m_kSkinMap.insert( map<string, ZGuiSkin*>::value_type(string("treenode_c"), 
-		new ZGuiSkin(treenode_c,false)) ); 
-	m_kSkinMap.insert( map<string, ZGuiSkin*>::value_type(string("treenode_o"), 
-		new ZGuiSkin(treenode_o,false)) ); 
-	m_kSkinMap.insert( map<string, ZGuiSkin*>::value_type(string("treenode_n"), 
-		new ZGuiSkin(treenode_n,false)) ); */
+	m_kSkinMap.insert( map<string, ZGuiSkin*>::value_type(string("treenode"), 
+		new ZGuiSkin(treenode,false)) ); 
+	m_kSkinMap.insert( map<string, ZGuiSkin*>::value_type(string("treenode_s"), 
+		new ZGuiSkin(treenode_s,false)) );
 
 	return true;
 }
@@ -659,22 +656,23 @@ void Gui::CreateTestWnd()
 	ZGuiTreebox* pkTreebox = new ZGuiTreebox(Rect(50,50,50+300,50+400), 
 		pkWnd, true, id++);
 
-	pkTreebox->InsertBranchSkin(0, GetSkin("treenode_c"));
-	pkTreebox->InsertBranchSkin(1, GetSkin("treenode_o"));
-	pkTreebox->InsertBranchSkin(2, GetSkin("treenode_n"));
+	pkTreebox->InsertBranchSkin(0, GetSkin("treenode"));
+	pkTreebox->InsertBranchSkin(1, GetSkin("treenode_s"));
 
-	ZGuiTreebox::Node* pkParent = pkTreebox->AddItem(NULL, "Animal", 0, 1, 2);
-	ZGuiTreebox::Node* pkApa = pkTreebox->AddItem(pkParent, "Apa", 0, 1, 2);
-	pkTreebox->AddItem(pkParent, "Kossa", 0, 1, 2);
-	pkTreebox->AddItem(pkApa, "Green apa", 0, 1, 2);
-	pkTreebox->AddItem(pkApa, "Brun apa", 0, 1, 2);
-	ZGuiTreebox::Node* pkParent2 = pkTreebox->AddItem(pkParent, "Weapons", 0, 1, 2);
-	pkTreebox->AddItem(pkParent2, "Ninja", 0, 1, 2);
-	pkTreebox->AddItem(pkParent2, "Scroll", 0, 1, 2);
+	ZGuiTreebox::Node* pkParent = pkTreebox->AddItem(NULL, "Animal", 0, 1);
+	ZGuiTreebox::Node* pkApa = pkTreebox->AddItem(pkParent, "Apa", 0, 1);
+	pkTreebox->AddItem(pkParent, "Kossa", 0, 1);
+	pkTreebox->AddItem(pkApa, "Green apa", 0, 1);
+	pkTreebox->AddItem(pkApa, "Brun apa", 0, 1);
+	ZGuiTreebox::Node* pkParent2 = pkTreebox->AddItem(pkParent, "Weapons", 0, 1);
+	pkTreebox->AddItem(pkParent2, "Scroll", 0, 1);
+	ZGuiTreebox::Node* pkParent3 = pkTreebox->AddItem(pkParent2, "Ninja", 0, 1);
+	pkTreebox->AddItem(pkParent3, "Green Ninja", 0, 1);
+	pkTreebox->AddItem(pkParent3, "Red Ninja", 0, 1);
+	pkTreebox->AddItem(pkParent3, "Black Ninja", 0, 1);
 	
-
 	pkWnd->SetSkin(new ZGuiSkin(255,255,255,0,0,0,1));
-	pkTreebox->SetSkin(new ZGuiSkin(255,255,255,0,0,0,1));
+	pkTreebox->SetSkin(new ZGuiSkin(255,128,64,0,0,0,1));
 
 	m_pkGui->RegisterWindow(pkTreebox, "TestTreeBox");
 }

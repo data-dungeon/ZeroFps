@@ -24,23 +24,22 @@ public:
 
 	struct Node
 	{
-		unsigned char ucState;			 // 0 = Normal, 1 = Closed, 2 = Open. 
-		unsigned char ucSkinIndexNormal; // Kan varken stängas eller öppnas. 
-										 // Endast grenar som inte har några 
-										 // childs har en sån bild.
-		unsigned char ucSkinIndexClosed; // '+' tecknet, redo att öppnas
-		unsigned char ucSkinIndexOpen;	 // '-' tecknet, redo att stängas
-
 		ZGuiCheckbox* pkButton;
 
+		unsigned char ucSkinIndex;	
+		unsigned char ucSkinIndexSelected;
+		unsigned int uiRootLevel;
+		
 		Node *pkPrev, *pkNext;
 
 		bool bChildListIsOpen; // måste känna till detta för att kunna öppna/stänga tillräckligt många "steg".
 		vector<Node*> m_kChilds;
 	};
+
+	typedef list<Node*>::iterator itNode;
 	
-	Node* AddItem(Node* pkParent, char* szText, unsigned char uiSkinNormal,
-		unsigned char uiSkinClosed, unsigned char uiSkinOpen);
+	Node* AddItem(Node* pkParent, char* szText, unsigned char ucSkinIndex, 
+		unsigned char ucSkinIndexSelected);
 
 	ZGuiSkin* GetItemSkin(unsigned int uiIndex);
 
@@ -51,12 +50,12 @@ protected:
 	bool Notify(ZGuiWnd* pkWnd, int iCode);
 	
 private:
-	
+	void MoveNode(Node* pkNode, int offset);
 	void ShowNode(vector<Node*> itList, bool bShow);
 	void OpenNode(Node* pkNode, bool bNode);
 
-	Node* CreateNode(Node* pkParent, char* szText, unsigned char uiSkinNormal,
-		unsigned char uiSkinClosed, unsigned char uiSkinOpen);
+	Node* CreateNode(Node* pkParent, char* szText, unsigned char ucSkinIndex,
+		unsigned char ucSkinIndexSelected);
 
 	void CreateInternalControls();
 	int m_iID;
