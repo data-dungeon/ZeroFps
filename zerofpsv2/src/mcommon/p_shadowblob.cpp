@@ -89,7 +89,7 @@ vector<PropertyValues> P_ShadowBlob::GetPropertyValues()
 		
 	kReturn[0].kValueName = "scale";
 	kReturn[0].iValueType = VALUETYPE_FLOAT;
-	kReturn[0].pkValue    = NULL;
+	kReturn[0].pkValue    = (void*)&m_kScale.x;
 
 
 	return kReturn;

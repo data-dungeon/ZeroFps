@@ -73,7 +73,9 @@ class MistServer :public Application , public ZGuiApp {
 			FID_CAMNOFOLLOW,
 			FID_DELETE,
 			FID_CLONE,
-
+			FID_CUT,
+			FID_COPY,
+			FID_PASTE,
 		};
 
 		enum EditMode_e
@@ -84,6 +86,8 @@ class MistServer :public Application , public ZGuiApp {
 			EDIT_MAX,
 		
 		};
+
+		void EditRunCommand(FuncId_e eEditCmd);
 
 		bool	m_bEditSun;
 
@@ -123,9 +127,12 @@ class MistServer :public Application , public ZGuiApp {
 
 		Entity*	GetTargetObject();		
 
+		void  CreateEditCameras();
 		bool	SetCamera(int iNum);
 		int	GetView(float x, float y);
 		void CamFollow(bool bFollowMode);
+
+		string	m_strWorldDir;						// The current dir for the world. Use for SaveAs and Title.
 
 		// Selection of Entitys.
 		set<int>	m_SelectedEntitys;

@@ -1455,7 +1455,18 @@ Entity* EntityManager::CloneObject(int iNetID)
 		return NULL;
 
 	Entity* pkObjClone =	CreateObject();
-	pkObjClone->MakeCloneOf(pkObjOrginal);
+
+	ZFVFile kFile;
+	kFile.Open("tclone.dat",0,true);
+	pkObjOrginal->Save(&kFile);
+	kFile.Close();
+
+	kFile.Open("tclone.dat",0,false);
+	pkObjClone->Load(&kFile,false);
+	pkObjClone->SetParent(pkObjOrginal->GetParent());
+	kFile.Close();
+
+//	pkObjClone->MakeCloneOf(pkObjOrginal);
 	return pkObjClone;
 }
 

@@ -5,6 +5,9 @@
   MistServer is the Server of the game MistLands.
 */ 
 
+#include <set> 
+#include <algorithm>
+
 #include "mistserver.h"
 #include "../zerofpsv2/engine_systems/common/heightmap.h"
 #include "../zerofpsv2/engine_systems/propertys/p_mad.h"
@@ -12,19 +15,15 @@
 #include "../zerofpsv2/engine_systems/propertys/p_track.h"
 #include "../zerofpsv2/engine_systems/propertys/p_skyboxrender.h"
 #include "../zerofpsv2/engine_systems/propertys/p_hmrp2.h"
-
 #include "../zerofpsv2/engine/p_pfpath.h"
 #include "../zerofpsv2/gui/zgui.h"
 #include "../zerofpsv2/engine_systems/script_interfaces/si_gui.h"
 #include "../zerofpsv2/basic/zguifont.h"
 #include "../mcommon/rulesystem/sendtype.h"
-#include <set> 
-#include <algorithm>
-
 #include "../zerofpsv2/engine/inputhandle.h"
 #include "../zerofpsv2/gui/zguiresourcemanager.h"
 
-MistServer g_kMistServer("MistServer",0,0,0);
+MistServer g_kMistServer("MistServer", 0, 0, 0);
 
 static bool GUIPROC( ZGuiWnd* win, unsigned int msg, int numparms, void *params ) 
 {
@@ -54,6 +53,7 @@ static bool GUIPROC( ZGuiWnd* win, unsigned int msg, int numparms, void *params 
 	}
 	return true;
 }
+
 
 MistServer::MistServer(char* aName,int iWidth,int iHeight,int iDepth) 
 	: Application(aName,iWidth,iHeight,iDepth), ZGuiApp(GUIPROC)
@@ -87,9 +87,10 @@ MistServer::MistServer(char* aName,int iWidth,int iHeight,int iDepth)
 	Register_Cmd("camfollow", FID_CAMFOLLOW);
 	Register_Cmd("camnofollow", FID_CAMNOFOLLOW);
 	Register_Cmd("delsel", FID_DELETE);
-	Register_Cmd("clone", FID_CLONE);
-	
-
+	Register_Cmd("clone",	FID_CLONE);
+	Register_Cmd("cut",		FID_CUT);
+	Register_Cmd("copy",		FID_COPY);
+	Register_Cmd("paste",	FID_PASTE);
 
 	m_kDrawPos.Set(0,0,0);
 
@@ -97,10 +98,12 @@ MistServer::MistServer(char* aName,int iWidth,int iHeight,int iDepth)
 	m_fHMOutRadius = 2;
 	m_iEditLayer	= 1;
 	m_fDelayTime   = 0.0;
-
+	m_strWorldDir  = "Fisklandet";
+   
 	m_pkActiveCameraObject	= NULL;
 	m_pkActiveCamera			= NULL;
 } 
+
 
 int MistServer::GetView(float x, float y)
 {
@@ -119,6 +122,7 @@ int MistServer::GetView(float x, float y)
 
 	return -1;
 }
+
 
 bool MistServer::SetCamera(int iNum)
 {
@@ -142,6 +146,27 @@ bool MistServer::SetCamera(int iNum)
 
 	return true;
 }
+
+
+void MistServer::CreateEditCameras()
+{
+	for(int i=0; i<4; i++) 
+	{
+		m_pkCameraObject[i] = m_pkObjectMan->CreateObjectFromScript("data/script/objects/t_camedit.lua");
+		if(m_pkCameraObject[i]) 
+		{
+			m_pkCameraObject[i]->SetParent( m_pkObjectMan->GetWorldObject() );
+			P_Camera* m_pkCamProp = (P_Camera*)m_pkCameraObject[i]->GetProperty("P_Camera");
+			m_pkCamProp->SetCamera(m_pkCamera[i]);
+			m_pkCameraObject[i]->GetSave() = false;
+		}
+	}
+
+	m_pkActiveCameraObject	= NULL;
+	m_pkActiveCamera			= NULL;
+	SetCamera(0);
+}
+
 
 void MistServer::OnInit() 
 {
@@ -230,9 +255,9 @@ void MistServer::Init()
 	m_pkInput->ShowCursor(true);
 
 //	m_pkInputHandle->ToggleGrab();
-
 //	m_pkPlayerDB->GetLoginCharacters(string("user"));
 
+	// Setup the Edit Sun that are used for simple lightning in the editor.
 	m_kSun.kRot = Vector3(1,2,1);
 	m_kSun.kDiffuse=Vector4(1,1,1,0);
 	m_kSun.kAmbient=Vector4(0.2,0.2,0.2,0);
@@ -241,8 +266,8 @@ void MistServer::Init()
 	m_kSun.fConst_Atten=1;
 	m_kSun.fLinear_Atten=0;
 	m_kSun.fQuadratic_Atten=0;
-
 }
+
 
 void MistServer::SetupGuiEnviroment()
 {
@@ -265,12 +290,12 @@ void MistServer::SetupGuiEnviroment()
 	pkGui->GetToolTip()->AddToolTip(GetWnd("RotateZoneModellButton"),"Rotate");
 }
 
-	
 
 void MistServer::RegisterResources()
 {
 	m_pkResourceDB->RegisterResource( string(".env"), Create__EnvSetting	);
 }
+
 
 void MistServer::RegisterPropertys()
 {
@@ -292,6 +317,7 @@ void MistServer::RegisterPropertys()
    m_pkPropertyFactory->Register("P_Container", Create_P_Container);
 }
 
+
 void MistServer::DrawHMEditMarker(HeightMap* pkHmap, Vector3 kCenterPos, float fInRadius, float fOutRadius )
 {
 	if(pkHmap == NULL)	return;
@@ -301,11 +327,11 @@ void MistServer::DrawHMEditMarker(HeightMap* pkHmap, Vector3 kCenterPos, float f
 	Vector3				kVertex;
 	vector<Vector3>	kVertexList;
 
-//	float x,z;
 	kCenterPos.y = 0;
 	Vector3 kPos;
 
-	for(int i=0; i<360; i+=(int)12.25) {
+	for(int i=0; i<360; i+=(int)12.25) 
+	{
 		kVertex.x = float( cos(DegToRad( float(i) )) * fInRadius );
 		kVertex.z = float( sin(DegToRad( float(i) )) * fInRadius );
 		kVertex.y = pkHmap->Height(kCenterPos.x+kVertex.x,kCenterPos.z + kVertex.z) + 0.01;
@@ -316,7 +342,8 @@ void MistServer::DrawHMEditMarker(HeightMap* pkHmap, Vector3 kCenterPos, float f
 	m_pkRender->DrawCircle(kVertexList, m_pkRender->GetEditColor("hmapbrush") );
 
 	kVertexList.clear();
-	for(int i=0; i<360; i+=(int)12.25) {
+	for(int i=0; i<360; i+=(int)12.25) 
+	{
 		kVertex.x = float( cos(DegToRad( float(i) )) * fOutRadius );
 		kVertex.z = float( sin(DegToRad( float(i) )) * fOutRadius );
 		kVertex.y = pkHmap->Height(kCenterPos.x+kVertex.x,kCenterPos.z + kVertex.z) + 0.01;
@@ -327,13 +354,15 @@ void MistServer::DrawHMEditMarker(HeightMap* pkHmap, Vector3 kCenterPos, float f
 	m_pkRender->DrawCircle(kVertexList, m_pkRender->GetEditColor("hmapbrush") );
 }
 
+
 void MistServer::DrawSelectedEntity()
 {
 	for(set<int>::iterator itEntity = m_SelectedEntitys.begin(); itEntity != m_SelectedEntitys.end(); itEntity++ ) 
 	{
 		Entity* pkEnt = m_pkObjectMan->GetObjectByNetWorkID((*itEntity));
 	
-		if(pkEnt) {
+		if(pkEnt) 
+		{
 			float fRadius = pkEnt->GetRadius();
 			if(fRadius < 0.1)
 				fRadius = 0.1;
@@ -345,9 +374,10 @@ void MistServer::DrawSelectedEntity()
 				m_pkRender->DrawAABB( kMin,kMax, m_pkRender->GetEditColor("active/firstentity") );
 			else
 				m_pkRender->DrawAABB( kMin,kMax, m_pkRender->GetEditColor("active/entity") );
-			}
+		}
 	}
 }
+
 
 void MistServer::Select_Toggle(int iId, bool bMultiSelect)
 {
@@ -370,6 +400,7 @@ void MistServer::Select_Toggle(int iId, bool bMultiSelect)
 		}
 	}
 }
+
 
 void MistServer::DeleteSelected()
 {
@@ -404,6 +435,7 @@ void MistServer::DeleteSelected()
 		*/	
 }
 
+
 void MistServer::OnIdle()
 {	
 	m_pkFps->SetCamera(m_pkActiveCamera);		
@@ -436,7 +468,6 @@ void MistServer::OnIdle()
 		//DrawZoneMarker(m_kZoneMarkerPos);		
 	}
 	
-	
 	if(m_iEditMode == EDIT_OBJECTS)
 	{	
 		UpdateObjectMakerPos();
@@ -445,6 +476,7 @@ void MistServer::OnIdle()
 
 	PathTest();
 }
+
 
 void MistServer::RenderInterface(void)
 {
@@ -458,12 +490,12 @@ void MistServer::RenderInterface(void)
 	if(m_iEditMode == EDIT_OBJECTS)	DrawCrossMarker(m_kObjectMarkerPos);		
 }
 
+
 void MistServer::OnSystem()
 {
 	HandleOrders();
-	
-
 }
+
 
 HeightMap* MistServer::SetPointer()
 {
@@ -493,10 +525,11 @@ HeightMap* MistServer::SetPointer()
 
 	Vector3 kIsect;
 
-	if(kP.LineTest(start,end, &kIsect)) {
+	if(kP.LineTest(start,end, &kIsect))
+	{
 		m_kDrawPos = kIsect;
 		m_kDrawPos.y = hmrp->m_pkHeightMap->Height(m_kDrawPos.x,m_kDrawPos.z);
-		}
+	}
 
 	return hmrp->m_pkHeightMap;
 
@@ -504,6 +537,7 @@ HeightMap* MistServer::SetPointer()
 	//Vector3 kLocalOffset = m_kDrawPos - hmrp->m_pkHeightMap->m_kCornerPos;
 	//cout << "Local pos: " << kLocalOffset.x << ", " << kLocalOffset.y << ", " << kLocalOffset.z << endl;
 }
+
 
 void MistServer::HMModifyCommand(float fSize)
 {
@@ -528,6 +562,7 @@ void MistServer::HMModifyCommand(float fSize)
 			}
 		}
 }
+
 
 // Handles input for EditMode Terrain.
 void MistServer::Input_EditTerrain()
@@ -575,6 +610,7 @@ void MistServer::Input_EditTerrain()
 		}
 	}
 }
+
 
 // Handles input for EditMode Zones.
 void MistServer::Input_EditZone()
@@ -625,6 +661,7 @@ void MistServer::Input_EditZone()
 	if(m_pkInputHandle->Pressed(KEY_5)) m_kZoneSize.Set(64,16,64);		
 	if(m_pkInputHandle->Pressed(KEY_6)) m_kZoneSize.Set(1024,32,1024);		
 }
+
 
 // Handles input for EditMode Object.
 void MistServer::Input_EditObject(float fMouseX, float fMouseY)
@@ -934,6 +971,18 @@ bool MistServer::DelayCommand()
 	return false;
 }
 
+void MistServer::EditRunCommand(FuncId_e eEditCmd)
+{
+	if(eEditCmd == FID_CLONE)
+	{
+		m_pkObjectMan->CloneObject(m_iCurrentObject);	// Select_Toggle
+	}
+
+	if(eEditCmd == FID_CUT)		cout << "Edit/Cut is not done yet" << endl;
+	if(eEditCmd == FID_COPY)	cout << "Edit/Copy is not done yet" << endl;
+	if(eEditCmd == FID_PASTE)	cout << "Edit/Paste is not done yet" << endl;
+}
+
 void MistServer::RunCommand(int cmdid, const CmdArgument* kCommand)
 {
 	ClientOrder kOrder;
@@ -942,20 +991,14 @@ void MistServer::RunCommand(int cmdid, const CmdArgument* kCommand)
 	vector<string>	kUsers;
 	int iMode;
 	float fTest;
+	string strNewTitle;
 
 	switch(cmdid) {
 		case FID_NEW:
-/*		
-			if(kCommand->m_kSplitCommand.size() <= 1)
-			{
-				m_pkConsole->Printf("new [mapdir]");
-				break;				
-			}
-			
-			m_pkObjectMan->SetWorldDir(kCommand->m_kSplitCommand[1].c_str());*/
 			m_pkObjectMan->Clear();
-			
 			GetSystem().RunCommand("server Default server",CSYS_SRC_SUBSYS);
+			m_strWorldDir = "";
+			SetTitle("MistServer");
 			break;
 		
 		case FID_LOAD:
@@ -970,7 +1013,13 @@ void MistServer::RunCommand(int cmdid, const CmdArgument* kCommand)
 				cout<<"Error loading world"<<endl;
 				break;
 			}				
-/*			if(kCommand->m_kSplitCommand.size() <= 1)
+			
+			// Set the title to include the world name.
+			m_strWorldDir = kCommand->m_kSplitCommand[1];
+			strNewTitle = "MistServer - " + m_strWorldDir;
+			SetTitle(strNewTitle);
+
+			/*			if(kCommand->m_kSplitCommand.size() <= 1)
 			{
 				m_pkConsole->Printf("load [mapdir]");
 				break;				
@@ -1012,12 +1061,16 @@ void MistServer::RunCommand(int cmdid, const CmdArgument* kCommand)
 			{
 				m_pkConsole->Printf("Error saving world");
 				break;
-			}						
+			}	
+
+			// Set the title to include the world name.
+			m_strWorldDir = kCommand->m_kSplitCommand[1];
+			strNewTitle = "MistServer - " + m_strWorldDir;
+			SetTitle(strNewTitle);
+
 /*			cout<<"saving world:"<<endl;
-			
 			m_pkObjectMan->ForceSave();
 			m_pkObjectMan->SaveZones();			
-			
 			cout<<"saved"<<endl;
 */			
 			break;		
@@ -1086,7 +1139,10 @@ void MistServer::RunCommand(int cmdid, const CmdArgument* kCommand)
 		case FID_SELNONE:		Select_None();		break;
 		case FID_DELETE:		DeleteSelected();	break;
 
-		case FID_CLONE:		Select_Toggle(m_pkObjectMan->CloneObject(m_iCurrentObject)->GetEntityID(),false );	break;
+		case FID_CLONE:		EditRunCommand(FID_CLONE);		break;
+		case FID_CUT:			EditRunCommand(FID_CUT);		break;
+		case FID_COPY:			EditRunCommand(FID_COPY);		break;
+		case FID_PASTE:		EditRunCommand(FID_PASTE);		break;
 
 		case FID_LIGHTMODE:
 			if(kCommand->m_kSplitCommand.size() <= 1)
@@ -1097,6 +1153,7 @@ void MistServer::RunCommand(int cmdid, const CmdArgument* kCommand)
 			if(iMode == 1)	m_pkZShader->SetForceLighting(LIGHT_ALWAYS_OFF);		
 			if(iMode == 2)	m_pkZShader->SetForceLighting(LIGHT_MATERIAL);		
 			break;
+
 
 
 		case FID_LOCALORDER:
@@ -1310,70 +1367,12 @@ void MistServer::OnServerClientPart(ZFClient* pkClient,int iConID)
 
 void MistServer::OnServerStart(void)
 {		
+	CreateEditCameras();
 
-	for(int i=0; i<4; i++) {
-		m_pkCameraObject[i] = m_pkObjectMan->CreateObjectFromScript("data/script/objects/t_camedit.lua");
-		if(m_pkCameraObject[i]) {
-			m_pkCameraObject[i]->SetParent( m_pkObjectMan->GetWorldObject() );
-			P_Camera* m_pkCamProp = (P_Camera*)m_pkCameraObject[i]->GetProperty("P_Camera");
-			m_pkCamProp->SetCamera(m_pkCamera[i]);
-			m_pkCameraObject[i]->GetSave() = false;
-			}
-		}
-
+	// Create and setup the Env on the server.
 	P_Enviroment* pe = (P_Enviroment*)m_pkCameraObject[0]->AddProperty("P_Enviroment");
 	pe->SetEnable(true);		
 	pe->SetEnviroment("data/enviroments/server.env");
-
-	//create a camera for the server
-/*	m_pkCameraObject[0] = m_pkObjectMan->CreateObjectFromScript("data/script/objects/t_camedit.lua");
-	if(m_pkCameraObject)
-	{	
-		m_pkCameraObject[0]->SetParent(m_pkObjectMan->GetWorldObject());
-		P_Camera* m_pkCamProp = (P_Camera*)m_pkCameraObject[0]->GetProperty("P_Camera");
-		m_pkCamProp->SetCamera(m_pkCamera[0]);
-		m_pkCameraObject[0]->GetSave() = false;
-		
-		//eye candy for server
-		//P_SkyBoxRender* sb = (P_SkyBoxRender*)m_pkCameraObject->AddProperty("P_SkyBoxRender");
-		//sb->SetTexture("data/textures/env/plainsky/sky","mode6");
-		//sb->SetTexture("data/textures/env/sky1.bmp","data/textures/env/sky2.bmp");
-		
-		P_Enviroment* pe = (P_Enviroment*)m_pkCameraObject[0]->AddProperty("P_Enviroment");
-		pe->SetEnable(true);		
-		pe->SetEnviroment("data/enviroments/server.env");
-	}
-	
-	// Create Cam 2 For the Server.
-	m_pkCameraObject[1] = m_pkObjectMan->CreateObjectFromScript("data/script/objects/t_camedit.lua");
-	if(m_pkCameraObject[1])
-	{	
-		m_pkCameraObject[1]->SetParent(m_pkCameraObject[0] );	//m_pkObjectMan->GetWorldObject()
-		P_Camera* m_pkCamProp = (P_Camera*)m_pkCameraObject[1]->GetProperty("P_Camera");
-		m_pkCamProp->SetCamera(m_pkCamera[1]);
-		m_pkCameraObject[1]->GetSave() = false;
-	}
-
-	m_pkCameraObject[2] = m_pkObjectMan->CreateObjectFromScript("data/script/objects/t_camedit.lua");
-	if(m_pkCameraObject[2])
-	{	
-		m_pkCameraObject[2]->SetParent(m_pkCameraObject[0]);
-		P_Camera* m_pkCamProp = (P_Camera*)m_pkCameraObject[2]->GetProperty("P_Camera");
-		m_pkCamProp->SetCamera(m_pkCamera[2]);
-		m_pkCameraObject[2]->GetSave() = false;
-	}
-
-	m_pkCameraObject[3] = m_pkObjectMan->CreateObjectFromScript("data/script/objects/t_camedit.lua");
-	if(m_pkCameraObject[3])
-	{	
-		m_pkCameraObject[3]->SetParent(m_pkCameraObject[0]);
-		P_Camera* m_pkCamProp = (P_Camera*)m_pkCameraObject[3]->GetProperty("P_Camera");
-		m_pkCamProp->SetCamera(m_pkCamera[3]);
-		m_pkCameraObject[3]->GetSave() = false;
-	}*/
-
-
-	SetCamera(0);
 
 	//create server info object
 	m_pkServerInfo = m_pkObjectMan->CreateObjectFromScript("data/script/objects/t_serverinfo.lua");
@@ -1388,7 +1387,6 @@ void MistServer::OnServerStart(void)
 		else
 			cout<<"ERROR: No server P_ServerInfo property created, this is no good"<<endl;
 	}
-	
 }
 
 void MistServer::OnClientStart(void)

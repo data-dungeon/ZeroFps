@@ -29,6 +29,11 @@ Title=Save
 Parent=Menu_File
 Cmd=fileopendlg save map
 
+[Menu_SaveAsmap]
+Title=Save As
+Parent=Menu_File
+Cmd=fileopendlg saveas map
+
 [Menu_Exit]
 Title=Exit
 Parent=Menu_File
@@ -46,6 +51,21 @@ Cmd=NULL
 Title=Duplicate
 Parent=Menu_Edit
 Cmd=clone
+
+[Menu_EditCut]
+Title=Cut
+Parent=Menu_Edit
+Cmd=cut
+
+[Menu_EditCopy]
+Title=Copy
+Parent=Menu_Edit
+Cmd=copy
+
+[Menu_EditPaste]
+Title=Paste
+Parent=Menu_Edit
+Cmd=paste
 
 [Menu_EditDelete]
 Title=Delete
