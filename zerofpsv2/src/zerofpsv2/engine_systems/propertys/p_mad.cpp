@@ -177,9 +177,8 @@ void P_Mad::PackFrom(NetPacket* pkNetPacket, int iConnectionID )
 		PlayAnimation(iNewAnim, 0);
 
 	int iNewNextAnim;
-	pkNetPacket->Read( iNewNextAnim );
-	if(iNewNextAnim != m_iNextAnimation)
-		Mad_Modell::SetNextAnimation(iNewNextAnim);
+	pkNetPacket->Read( iNewNextAnim );	
+	Mad_Modell::SetNextAnimation(iNewNextAnim);
 
 	unsigned char ucNumOfMesh;
 	int iMesh;
