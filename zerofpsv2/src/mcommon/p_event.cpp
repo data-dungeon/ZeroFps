@@ -32,15 +32,15 @@ bool P_Event::SendEvent(const char* acEvent)
 	if(!m_pkScriptResHandle->SetRes(m_pkObject->GetType()))
 		printf("Failed to load event script %s\n", m_pkObject->GetType().c_str());
 	
-	ZFScript* pkScriptRes = (ZFScript*)m_pkScriptResHandle->GetResourcePtr();
+//	ZFScript* pkScriptRes = (ZFScript*)m_pkScriptResHandle->GetResourcePtr();
 
 //	cout<<"ba"<<endl;
 //	cout<<"SCRIPT:"<<(char*)m_pkObject->GetType().c_str()<<endl;
-	if(!m_pkScriptSys->Run(pkScriptRes))
+	if(!m_pkScriptSys->Run(m_pkScriptResHandle))
 		return false;
 		
 //	cout<<"bla"<<endl;
-	if(!m_pkScriptSys->Call(pkScriptRes, (char*)acEvent, 0, 0))
+	if(!m_pkScriptSys->Call(m_pkScriptResHandle, (char*)acEvent, 0, 0))
 		return false;
 
 	return true;

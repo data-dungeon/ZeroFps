@@ -85,6 +85,8 @@ public:
 	ZGuiApp(callback oMainWndProc);
 	~ZGuiApp();
 
+	ZFResourceHandle* m_pkScriptResHandle;
+
 private:
 	GuiType GetType(ZGuiWnd* pkWnd);
 	int GetTexID(char* szFile);
@@ -104,8 +106,6 @@ private:
 	char* m_szLastRadioBGroup;
 	int m_iLastRadioBGroup;
 	char m_szTexName[250];
-
-	ZFResourceHandle* m_pkScriptResHandle;
 };
 
 #endif // #ifndef _GUIBUILDER_H

@@ -608,7 +608,26 @@ int ZFScript::CalculateSize()
 	return 4;
 }
 
-bool ZFScriptSystem::Run(ZFScript *pkScript)
+bool ZFScriptSystem::Run(ZFResourceHandle* pkResHandle)
+{	
+	ZFScript* pkScript = (ZFScript*) pkResHandle->GetResourcePtr();
+
+	if(pkScript->m_pkLuaState == NULL)
+		return false;
+
+	// Försök att hitta sökvägen via det virituella filsystemet.
+	string strPath = m_pkFileSys->GetFullPath(pkScript->m_szScriptName);
+
+	if(strPath.empty())
+		ZFAssert(0, "Failed to run scrip! Bad path.\n");
+
+	if(lua_dofile(pkScript->m_pkLuaState, strPath.c_str()) != 0)
+		ZFAssert(0, "Failed to run scrip! Script does not exist.\n");	
+
+	return true;
+}
+
+bool ZFScriptSystem::Run(ZFScript* pkScript)
 {	
 	if(pkScript->m_pkLuaState == NULL)
 		return false;
@@ -625,8 +644,11 @@ bool ZFScriptSystem::Run(ZFScript *pkScript)
 	return true;
 }
 
-bool ZFScriptSystem::Call(ZFScript *pkScript, char* szFuncName, int iNumParams, int iNumResults)
+bool ZFScriptSystem::Call(ZFResourceHandle* pkResHandle, char* szFuncName, 
+								  int iNumParams, int iNumResults)
 {	
+	ZFScript *pkScript = (ZFScript*) pkResHandle->GetResourcePtr();
+
 	if(pkScript->m_pkLuaState == NULL)
 		return false;
 

@@ -51,7 +51,6 @@ class SCRIPT_API ZFScript : public ZFResource
 
 		char* m_szScriptName;
 		
-
 		friend class ZFScriptSystem;
 };
 
@@ -61,8 +60,8 @@ SCRIPT_API ZFResource* Create__ZFScript();
 class SCRIPT_API ZFScriptSystem  : public ZFSubSystem
 {
 public:
-	bool Call(ZFScript *pkScript, char* szFuncName, int iNumParams, int iNumResults);
-	bool Run(ZFScript* pkScript);
+	bool Call(ZFResourceHandle* pkResHandle, char* szFuncName, int iNumParams, int iNumResults);
+	bool Run(ZFResourceHandle* pkResHandle);
 
 	void AddReturnValue(lua_State* state,char *szValue, int legth);
 	void AddReturnValue(lua_State* state, double dValue);
@@ -95,6 +94,8 @@ public:
 	virtual ~ZFScriptSystem();
 
 private:
+
+	bool Run(ZFScript* pkScript);
 
 	struct GlobalFuncInfo
 	{
@@ -139,6 +140,8 @@ private:
 
 protected:
 	lua_State* GetLua() { return m_pkLua; }
+
+	friend class ZFScript;
 
 };
 
