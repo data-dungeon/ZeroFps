@@ -227,15 +227,16 @@ void MistClient::Input()
 
 	if(pkInput->Pressed(MOUSELEFT))
 	{
-		Vector3 start = pkFps->GetCam()->GetPos();
-		Vector3 dir = Get3DMousePos();
-	
-		vector<Object*> kObjects;
-		kObjects.clear();
+		Object* pkObject = GetTargetObject();
 		
-		pkObjectMan->TestLine(&kObjects,start,dir);
-		
-		cout<<"Objects targeted:"<<kObjects.size()<<endl;
+		if(pkObject)
+		{
+			P_Event* pe = (P_Event*)pkObject->GetProperty("P_Event");
+			if(pe)
+			{	
+				pe->SendEvent("Use");
+			}
+		} 
 	}
 
 	int iPressedKey = pkInput->GetQueuedKey();
@@ -432,3 +433,30 @@ Vector3 MistClient::Get3DMousePos()
 	return dir;
 }
 
+Object* MistClient::GetTargetObject()
+{
+	Vector3 start = pkFps->GetCam()->GetPos();
+	Vector3 dir = Get3DMousePos();
+
+	vector<Object*> kObjects;
+	kObjects.clear();
+	
+	pkObjectMan->TestLine(&kObjects,start,dir);
+	
+	
+	float closest = 9999999999;
+	Object* pkClosest = NULL;	
+	for(int i=0;i<kObjects.size();i++)
+	{
+		
+		float d = (start - kObjects[i]->GetWorldPosV()).Length();
+	
+		if(d < closest)
+		{
+			closest = d;
+			pkClosest = kObjects[i];
+		}
+	}
+	
+	return pkClosest;
+}

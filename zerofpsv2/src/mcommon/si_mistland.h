@@ -19,11 +19,10 @@ namespace MistLandLua
 	extern int						g_iCurrentObjectID;
 
 	void MCOMMON_API Init(ObjectManager* pkObjMan,ZFScriptSystem* pkScript);	
-	int MCOMMON_API GetSelfIDLua(lua_State* pkLua);			
 	
-	int MCOMMON_API GetClosestObjectLua(lua_State* pkLua);			
-
-	int MCOMMON_API RemoveObjectLua(lua_State* pkLua);			
+	int MCOMMON_API GetSelfIDLua(lua_State* pkLua);					//return the callers object id
+	int MCOMMON_API GetClosestObjectLua(lua_State* pkLua);		//return the closest object to the caller or a parameter id
+	int MCOMMON_API RemoveObjectLua(lua_State* pkLua);				//removes the caller or a parameter id
 };
 
 #endif

@@ -59,8 +59,7 @@ class MistClient :public Application, public ZGuiApp {
 		
 		
 		Vector3	Get3DMousePos();
-		
-		
+		Object*	GetTargetObject();		
 
 	public:
 		void OnCommand(int iID, ZGuiWnd* pkMainWnd);
