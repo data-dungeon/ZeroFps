@@ -57,7 +57,7 @@ LINK32=link.exe
 # Begin Special Build Tool
 ProjDir=.
 SOURCE="$(InputPath)"
-PostBuild_Cmds=copy              $(ProjDir)\release\*.lib              ..\..\..\bin\ 
+PostBuild_Cmds=copy               $(ProjDir)\release\*.lib               ..\..\..\bin\ 
 # End Special Build Tool
 
 !ELSEIF  "$(CFG)" == "render - Win32 Debug"
@@ -74,7 +74,7 @@ PostBuild_Cmds=copy              $(ProjDir)\release\*.lib              ..\..\..\
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MTd /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "RENDER_EXPORTS" /YX /FD /GZ /c
-# ADD CPP /nologo /MDd /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "RENDER_EXPORTS" /YX /FD /GZ /c
+# ADD CPP /nologo /MDd /W3 /Gm /GX /ZI /Od /I "c:\cppdev\cppdev\\" /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "RENDER_EXPORTS" /YX /FD /GZ /c
 # ADD BASE MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x41d /d "_DEBUG"
@@ -88,7 +88,7 @@ LINK32=link.exe
 # Begin Special Build Tool
 ProjDir=.
 SOURCE="$(InputPath)"
-PostBuild_Cmds=copy              $(ProjDir)\debug\*.lib              ..\..\..\bin\ 
+PostBuild_Cmds=copy               $(ProjDir)\debug\*.lib               ..\..\..\bin\ 
 # End Special Build Tool
 
 !ENDIF 
@@ -115,13 +115,6 @@ SOURCE=.\glguirender.cpp
 # Begin Source File
 
 SOURCE=.\landscape.cpp
-
-!IF  "$(CFG)" == "render - Win32 Release"
-
-!ELSEIF  "$(CFG)" == "render - Win32 Debug"
-
-!ENDIF 
-
 # End Source File
 # Begin Source File
 

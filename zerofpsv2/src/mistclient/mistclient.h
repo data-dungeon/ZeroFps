@@ -92,7 +92,7 @@ class MistClient :public Application, public ZGuiApp {
 		
 		//gui
 		bool					m_bActionMenuIsOpen;
-		bool					m_bMouseMode; // if true, move mouse, else move camera	
+		int					m_iMouseMode; // if true, move mouse, else move camera	
 		const unsigned int MAX_NUM_ACTION_BUTTONS;
 		map<ZGuiButton*, string> m_kActionBnTranslator;		
 		
@@ -117,11 +117,17 @@ class MistClient :public Application, public ZGuiApp {
 		void UpdateCullObjects();
 		void UpdateManaAndHealthBar(CharacterStats* pkCharacterProperty);
 		void DrawCrossHair();
+
+		// move camera or mouse
+		enum eMOUSE_MODES { eMOUSE_MODE, eCAMERA_MODE, eACTION_MODE };
+
+		// change between mousemode and camera mode
+		void ChangeMode ( eMOUSE_MODES eMode );
 		
 	public:
 		void OnKeyPress(int iKey, ZGuiWnd* pkWnd);
 		void CloseActionMenu();
-		void OpenActionMenu(int x, int y);
+		bool OpenActionMenu(int x, int y);
 		void OnClientInputSend(char* szText);
 		void OnSelectCB(int ListBoxID, int iItemIndex, ZGuiWnd* pkWnd);
 		void PrintInfoBox(const char* strText);

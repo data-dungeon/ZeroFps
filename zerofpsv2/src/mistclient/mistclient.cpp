@@ -93,13 +93,14 @@ MistClient::MistClient(char* aName,int iWidth,int iHeight,int iDepth)
 	m_fPAngle 					= 0;
 	
 	g_ZFObjSys.Log_Create("mistclient");
+
 } 
 
 void MistClient::OnInit() 
 {
 	pkConsole->Printf(" MistClient , im scarred  =/");
 	pkConsole->Printf("--------------------------------");
-	pkConsole->Printf(" ugga?  blub?");
+	pkConsole->Printf("this program will selfdestruct in 5 seconds");
 
 	Init();
 
@@ -218,7 +219,7 @@ void MistClient::OnIdle()
    if ( m_pkInventDlg )
       m_pkInventDlg->Update();
 	
- 	pkFps->UpdateCamera(); 	
+	pkFps->UpdateCamera();
 	
 	
 	// FULHACK Tm Vim
@@ -375,7 +376,7 @@ void MistClient::Input()
 
 		if(m_pkCamProp)
 		{
-			m_fDistance += z/60.0;
+			m_fDistance += z/60.f;
 	
 			if(m_fDistance < m_fMinCamDistance)
 				m_fDistance = m_fMinCamDistance;
@@ -393,10 +394,10 @@ void MistClient::Input()
 		m_pkClientControlP->m_kControls.m_akControls[CTRL_LEFT] = pkInput->Pressed(KEY_A);
 		m_pkClientControlP->m_kControls.m_akControls[CTRL_RIGHT] = pkInput->Pressed(KEY_D);
 
-		if(m_pkCamProp)
+		if(m_pkCamProp && m_iMouseMode == eCAMERA_MODE)
 		{
-			m_fAngle -=x/300.0;
-			m_fPAngle -= z/300.0;
+			m_fAngle -=x/300.f;
+			m_fPAngle -= z/300.f;
 			
 			if(m_fPAngle > 0.9)
 				m_fPAngle = 0.9;
@@ -410,7 +411,7 @@ void MistClient::Input()
 			m_pkCamProp->Set3PDistance(m_fDistance);
 			
 			m_pkClientControlP->m_kControls.m_fXRot = m_fPAngle;			
-			m_pkClientControlP->m_kControls.m_fYRot = -m_fAngle + 3.14;
+			m_pkClientControlP->m_kControls.m_fYRot = -m_fAngle + 3.14f;
 		}
 	}
 		
@@ -497,10 +498,19 @@ void MistClient::Input()
 
 		//DVOID här behövs en fix för att sätta menyn i mitten oavset skärmupplösning,samt frigöra musmarkören
 		int mx, my;
-		//pkInput->MouseXY(mx,my);
-		mx = 200;
-		my = 200;
-		OpenActionMenu(mx, my); 
+
+		// use mouse pointer as center of action menu
+		if ( m_iMouseMode == eMOUSE_MODE)
+			pkInput->MouseXY(mx,my);
+		else
+		{
+			// use middle of screen as center of action menu
+			mx = m_iWidth  / 2.f;
+			my = m_iHeight / 2.f;
+		}
+
+		if ( OpenActionMenu(mx, my) && m_iMouseMode == eCAMERA_MODE )
+			ChangeMode ( eACTION_MODE );
 	}
 
 
@@ -575,8 +585,8 @@ void MistClient::OnHud(void)
 	pkFps->DevPrintf("common","Avrage Fps: %f",pkFps->m_fAvrageFps);			
 	pkFps->DevPrintf("common","SelfID: %d", m_iSelfObjectID);	
 	
-	
-	DrawCrossHair();
+	if ( m_iMouseMode == eCAMERA_MODE )
+		DrawCrossHair();
 	
 	pkFps->m_bGuiMode = false;
 	pkFps->ToggleGui();
@@ -1052,7 +1062,12 @@ Vector3 MistClient::Get3DMousePos(bool m_bMouse=true)
 Entity* MistClient::GetTargetObject()
 {
 	Vector3 start = m_pkCamera->GetPos();
-	Vector3 dir = Get3DMousePos(false);
+	Vector3 dir;
+
+	if ( m_iMouseMode == eMOUSE_MODE )		
+		dir = Get3DMousePos(true);
+	else
+		dir = Get3DMousePos(false);
 
 	vector<Entity*> kObjects;
 	kObjects.clear();
@@ -1068,7 +1083,7 @@ Entity* MistClient::GetTargetObject()
 	for(unsigned int i=0;i<kObjects.size();i++)
 	{
 		
-		//objects that shuld not be clicked on (special cases)
+		//objects that should not be clicked on (special cases)
 		if(kObjects[i]->iNetWorkID <100000)
 			continue;
 		
@@ -1540,15 +1555,15 @@ void MistClient::OnClientInputSend(char *szText)
 	m_pkClientControlP->AddOrder(order);
 }
 
-void MistClient::OpenActionMenu(int mx, int my)
+bool MistClient::OpenActionMenu(int mx, int my)
 {
 	if(m_bActionMenuIsOpen || m_pkTargetObject == NULL)
-		return;
+		return false;
 
 	P_Ml* pkMistLandProp = static_cast<P_Ml*>(m_pkTargetObject->GetProperty("P_Ml")); 
 
 	if(!pkMistLandProp)
-		return;
+		return false;
 
 	vector<string> vkActions;
 	pkMistLandProp->GetActions(vkActions);
@@ -1626,6 +1641,8 @@ void MistClient::OpenActionMenu(int mx, int my)
 	}
 
 	m_bActionMenuIsOpen = true;
+
+	return true;
 }
 
 void MistClient::CloseActionMenu()
@@ -1640,6 +1657,10 @@ void MistClient::CloseActionMenu()
 	}
 
 	m_bActionMenuIsOpen = false;
+
+	// if actionmeny was opened from cameramode, change back to cameramode
+	if ( m_iMouseMode == eACTION_MODE )
+		ChangeMode ( eCAMERA_MODE );
 }
 
 
@@ -1721,10 +1742,14 @@ void MistClient::OnKeyPress(int iKey, ZGuiWnd *pkWnd)
 		}
 		break;
 
-/*	case KEY_SPACE:
-		if ( m_pkContainerDlg )
-         m_pkContainerDlg->ToggleOpen(!m_pkContainerDlg->IsOpen());
-		break;*/
+	// change between camera rotate and mousepointer
+	case KEY_SPACE:
+		if ( m_iMouseMode == eMOUSE_MODE )
+			ChangeMode ( eCAMERA_MODE );
+		else 
+			ChangeMode ( eMOUSE_MODE );
+
+		break;
 	}
 
 }
@@ -1744,4 +1769,24 @@ void MistClient::UpdateManaAndHealthBar(CharacterStats* pkCharacterStats)
 
 	if(fMP >= 0 && fMP <= 1)
 		GetWnd("ManaBarProgress")->Resize((int) (max_size*fMP), 8);
+}
+
+
+void MistClient::ChangeMode ( eMOUSE_MODES eMode )
+{
+	m_iMouseMode = eMode;
+
+	switch ( eMode )
+	{
+		case eMOUSE_MODE:
+			pkGui->ShowCursor(true);
+			break;
+		case eCAMERA_MODE:
+			pkGui->ShowCursor(false);
+			break;
+		case eACTION_MODE:
+			pkInput->SetCursorInputPos ( m_iWidth/2.f, m_iHeight/2.f );
+			pkGui->ShowCursor(true);
+			break;
+	}
 }
