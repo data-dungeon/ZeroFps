@@ -63,8 +63,8 @@ void GLGuiRender::SetScaleMode(GUIScaleMode eGUIScaleMode)
 //
 bool GLGuiRender::StartRender()
 {
-	glPushAttrib(/*GL_COLOR_BUFFER_BIT | */GL_TEXTURE_BIT | GL_LIGHTING_BIT | GL_FOG_BIT | 
-		GL_DEPTH_BUFFER_BIT | GL_ENABLE_BIT | GL_CURRENT_BIT); // 040513 - tog bort GL_COLOR_BUFFER_BIT :) (eftersom den fuckade up skuggorna!!!?)
+	glPushAttrib(GL_TEXTURE_BIT | GL_LIGHTING_BIT | GL_FOG_BIT | 
+		GL_DEPTH_BUFFER_BIT | GL_ENABLE_BIT | GL_CURRENT_BIT); 
 	glDisable(GL_CULL_FACE);
 	glDisable(GL_LIGHTING);
 	glDisable(GL_DEPTH_TEST);
@@ -180,9 +180,6 @@ bool GLGuiRender::RenderQuad(Rect rc)
 	bool bMask = m_pkSkin->m_iBkTexAlphaID != -1;
 
 	//glLoadIdentity();
-
-	float orginal_pos_x = (float) rc.Left;
-	float orginal_pos_y = (float) rc.Top;
 	
 	bool bDrawMasked = (bMask == true && m_pkSkin->m_iBkTexAlphaID > 0) ? 
 		true : false;
@@ -262,19 +259,14 @@ bool GLGuiRender::RenderQuad(Rect rc)
 
 	glBegin(GL_QUADS);	 
 
-/*		if(bDrawMasked)
-			glColor3f(1,1,1);
-		else*/
+		//if(bDrawMasked)
+		//	glColor3f(1,1,1);
+		//else
 			glColor3f(m_pkSkin->m_afBkColor[0],m_pkSkin->m_afBkColor[1],
 				m_pkSkin->m_afBkColor[2]);
 
 		if(bIsTGA)
 		{
-/*			glTexCoord2f(tx,th);			glVertex2i(rc.Left,m_iScreenHeight-rc.Bottom);		 
-			glTexCoord2f(tx,ty);			glVertex2i(rc.Left,m_iScreenHeight-rc.Top);		
-			glTexCoord2f(tx+tw,ty);		glVertex2i(rc.Right,m_iScreenHeight-rc.Top);    
-			glTexCoord2f(tx+tw,th);		glVertex2i(rc.Right,m_iScreenHeight-rc.Bottom);  */
-
 			glTexCoord2f(txs[0],tys[2]);	glVertex2i(rc.Left,m_iScreenHeight-rc.Bottom);		 
 			glTexCoord2f(txs[1],tys[3]);	glVertex2i(rc.Left,m_iScreenHeight-rc.Top);		
 			glTexCoord2f(txs[2],tys[0]);	glVertex2i(rc.Right,m_iScreenHeight-rc.Top);    
@@ -282,11 +274,6 @@ bool GLGuiRender::RenderQuad(Rect rc)
 		}
 		else
 		{
-	/*		glTexCoord2f(tx,ty);			glVertex2i(rc.Left,m_iScreenHeight-rc.Bottom);		 
-			glTexCoord2f(tx,th);			glVertex2i(rc.Left,m_iScreenHeight-rc.Top);		
-			glTexCoord2f(tx+tw,th);		glVertex2i(rc.Right,m_iScreenHeight-rc.Top);    
-			glTexCoord2f(tx+tw,ty);		glVertex2i(rc.Right,m_iScreenHeight-rc.Bottom);  */
-
 			glTexCoord2f(txs[0],tys[0]);	glVertex2i(rc.Left,m_iScreenHeight-rc.Bottom);		 
 			glTexCoord2f(txs[1],tys[1]);	glVertex2i(rc.Left,m_iScreenHeight-rc.Top);		
 			glTexCoord2f(txs[2],tys[2]);	glVertex2i(rc.Right,m_iScreenHeight-rc.Top);    
@@ -326,8 +313,8 @@ bool GLGuiRender::RenderBorder(Rect rc)
 	float wx = (float)(rc.Right-rc.Left) / sz;
 	float wy = (float)(rc.Bottom-rc.Top) / sz;
 
-	int texture;
-	bool bDrawAlpha;
+	int texture = m_pkSkin->m_iHorzBorderTexAlphaID;
+	bool bDrawAlpha = false;
 
 	glColor3f(m_pkSkin->m_afBorderColor[0],m_pkSkin->m_afBorderColor[1],
 		m_pkSkin->m_afBorderColor[2]);
@@ -652,11 +639,6 @@ void GLGuiRender::RenderText( char *strText, Rect rc, int iCursorPos,
 	m_pkTextureManger->BindTexture( m_pkFont->m_iTextureID );		
 	glEnable(GL_TEXTURE_2D);
 
-	//glColor4f(1,1,1,1);		
-	//glAlphaFunc(GL_GREATER,0.4);
-	//glEnable(GL_ALPHA_TEST);
-
-	
 	glColor4f(0.0f,0.0f,0.0f,1);		
 	//glDisable(GL_LIGHTING);
 	glAlphaFunc(GL_GREATER,0.1f);
@@ -813,8 +795,8 @@ bool GLGuiRender::PrintRow(char *text, Rect rc, int iCursorPos,
 			offset += kLength.first;
 			xpos += kLength.second;
 
-		/*	if(xpos >= max_width)
-				break;*/
+			//if(xpos >= max_width)
+			//	break;
 		}
 
 		// Print cursor outside the loop if last character.
