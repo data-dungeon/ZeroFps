@@ -102,6 +102,7 @@ class ENGINE_API EntityManager : public ZFSubSystem{
 		int							iNextObjectID;												///< Next free object ID.
 		bool							m_bUpdate;													///< Disable all updates except RENDER.	
 		bool							m_bDrawZones;
+		bool							m_bDrawZoneConnections;
 
 		void RunCommand(int cmdid, const CmdArgument* kCommand);
 		void GetPropertys(int iType,int iSide);						///< Fill propery list.

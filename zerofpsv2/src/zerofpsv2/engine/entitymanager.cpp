@@ -70,6 +70,7 @@ EntityManager::EntityManager()
 	m_iTotalNetObjectData	= 0;
 	m_iNumOfNetObjects		= 0;
 	m_bDrawZones				= false;
+	m_bDrawZoneConnections	= false;
 	m_pScriptFileHandle		= NULL;
 	m_iTrackerLOS				= 3;	
 
@@ -85,7 +86,9 @@ EntityManager::EntityManager()
 	Register_Cmd("loadzones",FID_LOADZONES, CSYS_FLAG_SRC_ALL);	
 	Register_Cmd("savezones",FID_SAVEZONE, CSYS_FLAG_SRC_ALL);	
 
-	RegisterVariable("l_showzones", &m_bDrawZones, CSYS_BOOL);
+	RegisterVariable("l_showzones", &m_bDrawZones,					CSYS_BOOL);
+	RegisterVariable("l_showconn",  &m_bDrawZoneConnections,		CSYS_BOOL);
+	
 	RegisterVariable("l_trackerlos", &m_iTrackerLOS, CSYS_INT);	
 }
 
@@ -1196,6 +1199,13 @@ void EntityManager::Test_CreateZones()
 //	int ispya = 2;
 }*/
 
+/*
+	Draws the Zone's to the screen as colored boxes.
+
+		Inactive:	Red.
+		Active:		Green.
+		EditMode:	Blue.
+eeeeeeereere*/
 void EntityManager::Test_DrawZones()
 {
 	if(!m_bDrawZones)
@@ -1209,16 +1219,28 @@ void EntityManager::Test_DrawZones()
 			
 		Vector3 kMin = m_kZones[i].m_kPos - m_kZones[i].m_kSize/2;
 		Vector3 kMax = m_kZones[i].m_kPos + m_kZones[i].m_kSize/2;
-
-		if(m_kZones[i].m_bActive)
-			m_pkRender->DrawAABB( kMin,kMax, Vector3(1,0,0) );
-		else 
-			m_pkRender->DrawAABB( kMin,kMax, Vector3(0,1,0) );
 	
-		for(int j = 0 ;j< m_kZones[i].m_iZoneLinks.size();j++)
-		{	
-			glColor4f(0,0,1,0);
-			m_pkRender->Line(m_kZones[i].m_kPos,m_kZones[m_kZones[i].m_iZoneLinks[j]].m_kPos);
+		if(m_kZones[i].m_bUnderContruction)
+			m_pkRender->DrawAABB( kMin,kMax, Vector3(0,0,1), 3 );
+
+		if(m_kZones[i].m_bActive) {
+			m_pkRender->DrawAABB( kMin,kMax, Vector3(1,0,0) );
+			}
+		else {
+			m_pkRender->DrawAABB( kMin,kMax, Vector3(0,1,0) );
+			}	
+
+/*			if(m_kZones[i].m_bUnderContruction)
+			m_pkRender->DrawAABB( kMin,kMax, Vector3(0,0,1) );
+		else {
+			}*/
+	
+		if(m_bDrawZoneConnections) {
+			for(int j = 0 ;j< m_kZones[i].m_iZoneLinks.size();j++)
+			{	
+				glColor4f(0,0,1,0);
+				m_pkRender->Line(m_kZones[i].m_kPos,m_kZones[m_kZones[i].m_iZoneLinks[j]].m_kPos);
+			}
 		}
 	
 	}

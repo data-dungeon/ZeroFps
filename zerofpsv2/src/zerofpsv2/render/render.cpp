@@ -24,8 +24,8 @@ Render::Render()
 	m_bCapture					= false;
 
 	// The default graphics mode.
-	m_iWidth						= 640;
-	m_iHeight					= 480;
+	m_iWidth						= 800;
+	m_iHeight					= 600;
 	m_iDepth						= 16;
 	m_iFullScreen				= 1;
 	
@@ -973,13 +973,15 @@ void Render::DrawColorBox(Vector3 kPos,Vector3 kRot,Vector3 kScale,Vector3 kColo
 	
 }
 
-void Render::DrawAABB( Vector3 kMin,Vector3 kMax, Vector3 kColor )
+void Render::DrawAABB( Vector3 kMin,Vector3 kMax, Vector3 kColor, float fLineSize )
 {
 	Vector3 kCubeNeg = kMin; 
 	Vector3 kCubePos = kMax; 
 
 	glDisable(GL_TEXTURE_2D);
 	glDisable(GL_LIGHTING );
+
+	glLineWidth( fLineSize );
 
 	glColor3f(kColor.x,kColor.y,kColor.z);
 	glBegin(GL_LINES);
@@ -1012,6 +1014,8 @@ void Render::DrawAABB( Vector3 kMin,Vector3 kMax, Vector3 kColor )
 
 	glEnable(GL_TEXTURE_2D);
 	glEnable(GL_LIGHTING);
+
+	glLineWidth( 1.0 );
 }
 
 void Render::DrawSolidAABB( Vector3 kMin,Vector3 kMax, Vector3 kColor )
