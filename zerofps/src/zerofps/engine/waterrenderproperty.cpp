@@ -47,19 +47,20 @@ void WaterRenderProperty::Update()
 
 void WaterRenderProperty::PackTo(NetPacket* pkNetPacket)
 {
-	pkNetPacket->Write((int) m_iSize);
-	pkNetPacket->Write((int) m_iStep);
+//	pkNetPacket->Write((int) m_iSize);
+//	pkNetPacket->Write((int) m_iStep);
 }
  
 void WaterRenderProperty::PackFrom(NetPacket* pkNetPacket)
 {
-	pkNetPacket->Read((int) m_iSize);
-	pkNetPacket->Read((int) m_iStep);
+	//pkNetPacket->Read((int) m_iSize);
+	//pkNetPacket->Read((int) m_iStep);
 }
 
 
 void WaterRenderProperty::Save(ZFMemPackage* pkPackage)
 {
+
 	char data[256];	
 	
 	pkPackage->Write((void*)&m_iSize,sizeof(m_iSize));
@@ -67,6 +68,7 @@ void WaterRenderProperty::Save(ZFMemPackage* pkPackage)
 	
 	strcpy(data,m_sTexture.c_str());		
 	pkPackage->Write((void*)&data,256);
+
 }
 
 void WaterRenderProperty::Load(ZFMemPackage* pkPackage)
