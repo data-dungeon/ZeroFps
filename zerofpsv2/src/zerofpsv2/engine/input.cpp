@@ -16,6 +16,8 @@ Input::Input()
 	Register_Cmd("i_mousesens",		FID_MOUSESENS);		
 	Register_Cmd("i_bindvk",			FID_BINDVK);
 	Register_Cmd("i_listvk",			FID_VKBINDLIST);
+	Register_Cmd("i_save",				FID_SAVE);
+
 //	Register_Cmd("i_bind",				FID_BIND);
 //	Register_Cmd("i_unbindall",		FID_UNBINDALL);
 //	Register_Cmd("i_listactions",		FID_LISTACTIONS);		
@@ -96,31 +98,26 @@ void Input::Update(void)
     		
 	    	//mouse    		
    	 	case SDL_MOUSEBUTTONDOWN:
-				cout << "MouseDown: " <<  (int) m_kEvent.button.button << endl;
+				//cout << "SDL_MOUSEBUTTONDOWN: " << (int) m_kEvent.button.button << endl;
 
     			switch(m_kEvent.button.button){
-    				case SDL_BUTTON_LEFT:
-    					m_akKeyState[MOUSELEFT].m_bDown=true;
-	    			break;
-   	 			case SDL_BUTTON_MIDDLE:
-    					m_akKeyState[MOUSEMIDDLE].m_bDown=true;
-    				break;
-    				case SDL_BUTTON_RIGHT:
-    					m_akKeyState[MOUSERIGHT].m_bDown=true;
-	    			break;	
-   	 		}
-   	 		break;
+    				case SDL_BUTTON_LEFT:		m_akKeyState[MOUSELEFT].m_bDown = true;	break;
+   	 			case SDL_BUTTON_MIDDLE:		m_akKeyState[MOUSEMIDDLE].m_bDown=true;	break;
+    				case SDL_BUTTON_RIGHT:		m_akKeyState[MOUSERIGHT].m_bDown=true;		break;	
+    				case SDL_BUTTON_WHEELUP:	m_akKeyState[MOUSEWUP].m_bDown=true;		break;	
+    				case SDL_BUTTON_WHEELDOWN:	m_akKeyState[MOUSEWDOWN].m_bDown=true;		break;	
+				}
+				break;
+
 	    	case SDL_MOUSEBUTTONUP:
-   	 		switch(m_kEvent.button.button){
-    				case SDL_BUTTON_LEFT:
-    					m_akKeyState[MOUSELEFT].m_bDown=false;
-    				break;
-	    			case SDL_BUTTON_MIDDLE:
-   	 				m_akKeyState[MOUSEMIDDLE].m_bDown=false;
-    				break;
-    				case SDL_BUTTON_RIGHT:
-    					m_akKeyState[MOUSERIGHT].m_bDown=false;
-	    			break;	
+ 				//cout << "SDL_MOUSEBUTTONUP: " << (int) m_kEvent.button.button << endl;
+
+				switch(m_kEvent.button.button){
+    				case SDL_BUTTON_LEFT:		m_akKeyState[MOUSELEFT].m_bDown=false;		break;
+	    			case SDL_BUTTON_MIDDLE:		m_akKeyState[MOUSEMIDDLE].m_bDown=false;	break;
+    				case SDL_BUTTON_RIGHT:		m_akKeyState[MOUSERIGHT].m_bDown=false;	break;	
+    				case SDL_BUTTON_WHEELUP:	m_akKeyState[MOUSEWUP].m_bDown=false;		break;	
+    				case SDL_BUTTON_WHEELDOWN:	m_akKeyState[MOUSEWDOWN].m_bDown=false;	break;	
    	 		}    	
     			 break;
 		}	
@@ -170,10 +167,13 @@ bool Input::VKIsDown(string strName)
 		return false;
 
 	bool bKeyDown = false;
+	//cout << "Checking" << strName << ": ";
 	for(int i=0; i<VKMAPS;i++) {
+		//cout << pkVk->m_iInputKey[i] << ", ";
 		bKeyDown |= m_akKeyState[pkVk->m_iInputKey[i]].m_bDown;
 		}
 
+	//cout << endl;
 	return bKeyDown;
 }
 
@@ -368,7 +368,11 @@ void Input::RunCommand(int cmdid, const CmdArgument* kCommand)
 			VKList();
 			break;
 
+		case FID_SAVE:
+			Save(string("vim.cfg"));
+			break;
 			
+
 		case FID_MOUSESENS:
 			if(kCommand->m_kSplitCommand.size()!=2)
 				if(GetConsole())
@@ -378,6 +382,13 @@ void Input::RunCommand(int cmdid, const CmdArgument* kCommand)
 			break;
 	}
 }
+
+void Input::Save(string strCfgName)
+{
+
+}
+
+
 
 int Input::GetQueuedKey()
 {
@@ -598,9 +609,7 @@ void Input::SetupMapToKeyState()
 	m_akMapToKeyState[ SDLK_NUMLOCK ]	= KEY_NUMLOCK;
 	m_akMapToKeyState[ SDLK_CAPSLOCK ]	= KEY_CAPSLOCK;
 
-
-
-
+	m_akMapToKeyState[ SDLK_NUMLOCK ]	= KEY_NUMLOCK;
 
 	m_akKeyState[KEY_ESCAPE].m_strName = "esc";
 
@@ -732,6 +741,12 @@ void Input::SetupMapToKeyState()
 
 	m_akKeyState[KEY_NUMLOCK].m_strName			= "kpnumlock";
 	m_akKeyState[KEY_CAPSLOCK].m_strName		= "capslock";
+
+	m_akKeyState[MOUSELEFT].m_strName			= "mus1";
+	m_akKeyState[MOUSEMIDDLE].m_strName			= "mus3";
+	m_akKeyState[MOUSERIGHT].m_strName			= "mus2";
+	m_akKeyState[MOUSEWUP].m_strName				= "mwup";
+	m_akKeyState[MOUSEWDOWN].m_strName			= "mwdown";
 
 //	m_akKeyState[KEY_].m_strName = "";
 }

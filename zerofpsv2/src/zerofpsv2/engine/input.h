@@ -18,8 +18,6 @@ class ZeroFps;
 
 using namespace std;
 
-
-
 #define MAX_KEYS		1000
 #define MAX_SDLKEYS	SDLK_LAST
 
@@ -61,6 +59,8 @@ class ENGINE_API Input : public ZFSubSystem {
 			FID_BINDVK,			// Bind VK to a key.
 			FID_MOUSESENS,
 			FID_VKBINDLIST,		// List all VK and keys they are bind to.
+			FID_LOAD,
+			FID_SAVE,
 			//FID_UNBINDALL,
 			//FID_BIND,
 			//FID_LISTACTIONS,
@@ -114,6 +114,7 @@ public:
 		bool VKIsDown(string strName);
 		
 		void VKList();
+		void Save(string strCfgName);
 		
 		void FormatKey(int& iKey);
 		void SetCursorInputPos(int x, int y);

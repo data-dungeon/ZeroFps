@@ -43,7 +43,8 @@ struct TerrainBlock
 
 struct Mad_Face;
 
-class ENGINE_SYSTEMS_API HeightMap: public ZFSubSystem {
+class ENGINE_SYSTEMS_API HeightMap /*: public ZFSubSystem */
+{
 	private:			
 		TextureManager*	m_pkTexMan;
 		ZFBasicFS*			m_pkBasicFS;
@@ -75,7 +76,7 @@ class ENGINE_SYSTEMS_API HeightMap: public ZFSubSystem {
 
 		HeightMap();		
 		~HeightMap();		
-		void RunCommand(int cmdid, const CmdArgument* kCommand);		
+		//void RunCommand(int cmdid, const CmdArgument* kCommand);		
 		void Create(int iHmSize);
 		void Zero();
 		void Random();
@@ -120,10 +121,11 @@ class ENGINE_SYSTEMS_API HeightMap: public ZFSubSystem {
 		
 		friend class Render;
 
+		/*
 		bool StartUp();
 		bool ShutDown();
 		bool IsValid();
-
+		*/
 };
 
 

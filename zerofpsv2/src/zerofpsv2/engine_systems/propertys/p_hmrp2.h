@@ -33,6 +33,10 @@ class ENGINE_SYSTEMS_API P_HMRP2: public Property {
 
 		void PackTo(NetPacket* pkNetPacket, int iConnectionID);
 		void PackFrom(NetPacket* pkNetPacket, int iConnectionID);
+
+		void Save(ZFIoInterface* pkPackage);
+		void Load(ZFIoInterface* pkPackage);
+
 };
 
 Property* Create_HMRP2();

@@ -130,9 +130,6 @@ void MistClient::Init()
 	//initiate our camera bös
 	m_pkCamera=new Camera(Vector3(0,0,0),Vector3(0,0,0),70,1.333,0.25,250);	
 	
-	//register actions bös
-	RegisterActions();
-
 	//register property bös
 	RegisterPropertys();
 
@@ -182,23 +179,6 @@ void MistClient::Init()
 void MistClient::RegisterResources()
 {
 	m_pkResourceDB->RegisterResource( string(".env"), Create__EnvSetting	);
-}
-
-void MistClient::RegisterActions()
-{
-/*
-	m_iActionDoOrder=m_pkInput->RegisterAction("DoOrder");
-	m_iActionPrintServerInfo=m_pkInput->RegisterAction("PrintServerInfo");
-	m_iActionUnExploreAll=m_pkInput->RegisterAction("UnExploreAll");
-	m_iActionExploreAll=m_pkInput->RegisterAction("ExploreAll");
-	m_iActionCamLeft=m_pkInput->RegisterAction("CamLeft");
-	m_iActionCamRight=m_pkInput->RegisterAction("CamRight");
-	m_iActionCamUp=m_pkInput->RegisterAction("CamUp");
-	m_iActionCamDown=m_pkInput->RegisterAction("CamDown");
-	m_iActionSelect=m_pkInput->RegisterAction("Select");
-	m_iActionScroll=m_pkInput->RegisterAction("Scroll");	
-	m_iActionSelectManyModifier=m_pkInput->RegisterAction("SelectManyModifier");	
-*/
 }
 
 void MistClient::RegisterPropertys()
@@ -398,10 +378,10 @@ void MistClient::Input()
 	}
 	else if(m_pkClientControlP)			//else rotate camera
 	{
-		m_pkClientControlP->m_kControls.m_akControls[CTRL_UP]		= m_pkInput->Pressed(KEY_W);
-		m_pkClientControlP->m_kControls.m_akControls[CTRL_DOWN]	= m_pkInput->Pressed(KEY_S);
-		m_pkClientControlP->m_kControls.m_akControls[CTRL_LEFT]	= m_pkInput->Pressed(KEY_A);
-		m_pkClientControlP->m_kControls.m_akControls[CTRL_RIGHT] = m_pkInput->Pressed(KEY_D);
+		m_pkClientControlP->m_kControls.m_akControls[CTRL_UP]		= m_pkInput->VKIsDown("forward");
+		m_pkClientControlP->m_kControls.m_akControls[CTRL_DOWN]	= m_pkInput->VKIsDown("back");
+		m_pkClientControlP->m_kControls.m_akControls[CTRL_LEFT]	= m_pkInput->VKIsDown("left");
+		m_pkClientControlP->m_kControls.m_akControls[CTRL_RIGHT] = m_pkInput->VKIsDown("right");
 
 		if(m_pkCamProp && m_iMouseMode == eCAMERA_MODE)
 		{

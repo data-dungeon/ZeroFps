@@ -979,7 +979,7 @@ bool TextureManager::SaveTexture(const char* acFile,int iLevel)
 	
 	iDepth = iRSize+iGSize+iBSize+iASize;
 	
-/*	
+	
 	cout << " iInternalFormat "<< iInternalFormat << "\n";
 	
 	cout<<"width: "<<iWidth<<endl;
@@ -990,7 +990,7 @@ bool TextureManager::SaveTexture(const char* acFile,int iLevel)
 	cout<<"green size:"<<iGSize<<endl;	
 	cout<<"blue size: "<<iBSize<<endl;	
 	cout<<"alpha size:"<<iASize<<endl;	
-*/	
+	
 
 	int iFormat=-1;
 	int iType=-1;
@@ -1015,7 +1015,7 @@ bool TextureManager::SaveTexture(const char* acFile,int iLevel)
 	if(iFormat == GL_RGBA)	
 	{
 		glGetTexImage(GL_TEXTURE_2D,iLevel,iFormat,iType,temp.m_pkPixels);
-		//cout << "Arghhhhhhhhhhhhh:" << GetOpenGLErrorName(glGetError()) << "\n";		
+		cout << "Arghhhhhhhhhhhhh:" << GetOpenGLErrorName(glGetError()) << "\n";		
 		temp.Save(acFile,true);
 	}
 

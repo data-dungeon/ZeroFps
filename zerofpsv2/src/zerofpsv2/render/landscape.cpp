@@ -810,18 +810,14 @@ void Render::DrawHMLodSplat(HeightMap* kMap,Vector3 CamPos,int iFps)
 	DrawAllHM(kMap,CamPos,true);
 		
 	//set blending
-/*	glDepthFunc(GL_EQUAL);
+	glDepthFunc(GL_EQUAL);
 	glEnable(GL_BLEND);		
 	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);				
-
-	
-	
 	
  	//enable TU0 again
 	glActiveTextureARB(GL_TEXTURE0_ARB);	
 	glEnable(GL_TEXTURE_2D);	
 		
-	
 	for(unsigned int i=1;i<kMap->m_kSets.size();i++)
 	{	
 		if(i >= m_iMaxLandscapeLayers)
@@ -839,7 +835,7 @@ void Render::DrawHMLodSplat(HeightMap* kMap,Vector3 CamPos,int iFps)
 	}
 
 
-		*/
+		
 	
 	glActiveTextureARB(GL_TEXTURE1_ARB);
 	glDisable(GL_TEXTURE_2D);

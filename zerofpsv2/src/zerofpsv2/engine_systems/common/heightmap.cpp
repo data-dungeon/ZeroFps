@@ -13,28 +13,17 @@
 int iNumOfHMVertex;
 
 HeightMap::HeightMap() 
- : ZFSubSystem("HeightMap") {
- 
-// 	m_pkFile=static_cast<FileIo*>(g_ZFObjSys.GetObjectPtr("FileIo"));		
-	m_iError	=	4;
-	verts		=	NULL;
-	iNumOfHMVertex = 0;
-}
-
-bool HeightMap::StartUp()	
-{ 
-	m_pkTexMan=static_cast<TextureManager*>(g_ZFObjSys.GetObjectPtr("TextureManager"));		
-	m_pkBasicFS=static_cast<ZFBasicFS*>(g_ZFObjSys.GetObjectPtr("ZFBasicFS"));		
-	Create(4);
-	return true; 
-}
-
-bool HeightMap::ShutDown() 
 {
-	return true; 
-}
+// 	m_pkFile=static_cast<FileIo*>(g_ZFObjSys.GetObjectPtr("FileIo"));		
+	m_iError			= 0;
+	verts				= NULL;
+	iNumOfHMVertex = 0;
 
-bool HeightMap::IsValid()	{ return true; }
+	m_pkTexMan	= static_cast<TextureManager*>(g_ZFObjSys.GetObjectPtr("TextureManager"));		
+	m_pkBasicFS	= static_cast<ZFBasicFS*>(g_ZFObjSys.GetObjectPtr("ZFBasicFS"));		
+	Create(4);
+	//return true; 
+}
 
 HeightMap::~HeightMap() 
 {
@@ -42,14 +31,14 @@ HeightMap::~HeightMap()
 		delete[] verts;
 }
 
-
-
 bool HeightMap::AllocHMMemory(int iSize)
 {
 	if(verts)
 		delete[] verts;
 
-	iNumOfHMVertex = (m_iHmSize+m_iError)*m_iHmSize;
+	iSize ++;
+
+	iNumOfHMVertex = (iSize+m_iError) * iSize;
 	verts=new HM_vert[iNumOfHMVertex];	
 	return true;
 }
@@ -68,6 +57,9 @@ void HeightMap::Create(int iHmSize)
 	
 	ClearSet();
 	AddSet("../data/textures/nodetail1.bmp","../data/textures/detail1.bmp","FEL");
+	AddSet("../data/textures/nodetail2.bmp","../data/textures/detail2.bmp","mask.tga");
+
+//	AddSet("../data/textures/nodetail2.bmp","../data/textures/detail2.bmp","../data/textures/mask.tga");
 //	m_pkMap->ClearSet();
 //	m_pkMap->AddSet("../data/textures/nodetail1.bmp","../data/textures/detail1.bmp","FEL");
 	CreateBlocks();
@@ -381,7 +373,7 @@ bool HeightMap::Load(const char* acFile)
 	cout<<"SIZE:"<<sizeof(HM_vert)<<endl;
 	
 	int i;
-	for(i=0;i<(m_iHmSize*m_iHmSize);i++) 
+	for(i=0;i<((m_iHmSize+1)*(m_iHmSize+1));i++) 
 	{
 		savefile.Read((void*)&verts[i],sizeof(HM_vert),1);
 	}
@@ -400,7 +392,7 @@ bool HeightMap::Load(const char* acFile)
 	do
 	{
 		string file=acFile;
-		file += ".mask.";
+		file += "mask";
 		char nr[5] = "    ";
 		IntToChar(nr,i);
 		file+=nr;
@@ -441,7 +433,9 @@ bool HeightMap::Save(const char* acFile) {
 	//setup fileheader
 	HM_fileheader k_Fh;
 	k_Fh.m_iHmSize=m_iHmSize;
-	
+	cout<<"MAP SIZE IS:"<<m_iHmSize<<endl;
+
+
 	ZFVFile savefile;
 	if(!savefile.Open(hmfile.c_str(),0,true)){
 		cout<<"Could not save heightmap"<<endl;
@@ -449,7 +443,7 @@ bool HeightMap::Save(const char* acFile) {
 	}
 	savefile.Write((void*)&k_Fh, sizeof(HM_fileheader),1);
 	
-	for(int i=0;i<(m_iHmSize*m_iHmSize);i++) 
+	for(int i=0;i<((m_iHmSize + 1)*(m_iHmSize + 1));i++) 
 	{
 		savefile.Write((void*)&verts[i],sizeof(HM_vert),1);
 	}
@@ -462,7 +456,7 @@ bool HeightMap::Save(const char* acFile) {
 		for(unsigned int i=1;i<m_kSets.size();i++)
 		{
 			string file=acFile;
-			file += ".mask.";
+			file += "mask";
 			char nr[5] = "    ";
 			IntToChar(nr,i+1);
 			file+=nr;
@@ -470,7 +464,8 @@ bool HeightMap::Save(const char* acFile) {
 			
 			ZFResourceHandle m_kConsoleText;
 			m_kConsoleText.SetRes(m_kSets[i].m_acMask);	
-			
+			cout << "Save Res: " << m_kSets[i].m_acMask << endl;
+
 			ResTexture* pkTexture = static_cast<ResTexture*>(m_kConsoleText.GetResourcePtr());
 			m_pkTexMan->BindTexture(pkTexture->m_iTextureID);
 			
@@ -667,10 +662,10 @@ Uint32 HeightMap::GetPixel(SDL_Surface *surface, int x, int y)
     }
 }
 
-void HeightMap::RunCommand(int cmdid, const CmdArgument* kCommand)
+/*void HeightMap::RunCommand(int cmdid, const CmdArgument* kCommand)
 {
 
-}
+}*/
 
 void HeightMap::AddSet(const char* acTexture,const char* acDetailTexture,const char* acMask)
 {

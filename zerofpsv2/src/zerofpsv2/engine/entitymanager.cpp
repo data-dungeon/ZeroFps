@@ -1920,6 +1920,8 @@ int EntityManager::CreateZone(Vector3 kPos,Vector3 kSize)
 
 void EntityManager::DeleteZone(int iId)
 {
+	if(iId == -1)	return;
+
 	if(iId >= (int) m_kZones.size())
 	{
 		//cout<<"that zone is invalid"<<endl;

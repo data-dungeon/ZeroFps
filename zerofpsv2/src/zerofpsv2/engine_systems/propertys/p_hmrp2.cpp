@@ -71,6 +71,25 @@ void P_HMRP2::SetPolyMode(PolygonMode eMode)
 }
 
 
+void P_HMRP2::Save(ZFIoInterface* pkPackage)
+{
+	char hmapname[256];
+	sprintf(hmapname, "hm%d", m_pkObject->iNetWorkID);
+
+	cout << "Should Save HMRP2: " << hmapname << endl;
+	if(m_pkHeightMap)
+		m_pkHeightMap->Save(hmapname);
+}
+
+void P_HMRP2::Load(ZFIoInterface* pkPackage)
+{
+	char hmapname[256];
+	sprintf(hmapname, "hm%d", m_pkObject->iNetWorkID);
+	cout << "Should Load HMRP2: " << hmapname << endl;
+
+	m_pkHeightMap = new HeightMap;
+	m_pkHeightMap->Load(hmapname);
+}
 
 
 

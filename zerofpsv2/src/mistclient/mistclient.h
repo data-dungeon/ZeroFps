@@ -8,7 +8,6 @@
 
 #include <iostream>
 #include <cmath>
-//#include <GL/glut.h>
 #include <list>
 #include "../zerofpsv2/engine/application.h"
 #include "../zerofpsv2/engine_systems/mad/mad_modell.h"
@@ -42,19 +41,6 @@
 */
 class MistClient :public Application, public ZGuiApp {
 	private:
-		// actions
-/*		int 			m_iActionCamLeft;
-		int 			m_iActionCamRight;
-		int 			m_iActionCamUp;
-		int 			m_iActionCamDown;
-		int 			m_iActionSelect;
-		int 			m_iActionScroll;		
-		int 			m_iActionSelectManyModifier;		
-		int			m_iActionExploreAll;
-		int			m_iActionUnExploreAll;		
-		int			m_iActionPrintServerInfo;				
-		int			m_iActionDoOrder;*/
-		
 		//console functions
 		enum FuncId_e
 		{
@@ -154,7 +140,6 @@ class MistClient :public Application, public ZGuiApp {
 				
 		void RunCommand(int cmdid, const CmdArgument* kCommand);		
 		void Init();
-		void RegisterActions();		
 		void RegisterPropertys();
 		void RegisterResources();
 		void Input();
