@@ -24,6 +24,7 @@ HenchmanButton::HenchmanButton(ZGuiApp* pkApp, int iIconID, int iPos)
 	sprintf(szName, "HenchManLifeBar0%i", iPos);
 	pkApp->CreateWnd(Label, szName, "MainWnd", "", pkApp->GetWidth()-51, 52+iPos*56, 48, 4, 0);
 	pkApp->GetWnd(szName)->SetSkin(new ZGuiSkin(0,0,255, 0,0,0, 0));
+	m_pkLifeBar = (ZGuiLabel*) pkApp->GetWnd(szName);
 
 	sprintf(szName, "HenchManLifeBarBk0%i", iPos);
 	pkApp->CreateWnd(Label, szName, "MainWnd", "", pkApp->GetWidth()-51, 52+iPos*56, 48, 4, 0);
@@ -36,7 +37,6 @@ string HenchmanButton::GetName()
 {
 	return string(m_pkClickIcon->GetName());
 }
-
 
 void HenchmanButton::Check(bool bCheck)
 {

@@ -250,6 +250,24 @@ void MistClient::OnIdle()
 	if(m_pkStatsDlg && m_pkStatsDlg->IsVisible())
 		m_pkStatsDlg->Update();
 
+
+	CharacterProperty* pkCharacterProperty = NULL;
+
+	if(m_pkActiveCharacter)
+	{
+		pkCharacterProperty = static_cast<CharacterProperty*>(
+			m_pkActiveCharacter->GetProperty("P_CharStats"));
+	}
+
+	if(pkCharacterProperty)
+	{
+		CharacterStats* pkCharacterStats = pkCharacterProperty->GetCharStats();
+		
+		UpdateManaAndHealthBar(pkCharacterStats);
+
+		//pkCharacterProperty->GetProperty("P_ServerInfo")
+	}
+
 }
 
 void MistClient::OnSystem() 
@@ -714,7 +732,6 @@ void MistClient::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 
 				pkScript->Call(m_pkScriptResHandle, "OnClickStats", 0, 0); // create
 
-
 				if ( GetWnd("StatsWnd")->IsVisible() )
 					pkGui->SetFocus(GetWnd("StatsWnd"));
 
@@ -762,7 +779,15 @@ void MistClient::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 			else
 			if(strClickWndName == "SelectSkillBn")
 			{
-				m_pkSkillDlg->SetCharacterProperty((CharacterProperty*)m_pkActiveCharacter->GetProperty("P_CharStats"));
+				if(m_pkActiveCharacter != NULL)
+				{
+					m_pkSkillDlg->SetCharacterProperty((CharacterProperty*)m_pkActiveCharacter->GetProperty("P_CharStats"));
+				}
+				else
+				{
+					printf("Failed to get character property! m_pkActiveCharacter = NULL\n");
+				}
+
 				m_pkSkillDlg->ToogleOpen();
 			}
 		}
@@ -778,7 +803,10 @@ void MistClient::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 			m_vkHenchmanIcons[i]->Check(IsClicked);
 
 			if(IsClicked)
+			{
 				m_pkSelHenchmanIcon = m_vkHenchmanIcons[i];
+				SetActiveCaracter(i);
+			}
 		}
 
 		char szActionButton[25];
@@ -1146,12 +1174,16 @@ void MistClient::SetActiveCaracter(int iCaracter)
 						//set current active character
 						m_iActiveCaracter = iCaracter;
 						m_iActiveCaracterObjectID = id;
+
+
                      
                   // set active character in clientcontrol property also
                   if ( m_pkClientControlP )
                   	m_pkClientControlP->m_iActiveCaracterObjectID = id;
 						
 						cout<<"current character is: "<<m_iActiveCaracter<<endl;
+
+						m_pkActiveCharacter = pkObj;
 					}
 				}		
 			}
@@ -1495,4 +1527,21 @@ void MistClient::OnKeyPress(int iKey, ZGuiWnd *pkWnd)
 			}
 		}
 	}
+}
+
+void MistClient::UpdateManaAndHealthBar(CharacterStats* pkCharacterStats)
+{
+	static float max_size = ((float)GetWidth()-15.0f)/2.0f;
+
+	// update life meter
+	float fHP = pkCharacterStats->GetHPPercent();
+	
+	if(fHP >= 0 && fHP <= 1)
+		GetWnd("LifeBarProgress")->Resize((int) (max_size*fHP), 8);
+
+	// update mana meter
+	float fMP = pkCharacterStats->GetMPPercent();
+
+	if(fMP >= 0 && fMP <= 1)
+		GetWnd("ManaBarProgress")->Resize((int) (max_size*fMP), 8);
 }

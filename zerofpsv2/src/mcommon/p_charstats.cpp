@@ -324,7 +324,7 @@ void CharacterProperty::PackTo(NetPacket* pkNetPacket, int iConnectionID )
             pkNetPacket->Write( &(*kIte).second.m_iValue, sizeof(int) );
          }
       }
-      // send character data (name, rase, sex...)
+      // send character data (name, race, sex...)
       else if ( m_kSends.front().m_iClientID == iConnectionID && m_kSends.front().m_kSendType == "data" )
       {
          iStuff = eDATA;

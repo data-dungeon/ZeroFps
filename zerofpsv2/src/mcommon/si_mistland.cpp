@@ -909,6 +909,8 @@ int MistLandLua::SetAttributeValueLua (lua_State* pkLua)
          CharacterStats *pkCS = pkCP->GetCharStats();
 
          pkCS->SetAttribute ( (string)acType, iValue );
+
+			
       }
    }
 

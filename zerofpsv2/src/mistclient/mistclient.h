@@ -110,6 +110,8 @@ class MistClient :public Application, public ZGuiApp {
 		void UpdateObjectList(PlayerInfo* pkPlayerInfo);
 		
 		void UpdateCullObjects();
+
+		void UpdateManaAndHealthBar(CharacterStats* pkCharacterProperty);
 		
 	public:
 		void OnKeyPress(int iKey, ZGuiWnd* pkWnd);

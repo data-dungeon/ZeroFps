@@ -30,17 +30,46 @@ void StatsDlg::Update()
 	{
 		CharacterStats* pkCharStats = m_pkCharProperty->GetCharStats();
 		
+		// Update texboxes data
 		map<string,string> kDataList;
 		pkCharStats->GetData(kDataList); 
+		
+		m_pkApp->GetWnd("CharacterNameLabel")->SetText((char*)kDataList["Name"].c_str());
+		m_pkApp->GetWnd("CharacterRaceLabel")->SetText((char*)kDataList["Race"].c_str());
+		m_pkApp->GetWnd("CharacterSexLabel")->SetText((char*)kDataList["Sex"].c_str());
 
-		map<string,string>::iterator itData = kDataList.begin();
+		// Update texboxes attributes
+		map<string,StatDescriber> kAttribList;
+		pkCharStats->GetAttributes(kAttribList); 
 
-		printf("kDataList size = %i\n", kDataList.size());
+		m_pkApp->SetTextInt("CharacterAttribSTYLabel", kAttribList["str"].m_iValue); 
+		m_pkApp->SetTextInt("CharacterAttribCONLabel", kAttribList["con"].m_iValue);
+		m_pkApp->SetTextInt("CharacterAttribDEXLabel", kAttribList["dex"].m_iValue);
+		m_pkApp->SetTextInt("CharacterAttribINTLabel", kAttribList["int"].m_iValue);
+		m_pkApp->SetTextInt("CharacterAttribPIELabel", kAttribList["pie"].m_iValue);
 
-/*		for( ; itData != kDataList.end(); itData++)
+		// Update mp/hp
+		m_pkApp->SetTextInt("CharacterCounterHPLabel", pkCharStats->GetHP()); 
+		m_pkApp->SetTextInt("CharacterCounterMPLabel", pkCharStats->GetMP()); 
+
+		// Update listbox skills
+		map<string,StatDescriber> kSkillList;
+		pkCharStats->GetSkills(kSkillList);
+
+		if((unsigned int) m_pkSkillList->GetItemCount() != kSkillList.size())
 		{
-			printf("itData %s = %s\n", itData->first, itData->second);
-		}*/
+			int id=1;
+			m_pkSkillList->RemoveAllItems();
+			map<string,StatDescriber>::iterator itSkills = kSkillList.begin();
+			for( ; itSkills != kSkillList.end(); itSkills++)
+			{
+				id++;
+
+				char szItemName[50];
+				sprintf(szItemName, "%s %i", itSkills->first.c_str(), itSkills->second.m_iValue);
+				m_pkSkillList->AddItem(szItemName, id, false);
+			}
+		}
 	}
 }
 
@@ -49,6 +78,7 @@ void StatsDlg::Init()
 	int screen_w = m_pkApp->GetWidth(); 
 	int screen_h = m_pkApp->GetHeight();
 
+	// Set textures skills listbox
 	m_pkSkillList = (ZGuiListbox*) m_pkApp->GetWnd("SkillsListbox");
 	m_pkAttackDefList =  (ZGuiListbox*) m_pkApp->GetWnd("AttackDefListbox");
 
@@ -72,6 +102,16 @@ void StatsDlg::Init()
 	m_pkSkillList->SetItemHighLightSkin(pkItemFocusSkin); 
 	m_pkSkillList->SetItemSelectedSkin(pkItemDownSkin); 
 
+	ZGuiSkin* pkUpSkinNorm = m_pkApp->GetSkin("DefSBrScrollUpSkin_u");
+	ZGuiSkin* pkUpSkinSel = m_pkApp->GetSkin("DefSBrScrollUpSkin_d");
+
+	ZGuiSkin* pkDownSkinNorm = m_pkApp->GetSkin("DefSBrScrollDownSkin_u");
+	ZGuiSkin* pkDownSkinSel = m_pkApp->GetSkin("DefSBrScrollDownSkin_d");
+
+	m_pkSkillList->GetScrollbar()->SetScrollButtonUpSkins(pkUpSkinNorm, pkUpSkinSel);
+	m_pkSkillList->GetScrollbar()->SetScrollButtonDownSkins(pkDownSkinNorm, pkDownSkinSel);
+
+	// Set textures attack listbox
 	m_pkAttackDefList->SetSkin( new ZGuiSkin());			
 	m_pkAttackDefList->GetSkin()->m_iBkTexID = 
 		m_pkTexMan->Load("/data/textures/gui/stone.bmp", 0);
@@ -81,6 +121,9 @@ void StatsDlg::Init()
 	m_pkAttackDefList->SetItemHighLightSkin(pkItemFocusSkin); 
 	m_pkAttackDefList->SetItemSelectedSkin(pkItemDownSkin); 
 	m_pkAttackDefList->GetScrollbar()->SetScrollInfo(0,100,0.15f,0);
+
+	m_pkAttackDefList->GetScrollbar()->SetScrollButtonUpSkins(pkUpSkinNorm, pkUpSkinSel);
+	m_pkAttackDefList->GetScrollbar()->SetScrollButtonDownSkins(pkDownSkinNorm, pkDownSkinSel);
 }
 
 bool StatsDlg::IsVisible()
@@ -99,7 +142,11 @@ void StatsDlg::OnCommand(ZGuiWnd* pkWndClicked)
 void StatsDlg::ToogleOpen()
 {
 	if(m_pkCharProperty)
+	{
 		m_pkCharProperty->RequestUpdateFromServer("data");
+		m_pkCharProperty->RequestUpdateFromServer("attributes");
+		m_pkCharProperty->RequestUpdateFromServer("skills");
+	}
 
 	if(m_pkDialog == NULL)
 	{
@@ -118,23 +165,9 @@ void StatsDlg::ToogleOpen()
 			m_pkApp->GetWnd("CharacterPortrait")->SetSkin(pkSkin);
 		}
 
-		m_pkApp->GetWnd("CharacterAttribSTYLabel")->SetText("10");
-		m_pkApp->GetWnd("CharacterAttribCONLabel")->SetText("10");
-		m_pkApp->GetWnd("CharacterAttribDEXLabel")->SetText("10");
-		m_pkApp->GetWnd("CharacterAttribINTLabel")->SetText("10");
-		m_pkApp->GetWnd("CharacterAttribPIELabel")->SetText("10");
-
-		m_pkApp->GetWnd("CharacterCounterHPLabel")->SetText("100");
-		m_pkApp->GetWnd("CharacterCounterMPLabel")->SetText("100");
-
 		m_pkSkillList->RemoveAllItems();
 		m_pkAttackDefList->RemoveAllItems();
 
-		m_pkSkillList->AddItem("Shild = 10", 0, 0);
-		m_pkSkillList->AddItem("Sword = 10", 0, 0);
-		m_pkSkillList->AddItem("Jump = 10", 0, 0);
-
-		m_pkAttackDefList->AddItem("Slash mod = 20%", 0, 0); 
 	}
 
 }

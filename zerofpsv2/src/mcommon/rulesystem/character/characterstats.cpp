@@ -115,6 +115,9 @@ void CharacterStats::SetSkill (string kName, int iStartValue)
 
 void CharacterStats::SetAttribute (string kName, int iStartValue)
 {
+
+//	printf("kName = %s = %i\n", kName.c_str() , iStartValue);
+
       // check if the skill exists
    for ( unsigned int i = 0; i < g_kAttributes.size(); i++ )
       if ( g_kAttributes[i] == kName )

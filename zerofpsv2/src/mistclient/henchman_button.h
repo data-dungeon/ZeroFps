@@ -6,7 +6,7 @@
 class HenchmanButton
 {
 	ZGuiCheckbox* m_pkClickIcon;
-	ZGuiLabel* m_pkLifeBar[2];
+	ZGuiLabel* m_pkLifeBar;
 
 	int m_iListPos; ///> position in list
 
