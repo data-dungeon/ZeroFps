@@ -36,7 +36,7 @@ ZoneData::ZoneData()
 	m_fInactiveTime = 0;
 	m_bActive = false;
 	m_iRange = 0;		
-
+	m_strEnviroment = "Default";
 }
 
 bool ZoneData::IsInside(Vector3 kPoint)
@@ -1651,6 +1651,7 @@ int ObjectManager::CreateZone(Vector3 kPos,Vector3 kSize)
 	m_kZones[id].m_iZoneLinks.clear();
 	m_kZones[id].m_fInactiveTime = 0;
 	m_kZones[id].m_iRange = 0;
+	m_kZones[id].m_strEnviroment = "Default";
 	
 	UpdateZoneLinks(id);
 	
@@ -1706,6 +1707,10 @@ bool ObjectManager::LoadZones()
 		kFile.Read(&kZData.m_kSize, sizeof(kZData.m_kSize), 1);
 		kFile.Read(&kZData.m_kPos, sizeof(kZData.m_kPos), 1);
 
+		char temp[128];
+		kFile.Read(temp, 128, 1);
+		kZData.m_strEnviroment = temp;
+
 
 		int iNumOfLinks;	
 		kFile.Read(&iNumOfLinks, sizeof(iNumOfLinks), 1);
@@ -1751,6 +1756,10 @@ bool ObjectManager::SaveZones()
 		kFile.Write(&m_kZones[i].m_iZoneID, sizeof(m_kZones[i].m_iZoneID), 1);
 		kFile.Write(&m_kZones[i].m_kSize, sizeof(m_kZones[i].m_kSize), 1);		
 		kFile.Write(&m_kZones[i].m_kPos, sizeof(m_kZones[i].m_kPos), 1);
+
+		char temp[128];
+		strcpy(temp,m_kZones[i].m_strEnviroment.c_str());
+		kFile.Write(temp, 128, 1);
 
 		int iNumOfLinks = m_kZones[i].m_iZoneLinks.size();		
 		kFile.Write(&iNumOfLinks, sizeof(iNumOfLinks), 1);		

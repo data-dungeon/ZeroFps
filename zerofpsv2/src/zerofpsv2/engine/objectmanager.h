@@ -30,6 +30,7 @@ public:
 	Vector3				m_kPos;
 	Vector3				m_kSize;
 	vector<int>			m_iZoneLinks;
+	string				m_strEnviroment;
 
 	float					m_fInactiveTime;
 	bool					m_bActive;

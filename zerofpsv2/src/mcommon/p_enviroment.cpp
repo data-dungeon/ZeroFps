@@ -7,7 +7,7 @@ P_Enviroment::P_Enviroment()
 	m_iSide=PROPERTY_SIDE_SERVER;
 	
 	m_pkFps=static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
-
+	m_pkObjectMan=static_cast<ObjectManager*>(g_ZFObjSys.GetObjectPtr("ObjectManager"));
 
 	bNetwork = true;
 
@@ -26,6 +26,12 @@ void P_Enviroment::ZoneChange(int iCurrent,int iNew)
 {
 	cout<<"Zone change:"<<endl;
 
+	ZoneData* zd = m_pkObjectMan->GetZoneData(iNew);
+
+	if(zd)	
+	{
+		m_StrCurrentEnviroment = zd->m_strEnviroment;
+	}
 }
 
 
@@ -34,9 +40,7 @@ void P_Enviroment::SetEnviroment(char* csEnviroment)
 	if(m_StrCurrentEnviroment == csEnviroment)
 		return;
 
-	m_StrCurrentEnviroment  == csEnviroment;
-
-	cout<<"changed enviroment to :"<<csEnviroment<<endl;
+	m_StrCurrentEnviroment = csEnviroment;
 
 }
 

@@ -14,11 +14,12 @@ using namespace std;
 
 class MCOMMON_API P_Enviroment: public Property {
 	private:
-		ZeroFps* m_pkFps;
+		ZeroFps* 		m_pkFps;
+		ObjectManager* m_pkObjectMan;
 		
-		bool		m_bEnabled;
+		bool				m_bEnabled;
 		
-		string	m_StrCurrentEnviroment;
+		string			m_StrCurrentEnviroment;
 		
 	public:
 
