@@ -25,6 +25,7 @@ class P_Walker : public Property
 		float m_fParaLength;		
 		float	m_fFindNewTargetTime;
 		
+		bool	m_bSetSize;
 		
 		void Paralize(float fTime);
 		int ClosestPlayer();

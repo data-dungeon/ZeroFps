@@ -35,11 +35,35 @@ P_Walker::P_Walker()
 			
 	m_iMaxLife = (5 * fLevel) * fPlayers ;
 	m_iLife = m_iMaxLife;
+		
+	
+	
+	//if abow level 20 mak em bigger
+	if(m_pkStopEmUp->GetLevel() >= 20)
+		m_bSetSize = true;
+	else
+		m_bSetSize = false;
 }
 
 void P_Walker::Update()
 {
-
+	if(m_bSetSize)
+	{
+		m_bSetSize = false;
+		
+		if(P_Mad* pkMad = (P_Mad*)GetEntity()->GetProperty("P_Mad"))
+		{
+			pkMad->SetScale(2);
+		}
+		
+		if(P_Tcs* pkTcs = (P_Tcs*)GetEntity()->GetProperty("P_Tcs"))
+		{
+			pkTcs->SetRadius(0.8);
+			pkTcs->SetLegLength(1.1);
+		}
+	}
+	
+	
 	//check if paralized
 	if(m_fParaTime != -1)
 	{

@@ -134,7 +134,9 @@ void P_Gun::FireBullet()
 			{
 			
 				pkWalk->Damage(m_iDamage,GetEntity()->GetEntityID());
-				Vector3 kHitPos = pkClosest->GetWorldPosV() + Vector3(Randomf(0.5)-0.25,-Randomf(0.5),Randomf(0.5)-0.25);
+				float fRadius = pkClosest->GetRadius();
+				
+				Vector3 kHitPos = pkClosest->GetWorldPosV() + Vector3(Randomf(fRadius)-fRadius/2.0,-Randomf(fRadius),Randomf(fRadius)-fRadius/2.0);
 				m_pkEntityManager->CreateEntityFromScriptInZone(m_strDirectHitObject.c_str(),kHitPos,GetEntity()->GetCurrentZone());				
 			
 			}
