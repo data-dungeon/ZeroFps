@@ -129,28 +129,22 @@ void ZeroEdit::OnInit(void)
 		pkConsole->Printf("No zeroedit_autoexec.ini found");
 
 	m_iCopyNetWorkID = -1;
+
+//	pkTexMan->BindTexture("pencil.tga",0);			
+//	SDL_Surface* bla=pkTexMan->GetTexture(0);
 	
-	
-	
-	
-	pkTexMan->BindTexture("pencil.tga",0);			
-	SDL_Surface* bla=pkTexMan->GetTexture(0);
-	
-	pkTexMan->BindTexture("smily.tga",0);			
-	
-	
-	pkTexMan->Blit(bla,10,20);
+	pkTexMan->BindTexture("../data/textures/stone.bmp",0);			
+//	pkTexMan->Blit(bla,10,20);
 	
 	for(int x=0;x<10;x++)
 		for(int y=0;y<10;y++)
 			pkTexMan->PsetRGB(x,y,255,255,255);
-			
-	for(int x=2;x<5;x++)
-		for(int y=2;y<5;y++)
-			pkTexMan->PsetRGB(x,y,255,0,0);
-			
-			
-			
+
+		
+
+	for(int x2=2;x2<5;x2++)
+		for(int y2=2;y2<5;y2++)
+			pkTexMan->PsetRGB(x2,y2,255,0,0);
 			
 	pkTexMan->SwapTexture();				
 	
@@ -566,6 +560,8 @@ void ZeroEdit::RunCommand(int cmdid, const CmdArgument* kCommand)
 			break;
 
 		case FID_COPY:
+			if(!m_pkCurentChild)
+				break;
 			m_iCopyNetWorkID = m_pkCurentChild->iNetWorkID;
 			break;
 
@@ -574,6 +570,8 @@ void ZeroEdit::RunCommand(int cmdid, const CmdArgument* kCommand)
 			break;
 		
 		case FID_DELETE:
+			if(!m_pkCurentChild)
+				break;
 			DeleteSelected();
 			break;
 
@@ -1265,6 +1263,7 @@ void ZeroEdit::ListTemplates()
 
 void ZeroEdit::HeightMapDraw(Vector3 kPencilPos)
 {
+
 /*	
 	for(int i=0;i<1;i++)
 	{

@@ -803,6 +803,30 @@ void Render::DrawAllHM(HeightMap* kMap,Vector3 CamPos)
 		for(int x=0;x<kMap->m_iHmSize;x+=iPatchSize)
 		{
 			DrawPatch(kMap,CamPos,x,z,iPatchSize);		
+			//DrawPatch_Vim1(kMap,CamPos,x,z,iPatchSize);		
+			
+		}
+	}
+}
+
+// Returns Min/Max hojd i vald patch
+void Render::GetMinMax(HeightMap* kMap, float& fMin, float& fMax, int xp,int zp,int iSize)
+{
+	fMin = 100000;
+	fMax = -100000;
+	HM_vert* pkHmVertex = kMap->verts;
+	float fHojd;
+	
+	//	fMin = 
+	for(int z = zp ; z < zp+iSize; z++){
+		for(int x = xp ; x <= xp+iSize ; x++){	
+			int iVertexIndex = (z)*kMap->m_iHmSize+x;
+			fHojd = float(pkHmVertex[iVertexIndex].height*HEIGHTMAP_SCALE);
+			
+			if(fHojd < fMin)
+				fMin = fHojd;
+			if(fHojd > fMax)
+				fMax = fHojd;
 		}
 	}
 }
@@ -821,10 +845,16 @@ void Render::DrawPatch(HeightMap* kMap,Vector3 CamPos,int xp,int zp,int iSize)
 		
 	if(fDistance > m_iViewDistance)
 		return;
+
+		
 	if(!m_pkFrustum->CubeInFrustum(PatchCenter.x,PatchCenter.y,PatchCenter.z,
 		(iSize/2)*HEIGHTMAP_SCALE,54*HEIGHTMAP_SCALE,(iSize/2)*HEIGHTMAP_SCALE))
 		return;
 		
+//	float fMin,fMax;
+//	cout << "fMin " << fMin << endl;
+//	cout << "fMax " << fMax << endl;
+//	GetMinMax(kMap,fMin,fMax,xp,zp,iSize);
 		
 	iStep=PowerOf2(int(fDistance / m_iDetail));
 		
@@ -834,6 +864,8 @@ void Render::DrawPatch(HeightMap* kMap,Vector3 CamPos,int xp,int zp,int iSize)
 	glPushMatrix();			
 		glTranslatef(-kMap->m_kPosition.x+kMap->m_iHmScaleSize/2,-kMap->m_kPosition.y,-kMap->m_kPosition.z+kMap->m_iHmScaleSize/2);
 		m_pkLight->Update(PatchCenter);
+		//DrawAABB(PatchCenter.x,PatchCenter.y,PatchCenter.z,
+		//	(iSize/2)*HEIGHTMAP_SCALE,54*HEIGHTMAP_SCALE,(iSize/2)*HEIGHTMAP_SCALE, fMin,fMax, Vector3(1,1,1));
 	glPopMatrix();
 
 //	glPolygonMode(GL_FRONT,GL_LINE);
@@ -952,5 +984,125 @@ void Render::DrawPatch(HeightMap* kMap,Vector3 CamPos,int xp,int zp,int iSize)
 
 
 //	glPolygonMode(GL_FRONT,GL_FILL);
+}
+
+int iPatchIndex[4096];
+
+void Render::DrawPatch_Vim1(HeightMap* kMap,Vector3 CamPos,int xp,int zp,int iSize)
+{
+	Vector3* pkLandVertex;
+	Vector3* pkLandNormals;
+	Vector3* pkLandTextureCoo1;
+	Vector3* pkLandTextureCoo2;
+
+	// Get Patch Center
+	Vector3 PatchCenter(kMap->m_kPosition.x-(kMap->m_iHmScaleSize/2) + (xp + iSize/2)*HEIGHTMAP_SCALE,
+							  kMap->m_kPosition.y + 34*HEIGHTMAP_SCALE,
+							  kMap->m_kPosition.z-(kMap->m_iHmScaleSize/2) + (zp + iSize/2)*HEIGHTMAP_SCALE);
+		
+	// Distance Cull Patch
+	float fDistance = (CamPos - PatchCenter).Length();
+	if(fDistance > m_iViewDistance)
+		return;
+
+	// Cull AABB
+	if(!m_pkFrustum->CubeInFrustum(PatchCenter.x,PatchCenter.y,PatchCenter.z,
+		(iSize/2)*HEIGHTMAP_SCALE,54*HEIGHTMAP_SCALE,(iSize/2)*HEIGHTMAP_SCALE))
+		return;
+		
+	// Min/Max	AABB
+	float fMin,fMax;
+	GetMinMax(kMap,fMin,fMax,xp,zp,iSize);
+		
+	// Get StepSize.
+	int iStep;
+	iStep=PowerOf2(int(fDistance / m_iDetail));
+		
+	// Set Lightning.
+	glPushMatrix();			
+		glTranslatef(-kMap->m_kPosition.x+kMap->m_iHmScaleSize/2,-kMap->m_kPosition.y,-kMap->m_kPosition.z+kMap->m_iHmScaleSize/2);
+		m_pkLight->Update(PatchCenter);
+		DrawAABB(PatchCenter.x,PatchCenter.y,PatchCenter.z,
+			(iSize/2)*HEIGHTMAP_SCALE,54*HEIGHTMAP_SCALE,(iSize/2)*HEIGHTMAP_SCALE, fMin,fMax, Vector3(1,1,1));
+	glPopMatrix();
+
+	// Alloc Mem.
+
+	int iNumOfPatchVertex = iSize * iSize;
+	pkLandVertex		= new Vector3 [iNumOfPatchVertex];		// Create Vertex
+	pkLandNormals		= new Vector3 [iNumOfPatchVertex];		// Create Normals
+	// Create TexCoo
+	pkLandTextureCoo1 = new Vector3 [iNumOfPatchVertex];				
+	pkLandTextureCoo2 = new Vector3 [iNumOfPatchVertex];
+
+
+	
+	// Draw the Terrain Patch.
+	float fXDivTexScale;
+	float fZDivTexScale;
+	float fXDivHmSize;
+	float fZDivHmSize;
+	int	  iVertexIndex;
+	float fScaleX, fScaleZ;
+
+	HM_vert* pkHmVertex = kMap->verts;
+	int z,x;
+
+//	fZDivTexScale	= (float) z / TEX_SCALE;
+//	fZDivHmSize		= (float) z / kMap->m_iHmSize;
+
+		//	fMin = 
+	int iPatchIndex = 0;
+	for( z = zp ; z < zp+iSize; z++){
+		for( x = xp ; x < xp+iSize ; x++){	
+			int iVertexIndex = (z)*kMap->m_iHmSize+x;
+			fScaleX = float(x * HEIGHTMAP_SCALE);
+			fScaleZ = float(z * HEIGHTMAP_SCALE);
+			
+			pkLandVertex[ iPatchIndex ]	= Vector3(fScaleX, float(pkHmVertex[iVertexIndex].height*HEIGHTMAP_SCALE) ,fScaleZ);
+			//pkLandNormals[ iPatchIndex ]	= pkHmVertex[ iVertexIndex ].normal;
+			iPatchIndex++;
+		}
+	}
+
+	cout << "iNumOfPatchVertex: "<< iNumOfPatchVertex << endl;
+	cout << "iPatchIndex: "<< iPatchIndex << endl;
+
+	// Create Elements List
+	glDisable(GL_TEXTURE_2D);
+//	glDisable(GL_LIGHTING );
+
+	for( z = 0 ; z < iSize; z++){
+		glBegin(GL_TRIANGLE_STRIP);
+		for( x = 0 ; x < iSize ; x++){	
+			iVertexIndex = z * iSize + x;
+			//glNormal3fv((float*)&pkLandNormals[iVertexIndex]);			
+			glVertex3fv((float*)&pkLandVertex[iVertexIndex]);					
+			iVertexIndex = (z+iStep) * iSize + x;
+			//glNormal3fv((float*)&pkLandNormals[iVertexIndex]);			
+			glVertex3fv((float*)&pkLandVertex[iVertexIndex]);					
+		}
+		glEnd();		
+	}
+	
+	glEnable(GL_TEXTURE_2D);
+//	glEnable(GL_LIGHTING );
+
+
+	// Draw Layers
+/*	glColor3f(1,1,1);
+	glPointSize(15);
+	glBegin(GL_POINTS);
+		for(int i=0; i<iNumOfPatchVertex; i++)
+			glVertex3f(pkLandVertex[i].x, pkLandVertex[i].y, pkLandVertex[i].z);
+	glEnd();
+	glPointSize(1);*/
+
+	// Fill Holes.
+
+	delete [] pkLandVertex;
+	delete [] pkLandNormals;
+	delete [] pkLandTextureCoo1;
+	delete [] pkLandTextureCoo2;
 }
 

@@ -76,6 +76,8 @@ class RENDER_API Render : public ZFObject {
 		void DrawAllHM(HeightMap* kmap,Vector3 CamPos);
 		void DrawPatch(HeightMap* kmap,Vector3 CamPos,int xp,int zp,int iSize);
 		
+		void DrawPatch_Vim1(HeightMap* kmap,Vector3 CamPos,int xp,int zp,int iSize);
+
 		void DrawSkyBox(Vector3 CamPos,Vector3 kHead,int iHor,int iTop);
 		void DrawSkyBox_SixSided(Vector3 CamPos,Vector3 kHead,int* aiSideTextures);
 		void DrawWater(Vector3 kCamPos,Vector3 kPosition,Vector3 kHead,int iSize,int iStep,int iTexture);
@@ -88,6 +90,9 @@ class RENDER_API Render : public ZFObject {
 		void DrawBoundSphere(float fRadius, Vector3);
 		void DrawBox(Vector3 kPos,Vector3 kRot,Vector3 kScale,int iTexture);
 		void DrawColorBox(Vector3 kPos,Vector3 kRot,Vector3 kScale,Vector3 kColor);
+		void DrawAABB( float x, float y, float z, float sizex,float sizey,float sizez, float fMin,float fMax, Vector3 kColor );
+
+		void GetMinMax(HeightMap* kMap, float& fMin, float& fMax, int xp,int zp,int iSize);
 
 		void DumpGLState(void);
 

@@ -269,6 +269,44 @@ void ZeroFps::Run_Client()
 
 void ZeroFps::Update_System()
 {
+// RROFILE
+/*
+	float fATime = GetTicks() - m_fSystemUpdateTime; 	
+	int iLoops = int(m_fSystemUpdateFps * fATime);
+
+
+	if(iLoops<=0)
+		return;
+
+	m_fGameFrameTime = 1/m_fSystemUpdateFps;//(fATime / iLoops);	
+	
+	float m_fLU = m_fSystemUpdateTime;
+	
+	//m_fGameTime = GetTicks();
+
+	for(int i=0;i<iLoops;i++)
+	{
+		m_fGameTime = m_fLU + (i * m_fGameFrameTime);
+		
+		if(m_bRunWorldSim) {
+			//update all normal propertys
+			m_pkObjectMan->Update(PROPERTY_TYPE_NORMAL,PROPERTY_SIDE_ALL,false);
+			m_pkObjectMan->UpdateGameMessages();
+
+			//update physicsengine
+			m_pkPhysEngine->Update();	
+			}
+
+		//delete objects
+		m_pkObjectMan->UpdateDelete();
+		
+		//update the resource manager
+		m_pkResourceDB->Refresh();
+
+		m_fSystemUpdateTime = GetTicks();
+//
+*/
+// NORMAL
 	float fATime = GetTicks() - m_fSystemUpdateTime; 	
 	int iLoops = int(m_fSystemUpdateFps * fATime);
 
