@@ -137,10 +137,10 @@ bool GLGuiRender::RenderQuad(Rect kScreenRect, bool bMask)
 		glBegin(GL_QUADS);		
 			//glColor3f(m_pkSkin->m_afBkColor[0],m_pkSkin->m_afBkColor[1],m_pkSkin->m_afBkColor[2]);
 			glColor3f(1,1,1);
-			glTexCoord2f(0,0);	glVertex2i(kScreenRect.Left,m_iScreenHeight-kScreenRect.Bottom);		 
-			glTexCoord2f(0,wy);	glVertex2i(kScreenRect.Left,m_iScreenHeight-kScreenRect.Top);		
-			glTexCoord2f(wx,wy);	glVertex2i(kScreenRect.Right,m_iScreenHeight-kScreenRect.Top);    
-			glTexCoord2f(wx,0);	glVertex2i(kScreenRect.Right,m_iScreenHeight-kScreenRect.Bottom);    
+			glTexCoord2f(0,0);		glVertex2i(kScreenRect.Left,m_iScreenHeight-kScreenRect.Bottom);		 
+			glTexCoord2f(0,-wy);		glVertex2i(kScreenRect.Left,m_iScreenHeight-kScreenRect.Top);		
+			glTexCoord2f(wx,-wy);	glVertex2i(kScreenRect.Right,m_iScreenHeight-kScreenRect.Top);    
+			glTexCoord2f(wx,0);		glVertex2i(kScreenRect.Right,m_iScreenHeight-kScreenRect.Bottom);    
 		glEnd();							
 	}
 	 		
@@ -166,8 +166,8 @@ bool GLGuiRender::RenderQuad(Rect kScreenRect, bool bMask)
 			glColor3f(m_pkSkin->m_afBkColor[0],m_pkSkin->m_afBkColor[1],m_pkSkin->m_afBkColor[2]);
 
 		glTexCoord2f(0,0);		glVertex2i(kScreenRect.Left,m_iScreenHeight-kScreenRect.Bottom);		 
-		glTexCoord2f(0,wy);		glVertex2i(kScreenRect.Left,m_iScreenHeight-kScreenRect.Top);		
-		glTexCoord2f(wx,wy);	glVertex2i(kScreenRect.Right,m_iScreenHeight-kScreenRect.Top);    
+		glTexCoord2f(0,-wy);		glVertex2i(kScreenRect.Left,m_iScreenHeight-kScreenRect.Top);		
+		glTexCoord2f(wx,-wy);	glVertex2i(kScreenRect.Right,m_iScreenHeight-kScreenRect.Top);    
 		glTexCoord2f(wx,0);		glVertex2i(kScreenRect.Right,m_iScreenHeight-kScreenRect.Bottom);    
 	glEnd();
 

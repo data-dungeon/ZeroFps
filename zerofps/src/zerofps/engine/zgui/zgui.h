@@ -53,6 +53,7 @@ class ZGuiResourceManager;
 class ENGINE_API ZGui  
 {
 public:	
+	void SetDefaultFont(ZGuiFont* pkFont);
 	void AddKeyCommand(int Key, ZGuiWnd* pkFocusWnd, ZGuiWnd* pkTriggerWnd);
 	ZGuiFont* AddBitmapFont(char* strBitmapName, char cCharsOneRow, char cCellSize, char cPixelGapBetweenChars, int iID);
 	ZGuiFont* GetBitmapFont(int iID);

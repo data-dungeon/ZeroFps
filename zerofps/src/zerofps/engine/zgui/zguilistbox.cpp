@@ -4,6 +4,7 @@
 
 #include "zguilistbox.h"
 #include "../../render/zguirenderer.h"
+#include "../../basic/zfassert.h"
 #include "zguiscrollbar.h"
 #include "zguibutton.h"
 #include "zgui.h"
@@ -281,8 +282,21 @@ bool ZGuiListbox::Notify(ZGuiWnd* pkWnd, int iCode)
 					int* piParams = new int[2];
 					piParams[0] = GetID(); // Listbox ID
 					piParams[1] = m_pkSelectedItem->GetIndex(); // list item ID
-					GetGUI()->GetActiveCallBackFunc()(
-						GetGUI()->GetActiveMainWnd(), ZGM_SELECTLISTITEM, 2, piParams);
+					
+					ZGui* pkGui = GetGUI();
+					if(pkGui == NULL)
+					{
+						pkGui = GetParent()->GetGUI();
+						ZFAssert(pkGui, "ZGuiListbox::Notify, GetGUI = NULL");
+					}
+
+					callbackfunc cb = pkGui->GetActiveCallBackFunc();
+					ZFAssert(cb, "ZGuiListbox::Notify, GetActiveCallBackFunc = NULL");
+
+					ZGuiWnd* pkActivMainWnd = pkGui->GetActiveMainWnd();
+					ZFAssert(pkActivMainWnd, "ZGuiListbox::Notify, pkGui->GetActiveMainWnd() = NULL");
+					
+					cb(pkActivMainWnd, ZGM_SELECTLISTITEM, 2, piParams);
 					delete[] piParams;
 
 					break;

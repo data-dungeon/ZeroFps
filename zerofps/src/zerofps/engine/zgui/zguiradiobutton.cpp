@@ -18,7 +18,8 @@ ZGuiRadiobutton::ZGuiRadiobutton(Rect kRectangle, ZGuiWnd* pkParent, int iID, in
 	m_pkPrev = NULL;
 	m_pkNext = NULL;
 	m_iGroupID = -1;
-	m_pkCheckbox = new ZGuiCheckbox(kRectangle, this, true, iID);
+	m_pkCheckbox = new ZGuiCheckbox(Rect(0,0,kRectangle.Width(),
+		kRectangle.Height()), this, true, iID);
 	ConnectToGroup(iGroupID, m_pkLastbutton);
 	m_pkLastbutton = this;
 }
@@ -73,6 +74,8 @@ bool ZGuiRadiobutton::Notify(ZGuiWnd* pkWnd, int iCode)
 		}
 
 		m_pkCheckbox->CheckButton();
+
+		ZGuiWnd::SetFocus();
 	}
 
 	return true;

@@ -46,7 +46,7 @@ public:
 	virtual void SetFont(ZGuiFont* pkFont);
 	ZGuiFont* GetFont() { return m_pkFont; }
 
-	void Resize(int Width, int Height);
+	void Resize(int Width, int Height, bool bChangeMoveArea=true);
 	ZGuiSkin* GetSkin() { return m_pkSkin; }
 	virtual void SetSkin(ZGuiSkin* pkSkin, int iBkMaskTexture = -1, int iBorderMaskTexture = -1);
 	
@@ -59,11 +59,12 @@ public:
 	bool RemoveChild( ZGuiWnd *pkWindow );
 	bool AddChild(ZGuiWnd *pkWindow);					// Add a new childwindow
 	bool SetParent(ZGuiWnd *pkWindow);					// Set the parent window
-	ZGuiWnd* GetParent();								// Get the parent window
+	ZGuiWnd* GetParent(bool bRootParent=false);								// Get the parent window
 	bool SetPos(int x, int y, bool bScreenSpace=false, bool bFreeMovement=false);	// Move the window and change the size
 	virtual bool Render(ZGuiRender* pkRender);						// Render this window
 	virtual bool Notify(ZGuiWnd* pkWnd, int iCode) {return false;}
 	unsigned int GetID() {return m_iID;}
+	void SetID(int iID) {m_iID = iID;}
 	void SetGUI(ZGui* pkGui);
 
 	void Enable()	{ m_bEnabled = true;  }

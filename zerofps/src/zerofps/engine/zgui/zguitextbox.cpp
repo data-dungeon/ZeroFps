@@ -198,8 +198,14 @@ void ZGuiTextbox::ResizeTextBuffer( int nCharacters )
 // överlagrad från Zguiwnd
 void ZGuiTextbox::SetText(char* strText)
 {
-	if(strText == NULL)
+	if(strText == NULL || strlen(strText) < 1)
+	{
+		delete[] m_strText;
+		m_iTextLength = 1;
+		m_strText = new char[m_iTextLength];
+		m_strText[0] = '\0';
 		return;
+	}
 
 	int iLength = strlen(strText)+1;
 

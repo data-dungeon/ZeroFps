@@ -118,9 +118,21 @@ bool ZGuiWnd::SetParent( ZGuiWnd *pkWindow )
     return true;
 }
 
-ZGuiWnd *ZGuiWnd::GetParent()
+ZGuiWnd *ZGuiWnd::GetParent(bool bRootParent)
 {
-	return m_pkParent;
+	if(bRootParent==false)
+		return m_pkParent;
+	else
+	{
+		ZGuiWnd* pkParent = GetParent(false);
+		ZGuiWnd* next = pkParent;
+		while(next != NULL) 
+		{
+			pkParent = next;
+			next = next->GetParent(false);		
+		}
+		return pkParent;
+	}
 }
 
 void ZGuiWnd::GetChildrens(list<ZGuiWnd*>& kList)
@@ -323,7 +335,12 @@ void ZGuiWnd::SetGUI(ZGui* pkGui)
 void ZGuiWnd::SetText(char* strText)
 {
 	if(strText == NULL)
-		return;
+	{
+		delete[] m_strText;
+		m_iTextLength = 1;
+		m_strText = new char[m_iTextLength];
+		m_strText[0] = '\0';
+	}
 
 	int iLength = strlen(strText);
 
@@ -362,13 +379,14 @@ Rect ZGuiWnd::GetScreenRect()
 	return m_kArea;
 }
 
-void ZGuiWnd::Resize(int Width, int Height)
+void ZGuiWnd::Resize(int Width, int Height, bool bChangeMoveArea)
 {
 
 	m_kArea.Right = m_kArea.Left + Width;
 	m_kArea.Bottom = m_kArea.Top + Height;
 
-	m_kMoveArea = m_kArea;
+	if(bChangeMoveArea)
+		m_kMoveArea = m_kArea;
 }
 
 void ZGuiWnd::Move(int dx, int dy, bool bScreenSpace, bool bFreeMovement)

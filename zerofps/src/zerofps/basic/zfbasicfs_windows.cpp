@@ -37,6 +37,50 @@ bool ZFBasicFS::ListDir(vector<string>* pkFiles, const char* acName, bool bOnlyM
 	return true;
 }
 
+bool ZFBasicFS::ListDirFilter(vector<string>* pkFiles, vector<string>& pkFilters, 
+							  const char* acName, bool bIgnoreMaps)
+{  
+	WIN32_FIND_DATA finddata;
+
+	char searchPath[MAX_PATH];
+	strcpy(searchPath, acName);
+
+	if(strnicmp("\\*",searchPath+strlen(searchPath)-2,2))
+		strcat(searchPath, "\\*");
+		
+	HANDLE hFind = FindFirstFile(searchPath, &finddata);         
+	BOOL bMore = (hFind != (HANDLE) -1);   
+	BOOL bIsDir;
+		
+	while (bMore) 
+	{                  
+		bIsDir = (finddata.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY);                 
+
+		if(bIsDir == TRUE || strcmp(finddata.cFileName, "..") == 0)
+		{
+			if(bIgnoreMaps == false)
+				pkFiles->push_back(string(finddata.cFileName));
+		}
+		else
+		{
+			for(unsigned int i=0; i<pkFilters.size(); i++)
+			{
+				if(strstr(finddata.cFileName, (char*) pkFilters[i].c_str()) != NULL)
+				{
+					pkFiles->push_back(string(finddata.cFileName));
+					break;
+				}
+			}
+		}
+			
+		bMore = FindNextFile(hFind, &finddata);         
+	}
+
+	FindClose(hFind);
+
+	return true;
+}
+
 bool ZFBasicFS::CreateDir(const char* acName)
 {
 	if(!CreateDirectory(acName, NULL))

@@ -325,8 +325,8 @@ bool ZGui::OnMouseUpdate()
 
 	ZGuiWnd* pkFocusWindow = m_pkActiveMainWin->pkWin->Find(x, y);
 
-	if(pkFocusWindow == NULL)
-		pkFocusWindow = m_pkActiveMainWin->pkWin;
+	/*if(pkFocusWindow == NULL)
+		pkFocusWindow = m_pkActiveMainWin->pkWin;*/
 
 	ZGuiWnd::m_pkWndUnderCursor = pkFocusWindow;
 
@@ -461,7 +461,7 @@ bool ZGui::OnKeyUpdate()
 	map<pair<ZGuiWnd*, int>, ZGuiWnd*>::iterator itKey;
 	itKey = m_KeyCommandTable.find(pair<ZGuiWnd*, int>(ZGuiWnd::m_pkFocusWnd, iKey));
 	if(itKey != m_KeyCommandTable.end())
-	{
+	{		
 		// Skicka ett Command medelande till valt fönster.
 		int* pkParams = new int[1];
 		int id = itKey->second->GetID(); // control id
@@ -477,6 +477,7 @@ bool ZGui::OnKeyUpdate()
 	{
 		if(m_pkInput->Pressed(KEY_RSHIFT) || m_pkInput->Pressed(KEY_LSHIFT))
 		{
+
 			if(iKey == '7')
 				iKey = '/';
 			else
@@ -674,5 +675,14 @@ void ZGui::ShowCursor(bool bShow)
 	m_pkCursor->Show(bShow);
 }
 
-
-
+void ZGui::SetDefaultFont(ZGuiFont* pkFont)
+{
+	map<int, ZGuiFont*>::iterator itFont;
+	itFont = m_pkFonts.find(ZG_DEFAULT_GUI_FONT);
+	if(itFont != m_pkFonts.end())
+	{
+		delete (itFont->second);
+		m_pkFonts.erase(itFont);
+		m_pkFonts.insert( map<int, ZGuiFont*>::value_type(pkFont->m_iID, pkFont)); 
+	}
+}
