@@ -22,7 +22,6 @@ ZGuiToolTip::ZGuiToolTip(float fDisplayTime) : m_fDisplayTime(fDisplayTime)
 
 	m_pkToolTipWnd = new ZGuiLabel(Rect(300,300,400,400),  NULL, false, 432342);
 	m_pkToolTipWnd->SetSkin(new ZGuiSkin( 255, 0, 0, 255, 0, 0,  2));
-
 }
 
 ZGuiToolTip::~ZGuiToolTip()
