@@ -341,12 +341,17 @@ void Tcs::UpdateLineTests(float fAlphaTime)
 				{
 					bTuchedGround = true;
 				
-					m_kBodys[i]->m_kNewPos = m_kLastLineTestColPos + Vector3(0,m_kBodys[i]->m_fLegLength*0.9,0);
+					//m_kBodys[i]->m_kNewPos = m_kLastLineTestColPos + Vector3(0,m_kBodys[i]->m_fLegLength*0.9,0);
 					m_kBodys[i]->m_bOnGround = true;
-					m_kBodys[i]->m_kLinearVelocity.y= 0;
+					//m_kBodys[i]->m_kLinearVelocity.y= 0;
 				
 					//ground breaks
 					m_kBodys[i]->m_kLinearVelocity -= 10*(m_kBodys[i]->m_kLinearVelocity * fAlphaTime);											
+					
+					
+					//set UP velocity depending on how far player has sunken into the ground
+					m_kBodys[i]->m_kLinearVelocity.y = (m_kBodys[i]->m_fLegLength - distance) * 20.0;
+					
 				}
 			}
 			
