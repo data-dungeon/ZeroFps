@@ -989,12 +989,12 @@ void ZeroRTS::CreateClientUnits(int iID)
 
 	// Test mode that spawns the max amount of objects.
 	vector<string>	kBuildNames;
-	kBuildNames.push_back("ZeroRTSCommandCenter");
-	kBuildNames.push_back("ZeroRTSFactory");
+	kBuildNames.push_back("ZeroRTSTestBox");
+/*	kBuildNames.push_back("ZeroRTSFactory");
 	kBuildNames.push_back("ZeroRTSPowerPlant");
 	kBuildNames.push_back("ZeroRTSRadar");
 	kBuildNames.push_back("ZeroRTSSuply");
-	kBuildNames.push_back("ZeroRTSFactory");
+	kBuildNames.push_back("ZeroRTSFactory");*/
 
 	vector<string>	kUnitNames;
 	kUnitNames.push_back("ZeroRTSEngineringCrew");
@@ -1019,7 +1019,8 @@ void ZeroRTS::CreateClientUnits(int iID)
 			ob->AttachToClosestZone();
 		
 			P_ServerUnit* su = (P_ServerUnit*)ob->GetProperty("P_ServerUnit");		
-			su->m_kInfo.m_Info2.m_cTeam = iID;		
+			if(su)
+				su->m_kInfo.m_Info2.m_cTeam = iID;		
 		}
 
 		// Spawn några units.
@@ -1027,14 +1028,15 @@ void ZeroRTS::CreateClientUnits(int iID)
 			// Pick a random building to make
 			iRnd = rand() % kUnitNames.size();
 			
-			Object* ob = pkObjectMan->CreateObjectByArchType( kUnitNames[iRnd].c_str() );	
+			Object* ob = pkObjectMan->CreateObjectByArchType("ZeroRTSTestBox"  );	//kUnitNames[iRnd].c_str()
 			Vector3 pos = Vector3( 250 - rand() % 500, 0, 250 - rand() % 500);
 			ob->SetPos(pos);
 			ob->SetPos(pos);		
 			ob->AttachToClosestZone();
 		
 			P_ServerUnit* su = (P_ServerUnit*)ob->GetProperty("P_ServerUnit");		
-			su->m_kInfo.m_Info2.m_cTeam = iID;		
+			if(su)
+				su->m_kInfo.m_Info2.m_cTeam = iID;		
 		}
 
 

@@ -103,6 +103,10 @@ public:
 	int					m_iPos;
 	IPaddress			m_kAddress;
 //	ZFNetHeader			m_kPacketHeader;
+	bool					m_bReadError;
+
+	void SetError(bool bError) { m_bReadError = bError;	}
+	bool IsReadError() { return m_bReadError; }
 
 	void Write_Str(const char* szString);
 	void Read_Str(char* szString);

@@ -914,6 +914,9 @@ void ZeroFps::HandleNetworkPacket(NetPacket* pkNetPacket)
 	pkNetPacket->Read(ucGamePacketType);
 
 	while(ucGamePacketType != ZFGP_ENDOFPACKET) {
+		if(pkNetPacket->IsReadError())
+			return;
+
 		switch(ucGamePacketType) {
 			case ZFGP_DELETEOBJECT:
 				g_ZFObjSys.Logf("net", "HandleNetworkPacket(ZFGP_DELETEOBJECT)\n");
@@ -1017,6 +1020,8 @@ void ZeroFps::Connect(int iConnectionID)
 	m_pkConsole->Printf("Player Object %d", m_kClient[iConnectionID].m_pkObject->iNetWorkID);
 
 	m_pkApp->OnServerClientJoin(&m_kClient[iConnectionID],iConnectionID);
+
+	m_pkObjectMan->m_fEndTimeForceNet = GetEngineTime() + 5.0;
 }
 
 void ZeroFps::Disconnect(int iConnectionID)

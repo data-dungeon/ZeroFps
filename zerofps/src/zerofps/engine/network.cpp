@@ -38,6 +38,7 @@ void RemoteNode::Clear()
 
 	m_kRecvGraph.SetMinMax(0,10000);		
 	m_kRecvGraph.SetSize(100,100,50);
+
 }
 
 void RemoteNode::SetAddress(IPaddress* pkAddress)
@@ -70,6 +71,7 @@ void NetPacket::Clear()
 {
 	m_iLength = 0;
 	m_iPos = 0;
+	m_bReadError = false;
 }
 
 void NetPacket::SetTarget(const char* szIp)
@@ -243,6 +245,9 @@ int NetWork::NetString_GetIndex(const char* szString)
 
 string NetWork::NetString_GetString(int iIndex)
 {
+	if(iIndex < 0 || iIndex >= m_kStringTable.size())
+		return string("nons");
+
 	if(m_kStringTable[iIndex].m_bInUse)
 		return m_kStringTable[iIndex].m_NetString.c_str();
 	else 

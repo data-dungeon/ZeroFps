@@ -210,6 +210,7 @@ Object* ObjectManager::CreateObjectByNetWorkID(int iNetID)
 	
 	g_ZFObjSys.Logf("net", " CreateObjectByNetWorkID( %d ).\n", iNetID);
 
+	pkNew->AddProperty("ModelProperty");
 	return pkNew;
 }
 
@@ -516,6 +517,9 @@ void ObjectManager::UpdateState(NetPacket* pkNetPacket)
 		if( pkNetSlave ) {
 			g_ZFObjSys.Logf("net", " Refreshing object %d.\n", iObjectID);
 			pkNetSlave->PackFrom(pkNetPacket);
+			if(pkNetPacket->IsReadError())
+				return;
+
 			pkNetPacket->Read(iObjectID);
 			}
 		else {
@@ -536,12 +540,13 @@ void ObjectManager::PackToClients()
 
 	if(m_pkZeroFps->GetEngineTime() < m_fEndTimeForceNet) {
 		m_iForceNetUpdate = 0xFFFFFFFF;
+		cout << "Forcing Object network updates" << endl;
 		}
 	else {
 		m_iForceNetUpdate  = 0x0;					
 		}
 
-	m_iForceNetUpdate  = 0x0;					
+//	m_iForceNetUpdate  = 0x0;					
 
 	/*
 	if(net->m_eNetStatus != NET_SERVER) {

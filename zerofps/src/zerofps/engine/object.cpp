@@ -406,8 +406,8 @@ void Object::PackTo(NetPacket* pkNetPacket)
 
 	pkNetPacket->Write(m_fRadius);
 
-//	pkNetPacket->Write_NetStr(m_kName.c_str());
-	pkNetPacket->Write_Str(m_kName.c_str());
+//	pkNetPacket->Write_Str(m_kName.c_str());
+	pkNetPacket->Write_NetStr(m_kName.c_str());
 	g_ZFObjSys.Logf("net", " Object Name '%s':", m_kName.c_str() );
 	
 	char szPropertyName[256];
@@ -459,13 +459,13 @@ void Object::PackFrom(NetPacket* pkNetPacket)
 	GetRadius() = fFloat;
 
 	char szStr[256];
-	pkNetPacket->Read_Str(szStr);
-	//pkNetPacket->Read_NetStr(szStr);
+	//pkNetPacket->Read_Str(szStr);
+	pkNetPacket->Read_NetStr(szStr);
 	m_kName = szStr;
 	g_ZFObjSys.Logf("net", " Object Name '%s':", m_kName.c_str() );
+	g_ZFObjSys.Logf("net", " ObjHead Size = %d\n",  pkNetPacket->m_iPos - iStart );	
 
 	char szProperty[256];
-
 //	pkNetPacket->Read_Str(szProperty);
 	pkNetPacket->Read_NetStr(szProperty);
 
@@ -473,15 +473,23 @@ void Object::PackFrom(NetPacket* pkNetPacket)
 	while(strcmp(szProperty,"") != 0) {
 		int iPStart = pkNetPacket->m_iPos;
 		Property* pProp  = AddProxyProperty(szProperty);
-		pProp->PackFrom(pkNetPacket);
-//		pkNetPacket->Read_Str(szProperty);
+		if(pProp) {
+			pProp->PackFrom(pkNetPacket);
+			}
+		else {
+			cout << "Error in netpacket" << endl;
+			pkNetPacket->SetError(true);
+			return;
+			}
+
 		int iPEnd	= pkNetPacket->m_iPos;
-		g_ZFObjSys.Logf("net", "Property: %s Size = %d\n", szProperty, iPEnd - iPStart);
+		g_ZFObjSys.Logf("net", "Property: %s Size = %d\n", szProperty, (iPEnd - iPStart) + 4);	// +4 for netstring for property name
 
 		pkNetPacket->Read_NetStr(szProperty);
 		}	
 
 	int iEnd = pkNetPacket->m_iPos;
+	g_ZFObjSys.Logf("net", " End Of Propertys size: 4");
 	g_ZFObjSys.Logf("net", "Object Size: %d\n",(iEnd - iStart) );
 	m_pkObjectMan->m_iTotalNetObjectData += (iEnd - iStart);
 	m_pkObjectMan->m_iNumOfNetObjects ++;
