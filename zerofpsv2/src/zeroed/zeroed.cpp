@@ -33,6 +33,7 @@
 #include "../mcommon/ml_netmessages.h"
 #include "../mcommon/p_charactercontrol.h"
 #include "../mcommon/p_characterproperty.h"
+#include "../mcommon/p_fogplane.h"
 #include "../zerofpsv2/engine_systems/propertys/p_ambientsound.h"
 
 ZeroEd g_kZeroEd("ZeroEd", 0, 0, 0);
@@ -427,6 +428,7 @@ void ZeroEd::RegisterResources()
 void ZeroEd::RegisterPropertys()
 {
 	//m_pkPropertyFactory->Register("P_CharacterProperty",	Create_P_CharacterProperty);
+	Register_P_FogPlane(m_pkZeroFps);
 	Register_P_CharacterProperty(m_pkZeroFps);
 	Register_P_Ml(m_pkZeroFps);
 	Register_P_CharacterControl(m_pkZeroFps);	

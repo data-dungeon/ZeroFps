@@ -1,0 +1,132 @@
+#include "p_fogplane.h"
+
+
+P_FogPlane::P_FogPlane()
+{
+	strcpy(m_acName,"P_FogPlane");		
+	m_iType=PROPERTY_TYPE_RENDER;
+	m_iSide=PROPERTY_SIDE_CLIENT;
+
+	bNetwork = true;	
+	m_iVersion = 2;
+	m_iSortPlace=10;
+	
+	m_pkZShaderSystem=	static_cast<ZShaderSystem*>(g_ZFObjSys.GetObjectPtr("ZShaderSystem"));				
+
+	
+	m_fSize = 4;
+	
+		
+	m_pkFogMaterial = new ZMaterial;
+	m_pkFogMaterial->GetPass(0)->m_kTUs[0]->SetRes("data/textures/fogplane.tga");
+	m_pkFogMaterial->GetPass(0)->m_iPolygonModeFront = 	FILL_POLYGON;
+	m_pkFogMaterial->GetPass(0)->m_iCullFace = 				CULL_FACE_NONE;		
+	m_pkFogMaterial->GetPass(0)->m_bLighting = 				true;		
+	m_pkFogMaterial->GetPass(0)->m_bFog = 						true;		
+	m_pkFogMaterial->GetPass(0)->m_bBlend = 					true;	
+	m_pkFogMaterial->GetPass(0)->m_bDepthMask =				false;
+		
+	
+	m_pkFogMaterial->GetPass(0)->m_iBlendSrc = SRC_ALPHA_BLEND_SRC;
+	m_pkFogMaterial->GetPass(0)->m_iBlendDst = ONE_MINUS_SRC_ALPHA_BLEND_DST;
+
+
+}
+
+P_FogPlane::~P_FogPlane()
+{
+
+	delete m_pkFogMaterial;
+}
+
+void P_FogPlane::Update()
+{
+	static float afVerts[] = {	-0.5,	0,	0.5,	
+							 			-0.5,	0,	-0.5,	
+							 			0.5,	0,	-0.5,	
+										0.5,	0,	0.5};
+										
+	static float afNormals[] = {	0,1,0,	
+							 				0,1,0,	
+							 				0,1,0,	
+											0,1,0,};										
+	
+	static float afUvs[] = {	0,1,
+							 			1,1,
+										1,0,
+										0,0};	
+
+	m_pkZShaderSystem->ResetPointers();
+	m_pkZShaderSystem->SetPointer(VERTEX_POINTER,afVerts);
+	m_pkZShaderSystem->SetPointer(TEXTURE_POINTER0,afUvs);
+	m_pkZShaderSystem->SetPointer(NORMAL_POINTER,afNormals);
+	m_pkZShaderSystem->SetNrOfVertexs(4);
+	
+										
+										
+	m_pkZShaderSystem->MatrixPush();	
+	
+	m_pkZShaderSystem->MatrixTranslate(GetEntity()->GetWorldPosV());
+	//m_pkZShaderSystem->MatrixRotate(Vector3(0,m_pkZeroFps->GetTicks()*50,0));
+	m_pkZShaderSystem->MatrixScale(m_fSize);
+	
+	m_pkZShaderSystem->BindMaterial(m_pkFogMaterial);	
+	m_pkZShaderSystem->DrawArray(QUADS_MODE);										
+	
+	
+	m_pkZShaderSystem->MatrixPop();
+
+	
+}
+
+vector<PropertyValues> P_FogPlane::GetPropertyValues()
+{
+	vector<PropertyValues> kReturn(1);
+		
+	kReturn[0].kValueName = "size";
+	kReturn[0].iValueType = VALUETYPE_FLOAT;
+	kReturn[0].pkValue    = (void*)&m_fSize;
+
+	return kReturn;
+}
+
+
+void P_FogPlane::Save(ZFIoInterface* pkPackage)
+{
+	pkPackage->Write(m_fSize);
+
+}
+
+void P_FogPlane::Load(ZFIoInterface* pkPackage,int iVersion)
+{
+	if(iVersion == 2)
+		pkPackage->Read(m_fSize);
+}
+
+
+void P_FogPlane::PackTo(NetPacket* pkNetPacket, int iConnectionID )
+{
+	pkNetPacket->Write(m_fSize);
+	
+	SetNetUpdateFlag(iConnectionID,false);
+}
+ 
+void P_FogPlane::PackFrom(NetPacket* pkNetPacket, int iConnectionID )
+{
+	pkNetPacket->Read(m_fSize);
+}
+
+
+Property* Create_P_FogPlane()
+{
+	return new P_FogPlane;
+}
+
+void Register_P_FogPlane(ZeroFps* pkZeroFps)
+{
+	// Register Property
+	pkZeroFps->m_pkPropertyFactory->Register("P_FogPlane", Create_P_FogPlane);					
+
+	// Register Property Script Interface
+
+}

@@ -22,6 +22,7 @@
 #include "../mcommon/ml_netmessages.h"
 #include "../mcommon/p_charactercontrol.h"
 #include "../mcommon/p_characterproperty.h"
+#include "../mcommon/p_fogplane.h"
 #include "../mcommon/zssmltime.h"
 
 #include "../zerofpsv2/engine_systems/propertys/p_track.h"
@@ -229,6 +230,7 @@ void MistServer::RegisterPropertys()
 	Register_P_CharacterProperty(m_pkZeroFps);	
 	Register_P_Ml(m_pkZeroFps);
 	Register_P_CharacterControl(m_pkZeroFps);
+	Register_P_FogPlane(m_pkZeroFps);
 //	m_pkPropertyFactory->Register("P_Car", Create_P_Car);	
 //	m_pkPropertyFactory->Register("P_DMCharacter", Create_P_DMCharacter);
 //	m_pkPropertyFactory->Register("P_DMShop", Create_P_DMShop);

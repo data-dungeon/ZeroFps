@@ -20,6 +20,7 @@
 #include "../mcommon/p_characterproperty.h"
 #include "../mcommon/p_item.h"
 #include "../mcommon/p_container.h"
+#include "../mcommon/p_fogplane.h"
 
 #include "gui_optionsdlg.h"
 
@@ -201,7 +202,7 @@ void MistClient::RegisterPropertys()
 	m_pkPropertyFactory->Register("P_Container", 			Create_P_Container);
 
 	Register_P_CharacterControl(m_pkZeroFps);
-	
+	Register_P_FogPlane(m_pkZeroFps);	
 }
 
 void MistClient::RenderInterface(void)
