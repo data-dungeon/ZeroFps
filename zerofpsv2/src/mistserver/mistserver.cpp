@@ -187,6 +187,7 @@ void MistServer::RegisterPropertys()
 
 void MistServer::OnIdle()
 {	
+
 	m_pkFps->SetCamera(m_pkCamera);		
 	m_pkFps->GetCam()->ClearViewPort();	
 
@@ -298,6 +299,7 @@ void MistServer::Input()
 		m_pkFps->AddHMProperty(z, z->m_iZoneObjectID,z->m_kSize);
 	}  
 
+
 /*	if(m_pkInput->Pressed(KEY_F5) && mp) {
 		m_pkZeroFps->AddHMProperty();
 		mp->SetAnimationActive(false);
@@ -347,13 +349,13 @@ void MistServer::Input()
 		xv.Normalize();
 		zv.Normalize();
 	
-		if(m_pkInput->Pressed(KEY_D))	newpos += xv * fSpeedScale;		
-		if(m_pkInput->Pressed(KEY_A))	newpos += xv * -fSpeedScale;		
-		if(m_pkInput->Pressed(KEY_W))	newpos += zv * -fSpeedScale;
-		if(m_pkInput->Pressed(KEY_S))	newpos += zv * fSpeedScale;	
+		if(m_pkInput->VKIsDown("right"))		newpos += xv * fSpeedScale;		
+		if(m_pkInput->VKIsDown("left"))		newpos += xv * -fSpeedScale;		
+		if(m_pkInput->VKIsDown("forward"))	newpos += zv * -fSpeedScale;
+		if(m_pkInput->VKIsDown("back"))		newpos += zv * fSpeedScale;	
 	
-		if(m_pkInput->Pressed(KEY_Q))	newpos.y += fSpeedScale;
-		if(m_pkInput->Pressed(KEY_E))	newpos.y -= fSpeedScale;
+		if(m_pkInput->VKIsDown("down"))		newpos.y += fSpeedScale;
+		if(m_pkInput->VKIsDown("up"))			newpos.y -= fSpeedScale;
 				
 
 		Vector3 rot;

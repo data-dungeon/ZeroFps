@@ -186,6 +186,7 @@ void MistClient::RegisterResources()
 
 void MistClient::RegisterActions()
 {
+/*
 	m_iActionDoOrder=m_pkInput->RegisterAction("DoOrder");
 	m_iActionPrintServerInfo=m_pkInput->RegisterAction("PrintServerInfo");
 	m_iActionUnExploreAll=m_pkInput->RegisterAction("UnExploreAll");
@@ -197,6 +198,7 @@ void MistClient::RegisterActions()
 	m_iActionSelect=m_pkInput->RegisterAction("Select");
 	m_iActionScroll=m_pkInput->RegisterAction("Scroll");	
 	m_iActionSelectManyModifier=m_pkInput->RegisterAction("SelectManyModifier");	
+*/
 }
 
 void MistClient::RegisterPropertys()

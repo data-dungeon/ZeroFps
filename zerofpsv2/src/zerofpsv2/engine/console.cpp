@@ -51,12 +51,14 @@ bool Console::IsValid()	{ return true; }
 
 void Console::InsertKey(unsigned char ucKey)
 {
+	cout << "InsertKey" << (int )ucKey<<endl;
+
 	if(ucKey == SDLK_BACKSPACE) {
 		RemoveKey(false);
 		return;	
 		}
 
-	if(ucKey == KEY_DELETE) {
+	if(ucKey == SDLK_DELETE) {
 		RemoveKey(true);
 		return;	
 		}
@@ -231,7 +233,12 @@ void Console::Update(void)
 	static float s_fLastRepeatTime = m_pkEngine->GetEngineTime();			//GetGameTime();
 
 	int iKeyPressed = m_pkInput->GetQueuedKey();
-		
+	if(iKeyPressed != -1)	cout << "Key: " << iKeyPressed << endl;
+	if(iKeyPressed == 8) {
+		int ifsdf = 25;
+		}
+
+
 	if(m_pkInput->Pressed(KEY_RSHIFT) || m_pkInput->Pressed(KEY_LSHIFT)){
 		m_bShift=true;
 	}else{
@@ -248,10 +255,11 @@ void Console::Update(void)
 	if(m_pkInput->Pressed(KEY_RIGHT))		eCmd = CONCMD_MARKERRIGHT;
 	if(m_pkInput->Pressed(KEY_INSERT))		eCmd = CONCMD_TOGGLEINSERT;
 	if(m_pkInput->Pressed(KEY_TAB))			eCmd = CONCMD_TOGGLE;
-	if(m_pkInput->Pressed(SDLK_RETURN))		eCmd = CONCMD_RUN;
+	if(m_pkInput->Pressed(KEY_RETURN))		eCmd = CONCMD_RUN;
 
 	if(eCmd != CONCMD_NONE)
 	{
+		cout << "Running Cmd" << endl;
 		if(bUpdate) {
 			PREVTIME = fCurrTime;
 			ConsoleCmd( eCmd );
@@ -259,13 +267,15 @@ void Console::Update(void)
 		return;
 	}
 
+
 	//type text
 	if(strlen(m_aCommand)<COMMAND_LENGHT) 
 	{
 		// Registrera senast knappnedtryck.
 		if(iKeyPressed != -1 && 
-			!(iKeyPressed == KEY_LSHIFT || iKeyPressed == KEY_RSHIFT))
+			!(iKeyPressed == SDLK_LSHIFT || iKeyPressed == SDLK_RSHIFT))
 		{
+	
 			// Formatera bokstaven.
 			FormatKey(iKeyPressed);
 
@@ -277,7 +287,7 @@ void Console::Update(void)
 		}
 		
 		// Kolla om den sist nedtryckta knappen fortfarande är nedtryckt...
-		if(m_pkInput->Pressed(s_iLastKeyPressed))
+		if(m_pkInput->Pressed((Buttons) s_iLastKeyPressed))
 		{
 			float fCurrTime = m_pkEngine->GetEngineTime();	//GetGameTime();
 
@@ -351,6 +361,7 @@ void Console::FormatKey(int& r_iKey)
 {
 	if(m_pkInput->Pressed(KEY_RSHIFT) || m_pkInput->Pressed(KEY_LSHIFT)) 
 	{
+		cout << "Formating Key" << endl;
 		if(r_iKey>96 && r_iKey<123){
 			r_iKey-=32;
 		}

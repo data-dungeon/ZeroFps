@@ -43,7 +43,7 @@
 class MistClient :public Application, public ZGuiApp {
 	private:
 		// actions
-		int 			m_iActionCamLeft;
+/*		int 			m_iActionCamLeft;
 		int 			m_iActionCamRight;
 		int 			m_iActionCamUp;
 		int 			m_iActionCamDown;
@@ -53,7 +53,7 @@ class MistClient :public Application, public ZGuiApp {
 		int			m_iActionExploreAll;
 		int			m_iActionUnExploreAll;		
 		int			m_iActionPrintServerInfo;				
-		int			m_iActionDoOrder;
+		int			m_iActionDoOrder;*/
 		
 		//console functions
 		enum FuncId_e

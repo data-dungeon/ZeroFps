@@ -256,7 +256,12 @@ bool ZeroFps::Init(int iNrOfArgs, char** paArgs)
 void ZeroFps::Run_EngineShell()
 {
 	m_pkInput->SetInputEnabled(true);
-/*
+
+	if(m_pkInput->Pressed(KEY_RETURN)) {
+		cout << "Key Is Down" << endl;
+		} 
+	
+	/*
 	m_pkObjectMan->PackToClients();
 	m_pkNetWork->Run();
 */
@@ -290,16 +295,16 @@ void ZeroFps::Run_EngineShell()
 
 	int iInputKey = -1;
 	for(int i=0; i<256; i++)
-		if(m_pkInput->Pressed(i)) {
+		if(m_pkInput->Pressed((Buttons) i)) {
 			iInputKey = i; break;
 		}
 
-	if(m_pkInput->Pressed(KEY_LEFT)) iInputKey = gKEY_LEFT;
-	else if(m_pkInput->Pressed(KEY_RIGHT)) iInputKey = gKEY_RIGHT;
-	else if(m_pkInput->Pressed(KEY_HOME)) iInputKey = gKEY_HOME;
-	else if(m_pkInput->Pressed(KEY_END)) iInputKey = gKEY_END;
-	else if(m_pkInput->Pressed(KEY_DELETE)) iInputKey = gKEY_DELETE;
-	else if(m_pkInput->Pressed(KEY_INSERT)) iInputKey = gKEY_INSERT;
+	if(m_pkInput->Pressed(KEY_LEFT))				iInputKey = gKEY_LEFT;
+	else if(m_pkInput->Pressed(KEY_RIGHT))		iInputKey = gKEY_RIGHT;
+	else if(m_pkInput->Pressed(KEY_HOME))		iInputKey = gKEY_HOME;
+	else if(m_pkInput->Pressed(KEY_END))		iInputKey = gKEY_END;
+	else if(m_pkInput->Pressed(KEY_DELETE))	iInputKey = gKEY_DELETE;
+	else if(m_pkInput->Pressed(KEY_INSERT))	iInputKey = gKEY_INSERT;
 	
 	m_pkInput->FormatKey(iInputKey);
 
