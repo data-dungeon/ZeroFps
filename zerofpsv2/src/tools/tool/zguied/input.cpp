@@ -470,6 +470,82 @@ void ZGuiEd::OnCommand(int iCtrlID, int iEvent)
 				}
 			break;
 
+		case IDC_HORIZONTAL_CB:
+			if(m_pkFocusWnd)
+			{
+				bool bHorizontal = IsDlgButtonChecked(g_kDlgBoxBottom, IDC_HORIZONTAL_CB);
+
+				Rect rc = m_pkFocusWnd->GetScreenRect();
+			
+				if(bHorizontal)
+				{
+					if(GetWndType(m_pkFocusWnd) == Slider)
+						((ZGuiSlider*)m_pkFocusWnd)->SetCtrlStyle(SCF_HORZ);
+										
+					if(rc.Height() > rc.Width())					
+						m_pkFocusWnd->Resize(rc.Height(), rc.Width());					
+				}
+				else
+				{
+					if(GetWndType(m_pkFocusWnd) == Slider)
+						((ZGuiSlider*)m_pkFocusWnd)->SetCtrlStyle(SCF_VERT);
+					
+					if(rc.Width() > rc.Height())					
+						m_pkFocusWnd->Resize(rc.Width(), rc.Height());
+				}
+
+				if(GetWndType(m_pkFocusWnd) == Scrollbar)
+					((ZGuiScrollbar*)m_pkFocusWnd)->ToogleHorizontal();
+
+				CheckMovement();
+			}
+			break;
+
+		case IDC_PROGRESSBAR_DIR1_RB:
+			((ZGuiProgressbar*)m_pkFocusWnd)->SetDir(PBDIR_LEFT_TO_RIGHT);
+			break;
+
+		case IDC_PROGRESSBAR_DIR2_RB:
+			((ZGuiProgressbar*)m_pkFocusWnd)->SetDir(PBDIR_RIGHT_TO_LEFT);
+			break;
+
+		case IDC_PROGRESSBAR_DIR3_RB:
+			((ZGuiProgressbar*)m_pkFocusWnd)->SetDir(PBDIR_TOP_TO_BOTTOM);
+			break;
+
+		case IDC_PROGRESSBAR_DIR4_RB:
+			((ZGuiProgressbar*)m_pkFocusWnd)->SetDir(PBDIR_BOTTOM_TO_TOP);
+			break;
+
+		case IDC_PBTEXTORIENT_RB1:
+			((ZGuiProgressbar*)m_pkFocusWnd)->m_bShowText = true;
+			((ZGuiProgressbar*)m_pkFocusWnd)->SetTextOrientation(PBTEXTORIENT_CENTER);
+			break;
+
+		case IDC_PBTEXTORIENT_RB2:
+			((ZGuiProgressbar*)m_pkFocusWnd)->m_bShowText = true;
+			((ZGuiProgressbar*)m_pkFocusWnd)->SetTextOrientation(PBTEXTORIENT_LEFT);
+			break;
+
+		case IDC_PBTEXTORIENT_RB3:
+			((ZGuiProgressbar*)m_pkFocusWnd)->m_bShowText = true;
+			((ZGuiProgressbar*)m_pkFocusWnd)->SetTextOrientation(PBTEXTORIENT_OVER);
+			break;
+
+		case IDC_PBTEXTORIENT_RB4:
+			((ZGuiProgressbar*)m_pkFocusWnd)->m_bShowText = true;
+			((ZGuiProgressbar*)m_pkFocusWnd)->SetTextOrientation(PBTEXTORIENT_RIGHT);
+			break;
+
+		case IDC_PBTEXTORIENT_RB5:
+			((ZGuiProgressbar*)m_pkFocusWnd)->m_bShowText = true;
+			((ZGuiProgressbar*)m_pkFocusWnd)->SetTextOrientation(PBTEXTORIENT_UNDER);
+			break;
+
+		case IDC_PBTEXTORIENT_RB6:
+			((ZGuiProgressbar*)m_pkFocusWnd)->m_bShowText = false;
+			break;
+
 		case IDC_CLOSE_BUTTON:
 			m_pkZeroFps->QuitEngine();
 			break;
@@ -677,7 +753,12 @@ void ZGuiEd::OnCommand(int iCtrlID, int iEvent)
 					
 			m_bTestGUI = !m_bTestGUI;
 			m_pkGui->Activate(m_bTestGUI); 
-			m_iTask = TASK_TEST_GUI;			
+			m_iTask = TASK_TEST_GUI;		
+
+			if(m_bTestGUI) // change clear color to notify we are in test mode.
+				m_pkCamera->SetClearColor(Vector4(0.44f,0.14f,0.14f,0));
+			else
+				m_pkCamera->SetClearColor(Vector4(0.44f,0.44f,0.44f,0));
 
 			break;
 
@@ -729,12 +810,14 @@ void ZGuiEd::OnCommand(int iCtrlID, int iEvent)
 					"Resize\r\n" \
 					"Hold Left Shift and click close to right side to resize the widget horizontally \r\n" \
 					"or close to bottom side to resize the widget vertically.\r\n" \
+					"Hold down 'x' to resize the widget only horizontally or 'y' for only vertically resizement.\r\n"
 					"\r\n" \
 					"Delete\r\n" \
 					"Press Delete key.\r\n" \
 					"\r\n" \
 					"Move widget\r\n" \
-					"Press Left, Right, Up or Down Arrow key to move to that direction." \
+					"Press Left, Right, Up or Down Arrow key to move to that direction.\r\n" \
+					"Hold down 'x' to move the widget only horizontally or 'y' for only vertically movement." \
 					"\r\n" \
 				};
 			

@@ -18,6 +18,8 @@ const int SCROLLDOWN_ID = 522;
 class GUI_API ZGuiScrollbar : public ZGuiWnd
 {
 public:
+
+	bool IsHorizontal() { return m_bHorzintal; }
 	
 	int GetArrowButtonHeight();
 	int GetArrowButtonWidth();

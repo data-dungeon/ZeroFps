@@ -97,6 +97,9 @@ void ZGuiProgressbar::SetRange(int iMin, int iMax)
 void ZGuiProgressbar::SetDir(ProgressbarDir eDir)
 {
 	m_eDir = eDir;
+	int w = GetScreenRect().Width();
+	int h = GetScreenRect().Height();
+	Resize(w, h, true);
 }
 
 ProgressbarDir ZGuiProgressbar::GetDir()
@@ -139,7 +142,7 @@ bool ZGuiProgressbar::Render( ZGuiRender* pkRenderer )
 		char text[128];
 
 		if(m_strText && strlen(m_strText) > 0)
-			sprintf(text, "%s = %i/%i\n", m_strText, m_iPos, m_iMax-m_iMin);
+			sprintf(text, "%s %i/%i\n", m_strText, m_iPos, m_iMax-m_iMin);
 		else
 			sprintf(text, "%i/%i\n", m_iPos, m_iMax-m_iMin);
 		

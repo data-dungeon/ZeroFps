@@ -240,8 +240,6 @@ BEGIN
                     ES_NUMBER
     PUSHBUTTON      "Paste",IDC_PASTE_SKIN,386,7,36,14
     PUSHBUTTON      "Copy",IDC_COPY_SKIN,346,7,36,14
-    PUSHBUTTON      "Special Attributes...",IDC_OPEN_SPECIAL_ATTIBUTES_BN,
-                    180,83,75,14
     LTEXT           "Z Value",IDC_STATIC,120,67,9,8
     EDITTEXT        IDC_ZVALUE_EB,132,64,40,14,ES_AUTOHSCROLL | ES_READONLY
     PUSHBUTTON      "Copy All",IDC_COPY_ALL_SKINS,305,7,36,14
@@ -270,7 +268,36 @@ BEGIN
     CONTROL         "Both",IDC_RESIZETYPE_BOTH,"Button",BS_AUTORADIOBUTTON,
                     569,101,31,10
     CONTROL         "MultiLine",IDC_MULTILINE_CB,"Button",BS_AUTOCHECKBOX | 
-                    NOT WS_VISIBLE | WS_TABSTOP,4,101,69,10
+                    NOT WS_VISIBLE | WS_TABSTOP,4,101,46,10
+    CONTROL         "Horizontal",IDC_HORIZONTAL_CB,"Button",BS_AUTOCHECKBOX | 
+                    NOT WS_VISIBLE | WS_TABSTOP,61,101,49,10
+    CONTROL         "Left to Right",IDC_PROGRESSBAR_DIR1_RB,"Button",
+                    BS_AUTORADIOBUTTON | NOT WS_VISIBLE | WS_GROUP,5,103,56,
+                    10
+    CONTROL         "Right to Left",IDC_PROGRESSBAR_DIR2_RB,"Button",
+                    BS_AUTORADIOBUTTON | NOT WS_VISIBLE,62,103,56,10
+    CONTROL         "Top to Bottom",IDC_PROGRESSBAR_DIR3_RB,"Button",
+                    BS_AUTORADIOBUTTON | NOT WS_VISIBLE,119,103,64,10
+    CONTROL         "Bottom to Top",IDC_PROGRESSBAR_DIR4_RB,"Button",
+                    BS_AUTORADIOBUTTON | NOT WS_VISIBLE,183,103,64,10
+    GROUPBOX        "Progressbar Direction",IDC_PROGRESSBAR_DIR_GROUP_LABEL,
+                    2,94,252,23,NOT WS_VISIBLE,WS_EX_RIGHT
+    GROUPBOX        "Progressbar Textorientation",
+                    IDC_PROGRESSBAR_TEXTORIENT_GROUP_LABEL,259,94,235,25,NOT 
+                    WS_VISIBLE
+    CONTROL         "Center",IDC_PBTEXTORIENT_RB1,"Button",
+                    BS_AUTORADIOBUTTON | NOT WS_VISIBLE | WS_GROUP,263,103,
+                    38,10
+    CONTROL         "Left",IDC_PBTEXTORIENT_RB2,"Button",BS_AUTORADIOBUTTON | 
+                    NOT WS_VISIBLE,303,103,28,10
+    CONTROL         "Over",IDC_PBTEXTORIENT_RB3,"Button",BS_AUTORADIOBUTTON | 
+                    NOT WS_VISIBLE,335,103,34,10
+    CONTROL         "Right",IDC_PBTEXTORIENT_RB4,"Button",BS_AUTORADIOBUTTON | 
+                    NOT WS_VISIBLE,372,103,33,10
+    CONTROL         "Under",IDC_PBTEXTORIENT_RB5,"Button",BS_AUTORADIOBUTTON | 
+                    NOT WS_VISIBLE,410,103,36,10
+    CONTROL         "None",IDC_PBTEXTORIENT_RB6,"Button",BS_AUTORADIOBUTTON | 
+                    NOT WS_VISIBLE,450,104,34,10
 END
 
 

@@ -101,6 +101,19 @@
 #define IDC_IMAGE_INFO_LABEL            1093
 #define IDC_MULTILINE_CB                1094
 #define IDC_SCREEN_ALIGNMENT_GB         1095
+#define IDC_HORIZONTAL_CB               1096
+#define IDC_PROGRESSBAR_DIR1_RB         1097
+#define IDC_PROGRESSBAR_DIR2_RB         1098
+#define IDC_PROGRESSBAR_DIR3_RB         1099
+#define IDC_PROGRESSBAR_DIR4_RB         1100
+#define IDC_PROGRESSBAR_DIR_GROUP_LABEL 1101
+#define IDC_PROGRESSBAR_TEXTORIENT_GROUP_LABEL 1102
+#define IDC_PBTEXTORIENT_RB1            1103
+#define IDC_PBTEXTORIENT_RB2            1104
+#define IDC_PBTEXTORIENT_RB3            1105
+#define IDC_PBTEXTORIENT_RB4            1106
+#define IDC_PBTEXTORIENT_RB5            1107
+#define IDC_PBTEXTORIENT_RB6            1108
 #define ID_SDSD_DSFSD                   40001
 #define ID_SDFSDF_SDF                   40002
 #define ID_SDF_SDF                      40003
@@ -126,7 +139,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        106
 #define _APS_NEXT_COMMAND_VALUE         40022
-#define _APS_NEXT_CONTROL_VALUE         1096
+#define _APS_NEXT_CONTROL_VALUE         1108
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

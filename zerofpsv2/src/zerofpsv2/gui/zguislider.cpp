@@ -252,10 +252,40 @@ void ZGuiSlider::GetWndSkinsDesc(vector<SKIN_DESC>& pkSkinDesc) const
 		pkSkinDesc[i].second.insert(0, "Slider: ");
 }
 
+void ZGuiSlider::Resize(int iWidth, int iHeight, bool bChangeMoveArea)
+{
+	if(iWidth == -1) iWidth = GetScreenRect().Width();
+	if(iHeight == -1) iHeight = GetScreenRect().Height();	
 
+	if(GetCtrlStyle(SCF_HORZ))
+	{
+		if(iWidth < iHeight)
+		{
+			int temp = iHeight;
+			iHeight = iWidth;
+			iWidth = temp;
+		}
 
+		ZGuiWnd::Resize(iWidth, iHeight, bChangeMoveArea);
 
+		m_pkLabel->Resize(iWidth, iHeight, bChangeMoveArea); 
+		m_pkButton->Resize(iHeight, iHeight, bChangeMoveArea);		
+	}
+	else
+	{
+		if(iHeight < iWidth)
+		{
+			int temp = iHeight;
+			iHeight = iWidth;
+			iWidth = temp;
+		}
 
+		ZGuiWnd::Resize(iWidth, iHeight, bChangeMoveArea);
 
+		m_pkLabel->Resize(iWidth, iHeight, bChangeMoveArea);
+		m_pkButton->Resize(iWidth, iWidth, bChangeMoveArea);
+	}
 
-
+	m_pkButton->SetMoveArea(m_pkLabel->GetScreenRect());
+	m_pkButton->SetPos(0,0); 
+}

@@ -470,7 +470,6 @@ void ZGuiEd::CreateNewWindow(ZGuiWnd* pkCloneTarget)
 		AddSampleCtrlItem(m_pkFocusWnd);
 
 		ShowSpecialControls();
-
 	}
 }
 
@@ -1230,5 +1229,80 @@ void ZGuiEd::ShowSpecialControls()
 	else
 		ShowWindow(GetDlgItem(g_kDlgBoxBottom, IDC_MULTILINE_CB), SW_HIDE);
 
+	if(m_pkFocusWnd != NULL &&
+		GetWndType(m_pkFocusWnd) == Slider || 
+		GetWndType(m_pkFocusWnd) == Scrollbar)
+	{
+		ShowWindow(GetDlgItem(g_kDlgBoxBottom, IDC_HORIZONTAL_CB), SW_SHOW);
+		SetWindowPos(GetDlgItem(g_kDlgBoxBottom, IDC_HORIZONTAL_CB), NULL,
+			x, y, 0, 0, SWP_NOZORDER | SWP_NOSIZE);
+		x += (GetWindowSize(IDC_HORIZONTAL_CB, false, true) + 5);
+	}
+	else
+		ShowWindow(GetDlgItem(g_kDlgBoxBottom, IDC_HORIZONTAL_CB), SW_HIDE);
+
+	if(m_pkFocusWnd && GetWndType(m_pkFocusWnd) == Slider)
+		CheckDlgButton(g_kDlgBoxBottom, IDC_HORIZONTAL_CB, 
+			((ZGuiSlider*) m_pkFocusWnd)->GetCtrlStyle(SCF_HORZ)); 
+	else
+	if(m_pkFocusWnd && GetWndType(m_pkFocusWnd) == Scrollbar)
+		CheckDlgButton(g_kDlgBoxBottom, IDC_HORIZONTAL_CB, 
+		((ZGuiScrollbar*) m_pkFocusWnd)->IsHorizontal()); 
+
+	bool bIsProgessbar = (GetWndType(m_pkFocusWnd) == Progressbar);
+	
+	int show_state = bIsProgessbar ? SW_SHOW : SW_HIDE;
+
+	ShowWindow(GetDlgItem(g_kDlgBoxBottom, IDC_PROGRESSBAR_DIR1_RB), show_state);
+	ShowWindow(GetDlgItem(g_kDlgBoxBottom, IDC_PROGRESSBAR_DIR2_RB), show_state);
+	ShowWindow(GetDlgItem(g_kDlgBoxBottom, IDC_PROGRESSBAR_DIR3_RB), show_state);
+	ShowWindow(GetDlgItem(g_kDlgBoxBottom, IDC_PROGRESSBAR_DIR4_RB), show_state);
+	ShowWindow(GetDlgItem(g_kDlgBoxBottom, IDC_PROGRESSBAR_DIR_GROUP_LABEL), show_state);
+	ShowWindow(GetDlgItem(g_kDlgBoxBottom, IDC_PROGRESSBAR_TEXTORIENT_GROUP_LABEL), show_state);
+	ShowWindow(GetDlgItem(g_kDlgBoxBottom, IDC_PBTEXTORIENT_RB1), show_state);
+	ShowWindow(GetDlgItem(g_kDlgBoxBottom, IDC_PBTEXTORIENT_RB2), show_state);
+	ShowWindow(GetDlgItem(g_kDlgBoxBottom, IDC_PBTEXTORIENT_RB3), show_state);
+	ShowWindow(GetDlgItem(g_kDlgBoxBottom, IDC_PBTEXTORIENT_RB4), show_state);
+	ShowWindow(GetDlgItem(g_kDlgBoxBottom, IDC_PBTEXTORIENT_RB5), show_state);
+	ShowWindow(GetDlgItem(g_kDlgBoxBottom, IDC_PBTEXTORIENT_RB6), show_state);
+	
+	if(bIsProgessbar)
+	{
+		x += GetWindowSize(IDC_PROGRESSBAR_DIR_GROUP_LABEL, false, true);
+		x += GetWindowSize(IDC_PROGRESSBAR_TEXTORIENT_GROUP_LABEL, false, true);
+
+		if(((ZGuiProgressbar*) m_pkFocusWnd)->GetDir() == PBDIR_LEFT_TO_RIGHT)
+			CheckRadioButton(g_kDlgBoxBottom, IDC_PROGRESSBAR_DIR1_RB, 
+				IDC_PROGRESSBAR_DIR4_RB, IDC_PROGRESSBAR_DIR1_RB);
+		if(((ZGuiProgressbar*) m_pkFocusWnd)->GetDir() == PBDIR_RIGHT_TO_LEFT)
+			CheckRadioButton(g_kDlgBoxBottom, IDC_PROGRESSBAR_DIR1_RB, 
+				IDC_PROGRESSBAR_DIR4_RB, IDC_PROGRESSBAR_DIR2_RB);
+		if(((ZGuiProgressbar*) m_pkFocusWnd)->GetDir() == PBDIR_TOP_TO_BOTTOM)
+			CheckRadioButton(g_kDlgBoxBottom, IDC_PROGRESSBAR_DIR1_RB, 
+				IDC_PROGRESSBAR_DIR4_RB, IDC_PROGRESSBAR_DIR3_RB);
+		if(((ZGuiProgressbar*) m_pkFocusWnd)->GetDir() == PBDIR_BOTTOM_TO_TOP)
+			CheckRadioButton(g_kDlgBoxBottom, IDC_PROGRESSBAR_DIR1_RB, 
+				IDC_PROGRESSBAR_DIR4_RB, IDC_PROGRESSBAR_DIR4_RB);
+
+		if(((ZGuiProgressbar*) m_pkFocusWnd)->GetTextOrientation() == PBTEXTORIENT_CENTER)
+			CheckRadioButton(g_kDlgBoxBottom, IDC_PBTEXTORIENT_RB1, 
+				IDC_PBTEXTORIENT_RB6, IDC_PBTEXTORIENT_RB1);
+		if(((ZGuiProgressbar*) m_pkFocusWnd)->GetTextOrientation() == PBTEXTORIENT_LEFT)
+			CheckRadioButton(g_kDlgBoxBottom, IDC_PBTEXTORIENT_RB1, 
+				IDC_PBTEXTORIENT_RB6, IDC_PBTEXTORIENT_RB2);
+		if(((ZGuiProgressbar*) m_pkFocusWnd)->GetTextOrientation() == PBTEXTORIENT_OVER)
+			CheckRadioButton(g_kDlgBoxBottom, IDC_PBTEXTORIENT_RB1, 
+				IDC_PBTEXTORIENT_RB6, IDC_PBTEXTORIENT_RB3);
+		if(((ZGuiProgressbar*) m_pkFocusWnd)->GetTextOrientation() == PBTEXTORIENT_RIGHT)
+			CheckRadioButton(g_kDlgBoxBottom, IDC_PBTEXTORIENT_RB1, 
+				IDC_PBTEXTORIENT_RB6, IDC_PBTEXTORIENT_RB4);
+		if(((ZGuiProgressbar*) m_pkFocusWnd)->GetTextOrientation() == PBTEXTORIENT_UNDER)
+			CheckRadioButton(g_kDlgBoxBottom, IDC_PBTEXTORIENT_RB1, 
+				IDC_PBTEXTORIENT_RB6, IDC_PBTEXTORIENT_RB5);
+		if(((ZGuiProgressbar*) m_pkFocusWnd)->m_bShowText == false)
+			CheckRadioButton(g_kDlgBoxBottom, IDC_PBTEXTORIENT_RB1, 
+				IDC_PBTEXTORIENT_RB6, IDC_PBTEXTORIENT_RB6);
+		
+	}
 
 }
