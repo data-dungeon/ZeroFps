@@ -86,9 +86,10 @@ void MistServer::CreateEditCameras()
 
 	}
 
+/* mega över super evil
 	GetWnd("vp1")->SetRenderTarget(m_pkCamera);
 	GetWnd("vp1")->SetMoveArea(Rect(0,0,800,600), false);
-
+*/
 	m_pkActiveCamera = m_pkCamera;
 	m_pkActiveCamera->SetSelected(true);
 
