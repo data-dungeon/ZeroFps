@@ -32,13 +32,16 @@ public:
       m_iOnDestruction;
 
 
-   float m_fLifeTime; // how long the spell lasts
+   float 
+      m_fLifeTime, // how long the spell lasts
+      m_fStartRadius, // collision radius, that is...
+      m_fEndRadius;
 
    string 
       m_kSpellGroup, // which type of spell it is (fire, healing....)
       m_kSpellName,
       m_kOnHit[2], // 0=event 1=spelltype on event
-      m_kAffect; // characters, items, all, characters_and_items
+      m_kAffectedObjects; // characters, items, all, characters_and_items
     
    // Stat bonuses (or curses :) )
    map<string, int> 

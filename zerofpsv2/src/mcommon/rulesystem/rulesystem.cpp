@@ -100,7 +100,28 @@ bool LoadSpell (string kSpellName)
 		      pkNewSpell->m_iCastOn = eON_CASTER;
       }
 	   else
-         pkNewSpell->m_iCastOn = eON_GROUND;      
+         pkNewSpell->m_iCastOn = eON_GROUND;
+      
+      
+      // affect, which type of object is hit by the spell
+	   if ( kIniLoader.KeyExist("spell", "affectedobjects") )
+         pkNewSpell->m_kAffectedObjects = kIniLoader.GetValue("spell", "affectedobjects");
+      else
+         pkNewSpell->m_kAffectedObjects = "characters";
+
+
+      // start and end radius for collisiondetecting
+	   if ( kIniLoader.KeyExist("collision", "start_radius") )
+         pkNewSpell->m_fStartRadius = kIniLoader.GetFloatValue("collision", "start_radius");
+      else
+         pkNewSpell->m_fStartRadius = 0;
+
+      if ( kIniLoader.KeyExist("collision", "end_radius") )
+         pkNewSpell->m_fEndRadius = kIniLoader.GetFloatValue("collision", "end_radius");
+      else
+         pkNewSpell->m_fEndRadius = pkNewSpell->m_fStartRadius;
+
+
 
       // do what on destruction
 	   if ( kIniLoader.KeyExist("spell", "ondestruction") )

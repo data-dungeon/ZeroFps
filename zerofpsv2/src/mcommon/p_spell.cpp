@@ -78,8 +78,9 @@ void P_Spell::Update()
          }
       }
 
-      // TODO: test collisions vs objects in spell area
-      DoCollisions();
+      // test collisions vs objects in spell area
+      if ( m_pkSpellType->m_fStartRadius || m_pkSpellType->m_fEndRadius )
+         DoCollisions();
 
       // if lifetime is over
       if ( m_fAge >= m_pkSpellType->m_fLifeTime )
@@ -91,7 +92,7 @@ void P_Spell::Update()
          // delete spell-object or property
          if ( m_pkSpellType->m_iOnDestruction == eKILL_SELF )
             m_pkObject->RemoveProperty ( this );
-         else if ( m_pkSpellType->m_iOnDestruction == eKILL_PARENT )
+         else
             m_pkObject->m_pkObjectMan->Delete( m_pkObject ); 
       }
 
@@ -223,6 +224,9 @@ bool P_Spell::HandleSetValue( string kValueName, string kValue )
       if ( kIte != g_kSpells.end() )
       {
          m_pkSpellType = g_kSpells[kValue];
+
+         Bonuses(true);
+
          return true;
       }
       else
@@ -256,7 +260,7 @@ P_Spell* P_Spell::Copy()
    pkNewP->m_pkSpellType = m_pkSpellType;
    pkNewP->m_fAge = m_fAge;
 
-   // don't copy PSIndex since we wan't every PSystem the spell uses
+   // don't copy PSIndex since we want every PSystem the spell should use
    //pkNewP->m_iPSIndex = m_iPSIndex;
 
    for ( unsigned int i = 0; i < m_kAttackedObjects.size(); i++ )
@@ -280,10 +284,15 @@ void P_Spell::DoCollisions()
 
    for ( unsigned int i = 0; i < kObjects.size(); i++ )
    {
+      
       bool bOk = true;
       
       // don't care if spell collides with own ps or self
       if ( kObjects[i] == m_pkObject )
+         bOk = false;
+
+      // don't test against the zone object :) We don't want to burn that away
+      if ( pkZone->m_pkZone == kObjects[i] )
          bOk = false;
 
       for ( unsigned int j = 0; j < m_kPSystems.size(); j++ )
@@ -298,65 +307,100 @@ void P_Spell::DoCollisions()
       // if object was ok to test..
       if ( bOk )
       {
-         float fDist = kObjects[i]->GetLocalPosV().DistanceTo (m_pkObject->GetLocalPosV() );
+         bOk = false;
 
-         // test is a object was hit
-         if ( fDist < 0.3f )
+         // check if object really is affected by the spell
+         if ( m_pkSpellType->m_kAffectedObjects == "all" )
+            bOk = true;
+
+         if ( m_pkSpellType->m_kAffectedObjects == "characters" )
+            if ( kObjects[i]->GetProperty("P_CharStats") )
+               bOk = true;
+            else
+               m_kAttackedObjects.push_back (kObjects[i]->iNetWorkID);
+
+         if ( m_pkSpellType->m_kAffectedObjects == "items" )
+            if ( kObjects[i]->GetProperty("P_Item") )
+               bOk = true;
+            else
+               m_kAttackedObjects.push_back (kObjects[i]->iNetWorkID);
+
+         if ( m_pkSpellType->m_kAffectedObjects == "characters_and_items" || 
+              m_pkSpellType->m_kAffectedObjects == "items_and_characters" )
+            if ( kObjects[i]->GetProperty("P_Item") || kObjects[i]->GetProperty("P_CharStats") )
+               bOk = true;
+            else
+               m_kAttackedObjects.push_back (kObjects[i]->iNetWorkID);
+
+         // if the object had right to be affacted by the spell
+         if ( bOk )
          {
-            // check which event concur when something is hit
 
-            // attach new spell to hit object
-            if ( m_pkSpellType->m_kOnHit[0] == "attachnewspell" )
+            float fDist = kObjects[i]->GetLocalPosV().DistanceTo (m_pkObject->GetLocalPosV() );
+
+            // calculate collision radius
+            float fColRad = ((m_fAge / m_pkSpellType->m_fLifeTime) * m_pkSpellType->m_fEndRadius) +
+                            ((1-(m_fAge / m_pkSpellType->m_fLifeTime)) * m_pkSpellType->m_fStartRadius);
+
+            // test is a object was hit
+            if ( fDist < fColRad )
             {
-               P_Spell *pkNewSpell = new P_Spell;
-               kObjects[i]->AddProperty( pkNewSpell );
-               pkNewSpell->SetValue ( "SpellType", m_pkSpellType->m_kOnHit[1] );
+               // check which event concur when something is hit
+
+               // attach new spell to hit object
+               if ( m_pkSpellType->m_kOnHit[0] == "attachnewspell" )
+               {
+                  P_Spell *pkNewSpell = new P_Spell;
+                  kObjects[i]->AddProperty( pkNewSpell );
+                  pkNewSpell->SetValue ( "SpellType", m_pkSpellType->m_kOnHit[1] );
+               }
+
+               // destroy spell (TODO!!!: after dealt damage!!! )
+               if ( m_pkSpellType->m_kOnHit[0] == "destroyspell" ) 
+                  m_pkObject->m_pkObjectMan->Delete ( m_pkObject );
+
+               // creates a new spell at the hit location and removes the old one
+               if ( m_pkSpellType->m_kOnHit[0] == "createnewspell" ) 
+               {
+                  Object *pkNewSpellObject = m_pkObject->m_pkObjectMan->CreateObject();
+            
+                  P_Spell *pkNewSpell = new P_Spell;
+                  pkNewSpellObject->AddProperty( pkNewSpell );
+                  pkNewSpell->SetValue ( "SpellType", m_pkSpellType->m_kOnHit[1] );
+            
+                  pkNewSpellObject->SetWorldPosV ( m_pkObject->GetWorldPosV() );
+                  pkNewSpellObject->SetWorldRotV ( m_pkObject->GetWorldRotV() );
+
+                  pkNewSpellObject->AttachToZone();
+
+                  m_pkObject->m_pkObjectMan->Delete ( m_pkObject );
+               }
+
+               // creates a psystem at the hit location and removes the spell
+               if ( m_pkSpellType->m_kOnHit[0] == "createpsystem" ) 
+               {
+                  Object *pkNewPSystem = m_pkObject->m_pkObjectMan->CreateObject();
+            
+                  PSystemProperty *pkNewPSProp = new PSystemProperty;
+                  kObjects[i]->AddProperty( pkNewPSProp );
+                  pkNewPSProp->SetValue ( "PSType", m_pkSpellType->m_kOnHit[1] );
+            
+                  pkNewPSystem->SetWorldPosV ( m_pkObject->GetWorldPosV() );
+                  pkNewPSystem->SetWorldRotV ( m_pkObject->GetWorldRotV() );
+
+                  pkNewPSystem->AttachToZone();
+
+                  m_pkObject->m_pkObjectMan->Delete ( m_pkObject );
+               }
+
+               // the spell maskes a copy of itself that attaches on the hit object
+               if ( m_pkSpellType->m_kOnHit[0] == "spread" ) 
+                   kObjects[i]->AddProperty ( Copy() );
+
+               // remember which objects is hit by the spell so it can't hit same object twice
+               m_kAttackedObjects.push_back (kObjects[i]->iNetWorkID);
+
             }
-
-            // destroy spell (TODO!!!: after dealt damage!!! )
-            if ( m_pkSpellType->m_kOnHit[0] == "destroyspell" ) 
-               m_pkObject->m_pkObjectMan->Delete ( m_pkObject );
-
-            // creates a new spell at the hit location and removes the old one
-            if ( m_pkSpellType->m_kOnHit[0] == "createnewspell" ) 
-            {
-               Object *pkNewSpellObject = m_pkObject->m_pkObjectMan->CreateObject();
-            
-               P_Spell *pkNewSpell = new P_Spell;
-               pkNewSpellObject->AddProperty( pkNewSpell );
-               pkNewSpell->SetValue ( "SpellType", m_pkSpellType->m_kOnHit[1] );
-            
-               pkNewSpellObject->SetWorldPosV ( m_pkObject->GetWorldPosV() );
-               pkNewSpellObject->SetWorldRotV ( m_pkObject->GetWorldRotV() );
-
-               pkNewSpellObject->AttachToZone();
-
-               m_pkObject->m_pkObjectMan->Delete ( m_pkObject );
-            }
-
-            // creates a psystem at the hit location and removes the spell
-            if ( m_pkSpellType->m_kOnHit[0] == "createpsystem" ) 
-            {
-               Object *pkNewPSystem = m_pkObject->m_pkObjectMan->CreateObject();
-            
-               PSystemProperty *pkNewPSProp = new PSystemProperty;
-               kObjects[i]->AddProperty( pkNewPSProp );
-               pkNewPSProp->SetValue ( "PSType", m_pkSpellType->m_kOnHit[1] );
-            
-               pkNewPSystem->SetWorldPosV ( m_pkObject->GetWorldPosV() );
-               pkNewPSystem->SetWorldRotV ( m_pkObject->GetWorldRotV() );
-
-               pkNewPSystem->AttachToZone();
-
-               m_pkObject->m_pkObjectMan->Delete ( m_pkObject );
-            }
-
-            // the spell maskes a copy of itself that attaches on the hit object
-            if ( m_pkSpellType->m_kOnHit[0] == "spread" ) 
-                kObjects[i]->AddProperty ( Copy() );
-
-            // remember which objects is hit by the spell so it can't hit same object twice
-            m_kAttackedObjects.push_back (kObjects[i]->iNetWorkID);
          }
       }
 
