@@ -5,14 +5,14 @@ function GUICreate()
 	-------------------------------------------------------------------------
 	-- Skins.
 	-------------------------------------------------------------------------
-	Skin1 = { tex1="dm/bn1u.bmp", tex2="0", tex3="0", tex4="0", tex1a="0", tex2a="0", tex3a="0", tex4a="0", bkR=255,
-	 bkG=255, bkB=255, borderR=255, borderG=255, borderB=255, bd_size=0, tile=0, trans=0 }
-	Skin2 = { tex1="dm/bn1d.bmp", tex2="0", tex3="0", tex4="0", tex1a="0", tex2a="0", tex3a="0", tex4a="0", bkR=255,
-	 bkG=255, bkB=255, borderR=255, borderG=255, borderB=255, bd_size=0, tile=0, trans=0 }
-	Skin3 = { tex1="dm/bn1f.bmp", tex2="0", tex3="0", tex4="0", tex1a="0", tex2a="0", tex3a="0", tex4a="0", bkR=255,
-	 bkG=255, bkB=255, borderR=255, borderG=255, borderB=255, bd_size=0, tile=0, trans=0 }
-	Skin4 = { tex1="0", tex2="0", tex3="0", tex4="0", tex1a="0", tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=255,
-	 bkB=255, borderR=255, borderG=255, borderB=255, bd_size=0, tile=0, trans=1 }
+--	Skin1 = { tex1="dm/bn1u.bmp", tex2="0", tex3="0", tex4="0", tex1a="0", tex2a="0", tex3a="0", tex4a="0", bkR=255,
+--	 bkG=255, bkB=255, borderR=255, borderG=255, borderB=255, bd_size=0, tile=0, trans=0 }
+--	Skin2 = { tex1="dm/bn1d.bmp", tex2="0", tex3="0", tex4="0", tex1a="0", tex2a="0", tex3a="0", tex4a="0", bkR=255,
+--	 bkG=255, bkB=255, borderR=255, borderG=255, borderB=255, bd_size=0, tile=0, trans=0 }
+--	Skin3 = { tex1="dm/bn1f.bmp", tex2="0", tex3="0", tex4="0", tex1a="0", tex2a="0", tex3a="0", tex4a="0", bkR=255,
+--	 bkG=255, bkB=255, borderR=255, borderG=255, borderB=255, bd_size=0, tile=0, trans=0 }
+--	Skin4 = { tex1="0", tex2="0", tex3="0", tex4="0", tex1a="0", tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=255,
+--	 bkB=255, borderR=255, borderG=255, borderB=255, bd_size=0, tile=0, trans=1 }
 	Skin5 = { tex1="cb_bk.bmp", tex2="0", tex3="0", tex4="0", tex1a="0", tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=255,
 	 bkB=255, borderR=56, borderG=56, borderB=56, bd_size=1, tile=1, trans=0 }
 	Skin6 = { tex1="dm/start_base1.bmp", tex2="0", tex3="0", tex4="0", tex1a="0", tex2a="0", tex3a="0", tex4a="0", bkR=255,
@@ -34,6 +34,13 @@ function GUICreate()
 	 bkB=255, borderR=255, borderG=255, borderB=255, bd_size=0, tile=0, trans=0 }
 	Skin14 = { tex1="sb_f.bmp", tex2="0", tex3="0", tex4="0", tex1a="0", tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=255,
 	 bkB=255, borderR=255, borderG=255, borderB=255, bd_size=0, tile=0, trans=0 }
+
+
+	Skin1 = { tex1="dm/misc_button_u.bmp", tex2="0", tex3="0", tex4="0", tex1a="0", tex2a="0", tex3a="0", tex4a="0", bkR=255,
+	 bkG=255, bkB=255, borderR=255, borderG=255, borderB=255, bd_size=0, tile=0, trans=0 }
+	Skin2 = { tex1="dm/misc_button_d.bmp", tex2="0", tex3="0", tex4="0", tex1a="0", tex2a="0", tex3a="0", tex4a="0", bkR=255,
+	 bkG=255, bkB=255, borderR=255, borderG=255, borderB=255, bd_size=0, tile=0, trans=0 }
+
 	-------------------------------------------------------------------------
 	-- Create all windows in correct order (parents before childrens etc.)
 	-- 0 = Wnd, 1 = Button, 2 = Checkbox, 3 = Combobox, 4 = Label, 5 = Listbox, 6 = Radiobutton,
@@ -74,12 +81,12 @@ function GUICreate()
 	CreateWnd(1,"SelectNextBaseBn","StartNewGameWnd",">",769,203,20,20,0)
 	ChangeSkin("SelectNextBaseBn","Skin1","Button up")
 	ChangeSkin("SelectNextBaseBn","Skin2","Button down")
-	ChangeSkin("SelectNextBaseBn","Skin3","Button focus")
+	ChangeSkin("SelectNextBaseBn","Skin1","Button focus")
 
 	CreateWnd(1,"SelectPrevBaseBn","StartNewGameWnd","<",604,202,20,20,0)
 	ChangeSkin("SelectPrevBaseBn","Skin1","Button up")
 	ChangeSkin("SelectPrevBaseBn","Skin2","Button down")
-	ChangeSkin("SelectPrevBaseBn","Skin3","Button focus")
+	ChangeSkin("SelectPrevBaseBn","Skin1","Button focus")
 
 	CreateWnd(4,"StarBaseLabel","StartNewGameWnd","Start base",664,127,65,20,0)
 	ChangeSkin("StarBaseLabel","Skin4","Label")
@@ -90,10 +97,10 @@ function GUICreate()
 	CreateWnd(4,"StartBaseNameLabel","StartNewGameWnd","Old warehouse",634,289,128,20,0)
 	ChangeSkin("StartBaseNameLabel","Skin4","Label")
 
-	CreateWnd(1,"StartNewGameDone","StartNewGameWnd","Done",723,569,62,20,0)
+	CreateWnd(1,"StartNewGameDone","StartNewGameWnd","Done",800-96-8,600-40-8,96,40,0)
 	ChangeSkin("StartNewGameDone","Skin1","Button up")
 	ChangeSkin("StartNewGameDone","Skin2","Button down")
-	ChangeSkin("StartNewGameDone","Skin3","Button focus")
+	ChangeSkin("StartNewGameDone","Skin1","Button focus")
 
 	AddListItem("TeamColorCB", "Red")
 	AddListItem("TeamColorCB", "Green")

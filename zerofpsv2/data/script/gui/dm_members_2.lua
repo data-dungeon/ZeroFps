@@ -62,10 +62,10 @@ function GUICreate()
 	Skin22 = { tex1="lb_u.bmp", tex2="0", tex3="0", tex4="0", tex1a="0", tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=255,
 	 bkB=255, borderR=255, borderG=255, borderB=255, bd_size=0, tile=0, trans=0 }
 
-	Skin23 = { tex1="sb_n.bmp", tex2="0", tex3="0", tex4="0", tex1a="0", tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=255,
-	 bkB=255, borderR=255, borderG=255, borderB=255, bd_size=0, tile=0, trans=0 }
-	Skin24 = { tex1="sb_f.bmp", tex2="0", tex3="0", tex4="0", tex1a="0", tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=255,
-	 bkB=255, borderR=255, borderG=255, borderB=255, bd_size=0, tile=0, trans=0 }
+	Skin23 = { tex1="dm/final/members/drop_button.bmp", tex2="0", tex3="0", tex4="0", tex1a="dm/final/members/drop_button_a.bmp", 
+	 tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=255, bkB=255, borderR=255, borderG=255, borderB=255, bd_size=0, tile=0, trans=0 }
+	Skin24 = { tex1="dm/final/members/drop_button_d.bmp", tex2="0", tex3="0", tex4="0", tex1a="dm/final/members/drop_button_a.bmp", 
+	 tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=255, bkB=255, borderR=255, borderG=255, borderB=255, bd_size=0, tile=0, trans=0 }
 
 
 
@@ -75,7 +75,7 @@ function GUICreate()
 	 bkB=32, borderR=32, borderG=255, borderB=255, bd_size=0, tile=0, trans=0 }
 
 	Skin27 = { tex1="0", tex2="0", tex3="0", tex4="0", tex1a="0", tex2a="0", tex3a="0", tex4a="0", bkR=92, bkG=92,
-	 bkB=92, borderR=255, borderG=255, borderB=255, bd_size=0, tile=0, trans=0 }
+	 bkB=92, borderR=255, borderG=255, borderB=255, bd_size=0, tile=0, trans=1 }
 
 	Skin28 = { tex1="0", tex2="0", tex3="0", tex4="0", tex1a="0", tex2a="0", tex3a="0", tex4a="0", bkR=92, bkG=92,
 	 bkB=92, borderR=255, borderG=255, borderB=255, bd_size=0, tile=0, trans=1 }
@@ -172,7 +172,7 @@ function GUICreate()
 --	ChangeSkin("MembersEquipBn","Skin24","Button down")
 --	ChangeSkin("MembersEquipBn","Skin24","Button focus")
 
-	CreateWnd(1,"MembersDropItemBn","MembersWnd","Drop",20,156,64,20,0)
+	CreateWnd(1,"MembersDropItemBn","MembersWnd","",20,156,64,32,0)
 	ChangeSkin("MembersDropItemBn","Skin23","Button up")
 	ChangeSkin("MembersDropItemBn","Skin24","Button down")
 	ChangeSkin("MembersDropItemBn","Skin24","Button focus")

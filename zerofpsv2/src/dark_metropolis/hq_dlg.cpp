@@ -62,7 +62,7 @@ void CHQDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName,
 	else
 	if(strClickName == "HQHireBn") // the telephone button
 	{
-		LoadDlg("data/script/gui/dm_agents.lua");
+		LoadDlg("data/script/gui/dm_agents2.lua");
 		GetGameDlg(HANDLE_AGENTS_DLG)->InitDlg();
 		m_pkGui->SetCaptureToWnd(GetWnd("AgentsWnd"));
 
@@ -71,8 +71,7 @@ void CHQDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName,
 	}
 	else
 	if(strClickName == "HQInventoryBn") // the rifle on the wall
-	{
-		
+	{		
 		LoadDlg("data/script/gui/dm_itemtransaction.lua");
 		
 		((CItemTransactionDlg*)GetGameDlg(ITEMTRANSACTION_DLG))->m_eViewMode = 
@@ -170,3 +169,41 @@ void CHQDlg::OpenDlg()
 	m_pkDM->PauseGame(true);
 }
 
+/*
+
+	CreateWnd(1,"StarNewGameBn","DMStartWnd","New",800/2-96/2,122+50*0,96,40,0)
+	ChangeSkin("StarNewGameBn","Skin1","Button up")
+	ChangeSkin("StarNewGameBn","Skin2","Button down")
+	ChangeSkin("StarNewGameBn","Skin1","Button focus")
+
+	CreateWnd(1,"LoadNewGameBn","DMStartWnd","Load",800/2-96/2,122+50*1,96,40,0)
+	ChangeSkin("LoadNewGameBn","Skin1","Button up")
+	ChangeSkin("LoadNewGameBn","Skin2","Button down")
+	ChangeSkin("LoadNewGameBn","Skin1","Button focus")
+
+	CreateWnd(1,"SaveNewGameBn","DMStartWnd","Save",800/2-96/2,122+50*2,96,40,0)
+	ChangeSkin("SaveNewGameBn","Skin1","Button up")
+	ChangeSkin("SaveNewGameBn","Skin2","Button down")
+	ChangeSkin("SaveNewGameBn","Skin1","Button focus")
+
+	CreateWnd(1,"OptionsBn","DMStartWnd","Options",800/2-96/2,122+50*3,96,40,0)
+	ChangeSkin("OptionsBn","Skin1","Button up")
+	ChangeSkin("OptionsBn","Skin2","Button down")
+	ChangeSkin("OptionsBn","Skin1","Button focus")
+
+	CreateWnd(1,"CreditsBn","DMStartWnd","Credits",800/2-96/2,122+50*4,96,40,0)
+	ChangeSkin("CreditsBn","Skin1","Button up")
+	ChangeSkin("CreditsBn","Skin2","Button down")
+	ChangeSkin("CreditsBn","Skin1","Button focus")
+
+	CreateWnd(1,"QuitBn","DMStartWnd","Quit",800/2-96/2,122+50*5,96,40,0)
+	ChangeSkin("QuitBn","Skin1","Button up")
+	ChangeSkin("QuitBn","Skin2","Button down")
+	ChangeSkin("QuitBn","Skin1","Button focus")
+
+	CreateWnd(1,"ContinueGameBn","DMStartWnd","Continue",800/2-96/2,122+50*6,70,40,0)
+	ChangeSkin("ContinueGameBn","Skin1","Button up")
+	ChangeSkin("ContinueGameBn","Skin2","Button down")
+	ChangeSkin("ContinueGameBn","Skin1","Button focus")
+
+	*/

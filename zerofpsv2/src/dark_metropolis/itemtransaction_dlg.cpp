@@ -27,7 +27,7 @@ void CItemTransactionDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName,
 			InitDlg();
 		}
 
-		SetText("ItemInfoLabel", GetGetContainerName(m_iActiveContainer));
+		SetText("ItemRemoveContainerLabel", GetGetContainerName(m_iActiveContainer));
 	}
 	else
 	if(strClickName == "ItemRemoveTransactionNextPageBn")
@@ -38,7 +38,7 @@ void CItemTransactionDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName,
 			InitDlg();
 		}
 
-		SetText("ItemInfoLabel", GetGetContainerName(m_iActiveContainer));
+		SetText("ItemRemoveContainerLabel", GetGetContainerName(m_iActiveContainer));
 	}
 	else
 	if(strClickName == "ItemTransactionCloseBn")
@@ -168,9 +168,15 @@ bool CItemTransactionDlg::InitDlg()
 	DMContainer* pkStockroomOrShop;
 	
 	if(m_eViewMode == shop)
+	{
 		pkStockroomOrShop = ((P_DMShop*)pkHQ->GetProperty("P_DMShop"))->m_pkItems;
+		SetText("ItemAddContainerLabel", "Shop");
+	}
 	else
+	{
 		pkStockroomOrShop = ((P_DMHQ*)pkHQ->GetProperty("P_DMHQ"))->m_pkStockroom;
+		SetText("ItemAddContainerLabel", "Storeroom");
+	}
 
 	int iAgentID = ((CHandleAgents*)GetGameDlg(HANDLE_AGENTS_DLG))->GetSelAgent();
 	
@@ -285,6 +291,10 @@ bool CItemTransactionDlg::InitDlg()
 				GetWnd("ItemAddTransactionPrevPageBn")->m_iZValue = s_okaZ++;
 				GetWnd("ItemRemoveTransactionNextPageBn")->m_iZValue = s_okaZ++;
 				GetWnd("ItemRemoveTransactionPrevPageBn")->m_iZValue = s_okaZ++;
+
+				GetWnd("ItemAddContainerLabel")->m_iZValue = s_okaZ++;
+				GetWnd("ItemRemoveContainerLabel")->m_iZValue = s_okaZ++;
+				
 
 				
 

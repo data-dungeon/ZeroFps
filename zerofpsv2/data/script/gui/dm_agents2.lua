@@ -7,11 +7,11 @@ function GUICreate()
 	-------------------------------------------------------------------------
 	Skin1 = { tex1="dm/label_bk.bmp", tex2="0", tex3="0", tex4="0", tex1a="0", tex2a="0", tex3a="0", tex4a="0", bkR=255,
 	 bkG=255, bkB=255, borderR=255, borderG=255, borderB=255, bd_size=0, tile=0, trans=0 }
-	Skin2 = { tex1="dm/bn1u.bmp", tex2="0", tex3="0", tex4="0", tex1a="0", tex2a="0", tex3a="0", tex4a="0", bkR=255,
+	Skin2 = { tex1="dm/misc_button_u.bmp", tex2="0", tex3="0", tex4="0", tex1a="0", tex2a="0", tex3a="0", tex4a="0", bkR=255,
 	 bkG=255, bkB=255, borderR=255, borderG=255, borderB=255, bd_size=0, tile=0, trans=0 }
-	Skin3 = { tex1="dm/bn1d.bmp", tex2="0", tex3="0", tex4="0", tex1a="0", tex2a="0", tex3a="0", tex4a="0", bkR=255,
+	Skin3 = { tex1="dm/misc_button_d.bmp", tex2="0", tex3="0", tex4="0", tex1a="0", tex2a="0", tex3a="0", tex4a="0", bkR=255,
 	 bkG=255, bkB=255, borderR=255, borderG=255, borderB=255, bd_size=0, tile=0, trans=0 }
-	Skin4 = { tex1="dm/bn1f.bmp", tex2="0", tex3="0", tex4="0", tex1a="0", tex2a="0", tex3a="0", tex4a="0", bkR=255,
+	Skin4 = { tex1="dm/misc_button_u.bmp", tex2="0", tex3="0", tex4="0", tex1a="0", tex2a="0", tex3a="0", tex4a="0", bkR=255,
 	 bkG=255, bkB=255, borderR=255, borderG=255, borderB=255, bd_size=0, tile=0, trans=0 }
 	Skin5 = { tex1="dm/portraits/portrait5.bmp", tex2="0", tex3="0", tex4="0", tex1a="0", tex2a="0", tex3a="0", tex4a="0",
 	 bkR=255, bkG=255, bkB=255, borderR=255, borderG=255, borderB=255, bd_size=0, tile=0, trans=0 }
@@ -19,26 +19,45 @@ function GUICreate()
 	 bkR=255, bkG=255, bkB=255, borderR=255, borderG=255, borderB=255, bd_size=0, tile=0, trans=0 }
 	Skin7 = { tex1="0", tex2="0", tex3="0", tex4="0", tex1a="0", tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=255,
 	 bkB=255, borderR=255, borderG=255, borderB=255, bd_size=0, tile=0, trans=1 }
-	Skin8 = { tex1="0", tex2="0", tex3="0", tex4="0", tex1a="0", tex2a="0", tex3a="0", tex4a="0", bkR=0, bkG=0, bkB=0,
-	 borderR=255, borderG=255, borderB=255, bd_size=0, tile=1, trans=0 }
-	Skin9 = { tex1="dm/next_u.bmp", tex2="0", tex3="0", tex4="0", tex1a="0", tex2a="0", tex3a="0", tex4a="0", bkR=255,
+
+
+	Skin8 = { tex1="dm/final/win_tile.bmp", 
+	 tex2="dm/final/window/win_edge_ver.bmp", 
+	 tex3="dm/final/window/win_edge_hor.bmp", 
+	 tex4="dm/final/window/dm_win_corn.bmp", tex1a="0", 
+	 tex2a="dm/final/window/win_edge_ver_a.bmp", 
+	 tex3a="dm/final/window/win_edge_hor_a.bmp", 
+	 tex4a="dm/final/window/dm_win_corn_a.bmp", bkR=255, bkG=255, bkB=255,
+	 borderR=255, borderG=255, borderB=255, bd_size=32, tile=1, trans=0 }
+
+
+	Skin9 = { tex1="dm/final/members/right_button.bmp", tex2="0", tex3="0", tex4="0", tex1a="0", tex2a="0", tex3a="0", tex4a="0", bkR=255,
 	 bkG=255, bkB=255, borderR=255, borderG=255, borderB=255, bd_size=0, tile=0, trans=0 }
-	Skin10 = { tex1="dm/next_d.bmp", tex2="0", tex3="0", tex4="0", tex1a="0", tex2a="0", tex3a="0", tex4a="0", bkR=255,
+	Skin10 = { tex1="dm/final/members/right_arrow_d.bmp", tex2="0", tex3="0", tex4="0", tex1a="0", tex2a="0", tex3a="0", tex4a="0", bkR=255,
 	 bkG=255, bkB=255, borderR=255, borderG=255, borderB=255, bd_size=0, tile=0, trans=0 }
-	Skin11 = { tex1="dm/next_f.bmp", tex2="0", tex3="0", tex4="0", tex1a="0", tex2a="0", tex3a="0", tex4a="0", bkR=255,
+	Skin11 = { tex1="dm/final/members/right_button.bmp", tex2="0", tex3="0", tex4="0", tex1a="0", tex2a="0", tex3a="0", tex4a="0", bkR=255,
 	 bkG=255, bkB=255, borderR=255, borderG=255, borderB=255, bd_size=0, tile=0, trans=0 }
-	Skin12 = { tex1="dm/prev_u.bmp", tex2="0", tex3="0", tex4="0", tex1a="0", tex2a="0", tex3a="0", tex4a="0", bkR=255,
+	Skin12 = { tex1="dm/final/members/left_arrow.bmp", tex2="0", tex3="0", tex4="0", tex1a="0", tex2a="0", tex3a="0", tex4a="0", bkR=255,
 	 bkG=255, bkB=255, borderR=255, borderG=255, borderB=255, bd_size=0, tile=0, trans=0 }
-	Skin13 = { tex1="dm/prev_d.bmp", tex2="0", tex3="0", tex4="0", tex1a="0", tex2a="0", tex3a="0", tex4a="0", bkR=255,
+	Skin13 = { tex1="dm/final/members/left_arrow_d.bmp", tex2="0", tex3="0", tex4="0", tex1a="0", tex2a="0", tex3a="0", tex4a="0", bkR=255,
 	 bkG=255, bkB=255, borderR=255, borderG=255, borderB=255, bd_size=0, tile=0, trans=0 }
-	Skin14 = { tex1="dm/prev_f.bmp", tex2="0", tex3="0", tex4="0", tex1a="0", tex2a="0", tex3a="0", tex4a="0", bkR=255,
+	Skin14 = { tex1="dm/final/members/left_arrow.bmp", tex2="0", tex3="0", tex4="0", tex1a="0", tex2a="0", tex3a="0", tex4a="0", bkR=255,
 	 bkG=255, bkB=255, borderR=255, borderG=255, borderB=255, bd_size=0, tile=0, trans=0 }
+
+
+	Skin15 = { tex1="dm/final/members/x-button.bmp", tex2="0", tex3="0", tex4="0", tex1a="dm/final/members/x-button_a.bmp",
+	 tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=255, bkB=255, borderR=255, borderG=255, borderB=255, bd_size=0, tile=0,
+	 trans=0 }
+	Skin16 = { tex1="dm/final/members/x-button_d.bmp", tex2="0", tex3="0", tex4="0",
+	 tex1a="dm/final/members/x-button_a.bmp", tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=255, bkB=255, borderR=255, borderG=255, borderB=255, bd_size=0,
+	 tile=0, trans=0 }
+
 	-------------------------------------------------------------------------
 	-- Create all windows in correct order (parents before childrens etc.)
 	-- 0 = Wnd, 1 = Button, 2 = Checkbox, 3 = Combobox, 4 = Label, 5 = Listbox, 6 = Radiobutton,
 	-- 7 = Scrollbar, 8 = Slider, 9 = TabControl, 10 = Textbox, 11 = Treebox
 	-------------------------------------------------------------------------
-	CreateWnd(0,"AgentsWnd","","",144,7,512,582,0)
+	CreateWnd(0,"AgentsWnd","","",800/2-512/2,600/2-530/2,512,530,0)
 	ChangeSkin("AgentsWnd","Skin8","Window")
 
 	CreateWnd(4,"CurrentAgentToHireLabel","AgentsWnd","Agent for hire 1/40 - Mr Smith",32,214,449,16,0)
@@ -109,12 +128,12 @@ function GUICreate()
 	CreateWnd(4,"AgentInHQLabel","AgentsWnd","Your agent 1/10 - Mr Smith",32,51,449,16,0)
 	ChangeSkin("AgentInHQLabel","Skin1","Label")
 
-	CreateWnd(1,"AgentsClose","AgentsWnd","Close",212,537,100,33,0)
-	ChangeSkin("AgentsClose","Skin2","Button up")
-	ChangeSkin("AgentsClose","Skin3","Button down")
-	ChangeSkin("AgentsClose","Skin4","Button focus")
+	CreateWnd(1,"AgentsClose","AgentsWnd","",472,9,32,32,0)
+	ChangeSkin("AgentsClose","Skin15","Button up")
+	ChangeSkin("AgentsClose","Skin16","Button down")
+	ChangeSkin("AgentsClose","Skin15","Button focus")
 
-	CreateWnd(1,"AgentsEquip","AgentsWnd","Equip",275,150,80,33,0)
+	CreateWnd(1,"AgentsEquip","AgentsWnd","Storeroom",275,150,80,33,0)
 	ChangeSkin("AgentsEquip","Skin2","Button up")
 	ChangeSkin("AgentsEquip","Skin3","Button down")
 	ChangeSkin("AgentsEquip","Skin4","Button focus")
@@ -157,7 +176,7 @@ function GUICreate()
 	CreateWnd(4,"AgentsMoneyLabel","AgentsWnd","Money:",14,15,274,20,0)
 	ChangeSkin("AgentsMoneyLabel","Skin1","Label")
 
-	CreateWnd(4,"AgentsReputaionLabel","AgentsWnd","Reputation: ",288,15,210,20,0)
+	CreateWnd(4,"AgentsReputaionLabel","AgentsWnd","Reputation: ",288,15,200,20,0)
 	ChangeSkin("AgentsReputaionLabel","Skin1","Label")
 
 	CreateWnd(1,"AgentsShop","AgentsWnd","Shop",161,150,80,33,0)

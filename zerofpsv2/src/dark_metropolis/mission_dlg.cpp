@@ -60,23 +60,23 @@ void CMissionDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName,
 
 		if(strClickName == "Mission_A_Eb")
 		{
-			GetWnd("Mission_A_Eb")->GetSkin()->m_afBkColor[0] = 0.22; 
-			GetWnd("Mission_A_Eb")->GetSkin()->m_afBkColor[1] = 0.52; 
-			GetWnd("Mission_A_Eb")->GetSkin()->m_afBkColor[2] = 0.12; 
+			GetWnd("Mission_A_Eb")->GetSkin()->m_afBkColor[0] = 0.55; 
+			GetWnd("Mission_A_Eb")->GetSkin()->m_afBkColor[1] = 0.95; 
+			GetWnd("Mission_A_Eb")->GetSkin()->m_afBkColor[2] = 0.55; 
 		}
 		else
 		if(strClickName == "Mission_B_Eb")
 		{
-			GetWnd("Mission_B_Eb")->GetSkin()->m_afBkColor[0] = 0.22; 
-			GetWnd("Mission_B_Eb")->GetSkin()->m_afBkColor[1] = 0.52; 
-			GetWnd("Mission_B_Eb")->GetSkin()->m_afBkColor[2] = 0.12; 
+			GetWnd("Mission_B_Eb")->GetSkin()->m_afBkColor[0] = 0.55; 
+			GetWnd("Mission_B_Eb")->GetSkin()->m_afBkColor[1] = 0.95; 
+			GetWnd("Mission_B_Eb")->GetSkin()->m_afBkColor[2] = 0.55; 
 		}
 		else
 		if(strClickName == "Mission_C_Eb")
 		{
-			GetWnd("Mission_C_Eb")->GetSkin()->m_afBkColor[0] = 0.22; 
-			GetWnd("Mission_C_Eb")->GetSkin()->m_afBkColor[1] = 0.52; 
-			GetWnd("Mission_C_Eb")->GetSkin()->m_afBkColor[2] = 0.12; 
+			GetWnd("Mission_C_Eb")->GetSkin()->m_afBkColor[0] = 0.55; 
+			GetWnd("Mission_C_Eb")->GetSkin()->m_afBkColor[1] = 0.95; 
+			GetWnd("Mission_C_Eb")->GetSkin()->m_afBkColor[2] = 0.55; 
 		}
 
 		float reputation = ((P_DMGameInfo*)

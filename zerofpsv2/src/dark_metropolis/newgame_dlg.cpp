@@ -83,20 +83,21 @@ void CNewGameDlg::AddContinueButton()
 
 	if(GetGameInfo() == NULL)
 	{
-		char* aButtons[] = {
-			"OptionsBn", "QuitBn", "SaveNewGameBn", "CreditsBn",
-			"LoadNewGameBn"
-		};
+		//char* aButtons[] = {
+		//	"OptionsBn", "QuitBn", "SaveNewGameBn", "CreditsBn",
+		//	"LoadNewGameBn"
+		//};
 
-		for(int i=0; i<sizeof(aButtons)/sizeof(aButtons[1]); i++)
-		{
-			GetWnd(aButtons[i])->Move(0,24,false,true);
-			GetWnd(aButtons[i])->SetMoveArea(
-				GetWnd(aButtons[i])->GetScreenRect(), true);
-		}
+		//for(int i=0; i<sizeof(aButtons)/sizeof(aButtons[1]); i++)
+		//{
+		//	GetWnd(aButtons[i])->Move(0,24,false,true);
+		//	GetWnd(aButtons[i])->SetMoveArea(
+		//		GetWnd(aButtons[i])->GetScreenRect(), true);
+		//}
 
-		ShowWnd("ContinueGameBn", true);
-		GetWnd("ContinueGameBn")->SetPos(365,122,false,true);
+		//ShowWnd("ContinueGameBn", true);
+		GetWnd("ContinueGameBn")->Show();
+	//	GetWnd("ContinueGameBn")->SetPos(365,122,false,true);
 	}
 }
 

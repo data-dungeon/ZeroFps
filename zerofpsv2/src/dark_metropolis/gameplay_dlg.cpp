@@ -5,8 +5,8 @@
 CGamePlayDlg::CGamePlayDlg() : CGameDlg("GamePlayScreen", &g_kDM)
 {
 	m_iSelectedAgent = -1;
-	m_bSkillbarIsOut = true;
-	m_bActionbarIsOut = true;
+	m_bSkillbarIsOut = false;
+	m_bActionbarIsOut = false;
 	m_bCharbarIsOut = true;
 	m_bItembarIsOut = true;
 }
@@ -249,6 +249,13 @@ bool CGamePlayDlg::InitDlg()
 
 		((ZGuiTextbox*)GetWnd("MissionInfoLabel"))->ToggleMultiLine(true);
 		((ZGuiTextbox*)GetWnd("MissionInfoLabel"))->SetReadOnly(true);	
+
+		GetWnd("GamePlayDlgQuickItem1")->Hide();
+		GetWnd("GamePlayDlgQuickItem2")->Hide();
+		GetWnd("GamePlayDlgQuickItem3")->Hide();
+		GetWnd("GamePlayDlgQuickItem4")->Hide();
+		GetWnd("GamePlayDlgWeaponBn")->Hide();
+
 	}
 
 	if(m_iSelectedAgent == -1)
