@@ -63,6 +63,9 @@ class MCOMMON_API P_DMItem: public Property {
 		void Save(ZFIoInterface* pkPackage);
 		void Load(ZFIoInterface* pkPackage);
 
+		string GetIcon() { return m_strIcon; }
+		int GetType() { return m_iType; }
+
 		
 	friend class DMContainer;
 };
