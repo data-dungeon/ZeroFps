@@ -28,6 +28,7 @@ FileOpenDlg::FileOpenDlg(Gui* pkGui, ZFBasicFS* pkBasicFS, string szPath,
 	m_szCurrentFile.reserve(128);
 
 	m_szSearchPath = pkBasicFS->GetCWD();
+	//printf("%s\n", m_szSearchPath.c_str());
 
 	int size = m_szSearchPath.length();  
 	int pos = m_szSearchPath.find_last_of("//");
@@ -42,7 +43,7 @@ FileOpenDlg::FileOpenDlg(Gui* pkGui, ZFBasicFS* pkBasicFS, string szPath,
 	m_pkGui = pkGui;
 	m_pkZGui = m_pkGui->GetGUI(); 
 	m_pkBasicFS = pkBasicFS;
-	m_pkWindow = Create(0,0,500,500);
+	m_pkWindow = Create(100,100,500,500);
 }
 
 FileOpenDlg::~FileOpenDlg()
