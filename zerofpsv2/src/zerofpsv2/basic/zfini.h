@@ -38,6 +38,8 @@ public:
 	bool GetBoolValue(const char* strSection, char* strKey);
 	float GetFloatValue(const char* strSection, char* strKey);
 	int GetIntValue(const char* strSection, char* strKey);
+	bool SetIntValue(const char* strSection, char* strKey, int value);
+	void Save(const char* szFileName);
 	
 	bool SectionExist(const char* acSection);
 	bool KeyExist(const char* strSection, char* strKey);

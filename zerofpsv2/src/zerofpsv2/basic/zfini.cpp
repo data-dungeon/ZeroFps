@@ -483,6 +483,62 @@ int ZFIni::GetIntValue(const char* strSection, char* strKey)
 	return atoi(str);
 }
 
+bool ZFIni::SetIntValue(const char *szSearchSection, char *szSearchKey, int value)
+{
+	if(m_bFileReady == false)
+		return false;
+
+	const char* pFindSec, *pFindKey;
+
+	for(int sec=0; sec<m_iNumSections; sec++)
+		if((pFindSec = strstr(m_pstrSections[sec], szSearchSection)) != NULL)
+		{
+			if(strcmp(pFindSec, szSearchSection) == 0)
+			{
+				for(int key=0; key<m_pkSectionData[sec].iNumKeys; key++)
+					if((pFindKey = strstr(m_pkSectionData[sec].strKeyName[key],
+						szSearchKey)) != NULL)
+					{
+						if(strcmp(pFindKey, szSearchKey) == 0)
+						{
+							if(m_pkSectionData[sec].strKeyValue[key])
+							{
+								delete[] m_pkSectionData[sec].strKeyValue[key];
+
+								char szNewKey[20];
+								sprintf(szNewKey, "%i", value);
+
+								m_pkSectionData[sec].strKeyValue[key] = new char[strlen(szNewKey)+1];
+								strcpy(m_pkSectionData[sec].strKeyValue[key], szNewKey);
+							}
+						}
+					}
+			}
+		}
+
+	return NULL;	
+}
+
+void ZFIni::Save(const char* szFileName)
+{
+	FILE* pkFile;
+	if ((pkFile = fopen(szFileName, "wt")) != NULL)
+	{
+		for(int sec=0; sec<m_iNumSections; sec++)
+		{
+			fprintf(pkFile, "\n[%s]\n", m_pstrSections[sec]);
+			for(int key=0; key<m_pkSectionData[sec].iNumKeys; key++)
+			{
+				fprintf(pkFile, "%s=%s\n", 
+					m_pkSectionData[sec].strKeyName[key], 
+					m_pkSectionData[sec].strKeyValue[key]);
+			}
+		}
+	}
+
+	fclose(pkFile);
+}
+
 
 float ZFIni::GetFloatValue(const char* strSection, char* strKey)
 {

@@ -42,7 +42,7 @@ ZGResEdit::ZGResEdit(char* aName,int iWidth,int iHeight,int iDepth)
 	m_iRadiogroupCounter = RADIO_GROUP_COUNTER_START;
 	m_bLeftButtonPressed = false;
 	m_bUpdatePos = false;
-	m_bUpdateSize = false;
+	m_bUpdateSize = false;	
 }
 
 void ZGResEdit::OnInit()
@@ -220,22 +220,10 @@ void ZGResEdit::OnKeyDown(int iKey)
 	{
 	case KEY_F7:
 		{
-					map<string, ZGuiWnd*> kWindows;
-					m_pkGuiMan->GetWindows(kWindows);
-					map<string, ZGuiWnd*>::iterator it2;
-
-					int antal = kWindows.size();
-					int oka = 0;
-
-					for( it2 = kWindows.begin(); it2 != kWindows.end(); it2++)
-					{
-						ZGuiWnd* pkWnd = it2->second;
-
-						//if(pkWnd && !m_pkScene->IsSceneWnd(pkWnd) )
-							printf("%i - %s\n", oka++, it2->second->GetName());
-					}
-
-					printf("----------------------\n");
+			ZFIni kINI;
+			kINI.Open("ResEdit.ini", false);
+			kINI.SetIntValue("Application", "r_toolbarleft", 33);
+			kINI.Save("ResEdit.ini");
 		}
 		break;
 
@@ -2179,4 +2167,41 @@ void ZGResEdit::TempSave(bool bSave)
 		UpdateViewWnd();
 		UpdatePropertyWnd();
 	}
+}
+
+bool ZGResEdit::ShutDown()
+{
+	const char szSetupFile[] = "zgresedit_setup.ini";
+
+	int iToolbarPosX = m_pkScene->m_pkWorkSpace->GetScreenRect().Left;
+	int iToolbarPosY = m_pkScene->m_pkWorkSpace->GetScreenRect().Top;
+	int iPropertyWndPosX = m_pkScene->m_pkPropertyWnd->GetScreenRect().Left;
+	int iPropertyWndPosY = m_pkScene->m_pkPropertyWnd->GetScreenRect().Top;
+
+	ZFIni kINI;
+	if(!kINI.Open(szSetupFile, false))
+	{
+		FILE* pkFile = fopen(szSetupFile, "wt");
+		fprintf(pkFile, "[Desktop]\n");
+		fprintf(pkFile, "r_workspaceleft=%i\n", iToolbarPosX);
+		fprintf(pkFile, "r_workspacetop=%i\n", iToolbarPosY);
+		fprintf(pkFile, "r_propertywndleft=%i\n", iPropertyWndPosX);
+		fprintf(pkFile, "r_propertywndright=%i\n\n", iPropertyWndPosY);
+		fclose (pkFile);
+	}
+	else
+	{
+		kINI.SetIntValue("Desktop", "r_workspaceleft", iToolbarPosX);
+		kINI.SetIntValue("Desktop", "r_workspacetop", iToolbarPosY);
+		kINI.SetIntValue("Desktop", "r_propertywndleft", iPropertyWndPosX);
+		kINI.SetIntValue("Desktop", "r_propertywndright", iPropertyWndPosY);
+		kINI.Save(szSetupFile);
+	}
+
+	return true;
+}
+
+bool ZGResEdit::StartUp()
+{
+	return true;
 }

@@ -29,6 +29,20 @@ void Scene::Init(ZGuiApp *pkApp)
 {
 	m_pkApp = pkApp;
 	CreateUI();
+
+	const char szSetupFile[] = "zgresedit_setup.ini";
+
+	ZFIni kINI;
+	if(kINI.Open(szSetupFile, false))
+	{
+		int iWorkspacePosX = kINI.GetIntValue("Desktop", "r_workspaceleft");
+		int iWorkspacePosY = kINI.GetIntValue("Desktop", "r_workspacetop");
+		int iPropertyWndPosX = kINI.GetIntValue("Desktop", "r_propertywndleft");
+		int iPropertyWndPosY = kINI.GetIntValue("Desktop", "r_propertywndright");
+		
+		m_pkWorkSpace->SetPos(iWorkspacePosX, iWorkspacePosY, true, true);
+		m_pkPropertyWnd->SetPos(iPropertyWndPosX, iPropertyWndPosY, true, true);
+	}
 }
 
 void Scene::CreateUI()
@@ -38,7 +52,7 @@ void Scene::CreateUI()
 	//
 
 	m_pkApp->CreateWnd(Wnd, "WorkSpace", "", "", 800-204, 8, 200, 600-16, 0);
-	(m_pkWorkSpace = m_pkApp->GetWnd("WorkSpace"))->SetMoveArea(Rect(-190,-490,800+190,600+490),true);
+	(m_pkWorkSpace = m_pkApp->GetWnd("WorkSpace"))->SetMoveArea(Rect(-800,-600,800+800,600+600),true);
 
 	m_pkApp->CreateWnd(Button, "UndoButton", "WorkSpace", "", 2, 0, 24, 22, 0);
 
@@ -189,7 +203,7 @@ void Scene::CreateUI()
 	// Create toolbar
 	//
 	m_pkApp->CreateWnd(Wnd, "PropertyWnd", "", "", 800/2-300/2, 600-138, 300, 110, 0);
-	(m_pkPropertyWnd = m_pkApp->GetWnd("PropertyWnd"))->SetMoveArea(Rect(-290,-100,800+290,600+100),true);
+	(m_pkPropertyWnd = m_pkApp->GetWnd("PropertyWnd"))->SetMoveArea(Rect(-800,-600,800+800,600+600),true);
 
 	m_pkApp->CreateWnd(Label, "NameLabel",  "PropertyWnd",  "Name:", 4,  4+2, 25, 20, 0);
 	m_pkApp->CreateWnd(Textbox, "WndNameTextbox", "PropertyWnd", "", 40,  4, 250, 20, 0);

@@ -25,7 +25,7 @@ const int RADIO_GROUP_COUNTER_START = 100;
 class ZGResEdit : public Application, public ZGuiApp 
 {
 	public:
-		
+
 		void OnClickListbox(int iListBoxID, int iListboxIndex, ZGuiWnd* pkMain);
 		void OnClickTreeItem(char *szTreeBox, char *szParentNodeText, char *szClickNodeText, bool bHaveChilds);
 		void OnSelectCB(int ListBoxID, int iItemIndex, ZGuiWnd *pkMain);
@@ -39,8 +39,8 @@ class ZGResEdit : public Application, public ZGuiApp
 		void OnServerStart(void) {};
 		void OnClientStart(void) {};
 
-		bool StartUp() {return true;};
-		bool ShutDown() {return true;};
+		bool StartUp();
+		bool ShutDown();
 		bool IsValid() {return true;};
 
 		bool OnPreConnect(IPaddress kRemoteIp, char* szLogin, char* szPass) { return true; }
@@ -104,8 +104,14 @@ class ZGResEdit : public Application, public ZGuiApp
 		bool m_bLeftButtonPressed;
 		bool m_bUpdateSize, m_bUpdatePos;
 		int m_iHighestZValue;
+		int m_iApa;
 
 		Point m_kSelStart, m_kClickPos;
+
+		int m_iToolbarPosX;
+		int m_iToolbarPosY;
+		int m_iPropertyWndPosX;
+		int m_iPropertyWndPosY;
 
 		struct SORT_MOST_PARENTS : public binary_function<pair<ZGuiWnd*, int>, pair<ZGuiWnd*, int>, bool> {
 			bool operator()(pair<ZGuiWnd*, int> x, pair<ZGuiWnd*, int> y) { 
