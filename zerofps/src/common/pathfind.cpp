@@ -117,6 +117,13 @@ bool PathFind::GetNextStep(int &riSquareX, int &riSquareY)
 		riSquareX = sqr.x; 
 		riSquareY = sqr.y;
 		m_kqPath.pop();
+
+		if( (riSquareX < 0 || riSquareX > 512) ||
+			(riSquareY < 0 || riSquareY > 512) )
+		{
+			printf("GetNextStep failed! Crasy values (%i,%i)\n", riSquareX, riSquareY);
+		}
+
 		return true;
 	}
 	
@@ -558,14 +565,14 @@ bool PathFind::FillQueue()
 		vector<Point> kPath(m_kqClosestPath.size());
 		while(m_kqClosestPath.size())
 		{
-			kPath.push_back(m_kqClosestPath.front());
+			m_kqPath.push(m_kqClosestPath.front());
 			m_kqClosestPath.pop();
 		}
 
 		// Kopiera över vektorn till kön som skall användas
 		// och hoppa över onödiga mellansteg som kan undvikas
 		// genom att gö diagonalt.
-		unsigned int iSize = kPath.size();
+/*		unsigned int iSize = kPath.size();
 		for(int i=0; i<iSize; i++)
 		{
 			if(i < iSize-2)
@@ -584,7 +591,7 @@ bool PathFind::FillQueue()
 			}
 
 			m_kqPath.push(kPath[i]); 
-		}
+		}*/
 
 		FreeAllNodes();
 
