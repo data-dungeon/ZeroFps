@@ -57,6 +57,7 @@ OggMusic::~OggMusic()
 	
 	//SDL_Quit();
 	Stop();
+
 	alDeleteBuffers(m_uiNrOfBuffers,m_pALuiBuffers);
 	alDeleteSources(1, &m_ALuiSource);
 	delete m_pcTempBuffer;
@@ -208,8 +209,11 @@ bool OggMusic::Stop()
 			alSourceStop(m_ALuiSource);
 	m_bPlaying=false;
 	//rewind
-	if (ov_pcm_seek(&m_kOggFile,0) != 0)
+
+	/*	Dvoid   krashar här för mig =(
+	if(ov_pcm_seek(&m_kOggFile,0) != 0)
 		return false;
+	*/
 	return true;
 }
 
