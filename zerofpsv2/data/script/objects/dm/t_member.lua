@@ -69,11 +69,6 @@ function FirstRun()
 end
 
 function HeartBeat()
-	--p = {}
-	--p[1] = 0
-	--p[2] = 1
-	--p[3] = 0
-	--CreateEntity("data/script/objects/dm/t_police.lua",p);
 
 	if ( IsDead(SIGetSelfID()) == 1) then
 		AddToEntityVar (SIGetSelfID(), "deadtime", 1);
