@@ -750,6 +750,9 @@ MStatus	MadExport::LoopFrames(void)
 
 MStatus MadExport::GetBoneNames(void)
 {
+	cout << "GetBoneNames: " << m_kBoneList.size() << "\n";
+
+
 	BoneList::iterator itBones;
 	NameIntMap::iterator mapIt;
 
@@ -771,6 +774,8 @@ MStatus MadExport::GetBoneNames(void)
 
 MStatus MadExport::GetBoneList(void)
 {
+	cout << "GetBoneList\n";
+
 	MStatus		status;
 	int			iLastJointID = -1;
 	m_kJointMap.clear();
@@ -833,6 +838,9 @@ MStatus MadExport::GetBoneList(void)
 		}
 
 	GetBoneNames();
+
+	cout << "GetBoneList Done. Found " << m_kBoneList.size() << "bones.\n";
+
 	return MStatus::kSuccess;
 }
  
@@ -1065,13 +1073,24 @@ void MadExport::PrintSelection()
 
 MadExport::MadExport()
 {
-
+	Clear();
 }
 
 MadExport::~MadExport()
 {
 
 }
+
+void MadExport::Clear()
+{
+	m_kJointMap.clear();
+	m_kBoneList.clear();
+	m_bIsAnimation = false;
+	m_bIsBaseData = false;
+	m_pkOutFile = NULL;
+}
+
+
 
 // PUBLIC / Interface
 
@@ -1123,6 +1142,8 @@ MStatus MadExport::reader( const MFileObject& file, const MString& options, File
  
 MStatus MadExport::writer( const MFileObject& file, const MString& options, FileAccessMode mode)
 {
+	Clear();
+
 	MString FullPathName = file.fullName();
 	MString FileExt;
 
@@ -1246,8 +1267,8 @@ MStatus initializePlugin( MObject obj )
 
     MFnPlugin plugin( obj, "ZeroFps", "1.0", "Any" );
 //    plugin.registerCommand( "madexport", MadExport::creator );
-    status = plugin.registerFileTranslator( "madus" , "none", MadExport::creator,
-		"MadExportOptions", "madType=m", true );
+    status = plugin.registerFileTranslator( "MAD" , "none", MadExport::creator,
+		"MadExportOptions", "", true );
 
 	if (!status) {
 		cout << "ERROOOOR\n";

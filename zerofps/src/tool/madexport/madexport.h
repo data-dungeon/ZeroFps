@@ -99,6 +99,8 @@ private:
 	MString			m_strMeshName;				// Name of exported mesh
 	void			PrintSelection();
 
+	void Clear();
+
 public:
 	MadExport();
 	~MadExport();
@@ -116,7 +118,6 @@ public:
 	MString		defaultExtension() const;
 
 	MPxFileTranslator::MFileKind identifyFile( const MFileObject& kFIleName, const char* pcData, short iSize) const;
-
 
 };
 

@@ -60,8 +60,9 @@ void DrawBoundSphere(float fRadius)
 
 void MadProperty::Update() 
 {
+//	return;
 	float fRadius = pkCore->GetRadius();
-
+ 
 	if(!pkCore)
 		return;
 
