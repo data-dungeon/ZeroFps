@@ -256,11 +256,11 @@ void MistClient::Input()
 	{
 	case KEY_P:
 		{
-			SoundInfo kSound;
+			ZFSoundInfo kSound;
 
 			static int COUNTER = 0;
 
-			kSound.m_bLoop = true;
+			kSound.m_bLoop = false;
 			kSound.m_kDir = Vector3(0,0,-1);
 			kSound.m_kPos = Vector3(0,0,0);
 			
@@ -288,7 +288,7 @@ void MistClient::Input()
 
 	case KEY_O:
 
-		SoundInfo kSound;
+		ZFSoundInfo kSound;
 
 		kSound.m_kDir = Vector3(0,0,-1);
 		kSound.m_kPos = Vector3(0,0,0);

@@ -13,7 +13,6 @@
 #include "oggmusic.h"
 
 #define DUMMY_SOUND "/data/sound/dummy.wav"
-#define SOURCE_POOL_SIZE 32
 
 class ZFAudioSystem;
 
@@ -32,16 +31,17 @@ class ENGINE_SYSTEMS_API ZFSoundRes : public ZFResource
 		bool Load();
 		char* m_szFileName;
 		ALuint m_uiBufferIndexName;
+		unsigned int m_uiSize;
 };
 
 ENGINE_SYSTEMS_API ZFResource* Create__WavSound();
 
-class ENGINE_SYSTEMS_API SoundInfo
+class ENGINE_SYSTEMS_API ZFSoundInfo
 {
 	public:
-		SoundInfo();
-		SoundInfo(const char* c_szFile, Vector3 pos, Vector3 dir, bool bLoop=false);
-		~SoundInfo();
+		ZFSoundInfo();
+		ZFSoundInfo(const char* c_szFile, Vector3 pos, Vector3 dir, bool bLoop=false);
+		~ZFSoundInfo();
 
 		bool m_bLoop;
 		Vector3 m_kPos;
@@ -56,14 +56,20 @@ class ENGINE_SYSTEMS_API SoundInfo
 		friend class ZFAudioSystem;
 };
 
-/// Sub System for Sound.
+/**	\brief	Sub System for Sound. Use this system to play (start) or stop sounds by 
+creating a (temporary) ZFSoundInfo object and call StartSound. Both loop sounds and
+single sound can be created. The system creates internal copies of the sounds and uses
+a cach system to load and unload wav files from memory when they are no longer needed,
+Importent: Only mono wav files should be used as resources!
+*/
+
 class ENGINE_SYSTEMS_API ZFAudioSystem  : public ZFSubSystem 
 {
 public:
 	void RemoveAllSounds();
 	
-	bool StartSound(SoundInfo kSound);
-	bool RemoveSound(SoundInfo kSound, float fMaxSearchRange = 1000000.0f);
+	bool StartSound(ZFSoundInfo kSound);
+	bool RemoveSound(ZFSoundInfo kSound, float fMaxSearchRange = 1000000.0f);
 
 	unsigned int GetNumActiveSounds();
 	unsigned int GetNumActiveChannels();
@@ -110,20 +116,21 @@ private:
 	
 	typedef pair<ALuint, bool> SOURCE_POOL; // source index name, is used
 
-	SOURCE_POOL m_akSourcePool[SOURCE_POOL_SIZE];
+	unsigned int m_uiSourcePoolSize;
+	SOURCE_POOL* m_pkSourcePool;
 
 	map<string, ZFResourceHandle*> m_mkResHandles;
 	map<string, unsigned short> m_mkResHandleCounter;
 
-	list<SoundInfo*> m_kActiveSounds;
+	list<ZFSoundInfo*> m_kActiveSounds;
 
 	// Common
 	bool GenerateSourcePool();
 	ZFResourceHandle* GetResHandle(string strFileName);
-	bool Hearable(SoundInfo* pkSound);
-	bool RestartLoopSound(SoundInfo* pkSound);
-	bool LoadRes(SoundInfo* pkSound);
-	bool UnLoadRes(SoundInfo* pkSound);
+	bool Hearable(ZFSoundInfo* pkSound);
+	bool RestartLoopSound(ZFSoundInfo* pkSound);
+	bool LoadRes(ZFSoundInfo* pkSound);
+	bool UnLoadRes(ZFSoundInfo* pkSound);
 	unsigned short ChangeResCounter(string strFileName, unsigned short modification);
 };
 
