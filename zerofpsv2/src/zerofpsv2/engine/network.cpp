@@ -827,6 +827,21 @@ bool NetWork::AddressToStr(IPaddress* pkAddress, char* szString)
 	return true;
 }
 
+void NetWork::SendToClient(int iClient, NetPacket* pkNetPacket)
+{
+	if(m_RemoteNodes[iClient].m_eConnectStatus != NETSTATUS_CONNECTED) {
+		cout << "Warning: Try to send to unconnected client " << iClient << endl;
+		return;
+		}
+
+	pkNetPacket->m_kAddress = m_RemoteNodes[iClient].m_kAddress;
+	pkNetPacket->m_kData.m_kHeader.m_iOrder = m_RemoteNodes[iClient].m_iNumOfPacketsSent;
+	Logf("net", "SendToClient[%d] : Order = %d", iClient, m_RemoteNodes[iClient].m_iNumOfPacketsSent );
+	
+	Send(pkNetPacket);
+}
+
+
 void NetWork::SendToAllClients(NetPacket* pkNetPacket)
 {
 	if(m_RemoteNodes.size() <= 0)

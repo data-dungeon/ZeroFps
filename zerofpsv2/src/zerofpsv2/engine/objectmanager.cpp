@@ -297,6 +297,7 @@ Object* ObjectManager::CreateObjectByNetWorkID(int iNetID)
 	pkNew->SetParent(m_pkWorldObject);
 	pkNew->m_eRole			= NETROLE_PROXY;
 	pkNew->m_eRemoteRole	= NETROLE_AUTHORITY;
+	pkNew->SetUseZones(false);
 	
 	Logf("net", " CreateObjectByNetWorkID( %d ).\n", iNetID);
 
@@ -500,6 +501,221 @@ void ObjectManager::UpdateState(NetPacket* pkNetPacket)
 		}	
 }
 
+void ObjectManager::PackToClient(int iClient, vector<Object*> kObjects)
+{
+	int iPacketSize = 0;
+	int iEndOfObject = -1;
+
+	Object* pkPackObj;
+
+	NetPacket NP;
+	NP.Clear();
+	NP.m_kData.m_kHeader.m_iPacketType = ZF_NETTYPE_UNREL;
+	NP.Write((char) ZFGP_OBJECTSTATE);
+
+	for(int iObj=0; iObj < kObjects.size(); iObj++)	{
+		pkPackObj = kObjects[iObj];
+
+		pkPackObj->m_iNetUpdateFlags |= m_iForceNetUpdate;
+
+		if(pkPackObj->NeedToPack() == false)				continue;
+		if(pkPackObj->m_eRole != NETROLE_AUTHORITY)		continue;
+
+		NP.Write(pkPackObj->iNetWorkID);
+		Logf("net", "Object [%d]\n",pkPackObj->iNetWorkID );
+		pkPackObj->PackTo(&NP);
+		iPacketSize++;
+
+		Logf("net", " Size: %d\n\n",NP.m_iPos );
+
+		if(NP.m_iPos >= 512) {
+			NP.Write(iEndOfObject);
+			NP.Write(ZFGP_ENDOFPACKET);
+			m_pkNetWork->SendToClient(iClient, &NP);
+
+			NP.Clear();
+			NP.m_kData.m_kHeader.m_iPacketType = ZF_NETTYPE_UNREL;
+			NP.Write((char) ZFGP_OBJECTSTATE);
+
+			iPacketSize = 0;
+			}
+		}
+
+	NP.Write(iEndOfObject);
+	NP.Write(ZFGP_ENDOFPACKET);
+	m_pkNetWork->SendToClient(iClient, &NP);
+}
+
+
+void ObjectManager::PackToClients()
+{
+	if(m_pkNetWork->GetNumOfClients() == 0)
+		return;
+
+
+
+	Logf("net", " *** ObjectManager::PackToClients() *** \n");
+
+
+/*	if(m_pkZeroFps->GetEngineTime() < m_fEndTimeForceNet) {
+		m_iForceNetUpdate = 0xFFFFFFFF;
+		cout << "Forcing Object network updates" << endl;
+		}
+	else {
+		m_iForceNetUpdate  = 0x0;					
+		}*/
+
+	vector<Object*>	kObjects;
+
+	m_iForceNetUpdate = 0xFFFFFFFF;
+
+	NetPacket NP;
+	
+	// Keep it alive.
+	NP.Clear();
+	NP.m_kData.m_kHeader.m_iPacketType = ZF_NETTYPE_CONTROL;
+	NP.Write((char) ZF_NETCONTROL_NOP);
+	NP.Write(ZFGP_ENDOFPACKET);
+	m_pkNetWork->SendToAllClients(&NP);
+	
+
+
+	NP.Clear();
+	NP.m_kData.m_kHeader.m_iPacketType = ZF_NETTYPE_UNREL;
+	NP.Write((char) ZFGP_OBJECTSTATE);
+
+	int iNumOfObjects = m_akObjects.size();
+	int iPacketSize = 0;
+	int iEndOfObject = -1;
+
+	Object* pkZone;
+//	Object* pkPackObj;
+
+	if(m_pkZeroFps->m_bClientMode) {
+		m_pkWorldObject->GetAllObjects(&kObjects);
+		PackToClient(0, kObjects);
+		return;
+		}
+
+	// Loop all clients.
+	for(int iClient=0; iClient < m_pkZeroFps->m_kClient.size(); iClient++) {
+		if(m_pkZeroFps->m_kClient[iClient].m_pkObject == NULL)	continue;
+
+		// Get Ptr to clients tracker.
+		TrackProperty* pkTrack = dynamic_cast<TrackProperty*>(m_pkZeroFps->m_kClient[iClient].m_pkObject->GetProperty("TrackProperty"));
+
+		// Loop all zones activated by client.
+		for(set<int>::iterator itActiveZone = pkTrack->m_iActiveZones.begin(); itActiveZone != pkTrack->m_iActiveZones.end(); itActiveZone++ ) {
+			// Get Zone and all subobjects.
+			int iZoneID = (*itActiveZone);
+			pkZone = m_kZones[iZoneID].m_pkZone;
+			assert(pkZone);
+
+			kObjects.clear();
+			pkZone->GetAllObjects(&kObjects);
+			PackToClient(iClient, kObjects);
+
+			/*for(int iObj=0; iObj < kObjects.size(); iObj++)	{
+				pkPackObj = kObjects[iObj];
+
+				pkPackObj->m_iNetUpdateFlags |= m_iForceNetUpdate;
+
+				if(pkPackObj->NeedToPack() == false)				continue;
+				if(pkPackObj->m_eRole != NETROLE_AUTHORITY)		continue;
+
+				NP.Write(pkPackObj->iNetWorkID);
+				Logf("net", "Object [%d]\n",pkPackObj->iNetWorkID );
+				pkPackObj->PackTo(&NP);
+				iPacketSize++;
+		
+				Logf("net", " Size: %d\n\n",NP.m_iPos );
+
+				if(NP.m_iPos >= 512) {
+					NP.Write(iEndOfObject);
+					NP.Write(ZFGP_ENDOFPACKET);
+					m_pkNetWork->SendToClient(iClient, &NP);
+
+					NP.Clear();
+					NP.m_kData.m_kHeader.m_iPacketType = ZF_NETTYPE_UNREL;
+					NP.Write((char) ZFGP_OBJECTSTATE);
+
+					iPacketSize = 0;
+					}
+				}
+				
+			NP.Write(iEndOfObject);
+			NP.Write(ZFGP_ENDOFPACKET);
+			m_pkNetWork->SendToClient(iClient, &NP);*/
+			}
+		}
+
+/*	for(list<Object*>::iterator it=m_akObjects.begin();it!=m_akObjects.end();it++) {
+
+		(*it)->m_iNetUpdateFlags |= m_iForceNetUpdate;
+		
+		if((*it)->NeedToPack() == false)					continue;
+		if((*it)->m_eRole != NETROLE_AUTHORITY)		continue;
+
+		NP.Write((*it)->iNetWorkID);
+		Logf("net", "Object [%d]\n",(*it)->iNetWorkID );
+		(*it)->PackTo(&NP);
+		iPacketSize++;
+
+		Logf("net", " Size: %d\n\n",NP.m_iPos );
+
+		if(NP.m_iPos >= 512) {
+			NP.Write(iEndOfObject);
+			NP.Write(ZFGP_ENDOFPACKET);
+			m_pkNetWork->SendToAllClients(&NP);
+
+			NP.Clear();
+			NP.m_kData.m_kHeader.m_iPacketType = ZF_NETTYPE_UNREL;
+			NP.Write((char) ZFGP_OBJECTSTATE);
+
+			iPacketSize = 0;
+			}
+	}
+
+	NP.Write(iEndOfObject);
+	NP.Write(ZFGP_ENDOFPACKET);
+	m_pkNetWork->SendToAllClients(&NP);*/
+
+	if(m_aiNetDeleteList.size() == 0)
+		return;
+
+	// Pack delete data.
+	NP.Clear();
+	NP.m_kData.m_kHeader.m_iPacketType = ZF_NETTYPE_UNREL;
+	NP.Write((char) ZFGP_DELETEOBJECT);
+
+	cout << "Delete List Size:"  << m_aiNetDeleteList.size() << endl;
+
+	for(unsigned int i=0; i<m_aiNetDeleteList.size(); i++) {
+		NP.Write((int) m_aiNetDeleteList[i] );
+
+		if(NP.m_iPos >= 512) {
+			NP.Write(iEndOfObject);
+			NP.Write(ZFGP_ENDOFPACKET);
+			m_pkNetWork->SendToAllClients(&NP);
+
+			NP.Clear();
+			NP.m_kData.m_kHeader.m_iPacketType = ZF_NETTYPE_UNREL;
+			NP.Write((char) ZFGP_DELETEOBJECT);
+
+			iPacketSize = 0;
+			}
+	
+		}
+	
+	NP.Write(iEndOfObject);
+	NP.Write(ZFGP_ENDOFPACKET);
+	m_pkNetWork->SendToAllClients(&NP);
+
+	m_aiNetDeleteList.clear();
+}
+
+
+/*
 void ObjectManager::PackToClients()
 {
 	if(m_pkNetWork->GetNumOfClients() == 0)
@@ -590,6 +806,7 @@ void ObjectManager::PackToClients()
 
 	m_aiNetDeleteList.clear();
 }
+*/
 
 
 // Debug / Help Functions		

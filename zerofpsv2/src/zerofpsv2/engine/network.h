@@ -235,6 +235,7 @@ public:
 
 	bool Send(NetPacket* pkNetPacket);
 	void SendToAllClients(NetPacket* pkNetPacket);
+	void SendToClient(int iClient, NetPacket* pkNetPacket);
 
 	void TEST_KeepAliveALL();										// Sends a NOP Controll message to all clients
 	

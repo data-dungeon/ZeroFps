@@ -308,7 +308,6 @@ void ZeroTank::OnServerClientJoin(ZFClient* pkClient,int iConID)
 	pkClient->m_pkObject->AddProperty("P_Primitives3D");	
 	cout << "Now adding tracker to client" << endl;
 	pkClient->m_pkObject->AddProperty("TrackProperty");	
-//	pkObjectMan->AddTracker(pkClient->m_pkObject);
 }
 
 void ZeroTank::OnServerClientPart(ZFClient* pkClient,int iConID)

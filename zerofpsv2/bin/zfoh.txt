@@ -40,7 +40,7 @@ class object
 	class FWarrior
 		parent object
 		set MadProperty m_kMadFile /data/mad/fwarrior.mad
-		set MadProperty m_fScale 1
+		set MadProperty m_fScale 0.4
 
 	class Armour
 		parent object
@@ -80,7 +80,7 @@ class object
 	class Goblin
 		parent object
 		set MadProperty m_kMadFile /data/mad/goblin.mad
-		set MadProperty m_fScale 1
+		set MadProperty m_fScale 0.4
 
 	class ZeroRTSTestBox
 		parent object

@@ -165,7 +165,9 @@ class ENGINE_API ObjectManager : public ZFSubSystem{
 		// NetWork
 		void UpdateState(NetPacket* pkNetPacket);						//Updates objects.
 		void UpdateDeleteList(NetPacket* pkNetPacket);
+		void PackToClient(int iClient, vector<Object*> kObjects);
 		void PackToClients();												//Packs and Sends to ALL clients.
+		
 
 		// Debug / Help Functions		
 		void DisplayTree();
