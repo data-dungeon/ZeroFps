@@ -20,6 +20,10 @@ struct GuiData;
 class ItemBox : public DlgBox 
 {
 public:
+
+	typedef pair<int,int > slot_pos;
+	typedef pair<ZGuiButton*, slot_pos> slot;
+
 	Object* GetItemObject(int mx, int my);
 	Container* GetContainer();
 	void SetPlayerControlProperty(PlayerControlProperty *pkPlayerProp);
@@ -36,16 +40,18 @@ public:
 	bool Create(int x, int y, char* szResourceFile, char* szDlgName);
 	bool OnClose(bool bSave);
 	bool OnOpen(int x, int y);
+	//slot* GetMoveItem() { return m_pkMoveItem; }
+	void RemoveSlot(int grid_x, int grid_y);
+	void AddSlot(GuiData* pkData);
+	slot_pos GetSlot(int x, int y);
+
+	slot* m_pkMoveItem;
 
 private:
 	void PaintStaticSlots(int container_size_x, int container_size_y);
 
-	typedef pair<int,int > slot_pos;
-
 	void CreateStaticGrid();
 	bool ButtonSlotExist(int grid_x, int grid_y);
-	void RemoveSlot(int grid_x, int grid_y);
-	void AddSlot(GuiData* pkData);
 	char* GetSlotName(int id);
 
 	/// number of rows and colls
@@ -69,13 +75,7 @@ private:
 	Container* m_pkContainer;
 	Input* m_pkInput;
 
-	typedef pair<ZGuiButton*, slot_pos> slot;
-
 	vector< slot > m_akSlots;
-
-	slot* m_pkMoveItem;
-
-	slot_pos GetSlot(int x, int y);
 
 };
 

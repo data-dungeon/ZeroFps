@@ -56,7 +56,7 @@ class ENGINE_API VegitationProperty: public Property {
 		
 };
 
-Property* Create_VegitationProperty();
+ENGINE_API Property* Create_VegitationProperty();
 
 #endif
 

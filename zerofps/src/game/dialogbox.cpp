@@ -67,8 +67,7 @@ void DlgBox::KillFocus()
 }
 
 
-
-
-
-
-
+const ZGuiWnd* DlgBox::GetWnd()
+{
+	return m_pkDlgBox;
+}

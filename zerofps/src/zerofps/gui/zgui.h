@@ -60,6 +60,7 @@ class GUI_API ZGui
 {
 public:	
 	
+	ZGuiWnd* GetMainWindowFromPoint(int x, int y);
 	bool MouseHoverWnd();
 	bool ChangeWndRegName(ZGuiWnd* pkWndToRename, const char* pkNewName);
 	ZGuiSkin* GetFocusBorderSkin() { return m_pkFocusBorderSkin; }

@@ -211,11 +211,6 @@ void VegitationProperty::Load(ZFMemPackage* pkPackage)
 }
 
 
-
-
-
-
-
 Property* Create_VegitationProperty()
 {
 	return new VegitationProperty();

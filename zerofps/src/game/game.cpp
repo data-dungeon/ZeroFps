@@ -32,6 +32,8 @@ static bool WINPROC( ZGuiWnd* pkWindow, unsigned int uiMessage, int iNumberOfPar
 
 static bool PLAYER_INVENTORYPROC( ZGuiWnd* wnd, unsigned int msg, int num, void *parms ) 
 {
+	int mx,my;
+
 	switch(msg)
 	{
 	case ZGM_COMMAND:
@@ -44,18 +46,25 @@ static bool PLAYER_INVENTORYPROC( ZGuiWnd* wnd, unsigned int msg, int num, void 
 		break;
 
 	case ZGM_RBUTTONUP:
-		int x,y;
-		x = ((int*)parms)[0];
-		y = ((int*)parms)[1];
+		mx = ((int*)parms)[0];
+		my = ((int*)parms)[1];
 
 		Object* pkSelObject;
-		pkSelObject = g_kGame.m_pkPlayerInventoryBox->GetItemObject(x,y);
+		pkSelObject = g_kGame.m_pkPlayerInventoryBox->GetItemObject(mx,my);
 
 		if(pkSelObject)
 		{
-			g_kGame.OpenExamineMenu(pkSelObject,INVENTORYUSE,x,y);
+			g_kGame.OpenExamineMenu(pkSelObject,INVENTORYUSE,mx,my);
 		}
 		break;
+
+	case ZGM_LBUTTONUP:
+		if(g_kGame.DragAndDropItem(((int*)parms)[0],((int*)parms)[1],
+			g_kGame.m_pkPlayerInventoryBox->m_pkMoveItem,
+			g_kGame.m_pkPlayerInventoryBox,g_kGame.m_pkContainerBox))
+			return true;
+		break;
+
 	}
 
 	return g_kGame.m_pkPlayerInventoryBox->DlgProc(wnd,msg,num,parms); 
@@ -63,6 +72,8 @@ static bool PLAYER_INVENTORYPROC( ZGuiWnd* wnd, unsigned int msg, int num, void 
 
 static bool CONTAINER_BOXPROC( ZGuiWnd* wnd, unsigned int msg, int num, void *parms ) 
 {
+	int mx,my;
+
 	switch(msg)
 	{
 	case ZGM_COMMAND:
@@ -73,6 +84,15 @@ static bool CONTAINER_BOXPROC( ZGuiWnd* wnd, unsigned int msg, int num, void *pa
 			break;
 		}
 		break;
+
+/*	case ZGM_LBUTTONUP:
+		mx = ((int*)parms)[0];
+		my = ((int*)parms)[1];
+		if(g_kGame.DragAndDropItem(mx,my,
+			g_kGame.m_pkContainerBox->m_pkMoveItem,
+			g_kGame.m_pkContainerBox,g_kGame.m_pkPlayerInventoryBox))
+			return true;
+		break;*/
 	}
 
 	return g_kGame.m_pkContainerBox->DlgProc(wnd,msg,num,parms); 
@@ -171,7 +191,10 @@ void Game::OnIdle(void)
 
 			if(m_pkPlayerInventoryBox->IsOpen() || m_pkContainerBox->IsOpen() ||
 				m_pkExamineMenu->IsOpen())
+			{
+
 				LockPlayerCamera(true);
+			}
 			else
 				LockPlayerCamera(false);
 
@@ -562,4 +585,51 @@ void Game::OpenExamineMenu(Object* pkObject, Action_Type eActionType, int x, int
 			m_pkExamineMenu->OnOpen(x,y);
 		}
 	}
+}
+
+bool Game::DragAndDropItem(int mx, int my, ItemBox::slot* pkMoveItem, 
+			ItemBox* pkItemBoxFrom, ItemBox* pkItemBoxTo)
+{
+	Container* pkFrom = pkItemBoxFrom->GetContainer();
+	Container* pkTo = pkItemBoxTo->GetContainer();
+
+	if(pkMoveItem == NULL || pkFrom == NULL || pkTo == NULL)
+		return false;
+
+	ZGuiWnd* pkMainWindowUnderCursor = pkGui->GetMainWindowFromPoint(mx,my);
+
+	if(pkMainWindowUnderCursor != NULL)
+	{
+		if(pkItemBoxTo->GetWnd() == pkMainWindowUnderCursor)
+		{
+			int cell_from_x = pkMoveItem->second.first;
+			int cell_from_y = pkMoveItem->second.second;
+
+			ItemBox::slot_pos kCell_to = pkItemBoxTo->GetSlot(mx, my);
+
+			if(kCell_to.first != -1)
+			{
+				Object* pkObjectToMove = pkFrom->GetItem(cell_from_x, cell_from_y);
+				
+				// Add object to destination container.
+				pkTo->AddItem(pkObjectToMove, kCell_to.first, kCell_to.second);
+
+				// Remove button from window.
+				pkItemBoxFrom->RemoveSlot(cell_from_x, cell_from_y);
+
+				// Remove object from source container.
+				pkFrom->RemoveItem(pkObjectToMove);
+				
+				//pkMoveItem = NULL;
+				printf("moving item to a new container, from slot(%i,%i), to slot(%i,%i)\n",
+					cell_from_x, cell_from_y, kCell_to.first, kCell_to.second);
+
+				pkGui->SetFocus(pkMainWindowUnderCursor);
+
+				return true;
+			}
+		}
+	}
+
+	return false;
 }

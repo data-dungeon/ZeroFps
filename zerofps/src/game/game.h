@@ -54,6 +54,7 @@ class Game :public Application {
 		void Input();				
 		void SetupLevel();		
 		void PlayerExamineObject();
+		
 //		bool LoadLevel(const char* acFile);				
 
 //		void Clear();		
@@ -69,6 +70,9 @@ class Game :public Application {
 		int m_iActionOpenInventory, m_iActionCloseInventory;
 
 	public:
+	
+		bool DragAndDropItem(int mx, int my, ItemBox::slot* kMoveItem, 
+			ItemBox* pkItemBoxFrom, ItemBox* pkItemBoxTo);
 		void OpenExamineMenu(Object* pkObject, Action_Type eActionType, int x=-1, int y=-1);
 		void OpenContainer();
 		void LockPlayerCamera(bool bTrue);

@@ -46,6 +46,8 @@ bool ItemBox::DlgProc( ZGuiWnd* pkWnd,unsigned int uiMessage,
 			if(pkWnd == m_akSlots[i].first)
 			{
 				m_pkMoveItem = &m_akSlots[i];
+				m_pkMoveItem->first->SetZValue(s_iButtonSlotIDCounter+1);
+				m_pkDlgBox->SortChilds();
 				break;
 			}
 		}
@@ -119,6 +121,7 @@ bool ItemBox::DlgProc( ZGuiWnd* pkWnd,unsigned int uiMessage,
 		break;
 
 	case ZGM_MOUSEMOVE:
+
 		if(m_pkMoveItem)
 		{
 			int mx = ((int*)pkParams)[1]; 
@@ -295,6 +298,8 @@ bool ItemBox::ButtonSlotExist(int grid_x, int grid_y)
 }
 
 /// x och y är i skärm koordinater
+/// x och y värdet kan vara större än maximalt
+/// antal rader och kollonner,
 pair<int,int> ItemBox::GetSlot(int x, int y)
 {
 	Rect test = m_pkDlgBox->GetScreenRect();
@@ -396,3 +401,5 @@ Object* ItemBox::GetItemObject(int mx, int my)
 
 	return pkObject;
 }
+
+

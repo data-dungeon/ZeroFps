@@ -11,6 +11,7 @@ class Input;
 class DlgBox  
 {
 public:
+	const ZGuiWnd* GetWnd();
 	void KillFocus();
 	void SetPos(int x, int y);
 	void GetPos(int& x, int& y);

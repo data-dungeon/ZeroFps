@@ -40,7 +40,7 @@ class ENGINE_API WaterRenderProperty: public Property {
 
 };
 
-Property* Create_WaterRenderProperty();
+ENGINE_API Property* Create_WaterRenderProperty();
 
 
 #endif

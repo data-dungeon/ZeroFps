@@ -1552,41 +1552,31 @@ void ZGui::GetResolution(int& res_x, int& res_y)
 	m_pkRenderer->GetScreenSize(res_x, res_y);
 }
 
+ZGuiWnd* ZGui::GetMainWindowFromPoint(int x, int y)
+{
+	MAIN_WINDOW* best = NULL;
 
+	// Find the window
+	for(list<MAIN_WINDOW*>::iterator it = m_pkMainWindows.begin();
+		 it != m_pkMainWindows.end(); it++)
+		 {
+			if( (*it)->pkWnd->IsVisible() && 
+				(*it)->pkWnd->GetScreenRect().Inside(x,y))
+			{
+				if(best != NULL && best->pkWnd->GetScreenRect().Inside(x,y))
+				{
+					if((*it)->iZValue > best->iZValue)
+						best = (*it);
+				}
+				else
+				{
+					best = (*it);
+				}
+			}
+		 }	
 
+	if(best == NULL)
+		return NULL;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+	return best->pkWnd; 
+}
