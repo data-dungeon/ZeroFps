@@ -410,3 +410,19 @@ void ZFIni::RunCommand(int cmdid, const CmdArgument* kCommand)
 			break;
 	}
 }
+
+bool ZFIni::ExecuteCommands(const char* strName)
+{
+	if(Open(strName, true))
+	{
+		if(m_pkCommandData)
+		{
+			for(int i=0; i<m_pkCommandData->iNumCommands; i++)
+				g_ZFObjSys.RunCommand(m_pkCommandData->strCommand[i]);
+		}
+
+		return true;
+	}
+
+	return false;
+}

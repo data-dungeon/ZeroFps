@@ -33,6 +33,7 @@ public:
 	void GetCommandStrings(vector<string>* pkCommands);
 	char* GetValue(char* strSection, char* strKey);
 	bool Open(const char* strFileName, bool bCommandFile);
+	bool ExecuteCommands(const char* strName);
 	ZFIni();
 	~ZFIni();
 
