@@ -16,7 +16,6 @@ class PhysicProperty;
 
 class Object;
 class HeightMapObject;
-class SkyBoxObject;
 class ZoneObject;
 
 #include "object.h"
@@ -26,7 +25,6 @@ class ZoneObject;
 #include "madproperty.h"
 #include "heightmapobject.h"
 #include "heightmaprenderproperty.h"
-#include "skyboxobject.h"
 #include "skyboxrenderproperty.h"
 #include "waterrenderproperty.h"
 #include "proxyproperty.h"

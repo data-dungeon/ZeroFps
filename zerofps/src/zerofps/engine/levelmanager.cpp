@@ -390,7 +390,6 @@ void LevelManager::Water(bool bWater)
 		if(m_pkObjectMan->GetObject("WorldWaterObject") == NULL)
 		{	
 			//water
-//			WaterObject *water=new WaterObject(m_pkMap->GetSize()+300,100,"file:../data/textures/water2.bmp");
 			Object* water = new Object();
 			water->AddProperty("WaterRenderProperty");
 			WaterRenderProperty* wrp= static_cast<WaterRenderProperty*>(water->GetProperty("WaterRenderProperty"));
@@ -412,19 +411,26 @@ void LevelManager::SkyBox(const char* acHor,const char* acTop,Vector3 kRotate)
 	m_kWIP.m_kSkyBoxTop=acTop;
 	m_kWIP.m_kSkyBoxRotate=kRotate;
 	
-	SkyBoxObject* skybox;
+	Object* pkSkybox;
 	
 	//check if there already is a SkyBoxObject else create one
 	if(m_pkObjectMan->GetObject("SkyBoxObject") == NULL)
 	{	
-		skybox=new SkyBoxObject(acHor,acTop);
-		skybox->SetParent(m_pkObjectMan->GetWorldObject());	
+		pkSkybox=new Object();//SkyBoxObject(acHor,acTop);
+		pkSkybox->SetParent(m_pkObjectMan->GetWorldObject());	
+		pkSkybox->AddProperty("SkyBoxRenderProperty");
+		pkSkybox->GetName()="SkyBoxObject";
 	}else {
-		skybox=static_cast<SkyBoxObject*>(m_pkObjectMan->GetObject("SkyBoxObject"));
+		pkSkybox=m_pkObjectMan->GetObject("SkyBoxObject");
 	}
 	
-	skybox->SetTexture(acHor,acTop);
-	skybox->SetRotate(kRotate);			
+	SkyBoxRenderProperty* pkSBRP = static_cast<SkyBoxRenderProperty*>(pkSkybox->GetProperty("SkyBoxRenderProperty"));
+	
+	pkSBRP->SetTexture(acHor,acTop);
+	pkSBRP->SetRotate(kRotate);			
+	
+//	pkSkybox->SetTexture(acHor,acTop);
+//	pkSkybox->SetRotate(kRotate);			
 	
 }
 
