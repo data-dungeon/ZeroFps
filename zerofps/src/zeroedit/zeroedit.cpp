@@ -481,7 +481,7 @@ void ZeroEdit::Input()
 	float childrotatespeed=15;
 	float speed=40;
 
-	if(pkInput->GetQueuedKey() == F10)
+	if(pkInput->GetQueuedKey() == KEY_F10)
 		m_pkGui->ToogleMenu();
 
 	//camera movements
@@ -515,48 +515,48 @@ void ZeroEdit::Input()
 	
 	if(m_pkCurentChild!=NULL){	
 		//child movements
-		if(pkInput->Pressed(LEFT)) {
+		if(pkInput->Pressed(KEY_LEFT)) {
 			m_pkCurentChild->GetPos().x-=pkFps->GetFrameTime()*childmovespeed;
 		}
-		if(pkInput->Pressed(RIGHT)) {
+		if(pkInput->Pressed(KEY_RIGHT)) {
 			m_pkCurentChild->GetPos().x+=pkFps->GetFrameTime()*childmovespeed;	
 		}
-		if(pkInput->Pressed(UP)) {
+		if(pkInput->Pressed(KEY_UP)) {
 			m_pkCurentChild->GetPos().z-=pkFps->GetFrameTime()*childmovespeed;	
 		}
-		if(pkInput->Pressed(DOWN)) {
+		if(pkInput->Pressed(KEY_DOWN)) {
 			m_pkCurentChild->GetPos().z+=pkFps->GetFrameTime()*childmovespeed;	
 		}
-		if(pkInput->Pressed(RSHIFT)) {
+		if(pkInput->Pressed(KEY_RSHIFT)) {
 			m_pkCurentChild->GetPos().y+=pkFps->GetFrameTime()*childmovespeed;	
 		}
-		if(pkInput->Pressed(RCTRL)) {
+		if(pkInput->Pressed(KEY_RCTRL)) {
 			m_pkCurentChild->GetPos().y-=pkFps->GetFrameTime()*childmovespeed;	
 		}
 
 	
 		//child rotation
-		if(pkInput->Pressed(HOME)) {
+		if(pkInput->Pressed(KEY_HOME)) {
 			m_pkCurentChild->GetRot().y+=pkFps->GetFrameTime()*childrotatespeed;
 		}
-		if(pkInput->Pressed(END)) {
+		if(pkInput->Pressed(KEY_END)) {
 			m_pkCurentChild->GetRot().y-=pkFps->GetFrameTime()*childrotatespeed;
 		}
-		if(pkInput->Pressed(INSERT)) {
+		if(pkInput->Pressed(KEY_INSERT)) {
 			m_pkCurentChild->GetRot().x+=pkFps->GetFrameTime()*childrotatespeed;
 		}
 		if(pkInput->Pressed(KEY_DELETE)) {
 			m_pkCurentChild->GetRot().x-=pkFps->GetFrameTime()*childrotatespeed;
 		}
-		if(pkInput->Pressed(PAGEUP)) {
+		if(pkInput->Pressed(KEY_PAGEUP)) {
 			m_pkCurentChild->GetRot().z+=pkFps->GetFrameTime()*childrotatespeed;
 		}
-		if(pkInput->Pressed(PAGEDOWN)) {
+		if(pkInput->Pressed(KEY_PAGEDOWN)) {
 			m_pkCurentChild->GetRot().z-=pkFps->GetFrameTime()*childrotatespeed;
 		}
 		
 		//child delete mohahaha
-		if(pkInput->Pressed(BACKSPACE)) {
+		if(pkInput->Pressed(KEY_BACKSPACE)) {
 			if(m_pkCurentChild!=NULL)
 				if(m_pkCurentChild->GetName() != "HeightMapObject") 
 					if(m_pkCurentChild->GetName() != "WorldObject"){					
@@ -641,7 +641,7 @@ void ZeroEdit::Input()
 			{
 				SelectChild();
 			}
-			if(pkInput->Pressed(SPACE))
+			if(pkInput->Pressed(KEY_SPACE))
 			{
 				SelectParent();
 			}
