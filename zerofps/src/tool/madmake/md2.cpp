@@ -580,6 +580,8 @@ bool ModellMD2::Export(MadExporter* mad, const char* filename)
 		pkMesh->akTextureCoo[i].t = kTextureCoo[i].t;
 	}
 
+	pkMesh->CreateRigidBoneConnections();
+
 	// Import Animations.
 /*	vector<Pmd_Animation>::iterator		itAnim;
 	vector<Pmd_KeyFrame>::iterator		itKeyF;

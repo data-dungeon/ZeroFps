@@ -13,6 +13,9 @@ class MadExporter;
 #define MAD_MAX_TEXTURENAME		64
 #define MAD_MAX_TEXTURES		64
 
+#define MAX_MAX_VERTEX			8192	// Max Vertex per mesh.
+
+
 /*
 Bas klass för alla klasser som kan importeras till MAD.
 */
@@ -116,6 +119,7 @@ public:
 	vector<Mad_CoreMeshAnimation>	akAnimation;
 	vector<int>						akBoneConnections;
 
+	void CreateRigidBoneConnections(int iBoneId = 0);
 	void Save(FILE* fp);
 	void Load(FILE* fp);
 	void ShowInfo(void);

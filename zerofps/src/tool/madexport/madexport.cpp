@@ -139,6 +139,133 @@ int MadExport::GetNumOfMeshTriangles(MDagPath path)
 	return NumOfTriangles;
 }
 
+MStatus MadExport::GetSkinClusterWeights(void)
+{	
+	size_t count = 0;
+	float infMax;
+
+	// Iterate through graph and search for skinCluster nodes
+	cout << "GetSkinClusterWeights: 1" << endl;
+	MItDependencyNodes iter( MFn::kSkinClusterFilter );
+	for ( ; !iter.isDone(); iter.next() ) {
+		MObject object = iter.item();
+		count++;
+
+		MFnSkinCluster skinCluster(object);
+
+		// did the user specify a skin cluster?
+		m_strSkinCluster = skinCluster.name();
+
+		// otherwise proceed with analyzing this skinCluster
+		// get the list of influence objects. store all influence objects in the array "m_rgInfs"
+		// only used if the user decides not to export all bones
+
+		MStatus stat;
+		unsigned int nInfs = skinCluster.influenceObjects(m_rgInfs, &stat);
+		if (!stat) {
+			stat.perror("Error getting influence objects");
+			continue;
+		}
+
+		cout << "GetSkinClusterWeights: 2" << endl;
+		if (0 == nInfs) {
+			stat = MStatus::kFailure;
+			stat.perror("Error: No influence objects found.");
+			return stat;
+		}
+		cout << "GetSkinClusterWeights: 3" << endl;
+			
+		// loop through the geometries affected by this cluster
+		unsigned int nGeoms = skinCluster.numOutputConnections();
+		for (size_t ii = 0; ii < nGeoms; ++ii) {
+			unsigned int index = skinCluster.indexForOutputConnection(ii,&stat);
+			if (!stat) {
+				stat.perror ("Error getting geometry index.");
+				return stat;
+			}
+			
+			// get the dag path of the ii'th geometry
+			stat = skinCluster.getPathAtIndex(index,m_skinPath);
+			if (!stat) {
+				stat.perror ("Error getting geometry path.");
+				return stat;
+			}
+
+			// iterate through the components of this geometry
+			MItGeometry gIter(m_skinPath);
+
+			// print out the path name of the skin, vertexCount & influenceCount
+			cout << "found skin: '" << m_skinPath.partialPathName().asChar() << "' with " << gIter.count() << " vertices " << "and " << nInfs << " influences\n";
+							
+			// set up the array for all vertices
+			if (m_rgWeights) {
+				delete m_rgWeights;
+			}
+
+			m_rgWeights = new int[gIter.count(&stat)];
+			if (!stat) {
+				stat.perror ("Error creating array of vertices");
+				return stat;
+			}
+			cout << "GetSkinClusterWeights: 4" << endl;
+
+			for ( /* nothing */ ; !gIter.isDone(); gIter.next() ) {
+				MObject comp = gIter.component(&stat);
+				if (!stat) {
+					stat.perror ("Error getting component.");
+					return stat;
+				}
+				cout << "GetSkinClusterWeights: 5" << endl;
+
+
+				// Get the weights for this vertex (one per influence object)
+				MFloatArray wts;
+				unsigned int infCount;
+				stat = skinCluster.getWeights(m_skinPath,comp,wts,infCount);
+				if (!stat) {
+					stat.perror ("Error getting weights.");
+					return stat;
+				}
+				cout << "GetSkinClusterWeights: 6" << endl;
+
+
+				if (0 == infCount) {
+					stat = MStatus::kFailure;
+					cout << "Error: 0 influence objects.\n";
+					return stat;
+				}
+				cout << "GetSkinClusterWeights: 7" << endl;
+
+
+				// find the strongest influencer for this vertex
+				infMax = 0;
+				m_rgWeights[gIter.index()] = 0;
+				for (unsigned int iInf = 0; iInf < infCount ; ++iInf ) {
+					int r = wts[iInf];
+					if (wts[iInf] > infMax) {
+						m_rgWeights[gIter.index()] = iInf;
+						infMax = wts[iInf];
+					}
+				}
+			}
+		}
+	} 
+	cout << "GetSkinClusterWeights: 100" << endl;
+
+
+	if (0 == count) {
+		cout << "No skinned meshes found in this scene. Is your mesh bound to a skeleton?\n";
+		return MStatus::kFailure;
+	} else if (m_skinPath.partialPathName().length() == 0) {
+		cout << "Could not find desired skin cluster '" << m_strSkinCluster.asChar() << "'\n";
+		return MStatus::kFailure;
+	} else {
+		cout << "Processing skin cluster '" << m_strSkinCluster.asChar() << "'\n";
+	}
+	return MStatus::kSuccess;
+}
+
+
 MStatus	MadExport::getMesh(void)
 {
 	MStatus	status;
@@ -146,12 +273,10 @@ MStatus	MadExport::getMesh(void)
 	MItDependencyNodes iter( MFn::kMesh  );
 	for ( ; !iter.isDone(); iter.next() ) {
 		MObject object = iter.item();
-
 	
 		MFnDagNode fnNode (object);
 		MDagPath path;
 		status = fnNode.getPath (path);
-
 
 		if (status == MStatus::kFailure)
 		{
@@ -162,7 +287,6 @@ MStatus	MadExport::getMesh(void)
  
 		if(fnNode.isIntermediateObject(&status))
 			continue;
-
  
 		status = path.extendToShape();
 		if (status != MStatus::kSuccess) {
@@ -170,7 +294,6 @@ MStatus	MadExport::getMesh(void)
 			cout << "Not geometry" << endl;
 			continue;
 		}
-		
 
 		MFnMesh fnMesh(path, &status);
 		if (status != MStatus::kSuccess) {
@@ -189,7 +312,6 @@ MStatus	MadExport::getMesh(void)
 	
 		int iNumOfTriangles = GetNumOfMeshTriangles(path);
 		fprintf(m_pkOutFile, "Num %d\n", iNumOfTriangles);
-
 
 		// Get a list of all shaders attached to this mesh
 		MObjectArray rgShaders;
@@ -229,7 +351,7 @@ MStatus	MadExport::getMesh(void)
 }
 
 
-MStatus MadExport::parsePolySet(MItMeshPolygon &meshPoly,MStringArray rgTextures, MIntArray texMap)
+MStatus MadExport::parsePolySet(MItMeshPolygon &meshPoly,MStringArray rgTextures, MIntArray texMap, int iForceBone)
 {
 	MStatus	status;
 
@@ -238,6 +360,7 @@ MStatus MadExport::parsePolySet(MItMeshPolygon &meshPoly,MStringArray rgTextures
 	MIntArray rgint;
 	PtLookupMap ptMap;
 	int i;
+	int iW;
 
 	for ( ; !meshPoly.isDone(); meshPoly.next() ) {
 		status = meshPoly.numTriangles (cTri);	
@@ -300,8 +423,10 @@ MStatus MadExport::parsePolySet(MItMeshPolygon &meshPoly,MStringArray rgTextures
 			for(int v = 0; v < 3; v++)
 			{
 				pt = rgpt[v];
-				CalculateTriangleVertex (rgint[v], pt, normal, ucoo, vcoo, meshPoly, ptMap);
-				fprintf(m_pkOutFile, "<%f,%f,%f,%f,%f,%f,%f,%f> ", pt[0] ,pt[1] ,pt[2],
+				CalculateTriangleVertex (rgint[v], iW,pt, normal, ucoo, vcoo, meshPoly, ptMap);
+				if(iForceBone != -1)
+					iW = iForceBone;
+	 			fprintf(m_pkOutFile, " <%d, %f,%f,%f, %f,%f,%f, %f,%f> ", iW , pt[0] ,pt[1] ,pt[2],
 					normal[0], normal[1], normal[2], 
 					ucoo, vcoo );
 			}
@@ -312,7 +437,7 @@ MStatus MadExport::parsePolySet(MItMeshPolygon &meshPoly,MStringArray rgTextures
 	return MS::kSuccess;
 }
 
-MStatus MadExport::CalculateTriangleVertex (int vt, MVector &pt, MVector &n, float &u, float &v, MItMeshPolygon &meshPoly, PtLookupMap &ptMap)
+MStatus MadExport::CalculateTriangleVertex (int vt, int &iWeight, MVector &pt, MVector &n, float &u, float &v, MItMeshPolygon &meshPoly, PtLookupMap &ptMap)
 {
 	MStatus	status;
 	int vtLocal;
@@ -355,9 +480,128 @@ MStatus MadExport::CalculateTriangleVertex (int vt, MVector &pt, MVector &n, flo
 		v = v + 1;
 	}*/
 
+
+
+	if (m_rgWeights) {
+		iWeight = m_rgWeights[vt];
+
+		// now need to look up appropriate bone for this vertex
+		MDagPath path = m_rgInfs[iWeight];
+		MFnDependencyNode joint (path.node());
+		char *name = (char *)joint.name().asChar();
+		NameIntMap::iterator mapIt2;
+		mapIt2 = m_kJointMap.find(name);
+		if (mapIt2 != m_kJointMap.end()) {
+			iWeight = (*mapIt2).second;
+		} else {
+			// error - bone not found!
+			cout << "Error: can't find weight bone with index " << iWeight << " and name '" << name << "' in joint map\n";
+			return MS::kFailure;
+		}
+	} else {
+		iWeight = 0;
+	}
+ 
 	return MS::kSuccess;
 }
 
+
+MStatus MadExport::ExportBoneGeometry( )
+{
+	cout << "ExportBoneGeometry: 1" << endl;
+	MStatus status;
+  
+	BoneList::iterator itBones;
+	for (itBones = m_kBoneList.begin(); itBones != m_kBoneList.end(); itBones++)
+	{
+		cout << "Bone: ";
+		MFnDagNode fnJoint = (*itBones)->m_kPath.node(&status);
+	
+		// go through children looking for geometry
+		for (unsigned int i=0; i < fnJoint.childCount (&status); i++) {
+			cout << "/";
+			MObject obj = fnJoint.child(i, &status);
+			if (status == MStatus::kFailure)
+			{
+				cout << "Unable to load child for bone" << endl;
+				status.perror("Unable to load child for bone");
+				return (MStatus::kFailure);
+			}
+			MFnDagNode fnNode (obj);
+			MDagPath path;
+			status = fnNode.getPath (path);
+			if (status == MStatus::kFailure)
+			{
+				cout << "unable to lookup path for child of bone" << endl;
+				status.perror ("unable to lookup path for child of bone");
+				return (MStatus::kFailure);
+			}
+ 
+			cout << "Name: " << fnNode.name().asChar() << endl;
+
+			// Have to make the path include the shape below it so that
+			// we can determine if the underlying shape node is instanced.
+			// By default, dag paths only include transform nodes.
+			//
+			status = path.extendToShape();
+			if (status != MStatus::kSuccess) {
+				// no geometry under this node...
+				cout << "No Geo"<< endl;
+				continue;
+			}
+ 
+			// If the shape is instanced then we need to determine which
+			// instance this path refers to.
+			//
+			int instanceNum = 0;
+			if (path.isInstanced())
+				instanceNum = path.instanceNumber();
+
+			MFnMesh fnMesh(path, &status);
+			if (status != MStatus::kSuccess) {
+				// this object is not a mesh
+				// no geometry under this node...
+				cout << "No Mesh"<< endl;
+				continue;
+			}
+
+			cout << "processing mesh " << fnMesh.name().asChar() << "\n";
+
+			// Get a list of all shaders attached to this mesh
+	
+			MObjectArray rgShaders;
+			MIntArray rgFaces;
+			status = fnMesh.getConnectedShaders (instanceNum, rgShaders, rgFaces);
+			if (status == MStatus::kFailure)
+			{
+				status.perror("Unable to load shaders for mesh");
+				return (MStatus::kFailure);
+			}
+
+			MString texFilename;
+			MStringArray rgTextures (rgShaders.length(), "");
+
+			for ( int i=0; i<rgShaders.length(); i++ ) {
+				MObject shader = rgShaders[i];
+
+
+				status = GetShaderTextureFileName (texFilename, shader);
+				if (status == MStatus::kFailure) {
+		            status.perror ("Unable to retrieve filename of texture");
+		            continue;
+			    }
+
+				rgTextures[i] = texFilename;
+			}
+
+			// now iterate through all polygons and set up that data
+			MItMeshPolygon piter(path, MObject::kNullObj, &status);
+			parsePolySet(piter, rgTextures, rgFaces, (*itBones)->m_iId);
+		}
+	}
+
+	return MStatus::kSuccess;
+}
 
 MStatus	MadExport::LoopFrames(void)
 {
@@ -384,7 +628,6 @@ MStatus	MadExport::LoopFrames(void)
 
 		// Do Things for each frame.
 		getMesh();
-		//getBoneData();
 	}
 	MGlobal::viewFrame( currentFrame );
 
@@ -639,11 +882,14 @@ MStatus	MadExport::Export_MX(char* filename)
 		cout << "unable to open file " << filename << " for writing\n";
 		return MStatus::kSuccess;
 	}
-
+ 
+	cout << "Export_MX: 0" << endl;
+	GetSkinClusterWeights();
+	cout << "Export_MX: 1" << endl;
 	GetBoneList();
+	cout << "Export_MX: 2" << endl;
 
- 	int		frameFirst;
-	int		frameLast;
+
 	MTime	tmNew;
 	MStatus	status;
 
@@ -651,15 +897,11 @@ MStatus	MadExport::Export_MX(char* filename)
 	MTime currentFrame	= MAnimControl::currentTime();
 	MGlobal::viewFrame( currentFrame );
 
-	for (int i=frameFirst; i<=frameLast; i++)
-	{
-		fprintf(m_pkOutFile, "Frame %d\n", i);
-
-		// Do Things for each frame.
-		UpdateBoneList();
-		getMesh();
-		WriteBonePose();
-	}
+	UpdateBoneList();
+	cout << "Export_MX: 3" << endl;
+	getMesh();
+//	ExportBoneGeometry();
+	cout << "Export_MX: 4" << endl;
 
 	fclose(m_pkOutFile);
 	return MStatus::kSuccess;
@@ -705,6 +947,8 @@ MStatus MadExport::doIt( const MArgList& args )
 	m_bIsAnimation	= false;
 	m_bIsBaseData	= false;
 
+	m_rgWeights = NULL;
+
 	if(strcmp(args.asString( 0 ).asChar(), "help") == 0)
 		return ShowHelp();
 
@@ -716,7 +960,7 @@ MStatus MadExport::doIt( const MArgList& args )
 
 	if(strcmp(args.asString( 0 ).asChar(), "s") == 0)
 		return Export_SX("c:\\test.sx");
-
+ 
 	if(strcmp(args.asString( 0 ).asChar(), "a") == 0)
 		return Export_AX("c:\\test.ax");
 

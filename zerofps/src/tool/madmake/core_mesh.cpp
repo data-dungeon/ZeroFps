@@ -28,6 +28,7 @@ void Mad_CoreMesh::Clear(void)
 	akFrames.clear();
 	akSubMeshes.clear();
 	akAnimation.clear();
+	akBoneConnections.clear();
 }
 
 void Mad_CoreMesh::operator=(const Mad_CoreMesh& kOther)
@@ -46,8 +47,16 @@ void Mad_CoreMesh::operator=(const Mad_CoreMesh& kOther)
 	akFrames = kOther.akFrames;
 	akSubMeshes = kOther.akSubMeshes;
 	akAnimation = kOther.akAnimation;
+	akBoneConnections = kOther.akBoneConnections;
 }
 
+void Mad_CoreMesh::CreateRigidBoneConnections(int iBoneId)
+{
+	akBoneConnections.resize(kHead.iNumOfVertex);
+	for(int i=0; i<akBoneConnections.size(); i++)
+		akBoneConnections[i] = iBoneId;
+
+}
 
 
 void Mad_CoreMesh::ShowInfo(void)

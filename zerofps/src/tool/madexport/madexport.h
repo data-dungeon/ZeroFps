@@ -65,8 +65,8 @@ private:
 
 	FILE*			m_pkOutFile;
 
-	MStatus			CalculateTriangleVertex (int vt, MVector &pt, MVector &n, float &u, float &v, MItMeshPolygon &meshPoly, PtLookupMap &ptMap);
-	MStatus			parsePolySet(MItMeshPolygon &meshPoly,MStringArray rgTextures, MIntArray texMap);
+	MStatus			CalculateTriangleVertex (int vt, int& iWeight, MVector &pt, MVector &n, float &u, float &v, MItMeshPolygon &meshPoly, PtLookupMap &ptMap);
+	MStatus			parsePolySet(MItMeshPolygon &meshPoly,MStringArray rgTextures, MIntArray texMap, int iForceBone = -1);
 	MStatus			getMesh(void);
 	MStatus			LoopFrames(void);
 
@@ -87,6 +87,15 @@ private:
 	MStatus			Export_AX(char* filename);
 	MStatus			Export_MX(char* filename);
 	MStatus			Export_FX(char* filename);
+
+	MStatus			ExportBoneGeometry();
+
+	MStatus			GetSkinClusterWeights(void);
+	MString			m_strSkinCluster;	
+	MDagPathArray	m_rgInfs;	
+	MDagPath		m_skinPath;	
+	int				*m_rgWeights;	// for each vertex, store index of influence joint
+
 
 public:
     MStatus			doIt( const MArgList& args );

@@ -191,9 +191,9 @@ void MadMake::Run(int argc, char* argv[])
 	MadExporter madexp;
 	pkImport->Read(ucaInFile.c_str());
 	pkImport->Export(&madexp,ucaTextureNames.c_str());
-//	madexp.Save_MAD(ucaOutFile.c_str());
-	madexp.Save_SD("test.sd");
-	madexp.Save_MD("test.md");
+	madexp.Save_MAD(ucaOutFile.c_str());
+//	madexp.Save_SD("test.sd");
+//	madexp.Save_MD("test.md");
 //	madexp.Save_AD("test.ad");
 }
 
