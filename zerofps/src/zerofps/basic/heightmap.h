@@ -51,7 +51,7 @@ class BASIC_API HeightMap {
 		bool LoadImageHmap(char* acFile);
 		void GenerateNormals();
 		void GenerateTextures();
-		float Height(int x,int z);
+		float Height(float x,float z);
 		void SetTileSet(char* acTileSet);
 		void SetPosition(Vector3 kNewPos);
 

@@ -94,7 +94,7 @@ void Test::OnHud(void) {
 
 
 void Test::input() {
-	float speed=0.025;
+	float speed=0.05;
 
 	if(pkInput->Pressed(RIGHT)){
 		pkFps->CamPos().x+=cos((pkFps->CamRot().y)/degtorad) *pkFps->GetFrameTime()*speed;			

@@ -39,7 +39,7 @@ float HeightMap::Height(float x,float z) {
 	float ox=x-float(lx);
 	float oz=z-float(lz);
 	float bp,xp,zp;
-	
+
 	
 //	cout<<"HEIGHT "<<lx<<" "<<lz<< " "<<ox<<" "<<oz<<endl;
 	
@@ -62,12 +62,10 @@ float HeightMap::Height(float x,float z) {
 	}
 	
 
-	float height=bp+(xp*ox)+(zp*oz);
+	float height=bp+m_kPosition.y+(xp*ox)+(zp*oz);
 //	cout<<"::::: > "<<xp<<" "<<zp<<" "<<bp<<" "<<"Hegiht: "<<height<<" x" <<(xp*ox)<<" y"<<(zp*oz)<<endl;
 	return height;
 	
-//	return 0;
-//	return verts[lz*m_iHmSize+lx].height+m_kPosition.y;
 }
 
 void HeightMap::SetTileSet(char* acTileSet) {

@@ -52,7 +52,10 @@ void ZeroFps::MainLoop(void) {
 	while(m_iState!=state_exit) {		
 		switch(m_iState){
 			case state_normal:{
-				m_pkInput->Update();				
+//				m_pkApp->OnHud();				
+				Camera();
+				m_pkApp->OnIdle();				
+				
 				//this changes mode to console
 				if(m_pkInput->Pressed(TAB)){
 					glDisable(GL_LIGHTING);
@@ -65,10 +68,7 @@ void ZeroFps::MainLoop(void) {
 				if(m_pkInput->Pressed(F11))
 					ToggleFullScreen();				
 
-//				m_pkApp->OnHud();
-				Camera();
-				m_pkApp->OnIdle();		
-
+				m_pkInput->Update();				
 				Swap();
 
 				break;			
