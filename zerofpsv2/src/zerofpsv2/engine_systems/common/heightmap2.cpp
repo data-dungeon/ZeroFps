@@ -298,21 +298,21 @@ void Heightmap2::GeneratePatch(HM2_patch* pkPatch,int iStartX,int iStartY,int iS
 
 void Heightmap2::GenerateLodLevel(HM2_patch* pkPatch,int iStep)
 {
-	HM2_level* pkOriginal = &pkPatch->kLevels[0];
+//	HM2_level* pkOriginal = &pkPatch->kLevels[0];
 
 	HM2_level newlevel;
 	newlevel.kVertex.clear();
 	newlevel.kNormal.clear();
 	newlevel.kTexCor.clear();	
 	
-	int w =  m_iPatchWidth;//pkPatch->iWidth/iStep;
-	int h =  m_iPatchHeight;//pkPatch->iHeight/iStep;
+//	int w =  m_iPatchWidth;//pkPatch->iWidth/iStep;
+//	int h =  m_iPatchHeight;//pkPatch->iHeight/iStep;
 	
 	int sx = pkPatch->iX;
 	int sy = pkPatch->iY;
 	
 	bool right =true;
-	float fHeight; 
+	float fHeight=0; 
 	Vector3 kNormal;	
 	Vector2 kTexCor;
 	Vector2 kMaskTexCor;

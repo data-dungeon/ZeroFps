@@ -113,7 +113,7 @@ void P_PfPath::Update()
 
 	if(m_kPath.size() == 0)
 		return;
-	if(m_iNextGoal == m_kPath.size())
+	if(m_iNextGoal == (int) m_kPath.size())
 		return;
 
 	// Get Distance to next goal.
@@ -129,7 +129,7 @@ void P_PfPath::Update()
 			m_pkObject->SetWorldPosV(kGoal);
 		
 		m_iNextGoal++;
-		if(m_iNextGoal == m_kPath.size()) 
+		if(m_iNextGoal == (int) m_kPath.size()) 
 		{
 			if(!m_pkAStar->m_bDrawPaths)
 			{
@@ -271,14 +271,14 @@ void P_PfPath::SetupOffset()
 	m_bHaveOffset = true;
 	return;
 
-	P_Mad* pm = (P_Mad*)m_pkObject->GetProperty("P_Mad");
+/*	P_Mad* pm = (P_Mad*)m_pkObject->GetProperty("P_Mad");
 	if(pm)
 	{	
 		//m_kOffset = pm->GetJointPosition("fem_run_c_root");
 		m_kOffset = Vector3(0,1.1,0);
 		m_bHaveOffset = true;
 		//	cout<<"Got offset: "<<m_kOffset.x<<" "<<m_kOffset.y<<" "<<m_kOffset.z<<endl;
-	}
+	}*/
 }
 
 

@@ -2,6 +2,8 @@
 //
 //////////////////////////////////////////////////////////////////////
 
+#pragma warning( disable : 4512) // 'class' : assignment operator could not be generated 
+
 #include <AL/al.h>
 #include "AL/alc.h"
 #include <AL/alut.h>

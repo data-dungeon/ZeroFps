@@ -1,6 +1,8 @@
 #ifndef _ENGINE_OBJECT_H_
 #define _ENGINE_OBJECT_H_
 
+#pragma warning( disable : 4512) // 'class' : assignment operator could not be generated 
+
 #include <vector>
 #include <list>
 #include <string.h>

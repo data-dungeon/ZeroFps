@@ -1,6 +1,8 @@
 #ifndef _ENGINE_NETPACKET_H_
 #define _ENGINE_NETPACKET_H_
 
+
+
 #include <vector>
 #include "../basic/zfassert.h"
 #include "engine_x.h"
@@ -29,6 +31,9 @@ struct ZFNetPacketData
 };
 
 #pragma pack(  )
+
+
+#pragma warning( disable : 4512) // 'class' : assignment operator could not be generated 
 
 
 /// A Packet that is sent over network.

@@ -298,7 +298,7 @@ bool AStar::GetFullPath(Vector3 kStart, Vector3 kEnd, vector<PathNode>& kPath)
 
 P_PfMesh* AStar::GetPathFindMesh(Vector3 kPos)
 {
-	int iZone	= m_pkObjectManger->GetZoneIndex(kPos,-1, false);
+//	int iZone	= m_pkObjectManger->GetZoneIndex(kPos,-1, false);
 	if(m_iStartZone < 0)	return NULL;
 
 	ZoneData* pkZone = m_pkObjectManger->GetZoneData(m_iStartZone);

@@ -14,6 +14,8 @@
 #define _ENGINE_FH_H_
 //#include "zfresource.h"
 
+#pragma warning( disable : 4512) // 'class' : assignment operator could not be generated 
+
 #include <vector>
 #include "../basic/vector3.h"
 #include "engine_x.h"

@@ -34,7 +34,7 @@ int ENGINE_API EngineStart(int iNrOfArgs, char* paArgs[])
 	// This leave console window on screen.
 	exit(1);
 
-	return 0;
+//	return 0;
 }
 
 

@@ -1,6 +1,8 @@
 #ifndef _ENGINE_HEIGHTMAPRENDERPROPERTY_H_
 #define _ENGINE_HEIGHTMAPRENDERPROPERTY_H_
 
+#pragma warning( disable : 4512) // 'class' : assignment operator could not be generated 
+
 #include "../common/heightmap.h"
 #include "../../engine/property.h"
 #include <iostream>

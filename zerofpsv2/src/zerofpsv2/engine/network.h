@@ -3,6 +3,8 @@
 
 #include "deque"
 
+#pragma warning( disable : 4512) // 'class' : assignment operator could not be generated 
+
 #include "../basic/zfassert.h"
 #include "engine_x.h"
 #include "console.h"

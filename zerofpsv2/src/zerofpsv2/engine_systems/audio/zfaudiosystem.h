@@ -3,6 +3,8 @@
 #ifndef _THE_ZFAUDIOSYSTEM_H_
 #define _THE_ZFAUDIOSYSTEM_H_
 
+#pragma warning( disable : 4512) // 'class' : assignment operator could not be generated 
+
 #include <map>
 #include <list>
 #include "../engine_systems_x.h"

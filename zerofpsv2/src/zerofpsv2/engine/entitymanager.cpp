@@ -313,7 +313,7 @@ void EntityManager::Delete(Entity* pkObject)
 */
 void EntityManager::UpdateDelete()
 {
-	int iSize = m_aiDeleteList.size();
+//	int iSize = m_aiDeleteList.size();
 
 	if(m_aiDeleteList.size()==0)
 		return;
@@ -840,9 +840,9 @@ void EntityManager::PackToClients()
 //	NetPacket NP;
 	
 	// Keep it alive.
-	int iNumOfObjects	= m_akEntitys.size();
-	int iPacketSize		= 0;
-	int iEndOfObject	= -1;
+//	int iNumOfObjects	= (int) m_akEntitys.size();
+//	int iPacketSize		= 0;
+//	int iEndOfObject	= -1;
 
 	Entity* pkZone;
 	unsigned int iClient;
@@ -903,7 +903,7 @@ void EntityManager::PackToClients()
 		kObjects.clear();	
 		for(list<P_Track*>::iterator it = m_kTrackedObjects.begin(); it != m_kTrackedObjects.end(); it++ ) 
 		{
-			if((*it)->m_iConnectID == iClient)
+			if((*it)->m_iConnectID == (int) iClient)
 				(*it)->GetObject()->GetAllEntitys(&kObjects, true);
 		}		
 		PackToClient(iClient, kObjects,false);
@@ -1361,7 +1361,7 @@ void EntityManager::OwnerShip_Request(Entity* pkObj)
 	NP.Write((char) ZFGP_REQOWNOBJECT);
 	NP.Write(ZFGP_ENDOFPACKET);
 
-	NetWork* net = static_cast<NetWork*>(GetSystem().GetObjectPtr("NetWork"));
+//	NetWork* net = static_cast<NetWork*>(GetSystem().GetObjectPtr("NetWork"));
 	NP.TargetSetClient(ZF_NET_ALLCLIENT);
 	m_pkNetWork->Send2(&NP);
 //	net->SendToAllClients(&NP);
@@ -1383,7 +1383,7 @@ void EntityManager::OwnerShip_OnRequest(Entity* pkObj)
 	NP.Write((char) ZFGP_GIVEOWNOBJECT);
 	NP.Write(ZFGP_ENDOFPACKET);
 
-	NetWork* net = static_cast<NetWork*>(GetSystem().GetObjectPtr("NetWork"));
+//	NetWork* net = static_cast<NetWork*>(GetSystem().GetObjectPtr("NetWork"));
 	NP.TargetSetClient(ZF_NET_ALLCLIENT);
 	m_pkNetWork->Send2(&NP);
 //	net->SendToAllClients(&NP);
@@ -2373,7 +2373,7 @@ void EntityManager::UpdateZoneLinks(int iId)
 		if(m_kZones[i].m_iStatus == EZS_UNUSED)
 			continue;
 	
-		if(i == iId)
+		if((int)i == iId)
 			continue;
 			
 		if(BoxVSBox(kPos,kSize ,m_kZones[i].m_kPos, m_kZones[i].m_kSize))

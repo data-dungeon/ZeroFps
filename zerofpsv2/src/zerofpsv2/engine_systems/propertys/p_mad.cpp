@@ -73,7 +73,7 @@ void P_Mad::Update()
 		// Set Object LOD.
 		if(g_iMadLODLock == 0) {
 			Vector3 kDiff = m_pkZeroFps->GetCam()->GetPos() - m_pkObject->GetWorldPosV();
-			float fDist = float( fabs(kDiff.Length()) );
+//			float fDist = float( fabs(kDiff.Length()) );
 			//m_fLod = 1 - (fDist / 300);
 			//cout << "fDist: " << fDist << " / " << "m_fLod: " << m_fLod << endl;
 		}

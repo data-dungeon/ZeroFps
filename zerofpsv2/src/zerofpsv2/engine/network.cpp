@@ -1,3 +1,5 @@
+#pragma warning( disable : 4512) // 'class' : assignment operator could not be generated 
+
 #include "network.h"
 #include "zerofps.h"
 
@@ -48,7 +50,7 @@ bool NetWork::StartUp()
 
 	g_pkNetWork  = this;
 
-	int iInitRes = SDLNet_Init();
+//	int iInitRes = SDLNet_Init();
 
 #ifdef NET_LOGALL
 	GetSystem().Log("net",		"NetWork SubSystem Startup:\n");
@@ -397,7 +399,7 @@ bool NetWork::SendRaw(NetPacket* pkNetPacket)
 	kPacket.maxlen		= MAX_PACKET_SIZE;
 	kPacket.address	= pkNetPacket->m_kAddress;
 
-	int iRes = SDLNet_UDP_Send(m_pkSocket, -1, &kPacket);
+//	int iRes = SDLNet_UDP_Send(m_pkSocket, -1, &kPacket);
 
 	return true;
 }

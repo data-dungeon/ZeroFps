@@ -161,7 +161,7 @@ int HeightMap::GetTopLowTriangle(Vector3 kPos)
 	else 
 		return HM_FLAGVISIBLE2;
 
-	return 0;
+//	return 0;
 }
 
 /**	\brief	Returns height at one position in Hmap.
@@ -692,7 +692,7 @@ void HeightMap::DrawMask(Vector3 kPos,int iMask,float fSize,int r,int g,int b,in
 		}
 	
 	//get texture pos
-	float fSizeW = ((float)GetSize() / (float)m_pkTexMan->EditGetImage(m_kLayer[iMask].m_strMask.c_str())->m_iWidth);
+//	float fSizeW = ((float)GetSize() / (float)m_pkTexMan->EditGetImage(m_kLayer[iMask].m_strMask.c_str())->m_iWidth);
 	float xpos = (float) ((kPos.x) / (float)GetSize())  ;
 	float ypos = (float) ((kPos.z) / (float)GetSize())  ;
 	
@@ -701,7 +701,7 @@ void HeightMap::DrawMask(Vector3 kPos,int iMask,float fSize,int r,int g,int b,in
 	cout << "Texture pos: "<< xpos << ", " << ypos << endl;
 
 	float fRealSize = GetBrushSizeInAlphaUVSpace( fSize );	// * (float)m_pkTexMan->GetImage()->w;
-	int size=fRealSize;
+//	int size=fRealSize;
 	
 	cout << "Brush size: " << fRealSize << endl;
 	//cout << "Img Size: " << m_pkTexMan->GetImage()->m_iWidth << "," << m_pkTexMan->GetImage()->m_iHeight;

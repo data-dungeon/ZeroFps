@@ -149,7 +149,7 @@ int AudioLua::PlayGuiSoundLua(lua_State* pkLua)
 	double dValue;
 	g_pkScript->GetArgNumber(pkLua, 1, &dValue);
 
-	bool bLoop = (dValue < 1) ? false : true;
+//	bool bLoop = (dValue < 1) ? false : true;
 
 	// Create full path
 	string strFileName = "data/sound/";

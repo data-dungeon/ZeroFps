@@ -1,9 +1,12 @@
+#pragma warning( disable : 4512) // 'class' : assignment operator could not be generated 
+
 #include "network.h"
 #include "zerofps.h"
 
 #include "../basic/zfsystem.h"
 
 extern NetWork* g_pkNetWork;
+
 
 
 RemoteNode::RemoteNode()

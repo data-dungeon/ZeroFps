@@ -995,7 +995,7 @@ bool Tcs::TestSphereVSPolygon(Vector3* kVerts,P_Tcs* pkSphere)
 	bool didcollide = false;
 	float closest = 99999999;
 	
-	int p1,p2;
+	int p1=0,p2=1;
 	float d;
 	
 	for(int i = 0;i<3;i++)
@@ -1224,7 +1224,7 @@ bool Tcs::CollideMeshVSMesh(P_Tcs* pkBody1,P_Tcs* pkBody2,Tcs_collission* pkTemp
 			}
 			
 			
-			int i1,i2;
+			int i1=0,i2=1;
 			for(int i = 0;i<3;i++)
 			{
 				switch(i)
@@ -1377,7 +1377,7 @@ bool Tcs::CollideMeshVSMesh2(P_Tcs* pkBody1,P_Tcs* pkBody2)
 		return false;
 		
 		
-	bool bHaveCleared = false;	
+//	bool bHaveCleared = false;	
 		
 
 	Matrix4 kModelMatrix1 = pkBody1->GetModelMatrix();
@@ -1458,7 +1458,7 @@ bool Tcs::TestPolygonVSPolygon(Vector3* pkPolygon1,Vector3* pkPolygon2)
 	
 		
 	m_fLastTestDist = 1;	
-	int i1,i2;	
+	int i1=0,i2=1;	
 	for(int i = 0;i<6;i++)
 	{
 		switch(i)

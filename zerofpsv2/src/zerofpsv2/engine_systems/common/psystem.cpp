@@ -85,7 +85,7 @@ bool PSystem::Update( Vector3 kNewPosition, Matrix4 kNewRotation )
 				ResetParticle ( m_kParticles.size() - 1, fTempTime * (iCreate - i) );
 
 				// check so we don't create more particles than there could be in the PSystem
-				if ( m_kParticles.size() == m_uiParticles )
+				if ( (int) m_kParticles.size() == m_uiParticles )
 					break;
 			}
 
@@ -192,7 +192,7 @@ void PSystem::ResetParticle (int iParticleIndex, float fTimeOffset)
 	if ( iParticleIndex < m_uiFirstParticle )
 		m_uiFirstParticle = iParticleIndex;
 
-	int iIndex = (iParticleIndex) * 9;
+//	int iIndex = (iParticleIndex) * 9;
 	int iClrIndex = iParticleIndex * 12;
 
 	m_fTimeSinceLastCreatedParticle = 0;

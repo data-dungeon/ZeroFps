@@ -344,7 +344,7 @@ void Mad_Modell::Create_GLList(Mad_CoreMesh* pkMesh)
 
 void Mad_Modell::LoadTextures()
 {
-	TextureManager*	pkTex = static_cast<TextureManager*>(g_ZFObjSys.GetObjectPtr("TextureManager"));
+//	TextureManager*	pkTex = static_cast<TextureManager*>(g_ZFObjSys.GetObjectPtr("TextureManager"));
 
 	int iNumOfMesh = GetNumOfMesh();
 	int iNumOfSubMesh;
@@ -458,7 +458,7 @@ void Mad_Modell::Draw_All(int iDrawFlags)
 			if(iDrawFlags & MAD_DRAW_MESH) {
 				iNumOfFaces = GetNumFaces();	// * g_fMadLODScale;
 
-				Mad_CoreTexture* pkTexInfo = GetTextureInfo();
+//				Mad_CoreTexture* pkTexInfo = GetTextureInfo();
 
 				ZFResourceHandle* pkRes;
 				if(m_akReplaceTexturesHandles[ m_pkSubMesh->iTextureIndex ].IsValid()) {
