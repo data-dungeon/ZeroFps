@@ -41,6 +41,8 @@ private:
    int m_iContainerID; // id of this container
 	int m_iCurrentContainer; // id to the container where this item is.
 
+	static int s_iContainerCounter;
+
 public:
    ItemStats();
 

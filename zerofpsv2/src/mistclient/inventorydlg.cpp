@@ -123,6 +123,20 @@ void InventoryDlg::OnClick(int x, int y, bool bMouseDown, bool bLeftButton)
 					m_pkGui->SetCaptureToWnd( m_pkDlgWnd ); // set capture
 				}
 			}
+			else
+			{
+				if(!m_kDragSlots.empty())
+				{
+					int iContainerUnderCursor = pkSlot->m_pkItemStats->GetContainerID();
+
+					// Släppa föremål i en annan container.
+					if(iContainerUnderCursor != -1)
+					{
+						DropItemsToContainer(iContainerUnderCursor);
+						m_pkGui->KillWndCapture(); // remove capture
+					}
+				}
+			}
 		}
 		else // släppa tillbaks ett föremål
 		if(!m_kDragSlots.empty() && bMouseDown == false)
@@ -229,7 +243,9 @@ void InventoryDlg::OnDClick(int x, int y, bool bLeftButton)
 				m_kContainerStack.push(new_container);
 
 				m_pkAudioSys->StartSound("/data/sound/WoodenPanelClose.wav",
-					m_pkAudioSys->GetListnerPos(),m_pkAudioSys->GetListnerDir(),false);					
+					m_pkAudioSys->GetListnerPos(),m_pkAudioSys->GetListnerDir(),false);
+				
+				printf("going in to container %i\n", new_container);
 			}
 
 			// dölj markören igen
@@ -683,7 +699,9 @@ void InventoryDlg::DropItems()
 	{
 		if((*it).m_pkItemStats->GetCurrentContainer() != MAIN_CONTAINER)
 		{
-			int iNewContainer = (*it).m_pkItemStats->GetCurrentContainer() - 1;
+			int iNewContainer = GetPrevContainer();
+
+			printf("iNewContainer = %i\n", iNewContainer);
 
 			Point sqr;
 			if(GetFreeSlotPos(sqr, iNewContainer))
@@ -707,4 +725,56 @@ void InventoryDlg::DropItems()
 
 	for(unsigned int i=0; i<kRemoveList.size(); i++)
 		m_kDragSlots.erase(kRemoveList[i]);
+}
+
+void InventoryDlg::DropItemsToContainer(int iContainer)
+{
+	vector<itSlot> kRemoveList;
+
+	itSlot it;
+	for( it = m_kDragSlots.begin(); it != m_kDragSlots.end(); it++)
+	{
+		int iNewContainer = iContainer;
+
+		Point sqr;
+		if(GetFreeSlotPos(sqr, iNewContainer))
+		{
+			Slot s = (*it);
+
+			AddSlot( s.m_szPic[0], s.m_szPic[1], sqr, CONTAINTER_SLOTS, 
+				s.m_pkItemStats, iNewContainer);
+
+			m_pkGui->UnregisterWindow((*it).m_pkLabel);
+			kRemoveList.push_back(it);
+		}
+	}
+
+	for(unsigned int i=0; i<kRemoveList.size(); i++)
+		m_kDragSlots.erase(kRemoveList[i]);
+}
+
+int InventoryDlg::GetPrevContainer()
+{
+	if(m_kContainerStack.size() <= 1)
+		return MAIN_CONTAINER;
+	
+	printf("%i\n", m_kContainerStack.size());
+
+	vector<int> copy;
+
+	while(!m_kContainerStack.empty())
+	{
+		copy.push_back(m_kContainerStack.top());
+		m_kContainerStack.pop();
+	}
+
+	int value = copy[1];
+
+	while(!copy.empty())
+	{
+		m_kContainerStack.push(copy.back());
+		copy.pop_back();
+	}
+
+	return value;
 }

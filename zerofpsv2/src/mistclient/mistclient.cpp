@@ -545,8 +545,8 @@ void MistClient::OnCommand(int iID, ZGuiWnd *pkMainWnd)
 						tInfo(Weapon, pair<string, string>("dagger.bmp", "dagger_a.bmp")),
 						tInfo(Weapon, pair<string, string>("dagger.bmp", "dagger_a.bmp")),
 						tInfo(Belt, pair<string, string>("spellbook.bmp", "spellbook_a.bmp")),
-						tInfo(Ring, pair<string, string>("gembag1.bmp", "gembag1_a.bmp")),
-						tInfo(Ring, pair<string, string>("gembag1.bmp", "gembag1_a.bmp")),
+						tInfo(Item, pair<string, string>("gembag1.bmp", "gembag1_a.bmp")),
+						tInfo(Item, pair<string, string>("gembag1.bmp", "gembag1_a.bmp")),
 					};
 
 					vector<InventoryDlg::itItem> kItems;
@@ -559,8 +559,8 @@ void MistClient::OnCommand(int iID, ZGuiWnd *pkMainWnd)
 							info[i].second.second), &pkTestItems[i]) );
 					}
 
-					kItems[2].second->RegisterAsContainer(); 
-					kItems[0].second->RegisterAsContainer(); 
+					kItems[3].second->RegisterAsContainer(); 
+					kItems[4].second->RegisterAsContainer(); 
 					
 					m_pkInventDlg->AddItems(kItems);
 				}

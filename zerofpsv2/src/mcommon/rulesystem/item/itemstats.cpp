@@ -2,6 +2,8 @@
 #include <iostream>
    using namespace std;
 
+int ItemStats::s_iContainerCounter = 0;
+
 // ---------------------------------------------------------------------------------------------
 
 bool ItemStats::EquipOn ( CharacterStats *pkCharStat )
@@ -413,7 +415,6 @@ bool ItemStats::CanEquipOn ( string kSlotName )
 
 void ItemStats::RegisterAsContainer()
 { 
-	static int s_iContainerCounter=0;
 	s_iContainerCounter++;
 	m_iContainerID = s_iContainerCounter;
 }

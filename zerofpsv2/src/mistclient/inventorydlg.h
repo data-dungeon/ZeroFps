@@ -65,6 +65,8 @@ public:
 	~InventoryDlg();
 
 private:
+	int GetPrevContainer();
+	void DropItemsToContainer(int iContainer);
 	void DropItems();
 	void SwitchContainer(int iNewContainer);
 	void AddSlot(const char *szPic, const char *szPicA, Point sqr, 
