@@ -217,47 +217,67 @@ void InventoryDlg::OnDropItem()
 	Rect rcMain = m_vkInventoryItemList[m_iMoveSlot].pkWnd->GetWndRect();
 	Rect rc = m_vkInventoryItemList[m_iMoveSlot].pkWnd->GetWndRect();
 
-	if(rc.Left < UPPER_LEFT.x) rc.Left = UPPER_LEFT.x;
-	if(rc.Top < UPPER_LEFT.y) rc.Top = UPPER_LEFT.y;
+	Rect rcScreenMain = m_pkInventoryWnd->GetScreenRect();
+	Rect rcDropWnd = m_vkInventoryItemList[m_iMoveSlot].pkWnd->GetScreenRect();
 
-	int slot_w = rc.Width() / ICON_WIDTH;
-	int slot_h = rc.Height() / ICON_HEIGHT;
-
-	int slot_x = (rc.Left - UPPER_LEFT.x) / ICON_WIDTH;
-	int slot_y = (rc.Top  - UPPER_LEFT.y) / ICON_HEIGHT;
-
-	if(slot_x > SLOTTS_HORZ-slot_w) slot_x = SLOTTS_HORZ-slot_w;
-	if(slot_y > SLOTTS_VERT-slot_h) slot_y = SLOTTS_VERT-slot_h;
-
-	int x = UPPER_LEFT.x + slot_x * ICON_WIDTH + slot_x;
-	int y = UPPER_LEFT.y + slot_y * ICON_HEIGHT + slot_y;
-
-	bool bMoveOK = true;
-	for(int i=0; i<m_vkInventoryItemList.size(); i++)
+	if(!rcScreenMain.Inside(rcDropWnd.Left, rcDropWnd.Top))
 	{
-		if(i!=m_iMoveSlot)
+		g_kMistClient.SendMoveItem(m_vkInventoryItemList[m_iMoveSlot].iItemID, -1, -1, -1);
+
+		for(int i=0; i<m_vkInventoryItemList.size(); i++)
 		{
-			if(m_vkInventoryItemList[i].pkWnd->GetWndRect().Inside(x,y) ||
-				m_vkInventoryItemList[i].pkWnd->GetWndRect().Inside(x+rc.Width()-1,y) ||
-				m_vkInventoryItemList[i].pkWnd->GetWndRect().Inside(x,y+rc.Height()-1) ||
-				m_vkInventoryItemList[i].pkWnd->GetWndRect().Inside(x+rc.Width()-1,y+rc.Height()-1))
+			if(m_iMoveSlot == i)
 			{
-				// TODO: Check if collision slot is a container or ar stackable item.
-				bMoveOK = false; 
+				m_vkInventoryItemList[i].pkWnd->Hide();				
+				m_iMoveSlot = -1;
 				break;
 			}
 		}
 	}
-
-	if(bMoveOK)
-	{
-		m_vkInventoryItemList[m_iMoveSlot].pkWnd->SetPos(x, y, false, true);
-		g_kMistClient.SendMoveItem(m_vkInventoryItemList[m_iMoveSlot].iItemID, -1, slot_x, slot_y);
-	}
 	else
 	{
-		m_vkInventoryItemList[m_iMoveSlot].pkWnd->SetPos(m_kPosBeforeMove.x, 
-			m_kPosBeforeMove.y, false, true);		
+		if(rc.Left < UPPER_LEFT.x) rc.Left = UPPER_LEFT.x;
+		if(rc.Top < UPPER_LEFT.y) rc.Top = UPPER_LEFT.y;
+
+		int slot_w = rc.Width() / ICON_WIDTH;
+		int slot_h = rc.Height() / ICON_HEIGHT;
+
+		int slot_x = (rc.Left - UPPER_LEFT.x) / ICON_WIDTH;
+		int slot_y = (rc.Top  - UPPER_LEFT.y) / ICON_HEIGHT;
+
+		if(slot_x > SLOTTS_HORZ-slot_w) slot_x = SLOTTS_HORZ-slot_w;
+		if(slot_y > SLOTTS_VERT-slot_h) slot_y = SLOTTS_VERT-slot_h;
+
+		int x = UPPER_LEFT.x + slot_x * ICON_WIDTH + slot_x;
+		int y = UPPER_LEFT.y + slot_y * ICON_HEIGHT + slot_y;
+
+		bool bMoveOK = true;
+		for(int i=0; i<m_vkInventoryItemList.size(); i++)
+		{
+			if(i!=m_iMoveSlot)
+			{
+				if(m_vkInventoryItemList[i].pkWnd->GetWndRect().Inside(x,y) ||
+					m_vkInventoryItemList[i].pkWnd->GetWndRect().Inside(x+rc.Width()-1,y) ||
+					m_vkInventoryItemList[i].pkWnd->GetWndRect().Inside(x,y+rc.Height()-1) ||
+					m_vkInventoryItemList[i].pkWnd->GetWndRect().Inside(x+rc.Width()-1,y+rc.Height()-1))
+				{
+					// TODO: Check if collision slot is a container or ar stackable item.
+					bMoveOK = false; 
+					break;
+				}
+			}
+		}
+
+		if(bMoveOK)
+		{
+			m_vkInventoryItemList[m_iMoveSlot].pkWnd->SetPos(x, y, false, true);
+			g_kMistClient.SendMoveItem(m_vkInventoryItemList[m_iMoveSlot].iItemID, -1, slot_x, slot_y);
+		}
+		else
+		{
+			m_vkInventoryItemList[m_iMoveSlot].pkWnd->SetPos(m_kPosBeforeMove.x, 
+				m_kPosBeforeMove.y, false, true);		
+		}
 	}
 }
 
