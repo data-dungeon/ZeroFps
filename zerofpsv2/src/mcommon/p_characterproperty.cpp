@@ -73,7 +73,7 @@ P_CharacterProperty::P_CharacterProperty()
 void P_CharacterProperty::Init()
 {
 	//containers
-	m_pkInventory		=	new MLContainer(m_pkEntityMan,GetEntity()->GetEntityID(),10,5,true,0);
+	m_pkInventory		=	new MLContainer(m_pkEntityMan,GetEntity()->GetEntityID(),6,12,true,0);
 	m_pkHead				=	new MLContainer(m_pkEntityMan,GetEntity()->GetEntityID(),2,2,true,1);
 	m_pkBody				=	new MLContainer(m_pkEntityMan,GetEntity()->GetEntityID(),2,4,true,2);
 	m_pkLeftHand		=	new MLContainer(m_pkEntityMan,GetEntity()->GetEntityID(),2,4,true,3);
