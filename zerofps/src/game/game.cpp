@@ -475,6 +475,7 @@ void Game::InitGui()
 	ZGuiSkin* pkArmorBkSkin  =	new ZGuiSkin(255, 0,   0,   0,   0,   128, 4);
 	ZGuiSkin* pkArmorSkin    =	new ZGuiSkin(0,   255, 0,   0,   0,   128, 4);
 	ZGuiSkin* pkFaceSkin    =	new ZGuiSkin(255, 255, 255, 0,   0,   0,   0);
+	ZGuiSkin* pkWeaponSkin    =	new ZGuiSkin(255, 255, 255, 0,   0,   0,   0);
 
 	pkMainSkin->m_iBkTexID = pkTexMan->Load("piss.bmp", 0); // först misslyckas, vet inte varför...
 	pkMainSkin->m_iBkTexID = pkTexMan->Load("../data/textures/player_panel.bmp", 0);
@@ -503,6 +504,12 @@ void Game::InitGui()
 	ZGuiWnd* pkFaceWnd = new ZGuiWnd(Rect(256,20,256+92,20+92),pkPlayerStatusMainWnd,true,id++);
 	pkFaceSkin->m_iBkTexID = pkTexMan->Load("../data/textures/face.bmp", 0);
 	pkFaceWnd->SetSkin(pkFaceSkin);
+	pkFaceWnd->RemoveWindowFlag(WF_CANHAVEFOCUS);
+
+	ZGuiWnd* pkWeaponWnd = new ZGuiWnd(Rect(256+92+24,20,256+92+92+24,20+92),pkPlayerStatusMainWnd,true,id++);
+	pkWeaponSkin->m_iBkTexID = pkTexMan->Load("../data/textures/gun.bmp", 0);
+	pkWeaponWnd->SetSkin(pkWeaponSkin);
+	pkWeaponWnd->RemoveWindowFlag(WF_CANHAVEFOCUS);
 
 	pkGui->AddMainWindow(id++, pkPlayerStatusMainWnd, "PlayerStatusMainWnd", WINPROC, true);
 
@@ -511,6 +518,7 @@ void Game::InitGui()
 	pkGui->RegisterWindow(pkHelthbarBk, "helthbar_bk");
 	pkGui->RegisterWindow(pkArmorbarBk, "armorbar_bk");
 	pkGui->RegisterWindow(pkFaceWnd, "facewnd");
+	pkGui->RegisterWindow(pkWeaponWnd, "weaponwnd");
 
 	// Create inventory window
 	m_iActionOpenInventory = pkInput->RegisterAction("inventory_open");
