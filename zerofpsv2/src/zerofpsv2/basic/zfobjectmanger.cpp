@@ -388,8 +388,8 @@ void ZFObjectManger::Log(const char* szMessage)
 	if(s_bNewLine)
 	{
 		static int s_counter = 0;
-		static int s_iMaxPreZeros = (int) log10(9999);
-		int curr = (int) log10(s_counter);
+		static int s_iMaxPreZeros = (int) log10((float)9999);
+		int curr = (int) log10((float)s_counter);
 
 		int iNumPreZeros = s_iMaxPreZeros-curr;
 		for(int j=0; j<iNumPreZeros; j++)

@@ -121,12 +121,12 @@ void ZeroTank::OnIdle()
 
 /*
 	Vector3 pos = pkFps->GetCam()->GetPos();
-	pos.y  = m_pkMap2->Height(pos.x,pos.z) +1;
+	pos.y  = m_pkMap2->Height(pos.x,pos.z) ;
 	pkFps->GetCam()->SetPos(pos);
 	
 	Vector3 norm = m_pkMap2->Tilt(pos.x,pos.z);
 	float deg=Vector3(0,1,0).Angle(norm);
-	
+/*	
 	norm.Angels();
 	cout<<"x:"<<norm.x<<endl;
 	cout<<"y:"<<norm.y<<endl;	
@@ -144,8 +144,8 @@ void ZeroTank::OnIdle()
 	Object* pkObj = pkObjectMan->GetObjectByNetWorkID( m_iSelfObjectID );
 	if(pkObj) {
 		pkObjectMan->OwnerShip_Take( pkObj );
-		pkObj->SetPos(pkFps->GetCam()->GetPos() + Vector3(0,-10,0));
-		pkObj->SetPos(pkFps->GetCam()->GetPos() + Vector3(0,-10,0));
+		pkObj->SetPos(pkFps->GetCam()->GetPos());
+		pkObj->SetPos(pkFps->GetCam()->GetPos());
 	}
 
 }
