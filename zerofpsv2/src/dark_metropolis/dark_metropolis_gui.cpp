@@ -331,21 +331,24 @@ void DarkMetropolis::GUI_OnClick(int x, int y, bool bMouseDown,
 
 			Vector3 kClickPos = Vector3(fx,0,fy);
 
-			Entity* pkEnt = m_pkObjectMan->GetObjectByNetWorkID(
-				((CGamePlayDlg*)m_pkGamePlayDlg)->GetSelAgentObject());
-
-			if(pkEnt)
+			for(int i=0; i<m_kSelectedEntitys.size(); i++)
 			{
-				if(P_DMCharacter* pkCharProp = (P_DMCharacter*)pkEnt->GetProperty("P_DMCharacter"))
-				{	
-					DMOrder kWalkOrder;
-					kWalkOrder.m_iEntityID = ((CGamePlayDlg*)m_pkGamePlayDlg)->GetSelAgentObject();
-					kWalkOrder.m_iOrderType = eWalk;							 
-					kWalkOrder.m_kPosition = kClickPos;
-					kWalkOrder.m_kPosition.y = pkEnt->GetWorldPosV().y; 
+				Entity* pkEnt = m_pkObjectMan->GetObjectByNetWorkID(m_kSelectedEntitys[i]);
+					
+				if(pkEnt)
+				{
+					if(P_DMCharacter* pkCharProp = (P_DMCharacter*)pkEnt->GetProperty("P_DMCharacter"))
+					{	
+						DMOrder kWalkOrder;
+						kWalkOrder.m_iEntityID = m_kSelectedEntitys[i]; 
+						kWalkOrder.m_iOrderType = eWalk;							 
+						kWalkOrder.m_kPosition = kClickPos + 
+							GetFormationPos(m_iCurrentFormation,m_kSelectedEntitys.size(),i);
+						kWalkOrder.m_kPosition.y = pkEnt->GetWorldPosV().y; 
 
-					pkCharProp->ClearOrders();
-					pkCharProp->AddOrder(kWalkOrder);		
+						pkCharProp->ClearOrders();
+						pkCharProp->AddOrder(kWalkOrder);		
+					}
 				}
 			}
 		}

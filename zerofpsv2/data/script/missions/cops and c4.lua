@@ -101,8 +101,8 @@ function OnMissionStart()
 	AddPatrolPoint(police3, pos1)
 	AddPatrolPoint(police3, pos2)
 
-	ch = GetDMCharacterClosest(hq)	
-	SetObjectPos(ch, pos1)
+--	ch = GetDMCharacterClosest(hq)	
+--	SetObjectPos(ch, pos1)
 
 end
 
@@ -143,6 +143,9 @@ function BlowupPoliceStation()
 	Delete(BombEntID)
 	Delete(PoliceStationID)
 
+--	zonid = GetZoneIDAtPos(HQPos)
+--	SetZoneModel(zonid, "data/mad/zones/dm/zon_asfalt.mad")
+
 	----------------------------------------------------
 	-- Nu går poliserna till attack
 	----------------------------------------------------
@@ -163,6 +166,7 @@ function IsMissionDone()
 
 		Print( "Mission Cops and c4 are mission some objects" )
 
+		-- Fortsätt leta efter polisstationen
 		PoliceStationID = GetDMObject(2)
 		return
 	end
