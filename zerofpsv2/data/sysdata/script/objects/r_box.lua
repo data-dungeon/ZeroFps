@@ -16,7 +16,7 @@ function Create()
 			InitParameter("airfriction",0.1);
 			InitParameter("mass",1);
 			InitParameter("inertia",1);
-			InitParameter("bounce",0.8);
+			InitParameter("bounce",0.0);
 			InitParameter("friction",0.5);
 			InitParameter("activemoment","true");
 			

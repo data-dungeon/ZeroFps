@@ -209,7 +209,7 @@ void Tcs::HandleCollission(Tcs_collission* pkCol)
 			
 	//bounce
 	float fBounce = pkCol->pkBody1->m_fBounce * pkCol->pkBody2->m_fBounce;
-	fBounce = 0;
+	//fBounce = 0;
 	
 	//friction
 	float fFriction = pkCol->pkBody1->m_fFriction * pkCol->pkBody2->m_fFriction;
@@ -1160,7 +1160,7 @@ bool Tcs::CollideMeshVSMesh(P_Tcs* pkBody1,P_Tcs* pkBody2,Tcs_collission* pkTemp
 		Normal= ((verts1[1] - verts1[0]).Cross(verts1[2] - verts1[0])).Unit();				
 		P.Set(Normal,verts1[0]);
 		
-		if(m_iDebugGraph)
+		if(m_iDebugGraph == 2)
 		{
 			//debug stuff
 			m_pkRender->Line(verts1[0],verts1[1]);
@@ -1185,7 +1185,7 @@ bool Tcs::CollideMeshVSMesh(P_Tcs* pkBody1,P_Tcs* pkBody2,Tcs_collission* pkTemp
 			if(verts2[1] == verts2[2])
 				continue;			
 			
-			if(m_iDebugGraph)
+			if(m_iDebugGraph == 2)
 			{
 				//debug stuff
 				m_pkRender->Line(verts2[0],verts2[1]);
@@ -1193,66 +1193,60 @@ bool Tcs::CollideMeshVSMesh(P_Tcs* pkBody1,P_Tcs* pkBody2,Tcs_collission* pkTemp
 				m_pkRender->Line(verts2[2],verts2[0]);				
 			}
 			
-			
-			if(TestLineVSPolygon(verts1,&verts2[0],&verts2[1],&P))
+			/*
+			if(TestPolygonVSPolygon(verts1,verts2))
 			{
 				if(!bHaveCleared)
 				{
 					bHaveCleared = true;
 					pkTempCol->kNormals.clear();
 					pkTempCol->kPositions.clear();
-				}
-				
-				
+				}				
 				pkTempCol->kPositions.push_back(m_kLastTestPos);
+				pkTempCol->kNormals.push_back(m_kLastTestNormal);
+				bHaveColided = true;													
+			}			
+			*/
+			
+			int i1,i2;
+			for(int i = 0;i<3;i++)
+			{
+				switch(i)
+				{
+					case 0:
+						i1 = 0;
+						i2 = 1; 
+						break;
+		
+					case 1:
+						i1 = 1;
+						i2 = 2; 
+						break;
+		
+					case 2:
+						i1 = 2;
+						i2 = 0; 
+						break;
+				}			
 				
-				if(m_kLastTestNormal.Length() == 0)
-					pkTempCol->kNormals.push_back( (pkBody1->m_kNewPos - m_kLastTestPos).Unit() );
-				else
+				if(TestLineVSPolygon(verts1,&verts2[i1],&verts2[i2],&P))
+				{
+					if(!bHaveCleared)
+					{
+						bHaveCleared = true;
+						pkTempCol->kNormals.clear();
+						pkTempCol->kPositions.clear();
+					}
+					
+					
+					pkTempCol->kPositions.push_back(m_kLastTestPos);
 					pkTempCol->kNormals.push_back(m_kLastTestNormal);
-				
-				bHaveColided = true;	
-
+					
+					bHaveColided = true;	
+	
+				}
 			}
-
-			if(TestLineVSPolygon(verts1,&verts2[1],&verts2[2],&P))
-			{
-				if(!bHaveCleared)
-				{
-					bHaveCleared = true;
-					pkTempCol->kNormals.clear();
-					pkTempCol->kPositions.clear();
-				}
-				
-				pkTempCol->kPositions.push_back(m_kLastTestPos);
-				
-				if(m_kLastTestNormal.Length() == 0)
-					pkTempCol->kNormals.push_back( (pkBody1->m_kNewPos - m_kLastTestPos).Unit() );
-				else
-					pkTempCol->kNormals.push_back(m_kLastTestNormal);
-				
-				bHaveColided = true;	
-			}
-
-			if(TestLineVSPolygon(verts1,&verts2[2],&verts2[0],&P))
-			{
-				if(!bHaveCleared)
-				{
-					bHaveCleared = true;
-					pkTempCol->kNormals.clear();
-					pkTempCol->kPositions.clear();
-				}
 			
-			
-				pkTempCol->kPositions.push_back(m_kLastTestPos);
-				
-				if(m_kLastTestNormal.Length() == 0)
-					pkTempCol->kNormals.push_back( (pkBody1->m_kNewPos - m_kLastTestPos).Unit() );
-				else
-					pkTempCol->kNormals.push_back(m_kLastTestNormal);
-				
-				bHaveColided = true;	
-			}				
 		}
 	}
 	
@@ -1369,7 +1363,7 @@ bool Tcs::TestPolygonVSPolygon(Vector3* pkPolygon1,Vector3* pkPolygon2)
 			case 2:
 			case 5:
 				i1 = 2;
-				i2 = 1; 
+				i2 = 0; 
 				break;
 										
 		}
@@ -1395,7 +1389,11 @@ bool Tcs::TestPolygonVSPolygon(Vector3* pkPolygon1,Vector3* pkPolygon2)
 	}
 
 	if(m_fLastTestDist != 1)
+	{
 		return true;
+	}
+	
+	return false;
 }
 
 float Tcs::LineInsidePolygon(Vector3* pkPolgyon,Plane* pkPlane,Vector3* pkLinePos1,Vector3* pkLinePos2,Vector3* pkColPos)
@@ -1431,8 +1429,8 @@ bool Tcs::TestLineVSPolygon(Vector3* pkPolygon,Vector3* pkPos1,Vector3* pkPos2,P
 	{
 		if(TestSides(pkPolygon,&(pkPlane->m_kNormal),m_kLastTestPos,0))
 		{
-			//m_kLastTestNormal = -pkPlane->m_kNormal;		
-			//return true;
+			m_kLastTestNormal = -pkPlane->m_kNormal;		
+			return true;
 			
 			if( m_kLastTestPos.DistanceTo(*pkPos1) < fMinDist ||
 				 m_kLastTestPos.DistanceTo(*pkPos2) < fMinDist ||
@@ -1448,11 +1446,11 @@ bool Tcs::TestLineVSPolygon(Vector3* pkPolygon,Vector3* pkPos1,Vector3* pkPos2,P
 			}
 			else
 			{
-				//m_kLastTestNormal = -pkPlane->m_kNormal;
-				m_kLastTestNormal.Set(0,0,0);
+				m_kLastTestNormal = -pkPlane->m_kNormal;
+				//m_kLastTestNormal.Set(0,0,0);
 				
 				//cout<<"EDGE:"<<endl;
-				//m_kLastTestNormal = -( *pkPos1 - *pkPos2).Cross(pkPolygon[0] - pkPolygon[1]).Unit();
+				m_kLastTestNormal = -( *pkPos1 - *pkPos2).Cross(pkPolygon[0] - pkPolygon[1]).Unit();
 				
 				//m_kLastTestNormal = ( *pkPos1 - *pkPos2).Cross(pkPolygon[0] - pkPolygon[1]).Unit();
 				//m_kLastTestNormal = -(pkPolygon[0] - pkPolygon[1]).Cross( *pkPos1 - *pkPos2).Unit();
