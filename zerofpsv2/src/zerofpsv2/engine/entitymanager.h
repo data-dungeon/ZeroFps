@@ -128,7 +128,6 @@ class ENGINE_API EntityManager : public ZFSubSystem{
 		
 		void GetZones(set<int>* kZones,int iZone,Vector3 kPos,float fRadius);
 		void Test_DrawZones();
-		void UpdateZones();
 		void ClearZoneLinks(int iId);
 		void UpdateZoneLinks(int iId);
 		
@@ -139,15 +138,18 @@ class ENGINE_API EntityManager : public ZFSubSystem{
 		bool SaveTrackers(string strSaveDir = "");
 		bool LoadTrackers(string strSaveDir = "");
 		void UnLoadZone(int iId);										//unload zone (saves and deletes)
+
+		//void UpdateZones();
 		
+				
 	public:
 		float		m_fSimTime;				// Time in the virtual world.
 		float		m_fSimTimeScale;		// How fast does the time in the sim run with respect to the real world time. 
-//		float 	m_fGameFrameTime;
+		//float 	m_fGameFrameTime;
 		float		m_fSimTimeDelta;
 		float		GetSimTime()				 {	return m_fSimTime; }
 		float		GetGameTime()				{	return m_fSimTime;};
-//		float		GetGameFrameTime()		{	return m_fGameFrameTime;};
+		//float		GetGameFrameTime()		{	return m_fGameFrameTime;};
 		float		GetSimDelta()				{	return m_fSimTimeDelta;	}
 
 		int		m_iForceNetUpdate;					

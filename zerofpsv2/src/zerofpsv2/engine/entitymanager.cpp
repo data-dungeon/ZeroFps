@@ -1642,193 +1642,6 @@ int EntityManager::GetZoneIndex(Vector3 kMyPos,int iCurrentZone,bool bClosestZon
 }
 
 
-void EntityManager::UpdateZones()
-{
-
-
-	float fTime = m_pkZeroFps->GetEngineTime();
-	ZoneData* pkZone;
-	ZoneData* pkStartZone;
-	unsigned int iZ;
-
-
-	//int iTrackerLOS = 3;
-
-	// Set All Zones as inactive.
-	for(iZ=0;iZ<m_kZones.size();iZ++) 
-	{
-		m_kZones[iZ].m_bTracked		= false;
-		m_kZones[iZ].m_iRange		= 10000;
-		
-		if(m_kZones[iZ].m_pkZone)
-			m_kZones[iZ].m_pkZone->SetUpdateStatus(UPDATE_NONE);
-	}
-
-	vector<ZoneData*>	m_kFloodZones;
-	int iZoneIndex;
-
-	// For each tracker.
-	for(list<P_Track*>::iterator iT=m_kTrackedObjects.begin();iT!=m_kTrackedObjects.end();iT++) 
-	{
-		// Find Active Zone.
-		set<int>			kNewActiveZones;
-		
-		for(iZ=0;iZ<m_kZones.size();iZ++)
-			m_kZones[iZ].m_iRange							= 10000;
-		
-		//get current zone
-		iZoneIndex = GetZoneIndex((*iT)->GetObject(),(*iT)->GetObject()->m_iCurrentZone,(*iT)->m_bClosestZone);
-		
-		if(iZoneIndex >= 0) 
-		{
-			pkStartZone = &m_kZones[iZoneIndex];
-			pkStartZone->m_iRange = 0;
-			
-			
-			m_kFloodZones.push_back(pkStartZone);
-		}
-
-		// Flood Zones in rage to active.
-		while(m_kFloodZones.size()) 
-		{
-			pkZone = m_kFloodZones.back();
-			m_kFloodZones.pop_back();
-
-			kNewActiveZones.insert(pkZone->m_iZoneID);
-
-			pkZone->m_bTracked = true;
-			int iRange = pkZone->m_iRange + 1;
-
-			if(iRange < m_iTrackerLOS) 
-			{
-				for(unsigned int i=0; i<pkZone->m_iZoneLinks.size(); i++) 
-				{
-					ZoneData* pkOtherZone = GetZoneData(pkZone->m_iZoneLinks[i]); //				pkZone->m_pkZoneLinks[i];	//GetZoneData(pkZone->m_iZoneLinks[i]);				
-
-					//if zone has already been checked continue whit the next one
-					if(pkOtherZone->m_iRange <= iRange)	continue;		// Dvoid: ändrade till <= från <  , tycks snabba upp algoritmen med en faktor av ca 100000000 (pga att den lägger till samma zon flera gånger)
-					
-					//set new range 
-					pkOtherZone->m_iRange = iRange;
-					
-					
-					
-					//add zone to flooded zones list
-					m_kFloodZones.push_back(pkOtherZone);
-				}				
-			}
-		}
-		
-		//find new loaded zones  , compare new actives zones whit last update to find new loaded zones
-		(*iT)->m_iNewActiveZones.clear();
-		set_difference(kNewActiveZones.begin(),kNewActiveZones.end(),(*iT)->m_iActiveZones.begin(),(*iT)->m_iActiveZones.end(), inserter((*iT)->m_iNewActiveZones, (*iT)->m_iNewActiveZones.begin()));
-		
-		//findout wich zones has been removed since last update, and add them to list to be sent to client (observer the list shuld not be cleared here, but in the code that sends the package)
-		if((*iT)->m_iConnectID != -1)
-			set_difference((*iT)->m_iActiveZones.begin(),(*iT)->m_iActiveZones.end(),kNewActiveZones.begin(),kNewActiveZones.end(), inserter((*iT)->m_iUnloadZones, (*iT)->m_iUnloadZones.begin()));		
-		
-		//if((*iT)->m_iNewActiveZones.size() != 0) cout<<"loaded:"<<(*iT)->m_iNewActiveZones.size()<<endl;
-		//if((*iT)->m_iUnloadZones.size() != 0) cout<<"unloaded:"<<(*iT)->m_iUnloadZones.size()<<endl;
-				
-		//save new active zones in tracker
-		(*iT)->m_iActiveZones = kNewActiveZones;
-	}
-
-
-	//loop trough all zones and load/unload them	
-	int iOperations = 0;
-	ZoneData* pkZoneRefresh;	
-	for(unsigned int i=0; i<m_kZones.size(); i++) 
-	{
-	//	cout<<"handling zone "<<m_kZones[i].m_iZoneID<<endl;
-	
-		pkZoneRefresh = &m_kZones[i];
-
-		//perform max X operations per frame
-		if(iOperations < m_iMaxZoneIO)
-		{
-			// Load / Unload zones.
-			if(pkZoneRefresh->m_bTracked && pkZoneRefresh->m_pkZone == NULL) 
-			{
-			//	cout<<"load "<<m_kZones[i].m_iZoneID<<endl;
-				
-				iOperations++;			
-				LoadZone(pkZoneRefresh->m_iZoneID);	
-			}
-	
-			// Zones that need to unload
-			if(pkZoneRefresh->m_bTracked == false && pkZoneRefresh->m_pkZone) 
-			{
-			
-				//check time since zone was last active, if longer than m_fZoneUnloadTime unload it
-				if( (fTime - pkZoneRefresh->m_fInactiveTime) > m_fZoneUnloadTime)
-				{		
-					//cout<<"unload "<<m_kZones[i].m_iZoneID<<endl;
-					
-					iOperations++;
-					UnLoadZone(pkZoneRefresh->m_iZoneID);
-				}
-			}
-		}
-		
-		//all active zones 
-		if(pkZoneRefresh->m_bTracked && pkZoneRefresh->m_pkZone)
-		{
-		//	cout<<"setting as active "<<m_kZones[i].m_iZoneID<<endl;
-			pkZoneRefresh->m_pkZone->SetUpdateStatus(UPDATE_ALL);
-			
-			//update zone timer
-			pkZoneRefresh->m_fInactiveTime = fTime;
-		}
-				
-/*
-		//dvoid object loding ...eller nått
-		if(pkZoneRefresh->m_bActive)
-		{
-			if(pkZoneRefresh->m_pkZone)
-			{
-				//cout<<"range:"<<pkZoneRefresh->m_iRange<<endl;
-			
-				if(pkZoneRefresh->m_fDistance < m_iObjectDistance)
-				//if(pkZoneRefresh->m_iRange < m_iTrackerLOS / 2)
-				{
-					pkZoneRefresh->m_pkZone->SetUpdateStatus(UPDATE_ALL);
-					pkZoneRefresh->m_pkZone->m_bSendChilds = true;					
-					//cout<<"whit childs"<<endl;					
-				}
-				else
-				{
-					pkZoneRefresh->m_pkZone->SetUpdateStatus(UPDATE_NOCHILDS);
-					pkZoneRefresh->m_pkZone->m_bSendChilds = false;
-					//cout<<"no childs"<<endl;
-				}
-			}
-		}
-*/		
-	}
-
-
-
-	//reset all new loaded zones
-	for(list<P_Track*>::iterator iT2=m_kTrackedObjects.begin();iT2!=m_kTrackedObjects.end();iT2++) 
-	{
-		//if therse no connection on this tracker, we cant reset anything
-		if((*iT2)->m_iConnectID == -1)
-			continue;
-	
-		for(set<int>::iterator it3 = (*iT2)->m_iNewActiveZones.begin(); it3 != (*iT2)->m_iNewActiveZones.end();it3++)
-		{
-			ZoneData* zd = GetZoneData((*it3));
-		
-			if(zd)
-			{
-				if(zd->m_pkZone)
-					zd->m_pkZone->ResetAllNetUpdateFlagsAndChilds((*iT2)->m_iConnectID);
-				//cout<<"reseting zone:"<<endl;
-			}
-		}
-	}
-}
 
 
 vector<int>	EntityManager::GetActiveZoneIDs(int iTracker)
@@ -2538,7 +2351,8 @@ void EntityManager::ForceUnload()
 	UpdateDelete();
 	
 	//after unloading , reload 	
-	UpdateZones();
+	UpdateZoneSystem();
+
 }
 
 void EntityManager::ForceSave()
@@ -3176,5 +2990,195 @@ void EntityManager::Test_CreateZones()
 int EntityManager::CreateZone()
 {
 	return CreateZone(Vector3(0,0,0),Vector3(8,8,8));
+}
+*/
+
+/*
+void EntityManager::UpdateZones()
+{
+
+
+	float fTime = m_pkZeroFps->GetEngineTime();
+	ZoneData* pkZone;
+	ZoneData* pkStartZone;
+	unsigned int iZ;
+
+
+	//int iTrackerLOS = 3;
+
+	// Set All Zones as inactive.
+	for(iZ=0;iZ<m_kZones.size();iZ++) 
+	{
+		m_kZones[iZ].m_bTracked		= false;
+		m_kZones[iZ].m_iRange		= 10000;
+		
+		if(m_kZones[iZ].m_pkZone)
+			m_kZones[iZ].m_pkZone->SetUpdateStatus(UPDATE_NONE);
+	}
+
+	vector<ZoneData*>	m_kFloodZones;
+	int iZoneIndex;
+
+	// For each tracker.
+	for(list<P_Track*>::iterator iT=m_kTrackedObjects.begin();iT!=m_kTrackedObjects.end();iT++) 
+	{
+		// Find Active Zone.
+		set<int>			kNewActiveZones;
+		
+		for(iZ=0;iZ<m_kZones.size();iZ++)
+			m_kZones[iZ].m_iRange							= 10000;
+		
+		//get current zone
+		iZoneIndex = GetZoneIndex((*iT)->GetObject(),(*iT)->GetObject()->m_iCurrentZone,(*iT)->m_bClosestZone);
+		
+		if(iZoneIndex >= 0) 
+		{
+			pkStartZone = &m_kZones[iZoneIndex];
+			pkStartZone->m_iRange = 0;
+			
+			
+			m_kFloodZones.push_back(pkStartZone);
+		}
+
+		// Flood Zones in rage to active.
+		while(m_kFloodZones.size()) 
+		{
+			pkZone = m_kFloodZones.back();
+			m_kFloodZones.pop_back();
+
+			kNewActiveZones.insert(pkZone->m_iZoneID);
+
+			pkZone->m_bTracked = true;
+			int iRange = pkZone->m_iRange + 1;
+
+			if(iRange < m_iTrackerLOS) 
+			{
+				for(unsigned int i=0; i<pkZone->m_iZoneLinks.size(); i++) 
+				{
+					ZoneData* pkOtherZone = GetZoneData(pkZone->m_iZoneLinks[i]); //				pkZone->m_pkZoneLinks[i];	//GetZoneData(pkZone->m_iZoneLinks[i]);				
+
+					//if zone has already been checked continue whit the next one
+					if(pkOtherZone->m_iRange <= iRange)	continue;		// Dvoid: ändrade till <= från <  , tycks snabba upp algoritmen med en faktor av ca 100000000 (pga att den lägger till samma zon flera gånger)
+					
+					//set new range 
+					pkOtherZone->m_iRange = iRange;
+					
+					
+					
+					//add zone to flooded zones list
+					m_kFloodZones.push_back(pkOtherZone);
+				}				
+			}
+		}
+		
+		//find new loaded zones  , compare new actives zones whit last update to find new loaded zones
+		(*iT)->m_iNewActiveZones.clear();
+		set_difference(kNewActiveZones.begin(),kNewActiveZones.end(),(*iT)->m_iActiveZones.begin(),(*iT)->m_iActiveZones.end(), inserter((*iT)->m_iNewActiveZones, (*iT)->m_iNewActiveZones.begin()));
+		
+		//findout wich zones has been removed since last update, and add them to list to be sent to client (observer the list shuld not be cleared here, but in the code that sends the package)
+		if((*iT)->m_iConnectID != -1)
+			set_difference((*iT)->m_iActiveZones.begin(),(*iT)->m_iActiveZones.end(),kNewActiveZones.begin(),kNewActiveZones.end(), inserter((*iT)->m_iUnloadZones, (*iT)->m_iUnloadZones.begin()));		
+		
+		//if((*iT)->m_iNewActiveZones.size() != 0) cout<<"loaded:"<<(*iT)->m_iNewActiveZones.size()<<endl;
+		//if((*iT)->m_iUnloadZones.size() != 0) cout<<"unloaded:"<<(*iT)->m_iUnloadZones.size()<<endl;
+				
+		//save new active zones in tracker
+		(*iT)->m_iActiveZones = kNewActiveZones;
+	}
+
+
+	//loop trough all zones and load/unload them	
+	int iOperations = 0;
+	ZoneData* pkZoneRefresh;	
+	for(unsigned int i=0; i<m_kZones.size(); i++) 
+	{
+	//	cout<<"handling zone "<<m_kZones[i].m_iZoneID<<endl;
+	
+		pkZoneRefresh = &m_kZones[i];
+
+		//perform max X operations per frame
+		if(iOperations < m_iMaxZoneIO)
+		{
+			// Load / Unload zones.
+			if(pkZoneRefresh->m_bTracked && pkZoneRefresh->m_pkZone == NULL) 
+			{
+			//	cout<<"load "<<m_kZones[i].m_iZoneID<<endl;
+				
+				iOperations++;			
+				LoadZone(pkZoneRefresh->m_iZoneID);	
+			}
+	
+			// Zones that need to unload
+			if(pkZoneRefresh->m_bTracked == false && pkZoneRefresh->m_pkZone) 
+			{
+			
+				//check time since zone was last active, if longer than m_fZoneUnloadTime unload it
+				if( (fTime - pkZoneRefresh->m_fInactiveTime) > m_fZoneUnloadTime)
+				{		
+					//cout<<"unload "<<m_kZones[i].m_iZoneID<<endl;
+					
+					iOperations++;
+					UnLoadZone(pkZoneRefresh->m_iZoneID);
+				}
+			}
+		}
+		
+		//all active zones 
+		if(pkZoneRefresh->m_bTracked && pkZoneRefresh->m_pkZone)
+		{
+		//	cout<<"setting as active "<<m_kZones[i].m_iZoneID<<endl;
+			pkZoneRefresh->m_pkZone->SetUpdateStatus(UPDATE_ALL);
+			
+			//update zone timer
+			pkZoneRefresh->m_fInactiveTime = fTime;
+		}
+				
+/
+		//dvoid object loding ...eller nått
+		if(pkZoneRefresh->m_bActive)
+		{
+			if(pkZoneRefresh->m_pkZone)
+			{
+				//cout<<"range:"<<pkZoneRefresh->m_iRange<<endl;
+			
+				if(pkZoneRefresh->m_fDistance < m_iObjectDistance)
+				//if(pkZoneRefresh->m_iRange < m_iTrackerLOS / 2)
+				{
+					pkZoneRefresh->m_pkZone->SetUpdateStatus(UPDATE_ALL);
+					pkZoneRefresh->m_pkZone->m_bSendChilds = true;					
+					//cout<<"whit childs"<<endl;					
+				}
+				else
+				{
+					pkZoneRefresh->m_pkZone->SetUpdateStatus(UPDATE_NOCHILDS);
+					pkZoneRefresh->m_pkZone->m_bSendChilds = false;
+					//cout<<"no childs"<<endl;
+				}
+			}
+		}
+*	
+	}
+
+
+
+	//reset all new loaded zones
+	for(list<P_Track*>::iterator iT2=m_kTrackedObjects.begin();iT2!=m_kTrackedObjects.end();iT2++) 
+	{
+		//if therse no connection on this tracker, we cant reset anything
+		if((*iT2)->m_iConnectID == -1)
+			continue;
+	
+		for(set<int>::iterator it3 = (*iT2)->m_iNewActiveZones.begin(); it3 != (*iT2)->m_iNewActiveZones.end();it3++)
+		{
+			ZoneData* zd = GetZoneData((*it3));
+		
+			if(zd)
+			{
+				if(zd->m_pkZone)
+					zd->m_pkZone->ResetAllNetUpdateFlagsAndChilds((*iT2)->m_iConnectID);
+				//cout<<"reseting zone:"<<endl;
+			}
+		}
+	}
 }
 */
