@@ -28,7 +28,7 @@ public:
 	bool IsValid();
 
 	bool EndRender();
-	bool StartRender();
+	bool StartRender(bool bClear);
 	bool RenderQuad(Rect kScreenRect);
 	bool RenderPoints(vector<tRGBPoint>& akLines);
 	bool RenderLines(vector<Point>& akLines, 

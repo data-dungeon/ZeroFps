@@ -24,6 +24,8 @@ int ZGui::m_iResY = 600; //768;
 
 ZGui::ZGui(int iResX, int iResY) : ZFSubSystem("Gui") 
 {
+	m_bClearScreen = false;
+
 	m_iResX = iResX;
 	m_iResY = iResY;
 
@@ -312,7 +314,7 @@ bool ZGui::Render(int fps)
 	if(!m_bRenderEnabled)
 		return true;
 
-	m_pkRenderer->StartRender();
+	m_pkRenderer->StartRender(m_bClearScreen);
 	
 	// Blit windows with lowest z order first.
 	for(list<MAIN_WINDOW*>::reverse_iterator it = m_pkMainWindows.rbegin();
@@ -337,7 +339,7 @@ bool ZGui::Render(int fps)
 
 			pkWnd->m_pkCamera->RenderView(); 
 
-			m_pkRenderer->StartRender();
+			m_pkRenderer->StartRender(false);
 		}
 	 }
 

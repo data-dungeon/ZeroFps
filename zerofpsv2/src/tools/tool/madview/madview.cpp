@@ -56,12 +56,12 @@ MadView::MadView(char* aName,int iWidth,int iHeight,int iDepth)
 
 	Register_Cmd("object_rotation_mode", FID_OBJECTROTATIONMODE);	
 	Register_Cmd("object_rotation_speed", FID_OBJECTROTATIONSPEED);	
-	Register_Cmd("mad_draw_mode", FID_MAD_DRAW_MODE);	
+	Register_Cmd ("mad_draw_mode", FID_MAD_DRAW_MODE);	
 	Register_Cmd("change_bkcolor_infownd", FID_TOGGLE_BKCOLOR);	
 
 	m_strMadFile = "data/mad/cube.mad";
 
-	RegisterVariable("madfile", &m_strMadFile, CSYS_STRING); // Ta inte bort denna dvoid, tack.
+	RegisterVariable("r_madfile", &m_strMadFile, CSYS_STRING); // Ta inte bort denna dvoid, tack.
 } 
 
 void MadView::OnInit() 
@@ -95,17 +95,20 @@ void MadView::Init()
 	CreateViewObject();
 	CreateCamera();
 
-	
-	ToogleLight(true);
-
-	m_fRotTimer = (float) SDL_GetTicks() / 1000.0f;
-	
-	m_fDelayTime = m_pkZeroFps->GetEngineTime();
-
 	ZFVFile kFile;
 	if(kFile.Open("madviewsettings.dot", 0, false))
 	{
 		Vector3 kCamerPos, kObjectPos;
+
+		char szMadFile[128];
+		if(!kFile.Read(szMadFile, sizeof(char), 128))
+			m_strMadFile = "data/mad/cube.mad";
+
+		m_strMadFile = szMadFile;
+
+		if(m_strMadFile.find(".mad") == string::npos)
+			m_strMadFile = "data/mad/cube.mad";
+
 		kFile.Read(&kCamerPos, sizeof(kCamerPos), 1);
 		kFile.Read(&kObjectPos, sizeof(kCamerPos), 1);
 		kFile.Read(&m_fObjRotX, sizeof(m_fObjRotX), 1);
@@ -115,6 +118,14 @@ void MadView::Init()
 		m_pkViewObject->SetWorldPosV(kObjectPos);
 		m_pkViewObject->SetWorldRotV(Vector3(m_fObjRotX,m_fObjRotY,m_fObjRotZ));
 	}
+
+	ChangeMad(m_strMadFile.c_str());
+
+	ToogleLight(true);
+
+	m_fRotTimer = (float) SDL_GetTicks() / 1000.0f;
+	
+	m_fDelayTime = m_pkZeroFps->GetEngineTime();
 }
 
 void MadView::OnIdle()
@@ -184,7 +195,7 @@ void MadView::CreateCamera()
 	m_pkCamera->m_bForceFullScreen = false;
 	m_pkCamera->SetName("persp");
 	m_pkZeroFps->AddRenderCamera(m_pkCamera);
-
+	
 	m_pkCameraObject = m_pkEntityManager->CreateEntityFromScript("data/script/objects/t_camedit.lua");
 	m_pkCameraObject->SetParent( m_pkEntityManager->GetWorldEntity() );				
 	
@@ -199,7 +210,6 @@ void MadView::CreateViewObject()
 {
 	m_pkViewObject = m_pkEntityManager->CreateEntity();
 	m_pkViewObject->SetParent( m_pkEntityManager->GetWorldEntity() ); 
-	ChangeMad(m_strMadFile.c_str());
 	m_pkViewObject->AddProperty("P_LightUpdate");
 	m_pkViewObject->SetWorldPosV(Vector3(0,0,0));
 }
@@ -281,6 +291,11 @@ bool MadView::ShutDown()
 
 	ZFVFile kFile;
 	kFile.Open("madviewsettings.dot", 0, true);
+	
+	char szMadFile[128];
+	strcpy(szMadFile, m_strMadFile.c_str());
+	kFile.Write(szMadFile, sizeof(char), 128);
+
 	kFile.Write(&kCamerPos, sizeof(kCamerPos), 1);
 	kFile.Write(&kObjectPos, sizeof(kCamerPos), 1);
 	kFile.Write(&m_fObjRotX, sizeof(m_fObjRotX), 1);

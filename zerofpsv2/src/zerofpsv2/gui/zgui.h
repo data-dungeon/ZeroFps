@@ -179,6 +179,8 @@ public:
 	bool m_bForceGUICapture; // Anropas av textboxen
 	int m_iShowFPSCounter;
 
+	bool m_bClearScreen; // Sätt till true om ingen main kamera finns och guit då måste rensa skärmen själv.
+
 	void ShowFPSCounter(bool bShow);
 
 	ZGuiWnd* m_pkFpsWnd;

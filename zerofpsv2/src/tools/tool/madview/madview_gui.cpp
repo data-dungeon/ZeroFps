@@ -224,7 +224,7 @@ void MadView::ChangeMad(string strName)
 	
 	// Change mad
 	m_strMadFile = strName;
-	pkMad->SetBase(m_strMadFile.c_str());
+	pkMad->SetBase(strName.c_str());
 
 	Mad_Core* pkCore = dynamic_cast<Mad_Core*>(pkMad->kMadHandle.GetResourcePtr()); 
 

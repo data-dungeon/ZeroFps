@@ -69,7 +69,7 @@ void GLGuiRender::SetScaleMode(GUIScaleMode eGUIScaleMode)
 ///////////////////////////////////////////////////////////////////////////////
 // Name: StartRender
 //
-bool GLGuiRender::StartRender()
+bool GLGuiRender::StartRender(bool bClear)
 {
 	m_pkShader->Push("gui");
 
@@ -94,6 +94,8 @@ bool GLGuiRender::StartRender()
 	glScissor  ( 0, 0,	m_iScreenWidth, m_iScreenHeight ); // lade till 22 okt 2004 för att kunna rendera camera i fönster	
 	glViewport ( 0, 0,	m_iScreenWidth, m_iScreenHeight  );	// lade till 22 okt 2004 för att kunna rendera camera i fönster	
 
+	if(bClear)
+		glClear(GL_COLOR_BUFFER_BIT);	
 
 		glDisable(GL_COLOR_MATERIAL);	 // lade till 19 okt 2004
 
