@@ -126,3 +126,10 @@ bool ZFBasicFS::DirExist(const char* acName)
 
 #endif
 
+bool ZFBasicFS::FileExist(const char* szFile)
+{
+	bool bOK = false;
+	FILE* f = fopen(szFile, "r"); 
+	if(f) { fclose(f); bOK = true; }
+	return bOK;
+}

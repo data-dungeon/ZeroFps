@@ -5,6 +5,8 @@
 #include "dialogbox.h"
 #include "../zerofps/engine/input.h"
 
+stack<DlgBox*> DlgBox::s_pkOpenStack;
+
 ///////////////////////////////////////////////////////////////////////////////
 // Construction/Destruction
 //
@@ -80,6 +82,8 @@ bool DlgBox::Open(int x, int y)
 
 	CenterCursor();
 
+	s_pkOpenStack.push(this);
+
 	return OnOpen(x,y);
 }
 
@@ -87,5 +91,9 @@ bool DlgBox::Close(bool bSave)
 {
 	m_pkGui->ShowMainWindow(m_pkDlgBox, false);
 	KillFocus();
+
+	if(s_pkOpenStack.empty() == false)
+		s_pkOpenStack.pop();
+
 	return OnClose(bSave);
 }

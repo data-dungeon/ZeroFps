@@ -989,9 +989,7 @@ void ZeroEdit::Input()
 	}
 
 	if(pkInput->Pressed(KEY_SPACE))
-	{
 		m_pkGui->OpenPropertybox();
-	}
 }
 
 void ZeroEdit::PasteObject(Vector3 kPos)

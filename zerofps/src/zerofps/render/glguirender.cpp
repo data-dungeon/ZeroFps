@@ -417,7 +417,7 @@ bool GLGuiRender::PrintRows(char* text, Rect rc, int iCursorPos, int iRenderDist
 				ypos - iRenderDistFromTop;
 
 			bool bInside = true;
-			if(ypos+iRenderDistFromTop>=rc.Height())
+			if(ypos+iRenderDistFromTop+m_pkFont->m_cCharCellSize>rc.Height())
 				bInside = false;
 			if(rc.Top + ypos + iRenderDistFromTop < rc.Top)
 				bInside = false;

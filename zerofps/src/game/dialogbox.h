@@ -8,6 +8,9 @@
 
 class Input;
 
+#include <stack>
+using namespace std;
+
 class DlgBox  
 {
 public:
@@ -30,6 +33,8 @@ public:
 
 	bool Open(int x=-1, int y=-1);
 	bool Close(bool bSave);
+
+	static stack<DlgBox*> s_pkOpenStack;
 
 protected:
 

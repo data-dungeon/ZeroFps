@@ -27,8 +27,11 @@ bool LogBox::OnOpen(int x, int y)
 	if(!(x==-1 && y==-1))
 		m_pkDlgBox->SetPos(x,y,true,true);
 
-	m_pkGui->ShowMainWindow(m_pkDlgBox, true);
+	ZGuiWnd* pkTextbox = m_pkGuiMan->Wnd( string("LogBoxText") );
+	if(pkTextbox == NULL)
+		return false;
 
+	((ZGuiTextbox*)pkTextbox)->SetCursorRow(0, true);
 
 	return true;
 }

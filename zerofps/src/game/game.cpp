@@ -65,7 +65,7 @@ static bool PLAYER_INVENTORYPROC( ZGuiWnd* wnd, unsigned int msg, int num, void 
 				(pkSelObject->GetProperty("LogProperty"));
 
 			if(lp != NULL)
-				g_kGame.m_pkLogBox->SetLogProperty(lp);  
+				g_kGame.SetLogInfo(lp);
 		}
 		break;
 
@@ -186,17 +186,13 @@ void Game::OnIdle(void)
 				m_pkPlayerInventoryBox->Update();
 
 			if(m_pkContainerBox->IsOpen())
-			{
 				m_pkContainerBox->Update();
-			}
 
 			PlayerExamineObject();
 
 			if(m_pkPlayerInventoryBox->IsOpen() || m_pkContainerBox->IsOpen() ||
 				m_pkExamineMenu->IsOpen() || m_pkLogBox->IsOpen())
-			{
 				LockPlayerCamera(true);
-			}
 			else
 				LockPlayerCamera(false);
 
@@ -304,37 +300,15 @@ void Game::Input()
 		break;
 
 	case KEY_ESCAPE:
-	
-		if(m_pkExamineMenu->IsOpen())
-			m_pkExamineMenu->Close(false);
 
-		if(m_pkPlayerInventoryBox->IsOpen())
-			m_pkPlayerInventoryBox->Close(false);
-		break;
-
-	case KEY_L:
-
-		Object* pkObject;
-		pkObject = pkObjectMan->GetObject("LogStone");
-
-		if(pkObject != NULL)
+		if(DlgBox::s_pkOpenStack.size() > 0)
 		{
-			if(!pkIni->Open("../data/maps/village/log.txt", false))
-				printf("Failed to read log file!\n");
+			DlgBox* pkTop = DlgBox::s_pkOpenStack.top();
 
-			char* szValue = pkIni->GetValue("ReadStone", "text");
-
-			LogProperty* lp = static_cast<LogProperty*>
-				(pkObject->GetProperty("LogProperty"));
-
-			if(lp != NULL)
-			{
-				lp->m_sLog = szValue;
-				m_pkLogBox->SetLogProperty(lp);
-			}
-
-			OpenLogWnd();
+			if(pkTop->IsOpen())
+				pkTop->Close(false);
 		}
+
 		
 		break;
 	}
@@ -597,34 +571,35 @@ void Game::PlayerExamineObject()
 			(pkObjectTouched->GetProperty("LogProperty"));
 
 		if(lp != NULL)
-			m_pkLogBox->SetLogProperty(lp);
-
-	
+			SetLogInfo(lp);
 	}
 }
 
 void Game::LockPlayerCamera(bool bLock)
 {
 	static int prev_x, prev_y;
-	static bool bSet = true;
-
-	if(bLock == true && bSet == true)
-	{
-		pkInput->MouseXY(prev_x, prev_y);
-		bSet = false;
-		cout<<"getting y "<<prev_y<<endl;
-	}
-	
-	if(bLock == false && bSet == false)
-	{
-		pkInput->SetCursorInputPos(prev_x, prev_y);
-		
-		cout<<"setting y "<<prev_y<<endl;
-		bSet = true;
-	}
 
 	PlayerControlProperty* pkPlayerCtrl = static_cast<PlayerControlProperty*>
 		(m_pkPlayer->GetProperty("PlayerControlProperty"));
+
+	if(bLock == pkPlayerCtrl->m_bLockCamera)
+	{
+		return; // Nothing changed.
+	}
+
+	if(bLock == true)
+	{
+		pkInput->MouseXY(prev_x, prev_y);
+		cout << "Locking camera: Storing cursor pos (" 
+			 << prev_x << "," << prev_y << ")" << endl;
+	}
+	
+	if(bLock == false)
+	{
+		cout << "Unlocking camera: Setting cursor pos back to pos (" 
+			 << prev_x << "," << prev_y << ")" << endl;
+		pkInput->SetCursorInputPos(prev_x, prev_y);
+	}
 
 	if(pkPlayerCtrl)
 		pkPlayerCtrl->m_bLockCamera = bLock;
@@ -740,10 +715,6 @@ bool Game::OpenLogWnd()
 		int y = m_iHeight/2 - m_pkLogBox->Height()/2;
 		m_pkLogBox->Open(x,y);
 	}
-	else
-	{
-		m_pkLogBox->Close(false); 
-	}
 
 	return true;
 }
@@ -755,17 +726,45 @@ bool Game::ProcessUseMsg(char *szMessage)
 
 	if(strcmp(szMessage, "Open container") == 0)
 	{
-		m_pkExamineMenu->Close(true);
 		OpenContainer();
 		return true;
 	}
 
 	if(strcmp(szMessage, "Read Log") == 0)
 	{
-		m_pkExamineMenu->Close(true);
 		OpenLogWnd();
 		return true;
 	}
 
 	return false;
+}
+
+void Game::SetLogInfo(LogProperty *lp)
+{
+	if(lp == NULL)
+		return;
+
+	if(pkBasicFS->FileExist(pkLevelMan->GetLogFileFullName().c_str()))
+	{
+		char* szText=NULL, *szIcon=NULL;
+		if(m_pkScript->GetLogText(pkLevelMan->GetLogFileFullName().c_str(), 
+			lp->m_strLogKey.c_str(), &szText, &szIcon))
+		{
+			lp->m_sLog = szText;
+			lp->m_kLogIcon = szIcon;
+			m_pkLogBox->SetLogProperty(lp);
+			
+			if(szText != NULL) delete[] szText;
+			if(szIcon != NULL) delete[] szIcon;
+		}
+		else
+		{
+			printf("Can't set log info. Failed to read log file %s with key %s!\n",
+				pkLevelMan->GetLogFileFullName().c_str(), lp->m_strLogKey.c_str());
+		}
+	}
+	else
+	{
+		printf("Can't set log info. No log file found in folder!\n");
+	}
 }

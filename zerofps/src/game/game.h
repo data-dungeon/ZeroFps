@@ -70,6 +70,7 @@ class Game :public Application {
 		int m_iActionOpenInventory, m_iActionCloseInventory;
 
 	public:
+		void SetLogInfo(LogProperty* lp);
 		bool ProcessUseMsg(char* szMessage);
 	
 		bool DragAndDropItem(int mx, int my, ItemBox::slot* ppkMoveItem, 

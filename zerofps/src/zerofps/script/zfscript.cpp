@@ -60,6 +60,7 @@ bool ZFScript::Open()
 	lua_settagmethod(m_pkLua, m_iLuaTagString, "getglobal");
 	lua_pushcfunction(m_pkLua, SetTypeString); 
 	lua_settagmethod(m_pkLua, m_iLuaTagString, "setglobal");
+
 	return true;	
 }
 
@@ -227,3 +228,5 @@ int ZFScript::GetTypeString(lua_State* pkLua) {
 	lua_pushstring(pkLua,var);
 	return 1;
 }
+
+

@@ -1013,3 +1013,15 @@ void ZGuiTextbox::SetReadOnly(bool bReadOnly)
 {
 	m_bReadOnly = bReadOnly;
 }
+
+bool ZGuiTextbox::SetCursorRow(int row, bool bUpdate)
+{
+	if(row < 0 || row > m_iNumRows-1)
+		return false;
+
+	m_iCursorRow = row;
+	m_iCursorPos = m_kRowOffsets[m_iCursorRow];
+	
+	if(bUpdate)
+		ScrollText(m_iCursorRow);
+}

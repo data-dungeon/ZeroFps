@@ -612,3 +612,10 @@ void LevelManager::DrawZones()
 }
 
 
+const string LevelManager::GetLogFileFullName()
+{
+	string strPath;
+	strPath.assign(m_kCurrentMapDir);
+	strPath.append("log.txt");
+	return strPath;
+}

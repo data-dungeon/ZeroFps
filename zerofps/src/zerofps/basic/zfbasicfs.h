@@ -39,6 +39,8 @@ class BASIC_API ZFBasicFS : public ZFObject
 		bool StartUp()	{ return true;	}
 		bool ShutDown()	{ return true;	}
 		bool IsValid()	{ return true;	}
+
+		bool FileExist(const char* szFile);
 };
 
 

@@ -11,6 +11,7 @@ LogProperty::LogProperty()
 	
 	m_sLog = "This Log is empty";
 	m_kLogIcon = "noicon.tga";	
+	m_strLogKey = "nokey";
 
 }
 
@@ -65,7 +66,7 @@ void LogProperty::ReadLog()
 
 vector<PropertyValues> LogProperty::GetPropertyValues()
 {
-	vector<PropertyValues> kReturn(2);
+	vector<PropertyValues> kReturn(3);
 		
 	kReturn[0].kValueName="m_sLog";
 	kReturn[0].iValueType=VALUETYPE_STRING;
@@ -74,35 +75,44 @@ vector<PropertyValues> LogProperty::GetPropertyValues()
 	kReturn[1].kValueName="m_kLogIcon";
 	kReturn[1].iValueType=VALUETYPE_STRING;
 	kReturn[1].pkValue=(void*)&m_kLogIcon;
+
+	kReturn[2].kValueName="m_strLogKey";
+	kReturn[2].iValueType=VALUETYPE_STRING;
+	kReturn[2].pkValue=(void*)&m_strLogKey;
 	
 	return kReturn;
 }
 
 void LogProperty::Save(ZFMemPackage* pkPackage)
 {
-	char data1[256];	
-	char data2[2048];	
-	
-	
+	char data1[256];
+	char data2[2048];
+	char data3[128];	
+		
 	strcpy(data1,m_kLogIcon.c_str());		
 	pkPackage->Write((void*)&data1,256);
 	
 	strcpy(data2,m_sLog.c_str());		
 	pkPackage->Write((void*)&data2,2048);
-	
 
+	strcpy(data3,m_strLogKey.c_str());		
+	pkPackage->Write((void*)&data3,128);
 }
 
 void LogProperty::Load(ZFMemPackage* pkPackage)
 {
 	char data1[256];	
 	char data2[2048];	
-		
+	char data3[128];
+
 	pkPackage->Read((void*)&data1,256);
 	m_kLogIcon = data1;
 	
 	pkPackage->Read((void*)&data2,2048);
 	m_sLog = data2;
+
+	pkPackage->Read((void*)&data3,128);
+	m_strLogKey = data3;
 		
 }
 

@@ -22,6 +22,11 @@ public:
 	virtual ~GameScript();
 
 	void OpenPackageFiles();
+	bool GetLogText(const char* szFile, const char* szKey, 
+		char** pszText, char **pszIcon);
+
+private:
+	static int GetTextFromFile(lua_State* pkLua);
 
 };
 
