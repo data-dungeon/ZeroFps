@@ -556,9 +556,32 @@ bool EditPropertyDlg::DlgProc( ZGuiWnd* pkWindow, unsigned int uiMessage, int iN
 			{
 				if(m_pkSelProperty)
 				{
+					vector<string> akPropertyNamesBefore;
+					akPropertyNamesBefore = m_pkSelProperty->GetValueNames();
+
 					string kPrevValue = m_pkSelProperty->GetValue(m_szSelPropValue);
 					char* text = m_pkGui->Get("PropertyValueSetEB")->GetText();
 					m_pkSelProperty->SetValue(m_szSelPropValue, string(text));
+					
+					vector<string> akPropertyNamesAfter;
+					akPropertyNamesAfter = m_pkSelProperty->GetValueNames();
+
+					bool bUpdate = false;
+
+					if(akPropertyNamesBefore.size() == akPropertyNamesAfter.size())
+					{
+						for(unsigned int i=0; i<akPropertyNamesAfter.size(); i++)
+							if(akPropertyNamesBefore[i] != akPropertyNamesAfter[i])
+							{
+								bUpdate = true;
+								break;
+							}
+					}
+					else
+						bUpdate = true;
+
+					if(bUpdate)
+						OnOpenEditProperty();
 				}
 			}
 			break;

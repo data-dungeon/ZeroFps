@@ -1384,7 +1384,7 @@ bool ZGui::SetSkins(vector<tSkinInf>& kAllSkinsTempArray, ZGuiWnd* pkWnd)
 				kAllSkinsTempArray[j].first.second == strDesc )
 			{
 				if(pkSkin == NULL)
-					pkSkin = new ZGuiSkin();
+					continue; //pkSkin = new ZGuiSkin();
 
 				*pkSkin = *kAllSkinsTempArray[j].second;
 				break;

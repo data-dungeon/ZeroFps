@@ -480,6 +480,8 @@ bool ZGuiListbox::SelItem(int iIndex)
 			 }
 		 }
 
+	UpdateList();
+
 	return true;
 }
 
