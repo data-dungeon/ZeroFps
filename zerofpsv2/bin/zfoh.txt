@@ -61,8 +61,6 @@ class object
 		parent object
 		set MadProperty m_kMadFile /data/mad/goblin.mad
 		set MadProperty m_fScale 1
-		Add PSystemProperty
-		set PSystemProperty PSType Waterfall
 
 	class ZeroRTSTestBox
 		parent object
