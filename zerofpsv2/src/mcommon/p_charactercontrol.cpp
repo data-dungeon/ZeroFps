@@ -10,6 +10,8 @@ P_CharacterControl::P_CharacterControl()
 	m_iVersion = 			2;
 		
 	
+	m_fLockTime = 			-1;
+	
 	m_fYAngle = 			0;
 	m_fPAngle = 			0;	
 	m_fSoundWalkDelay = 	0;
@@ -80,6 +82,15 @@ vector<PropertyValues> P_CharacterControl::GetPropertyValues()
 
 void P_CharacterControl::Update()
 {	
+	if(m_fLockTime != -1)
+	{
+		if(m_pkEntityManager->GetSimTime() < m_fLockTime)
+			return;
+		else
+			m_fLockTime = -1;
+	
+	}
+
 	if(m_pkEntityManager->IsUpdate(PROPERTY_SIDE_SERVER))
 	{
 		//reset character states
@@ -192,6 +203,16 @@ void P_CharacterControl::Update()
 		//update animation
 		UpdateAnimation();
 	}	
+}
+
+void P_CharacterControl::Lock(float fTime)
+{
+	m_fLockTime = m_pkEntityManager->GetSimTime() + fTime;
+	
+	if(P_Mad* pkMad = (P_Mad*)GetEntity()->GetProperty("P_Mad"))
+	{	
+		pkMad->SetAnimation(m_strIdleStanding.c_str(), 0);
+	}
 }
 
 void P_CharacterControl::RotateTowards(const Vector3& kPos)
@@ -493,6 +514,42 @@ namespace SI_P_CharacterControl
 		
 		return 0;
 	}	
+	
+	int LockCharacterLua(lua_State* pkLua)
+	{
+		if(g_pkScript->GetNumArgs(pkLua) != 2)
+			return 0;
+		
+		int id;
+		double dDelay;
+		
+		g_pkScript->GetArgInt(pkLua, 0, &id);
+		g_pkScript->GetArgNumber(pkLua, 1, &dDelay);
+		
+		if(Entity* pkObject = g_pkObjMan->GetEntityByID(id))
+			if(P_CharacterControl* pkCC = (P_CharacterControl*)pkObject->GetProperty("P_CharacterControl"))
+				pkCC->Lock(dDelay);
+		
+		return 0;
+	}		
+	
+	int DoEmoteLua(lua_State* pkLua)
+	{
+		if(g_pkScript->GetNumArgs(pkLua) != 2)
+			return 0;
+		
+		int id;
+		int iEmote;
+		
+		g_pkScript->GetArgInt(pkLua, 0, &id);
+		g_pkScript->GetArgInt(pkLua, 1, &iEmote);
+		
+		if(Entity* pkObject = g_pkObjMan->GetEntityByID(id))
+			if(P_CharacterControl* pkCC = (P_CharacterControl*)pkObject->GetProperty("P_CharacterControl"))
+				pkCC->DoEmote(iEmote);
+		
+		return 0;
+	}		
 }
 
 
@@ -512,7 +569,10 @@ void Register_P_CharacterControl(ZeroFps* pkZeroFps)
 	
 	g_pkScript->ExposeFunction("GetCharacterYAngle",	SI_P_CharacterControl::GetCharacterYAngleLua);
 	g_pkScript->ExposeFunction("SetCharacterYAngle",	SI_P_CharacterControl::SetCharacterYAngleLua);
-
+	
+	g_pkScript->ExposeFunction("LockCharacter",	SI_P_CharacterControl::LockCharacterLua);
+	g_pkScript->ExposeFunction("DoEmote",	SI_P_CharacterControl::DoEmoteLua);
+		
 }
 
 

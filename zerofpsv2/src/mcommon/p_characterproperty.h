@@ -18,7 +18,7 @@ class MCOMMON_API Skill
 		ZFScriptSystem*	m_pkScript;		
 		ZFResourceHandle*	m_pkScriptFileHandle;	
 		ZeroFps*				m_pkZeroFps;
-		
+		EntityManager*		m_pkEntityManager;
 		
 		string	m_strSkillScript;
 		

@@ -15,6 +15,7 @@ Skill::Skill(const string& strScriptFile,const string& strParent, int iOwnerID)
 {
 	m_pkScript = static_cast<ZFScriptSystem*>(g_ZFObjSys.GetObjectPtr("ZFScriptSystem"));
 	m_pkZeroFps= static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
+	m_pkEntityManager = static_cast<EntityManager*>(g_ZFObjSys.GetObjectPtr("EntityManager"));
 	
 	//create and setup script
 	m_pkScriptFileHandle = new ZFResourceHandle;
@@ -47,10 +48,10 @@ Skill::~Skill()
 
 void Skill::Update()
 {
-	if( (m_pkZeroFps->GetEngineTime() < m_fLastUpdate) || m_fLastUpdate == -1)
+	if( (m_pkEntityManager->GetSimTime() < m_fLastUpdate) || m_fLastUpdate == -1)
 	{
 		cout<<"skill time dont match"<<endl;				
-		m_fLastUpdate =m_pkZeroFps->GetEngineTime();
+		m_fLastUpdate =m_pkEntityManager->GetSimTime();
 		return; 
 	}
 
@@ -59,12 +60,12 @@ void Skill::Update()
 		return;
 		
 	//decrese timeleft
-	m_fTimeLeft -= m_pkZeroFps->GetEngineTime() - m_fLastUpdate ;			
+	m_fTimeLeft -= m_pkEntityManager->GetSimTime() - m_fLastUpdate ;			
 	if(m_fTimeLeft < 0)
 		m_fTimeLeft = 0;
 	
 	//update last update time
-	m_fLastUpdate = m_pkZeroFps->GetEngineTime();
+	m_fLastUpdate = m_pkEntityManager->GetSimTime();
 	
 	if(m_fTimeLeft == 0)
 		cout<<"skill reloaded:"<<GetName()<<endl;
@@ -178,7 +179,7 @@ void Skill::Use(int iTargetID,const Vector3& kPos,const Vector3& kDir)
 	
 	//reset reload timer
 	m_fTimeLeft = m_fReloadTime;
-	m_fLastUpdate = m_pkZeroFps->GetEngineTime();
+	m_fLastUpdate = m_pkEntityManager->GetSimTime();
 }
 
 

@@ -714,6 +714,8 @@ void MistClient::Input()
 				}
 			}				
 		
+			//CAMERA ROTATION
+			
 			//captured mouse pointer?
 			if(!m_bGuiCapture)
 			{
@@ -737,6 +739,36 @@ void MistClient::Input()
 			//rotate camera by keyboard
 			if(m_pkInputHandle->VKIsDown("rotate_left"))		pkCam->Set3PYAngle(pkCam->Get3PYAngle() + m_pkZeroFps->GetFrameTime()*150);
 			if(m_pkInputHandle->VKIsDown("rotate_right"))	pkCam->Set3PYAngle(pkCam->Get3PYAngle() - m_pkZeroFps->GetFrameTime()*150);			
+			
+			
+			//rotate towards target
+			if(m_iTargetID != -1)
+			{
+				if(Entity* pkTarget = m_pkEntityManager->GetEntityByID(m_iTargetID))
+				{
+					if(Entity* pkPlayer = m_pkEntityManager->GetEntityByID(m_iCharacterID))
+					{
+					
+						static Vector3 kDir;
+						static float fAngle;
+					
+						kDir = pkTarget->GetIWorldPosV() - pkPlayer->GetIWorldPosV();
+						kDir.Normalize();
+						kDir.y = 0;
+						
+						fAngle = Vector3(0,0,1).Angle(kDir);
+						fAngle = -RadToDeg(fAngle);
+						
+						if(kDir.x > 0)
+							fAngle = fabs(fAngle);	
+					
+						pkCam->Set3PYAngle(fAngle);					
+					}
+				}
+			}
+			
+			// ///////////////////
+			
 			
 			//get current distance
 			float fDistance = pkCam->Get3PDistance();

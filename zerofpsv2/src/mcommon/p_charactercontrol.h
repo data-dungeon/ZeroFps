@@ -47,6 +47,8 @@ class MCOMMON_API P_CharacterControl: public Property
 		bitset<CHARACTER_STATES>	m_kCharacterStates;			//sent to client
 		int								m_iDirection;
 		
+		float			m_fLockTime;
+		
 		float			m_fSpeed;
 		float			m_fJumpForce;
 		
@@ -118,7 +120,7 @@ class MCOMMON_API P_CharacterControl: public Property
 		
 			
 		void DoEmote(int iEmoteID);	
-		
+		void Lock(float fTime);
 };
 
 MCOMMON_API Property* Create_P_CharacterControl();

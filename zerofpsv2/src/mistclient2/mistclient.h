@@ -51,7 +51,7 @@ class MistClient :public Application, public ZGuiApp {
 		
 		//game
 		vector<string>	m_kEmotes;					//emote list
-		int			m_iTargetID;
+		int				m_iTargetID;
 		
 		
 		//states
