@@ -51,7 +51,13 @@ int DMLua::MakePathFindLua(lua_State* pkLua)
 		{
 			P_PfPath* pf = (P_PfPath*)pkEnt->GetProperty("P_PfPath");
 			if(pf)
-				pf->MakePathFind(kPos);
+			{
+				double dSuccess = pf->MakePathFind(kPos);
+
+				g_pkScript->AddReturnValue(pkLua,dSuccess);
+
+				return 1;
+			}
 		}
 	}
 	return 0;

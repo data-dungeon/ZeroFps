@@ -24,7 +24,6 @@ namespace DMLua
 		vector<Vector3> m_vkPoints;
 	};
 
-	extern map<string, double> m_kVars;
 	extern vector<int> m_kCallsForHelp;
 	extern map<int, PATROL_POINTS> m_kPatrolPoints;
 

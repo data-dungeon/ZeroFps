@@ -12,7 +12,6 @@
 
 ZFScriptSystem*						DMLua::g_pkScript;
 EntityManager*							DMLua::g_pkObjMan;
-map<string, double>					DMLua::m_kVars;
 vector<int>								DMLua::m_kCallsForHelp;
 map<int, DMLua::PATROL_POINTS>	DMLua::m_kPatrolPoints;
 
@@ -434,38 +433,58 @@ int DMLua::SetGunShootAnimLua (lua_State* pkLua)
 
 int DMLua::RunScriptLua (lua_State* pkLua)
 {
- 	if( g_pkScript->GetNumArgs(pkLua) == 2 || g_pkScript->GetNumArgs(pkLua) == 1)
-   {
+	if( g_pkScript->GetNumArgs(pkLua) > 0 && g_pkScript->GetNumArgs(pkLua) < 4)
+	{
+		Vector3 kPos = Vector3(0,0,0);
+		ZFScriptSystem* pkZFScriptSys = g_pkScript;
+
      	char	acType[128];
 		g_pkScript->GetArgString(pkLua, 0, acType);
 
-      double temp;
-		g_pkScript->GetArgNumber(pkLua, 1, &temp);
- 		int objectid = (int) temp;
+		// position from object
+		if ( g_pkScript->GetNumArgs(pkLua) > 1 )
+		{
+			double temp;
+			g_pkScript->GetArgNumber(pkLua, 1, &temp);
+			int objectid = (int) temp;
+			Entity* pkObject = g_pkObjMan->GetObjectByNetWorkID(objectid);
 
+			if(!pkObject)
+			{
+				cout<<"parent object does not exist"<<endl;
+			}
+			else
+				kPos = pkObject->GetWorldPosV();
+		}
 
-      ZFScriptSystem* pkZFScriptSys = g_pkScript;
-	   
-	   Entity* object = g_pkObjMan->GetObjectByNetWorkID(objectid);
-	   if(!object)
-	   {
-		   cout<<"parent object does not exist"<<endl;
-		   return 0;
-	   }
-   
-      // create the new object
-      Entity* pkNewObj = g_pkObjMan->CreateObjectFromScriptInZone(acType, 
-                         object->GetWorldPosV() );
+		// position from vector
+		if ( g_pkScript->GetNumArgs(pkLua) > 2 )
+		{
+			vector<TABLE_DATA> vkData;
+			g_pkScript->GetArgTable(pkLua, 3, vkData); // första argumetet startar på 1
 
-      // return everything the way it was
-      g_pkScript = pkZFScriptSys;
+			if ( vkData.size() )
+			{
+				kPos.x = (float) (*(double*) vkData[0].pData);
+				kPos.y = (float) (*(double*) vkData[1].pData);
+				kPos.z = (float) (*(double*) vkData[2].pData);
+			}
+			
+		}	
+		// create the new object
+		Entity* pkNewObj = g_pkObjMan->CreateObjectFromScriptInZone(acType, 
+							kPos );
 
-      // return the new object´s ID      
-      g_pkScript->AddReturnValue( pkLua, pkNewObj->GetEntityID() );
+		// return everything the way it was
+		g_pkScript = pkZFScriptSys;
 
-      return 1; // return newcreated-object_ID
-      
-   } 
+		// return the new object´s ID      
+		g_pkScript->AddReturnValue( pkLua, pkNewObj->GetEntityID() );
+
+		return 1; // return newcreated-object_ID
+		    
+   }
+
    return 0;  
 
 }
@@ -636,15 +655,7 @@ int DMLua::GetVarLua (lua_State* pkLua)
 
 	g_pkScript->GetArgString(pkLua, 0, cKey);
 
-	map<string, double>::iterator kIte = m_kVars.find(cKey);
-
-	if ( kIte == m_kVars.end() )
-	{
-		cout << "Warning! DMLua::GetVarLua: Coulnd't find key:" << cKey << ". Setting value to 0." << endl;
-		m_kVars[cKey] = 0;
-	}
-
-	double dValue = 0;
+	double dValue = -1;
 
 	Entity* pkHQ = GetHQEntity();
 
@@ -677,14 +688,6 @@ int DMLua::AddToVarLua (lua_State* pkLua)
 
 	g_pkScript->GetArgString(pkLua, 0, cKey);
 	g_pkScript->GetArgNumber(pkLua, 1, &dValue);
-
-	map<string, double>::iterator kIte = m_kVars.find(cKey);
-
-	if ( kIte == m_kVars.end() )
-	{
-		cout << "Warning! DMLua::GetVarLua: Coulnd't find key:" << cKey << ". Setting value to 0." << endl;
-		m_kVars[cKey] = 0;
-	}
 
 	Entity* pkHQ = GetHQEntity();
 
@@ -1328,7 +1331,7 @@ int DMLua::GetDMObjectLua(lua_State* pkLua)
 					{
 						string strEntName = kObjs[i]->GetName();
 
-						// Kolla om det är ett sjukhus genom att titta på objektets namn
+						// Kolla om det är harrys hus genom att titta på objektets namn
 						if( strEntName.find("t_door_harrys_house") != string::npos)
 						{
 							dEntID = (double)kObjs[i]->GetEntityID();

@@ -8,7 +8,6 @@ function Create()
 		InitProperty("P_ScriptInterface");
 		InitProperty("P_Sound");
 
-
 end
 
 

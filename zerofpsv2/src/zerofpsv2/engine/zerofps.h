@@ -125,6 +125,8 @@ class ENGINE_API ZeroFps : public I_ZeroFps {
 			FID_MASSSPAWN,
 
 			FID_SERVERCOMMAND,
+
+			FID_POS // dumps x,y,z of camera
 		};
 		
 

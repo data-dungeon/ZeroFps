@@ -45,20 +45,6 @@ end
 
 function HeartBeat()
 
-	local Life = GetCharStats(SIGetSelfID(), 0)
-	local prev_life = GetEntityVar(SIGetSelfID(), "g_HarryLife")
-
-	if Life < prev_life and IsDead(SIGetSelfID()) == 0 then
-		SetState (SIGetSelfID(), 4); --agro
-	end
-
-	-- Registrera nuvarande liv
-	SetEntityVar(SIGetSelfID(), "g_HarryLife", Life)
-
-	if HavePath(SIGetSelfID()) == 1 then
-		return
-	end	
-
 	if ( IsDead(SIGetSelfID()) == 1) then
 		AddToEntityVar (SIGetSelfID(), "deadtime", 1);
 
@@ -68,6 +54,22 @@ function HeartBeat()
 	
 		return
 	end
+
+	local Life = GetCharStats(SIGetSelfID(), 0)
+	local prev_life = GetEntityVar(SIGetSelfID(), "g_HarryLife")
+
+	if Life < prev_life and IsDead(SIGetSelfID()) == 0 then
+		if GetState(SIGetSelfID()) == 0 then
+			SetState (SIGetSelfID(), 4); --agro
+		end
+	end
+
+	-- Registrera nuvarande liv
+	SetEntityVar(SIGetSelfID(), "g_HarryLife", Life)
+
+	if HavePath(SIGetSelfID()) == 1 then
+		return
+	end	
 
 	State = GetState(SIGetSelfID());
 
@@ -96,7 +98,6 @@ function Dead()
 	RunScript ("data/script/objects/dm/t_money.lua", SIGetSelfID());
 	RunScript ("data/script/objects/dm/t_money.lua", SIGetSelfID());
 
-	SISetHeartRate(SIGetSelfID(),-1);
 end
 
 function Aggro()
@@ -122,10 +123,19 @@ end
 
 
 function Idle()
+	Print("IDLE");
 
-	local pos = GetObjectPos(SIGetSelfID());
-	pos[1] = pos[1] + Random(20)-10;
-	pos[3] = pos[3] + Random(20)-10;
+	local pos = {};
+	if DistanceTo(SIGetSelfID(), GetVar("HarryHouseID")) > 10 then
+		pos = GetObjectPos(GetVar("HarryHouseID"));
+		pos[1] = pos[1] + Random(8)-4;
+		pos[3] = pos[3] + Random(8)-4;
+	else
+		pos = GetObjectPos(SIGetSelfID());
+		pos[1] = pos[1] + Random(10)-5;
+		pos[3] = pos[3] + Random(10)-5;
+	end
+
 
 	MakePathFind(SIGetSelfID(),pos);
 

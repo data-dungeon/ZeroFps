@@ -19,7 +19,7 @@ vector<PropertyValues> P_DMClickMe::GetPropertyValues()
 void P_DMClickMe::Init()
 {
 	m_pkScript = (P_ScriptInterface*)m_pkObject->GetProperty("P_ScriptInterface");
-
+	m_bIsHouse = false;
 }
 
 // ------------------------------------------------------------------------------------------

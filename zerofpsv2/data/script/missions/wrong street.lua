@@ -31,25 +31,25 @@ function OnMissionStart()
 	-- create harry and his gangmembers
 
 	--position modifier for the whole gang
-	local pos = {0,0,0};
+	local pos = {44.16,1.700,95.97};
+	local HarryPos = {44.16,1.70,95.97};
 
-	HarryID = RunScript("data/script/objects/dm/t_harry.lua");
+	HarryID = RunScript("data/script/objects/dm/t_harry.lua", -1, HarryPos);
 
 	for i = 0, NumOfBaldies, 1
 	do
-		Baldies[i] = RunScript("data/script/objects/dm/t_baldie.lua");
 		local newpos = {0,0,0};
-		newpos[0] = Random(6) - 3;
-		newpos[1] = 0;
-		newpos[2] = Random(6) - 3;
-
-		SetObjectPos (Baldies[i], newpos);
+		newpos[1] = Random(6) - 3 + pos[1];
+		newpos[2] = pos[2];
+		newpos[3] = Random(6) - 3 + pos[3];
+		Baldies[i] = RunScript("data/script/objects/dm/t_baldie.lua", -1, newpos);
 	end
 	
 	HarryHouseID = GetDMObject (3);
 
 	SetVar ("HarryWounded", 0);
 	SetVar ("HarryID", HarryID);
+	SetVar ("HarryHouseID", -1);
 
 end
 
@@ -66,6 +66,11 @@ function OnMissionFailed()
 end
 
 function IsMissionDone()
+	if GetVar("HarryHouseID") == -1 then
+		HarryHouseID = GetDMObject (3);	
+		SetVar ("HarryHouseID", HarryHouseID);
+	end
+
 	if IsDead(HarryID) == 1 then
 		MissionInfo.success = 1;
 		return
@@ -109,8 +114,9 @@ function IsMissionDone()
 	
 		if BaldLive < 0 then
 			SetState (HarryID, 3); -- panic
-			housepos = GetEntityPos(HarryHouseID);
-			MakePathFind(HarryID, housepos);
+			housepos = GetEntityPos(GetVar("HarryHouseID"));
+			Print("GOTOHOUSE");
+			Print(MakePathFind(HarryID, housepos));
 		end
 	end	
 
