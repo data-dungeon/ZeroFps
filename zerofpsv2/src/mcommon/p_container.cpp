@@ -63,6 +63,12 @@ void P_Container::Update()
 					cout<<"Container owner out of distance, reseting owner to -1"<<endl;
 				} 
 			}
+			else
+			{
+				m_iOwnerID = -1;
+				cout<<"container owner does not exist anymore, reseting owner to -1"<<endl;
+				
+			}
 		}
 	}
 }
