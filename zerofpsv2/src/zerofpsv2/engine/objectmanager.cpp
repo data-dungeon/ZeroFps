@@ -1011,6 +1011,8 @@ void ObjectManager::Test_CreateZones()
 	MazeGen GaaMaze;
 	GaaMaze.Load("maze.bmp");
 
+	ZoneData kZData;
+
 	for(int x=0; x<iZonesSide; x++) {
 		for(int z=0; z<iZonesSide; z++) {
 			if(GaaMaze.aaiMaze[x][z] == 1) {
@@ -1019,7 +1021,17 @@ void ObjectManager::Test_CreateZones()
 				object->SetLocalPosV(kPos);
 				object->SetParent(GetWorldObject());				
 				object->GetUpdateStatus()=UPDATE_DYNAMIC;
-				m_kZones.push_back(object);
+				
+				kZData.m_pkZone = object;
+				kZData.m_kPos   = kPos;
+				kZData.m_kMin.Set(0,0,0);
+				kZData.m_kMax.Set(0,0,0);
+				kZData.m_iZoneID = object->iNetWorkID;
+				kZData.m_iNumOfLinks = object->m_kZoneLinks.size();
+				for(int zl=0; zl <object->m_kZoneLinks.size(); zl++)
+					kZData.m_iZoneLinks.push_back(object->m_kZoneLinks[zl]->iNetWorkID);
+				//m_kZones.push_back(object);
+				m_kZones.push_back(kZData);
 
 				// Create Ground Box.
 				//object->AddProperty("P_Primitives3D");
@@ -1031,7 +1043,7 @@ void ObjectManager::Test_CreateZones()
 				pk3d->m_kColor = RndColor();
 
 				// Create Random Objects.
-				iNumOfBalls = rand() % 20;
+				iNumOfBalls = rand() % 1;
 				for(int i=0; i<iNumOfBalls; i++) {
 					kRandOffset = Vector3(5,-4,5) - Vector3(rand()%10,0,rand()%10);
 					pkBall = CreateObjectByArchType("TVimBollus");
@@ -1055,10 +1067,10 @@ void ObjectManager::Test_DrawZones()
 	Render* m_pkRender=static_cast<Render*>(GetSystem().GetObjectPtr("Render"));
 
 	for(unsigned int i=0;i<m_kZones.size();i++) {
-		Vector3 kMin = m_kZones[i]->GetWorldPosV() - (m_kZones[i]->m_kSize * 0.5);
-		Vector3 kMax = m_kZones[i]->GetWorldPosV() + (m_kZones[i]->m_kSize * 0.5);
+		Vector3 kMin = m_kZones[i].m_pkZone->GetWorldPosV() - (m_kZones[i].m_pkZone->m_kSize * 0.5);
+		Vector3 kMax = m_kZones[i].m_pkZone->GetWorldPosV() + (m_kZones[i].m_pkZone->m_kSize * 0.5);
 
-		if(m_kZones[i]->m_bActive)
+		if(m_kZones[i].m_pkZone->m_bActive)
 			m_pkRender->DrawAABB( kMin,kMax, Vector3(1,0,0) );
 		else 
 			m_pkRender->DrawAABB( kMin,kMax, Vector3(0,1,0) );
@@ -1091,16 +1103,16 @@ void ObjectManager::AutoConnectZones()
 
 	// For each Zone.
 	for(unsigned int i=0;i<m_kZones.size();i++) {
-		kCenterPos = m_kZones[i]->GetWorldPosV();
+		kCenterPos = m_kZones[i].m_pkZone->GetWorldPosV();
 
 		// For each possible zone around this one.
 		for(int iDir = 0; iDir < kAutoConnectDirs.size(); iDir++) {
 			kCheckPos = kCenterPos + kAutoConnectDirs[iDir];
 			pkZone = GetZone(kCheckPos);
 			// If a zone add a link.
-			if(pkZone && (m_kZones[i] != pkZone)) {
+			if(pkZone && (m_kZones[i].m_pkZone != pkZone)) {
 				cout << "Connecting Zone" << endl;
-				m_kZones[i]->m_kZoneLinks.push_back(pkZone);
+				m_kZones[i].m_pkZone->m_kZoneLinks.push_back(pkZone);
 				}
 
 			}
@@ -1110,7 +1122,7 @@ void ObjectManager::AutoConnectZones()
 
 Vector3 ObjectManager::GetZoneCenter(int iZoneNum)
 {
-	return m_kZones[iZoneNum]->GetWorldPosV();
+	return m_kZones[iZoneNum].m_pkZone->GetWorldPosV();
 }
 
 int ObjectManager::GetNumOfZones()
@@ -1148,8 +1160,8 @@ ZoneObject* ObjectManager::GetZone(Vector3 kPos)
 {
 	// Set All Zones as inactive.
 	for(unsigned int iZ=0;iZ<m_kZones.size();iZ++) {
-		if(m_kZones[iZ]->IsInside(kPos))
-			return m_kZones[iZ];
+		if(m_kZones[iZ].m_pkZone->IsInside(kPos))
+			return m_kZones[iZ].m_pkZone;
 		}
 
 	return NULL;
@@ -1159,8 +1171,8 @@ ZoneObject* ObjectManager::GetZone(Object* PkObject)
 {
 	// Set All Zones as inactive.
 	for(unsigned int iZ=0;iZ<m_kZones.size();iZ++) {
-		if(m_kZones[iZ]->IsInside(PkObject->GetWorldPosV()))
-			return m_kZones[iZ];
+		if(m_kZones[iZ].m_pkZone->IsInside(PkObject->GetWorldPosV()))
+			return m_kZones[iZ].m_pkZone;
 		}
 
 	return NULL;
@@ -1177,10 +1189,10 @@ void ObjectManager::UpdateZones()
 
 	// Set All Zones as inactive.
 	for(unsigned int iZ=0;iZ<m_kZones.size();iZ++) {
-		m_kZones[iZ]->m_bActive					= false;
-		m_kZones[iZ]->m_fInactiveTime			= fTime;
-		m_kZones[iZ]->m_iRange					= 1000;
-		m_kZones[iZ]->GetUpdateStatus()		= UPDATE_NONE;
+		m_kZones[iZ].m_pkZone->m_bActive					= false;
+		m_kZones[iZ].m_pkZone->m_fInactiveTime			= fTime;
+		m_kZones[iZ].m_pkZone->m_iRange					= 1000;
+		m_kZones[iZ].m_pkZone->GetUpdateStatus()		= UPDATE_NONE;
 		}
 
 	vector<ZoneObject*>	m_kFloodZones;
@@ -1227,3 +1239,27 @@ vector<int>	ObjectManager::GetActiveZoneIDs(int iTracker)
 	vector<int>	Nisse;
 	return Nisse;
 }
+
+
+void ObjectManager::LoadZones()
+{
+		
+}
+
+void ObjectManager::SaveZones()
+{
+	ZoneData kZData;
+
+	ZFVFile kFile;
+	kFile.Open("zones.dat",0,true);
+
+	int iNumOfZone = m_kZones.size();
+	kFile.Write(&iNumOfZone,sizeof(int),1);
+
+//	for(int i=0; i<iNumOfZone; i++) {
+//		kZData.m_iZoneID = m_kZones[i]->
+//		}
+
+	kFile.Close();
+}
+

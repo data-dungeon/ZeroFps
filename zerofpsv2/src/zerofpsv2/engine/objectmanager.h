@@ -15,6 +15,25 @@ class GameMessage;
 class NetWork;
 class ZoneObject;
 
+
+/*
+	Data about a zone.
+*/
+
+class ZoneData
+{
+public:
+	ZoneObject*		m_pkZone;
+	int				m_iZoneID;
+	Vector3			m_kPos;
+	Vector3			m_kMin;
+	Vector3			m_kMax;
+	int				m_iNumOfLinks;
+	vector<int>		m_iZoneLinks;
+	// int	m_iZoneLinks[ m_iNumOfLinks ];
+};
+
+
 class ENGINE_API ObjectManager : public ZFSubSystem{
 	private:
 		enum FuncId_e
@@ -156,7 +175,10 @@ class ENGINE_API ObjectManager : public ZFSubSystem{
 		bool IsValid();
 
 		// Zones
-		vector<ZoneObject*> 	m_kZones;
+		//vector<ZoneObject*> 	m_kZones;
+		vector<ZoneData>			m_kZones;
+		
+
 		int GetNumOfZones();
 		void Test_CreateZones();
 		void Test_DrawZones();
@@ -176,7 +198,8 @@ class ENGINE_API ObjectManager : public ZFSubSystem{
 		void ClearTrackers();
 		vector<int>	GetActiveZoneIDs(int iTracker);	// Returns a list with zones that the tracked activates,
 		
-
+		void LoadZones();
+		void SaveZones();
 };
 
 #endif
