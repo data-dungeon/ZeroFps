@@ -20,7 +20,8 @@ public:
 	InventoryDlg();
 	~InventoryDlg();
 
-	void Update(vector<MLContainerInfo>& vkContainerList);
+	void UpdateInventory(vector<MLContainerInfo>& vkItemList);
+	void UpdateContainer(vector<MLContainerInfo>& vkItemList);
 
 	void Open();
 	void Close();
@@ -33,25 +34,33 @@ public:
 		return m_pkInventoryWnd->IsVisible(); 
 	}
 	
-	void OpenContainerWnd();
+	void OpenContainerWnd(int id, char slots_x, char slots_y);
 	void CloseContainerWnd();
 
 	int m_iItemUnderCursor; // används av inventoryt för att avgöra vilket item som finns under 
 									// cursorn efter att ha klickat på ett object i världen.
+
+	int m_iActiveContainerID;
 	
 private:
 
 	struct ITEM_SLOT
-	{
+	{	
 		ZGuiWnd* pkWnd;
 		int iItemID;
 	};
 
+	struct MOVE_SLOT
+	{
+		int m_iIndex; // index in item list (m_vkInventoryItemList or m_vkContainerItemList)
+		bool bIsInventoryItem;
+	};
+
 	void OnDropItem();
-	void CreateContainerGrid(int slots_horz, int slots_vert);
-	bool TestForCollision(int iTestSlot);
-	Point SlotFromScreenPos(int x, int y);
-	Point SlotFromWnd(ZGuiWnd* pkWnd);
+	void CreateContainerGrid(char slots_horz, char slots_vert);
+	bool TestForCollision(int iTestSlot, bool bInventory);
+	Point SlotFromScreenPos(int x, int y, bool bInventory);
+	Point SlotFromWnd(ZGuiWnd* pkWnd, bool bInventory);
 	Point SlotSizeFromWnd(ZGuiWnd* pkWnd);
 
 	TextureManager* m_pkTexMan;
@@ -62,11 +71,15 @@ private:
 	ZGuiWnd* m_pkInventoryWnd;
 	ZGuiWnd* m_pkContainerWnd;
 
-	int m_iMoveSlot; // index of m_vkItemList
+	MOVE_SLOT m_kMoveSlot; // index of m_vkItemList
 	int m_iSelItemID; // ITEM_SLOT::iItemID (aka MLContainerInfo::m_iItemID)
 	int m_iHighestZ;
 
 	float m_fPickUpTimer;
+
+	int m_iSlotsHorzContainer;
+	int m_iSlotsVertContainer;
+	
 
 	Point m_kPosBeforeMove;
 	
@@ -75,10 +88,11 @@ private:
 	const int ICON_WIDTH;
 	const int ICON_HEIGHT;
 
-	const int SLOTTS_HORZ;
-	const int SLOTTS_VERT;
+	const int SLOTTS_HORZ_INVENTORY;
+	const int SLOTTS_VERT_INVENTORY;
 
-	const Point UPPER_LEFT;
+	const Point UPPER_LEFT_INVENTORY;
+	const Point UPPER_LEFT_CONTAINER;
 };
 
 #endif

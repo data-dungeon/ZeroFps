@@ -97,6 +97,7 @@ class MistClient :public Application, public ZGuiApp {
 		void SetupGUI();
 		void SetGuiCapture(bool bSet, bool bMoveCursorToCenter=true);
 		void PositionActionButtons();
+		void CloseActiveContainer();
 						
 		//register
 		void RegisterPropertys();

@@ -572,6 +572,7 @@ void MistClient::OnSystem()
 {
 	UpdateCharacter();
 	SendControlInfo();
+	CloseActiveContainer();
 }
 
 void MistClient::SendControlInfo()
@@ -754,7 +755,22 @@ void MistClient::OnNetworkMessage(NetPacket *pkNetMessage)
 					if(!m_pkInventoryDlg->IsVisible())
 						m_pkInventoryDlg->Open(); 
 					
-				m_pkInventoryDlg->Update(kItemList);
+				m_pkInventoryDlg->UpdateInventory(kItemList);
+			}
+			else
+			if(iContainerType == eNormal)
+			{
+				if(bOpen)
+					if(!m_pkInventoryDlg->IsVisible())
+					{
+						m_pkInventoryDlg->Open();
+						RequestOpenInventory();
+					}
+
+				if(bOpen)					
+					m_pkInventoryDlg->OpenContainerWnd(iContainerID, cSizeX, cSizeY);
+
+				m_pkInventoryDlg->UpdateContainer(kItemList);
 			}
 				
 			break;
@@ -1100,9 +1116,23 @@ void MistClient::SendMoveItem(int iItemID,int iTarget,int iPosX,int iPosY)
 	kNp.Write(iPosX);
 	kNp.Write(iPosY);
 	
-	
 	kNp.TargetSetClient(0);
 	SendAppMessage(&kNp);			
 }
 
+void MistClient::CloseActiveContainer()
+{
+	if(m_pkInventoryDlg == NULL)
+		return;
 
+	if(!m_pkInventoryDlg->IsVisible())
+		return;
+	
+	if(Entity* pkContainer = m_pkEntityManager->GetEntityByID(m_pkInventoryDlg->m_iActiveContainerID))
+		if(Entity* pkCharacter = m_pkEntityManager->GetEntityByID(m_iCharacterID))
+		{
+			Vector3 dist = pkCharacter->GetWorldPosV() - pkContainer->GetWorldPosV();
+			if(dist.Length() > 2)
+				m_pkInventoryDlg->CloseContainerWnd(); 
+		}
+}

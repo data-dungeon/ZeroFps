@@ -36,15 +36,18 @@ void GuiMsgInventoryDlg( string strMainWnd, string strController,
 	}
 }
 
-InventoryDlg::InventoryDlg() : ICON_WIDTH(32), ICON_HEIGHT(32), UPPER_LEFT(27,87),
-										 SLOTTS_HORZ(6), SLOTTS_VERT(12)
+InventoryDlg::InventoryDlg() : ICON_WIDTH(32), ICON_HEIGHT(32), UPPER_LEFT_INVENTORY(27,87),
+										 SLOTTS_HORZ_INVENTORY(6), SLOTTS_VERT_INVENTORY(12), UPPER_LEFT_CONTAINER(0,0)
 {
 	m_pkInventoryWnd = NULL;
+	m_pkContainerWnd = NULL;
+
 	m_pkTexMan = g_kMistClient.m_pkTexMan;
-	m_iMoveSlot = -1;
+	m_kMoveSlot.m_iIndex = -1;
 	m_iSelItemID = -1;
 	m_iHighestZ = 1000;
 	m_iItemUnderCursor = -1;
+	m_iActiveContainerID = -1;
 }
 
 InventoryDlg::~InventoryDlg()
@@ -99,12 +102,15 @@ void InventoryDlg::Open()
 void InventoryDlg::Close()
 {
 	m_pkInventoryWnd->Hide();
+	CloseContainerWnd();
 
 	// Must set focus on mainwnd to recive SPACE intput for chatbox...
 	g_kMistClient.m_pkGui->SetFocus(g_kMistClient.GetWnd("GuiMainWnd"), false);	
 
 	g_kMistClient.GetWnd("OpenInventoryBn")->Show();
 	g_kMistClient.PositionActionButtons();
+
+	
 
 }
 
@@ -132,7 +138,10 @@ void InventoryDlg::OnMouseMove(bool bLeftButtonPressed, int mx, int my)
 				if(m_vkInventoryItemList[i].iItemID == m_iItemUnderCursor)
 				{
 					if(bLeftButtonPressed)
-						m_iMoveSlot = i;
+					{
+						m_kMoveSlot.bIsInventoryItem = true;
+						m_kMoveSlot.m_iIndex = i;
+					}
 
 					m_vkInventoryItemList[i].pkWnd->Show();
 					break;
@@ -152,33 +161,33 @@ void InventoryDlg::OnMouseMove(bool bLeftButtonPressed, int mx, int my)
 	{		
 		if(m_vkInventoryItemList[i].pkWnd->GetScreenRect().Inside(mx, my))
 		{
-			if(m_iMoveSlot == -1)
+			if(m_kMoveSlot.m_iIndex == -1)
 				m_vkInventoryItemList[i].pkWnd->GetSkin()->m_unBorderSize = 2;
 
 			if(bLeftButtonPressed)
 			{
-				if(m_iMoveSlot == -1)
+				if(m_kMoveSlot.m_iIndex == -1)
 				{
 					m_kPosBeforeMove.x = m_vkInventoryItemList[i].pkWnd->GetWndRect().Left;
 					m_kPosBeforeMove.y = m_vkInventoryItemList[i].pkWnd->GetWndRect().Top;
 
-					m_iMoveSlot = i; // select new item
+					m_kMoveSlot.bIsInventoryItem = true;
+					m_kMoveSlot.m_iIndex = i; // select new item
 					m_vkInventoryItemList[i].pkWnd->m_iZValue = m_iHighestZ++;
 					m_pkInventoryWnd->SortChilds(); 
 				}
 			}
 			else
 			{
-				if(m_iMoveSlot != -1)
+				if(m_kMoveSlot.m_iIndex != -1)
 					OnDropItem();
 
-				m_iMoveSlot = -1;
+				m_kMoveSlot.m_iIndex = -1;
 			}	
 
 			if(g_kMistClient.m_pkGui->m_bMouseRightPressed)
 			{	
 				m_iSelItemID = m_vkInventoryItemList[i].iItemID;
-				OpenContainerWnd();
 			}
 		}
 		else
@@ -188,16 +197,141 @@ void InventoryDlg::OnMouseMove(bool bLeftButtonPressed, int mx, int my)
 		}
 	}
 
-	if(m_iMoveSlot != -1)
+	for(int i=0; i<m_vkContainerItemList.size(); i++)
 	{
-		m_vkInventoryItemList[m_iMoveSlot].pkWnd->SetPos(mx,my, true, true);
+		if(m_vkContainerItemList[i].pkWnd->GetScreenRect().Inside(mx, my))
+		{
+			if(m_kMoveSlot.m_iIndex == -1)
+				m_vkContainerItemList[i].pkWnd->GetSkin()->m_unBorderSize = 2;
+
+			if(bLeftButtonPressed)
+			{
+				if(m_kMoveSlot.m_iIndex == -1)
+				{
+					m_kPosBeforeMove.x = m_vkContainerItemList[i].pkWnd->GetWndRect().Left;
+					m_kPosBeforeMove.y = m_vkContainerItemList[i].pkWnd->GetWndRect().Top;
+
+					m_kMoveSlot.bIsInventoryItem = false;
+					m_kMoveSlot.m_iIndex = i; // select new item
+					m_vkContainerItemList[i].pkWnd->m_iZValue = m_iHighestZ++;
+					m_pkContainerWnd->SortChilds(); 
+				}
+			}
+			else
+			{
+				if(m_kMoveSlot.m_iIndex != -1)
+					OnDropItem();
+
+				m_kMoveSlot.m_iIndex = -1;
+			}	
+
+			if(g_kMistClient.m_pkGui->m_bMouseRightPressed)
+			{	
+				m_iSelItemID = m_vkContainerItemList[i].iItemID;
+			}
+		}
+		else
+		{
+			if( m_vkContainerItemList[i].iItemID != m_iSelItemID)
+				m_vkContainerItemList[i].pkWnd->GetSkin()->m_unBorderSize = 0;
+		}		
+	}
+
+	if(m_kMoveSlot.m_iIndex != -1)
+	{
+		if(m_kMoveSlot.bIsInventoryItem == true)
+			m_vkInventoryItemList[m_kMoveSlot.m_iIndex].pkWnd->SetPos(mx,my, true, true);
+		else
+			m_vkContainerItemList[m_kMoveSlot.m_iIndex].pkWnd->SetPos(mx,my, true, true);
 	}
 }
 
-void InventoryDlg::Update(vector<MLContainerInfo>& vkItemList)
+void InventoryDlg::OpenContainerWnd(int id, char slots_x, char slots_y)
+{
+	m_pkContainerWnd = g_kMistClient.GetWnd("ContainerWnd");
+	m_pkContainerWnd->Show();
+
+	m_iSlotsHorzContainer = slots_x;
+	m_iSlotsVertContainer = slots_y;
+	m_iActiveContainerID = id;
+
+	CreateContainerGrid(slots_x, slots_y);
+
+//	m_pkContainerWnd->m_bIncludeBorder = true;
+	m_pkContainerWnd->SetZValue(22);
+	g_kMistClient.GetWnd("ContainerCloseButton")->SetZValue(44);
+	
+	g_kMistClient.m_pkGui->PlaceWndFrontBack(m_pkContainerWnd, true); 
+
+	g_kMistClient.m_pkGui->SetFocus(m_pkContainerWnd, false);
+}
+
+void InventoryDlg::CreateContainerGrid(char slots_horz, char slots_vert)
+{
+	list<ZGuiWnd*> kChilds;
+	m_pkContainerWnd->GetChildrens(kChilds);
+
+	const int MAX_WIDTH = slots_horz*32;
+	const int MAX_HEIGHT = slots_vert*32;
+
+	m_pkContainerWnd->Resize(MAX_WIDTH+slots_horz/2, MAX_HEIGHT+slots_vert/2);
+
+	int bdsize = m_pkContainerWnd->GetSkin()->m_unBorderSize; 
+	
+	Rect rcInventory = m_pkInventoryWnd->GetScreenRect();
+	m_pkContainerWnd->SetPos(rcInventory.Left - MAX_WIDTH - bdsize, 
+		rcInventory.Bottom - MAX_HEIGHT - bdsize - 8 /*no all is opaque*/, true, true);
+
+	g_kMistClient.GetWnd("ContainerCloseButton")->SetPos(MAX_WIDTH, -20, false, true);
+	g_kMistClient.GetWnd("ContainerCloseButton")->Show();
+
+	int current_slot_x=0, current_slot_y=0;
+	
+	for(list<ZGuiWnd*>::iterator it=kChilds.begin(); it!=kChilds.end(); it++)
+	{
+		string strName = (*it)->GetName();
+
+		if(strName.find("CSlotBkLabel_") != string::npos)
+		{	
+			int x = current_slot_x * 32 + current_slot_x / 3;
+			int y = current_slot_y * 32 + current_slot_y / 3;
+			(*it)->SetPos(x, y, false, true);
+
+			current_slot_x += 3;
+
+			if(current_slot_y > slots_vert)
+			{
+				(*it)->Hide();
+			}
+			else
+			{
+				(*it)->Show();
+				(*it)->SetZValue(1);
+
+				Rect rc = (*it)->GetWndRect();
+
+				int w = rc.Width();
+				int h = rc.Height();
+
+				if(rc.Right > MAX_WIDTH)  w = MAX_WIDTH-rc.Left;
+				if(rc.Bottom > MAX_HEIGHT) h = MAX_HEIGHT-rc.Top;
+
+				(*it)->Resize(w, h);
+			}
+
+			if(current_slot_x > slots_horz)
+			{
+				current_slot_x = 0;
+				current_slot_y += 3;
+			}
+		}
+	}
+}
+
+void InventoryDlg::UpdateInventory(vector<MLContainerInfo>& vkItemList)
 {
 	m_iHighestZ = 1000;
-	m_iMoveSlot = -1;
+	m_kMoveSlot.m_iIndex = -1;
 
 	// Remove all slots.
 	for(int i=0; i<m_vkInventoryItemList.size(); i++)
@@ -215,8 +349,8 @@ void InventoryDlg::Update(vector<MLContainerInfo>& vkItemList)
 	for(int i=0; i<vkItemList.size(); i++)
 	{
 		sprintf(szItemName, "InventoryItemLabel%i", i);
-		x = UPPER_LEFT.x + vkItemList[i].m_cItemX * ICON_WIDTH + vkItemList[i].m_cItemX;
-		y = UPPER_LEFT.y + vkItemList[i].m_cItemY * ICON_HEIGHT + vkItemList[i].m_cItemY;
+		x = UPPER_LEFT_INVENTORY.x + vkItemList[i].m_cItemX * ICON_WIDTH + vkItemList[i].m_cItemX;
+		y = UPPER_LEFT_INVENTORY.y + vkItemList[i].m_cItemY * ICON_HEIGHT + vkItemList[i].m_cItemY;
 		w = vkItemList[i].m_cItemW * ICON_WIDTH;
 		h = vkItemList[i].m_cItemH * ICON_HEIGHT;
 
@@ -245,61 +379,215 @@ void InventoryDlg::Update(vector<MLContainerInfo>& vkItemList)
 		kNewSlot.pkWnd = pkNewSlot;
 		kNewSlot.iItemID = vkItemList[i].m_iItemID;
 		m_vkInventoryItemList.push_back(kNewSlot);
+	}	
+}
 
+void InventoryDlg::UpdateContainer(vector<MLContainerInfo>& vkItemList)
+{
+	//m_iHighestZ = 1000;
+	//m_iMoveSlot = -1;
+
+	// Remove all slots.
+	for(int i=0; i<m_vkContainerItemList.size(); i++)
+	{
+		ZGuiWnd* pkWnd = m_vkContainerItemList[i].pkWnd;
+		delete pkWnd->GetSkin();
+		g_kMistClient.m_pkGui->UnregisterWindow( pkWnd );
 	}
+
+	m_vkContainerItemList.clear();
+
+	// Rebuild slotlist.
+	int x,y,w,h;
+	char szItemName[128];
+	for(int i=0; i<vkItemList.size(); i++)
+	{
+		sprintf(szItemName, "ContainerItemLabel%i", i);
+		x = UPPER_LEFT_CONTAINER.x + vkItemList[i].m_cItemX * ICON_WIDTH + vkItemList[i].m_cItemX;
+		y = UPPER_LEFT_CONTAINER.y + vkItemList[i].m_cItemY * ICON_HEIGHT + vkItemList[i].m_cItemY;
+		w = vkItemList[i].m_cItemW * ICON_WIDTH;
+		h = vkItemList[i].m_cItemH * ICON_HEIGHT;
+
+		ZGuiWnd* pkNewSlot = g_kMistClient.CreateWnd(Label, 
+			szItemName, "", m_pkContainerWnd, x, y, w, h, 0);
+		pkNewSlot->Show();
+		pkNewSlot->SetZValue(12121);
+
+		//if(g_kMistClient.m_pkGui->m_bMouseLeftPressed)
+		//{
+		//	if(m_iItemUnderCursor == vkItemList[i].m_iItemID)
+		//	{
+		//		float fTime = (float) SDL_GetTicks() / 1000.0f;
+		//		m_fPickUpTimer = fTime;
+		//		pkNewSlot->Hide();
+		//	}
+		//}
+
+		pkNewSlot->SetSkin(new ZGuiSkin());
+		pkNewSlot->GetSkin()->m_iBkTexID = m_pkTexMan->Load(
+			string(string("data/textures/gui/items/") + vkItemList[i].m_strIcon).c_str(), 0) ;	
+
+		if(m_iSelItemID == vkItemList[i].m_iItemID)
+			pkNewSlot->GetSkin()->m_unBorderSize = 2;
+
+		ITEM_SLOT kNewSlot;
+		kNewSlot.pkWnd = pkNewSlot;
+		kNewSlot.iItemID = vkItemList[i].m_iItemID;
+		m_vkContainerItemList.push_back(kNewSlot);
+	}
+
+	m_pkContainerWnd->SortChilds();
 }
 
 // When dropping a item, check for collision, reposition it and update the inventory.
 void InventoryDlg::OnDropItem()
 {
-	Rect rcMain = m_vkInventoryItemList[m_iMoveSlot].pkWnd->GetWndRect();
-	Rect rc = m_vkInventoryItemList[m_iMoveSlot].pkWnd->GetWndRect();
+	Point upper_left;
+	Rect rcMain, rc, rcScreenMain, rcDropWnd;
 
-	Rect rcScreenMain = m_pkInventoryWnd->GetScreenRect();
-	Rect rcDropWnd = m_vkInventoryItemList[m_iMoveSlot].pkWnd->GetScreenRect();
+	int iSlotsHorz, iSlotsVert;
+
+	if(m_kMoveSlot.bIsInventoryItem)
+	{
+		upper_left = UPPER_LEFT_INVENTORY;
+
+		rcMain = m_vkInventoryItemList[m_kMoveSlot.m_iIndex].pkWnd->GetWndRect();
+		rc = m_vkInventoryItemList[m_kMoveSlot.m_iIndex].pkWnd->GetWndRect();
+		rcScreenMain = m_pkInventoryWnd->GetScreenRect();
+		rcDropWnd = m_vkInventoryItemList[m_kMoveSlot.m_iIndex].pkWnd->GetScreenRect();
+
+		iSlotsHorz = SLOTTS_HORZ_INVENTORY;
+		iSlotsVert = SLOTTS_VERT_INVENTORY;
+	}
+	else
+	{
+		upper_left = UPPER_LEFT_CONTAINER;
+
+		rcMain = m_vkContainerItemList[m_kMoveSlot.m_iIndex].pkWnd->GetWndRect();
+		rc = m_vkContainerItemList[m_kMoveSlot.m_iIndex].pkWnd->GetWndRect();
+
+		rcScreenMain = m_pkContainerWnd->GetScreenRect();
+		rcDropWnd = m_vkContainerItemList[m_kMoveSlot.m_iIndex].pkWnd->GetScreenRect();
+
+		iSlotsHorz = m_iSlotsHorzContainer;
+		iSlotsVert = m_iSlotsVertContainer;
+	}
 
 	if(!rcScreenMain.Inside(rcDropWnd.Left, rcDropWnd.Top))
 	{
-		g_kMistClient.SendMoveItem(m_vkInventoryItemList[m_iMoveSlot].iItemID, -1, -1, -1);
-
-		for(int i=0; i<m_vkInventoryItemList.size(); i++)
+		if(m_kMoveSlot.bIsInventoryItem)
 		{
-			if(m_iMoveSlot == i)
+			if(m_pkContainerWnd && m_pkContainerWnd->IsVisible() && 
+				m_pkContainerWnd->GetScreenRect().Inside(rcDropWnd.Left, rcDropWnd.Top))
 			{
-				m_vkInventoryItemList[i].pkWnd->Hide();				
-				m_iMoveSlot = -1;
-				break;
+				if(Entity* pkCharacter = g_kMistClient.m_pkEntityManager->GetEntityByID(g_kMistClient.m_iCharacterID))
+				{
+					if(P_CharacterProperty* pkCharProp = (P_CharacterProperty*)pkCharacter->GetProperty("P_CharacterProperty"))
+					{
+						g_kMistClient.SendMoveItem(
+							m_vkInventoryItemList[m_kMoveSlot.m_iIndex].iItemID,m_iActiveContainerID,-1,-1);
+						m_vkInventoryItemList[m_kMoveSlot.m_iIndex].pkWnd->Hide();	
+						m_kMoveSlot.m_iIndex = -1;
+						return;
+					}
+				}
+			}
+			else
+			{
+				g_kMistClient.SendMoveItem(m_vkInventoryItemList[m_kMoveSlot.m_iIndex].iItemID, -1, -1, -1);
+
+				for(int i=0; i<m_vkInventoryItemList.size(); i++)
+				{
+					if(m_kMoveSlot.m_iIndex == i)
+					{
+						m_vkInventoryItemList[i].pkWnd->Hide();				
+						m_kMoveSlot.m_iIndex = -1;
+						break;
+					}
+				}
+			}
+		}
+		else
+		{
+			if(m_pkInventoryWnd->GetScreenRect().Inside(rcDropWnd.Left, rcDropWnd.Top))
+			{
+				if(Entity* pkCharacter = g_kMistClient.m_pkEntityManager->GetEntityByID(g_kMistClient.m_iCharacterID))
+				{
+					if(P_CharacterProperty* pkCharProp = (P_CharacterProperty*)pkCharacter->GetProperty("P_CharacterProperty"))
+					{
+						g_kMistClient.SendMoveItem(
+							m_vkContainerItemList[m_kMoveSlot.m_iIndex].iItemID,pkCharProp->m_iInventory,-1,-1);
+						m_vkContainerItemList[m_kMoveSlot.m_iIndex].pkWnd->Hide();	
+						m_kMoveSlot.m_iIndex = -1;
+						return;
+					}
+				}
+			}
+			else
+			{
+				g_kMistClient.SendMoveItem(m_vkContainerItemList[m_kMoveSlot.m_iIndex].iItemID, -1, -1, -1);
+
+				for(int i=0; i<m_vkContainerItemList.size(); i++)
+				{
+					if(m_kMoveSlot.m_iIndex == i)
+					{
+						m_vkContainerItemList[i].pkWnd->Hide();				
+						m_kMoveSlot.m_iIndex = -1;
+						break;
+					}
+				}
 			}
 		}
 	}
 	else
 	{
-		if(rc.Left < UPPER_LEFT.x) rc.Left = UPPER_LEFT.x;
-		if(rc.Top < UPPER_LEFT.y) rc.Top = UPPER_LEFT.y;
+		if(rc.Left < upper_left.x) rc.Left = upper_left.x;
+		if(rc.Top < upper_left.y) rc.Top = upper_left.y;
 
 		int slot_w = rc.Width() / ICON_WIDTH;
 		int slot_h = rc.Height() / ICON_HEIGHT;
 
-		int slot_x = (rc.Left - UPPER_LEFT.x) / ICON_WIDTH;
-		int slot_y = (rc.Top  - UPPER_LEFT.y) / ICON_HEIGHT;
+		int slot_x = (rc.Left - upper_left.x) / ICON_WIDTH;
+		int slot_y = (rc.Top  - upper_left.y) / ICON_HEIGHT;
 
-		if(slot_x > SLOTTS_HORZ-slot_w) slot_x = SLOTTS_HORZ-slot_w;
-		if(slot_y > SLOTTS_VERT-slot_h) slot_y = SLOTTS_VERT-slot_h;
+		if(slot_x > iSlotsHorz-slot_w) slot_x = iSlotsHorz - slot_w;
+		if(slot_y > iSlotsVert-slot_h) slot_y = iSlotsVert - slot_h;
 
-		int x = UPPER_LEFT.x + slot_x * ICON_WIDTH + slot_x;
-		int y = UPPER_LEFT.y + slot_y * ICON_HEIGHT + slot_y;
+		int x = upper_left.x + slot_x * ICON_WIDTH + slot_x;
+		int y = upper_left.y + slot_y * ICON_HEIGHT + slot_y;
 
-		bool bCollision = TestForCollision(m_iMoveSlot);
+		printf("slot_x = %i\n", slot_x);
+		printf("slot_y = %i\n", slot_y);
+
+		bool bCollision = TestForCollision(m_kMoveSlot.m_iIndex, m_kMoveSlot.bIsInventoryItem);
 
 		if(bCollision == false)
 		{
-			m_vkInventoryItemList[m_iMoveSlot].pkWnd->SetPos(x, y, false, true);
-			g_kMistClient.SendMoveItem(m_vkInventoryItemList[m_iMoveSlot].iItemID, -1, slot_x, slot_y);
+			if(m_kMoveSlot.bIsInventoryItem)
+			{
+				m_vkInventoryItemList[m_kMoveSlot.m_iIndex].pkWnd->SetPos(x, y, false, true);
+				g_kMistClient.SendMoveItem(m_vkInventoryItemList[m_kMoveSlot.m_iIndex].iItemID, 
+					-1, slot_x, slot_y);
+			}
+			else
+			{
+				m_vkContainerItemList[m_kMoveSlot.m_iIndex].pkWnd->SetPos(x, y, false, true);
+				g_kMistClient.SendMoveItem(m_vkContainerItemList[m_kMoveSlot.m_iIndex].iItemID, 
+					-1, slot_x, slot_y);
+			}
 		}
 		else
 		{
-			m_vkInventoryItemList[m_iMoveSlot].pkWnd->SetPos(m_kPosBeforeMove.x, 
-				m_kPosBeforeMove.y, false, true);		
+			if(m_kMoveSlot.bIsInventoryItem)
+			{
+				m_vkInventoryItemList[m_kMoveSlot.m_iIndex].pkWnd->SetPos(m_kPosBeforeMove.x, 
+					m_kPosBeforeMove.y, false, true);		
+			}
+			else
+			{
+				m_vkContainerItemList[m_kMoveSlot.m_iIndex].pkWnd->SetPos(m_kPosBeforeMove.x, 
+					m_kPosBeforeMove.y, false, true);	
+			}
 		}
 	}
 }
@@ -314,103 +602,53 @@ void InventoryDlg::CloseContainerWnd()
 	}
 }
 
-void InventoryDlg::OpenContainerWnd()
+
+
+bool InventoryDlg::TestForCollision(int iTestSlot, bool bInventory)
 {
-	m_pkContainerWnd = g_kMistClient.GetWnd("ContainerWnd");
-	m_pkContainerWnd->Show();
+	Point test_slot, test_size;
 
-	int slots_x = 4;
-	int slots_y = 8;
-
-	CreateContainerGrid(slots_x, slots_y);
-
-	m_pkContainerWnd->m_bIncludeBorder = true;
-	m_pkContainerWnd->SetZValue(22);
-	g_kMistClient.GetWnd("ContainerCloseButton")->SetZValue(44);
-	
-	g_kMistClient.m_pkGui->PlaceWndFrontBack(m_pkContainerWnd, true); 
-
-	g_kMistClient.m_pkGui->SetFocus(m_pkContainerWnd, false);
-}
-
-void InventoryDlg::CreateContainerGrid(int slots_horz, int slots_vert)
-{
-	list<ZGuiWnd*> kChilds;
-	m_pkContainerWnd->GetChildrens(kChilds);
-
-	const int MAX_WIDTH = slots_horz*32;
-	const int MAX_HEIGHT = slots_vert*32;
-
-	m_pkContainerWnd->Resize(MAX_WIDTH+slots_horz/2, MAX_HEIGHT+slots_vert/2);
-
-	int bdsize = m_pkContainerWnd->GetSkin()->m_unBorderSize; 
-	
-	Rect rcInventory = m_pkInventoryWnd->GetScreenRect();
-	m_pkContainerWnd->SetPos(rcInventory.Left - MAX_WIDTH - bdsize, 
-		rcInventory.Top + bdsize, true, true);
-
-	g_kMistClient.GetWnd("ContainerCloseButton")->SetPos(MAX_WIDTH, -20, false, true);
-	g_kMistClient.GetWnd("ContainerCloseButton")->Show();
-
-	int current_slot_x=0, current_slot_y=0;
-	
-	for(list<ZGuiWnd*>::iterator it=kChilds.begin(); it!=kChilds.end(); it++)
+	if(bInventory)
 	{
-		string strName = (*it)->GetName();
-
-		if(strName.find("CSlotBkLabel_") != string::npos)
-		{	
-			int x = current_slot_x * 32;
-			int y = current_slot_y * 32;
-			(*it)->SetPos(x, y, false, true);
-
-			current_slot_x += 3;
-
-			if(current_slot_y > slots_vert)
-			{
-				(*it)->Hide();
-			}
-			else
-			{
-				(*it)->Show();
-
-				Rect rc = (*it)->GetWndRect();
-
-				int w = rc.Width();
-				int h = rc.Height();
-
-				if(rc.Right > MAX_WIDTH)  w = MAX_WIDTH-rc.Left+slots_horz/2;
-				if(rc.Bottom > MAX_HEIGHT) h = MAX_HEIGHT-rc.Top+slots_vert/2;
-
-				(*it)->Resize(w, h);
-			}
-
-			if(current_slot_x > slots_horz)
-			{
-				current_slot_x = 0;
-				current_slot_y += 3;
-			}
-		}
+		test_slot = SlotFromWnd(m_vkInventoryItemList[iTestSlot].pkWnd, true);
+		test_size = SlotSizeFromWnd(m_vkInventoryItemList[iTestSlot].pkWnd);
 	}
-}
-
-bool InventoryDlg::TestForCollision(int iTestSlot)
-{
-	Point test_slot = SlotFromWnd(m_vkInventoryItemList[iTestSlot].pkWnd);
-	Point test_size = SlotSizeFromWnd(m_vkInventoryItemList[iTestSlot].pkWnd);
+	else
+	{
+		test_slot = SlotFromWnd(m_vkContainerItemList[iTestSlot].pkWnd, false);
+		test_size = SlotSizeFromWnd(m_vkContainerItemList[iTestSlot].pkWnd);
+	}
 
 	vector<Point> kSlotsTaken;
 
-	for(int i=0; i<m_vkInventoryItemList.size(); i++)
+	if(bInventory)
 	{
-		if( i != iTestSlot)
+		for(int i=0; i<m_vkInventoryItemList.size(); i++)
 		{
-			Point kSlot = SlotFromWnd(m_vkInventoryItemList[i].pkWnd);
-			Point kSlotSize = SlotSizeFromWnd(m_vkInventoryItemList[i].pkWnd);
+			if( i != iTestSlot)
+			{
+				Point kSlot = SlotFromWnd(m_vkInventoryItemList[i].pkWnd, true);
+				Point kSlotSize = SlotSizeFromWnd(m_vkInventoryItemList[i].pkWnd);
 
-			for(int y=0; y<kSlotSize.y; y++)
-				for(int x=0; x<kSlotSize.x; x++)
-					kSlotsTaken.push_back(Point(kSlot.x+x, kSlot.y+y));
+				for(int y=0; y<kSlotSize.y; y++)
+					for(int x=0; x<kSlotSize.x; x++)
+						kSlotsTaken.push_back(Point(kSlot.x+x, kSlot.y+y));
+			}
+		}
+	}
+	else
+	{
+		for(int i=0; i<m_vkContainerItemList.size(); i++)
+		{
+			if( i != iTestSlot)
+			{
+				Point kSlot = SlotFromWnd(m_vkContainerItemList[i].pkWnd, false);
+				Point kSlotSize = SlotSizeFromWnd(m_vkContainerItemList[i].pkWnd);
+
+				for(int y=0; y<kSlotSize.y; y++)
+					for(int x=0; x<kSlotSize.x; x++)
+						kSlotsTaken.push_back(Point(kSlot.x+x, kSlot.y+y));
+			}
 		}
 	}
 
@@ -430,10 +668,10 @@ bool InventoryDlg::TestForCollision(int iTestSlot)
 
 }
 
-Point InventoryDlg::SlotFromWnd(ZGuiWnd* pkWnd)
+Point InventoryDlg::SlotFromWnd(ZGuiWnd* pkWnd, bool bInventory)
 {
 	Rect rcTest = pkWnd->GetScreenRect();
-	return SlotFromScreenPos(rcTest.Left, rcTest.Top);
+	return SlotFromScreenPos(rcTest.Left, rcTest.Top, bInventory);
 }
 
 Point InventoryDlg::SlotSizeFromWnd(ZGuiWnd* pkWnd)
@@ -442,9 +680,20 @@ Point InventoryDlg::SlotSizeFromWnd(ZGuiWnd* pkWnd)
 	return Point(rcTest.Width()/ICON_WIDTH, rcTest.Height()/ICON_HEIGHT);
 }
 
-Point InventoryDlg::SlotFromScreenPos(int x, int y)
+Point InventoryDlg::SlotFromScreenPos(int x, int y, bool bInventory)
 {
-	int slot_x = (x - m_pkInventoryWnd->GetScreenRect().Left - UPPER_LEFT.x) / ICON_WIDTH; 
-	int slot_y = (y - m_pkInventoryWnd->GetScreenRect().Top - UPPER_LEFT.y) / ICON_HEIGHT;
+	int slot_x, slot_y;
+
+	if(bInventory)
+	{
+		slot_x = (x - m_pkInventoryWnd->GetScreenRect().Left - UPPER_LEFT_INVENTORY.x) / ICON_WIDTH; 
+		slot_y = (y - m_pkInventoryWnd->GetScreenRect().Top - UPPER_LEFT_INVENTORY.y) / ICON_HEIGHT;
+	}
+	else
+	{
+		slot_x = (x - m_pkContainerWnd->GetScreenRect().Left - UPPER_LEFT_CONTAINER.x) / ICON_WIDTH; 
+		slot_y = (y - m_pkContainerWnd->GetScreenRect().Top - UPPER_LEFT_CONTAINER.y) / ICON_HEIGHT;
+	}
+
 	return Point(slot_x, slot_y);
 }
