@@ -286,6 +286,8 @@ void ZeroFps::CreateMaterials()
 
 void ZeroFps::UpdateDevPages()
 {
+	m_pkNetWork->DevShow_ClientConnections();
+
 	DevPrintf("conn","Num of Clients: %d", m_pkNetWork->GetNumOfClients());
 	if(m_bServerMode) 
 	{
@@ -465,12 +467,6 @@ void ZeroFps::Run_Client()
 		m_pkAudioSystem->SetListnerPosition(m_kRenderCamera[0]->GetPos(),m_kRenderCamera[0]->GetRotM());
 	//m_pkAudioSystem->SetListnerPosition(m_pkCamera->GetPos(),m_pkCamera->GetRotM());
 	m_pkAudioSystem->Update();
-
-	
-	
-
-	m_pkNetWork->DevShow_ClientConnections();
-
 }
 
 void ZeroFps::Update_System()

@@ -25,6 +25,8 @@ void RemoteNode::Clear()
 	m_kAddress.host		=	INADDR_NONE;
 	m_kAddress.port		=  0;
 
+	m_iReliableSendOrder = 0;
+
 	m_iNumOfPacketsSent	= 0;
 	m_iNumOfPacketsRecv  = 0;
 	m_iNumOfBytesSent    = 0;
@@ -49,6 +51,10 @@ void RemoteNode::Clear()
 	m_kRecvSizeGraph.SetSize(100,100,25);
 	m_kRecvSizeGraph.SetBackColor(0.8, 0.8, 0.8);
 	m_kRecvGraph.SetDrawColor(0,1,0);
+
+	for(int i=0; i<ZF_NET_MAXREL; i++) {
+		m_akRelPack[i].m_kHeader.m_iPacketType = ZF_NETTYPE_NONE;
+		}
 }
 
 void RemoteNode::SetAddress(IPaddress* pkAddress)
@@ -57,7 +63,29 @@ void RemoteNode::SetAddress(IPaddress* pkAddress)
 
 }
 
+int RemoteNode::GetFreeRelStore()
+{
+	for(int i=0; i<ZF_NET_MAXREL; i++) {
+		if(m_akRelPack[i].m_kHeader.m_iPacketType == ZF_NETTYPE_NONE)
+			return i;
+		}
 
+	return -1;
+}
+
+void RemoteNode::FreeRelStore(ZFNetPacketData* pkRel)
+{
+	pkRel->m_kHeader.m_iPacketType = ZF_NETTYPE_NONE;
+}
+
+void RemoteNode::FreeRelStore(int iRelID)
+{
+	for(int i=0; i<ZF_NET_MAXREL; i++) 
+	{
+		if(m_akRelPack[i].m_kHeader.m_iOrder == iRelID)
+			m_akRelPack[i].m_kHeader.m_iPacketType = ZF_NETTYPE_NONE;
+	}
+}
 
 
 

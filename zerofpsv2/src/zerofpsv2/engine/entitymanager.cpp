@@ -729,7 +729,7 @@ void EntityManager::PackToClient(int iClient, vector<Entity*> kObjects,bool bZon
 			m_pkNetWork->Send2(&m_OutNP);
 
 			m_OutNP.Clear();
-			m_OutNP.m_kData.m_kHeader.m_iPacketType = ZF_NETTYPE_UNREL;
+			m_OutNP.m_kData.m_kHeader.m_iPacketType = ZF_NETTYPE_UNREL;	// ZF_NETTYPE_UNREL ZF_NETTYPE_REL
 			m_OutNP.Write((char) ZFGP_OBJECTSTATE);
 			m_OutNP.TargetSetClient(iClient);
 			iPacketSize = 0;
@@ -918,7 +918,7 @@ void EntityManager::PackToClients()
 	{
 		if(m_pkZeroFps->m_kClient[iClient].m_pkObject == NULL)	continue;
 		m_OutNP.Clear();
-		m_OutNP.m_kData.m_kHeader.m_iPacketType = ZF_NETTYPE_UNREL;
+		m_OutNP.m_kData.m_kHeader.m_iPacketType = ZF_NETTYPE_UNREL;	// ZF_NETTYPE_UNREL ZF_NETTYPE_REL
 		m_OutNP.TargetSetClient(iClient);
 
 		// Pack And Send unload list to client

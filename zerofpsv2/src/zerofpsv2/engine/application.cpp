@@ -53,7 +53,7 @@ void Application::SendAppMessage(NetPacket* pkNet)
 {
 	NetPacket kNp;
 	kNp.Clear();
-	kNp.m_kData.m_kHeader.m_iPacketType = ZF_NETTYPE_UNREL;
+	kNp.m_kData.m_kHeader.m_iPacketType = ZF_NETTYPE_UNREL;	// ZF_NETTYPE_UNREL	ZF_NETTYPE_REL
 	kNp.Write((char) ZPGP_SS_APP);
 	
 	kNp.WriteNp(pkNet);

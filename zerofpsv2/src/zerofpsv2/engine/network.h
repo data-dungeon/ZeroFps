@@ -18,6 +18,7 @@ using namespace std;
 #define MAX_NETWORKNAME					16					
 
 // Diffrent types of messages the network sends.
+#define ZF_NETTYPE_NONE					0	// A Unspec Packet.
 #define ZF_NETTYPE_CONTROL				1	// A Connection controll message
 #define ZF_NETTYPE_UNREL				2	// Unrel message that ZeroFps handles.
 #define ZF_NETTYPE_REL					3	// Rel Udp message that ZeroFps handles.
@@ -32,12 +33,15 @@ using namespace std;
 #define ZF_NETCONTROL_CLIENTID		8	//
 #define ZF_NETCONTROL_NETSTRINGS		9	//
 #define ZF_NETCONTROL_REQNETSTRING	10	//
+#define ZF_NETCONTROL_ACKREL			15	// Ack that we got a rel pack.	
 
 #define MAX_NET_CLIENTS					4		// Max number of clients (nodes).
 #define ZF_NET_NOCLIENT					-1		// ID for a non client.
 #define ZF_NET_ALLCLIENT				-2		// ID for a all clients.
 
 #define ZF_NET_CONNECTION_TIMEOUT	45	// Timeout connection if no message from a client after this time (sec).
+
+#define ZF_NET_MAXREL					20
 
 // Status of a remote node.
 enum ClientConnectStatus
@@ -62,6 +66,8 @@ public:
 	void SetAddress(IPaddress* pkAddress);			// Sets address of node.
 	void Clear();
 
+	int				m_iReliableSendOrder;
+
 	// Stats
 	int				m_iNumOfPacketsSent;				// Total num of packets sent (Any type).
 	int				m_iNumOfPacketsRecv;				// Total num of packets recv (Any type).
@@ -85,8 +91,14 @@ public:
 
 	unsigned int	m_iCurrentObject;						//current position in zoneobject list, for packtoclient
 	
+	ZFNetPacketData	m_akRelPack[ZF_NET_MAXREL];
+	float					m_akRelPackSendTime[ZF_NET_MAXREL];
+	int					m_aiRelPackSize[ZF_NET_MAXREL];
 
-	deque<ZFNetPacketData>	m_RelPackages;
+	int GetFreeRelStore();
+	void FreeRelStore(ZFNetPacketData* pkRel);
+	void FreeRelStore(int iRelID);
+
 };
 
 
@@ -200,6 +212,8 @@ public:
 	// Send
 	bool SendRaw(NetPacket* pkNetPacket);
 	bool Send2(NetPacket* pkNetPacket);
+	void SendUDP(ZFNetPacketData* pkData, int iSize, IPaddress* pkIp);
+
 //	void SendToAllClients(NetPacket* pkNetPacket);
 //	void SendToClient(int iClient, NetPacket* pkNetPacket);
 
