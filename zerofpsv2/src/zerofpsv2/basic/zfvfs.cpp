@@ -108,7 +108,7 @@ bool ZFVFileSystem::StartUp()
 		szDiv[1] = 0;
 
 	AddRootPath(szWorkDir);
-	AddRootPath("h:/");
+//	AddRootPath("h:/");
 	////////////////////////////////////////////////// [/zeb]
 
 	return true;

@@ -35,42 +35,63 @@ PlayerDatabase::PlayerDatabase()
 
 bool PlayerDatabase::CreatePlayer(string strPlayer,string strPassword)
 {
+	// First check so there is not already a player with this name.
+	if(LoginExist(strPlayer)) {
+		cout<< "The Login already '" << strPlayer << "' exist" <<endl;	
+		return false;
+		}
+	
 	ZFVFile kFile;
-
 	string strPlayerDataFile = m_strPlayerDirectory + strPlayer + "/playerdata.dat"; 
 	
-	if(!kFile.Open(strPlayerDataFile.c_str(),0,false))
+	if(!kFile.Open(strPlayerDataFile.c_str(),0,true))
 	{
-		//cout<<"player does not exist <-- this is actualy good =)"<<endl;	
-		
-		if(!kFile.Open(strPlayerDataFile.c_str(),0,true))
-		{
-			cout<<"Error creating player file "<<strPlayerDataFile<<endl;
-			return false;
-		}
-		
-		//writing password
-		char czPwd[128];
-		strcpy(czPwd,strPassword.c_str());
-		kFile.Write(czPwd,128,1);
-		
-		kFile.Close();
-		return true;
-	}
-	else
-	{	
-		cout<<"player already exist"<<endl;	
-		kFile.Close();
+		cout<<"Error creating player file " << strPlayerDataFile << endl;
 		return false;
 	}
+	
+	//writing password
+	char czPwd[128];
+	strcpy(czPwd,strPassword.c_str());
+	kFile.Write(czPwd,128,1);
+	
+	kFile.Close();
+	return true;
 }
+
+vector<string> PlayerDatabase::GetLoginCharacters(string strLogin)
+{
+	vector<string>	kCharNames;
+	string strPlayerDataFile = "bin/" + m_strPlayerDirectory + strLogin; 
+
+	ZFVFileSystem* pkVFS	= static_cast<ZFVFileSystem*>(g_ZFObjSys.GetObjectPtr("ZFVFileSystem"));	
+	pkVFS->ListDir(&kCharNames, strPlayerDataFile, true);
+
+/*	cout << strPlayerDataFile <<endl;
+	for(int i=0; i<kCharNames.size(); i++)
+		cout << "Name: " << i << " " <<  kCharNames[i] << endl;*/
+
+	return kCharNames;
+}
+
+bool PlayerDatabase::LoginExist(string strLogin)
+{
+	ZFVFile kFile;
+	string strPlayerDataFile = m_strPlayerDirectory + strLogin + "/playerdata.dat"; 
+	cout << "strPlayerDataFile " << strPlayerDataFile << endl;
+
+	if(!kFile.Open(strPlayerDataFile.c_str(),0,false))
+		return false;
+
+	return true;
+}
+
 
 bool PlayerDatabase::Login(string strPlayer,string strPassword)
 {
 	if(VerifyPlayer(strPlayer, strPassword)) {
 		m_strActiveUsers.push_back( strPlayer );
 
-		cout << "Login: " << strPlayer << endl;
 		return true;
 		}
 

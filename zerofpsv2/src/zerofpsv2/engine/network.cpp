@@ -474,11 +474,11 @@ void NetWork::HandleControlMessage(NetPacket* pkNetPacket)
 				}
 			else {
 				if(! m_pkZeroFps->PreConnect(pkNetPacket->m_kAddress, szLogin, szPass, szText)) {
-					m_pkConsole->Printf("Join Ignored: To many connected clients.");
+					m_pkConsole->Printf("Join Ignored: Preconnect no.");
 					kNetPRespons.m_kData.m_kHeader.m_iPacketType = ZF_NETTYPE_CONTROL;
 					//kNetPRespons.Write((unsigned char) ZF_NETTYPE_CONTROL);
 					kNetPRespons.Write((unsigned char) ZF_NETCONTROL_JOINNO);
-					kNetPRespons.Write_Str("There server is full.");
+					kNetPRespons.Write_Str("Wrong login and/or password.");
 					kNetPRespons.m_kAddress = pkNetPacket->m_kAddress;
 					SendRaw(&kNetPRespons);
 					break;

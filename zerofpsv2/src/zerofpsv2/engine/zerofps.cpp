@@ -264,7 +264,7 @@ void ZeroFps::Run_EngineShell()
 	DevPrintf("common","Num of Clients: %d", m_pkNetWork->GetNumOfClients());
 	if(m_bServerMode) {
 		for(int i=0; i<4; i++) {
-			DevPrintf("common","Client[%d]: %s", i, m_kClient[i].m_strName.c_str());
+			DevPrintf("common","Client[%d]: %s", i, m_kClient[i].m_strLogin.c_str());
 			// Server gives upp object a time after connection
 			
 			if(m_kClient[i].m_pkObject) {
@@ -955,7 +955,7 @@ void ZeroFps::RunCommand(int cmdid, const CmdArgument* kCommand)
 	}	
 }
 
-void ZeroFps::PrintToClient(int iConnectionID, char* szMsg)
+void ZeroFps::PrintToClient(int iConnectionID, const char* szMsg)
 {
 	NetPacket kNp;
 	kNp.Clear();
@@ -1143,9 +1143,9 @@ int ZeroFps::Connect(int iConnectionID, char* szLogin, char* szPass)
 
 	m_pkConsole->Printf("ZeroFps::Connect(%d)", iConnectionID);
 
-	char szName[64];
-	sprintf(szName, "Player%d", iConnectionID);
-	m_kClient[iConnectionID].m_strName = szName;
+//	char szName[64];
+//	sprintf(szName, "Player%d", iConnectionID);
+//	m_kClient[iConnectionID].m_strName = szName;
 
 	m_kClient[iConnectionID].m_pkObject = m_pkObjectMan->CreateObject();//m_pkObjectMan->CreateObjectByArchType("ZeroRTSPlayer");
 	assert(m_kClient[iConnectionID].m_pkObject);	

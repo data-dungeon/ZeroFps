@@ -61,6 +61,11 @@ class MistClient :public Application, public ZGuiApp {
 			FID_LOAD,
 			FID_UNLOAD,
 			FID_MASSSPAWN,
+
+			FID_GETCHAR,
+			FID_SELECTCHAR,
+			FID_DELETECHAR,
+			FID_PLAY,
 		};
 
 		//selected character
@@ -157,6 +162,8 @@ class MistClient :public Application, public ZGuiApp {
 //		void SetActiveCaracter(int iCaracter);
 		void SetActiveCaracter(bool bEnabled);
 		
+		void SendOrder(string strOrder);
+
 		//init client
 		void ClientInit();
 		

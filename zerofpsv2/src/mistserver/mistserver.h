@@ -76,6 +76,7 @@ class MistServer :public Application , public ZGuiApp {
 		vector<pair<string,Vector3> >	m_kLocations;
 		
 		PlayerDatabase*	m_pkPlayerDB;
+		bool					m_AcceptNewLogins;
 
 		//edit stuff
 		int		m_iEditMode;

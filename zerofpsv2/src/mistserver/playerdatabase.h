@@ -31,9 +31,11 @@ class PlayerDatabase
 		Entity* CreateCharacter(string strPlayer, string strCharacter);
 		bool SaveCharacter(Entity* pkEntity,string strPlayer);
 		
+		bool LoginExist(string strLogin);
 		bool Login(string strPlayer,string strPassword);
 		void Logout(string strPlayer);
 		
+		vector<string>	GetLoginCharacters(string strLogin);
 		vector<string>	GetUsers();
 
 };

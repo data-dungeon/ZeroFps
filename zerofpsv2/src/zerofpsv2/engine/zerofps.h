@@ -82,9 +82,10 @@ class ENGINE_API ZFClient
 {
 public:
 	float		m_fConnectTime;	
-	string		m_strLogin;			// Login Name
-	string		m_strName;			// Name of player.
-	Entity*		m_pkObject;			// Object used for client.
+	string	m_strLogin;				// Login Name
+	//string	m_strName;				// Name of player.
+	string	m_strCharacter;
+	Entity*	m_pkObject;				// Object used for client.
 	set<int>	m_iActiveZones;		// Activated Zones.
 	set<int>	m_iUnloadZones;		// Activated Zones.	
 };
@@ -274,7 +275,7 @@ class ENGINE_API ZeroFps : public I_ZeroFps {
 		bool ShutDown();
 		bool IsValid();
 
-		void PrintToClient(int iConnectionID, char* szMsg);
+		void PrintToClient(int iConnectionID, const char* szMsg);
 
 		friend class NetWork;
 };

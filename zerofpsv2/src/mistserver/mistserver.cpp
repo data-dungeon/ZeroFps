@@ -69,6 +69,16 @@ MistServer::MistServer(char* aName,int iWidth,int iHeight,int iDepth)
 { 
 	g_ZFObjSys.Log_Create("mistserver");
 	m_pkServerInfoP = NULL;
+
+	m_AcceptNewLogins = true;
+
+	RegisterVariable("s_newlogins",				&m_AcceptNewLogins,			CSYS_BOOL);	
+
+	//register commmands bös
+	Register_Cmd("new",FID_NEW);		
+	Register_Cmd("load",FID_LOAD);		
+	Register_Cmd("save",FID_SAVE);		
+	Register_Cmd("users",FID_USERS);		
 } 
 
 void MistServer::OnInit() 
@@ -104,13 +114,6 @@ void MistServer::Init()
 
 	//click delay
 	m_fClickDelay = pkFps->GetTicks();
-	
-	//register commmands bös
-	Register_Cmd("new",FID_NEW);		
-	Register_Cmd("load",FID_LOAD);		
-	Register_Cmd("save",FID_SAVE);		
-	Register_Cmd("users",FID_USERS);		
-
 	
 	//damn "#¤(="%#( lighting fix bös
 	pkLight->SetLighting(true);
@@ -161,6 +164,8 @@ void MistServer::Init()
 	pkGui->GetToolTip()->SetSkin(kSkin);	
 
 	pkInput->ToggleGrab();
+
+//	m_pkPlayerDB->GetLoginCharacters(string("user"));
 }
 
 void MistServer::RegisterResources()
@@ -648,26 +653,31 @@ bool MistServer::OnPreConnect(IPaddress kRemoteIp, char* szLogin, char* szPass)
 	string strPlayer		= szLogin;
 	string strPasswd		= szPass;
 	string strCharacter	= "mrbad";
-
 	
-	//check valid password
-	if(!m_pkPlayerDB->Login(strPlayer,strPasswd))
-	{
-		cout<<"WARNING: player "<<strPlayer<< " typed wrong password or player dont exist"<<endl;
-		cout<<"         trying to create a new player"<<endl;
-		if(!m_pkPlayerDB->CreatePlayer(strPlayer,strPasswd))
-		{
-			cout<<"ERROR: creating player"<<strPlayer<<endl;
-			
-			//KICKA O DÖDA SPELAREN!!! HÄRR!! FÖR HAN SKREV FAN FEL JÄVLA LÖSEEN DÖÖÖÖÖ!!!
-			
+	// Check that this is a valid login.
+	if(m_pkPlayerDB->LoginExist(strPlayer)) {
+		// Check Password
+		if(!m_pkPlayerDB->Login(strPlayer,strPasswd)) {
+			return false;
+			}
+		// Login Ok.
+
+		}
+	else {
+		/* Failed to find the login. */
+		cout << "Login not found" << endl;
+
+		if(m_AcceptNewLogins) {
+			if(!m_pkPlayerDB->CreatePlayer(strPlayer,strPasswd)) {
+				return false;
+				}
+	
+			m_pkPlayerDB->Login(strPlayer,strPasswd);
+			}
+		else 
 			return false;
 		}
 
-		m_pkPlayerDB->Login(strPlayer,strPasswd);
-	}
-	
-	
 
 	if(m_pkServerInfoP)
 	{
@@ -690,10 +700,8 @@ void MistServer::OnServerClientJoin(ZFClient* pkClient,int iConID, char* szLogin
 	//dessa skall du fixa till vim =D
 	string strPlayer		= szLogin;
 	string strPasswd		= szPass;
-	string strCharacter		= "mrbad";
 
-	cout<<"Client "<<iConID<<" Joined"<<endl;
-
+	pkClient->m_strCharacter = "MrSmile";
 	pkClient->m_strLogin = szLogin;
 
 	//add client control to client object
@@ -708,47 +716,17 @@ void MistServer::OnServerClientJoin(ZFClient* pkClient,int iConID, char* szLogin
 		(P_ClientControl*)pkClient->m_pkObject->AddProperty("P_Primitives3D");
 		return;
 		}
-
-//	pkFps->PrintToClient(iConID, "Welcome to server. Use command 'play' to start game");
-
 	else
 		SpawnPlayer(iConID);
-
-/*	else {
-			//update start locations  
-			UpdateStartLocatons();
-
-			//create player object
-			int iPlayerID  = CreatePlayer(strPlayer.c_str(),strCharacter.c_str(),"Start",iConID);
-			
-			if(iPlayerID == -1)
-			{
-				cout<<"Error creating playercharacter"<<endl;
-			}
-			
-			
-			if(m_pkServerInfoP)
-			{	
-				//wich rights shuld a client have on its player caracter
-				//int playerrights = PR_OWNER|PR_CONTROLS|PR_LOOKAT;
-				
-				m_pkServerInfoP->AddPlayer(iConID,strPlayer.c_str());
-				m_pkServerInfoP->SetCharacterID(iConID,iPlayerID);
-				//m_pkServerInfoP->AddObject(iConID,iPlayerID,playerrights);
-			}
-		}
-		*/
 }
 
 void MistServer::SpawnPlayer(int iConID)
 {
-	string strCharacter		= "mrbad";
-
 	//update start locations  
 	UpdateStartLocatons();
 
 	//create player object
-	int iPlayerID  = CreatePlayer(pkFps->m_kClient[iConID].m_strLogin.c_str(),strCharacter.c_str(),"Start",iConID);
+	int iPlayerID  = CreatePlayer(pkFps->m_kClient[iConID].m_strLogin.c_str(),pkFps->m_kClient[iConID].m_strCharacter.c_str(),"Start",iConID);
 	
 	if(iPlayerID == -1)
 	{
@@ -764,7 +742,6 @@ void MistServer::SpawnPlayer(int iConID)
 		m_pkServerInfoP->SetCharacterID(iConID,iPlayerID);
 		//m_pkServerInfoP->AddObject(iConID,iPlayerID,playerrights);
 	}
-
 }
 
 
@@ -1465,11 +1442,20 @@ void MistServer::HandleOrders()
 		}
       
 		// Play Order
-	  else if ( order->m_sOrderName == "ccPlay" )
+		else if ( order->m_sOrderName == "ccPlay" )
       {
-		cout << "Player: " << order->m_iClientID << " wish to start play" << endl;
-		SpawnPlayer(order->m_iClientID);
+			cout << "Player: " << order->m_iClientID << " wish to start play" << endl;
+			SpawnPlayer(order->m_iClientID);
       }
+		else if ( order->m_sOrderName == "ccCharList" )
+      {
+			cout << "Player: " << order->m_iClientID << " wish to know what char he have." << endl;
+			vector<string> kChars;
+			kChars = m_pkPlayerDB->GetLoginCharacters(string("vim"));
+			for(int i=0; i<kChars.size(); i++)
+				pkFps->PrintToClient(order->m_iClientID, kChars[i].c_str());
+      }
+		
 
 
       // equip

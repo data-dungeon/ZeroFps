@@ -116,7 +116,12 @@ void MistClient::Init()
 	//register commmands bös
 	Register_Cmd("load",FID_LOAD);		
 	Register_Cmd("unload",FID_UNLOAD);			
-	Register_Cmd("play",FID_MASSSPAWN);			
+
+	Register_Cmd("c_getchar",FID_GETCHAR);			
+	Register_Cmd("c_selchar",FID_SELECTCHAR);			
+	Register_Cmd("c_delchar",FID_DELETECHAR);			
+	Register_Cmd("play",FID_PLAY);			
+
 
 	//initiate our camera bös
 	m_pkCamera=new Camera(Vector3(0,0,0),Vector3(0,0,0),70,1.333,0.25,250);	
@@ -632,20 +637,25 @@ void MistClient::RunCommand(int cmdid, const CmdArgument* kCommand)
 		case FID_UNLOAD:
 			break;
 	
-		case FID_MASSSPAWN:
-			cout << "MassSpawn" << endl;
+		case FID_GETCHAR:			SendOrder(string("ccCharList"));	break;
+		case FID_SELECTCHAR:		SendOrder(string("ccPlay"));	break;
+		case FID_DELETECHAR:		SendOrder(string("ccPlay"));	break;
+		case FID_PLAY:				SendOrder(string("ccPlay"));	break;
 
-			ClientOrder order;
-			order.m_sOrderName = "ccPlay";
-			order.m_iClientID = pkFps->GetConnectionID();
-			
-			order.m_iObjectID	= -1;				
-			order.m_iCharacter	= -1;
-			m_pkClientControlP->AddOrder(order);
-			break;
+
 	}
 }
 
+void MistClient::SendOrder(string strOrder)
+{
+	ClientOrder order;
+	order.m_sOrderName	= strOrder;
+	order.m_iClientID		= pkFps->GetConnectionID();
+	order.m_iObjectID		= -1;				
+	order.m_iCharacter	= -1;
+	m_pkClientControlP->AddOrder(order);
+
+}
 
 
 void MistClient::ClientInit()
