@@ -55,7 +55,7 @@ void MistClient::Init()
 	glEnable(GL_LIGHTING );
 	
 	//initiate our camera bös
-	m_pkCamera=new Camera(Vector3(0,10,0),Vector3(0,0,0),85,1.333,0.25,250);	
+	m_pkCamera=new Camera(Vector3(0,0,0),Vector3(0,0,0),90,1.333,0.25,250);	
 	
 	//register actions bös
 	RegisterActions();
@@ -116,6 +116,12 @@ void MistClient::OnIdle()
 
 	pkRender->DrawHM2(m_pkMap2,pkFps->GetCam()->GetPos());	
 
+	Vector3 pos = Get3DMousePos();
+	pos+=pkFps->GetCam()->GetPos();
+	
+	pkRender->Line(pos,pos+Vector3(10,0,0));
+	pkRender->Line(pos,pos+Vector3(0,10,0));	
+	pkRender->Line(pos,pos+Vector3(0,0,10));	
 }
 
 void MistClient::OnSystem() 
@@ -189,8 +195,44 @@ void MistClient::Input()
 		if(pkInput->Pressed(KEY_E))
 			newpos.y-=2*fSpeedScale;
 		
+		//gubbe rotation
+
+		Vector3 rot;
+		rot.Set(0,0,0);
+		
+		if(pkInput->Pressed(KEY_U))
+			rot.x+=fSpeedScale*5;
+		if(pkInput->Pressed(KEY_J))
+			rot.x-=fSpeedScale*5;		
+		if(pkInput->Pressed(KEY_I))
+			rot.y+=fSpeedScale*5;
+		if(pkInput->Pressed(KEY_K))
+			rot.y-=fSpeedScale*5;
+		if(pkInput->Pressed(KEY_O))
+			rot.z+=fSpeedScale*5;
+		if(pkInput->Pressed(KEY_L))
+			rot.z-=fSpeedScale*5;
+
+
 
 		m_pkME->SetLocalPosV(newpos);				
+		m_pkME->RotateLocalRotV(rot);				
+		
+	}
+
+	if(pkInput->Pressed(MOUSELEFT))
+	{
+		Vector3 start = pkFps->GetCam()->GetPos();
+		Vector3 dir = Get3DMousePos();
+	
+		vector<Object*> kObjects;
+		kObjects.clear();
+		
+		pkObjectMan->TestLine(&kObjects,start,dir);
+		
+		cout<<"Objects targeted:"<<kObjects.size()<<endl;
+	
+		
 	}
 
 }
@@ -304,45 +346,8 @@ void MistClient::OnServerStart(void)
 		m_pkCamProp->SetCamera(m_pkCamera);
 		m_pkCamProp->SetType(CAM_TYPE3PERSON);
 	
-		m_pkTestobj->SetWorldPosV(Vector3(0,20,0));
+		m_pkTestobj->SetWorldPosV(Vector3(0,0.1,0));
 	}
-
-
-/*	m_pkME = pkObjectMan->CreateObject();
-	m_pkME->AttachToClosestZone();
-	m_pkME->AddProperty("CameraProperty");
-	
-	CameraProperty* cam = (CameraProperty*)m_pkME->GetProperty("CameraProperty");
-	cam->SetCamera(m_pkCamera);
-	*/
-
-/*	m_pkME = pkObjectMan->CreateObjectByArchType("body");
-	if(m_pkME) {
-		m_pkME->SetWorldPosV(Vector3(0,0,0));
-		m_pkME->AttachToClosestZone();
-	
-		
-		m_pkME->AddProperty("CameraProperty");
-	
-		CameraProperty* cam = (CameraProperty*)m_pkME->GetProperty("CameraProperty");
-		cam->SetCamera(m_pkCamera);
-		
-	}
-
-	Object* pk1 = pkObjectMan->CreateObjectByArchType("ZeroRTSTestBox");
-	if(pk1) {
-		pk1->SetParent(m_pkME);
-		pk1->SetLocalPosV(Vector3(0,0.81,0));
-		//pk1->AttachToClosestZone();		
-	}
-
-	Object* pk2 = pkObjectMan->CreateObjectByArchType("ZeroRTSGun");
-	if(pk2) {
-		pk2->SetParent(pk1);
-		pk2->SetLocalPosV(Vector3(0,0.0,0));
-	}*/
-
-
 	pkObjectMan->Test_CreateZones();
 
 
@@ -397,5 +402,42 @@ void MistClient::OnCommand(int iID, ZGuiWnd *pkMainWnd)
 		pkScript->CallScript("OnClickStats", 0, 0);
 	if(iID == 4)
 		pkScript->CallScript("OnClickMap", 0, 0);
-
 }
+
+
+
+Vector3 MistClient::Get3DMousePos()
+{
+	Vector3 dir;
+	float x,y;		
+	
+	//screen propotions
+	float xp=4;
+	float yp=3;
+	
+	pkInput->UnitMouseXY(x,y);	
+	dir.Set(x*xp,-y*yp,-1.5);
+	dir.Normalize();
+	
+	Matrix4 rm = m_pkCamera->GetRotM();
+	rm.Transponse();
+	dir = rm.VectorTransform(dir);
+	
+/*	Vector3 pos = (dir*1)+m_pkCamera->GetPos();//m_pkTestobj->GetLocalPosV();
+
+	pkRender->Line(pos,pos+Vector3(2,0,0));
+	pkRender->Line(pos,pos+Vector3(0,2,0));	
+	pkRender->Line(pos,pos+Vector3(0,0,2));	
+	pkRender->Sphere(pos,0.1,10,Vector3(0,1,0),false);
+/
+
+	pkRender->Line(m_pkTestobj->GetLocalPosV(),m_pkTestobj->GetLocalPosV()+dir*10);
+
+	pkRender->Line(m_pkTestobj->GetLocalPosV(),m_pkTestobj->GetLocalPosV() + Vector3(10,0,0));
+	pkRender->Line(m_pkTestobj->GetLocalPosV(),m_pkTestobj->GetLocalPosV() + Vector3(0,10,0));	
+	pkRender->Line(m_pkTestobj->GetLocalPosV(),m_pkTestobj->GetLocalPosV() + Vector3(0,0,10));		
+	pkRender->Line(m_pkTestobj->GetLocalPosV(),m_pkTestobj->GetLocalPosV() + Vector3(10,0,10));		
+*/	 
+	return dir;
+}
+
