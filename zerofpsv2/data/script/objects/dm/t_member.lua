@@ -1,0 +1,24 @@
+function Create()
+	
+	InitObject();
+		InitProperty("P_Mad");	
+			InitParameter("m_kMadFile","/data/mad/member.mad");			
+			InitParameter("m_fScale","1");		
+
+		InitProperty("P_DMGun");
+		InitProperty("P_PfPath");
+		InitProperty("P_Track");
+		InitProperty("P_DMCharacter");
+		InitProperty("P_ScriptInterface");
+		InitProperty("P_ShadowBlob");
+
+end
+
+function FirstRun()
+	SISetHeartRate(SIGetSelfID(),1);
+	PlayAnim(GetSelfID(), "idle");
+end
+
+function HeartBeat()
+
+end
