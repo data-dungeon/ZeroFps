@@ -51,9 +51,20 @@ bool ZFBasicFS::RemoveDir(const char* acName)
 	return true;
 }
 
+static void FormatString(char* strPath)
+{
+	int length = strlen(strPath);
+	for(int i=0; i<length; i++)
+	{
+		if(strPath[i] == '\\')
+			strPath[i] = '/';
+	}
+}
+
 char* ZFBasicFS::GetCWD()
 {
 	GetCurrentDirectory(2048, m_acDir);
+	FormatString(m_acDir);
 	return m_acDir;
 }
 

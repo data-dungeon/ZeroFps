@@ -89,6 +89,11 @@ bool ZGuiTextbox::ProcessKBInput(int nKey)
 	if(m_iCursorPos >= m_iCurrMaxText-2 || m_iCursorPos == 0)
 		ResizeTextBuffer(10);
 
+	if(nKey == KEY_LEFT)
+	{
+		m_iCursorPos--;	
+	}
+
 	if(nKey == '\b')
 	{
 		if(m_iCursorPos > 0)
@@ -226,7 +231,7 @@ void ZGuiTextbox::CreateInternalControls()
 	if(m_bMultiLine)
 	{
 		m_pkScrollbarVertical = new ZGuiScrollbar(Rect(x,y,x+w,y+h),
-			this,true,VERT_SCROLLBAR_TEXBOX_ID); 
+			this,true,VERT_SCROLLBAR_TEXBOX_ID);
 		m_pkScrollbarVertical->SetScrollInfo(0,0,1.0f,0); 
 	}
 	else
