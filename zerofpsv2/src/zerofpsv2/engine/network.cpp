@@ -25,13 +25,10 @@ NetWork::NetWork()
 	// Set Default values
 	m_fConnectTimeOut		= ZF_NET_CONNECTION_TIMEOUT;
 	m_iMaxNumberOfNodes	= 0;
-	//m_iNetSpeed				= 4000;
-	//m_iMaxSendSize			= m_iNetSpeed / 20;
 	m_iDefPort				= 4242;
 
 	// Register Variables
 	RegisterVariable("n_connecttimeout",	&m_fConnectTimeOut,	CSYS_FLOAT);	
-	RegisterVariable("n_sendsize",			&m_iMaxSendSize,		CSYS_INT);		
 	
 	// Register Commands
 	Register_Cmd("n_netgmax", FID_NETGMAX);
