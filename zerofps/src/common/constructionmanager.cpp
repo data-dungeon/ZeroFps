@@ -149,7 +149,7 @@ void ConstructionManager::PrintUpgrades(int iTechLevel)
 
 }
 
-bool ConstructionManager::Build(char *szStructureName, Point kSquare)
+bool ConstructionManager::Build(char *szStructureName, Point kSquare, unsigned char ucTeam)
 {
 	const float c_fFailBuildAngle = 20.0f;
 
@@ -164,7 +164,7 @@ bool ConstructionManager::Build(char *szStructureName, Point kSquare)
 		{
 			int width = pkServerUnit->m_kInfo.m_Info2.m_cWidth;
 			int height = pkServerUnit->m_kInfo.m_Info2.m_cHeight;
-
+			pkServerUnit->m_kInfo.m_Info2.m_cTeam = ucTeam;
 			// Kolla först i tile så att rutorna inte är upptagna.
 			bool bOK = true;
 			int x_min = kSquare.x-width/2;
@@ -202,6 +202,7 @@ bool ConstructionManager::Build(char *szStructureName, Point kSquare)
 		pkNewObject->AttachToClosestZone();
 		pkNewObject->SetPos(pos);
 		pkNewObject->SetPos(pos); // måste vara 2 anrop til setpos annars fuckar det upp sig.
+	
 		return true;
 	}
 

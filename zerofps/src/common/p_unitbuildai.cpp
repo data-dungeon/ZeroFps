@@ -102,8 +102,9 @@ AIBase* P_UnitBuildAI::RunUnitCommand(int iCommandID, int iXDestinaton, int iYDe
 	{
 		bool bSuccess = false;
 		bSuccess = ConstructionManager::GetInstance()->Build(m_kStructures[iCommandID].szName, 
-			Point(iXDestinaton, iYDestinaton));
-			cout<<m_kStructures[iCommandID].szName <<endl;
+			Point(iXDestinaton, iYDestinaton), m_pkUnit->m_kInfo.m_Info2.m_cTeam);
+			
+		cout<<m_kStructures[iCommandID].szName <<endl;
 		if(bSuccess)
 		{
 			

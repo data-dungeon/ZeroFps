@@ -34,7 +34,7 @@ struct Structure
 class COMMON_API ConstructionManager  
 {
 public:
-	bool Build(char* szStructureName, Point kSquare);
+	bool Build(char* szStructureName, Point kSquare, unsigned char ucTeam);
 	void PrintUpgrades(int iTechLevel);
 	void PrintAll();
 	ConstructionManager(int iNumTeams);
