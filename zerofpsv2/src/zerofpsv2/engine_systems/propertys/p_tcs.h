@@ -46,6 +46,8 @@ class ENGINE_SYSTEMS_API P_Tcs : public Property
 		float		m_fFriction;
 		bool		m_bSleeping;
 		bool		m_bCantSleep;
+		bool		m_bDisableOnSleep;
+		bool		m_bRemoveOnSleep;
 		
       Vector3	m_kRotVel;
 		Vector3	m_kWalkVel;

@@ -151,7 +151,7 @@ Property* Entity::AddProperty(const char* acName)
 	return pProp;
 }
 
-/**	\brief	Removes the property from the Entity.
+/**	\brief	Removes the property from the Entity ( but does not delete it).
 */
 void Entity::RemoveProperty(Property* pkProp) 
 {

@@ -37,6 +37,9 @@ P_Tcs::P_Tcs()
 	m_fFriction = 			0.2;
 	m_bSleeping = 			false;
 	m_bCantSleep = 		false;
+	m_bDisableOnSleep =	false;
+	m_bRemoveOnSleep =	false;
+	
 	
 	ResetGroupFlags();
 	ResetWalkGroupFlags();
@@ -57,7 +60,6 @@ P_Tcs::P_Tcs()
 P_Tcs::~P_Tcs()
 {
 	Disable();
-
 }
 
 
@@ -150,7 +152,11 @@ void P_Tcs::Save(ZFIoInterface* pkPackage)
 	pkPackage->Write((void*)&m_bActiveMoment,sizeof(m_bActiveMoment),1);									
 	
 	pkPackage->Write((void*)&m_bCantSleep,sizeof(m_bCantSleep),1);									
+	pkPackage->Write((void*)&m_bDisableOnSleep,sizeof(m_bDisableOnSleep),1);									
+	pkPackage->Write((void*)&m_bRemoveOnSleep,sizeof(m_bRemoveOnSleep),1);										
+
 }
+
 
 void P_Tcs::Load(ZFIoInterface* pkPackage)
 {
@@ -180,11 +186,13 @@ void P_Tcs::Load(ZFIoInterface* pkPackage)
 	pkPackage->Read((void*)&m_bActiveMoment,sizeof(m_bActiveMoment),1);									
 	
 	pkPackage->Read((void*)&m_bCantSleep,sizeof(m_bCantSleep),1);									
+	pkPackage->Read((void*)&m_bDisableOnSleep,sizeof(m_bDisableOnSleep),1);									
+	pkPackage->Read((void*)&m_bRemoveOnSleep,sizeof(m_bRemoveOnSleep),1);										
 }
 
 vector<PropertyValues> P_Tcs::GetPropertyValues()
 {
-	vector<PropertyValues> kReturn(17);
+	vector<PropertyValues> kReturn(19);
 
 	int dummy;
 
@@ -256,6 +264,13 @@ vector<PropertyValues> P_Tcs::GetPropertyValues()
 	kReturn[16].iValueType=VALUETYPE_BOOL;
 	kReturn[16].pkValue=(void*)&m_bCantSleep;	
 	
+	kReturn[17].kValueName="disableonsleep";
+	kReturn[17].iValueType=VALUETYPE_BOOL;
+	kReturn[17].pkValue=(void*)&m_bDisableOnSleep;	
+
+	kReturn[18].kValueName="removeonsleep";
+	kReturn[18].iValueType=VALUETYPE_BOOL;
+	kReturn[18].pkValue=(void*)&m_bRemoveOnSleep;	
 							
 	return kReturn;
 }
@@ -613,8 +628,6 @@ void P_Tcs::Sleep()
 	if(m_bStatic || m_bCantSleep)
 		return;
 			
-//	if(m_bSleeping)
-//		return;
 		
 	m_kLinearVelocity.Set(0,0,0);
 	m_kRotVelocity.Set(0,0,0);		
@@ -622,8 +635,9 @@ void P_Tcs::Sleep()
 	m_kRotForce.Set(0,0,0);
 	m_bSleeping = true;
 	
-//	cout<<"sleep"<<endl;
-	
+		
+	if(m_bRemoveOnSleep)
+		GetObject()->m_pkEntityMan->Delete(GetObject());
 }
 
 void P_Tcs::AddRestingBody(P_Tcs* pkBody)

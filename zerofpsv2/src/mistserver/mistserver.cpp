@@ -753,7 +753,7 @@ void MistServer::Input_EditObject(float fMouseX, float fMouseY)
 		m_pkObjectMan->CreateObjectFromScriptInZone(
 			m_strActiveObjectName.c_str(), m_kObjectMarkerPos);
 
-		cout << "Spawning " << m_strActiveObjectName.c_str() << endl;
+		//cout << "Spawning " << m_strActiveObjectName.c_str() << endl;
 	}
 	
 	if(m_pkInputHandle->VKIsDown("selectzone") && !DelayCommand())
@@ -1058,7 +1058,7 @@ bool MistServer::DelayCommand()
 	if(m_pkFps->GetEngineTime() < m_fDelayTime)
 		return true;
 
-	m_fDelayTime = m_pkFps->GetEngineTime() + 0.5;
+	m_fDelayTime = m_pkFps->GetEngineTime() + 0.3;
 	return false;
 }
 

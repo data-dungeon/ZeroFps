@@ -284,14 +284,14 @@ void Tcs::HandleCollission(Tcs_collission* pkCol)
 		}					  
 	}
 	
-	//cout<<"totalj:"<<fTotalj<<endl;
-		
-	TryToSleep(pkCol->pkBody1,pkCol->pkBody2);		
-				
-	
 	//touch objects
 	pkCol->pkBody1->GetObject()->Touch(pkCol->pkBody2->GetObject()->GetEntityID());
 	pkCol->pkBody2->GetObject()->Touch(pkCol->pkBody1->GetObject()->GetEntityID());	
+
+			
+	TryToSleep(pkCol->pkBody1,pkCol->pkBody2);		
+				
+	
 
 }
 
@@ -1359,7 +1359,21 @@ void Tcs::TryToSleep(P_Tcs* pkBody1,P_Tcs* pkBody2)
 			pkBody1->Sleep();
 			pkBody2->Sleep();
 			
-			
+			if(pkBody1->m_bSleeping)
+				if(pkBody1->m_bDisableOnSleep)
+				{
+					pkBody1->Disable();
+					pkBody1->GetObject()->DeleteProperty("P_Tcs");;
+				}
+
+			if(pkBody2->m_bSleeping)
+				if(pkBody2->m_bDisableOnSleep)
+				{
+					pkBody2->Disable();
+					pkBody2->GetObject()->DeleteProperty("P_Tcs");
+				}
+					
+								
 			//pkBody1->AddRestingBody(pkBody2);
 			//pkBody2->AddRestingBody(pkBody1);
 			/*
