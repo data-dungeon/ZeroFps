@@ -135,7 +135,7 @@ void MistServer::Init()
 
 	SDL_WM_SetCaption("MistServer", NULL);
 
-	CreateMenu("../data/script/gui/menu.txt");
+	CreateMenu("data/script/gui/menu.txt");
 }
 
 void MistServer::RegisterResources()
