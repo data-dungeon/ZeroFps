@@ -127,8 +127,8 @@ void Tcs::Update(float fAlphaTime)
 	//fStepSize = fAlphaTime;
 	
 	//minimum time size
-	if(fStepSize > 0.05)
-		fStepSize = 0.05;
+	if(fStepSize > 0.03)
+		fStepSize = 0.03;
 	
 	
 	
@@ -291,7 +291,8 @@ void Tcs::Shock()
 			if(	m_kCollissions[i]->pkBody1->m_bStatic || m_kCollissions[i]->pkBody1->m_bTempStatic
 				||	m_kCollissions[i]->pkBody2->m_bStatic || m_kCollissions[i]->pkBody2->m_bTempStatic)
 			{
-				HandleCollission(m_kCollissions[i],true,false);
+				//handle collission as a bouncing collision but no angular effect
+				HandleCollission(m_kCollissions[i],false,true);
 				
 				if(m_kCollissions[i]->pkBody1->m_bStatic || m_kCollissions[i]->pkBody1->m_bTempStatic)
 					m_kCollissions[i]->pkBody2->m_bTempStatic = true;
@@ -443,12 +444,15 @@ void Tcs::HandleCollission(Tcs_collission* pkCol,bool bNoBounce,bool bNoAngular)
 		while(	pkCol->kNormals[i].Dot(
 				( (pkCol->pkBody1->m_kLinearVelocity-pkCol->pkBody2->m_kLinearVelocity) + 
 				(-pkCol->pkBody1->m_kRotVelocity.Cross(pkCol->kPositions[i] - pkCol->pkBody1->m_kNewPos) - 
-				-pkCol->pkBody2->m_kRotVelocity.Cross(pkCol->kPositions[i] - pkCol->pkBody2->m_kNewPos)) )) <= 0	)
+				-pkCol->pkBody2->m_kRotVelocity.Cross(pkCol->kPositions[i] - pkCol->pkBody2->m_kNewPos)) )) < 0	)
 		{					
 			iLoops++;			
-			if(iLoops >= 4)			
+			if(iLoops >= 5)			
 				break;
 		
+			//if(iLoops > 1)
+			//	j*= 2.0;
+				
 			// APPLY IMPULSES					
 			if( (!pkCol->pkBody1->m_bStatic) && (!pkCol->pkBody1->m_bTempStatic) )
 			{		

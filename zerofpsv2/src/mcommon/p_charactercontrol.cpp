@@ -1,5 +1,5 @@
 #include "p_charactercontrol.h"
-
+#include "../zerofpsv2/engine_systems/script_interfaces/si_objectmanager.h" 
 
 P_CharacterControl::P_CharacterControl()
 {
@@ -156,6 +156,16 @@ void P_CharacterControl::PackFrom( NetPacket* pkNetPacket, int iConnectionID  )
 	pkNetPacket->Read(m_iDirection);
 }
 
+
+void P_CharacterControl::SetControl(int iControl,bool bState)
+{
+	if(iControl < 0 || iControl > 5)
+		return;
+
+	m_kControls[iControl] = bState;
+}
+
+
 void P_CharacterControl::SetMoveDirection(int iDir)
 {
 	if(m_iDirection == iDir)
@@ -194,8 +204,75 @@ bool P_CharacterControl::GetControl(int iKey)
 	return m_kControls[iKey];
 }
 
+
+// P_CharacterControl script interface
+
+
+using namespace ObjectManagerLua;
+
+namespace SI_P_CharacterControl
+{
+	int SetCharacterControlLua(lua_State* pkLua)
+	{
+		if(g_pkScript->GetNumArgs(pkLua) != 3)
+			return 0;
+		
+		int id;
+		int iControl;
+		int iState;
+		
+		double dTemp;
+		g_pkScript->GetArgNumber(pkLua, 0, &dTemp);
+		id = (int)dTemp;		
+		
+		g_pkScript->GetArgNumber(pkLua, 1, &dTemp);
+		iControl = (int)dTemp;			
+		
+		g_pkScript->GetArgNumber(pkLua, 2, &dTemp);
+		iState = (int)dTemp;			
+
+		if(Entity* pkObject = g_pkObjMan->GetEntityByID(id))
+			if(P_CharacterControl* pkCC = (P_CharacterControl*)pkObject->GetProperty("P_CharacterControl"))
+				pkCC->SetControl(iControl,bool(iState));
+		
+		return 0;
+	}
+	
+	int ClearCharacterControlsLua(lua_State* pkLua)
+	{
+		if(g_pkScript->GetNumArgs(pkLua) != 1)
+			return 0;
+		
+		int id;
+		double dTemp;
+		g_pkScript->GetArgNumber(pkLua, 0, &dTemp);
+		id = (int)dTemp;		
+		
+		bitset<6> kKeys;
+		
+		if(Entity* pkObject = g_pkObjMan->GetEntityByID(id))
+			if(P_CharacterControl* pkCC = (P_CharacterControl*)pkObject->GetProperty("P_CharacterControl"))
+				pkCC->SetKeys(&kKeys);
+		
+		return 0;
+	}	
+}
+
+
 Property* Create_P_CharacterControl()
 {
 	return new P_CharacterControl;
 }
+
+void Register_P_CharacterControl(ZeroFps* pkZeroFps)
+{
+	// Register Property
+	pkZeroFps->m_pkPropertyFactory->Register("P_CharacterControl", Create_P_CharacterControl);					
+
+	// Register Property Script Interface
+	g_pkScript->ExposeFunction("SetCharacterControl",	SI_P_CharacterControl::SetCharacterControlLua);
+	g_pkScript->ExposeFunction("ClearCharacterControls",	SI_P_CharacterControl::ClearCharacterControlsLua);
+
+}
+
 

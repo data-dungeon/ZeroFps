@@ -194,11 +194,14 @@ void MistClient::RegisterResources()
 void MistClient::RegisterPropertys()
 {
 	m_pkPropertyFactory->Register("P_CharacterProperty",	Create_P_CharacterProperty);	
-	m_pkPropertyFactory->Register("P_CharacterControl",  Create_P_CharacterControl);	
+//	m_pkPropertyFactory->Register("P_CharacterControl",  Create_P_CharacterControl);	
 	m_pkPropertyFactory->Register("P_Enviroment", 			Create_P_Enviroment);
 	m_pkPropertyFactory->Register("P_Ml", 						Create_P_Ml);
 	m_pkPropertyFactory->Register("P_Item", 					Create_P_Item);
 	m_pkPropertyFactory->Register("P_Container", 			Create_P_Container);
+
+	Register_P_CharacterControl(m_pkZeroFps);
+	
 }
 
 void MistClient::RenderInterface(void)

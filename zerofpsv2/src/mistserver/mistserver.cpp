@@ -217,7 +217,7 @@ void MistServer::RegisterScriptFunctions()
 void MistServer::RegisterPropertys()
 {
 //	m_pkPropertyFactory->Register("P_CharacterProperty", Create_P_CharacterProperty);
-	m_pkPropertyFactory->Register("P_CharacterControl",  Create_P_CharacterControl);
+//	m_pkPropertyFactory->Register("P_CharacterControl",  Create_P_CharacterControl);
 
 	m_pkPropertyFactory->Register("P_ArcadeCharacter",	Create_P_ArcadeCharacter);
 // 	m_pkPropertyFactory->Register("P_Ml", Create_P_Ml);
@@ -228,7 +228,7 @@ void MistServer::RegisterPropertys()
 		
 	Register_P_CharacterProperty(m_pkZeroFps);	
 	Register_P_Ml(m_pkZeroFps);
-	
+	Register_P_CharacterControl(m_pkZeroFps);
 //	m_pkPropertyFactory->Register("P_Car", Create_P_Car);	
 //	m_pkPropertyFactory->Register("P_DMCharacter", Create_P_DMCharacter);
 //	m_pkPropertyFactory->Register("P_DMShop", Create_P_DMShop);

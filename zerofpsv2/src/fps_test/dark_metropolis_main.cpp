@@ -399,7 +399,8 @@ bool DarkMetropolis::IsValid()
 
 void DarkMetropolis::RegisterPropertys()
 {
-	m_pkPropertyFactory->Register("P_CharacterControl", Create_P_CharacterControl);
+//	m_pkPropertyFactory->Register("P_CharacterControl", Create_P_CharacterControl);
+	Register_P_CharacterControl(m_pkZeroFps);
 
 	m_pkPropertyFactory->Register("P_Ml", Create_P_Ml);
 
