@@ -13,7 +13,7 @@ class ObjectDescriptor;
 class ZeroFps;
 class GameMessage;
 
-class ENGINE_API ObjectManager : public ZFObject{
+class ENGINE_API ObjectManager : public ZFSubSystem{
 	private:
 		enum FuncId_e
 		{

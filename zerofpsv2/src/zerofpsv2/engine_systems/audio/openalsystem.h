@@ -29,7 +29,7 @@ class ENGINE_SYSTEMS_API Sound {
 };
 
 
-class ENGINE_SYSTEMS_API OpenAlSystem : public ZFObject {
+class ENGINE_SYSTEMS_API OpenAlSystem : public ZFSubSystem {
 	private:
 		struct SourceAlloc{
 			ALuint m_iSource;		

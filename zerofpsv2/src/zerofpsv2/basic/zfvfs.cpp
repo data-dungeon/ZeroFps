@@ -79,7 +79,7 @@ int ZFVFile::GetSize()
 
 
 ZFVFileSystem::ZFVFileSystem()
-: ZFObject("ZFVFileSystem")
+: ZFSubSystem("ZFVFileSystem")
 {
 	m_pkBasicFS = static_cast<ZFBasicFS*>(g_ZFObjSys.GetObjectPtr("ZFBasicFS"));		
 

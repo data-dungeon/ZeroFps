@@ -13,7 +13,7 @@
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 
-ZGuiResourceManager::ZGuiResourceManager() : ZFObject("ZGuiResourceManager")
+ZGuiResourceManager::ZGuiResourceManager() : ZFSubSystem("ZGuiResourceManager")
 {
 
 }

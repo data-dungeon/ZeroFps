@@ -3,7 +3,7 @@
 #include "zerofps.h"
 
 Input::Input() 
- : ZFObject("Input") {
+ : ZFSubSystem("Input") {
 	cout<<"Sdl_Input initializing"<<endl;	
 	
 	/*

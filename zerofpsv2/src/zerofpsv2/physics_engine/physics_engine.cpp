@@ -1,7 +1,7 @@
 #include "physics_engine.h"
 
 Physics_Engine::Physics_Engine() 
-: ZFObject("Physics_Engine")
+: ZFSubSystem("Physics_Engine")
 {
 	m_fCtol =		0.01;
 	m_iMaxTests =	20;

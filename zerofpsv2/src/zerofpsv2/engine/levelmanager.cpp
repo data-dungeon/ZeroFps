@@ -10,7 +10,7 @@
 
 //#include "heightmapobject.h"
 
-LevelManager::LevelManager(): ZFObject("LevelManager")
+LevelManager::LevelManager(): ZFSubSystem("LevelManager")
 {
 	m_pkZeroFps=static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
 	m_pkObjectMan=static_cast<ObjectManager*>(g_ZFObjSys.GetObjectPtr("ObjectManager"));

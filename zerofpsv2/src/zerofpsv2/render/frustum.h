@@ -12,7 +12,7 @@
 using namespace std;
 
 /// A Frustum pyramid in 3D.
-class RENDER_API Frustum : public ZFObject
+class RENDER_API Frustum : public ZFSubSystem
 {
 	private:
 		Vector4 m_akFrustum[6];

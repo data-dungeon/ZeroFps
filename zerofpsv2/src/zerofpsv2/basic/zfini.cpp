@@ -14,7 +14,7 @@
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 
-ZFIni::ZFIni() : ZFObject("ZFIni")
+ZFIni::ZFIni() : ZFSubSystem("ZFIni")
 {
 	m_iLines = 0;
 	m_iNumSections = 0;

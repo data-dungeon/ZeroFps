@@ -34,7 +34,7 @@ LightSource::LightSource() {
 
 
 Light::Light() 
-: ZFObject("Light") {
+: ZFSubSystem("Light") {
 	m_iNrOfLights=8;				//this shuld never be greater than 8
 	glLightModelf(GL_LIGHT_MODEL_TWO_SIDE,0);
 	glEnable(GL_LIGHTING);

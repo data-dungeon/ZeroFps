@@ -27,7 +27,7 @@ using std::string;**/
 using namespace std;
 
 class ZeroFps;
-class ENGINE_SYSTEMS_API OggMusic: public ZFObject  
+class ENGINE_SYSTEMS_API OggMusic: public ZFSubSystem  
 {
 public:
 	

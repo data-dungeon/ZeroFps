@@ -49,7 +49,7 @@ struct ENGINE_SYSTEMS_API Sphere{
 	Vector3 m_kPos;
 };
 
-class ENGINE_SYSTEMS_API PhysicsEngine : public ZFObject
+class ENGINE_SYSTEMS_API PhysicsEngine : public ZFSubSystem
 {
 	private:
 		struct Sort_Collision : public binary_function<CP*, CP*, bool> {

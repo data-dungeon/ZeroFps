@@ -17,7 +17,7 @@ class ZGuiFont;
 class ZGuiSkin;
 class ZGui;
 
-class GUI_API ZGuiResourceManager : public ZFObject
+class GUI_API ZGuiResourceManager : public ZFSubSystem
 {
 public:
 	ZGuiResourceManager();

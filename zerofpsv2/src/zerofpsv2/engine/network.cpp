@@ -172,7 +172,7 @@ void NetPacket::SetType(int iType)
 
 
 NetWork::NetWork()
-: ZFObject("NetWork"){
+: ZFSubSystem("NetWork"){
 
 	// Create Log Files.
 	g_ZFObjSys.Log_Create("net");

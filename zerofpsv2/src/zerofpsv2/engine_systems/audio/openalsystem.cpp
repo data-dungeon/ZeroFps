@@ -14,7 +14,7 @@ Sound::Sound()
 
 
 OpenAlSystem::OpenAlSystem()  
-: ZFObject("OpenAlSystem") {
+: ZFSubSystem("OpenAlSystem") {
 	sbm= static_cast<SoundBufferManager*>(g_ZFObjSys.GetObjectPtr("SoundBufferManager"));
 
 	Init();

@@ -50,7 +50,7 @@ public:
 
 
 
-class ENGINE_API ZFResourceDB : public ZFObject {
+class ENGINE_API ZFResourceDB : public ZFSubSystem {
 	private:
 		enum FuncId_e
 		{

@@ -56,7 +56,7 @@ enum RENDER_API DRAW_MODE
 };
 
 
-class RENDER_API ZShader : public ZFObject
+class RENDER_API ZShader : public ZFSubSystem
 {
 	private:
 		struct Vector2

@@ -4,7 +4,7 @@
 Application* Application::pkApp;
  
 Application::Application(char* pName,int iWidth,int iHeight,int iDepth) 
-	: ZFObject("Application") 
+	: ZFSubSystem("Application") 
 {
 	Application::pkApp = this;
 	
@@ -14,6 +14,9 @@ Application::Application(char* pName,int iWidth,int iHeight,int iDepth)
 	m_iDepth		=	iDepth;
 }
 	
+/**
+	Sets up all SubSystem ptr's so app can access subsystems.
+*/
 void Application::SetEnginePointer(ZeroFps* pkZeroFps) 
 {
 	pkFps					=	pkZeroFps;	

@@ -94,7 +94,7 @@ ZFObjectManger::ZFObjectManger()
 	setvbuf(m_pkLogFile, NULL, _IONBF, 0);		// Set Non buffer mode.
 
 #ifdef _DEBUG
-	g_Logf("Starting Object System\n");
+	g_Logf("Starting ZeroFps Object System\n");
 #endif
 
 //	g_ZFObjSys.Register_Cmd("set",		FID_SET,this, "set name value", 2);
@@ -104,7 +104,7 @@ ZFObjectManger::ZFObjectManger()
 ZFObjectManger::~ZFObjectManger()
 {
 #ifdef _DEBUG
-	g_Logf("Closing Object System\n");
+	g_Logf("Closing ZeroFps Object System\n");
 #endif
 
 	// Check that we don't have any objects left.
@@ -124,16 +124,17 @@ ZFObjectManger* ZFObjectManger::GetInstance()
 }
 
 
-void ZFObjectManger::Register(ZFObject* pkObject, char* acName, ZFObject* pkParent)
+void ZFObjectManger::Register(ZFSubSystem* pkObject, char* acName, ZFSubSystem* pkParent)
 {
 #ifdef _DEBUG
-	Logf("Register '%s'", acName);
+	g_Logf("Register '%s'", acName);
 #endif
 
 	// Make sure that there is no other object with the same name.
-	ZFObject* pkCheck = GetObjectPtr(acName);
+	ZFSubSystem* pkCheck = GetObjectPtr(acName);
 	if(pkCheck) {
-		Logf("There is already a object with name '%s'\n", acName);
+		g_Logf("Fail\n");
+		Logf("Warning: There was already a object with name '%s'\n", acName);
 		return;
 		}
 
@@ -145,17 +146,17 @@ void ZFObjectManger::Register(ZFObject* pkObject, char* acName, ZFObject* pkPare
 	kObjectNames.push_back(kObjName);
 	pkObject->m_strZFpsName = string(acName);
 
-	
+	pkObject->m_pkObjectManger = this;
 
 #ifdef _DEBUG
 	g_Logf("ok\n");
 #endif
 }
 
-void ZFObjectManger::UnRegister(ZFObject* pkObject)
+void ZFObjectManger::UnRegister(ZFSubSystem* pkObject)
 {
 #ifdef _DEBUG
-	Logf("UnRegister '%s' ", pkObject->m_strZFpsName.c_str());
+	g_Logf("UnRegister '%s' ", pkObject->m_strZFpsName.c_str());
 #endif
 
 	vector<NameObject>::iterator itNames;
@@ -178,7 +179,7 @@ void ZFObjectManger::UnRegister(ZFObject* pkObject)
 	UnRegister_Cmd(pkObject);
 }
 
-ZFObject* ZFObjectManger::GetObjectPtr(char* acName)
+ZFSubSystem* ZFObjectManger::GetObjectPtr(char* acName)
 {
 	string Test(acName);
 
@@ -194,13 +195,13 @@ ZFObject* ZFObjectManger::GetObjectPtr(char* acName)
 
 
 
-void ZFObjectManger::Link(ZFObject* pkParent, ZFObject* pkObject)
+void ZFObjectManger::Link(ZFSubSystem* pkParent, ZFSubSystem* pkObject)
 {
 	pkObject->m_pkParent = pkParent;
 	pkParent->m_akChild.push_back(pkObject);
 }
 
-void ZFObjectManger::UnLink(ZFObject* pkObject)
+void ZFObjectManger::UnLink(ZFSubSystem* pkObject)
 {
 	if(pkObject->m_pkParent == NULL)	
 		return;
@@ -212,7 +213,7 @@ void ZFObjectManger::UnLink(ZFObject* pkObject)
 void ZFObjectManger::PrintObjects(void)
 {
 	for(unsigned int i=0; i < kObjectNames.size();i++) {
-		Logf(" %s, %d\n", kObjectNames[i].m_strName.c_str(), kObjectNames[i].m_iNumOfRequests );
+		g_Logf(" %s, %d\n", kObjectNames[i].m_strName.c_str(), kObjectNames[i].m_iNumOfRequests );
 	}
 
 }
@@ -240,7 +241,7 @@ ZFCmdData* ZFObjectManger::FindArea(const char* szName)
 }
 
 
-bool ZFObjectManger::Register_Cmd(char* szName, int iCmdID, ZFObject* kObject,char* szHelp, int iNumOfArg)
+bool ZFObjectManger::Register_Cmd(char* szName, int iCmdID, ZFSubSystem* kObject,char* szHelp, int iNumOfArg)
 {
 	// Validate parameters
 	if(szName == NULL)	return false;
@@ -274,7 +275,7 @@ bool ZFObjectManger::Register_Cmd(char* szName, int iCmdID, ZFObject* kObject,ch
 	return true;
 }
 
-bool ZFObjectManger::UnRegister_Cmd(ZFObject* kObject)
+bool ZFObjectManger::UnRegister_Cmd(ZFSubSystem* kObject)
 {
 #ifdef _DEBUG
 	g_Logf("'%s' will no longer handle any commands\n", kObject->m_strZFpsName);
@@ -534,14 +535,15 @@ void ZFObjectManger::PrintVariables()
 
 bool ZFObjectManger::StartUp()
 {
-	g_Logf("Start Engine SubSystems: \n");
-
+	g_Logf("Start ZeroFps Engine SubSystems: \n");
 
 	for(unsigned int i=0; i < kObjectNames.size();i++) {
-		Logf("Start %s: ",kObjectNames[i].m_strName.c_str());
+		g_Logf(" - %s: ",kObjectNames[i].m_strName.c_str());
 
-		if(!kObjectNames[i].pkObject->StartUp())
+		if(!kObjectNames[i].pkObject->StartUp()) {
+			g_Logf("Fail\n");
 			return false;
+			}
 
 		g_Logf("Ok\n");
 	}
@@ -552,10 +554,14 @@ bool ZFObjectManger::StartUp()
 bool ZFObjectManger::ShutDown()
 {
 	g_Logf("ShutDown Engine SubSystems: \n");
-	for(unsigned int i=0; i < kObjectNames.size();i++) {
-		g_Logf("ShutDown %s: ",kObjectNames[i].m_strName.c_str());
-		if(!kObjectNames[i].pkObject->ShutDown())
+
+	// Engine Systems Shutdown backwards.
+	for( int i = (kObjectNames.size() - 1); i >= 0; i--) {
+		g_Logf(" -  %s: ",kObjectNames[i].m_strName.c_str());
+		if(!kObjectNames[i].pkObject->ShutDown()) {
+			g_Logf("Fail\n");
 			return false;
+			}
 		g_Logf("Ok\n");
 	}
 	

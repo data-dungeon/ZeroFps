@@ -15,7 +15,7 @@ using namespace std;
 #include "basic_x.h"
 
 /// Reads text based INI files (Basic Config Sys of ZeroFps).
-class BASIC_API ZFIni : public ZFObject
+class BASIC_API ZFIni : public ZFSubSystem
 {
 public:
 	enum FuncId_e

@@ -14,7 +14,8 @@ class Input;
 class FileIo;
 class ZFClient;
 
-class ENGINE_API Application : public ZFObject {	
+/// The application object.
+class ENGINE_API Application : public ZFSubSystem {	
 	protected:
 		ZeroFps*					pkFps;
 		Console*					pkConsole;			
@@ -34,18 +35,18 @@ class ENGINE_API Application : public ZFObject {
 		PhysicsEngine*			pkPhysEngine;
 		ZFScript*				pkScript;
 		ZFVFileSystem*			pkZFVFileSystem;
-		
 		Physics_Engine*		pkPhysics_Engine;
 		ZShader*					pkZShader;	
 		
 		
 	public:
-		static Application*	pkApp;								///< The one and Only App Instance.
+		static Application*	pkApp;												///< The one and Only App Instance.
 		
 		int m_iWidth,m_iHeight,m_iDepth;
-		char* m_pTitle;												///< Windows Title.
+		char* m_pTitle;																///< Windows Title.
 		
-		void SetEnginePointer(ZeroFps* pkZeroFps);					///< Set pointer to ZeroFps Engine.
+		void SetEnginePointer(ZeroFps* pkZeroFps);							///< Set pointer to ZeroFps Engine.
+					
 		Application(char* pName,int iWidth,int iHeight,int iDepth);
 
 		virtual void OnInit(void)=0;

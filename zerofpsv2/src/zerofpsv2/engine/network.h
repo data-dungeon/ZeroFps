@@ -162,7 +162,7 @@ struct ZFNet_String
 	bool		m_bNeedUpdate;	// True if we need to request a update from server.
 };
 
-class ENGINE_API NetWork : public ZFObject 
+class ENGINE_API NetWork : public ZFSubSystem 
 {
 private:
 	UDPsocket				m_pkSocket;								// Socket we use for all our messages.

@@ -10,7 +10,7 @@
 
 using namespace std;
 
-class ZFObject;
+class ZFSubSystem;
 
 class ZFLogFile
 {
@@ -25,7 +25,7 @@ public:
 struct NameObject
 {
 	string		m_strName;			// Name of object.
-	ZFObject*	pkObject;			// Ptr to object.
+	ZFSubSystem*	pkObject;			// Ptr to object.
 	int			m_iNumOfRequests;	// Num times name was checked.
 };
 
@@ -57,7 +57,7 @@ public:
 	int				m_iFlags;				// flags.
 
 	void*				m_vValue;				// Pekare till data.
-	ZFObject*		m_pkObject;				// Ptr to zfps object that owns this data (if any).
+	ZFSubSystem*		m_pkObject;				// Ptr to zfps object that owns this data (if any).
 	int				m_iCmdID;				// ID.
 
 	int				m_iMinNumOfArgs;		// Minimum num of arguments this func need.
@@ -91,20 +91,20 @@ public:
 	ZFObjectManger();
 	~ZFObjectManger();
 
-	void Register(ZFObject* pkObject, char* acName, ZFObject* pkParent);	///< Register a Object.
-	void UnRegister(ZFObject* pkObject);									///< UnRegister a objects.
-	ZFObject* GetObjectPtr(char* acName);									///< Get pointer to object by name.
+	void Register(ZFSubSystem* pkObject, char* acName, ZFSubSystem* pkParent);	///< Register a Object.
+	void UnRegister(ZFSubSystem* pkObject);									///< UnRegister a objects.
+	ZFSubSystem* GetObjectPtr(char* acName);									///< Get pointer to object by name.
 
-	void Link(ZFObject* pkParent, ZFObject* pkObject);						///< Links a object as a child to another.
-	void UnLink(ZFObject* pkObject);										///< Unlinks a object from another.
+	void Link(ZFSubSystem* pkParent, ZFSubSystem* pkObject);						///< Links a object as a child to another.
+	void UnLink(ZFSubSystem* pkObject);										///< Unlinks a object from another.
 
 	void PrintObjects(void);
 	void PrintObjectsHer(void);
 
 // Cmd / Functions.
 	ZFCmdData* FindArea(const char* szName);
-	bool Register_Cmd(char* szName, int iCmdID, ZFObject* kObject, char* szHelp = NULL, int iNumOfArg = 0);	///< Register a Cmd and object that will handle it.
-	bool UnRegister_Cmd(ZFObject* kObject);									///< UnRegister all cmd's bound to a object.
+	bool Register_Cmd(char* szName, int iCmdID, ZFSubSystem* kObject, char* szHelp = NULL, int iNumOfArg = 0);	///< Register a Cmd and object that will handle it.
+	bool UnRegister_Cmd(ZFSubSystem* kObject);									///< UnRegister all cmd's bound to a object.
 	bool RunCommand(const char* szCmdArg);									///< Run a cmd by passing it along to the correct object
 
 // Variables

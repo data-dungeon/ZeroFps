@@ -11,7 +11,7 @@
 int iNumOfHMVertex;
 
 HeightMap::HeightMap() 
- : ZFObject("HeightMap") {
+ : ZFSubSystem("HeightMap") {
  
 // 	m_pkFile=static_cast<FileIo*>(g_ZFObjSys.GetObjectPtr("FileIo"));		
 	m_pkTexMan=static_cast<TextureManager*>(g_ZFObjSys.GetObjectPtr("TextureManager"));		

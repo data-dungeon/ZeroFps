@@ -40,7 +40,7 @@ enum PolygonMode
 	LINE 
 };
 
-class RENDER_API Render : public ZFObject {
+class RENDER_API Render : public ZFSubSystem {
 	private:
 		Frustum*				m_pkFrustum;
 		TextureManager*	m_pkTexMan;

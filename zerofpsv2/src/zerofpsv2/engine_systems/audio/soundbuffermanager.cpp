@@ -3,7 +3,7 @@
 
 
 SoundBufferManager::SoundBufferManager()
-: ZFObject("SoundBufferManager"){
+: ZFSubSystem("SoundBufferManager"){
 }
 
 

@@ -16,7 +16,7 @@
 int ZGui::m_iResX = 1024;
 int ZGui::m_iResY = 768;
 
-ZGui::ZGui(int iResX, int iResY) : ZFObject("Gui") 
+ZGui::ZGui(int iResX, int iResY) : ZFSubSystem("Gui") 
 {
 	m_iResX = iResX;
 	m_iResY = iResY;

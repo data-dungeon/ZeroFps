@@ -17,7 +17,7 @@ class ENGINE_SYSTEMS_API SoundBuffer {
 		string m_acFile;
 };
 
-class ENGINE_SYSTEMS_API SoundBufferManager : public ZFObject {
+class ENGINE_SYSTEMS_API SoundBufferManager : public ZFSubSystem {
 	private:
 		vector<SoundBuffer*> m_kBuffers;
 				

@@ -19,12 +19,12 @@
 using namespace std;
 
 
-class BASIC_API ZFBasicFS : public ZFObject 
+class BASIC_API ZFBasicFS : public ZFSubSystem 
 {
 	char m_acDir[2048];
 
 	public:
-		ZFBasicFS() : ZFObject("ZFBasicFS") 
+		ZFBasicFS() : ZFSubSystem("ZFBasicFS") 
 		{
 		}
 		

@@ -78,7 +78,7 @@ public:
 };
 
 /// Main class for the ZeroFps engine. 
-class ENGINE_API ZeroFps : public ZFObject {
+class ENGINE_API ZeroFps : public ZFSubSystem {
 	private:		
 		enum FuncId_e
 		{

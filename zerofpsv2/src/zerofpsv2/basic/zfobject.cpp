@@ -14,30 +14,31 @@ using namespace std;
 BASIC_API ZFObjectManger g_ZFObjSys;
 
 
-ZFObject::ZFObject(char *szName)
+ZFSubSystem::ZFSubSystem(char *szName)
 {
 	m_strZFpsName = string("");
 	m_pkParent = NULL;
+	m_pkObjectManger = NULL;
 	g_ZFObjSys.Register(this, szName, NULL);
 }
 
-ZFObject::~ZFObject()
+ZFSubSystem::~ZFSubSystem()
 {
 	DestroyChildren();
 	g_ZFObjSys.UnRegister(this);
 }
 
-int ZFObject::GetNumChildren() const
+int ZFSubSystem::GetNumChildren() const
 {
 	return m_akChild.size();
 }
 
-ZFObject*	ZFObject::GetParent() const
+ZFSubSystem*	ZFSubSystem::GetParent() const
 {
 	return m_pkParent;
 }
 
-void ZFObject::PrintChilds(const char* szParentName)
+void ZFSubSystem::PrintChilds(const char* szParentName)
 {
 	string FullName = string(szParentName) + "/" + m_strZFpsName;
 	cout << FullName << endl;
@@ -47,12 +48,12 @@ void ZFObject::PrintChilds(const char* szParentName)
 		}
 }
 
-void ZFObject::AddChild(ZFObject* pkObject)
+void ZFSubSystem::AddChild(ZFSubSystem* pkObject)
 {
 	m_akChild.push_back(pkObject);
 }
 
-void ZFObject::RemoveChild(ZFObject* pkObject)
+void ZFSubSystem::RemoveChild(ZFSubSystem* pkObject)
 {
 	int iIndex = GetChildIndex(pkObject);
 	if(iIndex == NOOBJECT_INDEX)
@@ -62,7 +63,7 @@ void ZFObject::RemoveChild(ZFObject* pkObject)
 	pkObject->m_pkParent = NULL;
 }
 
-int ZFObject::GetChildIndex(ZFObject* pkChild)
+int ZFSubSystem::GetChildIndex(ZFSubSystem* pkChild)
 {
 	for(unsigned int i=0; i < m_akChild.size(); i++) {
 		if(pkChild == m_akChild[i])
@@ -72,7 +73,7 @@ int ZFObject::GetChildIndex(ZFObject* pkChild)
 	return NOOBJECT_INDEX;
 }
 
-int ZFObject::GetChildIndex(char* szName)
+int ZFSubSystem::GetChildIndex(char* szName)
 {
 	string strName(szName);
 
@@ -84,7 +85,7 @@ int ZFObject::GetChildIndex(char* szName)
 	return NOOBJECT_INDEX;
 }
 
-ZFObject* ZFObject::GetChildPtr(int iIndex)
+ZFSubSystem* ZFSubSystem::GetChildPtr(int iIndex)
 {
 	if(iIndex >= 0 || (unsigned int)iIndex < m_akChild.size())
 		return m_akChild[iIndex];
@@ -93,7 +94,7 @@ ZFObject* ZFObject::GetChildPtr(int iIndex)
 }
 
 
-ZFObject* ZFObject::GetChildPtr(char* szName)
+ZFSubSystem* ZFSubSystem::GetChildPtr(char* szName)
 {
 	string strName(szName);
 
@@ -105,9 +106,9 @@ ZFObject* ZFObject::GetChildPtr(char* szName)
 	return NULL;
 }
 
-void ZFObject::DestroyChildren()
+void ZFSubSystem::DestroyChildren()
 {
-	vector<ZFObject*>::iterator itChild;
+	vector<ZFSubSystem*>::iterator itChild;
 	
 	for(itChild = m_akChild.begin(); itChild != m_akChild.end(); itChild++)
 	{
@@ -120,7 +121,7 @@ void ZFObject::DestroyChildren()
 /**
 	dfsad
   */
-bool ZFObject::StartUp()
+bool ZFSubSystem::StartUp()
 {
 	return true;
 }
@@ -128,7 +129,7 @@ bool ZFObject::StartUp()
 /**
 	sgdsfg
   */
-bool ZFObject::ShutDown()
+bool ZFSubSystem::ShutDown()
 {
 	return true;
 	
@@ -137,7 +138,7 @@ bool ZFObject::ShutDown()
 /**
 	dghdfj
 */
-bool ZFObject::IsValid()
+bool ZFSubSystem::IsValid()
 {
 	return true;
 

@@ -13,7 +13,7 @@ using namespace std;
 
 
 BasicConsole::BasicConsole(char* szName)
-: ZFObject(szName)
+: ZFSubSystem(szName)
 {
 
 }

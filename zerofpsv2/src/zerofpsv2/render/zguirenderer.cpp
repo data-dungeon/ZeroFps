@@ -8,7 +8,7 @@
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 
-ZGuiRender::ZGuiRender() :	ZFObject("ZGuiRender")
+ZGuiRender::ZGuiRender() :	ZFSubSystem("ZGuiRender")
 {
 
 }

@@ -5,7 +5,7 @@
 #include "globals.h"
 
 CmdSystem::CmdSystem()
-: ZFObject("CmdSystem") {
+: ZFSubSystem("CmdSystem") {
 	g_ZFObjSys.Register_Cmd("set",		FID_SET,this, "set name value", 2);
 	g_ZFObjSys.Register_Cmd("varlist",	FID_VARLIST,this);
 

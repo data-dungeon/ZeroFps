@@ -35,7 +35,7 @@ public:
 };
 
 /// ZeroFps Virtual File Systems.
-class BASIC_API ZFVFileSystem : public ZFObject 
+class BASIC_API ZFVFileSystem : public ZFSubSystem 
 {
 	private:
 		ZFBasicFS*	m_pkBasicFS;					

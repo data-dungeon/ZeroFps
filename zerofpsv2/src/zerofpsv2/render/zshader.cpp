@@ -1,6 +1,6 @@
 #include "zshader.h"
 
-ZShader::ZShader() : ZFObject("ZShader")
+ZShader::ZShader() : ZFSubSystem("ZShader")
 {
 	
 }

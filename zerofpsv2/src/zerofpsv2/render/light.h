@@ -58,7 +58,7 @@ class RENDER_API LightSource {
 };
 
 /// A Light in ZeroFPS.
-class RENDER_API Light : public ZFObject {
+class RENDER_API Light : public ZFSubSystem {
 	private:
 		Vector3 m_kCamPos;
 

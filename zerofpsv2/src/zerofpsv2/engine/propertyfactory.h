@@ -28,7 +28,7 @@ public:
 };
 
 /// Engine System that creates propertys.
-class ENGINE_API PropertyFactory : public ZFObject
+class ENGINE_API PropertyFactory : public ZFSubSystem
 {
 private:
 	vector<ProperyCreateLink>	m_kProperyLinks; 
@@ -36,7 +36,7 @@ private:
 	void RunCommand(int cmdid, const CmdArgument* kCommand) { }
 
 public:
-	PropertyFactory() : ZFObject("PropertyFactory") { }
+	PropertyFactory() : ZFSubSystem("PropertyFactory") { }
 	~PropertyFactory() { }
 
 	Property*	CreateProperty(const char* szName);

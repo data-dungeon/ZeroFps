@@ -152,7 +152,7 @@ class Console;
 
 /// Engine Systems that handles input (keyb, mouse, joystick).
 
-class ENGINE_API Input : public ZFObject {
+class ENGINE_API Input : public ZFSubSystem {
 	private:
 		
 		enum FuncId_e

@@ -43,7 +43,7 @@ struct TerrainBlock
 	Vector3 kAABB_Max;
 };
 
-class ENGINE_SYSTEMS_API HeightMap: public ZFObject {
+class ENGINE_SYSTEMS_API HeightMap: public ZFSubSystem {
 	private:			
 		TextureManager*	m_pkTexMan;
 		ZFBasicFS*			m_pkBasicFS;

@@ -9,7 +9,7 @@
 #define ERROR_TEXTURE	"../data/textures/notex.bmp"
 
 TextureManager::TextureManager()
- : ZFObject("TextureManager") {
+ : ZFSubSystem("TextureManager") {
 
 	m_pkZFFileSystem	=	static_cast<ZFVFileSystem*>(g_ZFObjSys.GetObjectPtr("ZFVFileSystem"));		
 

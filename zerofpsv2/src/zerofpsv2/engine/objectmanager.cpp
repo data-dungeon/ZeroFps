@@ -6,7 +6,7 @@
 #include "../basic/simplescript.h"
 
 ObjectManager::ObjectManager() 
-: ZFObject("ObjectManager") 
+: ZFSubSystem("ObjectManager") 
 {
 	iNextObjectID		= 0;
 	m_bUpdate			= true;

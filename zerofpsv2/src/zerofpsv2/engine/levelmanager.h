@@ -11,7 +11,7 @@
 using namespace std;
 
 
-class ENGINE_API LevelManager : public ZFObject {
+class ENGINE_API LevelManager : public ZFSubSystem {
 	private:
 		ObjectManager* 	m_pkObjectMan;
 		ZeroFps* 			m_pkZeroFps;

@@ -1,6 +1,6 @@
 #include "frustum.h"
 
-Frustum::Frustum() : ZFObject("Frustum") 
+Frustum::Frustum() : ZFSubSystem("Frustum") 
 {
 	
 

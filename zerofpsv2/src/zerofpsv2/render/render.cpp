@@ -2,7 +2,7 @@
 #include "../ogl/zfpsgl.h"
 
 Render::Render()  
-:	ZFObject("Render") , m_eLandscapePolygonMode(FILL) {
+:	ZFSubSystem("Render") , m_eLandscapePolygonMode(FILL) {
 
 }
 

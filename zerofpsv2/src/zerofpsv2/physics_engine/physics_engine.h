@@ -36,7 +36,7 @@ enum PHYSICSENGINE_API CollisionState
 	NOT,
 };
 
-class PHYSICSENGINE_API Physics_Engine : public ZFObject
+class PHYSICSENGINE_API Physics_Engine : public ZFSubSystem
 {
 	private:
 		list<Body*>				m_kBodys;

@@ -65,7 +65,7 @@ class ZGuiResourceManager;
 
 
 
-class GUI_API ZGui : public ZFObject 
+class GUI_API ZGui : public ZFSubSystem 
 {
 public:	
 	enum ZndInfo {WNDPROC};
