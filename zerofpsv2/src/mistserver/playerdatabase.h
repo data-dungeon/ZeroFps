@@ -1,7 +1,7 @@
 #ifndef _PLAYERDATABASE_H_
 #define _PLAYERDATABASE_H_
 
-using namespace std;
+//using namespace std;
 
 #include "../zerofpsv2/engine/entitymanager.h"
 #include "../zerofpsv2/basic/zfsystem.h"

@@ -552,6 +552,9 @@ void MistClient::OnServerStart(void)
 			GetWnd("IntroWnd")->Hide();
 			pkScript->Call(m_pkScriptResHandle, "CreatePlayerPanel", 0, 0);
 			CreateGuiInterface();
+
+			OggMusic* pkMusic = static_cast<OggMusic*>(g_ZFObjSys.GetObjectPtr("OggMusic"));
+			pkMusic->Stop();
 		}
 
 		printf("Connecting to server\n");
