@@ -172,9 +172,9 @@ class ENGINE_API Object
 			The name of the object. This is not unik so many objects can (and will) have the same name. The name will
 			be set to 'A' + m_strType by defualt.
 			*/
-		string						m_strName;							
+		string						m_strName;
 		
-		
+	
 		bool							m_bZone;
 		bool							m_bSave;								///< True if this object should save to disk.
 	
@@ -216,6 +216,8 @@ class ENGINE_API Object
 		NetWorkRole					m_eRole;							///< This node power on object.
 		NetWorkRole					m_eRemoteRole;						///< Remote node power on object.
 		bool						m_bIsNetWork;
+
+      string                  m_strCreatedFromScript; // which script the object was created from. used when splitting items
 
 		~Object();
 		

@@ -10,6 +10,8 @@ class MCOMMON_API P_Item: public Property
 {
 	private:
 		ItemStats *m_pkItemStats;
+      string m_kObjectScriptname; // which script the object is created from
+                                  // needed when splitting items
 		
    public:
 	   void Update();
@@ -28,6 +30,8 @@ class MCOMMON_API P_Item: public Property
 		void PackFrom(NetPacket* pkNetPacket);
 
 		bool HandleSetValue( string kValueName, string kValue );
+
+      Object* Split ( int iTookens );
 };
 
 MCOMMON_API Property* Create_P_Item();

@@ -16,6 +16,7 @@ using namespace std;
 struct Collision;
 class Object;
 class PropertyFactory;
+class ObjectManager;
 class GameMessage;
 
 /*	When property should be updated. 
@@ -151,6 +152,7 @@ class ENGINE_API Property
 		///////////////////////////////////////////
 	protected:
 		Object*					m_pkObject;
+      ObjectManager*    m_pkObjMan;
 		//PropertyFactory*		m_pkPropertyFactory;	// Vim - Removes
 	
 

@@ -1,5 +1,6 @@
 #include "p_item.h"
 #include "../zerofpsv2/engine/object.h"
+#include "../zerofpsv2/engine/objectmanager.h"
 
 // ------------------------------------------------------------------------------------------
 
@@ -220,6 +221,16 @@ void P_Item::PackTo(NetPacket* pkNetPacket)
 
 void P_Item::PackFrom(NetPacket* pkNetPacket)
 {
+}
+
+// ------------------------------------------------------------------------------------------
+
+Object* P_Item::Split ( int iTookens )
+{
+   Object *pkNewObject = m_pkObjMan->CreateObjectFromScript ( m_pkObject->m_strCreatedFromScript.c_str() );
+
+   return pkNewObject;
+
 }
 
 // ------------------------------------------------------------------------------------------

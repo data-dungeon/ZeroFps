@@ -39,7 +39,7 @@
 #include <maya/MPxFileTranslator.h>
 #include <maya/MFnIkJoint.h>
 
-using namespace std;
+//using namespace std;
 
 #include "bone.h" 
 

@@ -88,7 +88,7 @@ void MistLandLua::Init(ObjectManager* pkObjMan,ZFScriptSystem* pkScript)
    pkScript->ExposeFunction("RunScript",			      MistLandLua::RunScriptLua);		
 
    // equip / unequip
-   pkScript->ExposeFunction("Equip",   		   	   MistLandLua::EquipLua);			
+   pkScript->ExposeFunction("EquipFromScript",   		MistLandLua::EquipFromScriptLua);			
    pkScript->ExposeFunction("UnEquip",	      		   MistLandLua::UnEquipLua);			
 
 }
@@ -1662,7 +1662,7 @@ int MistLandLua::UnEquipLua (lua_State* pkLua)
 
 // ----------------------------------------------------------------------------------------------
 
-int MistLandLua::EquipLua (lua_State* pkLua)
+int MistLandLua::EquipFromScriptLua (lua_State* pkLua)
 {
 	if( g_pkScript->GetNumArgs(pkLua) == 2 )
    {
@@ -1717,6 +1717,43 @@ int MistLandLua::EquipLua (lua_State* pkLua)
 }
 
 // ----------------------------------------------------------------------------------------------
+
+int MistLandLua::EquipLua (lua_State* pkLua)
+{
+	if( g_pkScript->GetNumArgs(pkLua) == 2 )
+   {
+		Object* pkObject = g_pkObjMan->GetObjectByNetWorkID(g_iCurrentObjectID);
+
+	   if (pkObject)
+		{
+         double dTemp;
+         g_pkScript->GetArgNumber(pkLua, 0, &dTemp);
+
+         char	acSlot[128];
+			g_pkScript->GetArgString(pkLua, 1, acSlot);
+
+         Object* pkCharProp = g_pkObjMan->GetObjectByNetWorkID ( int(dTemp) );
+
+         if ( pkCharProp )
+         {
+            CharacterProperty *pkChar = (CharacterProperty*)pkCharProp->GetProperty("P_CharStats");   
+
+            if ( pkChar )
+            {      
+               pkChar->GetCharStats()->Equip ( pkObject, string(acSlot) );            
+            }
+            else
+               cout << "Warning! Tried to equip something on a non-character object!" << endl;
+         }
+       }
+
+   }
+
+   return 0;
+}
+
+// ----------------------------------------------------------------------------------------------
+
 
 int MistLandLua::RunScriptLua (lua_State* pkLua)
 {/*

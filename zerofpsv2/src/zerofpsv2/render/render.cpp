@@ -1383,6 +1383,8 @@ void Render::DrawPSystem( PSystem *pkPSystem )
 
 	glPushMatrix();
 
+   glDisable (GL_LIGHTING);
+
 	glDisableClientState (GL_NORMAL_ARRAY);
 
 	// PSystem uses color&alpha values

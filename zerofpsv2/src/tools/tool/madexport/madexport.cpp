@@ -8,7 +8,7 @@
 */
 
 
-#include <iostream>
+//#include <iostream>
 #include <stdio.h>
 #include <assert.h>
 #include <map> 
@@ -75,7 +75,7 @@ MObject findShader( MObject& setNode )
 		shaderPlug.connectedTo( connectedPlugs, asDst, asSrc );
 
 		if (connectedPlugs.length() != 1)
-			cerr << "Error getting shader\n";
+	;//		cerr << "Error getting shader\n";
 		else 
 			return connectedPlugs[0].node();
 	}

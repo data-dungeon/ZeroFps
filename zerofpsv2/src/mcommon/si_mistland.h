@@ -22,7 +22,7 @@ namespace MistLandLua
 	
 	extern int						g_iCurrentObjectID;
 	extern int						g_iLastCollidedID;
-	extern int						g_iCurrentPCID;
+	extern int MCOMMON_API 		g_iCurrentPCID;
 
 	void MCOMMON_API Init(ObjectManager* pkObjMan,ZFScriptSystem* pkScript);	
 	
@@ -94,6 +94,7 @@ namespace MistLandLua
 
    // equip / unequip character
 
+   int MCOMMON_API EquipFromScriptLua (lua_State* pkLua);
    int MCOMMON_API EquipLua (lua_State* pkLua);
    int MCOMMON_API UnEquipLua (lua_State* pkLua);
 

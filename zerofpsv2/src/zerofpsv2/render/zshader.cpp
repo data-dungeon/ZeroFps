@@ -251,7 +251,7 @@ void ZShader::Waves()
 	for(int i=0;i<m_iNrOfVertexs;i++)
 	{
 		float offset = m_pkVertexPointer[i].x + m_pkVertexPointer[i].y + m_pkVertexPointer[i].z;
-		float bla = sin(SDL_GetTicks()/500.0 + offset)*0.1;
+		float bla = cos(SDL_GetTicks()/500.0 + offset)*0.03;
 		m_pkVertexPointer[i] += Vector3(bla,bla,bla);
 
 	}

@@ -219,21 +219,6 @@ Object* ObjectManager::CreateObject()
 	return pkObj;
 }
 
-/**	\brief	Creates a object and gives it a specified ID.
-*/
-Object* ObjectManager::CreateObjectByNetWorkID(int iNetID)
-{
-	Object *pkNew = CreateObject();
-
-	//	Add(pkNew);
-	pkNew->iNetWorkID			= iNetID;
-	pkNew->SetParent(m_pkWorldObject);
-	pkNew->m_eRole				= NETROLE_PROXY;
-	pkNew->m_eRemoteRole		= NETROLE_AUTHORITY;
-	pkNew->SetUseZones(false);
-	return pkNew;
-}
-
 /**	\brief	Creates a object from the zfoh.txt file.
 
 	Creates a object as described in the zfoh.txt file (poor man script). If a object is
@@ -255,85 +240,6 @@ Object* ObjectManager::CreateObjectByArchType(const char* acName)
 	pkObj->m_strName	= string("A ") + pkObj->m_strType;
 
 	return pkObj;
-}
-
-Object* ObjectManager::CreateObjectFromScript(const char* acName)
-{
-	if(m_pScriptFileHandle)
-		delete m_pScriptFileHandle;
-
-	m_pScriptFileHandle = new ZFResourceHandle;
-	if(!m_pScriptFileHandle->SetRes(acName))
-	{
-		printf("Failed to load object script %s\n", acName);
-		return NULL;
-	}
-	
-	//push all pointers
-	ObjectManagerLua::Push();
-
-	if(!m_pkScript->Call(m_pScriptFileHandle, "Create", 0, 0))
-	{	
-		//pop pointers and return
-		ObjectManagerLua::Pop();		
-		return NULL;
-	}
-	
-	
-	//find last /
-	int len = strlen(acName);
-	int pos = 0;
-	for(int i = len;i > 0 ;i--)
-	{
-		if(acName[i] == '/')
-		{	
-			pos = i+1;
-			break;
-		}
-	}
-	
-	ObjectManagerLua::g_pkReturnObject->m_strType	= &acName[pos];
-	ObjectManagerLua::g_pkReturnObject->m_strName	= string("A ") + &acName[pos];
-	ObjectManagerLua::g_pkReturnObject->m_pScriptFileHandle->SetRes(acName);
-	
-	Object* pkReturnObj = ObjectManagerLua::g_pkReturnObject;
-	
-	//pop pointers
-	ObjectManagerLua::Pop();			
-	
-	return pkReturnObj;
-}
-
-/**	\brief	Uses a script to create the object.
-
-	Creates a object from a script and use it to set values and propertys. If script file
-	is not found no object will be created. 
-*/
-Object* ObjectManager::CreateObjectFromScriptInZone(const char* acName,Vector3 kPos,int iCurrentZone)
-{
-	int id = GetZoneIndex(kPos,iCurrentZone,false);
-	
-	if(id == -1)
-		return NULL;
-	
-	//force loading of this zone
-	LoadZone(id);
-	
-	if(!m_kZones[id].m_pkZone)
-		return NULL;
-		
-		
-	Object* newobj = CreateObjectFromScript(acName);
-	
-	if(newobj)
-	{		
-		newobj->SetUseZones(true);
-		newobj->SetWorldPosV(kPos);	
-		if(newobj->m_iCurrentZone == -1)
-			cout<<"ERROR!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"<<endl;
-	}
-
-	return newobj;
 }
 
 /**	\brief	Adds an object to delete qeue
@@ -445,6 +351,109 @@ void ObjectManager::UpdateGameMessages(void)
 }
 
 
+/**	\brief	Creates a new clean object.
+
+	Creates a basic object without any propertys and all values set to defualt. 
+*/
+
+Object* ObjectManager::CreateObjectByNetWorkID(int iNetID)
+{
+//	Object *pkNew = new NetSlaveObject;
+	Object *pkNew = CreateObject();
+
+	//	Add(pkNew);
+	pkNew->iNetWorkID = iNetID;
+	pkNew->SetParent(m_pkWorldObject);
+	pkNew->m_eRole			= NETROLE_PROXY;
+	pkNew->m_eRemoteRole	= NETROLE_AUTHORITY;
+	pkNew->SetUseZones(false);
+	
+//	Logf("net", " CreateObjectByNetWorkID( %d ).\n", iNetID);
+
+//	pkNew->AddProperty("P_Primitives3D");
+	return pkNew;
+}
+
+/**	\brief	Uses a script to create the object.
+
+	Creates a object from a script and use it to set values and propertys. If script file
+	is not found no object will be created. 
+*/
+Object* ObjectManager::CreateObjectFromScriptInZone(const char* acName,Vector3 kPos,int iCurrentZone)
+{
+	int id = GetZoneIndex(kPos,iCurrentZone,false);
+	
+	if(id == -1)
+		return NULL;
+	
+	//force loading of this zone
+	LoadZone(id);
+	
+	if(!m_kZones[id].m_pkZone)
+		return NULL;
+		
+		
+	Object* newobj = CreateObjectFromScript(acName);
+	
+	if(newobj)
+	{      
+		newobj->SetUseZones(true);
+		newobj->SetWorldPosV(kPos);	
+		if(newobj->m_iCurrentZone == -1)
+			cout<<"ERROR!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"<<endl;
+	}
+
+	return newobj;
+}
+
+Object* ObjectManager::CreateObjectFromScript(const char* acName)
+{
+	if(m_pScriptFileHandle)
+		delete m_pScriptFileHandle;
+
+	m_pScriptFileHandle = new ZFResourceHandle;
+	if(!m_pScriptFileHandle->SetRes(acName))
+	{
+		printf("Failed to load object script %s\n", acName);
+		return NULL;
+	}
+	
+	//push all pointers
+	ObjectManagerLua::Push();
+
+	if(!m_pkScript->Call(m_pScriptFileHandle, "Create", 0, 0))
+	{	
+		//pop pointers and return
+		ObjectManagerLua::Pop();		
+		return NULL;
+	}
+	
+	
+	//find last /
+	int len = strlen(acName);
+	int pos = 0;
+	for(int i = len;i > 0 ;i--)
+	{
+		if(acName[i] == '/')
+		{	
+			pos = i+1;
+			break;
+		}
+	}
+	
+	ObjectManagerLua::g_pkReturnObject->m_strType	= &acName[pos];
+	ObjectManagerLua::g_pkReturnObject->m_strName	= string("A ") + &acName[pos];
+	ObjectManagerLua::g_pkReturnObject->m_pScriptFileHandle->SetRes(acName);
+	
+	Object* pkReturnObj = ObjectManagerLua::g_pkReturnObject;
+	
+	//pop pointers
+	ObjectManagerLua::Pop();
+
+   pkReturnObj->m_strCreatedFromScript = acName;
+	
+	return pkReturnObj;
+}
 
 bool ObjectManager::IsA(Object* pkObj, string strStringType)
 {

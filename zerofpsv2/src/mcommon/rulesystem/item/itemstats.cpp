@@ -304,6 +304,10 @@ bool ItemStats::Stock ( ItemStats *pkItemStats )
    if ( pkItemStats == this )
    {
       m_iQuantity += pkItemStats->m_iQuantity;
+
+      // remove the stacked object
+
+
       return true;
    }
    else
@@ -409,6 +413,31 @@ bool ItemStats::CanEquipOn ( string kSlotName )
          return true;
 
    return false;
+}
+
+// ---------------------------------------------------------------------------------------------
+
+ItemStats::operator= ( ItemStats &kItemStats )
+{
+  
+   m_kItemName = kItemStats.m_kItemName;
+   
+   m_iQuantity = kItemStats.m_iQuantity;
+   m_iValue = kItemStats.m_iValue;
+
+   m_fQuality = kItemStats.m_fQuality;
+   m_fWeight = kItemStats.m_fWeight;
+
+
+   m_kSkillBonus = kItemStats.m_kSkillBonus;
+	m_kAttributeBonus = kItemStats.m_kAttributeBonus;
+
+   m_kFightStats = kItemStats.m_kFightStats;
+
+   m_kEquippableOn = kItemStats.m_kEquippableOn;
+
+   //int m_iContainerID; // id of this container
+	m_iCurrentContainer = kItemStats.m_iCurrentContainer;
 }
 
 // ---------------------------------------------------------------------------------------------

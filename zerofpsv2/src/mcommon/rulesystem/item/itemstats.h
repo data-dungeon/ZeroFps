@@ -16,13 +16,14 @@ class MCOMMON_API ItemStats
 private:
 
    // TODO! 
-   // add inventory icon
+   //string m_kIcon
    
    string m_kItemName;
    
    int 
       m_iQuantity,
-      m_iValue; // gold value
+      m_iValue, // gold value
+      m_iLastChange; // a value to know if the client should recieve all itemdata or none
 
    float 
       m_fQuality,
@@ -44,6 +45,7 @@ private:
 	static int s_iContainerCounter;
 
 public:
+
    ItemStats();
 
    void AddToSkillBonus ( string kSkillName, int iValue );
@@ -101,10 +103,10 @@ public:
 
    void Print();
 
-   void Split ( int iTookens );
    bool Stock ( ItemStats *pkItemStats );
 
    bool operator== ( ItemStats &kItemStats );
+   operator= ( ItemStats &kItemStats );
 
    friend class P_Item;
 
