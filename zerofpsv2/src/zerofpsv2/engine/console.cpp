@@ -51,8 +51,6 @@ bool Console::IsValid()	{ return true; }
 
 void Console::InsertKey(unsigned char ucKey)
 {
-	cout << "InsertKey" << (int )ucKey<<endl;
-
 	if(ucKey == KEY_BACKSPACE) {
 		RemoveKey(false);
 		return;	
@@ -233,10 +231,10 @@ void Console::Update(void)
 	static float s_fLastRepeatTime = m_pkEngine->GetEngineTime();			//GetGameTime();
 
 	int iKeyPressed = m_pkInput->GetQueuedKey();
-	if(iKeyPressed != -1)	cout << "Key: " << iKeyPressed << endl;
+/*	if(iKeyPressed != -1)	cout << "Key: " << iKeyPressed << endl;
 	if(iKeyPressed == 8) {
 		int ifsdf = 25;
-		}
+		}*/
 
 
 	if(m_pkInput->Pressed(KEY_RSHIFT) || m_pkInput->Pressed(KEY_LSHIFT)){

@@ -41,6 +41,14 @@ struct TerrainBlock
 	Vector3 kAABB_Max;
 };
 
+class ENGINE_SYSTEMS_API HMSelectVertex
+{
+public:
+	int		m_iIndex;
+	float		m_fValue;
+};
+
+
 struct Mad_Face;
 
 class ENGINE_SYSTEMS_API HeightMap /*: public ZFSubSystem */
@@ -53,7 +61,11 @@ class ENGINE_SYSTEMS_API HeightMap /*: public ZFSubSystem */
 
 		HM_vert* verts;	
 
+		
+
 	public:
+		vector<HMSelectVertex> GetSelection(Vector3 kCenter, float fInRadius, float fOutRadius);
+
 		vector<TileSet>		m_kSets;
 		vector<TerrainBlock>	m_kTerrainBlocks;
 	
@@ -94,8 +106,11 @@ class ENGINE_SYSTEMS_API HeightMap /*: public ZFSubSystem */
 		void GetMapXZ(float& x,float& z);
 		
 		void Smooth(int fStartx,int fStartz,int fWidth,int fHeight);
-		void Flatten(int iPosx,int iPosy,int iSize);
-		void Raise(int iPosx,int iPosy,int iMode,int iSize,bool bSmooth);
+		//void Flatten(int iPosx,int iPosy,int iSize);
+		//void Raise(int iPosx,int iPosy,int iMode,int iSize,bool bSmooth);
+		void Flatten(vector<HMSelectVertex> kSelected, Vector3 kPos);
+		void Raise(vector<HMSelectVertex> kSelected, float fSize);		// Raise or lower a selection.
+		
 		void DrawMask(int iPosX,int iPosy,int iMode,int iSize,int r,int g,int b,int a);
 		
 		int GetSize(){return m_iHmSize*HEIGHTMAP_SCALE;};
@@ -120,12 +135,6 @@ class ENGINE_SYSTEMS_API HeightMap /*: public ZFSubSystem */
 		void GetCollData(vector<Mad_Face>* pkFace,vector<Vector3>* pkVertex , vector<Vector3>* pkNormal);
 		
 		friend class Render;
-
-		/*
-		bool StartUp();
-		bool ShutDown();
-		bool IsValid();
-		*/
 };
 
 

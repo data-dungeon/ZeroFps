@@ -577,7 +577,8 @@ void Render::DrawConsole(char* m_aCommand,vector<char*>* m_kText,int iStartLine,
 	Mode2D_End();
 }
 
-void Render::DrawBillboard(Matrix4& kModelMatrix,Vector3& kPos,float fSize,int iTexture) {
+void Render::DrawBillboard(Matrix4& kModelMatrix,Vector3& kPos,float fSize,int iTexture) 
+{
 	fSize/=2;
 	
 	Vector3 x;
@@ -641,6 +642,23 @@ void Render::DrawBillboard(Matrix4& kModelMatrix,Vector3& kPos,float fSize,int i
 	glPopAttrib();
 	glEnable(GL_CULL_FACE);	
 	
+}
+
+void Render::DrawCircle(vector<Vector3> kCircel, Vector3 kColor)
+{
+	glPushAttrib(GL_FOG_BIT|GL_LIGHTING_BIT | GL_TEXTURE_BIT | GL_COLOR_BUFFER_BIT );
+	glColor3f(kColor.x,kColor.y,kColor.z);
+	glDisable(GL_LIGHTING);
+	glDisable(GL_TEXTURE_2D );
+
+	glBegin(GL_LINE_LOOP );
+	for(int i=0; i<kCircel.size(); i++) {
+		glVertex3f(kCircel[i].x,kCircel[i].y, kCircel[i].z);
+		
+		}
+
+	glEnd();
+	glPopAttrib();
 }
 
 
@@ -1590,6 +1608,18 @@ void Render::DumpGLState(char* szFileName)
 	//	SPOT CUTOFF
 	//	LIGHTi
 	//	COLOR INDEXES
+
+	// Dump State of all 8 Std OpenGl Lights.
+//	fprintf(pkGlDumpLog, "\n\Lights: \n");
+	GlDump_IsEnabled(GL_LIGHT0 , "GL_LIGHT0");
+	GlDump_IsEnabled(GL_LIGHT1 , "GL_LIGHT1");
+	GlDump_IsEnabled(GL_LIGHT2 , "GL_LIGHT2");
+	GlDump_IsEnabled(GL_LIGHT3 , "GL_LIGHT3");
+	GlDump_IsEnabled(GL_LIGHT4 , "GL_LIGHT4");
+	GlDump_IsEnabled(GL_LIGHT5 , "GL_LIGHT5");
+	GlDump_IsEnabled(GL_LIGHT6 , "GL_LIGHT6");
+	GlDump_IsEnabled(GL_LIGHT7 , "GL_LIGHT7");
+
 
 	// Rasterization 6.12
 	// Multisampling 6.13

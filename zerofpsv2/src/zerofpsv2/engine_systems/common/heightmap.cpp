@@ -5,6 +5,7 @@
 #include <cstdio>
 #include "heightmap.h"
 #include "../../render/frustum.h"
+#include "../../render/render.h"
 #include "../mad/mad_core.h"
 
 #include "../../engine/res_texture.h"
@@ -63,6 +64,16 @@ void HeightMap::Create(int iHmSize)
 //	m_pkMap->ClearSet();
 //	m_pkMap->AddSet("../data/textures/nodetail1.bmp","../data/textures/detail1.bmp","FEL");
 	CreateBlocks();
+
+/*		ZFResourceHandle m_kConsoleText;
+		m_kConsoleText.SetRes("mask.tga");	
+
+		ResTexture* pkTexture = static_cast<ResTexture*>(m_kConsoleText.GetResourcePtr());
+		Render* spya =static_cast<Render*>(g_ZFObjSys.GetObjectPtr("Render"));			
+		spya->DumpGLState("arghhh.txt");
+		m_pkTexMan->BindTexture(pkTexture->m_iTextureID);
+		m_pkTexMan->SaveTexture("ostbow.tga",0);*/
+
 }
 
 void HeightMap::Zero() 
@@ -70,6 +81,7 @@ void HeightMap::Zero()
 	cout << "iNumOfHMVertex:: " << iNumOfHMVertex << endl;
 	for(int i=0;i < iNumOfHMVertex;i++) {
 		verts[i].height	=	0;
+		verts[i].normal.Set(0,1,0);
 		//verts[i].texture	=	0;
 	}
 }
@@ -389,6 +401,7 @@ bool HeightMap::Load(const char* acFile)
 	ClearSet();
 	AddSet("../data/textures/nodetail1.bmp","../data/textures/detail1.bmp","FEL");
 	
+	cout << "Loading Layers: ";
 	do
 	{
 		string file=acFile;
@@ -412,13 +425,16 @@ bool HeightMap::Load(const char* acFile)
 			detail+=".bmp";
 		
 		
+			cout << file.c_str() << ", ";
 			AddSet(nodetail.c_str(),detail.c_str(),file.c_str());
 		}
 		i++;
 		
 	} while(exist);
 	
-	
+	cout << endl;
+
+
 	return true;
 }
 
@@ -467,6 +483,8 @@ bool HeightMap::Save(const char* acFile) {
 			cout << "Save Res: " << m_kSets[i].m_acMask << endl;
 
 			ResTexture* pkTexture = static_cast<ResTexture*>(m_kConsoleText.GetResourcePtr());
+			Render* spya =static_cast<Render*>(g_ZFObjSys.GetObjectPtr("Render"));			
+			spya->DumpGLState("arghhh.txt");
 			m_pkTexMan->BindTexture(pkTexture->m_iTextureID);
 			
 			m_pkTexMan->SaveTexture(file.c_str(),0);
@@ -746,7 +764,17 @@ void HeightMap::Smooth(int iStartx,int iStartz,int iWidth,int iHeight)
 	GenerateNormals(iStartx,iStartz,iWidth,iHeight);
 }
 
+void HeightMap::Flatten(vector<HMSelectVertex> kSelected, Vector3 kPos)
+{	
+	float fHeight = Height(kPos.x,kPos.z);
 
+	for(int i=0; i<kSelected.size(); i++) {
+		verts[kSelected[i].m_iIndex].height = fHeight;
+		}
+
+}
+
+/*
 void HeightMap::Flatten(int iPosx,int iPosy,int iSize)
 {			
 	if(iPosx - (iSize/2) >=0 &&
@@ -764,11 +792,73 @@ void HeightMap::Flatten(int iPosx,int iPosy,int iSize)
 				
 		GenerateNormals(iPosx - (iSize/2),iPosy- (iSize/2),iSize,iSize);
 	}
+}*/
+
+vector<HMSelectVertex> HeightMap::GetSelection(Vector3 kCenter, float fInRadius, float fOutRadius)
+{
+	vector<HMSelectVertex> kSelection;
+	HMSelectVertex kSel;
+	kSel.m_fValue = 1.0;
+
+	float fInOutDiff = fOutRadius - fInRadius;
+
+	int iMinX, iMinZ, iMaxX, iMaxZ;		// Min/Max X/Y Index of vertices that can be selected.
+
+	iMinX = 0;
+	iMinZ = 0;
+	iMaxX = m_iHmSize;
+	iMaxZ = m_iHmSize;
+	float fLen;
+	float fLen2;
+
+	int x,y;
+
+	for(int z = iMinZ ; z < iMaxZ; z++) {
+		for(int x = iMinX ; x < iMaxX ; x++) {	
+			// Calc World Pos of the vertex.
+			int iVertexIndex = z*m_iHmSize+x;
+			kSel.m_iIndex = iVertexIndex;
+			Vector3 kWorld = Vector3(x * HEIGHTMAP_SCALE, verts[iVertexIndex].height*HEIGHTMAP_SCALE ,z * HEIGHTMAP_SCALE);
+			kWorld += m_kCornerPos;
+			//kVertex += (CamPos + kMap->m_kCornerPos);
+	
+			Vector3 kDiff = kWorld - kCenter;
+			kDiff.y = 0;
+
+			fLen = kDiff.Length();
+
+			// If inside inner circle set value to max.
+			if(fLen < fInRadius) {
+				kSel.m_fValue = 1.0;
+				kSelection.push_back(kSel);
+				}
+			if (fLen >= fInRadius && fLen <= fOutRadius) {
+				fLen2 = fLen - fInRadius;
+
+				kSel.m_fValue = 1.0 - (fLen2 / fInOutDiff);
+				//cout << kSel.m_fValue << ",";
+				kSelection.push_back(kSel);
+				}
+			}
+	}
+
+	cout << "Num Of Vertices Selected: " << kSelection.size();
+	cout << endl;
+
+	return kSelection;
 }
 
-
-void HeightMap::Raise(int iPosx,int iPosy,int iMod,int iSize,bool bSmooth)
+void HeightMap::Raise(vector<HMSelectVertex> kSelected, float fSize)
 {
+	for(int i=0; i<kSelected.size(); i++) {
+		verts[kSelected[i].m_iIndex].height += fSize * kSelected[i].m_fValue;
+		}
+}
+
+/*void HeightMap::Raise(int iPosx,int iPosy,int iMod,int iSize,bool bSmooth)
+{
+	cout << "Raise: " << iPosx << "," << iPosy << endl;
+
 	if(iPosx - (iSize/2) >=0 &&
 		iPosx + (iSize/2) <=m_iHmSize &&
 		iPosy - (iSize/2) >=0 &&
@@ -784,7 +874,7 @@ void HeightMap::Raise(int iPosx,int iPosy,int iMod,int iSize,bool bSmooth)
 		if(bSmooth)
 			Smooth(iPosx-(iSize/2),iPosy-(iSize/2),iSize,iSize);				
 	}
-}
+}*/
 
 void HeightMap::DrawMask(int iPosX,int iPosy,int iMask,int iSize,int r,int g,int b,int a)
 {

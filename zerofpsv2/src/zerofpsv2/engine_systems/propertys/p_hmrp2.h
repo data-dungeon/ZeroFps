@@ -5,19 +5,23 @@
 #include <iostream>
 #include "../common/heightmap.h"
 #include "../engine_systems_x.h"
+#include "../../render/light.h"
 //#include "GL/glut.h"
 
 using namespace std;
 
 /// Property to add a Hmap to a object.
-class ENGINE_SYSTEMS_API P_HMRP2: public Property {
-		HeightMap* m_pkHeightMap;
+class ENGINE_SYSTEMS_API P_HMRP2: public Property 
+{
 		TextureManager* m_pkTexMan;
 		ZeroFps* m_pkZeroFps;
 		Render* m_pkRender;	
+		Light* m_pkLight;	
 	
 	
 	public:
+		HeightMap* m_pkHeightMap;
+
 		string	m_strMapName;
 
 		void SetPolyMode(int iMode);

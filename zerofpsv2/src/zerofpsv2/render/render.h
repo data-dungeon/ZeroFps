@@ -20,6 +20,7 @@ class PSystem;
 class HeightMap;
 class Heightmap2;
 class BasicConsole;
+class HMSelectVertex;
 
 using namespace std;
 
@@ -139,21 +140,28 @@ class RENDER_API Render : public ZFSubSystem {
 		void SetColor(Vector3 kColor);
 		void SetClearColor(Vector4 kColor);
 
+		// LandScape
+		void DrawHMSelected(HeightMap* kmap, vector<HMSelectVertex> kSelected);
+		void DrawNormals(HeightMap* kmap,Vector3 CamPos,int iFps);
 		void DrawHMLodSplat(HeightMap* kmap,Vector3 CamPos,int iFps);
 		void DrawAllHM(HeightMap* kmap,Vector3 CamPos,bool bBorders);
 		void DrawPatch(HeightMap* kmap,Vector3 CamPos,int xp,int zp,int iSize,bool bBorders);
-		
 		void DrawPatch_Vim1(HeightMap* kmap,Vector3 CamPos,int xp,int zp,int iSize);
 		void DrawHMVertex(HeightMap* kMap);
 		void DrawBlocks(HeightMap* kmap);
-
 		void DrawHM2(Heightmap2* pkMap,Vector3 kCamPos);
 
+		// SkyBox
 		void DrawSkyBox(Vector3 CamPos,Vector3 kHead,int iHor,int iTop);
 		void DrawSkyBox_SixSided(Vector3 CamPos,Vector3 kHead,int* aiSideTextures);
+		
+		// Water
 		void DrawWater(Vector3 kCamPos,Vector3 kPosition,Vector3 kHead,int iSize,int iStep,int iTexture, float fBlendValue);
 		void DrawSimpleWater(Vector3 kPosition,Vector4 kColor,int iSize,int iTexture);
+
+		// Fog
 		void SetFog(Vector4 kFogColor,float FogStart,float FogStop,bool FogEnable);		
+
 		void GiveTexCor(float &iX,float &iY,int iNr);
 		void DrawCross(Vector3& kPos,Vector3& kHead,Vector3& kScale,int& iTexture1);//,int iTexture2);
 		void DrawBillboard(Matrix4& kModelMatrix,Vector3& kPos,float fSize,int iTexture);
@@ -168,6 +176,8 @@ class RENDER_API Render : public ZFSubSystem {
 		void DrawAABB( float x, float y, float z, float sizex,float sizey,float sizez, Vector3 kColor );
 		void DrawAABB( Vector3 kMin,Vector3 kMax, Vector3 kColor, float fLineSize = 1.0 );
 		void DrawSolidAABB( Vector3 kMin,Vector3 kMax, Vector3 kColor );
+
+		void DrawCircle(vector<Vector3> kCircel, Vector3 kColor);
 
 		void GetMinMax(HeightMap* kMap, float& fMin, float& fMax, int xp,int zp,int iSize);
 

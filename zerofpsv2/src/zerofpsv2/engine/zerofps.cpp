@@ -1210,34 +1210,46 @@ int ZeroFps::GetClientObjectID()
 
 void ZeroFps::AddHMProperty(ZoneData* pkZd, int iNetWorkId, Vector3 kZoneSize)
 {
-	cout << "AddHM: "  << iNetWorkId << endl;
-	cout << "Size: "  << kZoneSize.x << endl;
-
-	// Add Property to object
+	// Get Entity, Check For Valid and Check if its already have a hmap.
 	Entity* pkEntity = this->m_pkObjectMan->GetObjectByNetWorkID(iNetWorkId);
-	if(!pkEntity)
-		return;
-	if(pkEntity->GetProperty("P_HMRP2")) {
-		cout << "Allready set HM" << endl;
-		return;
-		}
+	if(!pkEntity)										return;
+	if(pkEntity->GetProperty("P_HMRP2"))		return;
 
-
-
+	// Create a new Hmap and add it.
 	HeightMap* pkMap = new HeightMap;
-//	pkMap->StartUp();
-	pkMap->Create((int)kZoneSize.x);
-	pkMap->Random();
+	pkMap->Create( (int)kZoneSize.x );
+	//pkMap->Random();
 
+	// Create a new Hmrp and set hmap and add it to Entity.
 	P_HMRP2* pkhmrp2 = new P_HMRP2(pkMap, "Spya");
-
 	pkEntity->AddProperty(pkhmrp2);
 
-	vector<Mad_Face> kFace;
-	vector<Vector3> kVertex;
-	vector<Vector3> kNormal;
+	// Setup Collision Data
+	vector<Mad_Face>	kFace;
+	vector<Vector3>	kVertex;
+	vector<Vector3>	kNormal;
 
 	pkMap->GetCollData(&kFace,&kVertex,&kNormal);
+
+	// Transform all vertex from Local to World.
+	for(unsigned int i=0; i<kVertex.size(); i++) 
+		kVertex[i] += pkEntity->GetWorldPosV() + pkMap->m_kCornerPos;
+
+	// Create Tcs Property
+	P_Tcs* pp = (P_Tcs*)pkEntity->GetProperty("P_Tcs");
+	if(!pp)
+		pp = (P_Tcs*)pkEntity->AddProperty("P_Tcs");	
+
+	// Set Data.
+	if(pp)
+	{
+		pp->SetPolygonTest(true);	
+		pp->SetStatic(true);			
+		pp->SetData(kFace,kVertex,kNormal,	10);	 //(int)kZoneSize.x * 2
+		pp->SetHmap(pkMap);
+		pp->SetGroup(0);
+	}
+
 /*		Vector3 kMin = pkZd->m_kPos - pkZd->m_kSize/2;
 		Vector3 kMax = pkZd->m_kPos + pkZd->m_kSize/2;
 		Vector3 ANormal(0,1,0);
@@ -1252,29 +1264,6 @@ void ZeroFps::AddHMProperty(ZoneData* pkZd, int iNetWorkId, Vector3 kZoneSize)
 		kFace.push_back(aFace);
 		aFace.iIndex[0] = 0;	aFace.iIndex[1] = 3;	aFace.iIndex[2] = 2;
 		kFace.push_back(aFace);*/
-	
-	for(unsigned int i=0; i<kVertex.size(); i++) 
-		kVertex[i] += pkEntity->GetWorldPosV() + pkMap->m_kCornerPos;
-
-
-
-
-	P_Tcs* pp = (P_Tcs*)pkEntity->GetProperty("P_Tcs");
-	
-	if(!pp)
-		pp = (P_Tcs*)pkEntity->AddProperty("P_Tcs");	
-	
-	if(pp)
-	{
-		pp->SetPolygonTest(true);	
-		pp->SetStatic(true);			
-		//pp->SetRefetchPolygonData();
-		pp->SetData(kFace,kVertex,kNormal,10);
-		pp->SetHmap(pkMap);
-		pp->SetGroup(0);
-	}
-
-
 }
 
 

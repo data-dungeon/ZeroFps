@@ -68,8 +68,12 @@ class MistServer :public Application , public ZGuiApp {
 		{
 			EDIT_ZONES,
 			EDIT_OBJECTS,
+			EDIT_HMAP,
+			EDIT_MAX,
 		
 		};
+
+		bool	m_bUpdateMarker;
 
 		//server stuff
 		Entity* m_pkServerInfo;
@@ -136,6 +140,17 @@ class MistServer :public Application , public ZGuiApp {
 			void PathTest();
 
 		bool CreateMenu(char* szFileName);
+
+		Vector3	m_kDrawPos;
+		HeightMap* SetPointer();
+
+		void DrawHMEditMarker(HeightMap* pkHmap, Vector3 kCenterPos, float fInRadius, float fOutRadius );
+
+		LightSource	m_kSun;
+
+		vector<HMSelectVertex>	m_kSelectedHMVertex;
+		float m_fHMInRadius;
+		float m_fHMOutRadius;
 
 	public:
 		void OnClickTabPage(ZGuiTabCtrl *pkTabCtrl, int iNewPage, int iPrevPage);

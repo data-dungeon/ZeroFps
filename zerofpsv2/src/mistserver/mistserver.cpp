@@ -11,6 +11,7 @@
 #include "../zerofpsv2/engine_systems/propertys/p_primitives3d.h"
 #include "../zerofpsv2/engine_systems/propertys/p_track.h"
 #include "../zerofpsv2/engine_systems/propertys/p_skyboxrender.h"
+#include "../zerofpsv2/engine_systems/propertys/p_hmrp2.h"
 
 #include "../zerofpsv2/engine/p_pfpath.h"
 #include "../zerofpsv2/gui/zgui.h"
@@ -62,9 +63,11 @@ MistServer::MistServer(char* aName,int iWidth,int iHeight,int iDepth)
 
 	// Set Default values
 	m_AcceptNewLogins = true;
+	m_bUpdateMarker = true;
 
 	// Register Variables
 	RegisterVariable("s_newlogins",				&m_AcceptNewLogins,			CSYS_BOOL);	
+	RegisterVariable("s_marker",					&m_bUpdateMarker,			CSYS_BOOL);	
 
 	// Register Commands
 	Register_Cmd("new",FID_NEW);		
@@ -74,7 +77,10 @@ MistServer::MistServer(char* aName,int iWidth,int iHeight,int iDepth)
 	Register_Cmd("lo",FID_LOCALORDER);		
 	Register_Cmd("lightmode", FID_LIGHTMODE);		
 
-	
+	m_kDrawPos.Set(0,0,0);
+
+	m_fHMInRadius  = 1;
+	m_fHMOutRadius = 2;
 } 
 
 void MistServer::OnInit() 
@@ -161,7 +167,19 @@ void MistServer::Init()
 	m_pkInput->ToggleGrab();
 
 //	m_pkPlayerDB->GetLoginCharacters(string("user"));
+
+	m_kSun.kRot= Vector3(1,2,1);
+	m_kSun.kDiffuse=Vector4(1,1,1,1);
+	m_kSun.kAmbient=Vector4(0.05,0.05,0.05,1);
+	m_kSun.iType=DIRECTIONAL_LIGHT;			
+	m_kSun.iPriority=10;
+	m_kSun.fConst_Atten=1;
+	m_kSun.fLinear_Atten=0;
+	m_kSun.fQuadratic_Atten=0;
+	m_pkLight->Add(&m_kSun);
 }
+
+	
 
 void MistServer::RegisterResources()
 {
@@ -183,7 +201,40 @@ void MistServer::RegisterPropertys()
    m_pkPropertyFactory->Register("P_Container", Create_P_Container);
 }
 
+void MistServer::DrawHMEditMarker(HeightMap* pkHmap, Vector3 kCenterPos, float fInRadius, float fOutRadius )
+{
+	if(pkHmap == NULL)	return;
 
+	m_pkRender->DrawBillboard(m_pkFps->GetCam()->GetModelViewMatrix(),kCenterPos,1,pkTexMan->Load("../data/textures/pointer.tga",T_NOMIPMAPPING));	
+
+	Vector3				kVertex;
+	vector<Vector3>	kVertexList;
+
+	float x,z;
+	kCenterPos.y = 0;
+	Vector3 kPos;
+
+	for(int i=0; i<360; i+=(int)12.25) {
+		kVertex.x = float( cos(DegToRad( float(i) )) * fInRadius );
+		kVertex.z = float( sin(DegToRad( float(i) )) * fInRadius );
+		kVertex.y = pkHmap->Height(kCenterPos.x+kVertex.x,kCenterPos.z + kVertex.z) + 0.01;
+		kVertex += kCenterPos;
+		kVertexList.push_back(kVertex);
+	}
+
+	m_pkRender->DrawCircle(kVertexList, Vector3(0.8,0.8,0));
+
+	kVertexList.clear();
+	for(int i=0; i<360; i+=(int)12.25) {
+		kVertex.x = float( cos(DegToRad( float(i) )) * fOutRadius );
+		kVertex.z = float( sin(DegToRad( float(i) )) * fOutRadius );
+		kVertex.y = pkHmap->Height(kCenterPos.x+kVertex.x,kCenterPos.z + kVertex.z) + 0.01;
+		kVertex += kCenterPos;
+		kVertexList.push_back(kVertex);
+	}
+
+	m_pkRender->DrawCircle(kVertexList, Vector3(1,1,0));
+}
 
 void MistServer::OnIdle()
 {	
@@ -207,26 +258,31 @@ void MistServer::OnIdle()
 		m_pkFps->DevPrintf("server","Players: %d", m_pkServerInfoP->GetNrOfPlayers());	
 	}
 	
+	if(m_iEditMode == EDIT_HMAP) {
+		HeightMap* pkMap = SetPointer();
+		DrawHMEditMarker(pkMap, m_kDrawPos, m_fHMInRadius,m_fHMOutRadius);
+		}
+
 	if(m_iEditMode == EDIT_ZONES)
 	{
 		UpdateZoneMarkerPos();		
 		DrawZoneMarker(m_kZoneMarkerPos);		
 		
-		/*
+		
 		//draw selected zone marker
 		if(m_iCurrentMarkedZone != -1)
 		{
-			ZoneData* z = pkObjectMan->GetZoneData(m_iCurrentMarkedZone);
+			ZoneData* z = m_pkObjectMan->GetZoneData(m_iCurrentMarkedZone);
 		
 			if(z)
 			{
 				Vector3 kMin = z->m_kPos - z->m_kSize/2;
 				Vector3 kMax = z->m_kPos + z->m_kSize/2;
 		
-				pkRender->DrawAABB( kMin,kMax, Vector3(1,1,0) );
+				m_pkRender->DrawAABB( kMin,kMax, Vector3(1,1,0) );
 			}
 		}
-		*/
+		
 	}
 	
 	if(m_iEditMode == EDIT_OBJECTS)
@@ -259,6 +315,48 @@ void MistServer::OnSystem()
 
 }
 
+HeightMap* MistServer::SetPointer()
+{
+	if(m_bUpdateMarker == false)
+		return NULL;
+
+	m_kDrawPos.Set(0,0,0);
+
+	int id = m_iCurrentMarkedZone;	//m_pkObjectMan->GetZoneIndex(m_iCurrentMarkedZone,-1,false);
+	
+	if(id ==-1)	return NULL;
+	ZoneData* kZData = m_pkObjectMan->GetZoneData(id);
+	if(!kZData)	return NULL;
+	P_HMRP2* hmrp = dynamic_cast<P_HMRP2*>(kZData->m_pkZone->GetProperty("P_HMRP2"));
+	if(!hmrp)	return NULL;
+
+	Vector3 start	= m_pkFps->GetCam()->GetPos();
+	Vector3 dir		= Get3DMousePos(true);
+	Vector3 end    = start + dir * 1000;
+
+	if(dir.y >= 0) return NULL;
+
+	// Find Level 0 for the selected zone in u.
+	//float fLevelZero = kZData->m_pkZone->GetWorldPosV().y;
+	//float fDiff = start.y - fLevelZero;
+	//m_kDrawPos = start + dir * (fDiff);
+	Plane kP;
+	kP.m_kNormal.Set(0,1,0);
+	kP.m_fD = - kZData->m_pkZone->GetWorldPosV().y;
+
+	Vector3 kIsect;
+
+	if(kP.LineTest(start,end, &kIsect)) {
+		m_kDrawPos = kIsect;
+		m_kDrawPos.y = hmrp->m_pkHeightMap->Height(m_kDrawPos.x,m_kDrawPos.z);
+		}
+
+	return hmrp->m_pkHeightMap;
+
+
+	//Vector3 kLocalOffset = m_kDrawPos - hmrp->m_pkHeightMap->m_kCornerPos;
+	//cout << "Local pos: " << kLocalOffset.x << ", " << kLocalOffset.y << ", " << kLocalOffset.z << endl;
+}
 
 void MistServer::Input()
 {
@@ -278,11 +376,9 @@ void MistServer::Input()
 	float speed = 20;
 	
 	//set speed depending on edit mode
-	if(m_iEditMode == EDIT_ZONES)
-		speed = 20;
-	
-	if(m_iEditMode == EDIT_OBJECTS)
-		speed = 5;
+	if(m_iEditMode == EDIT_HMAP)		speed = 20;
+	if(m_iEditMode == EDIT_ZONES)		speed = 20;
+	if(m_iEditMode == EDIT_OBJECTS)	speed = 5;
 	
 	
 	int x,z;		
@@ -323,6 +419,7 @@ void MistServer::Input()
 */	
 	Vector3 kMove(0,0,0);
 	Vector3 kRotate(0,0,0);
+
 
 	if(m_pkCameraObject)	
 	{	
@@ -374,17 +471,62 @@ void MistServer::Input()
 			m_pkCameraObject->SetLocalRotM(kRm);	
 	
 	
-		if(m_pkInput->VKIsDown("modezone"))		m_iEditMode = EDIT_ZONES;
-		if(m_pkInput->VKIsDown("modeobj"))		m_iEditMode = EDIT_OBJECTS;		
+		if(m_pkInput->VKIsDown("modezone"))			m_iEditMode = EDIT_ZONES;
+		if(m_pkInput->VKIsDown("modeobj"))			m_iEditMode = EDIT_OBJECTS;		
+		if(m_pkInput->VKIsDown("modehmvertex"))	m_iEditMode = EDIT_HMAP;		
 	
+		
+
 		if(m_pkInput->VKIsDown("lighton"))		m_pkZShader->SetForceLighting(LIGHT_ALWAYS_ON);	
 		if(m_pkInput->VKIsDown("lightoff"))		m_pkZShader->SetForceLighting(LIGHT_ALWAYS_OFF);
 		if(m_pkInput->VKIsDown("lightstd"))		m_pkZShader->SetForceLighting(LIGHT_MATERIAL);
 	
-	
+		if(m_iEditMode == EDIT_HMAP) {
+			if(m_pkInput->VKIsDown("inrad+"))	m_fHMInRadius += 1 * m_pkFps->GetGameFrameTime();
+			if(m_pkInput->VKIsDown("inrad-"))	m_fHMInRadius -= 1 * m_pkFps->GetGameFrameTime();
+			if(m_pkInput->VKIsDown("outrad+"))	m_fHMOutRadius += 1 * m_pkFps->GetGameFrameTime();
+			if(m_pkInput->VKIsDown("outrad-"))	m_fHMOutRadius -= 1 * m_pkFps->GetGameFrameTime();
+			if(m_fHMInRadius > m_fHMOutRadius)
+				m_fHMInRadius = m_fHMOutRadius;
+
+			int id = m_iCurrentMarkedZone;
+			if(id!=-1) {
+				ZoneData* kZData = m_pkObjectMan->GetZoneData(id);
+				P_HMRP2* hmrp = dynamic_cast<P_HMRP2*>(kZData->m_pkZone->GetProperty("P_HMRP2"));
+				Vector3 kLocalOffset = m_kDrawPos - hmrp->m_pkHeightMap->m_kCornerPos;
+
+				if(m_pkInput->VKIsDown("hmraise")) {
+					m_kSelectedHMVertex = hmrp->m_pkHeightMap->GetSelection(m_kDrawPos,m_fHMInRadius,m_fHMOutRadius);
+					if(m_kSelectedHMVertex.size() > 0) {
+						hmrp->m_pkHeightMap->Raise(m_kSelectedHMVertex, 5 * m_pkFps->GetGameFrameTime());
+						m_kSelectedHMVertex.clear();
+						}
+					}
+
+				if(m_pkInput->VKIsDown("hmlower"))
+					m_kSelectedHMVertex = hmrp->m_pkHeightMap->GetSelection(m_kDrawPos,m_fHMInRadius,m_fHMOutRadius);
+					if(m_kSelectedHMVertex.size() > 0) {
+						//hmrp->m_pkHeightMap->Raise(m_kSelectedHMVertex, -5 * m_pkFps->GetGameFrameTime());
+						hmrp->m_pkHeightMap->Flatten(m_kSelectedHMVertex, m_kDrawPos);
+						m_kSelectedHMVertex.clear();
+						}
+				}	
+			} 
+
 		//edit zone  mode
 		if(m_iEditMode == EDIT_ZONES)
 		{
+			/*if(m_pkInput->Pressed(KEY_B))
+			{
+				int id = m_iCurrentMarkedZone;
+				if(id!=-1) {
+					ZoneData* kZData = m_pkObjectMan->GetZoneData(id);
+					P_HMRP2* hmrp = dynamic_cast<P_HMRP2*>(kZData->m_pkZone->GetProperty("P_HMRP2"));
+					Vector3 kLocalOffset = m_kDrawPos - hmrp->m_pkHeightMap->m_kCornerPos;
+					hmrp->m_pkHeightMap->Raise(kLocalOffset.x,kLocalOffset.z,6,6,true);
+					}
+			}*/
+
 			if(m_pkInput->Pressed(MOUSELEFT))
 			{
 				AddZone(m_kZoneMarkerPos, m_kZoneSize, m_strActiveZoneName);	
@@ -438,22 +580,21 @@ void MistServer::Input()
 				}
 			}	
 	
-/*			if(pkInput->Pressed(MOUSEMIDDLE))
+			if(m_pkInput->VKIsDown("selectzone"))
 			{		
-				m_iCurrentMarkedZone =  pkObjectMan->GetZoneIndex(m_kZoneMarkerPos,-1,false);
+				m_iCurrentMarkedZone =  m_pkObjectMan->GetZoneIndex(m_kZoneMarkerPos,-1,false);
 			}
-*/
-	
+
+
+			 
+
 			if(m_pkInput->Pressed(KEY_1)) m_kZoneSize.Set(4,4,4);
 			if(m_pkInput->Pressed(KEY_2)) m_kZoneSize.Set(8,8,8);
 			if(m_pkInput->Pressed(KEY_3)) m_kZoneSize.Set(16,16,16);	
 			if(m_pkInput->Pressed(KEY_4)) m_kZoneSize.Set(32,16,32);	
 			if(m_pkInput->Pressed(KEY_5)) m_kZoneSize.Set(64,16,64);			
-			if(m_pkInput->Pressed(KEY_6)) m_kZoneSize.Set(16,8,8);		
-			if(m_pkInput->Pressed(KEY_7)) m_kZoneSize.Set(8,8,16);		
-			if(m_pkInput->Pressed(KEY_8)) m_kZoneSize.Set(4,8,16);				
-			if(m_pkInput->Pressed(KEY_9)) m_kZoneSize.Set(16,8,4);					
-         if(m_pkInput->Pressed(KEY_0)) m_kZoneSize.Set(8,16,8);
+			if(m_pkInput->Pressed(KEY_9)) m_bUpdateMarker = true;				
+         if(m_pkInput->Pressed(KEY_0)) m_bUpdateMarker = false;
 		}	
 	
 		//edit object mode
@@ -540,6 +681,8 @@ void MistServer::Input()
 			if(m_pkInput->VKIsDown("roty-"))			pkObj->RotateLocalRotV(Vector3(0,-100*m_pkFps->GetFrameTime(),0));			
 			if(m_pkInput->VKIsDown("rotz+"))			pkObj->RotateLocalRotV(Vector3(0,0,100*m_pkFps->GetFrameTime()));			
 			if(m_pkInput->VKIsDown("rotz-"))			pkObj->RotateLocalRotV(Vector3(0,0,-100*m_pkFps->GetFrameTime()));			
+		
+			
 		}		
 
 	

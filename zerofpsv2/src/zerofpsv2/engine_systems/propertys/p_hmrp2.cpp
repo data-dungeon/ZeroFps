@@ -9,6 +9,7 @@ P_HMRP2::P_HMRP2(HeightMap* pkHeightMap, string strMapName)
 	m_pkTexMan	=	static_cast<TextureManager*>(g_ZFObjSys.GetObjectPtr("TextureManager"));	
 	m_pkZeroFps	=	static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));		
 	m_pkRender	=	static_cast<Render*>(g_ZFObjSys.GetObjectPtr("Render"));		
+	m_pkLight   =	static_cast<Light*>(g_ZFObjSys.GetObjectPtr("Light"));	
 
 
 	SetHeightMap(pkHeightMap,strMapName);
@@ -32,7 +33,9 @@ void P_HMRP2::Update()
 {	
 	if(m_pkHeightMap!=NULL){
 		m_pkHeightMap->SetPosition(m_pkObject->GetWorldPosV());
+		m_pkLight->Update(m_pkObject->GetWorldPosV());
 		m_pkRender->DrawHMLodSplat(m_pkHeightMap,m_pkZeroFps->GetCam()->GetPos(),int(m_pkZeroFps->m_fFps));
+		//m_pkRender->DrawNormals(m_pkHeightMap,m_pkObject->GetWorldPosV(),int(m_pkZeroFps->m_fFps));
 //		m_pkRender->G4DrawHMLodSplat(m_pkHeightMap,m_pkZeroFps->GetCam()->GetPos(),m_pkZeroFps->m_iFps);		
 	}
 	

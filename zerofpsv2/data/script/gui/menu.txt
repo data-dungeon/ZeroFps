@@ -119,6 +119,11 @@ Title=Log RenderP
 Parent=Menu_Debug
 Cmd=set r_logrp 1
 
+[Menu_Marker]
+Title=Marker (T)
+Parent=Menu_Debug
+Cmd=set s_marker toggle
+
 
 ; ------------- DEVPAGE MENU -------------
 

@@ -863,7 +863,7 @@ void Render::DrawAllHM(HeightMap* kMap,Vector3 CamPos,bool bBorders)
 
 	//glDisable(GL_TEXTURE_2D);
 	glColor3f(1,1,1);
-	glDisable(GL_LIGHTING);
+	//glDisable(GL_LIGHTING);
 
 	for(int z=0;z<kMap->m_iHmSize;z+=iPatchSize)
 	{
@@ -903,6 +903,45 @@ void Render::DrawHMVertex(HeightMap* kMap)
 	glEnable(GL_LIGHTING);
 }
 
+void Render::DrawNormals(HeightMap* kMap,Vector3 CamPos,int iFps)
+{
+	glDisable(GL_TEXTURE_2D);
+	glDisable(GL_LIGHTING );
+
+	Vector3 kVertex;
+	Vector3 kNormal;
+
+	glColor3f(1,1,1);
+	glBegin(GL_LINES );
+	
+	HM_vert* pkHmVertex = kMap->verts;
+
+	for(int z = 0 ; z < kMap->m_iHmSize; z++){
+		for(int x = 0 ; x < kMap->m_iHmSize ; x++){	
+			float	fScaleX = float(x * HEIGHTMAP_SCALE);
+			float fScaleZ = float(z * HEIGHTMAP_SCALE);
+			int iVertexIndex = z*kMap->m_iHmSize+x;
+
+			kVertex.Set(fScaleX ,pkHmVertex[iVertexIndex].height*HEIGHTMAP_SCALE, fScaleZ);
+			kVertex += (CamPos + kMap->m_kCornerPos);
+			glVertex3f(kVertex.x,kVertex.y,kVertex.z);					
+			
+			kNormal = pkHmVertex[ iVertexIndex ].normal;
+			kVertex += kNormal * 1;
+			glVertex3f(kVertex.x,kVertex.y,kVertex.z);					
+		}
+	}
+
+
+	glEnd();
+}
+
+void Render::DrawHMSelected(HeightMap* kmap, vector<HMSelectVertex> kSelected)
+{
+	for(int i=0; i<kSelected.size(); i++) {
+		kmap->verts[kSelected[i].m_iIndex].height = 3 * kSelected[i].m_fValue;
+		}
+}
 
 // Returns Min/Max hojd i vald patch
 void Render::GetMinMax(HeightMap* kMap, float& fMin, float& fMax, int xp,int zp,int iSize)
@@ -969,6 +1008,7 @@ void Render::DrawPatch(HeightMap* kMap,Vector3 CamPos,int xp,int zp,int iSize,bo
 	HM_vert* pkHmVertex = kMap->verts;
 	int z;
 	
+//	DumpGLState("fisk.txt");
 	for(z = zp ; z < zp+iSize; z+=iStep){
 		//if(z >= kMap->m_iHmSize-iStep)
 		//	break;			

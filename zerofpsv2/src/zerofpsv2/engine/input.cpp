@@ -79,7 +79,7 @@ void Input::Update(void)
 			case SDL_KEYDOWN:
 				//put key in list
 				m_aPressedKeys.push(  SDLToZeroFpsKey(m_kEvent.key.keysym.sym)  );
-				cout << "Key Qued: " << m_kEvent.key.keysym.sym << endl;
+				//cout << "Key Qued: " << m_kEvent.key.keysym.sym << endl;
 
 				if(m_aPressedKeys.size()>m_iQueueLength)
 					m_aPressedKeys.pop();
@@ -87,7 +87,7 @@ void Input::Update(void)
 				//set button as pressed		
 				iZfKey = (Buttons) SDLToZeroFpsKey(m_kEvent.key.keysym.sym);
 
-				cout << "Key Pressed: " << iZfKey << " - " << GetKeyName(iZfKey) << endl;
+				//cout << "Key Pressed: " << iZfKey << " - " << GetKeyName(iZfKey) << endl;
 				m_akKeyState[iZfKey].m_bDown = true;	
     			break;			
 
@@ -404,7 +404,7 @@ int Input::GetQueuedKey()
 				printf("GetQueuedKey: value < 0");
 			}
 
-			cout << "GetQueuedKey: " << value << endl;
+			//cout << "GetQueuedKey: " << value << endl;
 
 			return value;
 		}
