@@ -1443,6 +1443,7 @@ void MistServer::ClientInit()
 
 bool MistServer::OnPreConnect(IPaddress kRemoteIp, char* szLogin, char* szPass)
 {
+	cout << "MistServer::OnPreConnect" << endl;
 	//dessa skall du fixa till vim =D
 	string strPlayer		= szLogin;
 	string strPasswd		= szPass;
@@ -1491,6 +1492,7 @@ bool MistServer::OnPreConnect(IPaddress kRemoteIp, char* szLogin, char* szPass)
 
 void MistServer::OnServerClientJoin(ZFClient* pkClient,int iConID, char* szLogin, char* szPass)
 {
+	cout << "MistServer::OnServerClientJoin" << endl;
 	//dessa skall du fixa till vim =D
 	string strPlayer		= szLogin;
 	string strPasswd		= szPass;
@@ -1516,6 +1518,7 @@ void MistServer::OnServerClientJoin(ZFClient* pkClient,int iConID, char* szLogin
 
 void MistServer::SpawnPlayer(int iConID)
 {
+	cout << "MistServer::SpawnPlayer" << endl;
 	if(m_pkFps->m_kClient[iConID].m_strCharacter.size() == 0) {
 		m_pkFps->PrintToClient(iConID, "You must select a character before you can join" );
 		return;
@@ -2164,7 +2167,7 @@ int MistServer::CreatePlayer(const char* csPlayer,const char* csCharacter,const 
 	
 	if(pkObject)
 	{	
-		Vector3 kStartPos = Vector3(0,0,0);
+		Vector3 kStartPos = Vector3(0,3,0);
 				
 		//try to get recal position from characterstats
 		CharacterProperty* pkCP = (CharacterProperty*)pkObject->GetProperty("P_CharStats");
@@ -2190,7 +2193,7 @@ int MistServer::CreatePlayer(const char* csPlayer,const char* csCharacter,const 
 		//finaly set objects position
 		pkObject->SetWorldPosV(kStartPos);
 		
-		cout<<"setting pos:"<<kStartPos.x<<" "<<kStartPos.y<<" "<<kStartPos.z<<endl;
+		cout<<"setting char pos:"<<kStartPos.x<<" "<<kStartPos.y<<" "<<kStartPos.z<<endl;
 		
 		//setup tracker to correct tracker id
 		P_Track* pkTrack = dynamic_cast<P_Track*>(pkObject->GetProperty("P_Track"));	

@@ -2721,7 +2721,9 @@ bool EntityManager::CallFunction(Entity* pkEntity, const char* acFunction,vector
 {
 	//set self id before calling the funktion
 	ObjectManagerLua::g_iCurrentObjectID = pkEntity->m_iEntityID;	
-		
+	
+	cout << "Calling Func: " << acFunction << endl;
+
 	if(pkParams)
 		return m_pkScript->Call(pkEntity->GetEntityScript(), (char*)acFunction,*pkParams);
 	else

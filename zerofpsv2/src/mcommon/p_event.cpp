@@ -54,7 +54,7 @@ bool P_Event::SendEvent(const char* acEvent)
 	if(m_pkObject->GetEntityScript() != NULL)
 	{
 		//set self id before calling the funktion
-		MistLandLua::g_iCurrentObjectID = m_pkObject->GetEntityID();
+		ObjectManagerLua::g_iCurrentObjectID = m_pkObject->GetEntityID();
 		
 		bool bSuccess = m_pkScriptSys->Call(m_pkObject->GetEntityScript(), (char*)acEvent,0,0);
 		//cout << "Calling Event: " << acEvent << " = " << bSuccess << endl;
@@ -70,7 +70,7 @@ bool P_Event::SendObjectClickEvent(const char* acType,int iCallerObject )
 	if(m_pkObject->GetEntityScript() && acType != NULL)
 	{
 		//set self id before calling the funktion
-		MistLandLua::g_iCurrentObjectID = m_pkObject->GetEntityID();
+		ObjectManagerLua::g_iCurrentObjectID = m_pkObject->GetEntityID();
 		
 		//set caller id
 		MistLandLua::g_iCurrentPCID = iCallerObject;
@@ -98,7 +98,7 @@ bool P_Event::SendGroudClickEvent(const char* acType,Vector3 kPos,int iCallerObj
 	if(m_pkObject->GetEntityScript() && acType != NULL)
 	{
 		//set self id before calling the funktion
-		MistLandLua::g_iCurrentObjectID = m_pkObject->GetEntityID();
+		ObjectManagerLua::g_iCurrentObjectID = m_pkObject->GetEntityID();
 		
 		//set caller id
 		MistLandLua::g_iCurrentPCID = iCallerObject;

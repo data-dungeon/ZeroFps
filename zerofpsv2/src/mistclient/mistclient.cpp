@@ -112,6 +112,9 @@ MistClient::MistClient(char* aName,int iWidth,int iHeight,int iDepth)
 
 void MistClient::OnInit() 
 {
+	m_pkZFVFileSystem->AddRootPath( string("../data/mistlands/") ,"data/");
+	m_pkZFVFileSystem->AddRootPath( string("../data/dm/") ,"data/");
+
 	m_pkConsole->Printf(" MistClient ");
 	m_pkConsole->Printf("--------------------------------");
 	m_pkConsole->Printf("");
@@ -1732,10 +1735,10 @@ void MistClient::UpdateCullObjects()
 	Vector3 kStart = m_pkCamera->GetPos();
 	Vector3 kDir = pkCar->GetWorldPosV() - m_pkCamera->GetPos();
 
-   //if ( kDir != Vector3::ZERO )
+   if ( kDir != Vector3::ZERO )
       kDir.Unit();	
-   //else
-   //   return;
+   else
+      return;
 	
 	float d = (pkCar->GetWorldPosV() - kStart).Length() + fAddRadius ;
 

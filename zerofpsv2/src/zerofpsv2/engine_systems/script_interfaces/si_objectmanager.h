@@ -18,20 +18,19 @@ namespace ObjectManagerLua
 	void ENGINE_SYSTEMS_API Push();
 	void ENGINE_SYSTEMS_API Pop();	
 
-	extern ZFScriptSystem* 		g_pkScript;
+	extern ZFScriptSystem* 	g_pkScript;
+	extern EntityManager*	g_pkObjMan;
 	
-	extern EntityManager* g_pkObjMan;
-	
-	extern Entity*			g_pkLastObject;
-	extern Entity*			g_pkLastParent;
-	extern Property*		g_pkLastProperty;
-	extern Entity*			g_pkReturnObject;
+	extern ENGINE_SYSTEMS_API	Entity*		g_pkLastObject;
+	extern ENGINE_SYSTEMS_API	Entity*		g_pkLastParent;
+	extern ENGINE_SYSTEMS_API	Property*	g_pkLastProperty;
+	extern ENGINE_SYSTEMS_API	Entity*		g_pkReturnObject;
 
-	extern Entity*			g_pkLastParentBak;
-	extern Property*		g_pkLastPropertyBak;
-	extern Entity*			g_pkReturnObjectBak;
+	extern ENGINE_SYSTEMS_API	Entity*		g_pkLastParentBak;
+	extern ENGINE_SYSTEMS_API	Property*	g_pkLastPropertyBak;
+	extern ENGINE_SYSTEMS_API	Entity*		g_pkReturnObjectBak;
 
-	extern int						g_iCurrentObjectID;
+	extern ENGINE_SYSTEMS_API	int			g_iCurrentObjectID;
 
 	//create funktions  --- these are only used inside the create funktion
 	int ENGINE_SYSTEMS_API InitObjectLua(lua_State* pkLua);

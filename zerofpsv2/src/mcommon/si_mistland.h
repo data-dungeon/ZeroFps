@@ -11,6 +11,7 @@ class PSystemProperty;
 #include "../zerofpsv2/engine/entitymanager.h"
 #include "../zerofpsv2/engine_systems/propertys/p_psystem.h"
 #include "../zerofpsv2/engine_systems/propertys/p_tcs.h"
+#include "../zerofpsv2/engine_systems/script_interfaces/si_objectmanager.h"
 #include "p_event.h"
 #include "p_ml.h"
 #include <map>
@@ -32,7 +33,7 @@ namespace MistLandLua
 	extern EntityManager*		g_pkObjMan;
 	extern P_ServerInfo*			g_pkServerInfo;
 
-	extern int						g_iCurrentObjectID;
+//	extern int						g_iCurrentObjectID;
 	extern int						g_iLastCollidedID;
 	extern int MCOMMON_API 		g_iCurrentPCID;
 
