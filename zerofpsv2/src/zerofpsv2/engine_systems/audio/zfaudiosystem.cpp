@@ -178,7 +178,6 @@ ZFSoundInfo::ZFSoundInfo(const char* c_szFile, Vector3 pos,
 
 	m_pkResource = NULL;
 	m_bLoopingNoLongerHearable = false;
-	m_fReferenceDistance = 1.0f;
 }
 
 ZFSoundInfo::~ZFSoundInfo()
@@ -201,6 +200,7 @@ ZFAudioSystem::ZFAudioSystem(int uiMaxCachSize) : ZFSubSystem("ZFAudioSystem")
 	m_bIsValid = false;
 	m_uiCurrentCachSize = 0;
 	m_uiMaxCachSize = uiMaxCachSize;
+	m_fReferenceDistance = 1.0f;
 
 	RegisterVariable("r_enablesound",&m_iEnableSound,CSYS_INT);
 	RegisterVariable("r_ReferenceDistance",&m_fReferenceDistance,CSYS_FLOAT);
