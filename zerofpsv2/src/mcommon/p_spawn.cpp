@@ -6,7 +6,7 @@ P_Spawn::P_Spawn()
 {
 	strcpy(m_acName,"P_Spawn");		
 	m_iType=PROPERTY_TYPE_NORMAL|PROPERTY_TYPE_RENDER;
-	m_iSide=PROPERTY_SIDE_SERVER| PROPERTY_SIDE_CLIENT;
+	m_iSide=PROPERTY_SIDE_SERVER|PROPERTY_SIDE_CLIENT;
 	
 	m_pkFps=static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
 	m_pkObjectMan=static_cast<EntityManager*>(g_ZFObjSys.GetObjectPtr("EntityManager"));
@@ -27,11 +27,13 @@ P_Spawn::P_Spawn()
 
 void P_Spawn::Update()
 {
+	if(!m_pkFps->m_bServerMode)	
+		return;
+	
 	//draw a ball on the server
 	if( m_pkObjMan->IsUpdate(PROPERTY_TYPE_RENDER) ) 
 	{
-		if(m_pkFps->m_bServerMode)
-			m_pkRender->Sphere(m_pkObject->GetWorldPosV(),0.5,1,Vector3(1,0,0),true);
+		m_pkRender->Sphere(m_pkObject->GetWorldPosV(),0.5,1,Vector3(1,0,0),true);
 		return;
 	}
 	

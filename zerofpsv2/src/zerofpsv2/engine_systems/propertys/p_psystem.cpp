@@ -55,7 +55,7 @@ P_PSystem::P_PSystem()
    bNetwork = true;
 
 	m_iType = PROPERTY_TYPE_RENDER|PROPERTY_TYPE_NORMAL;
-	m_iSide = PROPERTY_SIDE_CLIENT;
+	m_iSide = PROPERTY_SIDE_CLIENT|PROPERTY_SIDE_SERVER;
 	m_iSortPlace =	9;
 
 	strcpy(m_acName,"P_PSystem");

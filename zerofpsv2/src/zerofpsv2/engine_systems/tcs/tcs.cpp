@@ -237,12 +237,12 @@ bool Tcs::MeshVSSphereTest(P_Tcs* pkMesh,P_Tcs* pkSphere)
 		verts[1] = m_kModelMatrix.VectorTransform((*pkMesh->m_pkVertex)[(*pkMesh->m_pkFaces)[f].iIndex[1]]);		
 		verts[2] = m_kModelMatrix.VectorTransform((*pkMesh->m_pkVertex)[(*pkMesh->m_pkFaces)[f].iIndex[2]]);		
 	
-		//debug		
+/*		//debug		
 		m_pkRender->SetColor(Vector3(1,1,1));
 		m_pkRender->Line(verts[0],verts[1]);
 		m_pkRender->Line(verts[1],verts[2]);		
 		m_pkRender->Line(verts[2],verts[0]);		
-		
+*/		
 		
 		
 		if(TestSphereVSPolygon(verts,pkSphere))

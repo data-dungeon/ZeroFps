@@ -151,7 +151,7 @@ class ENGINE_API ZeroFps : public I_ZeroFps {
 		void Run_Server();
 		void Run_Client();
 		void Draw_EngineShell();		
-		void Update_System();
+		void Update_System(bool bServer);
 
 		
 

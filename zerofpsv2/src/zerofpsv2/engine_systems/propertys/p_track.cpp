@@ -90,7 +90,7 @@ P_Track::P_Track()
 
 	strcpy(m_acName,"P_Track");		
 	m_iType = PROPERTY_TYPE_NORMAL;
-	m_iSide = PROPERTY_SIDE_SERVER | PROPERTY_SIDE_CLIENT;
+	m_iSide = PROPERTY_SIDE_SERVER;
 
 	m_fNextMove			= m_pkFps->GetGameTime() + 1.0;
 	m_iZoneNum			= 0;

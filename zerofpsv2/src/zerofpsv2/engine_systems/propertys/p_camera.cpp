@@ -10,7 +10,7 @@ P_Camera::P_Camera()
 	m_eCameraType = CAM_TYPEFIRSTPERSON;
 	strcpy(m_acName,"P_Camera");	
 
-	m_iType=PROPERTY_TYPE_NORMAL;
+	m_iType=PROPERTY_TYPE_RENDER;
 	m_iSide=PROPERTY_SIDE_CLIENT;
 
 	m_pkFps = static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));

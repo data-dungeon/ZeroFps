@@ -1142,7 +1142,7 @@ void MistServer::HandleOrders()
                      kSendType.m_iClientID = order->m_iClientID;
                      kSendType.m_kSendType = "itemdata";
                   
-                     pkItProp->AddSendsData ( kSendType );
+//                     pkItProp->AddSendsData ( kSendType );
                  }
 
             }
@@ -1169,7 +1169,7 @@ void MistServer::HandleOrders()
                   SendType kSend;
                   kSend.m_iClientID = order->m_iClientID;
                   kSend.m_kSendType = "all";
-                  pkC->AddSendsData ( kSend );
+//                  pkC->AddSendsData ( kSend );
                }
             }            
             else
@@ -1196,7 +1196,7 @@ void MistServer::HandleOrders()
                      kSendType.m_iClientID = order->m_iClientID;
                      kSendType.m_kSendType = "skills";
                   
-                     pkCP->AddSendsData ( kSendType );
+//                     pkCP->AddSendsData ( kSendType );
                  //}
 
             }
@@ -1223,7 +1223,7 @@ void MistServer::HandleOrders()
                      kSendType.m_iClientID = order->m_iClientID;
                      kSendType.m_kSendType = "data";
                   
-                     pkCP->AddSendsData ( kSendType );
+//                     pkCP->AddSendsData ( kSendType );
                //  }
 
             }
@@ -1250,7 +1250,7 @@ void MistServer::HandleOrders()
                      kSendType.m_iClientID = order->m_iClientID;
                      kSendType.m_kSendType = "attributes";
                   
-                     pkCP->AddSendsData ( kSendType );
+//                     pkCP->AddSendsData ( kSendType );
                  //}
 
             }

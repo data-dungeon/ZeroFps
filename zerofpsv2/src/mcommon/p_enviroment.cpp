@@ -127,7 +127,7 @@ ZFResource* Create__EnvSetting()
 P_Enviroment::P_Enviroment()
 {
 	strcpy(m_acName,"P_Enviroment");		
-	m_iType=PROPERTY_TYPE_NORMAL;
+	m_iType=PROPERTY_TYPE_RENDER;
 	m_iSide=PROPERTY_SIDE_CLIENT;
 	
 	m_pkFps=static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));

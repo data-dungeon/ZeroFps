@@ -323,8 +323,6 @@ void ZeroFps::Run_EngineShell()
 		m_pkInput->Reset();
 	}
 
-	//update system
-	Update_System();
 
 }
 
@@ -332,6 +330,9 @@ void ZeroFps::Run_Server()
 {
 	//update zones
 	//m_pkLevelMan->UpdateZones();			
+	
+	//update system
+	Update_System(true);
 	
 
 }
@@ -345,7 +346,11 @@ void ZeroFps::Run_Client()
 		
 	//run application main loop
 	m_pkApp->OnIdle();
-	m_pkObjectMan->Update(PROPERTY_TYPE_NORMAL,PROPERTY_SIDE_CLIENT,false);
+	
+//	if(!m_bServerMode)
+//		m_pkObjectMan->Update(PROPERTY_TYPE_NORMAL,PROPERTY_SIDE_CLIENT,false);
+	if(!m_bServerMode)
+		Update_System(false);
 		
 
 	//update zones
@@ -382,7 +387,7 @@ void ZeroFps::Run_Client()
 
 }
 
-void ZeroFps::Update_System()
+void ZeroFps::Update_System(bool bServer)
 {
 	int iLoops;
 
@@ -422,7 +427,11 @@ void ZeroFps::Update_System()
 		{
 			if(m_bRunWorldSim) {			
 				//update all normal propertys
-				m_pkObjectMan->Update(PROPERTY_TYPE_NORMAL,PROPERTY_SIDE_SERVER,false);
+				if(bServer)					
+					m_pkObjectMan->Update(PROPERTY_TYPE_NORMAL,PROPERTY_SIDE_SERVER,false);
+				else
+					m_pkObjectMan->Update(PROPERTY_TYPE_NORMAL,PROPERTY_SIDE_CLIENT,false);
+				
 				m_pkObjectMan->UpdateGameMessages();
 
 				//update physicsengine
@@ -524,10 +533,12 @@ void ZeroFps::MainLoop(void) {
 			Run_Server();
 			}*/
 
-		if(m_bClientMode)	{
+		if(m_bClientMode)
 			Run_Client();
-			}
-
+		
+		if(m_bServerMode)
+			Run_Server();			
+		
 		Draw_EngineShell();
 	}
 

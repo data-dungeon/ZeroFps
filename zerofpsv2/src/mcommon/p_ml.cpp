@@ -111,6 +111,8 @@ void P_Ml::AddAction(const char* csAction)
 
 void P_Ml::PackTo( NetPacket* pkNetPacket, int iConnectionID  ) 
 {
+	pkNetPacket->Write(&m_bShowText,sizeof(m_bShowText));
+
 	int nr = m_kActions.size();
 	
 	pkNetPacket->Write(&nr,sizeof(nr));
@@ -125,6 +127,8 @@ void P_Ml::PackTo( NetPacket* pkNetPacket, int iConnectionID  )
 
 void P_Ml::PackFrom( NetPacket* pkNetPacket, int iConnectionID  ) 
 {
+	pkNetPacket->Read(&m_bShowText,sizeof(m_bShowText));
+
 	int nr;	
 	
 	pkNetPacket->Read(&nr,sizeof(nr));

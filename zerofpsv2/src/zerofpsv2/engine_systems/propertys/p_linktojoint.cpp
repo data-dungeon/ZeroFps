@@ -7,7 +7,7 @@
 P_LinkToJoint::P_LinkToJoint() 
 {
 	strcpy(m_acName,"P_LinkToJoint");		
-	m_iType = PROPERTY_TYPE_NORMAL;
+	m_iType = PROPERTY_TYPE_RENDER;
 	m_iSide = PROPERTY_SIDE_SERVER | PROPERTY_SIDE_CLIENT;
 
 	SetJoint("joint0");
