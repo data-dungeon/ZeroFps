@@ -7,13 +7,19 @@
 
 void P_PSystem::Update()
 {
-
 	if ( m_pkPSystem )
 	{
+		
+		
 	
       // returns true if the PSystem is finished
 		if ( !m_pkPSystem->Update( m_pkObject->GetIWorldPosV(), m_pkObject->GetWorldRotM() ) )
- 		   m_pkPSystem->Draw();
+		{
+ 		   if(m_pkObjMan->IsUpdate(PROPERTY_TYPE_RENDER))
+	 		   m_pkPSystem->Draw();
+	 		else
+		 		glPopAttrib();
+ 		}
       else
       {
          if ( m_pkPSystem->m_pkPSystemType->m_kPSystemBehaviour.m_bRemoveParentOnFinish )
@@ -47,7 +53,7 @@ P_PSystem::P_PSystem()
 {
    bNetwork = true;
 
-	m_iType = PROPERTY_TYPE_RENDER;
+	m_iType = PROPERTY_TYPE_RENDER|PROPERTY_TYPE_NORMAL;
 	m_iSide = PROPERTY_SIDE_CLIENT;
 	m_iSortPlace =	9;
 
