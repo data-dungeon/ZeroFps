@@ -704,7 +704,8 @@ void Tcs::UpdateCollissions(vector<Tcs_collission*>*	pkCollissions)
 			
 			//increse number of tests
 			m_iNrOfTests++;
-									
+
+												
 			if(((m_kBodys[B1]->m_iTestType==E_BOX) && (m_kBodys[B2]->m_iTestType==E_MESH)) || 
 				((m_kBodys[B1]->m_iTestType==E_MESH) && (m_kBodys[B2]->m_iTestType==E_BOX)))
 			{
@@ -731,7 +732,13 @@ void Tcs::UpdateCollissions(vector<Tcs_collission*>*	pkCollissions)
 			{
 				//SPHERE VS SPHERE
 				TestSphereVsSphere(m_kBodys[B1],m_kBodys[B2],pkCollissions);
-			}							
+			}
+			else if	(((m_kBodys[B1]->m_iTestType==E_SPHERE) && (m_kBodys[B2]->m_iTestType==E_HMAP)) || 
+						((m_kBodys[B1]->m_iTestType==E_HMAP) && (m_kBodys[B2]->m_iTestType==E_SPHERE)))
+			{
+				//SPHERE VS MESH ( HEIGHTMAP)
+				TestSphereVsMesh(m_kBodys[B1],m_kBodys[B2],pkCollissions);			
+			}
 		}
 	}
 }
@@ -838,7 +845,9 @@ void Tcs::UpdateAABBs()
 				pkBody->m_kAABBMin.Set(-pkBody->m_fRadius,-pkBody->m_fRadius,-pkBody->m_fRadius);
 
 				break;
-				
+			
+			// mesh and hmap uses the same
+			case E_HMAP:
 			case E_MESH:
 			{
 				if(!pkBody->m_bHavePolygonData)
@@ -1012,31 +1021,48 @@ P_Tcs* Tcs::CharacterLineTest(Vector3 kStart,Vector3 kDir,P_Tcs* pkTester)
 	Vector3 kPos2 = kStart + kDir*10;
 		
 	for(unsigned int i=0;i<m_kBodys.size();i++)
-	{		
+	{				
 		if(	(m_kBodys[i] == pkTester) || 
-				(!pkTester->m_akWalkableGroups[m_kBodys[i]->m_iGroup]) || 
-				(!m_kBodys[i]->m_bHavePolygonData)	)
+				(!pkTester->m_akWalkableGroups[m_kBodys[i]->m_iGroup]) )
 			continue;
+			
 	
 		//check if entitys are in neighbour zone
 		if(!IsInNerbyZone(pkTester,m_kBodys[i]))
 			continue;							
-					
-		if(CharacterTestLineVSSphere(kStart,kPos2,m_kBodys[i]))
-		{						
-			if(CharacterTestLineVSMesh(kStart,kDir,m_kBodys[i]))
-			{
-				d = kStart.DistanceTo(m_kLastTestPos);				
-				if(d < fClosest)
-				{						
-					m_kLastLineTestColPos = m_kLastTestPos;
-					fClosest = d;
-					pkClosest = m_kBodys[i];
-				}													
-			}					
-		}			
+		
+			
+		switch(m_kBodys[i]->m_iTestType)
+		{
+			case E_MESH:
+				if(CharacterTestLineVSSphere(kStart,kPos2,m_kBodys[i]))
+					if(CharacterTestLineVSMesh(kStart,kDir,m_kBodys[i]))
+					{
+						d = kStart.DistanceTo(m_kLastTestPos);				
+						if(d < fClosest)
+						{						
+							m_kLastLineTestColPos = m_kLastTestPos;
+							fClosest = d;
+							pkClosest = m_kBodys[i];
+						}													
+					}					
+				break;
+				
+			case E_HMAP:
+				if(CharacterTestLineVSSphere(kStart,kPos2,m_kBodys[i]))
+					if(CharacterTestLineVSMesh(kStart,kDir,m_kBodys[i]))
+					{
+						d = kStart.DistanceTo(m_kLastTestPos);				
+						if(d < fClosest)
+						{						
+							m_kLastLineTestColPos = m_kLastTestPos;
+							fClosest = d;
+							pkClosest = m_kBodys[i];
+						}													
+					}					
+				break;
+		}
 	}
-	
 
 	return pkClosest;
 }
@@ -1324,7 +1350,7 @@ void Tcs::TestSphereVsMesh(P_Tcs* pkBody1,P_Tcs* pkBody2,vector<Tcs_collission*>
 	int nroftests = 0;
 	
 	//if body1 is the mesh just flip them,body2 shuld always be the mesh
-	if(pkBody1->m_iTestType==E_MESH)
+	if( (pkBody1->m_iTestType==E_MESH) || pkBody1->m_iTestType==E_HMAP )
 	{
 		P_Tcs* b2c = pkBody2;	
 		pkBody2 = pkBody1;
@@ -1347,8 +1373,7 @@ void Tcs::TestSphereVsMesh(P_Tcs* pkBody1,P_Tcs* pkBody2,vector<Tcs_collission*>
 		temp->pkBody2 = pkBody2;	
 		temp->kNormals.push_back((pkBody1->m_kNewPos - m_kLastTestPos).Unit());
 		temp->kPositions.push_back(m_kLastTestPos);
-		
-			
+					
 		pkCollissions->push_back(temp);				
 	}
 		

@@ -44,7 +44,7 @@ void P_HMRP2::Init()
 
 void P_HMRP2::Update() 
 {	
-	cout << "Render HMAP" << endl; 
+	//cout << "Render HMAP" << endl; 
 	if(m_pkHeightMap!=NULL)
 	{
 		m_pkHeightMap->SetPosition(m_pkEntity->GetWorldPosV());

@@ -99,7 +99,7 @@ void P_Tcs::Update()
 {	
 	if( m_pkEntityManager->IsUpdate(PROPERTY_TYPE_NORMAL) ) 
 	{
-		if(m_iTestType == E_MESH)
+		if( (m_iTestType == E_MESH) || (m_iTestType == E_HMAP))
 		{
 			if(!m_bHavePolygonData)
 			{
