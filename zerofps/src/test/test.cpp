@@ -1,7 +1,7 @@
 #include "test.h"
 
 
-Test olle("MegaGame",800,600,16);
+Test olle("MegaGame",1024,768,16);
 
 Test::Test(char* aName,int iWidth,int iHeight,int iDepth): Application(aName,iWidth,iHeight,iDepth) {
 
@@ -50,11 +50,11 @@ void Test::OnInit(void) {
 	pkLight->SetCamera(pkFps->m_kCamPos);
 	
 	LightSource *spot=new LightSource();
-	Vector3 *spotpos=new Vector3(25,10,25);
-	Vector3 *spotrot=new Vector3(.8,-.2,0);	
+	Vector3 *spotpos=new Vector3(55,50,40);
+	Vector3 *spotrot=new Vector3(0,-1,0);	
 		spot->kPos=spotpos;
 		spot->kRot=spotrot;
-		spot->kDiffuse=Vector4(0,0,2,1);
+		spot->kDiffuse=Vector4(0,0,6,1);
 		spot->kAmbient=Vector4(0,0,0,0);		
 		spot->fCutoff=20;	
 		spot->fExp=20;
@@ -68,13 +68,13 @@ void Test::OnInit(void) {
 	Vector3 *solpos=new Vector3(1000,1000,1000);
 		sol->kRot=solrot;
 		sol->kPos=solpos;		
-		sol->kDiffuse=Vector4(1.0,1.0,1.0,1);
-		sol->kAmbient=Vector4(.1,.1,.1,.1);
+		sol->kDiffuse=Vector4(.9,0.9,0.9,1);
+		sol->kAmbient=Vector4(0,0,0,0);
 		sol->iType=POINT_LIGHT;			
 		sol->iPriority=10;
 
 
-//	pkLight->Add(spot);
+	pkLight->Add(spot);
 	pkLight->Add(sol);
 
 }
