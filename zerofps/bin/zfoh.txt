@@ -21,7 +21,7 @@ class object
 		class ZeroRTSEngineringCrew
 			parent ZeroRTSUnit
 			add P_UnitMoveAI
-			set MadProperty m_kMadFile /data/mad/adaptor.mad
+			set MadProperty m_kMadFile /data/mad/rts/unit/ecrew.mad
 			set MadProperty m_fScale 1
 
 		class ZeroRTSLightTank
@@ -30,12 +30,63 @@ class object
 			set MadProperty m_kMadFile /data/mad/rts/unit/tankl.mad
 			set MadProperty m_fScale 0.3
 
+		class ZeroRTSHeavyTank
+			parent ZeroRTSUnit
+			add P_UnitMoveAI
+			set MadProperty m_kMadFile /data/mad/rts/unit/tankh.mad
+			set MadProperty m_fScale 0.3
+
+		class ZeroRTSCommandCenter
+			parent ZeroRTSUnit
+			set MadProperty m_kMadFile /data/mad/rts/build/cmd.mad
+			set MadProperty m_fScale 0.3
 
 		class ZeroRTSFactory
 			parent ZeroRTSUnit
-			add P_UnitMoveAI
 			set MadProperty m_kMadFile /data/mad/rts/build/factory.mad
 			set MadProperty m_fScale 0.3
+
+		class ZeroRTSPowerPlant
+			parent ZeroRTSUnit
+			set MadProperty m_kMadFile /data/mad/rts/build/power.mad
+			set MadProperty m_fScale 0.3
+
+		class ZeroRTSRadar
+			parent ZeroRTSUnit
+			set MadProperty m_kMadFile /data/mad/rts/build/radar.mad
+			set MadProperty m_fScale 0.3
+
+		class ZeroRTSSuply
+			parent ZeroRTSUnit
+			set MadProperty m_kMadFile /data/mad/rts/build/suply.mad
+			set MadProperty m_fScale 0.3
+
+		class ZeroRTSBarack
+			parent ZeroRTSUnit
+			set MadProperty m_kMadFile /data/mad/rts/build/barack.mad
+			set MadProperty m_fScale 0.3
+
+		class ZeroRTSFactory
+			parent ZeroRTSUnit
+			set MadProperty m_kMadFile /data/mad/rts/build/factory.mad
+			set MadProperty m_fScale 0.3
+
+		class ZeroRTSShipYard
+			parent ZeroRTSUnit
+			set MadProperty m_kMadFile /data/mad/rts/build/shipyard.mad
+			set MadProperty m_fScale 0.3
+		
+		class ZeroRTSTraining
+			parent ZeroRTSUnit
+			set MadProperty m_kMadFile /data/mad/rts/build/training.mad
+			set MadProperty m_fScale 0.3
+		
+		class ZeroRTSWeaponFactory
+			parent ZeroRTSUnit
+			set MadProperty m_kMadFile /data/mad/rts/build/wepfact.mad
+			set MadProperty m_fScale 0.3
+		
+
 
 	class physics
 		parent object
