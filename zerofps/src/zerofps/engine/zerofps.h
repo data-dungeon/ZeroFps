@@ -45,6 +45,7 @@ class ENGINE_API ZeroFps : public ZFObject {
 			FID_SERVER,			// Start a Server.
 			FID_DIR,
 			FID_CD,
+			FID_LISTMAD,
 		};
 		
 		SDL_Surface* m_pkScreen;		
@@ -91,7 +92,7 @@ class ENGINE_API ZeroFps : public ZFObject {
 		PhysicsEngine* m_pkPhysEngine;
 
 //		vector<Core>		akCoreModells;
-		vector<Mad_Core>	akCoreModells;
+		vector<Mad_Core*>	akCoreModells;
 				
 		
 		int LoadMAD(const char* filename);

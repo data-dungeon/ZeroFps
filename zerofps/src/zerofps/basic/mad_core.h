@@ -20,13 +20,13 @@ using namespace std;
 // MAD - MD (Mesh Data)
 struct BASIC_API Mad_TextureCoo
 {
-	float	s;
-	float	t;
+	float	s;							// s Texture Coo.
+	float	t;							// t Texture Coo.
 };
 
 struct BASIC_API Mad_Face
 {
-	int		iIndex[3];
+	int		iIndex[3];					// Vertex Index of Face.
 };
 
 struct BASIC_API Mad_CoreMeshHeader
@@ -44,15 +44,15 @@ struct BASIC_API Mad_CoreTexture
 {
 	bool	bIsAlphaTest;				// True if needs alpha test.
 	bool	bTwoSided;					// True if two sided.
-	bool	bClampTexture;
+	bool	bClampTexture;				// True if texture should clamp texture coo.
 	char	ucTextureName[64];			// path/name of texture.
 };
 
 class BASIC_API Mad_CoreVertexFrame
 {
 private:
-	vector<Vector3>	akVertex;
-	vector<Vector3>	akNormal;
+	vector<Vector3>	akVertex;			// Array of all vertices.
+	vector<Vector3>	akNormal;			// Array of all normals.
 	
 public:
 	Mad_CoreVertexFrame() ;
@@ -112,7 +112,7 @@ struct BASIC_API Mad_CoreSubMesh
 class BASIC_API Mad_CoreMesh
 { 
 private:
-	vector<Mad_CoreTexture>			akTextures;
+	vector<Mad_CoreTexture>			akTextures;				
 	vector<Mad_TextureCoo>			akTextureCoo;
 	vector<Mad_Face>				akFaces;
 	vector<Mad_CoreVertexFrame>		akFrames;
@@ -283,19 +283,19 @@ public:
 // MAD File 
 struct BASIC_API Mad_Header
 {
-	int	m_iVersionNum;
+	int	m_iVersionNum;									// MAD_VERSION
 	
-	int	m_iNumOfMeshes;
-	int m_iNumOfAnimations;
+	unsigned int	m_iNumOfMeshes;						// Num of meshes in this file.
+	unsigned int	m_iNumOfAnimations;					// Num of bone animations in this file.
 };
 
 
 class BASIC_API Mad_Core
 {
 private:
-	vector<Mad_CoreMesh>			m_kMesh;
-	vector<Mad_CoreBoneAnimation>	m_kBoneAnim;
-	vector<Mad_CoreBone>			m_kSkelleton;
+	vector<Mad_CoreBone>			m_kSkelleton;		// Skelleton for modell.
+	vector<Mad_CoreBoneAnimation>	m_kBoneAnim;		// List of all bone animations for modell.
+	vector<Mad_CoreMesh>			m_kMesh;			// List of all mesh object for modell.
 
 	Matrix4		g_MadkbonetransformI[MAX_BONES];		// Inverse bone transformation matrix for bind pose
 
@@ -337,7 +337,7 @@ public:
 	void LoadSkelleton(const char* MadFileName);
 	void LoadAnimation(const char* MadFileName); 
 	void LoadMesh(const char* MDFileName);
-	void LoadMad(const char* MadFileName);
+	bool LoadMad(const char* MadFileName);
 
 	void SetAnimationTime(int iAnim, float fTime );
 	void SetBoneAnimationTime(int iAnim, float fTime );

@@ -1,5 +1,6 @@
 #include "zeroedit.h"
 #include "gui.h"
+#include "fh.h"
 
 ZeroEdit Editor("ZeroEdit",1024,768,16);
 
@@ -41,6 +42,7 @@ void ZeroEdit::OnInit(void)
 	g_ZFObjSys.Register_Cmd("listland",FID_LISTLAND,this);		
 	g_ZFObjSys.Register_Cmd("loadland",FID_LOADLAND,this);		
 	g_ZFObjSys.Register_Cmd("saveland",FID_SAVELAND,this);		
+	g_ZFObjSys.Register_Cmd("madview",FID_VIEWMAD,this);		
 
 	//start text =)
 	pkConsole->Printf("            ZeroEdit ");
@@ -463,6 +465,18 @@ void ZeroEdit::RunCommand(int cmdid, const CmdArgument* kCommand)
 				
 			pkConsole->Printf("Level saved");				
 			
+			break;
+		case FID_VIEWMAD:
+			if(kCommand->m_kSplitCommand.size() <= 1) {
+				pkConsole->Printf("madview [filename]");
+				break;
+			}
+			
+			pkConsole->Printf("Loading MAD %s", kCommand->m_kSplitCommand[1].c_str());				
+
+			Object *pkmad = new FHObject(kCommand->m_kSplitCommand[1].c_str());
+			pkmad->GetPos()=m_kDrawPos;
+			pkmad->AttachToClosestZone();
 			break;
 	}
 }

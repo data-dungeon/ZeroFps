@@ -7,8 +7,8 @@ Matrix4		g_MadkBoneMatrix;
 Quaternion	g_Madq[MAX_BONES];
 Vector3		g_Madpos[MAX_BONES];
 
-Vector3		g_akVertexBuffer[10000];
-Vector3		g_akNormalBuffer[10000];
+//Vector3		g_akVertexBuffer[10000];
+//Vector3		g_akNormalBuffer[10000];
 Vector3		g_TransformedVertex[10000];
 Vector3		g_TransformedNormal[10000];
 
@@ -29,7 +29,6 @@ Mad_Core::~Mad_Core()
 {
 
 }
-
 
 void Mad_Core::Save_SD(FILE* pkFp)
 {
@@ -151,9 +150,6 @@ float Mad_Core::GetAnimationLengthInS(int iAnim)
 { 
 	int iNumOfKeyFrames = m_kBoneAnim[iAnim].m_kBoneKeyFrames.size();
 	return (iNumOfKeyFrames * 0.1);
-/*	int iNumOfKeyFrames = m_kMesh[0].akAnimation[iAnim].KeyFrame.size();
-	return (iNumOfKeyFrames * 0.1);
-	return 0;*/
 }
 
 int Mad_Core::GetAnimationTimeInFrames(int iAnim)
@@ -168,36 +164,16 @@ void Mad_Core::SetReplaceTexture(char* szFileName)
 	for(int i = 0; i< kHead.iNumOfTextures; i++) {
 		sprintf(nisse, "../data/textures/%s.bmp", szFileName);
 //		aiReplaceTextureIndex[i] = pkTextureManger->Load(nisse,0);
-	}*/
-
+*/
 }
 
 
-
+/*
 void InversTransformMatrix(Matrix4& pkIn, Matrix4& pkOut)
 {
 	pkOut = pkIn;
 	pkOut = pkIn.Invert2();
-
-//	pkOut = pkIn;
-
-/*	swap(pkOut.RowCol[0][1], pkOut.RowCol[1][0]);
-	swap(pkOut.RowCol[0][2], pkOut.RowCol[2][0]);
-	swap(pkOut.RowCol[1][2], pkOut.RowCol[2][1]);
-
-	Vector3 Pos = pkIn.GetPos();
-	Pos = -Pos;
-	pkOut.SetPos(Pos);*/
-
-/*	cout << "Inverse: "<< endl;
-	pkIn.Print();
-	pkOut.Print();
-	Matrix4 res = pkOut;
-	res *= pkIn;
-	res.SetZeroDelta(0.001 );
-	res.Print(); 
-	cout << "End Inverse: "<< endl;*/
-}
+}*/
 
 void Mad_Core::SetUpBindPose()
 {
@@ -228,14 +204,9 @@ void Mad_Core::SetUpBindPose()
 
 	for (i = 0; i < m_kSkelleton.size(); i++) {
 		cout << "Invert " << m_kSkelleton[i].m_acName << endl ;
-		InversTransformMatrix(g_Madkbonetransform[i],g_MadkbonetransformI[i]);
+		g_MadkbonetransformI[i] = g_Madkbonetransform[i].Invert2();
+		//InversTransformMatrix(g_Madkbonetransform[i],g_MadkbonetransformI[i]);
 		}	
-
-/*	Matrix4 a;
-	Matrix4 b;
-	a.Identity();
-	a.Translate(456.4643455469,345346.654654,234346.564654);
-	InversTransformMatrix(a,b);*/
 }
 
 /*
@@ -290,16 +261,11 @@ void Mad_Core::SetupBonePose()
 	unsigned int i;
 	Vector3 Angles;
 
-//	cout << "Size: " << m_kBoneAnim[iActiveAnimation].m_kBoneKeyFrames.size() << endl;
-
 	int iNumOfFrame = m_kBoneAnim[iActiveAnimation].m_kBoneKeyFrames.size();
 	int iStartFrame = int(fActiveAnimationTime / 0.1);
 	int iEndFrame = iStartFrame + 1;
 	if(iEndFrame >= iNumOfFrame) 
 		iEndFrame = 0;
-
-	//if(iBoneFrame >= m_kBoneAnim[iActiveAnimation].m_kBoneKeyFrames.size() )
-	//	iBoneFrame = 0;
 
 	Mad_CoreBoneKey* pkStartKey = &m_kBoneAnim[iActiveAnimation].m_kBoneKeyFrames[iStartFrame].m_kBonePose[0];
 	Mad_CoreBoneKey* pkEndKey = &m_kBoneAnim[iActiveAnimation].m_kBoneKeyFrames[iEndFrame].m_kBonePose[0];
@@ -309,23 +275,15 @@ void Mad_Core::SetupBonePose()
 	float OneMinusFrameOffs = 1.0 - fFrameOffs;
 
 	for(i=0; i<m_kSkelleton.size(); i++) {
-/*		Angles = m_kSkelleton[i].m_kRotation;
-		g_Madq[i].AngleQuaternion(Angles);
-		g_Madpos[i] = m_kSkelleton[i].m_kPosition;*/
-	
-		//g_Madq[i].AngleQuaternion( pkStartKey[i].m_kRotation);
+		// Get Start/End Keys
 		kStart.AngleQuaternion(pkStartKey[i].m_kRotation); 
 		kEnd.AngleQuaternion(pkEndKey[i].m_kRotation); 
+
+		// Interp Keys
 		g_Madq[i].QuaternionSlerp(&kStart, &kEnd, fFrameOffs);
-		 
-		//g_Madpos[i] = pkStartKey[i].m_kPosition;
-		g_Madpos[i] = pkStartKey[i].m_kPosition * OneMinusFrameOffs +
-		pkEndKey[i].m_kPosition * fFrameOffs;
+		g_Madpos[i] = pkStartKey[i].m_kPosition * OneMinusFrameOffs + pkEndKey[i].m_kPosition * fFrameOffs;
 		}
 
-
-
-	Quaternion kTestQ;
 	for (i = 0; i < m_kSkelleton.size(); i++) {
 		g_MadkBoneMatrix.Identity();
 		g_MadkBoneMatrix = g_Madq[i].Inverse();
@@ -337,22 +295,10 @@ void Mad_Core::SetupBonePose()
 		else {
 			g_Madkbonetransform[i] = g_MadkBoneMatrix * g_Madkbonetransform[m_kSkelleton[i].m_iParent];
 		}
+
+		g_FullBoneTransform[i] = g_MadkbonetransformI[i] * g_Madkbonetransform[i];
 	}
-
-	Matrix4 kRes;
-
-	for (i = 0; i < m_kSkelleton.size(); i++) {
-		kRes = g_MadkbonetransformI[i];
-		kRes = kRes * g_Madkbonetransform[i];
-//		kRes *= g_Madkbonetransform[i];
-		//kRes.Print();
-//		kRes.Identity();
-		kRes.SetZeroDelta(0.001 );
-		g_FullBoneTransform[i] = kRes;
-		}	
 }
-
-
 
 void Mad_Core::ClearReplaceTexture(void)
 {
@@ -363,8 +309,6 @@ void Mad_Core::ClearReplaceTexture(void)
 int	Mad_Core::GetNumOfAnimations()
 {
 	return m_kBoneAnim.size();
-
-//	return m_kMesh[0].akAnimation.size();
 }
 
 void Mad_Core::SetAnimationTime( int iAnim, float fTime )
@@ -376,7 +320,6 @@ void Mad_Core::SetAnimationTime( int iAnim, float fTime )
 	int iFrame = int(fActiveAnimationTime / 0.1);
 	fFrameOffs = (fActiveAnimationTime / 0.1) - iFrame;
 	SetFrameI(m_kMesh[0].akAnimation[iActiveAnimation].KeyFrame[iFrame].iVertexFrame);
-
 }
 
 void Mad_Core::SetBoneAnimationTime(int iAnim, float fTime )
@@ -419,56 +362,9 @@ void Mad_Core::LoadMesh(FILE* pkFp)
 	kNewMesh.Load(pkFp);
 	m_kMesh.push_back(kNewMesh);
 
-	// Load Textures
-//	char nisse[256];
-	Mad_CoreMesh* pkMesh = &m_kMesh[0];
-
-/*		bool	bIsAlphaTest;				// True if needs alpha test.
-	bool	bTwoSided;					// True if two sided.
-	bool	bClampTexture;
-*/
-
-/*	for(int i=0; i<pkMesh->kHead.iNumOfTextures; i++) {
-		pkMesh->akTextures[i].bIsAlphaTest = false;
-		pkMesh->akTextures[i].bTwoSided = false;
-		pkMesh->akTextures[i].bClampTexture = false;
-		glGenTextures(1, &TexturesID[i]);	
-		 
-		img.free();
-		sprintf(nisse, "%s.tga", kNewMesh.akTextures[i].ucTextureName);
-		img.load(nisse);
-		if(img.bHasAlpha) {
-			pkMesh->akTextures[i].bIsAlphaTest = true;
-			pkMesh->akTextures[i].bTwoSided = true;
-			pkMesh->akTextures[i].bClampTexture = true;
-			}
-
-		img.MapColorToAlpha(0.9,0.9,0.9,1.0);
-		img.save("alptest.tga", true);
-		glBindTexture( GL_TEXTURE_2D, TexturesID[i] );		
-
-		glTexImage2D(GL_TEXTURE_2D, 0, 4, img.width, img.height, 0, GL_RGBA, 
-			GL_UNSIGNED_BYTE, img.pixels );
-
-		GLenum daerror = glGetError();
-		if(daerror != GL_NO_ERROR) {
-			cout << "Error is" << GetGLErrorString(daerror) << endl;
-			}
-		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-		if(pkMesh->akTextures[i].bClampTexture) {
-			glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S , GL_CLAMP);
-			glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T , GL_CLAMP);
-			}
-		
-		}		*/
+//	Mad_CoreMesh* pkMesh = &m_kMesh[0];
 }
 
-
-/*		bool	bIsAlphaTest;				// True if needs alpha test.
-	bool	bTwoSided;					// True if two sided.
-	bool	bClampTexture;
-*/
 
 void Mad_Core::LoadSkelleton(const char* MadFileName)
 {
@@ -494,24 +390,36 @@ void Mad_Core::LoadMesh(const char* MDFileName)
 
 
 
-void Mad_Core::LoadMad(const char* MadFileName)
+bool Mad_Core::LoadMad(const char* MadFileName)
 {
 	strcpy(Name,MadFileName);
 
-	cout << "LoadMad: " << MadFileName << endl;
 	FILE* MadFp = fopen(MadFileName, "rb");
+
+	if(!MadFp) {
+		cout << "Failed to find" << MadFileName << endl;
+		return false;
+		}
 
 	Mad_Header kMadHeader;
 	fread(&kMadHeader,sizeof(Mad_Header), 1, MadFp);
+	
+	// Check Versions Num
+	if(kMadHeader.m_iVersionNum != MAD_VERSION) {
+		cout << "Wrong version " << kMadHeader.m_iVersionNum << " in " << MadFileName << endl;
+		}	
 
-	cout << "m_iVersionNum: " << kMadHeader.m_iVersionNum << endl;
-	cout << "m_iNumOfMeshes: " << kMadHeader.m_iNumOfMeshes << endl;
-	cout << "m_iNumOfAnimations: " << kMadHeader.m_iNumOfAnimations << endl;
+/*
+	cout << "m_iVersionNum: "		<< kMadHeader.m_iVersionNum << endl;
+	cout << "m_iNumOfMeshes: "		<< kMadHeader.m_iNumOfMeshes << endl;
+	cout << "m_iNumOfAnimations: "	<< kMadHeader.m_iNumOfAnimations << endl;
+*/
+	
 
 	LoadSkelleton(MadFp);
 	SetUpBindPose();
 
-	int i;
+	unsigned int i;
 	for(i=0; i<kMadHeader.m_iNumOfAnimations; i++)
 		LoadAnimation(MadFp);
 
@@ -527,6 +435,8 @@ void Mad_Core::LoadMad(const char* MadFileName)
 		}
 
 	CalculateRadius();
+
+	return true;
 }
 
 Mad_CoreMesh* Mad_Core::GetMeshByID(int iMesh)
@@ -573,31 +483,24 @@ void Mad_Core::PrepareMesh(Mad_CoreMesh* pkMesh)
 	if(pkMesh->bNotAnimated)
 		return;
 	
-	//	return;
-	Matrix4 kFullTransform;
-
-	cout << "pkMesh->kHead.iNumOfVertex" << pkMesh->kHead.iNumOfVertex << endl;
+	//Matrix4 kFullTransform;
+	int iBoneConnection;
+	Vector3* pkVertex = &pkMesh->akFrames[0].akVertex[0];
+	Vector3* pkNormal = &pkMesh->akFrames[0].akNormal[0];
+ 
 	for(int i = 0; i<pkMesh->kHead.iNumOfVertex; i++) {
-		/*kFullTransform = g_MadkbonetransformI[0];
-		kFullTransform = g_Madkbonetransform[pkMesh->akBoneConnections[i]] 
-		g_MadkbonetransformI[pkMesh->akBoneConnections[i]];
-		g_TransformedVertex[i] = pkMesh->akFrames[0].akVertex[i];*/
-
-		kFullTransform.Identity();
-		kFullTransform = g_FullBoneTransform[ pkMesh->akBoneConnections[i] ];
-
-		if(pkMesh->akBoneConnections[i] < 0)
-			cout << "Error in boneconnection: " << pkMesh->akBoneConnections[i] << endl;
-		if(pkMesh->akBoneConnections[i] >= m_kSkelleton.size())
-			cout << "Error in boneconnection: " << pkMesh->akBoneConnections[i] << endl;
+		iBoneConnection = pkMesh->akBoneConnections[i];
+		g_TransformedVertex[i] = g_FullBoneTransform[iBoneConnection].VectorTransform( pkVertex[i] );
+		g_TransformedNormal[i] = g_FullBoneTransform[iBoneConnection].VectorRotate( pkNormal[i] );
 		
+		/*kFullTransform.Identity();
+		kFullTransform = g_FullBoneTransform[ pkMesh->akBoneConnections[i] ];
 		g_TransformedVertex[i] = kFullTransform.VectorTransform(pkMesh->akFrames[0].akVertex[i]);
 		g_TransformedNormal[i] = kFullTransform.VectorRotate(pkMesh->akFrames[0].akNormal[i]);
-		
-		//g_TransformedVertex[i] = pkMesh->akFrames[0].akVertex[i];
-		//g_TransformedNormal[i] = pkMesh->akFrames[0].akNormal[i];
+		*/
 		}
 }
+
 
 int Mad_Core::GetNumOfBones()
 {
@@ -647,7 +550,7 @@ void Mad_Core::SetAnimation(vector<Mad_CoreBoneAnimation>	kBoneAnim)
 
 void Mad_Core::PrintCoreInfo()
 {
-	int i;
+	unsigned int i;
 	cout << "Num Of Animations: " << m_kBoneAnim.size() << endl;
 	for(i=0; i<m_kBoneAnim.size(); i++)
 		cout << " [" << i << "]: " << m_kBoneAnim[i].m_szName << endl;
@@ -670,7 +573,7 @@ void Mad_Core::CalculateRadius()
 	Vector3 kMin = pkVertex[0];
 	Vector3 kMax = kMin;
 
-	for(int i=0; i <pkMesh->akFrames[0].akVertex.size(); i++) {
+	for(unsigned int i=0; i <pkMesh->akFrames[0].akVertex.size(); i++) {
 		if(pkVertex[i].x < kMin.x)
 			kMin.x = pkVertex[i].x;
 		else if (pkVertex[i].x > kMax.x)

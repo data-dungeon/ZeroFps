@@ -189,42 +189,44 @@ void Matrix4::operator= (const Quaternion& rkQuaternion)
 	*this = mat3;
 }
 
-Vector3 Matrix4::VectorRotate (const Vector3 kVec)
-{
-	Vector3 res;
-	
-	res.x = kVec.x * RowCol[0][0] + kVec.y * RowCol[1][0] + kVec.z * RowCol[2][0];
-	res.y = kVec.x * RowCol[0][1] + kVec.y * RowCol[1][1] + kVec.z * RowCol[2][1];
-	res.z = kVec.x * RowCol[0][2] + kVec.y * RowCol[1][2] + kVec.z * RowCol[2][2];
-	return res;
-}
-
-Vector3 Matrix4::VectorIRotate (const Vector3 kVec)
-{
-	Vector3 res;
-	
-	res.x = kVec.x * RowCol[0][0] + kVec.y * RowCol[1][0] + kVec.z * RowCol[2][0];
-	res.y = kVec.x * RowCol[0][1] + kVec.y * RowCol[1][1] + kVec.z * RowCol[2][1];
-	res.z = kVec.x * RowCol[0][2] + kVec.y * RowCol[1][2] + kVec.z * RowCol[2][2];
-	return res;
-}
-
-Vector3 Matrix4::VectorTransform (const Vector3 kVec)
-{
-	Vector3 res;
-	
 /*
-	res.x = kVec.x * RowCol[0][0] + kVec.y * RowCol[0][1] + kVec.z * RowCol[0][2] + RowCol[0][3];
-	res.y = kVec.x * RowCol[1][0] + kVec.y * RowCol[1][1] + kVec.z * RowCol[1][2] + RowCol[1][3];
-	res.z = kVec.x * RowCol[2][0] + kVec.y * RowCol[2][1] + kVec.z * RowCol[2][2] + RowCol[2][3];
-*/
-		
+Vector3 Matrix4::VectorRotate (const Vector3& kVec)
+{
+	Vector3 res;
+	
+	res.x = kVec.x * RowCol[0][0] + kVec.y * RowCol[1][0] + kVec.z * RowCol[2][0];
+	res.y = kVec.x * RowCol[0][1] + kVec.y * RowCol[1][1] + kVec.z * RowCol[2][1];
+	res.z = kVec.x * RowCol[0][2] + kVec.y * RowCol[1][2] + kVec.z * RowCol[2][2];
+	return res;
+}*/
+
+Vector3 Matrix4::VectorIRotate (const Vector3& kVec)
+{
+	Vector3 res;
+	
+	res.x = kVec.x * RowCol[0][0] + kVec.y * RowCol[1][0] + kVec.z * RowCol[2][0];
+	res.y = kVec.x * RowCol[0][1] + kVec.y * RowCol[1][1] + kVec.z * RowCol[2][1];
+	res.z = kVec.x * RowCol[0][2] + kVec.y * RowCol[1][2] + kVec.z * RowCol[2][2];
+	return res;
+}
+/*
+Vector3 Matrix4::VectorTransform (const Vector3& kVec)
+{
+	Vector3 res;
+
 	res.x = kVec.x * RowCol[0][0] + kVec.y * RowCol[1][0] + kVec.z * RowCol[2][0] + RowCol[3][0];
 	res.y = kVec.x * RowCol[0][1] + kVec.y * RowCol[1][1] + kVec.z * RowCol[2][1] + RowCol[3][1];
 	res.z = kVec.x * RowCol[0][2] + kVec.y * RowCol[1][2] + kVec.z * RowCol[2][2] + RowCol[3][2];
 	
+
+
+//	res.x = kVec.x * data[0] + kVec.y * data[4] + kVec.z * data[8] + data[12];
+//	res.y = kVec.x * data[1] + kVec.y * data[5] + kVec.z * data[9] + data[13];
+//	res.z = kVec.x * data[2] + kVec.y * data[6] + kVec.z * data[10] + data[14];
+	
+
 	return res;
-}
+}*/
 
 Matrix4 Matrix4::operator+ (const Matrix4& rkMatrix) const
 {

@@ -60,7 +60,7 @@ LINK32=link.exe
 # Begin Special Build Tool
 ProjDir=.
 SOURCE="$(InputPath)"
-PostBuild_Cmds=copy             $(ProjDir)\release\*.lib                              ..\..\..\bin\ 
+PostBuild_Cmds=copy              $(ProjDir)\release\*.lib                               ..\..\..\bin\ 
 # End Special Build Tool
 
 !ELSEIF  "$(CFG)" == "engine - Win32 Debug"
@@ -91,7 +91,7 @@ LINK32=link.exe
 # Begin Special Build Tool
 ProjDir=.
 SOURCE="$(InputPath)"
-PostBuild_Cmds=copy                                                                  $(ProjDir)\debug\*.lib                                                                  ..\..\..\bin\ 
+PostBuild_Cmds=copy                                                                   $(ProjDir)\debug\*.lib                                                                   ..\..\..\bin\ 
 # End Special Build Tool
 
 !ELSEIF  "$(CFG)" == "engine - Win32 Release Profile"
@@ -352,6 +352,10 @@ SOURCE=..\ogl\extgl.c
 # Begin Source File
 
 SOURCE=.\fh.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\heightmapcs.cpp
 # End Source File
 # Begin Source File
 
@@ -754,6 +758,10 @@ SOURCE=..\ogl\extgl.h
 # Begin Source File
 
 SOURCE=.\fh.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\heightmapcs.h
 # End Source File
 # Begin Source File
 

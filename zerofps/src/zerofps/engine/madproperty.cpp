@@ -51,7 +51,8 @@ void DrawBoundSphere(float fRadius)
 		x = cos(DegToRad(i)) * fRadius;
 		y = sin(DegToRad(i)) * fRadius;
 		glVertex3f(x,y,0);
-		}
+	}
+	
 	glEnd();
 
 	glPopAttrib();
@@ -64,7 +65,7 @@ void MadProperty::Update()
 	if(!pkCore)
 		return;
 
-	UpdateAnimation(0.001);
+	UpdateAnimation(m_pkZeroFps->GetFrameTime());
 
 	glPushMatrix();
 		glTranslatef(m_pkObject->GetPos().x,m_pkObject->GetPos().y,m_pkObject->GetPos().z);
@@ -91,7 +92,7 @@ void MadProperty::Update()
 void MadProperty::SetBase(const char* acName)
 {
 	SetBasePtr(m_pkZeroFps->GetMADPtr(acName));
-	m_kMadFile=acName;
+//	m_kMadFile=acName;
 }
 
 //void MadProperty::SetBase(Mad_Core* pkModell)

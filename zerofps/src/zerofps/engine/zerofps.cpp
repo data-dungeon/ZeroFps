@@ -38,7 +38,7 @@ ZeroFps::ZeroFps(void)
 	m_bDrawDevList=true;
 	m_bGuiMode=false;
 	
-	akCoreModells.reserve(25);
+//	akCoreModells.reserve(25);
 
 	//add some nice variables =)
 //	m_pkCmd->Add(&m_iState,"G_State",type_int);
@@ -62,6 +62,7 @@ ZeroFps::ZeroFps(void)
 	g_ZFObjSys.Register_Cmd("server",FID_SERVER,this);
 	g_ZFObjSys.Register_Cmd("dir",FID_DIR,this);	
 	g_ZFObjSys.Register_Cmd("cd",FID_CD,this);	
+	g_ZFObjSys.Register_Cmd("listmad",FID_LISTMAD,this);	
 
 
 	m_kCurentDir=m_pkBasicFS->GetCWD();
@@ -322,8 +323,8 @@ void ZeroFps::Swap(void) {
 	
 #ifdef RUNPROFILE
 	g_iNumOfFrames++;
-	if(g_iNumOfFrames >= 1000)
-		m_iState = state_exit;
+//	if(g_iNumOfFrames >= 1000)
+//		m_iState = state_exit;
 
 #endif
 }
@@ -558,7 +559,15 @@ void ZeroFps::RunCommand(int cmdid, const CmdArgument* kCommand)
 			kFiles.clear();
 					
 			break;
-	
+
+		case FID_LISTMAD:
+			int iSize = akCoreModells.size();
+			m_pkConsole->Printf("Loaded Mads: ");
+			for(i=0; i < akCoreModells.size(); i++) {
+				m_pkConsole->Printf(" %d: %s", i, akCoreModells[i]->Name);
+				}
+			break;
+
 	}	
 }
 
@@ -570,16 +579,27 @@ int ZeroFps::LoadMAD(const char* filename)
 	if(iMadId != -1)
 		return iMadId;
 
-	Mad_Core CoreAdd;
-	akCoreModells.push_back(CoreAdd);
-	Mad_Core* pCoreMdl = &akCoreModells.back();
-//	pCoreMdl->SetTextureManger(m_pkTexMan);
-	pCoreMdl->LoadMad(filename);
-	return (akCoreModells.size() - 1);
+	Mad_Core* CoreAdd = new Mad_Core;
+	if(CoreAdd->LoadMad(filename)) {
+		akCoreModells.push_back(CoreAdd);
+		return (akCoreModells.size() - 1);
+		}
+	else {
+		delete CoreAdd;
+		CoreAdd = new Mad_Core;
+		CoreAdd->LoadMad("../data/mad/zoneobject.mad");
+		akCoreModells.push_back(CoreAdd);
+		return (akCoreModells.size() - 1);
+		}
+
+	return -1;
 }
 
 void ZeroFps::ClearMAD(void)
 {
+	for(int i=0; i< akCoreModells.size(); i++)
+		delete akCoreModells[i];
+
 	akCoreModells.clear();
 }
 
@@ -587,7 +607,7 @@ int ZeroFps::GetMADIndex(const char* filename)
 {
 	for(unsigned int i=0; i < akCoreModells.size(); i++)
 	{
-		if(strcmp(akCoreModells[i].GetName(),filename) == 0)
+		if(strcmp(akCoreModells[i]->GetName(),filename) == 0)
 			return i;
 	}
 
@@ -599,7 +619,7 @@ Mad_Core* ZeroFps::GetMADPtr(const char* filename)
 	int iMadId = LoadMAD(filename);
 
 	if(iMadId != -1)
-		return &akCoreModells[iMadId];
+		return akCoreModells[iMadId];
 
 	return NULL;
 }

@@ -20,7 +20,8 @@ Mad_Modell::Mad_Modell()
 Mad_Modell::Mad_Modell(Mad_Core* pkModell) 
 {
 	pkCore = pkModell;
-	
+	m_kMadFile = pkCore->Name;
+
 	PlayAnimation(0, 0.0);
 	m_fScale = 1.0;
 	m_bActive = true;
@@ -34,7 +35,9 @@ Mad_Modell::Mad_Modell(Mad_Core* pkModell)
 void Mad_Modell::SetBasePtr(Mad_Core* pkModell)
 {
 	pkCore = pkModell;
-	
+	m_kMadFile = pkCore->Name;
+
+
 	PlayAnimation(0, 0.0);
 	m_fScale = 1.0;
 	m_bActive = true;
@@ -322,19 +325,14 @@ void Mad_Modell::Draw_All(int iDrawFlags)
 	for(int iM = 0; iM <iNumOfMesh; iM++) {
 		SelectMesh(iM);
 
-//		if(g_pkLastMesh != m_pkMesh) {
-//			g_pkLastMesh = m_pkMesh;
-//			cout << "Swap";
 		pkCore->PrepareMesh(pkCore->GetMeshByID(iM));
 
 		glTexCoordPointer(2,GL_FLOAT,0,GetTextureCooPtr());
 		glVertexPointer(3,GL_FLOAT,0,GetVerticesPtr());
 		glNormalPointer(GL_FLOAT,0,GetNormalsPtr());
 
-//			}
-
 		iNumOfSubMesh = GetNumOfSubMesh(iM);
-
+		
 		for(int iSubM = 0; iSubM < iNumOfSubMesh; iSubM++) {
 			SelectSubMesh(iSubM);
 

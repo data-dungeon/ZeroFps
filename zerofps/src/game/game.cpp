@@ -156,6 +156,8 @@ void Game::SetUpMenuScreen()
 
 	m_pkCamera->GetPos().Set(252,11,149);	
 	m_pkCamera->GetRot().Set(15,-302,0);	
+//	m_pkCamera->GetPos().Set(224,40,182);	
+//	m_pkCamera->GetRot().Set(33,128,0);	
 
 	//default light
 	LightSource *sol=new LightSource;	

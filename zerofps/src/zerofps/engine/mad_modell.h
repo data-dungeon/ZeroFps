@@ -44,6 +44,8 @@ private:
 	void	Create_GLList(Mad_CoreMesh* pkMesh);
 
 public:
+	string	m_kMadFile;
+
 	int		iActiveAnimation;
 	float	fCurrentTime;
 	float	fLastUpdate;
