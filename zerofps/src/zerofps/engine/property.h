@@ -18,7 +18,7 @@ class Property
 		Object *m_pkObject;
 		
 	public:
-		char m_acName[20];
+		char m_acName[50];
 			
 			
 		void SetObject(Object* pkObject);

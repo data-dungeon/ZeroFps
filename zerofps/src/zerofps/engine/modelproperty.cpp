@@ -2,7 +2,7 @@
 
 
 ModelProperty::ModelProperty() {
-
+	strcpy(m_acName,"ModelProperty");
 }
 
 
