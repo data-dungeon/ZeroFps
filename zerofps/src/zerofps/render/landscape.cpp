@@ -529,8 +529,8 @@ void Render::DrawCross(Vector3 kPos,Vector3 kHead,Vector3 kScale,int iTexture1) 
 	glRotatef(kHead.z, 0, 0, 1);
 	glScalef(kScale.x,kScale.y,kScale.z);
 	
-	glDisable(GL_COLOR_MATERIAL);		
-	glColorMaterial(GL_FRONT,GL_AMBIENT_AND_DIFFUSE);	
+//	glDisable(GL_COLOR_MATERIAL);		
+//	glColorMaterial(GL_FRONT,GL_AMBIENT_AND_DIFFUSE);	
 
 //	glLightModeli( GL_LIGHT_MODEL_TWO_SIDE, 1);
 	glDisable(GL_CULL_FACE);	
@@ -542,6 +542,22 @@ void Render::DrawCross(Vector3 kPos,Vector3 kHead,Vector3 kScale,int iTexture1) 
 	
 //	Quad(Vector3(0,0,0),Vector3(0,0,0),Vector3(1,1,1),iTexture1);
 //	Quad(Vector3(0,0,0),Vector3(0,90,0),Vector3(1,1,1),iTexture1);	
+/*	
+	m_pkTexMan->BindTexture(iTexture1);  	
+	glBegin(GL_TRIANGLES);
+	
+		glNormal3f(0,1,0);
+		glTexCoord2f(.5,-1);glVertex3f(0,1,0); 
+		glTexCoord2f(-1,1);glVertex3f(-1,-0.5,0); 
+		glTexCoord2f(2,1);glVertex3f(1,-0.5,0); 	
+	
+		//glNormal3f(0,1,0);
+		glTexCoord2f(.5,-1);glVertex3f(0,1,0); 
+		glTexCoord2f(-1,1);glVertex3f(0,-0.5,-1); 
+		glTexCoord2f(2,1);glVertex3f(0,-0.5,1); 
+	
+	glEnd();
+*/	
 	
 	
 	m_pkTexMan->BindTexture(iTexture1);  	
