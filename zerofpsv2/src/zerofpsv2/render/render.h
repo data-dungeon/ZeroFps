@@ -18,6 +18,7 @@
 //#include "../engine/zfresource.h"
 #include "zshader.h"
 
+class PSystem;
 class HeightMap;
 class Heightmap2;
 class BasicConsole;
@@ -34,6 +35,7 @@ enum SkyBoxSides
 	SKYBOXSIDE_DOWN,
 	SKYBOXSIDE_MAX,
 };
+
 
 enum PolygonMode 
 { 
@@ -164,6 +166,8 @@ class RENDER_API Render : public ZFSubSystem {
 		void Draw_MarkerCross(Vector3 kPos, Vector3 Color, float fScale = 1.0);		///< Draw a cross made up of lines.
 
 		void CaptureScreenShoot( int m_iWidth, int m_iHeight );							///< Take a screenshoot and save it as a TGA.		
+
+		void DrawPSystem( PSystem *pkPSystem );
 
 };
 

@@ -1,6 +1,8 @@
 class object	
+
 	class camera
 		parent object
+		set MadProperty m_kMadFile /data/mad/orc.mad
 		add CameraProperty
 		add LightProperty
 	
@@ -14,9 +16,55 @@ class object
 		parent object
 		set MadProperty m_kMadFile /data/mad/minoutar.mad
 		set MadProperty m_fScale 1
+
+	class FWarrior
+		parent object
+		set MadProperty m_kMadFile /data/mad/fwarrior.mad
+		set MadProperty m_fScale 0.2
+
+	class Armour
+		parent object
+		set MadProperty m_kMadFile /data/mad/armour.mad
+		set MadProperty m_fScale 0.2
+
+	class Orc
+		parent object
+		set MadProperty m_kMadFile /data/mad/orc.mad
+		set MadProperty m_fScale 1
+
+	class Helmet
+		parent object
+		set MadProperty m_kMadFile /data/mad/helmet.mad
+		set MadProperty m_fScale 0.2
+
+	class Shield
+		parent object
+		set MadProperty m_kMadFile /data/mad/shield.mad
+		set MadProperty m_fScale 0.2
+
+	class Stovlar
+		parent object
+		set MadProperty m_kMadFile /data/mad/stovlar.mad
+		set MadProperty m_fScale 0.2
+
+	class Armband
+		parent object
+		set MadProperty m_kMadFile /data/mad/Armband.mad
+		set MadProperty m_fScale 0.2
 	
+	class Sword
+		parent object
+		set MadProperty m_kMadFile /data/mad/Sword.mad
+		set MadProperty m_fScale 0.2
+
+	class Goblin
+		parent object
+		set MadProperty m_kMadFile /data/mad/goblin.mad
+		set MadProperty m_fScale 1
+
 	class ZeroRTSTestBox
 		parent object
+		set MadProperty m_kMadFile /data/mad/adaptor.mad
 		set MadProperty m_kMadFile /data/mad/rts/unit/ecrew.mad
 	
 	class TVimBollus
@@ -56,4 +104,58 @@ class object
 		parent object
 		set MadProperty m_kMadFile /data/mad/rts/unit/gun.mad
 	
+	class Monster
+		parent object
+		set MadProperty m_kMadFile /data/mad/monster.mad
+		set MadProperty m_fScale 1.0
+
+	class Minoutar
+		parent object
+		set MadProperty m_kMadFile /data/mad/minoutar.mad
+		set MadProperty m_fScale 1.0
+
+	class Min_axe
+		parent object
+		set MadProperty m_kMadFile /data/mad/min_axe.mad
+		set MadProperty m_fScale 1.0
+
+	class Inn_roof
+		parent object
+		set MadProperty m_kMadFile /data/mad/inn_roof.mad
+		set MadProperty m_fScale 1.0
+
+	class Inn_walls
+		parent object
+		set MadProperty m_kMadFile /data/mad/inn_walls.mad
+		set MadProperty m_fScale 1.0
+
+	class Fire
+		parent object
+		Add PSystemProperty
+		set PSystemProperty PSType Fire
+
+	class Snow
+		parent object
+		Add PSystemProperty
+		set PSystemProperty PSType Snow
+
+	class Rain
+		parent object
+		Add PSystemProperty
+		set PSystemProperty PSType Rain
+
+	class Smoke
+		parent object
+		Add PSystemProperty
+		set PSystemProperty PSType Smoke
+
+	class Waterfall
+		parent object
+		Add PSystemProperty
+		set PSystemProperty PSType Waterfall
+
+	class ServerInfoObject
+		parent object
+		add P_ServerInfo=======
+
 

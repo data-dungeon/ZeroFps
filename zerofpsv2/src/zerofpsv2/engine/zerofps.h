@@ -29,7 +29,6 @@
 #define ZF_VERSION_NUM		"ZF 0.0"
 
 
-
 using namespace std;
 
 
@@ -42,6 +41,7 @@ class GLGuiRender;
 class ZFScript;
 class Application;
 class NetPacket;
+class PSystemManager;
 
 enum enginestates 
 {
@@ -177,6 +177,7 @@ class ENGINE_API ZeroFps : public I_ZeroFps {
 		Application*			m_pkApp;						///< Application object.
 		ZShader*					m_pkZShader;				///< zerofps shader system
 		OggMusic*				m_pkMusic;
+		PSystemManager*		m_pkPSystemManager;		///< ParticleSystemManager - Zerom
 		
 		int		m_iState;									//	curent game state see enum enginestates
 		float		m_fFps;										//	curent FPS

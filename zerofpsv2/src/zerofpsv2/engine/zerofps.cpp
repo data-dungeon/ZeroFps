@@ -1,3 +1,4 @@
+#include "psystemmanager.h"
 #include "zerofps.h"
 #include "network.h"
 #include "objectmanager.h"
@@ -53,6 +54,7 @@ ZeroFps::ZeroFps(void) : I_ZeroFps("ZeroFps")
 	m_pkTexMan					= new TextureManager;
 	m_pkZFVFileSystem			= new ZFVFileSystem;
 	m_pkBasicFS					= new ZFBasicFS;
+	m_pkPSystemManager		= new PSystemManager;
 
 	m_pkScript					= new ZFScript;
 
@@ -130,6 +132,7 @@ ZeroFps::~ZeroFps()
 	delete m_pkBasicFS;
 	delete m_pkPhysics_Engine;
 	delete m_pkResourceDB;		//d krashar om denna ligger där uppe =(, Dvoid
+	delete m_pkPSystemManager;
 	delete m_pkZShader;
 }
 
@@ -980,6 +983,8 @@ void ZeroFps::RegisterPropertys()
 	m_pkPropertyFactory->Register("WorldInfoProperty",Create_WorldInfoProperty);						
 	m_pkPropertyFactory->Register("AutoParentProperty",Create_AutoParentProperty);							
 	m_pkPropertyFactory->Register("PhysicProperty",Create_PhysicProperty);								
+	m_pkPropertyFactory->Register("PSystemProperty",Create_PSystemProperty);								
+
 }
 
 void ZeroFps::QuitEngine()

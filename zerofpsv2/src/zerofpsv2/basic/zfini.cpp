@@ -482,6 +482,17 @@ int ZFIni::GetIntValue(const char* strSection, char* strKey)
 	return atoi(str);
 }
 
+
+float ZFIni::GetFloatValue(const char* strSection, char* strKey)
+{
+	char* str = GetValue(strSection,strKey);
+	
+	if(!str)
+		return 0;
+		
+	return atof(str);
+}
+
 void ZFIni::Close()
 {
 	int i, j;

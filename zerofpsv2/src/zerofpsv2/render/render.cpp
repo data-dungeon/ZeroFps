@@ -1,6 +1,7 @@
 #include "render.h"
 #include "../ogl/zfpsgl.h"
 #include "../basic/basicconsole.h"
+#include "../engine_systems/common/psystem.h"
  
 Render::Render()  
 :	ZFSubSystem("Render") , m_eLandscapePolygonMode(FILL) 
@@ -9,7 +10,7 @@ Render::Render()
 	// Set Our own local variables.
 	m_iSlicesize				= 32;						//grid size of lod tiles
 	m_iDetail					= 30;						//height meens greater detail att longer range	
-	m_iViewDistance				= 300;
+	m_iViewDistance			= 300;
 	m_iFpsLock					= 60;
 	m_iAutoLod					= 1;
 	m_iLodUpdate				= 0;	
@@ -1287,6 +1288,60 @@ void Render::RunCommand(int cmdid, const CmdArgument* kCommand)
 		case FID_CONSOLECOLOR:	m_kConsoleColor.Set(1,0,0);	break;
 		}
 }
+
+
+void Render::DrawPSystem( PSystem *pkPSystem )
+{
+
+	glPushMatrix();
+
+	glDisableClientState (GL_NORMAL_ARRAY);
+
+	glDisable (GL_LIGHTING);
+
+	glColor4f (255,255,255,255);
+
+	// PSystem uses color&alpha values
+	if ( pkPSystem->GetColors() )
+	{
+		glEnable(GL_COLOR_MATERIAL);
+
+		glEnableClientState(GL_COLOR_ARRAY);
+		glColorPointer( 4, GL_FLOAT, 0, pkPSystem->GetColors() + pkPSystem->Start() * 12 );
+	}
+	else
+	{
+		glDisableClientState (GL_COLOR_ARRAY);
+		glDisable (GL_COLOR_MATERIAL);
+	}
+
+	
+	// if PS uses texture
+	if ( pkPSystem->GetTexCoords() )
+	{
+		// Turn on the texture coordinate state
+		glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+		glTexCoordPointer( 2, GL_FLOAT, 0, pkPSystem->GetTexCoords() + pkPSystem->Start() * 6 );
+	}
+	else
+	{
+		glDisableClientState (GL_TEXTURE_COORD_ARRAY);
+		glDisable (GL_TEXTURE_2D);
+	}
+
+	// Turn on the vertex array state
+	glEnableClientState(GL_VERTEX_ARRAY);
+	glVertexPointer(3, GL_FLOAT, 0, pkPSystem->GetVertices() + pkPSystem->Start() * 9);
+
+	// draw the stuff
+	glDrawElements(GL_TRIANGLES, pkPSystem->Particles() * 3, 
+					   GL_UNSIGNED_INT, pkPSystem->GetIndices() );
+
+
+	glPopMatrix();
+}
+
+
 
 RENDER_API void RenderDLL_InitExtGL(void)
 {

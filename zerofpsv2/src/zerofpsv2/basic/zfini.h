@@ -31,6 +31,7 @@ public:
 	char* GetValue(const char* strSection, const char* strKey);
 	void GetSectionNames(vector<string>& kSectionList);
 	bool GetBoolValue(const char* strSection, char* strKey);
+	float GetFloatValue(const char* strSection, char* strKey);
 	int GetIntValue(const char* strSection, char* strKey);
 	
 	bool SectionExist(const char* acSection);
