@@ -373,8 +373,8 @@ Object* ObjectManager::CreateObjectFromScriptInZone(const char* acName,Vector3 k
 	{		
 		newobj->SetUseZones(true);
 		newobj->SetWorldPosV(kPos);	
-		//if(newobj->m_iCurrentZone != id)
-		//	cout<<"ERROR!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"<<endl;
+		if(newobj->m_iCurrentZone == -1)
+			cout<<"ERROR!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"<<endl;
 	}
 
 	return newobj;
