@@ -487,8 +487,14 @@ bool Entity::IsNetWork()
 {
 	m_bIsNetWork = false;
 
-	if(m_strType == "ZoneObject")
+	if(m_strName == "ZoneObject")
+	{
 		m_bIsNetWork = true;
+	}
+	else if(m_strName == "StaticEntity")
+	{
+		m_bIsNetWork = true;
+	}
 	else {
 		for(vector<Property*>::iterator it=m_akPropertys.begin();it!=m_akPropertys.end();it++) {
 			if((*it)->bNetwork == true) {
