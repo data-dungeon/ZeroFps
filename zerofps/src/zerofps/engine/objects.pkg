@@ -1,0 +1,11 @@
+class Object;
+class Property;
+class PlayerControl;
+
+#include "object.h"
+#include "property.h"
+#include "playercontrol.h"
+
+
+
+

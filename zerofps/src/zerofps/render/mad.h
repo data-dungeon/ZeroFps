@@ -66,6 +66,7 @@ struct Mad_Animation
 
 class MadRender
 {
+	public:
 	int GetSubMeshCount(void);
 	/* Ta fram antal submeshes i modellen.*/
 	void SetSubMesh(int iMeshNum);
@@ -84,6 +85,7 @@ class MadRender
 class RENDER_API Core
 {
 public:
+	
 	Core();
 	~Core();
 
@@ -124,6 +126,7 @@ public:
 
 class MadManger
 {
+	public:	
 	bool Load(char* MadFileName);
 	
 	Core* GetCore(char* MadFileName);
@@ -132,6 +135,7 @@ class MadManger
 
 class MadInstans
 {
+	public:
 	void SetBase(Core*);	// Väljer vilken bas modell denna instans är.
 
 	void PlayAnimation(int iAnimNum, float fStartTime);

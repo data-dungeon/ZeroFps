@@ -87,7 +87,7 @@ void Test::OnInit(void) {
 	Vector3 *solpos=new Vector3(1000,1000,1000);
 		sol->kRot=solrot;
 		sol->kPos=solpos;		
-		sol->kDiffuse=Vector4(.9,0.9,0.9,1);
+		sol->kDiffuse=Vector4(2,2,2,2);
 		sol->kAmbient=Vector4(0.01,0.01,0.01,0.01);
 		sol->iType=POINT_LIGHT;			
 		sol->iPriority=10;
@@ -95,6 +95,11 @@ void Test::OnInit(void) {
 	pkLight->Add(spot2);			
 	pkLight->Add(spot);	
 	pkLight->Add(sol);
+	
+	
+	Object *kul=new Object;
+	
+	
 }
 
 
@@ -127,7 +132,7 @@ void Test::OnIdle(void) {
 	glPushMatrix();
 		glTranslatef(5,test->Height(5,5),5);
 		glColor3f(0,0,1);
-		glScalef(.01,.01,.01);
+		glScalef(.02,.02,.02);
 		CoreTest.SetFrameI(iCoreFrame);
 		iCoreFrame++;
 		if(iCoreFrame >= 289)
@@ -143,8 +148,8 @@ void Test::OnIdle(void) {
 	float z=pkFps->m_kCamPos->z;
 	float x=pkFps->m_kCamPos->x;	
 	
-	if(pkFps->m_kCamPos->y<test->Height(x,z)+.5)
-		pkFps->m_kCamPos->y=test->Height(x,z)+.5;	
+	if(pkFps->m_kCamPos->y<test->Height(x,z)+1)
+		pkFps->m_kCamPos->y=test->Height(x,z)+1;	
 
 }
 
