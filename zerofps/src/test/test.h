@@ -11,6 +11,10 @@
 class Test :public Application {
 	HeightMap *test;
 
+	GLfloat light_position[];
+	GLfloat white_light[] ;
+	GLfloat lmodel_ambient[];
+
 
 	public:
 		Test(char* aName,int iWidth,int iHeight,int iDepth);

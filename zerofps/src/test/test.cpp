@@ -15,13 +15,33 @@ void Test::OnInit(void) {
 
 	test=new HeightMap();
 	test->Random();
+
+	GLfloat light_position[] ={10,15,-20,0};
+	GLfloat white_light[] = {1.0,1.0,1.0,1.0};
+	GLfloat lmodel_ambient[] = {0.6,0.6,0.6,0.6};
+
+  glLightfv(GL_LIGHT0,GL_DIFFUSE,white_light);
+  glLightfv(GL_LIGHT0,GL_SPECULAR,white_light);
+//  glEnable(GL_LIGHTING);
+  glEnable(GL_LIGHT0);
+  glColorMaterial(GL_FRONT,GL_AMBIENT_AND_DIFFUSE);
+
+  
+  glLightModelfv(GL_LIGHT_MODEL_AMBIENT,lmodel_ambient);
+
 }
 
 
 void Test::OnIdle(void) {
+//   glLightfv(GL_LIGHT0,GL_POSITION,light_position);	
 	input();
+  glLightfv(GL_LIGHT0,GL_POSITION,light_position);	
+
 	pkRender->DrawHM(test);		
-	
+	pkRender->
+	SetFont("file:../data/textures/text/console.bmp");	
+	pkRender->Print(Vector3(10,15,-20),Vector3(0,0,0),Vector3(1,1,1),"HEJ JULLE");
+
 	cout<<pkFps->m_iFps<<endl;
 	
 //	for(int i=2;i<60;i++)

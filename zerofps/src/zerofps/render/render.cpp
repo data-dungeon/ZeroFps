@@ -185,20 +185,25 @@ void Render::DrawHM(HeightMap *kmap) {
 	Vector3 p2;
 	Vector3 p3;
 	Vector3 p4;
-//	glTranslatef(0,0,0);
-
-//	SetColor(Vector3(255,255,255));
-//	glScalef(0.5,.5,.5);
 	
 	m_pkTexMan->BindTexture("file:../data/textures/grass.bmp");
 	
-	int x;
+	GLfloat mat_specular[]={1,1,1,1};
+	GLfloat mat_shininess[]={10};
+  glMaterialfv(GL_FRONT,GL_SPECULAR,mat_specular);
+  glMaterialfv(GL_FRONT,GL_SHININESS,mat_shininess);
+
+	glTexEnvf(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE);
+
 	
+	int x;	
 	glFrontFace(GL_CW);
 	for(int z=0;z<kmap->m_iHmSize-1;z++){
 			
 //		int z=0;
 		glBegin(GL_TRIANGLE_STRIP);
+	  glNormal3f(0,1,0); //bad normals
+
 		x=0;
 		p1=Vector3(x,kmap->verts[z*kmap->m_iHmSize+x].height,-z);				
 		p2=Vector3(x,kmap->verts[(z+1)*kmap->m_iHmSize+x].height,-z-1);			
