@@ -53,6 +53,8 @@ ZGResEdit::~ZGResEdit()
 //
 void ZGResEdit::OnInit()
 {
+	int test = 2;
+
 	m_pkCamera=new Camera(Vector3(0,10,0),Vector3(0,0,0),85,1.333,0.25,250);
 	m_pkGuiBuilder=new GuiBuilder(pkGui,pkTexMan,pkGuiMan,
 		Rect(0,0,m_iWidth,m_iHeight));
