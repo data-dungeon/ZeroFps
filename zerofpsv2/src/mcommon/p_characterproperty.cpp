@@ -93,6 +93,10 @@ void P_CharacterProperty::SetupContainers()
 	{
 		if(P_Container* pkContainer = (P_Container*)kEntitys[i]->GetProperty("P_Container"))
 		{
+			//set owner
+			pkContainer->SetOwnerID(GetEntity()->GetEntityID());
+			
+			//setup container id's
 			switch(pkContainer->GetContainerType())
 			{
 				case eInventory:

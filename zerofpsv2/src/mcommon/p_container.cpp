@@ -658,7 +658,7 @@ namespace SI_P_Container
 					//try adding it to the container
 					if(pkCP->AddItem(pkEnt->GetEntityID()))
 					{
-						cout<<"created "<<czItemName<<" in container "<<iContainerID<<endl;
+						//cout<<"created "<<czItemName<<" in container "<<iContainerID<<endl;
 						return 0;
 					}
 					else

@@ -466,8 +466,9 @@ void MistClient::Input()
 			{				
 				//if its an item , pick it up
 				if(P_Item* pkItem = (P_Item*)pkEnt->GetProperty("P_Item"))
-				{					
-					SendMoveItem(m_iPickedEntityID,-1,-1,-1);
+				{
+					RequestPickup(m_iPickedEntityID);
+					//SendMoveItem(m_iPickedEntityID,-1,-1,-1);
 
 					if(m_pkInventoryDlg->IsVisible()) 
 						m_pkInventoryDlg->m_iItemUnderCursor = m_iPickedEntityID;	
@@ -1073,6 +1074,17 @@ void MistClient::RequestOpenInventory()
 		if(P_CharacterProperty* pkCharProp = (P_CharacterProperty*)pkCharacter->GetProperty("P_CharacterProperty"))
 		{
 			SendRequestContainer(pkCharProp->m_iInventory);
+		}
+	}
+}
+
+void MistClient::RequestPickup(int iEntityID,int iPosX,int iPosY)
+{
+	if(Entity* pkCharacter = m_pkEntityManager->GetEntityByID(m_iCharacterID))
+	{
+		if(P_CharacterProperty* pkCharProp = (P_CharacterProperty*)pkCharacter->GetProperty("P_CharacterProperty"))
+		{
+			SendMoveItem(iEntityID,pkCharProp->m_iInventory,iPosX,iPosY);
 		}
 	}
 }

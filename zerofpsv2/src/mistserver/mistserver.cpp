@@ -985,17 +985,129 @@ void MistServer::OnNetworkMessage(NetPacket *PkNetMessage)
 		case MLNM_CS_MOVE_ITEM:
 		{
 			int iItemID;
-			int iTarget;
-			int iContainerType;
+			int iTargetContainer;
 			int iPosX;
 			int iPosY;
 			
 			PkNetMessage->Read(iItemID);
-			PkNetMessage->Read(iTarget);
+			PkNetMessage->Read(iTargetContainer);
 			PkNetMessage->Read(iPosX);
 			PkNetMessage->Read(iPosY);			
 		
+			P_Container*	pkTargetContainer = NULL;
+			P_Container*	pkInContainer = NULL;
+			P_Item* 			pkItem = NULL;
+			Entity*			pkCharacter = NULL;
 			
+			//get container
+			if(Entity* pkContainerEnt = m_pkEntityManager->GetEntityByID(iTargetContainer))
+				pkTargetContainer = (P_Container*)pkContainerEnt->GetProperty("P_Container");
+
+			//Get item
+			if(Entity* pkContainerEnt = m_pkEntityManager->GetEntityByID(iItemID))
+				if(!(pkItem = (P_Item*)pkContainerEnt->GetProperty("P_Item")))			
+				{
+					cout<<"WARNING: MLNM_CS_MOVE_ITEM  could not find item "<<iItemID<<endl;
+					break;
+				}
+
+			//get in container
+			if(Entity* pkContainerEnt = m_pkEntityManager->GetEntityByID(pkItem->GetInContainerID()))
+				pkInContainer = (P_Container*)pkContainerEnt->GetProperty("P_Container");
+				
+			//get players character entity
+			if(PlayerData* pkPlayerData = m_pkPlayerDB->GetPlayerData(PkNetMessage->m_iClientID))
+				if(!(pkCharacter = m_pkEntityManager->GetEntityByID(pkPlayerData->m_iCharacterID)))
+				{
+					cout<<"WARNING: MLNM_CS_MOVE_ITEM could not find any character"<<endl;
+					break;
+				}
+							
+				
+			//item is not in any container	
+			if(!pkInContainer)
+			{
+				//do a distance check
+				if(pkItem->GetEntity()->GetWorldPosV().DistanceTo(pkCharacter->GetWorldPosV()) > 2.0)
+				{
+					SayToClients("You are to far away",PkNetMessage->m_iClientID);
+					break;
+				}						
+			
+				//do we have a target container , if so try to put item in it
+				if(pkTargetContainer)
+				{
+					//we have a target contianer ,check if its ours
+					if(pkTargetContainer->GetOwnerID() == pkCharacter->GetEntityID())
+					{					
+						//no target position given assuming free position
+						if(iPosX == -1)
+						{
+							//try adding item on a free position in character inventory
+							if(pkTargetContainer->AddItem(iItemID))											
+								SendContainer(iTargetContainer,PkNetMessage->m_iClientID,false);											
+							else
+								SayToClients("You could not pick that up",PkNetMessage->m_iClientID);
+
+							
+							break;
+						}
+						else
+						{
+							//try adding item on target position in character inventory
+							if(pkTargetContainer->AddItem(iItemID,iPosX,iPosY))											
+								SendContainer(iTargetContainer,PkNetMessage->m_iClientID,false);
+							else
+								SayToClients("You could not pick that up",PkNetMessage->m_iClientID);
+																		
+							break;																	
+						}
+					}
+					else
+					{
+						cout<<"WARNING: MLNM_CS_MOVE_ITEM we dont own the target container"<<endl;
+						break;
+					}
+				}
+				else
+				{
+					cout<<"WARNING: item not in any container, nor does it have ny target, noting to do :("<<endl;
+					break;
+				}		
+					
+				//try to pickup item
+				
+			}
+			//item is in a container
+			else
+			{
+				//ware we owner of this container?
+				if(pkInContainer->GetOwnerID() != pkCharacter->GetEntityID())
+				{
+					SayToClients("That container is not yours",PkNetMessage->m_iClientID);
+					break;					
+				}
+			
+				//do we have a target container 
+				if(!pkTargetContainer)
+				{
+					//no position, drop item outside this container
+					if(iPosX == -1)
+					{
+						pkInContainer->DropItem(iItemID,pkCharacter->GetWorldPosV());
+						break;				
+					}
+					//we have a position try to move item there
+					else
+					{
+						if(!pkInContainer->MoveItem(iItemID,iPosX,iPosY))
+							SayToClients("Could not move there",PkNetMessage->m_iClientID);						
+						break;
+					}
+				}
+			}
+				
+			/*					
 			//get player data
 			if(PlayerData* pkPlayerData = m_pkPlayerDB->GetPlayerData(PkNetMessage->m_iClientID))
 			{
@@ -1098,7 +1210,7 @@ void MistServer::OnNetworkMessage(NetPacket *PkNetMessage)
 					}
 				}
 			}
-			
+			*/
 			cout<<"WARNING: bad item movement"<<endl;
 			SayToClients("Bad item movement",PkNetMessage->m_iClientID);
 			
@@ -1335,10 +1447,8 @@ namespace SI_MistServer
 		g_pkScript->GetArgNumber(pkLua, 1, &dTemp);
 		iCharacter = (int)dTemp;	
 		
-		cout<<"blub"<<endl;
 		if(PlayerData* pkData = g_kMistServer.m_pkPlayerDB->GetPlayerDataByCharacterID(iCharacter))
 		{
-			cout<<"blubaa"<<endl;	
 			g_kMistServer.OpenContainer(iContainer,pkData->m_iConnectionID);
 		}										
 	}
