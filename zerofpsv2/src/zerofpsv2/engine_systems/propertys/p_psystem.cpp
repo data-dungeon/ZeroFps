@@ -73,9 +73,11 @@ P_PSystem::P_PSystem()
 	m_iType = PROPERTY_TYPE_RENDER_NOSHADOW|PROPERTY_TYPE_NORMAL;
 	m_iSide = PROPERTY_SIDE_CLIENT|PROPERTY_SIDE_SERVER;
 	m_iSortPlace =	9;
-
+	m_iVersion = 2;
+	
 	strcpy(m_acName,"P_PSystem");
 	m_pkPSystem = NULL;
+	
 
 	
 	m_pkZShaderSystem =  static_cast<ZShaderSystem*>(g_ZFObjSys.GetObjectPtr("ZShaderSystem"));			
@@ -130,14 +132,15 @@ void P_PSystem::Save(ZFIoInterface* pkPackage)
 {
 
    // PSType
-   char temp[128];
-	strcpy(temp,m_kPSType.c_str());	
-	pkPackage->Write((void*)&temp,128,1);
+	pkPackage->Write_Str(m_kPSType);
 
    
    // PSAge
-   float fAge = m_pkPSystem->Age();
-   pkPackage->Write ( (void*)&fAge, sizeof(float), 1 );
+   float fAge = 0;
+	if(m_pkPSystem)
+		fAge = m_pkPSystem->Age();
+		
+   pkPackage->Write (fAge);
 
 }
 
@@ -145,19 +148,42 @@ void P_PSystem::Save(ZFIoInterface* pkPackage)
 
 void P_PSystem::Load(ZFIoInterface* pkPackage,int iVersion)
 {
-
-   // Read PSType
-	char temp[128];
-	pkPackage->Read((void*)&temp,128,1);
-	m_kPSType=temp;
-
-   // Load PSType data and init PSystem
-   SetPSType( m_kPSType );
-   
-   // Read PSAge
-   float fAge = m_pkPSystem->Age();
-   pkPackage->Read ( (void*)&fAge, sizeof(float), 1 );
-   m_pkPSystem->SetAge (fAge);
+	switch(iVersion)
+	{
+		case 1:
+		{
+				char temp[128];
+				pkPackage->Read((void*)&temp,128,1);
+				m_kPSType=temp;
+			
+				// Load PSType data and init PSystem
+				SetPSType( m_kPSType );
+				
+				// Read PSAge
+				float fAge;
+				pkPackage->Read ( fAge);
+				m_pkPSystem->SetAge (fAge);		
+		
+			break;		
+		}
+		
+		case 2:
+		{
+			pkPackage->Read_Str(m_kPSType);
+		
+			// Load PSType data and init PSystem
+			SetPSType( m_kPSType );
+			
+			// Read PSAge
+			float fAge;
+			pkPackage->Read ( fAge);
+			m_pkPSystem->SetAge (fAge);
+		
+		
+			break;
+		}
+	
+	}	
 
 }
 
