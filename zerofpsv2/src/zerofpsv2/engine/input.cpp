@@ -39,7 +39,8 @@ bool Input::StartUp()
 	}*/
 
 	m_pkZeroFps	=	static_cast<ZeroFps*>(GetSystem().GetObjectPtr("ZeroFps"));
-		
+	GetConsole();	
+
 	m_bKeyRepeat	= true;
 	m_iQueueLength	= 100;
 	m_iGrabtime		= SDL_GetTicks();
@@ -154,7 +155,7 @@ bool Input::RegisterInputHandle(InputHandle* pkInputHandle)
 	else
 	{
 		m_kInputHandles.push_back(pkInputHandle);
-		cout<<"InputHandle "<<pkInputHandle->m_strHandleName<<" registered"<<endl;
+		// cout<<"InputHandle "<<pkInputHandle->m_strHandleName<<" registered"<<endl;
 		return true;
 	}
 
@@ -538,9 +539,11 @@ void Input::RunCommand(int cmdid, const CmdArgument* kCommand)
 						nice = false;
 			
 				if(nice)
-					cout<<"Bind succes "<<kCommand->m_kSplitCommand[1]<<endl;
+					m_pkConsole->Printf("bind succes %s", kCommand->m_kSplitCommand[1].c_str() );
+					//cout<<"Bind succes "<<kCommand->m_kSplitCommand[1]<<endl;
 				else
-					cout<<"Bind fail "<<kCommand->m_kSplitCommand[1]<<endl;
+					m_pkConsole->Printf("bind fail %s", kCommand->m_kSplitCommand[1].c_str() );
+					//cout<<"Bind fail "<<kCommand->m_kSplitCommand[1]<<endl;
 				
 			}
 			else			

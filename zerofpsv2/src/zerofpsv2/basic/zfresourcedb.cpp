@@ -121,9 +121,6 @@ void ZFResourceDB::RunCommand(int cmdid, const CmdArgument* kCommand)
 		case FID_LISTRES:
 
 		for(it = m_kResources.begin(); it != m_kResources.end(); it++ ) {
-			//string hora = (*it)->m_strName.c_str();
-			//cout << "Hora: " <<  hora << endl;
-
 			GetSystem().Printf("- %s - %d - %d",(*it)->m_strName.c_str(),(*it)->m_iNumOfUsers, (*it)->m_pkResource->GetSize());
 			}
 			break;

@@ -559,8 +559,8 @@ void ZeroFps::SetRenderTarget(Camera* pkCamera)
 			return;
 
 	m_kRenderTarget.push_back(pkCamera);
-	cout << "Adding: " << pkCamera->GetName();
-	cout << " to active rendertargets\n";
+	//cout << "Adding: " << pkCamera->GetName();
+	//cout << " to active rendertargets\n";
 }
 
 void ZeroFps::RemoveRenderTarget(Camera* pkCamera)

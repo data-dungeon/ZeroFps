@@ -490,7 +490,7 @@ void ZGuiApp::InitGui(ZFScriptSystem* pkScriptSys, char* szFontTexture,
 	m_pkTexMan = static_cast<TextureManager*>(g_ZFObjSys.GetObjectPtr("TextureManager"));
 	m_pkResMan = static_cast<ZGuiResourceManager*>(g_ZFObjSys.GetObjectPtr("ZGuiResourceManager"));
 
-	m_pkTexMan->Load("data/textures/gui/slask.bmp", 0); // första misslyckas, vet inte varför..
+	//	m_pkTexMan->Load("data/textures/gui/slask.bmp", 0); // första misslyckas, vet inte varför..
 
 	ZGuiFont* pkDefaultFont = new ZGuiFont(16,16,0,ZG_DEFAULT_GUI_FONT);				// LEAK - MistServer, Nothing loaded. (FIXED)
 	pkDefaultFont->CreateFromFile(szFontTexture);		
