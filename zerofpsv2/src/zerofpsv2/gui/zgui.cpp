@@ -960,15 +960,24 @@ bool ZGui::RunKeyCommand(int iKey)
 	map<pair<ZGuiWnd*,int>,ZGuiWnd*>::iterator itKey;
 	itKey = m_KeyCommandTable.find(pair<ZGuiWnd*,int>
 		(ZGuiWnd::m_pkFocusWnd,iKey));
+
 	if(itKey != m_KeyCommandTable.end() && m_pkActiveMainWin)
 	{		
 		// Skicka ett Command medelande till valt fönster.
 		int* pkParams = new int[1];
 		int id = itKey->second->GetID(); // control id
 		pkParams[0] = id;
-		m_pkActiveMainWin->pkCallback(m_pkActiveMainWin->pkWnd,ZGM_COMMAND,
-			1,pkParams);
+
+		ZGuiWnd* pkMain = itKey->second->GetParent();
+
+		if(pkMain == NULL)
+			pkMain = m_pkActiveMainWin->pkWnd;
+
+		m_pkActiveMainWin->pkCallback(pkMain,ZGM_COMMAND, 1,pkParams);
 		delete[] pkParams;
+
+		SetFocus(itKey->second);
+
 		return true;
 	}
 
@@ -977,7 +986,7 @@ bool ZGui::RunKeyCommand(int iKey)
 
 void ZGui::OnKeyPress(int iKey)
 {
-	if(ZGuiWnd::m_pkFocusWnd)
+	if(ZGuiWnd::m_pkFocusWnd && iKey != -1)
 	{	
 		bool bIsTextbox = typeid(*ZGuiWnd::m_pkFocusWnd) == 
 			typeid(ZGuiTextbox) ? true : false;
@@ -1016,6 +1025,8 @@ void ZGui::OnKeyPress(int iKey)
 		int kParams[1] = {iKey};
 		m_pkActiveMainWin->pkCallback(ZGuiWnd::m_pkFocusWnd,
 			ZGM_KEYDOWN,1,(int*) kParams);
+
+		RunKeyCommand(iKey);
 	}
 }
 

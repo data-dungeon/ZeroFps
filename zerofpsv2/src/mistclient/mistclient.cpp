@@ -1071,6 +1071,8 @@ void MistClient::CreateGuiInterface()
 	GetWnd("InputBox")->SetFont( pkFont);
 	GetWnd("InfoBox")->GetFont()->m_cCharCellSize = 12; 	
 
+	pkGui->AddKeyCommand(KEY_RETURN, GetWnd("InputBox"), GetWnd("SendInputBoxBn") );
+
 	// tillfällig Fulhack delux (ta bort sen)
 /*	pkFps->DevPrintf("common", "=)");
 	pkFps->DevPrint_FindPage("common")->m_bVisible = true;

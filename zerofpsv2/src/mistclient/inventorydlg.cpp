@@ -561,9 +561,14 @@ void InventoryDlg::AddSlot(const char *szPic, const char *szPicA, Point sqr,
          (*kIte).m_pkItemStats = pkItemStats;
 
          // check if a new icon must be loaded
-         if ( strcmp((*kIte).m_szPic[0], szPic) )
+         //if ( strcmp((*kIte).m_szPic[0], szPic) )
          {
             cout << "Changed icon to:" << szPic << endl;
+
+				ZGuiSkin* pkSkin = (*kIte).m_pkLabel->GetSkin();
+
+				//pkSkin->m_iBkTexAlphaID = m_pkTexMan->Load( 
+
          }
 
          return;
