@@ -242,13 +242,13 @@ void Render::DrawHMlod(HeightMap* kmap,Vector3 CamPos,int iFps){
 							p1=Vector3(x,kmap->verts[z*kmap->m_iHmSize+x].height,z);									
 							glNormal3fv((float*)&kmap->verts[z*kmap->m_iHmSize+x].normal);						
 							glColor3fv((float*)&kmap->verts[z*kmap->m_iHmSize+x].color);
-							glTexCoord2f(t+0.01,s-0.01);						
+							glTexCoord2f(t+0.01,s+0.01);						
 					 		glVertex3fv((float*)&p1);
 				 			
 							p2=Vector3(x,kmap->verts[(z+step)*kmap->m_iHmSize+x].height,z+step);			 		
 						 	glNormal3fv((float*)&kmap->verts[(z+step)*kmap->m_iHmSize+x].normal);				 		
 							glColor3fv((float*)&kmap->verts[(z+step)*kmap->m_iHmSize+x].color);
-					 		glTexCoord2f(t+0.01,s-0.24);				
+					 		glTexCoord2f(t+0.01,s+0.24);				
 							glVertex3fv((float*)&p2); 
 							
 							t=nt;s=ns;//set the new cordinats
@@ -261,9 +261,9 @@ void Render::DrawHMlod(HeightMap* kmap,Vector3 CamPos,int iFps){
 					glColor3fv((float*)&kmap->verts[z*kmap->m_iHmSize+x].color);
 					
 					if(flip)						
-				 		glTexCoord2f(t+0.01,s-0.01);
+				 		glTexCoord2f(t+0.01,s+0.01);
  					else
- 						glTexCoord2f(t+0.24,s-0.01);
+ 						glTexCoord2f(t+0.24,s+0.01);
  						
 			 		glVertex3fv((float*)&p1);//set vertex
  		
@@ -273,9 +273,9 @@ void Render::DrawHMlod(HeightMap* kmap,Vector3 CamPos,int iFps){
 					glColor3fv((float*)&kmap->verts[(z+step)*kmap->m_iHmSize+x].color);
 					
 					if(flip)	
-				 		glTexCoord2f(t+0.01,s-0.24);
+				 		glTexCoord2f(t+0.01,s+0.24);
  					else
- 						glTexCoord2f(t+0.24,s-0.24);
+ 						glTexCoord2f(t+0.24,s+0.24);
 									   
 					glVertex3fv((float*)&p2); //set vertex
 			 		
@@ -394,5 +394,16 @@ void Render::SetFog(Vector4 kFogColor,float FogDensity,float FogStart,float FogS
 
 
 
+//this funktion calculates the texture cordinat for a subtexture in a 1024x1024 texture
+void Render::GiveTexCor(float &iX,float &iY,int iNr) {	
+	iX=(iNr%4);	
+	iY=(iNr-(iNr%4))/4;
+
+	iX*=0.25;
+	iY*=0.25;
+	iY=iY;
+	
+//	cout<<"X: "<<iX<< "  Y: "<<iY<<endl;
+}
 
 

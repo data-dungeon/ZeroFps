@@ -25,13 +25,13 @@ void Render::Quad(Vector3 kPos,Vector3 kHead,Vector3 kScale,int iTexture){
  		
   	m_pkTexMan->BindTexture(iTexture);  
 
-   glBegin(GL_QUADS);			
+	glBegin(GL_QUADS);			
 	glColor4f(1.0,1.0,1.0,1.0);  	  
-  	glNormal3f(1,0,0);
-   glTexCoord2f(0.0,0.0);glVertex3f(-.5,-0.5,0);		 
-   glTexCoord2f(1.0,0.0);glVertex3f(.5,-0.5,0);		
- 	glTexCoord2f(1.0,1.0);glVertex3f(.5,0.5,0);    
-	glTexCoord2f(0.0,1.0);glVertex3f(-0.5,0.5,0);    
+	glNormal3f(1,0,0);
+   glTexCoord2f(0.0,1.0);glVertex3f(-.5,-0.5,0);		 
+   glTexCoord2f(1.0,1.0);glVertex3f(.5,-0.5,0);		
+ 	glTexCoord2f(1.0,0.0);glVertex3f(.5,0.5,0);    
+	glTexCoord2f(0.0,0.0);glVertex3f(-0.5,0.5,0);    
 	glEnd();			
 
 	glPopMatrix();
@@ -100,15 +100,15 @@ void Render::PrintChar(char cChar) {
 	float glu=1.0/texwidth;				//opengl texture cordinats is 0-1
 	float width=glu*FONTWIDTH;
 	
-	float y=1.0-(float(int(pos/texwidth)*FONTWIDTH)*glu+width);
+	float y=(float(int(pos/texwidth)*FONTWIDTH)*glu+width);
 	float x=float(pos%texwidth)*glu;//+width/2;
 	
 	
 //	cout<<"Att texture position:"<<pos<<" "<<x<<" "<<y<<endl;
 	
-	
-	
-//	glBlendFunc(GL_ONE,GL_ALPHA); 		
+	glDepthMask(GL_FALSE);	
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_ONE,GL_ALPHA); 		
  	m_pkTexMan->BindTexture(aCurentFont);  
 
 	glPushMatrix();
@@ -118,8 +118,8 @@ void Render::PrintChar(char cChar) {
  	  
 	   	glTexCoord2f(x				,y);				glVertex3f(-.5,-0.5,0);		 
   	 	glTexCoord2f(x+width	,y);				glVertex3f(.5,-0.5,0);		
-	  	glTexCoord2f(x+width	,y+width);	glVertex3f(.5,0.5,0);    
-	  	glTexCoord2f(x				,y+width);	glVertex3f(-0.5,0.5,0);    
+	  	glTexCoord2f(x+width	,y-width);	glVertex3f(.5,0.5,0);    
+	  	glTexCoord2f(x				,y-width);	glVertex3f(-0.5,0.5,0);    
 		glEnd();				
 	glPopMatrix();
 	
@@ -239,7 +239,7 @@ void Render::Dot(float x,float y,float z) {
 
 
 void Render::DrawConsole(char* m_aCommand,vector<char*>* m_kText) {
-	SetFont("file:../data/textures/text/console.bmp");
+	SetFont("file:../data/textures/text/console.tga");
 
 	Quad(Vector3(0,0,-1.1),Vector3(0,0,0),Vector3(2.2,2.2,2.2),m_pkTexMan->Load("file:../data/textures/background.bmp"));
 	
@@ -252,17 +252,6 @@ void Render::DrawConsole(char* m_aCommand,vector<char*>* m_kText) {
 	}
 }
 
-//this funktion calculates the texture cordinat for a subtexture in a 1024x1024 texture
-void Render::GiveTexCor(float &iX,float &iY,int iNr) {	
-	iX=(iNr%4);	
-	iY=(iNr-(iNr%4))/4;
-
-	iX*=0.25;
-	iY*=0.25;
-	iY=1-iY;
-	
-//	cout<<"X: "<<iX<< "  Y: "<<iY<<endl;
-}
 
 void Render::GetFrustum() {
    Matrix4   proj;

@@ -7,20 +7,30 @@ TextureManager::TextureManager(FileIo* pkFile) {
 
 
 bool TextureManager::LoadTexture(GLuint &iNr,char *acFilename) {
+	bool isTga=false;
+	
 	SDL_Surface *image;
 
   image= LoadImage(acFilename);
   if(!image) {    
     return false;
   };
+  
+  if(strncmp(&acFilename[strlen(acFilename)-4],".tga",4)==0)
+		isTga=true;  	
 
   glGenTextures(1,&iNr);
   glBindTexture(GL_TEXTURE_2D,iNr);
   glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
+//  glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);  
   glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR_MIPMAP_LINEAR);
 
 //  glTexImage2D(GL_TEXTURE_2D,0,GL_RGB,image->w,image->h,0,GL_RGB,GL_UNSIGNED_BYTE,image->pixels);
-  gluBuild2DMipmaps(GL_TEXTURE_2D,GL_RGB,image->w,image->h,GL_RGB,GL_UNSIGNED_BYTE,image->pixels);
+  if(isTga)
+		gluBuild2DMipmaps(GL_TEXTURE_2D,GL_RGBA,image->w,image->h,GL_BGRA,GL_UNSIGNED_BYTE,image->pixels);  
+  else 
+	  gluBuild2DMipmaps(GL_TEXTURE_2D,GL_RGB,image->w,image->h,GL_BGR,GL_UNSIGNED_BYTE,image->pixels);
+  
   glBindTexture(GL_TEXTURE_2D,0);
   return true;
 }
@@ -38,7 +48,8 @@ SDL_Surface *TextureManager::LoadImage(char *acFilename) {
       return(NULL);
     }
 
-  /* GL surfaces are upsidedown and RGB, not BGR :-) */
+/*
+  // GL surfaces are upsidedown and RGB, not BGR :-) 
   tmpbuf = (Uint8 *)malloc(image->pitch);
   if ( tmpbuf == NULL ) {
     fprintf(stderr, "Out of memory\n");
@@ -62,6 +73,7 @@ SDL_Surface *TextureManager::LoadImage(char *acFilename) {
       rowlo -= image->pitch;
     }
   free(tmpbuf);
+  */
   return(image);
 };
 
