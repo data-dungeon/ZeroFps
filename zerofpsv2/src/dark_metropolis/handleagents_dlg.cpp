@@ -52,6 +52,8 @@ void CHandleAgents::OnCommand(ZGuiWnd *pkMainWnd, string strClickName)
 			if(pkMembersDlg)
 				pkMembersDlg->SetWindowMode(
 					CMembersDlg::HQ_BROWSE_MEMBERS_AND_AGENTS_AVAILABLE_FOR_HIRING); 
+
+			m_pkGui->SetCaptureToWnd(GetWnd("MembersWnd"));
 		}
 	}
 	else

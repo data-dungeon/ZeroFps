@@ -330,7 +330,7 @@ void MistServer::SetupGuiEnviroment()
 	// Create from script.
 	LoadGuiFromScript(m_pkScript, "data/script/gui/server.lua");
 	GetWnd("worktab")->Hide();
-
+	
 	// Fill zone- and object treebox.
 	BuildFileTree("ZoneModelTree", "data/mad/zones");
 	BuildFileTree("ObjectTree", "data/script/objects");

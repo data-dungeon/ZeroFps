@@ -45,6 +45,12 @@ void CMembersDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName)
 			m_pkGui->SetCaptureToWnd(GetWnd("HQWnd"));
 		}
 		else
+		if(m_eWidowMode == HQ_BROWSE_MEMBERS_AND_AGENTS_AVAILABLE_FOR_HIRING)
+		{
+			m_pkGui->KillWndCapture(); 
+			m_pkGui->SetCaptureToWnd(GetWnd("AgentsWnd"));
+		}
+		else
 		{
 			m_pkGui->KillWndCapture();
 		}
@@ -376,7 +382,8 @@ void CMembersDlg::OnClick(int x, int y, bool bMouseDown, bool bLeftButton,
 					if(kContainer.pkContainer == m_pkMoveInfo->m_kFromContainer.pkContainer)
 					{
 						// Funkar inte i nuläget.
-						printf("Don't work right now\n");
+						//printf("Don't work right now\n");
+						kContainer.pkContainer->MoveItem(*m_pkMoveInfo->m_pMoveObject, sx, sy);
 					}
 					else
 					if((*kContainer.pkContainer->GetItem(sx,sy)) == -1)
