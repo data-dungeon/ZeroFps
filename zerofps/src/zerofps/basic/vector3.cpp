@@ -251,26 +251,44 @@ Vector3 Vector3::Angels(void){
 	Vector3 temp=Vector3(0,0,0);
 
 
+
+
+
 	temp.x=-atan(y/z) * degtorad;	
-	if(z<0)
+/*	if(z<0)
 		temp.x+=180;
+*/
+
+//	cout<<"BLUB: "<<z<<endl;
+	if(z<0.5 && z>0)
+		z=0.5;
+	if(z>-0.5 && z<0)
+		z=0.5;
+
+
 
 
 	temp.y=atan(x/z) * degtorad;
+	
 	if(z<0)
 		temp.y+=180;
-
-
-//	temp.x=0;
 	
-//	temp.y=0;
+/*	
+	if(z<0)
+		temp.y+=180;
+*/
+
 /*	temp.y=atan(x/z) * degtorad;
 	if(z<0)
 		temp.y+=180;*/
-/*	temp.z=atan(x/y) * degtorad;
+//	temp.z=-atan(x/y) * degtorad;
+	
+/*	
 	if(y<0)
 		temp.z+=180;
-	*/
+	if(x<0)
+		temp.z+=180;*/
+
 	
 	return temp;
 }

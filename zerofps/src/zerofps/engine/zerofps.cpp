@@ -45,6 +45,9 @@ void ZeroFps::Init(int iNrOfArgs, char** paArgs)
 	InitDisplay(m_pkApp->m_iWidth,m_pkApp->m_iHeight,m_pkApp->m_iDepth);
 	
 	m_iState=state_normal;								//init gamestate to normal		
+	m_pkGameCamera=m_pkDefaultCamera;		
+	m_pkCamera=m_pkGameCamera;
+
 	
 	m_pkApp->OnInit();										//call the applications oninit funktion
 	MainLoop();														//jump to mainloop
@@ -54,13 +57,15 @@ void ZeroFps::MainLoop(void) {
 	while(m_iState!=state_exit) {		
 		switch(m_iState){
 			case state_normal:{
-			
-
+				m_pkCamera=m_pkGameCamera;
+				
 				m_pkApp->OnHud();									
 
-				Camera();
+				UpdateCamera();
+				m_pkRender->GetFrustum();				
+				
+				m_pkLight->SetCamera(m_pkCamera->GetPos());				
 				m_pkLight->Update();				
-				m_pkRender->GetFrustum();															
 				m_pkApp->OnIdle();				
 				
 				//this changes mode to console
@@ -69,6 +74,9 @@ void ZeroFps::MainLoop(void) {
 					glDisable(GL_LIGHTING);
 					m_iState=state_console;
 					m_pkInput->Reset();
+					m_pkCamera=m_pkConsoleCamera;					
+					m_pkCamera->UpdateAll();
+									
 					break;
 				}
 				if(m_pkInput->Pressed(F12))
@@ -86,8 +94,13 @@ void ZeroFps::MainLoop(void) {
 			}
 			case state_console: {
 				m_pkConsole->Update();
-
 				Swap();
+				
+				if(m_iState==state_normal){
+					m_pkCamera=m_pkGameCamera;
+					m_pkCamera->UpdateAll();
+				}					
+				
 				break;
 			}
 		}
@@ -134,12 +147,17 @@ void ZeroFps::InitDisplay(int iWidth,int iHeight,int iDepth) {
 	
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();													//
-	glFrustum(-.3,.3,-.225,.225,.25,400);				//
+//	glFrustum(-.3,.3,-.225,.225,.25,400);				//
+	m_pkDefaultCamera=new Camera(Vector3(0,0,0),Vector3(0,0,0),90,1.333,0.25,400);
+	m_pkConsoleCamera=new Camera(Vector3(0,0,0),Vector3(0,0,0),84,1.333,0.3,400);	
+	
+//	m_pkCamera->UppLoad();
+//	gluPerspective(90,1.333,0.25,400);
 	
 	//set camera mode
-	m_iCamMode=cam_look; 
-	m_kCamPos=new Vector3(0,0,0);
-	m_kCamRot=new Vector3(0,0,0);
+//	m_iCamMode=cam_look; 
+//	m_kCamPos=new Vector3(0,0,0);
+//	m_kCamRot=new Vector3(0,0,0);
   
 	glMatrixMode(GL_MODELVIEW);
 
@@ -152,7 +170,7 @@ void ZeroFps::Swap(void) {
 	SDL_GL_SwapBuffers();  //guess
 	
 	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
- 	glLoadIdentity();													
+	glLoadIdentity();
   
 	//count FPS
 	m_fFrameTime=SDL_GetTicks()-m_fLastFrameTime;
@@ -162,12 +180,26 @@ void ZeroFps::Swap(void) {
 
 }
 
-void ZeroFps::Camera(void) {
+void ZeroFps::UpdateCamera(void) {
+
+	m_pkCamera->Update();		
+
+
+
+
+/*
+
 //	if(m_iState==state_normal) {
 		// Update Camera
+
+
+
 		switch(m_iCamMode)
 		{
 		case cam_look:
+			m_pkCamera->Update();		
+			
+			/*
 			//rotate the camera
 			glRotatef(m_kCamRot->x,1,0,0);	
 			glRotatef(m_kCamRot->y,0,1,0);	
@@ -175,6 +207,8 @@ void ZeroFps::Camera(void) {
 		
 			//translate the camera
 			glTranslatef(-m_kCamPos->x,-m_kCamPos->y,-m_kCamPos->z);
+			
+			
 			break;
 		case cam_target:
 			gluLookAt(m_kCamPos->x,m_kCamPos->y,m_kCamPos->z,
@@ -182,6 +216,8 @@ void ZeroFps::Camera(void) {
 			break;
 		}
 //	}
+*/
+
 }
 
 void ZeroFps::ToggleFullScreen(void){

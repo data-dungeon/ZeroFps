@@ -347,12 +347,17 @@ void Render::DrawBillboard(Vector3 kCamPos,Vector3 kPos,Vector3 kScale,int iText
 //	glDisable(GL_COLOR_MATERIAL);
 	glColor4f(1,1,1,1);
 
+	
 
 	
 	Vector3 kDis=kCamPos-kPos;
-	
+//	Vector3 kDis=Vector3(0.5,0,.5);
+
+	kDis.Normalize();	
 	Vector3 kRot=kDis.Angels();
 	
+	
+//	Line(kPos,kPos+kDis+Vector3(5,0,0));
 	
 //	kRot.y=atan(kDis.x/kDis.z) * degtorad;
 //	kRot.x=-atan(kDis.y/kDis.x) * degtorad;	
@@ -361,14 +366,15 @@ void Render::DrawBillboard(Vector3 kCamPos,Vector3 kPos,Vector3 kScale,int iText
 		
 //	if(kRot.y<0)
 //		kRot.y+=180;
-	cout<<"ROT:"<<kRot.y<<endl;	
+//	cout<<"ROT:"<<kRot.x<<endl;	
 	
 	
 	glTranslatef(kPos.x,kPos.y,kPos.z);	
-	glRotatef(kRot.y, 0, 1, 0);		
-	glRotatef(kRot.x, 1, 0, 0);
+	glRotatef(kRot.z, 0, 0, 1);		
+	glRotatef(kRot.y, 0, 1, 0);			
+	glRotatef(kRot.x, 1, 0, 0);	
 
-	glRotatef(kRot.z, 0, 0, 1);	
+
 //	glScalef(kScale.x,kScale.y,kScale.z);	
 	
 	m_pkTexMan->BindTexture(iTexture); 	

@@ -32,7 +32,7 @@ Light::Light() {
 	glEnable(GL_LIGHTING);
 }
 
-void Light::SetCamera(Vector3 *kCamPos) {
+void Light::SetCamera(Vector3 kCamPos) {
 	m_kCamPos=kCamPos;
 }
 
@@ -68,7 +68,7 @@ void Light::Update() {
 			//		opengl LightIntesity equation	min(1, 1 / ((*it)-> + l*d + q*d*d))
 			
 			Vector3 kPos = (*(*it)->kPos)+(*it)->kConstPos;		
-			float fDistance = (*m_kCamPos-kPos).Length();		
+			float fDistance = (m_kCamPos-kPos).Length();		
 			float fIntensity = min(1, 1 / ((*it)->fConst_Atten + (*it)->fLinear_Atten*fDistance + (*it)->fQuadratic_Atten*fDistance*fDistance));
 		
 			if(fIntensity>0.05)

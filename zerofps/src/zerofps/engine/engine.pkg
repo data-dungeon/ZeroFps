@@ -5,7 +5,9 @@ class Application;
 class Console;
 class ObjectManager;
 class CollisionManager;
+class Camera;
 
+#include "camera.h"
 #include "engine_x.h"
 #include "console.h"
 #include "application.h"

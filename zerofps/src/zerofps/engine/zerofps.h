@@ -35,6 +35,11 @@ class ZeroFps {
 
 		float m_fLastFrameTime;
 
+		Camera *m_pkCamera;
+		Camera *m_pkConsoleCamera;
+		Camera *m_pkGameCamera;		
+		Camera *m_pkDefaultCamera;
+
 	public:
 		Application* m_pkApp;						//application
 		CmdSystem* m_pkCmd;							//realtime variable handler
@@ -52,9 +57,9 @@ class ZeroFps {
 		int m_iFps;											//curent FPS
 		float m_fFrameTime;							//frametime in MS
 		
-		Vector3 *m_kCamPos;
-		Vector3 *m_kCamRot;
-		int m_iCamMode;
+//		Vector3 *m_kCamPos;
+//		Vector3 *m_kCamRot;
+//		int m_iCamMode;
 		
 					
 		ZeroFps(void);
@@ -64,7 +69,7 @@ class ZeroFps {
 		void MainLoop(void);		
 		void InitDisplay(int iWidth,int iHeight,int iDepth);		
 		void Swap(void);								//swap gl buffers
-		void Camera(void);
+		void UpdateCamera(void);
 		
 		void ToggleFullScreen(void);
 		
@@ -72,14 +77,21 @@ class ZeroFps {
 		inline float GetFrameTime() {return m_fFrameTime;};
 		
 		
-		inline Vector3& CamPos(Vector3 kCamPos){*m_kCamPos=kCamPos;return *m_kCamPos;};
-		inline Vector3& CamPos(void){return *m_kCamPos;};
-		inline void SetCamPosPointer(Vector3* pkNewCamPos) {m_kCamPos=pkNewCamPos;};
+//		inline Vector3& CamPos(Vector3 kCamPos){*m_kCamPos=kCamPos;return *m_kCamPos;};
+//		inline Vector3& CamPos(void){return *m_kCamPos;};
+//		inline void SetCamPosPointer(Vector3* pkNewCamPos) {m_kCamPos=pkNewCamPos;};
 		
-		inline Vector3& CamRot(Vector3 kCamRot){*m_kCamPos=kCamRot;return *m_kCamRot;};
-		inline Vector3& CamRot(void){return *m_kCamRot;};		
-		inline void SetCamRotPointer(Vector3* pkNewCamRot) {m_kCamRot=pkNewCamRot;};
+//		inline Vector3& CamRot(Vector3 kCamRot){*m_kCamPos=kCamRot;return *m_kCamRot;};
+//		inline Vector3& CamRot(void){return *m_kCamRot;};		
+//		inline void SetCamRotPointer(Vector3* pkNewCamRot) {m_kCamRot=pkNewCamRot;};
 	
+		inline void SetCam(Camera* pkCamera) {m_pkCamera=pkCamera;};
+		inline void SetGameCam(Camera* pkCamera) {m_pkGameCamera=pkCamera;};
+		
+		inline Camera *GetCam() {return m_pkCamera;};		
+		inline Camera *GetGameCam() {return m_pkGameCamera;};				
+		inline Camera *GetDefaultCam() {return m_pkDefaultCamera;};
+//		inline void SetConsoleCam(Camera* pkCamera) {m_pkConsoleCamera=pkCamera;};
 };
 
 

@@ -47,7 +47,7 @@ class RENDER_API LightSource {
 
 class RENDER_API Light {
 	private:
-		Vector3 *m_kCamPos;
+		Vector3 m_kCamPos;
 		int m_iNrOfLights;
 		list<LightSource*> m_kLights;		
 		vector<LightSource*> m_kActiveLights;
@@ -60,7 +60,7 @@ class RENDER_API Light {
 		
 		void Add(LightSource* kNewLight);
 		void Remove(LightSource *kLight);
-		void SetCamera(Vector3 *kCamPos);
+		void SetCamera(Vector3 kCamPos);
 		void Update();
 
 };
