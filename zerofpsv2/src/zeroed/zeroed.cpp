@@ -337,13 +337,9 @@ void ZeroEd::Init()
 	
 	// Setup the Edit Sun that are used for simple lightning in the editor.
 	m_kSun.kRot = Vector3(1,2,1);
-	m_kSun.kDiffuse=Vector4(1,1,1,0);
-	m_kSun.kAmbient=Vector4(0.2,0.2,0.2,0);
+	m_kSun.kDiffuse=Vector4(0.5,0.5,0.5,0);
+	m_kSun.kAmbient=Vector4(0.5,0.5,0.5,0);
 	m_kSun.iType=DIRECTIONAL_LIGHT;			
-	m_kSun.iPriority=10;
-	m_kSun.fConst_Atten=1;
-	m_kSun.fLinear_Atten=0;
-	m_kSun.fQuadratic_Atten=0;
 
 	// Create startup GUI for the the server from script.
 	SetupGuiEnviroment();
@@ -1728,7 +1724,7 @@ void ZeroEd::OnClientConnected()
 	m_bRemoteEditing = true;
 	cout<<"connected"<<endl;
 	
-	//SendZoneListRequest();
+	SendZoneListRequest();
 }
 
 int ZeroEd::GetZoneID(const Vector3& kPos)

@@ -198,7 +198,7 @@ void MadView::ToogleLight(bool bEnabled)
 
 void MadView::CreateCamera()
 {
-	m_pkCamera=new Camera(Vector3(0,0,0),Vector3(0,0,0),70,1.333,1,100);	
+	m_pkCamera=new Camera(Vector3(0,0,0),Vector3(0,0,0),70,1.333,0.01,200);	
 	m_pkCamera->m_bForceFullScreen = false;
 	m_pkCamera->SetName("persp");
 	m_pkZeroFps->AddRenderCamera(m_pkCamera);
