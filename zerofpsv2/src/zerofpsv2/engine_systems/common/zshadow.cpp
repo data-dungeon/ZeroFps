@@ -21,6 +21,22 @@ ShadowMesh::ShadowMesh(P_Mad* pkMad,LightSource* pkLightSource,int iShadowMode)
 		m_kLightPos = pkLightSource->kPos;
 
 
+	m_pkExtrudedSiluetVB = NULL;
+	m_pkFrontCapingVB = NULL;
+	m_pkBackCapingVB = NULL;
+}
+
+ShadowMesh::~ShadowMesh()
+{
+	if(m_pkExtrudedSiluetVB)
+		delete m_pkExtrudedSiluetVB;
+
+	if(m_pkFrontCapingVB)
+		delete m_pkFrontCapingVB;
+	
+	if(m_pkBackCapingVB)
+		delete m_pkBackCapingVB;
+
 }
 
 bool ShadowMesh::Equals(P_Mad* pkMad,LightSource* pkLightSource,int iShadowMode)
@@ -89,6 +105,9 @@ ZShadow::ZShadow(): ZFSubSystem("ZShadow")
 	m_fFrontCapOffset =	0.05;
 	m_fShadowIntensity = 0.3;
 	
+	m_bVBO=					false;
+	
+	RegisterVariable("r_shadowvbo",			&m_bVBO,CSYS_BOOL);
 	RegisterVariable("r_shadows",				&m_iNrOfShadows,CSYS_INT);
 	RegisterVariable("r_shadowmode",			&m_iShadowMode,CSYS_INT);
 	RegisterVariable("r_shadowdebug",		&m_iDebug,CSYS_INT);
@@ -288,21 +307,52 @@ bool ZShadow::SetupMesh(P_Mad* pkMad)
 
 void ZShadow::DrawCapings(ShadowMesh* pkShadowMesh)
 {
-	m_pkZShaderSystem->SetPointer(VERTEX_POINTER,&(pkShadowMesh->m_kFrontCaping[0].x));
-	m_pkZShaderSystem->SetNrOfVertexs(pkShadowMesh->m_kFrontCaping.size());
-	m_pkZShaderSystem->DrawArray(TRIANGLES_MODE);
-
-	m_pkZShaderSystem->SetPointer(VERTEX_POINTER,&(pkShadowMesh->m_kBackCaping[0].x));
-	m_pkZShaderSystem->SetNrOfVertexs(pkShadowMesh->m_kBackCaping.size());
-	m_pkZShaderSystem->DrawArray(TRIANGLES_MODE);
+	if(m_bVBO)
+	{
+		if(!pkShadowMesh->m_pkFrontCapingVB)
+		{
+			m_pkZShaderSystem->SetPointer(VERTEX_POINTER,&(pkShadowMesh->m_kFrontCaping[0].x));
+			m_pkZShaderSystem->SetNrOfVertexs(pkShadowMesh->m_kFrontCaping.size());
+			pkShadowMesh->m_pkFrontCapingVB = m_pkZShaderSystem->CreateVertexBuffer(TRIANGLES_MODE);
 		
+			m_pkZShaderSystem->SetPointer(VERTEX_POINTER,&(pkShadowMesh->m_kBackCaping[0].x));
+			m_pkZShaderSystem->SetNrOfVertexs(pkShadowMesh->m_kBackCaping.size());
+			pkShadowMesh->m_pkBackCapingVB = m_pkZShaderSystem->CreateVertexBuffer(TRIANGLES_MODE);		
+		}		
+		m_pkZShaderSystem->DrawVertexBuffer(pkShadowMesh->m_pkFrontCapingVB);
+		m_pkZShaderSystem->DrawVertexBuffer(pkShadowMesh->m_pkBackCapingVB);
+	}
+	else
+	{
+		m_pkZShaderSystem->SetPointer(VERTEX_POINTER,&(pkShadowMesh->m_kFrontCaping[0].x));
+		m_pkZShaderSystem->SetNrOfVertexs(pkShadowMesh->m_kFrontCaping.size());
+		m_pkZShaderSystem->DrawArray(TRIANGLES_MODE);
+	
+		m_pkZShaderSystem->SetPointer(VERTEX_POINTER,&(pkShadowMesh->m_kBackCaping[0].x));
+		m_pkZShaderSystem->SetNrOfVertexs(pkShadowMesh->m_kBackCaping.size());
+		m_pkZShaderSystem->DrawArray(TRIANGLES_MODE);
+	}
 }
 
 void ZShadow::DrawExtrudedSiluet(ShadowMesh* pkShadowMesh)
 {
-	m_pkZShaderSystem->SetPointer(VERTEX_POINTER,&pkShadowMesh->m_kExtrudedSiluet[0].x);
-	m_pkZShaderSystem->SetNrOfVertexs(pkShadowMesh->m_kExtrudedSiluet.size());
-	m_pkZShaderSystem->DrawArray(QUADS_MODE);
+	if(m_bVBO)
+	{
+		if(!pkShadowMesh->m_pkExtrudedSiluetVB)
+		{
+			m_pkZShaderSystem->SetPointer(VERTEX_POINTER,&pkShadowMesh->m_kExtrudedSiluet[0].x);
+			m_pkZShaderSystem->SetNrOfVertexs(pkShadowMesh->m_kExtrudedSiluet.size());		
+			pkShadowMesh->m_pkExtrudedSiluetVB = m_pkZShaderSystem->CreateVertexBuffer(QUADS_MODE);
+		}				
+		m_pkZShaderSystem->DrawVertexBuffer(pkShadowMesh->m_pkExtrudedSiluetVB);
+	}
+	else
+	{	
+
+		m_pkZShaderSystem->SetPointer(VERTEX_POINTER,&pkShadowMesh->m_kExtrudedSiluet[0].x);
+		m_pkZShaderSystem->SetNrOfVertexs(pkShadowMesh->m_kExtrudedSiluet.size());
+		m_pkZShaderSystem->DrawArray(QUADS_MODE);
+	}	
 }
 
 

@@ -15,6 +15,7 @@
 #include "../engine/res_texture.h"
 #include "zvprogram.h"
 #include "zfprogram.h"
+#include "zvertexbuffer.h"
 
 using namespace std;
 
@@ -170,6 +171,8 @@ enum RENDER_API DRAW_MODE
 };
 
 
+class ZVertexBuffer;
+
 class RENDER_API ZShaderSystem : public ZFSubSystem
 {
 	private:
@@ -308,6 +311,11 @@ class RENDER_API ZShaderSystem : public ZFSubSystem
 		void DrawArray();
 		void DrawArray(const int& iDrawMode);
 	
+		ZVertexBuffer* CreateVertexBuffer(const int& iDrawMode);
+		ZVertexBuffer* CreateVertexBuffer();
+		
+		void DrawVertexBuffer(ZVertexBuffer* pkBuffer);
+		
 		//basic draw funktions
 		void ClearGeometry();
 		void DrawGeometry();

@@ -31,11 +31,16 @@ class ENGINE_SYSTEMS_API ShadowMesh
 		LightSource*			m_pkLightSource;
 		Vector3					m_kLightPos;
 
+		ZVertexBuffer*			m_pkExtrudedSiluetVB;
+		ZVertexBuffer*			m_pkFrontCapingVB;
+		ZVertexBuffer*			m_pkBackCapingVB;
+		
 		vector<Vector3>		m_kExtrudedSiluet;
 		vector<Vector3>		m_kFrontCaping;
 		vector<Vector3>		m_kBackCaping;
 
 		ShadowMesh(P_Mad* pkMad,LightSource* pkLightSource,int iShadowMode);
+		~ShadowMesh();
 		bool Equals(P_Mad* pkMad,LightSource* pkLightSource,int iShadowMode);
 };
 
@@ -75,6 +80,7 @@ class ENGINE_SYSTEMS_API ZShadow  : public ZFSubSystem
 		bool			m_bHaveCheckedBits;		//have we checked that the stencil buffer is ok
 		bool			m_bDisabled;				//is shadows disabled
 
+		bool			m_bVBO;
 		int			m_iDebug;
 		int			m_iShadowMode;
 		int			m_iNrOfShadows;			//number of shadows calculated per model

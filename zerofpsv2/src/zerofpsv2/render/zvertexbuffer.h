@@ -7,8 +7,9 @@
 class RENDER_API ZVertexBuffer
 {
 	private:
-		int		m_iBufferID;		
-		int		m_iVertexType ;
+		unsigned int	m_iBufferID;
+		int				m_iDrawMode;		
+		int				m_iVertexType ;
 
 		//what kind of data does this vertexbuffer contain
 		bool		m_bNormals;
@@ -19,12 +20,28 @@ class RENDER_API ZVertexBuffer
 		bool		m_bIndex;
 		bool		m_bColor;
 		
+		int		m_iVertises;
+		int		m_iIndexes;
 		
 	public:
+		ZVertexBuffer();
+		~ZVertexBuffer();
 
-		
-
+	friend class ZShaderSystem;
 };
 
 
 #endif
+
+
+
+
+
+
+
+
+
+
+
+
+

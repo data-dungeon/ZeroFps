@@ -33,7 +33,7 @@ bool ZShaderSystem::StartUp()
 	//check for vertex and fragment program support
 	if(!(m_bSupportVertexProgram = HaveExtension("GL_ARB_vertex_program")))
 		cout<<"ZSHADER: No vertex program support"<<endl;
-	if(!(m_iCurrentFragmentProgram = HaveExtension("GL_ARB_fragment_program")));
+	if(!(m_bSupportFragmentProgram = HaveExtension("GL_ARB_fragment_program")))
 		cout<<"ZSHADER: No fragment program support"<<endl;
 	
 	//check for vertexbuffer support
@@ -874,6 +874,66 @@ void ZShaderSystem::DrawArray()
 		CleanCopyedData();
 }
 
+void ZShaderSystem::DrawVertexBuffer(ZVertexBuffer* pkBuffer)
+{
+	if(m_pkCurrentMaterial == NULL)
+	{
+		cout<<"WARNING: no material bound"<<endl;
+		return;
+	}
+
+	if(pkBuffer->m_iBufferID == 0)
+	{
+		cout<<"warning tried to draw incomplete vertex buffer"<<endl;
+		return;
+	}
+
+	//reset all pointers
+	ResetPointers();
+	
+	//disable all client states
+	glDisableClientState(GL_VERTEX_ARRAY);	
+	glDisableClientState(GL_NORMAL_ARRAY);	
+	glDisableClientState(GL_INDEX_ARRAY);	
+	glDisableClientState(GL_COLOR_ARRAY);
+	glDisableClientState(GL_EDGE_FLAG_ARRAY);		
+
+	//set vertex buffer
+	glBindBuffer(GL_ARRAY_BUFFER_ARB,pkBuffer->m_iBufferID);
+	
+			
+	if(pkBuffer->m_iVertexType == VERTEXTYPE_3)
+	{
+		m_pkVertexPointer = 0;
+		glEnableClientState(GL_VERTEX_ARRAY);
+		glVertexPointer(3,GL_FLOAT,0,m_pkVertexPointer);		
+	}	
+
+	//update shader parameters
+	UpdateFragmentProgramParameters();
+	UpdateVertexProgramParameters();
+
+	
+	if(m_pkCurrentMaterial->GetNrOfPasses() == 1)
+	{
+		SetupTUClientStates(0);
+		
+		if(m_pkIndexPointer)
+		{
+			m_iTotalVertises += m_iNrOfIndexes;
+			glDrawElements(pkBuffer->m_iDrawMode,m_iNrOfIndexes,GL_UNSIGNED_INT,m_pkIndexPointer);
+		}
+		else
+		{			
+			m_iTotalVertises += pkBuffer->m_iVertises;
+			glDrawArrays(pkBuffer->m_iDrawMode,0,pkBuffer->m_iVertises);
+			//cout<<"bah"<<endl;
+		}
+	}
+		
+	glBindBuffer(GL_ARRAY_BUFFER_ARB,0);		
+}
+
 void ZShaderSystem::DrawGeometry(const int& iDrawMode)
 {	
 	SetDrawMode(iDrawMode);
@@ -1311,7 +1371,52 @@ void ZShaderSystem::MatrixMode(const int& iMode)
 	}
 }
 
+ZVertexBuffer* ZShaderSystem::CreateVertexBuffer(const int& iDrawMode)
+{
+	SetDrawMode(iDrawMode);
+	return CreateVertexBuffer();
+}
 
+ZVertexBuffer* ZShaderSystem::CreateVertexBuffer()
+{
+	if(!m_bSupportVertexBuffers)
+		return NULL;
+
+		
+	//check if theres any vertises =D
+	if(!(m_pk2DVertexPointer || m_pkVertexPointer))
+		return NULL;
+
+	//create new zvertexbuffer object
+	ZVertexBuffer* pkNewBuffer = new ZVertexBuffer;
+
+	//generate a new vertexbuffer
+	glGenBuffersARB(1,&(pkNewBuffer->m_iBufferID));
+	
+	//bind the new buffer
+	glBindBufferARB(GL_ARRAY_BUFFER_ARB, pkNewBuffer->m_iBufferID);
+	
+	//save vertex data
+	if(m_pkVertexPointer)
+	{
+		glBufferDataARB(GL_ARRAY_BUFFER_ARB, m_iNrOfVertexs*sizeof(Vector3), m_pkVertexPointer, GL_STATIC_DRAW_ARB);
+		pkNewBuffer->m_iVertexType = VERTEXTYPE_3;
+	}
+		
+		
+	//set drawmode
+	pkNewBuffer->m_iDrawMode = m_iDrawMode;
+	
+	//set nr of vertiess
+	pkNewBuffer->m_iVertises = m_iNrOfVertexs;
+		
+	//reset buffer binding
+	glBindBufferARB(GL_ARRAY_BUFFER_ARB,0);
+	
+	//cout<<"+VB:"<<pkNewBuffer->m_iBufferID<<endl;
+	
+	return pkNewBuffer;
+}
 
 
 
