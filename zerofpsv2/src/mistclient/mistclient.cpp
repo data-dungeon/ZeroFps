@@ -95,9 +95,6 @@ void MistClient::OnInit()
 	//run autoexec script
 	if(!pkIni->ExecuteCommands("mistclient_autoexec.ini"))
 		pkConsole->Printf("No game_autoexec.ini.ini found");
-
-
-
 }
 
 void MistClient::Init()
@@ -160,7 +157,7 @@ void MistClient::Init()
 
 	ZFResourceHandle kIpSetupScript;
 	kIpSetupScript.SetRes("data/script/net/ipsetup.lua");
-	pkScript->Call(&kIpSetupScript, "SetupIP", 0, 0);		
+	pkScript->Call(&kIpSetupScript, "SetupIP", 0, 0);
 }
 
 void MistClient::RegisterResources()
@@ -199,8 +196,11 @@ void MistClient::OnIdle()
 {
 	pkFps->SetCamera(m_pkCamera);		
 	pkFps->GetCam()->ClearViewPort();	
-			
-	Input();
+		
+	if(pkGui->m_bHaveInputFocus == false)
+	{
+		Input();
+	}
 	
  	pkFps->UpdateCamera(); 	
 	
@@ -407,7 +407,9 @@ void MistClient::Input()
 
 	if(pkInput->Pressed(MOUSERIGHT))
 	{
-		m_pkTargetObject = GetTargetObject();
+		m_pkTargetObject2 = GetTargetObject();
+
+		pkGui->SetFocus(GetWnd("MainWnd")); // set focus to main wnd.
 
 		int mx, my;
 		pkInput->MouseXY(mx,my);
@@ -631,25 +633,29 @@ void MistClient::OnCommand(int iID, ZGuiWnd *pkMainWnd)
 
 					if(res != m_kActionBnTranslator.end())
 					{
-						printf("selected order = %s\n", res->second.c_str());
-
 						if(m_pkClientControlP)
 						{
-							if(m_pkTargetObject)
+							printf("m_pkClientControlP\n");
+							if(m_pkTargetObject2)
 							{
+								printf("m_pkTargetObject2\n");
 								if(m_iActiveCaracterObjectID != -1)
 								{
+									printf("m_iActiveCaracterObjectID != -1\n");
+
 									ClientOrder order;
 
 									order.m_sOrderName = res->second;
 									order.m_iClientID = pkFps->GetConnectionID();
-									order.m_iObjectID = m_pkTargetObject->iNetWorkID;				
+									order.m_iObjectID = m_pkTargetObject2->iNetWorkID;				
 									order.m_iCaracter = m_iActiveCaracterObjectID;
 
 									//set this to -1 if its not a ground click
 									order.m_iFace = -1;
 
-									//m_pkClientControlP->AddOrder(order);
+									m_pkClientControlP->AddOrder(order);
+
+									printf("selected order = %s\n", res->second.c_str());
 								}
 							}
 						}
@@ -1156,10 +1162,10 @@ void MistClient::OnClientInputSend(char *szText)
 
 void MistClient::OpenActionMenu(int mx, int my)
 {
-	if(m_bActionMenuIsOpen || m_pkTargetObject == NULL)
+	if(m_bActionMenuIsOpen || m_pkTargetObject2 == NULL)
 		return;
 
-	P_Ml* pkMistLandProp = static_cast<P_Ml*>(m_pkTargetObject->GetProperty("P_Ml")); 
+	P_Ml* pkMistLandProp = static_cast<P_Ml*>(m_pkTargetObject2->GetProperty("P_Ml")); 
 
 	if(!pkMistLandProp)
 		return;
@@ -1168,20 +1174,18 @@ void MistClient::OpenActionMenu(int mx, int my)
 	pkMistLandProp->GetActions(vkActions);
 
 	int x=0, y=0, knappar=vkActions.size();
-	float grad=0;
+	float grad=-PI/2;
 	char name[25];
 	bool bWndExist;
-
 	const float fOffset = 35;
-	int apa_x = 16;
-	int apa_y = 0;
+	int x_diff = -8, y_diff = 20;
 
 	for(int i=0; i<MAX_NUM_ACTION_BUTTONS; i++)
 	{
 		sprintf(name, "%s%i", "ActionButton", i);
 		bWndExist = GetWnd(name) != NULL;
 
-		CreateWnd(Button, name, "MainWnd", "", mx-apa_x+x-fOffset, my-apa_y+y-fOffset, 32, 32, 0);
+		CreateWnd(Button, name, "MainWnd", "", mx-x_diff+x-fOffset, my-y_diff+y-fOffset, 32, 32, 0);
 		ZGuiButton* pkButton = static_cast<ZGuiButton*>(GetWnd(name));
 
 		if(!bWndExist)
@@ -1203,13 +1207,13 @@ void MistClient::OpenActionMenu(int mx, int my)
 		{
 			ZGuiWnd* pkWnd = GetWnd(name);
 			pkWnd->Show();
-			pkWnd->SetPos(mx+x-fOffset-apa_x, my+y-fOffset-apa_y, true, true);
+			pkWnd->SetPos(mx+x-fOffset-x_diff, my+y-fOffset-y_diff, true, true);
 		}
 
 		sprintf(name, "%s%i", "ActionLabel", i);
 		bWndExist = GetWnd(name) != NULL;
 
-		CreateWnd(Label, name, "MainWnd", "", mx-apa_x+x-fOffset, my-apa_y+y-fOffset, 32, 32, 0);
+		CreateWnd(Label, name, "MainWnd", "", mx-x_diff+x-fOffset, my-y_diff+y-fOffset, 32, 32, 0);
 
 		if(!bWndExist)
 		{
@@ -1222,7 +1226,7 @@ void MistClient::OpenActionMenu(int mx, int my)
 		{
 			ZGuiWnd* pkWnd = GetWnd(name);
 			pkWnd->Show();
-			pkWnd->SetPos(mx+x-fOffset-apa_x, my+y-fOffset-apa_y, true, true);
+			pkWnd->SetPos(mx+x-fOffset-x_diff, my+y-fOffset-y_diff, true, true);
 		}
 
 		if(i < vkActions.size())
@@ -1239,13 +1243,18 @@ void MistClient::OpenActionMenu(int mx, int my)
 	
 			m_kActionBnTranslator.insert(
 				map<ZGuiButton*,string>::value_type(pkButton,vkActions[i]));
-
+		}
+		else
+		{
+			pkButton->Hide();
+			GetWnd(name)->GetSkin()->m_iBkTexID = 
+				pkTexMan->Load("data/textures/gui/actions/noaction.bmp", 0);
 		}
 
-		x += sin(grad) * fOffset;
-		y += cos(grad) * fOffset;
+		x -= sin(grad) * fOffset;
+		y -= cos(grad) * fOffset;
 
-		grad += (zf_pi / (float) MAX_NUM_ACTION_BUTTONS);
+		grad -= (zf_pi / (float) MAX_NUM_ACTION_BUTTONS);
 	}
 
 	m_bActionMenuIsOpen = true;

@@ -61,7 +61,7 @@ class MistClient :public Application, public ZGuiApp {
 		//clients own little qute object
 		int					m_iSelfObjectID;				// Network ID that i use to send data to server.
 		Entity*				m_pkClientObject;
-		Entity*				m_pkTargetObject;
+		Entity*				m_pkTargetObject, *m_pkTargetObject2;
 		P_ClientControl*	m_pkClientControlP;
 
 		P_ServerInfo*		m_pkServerInfo;

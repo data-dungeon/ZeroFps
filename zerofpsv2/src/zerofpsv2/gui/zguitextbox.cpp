@@ -554,7 +554,6 @@ void ZGuiTextbox::ResizeTextBuffer( int nCharacters )
 // överlagrad från Zguiwnd
 void ZGuiTextbox::SetText(char* strText, bool bResizeWnd)
 {
-	cout<<"HORJÄVEL"<<endl;
 	if(strText == NULL || strlen(strText) < 1)
 	{
 		delete[] m_strText;
