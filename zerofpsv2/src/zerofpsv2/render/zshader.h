@@ -211,6 +211,7 @@ class RENDER_API ZShader : public ZFSubSystem
 		bool StartUp();
 	
 		void SetForceLighting(int iMode) { m_iForceLighting = iMode;};
+		int  GetForceLighting() { return m_iForceLighting; }
 		void SetForceBlending(int iMode) { m_iForceBledning = iMode;};
 		void SetMaterial(ZMaterial* pkMaterial);		
 		void SetPointer(int iType,void* pkPointer);

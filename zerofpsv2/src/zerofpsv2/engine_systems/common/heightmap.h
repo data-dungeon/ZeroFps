@@ -27,22 +27,14 @@ struct HM_fileheader
 	int	m_iNumOfLayers;
 };
 
-/*
-struct TileSet
-{
-	char	m_acTexture[256];
-	char	m_acDetailTexture[256];
-	char	m_acMask[256];
-};
-*/
-
+// One rendering pass with a texture over the terrain. 
 class HM_Layer
 {
 public:
 	string	m_strName;					// Name of layer.
-	string	m_strTexture;	
-	string	m_strDetailTexture;
-	string	m_strMask;
+	string	m_strTexture;				// Name of texture to use.
+	string	m_strDetailTexture;		// Detail texture name.
+	string	m_strMask;					// Name of layer alpha mask.
 
 	ZFResourceHandle	m_kMaskHandle;
 
@@ -79,33 +71,29 @@ class ENGINE_SYSTEMS_API HeightMap
 		TextureManager*	m_pkTexMan;		
 		ZFBasicFS*			m_pkBasicFS;
 
-		int					m_iID;			// ID Assigned to each Hm in the game. Used for savefile names.
+		int					m_iID;						// ID Assigned to each Hm in the game. Used for savefile names.
 
-		int m_iTilesSide;					// The number of edges/tiles on each side.
-		int m_iVertexSide;				// The number of vertex on each side (tiles + 1)
-		int m_iNumOfHMVertex;			// Total number of HMVertex that are in this map.
+		int					m_iTilesSide;				// The number of edges/tiles on each side.
+		int					m_iVertexSide;				// The number of vertex on each side (tiles + 1)
+		int					m_iNumOfHMVertex;			// Total number of HMVertex that are in this map.
 
-		HM_vert* verts;	
-//		vector<TileSet>		m_kSets;
-		vector<HM_Layer>		m_kLayer;
+		HM_vert*				verts;						// Ptr to array of HMVertex. 
+		vector<HM_Layer>	m_kLayer;					// All layers in the HM.
 
-		//vector<TerrainBlock>	m_kTerrainBlocks;
+		int					m_iHmScaleSize;
+		Vector3				m_kPosition;				// Position of Center of HMAP
 
-		int		m_iHmScaleSize;
-		Vector3	m_kPosition;			// Position of Center of HMAP
-
-		Uint32 GetPixel(SDL_Surface* surface, int x, int y);
-		bool AllocHMMemory(int iSize);
-	
+		bool AllocHMMemory(int iSize);				// Alloc memory for HMVertex.
 
 	public:
-		Vector3	m_kCornerPos;			// Position for Corner for rendering.
+		Vector3				m_kCornerPos;				// Position of the Corner of the HM (for rendering).
 
 		// Construct & Destruct
 		HeightMap();		
 		~HeightMap();		
 		
-		bool		m_bInverted;
+		bool					m_bInverted;
+
 		void		Invert() { m_bInverted = !m_bInverted; }
 
 		// Init
@@ -119,14 +107,11 @@ class ENGINE_SYSTEMS_API HeightMap
 		// Load/Save
 		bool Load(const char* acFile);
 		bool Save(const char* acFile);
-		//bool LoadImageHmap(const char* acFile);
 
 
 		vector<HMSelectVertex> GetSelection(Vector3 kCenter, float fInRadius, float fOutRadius);
-		//void CreateBlocks();
 		
 		Vector3* m_pkVertex;			// Precalc vertex coo. Created at load time.
-		void RebuildVertex();
 		HM_vert* GetHMVertex()	{	return verts;	}
 		bool	IsIndexOutOfMap(int iIndex);
 
@@ -137,23 +122,18 @@ class ENGINE_SYSTEMS_API HeightMap
 		HM_vert* GetVert(int x,int z);		
 		void GetMapXZ(float& x,float& z);
 		
-		void Smooth(int fStartx,int fStartz,int fWidth,int fHeight);
+		void Smooth(vector<HMSelectVertex> kSelected);
 		void Flatten(vector<HMSelectVertex> kSelected, Vector3 kPos);
 		void Raise(vector<HMSelectVertex> kSelected, float fSize);		// Raise or lower a selection.
 		
 		void DrawMask(Vector3 kPos,int iMode,float fSize,int r,int g,int b,int a);
 		
 		int GetSize(){return m_iTilesSide*HEIGHTMAP_SCALE;};				// Return the size of one side of the Hm.
-		//void AddSet(const char* acTexture,const char* acDetailTexture,const char* acMask);
-		//void ClearSet();
-
 
 		HM_vert* LinePick(Vector3 kPos,Vector3 kDir,Vector3 kCenterPos,int iWidth,Vector3& kHitPos);		
 		bool LineVSPolygon(Vector3* pkVerts,Vector3 kPos1,Vector3 kPos2,Vector3& kColPos);
 		bool TestSides(Vector3* kVerts,Vector3* pkNormal,Vector3 kPos);
 
-		float GetAlpha(float x,float y,int iTexture);
-		int GetMostVisibleTexture(float x,float y);
 		
 		void GenerateTextures();
 
@@ -173,18 +153,18 @@ class ENGINE_SYSTEMS_API HeightMap
  
 		float GetBrushSizeInAlphaUVSpace(float fSize);
 
-		/*
-			-Create
-			-Delete
-			-Duplicate	-
-			-GetLayers	- Returns lista med namn på alla layers.
-			-MoveLaye		- Flyttar layer upp/ned i listan på layers som ritas ut.
-			-Fill			- Fyller lager med vald färg.
-			-Draw			- Använder brush för att rita på layer.
-
-*/
-
 		friend class Render;
+
+//		float GetAlpha(float x,float y,int iTexture);
+//		int GetMostVisibleTexture(float x,float y);
+		//void RebuildVertex();
+//		Uint32 GetPixel(SDL_Surface* surface, int x, int y);
+
+		//void AddSet(const char* acTexture,const char* acDetailTexture,const char* acMask);
+		//void ClearSet();
+		//bool LoadImageHmap(const char* acFile);
+		//void CreateBlocks();
+
 };
 
 

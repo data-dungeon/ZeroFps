@@ -157,7 +157,8 @@ void Render::SetDisplay()
 	m_pkScreen= SDL_SetVideoMode(m_iWidth,m_iHeight,m_iDepth, m_iSDLVideoModeFlags);	
 
 	glViewport(0, 0,m_iWidth,m_iHeight);
-	
+
+	m_pkLight->SetStartUpValues();
 }
 
 void Render::Swap(void) {
@@ -1894,7 +1895,8 @@ void Render::DrawPSystem( PSystem *pkPSystem )
 RENDER_API void RenderDLL_InitExtGL(void)
 {
 #ifdef _WIN32
-	int res = extgl_Initialize();
+	//int res; 
+	extgl_Initialize();
 //	cout << "extgl_Initialize: "<< res << endl;
 #endif
 }

@@ -48,9 +48,7 @@ void Light::SetLighting(bool bOn)
 
 bool Light::StartUp()	
 { 
-	glLightModelf(GL_LIGHT_MODEL_TWO_SIDE, 0);
-	SetLighting(true);
-	
+	SetStartUpValues();
 	return true;	
 }
 
@@ -64,6 +62,15 @@ bool Light::IsValid()
 	return true;
 }
 
+void Light::SetStartUpValues()
+{
+	glLightModelf(GL_LIGHT_MODEL_TWO_SIDE, 0);
+
+	float afAmbient[4] = {0,0,0,0};
+	glLightModelfv(GL_LIGHT_MODEL_AMBIENT, afAmbient);
+
+	SetLighting(true);
+}
 
 void Light::SetCamera(Vector3 kCamPos) {
 	m_kCamPos=kCamPos;
@@ -86,6 +93,7 @@ bool comp(LightSource* x, LightSource* y)
  
 void Light::Update(Vector3 kRefPos)
 {
+
 	m_kActiveLights.clear();
 	m_kSorted.clear();	
 	TurnOffAll();
@@ -181,7 +189,9 @@ void Light::EnableLight(LightSource* pkLight,int iGlLight)
 				break; 		
   			case 7:
 				light=GL_LIGHT7;
-				break; 												
+				break; 
+			default:
+				return;
   		}
 		glEnable(light);		
 			

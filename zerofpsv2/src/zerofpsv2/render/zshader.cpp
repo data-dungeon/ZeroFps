@@ -471,7 +471,9 @@ void ZShader::SetupRenderStates(ZMaterialSettings* pkSettings)
 				break;
 			case SRC_ALPHA_SATURATE_BLEND_SRC:
 				iblendsrc = GL_SRC_ALPHA_SATURATE;
-				break;	
+				break;
+			default:
+				iblendsrc = GL_ONE;
 		}
 	
 		//setup dst blend factor	
@@ -501,6 +503,8 @@ void ZShader::SetupRenderStates(ZMaterialSettings* pkSettings)
 			case ONE_MINUS_DST_ALPHA_BLEND_DST:
 				iblenddst = GL_ONE_MINUS_DST_ALPHA;
 				break;
+			default:
+				iblenddst = GL_ZERO;
 		}
 	
 		//finally set opengl blend function

@@ -46,8 +46,6 @@ void HM_Layer::Save(ZFVFile* pkFile)
 
 
 
-// Low X Effects High X.
-// Nothing Effects HighZ.
 
 HeightMap::HeightMap() 
 {
@@ -56,8 +54,8 @@ HeightMap::HeightMap()
 	m_iID					= -1;
 	m_bInverted			= false;
 
-	m_pkTexMan	= static_cast<TextureManager*>(g_ZFObjSys.GetObjectPtr("TextureManager"));		
-	m_pkBasicFS	= static_cast<ZFBasicFS*>(g_ZFObjSys.GetObjectPtr("ZFBasicFS"));		
+	m_pkTexMan			= static_cast<TextureManager*>(g_ZFObjSys.GetObjectPtr("TextureManager"));		
+	m_pkBasicFS			= static_cast<ZFBasicFS*>(g_ZFObjSys.GetObjectPtr("ZFBasicFS"));		
 //	Create(4);
 }
 
@@ -72,7 +70,7 @@ bool HeightMap::AllocHMMemory(int iSize)
 	if(verts)
 		delete[] verts;
 
-	m_iNumOfHMVertex = (iSize) * iSize;
+	m_iNumOfHMVertex = iSize * iSize;
 	verts = new HM_vert[m_iNumOfHMVertex];	
 	return true;
 }
@@ -86,7 +84,6 @@ void HeightMap::Create(int iTilesSide)
 
 	AllocHMMemory(m_iVertexSide);
 	Zero();
-	//m_iHmSize		=	iTilesSide;
 
 	// AddTestLayers
 	Layer_Create(string("layer0"), string("../data/textures/tgrass.bmp"));
@@ -125,26 +122,13 @@ void HeightMap::SetPosition(Vector3 kNewPos)
 	m_kCornerPos.Set(m_kPosition.x	-	m_iHmScaleSize/2, 
 		m_kPosition.y,
 		m_kPosition.z	-	m_iHmScaleSize/2);
-
 }
 
-/*
-void HeightMap::CreateBlocks()
-{
-	int iBlockSize = 32;
+/**	\brief	Returns height at one position in Hmap.
 
-	TerrainBlock kBlock;
-
-	for(int z=0; z<m_iVertexSide; z += iBlockSize) {
-		for(int x=0; x<m_iVertexSide; x += iBlockSize) {
-			kBlock.kAABB_Min.Set( float(x*HEIGHTMAP_SCALE),	1,	float(z*HEIGHTMAP_SCALE));
-			kBlock.kAABB_Max.Set(float((x + iBlockSize)*HEIGHTMAP_SCALE),1,float((z + iBlockSize)*HEIGHTMAP_SCALE));
-			m_kTerrainBlocks.push_back(kBlock);
-		}
-	}
-}*/
-
-
+	Takes the x,z world coo and returns the world y position of the hmap or as if had a height of 0.0 if the position
+	is outside the hmap.
+*/
 float HeightMap::Height(float x,float z) 
 {
 	x /= HEIGHTMAP_SCALE;
@@ -154,7 +138,7 @@ float HeightMap::Height(float x,float z)
 	z -= m_kPosition.z - m_iTilesSide/2;
 
 	if(x<0 || x>m_iTilesSide || z<0 || z>m_iTilesSide) 
-		return 1;
+		return m_kPosition.y;
 
 	int lx = int(x);
 	int lz = int(z);
@@ -183,7 +167,10 @@ float HeightMap::Height(float x,float z)
 	return m_kPosition.y + (bp+(xp*ox)+(zp*oz)) * HEIGHTMAP_SCALE;	
 }
 
+/**	\brief	Returns normal at one position in Hmap.
 
+	Takes the x,z world coo and returns the normal of that position. Return (0,1,0) if position is outside hm.
+*/
 Vector3 HeightMap::Tilt(float x,float z)
 {
 	x/=HEIGHTMAP_SCALE;
@@ -193,7 +180,7 @@ Vector3 HeightMap::Tilt(float x,float z)
 	z-=m_kPosition.z-m_iTilesSide/2;
 
 	if(x<0 || x>m_iTilesSide || z<0 || z>m_iTilesSide) 
-		return Vector3(1,1,1);
+		return Vector3(0,1,0);
 		
 	int lx=int(x);
 	int lz=int(z);
@@ -224,6 +211,8 @@ Vector3 HeightMap::Tilt(float x,float z)
 	return n1;
 }
 
+/**	\brief	Returns true if the given index (index for hmvertex) is outside the valid range.
+*/
 bool	HeightMap::IsIndexOutOfMap(int iIndex)
 {
 	if(iIndex < 0)	
@@ -234,8 +223,8 @@ bool	HeightMap::IsIndexOutOfMap(int iIndex)
 	return false;
 }
 
-
-
+/**	\brief	Generates normals for the whole Hm.
+*/
 void HeightMap::GenerateNormals() 
 {
 	Vector3 med;
@@ -243,9 +232,9 @@ void HeightMap::GenerateNormals()
 
 	int iZIndex, iXIndex;
 	int iNumOfSides;
-	for(int z = 0; z < m_iVertexSide; z++){
-		for(int x = 0; x < m_iVertexSide; x++) {
-			med = Vector3(0,0,0);  //reset medium vector
+	for(int z = 0; z < m_iVertexSide; z++)	{
+		for(int x = 0; x < m_iVertexSide; x++)	{
+			med = Vector3::ZERO;		//reset medium vector
 			iNumOfSides = 0;
 
 			for(int q=-1;q<1;q++){
@@ -261,60 +250,32 @@ void HeightMap::GenerateNormals()
 		
 						n1=v2.Cross(v1);			
 						n2=v3.Cross(v2);				
-	//					n1.normalize();
-	//					n2.normalize();
+						//	n1.normalize();
+						//	n2.normalize();
 						}
 					else {
 						n1.Set(0,1,0);
 						n2.Set(0,1,0);
-	
 						}	
 		
 				med=med+n1+n2;
 				}	
 			}
 
-			med=med*0.125;	//insted of  division by 8 
+			med=med*0.125;				//insted of  division by 8 
 			med.Normalize();
 			verts[z*m_iVertexSide+x].normal=med;
 		}
 	}
-
-/*	Vector3 med;
-	Vector3 v1,v2,v3,n1,n2;
-	
-	
-	for(int z=1;z<m_iHmSize-1;z++){
-		for(int x=1;x<m_iHmSize-1;x++) {
-			med=Vector3(0,0,0);  //reset medium vector
-			for(int q=-1;q<1;q++){
-				for(int w=-1;w<1;w++){
-					v1=Vector3(1,(verts[(z+q)*m_iHmSize+(x+1+w)].height)-(verts[(z+q)*m_iHmSize+(x+w)].height) ,0);
-					v2=Vector3(1,(verts[(z+1+q)*m_iHmSize+(x+1+w)].height)- (verts[(z+q)*m_iHmSize+(x+w)].height),1);		
-					v3=Vector3(0,(verts[(z+q+1)*m_iHmSize+(x+w)].height)-(verts[(z+q)*m_iHmSize+(x+w)].height) ,1);	
-	
-					n1=v2.Cross(v1);			
-					n2=v3.Cross(v2);				
-//					n1.normalize();
-//					n2.normalize();
-	
-					med=med+n1+n2;
-				}	
-			}
-			med=med*0.125;	//insted of  division by 8 
-			med.Normalize();
-			verts[z*m_iHmSize+x].normal=med;
-		}
-	}
-*/
 }
 
+/**	\brief	Generates normals for a selected part of the Hm.
+*/
 void HeightMap::GenerateNormals(int iStartx,int iStartz,int iWidth,int iHeight)
 {
 	Vector3 med;
 	Vector3 v1,v2,v3,n1,n2;
-	
-	
+		
 	int lx,rx;
 	int tz,bz;
 
@@ -336,18 +297,9 @@ void HeightMap::GenerateNormals(int iStartx,int iStartz,int iWidth,int iHeight)
 	if(bz > m_iTilesSide)
 		bz = m_iTilesSide;	
 	
-/*	if(iPosX>m_iHmSize || iPosZ>m_iHmSize)
-		return;
-	if(iPosX<0 || iPosZ <0)
-		return;	
-	if(iPosX+iWidth>m_iHmSize || iPosZ+iHeight>m_iHmSize){
-		iWidth=iWidth-(iPosX+iWidth-m_iHmSize);
-		iHeight=iHeight-(iPosZ+iHeight-m_iHmSize);
-	}*/
-	
 	for(int z=tz;z<bz-1;z++){
 		for(int x=lx;x<rx-1;x++) {
-			med=Vector3(0,0,0);  //reset medium vector
+			med = Vector3::ZERO;				// Reset medium vector
 			for(int q=-1;q<1;q++){
 				for(int w=-1;w<1;w++){
 					v1=Vector3(1,(verts[(z+q)*m_iTilesSide+(x+1+w)].height)-(verts[(z+q)*m_iTilesSide+(x+w)].height) ,0);
@@ -356,13 +308,12 @@ void HeightMap::GenerateNormals(int iStartx,int iStartz,int iWidth,int iHeight)
 	
 					n1=v2.Cross(v1);			
 					n2=v3.Cross(v2);				
-//					n1.normalize();
-//					n2.normalize();
-	
+					//	n1.normalize();
+					//	n2.normalize();
 					med=med+n1+n2;
 				}	
 			}
-			med=med*0.125;	//insted of  division by 8 
+			med=med*0.125;					//insted of  division by 8 
 			med.Normalize();
 			verts[z*m_iTilesSide+x].normal=med;
 		}
@@ -408,49 +359,6 @@ bool HeightMap::Load(const char* acFile)
 	// Read VertexData
 	savefile.Read((void*)&verts[0],sizeof(HM_vert), m_iVertexSide*m_iVertexSide);
 	savefile.Close();
-	
-// Load Layers.	
-	bool exist = false;		
-	i=2;		
-
-
-//	ClearSet();
-//	AddSet("../data/textures/nodetail1.bmp","../data/textures/detail1.bmp","FEL");
-	
-/*	cout << "Loading Layers: ";
-	do
-	{
-		string file=acFile;
-		file += "mask";
-		char nr[5] = "    ";
-		IntToChar(nr,i);
-		file+=nr;
-		file+=".tga";		
-			
-		exist = m_pkBasicFS->FileExist(file.c_str());
-		
-		if(exist)
-		{
-			string nodetail = "../data/textures/nodetail";
-			string detail = "../data/textures/detail";			
-		
-			nodetail+=nr;
-			detail+=nr;
-			
-			nodetail+=".bmp";
-			detail+=".bmp";
-	
-			cout << file.c_str() << ", ";
-			//Layer_Create();
-			//AddSet(nodetail.c_str(),detail.c_str(),file.c_str());
-		}
-		i++;
-		
-	} while(exist);
-	
-	cout << endl;*/
-
-
 	return true;
 }
 
@@ -493,28 +401,6 @@ bool HeightMap::Save(const char* acFile)
 		m_pkTexMan->BindTexture(pkTexture->m_iTextureID);
 		m_pkTexMan->SaveTexture(file.c_str(),0);
 		}
-
-// Save Layers
-/*	DOO
-	if(m_kSets.size() > 1)
-	{
-		for(unsigned int i=1;i<m_kSets.size();i++)
-		{
-			string file=acFile;
-			file += "mask";
-			char nr[5] = "    ";
-			IntToChar(nr,i+1);
-			file+=nr;
-			file+=".tga";
-			
-			ZFResourceHandle m_kConsoleText;
-			m_kConsoleText.SetRes(m_kSets[i].m_acMask);	
-			ResTexture* pkTexture = static_cast<ResTexture*>(m_kConsoleText.GetResourcePtr());
-			m_pkTexMan->BindTexture(pkTexture->m_iTextureID);
-			m_pkTexMan->SaveTexture(file.c_str(),0);
-		}
-	}
-*/
 	
 	return true;
 }
@@ -564,109 +450,14 @@ void HeightMap::Random()
 	}
 }
 
-
+/**	\brief	Returns ptr to hm vertex at index (x,z).
+*/
 HM_vert* HeightMap::GetVert(int x,int z) 
 {
-	return &verts[ z*m_iVertexSide +x];
+	return &verts[ z*m_iVertexSide + x];
 }
 
 
-
-/*
-bool HeightMap::LoadImageHmap(const char* acFile) 
-{
-	int smooth=1;
-
-	Image kImage;
-	Uint8 data;
-//	Uint32 pixel;
-	
-	bool bSuccess = kImage.load(acFile);
-	if(!bSuccess)
-	{
-		cout<<"Failed to load heightmap "<<acFile<<endl<<endl<<endl;
-		return false;
-	}
-
-	m_iHmSize=kImage.m_iWidth;
-//	cout<<"Image Size is:"<<m_iHmSize<<endl;
-	
-	if(verts)
-		delete[] verts;
-
-	verts=new HM_vert[(m_iHmSize)*m_iHmSize];	
-
-	for(int y=0;y<m_iHmSize;y++)
-		for(int x=0;x<m_iHmSize;x++)
-		{							
-			color_rgba color;
-			kImage.get_pixel(x,y,color); 
-		
-			data = color.r;
-			verts[y*m_iHmSize+x].height = (float) (data/3);		
-		}
-			
-	float med;
-	for(int l=0;l<smooth;l++) {
-		for(int y=1;y<m_iHmSize-1;y++) {
-			for(int x=1;x<m_iHmSize-1;x++) {
-				med=0;
-				for(int q=-1;q<2;q++)
-					for(int w=-1;w<2;w++){
-						if(q==0 && w==0) {							
-
-						} else {
-							med+=verts[(y+q)*m_iHmSize+(x+w)].height;							
-						}
-					}
-				med=med/8;
-				
-				verts[y*m_iHmSize+x].height=med;
-			}
-		}
-
-	}
-
-	return false;
-}*/	
-
-
-Uint32 HeightMap::GetPixel(SDL_Surface *surface, int x, int y)
-{
-    int bpp = surface->format->BytesPerPixel;
-    // Here p is the address to the pixel we want to retrieve 
-    Uint8 *p = (Uint8 *)surface->pixels + y * surface->pitch + x * bpp;
-
-    switch(bpp) {
-    case 1:
-        return *p;
-
-    case 2:
-        return *(Uint16 *)p;
-
-    case 3:
-        if(SDL_BYTEORDER == SDL_BIG_ENDIAN)
-            return p[0] << 16 | p[1] << 8 | p[2];
-        else
-            return p[0] | p[1] << 8 | p[2] << 16;
-
-    case 4:
-        return *(Uint32 *)p;
-
-    default:
-        return 0;       // shouldn't happen, but avoids warnings
-    }
-}
-
-
-
-void HeightMap::RebuildVertex()
-{
-	for(int i=0;i<(m_iTilesSide)*m_iTilesSide;i++){
-//		m_pkVertex[i].Set(0,0,0);
-	}
-
-}
 
 void HeightMap::GetMapXZ(float& x,float& z)
 {
@@ -678,9 +469,43 @@ void HeightMap::GetMapXZ(float& x,float& z)
 
 }
 
-void HeightMap::Smooth(int iStartx,int iStartz,int iWidth,int iHeight)
+//void HeightMap::Smooth(int iStartx,int iStartz,int iWidth,int iHeight)
+void HeightMap::Smooth(vector<HMSelectVertex> kSelected)
 {
-	cout << "Smooth " << iStartx << "," << iStartz << endl;
+	int iX, iZ;
+	int iIndex;
+
+
+	for(int i=0; i<kSelected.size(); i++) {
+		iIndex = kSelected[i].m_iIndex;
+
+		iX = iIndex % (m_iTilesSide + 1);
+		iZ = iIndex / (m_iTilesSide + 1);
+
+		if(iX <= 0)					continue;
+		if(iX >= m_iTilesSide)	continue;
+		if(iZ <= 0)					continue;
+		if(iZ >= m_iTilesSide)	continue;
+			
+		float med=0;
+		for(int q=-1;q<2;q++)
+			for(int w=-1;w<2;w++){
+				if(q==0 && w==0) 
+				{							
+				} else 
+				{
+					med+=verts[(iZ+q)*m_iVertexSide+(iX+w)].height;							
+				}
+			}
+		med=med/8;
+		verts[kSelected[i].m_iIndex].height = med;
+		}
+
+	GenerateNormals();
+
+//			int iVertexIndex = z * (m_iTilesSide + 1) + x;
+
+/*	cout << "Smooth " << iStartx << "," << iStartz << endl;
 	cout << "Smooth size " << iWidth << "," << iHeight << endl;
 
 
@@ -724,7 +549,7 @@ void HeightMap::Smooth(int iStartx,int iStartz,int iWidth,int iHeight)
 		}
 	}
 	
-	GenerateNormals(iStartx,iStartz,iWidth,iHeight);
+	GenerateNormals(iStartx,iStartz,iWidth,iHeight);*/
 }
 
 void HeightMap::Flatten(vector<HMSelectVertex> kSelected, Vector3 kPos)
@@ -734,9 +559,7 @@ void HeightMap::Flatten(vector<HMSelectVertex> kSelected, Vector3 kPos)
 	for(int i=0; i<kSelected.size(); i++) {
 		verts[kSelected[i].m_iIndex].height = fHeight;
 		}
-
 }
-
 
 vector<HMSelectVertex> HeightMap::GetSelection(Vector3 kCenter, float fInRadius, float fOutRadius)
 {
@@ -814,12 +637,6 @@ void HeightMap::DrawMask(Vector3 kPos,int iMask,float fSize,int r,int g,int b,in
 	if(iMask <= 0 || iMask >= int(m_kLayer.size()))
 		return;
 		
-//	ZFResourceHandle m_kConsoleText;
-//	m_kConsoleText.SetRes(m_kLayer[iMask].m_strMask.c_str());	
-
-//	ResTexture* pkTexture = static_cast<ResTexture*>(m_kConsoleText.GetResourcePtr());
-//	m_pkTexMan->BindTexture(pkTexture->m_iTextureID);
-
 	m_pkTexMan->BindTexture(m_kLayer[iMask].m_strMask.c_str(),0);
 	
 	if(!m_pkTexMan->MakeTextureEditable()) {
@@ -838,8 +655,8 @@ void HeightMap::DrawMask(Vector3 kPos,int iMask,float fSize,int r,int g,int b,in
 	float fRealSize = GetBrushSizeInAlphaUVSpace( fSize );	// * (float)m_pkTexMan->GetImage()->w;
 	int size=fRealSize;
 	
-	cout << "Brush size: " << fRealSize << endl;
-	cout << "Img Size: " << m_pkTexMan->GetImage()->m_iWidth << "," << m_pkTexMan->GetImage()->m_iHeight;
+	//cout << "Brush size: " << fRealSize << endl;
+	//cout << "Img Size: " << m_pkTexMan->GetImage()->m_iWidth << "," << m_pkTexMan->GetImage()->m_iHeight;
 
 	for(float i=0;i<fRealSize;i+=0.5)
 	{
@@ -856,8 +673,6 @@ void HeightMap::DrawMask(Vector3 kPos,int iMask,float fSize,int r,int g,int b,in
 			
 			int pr,pg,pb,pa;
 			
-			/*SDL_GetRGBA(old,  m_pkTexMan->GetImage()->format ,&cr,&cg,&cb,&ca);
-					
 			//grr hata Uint8*/	
 			pr=kColor.r;
 			pg=kColor.g;			
@@ -896,8 +711,6 @@ void HeightMap::DrawMask(Vector3 kPos,int iMask,float fSize,int r,int g,int b,in
 	if(!m_pkTexMan->SwapTexture()) {
 		cout << "Failed to swap back texture" << endl;
 		}
-
-//	_pkTexMan->BindTexture(pkTexture->m_iTextureID);
 }
 
 
@@ -1063,87 +876,6 @@ bool HeightMap::TestSides(Vector3* kVerts,Vector3* pkNormal,Vector3 kPos)
 	return inside;	
 }
 
-float HeightMap::GetAlpha(float x,float y,int iTexture)
-{
-/*	DOO
-	//return -1 if outside heightmap
-	if(x <0 &&
-		x >=m_iTilesSide &&
-		y <0 &&
-		y >=m_iTilesSide)
-	{
-		return -1;
-	}
-
-	//return -1 if texture does not extist
-	if(iTexture >= int(m_kSets.size()))
-		return -1;
-	
-	//texture 0 dont have any alpha mask, therefor alpha is always 1
-	if(iTexture == 0)
-		return 1;
-			
-	//bind mask
-	//m_pkTexMan->BindTexture(m_kSets[iTexture].m_acMask,0);
-		
-	ZFResourceHandle m_kConsoleText;
-	m_kConsoleText.SetRes(m_kSets[iTexture].m_acMask);			
-	ResTexture* pkTexture = static_cast<ResTexture*>(m_kConsoleText.GetResourcePtr());
-	m_pkTexMan->BindTexture(pkTexture->m_iTextureID);
-		
-		
-	float dw = (float) (m_pkTexMan->GetImage()->w / m_iTilesSide);
-	float dh = (float) (m_pkTexMan->GetImage()->h / m_iTilesSide);	
-	
-	//convert to texture cordinats
-	x*=dw;
-	y*=dh;
-	
-	//get color
-	Uint32 color = m_pkTexMan->GetPixel(int(x),int(y));
-	
-	Uint8 r,g,b,a;
-		
-	//get alpha value
-	SDL_GetRGBA(color,  m_pkTexMan->GetImage()->format ,&r,&g,&b,&a);
-	
-	return (a/255.0f);*/
-
-	return 0;
-}
-
-int HeightMap::GetMostVisibleTexture(float x,float y)
-{
-/*	DOO
-	//return -1 if outside heightmap
-	if(x <0 &&
-		x >=m_iTilesSide &&
-		y <0 &&
-		y >=m_iTilesSide)
-	{
-		return -1;
-	}	
-
-
-	int t=-1;
-	float v=0;
-	
-	for(unsigned int i=0;i<m_kSets.size();i++)
-	{
-		float a=GetAlpha(x,y,i);
-		
-		if(a>0.5)
-		{
-			v=a;
-			t=i;
-		}	
-	}
-	return t;
-
-	*/
-		
-	return -1;
-}
 
 
 
@@ -1245,121 +977,19 @@ vector<string>	HeightMap::Layers_GetNames()
 
 }
 
-
-
-
-
-/*bool HeightMap::LoadImageHmap(const char* acFile) {
-	int smooth=1;
-
-	SDL_Surface *image;
-	Uint8 data;
-	Uint32 pixel;
-	
-	image=IMG_Load(acFile);
-	if(!image)
-		return false;
-		
-	m_iHmSize=image->w;
-	cout<<"Image Size is:"<<m_iHmSize<<endl;
-	
-	delete[] verts;
-	verts=new HM_vert[(m_iHmSize+m_iError)*m_iHmSize];	
-//	delete[] m_pkVertex;
-//	m_pkVertex=new Vector3[(m_iHmSize+m_iError)*m_iHmSize];	
-	 
-	for(int y=0;y<m_iHmSize;y++)
-		for(int x=0;x<m_iHmSize;x++){						
-			pixel=GetPixel(image,x,y);			
-		
-			SDL_GetRGB(pixel, image->format, &data,&data, &data);
-			verts[y*m_iHmSize+x].height = data/3;		
-		}
-			
-	float med;
-	for(int l=0;l<smooth;l++) {
-		for(int y=1;y<m_iHmSize-1;y++) {
-			for(int x=1;x<m_iHmSize-1;x++) {
-				med=0;
-				for(int q=-1;q<2;q++)
-					for(int w=-1;w<2;w++){
-						if(q==0 && w==0) {							
-
-						} else {
-							med+=verts[(y+q)*m_iHmSize+(x+w)].height;							
-						}
-					}
-				med=med/8;
-				
-				verts[y*m_iHmSize+x].height=med;
-			}
-		}
-	}
-	
-//	delete image;
-	return true;
-}*/
-
-/*void HeightMap::Raise(int iPosx,int iPosy,int iMod,int iSize,bool bSmooth)
-{
-	cout << "Raise: " << iPosx << "," << iPosy << endl;
-
-	if(iPosx - (iSize/2) >=0 &&
-		iPosx + (iSize/2) <=m_iHmSize &&
-		iPosy - (iSize/2) >=0 &&
-		iPosy + (iSize/2) <=m_iHmSize)
-	{		
-	
-		for(int xp=-(iSize/5);xp<=(iSize/5);xp++){
-			for(int yp=-(iSize/5);yp<=(iSize/5);yp++){
-				GetVert(iPosx+xp,iPosy+yp)->height+=iMod;				
-			}
-		}
-			
-		if(bSmooth)
-			Smooth(iPosx-(iSize/2),iPosy-(iSize/2),iSize,iSize);				
-	}
-}*/
-
 /*
-void HeightMap::Flatten(int iPosx,int iPosy,int iSize)
-{			
-	if(iPosx - (iSize/2) >=0 &&
-		iPosx + (iSize/2) <=m_iHmSize &&
-		iPosy - (iSize/2) >=0 &&
-		iPosy + (iSize/2) <=m_iHmSize)
-	{		
-		float height=GetVert(iPosx,iPosy)->height;
+void HeightMap::CreateBlocks()
+{
+	int iBlockSize = 32;
 
-		for(int xp=-(iSize/2);xp<=(iSize/2);xp++){
-			for(int yp=-(iSize/2);yp<=(iSize/2);yp++){
-				GetVert(iPosx+xp,iPosy+yp)->height=height;				
-			}
+	TerrainBlock kBlock;
+
+	for(int z=0; z<m_iVertexSide; z += iBlockSize) {
+		for(int x=0; x<m_iVertexSide; x += iBlockSize) {
+			kBlock.kAABB_Min.Set( float(x*HEIGHTMAP_SCALE),	1,	float(z*HEIGHTMAP_SCALE));
+			kBlock.kAABB_Max.Set(float((x + iBlockSize)*HEIGHTMAP_SCALE),1,float((z + iBlockSize)*HEIGHTMAP_SCALE));
+			m_kTerrainBlocks.push_back(kBlock);
 		}
-				
-		GenerateNormals(iPosx - (iSize/2),iPosy- (iSize/2),iSize,iSize);
 	}
 }*/
 
-/*void HeightMap::RunCommand(int cmdid, const CmdArgument* kCommand)
-{
-
-}*/
-
-/*
-void HeightMap::AddSet(const char* acTexture,const char* acDetailTexture,const char* acMask)
-{
-	TileSet temp;
-	strcpy(temp.m_acTexture,acTexture);
-	strcpy(temp.m_acDetailTexture,acDetailTexture);	
-	strcpy(temp.m_acMask,acMask);
-	
-	m_kSets.push_back(temp);
-	
-}
-
-void HeightMap::ClearSet()
-{
-	//m_kSets.clear();
-}
-*/

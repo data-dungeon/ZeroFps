@@ -155,13 +155,12 @@ bool TextureManager::LoadTexture(texture *pkTex,const char *acFilename)
 {	
 	GLint iInternalFormat	=	GL_RGB;
 	GLint iFormat				=	GL_RGB;
-	GLint iType					=	GL_UNSIGNED_BYTE;
+//	GLint iType					=	GL_UNSIGNED_BYTE;
 	
 	//make sure the m_pkImage is null for swaping;
 	pkTex->m_pkImage2 = NULL;	
 	
 	//is this a tga?
-	bool isTga=false;
 	if(strncmp(&acFilename[strlen(acFilename)-4],".tga",4)==0) {
 		iInternalFormat=GL_RGBA4;
 		iFormat=GL_RGBA;
@@ -582,139 +581,18 @@ Image* TextureManager::GetTexture(int iLevel)
 {
 	glGetError();
 	
-	Image* pkImage;
-	int iHeight;
-	int iWidth;
-	int iDepth;
-	int iInternalFormat;
-	int iRSize;
-	int iGSize;	
-	int iBSize;	
-	int iASize;	
-	Uint32 rmask, gmask, bmask, amask;
+	Image*	pkImage;
+	int		iHeight;
+	int		iWidth;
+	int		iInternalFormat;
 	
-	
-	glGetTexLevelParameteriv(GL_TEXTURE_2D, iLevel,GL_TEXTURE_WIDTH,&iWidth);
-	glGetTexLevelParameteriv(GL_TEXTURE_2D, iLevel,GL_TEXTURE_HEIGHT,&iHeight);	
-	glGetTexLevelParameteriv(GL_TEXTURE_2D, iLevel,GL_TEXTURE_INTERNAL_FORMAT,&iInternalFormat);		
-	glGetTexLevelParameteriv(GL_TEXTURE_2D, iLevel,GL_TEXTURE_RED_SIZE,&iRSize);		
-	glGetTexLevelParameteriv(GL_TEXTURE_2D, iLevel,GL_TEXTURE_GREEN_SIZE,&iGSize);		
-	glGetTexLevelParameteriv(GL_TEXTURE_2D, iLevel,GL_TEXTURE_BLUE_SIZE,&iBSize);		
-	glGetTexLevelParameteriv(GL_TEXTURE_2D, iLevel,GL_TEXTURE_ALPHA_SIZE,&iASize);		
-	
-	iDepth = iRSize+iGSize+iBSize+iASize;
-	
-	
-	cout << " iInternalFormat "<< iInternalFormat << "\n";
-	cout << " iDepth "<< iDepth << "\n";	
-	
-	cout<<"width: "<<iWidth<<endl;
-	cout<<"Height:"<<iHeight<<endl;
-	cout<<"Depth: "<<iDepth<<endl;		
-	
-	cout<<"red size:  "<<iRSize<<endl;
-	cout<<"green size:"<<iGSize<<endl;	
-	cout<<"blue size: "<<iBSize<<endl;	
-	cout<<"alpha size:"<<iASize<<endl;	
-	
-	int iFormat=-1;
-	int iType=-1;
+	glGetTexLevelParameteriv(GL_TEXTURE_2D, iLevel,GL_TEXTURE_WIDTH,				&iWidth);
+	glGetTexLevelParameteriv(GL_TEXTURE_2D, iLevel,GL_TEXTURE_HEIGHT,				&iHeight);	
+	glGetTexLevelParameteriv(GL_TEXTURE_2D, iLevel,GL_TEXTURE_INTERNAL_FORMAT,	&iInternalFormat);		
 
-/*
-	
-	
-	if(iDepth == 16 )
-	{
-		if(iInternalFormat == GL_RGB || iInternalFormat == GL_RGB5)
-		{		
-			//cout<<"GL_RGB"<<endl;
-			iFormat = GL_RGB;
-			iType = GL_UNSIGNED_SHORT_5_6_5;
-
-			rmask = 0xf800;
-			gmask = 0x07e0;		
-			bmask = 0x001f;		
-			amask = 0x0000;		
-		}
-		
-		
-		if(iInternalFormat == GL_RGBA || iInternalFormat == GL_RGBA4)
-		{
-			//cout<<"GL_RGBA"<<endl;
-			iFormat = GL_RGBA;
-			iType = GL_UNSIGNED_SHORT_4_4_4_4;//GL_UNSIGNED_SHORT_4_4_4_4;
-		
-			rmask = 0xf000;
-			gmask = 0x0f00;
-			bmask = 0x00f0;
-			amask = 0x000f;
-
-		}
-	}
-	
-	if(iDepth == 24)
-	{
-		
-		if(iInternalFormat == GL_RGB)
-		{		
-			//ut<<"GL_RGB"<<endl;
-			
-			iFormat = GL_RGB;
-			iType = GL_UNSIGNED_BYTE;
-
-			rmask = 0x0000ff;
-			gmask = 0x00ff00;
-			bmask = 0xff0000;
-			amask = 0x000000;
-	
-		}
-	}
-
-	// added by zerom, buttons in client crashed the program else
-	if(iDepth == 32)
-	{
-		
-		if(iInternalFormat == GL_RGB)
-		{		
-			//ut<<"GL_RGB"<<endl;
-			
-			iFormat = GL_RGB;
-			iType = GL_UNSIGNED_BYTE;
-
-			rmask = 0x0000ff;
-			gmask = 0x00ff00;
-			bmask = 0xff0000;
-			amask = 0x000000;
-	
-		}
-	}
-	
-	if(iFormat == -1)
-	{
-		cout<<"Cant download texture Unsupored format"<<endl;
-		return NULL;
-	}
-	
-	//create sdl surface
-	image = SDL_CreateRGBSurface(SDL_SWSURFACE, iWidth, iHeight, iDepth,rmask,gmask,bmask,amask);
-	if(image == NULL)
-	{
-		cout<<"error creating sdlsurface"<<endl;
-		return NULL;
-	}
-	
-	cout << "TextureManager::GetTexture: " << glGetError() << endl;
-	cout << "GetTexture:" << GetOpenGLErrorName(glGetError()) << "\n";
-	//download pixels from opengl
-	glGetTexImage(GL_TEXTURE_2D,iLevel,iFormat,iType,image->pixels);
-*/
 	pkImage = new Image;
 	pkImage->CreateEmpty(iWidth,iHeight);
 	glGetTexImage(GL_TEXTURE_2D,iLevel,GL_RGBA,GL_UNSIGNED_BYTE,pkImage->m_pkPixels);
-
-	
-	cout << "GetTexture:" << GetOpenGLErrorName(glGetError()) << "\n";
-
 	return pkImage;
 }
 
@@ -724,91 +602,14 @@ bool TextureManager::PutTexture(Image* pkImage,bool bMipMaping)
 	glGetError();
 
 	int iInternalFormat;
-	int iFormat=-1;
-	
-	int iDepth;
-	int iRSize;
-	int iGSize;	
-	int iBSize;	
-	int iASize;	
-	
 	glGetTexLevelParameteriv(GL_TEXTURE_2D, 0,GL_TEXTURE_INTERNAL_FORMAT,&iInternalFormat);		
-	
-	glGetTexLevelParameteriv(GL_TEXTURE_2D, 0,GL_TEXTURE_RED_SIZE,&iRSize);		
-	glGetTexLevelParameteriv(GL_TEXTURE_2D, 0,GL_TEXTURE_GREEN_SIZE,&iGSize);		
-	glGetTexLevelParameteriv(GL_TEXTURE_2D, 0,GL_TEXTURE_BLUE_SIZE,&iBSize);		
-	glGetTexLevelParameteriv(GL_TEXTURE_2D, 0,GL_TEXTURE_ALPHA_SIZE,&iASize);		
-	
-	iDepth = iRSize+iGSize+iBSize+iASize;
 
 	// Upload into same format.
 	if(bMipMaping)
 		gluBuild2DMipmaps(GL_TEXTURE_2D,iInternalFormat,pkImage->m_iWidth,pkImage->m_iHeight,GL_RGBA,GL_UNSIGNED_BYTE,pkImage->m_pkPixels);  					
 	else
 		glTexImage2D(GL_TEXTURE_2D,0,iInternalFormat,pkImage->m_iWidth,pkImage->m_iHeight,0,GL_RGBA,GL_UNSIGNED_BYTE,pkImage->m_pkPixels);  					
-		
-/*	if(iInternalFormat == GL_RGB || iInternalFormat == GL_RGB5)
-	{		
-		//cout<<"GL_RGB"<<endl;
-		iFormat = GL_RGB;
-	}
-	
-	if(iInternalFormat == GL_RGBA || iInternalFormat == GL_RGBA4)
-	{
-		//cout<<"GL_RGBA"<<endl;	
-		iFormat = GL_RGBA;		
-	}
 
-	
-	if(iFormat == -1)
-	{
-		cout<<"cant upload texture unsupored format"<<endl;
-		return false;
-	}
-	
-	if(bMipMaping)
-	{
-		if(iDepth == 16)
-		{
-			//cout<<"rebuilding mipmaps"<<endl;	
-			if(iFormat == GL_RGB)
-				gluBuild2DMipmaps(GL_TEXTURE_2D,iInternalFormat,pkImage->m_iWidth,pkImage->m_iHeight,iFormat,GL_UNSIGNED_SHORT_5_6_5,pkImage->m_pkPixels);  					
-			if(iFormat == GL_RGBA)
-				gluBuild2DMipmaps(GL_TEXTURE_2D,iInternalFormat,pkImage->m_iWidth,pkImage->m_iHeight,iFormat,GL_UNSIGNED_SHORT_4_4_4_4,pkImage->m_pkPixels);  		
-		}
-		
-		if(iDepth == 24)
-		{
-			if(iFormat == GL_RGB)
-				gluBuild2DMipmaps(GL_TEXTURE_2D,iInternalFormat,pkImage->m_iWidth,pkImage->m_iHeight,iFormat,GL_UNSIGNED_BYTE,pkImage->m_pkPixels);  					
-			if(iFormat == GL_RGBA)
-				cout<<"putting unsuported format GL_RGBA in 24bit depth"<<endl;
-				//glTexImage2D(GL_TEXTURE_2D,0,iInternalFormat,pkImage->w,pkImage->h,0,iFormat,GL_UNSIGNED_BYTE,pkImage->pixels);  										
-		}
-		
-	}
-	else
-	{
-		if(iDepth == 16)
-		{	
-			//cout<<"no mipmaps"<<endl;		
-			if(iFormat == GL_RGB)
-				glTexImage2D(GL_TEXTURE_2D,0,iInternalFormat,pkImage->w,pkImage->h,0,iFormat,GL_UNSIGNED_SHORT_5_6_5,pkImage->pixels);  					
-			if(iFormat == GL_RGBA)
-				glTexImage2D(GL_TEXTURE_2D,0,iInternalFormat,pkImage->w,pkImage->h,0,iFormat,GL_UNSIGNED_SHORT_4_4_4_4,pkImage->pixels);  								
-		}
-	
-		if(iDepth == 24)
-		{
-			if(iFormat == GL_RGB)
-				glTexImage2D(GL_TEXTURE_2D,0,iInternalFormat,pkImage->w,pkImage->h,0,iFormat,GL_UNSIGNED_BYTE,pkImage->pixels);  					
-			if(iFormat == GL_RGBA)
-				cout<<"putting unsuported format GL_RGBA in 24bit depth"<<endl;
-				//glTexImage2D(GL_TEXTURE_2D,0,iInternalFormat,pkImage->w,pkImage->h,0,iFormat,GL_UNSIGNED_BYTE,pkImage->pixels);  										
-		}
-	
-	}*/
-	
 	return true;
 }
 

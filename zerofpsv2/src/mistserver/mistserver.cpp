@@ -118,8 +118,6 @@ void MistServer::Init()
 	//click delay
 	m_fClickDelay = m_pkFps->GetTicks();
 	
-	//damn "#¤(="%#( lighting fix bös
-	m_pkLight->SetLighting(true);
 	m_pkZShader->SetForceLighting(LIGHT_ALWAYS_OFF);	
 	
 	//register property bös
@@ -170,14 +168,14 @@ void MistServer::Init()
 //	m_pkPlayerDB->GetLoginCharacters(string("user"));
 
 	m_kSun.kRot= Vector3(1,2,1);
-	m_kSun.kDiffuse=Vector4(1,1,1,1);
-	m_kSun.kAmbient=Vector4(0.05,0.05,0.05,1);
+	m_kSun.kDiffuse=Vector4(0,0,0,0);
+	m_kSun.kAmbient=Vector4(0,0,0,0);
 	m_kSun.iType=DIRECTIONAL_LIGHT;			
 	m_kSun.iPriority=10;
 	m_kSun.fConst_Atten=1;
 	m_kSun.fLinear_Atten=0;
 	m_kSun.fQuadratic_Atten=0;
-	m_pkLight->Add(&m_kSun);
+//	m_pkLight->Add(&m_kSun);
 
 }
 
@@ -367,6 +365,7 @@ void MistServer::HMModifyCommand(float fSize)
 	for(int i=0; i<m_pkObjectMan->GetNumOfZones(); i++) {
 		ZoneData* kZData = m_pkObjectMan->GetZoneData(i);
 		if(kZData == NULL)	continue;
+		if(kZData->m_pkZone == NULL)	continue;
 		P_HMRP2* hmrp = dynamic_cast<P_HMRP2*>(kZData->m_pkZone->GetProperty("P_HMRP2"));
 		if(hmrp == NULL)		continue;
 	
@@ -374,7 +373,10 @@ void MistServer::HMModifyCommand(float fSize)
 
 		m_kSelectedHMVertex = hmrp->m_pkHeightMap->GetSelection(m_kDrawPos,m_fHMInRadius,m_fHMOutRadius);
 		if(m_kSelectedHMVertex.size() > 0) {
-			hmrp->m_pkHeightMap->Raise(m_kSelectedHMVertex, fSize * fTime);
+			if(fSize == 0.0)
+				hmrp->m_pkHeightMap->Smooth(m_kSelectedHMVertex);
+			else
+				hmrp->m_pkHeightMap->Raise(m_kSelectedHMVertex, fSize * fTime);
 			m_kSelectedHMVertex.clear();
 			}
 		}
@@ -399,18 +401,14 @@ void MistServer::Input_EditTerrain()
 	if(m_fHMInRadius > m_fHMOutRadius)
 		m_fHMInRadius = m_fHMOutRadius;
 
-		if(m_pkInput->VKIsDown("hmraise"))
-			HMModifyCommand(5); 
-		if(m_pkInput->VKIsDown("hmlower")) {
-			Vector3 kLocalOffset = m_kDrawPos - hmrp->m_pkHeightMap->m_kCornerPos;
-			hmrp->m_pkHeightMap->Smooth(kLocalOffset.x,kLocalOffset.z,5,5);
-			//HMModifyCommand(-5); 
-			}
+	if(m_pkInput->VKIsDown("hmraise"))			HMModifyCommand(5); 
+	if(m_pkInput->VKIsDown("hmlower"))			HMModifyCommand(-5);
+	if(m_pkInput->VKIsDown("hmsm") ) 			HMModifyCommand(0.0); 
 
-		if(m_pkInput->VKIsDown("hmpaint")) {
-			Vector3 kLocalOffset = m_kDrawPos - hmrp->m_pkHeightMap->m_kCornerPos;
-			hmrp->m_pkHeightMap->DrawMask(m_kDrawPos, m_iEditLayer,m_fHMInRadius,255,255,255,1);
-			}
+	if(m_pkInput->VKIsDown("hmpaint")) {
+		Vector3 kLocalOffset = m_kDrawPos - hmrp->m_pkHeightMap->m_kCornerPos;
+		hmrp->m_pkHeightMap->DrawMask(m_kDrawPos, m_iEditLayer,m_fHMInRadius,255,255,255,1);
+		}
 
 	if(m_pkInput->Pressed(KEY_1)) m_iEditLayer = 1;		
 	if(m_pkInput->Pressed(KEY_2)) m_iEditLayer = 2;			
@@ -486,6 +484,7 @@ void MistServer::Input_EditZone()
 	if(m_pkInput->Pressed(KEY_3)) m_kZoneSize.Set(16,16,16);	
 	if(m_pkInput->Pressed(KEY_4)) m_kZoneSize.Set(32,16,32);	
 	if(m_pkInput->Pressed(KEY_5)) m_kZoneSize.Set(64,16,64);		
+	if(m_pkInput->Pressed(KEY_6)) m_kZoneSize.Set(1024,32,1024);		
 
 
 	if(m_pkInput->Pressed(KEY_9)) m_bUpdateMarker = true;				

@@ -756,7 +756,12 @@ void Render::DrawHMLodSplat(HeightMap* kMap,Vector3 CamPos,int iFps)
 	glPushMatrix();
 	glPushAttrib(GL_DEPTH_BUFFER_BIT);
 	glDisable(GL_COLOR_MATERIAL);
-	glEnable(GL_LIGHTING);
+
+	int iLightMode = m_pkZShader->GetForceLighting();
+	if(iLightMode == LIGHT_ALWAYS_OFF)
+		glDisable(GL_LIGHTING);
+	else 
+		glEnable(GL_LIGHTING);
 
 	glTranslatef(kMap->m_kCornerPos.x,kMap->m_kCornerPos.y,kMap->m_kCornerPos.z);
 	glColor4f(1,1,1,1);
