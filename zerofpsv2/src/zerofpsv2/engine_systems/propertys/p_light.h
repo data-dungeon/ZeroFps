@@ -41,8 +41,6 @@ class ENGINE_SYSTEMS_API P_Light : public Property {
 	 
 		void SetMaterial(const string& strMaterial);
 		
-		void TurnOn();
-		void TurnOff();
 
 		void UpdateLightMode();		
 		void DrawFlare();
@@ -71,6 +69,8 @@ class ENGINE_SYSTEMS_API P_Light : public Property {
 		inline Vector4 GetAmbient()	{return m_pkLightSource->kAmbient;};		
 		inline Vector3 GetRot()			{return m_pkLightSource->kRot;};				
 		
+		void TurnOn();
+		void TurnOff();
 
 		void	OnEvent(GameMessage& Msg);
 

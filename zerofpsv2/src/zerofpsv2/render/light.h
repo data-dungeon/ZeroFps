@@ -101,7 +101,8 @@ class RENDER_API Light : public ZFSubSystem {
 		void SetAmbientOnly(bool bAmbient)	{	m_bAmbientOnly = bAmbient;	}
 		
 		void GetClosestLights(vector<LightSource*>* pkLights,int iNrOfLights,Vector3 kPos,bool bNoDirectional = false);
-
+		LightSource* GetFirstDirectionalLight();
+		
 		bool StartUp();
 		bool ShutDown();
 		bool IsValid();

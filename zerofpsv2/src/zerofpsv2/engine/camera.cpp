@@ -549,9 +549,10 @@ void Camera::RenderView()
 	//get root entity		
 	Entity* pkRootEntity = m_pkEntityMan->GetEntityByID(m_iRootEntity);
 		
-		
-	if(m_bShadowMap && m_pkZeroFps->GetShadowMap())
-	{
+	
+	//shuld be render shadowmaps?		
+	if((m_bShadowMap && m_pkZeroFps->GetShadowMap()))
+	{	
 		//scene center (use entity pos if any)
 		Vector3 kCenter;	
 		if(Entity* pkEnt = m_pkEntityMan->GetEntityByID(m_iEntity))
@@ -560,23 +561,14 @@ void Camera::RenderView()
 			kCenter = m_kPos;
 			
 		//setup light
-		vector<LightSource*> kLights;
-		m_pkLight->GetClosestLights(&kLights,1,m_kPos,false);
+		LightSource* pkLight= m_pkLight->GetFirstDirectionalLight();		
 		
 		Vector3 kLightPos;
-		if(!kLights.empty())
-		{			
-			if(kLights[0]->iType == DIRECTIONAL_LIGHT)
-				kLightPos = (kCenter + (kLights[0]->kRot.Unit() * 100));
-			else
-				kLightPos =  kLights[0]->kPos;		
-								
-		}
+		if(pkLight)
+			kLightPos = (kCenter + (pkLight->kRot.Unit() * 100));
 		else
-		{
 			kLightPos =  kCenter + Vector3(0,100,0);		
-			//cout<<"WARNING: missing light source when doing shadows"<<endl;
-		}
+
 		
 		//create shadow map	
 		//cout<<"pos:"<<kLightPos.x<<" "<<kLightPos.y<<" "<<kLightPos.z<<"   "<< kCenter.DistanceTo(kLightPos)<<endl;
@@ -586,22 +578,38 @@ void Camera::RenderView()
 	
 		//draw LIT light				
 		InitView();	
-		m_pkLight->SetAmbientOnly(false);			
 		m_iCurrentRenderMode = RENDER_NORMAL;
 		m_pkEntityMan->Update(PROPERTY_TYPE_RENDER,PROPERTY_SIDE_CLIENT,true,pkRootEntity,m_bRootOnly);		
 		
 		//draw shadowed scene
-		m_pkLight->SetAmbientOnly(true);		
-		m_iCurrentRenderMode = RENDER_SHADOW;
-		DrawShadowedScene();
-		m_pkLight->SetAmbientOnly(false);		
-	
+		if(pkLight)
+		{
+			Vector4 kDiffuseBak  = pkLight->kDiffuse;
+			Vector4 kSpecularBak = pkLight->kSpecular;;			
+			pkLight->kDiffuse.Set(0,0,0,0);
+			pkLight->kSpecular.Set(0,0,0,0);
 		
+			m_iCurrentRenderMode = RENDER_SHADOW;
+			DrawShadowedScene();			
+			
+			pkLight->kDiffuse = kDiffuseBak;
+			pkLight->kSpecular = kSpecularBak;		
+		}
+		else
+		{
+			m_pkLight->SetAmbientOnly(true);		
+			m_iCurrentRenderMode = RENDER_SHADOW;
+			DrawShadowedScene();
+			m_pkLight->SetAmbientOnly(false);				
+		}
+		
+			
 		//Draw unshadows scene
 		m_iCurrentRenderMode = RENDER_NOSHADOWED;
 		m_pkEntityMan->Update(PROPERTY_TYPE_RENDER_NOSHADOW,PROPERTY_SIDE_CLIENT,true,pkRootEntity,m_bRootOnly);
 	
-		m_iCurrentRenderMode = RENDER_NONE;	
+		m_iCurrentRenderMode = RENDER_NONE;		
+		
 	}
 	else
 	{		
@@ -610,7 +618,7 @@ void Camera::RenderView()
 		m_pkEntityMan->Update(PROPERTY_TYPE_RENDER,PROPERTY_SIDE_CLIENT,true,pkRootEntity,m_bRootOnly);
 	
 		//update shadow map
-		m_pkZShadow->Update();
+		//m_pkZShadow->Update();
 	
 		//update all render propertys that shuld NOT be shadowed
 		m_iCurrentRenderMode = RENDER_NOSHADOWED;

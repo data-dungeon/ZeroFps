@@ -306,3 +306,13 @@ void Light::GetClosestLights(vector<LightSource*>* pkLights,int iNrOfLights,Vect
 		pkLights->push_back(kSorted[i]);
 }
 
+LightSource* Light::GetFirstDirectionalLight()
+{
+	for(list<LightSource*>::iterator it=m_kLights.begin();it!=m_kLights.end();it++)
+	{
+		if((*it)->iType==DIRECTIONAL_LIGHT)
+			return (*it);	
+	}
+	
+	return NULL;
+}
