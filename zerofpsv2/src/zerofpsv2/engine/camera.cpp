@@ -427,19 +427,19 @@ void Camera::RenderView()
 	
 	//get root entity
 	Entity* pkRootEntity = m_pkEntityMan->GetEntityByID(m_iRootEntity);
-		
+
 	//update all render propertys that shuld be shadowed
 	m_pkEntityMan->Update(PROPERTY_TYPE_RENDER,PROPERTY_SIDE_CLIENT,true,pkRootEntity,m_bRootOnly);
-	
+
 	//update shadow map
 	m_pkZShadow->Update();
 
 	//update all render propertys that shuld NOT be shadowed
 	m_pkEntityMan->Update(PROPERTY_TYPE_RENDER_NOSHADOW,PROPERTY_SIDE_CLIENT,true,pkRootEntity,m_bRootOnly);
-	
+
 	if(m_bClearViewPort) // Kommentera INTE ut, är för slippa rendera zonsystem osv till en guikamera.
 	{
-		m_pkEntityMan->DrawZones();
+	//	m_pkEntityMan->DrawZones();
 		m_pkZeroFps->m_pkApp->RenderInterface();
 		
 		//draw axes icon
@@ -449,6 +449,7 @@ void Camera::RenderView()
 		
 	//reset camera
 	m_pkZeroFps->m_pkCamera=NULL;
+
 }
 
 void Camera::SetFog(const Vector4& kColor,float fStart,float fStop,bool bEnabled)

@@ -289,7 +289,7 @@ void MistClient::UpdateCharacter()
 				pkCam->Set3PDistance(4);			
 				
 				pkCam->SetAttachToBone(true);
-				pkCam->SetBone("maNus_c_head_0");
+				pkCam->SetBone("headjoint1");
 			}			
 		}
 		
