@@ -11,8 +11,9 @@ public:
 	void SelectAgent(int iAgent, bool bSelectModels);
 	int GetSelAgentObject() { return m_iSelectedAgent; } // object id
 	
-protected:
 	bool InitDlg();
+
+protected:
 	
 	DMCharacterStats* GetAgentStats(int iAgent);
 

@@ -180,7 +180,6 @@ bool P_DMMission::SetCurrentMission(string strMissionScript)
 
 	for(int i=0; i<m_vkMissions.size(); i++)
 	{
-		printf("%s\n", m_vkMissions[i]->m_strScript);
 		if(m_vkMissions[i]->m_strScript == strMissionScript)
 		{
 			m_pkCurrentMission = m_vkMissions[i];

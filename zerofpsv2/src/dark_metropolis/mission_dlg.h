@@ -8,11 +8,14 @@ public:
 	~CMissionDlg();
 
 	void OnCommand(ZGuiWnd *pkMainWnd, string strClickName);
+	bool InitDlg();
 
 	string m_strSelMission;
 
+
+
 protected:
-	bool InitDlg();
+	
 	void OnScroll(int iID, int iPos, ZGuiWnd *pkMain);
 	
 private:

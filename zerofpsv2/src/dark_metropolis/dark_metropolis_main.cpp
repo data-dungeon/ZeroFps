@@ -962,7 +962,7 @@ void DarkMetropolis::SelectAgent(int id, bool bToggleSelect, bool bResetFirst,
 		}
 	}
 
-	m_pkAudioSys->StartSound("/data/sound/yes_my_lord.WAV",
+	m_pkAudioSys->StartSound("/data/sound/yes_my_lord.wav",
 		m_pkObjectMan->GetObjectByNetWorkID(id)->GetIWorldPosV() );
 
 	//

@@ -175,9 +175,13 @@ void CHandleAgents::OnCommand(ZGuiWnd *pkMainWnd, string strClickName)
 			else
 			{
 				m_iSelAgent = m_vkCharsInBaseBns[i].second;
+
+				DMCharacterStats* pkStats = 
+					((P_DMCharacter*)GetObject(m_iSelAgent)->GetProperty("P_DMCharacter"))->GetStats();
+
 				char szText[150];
-				sprintf(szText, "Your agent %i/%i - Mr Smith %i", i+m_iStartAgent+1, 
-					GetNumAgentsInBase(), m_iSelAgent);
+				sprintf(szText, "Your agent %i/%i - %s", i+m_iStartAgent+1, 
+					GetNumAgentsInBase(), pkStats->m_strName.c_str());
 				SetText("AgentInHQLabel", szText);
 
 				m_pkAudioSys->StartSound("data/sound/computer beep 5.wav", 

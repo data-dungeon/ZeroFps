@@ -205,7 +205,8 @@ void DarkMetropolis::GUI_OnCommand(int iID, bool bRMouseBnClick,
 					pkGui->KillWndCapture();
 					ShowWnd("LoadListWnd", false);
 					ShowWnd("DMStartWnd", false);
-					GUI_NewGame(pkMainWnd);				
+					GUI_NewGame(pkMainWnd);		
+					((CGamePlayDlg*)m_pkGamePlayDlg)->InitDlg();
 				}
 			}
 
