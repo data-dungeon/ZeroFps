@@ -295,7 +295,7 @@ void ItemBox::PaintStaticSlots(int container_size_x, int container_size_y)
 				slot_pos cell = GetSlot(pkWnd->GetScreenRect().Left, 
 					pkWnd->GetScreenRect().Top);
 				
-				if(cell.first>container_size_x || cell.second>container_size_y)
+				if(cell.first>=container_size_x || cell.second>=container_size_y)
 					memcpy(pkWnd->GetSkin()->m_afBkColor, 
 						fStaticColor, sizeof(float) * 3);
 			}
