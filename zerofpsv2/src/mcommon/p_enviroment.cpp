@@ -158,6 +158,7 @@ void P_Enviroment::UpdateEnviroment()
 
 	//music
 		
+	static float s_fGain = 0.0f, s_fTimer = -1;
 	static string strCurrentMusic;
 	if(m_kCurrentEnvSetting.m_strMusic != strCurrentMusic)
 	{
@@ -170,12 +171,25 @@ void P_Enviroment::UpdateEnviroment()
 	
 		if(m_kCurrentEnvSetting.m_strMusic.length() != 0)
 		{
+			s_fGain = 0.0f;
+			s_fTimer = m_pkEntityManager->GetSimTime();
 			strCurrentMusic = m_kCurrentEnvSetting.m_strMusic;		
 			m_iMusicID = m_pkAudioSystem->PlayAudio(m_kCurrentEnvSetting.m_strMusic, 
-																Vector3(0,0,0), Vector3(0,0,1), ZFAUDIO_LOOP);
-			
+				Vector3(0,0,0), Vector3(0,0,1), ZFAUDIO_LOOP, s_fGain);
+			m_pkAudioSystem->SetGain(m_iMusicID, s_fGain);
 		}	
 	}
+	else
+	{
+		if(m_iMusicID != -1 && s_fGain < 0.25f) // en liten fade :)
+		{
+			float fTime = m_pkEntityManager->GetSimTime();
+			s_fGain += (fTime - s_fTimer) / (50.0f);
+			m_pkAudioSystem->SetGain(m_iMusicID, s_fGain);
+			s_fTimer = fTime;
+		}
+	}
+
 	
 /*	
 	//sky box
@@ -200,6 +214,7 @@ void P_Enviroment::UpdateEnviroment()
 		GetEntity()->DeleteProperty("P_SkyBoxRender");
 	}
 */		
+
 }
 
 void P_Enviroment::UpdateEnvSetting(EnvSetting* pkEnvSetting)

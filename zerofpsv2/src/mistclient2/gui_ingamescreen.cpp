@@ -57,7 +57,7 @@ void GuiMsgIngameScreen( string strMainWnd, string	strController,
 				}
 
 				ZGuiWnd::m_pkFocusWnd->KillFocus();
-				g_kMistClient.m_pkGui->SetFocus(g_kMistClient.GetWnd("GuiMainWnd"));				
+				g_kMistClient.m_pkGui->SetFocus(g_kMistClient.GetWnd("GuiMainWnd"), false);				
 				g_kMistClient.ToggleGuiCapture(0);
 			}
 			else
@@ -73,8 +73,10 @@ void GuiMsgIngameScreen( string strMainWnd, string	strController,
 				((ZGuiTextbox*)g_kMistClient.GetWnd(strController))->KillFocus();
 				if(ZGuiWnd::m_pkFocusWnd)
 					ZGuiWnd::m_pkFocusWnd->KillFocus();
-				g_kMistClient.ToggleGuiCapture(0);
+				g_kMistClient.ToggleGuiCapture(0);				
 			}
+
+			g_kMistClient.m_pkGui->m_bForceGUICapture = false;
 		}
 	}
 }

@@ -95,6 +95,7 @@ void MistClient::OnInit()
 	//run autoexec script
 	if(!m_pkIni->ExecuteCommands("mistclient_autoexec.ini"))
 		m_pkConsole->Printf("No game_autoexec.ini.ini found");	
+
 }
 
 void MistClient::RunCommand(int cmdid, const CmdArgument* kCommand)

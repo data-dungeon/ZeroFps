@@ -152,6 +152,7 @@ bool OggStream::Play()
 		QueueBuffer(&m_pALuiBuffers[index]);
 
 	m_fStartTime = m_pkZeroFpsObject->m_pkEntityManager->GetSimTime();
+	alSourcef(m_uiSource, AL_GAIN, m_fVolume);
 	alSourcePlay(m_uiSource);	
 	
 	if (alGetError()!=AL_NO_ERROR)

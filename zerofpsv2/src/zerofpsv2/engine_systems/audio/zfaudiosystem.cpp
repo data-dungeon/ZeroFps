@@ -398,9 +398,10 @@ int ZFAudioSystem::PlayAudio(string strName, Vector3 kPos, Vector3 kDir, int iFl
 		g_iIDCounter++;
 		pkOgg->m_iID = g_iIDCounter;
 		pkOgg->SetLooping(iFlags & ZFAUDIO_LOOP);
-		if(iFlags & ZFAUDIO_3DOGG) pkOgg->m_kPos = kPos;
-		else
-			pkOgg->SetVolume(0.25f); // minska volymen eftersom den är för stark i relation till 3dljuden
+		if(iFlags & ZFAUDIO_3DOGG) 
+			pkOgg->m_kPos = kPos;
+		//else
+		pkOgg->SetVolume(fGain); // minska volymen eftersom den är för stark i relation till 3dljuden
 
 		pkOgg->Play();
 
@@ -1412,8 +1413,8 @@ bool ZFAudioSystem::MoveAudio(int iID, Vector3 kNewPos, Vector3 kNewDir, float f
 // Leta rätt på ljudet med det ID:t och ändra gaoim på det 
 ///////////////////////////////////////////////////////////////////////////////
 
-bool ZFAudioSystem::SetSoundGain(int iID, float fGain)
-{
+bool ZFAudioSystem::SetGain(int iID, float fGain)
+{/*
 	list<ZFSoundInfo*>::iterator itFind = m_kSoundList.end();
 
 	list<ZFSoundInfo*>::iterator itSound = m_kSoundList.begin();
@@ -1430,6 +1431,36 @@ bool ZFAudioSystem::SetSoundGain(int iID, float fGain)
 	{
 		(*itFind)->m_fGain = fGain;
 		return true;
+	}
+
+	return false;
+	*/
+
+	ZFSoundInfo *pkSound = NULL;
+
+	map<int,ZFSoundInfo*>::iterator itLoopSound = m_kLoopSoundMap.find(iID);
+	if(itLoopSound != m_kLoopSoundMap.end())
+	{
+		pkSound = itLoopSound->second;
+		pkSound->m_fGain = fGain;
+	}
+	else
+	{
+		vector<OggStream*>::iterator it = m_vkOggStreams.begin();
+		for( ; it!=m_vkOggStreams.end(); it++)
+		{
+			OggStream* ogg = (*it);
+			if(ogg->m_iID == iID)
+			{
+				ogg->SetVolume(fGain);
+				return true;
+			}
+		}
+	}
+
+	if(pkSound == NULL)
+	{
+		printf("Failed to set Gain for sound!\n");
 	}
 
 	return false;

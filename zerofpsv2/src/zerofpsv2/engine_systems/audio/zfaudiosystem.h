@@ -126,7 +126,7 @@ public:
 	bool LoadSound(string strFileName);
 	bool UnLoadSound(string strFileName);
 
-	bool SetSoundGain(int iID, float fGain);
+	bool SetGain(int iID, float fGain);
 
 	unsigned int GetNumSounds();
 	unsigned int GetNumActiveChannels();
