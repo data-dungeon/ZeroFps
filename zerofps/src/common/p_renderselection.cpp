@@ -17,7 +17,7 @@ void P_RenderSelection::Update()
 	if(m_bEnabled)
 	{
 		glDisable(GL_LIGHTING);
-		m_pkRender->Sphere(m_pkObject->GetPos(), m_pkObject->GetRadius(),10,Vector3(0,1,1),false);
+		m_pkRender->Sphere(m_pkObject->GetPos(), m_pkObject->GetRadius(),5,Vector3(1,0,0),false);
 		glEnable(GL_LIGHTING);
 	}
 

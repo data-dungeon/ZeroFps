@@ -322,6 +322,10 @@ void ZeroRTS::Input()
 	
 	if(pkInput->Action(m_iActionDoOrder))
 	{
+		if(pkFps->GetTicks() - m_fClickTimer < m_fClickDelay)
+			return;			
+		m_fClickTimer = pkFps->GetTicks();
+		
 		if(m_pkClientInput)
 		{
 			PickInfo info = Pick();
