@@ -236,7 +236,7 @@ void MistServer::OnInit()
 	Init();
 
 	//init dm script interface (register script functions for gameplay)
-	DMLua::Init(m_pkObjectMan,m_pkScript);
+	DMLua::Init(m_pkObjectMan,m_pkScript,m_pkGuiMan);
 
 	//run autoexec script
 	if(!m_pkIni->ExecuteCommands("mistserver_autoexec.ini"))
