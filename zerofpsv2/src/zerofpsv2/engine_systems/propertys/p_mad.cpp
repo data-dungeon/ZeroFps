@@ -24,7 +24,7 @@ P_Mad::P_Mad()
 	m_fScale	 = 1.0;
 }
 
-void P_Mad::Update() 
+void P_Mad::Update()
 {
 /*
 	Matrix4 kOldMat4 = m_pkObject->GetLocalRotM();
@@ -65,25 +65,25 @@ void P_Mad::Update()
 			
 			
 			//dvoid yber loding deluxe
-			float blub = GetRadius() / fDist;		
-			if(blub < 0.020)
-				return;
+			//float blub = GetRadius() / fDist;
+			//if(blub < 0.020)
+			//	return;
 		}
 
 		g_fMadLODScale = m_fLod;
-		
+
 
 		//set force transparent if not visible
 		if(!m_bIsVisible)
 			m_pkShader->SetForceBlending(BLEND_FORCE_TRANSPARENT);
 
 		glPushMatrix();
-			Vector3 pos; 
-			
+			Vector3 pos;
+
 			pos = m_pkObject->GetIWorldPosV();
-				
+
 			glTranslatef(pos.x,pos.y,pos.z);
-		
+
 			Matrix4 ori;
 			ori = m_pkObject->GetWorldRotM();
 			glMultMatrixf(&ori[0]);
@@ -95,13 +95,13 @@ void P_Mad::Update()
 			glPushMatrix();
 				glTranslatef(m_pkObject->GetWorldPosV().x,m_pkObject->GetWorldPosV().y,m_pkObject->GetWorldPosV().z);
 				glRotatef(90 ,1,0,0);
-//				m_pkRender->DrawBoundSphere(GetRadius(),Vector3::ZERO);		
-				m_pkRender->Sphere(Vector3::ZERO, GetRadius(), 2, Vector3(1,1,1),false);		
+//				m_pkRender->DrawBoundSphere(GetRadius(),Vector3::ZERO);
+				m_pkRender->Sphere(Vector3::ZERO, GetRadius(), 2, Vector3(1,1,1),false);
 			glPopMatrix();
 		}
 
 		m_pkZeroFps->m_iNumOfMadRender++;
-	
+
 		//reset blend
 		if(!m_bIsVisible)
 			m_pkShader->SetForceBlending(BLEND_MATERIAL);
