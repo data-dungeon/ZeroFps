@@ -1,4 +1,4 @@
-CC = g++
-C_ARGS = -pg
-L_ARGS = -pg
-MAKE = make
+CC = g++									#compiler to use
+CXXFLAGS= -O3 #-pg #-ggdb		  #compiler flags
+C_ARGS = -O3 #-pg #-ggdb			#linker flags
+MAKE = make								#make to use

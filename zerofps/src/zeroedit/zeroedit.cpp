@@ -59,7 +59,7 @@ void ZeroEdit::OnInit(void)
 	
 
 	//start text =)
-	pkConsole->Printf("            ZeroEdit ");
+	pkConsole->Printf("             ZeroEdit ");
 	pkConsole->Printf("--------------------------------");
 
 	

@@ -183,6 +183,7 @@ class ZeroEdit :public Application {
 		//on client join, server runs this
 		void OnServerClientJoin(ZFClient* pkClient,int iConID);
 		void OnServerClientPart(ZFClient* pkClient,int iConID);
+
 		
 	friend class Gui;
 	friend class WorkPanelDlg;
