@@ -6,24 +6,6 @@
 --------------------Configuration: script - Win32 Debug--------------------
 </h3>
 <h3>Command Lines</h3>
-Creating temporary file "C:\DOCUME~1\KRGL02~1.KRE\LOCALS~1\Temp\RSP2FC.tmp" with contents
-[
-lua.lib lualib.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /profile /debug /machine:I386 /out:"..\..\..\bin\script.dll" /implib:"Debug/script.lib" /libpath:"..\..\..\bin" 
-".\Debug\zfscript.obj"
-]
-Creating command line "link.exe @C:\DOCUME~1\KRGL02~1.KRE\LOCALS~1\Temp\RSP2FC.tmp"
-<h3>Output Window</h3>
-Linking...
-   Creating library Debug/script.lib and object Debug/script.exp
-Creating temporary file "C:\DOCUME~1\KRGL02~1.KRE\LOCALS~1\Temp\RSP300.bat" with contents
-[
-@echo off
-copy  .\debug\*.lib ..\..\..\bin
-]
-Creating command line "C:\DOCUME~1\KRGL02~1.KRE\LOCALS~1\Temp\RSP300.bat"
-
-.\debug\script.lib
-        1 file(s) copied.
 
 
 

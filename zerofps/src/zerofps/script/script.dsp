@@ -113,6 +113,10 @@ SOURCE=.\script_x.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\zfclasswrap.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\zfscript.h
 # End Source File
 # End Group

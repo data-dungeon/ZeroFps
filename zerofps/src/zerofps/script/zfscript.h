@@ -10,6 +10,7 @@
 #endif // _MSC_VER > 1000
 
 #include "script_x.h"
+#include "zfclasswrap.h"
 
 extern "C"  {
 	#include <lua.h>
@@ -30,6 +31,7 @@ class SCRIPT_API ZFScript
 {
 public:
 	
+	bool ExposeClass(const char *szName);
 	bool ExposeFunction(const char* szName, LuaCallback o_Function);
 	bool ExposeVariable(const char* szName, void* pkData, VarType eVariableType);
 	bool RunScript(char* szFileName);

@@ -73,6 +73,35 @@ bool ZFScript::RunScript(char* szFileName)
 	return (lua_dofile(m_pkLua, szFileName) == 0);
 }
 
+/*class TestKlass
+{
+public:
+	TestKlass(lua_State* L);
+	~TestKlass();
+
+	int Print(lua_State* L) { printf("hello from TestKlass!"); return 1; }
+
+	static const char className[];
+	static const ZFClassWrap<TestKlass>::RegType Register[];
+};
+
+const char TestKlass::className[] = "TestKlass";
+const ZFClassWrap<TestKlass>::RegType TestKlass::Register[] = 
+{
+	 {"print",  &TestKlass::Print},
+	 {0}
+};
+*/
+///////////////////////////////////////////////////////////////////////////////
+// Name:		ExposeClass
+// Description:	Registrera en C++ klass som Lua kan se.
+//
+bool ZFScript::ExposeClass(const char *szName)
+{
+//	ZFClassWrap<TestKlass>::Register(m_pkLua);
+	return true;
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 // Name:		ExposeFunction
 // Description:	Registrera en C++ function som Lua kan se.
