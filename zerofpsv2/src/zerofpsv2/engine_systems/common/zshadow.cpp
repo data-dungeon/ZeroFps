@@ -14,6 +14,7 @@ ZShadow::ZShadow(): ZFSubSystem("ZShadow")
 
 	RegisterVariable("r_shadows",		&m_iNrOfShadows,CSYS_INT);
 	RegisterVariable("r_shadowlength",		&m_fExtrudeDistance,CSYS_FLOAT);
+
 }
 
 bool ZShadow::StartUp()
@@ -25,7 +26,7 @@ bool ZShadow::StartUp()
 
 
 	//EnableShadowGroup(0);
-	EnableShadowGroup(1);
+	//EnableShadowGroup(1);
 	EnableShadowGroup(2);
 
 	return true;

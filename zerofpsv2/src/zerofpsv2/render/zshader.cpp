@@ -636,7 +636,7 @@ void ZShader::CleanCopyedData()
 	m_pkColorPointer =	m_pkBakupColorPointer;
 	
 	m_bCopyedData = false;
-	
+
 }
 
 
@@ -644,7 +644,7 @@ void ZShader::Draw()
 {
 	glPushMatrix();
 
-	glMultMatrixf( &m_kModelMatrix.data[0] );
+	//glMultMatrixf( &m_kModelMatrix.data[0] );
 
 	SetupPrerenderStates();
 
@@ -658,15 +658,11 @@ void ZShader::Draw()
 
 		SetupRenderStates(m_pkCurentMaterial->GetPass(i));
 
-
 		if(m_pkIndexPointer)
 			glDrawElements(m_iDrawMode,m_iNrOfIndexes,GL_UNSIGNED_INT,m_pkIndexPointer);
 		else
 			glDrawArrays(m_iDrawMode,0,m_iNrOfVertexs);
 
-
-
-		glPopMatrix;
 
 		glPopAttrib();
 	}
@@ -675,10 +671,6 @@ void ZShader::Draw()
 		CleanCopyedData();
 
 	glPopMatrix();
-
-	//make some nice stencile shadows
-	//MakeStencilShadow(Vector3(0,0,0));
-	//ExtrudeSiluet(Vector3(0,0,0));
 
 
 	//strange reason this has to be here, push_attrib does not take it =(
