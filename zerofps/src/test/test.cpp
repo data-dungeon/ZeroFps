@@ -12,9 +12,12 @@ void Test::OnInit(void) {
 	g_ZFObjSys.Register_Cmd("loadmap",FID_LOADMAP,this);	
 	g_ZFObjSys.Register_Cmd("savemap",FID_SAVEMAP,this);		
 	
+	pkConsole->Printf(" ZeroFps test program =) ");
+	pkConsole->Printf("--------------------------------");
+	pkConsole->Printf(" Use loadmap/savemap to load and save heightmaps ");
 	
-//	pkConsole->Print("MegaUltraSuper Duper Game");
-	pkFps->m_pkAudioMan->LoadMusic("file:../data/music/killer_chin.mod");		
+	
+//	pkFps->m_pkAudioMan->LoadMusic("file:../data/music/killer_chin.mod");		
 //	pkFps->m_pkAudioMan->PlayMusic();
 
 
@@ -32,9 +35,6 @@ void Test::OnInit(void) {
 	test->SetPosition(Vector3(0,-4,0));
 //----------------------------
 	
-//	IntToChar(fps,pkFps->m_iFps);
-//	fpsupdate=0;
-
 	pkFps->m_pkCmd->Add(&speed,"g_speed",type_float);		
 	speed=30;
   	
@@ -43,9 +43,6 @@ void Test::OnInit(void) {
 	m_iGrassVolyme=150;	
 	pkFps->m_pkCmd->Add(&m_iGrassVolyme,"g_grassvolyme",type_int);		  	
 
-  
-//	pkFps->GetCam()->SetView(90,1.333,0.25,400);
-//  	pkFps->GetCam()->SetPos(Vector3(20,50,30));
   
 	pkRender->SetFog(Vector4(.50,.55,.88,1),8,100,200,true);
 
@@ -271,7 +268,8 @@ void Test::RunCommand(int cmdid, const CmdArgument* kCommand)
 				return;
 			}
 			
-			test->Load(kCommand->m_kSplitCommand[1].c_str());
+			if(!test->Load(kCommand->m_kSplitCommand[1].c_str()))
+				pkConsole->Printf("Could not load map =(");
 			break;
 	
 		case FID_SAVEMAP:
@@ -280,7 +278,8 @@ void Test::RunCommand(int cmdid, const CmdArgument* kCommand)
 				return;
 			}
 			
-			test->Save(kCommand->m_kSplitCommand[1].c_str());
+			if(!test->Save(kCommand->m_kSplitCommand[1].c_str()))
+				pkConsole->Printf("Could not save map =(");			
 			break;
 	
 	}
