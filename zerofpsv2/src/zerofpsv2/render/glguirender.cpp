@@ -164,6 +164,7 @@ Vector2 RotateXY(float angle, Vector2 point)
 //
 bool GLGuiRender::RenderQuad(Rect rc)
 {
+
 	if(!m_pkSkin)
 		return false;
 
@@ -817,6 +818,8 @@ void GLGuiRender::RenderText( char *strText, Rect rc, int iCursorPos,
 	int chars_printed;
 	PrintRow(strText, rc, iCursorPos, iRenderDistFromLeft, chars_printed);
 
+	glDisable(GL_BLEND);		
+
 }
 
 bool GLGuiRender::PrintRows(char* text, Rect rc, int iCursorPos, 
@@ -1165,6 +1168,8 @@ void GLGuiRender::EndDrawText()
 {
 	if(m_bDrawList)
 		glEndList();
+
+	glDisable(GL_BLEND);
 }
 
 void GLGuiRender::DrawStringDisplayList(int iDisplayListID)
