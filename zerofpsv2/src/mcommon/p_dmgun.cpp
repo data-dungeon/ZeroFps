@@ -28,6 +28,7 @@ P_DMGun::P_DMGun()
 	m_fRandom = 	0.5;
 	m_fDamage =		25;
 	m_iBulletsPerAmmo = 1;
+	m_iTeam = -1; // belongs to no team
 
 	m_pkAudioSys = static_cast<ZFAudioSystem*>(g_ZFObjSys.GetObjectPtr("ZFAudioSystem"));
 }
@@ -211,7 +212,7 @@ bool P_DMGun::FireBullets(int iAmount)
 						// so dead models are hit as if they are standing :(
 						if( P_DMCharacter* pkChar = (P_DMCharacter*)kObjects[i]->GetProperty("P_DMCharacter") )
 						{
-							if ( pkChar->GetStats()->m_iLife > 0 )
+							if ( pkChar->GetStats()->m_iLife > 0 && m_iTeam != pkChar->m_iTeam )
 							{
 								closest = d;
 								pkClosest = kObjects[i];

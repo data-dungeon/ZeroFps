@@ -29,12 +29,14 @@ public:
 	float	m_fArmourVal;
 	float	m_fSpeedVal;
 	float	m_iMaxLifeVal;
+	float	m_fAim;
 
 	DMItemStats()
 	{
 		m_fArmourVal = 0;
 		m_fSpeedVal = 0;
 		m_iMaxLifeVal = 0;
+		m_fAim = 0;
 	}
 };
 

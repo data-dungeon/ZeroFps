@@ -17,6 +17,7 @@ DMCharacterStats::DMCharacterStats()
 	m_fSpeed =		1;
 	m_fArmour =		10;
 	m_fWage =		10;
+	m_fAim =		1;
 				
 	m_fExperience =0;
 	m_fNextLevel = 1000;
@@ -247,6 +248,8 @@ void P_DMCharacter::Shoot (Vector3 kLocation)
 
 	P_Mad* pkMad = (P_Mad*)m_pkObject->GetProperty ("P_Mad");
 
+	pkP_Gun->m_iTeam = m_iTeam;
+
 	pkP_Gun->Fire (kLocation);
 
 	// rotate character towards target
@@ -258,7 +261,6 @@ void P_DMCharacter::Shoot (Vector3 kLocation)
 	kRotM.Transponse();
 	m_pkObject->SetLocalRotM(kRotM);
 
-
 	// Start shoot animation, if gun isn't empty
 	if(P_Mad* pkMad = (P_Mad*)m_pkObject->GetProperty("P_Mad"))
 	{
@@ -266,6 +268,11 @@ void P_DMCharacter::Shoot (Vector3 kLocation)
 		{
 			pkMad->SetAnimation ("shoot", 0);
 			pkMad->SetNextAnimation ("idle");
+
+			// clear p_path, can't move and shoot at the same time
+			P_PfPath* pkPath = (P_PfPath*)m_pkObject->GetProperty("P_PfPath");
+			if ( pkPath )
+				pkPath->ClearPath();
 		}
 	}
 
@@ -392,7 +399,7 @@ void P_DMCharacter::Equip (P_DMItem* pkDMItem)
 	
 	m_kStats.m_fArmour += pkDMItem->m_kItemStats.m_fArmourVal;
 	m_kStats.m_iMaxLife += pkDMItem->m_kItemStats.m_iMaxLifeVal;
-	m_kStats.m_fSpeed += pkDMItem->m_kItemStats.m_fSpeedVal;
+	AddMoveSpeed ( pkDMItem->m_kItemStats.m_fSpeedVal );
 
 }
 
@@ -405,7 +412,39 @@ void P_DMCharacter::UnEquip (P_DMItem* pkDMItem)
 	
 	m_kStats.m_fArmour -= pkDMItem->m_kItemStats.m_fArmourVal;
 	m_kStats.m_iMaxLife -= pkDMItem->m_kItemStats.m_iMaxLifeVal;
-	m_kStats.m_fSpeed -= pkDMItem->m_kItemStats.m_fSpeedVal;
+	AddMoveSpeed ( -pkDMItem->m_kItemStats.m_fSpeedVal );
+}
+
+// -----------------------------------------------------------------------------------------------
+
+void P_DMCharacter::SetMoveSpeed (float fSpeed)
+{
+	// get pf_path property
+	P_PfPath* pkPath = (P_PfPath*)m_pkObject->GetProperty("P_PfPath");
+
+	m_kStats.m_fSpeed = fSpeed;
+
+	if ( m_kStats.m_fSpeed < 0 )
+		m_kStats.m_fSpeed = 0;
+
+	if ( pkPath )
+		pkPath->SetSpeed (m_kStats.m_fSpeed);
+}
+
+// -----------------------------------------------------------------------------------------------
+
+void P_DMCharacter::AddMoveSpeed (float fSpeed)
+{
+	// get pf_path property
+	P_PfPath* pkPath = (P_PfPath*)m_pkObject->GetProperty("P_PfPath");
+
+	m_kStats.m_fSpeed += fSpeed;
+
+	if ( m_kStats.m_fSpeed < 0 )
+		m_kStats.m_fSpeed = 0;
+
+	if ( pkPath )
+		pkPath->SetSpeed (m_kStats.m_fSpeed);
 }
 
 // -----------------------------------------------------------------------------------------------
@@ -423,13 +462,5 @@ Property* Create_P_DMCharacter()
 {
 	return new P_DMCharacter;
 }
-
-
-
-
-
-
-
-
 
 

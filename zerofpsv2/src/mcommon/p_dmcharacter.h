@@ -28,6 +28,7 @@ class MCOMMON_API DMCharacterStats
 		float		m_fSpeed;	
 		float		m_fArmour;
 		float		m_fWage;
+		float		m_fAim;
 			
 		int		m_fExperience;
 		int		m_fNextLevel;
@@ -79,7 +80,10 @@ class MCOMMON_API P_DMCharacter: public Property {
 		// add and removes item bonuses (defence, speed, life etc..)
 		void Equip (P_DMItem* pkDMItem);
 		void UnEquip (P_DMItem* pkDMItem);
-		
+
+		// Speed pathfinding is using
+		void SetMoveSpeed (float fSpeed);		
+		void AddMoveSpeed (float fSpeed);
 		
 		void Init();		
 		void Update();		

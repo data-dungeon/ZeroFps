@@ -48,6 +48,8 @@ class MCOMMON_API P_DMGun: public Property {
 		
 
 	public:
+
+		int m_iTeam;
 		
 		P_DMGun();
 		~P_DMGun();
@@ -69,7 +71,7 @@ class MCOMMON_API P_DMGun: public Property {
 		void SetAmmo		 (int iAmmo);
 
 		bool HasAmmo		 ()					{ return m_iAmmo; }
-		bool ReadyToFire	 ()					{ return !m_bFireing; }
+		bool ReadyToFire	 ()					{ return m_bFireing; }
 		
 		void Save(ZFIoInterface* pkPackage);
 		void Load(ZFIoInterface* pkPackage);
