@@ -139,8 +139,10 @@ class ENGINE_API ObjectManager : public ZFObject{
 
 		bool TestLine(vector<Object*>* pkObList,Vector3 kPos,Vector3 kVec);
 
-		void OwnerShip_Take(Object* pkObj);
+		void OwnerShip_Take(Object* pkObj);		
 		void OwnerShip_Give(Object* pkObj);
+		
+		friend class Object;
 };
 
 #endif

@@ -710,7 +710,15 @@ float Object::GetI()
 
 Vector3 Object::GetIRot()
 {
-	float i = GetI();					
+//	float i = GetI();					
+	float t = m_pkFps->GetGameFrameTime(); 
+	float at = m_pkFps->GetTicks() - m_fLastRotSetTime;
+	float i = at/t;				
+	
+	if(i>1)
+		i=1;	
+	if(i<0)
+		i=0;
 
 	Vector3 res;	
 	
@@ -723,7 +731,16 @@ Vector3 Object::GetIRot()
 
 Vector3 Object::GetIPos()
 {
-	float i = GetI();
+//	float i = GetI();
+	float t = m_pkFps->GetGameFrameTime(); 
+	float at = m_pkFps->GetTicks() - m_fLastPosSetTime;
+	float i = at/t;				
+	
+	if(i>1)
+		i=1;	
+	if(i<0)
+		i=0;
+
 
 	Vector3 res;
 	res.Lerp(m_kOldPos,m_kPos,i);
@@ -739,6 +756,8 @@ void Object::SetRot(Vector3 kRot)
 
 	m_kOldRot = m_kRot;
 	m_kRot = kRot;
+	
+	m_fLastRotSetTime = m_pkObjectMan->m_pkZeroFps->GetEngineTime();	
 }
 
 void Object::SetPos(Vector3 kPos)
@@ -750,6 +769,8 @@ void Object::SetPos(Vector3 kPos)
 
 	m_kOldPos = m_kPos;
 	m_kPos = kPos;
+	
+	m_fLastPosSetTime = m_pkObjectMan->m_pkZeroFps->GetEngineTime();
 }
 
 

@@ -172,6 +172,9 @@ class ENGINE_API Object
 		PropertyFactory*			m_pkPropertyFactory;	
 		ZeroFps*						m_pkFps;
 
+		float							m_fLastPosSetTime;
+		float							m_fLastRotSetTime;		
+
 		list<Object*>				m_akChilds;							///< List of child objects.
 		list<Property*>			m_akPropertys;						///< List of propertys of object.
 		
