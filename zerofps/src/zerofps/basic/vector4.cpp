@@ -2,6 +2,7 @@
 #include <cassert>
 #include "vector4.h"
 #include "matrix4.h"
+#include "vector3.h"
 
 using namespace std;
 
@@ -38,6 +39,15 @@ Vector4 Vector4::operator=(const Vector4 &kOtherV3)
 	w=kOtherV3.w;	
 	return *this;
 }
+Vector4 Vector4::operator=(const Vector3 &kOtherV3) 
+{
+	x=kOtherV3.x;
+	y=kOtherV3.y;
+	z=kOtherV3.z;
+	w=1;	
+	return *this;
+}
+
 
 void Vector4::set(float nx, float ny, float nz,float nw)
 {
@@ -136,8 +146,6 @@ float &Vector4::operator[](const int i)
 		case 3:
 			return w;
 	}
-
-	return x;
 }
 
 Vector4 Vector4::operator*(const Matrix4 &f) const 

@@ -59,8 +59,21 @@ Vector4 Matrix4::operator*(const Vector4 &f)
 
 }
 
-Vector4 Matrix4::operator*(const Matrix4 &kOther) const 
+Matrix4 Matrix4::operator*(const Matrix4 &kOther) const 
 {
+	Matrix4 ny;
+	
+	for(int y=0;y<4;y++){
+		for(int x=0;x<4;x++){
+			ny.data[y*4+x]=0;			
+			for(int i=0;i<4;i++){
+				ny.data[y*4+x]+=data[y*4+i]*kOther.data[i*4+x];	
+
+			}
+		}
+	}
+	
+/*	
 //	float *ny=new float[4];
 	Vector4 ny;
 
@@ -70,9 +83,30 @@ Vector4 Matrix4::operator*(const Matrix4 &kOther) const
 	for(int y=0;y<4;y++)
 		for(int x=0;x<4;x++)
 			ny[y]+=data[y*4+x]*kOther.data[x*4+y];		
-
+*/
 
 	return ny;
+}
+
+void Matrix4::Print()
+{
+	cout <<" -= The Matrix =-"<<endl;
+	for(int y=0;y<4;y++){
+		for(int x=0;x<4;x++){
+			cout<<data[y*4+x]<<"\t";			
+		}
+		cout<<endl;
+	}
+
+
+}
+
+void Matrix4::Identity() {
+	*this=Matrix4(1,0,0,0,
+								0,1,0,0,
+								0,0,1,0,
+								0,0,0,1);
+
 }
 
 

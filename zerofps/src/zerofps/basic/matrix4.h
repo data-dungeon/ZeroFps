@@ -1,12 +1,11 @@
 #ifndef _MATRIX_H_
 #define _MATRIX_H_
 
-#include "basic_x.h"
 #include <iostream>
 #include "vector4.h"
-using namespace std;
 
-class BASIC_API Matrix4 {
+
+class Matrix4 {
 	private:	
 	
 	public:
@@ -21,12 +20,12 @@ class BASIC_API Matrix4 {
 						
 		Matrix4 operator=(const Matrix4 &kOther);
 		Matrix4 operator*(const float &f) const;
-		Vector4 operator*(const Matrix4 &kOther) const;
+		Matrix4 operator*(const Matrix4 &kOther) const;
 		Matrix4 operator*=(const float &f);		
 		Vector4 operator*(const Vector4 &f);
 	
-
-
+		void Print();
+		void Identity();
 
 };
 

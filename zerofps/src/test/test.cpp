@@ -49,6 +49,9 @@ void Test::OnInit(void) {
   
   glEnable(GL_LIGHTING);
   glEnable(GL_LIGHT0);
+  
+//  pkRender->SetFog(Vector4(0,0,1,1),0.25,300,400,true);
+  
 
 }
 

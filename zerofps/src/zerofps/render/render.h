@@ -43,6 +43,7 @@ class RENDER_API Render {
 		void DrawSkyBox(Vector3 CamPos);
 		void DrawWater(Vector3 kCamPos,Vector3 kPosition,Vector3 kHead,int iSize,int iStep);
 		void DrawSimpleWater(Vector3 kPosition,int iSize);
+		void SetFog(Vector4 kFogColor,float FogDensity,float FogStart,float FogStop,bool FogEnable);
 		void DrawConsole(char* m_aCommand,vector<char*>* m_kText); 
 		
 		void GiveTexCor(float &iX,float &iY,int iNr);

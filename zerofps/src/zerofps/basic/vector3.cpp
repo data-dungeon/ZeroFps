@@ -33,7 +33,7 @@ Vector3 Vector3::operator=(const Vector3 &kOtherV3)
 	return *this;
 }
 
-void Vector3::set(float nx, float ny, float nz)
+void Vector3::Set(float nx, float ny, float nz)
 {
 	x = nx;
 	y = ny;
@@ -115,29 +115,29 @@ Vector3 Vector3::operator-()
 }
 
 // Vector operations.
-float Vector3::length(void) const
+float Vector3::Length(void) const
 {
 	return (float)sqrt( x*x + y*y + z*z );  
 
 }
 
-float Vector3::dot( const Vector3& v  ) const	
+float Vector3::Dot( const Vector3& v  ) const	
 {
 	return x*v.x + y*v.y + z*v.z; 
 }
 
-Vector3 Vector3::unit(void) const						
+Vector3 Vector3::Unit(void) const						
 {
-	float invlen = length();
+	float invlen = Length();
 	assert(invlen != 0.0);
 	invlen = 1 / invlen;
 	return Vector3(x * invlen, y * invlen, z * invlen);
 	return *this;
 }
 
-void Vector3::normalize(void)						
+void Vector3::Normalize(void)						
 {
-	float invlen = length();
+	float invlen = Length();
 	assert(invlen != 0.0);
 	invlen = 1 / invlen;
 	x *= invlen;
@@ -145,7 +145,7 @@ void Vector3::normalize(void)
 	z *= invlen;
 }
 
-Vector3 Vector3::cross( const Vector3& v )	const
+Vector3 Vector3::Cross( const Vector3& v )	const
 {
 	return Vector3( y*v.z - z*v.y, z*v.x - x*v.z, x*v.y - y*v.x ); 
 }

@@ -129,8 +129,8 @@ void HeightMap::GenerateNormals() {
 					v2=Vector3(1,(verts[(z+1+q)*m_iHmSize+(x+1+w)].height)- (verts[(z+q)*m_iHmSize+(x+w)].height),1);		
 					v3=Vector3(0,(verts[(z+q+1)*m_iHmSize+(x+w)].height)-(verts[(z+q)*m_iHmSize+(x+w)].height) ,1);	
 	
-					n1=v2.cross(v1);			
-					n2=v3.cross(v2);				
+					n1=v2.Cross(v1);			
+					n2=v3.Cross(v2);				
 //					n1.normalize();
 //					n2.normalize();
 	
@@ -138,7 +138,7 @@ void HeightMap::GenerateNormals() {
 				}	
 			}
 			med=med*0.125;
-			med.normalize();
+			med.Normalize();
 			verts[z*m_iHmSize+x].normal=med;
 		}
 	}
@@ -279,8 +279,8 @@ void HeightMap::GenerateTextures() {
 					diff+=GetVert(x+w,z+q)->normal;
 				}
 			}
-			diff.normalize();
-			slope=diff.dot(Vector3(0,1,0)) *degtorad;
+			diff.Normalize();
+			slope=diff.Dot(Vector3(0,1,0)) *degtorad;
 			height=GetVert(x,z)->height;						
 //			cout<<"Slope:"<<slope<<endl;
 
@@ -306,7 +306,7 @@ void HeightMap::GenerateTextures() {
 					GetVert(x,z)->color=Vector3(.35,.65,.0);				
 				}
 			}
-			GetVert(x,z)->color.normalize();
+			GetVert(x,z)->color.Normalize();
 		}
 	}
 }

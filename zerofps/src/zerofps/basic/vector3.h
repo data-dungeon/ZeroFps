@@ -1,12 +1,11 @@
 #ifndef _VECTOR3_H_
 #define _VECTOR3_H_
 
-#include "basic_x.h"
 #include <iostream>
 
 using namespace std;
 
-class BASIC_API Vector3 {
+class Vector3 {
 	public:
 		float x,y,z;
 	
@@ -15,7 +14,7 @@ class BASIC_API Vector3 {
 	
 		// Assign
 		Vector3 operator=(const Vector3 &kOtherV3);		
-		void set(float nx, float ny, float nz);			
+		void Set(float nx, float ny, float nz);			
 		
 		// Arithmetic operations
 		Vector3 operator+(const Vector3 &kOtherV3)	const;
@@ -34,16 +33,17 @@ class BASIC_API Vector3 {
 		bool operator!=(const Vector3 &kOtherV3)	const;
 
 		// Vector operations.
-		float length(void)const;				
-		void normalize(void);						
-		float dot( const Vector3& v  )		const; 	
-		Vector3 unit(void)					const;						
-		Vector3 cross( const Vector3& v )	const;	
+		float Length(void)const;				
+		void Normalize(void);						
+		float Dot( const Vector3& v  )		const; 	
+		Vector3 Unit(void)					const;						
+		Vector3 Cross( const Vector3& v )	const;	
 		
 		static const Vector3 ZERO;
 		static const Vector3 AXIS_X;
 		static const Vector3 AXIS_Y;
 		static const Vector3 AXIS_Z;
+		
 };
 
 

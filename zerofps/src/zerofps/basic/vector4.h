@@ -1,14 +1,15 @@
 #ifndef _Vector4_H_
 #define _Vector4_H_
 
-#include "basic_x.h"
 #include <iostream>
-
-using namespace std;
+#include "vector3.h"
+//#include "Matrix4.h"
 
 class Matrix4;
 
-class BASIC_API Vector4 {
+using namespace std;
+
+class Vector4 {
 	public:
 		float x,y,z,w;
 	
@@ -17,6 +18,7 @@ class BASIC_API Vector4 {
 	
 		// Assign
 		Vector4 operator=(const Vector4 &kOtherV3);		
+		Vector4 operator=(const Vector3 &kOtherV3);				
 		void set(float nx, float ny, float nz,float nw);			
 		
 		float &operator[](const int i);

@@ -167,7 +167,7 @@ void Render::DrawHMlod(HeightMap* kmap,Vector3 CamPos){
 											CamPos.y,//this is nice =)
 //											kmap->m_kPosition.y+kmap->verts[(sz*m_iSlicesize+m_iSlicesize/2)*kmap->m_iHmSize+(sx*m_iSlicesize+m_iSlicesize/2)].height,
 											kmap->m_kPosition.z+sz*m_iSlicesize+m_iSlicesize/2)
-											).length()/m_iDetail);																
+											).Length()/m_iDetail);																
 //	cout<<"STEP"<<step<<endl;
 			if(step>13)
 				continue;
@@ -348,3 +348,23 @@ void Render::DrawHM(HeightMap *kmap) {
 	*/
 	glPopMatrix();			
 }
+
+void Render::SetFog(Vector4 kFogColor,float FogDensity,float FogStart,float FogStop,bool FogEnabled){
+	if(FogEnabled)
+		glEnable(GL_FOG);
+	else
+		glDisable(GL_FOG);
+		
+	glFogi(GL_FOG_MODE,GL_LINEAR);
+	glHint(GL_FOG_HINT,GL_NICEST);	
+	
+	glFogfv(GL_FOG_COLOR,(float*)&kFogColor[0]);
+	glFogf(GL_FOG_DENSITY,FogDensity);
+	glFogf(GL_FOG_START,FogStart);
+	glFogf(GL_FOG_END,FogStop);	
+}
+
+
+
+
+
