@@ -22,6 +22,10 @@ class ENGINE_API PhysicProperty :public Property
 		PhysicProperty();
 		~PhysicProperty();		
 		
+		void Update();
+		
+		float GetBoundingRadius();
+		
 		CollisionShape* GetColSphere(){return m_pkColSphere;};
 		CollisionShape* GetColShape(){return m_pkColObject;};
 

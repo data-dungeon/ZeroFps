@@ -15,7 +15,7 @@ PhysicProperty::PhysicProperty()
 	m_pkColSphere=NULL;
 	m_pkColObject=NULL;
 
-	m_pkColSphere=new CSSphere(1);
+	m_pkColSphere=new CSSphere(0);
 	m_pkColSphere->SetPPPointer(this);
 
 }
@@ -24,6 +24,33 @@ PhysicProperty::~PhysicProperty()
 {
 	delete m_pkColSphere;
 	delete m_pkColObject;
+}
+
+void PhysicProperty::Update()
+{
+	if(static_cast<CSSphere*>(m_pkColSphere)->m_fRadius==0)
+	{
+		static_cast<CSSphere*>(m_pkColSphere)->m_fRadius=GetBoundingRadius();
+	}
+}
+
+float PhysicProperty::GetBoundingRadius()
+{
+	MadProperty* mp = static_cast<MadProperty*>(m_pkObject->GetProperty("MadProperty"));
+	if(mp!=NULL)
+	{
+//		cout<<"Got radius from madproperty"<<endl;
+		return mp->pkCore->GetRadius();	
+	}
+	
+	ModelProperty* mop = static_cast<ModelProperty*>(m_pkObject->GetProperty("ModelProperty"));
+	if(mop!=NULL)
+	{
+//		cout<<"Got radius from Modelproperty"<<endl;	
+		return mop->m_fRadius;	
+	}
+	
+	return 0.1;
 }
 
 void PhysicProperty::Save(ZFMemPackage* pkPackage)

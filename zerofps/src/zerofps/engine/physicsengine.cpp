@@ -30,6 +30,11 @@ void PhysicsEngine::Update()
 	for(list<Property*>::iterator it=m_kPropertys.begin();it!=m_kPropertys.end();it++) {	
 		PhysicProperty* PP = static_cast<PhysicProperty*>(*it);
 		
+		
+		//WARNING THIS CRAP SHULD NOT BE HERE!!!!!!!!!!!!!!
+		PP->Update();
+		
+		
 		MoveObject(PP);
 	}
 
