@@ -718,6 +718,7 @@ void EntityManager::PackToClient(int iClient, vector<Entity*> kObjects,bool bZon
 		 iObj =  m_pkNetWork->m_RemoteNodes[iClient].m_iCurrentObject;	
 	}
 
+	NetPacket kEntityNp;
 	
 	for(; iObj < kObjects.size(); iObj++)	
 	{
@@ -729,13 +730,16 @@ void EntityManager::PackToClient(int iClient, vector<Entity*> kObjects,bool bZon
 			continue;
 		}
 		
-		m_OutNP.Write(pkPackObj->m_iEntityID);
+		kEntityNp.Clear();
+
+		kEntityNp.Write(pkPackObj->m_iEntityID);
 		
-		pkPackObj->PackTo(&m_OutNP,iClient);
+		pkPackObj->PackTo(&kEntityNp,iClient);
 		iPacketSize++; 
 
+		// If this entity will overflow the current UDP message, send it and start a new one.
 
-		if(m_OutNP.m_iPos >= iMaxPacketSize) 
+		if( (m_OutNP.m_iPos + kEntityNp.m_iPos) >= iMaxPacketSize) 
 		{
 			iSentSize += m_OutNP.m_iPos;			//increse total amount of data sent
 			
@@ -748,11 +752,11 @@ void EntityManager::PackToClient(int iClient, vector<Entity*> kObjects,bool bZon
 			m_OutNP.m_kData.m_kHeader.m_iPacketType = ZF_NETTYPE_UNREL;
 			m_OutNP.Write((char) ZFGP_OBJECTSTATE);
 			m_OutNP.TargetSetClient(iClient);
-
 			iPacketSize = 0;
-						
 		}
-		
+	
+		m_OutNP.WriteNp( &kEntityNp );
+
 		if(bZoneObject)
 		{
 			if(iSentSize > iMaxSendSize)

@@ -62,12 +62,16 @@ void PropertyFactory::Display()
 {
 	cout << "Listing properys : 'name' : 'active' : 'total created'" << endl;
 
+	int iSize = 0;
+
 	for(unsigned int i=0; i<m_kProperyLinks.size(); i++)
 	{
 		cout << m_kProperyLinks[i].m_szName << " : " << m_kProperyLinks[i].iCount 
 			<< " : " << m_kProperyLinks[i].iTotalCreated << endl;
+		iSize += strlen( m_kProperyLinks[i].m_szName ) + 1;
 	}
 	
+	cout << "Total Property Name Size: " <<  iSize << endl;
 }
 
 void PropertyFactory::GetAllProperties(vector<string>& vkList)

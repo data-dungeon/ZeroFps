@@ -1332,10 +1332,10 @@ void ZeroFps::GetEngineCredits(vector<string>& kCreditsStrings)
 	for a server Node that accepts connections. Never called on a client node. Return false
 	to deny connection. Put reason if any into szWhy256.
 */
-bool	ZeroFps::PreConnect(IPaddress kRemoteIp, char* szLogin, char* szPass, bool bIsEditor, char* szWhy256)
+bool	ZeroFps::PreConnect(IPaddress kRemoteIp, char* szLogin, char* szPass, bool bIsEditor, string& strWhy)
 {
 	//m_pkConsole->Printf("ZeroFps::PreConnect()");
-	return m_pkApp->OnPreConnect(kRemoteIp, szLogin, szPass,bIsEditor);
+	return m_pkApp->OnPreConnect(kRemoteIp, szLogin, szPass,bIsEditor, strWhy);
 }
 
 /**	\brief	Called when someone have been connected.

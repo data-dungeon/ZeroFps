@@ -228,7 +228,7 @@ class ZeroEd :public Application , public ZGuiApp {
 		void UpdateStartLocatons();
 
 		//on client join, server runs this
-		bool OnPreConnect(IPaddress, char*, char*, bool bIsEditor){return true;}
+		bool OnPreConnect(IPaddress, char*, char*, bool bIsEditor, string& strWhy){return true;}
 		void OnServerClientJoin(ZFClient*,int, char*, char*, bool bIsEditor){};
 		void OnServerClientPart(ZFClient* pkClient,int iConID){};
 		void RenderInterface(void);

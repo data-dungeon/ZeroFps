@@ -62,7 +62,7 @@ class ENGINE_API Application : public ZFSubSystem {
 		virtual void OnHud(void)			{};
 		virtual void OnSystem(void)		{};
 
-		virtual bool OnPreConnect(IPaddress kRemoteIp, char* szLogin, char* szPass, bool bIsEditor) 				{return true;};
+		virtual bool OnPreConnect(IPaddress kRemoteIp, char* szLogin, char* szPass, bool bIsEditor, string& strWhy) 				{return true;};
 		virtual void OnServerClientJoin(ZFClient* pkClient,int iConID, char* szLogin, char* szPass, bool bIsEditor)	{};
 		virtual void OnServerClientPart(ZFClient* pkClient,int iConID)			{};
 		virtual void OnClientConnected()			{};

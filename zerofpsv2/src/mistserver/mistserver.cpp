@@ -203,6 +203,8 @@ void MistServer::RegisterPropertys()
 	m_pkPropertyFactory->Register("P_AI", Create_P_AI);
 	m_pkPropertyFactory->Register("P_Container", Create_P_Container);
 	m_pkPropertyFactory->Register("P_ArcadeCharacter", Create_P_ArcadeCharacter);
+
+	//m_pkPropertyFactory->Display();
 }
 
 void MistServer::OnIdle()
@@ -592,19 +594,20 @@ void MistServer::ClientInit()
 	//cout<<"Join Complete"<<endl;
 }
 
-bool MistServer::OnPreConnect(IPaddress kRemoteIp, char* szLogin, char* szPass, bool bIsEditor)
+bool MistServer::OnPreConnect(IPaddress kRemoteIp, char* szLogin, char* szPass, bool bIsEditor, string& strWhy)
 {
 	//dessa skall du fixa till vim =D
 	string strPlayer		= szLogin;
 	string strPasswd		= szPass;
 	string strCharacter	= "mrbad";
-		
+
 	// Check that this is a valid login.
 	if(m_pkPlayerDB->LoginExist(strPlayer)) 
 	{
 		if(m_pkPlayerDB->IsOnline(szLogin))
 		{
 			m_pkConsole->Printf("Player '%s' tried to join twice",strPlayer.c_str());
+			strWhy = "Your login name is already connected";
 			return false;	
 		}
 
@@ -612,6 +615,7 @@ bool MistServer::OnPreConnect(IPaddress kRemoteIp, char* szLogin, char* szPass, 
 		if(!m_pkPlayerDB->VerifyPlayer(strPlayer,strPasswd)) 
 		{
 			m_pkConsole->Printf("Player '%s' found, password check FAILED",strPlayer.c_str());
+			strWhy = "Wrong login name and/or password";
 			return false;
 		}
 
@@ -623,6 +627,7 @@ bool MistServer::OnPreConnect(IPaddress kRemoteIp, char* szLogin, char* szPass, 
 		if(!m_AcceptNewLogins)
 		{
 			m_pkConsole->Printf("A new player '%s' tried to join but new players are not accepted", strPlayer.c_str());
+			strWhy = "No login with that name found";
 			return false;
 		}
 
@@ -630,6 +635,7 @@ bool MistServer::OnPreConnect(IPaddress kRemoteIp, char* szLogin, char* szPass, 
 		if(!m_pkPlayerDB->CreatePlayer(strPlayer,strPasswd)) 
 		{
 			m_pkConsole->Printf("Failed to create new player '%s'",strPlayer.c_str());
+			strWhy = "Failed to create player on server";
 			return false;
 		}
 	

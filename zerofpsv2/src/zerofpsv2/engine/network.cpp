@@ -441,6 +441,7 @@ void NetWork::HandleControlMessage(NetPacket* pkNetPacket)
 {
 	int iObjId;
 	char szText[256];
+	string strNoMessage;
 
 	float fEngineTime = m_pkZeroFps->GetEngineTime();
 
@@ -467,7 +468,6 @@ void NetWork::HandleControlMessage(NetPacket* pkNetPacket)
 			// Sent to join a server.
 			m_pkConsole->Printf("NetWork::HandleControlMessage(ZF_NETCONTROL_JOIN)");
 			AddressToStr(&pkNetPacket->m_kAddress, m_szAddressBuffer);
-			m_pkConsole->Printf("Ip: %s", m_szAddressBuffer);
 
 			// Server respons with yes/no.
 			kNetPRespons.Clear();
@@ -476,26 +476,29 @@ void NetWork::HandleControlMessage(NetPacket* pkNetPacket)
 			pkNetPacket->Read_Str(szPass);
 			pkNetPacket->Read(iConnectAsEditor);
 
-			if(GetNumOfClients() == m_iMaxNumberOfNodes) {
+			m_pkConsole->Printf("'%s' try to join as '%s' in editmode '%d'", m_szAddressBuffer, szLogin, iConnectAsEditor);
+
+			if(GetNumOfClients() == m_iMaxNumberOfNodes) 
+			{
 				m_pkConsole->Printf("Join Ignored: To many connected clients.");
 				kNetPRespons.m_kData.m_kHeader.m_iPacketType = ZF_NETTYPE_CONTROL;
-				//kNetPRespons.Write((unsigned char) ZF_NETTYPE_CONTROL);
 				kNetPRespons.Write((unsigned char) ZF_NETCONTROL_JOINNO);
-				kNetPRespons.Write_Str("There server is full.");
+				kNetPRespons.Write_Str( string("There server is full.") );
 				kNetPRespons.m_kAddress = pkNetPacket->m_kAddress;
 				SendRaw(&kNetPRespons);
-				}
-			else {
-				if(! m_pkZeroFps->PreConnect(pkNetPacket->m_kAddress, szLogin, szPass, iConnectAsEditor, szText)) {
+			}
+			else 
+			{
+				if(! m_pkZeroFps->PreConnect(pkNetPacket->m_kAddress, szLogin, szPass, iConnectAsEditor, strNoMessage))
+				{
 					m_pkConsole->Printf("Join Ignored: Preconnect no.");
 					kNetPRespons.m_kData.m_kHeader.m_iPacketType = ZF_NETTYPE_CONTROL;
-					//kNetPRespons.Write((unsigned char) ZF_NETTYPE_CONTROL);
 					kNetPRespons.Write((unsigned char) ZF_NETCONTROL_JOINNO);
-					kNetPRespons.Write_Str("Wrong login and/or password.");
+					kNetPRespons.Write_Str( strNoMessage );
 					kNetPRespons.m_kAddress = pkNetPacket->m_kAddress;
 					SendRaw(&kNetPRespons);
 					break;
-					}
+				}
 
 				iClientID = GetFreeClientNum();
 				assert(iClientID != ZF_NET_NOCLIENT);
@@ -523,7 +526,7 @@ void NetWork::HandleControlMessage(NetPacket* pkNetPacket)
 				SendRaw(&kNetPRespons);
 				
 				NetString_ReSendAll();
-				}
+			}
 			
 			break;
 
@@ -554,8 +557,8 @@ void NetWork::HandleControlMessage(NetPacket* pkNetPacket)
 
 		case ZF_NETCONTROL_JOINNO:
 			m_pkConsole->Printf("NetWork::HandleControlMessage(ZF_NETCONTROL_JOINNO)");
-			pkNetPacket->Read_Str( szText );
-			m_pkConsole->Printf("Connect No: %s", szText );
+			pkNetPacket->Read_Str( strNoMessage );
+			m_pkConsole->Printf("Connect No: %s", strNoMessage.c_str() );
 			break;
 
 		case ZF_NETCONTROL_REQCLIENTID:
