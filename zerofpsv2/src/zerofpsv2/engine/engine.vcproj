@@ -278,6 +278,9 @@
 				RelativePath="..\engine_systems\propertys\p_tcs.cpp">
 			</File>
 			<File
+				RelativePath="..\engine_systems\propertys\p_tcstrigger.cpp">
+			</File>
+			<File
 				RelativePath="..\engine_systems\propertys\p_track.cpp">
 			</File>
 			<File
@@ -433,6 +436,9 @@
 			</File>
 			<File
 				RelativePath="..\engine_systems\propertys\p_tcs.h">
+			</File>
+			<File
+				RelativePath="..\engine_systems\propertys\p_tcstrigger.h">
 			</File>
 			<File
 				RelativePath="..\engine_systems\propertys\p_track.h">

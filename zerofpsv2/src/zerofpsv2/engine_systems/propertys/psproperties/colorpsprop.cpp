@@ -17,17 +17,17 @@ void ColorPSProp::Update()
 
  	for ( int i = m_pkParent->Start(); i < m_pkParent->End(); i++ )
 	{
-		m_fR = ( m_pkParent->m_pkPSystemType->m_kParticleBehaviour.m_kEndColor.r - 
-					m_pkParent->m_pkPSystemType->m_kParticleBehaviour.m_kStartColor.r ) /
+		m_fR = ( pkParticles->at(i).m_kEndColor.x - 
+					pkParticles->at(i).m_kStartColor.x ) /
 					pkParticles->at(i).m_fLifeTime;
-		m_fG = ( m_pkParent->m_pkPSystemType->m_kParticleBehaviour.m_kEndColor.g - 
-					m_pkParent->m_pkPSystemType->m_kParticleBehaviour.m_kStartColor.g ) /
+		m_fG = ( pkParticles->at(i).m_kEndColor.y - 
+					pkParticles->at(i).m_kStartColor.y ) /
 					pkParticles->at(i).m_fLifeTime;
-		m_fB = ( m_pkParent->m_pkPSystemType->m_kParticleBehaviour.m_kEndColor.b - 
-					m_pkParent->m_pkPSystemType->m_kParticleBehaviour.m_kStartColor.b ) /
+		m_fB = ( pkParticles->at(i).m_kEndColor.z - 
+					pkParticles->at(i).m_kStartColor.z ) /
 					pkParticles->at(i).m_fLifeTime;
-		m_fA = ( m_pkParent->m_pkPSystemType->m_kParticleBehaviour.m_kEndColor.a - 
-					m_pkParent->m_pkPSystemType->m_kParticleBehaviour.m_kStartColor.a ) /
+		m_fA = ( pkParticles->at(i).m_kEndColor.w - 
+					pkParticles->at(i).m_kStartColor.w ) /
 					pkParticles->at(i).m_fLifeTime;
 
 		// Prevent particle from use time_Color after age

@@ -46,6 +46,7 @@ void P_EditIcon::Update()
 		case 0:	return;	break;
 		case 1:	SetTexture("/data/textures/editicon/camera.bmp");	break;
 		case 2:	SetTexture("/data/textures/editicon/light.bmp");	break;
+		case 3:	SetTexture("/data/textures/editicon/psystem.bmp");	break;
 		default:
 			SetTexture("/data/textures/editicon/noedit.bmp");
 	}

@@ -259,36 +259,60 @@ void PSystem::ResetParticle (int iParticleIndex, float fTimeOffset)
 	// Set age to max lifetime
 	m_kParticles[iParticleIndex].m_fAge = m_kParticles[iParticleIndex].m_fLifeTime - fTimeOffset;
 
+
 	// if PSystem uses colors, reset color
 	if ( m_pfColors )
+	{
+		m_kParticles[iParticleIndex].m_kStartColor = m_pkPSystemType->m_kParticleBehaviour.m_kStartColor;
+		m_kParticles[iParticleIndex].m_kEndColor = m_pkPSystemType->m_kParticleBehaviour.m_kEndColor;
+
+		// Random PSystem start colors
+		m_kParticles[iParticleIndex].m_kStartColor.x += (((rand()%100) / 100.f) * ((rand()%2) * 2 - 1)) *
+			m_kParticles[iParticleIndex].m_kStartColor.x * m_pkPSystemType->m_kParticleBehaviour.m_kStartColorRandom.x;
+		m_kParticles[iParticleIndex].m_kStartColor.y += (((rand()%100) / 100.f) * ((rand()%2) * 2 - 1)) *
+			m_kParticles[iParticleIndex].m_kStartColor.y * m_pkPSystemType->m_kParticleBehaviour.m_kStartColorRandom.y;
+		m_kParticles[iParticleIndex].m_kStartColor.z += (((rand()%100) / 100.f) * ((rand()%2) * 2 - 1)) *
+			m_kParticles[iParticleIndex].m_kStartColor.z * m_pkPSystemType->m_kParticleBehaviour.m_kStartColorRandom.z;
+		m_kParticles[iParticleIndex].m_kStartColor.w += (((rand()%100) / 100.f) * ((rand()%2) * 2 - 1)) *
+			m_kParticles[iParticleIndex].m_kStartColor.w * m_pkPSystemType->m_kParticleBehaviour.m_kStartColorRandom.w;
+
+		// Random PSystem end colors
+		m_kParticles[iParticleIndex].m_kEndColor.x += (((rand()%100) / 100.f) * ((rand()%2) * 2 - 1)) *
+			m_kParticles[iParticleIndex].m_kEndColor.x * m_pkPSystemType->m_kParticleBehaviour.m_kEndColorRandom.x;
+		m_kParticles[iParticleIndex].m_kEndColor.y += (((rand()%100) / 100.f) * ((rand()%2) * 2 - 1)) *
+			m_kParticles[iParticleIndex].m_kEndColor.y * m_pkPSystemType->m_kParticleBehaviour.m_kEndColorRandom.y;
+		m_kParticles[iParticleIndex].m_kEndColor.z += (((rand()%100) / 100.f) * ((rand()%2) * 2 - 1)) *
+			m_kParticles[iParticleIndex].m_kEndColor.z * m_pkPSystemType->m_kParticleBehaviour.m_kEndColorRandom.z;
+		m_kParticles[iParticleIndex].m_kEndColor.w += (((rand()%100) / 100.f) * ((rand()%2) * 2 - 1)) *
+			m_kParticles[iParticleIndex].m_kEndColor.w * m_pkPSystemType->m_kParticleBehaviour.m_kEndColorRandom.w;
+
 		for ( int i = 0; i < 12; i += 4 )
 		{
-			m_pfColors[iClrIndex + i    ]	= m_pkPSystemType->m_kParticleBehaviour.m_kStartColor.r + 
-													  (( m_pkPSystemType->m_kParticleBehaviour.m_kEndColor.r - 
-													  m_pkPSystemType->m_kParticleBehaviour.m_kStartColor.r ) /
+			// Set startcolor
+
+			m_pfColors[iClrIndex + i    ]	= m_kParticles[iParticleIndex].m_kStartColor.x + 
+													  (( m_kParticles[iParticleIndex].m_kEndColor.x - 
+													  m_pkPSystemType->m_kParticleBehaviour.m_kStartColor.x ) /
 													  m_kParticles[iParticleIndex].m_fLifeTime * fTimeOffset);
 
-			m_pfColors[iClrIndex + i + 1] = m_pkPSystemType->m_kParticleBehaviour.m_kStartColor.g + 
-													  (( m_pkPSystemType->m_kParticleBehaviour.m_kEndColor.g - 
-													  m_pkPSystemType->m_kParticleBehaviour.m_kStartColor.g ) /
+			m_pfColors[iClrIndex + i + 1] = m_kParticles[iParticleIndex].m_kStartColor.y + 
+													  (( m_kParticles[iParticleIndex].m_kEndColor.y - 
+													  m_pkPSystemType->m_kParticleBehaviour.m_kStartColor.y ) /
 													  m_kParticles[iParticleIndex].m_fLifeTime * fTimeOffset);
 
-			m_pfColors[iClrIndex + i + 2] = m_pkPSystemType->m_kParticleBehaviour.m_kStartColor.b + 
-													  (( m_pkPSystemType->m_kParticleBehaviour.m_kEndColor.b - 
-													  m_pkPSystemType->m_kParticleBehaviour.m_kStartColor.b ) /
+			m_pfColors[iClrIndex + i + 2] = m_kParticles[iParticleIndex].m_kStartColor.z + 
+													  (( m_kParticles[iParticleIndex].m_kEndColor.z - 
+													  m_kParticles[iParticleIndex].m_kStartColor.z ) /
 													  m_kParticles[iParticleIndex].m_fLifeTime * fTimeOffset);
 
-			m_pfColors[iClrIndex + i + 3] = m_pkPSystemType->m_kParticleBehaviour.m_kStartColor.a + 
-													  (( m_pkPSystemType->m_kParticleBehaviour.m_kEndColor.a - 
-													  m_pkPSystemType->m_kParticleBehaviour.m_kStartColor.a ) /
+			m_pfColors[iClrIndex + i + 3] = m_kParticles[iParticleIndex].m_kStartColor.w + 
+													  (( m_kParticles[iParticleIndex].m_kEndColor.w - 
+													  m_kParticles[iParticleIndex].m_kStartColor.w ) /
 													  m_kParticles[iParticleIndex].m_fLifeTime * fTimeOffset);
-		
 		}
+	} // pfColor != 0
 
-
-	
 	m_kParticles[iParticleIndex].m_kForce = m_pkPSystemType->m_kParticleBehaviour.m_kForce;
-	
 	
 	Vector3 kRandomDir = m_pkPSystemType->m_kParticleBehaviour.m_kDirection;
 
@@ -359,8 +383,6 @@ void PSystem::ResetParticle (int iParticleIndex, float fTimeOffset)
    m_kParticles[iParticleIndex].m_kCenter += m_kRotation.VectorRotate ( Vector3 (m_pkPSystemType->m_kParticleBehaviour.m_kStartSize.x, 
                                                                         m_pkPSystemType->m_kParticleBehaviour.m_kStartSize.y, 
                                                                         m_pkPSystemType->m_kParticleBehaviour.m_kStartSize.x )) ;
-      
-
 }
 
 // ------------------------------------------------------------------------------------------

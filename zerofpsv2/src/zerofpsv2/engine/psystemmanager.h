@@ -9,10 +9,6 @@
 #include <map>
 	using namespace std;
 
-struct rgba {
-	float r, g, b, a;
-};
-
 //
 
 struct v2 {
@@ -62,9 +58,11 @@ struct ParticleTypeData
 
 	ZFResourceHandle* m_pkMaterial;	
 
-	rgba 
+	Vector4 
 		m_kStartColor,
-		m_kEndColor;
+		m_kEndColor,
+		m_kStartColorRandom,
+		m_kEndColorRandom;
 	
 	float 
 		m_fLifeTime,

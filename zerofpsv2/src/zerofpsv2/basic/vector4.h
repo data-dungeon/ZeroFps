@@ -29,7 +29,14 @@ class BASIC_API Vector4 {
 			w=kOtherV4.w;	
 			return *this;
 			}
-
+		
+		Vector4& operator=(const int &iEquals) {
+			x=iEquals;
+			y=iEquals;
+			z=iEquals;
+			w=iEquals;
+			return *this;
+			}
 		Vector4& operator=(const Vector3 &kOtherV3);
 
 		void Set(float fX, float fY, float fZ,float fW) {

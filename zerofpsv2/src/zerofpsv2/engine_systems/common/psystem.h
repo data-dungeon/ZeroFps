@@ -4,6 +4,7 @@
 #include "../propertys/psproperties/particleproperty.h"
 
 #include "../../basic/vector3.h"
+#include "../../basic/vector4.h"
 #include "../../basic/matrix4.h"
 #include "../../basic/vector2.h"
 #include "../../engine/zerofps.h"
@@ -27,6 +28,9 @@ struct Particle
 	Vector2 m_kSize;
 	Vector2 m_kEndSize;
 	Vector2 m_kStartSize;
+
+	Vector4 m_kStartColor;
+	Vector4 m_kEndColor;
 
 	float m_fAge;
 	float m_fLifeTime;

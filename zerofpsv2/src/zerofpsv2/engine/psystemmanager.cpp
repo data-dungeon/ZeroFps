@@ -235,48 +235,77 @@ bool PSystemManager::LoadData ( PSystemType *pkPSType )
 
 	// Start RGBA
 	if( m_kIniLoader.KeyExist("start_color", "r") )
-		pkPSType->m_kParticleBehaviour.m_kStartColor.r = m_kIniLoader.GetFloatValue("start_color", "r");
+		pkPSType->m_kParticleBehaviour.m_kStartColor.x = m_kIniLoader.GetFloatValue("start_color", "r");
 	else
-		pkPSType->m_kParticleBehaviour.m_kStartColor.r = 1;
+		pkPSType->m_kParticleBehaviour.m_kStartColor.x = 1;
 
 	if( m_kIniLoader.KeyExist("start_color", "g") )
-		pkPSType->m_kParticleBehaviour.m_kStartColor.g = m_kIniLoader.GetFloatValue("start_color", "g");
+		pkPSType->m_kParticleBehaviour.m_kStartColor.y = m_kIniLoader.GetFloatValue("start_color", "g");
 	else
-		pkPSType->m_kParticleBehaviour.m_kStartColor.g = 1;
+		pkPSType->m_kParticleBehaviour.m_kStartColor.y = 1;
 
 	if( m_kIniLoader.KeyExist("start_color", "b") )
-		pkPSType->m_kParticleBehaviour.m_kStartColor.b = m_kIniLoader.GetFloatValue("start_color", "b");
+		pkPSType->m_kParticleBehaviour.m_kStartColor.z = m_kIniLoader.GetFloatValue("start_color", "b");
 	else
-		pkPSType->m_kParticleBehaviour.m_kStartColor.b = 1;
+		pkPSType->m_kParticleBehaviour.m_kStartColor.z = 1;
 
 	if( m_kIniLoader.KeyExist("start_color", "a") )
-		pkPSType->m_kParticleBehaviour.m_kStartColor.a = m_kIniLoader.GetFloatValue("start_color", "a");
+		pkPSType->m_kParticleBehaviour.m_kStartColor.w = m_kIniLoader.GetFloatValue("start_color", "a");
 	else
-		pkPSType->m_kParticleBehaviour.m_kStartColor.a = 1;
+		pkPSType->m_kParticleBehaviour.m_kStartColor.w = 1;
 	
+	// Start RGB Random
+	pkPSType->m_kParticleBehaviour.m_kStartColorRandom = 0;
+
+	if( m_kIniLoader.KeyExist("start_color", "random") )
+		pkPSType->m_kParticleBehaviour.m_kStartColorRandom = m_kIniLoader.GetFloatValue("start_color", "random");
+
+	if( m_kIniLoader.KeyExist("start_color", "random_r") )
+		pkPSType->m_kParticleBehaviour.m_kStartColorRandom.x = m_kIniLoader.GetFloatValue("start_color", "random_r");
+	if( m_kIniLoader.KeyExist("start_color", "random_g") )
+		pkPSType->m_kParticleBehaviour.m_kStartColorRandom.y = m_kIniLoader.GetFloatValue("start_color", "random_g");
+	if( m_kIniLoader.KeyExist("start_color", "random_b") )
+		pkPSType->m_kParticleBehaviour.m_kStartColorRandom.z = m_kIniLoader.GetFloatValue("start_color", "random_b");
+	if( m_kIniLoader.KeyExist("start_color", "random_a") )
+		pkPSType->m_kParticleBehaviour.m_kStartColorRandom.w = m_kIniLoader.GetFloatValue("start_color", "random_a");
 
 
 	// End RGBA
 	if( m_kIniLoader.KeyExist("end_color", "r") )
-		pkPSType->m_kParticleBehaviour.m_kEndColor.r = m_kIniLoader.GetFloatValue("end_color", "r");
+		pkPSType->m_kParticleBehaviour.m_kEndColor.x = m_kIniLoader.GetFloatValue("end_color", "r");
 	else
-		pkPSType->m_kParticleBehaviour.m_kEndColor.r = pkPSType->m_kParticleBehaviour.m_kStartColor.r;
+		pkPSType->m_kParticleBehaviour.m_kEndColor.x = pkPSType->m_kParticleBehaviour.m_kStartColor.x;
 
 	if( m_kIniLoader.KeyExist("end_color", "g") )
-		pkPSType->m_kParticleBehaviour.m_kEndColor.g = m_kIniLoader.GetFloatValue("end_color", "g");
+		pkPSType->m_kParticleBehaviour.m_kEndColor.y = m_kIniLoader.GetFloatValue("end_color", "g");
 	else
-		pkPSType->m_kParticleBehaviour.m_kEndColor.g = pkPSType->m_kParticleBehaviour.m_kStartColor.g;
+		pkPSType->m_kParticleBehaviour.m_kEndColor.y = pkPSType->m_kParticleBehaviour.m_kStartColor.y;
 
 	if( m_kIniLoader.KeyExist("end_color", "b") )
-		pkPSType->m_kParticleBehaviour.m_kEndColor.b = m_kIniLoader.GetFloatValue("end_color", "b");
+		pkPSType->m_kParticleBehaviour.m_kEndColor.z = m_kIniLoader.GetFloatValue("end_color", "b");
 	else
-		pkPSType->m_kParticleBehaviour.m_kEndColor.b = pkPSType->m_kParticleBehaviour.m_kStartColor.b;
+		pkPSType->m_kParticleBehaviour.m_kEndColor.z = pkPSType->m_kParticleBehaviour.m_kStartColor.z;
 
 	if( m_kIniLoader.KeyExist("end_color", "a") )
-		pkPSType->m_kParticleBehaviour.m_kEndColor.a = m_kIniLoader.GetFloatValue("end_color", "a");
+		pkPSType->m_kParticleBehaviour.m_kEndColor.w = m_kIniLoader.GetFloatValue("end_color", "a");
 	else
-		pkPSType->m_kParticleBehaviour.m_kEndColor.a = pkPSType->m_kParticleBehaviour.m_kStartColor.a;
+		pkPSType->m_kParticleBehaviour.m_kEndColor.w = pkPSType->m_kParticleBehaviour.m_kStartColor.w;
 
+	// End RGB Random
+	pkPSType->m_kParticleBehaviour.m_kEndColorRandom = 0;
+
+	if( m_kIniLoader.KeyExist("end_color", "random") )
+	{
+		pkPSType->m_kParticleBehaviour.m_kStartColorRandom = m_kIniLoader.GetFloatValue("end_color", "random");
+	}
+	if( m_kIniLoader.KeyExist("end_color", "random_r") )
+		pkPSType->m_kParticleBehaviour.m_kEndColorRandom.x = m_kIniLoader.GetFloatValue("end_color", "random_r");
+	if( m_kIniLoader.KeyExist("end_color", "random_g") )
+		pkPSType->m_kParticleBehaviour.m_kEndColorRandom.y = m_kIniLoader.GetFloatValue("end_color", "random_g");
+	if( m_kIniLoader.KeyExist("end_color", "random_b") )
+		pkPSType->m_kParticleBehaviour.m_kEndColorRandom.z = m_kIniLoader.GetFloatValue("end_color", "random_b");
+	if( m_kIniLoader.KeyExist("end_color", "random_a") )
+		pkPSType->m_kParticleBehaviour.m_kEndColorRandom.w = m_kIniLoader.GetFloatValue("end_color", "random_a");
 
 
 	// Start area, (random size start area)
@@ -505,14 +534,14 @@ bool PSystemManager::LoadData ( PSystemType *pkPSType )
 void PSystemManager::SetProperties ( PSystemType *pkPSType )
 {
 	// color
-	if ( pkPSType->m_kParticleBehaviour.m_kStartColor.r != 1 || 
-		  pkPSType->m_kParticleBehaviour.m_kEndColor.r   != 1 ||
-		  pkPSType->m_kParticleBehaviour.m_kStartColor.g != 1 || 
-		  pkPSType->m_kParticleBehaviour.m_kEndColor.g   != 1 ||
-		  pkPSType->m_kParticleBehaviour.m_kStartColor.b != 1 ||
-		  pkPSType->m_kParticleBehaviour.m_kEndColor.b   != 1 ||
-		  pkPSType->m_kParticleBehaviour.m_kStartColor.a != 1 || 
-		  pkPSType->m_kParticleBehaviour.m_kEndColor.a   != 1  )
+	if ( pkPSType->m_kParticleBehaviour.m_kStartColor.x != 1 || 
+		  pkPSType->m_kParticleBehaviour.m_kEndColor.x   != 1 ||
+		  pkPSType->m_kParticleBehaviour.m_kStartColor.y != 1 || 
+		  pkPSType->m_kParticleBehaviour.m_kEndColor.y   != 1 ||
+		  pkPSType->m_kParticleBehaviour.m_kStartColor.z != 1 ||
+		  pkPSType->m_kParticleBehaviour.m_kEndColor.z   != 1 ||
+		  pkPSType->m_kParticleBehaviour.m_kStartColor.w != 1 || 
+		  pkPSType->m_kParticleBehaviour.m_kEndColor.w   != 1  )
 		pkPSType->m_kPSystemBehaviour.m_kProperties.push_back ("Color");
 
 	// size

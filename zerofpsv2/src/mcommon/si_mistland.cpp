@@ -355,7 +355,6 @@ int MistLandLua::RotateTowardsLua(lua_State* pkLua)
 			Matrix4 kRot;
 			kRot.LookDir(kPos - pkEnt->GetWorldPosV(),Vector3(0,1,0));			
 			kRot.Transponse();
-			
 			pkEnt->SetLocalRotM(kRot);
 		}
 		return 0;

@@ -45,9 +45,9 @@ void MovePSProp::Update()
 	kRightVect.Set(afM[0], afM[4], afM[8]); // right_vector
 	kUpVect.Set(afM[1], afM[5], afM[9]); // up_vector
 
-	a = kUpVect;
-   b = -kUpVect + kRightVect;
-   c = -kUpVect - kRightVect;
+	a = kUpVect/2 + kRightVect/2;
+   b = -kUpVect/2 + kRightVect;
+   c = -kUpVect/2 - kRightVect;
 
 	// which dimesions to billboard
 	if ( !m_pkParent->m_pkPSystemType->m_kParticleBehaviour.m_bBillBoardY )
