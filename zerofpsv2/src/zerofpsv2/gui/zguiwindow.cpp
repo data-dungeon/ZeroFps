@@ -69,8 +69,8 @@ ZGuiWnd::ZGuiWnd(Rect kRectangle, ZGuiWnd* pkParent, bool bVisible, int iID)
 
 	//afBkColorBuffer[0]=afBkColorBuffer[1]=afBkColorBuffer[2]=-1.0f;
 
-	m_bUseClipper = false;
-	m_kClipperArea = Rect(0,0,800,600);
+	m_bUseClipper = false;  
+   m_kClipperArea = Rect(0,0,ZGui::m_iResX,ZGui::m_iResY);
 
 	m_bResizeHorz = true;
 	m_bResizeVert = true;
@@ -229,12 +229,15 @@ void ZGuiWnd::UpdatePos(int iPrevPosX, int iPrevPosY, int w, int h,
 		m_kMoveArea.Bottom += iOffsetY;
 	}
 
+   int iNumChildrens = m_kChildList.size();
+
 	// Move childrens
 	for( WINit win = m_kChildList.begin();
 		 win != m_kChildList.end(); win++)
 		 {
-			 Rect rc = (*win)->GetScreenRect();
-			 (*win)->SetPos(rc.Left+iOffsetX, rc.Top+iOffsetY, true, true); 
+          ZGuiWnd* pkWnd = (*win);
+			 Rect rc = pkWnd->GetScreenRect();
+			 pkWnd->SetPos(rc.Left+iOffsetX, rc.Top+iOffsetY, true, true); 
 		 }
 }
 

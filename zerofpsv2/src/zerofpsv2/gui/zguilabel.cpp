@@ -31,12 +31,12 @@ bool ZGuiLabel::Render( ZGuiRender* pkRenderer )
 	pkRenderer->RenderQuad(GetScreenRect()); 
 	pkRenderer->RenderBorder(GetScreenRect()); 
 
-	if(m_pkGUI)
-	{
-		int curr_res_x, curr_res_y;
-		m_pkGUI->GetResolution(curr_res_x, curr_res_y);
+//	if(m_pkGUI)
+//	{
+//		int curr_res_x, curr_res_y;
+//		m_pkGUI->GetResolution(curr_res_x, curr_res_y);
 //		Rescale(m_iResolutionX, m_iResolutionY, curr_res_x, curr_res_y);
-	}
+//	}
 
 	if(m_strText != NULL)
 	{

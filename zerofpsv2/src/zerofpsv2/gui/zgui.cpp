@@ -19,8 +19,8 @@
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 
-int ZGui::m_iResX = 1024;
-int ZGui::m_iResY = 768;
+int ZGui::m_iResX = 800; //1024;
+int ZGui::m_iResY = 600; //768;
 
 ZGui::ZGui(int iResX, int iResY) : ZFSubSystem("Gui") 
 {
@@ -841,7 +841,10 @@ bool ZGui::MouseHoverWnd()
 
 void ZGui::GetResolution(int& res_x, int& res_y)
 {
-	m_pkRenderer->GetScreenSize(res_x, res_y);
+   res_x = m_iResX;
+   res_y = m_iResY;
+
+	//m_pkRenderer->GetScreenSize(res_x, res_y);
 }
 
 ZGuiWnd* ZGui::GetMainWindowFromPoint(int x, int y)

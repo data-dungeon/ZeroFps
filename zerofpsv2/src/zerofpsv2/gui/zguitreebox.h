@@ -74,7 +74,7 @@ public:
 
 	//bool Rescale(int iOldWidth, int iOldHeight, int iNewWidth, int iNewHeight);
 
-	bool SetPos(int x, int y, bool bScreenSpace, bool bFreeMovement); // overloaded
+	bool SetPos(int x, int y, bool bScreenSpace=false, bool bFreeMovement=false); // overloaded
 
 	void Resize(int Width, int Height, bool bChangeMoveArea=true); // overloaded
 

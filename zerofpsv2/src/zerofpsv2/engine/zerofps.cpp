@@ -37,13 +37,26 @@ ZeroFps::ZeroFps(void) : I_ZeroFps("ZeroFps")
 		g_Logf("Error: Failed to StartUp SDL\n");
 	}	
 
+   int iScreenWidth=800, iScreenHeight=600;
+
+   // GUI:t behöver veta dimensionen på skärmen...
+	ZFIni kINI;
+   char szINIFile[256];
+   sprintf(szINIFile, "%s.ini", Application::m_pkApp->m_pTitle);
+	if(kINI.Open(szINIFile, false)) 
+   {
+		iScreenWidth = kINI.GetIntValue("Render", "r_width");
+      iScreenHeight = kINI.GetIntValue("Render", "r_height");
+		kINI.Close();
+	}
+
 	// Create Engine SubSystems 
 	m_pkAStar					= new AStar;
 	m_pkZShader					= new ZShader;
 	m_pkObjectMan				= new EntityManager;
 	m_pkResourceDB				= new ZFResourceDB;
 	m_pkIni						= new ZFIni;
-	m_pkGui						= new ZGui(Application::m_pkApp->m_iWidth, Application::m_pkApp->m_iHeight);
+	m_pkGui						= new ZGui(iScreenWidth, iScreenHeight);
 	m_pkGuiMan					= new ZGuiResourceManager;
 	m_pkGuiRenderer			= new GLGuiRender;
 	m_pkNetWork					= new NetWork;
