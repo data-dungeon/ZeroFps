@@ -136,7 +136,6 @@ private:
 	int						m_iMaxSendSize;						// max bytes to send to client per frame
 
 	vector<RemoteNode>	m_RemoteNodes;							// Data About all our remote connections.
-	IPaddress				m_kServerAddress;						// Ip of the server we are conencted to.
 	char						m_szAddressBuffer[256];				// Used to convert/print address.
 
 	float						m_fStatsUpdate;
@@ -160,6 +159,7 @@ public:
 	string	GetLocalIP();			
 	NetWorkStatus			m_eNetStatus;
 //	vector<RemoteNode>	m_akClients;
+	IPaddress				m_kServerAddress;						// Ip of the server we are conencted to.
 
 	NetWork();
 	~NetWork();

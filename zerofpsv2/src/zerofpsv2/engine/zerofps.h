@@ -67,7 +67,7 @@ enum enginestates
 #define ZFGP_GETSTATICDATA		9
 #define ZFGP_STATICDATA			10
 #define ZFGP_COMMAND			12
-
+#define ZFGP_EDIT				13
 
 #define	ZFGP_ENDOFPACKET		128
 
@@ -172,6 +172,7 @@ class ENGINE_API ZeroFps : public I_ZeroFps {
 		void SetApp(void);
 		void Swap(void);											//	swap gl buffers		
 		void HandleNetworkPacket(NetPacket* pkNetPacket);
+	
 		void RegisterPropertys();
 		void RegisterResources();
 		void GetEngineCredits(vector<string>& kCreditsStrings);
@@ -301,7 +302,9 @@ class ENGINE_API ZeroFps : public I_ZeroFps {
 		int	GetConnectionID() {	return m_iServerConnection;	};		///< Return our Connection Num on the Server.
 		int	GetMaxPlayers() {return m_iMaxPlayers;};
 		
-		
+		void HandleEditCommand(NetPacket* pkNetPacket);						
+		void RouteEditCommand(NetPacket* pkNetPacket);						
+	
 		friend class NetWork;
 };
 

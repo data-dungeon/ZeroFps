@@ -1152,6 +1152,10 @@ void ZeroFps::HandleNetworkPacket(NetPacket* pkNetPacket)
 				m_pkObjectMan->StaticData(pkNetPacket->m_iClientID, pkNetPacket);
 				break;
 
+			case ZFGP_EDIT:
+				HandleEditCommand(pkNetPacket);
+				break;
+
 			default:
 				cout << "Error in game packet : " << (int) ucGamePacketType << endl;
 				return;
@@ -1159,6 +1163,104 @@ void ZeroFps::HandleNetworkPacket(NetPacket* pkNetPacket)
 
 		pkNetPacket->Read(ucGamePacketType);
 		}
+}
+
+void ZeroFps::HandleEditCommand(NetPacket* pkNetPacket)
+{
+	char szCmd[512];
+	Vector3 kPos;
+	int iEntId;
+	Vector3 kMove;
+
+	pkNetPacket->Read_Str(szCmd);
+
+	if ( szCmd == string("spawn"))
+	{
+		pkNetPacket->Read_Str(szCmd);
+		pkNetPacket->Read(kPos);
+		m_pkObjectMan->CreateObjectFromScriptInZone( szCmd, kPos);
+	}
+
+	if( szCmd == string("move"))
+	{
+		pkNetPacket->Read(iEntId);
+		pkNetPacket->Read(kMove);
+		Entity* pkObj = m_pkObjectMan->GetObjectByNetWorkID(iEntId);								
+		if(!pkObj)
+			return;	
+		pkObj->SetLocalPosV(pkObj->GetLocalPosV() + kMove);
+	}
+
+	if( szCmd == string("setpos"))
+	{
+		pkNetPacket->Read(iEntId);
+		pkNetPacket->Read(kMove);
+		Entity* pkObj = m_pkObjectMan->GetObjectByNetWorkID(iEntId);								
+		if(!pkObj)
+			return;	
+		pkObj->SetLocalPosV(kMove);
+	}
+
+	if( szCmd == string("rot"))
+	{
+		pkNetPacket->Read(iEntId);
+		pkNetPacket->Read(kMove);
+		Entity* pkObj = m_pkObjectMan->GetObjectByNetWorkID(iEntId);								
+		if(!pkObj)
+			return;	
+		pkObj->RotateLocalRotV(kMove);
+	}
+
+	if( szCmd == string("del"))
+	{
+		int iNumOfId;
+		pkNetPacket->Read(iNumOfId);
+//		Entity* pkObj = m_pkObjectMan->GetObjectByNetWorkID(iEntId);								
+//		if(!pkObj)
+//			return;	
+		iEntId = 0;
+
+		for(int i=0; i<iNumOfId; i++) 
+		{
+			pkNetPacket->Read(iEntId);
+			Entity* pkEntity = m_pkObjectMan->GetObjectByNetWorkID(iEntId);
+			if(!pkEntity)	continue;
+			cout << " " << pkEntity->GetEntityID() << " - '" << pkEntity->GetType() << "' - '" << pkEntity->GetName() << "'" <<endl;
+			if(pkEntity->GetName() == string("ZoneObject"))
+			{
+				int iZoneID = m_pkObjectMan->GetZoneIndex( pkEntity->GetEntityID() );
+				m_pkObjectMan->DeleteZone(iZoneID);
+				cout << "Delete zone " << iZoneID << endl;
+			}
+			else
+				m_pkObjectMan->Delete(pkEntity->GetEntityID());	
+		}
+	}
+}
+
+
+/*
+	This function checks if the command for the editor should run localy (we are the server) or be sent over the
+	network (we are connected to a server).
+*/
+void ZeroFps::RouteEditCommand(NetPacket* pkNetPacket)
+{
+	pkNetPacket->m_kData.m_kHeader.m_iPacketType = ZF_NETTYPE_UNREL;
+	pkNetPacket->Write((char)ZFGP_ENDOFPACKET);
+	pkNetPacket->m_iPos = 0;
+
+	char cEcmd;
+
+	if(m_bServerMode)
+	{
+		pkNetPacket->Read(cEcmd);
+		HandleEditCommand(pkNetPacket);
+	}
+	else
+	{
+		pkNetPacket->TargetSetClient(ZF_NET_ALLCLIENT);
+		m_pkNetWork->Send2(pkNetPacket);
+	}
 }
 
 void ZeroFps::RegisterResources()

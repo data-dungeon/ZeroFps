@@ -500,10 +500,19 @@ void ZeroEd::DeleteSelected()
 {
 	if(m_SelectedEntitys.size() == 0)	return;
 
+	NetPacket kNp;
+	kNp.Clear();
+	kNp.Write((char) ZFGP_EDIT);
+	kNp.Write_Str("del");
+	kNp.Write((int) m_SelectedEntitys.size());
+
 	cout << "Delete Selected: ID, Type, Name" << endl;
 	for(set<int>::iterator itEntity = m_SelectedEntitys.begin(); itEntity != m_SelectedEntitys.end(); itEntity++ ) 
 	{
-		Entity* pkEntity = m_pkObjectMan->GetObjectByNetWorkID((*itEntity));
+		int iId = (*itEntity);
+		kNp.Write((int)iId);
+
+	/*	Entity* pkEntity = m_pkObjectMan->GetObjectByNetWorkID((*itEntity));
 		if(!pkEntity)	continue;
 	
 		cout << " " << pkEntity->GetEntityID() << " - '" << pkEntity->GetType() << "' - '" << pkEntity->GetName() << "'" <<endl;
@@ -524,8 +533,9 @@ void ZeroEd::DeleteSelected()
 			cout << "Delete zone " << iZoneID << endl;
 		}
 		else
-			m_pkObjectMan->Delete(pkEntity->GetEntityID());		
+			m_pkObjectMan->Delete(pkEntity->GetEntityID());		*/
 	}
+	m_pkFps->RouteEditCommand(&kNp);
 
 	m_SelectedEntitys.clear();
 	m_iCurrentObject = -1;
@@ -795,6 +805,8 @@ void ZeroEd::Input_EditObject(float fMouseX, float fMouseY)
 	if(m_pkInputHandle->VKIsDown("copy"))	EditRunCommand(FID_COPY);
 	if(m_pkInputHandle->VKIsDown("paste"))	EditRunCommand(FID_PASTE);
 
+	NetPacket kNp;
+
 	if(m_pkInputHandle->Pressed(MOUSELEFT) && !DelayCommand() )
 	{
 		/*
@@ -803,12 +815,19 @@ void ZeroEd::Input_EditObject(float fMouseX, float fMouseY)
 		pkObj->SetParent(m_pkObjectMan->GetObjectByNetWorkID(
 			m_pkObjectMan->GetZoneData(m_iCurrentMarkedZone)->m_iZoneID));
 		*/
-		Entity* pkObj = m_pkObjectMan->CreateObjectFromScriptInZone(m_strActiveObjectName.c_str(), m_kObjectMarkerPos);
+		kNp.Write((char) ZFGP_EDIT);
+		kNp.Write_Str("spawn");
+		kNp.Write_Str(m_strActiveObjectName.c_str());
+		kNp.Write(m_kObjectMarkerPos);
+		m_pkFps->RouteEditCommand(&kNp);
+
+		/*Entity* pkObj = m_pkObjectMan->CreateObjectFromScriptInZone(m_strActiveObjectName.c_str(), m_kObjectMarkerPos);
 
 		if(pkObj)
 			if(m_bPlaceObjectsOnGround)
 				if(pkObj->GetCurrentZone() != -1)
 					PlaceObjectOnGround(pkObj->GetEntityID());
+		*/
 	}
 	
 	if(m_pkInputHandle->VKIsDown("selectzone") && !DelayCommand())
@@ -858,7 +877,14 @@ void ZeroEd::Input_EditObject(float fMouseX, float fMouseY)
 				pkObj->GetLocalPosV().PEP(kAxisZ);
 			}
 
-		pkObj->SetLocalPosV( m_pkActiveCamera->SnapToGrid(kMove) );
+		kMove = m_pkActiveCamera->SnapToGrid(kMove);
+		kNp.Clear();
+		kNp.Write((char) ZFGP_EDIT);
+		kNp.Write_Str("setpos");
+		kNp.Write(m_iCurrentObject);
+		kNp.Write(kMove);
+		m_pkFps->RouteEditCommand(&kNp);
+		//pkObj->SetLocalPosV( m_pkActiveCamera->SnapToGrid(kMove) );
 	}
 	else 
 	{
@@ -875,7 +901,14 @@ void ZeroEd::Input_EditObject(float fMouseX, float fMouseY)
 			kMove += m_pkActiveCamera->GetOrthoMove( Vector3(fMouseX, fMouseY,0) );
 		}
 
-		pkObj->SetLocalPosV(pkObj->GetLocalPosV() + kMove);
+		kNp.Clear();
+		kNp.Write((char) ZFGP_EDIT);
+		kNp.Write_Str("move");
+		kNp.Write(m_iCurrentObject);
+		kNp.Write(kMove);
+		m_pkFps->RouteEditCommand(&kNp);
+
+		//pkObj->SetLocalPosV(pkObj->GetLocalPosV() + kMove);
 	}
 
 /*	if(m_pkInputHandle->VKIsDown("rotent")) 
@@ -884,12 +917,29 @@ void ZeroEd::Input_EditObject(float fMouseX, float fMouseY)
 	}*/
 
 	// Rotate Selected Entity
+	/*
 	if(m_pkInputHandle->VKIsDown("rotx+"))			pkObj->RotateLocalRotV(Vector3(100*m_pkFps->GetFrameTime(),0,0));			
 	if(m_pkInputHandle->VKIsDown("rotx-"))			pkObj->RotateLocalRotV(Vector3(-100*m_pkFps->GetFrameTime(),0,0));			
 	if(m_pkInputHandle->VKIsDown("roty+"))			pkObj->RotateLocalRotV(Vector3(0,100*m_pkFps->GetFrameTime(),0));			
 	if(m_pkInputHandle->VKIsDown("roty-"))			pkObj->RotateLocalRotV(Vector3(0,-100*m_pkFps->GetFrameTime(),0));			
 	if(m_pkInputHandle->VKIsDown("rotz+"))			pkObj->RotateLocalRotV(Vector3(0,0,100*m_pkFps->GetFrameTime()));			
 	if(m_pkInputHandle->VKIsDown("rotz-"))			pkObj->RotateLocalRotV(Vector3(0,0,-100*m_pkFps->GetFrameTime()));			
+	*/
+	kMove.Set(0,0,0);
+	if(m_pkInputHandle->VKIsDown("rotx+"))			kMove.x = 100*m_pkFps->GetFrameTime();		
+	if(m_pkInputHandle->VKIsDown("rotx-"))			kMove.x = -100*m_pkFps->GetFrameTime();			
+	if(m_pkInputHandle->VKIsDown("roty+"))			kMove.y = 100*m_pkFps->GetFrameTime();			
+	if(m_pkInputHandle->VKIsDown("roty-"))			kMove.y = -100*m_pkFps->GetFrameTime();			
+	if(m_pkInputHandle->VKIsDown("rotz+"))			kMove.z = 100*m_pkFps->GetFrameTime();			
+	if(m_pkInputHandle->VKIsDown("rotz-"))			kMove.z = -100*m_pkFps->GetFrameTime();			
+
+	kNp.Clear();
+	kNp.Write((char) ZFGP_EDIT);
+	kNp.Write_Str("rot");
+	kNp.Write(m_iCurrentObject);
+	kNp.Write(kMove);
+	m_pkFps->RouteEditCommand(&kNp);
+
 }
 
 void ZeroEd::Input_Camera(float fMouseX, float fMouseY)
