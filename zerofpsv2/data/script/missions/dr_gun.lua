@@ -11,6 +11,7 @@ NumCivilians = 0
 NumCiviliansWounded = 0
 CivWounded = {} -- lista på vilka civilians som har blivit skadade
 InjureList = {} -- en annan lista som söks igenom för att se om några skadeskjutna civila har dött
+HQObject = -1
 
 MissionText = 
 { 
@@ -43,6 +44,10 @@ function OnMissionStart()
 		counter = counter + 1
 	end
 
+	HQObject = GetDMObject(0)
+
+	Print("----- HQ object = ", HQObject)
+
 end
 
 function OnMissionSuccess()
@@ -54,6 +59,16 @@ end
 function OnMissionFailed()
 
 
+
+end
+
+function SendObjectToHospitle(object)
+
+	Print( "Sendin object: ", object, " to hosptile")
+
+	local hq_pos = GetEntityPos(HQObject)
+
+	MakePathFind(HQObject, hq_pos)
 
 end
 
@@ -78,6 +93,8 @@ function IsMissionDone()
 				InjureList[NumCiviliansWounded] = obj -- lägg till till lista över skadeskjutna gubbar
 
 				NumCiviliansWounded = NumCiviliansWounded + 1 -- öka antalet skadade personer
+
+				SendObjectToHospitle(obj)
 			end
 
 		end
@@ -110,7 +127,7 @@ function IsMissionDone()
 
 	Print("Person wounded: ", NumCiviliansWounded)
 
-	if NumCiviliansWounded == 3 then
+	if NumCiviliansWounded == 5 then
 
 		MissionInfo.success = 1 -- Uppdraget har lyckats!
 
@@ -123,3 +140,4 @@ function IsMissionFailed()
 
 
 end
+

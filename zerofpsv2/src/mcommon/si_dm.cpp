@@ -24,7 +24,6 @@ void DMLua::Init(EntityManager* pkObjMan,ZFScriptSystem* pkScript)
 	pkScript->ExposeFunction("GetDMCharacterByName", DMLua::GetDMCharacterByNameLua);
 	pkScript->ExposeFunction("SetDMCharacterName", DMLua::SetDMCharacterNameLua);
 	pkScript->ExposeFunction("GetDMCharacterClosest", DMLua::GetDMCharacterClosestLua);
-	//pkScript->ExposeFunction("SetNewMission", DMLua::SetNewMissionLua);
 
 	// character functions
 	pkScript->ExposeFunction("KillCharacter", DMLua::KillCharacterLua);
@@ -82,6 +81,7 @@ void DMLua::Init(EntityManager* pkObjMan,ZFScriptSystem* pkScript)
 	pkScript->ExposeFunction("SetEntityVar", DMLua::SetEntityVarLua);	
 	pkScript->ExposeFunction("GetEntityVar", DMLua::GetEntityVarLua);
 	pkScript->ExposeFunction("AddToEntityVar", DMLua::AddToEntityVarLua);
+	pkScript->ExposeFunction("GetEntityPos", DMLua::GetEntityPosLua);
 
 	// Item bonuses
 	pkScript->ExposeFunction("SetItemArmourBonus", DMLua::SetItemArmourLua);
@@ -101,6 +101,7 @@ void DMLua::Init(EntityManager* pkObjMan,ZFScriptSystem* pkScript)
 
 	// hmm... team related
 	pkScript->ExposeFunction("GetCharsByFraction", DMLua::GetCharsByFractionLua);
+	pkScript->ExposeFunction("GetDMObject", DMLua::GetDMObjectLua);
 	
 	cout << "DM LUA Scripts Loaded" << endl;
 
@@ -201,42 +202,6 @@ int DMLua::GetDMCharacterClosestLua(lua_State* pkLua)
 
 	return 1; // this function returns one (1) argument
 }
-// ------------------------------------------------------------------------------------------------
-
-//int DMLua::SetNewMissionLua(lua_State* pkLua)
-//{
-//	if( g_pkScript->GetNumArgs(pkLua) == 1 )
-//	{
-//		char szName[256];
-//		P_DMMission* pkMissionProp = NULL;
-//	
-//		g_pkScript->GetArgString(pkLua, 0, szName);
-//
-//		Entity* pkGlobal = g_pkObjMan->GetGlobalObject();
-//
-//		vector<Entity*> kObjects;
-//		pkGlobal->GetAllEntitys(&kObjects);
-//
-//		for(unsigned int i=0;i<kObjects.size();i++)
-//			if(kObjects[i]->GetProperty("P_DMGameInfo"))
-//			{
-//				pkMissionProp = (P_DMMission*) kObjects[i]->GetProperty("P_DMMission");
-//				break;
-//			}
-//
-//		if(pkMissionProp == NULL)
-//		{
-//			printf("Failed to change mission, failed to find property\n");
-//			return 0;
-//		}
-//
-//		pkMissionProp->SetCurrentMission( szName);
-//	}
-//
-//	return 0; // this function returns zero (0) argument
-//}
-
-// ------------------------------------------------------------------------------------------------
 
 int DMLua::GetNumOfLivingAgentsLua(lua_State* pkLua)
 {
@@ -1819,5 +1784,95 @@ int DMLua::GetCharsByFractionLua(lua_State* pkLua)
 
 	g_pkScript->AddReturnValueTable(pkLua, vkData);
 
+	return 1;
+}
+
+// ------------------------------------------------------------------------------------------------
+// takes entityID (double) 
+// returns a table with 3 numbers (pos vector)
+// if the function fails the x,y and z pos is -99999
+int DMLua::GetEntityPosLua (lua_State* pkLua)
+{
+	double xPos=-99999, yPos=-99999, zPos=-99999;
+	double dEntID;	
+	
+	if ( g_pkScript->GetNumArgs(pkLua) == 1 )
+	{
+		if( g_pkScript->GetArgNumber(pkLua, 0, &dEntID) )
+		{
+			Entity* pkEnt = g_pkObjMan->GetObjectByNetWorkID(dEntID);
+
+			if(pkEnt != NULL)
+			{
+				xPos = pkEnt->GetWorldPosV().x;
+				yPos = pkEnt->GetWorldPosV().y;
+				zPos = pkEnt->GetWorldPosV().z;
+			}
+		}
+	}
+
+	vector<TABLE_DATA> vkData;
+	TABLE_DATA temp;
+
+	temp.bNumber = true;
+	temp.pData = new double;
+	(*(double*) temp.pData) = (double) xPos;
+	vkData.insert(vkData.begin(), temp);
+
+	temp.bNumber = true;
+	temp.pData = new double;
+	(*(double*) temp.pData) = (double) yPos;
+	vkData.insert(vkData.begin(), temp);
+
+	temp.bNumber = true;
+	temp.pData = new double;
+	(*(double*) temp.pData) = (double) zPos;
+	vkData.insert(vkData.begin(), temp);
+
+	g_pkScript->AddReturnValueTable(pkLua, vkData);
+
+	return 1;
+
+}
+
+// ------------------------------------------------------------------------------------------------
+//
+// Tar ett nummer, returnerar Entity ID på ett object eller -1 om inget finns.
+// 0 = HQ
+//
+int DMLua::GetDMObjectLua(lua_State* pkLua)
+{
+	double dObjectType = -1;
+	double dEntID = -1;
+
+	if ( g_pkScript->GetNumArgs(pkLua) == 1 )
+	{
+		if( g_pkScript->GetArgNumber(pkLua, 0, &dObjectType) )
+		{
+			vector<Entity*> kObjs;
+			g_pkObjMan->GetAllObjects(&kObjs);
+
+			unsigned int i;
+
+			switch((int)dObjectType)
+			{
+			case 0: // HQ
+
+				for ( i = 0; i < kObjs.size(); i++ )
+				{
+					P_DMHQ* pkHQProperty = (P_DMHQ*)kObjs[i]->GetProperty("P_DMHQ");
+					if(pkHQProperty && pkHQProperty->GetActive())
+					{
+						dEntID = (double)kObjs[i]->GetEntityID();
+						break;
+					}
+				}
+
+				break;
+			}
+		}
+	}
+
+	g_pkScript->AddReturnValue( pkLua, dEntID );
 	return 1;
 }
