@@ -9,6 +9,7 @@
 #include <cstring>
 #include <iostream>
 #include <vector>
+#include <cmath>
 #include "texturemanager.h"
 #include "../engine/engine.pkg"
 
@@ -32,6 +33,7 @@ class RENDER_API Render {
 		void Dot(float x,float y,float z);
 		void SetColor(Vector3 kColor);
 		void DrawHM(HeightMap* kmap);
+		void DrawHMlod(HeightMap* kmap,Vector3 CamPos);
 		void DrawHMQT(HeightMap* kmap);		
 		void DrawQuad(HM_vert* vert,int width);
 		void DrawConsole(char* m_aCommand,vector<char*>* m_kText); 

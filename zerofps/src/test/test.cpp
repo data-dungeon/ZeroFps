@@ -48,11 +48,12 @@ void Test::OnIdle(void) {
 //  light_position[2]=z;
 //  glLightfv(GL_LIGHT0,GL_POSITION,light_position);	
 
-	pkRender->DrawHM(test);		
+	pkRender->DrawHMlod(test,*pkFps->m_kCamPos);		
+//	pkRender->DrawHM(test);		
 	pkRender->SetFont("file:../data/textures/text/console.bmp");	
 	pkRender->Print(Vector3(x,20,z),Vector3(0,0,0),Vector3(5,5,5),"HEJ JULLE");
 
-//	cout<<pkFps->m_iFps<<endl;
+	cout<<pkFps->m_iFps<<endl;
 	
 //	for(int i=2;i<60;i++)
 //		pkRender->Pyra(sin(pkFps->GetTicks()/1000.0*i/2)*2,cos(pkFps->GetTicks()/1000.0*i/2)*2,-i/2);

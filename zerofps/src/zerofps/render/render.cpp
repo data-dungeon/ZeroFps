@@ -187,7 +187,7 @@ void Render::DrawHM(HeightMap *kmap) {
 	Vector3 p4;
 	
 	glTranslatef(-50,-10,-50);
-//	m_pkTexMan->BindTexture(kmap->m_acTileSet);
+	m_pkTexMan->BindTexture(kmap->m_acTileSet);
 	
 	GLfloat mat_specular[]={1,1,1,1};
 	GLfloat mat_shininess[]={10};
@@ -197,11 +197,10 @@ void Render::DrawHM(HeightMap *kmap) {
 	glTexEnvf(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE);
 	SetColor(Vector3(255,255,255));
 
-	glPolygonMode(GL_FRONT,GL_LINE);
+//	glPolygonMode(GL_FRONT,GL_LINE);
 
 	int step=1;	
 	int x;	
-//	glFrontFace(GL_CW);// jag ritar medsols så d så
 	for(int z=0;z<kmap->m_iHmSize-step;z+=step){
 
 		glBegin(GL_TRIANGLE_STRIP);		
@@ -212,23 +211,32 @@ void Render::DrawHM(HeightMap *kmap) {
  		glTexCoord2f(0.0,0.0);glVertex3fv((float*)&p1);
  		
 		p2=Vector3(x,kmap->verts[(z+step)*kmap->m_iHmSize+x].height,z+step);			 		
-	  glNormal3fv((float*)&kmap->verts[(z+step)*kmap->m_iHmSize+x].normal);
+ 	   glNormal3fv((float*)&kmap->verts[(z+step)*kmap->m_iHmSize+x].normal);
  		glTexCoord2f(0.0,1);glVertex3fv((float*)&p2);		 				
  		
-		for(x=1;x<kmap->m_iHmSize-step;x+=step) {			
+// 		cout<<"STEP:"<<step<<endl;
+ 		
+		for(x=1;x<kmap->m_iHmSize-step;x+=step) {
+	
+/*			step=int(sqrt(pow(CamPos.x-x,2)+pow(CamPos.y,2)+pow(CamPos.z-z,2)))/20;
+			if(step<1)
+				step=1;
+//			if(step>5)				
+//				step=5;*/
+
 			p3=Vector3(x+step,kmap->verts[z*kmap->m_iHmSize+x+step].height,z);							
-		  glNormal3fv((float*)&kmap->verts[z*kmap->m_iHmSize+x+step].normal);
-  		glTexCoord2f(x/step,0.0);glVertex3fv((float*)&p3);    			
+			glNormal3fv((float*)&kmap->verts[z*kmap->m_iHmSize+x+step].normal);
+  			glTexCoord2f(x/step,0.0);glVertex3fv((float*)&p3);    			
   			
 			p4=Vector3(x+step,kmap->verts[(z+step)*kmap->m_iHmSize+x+step].height,z+step);
-		  glNormal3fv((float*)&kmap->verts[(z+step)*kmap->m_iHmSize+x+step].normal);  			
-  		glTexCoord2f(x/step,1);glVertex3fv((float*)&p4);    				
+			glNormal3fv((float*)&kmap->verts[(z+step)*kmap->m_iHmSize+x+step].normal);  			
+  			glTexCoord2f(x/step,1);glVertex3fv((float*)&p4);    				
 	
 		}		
 		glEnd();
 
 	}
-	glPolygonMode(GL_FRONT,GL_FILL);			
+//	glPolygonMode(GL_FRONT,GL_FILL);			
 //	glFrontFace(GL_CCW);
 	
 	//this draw the normals of the heightmap
@@ -290,6 +298,63 @@ void Render::Dot(float x,float y,float z) {
 
 }
 
+
+void Render::DrawHMlod(HeightMap* kmap,Vector3 CamPos){
+	glPushMatrix();
+	glTranslatef(-4,0,-3);
+
+	m_pkTexMan->BindTexture(kmap->m_acTileSet);
+	
+	GLfloat mat_specular[]={1,1,1,1};
+	GLfloat mat_shininess[]={10};
+	glMaterialfv(GL_FRONT,GL_SPECULAR,mat_specular);
+	glMaterialfv(GL_FRONT,GL_SHININESS,mat_shininess);
+
+	glTexEnvf(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE);
+	SetColor(Vector3(255,255,255));
+
+//	glPolygonMode(GL_FRONT,GL_LINE);
+
+	Vector3 p1,p2;
+
+	
+	int slicesize=30;	
+	int slices=(kmap->m_iHmSize-1)/slicesize;
+	int step=1;
+	
+	for(int sz=0;sz<slices;sz++) {
+		for(int sx=0;sx<slices;sx++) {
+			step=int((CamPos-Vector3(sx*slicesize,0,sz*slicesize)).length()/15);
+//			step=1;
+			if(step<1)
+				step=1;				
+			if(step>5)
+				step=5;
+				
+//			step=2;
+//			cout<<"Step:"<<step<<endl;
+			for(int z=sz*slicesize;z<sz*slicesize+slicesize;z+=step){
+				glBegin(GL_TRIANGLE_STRIP);		
+				for(int x=sx*slicesize;x<sx*slicesize+slicesize+step;x+=step){
+//					Dot(x,kmap->verts[z*kmap->m_iHmSize+x].height,z);	
+
+					p1=Vector3(x,kmap->verts[z*kmap->m_iHmSize+x].height,z);				
+					glNormal3fv((float*)&kmap->verts[z*kmap->m_iHmSize+x].normal);
+			 		glTexCoord2f(x,0);glVertex3fv((float*)&p1);
+ 		
+					p2=Vector3(x,kmap->verts[(z+step)*kmap->m_iHmSize+x].height,z+step);			 		
+			 	  glNormal3fv((float*)&kmap->verts[(z+step)*kmap->m_iHmSize+x].normal);
+			 		glTexCoord2f(x,1);glVertex3fv((float*)&p2);		 				
+								
+				}					
+				glEnd();
+			}
+		}
+	}
+	
+	glPolygonMode(GL_FRONT,GL_FILL);
+	glPopMatrix();
+}
 
 void Render::DrawConsole(char* m_aCommand,vector<char*>* m_kText) {
 	SetFont("file:../data/textures/text/console.bmp");

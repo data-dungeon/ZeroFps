@@ -2,7 +2,7 @@
 
 
 HeightMap::HeightMap() {
-	m_iHmSize=100;	
+	m_iHmSize=500;	
 	m_iBoxTresh=2;
 	m_iMaxSteps=5;
 	verts=new HM_vert[(m_iHmSize+1)*m_iHmSize];
@@ -182,9 +182,9 @@ bool HeightMap::Load(char* acFile) {
 }
 
 void HeightMap::Random() {
-	int height=3000;
-	int peaks=500;
-	int smooth=4;
+	int height=5000;
+	int peaks=2000;
+	int smooth=5;
 
 //   nice terrain
 //	int height=30000000;
