@@ -146,7 +146,10 @@ bool Input::RegisterInputHandle(InputHandle* pkInputHandle)
 	{
 		m_kInputHandles.push_back(pkInputHandle);
 		cout<<"InputHandle "<<pkInputHandle->m_strHandleName<<" registered"<<endl;
+		return true;
 	}
+
+	return false;
 }
 
 bool Input::UnregisterInputHandle(InputHandle* pkInputHandle)

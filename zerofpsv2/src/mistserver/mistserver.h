@@ -138,14 +138,7 @@ class MistServer :public Application , public ZGuiApp {
 		bool CheckValidOrder(ClientOrder* pkOrder);
 		void SendTextToMistClientInfoBox(char* szText);
 
-			//struct SORT_FILES : public binary_function<string, string, bool> {
-			//	bool operator()(string x, string y) { 
-			//		return (x.find(".") == string::npos);
-			//	};
-			//} SortFiles;
-
 		void SetupGuiEnviroment();
-	//	bool BuildFileTree(char* szTreeBoxName, char* szRootPath);
 		void ToogleLight(bool bEnabled);
 		void RotateActiveZoneObject();
 

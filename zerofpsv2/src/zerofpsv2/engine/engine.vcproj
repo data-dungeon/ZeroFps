@@ -219,6 +219,9 @@
 				RelativePath=".\input.cpp">
 			</File>
 			<File
+				RelativePath=".\inputhandle.cpp">
+			</File>
+			<File
 				RelativePath="..\engine_systems\mad\mad_modell.cpp">
 			</File>
 			<File
@@ -383,6 +386,9 @@
 			</File>
 			<File
 				RelativePath=".\input.h">
+			</File>
+			<File
+				RelativePath=".\inputhandle.h">
 			</File>
 			<File
 				RelativePath="..\engine_systems\mad\mad_core.h">

@@ -220,10 +220,7 @@ void ZGResEdit::OnKeyDown(int iKey)
 	{
 	case KEY_F7:
 		{
-			ZFIni kINI;
-			kINI.Open("ResEdit.ini", false);
-			kINI.SetIntValue("Application", "r_toolbarleft", 33);
-			kINI.Save("ResEdit.ini");
+
 		}
 		break;
 
