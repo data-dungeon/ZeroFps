@@ -6,11 +6,12 @@
 #include "../../engine/zerofps.h"
 #include <AL/al.h>
 #include <AL/alut.h>
+#include "zfaudiosystem.h"
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 
-
+SDL_Thread*	OggMusic::m_pkThread = NULL;
 
 OggMusic::OggMusic() : 
 	ZFSubSystem("OggMusic")  
@@ -46,6 +47,21 @@ OggMusic::~OggMusic()
 	
 	if(m_bFileOK)
 		ov_clear(&m_kOggFile);
+}
+
+int OggMusic::ThreadMain(void *v)
+{
+	if(v)
+	{
+		OggMusic* pkOgg = (OggMusic*) v;
+		while(1)
+		{
+			pkOgg->Update(ZFAudioSystem::GetListnerPos());
+			SDL_Delay(10);
+		}
+	}
+
+	return 0;
 }
 
 bool OggMusic::StartUp()	
@@ -194,8 +210,6 @@ bool OggMusic::Play()
 
 bool OggMusic::Update(Vector3 kListerPos)
 {
-
-	
 	if(m_bPlaying)
 	{
 		//update position of sound

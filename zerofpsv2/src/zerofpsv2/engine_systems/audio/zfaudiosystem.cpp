@@ -404,6 +404,7 @@ unsigned int ZFAudioSystem::GetNumActiveChannels()
 bool ZFAudioSystem::StartUp()
 {
 	m_pkMusic = static_cast<OggMusic*>(g_ZFObjSys.GetObjectPtr("OggMusic"));
+	m_pkTreadInfo = new THREAD_INFO;
 
 	Register_Cmd("musicload",FID_MUSICLOAD);
 	Register_Cmd("musicplay",FID_MUSICPLAY);
@@ -522,8 +523,13 @@ bool ZFAudioSystem::SetVolume(float fVolume)
 ///////////////////////////////////////////////////////////////////////////////
 void ZFAudioSystem::Update()
 {
-	// Spela upp ogg music.
-	m_pkMusic->Update(m_kPos);
+	// Kör igång mainloopen för musiktråden
+	if( OggMusic::m_pkThread == NULL)
+	{
+		m_pkMusic->m_pkThread = SDL_CreateThread(OggMusic::ThreadMain, m_pkMusic);
+	}
+
+	//m_pkMusic->Update(m_kPos);
 
 	if(m_iEnableSound == 0)
 		return;

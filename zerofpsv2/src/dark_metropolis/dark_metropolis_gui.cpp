@@ -130,7 +130,7 @@ void DarkMetropolis::GUI_Init()
 		NULL, bJagVillHellreHaHWCursorMenWTF);
 
 	// Load start sceen.
-	LoadGuiFromScript(m_pkScript, "data/script/gui/dm_start.lua");
+	LoadGuiFromScript(/*m_pkScript, */"data/script/gui/dm_start.lua");
 	m_pkGui->SetFocus(GetWnd("DMStartWnd"));
 
 	ShowWnd("ContinueGameBn", false);
@@ -699,7 +699,7 @@ bool DarkMetropolis::GUI_NewGame(ZGuiWnd *pkMainWnd)
 {			
 	pkMainWnd->Hide();
 	
-	LoadGuiFromScript(m_pkScript,"data/script/gui/dm_gameplay_2.lua");
+	LoadGuiFromScript(/*m_pkScript,*/"data/script/gui/dm_gameplay_2.lua");
 	
 	StartSong("data/music/dm ingame.ogg");	
 

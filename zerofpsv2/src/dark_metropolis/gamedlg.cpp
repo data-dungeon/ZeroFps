@@ -112,7 +112,7 @@ CGameDlg* CGameDlg::GetGameDlg(GAME_DLG eDlgType)
 
 bool CGameDlg::LoadDlg(char* szScriptName) 
 { 
-	bool bSuccess = m_pkDM->LoadGuiFromScript(m_pkDM->m_pkScript, szScriptName); 
+	bool bSuccess = m_pkDM->LoadGuiFromScript(/*m_pkDM->m_pkScript,*/ szScriptName); 
 
 	if(bSuccess)
 	{

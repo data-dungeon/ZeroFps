@@ -1,7 +1,7 @@
-// guibuilder.h
+// zguiapp.h
 
-#ifndef _GUIBUILDER_H
-#define _GUIBUILDER_H
+#ifndef _ZGUIAPP_H
+#define _ZGUIAPP_H
 
 #include "gui_x.h"
 #include <map>
@@ -46,20 +46,26 @@ class GUI_API ZGuiApp
 {
 public:
 
+	struct THREAD_INFO
+	{
+		char* szFileName;
+		ZFScriptSystem* pkScriptSys;
+	};
+
 	bool BuildFileTree(char* szTreeBoxName, char* szRootPath, char* szExtension=NULL);
-	bool CreateMenu(char* szFileName, ZFScriptSystem* pkScriptSys);
+	bool CreateMenu(char* szFileName);
 	int  GetWndID(char* szResName); // returns -1 if no window exist and can be used to check if a window exist from script.
 	void ClearListbox(char* szName);
 	void AddListItem(char* szListboxResName, char* szText);
 //	void AddListItem(int iListboxID, char* szText);
 	bool IsWndVisible(char* szResName);
 	void ResizeWnd(char* szResName, int w, int h);
-	bool ChangeSkin(ZFScriptSystem* pkScript, lua_State* pkState, char* szID, char* szSkinName, char* szSkinType);
+	bool ChangeSkin(lua_State* pkState, char* szID, char* szSkinName, char* szSkinType);
 
-	bool LoadGuiFromScript(ZFScriptSystem* pkScript, char* szFileName); ///< Open GUI enviroment from script.
+	bool LoadGuiFromScript(char* szFileName); ///< Open GUI enviroment from script.
 
-	ZGuiSkin* AddSkinFromScript(char* szName, ZFScriptSystem* pkScript, ZGuiSkin* pkSkin=NULL);
-	ZGuiSkin* AddSkinFromScript2(char *szName, ZFScriptSystem *pkScript, lua_State* pkResHandle, ZGuiSkin* pkSkin);
+	ZGuiSkin* AddSkinFromScript(char* szName, ZGuiSkin* pkSkin=NULL);
+	ZGuiSkin* AddSkinFromScript2(char *szName, lua_State* pkResHandle, ZGuiSkin* pkSkin);
 
 	bool IsButtonChecked(char* szWnd);
 	float GetTextFloat(char* szWnd, bool* pkSuccess);
@@ -122,11 +128,12 @@ private:
 	unsigned int m_uiWindowIDCounter;
 
 	int GetTexID(char* szFile);
-	void InitDefaultSkins(ZFScriptSystem* pkScript);
+	void InitDefaultSkins();
 
 	ZGui* m_pkGuiSys;
 	ZGuiResourceManager* m_pkResMan;
 	TextureManager* m_pkTextureMan;
+	ZFScriptSystem* m_pkScriptSystem;
 	map<string, ZGuiSkin*> m_kSkins;
 	map<int, ZGuiWnd*> m_kWindows;
 	
@@ -143,4 +150,4 @@ private:
 
 };
 
-#endif // #ifndef _GUIBUILDER_H
+#endif // #ifndef _ZGUIAPP_H

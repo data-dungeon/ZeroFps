@@ -219,6 +219,8 @@ class DarkMetropolis : public Application, public ZGuiApp
 		CGameDlg* m_pkMembersDlg;
 		CGameDlg* m_pkHandleAgents;
 
+		THREAD_INFO* pkTreadInfo;
+
 		friend class CGameDlg;
 };
 

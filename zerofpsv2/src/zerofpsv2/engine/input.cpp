@@ -24,16 +24,11 @@ Input::Input()
 	Register_Cmd("i_listvk",			FID_VKBINDLIST);
 	Register_Cmd("i_save",				FID_SAVE);
 
+
 //	Register_Cmd("i_bind",				FID_BIND);
 //	Register_Cmd("i_unbindall",		FID_UNBINDALL);
 //	Register_Cmd("i_listactions",		FID_LISTACTIONS);		
 };
-
-int InputThreadMain(void *)
-{
-	printf("Apa\n");
-	return 0;
-}
 
 bool Input::StartUp()	
 { 
@@ -63,19 +58,6 @@ bool Input::StartUp()
 	};
 	
 	SetupMapToKeyState();	
-
-	m_pkInputThread = SDL_CreateThread(InputThreadMain,NULL);
-	if(!m_pkInputThread)
-	{
-		printf("Error: SDL_CreateThread: %s\n",SDL_GetError());
-		return false;
-	}
-	else
-	{
-		printf("SDL_CreateThread - Success\n");
-	}
-
-	SDL_WaitThread(m_pkInputThread, NULL);
 
 	return true;
 }

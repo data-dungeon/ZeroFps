@@ -22,12 +22,22 @@
 #include "../../basic/zfsystem.h"
 #include "../../basic/vector3.h"
 
+#include <SDL/SDL_thread.h>
+
 /*using std::cout;
 using std::endl;
 using std::string;**/
 using namespace std;
 
 class ZeroFps;
+class OggMusic;
+
+struct THREAD_INFO
+{
+	int iType;
+	OggMusic* pkOgg;
+	void* data;
+};
 
 /// SubSystem that handles music in ZeroFPS.
 class ENGINE_SYSTEMS_API OggMusic: public ZFSubSystem  
@@ -44,6 +54,9 @@ public:
 	bool SetVolume(float fVolume);
 	inline void SetLooping(bool bState) {m_bLooping=bState;};
 
+	static int OggMusic::ThreadMain(void *);
+	static SDL_Thread* m_pkThread;
+	
 private:
 	//bool InitPlay();
 	float GetTicks(); 

@@ -119,7 +119,7 @@ public:
 	void SetListnerPosition(Vector3 kPos,Vector3 kHead,Vector3 kUp);
 	void SetListnerPosition(Vector3 kPos,Matrix4 kOri);
 	void SetReferensDistance(float fR) {m_fReferenceDistance = fR;};
-	Vector3 GetListnerPos() { return m_kPos;  }
+	static Vector3 GetListnerPos() { return m_kPos;  }
 	Vector3 GetListnerDir() { return m_kHead; }
 	static void PrintError(ALenum error, char* szDesc);
 
@@ -138,6 +138,7 @@ private:
 	float m_fVolume;
 	
 	OggMusic* m_pkMusic;
+	THREAD_INFO* m_pkTreadInfo;
 
 	static Vector3 m_kPos;
 	Vector3 m_kHead;
