@@ -47,6 +47,8 @@ void CBriefingDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName)
 
 bool CBriefingDlg::InitDlg()
 {
-	//SetText("Mission_A_Eb", "Kill Bill");
+
+	SetText("Mission_A_Eb", "Kill Bill");
+
 	return true;
 }

@@ -12,9 +12,30 @@
 
 using namespace std;
 
+struct MCOMMON_API DMMissionInfo
+{
+	int m_iLevel;
+	int m_iXP;
+	int m_iCash;
+	string m_strName;
+	string m_strScript;
+	string m_strInfoTextShort;
+	string m_strInfoTextLong;
+	ZFResourceHandle* m_pkScriptResHandle;
+};
+
 class MCOMMON_API P_DMMission: public Property {
 	private:
 		vector<PropertyValues> GetPropertyValues();
+
+		float m_fMissionDoneCheckTime;
+		float m_fMissionFailedCheckTime;
+		
+		bool GetMissionInfoFromScript(DMMissionInfo** ppInfo);
+		const char* GetMissionText(bool bLong);
+
+		vector<DMMissionInfo*> m_vkMissions;
+		DMMissionInfo* m_pkCurrentMission;
 		
 	public:
 		
@@ -30,22 +51,16 @@ class MCOMMON_API P_DMMission: public Property {
 		void Load(ZFIoInterface* pkPackage);
 
 		bool SetCurrentMission(string strMissionScript);
+		void GetPossibleMissions(int iLevel);
 
-		string m_strName;
-		string m_strMissionScript;
-		int m_iDifficulty;
+		//string m_strName;
+		//string m_strMissionScript;
+		//int m_iDifficulty;
+		//int m_iXP;
 
 		ZFScriptSystem* m_pkScriptSys;
-		ZFResourceHandle* m_pkScriptResHandle;
+		//ZFResourceHandle* m_pkScriptResHandle;
 		ZeroFps* m_pkZeroFps;
-
-private:
-
-	float m_fMissionDoneCheckTime;
-	float m_fMissionFailedCheckTime;
-
-	bool GetMissionInfoFromScript();
-
 };
 
 MCOMMON_API Property* Create_P_DMMission();

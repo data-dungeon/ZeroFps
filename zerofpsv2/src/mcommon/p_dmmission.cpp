@@ -7,17 +7,14 @@ P_DMMission::P_DMMission()
 	m_iType=PROPERTY_TYPE_NORMAL;
 	m_iSide=PROPERTY_SIDE_SERVER;
 
-	m_strName = "Unnamed mission";
-	m_strMissionScript = "";
-	m_iDifficulty = 0;
-	
 	bNetwork = true;
 
 	m_pkScriptSys = static_cast<ZFScriptSystem*>(g_ZFObjSys.GetObjectPtr("ZFScriptSystem"));
 	m_pkZeroFps = static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
-	m_pkScriptResHandle = NULL;
 	m_fMissionDoneCheckTime=0;
 	m_fMissionFailedCheckTime=0;
+
+	m_pkCurrentMission = NULL;
 }
 
 P_DMMission::~P_DMMission()
@@ -28,59 +25,109 @@ P_DMMission::~P_DMMission()
 
 void P_DMMission::Init()
 {
-	cout<< "New mission created:" << m_strName.c_str() << " : "
-		<< m_strMissionScript << endl;
+	ZFVFileSystem* m_pkFileSys = reinterpret_cast<ZFVFileSystem*>(
+		g_ZFObjSys.GetObjectPtr("ZFVFileSystem"));	
+
+	vector<string> t;
+	vector<string> final;
+	m_pkFileSys->ListDir(&t, "data/script/missions/");
+	for(unsigned int i=0; i<t.size(); i++)
+	{
+		if(t[i].find(".lua") != string::npos)
+		{
+			bool bDubble = false;
+			for(int j=0; j<final.size(); j++)
+			{
+				if(final[j] == t[i] && j != i)
+				{
+					bDubble = true;
+					break;
+				}
+			}
+
+			if(bDubble == false)
+				final.push_back(t[i]); 
+		}
+	}
+
+	for(int i=0; i<final.size(); i++)
+	{
+		DMMissionInfo* pkMission = new DMMissionInfo;
+		pkMission->m_pkScriptResHandle = new ZFResourceHandle;
+
+		string strPath = string("data/script/missions/") + final[i];
+
+		bool test = pkMission->m_pkScriptResHandle->SetRes(strPath);
+
+		if(test == false)
+		{
+			char szErrorMssage[512];
+			sprintf(szErrorMssage, "Failed to load lua script %s, for P_DMMission\n", 
+				strPath.c_str());
+
+			ZFAssert(test, szErrorMssage);
+		}
+
+		pkMission->m_strScript = strPath;
+
+		GetMissionInfoFromScript(&pkMission);
+
+		m_vkMissions.push_back(pkMission);
+	}
 }
 
 
 vector<PropertyValues> P_DMMission::GetPropertyValues()
 {
-	vector<PropertyValues> kReturn(3);
-		
-	kReturn[0].kValueName = "name";
-	kReturn[0].iValueType = VALUETYPE_STRING;
-	kReturn[0].pkValue    = &m_strName;		
+	vector<PropertyValues> kReturn(0);
+	//	
+	//kReturn[0].kValueName = "name";
+	//kReturn[0].iValueType = VALUETYPE_STRING;
+	//kReturn[0].pkValue    = &pkMissionm_strName;		
 
-	kReturn[1].kValueName = "difficulty";
-	kReturn[1].iValueType = VALUETYPE_INT;
-	kReturn[1].pkValue    = &m_iDifficulty;	
+	//kReturn[1].kValueName = "difficulty";
+	//kReturn[1].iValueType = VALUETYPE_INT;
+	//kReturn[1].pkValue    = &m_iDifficulty;	
 
-	kReturn[2].kValueName = "missionscript";
-	kReturn[2].iValueType = VALUETYPE_STRING;
-	kReturn[2].pkValue    = &m_strMissionScript;	
+	//kReturn[2].kValueName = "missionscript";
+	//kReturn[2].iValueType = VALUETYPE_STRING;
+	//kReturn[2].pkValue    = &m_strMissionScript;	
 
 	return kReturn;
 }
 
 void P_DMMission::Save(ZFIoInterface* pkPackage)
 {	
-	char temp[256];
-	
-	strcpy(temp,m_strName.c_str());
-	pkPackage->Write(temp,256,1);
+	//char temp[256];
+	//
+	//strcpy(temp,m_strName.c_str());
+	//pkPackage->Write(temp,256,1);
 
-	pkPackage->Write(&m_iDifficulty,sizeof(m_iDifficulty),1);
+	//pkPackage->Write(&m_iDifficulty,sizeof(m_iDifficulty),1);
 
-	strcpy(temp,m_strMissionScript.c_str());
-	pkPackage->Write(temp,256,1);
+	//strcpy(temp,m_strMissionScript.c_str());
+	//pkPackage->Write(temp,256,1);
 }
 
 void P_DMMission::Load(ZFIoInterface* pkPackage)
 {
-	char temp[256];
-	
-	pkPackage->Read(temp,256,1);
-	m_strName = temp;
+	//char temp[256];
+	//
+	//pkPackage->Read(temp,256,1);
+	//m_strName = temp;
 
-	pkPackage->Read(&m_iDifficulty,sizeof(m_iDifficulty),1);	
+	//pkPackage->Read(&m_iDifficulty,sizeof(m_iDifficulty),1);	
 
-	pkPackage->Read(temp,256,1);
-	m_strMissionScript = temp;
+	//pkPackage->Read(temp,256,1);
+	//m_strMissionScript = temp;
 }
 
 void P_DMMission::Update()
 {
-	if(m_pkScriptResHandle != NULL)
+	if(m_pkCurrentMission == NULL)
+		return;
+
+	if(m_pkCurrentMission->m_pkScriptResHandle != NULL)
 	{
 		//
 		// Kolla om uppdraget har slutförts 1 gång var 3:e sekund
@@ -90,16 +137,18 @@ void P_DMMission::Update()
 
 		if(fTimeCheck - m_fMissionDoneCheckTime > 3.0f)
 		{
-			m_pkScriptSys->Call(m_pkScriptResHandle, "IsMissionDone", 0, 0);
+			m_pkScriptSys->Call(m_pkCurrentMission->m_pkScriptResHandle, 
+				"IsMissionDone", 0, 0);
 			m_fMissionDoneCheckTime = fTimeCheck;
 
 			if(DMLua::g_iMissionStatus == 1)
 			{
 				printf("\n---------------------------------\n");
-				printf("Mission \"%s\" sucess!\n", m_strMissionScript.c_str());
+				printf("Mission \"%s\" sucess!\n", m_pkCurrentMission->m_strScript.c_str());
 				printf("\n---------------------------------\n");
 
-				m_pkScriptSys->Call(m_pkScriptResHandle, "OnMissionSuccess", 0, 0);
+				m_pkScriptSys->Call(m_pkCurrentMission->m_pkScriptResHandle, 
+					"OnMissionSuccess", 0, 0);
 			}
 		}
 
@@ -109,13 +158,14 @@ void P_DMMission::Update()
 
 		if(fTimeCheck - m_fMissionFailedCheckTime > 3.0f)
 		{
-			m_pkScriptSys->Call(m_pkScriptResHandle, "IsMissionFailed", 0, 0);
+			m_pkScriptSys->Call(m_pkCurrentMission->m_pkScriptResHandle, 
+				"IsMissionFailed", 0, 0);
 			m_fMissionFailedCheckTime = fTimeCheck;
 
 			if(DMLua::g_iMissionStatus == -1)
 			{
 				printf("\n---------------------------------\n");
-				printf("Mission \"%s\" failed!\n", m_strMissionScript.c_str());
+				printf("Mission \"%s\" failed!\n", m_pkCurrentMission->m_strScript.c_str());
 				printf("\n---------------------------------\n");
 
 				//m_pkScriptSys->Call(m_pkScriptResHandle, "OnMissionSuccess", 0, 0);
@@ -126,19 +176,21 @@ void P_DMMission::Update()
 
 bool P_DMMission::SetCurrentMission(string strMissionScript)
 {
-	m_strMissionScript = strMissionScript;
-	
-	if(m_pkScriptResHandle)
+	bool bSuccess = false;
+
+	for(int i=0; i<m_vkMissions.size(); i++)
 	{
-		delete m_pkScriptResHandle;
-		m_pkScriptResHandle = NULL;
+		printf("%s\n", m_vkMissions[i]->m_strScript);
+		if(m_vkMissions[i]->m_strScript == strMissionScript)
+		{
+			m_pkCurrentMission = m_vkMissions[i];
+			bSuccess = true;
+			break;
+		}
 	}
 
-	m_pkScriptResHandle = new ZFResourceHandle;
-	if(!m_pkScriptResHandle->SetRes(m_strMissionScript))
+	if(bSuccess == false)
 	{
-		printf("Failed to load lua script: %s, for P_DMMission\n", 
-			m_strMissionScript.c_str());
 		return false;
 	}
 
@@ -146,21 +198,34 @@ bool P_DMMission::SetCurrentMission(string strMissionScript)
 	printf("Starting mission \"%s\"\n", strMissionScript.c_str());
 	printf("\n---------------------------------\n");
 
-	return GetMissionInfoFromScript();
+	return bSuccess;
 }
 
-bool P_DMMission::GetMissionInfoFromScript()
+bool P_DMMission::GetMissionInfoFromScript(DMMissionInfo** ppInfo)
 {
-	ZFScript* pkScript = (ZFScript*) m_pkScriptResHandle->GetResourcePtr();
+	ZFScript* pkScript = (ZFScript*) (*ppInfo)->m_pkScriptResHandle->GetResourcePtr();
 
+	char szInfoTextShort[256];
+	char szInfoTextLong[1024];
 	char szName[128];
 	double dDifficulty;
+	double dXP;
+
+	(*ppInfo)->m_pkScriptResHandle = (*ppInfo)->m_pkScriptResHandle;
 
 	m_pkScriptSys->GetGlobal(pkScript->m_pkLuaState, "MissionInfo", "name", szName);
-	m_strName = szName;
+	(*ppInfo)->m_strName = szName;
 
 	m_pkScriptSys->GetGlobal(pkScript->m_pkLuaState, "MissionInfo", "difficulty", dDifficulty);
-	m_iDifficulty = dDifficulty;
+	(*ppInfo)->m_iLevel = (int) dDifficulty;
+
+	m_pkScriptSys->GetGlobal(pkScript->m_pkLuaState, "MissionInfo", "xp", dXP);
+	(*ppInfo)->m_iXP = (int) dXP;
+
+	m_pkScriptSys->GetGlobal(pkScript->m_pkLuaState, "MissionText", "short", szInfoTextShort);	
+	m_pkScriptSys->GetGlobal(pkScript->m_pkLuaState, "MissionText", "long", szInfoTextLong);
+	(*ppInfo)->m_strInfoTextShort = szInfoTextShort;
+	(*ppInfo)->m_strInfoTextLong = szInfoTextLong;
 
 	return true;
 }
@@ -168,4 +233,9 @@ bool P_DMMission::GetMissionInfoFromScript()
 Property* Create_P_DMMission()
 {
 	return new P_DMMission;
+}
+
+void P_DMMission::GetPossibleMissions(int iLevel)
+{
+	
 }
