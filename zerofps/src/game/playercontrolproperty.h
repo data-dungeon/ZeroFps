@@ -16,7 +16,8 @@ class PlayerControlProperty: public Property {
 		Input *m_pkInput;
 		ZeroFps *m_pkFps;
 		HeightMap *m_pkMap;
-		
+		OpenAlSystem* m_pkAlSys;
+	
 		ObjectManager *m_pkObjectMan;
 		CollisionManager *m_pkCollisionMan;
 		int m_iActionForward;
@@ -26,6 +27,8 @@ class PlayerControlProperty: public Property {
 
 		float walk;
 		bool walking;
+		
+		Sound *walksound;		
 		
 	public:
 		bool onGround;

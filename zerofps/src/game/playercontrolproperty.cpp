@@ -6,7 +6,8 @@ PlayerControlProperty::PlayerControlProperty(Input *pkInput,HeightMap *pkMap)
 	m_pkFps = static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
 	m_pkObjectMan = static_cast<ObjectManager*>(g_ZFObjSys.GetObjectPtr("ObjectManager"));	
 	m_pkCollisionMan = static_cast<CollisionManager*>(g_ZFObjSys.GetObjectPtr("CollisionManager"));	
-	//m_pkFps=pkFps;
+	m_pkAlSys=static_cast<OpenAlSystem*>(g_ZFObjSys.GetObjectPtr("OpenAlSystem"));		
+
 	m_pkInput=pkInput;	
 	strcpy(m_acName,"PlayerControlProperty");
 
@@ -20,6 +21,11 @@ PlayerControlProperty::PlayerControlProperty(Input *pkInput,HeightMap *pkMap)
 	m_iActionStrafeRight=m_pkInput->RegisterAction("strafe_right");
 	m_iActionStrafeLeft=m_pkInput->RegisterAction("strafe_left");
 	m_iActionBack=m_pkInput->RegisterAction("backward");
+	
+	
+	walksound=new Sound();
+	walksound->m_acFile="file:../data/sound/walk.wav";
+	walksound->m_bLoop=false;
 };
 
 /*
@@ -40,9 +46,6 @@ void PlayerControlProperty::Update() {
 	walking=false;
 	Vector3 vel(0,m_pkObject->GetVel().y,0);
 	
-	//cant move fast while in air
-//	if(dynamic_cast<PlayerObject*>(m_pkObject)->onGround==false)
-//		speed*=0.5;
 	
 	if(m_pkInput->Pressed(KEY_X)){
 		speed*=0.5;
@@ -53,44 +56,31 @@ void PlayerControlProperty::Update() {
 		
 		vel.x+=cos((m_pkObject->GetRot().y)/degtorad)*speed;
 		vel.z+=sin((m_pkObject->GetRot().y)/degtorad)*speed;
-
-//		m_pkObject->GetPos().x+=cos((m_pkObject->GetRot().y)/degtorad)*m_pkFps->GetFrameTime()*speed;			
-//		m_pkObject->GetPos().z+=sin((m_pkObject->GetRot().y)/degtorad)*m_pkFps->GetFrameTime()*speed;			
 	}
 	if(m_pkInput->Action(m_iActionStrafeLeft)){
 		walking=true;		
 		
 		vel.x+=cos((m_pkObject->GetRot().y+180)/degtorad)*speed;
-		vel.z+=sin((m_pkObject->GetRot().y+180)/degtorad)*speed;
-		
-//		m_pkObject->GetPos().x+=cos((m_pkObject->GetRot().y+180)/degtorad)*m_pkFps->GetFrameTime()*speed;			
-//		m_pkObject->GetPos().z+=sin((m_pkObject->GetRot().y+180)/degtorad)*m_pkFps->GetFrameTime()*speed;			
+		vel.z+=sin((m_pkObject->GetRot().y+180)/degtorad)*speed;		
 	}
 	if(m_pkInput->Action(m_iActionForward)){
 		walking=true;
 		
 		vel.x+=cos((m_pkObject->GetRot().y-90)/degtorad)*speed;
-		vel.z+=sin((m_pkObject->GetRot().y-90)/degtorad)*speed;
-		
-//		m_pkObject->GetPos().x+=cos((m_pkObject->GetRot().y-90)/degtorad)*m_pkFps->GetFrameTime()*speed;			
-//		m_pkObject->GetPos().z+=sin((m_pkObject->GetRot().y-90)/degtorad)*m_pkFps->GetFrameTime()*speed;			
+		vel.z+=sin((m_pkObject->GetRot().y-90)/degtorad)*speed;		
 	}
 	if(m_pkInput->Action(m_iActionBack)){
 		walking=true;
 		
 		vel.x+=cos((m_pkObject->GetRot().y-270)/degtorad)*speed;
-		vel.z+=sin((m_pkObject->GetRot().y-270)/degtorad)*speed;
-		
-//		m_pkObject->GetPos().x+=cos((m_pkObject->GetRot().y-270)/degtorad)*m_pkFps->GetFrameTime()*speed;			
-//		m_pkObject->GetPos().z+=sin((m_pkObject->GetRot().y-270)/degtorad)*m_pkFps->GetFrameTime()*speed;			
+		vel.z+=sin((m_pkObject->GetRot().y-270)/degtorad)*speed;		
 	}
 	if(m_pkInput->Pressed(MOUSERIGHT) ){
 		if(onGround){
-			vel.y+=5;// *m_pkFps->GetFrameTime();;						
+			vel.y+=5;
+			walking=false;
 		}
 	}
-	
-//	cout<<"VEL "<<vel.y<<endl;
 	
 	m_pkObject->GetVel()=vel;
 	
@@ -121,6 +111,13 @@ void PlayerControlProperty::Update() {
 		m_pkObject->GetRot().x=-90;
 	
 	
+	//update sound possition
+	walksound->m_kPos=m_pkObject->GetPos();
+
+	if(walking)
+		m_pkAlSys->AddSound(walksound);
+	else
+		m_pkAlSys->RemoveSound(walksound);
 	
 	onGround=false;
 };

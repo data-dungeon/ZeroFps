@@ -85,7 +85,7 @@ void OpenAlSystem::AddSound(Sound* pkSound)
 	{	
 		if( (*it) == pkSound)
 		{
-			cout<<"already added"<<endl;
+//			cout<<"already added"<<endl;
 			return;
 		}
 	}
@@ -96,6 +96,17 @@ void OpenAlSystem::AddSound(Sound* pkSound)
 void OpenAlSystem::RemoveSound(Sound* pkSound) 
 {
 //	cout<<"Removing a sound"<<endl;
+	
+	bool found=false;
+	for(list<Sound*>::iterator it=m_akSounds.begin();it!=m_akSounds.end();it++)
+	{	
+		if( (*it) == pkSound)
+			found=true;	
+	}
+	
+	if(found==false)
+		return;
+	
 	
 	alSourceStop(m_kSources[pkSound->m_iSource]->m_iSource);
 	if(pkSound->m_iSource!=-1){
