@@ -112,7 +112,7 @@ bool PropertyBox::Create(int x,int y,int w,int h,ZGuiWndProc pkWndProc)
 	pkPosX->SetWindowFlag(WF_CANHAVEFOCUS);
 
 	// Create special state controls
-	CreateUniqueProperites();
+	CreateSpecialProperites();
 
 	// OK button
 	ZGuiWnd* pkOKButton = m_pkGuiBuilder->CreateOKButton(m_pkDlgBox,
@@ -165,28 +165,48 @@ bool PropertyBox::OnOpen(int x,int y)
 //
 bool PropertyBox::OnClose(bool bSave)
 {
-	if(SelectWnd::GetInstance()->m_pkWnd && bSave)
+	ZGuiWnd* pkSelWnd = SelectWnd::GetInstance()->m_pkWnd;
+
+	if(pkSelWnd && bSave)
 	{
-		SelectWnd::GetInstance()->m_pkWnd->SetText(
+		pkSelWnd->SetText(
 			m_pkGuiBuilder->GetWnd("CtrlPropCaptionEB")->GetText());
-		SelectWnd::GetInstance()->m_pkWnd->SetID(atoi(
+		pkSelWnd->SetID(atoi(
 			m_pkGuiBuilder->GetWnd("CtrlPropIDEB")->GetText()));
-		SelectWnd::GetInstance()->m_pkWnd->SetTabOrderNr(atoi(
+		pkSelWnd->SetTabOrderNr(atoi(
 			m_pkGuiBuilder->GetWnd("CtrlTabOrderEB")->GetText()));
 
 		switch(m_pkGuiBuilder->GetWndType(
-			SelectWnd::GetInstance()->m_pkWnd))
+			pkSelWnd))
 		{
 			case COMBOBOX:
-				((ZGuiCombobox*)SelectWnd::GetInstance()->m_pkWnd)->
+				((ZGuiCombobox*)pkSelWnd)->
 					SetNumVisibleRows(atoi(m_pkGuiBuilder->
 						GetWnd("NumVisibleRowsEB")->GetText()));
+				break;
+			case RADIOBUTTON:
+				char* szGroupName = m_pkGuiBuilder->GetWnd(
+					"RadioBnGroupResIDEB")->GetText();
+
+				if(m_pkGuiBuilder->IsGroupNameLegal(
+					(ZGuiRadiobutton*)pkSelWnd,szGroupName))
+				{
+					((ZGuiRadiobutton*)pkSelWnd)->
+						ChangeGroupName(m_pkGuiBuilder->
+							GetWnd("RadioBnGroupResIDEB")->GetText());
+				}
+				else
+				{
+					m_pkGuiBuilder->GetWnd(
+						"RadioBnGroupResIDEB")->SetText("Bad name!");
+					return false;
+				}
 				break;
 		}
 	}
 
 	m_pkGui->ShowMainWindow(m_pkGuiBuilder->GetWnd("CtrlPropBoxWnd"),false);
-	m_pkGui->SetFocus(SelectWnd::GetInstance()->m_pkWnd);
+	m_pkGui->SetFocus(pkSelWnd);
 
 	return true;
 }
@@ -345,11 +365,11 @@ bool PropertyBox::DlgProc( ZGuiWnd* pkWnd,unsigned int uiMessage,
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-// Name: CreateUniqueProperites
+// Name: CreateSpecialProperites
 // Description: Create controls that are unique for each control and that are
 //				hidden from the beginning and showed when the Dialog are opened.
 //
-void PropertyBox::CreateUniqueProperites()
+void PropertyBox::CreateSpecialProperites()
 {
 	ZGuiTextbox* pkTextbox;
 	ZGuiCheckbox* pkCheckbox;
@@ -387,12 +407,25 @@ void PropertyBox::CreateUniqueProperites()
 
 	// Radiobutton: GroupID
 	w = 40; h = 20;
-	pkLabel = m_pkGuiBuilder->CreateLabel(m_pkDlgBox,ID_CTRLGROUPIDRADIOBN_LAB,
+	pkLabel = m_pkGuiBuilder->CreateLabel(m_pkDlgBox,0,
 		"RadioBnGroupIDLB",x,y,80,h,"Group ID:");
 	pkLabel->Hide();
 	m_kSpecCtrls.push_back(pair<CtrlType, ZGuiWnd*>(RADIOBUTTON,pkLabel));
 	pkTextbox = m_pkGuiBuilder->CreateTextbox(m_pkDlgBox, 
 		ID_CTRLGROUPIDRADIOBN_EB,"RadioBnGroupIDEB",x+90,y,w,h,false);
+	pkTextbox->SetWindowFlag(WF_CANHAVEFOCUS);
+	pkTextbox->Disable();
+	pkTextbox->Hide();
+	m_kSpecCtrls.push_back(pair<CtrlType, ZGuiWnd*>(RADIOBUTTON,pkTextbox));
+
+	// Radiobutton: GroupResIDName
+	w = 125; h = 20;
+	pkLabel = m_pkGuiBuilder->CreateLabel(m_pkDlgBox,0,
+		"RadioGroupResIDNameLB",x,y+30,w,h,"Group Res ID:");
+	pkLabel->Hide();
+	m_kSpecCtrls.push_back(pair<CtrlType, ZGuiWnd*>(RADIOBUTTON,pkLabel));
+	pkTextbox = m_pkGuiBuilder->CreateTextbox(m_pkDlgBox, 
+		ID_CTRLGROUPRESIDRADIOBN_EB,"RadioBnGroupResIDEB",x,y+60,125,40,false);
 	pkTextbox->SetWindowFlag(WF_CANHAVEFOCUS);
 	pkTextbox->Hide();
 	m_kSpecCtrls.push_back(pair<CtrlType, ZGuiWnd*>(RADIOBUTTON,pkTextbox));
@@ -413,13 +446,15 @@ void PropertyBox::CreateUniqueProperites()
 
 void PropertyBox::UpdateUniquePropertyText(ZGuiWnd *pkControl, CtrlType c_iSelWndType)
 {
+	ZGuiWnd* pkSelWnd = SelectWnd::GetInstance()->m_pkWnd;
+
 	switch(c_iSelWndType)
 	{
 	case WINDOW:
 		if(pkControl == m_pkGuiBuilder->GetWnd("ToogleMoveableWndCB"))
 		{
-			if( SelectWnd::GetInstance()->m_pkWnd->GetMoveArea() ==
-				SelectWnd::GetInstance()->m_pkWnd->GetScreenRect() )
+			if( pkSelWnd->GetMoveArea() ==
+				pkSelWnd->GetScreenRect() )
 			{
 				((ZGuiCheckbox*) pkControl)->UncheckButton();
 			}
@@ -433,10 +468,8 @@ void PropertyBox::UpdateUniquePropertyText(ZGuiWnd *pkControl, CtrlType c_iSelWn
 	case SCROLLBAR:
 		if(pkControl == m_pkGuiBuilder->GetWnd("ToogleScrollbarTypeCB"))
 		{
-			bool bHorzintal = SelectWnd::GetInstance()->m_pkWnd->
-					GetWndRect().Width() > 
-				SelectWnd::GetInstance()->m_pkWnd->
-					GetWndRect().Height() ? true : false;
+			bool bHorzintal = pkSelWnd->GetWndRect().Width() > 
+				pkSelWnd->GetWndRect().Height() ? true : false;
 
 			if( bHorzintal )
 			{
@@ -446,6 +479,20 @@ void PropertyBox::UpdateUniquePropertyText(ZGuiWnd *pkControl, CtrlType c_iSelWn
 			{
 				((ZGuiCheckbox*) pkControl)->CheckButton();
 			}
+		}
+		break;
+
+	case RADIOBUTTON:
+		if(pkControl == m_pkGuiBuilder->GetWnd("RadioBnGroupIDEB"))
+		{
+			int group_id = ((ZGuiRadiobutton*) pkSelWnd)->GetGroupID();
+			m_pkGuiBuilder->SetTextInt(pkControl->GetName(), group_id);
+		}
+		else
+		if(pkControl == m_pkGuiBuilder->GetWnd("RadioBnGroupResIDEB"))
+		{
+			char* group_name = ((ZGuiRadiobutton*) pkSelWnd)->GetGroupName();
+			pkControl->SetText(group_name);
 		}
 		break;
 	}

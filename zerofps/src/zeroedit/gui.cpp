@@ -363,7 +363,7 @@ void Gui::CreateRadiobuttons(ZGuiWnd* pkParent, vector<string>& vkNames,
 	for(int i=0; i<antal; i++)
 	{
 		ZGuiRadiobutton* pkGroupbutton = new ZGuiRadiobutton(rc,pkParent,
-			start_id+i,start_id,pkPrev,true);
+			start_id+i,start_id,strRadioGroupName,pkPrev,true);
 		pkGroupbutton->SetButtonUnselectedSkin(GetSkin("rbn_down"));
 		pkGroupbutton->SetButtonSelectedSkin(GetSkin("rbn_up"));
 		pkGroupbutton->SetGUI(m_pkEdit->pkGui);

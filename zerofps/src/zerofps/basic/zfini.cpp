@@ -326,8 +326,6 @@ bool ZFIni::ProcessINIFile()
 		}
 	}
 
-	printf("Num sections=%i\n", m_iNumSections);
-
 	return true;
 }
 

@@ -18,3 +18,13 @@ DlgBox::~DlgBox()
 {
 
 }
+
+int DlgBox::Width()
+{
+	return m_pkDlgBox->GetScreenRect().Width();
+}
+
+int DlgBox::Height()
+{
+	return m_pkDlgBox->GetScreenRect().Height();
+}

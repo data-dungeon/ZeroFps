@@ -9,6 +9,8 @@
 class DlgBox  
 {
 public:
+	int Height();
+	int Width();
 	
 	typedef bool (*ZGuiWndProc)(ZGuiWnd*, unsigned int, int, void*);
 	

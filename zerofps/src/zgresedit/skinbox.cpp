@@ -70,7 +70,7 @@ bool SkinBox::Create(int x,int y,int w,int h,ZGuiWndProc pkWndProc)
 	{
 		pkRadioBn = m_pkGuiBuilder->CreateRadioButton(m_pkDlgBox,
 			akCtrls[i].first,(char*)akCtrls[i].second.first.c_str(),
-			ID_SKINTEXTURETYPE_GROUP,false,x,y,w,h,
+			ID_SKINTEXTURETYPE_GROUP,"ID_SKINTEXTURETYPE_GROUP",false,x,y,w,h,
 			(char*)akCtrls[i].second.second.c_str(), (i==0));
 		y += 20;
 
@@ -142,10 +142,10 @@ bool SkinBox::Create(int x,int y,int w,int h,ZGuiWndProc pkWndProc)
 	m_pkGuiBuilder->CreateTextbox(m_pkDlgBox,ID_SKINBORDERBLUECOLOR_EB,"BdBlueEB",
 		349,280,31,18,false);
 
-	m_pkGuiBuilder->CreateCombobox(m_pkDlgBox,ID_SKINDLGTYPES_CB,
-		"SkinTypesCB",0,0,250,20,true);
-	((ZGuiCombobox*)m_pkGuiBuilder->GetWnd("SkinTypesCB"))
-		->SetLabelText("Skin type: 1");
+	ZGuiCombobox* pkSkinTypesCB = m_pkGuiBuilder->CreateCombobox(m_pkDlgBox,
+		ID_SKINDLGTYPES_CB,"SkinTypesCB",0,0,250,20,true);
+	pkSkinTypesCB->SetNumVisibleRows(2);
+	pkSkinTypesCB->SetLabelText("Skin type: 1");
 
 	m_pkGui->ShowMainWindow(m_pkGuiBuilder->GetWnd("SkinBoxWnd"),false);
 	return true;

@@ -58,6 +58,12 @@ ZGuiWnd* EditPropertyDlg::Create(int x, int y, int w, int h)
 		return test;
 	}
 
+/*	m_pkZGui->LoadDialog("../data/gui_resource_files/zgresource_rc.txt", 
+		"PropertyDlg", PROPERTYPROC);
+	return m_pkGui->Get("PropertyDlg");
+*/
+	
+
 	ZGuiWnd* pkMainWindow = new ZGuiWnd(Rect(x,y,x+w,y+h),
 		NULL,true,ID_PROPERTY_WND);
 	pkMainWindow->SetSkin(m_pkGui->GetSkin("main"));
@@ -96,7 +102,7 @@ ZGuiWnd* EditPropertyDlg::Create(int x, int y, int w, int h)
 	bn->SetWindowFlag(WF_CENTER_TEXT);
 
 	m_pkGui->Register(bn = m_pkGui->CreateButton(pkMainWindow, ID_REMOVEPROPERTY_BN, 
-		16*6+16*6+16*7*2+10, y_pos+30, 70, 20, "Remove"), "AddPropertyBN");
+		16*6+16*6+16*7*2+10, y_pos+30, 70, 20, "Remove"), "RemovePropertyBN");
 	bn->SetWindowFlag(WF_CENTER_TEXT);
 
 	y_pos += 30;

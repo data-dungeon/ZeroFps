@@ -64,12 +64,15 @@ public:
 	ZGuiWnd* CreateMainWindow(int iMainWndID, int iID, char* szRegName, int x, int y, 
 		int w, int h, ZGuiWndProc oWndProc, char* szSkin="gray", int TabOrderNr=-1);
 	ZGuiRadiobutton* CreateRadioButton(ZGuiWnd* pkParent, int iID, char* szRegName,
-		int GroupID, bool bCreateNewGroup, int x, int y, int w, int h, char *szName, 
+		int GroupID, char* szGroupName, bool bCreateNewGroup, int x, int y, int w, int h, char *szName, 
 		bool bCheck=false, int TabOrderNr=-1);
 	ZGuiButton* CreateButton(ZGuiWnd* pkParent, int iID, char* szRegName, int x, int y, 
 		int w, int h, char *szName, int TabOrderNr=-1);
 
 	bool IsResNameLegalForWnd(const ZGuiWnd* pkWndToCheck, const char* szResName);
+	bool IsGroupNameLegal(ZGuiRadiobutton* pkRadibuttonToCheck, 
+		const char* szGroupName);
+
 	ZGuiWnd* GetWnd(const char* szName);
 	ZGuiSkin* GetSkin(const char* szName, bool bAllocateNew=false);
 	int GetTexture(const char* szName);
@@ -108,10 +111,11 @@ public:
 	Rect m_rcScreen;
 	ZGui* m_pkGui;
 	bool m_bAllocateNewSkins;
-	int m_iLastID;
-	int m_iUniqueSkinCounter;
-	int m_iLastRadioGroup;
-	int m_iLastTabNr;
+	
+	static int m_iLastID;
+	static int m_iLastRadioGroup;
+	static char m_szLastGroupName[50];
+	static int m_iLastTabNr;
 };
 
 #endif // #ifndef _GUIBUILDER_H

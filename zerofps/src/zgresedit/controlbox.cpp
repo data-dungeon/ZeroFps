@@ -8,6 +8,7 @@
 #include "../zerofps/render/texturemanager.h"
 #include <typeinfo>
 #include "../zerofps/basic/zfini.h"
+#include <set>
 
 ///////////////////////////////////////////////////////////////////////////////
 // Construction/Destruction
@@ -58,8 +59,8 @@ bool ControlBox::Create(int x,int y,int w,int h,ZGuiWndProc pkWndProc)
 	{
 		pkResMenuBn = m_pkGuiBuilder->CreateRadioButton(m_pkDlgBox,
 			akCtrls[i].first,(char*) akCtrls[i].second.first.c_str(),
-			CTRLMENU_RADIO_GROUP,false,x,y,w,h,(char*)
-			akCtrls[i].second.second.c_str());
+			CTRLMENU_RADIO_GROUP,"CTRLMENU_RADIO_GROUP",false,
+			x,y,w,h,(char*)akCtrls[i].second.second.c_str());
 
 		((ZGuiRadiobutton*)pkResMenuBn)->SetButtonUnselectedSkin(
 			m_pkGuiBuilder->GetSkin("RbSqrSqrUp"));
@@ -172,15 +173,16 @@ bool ControlBox::CreateNewType(CtrlType eType, ZGuiWndProc oWndProc)
 		pkWin=m_pkGuiBuilder->CreateButton(pkParent,-1,NULL,x,y,w=50,h=20,"Button");	
 		break;
 	case CHECKBOX:
-		pkWin=m_pkGuiBuilder->CreateCheckbox(pkParent,-1,NULL,x,y,w=16,h=16,"Check Box");	
+		pkWin=m_pkGuiBuilder->CreateCheckbox(pkParent,-1,NULL,x,y,w=16,h=16,
+			"Check Box");	
 		break;
 	case RADIOBUTTON:
-		pkWin=m_pkGuiBuilder->CreateRadioButton(pkParent,-1,NULL,-1,false,x,y,w=16,
-			h=16,"Radio Button");	
+		pkWin=m_pkGuiBuilder->CreateRadioButton(pkParent,-1,NULL,-1,NULL,false,
+			x,y,w=16,h=16,"Radio Button");	
 		break;
 	case RADIOBUTTON_NEW_GROUP:
-		pkWin=m_pkGuiBuilder->CreateRadioButton(pkParent,-1,NULL,-1,true,x,y,w=16,
-			h=16,"Radio Button");	
+		pkWin=m_pkGuiBuilder->CreateRadioButton(pkParent,-1,NULL,-1,NULL,true,
+			x,y,w=16,h=16,"Radio Button");	
 		break;
 	case LISTBOX:
 		pkWin=m_pkGuiBuilder->CreateListbox(pkParent,-1,NULL,x,y,w=100,h=100);
@@ -307,9 +309,36 @@ void ControlBox::UnregisterNewType(ZGuiWnd *pkWnd)
 
 void ControlBox::PrintWindowIDs(Serialization *pkFile)
 {
-	for(unsigned int i=0; i<m_pkCreatedWindows.size(); i++)
+	unsigned int i;
+
+	for( i=0; i<m_pkCreatedWindows.size(); i++)
 		pkFile->Outputa( "\t%s = %i,\n", m_pkCreatedWindows[i].m_pkWnd->GetName(), 
 			m_pkCreatedWindows[i].m_pkWnd->GetID() );
+
+	// Printa också alla radio groups
+	set<int> kPrintedIDs;
+
+	// Lämna en tomrad mellan
+	pkFile->Outputa("\n");
+
+	for( i=0; i<m_pkCreatedWindows.size(); i++)
+	{
+		if(m_pkGuiBuilder->GetWndType(m_pkCreatedWindows[i].m_pkWnd) == 
+			RADIOBUTTON)
+		{
+			char* group_id_name = 
+				((ZGuiRadiobutton*)m_pkCreatedWindows[i].m_pkWnd)->GetGroupName();
+			int group_id = 
+				((ZGuiRadiobutton*)m_pkCreatedWindows[i].m_pkWnd)->GetGroupID();
+
+			// Finns redan?
+			if( kPrintedIDs.find(group_id) != kPrintedIDs.end() )
+				continue;
+
+			kPrintedIDs.insert(group_id);
+			pkFile->Outputa( "\t%s = %i,\n", group_id_name, group_id );
+		}
+	}
 }
 
 static bool SortPrintWnd(const ControlBox::CreateWnd& w1, const ControlBox::CreateWnd& w2)
@@ -385,7 +414,7 @@ void ControlBox::PrintWindowRC(Serialization *pkFile, TextureManager* pkTexMan)
 		pkFile->Outputa("tab_order=%i\n", pkWnd->GetTabOrderNr() ); 
 
 		// Unique properties
-		PrintUniqueWndProperites(pkFile, pkWnd);
+		PrintSpecialProperites(pkFile, pkWnd);
 
 		if(i < number-1)
 			pkFile->Outputa("\n");
@@ -465,12 +494,13 @@ void ControlBox::PrintSkins(Serialization *pkFile, TextureManager* pkTexMan)
 	}
 }
 
-void ControlBox::PrintUniqueWndProperites(Serialization *pkFile, ZGuiWnd *pkWnd)
+void ControlBox::PrintSpecialProperites(Serialization *pkFile, ZGuiWnd *pkWnd)
 {
 	switch(m_pkGuiBuilder->GetWndType(pkWnd))
 	{
 	case WINDOW:
-		pkFile->Outputa("mainwnd_id=%i\n", m_pkGui->GetMainWindowID((char*)pkWnd->GetName()));
+		pkFile->Outputa("mainwnd_id=%i\n", 
+			m_pkGui->GetMainWindowID((char*)pkWnd->GetName()));
 		break;
 	case LABEL:
 		break;
@@ -482,13 +512,17 @@ void ControlBox::PrintUniqueWndProperites(Serialization *pkFile, ZGuiWnd *pkWnd)
 		pkFile->Outputa("checked=%i\n", (int)((ZGuiCheckbox*)(pkWnd))->IsChecked());
 		break;
 	case RADIOBUTTON:
-		pkFile->Outputa("radio_group=%i\n", ((ZGuiRadiobutton*)(pkWnd))->GetGroupID());
+		pkFile->Outputa("radio_group=%i\n", 
+			((ZGuiRadiobutton*)(pkWnd))->GetGroupID());
+		pkFile->Outputa("radio_group_name=%s\n", 
+			((ZGuiRadiobutton*)(pkWnd))->GetGroupName());
 		break;
 	case RADIOBUTTON_NEW_GROUP:
 		break;
 	case COMBOBOX:
 		pkFile->Outputa("is_menu=%i\n", (int)((ZGuiCombobox*)(pkWnd))->IsMenu());
-		pkFile->Outputa("num_visible_rows=%i\n", (int)((ZGuiCombobox*)(pkWnd))->GetNumVisibleRows());
+		pkFile->Outputa("num_visible_rows=%i\n",
+			(int)((ZGuiCombobox*)(pkWnd))->GetNumVisibleRows());
 		break;
 	case LISTBOX:
 		break;
@@ -500,6 +534,10 @@ void ControlBox::PrintUniqueWndProperites(Serialization *pkFile, ZGuiWnd *pkWnd)
 bool ControlBox::LoadGUI(ZFIni *pkINI, TextureManager* pkTexMan)
 {
 	ClearAll();
+
+/*	m_pkGui->LoadDialog("../data/gui_resource_files/zgresource_rc.txt",
+		"PropertyDlg", m_oMainWndProc);*/
+
 
 	vector<string> vkSections;
 	pkINI->GetSectionNames(vkSections);
@@ -604,8 +642,7 @@ bool ControlBox::LoadGUI(ZFIni *pkINI, TextureManager* pkTexMan)
 			"parent_name");
 		bool bVisible = atoi(pkINI->GetValue((char*)vkSections[i].c_str(), 
 			"visible")) == 0 ? false : true;
-		bool bEnabled = /*atoi(pkINI->GetValue((char*)vkSections[i].c_str(), 
-			"enabled")) == 0 ? false : */true;
+		bool bEnabled = true;//atoi(pkINI->GetValue((char*)vkSections[i].c_str(),"enabled")) == 0 ? false : true;
 		int x=atoi(pkINI->GetValue((char*)vkSections[i].c_str(),"area_left"));
 		int y=atoi(pkINI->GetValue((char*)vkSections[i].c_str(),"area_top"));
 		int w=atoi(pkINI->GetValue((char*)vkSections[i].c_str(),"area_right"))-x;
@@ -658,16 +695,20 @@ bool ControlBox::LoadGUI(ZFIni *pkINI, TextureManager* pkTexMan)
 			{
 				int radio_group = atoi(pkINI->GetValue(
 					(char*)vkSections[i].c_str(), "radio_group"));
+				char* radio_group_name = pkINI->GetValue(vkSections[i].c_str(),
+					"radio_group_name");
 				pkWnd=m_pkGuiBuilder->CreateRadioButton(pkParent,wnd_id,name,
-					radio_group,false,x,y,w,h,text);	
+					radio_group,radio_group_name,false,x,y,w,h,text);	
 			}
 			break;
 		case RADIOBUTTON_NEW_GROUP:
 			{
 				int radio_group = atoi(pkINI->GetValue(
 					(char*)vkSections[i].c_str(), "radio_group"));
+				char* radio_group_name = pkINI->GetValue(vkSections[i].c_str(),
+					"radio_group_name");
 				pkWnd=m_pkGuiBuilder->CreateRadioButton(pkParent,wnd_id,name,
-					radio_group,true,x,y,w,h,text);	
+					radio_group,radio_group_name,true,x,y,w,h,text);	
 			}
 			break;
 		case LISTBOX:

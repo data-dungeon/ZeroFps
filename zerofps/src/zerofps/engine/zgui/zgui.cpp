@@ -1029,7 +1029,8 @@ bool ZGui::LoadDialog(char* szResourceFile, char* szWndResName, callback cb)
 	{
 		tSkinInf kNewSkinInfo;
 
-		char* szWindowName = pkINI->GetValue(vkSections[i].c_str(),"window_name");
+		char* szWindowName = pkINI->GetValue(
+			(char*)vkSections[i].c_str(),"window_name");
 
 		// We have found the last skin. 
 		if(szWindowName == NULL)
@@ -1243,8 +1244,10 @@ bool ZGui::LoadDialog(char* szResourceFile, char* szWndResName, callback cb)
 				{
 					int radio_group = atoi(pkINI->GetValue(vkSections[i].c_str(),
 						"radio_group"));
+					char* radio_group_name = pkINI->GetValue(vkSections[i].c_str(),
+						"radio_group_name");
 					pkNewWnd = new ZGuiRadiobutton(rc,pkParent,wnd_id,radio_group,
-						pkPrevRadiobutton,bVisible);
+						radio_group_name,pkPrevRadiobutton,bVisible);
 					((ZGuiRadiobutton*) pkNewWnd)->SetButtonSelectedSkin(new ZGuiSkin());
 					((ZGuiRadiobutton*) pkNewWnd)->SetButtonUnselectedSkin(new ZGuiSkin());
 				}
@@ -1283,11 +1286,13 @@ bool ZGui::LoadDialog(char* szResourceFile, char* szWndResName, callback cb)
 			RegisterWindow(pkNewWnd, name);
 		}		
 
-		if(eWndType != BUTTON)
+		if(eWndType != BUTTON )
 			pkNewWnd->SetSkin(new ZGuiSkin());
 
 		if(strcmp(text, "(null)") != 0) 
-			pkNewWnd->SetText(text);	
+			pkNewWnd->SetText(text);
+		
+		int antal_skins = kAllSkinsTempArray.size();
 
 		SetSkins(kAllSkinsTempArray, pkNewWnd);
 	}
@@ -1306,8 +1311,10 @@ bool ZGui::SetSkins(vector<tSkinInf>& kAllSkinsTempArray, ZGuiWnd* pkWnd)
 
 	string strWndName = pkWnd->GetName();
 
+	unsigned int skins_this_wnd = kSkinList.size();
+
 	// Loopa igenom alla skins som detta fönster har
-	for(unsigned int i=0; i<kSkinList.size(); i++)
+	for(unsigned int i=0; i<skins_this_wnd; i++)
 	{
 		ZGuiSkin* pkSkin = kSkinList[i].first;
 		string strDesc = kSkinList[i].second;

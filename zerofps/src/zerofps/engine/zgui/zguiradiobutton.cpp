@@ -7,20 +7,23 @@
 #include "zgui.h"
 #include <typeinfo>
 
-//////////////////////////////////////////////////////////////////////
-// Construction/Destruction
-//////////////////////////////////////////////////////////////////////
-
 ZGuiRadiobutton* ZGuiRadiobutton::m_pkLastbutton = NULL;
 
-ZGuiRadiobutton::ZGuiRadiobutton(Rect kRectangle, ZGuiWnd* pkParent, int iID, int iGroupID, 
+///////////////////////////////////////////////////////////////////////////////
+// Name: Construction/Destruction
+// Description:
+//
+ZGuiRadiobutton::ZGuiRadiobutton(Rect kRectangle, ZGuiWnd* pkParent, int iID, 
+								 int iGroupID, char* szGroupName, 
 								 ZGuiRadiobutton* pkPrev, bool bVisible) :
 	ZGuiControl(kRectangle, pkParent, bVisible, iID)
 {
 	m_pkPrev = NULL;
 	m_pkNext = NULL;
 	m_iGroupID = -1;
-	m_pkCheckbox = new ZGuiCheckbox(Rect(0,0,/*kRectangle.Width()*/kRectangle.Height(),
+	if(szGroupName != NULL)
+		strcpy(m_szGroupName, szGroupName);
+	m_pkCheckbox = new ZGuiCheckbox(Rect(0,0,kRectangle.Height(),
 		kRectangle.Height()), this, true, iID);
 	m_pkCheckbox->Disable();
 	RemoveWindowFlag(WF_CANHAVEFOCUS);
@@ -61,28 +64,44 @@ ZGuiRadiobutton::~ZGuiRadiobutton()
 	}
 }
 
+///////////////////////////////////////////////////////////////////////////////
+// Name: Render
+// Description:
+//
 bool ZGuiRadiobutton::Render( ZGuiRender* pkRenderer )
 {
 	if(m_pkFont)
 		pkRenderer->SetFont(m_pkFont);
 
 	pkRenderer->SetSkin(m_pkSkin);
-	pkRenderer->RenderQuad(GetScreenRect()/*,(m_iBkMaskTexture > 0)*/); 
+	pkRenderer->RenderQuad(GetScreenRect()); 
 	pkRenderer->RenderBorder(GetScreenRect()); 
 	m_pkCheckbox->Render(pkRenderer);
 	return false;
 }
 
-void ZGuiRadiobutton::SetButtonSelectedSkin(ZGuiSkin* pkSkin/*, int iMaskTex*/)
+///////////////////////////////////////////////////////////////////////////////
+// Name: SetButtonSelectedSkin
+// Description:
+//
+void ZGuiRadiobutton::SetButtonSelectedSkin(ZGuiSkin* pkSkin)
 {
-	m_pkCheckbox->SetButtonCheckedSkin(pkSkin/*, iMaskTex*/);
+	m_pkCheckbox->SetButtonCheckedSkin(pkSkin);
 }
 
-void ZGuiRadiobutton::SetButtonUnselectedSkin(ZGuiSkin* pkSkin/*, int iMaskTex*/)
+///////////////////////////////////////////////////////////////////////////////
+// Name: SetButtonUnselectedSkin
+// Description:
+//
+void ZGuiRadiobutton::SetButtonUnselectedSkin(ZGuiSkin* pkSkin)
 {
-	m_pkCheckbox->SetButtonUncheckedSkin(pkSkin/*, iMaskTex*/);
+	m_pkCheckbox->SetButtonUncheckedSkin(pkSkin);
 }
 
+///////////////////////////////////////////////////////////////////////////////
+// Name: Notify
+// Description:
+//
 bool ZGuiRadiobutton::Notify(ZGuiWnd* pkWnd, int iCode)
 {
 	if(iCode == NCODE_CLICK_UP && m_iGroupID != -1)
@@ -113,6 +132,10 @@ bool ZGuiRadiobutton::Notify(ZGuiWnd* pkWnd, int iCode)
 	return true;
 }
 
+///////////////////////////////////////////////////////////////////////////////
+// Name: SetText
+// Description:
+//
 void ZGuiRadiobutton::SetText(char* strText, bool bResizeWnd)
 {
 	m_pkCheckbox->SetText(strText);
@@ -133,11 +156,19 @@ void ZGuiRadiobutton::SetText(char* strText, bool bResizeWnd)
 	Resize(usTextLength+20, GetScreenRect().Height());
 }
 
+///////////////////////////////////////////////////////////////////////////////
+// Name: GetText
+// Description:
+//
 char* ZGuiRadiobutton::GetText()
 {
 	return m_pkCheckbox->GetText(); 
 }
 
+///////////////////////////////////////////////////////////////////////////////
+// Name: ConnectToGroup
+// Description:
+//
 void ZGuiRadiobutton::ConnectToGroup(int iGroupID, ZGuiRadiobutton* pbNeigbour)
 {
 	// Ta bort knappen från den tidigare gruppen
@@ -164,6 +195,10 @@ void ZGuiRadiobutton::ConnectToGroup(int iGroupID, ZGuiRadiobutton* pbNeigbour)
 	m_iGroupID = iGroupID;
 }
 
+///////////////////////////////////////////////////////////////////////////////
+// Name: GetWndSkinsDesc
+// Description:
+//
 void ZGuiRadiobutton::GetWndSkinsDesc(vector<SKIN_DESC>& pkSkinDesc) const
 {
 	int iStart = pkSkinDesc.size(); 
@@ -172,6 +207,10 @@ void ZGuiRadiobutton::GetWndSkinsDesc(vector<SKIN_DESC>& pkSkinDesc) const
 		pkSkinDesc[i].second.insert(0, "Radiobutton: ");
 }
 
+///////////////////////////////////////////////////////////////////////////////
+// Name: Resize
+// Description:
+//
 void ZGuiRadiobutton::Resize(int iWidth, int iHeight, bool bChangeMoveArea)
 {
 	iHeight = GetScreenRect().Height(); // dont allow vertcal resize
@@ -180,6 +219,10 @@ void ZGuiRadiobutton::Resize(int iWidth, int iHeight, bool bChangeMoveArea)
 	ZGuiWnd::Resize(iWidth, iHeight, bChangeMoveArea);
 }
 
+///////////////////////////////////////////////////////////////////////////////
+// Name: CopyNonUniqueData
+// Description:
+//
 void ZGuiRadiobutton::CopyNonUniqueData(const ZGuiWnd* pkSrc)
 {
 	if(pkSrc && typeid(*pkSrc)==typeid(ZGuiRadiobutton))
@@ -188,4 +231,25 @@ void ZGuiRadiobutton::CopyNonUniqueData(const ZGuiWnd* pkSrc)
 	}
 
 	ZGuiWnd::CopyNonUniqueData(pkSrc);
+}
+
+void ZGuiRadiobutton::ChangeGroupName(char *szNewName)
+{
+	ZGuiRadiobutton* prev = m_pkPrev;
+	while(prev != NULL)
+	{
+		if(prev->GetGroupID() == m_iGroupID)
+			strcpy(prev->m_szGroupName, szNewName); 
+		prev = prev->GetPrev();
+	}
+
+	ZGuiRadiobutton* next = m_pkNext;
+	while(next != NULL)
+	{
+		if(next->GetGroupID() == m_iGroupID)
+			strcpy(next->m_szGroupName, szNewName); 
+		next = next->GetNext();
+	}
+
+	strcpy(m_szGroupName, szNewName);
 }

@@ -197,6 +197,12 @@ bool ZGuiCombobox::AddItem(char* strText,int iIndex,bool bSelect)
 
 	m_pkListbox->AddItem(strText,iIndex,bSelectItem);
 
+	if(m_bIsMenu)
+	{
+		Resize(m_pkListbox->GetScreenRect().Width(), 
+			m_pkListbox->GetItemCount()*m_pkListbox->GetItemHeight()); 
+	}
+
 	if(bSelectItem)
 	{
 		if(m_pkListbox->GetSelItem())
@@ -304,6 +310,14 @@ void ZGuiCombobox::Resize(int iWidth,int iHeight,bool bChangeMoveArea)
 		m_pkLabel->Resize(iWidth,m_pkListbox->GetItemHeight());
 
 	ZGuiWnd::Resize(iWidth,iHeight,bChangeMoveArea);
+
+	if(m_bIsMenu)
+	{
+		m_pkListbox->Resize(
+			m_pkListbox->GetScreenRect().Width(),
+			m_pkListbox->GetItemCount()*
+			m_pkListbox->GetItemHeight());
+	}
 }
 
 void ZGuiCombobox::CopyNonUniqueData(const ZGuiWnd* pkSrc)

@@ -15,8 +15,10 @@
 class ENGINE_API ZGuiRadiobutton : public ZGuiControl
 {
 public:
+	void ChangeGroupName(char* szNewName);
 	ZGuiRadiobutton(Rect kRectangle, ZGuiWnd* pkParent, int iID=0, 
-		int iGroupID=-1, ZGuiRadiobutton* pkPrev=NULL, bool bVisible=true);
+		int iGroupID=-1, char* szGroupName=NULL, 
+		ZGuiRadiobutton* pkPrev=NULL, bool bVisible=true);
 	virtual ~ZGuiRadiobutton();
 	bool Render( ZGuiRender* pkRenderer );
 	void GetWndSkinsDesc(vector<SKIN_DESC>& pkSkinDesc) const; // overloaded
@@ -29,6 +31,7 @@ public:
 	char* GetText();// overloaded
 	void Resize(int Width, int Height, bool bChangeMoveArea=true); // overloaded
 	int GetGroupID() {return m_iGroupID;}
+	char* GetGroupName() {return m_szGroupName;}
 	void CopyNonUniqueData(const ZGuiWnd* pkSrc);
 
 private:
@@ -40,6 +43,7 @@ private:
 
 	ZGuiCheckbox* m_pkCheckbox;
 	int m_iGroupID;
+	char m_szGroupName[50]; // Same name as the resource manager use to find the window.
 
 	ZGuiRadiobutton* m_pkPrev;
 	ZGuiRadiobutton* m_pkNext;

@@ -22,7 +22,7 @@ public:
 	
 private:
 	void UpdateUniquePropertyText(ZGuiWnd* pkControl, CtrlType eWndType);
-	void CreateUniqueProperites();
+	void CreateSpecialProperites();
 
 	vector<pair<CtrlType, ZGuiWnd*> > m_kSpecCtrls;
 };

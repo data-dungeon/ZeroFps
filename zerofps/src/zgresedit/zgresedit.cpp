@@ -206,6 +206,7 @@ bool ZGResEdit::WinProc(ZGuiWnd* pkWnd,unsigned int uiMessage,
 			if(pkWnd != m_pkRectWnd)
 			{
 				m_pkRectWnd->Hide();
+				m_pkMoveWnds.clear(); 
 			}
 
 			if(!IsGuiWnd(pkWnd) || pkWnd == m_pkRectWnd)
@@ -285,6 +286,11 @@ bool ZGResEdit::WinProc(ZGuiWnd* pkWnd,unsigned int uiMessage,
 		{
 			int x = ((int*)pkParams)[0];
 			int y = ((int*)pkParams)[1];
+
+			if(x + m_pkPropertyBox->Width() > m_iWidth)
+				x -= (x + m_pkPropertyBox->Width()-m_iWidth);
+			if(y + m_pkPropertyBox->Height() > m_iHeight)
+				y -= (y + m_pkPropertyBox->Height()-m_iHeight);
 			
 			m_pkPropertyBox->OnOpen(x,y);
 		}
@@ -449,7 +455,7 @@ bool ZGResEdit::WinProc(ZGuiWnd* pkWnd,unsigned int uiMessage,
 			}
 
 			break;
-		case KEY_RETURN:
+/*		case KEY_RETURN:
 			{
 				ZGuiWnd* pkFocusWnd = ZGuiWnd::m_pkFocusWnd;
 
@@ -465,44 +471,83 @@ bool ZGResEdit::WinProc(ZGuiWnd* pkWnd,unsigned int uiMessage,
 					pkInput->Reset();
 				}
 			}
-			break;
+			break;*/
 		case KEY_UP:
 		case KEY_DOWN:
 			{
-				if( !IsGuiWnd(SelectWnd::GetInstance()->m_pkWnd) && 
-					!m_pkPropertyBox->IsOpen())
+				if(m_pkMoveWnds.empty())
 				{
-					int offset = 1;
-					if(m_bUseGrid)
-						offset = m_iGridPrec;
+					if( !IsGuiWnd(SelectWnd::GetInstance()->m_pkWnd) && 
+						!m_pkPropertyBox->IsOpen())
+					{
+						int offset = 1;
+						if(m_bUseGrid)
+							offset = m_iGridPrec;
 
-					if(((int*)pkParams)[0] == KEY_UP)
-						offset = -offset;
-					
-					Rect rc = SelectWnd::GetInstance()->m_pkWnd->GetScreenRect();
-					MoveWnd(SelectWnd::GetInstance()->m_pkWnd,
-						rc.Left,rc.Top+offset);
-					pkGui->SetFocus(SelectWnd::GetInstance()->m_pkWnd);
+						if(((int*)pkParams)[0] == KEY_UP)
+							offset = -offset;
+						
+						Rect rc = SelectWnd::GetInstance()->m_pkWnd->GetScreenRect();
+						MoveWnd(SelectWnd::GetInstance()->m_pkWnd,
+							rc.Left,rc.Top+offset);
+						pkGui->SetFocus(SelectWnd::GetInstance()->m_pkWnd);
+					}
+				}
+				else
+				{
+					for( int i=0; i<m_pkMoveWnds.size(); i++)
+					{
+						int offset = 1;
+						if(m_bUseGrid)
+							offset = m_iGridPrec;
+
+						if(((int*)pkParams)[0] == KEY_UP)
+							offset = -offset;
+						
+						Rect rc = m_pkMoveWnds[i]->GetScreenRect();
+						MoveWnd(m_pkMoveWnds[i],rc.Left,rc.Top+offset);
+						pkGui->SetFocus(m_pkMoveWnds[i]);
+					}
 				}
 			}
 			break;
 		case KEY_LEFT:
 		case KEY_RIGHT:
 			{
-				if( !IsGuiWnd(SelectWnd::GetInstance()->m_pkWnd) && 
-					!m_pkPropertyBox->IsOpen())
+				if(m_pkMoveWnds.empty())
 				{
-					int offset = 1;
-					if(m_bUseGrid)
-						offset = m_iGridPrec;
+					if( !IsGuiWnd(SelectWnd::GetInstance()->m_pkWnd) && 
+						!m_pkPropertyBox->IsOpen())
+					{
+						int offset = 1;
+						if(m_bUseGrid)
+							offset = m_iGridPrec;
 
-					if(((int*)pkParams)[0] == KEY_LEFT)
-						offset = -offset;
+						if(((int*)pkParams)[0] == KEY_LEFT)
+							offset = -offset;
 
-					Rect rc = SelectWnd::GetInstance()->m_pkWnd->GetScreenRect();
-					MoveWnd(SelectWnd::GetInstance()->m_pkWnd,rc.Left+offset,
-						rc.Top);
-					pkGui->SetFocus(SelectWnd::GetInstance()->m_pkWnd);
+						Rect rc = SelectWnd::GetInstance()->m_pkWnd->GetScreenRect();
+						MoveWnd(SelectWnd::GetInstance()->m_pkWnd,rc.Left+offset,
+							rc.Top);
+						pkGui->SetFocus(SelectWnd::GetInstance()->m_pkWnd);
+					}
+				}
+				else
+				{
+					for( int i=0; i<m_pkMoveWnds.size(); i++)
+						if(!IsGuiWnd(m_pkMoveWnds[i]))
+						{
+							int offset = 1;
+							if(m_bUseGrid)
+								offset = m_iGridPrec;
+
+							if(((int*)pkParams)[0] == KEY_LEFT)
+								offset = -offset;
+
+							Rect rc = m_pkMoveWnds[i]->GetScreenRect();
+							MoveWnd(m_pkMoveWnds[i],rc.Left+offset,rc.Top);
+							pkGui->SetFocus(m_pkMoveWnds[i]);
+						}
 				}
 			}
 			break;
@@ -613,6 +658,10 @@ bool ZGResEdit::Create()
 	pkFileMenuCB->AddItem("Save", IDM_SAVEFILE);
 	pkFileMenuCB->AddItem("Save as...", IDM_SAVEFILE_AS);
 	pkFileMenuCB->AddItem("Exit", IDM_EXIT);
+
+	// Set last group name
+	sprintf(m_pkGuiBuilder->m_szLastGroupName, "RadioGroup%i",
+		m_pkGuiBuilder->m_iLastRadioGroup);
 
 	return true;
 }

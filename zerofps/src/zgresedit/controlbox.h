@@ -22,14 +22,13 @@ public:
 
 private:
 	void CreateCopy();
-	typedef bool (*ZGuiWndProc) (ZGuiWnd* a, unsigned int b, int c, void* d) ;
 	typedef pair<pair<string,string>, ZGuiSkin*> tSkinInf; //window_name, wnd_desc, skin
 
 	bool OnClose(bool bSave);
 	void SelectSkins(vector<tSkinInf>& kSkinInfoList, ZGuiWnd* pkWnd);
 	bool CreateNewType(CtrlType eType, ZGuiWndProc oWndProc);
 	void PrintSkins(Serialization *pkFile, TextureManager* pkTexMan);
-	void PrintUniqueWndProperites(Serialization* pkFile, ZGuiWnd* pkWnd);
+	void PrintSpecialProperites(Serialization* pkFile, ZGuiWnd* pkWnd);
 	
 public:
 	void ClearAll();

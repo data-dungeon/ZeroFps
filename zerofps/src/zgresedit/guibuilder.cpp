@@ -11,6 +11,11 @@
 #include "../zerofps/basic/zguiskin.h"
 #include <typeinfo>
 
+int  GuiBuilder::m_iLastID = LAST_ID;
+int  GuiBuilder::m_iLastRadioGroup = LAST_ID+1000;
+char GuiBuilder::m_szLastGroupName[50];
+int  GuiBuilder::m_iLastTabNr = 0;
+
 ///////////////////////////////////////////////////////////////////////////////
 // Construction/Destruction
 //
@@ -20,9 +25,9 @@ GuiBuilder::GuiBuilder(ZGui* pkGui,TextureManager* pkTexMan,
 	m_pkGui = pkGui;
 	m_pkTexMan = pkTexMan;
 	m_pkGuiMan = pkGuiMan;
-	m_iLastID = LAST_ID;
+/*	m_iLastID = LAST_ID;
 	m_iLastRadioGroup = LAST_ID+10000;
-	m_iLastTabNr = 0;
+	m_iLastTabNr = 0;*/
 	m_rcScreen = rcScreen;
 	m_bAllocateNewSkins = false;
 }
@@ -358,6 +363,7 @@ ZGuiCheckbox* GuiBuilder::CreateCheckbox(ZGuiWnd* pkParent,int iID,
 //
 ZGuiRadiobutton* GuiBuilder::CreateRadioButton(ZGuiWnd* pkParent,int iID,
 											   char* szRegName,int GroupID,
+											   char* szGroupName,
 											   bool bCreateNewGroup,
 											   int x,int y,int w,int h,
 											   char *szRbName,bool bCheck,
@@ -373,6 +379,21 @@ ZGuiRadiobutton* GuiBuilder::CreateRadioButton(ZGuiWnd* pkParent,int iID,
 		GroupID = m_iLastRadioGroup;
 	}
 
+	char szRadioGroup[50];
+
+	if(szGroupName == NULL)
+	{
+		if(bCreateNewGroup)
+			sprintf(m_szLastGroupName, "RadioGroup%i", m_iLastRadioGroup);
+	
+		strcpy(szRadioGroup, m_szLastGroupName);
+	}
+	else
+	{
+		strcpy(m_szLastGroupName, szGroupName);
+		strcpy(szRadioGroup, m_szLastGroupName);
+	}
+
 	static int iPrevGroupID = -3231963;
 	static ZGuiRadiobutton* pkPrev = NULL;
 
@@ -383,14 +404,13 @@ ZGuiRadiobutton* GuiBuilder::CreateRadioButton(ZGuiWnd* pkParent,int iID,
 	}
 
 	ZGuiRadiobutton* pkRadioButton = new ZGuiRadiobutton(Rect(x,y,x+w,y+h),
-		pkParent,iID,GroupID,pkPrev,true);
+		pkParent,iID,GroupID,szRadioGroup,pkPrev,true);
 	pkRadioButton->SetButtonUnselectedSkin(GetSkin("rbn_down",m_bAllocateNewSkins));
 	pkRadioButton->SetButtonSelectedSkin(GetSkin("rbn_up",m_bAllocateNewSkins));
 	pkRadioButton->GetButton()->SetLabelSkin(GetSkin("Label",m_bAllocateNewSkins));
 	pkRadioButton->SetText(szRbName);
 	pkRadioButton->SetGUI(m_pkGui);
-	pkRadioButton->SetTabOrderNr((TabOrderNr == -1) ? m_iLastTabNr++ : 
-		TabOrderNr);
+	pkRadioButton->SetTabOrderNr((TabOrderNr == -1) ?m_iLastTabNr++ :TabOrderNr);
 
 	if(bCheck)
 		pkRadioButton->GetButton()->CheckButton();
@@ -938,4 +958,52 @@ bool GuiBuilder::IsResNameLegalForWnd(const ZGuiWnd* pkWndToCheck,
 		return true;
 
 	return false;
+}
+
+bool GuiBuilder::IsGroupNameLegal(ZGuiRadiobutton* pkRadibuttonToCheck,
+								  const char* szGroupName)
+{
+	if(szGroupName == NULL || pkRadibuttonToCheck == NULL)
+		return false;
+
+	int iLength = strlen(szGroupName);
+
+	if(iLength < 1)
+		return false;
+
+	for(int i=0; i<iLength; i++)
+	{
+		if(szGroupName[i] >= 48 && szGroupName[i] <= 57)  // numbers
+			continue;
+		if(szGroupName[i] >= 65 && szGroupName[i] <= 90)  // big letters
+			continue;
+		if(szGroupName[i] >= 97 && szGroupName[i] <= 122) // small letters
+			continue;
+		if(szGroupName[i] == '_' || szGroupName[i] == '#')
+			continue;
+
+		return false;
+	}
+
+	const char* szOldName = ((ZGuiWnd*) pkRadibuttonToCheck)->GetName();
+
+	if(strcmp(szOldName, szGroupName) == 0)
+		return true;
+
+	map<string,ZGuiWnd*>::iterator it;
+	map<string,ZGuiWnd*> pkAllWindows;
+	m_pkGuiMan->GetWindows(pkAllWindows);
+	for(it=pkAllWindows.begin(); it != pkAllWindows.end(); it++)
+	{
+		if(GetWndType(it->second) == RADIOBUTTON)
+		{
+			if(strcmp( ((ZGuiRadiobutton*)it->second)->GetGroupName(),
+				szGroupName) == 0)
+			{
+				return false;
+			}
+		}
+	}
+
+	return true;
 }
