@@ -88,10 +88,6 @@ LINK32=link.exe
 
 SOURCE=.\mistclient.cpp
 # End Source File
-# Begin Source File
-
-SOURCE=..\zerofpsv2\script\zfscript.cpp
-# End Source File
 # End Group
 # Begin Group "Header Files"
 

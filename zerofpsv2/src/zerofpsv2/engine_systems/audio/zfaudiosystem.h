@@ -58,9 +58,10 @@ class ENGINE_SYSTEMS_API SoundInfo
 class ENGINE_SYSTEMS_API ZFAudioSystem  : public ZFSubSystem 
 {
 public:
+	void RemoveAllSounds();
 	
 	bool StartSound(SoundInfo kSound);
-	bool EndSound(SoundInfo kSound, float fMaxSearchRange = 1000000.0f);
+	bool RemoveSound(SoundInfo kSound, float fMaxSearchRange = 1000000.0f);
 
 	unsigned int GetNumActiveSounds();
 	unsigned int GetNumActiveChannels();
@@ -98,7 +99,6 @@ public:
 	Vector3 GetListnerDir() { return m_kHead; }
 
 private:
-
 	bool m_bIsValid;
 	
 	OggMusic* m_pkMusic;
@@ -119,6 +119,7 @@ private:
 	ZFResourceHandle* GetResHandle(string strFileName);
 	bool Hearable(SoundInfo* pkSound);
 	bool RestartLoopSound(SoundInfo* pkSound);
+	bool LoadRes(SoundInfo* pkSound);
 };
 
 #endif // #ifndef _THE_ZFAUDIOSYSTEM_H_

@@ -192,7 +192,7 @@ int AudioLua::StopSoundLua(lua_State* pkLua)
 	strFileName.append(szFileName);
 
 	SoundInfo sound(strFileName.c_str(), pos, Vector3(0,0,1), false);
-	if(!g_pAudioSys->EndSound(sound, fMaxSearchRange))
+	if(!g_pAudioSys->RemoveSound(sound, fMaxSearchRange))
 	{
 		printf("Failed to stop sound!\n");
 	}

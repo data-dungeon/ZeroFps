@@ -135,7 +135,11 @@ SoundInfo::SoundInfo(const char* c_szFile, Vector3 pos, Vector3 dir, bool bLoop)
 
 SoundInfo::~SoundInfo()
 {
-	
+	if(m_pkResource != NULL)
+	{
+		delete m_pkResource;
+		m_pkResource = NULL;
+	}
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -384,10 +388,10 @@ void ZFAudioSystem::Update()
 				pkSound->m_uiSourceBufferName = 0;
 				
 				// Ta bort ljudet om det inte loopar. Ifall det loopar så 
-				// behåller vi ljudet men flaggar att det inte längre kan
-				// höras, så att vi sedan kan kolla det och aktivera det
-				// pånytt om lyssnaren skulle komma såpass nära att ljudet
-				// pånytt kan höras.
+				// behåller vi ljudet men laddar ur resursen och flaggar att 
+				// det inte längre kan höras, så att vi sedan kan kolla det 
+				// och aktivera det pånytt om lyssnaren skulle komma såpass 
+				// nära att ljudet pånytt kan höras.
 				if(pkSound->m_bLoop == false)
 				{
 					m_kActiveSounds.remove( pkSound ) ;
@@ -396,6 +400,10 @@ void ZFAudioSystem::Update()
 				else
 				{
 					pkSound->m_bLoopingNoLongerHearable = true;
+					
+					// Ladda ur resursen.
+					delete pkSound->m_pkResource;
+					pkSound->m_pkResource = NULL;
 				}
 				break;
 			}
@@ -428,22 +436,8 @@ bool ZFAudioSystem::StartSound(SoundInfo kSound)
 		return false;
 	}
 
-	// Hämta ett resurshantag.
-	ZFResourceHandle* pkResHandle = GetResHandle(string(pkSound->m_szFile));
-
-	// Är resursen ej inladdad?
-	if(pkResHandle->IsValid() == false)
-	{
-		// Försök ladda in ljudet från disk via resurs systemet.
-		if(pkResHandle->SetRes(pkSound->m_szFile) == false)
-		{
-			printf("ZFAudioSystem::ActivateSound: SetRes failed!\n");
-			return false;
-		}
-	}
-
-	// Sätt resurspekaren.
-	pkSound->m_pkResource = (ZFSoundRes*) pkResHandle->GetResourcePtr();
+	// Ladda ljudet om det inte redan finns.
+	LoadRes(pkSound);
 
 	// Hitta en ledigt ljudkanal.
 	for(int i=0; i<SOURCE_POOL_SIZE; i++)
@@ -474,7 +468,7 @@ bool ZFAudioSystem::StartSound(SoundInfo kSound)
 // heter samma som [kSound]. Avståndet mellan det funna ljudet
 // och [kSound] bestäms av parametern fMaxSearchRange.
 //
-bool ZFAudioSystem::EndSound(SoundInfo kSound, float fMaxSearchRange)
+bool ZFAudioSystem::RemoveSound(SoundInfo kSound, float fMaxSearchRange)
 {
 	SoundInfo* pkRemoveSound = NULL;
 
@@ -512,6 +506,8 @@ bool ZFAudioSystem::EndSound(SoundInfo kSound, float fMaxSearchRange)
 				m_akSourcePool[j].second = false;
 				pkRemoveSound->m_uiSourceBufferName = 0;
 				
+				printf("removing\n");
+
 				// Ta bort ljudet ur listan.
 				m_kActiveSounds.remove( pkRemoveSound ) ;
 				delete pkRemoveSound; // radera	
@@ -522,6 +518,22 @@ bool ZFAudioSystem::EndSound(SoundInfo kSound, float fMaxSearchRange)
 	}
 
 	return false;
+}
+
+void ZFAudioSystem::RemoveAllSounds()
+{
+	vector<SoundInfo*> kRemoveArray;
+
+	// Radera alla ljud
+	list<SoundInfo*>::iterator itSound = m_kActiveSounds.begin();
+	for( ; itSound != m_kActiveSounds.end(); itSound++)  
+		delete (*itSound); // radera
+
+	m_kActiveSounds.clear();
+
+	// Frigör poolen
+	for(int i=0; i<SOURCE_POOL_SIZE; i++)
+		m_akSourcePool[i].second = false;
 }
 
 //
@@ -570,6 +582,10 @@ unsigned int ZFAudioSystem::GetNumActiveChannels()
 
 bool ZFAudioSystem::RestartLoopSound(SoundInfo *pkSound)
 {
+	// Ladda in ljudet på nytt
+	if(pkSound->m_pkResource == NULL)
+		LoadRes(pkSound);
+
 	bool bFoundChannel = false;
 
 	// Hitta en ledigt ljudkanal.
@@ -593,4 +609,26 @@ bool ZFAudioSystem::RestartLoopSound(SoundInfo *pkSound)
 	alSourcei( pkSound->m_uiSourceBufferName, AL_SOURCE_STATE, AL_INITIAL );
 
 	return bFoundChannel;
+}
+
+bool ZFAudioSystem::LoadRes(SoundInfo* pkSound)
+{
+	// Hämta ett resurshantag.
+	ZFResourceHandle* pkResHandle = GetResHandle(string(pkSound->m_szFile));
+
+	// Är resursen ej inladdad?
+	if(pkResHandle->IsValid() == false)
+	{
+		// Försök ladda in ljudet från disk via resurs systemet.
+		if(pkResHandle->SetRes(pkSound->m_szFile) == false)
+		{
+			printf("ZFAudioSystem::ActivateSound: SetRes failed!\n");
+			return false;
+		}
+	}
+
+	// Sätt resurspekaren.
+	pkSound->m_pkResource = (ZFSoundRes*) pkResHandle->GetResourcePtr();
+
+	return true;
 }
