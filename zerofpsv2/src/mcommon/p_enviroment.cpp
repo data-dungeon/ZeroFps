@@ -35,6 +35,7 @@ P_Enviroment::P_Enviroment()
 	m_fTimeScale =						1;
 	m_iCurrentSecond = 				0;
 	
+	/*
 	if(!m_pkEnviroment)
 	{
 		cout<<"WARNING: no enviroment subsystem found in application, enviroments will be disabled"<<endl;	
@@ -44,6 +45,7 @@ P_Enviroment::P_Enviroment()
 	{
 		cout<<"WARNING: no mistlands time system found in application ( client dont need this )"<<endl;
 	}
+	*/
 }
 
 P_Enviroment::~P_Enviroment()

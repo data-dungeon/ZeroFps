@@ -82,7 +82,8 @@ void P_CharacterControl::Update()
 				kVel *= 0.25;
 							
 			//apply movement force					
-			pkTcs->ApplyForce(Vector3(0,0,0),kVel);
+			if(!kVel.IsZero())
+				pkTcs->ApplyForce(Vector3(0,0,0),kVel);
 			
 			//check if where walking or running or nothing
 			if(kVel.Length() > 0 && pkTcs->GetOnGround())

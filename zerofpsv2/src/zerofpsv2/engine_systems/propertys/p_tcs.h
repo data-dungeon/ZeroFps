@@ -25,6 +25,14 @@ class P_Mad;
 	4:   enviroment objects (stones trees etc)
 */
 
+enum ENGINE_SYSTEMS_API TestTypes
+{
+	E_SPHERE = 0,
+	E_MESH	= 1,
+	E_BOX		= 2,
+	E_HMAP	= 3,
+};
+
 class ENGINE_SYSTEMS_API P_Tcs : public Property
 {
 	private:
@@ -32,9 +40,9 @@ class ENGINE_SYSTEMS_API P_Tcs : public Property
 		Render*	m_pkRender;
 		
 		bool		m_bHaveTriedToSetup;
-			
-		bool		m_bPolygonTest;
-		bool		m_bStatic;		
+		Vector3	m_kBoxSize;
+		int		m_iTestType;
+		bool		m_bStatic;
 		float	 	m_fRadius;						
 		bool		m_bHavePolygonData;
 		bool		m_bGravity;
@@ -44,7 +52,6 @@ class ENGINE_SYSTEMS_API P_Tcs : public Property
 		float		m_fMass;
 		float		m_fInertia;
 		float		m_fAirFriction;
-      bool		m_bOnGround;
 		bool		m_bActiveMoment;
 		float		m_fBounce;
 		float		m_fFriction;
@@ -80,6 +87,14 @@ class ENGINE_SYSTEMS_API P_Tcs : public Property
 	
 		
 		//temp data
+		Vector3	m_kAABBMax;
+		Vector3	m_kAABBMin;
+		Matrix4	m_kAABBRotation;
+		
+      bool		m_bOnGround;		
+		bool		m_bTempStatic;				
+		Vector3	m_kLastPos;				//used to determin if a body is resting
+		
 		Vector3	m_kLinearVelocity;
 		Vector3	m_kRotVelocity;
 		Vector3	m_kLinearForce;
@@ -87,8 +102,6 @@ class ENGINE_SYSTEMS_API P_Tcs : public Property
 		Vector3	m_kNewPos;
 		Matrix4	m_kNewRotation;
 		
-		Vector3	m_kMSPos;
-		float		m_fMSRadius;	
 
 		vector<PropertyValues> GetPropertyValues();
 		bool HandleSetValue( string kValueName, string kValue );
@@ -139,7 +152,8 @@ class ENGINE_SYSTEMS_API P_Tcs : public Property
 		
 		//sets 
       void SetRotVel (Vector3 kRotVel)			{m_kRotVel = kRotVel; }		
-		void SetPolygonTest(bool t) 				{m_bPolygonTest = t;};
+		//void SetPolygonTest(bool t) 				{m_bPolygonTest = t;};
+		void SetTestType(int iTest)				{m_iTestType = iTest;};
 		void SetRadius(float t) 					{m_fRadius = t;};
 		void SetStatic(bool bStatic) 				{m_bStatic = bStatic;};		
 		void SetRefetchPolygonData() 				{m_bHavePolygonData = false;};

@@ -340,6 +340,7 @@ void ZeroFps::UpdateDevPages()
 
 	DevPrintf("common","TCS:");
 	DevPrintf("common","  Collissions : %d", m_pkTcs->GetNrOfCollissions());
+	DevPrintf("common","  Contacts    : %d", m_pkTcs->GetNrOfContacts());
 	DevPrintf("common","  Tests       : %d", m_pkTcs->GetNrOfTests());
 	DevPrintf("common","  ActiveBodies: %d", m_pkTcs->GetNrOfActiveBodies());
 	
@@ -513,21 +514,21 @@ void ZeroFps::Run_Client()
 
 void ZeroFps::Update_System()
 {
-	int iLoops;
-	float fRestTime = 0;
+	int iLoops			= 0;
+	float fRestTime	= 0;
+	float fATime		= 0;
 
 	//calculate new system delta time
 	m_fSystemUpdateFpsDelta = float(1.0) / m_fSystemUpdateFps;	
 		
 	//time since last update
-	float fATime = GetTicks() - m_fSystemUpdateTime; 	
+	fATime = GetTicks() - m_fSystemUpdateTime; 	
 	
 	//how many system loops shuld we make?
 	iLoops = int(fATime / m_fSystemUpdateFpsDelta);		
 			
 	//save rest time to add it att end of function
 	fRestTime = fATime - (iLoops * m_fSystemUpdateFpsDelta);				
-
 			
 	//if no loops are to be done, just return
 	if(iLoops<=0)
@@ -540,11 +541,14 @@ void ZeroFps::Update_System()
 		iLoops = 10;
 	}
 	
+	
 
 	/*
+	//calc real systemfps  (for debuging)
 	static float time = GetTicks();
 	static float tStart = GetTicks();
 	static int frames = 0;
+	frames+=iLoops;
 	time =GetTicks();	
 	if(time -tStart >= 1.0)
 	{
@@ -552,9 +556,8 @@ void ZeroFps::Update_System()
 		frames = 0;
 		tStart = time;
 			
-	}
-	frames+=iLoops;
-	*/
+	}*/
+	
 		
 	for(int i=0;i<iLoops;i++)
 	{	
@@ -1790,7 +1793,8 @@ void ZeroFps::AddHMProperty(Entity* pkEntity, int iNetWorkId, Vector3 kZoneSize)
 	if(!pp)
 	{
 		pp = (P_Tcs*)pkEntity->AddProperty("P_Tcs");	
-		pp->SetPolygonTest(true);	
+		//pp->SetPolygonTest(true);	
+		pp->SetTestType(E_HMAP);
 		pp->SetStatic(true);			
 	}
 

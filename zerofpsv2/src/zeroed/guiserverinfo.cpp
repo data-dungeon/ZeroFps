@@ -1,5 +1,5 @@
 #include "guiserverinfo.h"
-#include <iostream.h>
+#include <iostream>
 #include "zeroed.h"
 
 bool GUIServerInfo::ConvertFromFullName(string strFullName)

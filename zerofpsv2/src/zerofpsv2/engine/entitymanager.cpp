@@ -447,6 +447,9 @@ Entity* EntityManager::CreateEntityByNetWorkID(int iNetID)
 	pkNew->m_eRole			= NETROLE_PROXY;
 	pkNew->m_eRemoteRole	= NETROLE_AUTHORITY;
 	pkNew->SetUseZones(false);
+	
+	//setup interpolation
+	pkNew->SetInterpolate(true);
 	pkNew->SetInterpolateFactor(4.0);
 	
 	return pkNew;
@@ -2352,7 +2355,8 @@ void EntityManager::SetZoneModel(const char* szName,int iId)
 	
 	if(pp)
 	{
-		pp->SetPolygonTest(true);	
+		//pp->SetPolygonTest(true);	
+		pp->SetTestType(E_MESH);
 		pp->SetStatic(true);			
 		pp->SetRefetchPolygonData();
 		pp->SetGroup(0);

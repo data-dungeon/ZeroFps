@@ -52,10 +52,10 @@ Entity::Entity()
 	m_pkParent				= NULL;
 	m_bRelativeOri			= false;
 	m_bFirstSetPos			= true;
-	m_bInterpolate			= true;
+	m_bInterpolate			= false;
 	m_iEntityID				= -1;
 	m_bSendChilds			= true;
-	m_fInterPolateFactor = 10;
+	m_fInterPolateFactor = 10;						//lower factor = slower moving objects/smoother movements
 
 	//clear child list
 	m_akChilds.clear();	

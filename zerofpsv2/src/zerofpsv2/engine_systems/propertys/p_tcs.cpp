@@ -15,13 +15,16 @@ P_Tcs::P_Tcs()
 	m_iType = PROPERTY_TYPE_RENDER | PROPERTY_TYPE_NORMAL;
 	m_iSide=PROPERTY_SIDE_SERVER | PROPERTY_SIDE_CLIENT;	
 		
-	bNetwork  = false;
-
+	bNetwork		= false;
+	m_iVersion	= 2;
+	
+	
 	m_pkTcs	= 		static_cast<Tcs*>(g_ZFObjSys.GetObjectPtr("Tcs"));
 	m_pkRender = 	static_cast<Render*>(g_ZFObjSys.GetObjectPtr("Render"));
 	
 	m_bHavePolygonData=	false;
-	m_bPolygonTest=		false;
+	m_kBoxSize=				Vector3(1,1,1);
+	m_iTestType=			E_SPHERE;
 	m_fRadius=				0.5;	
 	m_bGravity=				false;
 	m_bCharacter=			false;
@@ -37,6 +40,7 @@ P_Tcs::P_Tcs()
 	m_fAirFriction	=		1;
 	m_fInertia =			1;
 	m_bStatic=				false;
+	m_bTempStatic=			false;
 	m_iGroup=				0;
 	m_bOnGround=			false;
 	m_bActiveMoment =		true;
@@ -54,6 +58,11 @@ P_Tcs::P_Tcs()
    m_kRotVel.Set(0,0,0);
 	m_kExternalLinearForce.Set(0,0,0);
 	m_kExternalRotForce.Set(0,0,0);
+	
+	m_kLastPos.Set(0,0,0);
+	m_kAABBMax.Set(0,0,0);
+	m_kAABBMin.Set(0,0,0);
+	m_kAABBRotation.Zero();
 	
 	m_kLinearVelocity.Set(0,0,0);
 	m_kRotVelocity.Set(0,0,0);
@@ -90,7 +99,7 @@ void P_Tcs::Update()
 {	
 	if( m_pkEntityManager->IsUpdate(PROPERTY_TYPE_NORMAL) ) 
 	{
-		if(m_bPolygonTest)
+		if(m_iTestType == E_MESH)
 		{
 			if(!m_bHavePolygonData)
 			{
@@ -119,7 +128,7 @@ void P_Tcs::Update()
 void P_Tcs::SetData(vector<Mad_Face> kFaces, vector<Vector3> kVertex, vector<Vector3> kNormals, float fRadius )
 {
 	m_bLocalStoredData	= true;
-	m_bPolygonTest			= true;
+	//m_bPolygonTest			= true;
 	m_bHavePolygonData	= true;
 
 	m_pkFaces	= new vector<Mad_Face>;
@@ -137,7 +146,10 @@ void P_Tcs::SetData(vector<Mad_Face> kFaces, vector<Vector3> kVertex, vector<Vec
 
 void P_Tcs::Save(ZFIoInterface* pkPackage)
 {
-	pkPackage->Write((void*)&m_bPolygonTest,sizeof(m_bPolygonTest),1);
+	//pkPackage->Write((void*)&m_bPolygonTest,sizeof(m_bPolygonTest),1);
+	pkPackage->Write((void*)&m_kBoxSize,sizeof(m_kBoxSize),1);
+	pkPackage->Write((void*)&m_iTestType,sizeof(m_iTestType),1);
+	
 	pkPackage->Write((void*)&m_fRadius,sizeof(m_fRadius),1);	
 	pkPackage->Write((void*)&m_iGroup,sizeof(m_iGroup),1);	
 	pkPackage->Write((void*)&m_akTestGroups,sizeof(m_akTestGroups),1);		
@@ -171,45 +183,95 @@ void P_Tcs::Save(ZFIoInterface* pkPackage)
 
 void P_Tcs::Load(ZFIoInterface* pkPackage,int iVersion)
 {
-	pkPackage->Read((void*)&m_bPolygonTest,sizeof(m_bPolygonTest),1);
-	pkPackage->Read((void*)&m_fRadius,sizeof(m_fRadius),1);	
-	pkPackage->Read((void*)&m_iGroup,sizeof(m_iGroup),1);	
-	pkPackage->Read((void*)&m_akTestGroups,sizeof(m_akTestGroups),1);		
-	pkPackage->Read((void*)&m_akWalkableGroups,sizeof(m_akWalkableGroups),1);			
-	pkPackage->Read((void*)&m_iModelID,sizeof(m_iModelID),1);		
-	pkPackage->Read((void*)&m_bGravity,sizeof(m_bGravity),1);			
-	pkPackage->Read((void*)&m_bCharacter,sizeof(m_bCharacter),1);				
-	pkPackage->Read((void*)&m_fLegLength,sizeof(m_fLegLength),1);					
-
-	pkPackage->Read((void*)&m_fBounce,sizeof(m_fBounce),1);		
-	pkPackage->Read((void*)&m_fFriction,sizeof(m_fFriction),1);											
-	pkPackage->Read((void*)&m_fMass,sizeof(m_fMass),1);						
-	pkPackage->Read((void*)&m_fInertia,sizeof(m_fInertia),1);						
-	pkPackage->Read((void*)&m_fAirFriction,sizeof(m_fAirFriction),1);						
-	pkPackage->Read((void*)&m_bStatic,sizeof(m_bStatic),1);		
-	pkPackage->Read((void*)&m_bSleeping,sizeof(m_bSleeping),1);					
-					
-	pkPackage->Read((void*)&m_kRotVel,sizeof(m_kRotVel),1);								
-	
-	pkPackage->Read((void*)&m_kExternalLinearForce,sizeof(m_kExternalLinearForce),1);									
-	pkPackage->Read((void*)&m_kExternalRotForce,sizeof(m_kExternalRotForce),1);									
-	pkPackage->Read((void*)&m_bActiveMoment,sizeof(m_bActiveMoment),1);									
-	
-	pkPackage->Read((void*)&m_bCantSleep,sizeof(m_bCantSleep),1);									
-	pkPackage->Read((void*)&m_bDisableOnSleep,sizeof(m_bDisableOnSleep),1);									
-	pkPackage->Read((void*)&m_bRemoveOnSleep,sizeof(m_bRemoveOnSleep),1);											
-	pkPackage->Read((void*)&m_bNoColRespons,sizeof(m_bNoColRespons),1);											
+	switch(iVersion)
+	{
+		case 1:
+		{
+			bool bPTest;
+		
+			pkPackage->Read((void*)&bPTest,sizeof(bPTest),1);
+			pkPackage->Read((void*)&m_fRadius,sizeof(m_fRadius),1);	
+			pkPackage->Read((void*)&m_iGroup,sizeof(m_iGroup),1);	
+			pkPackage->Read((void*)&m_akTestGroups,sizeof(m_akTestGroups),1);		
+			pkPackage->Read((void*)&m_akWalkableGroups,sizeof(m_akWalkableGroups),1);			
+			pkPackage->Read((void*)&m_iModelID,sizeof(m_iModelID),1);		
+			pkPackage->Read((void*)&m_bGravity,sizeof(m_bGravity),1);			
+			pkPackage->Read((void*)&m_bCharacter,sizeof(m_bCharacter),1);				
+			pkPackage->Read((void*)&m_fLegLength,sizeof(m_fLegLength),1);					
+		
+			pkPackage->Read((void*)&m_fBounce,sizeof(m_fBounce),1);		
+			pkPackage->Read((void*)&m_fFriction,sizeof(m_fFriction),1);											
+			pkPackage->Read((void*)&m_fMass,sizeof(m_fMass),1);						
+			pkPackage->Read((void*)&m_fInertia,sizeof(m_fInertia),1);						
+			pkPackage->Read((void*)&m_fAirFriction,sizeof(m_fAirFriction),1);						
+			pkPackage->Read((void*)&m_bStatic,sizeof(m_bStatic),1);		
+			pkPackage->Read((void*)&m_bSleeping,sizeof(m_bSleeping),1);					
+							
+			pkPackage->Read((void*)&m_kRotVel,sizeof(m_kRotVel),1);								
+			
+			pkPackage->Read((void*)&m_kExternalLinearForce,sizeof(m_kExternalLinearForce),1);									
+			pkPackage->Read((void*)&m_kExternalRotForce,sizeof(m_kExternalRotForce),1);									
+			pkPackage->Read((void*)&m_bActiveMoment,sizeof(m_bActiveMoment),1);									
+			
+			pkPackage->Read((void*)&m_bCantSleep,sizeof(m_bCantSleep),1);									
+			pkPackage->Read((void*)&m_bDisableOnSleep,sizeof(m_bDisableOnSleep),1);									
+			pkPackage->Read((void*)&m_bRemoveOnSleep,sizeof(m_bRemoveOnSleep),1);											
+			pkPackage->Read((void*)&m_bNoColRespons,sizeof(m_bNoColRespons),1);			
+		
+			if(bPTest)
+				m_iTestType = E_MESH;
+			else
+				m_iTestType = E_SPHERE;
+							
+			break;	
+		}
+		
+		case 2:
+		{
+			pkPackage->Read((void*)&m_kBoxSize,sizeof(m_kBoxSize),1);
+			pkPackage->Read((void*)&m_iTestType,sizeof(m_iTestType),1);
+			pkPackage->Read((void*)&m_fRadius,sizeof(m_fRadius),1);	
+			pkPackage->Read((void*)&m_iGroup,sizeof(m_iGroup),1);	
+			pkPackage->Read((void*)&m_akTestGroups,sizeof(m_akTestGroups),1);		
+			pkPackage->Read((void*)&m_akWalkableGroups,sizeof(m_akWalkableGroups),1);			
+			pkPackage->Read((void*)&m_iModelID,sizeof(m_iModelID),1);		
+			pkPackage->Read((void*)&m_bGravity,sizeof(m_bGravity),1);			
+			pkPackage->Read((void*)&m_bCharacter,sizeof(m_bCharacter),1);				
+			pkPackage->Read((void*)&m_fLegLength,sizeof(m_fLegLength),1);					
+		
+			pkPackage->Read((void*)&m_fBounce,sizeof(m_fBounce),1);		
+			pkPackage->Read((void*)&m_fFriction,sizeof(m_fFriction),1);											
+			pkPackage->Read((void*)&m_fMass,sizeof(m_fMass),1);						
+			pkPackage->Read((void*)&m_fInertia,sizeof(m_fInertia),1);						
+			pkPackage->Read((void*)&m_fAirFriction,sizeof(m_fAirFriction),1);						
+			pkPackage->Read((void*)&m_bStatic,sizeof(m_bStatic),1);		
+			pkPackage->Read((void*)&m_bSleeping,sizeof(m_bSleeping),1);					
+							
+			pkPackage->Read((void*)&m_kRotVel,sizeof(m_kRotVel),1);								
+			
+			pkPackage->Read((void*)&m_kExternalLinearForce,sizeof(m_kExternalLinearForce),1);									
+			pkPackage->Read((void*)&m_kExternalRotForce,sizeof(m_kExternalRotForce),1);									
+			pkPackage->Read((void*)&m_bActiveMoment,sizeof(m_bActiveMoment),1);									
+			
+			pkPackage->Read((void*)&m_bCantSleep,sizeof(m_bCantSleep),1);									
+			pkPackage->Read((void*)&m_bDisableOnSleep,sizeof(m_bDisableOnSleep),1);									
+			pkPackage->Read((void*)&m_bRemoveOnSleep,sizeof(m_bRemoveOnSleep),1);											
+			pkPackage->Read((void*)&m_bNoColRespons,sizeof(m_bNoColRespons),1);						
+		
+			break;
+		}			
+	}					
 }
 
 vector<PropertyValues> P_Tcs::GetPropertyValues()
 {
-	vector<PropertyValues> kReturn(20);
+	vector<PropertyValues> kReturn(21);
 
 	int dummy;
-
-	kReturn[0].kValueName="polygontest";
-	kReturn[0].iValueType=VALUETYPE_BOOL;
-	kReturn[0].pkValue=(void*)&m_bPolygonTest;
+	
+	kReturn[0].kValueName="testtype";
+	kReturn[0].iValueType=VALUETYPE_INT;
+	kReturn[0].pkValue=(void*)&m_iTestType;
 
 	kReturn[1].kValueName="groupflag";
 	kReturn[1].iValueType=VALUETYPE_INT;
@@ -286,7 +348,12 @@ vector<PropertyValues> P_Tcs::GetPropertyValues()
 	kReturn[19].kValueName="nocolrespons";
 	kReturn[19].iValueType=VALUETYPE_BOOL;
 	kReturn[19].pkValue=(void*)&m_bNoColRespons;	
-								
+
+	kReturn[20].kValueName="boxsize";
+	kReturn[20].iValueType=VALUETYPE_VECTOR3;
+	kReturn[20].pkValue=(void*)&m_kBoxSize;	
+	
+									
 	return kReturn;
 }
 
@@ -384,7 +451,8 @@ bool P_Tcs::SetupMeshData()
 			kVertex[i] += pkHm->m_pkHeightMap->m_kCornerOffset;	//m_pkEntity->GetWorldPosV();	// + pkHm->m_pkHeightMap->m_kCornerPos;
 
 		// Set Data.
-		SetPolygonTest(true);	
+		//SetPolygonTest(true);	
+		SetTestType(E_HMAP);
 		SetStatic(true);			
 		SetData(kFace,kVertex,kNormal, 1);	 
 		SetHmap(pkHm->m_pkHeightMap);
@@ -529,8 +597,17 @@ bool P_Tcs::TestSides(Vector3* kVerts,Vector3* pkNormal,Vector3 kPos)
 void P_Tcs::Draw()
 {
 	// Draw TCS bound sphere.
-	m_pkRender->Sphere(GetEntity()->GetIWorldPosV(),m_fRadius,2,Vector3(1,0,1),false);
-
+//	m_pkRender->Sphere(GetEntity()->GetIWorldPosV(),m_fRadius,2,Vector3(1,0,1),false);
+	
+	if(m_bStatic)
+		m_pkRender->DrawAABB(GetEntity()->GetIWorldPosV() + m_kAABBMin,GetEntity()->GetIWorldPosV() + m_kAABBMax,Vector3(1,1,1) );
+	else if(m_bSleeping)
+		m_pkRender->DrawAABB(GetEntity()->GetIWorldPosV() + m_kAABBMin,GetEntity()->GetIWorldPosV() + m_kAABBMax,Vector3(0,0,1) );
+	else
+		m_pkRender->DrawAABB(GetEntity()->GetIWorldPosV() + m_kAABBMin,GetEntity()->GetIWorldPosV() + m_kAABBMax,Vector3(0,1,0) );
+				
+	/*
+	
 	if(!m_pkVertex)
 		return;
 
@@ -580,6 +657,8 @@ void P_Tcs::Draw()
 	}
 
 	glPopAttrib();
+	
+	*/
 }
 
 void P_Tcs::GenerateModelMatrix() 
@@ -638,7 +717,7 @@ void P_Tcs::ClearExternalForces()
 
 void P_Tcs::ApplyImpulsForce(Vector3 kAttachPos,const Vector3& kForce,bool bLocal)
 {
-	if(m_bStatic)
+	if(m_bStatic ||  m_bTempStatic)
 		return;
 
 	Wakeup();
@@ -650,9 +729,9 @@ void P_Tcs::ApplyImpulsForce(Vector3 kAttachPos,const Vector3& kForce,bool bLoca
 	{	
 		//are we using local cordinats or not, if so rotate it
 		if(bLocal)
-			kAttachPos = GetEntity()->GetLocalRotM().VectorTransform(kAttachPos);	
+			kAttachPos = m_kNewRotation.VectorTransform(kAttachPos);	
 		else
-			kAttachPos = kAttachPos - GetEntity()->GetWorldPosV();
+			kAttachPos = kAttachPos - m_kNewPos;
 				
 			
 		m_kRotVelocity += kForce.Cross(kAttachPos) * m_fInertia; 
@@ -663,7 +742,7 @@ void P_Tcs::ApplyImpulsForce(Vector3 kAttachPos,const Vector3& kForce,bool bLoca
 
 void P_Tcs::ApplyImpulsForce(const Vector3& kForce)
 {
-	if(m_bStatic)
+	if(m_bStatic ||  m_bTempStatic)
 		return;
 	
 	Wakeup();
@@ -724,8 +803,6 @@ void P_Tcs::Wakeup(bool bWakeChilds)
 	if( !m_bSleeping)
 		return;
 		
-		
-//	cout<<"wakup"<<endl;
 		
 	m_bSleeping = false;
 
