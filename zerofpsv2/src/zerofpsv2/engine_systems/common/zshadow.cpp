@@ -117,6 +117,7 @@ ZShadow::ZShadow(): ZFSubSystem("ZShadow")
 	RegisterVariable("r_shadowdebug",		&m_iDebug,CSYS_INT);
 	RegisterVariable("r_shadowintensity",	&m_fShadowIntensity,CSYS_FLOAT);
 	
+	
 	//ugly damn save shadowgroups hack deluxe alla dvoid
 	char nr[4];
 	for(int i = 0;i<8;i++)
