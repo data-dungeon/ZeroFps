@@ -2,6 +2,9 @@
 #include "mdl.h"
 #include "qpack.h"
 
+int g_fMd2ToMadScale;
+
+
 float Md2Normals[] = {
 	-0.525731, 0.000000, 0.850651,
 	 -0.442863, 0.238856, 0.864188 , 
@@ -379,6 +382,8 @@ bool ModellMD2::Export(pmd_c* pmd)
 
 bool ModellMD2::Export(MadExporter* mad, const char* filename)
 {
+	g_fMd2ToMadScale = 0.1;
+	
 	int i,f;
 
 	Mad_CoreMesh* pkMesh = mad->GetMesh("mesh");
@@ -387,13 +392,14 @@ bool ModellMD2::Export(MadExporter* mad, const char* filename)
 	pkMesh->kHead.iNumOfVertex		= m_kHead.num_xyz;
 	pkMesh->kHead.iNumOfFaces		= m_kHead.num_tris;
 	pkMesh->kHead.iNumOfFrames		= m_kHead.num_frames;
-//	pkMesh->kHead.iNumOfVertex		= head.num_st;
 	pkMesh->kHead.iNumOfSubMeshes	= 1;
 	pkMesh->kHead.iNumOfAnimation	= 0;
 
 	// Force one skin.
 	if(pkMesh->kHead.iNumOfTextures == 0)
 		pkMesh->kHead.iNumOfTextures = 1;
+
+	pkMesh->ResizeTextures(pkMesh->kHead.iNumOfTextures);
 
 	char ucSkinName[64];
 	strcpy(ucSkinName, "skin_");
@@ -402,9 +408,9 @@ bool ModellMD2::Export(MadExporter* mad, const char* filename)
 
 	for(i=0; i<pkMesh->kHead.iNumOfTextures; i++) {
 		sprintf(NewSkinName,"%s%d", ucSkinName, i);
-//		strcpy(pkMesh->akTextures[i].ucTextureName, NewSkinName);
-//		if(i < m_kHead.num_skins)
-//			g_PakFileSystem.Unpack(g_skins[i], NewSkinName);
+		strcpy(pkMesh->GetTexture2()[i].ucTextureName, NewSkinName);
+		if(i < m_kHead.num_skins)
+			g_PakFileSystem.Unpack(g_skins[i], NewSkinName);
 		}
 
 	vector<pmd_triangle_s>	akPmdTriangles;
@@ -583,9 +589,9 @@ bool ModellMD2::Export(MadExporter* mad, const char* filename)
 //		pkMesh->akFrames[f].akNormal.resize(iNewNumOfVertex);
 
 		for(int v=0; v < iNewNumOfVertex; v++) {
-			pkMesh->GetFramesPointer2()[f].GetVertexPointer2()[v].x = akVertexFrames[f].GetVertexPointer2()[kVertexBufferIndex[v]].x;
-			pkMesh->GetFramesPointer2()[f].GetVertexPointer2()[v].y = akVertexFrames[f].GetVertexPointer2()[kVertexBufferIndex[v]].y;
-			pkMesh->GetFramesPointer2()[f].GetVertexPointer2()[v].z = akVertexFrames[f].GetVertexPointer2()[kVertexBufferIndex[v]].z;
+			pkMesh->GetFramesPointer2()[f].GetVertexPointer2()[v].x = akVertexFrames[f].GetVertexPointer2()[kVertexBufferIndex[v]].x * 0.1;
+			pkMesh->GetFramesPointer2()[f].GetVertexPointer2()[v].y = akVertexFrames[f].GetVertexPointer2()[kVertexBufferIndex[v]].y * 0.1;
+			pkMesh->GetFramesPointer2()[f].GetVertexPointer2()[v].z = akVertexFrames[f].GetVertexPointer2()[kVertexBufferIndex[v]].z * 0.1;
 			pkMesh->GetFramesPointer2()[f].GetNormalPointer2()[v] = akVertexFrames[f].GetNormalPointer2()[kVertexBufferIndex[v]];
 			}
 	}
@@ -601,6 +607,42 @@ bool ModellMD2::Export(MadExporter* mad, const char* filename)
 	}
 
 	pkMesh->CreateRigidBoneConnections();
+	pkMesh->FlipFaces();
+	pkMesh->CreateVertexNormals();
+
+	// Add Bone
+	vector<Mad_CoreBone>	kSkelleton;
+	Mad_CoreBone NewBone;
+	strcpy(NewBone.m_acName,"Base");
+	NewBone.m_iParent =	-1;
+	NewBone.m_kPosition.x = 0;
+	NewBone.m_kPosition.y = 0;
+	NewBone.m_kPosition.z = 0;
+	NewBone.m_kRotation.x = 0;
+	NewBone.m_kRotation.y = 0;
+	NewBone.m_kRotation.z = 0;
+	kSkelleton.push_back(NewBone);
+	mad->SetSkelleton(kSkelleton);
+
+	// Add Static Anim
+	vector<Mad_CoreBoneAnimation>		kAnim;
+
+	Mad_CoreBoneKey						kNewBoneKey;
+	Mad_CoreBoneKeyFrame					kNewBoneKeyFrame;
+	Mad_CoreBoneAnimation				kNewBoneAnim;
+
+	kNewBoneKey.Clear();
+	kNewBoneKeyFrame.Clear();
+	kNewBoneAnim.Clear();
+
+	kNewBoneKey.m_kPosition.Set(0,0,0);
+	kNewBoneKey.m_kRotation.Set(0,0,0);
+	kNewBoneKeyFrame.PushBack(kNewBoneKey);
+	kNewBoneAnim.PushBack(kNewBoneKeyFrame);
+	kAnim.push_back(kNewBoneAnim);
+	mad->SetAnimation(kAnim);
+
+
 
 	// Import Animations.
 /*	vector<Pmd_Animation>::iterator		itAnim;

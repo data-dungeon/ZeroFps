@@ -551,3 +551,17 @@ int Mad_CoreMesh::GetTextureID(int iTextureIndex)
 	return iTextureID[iTextureIndex];
 }
 
+void Mad_CoreMesh::FlipFaces()
+{
+	int i0,i1,i2;
+
+	for(int i =0; i < akFaces.size(); i++) {
+		i0 = akFaces[i].iIndex[0];
+		i1 = akFaces[i].iIndex[1];
+		i2 = akFaces[i].iIndex[2];
+
+		akFaces[i].iIndex[0] = i2;
+		akFaces[i].iIndex[1] = i1;
+		akFaces[i].iIndex[2] = i0;
+		}
+}

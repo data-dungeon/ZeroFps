@@ -183,6 +183,7 @@ public:
 	Mad_Face*				GetFacesPointer2()	{	return &akFaces[0];			};
 	Mad_CoreVertexFrame*	GetFramesPointer2()	{	return &akFrames[0];			};
 	Mad_TextureCoo*		GetTexCooPointer2()	{	return &akTextureCoo[0];			};
+	Mad_CoreTexture*		GetTexture2()			{	return &akTextures[0];			};
 
 
 	int NumOfVertexPerFrame();
@@ -216,6 +217,8 @@ public:
 	int	AddTexture(char* ucpTextureName);
 
 	void SetTextureFlags(void);
+
+	void FlipFaces();
 
 	friend class Mad_Core;
 
