@@ -92,7 +92,7 @@ bool ZShadow::IsValid()		{ return true; }
 
 ZShadow::ZShadow(): ZFSubSystem("ZShadow")
 {
-	Logf("zerofps","ZShadow system created");
+	LOGF("zerofps","ZShadow system created");
 
 	m_iNrOfShadows =		1;
  	m_fExtrudeDistance = 100;

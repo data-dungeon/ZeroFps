@@ -5,7 +5,8 @@ MAKE = make		#make to use
 #CXX = /usr/lib/distcc/bin/g++              			#compiler to use
 #CC = /usr/lib/distcc/bin/g++               			#linker to use
 #cXXFLAGS= -O3 -g -DNDEBUG #-pg -g                  #compiler flags
-#C_ARGS = -O3 -g #-pg -g
+#CXXFLAGS= -O3 -g
+#C_ARGS = -O3 -g 
 #MAKEFLAGS= j2													#number of jobs to runt, equal to number of hosts
 
 
@@ -13,7 +14,7 @@ MAKE = make		#make to use
 CXX = g++              #compiler to use
 CC = g++               #linker to use
 #CXXFLAGS= -O3 -g -DNDEBUG -DNOPROFILE# -pg 						#compiler flags
-CXXFLAGS= -O3 -g
+CXXFLAGS= -O3 -g -DNOLOG
 C_ARGS = -O3 -g# -pg 				  					#linker flags
 
 

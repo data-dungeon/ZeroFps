@@ -143,8 +143,10 @@ EntityManager::~EntityManager()
 		fAvgObjSize = float(m_iTotalNetEntityData / m_iNumOfNetEntitys);
 		}
 
-	Logf("net", " Avg Obj Size: %f\n", fAvgObjSize);
-
+	LOGF("net", " Avg Obj Size: %f\n", fAvgObjSize);
+	
+	//LOGF("net", "apan är löst");
+	
 	// Obs! Här skall resursen laddas ur, går dock inte pga timeout expire.
 	//delete m_pScriptFileHandle;
 
@@ -1030,13 +1032,13 @@ void EntityManager::DisplayTree()
 
 void EntityManager::DumpActiverPropertysToLog(char* szMsg)
 {
-	Logf("net", "%s : %d\n", szMsg, m_akPropertys.size() );
+	LOGF("net", "%s : %d\n", szMsg, m_akPropertys.size() );
 
 	for(vector<Property*>::iterator it=m_akPropertys.begin();it!=m_akPropertys.end();it++) 
 	{
-		Logf("net", "%s (%d)", (*it)->m_acName, (*it)->GetEntity()->m_iEntityID );
+		LOGF("net", "%s (%d)", (*it)->m_acName, (*it)->GetEntity()->m_iEntityID );
 		if((*it)->GetEntity()->m_pkParent)
-			Logf("net", " Parent Obj: %s\n", (*it)->GetEntity()->m_pkParent->m_strName.c_str() );
+			LOGF("net", " Parent Obj: %s\n", (*it)->GetEntity()->m_pkParent->m_strName.c_str() );
 	}
 	
 }
@@ -1282,7 +1284,7 @@ void EntityManager::OwnerShip_Request(Entity* pkObj)
 	NP.TargetSetClient(ZF_NET_ALLCLIENT);
 	m_pkNetWork->Send2(&NP);
 //	net->SendToAllClients(&NP);
-	Logf("net", " Sending Own Request for %d\n", pkObj->m_iEntityID);
+	LOGF("net", " Sending Own Request for %d\n", pkObj->m_iEntityID);
 	
 }
 
@@ -1306,7 +1308,7 @@ void EntityManager::OwnerShip_OnRequest(Entity* pkObj)
 //	net->SendToAllClients(&NP);
 
 	OwnerShip_Give(pkObj);
-	Logf("net", " Gives away ownership of %d\n", pkObj->m_iEntityID);
+	LOGF("net", " Gives away ownership of %d\n", pkObj->m_iEntityID);
 
 }
 
@@ -1316,7 +1318,7 @@ void EntityManager::OwnerShip_OnGrant(Entity* pkObj)
 		return;
 
 	OwnerShip_Take(pkObj);
-	Logf("net", " This node now own %d\n", pkObj->m_iEntityID);
+	LOGF("net", " This node now own %d\n", pkObj->m_iEntityID);
 }
 
 Entity* EntityManager::CloneEntity(int iNetID)

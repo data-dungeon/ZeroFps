@@ -4,7 +4,7 @@
 	
 Tcs::Tcs(): ZFSubSystem("Tcs")
 {
-	Logf("zerofps","Tiny Collission system created");
+	LOGF("zerofps","Tiny Collission system created");
 
  	m_fMaxDelay = 		0.04;
 	m_fAlmostZero = 	0.001;

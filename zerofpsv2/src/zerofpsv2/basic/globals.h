@@ -98,7 +98,15 @@ Vector3 BASIC_API RndColor();												//randomize a colorvector...i think
 		}	
 #endif
 
-
+//logging
+//#define NOLOG
+#ifdef NOLOG
+	#define LOGF(czName,...) ((void)0)
+#else
+	#define LOGF(czName,...) {\
+		g_ZFObjSys.Logf(czName,__VA_ARGS__);\
+		}
+#endif
 
 bool BASIC_API GetClipboardText(string& r_strText);
 

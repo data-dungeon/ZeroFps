@@ -559,9 +559,6 @@ void ZeroFps::Update_System()
 			
 	}*/
 	
-	StartProfileTimer("s__blub");
-	
-		
 	for(int i=0;i<iLoops;i++)
 	{	
 	
@@ -620,10 +617,6 @@ void ZeroFps::Update_System()
 
 	//finaly add rest time
 	m_fSystemUpdateTime -= fRestTime;
-	
-	
-	StopProfileTimer("s__blub");	
-	
 }
 
 void ZeroFps::Draw_EngineShell()
@@ -1661,10 +1654,10 @@ void ZeroFps::QuitEngine()
 	{
 		m_pkEntityManager->GetWorldEntity()->GetAllVarNames(kPropertyNames);
 
-		Logf("net", "WorldObject Dump %f\n", GetEngineTime());
+		LOGF("net", "WorldObject Dump %f\n", GetEngineTime());
 		for(unsigned int i=0; i<kPropertyNames.size(); i++) 
 		{
-			Logf("net", " %s %f\n",kPropertyNames[i].c_str(),  m_pkEntityManager->GetWorldEntity()->GetVarDouble(kPropertyNames[i]));
+			LOGF("net", " %s %f\n",kPropertyNames[i].c_str(),  m_pkEntityManager->GetWorldEntity()->GetVarDouble(kPropertyNames[i]));
 		}
 	}
 
