@@ -32,4 +32,7 @@ int BASIC_API PowerOf2(int iVal);
 
 Vector3 BASIC_API GetYawVector2(float fAngleDeg);
 
+float BASIC_API GetYawAngle(Vector3 kDir);
+
+
 #endif

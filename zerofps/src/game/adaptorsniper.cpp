@@ -13,6 +13,7 @@ AdaptorSniper::AdaptorSniper()
 	m_kDir.Set(0,0,0);
 	
 	m_pkStatusProperty=NULL;
+	m_pkPlayer=NULL;
 	
 	m_fChangeTime=m_pkFps->GetTicks();
 	m_fHitTime=m_pkFps->GetTicks();	
@@ -20,6 +21,7 @@ AdaptorSniper::AdaptorSniper()
 	m_fRotateSpeed=2;
 	m_fWalkSpeed=3;	
 }
+
 
 void AdaptorSniper::Update()
 {
@@ -41,6 +43,17 @@ void AdaptorSniper::Update()
 		m_kDir.Set(0,rand()%360,0);		
 	}
 	
+	if(m_pkPlayer==NULL)
+	{
+		m_pkPlayer=m_pkObjectMan->GetObject("Player");
+	}
+	else
+	{
+		if((m_pkObject->GetPos() - m_pkPlayer->GetPos()).Length() < 30){		
+			m_kDir.y=GetYawAngle(m_pkObject->GetPos() - m_pkPlayer->GetPos())+90;
+		}
+	}	
+	
 	
 	if(m_pkObject->GetRot().y>360)
 		m_pkObject->GetRot().y-=360;
@@ -56,11 +69,12 @@ void AdaptorSniper::Update()
 	m_pkObject->GetVel()=vel;
 	
 
+
 }
 
 void AdaptorSniper::Touch(Object* pkObject)
 {
-	if(pkObject->GetName() != "HeightMapObject")
+	if(pkObject->GetName() != "HeightMapObject" && pkObject->GetName() != "Player")
 	{		
 		m_pkObject->GetRot().y+=180;
 	}

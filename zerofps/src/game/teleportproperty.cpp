@@ -52,10 +52,16 @@ void TeleportProperty::Update()
 
 void TeleportProperty::Touch(Object* pkObject)
 {
-	m_pkAlSys->AddSound(sound);
-	m_pkAlSys->AddSound(sound2);	
+	cout<<"teleporting :"<<pkObject->GetName()<<endl;
+
+	if(pkObject->GetName()!="HeightMapObject");
+	{
+
+		m_pkAlSys->AddSound(sound);
+		m_pkAlSys->AddSound(sound2);	
 	
-	pkObject->GetPos()=m_kToPos;	
+		pkObject->GetPos()=m_kToPos;	
+	}
 }
 
 

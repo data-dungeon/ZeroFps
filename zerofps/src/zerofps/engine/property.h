@@ -87,6 +87,7 @@ class ENGINE_API Property
 		Property();
 		virtual ~Property(){};
 		virtual void Touch(Object* pkObject){};
+		virtual void Init(){};
 		virtual void Update(){};			
 		virtual void PackTo(NetPacket* pkNetPacket){} ;
 		virtual void PackFrom(NetPacket* pkNetPacket){} ;

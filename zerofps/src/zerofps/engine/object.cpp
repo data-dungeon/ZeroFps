@@ -309,6 +309,8 @@ Property* Object::AddProperty(Property* pkNewProperty)
 
 	pkNewProperty->SetObject(this);
 	m_akPropertys.push_back(pkNewProperty);
+	
+	pkNewProperty->Init();
 	return pkNewProperty;
 }
 
