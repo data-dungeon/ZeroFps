@@ -20,6 +20,7 @@ private:
 	float m_fFadeOffset;
 
 	static char* Labels[];
+	int m_iNumPictures;
 
 	struct INTRO_CRAP
 	{
@@ -31,6 +32,9 @@ private:
 
 	INTRO_CRAP m_kApa;
 
+	vector<int> m_vkPlayedPictures;
+
 	void CancelIntro();
+	int GetNextPicture();
 	
 };

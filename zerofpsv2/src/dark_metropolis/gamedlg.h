@@ -49,6 +49,7 @@ protected:
 		GAME_INFO
 	};
 
+
 	Entity* GetObject(int iID){return m_pkDM->m_pkObjectMan->GetObjectByNetWorkID(iID);}
 	Entity* GetDMObject(DM_OBJECT eDmObject);
 	void GetAllAgentsInField(vector<Entity*>& kList);
@@ -56,6 +57,7 @@ protected:
 	DarkMetropolis* m_pkDM;
 	ZGui* m_pkGui;
 	ZFAudioSystem* m_pkAudioSys;
+	TextureManager* GetTexMan() { return m_pkDM->Application::pkTexMan; }
 
 	int GetTexID(char* szName);
 	int m_iFailTex;

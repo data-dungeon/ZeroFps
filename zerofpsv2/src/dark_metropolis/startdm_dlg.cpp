@@ -10,6 +10,7 @@ char* CStartDMDlg::Labels[] =
 	"zebLabel",
 	"eldLabel",
 	"manfredLabel",
+	"lastimageLabel",
 };
 
 CStartDMDlg::CStartDMDlg() : CGameDlg("StartNewGameWnd", &g_kDM)
@@ -17,6 +18,7 @@ CStartDMDlg::CStartDMDlg() : CGameDlg("StartNewGameWnd", &g_kDM)
 	m_pkFps=static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
 	m_bPlayIntro = false;
 	m_fFadeOffset = 0;
+	m_iNumPictures = sizeof(CStartDMDlg::Labels) / sizeof(CStartDMDlg::Labels[1]);
 }
 
 CStartDMDlg::~CStartDMDlg()
@@ -111,6 +113,7 @@ void CStartDMDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName)
 		m_kApa.first = true;
 		m_kApa.pkCurrent = NULL;
 		m_bPlayIntro = true;
+		m_vkPlayedPictures.clear();
 		PlayIntroScreen();
 	}
 }
@@ -121,16 +124,35 @@ void CStartDMDlg::PlayIntroScreen()
 	m_pkGui->SetCaptureToWnd(GetWnd("DMIntroWnd")); 
 	m_pkGui->SetFocus(GetWnd("DMIntroWnd"));
 	
-	int antal = sizeof(CStartDMDlg::Labels) / sizeof(CStartDMDlg::Labels[1]);
-	for(int i=0; i<antal; i++)
-		GetWnd(CStartDMDlg::Labels[i])->Hide();
+	for(int i=0; i<m_iNumPictures; i++)
+	{
+		ZGuiWnd* pkWnd = GetWnd(CStartDMDlg::Labels[i]);
+
+		ZGuiSkin* pkSkin = pkWnd->GetSkin() ;
+
+		if(pkSkin)
+		{
+			if(pkSkin->m_iBkTexID)
+			{
+				GetTexMan()->BindTexture(pkSkin->m_iBkTexID);
+				GetTexMan()->EditStart(pkSkin->m_iBkTexID);
+				Image* surface = GetTexMan()->EditGetImage(pkSkin->m_iBkTexID);
+				pkWnd->Resize(surface->m_iWidth, surface->m_iHeight);
+				GetTexMan()->EditEnd(pkSkin->m_iBkTexID);
+			}
+		}
+
+		int x = 800/2 - pkWnd->GetScreenRect().Width()/2; 
+		int y = 600/2 - pkWnd->GetScreenRect().Height()/2;
+
+		pkWnd->SetPos(x, y, true, true); 
+		pkWnd->Hide();
+	}
 }
 
 void CStartDMDlg::Update(float fFrameTime)
 {
-	int antal_bilder = sizeof(Labels) / sizeof(Labels[1]);
-
-	if(m_bPlayIntro && m_kApa.oka <= antal_bilder)
+	if(m_bPlayIntro && m_kApa.oka <= m_iNumPictures)
 	{
 		if(m_kApa.first)
 		{
@@ -143,7 +165,7 @@ void CStartDMDlg::Update(float fFrameTime)
 		if(m_fFadeOffset < m_kApa.FADE_TIME)
 			m_fFadeOffset += procent;
 		
-		if(m_kApa.oka != antal_bilder)
+		if(m_kApa.oka != m_iNumPictures)
 		{
 			if(m_fFadeOffset > 1)
 			{
@@ -154,15 +176,19 @@ void CStartDMDlg::Update(float fFrameTime)
 
 			if(m_kApa.pkCurrent == NULL)
 			{
-				m_kApa.pkCurrent = GetWnd(Labels[m_kApa.oka]); 
+				int picture = GetNextPicture();
 
-				if(GetWnd(Labels[m_kApa.oka])->IsVisible() == false)
+				m_kApa.pkCurrent = GetWnd(Labels[picture]); 
+
+				if(GetWnd(Labels[picture])->IsVisible() == false)
 				{
-					GetWnd(Labels[m_kApa.oka])->Show();	
-				}
+					ZGuiWnd* pkWnd = GetWnd(Labels[picture]);
 
-				m_kApa.oka++;
-				m_fFadeOffset = 0;
+					pkWnd->Show();	
+
+					m_kApa.oka++;
+					m_fFadeOffset = 0;
+				}
 			}
 		}
 		else
@@ -192,4 +218,51 @@ void CStartDMDlg::CancelIntro()
 
 	m_pkGui->SetCaptureToWnd(GetWnd("StartNewGameWnd")); 
 	m_pkGui->KillWndCapture();
+	
+}
+
+int CStartDMDlg::GetNextPicture()
+{
+	// Kör alltid första bilden först
+	if(m_vkPlayedPictures.empty())
+	{
+		m_vkPlayedPictures.push_back(0);
+		return 0;
+	}
+
+	// Kör alltid sista bilden sist
+	if(m_vkPlayedPictures.size() == m_iNumPictures-1)
+	{
+		m_vkPlayedPictures.push_back(m_iNumPictures-1);
+		return m_iNumPictures-1;
+	}
+
+	while(1)
+	{
+		int picture = rand() % m_iNumPictures;
+		bool bOK = true;
+
+		if(picture == 0 || picture == m_iNumPictures-1)
+		{
+			bOK = false;
+		}
+		else
+		{
+			for(int i=0; i<m_vkPlayedPictures.size(); i++)
+			{
+				if(m_vkPlayedPictures[i] == picture)
+				{
+					bOK = false;
+					break;
+				}
+			}
+		}
+		
+		if(bOK)
+		{
+			m_vkPlayedPictures.push_back(picture);
+			printf("Printing credits for: %s\n", Labels[picture]);
+			return picture;
+		}
+	}
 }

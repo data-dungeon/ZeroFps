@@ -149,8 +149,6 @@ void P_DMMission::Update()
 			int iSuccess = m_pkScriptSys->GetGlobalInt(
 				((ZFScript*)m_pkCurrentMission->m_pkScriptResHandle->GetResourcePtr())->m_pkLuaState, 
 				"Success", &bSuccess);
-
-			printf("APA = %i\n", iSuccess);
 		}
 
 		//

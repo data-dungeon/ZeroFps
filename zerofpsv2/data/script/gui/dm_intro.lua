@@ -29,6 +29,9 @@ function GUICreate()
 	Skin8 = { tex1="dm/intro/logga.bmp", tex2="0", tex3="0", tex4="0", tex1a="0", tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=255,
 	 bkB=255, borderR=255, borderG=255, borderB=255, bd_size=0, tile=0, trans=0 }
 
+	Skin9 = { tex1="dm/intro/last_image.bmp", tex2="0", tex3="0", tex4="0", tex1a="0", tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=255,
+	 bkB=255, borderR=255, borderG=255, borderB=255, bd_size=0, tile=0, trans=0 }
+
 	-------------------------------------------------------------------------
 	-- Create all windows in correct order (parents before childrens etc.)
 	-- 0 = Wnd, 1 = Button, 2 = Checkbox, 3 = Combobox, 4 = Label, 5 = Listbox, 6 = Radiobutton,
@@ -57,6 +60,11 @@ function GUICreate()
 
 	CreateWnd(4,"manfredLabel","DMIntroWnd","",300,260,256,64,0)
 	ChangeSkin("manfredLabel","Skin7","Label")
+
+	CreateWnd(4,"lastimageLabel","DMIntroWnd","",300,260,256,64,0)
+	ChangeSkin("lastimageLabel","Skin9","Label")
+
+	
 
 end
 
