@@ -100,7 +100,7 @@ bool ZMaterial::LoadShader(const char* acFile)
 	else		//if file didt open, try to load a default texture
 	{
 		cout<<"Error loading shader: "<<acFile<<" using nomaterial"<<endl;
-		if(m_kIni.Open("../data/material/nomaterial.zmt",0))
+		if(m_kIni.Open("data/material/nomaterial.zmt",0))
 			open=true;
 	}
 
