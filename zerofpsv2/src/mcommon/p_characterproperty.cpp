@@ -3,6 +3,7 @@
 #include "p_container.h"
 #include "p_item.h"
 #include "p_buff.h"
+#include "ml_netmessages.h"
 
 #include "../zerofpsv2/engine_systems/script_interfaces/si_objectmanager.h" 
 
@@ -13,6 +14,7 @@ P_CharacterProperty::P_CharacterProperty()
 	m_pkRender=				static_cast<Render*>(g_ZFObjSys.GetObjectPtr("Render"));			
 	m_pkZShaderSystem=	static_cast<ZShaderSystem*>(g_ZFObjSys.GetObjectPtr("ZShaderSystem"));			
 	m_pkEntityMan=			static_cast<EntityManager*>(g_ZFObjSys.GetObjectPtr("EntityManager"));			
+	m_pkApp=					static_cast<Application*>(g_ZFObjSys.GetObjectPtr("Application"));			
 	
 	strcpy(m_acName,"P_CharacterProperty");
 	m_iType=PROPERTY_TYPE_NORMAL|PROPERTY_TYPE_RENDER;
@@ -21,8 +23,11 @@ P_CharacterProperty::P_CharacterProperty()
 	m_bNetwork = 	true;
 	m_iVersion = 	1;
 	
+	
+	
 	m_kCurrentCharacterStates.reset();
 	
+	m_iConID					=	-1;
 	m_strName 				=	"NoName";
 	m_strOwnedByPlayer 	=	"NoPlayer";
 	m_bIsPlayerCharacter =	false;
@@ -518,6 +523,40 @@ void P_CharacterProperty::PlayCharacterMovementSounds()
 	}
 }
 
+void P_CharacterProperty::SendBuffList()
+{
+	if(m_iConID == -1)
+		return;
+
+		
+	NetPacket kNp;
+	kNp.Write((char) MLNM_SC_BUFFLIST);	
+	
+	vector<Property*> kProps;
+	GetEntity()->GetPropertys(&kProps,PROPERTY_TYPE_NORMAL,PROPERTY_SIDE_SERVER);
+
+		
+	for(int i = 0;i<kProps.size();i++)
+	{
+		if(P_Buff* pkBuff = dynamic_cast<P_Buff*>(kProps[i]))
+		{
+			if(pkBuff->m_bShow)
+			{
+				kNp.Write_Str(pkBuff->m_strName);
+				kNp.Write_Str(pkBuff->m_strIcon);
+				kNp.Write(pkBuff->m_fTimeOut);
+				kNp.Write(pkBuff->m_cType);
+			}
+		}
+	}
+	kNp.Write_Str(string(""));
+	
+	
+	//send package
+	kNp.TargetSetClient(m_iConID);
+	m_pkApp->SendAppMessage(&kNp);		
+}
+
 
 P_Buff* P_CharacterProperty::AddBuff(const string& strBuffName)
 {
@@ -528,6 +567,8 @@ P_Buff* P_CharacterProperty::AddBuff(const string& strBuffName)
 		pkEnt->SetParent(GetEntity());
 		
 		cout<<"added buff "<<strBuffName<<endl;
+		
+		SendBuffList();
 		return (P_Buff*)pkEnt->GetProperty("P_Buff");
 	}
 		
@@ -539,7 +580,12 @@ P_Buff* P_CharacterProperty::AddBuff(const string& strBuffName)
 void P_CharacterProperty::RemoveBuff(P_Buff* pkBuff)
 {
 	if(pkBuff->GetCharacter() == this)
-		m_pkEntityManager->Delete(pkBuff->GetEntity());
+	{
+		//m_pkEntityManager->Delete(pkBuff->GetEntity());
+		pkBuff->m_bShow = false;
+		
+		SendBuffList();
+	}
 }
 
 
@@ -704,6 +750,8 @@ namespace SI_P_CharacterProperty
 		return 1;		
 	}	
 }
+
+
 
 
 Property* Create_P_CharacterProperty()

@@ -19,14 +19,20 @@ class MCOMMON_API P_Buff: public Property
 	private:
 		P_CharacterProperty*	m_pkCharacter;
 		
+		string	m_strName;
+		string	m_strIcon;
+		float		m_fTimeOut;
+		char		m_cType;
+		bool		m_bShow;		
+		
+		
 		
 		void Enable(P_CharacterProperty* pkCP);
 		void Disable();
- 		
-// 		vector<PropertyValues> GetPropertyValues();
 			
 	public:
-		
+	
+			
 		P_Buff();
 		~P_Buff();
 		
@@ -34,11 +40,9 @@ class MCOMMON_API P_Buff: public Property
 		void Update();
 		
 		P_CharacterProperty*	GetCharacter()				{	return m_pkCharacter;	}
+	
 		
-// 		void Save(ZFIoInterface* pkPackage);
-// 		void Load(ZFIoInterface* pkPackage,int iVersion);
-
-
+		friend class P_CharacterProperty;	
 };
 
 MCOMMON_API Property* Create_P_Buff();

@@ -12,6 +12,14 @@ P_Buff::P_Buff()
 	m_iVersion = 1;	
 	
 	m_pkCharacter = NULL;
+	
+	
+	
+	m_strName	= "Unkown";
+	m_strIcon	= "default";
+	m_fTimeOut	= -1;
+	m_cType		= 0;
+	m_bShow		= true;
 }
 
 P_Buff::~P_Buff()
@@ -71,11 +79,14 @@ void P_Buff::Disable()
 {
 	if(m_pkCharacter)
 	{
+	
 		vector<ScriptFuncArg> kParams;
 		int iID = m_pkCharacter->GetEntity()->GetEntityID();
 		kParams.push_back(ScriptFuncArg( &iID,tINT));	
 		
 		m_pkEntityManager->CallFunction(GetEntity(),"RemoveBuff",&kParams);			
+	
+		m_pkCharacter->RemoveBuff(this);	
 	}
 	
 	m_pkCharacter = NULL;

@@ -749,6 +749,8 @@ void MistClient::OnNetworkMessage(NetPacket *pkNetMessage)
 
 	switch(ucType)
 	{
+		
+	
 		case MLNM_SC_CHARACTERID:
 		{
 			cout<<"got character entityID from server"<<endl;
@@ -782,6 +784,29 @@ void MistClient::OnNetworkMessage(NetPacket *pkNetMessage)
 			break;
 		}			
 
+		case MLNM_SC_BUFFLIST:
+		{
+			cout<<"got buff list from server"<<endl;
+		
+			string strName;
+			string strIcon;
+			float  fTimeout;
+			char   cType;
+			
+			pkNetMessage->Read_Str(strName);
+			while(!strName.empty())
+			{
+				pkNetMessage->Read_Str(strIcon);
+				pkNetMessage->Read(fTimeout);
+				pkNetMessage->Read(cType);							
+			
+				pkNetMessage->Read_Str(strName);			
+			}
+			
+			
+			break;
+		}
+		
 		case MLNM_SC_CHARLIST:
 		{
 			int iNumOfChar;

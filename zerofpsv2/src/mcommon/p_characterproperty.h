@@ -18,7 +18,7 @@ class MCOMMON_API P_CharacterProperty: public Property
 		Render*			m_pkRender;	
 		ZShaderSystem*	m_pkZShaderSystem;
 		EntityManager*	m_pkEntityMan;
-
+		Application*	m_pkApp;
 		
 		
 		//over head text
@@ -34,6 +34,7 @@ class MCOMMON_API P_CharacterProperty: public Property
 		float			m_fChatTime;				//lst chat msg time
 		
 		
+		int			m_iConID;					//player connection ID if any				
 		bool			m_bFirstUpdate;
 		
 		bitset<CHARACTER_STATES>	m_kCurrentCharacterStates;
@@ -52,6 +53,9 @@ class MCOMMON_API P_CharacterProperty: public Property
 		void SetupContainers();
 		
 		vector<PropertyValues> GetPropertyValues();
+		
+		
+		void SendBuffList();
 		
 	public:
 		//containers
@@ -79,6 +83,8 @@ class MCOMMON_API P_CharacterProperty: public Property
 		void Init();
 		void Update();
 		
+		void SetClient(int iConID)									{	m_iConID = iConID;				}
+		
 		void SetName(const string& strName)						{	m_strName = strName;						ResetAllNetUpdateFlags();}
 		void SetOwnedByPlayer(const string& strPlayer)		{	m_strOwnedByPlayer = strPlayer;		ResetAllNetUpdateFlags();}
 		void SetIsPlayerCharacter(bool bIsPlayer)				{	m_bIsPlayerCharacter = bIsPlayer;	ResetAllNetUpdateFlags();}
@@ -94,8 +100,8 @@ class MCOMMON_API P_CharacterProperty: public Property
 		bool	 GetIsPlayerCharacter()								{	return m_bIsPlayerCharacter;	}
 		
 		
-		P_Buff* AddBuff(const string& strBuffName);
-		void RemoveBuff(P_Buff* pkBuff);
+		P_Buff* AddBuff(const string& strBuffName);			//creates and adds buff to character
+		void RemoveBuff(P_Buff* pkBuff);							//sends update to client about removed buff (does not delete it)
 		
 		
 		//client code
