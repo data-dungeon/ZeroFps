@@ -202,9 +202,6 @@ void Tcs::Update(float fAlphaTime)
 	UpdateBodyVels(fStepSize);		
 
 	
-	//do shock test
-	Shock();
-	
 	//handle contacts
 	for(int i = 0;i< m_iContactIterations;i++)
 	{
@@ -229,7 +226,9 @@ void Tcs::Update(float fAlphaTime)
 							
 	}
 	
-
+	//do shock test
+	Shock();
+	
 	//now move all objects	
 	UpdateBodyPos(fStepSize);
 //---------------- End of maaaaaaaaaain loop	
@@ -392,7 +391,8 @@ void Tcs::Shock()
 {
 	for(int j = 0;j<5;j++)
 	{	
-		for(int i = 0;i<m_kCollissions.size();i++)
+		int iSize = m_kCollissions.size();
+		for(int i = 0;i<iSize;i++)
 		{
 			//check if both are now static
 			if(	(m_kCollissions[i]->pkBody1->InActive()) && 
@@ -404,15 +404,19 @@ void Tcs::Shock()
 				||	m_kCollissions[i]->pkBody2->InActive())
 			{
 				//handle collission as a bouncing collision but no angular effect
-				HandleCollission(m_kCollissions[i],false,true);
+// 				HandleCollission(m_kCollissions[i],false,true);					
+					HandleCollission(m_kCollissions[i],true,true);					
+
 				
 				if(m_kCollissions[i]->pkBody1->InActive())
 					m_kCollissions[i]->pkBody2->m_bTempStatic = true;
 				else
 					m_kCollissions[i]->pkBody1->m_bTempStatic = true;
-			
+
+								
 			}
-		}			
+		}
+					
 	}
 
 	//clear temp statics
@@ -509,12 +513,12 @@ void Tcs::HandleCollission(Tcs_collission* pkCol,bool bNoBounce,bool bNoAngular)
 	float fMass2 = pkCol->pkBody2->m_fMass;
 	
 	//treat static bodys as having infinit mass	
-	if(pkCol->pkBody1->m_bStatic)
+	if(pkCol->pkBody1->m_bStatic || pkCol->pkBody1->m_bTempStatic)
 	{
 		fMass1 = 999999999;	
 	}
 	
-	if(pkCol->pkBody2->m_bStatic)
+	if(pkCol->pkBody2->m_bStatic || pkCol->pkBody2->m_bTempStatic)
 	{
 		fMass2 = 999999999;	
 	}
