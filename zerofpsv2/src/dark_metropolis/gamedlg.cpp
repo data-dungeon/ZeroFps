@@ -128,8 +128,12 @@ void CGameDlg::GetAllAgentsInField(vector<Entity*>& kList)
 	vector<Entity*> kObjects;	
 	m_pkDM->m_pkObjectMan->GetZoneObject()->GetAllEntitys(&kObjects,false);
 	for(unsigned int i=0;i<kObjects.size();i++)
-		if((P_DMHQ*)kObjects[i]->GetProperty("P_DMCharacter"))
-			kList.push_back(kObjects[i]);	
+		if((P_DMCharacter*)kObjects[i]->GetProperty("P_DMCharacter"))
+		{
+			// check if member belongs to players team
+			if ( ((P_DMCharacter*)kObjects[i]->GetProperty("P_DMCharacter"))->m_iTeam == 0 )
+				kList.push_back(kObjects[i]);	
+		}
 }
 
 void CGameDlg::SetNumber(char* szWndName, float fNumber)
