@@ -91,7 +91,8 @@ void MadView::Input()
 	static float prev_x2 = 0, prev_y2 = 0;
 	static Point press_pos2;
 	static bool pressed2 = false;
-	if(m_pkInputHandle->Pressed(MOUSERIGHT))
+	//if(m_pkInputHandle->Pressed(MOUSERIGHT))
+	if(m_pkInputHandle->Pressed(MOUSERIGHT) && !m_pkInputHandle->Pressed(KEY_LSHIFT))
 	{
 		if(pressed2 == false)
 		{
@@ -120,8 +121,10 @@ void MadView::Input()
 	static float prev_x3 = 0, prev_y3 = 0;
 	static Point press_pos3;
 	static bool pressed3 = false;
-	if(m_pkInputHandle->Pressed(MOUSEMIDDLE))
+	//if(m_pkInputHandle->Pressed(MOUSEMIDDLE))
+	if(m_pkInputHandle->Pressed(MOUSERIGHT) && m_pkInputHandle->Pressed(KEY_LSHIFT))
 	{
+		printf("olle\n");
 		if(pressed3 == false)
 		{
 			m_pkInputHandle->SDLMouseXY(press_pos3.x, press_pos3.y);
@@ -142,10 +145,17 @@ void MadView::Input()
 
 	m_pkCameraObject->SetWorldPosV(kCamerPos);
 	
+	// Change text in CameraPosLabel and update window size if needed.
 	char szText[100];
 	sprintf(szText, "Camera: X:%.2f, Y:%.2f, Z:%.2f", kCamerPos.x, kCamerPos.y, kCamerPos.z);
-
-	SetText("CameraPosLabel", szText);
+	SetText("CameraPosLabel", szText, true);
+	ZGuiWnd* pkWnd = GetWnd("CameraPosLabel");
+	static int prev_width = 0;
+	if(prev_width != pkWnd->GetWndRect().Width())
+	{
+		prev_width = pkWnd->GetScreenRect().Width()+10;
+		GetWnd("MadViewInfoWnd")->Resize(prev_width, -1); 
+	}
 };
 
 bool MadView::DelayCommand()

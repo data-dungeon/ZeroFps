@@ -177,7 +177,7 @@ void MadView::OnClickTreeItem(char *szTreeBox, char *szParentNodeText,
 
 		unsigned int min, max, pos;
 		((ZGuiTreebox*)GetWnd("AnimationFileTree"))->GetScrollbar(true)->GetScrollInfo(min,max,pos);
-		GetWnd("MaterialFileTree")->SetPos(0,120+max*20,false,true);
+		GetWnd("MaterialFileTree")->SetPos(2,120+max*20,false,true);
 	}
 	else
 	if(strcmp(szTreeBox, "MaterialFileTree") == 0)
@@ -203,27 +203,34 @@ void MadView::OnClickTreeItem(char *szTreeBox, char *szParentNodeText,
 			ShowWnd("MadViewInfoWnd", false);
 		}
 	}
+
+	// Resize view window
+	int h = GetWnd("MaterialFileTree")->GetScreenRect().Top;
+
+	unsigned int min, max, pos;
+	((ZGuiTreebox*)GetWnd("MaterialFileTree"))->GetScrollbar(true)->GetScrollInfo(min,max,pos);
+	h += max*20;
+
+	GetWnd("MadViewInfoWnd")->Resize(-1, h); 
 }
 
 void MadView::ChangeMad(string strName)
 {
-	m_strMadFile = strName;
-
 	P_Mad* pkMad = (P_Mad*) m_pkViewObject->GetProperty("P_Mad");
-
 	if(pkMad == NULL)
-	{
 		pkMad = (P_Mad*) m_pkViewObject->AddProperty("P_Mad");
-	}
-
+	
+	// Change mad
+	m_strMadFile = strName;
 	pkMad->SetBase(m_strMadFile.c_str());
 
 	char szText[100];
 
+	// Update information in textboxes
 	string strFormated = m_strMadFile;
 	strFormated.erase(0, strlen("data/mad/"));
 	sprintf(szText, "Name: %s", strFormated.c_str());
-	SetText("MadNameLabel", szText);
+	SetText("MadNameLabel", szText, true);
 
 	sprintf(szText, "Vertices: %i", pkMad->GetNumVertices());
 	SetText("NumVertsLabel", szText);
@@ -234,6 +241,7 @@ void MadView::ChangeMad(string strName)
 	sprintf(szText, "Radius: %.2f", pkMad->GetRadius());
 	SetText("MadRadiusLabel", szText);
 
+	// Add items to animations list
 	((ZGuiTreebox*)GetWnd("AnimationFileTree"))->Clear(); 
 
 	Mad_Core* pkCore = dynamic_cast<Mad_Core*>(pkMad->kMadHandle.GetResourcePtr()); 
@@ -251,7 +259,8 @@ void MadView::ChangeMad(string strName)
 		AddTreeItem("AnimationFileTree", strName.c_str(), "Animations", (char*) strName.c_str(), 0, 1);
 	}
 
-	GetWnd("MaterialFileTree")->SetPos(0,120+20,false,true);
+	// Add items to material list
+	GetWnd("MaterialFileTree")->SetPos(2,120+20,false,true);
 
 	((ZGuiTreebox*)GetWnd("MaterialFileTree"))->Clear(); 
 	
@@ -265,4 +274,14 @@ void MadView::ChangeMad(string strName)
 		string strName = mesh + string(" : ") + pkCore->GetMeshByID(0)->m_kLodMesh[0].GetTextureName(i);
 		AddTreeItem("MaterialFileTree", strName.c_str(), "Materials", (char*) strName.c_str(), 0, 1);
 	}
+
+	// Resize view window
+	int w = 50, h = GetWnd("MaterialFileTree")->GetScreenRect().Top + 20;
+	char* wnds[] = {"CameraPosLabel","MadNameLabel"};
+	for(int i=0; i<sizeof(wnds)/sizeof(wnds[0]); i++)
+	{
+		ZGuiWnd* pkWnd = GetWnd(wnds[i]);
+		if(pkWnd->GetScreenRect().Width() > w) w = pkWnd->GetScreenRect().Width();
+	}
+	GetWnd("MadViewInfoWnd")->Resize(w+10, h); 
 }

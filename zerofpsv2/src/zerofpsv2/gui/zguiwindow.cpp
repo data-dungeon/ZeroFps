@@ -483,8 +483,11 @@ Rect ZGuiWnd::GetScreenRect(bool bIncBorder)
 
 void ZGuiWnd::Resize(int Width, int Height, bool bChangeMoveArea)
 {
-	m_kArea.Right = m_kArea.Left + Width;
-	m_kArea.Bottom = m_kArea.Top + Height;
+	if(Width != -1)
+		m_kArea.Right = m_kArea.Left + Width;
+
+	if(Height != -1)
+		m_kArea.Bottom = m_kArea.Top + Height;
 
 	if(bChangeMoveArea)
 		m_kMoveArea = m_kArea;
