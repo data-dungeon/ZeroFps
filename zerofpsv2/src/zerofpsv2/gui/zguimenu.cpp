@@ -63,6 +63,15 @@ bool ZGuiMenu::Notify(ZGuiWnd* pkWindow, int iCode)
 
 					if(m_bPopup)
 						Hide();
+
+					// Skicka ett command message till mainprocen.
+					int* pkParams = new int[2];
+					pkParams[0] = iMenuID;
+					pkParams[1] = 0;
+
+					GetGUI()->GetActiveCallBackFunc()(this, ZGM_COMMAND, 2, pkParams);
+
+					delete[] pkParams;
 				}
 
 				break;
@@ -105,8 +114,8 @@ bool ZGuiMenu::Notify(ZGuiWnd* pkWindow, int iCode)
 
 bool ZGuiMenu::Render( ZGuiRender* pkRenderer )
 {
-	if(!IsVisible())
-		return true;
+	//if(!IsVisible())
+	//	return true;
 
 	if(m_bNeedToResize == true)
 	{
@@ -125,7 +134,9 @@ bool ZGuiMenu::Render( ZGuiRender* pkRenderer )
 		m_pkLabel->Render(pkRenderer); 
 
 	if(m_bPopup)
-		m_vkItems[0]->pkButton->Hide();
+	{
+ 		m_vkItems[0]->pkButton->Hide();
+	}
 
 	for(int i=0; i<m_vkItems.size(); i++)
 	{
@@ -204,16 +215,25 @@ void ZGuiMenu::CreateInternalControls()
 	m_pkSkinDown->m_afBorderColor[2] = (1.0f / 255) * Bdf ;
 
 	m_pkSkinDown->m_unBorderSize = 1;
-
-	if(m_bPopup)
-	{
-		AddItem("Pm", "PopupRootMain", NULL, true);
-	}
 }
 
 bool ZGuiMenu::AddItem(const char* szText, const char* szNameID, 
 							  const char* szParentID, bool bOpenSubMenu)
 {
+
+	if(m_vkItems.empty() && m_bPopup)
+	{
+		ZGuiMenuItem* pkRootItem = new ZGuiMenuItem;
+		pkRootItem->bOpenSubMenu = false;
+		pkRootItem->pkParent = NULL;
+		pkRootItem->szNameID = new char[strlen("PopupRootMain")+1];
+		strcpy(pkRootItem->szNameID, "PopupRootMain");
+		pkRootItem->pkButton = new ZGuiButton(Rect(0,0,10,10),this,1,0);
+		m_vkItems.push_back(pkRootItem); 
+
+		s_iMenuIDCounter++;
+	}
+
 	char* szRealParent = NULL;
 
 	if(szParentID == NULL && !m_vkItems.empty() && m_bPopup)
@@ -268,20 +288,22 @@ bool ZGuiMenu::AddItem(const char* szText, const char* szNameID,
 		bShow = true;
 	}
 
-	new_item->pkButton = new ZGuiButton(Rect(x,y,x+w,y+h),this,bShow,0);
+	new_item->pkButton = new ZGuiButton(Rect(x,y,x+w,y+h),this,bShow,s_iMenuIDCounter++);
 	new_item->pkButton->SetButtonUpSkin(m_pkItemSkinUp); 
 	new_item->pkButton->SetButtonHighLightSkin(m_pkItemSkinFocus); 
 	new_item->pkButton->SetButtonDownSkin(m_pkSkinDown); 
 	new_item->pkButton->SetText((char*) szText, false); 
 	new_item->pkButton->m_bCenterTextHorz = false;
 
-	new_item->pkButton->SetID(s_iMenuIDCounter++);
+
+
+	//new_item->pkButton->SetID(s_iMenuIDCounter++);
 
 	new_item->bOpenSubMenu = bOpenSubMenu;
 
 	m_vkItems.push_back(new_item); 
 
-	GetGUI()->RegisterWindow( new_item->pkButton, (char*) szNameID);
+//	GetGUI()->RegisterWindow( new_item->pkButton, (char*) szNameID);
 
 	if(new_item->bOpenSubMenu)
 	{
@@ -381,6 +403,20 @@ bool ZGuiMenu::IsChildOf(ZGuiMenuItem* pkSubMenu)
 	return false;
 }
 
+void ZGuiMenu::ClearAll()
+{
+	for(int i=0; i<m_vkItems.size(); i++)
+	{
+		delete m_vkItems[i]->pkButton;
+		delete m_vkItems[i];
+	}
+
+	s_iMenuIDCounter = 0;
+
+	m_vkItems.clear();
+	m_mkSubMenuStateMap.clear();
+}
+
 void ZGuiMenu::HideAll()
 {
 	for(int i=0; i<m_vkItems.size(); i++)
@@ -443,7 +479,7 @@ void ZGuiMenu::ResizeMenu()
 			if(m_vkItems[j]->pkParent == NULL)
 				continue;
 
-			int w = sizes[ string(m_vkItems[j]->pkParent->szNameID) ];
+			int w = sizes[ string(m_vkItems[j]->pkParent->szNameID) ] + 8;
 			m_vkItems[j]->pkButton->Resize(w,-1,true); 
 			m_vkItems[j]->pkButton->Move(0,-MENU_ITEM_HEIGHT,false,false); 
 
@@ -607,4 +643,15 @@ bool ZGuiMenu::HooverItem(int x, int y)
 	}
 
 	return false;
+}
+
+char* ZGuiMenu::GetItemName(int iID)
+{
+	for(int i=0; i<m_vkItems.size(); i++)
+	{
+		if(m_vkItems[i]->pkButton->GetID() == iID)
+			return m_vkItems[i]->szNameID;
+	}
+
+	return NULL;
 }

@@ -54,6 +54,10 @@ void MadView::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 	{
 		string strMainWnd = pkMainWnd->GetName();
 		string strWndClicked = pkWndClicked->GetName();
+
+		if(GetWndType(pkMainWnd) == Menu)
+			strWndClicked = ((ZGuiMenu*)pkMainWnd)->GetItemName(iID); 
+
 		string strParent = "null";
 
 		if(pkWndClicked->GetParent())

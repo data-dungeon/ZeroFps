@@ -83,7 +83,7 @@ public:
 	};
 
 	bool BuildFileTree(char* szTreeBoxName, char* szRootPath, char* szExtension=NULL);
-	bool CreateMenu(char* szFileName);
+	bool CreateMenu(char* szFileName, char* szName, bool bPopup);
 	int  GetWndID(char* szResName); // returns -1 if no window exist and can be used to check if a window exist from script.
 	void ClearListbox(char* szName);
 	void AddListItem(char* szListboxResName, char* szText, bool bSelect=false);

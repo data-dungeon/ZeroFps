@@ -87,6 +87,9 @@ void ZeroEd::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 
 		string strWndClicked = pkWndClicked->GetName();
 
+		if(GetWndType(pkMainWnd) == Menu)
+			strWndClicked = ((ZGuiMenu*) pkMainWnd)->GetItemName(iID);
+
 		string strParent = "null";
 
 		if(pkWndClicked->GetParent())
@@ -360,6 +363,20 @@ void ZeroEd::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 				ShowWnd("PreviewWnd", false); // close window
 			}
 		}
+		else
+		if(strMainWnd == "ObjectMenu")
+		{
+			if(strWndClicked == "Remove_Object")
+			{
+				SendDeleteSelected();
+			}
+			else
+			if(strWndClicked == "Rotate_90_degree")
+			{
+				RotateActive();
+			}
+		}
+
 	}
 }
 

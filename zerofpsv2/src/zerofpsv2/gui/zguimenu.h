@@ -41,12 +41,15 @@ public:
 	
 	ZGuiMenuItem* GetItem(const char* szNameID);
 	void HideAll();
+	void ClearAll();
 
 	void ResizeMenu();
 
 	bool IsOpen();
 	bool IsMenuItem(ZGuiWnd* pkButton);
 	bool HooverItem(int x, int y);
+
+	char* GetItemName(int iID);
 
 protected:
 	bool Notify(ZGuiWnd* pkWnd, int iCode);

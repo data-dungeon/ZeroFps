@@ -668,7 +668,7 @@ void ZGuiApp::InitGui(ZFScriptSystem* pkScriptSys, char* szFontName,
 
 	// Create the menu for the application
 	if(szMenuFile != NULL)
-		CreateMenu(szMenuFile/*, pkScriptSys*/);
+		CreateMenu(szMenuFile, "MainMenu", false);
 
 	// Setup cursor
 	m_pkGuiSys->m_bUseHardwareMouse = bUseHardwareMouse;
@@ -1194,7 +1194,7 @@ bool ZGuiApp::LoadGuiFromScript(char* szFileName)
 	return true;
 }
 
-bool ZGuiApp::CreateMenu(char* szFileName)
+bool ZGuiApp::CreateMenu(char* szFileName, char* szName, bool bPopup)
 {
    int iMenuHeight;
 
@@ -1204,8 +1204,11 @@ bool ZGuiApp::CreateMenu(char* szFileName)
       iMenuHeight = 20;
 
 	// Skapa själva menyn
-	ZGuiMenu* pkMenu = (ZGuiMenu*) CreateWnd(Menu, "MainMenu", "GuiMainWnd", "", 
-		0,0, GetWidth(), iMenuHeight, 0, TopLeft, ResizeWidth);
+	int iFlags = bPopup ? MENU_IS_POPUP : 0;
+	ZGuiMenu* pkMenu = (ZGuiMenu*) CreateWnd(Menu, szName, "GuiMainWnd", "", 
+		0, 0, GetWidth(), iMenuHeight, iFlags, TopLeft, ResizeWidth);
+
+	pkMenu->ClearAll();
 
 	// Öppna INI filen
 	ZFIni kINI;

@@ -250,14 +250,28 @@ bool ZeroEd::SaveCurrentToScript()
    return true;
 }
 
+void ZeroEd::OpenObjectMenu(bool bOpen)
+{
+	static ZGuiMenu* pkMenu = NULL;
 
+	if(pkMenu == NULL)
+	{
+		CreateMenu("data/script/gui/objectmenu.txt", "ObjectMenu", true);
+		pkMenu = (ZGuiMenu*) GetWnd("ObjectMenu");
+	}
 
+	if(pkMenu == NULL)
+		return;
 
-
-
-
-
-
-
-
-
+	if(bOpen)
+	{
+		int x,y;
+		m_pkInputHandle->SDLMouseXY(x,y); 
+		pkMenu->SetPos(x,y,true,true); 
+		pkMenu->Show();
+	}
+	else
+	{
+		pkMenu->Hide();
+	}
+}

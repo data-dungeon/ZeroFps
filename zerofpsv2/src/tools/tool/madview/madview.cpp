@@ -98,6 +98,8 @@ void MadView::Init()
 		string strMadFile = g_ZFObjSys.GetArgument(1);
 		ChangeMad(strMadFile);
 	}
+
+		
 }
 
 void MadView::OnIdle()

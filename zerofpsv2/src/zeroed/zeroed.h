@@ -193,6 +193,7 @@ class ZeroEd :public Application , public ZGuiApp {
 		bool UpdatePropertyList(int iID);		
 		void SetupPreviewWnd(const char* szMadFile);
 		void UpdatePreviewObject();
+		void OpenObjectMenu(bool bOpen);
 
 		//camera stuff
 		void  CreateEditCameras();

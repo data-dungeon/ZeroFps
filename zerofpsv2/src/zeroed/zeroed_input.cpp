@@ -122,6 +122,9 @@ void ZeroEd::Input_EditObject(float fMouseX, float fMouseY)
 	NetPacket kNp;
 	if(m_pkInputHandle->Pressed(MOUSELEFT) && !DelayCommand() )
 	{
+
+		OpenObjectMenu(false);
+
 		/*
 		Entity* pkObj = m_pkEntityManager->CreateObjectFromScript(m_strActiveObjectName.c_str());
 		pkObj->SetWorldPosV(m_kObjectMarkerPos);
@@ -140,22 +143,31 @@ void ZeroEd::Input_EditObject(float fMouseX, float fMouseY)
 		   if((pkObj = GetTargetObject()))
 		      if(pkObj->GetCurrentZone() != -1)
 				   PlaceObjectOnGround(pkObj->GetEntityID());
-      }
-
-		//Entity* pkEnt ;
-		//if((pkEnt = GetTargetObject()))
-		//	CreateASPDefaultArea(pkEnt);
-		
+      }		
 	}
 	
 	if(m_pkInputHandle->VKIsDown("selectzone") && !DelayCommand())
-	{		
+	{	
 		Entity* pkObj =  GetTargetObject();
 		if(pkObj)
       {
+			int sel_object = m_iCurrentObject;
+
 			Select_Toggle(pkObj->GetEntityID(), m_pkInputHandle->Pressed(KEY_LSHIFT));  
+
+			if(m_iCurrentObject == -1 && !GetWnd("ObjectMenu")->IsVisible() )
+			{
+				Select_Toggle(sel_object, false);  
+				OpenObjectMenu(true);
+			}
+			else
+				OpenObjectMenu(false);
+			
       }
+		else
+			OpenObjectMenu(false);
 	}
+
 
 	if(m_pkInputHandle->VKIsDown("applyforce") )
 	{	
@@ -263,6 +275,8 @@ void ZeroEd::Input_EditObject(float fMouseX, float fMouseY)
 		kNp.Write(kRot);
 		m_pkZeroFps->RouteEditCommand(&kNp);
 	}
+
+
 }
 
 // Handles input for Edit Ambient Areas
