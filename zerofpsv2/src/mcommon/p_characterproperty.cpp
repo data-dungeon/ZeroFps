@@ -58,6 +58,7 @@ void P_CharacterProperty::PlayCharacterMovementSounds()
 		{
 			if(!m_kCurrentCharacterStates[eWALKING])
 			{
+				m_pkAudioSystem->StopSound(m_iWalkSoundID);
 				m_iWalkSoundID = m_pkAudioSystem->StartSound(m_strWalkSound,GetEntity()->GetIWorldPosV(),Vector3(0,0,0),true);
 			}
 			else
@@ -74,6 +75,7 @@ void P_CharacterProperty::PlayCharacterMovementSounds()
 		{
 			if(!m_kCurrentCharacterStates[eRUNNING])
 			{
+				m_pkAudioSystem->StopSound(m_iRunSoundID);
 				m_iRunSoundID = m_pkAudioSystem->StartSound(m_strRunSound,GetEntity()->GetIWorldPosV(),Vector3(0,0,0),true);
 			}
 			else
@@ -92,6 +94,7 @@ void P_CharacterProperty::PlayCharacterMovementSounds()
 		{
 			if(!m_kCurrentCharacterStates[eSWIMING])
 			{	
+				m_pkAudioSystem->StopSound(m_iSwimSoundID);
 				m_iSwimSoundID = m_pkAudioSystem->StartSound(m_strSwimSound,GetEntity()->GetIWorldPosV(),Vector3(0,0,0),true);
 			}
 			else

@@ -271,7 +271,7 @@ bool ZFAudioSystem::StopSound(string strName, Vector3 pos)
 ///////////////////////////////////////////////////////////////////////////////
 bool ZFAudioSystem::StopSound(int iID)
 {
-	ZFSoundInfo *pkSound;
+	ZFSoundInfo *pkSound = NULL;
 
 	list<ZFSoundInfo*>::iterator itSound = m_kSoundList.begin();
 	for( ; itSound != m_kSoundList.end(); itSound++)  
