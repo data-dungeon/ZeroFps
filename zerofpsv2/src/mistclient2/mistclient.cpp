@@ -20,6 +20,8 @@ MistClient g_kMistClient("MistClient",0,0,0);
 
 bool GUIPROC( ZGuiWnd* win, unsigned int msg, int numparms, void *params ) ;
 
+void GuiMsgIngameScreen( string strMainWnd, string	strController,	unsigned int msg, int numparms,	void *params )	;
+
 MistClient::MistClient(char* aName,int iWidth,int iHeight,int iDepth) 
 	: Application(aName,iWidth,iHeight,iDepth), ZGuiApp(GUIPROC)
 { 
@@ -57,8 +59,6 @@ void MistClient::OnInit()
 	//register resources
 	RegisterResources();
 
-
-		
 	//init mistland script intreface
 	MistLandLua::Init(m_pkEntityManager,m_pkScript);
 
@@ -71,44 +71,8 @@ void MistClient::OnInit()
 	//set client in server mode to show gui etc
 	m_pkZeroFps->StartServer(true,false);
 
-   // initialize gui system with default skins, font etc
-	InitGui(m_pkScript, "morpheus10", "data/script/gui/defskins.lua", NULL, false, true); 
-
-   char szFontData[512], szFontTex[512];
-   sprintf(szFontData, "data/textures/gui/fonts/%s.fnt", "defguifont");
-   sprintf(szFontTex, "data/textures/gui/fonts/%s.tga", "defguifont");
-
-   ZGuiFont* font = new ZGuiFont("listboxfont");
-   font->Create(szFontData, m_pkTexMan->Load(szFontTex, 0));
-	m_pkGui->GetResMan()->Add("listboxfont", font);
-
-   // load startup screen 
-   if(!m_bSkipLoginScreen)
-   {
-      LoadGuiFromScript("data/script/gui/ml_start.lua");
-
-      GetWnd("ServerList")->SetFont(font); 
-      GetWnd("LoginNameEB")->SetFont(font); 
-      GetWnd("LoginPWEb")->SetFont(font); 
-      GetWnd("NewServerIPName")->SetFont(font); 
-      GetWnd("NewServerNameEB")->SetFont(font); 
-
-      m_pkGui->AddKeyCommand(KEY_RETURN, GetWnd("NewServerNameEB"), GetWnd("AddNewServerOK"));
-      m_pkGui->AddKeyCommand(KEY_RETURN, GetWnd("NewServerIPName"), GetWnd("AddNewServerOK"));
-      m_pkGui->AddKeyCommand(KEY_ESCAPE, GetWnd("LoginWnd"), GetWnd("LoginCancel"));
-      m_pkGui->AddKeyCommand(KEY_RETURN, GetWnd("LoginWnd"), GetWnd("LoginOK"));
-      m_pkGui->AddKeyCommand(KEY_RETURN, GetWnd("LoginNameEB"), GetWnd("LoginOK"));
-      m_pkGui->AddKeyCommand(KEY_RETURN, GetWnd("LoginPWEb"), GetWnd("LoginOK"));
-      m_pkGui->AddKeyCommand(KEY_ESCAPE, GetWnd("ConnectWnd"), GetWnd("CloseServerWndBn"));
-      m_pkGui->AddKeyCommand(KEY_RETURN, GetWnd("ConnectWnd"), GetWnd("ConnectBn"));
-      m_pkGui->AddKeyCommand(KEY_ESCAPE, GetWnd("AddNewServerWnd"), GetWnd("AddNewServerCancelBn"));
-      m_pkGui->AddKeyCommand(KEY_RETURN, GetWnd("AddNewServerWnd"), GetWnd("AddNewServerOK"));
-   }
-
-   // load software cursor
-	m_pkGui->SetCursor( 0,0, m_pkTexMan->Load("data/textures/gui/cursor.bmp", 0),
-		m_pkTexMan->Load("data/textures/gui/cursor_a.bmp", 0), 32, 32);
-   m_pkInput->ShowCursor(false);
+	// create gui for mistlands
+	SetupGUI();
 
 	//run autoexec script
 	if(!m_pkIni->ExecuteCommands("mistclient_autoexec.ini"))

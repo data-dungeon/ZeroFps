@@ -5,15 +5,14 @@ extern MistClient	g_kMistClient;
 void GuiMsgIngameScreen( string strMainWnd, string	strController,	
 								 unsigned int msg, int numparms,	void *params )	
 {
-
 	if(msg == ZGM_COMMAND)
 	{
 		if(strMainWnd == "GameGuiToolbar")
 		{
 			if(strController == "OpenChatButton")
 			{
-					g_kMistClient.SetText("SayTextbox",	"");
-					g_kMistClient.ToogleChatWnd(true);
+				g_kMistClient.SetText("SayTextbox",	"");
+				g_kMistClient.ToogleChatWnd(true);
 			}
 		}
 		else
@@ -83,8 +82,6 @@ void GuiMsgIngameScreen( string strMainWnd, string	strController,
 			}
 		}
 	}
-
-
 }
 
 void MistClient::ToogleChatWnd(bool	bOpen, bool	bSetInputFocus)
@@ -118,11 +115,11 @@ void MistClient::AddStringToChatBox(string strMsg)
 		((ZGuiTextbox*)g_kMistClient.GetWnd("ChatTextbox"))->GetRowCount());
 }
 
-void MistClient::ResizeChatDlg(bool	bBigger)
+void MistClient::ResizeChatDlg(bool	bMakeBigger)
 {
 	static unsigned char	s_byCurrenSize	= 0;
 
-	if(bBigger)
+	if(bMakeBigger)
 	{
 		if(s_byCurrenSize	==	2)
 			return;
@@ -143,7 +140,7 @@ void MistClient::ResizeChatDlg(bool	bBigger)
 	const	int RESIZE_VALUE = 150;
 	int iVerticalOffset = 0;
 
-	if(bBigger)
+	if(bMakeBigger)
 	{
 		rcChatDlgMainWnd.Top	-=	RESIZE_VALUE;
 		rcChatTextbox.Top	-=	RESIZE_VALUE;

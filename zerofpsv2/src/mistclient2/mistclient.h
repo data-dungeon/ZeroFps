@@ -13,6 +13,8 @@
 #include "../mcommon/p_enviroment.h"
 #include "../mcommon/p_charactercontrol.h"
 
+typedef void (*msgScreenProg)(string, string, unsigned int msg, int numparms, void *params);
+
 /**	\brief	Da MistClient
 		\ingroup MistClient
 */
@@ -76,9 +78,13 @@ class MistClient :public Application, public ZGuiApp {
 
 		void RunCommand(int cmdid, const CmdArgument* kCommand);
 		
+		void SetupGUI();
+
       friend bool GUIPROC( ZGuiWnd* win, unsigned int msg, int numparms, void *params );
       friend void GuiMsgStartScreen( string strMainWnd, string strController, unsigned int msg, int numparms, void *params );
 		friend void GuiMsgIngameScreen( string strMainWnd, string strController, unsigned int msg, int numparms, void *params );
+
+		map<string, msgScreenProg> m_kGuiMsgProcs;
 };
 
 
