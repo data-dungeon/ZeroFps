@@ -34,6 +34,9 @@ ZoneData::ZoneData()
 	m_fInactiveTime = 0;
 	m_bActive = false;
 	m_iRange = 0;		
+	m_bUnderContruction = false;
+	m_iRevision = 0;
+	
 	m_strEnviroment = "Default";
 }
 
@@ -1513,6 +1516,8 @@ int EntityManager::CreateZone(Vector3 kPos,Vector3 kSize)
 	m_kZones[id].m_iZoneLinks.clear();
 	m_kZones[id].m_fInactiveTime = 0;
 	m_kZones[id].m_iRange = 0;
+	m_kZones[id].m_bUnderContruction = false;
+	m_kZones[id].m_iRevision = 0;
 	m_kZones[id].m_strEnviroment = "Default";
 	
 	UpdateZoneLinks(id);
@@ -1564,6 +1569,8 @@ bool EntityManager::LoadZones()
 
 	for( i=0; i<iNumOfZone; i++) {
 		kFile.Read(&kZData.m_bNew, sizeof(kZData.m_bNew), 1);
+		kFile.Read(&kZData.m_bUnderContruction, sizeof(kZData.m_bUnderContruction), 1);						
+		kFile.Read(&kZData.m_iRevision, sizeof(kZData.m_iRevision), 1);								
 		kFile.Read(&kZData.m_bUsed, sizeof(kZData.m_bUsed), 1);						
 		kFile.Read(&kZData.m_iZoneID, sizeof(kZData.m_iZoneID), 1);
 		kFile.Read(&kZData.m_kSize, sizeof(kZData.m_kSize), 1);
@@ -1614,6 +1621,8 @@ bool EntityManager::SaveZones()
 	{
 
 		kFile.Write(&m_kZones[i].m_bNew, sizeof(m_kZones[i].m_bNew), 1);
+		kFile.Write(&m_kZones[i].m_bUnderContruction, sizeof(m_kZones[i].m_bUnderContruction), 1);								
+		kFile.Write(&m_kZones[i].m_iRevision, sizeof(m_kZones[i].m_iRevision), 1);										
 		kFile.Write(&m_kZones[i].m_bUsed, sizeof(m_kZones[i].m_bUsed), 1);				
 		kFile.Write(&m_kZones[i].m_iZoneID, sizeof(m_kZones[i].m_iZoneID), 1);
 		kFile.Write(&m_kZones[i].m_kSize, sizeof(m_kZones[i].m_kSize), 1);		
@@ -1979,4 +1988,38 @@ void EntityManager::ForceSave()
 		if(m_kZones[i].m_pkZone)
 			SaveZone(i);		
 	}	
+}
+
+void EntityManager::SetUnderConstruction(int iId)
+{
+	ZoneData* zd = GetZoneData(iId);	
+	if(zd)
+	{
+		if(zd->m_bUnderContruction)
+		{
+			//cout<<"Zone is already under construction"<<endl;
+			return;
+		}
+		
+		zd->m_bUnderContruction = true;
+		cout<<"Setting zone:"<<iId<<" in construction mode revision:"<<zd->m_iRevision<<endl;		
+	}
+}
+
+void EntityManager::CommitZone(int iId)
+{
+	ZoneData* zd = GetZoneData(iId);	
+	if(zd)
+	{
+		if(!zd->m_bUnderContruction)
+		{
+			//cout<<"Zone is not underconstruction"<<endl;
+			return;
+		}
+	
+		zd->m_bUnderContruction = false;
+		zd->m_iRevision++;
+		
+		cout<<"committing zone:"<<iId<<" new revision is:"<<zd->m_iRevision<<endl;
+	}
 }

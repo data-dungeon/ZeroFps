@@ -1110,9 +1110,6 @@ void MistClient::OnClientInputSend(char *szText)
 	string message = "(IM)";
 	message+=szText;
 
-	cout<<"sending:"<<szText<<endl;
-	cout<<"sending:"<<message<<endl;
-	
 	ClientOrder order;
 						
 	order.m_sOrderName = message; 

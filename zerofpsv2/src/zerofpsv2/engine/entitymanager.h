@@ -24,6 +24,8 @@ public:
 
 	bool					m_bNew;
 	bool					m_bUsed;
+	bool					m_bUnderContruction;	
+	unsigned int		m_iRevision;		
 	Entity*				m_pkZone;
 	int					m_iZoneID;
 	Vector3				m_kPos;
@@ -199,13 +201,6 @@ class ENGINE_API EntityManager : public ZFSubSystem{
 		int GetZoneIndex(Vector3 kMyPos,int iCurrentZone,bool bClosestZone);
 		ZoneData* GetZone(Vector3 kPos);
 		Vector3 GetZoneCenter(int iZoneNum);
-		void ForceUnload();					//forcing unload of all loaded zones
-		void ForceSave();						//forcing save of all loaded zones
-		bool LoadZones();						//load zone info list
-		bool SaveZones();						//save zone info list
-		void LoadZone(int iId);				//load zone
-		void SaveZone(int iId);				//save zone
-		void UnLoadZone(int iId);			//unload zone (saves and deletes)
 		ZoneData*	GetZoneData(int iID);
 		int CreateZone();
 		int CreateZone(Vector3 kPos,Vector3 kSize);
@@ -217,9 +212,19 @@ class ENGINE_API EntityManager : public ZFSubSystem{
 		bool IsInsideZone(Vector3 kPos,Vector3 kSize);
 		void UpdateZoneLinks(int iId);
 		bool NewWorld();		
+		void SetUnderConstruction(int iId);
+		void CommitZone(int iId);
 
-		//void AutoConnectZones();
-		//void Test_CreateZones();
+		void SetWorldDir(const char* acDir) {m_kWorldDirectory = acDir;};
+		bool LoadWorld(const char* acDir);
+		void ForceUnload();					//forcing unload of all loaded zones
+		void ForceSave();						//forcing save of all loaded zones
+		bool LoadZones();						//load zone info list
+		bool SaveZones();						//save zone info list
+		void LoadZone(int iId);				//load zone
+		void SaveZone(int iId);				//save zone
+		void UnLoadZone(int iId);			//unload zone (saves and deletes)
+
 
 		//trackers
 		void AddTracker(Entity* kObject);
@@ -229,8 +234,6 @@ class ENGINE_API EntityManager : public ZFSubSystem{
 		void ClearTrackers();
 		vector<int>	GetActiveZoneIDs(int iTracker);	// Returns a list with zones that the tracked activates,
 		
-		void SetWorldDir(const char* acDir) {m_kWorldDirectory = acDir;};
-		bool LoadWorld(const char* acDir);
 
 		friend class Entity;
 		friend class ZeroFps;		

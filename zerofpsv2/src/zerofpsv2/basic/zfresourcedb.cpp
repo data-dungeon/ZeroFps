@@ -4,7 +4,7 @@
 #include "globals.h"
 #include "zfsystem.h"
 
-#define	RES_EXPIRE_TIME	5.0
+#define	RES_EXPIRE_TIME	30.0
 
 int	g_iResourceHandleID;
 

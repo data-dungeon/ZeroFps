@@ -184,6 +184,7 @@ void MistServer::OnIdle()
 		UpdateZoneMarkerPos();		
 		DrawZoneMarker(m_kZoneMarkerPos);		
 		
+		/*
 		//draw selected zone marker
 		if(m_iCurrentMarkedZone != -1)
 		{
@@ -197,6 +198,7 @@ void MistServer::OnIdle()
 				pkRender->DrawAABB( kMin,kMax, Vector3(1,1,0) );
 			}
 		}
+		*/
 	}
 	
 	if(m_iEditMode == EDIT_OBJECTS)
@@ -380,15 +382,36 @@ void MistServer::Input()
 				if(pkFps->GetTicks() - m_fClickDelay > 0.2)
 				{	
 					m_fClickDelay = pkFps->GetTicks();						
+					m_iCurrentMarkedZone = pkObjectMan->GetZoneIndex(m_kZoneMarkerPos,-1,false);
 					RotateActiveZoneObject();
 				}
 			}
+			
+			if(pkInput->Pressed(KEY_C))
+			{
+				if(pkFps->GetTicks() - m_fClickDelay > 0.2)
+				{	
+					m_fClickDelay = pkFps->GetTicks();
+					m_iCurrentMarkedZone = pkObjectMan->GetZoneIndex(m_kZoneMarkerPos,-1,false);
+					pkObjectMan->SetUnderConstruction(m_iCurrentMarkedZone);
+				}
+			}
+			
+			if(pkInput->Pressed(KEY_V))
+			{
+				if(pkFps->GetTicks() - m_fClickDelay > 0.2)
+				{	
+					m_fClickDelay = pkFps->GetTicks();
+					m_iCurrentMarkedZone = pkObjectMan->GetZoneIndex(m_kZoneMarkerPos,-1,false);
+					pkObjectMan->CommitZone(m_iCurrentMarkedZone);
+				}
+			}	
 	
-			if(pkInput->Pressed(MOUSEMIDDLE))
+/*			if(pkInput->Pressed(MOUSEMIDDLE))
 			{		
 				m_iCurrentMarkedZone =  pkObjectMan->GetZoneIndex(m_kZoneMarkerPos,-1,false);
 			}
-
+*/
 	
 			if(pkInput->Pressed(KEY_1)) m_kZoneSize.Set(4,4,4);
 			if(pkInput->Pressed(KEY_2)) m_kZoneSize.Set(8,8,8);
