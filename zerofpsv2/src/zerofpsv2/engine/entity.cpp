@@ -1666,3 +1666,11 @@ void	Entity::SetNetUpdateFlag(int iConID,int iFlagID,bool bValue)
 	m_kNetUpdateFlags[iConID][iFlagID] = bValue;
 }
 
+
+void Entity::SetUpdateStatus(int iUpdateStatus)
+{
+	m_iUpdateStatus = iUpdateStatus; 
+	SetNetUpdateFlagAndChilds(NETUPDATEFLAG_UPDATESTATUS,true);
+}
+
+

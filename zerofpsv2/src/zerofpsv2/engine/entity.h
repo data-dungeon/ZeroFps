@@ -317,7 +317,7 @@ class ENGINE_API Entity
 		inline float* GetRadiusPointer()			{	return &m_fRadius;		};		
 		inline EntityManager *GetObjectMan()	{	return m_pkObjectMan;	};				
 
-      void SetUpdateStatus(int iUpdateStatus){  m_iUpdateStatus = iUpdateStatus; }
+      void SetUpdateStatus(int iUpdateStatus);
 		
 		void MakeCloneOf(Entity* pkOrginal);
 		
