@@ -42,7 +42,7 @@ void P_AmbientSound::Update()
 	Vector3 pos = pkObject->GetWorldPosV();
 
 	// Kolla avståndet till lyssnaren, om det är "tillräckligt" kort
-	float fDistanceToListener = m_pkAudioSystem->GetListnerPos().DistanceTo(pos);
+	float fDistanceToListener = float(m_pkAudioSystem->GetListnerPos().DistanceTo(pos));
 
 	if(fDistanceToListener < m_fHearableDistance)
 	{

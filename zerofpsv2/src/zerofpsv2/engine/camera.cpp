@@ -76,8 +76,8 @@ void Camera::Update(int iWidth,int iHeight)
 			m_kViewPortSize.y = float(m_pkRender->GetHeight());
 		}
 
-		glScissor  ( m_kViewPortCorner.x, m_kViewPortCorner.y,	m_kViewPortSize.x, m_kViewPortSize.y );
-		glViewport ( m_kViewPortCorner.x, m_kViewPortCorner.y,	m_kViewPortSize.x, m_kViewPortSize.y  );		
+		glScissor  ( GLint(m_kViewPortCorner.x), GLint(m_kViewPortCorner.y),	GLsizei(m_kViewPortSize.x), GLsizei(m_kViewPortSize.y) );
+		glViewport ( GLint(m_kViewPortCorner.x), GLint(m_kViewPortCorner.y),	GLsizei(m_kViewPortSize.x), GLsizei(m_kViewPortSize.y)  );		
 	}
 	
 	//reset modelview matrix and setup the newone
