@@ -14,9 +14,21 @@ P_LightUpdate::P_LightUpdate()
 
 void P_LightUpdate::Update()
 {
-//	if(m_pkObject->GetUpdateStatus() & UPDATE_LIGHT)
-		m_pkLight->Update(m_pkObject->GetWorldPosV());
+	m_pkLight->Update(m_pkObject->GetWorldPosV());
 }
+
+
+void P_LightUpdate::PackTo( NetPacket* pkNetPacket, int iConnectionID ) 
+{
+
+	SetNetUpdateFlag(iConnectionID,false);
+}
+
+void P_LightUpdate::PackFrom( NetPacket* pkNetPacket, int iConnectionID  ) 
+{
+			
+}
+
 
 Property* Create_LightUpdateProperty()
 {

@@ -65,10 +65,17 @@ Entity::~Entity()
 	DeleteAllChilds();
 
 	// Add Ourself to our Net.DeletList
-	m_aiNetDeleteList.push_back(iNetWorkID);
+	AddToDeleteList(iNetWorkID);
+	
 	// Add our Net.DeleteList to our parent.
 	if(m_pkParent != NULL)
-		m_pkParent->m_aiNetDeleteList.insert(m_pkParent->m_aiNetDeleteList.begin(), m_aiNetDeleteList.begin(), m_aiNetDeleteList.end());
+	{
+		for(int i=0;i<m_aiNetDeleteList.size();i++)
+		{
+			m_pkParent->AddToDeleteList(m_aiNetDeleteList[i]);
+		}
+		//m_pkParent->m_aiNetDeleteList.insert(m_pkParent->m_aiNetDeleteList.begin(), m_aiNetDeleteList.begin(), m_aiNetDeleteList.end());
+	}
 
 	// Then we remove ourself from our master.
 	if(m_pkParent != NULL)
@@ -566,6 +573,9 @@ bool Entity::HaveSomethingToSend(int iConnectionID)
 		if((*it)->bNetwork) 
 		{
 			bNeedUpdate |= (*it)->GetNetUpdateFlag(iConnectionID);
+		
+			//if((*it)->GetNetUpdateFlag(iConnectionID))
+			//	cout<<"sending: "<<(*it)->m_acName<<endl;
 		}
 	}
 	
@@ -578,8 +588,8 @@ bool Entity::HaveSomethingToSend(int iConnectionID)
 void Entity::PackTo(NetPacket* pkNetPacket, int iConnectionID)
 {
 	//check delete list
-	if(m_aiNetDeleteList.size())
-		SetNetUpdateFlag(iConnectionID,NETUPDATEFLAG_DELETE,true);
+	//if(m_aiNetDeleteList.size())
+	//	SetNetUpdateFlag(iConnectionID,NETUPDATEFLAG_DELETE,true);
 	
 
 	//send update flags
@@ -741,6 +751,7 @@ void Entity::PackTo(NetPacket* pkNetPacket, int iConnectionID)
 */
 void Entity::PackFrom(NetPacket* pkNetPacket, int iConnectionID)
 {
+
 	int iStart = pkNetPacket->m_iPos;
 
 	//read update flags
@@ -1705,3 +1716,8 @@ void Entity::SetUpdateStatus(int iUpdateStatus)
 }
 
 
+void Entity::AddToDeleteList(int iId)
+{
+	m_aiNetDeleteList.push_back(iId);
+	SetNetUpdateFlag(NETUPDATEFLAG_DELETE,true);
+}

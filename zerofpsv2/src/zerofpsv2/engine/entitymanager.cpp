@@ -594,8 +594,8 @@ void EntityManager::PackToClient(int iClient, vector<Entity*> kObjects,bool bZon
 	
 	}
 	
-	int nso=0;
-	int obs=0;
+	//int nso=0;
+	//int obs=0;
 
 	for(; iObj < kObjects.size(); iObj++)	{
 		pkPackObj = kObjects[iObj];
@@ -605,11 +605,11 @@ void EntityManager::PackToClient(int iClient, vector<Entity*> kObjects,bool bZon
 		if(pkPackObj->NeedToPack() == false)						continue;
 		if(pkPackObj->m_eRole != NETROLE_AUTHORITY)				continue;
 		
-		obs++;				//count objects to send
+		//obs++;				//count objects to send
 		if(pkPackObj->HaveSomethingToSend(iClient) == false) 
 		{
 			//cout << "No need to send object" << endl;
-			nso++;	//count object not sent
+			//nso++;	//count object not sent
 			continue;
 		}
 
@@ -647,7 +647,7 @@ void EntityManager::PackToClient(int iClient, vector<Entity*> kObjects,bool bZon
 		}
 	}
 	
-	cout<<"Sent "<<obs-nso <<" object of "<<obs<<endl;
+	//cout<<"Sent "<<obs-nso <<" object of "<<obs<<endl;
 	
 	//if zone object save this object is, so that we can continue at this object next frame
 	if(bZoneObject)

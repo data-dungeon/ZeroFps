@@ -235,6 +235,8 @@ class ENGINE_API Entity
 		void GetAllObjects(vector<Entity*> *pakObjects);			// Return this + all childs.
 		void GetAllDynamicEntitys(vector<Entity*> *pakObjects);	// Return this + all childs.
 		Entity* GetStaticEntity();
+		
+		void AddToDeleteList(int iId);
 
 		bool AttachToZone();		
 		bool AttachToZone(Vector3 kPos);		

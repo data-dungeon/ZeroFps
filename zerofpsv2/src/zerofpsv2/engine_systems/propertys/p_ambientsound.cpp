@@ -234,19 +234,20 @@ void P_Sound::Update()
 void P_Sound::Play(string strName) // körs endast på server sidan
 {
 	m_strFileName = strName;
+	SetNetUpdateFlag(true);
 }
 
 void P_Sound::PackTo(NetPacket* pkNetPacket, int iConnectionID )
 {
-	pkNetPacket->Write_NetStr( m_strFileName.c_str()); // write filename
+	pkNetPacket->Write_Str( m_strFileName.c_str()); // write filename
 	m_strFileName = "";
-	
+	SetNetUpdateFlag(iConnectionID,false);
 }
 
 void P_Sound::PackFrom(NetPacket* pkNetPacket, int iConnectionID )
 {
 	char file_name[128];
-	pkNetPacket->Read_NetStr(file_name); // read filename
+	pkNetPacket->Read_Str(file_name); // read filename
 	m_strFileName = file_name;
 }
 

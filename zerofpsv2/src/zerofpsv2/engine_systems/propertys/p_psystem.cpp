@@ -89,6 +89,8 @@ void P_PSystem::SetPSType( string kName )
 {
 	m_pkPSystem = PSystemManager::GetInstance()->GetPSSystem ( kName );
    m_kPSType = kName;
+   
+   SetNetUpdateFlag(true);
 }
 
 // ------------------------------------------------------------------------------------------
@@ -132,7 +134,9 @@ void P_PSystem::Load(ZFIoInterface* pkPackage)
 
 void P_PSystem::PackTo( NetPacket* pkNetPacket, int iConnectionID  ) 
 {
-   pkNetPacket->Write_NetStr( m_kPSType.c_str() );
+   pkNetPacket->Write_Str( m_kPSType.c_str() );
+   
+	SetNetUpdateFlag(iConnectionID,false);   
 }
 
 // ------------------------------------------------------------------------------------------
@@ -140,7 +144,7 @@ void P_PSystem::PackTo( NetPacket* pkNetPacket, int iConnectionID  )
 void P_PSystem::PackFrom( NetPacket* pkNetPacket, int iConnectionID  ) 
 {
 	char temp[128];
-	pkNetPacket->Read_NetStr(temp);
+	pkNetPacket->Read_Str(temp);
 	m_kPSType = temp;	
 	
 	if(m_kPSType == "nons")
