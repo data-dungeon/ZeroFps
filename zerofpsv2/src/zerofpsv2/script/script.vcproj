@@ -40,12 +40,12 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386"
-				AdditionalDependencies="Lua.lib odbc32.lib odbccp32.lib"
+				AdditionalDependencies="liblua.lib liblualib.lib odbc32.lib odbccp32.lib"
 				OutputFile="..\..\..\bin\script.dll"
 				LinkIncremental="2"
 				SuppressStartupBanner="TRUE"
 				AdditionalLibraryDirectories="..\..\..\bin"
-				IgnoreDefaultLibraryNames=""
+				IgnoreDefaultLibraryNames="LIBCD.lib"
 				GenerateDebugInformation="TRUE"
 				ProgramDatabaseFile=".\Debug/script.pdb"
 				ImportLibrary=".\Debug/script.lib"/>

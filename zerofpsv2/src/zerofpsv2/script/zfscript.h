@@ -6,7 +6,7 @@
 extern "C"  
 {
 	#include <lua.h>
-//	#include <lualib.h>
+	#include <lualib.h>
 }
 
 #pragma warning( disable : 4512) // 'class' : assignment operator could not be generated 

@@ -12,7 +12,7 @@
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
- 
+  
 ZFScriptSystem::ZFScriptSystem() : ZFSubSystem("ZFScriptSystem")
 {
 	Open(); 
@@ -50,8 +50,6 @@ bool ZFScriptSystem::Open()
 	// Open Lua
 	m_pkLua = lua_open(0);
 
-	// Open base lib for access to some useful functions.
-	//lua_baselibopen(m_pkLua);
 
 	// Create Lua tag for Int type.
 	m_iLuaTagInt = lua_newtag(m_pkLua);
@@ -83,6 +81,13 @@ bool ZFScriptSystem::Open()
 
 	m_pkFileSys = reinterpret_cast<ZFVFileSystem*>(
 		g_ZFObjSys.GetObjectPtr("ZFVFileSystem"));	
+
+	// Open base lib for access to some useful functions.
+	lua_baselibopen(m_pkLua);
+	lua_strlibopen(m_pkLua);
+	lua_mathlibopen(m_pkLua);
+	lua_iolibopen(m_pkLua);
+	lua_dblibopen(m_pkLua);
 
 	return true;	
 }

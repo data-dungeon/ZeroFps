@@ -1,7 +1,7 @@
 #include "application.h"
 #include "zerofps.h"
 #include "inputhandle.h"
-
+ 
 Application* Application::m_pkApp;
  
 Application::Application(char* pName,int iWidth,int iHeight,int iDepth) 
