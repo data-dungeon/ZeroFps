@@ -894,7 +894,7 @@ void Tcs::TestSphereVsMesh(P_Tcs* pkBody1,P_Tcs* pkBody2,float fAtime)
 							
 			didpen = true;			
 			retry = true;
-			fAtime /=2;
+			fAtime /=1.5;
 			//fAtime -= fTD;
 		
 		}
@@ -1149,7 +1149,7 @@ void Tcs::TestMeshVsMesh(P_Tcs* pkBody1,P_Tcs* pkBody2,float fAtime)
 			didpen = true;			
 			retry = true;
 			fLastColTime  = fAtime;
-			fAtime /= 2;
+			fAtime /= 1.5;
 		}
 		else if(didpen)
 			break;
