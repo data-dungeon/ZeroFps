@@ -1256,7 +1256,7 @@ bool MadExport::haveWriteMethod() const
 
 MString	MadExport::defaultExtension() const
 {
-	return "mad";
+	return "";
 }
 
 bool MadExport::canBeOpened () const

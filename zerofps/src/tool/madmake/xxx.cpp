@@ -2,7 +2,9 @@
 #include "xxx.h"
 #include "script.h"
 
-float g_fExportScale;
+float g_fExportScale;	
+float g_fUnitsMeter;	// Num of units to be one meter in real scale.
+float g_fTotalScale;	// 
 
 /*int	ModellXXX::AddTexture(char* ucpTextureName)
 {
@@ -202,7 +204,7 @@ void ModellXXX::ReadCoreMesh(const char* filename, const char* szName)
 			fscanf(fp, " <%d,%f,%f,%f,%f,%f,%f,%f,%f>",&iBoneLink, &kVertex.x,&kVertex.y,&kVertex.z,
 				&kNormal.x,&kNormal.y,&kNormal.z,
 				&kTextureCoo.s,&kTextureCoo.t);
-			kVertex *= g_fExportScale;
+			kVertex *= g_fTotalScale;
 			kFace.iIndex[v] = kFrame.Size();
 			kFrame.PushBack(kVertex, kNormal);
 			//kFrame.akVertex.push_back(kVertex);
@@ -342,8 +344,8 @@ void ModellXXX::ReadExportSD(const char* filename)
 		NewBone.m_kRotation.z = atof(tmpstr);
 
 		// Scale
-		NewBone.m_kPosition *= g_fExportScale;
-		NewBone.m_kRotation *= g_fExportScale;
+		NewBone.m_kPosition *= g_fTotalScale;
+		NewBone.m_kRotation *= g_fTotalScale;
 
 		m_akSkelleton.push_back(NewBone);
 	}
@@ -467,8 +469,8 @@ void ModellXXX::ReadExportAD(const char* filename,	const char* szName)
 		fscanf(fp, "%s",tmpstr);
 		kNewBoneKey.m_kRotation.z = atof(tmpstr);
 
-		kNewBoneKey.m_kPosition *= g_fExportScale;
-		kNewBoneKey.m_kRotation *= g_fExportScale;
+		kNewBoneKey.m_kPosition *= g_fTotalScale;
+		kNewBoneKey.m_kRotation *= g_fTotalScale;
 
 //		kNewBoneKeyFrame.m_kBonePose.push_back(kNewBoneKey);
 		kNewBoneKeyFrame.PushBack(kNewBoneKey);
@@ -510,7 +512,10 @@ extern string ucaOutFile;
 
 void ModellXXX::Read( const char* filename )
 {
-	g_fExportScale = 1.0;
+	g_fExportScale	= 1.0;
+	g_fUnitsMeter	= 100;	 
+	g_fTotalScale	= (1.0 / g_fUnitsMeter) * g_fExportScale;
+	cout << "g_fTotalScale: " << g_fTotalScale << endl;
 
 	ScriptFile kMMScipt;
 	kMMScipt.LoadScript(filename);
@@ -526,8 +531,8 @@ void ModellXXX::Read( const char* filename )
 		{
 			ucpToken = kMMScipt.GetToken();
 			g_fExportScale = atof(ucpToken);
-			//sscanf(fp, "%s",tmpstr);
 			cout << "Setting Scale to: " << g_fExportScale << endl;
+			g_fTotalScale	= (1.0 / g_fUnitsMeter) * g_fExportScale;
 		}
 
 		if (!strcmp (ucpToken, "!filetype")) {
