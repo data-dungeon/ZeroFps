@@ -303,16 +303,6 @@ void ZeroFps::Run_EngineShell()
 			iInputKey = i; break;
 		}
 
-	if(m_pkInput->Pressed(KEY_LEFT))				iInputKey = gKEY_LEFT;
-	else if(m_pkInput->Pressed(KEY_RIGHT))		iInputKey = gKEY_RIGHT;
-	else if(m_pkInput->Pressed(KEY_HOME))		iInputKey = gKEY_HOME;
-	else if(m_pkInput->Pressed(KEY_END))		iInputKey = gKEY_END;
-	else if(m_pkInput->Pressed(KEY_DELETE))	iInputKey = gKEY_DELETE;
-	else if(m_pkInput->Pressed(KEY_INSERT))	iInputKey = gKEY_INSERT;
-	
-	m_pkInput->FormatKey(iInputKey);
-	if(iInputKey != -1) cout << "Gui Char " <<(char)iInputKey << endl;
-
 	m_pkGui->Update(GetGameTime(),iInputKey,false,
 		(m_pkInput->Pressed(KEY_RSHIFT) || m_pkInput->Pressed(KEY_LSHIFT)),
 		mx,my,m_pkInput->Pressed(MOUSELEFT),m_pkInput->Pressed(MOUSERIGHT),

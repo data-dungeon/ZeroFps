@@ -10,6 +10,7 @@
 #include <typeinfo>
 #include <queue>
 #include "../basic/globals.h"
+#include "../basic/keys.h"
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
@@ -794,7 +795,6 @@ bool ZGui::Update(float fGameTime, int iKeyPressed, bool bLastKeyStillPressed,
 		if(m_pkCursor && m_pkCursor->IsVisible())	
 			OnMouseUpdate(x, y, bLBnPressed, bRBnPressed, bMBnPressed, fGameTime);
 
-		//OnKeyUpdate(iKeyPressed, bLastKeyStillPressed, bShiftIsPressed, m_fGameTime);
 		KeyboardInput(iKeyPressed, bShiftIsPressed, fGameTime);
 
 		m_pkToolTip->Update(x,y,(bLBnPressed|bRBnPressed|bMBnPressed),fGameTime);
@@ -1012,24 +1012,24 @@ void ZGui::OnKeyPress(int iKey)
 			{
 				bMultiLine = ((ZGuiTextbox*) ZGuiWnd::m_pkFocusWnd)->IsMultiLine();
 
-	/*			if(iKey == gKEY_RETURN)
+	/*			if(iKey == KEY_RETURN)
 					m_bHaveInputFocus = false;*/
 			}
 	/*		else
 				m_bHaveInputFocus = false;*/
 
-			if((iKey==gKEY_DOWN || iKey==gKEY_UP) && !(bIsTextbox && bMultiLine))
+			if((iKey==KEY_DOWN || iKey==KEY_UP) && !(bIsTextbox && bMultiLine))
 			{
 				// Find the child with the next tab nr...
 				ZGuiWnd* pkNext = FindNextTabWnd(ZGuiWnd::m_pkFocusWnd,
-					(iKey==gKEY_DOWN));
+					(iKey==KEY_DOWN));
 
 				if(pkNext)
 					SetFocus( pkNext );
 			}
 
 			// Send a WM Command message when Return or space ar being hit
-			if( (iKey == gKEY_RETURN || iKey == gKEY_SPACE) 
+			if( (iKey == KEY_RETURN || iKey == KEY_SPACE) 
 				&& !(bIsTextbox && bMultiLine) )
 			{
 				ZGuiWnd::m_pkFocusWnd->Notify(ZGuiWnd::m_pkFocusWnd,
@@ -1233,6 +1233,15 @@ void ZGui::SetInputFocus(ZGuiWnd* pkClikWnd, bool bSet)
 
 void ZGui::KeyboardInput(int key, bool shift, float time)
 {
+	if(key != -1)
+	{
+		if(shift)
+		{
+			key = key-32;
+			shift = false;
+		}
+	}
+
 	const float REPEAT_DELAY_SEC = 0.5f;
 
 	static int s_iLastKeyPressed = -1;
@@ -1278,11 +1287,11 @@ void ZGui::KeyboardInput(int key, bool shift, float time)
 	if(bPrint)
 	{
 		if(key == 8)
-			key = gKEY_BACKSPACE;
+			key = KEY_BACKSPACE;
 		if(key == 9)
-			key = gKEY_TAB;
+			key = KEY_TAB;
 		if(key == 13)
-			key = gKEY_RETURN;
+			key = KEY_RETURN;
 		
 		// om det är en ny tagent...
 		if(ZGuiWnd::m_pkFocusWnd)

@@ -3,6 +3,7 @@
 //////////////////////////////////////////////////////////////////////
 
 #include "../basic/zguiskin.h"
+#include "../basic/keys.h"
 #include "zguilabel.h"
 #include "../render/zguirenderer.h"
 #include "zguitextbox.h"
@@ -120,7 +121,7 @@ bool ZGuiTextbox::ProcessKBInput(int iKey)
 	if(m_bReadOnly == true)
 		return true;
 
-	if(iKey == gKEY_RETURN)
+	if(iKey == KEY_RETURN)
 	{
 		if(m_bMultiLine == true)
 			iKey = '\n';
@@ -128,13 +129,13 @@ bool ZGuiTextbox::ProcessKBInput(int iKey)
 			return true;
 	}
 
-	if(iKey == gKEY_LSHIFT || iKey == gKEY_RSHIFT)
+	if(iKey == KEY_LSHIFT || iKey == KEY_RSHIFT)
 		return false;
 
-	if( (iKey == gKEY_DOWN && m_bMultiLine == true) ||
-		(iKey == gKEY_UP   && m_bMultiLine == true) )
+	if( (iKey == KEY_DOWN && m_bMultiLine == true) ||
+		(iKey == KEY_UP   && m_bMultiLine == true) )
 	{
-		if(iKey == gKEY_DOWN)
+		if(iKey == KEY_DOWN)
 			MoveDownOneRow();
 		else
 			MoveUpOneRow();
@@ -143,11 +144,11 @@ bool ZGuiTextbox::ProcessKBInput(int iKey)
 
 		bool bScroll = false;
 
-		if(iKey == gKEY_DOWN &&
+		if(iKey == KEY_DOWN &&
 			y_pos >= GetScreenRect().Height()-m_pkFont->m_cCharCellSize)
 			bScroll = true;
 
-		if(iKey == gKEY_UP &&
+		if(iKey == KEY_UP &&
 			y_pos <= m_pkFont->m_cCharCellSize)
 			bScroll = true;
 
@@ -157,7 +158,7 @@ bool ZGuiTextbox::ProcessKBInput(int iKey)
 		return true;
 	}
 
-	if(iKey == gKEY_LEFT)
+	if(iKey == KEY_LEFT)
 	{
 		if(m_iCursorPos > 0)
 			m_iCursorPos--;
@@ -198,7 +199,7 @@ bool ZGuiTextbox::ProcessKBInput(int iKey)
 		return true;
 	}
 
-	if(iKey == gKEY_RIGHT && m_strText)
+	if(iKey == KEY_RIGHT && m_strText)
 	{
 		if((unsigned)m_iCursorPos < strlen(m_strText))
 			m_iCursorPos++;	
@@ -237,7 +238,7 @@ bool ZGuiTextbox::ProcessKBInput(int iKey)
 		return true;
 	}
 
-	if(iKey == gKEY_END && m_strText)
+	if(iKey == KEY_END && m_strText)
 	{
 		m_iCursorPos = strlen(m_strText);
 		
@@ -272,7 +273,7 @@ bool ZGuiTextbox::ProcessKBInput(int iKey)
 		return true;
 	}
 
-	if(iKey == gKEY_HOME)
+	if(iKey == KEY_HOME)
 	{
 		if(m_bMultiLine == false)
 			m_iRenderDistFromTop = 0;
@@ -284,7 +285,7 @@ bool ZGuiTextbox::ProcessKBInput(int iKey)
 		return true;
 	}
 
-	if(iKey == gKEY_ESCAPE || (iKey == gKEY_RETURN && m_bMultiLine == false) )
+	if(iKey == KEY_ESCAPE || (iKey == KEY_RETURN && m_bMultiLine == false) )
 	{
 		KillFocus();
 		if(m_pkGUI)
@@ -305,7 +306,7 @@ bool ZGuiTextbox::ProcessKBInput(int iKey)
 
 	bool bSkip = false;
 
-	if(iKey == gKEY_BACKSPACE && m_strText)
+	if(iKey == KEY_BACKSPACE && m_strText)
 	{
 		if(m_iCursorPos > 0)
 		{
@@ -326,7 +327,7 @@ bool ZGuiTextbox::ProcessKBInput(int iKey)
 		//return UpdateScrollbar();
 	}
 
-	if(iKey == gKEY_DELETE && m_strText)
+	if(iKey == KEY_DELETE && m_strText)
 	{
 		if((unsigned)m_iCursorPos < strlen(m_strText))
 		{
@@ -406,7 +407,7 @@ bool ZGuiTextbox::ProcessKBInput(int iKey)
 	}
 
 	// Send a message to the main winproc...
-	//if(iKey == gKEY_RETURN)
+	//if(iKey == KEY_RETURN)
 	{
 		int* piParams = new int[1];
 		piParams[0] = GetID(); // Listbox ID

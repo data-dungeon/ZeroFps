@@ -243,6 +243,9 @@
 				RelativePath=".\image.h">
 			</File>
 			<File
+				RelativePath=".\keys.h">
+			</File>
+			<File
 				RelativePath=".\line2d.h">
 			</File>
 			<File
