@@ -1065,7 +1065,7 @@ void P_CharacterProperty::RemoveAllSkills()
 
 bool P_CharacterProperty::AddSkill(const string& strSkillScript,const string& strParentSkill)
 {
-	AddSkillFullPath(m_strSkillDir+strSkillScript,strParentSkill);
+	return AddSkillFullPath(m_strSkillDir+strSkillScript,strParentSkill);
 }
 
 bool P_CharacterProperty::AddSkillFullPath(const string& strSkillScript,const string& strParentSkill)
@@ -1089,6 +1089,7 @@ bool P_CharacterProperty::AddSkillFullPath(const string& strSkillScript,const st
 
 	
 	cout<<"Added skill "<<strSkillScript<<endl;
+	return true;
 }
 
 P_Buff* P_CharacterProperty::AddBuff(const string& strBuffName)
