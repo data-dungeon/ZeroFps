@@ -20,12 +20,13 @@ class ENGINE_API Object {
 		bool m_bDelete;
 
 		list<Property*> m_akPropertys;
-
-	public:
 		ObjectManager* m_pkObjectMan; 
+	public:
+
 		Object();		
 		~Object();
 		
+		void Remove();
 		Property* GetProperty(char* acName);
 		void AddProperty(Property* pkNewProperty);
 		bool RemoveProperty(char* acName);
@@ -40,7 +41,7 @@ class ENGINE_API Object {
 //		inline bool &GetDelete(){return m_bDelete;};
 		inline bool &Static(){return m_bStatic;};		
 		inline void SetObjectMan(ObjectManager* pkObjectMan) {m_pkObjectMan=pkObjectMan;};		
-		
+		inline ObjectManager *GetObjectMan() {return m_pkObjectMan;};				
 		
 };
 

@@ -4,6 +4,7 @@ class AudioManager;
 class Application;
 class Console;
 class ObjectManager;
+class CollisionManager;
 
 #include "engine_x.h"
 #include "console.h"
@@ -12,7 +13,7 @@ class ObjectManager;
 #include "zerofps.h"
 #include "audiomanager.h"
 #include "objectmanager.h"
-
+#include "collisionmanager.h"
 
 
 

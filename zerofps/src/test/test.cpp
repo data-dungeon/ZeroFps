@@ -91,16 +91,37 @@ void Test::OnInit(void) {
 	pkLight->Add(sol);
 	
 	
-	for(int i=0;i<100;i++) {
+	Object *kul=new Object;
+	kul->AddProperty(new PlayerControlProperty(pkInput,pkFps,test));
+	kul->AddProperty(new ModelProperty());
+	kul->AddProperty(new CollisionProperty(&kul->GetPos(),new float(1)));		
+	kul->GetPos()=Vector3(5,5,5);		
+	pkObjectMan->Add(kul);
+	pkCollisionMan->Add(kul);
+	
+	Object *kul2=new Object;
+	kul2->AddProperty(new PlayerControlProperty(pkInput,pkFps,test));
+	kul2->AddProperty(new ModelProperty());
+	kul2->AddProperty(new CollisionProperty(&kul2->GetPos(),new float(1)));		
+	kul2->GetPos()=Vector3(6,5,5);		
+	pkObjectMan->Add(kul2);
+	pkCollisionMan->Add(kul2);	
+
+	
+	
+	for(int i=0;i<500;i++) {
 		Object *ball=new Object;
-		ball->AddProperty(new PlayerControlProperty(pkInput,pkFps,test));
+//		ball->AddProperty(new PlayerControlProperty(pkInput,pkFps,test));
 		ball->AddProperty(new ModelProperty());
-		ball->AddProperty(new CollisionProperty(&ball->GetPos(),new float(2)));
-		ball->GetPos()=Vector3(rand()%100,500,rand()%100);
+		ball->AddProperty(new CollisionProperty(&ball->GetPos(),new float(1)));		
+		float x=rand()%100;
+		float y=rand()%100;
+		ball->GetPos()=Vector3(x,test->Height(x,y),y);
 		pkObjectMan->Add(ball);
+		pkCollisionMan->Add(ball);
 	}
 
-
+/*
 	CollisionSphere *sp1=new CollisionSphere(Vector3(0,0,0),8);
 	CollisionSphere *sp2=new CollisionSphere(Vector3(4,0,0),4);
 	CollisionPoint *p1=new CollisionPoint(Vector3(1,1,1));
@@ -112,6 +133,7 @@ void Test::OnInit(void) {
 		cout<<"KROOOOOCK"<<endl;
 	if(p2->Collide(sp1,true))
 		cout<<"BLAAAAAAM"<<endl;
+		*/
 }
 
 

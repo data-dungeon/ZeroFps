@@ -24,6 +24,7 @@ class ENGINE_API Application {
 		FileIo* pkFile;
 		Light* pkLight;
 		ObjectManager* pkObjectMan;
+		CollisionManager* pkCollisionMan;
 		
 	public:
 		static Application* pkApp;

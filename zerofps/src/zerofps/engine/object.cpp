@@ -66,4 +66,9 @@ bool Object::Update(char* acName){
 	return false;
 }
 
+void Object::Remove() {
+	if(m_pkObjectMan!=NULL) {
+		m_pkObjectMan->Delete(this);	
+	}
+}
 

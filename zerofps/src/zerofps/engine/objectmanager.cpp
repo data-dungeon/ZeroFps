@@ -6,7 +6,7 @@ void ObjectManager::Add(Object* pkObject) {
 }
 
 void ObjectManager::Delete(Object* pkObject) {
-	pkObject->SetObjectMan(NULL);	
+	pkObject->SetObjectMan(NULL);
 	m_akDeleteList.push_back(pkObject);
 }
 
@@ -23,9 +23,6 @@ void ObjectManager::Update(){
 
 	for(list<Object*>::iterator it=m_akObjects.begin();it!=m_akObjects.end();it++) {
 		(*it)->Update();
-//		if((*it)->GetDelete()==true){
-//			m_akObjects.remove(*it);
-//		}
 	}
 }
 
@@ -33,14 +30,11 @@ void ObjectManager::UpdateDelete(){
 	if(m_akDeleteList.size()==0)
 		return;
 	
-	Object* hora=NULL;
-	
 //	cout<<"ANTAL"<<m_akDeleteList.size()<<endl;
 	for(vector<Object*>::iterator it=m_akDeleteList.begin();it!=m_akDeleteList.end();it++) 
 	{
-		hora=(*it);
 		m_akObjects.remove(*it);
-		delete hora;		
+		delete (*it);		
 	}
 	
 	m_akDeleteList.clear();

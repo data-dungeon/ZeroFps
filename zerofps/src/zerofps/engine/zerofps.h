@@ -46,6 +46,7 @@ class ZeroFps {
 		FileIo* m_pkFile;								//file io
 		Light* m_pkLight;
 		ObjectManager* m_pkObjectMan;
+		CollisionManager*  m_pkCollisionMan;
 	
 		int m_iState;										//curent game state see enum enginestates
 		int m_iFps;											//curent FPS

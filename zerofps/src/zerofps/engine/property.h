@@ -17,8 +17,10 @@ class ENGINE_API Property
 	public:
 		char m_acName[50];
 			
+		virtual ~Property(){};
 			
-		void SetObject(Object* pkObject);
+		inline void SetObject(Object* pkObject){m_pkObject=pkObject;};
+		inline Object *GetObject() {return m_pkObject;};
 		virtual void Update()=0;
 
 };

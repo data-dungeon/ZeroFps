@@ -29,7 +29,7 @@ void PlayerControlProperty::Update() {
 	}
 	
 	if(m_pkInput->Pressed(KEY_Q)){
-		m_pkObject->GetPos().y=100;
+		ner+=1;
 	}
 	
 	
@@ -41,6 +41,9 @@ void PlayerControlProperty::Update() {
 		ner=(ner/1.2)*-1;
 		m_pkObject->GetPos().y=m_pkMap->Height(m_pkObject->GetPos().x,m_pkObject->GetPos().z);
 	}
+
+	if(m_pkObject->GetPos().x>100)
+		m_pkObject->Remove();
 
 };
 
