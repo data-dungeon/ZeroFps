@@ -176,7 +176,7 @@ Vector3 Body::CalculateMassCenter()
 		Vector3 max = Vector3(0,0,0);
 		Vector3 min = Vector3(0,0,0);
 	
-		for(int i = 0;i<m_pkVertex->size();i++)
+		for(unsigned int i = 0;i<m_pkVertex->size();i++)
 		{
 			if((*m_pkVertex)[i].x > max.x)
 				max.x = (*m_pkVertex)[i].x;			
@@ -217,7 +217,7 @@ float Body::CalculateRadius()
 		Vector3 max = Vector3(0,0,0);
 		Vector3 min = Vector3(0,0,0);
 	
-		for(int i = 0;i<m_pkVertex->size();i++)
+		for(unsigned int i = 0;i<m_pkVertex->size();i++)
 		{
 			if((*m_pkVertex)[i].x > max.x)
 				max.x = (*m_pkVertex)[i].x;			

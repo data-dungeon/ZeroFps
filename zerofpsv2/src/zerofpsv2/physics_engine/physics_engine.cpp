@@ -505,6 +505,8 @@ bool Physics_Engine::TestBodyMeshVSBodyMesh(Body* pkBody1,Body* pkBody2,float fA
 		}
 		return true;
 	}
+
+	return false; // Zeblar: Vet inte vad den här funktionen skall returnera men jag chansar på FALSE :)
 }
 
 int Physics_Engine::CollideBodyMeshs(Body* pkBody1,Body* pkBody2)
@@ -692,6 +694,8 @@ bool Physics_Engine::TestBodyVSBody(Body* pkBody1,Body* pkBody2,float fATime)
 		
 		m_kCollissions.push_back(temp);		
 	}
+
+	return false; // Zeblar: Vet inte vad den här funktionen skall returnera men jag chansar på FALSE :)
 
 }
 

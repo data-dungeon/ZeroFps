@@ -36,7 +36,7 @@ void P_Container::AddObjectToBeLoaded (int iAddToContainer)
 // returns true if there was room for the object
 bool P_Container::AddObject ( int iAddToContainer )
 {
-   if ( m_kContainedObjects.size() < m_iCapacity )
+   if ( (int) m_kContainedObjects.size() < m_iCapacity )
    {
 
       Entity *pkEntity = m_pkObject->m_pkObjectMan->GetObjectByNetWorkID ( iAddToContainer );
