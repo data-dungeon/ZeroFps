@@ -383,7 +383,7 @@ class ENGINE_API Entity
 		string GetVarString(string& strName);
 		void	 SetVarDouble(string& strName, double fValue);
 		void	 SetVarString(string& strName, string strValue);
-		void	 AddVarDouble(string& strName, double fValueToAdd);
+		void	 AddVarDouble(string strName, double fValueToAdd);
 
 
 		friend class EntityManager;

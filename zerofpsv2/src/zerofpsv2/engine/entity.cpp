@@ -8,7 +8,7 @@
 typedef list<Entity*>::iterator		itListObject;
 typedef list<Property*>::iterator	itListProperty;
  
-#define LOGALL
+//#define LOGALL
 
 #ifdef LOGALL
 	#define LOGSIZE(name, size)	m_pkObjectMan->GetWorldObject()->AddVarDouble(string(name), size )
@@ -1973,7 +1973,7 @@ void Entity::SetVarString(string& strName, string strValue)
 	pkVar->m_strValue = strValue;
 }
 
-void Entity::AddVarDouble(string& strName, double fValueToAdd)
+void Entity::AddVarDouble(string strName, double fValueToAdd)
 {
 	double fD = GetVarDouble(strName);
 	fD += fValueToAdd;
