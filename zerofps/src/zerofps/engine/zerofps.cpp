@@ -39,7 +39,7 @@ ZeroFps::ZeroFps(void)
 	m_iFullScreen=			0;
 	m_fFrameTime=			0;
 	m_fLastFrameTime=		0;
-	m_fSystemUpdateFps=	30;
+	m_fSystemUpdateFps=	25;
 	m_fSystemUpdateTime= 0;
 	m_bServerMode = 		true;
 	m_bClientMode = 		true;
@@ -796,6 +796,7 @@ void ZeroFps::HandleNetworkPacket(NetPacket* pkNetPacket)
 
 void ZeroFps::RegisterPropertys()
 {
+	m_pkPropertyFactory->Register("VegitationProperty", Create_VegitationProperty);
 	m_pkPropertyFactory->Register("BoxRenderProperty", Create_BoxRenderProperty);
 	m_pkPropertyFactory->Register("BillBoardRenderProperty", Create_BillBoardRenderProperty);
 	m_pkPropertyFactory->Register("CrossRenderProperty", Create_CrossRenderProperty);

@@ -65,3 +65,10 @@ void DlgBox::KillFocus()
 	ZGuiWnd::m_pkFocusWnd = NULL;
 	m_pkDlgBox->KillFocus();
 }
+
+
+
+
+
+
+

@@ -3,6 +3,7 @@ class ModelProperty;
 class CameraProperty;
 class HeightMapRenderProperty;
 class CrossRenderProperty;
+class VegitaionProperty;
 class BillBoardRenderProperty;
 class BoxRenderProperty;
 class HMRP2;
@@ -37,3 +38,4 @@ class ZoneObject;
 #include "crossrenderproperty.h"
 #include "billboardrenderproperty.h"
 #include "boxrenderproperty.h"
+#include "vegitationproperty.h"

@@ -19,7 +19,7 @@ class RENDER_API Frustum : public ZFObject
 		void GetFrustum();
 		
 		bool PointInFrustum(Vector3 kPoint);
-		bool PointInFrustum(Vector3& kPoint);		
+//		bool PointInFrustum(Vector3& kPoint);		
 		
 		bool SphereInFrustum(Vector4 kPoint);
 		bool SphereInFrustum(Vector4& kPoint);		

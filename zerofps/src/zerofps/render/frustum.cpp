@@ -108,6 +108,7 @@ bool Frustum::PointInFrustum( Vector3 kPoint)
    return true;
 }
 
+/*
 bool Frustum::PointInFrustum( Vector3& kPoint)
 {
 	for(int p = 0; p < 6; p++ ){
@@ -117,7 +118,7 @@ bool Frustum::PointInFrustum( Vector3& kPoint)
 	
    return true;
 }
-
+*/
 
 bool Frustum::SphereInFrustum(Vector4 kPoint)
 {
