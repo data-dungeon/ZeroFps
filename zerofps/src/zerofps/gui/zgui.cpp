@@ -338,7 +338,10 @@ bool ZGui::OnMouseUpdate()
 	ZGuiWnd* pkFocusWindow = m_pkActiveMainWin->pkWnd->Find(x,y);
 	
 	// Registrer if mouse pointer moves over a window.
-	m_bHoverWindow = (pkFocusWindow != NULL);
+	if(pkFocusWindow == NULL)
+		m_bHoverWindow = false;
+	else
+		m_bHoverWindow = true;
 	
 	ZGuiWnd::m_pkWndUnderCursor = pkFocusWindow;
 
