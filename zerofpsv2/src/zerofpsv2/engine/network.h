@@ -172,6 +172,8 @@ private:
 	
 	int						m_iDefPort;
 
+	int						m_iMaxIncomingFrame;					// Max incoming networkpackages we handle each frame.
+   
 	// Console Variables
 	float						m_fConnectTimeOut;					// Num of seconds without any incoming data a connection times out.
 	int						m_iMaxClients;							// Num of max connected clients.

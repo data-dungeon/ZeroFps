@@ -321,10 +321,10 @@ void NetWork::StartSocket(bool bStartServer,int iPort)
 	
 	if(!m_pkSocket) 
 	{
-		cout << "SDLNet_UDP_Open: " <<  SDLNet_GetError() << endl;
+		Logf("net", "Error open socket %d: %s.\n", iSocketNum, SDLNet_GetError());
+		m_pkConsole->Printf("Failed to open socket %d.", iSocketNum);
 		return;
 	}
-	
 }
 
 void NetWork::CloseSocket()
@@ -410,12 +410,17 @@ bool NetWork::Recv(NetPacket* pkNetPacket)
 	kPacket.len			= 0;
 	kPacket.maxlen		= MAX_PACKET_SIZE;
 
-	if(SDLNet_UDP_Recv(m_pkSocket, &kPacket)) {
-		pkNetPacket->m_kAddress = kPacket.address;
-		pkNetPacket->m_iLength	= kPacket.len - sizeof(ZFNetHeader);
-		Logf("netpac", "Recv From Net");
-		return true;
-		}
+	if(m_iMaxIncomingFrame)
+	{
+		if(SDLNet_UDP_Recv(m_pkSocket, &kPacket)) {
+			pkNetPacket->m_kAddress = kPacket.address;
+			pkNetPacket->m_iLength	= kPacket.len - sizeof(ZFNetHeader);
+			Logf("netpac", "Recv From Net");
+			return true;
+			}
+	}
+	else
+		cout << "Hit max per frame number"<< endl;
 
 
 	for(int i=0; i<m_RemoteNodes.size(); i++)
@@ -769,6 +774,7 @@ void NetWork::HandleControlMessage(NetPacket* pkNetPacket)
 				pkNetPacket->Read( iRelID ); 
 				m_RemoteNodes[ pkNetPacket->m_iClientID ].FreeRelStore( iRelID );
 				m_RemoteNodes[pkNetPacket->m_iClientID].m_kRelSend.erase( iRelID );
+				Logf("netpac", "Recv Ack For: %d\n", iRelID );
 
 
 				if( m_RemoteNodes[pkNetPacket->m_iClientID].m_iRelPingIndex == iRelID )
@@ -778,16 +784,6 @@ void NetWork::HandleControlMessage(NetPacket* pkNetPacket)
 				}	
 			}
 
-			/*int iRelID, iNumOfAcks;
-			pkNetPacket->Read( iRelID ); 
-			m_RemoteNodes[ pkNetPacket->m_iClientID ].FreeRelStore( iRelID );
-			//cout << "Recvd Ack for: " << iRelID << endl;
-
-			if( m_RemoteNodes[pkNetPacket->m_iClientID].m_iRelPingIndex == iRelID )
-			{
-				m_RemoteNodes[pkNetPacket->m_iClientID].m_fPing = m_pkZeroFps->GetEngineTime() - m_RemoteNodes[pkNetPacket->m_iClientID].m_fPingSentEngineTime;
-				m_RemoteNodes[pkNetPacket->m_iClientID].m_iRelPingIndex = 0;
-			}*/	
 			break;
 			}
 	}
@@ -800,9 +796,6 @@ void NetWork::DevShow_ClientConnections()
 
 	char* pkName = "Die Vim";
 	char szAdress[256];
-	char szRelSendWait[512];
-	char szRelRecvWait[512];
-	szRelSendWait[0] = szRelRecvWait[0] = 0;
 
 	int iRelIndex;
 
@@ -826,52 +819,11 @@ void NetWork::DevShow_ClientConnections()
 				iNumOfUsesBuffers++;
 		}
 
-/*		int iAsp;
-		for(iAsp=0;iAsp<200; iAsp++)
-			szRelSendWait[iAsp]=' ';
-		int iProc = float(iNumOfUsesBuffers) / float(ZF_NET_MAXREL) * 10;
-		szRelSendWait[0]='[';
-		iRelIndex = 1;
-		for(iAsp=0; iAsp<iProc; iAsp++)
-			szRelSendWait[iAsp] = '.';
-		szRelSendWait[iRelIndex++]=']';
-		szRelSendWait[iRelIndex++] = 0;*/
-/*
-		szRelSendWait[0]='[';
-		iRelIndex = 1;
-		for(int iRel=0; iRel<ZF_NET_MAXREL; iRel++)
-		{
-			if(m_RemoteNodes[i].m_akRelPack[iRel].m_kHeader.m_iPacketType != ZF_NETTYPE_NONE)
-			{
-				szRelSendWait[iRelIndex++] = '.';
-
-			}
-		}
-		szRelSendWait[iRelIndex++]=']';
-		szRelSendWait[iRelIndex++] = 0;
-
-/*		szRelRecvWait[0]='[';
-		iRelIndex = 1;
-		for(int iRel=0; iRel<ZF_NET_MAXREL; iRel++)
-		{
-			if(m_RemoteNodes[i].m_akRelPackRecv[iRel].m_kHeader.m_iPacketType != ZF_NETTYPE_NONE)
-			{
-				sprintf(&szRelRecvWait[iRelIndex],"%d", m_RemoteNodes[i].m_akRelPackRecv[iRel].m_kHeader.m_iOrder);
-				iRelIndex += 4;
-				szRelRecvWait[iRelIndex++] = '|';
-
-			}
-		}
-		szRelRecvWait[iRelIndex++]=']';
-		szRelRecvWait[iRelIndex++] = 0;*/
-
 		int iPing = m_RemoteNodes[i].m_fPing * 1000;
 
-		m_pkZeroFps->DevPrintf("conn", " Node[%d] %s %s %d/%d %d/%d - %f - %d Ping=%d - %s %s", i, pkName, szAdress,
-			m_RemoteNodes[i].m_iNumOfPacketsSent, m_RemoteNodes[i].m_iNumOfBytesSent,
-			m_RemoteNodes[i].m_iNumOfPacketsRecv, m_RemoteNodes[i].m_iNumOfBytesRecv,
-			( m_RemoteNodes[i].m_fLastMessageTime + ZF_NET_CONNECTION_TIMEOUT ) - fEngineTime, m_RemoteNodes[i].m_iReliableRecvOrder , //m_RemoteNodes[i].m_iOutOfOrderNetFrame
-			iPing, szRelSendWait, szRelRecvWait);
+		m_pkZeroFps->DevPrintf("conn", " Node[%d] %s %s - %.2f - %d Ping=%d", i, pkName, szAdress,
+			( m_RemoteNodes[i].m_fLastMessageTime + ZF_NET_CONNECTION_TIMEOUT ) - fEngineTime, m_RemoteNodes[i].m_iReliableRecvOrder,
+			iPing);
 
 
       // evil stuff
@@ -929,10 +881,15 @@ void NetWork::Run()
 	NetPacket NetP;
 	NetPacket kNetPRespons;
 	int iClientID;
+	
+	m_iMaxIncomingFrame = 25;
 
 	// Recv all packets.
 	while(Recv(&NetP)) 
 	{
+		if(m_iMaxIncomingFrame)
+			m_iMaxIncomingFrame--;
+
 		// Update Stats
 		iClientID = GetClientNumber(&NetP.m_kAddress);
 		NetP.m_iClientID = iClientID;
@@ -971,8 +928,6 @@ void NetWork::Run()
 				// Only clients can send rel packets.
 				if(iClientID != ZF_NET_NOCLIENT) 
 				{
-					//cout << "Recv REL: " << NetP.m_kData.m_kHeader.m_iOrder << ". Current OrderID: " << m_RemoteNodes[iClientID].m_iReliableRecvOrder << endl;
-
 					// Check if it is the correct packet.
 					if(m_RemoteNodes[iClientID].m_iReliableRecvOrder == NetP.m_kData.m_kHeader.m_iOrder)
 					{
@@ -980,29 +935,25 @@ void NetWork::Run()
 						m_RemoteNodes[iClientID].m_iReliableRecvOrder++;
 						m_RemoteNodes[iClientID].m_kRelAckList.push_back( NetP.m_kData.m_kHeader.m_iOrder );
 						m_RemoteNodes[iClientID].FreeRelRecv( NetP.m_kData.m_kHeader.m_iOrder ); 
-
-						// Send Ack that we got the pack.
-						/*kNetPRespons.Clear();
-						kNetPRespons.m_kData.m_kHeader.m_iPacketType = ZF_NETTYPE_CONTROL;
-						kNetPRespons.Write((unsigned char) ZF_NETCONTROL_ACKREL);
-						kNetPRespons.Write( NetP.m_kData.m_kHeader.m_iOrder ); 
-						kNetPRespons.m_kAddress = NetP.m_kAddress;
-						SendRaw(&kNetPRespons);*/
 					}
 					else
 					{
 						if(NetP.m_kData.m_kHeader.m_iOrder < m_RemoteNodes[iClientID].m_iReliableRecvOrder)
 						{
-							cout << "Duplicate Message: ";
-							cout << NetP.m_kData.m_kHeader.m_iOrder - m_RemoteNodes[iClientID].m_iReliableRecvOrder << endl;
+							//cout << "Duplicate Message: ";
+							//cout << NetP.m_kData.m_kHeader.m_iOrder - m_RemoteNodes[iClientID].m_iReliableRecvOrder << endl;
+							Logf("netpac", "Duplicate Message: %d\n", NetP.m_kData.m_kHeader.m_iOrder - m_RemoteNodes[iClientID].m_iReliableRecvOrder);
 							m_RemoteNodes[iClientID].m_kRelAckList.push_back( NetP.m_kData.m_kHeader.m_iOrder );
 							break;	// Evil Duplicate, throw away.
 						}
 
 						if(NetP.m_kData.m_kHeader.m_iOrder > m_RemoteNodes[iClientID].m_iReliableRecvOrder)
 						{
-							cout << "Out Of Order Message: " << NetP.m_kData.m_kHeader.m_iOrder << " while waiting for: " << m_RemoteNodes[iClientID].m_iReliableRecvOrder << " : ";
-							cout << NetP.m_kData.m_kHeader.m_iOrder - m_RemoteNodes[iClientID].m_iReliableRecvOrder << endl;
+							Logf("netpac", "Out Of Order Message %d while waiting for %d - ",NetP.m_kData.m_kHeader.m_iOrder, m_RemoteNodes[iClientID].m_iReliableRecvOrder);
+							Logf("netpac", "%d\n", NetP.m_kData.m_kHeader.m_iOrder - m_RemoteNodes[iClientID].m_iReliableRecvOrder);
+
+							//cout << "Out Of Order Message: " <<  << " while waiting for: " <<  << " : ";
+							//cout <<  << endl;
 							
 							int iRecvIndex = m_RemoteNodes[iClientID].GetFreeRelRecv();
 							if(iRecvIndex != -1)
@@ -1071,22 +1022,9 @@ void NetWork::Run()
 			{
 				m_RemoteNodes[i].m_akRelPackSendTime[iRel] = fEngineTime;
 				SendUDP(&m_RemoteNodes[i].m_akRelPack[iRel], m_RemoteNodes[i].m_aiRelPackSize[iRel], &m_RemoteNodes[i].m_kAddress);
+				Logf("netpac", "Resending Packet: %d\n", m_RemoteNodes[i].m_akRelPack[iRel].m_kHeader.m_iOrder);
 			}
 		}
-
-		/*
-		// Resend any old packets
-		for(int iRel = 0; iRel < ZF_NET_MAXREL; iRel++)
-		{
-			if(m_RemoteNodes[i].m_akRelPack[iRel].m_kHeader.m_iPacketType == ZF_NETTYPE_NONE)
-				continue;
-			
-			if(( m_RemoteNodes[i].m_akRelPackSendTime[iRel] + 0.25 ) < fEngineTime)
-			{
-				m_RemoteNodes[i].m_akRelPackSendTime[iRel] = fEngineTime;
-				SendUDP(&m_RemoteNodes[i].m_akRelPack[iRel], m_RemoteNodes[i].m_aiRelPackSize[iRel], &m_RemoteNodes[i].m_kAddress);
-			}
-		}*/
 
 		SendAckList(i, m_RemoteNodes[i].m_kRelAckList);
 		m_RemoteNodes[i].m_kRelAckList.clear();
@@ -1149,41 +1087,6 @@ bool NetWork::IsValidIPAddress( const char* szString )
 	return true;
 }
 
-
-
-/*
-void NetWork::SendToClient(int iClient, NetPacket* pkNetPacket)
-{
-	if(m_RemoteNodes[iClient].m_eConnectStatus != NETSTATUS_CONNECTED) {
-		cout << "Warning: Try to send to unconnected client " << iClient << endl;
-		return;
-		}
-
-	pkNetPacket->m_kAddress = m_RemoteNodes[iClient].m_kAddress;
-	pkNetPacket->m_kData.m_kHeader.m_iOrder = m_RemoteNodes[iClient].m_iNumOfPacketsSent;
-
-	//m_RemoteNodes[iClient].m_RelPackages.push_back( pkNetPacket->m_kData );
-	Send(pkNetPacket);
-	//m_RemoteNodes[iClient].m_RelPackages.pop_front();
-}
-
-void NetWork::SendToAllClients(NetPacket* pkNetPacket)
-{
-	if(m_RemoteNodes.size() <= 0)
-		return;
-
-	for(unsigned int i=0; i<m_RemoteNodes.size(); i++) {
-		if(m_RemoteNodes[i].m_eConnectStatus != NETSTATUS_CONNECTED)
-			continue;
-
-		pkNetPacket->m_kAddress = m_RemoteNodes[i].m_kAddress;
-		pkNetPacket->m_kData.m_kHeader.m_iOrder = m_RemoteNodes[i].m_iNumOfPacketsSent;
-		
-		//m_RemoteNodes[i].m_RelPackages.push_back( pkNetPacket->m_kData );
-		Send(pkNetPacket);
-		//m_RemoteNodes[i].m_RelPackages.pop_front();
-		}
-}*/
 
 // Force Disconnect on all nodes.
 void NetWork::DisconnectAll()
