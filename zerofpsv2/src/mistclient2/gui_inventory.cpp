@@ -5,6 +5,7 @@
 #include "../zerofpsv2/gui/zgui.h"
 #include "../zerofpsv2/engine/inputhandle.h"
 #include "../zerofpsv2/gui/zguiresourcemanager.h"
+#include "gui_equipwnd.h"
 
 extern MistClient	g_kMistClient;
 
@@ -887,7 +888,7 @@ pair<int, bool> InventoryDlg::GetItemFromScreenPos(int x, int y)
 		for(int i=0; i<m_vkInventoryItemList.size(); i++)
 		{
 			rc = m_vkInventoryItemList[i].pkWnd->GetScreenRect();
-			if(rc.Inside(x,y) && (i != m_kMoveSlot.m_iIndex) )
+			if(rc.Inside(x,y) && (i != m_kMoveSlot.m_iIndex || !m_kMoveSlot.bIsInventoryItem ) )
 				return pair<int,bool>(i,true);
 		}
 	}
@@ -897,7 +898,7 @@ pair<int, bool> InventoryDlg::GetItemFromScreenPos(int x, int y)
 		for(int i=0; i<m_vkContainerItemList.size(); i++)
 		{
 			rc = m_vkContainerItemList[i].pkWnd->GetScreenRect();
-			if(rc.Inside(x,y) && (i != m_kMoveSlot.m_iIndex) )
+			if(rc.Inside(x,y) && (i != m_kMoveSlot.m_iIndex || m_kMoveSlot.bIsInventoryItem ) )
 				return pair<int,bool>(i,false);
 		}
 	}
@@ -921,12 +922,19 @@ InventoryDlg::InventoryDropTarget InventoryDlg::GetDropTargetFromScreenPos(int m
 
 	bool bDropInContainer = m_pkContainerWnd->IsVisible() && 
 		m_pkContainerWnd->GetScreenRect().Inside(mx, my);
+
+	EquipmentSlot eEqSlot = g_kMistClient.m_pkEquipmentDlg->GetSlot(mx, my, true);
+
+	bool bDropInEuipmentDlg = (eEqSlot == EqS_None) ? false : true;
 	
 	if(bDropInInventory == true && bDropInContainer == false)
 		return DropTarget_Inventory;
 	
 	if(bDropInContainer == true && bDropInInventory == false)
 		return DropTarget_Container;
+
+	if(bDropInEuipmentDlg)
+		return DropTarget_EquipmentSlot;
 
 	return DropTarget_Ground;
 }
@@ -1010,7 +1018,8 @@ void InventoryDlg::OpenSplitStockWnd()
 
 void InventoryDlg::CloseSplitStockWnd(bool bExecuteSplit)
 {
-	m_pkSplitStockWnd->Hide();
+	if(m_pkSplitStockWnd)
+		m_pkSplitStockWnd->Hide();
 
 	bool bUpdate = false;
 
@@ -1035,12 +1044,12 @@ void InventoryDlg::CloseSplitStockWnd(bool bExecuteSplit)
 			Point slot;
 			if(m_kSplitSlotTarget.bIsInventoryItem)
 			{
-				iTarget = m_vkInventoryItemList[m_kSplitSlotTarget.m_iIndex].iItemID;
+				iTarget = GetInventoryContainerID(); 
 				slot = SlotFromWnd(m_vkInventoryItemList[m_kSplitSlotTarget.m_iIndex].pkWnd, true);
 			}
 			else
 			{
-				iTarget = m_vkContainerItemList[m_kSplitSlotTarget.m_iIndex].iItemID;
+				iTarget = m_iActiveContainerID;
 				slot = SlotFromWnd(m_vkContainerItemList[m_kSplitSlotTarget.m_iIndex].pkWnd, false);
 			}
 
@@ -1072,7 +1081,9 @@ void InventoryDlg::CloseSplitStockWnd(bool bExecuteSplit)
 	m_kSplitSlot.m_iIndex = -1;
 	m_kSplitSlotTarget.m_iIndex = -1;
 	
-	ZGuiWnd::m_pkFocusWnd->KillFocus();
+	if(ZGuiWnd::m_pkFocusWnd)
+		ZGuiWnd::m_pkFocusWnd->KillFocus();
+
 	g_kMistClient.m_pkGui->SetFocus(m_pkInventoryWnd, false);	
 	g_kMistClient.m_pkGui->KillWndCapture(); 
 }

@@ -53,6 +53,7 @@ private:
 		DropTarget_Inventory,
 		DropTarget_Container,
 		DropTarget_Ground,
+		DropTarget_EquipmentSlot,
 	};
 
 	struct ITEM_SLOT
