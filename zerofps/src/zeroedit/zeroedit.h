@@ -1,7 +1,10 @@
 #ifndef _ZEROEDIT_H_
 #define _ZEROEDIT_H_
 
-#define _MAINAPPLICATION_
+#ifndef _DONT_MAIN
+	#define _MAINAPPLICATION_
+	#define _DONT_MAIN
+#endif _DONT_MAIN
 
 #include <iostream>
 #include <cmath>
