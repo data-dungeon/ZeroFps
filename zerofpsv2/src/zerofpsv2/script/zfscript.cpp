@@ -729,6 +729,50 @@ bool ZFScriptSystem::Run(ZFScript* pkScript)
 }
 
 bool ZFScriptSystem::Call(ZFResourceHandle* pkResHandle, char* szFuncName, 
+									vector<ARG_DATA>& vkParams)
+{
+	ZFScript *pkScript = (ZFScript*) pkResHandle->GetResourcePtr();
+
+	if(pkScript->m_pkLuaState == NULL)
+		return false;
+
+	lua_getglobal( pkScript->m_pkLuaState, szFuncName);
+
+	// Måste kolla så att den global funktion finns. 
+	// Låser sig fett om den int gör det!
+	if(lua_isnil( pkScript->m_pkLuaState, 1) )
+	{
+		lua_pop(pkScript->m_pkLuaState, 1);
+		return false;
+	}
+
+	double d;
+
+	for(int j=0; j<vkParams.size(); j++)
+	{
+		switch(vkParams[j].eType)
+		{
+		case tINT:
+			int* i; i = (int*) vkParams[j].pData; d = *i;
+			lua_pushnumber(pkScript->m_pkLuaState, d);
+			break;
+		case tDOUBLE:			
+			lua_pushnumber(pkScript->m_pkLuaState, (*(double*) vkParams[j].pData));
+			break;
+		case tFLOAT:
+			float* f; f = (float*) vkParams[j].pData; d = *f;
+			lua_pushnumber(pkScript->m_pkLuaState, d);
+			break;
+		case tSTRING:
+			lua_pushstring(pkScript->m_pkLuaState, (char*) vkParams[j].pData);
+			break;
+		}
+	}
+
+	return (lua_call(pkScript->m_pkLuaState, vkParams.size(), 0) == 0);
+}
+
+bool ZFScriptSystem::Call(ZFResourceHandle* pkResHandle, char* szFuncName, 
 								  int iNumParams, int iNumResults)
 {	
 	ZFScript *pkScript = (ZFScript*) pkResHandle->GetResourcePtr();

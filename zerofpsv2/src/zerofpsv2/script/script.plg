@@ -3,167 +3,24 @@
 <pre>
 <h1>Build Log</h1>
 <h3>
---------------------Configuration: basic - Win32 Debug--------------------
-</h3>
-<h3>Command Lines</h3>
-Creating temporary file "C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\RSP39FB.tmp" with contents
-[
-/nologo /MDd /W3 /Gm /GR /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "BASIC_EXPORTS" /Fo"Debug/" /Fd"Debug/" /FD /GZ /c 
-"C:\MistLands\zerofpsv2\zerofpsv2\src\zerofpsv2\basic\basicconsole.cpp"
-"C:\MistLands\zerofpsv2\zerofpsv2\src\zerofpsv2\basic\cmdsystem.cpp"
-"C:\MistLands\zerofpsv2\zerofpsv2\src\zerofpsv2\basic\globals.cpp"
-"C:\MistLands\zerofpsv2\zerofpsv2\src\zerofpsv2\basic\image.cpp"
-"C:\MistLands\zerofpsv2\zerofpsv2\src\zerofpsv2\basic\matrix3.cpp"
-"C:\MistLands\zerofpsv2\zerofpsv2\src\zerofpsv2\basic\matrix4.cpp"
-"C:\MistLands\zerofpsv2\zerofpsv2\src\zerofpsv2\basic\plane.cpp"
-"C:\MistLands\zerofpsv2\zerofpsv2\src\zerofpsv2\basic\quaternion.cpp"
-"C:\MistLands\zerofpsv2\zerofpsv2\src\zerofpsv2\basic\rect.cpp"
-"C:\MistLands\zerofpsv2\zerofpsv2\src\zerofpsv2\basic\simplescript.cpp"
-"C:\MistLands\zerofpsv2\zerofpsv2\src\zerofpsv2\basic\vector2.cpp"
-"C:\MistLands\zerofpsv2\zerofpsv2\src\zerofpsv2\basic\vector3.cpp"
-"C:\MistLands\zerofpsv2\zerofpsv2\src\zerofpsv2\basic\vector4.cpp"
-"C:\MistLands\zerofpsv2\zerofpsv2\src\zerofpsv2\basic\zfbasicfs_linux.cpp"
-"C:\MistLands\zerofpsv2\zerofpsv2\src\zerofpsv2\basic\zfbasicfs_windows.cpp"
-"C:\MistLands\zerofpsv2\zerofpsv2\src\zerofpsv2\basic\zffile.cpp"
-"C:\MistLands\zerofpsv2\zerofpsv2\src\zerofpsv2\basic\zfini.cpp"
-"C:\MistLands\zerofpsv2\zerofpsv2\src\zerofpsv2\basic\zfiofile.cpp"
-"C:\MistLands\zerofpsv2\zerofpsv2\src\zerofpsv2\basic\zfmempackage.cpp"
-"C:\MistLands\zerofpsv2\zerofpsv2\src\zerofpsv2\basic\zfobject.cpp"
-"C:\MistLands\zerofpsv2\zerofpsv2\src\zerofpsv2\basic\zfobjectmanger.cpp"
-"C:\MistLands\zerofpsv2\zerofpsv2\src\zerofpsv2\basic\zfresource.cpp"
-"C:\MistLands\zerofpsv2\zerofpsv2\src\zerofpsv2\basic\zfresourcedb.cpp"
-"C:\MistLands\zerofpsv2\zerofpsv2\src\zerofpsv2\basic\zfvfs.cpp"
-"C:\MistLands\zerofpsv2\zerofpsv2\src\zerofpsv2\basic\zguifont.cpp"
-"C:\MistLands\zerofpsv2\zerofpsv2\src\zerofpsv2\basic\zguiskin.cpp"
-]
-Creating command line "cl.exe @C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\RSP39FB.tmp" 
-Creating temporary file "C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\RSP39FC.tmp" with contents
-[
-sdl.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /incremental:yes /pdb:"Debug/basic.pdb" /debug /machine:I386 /out:"..\..\..\bin\basic.dll" /implib:"Debug/basic.lib" /pdbtype:sept 
-.\Debug\basicconsole.obj
-.\Debug\cmdsystem.obj
-.\Debug\globals.obj
-.\Debug\image.obj
-.\Debug\matrix3.obj
-.\Debug\matrix4.obj
-.\Debug\plane.obj
-.\Debug\quaternion.obj
-.\Debug\rect.obj
-.\Debug\simplescript.obj
-.\Debug\vector2.obj
-.\Debug\vector3.obj
-.\Debug\vector4.obj
-.\Debug\zfbasicfs_linux.obj
-.\Debug\zfbasicfs_windows.obj
-.\Debug\zffile.obj
-.\Debug\zfini.obj
-.\Debug\zfiofile.obj
-.\Debug\zfmempackage.obj
-.\Debug\zfobject.obj
-.\Debug\zfobjectmanger.obj
-.\Debug\zfresource.obj
-.\Debug\zfresourcedb.obj
-.\Debug\zfvfs.obj
-.\Debug\zguifont.obj
-.\Debug\zguiskin.obj
-]
-Creating command line "link.exe @C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\RSP39FC.tmp"
-<h3>Output Window</h3>
-Compiling...
-basicconsole.cpp
-cmdsystem.cpp
-globals.cpp
-c:\mistlands\zerofpsv2\zerofpsv2\src\zerofpsv2\basic\globals.cpp(183) : warning C4244: '=' : conversion from 'int' to 'float', possible loss of data
-c:\mistlands\zerofpsv2\zerofpsv2\src\zerofpsv2\basic\globals.cpp(184) : warning C4244: '=' : conversion from 'int' to 'float', possible loss of data
-c:\mistlands\zerofpsv2\zerofpsv2\src\zerofpsv2\basic\globals.cpp(185) : warning C4244: '=' : conversion from 'int' to 'float', possible loss of data
-image.cpp
-matrix3.cpp
-matrix4.cpp
-c:\mistlands\zerofpsv2\zerofpsv2\src\zerofpsv2\basic\matrix4.cpp(497) : warning C4244: 'initializing' : conversion from 'double' to 'float', possible loss of data
-c:\mistlands\zerofpsv2\zerofpsv2\src\zerofpsv2\basic\matrix4.cpp(498) : warning C4244: 'initializing' : conversion from 'double' to 'float', possible loss of data
-c:\mistlands\zerofpsv2\zerofpsv2\src\zerofpsv2\basic\matrix4.cpp(500) : warning C4244: 'initializing' : conversion from 'double' to 'float', possible loss of data
-c:\mistlands\zerofpsv2\zerofpsv2\src\zerofpsv2\basic\matrix4.cpp(501) : warning C4244: 'initializing' : conversion from 'double' to 'float', possible loss of data
-c:\mistlands\zerofpsv2\zerofpsv2\src\zerofpsv2\basic\matrix4.cpp(503) : warning C4244: 'initializing' : conversion from 'double' to 'float', possible loss of data
-c:\mistlands\zerofpsv2\zerofpsv2\src\zerofpsv2\basic\matrix4.cpp(504) : warning C4244: 'initializing' : conversion from 'double' to 'float', possible loss of data
-c:\mistlands\zerofpsv2\zerofpsv2\src\zerofpsv2\basic\matrix4.cpp(629) : warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
-c:\mistlands\zerofpsv2\zerofpsv2\src\zerofpsv2\basic\matrix4.cpp(630) : warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
-c:\mistlands\zerofpsv2\zerofpsv2\src\zerofpsv2\basic\matrix4.cpp(637) : warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
-c:\mistlands\zerofpsv2\zerofpsv2\src\zerofpsv2\basic\matrix4.cpp(640) : warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
-plane.cpp
-quaternion.cpp
-rect.cpp
-simplescript.cpp
-vector2.cpp
-vector3.cpp
-vector4.cpp
-zfbasicfs_linux.cpp
-zfbasicfs_windows.cpp
-zffile.cpp
-zfini.cpp
-c:\mistlands\zerofpsv2\zerofpsv2\src\zerofpsv2\basic\zfini.cpp(493) : warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
-zfiofile.cpp
-zfmempackage.cpp
-c:\mistlands\zerofpsv2\zerofpsv2\src\zerofpsv2\basic\zfmempackage.h(17) : warning C4251: 'm_acData' : class '_STL::vector<char,class _STL::allocator<char> >' needs to have dll-interface to be used by clients of class 'ZFMemPackage'
-zfobject.cpp
-Generating Code...
-Compiling...
-zfobjectmanger.cpp
-c:\mistlands\zerofpsv2\zerofpsv2\src\zerofpsv2\basic\zfobjectmanger.cpp(517) : warning C4800: 'float' : forcing value to bool 'true' or 'false' (performance warning)
-c:\mistlands\zerofpsv2\zerofpsv2\src\zerofpsv2\basic\zfobjectmanger.cpp(745) : warning C4018: '<' : signed/unsigned mismatch
-zfresource.cpp
-zfresourcedb.cpp
-c:\mistlands\zerofpsv2\zerofpsv2\src\zerofpsv2\basic\zfresourcedb.cpp(135) : warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
-zfvfs.cpp
-zguifont.cpp
-zguiskin.cpp
-Generating Code...
-Linking...
-   Creating library Debug/basic.lib and object Debug/basic.exp
-Creating temporary file "C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\RSP3A00.bat" with contents
-[
-@echo off
-copy  .\debug\*.lib  ..\..\..\bin
-]
-Creating command line "C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\RSP3A00.bat"
-
-.\debug\basic.lib
-        1 file(s) copied.
-<h3>
 --------------------Configuration: script - Win32 Debug--------------------
 </h3>
 <h3>Command Lines</h3>
-Creating temporary file "C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\RSP3A01.tmp" with contents
+Creating temporary file "C:\DOCUME~1\KRGL02~1.KRE\LOCALS~1\Temp\RSP205D.tmp" with contents
 [
 /nologo /MDd /W3 /Gm /GR /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "SCRIPT_EXPORTS" /FR"Debug/" /Fo"Debug/" /Fd"Debug/" /FD /GZ /c 
-"C:\MistLands\zerofpsv2\zerofpsv2\src\zerofpsv2\script\zfscript.cpp"
+"C:\Programming\My projects\zerofpsv2\src\zerofpsv2\script\zfscript.cpp"
 ]
-Creating command line "cl.exe @C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\RSP3A01.tmp" 
-Creating temporary file "C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\RSP3A02.tmp" with contents
-[
-lua.lib lualib.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /profile /debug /machine:I386 /out:"..\..\..\bin\script.dll" /implib:"Debug/script.lib" /libpath:"..\..\..\bin" 
-.\Debug\zfscript.obj
-\MistLands\zerofpsv2\zerofpsv2\src\zerofpsv2\basic\Debug\basic.lib
-]
-Creating command line "link.exe @C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\RSP3A02.tmp"
+Creating command line "cl.exe @C:\DOCUME~1\KRGL02~1.KRE\LOCALS~1\Temp\RSP205D.tmp" 
 <h3>Output Window</h3>
 Compiling...
 zfscript.cpp
-Linking...
-   Creating library Debug/script.lib and object Debug/script.exp
-Creating temporary file "C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\RSP3A06.bat" with contents
-[
-@echo off
-copy  .\debug\*.lib ..\..\..\bin
-]
-Creating command line "C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\RSP3A06.bat"
-
-.\debug\script.lib
-        1 file(s) copied.
+c:\programming\my projects\zerofpsv2\src\zerofpsv2\script\zfscript.cpp(757) : warning C4018: '<' : signed/unsigned mismatch
 
 
 
 <h3>Results</h3>
-script.dll - 0 error(s), 18 warning(s)
+zfscript.obj - 0 error(s), 1 warning(s)
 </pre>
 </body>
 </html>

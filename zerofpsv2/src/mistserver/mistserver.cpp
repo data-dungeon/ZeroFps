@@ -122,7 +122,7 @@ void MistServer::Init()
 	// hide cursor
 	SDL_ShowCursor(SDL_DISABLE);
 
-	SDL_WM_SetCaption("Mistland, the land of mist", NULL);
+	SDL_WM_SetCaption("MistServer", NULL);
 }
 
 void MistServer::RegisterPropertys()

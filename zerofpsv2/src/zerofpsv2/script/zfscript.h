@@ -43,6 +43,12 @@ struct SCRIPT_API TABLE_DATA
 	bool bNumber;
 };
 
+struct SCRIPT_API ARG_DATA
+{
+	void* pData;
+	ScripVarType eType;
+};
+
 /// A Script in the Resource SubSystem
 class SCRIPT_API ZFScript : public ZFResource
 {
@@ -68,6 +74,7 @@ class SCRIPT_API ZFScriptSystem  : public ZFSubSystem
 {
 public:
 
+	bool Call(ZFResourceHandle* pkResHandle, char* szFuncName, vector<ARG_DATA>& vkParams);
 	bool Call(ZFResourceHandle* pkResHandle, char* szFuncName, int iNumParams, int iNumResults);
 	bool Run(ZFResourceHandle* pkResHandle);
 

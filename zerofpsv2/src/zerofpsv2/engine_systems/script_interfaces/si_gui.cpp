@@ -23,6 +23,7 @@ void GuiAppLua::Init(ZGuiApp* pkGuiApp, ZFScriptSystem* pkScript)
 	pkScript->ExposeFunction("IsWndVisible", GuiAppLua::IsWndVisibleLua); 
 	pkScript->ExposeFunction("SetTextInt", GuiAppLua::SetTextInt); 
 	pkScript->ExposeFunction("AddTreeItem", GuiAppLua::AddTreeItemLua); 
+
 }
 
 // Name: CreateWndLua

@@ -48,7 +48,6 @@ static bool GUIPROC( ZGuiWnd* win, unsigned int msg, int numparms, void *params 
 		g_kMistClient.OnMouseMove(((int*)params)[1], ((int*)params)[2], 
 			((int*)params)[0] == 1 ? true : false, win);
 		break;
-
 	case ZGM_SCROLL:
 		g_kMistClient.OnScroll(((int*)params)[0], ((int*)params)[2], win);
 		break;
@@ -114,7 +113,7 @@ void MistClient::Init()
 	m_pkMap2->CreateHMFromImage("/data/textures/hmap.tga");
 
 	// set caption
-	SDL_WM_SetCaption("Mistland", NULL);
+	SDL_WM_SetCaption("MistClient", NULL);
 	 
 	// create gui script
 	GuiAppLua::Init(&g_kMistClient, GetScript());
@@ -130,6 +129,12 @@ void MistClient::Init()
 	// hide cursor
 	SDL_ShowCursor(SDL_DISABLE);
 
+	// Zeb: Tar bort detta, det görs ju i OnServerStart!
+	//pkObjectMan->CreateObjectFromScript("data/script/objects/t_player.lua");
+
+	// Varde ljus!
+	pkLight->SetLighting(true);
+	pkZShader->SetForceLighting(ALWAYS_OFF);
 	
 }
 
@@ -215,8 +220,7 @@ void MistClient::OnSystem()
 					m_pkClientControlP = (P_ClientControl*)m_pkClientObject->GetProperty("P_ClientControl");				
 					if(m_pkClientControlP)
 					{
-						pkConsole->Printf("Got client control");
-				
+						pkConsole->Printf("Got client control");				
 					}
 				
 				}
@@ -363,7 +367,7 @@ void MistClient::Input()
 					order.m_iClientID = pkFps->GetConnectionID();
 					order.m_iObjectID = pkObject->iNetWorkID;				
 				
-					m_pkClientControlP->AddOrder(order);			
+					m_pkClientControlP->AddOrder(order);
 				} 
 			}
 			
@@ -371,32 +375,6 @@ void MistClient::Input()
 			
 		}
 	}
-
-	int iPressedKey = pkInput->GetQueuedKey();
-
-	switch(iPressedKey)
-	{
-	case KEY_F1:
-		pkAudioSys->StartSound("data/sound/dummy.wav", pkFps->GetCam()->GetPos(), Vector3(0,0,1), true);
-		break;
-	case KEY_F5:
-		pkAudioSys->StopSound("data/sound/dummy.wav", pkFps->GetCam()->GetPos());
-		break;
-	case KEY_F2:
-		pkAudioSys->StartSound("data/sound/walk.wav", pkFps->GetCam()->GetPos(), Vector3(0,0,1), true);
-		break;
-	case KEY_F6:
-		pkAudioSys->StopSound("data/sound/walk.wav", pkFps->GetCam()->GetPos());
-		break;
-	case KEY_F9:
-		printf("Num sounds in system = %i\nNum active channels = %i\n",
-			pkAudioSys->GetNumSounds(), pkAudioSys->GetNumActiveChannels());
-		break;
-	case KEY_F10:
-		pkAudioSys->UnloadAll();
-		break;
-	}
-
 }
 
 void MistClient::OnHud(void) 
@@ -527,7 +505,7 @@ void MistClient::OnCommand(int iID, ZGuiWnd *pkMainWnd)
 			if(strName == "BackPackButton")
 			{
 				bool bExist = GetWnd("BackPackWnd") != NULL;
-
+				
 				pkScript->Call(m_pkScriptResHandle, "OnClickBackpack", 0, 0); 
 
 				if(bExist == false)
