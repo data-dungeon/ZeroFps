@@ -114,10 +114,21 @@ void ZeroRTS::Input()
 	int mx,my;
 	pkInput->MouseXY(mx,my);
 
-	static s_iCursorTex=-1, s_iCursorTex_a=-1;
-	int iNewCursorTex=0, iNewCursorTex_a=0;
+	static int s_iCursorTex=-1; 
+	static int s_iCursorTex_a=-1;
+	int iNewCursorTex=0;
+	int iNewCursorTex_a=0;
 
-	enum MOUSEDIR {Left, Right, Up, Down, None} eMouseDir = None;
+	enum MOUSEDIR {
+		Left, 
+		Right, 
+		Up, 
+		Down, 
+		Nothing
+	};
+	
+	MOUSEDIR eMouseDir; 
+	eMouseDir = Nothing;
 
 	if(mx == 0) {
 		iNewCursorTex = pkTexMan->Load("file:../data/textures/cursor_l.bmp", 0);
@@ -138,7 +149,7 @@ void ZeroRTS::Input()
 	else {
 		iNewCursorTex = pkTexMan->Load("file:../data/textures/cursor.bmp", 0);
 		iNewCursorTex_a = pkTexMan->Load("file:../data/textures/cursor_a.bmp", 0);
-		eMouseDir = None; }
+		eMouseDir = Nothing; }
 
 	// swap cursor image
 	if(s_iCursorTex != iNewCursorTex)

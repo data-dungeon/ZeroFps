@@ -85,7 +85,8 @@ void MiniMap::Draw(Camera *pkCamera, ZGui* pkGui)
 		init = true;
 	}
 
-	for(int i=0; i<200; i++)
+	int i;
+	for(i=0; i<200; i++)
 		pkGui->DrawPoint(array[i], 255, 128, 0);
 
 	for( i=200; i<400; i++)
