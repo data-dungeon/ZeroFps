@@ -39,7 +39,7 @@ ZFSoundRes::~ZFSoundRes()
 		if( (error = alGetError()) != AL_NO_ERROR)
 		{
 			printf("alDeleteBuffers Failed: "); 
-
+/*
 			switch(error)
 			{
 			case AL_INVALID_NAME:
@@ -58,7 +58,7 @@ ZFSoundRes::~ZFSoundRes()
 				printf(" AL_OUT_OF_MEMORY\n");
 				break;
 			}
-
+*/
 			printf("m_uiBufferIndexName: %i\n", (int) m_uiBufferIndexName); 
 
 		}
@@ -713,7 +713,7 @@ void ZFAudioSystem::Update()
 
 			if( (error = alGetError()) != AL_NO_ERROR)
 			{
-				printf("Stange AL state! Error: ");
+/*				printf("Stange AL state! Error: ");
 				switch(error)
 				{
 				case AL_INVALID_NAME:
@@ -731,7 +731,7 @@ void ZFAudioSystem::Update()
 				case AL_OUT_OF_MEMORY:
 					printf(" AL_OUT_OF_MEMORY\n");
 					break;
-				}
+				}*/
 			}
 			break;
 		}

@@ -17,15 +17,14 @@ void MovePSProp::Update()
 
 	int i;
 
-	// Update velocity
-	for ( i = m_pkParent->Start(); i < m_pkParent->End(); i++ )
-	{
-		// if force inherits direction of PSystem
-		if ( m_pkParent->m_pkPSystemType->m_kParticleBehaviour.m_bForceInheritDirection )
+
+	// if force inherits direction of PSystem ( Update velocity )
+	if ( m_pkParent->m_pkPSystemType->m_kParticleBehaviour.m_bForceInheritDirection )
+		for ( i = m_pkParent->Start(); i < m_pkParent->End(); i++ )
 			m_pkParent->m_kParticles[i].m_kVelocity += m_pkParent->m_kRotation.VectorRotate(m_pkParent->m_kParticles[i].m_kForce * fFrameTime);
-		else
+	else
+		for ( i = m_pkParent->Start(); i < m_pkParent->End(); i++ )
 			m_pkParent->m_kParticles[i].m_kVelocity += m_pkParent->m_kParticles[i].m_kForce * fFrameTime;
-	}
 
 	// Update position
 	for ( i = m_pkParent->Start(); i < m_pkParent->End(); i++ )

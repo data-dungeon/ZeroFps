@@ -584,6 +584,86 @@ void Render::DrawBox(Vector3 kPos,Vector3 kRot,Vector3 kScale,int iTexture)
 
 }
 
+void Render::DrawBox(Vector3 kPos, Vector3 kCenter, Matrix4 kRot, Vector3 kSize,int iTexture)
+{
+	glPushMatrix();
+
+	glDisable (GL_CULL_FACE);
+
+	Vector3 kEdge[8];
+
+	kSize = kSize / 2.f;
+
+	kEdge[0] = Vector3( kSize.x, -kSize.y, -kSize.z );
+	kEdge[1] = Vector3( -kSize.x, -kSize.y, -kSize.z );
+	kEdge[2] = Vector3( -kSize.x, -kSize.y, kSize.z );
+	kEdge[3] = Vector3( kSize.x, -kSize.y, kSize.z );
+	kEdge[4] = Vector3( kSize.x, kSize.y, -kSize.z );
+	kEdge[5] = Vector3( -kSize.x, kSize.y, -kSize.z );
+	kEdge[6] = Vector3( -kSize.x, kSize.y, kSize.z );
+	kEdge[7] = Vector3( kSize.x, kSize.y, kSize.z );
+
+	for ( int i = 0; i < 8; i++ )
+	{	
+		kEdge[i] = kRot.VectorRotate ( kEdge[i] + kCenter );
+		kEdge[i] += kPos;
+	}
+
+	m_pkTexMan->BindTexture(iTexture);
+	glColor4f(1,1,1,1);		
+
+		
+	glBegin(GL_QUADS);			
+		
+		//front
+		glNormal3f(0,0,1);
+		glTexCoord2f(0.0,1.0);glVertex3f(kEdge[3].x, kEdge[3].y, kEdge[3].z);		 
+		glTexCoord2f(1.0,1.0);glVertex3f(kEdge[2].x, kEdge[2].y, kEdge[2].z);		
+		glTexCoord2f(1.0,0.0);glVertex3f(kEdge[1].x, kEdge[1].y, kEdge[1].z);    
+		glTexCoord2f(0.0,0.0);glVertex3f(kEdge[0].x, kEdge[0].y, kEdge[0].z);    
+	
+		//back
+		glNormal3f(0,0,-1);
+		glTexCoord2f(0.0,0.0);glVertex3f(kEdge[3].x, kEdge[3].y, kEdge[3].z);    		
+		glTexCoord2f(1.0,0.0);glVertex3f(kEdge[7].x, kEdge[7].y, kEdge[7].z);    		
+		glTexCoord2f(1.0,1.0);glVertex3f(kEdge[6].x, kEdge[6].y, kEdge[6].z);			
+		glTexCoord2f(0.0,1.0);glVertex3f(kEdge[2].x, kEdge[2].y, kEdge[2].z);		 
+	
+		//right
+		glNormal3f(1,0,0);
+		glTexCoord2f(0.0,0.0);glVertex3f(kEdge[0].x, kEdge[0].y, kEdge[3].z);    		
+		glTexCoord2f(1.0,0.0);glVertex3f(kEdge[4].x, kEdge[4].y, kEdge[4].z);    		
+		glTexCoord2f(1.0,1.0);glVertex3f(kEdge[7].x, kEdge[7].y, kEdge[7].z);			
+		glTexCoord2f(0.0,1.0);glVertex3f(kEdge[3].x, kEdge[3].y, kEdge[3].z);		 
+
+		//left
+		glNormal3f(-1,0,0);		
+		glTexCoord2f(0.0,0.0);glVertex3f(kEdge[4].x, kEdge[4].y, kEdge[4].z);    		
+		glTexCoord2f(1.0,0.0);glVertex3f(kEdge[7].x, kEdge[7].y, kEdge[7].z);    		
+		glTexCoord2f(1.0,1.0);glVertex3f(kEdge[6].x, kEdge[6].y, kEdge[6].z);			
+		glTexCoord2f(0.0,1.0);glVertex3f(kEdge[5].x, kEdge[5].y, kEdge[5].z);		 
+		
+		//top
+		glNormal3f(0,1,0);
+		glTexCoord2f(0.0,0.0);glVertex3f(kEdge[5].x, kEdge[5].y, kEdge[5].z);    		
+		glTexCoord2f(1.0,0.0);glVertex3f(kEdge[6].x, kEdge[6].y, kEdge[6].z);    		
+		glTexCoord2f(1.0,1.0);glVertex3f(kEdge[2].x, kEdge[2].y, kEdge[2].z);			
+		glTexCoord2f(0.0,1.0);glVertex3f(kEdge[1].x, kEdge[1].y, kEdge[1].z);		 
+		
+		//bottom
+		glNormal3f(0,-1,0);
+		glTexCoord2f(0.0,0.0);glVertex3f(kEdge[0].x, kEdge[0].y, kEdge[0].z);    		
+		glTexCoord2f(1.0,0.0);glVertex3f(kEdge[4].x, kEdge[4].y, kEdge[4].z);    		
+		glTexCoord2f(1.0,1.0);glVertex3f(kEdge[5].x, kEdge[5].y, kEdge[5].z);			
+		glTexCoord2f(0.0,1.0);glVertex3f(kEdge[1].x, kEdge[1].y, kEdge[1].z);		 
+		
+		
+	glEnd();			
+	
+	glPopMatrix();
+
+}
+
 void Render::DrawPyramid(Vector3 kPos, Vector3 kScale, Vector3 kColor, bool bSolid)
 {
 	glPushMatrix();
@@ -1344,8 +1424,7 @@ void Render::DrawPSystem( PSystem *pkPSystem )
 	Vector3 kScale = pkPSystem->GetPSystemType()->m_kPSystemBehaviour.m_kMaxSize;
 
 	Vector3 kPos = pkPSystem->GetPosition() + 
-						pkPSystem->GetPSystemType()->m_kPSystemBehaviour.m_kPosOffset + 
-						pkPSystem->GetPSystemType()->m_kPSystemBehaviour.m_kCullPosOffset;
+						pkPSystem->GetPSystemType()->m_kPSystemBehaviour.m_kPosOffset;			
 
 	kScale *= 2.f;
 
@@ -1353,7 +1432,8 @@ void Render::DrawPSystem( PSystem *pkPSystem )
 	glDisable (GL_FOG);
 	glDisable (GL_LIGHTING);
 	glDepthMask(GL_FALSE);
-	DrawBox(kPos, Vector3(0,0,0), kScale, 2);
+	DrawBox(kPos, pkPSystem->GetPSystemType()->m_kPSystemBehaviour.m_kCullPosOffset, 
+			  pkPSystem->GetRotation(), kScale, 2);
 	*/
 
 	glPopMatrix();

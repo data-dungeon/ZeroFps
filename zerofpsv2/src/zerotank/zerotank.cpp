@@ -481,7 +481,7 @@ void ZeroTank::OnServerStart(void)
 
 	m_pkZeroTankHull = pkObjectMan->CreateObjectByArchType("Goblin");
 	if(m_pkZeroTankHull) {
-		m_pkZeroTankHull->SetWorldPosV(Vector3(8,10,7));
+		//m_pkZeroTankHull->SetWorldPosV(Vector3(8,10,7));
 		m_pkZeroTankHull->AttachToClosestZone();
 
 		//m_pkZeroTankHull->AddProperty("CameraProperty");
@@ -594,8 +594,8 @@ void ZeroTank::OnServerStart(void)
 	pk11->AttachToClosestZone();
 //	pk12->AttachToClosestZone();
 //	pk13->AttachToClosestZone();
-	pk14->AttachToClosestZone();
-	pkGob->AttachToClosestZone();
+//	pk14->AttachToClosestZone();
+//	pkGob->AttachToClosestZone();
 
 
 }

@@ -1382,6 +1382,10 @@ int ObjectManager::GetZoneIndex(Object* PkObject,int iCurrentZone,bool bClosestZ
 				id = iZ;			
 			}
 		}
+
+//		if(id != -1)
+//			cout<<"Got A far away zone"<<endl;			
+				
 		return id;
 	}
 

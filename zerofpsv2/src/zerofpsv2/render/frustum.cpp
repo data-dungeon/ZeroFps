@@ -154,35 +154,49 @@ bool Frustum::CubeInFrustum( float x, float y, float z, float sizex,float sizey,
 }
 
 
-bool Frustum::CubeInFrustum ( Vector3 kPos, Vector3 kSize, Matrix4 kRotation )
+bool Frustum::CubeInFrustum ( Vector3 kPos, Vector3 kCenter, Vector3 kSize, Matrix4 kRotation )
 {
 	int p;
 
-	Vector3 kCubeNeg(kPos.x - kSize.x, kPos.y - kSize.y, kPos.z - kSize.z); 
-	Vector3 kCubePos(kPos.x + kSize.x, kPos.y + kSize.y, kPos.z + kSize.z);
+	Vector3 kEdge[8];
 
-	kCubeNeg = kRotation.VectorRotate ( kCubeNeg );
-	kCubePos = kRotation.VectorRotate ( kCubePos );
+
+	kEdge[0] = Vector3( kSize.x, -kSize.y, -kSize.z );
+	kEdge[1] = Vector3( -kSize.x, -kSize.y, -kSize.z );
+	kEdge[2] = Vector3( -kSize.x, -kSize.y, kSize.z );
+	kEdge[3] = Vector3( kSize.x, -kSize.y, kSize.z );
+	kEdge[4] = Vector3( kSize.x, kSize.y, -kSize.z );
+	kEdge[5] = Vector3( -kSize.x, kSize.y, -kSize.z );
+	kEdge[6] = Vector3( -kSize.x, kSize.y, kSize.z );
+	kEdge[7] = Vector3( kSize.x, kSize.y, kSize.z );
+
+	for ( int i = 0; i < 8; i++ )
+	{	
+		kEdge[i] = kRotation.VectorRotate ( kEdge[i] + kCenter );
+		kEdge[i] += kPos;
+	}
 
 	for( p = 0; p < 6; p++ )
 	{
-		if( m_akFrustum[p].x * (kCubeNeg.x) + m_akFrustum[p].y * (kCubeNeg.y) + m_akFrustum[p].z * (kCubeNeg.z) + m_akFrustum[p].w > 0 )
+		if( m_akFrustum[p].x * (kEdge[0].x) + m_akFrustum[p].y * (kEdge[0].y) + m_akFrustum[p].z * (kEdge[0].z) + m_akFrustum[p].w > 0 )
 			continue;
-		if( m_akFrustum[p].x * (kCubePos.x) + m_akFrustum[p].y * (kCubeNeg.y) + m_akFrustum[p].z * (kCubeNeg.z) + m_akFrustum[p].w > 0 )
+		if( m_akFrustum[p].x * (kEdge[1].x) + m_akFrustum[p].y * (kEdge[1].y) + m_akFrustum[p].z * (kEdge[1].z) + m_akFrustum[p].w > 0 )
 			continue;
-		if( m_akFrustum[p].x * (kCubeNeg.x) + m_akFrustum[p].y * (kCubePos.y) + m_akFrustum[p].z * (kCubeNeg.z) + m_akFrustum[p].w > 0 )
+		if( m_akFrustum[p].x * (kEdge[2].x) + m_akFrustum[p].y * (kEdge[2].y) + m_akFrustum[p].z * (kEdge[2].z) + m_akFrustum[p].w > 0 )
 			continue;
-		if( m_akFrustum[p].x * (kCubePos.x) + m_akFrustum[p].y * (kCubePos.y) + m_akFrustum[p].z * (kCubeNeg.z) + m_akFrustum[p].w > 0 )
+		if( m_akFrustum[p].x * (kEdge[3].x) + m_akFrustum[p].y * (kEdge[3].y) + m_akFrustum[p].z * (kEdge[3].z) + m_akFrustum[p].w > 0 )
 			continue;
-		if( m_akFrustum[p].x * (kCubeNeg.x) + m_akFrustum[p].y * (kCubeNeg.y) + m_akFrustum[p].z * (kCubePos.z) + m_akFrustum[p].w > 0 )
+		if( m_akFrustum[p].x * (kEdge[4].x) + m_akFrustum[p].y * (kEdge[4].y) + m_akFrustum[p].z * (kEdge[4].z) + m_akFrustum[p].w > 0 )
 			continue;
-		if( m_akFrustum[p].x * (kCubePos.x) + m_akFrustum[p].y * (kCubeNeg.y) + m_akFrustum[p].z * (kCubePos.z) + m_akFrustum[p].w > 0 )
+		if( m_akFrustum[p].x * (kEdge[5].x) + m_akFrustum[p].y * (kEdge[5].y) + m_akFrustum[p].z * (kEdge[5].z) + m_akFrustum[p].w > 0 )
 			continue;
-		if( m_akFrustum[p].x * (kCubeNeg.x) + m_akFrustum[p].y * (kCubePos.y) + m_akFrustum[p].z * (kCubePos.z) + m_akFrustum[p].w > 0 )
+		if( m_akFrustum[p].x * (kEdge[6].x) + m_akFrustum[p].y * (kEdge[6].y) + m_akFrustum[p].z * (kEdge[6].z) + m_akFrustum[p].w > 0 )
 			continue;
-		if( m_akFrustum[p].x * (kCubePos.x) + m_akFrustum[p].y * (kCubePos.y) + m_akFrustum[p].z * (kCubePos.z) + m_akFrustum[p].w > 0 )
+		if( m_akFrustum[p].x * (kEdge[7].x) + m_akFrustum[p].y * (kEdge[7].y) + m_akFrustum[p].z * (kEdge[7].z) + m_akFrustum[p].w > 0 )
 			continue;
+
 		return false;
 	}
 	return true;
+
 }

@@ -155,6 +155,7 @@ class RENDER_API Render : public ZFSubSystem {
 		void DrawBoundSphere(float fRadius, Vector3);
 		void DrawBoundingBox(Vector3 kPos,Vector3 kRot,Vector3 kScale, Vector3 kColor);
 		void DrawBox(Vector3 kPos,Vector3 kRot,Vector3 kScale,int iTexture);
+		void DrawBox(Vector3 kPos,Vector3 kCenter, Matrix4 kRot,Vector3 kScale,int iTexture);
 		void DrawColorBox(Vector3 kPos,Vector3 kRot,Vector3 kScale,Vector3 kColor);
 		void DrawAABB( float x, float y, float z, float sizex,float sizey,float sizez, Vector3 kColor );
 		void DrawAABB( Vector3 kMin,Vector3 kMax, Vector3 kColor );

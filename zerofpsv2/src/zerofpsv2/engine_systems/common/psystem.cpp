@@ -8,12 +8,14 @@
 
 void PSystem::Draw()
 {
+	
 	if ( m_bInsideFrustum )
 	{
 		// Set depthmask
 		glDepthFunc ( m_pkPSystemType->m_kPSystemBehaviour.m_uiDepthMask );
 
 		m_pkRender->DrawPSystem (this);
+
 	}
 
 	glPopAttrib();
@@ -431,10 +433,18 @@ void PSystem::TestInsideFrustum()
 		Vector3 kScale = m_pkPSystemType->m_kPSystemBehaviour.m_kMaxSize;
 
 		Vector3 kPos = m_kPosition + 
-							m_pkPSystemType->m_kPSystemBehaviour.m_kPosOffset + 
-							m_pkPSystemType->m_kPSystemBehaviour.m_kCullPosOffset;
+							m_pkPSystemType->m_kPSystemBehaviour.m_kPosOffset;
 		
-		m_bInsideFrustum = pkFrustum->CubeInFrustum ( kPos, kScale, m_kRotation );
+		if ( m_pkPSystemType->m_kParticleBehaviour.m_bStartSpeedInheritDirection )
+			m_bInsideFrustum = pkFrustum->CubeInFrustum ( kPos, m_pkPSystemType->m_kPSystemBehaviour.m_kCullPosOffset,
+																		 kScale, m_kRotation );
+		else
+			m_bInsideFrustum = pkFrustum->CubeInFrustum ( kPos, m_pkPSystemType->m_kPSystemBehaviour.m_kCullPosOffset,
+																		 kScale, Matrix4(1,0,0,0,
+																							  0,1,0,0,
+																							  0,0,1,0,
+																							  0,0,0,1) );
+
 
 	}
 	else if ( m_pkPSystemType->m_kPSystemBehaviour.m_kCullingTest == "point" )
@@ -442,7 +452,10 @@ void PSystem::TestInsideFrustum()
 		Vector3 kPos = m_kPosition + 
 							m_pkPSystemType->m_kPSystemBehaviour.m_kPosOffset;
 
-		m_bInsideFrustum = pkFrustum->PointInFrustum ( m_kRotation.VectorRotate( kPos ) );
+		if ( m_pkPSystemType->m_kParticleBehaviour.m_bStartSpeedInheritDirection )
+			m_bInsideFrustum = pkFrustum->PointInFrustum ( m_kRotation.VectorRotate( kPos ) );
+		else
+			m_bInsideFrustum = pkFrustum->PointInFrustum ( kPos );
 	}
 	else
 		m_bInsideFrustum = true;
