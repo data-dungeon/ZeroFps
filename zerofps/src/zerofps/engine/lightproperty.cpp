@@ -57,10 +57,12 @@ void LightProperty::Update()
 
 void LightProperty::PackTo( NetPacket* pkNetPacket ) {
 	pkNetPacket->Write( m_pkLightSource->kDiffuse );		
+	pkNetPacket->Write( m_pkLightSource->kConstPos );			
 }
 
 void LightProperty::PackFrom( NetPacket* pkNetPacket ) {
 	pkNetPacket->Read( m_pkLightSource->kDiffuse );		
+	pkNetPacket->Read( m_pkLightSource->kConstPos );			
 }
 
 vector<PropertyValues> LightProperty::GetPropertyValues()
