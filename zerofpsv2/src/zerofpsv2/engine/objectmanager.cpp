@@ -60,8 +60,8 @@ ObjectManager::ObjectManager()
 	Register_Cmd("newworld",FID_NEWWORLD, CSYS_FLAG_SRC_ALL);	
 	Register_Cmd("loadworld",FID_LOADWORLD, CSYS_FLAG_SRC_ALL);	
 	Register_Cmd("setworlddir",FID_SETWORLDDIR, CSYS_FLAG_SRC_ALL);		
-	Register_Cmd("loadzones",FID_LOADZONES, CSYS_FLAG_SRC_ALL);	
-	Register_Cmd("savezones",FID_SAVEZONE, CSYS_FLAG_SRC_ALL);	
+	//Register_Cmd("loadzones",FID_LOADZONES, CSYS_FLAG_SRC_ALL);	
+	//Register_Cmd("savezones",FID_SAVEZONE, CSYS_FLAG_SRC_ALL);	
 
 	RegisterVariable("l_showzones", &m_bDrawZones, CSYS_BOOL);
 }
@@ -1188,7 +1188,7 @@ void ObjectManager::Test_CreateZones()
 				object->SetParent(GetWorldObject());				
 				object->GetUpdateStatus()=UPDATE_DYNAMIC;
 				
-				m_kZones[id].m_bActive = true;
+				m_kZones[id].m_bActive = false;
 				m_kZones[id].m_pkZone = object;
 				m_kZones[id].m_kMin = - (object->m_kSize * 0.5);
 				m_kZones[id].m_kMax =   (object->m_kSize * 0.5);
@@ -1351,7 +1351,7 @@ int ObjectManager::GetZoneIndex(Object* PkObject,int iCurrentZone,bool bClosestZ
 		{
 			if(m_kZones[pkZone->m_iZoneLinks[i]].IsInside(kMyPos))
 			{	
-				cout<<"Got A close zone"<<endl;
+				//cout<<"Got A close zone"<<endl;
 				return pkZone->m_iZoneLinks[i];						
 			}
 		}
@@ -1361,7 +1361,7 @@ int ObjectManager::GetZoneIndex(Object* PkObject,int iCurrentZone,bool bClosestZ
 	for(unsigned int iZ=0;iZ<m_kZones.size();iZ++) {
 		if(m_kZones[iZ].IsInside(kMyPos))
 		{
-			cout<<"Got A not so close zone"<<endl;			
+			//cout<<"Got A not so close zone"<<endl;			
 			return iZ;
 		}
 	}
@@ -1382,8 +1382,8 @@ int ObjectManager::GetZoneIndex(Object* PkObject,int iCurrentZone,bool bClosestZ
 			}
 		}
 	
-		if(id != -1)
-			cout<<"Got A far away zone"<<endl;			
+		//if(id != -1)
+		//	cout<<"Got A far away zone"<<endl;			
 				
 		return id;
 	}
@@ -1667,7 +1667,6 @@ ZoneData* ObjectManager::GetZoneData(int iID)
 
 void ObjectManager::LoadZone(int iId)
 {	
-	int i;
 	ZoneData* kZData = GetZoneData(iId);
 	assert(kZData);
 
@@ -1677,8 +1676,59 @@ void ObjectManager::LoadZone(int iId)
 
 	// Create Object.
 	ZoneObject *object = new ZoneObject;
-	//object->iNetWorkID = iId;
+	kZData->m_pkZone = object;
+	kZData->m_pkZone->SetParent(GetWorldObject());	
+	
+	//load
+	char nr[10];
+	IntToChar(nr,iId);
+	
+	string filename(m_kWorldDirectory);
+	filename+="/";
+	filename+=nr;
+	filename+=".dynamic.zone";
+	
+	cout<<"load from :"<<filename<<endl;
+	
+	ZFVFile kFile;
+	if(!kFile.Open(filename.c_str(),0,false))
+	{	
+		cout<<"error loading"<<endl;
+		
+		
+		
+		Vector3 kPos = kZData->m_kPos;
+		object->SetLocalPosV(kPos);
+		object->GetUpdateStatus()=UPDATE_DYNAMIC;
+		object->AddProperty("LightUpdateProperty");
 
+		// Create Ground Object
+		Object* pkNode;
+		pkNode = CreateObjectByArchType("Node4x");
+		pkNode->SetWorldPosV(kPos - Vector3(0,5,0)); 
+		pkNode->SetParent(object);
+
+		// Create Random Objects.
+		Vector3 kRandOffset;
+		Object* pkBall;
+		int iNumOfBalls = rand() % 5;
+		for(int i=0; i<iNumOfBalls; i++) {
+			kRandOffset = Vector3(5,-4,5) - Vector3(rand()%10,0,rand()%10);
+			pkBall = CreateObjectByArchType("TVimBollus");
+			pkBall->SetLocalPosV(kPos + kRandOffset);
+			pkBall->SetParent(object);				
+		}
+		
+		return;
+	}
+
+	kZData->m_pkZone->Load(&kFile);
+	
+	kFile.Close();
+	
+
+
+/*
 	Vector3 kPos = kZData->m_kPos;
 	object->SetLocalPosV(kPos);
 	object->SetParent(GetWorldObject());				
@@ -1703,6 +1753,7 @@ void ObjectManager::LoadZone(int iId)
 		pkBall->SetLocalPosV(kPos + kRandOffset);
 		pkBall->SetParent(object);				
 		}
+*/		
 }
 
 void ObjectManager::UnLoadZone(int iId)
@@ -1711,6 +1762,28 @@ void ObjectManager::UnLoadZone(int iId)
 	assert(kZData);
 	if(kZData->m_pkZone == NULL)
 		return;
+
+	char nr[10];
+	IntToChar(nr,iId);
+	
+	string filename(m_kWorldDirectory);
+	filename+="/";
+	filename+=nr;
+	filename+=".dynamic.zone";
+
+	
+	cout<<"saving to :"<<filename<<endl;
+	
+	ZFVFile kFile;
+	if(!kFile.Open(filename.c_str(),0,true))
+	{	
+		cout<<"error saving"<<endl;
+		return;
+	}
+
+	kZData->m_pkZone->Save(&kFile);
+	
+	kFile.Close();
 
 	Delete(kZData->m_pkZone);
 	kZData->m_pkZone = NULL;
