@@ -999,6 +999,37 @@ void ZeroEdit::Input()
 				}				
 			}
 			
+			if(pkInput->Pressed(KEY_L))
+			{
+				if(pkFps->GetTicks()-m_fTimer < m_fDrawRate)
+					break;			
+				m_fTimer=pkFps->GetTicks();
+			
+			
+				if(m_pkCurentChild != NULL)
+				{			
+					VegitationProperty* vp= static_cast<VegitationProperty*>(m_pkCurentChild->GetProperty("VegitationProperty"));
+								
+					if(vp != NULL)
+					{
+						Vector3 kPos = m_kDrawPos;						
+						
+						//randomize position 
+						kPos.x += (rand() % m_iPencilSize)-m_iPencilSize/2;
+						kPos.z += (rand() % m_iPencilSize)-m_iPencilSize/2;													
+						
+						//get heightmap heiht att curent possition
+						kPos.y = m_fPointerHeight+m_pkMap->Height(kPos.x,kPos.z);					
+						
+						kPos -= m_pkCurentChild->GetPos();
+						vp->AddPos(kPos);						
+					}
+					else
+						cout<<"no VegitationProperty"<<endl;				
+				}				
+			}
+			
+			
 			if(pkInput->Pressed(KEY_O))
 			{
 				if(m_pkCurentChild != NULL)

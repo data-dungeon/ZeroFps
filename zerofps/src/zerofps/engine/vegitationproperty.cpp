@@ -46,7 +46,7 @@ void VegitationProperty::Update()
 	if(fDistance > 50)
 		return;
 					
-	int iStep = int(fDistance / 5.0);
+	int iStep = int(fDistance / 8.0);
 	if(iStep < 1)
 		iStep = 1;
 
