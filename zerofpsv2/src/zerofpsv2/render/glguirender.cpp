@@ -4,7 +4,7 @@
 #include "../ogl/zfpsgl.h"
 #include "glguirender.h" 
 #include "../basic/zguiskin.h"
-#include "../basic/Vector4.h"
+#include "../basic/vector4.h"
 #include "texturemanager.h"
 #include "../basic/zfresourcedb.h"
 #include "../basic/zifanimation.h"
