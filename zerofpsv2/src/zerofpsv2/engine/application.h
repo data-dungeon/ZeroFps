@@ -27,8 +27,7 @@ class ENGINE_API Application : public ZFSubSystem {
 		Light*					pkLight;
 		ObjectManager*			pkObjectMan;
 		PropertyFactory*		pkPropertyFactory;
-		ZFAudioSystem2*		pkAudioSys;
-		//ZFAudioSystem2*		pkAudioSys2;
+		ZFAudioSystem*			pkAudioSys;
 		ZGui*						pkGui;
 		ZGuiResourceManager*	pkGuiMan;
 		ZFIni*					pkIni;

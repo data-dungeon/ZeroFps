@@ -270,35 +270,29 @@ void MistClient::Input()
 			static int COUNTER = 0;
 
 			SoundInfo kSound;
-			kSound.m_bLoop = false;
-			kSound.m_kDir = Vector3(0,0,1);
+			kSound.m_bLoop = true;
+			kSound.m_kDir = Vector3(0,0,-1);
 			kSound.m_kPos = Vector3(0,0,0);
 			
 			if(COUNTER==0)
 			{
 				strcpy(kSound.m_szFile, "data/sound/dummy.wav");
-			//	COUNTER++;
+				COUNTER++;
 			}
-/*			else
+			else
 			if(COUNTER==1)
 			{
-				strcpy(kSound.m_szFileName, "data/sound/dummy.wav");
+				strcpy(kSound.m_szFile, "data/sound/test.wav");
 				COUNTER++;
 			}
 			else
 			if(COUNTER==2)
 			{
-				strcpy(kSound.m_szFileName, "data/sound/walk.wav");
+				strcpy(kSound.m_szFile, "data/sound/walk.wav");
 				COUNTER = 0;
-			}*/
+			}
 			
 			pkAudioSys->ActivateSound(kSound);
-			
-			
-			printf("COUNTER = %i\n", COUNTER);
-			printf("ANTAL LJUD = %i\n", pkAudioSys->GetNumActiveSounds());
-
-			
 		}
 		break;
 	}
@@ -388,9 +382,6 @@ void MistClient::OnServerStart(void)
 		m_pkCamProp->SetType(CAM_TYPE3PERSON);
 	
 		m_pkTestobj->SetWorldPosV(Vector3(0,0.1,0));
-		
-		// Comment out by Zeb: Funkar inte att accessa variabeln.
-		// får felet: mistclient.obj : error LNK2001: unresolved external symbol "int  MistLandLua::g_iCurrentPCID" 
 		MistLandLua::g_iCurrentPCID = m_pkTestobj->iNetWorkID;
 	}
 	pkObjectMan->Test_CreateZones();

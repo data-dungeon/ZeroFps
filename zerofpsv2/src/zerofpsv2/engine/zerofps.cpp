@@ -39,7 +39,7 @@ ZeroFps::ZeroFps(void) : I_ZeroFps("ZeroFps")
 	m_pkGuiRenderer			= new GLGuiRender;
 	m_pkNetWork					= new NetWork;
 	m_pkMusic					= new OggMusic(24,4096);
-	m_pkAudioSystem			= new ZFAudioSystem2;
+	m_pkAudioSystem			= new ZFAudioSystem;
 	m_pkObjectMan				= new ObjectManager;
 	m_pkCmd						= new CmdSystem;
 	m_pkConsole					= new Console;

@@ -107,10 +107,6 @@ SOURCE=.\application.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\engine_systems\audio\audiosystem.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=..\engine_systems\propertys\autoparentproperty.cpp
 # End Source File
 # Begin Source File
@@ -339,7 +335,7 @@ SOURCE=.\zerofps.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\engine_systems\audio\zfaudiosystem2.cpp
+SOURCE=..\engine_systems\audio\zfaudiosystem.cpp
 # End Source File
 # Begin Source File
 
@@ -352,10 +348,6 @@ SOURCE=..\engine_systems\common\zoneobject.cpp
 # Begin Source File
 
 SOURCE=.\application.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\engine_systems\audio\audiosystem.h
 # End Source File
 # Begin Source File
 
@@ -583,7 +575,7 @@ SOURCE=.\zerofps.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\engine_systems\audio\zfaudiosystem2.h
+SOURCE=..\engine_systems\audio\zfaudiosystem.h
 # End Source File
 # Begin Source File
 

@@ -3,7 +3,7 @@
 //////////////////////////////////////////////////////////////////////
 
 #include "../../script/zfscript.h"
-#include "../audio/audiosystem.h"
+#include "../audio/zfaudiosystem.h"
 #include "../../engine/objectmanager.h"
 #include "si_audio.h"
 
@@ -79,12 +79,12 @@ int AudioLua::PlaySoundLua(lua_State* pkLua)
 	strFileName = "data/sound/";
 	strFileName.append(szFileName);
 
-	ZFSound* pkSound = g_pAudioSys->GetFreeSound(strFileName);
+/*	ZFSound* pkSound = g_pAudioSys->GetFreeSound(strFileName);
 	pkSound->m_kPos = pos;
 	pkSound->m_kVel = dir;
 	pkSound->m_bLoop = false;
 
-	g_pAudioSys->AddSound(pkSound);
+	g_pAudioSys->AddSound(pkSound);*/
 
 	return 1;
 }
@@ -94,7 +94,7 @@ int AudioLua::PlaySoundLua(lua_State* pkLua)
 //		(0) name of sound (not the full path) (char*)
 int AudioLua::PlayGuiSoundLua(lua_State* pkLua)
 {
-	Vector3 pos = g_pAudioSys->GetListnerPos();
+/*	Vector3 pos = g_pAudioSys->GetListnerPos();
 	Vector3 dir = g_pAudioSys->GetListnerDir();
 
 	int iNumArgs = g_pkScript->GetNumArgs(pkLua);
@@ -118,7 +118,7 @@ int AudioLua::PlayGuiSoundLua(lua_State* pkLua)
 	pkSound->m_kVel = dir;
 	pkSound->m_bLoop = false;
 
-	g_pAudioSys->AddSound(pkSound);
+	g_pAudioSys->AddSound(pkSound);*/
 
 	return 1;
 }
