@@ -257,7 +257,7 @@ void ZGuiCombobox::SetLabelWidth(int iWidth)
 //
 void ZGuiCombobox::IsMenu(bool bIsMenu)
 {
-	m_bIsMenu = bIsMenu; 
+	m_bIsMenu = bIsMenu;
 	m_pkListbox->IsMenu(bIsMenu);
 }
 
@@ -272,9 +272,9 @@ void ZGuiCombobox::SetNumVisibleRows(unsigned short iNumVisibleRows)
 	int iNewHeight = m_unNumVisibleRows*m_pkListbox->GetItemHeight();
 	m_pkListbox->Resize(m_pkListbox->GetScreenRect().Width(),iNewHeight);
 
-	ZGuiScrollbar* pkScrollbar = m_pkListbox->GetScrollbar(); 
+	ZGuiScrollbar* pkScrollbar = m_pkListbox->GetScrollbar();
 	if(pkScrollbar)
-		pkScrollbar->Resize(pkScrollbar->GetScreenRect().Width(), 
+		pkScrollbar->Resize(pkScrollbar->GetScreenRect().Width(),
 			iNewHeight);
 }
 

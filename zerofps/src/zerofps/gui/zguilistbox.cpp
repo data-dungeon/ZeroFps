@@ -19,8 +19,11 @@ const int FONT_SIZE = 12;
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 
-ZGuiListbox::ZGuiListbox(Rect kRectangle, ZGuiWnd* pkParent, bool bVisible, int iID, int iItemHeight,
-						 ZGuiSkin* pkSkinItem, ZGuiSkin* pkSkinItemSelected, ZGuiSkin* pkSkinItemHighLight) :
+ZGuiListbox::ZGuiListbox(Rect kRectangle, ZGuiWnd* pkParent, bool bVisible, 
+						 int iID, int iItemHeight, 
+						 ZGuiSkin* pkSkinItem, 
+						 ZGuiSkin* pkSkinItemSelected, 
+						 ZGuiSkin* pkSkinItemHighLight) :
 	ZGuiControl(kRectangle, pkParent, bVisible, iID)
 {
 	m_iScrollbarWidth = 20;
