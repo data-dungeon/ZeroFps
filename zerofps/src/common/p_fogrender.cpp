@@ -31,7 +31,7 @@ void P_FogRender::Update()
 	
 	glDisable(GL_DEPTH_TEST);
 
-	m_pkRender->Quad(m_pkObject->GetPos()+Vector3(0,5,0),Vector3(-90,0,0),Vector3(m_fScale,m_fScale,1),m_pkTexMan->Load(m_sFogTexture.c_str(),0));
+	m_pkRender->Quad(m_pkObject->GetPos()+Vector3(0,5,0),Vector3(-90,0,0),Vector3(m_fScale,m_fScale,1),m_pkTexMan->Load(m_sFogTexture.c_str(),T_NOMIPMAPPING));
 
 	glDisable(GL_ALPHA_TEST);
 	glEnable(GL_DEPTH_TEST);	
@@ -48,7 +48,7 @@ void P_FogRender::Explore(float x,float y,float r)
 	y*=(FOG_TEXTURE_SIZE/m_fScale);
 	r*=(FOG_TEXTURE_SIZE/m_fScale);
 
-	m_pkTexMan->BindTexture(m_sFogTexture.c_str(),0);
+	m_pkTexMan->BindTexture(m_sFogTexture.c_str(),T_NOMIPMAPPING);
 	
 	
 	for(int i=1;i<r;i++)
@@ -79,7 +79,7 @@ void P_FogRender::UnExplore(float x,float y,float r)
 	y*=(FOG_TEXTURE_SIZE/m_fScale);
 	r*=(FOG_TEXTURE_SIZE/m_fScale);
 
-	m_pkTexMan->BindTexture(m_sFogTexture.c_str(),0);
+	m_pkTexMan->BindTexture(m_sFogTexture.c_str(),T_NOMIPMAPPING);
 	
 	
 	for(int i=1;i<r;i++)
@@ -101,7 +101,7 @@ void P_FogRender::UnExplore(float x,float y,float r)
 
 void P_FogRender::UnExploreAll()
 {
-	m_pkTexMan->BindTexture(m_sFogTexture.c_str(),0);
+	m_pkTexMan->BindTexture(m_sFogTexture.c_str(),T_NOMIPMAPPING);
 	
 	float w = m_pkTexMan->GetImage()->w;
 	float h = m_pkTexMan->GetImage()->h;
@@ -115,7 +115,7 @@ void P_FogRender::UnExploreAll()
 
 void P_FogRender::ExploreAll()
 {
-	m_pkTexMan->BindTexture(m_sFogTexture.c_str(),0);
+	m_pkTexMan->BindTexture(m_sFogTexture.c_str(),T_NOMIPMAPPING);
 	
 	float w = m_pkTexMan->GetImage()->w;
 	float h = m_pkTexMan->GetImage()->h;

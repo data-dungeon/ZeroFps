@@ -106,6 +106,12 @@ ZeroFps::ZeroFps(void)
 
 	RegisterPropertys();
 
+	m_kClient.resize( 4 );	// Vim - Hard coded for now. Must be same as Network.SetMaxNodes
+	for(int i=0; i<4; i++)
+		m_kClient[i].m_pkObject = NULL;
+
+	m_iRTSClientObject = -1;
+
 	m_bDevPagesVisible = true;
 }
 
@@ -209,9 +215,23 @@ bool ZeroFps::Init(int iNrOfArgs, char** paArgs)
 void ZeroFps::Run_EngineShell()
 {
 	m_pkInput->SetInputEnabled(true);
-
+/*
+	m_pkObjectMan->PackToClients();
+	m_pkNetWork->Run();
+*/
 
 	DevPrintf("common","Num of Clients: %d", m_pkNetWork->GetNumOfClients());
+	if(m_bServerMode) {
+		for(int i=0; i<4; i++) {
+			DevPrintf("common","Client[%d]: %s", i, m_kClient[i].m_strName.c_str());
+			// Server gives upp object a time after connection
+			if(m_kClient[i].m_pkObject) {
+				if(GetEngineTime() > (m_kClient[i].m_fConnectTime + 2))
+					m_pkObjectMan->OwnerShip_Give( m_kClient[i].m_pkObject );
+				}
+			}
+		}
+	
 	DevPrintf("common","Num Objects: %d", m_pkObjectMan->GetNumOfObjects());
 
 	// Update Local Input.
@@ -972,6 +992,46 @@ void ZeroFps::GetEngineCredits(vector<string>& kCreditsStrings)
 	kCreditsStrings.push_back( string("   Nina 'Nanna3d' Rydqvist	") );
 }
 
+bool ZeroFps::PreConnect(IPaddress kRemoteIp, char* szWhy256)
+{
+	m_pkConsole->Printf("ZeroFps::PreConnect()");
+	return true; 
+}
 
+void ZeroFps::Connect(int iConnectionID) 
+{
+	if(!m_bServerMode)
+		return;
 
+	m_pkConsole->Printf("ZeroFps::Connect(%d)", iConnectionID);
 
+	char szName[64];
+	sprintf(szName, "Player%d", iConnectionID);
+	m_kClient[iConnectionID].m_strName = szName;
+
+	m_kClient[iConnectionID].m_pkObject = m_pkObjectMan->CreateObjectByArchType("ZeroRTSPlayer");
+	assert(m_kClient[iConnectionID].m_pkObject);	
+	m_kClient[iConnectionID].m_pkObject->SetPos(Vector3(0,0,2));
+	m_kClient[iConnectionID].m_pkObject->SetPos(Vector3(0,0,2));
+	m_kClient[iConnectionID].m_pkObject->AttachToClosestZone();
+	m_kClient[iConnectionID].m_fConnectTime = GetEngineTime();
+
+	m_pkConsole->Printf("Player Object %d", m_kClient[iConnectionID].m_pkObject->iNetWorkID);
+}
+
+void ZeroFps::Disconnect(int iConnectionID)
+{
+	m_pkConsole->Printf("ZeroFps::Disconnect(%d)", iConnectionID);
+	assert( m_kClient[iConnectionID].m_pkObject );
+	m_pkObjectMan->Delete( m_kClient[iConnectionID].m_pkObject );
+}
+
+int ZeroFps::GetClientObjectID()
+{
+	if(m_iRTSClientObject == -1) {
+		m_pkNetWork->RTS_RequestClientObjectID();
+		}
+
+	return m_iRTSClientObject;
+
+}

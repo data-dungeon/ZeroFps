@@ -1321,13 +1321,13 @@ void ZeroEdit::SelectParent()
 
 Object* ZeroEdit::GetClosest(Vector3 kPos)
 {
-	list<Object*> temp;
+	vector<Object*> temp;
 	float mindistance=999999999;
 	Object* minobject=NULL;
 	
 	pkObjectMan->GetWorldObject()->GetAllObjects(&temp);
 	
-	for(list<Object*>::iterator it=temp.begin();it!=temp.end();it++) {
+	for(vector<Object*>::iterator it=temp.begin();it!=temp.end();it++) {
 		float distance = abs(((*it)->GetPos() - kPos).Length());
 		if(distance<mindistance){
 			mindistance=distance;

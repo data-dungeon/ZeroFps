@@ -132,6 +132,9 @@ class ENGINE_API ObjectManager : public ZFObject{
 		Object* ObjectManager::CloneObject(int iNetID);
 
 		bool TestLine(vector<Object*>* pkObList,Vector3 kPos,Vector3 kVec);
+
+		void OwnerShip_Take(Object* pkObj);
+		void OwnerShip_Give(Object* pkObj);
 };
 
 #endif

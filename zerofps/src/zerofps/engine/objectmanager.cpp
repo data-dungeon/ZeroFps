@@ -37,7 +37,9 @@ void ObjectManager::Add(Object* pkObject)
 
 void ObjectManager::Remove(Object* pkObject) 
 {	
-	m_aiNetDeleteList.push_back(pkObject->iNetWorkID);
+	// If i own object mark so we remove it on clients.
+	if(pkObject->m_eRole == NETROLE_AUTHORITY && pkObject->m_eRemoteRole == NETROLE_PROXY)
+		m_aiNetDeleteList.push_back(pkObject->iNetWorkID);
 	m_akObjects.remove(pkObject);
 }
 
@@ -113,7 +115,9 @@ void ObjectManager::UpdateDelete()
 	for(vector<Object*>::iterator it=m_akDeleteList.begin();it!=m_akDeleteList.end();it++) 
 	{
 		Object* pkObject = (*it);
-		m_aiNetDeleteList.push_back((*it)->iNetWorkID);
+		// If i own object mark so we remove it on clients.
+		if(pkObject->m_eRole == NETROLE_AUTHORITY && pkObject->m_eRemoteRole == NETROLE_PROXY)
+			m_aiNetDeleteList.push_back((*it)->iNetWorkID);
 		delete (*it);		
 	}
 
@@ -205,8 +209,8 @@ Object* ObjectManager::CreateObjectByArchType(const char* acName)
 
 //	Object* pkObj			= new Object;
 	Object* pkObj	=	CreateObject();
-	pkObj->m_eRole			= NETROLE_PROXY;
-	pkObj->m_eRemoteRole	= NETROLE_AUTHORITY;
+	pkObj->m_eRemoteRole	= NETROLE_PROXY;
+	pkObj->m_eRole			= NETROLE_AUTHORITY;
 
 	AddArchPropertys(pkObj, string(acName));
 
@@ -477,7 +481,7 @@ void ObjectManager::UpdateDeleteList(NetPacket* pkNetPacket)
 		pkNetPacket->Read(iObjectID);
 		}	
 
-	m_aiNetDeleteList.clear();
+//	m_aiNetDeleteList.clear();
 }
 
 void ObjectManager::UpdateState(NetPacket* pkNetPacket)
@@ -514,10 +518,12 @@ void ObjectManager::PackToClients()
 	g_ZFObjSys.Logf("net", " *** ObjectManager::PackToClients() *** \n");
 
 	NetWork* net = static_cast<NetWork*>(g_ZFObjSys.GetObjectPtr("NetWork"));
+
+/*
 	if(net->m_eNetStatus != NET_SERVER) {
 		m_aiNetDeleteList.clear();
 		return;
-		}
+		}*/
 
 	NetPacket NP;
 	NP.Clear();
@@ -530,21 +536,13 @@ void ObjectManager::PackToClients()
 
 
 	for(list<Object*>::iterator it=m_akObjects.begin();it!=m_akObjects.end();it++) {
-		if((*it)->NeedToPack()) {
-			NP.Write((*it)->iNetWorkID);
-			g_ZFObjSys.Logf("net", "Object: %d\n",(*it)->iNetWorkID );
+		if((*it)->NeedToPack() == false)					continue;
+		if((*it)->m_eRole != NETROLE_AUTHORITY)		continue;
 
-			
-			/*if((*it)->GetParent()) {
-				NP.Write((*it)->GetParent()->iNetWorkID);
-				}
-			else
-				NP.Write(int (-1));*/
-
-			(*it)->PackTo(&NP);
-	
-			iPacketSize++;
-			}
+		NP.Write((*it)->iNetWorkID);
+		g_ZFObjSys.Logf("net", "Object: %d\n",(*it)->iNetWorkID );
+		(*it)->PackTo(&NP);
+		iPacketSize++;
 
 		g_ZFObjSys.Logf("net", "PackSize Is: %d\n",NP.m_iPos );
 
@@ -881,7 +879,18 @@ void ObjectManager::RunCommand(int cmdid, const CmdArgument* kCommand)
 
 }
 
+void ObjectManager::OwnerShip_Take(Object* pkObj)
+{
+	pkObj->m_eRole			= NETROLE_AUTHORITY;
+	pkObj->m_eRemoteRole	= NETROLE_PROXY;
+}
 
+void ObjectManager::OwnerShip_Give(Object* pkObj)
+{
+	pkObj->m_eRole			= NETROLE_PROXY;
+	pkObj->m_eRemoteRole	= NETROLE_AUTHORITY;
+
+}
 
 
 

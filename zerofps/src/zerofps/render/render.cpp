@@ -36,14 +36,15 @@ void Render::Sphere(Vector3 kPos,float fRadius,int iRes,Vector3 kColor,bool bSol
 //	glDisable(GL_LIGHTING);
 	glDisable(GL_COLOR_MATERIAL);	
 	glDisable(GL_TEXTURE_2D);
-	glDisable(GL_CULL_FACE);
 	
 	if(bSolid)
 	{
 		glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);		
 	}
-	else
+	else {
+		glDisable(GL_CULL_FACE);
 		glPolygonMode(GL_FRONT_AND_BACK,GL_LINE);
+		}
 
 	glColor3f(kColor.x,kColor.y,kColor.z);
 	

@@ -1,4 +1,9 @@
 class object
+	class ZeroRTSPlayer
+		parent object
+		set ModelProperty Radius	1
+			
+			
 
 	class physics
 		parent object

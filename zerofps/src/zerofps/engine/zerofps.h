@@ -54,6 +54,15 @@ public:
 	vector<string>	m_akDevString;
 };
 
+/* Information about a connectet client*/
+class ZFClient
+{
+public:
+	float			m_fConnectTime;	
+	string		m_strName;		// Name of player.
+	Object*		m_pkObject;		// Object used for client.
+};
+
 /// Main class for the ZeroFps engine. 
 class ENGINE_API ZeroFps : public ZFObject {
 	private:		
@@ -160,7 +169,9 @@ class ENGINE_API ZeroFps : public ZFObject {
 		
 		int		m_iMadDraw;									//	Flags for what part's of mad's that should be draw.
 		float		m_fMadLod;										//	If not 0 then force this LOD % on every mad.
-		
+
+		vector<ZFClient>		m_kClient;
+
 		ZeroFps(void);		
 		~ZeroFps();		
 		void SetApp(void);
@@ -212,6 +223,24 @@ class ENGINE_API ZeroFps : public ZFObject {
 		int GetHeight(){return m_iHeight;};		
 		int GetDepth(){return m_iDepth;};		
 
+
+		// Called by network.
+		/* PreConnect is called when a connection is about to be made. It's after a Connect message
+			for a server Node that accepts connections. Never called on a client node. Return false
+			to deny connection. Put reason if any into szWhy256. */
+		bool PreConnect(IPaddress kRemoteIp, char* szWhy256);
+		/* Connect is called when a connection have been made. It is called after PreConnect on server if
+			PreConnect returns true. It is called on Clients when they recive connect_yes from server.*/
+		void Connect(int iConnectionID);
+		/*	Called when a connection is closed down by the other side. */
+		void Disconnect(int iConnectionID);
+
+
+		// ZeroRTS - 
+		/* Returns ID of of object Client use to send data to server. Returns -1 if object is unknown at the moment.
+			Keep asking :).*/ 
+		int	m_iRTSClientObject;
+		int GetClientObjectID();
 };
 
 

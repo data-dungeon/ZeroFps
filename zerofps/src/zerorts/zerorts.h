@@ -66,6 +66,8 @@ class ZeroRTS :public Application {
 		//fog update
 		float			m_fFogTimer;
 
+		int			m_iSelfObjectID;				// Network ID that i use to send data to server.
+
 	public:
 
 		Vector3 GetPosFromSqr(Point square);

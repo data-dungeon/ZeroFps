@@ -14,6 +14,8 @@ ZeroRTS::ZeroRTS(char* aName,int iWidth,int iHeight,int iDepth)
 	m_pkTestPath = NULL;
 	m_pkStart = Point(-1,-1);
 	m_pkEnd = Point(-1,-1);
+	m_iSelfObjectID = -1;
+
 }
 
 void ZeroRTS::OnInit() 
@@ -126,6 +128,18 @@ void ZeroRTS::OnIdle()
 	// tassa
 	if(m_pkMoveObject)
 		MovePath(m_pkMoveObject);
+
+	int iObjID = pkFps->GetClientObjectID();
+	if(m_iSelfObjectID == -1 )
+		pkConsole->Printf("SelfID: %d" , iObjID);
+	m_iSelfObjectID = iObjID;
+
+	Object* pkObj = pkObjectMan->GetObjectByNetWorkID( m_iSelfObjectID );
+	if(pkObj) {
+		pkObjectMan->OwnerShip_Take( pkObj );
+		pkObj->SetPos(pkFps->GetCam()->GetPos());
+		pkObj->SetPos(pkFps->GetCam()->GetPos());
+		}
 }
 
 void ZeroRTS::OnSystem() 

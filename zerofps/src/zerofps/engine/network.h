@@ -13,14 +13,20 @@
 #define ZF_NETTYPE_UNREL			2
 
 
-#define ZF_NETCONTROL_LIST			1
-#define ZF_NETCONTROL_JOIN			2
-#define ZF_NETCONTROL_JOINYES		3
-#define ZF_NETCONTROL_JOINNO		4
-#define ZF_NETCONTROL_DISCONNECT	5
+#define ZF_NETCONTROL_LIST				1
+#define ZF_NETCONTROL_JOIN				2
+#define ZF_NETCONTROL_JOINYES			3
+#define ZF_NETCONTROL_JOINNO			4
+#define ZF_NETCONTROL_DISCONNECT		5
+#define ZF_NETCONTROL_NOP				6	// Ohh, nothing but i'm still here.
+#define ZF_NETCONTROL_REQCLIENTID	7
+#define ZF_NETCONTROL_CLIENTID		8
 
-#define MAX_NET_CLIENTS		4
-#define ZF_NET_NOCLIENT		-1
+
+#define MAX_NET_CLIENTS				4
+#define ZF_NET_NOCLIENT				-1
+
+#define ZF_NET_CONNECTION_TIMEOUT	15
 
 enum ClientConnectStatus
 {
@@ -158,6 +164,11 @@ public:
 
 	bool Send(NetPacket* pkNetPacket);
 	void SendToAllClients(NetPacket* pkNetPacket);
+
+	void TEST_KeepAliveALL();										// Sends a NOP Controll message to all clients
+	
+	void RTS_RequestClientObjectID();
+
 
 	bool CmpNetworkAddress();
 	bool StrToAddress();
