@@ -105,7 +105,7 @@ function CreateMainWnds()
 	local h = 600 --GetScreenHeight()
 
 	-- typ, wnd name, parent namn, label, x, y, w, h, flags
-	CreateWnd(Wnd,"MainWnd","","",0,0,w,h,0)
+	CreateWnd(Wnd,"MainWnd","","",0,0,w,h,0,0,0)
 
 	-- Set main window skin to hollow
 	ChangeSkin("MainWnd", "NullSkin", "Window")
@@ -119,73 +119,73 @@ function CreatePlayerPanel()
 	local pmax = w/2-15
 
 	-- Create panel bar
-	CreateWnd(Wnd,"PanelBkWnd","MainWnd","",0, h-110+2, w+2, 110, 0)
+	CreateWnd(Wnd,"PanelBkWnd","MainWnd","",0, h-110+2, w+2, 110, 0,0,0)
 	ChangeSkin("PanelBkWnd", "PanelBkSkin", "Window")
 
 	-- Create mana bar
-	CreateWnd(Label,"ManaBarProgress","PanelBkWnd","",10, 94,pmax/2,8,0) 
+	CreateWnd(Label,"ManaBarProgress","PanelBkWnd","",10, 94,pmax/2,8,0,0,0) 
 	ChangeSkin("ManaBarProgress", "ManaBarSkin", "Label")
 
 	-- Create life bar
-	CreateWnd(Label,"LifeBarProgress","PanelBkWnd","",w/2+10,94,pmax/2,8,0)
+	CreateWnd(Label,"LifeBarProgress","PanelBkWnd","",w/2+10,94,pmax/2,8,0,0,0)
 	ChangeSkin("LifeBarProgress", "LifeBarSkin", "Label")
 	
 	-- Create map button
-	CreateWnd(Button,"MapButton","PanelBkWnd","",w-40,56,32,32,0)
+	CreateWnd(Button,"MapButton","PanelBkWnd","",w-40,56,32,32,0,0,0)
 	ChangeSkin("MapButton", "MapSkinUp", "Button up")
 	ChangeSkin("MapButton", "MapSkinDown", "Button down")
 	ChangeSkin("MapButton", "MapSkinFocus", "Button focus")
 
 	-- Create backpack button
-	CreateWnd(Button,"BackPackButton","PanelBkWnd","",w-80,56,32,32,0)
+	CreateWnd(Button,"BackPackButton","PanelBkWnd","",w-80,56,32,32,0,0,0)
 	ChangeSkin("BackPackButton", "BackPackSkinUp", "Button up")
 	ChangeSkin("BackPackButton", "BackPackSkinDown", "Button down")
 	ChangeSkin("BackPackButton", "BackPackSkinFocus", "Button focus")
 
 	-- Create stats button
-	CreateWnd(Button,"StatsButton","PanelBkWnd","",w-120,56,32,32,0)
+	CreateWnd(Button,"StatsButton","PanelBkWnd","",w-120,56,32,32,0,0,0)
 	ChangeSkin("StatsButton", "StatsSkinUp", "Button up")
 	ChangeSkin("StatsButton", "StatsSkinDown", "Button down")
 	ChangeSkin("StatsButton", "StatsSkinFocus", "Button focus")
 
 	-- Select spell button
-	CreateWnd(Button,"SelectSpellBn","PanelBkWnd","",w-160,56,32,32,0)
+	CreateWnd(Button,"SelectSpellBn","PanelBkWnd","",w-160,56,32,32,0,0,0)
 	ChangeSkin("SelectSpellBn", "SelectSpellSkinUp", "Button up")
 	ChangeSkin("SelectSpellBn", "SelectSpellSkinDown", "Button down")
 	ChangeSkin("SelectSpellBn", "SelectSpellSkinFocus", "Button focus")
 
 	-- Select skill button
-	CreateWnd(Button,"SelectSkillBn","PanelBkWnd","",w-200,56,32,32,0)
+	CreateWnd(Button,"SelectSkillBn","PanelBkWnd","",w-200,56,32,32,0,0,0)
 	ChangeSkin("SelectSkillBn", "SelectSkillSkinUp", "Button up")
 	ChangeSkin("SelectSkillBn", "SelectSkillSkinDown", "Button down")
 	ChangeSkin("SelectSkillBn", "SelectSkillSkinFocus", "Button focus")
 
 	-- Toogle input button
-	CreateWnd(Button,"ToggleInputBoxBn","PanelBkWnd","",w-240,56,32,32,0)
+	CreateWnd(Button,"ToggleInputBoxBn","PanelBkWnd","",w-240,56,32,32,0,0,0)
 	ChangeSkin("ToggleInputBoxBn", "ToggleInputBoxBnUp", "Button up")
 	ChangeSkin("ToggleInputBoxBn", "ToggleInputBoxBnDown", "Button down")
 	ChangeSkin("ToggleInputBoxBn", "ToggleInputBoxBnFocus", "Button focus")
 
 	-- Toogle infobox button
-	CreateWnd(Button,"ToggleInfoBoxBn","PanelBkWnd","",w-280,56,32,32,0)
+	CreateWnd(Button,"ToggleInfoBoxBn","PanelBkWnd","",w-280,56,32,32,0,0,0)
 	ChangeSkin("ToggleInfoBoxBn", "ToggleInfoBoxBnUp", "Button up")
 	ChangeSkin("ToggleInfoBoxBn", "ToggleInfoBoxBnDown", "Button down")
 	ChangeSkin("ToggleInfoBoxBn", "ToggleInfoBoxBnFocus", "Button focus")
 
 	-- Create infobox
-	CreateWnd(Wnd,"InfoBoxWnd","PanelBkWnd","",0, 0, w/2+23, 91, 0)
+	CreateWnd(Wnd,"InfoBoxWnd","PanelBkWnd","",0, 0, w/2+23, 91, 0,0,0)
 	ChangeSkin("InfoBoxWnd", "InfoBoxWndSkin", "Window")   
 
-	CreateWnd(Textbox, "InfoBox", "InfoBoxWnd", "", 10, 10, w/2-30, 76, MultiLine)
+	CreateWnd(Textbox, "InfoBox", "InfoBoxWnd", "", 10, 10, w/2-30, 76, MultiLine,0,0)
 
 	-- Create input wnd
-	CreateWnd(Wnd, "InputWnd", "PanelBkWnd", "", w/2+35, 19, w/2-50, 32, 0)
+	CreateWnd(Wnd, "InputWnd", "PanelBkWnd", "", w/2+35, 19, w/2-50, 32, 0,0,0)
 	ChangeSkin("InputWnd", "InputWndSkin", "Window")
 	ShowWnd("InputWnd", 0, 0)
 	
-	CreateWnd(Textbox, "InputBox", "InputWnd", "", 10, 8, w/2-92, 16, 0);
+	CreateWnd(Textbox, "InputBox", "InputWnd", "", 10, 8, w/2-92, 16, 0,0,0)
 
-	CreateWnd(Button, "SendInputBoxBn", "InputWnd", "", w/2-92+12, 6, 20, 20, 0);
+	CreateWnd(Button, "SendInputBoxBn", "InputWnd", "", w/2-92+12, 6, 20, 20, 0,0,0)
 	ChangeSkin("SendInputBoxBn", "SendInputBoxBnSkinUp", "Button up")
 	ChangeSkin("SendInputBoxBn", "SendInputBoxBnSkinDown", "Button down")
 	ChangeSkin("SendInputBoxBn", "SendInputBoxBnSkinUp", "Button focus")   
@@ -205,35 +205,35 @@ function OnClickBackpack()
 
 		local wnd_exist = GetWnd("BackPackWnd")
 
-		CreateWnd(Wnd, "BackPackWnd", "MainWnd","",0,0,512,288,0)
+		CreateWnd(Wnd, "BackPackWnd", "MainWnd","",0,0,512,288,0,0,0)
 
 		if wnd_exist == -1 then
 			ChangeSkin("BackPackWnd", "BackPackWndSkin", "Window")
 
-			CreateWnd(Textbox,"GoldTextbox","BackPackWnd","",32,258,64,20,ReanOnly)
+			CreateWnd(Textbox,"GoldTextbox","BackPackWnd","",32,258,64,20,ReanOnly,0,0)
 			SetTextInt("GoldTextbox", 12457)
 
-			CreateWnd(Textbox,"CurrentWeightTextbox","BackPackWnd","",128,258,32,20,ReanOnly)
+			CreateWnd(Textbox,"CurrentWeightTextbox","BackPackWnd","",128,258,32,20,ReanOnly,0,0)
 			SetTextInt("CurrentWeightTextbox", 123)
 
-			CreateWnd(Textbox,"MaxWeightTextbox","BackPackWnd","",174,258,32,20,ReanOnly)
+			CreateWnd(Textbox,"MaxWeightTextbox","BackPackWnd","",174,258,32,20,ReanOnly,0,0)
 			SetTextInt("MaxWeightTextbox", 512)
 
-			CreateWnd(Textbox,"ArmorClassBackpackTextbox","BackPackWnd","",238,258,32,20,ReanOnly)
+			CreateWnd(Textbox,"ArmorClassBackpackTextbox","BackPackWnd","",238,258,32,20,ReanOnly,0,0)
 			SetTextInt("ArmorClassBackpackTextbox", -19)
 
-			CreateWnd(Textbox,"CurrentHPBackpackTextbox","BackPackWnd","",308,258,32,20,ReanOnly)
+			CreateWnd(Textbox,"CurrentHPBackpackTextbox","BackPackWnd","",308,258,32,20,ReanOnly,0,0)
 			SetTextInt("CurrentHPBackpackTextbox", 298)
 
-			CreateWnd(Textbox,"MaxHPBackpackTextbox","BackPackWnd","",356,258,32,20,ReanOnly)
+			CreateWnd(Textbox,"MaxHPBackpackTextbox","BackPackWnd","",356,258,32,20,ReanOnly,0,0)
 			SetTextInt("MaxHPBackpackTextbox", 512)
 
-			CreateWnd(Button,"BackPackBackButton","BackPackWnd","",472,259,28,19,0)
+			CreateWnd(Button,"BackPackBackButton","BackPackWnd","",472,259,28,19,0,0,0)
 			ChangeSkin("BackPackBackButton", "CloseContainerButtonSkinUp", "Button up")
 			ChangeSkin("BackPackBackButton", "CloseContainerButtonSkinDown", "Button down")
 			ChangeSkin("BackPackBackButton", "CloseContainerButtonSkinFocus", "Button focus")
 
-			CreateWnd(Scrollbar, "SlotListScrollbar", "BackPackWnd", "", 496, 8, 8, 240, 0)
+			CreateWnd(Scrollbar, "SlotListScrollbar", "BackPackWnd", "", 496, 8, 8, 240, 0,0,0)
 		end
 	end
 end
@@ -252,30 +252,30 @@ function OnClickStats()
 		local wnd_exist = GetWnd("StatsWnd")
 		PlayGuiSound("open_window.wav",0)
 		
-		CreateWnd(Wnd, "StatsWnd", "MainWnd","",0,288,512,283,0)
+		CreateWnd(Wnd, "StatsWnd", "MainWnd","",0,288,512,283,0,0,0)
 
 		-- Only create controlls ones
 		if wnd_exist == -1 then
 			
 			ChangeSkin("StatsWnd", "StatsWndSkin", "Window")
 
-			CreateWnd(Listbox,"SkillsListbox","StatsWnd","",144,24,187,251,0)
-			CreateWnd(Listbox,"AttackDefListbox","StatsWnd","",339,134,167,142,0)
+			CreateWnd(Listbox,"SkillsListbox","StatsWnd","",144,24,187,251,0,0,0)
+			CreateWnd(Listbox,"AttackDefListbox","StatsWnd","",339,134,167,142,0,0,0)
 
-			CreateWnd(Label,"CharacterPortrait","StatsWnd","",8,8,128,128,0)
+			CreateWnd(Label,"CharacterPortrait","StatsWnd","",8,8,128,128,0,0,0)
 
-			CreateWnd(Label,"CharacterNameLabel","StatsWnd","",339,24,165,18,0)
-			CreateWnd(Label,"CharacterRaceLabel","StatsWnd","",339,66,165,18,0)
-			CreateWnd(Label,"CharacterSexLabel","StatsWnd","",427,92,77,16,0)
+			CreateWnd(Label,"CharacterNameLabel","StatsWnd","",339,24,165,18,0,0,0)
+			CreateWnd(Label,"CharacterRaceLabel","StatsWnd","",339,66,165,18,0,0,0)
+			CreateWnd(Label,"CharacterSexLabel","StatsWnd","",427,92,77,16,0,0,0)
 
-			CreateWnd(Label,"CharacterAttribSTYLabel","StatsWnd","",76,144,60,18,0)
-			CreateWnd(Label,"CharacterAttribCONLabel","StatsWnd","",76,144+18*1,60,18,0)
-			CreateWnd(Label,"CharacterAttribDEXLabel","StatsWnd","",76,144+18*2,60,18,0)
-			CreateWnd(Label,"CharacterAttribINTLabel","StatsWnd","",76,144+18*3,60,18,0)
-			CreateWnd(Label,"CharacterAttribPIELabel","StatsWnd","",76,144+18*4,60,18,0)
+			CreateWnd(Label,"CharacterAttribSTYLabel","StatsWnd","",76,144,60,18,0,0,0)
+			CreateWnd(Label,"CharacterAttribCONLabel","StatsWnd","",76,144+18*1,60,18,0,0,0)
+			CreateWnd(Label,"CharacterAttribDEXLabel","StatsWnd","",76,144+18*2,60,18,0,0,0)
+			CreateWnd(Label,"CharacterAttribINTLabel","StatsWnd","",76,144+18*3,60,18,0,0,0)
+			CreateWnd(Label,"CharacterAttribPIELabel","StatsWnd","",76,144+18*4,60,18,0,0,0)
 
-			CreateWnd(Label,"CharacterCounterHPLabel","StatsWnd","",76,240+18*0,60,18,0)
-			CreateWnd(Label,"CharacterCounterMPLabel","StatsWnd","",76,240+18*1,60,18,0)
+			CreateWnd(Label,"CharacterCounterHPLabel","StatsWnd","",76,240+18*0,60,18,0,0,0)
+			CreateWnd(Label,"CharacterCounterMPLabel","StatsWnd","",76,240+18*1,60,18,0,0,0)
 		end 
 	end
 end
@@ -290,7 +290,7 @@ function OnClickMap()
 		CloseWnd("MapWnd")
 	else 
 		PlayGuiSound("open_window.wav",0)
-		CreateWnd(Wnd, "MapWnd", "MainWnd","",w-400,0,400,400,0)
+		CreateWnd(Wnd, "MapWnd", "MainWnd","",w-400,0,400,400,0,0,0)
 		ChangeSkin("MapWnd", "MapWndSkin", "Window")
 	end
 end
@@ -322,10 +322,10 @@ function CreateIntroScene()
 
 	--PlayGuiSound("grotta2_mono.wav",0)
 
-	CreateWnd(Wnd,"IntroWnd","MainWnd","",0,0,w,h,0)
+	CreateWnd(Wnd,"IntroWnd","MainWnd","",0,0,w,h,0,0,0)
 	ChangeSkin("IntroWnd", "IntroScreenSkin", "Window")
 
-	CreateWnd(Button, "OpenConnectButton", "IntroWnd", "Connect", w/2-170/2, h/2-20/2, 170, 20, 0);
+	CreateWnd(Button, "OpenConnectButton", "IntroWnd", "Connect", w/2-170/2, h/2-20/2, 170, 20, 0,0,0)
 	ChangeSkin("OpenConnectButton", "DefBnUSkin", "Button up")
 	ChangeSkin("OpenConnectButton", "DefBnDSkin", "Button down")
 	ChangeSkin("OpenConnectButton", "DefBnFSkin", "Button focus")
@@ -338,19 +338,19 @@ function OnClickConnect()
 
 	if IsWndVisible("IPNumbersComboBox") == 0 then 
 
-		CreateWnd(Label, "PresetLabel", "IntroWnd", "Presets", w/2-150/2-75, h/2-20/2+30, 170, 20, 0)
-		CreateWnd(Combobox, "IPNumbersComboBox", "IntroWnd", "192.168.0.127", w/2-150/2+25, h/2-20/2+30, 170, 20, 0)
+		CreateWnd(Label, "PresetLabel", "IntroWnd", "Presets", w/2-150/2-75, h/2-20/2+30, 170, 20, 0,0,0)
+		CreateWnd(Combobox, "IPNumbersComboBox", "IntroWnd", "192.168.0.127", w/2-150/2+25, h/2-20/2+30, 170, 20, 0,0,0)
 
-		CreateWnd(Label, "IPLabel", "IntroWnd", "Server IP", w/2-150/2-75, h/2-20/2+52, 150, 20, 0)
-		CreateWnd(Textbox, "IPNumberEditbox", "IntroWnd", "", w/2-150/2+25, h/2-20/2+52, 170, 20, 0)
+		CreateWnd(Label, "IPLabel", "IntroWnd", "Server IP", w/2-150/2-75, h/2-20/2+52, 150, 20, 0,0,0)
+		CreateWnd(Textbox, "IPNumberEditbox", "IntroWnd", "", w/2-150/2+25, h/2-20/2+52, 170, 20, 0,0,0)
 
-		CreateWnd(Label, "UserNameLabel", "IntroWnd", "Name", w/2-150/2-75, h/2-20/2+82, 170, 20, 0)
-		CreateWnd(Textbox, "UserEditbox", "IntroWnd", "Anonymus", w/2-150/2+25, h/2-20/2+82, 170, 20, 0)
+		CreateWnd(Label, "UserNameLabel", "IntroWnd", "Name", w/2-150/2-75, h/2-20/2+82, 170, 20, 0,0,0)
+		CreateWnd(Textbox, "UserEditbox", "IntroWnd", "Anonymus", w/2-150/2+25, h/2-20/2+82, 170, 20, 0,0,0)
 
-		CreateWnd(Label, "PasswordLabel", "IntroWnd", "Password", w/2-150/2-75, h/2-20/2+104, 170, 20, 0)
-		CreateWnd(Textbox, "PasswordEditbox", "IntroWnd", "", w/2-150/2+25, h/2-20/2+104, 170, 20, 0)
+		CreateWnd(Label, "PasswordLabel", "IntroWnd", "Password", w/2-150/2-75, h/2-20/2+104, 170, 20, 0,0,0)
+		CreateWnd(Textbox, "PasswordEditbox", "IntroWnd", "", w/2-150/2+25, h/2-20/2+104, 170, 20, 0,0,0)
 
-		CreateWnd(Button, "ConnectToServerButton", "IntroWnd", "OK", w/2-50/2+30, h/2-20/2+130, 50, 20, 0)
+		CreateWnd(Button, "ConnectToServerButton", "IntroWnd", "OK", w/2-50/2+30, h/2-20/2+130, 50, 20, 0,0,0)
 
 	else
 		ShowWnd("PresetLabel", 0, 0)

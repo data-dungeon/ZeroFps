@@ -25,46 +25,46 @@ function GUICreate()
 	-- 0 = Wnd, 1 = Button, 2 = Checkbox, 3 = Combobox, 4 = Label, 5 = Listbox, 6 = Radiobutton,
 	-- 7 = Scrollbar, 8 = Slider, 9 = TabControl, 10 = Textbox, 11 = Treebox
 	-------------------------------------------------------------------------
-	CreateWnd(0,"DMInGameScreen","","",0,0,800,600,0)
+	CreateWnd(0,"DMInGameScreen","","",0,0,800,600,0,0,0)
 	ChangeSkin("DMInGameScreen","Skin4","Window")
 
-	CreateWnd(4,"MoneyLabel","DMInGameScreen","$ 42",20,20,50,20,0)
+	CreateWnd(4,"MoneyLabel","DMInGameScreen","$ 42",20,20,50,20,0,0,0)
 	ChangeSkin("MoneyLabel","Skin5","Label")
 
-	CreateWnd(0,"InGamePanelWnd","","",8,534,786,64,0)
+	CreateWnd(0,"InGamePanelWnd","","",8,534,786,64,0,0,0)
 	ChangeSkin("InGamePanelWnd","Skin5","Window")
 
-	CreateWnd(1,"BribeBn","InGamePanelWnd","Bribe",234,17,66,37,0)
+	CreateWnd(1,"BribeBn","InGamePanelWnd","Bribe",234,17,66,37,0,0,0)
 	ChangeSkin("BribeBn","Skin1","Button up")
 	ChangeSkin("BribeBn","Skin2","Button down")
 	ChangeSkin("BribeBn","Skin3","Button focus")
 
-	CreateWnd(1,"HQBn","InGamePanelWnd","HQ",308,17,66,37,0)
+	CreateWnd(1,"HQBn","InGamePanelWnd","HQ",308,17,66,37,0,0,0)
 	ChangeSkin("HQBn","Skin1","Button up")
 	ChangeSkin("HQBn","Skin2","Button down")
 	ChangeSkin("HQBn","Skin3","Button focus")
 
-	CreateWnd(1,"MissionsBn","InGamePanelWnd","Missions",8,15,66,37,0)
+	CreateWnd(1,"MissionsBn","InGamePanelWnd","Missions",8,15,66,37,0,0,0)
 	ChangeSkin("MissionsBn","Skin1","Button up")
 	ChangeSkin("MissionsBn","Skin2","Button down")
 	ChangeSkin("MissionsBn","Skin3","Button focus")
 
-	CreateWnd(1,"ShopBn","InGamePanelWnd","Shop",158,16,66,37,0)
+	CreateWnd(1,"ShopBn","InGamePanelWnd","Shop",158,16,66,37,0,0,0)
 	ChangeSkin("ShopBn","Skin1","Button up")
 	ChangeSkin("ShopBn","Skin2","Button down")
 	ChangeSkin("ShopBn","Skin3","Button focus")
 
-	CreateWnd(1,"MembersBn","InGamePanelWnd","Members",84,15,66,37,0)
+	CreateWnd(1,"MembersBn","InGamePanelWnd","Members",84,15,66,37,0,0,0)
 	ChangeSkin("MembersBn","Skin1","Button up")
 	ChangeSkin("MembersBn","Skin2","Button down")
 	ChangeSkin("MembersBn","Skin3","Button focus")
 
-	CreateWnd(1,"MenuBn","InGamePanelWnd","Menu",713,14,66,37,0)
+	CreateWnd(1,"MenuBn","InGamePanelWnd","Menu",713,14,66,37,0,0,0)
 	ChangeSkin("MenuBn","Skin1","Button up")
 	ChangeSkin("MenuBn","Skin2","Button down")
 	ChangeSkin("MenuBn","Skin3","Button focus")
 
-	CreateWnd(4,"ReputationLabel","DMInGameScreen","Reputation 12",665,20,120,20,0)
+	CreateWnd(4,"ReputationLabel","DMInGameScreen","Reputation 12",665,20,120,20,0,0,0)
 	ChangeSkin("ReputationLabel","Skin5","Label")
 
 end

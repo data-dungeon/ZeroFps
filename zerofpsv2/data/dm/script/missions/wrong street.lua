@@ -49,7 +49,7 @@ function OnMissionStart()
 	SetVar ("HarryHouseID", -1);
 
 	HideAllMapIcons()
-	CreateWnd(4,"AMapLabel","MapWnd","",383,325,32,32,0)
+	CreateWnd(4,"AMapLabel","MapWnd","",383,325,32,32,0,0,0)
 	ChangeSkin("AMapLabel","Skin1","Label")
 
 end

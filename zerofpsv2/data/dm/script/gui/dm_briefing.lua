@@ -49,27 +49,27 @@ function GUICreate()
 	-- 7 = Scrollbar, 8 = Slider, 9 = TabControl, 10 = Textbox, 11 = Treebox
 	-------------------------------------------------------------------------
 
-	CreateWnd(0,"BriefingWnd","","",800/2-600/2,600/2-415/2,600,415,0)
+	CreateWnd(0,"BriefingWnd","","",800/2-600/2,600/2-415/2,600,415,0,6,0)
 	ChangeSkin("BriefingWnd","Skin10","Window")
 
-	CreateWnd(1,"BriefingAcceptBn","BriefingWnd","Accept",30,387,134,20,0)
+	CreateWnd(1,"BriefingAcceptBn","BriefingWnd","Accept",30,387,134,20,0,0,0)
 	ChangeSkin("BriefingAcceptBn","Skin1","Button up")
 	ChangeSkin("BriefingAcceptBn","Skin2","Button down")
 	ChangeSkin("BriefingAcceptBn","Skin1","Button focus")
 
-	CreateWnd(1,"BriefingCancelBn","BriefingWnd","Close",196,388,134,20,0)
+	CreateWnd(1,"BriefingCancelBn","BriefingWnd","Close",196,388,134,20,0,0,0)
 	ChangeSkin("BriefingCancelBn","Skin1","Button up")
 	ChangeSkin("BriefingCancelBn","Skin2","Button down")
 	ChangeSkin("BriefingCancelBn","Skin1","Button focus")
 
 
-	CreateWnd(1,"BriefingCancelMissionBn","BriefingWnd","Cancel mission",30,387,134,20,0)
+	CreateWnd(1,"BriefingCancelMissionBn","BriefingWnd","Cancel mission",30,387,134,20,0,0,0)
 	ChangeSkin("BriefingCancelMissionBn","Skin1","Button up")
 	ChangeSkin("BriefingCancelMissionBn","Skin2","Button down")
 	ChangeSkin("BriefingCancelMissionBn","Skin1","Button focus")
 
 
-	CreateWnd(10,"MissionDetailEb","BriefingWnd","",8,8,592-8,360,0)
+	CreateWnd(10,"MissionDetailEb","BriefingWnd","",8,8,592-8,360,0,0,0)
 	ChangeSkin("MissionDetailEb","Skin5","Textbox")
 	ChangeSkin("MissionDetailEb","Skin6","Textbox: Scrollbar")
 	ChangeSkin("MissionDetailEb","Skin7","Textbox: Scrollbar: Button up")

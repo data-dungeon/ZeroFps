@@ -7,6 +7,7 @@
 #include "../basic/zfresourcedb.h"
 #include "../engine/res_texture.h"
 #include "../render/texturemanager.h"
+#include "../render/glguirender.h"
 #include "zguiresourcemanager.h"
 #include <typeinfo>
 #include "../basic/zguifont.h"
@@ -78,7 +79,8 @@ ZGuiSkin* ZGuiApp::GetSkin(string strName)
 }
 
 ZGuiWnd* ZGuiApp::CreateWnd(GuiType eType, char* szResourceName, char* szText, ZGuiWnd* pkParent, 
-								int x, int y, int w, int h, unsigned long uiFlags)
+								int x, int y, int w, int h, unsigned long uiFlags,
+								WndAlignent eAlignment, WndResizeType eResizeType)
 {
 	
 	int iID = m_uiWindowIDCounter;
@@ -101,6 +103,29 @@ ZGuiWnd* ZGuiApp::CreateWnd(GuiType eType, char* szResourceName, char* szText, Z
 
 	const int LISTBOX_ITEM_HEIGHT = 20;
 	const int COMBOBOX_ITEM_HEIGHT = 20;
+
+	GUIScaleMode eScaleMode;
+	m_pkRenderer->GetScaleMode(eScaleMode);
+
+	if(eScaleMode == GUIScaleManually)
+	{
+		int iNewWidth = -1, iNewHeight = -1;
+
+		if(eResizeType == ResizeWidth || eResizeType == Resize)
+		{
+			float width_mod = (float) GetWidth() / 800.0f;
+			iNewWidth = (int) (800.0f*width_mod);
+		}
+
+		if(eResizeType == ResizeHeight || eResizeType == Resize)
+		{
+			float height_mod = (float) GetHeight() / 600.0f;
+			iNewHeight = (int) (600.0f*height_mod);
+		}
+
+		if(iNewWidth != -1) w = iNewWidth;
+		if(iNewHeight != -1) h = iNewHeight;
+	}
 
 	// Om parent fönstret är en TabControl så är uiFlags = sidnummret och parent fönstret
 	// måste då tas fram på nytt.
@@ -308,17 +333,66 @@ ZGuiWnd* ZGuiApp::CreateWnd(GuiType eType, char* szResourceName, char* szText, Z
 
 	if(uiFlags & CREATE_WND_HIDDEN) 
 		pkWnd->Hide();
+
+	if(eScaleMode == GUIScaleManually)
+	{
+		int parent_width = 800, parent_height = 600;
+
+		if(pkWnd->GetParent() != NULL)
+		{
+			parent_width = pkWnd->GetParent()->GetScreenRect().Width();
+			parent_height = pkWnd->GetParent()->GetScreenRect().Height();
+		}
+
+		//if(pkWnd->GetParent() == NULL || pkWnd->GetParent() == GetWnd("GuiMainWnd") )
+		{
+			int new_x=-1, new_y=-1;
+			Rect rc = pkWnd->GetScreenRect();
+
+			switch(eAlignment)
+			{
+			case BottomRight:
+				new_x = GetWidth() - (800-rc.Right) - rc.Width();
+				new_y = GetHeight() - (600-rc.Bottom) - rc.Height();
+				break;
+			case TopRight:
+				new_x = GetWidth() - (800-rc.Right) - rc.Width();
+				new_y = rc.Top;
+				break;
+			case BottomLeft:
+				new_x = rc.Left;
+				new_y = GetHeight() - (600-rc.Bottom) - rc.Height();
+				break;
+			case CenterHorz:
+				new_x = GetWidth() / 2 - rc.Width() / 2;
+				new_y = rc.Top;
+				break;
+			case CenterVert:
+				new_x = rc.Left;
+				new_y = GetHeight() / 2 - rc.Height() / 2;
+				break;
+			case Center:
+				new_x = GetWidth() / 2 - rc.Width() / 2;
+				new_y = GetHeight() / 2 - rc.Height() / 2;
+				break;
+			}
+
+			if(!(new_x==-1 && new_y==-1))
+				pkWnd->SetPos(new_x, new_y, true, true); 
+		}
+	}
 	
 	return pkWnd;
 }
 
 
 ZGuiWnd* ZGuiApp::CreateWnd(GuiType eType, char* szWndName, char* szParentName, 
-								char* szLabel, int x, int y, int w, int h, 
-								unsigned long uiFlags)
+								char* szLabel, int x, int y, int w, int h, unsigned long uiFlags, 
+								WndAlignent eAlignment, WndResizeType eResizeType)
 {
 	ZGuiWnd* pkParent = m_pkResMan->Wnd(string(szParentName)); // GetWnd(parentID);
-	return CreateWnd(eType, szWndName, szLabel, pkParent, x, y, w, h, uiFlags);
+	return CreateWnd(eType, szWndName, szLabel, pkParent, x, y, w, h, 
+		uiFlags, eAlignment, eResizeType);
 }
 
 ZGuiSkin* ZGuiApp::AddSkinFromScript(char *szName, ZGuiSkin* pkSkin)
@@ -489,6 +563,7 @@ void ZGuiApp::InitGui(ZFScriptSystem* pkScriptSys, char* szFontTexture,
 	m_pkTextureMan = static_cast<TextureManager*>(g_ZFObjSys.GetObjectPtr("TextureManager"));
 	m_pkResMan = static_cast<ZGuiResourceManager*>(g_ZFObjSys.GetObjectPtr("ZGuiResourceManager"));
 	m_pkScriptSystem = pkScriptSys;
+	m_pkRenderer = static_cast<ZGuiRender*>(g_ZFObjSys.GetObjectPtr("ZGuiRender"));
 
 	//	m_pkTextureMan->Load("data/textures/gui/slask.bmp", 0); // första misslyckas, vet inte varför..
 
@@ -508,7 +583,7 @@ void ZGuiApp::InitGui(ZFScriptSystem* pkScriptSys, char* szFontTexture,
 
 	InitDefaultSkins(/*pkScriptSys*/);
 
-	ZGuiWnd* pkWnd = CreateWnd(Wnd, "GuiMainWnd", "", "", 0, 0, 800, 600, 0);
+	ZGuiWnd* pkWnd = CreateWnd(Wnd, "GuiMainWnd", "", "", 0, 0, /*800*/GetWidth(), /*600*/GetHeight(), 0);
 	ZGuiSkin* main_skin = new ZGuiSkin();
 	main_skin->m_bTransparent = true;
 	pkWnd->SetSkin(main_skin);
@@ -530,7 +605,7 @@ void ZGuiApp::InitGui(ZFScriptSystem* pkScriptSys, char* szFontTexture,
 
 	// Create Fps wnd
 
-	m_pkGuiSys->m_pkFpsWnd = CreateWnd(Wnd, "zguiapp_fps_wnd", "", "", 800-60, 5, 55, 20, 0);
+	m_pkGuiSys->m_pkFpsWnd = CreateWnd(Wnd, "zguiapp_fps_wnd", "", "", 800-60, 5, 55, 20, 0, TopRight);
 	//m_pkGuiSys->m_pkFpsWnd = CreateWnd(Wnd, "zguiapp_fps_wnd", "", "", 800, 5, 55, 20, 0);
 	m_pkGuiSys->m_pkFpsWnd->SetSkin(new ZGuiSkin());
 	m_pkGuiSys->m_pkFpsLabel = (ZGuiLabel*) CreateWnd(Label, "zguiapp_fps_label", 
@@ -1148,7 +1223,7 @@ bool ZGuiApp::CreateMenu(char* szFileName)
 {
 	// Skapa själva menyn
 	ZGuiMenu* pkMenu = (ZGuiMenu*) CreateWnd(Menu, "MainMenu", "GuiMainWnd", "", 
-		0,0, 800, 20, 0);
+		0,0, 800, 20, 0, TopLeft, ResizeWidth);
 
 	// Öppna INI filen
 	ZFIni kINI;

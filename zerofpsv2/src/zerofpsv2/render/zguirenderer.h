@@ -18,6 +18,12 @@ const int ZG_CENTER_TEXT_HORZ = -2;
 typedef pair<Point,color_rgb> tRGBPoint;
 typedef pair<Rect,color_rgb> tRGBRect;
 
+enum GUIScaleMode
+{
+	GUIScaleProjMatBeforeRendering,
+	GUIScaleManually,
+};
+
 /**	\brief	Render for GUI.
 		\ingroup Render
 */
@@ -44,6 +50,9 @@ public:
 	virtual bool RenderLines(vector<Point>& akLines,
 		unsigned char r,unsigned char g,unsigned char b,
 		float width=1.0f) = 0;
+	virtual pair<int,int> GetWordLength(char *text, int offset, int max_width) = 0;
+	virtual void GetScaleMode(GUIScaleMode& eGUIScaleMode) = 0; 
+	virtual void SetScaleMode(GUIScaleMode eGUIScaleMode) = 0;
 
 };
 

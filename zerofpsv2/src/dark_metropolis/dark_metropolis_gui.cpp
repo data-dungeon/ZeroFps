@@ -178,6 +178,8 @@ void DarkMetropolis::GUI_OnCommand(int iID, bool bRMouseBnClick,
 	if(strClickName.empty())
 		return;
 
+	printf("strClickName=%s\n", strClickName.c_str());
+
 	if(strMainWnd == "DMStartWnd" ||
 		strMainWnd == "DMOptionsWnd")
 	{

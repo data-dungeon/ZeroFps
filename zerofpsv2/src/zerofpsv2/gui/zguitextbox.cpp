@@ -49,6 +49,8 @@ ZGuiTextbox::ZGuiTextbox(Rect kArea, ZGuiWnd* pkParent, bool bVisible,
 	m_kRowOffsets.assign(1000,0);
 	
 	m_kRowOffsets[0] = 0;
+
+	m_pkGuiRender = static_cast<ZGuiRender*>(g_ZFObjSys.GetObjectPtr("ZGuiRender"));
 }
 
 ZGuiTextbox::~ZGuiTextbox()
@@ -771,7 +773,7 @@ int ZGuiTextbox::GetNumRows(char* text)
 	{
 		int prev_row = rows;
 
-		kLength = GetWordLength(text, offset, max_width);
+		kLength = m_pkGuiRender->GetWordLength(text, offset, max_width);
 
 		if(xpos+kLength.second >= width)
 		{
@@ -837,44 +839,6 @@ int ZGuiTextbox::GetNumRows(char* text)
 	return rows;
 }
 
-pair<int,int> ZGuiTextbox::GetWordLength(char *text, int offset, int max_width)
-{
-	int char_counter = 0;
-	int length_counter = 0;
-
-	int iMax = strlen(text);
-	for(int i=offset; i<iMax; i++)
-	{
-		if(text[i] == '\n')
-		{
-			char_counter++;
-			break;
-		}
-
-		int index = text[i]-32;
-		if(index < 0 || index > 255)
-		{
-			char_counter++;
-			continue;
-		}
-
-		if(text[i] != '\n')
-			length_counter += m_pkFont->m_aChars[index].iSizeX;
-
-		// Break words bigger then then the length
-		// of one row in the textbox.
-		if(length_counter >= max_width)
-			break;
-
-		char_counter++;
-
-		if(text[i] == ' ')
-			break;
-
-	}
-
-	return pair<int,int>(char_counter, length_counter);
-}
 
 int ZGuiTextbox::GetNumRows()
 {
@@ -1194,3 +1158,42 @@ void ZGuiTextbox::Resize(int Width, int Height, bool bChangeMoveArea)
 
 	ZGuiWnd::Resize(Width, Height, bChangeMoveArea); 
 }
+
+//pair<int,int> ZGuiTextbox::GetWordLength(char *text, int offset, int max_width)
+//{
+//	int char_counter = 0;
+//	int length_counter = 0;
+//
+//	int iMax = strlen(text);
+//	for(int i=offset; i<iMax; i++)
+//	{
+//		if(text[i] == '\n')
+//		{
+//			char_counter++;
+//			break;
+//		}
+//
+//		int index = text[i]-32;
+//		if(index < 0 || index > 255)
+//		{
+//			char_counter++;
+//			continue;
+//		}
+//
+//		if(text[i] != '\n')
+//			length_counter += m_pkFont->m_aChars[index].iSizeX;
+//
+//		// Break words bigger then then the length
+//		// of one row in the textbox.
+//		if(length_counter >= max_width)
+//			break;
+//
+//		char_counter++;
+//
+//		if(text[i] == ' ')
+//			break;
+//
+//	}
+//
+//	return pair<int,int>(char_counter, length_counter);
+//}

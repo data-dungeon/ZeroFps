@@ -1057,7 +1057,10 @@ void ZGui::KeyboardInput(int key, bool shift, float time)
 bool ZGui::ClickedWndAlphaTex(int mx, int my, ZGuiWnd *pkWndClicked)
 {
 	if(m_bDisableAlphatest)
+	{
+		printf("Disabled\n");
 		return true;
+	}
 
 	if(pkWndClicked == NULL)
 		return false;
@@ -1073,7 +1076,6 @@ bool ZGui::ClickedWndAlphaTex(int mx, int my, ZGuiWnd *pkWndClicked)
 			return true;
 		if( typeid(*pkParent)==typeid(ZGuiTreebox) )
 			return true;
-	// uncomment 040416 because the system fail to find checkboxes otherwise (may cause a leak)
 		if( typeid(*pkParent)==typeid(ZGuiCheckbox) ) 
 			return true;
 
@@ -1100,7 +1102,14 @@ bool ZGui::ClickedWndAlphaTex(int mx, int my, ZGuiWnd *pkWndClicked)
 		return false;
 	}
 
+	bool bIsTGA = false;
 	int alpha_tex = pkSkin->m_iBkTexAlphaID;
+
+	if(m_pkTexMan->TextureHaveAlpha(pkSkin->m_iBkTexID))
+	{
+		alpha_tex = pkSkin->m_iBkTexID;
+		bIsTGA = true;
+	}
 	
 	if(alpha_tex > 0)
 	{
@@ -1125,13 +1134,31 @@ bool ZGui::ClickedWndAlphaTex(int mx, int my, ZGuiWnd *pkWndClicked)
 		float tex_w = (float) pkSurface->m_iWidth;
 		float tex_h = (float) pkSurface->m_iHeight;
 
+		int mod = 0;
+		if(bIsTGA)
+			mod = (int) -tex_h;
+
+		float dx = (int)(tex_w*x_offset);
+		float dy = mod+(int)(tex_h*y_offset);
+
+	//	if(dx < 0) dx = 0;
+	//	if(dy < 0) dy = 0;
+
 		//unsigned long pixel;
 		color_rgba kColor;
-		if(!pkSurface->get_pixel((int)(tex_w*x_offset),(int)(tex_h*y_offset), kColor))
+		if(!pkSurface->get_pixel(dx, dy, kColor))
 		{
 			printf("Image::get_pixel Failed\n");
 		}
 		m_pkTexMan->EditEnd( alpha_tex );
+
+		if(bIsTGA) 
+		{
+			if(kColor.a == 0) // En alpha pixel. Vi har INTE klickat på fönstret.
+				return false;
+			else
+				return true; // Ej alpha pixel. Vi har klickat på fönstret.
+		}
 
 		if(kColor.r == 0 && kColor.g == 0 && kColor.b == 0 /*&& kColor.a == 0*/)
 		{
@@ -1334,7 +1361,11 @@ bool ZGui::OnMouseUpdate(int x, int y, bool bLBnPressed,
 		return true;
 	}
 
-	TranslateMousePos(x,y);
+	GUIScaleMode eScaleMode;
+	m_pkRenderer->GetScaleMode(eScaleMode);
+
+	if(eScaleMode == GUIScaleProjMatBeforeRendering)
+		TranslateMousePos(x,y);
 
 	// Register public variables needed by the editbox.
 	m_iMouseX = x; m_iMouseY = y;

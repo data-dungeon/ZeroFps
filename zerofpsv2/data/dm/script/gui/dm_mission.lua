@@ -59,10 +59,10 @@ function GUICreate()
 	-- 7 = Scrollbar, 8 = Slider, 9 = TabControl, 10 = Textbox, 11 = Treebox
 	-------------------------------------------------------------------------
 
-	CreateWnd(0,"MissionWnd","","",291,136,287,318,0)
+	CreateWnd(0,"MissionWnd","","",291,136,287,318,0,6,0)
 	ChangeSkin("MissionWnd","Skin10","Window")
 
-	CreateWnd(7,"MissionScrollbar","MissionWnd","",248,14,20,260,0)
+	CreateWnd(7,"MissionScrollbar","MissionWnd","",248,14,20,260,0,0,0)
 	ChangeSkin("MissionScrollbar","Skin5","Scrollbar")
 
 	ChangeSkin("MissionScrollbar","Skin11","Scrollbar: Button up")
@@ -79,21 +79,21 @@ function GUICreate()
 
 
 
-	CreateWnd(1,"BriefingBn","MissionWnd","Briefing",28,286,93,20,0)
+	CreateWnd(1,"BriefingBn","MissionWnd","Briefing",28,286,93,20,0,0,0)
 	ChangeSkin("BriefingBn","Skin2","Button up")
 	ChangeSkin("BriefingBn","Skin3","Button down")
 	ChangeSkin("BriefingBn","Skin2","Button focus")
 
-	CreateWnd(10,"Mission_A_Eb","MissionWnd","",27,15,220,85,0)
+	CreateWnd(10,"Mission_A_Eb","MissionWnd","",27,15,220,85,0,0,0)
 	ChangeSkin("Mission_A_Eb","Skin5","Textbox")
 
-	CreateWnd(10,"Mission_B_Eb","MissionWnd","",27,101,220,85,0)
+	CreateWnd(10,"Mission_B_Eb","MissionWnd","",27,101,220,85,0,0,0)
 	ChangeSkin("Mission_B_Eb","Skin5","Textbox")
 
-	CreateWnd(10,"Mission_C_Eb","MissionWnd","",27,187,220,85,0)
+	CreateWnd(10,"Mission_C_Eb","MissionWnd","",27,187,220,85,0,0,0)
 	ChangeSkin("Mission_C_Eb","Skin5","Textbox")
 
-	CreateWnd(1,"MissionCancelBn","MissionWnd","Cancel",175,286,93,20,0)
+	CreateWnd(1,"MissionCancelBn","MissionWnd","Cancel",175,286,93,20,0,0,0)
 	ChangeSkin("MissionCancelBn","Skin2","Button up")
 	ChangeSkin("MissionCancelBn","Skin3","Button down")
 	ChangeSkin("MissionCancelBn","Skin2","Button focus")

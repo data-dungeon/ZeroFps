@@ -79,30 +79,30 @@ function GUICreate()
 	-- 7 = Scrollbar, 8 = Slider, 9 = TabControl, 10 = Textbox, 11 = Treebox
 	-------------------------------------------------------------------------
 
-	CreateWnd(0,"HQWnd","","",800/2-300/2,600/2-150/2,300,150,0)
+	CreateWnd(0,"HQWnd","","",800/2-300/2,600/2-150/2,300,150,0,6,0)
 	ChangeSkin("HQWnd","Skin21","Window")
 
-	CreateWnd(1,"HQMissionBn","HQWnd","Mission",300/2-128/2,8,128,40,0)
+	CreateWnd(1,"HQMissionBn","HQWnd","Mission",300/2-128/2,8,128,40,0,0,0)
 	ChangeSkin("HQMissionBn","Skin18","Button up")
 	ChangeSkin("HQMissionBn","Skin19","Button down")
 	ChangeSkin("HQMissionBn","Skin18","Button focus")
 
---	CreateWnd(1,"HQInventoryBn","HQWnd","Shop",400/2-200/2,64+30,200,25,0)
+--	CreateWnd(1,"HQInventoryBn","HQWnd","Shop",400/2-200/2,64+30,200,25,0,0,0)
 --	ChangeSkin("HQInventoryBn","Skin18","Button up")
 --	ChangeSkin("HQInventoryBn","Skin19","Button down")
 --	ChangeSkin("HQInventoryBn","Skin20","Button focus")
 
---	CreateWnd(1,"HQMembersBn","HQWnd","Members",400/2-200/2,64+60,200,25,0)
+--	CreateWnd(1,"HQMembersBn","HQWnd","Members",400/2-200/2,64+60,200,25,0,0,0)
 --	ChangeSkin("HQMembersBn","Skin18","Button up")
 --	ChangeSkin("HQMembersBn","Skin19","Button down")
 --	ChangeSkin("HQMembersBn","Skin20","Button focus")
 
-	CreateWnd(1,"HQHireBn","HQWnd","Agents",300/2-128/2,8+50,128,40,0)
+	CreateWnd(1,"HQHireBn","HQWnd","Agents",300/2-128/2,8+50,128,40,0,0,0)
 	ChangeSkin("HQHireBn","Skin18","Button up")
 	ChangeSkin("HQHireBn","Skin19","Button down")
 	ChangeSkin("HQHireBn","Skin18","Button focus")
 
-	CreateWnd(1,"HQCloseBn","HQWnd","Continue",300/2-128/2,8+100,128,40,0)
+	CreateWnd(1,"HQCloseBn","HQWnd","Continue",300/2-128/2,8+100,128,40,0,0,0)
 	ChangeSkin("HQCloseBn","Skin18","Button up")
 	ChangeSkin("HQCloseBn","Skin19","Button down")
 	ChangeSkin("HQCloseBn","Skin18","Button focus")

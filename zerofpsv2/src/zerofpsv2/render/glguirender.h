@@ -41,6 +41,8 @@ public:
 	bool SetDisplay(int w, int h);
 	bool SetFont(ZGuiFont* pkFont);
 	void GetScreenSize(int& cx, int& cy);
+	void GetScaleMode(GUIScaleMode& eGUIScaleMode) { eGUIScaleMode = m_eGUIScaleMode; } 
+	void SetScaleMode(GUIScaleMode eGUIScaleMode);
 	void SetClipperArea(Rect rc);
 
 private:
@@ -52,6 +54,8 @@ private:
 		int& chars_printed, int& rows_printed);
 	bool PrintRow(char* text, Rect rc, int iCursorPos, 
 		int iRenderDistFromLeft, int& chars_printed);
+
+	void DoTextTag(); 
 
 	ZGuiSkin* m_pkSkin; // current skin
 	ZGuiFont* m_pkFont; // current font
@@ -66,6 +70,13 @@ private:
 
 	int m_iScreenWidth;
 	int m_iScreenHeight;
+
+	float m_afTextColor[3]; // [0-1] RGB
+
+	bool m_bSearchForSytax;
+	string m_strSyntax;
+
+	GUIScaleMode m_eGUIScaleMode;
 };
 
 #endif

@@ -8,6 +8,7 @@
 #include "scene.h"
 
 #include "../zerofpsv2/engine/inputhandle.h"
+#include "../zerofpsv2/basic/zguifont.h"
 
 ZGResEdit g_kResEdit("ResEdit",0,0,0);
 
@@ -401,9 +402,54 @@ void ZGResEdit::OnKeyDown(int iKey)
 		ExecuteCommand();
 		break;
 
+	case KEY_K:
+		{
+			ZGuiFont* pkFont = new ZGuiFont(16,16,0,2312);
+			if(pkFont->CreateFromFile("data/zgresedit/textures/text/test.tga"))
+			{
+				printf("Setting font\n");
+				m_pkFocusWnd->SetFont(pkFont); 
+			}
+
+			m_pkFocusWnd->SetText("<col:255,0,0>Apan<col:0,0,255> e brun"); 
+
+			//m_pkFocusWnd->GetSkin()->m_afBkColor[0] =
+			//m_pkFocusWnd->GetSkin()->m_afBkColor[1] =
+			//m_pkFocusWnd->GetSkin()->m_afBkColor[2] = 0;
+
+
+			//int tex = m_pkFocusWnd->GetSkin()->m_iBkTexID;
+
+			//m_pkTexMan->EditStart( tex );
+			//Image* pkSurface = m_pkTexMan->EditGetImage( tex );
+
+			//if(pkSurface == NULL)
+			//{
+			//	printf("Failed to call GetImage from texturemanager!\n");
+			//	return;
+			//}
+
+			//color_rgba kColor;
+			//if(!pkSurface->get_pixel(0, 0, kColor))
+			//{
+			//	printf("Image::get_pixel Failed\n");
+			//}
+
+			//printf("color = %i, %i, %i, %i", kColor.r, kColor.g, kColor.b, kColor.a); 
+
+			//m_pkTexMan->EditEnd( tex );
+
+
+
+		}
+		break;
+
 	case KEY_Z:
-		if(m_pkInputHandle->Pressed(KEY_LCTRL))
-			TempSave(false);
+		if(m_eEditMode != VIEW)
+		{
+			if(m_pkInputHandle->Pressed(KEY_LCTRL))
+				TempSave(false);
+		}
 		break;
 
 	case KEY_F1:
@@ -425,17 +471,19 @@ void ZGResEdit::OnKeyDown(int iKey)
 		break;
 
 	case KEY_DELETE:
-		m_pkFocusWnd = DeleteWnd(m_pkFocusWnd);
-		
-		m_pkMainWnd = m_pkFocusWnd;
-		
-		if(m_pkMainWnd == NULL) m_pkMainWnd = GetWnd("GuiMainWnd");
-
-		UpdatePropertyWnd();
+		if(m_eEditMode != VIEW)
+		{
+			m_pkFocusWnd = DeleteWnd(m_pkFocusWnd);
+			m_pkMainWnd = m_pkFocusWnd;
+			
+			if(m_pkMainWnd == NULL) 
+				m_pkMainWnd = GetWnd("GuiMainWnd");
+			UpdatePropertyWnd();
+		}
 		break;
 
 	case KEY_UP:
-		if(m_pkFocusWnd) 
+		if(m_pkFocusWnd && m_eEditMode != VIEW)
 		{
 			if(m_pkInputHandle->Pressed(KEY_LSHIFT))
 			{
@@ -452,7 +500,7 @@ void ZGResEdit::OnKeyDown(int iKey)
 		}
 		break;
 	case KEY_DOWN:
-		if(m_pkFocusWnd) 
+		if(m_pkFocusWnd && m_eEditMode != VIEW)
 		{
 			if(m_pkInputHandle->Pressed(KEY_LSHIFT))
 			{
@@ -469,7 +517,7 @@ void ZGResEdit::OnKeyDown(int iKey)
 		}
 		break;
 	case KEY_LEFT:
-		if(m_pkFocusWnd)
+		if(m_pkFocusWnd && m_eEditMode != VIEW)
 		{
 			if(m_pkInputHandle->Pressed(KEY_LSHIFT))
 			{
@@ -487,7 +535,7 @@ void ZGResEdit::OnKeyDown(int iKey)
 		}
 		break;
 	case KEY_RIGHT:
-		if(m_pkFocusWnd)
+		if(m_pkFocusWnd && m_eEditMode != VIEW)
 		{
 			if(m_pkInputHandle->Pressed(KEY_LSHIFT))
 			{
@@ -1371,7 +1419,7 @@ void ZGResEdit::OnSelectCB(int ListBoxID, int iItemIndex, ZGuiWnd *pkMain)
 			int x, y, w, h;
 
 			if(strWndType == "Wnd")					{ x=8; y=8; w=200; h=150; }
-			else if(strWndType == "Button")			{ x=20; y=20; w=20;  h=20; } 
+			else if(strWndType == "Button")			{ x=20; y=20; w=80;  h=30; } 
 			else if(strWndType == "Checkbox")		{ x=8; y=8; w=20;  h=20; }
 			else if(strWndType == "Combobox")		{ x=8; y=8; w=100; h=20; }
 			else if(strWndType == "Label")			{ x=8; y=8; w=50;  h=20; }

@@ -66,25 +66,25 @@ function GUICreate()
 	-- 0 = Wnd, 1 = Button, 2 = Checkbox, 3 = Combobox, 4 = Label, 5 = Listbox, 6 = Radiobutton,
 	-- 7 = Scrollbar, 8 = Slider, 9 = TabControl, 10 = Textbox, 11 = Treebox
 	-------------------------------------------------------------------------
-	CreateWnd(0,"ItemTransactionWnd","","",80,40,670,475,0)
+	CreateWnd(0,"ItemTransactionWnd","","",80,40,670,475,0,6,0)
 	ChangeSkin("ItemTransactionWnd","Skin14","Window")
 
-	CreateWnd(4,"ItemAddWnd","ItemTransactionWnd","",40,40,256,348,0)
+	CreateWnd(4,"ItemAddWnd","ItemTransactionWnd","",40,40,256,348,0,0,0)
 	ChangeSkin("ItemAddWnd","Skin6","Label")
 
-	CreateWnd(4,"ItemRemoveWnd","ItemTransactionWnd","",380,40,256,348,0)
+	CreateWnd(4,"ItemRemoveWnd","ItemTransactionWnd","",380,40,256,348,0,0,0)
 	ChangeSkin("ItemRemoveWnd","Skin5","Label")
 
 
-	CreateWnd(4,"ItemInfoLabel","ItemTransactionWnd","",40,440,600,20,0)  
+	CreateWnd(4,"ItemInfoLabel","ItemTransactionWnd","",40,440,600,20,0,0,0)
 	ChangeSkin("ItemInfoLabel","Skin13","Label")
 
 
-	CreateWnd(4,"ItemAddContainerLabel","ItemTransactionWnd","Shop",40+4+20,40+318,230-20,20,0)
+	CreateWnd(4,"ItemAddContainerLabel","ItemTransactionWnd","Shop",40+4+20,40+318,230-20,20,0,0,0)
 	ChangeSkin("ItemAddContainerLabel","Skin17","Label")
 
 
-	CreateWnd(4,"ItemRemoveContainerLabel","ItemTransactionWnd","Backpack",380+4+20,40+318,230-20,20,0)
+	CreateWnd(4,"ItemRemoveContainerLabel","ItemTransactionWnd","Backpack",380+4+20,40+318,230-20,20,0,0,0)
 	ChangeSkin("ItemRemoveContainerLabel","Skin17","Label")
 
 
@@ -92,42 +92,42 @@ function GUICreate()
 
 
 
-	CreateWnd(1,"RemoveItemBn","ItemTransactionWnd","Sell",380+256/2-150/2,400,150,32,0)
+	CreateWnd(1,"RemoveItemBn","ItemTransactionWnd","Sell",380+256/2-150/2,400,150,32,0,0,0)
 	ChangeSkin("RemoveItemBn","Skin1","Button up")
 	ChangeSkin("RemoveItemBn","Skin2","Button down")
 	ChangeSkin("RemoveItemBn","Skin1","Button focus")
 
-	CreateWnd(1,"AddItemBn","ItemTransactionWnd","Buy",40+256/2-150/2,400,150,32,0)
+	CreateWnd(1,"AddItemBn","ItemTransactionWnd","Buy",40+256/2-150/2,400,150,32,0,0,0)
 	ChangeSkin("AddItemBn","Skin1","Button up")
 	ChangeSkin("AddItemBn","Skin2","Button down")
 	ChangeSkin("AddItemBn","Skin1","Button focus")
 
-	CreateWnd(1,"ItemTransactionCloseBn","ItemTransactionWnd","",670-32,0,32,32,0)
+	CreateWnd(1,"ItemTransactionCloseBn","ItemTransactionWnd","",670-32,0,32,32,0,0,0)
 	ChangeSkin("ItemTransactionCloseBn","Skin15","Button up")
 	ChangeSkin("ItemTransactionCloseBn","Skin16","Button down")
 	ChangeSkin("ItemTransactionCloseBn","Skin16","Button focus")
 
-	CreateWnd(1,"AgentsClose","AgentsWnd","",472,9,32,32,0)
+	CreateWnd(1,"AgentsClose","AgentsWnd","",472,9,32,32,0,0,0)
 	ChangeSkin("AgentsClose","Skin15","Button up")
 	ChangeSkin("AgentsClose","Skin16","Button down")
 	ChangeSkin("AgentsClose","Skin15","Button focus")
 
-	CreateWnd(1,"ItemAddTransactionNextPageBn","ItemTransactionWnd","",40+230,40+318,20,20,0)
+	CreateWnd(1,"ItemAddTransactionNextPageBn","ItemTransactionWnd","",40+230,40+318,20,20,0,0,0)
 	ChangeSkin("ItemAddTransactionNextPageBn","Skin7","Button up")
 	ChangeSkin("ItemAddTransactionNextPageBn","Skin8","Button down")
 	ChangeSkin("ItemAddTransactionNextPageBn","Skin9","Button focus")
 
-	CreateWnd(1,"ItemAddTransactionPrevPageBn","ItemTransactionWnd","",40+4,40+318,20,20,0)
+	CreateWnd(1,"ItemAddTransactionPrevPageBn","ItemTransactionWnd","",40+4,40+318,20,20,0,0,0)
 	ChangeSkin("ItemAddTransactionPrevPageBn","Skin10","Button up")
 	ChangeSkin("ItemAddTransactionPrevPageBn","Skin11","Button down")
 	ChangeSkin("ItemAddTransactionPrevPageBn","Skin12","Button focus")
 
-	CreateWnd(1,"ItemRemoveTransactionNextPageBn","ItemTransactionWnd","",380+230,40+318,20,20,0)
+	CreateWnd(1,"ItemRemoveTransactionNextPageBn","ItemTransactionWnd","",380+230,40+318,20,20,0,0,0)
 	ChangeSkin("ItemRemoveTransactionNextPageBn","Skin7","Button up")
 	ChangeSkin("ItemRemoveTransactionNextPageBn","Skin8","Button down")
 	ChangeSkin("ItemRemoveTransactionNextPageBn","Skin9","Button focus")
 
-	CreateWnd(1,"ItemRemoveTransactionPrevPageBn","ItemTransactionWnd","",380+4,40+318,20,20,0)
+	CreateWnd(1,"ItemRemoveTransactionPrevPageBn","ItemTransactionWnd","",380+4,40+318,20,20,0,0,0)
 	ChangeSkin("ItemRemoveTransactionPrevPageBn","Skin10","Button up")
 	ChangeSkin("ItemRemoveTransactionPrevPageBn","Skin11","Button down")
 	ChangeSkin("ItemRemoveTransactionPrevPageBn","Skin12","Button focus")

@@ -19,6 +19,9 @@ GLGuiRender::GLGuiRender()
 	m_iScreenWidth = 800;
 	m_iScreenHeight = 600;
 	m_bClipperEnabled = false;
+	m_afTextColor[0] = m_afTextColor[1] = m_afTextColor[2] = 0.0f;
+	m_bSearchForSytax = false;
+	m_eGUIScaleMode = GUIScaleProjMatBeforeRendering;
 }
 
 bool GLGuiRender::StartUp()	
@@ -50,13 +53,18 @@ bool GLGuiRender::SetDisplay(int w, int h)
 	return true;
 }
 
+void GLGuiRender::SetScaleMode(GUIScaleMode eGUIScaleMode)
+{
+	m_eGUIScaleMode = eGUIScaleMode;
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 // Name: StartRender
 //
 bool GLGuiRender::StartRender()
 {
-	glPushAttrib(GL_TEXTURE_BIT | GL_LIGHTING_BIT | GL_FOG_BIT | 
-		GL_DEPTH_BUFFER_BIT | GL_ENABLE_BIT | GL_CURRENT_BIT);
+	glPushAttrib(GL_COLOR_BUFFER_BIT | GL_TEXTURE_BIT | GL_LIGHTING_BIT | GL_FOG_BIT | 
+		GL_DEPTH_BUFFER_BIT | GL_ENABLE_BIT | GL_CURRENT_BIT); // 040508 - lade till GL_COLOR_BUFFER_BIT
 	glDisable(GL_CULL_FACE);
 	glDisable(GL_LIGHTING);
 	glDisable(GL_DEPTH_TEST);
@@ -71,28 +79,31 @@ bool GLGuiRender::StartRender()
 	//
 	// Skala om projektions matrisen.
 	//
-	if(m_iScreenWidth == 1024 && m_iScreenHeight == 768)
+	if(m_eGUIScaleMode == GUIScaleProjMatBeforeRendering)
 	{
-		glScalef(1.28f, 1.28f, 1.0f);
-		glTranslatef(0,-169, 0);
-	}
-	else
-	if(m_iScreenWidth == 1280 && m_iScreenHeight == 960)
-	{
-		glScalef(1.6f, 1.6f, 1.0f);
-		glTranslatef(0,-360, 0);
-	}
-	else
-	if(m_iScreenWidth == 1280 && m_iScreenHeight == 1024)
-	{
-		glScalef(1.6f, 1.706667f, 1.0f);
-		glTranslatef(0,-430, 0);
-	}
-	else
-	if(m_iScreenWidth == 1600 && m_iScreenHeight == 1200)
-	{
-		glScalef(2.0f, 2.0f, 1.0f);
-		glTranslatef(0,-600, 0);
+		if(m_iScreenWidth == 1024 && m_iScreenHeight == 768)
+		{
+			glScalef(1.28f, 1.28f, 1.0f);
+			glTranslatef(0,-169, 0);
+		}
+		else
+		if(m_iScreenWidth == 1280 && m_iScreenHeight == 960)
+		{
+			glScalef(1.6f, 1.6f, 1.0f);
+			glTranslatef(0,-360, 0);
+		}
+		else
+		if(m_iScreenWidth == 1280 && m_iScreenHeight == 1024)
+		{
+			glScalef(1.6f, 1.706667f, 1.0f);
+			glTranslatef(0,-430, 0);
+		}
+		else
+		if(m_iScreenWidth == 1600 && m_iScreenHeight == 1200)
+		{
+			glScalef(2.0f, 2.0f, 1.0f);
+			glTranslatef(0,-600, 0);
+		}
 	}
 
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
@@ -176,7 +187,11 @@ bool GLGuiRender::RenderQuad(Rect rc)
 	bool bDrawMasked = (bMask == true && m_pkSkin->m_iBkTexAlphaID > 0) ? 
 		true : false;
 
-	
+	bool bIsTGA = m_pkTextureManger->TextureHaveAlpha(m_pkSkin->m_iBkTexID);
+
+	if(bIsTGA)
+		bDrawMasked = false;
+
 	int texture = m_pkSkin->m_iBkTexID;
 
 	if(m_pkSkin->m_bTileBkSkin == true && texture > 0)
@@ -225,6 +240,14 @@ bool GLGuiRender::RenderQuad(Rect rc)
 		glDisable(GL_TEXTURE_2D);
 	}
 
+	if(bIsTGA)
+	{
+		glColor4f(1,1,1,1);		
+		glDisable(GL_LIGHTING);
+		glAlphaFunc(GL_GREATER,0.1);
+		glEnable(GL_ALPHA_TEST);
+	}
+
 	glBegin(GL_QUADS);	 
 
 /*		if(bDrawMasked)
@@ -233,10 +256,21 @@ bool GLGuiRender::RenderQuad(Rect rc)
 			glColor3f(m_pkSkin->m_afBkColor[0],m_pkSkin->m_afBkColor[1],
 				m_pkSkin->m_afBkColor[2]);
 
-		glTexCoord2f(tx,ty);			glVertex2i(rc.Left,m_iScreenHeight-rc.Bottom);		 
-		glTexCoord2f(tx,th);			glVertex2i(rc.Left,m_iScreenHeight-rc.Top);		
-		glTexCoord2f(tx+tw,th);		glVertex2i(rc.Right,m_iScreenHeight-rc.Top);    
-		glTexCoord2f(tx+tw,ty);		glVertex2i(rc.Right,m_iScreenHeight-rc.Bottom);   
+
+		if(bIsTGA)
+		{
+			glTexCoord2f(tx,th);			glVertex2i(rc.Left,m_iScreenHeight-rc.Bottom);		 
+			glTexCoord2f(tx,ty);			glVertex2i(rc.Left,m_iScreenHeight-rc.Top);		
+			glTexCoord2f(tx+tw,ty);		glVertex2i(rc.Right,m_iScreenHeight-rc.Top);    
+			glTexCoord2f(tx+tw,th);		glVertex2i(rc.Right,m_iScreenHeight-rc.Bottom);   
+		}
+		else
+		{
+			glTexCoord2f(tx,ty);			glVertex2i(rc.Left,m_iScreenHeight-rc.Bottom);		 
+			glTexCoord2f(tx,th);			glVertex2i(rc.Left,m_iScreenHeight-rc.Top);		
+			glTexCoord2f(tx+tw,th);		glVertex2i(rc.Right,m_iScreenHeight-rc.Top);    
+			glTexCoord2f(tx+tw,ty);		glVertex2i(rc.Right,m_iScreenHeight-rc.Bottom);  
+		}
 
 
 	glEnd();
@@ -404,11 +438,8 @@ void GLGuiRender::RenderText( char *strText, Rect rc, int iCursorPos, int iRende
 	if(m_pkFont == NULL)
 		return; 
 
-	bool bDrawMasked = true;
-
 	int fontTexture = m_pkTextureManger->Load(m_pkFont->m_szFileName.c_str(),0);
 
-	
 	int fontTexture_a = fontTexture; //m_pkTextureManger->Load(m_pkFont->m_szFileName.c_str(),0);
 
 	m_iCursorPos = iCursorPos;
@@ -421,11 +452,19 @@ void GLGuiRender::RenderText( char *strText, Rect rc, int iCursorPos, int iRende
 
 	glColor3f(1,1,1);
 
+	bool bIsTGA = m_pkTextureManger->TextureHaveAlpha(fontTexture);
+
+	bool bDrawMasked = !bIsTGA;
+
 	if(bDrawMasked)
 	{
 		glEnable(GL_BLEND);					// Enable Blending
 		glDisable(GL_DEPTH_TEST);			// Disable Depth Testing
-		glBlendFunc(GL_ZERO, GL_SRC_COLOR);	
+		
+		if(m_pkFont->m_iType == 0)
+			glBlendFunc(GL_ZERO, GL_SRC_COLOR);	
+		else
+			glBlendFunc(GL_DST_COLOR,GL_ZERO);
 		
 		m_pkTextureManger->BindTexture( fontTexture_a );				
 		glDisable(GL_TEXTURE_2D);
@@ -445,12 +484,22 @@ void GLGuiRender::RenderText( char *strText, Rect rc, int iCursorPos, int iRende
 		glEnable(GL_TEXTURE_2D);
 
 		if(bDrawMasked)
+		{
 			glBlendFunc(GL_DST_COLOR, GL_ZERO);	// Blend Screen Color With Zero (Black)
-			
+		}
 	}
 	else
 	{
 		return;
+	}
+
+
+	if(bIsTGA)
+	{
+		glColor4f(1,1,1,1);		
+		glDisable(GL_LIGHTING);
+		glAlphaFunc(GL_GREATER,0.1);
+		glEnable(GL_ALPHA_TEST);
 	}
 
 	if(bMultiLine)
@@ -616,7 +665,17 @@ bool GLGuiRender::PrintRow(char *text, Rect rc, int iCursorPos,
 			if(x < rc.Left + 2)
 				x = rc.Left + 2;
 			
+			float prevcolor[3] = {
+				m_afTextColor[0], m_afTextColor[1], m_afTextColor[2]
+			};
+
+			m_afTextColor[0]=m_afTextColor[1]=m_afTextColor[2]=0;
+
 			PrintWord(x, y, "|", 0, 1);
+
+			m_afTextColor[0]=prevcolor[0];
+			m_afTextColor[1]=prevcolor[1];
+			m_afTextColor[2]=prevcolor[2];
 		}
 
 	glEnd();
@@ -625,6 +684,115 @@ bool GLGuiRender::PrintRow(char *text, Rect rc, int iCursorPos,
 
 	return true;
 }
+
+void GLGuiRender::PrintWord(int x, int y, char *szWord, 
+							int offset, int length)
+{
+	int i, fx, fy, fw, fh, pos, iCurrLegth;
+	float tx, ty, tw, th;
+
+	for(i=offset; i<offset+length; i++)
+	{
+		// Print cursor
+		if(i == m_iCursorPos && !(m_iCursorPos == 0 && strlen(szWord) <= 1))
+		{
+			int iCursorX = x;
+			int iCursorY = y;
+
+			int index = '|'-32;
+			fx = m_pkFont->m_aChars[index].iPosX;
+			fy = m_pkFont->m_aChars[index].iPosY;
+			fw = m_pkFont->m_aChars[index].iSizeX;
+			fh = m_pkFont->m_aChars[index].iSizeY;
+
+			tx = (float) fx / m_pkFont->m_iBMPWidth;
+			ty = (float) fy / m_pkFont->m_iBMPWidth;
+			tw = (float) fw / m_pkFont->m_iBMPWidth;
+			th = (float) fh / m_pkFont->m_iBMPWidth;
+
+			iCursorX -= 2;	// minska markörens xpos ytterligare 2 pixlar.
+							// som en kompensation för tecknets egen storlek.
+
+			if(m_pkFont->m_iType == 1)
+			{
+				glColor3f(0,0,0);
+
+				glTexCoord2f(tx,1-ty);			glVertex2i(iCursorX,iCursorY+fh);		 
+				glTexCoord2f(tx+tw,1-ty);		glVertex2i(iCursorX+fw,iCursorY+fh);    
+				glTexCoord2f(tx+tw,1-ty-th);	glVertex2i(iCursorX+fw,iCursorY);    
+				glTexCoord2f(tx,1-ty-th);		glVertex2i(iCursorX,iCursorY);
+			}
+			else
+			{
+				glTexCoord2f(tx,ty);			glVertex2i(iCursorX,iCursorY+fh);		 
+				glTexCoord2f(tx+tw,ty);		glVertex2i(iCursorX+fw,iCursorY+fh);    
+				glTexCoord2f(tx+tw,ty+th);	glVertex2i(iCursorX+fw,iCursorY);    
+				glTexCoord2f(tx,ty+th);		glVertex2i(iCursorX,iCursorY);
+			}
+		}
+
+		pos = szWord[i]-32;
+		if(pos < 0 || pos > 255)
+			continue;
+		if(szWord[i] == '\n')
+			return;
+
+		// Do tags
+		if(szWord[i] == '<'){
+			m_bSearchForSytax = true;
+			continue;
+		} else if(szWord[i] == '>'){
+			DoTextTag();
+			continue;
+		} else if(m_bSearchForSytax){
+			m_strSyntax.push_back(szWord[i]);
+			continue;
+		}
+
+		fx = m_pkFont->m_aChars[pos].iPosX;
+		fy = m_pkFont->m_aChars[pos].iPosY;
+		fw = m_pkFont->m_aChars[pos].iSizeX;
+		fh = m_pkFont->m_aChars[pos].iSizeY;
+
+		iCurrLegth = fw;
+
+		if(m_rcTextBox.Inside(x, y))
+		{
+			if( !m_bClipperEnabled || (m_bClipperEnabled && 
+				 x > m_rcClipperArea.Left && x+fw < m_rcClipperArea.Right &&
+				 y < m_iScreenHeight-m_rcClipperArea.Top && 
+				 y+fh > m_iScreenHeight-m_rcClipperArea.Bottom))
+			{
+				tx = (float) fx / m_pkFont->m_iBMPWidth;
+				ty = (float) fy / m_pkFont->m_iBMPWidth;
+				tw = (float) fw / m_pkFont->m_iBMPWidth;
+				th = (float) fh / m_pkFont->m_iBMPWidth;
+
+				if(m_pkFont->m_iType == 1) // tga
+				{
+					glColor3f(m_afTextColor[0], m_afTextColor[1], m_afTextColor[2]);
+
+					glTexCoord2f(tx,1-ty);			glVertex2i(x,y+fh);		 
+					glTexCoord2f(tx+tw,1-ty);		glVertex2i(x+fw,y+fh);    
+					glTexCoord2f(tx+tw,1-ty-th);	glVertex2i(x+fw,y);    
+					glTexCoord2f(tx,1-ty-th);		glVertex2i(x,y);
+				}
+				else
+				{
+					glColor3f(1,1,1);
+
+					glTexCoord2f(tx,ty);			glVertex2i(x,y+fh);		 
+					glTexCoord2f(tx+tw,ty);		glVertex2i(x+fw,y+fh);    
+					glTexCoord2f(tx+tw,ty+th);	glVertex2i(x+fw,y);    
+					glTexCoord2f(tx,ty+th);		glVertex2i(x,y);
+				}
+			}
+		}
+
+		x+=iCurrLegth;
+	}
+}
+
 
 pair<int,int> GLGuiRender::GetWordLength(char *text, int offset, int max_width)
 {
@@ -647,8 +815,18 @@ pair<int,int> GLGuiRender::GetWordLength(char *text, int offset, int max_width)
 			continue;
 		}
 
-		if(text[i] != '\n')
-			length_counter += m_pkFont->m_aChars[index].iSizeX;
+		// Do tags
+		if(text[i] == '<'){
+			m_bSearchForSytax = true;
+		} else if(text[i] == '>'){
+			m_bSearchForSytax = false;
+		} 
+		else
+		if(m_bSearchForSytax == false)
+		{
+			if(text[i] != '\n')
+				length_counter += m_pkFont->m_aChars[index].iSizeX;
+		}
 
 		// Break words bigger then then the length
 		// of one row in the textbox.
@@ -662,79 +840,6 @@ pair<int,int> GLGuiRender::GetWordLength(char *text, int offset, int max_width)
 	}
 
 	return pair<int,int>(char_counter, length_counter);
-}
-
-void GLGuiRender::PrintWord(int x, int y, char *szWord, 
-							int offset, int length)
-{
-	int i;
-	for(i=offset; i<offset+length; i++)
-	{
-		// Print cursor
-		if(i == m_iCursorPos && !(m_iCursorPos == 0 && strlen(szWord) <= 1))
-		{
-			int iCursorX = x;
-			int iCursorY = y;
-
-			int index = '|'-32;
-			int fx = m_pkFont->m_aChars[index].iPosX;
-			int fy = m_pkFont->m_aChars[index].iPosY;
-			int fw = m_pkFont->m_aChars[index].iSizeX;
-			int fh = m_pkFont->m_aChars[index].iSizeY;
-
-			float tx = (float) fx / m_pkFont->m_iBMPWidth;
-			float ty = (float) fy / m_pkFont->m_iBMPWidth;
-			float tw = (float) fw / m_pkFont->m_iBMPWidth;
-			float th = (float) fh / m_pkFont->m_iBMPWidth;
-
-			iCursorX -= 2;	// minska markörens xpos ytterligare 2 pixlar.
-							// som en kompensation för tecknets egen storlek.
-
-			glTexCoord2f(tx,ty);		glVertex2i(iCursorX,iCursorY+fh);		 
-			glTexCoord2f(tx+tw,ty);		glVertex2i(iCursorX+fw,iCursorY+fh);    
-			glTexCoord2f(tx+tw,ty+th);	glVertex2i(iCursorX+fw,iCursorY);    
-			glTexCoord2f(tx,ty+th);		glVertex2i(iCursorX,iCursorY);
-		}
-
-		int iCurrLegth = 0;
-
-		int pos = szWord[i]-32;
-		if(pos < 0 || pos > 255)
-		{
-			continue;
-		}
-
-		if(szWord[i] == '\n')
-			return;
-
-		int fx = m_pkFont->m_aChars[pos].iPosX;
-		int fy = m_pkFont->m_aChars[pos].iPosY;
-		int fw = m_pkFont->m_aChars[pos].iSizeX;
-		int fh = m_pkFont->m_aChars[pos].iSizeY;
-
-		iCurrLegth = fw;
-
-		if(m_rcTextBox.Inside(x, y))
-		{
-			if( !m_bClipperEnabled || (m_bClipperEnabled && 
-				 x > m_rcClipperArea.Left && x+fw < m_rcClipperArea.Right &&
-				 y < m_iScreenHeight-m_rcClipperArea.Top && 
-				 y+fh > m_iScreenHeight-m_rcClipperArea.Bottom))
-			{
-				float tx = (float) fx / m_pkFont->m_iBMPWidth;
-				float ty = (float) fy / m_pkFont->m_iBMPWidth;
-				float tw = (float) fw / m_pkFont->m_iBMPWidth;
-				float th = (float) fh / m_pkFont->m_iBMPWidth;
-
-				glTexCoord2f(tx,ty);		glVertex2i(x,y+fh);		 
-				glTexCoord2f(tx+tw,ty);		glVertex2i(x+fw,y+fh);    
-				glTexCoord2f(tx+tw,ty+th);	glVertex2i(x+fw,y);    
-				glTexCoord2f(tx,ty+th);		glVertex2i(x,y);
-			}
-		}
-
-		x+=iCurrLegth;
-	}
 }
 
 
@@ -842,4 +947,49 @@ void GLGuiRender::EnableClipper(bool bEnable)
 	m_bClipperEnabled = bEnable;
 }
 
+void GLGuiRender::DoTextTag()
+{
+	m_strSyntax.push_back('\0');
 
+	// Bli av med alla skräptecken
+	for(int bb=0; bb<m_strSyntax.length(); bb++)
+		if(m_strSyntax[bb] == '\n' || m_strSyntax[bb] == '\t' || 
+			m_strSyntax[bb] == ' '){
+			m_strSyntax.erase(bb,1);
+			bb--;
+		}
+
+	//printf(m_strSyntax.c_str());
+
+	int ch;
+	char dst[50];
+	int length, pos;
+
+	// Byt textfärg
+	if((ch=m_strSyntax.find("col:", 0)) != string::npos)
+	{
+		if((ch = m_strSyntax.find(":", ch)) != string::npos)
+		{
+			length = m_strSyntax.find(",", ch)-ch-1;
+			pos = ch+1;
+			strncpy(dst, m_strSyntax.c_str()+pos, length);
+			dst[length] = '\0';
+			m_afTextColor[0] = (float) atoi(dst) / 255.0f;
+			pos += length+1;
+
+			length = m_strSyntax.find(",", pos)-pos;
+			strncpy(dst, m_strSyntax.c_str()+pos, length);
+			dst[length] = '\0';
+			m_afTextColor[1] = (float) atoi(dst) / 255.0f;
+			pos += length+1;
+
+			length = m_strSyntax.length()-pos-1;
+			strncpy(dst, m_strSyntax.c_str()+pos, length);
+			dst[length] = '\0';
+			m_afTextColor[2] = (float) atoi(dst) / 255.0f;
+		}
+	}
+
+	m_strSyntax.clear(); 
+	m_bSearchForSytax = false;
+}

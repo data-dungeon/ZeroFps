@@ -85,7 +85,7 @@ function OnMissionStart()
 	-- vart polistationen finns.
 	-----------------------------------------------------------------------
 	HideAllMapIcons()
-	CreateWnd(4,"HosptialMapLabel","MapWnd","",420,179,16,16,0)
+	CreateWnd(4,"HosptialMapLabel","MapWnd","",420,179,16,16,0,0,0)
 	ChangeSkin("HosptialMapLabel","Skin1","Label")
 
 end

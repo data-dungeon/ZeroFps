@@ -59,64 +59,64 @@ function GUICreate()
 	-- 0 = Wnd, 1 = Button, 2 = Checkbox, 3 = Combobox, 4 = Label, 5 = Listbox, 6 = Radiobutton,
 	-- 7 = Scrollbar, 8 = Slider, 9 = TabControl, 10 = Textbox, 11 = Treebox
 	-------------------------------------------------------------------------
---	CreateWnd(0,"GuiMainWnd","","",0,0,800,600,0)
+--	CreateWnd(0,"GuiMainWnd","","",0,0,800,600,0,0,0)
 --	ChangeSkin("GuiMainWnd","Skin1","Window")
 
-	CreateWnd(0,"MembersWnd","","",65,75,688,432,0)
+	CreateWnd(0,"MembersWnd","","",65,75,688,432,0,0,0)
 	ChangeSkin("MembersWnd","Skin15","Window")
 
-	CreateWnd(1,"MembersCloseBn","MembersWnd","",660,8,20,20,0)
+	CreateWnd(1,"MembersCloseBn","MembersWnd","",660,8,20,20,0,0,0)
 	ChangeSkin("MembersCloseBn","Skin19","Button up")
 	ChangeSkin("MembersCloseBn","Skin20","Button down")
 	ChangeSkin("MembersCloseBn","Skin21","Button focus")
 
-	CreateWnd(4,"LevelbarTopic","MembersWnd","Level : 3",137,364,200,20,0)
+	CreateWnd(4,"LevelbarTopic","MembersWnd","Level : 3",137,364,200,20,0,0,0)
 	ChangeSkin("LevelbarTopic","Skin1","Label")
 
-	CreateWnd(1,"NextMemberBn","MembersWnd","",668,412,20,20,0)
+	CreateWnd(1,"NextMemberBn","MembersWnd","",668,412,20,20,0,0,0)
 	ChangeSkin("NextMemberBn","Skin16","Button up")
 	ChangeSkin("NextMemberBn","Skin17","Button down")
 	ChangeSkin("NextMemberBn","Skin18","Button focus")
 
-	CreateWnd(1,"PrevMemberBn","MembersWnd","",0,412,20,20,0)
+	CreateWnd(1,"PrevMemberBn","MembersWnd","",0,412,20,20,0,0,0)
 	ChangeSkin("PrevMemberBn","Skin2","Button up")
 	ChangeSkin("PrevMemberBn","Skin3","Button down")
 	ChangeSkin("PrevMemberBn","Skin4","Button focus")
 
-	CreateWnd(4,"CurrentMemberNumberLabel","MembersWnd","",688/2-100/2,412,300,20,0)
+	CreateWnd(4,"CurrentMemberNumberLabel","MembersWnd","",688/2-100/2,412,300,20,0,0,0)
 	ChangeSkin("CurrentMemberNumberLabel","Skin1","Label")
 
-	CreateWnd(4,"Label169","MembersWnd","Name:",135,310,40,20,0)
+	CreateWnd(4,"Label169","MembersWnd","Name:",135,310,40,20,0,0,0)
 	ChangeSkin("Label169","Skin1","Label")
 
-	CreateWnd(4,"Label358","MembersWnd","Armour:",319,308,50,20,0)
+	CreateWnd(4,"Label358","MembersWnd","Armour:",319,308,50,20,0,0,0)
 	ChangeSkin("Label358","Skin1","Label")
 
-	CreateWnd(4,"Label391","MembersWnd","Skills",481,302,140,20,0)
+	CreateWnd(4,"Label391","MembersWnd","Skills",481,302,140,20,0,0,0)
 	ChangeSkin("Label391","Skin1","Label")
 
-	CreateWnd(4,"Label464","MembersWnd","Wage:",319,361,50,20,0)
+	CreateWnd(4,"Label464","MembersWnd","Wage:",319,361,50,20,0,0,0)
 	ChangeSkin("Label464","Skin1","Label")
 
-	CreateWnd(4,"Label478","MembersWnd","Life:",135,335,40,20,0)
+	CreateWnd(4,"Label478","MembersWnd","Life:",135,335,40,20,0,0,0)
 	ChangeSkin("Label478","Skin1","Label")
 
-	CreateWnd(4,"MemberNameField","MembersWnd","Elite guy",175,310,140,20,0)
+	CreateWnd(4,"MemberNameField","MembersWnd","Elite guy",175,310,140,20,0,0,0)
 	ChangeSkin("MemberNameField","Skin1","Label")
 
-	CreateWnd(4,"MemberIcon","MembersWnd","",18,309,92,92,0)
+	CreateWnd(4,"MemberIcon","MembersWnd","",18,309,92,92,0,0,0)
 	ChangeSkin("MemberIcon","Skin5","Label")
 
-	CreateWnd(4,"Label962","MembersWnd","Speed:",319,335,50,20,0)
+	CreateWnd(4,"Label962","MembersWnd","Speed:",319,335,50,20,0,0,0)
 	ChangeSkin("Label962","Skin1","Label")
 
-	CreateWnd(4,"LevelbarFront","MembersWnd","",137,364,50,20,0)
+	CreateWnd(4,"LevelbarFront","MembersWnd","",137,364,50,20,0,0,0)
 	ChangeSkin("LevelbarFront","Skin7","Label")
 
-	CreateWnd(4,"LevelbarBK","MembersWnd","",137,364,165,20,0)
+	CreateWnd(4,"LevelbarBK","MembersWnd","",137,364,165,20,0,0,0)
 	ChangeSkin("LevelbarBK","Skin6","Label")
 
-	CreateWnd(5,"MemberSkillsLB","MembersWnd","",486,333,182,61,0)
+	CreateWnd(5,"MemberSkillsLB","MembersWnd","",486,333,182,61,0,0,0)
 	ChangeSkin("MemberSkillsLB","Skin8","Listbox")
 	ChangeSkin("MemberSkillsLB","Skin9","Listbox: Button up")
 	ChangeSkin("MemberSkillsLB","Skin10","Listbox: Button down")
@@ -126,29 +126,29 @@ function GUICreate()
 	ChangeSkin("MemberSkillsLB","Skin14","Listbox: Scrollbar: Button down")
 	ChangeSkin("MemberSkillsLB","Skin14","Listbox: Scrollbar: Button focus")
 
-	CreateWnd(4,"MemberLifeField","MembersWnd","25/25",176,333,140,20,0)
+	CreateWnd(4,"MemberLifeField","MembersWnd","25/25",176,333,140,20,0,0,0)
 	ChangeSkin("MemberLifeField","Skin1","Label")
 	
-	CreateWnd(4,"MembersArmourField","MembersWnd","= 33",378,308,50,20,0)
+	CreateWnd(4,"MembersArmourField","MembersWnd","= 33",378,308,50,20,0,0,0)
 	ChangeSkin("MembersArmourField","Skin1","Label")
 
-	CreateWnd(4,"MemberSpeedField","MembersWnd","=22",378,336,50,20,0)
+	CreateWnd(4,"MemberSpeedField","MembersWnd","=22",378,336,50,20,0,0,0)
 	ChangeSkin("MemberSpeedField","Skin1","Label")
 
-	CreateWnd(4,"MemberWageField","MembersWnd","722%",378,359,50,20,0)
+	CreateWnd(4,"MemberWageField","MembersWnd","722%",378,359,50,20,0,0,0)
 	ChangeSkin("MemberWageField","Skin1","Label")
 
-	CreateWnd(1,"MembersEquipBn","MembersWnd","Equip",72,256,64,20,0)
+	CreateWnd(1,"MembersEquipBn","MembersWnd","Equip",72,256,64,20,0,0,0)
 	ChangeSkin("MembersEquipBn","Skin13","Button up")
 	ChangeSkin("MembersEquipBn","Skin14","Button down")
 	ChangeSkin("MembersEquipBn","Skin14","Button focus")
 
-	CreateWnd(1,"MembersDropItemBn","MembersWnd","Drop",72,256,64,20,0)
+	CreateWnd(1,"MembersDropItemBn","MembersWnd","Drop",72,256,64,20,0,0,0)
 	ChangeSkin("MembersDropItemBn","Skin13","Button up")
 	ChangeSkin("MembersDropItemBn","Skin14","Button down")
 	ChangeSkin("MembersDropItemBn","Skin14","Button focus")
 
-	CreateWnd(4,"MemberSelItemBorder","MembersWnd","",0,0,32,32,0)
+	CreateWnd(4,"MemberSelItemBorder","MembersWnd","",0,0,32,32,0,0,0)
 	ChangeSkin("MemberSelItemBorder","Skin22","Label")
 
 

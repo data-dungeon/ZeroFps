@@ -39,6 +39,32 @@ enum GuiType
 	GuiType_Error
 };
 
+enum WndAlignent
+{
+	TopLeft,     // 0. Fönstret flyttas ej.
+	TopRight,    // 1. Fönstret flyttas så att avståndet till högersidan av skärmen/parent fönstret 
+					 // blir den samma som innan.
+	BottomLeft,  // 2. Fönstret flyttas så att avståndet till undersidan av skärmen/parent fönstret 
+					 // blir den samma som innan.
+	BottomRight, // 3. Fönstret flyttas så att avståndet till undersidan och högersidan 
+					 // av skärmen/parent fönstret blir den samma som innan.
+	CenterHorz,  // 4. Fönstret flyttas så att det hamnar i centrum på skärmen/parent fönstret horisontellt.
+	CenterVert,  // 5. Fönstret flyttas så att det hamnar i centrum  på skärmen/parent fönstret vertilkalt.
+	Center,      // 6. Fönstret flyttas så att det hamnar i centrum på skärmen/parent fönstret 
+					 // horisontellt och vertilkalt.
+};
+
+enum WndResizeType
+{
+	None,				// 0. Fönstret skall inte skalas om.
+	ResizeWidth,	// 1
+	ResizeHeight,	// 2
+	Resize,			// 3
+	//MaxSize,      // 1. Skala om så att fönstret blir lika stort som skärmen/parent fönstret.
+	//MaxWidth,     // 2. Skala om så att fönstret blir lika brett som skärmen/parent fönstret.
+	//MaxHeight,    // 3. Skala om så att fönstret blir lika högt som skärmen/parent fönstret.
+};
+
 /** \brief	ZGuiApp
 	 \ingroup Gui
 */
@@ -90,9 +116,12 @@ public:
 		char* szScriptFile, char* szMenuFile, bool bUseHardwareMouse);
 
 	ZGuiWnd* CreateWnd(GuiType eType, char* szWndName, char* szParentName, 
-		char* szLabel, int x, int y, int w, int h, unsigned long uiFlags);
+		char* szLabel, int x, int y, int w, int h, unsigned long uiFlags,
+		WndAlignent eAlignment=TopLeft, WndResizeType eResizeType=None);
 	ZGuiWnd* CreateWnd(GuiType eType, char* szResourceName, char* szText, 
-		ZGuiWnd* pkParent, int x, int y, int w, int h, unsigned long uiFlags);
+		ZGuiWnd* pkParent, int x, int y, int w, int h, unsigned long uiFlags,
+		WndAlignent eAlignment=TopLeft, WndResizeType eResizeType=None);
+
 	void CloseWindow(char* szResName);
 	ZGuiWnd* GetWnd(int iID);
 	ZGuiWnd* GetWnd(string strName);
@@ -132,6 +161,7 @@ private:
 
 	ZGui* m_pkGuiSys;
 	ZGuiResourceManager* m_pkResMan;
+	ZGuiRender* m_pkRenderer;		// Pointer to the gui render object
 	TextureManager* m_pkTextureMan;
 	ZFScriptSystem* m_pkScriptSystem;
 	map<string, ZGuiSkin*> m_kSkins;

@@ -18,7 +18,8 @@ ZGuiFont::ZGuiFont(char cCharsOneRow, char cCharacterCellSize, char cPixelGapBet
 	m_cCharCellSize = cCharacterCellSize;
 	m_cCharsOneRow = cCharsOneRow;
 	m_cPixelGapBetweenChars = cPixelGapBetweenChars;
-	m_szFileName = "NONE";
+	m_szFileName = ""; // "NONE"
+	m_iType=0;
 
 	int counter=0;
 	int cRowWidth = m_cCharCellSize*m_cCharsOneRow;
@@ -44,30 +45,64 @@ ZGuiFont::~ZGuiFont()
 
 }
 
-bool ZGuiFont::CreateFromFile(char* strFileName)
+bool ZGuiFont::CreateFromFile(char* szFileName)
 {
 
 /*	ZFVFileSystem* pkFileSys;
 	pkFileSys = static_cast<ZFVFileSystem*>(g_ZFObjSys.GetObjectPtr("ZFVFileSystem"));		
-	string strFull = pkFileSys->GetFullPath(strFileName);*/
+	string strFull = pkFileSys->GetFullPath(szFileName);*/
 
 	ZFVFile kFile;
-	if(!kFile.Open(strFileName,0,false))
+	if(!kFile.Open(szFileName,0,false))
 	{
 		printf("Failed to open file for creating font\n");
 		return false;
 	}
 
 	Image kImage;
-	bool bSuccess = kImage.load(kFile.m_pkFilePointer, strFileName);
+	bool bSuccess = kImage.load(kFile.m_pkFilePointer, szFileName);
 
 	if(!bSuccess)
 	{
-		printf("font generation: Failed to find bitmap file [%s]!\n", strFileName);
+		printf("font generation: Failed to find bitmap file [%s]!\n", szFileName);
 		return false;
 	}
 
-	m_szFileName = string(strFileName);	
+	m_szFileName = string(szFileName);	
+
+	m_iType = 0; // bmp
+
+	FILE* pkFile = NULL;
+
+	bool bIsTGA = false;
+	if(m_szFileName.find(".tga") != string::npos)
+	{
+		bIsTGA = true;
+		m_iType = 1;
+
+		//pkFile = fopen("apa.txt", "wt");
+
+		//for(int y=0; y<kImage.m_iWidth; y++)
+		//{
+		//	for(int x=0; x<kImage.m_iWidth; x++)
+		//	{
+		//		color_rgba kCurrColor;
+		//		kImage.get_pixel(x, kImage.m_iWidth-1-y, kCurrColor); 
+		//		fprintf(pkFile, "%i ", (int) (kCurrColor.a));
+
+		//		if(kCurrColor.a < 10)
+		//			fprintf(pkFile, " ");
+		//		if(kCurrColor.a < 100)
+		//			fprintf(pkFile, " ");
+		//	}
+
+		//	fprintf(pkFile, "\n");
+		//}
+
+		//return false;
+
+	}
+
 	m_iBMPWidth = kImage.m_iWidth;
 
 	color_rgba kBkColor, kCurrColor;
@@ -82,20 +117,32 @@ bool ZGuiFont::CreateFromFile(char* strFileName)
 			for(int py=0;py<m_cCharCellSize;py++)
 				for(int px=0;px<m_cCharCellSize;px++)
 				{				
-					kImage.get_pixel(rx + px, ry + py,kCurrColor); 
+					if(bIsTGA == false)
+						kImage.get_pixel(rx + px, ry + py,kCurrColor); 
+					else
+						kImage.get_pixel(rx + px, m_iBMPWidth-1-(ry + py),kCurrColor); 
 
-					bool bNotBkColor = false;
-					//if(!(kCurrColor.r == 255 && kCurrColor.g == 255 && kCurrColor.b == 255)) // < 85)
-					if(kCurrColor.r < 85)
-						bNotBkColor = true;
+					bool bBkColor = true; // vi antar att det är bakgrundfärg
 
-					if(bNotBkColor && px > max_x)
+					if(bIsTGA)
+					{
+						if(kCurrColor.a > 5)
+							bBkColor = false;
+					}
+					else
+					{
+						//if(!(kCurrColor.r == 255 && kCurrColor.g == 255 && kCurrColor.b == 255)) // < 85)
+						if(kCurrColor.r < 85)
+							bBkColor = false;
+					}
+
+					if(!bBkColor && px > max_x)
 						max_x=px;
-					if(bNotBkColor && px < min_x)
+					if(!bBkColor && px < min_x)
 						min_x=px-1;
-					if(bNotBkColor && py > max_y)
+					if(!bBkColor && py > max_y)
 						max_y=py;
-					if(bNotBkColor && py < min_y)
+					if(!bBkColor && py < min_y)
 						min_y=py-1;
 				}
 
@@ -123,6 +170,9 @@ bool ZGuiFont::CreateFromFile(char* strFileName)
 
 	m_aChars[' '-32].iSizeX = m_aChars['t'-32].iSizeX;
 	m_aChars[' '-32].iSizeY = m_cCharCellSize;
+
+	if(pkFile != NULL)
+		fclose(pkFile);
 
 	return true;
 }

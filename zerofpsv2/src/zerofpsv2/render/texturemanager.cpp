@@ -381,6 +381,19 @@ int TextureManager::GetSizeOfTexture(int iTexture)
 	return m_iTextures[iTexture]->m_iSizeInBytes;
 }
 
+bool TextureManager::TextureHaveAlpha(int iTexture)
+{
+	if(!ValidIndex(iTexture))
+		return false;
+
+	int iASize;
+
+	BindTexture(iTexture);
+	glGetTexLevelParameteriv(GL_TEXTURE_2D,0,GL_TEXTURE_ALPHA_SIZE,&iASize);
+	
+	return (iASize > 0);
+}
+
 int TextureManager::GetTextureID (int iTexture)
 {
 	if(!ValidIndex(iTexture))

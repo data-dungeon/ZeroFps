@@ -46,13 +46,13 @@ function GUICreate()
 	-- 0 = Wnd, 1 = Button, 2 = Checkbox, 3 = Combobox, 4 = Label, 5 = Listbox, 6 = Radiobutton,
 	-- 7 = Scrollbar, 8 = Slider, 9 = TabControl, 10 = Textbox, 11 = Treebox
 	-------------------------------------------------------------------------
---	CreateWnd(0,"GuiMainWnd","","",0,0,800,600,0)
+--	CreateWnd(0,"GuiMainWnd","","",0,0,800,600,0,0,0)
 --	ChangeSkin("GuiMainWnd","Skin4","Window")
 
-	CreateWnd(0,"StartNewGameWnd","","",0,0,800,600,0)
+	CreateWnd(0,"StartNewGameWnd","","",0,0,800,600,0,0,0)
 	ChangeSkin("StartNewGameWnd","Skin7","Window")
 
-	CreateWnd(3,"TeamColorCB","StartNewGameWnd","",660,63,97,20,0)
+	CreateWnd(3,"TeamColorCB","StartNewGameWnd","",660,63,97,20,0,0,0)
 	ChangeSkin("TeamColorCB","Skin5","Combobox")
 	ChangeSkin("TeamColorCB","Skin8","Combobox: Label")
 	ChangeSkin("TeamColorCB","Skin5","Combobox: Listbox")
@@ -64,40 +64,40 @@ function GUICreate()
 	ChangeSkin("TeamColorCB","Skin14","Combobox: Listbox: Scrollbar: Button down")
 	ChangeSkin("TeamColorCB","Skin14","Combobox: Listbox: Scrollbar: Button focus")
 
---	CreateWnd(1,"StartNewGameBack","StartNewGameWnd","Back",654,569,62,20,0)
+--	CreateWnd(1,"StartNewGameBack","StartNewGameWnd","Back",654,569,62,20,0,0,0)
 --	ChangeSkin("StartNewGameBack","Skin1","Button up")
 --	ChangeSkin("StartNewGameBack","Skin2","Button down")
 --	ChangeSkin("StartNewGameBack","Skin3","Button focus")
 
-	CreateWnd(4,"ClanLabel","StartNewGameWnd","Clan",611,31,33,20,0)
+	CreateWnd(4,"ClanLabel","StartNewGameWnd","Clan",611,31,33,20,0,0,0)
 	ChangeSkin("ClanLabel","Skin4","Label")
 
-	CreateWnd(10,"ClanNameEB","StartNewGameWnd","",658,30,100,20,0)
+	CreateWnd(10,"ClanNameEB","StartNewGameWnd","",658,30,100,20,0,0,0)
 	ChangeSkin("ClanNameEB","Skin5","Textbox")
 
-	CreateWnd(4,"ColorLabel","StartNewGameWnd","Color",610,65,38,20,0)
+	CreateWnd(4,"ColorLabel","StartNewGameWnd","Color",610,65,38,20,0,0,0)
 	ChangeSkin("ColorLabel","Skin4","Label")
 
-	CreateWnd(1,"SelectNextBaseBn","StartNewGameWnd",">",769,203,20,20,0)
+	CreateWnd(1,"SelectNextBaseBn","StartNewGameWnd",">",769,203,20,20,0,0,0)
 	ChangeSkin("SelectNextBaseBn","Skin1","Button up")
 	ChangeSkin("SelectNextBaseBn","Skin2","Button down")
 	ChangeSkin("SelectNextBaseBn","Skin1","Button focus")
 
-	CreateWnd(1,"SelectPrevBaseBn","StartNewGameWnd","<",604,202,20,20,0)
+	CreateWnd(1,"SelectPrevBaseBn","StartNewGameWnd","<",604,202,20,20,0,0,0)
 	ChangeSkin("SelectPrevBaseBn","Skin1","Button up")
 	ChangeSkin("SelectPrevBaseBn","Skin2","Button down")
 	ChangeSkin("SelectPrevBaseBn","Skin1","Button focus")
 
-	CreateWnd(4,"StarBaseLabel","StartNewGameWnd","Start base",664,127,65,20,0)
+	CreateWnd(4,"StarBaseLabel","StartNewGameWnd","Start base",664,127,65,20,0,0,0)
 	ChangeSkin("StarBaseLabel","Skin4","Label")
 
-	CreateWnd(4,"StartBaseIconLabel","StartNewGameWnd","",634,151,128,128,0)
+	CreateWnd(4,"StartBaseIconLabel","StartNewGameWnd","",634,151,128,128,0,0,0)
 	ChangeSkin("StartBaseIconLabel","Skin6","Label")
 
-	CreateWnd(4,"StartBaseNameLabel","StartNewGameWnd","Old warehouse",634,289,128,20,0)
+	CreateWnd(4,"StartBaseNameLabel","StartNewGameWnd","Old warehouse",634,289,128,20,0,0,0)
 	ChangeSkin("StartBaseNameLabel","Skin4","Label")
 
-	CreateWnd(1,"StartNewGameDone","StartNewGameWnd","Done",800-96-8,600-40-8,96,40,0)
+	CreateWnd(1,"StartNewGameDone","StartNewGameWnd","Done",800-96-8,600-40-8,96,40,0,0,0)
 	ChangeSkin("StartNewGameDone","Skin1","Button up")
 	ChangeSkin("StartNewGameDone","Skin2","Button down")
 	ChangeSkin("StartNewGameDone","Skin1","Button focus")

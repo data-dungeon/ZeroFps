@@ -32,27 +32,27 @@ function GUICreate()
 	-- 0 = Wnd, 1 = Button, 2 = Checkbox, 3 = Combobox, 4 = Label, 5 = Listbox, 6 = Radiobutton,
 	-- 7 = Scrollbar, 8 = Slider, 9 = TabControl, 10 = Textbox, 11 = Treebox
 	-------------------------------------------------------------------------
-	CreateWnd(0,"DMOptionsWnd","","",109,188,225,186,0)
+	CreateWnd(0,"DMOptionsWnd","","",109,188,225,186,0,0,0)
 	ChangeSkin("DMOptionsWnd","Skin1","Window")
 
-	CreateWnd(4,"MusicVolumeLabel","DMOptionsWnd","Music volume",10,12,150,23,0)
+	CreateWnd(4,"MusicVolumeLabel","DMOptionsWnd","Music volume",10,12,150,23,0,0,0)
 	ChangeSkin("MusicVolumeLabel","Skin3","Label")
 
-	CreateWnd(1,"OptionsCloseBn","DMOptionsWnd","",225-32,0,32,32,0)
+	CreateWnd(1,"OptionsCloseBn","DMOptionsWnd","",225-32,0,32,32,0,0,0)
 	ChangeSkin("OptionsCloseBn","Skin8","Button up")
 	ChangeSkin("OptionsCloseBn","Skin9","Button down")
 	ChangeSkin("OptionsCloseBn","Skin8","Button focus")
 
-	CreateWnd(4,"SFXVolumeLabel","DMOptionsWnd","SFX Volume",10,69,150,23,0)
+	CreateWnd(4,"SFXVolumeLabel","DMOptionsWnd","SFX Volume",10,69,150,23,0,0,0)
 	ChangeSkin("SFXVolumeLabel","Skin3","Label")
 
-	CreateWnd(8,"MusicVolumeSlider","DMOptionsWnd","",12,35,150,32,0)
+	CreateWnd(8,"MusicVolumeSlider","DMOptionsWnd","",12,35,150,32,0,0,0)
 	ChangeSkin("MusicVolumeSlider","Skin6","Slider: Label")
 	ChangeSkin("MusicVolumeSlider","Skin7","Slider: Button up")
 	ChangeSkin("MusicVolumeSlider","Skin7","Slider: Button down")
 	ChangeSkin("MusicVolumeSlider","Skin7","Slider: Button focus")
 
-	CreateWnd(8,"SFXVolumeSlider","DMOptionsWnd","",11,91,150,32,0)
+	CreateWnd(8,"SFXVolumeSlider","DMOptionsWnd","",11,91,150,32,0,0,0)
 	ChangeSkin("SFXVolumeSlider","Skin6","Slider: Label")
 	ChangeSkin("SFXVolumeSlider","Skin7","Slider: Button up")
 	ChangeSkin("SFXVolumeSlider","Skin7","Slider: Button down")

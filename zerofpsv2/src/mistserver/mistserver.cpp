@@ -22,6 +22,7 @@
 #include "../mcommon/rulesystem/sendtype.h"
 #include "../zerofpsv2/engine/inputhandle.h"
 #include "../zerofpsv2/gui/zguiresourcemanager.h"
+#include "../zerofpsv2/render/glguirender.h"
 #include "../mcommon/si_dm.h"
 
 MistServer g_kMistServer("MistServer", 0, 0, 0);
@@ -300,6 +301,9 @@ void MistServer::Init()
 
 	//init mistland script intreface
 	MistLandLua::Init(m_pkObjectMan,m_pkScript);
+
+	ZGuiRender* pkRenderer = static_cast<ZGuiRender*>(g_ZFObjSys.GetObjectPtr("ZGuiRender"));
+	pkRenderer->SetScaleMode(GUIScaleManually);
 	
 	// create gui script funktions
 	GuiAppLua::Init(&g_kMistServer, m_pkScript);

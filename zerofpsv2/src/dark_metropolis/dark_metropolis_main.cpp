@@ -12,6 +12,7 @@
 #include "../mcommon/si_dm.h"
 #include "../mcommon/p_dmclickme.h"
 #include "../mcommon/p_dmshop.h"
+#include "../zerofpsv2/render/glguirender.h"
 
 DarkMetropolis g_kDM("DarkMetropolis",0,0,0);
 
@@ -97,6 +98,9 @@ void DarkMetropolis::OnInit()
 
 	//registering resources
 	m_pkResourceDB->RegisterResource( string(".env"), Create__EnvSetting	);
+
+	//ZGuiRender* pkRenderer = static_cast<ZGuiRender*>(g_ZFObjSys.GetObjectPtr("ZGuiRender"));
+	//pkRenderer->SetScaleMode(GUIScaleManually);
 
 	// create gui script
 	GUI_Init();

@@ -79,36 +79,40 @@ function GUICreate()
 	-- Create all windows in correct order (parents before childrens etc.)
 	-- 0 = Wnd, 1 = Button, 2 = Checkbox, 3 = Combobox, 4 = Label, 5 = Listbox, 6 = Radiobutton,
 	-- 7 = Scrollbar, 8 = Slider, 9 = TabControl, 10 = Textbox, 11 = Treebox
+	-- Parameter 10 (second last) is window alignment to screen or parent window:
+	-- 0 = TopLeft, 1 = TopRight, 2 = BottomLeft, 3 = BottomRight, 4 = CenterHorz, 5 = CenterVert, 6 = Center
+	-- Parameter 11 (last) is window resize type in relation to screen or parent window:
+	-- 0 = None, 1 = MaxSize, 2 = MaxWidth, 3 = MaxHeight
 	-------------------------------------------------------------------------
-	CreateWnd(0,"GuiMainWnd","","",0,0,800,600,0)
+	CreateWnd(0,"GuiMainWnd","","",0,0,800,600,0,0,0)
 	ChangeSkin("GuiMainWnd","Skin12","Window")
 
-	CreateWnd(1,"OpenWorkTabButton","GuiMainWnd","",760,560,32,32,0)
+	CreateWnd(1,"OpenWorkTabButton","GuiMainWnd","",760,560,32,32,0,3,0)
 	ChangeSkin("OpenWorkTabButton","Skin14","Button up")
 	ChangeSkin("OpenWorkTabButton","Skin15","Button down")
 	ChangeSkin("OpenWorkTabButton","Skin16","Button focus")
 
-	CreateWnd(2,"ToggleLight","GuiMainWnd","",720,560,32,32,0)
+	CreateWnd(2,"ToggleLight","GuiMainWnd","",720,560,32,32,0,3,0)
 	ChangeSkin("ToggleLight","Skin23","Checkbox: Button up")
 	ChangeSkin("ToggleLight","Skin24","Checkbox: Button down")
 	ChangeSkin("ToggleLight","Skin12","Checkbox: Label")
 
-	CreateWnd(0,"vp1","","",282,24,250,250,0)
+	CreateWnd(0,"vp1","","",282,24,250,250,0,0,0)
 	ChangeSkin("vp1","Skin32","Window")
 
-	CreateWnd(0,"vp2","","",17,25,250,250,0)
+	CreateWnd(0,"vp2","","",17,25,250,250,0,0,0)
 	ChangeSkin("vp2","Skin32","Window")
 
-	CreateWnd(0,"vp3","","",18,291,250,250,0)
+	CreateWnd(0,"vp3","","",18,291,250,250,0,0,0)
 	ChangeSkin("vp3","Skin32","Window")
 
-	CreateWnd(0,"vp4","","",284,290,250,250,0)
+	CreateWnd(0,"vp4","","",284,290,250,250,0,0,0)
 	ChangeSkin("vp4","Skin32","Window")
 
-	CreateWnd(0,"worktab","","",527,288,256,257,0)
+	CreateWnd(0,"worktab","","",527,288,256,257,0,3,0)
 	ChangeSkin("worktab","Skin33","Window")
 
-	CreateWnd(9,"WorkTabWnd","worktab","",0,0,256,256,0)
+	CreateWnd(9,"WorkTabWnd","worktab","",0,0,256,256,0,0,0)
 	ChangeSkin("WorkTabWnd","Skin25","Tabctrl")
 	ChangeSkin("WorkTabWnd","Skin26","Tabctrl: nexttab: Button up")
 	ChangeSkin("WorkTabWnd","Skin27","Tabctrl: nexttab: Button down")
@@ -119,18 +123,18 @@ function GUICreate()
 	ChangeSkin("WorkTabWnd","Skin30","Tabctrl: UnSeltab")
 	ChangeSkin("WorkTabWnd","Skin31","Tabctrl: Seltab")
 
-	CreateWnd(0,"ZonePage","WorkTabWnd","Zone",2,27,252,227,0)
+	CreateWnd(0,"ZonePage","WorkTabWnd","Zone",2,27,252,227,0,0,0)
 	ChangeSkin("ZonePage","Skin4","Window")
 
-	CreateWnd(1,"DeleteZoneButton","ZonePage","",224,38,16,16,0)
+	CreateWnd(1,"DeleteZoneButton","ZonePage","",224,38,16,16,0,0,0)
 	ChangeSkin("DeleteZoneButton","Skin1","Button up")
 	ChangeSkin("DeleteZoneButton","Skin2","Button down")
 	ChangeSkin("DeleteZoneButton","Skin3","Button focus")
 
-	CreateWnd(0,"ObjectPage","WorkTabWnd","Object",2,27,252,227,0)
+	CreateWnd(0,"ObjectPage","WorkTabWnd","Object",2,27,252,227,0,0,0)
 	ChangeSkin("ObjectPage","Skin4","Window")
 
-	CreateWnd(11,"ObjectTree","ObjectPage","",10,20,200,200,0)
+	CreateWnd(11,"ObjectTree","ObjectPage","",10,20,200,200,0,0,0)
 	ChangeSkin("ObjectTree","Skin13","Treebox")
 	ChangeSkin("ObjectTree","Skin9","Treebox: V.Scrollbar")
 	ChangeSkin("ObjectTree","Skin10","Treebox: V.Scrollbar: Button up")
@@ -141,17 +145,17 @@ function GUICreate()
 	ChangeSkin("ObjectTree","Skin11","Treebox: H.Scrollbar: Button down")
 	ChangeSkin("ObjectTree","Skin11","Treebox: H.Scrollbar: Button focus")
 
-	CreateWnd(1,"PlaceongroundButton","ObjectPage","",224,12,16,16,0)
+	CreateWnd(1,"PlaceongroundButton","ObjectPage","",224,12,16,16,0,0,0)
 	ChangeSkin("PlaceongroundButton","Skin17","Button up")
 	ChangeSkin("PlaceongroundButton","Skin18","Button down")
 	ChangeSkin("PlaceongroundButton","Skin19","Button focus")
 
-	CreateWnd(1,"RotateZoneModellButton","ZonePage","",224,12,16,16,0)
+	CreateWnd(1,"RotateZoneModellButton","ZonePage","",224,12,16,16,0,0,0)
 	ChangeSkin("RotateZoneModellButton","Skin20","Button up")
 	ChangeSkin("RotateZoneModellButton","Skin21","Button down")
 	ChangeSkin("RotateZoneModellButton","Skin22","Button focus")
 
-	CreateWnd(11,"ZoneModelTree","ZonePage","",10,20,200,200,0)
+	CreateWnd(11,"ZoneModelTree","ZonePage","",10,20,200,200,0,0,0)
 	ChangeSkin("ZoneModelTree","Skin13","Treebox")
 	ChangeSkin("ZoneModelTree","Skin9","Treebox: V.Scrollbar")
 	ChangeSkin("ZoneModelTree","Skin10","Treebox: V.Scrollbar: Button up")
@@ -162,10 +166,10 @@ function GUICreate()
 	ChangeSkin("ZoneModelTree","Skin11","Treebox: H.Scrollbar: Button down")
 	ChangeSkin("ZoneModelTree","Skin11","Treebox: H.Scrollbar: Button focus")
 
-	CreateWnd(0,"EnviromentPage","WorkTabWnd","Enviroment",2,27,252,227,0)
+	CreateWnd(0,"EnviromentPage","WorkTabWnd","Enviroment",2,27,252,227,0,0,0)
 	ChangeSkin("EnviromentPage","Skin4","Window")
 
-	CreateWnd(5,"EnviromentPresetList","EnviromentPage","",10,9,200,200,0)
+	CreateWnd(5,"EnviromentPresetList","EnviromentPage","",10,9,200,200,0,0,0)
 	ChangeSkin("EnviromentPresetList","Skin5","Listbox")
 	ChangeSkin("EnviromentPresetList","Skin6","Listbox: Button up")
 	ChangeSkin("EnviromentPresetList","Skin7","Listbox: Button down")

@@ -48,12 +48,14 @@ public:
 	void Resize(int Width, int Height, bool bChangeMoveArea=true);
 	bool m_bNumberOnly;
 
+	//pair<int,int> GetWordLength(char *text, int offset, int max_width);
+
 private:
 	void MoveDownOneRow();
 	void MoveUpOneRow();
 	
 	bool UpdateScrollbar();
-	pair<int,int> GetWordLength(char *text, int offset, int max_width);
+	
 	int GetNumRows(char* szText);
 	void ScrollText(ZGuiScrollbar* pkScrollbar);
 	void ScrollText(int row);
@@ -77,6 +79,7 @@ private:
 	int m_kHorzOffset;
 
 	ZGuiScrollbar* m_pkScrollbarVertical;
+	ZGuiRender* m_pkGuiRender;
 };
 
 #endif // #ifndef _GUI_ZGUITEXTBOX_H

@@ -401,7 +401,8 @@ bool Scene::BuildFileTree(char* szTreeBoxName, char* szRootPath, char* szExtensi
 					bool bCorectExt = true;
 
 					if(szExtension != NULL)
-						if(strLabel.find(szExtension) == string::npos)
+						if(strLabel.find(szExtension) == string::npos && 
+							strLabel.find(".tga") == string::npos )
 							bCorectExt = false;
 
 					if(bCorectExt)

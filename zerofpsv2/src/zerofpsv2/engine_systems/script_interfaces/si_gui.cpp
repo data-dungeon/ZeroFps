@@ -60,6 +60,8 @@ void GuiAppLua::Init(ZGuiApp* pkGuiApp, ZFScriptSystem* pkScript)
 	\param iW Desc
 	\param iH Desc
 	\param iFlags Desc
+	\param iWndAlignent (0-6, se WndAlignent at zguiapp.h)
+	\param iWndResizeType (0-3, se WndResizeType at zguiapp.h)
 
 	Creates a window in the GUI.	
 */
@@ -68,7 +70,7 @@ int GuiAppLua::CreateWndLua(lua_State* pkLua)
 {
 	int iNumArgs = g_pkScript->GetNumArgs(pkLua);
 
-	if(iNumArgs != 9)
+	if(iNumArgs != 11)
 	{
 		char szWindowName[50];
 		g_pkScript->GetArg(pkLua, 1, szWindowName);
@@ -85,14 +87,18 @@ int GuiAppLua::CreateWndLua(lua_State* pkLua)
 	g_pkScript->GetArg(pkLua, 2, szParentName);
 	g_pkScript->GetArg(pkLua, 3, szText);
 
-	double x, y, w, h, f;
+	double x, y, w, h, f, wndalignent, wndresizetype;
 	g_pkScript->GetArg(pkLua, 4, &x);
 	g_pkScript->GetArg(pkLua, 5, &y);
 	g_pkScript->GetArg(pkLua, 6, &w);
 	g_pkScript->GetArg(pkLua, 7, &h);
 	g_pkScript->GetArg(pkLua, 8, &f);
+	g_pkScript->GetArg(pkLua, 9, &wndalignent);
+	g_pkScript->GetArg(pkLua, 10, &wndresizetype);
 
 	GuiType eType = GuiType_Error;
+	WndAlignent eWndAlignent = TopLeft;
+	WndResizeType eWndResizeType = None;
 
 	switch( (int) dType )
 	{
@@ -115,8 +121,38 @@ int GuiAppLua::CreateWndLua(lua_State* pkLua)
 		}
 	}
 
+	switch( (int) wndalignent )
+	{
+		case 0:  eWndAlignent = TopLeft;		   break;
+		case 1:  eWndAlignent = TopRight;	   break;
+		case 2:  eWndAlignent = BottomLeft;	   break;
+		case 3:  eWndAlignent = BottomRight;	break;
+		case 4:  eWndAlignent = CenterHorz;		break;
+		case 5:  eWndAlignent = CenterVert;	   break;
+		case 6:  eWndAlignent = Center;			break;
+		default:
+		{
+			printf("Failed to create window! : wrong wndalignent\n");
+			return 0;
+		}
+	}
+
+	switch( (int) wndresizetype )
+	{
+		case 0:  eWndResizeType = None;				break;
+		case 1:  eWndResizeType = ResizeWidth;	   break;
+		case 2:  eWndResizeType = ResizeHeight;	break;
+		case 3:  eWndResizeType = Resize;			break;
+		default:
+		{
+			printf("Failed to create window! : wrong wndresizetype\n");
+			return 0;
+		}
+	}
+
 	g_pkGuiApp->CreateWnd(eType, szWindowName, szParentName, szText,
-		(int) x, (int) y, (int) w, (int) h, (unsigned long) f);
+		(int) x, (int) y, (int) w, (int) h, (unsigned long) f,
+		eWndAlignent, eWndResizeType);
 
 	return 1;
 }

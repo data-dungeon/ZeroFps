@@ -37,31 +37,31 @@ function GUICreate()
 	-- 0 = Wnd, 1 = Button, 2 = Checkbox, 3 = Combobox, 4 = Label, 5 = Listbox, 6 = Radiobutton,
 	-- 7 = Scrollbar, 8 = Slider, 9 = TabControl, 10 = Textbox, 11 = Treebox
 	-------------------------------------------------------------------------
-	CreateWnd(0,"DMIntroWnd","","",0,0,800,600,0)
+	CreateWnd(0,"DMIntroWnd","","",0,0,800,600,0,0,0)
 	ChangeSkin("DMIntroWnd","Skin1","Window")
 
-	CreateWnd(4,"loggaLabel","DMIntroWnd","",800/2-640/2,600/2-332/2,640,332,0)
+	CreateWnd(4,"loggaLabel","DMIntroWnd","",800/2-640/2,600/2-332/2,640,332,0,0,0)
 	ChangeSkin("loggaLabel","Skin8","Label")
 
-	CreateWnd(4,"dvoidLabel","DMIntroWnd","",300,260,256,64,0)
+	CreateWnd(4,"dvoidLabel","DMIntroWnd","",300,260,256,64,0,0,0)
 	ChangeSkin("dvoidLabel","Skin2","Label")
 
-	CreateWnd(4,"zeromLabel","DMIntroWnd","",144,172,512,256,0)
+	CreateWnd(4,"zeromLabel","DMIntroWnd","",144,172,512,256,0,0,0)
 	ChangeSkin("zeromLabel","Skin3","Label")
 
-	CreateWnd(4,"vimLabel","DMIntroWnd","",300,260,256,64,0)
+	CreateWnd(4,"vimLabel","DMIntroWnd","",300,260,256,64,0,0,0)
 	ChangeSkin("vimLabel","Skin4","Label")
 
-	CreateWnd(4,"zebLabel","DMIntroWnd","",300,260,256,64,0)
+	CreateWnd(4,"zebLabel","DMIntroWnd","",300,260,256,64,0,0,0)
 	ChangeSkin("zebLabel","Skin5","Label")
 
-	CreateWnd(4,"eldLabel","DMIntroWnd","",300,260,256,64,0)
+	CreateWnd(4,"eldLabel","DMIntroWnd","",300,260,256,64,0,0,0)
 	ChangeSkin("eldLabel","Skin6","Label")
 
-	CreateWnd(4,"manfredLabel","DMIntroWnd","",300,260,256,64,0)
+	CreateWnd(4,"manfredLabel","DMIntroWnd","",300,260,256,64,0,0,0)
 	ChangeSkin("manfredLabel","Skin7","Label")
 
-	CreateWnd(4,"lastimageLabel","DMIntroWnd","",300,260,256,64,0)
+	CreateWnd(4,"lastimageLabel","DMIntroWnd","",300,260,256,64,0,0,0)
 	ChangeSkin("lastimageLabel","Skin9","Label")
 
 	

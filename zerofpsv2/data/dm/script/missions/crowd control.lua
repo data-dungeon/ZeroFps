@@ -61,7 +61,7 @@ function OnMissionStart()
 	TempDoor[2] = RunScript("data/script/objects/dm/t_door.lua",-1, {-51.37, 1.00, 1.7});
 
 	HideAllMapIcons()
-	CreateWnd(4,"AMapLabel","MapWnd","",143,119,16,16,0)
+	CreateWnd(4,"AMapLabel","MapWnd","",143,119,16,16,0,0,0)
 	ChangeSkin("AMapLabel","Skin1","Label")
 	CreateWnd(4,"PoliceStationMapLabel","MapWnd","",330,164,16,16,0)
 	ChangeSkin("PoliceStationMapLabel","Skin2","Label")

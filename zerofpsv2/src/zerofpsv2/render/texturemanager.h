@@ -111,6 +111,7 @@ class RENDER_API TextureManager : public ZFSubSystem {
 		int GetIndex(const char* szFileName);
 		const char* GetFileName(unsigned int uiIndex);
 		int GetSizeOfTexture(int iTexture);							// Returns size of texture in bytes.
+		bool TextureHaveAlpha(int iTexture);							// speaks for it self I think.
       int GetTextureID (int iTexture);								// Returns opengl texture id of texture.
 
 		// Edit Textures

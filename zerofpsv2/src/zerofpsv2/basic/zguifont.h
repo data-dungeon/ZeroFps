@@ -35,8 +35,9 @@ public:
 	char m_cPixelGapBetweenChars;
 	int m_iID; // used to compare with other fonts to prevent rebuilding
 	string m_szFileName;
+	int m_iType; // 0 = BMP, 1 = TGA
 
-	bool CreateFromFile(char* strFileName);
+	bool CreateFromFile(char* szFileName);
 };
 
 #endif // !defined(AFX_ZGUIFONT_H__52B0ABD1_BF56_4D1D_A173_BB1CCEE56658__INCLUDED_)
