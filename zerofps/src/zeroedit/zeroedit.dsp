@@ -134,6 +134,10 @@ SOURCE=.\gui.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\workpaneldlg.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\zeroedit.cpp
 # End Source File
 # End Group
@@ -159,6 +163,10 @@ SOURCE=.\gui.h
 # Begin Source File
 
 SOURCE=.\resource_id.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\workpaneldlg.h
 # End Source File
 # Begin Source File
 

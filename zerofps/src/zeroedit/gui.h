@@ -15,10 +15,12 @@
 
 #include "zeroedit.h"
 #include "editpropertydlg.h"
+#include "workpaneldlg.h"
 
 class FileOpenDlg;
-//class EditPropertyDlg;
+//class WorkPanelDlg;
 class DlgBox;
+
 typedef bool (*ZGuiCallBack)(ZGuiWnd*, unsigned int, int, void*);
 
 enum SEARCH_TASK
@@ -33,7 +35,6 @@ enum SEARCH_TASK
 class Gui
 {
 private:
-	void MoveColorSliders(char* szLeader);
 	bool CreateSlider(ZGuiWnd* pkParent, int iID, int x, int y, int w, int h, 
 		bool bHorizontal, int min, int max, char* szResName, char* szBkSkin);
 	bool IsButtonChecked(char* szName, char* szGroupName=NULL);
@@ -100,7 +101,6 @@ private:
 	ZGuiWnd* Get(char* strName);
 
 	map<string, DlgBox*> m_kDialogs;
-	bool m_bLockMaskSliders;
 
 public:
 	bool OpenFileDlg(SEARCH_TASK eTask); 
@@ -122,11 +122,12 @@ public:
 	Gui(ZeroEdit* pkEdit);
 	virtual ~Gui();
 
-	ZGuiTabCtrl* m_pkWorkPanel;
+//	ZGuiTabCtrl* m_pkWorkPanel;
 	FileOpenDlg* m_pkFileDlgbox;
 
 	friend class FileOpenDlg;
 	friend class EditPropertyDlg;
+	friend class WorkPanelDlg;
 };
 
 #endif // !defined(AFX_GUI_H__6ADF8B0C_5888_4E90_95E1_C2E517786ECA__INCLUDED_)

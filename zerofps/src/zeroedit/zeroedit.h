@@ -25,6 +25,7 @@
 */
 
 class Gui;
+class WorkPanelDlg;
 class GameScript;
 
 
@@ -177,6 +178,7 @@ class ZeroEdit :public Application {
 		Gui* m_pkGui;
 		
 	friend class Gui;
+	friend class WorkPanelDlg;
 };
 
 

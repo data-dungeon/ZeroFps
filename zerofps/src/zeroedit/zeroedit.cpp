@@ -5,9 +5,6 @@
 char* pkTempObjectTemplate = "ZfEditTempObject";
 
 ZeroEdit Editor("ZeroEdit",1024,768,16);
-//ZeroEdit Editor("ZeroEdit",800,600,24);
-//ZeroEdit Editor("ZeroEdit",640,480,24);
-//ZeroEdit Editor("ZeroEdit",320,240,24);
 
 ZeroEdit::ZeroEdit(char* aName,int iWidth,int iHeight,int iDepth) 
 	: Application(aName,iWidth,iHeight,iDepth) 
@@ -346,7 +343,6 @@ void ZeroEdit::RunCommand(int cmdid, const CmdArgument* kCommand)
 			} else {
 				pkLevelMan->CreateZones();			
 			}
-			
 			break;
 			
 		case FID_LOADIMAGEMAP:
@@ -502,6 +498,12 @@ void ZeroEdit::RunCommand(int cmdid, const CmdArgument* kCommand)
 			}		
 			
 			pkConsole->Printf("Level loaded");
+
+			// Update texture map list in workpanel.
+			DlgBox* pkDlg;
+			pkDlg = m_pkGui->GetDlg("WorkPanelDlg"); 
+			if(pkDlg != NULL)
+				((WorkPanelDlg*)pkDlg)->UpdateMapTexList();
 			
 			break;	
 			
@@ -1031,10 +1033,12 @@ void ZeroEdit::Input()
 			break;
 
 		case KEY_F10:
-			if(m_pkGui->m_pkWorkPanel->IsVisible())
-				m_pkGui->m_pkWorkPanel->Hide();
+			DlgBox* pkWorkpanel = m_pkGui->GetDlg("WorkPanelDlg");
+			
+			if(pkWorkpanel->IsOpen())
+				pkWorkpanel->Close(false);
 			else
-				m_pkGui->m_pkWorkPanel->Show();
+				pkWorkpanel->Open();
 			break;
 	}
 }
