@@ -59,6 +59,9 @@ class ZeroEdit :public Application {
 			FID_SAVELAND,
 			FID_LOADLAND,
 			FID_VIEWMAD,
+			FID_SUN,
+			FID_MOON,
+			
 		};	
 	
 		Camera* m_pkCamera;

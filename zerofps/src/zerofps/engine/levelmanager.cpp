@@ -10,7 +10,8 @@ LevelManager::LevelManager(): ZFObject("LevelManager")
 	m_pkRender=static_cast<Render*>(g_ZFObjSys.GetObjectPtr("Render"));
 	m_pkCmd=static_cast<CmdSystem*>(g_ZFObjSys.GetObjectPtr("CmdSystem"));
 	m_pkIni=static_cast<ZFIni*>(g_ZFObjSys.GetObjectPtr("ZFIni"));
-
+	m_pkLight = static_cast<Light*>(g_ZFObjSys.GetObjectPtr("Light"));
+	
 	m_pkMap=new HeightMap();
 	
 	m_bVisibleZones=true;
@@ -19,6 +20,35 @@ LevelManager::LevelManager(): ZFObject("LevelManager")
 	
 	m_pkCmd->Add(&m_fZoneRadius,"l_zoneradius",type_float);		
 	
+	
+	
+	
+	//default light
+	m_bSun=new LightSource;	
+		m_bSun->kPos=new Vector3(1000,1000,1000);		
+//		m_bSun->kDiffuse=Vector4(1.0,1.0,1.0,1);	//Dag
+		m_bSun->kAmbient=Vector4(0.05,0.05,0.05,1);
+		m_bSun->iType=POINT_LIGHT;			
+		m_bSun->iPriority=10;
+		m_bSun->fConst_Atten=1;
+		m_bSun->fLinear_Atten=0;
+		m_bSun->fQuadratic_Atten=0;
+
+	m_bMoon=new LightSource;	
+		m_bMoon->kPos=new Vector3(-1000,-1000,-1000);		
+//		m_bMoon->kDiffuse=Vector4(0.1,0.1,0.3,1);
+		m_bMoon->kAmbient=Vector4(0,0,0,1);
+		m_bMoon->iType=POINT_LIGHT;			
+		m_bMoon->iPriority=10;
+		m_bMoon->fConst_Atten=1;
+		m_bMoon->fLinear_Atten=0;
+		m_bMoon->fQuadratic_Atten=0;	
+	
+	SetSunColor(Vector3(1,1,1));
+	SetMoonColor(Vector3(0.1,0.1,0.3));
+	
+	m_pkLight->Add(m_bSun);
+	m_pkLight->Add(m_bMoon);
 }
 
 void LevelManager::CreateEmptyLevel(int iSize)
@@ -297,6 +327,9 @@ void LevelManager::SetupWorld()
 	Water(m_kWIP.m_bWater);
 	
 	SkyBox(m_kWIP.m_kSkyBoxHor.c_str(),m_kWIP.m_kSkyBoxTop.c_str(),m_kWIP.m_kSkyBoxRotate);
+	
+	SetSunColor(m_kWIP.m_kSunColor);
+	SetMoonColor(m_kWIP.m_kMoonColor);	
 }
 
 void LevelManager::Fog(Vector3 kColor,float fStart,float fStop)
@@ -380,5 +413,16 @@ void LevelManager::ClearTrackers()
 	m_kTrackedObjects.clear();
 }
 
+void LevelManager::SetMoonColor(Vector3 kColor)
+{
+	m_bMoon->kDiffuse=kColor;
+	m_kWIP.m_kMoonColor=kColor;
+}
+
+void LevelManager::SetSunColor(Vector3 kColor)
+{
+	m_bSun->kDiffuse=kColor;
+	m_kWIP.m_kSunColor=kColor;	
+}
 
 

@@ -23,6 +23,9 @@ class WorldInfoProperty: public Property {
 				
 		bool m_bWater;
 		
+		Vector3 m_kSunColor;
+		Vector3 m_kMoonColor;
+		
 		WorldInfoProperty();
 		void Update();
 		

@@ -26,9 +26,13 @@ class ENGINE_API LevelManager : public ZFObject {
 		Render* m_pkRender;
 		CmdSystem* m_pkCmd;
 		ZFIni* m_pkIni;
+		Light*	m_pkLight;
 		
 		HeightMap* m_pkMap;
 		HeightMapObject* m_pkHeightMapObject;
+		
+		LightSource *m_bSun;
+		LightSource *m_bMoon;	
 		
 		bool m_bVisibleZones;
 		float m_fZoneRadius;
@@ -59,6 +63,9 @@ class ENGINE_API LevelManager : public ZFObject {
 		void Fog(Vector3 kColor,float fStart,float fStop);
 		void Water(bool bWater);
 		void SkyBox(const char* acHor,const char* acTop,Vector3 kRotate);
+		
+		void SetMoonColor(Vector3 kColor);
+		void SetSunColor(Vector3 kColor);		
 		
 		void AddTracker(Object* kObject);
 		void RemoveTracker(Object* kObject);

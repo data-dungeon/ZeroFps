@@ -43,6 +43,8 @@ void ZeroEdit::OnInit(void)
 	g_ZFObjSys.Register_Cmd("loadland",FID_LOADLAND,this);		
 	g_ZFObjSys.Register_Cmd("saveland",FID_SAVELAND,this);		
 	g_ZFObjSys.Register_Cmd("madview",FID_VIEWMAD,this);		
+	g_ZFObjSys.Register_Cmd("moon",FID_MOON,this);			
+	g_ZFObjSys.Register_Cmd("sun",FID_SUN,this);			
 
 	//start text =)
 	pkConsole->Printf("            ZeroEdit ");
@@ -88,22 +90,7 @@ void ZeroEdit::OnInit(void)
 	//create a default small world
 	pkLevelMan->CreateEmptyLevel(128);
 
-	//default light
-	LightSource *sol=new LightSource;	
-	Vector3 *solrot=new Vector3(.4,.4,.2);	
-	Vector3 *solpos=new Vector3(1000,1000,1000);
-		sol->kRot=solrot;
-		sol->kPos=solpos;		
-		sol->kDiffuse=Vector4(1.2,1.2,1.2,1);	//Dag
-//		sol->kDiffuse=Vector4(.01,.01,.01,1);	//Dag
-		sol->kAmbient=Vector4(0.05,0.05,0.05,1);
-		sol->iType=POINT_LIGHT;			
-		sol->iPriority=10;
-		sol->fConst_Atten=1;
-		sol->fLinear_Atten=0;
-		sol->fQuadratic_Atten=0;
 
-	pkLight->Add(sol);
 
 	m_pkGui = new Gui(this, g_ZGWinProc);
 
@@ -168,6 +155,33 @@ void ZeroEdit::OnHud(void)
 void ZeroEdit::RunCommand(int cmdid, const CmdArgument* kCommand)
 {
 	switch(cmdid) {
+		case FID_SUN:{
+			if(kCommand->m_kSplitCommand.size() < 4) {
+				pkConsole->Printf("sun [r][g][b]");
+				break;
+			}
+			
+			Vector3 kColor(atof(kCommand->m_kSplitCommand[1].c_str()),
+							 	atof(kCommand->m_kSplitCommand[2].c_str()),
+							 	atof(kCommand->m_kSplitCommand[3].c_str()));
+							 
+			pkLevelMan->SetSunColor(kColor);			
+			break;	
+		}
+		
+		case FID_MOON:{
+			if(kCommand->m_kSplitCommand.size() < 4) {
+				pkConsole->Printf("moon [r][g][b]");
+				break;
+			}
+			
+			Vector3 kColor(atof(kCommand->m_kSplitCommand[1].c_str()),
+							 	atof(kCommand->m_kSplitCommand[2].c_str()),
+							 	atof(kCommand->m_kSplitCommand[3].c_str()));
+							 
+			pkLevelMan->SetMoonColor(kColor);			
+			break;	
+		}
 		
 		case FID_SAVELAND:
 			if(kCommand->m_kSplitCommand.size() <= 1) {

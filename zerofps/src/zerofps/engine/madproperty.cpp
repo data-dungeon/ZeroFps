@@ -62,7 +62,7 @@ float fTestValue;
 
 void MadProperty::Update() 
 {
-	m_pkFrustum=static_cast<Frustum*>(g_ZFObjSys.GetObjectPtr("Frustum"));
+//	m_pkFrustum=static_cast<Frustum*>(g_ZFObjSys.GetObjectPtr("Frustum"));
 /*	Input* pkInput = static_cast<Input*>(g_ZFObjSys.GetObjectPtr("Input")); 
 	
 	if(strcmp(m_kMadFile.c_str(), "../data/mad/dropship.mad") == 0) {
@@ -77,12 +77,17 @@ void MadProperty::Update()
 		}*/
 
 //	return;
-	float fRadius = pkCore->GetRadius();
  
 	if(!pkCore)
 		return;
 
 	UpdateAnimation(m_pkZeroFps->GetFrameTime());
+	
+	Vector4 sphere=m_pkObject->GetPos();
+	sphere.w = pkCore->GetRadius();
+
+	if(!m_pkFrustum->SphereInFrustum(sphere))
+		return;
 
 	glPushMatrix();
 		glTranslatef(m_pkObject->GetPos().x,m_pkObject->GetPos().y,m_pkObject->GetPos().z);
@@ -91,17 +96,10 @@ void MadProperty::Update()
 		glRotatef(m_pkObject->GetRot().x ,1,0,0);
 		glRotatef(m_pkObject->GetRot().y ,0,1,0);		
 		
-		Vector4 sphere=m_pkObject->GetPos();
-		sphere.w = fRadius;
 
-		if(m_pkFrustum->SphereInFrustum(sphere)) {
-			m_pkZeroFps->m_iNumOfMadRender++;
-			//DrawBoundSphere(sphere.w * (1 / m_fScale));
-//			DrawBoundSphere(fRadius * (1 / m_fScale));
-//			DrawBoundSphere(fRadius);
+		m_pkZeroFps->m_iNumOfMadRender++;
 			
-			Draw_All();
-			}
+		Draw_All();
 	
 	glPopMatrix();
 }

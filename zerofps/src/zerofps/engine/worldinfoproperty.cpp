@@ -36,6 +36,11 @@ void WorldInfoProperty::Save(ZFMemPackage* pkPackage)
 	//water
 	pkPackage->Write((void*)&m_bWater,4);
 	
+	//suncolor
+	pkPackage->Write((void*)&m_kSunColor,12);			
+	//mooncolor
+	pkPackage->Write((void*)&m_kMoonColor,12);			
+	
 }
 
 void WorldInfoProperty::Load(ZFMemPackage* pkPackage)
@@ -58,6 +63,12 @@ void WorldInfoProperty::Load(ZFMemPackage* pkPackage)
 	
 	//water
 	pkPackage->Read((void*)&m_bWater,4);
+
+	//suncolor
+	pkPackage->Read((void*)&m_kSunColor,12);			
+	//mooncolor
+	pkPackage->Read((void*)&m_kMoonColor,12);			
+
 }
 
 Property* Create_WorldInfoProperty()
