@@ -1,0 +1,4 @@
+CC = g++
+C_ARGS = -pg
+L_ARGS = -pg
+MAKE = make
