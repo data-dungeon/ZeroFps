@@ -108,8 +108,9 @@ void Test::OnInit(void) {
 
 	glEnable(GL_LIGHTING );
 	
-	cam1=new Camera(Vector3(5,50,5),Vector3(0,0,0),90,1.333,0.25,400);	
-	
+	cam1=new Camera(Vector3(5,50,5),Vector3(0,0,0),85,1.333,0.25,400);	
+	cam2=new Camera(Vector3(5,50,5),Vector3(0,0,0),85,1.333,0.25,400);	
+	cam2->SetViewPort(0.7,0.7,0.29,0.29);
 
 	m_pkPlayer=new PlayerObject(test,pkInput);
 	m_pkPlayer->GetPos()=Vector3(300,25,785);		
@@ -139,6 +140,8 @@ void Test::OnServerStart(void)
 		float x=300 + rand()%100;
 		float y=750 + rand()%100;
 		sussi->GetPos()=Vector3(x,test->Height(x,y),y);
+		sussi->AddProperty(new CameraProperty(cam2));
+		
 		pkObjectMan->Add(sussi);
 		pkCollisionMan->Add(sussi);
 	}
@@ -156,17 +159,11 @@ void Test::OnIdle(void) {
 //	glFogCoordfEXT(-20);
 
 
-	m_kSpotpos->x=sin(SDL_GetTicks()/1000.0)*50.0+80;
-	m_kSpotpos->z=cos(SDL_GetTicks()/1000.0)*50.0+80;
-	m_kSpotpos->y=50;
+//	m_kSpotpos->x=sin(SDL_GetTicks()/1000.0)*50.0+80;
+//	m_kSpotpos->z=cos(SDL_GetTicks()/1000.0)*50.0+80;
+//	m_kSpotpos->y=50;
 
-	pkFps->SetCamera(cam1);		
-	pkFps->GetCam()->ClearViewPort();	
-
-	pkRender->DrawSkyBox(pkFps->GetCam()->GetPos());
-	pkRender->DrawHMlod(test,pkFps->GetCam()->GetPos(),pkFps->m_iFps);			
-	
-
+/*
 	if(m_iGrass>0){
 		for(int ix=0;ix<1000;ix+=30)
 			for(int iy=0;iy<1000;iy+=30){
@@ -174,17 +171,36 @@ void Test::OnIdle(void) {
 				pkRender->DrawGrassPatch(pkFps->GetCam()->GetPos(),Vector3(ix,0,iy),Vector3(1,.5,1),30,m_iGrassVolyme/4,test,pkTexMan->Load("file:../data/textures/grass3.tga",T_NOMIPMAPPING),pkFps->m_iFps);
 			}
 	}
+*/
 
-//	pkRender->DrawBillboard(pkFps->GetCam()->GetModelMatrix(),Vector3(0,70,0),4,pkTexMan->Load("file:../data/textures/ball.tga",T_NOMIPMAPPING));
-	glEnable(GL_ALPHA_TEST);
-	glAlphaFunc(GL_GREATER,0.3);
-//	glEnable(GL_BLEND);
-//	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
-		pkRender->DrawBillboard(pkFps->GetCam()->GetModelMatrix(),Vector3(140,50,450),20,pkTexMan->Load("file:../data/textures/star.tga",T_NOMIPMAPPING));	
-//	glDisable(GL_ALPHA_TEST);
+	pkFps->SetCamera(cam1);		
+		pkFps->GetCam()->ClearViewPort();	
+
+		pkRender->DrawSkyBox(pkFps->GetCam()->GetPos());
+		pkRender->DrawHMlod(test,pkFps->GetCam()->GetPos(),pkFps->m_iFps);			
+
+		glEnable(GL_ALPHA_TEST);
+		glAlphaFunc(GL_GREATER,0.3);
+			pkRender->DrawBillboard(pkFps->GetCam()->GetModelMatrix(),Vector3(140,50,450),20,pkTexMan->Load("file:../data/textures/star.tga",T_NOMIPMAPPING));	
 	
-	pkRender->DrawWater(pkFps->GetCam()->GetPos(),Vector3(512,0,512),Vector3(0,0,0),1200,50);	
-//	pkRender->DrawSimpleWater(Vector3(0,-5,0),Vector4(.5,.5,.5,.99),1024,pkTexMan->Load("file:../data/textures/water3.bmp",0));	
+		pkRender->DrawWater(pkFps->GetCam()->GetPos(),Vector3(512,0,512),Vector3(0,0,0),1200,50);	
+	
+
+	
+	pkFps->SetCamera(cam2);		
+		pkFps->GetCam()->ClearViewPort();	
+	
+		pkRender->DrawSkyBox(pkFps->GetCam()->GetPos());
+		pkRender->DrawHMlod(test,pkFps->GetCam()->GetPos(),pkFps->m_iFps);			
+
+		glEnable(GL_ALPHA_TEST);
+		glAlphaFunc(GL_GREATER,0.3);
+			pkRender->DrawBillboard(pkFps->GetCam()->GetModelMatrix(),Vector3(140,50,450),20,pkTexMan->Load("file:../data/textures/star.tga",T_NOMIPMAPPING));	
+	
+		pkRender->DrawWater(pkFps->GetCam()->GetPos(),Vector3(512,0,512),Vector3(0,0,0),1200,50);	
+	
+	pkFps->SetCamera(cam1);			
+	
 	
 	input();
 	float z=pkFps->GetCam()->GetPos().z;
