@@ -17,12 +17,21 @@ enum ControlKeys
 	eCRAWL = 5,
 };
 
+enum CharcterStates
+{
+	eWALKING	=	0,
+	eRUNNING	=	1,
+	eJUMPING	=	2,
+	eSWIMING	=	3,
+};
+
 enum MOVE_STATE { idle, moving };
 
 class MCOMMON_API P_CharacterControl: public Property
 {
 	private:
 		bitset<6>	m_kControls;
+		bitset<8>	m_kCharacterStates;
 		float			m_fSpeed;
 		float			m_fJumpForce;
 		
@@ -32,8 +41,8 @@ class MCOMMON_API P_CharacterControl: public Property
 		
 		float			m_fJumpDelay;
 
-		MOVE_STATE m_eMoveState;
-		Vector3 m_kPrevPos;
+		MOVE_STATE	m_eMoveState;
+		Vector3 		m_kPrevPos;
 
 		bool m_bMoveButtonReleased;
 
@@ -44,10 +53,17 @@ class MCOMMON_API P_CharacterControl: public Property
 
 		void Update();
 		void Init();		
-		
+		 
 		void SetKeys(bitset<6>* kControls) 					{	m_kControls = *kControls;	}
 		void SetRotation(float fYAngle,float fPAngle) 	{	m_fYAngle = fYAngle;
 																			m_fPAngle = fPAngle;			}
+										
+		void SetCharacterState(int iState,bool bValue);
+		bool GetCharacterState(int iState);																			
+																												
+		void PackTo(NetPacket* pkNetPacket, int iConnectionID ) ;
+		void PackFrom(NetPacket* pkNetPacket, int iConnectionID ) ;		
+																			
 };
 
 MCOMMON_API Property* Create_P_CharacterControl();

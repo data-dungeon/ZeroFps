@@ -156,7 +156,7 @@ class ENGINE_API Property
 		void	SetNetUpdateFlag(int iConID,bool bValue);
 		void	SetNetUpdateFlag(bool bValue);
 		bool	GetNetUpdateFlag(int iConID);
-		bool	AllNetUpdateFlagsFalse();
+		bool	AllNetUpdateFlagsFalse();								//warning this function sux. 
 		void	ResetAllNetUpdateFlags();
 
 
