@@ -185,6 +185,9 @@ void MadView::ChangeMad(string strName)
 	sprintf(szText, "Faces: %i", pkMad->GetNumFaces());
 	SetText("NumFacesLabel", szText);
 
+	float radius = pkMad->GetRadius();
+	printf("radius = %f\n", radius);
+
 	((ZGuiTreebox*)GetWnd("AnimationFileTree"))->Clear(); 
 
 	Mad_Core* pkCore = dynamic_cast<Mad_Core*>(pkMad->kMadHandle.GetResourcePtr()); 

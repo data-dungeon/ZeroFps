@@ -37,7 +37,6 @@ void MadView::Input()
 
 	if(m_pkInputHandle->Pressed(KEY_SPACE) && !DelayCommand())
 	{
-		
 		static int prev_mode = 0;
 
 		if(m_iObjRotMode != 0)
@@ -49,9 +48,62 @@ void MadView::Input()
 		{
 			m_iObjRotMode = prev_mode;
 		}		
-
 	}
-	
+
+	static float prev_x = 0, prev_y = 0;
+	static Point press_pos;
+	static bool pressed = false;
+	if(m_pkInputHandle->Pressed(MOUSELEFT))
+	{
+		if(pressed == false)
+		{
+			m_pkInputHandle->SDLMouseXY(press_pos.x, press_pos.y);
+			pressed = true;
+		}
+
+		Point curr_pos;
+		m_pkInputHandle->SDLMouseXY(curr_pos.x, curr_pos.y);
+
+		m_fObjRotX = curr_pos.y - press_pos.y + prev_x;
+		m_fObjRotY = curr_pos.x - press_pos.x + prev_y;
+	}
+	else
+	{
+		pressed = false;
+		prev_x = m_fObjRotX;
+		prev_y = m_fObjRotY;
+	}
+
+	static float prev_x2 = 0, prev_y2 = 0;
+	static Point press_pos2;
+	static bool pressed2 = false;
+	if(m_pkInputHandle->Pressed(MOUSERIGHT))
+	{
+		if(pressed2 == false)
+		{
+			m_pkInputHandle->SDLMouseXY(press_pos2.x, press_pos2.y);
+			pressed2 = true;
+		}
+
+		Point curr_pos;
+		m_pkInputHandle->SDLMouseXY(curr_pos.x, curr_pos.y);
+
+		if(m_pkInputHandle->Pressed(KEY_Z))
+			kCamerPos.z += (float)(curr_pos.y - press_pos2.y + prev_x2) / 1000.0f;
+
+		if(m_pkInputHandle->Pressed(KEY_X))
+			kCamerPos.x += (float)(curr_pos.x - press_pos2.x + prev_y2) / 1000.0f;
+
+		if(m_pkInputHandle->Pressed(KEY_C))
+			kCamerPos.y += (float)(curr_pos.y - press_pos2.y + prev_x2) / 1000.0f;
+	}
+	else
+	{
+		pressed2 = false;
+		prev_x2 = kCamerPos.x;
+		prev_y2 = kCamerPos.z;
+	}
+
 	m_pkCameraObject->SetWorldPosV(kCamerPos);
 	
 	char szText[100];
