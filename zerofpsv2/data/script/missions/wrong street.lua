@@ -17,14 +17,7 @@ MissionInfo = { name="Wrong street", difficulty=1, xp=900, cash=500, success=0 }
 MissionText = 
 { 
 	short = "Wrong street\n\nSome petty gansters have started selling drugs in the wrong hood and need some demotivation.",
-	long = [[Wrong street\n\nLarge Leonard, the local drugdealer and maffia boss is
-	pissed off. Someone has begun selling drogs in his neighborhood, and not just
-	anyone - it's Harry Hair and his gang of baldies, a gang of lowly and petty
-	thieves! They sure need to be taught a lesson or two.\nLeonard usually finishes
-	his own buissnisses, but thinks to highly of himself to do such a small work. 
-	That´s where you come in.\n\nHe wants you to make Harry and his gang a visit and teach 
-	them how hard it is to run your own buissness. Harry is recognized by his large afro 
-	hair, and all his gang members are bald.\n\nReward: 500 cash\nObjectives: Kill Harry and return to base.]]
+	long = [[Wrong street\n\nLarge Leonard, the local drugdealer and maffia boss is pissed off. Someone has begun selling drugs in his neighborhood, and not just anyone - it's Harry Hair and his gang of baldies, a gang of lowly and petty thieves! They sure need to be taught a lesson or two.\nLeonard usually finishes his own buissnises, but thinks to highly of himself to do such a small work. That´s where you come in.\n\nHe wants you to make Harry and his gang a visit and teach them how hard it is to run your own buissness. Harry is recognized by his large afro hair, and all his gang members are bald.\n\nReward: 500 cash\n\nObjectives: Kill Harry and return to base.]]
 }
 
 function OnMissionStart()
