@@ -47,13 +47,13 @@ void Test::OnIdle(void) {
 	
 	glLightfv(GL_LIGHT0,GL_POSITION,&light_position[0]);	
 
-	glutSolidSphere(5,20,20);
+//	glutSolidSphere(5,20,20);
 
 pkRender->DrawHMlod(test,*pkFps->m_kCamPos);		
 
 
 //	pkRender->DrawHM(test);		
-//	pkRender->Quad(Vector3(0,1,0),Vector3(-90,0,0),Vector3(2000,2000,2000),pkTexMan->Load("file:../data/textures/water.bmp"));
+	pkRender->Quad(Vector3(0,1,0),Vector3(-90,0,0),Vector3(2000,2000,2000),pkTexMan->Load("file:../data/textures/water.bmp"));
 
 //	cout<<pkFps->m_iFps<<endl;
 }
