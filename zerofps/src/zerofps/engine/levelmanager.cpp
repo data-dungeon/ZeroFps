@@ -8,19 +8,23 @@ LevelManager::LevelManager(): ZFObject("LevelManager")
 	m_pkBasicFS=static_cast<ZFBasicFS*>(g_ZFObjSys.GetObjectPtr("ZFBasicFS"));
 	m_pkConsole=static_cast<Console*>(g_ZFObjSys.GetObjectPtr("Console"));
 	m_pkRender=static_cast<Render*>(g_ZFObjSys.GetObjectPtr("Render"));
+	m_pkCmd=static_cast<CmdSystem*>(g_ZFObjSys.GetObjectPtr("CmdSystem"));
+	m_pkIni=static_cast<ZFIni*>(g_ZFObjSys.GetObjectPtr("ZFIni"));
 
 	m_pkMap=new HeightMap();
-
-	m_bVisibleZones=true;
-	m_fZoneRadius=250;
 	
+	m_bVisibleZones=true;
+	m_fZoneRadius=250;	
 	m_kMapBaseDir="../data/maps";
+	
+	m_pkCmd->Add(&m_fZoneRadius,"l_zoneradius",type_float);		
+	
 }
 
 void LevelManager::CreateEmptyLevel(int iSize)
 {
 	CreateNew(iSize);
-	CreateZones(m_fZoneRadius,m_bVisibleZones);
+	CreateZones();
 }
 
 void LevelManager::Clear() 
@@ -46,15 +50,17 @@ void LevelManager::CreateNew(int iSize)
 			
 }
 
-void LevelManager::CreateZones(float fRadius,bool bVisible)
+void LevelManager::CreateZones()
 {
-	for(float x=0;x< (float)m_pkMap->m_iHmSize;x+=fRadius/3){
-		for(float z=0;z< (float)m_pkMap->m_iHmSize;z+=fRadius/3){
+	for(float x=0;x< (float)m_pkMap->m_iHmSize;x+=m_fZoneRadius/3){
+		for(float z=0;z< (float)m_pkMap->m_iHmSize;z+=m_fZoneRadius/3){
 			if(m_pkMap->Height(x,z)>-1){
 				ZoneObject *object = new ZoneObject();
 				object->GetPos()=Vector3(x,m_pkMap->Height(x,z),z);
-				object->SetRadius(fRadius);
+				object->SetRadius(m_fZoneRadius);
 				object->SetParent(m_pkObjectMan->GetWorldObject());			
+				if(!m_bVisibleZones)
+					object->DeleteProperty("MadProperty");
 			}
 		}
 	}	
@@ -75,6 +81,9 @@ bool LevelManager::LoadLevel(const char* acFile)
 		
 	string kHmfile;
 	string kZolfile;
+	string kpreinifile;
+	string ksuinifile;	
+
 
 	kHmfile=m_kMapBaseDir;
 	kHmfile+="/";
@@ -88,8 +97,25 @@ bool LevelManager::LoadLevel(const char* acFile)
 	kZolfile+="/";	
 	kZolfile+="objects.zol";
 
+	kpreinifile=m_kMapBaseDir;
+	kpreinifile+="/";
+	kpreinifile+=acFile;
+	kpreinifile+="/";	
+	kpreinifile+="preconfig.ini";
+
+	ksuinifile=m_kMapBaseDir;
+	ksuinifile+="/";
+	ksuinifile+=acFile;
+	ksuinifile+="/";	
+	ksuinifile+="suconfig.ini";
+
+
 	//clear world
 	Clear();
+	
+	//execute preconfig.ini
+	if(!m_pkIni->ExecuteCommands(kpreinifile.c_str()))
+		m_pkConsole->Printf("No preconfig.ini found");
 	
 	//load heightmap
 	if(!m_pkMap->Load(kHmfile.c_str())){
@@ -98,19 +124,24 @@ bool LevelManager::LoadLevel(const char* acFile)
 	};	
 	
 	//create zoneobjects
-	CreateZones(m_fZoneRadius,m_bVisibleZones);		
+	CreateZones();		
 	
 	//load objects
 	if(!m_pkObjectMan->LoadAllObjects(kZolfile .c_str())){
 		m_pkConsole->Printf("Error loading objects");
 		return false;
-	}		
+	}
 
 	//extract world info from the worldinfo object and setup
 	if(!ExtractWorldInfoObject())
 		return false;
 	
+	//setup world from the worldinfoproperty
 	SetupWorld();	
+
+	//execute suconfig.ini
+	if(!m_pkIni->ExecuteCommands(ksuinifile.c_str()))
+		m_pkConsole->Printf("No suconfig.ini found");
 
 	return true;
 }

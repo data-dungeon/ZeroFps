@@ -30,6 +30,7 @@ class ENGINE_API ObjectDescriptor{
 		Vector3 m_kVel;
 		
 		bool m_bSave;
+		int m_iObjectType;
 		
 		list<PropertyDescriptor*> m_acPropertyList;		
 		

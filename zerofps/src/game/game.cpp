@@ -32,6 +32,9 @@ void Game::Init()
 	//initiate our camera
 	m_pkCamera=new Camera(Vector3(0,10,0),Vector3(0,0,0),85,1.333,0.25,250);	
 	
+	//disable zones modells
+	pkLevelMan->SetVisibleZones(false);
+	
 	//set gamestate to menu
 	m_iGameState=GAME_STATE_MENU;
 }

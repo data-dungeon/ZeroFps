@@ -24,6 +24,8 @@ class ENGINE_API LevelManager : public ZFObject {
 		ZFBasicFS* m_pkBasicFS;
 		Console* m_pkConsole;
 		Render* m_pkRender;
+		CmdSystem* m_pkCmd;
+		ZFIni* m_pkIni;
 		
 		HeightMap* m_pkMap;
 		HeightMapObject* m_pkHeightMapObject;
@@ -37,7 +39,7 @@ class ENGINE_API LevelManager : public ZFObject {
 
 	public:
 		LevelManager();
-		void CreateZones(float fRadius,bool bVisible);
+		void CreateZones();
 		bool LoadLevel(const char* acName);
 		bool SaveLevel(const char* acName);
 		void CreateNew(int iSize);
@@ -50,10 +52,13 @@ class ENGINE_API LevelManager : public ZFObject {
 		bool ExtractWorldInfoObject();	//is called after loading
 		void SetupWorld();
 		
+		void SetVisibleZones(bool bVisible) {m_bVisibleZones=bVisible;};		
+		float &GetZoneRadius() {return m_fZoneRadius;};
+		
 		void Fog(Vector3 kColor,float fStart,float fStop);
 		void Water(bool bWater);
-		
-		void SetVisibleZones(bool bVisible) {m_bVisibleZones=bVisible;};
+		void SkyBoxTexture(const char* acHor,const char* acTop);
+		void SkyBox(bool bSkyBox);
 };
 
 

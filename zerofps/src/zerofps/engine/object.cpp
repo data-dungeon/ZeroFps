@@ -104,12 +104,6 @@ void ObjectDescriptor::SaveToMem(ZFMemPackage* pkPackage)
 	char namn[50];
 	strcpy(namn,m_kName.c_str());
 	pkPackage->Write((void*)namn,50);	
-		
-/*		
-	pkPackage->Write(m_kPos);	
-	pkPackage->Write(m_kRot);	
-	pkPackage->Write(m_kVel);
-*/
 	
 	
 	pkPackage->Write((void*)&m_kPos,12);	
@@ -117,6 +111,7 @@ void ObjectDescriptor::SaveToMem(ZFMemPackage* pkPackage)
 	pkPackage->Write((void*)&m_kVel,12);
 	
 	pkPackage->Write((void*)&m_bSave,4);
+	pkPackage->Write((void*)&m_iObjectType,4);
 	
 	
 	int iNrOfPropertys=m_acPropertyList.size();
@@ -205,6 +200,7 @@ void ObjectDescriptor::LoadFromMem(ZFMemPackage* pkPackage)
 	pkPackage->Read((void*)&m_kVel,12);
 			
 	pkPackage->Read((void*)&m_bSave,4);			
+	pkPackage->Read((void*)&m_iObjectType,4);	
 			
 	int iNrOfPropertys;
 	pkPackage->Read((void*)&iNrOfPropertys,4);
@@ -247,7 +243,9 @@ Object::Object() {
 
 	m_kName="Object";
 		
-	m_iObjectType=OBJECT_TYPE_DYNAMIC;
+//	m_iObjectType=OBJECT_TYPE_DYNAMIC;
+	m_iObjectType=OBJECT_TYPE_STATIC;	
+	
 	m_bLockedChilds=false;
 	m_iUpdateStatus=UPDATE_ALL;
 	m_bLoadChilds=true;

@@ -203,7 +203,7 @@ void ZeroEdit::RunCommand(int cmdid, const CmdArgument* kCommand)
 			if(!m_pkMap->Load(kCommand->m_kSplitCommand[1].c_str())){
 				pkConsole->Printf("Could not load map =(");
 			} else {
-				pkLevelMan->CreateZones(250,true);			
+				pkLevelMan->CreateZones();			
 			}
 			
 			break;
@@ -220,7 +220,7 @@ void ZeroEdit::RunCommand(int cmdid, const CmdArgument* kCommand)
 			} else  {
 				m_pkMap->GenerateNormals(); 
 				m_pkMap->GenerateTextures();
-				pkLevelMan->CreateZones(250,true);
+				pkLevelMan->CreateZones();
 			}
 			
 			break;
