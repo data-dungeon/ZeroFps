@@ -16,5 +16,5 @@ end
 function Init()
 	PlaySound (SIGetSelfID(), "expl.wav");
 	Explosion (SIGetSelfID(), 3, 300);
-	PanicArea(SIGetSelfID(), 10);
+	PanicArea(SIGetSelfID(), 18);
 end
