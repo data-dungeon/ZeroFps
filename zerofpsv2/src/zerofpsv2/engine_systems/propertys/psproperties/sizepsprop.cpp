@@ -24,7 +24,7 @@ void SizePSProp::Update()
 				  								    pkParticles->at(i).m_fLifeTime )
 												  * fFrameTime;
 	}
-	
+	 
 }
 
 // ------------------------------------------------------------------------------------------
