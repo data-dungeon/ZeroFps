@@ -19,6 +19,9 @@ using namespace std;
 #define min(a,b)            (((a) < (b)) ? (a) : (b))
 #endif
 
+/*#define DEBUG_PRINT 0
+#define printf(x) { int apa = 2; }*/
+
 float const degtorad = float(57.3248);
 
 float BASIC_API DegToRad(float fAngle);				///< Convert a angle in degrees to radians.

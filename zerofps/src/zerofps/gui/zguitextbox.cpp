@@ -132,6 +132,9 @@ bool ZGuiTextbox::ProcessKBInput(int iKey)
 			return true;
 	}
 
+	if(iKey == gKEY_LSHIFT || iKey == gKEY_RSHIFT)
+		return false;
+
 	if( (iKey == gKEY_DOWN && m_bMultiLine == true) ||
 		(iKey == gKEY_UP   && m_bMultiLine == true) )
 	{
