@@ -744,10 +744,6 @@ void MistClient::Input()
 	{
 		if(!DelayCommand() )
 		{			
-			if(Entity* pkEnt = m_pkEntityManager->GetEntityByID(m_iPickedEntityID))			
-				m_pkPointText->AddText("klick",pkEnt->GetWorldPosV(),Vector3(0,0.3,0),5,0);
-
-		
 			if(Entity* pkEnt = m_pkEntityManager->GetEntityByID(m_iPickedEntityID))
 			{					
 				//remove current target
