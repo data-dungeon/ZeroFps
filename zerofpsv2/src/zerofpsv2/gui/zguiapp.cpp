@@ -1264,6 +1264,15 @@ bool ZGuiApp::BuildFileTree(char* szTreeBoxName, char* szRootPath, char* szExten
 	if(szRootPath == NULL || szTreeBoxName == NULL)
 		return false;
 
+	if(GetWnd(szTreeBoxName) == NULL)
+		return false;
+
+	if(GetWndType(GetWnd(szTreeBoxName)) != Treebox)
+		return false;
+
+	// Clear treebox
+	((ZGuiTreebox*)GetWnd(szTreeBoxName))->Clear(); 
+
 	// sista tecknet får inte vara ett '/' tecken
 	if(szRootPath[strlen(szRootPath)] == '/')
 		szRootPath[strlen(szRootPath)] = '\0';

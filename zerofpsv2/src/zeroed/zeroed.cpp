@@ -91,6 +91,7 @@ ZeroEd::ZeroEd(char* aName,int iWidth,int iHeight,int iDepth)
 	m_bIsEditor =  true;
 	strcpy(szCoolName , "Guldfisk");
    strMasterSmiley = "Vim";
+	m_iSelectFileState = NONE;
 
 	// Register Variables
 	RegisterVariable("coolname",				&strMasterSmiley,			CSYS_STRING);	

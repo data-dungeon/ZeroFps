@@ -35,6 +35,8 @@ void ZeroEd::SetupGuiEnviroment()
 
 	CheckButton("PlaceongroundButton", m_bPlaceObjectsOnGround);
 	CheckButton("DisableFreeZoneBuildBn", m_bDisableFreeZonePlacement);
+
+	ShowWnd("SelectFileWnd", false);
 }
 
 void ZeroEd::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
@@ -90,6 +92,7 @@ void ZeroEd::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 
 					GetWnd("AddNewProperyWnd")->Hide();
 					GetWnd("EditPropertyWnd")->Hide();
+					ShowWnd("SelectFileWnd", false);
 				}
 				else 
 				{
@@ -191,6 +194,26 @@ void ZeroEd::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 				RemoveSelProperty();
 			}
 		}
+		else
+		if(strMainWnd == "EditPropertyWnd")
+		{
+			if(strWndClicked == "SelectPropertyValBn")
+			{
+				char* item;
+				if((item = GetSelItem("PropertyValList")))
+				{
+					if(string(item) == string("m_kMadFile"))
+					{
+						ShowWnd("SelectFileWnd", true, true);
+
+						if(m_iSelectFileState != SELECT_MAD)
+							BuildFileTree("SelectFileTree", "data/mad", ".mad");
+
+						m_iSelectFileState = SELECT_MAD;
+					}
+				}
+			}
+		}
       else
       if(strMainWnd == "AmbientSoundPage")
       {
@@ -271,6 +294,23 @@ void ZeroEd::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 				}
 
 				s_bPlay = !s_bPlay;
+			}
+			else
+			if(strWndClicked == "SelectAmbientSoundBn")
+			{
+				if(!IsWndVisible("SelectFileWnd"))
+				{
+					ShowWnd("SelectFileWnd", true);
+
+					if(m_iSelectFileState != SELECT_SOUND)
+						BuildFileTree("SelectFileTree", "data/sound", ".wav");
+
+					m_iSelectFileState = SELECT_SOUND;
+				}
+				else
+				{
+					ShowWnd("SelectFileWnd", false);
+				}
 			}
       }
 		else
@@ -470,6 +510,51 @@ void ZeroEd::OnClickTreeItem(char *szTreeBox, char *szParentNodeText,
 			m_strActiveObjectName = strFullpath;
 		}
 	}
+	else
+	if(strcmp(szTreeBox, "SelectFileTree") == 0)
+	{
+		string strFullpath;
+
+		switch(m_iSelectFileState)
+		{
+		case SELECT_SOUND:
+
+			ZGuiListitem* pkItem;
+			pkItem = ((ZGuiListbox*)GetWnd("AmbientSoundList"))->GetSelItem();  
+			if(pkItem)
+			{
+				strFullpath = string("data/sound/");
+
+				if(szParentNodeText)
+					strFullpath += string(szParentNodeText);
+
+				if(szClickNodeText)
+					strFullpath += string(szClickNodeText);
+
+				m_pkAmbientSoundAreas->SetAmbientSound(pkItem->GetText(), strFullpath);
+				SetText("NewAsFileNameEb", (char*) strFullpath.c_str());
+			}
+			break;
+
+		case SELECT_MAD:
+
+			strFullpath = string("data/mad/");
+
+			if(szParentNodeText)
+				strFullpath += string(szParentNodeText);
+
+			if(szClickNodeText)
+				strFullpath += string(szClickNodeText);
+
+			SetText("PropertyValEb", (char*) strFullpath.c_str());
+
+			AddPropertyVal();
+
+			ShowWnd("SelectFileWnd", false); // close window
+
+			break;
+		}
+	}
 }
 
 void ZeroEd::OnClickTabPage(ZGuiTabCtrl *pkTabCtrl, int iNewPage, int iPrevPage)
@@ -484,15 +569,23 @@ void ZeroEd::OnClickTabPage(ZGuiTabCtrl *pkTabCtrl, int iNewPage, int iPrevPage)
 			m_iEditMode = EDIT_ZONES;
 			if(GetWnd("AddNewProperyWnd"))GetWnd("AddNewProperyWnd")->Hide();
 			if(GetWnd("EditPropertyWnd"))GetWnd("EditPropertyWnd")->Hide();
+			ShowWnd("SelectFileWnd", false);
 			break;
 		case 1:
 			m_iEditMode = EDIT_OBJECTS;
 			if(GetWnd("AddNewProperyWnd"))GetWnd("AddNewProperyWnd")->Hide();
 			if(GetWnd("EditPropertyWnd"))GetWnd("EditPropertyWnd")->Hide();
-         ((ZGuiTreebox*)GetWnd("ObjectTree"))->Clear(); 
+			ShowWnd("SelectFileWnd", false);
          BuildFileTree("ObjectTree", "data/script/objects/", ".lua");
 			break;
+		case 2:
+			ShowWnd("SelectFileWnd", false);
+			break;
+		case 3:
+			ShowWnd("SelectFileWnd", false);
+			break;
 		case 4:
+			ShowWnd("SelectFileWnd", false);
 			if(GetWnd("AddNewProperyWnd"))GetWnd("AddNewProperyWnd")->Hide();
 			if(GetWnd("EditPropertyWnd"))GetWnd("EditPropertyWnd")->Hide();
 			m_iEditMode = EDIT_AMBIENTSOUNDS;

@@ -90,6 +90,13 @@ class ZeroEd :public Application , public ZGuiApp {
 			EDIT_MAX,
 			EDIT_AMBIENTSOUNDS,		
 		};
+
+		enum GUISelectFileWndState_e
+		{
+			NONE = 0,
+			SELECT_SOUND,
+			SELECT_MAD,
+		};
 		
 		//wierd stuff
 		char		szCoolName[256];
@@ -103,6 +110,9 @@ class ZeroEd :public Application , public ZGuiApp {
 
 		// ambient sound areas
 		AmbientSoundAreas* m_pkAmbientSoundAreas;
+
+		// gui stuff
+		int m_iSelectFileState;
 		
 		string	m_strWorldDir;						// The current dir for the world. Use for SaveAs and Title.
 

@@ -207,7 +207,6 @@ bool ZeroEd::SaveCurrentToScript()
       //if(!pkBFPS->DirExist(CREATED_SCRIPTS_DIR.c_str()))
 	     // pkBFPS->CreateDir(CREATED_SCRIPTS_DIR.c_str());
 
-      ((ZGuiTreebox*)GetWnd("ObjectTree"))->Clear(); 
       BuildFileTree("ObjectTree", (char*) CREATED_SCRIPTS_DIR.c_str(), ".lua");
 
       ZFVFile kFile;
@@ -246,7 +245,6 @@ bool ZeroEd::SaveCurrentToScript()
 
    if(bUpdate)
    {
-      ((ZGuiTreebox*)GetWnd("ObjectTree"))->Clear(); 
       BuildFileTree("ObjectTree", (char*) CREATED_SCRIPTS_DIR.c_str(), ".lua");
 
       ShowWnd("SaveScriptFileNameEb",false);
