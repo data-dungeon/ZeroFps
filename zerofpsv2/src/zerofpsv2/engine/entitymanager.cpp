@@ -2599,22 +2599,29 @@ void EntityManager::UpdateTrackers()
 		//start zone
 		ZoneData* pkStartZone = GetZoneData(iZoneIndex);
 		pkStartZone->m_iRange = 0;						
-		kFloodZones.push_back(pkStartZone);
-
 		
-		// Flood Zones in rage to active.
-		while(kFloodZones.size()) 
+		if( (*iT)->m_bOneZoneOnly )
 		{
-			ZoneData* pkZone = kFloodZones.back();
-			kFloodZones.pop_back();
-
-			kNewActiveZones.insert(pkZone->m_iZoneID);
-
-			pkZone->m_bTracked = true;
-			int iRange = pkZone->m_iRange + 1;
-
-//			if(iRange < m_iTrackerLOS) 
-//			{
+			//add the one andonly zone to new active zones
+			kNewActiveZones.insert(iZoneIndex);
+			pkStartZone->m_bTracked = true;
+		}
+		else
+		{			
+			//add the first zone to flood zones (search will start from here)
+			kFloodZones.push_back(pkStartZone);						
+			
+			// Flood Zones in rage to active.
+			while(kFloodZones.size()) 
+			{
+				ZoneData* pkZone = kFloodZones.back();
+				kFloodZones.pop_back();
+	
+				kNewActiveZones.insert(pkZone->m_iZoneID);
+	
+				pkZone->m_bTracked = true;
+				int iRange = pkZone->m_iRange + 1;
+	
 				if(kTrackerPos.DistanceTo(pkZone->m_kPos) <= float(m_iTrackerLOS))
 				{
 			
@@ -2633,9 +2640,10 @@ void EntityManager::UpdateTrackers()
 						kFloodZones.push_back(pkOtherZone);
 					}				
 				}
-//			}
+			}
 		}
 		
+					
 		//find new loaded zones  , compare new actives zones whit last update to find new loaded zones
 		(*iT)->m_iNewActiveZones.clear();
 		set_difference(kNewActiveZones.begin(),kNewActiveZones.end(),(*iT)->m_iActiveZones.begin(),(*iT)->m_iActiveZones.end(), inserter((*iT)->m_iNewActiveZones, (*iT)->m_iNewActiveZones.begin()));

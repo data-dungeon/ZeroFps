@@ -9,12 +9,11 @@ P_Track::P_Track()
 	m_iType = PROPERTY_TYPE_NORMAL;
 	m_iSide = PROPERTY_SIDE_SERVER;
 
-	m_fNextMove			= m_pkFps->m_pkEntityManager->GetSimTime() + 1.0f;
+	m_bOneZoneOnly		= false;
 	m_iZoneNum			= 0;
-	//m_iLastZoneIndex	= -1;
 	m_bClosestZone		= true;
-
 	m_iConnectID		= -1;	// No Client.
+	m_iVersion			=	2;
 }
 
 P_Track::~P_Track() 
@@ -25,7 +24,6 @@ P_Track::~P_Track()
 
 void P_Track::Init() 
 {
-	//cout << "Trackerproperty Init" << endl;
 	m_pkOBjM->AddTracker(this);
 }
 
@@ -37,25 +35,34 @@ void P_Track::SetClient(int iId)
 
 void P_Track::Update() 
 {
-/*	if(m_pkFps->GetGameTime() < m_fNextMove)
-		return;
-	m_fNextMove = m_pkFps->GetGameTime() + 1.0;*/
 
-/*	m_iZoneNum++;
-	if(m_iZoneNum >= m_pkOBjM->m_kZones.size())
-		m_iZoneNum = 0;
-	m_pkObject->SetWorldPosV(m_pkOBjM->m_kZones[m_iZoneNum].m_kPos);*/
-	
-//	ZoneObject* pkZone = m_pkOBjM->GetZone(m_pkObject);
-//	if(!pkZone) {
-//		return;
-//		}
-/*
-	int iRandDir = rand() % pkZone->m_kZoneLinks.size();
-	m_pkObject->SetWorldPosV(m_pkOBjM->m_kZones[m_iZoneNum].m_kPos);
-	m_pkObject->SetWorldPosV(pkZone->m_kZoneLinks[iRandDir]->GetWorldPosV());*/
+
 }
 
+
+vector<PropertyValues> P_Track::GetPropertyValues()
+{
+	vector<PropertyValues> kReturn(1);
+	
+	kReturn[0].kValueName = "OneZoneOnly";
+	kReturn[0].iValueType = VALUETYPE_BOOL;
+	kReturn[0].pkValue    = (void*)&m_bOneZoneOnly;
+	
+	return kReturn;
+}
+
+void P_Track::Save(ZFIoInterface* pkPackage)
+{	
+	pkPackage->Write(m_bOneZoneOnly);
+}
+
+void P_Track::Load(ZFIoInterface* pkPackage,int iVersion)
+{
+	if(iVersion == 2)
+	{
+		pkPackage->Read(m_bOneZoneOnly);
+	}
+}
 
 Property* Create_TrackProperty()
 {
