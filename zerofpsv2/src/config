@@ -1,14 +1,12 @@
 MAKE = make		#make to use
-#CXX = g++		#compiler to use
-#CC = g++		#linker to use
 
-### distcc compilation
-#CXX = /usr/bin/dist/g++              #compiler to use
-#CC = /usr/bin/dist/g++               #linker to use
-#CXXFLAGS= -O3 -g -DNDEBUG #-pg -g                                               #compiler flags
+
+### distcc compilation  , distcc hosts are added in ~/.distcc/hosts
+#CXX = /usr/lib/distcc/bin/g++              			#compiler to use
+#CC = /usr/lib/distcc/bin/g++               			#linker to use
+#CXXFLAGS= -O3 -g -DNDEBUG #-pg -g                  #compiler flags
 #C_ARGS = -O3 -g #-pg -g
-#CXXFLAGS= -O0 -g -DNDEBUG #-pg -g                                               #compiler flags
-#C_ARGS = -O0 -g #-pg -g
+#MAKEFLAGS= -j2													#number of jobs to runt, equal to number of hosts
 
 
 ### normal compilation
