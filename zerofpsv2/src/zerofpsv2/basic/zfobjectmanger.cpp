@@ -6,6 +6,8 @@
 #include "zfobjectmanger.h"
 #include "basicconsole.h"
 #include "globals.h"
+#include "../basic/zfini.h"
+
 using namespace std;
 
 ZFObjectManger* ZFObjectManger::pkInstance;
@@ -113,6 +115,12 @@ ZFObjectManger::~ZFObjectManger()
 		PrintObjects();
 		}
 
+	// Check that we don't have any objects left.
+	if(m_kCmdDataList.size() > 0) {
+		g_Logf("WARNING: Some Variables Systems have not unregistred\n");
+		LogVariables();
+		}
+
 	Log_DestroyAll();
 	fclose(m_pkLogFile);						// Close Log Fil
 }
@@ -139,13 +147,13 @@ void ZFObjectManger::Register(ZFSubSystem* pkObject, char* acName, ZFSubSystem* 
 		}
 
 	NameObject kObjName;
-	kObjName.m_strName = string(acName);
-	kObjName.pkObject = pkObject;
+	kObjName.m_strName			= string(acName);
+	kObjName.pkObject				= pkObject;
 	kObjName.m_iNumOfRequests	= 0;
 	kObjName.m_bStarted			= false;
 	
 	kObjectNames.push_back(kObjName);
-	pkObject->m_strZFpsName = string(acName);
+	pkObject->m_strZFpsName		= string(acName);
 
 	pkObject->m_pkObjectManger = this;
 
@@ -173,11 +181,11 @@ void ZFObjectManger::UnRegister(ZFSubSystem* pkObject)
 			itNames++;
 	}
 
+	UnRegister_Cmd(pkObject);
+
 #ifdef _DEBUG
 	g_Logf("Ok\n");
 #endif
-
-	UnRegister_Cmd(pkObject);
 }
 
 ZFSubSystem* ZFObjectManger::GetObjectPtr(char* acName)
@@ -216,7 +224,13 @@ void ZFObjectManger::PrintObjects(void)
 	for(unsigned int i=0; i < kObjectNames.size();i++) {
 		g_Logf(" %s, %d\n", kObjectNames[i].m_strName.c_str(), kObjectNames[i].m_iNumOfRequests );
 	}
+}
 
+void ZFObjectManger::LogVariables(void)
+{
+	for(unsigned int i=0; i < m_kCmdDataList.size();i++) {
+		g_Logf(" %s\n", m_kCmdDataList[i].m_strName.c_str());
+	}
 }
 
 void ZFObjectManger::PrintObjectsHer(void)
@@ -278,9 +292,19 @@ bool ZFObjectManger::Register_Cmd(char* szName, int iCmdID, ZFSubSystem* kObject
 
 bool ZFObjectManger::UnRegister_Cmd(ZFSubSystem* kObject)
 {
+	vector<ZFCmdData>::iterator itCmds;
+	for(itCmds = m_kCmdDataList.begin(); itCmds != m_kCmdDataList.end(); )
+	{
+		if(itCmds->m_pkObject == kObject) {
+			itCmds = m_kCmdDataList.erase(itCmds);
 #ifdef _DEBUG
-	g_Logf("'%s' will no longer handle any commands\n", kObject->m_strZFpsName);
+			g_Logf(".");
 #endif
+			}
+		else
+			itCmds++;
+	}
+
 	return true;
 }
 
@@ -396,7 +420,7 @@ void ZFObjectManger::Logf(const char* szName, const char* szMessageFmt,...)
 
 
 
-bool ZFObjectManger::RegisterVariable(const char* szName, void* pvAddress, ZFCmdDataType eType)
+bool ZFObjectManger::RegisterVariable(const char* szName, void* pvAddress, ZFCmdDataType eType, ZFSubSystem* kObject)
 {
 	// Validate parameters
 	if(szName == NULL)		return false;
@@ -407,12 +431,12 @@ bool ZFObjectManger::RegisterVariable(const char* szName, void* pvAddress, ZFCmd
 		return false;
 
 	ZFCmdData kNewCmd;
-	kNewCmd.m_strName		= string(szName);
+	kNewCmd.m_strName			= string(szName);
 	kNewCmd.m_eType			= eType;
-	kNewCmd.m_iFlags		= 0;
-	kNewCmd.m_vValue		= pvAddress;
-	kNewCmd.m_pkObject		= NULL;
-	kNewCmd.m_iCmdID		= 0;
+	kNewCmd.m_iFlags			= 0;
+	kNewCmd.m_vValue			= pvAddress;
+	kNewCmd.m_pkObject		= kObject;
+	kNewCmd.m_iCmdID			= 0;
 	kNewCmd.m_iMinNumOfArgs = 0;
 
 	m_kCmdDataList.push_back(kNewCmd);
@@ -587,3 +611,53 @@ bool ZFObjectManger::IsValid()
 	return true;
 }
 
+void ZFObjectManger::Config_Save(string strFileName)
+{
+	string strVar;
+	FILE* fp = fopen(strFileName.c_str(), "wt");
+
+	for(unsigned int SubIndex=0; SubIndex < kObjectNames.size();SubIndex++) {
+		// Write Header to config
+		fprintf(fp,"\n\n[%s]\n", kObjectNames[SubIndex].m_strName.c_str());
+
+		for(unsigned int i=0; i<m_kCmdDataList.size(); i++) {
+			if(m_kCmdDataList[i].m_eType == CSYS_NONE)		continue; // We don't save none valid data.
+			if(m_kCmdDataList[i].m_eType == CSYS_FUNCTION)	continue; // We don't save functions.
+			
+			// Check so this variable is owned by the current section.
+			if(m_kCmdDataList[i].m_pkObject == kObjectNames[SubIndex].pkObject) {
+				strVar = GetVarValue(&m_kCmdDataList[i]);
+				fprintf(fp,"%s=%s\n",m_kCmdDataList[i].m_strName.c_str(), strVar.c_str());
+				}
+			}
+		}
+
+	fclose(fp);
+}
+
+void ZFObjectManger::Config_Load(string strFileName)
+{
+	ZFIni			m_kIni;
+	if(m_kIni.Open(strFileName.c_str(), 0) == 0) {
+		cout << "Failed to find config file" << endl;
+		return;
+		}
+
+	char* pkVal;
+
+	for(unsigned int SubIndex=0; SubIndex < kObjectNames.size();SubIndex++) {
+		cout << "[section] : " << kObjectNames[SubIndex].m_strName << endl;
+
+		for(unsigned int i=0; i<m_kCmdDataList.size(); i++) {
+			if(m_kCmdDataList[i].m_eType == CSYS_NONE)		continue; // We don't save none valid data.
+			if(m_kCmdDataList[i].m_eType == CSYS_FUNCTION)	continue; // We don't save functions.
+			
+			pkVal = m_kIni.GetValue(kObjectNames[SubIndex].m_strName.c_str(), m_kCmdDataList[i].m_strName.c_str());
+			if(pkVal) {
+				cout << "Setting " << m_kCmdDataList[i].m_strName.c_str();
+				cout << " " << pkVal << endl;
+				SetVariable(m_kCmdDataList[i].m_strName.c_str(),pkVal);
+				}
+			}
+		}
+}

@@ -134,6 +134,8 @@ class ENGINE_API ZeroFps : public I_ZeroFps {
 
 		void RunCommand(int cmdid, const CmdArgument* kCommand);
 		void HandleArgs(int iNrOfArgs, char** paArgs);		
+		void ConfigFileRun();
+		void ConfigFileSave();
 		void Run_EngineShell();
 		void Run_Server();
 		void Run_Client();

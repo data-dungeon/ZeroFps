@@ -58,7 +58,7 @@ public:
 	int				m_iFlags;				// flags.
 
 	void*				m_vValue;				// Pekare till data.
-	ZFSubSystem*		m_pkObject;				// Ptr to zfps object that owns this data (if any).
+	ZFSubSystem*	m_pkObject;				// Ptr to zfps object that owns this data (if any).
 	int				m_iCmdID;				// ID.
 
 	int				m_iMinNumOfArgs;		// Minimum num of arguments this func need.
@@ -103,6 +103,7 @@ public:
 
 	void PrintObjects(void);
 	void PrintObjectsHer(void);
+	void LogVariables(void);
 
 // Cmd / Functions.
 	ZFCmdData* FindArea(const char* szName);
@@ -111,7 +112,7 @@ public:
 	bool RunCommand(const char* szCmdArg);									///< Run a cmd by passing it along to the correct object
 
 // Variables
-	bool RegisterVariable(const char* szName, void* pvAddress, ZFCmdDataType eType);
+	bool RegisterVariable(const char* szName, void* pvAddress, ZFCmdDataType eType, ZFSubSystem* kObject);
 	bool SetVariable(const char* szName, const char* szValue);
 
 	void SetValue(ZFCmdData* pkArea, const char* szValue);
@@ -134,6 +135,9 @@ public:
 	bool ShutDown();
 	bool IsValid();
 
+	// Config Files
+	void Config_Save(string strFileName);
+	void Config_Load(string strFileName);
 };
 
 extern BASIC_API ZFObjectManger g_ZFObjSys;

@@ -177,7 +177,7 @@ int ZFIni::GetKeyValuePos(int row)
 	return -1;
 }
 
-char* ZFIni::GetValue(const char *szSearchSection, char *szSearchKey)
+char* ZFIni::GetValue(const char *szSearchSection, const char *szSearchKey)
 {
 	if(m_bFileReady == false)
 		return NULL;
@@ -449,6 +449,7 @@ void ZFIni::GetSectionNames(vector<string>& kSectionList)
 	for(int i=0; i<m_iNumSections; i++)
 		kSectionList.push_back(m_pstrSections[i]);
 }
+
 
 bool ZFIni::SectionExist(const char* acSection)
 {

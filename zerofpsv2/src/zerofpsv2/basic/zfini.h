@@ -27,7 +27,7 @@ public:
 	void GetCommandStrings(vector<string>* pkCommands);
 	bool ExecuteCommands(const char* strName);
 	
-	char* GetValue(const char* strSection, char* strKey);
+	char* GetValue(const char* strSection, const char* strKey);
 	void GetSectionNames(vector<string>& kSectionList);
 	bool GetBoolValue(const char* strSection, char* strKey);
 	int GetIntValue(const char* strSection, char* strKey);

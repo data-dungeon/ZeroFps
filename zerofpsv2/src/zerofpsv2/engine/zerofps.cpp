@@ -8,6 +8,7 @@
 #include "../gui/zgui.h"
 #include "levelmanager.h"
 #include "../engine_systems/propertys/propertys.pkg"
+#include "../basic/zfini.h"
 
 int		g_iNumOfFrames;
 int		g_iNumOfMadSurfaces;
@@ -58,26 +59,31 @@ ZeroFps::ZeroFps(void) : I_ZeroFps("ZeroFps")
 	m_bRunWorldSim	=		true;
 	m_bCapture			=	false;
 
-	g_iLogRenderPropertys = 0;
-	m_fAvrageFpsTime =	0;
-	m_iAvrageFrameCount =0;
+	g_iLogRenderPropertys	= 0;
+	m_fAvrageFpsTime			= 0;
+	m_iAvrageFrameCount		= 0;
 
-	g_ZFObjSys.RegisterVariable("m_sens", &m_pkInput->m_fMouseSensitivity,CSYS_FLOAT);
-	g_ZFObjSys.RegisterVariable("r_landlod", &m_pkRender->m_iDetail,CSYS_INT);
-	g_ZFObjSys.RegisterVariable("r_viewdistance", &m_pkRender->m_iViewDistance,CSYS_INT);
-	g_ZFObjSys.RegisterVariable("r_autolod", &m_pkRender->m_iAutoLod,CSYS_INT);
-	g_ZFObjSys.RegisterVariable("r_fpslock", &m_pkRender->m_iFpsLock,CSYS_INT);
-	g_ZFObjSys.RegisterVariable("r_maxlights", &m_pkLight->m_iNrOfLights,CSYS_INT);
-	g_ZFObjSys.RegisterVariable("r_width", &m_iWidth,CSYS_INT);
-	g_ZFObjSys.RegisterVariable("r_height", &m_iHeight,CSYS_INT);
-	g_ZFObjSys.RegisterVariable("r_depth", &m_iDepth,CSYS_INT);
-	g_ZFObjSys.RegisterVariable("r_fullscreen", &m_iFullScreen,CSYS_INT);
-	g_ZFObjSys.RegisterVariable("r_maddraw", &m_iMadDraw,CSYS_INT);
-	g_ZFObjSys.RegisterVariable("r_madlod", &g_fMadLODScale,CSYS_FLOAT);
-	g_ZFObjSys.RegisterVariable("r_madlodlock", &g_iMadLODLock,CSYS_FLOAT);
-	g_ZFObjSys.RegisterVariable("e_systemfps", &m_fSystemUpdateFps,CSYS_FLOAT);	
-	g_ZFObjSys.RegisterVariable("e_runsim", &m_bRunWorldSim,CSYS_BOOL);	
-	g_ZFObjSys.RegisterVariable("r_logrp", &g_iLogRenderPropertys,CSYS_INT);	
+	// The default graphics mode.
+	m_iWidth						= 640;
+	m_iHeight					= 480;
+	m_iDepth						= 16;
+
+	g_ZFObjSys.RegisterVariable("m_sens", &m_pkInput->m_fMouseSensitivity,CSYS_FLOAT, this);
+	g_ZFObjSys.RegisterVariable("r_landlod", &m_pkRender->m_iDetail,CSYS_INT, this);
+	g_ZFObjSys.RegisterVariable("r_viewdistance", &m_pkRender->m_iViewDistance,CSYS_INT, this);
+	g_ZFObjSys.RegisterVariable("r_autolod", &m_pkRender->m_iAutoLod,CSYS_INT, this);
+	g_ZFObjSys.RegisterVariable("r_fpslock", &m_pkRender->m_iFpsLock,CSYS_INT, this);
+	g_ZFObjSys.RegisterVariable("r_maxlights", &m_pkLight->m_iNrOfLights,CSYS_INT, this);
+	g_ZFObjSys.RegisterVariable("r_width", &m_iWidth,CSYS_INT, this);
+	g_ZFObjSys.RegisterVariable("r_height", &m_iHeight,CSYS_INT, this);
+	g_ZFObjSys.RegisterVariable("r_depth", &m_iDepth,CSYS_INT, this);
+	g_ZFObjSys.RegisterVariable("r_fullscreen", &m_iFullScreen,CSYS_INT, this);
+	g_ZFObjSys.RegisterVariable("r_maddraw", &m_iMadDraw,CSYS_INT, this);
+	g_ZFObjSys.RegisterVariable("r_madlod", &g_fMadLODScale,CSYS_FLOAT, this);
+	g_ZFObjSys.RegisterVariable("r_madlodlock", &g_iMadLODLock,CSYS_FLOAT, this);
+	g_ZFObjSys.RegisterVariable("e_systemfps", &m_fSystemUpdateFps,CSYS_FLOAT, this);	
+	g_ZFObjSys.RegisterVariable("e_runsim", &m_bRunWorldSim,CSYS_BOOL, this);	
+	g_ZFObjSys.RegisterVariable("r_logrp", &g_iLogRenderPropertys,CSYS_INT, this);	
 
 	g_ZFObjSys.Register_Cmd("setdisplay",FID_SETDISPLAY,this);
 	g_ZFObjSys.Register_Cmd("quit",FID_QUIT,this);
@@ -127,6 +133,7 @@ ZeroFps::~ZeroFps()
 {
 	m_pkNetWork->ServerEnd();
 	g_ZFObjSys.ShutDown();
+	ConfigFileSave();
 
 	delete m_pkPhysEngine;
 	delete m_pkLevelMan;
@@ -191,12 +198,24 @@ string ZeroFps::GetArg(int iArgIndex)
 	return strArg;
 }
 
+void ZeroFps::ConfigFileRun()
+{
+	string CfgName = string(m_pkApp->m_pTitle) + ".ini";
+	g_ZFObjSys.Config_Load(CfgName);
+}
+
+void ZeroFps::ConfigFileSave()
+{
+	string CfgName = string(m_pkApp->m_pTitle) + ".ini";
+	g_ZFObjSys.Config_Save(CfgName);
+}
 
 
 bool ZeroFps::Init(int iNrOfArgs, char** paArgs)
 {	
-	HandleArgs(iNrOfArgs,paArgs);							//	handle arguments
+	HandleArgs(iNrOfArgs,paArgs);						//	handle arguments
 	SetApp();												//	setup class pointers	
+	ConfigFileRun();
 
 	// StartUp SDL
 	if(SDL_Init(SDL_OPENGL | SDL_INIT_NOPARACHUTE )<0){
@@ -485,10 +504,14 @@ void ZeroFps::RemoveRenderTarget(Camera* pkCamera)
 }
 
 
-void ZeroFps::InitDisplay(int iWidth,int iHeight,int iDepth) {
-	m_iWidth=iWidth;
-	m_iHeight=iHeight;
-	m_iDepth=iDepth;
+void ZeroFps::InitDisplay(int iWidth,int iHeight,int iDepth) 
+{
+	// Anything sent from app overrides default and ini files.
+	if(iWidth || iHeight || iDepth) {
+		m_iWidth	= iWidth;
+		m_iHeight= iHeight;
+		m_iDepth	= iDepth;
+		}
 
 	SetDisplay();
 
@@ -895,7 +918,12 @@ void ZeroFps::RunCommand(int cmdid, const CmdArgument* kCommand)
 			break;
 
 		case FID_LISTMAD:
-			iArghhh = 12;
+			if(kCommand->m_kSplitCommand.size() <= 1) {
+				m_pkConsole->Printf("Debug: %%s");
+				return;
+				}
+
+			m_pkConsole->Printf("Para1 %s", kCommand->m_kSplitCommand[1].c_str());
 			break;
 
 

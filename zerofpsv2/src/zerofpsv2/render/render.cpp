@@ -16,8 +16,8 @@ bool Render::StartUp()
 
 	// Register Our Own commands.
 	// Register Our Own variables.
-	g_ZFObjSys.RegisterVariable("r_maxlayers", &m_iMaxLandscapeLayers,CSYS_INT);
-	g_ZFObjSys.RegisterVariable("r_drawland", &m_iDrawLandscape,CSYS_INT);
+	g_ZFObjSys.RegisterVariable("r_maxlayers", &m_iMaxLandscapeLayers,CSYS_INT, this);
+	g_ZFObjSys.RegisterVariable("r_drawland", &m_iDrawLandscape,CSYS_INT, this);
 
 	// Set Our own local variables.
 	m_iSlicesize				= 32;						//grid size of lod tiles

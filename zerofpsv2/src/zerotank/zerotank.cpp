@@ -1,7 +1,7 @@
 #include "zerotank.h"
 #include "../zerofpsv2/engine_systems/common/heightmap.h"
 
-ZeroTank g_kZeroTank("ZeroTank",800,600,16);
+ZeroTank g_kZeroTank("ZeroTank",0,0,0);
 
 ZeroTank::ZeroTank(char* aName,int iWidth,int iHeight,int iDepth) 
 	: Application(aName,iWidth,iHeight,iDepth) 
@@ -52,7 +52,7 @@ void ZeroTank::Init()
 	m_pkMap = pkLevelMan->GetHeightMap();	
 
 	//register variables
-	g_ZFObjSys.RegisterVariable("m_iGameType", &m_iGameType,CSYS_INT);
+	g_ZFObjSys.RegisterVariable("m_iGameType", &m_iGameType,CSYS_INT, this);
 	
 	//register commmands bös
 	g_ZFObjSys.Register_Cmd("load",FID_LOAD,this);		
