@@ -53,7 +53,7 @@ class P_CharacterProperty: public Property
 		string	m_strIdleStanding;
 		string	m_strIdleSitting;
 		string	m_strIdleSwimming;
-		string  m_strTaunt;
+		string	m_strTaunt;
 		
 		void PlayCharacterMovementSounds();
 		void UpdateAnimation();
@@ -75,6 +75,8 @@ class P_CharacterProperty: public Property
 		void SetRunSound(const string& strFile)				{	m_strRunSound = strFile;				ResetAllNetUpdateFlags();}
 		void SetJumpSound(const string& strFile)				{	m_strJumpSound = strFile;				ResetAllNetUpdateFlags();}
 		void SetSwimSound(const string& strFile)				{	m_strSwimSound = strFile;				ResetAllNetUpdateFlags();}
+		
+		void DoTaunt(int iTountID);
 		
 		string GetName()												{	return m_strName;					}
 		string GetOwnedByPlayer()									{	return m_strOwnedByPlayer;		}

@@ -111,6 +111,24 @@ void P_CharacterProperty::Update()
 	}		
 }
 
+void P_CharacterProperty::DoTaunt(int iTauntID)
+{
+	if(iTauntID <0 || iTauntID > 99)
+		return;
+	
+	char nr[4];
+	IntToChar(nr,iTauntID);	
+	
+	if(P_Mad* pkMad = (P_Mad*)GetEntity()->GetProperty("P_Mad"))
+	{
+		if(pkMad->GetCurrentAnimationName() == m_strIdleStanding)
+		{
+			pkMad->SetAnimation((m_strTaunt + nr).c_str(), 0);
+			pkMad->SetNextAnimation(m_strIdleStanding.c_str());	
+		}
+	}
+}
+
 void P_CharacterProperty::UpdateAnimation()
 {
 	if(P_Mad* pkMad = (P_Mad*)GetEntity()->GetProperty("P_Mad"))

@@ -217,7 +217,8 @@ void MistClient::Input()
 		if ( m_pkInputHandle->VKIsDown("taunt1") || m_pkInputHandle->VKIsDown("taunt2")|| 
 			m_pkInputHandle->VKIsDown("taunt3") || m_pkInputHandle->VKIsDown("taunt4") || 
 			m_pkInputHandle->VKIsDown("taunt5") )
-		{
+		{					
+		
 			int iTauntID = 0;
 			if (m_pkInputHandle->VKIsDown("taunt1"))
 				iTauntID = 1;
