@@ -22,15 +22,15 @@ public:
 	void Close();
 	void OnCommand(string strController);
 	void OnMouseMove(bool bLeftButtonPressed, int x, int y);
-	void SetEntity(Entity* pkEnt);
+	void SetEntity(int iEntityID);
 
 private:
 	TextureManager* m_pkTexMan;
-	int m_iDefTexID;
+
 	int m_kWidth, m_kHeight;
 	ZGuiWnd* m_pkMainWnd;
 
-	Entity* m_pkEntity;
+	int m_iEntityID;
 
 	Vector2 RotateXY(float angle, Vector2 size);
 	ZGuiSkin* GetFreeIconSkin();

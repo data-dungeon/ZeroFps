@@ -423,7 +423,7 @@ void MistClient::Input()
 		{
 			if(P_Ml* pkMl = (P_Ml*)pkEnt->GetProperty("P_Ml"))
 			{
-					m_pkActionDlg->SetEntity(pkEnt);			
+					m_pkActionDlg->SetEntity(m_iPickedEntityID);			
 					m_pkActionDlg->Open();				
 				
 					/*
@@ -984,7 +984,7 @@ void MistClient::SetGuiCapture(bool bCapture)
 	
 	if(m_bGuiCapture == true)
 	{
-		g_kMistClient.m_pkGui->m_bHandledMouse = false;
+		//g_kMistClient.m_pkGui->m_bHandledMouse = false;
 		m_pkInputHandle->SetCursorInputPos(m_pkRender->GetWidth()/2,m_pkRender->GetHeight()/2);
 		m_pkGui->ShowCursor(true);
 	}
