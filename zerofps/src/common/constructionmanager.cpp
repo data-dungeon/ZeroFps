@@ -58,13 +58,7 @@ void ConstructionManager::Init(char* szTechTreeINIFile)
 
 	m_pkObjectMan = static_cast<ObjectManager*>(g_ZFObjSys.GetObjectPtr("ObjectManager"));
 	m_pkTileEngine = TileEngine::GetInstance();
-	//////////////////////////////////////
-	//// gubb was here :)
-	cout<<"----------------------------------------------------" <<endl
-		 <<"				ConstructionApa Init" <<endl
-		 <<"----------------------------------------------------" <<endl;
 
-	////////////////////////////////////////7
 	if(pkIni)
 	{
 		if(!pkIni->Open(szTechTreeINIFile, false))
@@ -102,7 +96,6 @@ void ConstructionManager::Init(char* szTechTreeINIFile)
 				kNewStructure.ucID, kNewStructure ) );
 
 			if(kNewStructure.ucTechLevel > m_cMaxTechLevel)
-				//kNewStructure.ucTechLevel = m_cMaxTechLevel;
 				m_cMaxTechLevel = kNewStructure.ucTechLevel ;
 
 			m_kAllStructures.push_back(kNewStructure);
@@ -144,6 +137,8 @@ void ConstructionManager::PrintUpgrades(int iTechLevel)
 
 bool ConstructionManager::Build(char *szStructureName, Point kSquare)
 {
+	const float c_fFailBuildAngle = 20.0f;
+
 	Object* pkNewObject = m_pkObjectMan->CreateObjectByArchType(szStructureName);
 	
 	if(pkNewObject)
@@ -163,20 +158,32 @@ bool ConstructionManager::Build(char *szStructureName, Point kSquare)
 			int x_max = kSquare.x+width/2;
 			int y_max = kSquare.y+height/2;
 
-			for(int y=y_min; y<y_max; y++)
-				for(int x=x_min; x<x_max; x++)
+			int x,y;
+			for(y=y_min; y<y_max; y++)
+				for(x=x_min; x<x_max; x++)
+				{
 					if(m_pkTileEngine->GetTile(x,y)->kUnits.size())
 					{
 						bOK = false;
 						break;
 					}
 
+					if(m_pkTileEngine->GetTile(x,y)->fAngle > c_fFailBuildAngle)
+					{
+						bOK = false;
+						break;
+					}
+				}
+
 			if(bOK == false)
 			{
-				m_pkObjectMan->Delete(pkNewObject);
+				pkServerUnit->Damage(9999);
+				printf("Failed to build stucture\n");
 				return false;
 			}
 		}
+
+
 
 		pkNewObject->AttachToClosestZone();
 		pkNewObject->SetPos(pos);

@@ -71,11 +71,18 @@ void P_UnitBuildAI::Init()
 
 AIBase* P_UnitBuildAI::RunUnitCommand(int iCommandID, int iXDestinaton, int iYDestinaton, int iTarget)
 {
-	
+	bool bSuccess = false;
 	switch(iCommandID)
 	{
+	default:
+		bSuccess = ConstructionManager::GetInstance()->Build("ZeroRTSFactory", 
+			Point(iXDestinaton, iYDestinaton));
 	}
-	cout<<"I am building " <<endl;
+
+	if(bSuccess)
+		cout<<"I am building " <<endl;
+
+
 	return NULL;
 
 }

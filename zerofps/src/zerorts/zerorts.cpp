@@ -510,8 +510,7 @@ void ZeroRTS::RunCommand(int cmdid, const CmdArgument* kCommand)
 			
 			//setup tile engine
 			m_pkTileEngine->CreateMap();
-			
-			
+						
 			pkConsole->Printf("Everything is loaded ,Starting server");
 			g_ZFObjSys.RunCommand("server Default server");	
 			break;		
