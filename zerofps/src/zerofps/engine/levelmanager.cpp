@@ -212,6 +212,8 @@ bool LevelManager::LoadLevel(const char* acFile)
 	if(!m_pkIni->ExecuteCommands(ksuinifile.c_str()))
 		m_pkConsole->Printf("No suconfig.ini found");
 
+	m_kCurrentMapDir = kBase;
+
 	return true;
 }
 

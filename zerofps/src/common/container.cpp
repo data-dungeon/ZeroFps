@@ -84,7 +84,7 @@ void Container::SetSize(int iX,int iY)
 	
 	Clean();
 	
-	PrintContainer();
+//	PrintContainer();
 }
 
 
@@ -160,7 +160,7 @@ bool Container::AddItem(Object* pkObject)
 //	SetID(iX,iY,pkIP->m_iItemSizeX,pkIP->m_iItemSizeY,GetItemPos(pkObject));
 	RebuildGrid();
 
-	PrintContainer();
+//	PrintContainer();
 
 	return true;
 }

@@ -111,6 +111,8 @@ class ZeroEdit :public Application {
 		
 		int m_iPencilSize;
 		
+		int m_iEditMask;
+		
 		float m_fTimer;
 		float m_fDrawRate;
 		int m_iLandType;
@@ -130,13 +132,13 @@ class ZeroEdit :public Application {
 		void ListTemplates();		
 		void RegisterPropertys();
 		
-		void AddLandtype(int iTexture,Vector3 kColor);
-		bool RemoveLandtype(int iTexture,Vector3 kColor);		
-		bool RemoveLandtype(int iNr);
-		LandType GetLandType(int iNr);
-		void ListLandTypes();
-		bool LoadLandFromFile(const char* acFile);
-		bool SaveLandToFile(const char* acFile);		
+//		void AddLandtype(int iTexture,Vector3 kColor);
+//		bool RemoveLandtype(int iTexture,Vector3 kColor);		
+//		bool RemoveLandtype(int iNr);
+//		LandType GetLandType(int iNr);
+//		void ListLandTypes();
+//		bool LoadLandFromFile(const char* acFile);
+//		bool SaveLandToFile(const char* acFile);		
 		
 		void HeightMapDraw(Vector3 kPencilPos);
 

@@ -35,6 +35,7 @@ struct texture
 	bool b_bClamp;			// Texture Clamping.
 
 	bitset<20>	m_abLevels;		//level x is true if mipmap level is loaded	
+	SDL_Surface* m_pkImage;		//for realtime editing of surface
 };
 
 /// Handles all textures in the game. Texture can be refered to by name
@@ -49,7 +50,6 @@ class RENDER_API TextureManager : public ZFObject {
 
 		int m_iCurrentTexture;
 		vector<texture*> m_iTextures;
-//		list<texture*> m_iTextures;
 		
 		FileIo* m_pkFile;			
 		SDL_Surface *LoadImage(const char *filename);	
@@ -62,6 +62,8 @@ class RENDER_API TextureManager : public ZFObject {
 
 		ZFVFileSystem*	m_pkZFFileSystem;
 
+		void PutPixel(SDL_Surface* surface, int x, int y, Uint32 pixel);
+
 	public:
 		TextureManager(FileIo* pkFile);
 		int Load(const char* acFileName,int iOption);		
@@ -69,9 +71,19 @@ class RENDER_API TextureManager : public ZFObject {
 		void BindTexture(int iTexture);
 		void BindTexture(const char* acFileName,int iOption);
 		void ClearAll();
+		int CurentTexture() { return m_iCurrentTexture;};
 
 		int GetIndex(const char* szFileName);
 		const char* GetFileName(unsigned int uiIndex);
+
+		SDL_Surface* GetTexture(int iLevel);
+		bool PutTexture(SDL_Surface* pkImage);
+		bool SwapTexture();
+		bool MakeTextureEditable();
+		bool PsetRGB(int x,int y,int r,int g,int b);
+		bool PsetRGBA(int x,int y,int r,int g,int b,int a);
+		SDL_Surface* GetImage();
+		
 
 		bool StartUp()	{ return true;	}
 		bool ShutDown()	{ return true;	}

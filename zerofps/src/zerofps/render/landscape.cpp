@@ -769,6 +769,7 @@ void Render::DrawHMLodSplat(HeightMap* kMap,Vector3 CamPos,int iFps)
 		glActiveTextureARB(GL_TEXTURE0_ARB);	
 		m_pkTexMan->BindTexture(kMap->m_kSets[i].m_acMask,0);	
 		
+		
 		glActiveTextureARB(GL_TEXTURE1_ARB);
 		m_pkTexMan->BindTexture(kMap->m_kSets[i].m_acTexture,0);		
 		m_pkTexMan->AddMipMapLevel(0,kMap->m_kSets[i].m_acDetailTexture);					

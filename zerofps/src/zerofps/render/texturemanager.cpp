@@ -2,6 +2,8 @@
 #include "../ogl/zfpsgl.h"
 #include "../basic/zfvfs.h"
 
+#include "render.h"
+
 #define ERROR_TEXTURE	"../data/textures/notex.bmp"
 
 
@@ -38,31 +40,17 @@ void TextureManager::SetOptions(texture *pkTex, int iOption)
 }
 
 bool TextureManager::LoadTexture(texture *pkTex,const char *acFilename) {	
-/*	bool MipMapping=true;
-	bool Compression=false;
-	bool Clamp=false;*/
 	GLint iInternalFormat=GL_RGB;
 	GLint iFormat=GL_BGR;
+	GLint iType=GL_UNSIGNED_BYTE;
 	
-/*	if(iOption!=0) {	
-		if((iOption & T_NOMIPMAPPING)){
-//			cout<<"NOMIPMAPING"<<endl;
-			MipMapping=false;
-		}
-		if((iOption & T_COMPRESSION)) {
-//			cout<<"COMPRESSION"<<endl;
-			Compression=true;
-		}
-		if((iOption & T_CLAMP)) {
-			Clamp=true;
-		}	
-	}
-*/
+	//make sure the m_pkImage is null for swaping;
+	pkTex->m_pkImage = NULL;	
 	
 	//is this a tga?
 	bool isTga=false;
-  if(strncmp(&acFilename[strlen(acFilename)-4],".tga",4)==0) {
-		iInternalFormat=GL_RGBA;
+	if(strncmp(&acFilename[strlen(acFilename)-4],".tga",4)==0) {
+		iInternalFormat=GL_RGBA4;
 		iFormat=GL_BGRA;
 	}
 	
@@ -89,17 +77,17 @@ bool TextureManager::LoadTexture(texture *pkTex,const char *acFilename) {
 	if(pkTex->m_bMipMapping){
 		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);	
 		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR_MIPMAP_LINEAR);
-		gluBuild2DMipmaps(GL_TEXTURE_2D,iInternalFormat,image->w,image->h,iFormat,GL_UNSIGNED_BYTE,image->pixels);  		
+		gluBuild2DMipmaps(GL_TEXTURE_2D,iInternalFormat,image->w,image->h,iFormat,iType,image->pixels);  		
 	}else{
 		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);		
 		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);  
-		glTexImage2D(GL_TEXTURE_2D,0,iInternalFormat,image->w,image->h,0,iFormat,GL_UNSIGNED_BYTE,image->pixels);
+		glTexImage2D(GL_TEXTURE_2D,0,iInternalFormat,image->w,image->h,0,iFormat,iType,image->pixels);
 	}
   
   glBindTexture(GL_TEXTURE_2D,0);
   m_iCurrentTexture = NO_TEXTURE;
   
-  	SDL_FreeSurface(image); ;
+  	SDL_FreeSurface(image); 
 
   return true;
 }
@@ -333,6 +321,239 @@ bool TextureManager::AddMipMapLevel(int iLevel,const char* acNewFile)
 	return true;
 }
 
+SDL_Surface* TextureManager::GetTexture(int iLevel)
+{
+	
+	SDL_Surface* image;
+	int iHeight;
+	int iWidth;
+	int iDepth;
+	int iInternalFormat;
+	int iRSize;
+	int iGSize;	
+	int iBSize;	
+	int iASize;	
+	Uint32 rmask, gmask, bmask, amask;
+	
+	
+	glGetTexLevelParameteriv(GL_TEXTURE_2D, iLevel,GL_TEXTURE_WIDTH,&iWidth);
+	glGetTexLevelParameteriv(GL_TEXTURE_2D, iLevel,GL_TEXTURE_HEIGHT,&iHeight);	
+	glGetTexLevelParameteriv(GL_TEXTURE_2D, iLevel,GL_TEXTURE_INTERNAL_FORMAT,&iInternalFormat);		
+	
+	glGetTexLevelParameteriv(GL_TEXTURE_2D, iLevel,GL_TEXTURE_RED_SIZE,&iRSize);		
+	glGetTexLevelParameteriv(GL_TEXTURE_2D, iLevel,GL_TEXTURE_GREEN_SIZE,&iGSize);		
+	glGetTexLevelParameteriv(GL_TEXTURE_2D, iLevel,GL_TEXTURE_BLUE_SIZE,&iBSize);		
+	glGetTexLevelParameteriv(GL_TEXTURE_2D, iLevel,GL_TEXTURE_ALPHA_SIZE,&iASize);		
+	
+	iDepth = iRSize+iGSize+iBSize+iASize;
+	
+	/*
+	cout<<"width: "<<iWidth<<endl;
+	cout<<"Height:"<<iHeight<<endl;
+	cout<<"Depth: "<<iDepth<<endl;		
+	
+	cout<<"red size:  "<<iRSize<<endl;
+	cout<<"green size:"<<iGSize<<endl;	
+	cout<<"blue size: "<<iBSize<<endl;	
+	cout<<"alpha size:"<<iASize<<endl;	
+	*/
+
+	int iFormat=-1;
+	int iType=-1;
+	
+	
+	if(iDepth == 16)
+	{
+		if(iInternalFormat == GL_RGB || iInternalFormat == GL_RGB5)
+		{		
+			//cout<<"GL_RGB"<<endl;
+			iFormat = GL_RGB;
+			iType = GL_UNSIGNED_SHORT_5_6_5;
+
+			rmask = 0xf800;
+			gmask = 0x07e0;		
+			bmask = 0x001f;		
+			amask = 0x0000;		
+		}
+		
+		
+		if(iInternalFormat == GL_RGBA || iInternalFormat == GL_RGBA4)
+		{
+			//cout<<"GL_RGBA"<<endl;
+			iFormat = GL_RGBA;
+			iType = GL_UNSIGNED_SHORT_4_4_4_4;//GL_UNSIGNED_SHORT_4_4_4_4;
+		
+			rmask = 0xf000;
+			gmask = 0x0f00;
+			bmask = 0x00f0;
+			amask = 0x000f;
+
+		}
+	}
+	
+	
+	if(iFormat == -1)
+	{
+		cout<<"Cant download texture Unsupored format"<<endl;
+		return NULL;
+	}
+	
+	//create sdl surface
+	image = SDL_CreateRGBSurface(SDL_SWSURFACE, iWidth, iHeight, iDepth,rmask,gmask,bmask,amask);
+	if(image == NULL)
+	{
+		cout<<"error creating sdlsurface"<<endl;
+		return NULL;
+	}
+	
+	glGetError();
+
+	//download pixels from opengl
+	glGetTexImage(GL_TEXTURE_2D,iLevel,iFormat,iType,image->pixels);
+	
+
+	return image;
+}
+
+
+bool TextureManager::PutTexture(SDL_Surface* pkImage)
+{
+	int iInternalFormat;
+	int iFormat=-1;
+	
+	glGetTexLevelParameteriv(GL_TEXTURE_2D, 0,GL_TEXTURE_INTERNAL_FORMAT,&iInternalFormat);		
+		
+		
+	if(iInternalFormat == GL_RGB || iInternalFormat == GL_RGB5)
+	{		
+		//cout<<"GL_RGB"<<endl;
+		iFormat = GL_RGB;
+	}
+	
+	if(iInternalFormat == GL_RGBA || iInternalFormat == GL_RGBA4)
+	{
+		//cout<<"GL_RGBA"<<endl;	
+		iFormat = GL_RGBA;		
+	}
+
+	
+	if(iFormat == -1)
+	{
+		cout<<"cant upload texture unsupored format"<<endl;
+		return false;
+	}
+	
+	
+	//load texture to opengl from sdl surface *image
+	if(iFormat == GL_RGB)
+		gluBuild2DMipmaps(GL_TEXTURE_2D,iInternalFormat,pkImage->w,pkImage->h,iFormat,GL_UNSIGNED_SHORT_5_6_5,pkImage->pixels);  		
+			
+	if(iFormat == GL_RGBA)
+		gluBuild2DMipmaps(GL_TEXTURE_2D,iInternalFormat,pkImage->w,pkImage->h,iFormat,GL_UNSIGNED_SHORT_4_4_4_4,pkImage->pixels);  		
+
+	return true;
+}
+
+bool TextureManager::SwapTexture()
+{
+	if(m_iTextures[m_iCurrentTexture]->m_pkImage == NULL)
+		return false;
+		
+	bool works = PutTexture(m_iTextures[m_iCurrentTexture]->m_pkImage);	
+	
+	if(works)
+	{
+		SDL_FreeSurface(m_iTextures[m_iCurrentTexture]->m_pkImage);
+		m_iTextures[m_iCurrentTexture]->m_pkImage = NULL;
+		return true;
+	}
+	else
+	{
+		cout<<"Error while swaping texture, not changed?"<<endl;
+		return false;
+	}
+	
+}
+
+bool TextureManager::MakeTextureEditable()
+{
+	if(m_iTextures[m_iCurrentTexture]->m_pkImage != NULL)
+		return true;
+
+	m_iTextures[m_iCurrentTexture]->m_pkImage = GetTexture(0);
+	
+	if(m_iTextures[m_iCurrentTexture]->m_pkImage == NULL)
+		return false;
+
+	return true;
+}
+
+bool TextureManager::PsetRGB(int x,int y,int r,int g,int b)
+{
+	if(!MakeTextureEditable())
+		return false;
+
+	Uint32 color = SDL_MapRGB(m_iTextures[m_iCurrentTexture]->m_pkImage->format, r, g, b);
+	
+	PutPixel(m_iTextures[m_iCurrentTexture]->m_pkImage,x,y,color);
+
+	return true;
+}
+
+bool TextureManager::PsetRGBA(int x,int y,int r,int g,int b,int a)
+{
+	if(!MakeTextureEditable()){
+		return false;
+	}
+	
+	Uint32 color = SDL_MapRGBA(m_iTextures[m_iCurrentTexture]->m_pkImage->format, r, g, b,a);	
+
+	PutPixel(m_iTextures[m_iCurrentTexture]->m_pkImage,x,y,color);
+
+	return true;
+}
+
+
+void TextureManager::PutPixel(SDL_Surface* surface, int x, int y, Uint32 pixel)
+{
+	 int bpp = surface->format->BytesPerPixel;
+    /* Here p is the address to the pixel we want to set */
+    Uint8 *p = (Uint8 *)surface->pixels + y * surface->pitch + x * bpp;
+
+
+    switch(bpp) {
+    case 1:
+        *p = pixel;
+        break;
+
+    case 2:
+        *(Uint16 *)p = pixel;
+        break;
+
+    case 3:
+        if(SDL_BYTEORDER == SDL_BIG_ENDIAN) {
+            p[0] = (pixel >> 16) & 0xff;
+            p[1] = (pixel >> 8) & 0xff;
+            p[2] = pixel & 0xff;
+        } else {
+            p[0] = pixel & 0xff;
+            p[1] = (pixel >> 8) & 0xff;
+            p[2] = (pixel >> 16) & 0xff;
+        }
+        
+        break;
+
+    case 4:
+        *(Uint32 *)p = pixel;
+        break;
+    }
+}
+
+SDL_Surface* TextureManager::GetImage()
+{
+	return m_iTextures[m_iCurrentTexture]->m_pkImage;
+}
+
 void TextureManager::RunCommand(int cmdid, const CmdArgument* kCommand)
 { 
 	switch(cmdid) {
@@ -342,3 +563,5 @@ void TextureManager::RunCommand(int cmdid, const CmdArgument* kCommand)
 
 	};
 }
+
+

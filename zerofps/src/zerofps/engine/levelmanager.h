@@ -30,7 +30,6 @@ class ENGINE_API LevelManager : public ZFObject {
 		
 		HeightMap* 			m_pkMap;
 		Object*				m_pkHeightMapObject;
-//		HeightMapObject*	m_pkHeightMapObject;
 		
 		LightSource*		m_bSun;
 		LightSource*		m_bMoon;	
@@ -44,6 +43,7 @@ class ENGINE_API LevelManager : public ZFObject {
 		float 				m_fZoneDistance;
 		
 		string 				m_kMapBaseDir;
+		string				m_kCurrentMapDir;
 		WorldInfoProperty m_kWIP;
 
 		list<Object*> 		m_kTrackedObjects;		
@@ -96,6 +96,7 @@ class ENGINE_API LevelManager : public ZFObject {
 		void DrawZones();
 
 		const string GetMapBaseDir() { return m_kMapBaseDir; }
+		const string GetCurrentMapDir() { return m_kCurrentMapDir; }		
 };
 
 

@@ -90,23 +90,25 @@ void ZeroEdit::OnInit(void)
 	g_ZFObjSys.RegisterVariable("g_template", &m_kCurentTemplate,CSYS_STRING);
 	
 	m_iPencilSize=8;
-	g_ZFObjSys.RegisterVariable("g_PencilSize", &m_iPencilSize,CSYS_INT);
+	g_ZFObjSys.RegisterVariable("g_pencilsize", &m_iPencilSize,CSYS_INT);
 	
 	m_iLandType=1;
 	g_ZFObjSys.RegisterVariable("g_landtype", &m_iLandType,CSYS_INT);
 	
 	m_iRandom=1;
-	g_ZFObjSys.RegisterVariable("g_Random", &m_iRandom,CSYS_INT);
+	g_ZFObjSys.RegisterVariable("g_random", &m_iRandom,CSYS_INT);
 	
 	m_fDrawRate=0.1;
-	g_ZFObjSys.RegisterVariable("g_DrawRate", &m_fDrawRate,CSYS_INT);
+	g_ZFObjSys.RegisterVariable("g_drawrate", &m_fDrawRate,CSYS_INT);
 	
 	m_iMode=ADDOBJECT;		
 	g_ZFObjSys.RegisterVariable("g_mode", &m_iMode,CSYS_INT);
 		
 	m_fPointDistance=10;
-	g_ZFObjSys.RegisterVariable("g_PointDistance", &m_fPointDistance,CSYS_INT);
+	g_ZFObjSys.RegisterVariable("g_pointdistance", &m_fPointDistance,CSYS_INT);
 
+	m_iEditMask=1;
+	g_ZFObjSys.RegisterVariable("g_editmask", &m_iEditMask,CSYS_INT);
 	
 	//create a default small world
 	pkLevelMan->CreateEmptyLevel(128);
@@ -226,7 +228,7 @@ void ZeroEdit::RunCommand(int cmdid, const CmdArgument* kCommand)
 			pkLevelMan->SetMoonColor(kColor);			
 			break;	
 		}
-		
+/*		
 		case FID_SAVELAND:
 			if(kCommand->m_kSplitCommand.size() <= 1) {
 				pkConsole->Printf("saveland [filename]");
@@ -284,7 +286,7 @@ void ZeroEdit::RunCommand(int cmdid, const CmdArgument* kCommand)
 			ListLandTypes();
 			
 			break;
-	
+*/	
 		case FID_SKYBOX6: {
 			string strSkyPath = BaseEnvMap + kCommand->m_kSplitCommand[1] + "/sky";
 
@@ -1236,19 +1238,70 @@ void ZeroEdit::ListTemplates()
 
 void ZeroEdit::HeightMapDraw(Vector3 kPencilPos)
 {
-	LandType kTemp=GetLandType(m_iLandType);
+/*	
+	for(int i=0;i<1;i++)
+	{
+		pkTexMan->BindTexture("smily.bmp",0);			
 	
-	cout<<"color "<<kTemp.m_kColor.x<<endl;
+		float xx=rand()%50;
+		float yy=rand()%50;
 	
-	for(int xp=-(m_iPencilSize/2);xp<(m_iPencilSize/2)+1;xp++){
-		for(int yp=-(m_iPencilSize/2);yp<(m_iPencilSize/2)+1;yp++){
-			m_pkMap->GetVert(int(kPencilPos.x+xp),int(kPencilPos.z+yp))->texture=kTemp.m_iTexture;
-			m_pkMap->GetVert(int(kPencilPos.x+xp +1),int(kPencilPos.z+yp +1))->color=kTemp.m_kColor;
-		}
-	}	
+		float r = rand() % 255;
+		float g = rand() % 255;
+		float b = rand() % 255;
+	
+		for(int x=0;x<10;x++)
+			for(int y=0;y<10;y++)
+				pkTexMan->PsetRGB(x+xx,y+yy,r,g,b);
+				
+		pkTexMan->SwapTexture();			
+	}
+*/	
+	
+	
+	m_pkMap->GetMapXZ(kPencilPos.x,kPencilPos.z);
+		
+	string map1 = pkLevelMan->GetCurrentMapDir() + "mask1.tga";
+	string map2 = pkLevelMan->GetCurrentMapDir() + "mask2.tga";
+	string map3 = pkLevelMan->GetCurrentMapDir() + "mask3.tga";	
+
+	switch(m_iEditMask)
+	{
+		case 1:
+			pkTexMan->BindTexture(map1.c_str(),0);	
+			break;
+		case 2:
+			pkTexMan->BindTexture(map2.c_str(),0);	
+			break;
+		case 3:
+			pkTexMan->BindTexture(map3.c_str(),0);	
+			break;
+	
+		default:
+			return;
+			
+	}
+
+		
+	if(!pkTexMan->MakeTextureEditable())
+		return;
+		
+				
+	float xpos =(kPencilPos.x * HEIGHTMAP_SCALE) * (m_pkMap->GetSize() / pkTexMan->GetImage()->w)  ;
+	float ypos =(kPencilPos.z * HEIGHTMAP_SCALE) * (m_pkMap->GetSize() / pkTexMan->GetImage()->h)  ;
+		
+	//cout<<"pos:"<<xpos<<" "<<ypos<<endl;		
+		
+		
+	for(int x=0;x<5;x++)
+		for(int y=0;y<5;y++)
+			pkTexMan->PsetRGBA(xpos+x,ypos+y,255,255,255,200);
+			
+	pkTexMan->SwapTexture();
+
 }
 
-
+/*
 void ZeroEdit::AddLandtype(int iTexture,Vector3 kColor)
 {
 	LandType temp;
@@ -1375,3 +1428,10 @@ bool ZeroEdit::SaveLandToFile(const char* acFile)
 
 	return true;
 }
+*/
+
+
+
+
+
+
