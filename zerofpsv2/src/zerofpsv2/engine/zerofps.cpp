@@ -220,6 +220,9 @@ bool ZeroFps::StartUp()
 	//create materials
 	CreateMaterials();
 	
+	//set captured input as default
+	m_pkInput->ToggleGrab(true);
+	
 	return true;
 }
 
@@ -460,7 +463,7 @@ void ZeroFps::Run_EngineShell()
 
 	//for debuging the input system
 	if(m_pkInputHandle->Pressed(KEY_F9))	GetSystem().RunCommand("shot",CSYS_SRC_SUBSYS);	
-	if(m_pkInputHandle->Pressed(KEY_F10))	m_pkInput->ToggleGrab();
+	//if(m_pkInputHandle->Pressed(KEY_F10))	m_pkInput->ToggleGrab();
 	if(m_pkInputHandle->Pressed(KEY_F11))	ToggleFullScreen();		
 
 }

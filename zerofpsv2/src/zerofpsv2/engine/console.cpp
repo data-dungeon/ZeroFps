@@ -474,12 +474,16 @@ void Console::Toggle()
 	{
 		m_pkInput->SetActiveInputHandle("Zerofps");	
 		m_pkInput->AddActiveInputHandle("Console");
+		
+		m_pkInput->ToggleGrab(false);
 	}
 	else
 	{
 		m_pkInput->SetActiveInputHandle("Zerofps");
 		m_pkInput->AddActiveInputHandle("Gui");	
-		m_pkInput->AddActiveInputHandle("Application");			
+		m_pkInput->AddActiveInputHandle("Application");
+		
+		m_pkInput->ToggleGrab(true);			
 	}
 }
 
