@@ -2,14 +2,14 @@ function Create()
 	
 	InitObject();
 		InitProperty("P_Mad");	
-			InitParameter("m_kMadFile","/data/mad/dm/dm_medkit.mad");			
-			InitParameter("m_fScale","1.5");		
+			InitParameter("m_kMadFile","/data/mad/dm/dm_machinegun_clip.mad");			
+			InitParameter("m_fScale","1.0");		
 		InitProperty("P_DMItem");	
-			InitParameter("name","Medkit");
+			InitParameter("name","RifleClip");
 			InitParameter("sizex",1);
 			InitParameter("sizey",1);
-			InitParameter("icon","stol.bmp");
-			InitParameter("type","7");
+			InitParameter("icon","machinegun_clip.bmp");
+			InitParameter("type","4");
 		InitProperty("P_ScriptInterface");
 
 

@@ -2,13 +2,13 @@ function Create()
 	
 	InitObject();
 		InitProperty("P_Mad");	
-			InitParameter("m_kMadFile","/data/mad/rifle.mad");			
+			InitParameter("m_kMadFile","/data/mad/dm/dm_machinegun.mad");			
 			InitParameter("m_fScale","1");		
 		InitProperty("P_DMItem");	
 			InitParameter("name","rifle");
-			InitParameter("sizex",2);
+			InitParameter("sizex",3);
 			InitParameter("sizey",2);
-			InitParameter("icon","stol.bmp");
+			InitParameter("icon","machinegun.bmp");
 			InitParameter("type","5");
 		InitProperty("P_DMGun");
 		InitProperty("P_ScriptInterface");
