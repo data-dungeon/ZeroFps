@@ -36,21 +36,22 @@ class MCOMMON_API ZSSMLTime : public ZFSubSystem
 		bool ShutDown()		{return true;};
 		bool IsValid()			{return true;};				
 		
-		void SetTime(double dSecondsRT);		
-		void AddTime(float fSecondsRT);
+		void SetTime(double dTotalTimeML);		
+		void AddTime(double dSecondsRT);
 				
 		string GetDayName(int iDay);
 		string GetMonthName(int iMonth);
 		string GetDateString();
 		
-		int	GetYear()			{	return m_iYear;	};
-		int	GetMonth()			{	return m_iMonth;	};
-		int	GetWeek()			{	return m_iWeek;	};
-		int	GetDay()				{	return m_iDay;		};
-		int	GetHour()			{	return m_iHour;	};
-		int	GetMinute()			{	return m_iMinute;	};
-		int	GetSecond()			{	return m_iSecond;	};
-		float GetScale()			{	return m_fScale;	};
+		int	GetYear()			{	return m_iYear;			};
+		int	GetMonth()			{	return m_iMonth;			};
+		int	GetWeek()			{	return m_iWeek;			};
+		int	GetDay()				{	return m_iDay;				};
+		int	GetHour()			{	return m_iHour;			};
+		int	GetMinute()			{	return m_iMinute;			};
+		int	GetSecond()			{	return m_iSecond;			};
+		float GetScale()			{	return m_fScale;			};		
+		double GetTotalMLTime()	{	return m_dTotalTimeMT;	};
 };
 
 

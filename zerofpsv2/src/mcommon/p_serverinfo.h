@@ -16,9 +16,9 @@ struct MCOMMON_API PlayerInfo
 	int		iId;
 	string	sPlayerName;
 	int		iCharacterObjectID;
-	vector<pair<int,int> >	kControl; // objekt id, rättigheter
+	vector<pair<int,int> >	kControl; // objekt id, rï¿½tigheter
 	queue<string>	kMessages;
-	queue<pair<int,string> > kSounds; // objekt id på objektet som genererar ljudet, filnamn på ljudet
+	queue<pair<int,string> > kSounds; // objekt id pï¿½objektet som genererar ljudet, filnamn pï¿½ljudet
 };
 
 enum PlayerRights
@@ -37,6 +37,8 @@ class MCOMMON_API P_ServerInfo: public Property {
 		string 					m_sServerName;				
 		vector<PlayerInfo>	m_kPlayers;		
 		
+		double					m_dTotalMLTime;
+		
 		float m_fTimer;
 		
 	public:
@@ -46,6 +48,7 @@ class MCOMMON_API P_ServerInfo: public Property {
 		queue<string>			m_kMyMessages;					//messages recived is put in this queue		
 		
 		P_ServerInfo();
+		~P_ServerInfo();
 		
 		PlayerInfo* GetPlayerInfo(int id);
 
@@ -72,8 +75,16 @@ class MCOMMON_API P_ServerInfo: public Property {
 
 		int GetNrOfPlayers() {return int(m_kPlayers.size()); }
 		
+		
+		void SetTime(double dTime )												{	m_dTotalMLTime = dTime;	};
+		double GetTime()																{	return m_dTotalMLTime;	};
+		
       void PackTo(NetPacket* pkNetPacket, int iConnectionID );
 		void PackFrom(NetPacket* pkNetPacket, int iConnectionID );
+		
+		
+		void Save(ZFIoInterface* pkPackage);
+		void Load(ZFIoInterface* pkPackage,int iVersion);
 		
 };
 

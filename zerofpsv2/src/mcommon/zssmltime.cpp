@@ -16,7 +16,7 @@ ZSSMLTime::ZSSMLTime() : ZFSubSystem("ZSSMLTime")
 	m_fScale 		=	12.0;	
 
 	
-	RegisterVariable("mltimescale",&m_fScale,CSYS_FLOAT);			
+	RegisterVariable("ap_timescale",&m_fScale,CSYS_FLOAT);			
 }
 
 bool ZSSMLTime::StartUp()
@@ -26,48 +26,81 @@ bool ZSSMLTime::StartUp()
 }
 
 
-void ZSSMLTime::SetTime(double dNewSeconds)
+void ZSSMLTime::SetTime(double dTotalTimeML)
+{	
+	//save total time
+	m_dTotalTimeMT = dTotalTimeML;
+
+	//year
+	m_iYear = int(dTotalTimeML /  44236800);
+	dTotalTimeML -= double(m_iYear) * 44236800;
+
+	//month
+	m_iMonth = int(dTotalTimeML / 5529600);
+	dTotalTimeML -= double(m_iMonth) *5529600;
+	
+	
+	//week
+	m_iWeek = int(dTotalTimeML / 691200);
+	dTotalTimeML -= double(m_iWeek) * 691200;
+
+	//day
+	m_iDay = int(dTotalTimeML / 86400);
+	dTotalTimeML -= double(m_iDay) * 86400;
+	
+	//hour
+	m_iHour = int(dTotalTimeML / 3600);
+	dTotalTimeML -= double(m_iHour) * 3600;
+	
+	//minute
+	m_iMinute = int(dTotalTimeML / 60);
+	dTotalTimeML -= double(m_iMinute) * 60;
+	
+	//m_iSecond
+	m_iSecond = int(dTotalTimeML);
+};
+
+void ZSSMLTime::AddTime(double dNewSeconds)
 {
-	m_dTotalTimeRT = dNewSeconds;
+	//SetTime(m_dTotalTimeRT + fSecondsRT);
+	m_dTotalTimeRT += dNewSeconds;
 
 	//scale time
 	dNewSeconds *= m_fScale;
 	
 	//save total time
-	m_dTotalTimeMT = dNewSeconds;
+	m_dTotalTimeMT += dNewSeconds;
 
+	double dTotalTimeCopy = m_dTotalTimeMT;
+	
 	//year
-	m_iYear = int(dNewSeconds /  44236800);
-	dNewSeconds -= double(m_iYear) * 44236800;
+	m_iYear = int(dTotalTimeCopy /  44236800);
+	dTotalTimeCopy -= double(m_iYear) * 44236800;
 
 	//month
-	m_iMonth = int(dNewSeconds / 5529600);
-	dNewSeconds -= double(m_iMonth) *5529600;
+	m_iMonth = int(dTotalTimeCopy / 5529600);
+	dTotalTimeCopy -= double(m_iMonth) *5529600;
 	
 	
 	//week
-	m_iWeek = int(dNewSeconds / 691200);
-	dNewSeconds -= double(m_iWeek) * 691200;
+	m_iWeek = int(dTotalTimeCopy / 691200);
+	dTotalTimeCopy -= double(m_iWeek) * 691200;
 
 	//day
-	m_iDay = int(dNewSeconds / 86400);
-	dNewSeconds -= double(m_iDay) * 86400;
+	m_iDay = int(dTotalTimeCopy / 86400);
+	dTotalTimeCopy -= double(m_iDay) * 86400;
 	
 	//hour
-	m_iHour = int(dNewSeconds / 3600);
-	dNewSeconds -= double(m_iHour) * 3600;
+	m_iHour = int(dTotalTimeCopy / 3600);
+	dTotalTimeCopy -= double(m_iHour) * 3600;
 	
 	//minute
-	m_iMinute = int(dNewSeconds / 60);
-	dNewSeconds -= double(m_iMinute) * 60;
+	m_iMinute = int(dTotalTimeCopy / 60);
+	dTotalTimeCopy -= double(m_iMinute) * 60;
 	
 	//m_iSecond
-	m_iSecond = int(dNewSeconds);
-};
-
-void ZSSMLTime::AddTime(float fSecondsRT)
-{
-	SetTime(m_dTotalTimeRT + fSecondsRT);
+	m_iSecond = int(dTotalTimeCopy);	
+	
 }
 
 string ZSSMLTime::GetDateString()

@@ -197,7 +197,7 @@ void EntityManager::Link(Entity* pkEntity,int iId)
 	{
 		if(IsLinked(pkEntity))
 		{
-			cout<<"WARNING: Entity is already linked"<<endl;
+			cout<<"WARNING: Entity is already linked ("<<endl;
 			return;	
 		}
 	}
@@ -1868,6 +1868,61 @@ bool EntityManager::SaveZones(string strSaveDir)
 	return true;
 }
 
+bool EntityManager::SaveGlobalEntitys(string strSaveDir )
+{
+	string filename;
+
+	if(strSaveDir.empty())
+		filename = m_kWorldDirectory;	
+	else
+		filename = strSaveDir;
+	
+	filename+="/globals.dat";
+
+	//cout<<"saving global entitys"<<endl;
+	
+	ZFVFile kFile;
+	if(!kFile.Open(filename.c_str(),0,true))
+	{	
+		cout<<"Could not open global entitys save file"<<endl;
+		return false;
+	}	
+	
+	m_pkGlobalEntity->Save(&kFile);
+	
+	kFile.Close();
+	
+	return true;
+}
+
+bool EntityManager::LoadGlobalEntitys(string strSaveDir )
+{
+	string filename;
+
+	if(strSaveDir.empty())
+		filename = m_kWorldDirectory;	
+	else
+		filename = strSaveDir;
+	
+	filename+="/globals.dat";
+
+	//cout<<"loading global entitys"<<endl;
+	
+	ZFVFile kFile;
+	if(!kFile.Open(filename.c_str(),0,false))
+	{	
+		cout<<"Could not open global entitys save file"<<endl;
+		return false;
+	}	
+	
+	m_pkGlobalEntity->Load(&kFile,false,true);
+	
+	kFile.Close();	
+	
+	return true;
+}
+
+
 bool EntityManager::SaveTrackers(string strSaveDir)
 {
 	string filename;
@@ -2459,8 +2514,14 @@ bool EntityManager::SaveWorld(string strSaveDir,bool bForce)
 		}
 	}
 	
+	//save global entity
+	if(!SaveGlobalEntitys(strSaveDir))
+	{
+		cout<<"ERROR: could not save global entity"<<endl;
+		return false;
+	}	
 	
-	//first try to save zones
+	//save zone list
 	if(!SaveZones(strSaveDir))
 	{
 		cout<<"ERROR: could not save zonesdata"<<endl;
@@ -2473,7 +2534,6 @@ bool EntityManager::SaveWorld(string strSaveDir,bool bForce)
 		cout<<"ERROR: could not save trackers"<<endl;
 		return false;
 	}
-	
 	
 	
 	//now load zones and then save them in the save directory
@@ -2592,7 +2652,12 @@ bool EntityManager::LoadWorld(string strLoadDir)
 		return false;
 	}
 			
-
+	//load global entity
+	if(!LoadGlobalEntitys(strLoadDir))
+	{
+		cout<<"WARNING: could not load global entity"<<endl;
+		//return false;
+	}	
 		
 	//do a zone update
 //	UpdateZones();	

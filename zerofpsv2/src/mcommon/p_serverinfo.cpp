@@ -2,15 +2,29 @@
 
 P_ServerInfo::P_ServerInfo()
 {
+	//cout<<"Created p_serverinfo"<<endl;
+
+
 	strcpy(m_acName,"P_ServerInfo");		
 	m_iType=PROPERTY_TYPE_NORMAL;
 	m_iSide=PROPERTY_SIDE_SERVER;
 	
 	m_pkFps=static_cast<ZeroFps*>(g_ZFObjSys.GetObjectPtr("ZeroFps"));
 
-	m_bNetwork = true;
+	m_bNetwork = false;
+	m_bSave = true;
+	m_iVersion = 2;
+	
+	m_dTotalMLTime = 	0;
 	m_sServerName	= 	"NoName";
 	m_fTimer = m_pkFps->m_pkEntityManager->GetSimTime();
+}
+
+
+P_ServerInfo::~P_ServerInfo()
+{
+	//cout<<"p_serverinfo deleted"<<endl;
+
 }
 
 void P_ServerInfo::Update()
@@ -393,6 +407,30 @@ void P_ServerInfo::MessagePlayer(int id,string strMessage)
 	
 }
 
+
+void P_ServerInfo::Save(ZFIoInterface* pkPackage)
+{
+	pkPackage->Write_Str(m_sServerName);
+	pkPackage->Write(m_dTotalMLTime);
+	
+}
+
+void P_ServerInfo::Load(ZFIoInterface* pkPackage,int iVersion)
+{
+	switch(iVersion)
+	{
+		case 1:
+			pkPackage->Read_Str(m_sServerName);			
+		break;
+		
+		case 2:
+			pkPackage->Read_Str(m_sServerName);			
+			pkPackage->Read(m_dTotalMLTime);			
+		break;
+	}
+
+
+}
 
 Property* Create_P_ServerInfo()
 {

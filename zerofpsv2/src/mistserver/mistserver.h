@@ -18,6 +18,7 @@ class Camera;
 class ZSSEnviroment;
 class ZSSMLTime;
 class Entity;
+class P_ServerInfo;
 
 /**	\brief	Da MistServer
 		\ingroup MistServer
@@ -49,9 +50,8 @@ class MistServer :public Application , public ZGuiApp
 		//timer
 		ZSSMLTime*							m_pkTime;		
 		
-		//server stuff
-		Entity*								m_pkServerInfo;
-		//P_ServerInfo*						m_pkServerInfoP;
+		//server stuff		
+		P_ServerInfo*						m_pkServerInfoP;
 
 		vector<pair<string,Vector3> >	m_kLocations;
 		

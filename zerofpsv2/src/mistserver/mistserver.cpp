@@ -72,8 +72,10 @@ MistServer::MistServer(char* aName,int iWidth,int iHeight,int iDepth)
 
 	m_strWorldDir  = "";
    
-	m_pkActiveCameraObject		= NULL;
+	m_pkActiveCameraObject	= NULL;
 	m_pkActiveCamera			= NULL;
+	
+	m_pkServerInfoP			= NULL;
 } 
 
 
@@ -241,18 +243,17 @@ void MistServer::RegisterPropertys()
 
 void MistServer::OnIdle()
 {	
-	//m_pkZeroFps->GetCam()->ClearViewPort();	
-
 	if(m_pkGui->m_bHandledMouse == false)
 	{
 		Input();	
 	}
 
- 	//m_pkZeroFps->UpdateCamera(); 		
-
+	
+	//update ml time and save time in serverinfo
+	m_pkTime->AddTime(m_pkZeroFps->GetFrameTime());		
+	m_pkServerInfoP->SetTime(m_pkTime->GetTotalMLTime());
 	
 	//print current mistlands time
-	m_pkTime->AddTime(m_pkZeroFps->GetFrameTime());	
 	m_pkZeroFps->DevPrintf("server","date: %s", m_pkTime->GetDateString().c_str());
 }
 
@@ -717,8 +718,32 @@ void MistServer::OnServerClientPart(ZFClient* pkClient,int iConID)
 
 void MistServer::OnServerStart(void)
 {		
+	m_pkServerInfoP = NULL;
+
+
+
 	CreateEditCameras();
 
+	//create/check for server info property
+	if(m_pkServerInfoP = (P_ServerInfo*)m_pkEntityManager->GetGlobalEntity()->GetProperty("P_ServerInfo"))
+	{
+		cout<<"servern info property found =D"<<endl;	
+		cout<<"server name:"<<m_pkServerInfoP->GetServerName()<<endl;
+		cout<<"current server time:"<<m_pkServerInfoP->GetTime()<<endl;
+		
+		m_pkTime->SetTime(m_pkServerInfoP->GetTime());
+	}
+	else
+	{
+		if(m_pkServerInfoP = (P_ServerInfo*)m_pkEntityManager->GetGlobalEntity()->AddProperty("P_ServerInfo"))
+		{
+			cout<<"Created server info property"<<endl;
+			m_pkServerInfoP->SetServerName("MistServer alpha");
+		}
+	}
+	
+	
+	
 /*	
 	//create server info object
 	m_pkServerInfo = m_pkEntityManager->CreateObjectFromScript("data/script/objects/t_serverinfo.lua");
