@@ -240,6 +240,9 @@ void DarkMetropolis::GUI_OnCommand(int iID, bool bRMouseBnClick,
 		else
 		if(strClickName == "LoadListOKBn")
 		{
+			m_pkAudioSys->StartSound("data/sound/computer beep 5.wav", 
+				m_pkAudioSys->GetListnerPos()); 
+
 			char* szClanName = GetText("SaveLoadFileNameEB");
 			if(szClanName && strlen(szClanName) > 0)
 			{
@@ -254,15 +257,15 @@ void DarkMetropolis::GUI_OnCommand(int iID, bool bRMouseBnClick,
 					GUI_NewGame(pkMainWnd);		
 					((CGamePlayDlg*)m_pkGamePlayDlg)->InitDlg();
 					PauseGame(false);
+					return;
 				}
 			}
-
-			m_pkAudioSys->StartSound("data/sound/computer beep 5.wav", 
-				m_pkAudioSys->GetListnerPos()); 
-
-			((CNewGameDlg*) m_pkNewGameDlg)->SetFade(1.0f);
-			pkGui->PlaceWndFrontBack(GetWnd("DMStartWnd"), true); 
-			pkGui->SetCaptureToWnd(GetWnd("DMStartWnd"));
+			else
+			{
+				((CNewGameDlg*) m_pkNewGameDlg)->SetFade(1.0f);
+				pkGui->PlaceWndFrontBack(GetWnd("DMStartWnd"), true); 
+				pkGui->SetCaptureToWnd(GetWnd("DMStartWnd"));
+			}
 		}
 	}
 }
@@ -288,8 +291,6 @@ void DarkMetropolis::GUI_OnClick(int x, int y, bool bMouseDown,
 	{
 		m_pkStartDMDlg->OnClick(x, y, bMouseDown, bLeftButton, pkMain);
 	}
-
-	printf("strMainWnd = %s\n", strMainWnd.c_str());
 
 	if(strMainWnd == "ActiveCharacterPortraitBn")
 	{

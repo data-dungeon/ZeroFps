@@ -1071,8 +1071,9 @@ bool ZGui::ClickedWndAlphaTex(int mx, int my, ZGuiWnd *pkWndClicked)
 			return true;
 		if( typeid(*pkParent)==typeid(ZGuiTreebox) )
 			return true;
-		if( typeid(*pkParent)==typeid(ZGuiCheckbox) )
-			return true;
+	// uncomment 040416 because the system fail to find checkboxes otherwise (may cause a leak)
+	//	if( typeid(*pkParent)==typeid(ZGuiCheckbox) ) /
+	//		return true;
 	}
 
 	ZGuiSkin* pkSkin = pkWndClicked->GetSkin();

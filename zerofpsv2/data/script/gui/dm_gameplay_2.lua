@@ -110,6 +110,14 @@ function GUICreate()
 	 tex1a="dm/active_agent_border_a.bmp", tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=255,
 	 bkB=255, borderR=0, borderG=0, borderB=0, bd_size=0, tile=0, trans=0 }
 
+	Skin29 = { tex1="dm/pause_u.bmp", tex2="0", tex3="0", tex4="0", 
+	 tex1a="0", tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=255,
+	 bkB=255, borderR=255, borderG=0, borderB=0, bd_size=0, tile=0, trans=0 }
+
+	Skin30 = { tex1="dm/pause_d.bmp", tex2="0", tex3="0", tex4="0", 
+	 tex1a="0", tex2a="0", tex3a="0", tex4a="0", bkR=255, bkG=255,
+	 bkB=255, borderR=255, borderG=0, borderB=0, bd_size=0, tile=0, trans=0 }
+
 	-------------------------------------------------------------------------
 	-- Create all windows in correct order (parents before childrens etc.)
 	-- 0 = Wnd, 1 = Button, 2 = Checkbox, 3 = Combobox, 4 = Label, 5 = Listbox, 6 = Radiobutton,
@@ -286,10 +294,10 @@ function GUICreate()
 	ChangeSkin("GamPlayMenuBn","Skin1","Button focus")
 
 
-	CreateWnd(1,"PauseBn","wind_map","(p)",160+35,200-35,32,32,0)
-	ChangeSkin("PauseBn","Skin1","Button up")
-	ChangeSkin("PauseBn","Skin2","Button down")
-	ChangeSkin("PauseBn","Skin3","Button focus")
+	CreateWnd(2,"PauseBn","wind_map","",160+35,200-35,32,32,0)
+	ChangeSkin("PauseBn","Skin29","Checkbox: Button up")
+	ChangeSkin("PauseBn","Skin30","Checkbox: Button down")
+	--ChangeSkin("PauseBn","Skin3","Button focus")
 
 
 
