@@ -166,7 +166,11 @@ void MistLandLua::Init(EntityManager* pkObjMan,ZFScriptSystem* pkScript)
    pkScript->ExposeFunction("GetSeenPlayer", MistLandLua::GetSeenPlayerLua);
    pkScript->ExposeFunction("GetClosestItemOfType", MistLandLua::GetClosestItemOfTypeLua);
    pkScript->ExposeFunction("GetClosestPlayer", MistLandLua::GetClosestPlayerLua);
-   pkScript->ExposeFunction("GetClosestObjectOfType", MistLandLua::GetClosestObjectOfTypeLua);   
+   pkScript->ExposeFunction("GetClosestObjectOfType", MistLandLua::GetClosestObjectOfTypeLua);
+
+   pkScript->ExposeFunction("AIHaveTarget", MistLandLua::AIHaveTargetLua);
+  
+
 
 }
 
@@ -3431,6 +3435,34 @@ int MistLandLua::SetAIIsPlayerLua(lua_State* pkLua)
       g_pkScript->GetArgNumber(pkLua, 0, &dTemp);	
       
       pkAI->SetAIIsPlayer ( bool(dTemp) );
+
+   }
+
+   return 0;
+}
+
+// -----------------------------------------------------------------------------------------------
+
+int MistLandLua::AIHaveTargetLua(lua_State* pkLua)
+{
+	if( g_pkScript->GetNumArgs(pkLua) == 0 )
+	{
+      Entity* pkObj = g_pkObjMan->GetObjectByNetWorkID(g_iCurrentObjectID);
+
+      if ( !pkObj )
+         return 0;
+
+      P_AI* pkAI = (P_AI*)pkObj->GetProperty("P_AI");
+
+      if ( !pkAI )
+      {
+         cout << "Warning! Tried to use luafunction SetAIIsPlayerLua on a object withour ai" << endl;
+         return 0;
+      }
+
+      
+      g_pkScript->AddReturnValue( pkLua, pkAI->HaveTarget() );
+
 
    }
 

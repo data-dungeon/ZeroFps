@@ -31,11 +31,17 @@ void P_AI::Update()
    }
    else if ( m_pkCurrentOrder->m_kOrderType == "Attack" )
    {
+      m_eAI_Mode = eATTACKMODE;
+
       Entity* pkEnemy = m_pkObject->m_pkObjectMan->GetObjectByNetWorkID( m_pkCurrentOrder->m_iTargetID );
 
       // if enemy is dead, remove order
       if ( !pkEnemy )
       {
+         m_eAI_Mode = eIDLEMODE;
+
+         ((P_Mad*)m_pkObject->GetProperty("P_Mad"))->SetNextAnimation ("idle");
+
          NextOrder();
          return;
       }
@@ -124,6 +130,8 @@ void P_AI::Update()
    }
    else if ( m_pkCurrentOrder->m_kOrderType == "Idle" )
    {
+      m_eAI_Mode = eIDLEMODE;
+
       if ( m_pkCurrentOrder->m_iTargetID <= 0 )
       {
          m_pkCurrentOrder->m_iTargetID = m_pkCurrentOrder->m_iTargetID2;

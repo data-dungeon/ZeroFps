@@ -195,6 +195,8 @@ namespace MistLandLua
    int MCOMMON_API DistanceToLua(lua_State* pkLua);
    int MCOMMON_API SetAIIsPlayerLua(lua_State* pkLua);
 
+   int MCOMMON_API AIHaveTargetLua(lua_State* pkLua);
+
 
    
    int MCOMMON_API SetPropertyValueLua(lua_State* pkLua);   //which property, data in property and last, value

@@ -72,6 +72,8 @@ class MCOMMON_API P_AI: public Property
 
 		bool HandleSetValue( string kValueName, string kValue );
 
+      bool HaveTarget()                               { return m_eAI_Mode == eATTACKMODE; }
+
       void ClearDynamicOrders();
 
       void SetAIIsPlayer (bool bIsPlayer)             { m_bAIPlayer = bIsPlayer; }

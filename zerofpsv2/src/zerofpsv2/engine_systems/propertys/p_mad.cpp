@@ -42,10 +42,11 @@ void P_Mad::Update()
 	if(!pkCore)
 		return;
 
-	if( m_pkObjMan->IsUpdate(PROPERTY_TYPE_NORMAL ) /* &  m_pkObjMan->IsUpdate(PROPERTY_SIDE_SERVER)*/ ) {
+	if( m_pkObjMan->IsUpdate(PROPERTY_TYPE_NORMAL) )//&& m_pkObjMan->IsUpdate(PROPERTY_SIDE_SERVER) ) 
+   {
 		UpdateAnimation(m_pkZeroFps->GetFrameTime());
 		return;
-		}
+   }
 	
 	if( m_pkObjMan->IsUpdate(PROPERTY_TYPE_RENDER) ) {
 

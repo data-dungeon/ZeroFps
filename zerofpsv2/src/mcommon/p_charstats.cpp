@@ -99,6 +99,9 @@ void CharacterProperty::Save(ZFIoInterface* pkPackage)
    pkPackage->Write ( (void*)&iDefence, sizeof(int), 1 );
    pkPackage->Write ( (void*)&iCounters, sizeof(int), 1 );
 
+   // save current skill
+   strcpy( temp, m_pkCharStats->m_kCurrentSkill.c_str() ); // skillname
+	pkPackage->Write((void*)&temp,128,1);   
 
    // save counters
    for ( kPointIte = m_pkCharStats->m_kPointStats.begin(); 
@@ -217,6 +220,11 @@ void CharacterProperty::Load(ZFIoInterface* pkPackage)
    pkPackage->Read ( (void*)&iAttacks, sizeof(int), 1 );
    pkPackage->Read ( (void*)&iDefence, sizeof(int), 1 );
    pkPackage->Read ( (void*)&iCounters, sizeof(int), 1 );
+
+
+   // load current skill
+	pkPackage->Read((void*)&temp,128,1);   
+   m_pkCharStats->m_kCurrentSkill = temp;
 
    // load counters
    for ( i = 0; i < iCounters; i++ )
