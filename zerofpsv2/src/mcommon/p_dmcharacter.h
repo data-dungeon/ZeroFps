@@ -83,7 +83,10 @@ class MCOMMON_API P_DMCharacter: public Property {
 		void Equip (P_DMItem* pkDMItem);
 		void UnEquip (P_DMItem* pkDMItem);
 
-		void UseQuickItem(int iItemIndex); // <- iItemIndex = 0,1,2,3 dvs slot (0,0), (0,1) osv
+		// If bIndexIsItemType = true, then iItemIndex is a value of type eDMItemTypes  
+		// and the function looks for the first item item of that index.
+		// Else ItemIndex is a slotinde, ie. = 0,1,2,3 ie. slot (0,0), (0,1).
+		void UseQuickItem(int iItemIndex, bool bIndexIsItemType); 
 		
 		// Speed pathfinding is using
 		void SetMoveSpeed (float fSpeed);		

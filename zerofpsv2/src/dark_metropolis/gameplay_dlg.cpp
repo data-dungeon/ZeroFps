@@ -158,7 +158,7 @@ void CGamePlayDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName)
 			m_pkAudioSys->StartSound("data/sound/computer beep 6.wav", 
 				m_pkAudioSys->GetListnerPos()); 
 
-			pkCharacter->UseQuickItem(iItem);
+			pkCharacter->UseQuickItem(DMITEM_MEDKIT, true);
 			SelectAgent(m_iSelectedAgent, false);
 		}
 		else
