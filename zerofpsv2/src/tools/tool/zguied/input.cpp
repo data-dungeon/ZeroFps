@@ -50,10 +50,9 @@ void ZGuiEd::HandleInput()
 	{
 		int x,y;
 		m_pkInputHandle->SDLMouseXY(x,y);
-
-		if(!m_pkInputHandle->Pressed(KEY_LCTRL))
-			MouseClick(true, x,y);
-		else
+		MouseClick(true, x,y);
+		
+		if(m_pkInputHandle->Pressed(KEY_LCTRL))
 		{
 			CopyWnd();
 			PasteWnd();
@@ -108,8 +107,8 @@ void ZGuiEd::HandleInput()
 		if(m_pkInputHandle->Pressed(KEY_C) && s_bLCPressed == false)
 		{
 			s_bLCPressed = true;
-			if(m_pkInputHandle->Pressed(KEY_LCTRL))
-				CopyWnd();
+			if(m_pkInputHandle->Pressed(KEY_LCTRL))						
+				CopyWnd();			
 		}
 		else if(!m_pkInputHandle->Pressed(KEY_C))
 			s_bLCPressed = false;
@@ -329,14 +328,16 @@ void ZGuiEd::MouseMove(bool bLeft, int x, int y)
 		return;
 
 	if(m_pkFocusWnd)
-	{
-		if(m_pkFocusWnd->GetParent() && GetWndType(m_pkFocusWnd->GetParent()) == TabControl)
-			return;
-
+	{		
 		Rect rc = m_pkFocusWnd->GetScreenRect();
 
+		bool bParentIsTabControl = m_pkFocusWnd->GetParent() && GetWndType(m_pkFocusWnd->GetParent());
+
 		if(m_bResize == true)
-		{					
+		{	
+			if(bParentIsTabControl)	
+				m_pkFocusWnd = m_pkFocusWnd->GetParent();		
+
 			if(m_eResizeDir == Left)
 			{				   
 				int w = x - rc.Left;
@@ -362,7 +363,9 @@ void ZGuiEd::MouseMove(bool bLeft, int x, int y)
 			if(m_pkInputHandle->Pressed(KEY_X))
 				y = rc.Top;
 
-			m_pkFocusWnd->SetPos(x > 0 ? x : 0, y > 0 ? y : 0, true, true);
+			if(!bParentIsTabControl)
+				m_pkFocusWnd->SetPos(x > 0 ? x : 0, y > 0 ? y : 0, true, true);
+
 			CheckMovement();
 		}
 	}

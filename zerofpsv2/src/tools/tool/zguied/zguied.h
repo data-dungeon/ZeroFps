@@ -101,6 +101,7 @@ private:
 	void AddSampleCtrlItem(ZGuiWnd* pkWnd);
 	void RedrawCtrlSkin();
 	void CopyWnd();
+	void CutWnd();
 	void PasteWnd();
 	bool CloneSkins(ZGuiWnd* pkDst, ZGuiWnd* pkSrc);
 	void HandleInput();

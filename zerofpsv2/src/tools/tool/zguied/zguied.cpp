@@ -284,9 +284,13 @@ void ZGuiEd::CreateNewWindow(ZGuiWnd* pkCloneTarget)
 		if(strText == "Treebox") {eType = Treebox; w=100; h=100; text="";}
 		if(strText == "Menu") {eType = Menu; w=200; h=16; text="";}
 		if(strText == "Progressbar") {eType = Progressbar; w=100; h=16; text="";}
+
+		if(eType == Wnd && m_pkFocusWnd && m_pkFocusWnd->GetParent() && 
+			GetWndType(m_pkFocusWnd->GetParent()) == TabControl)
+			m_pkFocusWnd = m_pkFocusWnd->GetParent();
 	}
 
-	char name[50], parent[50];
+	char name[150], parent[150];
 
 	while(1)
 	{
@@ -302,7 +306,9 @@ void ZGuiEd::CreateNewWindow(ZGuiWnd* pkCloneTarget)
 		if(m_pkFocusWnd && GetWndType(m_pkFocusWnd) == TabControl)
 			strcpy(parent, m_pkFocusWnd->GetName());
 		else
+		{
 			strcpy(parent, "");
+		}
 	}
 	else
 	{
@@ -339,11 +345,14 @@ void ZGuiEd::CreateNewWindow(ZGuiWnd* pkCloneTarget)
 		pkNewWnd->SetZValue(m_iZValueCounter++);
 
 		m_pkGui->PlaceWndFrontBack(pkNewWnd, true);
-		CheckMovement();
+		
 
 		pkNewWnd->SetZValue(m_iZValueCounter);
 
 		m_pkFocusWnd = pkNewWnd;
+		
+		CheckMovement();
+
 		m_bForceCaptureToSel = false; // remove capture
 		CheckDlgButton(g_kDlgBoxRight, IDC_FORCE_CAPTURE_TO_SEL_CB, BST_UNCHECKED);
 		
@@ -940,41 +949,88 @@ void ZGuiEd::CopyWnd()
 		return;
 
 	m_pkCopyWnd = m_pkFocusWnd;
+
+}
+
+void ZGuiEd::CutWnd()
+{
+	//if(m_pkFocusWnd == NULL)
+	//	return;
+
+	//ZGuiWnd* pkCutWnd = m_pkFocusWnd;
+
+	//map<string, ZGuiWnd*> kWndsBefore;
+	//m_pkGuiMan->GetWindows(kWndsBefore);
+
+	//CopyWnd();
+	//PasteWnd();
+
+	//DeleteSelWindow(false);
 }
 
 void ZGuiEd::PasteWnd()
 {
-	if(m_pkCopyWnd)
+	ZGuiWnd* pkMainWnd = GetWnd("GuiMainWnd");
+
+	ZGuiWnd* kNewSelWnd = NULL;
+	vector<ZGuiWnd*> kWnds, kAddList;
+
+	map<string, ZGuiWnd*> kAllWndMap;
+	m_pkGuiMan->GetWindows(kAllWndMap);
+	for( map<string, ZGuiWnd*>::iterator it = kAllWndMap.begin(); it != kAllWndMap.end(); it++)
+		kWnds.push_back(it->second);
+
+	// Skapa mainwindow fönstret
+	if(GetWndType(m_pkCopyWnd) == Wnd)
 	{
-		vector<ZGuiWnd*> addlist;
+		CreateNewWindow(m_pkCopyWnd);	
+		kAddList.push_back(m_pkCopyWnd);
+		kNewSelWnd = m_pkFocusWnd;
+	}
 
-		map<string, ZGuiWnd*> kWindows;
-		m_pkGuiMan->GetWindows(kWindows);
-
-		for( map<string, ZGuiWnd*>::iterator it = kWindows.begin(); it != kWindows.end(); it++)
+	// Skapa alla eventuella tabcontrols och dess sidor
+	for(int i=0; i<kWnds.size(); i++)
+		if(GetWndType(kWnds[i]) == TabControl && kWnds[i]->GetParent() == m_pkCopyWnd)
 		{
-			ZGuiWnd* pkWnd = it->second;
-			if(pkWnd->GetParent() && pkWnd->GetParent() == m_pkCopyWnd) // hittat ett barn
-			{
-				bool bAlreadyThere = false;
+			CreateNewWindow(kWnds[i]); // skapa tab controllen
+			kAddList.push_back(kWnds[i]);
 
-				for(int k=0; k<addlist.size(); k++)
-					if(pkWnd == addlist[k])
-					{
-						bAlreadyThere = true;
-						break;
-					}
+			ZGuiTabCtrl* pkTabControl = (ZGuiTabCtrl*) m_pkFocusWnd;
+			
+			for(int j=0; j<((ZGuiTabCtrl*)kWnds[i])->GetNumPages(); j++)
+			{								
+				ZGuiWnd* pkPage = ((ZGuiTabCtrl*)kWnds[i])->GetPage(j);
 
-				if(!bAlreadyThere)
-					addlist.push_back(pkWnd);				
+				CreateNewWindow(pkPage); // skapa sidan
+				kAddList.push_back(pkPage);
+
+				// Sätt fokus på sidan
+				pkTabControl->SetCurrentPage(j);
+				m_pkFocusWnd = pkTabControl->GetPage(j);
+
+				// Skapa alla knappar och annat på sidorna
+				list<ZGuiWnd*> kChilds; pkPage->GetChildrens(kChilds);
+				for(list<ZGuiWnd*>::iterator it = kChilds.begin(); it!=kChilds.end(); it++)	
+				{
+					CreateNewWindow(*it);		
+					kAddList.push_back(*it);
+				}
+
+				m_pkFocusWnd = pkTabControl;
 			}
+
+			pkTabControl->SetCurrentPage(0);
 		}
 
-		CreateNewWindow(m_pkCopyWnd);
-
-		for(int i=0; i<addlist.size(); i++)
+	for(int i=0; i<kWnds.size(); i++)
+	{
+		if(kWnds[i]->GetParent() == m_pkCopyWnd || kWnds[i] == m_pkCopyWnd)
 		{
-			CreateNewWindow(addlist[i]);		
+			if(!AlreadyInList(kAddList, kWnds[i]))
+				CreateNewWindow(kWnds[i]);
 		}
 	}
+
+	if(kNewSelWnd != NULL)
+		m_pkFocusWnd = kNewSelWnd;
 }
