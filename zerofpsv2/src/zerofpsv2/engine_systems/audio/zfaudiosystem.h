@@ -45,7 +45,7 @@ class ENGINE_SYSTEMS_API SoundInfo
 		bool m_bLoop;
 		Vector3 m_kPos;
 		Vector3 m_kDir;
-		char m_szFile[128]; // ändra inte till string, då uppstår en kopiering bugg!!
+		char m_acFile[128]; // ändra inte till string, då uppstår en kopiering bugg!!
 			
 	private:
 		ZFSoundRes* m_pkResource;

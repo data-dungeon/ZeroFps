@@ -98,6 +98,19 @@ ZFVFileSystem::ZFVFileSystem()
 bool ZFVFileSystem::StartUp()
 { 
 	m_pkBasicFS = static_cast<ZFBasicFS*>(GetSystem().GetObjectPtr("ZFBasicFS"));		
+	 
+	// [zeb] ////////////////////////////////////////////////
+	char szWorkDir[512];
+	strcpy(szWorkDir, m_pkBasicFS->GetCWD());
+
+	char* szDiv =  strrchr(szWorkDir, '/');
+	if(szDiv)
+		szDiv[1] = 0;
+
+	AddRootPath(szWorkDir);
+	AddRootPath("h:/");
+	////////////////////////////////////////////////// [/zeb]
+
 	return true;
 }
 
@@ -133,9 +146,11 @@ FILE* ZFVFileSystem::Open(string strFileName, int iOptions, bool bWrite)
 	pkFp = fopen(strFileName.c_str(), szOptions);
 	if(pkFp)
 		return pkFp;
+
+	unsigned int num_paths = m_kstrRootPath.size();
 		
 	// Try to open from all active RootPaths.
-	for(unsigned int i=0; i <m_kstrRootPath.size(); i++) {
+	for(unsigned int i=0; i <num_paths; i++) {
 		strRootMerge = m_kstrRootPath[i] + strFileName;
 		pkFp = fopen(strRootMerge.c_str(), szOptions);
 		if(pkFp) {
@@ -199,6 +214,8 @@ void ZFVFileSystem::AddRootPath(string strRootPath)
 	g_Logf("Adding %s to VFS root table\n", strRootPath.c_str());
 	m_kstrRootPath.push_back(strRootPath);
 	int iSize = m_kstrRootPath.size();
+
+	printf("Adding root path %s\n", (char*) strRootPath.c_str() );
 }
 
 string	ZFVFileSystem::GetCurrentWorkingDir()

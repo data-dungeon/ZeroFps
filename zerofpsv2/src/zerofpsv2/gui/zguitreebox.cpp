@@ -679,7 +679,7 @@ bool ZGuiTreebox::DeleteNode(ZGuiTreeboxNode* pkNode, bool bRemoveFromMap)
 		return false;
 	}
 
-	ZGuiTreeboxNode* last_child;
+	ZGuiTreeboxNode* last_child = NULL;
 
 	printf("-------- DeleteNode START --------\n");
 

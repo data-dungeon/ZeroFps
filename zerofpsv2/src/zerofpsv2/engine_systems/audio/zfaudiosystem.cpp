@@ -125,7 +125,7 @@ SoundInfo::SoundInfo()
 
 SoundInfo::SoundInfo(const char* c_szFile, Vector3 pos, Vector3 dir, bool bLoop)
 {
-	strcpy(m_szFile, c_szFile);
+	strcpy(m_acFile, c_szFile);
 	m_bLoop = bLoop;
 	m_kPos = pos;
 	m_kDir = dir;
@@ -432,7 +432,7 @@ bool ZFAudioSystem::StartSound(SoundInfo kSound)
 	SoundInfo *pkSound = new SoundInfo;
 	memcpy(pkSound, &kSound, sizeof(SoundInfo));
 
-	if(pkSound == NULL || pkSound->m_szFile == NULL)
+	if(pkSound == NULL || pkSound->m_acFile == NULL)
 	{
 		printf("ZFAudioSystem::ActivateSound: Bad argument.\n");
 		return false;
@@ -482,7 +482,7 @@ bool ZFAudioSystem::RemoveSound(SoundInfo kSound, float fMaxSearchRange)
 	{
 		SoundInfo* pkSound = (*itSound);
 
-		if(strcmp(pkSound->m_szFile, kSound.m_szFile) == 0)
+		if(strcmp(pkSound->m_acFile, kSound.m_acFile) == 0)
 		{
 			float fDistance = (kSound.m_kPos - pkSound->m_kPos).LengthSqr();
 
@@ -512,7 +512,7 @@ bool ZFAudioSystem::RemoveSound(SoundInfo kSound, float fMaxSearchRange)
 
 				// Minska antalet laddade resurser och ladda ur resursen
 				// om vi inga ljud använder den.
-				if( ChangeResCounter(string(pkRemoveSound->m_szFile),-1) == 0)
+				if( ChangeResCounter(string(pkRemoveSound->m_acFile),-1) == 0)
 				{
 					UnLoadRes( pkRemoveSound );
 				}
@@ -664,23 +664,23 @@ bool ZFAudioSystem::RestartLoopSound(SoundInfo *pkSound)
 bool ZFAudioSystem::LoadRes(SoundInfo* pkSound)
 {
 	// Hämta ett resurshantag.
-	ZFResourceHandle* pkResHandle = GetResHandle(string(pkSound->m_szFile));
+	ZFResourceHandle* pkResHandle = GetResHandle(string(pkSound->m_acFile));
 
 	// Öka på antalet laddade resurser
-	ChangeResCounter(string(pkSound->m_szFile),1);
+	ChangeResCounter(string(pkSound->m_acFile),1);
 
 	// Är resursen ej inladdad?
 	if(pkResHandle->IsValid() == false)
 	{
 		// Försök ladda in ljudet från disk via resurs systemet.
-		if(pkResHandle->SetRes(pkSound->m_szFile) == false)
+		if(pkResHandle->SetRes(pkSound->m_acFile) == false)
 		{
 			printf("ZFAudioSystem::ActivateSound: SetRes failed!\n");
 			return false;
 		}
 		else
 		{
-			printf("Sound %s loaded\n", pkSound->m_szFile);
+			printf("Sound %s loaded\n", pkSound->m_acFile);
 		}
 	}
 
@@ -694,7 +694,7 @@ bool ZFAudioSystem::UnLoadRes(SoundInfo* pkSound)
 {
 	// Check if resource handle exist.
 	map<string,ZFResourceHandle*>::iterator itRes;
-	itRes = m_mkResHandles.find(pkSound->m_szFile);
+	itRes = m_mkResHandles.find(pkSound->m_acFile);
 	if(itRes != m_mkResHandles.end())
 	{
 		delete itRes->second;

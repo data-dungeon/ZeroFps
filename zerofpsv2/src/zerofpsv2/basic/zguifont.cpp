@@ -5,6 +5,7 @@
 #include "zguifont.h"
 #include <memory.h>
 #include "image.h"
+#include "zfvfs.h"
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
@@ -45,8 +46,20 @@ ZGuiFont::~ZGuiFont()
 
 bool ZGuiFont::CreateFromFile(char* strFileName)
 {
+
+/*	ZFVFileSystem* pkFileSys;
+	pkFileSys = static_cast<ZFVFileSystem*>(g_ZFObjSys.GetObjectPtr("ZFVFileSystem"));		
+	string strFull = pkFileSys->GetFullPath(strFileName);*/
+
+	ZFVFile kFile;
+	if(!kFile.Open(strFileName,0,false))
+	{
+		printf("Failed to open file for creating font\n");
+		return false;
+	}
+
 	Image kImage;
-	bool bSuccess = kImage.load(strFileName);
+	bool bSuccess = kImage.load(kFile.m_pkFilePointer, strFileName);
 
 	if(!bSuccess)
 	{

@@ -714,13 +714,14 @@ void Object::Load(ZFIoInterface* pkFile)
 		m_pScriptFileHandle->FreeRes();
 	else
 		m_pScriptFileHandle->SetRes(string(acTemp));
-		
+	
+	int i;
 	
 	//nr of propertys
 	int iProps = 0;
 	pkFile->Read(&iProps,sizeof(iProps),1);	
 	//save all propertys
-	for(int i = 0;i< iProps;i++)
+	for(i = 0;i< iProps;i++)
 	{
 		char name[50];		
 		pkFile->Read(&name,50,1);			
@@ -735,7 +736,7 @@ void Object::Load(ZFIoInterface* pkFile)
 	int iChilds = 0;		
 	pkFile->Read(&iChilds,sizeof(iChilds),1);		
 	//save all childs
-	for(int i = 0;i<iChilds;i++)
+	for(i = 0;i<iChilds;i++)
 	{
 		Object* newobj = m_pkObjectMan->CreateObject();
 		newobj->SetParent(this);
@@ -781,12 +782,13 @@ void Object::Save(ZFIoInterface* pkFile)
 		strcpy(acTemp,"none");	
 	pkFile->Write(acTemp,128,1);		
 		
+	int i;
 		
 	//nr of propertys
 	int iProps = m_akPropertys.size();		
 	pkFile->Write(&iProps,sizeof(iProps),1);	
 	//save all propertys
-	for(int i = 0;i<iProps;i++)
+	for( i = 0;i<iProps;i++)
 	{
 		pkFile->Write(&m_akPropertys[i]->m_acName,50,1);	
 		m_akPropertys[i]->Save(pkFile);
@@ -797,7 +799,7 @@ void Object::Save(ZFIoInterface* pkFile)
 	int iChilds = m_akChilds.size();		
 	pkFile->Write(&iChilds,sizeof(iChilds),1);		
 	//save all childs
-	for(int i = 0;i<iChilds;i++)
+	for( i = 0;i<iChilds;i++)
 	{
 		m_akChilds[i]->Save(pkFile);
 	}

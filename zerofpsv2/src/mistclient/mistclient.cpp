@@ -266,7 +266,7 @@ void MistClient::Input()
 			
 			if(COUNTER==0)
 			{
-				strcpy(kSound.m_szFile, "data/sound/dummy.wav");
+				strcpy(kSound.m_acFile, "data/sound/dummy.wav");
 		//		COUNTER++;
 			}
 /*			else
@@ -294,7 +294,7 @@ void MistClient::Input()
 		kSound.m_kPos = Vector3(0,0,0);
 		kSound.m_bLoop = true;
 
-		strcpy(kSound.m_szFile, "data/sound/dummy.wav");
+		strcpy(kSound.m_acFile, "data/sound/dummy.wav");
 		if(!pkAudioSys->RemoveSound(kSound))
 			printf("Failed to desroy sound\n");
 		else
