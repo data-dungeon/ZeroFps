@@ -88,11 +88,17 @@ void P_CharacterProperty::Update()
 	{
 		if(m_pkEntityManager->IsUpdate(PROPERTY_SIDE_SERVER))
 		{
+			if(!m_pkEntity->GetInterpolate())
+				cout<<"not interpolating"<<endl;
+			
 			UpdateAnimation();
 		}
 			
 		if(m_pkEntityManager->IsUpdate(PROPERTY_SIDE_CLIENT))
 		{
+			if(!m_pkEntity->GetInterpolate())
+				cout<<"not interpolating"<<endl;
+		
 			PlayCharacterMovementSounds();			
 		}
 	}
