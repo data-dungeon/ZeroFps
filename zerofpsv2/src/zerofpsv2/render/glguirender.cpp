@@ -4,6 +4,7 @@
 #include "../ogl/zfpsgl.h"
 #include "glguirender.h" 
 #include "../basic/zguiskin.h"
+#include "../basic/Vector4.h"
 #include "texturemanager.h"
 #include "../basic/zfresourcedb.h"
 #include "../basic/zifanimation.h"
@@ -79,6 +80,8 @@ bool GLGuiRender::StartRender()
 	glDisable(GL_DEPTH_TEST);
 	glDisable(GL_FOG);
 
+
+
 	glPolygonMode(GL_FRONT, GL_FILL);
 	glPolygonMode(GL_BACK, GL_FILL);
 	
@@ -87,6 +90,11 @@ bool GLGuiRender::StartRender()
 	glLoadIdentity();
 	//gluOrtho2D(0, m_iScreenWidth + 1, -1, m_iScreenHeight);
 	gluOrtho2D(0, m_iScreenWidth , 0, m_iScreenHeight);
+
+
+
+		glDisable(GL_COLOR_MATERIAL);	 // lade till 19 okt 2004
+
 
 	//
 	// Skala om projektions matrisen.

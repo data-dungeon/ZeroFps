@@ -6,7 +6,9 @@
  
 #include "madview.h"
 #include "../../../zerofpsv2/engine_systems/propertys/p_mad.h"
+#include "../../../zerofpsv2/engine_systems/propertys/p_mad.h"
 #include "../../../zerofpsv2/engine_systems/script_interfaces/si_gui.h"
+#include "../../../mcommon/p_enviroment.h"
 
 MadView g_kZeroEd("MadView", 0, 0, 0);
 
@@ -63,6 +65,7 @@ MadView::MadView(char* aName,int iWidth,int iHeight,int iDepth)
 
 void MadView::OnInit() 
 {
+	m_strMadFile = "data/mad/cube.mad";
 
 	//open mad from command line
 	if(g_ZFObjSys.GetNumberOfArguments() >= 2)
@@ -71,16 +74,12 @@ void MadView::OnInit()
 		m_strMadFile = g_ZFObjSys.GetArgument(1);
 	}
 
-	//m_pkZFVFileSystem->AddRootPath( "/" , "/");
-	//m_pkZFVFileSystem->AddRootPath( "../datafiles/mistlands/",	"/data");
-	//m_pkZFVFileSystem->AddRootPath( "../datafiles/madview/", "/data");
+	m_pkZFVFileSystem->AddRootPath( "../datafiles/mistlands/",	"/data");
 
 	m_pkConsole->Printf(" MadView ");
 	m_pkConsole->Printf("--------------------------------");
 	m_pkConsole->Printf("");
 
-	
-	//run autoexec script
 	if(!m_pkIni->ExecuteCommands("/madview_autoexec.ini"))
 		m_pkConsole->Printf("No madview_autoexec.ini found");
 	
@@ -111,7 +110,7 @@ void MadView::Init()
 	pe->SetEnable(true);		
 	pe->SetEnviroment("data/enviroments/sun.env");
 	*/
-	
+
 	m_fDelayTime = m_pkZeroFps->GetEngineTime();
 	
 
@@ -122,12 +121,12 @@ void MadView::Init()
 
 void MadView::RegisterResources()
 {
-	//m_pkResourceDB->RegisterResource( string(".env"), Create__EnvSetting	);
+	m_pkResourceDB->RegisterResource( string(".env"), Create__EnvSetting	);
 }
 
 void MadView::RegisterPropertys()
 {
-	//m_pkPropertyFactory->Register("P_Enviroment", Create_P_Enviroment);
+	m_pkPropertyFactory->Register("P_Enviroment", Create_P_Enviroment);
 }
 
 void MadView::OnIdle()
