@@ -102,22 +102,24 @@ ZeroFps::ZeroFps(void) : I_ZeroFps("ZeroFps")
 	m_iDepth						= 16;
 
 	// Register Commands
-	RegisterVariable("m_sens", &m_pkInput->m_fMouseSensitivity,CSYS_FLOAT);
-	RegisterVariable("r_landlod", &m_pkRender->m_iDetail,CSYS_INT);
-	RegisterVariable("r_viewdistance", &m_pkRender->m_iViewDistance,CSYS_INT);
-	RegisterVariable("r_autolod", &m_pkRender->m_iAutoLod,CSYS_INT);
-	RegisterVariable("r_fpslock", &m_pkRender->m_iFpsLock,CSYS_INT);
-	RegisterVariable("r_maxlights", &m_pkLight->m_iNrOfLights,CSYS_INT);
-	RegisterVariable("r_width", &m_iWidth,CSYS_INT);
-	RegisterVariable("r_height", &m_iHeight,CSYS_INT);
-	RegisterVariable("r_depth", &m_iDepth,CSYS_INT);
-	RegisterVariable("r_fullscreen", &m_iFullScreen,CSYS_INT);
-	RegisterVariable("r_maddraw", &m_iMadDraw,CSYS_INT);
-	RegisterVariable("r_madlod", &g_fMadLODScale,CSYS_FLOAT);
-	RegisterVariable("r_madlodlock", &g_iMadLODLock,CSYS_FLOAT);
-	RegisterVariable("e_systemfps", &m_fSystemUpdateFps,CSYS_FLOAT);	
-	RegisterVariable("e_runsim", &m_bRunWorldSim,CSYS_BOOL);	
-	RegisterVariable("r_logrp", &g_iLogRenderPropertys,CSYS_INT);	
+	//RegisterVariable("m_sens",			&m_pkInput->m_fMouseSensitivity,CSYS_FLOAT);
+/*
+	RegisterVariable("r_landlod",			&m_pkRender->m_iDetail,CSYS_INT);
+	RegisterVariable("r_viewdistance",	&m_pkRender->m_iViewDistance,CSYS_INT);
+	RegisterVariable("r_autolod",			&m_pkRender->m_iAutoLod,CSYS_INT);
+	RegisterVariable("r_fpslock",			&m_pkRender->m_iFpsLock,CSYS_INT);
+*/
+//	RegisterVariable("r_maxlights",		&m_pkLight->m_iNrOfLights,CSYS_INT);
+	RegisterVariable("r_width",			&m_iWidth,CSYS_INT);
+	RegisterVariable("r_height",			&m_iHeight,CSYS_INT);
+	RegisterVariable("r_depth",			&m_iDepth,CSYS_INT);
+	RegisterVariable("r_fullscreen",		&m_iFullScreen,CSYS_INT);
+	RegisterVariable("r_maddraw",			&m_iMadDraw,CSYS_INT);
+	RegisterVariable("r_madlod",			&g_fMadLODScale,CSYS_FLOAT);
+	RegisterVariable("r_madlodlock",		&g_iMadLODLock,CSYS_FLOAT);
+	RegisterVariable("e_systemfps",		&m_fSystemUpdateFps,CSYS_FLOAT);	
+	RegisterVariable("e_runsim",			&m_bRunWorldSim,CSYS_BOOL);	
+	RegisterVariable("r_logrp",			&g_iLogRenderPropertys,CSYS_INT);	
 
 	// Register Variables
 	Register_Cmd("setdisplay",FID_SETDISPLAY);

@@ -19,8 +19,9 @@ class BASIC_API CmdSystem : public ZFSubSystem  {
 	public:
 		enum FuncId_e
 			{
-			FID_SET,
+			FID_SET,	
 			FID_VARLIST,
+			FID_COMMANDS,
 			FID_SYS
 			};
 

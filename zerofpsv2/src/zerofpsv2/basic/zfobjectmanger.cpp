@@ -539,7 +539,9 @@ string ZFObjectManger::GetVarValue(ZFCmdData* pkArea)
 }
 
 
-
+/*
+	Print all system variables.
+*/
 void ZFObjectManger::PrintVariables()
 {
 	BasicConsole*		m_pkCon;
@@ -549,10 +551,31 @@ void ZFObjectManger::PrintVariables()
 	m_pkCon->Printf("### variable list ###");
 
 	for(unsigned int i=0; i<m_kCmdDataList.size(); i++) {
-			strValue = GetVarValue(&m_kCmdDataList[i]);
-			m_pkCon->Printf(" %s = [ %s]",m_kCmdDataList[i].m_strName.c_str(), strValue.c_str());
+		if(m_kCmdDataList[i].m_eType == CSYS_NONE)		continue; // We don't print none valid data.
+		if(m_kCmdDataList[i].m_eType == CSYS_FUNCTION)	continue; // We don't print functions.
+
+		strValue = GetVarValue(&m_kCmdDataList[i]);
+		m_pkCon->Printf(" %s = [ %s]",m_kCmdDataList[i].m_strName.c_str(), strValue.c_str());
 	}
 }
+
+
+void ZFObjectManger::PrintCommands()
+{
+	BasicConsole*		m_pkCon;
+	m_pkCon = dynamic_cast<BasicConsole*>(g_ZFObjSys.GetObjectPtr("Console"));
+	string strValue;
+
+	m_pkCon->Printf("### variable list ###");
+
+	for(unsigned int i=0; i<m_kCmdDataList.size(); i++) {
+		if(m_kCmdDataList[i].m_eType == CSYS_FUNCTION) {
+			strValue = GetVarValue(&m_kCmdDataList[i]);
+			m_pkCon->Printf(" %s = [ %s]",m_kCmdDataList[i].m_strName.c_str(), strValue.c_str());
+			}
+	}
+}
+
 
 
 bool ZFObjectManger::StartUp()

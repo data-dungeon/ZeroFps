@@ -107,6 +107,7 @@ public:
 	void SetString(ZFCmdData* pkArea, const char* szValue);
 
 	void PrintVariables();
+	void PrintCommands();
 	void* GetVar(ZFCmdData* pkArea);
 	string GetVarValue(ZFCmdData* pkArea);
 

@@ -5,6 +5,10 @@
 Input::Input() 
  : ZFSubSystem("Input") {
 
+	m_fMouseSensitivity = 1;	
+
+	RegisterVariable("m_sens", &m_fMouseSensitivity,CSYS_FLOAT);
+
 	Register_Cmd("togglegrab",FID_TOGGLEGRAB);
 	Register_Cmd("bind",FID_BIND);
 	Register_Cmd("unbindall",FID_UNBINDALL);
@@ -27,7 +31,6 @@ bool Input::StartUp()
 	m_bKeyRepeat = true;
 	
 	m_iQueueLength=100;
-	m_fMouseSensitivity=1;	
 	m_iGrabtime=SDL_GetTicks();
 	m_bInputEnabled=true;
 

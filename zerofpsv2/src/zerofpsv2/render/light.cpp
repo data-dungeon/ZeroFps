@@ -37,6 +37,9 @@ Light::Light()
 : ZFSubSystem("Light") 
 {
 	m_iNrOfLights=8;				//this shuld never be greater than 8
+
+	RegisterVariable("r_maxlights",		&m_iNrOfLights,CSYS_INT);
+
 }
 
 bool Light::StartUp()	

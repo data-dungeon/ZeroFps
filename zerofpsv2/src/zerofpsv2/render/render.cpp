@@ -4,8 +4,6 @@
 Render::Render()  
 :	ZFSubSystem("Render") , m_eLandscapePolygonMode(FILL) 
 {
-	// Register Our Own commands.
-	// Register Our Own variables.
 
 	// Set Our own local variables.
 	m_iSlicesize				= 32;						//grid size of lod tiles
@@ -15,13 +13,20 @@ Render::Render()
 	m_iAutoLod					= 1;
 	m_iLodUpdate				= 0;	
 	m_kOldCamPos				= Vector3(0,0,0);
-	m_iMaxLandscapeLayers		= 4;
+	m_iMaxLandscapeLayers	= 4;
 	m_iDrawLandscape			= 1;
 	m_iScreenShootNum			= 0;
 	m_iHmTempList				= 0;
 
-	RegisterVariable("r_maxlayers", &m_iMaxLandscapeLayers,CSYS_INT);
-	RegisterVariable("r_drawland", &m_iDrawLandscape,CSYS_INT);
+	// Register Our Own variables.
+	RegisterVariable("r_maxlayers",		&m_iMaxLandscapeLayers,CSYS_INT);
+	RegisterVariable("r_drawland",		&m_iDrawLandscape,CSYS_INT);
+	RegisterVariable("r_landlod",			&m_iDetail,CSYS_INT);
+	RegisterVariable("r_viewdistance",	&m_iViewDistance,CSYS_INT);
+	RegisterVariable("r_autolod",			&m_iAutoLod,CSYS_INT);
+	RegisterVariable("r_fpslock",			&m_iFpsLock,CSYS_INT);
+
+	// Register Our Own commands.
 }
 
 bool Render::StartUp()

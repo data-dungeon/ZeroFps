@@ -407,9 +407,10 @@ bool Console::Execute(char* aText) {
 		return false;
 	}
 	
+	Printf("> %s", aText);				// Print command to screen.
 	if(!GetSystem().RunCommand(aText))
 	{
-		Printf("Command Not Found");
+		Printf("No Command was Found for '%s'", aText);
 		return false;
 	}
 	else

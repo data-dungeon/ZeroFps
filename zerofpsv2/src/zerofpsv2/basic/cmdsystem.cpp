@@ -7,9 +7,10 @@
 CmdSystem::CmdSystem()
 : ZFSubSystem("CmdSystem") 
 {
-	Register_Cmd("set",		FID_SET, "set name value", 2);
-	Register_Cmd("varlist",	FID_VARLIST);
-	Register_Cmd("sys",		FID_SYS);
+	Register_Cmd("set",			FID_SET, "set name value", 2);
+	Register_Cmd("varlist",		FID_VARLIST);
+	Register_Cmd("commands",	FID_COMMANDS);
+	Register_Cmd("sys",			FID_SYS);
 }
 
 bool CmdSystem::StartUp()	
@@ -47,7 +48,8 @@ void CmdSystem::RunCommand(int cmdid, const CmdArgument* kCommand)
 			
 			break;
 
-		case FID_VARLIST:	GetSystem().PrintVariables();	break;
+		case FID_VARLIST:		GetSystem().PrintVariables();	break;
+		case FID_COMMANDS:	GetSystem().PrintCommands();	break;
 
 		case FID_SYS:
 			// Draw All Systems to console.
