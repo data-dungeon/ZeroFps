@@ -873,7 +873,7 @@ void Entity::Load(ZFIoInterface* pkFile,bool bLoadID,bool bLoadChilds)
 	Matrix3 rot;
 
 	int iNewID;
-	pkFile->Read(&iNewID,sizeof(iNewID),1);	
+	pkFile->Read(iNewID);	
 	if(bLoadID)
 	{
 		m_pkEntityManager->Link(this,iNewID);
@@ -881,47 +881,47 @@ void Entity::Load(ZFIoInterface* pkFile,bool bLoadID,bool bLoadChilds)
 	else
 		m_pkEntityManager->Link(this);	
 
-	pkFile->Read(&m_ucIcon,sizeof(m_ucIcon),1);	
-	pkFile->Read(&m_bRelativeOri,sizeof(m_bRelativeOri),1);	
-	pkFile->Read(&m_bInterpolate,sizeof(m_bInterpolate),1);	
+	pkFile->Read(m_ucIcon);	
+	pkFile->Read(m_bRelativeOri);	
+	pkFile->Read(m_bInterpolate);	
 	
-	pkFile->Read(&pos,sizeof(pos),1);	
-	pkFile->Read(&rot,sizeof(rot),1);	
+	pkFile->Read(pos);	
+	pkFile->Read(rot);	
 	
 	SetLocalRotM(rot);
 	SetLocalPosV(pos);
 	
-	pkFile->Read(&m_kVel,sizeof(m_kVel),1);	
-	pkFile->Read(&m_kAcc,sizeof(m_kAcc),1);	
-	pkFile->Read(&m_fRadius,sizeof(m_fRadius),1);		
+	pkFile->Read(m_kVel);	
+	pkFile->Read(m_kAcc);	
+	pkFile->Read(m_fRadius);		
 	
-	pkFile->Read(&m_iUpdateStatus,sizeof(m_iUpdateStatus),1);
-	pkFile->Read(&m_bSave,sizeof(m_bSave),1);		
+	pkFile->Read(m_iUpdateStatus);
+	pkFile->Read(m_bSave);		
 	
-	pkFile->Read(&m_bZone,sizeof(m_bZone),1);			
-	pkFile->Read(&m_bUseZones,sizeof(m_bUseZones),1);				
+	pkFile->Read(m_bZone);			
+	pkFile->Read(m_bUseZones);				
 	
-	pkFile->Read(&m_eRole,sizeof(m_eRole),1);		
-	pkFile->Read(&m_eRemoteRole,sizeof(m_eRemoteRole),1);				
+	pkFile->Read(m_eRole);		
+	pkFile->Read(m_eRemoteRole);				
 
 	char acTemp[128];
 
 	int i;
 
 	int iNumOfEntVars;
-	pkFile->Read(&iNumOfEntVars,sizeof(iNumOfEntVars), 1);		
+	pkFile->Read(iNumOfEntVars);		
 	EntityVariable kEntVar;
 
 	for(i=0; i<iNumOfEntVars; i++) 
 	{
 		pkFile->Read(acTemp,128,1);		
 		kEntVar.m_strName = acTemp;
-		pkFile->Read(&kEntVar.m_eType ,sizeof(int), 1);		
-		pkFile->Read(&kEntVar.m_fValue ,sizeof(kEntVar.m_fValue), 1);		
+		pkFile->Read(kEntVar.m_eType );		
+		pkFile->Read(kEntVar.m_fValue );		
 		pkFile->Read(acTemp,128,1);		
 		kEntVar.m_strValue = acTemp;
 		if(kEntVar.m_eType == EVAR_VECTOR)
-			pkFile->Read(&kEntVar.m_kVector ,sizeof(Vector3), 1);		
+			pkFile->Read(kEntVar.m_kVector );		
 		m_kVariables.push_back(kEntVar);
 	}
 
@@ -953,14 +953,14 @@ void Entity::Load(ZFIoInterface* pkFile,bool bLoadID,bool bLoadChilds)
 
 	//nr of propertys
 	int iProps = 0;
-	pkFile->Read(&iProps,sizeof(iProps),1);	
+	pkFile->Read(iProps);	
 	//load all propertys
 	for(i = 0;i< iProps;i++)
 	{
 		char name[50];		
-		pkFile->Read(&name,50,1);
+		pkFile->Read(name,50,1);
 		int iVersion;
-		pkFile->Read(&iVersion,sizeof(int),1);
+		pkFile->Read(iVersion);
 					
 		
 		Property* prop = AddProperty(name);
@@ -979,7 +979,7 @@ void Entity::Load(ZFIoInterface* pkFile,bool bLoadID,bool bLoadChilds)
 	{
 		//nr of childs
 		int iChilds = 0;		
-		pkFile->Read(&iChilds,sizeof(iChilds),1);		
+		pkFile->Read(iChilds);		
 	
 		//load all childs
 		for( i = 0; i < iChilds; i++ )
@@ -1001,46 +1001,46 @@ void Entity::Save(ZFIoInterface* pkFile)
 	Vector3 pos = GetLocalPosV();
 	Matrix3 rot = GetLocalRotM();
 
-	pkFile->Write(&m_iEntityID,sizeof(m_iEntityID),1);	
+	pkFile->Write(m_iEntityID);	
 	
 
-	pkFile->Write(&m_ucIcon,sizeof(m_ucIcon),1);	
-	pkFile->Write(&m_bRelativeOri,sizeof(m_bRelativeOri),1);	
-	pkFile->Write(&m_bInterpolate,sizeof(m_bInterpolate),1);	
+	pkFile->Write(m_ucIcon);	
+	pkFile->Write(m_bRelativeOri);	
+	pkFile->Write(m_bInterpolate);	
 	
-	pkFile->Write(&pos,sizeof(pos),1);	
-	pkFile->Write(&rot,sizeof(rot),1);	
+	pkFile->Write(pos);	
+	pkFile->Write(rot);	
 	
-	pkFile->Write(&m_kVel,sizeof(m_kVel),1);	
-	pkFile->Write(&m_kAcc,sizeof(m_kAcc),1);	
-	pkFile->Write(&m_fRadius,sizeof(m_fRadius),1);		
+	pkFile->Write(m_kVel);	
+	pkFile->Write(m_kAcc);	
+	pkFile->Write(m_fRadius);	
 	
-	pkFile->Write(&m_iUpdateStatus,sizeof(m_iUpdateStatus),1);
-	pkFile->Write(&m_bSave,sizeof(m_bSave),1);		
+	pkFile->Write(m_iUpdateStatus);	
+	pkFile->Write(m_bSave);	
 	
-	pkFile->Write(&m_bZone,sizeof(m_bZone),1);			
-	pkFile->Write(&m_bUseZones,sizeof(m_bUseZones),1);				
+	pkFile->Write(m_bZone);	
+	pkFile->Write(m_bUseZones);	
 	
-	pkFile->Write(&m_eRole,sizeof(m_eRole),1);		
-	pkFile->Write(&m_eRemoteRole,sizeof(m_eRemoteRole),1);				
+	pkFile->Write(m_eRole);	
+	pkFile->Write(m_eRemoteRole);	
 
 	char acTemp[128];
 	unsigned int i;
 
 	// Write Ent Vars
 	unsigned int iNumOfEntVars = m_kVariables.size();
-	pkFile->Write(&iNumOfEntVars,sizeof(iNumOfEntVars), 1);		
+	pkFile->Write(iNumOfEntVars);	
 	
 	for(i=0; i<iNumOfEntVars; i++) 
 	{
 		strcpy(acTemp,m_kVariables[i].m_strName.c_str());
 		pkFile->Write(acTemp,128,1);		
-		pkFile->Write(&m_kVariables[i].m_eType ,sizeof(int), 1);		
-		pkFile->Write(&m_kVariables[i].m_fValue ,sizeof(m_kVariables[i].m_fValue), 1);		
+		pkFile->Write(m_kVariables[i].m_eType);		
+		pkFile->Write(m_kVariables[i].m_fValue);		
 		strcpy(acTemp,m_kVariables[i].m_strValue.c_str());
 		pkFile->Write(acTemp,128,1);		
 		if(m_kVariables[i].m_eType == EVAR_VECTOR)
-			pkFile->Write(&m_kVariables[i].m_kVector ,sizeof(Vector3), 1);		
+			pkFile->Write(m_kVariables[i].m_kVector);		
 	}
 
 	//name
@@ -1061,12 +1061,12 @@ void Entity::Save(ZFIoInterface* pkFile)
 		
 	//nr of propertys
 	unsigned int iProps = m_akPropertys.size();		
-	pkFile->Write(&iProps,sizeof(iProps),1);	
+	pkFile->Write(iProps);	
 	//save all propertys
 	for( i = 0;i<iProps;i++)
 	{
 		pkFile->Write(&m_akPropertys[i]->m_acName,50,1);	
-		pkFile->Write(&m_akPropertys[i]->m_iVersion,sizeof(int),1);	
+		pkFile->Write(m_akPropertys[i]->m_iVersion);	
 		m_akPropertys[i]->Save(pkFile);
 	}
 		
@@ -1083,7 +1083,7 @@ void Entity::Save(ZFIoInterface* pkFile)
 	}		
 
 	//nr of childs
-	pkFile->Write(&iChilds,sizeof(iChilds),1);		
+	pkFile->Write(iChilds);		
 	
 	//save all childs
 	for( i = 0;i<iChilds;i++)
