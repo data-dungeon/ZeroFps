@@ -310,6 +310,14 @@ void Mad_Core::SetupBonePose()
 	ZFAssert(pkStartKey, "Mad_Core::SetupBonePose: No StartKey");
 	ZFAssert(pkEndKey, "Mad_Core::SetupBonePose: No EndKey");
 
+/*	if(strcmp(Name, "/data/mad/goblin.mad") == 0) {
+		cout << "Frame: "<< iStartFrame << "  ";
+		cout << pkStartKey[1].m_kRotation.x << "," 
+			 << pkStartKey[1].m_kRotation.y << ","
+			 << pkStartKey[1].m_kRotation.z << endl;
+
+		}*/
+	
 
 	Quaternion kStart, kEnd;
 
@@ -486,6 +494,11 @@ bool Mad_Core::Create(string MadFileName)
 //bool Mad_Core::LoadMad(const char* MadFileName)
 {
 	strcpy(Name,MadFileName.c_str());
+	cout << "Name " << Name << endl;
+
+	if(strcmp(Name, "/data/mad/goblin.mad") == 0) {
+		int gam = 1;
+	}
 
 	ZFVFile kZFile;
 	if( !kZFile.Open(MadFileName,0,false) ) {

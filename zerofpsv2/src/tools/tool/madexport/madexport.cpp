@@ -36,7 +36,7 @@ void LogIt(const char *fmt, ...)
 	cout << format_text << endl;
 }
 
-
+ 
 float DegToRad(float fAngle)
 {
 	return fAngle;
@@ -47,8 +47,8 @@ float RadToDeg(float fAngle)
 {
 	return fAngle;
 //	return (fAngle * NRDEG_IN_ONE_RAD);
-}
-
+} 
+ 
 
 #pragma warning ( disable : 4786 )
 

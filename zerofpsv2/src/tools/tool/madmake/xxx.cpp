@@ -388,7 +388,7 @@ void ModellXXX::ReadExportSD(const char* filename)
 
 		// Scale
 		NewBone.m_kPosition *= g_fTotalScale;
-		NewBone.m_kRotation *= g_fTotalScale;
+//		NewBone.m_kRotation *= g_fTotalScale;
 
 		m_akSkelleton.push_back(NewBone);
 	}
@@ -515,7 +515,7 @@ void ModellXXX::ReadExportAD(const char* filename,	const char* szName)
 		kNewBoneKey.m_kRotation.z = atof(tmpstr);
 
 		kNewBoneKey.m_kPosition *= g_fTotalScale;
-		kNewBoneKey.m_kRotation *= g_fTotalScale;
+//		kNewBoneKey.m_kRotation *= g_fTotalScale;
 
 //		kNewBoneKeyFrame.m_kBonePose.push_back(kNewBoneKey);
 		kNewBoneKeyFrame.PushBack(kNewBoneKey);

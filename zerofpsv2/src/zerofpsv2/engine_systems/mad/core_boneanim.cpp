@@ -175,6 +175,9 @@ void Mad_CoreBoneKey::Load(ZFVFile* pkZFile)
 {
 	pkZFile->Read(&m_kPosition, 1, sizeof(Vector3));
 	pkZFile->Read(&m_kRotation, 1, sizeof(Vector3));
+/*		cout << m_kRotation.x << "," 
+			 << m_kRotation.y << ","
+			 << m_kRotation.z << endl;*/
 	//fread(&m_kPosition, 1, sizeof(Vector3), fp);
 	//fread(&m_kRotation, 1, sizeof(Vector3), fp);
 }
