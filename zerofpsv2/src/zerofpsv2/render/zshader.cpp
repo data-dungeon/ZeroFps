@@ -401,6 +401,7 @@ void ZShader::SetupRenderStates(ZMaterialSettings* pkSettings)
 			break;						
 	}
 
+	//depthtest
    if ( pkSettings->m_bDepthTest )
       glEnable (GL_DEPTH_TEST);
    else

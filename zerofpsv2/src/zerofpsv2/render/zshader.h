@@ -225,6 +225,13 @@ class RENDER_API ZShader : public ZFSubSystem
 		bool HaveVertexProgramExt();
 		bool HaveFragmentProgramExt();
 
+		void SetVertexProgram(int iVPID);
+		void SetFragmentProgram(int iVPID);
+		int  GetCurrentVertexProgram() 	{ return m_iCurrentVertexProgram;};
+		int  GetCurrentFragmentProgram() { return m_iCurrentFragmentProgram;};
+		bool SupportVertexProgram() 		{ return m_bVertexProgram;};
+		bool SupportFragmentProgram() 	{ return m_bFragmentProgram;};
+		
 	public:
 		ZShader();
 		bool StartUp();
@@ -238,12 +245,6 @@ class RENDER_API ZShader : public ZFSubSystem
 		void SetNrOfIndexes(int iNr);
 		void SetDrawMode(int iDrawMode);
 
-		void SetVertexProgram(int iVPID);
-		void SetFragmentProgram(int iVPID);
-		int  GetCurrentVertexProgram() 	{ return m_iCurrentVertexProgram;};
-		int  GetCurrentFragmentProgram() { return m_iCurrentFragmentProgram;};
-		bool SupportVertexProgram() 		{ return m_bVertexProgram;};
-		bool SupportFragmentProgram() 	{ return m_bFragmentProgram;};
 
 		
 		//matrix manipulation
@@ -263,6 +264,9 @@ class RENDER_API ZShader : public ZFSubSystem
 		bool ShutDown();
 		bool IsValid();
 
+		
+		friend class ZVProgram;
+		friend class ZFProgram;
 };
 
 

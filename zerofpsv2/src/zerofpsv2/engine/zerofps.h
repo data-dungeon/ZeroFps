@@ -19,6 +19,7 @@
 #include "../engine_systems/tcs/tcs.h"
 #include "../engine_systems/common/zshadow.h"
 #include "../render/zshader.h"
+#include "../render/zshadersystem.h"
 #include "i_zerofps.h"
 #include "../engine_systems/mad/mad_core.h"
 #include "res_texture.h"
@@ -210,6 +211,7 @@ class ENGINE_API ZeroFps : public I_ZeroFps {
 		ZFScriptSystem*		m_pkScript;					///< script
 		Application*			m_pkApp;						///< Application object.
 		ZShader*					m_pkZShader;				///< zerofps shader system
+		ZShaderSystem*			m_pkZShaderSystem;		///< zerofps shader system
 		OggMusic*				m_pkMusic;
 		PSystemManager*		m_pkPSystemManager;		///< ParticleSystemManager - Zerom
 		AStar*					m_pkAStar;

@@ -298,7 +298,7 @@ bool ZMaterial::LoadPass(int iPass)
 bool ZMaterial::Create(string strName)
 {
 	return LoadShader(strName.c_str());
-}
+} 
 
 int ZMaterial::CalculateSize()
 {

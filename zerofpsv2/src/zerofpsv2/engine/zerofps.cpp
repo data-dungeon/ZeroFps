@@ -17,10 +17,10 @@
 
 int		g_iNumOfFrames;
 int		g_iNumOfMadSurfaces;
-float	g_fMadLODScale;
+float		g_fMadLODScale;
 int		g_iMadLODLock;
 int		g_iLogRenderPropertys;
-char g_szIpPort[256];
+char 		g_szIpPort[256];
 
 static char Devformat_text[4096];	//
 
@@ -53,6 +53,7 @@ ZeroFps::ZeroFps(void) : I_ZeroFps("ZeroFps")
 	// Create Engine SubSystems 
 	m_pkAStar					= new AStar;
 	m_pkZShader					= new ZShader;
+	m_pkZShaderSystem			= new ZShaderSystem;
 	m_pkObjectMan				= new EntityManager;
 	m_pkResourceDB				= new ZFResourceDB;
 	m_pkIni						= new ZFIni;

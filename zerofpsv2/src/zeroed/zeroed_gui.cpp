@@ -310,7 +310,7 @@ void ZeroEd::OnClickListbox(int iListBoxID, int iListboxIndex, ZGuiWnd* pkMain)
 				{
 					if(string("Variables") == string(szProperty))
 					{
-						SetText("PropertyValEb", (char*)pkEnt->GetVarString(string(item)).c_str());
+						SetText("PropertyValEb", (char*)pkEnt->GetVarString(item).c_str());
 					}
 					
 					else if((pkProp = pkEnt->GetProperty(szProperty)))

@@ -370,14 +370,14 @@ class ENGINE_API Entity
 		
 
 		// Entity Variables
-		EntityVariable* CreateVar(string& strName, EntityVariableType eType);
-		EntityVariable* GetVar(string& strName);
+		EntityVariable* CreateVar(const string& strName, EntityVariableType eType);
+		EntityVariable* GetVar(const string& strName);
 		void GetAllVarNames(vector<string>& vkList);
-		double GetVarDouble(string& strName);
-		string GetVarString(string& strName);
-		void	 SetVarDouble(string& strName, double fValue);
-		void	 SetVarString(string& strName, string strValue);		
-		void	 AddVarDouble(string strName, double fValueToAdd);
+		double GetVarDouble(const string& strName);
+		string GetVarString(const string& strName);
+		void	 SetVarDouble(const string& strName, double fValue);
+		void	 SetVarString(const string& strName, string strValue);		
+		void	 AddVarDouble(const string& strName, double fValueToAdd);
 
 		
 		//friends

@@ -1741,7 +1741,7 @@ void Entity::GetAllVarNames(vector<string>& vkList)
 }
 
 
-EntityVariable* Entity::CreateVar(string& strName, EntityVariableType eType)
+EntityVariable* Entity::CreateVar(const string& strName, EntityVariableType eType)
 {
 	EntityVariable kEntVar;
 	kEntVar.m_eType		= eType;
@@ -1753,7 +1753,7 @@ EntityVariable* Entity::CreateVar(string& strName, EntityVariableType eType)
 	return GetVar(strName);
 }
 
-EntityVariable* Entity::GetVar(string& strName)
+EntityVariable* Entity::GetVar(const string& strName)
 {
 	for(unsigned int i=0; i<m_kVariables.size(); i++) {
 		if(strName == m_kVariables[i].m_strName) 
@@ -1764,7 +1764,7 @@ EntityVariable* Entity::GetVar(string& strName)
 
 }
 
-double Entity::GetVarDouble(string& strName) 
+double Entity::GetVarDouble(const string& strName) 
 {
 	EntityVariable* pkVar = GetVar(strName);
 	
@@ -1774,7 +1774,7 @@ double Entity::GetVarDouble(string& strName)
 	return pkVar->m_fValue;
 }
 
-string Entity::GetVarString(string& strName)
+string Entity::GetVarString(const string& strName)
 {
 	EntityVariable* pkVar = GetVar(strName);
 	
@@ -1794,7 +1794,7 @@ string Entity::GetVarString(string& strName)
 	return string("");
 }
 
-void	 Entity::SetVarDouble(string& strName, double fValue)
+void	 Entity::SetVarDouble(const string& strName, double fValue)
 {
 	EntityVariable* pkVar = GetVar(strName);
 	
@@ -1804,7 +1804,7 @@ void	 Entity::SetVarDouble(string& strName, double fValue)
 	pkVar->m_fValue = fValue;
 }
 
-void Entity::SetVarString(string& strName, string strValue)
+void Entity::SetVarString(const string& strName, string strValue)
 {
 	EntityVariable* pkVar = GetVar(strName);
 	
@@ -1820,7 +1820,7 @@ void Entity::SetVarString(string& strName, string strValue)
 	}
 }
 
-void Entity::AddVarDouble(string strName, double fValueToAdd)
+void Entity::AddVarDouble(const string& strName, double fValueToAdd)
 {
 	double fD = GetVarDouble(strName);
 	fD += fValueToAdd;

@@ -66,16 +66,11 @@ class RENDER_API ZMaterial : public ZFResource
 {
 	private:
 		
-		vector<ZMaterialSettings*> m_kPasses;
-		ZFIni								m_kIni;
-		static map<string,int> 		m_kEnums;
+		vector<ZMaterialSettings*> m_kPasses;		//material passes
+		ZFIni								m_kIni;			//inifile
+		static map<string,int> 		m_kEnums;		//enums for loading
 		
-		bool LoadGlobalSection();
-		bool LoadPass(int iPass);		
-		int GetTranslateEnum(string strEnum);
-		void SetupEnums();
-		
-	public:		
+		//global material settings
 		bool	m_bCopyData;
 		
 		//software effects
@@ -83,20 +78,25 @@ class RENDER_API ZMaterial : public ZFResource
 		bool	m_bWaves;
 		bool	m_bTextureOffset;
 		float	m_faTextureOffset[2];
-		//----
+		
+		
+		bool LoadGlobalSection();
+		bool LoadPass(int iPass);		
+		int GetTranslateEnum(string strEnum);
+		void SetupEnums();
+		
+	public:		
 		
 		ZMaterial();
 		~ZMaterial();
 
 		bool Create(string strName);	//	for resource system
-		int  CalculateSize();		
-		
+		int  CalculateSize();				
 	
 		int GetNrOfPasses() {return m_kPasses.size();};
 		ZMaterialSettings* GetPass(int iPass);
 		ZMaterialSettings* AddPass();
-		
-		
+				
 		bool LoadShader(const char* acFile);
 		void Clear();
 	
