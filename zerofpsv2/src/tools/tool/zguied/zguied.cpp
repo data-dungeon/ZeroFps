@@ -3,15 +3,6 @@
 
 void ZGuiEd::OnIdle()
 {
-	if(!IsWindowVisible(GetDlgItem(g_kDlgBoxRight, IDC_CLOSE_BUTTON)))
-		if(m_pkRender->GetFullscreen() || 
-			GetDeviceCaps(GetDC(NULL), HORZRES) <= 1024 || 
-			GetDeviceCaps(GetDC(NULL), VERTRES) <= 768)
-		{
-			ShowWindow(GetDlgItem(g_kDlgBoxRight, IDC_CLOSE_BUTTON), SW_SHOW);
-			ShowWindow(GetDlgItem(g_kDlgBoxRight, IDC_MINIMIZE_BUTTON), SW_SHOW);			
-		}
-
 	if(m_bTestGUI && m_iTask != 11)
 		return;
 

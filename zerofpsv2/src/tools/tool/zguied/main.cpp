@@ -374,6 +374,9 @@ int Win32ThreadMain(void *v)
 	SendMessage(GetDlgItem(g_kDlgBoxBottom, IDC_WNDALIGNMENT_CENTER), 
 		BM_SETIMAGE, IMAGE_BITMAP, (LPARAM) (HANDLE) hIcon);
 
+	if( GetDeviceCaps(GetDC(NULL), HORZRES) <= 1024 || GetDeviceCaps(GetDC(NULL), VERTRES) <= 768)
+		ShowWindow(GetDlgItem(g_kDlgBoxRight, IDC_CLOSE_BUTTON), SW_SHOW);
+	
 	while (GetMessage (&msg, NULL, 0, 0))
 	{
 		TranslateMessage (&msg) ;
@@ -471,14 +474,12 @@ void ZGuiEd::OnInit()
 	m_iTask = 5; // update texture list
 
 	SendMessage(sdl_wnd, WM_SETICON, ICON_SMALL, (LPARAM) LoadIcon(hInstance, MAKEINTRESOURCE(IDI_ICON1)));
-	
-	ShowWindow(sdl_wnd, SW_SHOWMAXIMIZED);
 
-	//DWORD dwStyle = GetWindowLong(sdl_wnd, GWL_STYLE);
-	//dwStyle = dwStyle | WS_MAXIMIZE;
-	//SetWindowLong(sdl_wnd, GWL_STYLE, dwStyle);
+	if( (horizontal_res < 1024 || vertical_res < 768) )
+		ShowWindow(sdl_wnd, SW_SHOWMAXIMIZED);
 
-	
+	if(m_pkRender->GetFullscreen())
+		ShowWindow(GetDlgItem(g_kDlgBoxRight, IDC_CLOSE_BUTTON), SW_SHOW);		
 }
 
 HWND GetCtrl(int iID, bool bRightPanel)
