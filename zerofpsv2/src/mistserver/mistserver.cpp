@@ -691,7 +691,7 @@ void MistServer::OnServerClientJoin(ZFClient* pkClient,int iConID, char* szLogin
 		pkClient->m_pkObject->AddProperty("P_EditIcon");		
 		
 		pkClient->m_pkObject->m_ucIcon = 1;
-		
+		pkClient->m_bLogin = false;
 		return;
 	}
 //	else
