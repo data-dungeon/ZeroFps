@@ -455,8 +455,7 @@ void MistClient::Input()
 			m_fClickDelay = pkFps->GetTicks();					
 		}	
 	}
-
-	if(pkInput->Pressed(MOUSERIGHT))
+	else if(pkInput->Pressed(MOUSERIGHT))			//if no shift is pressed bring up action menu
 	{
 		m_pkTargetObject = GetTargetObject();
 

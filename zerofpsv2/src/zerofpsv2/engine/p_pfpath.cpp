@@ -63,7 +63,7 @@ void P_PfPath::Update()
 		}
 
 	kdiff.Normalize();
-	kPos += (kdiff * m_fSpeed) * m_pkFps->GetGameFrameTime();
+	kPos += (kdiff * m_fSpeed) * m_pkFps->GetFrameTime();
 	m_pkObject->SetWorldPosV(kPos);
 }
 
