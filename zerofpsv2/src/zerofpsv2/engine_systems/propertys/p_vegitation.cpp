@@ -56,17 +56,18 @@ void P_Vegitation::Update()
 	if(!m_pkFps->GetCam()->m_kFrustum.SphereInFrustum(m_pkObject->GetWorldPosV(),m_fRadius))
 		return;
 			
+			
 	Vector3 ObjectPos = m_pkObject->GetWorldPosV();			
 			
+	/*
 	float fDistance = (ObjectPos - m_pkFps->GetCam()->GetPos()).Length() - m_fRadius;
 	if(fDistance > 50)
 		return;
+	*/					
 					
+	//draw a ball on the server
 	if(m_pkFps->m_bServerMode)
-	{		
 		m_pkRender->Sphere(ObjectPos,0.5,5,Vector3(1,1,1),true);
-	
-	}
 					
 					
 /*	int iStep = int(fDistance / 8.0);
@@ -85,7 +86,6 @@ void P_Vegitation::Update()
 		
 	if(!pkRt)	
 	{
-		cout<<"HORA2"<<endl;
 		return;
 	}
 	else
@@ -183,8 +183,6 @@ void P_Vegitation::CalculateRadius()
 	{
 		float Distance = (m_akPositions[i].kPos).Length();
 		
-		
-		
 		if(Distance > maxDist)
 			maxDist = Distance;
 	}
@@ -233,13 +231,6 @@ void P_Vegitation::Save(ZFIoInterface* pkPackage)
 	pkPackage->Write((void*)&m_iAmount,sizeof(m_iAmount),1);
 	pkPackage->Write((void*)&m_iSize,sizeof(m_iSize),1);	
 	
-/*	int nrofpos = m_akPositions.size();
-	pkPackage->Write((void*)&nrofpos,sizeof(nrofpos),1);
-	
-	for(int i=0;i<nrofpos;i++)
-	{			
-		pkPackage->Write((void*)&m_akPositions[i],sizeof(vegitation),1);			
-	}*/
 
 }
 
@@ -251,8 +242,6 @@ void P_Vegitation::Load(ZFIoInterface* pkPackage)
 	pkPackage->Read((void*)&data,256,1);
 	m_kTexture = data;
 	
-
-	
 	pkPackage->Read((void*)&m_kScale,12,1);
 	pkPackage->Read((void*)&m_fRadius,4,1);
 	pkPackage->Read((void*)&m_fWind,4,1);
@@ -260,28 +249,9 @@ void P_Vegitation::Load(ZFIoInterface* pkPackage)
 	pkPackage->Read((void*)&m_iAmount,sizeof(m_iAmount),1);
 	pkPackage->Read((void*)&m_iSize,sizeof(m_iSize),1);	
 
-
 	Random();
 
 	UpdateSet();
-
-/*	Clear();
-	
-	int nrofpos;
-
-	pkPackage->Read((void*)&nrofpos,sizeof(nrofpos),1);
-	
-	//cout<<"grass found :"<<nrofpos<<endl;	
-	
-	for(int i=0;i<nrofpos;i++)
-	{			
-		vegitation temp;
-		pkPackage->Read((void*)&temp,sizeof(vegitation),1);			
-		
-		m_akPositions.push_back(temp);
-		
-	}
-*/
 
 
 }
@@ -290,9 +260,6 @@ void P_Vegitation::PackTo(NetPacket* pkNetPacket, int iConnectionID )
 {
 	pkNetPacket->Write_NetStr(m_kTexture.c_str());
 	
-	//pkNetPacket->Write(&m_kScale,sizeof(m_kScale));
-	//pkNetPacket->Write(&m_fRadius,sizeof(m_fRadius));
-	//pkNetPacket->Write(&m_fWind,sizeof(m_fWind));	
 	pkNetPacket->Write(&m_iAmount,sizeof(m_iAmount));
 	pkNetPacket->Write(&m_iSize,sizeof(m_iSize));	
 }
@@ -306,9 +273,6 @@ void P_Vegitation::PackFrom(NetPacket* pkNetPacket, int iConnectionID )
 	int oldamount = m_iAmount;
 	int oldsize = m_iSize;
 	
-	//pkNetPacket->Read(&m_kScale,sizeof(m_kScale));
-	//pkNetPacket->Read(&m_fRadius,sizeof(m_fRadius));
-	//pkNetPacket->Read(&m_fWind,sizeof(m_fWind));	
 	pkNetPacket->Read(&m_iAmount,sizeof(m_iAmount));
 	pkNetPacket->Read(&m_iSize,sizeof(m_iSize));	
 	
