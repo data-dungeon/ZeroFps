@@ -28,7 +28,7 @@ void HeightMapRenderProperty::Update()
 {	
 	if(m_pkHeightMap!=NULL){
 		m_pkHeightMap->SetPosition(m_pkObject->GetPos());
-		m_pkRender->DrawHMlod(m_pkHeightMap,m_pkZeroFps->GetCam()->GetPos(),m_pkZeroFps->m_iFps);
+//		m_pkRender->DrawHMlod(m_pkHeightMap,m_pkZeroFps->GetCam()->GetPos(),m_pkZeroFps->m_iFps);
 	}
 }
 

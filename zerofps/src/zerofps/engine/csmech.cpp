@@ -297,17 +297,17 @@ bool CSMech::SetUpMech()
 	MadProperty* pkMP = static_cast<MadProperty*>(m_pkPP->GetObject()->GetProperty("MadProperty"));	
 	if(pkMP != NULL)
 	{
-		cout<<"found mad property"<<endl;
+		//cout<<"found mad property"<<endl;
 		//look for core pointer in mad property
 		m_pkCore = pkMP->pkCore;	
 		if(m_pkCore != NULL)
 		{
-			cout<<"found core"<<endl;
+			//cout<<"found core"<<endl;
 			//look for mech pointer in core
 			m_pkCoreMech = m_pkCore->GetMeshByID(m_iModelID);					
 			if(m_pkCoreMech != NULL)		
 			{
-				cout<<"found mech"<<endl;
+				//cout<<"found mech"<<endl;
 				
 				m_pkFaces = m_pkCoreMech->GetFacesPointer();
 				m_pkVertex = (*m_pkCoreMech->GetVertexFramePointer())[0].GetVertexPointer();

@@ -36,6 +36,10 @@ TeleportProperty::~TeleportProperty()
 
 void TeleportProperty::Update()
 {
+//	m_pkObject->GetRot().x == 0;
+//	m_pkObject->GetRot().y == 0;	
+//	m_pkObject->GetRot().z += 2;	
+
 	sound->m_kPos=m_pkObject->GetPos();
 	sound2->m_kPos=m_kToPos;
 	
@@ -50,8 +54,22 @@ void TeleportProperty::Update()
 	}
 }
 
-void TeleportProperty::Touch(Object* pkObject)
+void TeleportProperty::Touch(Collision* pkCol)
 {
+	Object* pkObject;
+	Vector3 kNormal;
+	
+	if(pkCol->m_pkPP1->GetObject() != (Object*)this)
+	{
+		pkObject=pkCol->m_pkPP2->GetObject();
+		kNormal=pkCol->m_kNormal2;
+	}
+	else
+	{
+		pkObject=pkCol->m_pkPP1->GetObject();
+		kNormal=pkCol->m_kNormal1;		
+	}
+
 	cout<<"teleporting :"<<pkObject->GetName()<<endl;
 
 	if(pkObject->GetName()!="HeightMapObject")
@@ -62,7 +80,9 @@ void TeleportProperty::Touch(Object* pkObject)
 	
 		pkObject->GetPos()=m_kToPos;	
 	}
+
 }
+
 
 
 void TeleportProperty::Save(ZFMemPackage* pkPackage)

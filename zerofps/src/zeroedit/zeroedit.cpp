@@ -622,6 +622,7 @@ void ZeroEdit::Input()
 	{
 		pkFps->ToggleGui();
 	}*/
+	
 
 	//camera movements
 	if(pkInput->Pressed(KEY_X)){

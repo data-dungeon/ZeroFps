@@ -26,7 +26,7 @@ class TeleportProperty: public Property {
 		~TeleportProperty();
 		
 		void Update();
-		void Touch(Object* pkObject);		
+		void Touch(Collision* pkCol);		
 	
 		void Save(ZFMemPackage* pkPackage);
 		void Load(ZFMemPackage* pkPackage);

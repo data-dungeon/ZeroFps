@@ -44,12 +44,6 @@ class RENDER_API Render : public ZFObject {
 
 		TextureManager* GetTexMangager() { return m_pkTexMan; }
 		
-/*		
-		void GetFrustum();
-		bool PointInFrustum(Vector3 kPoint);
-		bool SphereInFrustum(Vector4 kPoint);
-		bool CubeInFrustum( float x, float y, float z, float sizex,float sizey,float sizez );
-*/		
 		void Quad(Vector3 kPos,Vector3 kHead,Vector3 kScale,int iTexture);
 		
 		
@@ -59,8 +53,6 @@ class RENDER_API Render : public ZFObject {
 		void Line(Vector3 kPos1,Vector3 kPos2);
 		void Dot(float x,float y,float z);
 		void SetColor(Vector3 kColor);
-//		void DrawHMQT(HeightMap* kmap);		
-//		void DrawQuad(HM_vert* vert,int width);
 		void DrawConsole(char* m_aCommand,vector<char*>* m_kText, int iStartLine); 
 		
 
@@ -68,27 +60,22 @@ class RENDER_API Render : public ZFObject {
 		void DrawAllHM(HeightMap* kmap,Vector3 CamPos);
 		void DrawPatch(HeightMap* kmap,Vector3 CamPos,int xp,int zp,int iSize);
 		
-/*		
-		void G4DrawHMLodSplat(HeightMap* kmap,Vector3 CamPos,int iFps);
-		void G4DrawAllHM(HeightMap* kmap,Vector3 CamPos);
-		void G4DrawPatch(HeightMap* kmap,Vector3 CamPos,int xp,int zp,int iSize);
-*/		
-		
-		void DrawHM(HeightMap* kmap);
-		void DrawHMlod(HeightMap* kmap,Vector3 CamPos,int iFps);		
 		void DrawSkyBox(Vector3 CamPos,Vector3 kHead,int iHor,int iTop);
 		void DrawWater(Vector3 kCamPos,Vector3 kPosition,Vector3 kHead,int iSize,int iStep,int iTexture);
 		void DrawSimpleWater(Vector3 kPosition,Vector4 kColor,int iSize,int iTexture);
 		void SetFog(Vector4 kFogColor,float FogStart,float FogStop,bool FogEnable);		
 		void GiveTexCor(float &iX,float &iY,int iNr);
 		void DrawCross(Vector3 kPos,Vector3 kHead,Vector3 kScale,int iTexture1);//,int iTexture2);
-//		void DrawGrassPatch(Vector3 kCamPos,Vector3 kPos,Vector3 kScale,int fW,int iNr,HeightMap* kMap,int iTexture,int iFps);
 		void DrawBillboard(Matrix4& kModelMatrix,Vector3& kPos,float fSize,int iTexture);
 
 		void DrawBoundSphere(float fRadius, Vector3);
 		void DrawBox(Vector3 kPos,Vector3 kRot,Vector3 kScale,int iTexture);
 
 		void DumpGLState(void);
+
+//		void DrawHM(HeightMap* kmap);
+//		void DrawHMlod(HeightMap* kmap,Vector3 CamPos,int iFps);		
+
 };
 
 RENDER_API void RenderDLL_InitExtGL(void);

@@ -119,7 +119,7 @@ void PlayerControlProperty::Update() {
 	}
 	
 	
-	if(onGround && m_fGroundAngle < 60)
+	if( (onGround || m_pkObject->GetPos().y < 0.5) && m_fGroundAngle < 60)
 		m_pkObject->GetVel()=vel;	
 	
 
