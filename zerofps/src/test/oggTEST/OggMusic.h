@@ -23,8 +23,11 @@ using std::string;
 class OggMusic  
 {
 public:
+	bool QueueBuffer(ALuint *pALuiBuffer);
+	bool Stop();
+	bool Update();
 	OggMusic(); 
-	OggMusic(string kFileName);
+	OggMusic(unsigned int uiNrOfBuffers, unsigned int uiBufferSize); 
 	virtual ~OggMusic();
 	bool LoadFile(string kFileName);
 	bool Play();
@@ -36,6 +39,8 @@ private:
 	bool m_bPlaying;
 	unsigned int m_uiNrOfBuffers;
 	unsigned int m_uiBufferSize;
+	unsigned int m_uiSamplingRate;
+	char *m_pcTempBuffer;
 	////ALuint* m_pALuiSource;
 	ALuint m_ALuiSource;
 	ALuint* m_pALuiBuffers;

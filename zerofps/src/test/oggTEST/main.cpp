@@ -139,8 +139,16 @@ int main(int argc, char** argv) //finaly the main function
 	alutExit();*/
 	
 	alutInit(0,NULL); 
-	OggMusic Hej;
+	
+	OggMusic Hej(16,4096);
 	Hej.LoadFile("test.ogg");
+	if(Hej.Play()) cout <<"fdsf";
+	bool apa=true;
+	while(apa)
+	{
+		apa=Hej.Update();
+	};
+			
 	alutExit();
 	return 0;
 }
