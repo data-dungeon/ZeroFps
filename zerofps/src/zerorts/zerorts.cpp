@@ -961,7 +961,7 @@ void ZeroRTS::CreateClientUnits(int iID)
 	{
 		for(int i=0;i<20;i++)
 		{
-			Object* ob = pkObjectMan->CreateObjectByArchType("ZeroRTSEngineringCrew");	
+			Object* ob = pkObjectMan->CreateObjectByArchType("ZeroRTSLightTank");	
 			Vector3 pos = m_kSpawnPoints[iID] + (Vector3(rand()%20,0,rand()%20)-Vector3(10,0,10));
 			ob->SetPos(pos);
 			ob->SetPos(pos);		

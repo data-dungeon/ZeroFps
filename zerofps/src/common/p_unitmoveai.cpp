@@ -200,14 +200,23 @@ bool P_UnitMoveAI::DoPathFind(Vector3 kStart,Vector3 kStop)
 	m_kStartPoint.x = int(m_pkMap->m_iHmSize/2+ceil((kStart.x / HEIGHTMAP_SCALE)));
 	m_kStartPoint.y = int(m_pkMap->m_iHmSize/2+ceil((kStart.z / HEIGHTMAP_SCALE)));		
 	
+	//temporary remove this unit so path finding
+	TileEngine::m_pkInstance->RemoveUnit(m_pkObject->GetPos(),(P_ServerUnit*)m_pkObject->GetProperty("P_ServerUnit"));								
+	
 	if(m_pkPathFind->Rebuild(m_kStartPoint.x, m_kStartPoint.y, m_kEndPoint.x, m_kEndPoint.y) == false)
 	{
+		//put this unit back
+		TileEngine::m_pkInstance->AddUnit(m_pkObject->GetPos(),(P_ServerUnit*)m_pkObject->GetProperty("P_ServerUnit"));								
+		
 		m_kEndPoint = m_kStartPoint;
 		printf("Pathfinding Failed\n");
 		return false;
 	} 
 	else
 	{
+		//put this unit back
+		TileEngine::m_pkInstance->AddUnit(m_pkObject->GetPos(),(P_ServerUnit*)m_pkObject->GetProperty("P_ServerUnit"));								
+		
 		m_kCurretDestination = m_pkObject->GetPos();
 		m_iCurrentState=UNIT_MOVE;
 		return true;
