@@ -94,6 +94,8 @@ TrackProperty::TrackProperty()
 	m_iZoneNum			= 0;
 	//m_iLastZoneIndex	= -1;
 	m_bClosestZone		= true;
+
+	m_iConnectID		= -1;	// No Client.
 }
 
 TrackProperty::~TrackProperty() 
@@ -108,7 +110,10 @@ void TrackProperty::Init()
 	m_pkOBjM->AddTracker(m_pkObject);
 }
 
-
+void TrackProperty::SetClient(int iId)
+{
+	m_iConnectID = iId;
+}
 
 
 void TrackProperty::Update() 

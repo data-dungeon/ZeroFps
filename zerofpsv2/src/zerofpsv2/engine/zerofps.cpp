@@ -1036,10 +1036,10 @@ bool ZeroFps::PreConnect(IPaddress kRemoteIp, char* szWhy256)
 	return true; 
 }
 
-void ZeroFps::Connect(int iConnectionID) 
+int ZeroFps::Connect(int iConnectionID) 
 {
 	if(!m_bServerMode)
-		return;
+		return -1;
 
 	m_pkConsole->Printf("ZeroFps::Connect(%d)", iConnectionID);
 
@@ -1054,8 +1054,6 @@ void ZeroFps::Connect(int iConnectionID)
 	// Connect all client objects to top level object,
 	m_kClient[iConnectionID].m_pkObject->SetParent(m_pkObjectMan->m_pkClientObject);	// GetWorldObject()
 	//m_kClient[iConnectionID].m_pkObject->AttachToClosestZone();
-	
-	
 
 	m_kClient[iConnectionID].m_fConnectTime = GetEngineTime();
 
@@ -1064,6 +1062,8 @@ void ZeroFps::Connect(int iConnectionID)
 	m_pkApp->OnServerClientJoin(&m_kClient[iConnectionID],iConnectionID);
 
 	m_pkObjectMan->m_fEndTimeForceNet = GetEngineTime() + 5.0;
+
+	return m_kClient[iConnectionID].m_pkObject->iNetWorkID;
 }
 
 void ZeroFps::Disconnect(int iConnectionID)
@@ -1083,7 +1083,7 @@ void ZeroFps::Disconnect(int iConnectionID)
 int ZeroFps::GetClientObjectID()
 {
 	if(m_iRTSClientObject == -1) {
-		m_pkNetWork->RTS_RequestClientObjectID();
+		//m_pkNetWork->RTS_RequestClientObjectID();
 		}
 
 	return m_iRTSClientObject;

@@ -8,15 +8,13 @@ AStar::AStar()
 
 }
 
-
-
-
 bool AStar::StartUp()
 {
 	m_pkObjectManger	= static_cast<ObjectManager*>(GetSystem().GetObjectPtr("ObjectManager"));
 
 	return true;
 }
+
 
 AStarNode* FindNodeInList(vector<AStarNodePtr>& List, int iID)
 {
@@ -47,44 +45,44 @@ bool AStar::GetPath(Vector3 kStart, Vector3 kEnd, vector<Vector3>& kPath)
 		return false;
 	if(m_iEndZone < 0)		// No path found.
 		return false;
-	
-//	cout << "Start Node: "	<< m_iStartZone << endl;
-//	cout << "End Node: "	<< m_iEndZone << endl;
 
+	// 1: Let P = the starting point.
 	pkNewNode = new AStarNode(m_iStartZone);
+
+	// 2: Assign f,g and h values to P.
 	pkNewNode->m_pParent = NULL;
 	pkNewNode->m_fGValue = 0;
 	pkNewNode->m_fHValue = 0;
 	pkNewNode->m_fFValue = 0;
 
+	// 3: Add P to open list.
 	kOpenList.push_back(pkNewNode);
 	push_heap( kOpenList.begin(), kOpenList.end(), HeapComp() );
 
-	// Så länge det finns en möjlighet att komma fram
+	// 4: Let B be the best node from the open list.
 	while(kOpenList.size()) {
 		// Get best node from open list
 		AStarNode* pkNode = kOpenList.front();
 		pop_heap( kOpenList.begin(), kOpenList.end(), HeapComp() );
 		kOpenList.pop_back();
 
-//		cout << "Got Node: " << pkNode->m_iZoneID << endl;
-
-		// If the node is the goal.
+		// 4:a	If B is the goal node.
 		if(pkNode->m_iZoneID == m_iEndZone) {
-//			cout << "Found Goal: " << pkNode->m_iZoneID << endl;
 			MakePath(pkNode, kPath);
 			return true;
 			}
 
 		pkZone = m_pkObjectManger->GetZoneData(pkNode->m_iZoneID);
 
-		// Loopa genom alla childs till node.
+		// 5: Let C be a node connected to B.
 		for(int i=0; i<pkZone->m_iZoneLinks.size(); i++) {
+			// 5:a Assign f,g and h values to C.
 			pkNewNode = new AStarNode( pkZone->m_iZoneLinks[i] );
 			pkNewNode->m_pParent = pkNode;
 			CalcCoset(pkNewNode);
 
-			AStarNode* pkInOpen = FindNodeInList(kOpenList, pkNewNode->m_iZoneID);
+			// 5:b Check if C is in the open or closed list
+			AStarNode* pkInOpen   = FindNodeInList(kOpenList, pkNewNode->m_iZoneID);
 			AStarNode* pkInClosed = FindNodeInList(kClosedList, pkNewNode->m_iZoneID);
 			
 			if(pkInOpen || pkInClosed) {
@@ -101,6 +99,7 @@ bool AStar::GetPath(Vector3 kStart, Vector3 kEnd, vector<Vector3>& kPath)
 					}
 				}
 			else {
+				// 5bii
 				kOpenList.push_back(pkNewNode);
 				push_heap( kOpenList.begin(), kOpenList.end(), HeapComp() );
 				}

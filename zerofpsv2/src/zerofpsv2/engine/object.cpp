@@ -95,7 +95,6 @@ Property* Object::AddProperty(Property* pkNewProperty)
 	/////////////////7
 	pkNewProperty->SetObject(this);
 	m_akPropertys.push_back(pkNewProperty);
-	
 	pkNewProperty->Init();
 	return pkNewProperty;
 }
@@ -448,19 +447,20 @@ void Object::GetAllObjects(vector<Object*> *pakObjects)
 */
 bool Object::IsNetWork()
 {
-	
+	m_bIsNetWork = false;
 
 	if(m_strType == "ZoneObject")
-		return true;
-
-	for(vector<Property*>::iterator it=m_akPropertys.begin();it!=m_akPropertys.end();it++) {
-
-		if((*it)->bNetwork == true) {
-			return true;
+		m_bIsNetWork = true;
+	else {
+		for(vector<Property*>::iterator it=m_akPropertys.begin();it!=m_akPropertys.end();it++) {
+			if((*it)->bNetwork == true) {
+				m_bIsNetWork = true;
+				break;
+			}
 		}
 	}
 	
-	return false;
+	return m_bIsNetWork;
 }
 
 /**	\brief	Returns true if there is any netactive properys in object

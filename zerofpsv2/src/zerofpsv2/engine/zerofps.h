@@ -79,9 +79,11 @@ public:
 class ENGINE_API ZFClient
 {
 public:
-	float			m_fConnectTime;	
-	string		m_strName;		// Name of player.
-	Object*		m_pkObject;		// Object used for client.
+	float		m_fConnectTime;	
+	string		m_strName;			// Name of player.
+	Object*		m_pkObject;			// Object used for client.
+	set<int>	m_iActiveZones;		// Activated Zones.
+
 };
 
 /// Main class for the ZeroFps engine. 
@@ -260,17 +262,19 @@ class ENGINE_API ZeroFps : public I_ZeroFps {
 			to deny connection. Put reason if any into szWhy256. */
 		bool PreConnect(IPaddress kRemoteIp, char* szWhy256);
 		/* Connect is called when a connection have been made. It is called after PreConnect on server if
-			PreConnect returns true. It is called on Clients when they recive connect_yes from server.*/
-		void Connect(int iConnectionID);
+			PreConnect returns true. It is called on Clients when they recive connect_yes from server.
+			Return value is the NetID off the client object on the server. It don't matter on the client. */
+		int Connect(int iConnectionID);
 		/*	Called when a connection is closed down by the other side. */
 		void Disconnect(int iConnectionID);
 
 
 		// ZeroRTS - 
 		/* Returns ID of of object Client use to send data to server. Returns -1 if object is unknown at the moment.
-			Keep asking :).*/ 
+			Keep asking :).*/
 		int	m_iRTSClientObject;
 		int GetClientObjectID();
+		int	m_iServerConnection;	// The Connection num we have on the server.
 
 		
 		bool StartUp();

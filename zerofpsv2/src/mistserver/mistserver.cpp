@@ -508,6 +508,9 @@ void MistServer::OnServerClientJoin(ZFClient* pkClient,int iConID)
 	
 	pkClient->m_pkObject->AddProperty("P_Primitives3D");	
 	pkClient->m_pkObject->AddProperty("TrackProperty");	
+	TrackProperty* pkTrack = dynamic_cast<TrackProperty*>(pkClient->m_pkObject->GetProperty("TrackProperty"));
+	pkTrack->SetClient(iConID);
+
 	pkClient->m_pkObject->AddProperty("P_ClientControl");
 		
 	UpdateStartLocatons();

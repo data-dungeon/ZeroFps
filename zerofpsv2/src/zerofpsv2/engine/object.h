@@ -181,7 +181,7 @@ class ENGINE_API Object
 		ObjectType					m_iObjectType;						
 	
 		// Rotation & Position.
-		bool							m_bRelativeOri;					///< True if this object transform is in the frame of its parent.
+		bool						m_bRelativeOri;					///< True if this object transform is in the frame of its parent.
 		bitset<7>					m_kGotData;							
 
 		Vector3						m_kLocalPosV;						///< Local position. important
@@ -198,11 +198,11 @@ class ENGINE_API Object
 
 		Vector3						m_kVel;								///< Velocity of object.
 		Vector3						m_kAcc;								///< Acc of object.
-		float							m_fRadius;							///< Radius of object.
+		float						m_fRadius;							///< Radius of object.
 
-		bool							m_bUseZones;
+		bool						m_bUseZones;
 		int							m_iCurrentZone;
-		vector<Object*>			m_akChilds;							///< List of child objects.
+		vector<Object*>				m_akChilds;							///< List of child objects.
 		vector<Property*>			m_akPropertys;						///< List of propertys of object.
 		
 		Object();				
@@ -211,8 +211,9 @@ class ENGINE_API Object
 		int							iNetWorkID;							///< ID used by network state code.
 		ObjectManager*				m_pkObjectMan;						///< Ptr to object manger.
 	
-		NetWorkRole					m_eRole;								///< This node power on object.
+		NetWorkRole					m_eRole;							///< This node power on object.
 		NetWorkRole					m_eRemoteRole;						///< Remote node power on object.
+		bool						m_bIsNetWork;
 
 		~Object();
 		

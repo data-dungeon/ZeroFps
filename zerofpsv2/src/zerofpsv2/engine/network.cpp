@@ -511,6 +511,7 @@ bool NetWork::Send(NetPacket* pkNetPacket)
 
 void NetWork::HandleControlMessage(NetPacket* pkNetPacket)
 {
+	int iObjId;
 	char szText[256];
 
 	float fEngineTime = m_pkZeroFps->GetEngineTime();
@@ -574,13 +575,18 @@ void NetWork::HandleControlMessage(NetPacket* pkNetPacket)
 				//RemoteNodes.push_back(kNewNode);
 				m_pkConsole->Printf("Client Connected: %s", m_szAddressBuffer);
 
+				// Tell ZeroFPS Someone has connected.
+				int iNetID = m_pkZeroFps->Connect(iClientID);
+
 				// Send Connect Yes.
 				kNetPRespons.m_kData.m_kHeader.m_iPacketType = ZF_NETTYPE_CONTROL;
-				//kNetPRespons.Write((unsigned char) ZF_NETTYPE_CONTROL);
 				kNetPRespons.Write((unsigned char) ZF_NETCONTROL_JOINYES);
+				kNetPRespons.Write( iClientID ); 
+				kNetPRespons.Write( iNetID ); 
+
 				kNetPRespons.m_kAddress = pkNetPacket->m_kAddress;
 				Send(&kNetPRespons);
-				m_pkZeroFps->Connect(iClientID);
+				
 				NetString_ReSendAll();
 				}
 			
@@ -600,8 +606,15 @@ void NetWork::HandleControlMessage(NetPacket* pkNetPacket)
 			m_pkConsole->Printf("NetWork::HandleControlMessage(ZF_NETCONTROL_JOINYES)");
 			AddressToStr(&pkNetPacket->m_kAddress, m_szAddressBuffer);
 			m_pkConsole->Printf("Server Ip: %s", m_szAddressBuffer);
-			m_pkZeroFps->Connect(iClientID);
 
+			// Read 			
+			int iConnID;
+			pkNetPacket->Read( iConnID ); 
+			pkNetPacket->Read( iObjId ); 
+			m_pkZeroFps->m_iServerConnection	= iConnID;
+			m_pkZeroFps->m_iRTSClientObject		= iObjId;
+			m_pkZeroFps->Connect(iClientID);
+			m_pkConsole->Printf("ConnID: %d, ObjID: %d", iConnID, iObjId);
 			break;
 
 		case ZF_NETCONTROL_JOINNO:
@@ -626,7 +639,6 @@ void NetWork::HandleControlMessage(NetPacket* pkNetPacket)
 
 		case ZF_NETCONTROL_CLIENTID:
 			GetSystem().Log("net", "*** *** ZF_NETCONTROL_CLIENTID *** ***\n");
-			int iObjId;
 			pkNetPacket->Read(iObjId);
 			m_pkZeroFps->m_iRTSClientObject = iObjId;
 			Logf("net", "ZF_NETCONTROL_CLIENTID: %d\n",m_pkZeroFps->m_iRTSClientObject );
@@ -866,6 +878,9 @@ void NetWork::SendToAllClients(NetPacket* pkNetPacket)
 
 void NetWork::RTS_RequestClientObjectID()
 {
+	cout << "TRYING TO REQUEST CLIENT OBJECT" << endl;
+	return;
+
 	GetSystem().Log("net", "RTS_RequestClientObjectID()\n");
 
 	NetPacket NPacket;

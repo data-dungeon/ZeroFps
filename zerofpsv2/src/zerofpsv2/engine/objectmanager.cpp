@@ -609,8 +609,9 @@ void ObjectManager::PackToClient(int iClient, vector<Object*> kObjects)
 	m_pkNetWork->SendToClient(iClient, &NP);
 }
 
-void ObjectManager::PackZoneListToClient(int iClient, TrackProperty* pkTrack)
+void ObjectManager::PackZoneListToClient(int iClient, set<int>& iZones /*TrackProperty* pkTrack*/)
 {
+		
 	int iNetID;
 
 	NetPacket NP;
@@ -619,7 +620,7 @@ void ObjectManager::PackZoneListToClient(int iClient, TrackProperty* pkTrack)
 	NP.m_kData.m_kHeader.m_iPacketType = ZF_NETTYPE_UNREL;
 	NP.Write((char) ZFGP_ZONELIST);
 
-	for(set<int>::iterator itActiveZone = pkTrack->m_iActiveZones.begin(); itActiveZone != pkTrack->m_iActiveZones.end(); itActiveZone++ ) {
+	for(set<int>::iterator itActiveZone = iZones.begin(); itActiveZone != iZones.end(); itActiveZone++ ) {
 		int iZoneID = (*itActiveZone);
 		iNetID = m_kZones[iZoneID].m_pkZone->iNetWorkID;
 
@@ -701,6 +702,20 @@ void ObjectManager::PackToClients()
 	int iEndOfObject	= -1;
 
 	Object* pkZone;
+	int iClient;
+
+	// Clear Active Zones for clients.
+	for(iClient=0; iClient < m_pkZeroFps->m_kClient.size(); iClient++)
+		m_pkZeroFps->m_kClient[iClient].m_iActiveZones.clear();
+	
+	// Refresh list of active Zones for each client.
+	for(list<Object*>::iterator iT=m_kTrackedObjects.begin();iT!=m_kTrackedObjects.end();iT++) {
+		TrackProperty* pkTrack = dynamic_cast<TrackProperty*>((*iT)->GetProperty("TrackProperty"));
+		if(pkTrack->m_iConnectID != -1)
+				m_pkZeroFps->m_kClient[pkTrack->m_iConnectID].m_iActiveZones.insert(
+					pkTrack->m_iActiveZones.begin(),pkTrack->m_iActiveZones.end());
+		}		
+
 
 	// Client Network send.
 	if(m_pkZeroFps->m_bClientMode && !m_pkZeroFps->m_bServerMode) {
@@ -710,14 +725,15 @@ void ObjectManager::PackToClients()
 		}
 
 	// Server Network send.
-	for(int iClient=0; iClient < m_pkZeroFps->m_kClient.size(); iClient++) {
+	for(iClient=0; iClient < m_pkZeroFps->m_kClient.size(); iClient++) {
 		if(m_pkZeroFps->m_kClient[iClient].m_pkObject == NULL)	continue;
 
 		// Get Ptr to clients tracker.
-		TrackProperty* pkTrack = dynamic_cast<TrackProperty*>(m_pkZeroFps->m_kClient[iClient].m_pkObject->GetProperty("TrackProperty"));
+		//TrackProperty* pkTrack = dynamic_cast<TrackProperty*>(m_pkZeroFps->m_kClient[iClient].m_pkObject->GetProperty("TrackProperty"));
 
 		// Pack And Sent Active Zones to client
-		PackZoneListToClient(iClient, pkTrack);
+		//PackZoneListToClient(iClient, pkTrack);
+		PackZoneListToClient(iClient, m_pkZeroFps->m_kClient[iClient].m_iActiveZones);
 
 		// Pack and Send all Client Objects
 		kObjects.clear();
@@ -730,7 +746,7 @@ void ObjectManager::PackToClients()
 		PackToClient(iClient, kObjects);
 
 		// Loop all zones activated by client.
-		for(set<int>::iterator itActiveZone = pkTrack->m_iActiveZones.begin(); itActiveZone != pkTrack->m_iActiveZones.end(); itActiveZone++ ) {
+		for(set<int>::iterator itActiveZone = m_pkZeroFps->m_kClient[iClient].m_iActiveZones.begin(); itActiveZone != m_pkZeroFps->m_kClient[iClient].m_iActiveZones.end(); itActiveZone++ ) {
 			// Get Zone and all subobjects.
 			int iZoneID = (*itActiveZone);
 			pkZone = m_kZones[iZoneID].m_pkZone;

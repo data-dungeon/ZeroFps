@@ -50,17 +50,19 @@ Property* Create_ProxyProperty();
 class ENGINE_SYSTEMS_API TrackProperty: public Property {
 	private:
 		ObjectManager*		m_pkOBjM;
-		ZeroFps*				m_pkFps;
-		float					m_fNextMove;
+		ZeroFps*			m_pkFps;
+		float				m_fNextMove;
 		
 	public:
-		bool					m_bClosestZone;
+		int					m_iConnectID;		// Client that should recv updates activated by this tracker.
+		bool				m_bClosestZone;
 		int					m_iZoneNum;
-		//int					m_iLastZoneIndex;	// Index of last zone we was close to.
-		set<int>				m_iActiveZones;
+		//int				m_iLastZoneIndex;	// Index of last zone we was close to.
+		set<int>			m_iActiveZones;
 
 		void Update();
 		void Init();
+		void SetClient(int iId);
 		
 		TrackProperty();
 		~TrackProperty();

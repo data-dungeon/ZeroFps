@@ -163,7 +163,7 @@ class ENGINE_API ObjectManager : public ZFSubSystem{
 
 		// NetWork
 		void UpdateZoneList(NetPacket* pkNetPacket);
-		void PackZoneListToClient(int iClient, TrackProperty* pkTrack);
+		void PackZoneListToClient(int iClient, set<int>& iZones /* TrackProperty* pkTrack*/ );
 		void UpdateState(NetPacket* pkNetPacket);						//Updates objects.
 		void UpdateDeleteList(NetPacket* pkNetPacket);
 		void PackToClient(int iClient, vector<Object*> kObjects);
