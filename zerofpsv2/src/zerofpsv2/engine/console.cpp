@@ -219,7 +219,7 @@ void Console::ConsoleCmd(CON_CMD eCmd)
 	
 void Console::Update(void) 
 {
-	Draw();
+	//Draw();
 
 	// Scroll console text
 	static float PREVTIME = m_pkEngine->GetEngineTime();	//GetGameTime();
@@ -273,7 +273,7 @@ void Console::Update(void)
 	{
 		// Registrera senast knappnedtryck.
 		if(iKeyPressed != -1 && 
-			!(iKeyPressed == SDLK_LSHIFT || iKeyPressed == SDLK_RSHIFT))
+			!(iKeyPressed == KEY_LSHIFT || iKeyPressed == KEY_RSHIFT))
 		{
 	
 			// Formatera bokstaven.

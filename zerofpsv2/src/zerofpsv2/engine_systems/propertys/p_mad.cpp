@@ -96,7 +96,8 @@ void P_Mad::Update()
 			glPushMatrix();
 				glTranslatef(m_pkObject->GetWorldPosV().x,m_pkObject->GetWorldPosV().y,m_pkObject->GetWorldPosV().z);
 				glRotatef(90 ,1,0,0);
-				m_pkRender->DrawBoundSphere(GetRadius(),Vector3::ZERO);		
+//				m_pkRender->DrawBoundSphere(GetRadius(),Vector3::ZERO);		
+				m_pkRender->Sphere(Vector3::ZERO, GetRadius(), 2, Vector3(1,1,1),false);		
 			glPopMatrix();
 		}
 

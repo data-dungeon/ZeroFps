@@ -321,7 +321,7 @@ void Input::Reset(void) {
 
 void Input::RunCommand(int cmdid, const CmdArgument* kCommand)
 {
-	int i;
+//	int i;
 	switch(cmdid) 
 	{
 		case FID_TOGGLEGRAB:
@@ -733,6 +733,7 @@ void Input::SetupMapToKeyState()
 
 //	m_akKeyState[KEY_].m_strName = "";
 }
+
 
 void Input::FormatKey(int& iKey)
 {

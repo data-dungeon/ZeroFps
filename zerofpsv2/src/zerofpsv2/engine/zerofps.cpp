@@ -257,14 +257,10 @@ void ZeroFps::Run_EngineShell()
 {
 	m_pkInput->SetInputEnabled(true);
 
-	if(m_pkInput->Pressed(KEY_RETURN)) {
-		cout << "Key Is Down" << endl;
-		} 
-	
 	/*
 	m_pkObjectMan->PackToClients();
 	m_pkNetWork->Run();
-*/
+	*/
 
 	DevPrintf("common","Num of Clients: %d", m_pkNetWork->GetNumOfClients());
 	if(m_bServerMode) {
@@ -286,10 +282,16 @@ void ZeroFps::Run_EngineShell()
 	// Update Local Input.
 	m_pkInput->Update();
 
+	m_pkInput->SetInputEnabled(false);			
+	if(m_pkConsole->IsActive()) {		
+		m_pkInput->SetInputEnabled(true);			
+		m_pkConsole->Update();
+		}
+
+	m_pkInput->SetInputEnabled(true);			
+
 	// Updata Gui input
 	int mx, my;
-	//m_pkInput->MouseXY(mx,my);
-	
 	mx = m_pkInput->m_iSDLMouseX;
 	my = m_pkInput->m_iSDLMouseY;
 
@@ -313,18 +315,11 @@ void ZeroFps::Run_EngineShell()
 		mx,my,m_pkInput->Pressed(MOUSELEFT),m_pkInput->Pressed(MOUSERIGHT),
 		m_pkInput->Pressed(MOUSEMIDDLE));
 
-	if(m_pkInput->Pressed(KEY_F8))	GetSystem().RunCommand("shot",CSYS_SRC_SUBSYS);	
+	if(m_pkInput->VKIsDown("shot"))	GetSystem().RunCommand("shot",CSYS_SRC_SUBSYS);	
+	if(m_pkInput->Pressed(KEY_F10))	m_pkInput->ToggleGrab();
+	if(m_pkInput->Pressed(KEY_F11))	ToggleFullScreen();		
 
-	//toggle keyboard/mouse grabing		// SHELL
-	if(m_pkInput->Pressed(KEY_F12))
-		m_pkInput->ToggleGrab();
-	if(m_pkInput->Pressed(KEY_F10))
-		m_pkInput->ToggleGrab();
-			
-	//toggle fullscreen on X systems	// SHELL	
-	if(m_pkInput->Pressed(KEY_F11))
-		ToggleFullScreen();		
-
+	// TAB Always handle console.
 	if(m_pkInput->Pressed(KEY_TAB))
 	{		
 		m_pkConsole->Toggle();
@@ -506,9 +501,7 @@ void ZeroFps::Draw_EngineShell()
 	
 	if(m_pkConsole->IsActive()) {		
 		SetCamera(m_pkConsoleCamera);			
-		
-		m_pkInput->SetInputEnabled(true);			
-		m_pkConsole->Update();
+		m_pkConsole->Draw();
 	}		
 	else 
 	{
