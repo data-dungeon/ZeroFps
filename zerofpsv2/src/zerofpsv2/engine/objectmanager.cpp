@@ -542,8 +542,10 @@ void ObjectManager::UpdateState(NetPacket* pkNetPacket)
 		if( pkNetSlave ) {
 //			g_ZFObjSys.Logf("net", " Refreshing object %d.\n", iObjectID);
 			pkNetSlave->PackFrom(pkNetPacket);
-			if(pkNetPacket->IsReadError())
+			if(pkNetPacket->IsReadError()) {
+				printf("pkNetPacket Read Error\n"); 
 				return;
+				}
 
 			pkNetPacket->Read(iObjectID);
 			}
@@ -647,12 +649,23 @@ void ObjectManager::UpdateZoneList(NetPacket* pkNetPacket)
 		pkNetPacket->Read(iZoneID);
 		}
 
-/*	
-	cout << "Active Zones: "; 
+	
+/*	cout << "Active Zones: "; 
 	for(i=0; i<kZones.size(); i++) 
 		cout << kZones[i] << ", ";
-	cout << endl;
-*/
+	cout << endl;*/
+	
+/*	string strZones;
+	char szNum[25];
+	strZones = "Active Zones: ";
+	for(i=0; i<kZones.size(); i++) {
+		sprintf(szNum,"%d",kZones[i]);
+		strZones = strZones + "," + szNum;
+		}*/
+
+//	printf("Num Of Zones %d\n", kZones.size());
+
+	//m_pkZeroFps->DevPrintf("common", "%s", strZones.c_str());
 
 	for(i=0; i<m_pkZoneObject->m_akChilds.size(); i++) {
 		int iLocalZoneID = m_pkZoneObject->m_akChilds[i]->iNetWorkID;
@@ -662,6 +675,12 @@ void ObjectManager::UpdateZoneList(NetPacket* pkNetPacket)
 			//cout << "Removing Zone: " << iLocalZoneID << endl;
 			}
 		}
+
+/*	for(i=0; i<kZones.size(); i++) {
+		if(GetObjectByNetWorkID(kZones[i]) == NULL) {
+			printf("Zone %d not found\n", kZones[i]);
+			}
+	}	*/
 }
 
 

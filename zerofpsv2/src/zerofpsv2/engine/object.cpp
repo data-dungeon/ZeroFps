@@ -559,9 +559,9 @@ void Object::PackTo(NetPacket* pkNetPacket)
 				pkNetPacket->Write_NetStr((*it)->m_acName);
 				(*it)->PackTo(pkNetPacket);
 				}
-			else {
+			//else {
 				//g_ZFObjSys.Logf("net", "Same as last year.\n");
-				}
+			//	}
 			}
 //		else 
 //			g_ZFObjSys.Logf("net", "Dont Add\n");
