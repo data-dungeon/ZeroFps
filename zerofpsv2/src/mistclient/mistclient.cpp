@@ -364,16 +364,24 @@ void MistClient::Input()
 			
 			if(pkObject)
 			{
-				if(m_pkClientControlP)
+				P_Ml* pkMistLandProp = static_cast<P_Ml*>(pkObject->GetProperty("P_Ml")); 
+
+				if(pkMistLandProp)
 				{
-					ClientOrder order;
-					order.m_sOrderName = "Klicka";
-					order.m_iClientID = pkFps->GetConnectionID();
-					order.m_iObjectID = pkObject->iNetWorkID;				
-					order.m_iCaracter = m_iActiveCaracterObjectID;
-					
-					m_pkClientControlP->AddOrder(order);
-				} 
+					vector<string> vkActionNames = pkMistLandProp->GetActions();
+
+					if(m_pkClientControlP && !vkActionNames.empty())
+					{
+						ClientOrder order;
+						
+						order.m_sOrderName = vkActionNames[0]; //"Klicka";
+						order.m_iClientID = pkFps->GetConnectionID();
+						order.m_iObjectID = pkObject->iNetWorkID;				
+						order.m_iCaracter = m_iActiveCaracterObjectID;
+						
+						m_pkClientControlP->AddOrder(order);
+					} 
+				}
 			}
 			
 			m_fClickDelay = pkFps->GetTicks();					
@@ -514,7 +522,7 @@ void MistClient::OnCommand(int iID, ZGuiWnd *pkMainWnd)
 				
 				pkScript->Call(m_pkScriptResHandle, "OnClickBackpack", 0, 0); 
 
-				if(bExist == false)
+	/*			if(bExist == false)
 				{
 					m_pkInventDlg = new InventoryDlg(GetWnd("BackPackWnd"));
 
@@ -546,8 +554,8 @@ void MistClient::OnCommand(int iID, ZGuiWnd *pkMainWnd)
 					kItems[3].second->RegisterAsContainer(); 
 					kItems[4].second->RegisterAsContainer(); 
 					
-					m_pkInventDlg->AddItems(kItems);
-				}
+				m_pkInventDlg->AddItems(kItems);	
+				}*/
 			}
 			if(strName == "StatsButton")
 				pkScript->Call(m_pkScriptResHandle, "OnClickStats", 0, 0);
@@ -739,12 +747,24 @@ void MistClient::PickUp()
 		if(cp)
 		{
 			CharacterStats* stats = cp->GetCharStats();
+
 			if(stats)
 			{
-				map<string, Object*>* items = stats->GetEquippedList();
+				map<string, Object*>* vkEquipmentList = stats->GetEquippedList();
 
-				int iNumItems = items->size();
-				printf("Number of items = %i\n", iNumItems);
+				map<string, Object*>::iterator it;
+				for( it=vkEquipmentList->begin(); it!=vkEquipmentList->end(); it++)
+				{
+					P_Item* pkItemProp = static_cast<P_Item*>(it->second->GetProperty("P_Item"));
+
+					if(pkItemProp)
+					{
+						ItemStats* pkStats = pkItemProp->GetItemStats();
+
+						if(pkStats)
+							m_pkInventDlg->AddItem(pkStats);
+					}
+				}
 			}
 		}
 	}

@@ -38,7 +38,7 @@ InventoryDlg::~InventoryDlg()
 	
 }
 
-bool InventoryDlg::AddItem(const char *szPic, const char *szPicA, ItemStats* pkItemStats)
+bool InventoryDlg::AddItem(ItemStats* pkItemStats)
 {
 	Point sqr;
 
@@ -48,7 +48,8 @@ bool InventoryDlg::AddItem(const char *szPic, const char *szPicA, ItemStats* pkI
 		return false;
 	}
 			
-	AddSlot(szPic, szPicA, sqr, CONTAINTER_SLOTS, pkItemStats, MAIN_CONTAINER);
+	AddSlot(pkItemStats->m_szPic[0], pkItemStats->m_szPic[1], sqr, 
+		CONTAINTER_SLOTS, pkItemStats, MAIN_CONTAINER);
 
 	ScrollItems(m_iCurrentScrollPos+1);
 	ScrollItems(m_iCurrentScrollPos-1);
@@ -56,9 +57,9 @@ bool InventoryDlg::AddItem(const char *szPic, const char *szPicA, ItemStats* pkI
 	return true;
 }
 
-bool InventoryDlg::AddItems(vector<pair<pair<string, string>,ItemStats*> >&vkItems)
+bool InventoryDlg::AddItems(vector<ItemStats*> &vkItems)
 {
-	vector<itItem>::iterator it = vkItems.begin(); 
+	vector<ItemStats*>::iterator it = vkItems.begin(); 
 
 	for( ; it != vkItems.end(); it++)
 	{
@@ -70,8 +71,10 @@ bool InventoryDlg::AddItems(vector<pair<pair<string, string>,ItemStats*> >&vkIte
 			return false;
 		}
 
-		AddSlot((*it).first.first.c_str(), (*it).first.second.c_str(), 
-			sqr, CONTAINTER_SLOTS, (*it).second, MAIN_CONTAINER);
+		ItemStats* stats = (*it);
+
+		AddSlot(stats->m_szPic[0], stats->m_szPic[1], 
+			sqr, CONTAINTER_SLOTS, stats, MAIN_CONTAINER);
 	}
 
 	ScrollItems(m_iCurrentScrollPos+1);

@@ -979,7 +979,7 @@ void MistServer::HandleOrders()
 			P_Event* pe = (P_Event*)ob->GetProperty("P_Event");
 			if(pe)
 			{	
-				pe->SendEvent("Use", order->m_sOrderName.c_str(),order->m_iCaracter );				
+				pe->SendEvent("Use", order->m_sOrderName.c_str(), order->m_iCaracter );				
 				
 				/*string strAction = "NoName";
 

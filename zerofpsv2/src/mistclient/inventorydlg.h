@@ -29,8 +29,8 @@ class InventoryDlg// : public ZFSubSystem
 public:
 	typedef pair<pair<string, string>,ItemStats*> itItem;
 
-	bool AddItems(vector<pair<pair<string,string>,ItemStats*> >&vkItems);
-	bool AddItem(const char* szPic, const char* szPicA, ItemStats* pkItemStats);
+	bool AddItems(vector<ItemStats*>&vkItems);
+	bool AddItem(ItemStats* pkItemStats);
 	void OnScroll(int iID, int iPos);
 	void OnCommand(int iID);
 	void OnMouseMove(int x, int y, bool bMouseDown);

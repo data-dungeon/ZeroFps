@@ -45,6 +45,7 @@ private:
 	static int s_iContainerCounter;
 
 public:
+	char m_szPic[2][50]; ///< namnet på inventory slotsen, vanlig bild och alpha blend bild (ej full väg, bara namnet på filen)
 
    ItemStats();
 

@@ -284,6 +284,8 @@ ItemStats::ItemStats()
    m_iQuantity = 1;
    m_eEquipmentCategory = Item;
    m_iContainerID = -1;
+	strcpy(m_szPic[0], "dummy.bmp");
+	strcpy(m_szPic[1], "dummy_a.bmp");
 
 }
 
