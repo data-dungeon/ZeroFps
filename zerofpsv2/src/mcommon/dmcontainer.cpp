@@ -127,6 +127,7 @@ bool DMContainer::AddItem(int iID,int iX,int iY)
 				}
 				
 				pkItem->SetParent(pkOwner);				
+				pkItem->SetUseZones(false);
 				
 				if(m_bDisableItems)				
 					pkItem->SetUpdateStatus(UPDATE_NONE);
@@ -206,6 +207,7 @@ bool DMContainer::DropItem(int iID)
 				ClearItem(iID);
 				
 				pkItem->SetUpdateStatus(UPDATE_ALL);				
+				pkItem->SetUseZones(true);
 				pkItem->SetParent(pkOwner->GetParent());				
 				pkItem->SetWorldPosV( pkOwner->GetWorldPosV() );
 				
