@@ -7,6 +7,90 @@
 
 #include "../zerofpsv2/engine_systems/script_interfaces/si_objectmanager.h" 
 
+
+
+//--------SKILL----------------
+
+Skill::Skill(const string& strScriptFile, int iOwnerID)
+{
+	m_pkScript = static_cast<ZFScriptSystem*>(g_ZFObjSys.GetObjectPtr("ZFScriptSystem"));
+
+	//create and setup script
+	m_pkScriptFileHandle = new ZFResourceHandle;
+	m_pkScriptFileHandle->SetRes(strScriptFile);
+	
+	
+	m_iOwnerID = 			iOwnerID;
+		
+	m_strInGameName =		"UnkownSkill";
+	m_strParentSkill = 	"";
+	m_strIcon = 			"default.tga";	
+	m_iLevel = 				0;	
+	m_fReloadTime =		1;
+	m_fTimeLeft =			1;
+	m_strSchool =			"UnkownSchool";
+	
+}
+
+Skill::~Skill()
+{
+	delete m_pkScriptFileHandle;
+
+}
+
+void Skill::UpdateFromScript()
+{
+	if(!m_pkScriptFileHandle->IsValid())
+	{
+		cout<<"WARNING: skill script "<<m_pkScriptFileHandle->GetRes()<<" not loaded"<<endl;
+		return;	
+	}
+
+	//setup parameters to Update function
+	vector<ScriptFuncArg> args(2);
+	args[0].m_kType.m_eType = tINT;
+	args[0].m_pData = &m_iOwnerID;			//owner character id
+	args[1].m_kType.m_eType = tINT;
+	args[1].m_pData = &m_iLevel;				//skill level
+	
+	
+	if(!m_pkScript->Call(m_pkScriptFileHandle, "Update",args))
+	{
+		cout<<"WARNING: could not call update function for skill script "<<m_pkScriptFileHandle->GetRes()<<" level "<<m_iLevel<<endl;
+		return;
+	}
+
+	
+	//print some nice info
+	cout<<"UPDATED FROM SCRIPT"<<endl;
+	cout<<"script:    "<<m_pkScriptFileHandle->GetRes()<<endl;
+	cout<<"ingamename:"<<m_strInGameName<<endl;
+	cout<<"school:    "<<m_strSchool<<endl;
+	cout<<"icon:      "<<m_strIcon<<endl;
+	cout<<"reloadtime:"<<m_fReloadTime<<endl;
+	cout<<"level:     "<<m_iLevel<<endl;
+	cout<<"parent:    "<<m_strParentSkill<<endl;
+}
+
+void Skill::SetLevel(int iLevel)
+{
+	//change level
+	m_iLevel = iLevel;
+	
+	//update skillstats from script
+	UpdateFromScript();
+	
+	return;
+}
+
+
+void Skill::Use(int iCharacterID,int iTargetID,const Vector3& kTarget)
+{
+
+
+}
+
+
 //-------CharacterStats-----------
 
 
@@ -213,7 +297,9 @@ P_CharacterProperty::P_CharacterProperty()
 	m_bNetwork = 	true;
 	m_iVersion = 	5;
 	
-	
+	//initiate stuff
+	m_strSkillDir			=	"data/script/objects/skills/";
+	m_strBuffDir			=	"data/script/objects/buffs/";
 	
 	m_kCurrentCharacterStates.reset();
 	
@@ -845,6 +931,8 @@ void P_CharacterProperty::SendStats()
 	m_pkApp->SendAppMessage(&kNp);	
 }
 
+
+
 void P_CharacterProperty::SendBuffList()
 {
 	if(m_iConID == -1)
@@ -879,13 +967,59 @@ void P_CharacterProperty::SendBuffList()
 	m_pkApp->SendAppMessage(&kNp);		
 }
 
+Skill* P_CharacterProperty::GetSkillPointer(const string& strSkillName)
+{
+	static string strSkill;
+	 
+	strSkill = m_strSkillDir + strSkillName;
 
+	for(int i =0;i<m_kSkills.size();i++)
+	{
+		if(m_kSkills[i]->GetName() == strSkill)
+			return m_kSkills[i];
+	};
+
+	return NULL;
+}
+
+void P_CharacterProperty::ChangeSkill(const string& strSkillScript,int iValue)
+{
+	
+	//check if skill already exist
+	if(Skill* pkSkill = GetSkillPointer(strSkillScript))
+	{
+		pkSkill->SetLevel(pkSkill->GetLevel()+iValue);
+		
+	}
+
+}
+
+bool P_CharacterProperty::AddSkill(const string& strSkillScript,const string& strParentSkill)
+{
+	
+	//check if skill already exist
+	if(Skill* pkSkill = GetSkillPointer(strSkillScript))
+	{
+		cout<<"character already has skill"<<endl;
+		return false;		
+	}
+	
+	
+	Skill* pkNewSkill = new Skill(m_strSkillDir+strSkillScript,m_pkEntity->GetEntityID());	
+	
+	m_kSkills.push_back(pkNewSkill);
+	
+		
+	//do a first update
+	pkNewSkill->SetLevel(0);
+
+	
+	cout<<"Added skill "<<strSkillScript<<endl;
+}
 
 P_Buff* P_CharacterProperty::AddBuff(const string& strBuffName)
 {
-	const string strBuffDir = "data/script/objects/buffs/";
-
-	if(Entity* pkEnt = m_pkEntityManager->CreateEntityFromScript((strBuffDir+strBuffName).c_str()))	
+	if(Entity* pkEnt = m_pkEntityManager->CreateEntityFromScript((m_strBuffDir+strBuffName).c_str()))	
 	{	
 		pkEnt->SetParent(GetEntity());
 		
@@ -1101,6 +1235,88 @@ using namespace ObjectManagerLua;
 
 namespace SI_P_CharacterProperty
 {
+	//skill
+	int AddSkillLua(lua_State* pkLua)
+	{
+		if(g_pkScript->GetNumArgs(pkLua) != 3)
+			return 0;		
+
+			
+		int iCharcterID;
+		string strSkill;
+		string strParent;
+		
+		g_pkScript->GetArgInt(pkLua, 0, &iCharcterID);
+		g_pkScript->GetArgString(pkLua, 1,strSkill);
+		g_pkScript->GetArgString(pkLua, 1,strParent);
+		
+		if(P_CharacterProperty* pkCP = (P_CharacterProperty*)g_pkObjMan->GetPropertyFromEntityID(iCharcterID,"P_CharacterProperty"))
+			pkCP->AddSkill(strSkill,strParent);		
+	
+		return 0;			
+	}
+
+	int ChangeSkillLua(lua_State* pkLua)
+	{
+		if(g_pkScript->GetNumArgs(pkLua) != 3)
+			return 0;		
+
+			
+		int iCharcterID;
+		string strSkill;
+		int iValue;
+		
+		g_pkScript->GetArgInt(pkLua, 0, &iCharcterID);
+		g_pkScript->GetArgString(pkLua, 1,strSkill);
+		g_pkScript->GetArgInt(pkLua, 2, &iValue);		
+		
+		if(P_CharacterProperty* pkCP = (P_CharacterProperty*)g_pkObjMan->GetPropertyFromEntityID(iCharcterID,"P_CharacterProperty"))
+			pkCP->ChangeSkill(strSkill,iValue);		
+	
+		return 0;			
+	}
+	
+	int SetupSkillLua(lua_State* pkLua)
+	{
+		if(g_pkScript->GetNumArgs(pkLua) != 6)
+			return 0;		
+
+			
+		int iCharcterID;
+		string strSkill;
+		string strInGameName;
+		string strSchool;
+		string strIcon;
+		double dReloadTime;
+		
+		g_pkScript->GetArgInt(pkLua, 0, &iCharcterID);		
+		
+		g_pkScript->GetArgString(pkLua, 1, strSkill);				
+		g_pkScript->GetArgString(pkLua, 2, strInGameName);		
+		g_pkScript->GetArgString(pkLua, 3, strSchool);		
+		g_pkScript->GetArgString(pkLua, 4, strIcon);		
+		g_pkScript->GetArgNumber(pkLua, 5, &dReloadTime);		
+		
+		if(P_CharacterProperty* pkCP = (P_CharacterProperty*)g_pkObjMan->GetPropertyFromEntityID(iCharcterID,"P_CharacterProperty"))
+		{
+			if(Skill* pkSkill = pkCP->GetSkillPointer(strSkill))
+			{
+				pkSkill->m_strInGameName = strInGameName;
+				pkSkill->m_strSchool = strSchool;
+				pkSkill->m_strIcon = strIcon;
+				pkSkill->m_fReloadTime = float(dReloadTime);
+				
+				cout<<"skill setup complete"<<endl;
+			}
+			else
+			{
+				cout<<"ERROR: setupskill called , but character does not have the skill "<<strSkill<<endl;			
+			}
+		}
+	
+		return 0;			
+	}	
+	
 	//eqipment
 	int GetCharacterContainerIDLua(lua_State* pkLua)
 	{
@@ -1374,8 +1590,14 @@ void Register_P_CharacterProperty(ZeroFps* pkZeroFps)
 	g_pkScript->ExposeFunction("AddBuff",			SI_P_CharacterProperty::AddBuffLua);
 	g_pkScript->ExposeFunction("RemoveBuff",		SI_P_CharacterProperty::RemoveBuffLua);
 	
+	//skills
+	g_pkScript->ExposeFunction("AddSkill",			SI_P_CharacterProperty::AddSkillLua);
+	g_pkScript->ExposeFunction("ChangeSkill",		SI_P_CharacterProperty::ChangeSkillLua);
+	g_pkScript->ExposeFunction("SetupSkill",		SI_P_CharacterProperty::SetupSkillLua);
+	
 	//faction
 	g_pkScript->ExposeFunction("SetFaction",		SI_P_CharacterProperty::SetFactionLua);
+	
 	
 }
 

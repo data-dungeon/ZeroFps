@@ -553,7 +553,7 @@ bool ZFScriptSystem::Run(ZFScript* pkScript)
 	return (lua_pcall(pkScript->m_pkLuaState, 0, 0, 0) == 0);
 }
 
-bool ZFScriptSystem::Call(ZFResourceHandle* pkResHandle, char* szFuncName, 
+bool ZFScriptSystem::Call(ZFResourceHandle* pkResHandle, const char* szFuncName, 
 									vector<ScriptFuncArg>& vkParams)
 {
 	ZFScript *pkScript = (ZFScript*) pkResHandle->GetResourcePtr();
@@ -632,7 +632,7 @@ bool ZFScriptSystem::Call(ZFResourceHandle* pkResHandle, char* szFuncName,
 	return true;
 }
 
-bool ZFScriptSystem::Call(ZFResourceHandle* pkResHandle, char* szFuncName, 
+bool ZFScriptSystem::Call(ZFResourceHandle* pkResHandle, const char* szFuncName, 
 								  int iNumParams, int iNumResults)
 {	
 		

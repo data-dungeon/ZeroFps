@@ -143,8 +143,8 @@ protected:
 
 public:
 
-	bool Call(ZFResourceHandle* pkResHandle, char* szFuncName, vector<ScriptFuncArg>& vkParams);
-	bool Call(ZFResourceHandle* pkResHandle, char* szFuncName, int iNumParams, int iNumResults);
+	bool Call(ZFResourceHandle* pkResHandle, const char* szFuncName, vector<ScriptFuncArg>& vkParams);
+	bool Call(ZFResourceHandle* pkResHandle, const char* szFuncName, int iNumParams, int iNumResults);
 	//bool Run(ZFResourceHandle* pkResHandle);
 
 	void AddReturnValueTable(lua_State* state, vector<TABLE_DATA>& vkData);

@@ -14,17 +14,40 @@ class P_Buff;
 
 class MCOMMON_API Skill
 {
+	private:
+		ZFScriptSystem*	m_pkScript;		
+		ZFResourceHandle*	m_pkScriptFileHandle;	
+		
+		//owner character
+		int	m_iOwnerID;		
+		
+		
+		//skill data
+		int		m_iLevel;
+		
+		void UpdateFromScript();
+		
+		
+
 	public:
-		string	m_strScriptName;
-		string	m_strName;
+		string	m_strInGameName;
+		string	m_strSchool;
 		string	m_strParentSkill;
 		string	m_strIcon;
-		int		m_iLevel;
+		
 		
 		float		m_fReloadTime;
 		float		m_fTimeLeft;
 		
+		Skill(const string& strScriptFile, int iOwnerID);
+		~Skill();
+		
+		
+		void SetLevel(int iLevel);
 		void Use(int iCharacterID,int iTargetID,const Vector3& kTarget);
+		
+		string GetName()		{	return m_pkScriptFileHandle->GetRes();	};
+		int	 GetLevel()		{	return m_iLevel;								};
 };
 
 
@@ -78,12 +101,17 @@ class MCOMMON_API P_CharacterProperty: public Property
 		EntityManager*	m_pkEntityMan;
 		Application*	m_pkApp;
 		
+		//dirs
+		string	m_strSkillDir;
+		string	m_strBuffDir;
+		
 		
 		//stat
-		float			m_fStatTimer;
-		
+		float			m_fStatTimer;		
 		float			m_fLegLength;
 		float			m_fMarkerSize;
+		
+		vector<Skill*>	m_kSkills;
 			
 		//over head text
 		ZMaterial*	m_pkTextMaterial;
@@ -123,6 +151,7 @@ class MCOMMON_API P_CharacterProperty: public Property
 		void SendStats();
 		
 		void UpdateStats();
+		
 		
 	public:
 		CharacterStats	m_kCharacterStats;
@@ -172,9 +201,15 @@ class MCOMMON_API P_CharacterProperty: public Property
 		float  GetLegLength()										{	return m_fLegLength;				}
 		float  GetMarkerSize()										{	return m_fMarkerSize;			}
 		
+		//buff
 		P_Buff* AddBuff(const string& strBuffName);			//creates and adds buff to character 
 		void RemoveBuff(P_Buff* pkBuff);							//removes buffs
 		void RemoveBuff(const string& strBuffName);
+		
+		//skills
+		bool AddSkill(const string& strSkillScript,const string& strParentSkill);
+		void ChangeSkill(const string& strSkillScript,int iValue);
+		Skill* GetSkillPointer(const string& strSkillName);
 		
 		
 		//client code
