@@ -1,0 +1,19 @@
+; ZeroFPS Editor 
+; Menu items
+; 
+; [Menu_Create]                	; Name of the menu item. Must start with "Menu_".
+; Title=Create			; Title of the menu item.
+; Parent=NULL	       		; Name of the parent or NULL if no parent exist
+; Cmd=NULL	  		; Name of the console commando to run or NULL if no
+;				; commando should be executed.
+;
+
+[Menu_Load]
+Title=Load
+Parent=NULL
+Cmd=NULL
+
+[Menu_LoadVillage]
+Title=Village
+Parent=Menu_Load
+Cmd=load village
