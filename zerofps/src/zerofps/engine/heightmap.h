@@ -15,14 +15,12 @@
 
 #define HEIGHTMAP_SCALE 2
 
-struct ENGINE_API HM_vert {
-	float			height;		//land height
+struct ENGINE_API HM_vert 
+{
+	float			height;	
 	Vector3		normal;
-	int			texture;		//what texture to use
+	int			texture;	
 	Vector3		color;
-
-
-//	HM_vert *childs[8];
 };
 
 struct HM_fileheader {
@@ -35,17 +33,28 @@ struct TileSet{
 	char m_acMask[256];
 };
 
+struct TerrainBlock
+{
+	Vector3 kAABB_Min;
+	Vector3 kAABB_Max;
+};
 
 class ENGINE_API HeightMap: public ZFObject {
 	private:			
 		TextureManager*	m_pkTexMan;
 		FileIo*				m_pkFile;	
 		Uint32 GetPixel(SDL_Surface* surface,int x,int y);
-		
-	public:
-		vector<TileSet> m_kSets;
-		
+		bool	AllocHMMemory(int iSize);
+
 		HM_vert* verts;	
+
+	public:
+		vector<TileSet>		m_kSets;
+		vector<TerrainBlock>	m_kTerrainBlocks;
+	
+			void CreateBlocks();
+
+
 		
 		Vector3* m_pkVertex;	// Precalc vertex coo. Created at load time.
 		void RebuildVertex();
@@ -53,10 +62,17 @@ class ENGINE_API HeightMap: public ZFObject {
 		int m_iHmSize;
 		int m_iHmScaleSize;
 		char m_acTileSet[256];
-		Vector3 m_kPosition;
+		Vector3 m_kPosition;			// Position of Center of HMAP
+		Vector3 m_kCornerPos;		// Position for corner for rendering.
 		int m_iError;
 	
+//		FileIo *m_pkFile;
+		
+		HM_vert* GetHMVertex()	{	return verts;	}
+		bool	IsIndexOutOfMap(int iIndex);
+
 		HeightMap();		
+		~HeightMap();		
 		void RunCommand(int cmdid, const CmdArgument* kCommand);		
 		void Create(int iHmSize);
 		void Zero();
@@ -83,6 +99,10 @@ class ENGINE_API HeightMap: public ZFObject {
 		int GetSize(){return m_iHmSize*HEIGHTMAP_SCALE;};
 		void AddSet(const char* acTexture,const char* acDetailTexture,const char* acMask);
 		void ClearSet();
+
+		bool IsAllZero();
+
+		friend class Render;
 };
 
 

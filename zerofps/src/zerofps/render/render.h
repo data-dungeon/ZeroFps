@@ -79,6 +79,8 @@ class RENDER_API Render : public ZFObject {
 		void DrawPatch(HeightMap* kmap,Vector3 CamPos,int xp,int zp,int iSize);
 		
 		void DrawPatch_Vim1(HeightMap* kmap,Vector3 CamPos,int xp,int zp,int iSize);
+		void DrawHMVertex(HeightMap* kMap);
+		void DrawBlocks(HeightMap* kmap);
 
 		void DrawSkyBox(Vector3 CamPos,Vector3 kHead,int iHor,int iTop);
 		void DrawSkyBox_SixSided(Vector3 CamPos,Vector3 kHead,int* aiSideTextures);
@@ -92,7 +94,8 @@ class RENDER_API Render : public ZFObject {
 		void DrawBoundSphere(float fRadius, Vector3);
 		void DrawBox(Vector3 kPos,Vector3 kRot,Vector3 kScale,int iTexture);
 		void DrawColorBox(Vector3 kPos,Vector3 kRot,Vector3 kScale,Vector3 kColor);
-		void DrawAABB( float x, float y, float z, float sizex,float sizey,float sizez, float fMin,float fMax, Vector3 kColor );
+		void DrawAABB( float x, float y, float z, float sizex,float sizey,float sizez, Vector3 kColor );
+		void DrawAABB(  Vector3 kMin,Vector3 kMax, Vector3 kColor );
 
 		void GetMinMax(HeightMap* kMap, float& fMin, float& fMax, int xp,int zp,int iSize);
 
@@ -100,6 +103,10 @@ class RENDER_API Render : public ZFObject {
 
 //		void DrawHM(HeightMap* kmap);
 //		void DrawHMlod(HeightMap* kmap,Vector3 CamPos,int iFps);		
+
+		void Draw_AxisIcon(float scale = 1.0);
+		void Draw_MarkerCross(Vector3 kPos, Vector3 Color, float fScale = 1.0);
+	
 
 		bool StartUp()	{ return true;	}
 		bool ShutDown()	{ return true;	}

@@ -711,13 +711,11 @@ void Render::DrawCross(Vector3 kPos,Vector3 kHead,Vector3 kScale,int iTexture1) 
 	glPopMatrix();
 }
 
-
-
-
 void Render::DrawHMLodSplat(HeightMap* kMap,Vector3 CamPos,int iFps)
 {
 	if(!m_iDrawLandscape)
 		return;
+
 
 	if(m_iAutoLod>0){
 		if(SDL_GetTicks()>(m_iLodUpdate+500)){
@@ -730,13 +728,21 @@ void Render::DrawHMLodSplat(HeightMap* kMap,Vector3 CamPos,int iFps)
 			}
 		}
 	}
+
 	
 	glPushMatrix();
 	glPushAttrib(GL_DEPTH_BUFFER_BIT);
-		
-	glTranslatef(kMap->m_kPosition.x-kMap->m_iHmScaleSize/2,kMap->m_kPosition.y,kMap->m_kPosition.z-kMap->m_iHmScaleSize/2);
+	
+	glTranslatef(kMap->m_kCornerPos.x,kMap->m_kCornerPos.y,kMap->m_kCornerPos.z);
+	//glTranslatef(kMap->m_kPosition.x-kMap->m_iHmScaleSize/2,kMap->m_kPosition.y,kMap->m_kPosition.z-kMap->m_iHmScaleSize/2);
 	glColor4f(1,1,1,1);
+	
+//	DrawHMVertex(kMap);
+//	glPopAttrib();
+//	glPopMatrix();
+//	return;
 
+//	DrawBlocks(kMap);
 //	if(m_iHmTempList==0)
 //		m_iHmTempList = glGenLists(1);
 	
@@ -797,7 +803,17 @@ void Render::DrawHMLodSplat(HeightMap* kMap,Vector3 CamPos,int iFps)
 
 void Render::DrawAllHM(HeightMap* kMap,Vector3 CamPos)
 {
-	int iPatchSize=32;
+/*	int iBlockSize = 17;
+
+	TerrainBlock kBlock;
+
+	for(int z=0; z<kMap->m_iHmSize; z += iBlockSize) {
+		for(int x=0; x<kMap->m_iHmSize; x += iBlockSize) {
+			DrawPatch_Vim1(kMap,CamPos,x,z,iBlockSize);		
+		}
+	}*/
+
+	int iPatchSize = 32;
 
 	for(int z=0;z<kMap->m_iHmSize;z+=iPatchSize)
 	{
@@ -808,7 +824,36 @@ void Render::DrawAllHM(HeightMap* kMap,Vector3 CamPos)
 			
 		}
 	}
+
 }
+
+void Render::DrawHMVertex(HeightMap* kMap)
+{
+	HM_vert* pkHmVertex = kMap->verts;
+
+	glDisable(GL_TEXTURE_2D);
+	glDisable(GL_LIGHTING );
+
+	glColor3f(1,1,1);
+
+	glBegin(GL_POINTS);
+	for(int z=0;z<kMap->m_iHmSize;z++)
+	{
+		for(int x=0;x<kMap->m_iHmSize;x++)
+		{
+			int iVertexIndex = z*kMap->m_iHmSize+x;
+			float fScaleX = float(x * HEIGHTMAP_SCALE);
+			float fScaleZ = float(z * HEIGHTMAP_SCALE);
+			glVertex3f(fScaleX ,pkHmVertex[iVertexIndex].height*HEIGHTMAP_SCALE, fScaleZ);
+				
+		}
+	}
+	glEnd();
+
+	glEnable(GL_TEXTURE_2D);
+	glEnable(GL_LIGHTING);
+}
+
 
 // Returns Min/Max hojd i vald patch
 void Render::GetMinMax(HeightMap* kMap, float& fMin, float& fMax, int xp,int zp,int iSize)
@@ -838,35 +883,26 @@ void Render::DrawPatch(HeightMap* kMap,Vector3 CamPos,int xp,int zp,int iSize)
 	float fDistance;
 	
 	// See if we can Cull away this patch.
-	Vector3 PatchCenter(kMap->m_kPosition.x-(kMap->m_iHmScaleSize/2) + (xp + iSize/2)*HEIGHTMAP_SCALE,
-							  kMap->m_kPosition.y + 34*HEIGHTMAP_SCALE,
-							  kMap->m_kPosition.z-(kMap->m_iHmScaleSize/2) + (zp + iSize/2)*HEIGHTMAP_SCALE);
+	Vector3 PatchCenter(kMap->m_kCornerPos.x + (xp + iSize/2)*HEIGHTMAP_SCALE,
+							  kMap->m_kCornerPos.y + 34*HEIGHTMAP_SCALE,
+							  kMap->m_kCornerPos.z + (zp + iSize/2)*HEIGHTMAP_SCALE);
 		
 	fDistance=(CamPos-PatchCenter).Length();
 		
 	if(fDistance > m_iViewDistance)
 		return;
-
 		
 	if(!m_pkFrustum->CubeInFrustum(PatchCenter.x,PatchCenter.y,PatchCenter.z,
 		(iSize/2)*HEIGHTMAP_SCALE,54*HEIGHTMAP_SCALE,(iSize/2)*HEIGHTMAP_SCALE))
 		return;
 		
-//	float fMin,fMax;
-//	cout << "fMin " << fMin << endl;
-//	cout << "fMax " << fMax << endl;
-//	GetMinMax(kMap,fMin,fMax,xp,zp,iSize);
-		
 	iStep=PowerOf2(int(fDistance / m_iDetail));
 		
-//	iStep=32;	
-//	cout<<iStep<<endl;
-		
 	glPushMatrix();			
-		glTranslatef(-kMap->m_kPosition.x+kMap->m_iHmScaleSize/2,-kMap->m_kPosition.y,-kMap->m_kPosition.z+kMap->m_iHmScaleSize/2);
+		glTranslatef( -kMap->m_kCornerPos.x, -kMap->m_kCornerPos.y, -kMap->m_kCornerPos.z );
 		m_pkLight->Update(PatchCenter);
 		//DrawAABB(PatchCenter.x,PatchCenter.y,PatchCenter.z,
-		//	(iSize/2)*HEIGHTMAP_SCALE,54*HEIGHTMAP_SCALE,(iSize/2)*HEIGHTMAP_SCALE, fMin,fMax, Vector3(1,1,1));
+		//	(iSize/2)*HEIGHTMAP_SCALE,54*HEIGHTMAP_SCALE,(iSize/2)*HEIGHTMAP_SCALE, Vector3(1,0,0));
 	glPopMatrix();
 
 //	glPolygonMode(GL_FRONT,GL_LINE);
@@ -989,6 +1025,15 @@ void Render::DrawPatch(HeightMap* kMap,Vector3 CamPos,int xp,int zp,int iSize)
 
 int iPatchIndex[4096];
 
+void Render::DrawBlocks(HeightMap* kmap)
+{
+	for(int i=0; i<kmap->m_kTerrainBlocks.size(); i++) {
+		DrawAABB(kmap->m_kTerrainBlocks[i].kAABB_Min,kmap->m_kTerrainBlocks[i].kAABB_Max, Vector3(0,1,0));
+
+		}
+}
+
+
 void Render::DrawPatch_Vim1(HeightMap* kMap,Vector3 CamPos,int xp,int zp,int iSize)
 {
 	Vector3* pkLandVertex;
@@ -997,10 +1042,17 @@ void Render::DrawPatch_Vim1(HeightMap* kMap,Vector3 CamPos,int xp,int zp,int iSi
 	Vector3* pkLandTextureCoo2;
 
 	// Get Patch Center
-	Vector3 PatchCenter(kMap->m_kPosition.x-(kMap->m_iHmScaleSize/2) + (xp + iSize/2)*HEIGHTMAP_SCALE,
+	Vector3 PatchCenter(kMap->m_kCornerPos.x + (xp + iSize/2)*HEIGHTMAP_SCALE,
+							  kMap->m_kCornerPos.y + 34*HEIGHTMAP_SCALE,
+							  kMap->m_kCornerPos.z + (zp + iSize/2)*HEIGHTMAP_SCALE);
+/*	Vector3 PatchCenter(kMap->m_kPosition.x-(kMap->m_iHmScaleSize/2) + (xp + iSize/2)*HEIGHTMAP_SCALE,
 							  kMap->m_kPosition.y + 34*HEIGHTMAP_SCALE,
-							  kMap->m_kPosition.z-(kMap->m_iHmScaleSize/2) + (zp + iSize/2)*HEIGHTMAP_SCALE);
-		
+							  kMap->m_kPosition.z-(kMap->m_iHmScaleSize/2) + (zp + iSize/2)*HEIGHTMAP_SCALE);*/
+
+
+	DrawCross(PatchCenter,Vector3::ZERO, Vector3(1,1,1),-1);
+	return;
+
 	// Distance Cull Patch
 	float fDistance = (CamPos - PatchCenter).Length();
 	if(fDistance > m_iViewDistance)
@@ -1023,8 +1075,8 @@ void Render::DrawPatch_Vim1(HeightMap* kMap,Vector3 CamPos,int xp,int zp,int iSi
 	glPushMatrix();			
 		glTranslatef(-kMap->m_kPosition.x+kMap->m_iHmScaleSize/2,-kMap->m_kPosition.y,-kMap->m_kPosition.z+kMap->m_iHmScaleSize/2);
 		m_pkLight->Update(PatchCenter);
-		DrawAABB(PatchCenter.x,PatchCenter.y,PatchCenter.z,
-			(iSize/2)*HEIGHTMAP_SCALE,54*HEIGHTMAP_SCALE,(iSize/2)*HEIGHTMAP_SCALE, fMin,fMax, Vector3(1,1,1));
+		//DrawAABB(PatchCenter.x,PatchCenter.y,PatchCenter.z,
+		//	(iSize/2)*HEIGHTMAP_SCALE,54*HEIGHTMAP_SCALE,(iSize/2)*HEIGHTMAP_SCALE, fMin,fMax, Vector3(1,1,1));
 	glPopMatrix();
 
 	// Alloc Mem.

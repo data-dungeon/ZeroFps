@@ -124,10 +124,6 @@ PostBuild_Cmds=copy $(ProjDir)\releaseprofile\*.map ..\..\bin
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 # Begin Source File
 
-SOURCE=.\dialogbox.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\examinepumenu.cpp
 # End Source File
 # Begin Source File

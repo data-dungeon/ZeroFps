@@ -190,9 +190,11 @@ bool ZeroFps::Init(int iNrOfArgs, char** paArgs)
 
 	m_iState=state_normal;									// init gamestate to normal		
 
+
 	m_pkApp->OnInit();										// call the applications oninit funktion
 	m_fFrameTime=0;
 	m_fLastFrameTime = SDL_GetTicks();
+
 
 	return true;
 }
@@ -248,7 +250,10 @@ void ZeroFps::Run_Client()
 	m_pkLevelMan->UpdateZones();	
 
 	//   _---------------------------------- fulhack deluxe 
-	UpdateCamera();	
+	UpdateCamera();
+	
+	m_pkRender->Draw_AxisIcon(5);
+
 	m_pkObjectMan->Update(PROPERTY_TYPE_RENDER,PROPERTY_SIDE_CLIENT,true);
 	if(g_iLogRenderPropertys) {
 		m_pkObjectMan->DumpActiverPropertysToLog("PROPERTY_TYPE_RENDER,PROPERTY_SIDE_CLIENT,true");
@@ -370,7 +375,6 @@ void ZeroFps::Draw_EngineShell()
 }
 
 void ZeroFps::MainLoop(void) {
-
 	while(m_iState!=state_exit) {
 
 		Swap();											//swap buffers n calculate fps

@@ -5,8 +5,8 @@
 #include <cstdio>
 #include "heightmap.h"
 
+int iNumOfHMVertex;
 #include "../render/render.pkg"
-
 
 HeightMap::HeightMap() 
  : ZFObject("HeightMap") {
@@ -14,45 +14,97 @@ HeightMap::HeightMap()
  	m_pkFile=static_cast<FileIo*>(g_ZFObjSys.GetObjectPtr("FileIo"));		
 	m_pkTexMan=static_cast<TextureManager*>(g_ZFObjSys.GetObjectPtr("TextureManager"));		
 	
-	m_iError=4;
-	
-	verts =NULL;
+	m_iError	=	4;
+	verts		=	NULL;
+	iNumOfHMVertex = 0;
 
-	Create(128);
-	
+	Create(16);
+}
 
+HeightMap::~HeightMap() 
+{
+	if(verts)
+		delete[] verts;
+}
+
+bool HeightMap::AllocHMMemory(int iSize)
+{
+	if(verts)
+		delete[] verts;
+
+	iNumOfHMVertex = (m_iHmSize+m_iError)*m_iHmSize;
+	verts=new HM_vert[iNumOfHMVertex];	
+	return true;
 }
 
 void HeightMap::Create(int iHmSize)
 {
-	m_iHmSize=iHmSize;
-	m_iHmScaleSize = this->GetSize();
-	m_kPosition.Set(0,0,0);
+	m_iHmSize		=	iHmSize;
+	m_iHmScaleSize =	this->GetSize();
+	SetPosition(Vector3::ZERO);
+	//m_kPosition.Set(0,0,0);
 
-	delete[] verts;
-	verts=new HM_vert[(m_iHmSize+m_iError)*m_iHmSize];	
-//	delete[] m_pkVertex;
-//	m_pkVertex =new Vector3[(m_iHmSize+m_iError)*m_iHmSize];	
+	AllocHMMemory(iHmSize);
 
 	Zero();
 	SetTileSet("file:../data/textures/landbw.bmp");
 	
 	ClearSet();
 	AddSet("file:../data/textures/nodetail1.bmp","file:../data/textures/detail1.bmp","FEL");
+	CreateBlocks();
 }
 
-void HeightMap::Zero() {
-	for(int i=0;i<(m_iHmSize+m_iError)*m_iHmSize;i++){
-		verts[i].height=5;
-		verts[i].texture=0;
-//		m_pkVertex[i].Set(0,0,0);
+void HeightMap::Zero() 
+{
+	cout << "iNumOfHMVertex:: " << iNumOfHMVertex << endl;
+	for(int i=0;i < iNumOfHMVertex;i++) {
+		verts[i].height	=	0;
+		verts[i].texture	=	0;
 	}
 }
 
-void HeightMap::SetPosition(Vector3 kNewPos) {
-	m_kPosition=kNewPos;
+bool HeightMap::IsAllZero()
+{
+	for(int z=0;z<m_iHmSize;z++)
+	{
+		for(int x=0;x<m_iHmSize;x++)
+		{
+			int iVertexIndex = z * m_iHmSize + x;
+			if(verts[iVertexIndex].height != 0)
+				return false;
+		}
+	}
+
+
+	return true;
+}
+
+
+void HeightMap::SetPosition(Vector3 kNewPos) 
+{
+	m_kPosition		= kNewPos;
+
+	m_kCornerPos.Set(m_kPosition.x	-	m_iHmScaleSize/2, 
+		m_kPosition.y,
+		m_kPosition.z	-	m_iHmScaleSize/2);
 
 }
+
+void HeightMap::CreateBlocks()
+{
+	int iBlockSize = 32;
+
+	TerrainBlock kBlock;
+
+	for(int z=0; z<m_iHmSize; z += iBlockSize) {
+		for(int x=0; x<m_iHmSize; x += iBlockSize) {
+			kBlock.kAABB_Min.Set(x*HEIGHTMAP_SCALE,1,z*HEIGHTMAP_SCALE);
+			kBlock.kAABB_Max.Set((x + iBlockSize)*HEIGHTMAP_SCALE,1,(z + iBlockSize)*HEIGHTMAP_SCALE);
+			m_kTerrainBlocks.push_back(kBlock);
+		}
+	}
+}
+
 
 float HeightMap::Height(float x,float z) {
 	
@@ -135,9 +187,63 @@ void HeightMap::SetTileSet(char* acTileSet) {
 	
 }
 
+bool	HeightMap::IsIndexOutOfMap(int iIndex)
+{
+	if(iIndex < 0)	
+		return true;
+	if(iIndex >= m_iHmSize)
+		return true;
 
-void HeightMap::GenerateNormals() {
+	return false;
+}
+
+
+
+void HeightMap::GenerateNormals() 
+{
 	Vector3 med;
+	Vector3 v1,v2,v3,n1,n2;
+
+	int iZIndex, iXIndex;
+	int iNumOfSides;
+	for(int z = 0; z < m_iHmSize; z++){
+		for(int x = 0; x < m_iHmSize; x++) {
+			med = Vector3(0,0,0);  //reset medium vector
+			iNumOfSides = 0;
+
+			for(int q=-1;q<1;q++){
+				for(int w=-1;w<1;w++){
+					iZIndex = z + q;
+					iXIndex = x + w;
+
+					if(!IsIndexOutOfMap(iZIndex) && !IsIndexOutOfMap(iXIndex) &&
+						!IsIndexOutOfMap(iZIndex+1) && !IsIndexOutOfMap(iXIndex+1)) {
+						v1=Vector3(1,(verts[(z+q)*m_iHmSize+(x+1+w)].height)-(verts[(z+q)*m_iHmSize+(x+w)].height) ,0);
+						v2=Vector3(1,(verts[(z+1+q)*m_iHmSize+(x+1+w)].height)- (verts[(z+q)*m_iHmSize+(x+w)].height),1);		
+						v3=Vector3(0,(verts[(z+q+1)*m_iHmSize+(x+w)].height)-(verts[(z+q)*m_iHmSize+(x+w)].height) ,1);	
+		
+						n1=v2.Cross(v1);			
+						n2=v3.Cross(v2);				
+	//					n1.normalize();
+	//					n2.normalize();
+						}
+					else {
+						n1.Set(0,1,0);
+						n2.Set(0,1,0);
+	
+						}	
+		
+				med=med+n1+n2;
+				}	
+			}
+
+			med=med*0.125;	//insted of  division by 8 
+			med.Normalize();
+			verts[z*m_iHmSize+x].normal=med;
+		}
+	}
+
+/*	Vector3 med;
 	Vector3 v1,v2,v3,n1,n2;
 	
 	
@@ -163,6 +269,7 @@ void HeightMap::GenerateNormals() {
 			verts[z*m_iHmSize+x].normal=med;
 		}
 	}
+*/
 }
 
 void HeightMap::GenerateNormals(int iStartx,int iStartz,int iWidth,int iHeight)
@@ -241,13 +348,14 @@ bool HeightMap::Load(const char* acFile) {
 //	savefile.Read((void*)&k_Fh,sizeof(k_Fh));
 	savefile.Read((void*)&k_Fh, sizeof(HM_fileheader));
 	
-	m_iHmSize=k_Fh.m_iHmSize;
-	m_iHmScaleSize = GetSize();
+	m_iHmSize		=	k_Fh.m_iHmSize;
+	m_iHmScaleSize =	GetSize();
 
 	cout<<"MAP SIZE IS:"<<m_iHmSize<<endl;
-	
-	delete[] verts;
-	verts=new HM_vert[(m_iHmSize+m_iError)*m_iHmSize];
+	AllocHMMemory(m_iHmSize);
+		
+//	delete[] verts;
+//	verts=new HM_vert[(m_iHmSize+m_iError)*m_iHmSize];
 //	delete[] m_pkVertex;
 //	m_pkVertex =new Vector3[(m_iHmSize+m_iError)*m_iHmSize];	
 

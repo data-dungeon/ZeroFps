@@ -145,13 +145,13 @@ void ZeroEdit::OnInit(void)
 
 	pkTexMan->BindTexture("grass2.tga",0);			
 	
-	for(int x=0;x<10;x++)
+/*	for(int x=0;x<10;x++)
 		for(int y=0;y<10;y++)
 			pkTexMan->PsetRGB(x,y,255,255,255);
 
 	for(int x2=2;x2<5;x2++)
 		for(int y2=2;y2<5;y2++)
-			pkTexMan->PsetRGB(x2,y2,255,0,0);
+			pkTexMan->PsetRGB(x2,y2,255,0,0);*/
 			
 	pkTexMan->SwapTexture();				
 	

@@ -85,8 +85,8 @@ void LevelManager::ClearObjects()
 	m_pkHeightMapObject=CreateHeightMapObject(m_pkMap);
 	
 	m_pkHeightMapObject->SetParent(m_pkObjectMan->GetWorldObject());
-	m_pkHeightMapObject->GetPos().Set(0,-4,0);
-	m_pkMap->SetPosition(Vector3(0,-4,0));
+	m_pkHeightMapObject->GetPos().Set(0,0,0);
+	m_pkMap->SetPosition(Vector3(0,0,0));
 }
 
 void LevelManager::CreateNew(int iSize) 
@@ -95,9 +95,9 @@ void LevelManager::CreateNew(int iSize)
 	
 	m_pkMap->Create(iSize);
 	m_pkMap->GenerateNormals(); 
-	m_pkMap->GenerateTextures();
-	m_pkMap->SetPosition(Vector3(0,-4,0));		
-		
+//	m_pkMap->GenerateTextures();
+	m_pkMap->SetPosition(Vector3(0,0,0));		
+	
 }
 
 void LevelManager::CreateZones()

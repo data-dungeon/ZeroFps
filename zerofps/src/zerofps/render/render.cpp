@@ -388,15 +388,56 @@ void Render::DrawColorBox(Vector3 kPos,Vector3 kRot,Vector3 kScale,Vector3 kColo
 	
 }
 
-void Render::DrawAABB( float x, float y, float z, float sizex,float sizey,float sizez, float fMin,float fMax, Vector3 kColor )
+void Render::DrawAABB( Vector3 kMin,Vector3 kMax, Vector3 kColor )
 {
-	Vector3 kCubeNeg(x - sizex, fMin, z - sizez); 
-	Vector3 kCubePos(x + sizex, fMax, z + sizez); 
+	Vector3 kCubeNeg = kMin; 
+	Vector3 kCubePos = kMax; 
 
 	glDisable(GL_TEXTURE_2D);
 	glDisable(GL_LIGHTING );
 
-	glColor3f(1,1,1);
+	glColor3f(kColor.x,kColor.y,kColor.z);
+	glBegin(GL_LINES);
+		glVertex3f(kCubeNeg.x,kCubeNeg.y,kCubeNeg.z);			glVertex3f(kCubeNeg.x,kCubeNeg.y,kCubePos.z);
+		glVertex3f(kCubeNeg.x,kCubeNeg.y,kCubePos.z);			glVertex3f(kCubePos.x,kCubeNeg.y,kCubePos.z);
+		glVertex3f(kCubePos.x,kCubeNeg.y,kCubePos.z);			glVertex3f(kCubePos.x,kCubeNeg.y,kCubeNeg.z);
+		glVertex3f(kCubePos.x,kCubeNeg.y,kCubeNeg.z);			glVertex3f(kCubeNeg.x,kCubeNeg.y,kCubeNeg.z);
+
+		glVertex3f(kCubeNeg.x,kCubePos.y,kCubeNeg.z);			glVertex3f(kCubeNeg.x,kCubePos.y,kCubePos.z);
+		glVertex3f(kCubeNeg.x,kCubePos.y,kCubePos.z);			glVertex3f(kCubePos.x,kCubePos.y,kCubePos.z);
+		glVertex3f(kCubePos.x,kCubePos.y,kCubePos.z);			glVertex3f(kCubePos.x,kCubePos.y,kCubeNeg.z);
+		glVertex3f(kCubePos.x,kCubePos.y,kCubeNeg.z);			glVertex3f(kCubeNeg.x,kCubePos.y,kCubeNeg.z);
+
+		glVertex3f(kCubeNeg.x,kCubeNeg.y,kCubeNeg.z);			glVertex3f(kCubeNeg.x,kCubePos.y,kCubeNeg.z);
+		glVertex3f(kCubeNeg.x,kCubeNeg.y,kCubePos.z);			glVertex3f(kCubeNeg.x,kCubePos.y,kCubePos.z);
+		glVertex3f(kCubePos.x,kCubeNeg.y,kCubePos.z);			glVertex3f(kCubePos.x,kCubePos.y,kCubePos.z);
+		glVertex3f(kCubePos.x,kCubeNeg.y,kCubeNeg.z);			glVertex3f(kCubePos.x,kCubePos.y,kCubeNeg.z);
+
+		/*		glVertex3f(kCubeNeg.x,kCubeNeg.y,kCubePos.z);			glVertex3f(kCubeNeg.x,kCubePos.y,kCubePos.z);
+		glVertex3f(kCubeNeg.x,kCubePos.y,kCubePos.z);			glVertex3f(kCubePos.x,kCubePos.y,kCubePos.z);
+		glVertex3f(kCubePos.x,kCubePos.y,kCubePos.z);			glVertex3f(kCubePos.x,kCubeNeg.y,kCubePos.z);
+		glVertex3f(kCubePos.x,kCubeNeg.y,kCubePos.z);			glVertex3f(kCubeNeg.x,kCubeNeg.y,kCubePos.z);
+
+		glVertex3f(kCubeNeg.x,kCubeNeg.y,kCubeNeg.z);			glVertex3f(kCubePos.x,kCubePos.y,kCubePos.z);
+		glVertex3f(kCubeNeg.x,kCubePos.y,kCubeNeg.z);			glVertex3f(kCubePos.x,kCubePos.y,kCubePos.z);
+		glVertex3f(kCubePos.x,kCubePos.y,kCubeNeg.z);			glVertex3f(kCubePos.x,kCubePos.y,kCubePos.z);
+		glVertex3f(kCubePos.x,kCubeNeg.y,kCubeNeg.z);			glVertex3f(kCubePos.x,kCubePos.y,kCubePos.z);*/
+
+	glEnd();
+
+	glEnable(GL_TEXTURE_2D);
+	glEnable(GL_LIGHTING);
+}
+
+void Render::DrawAABB( float x, float y, float z, float sizex,float sizey,float sizez, Vector3 kColor )
+{
+	Vector3 kCubeNeg(x - sizex, y - sizey, z - sizez); 
+	Vector3 kCubePos(x + sizex, y + sizey, z + sizez); 
+
+	glDisable(GL_TEXTURE_2D);
+	glDisable(GL_LIGHTING );
+
+	glColor3f(kColor.x,kColor.y,kColor.z);
 	glBegin(GL_LINES);
 		glVertex3f(kCubeNeg.x,kCubeNeg.y,kCubeNeg.z);			glVertex3f(kCubeNeg.x,kCubeNeg.y,kCubePos.z);
 		glVertex3f(kCubeNeg.x,kCubeNeg.y,kCubePos.z);			glVertex3f(kCubePos.x,kCubeNeg.y,kCubePos.z);
@@ -429,6 +470,61 @@ void Render::DrawAABB( float x, float y, float z, float sizex,float sizey,float 
 	glEnable(GL_LIGHTING);
 
 }
+
+void Render::Draw_AxisIcon(float scale)
+{
+	glDisable(GL_TEXTURE_2D);
+	glDisable(GL_LIGHTING );
+
+
+	glColor3f(1,0,0);
+	glBegin(GL_LINES);
+		glVertex3f(0,0,0);			glVertex3f(scale,0,0);
+	glEnd();
+
+	glColor3f(0,1,0);
+	glBegin(GL_LINES);
+		glVertex3f(0,0,0);			glVertex3f(0,scale,0);
+	glEnd();
+
+	glColor3f(0,0,1);
+	glBegin(GL_LINES);
+		glVertex3f(0,0,0);			glVertex3f(0,0,scale);
+	glEnd();
+
+	glEnable(GL_TEXTURE_2D);
+	glEnable(GL_LIGHTING);
+}
+
+void Render::Draw_MarkerCross(Vector3 kPos, Vector3 Color, float fScale)
+{
+	glPushMatrix();
+	glDisable(GL_TEXTURE_2D);
+	glDisable(GL_LIGHTING );
+	
+	float fHScale = cos(45) * fScale;
+
+	glTranslatef(kPos.x, kPos.y, kPos.z);
+
+	glColor3fv((float*)&Color);
+	glBegin(GL_LINES);
+		glVertex3f(-fScale,0,0);			glVertex3f(fScale,0,0);
+		glVertex3f(0,-fScale,0);			glVertex3f(0,fScale,0);
+		glVertex3f(0,0,-fScale);			glVertex3f(0,0,fScale);
+
+		glVertex3f(-fHScale,fHScale,fHScale);		glVertex3f(fHScale,-fHScale,-fHScale);
+		glVertex3f(fHScale,-fHScale,fHScale);		glVertex3f(-fHScale,fHScale,-fHScale);
+
+		glVertex3f(-fHScale,-fHScale,-fHScale);		glVertex3f(fHScale,fHScale,fHScale);
+		glVertex3f(fHScale,fHScale,-fHScale);		glVertex3f(-fHScale,-fHScale,fHScale);
+	glEnd();
+
+	glEnable(GL_TEXTURE_2D);
+	glEnable(GL_LIGHTING);
+	glPopMatrix();
+}
+
+
 
 char* BoolStr(bool bFlag)
 {
