@@ -60,7 +60,7 @@ LINK32=link.exe
 # Begin Special Build Tool
 ProjDir=.
 SOURCE="$(InputPath)"
-PostBuild_Cmds=copy                             $(ProjDir)\debug\*.lib                             ..\..\..\bin\ 
+PostBuild_Cmds=copy                              $(ProjDir)\debug\*.lib                              ..\..\..\bin\ 
 # End Special Build Tool
 
 !ELSEIF  "$(CFG)" == "basic - Win32 Debug"
@@ -93,7 +93,7 @@ LINK32=link.exe
 # Begin Special Build Tool
 ProjDir=.
 SOURCE="$(InputPath)"
-PostBuild_Cmds=copy                             $(ProjDir)\debug\*.lib                             ..\..\..\bin\ 
+PostBuild_Cmds=copy                             $(ProjDir)\debug\*.lib                             ..\..\..\bin
 # End Special Build Tool
 
 !ELSEIF  "$(CFG)" == "basic - Win32 Release Profile"
@@ -128,7 +128,7 @@ LINK32=link.exe
 # Begin Special Build Tool
 ProjDir=.
 SOURCE="$(InputPath)"
-PostBuild_Cmds=copy                             $(ProjDir)\debug\*.lib                             ..\..\..\bin\ 
+PostBuild_Cmds=copy                              $(ProjDir)\debug\*.lib                              ..\..\..\bin\ 
 # End Special Build Tool
 
 !ENDIF 

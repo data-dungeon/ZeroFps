@@ -164,6 +164,15 @@ void Matrix4::operator=(const Matrix3 &rkMatrix)
 
 }
 
+void Matrix4::operator= (const Quaternion& rkQuaternion)
+{
+	Matrix3 mat3;
+	mat3 = Matrix3::IDENTITY;
+	mat3 = rkQuaternion;
+	Identity();
+	*this = mat3;
+}
+
 Vector3 Matrix4::VectorRotate (const Vector3 kVec)
 {
 	Vector3 res;

@@ -1,6 +1,7 @@
 
 #include "matrix3.h"
 #include "matrix4.h"
+#include "quaternion.h"
 #include "zfassert.h"
 
 using namespace std;
@@ -161,6 +162,10 @@ void Matrix3::operator= (const Matrix4& rkMatrix)
 	m_aafRowCol[2][2] = rkMatrix.RowCol[2][2];
 }
 
+void Matrix3::operator= (const Quaternion& rkQuaternion)
+{
+	rkQuaternion.ToRotationMatrix(*this);
+}
 
 /*
 Matrix4 Matrix4::operator*(const float &f) const

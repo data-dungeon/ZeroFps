@@ -8,6 +8,7 @@
 #include "vector4.h"
 
 class Matrix3;
+class Quaternion;
 
 class BASIC_API Matrix4 {
 	private:	
@@ -49,6 +50,8 @@ class BASIC_API Matrix4 {
 		
 		Matrix4 operator=(const Matrix4 &kOther);
 		void operator=(const Matrix3 &rkMatrix);
+		void operator= (const Quaternion& rkQuaternion);
+
 		Matrix4 operator*(const float &f) const;
 		Matrix4 operator*(const Matrix4 &kOther) const;
 		Matrix4 operator*=(const float &f);		
@@ -61,8 +64,19 @@ class BASIC_API Matrix4 {
 		Vector3 VectorRotate (const Vector3 kVec);
 		Vector3 VectorIRotate (const Vector3 kVec);
 		Vector3 VectorTransform (const Vector3 kVec);
-};
 
+		Vector3 GetPos()
+		{
+			return Vector3(RowCol[3][0],RowCol[3][1],RowCol[3][2]);
+		}
+
+		void SetPos(Vector3& kPos)
+		{
+			RowCol[3][0] = kPos.x;
+			RowCol[3][1] = kPos.y;
+			RowCol[3][2] = kPos.z;
+		}
+};
 
 #endif
 

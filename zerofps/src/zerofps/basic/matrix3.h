@@ -9,7 +9,7 @@
 #include "string.h"
 
 class Matrix4;
-
+class Quaternion;
 
 class BASIC_API Matrix3 {
 	private:	
@@ -39,7 +39,9 @@ class BASIC_API Matrix3 {
 		bool Matrix3::operator!= (const Matrix3& rkMatrix) const;
 
 		void Matrix3::operator= (const Matrix4& rkMatrix);
+		void Matrix3::operator= (const Quaternion& rkQuaternion);
 
+		
 		// Arithmetic operations
 		Matrix3 Matrix3::operator+ (const Matrix3& rkMatrix) const;
 		Matrix3 Matrix3::operator+= (const Matrix3& rkMatrix);
