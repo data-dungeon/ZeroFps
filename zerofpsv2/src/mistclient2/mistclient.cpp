@@ -198,6 +198,7 @@ void MistClient::RenderInterface(void)
 void MistClient::OnIdle() 
 {
 	Input();
+	printf("olle = %i\n", m_bGuiCapture);
 }
 
 bool MistClient::DelayCommand()
@@ -212,55 +213,51 @@ bool MistClient::DelayCommand()
 
 void MistClient::Input()
 {
-	if(m_pkInputHandle->Pressed(KEY_SPACE) && !DelayCommand())
+	if(m_pkInputHandle->VKIsDown("togglegui") && !DelayCommand())
 		ToggleGuiCapture();
 
+	if(m_bGuiCapture)
+		return;
 
 	//get mouse
 	float x,z;		
 	m_pkInputHandle->RelMouseXY(x,z);	
 	
 	//check buttons
-	if(!m_bGuiCapture)
-	{
-		m_kCharacterControls[eUP] = 	m_pkInputHandle->VKIsDown("move_forward");
-		m_kCharacterControls[eDOWN] =	m_pkInputHandle->VKIsDown("move_back");			
-		m_kCharacterControls[eLEFT] = m_pkInputHandle->VKIsDown("move_left");			
-		m_kCharacterControls[eRIGHT]= m_pkInputHandle->VKIsDown("move_right");
-		m_kCharacterControls[eJUMP] = m_pkInputHandle->VKIsDown("jump");
-		m_kCharacterControls[eCRAWL] =m_pkInputHandle->VKIsDown("crawl");
-	}
+	m_kCharacterControls[eUP] = 	m_pkInputHandle->VKIsDown("move_forward");
+	m_kCharacterControls[eDOWN] =	m_pkInputHandle->VKIsDown("move_back");			
+	m_kCharacterControls[eLEFT] = m_pkInputHandle->VKIsDown("move_left");			
+	m_kCharacterControls[eRIGHT]= m_pkInputHandle->VKIsDown("move_right");
+	m_kCharacterControls[eJUMP] = m_pkInputHandle->VKIsDown("jump");
+	m_kCharacterControls[eCRAWL] =m_pkInputHandle->VKIsDown("crawl");
 
 	// taunts
-	if ( !m_bGuiCapture )
-	{
-		if ( m_pkInputHandle->VKIsDown("taunt1") || m_pkInputHandle->VKIsDown("taunt2")|| 
-			m_pkInputHandle->VKIsDown("taunt3") || m_pkInputHandle->VKIsDown("taunt4") || 
-			m_pkInputHandle->VKIsDown("taunt5") )
-		{					
-			if(!DelayCommand())
-			{
-				int iTauntID = 0;
-				if (m_pkInputHandle->VKIsDown("taunt1"))
-					iTauntID = 1;
-				if (m_pkInputHandle->VKIsDown("taunt2"))
-					iTauntID = 2;
-				if (m_pkInputHandle->VKIsDown("taunt3"))
-					iTauntID = 3;
-				if (m_pkInputHandle->VKIsDown("taunt4"))
-					iTauntID = 4;
-				if (m_pkInputHandle->VKIsDown("taunt5"))
-					iTauntID = 5;
+	if ( m_pkInputHandle->VKIsDown("taunt1") || m_pkInputHandle->VKIsDown("taunt2")|| 
+		m_pkInputHandle->VKIsDown("taunt3") || m_pkInputHandle->VKIsDown("taunt4") || 
+		m_pkInputHandle->VKIsDown("taunt5") )
+	{					
+		if(!DelayCommand())
+		{
+			int iTauntID = 0;
+			if (m_pkInputHandle->VKIsDown("taunt1"))
+				iTauntID = 1;
+			if (m_pkInputHandle->VKIsDown("taunt2"))
+				iTauntID = 2;
+			if (m_pkInputHandle->VKIsDown("taunt3"))
+				iTauntID = 3;
+			if (m_pkInputHandle->VKIsDown("taunt4"))
+				iTauntID = 4;
+			if (m_pkInputHandle->VKIsDown("taunt5"))
+				iTauntID = 5;
 
-				NetPacket kNp;	
-				kNp.Clear();
-				kNp.Write((char) MLNM_CS_ANIM);
+			NetPacket kNp;	
+			kNp.Clear();
+			kNp.Write((char) MLNM_CS_ANIM);
 
-				kNp.Write(iTauntID);
-				
-				kNp.TargetSetClient(0);
-				SendAppMessage(&kNp);
-			}
+			kNp.Write(iTauntID);
+			
+			kNp.TargetSetClient(0);
+			SendAppMessage(&kNp);
 		}
 	}
 
@@ -313,58 +310,55 @@ void MistClient::Input()
 			LoadInGameGui();
 	}
 
-	if(!m_bGuiCapture)
+	//update camera
+	if(Entity* pkCharacter = m_pkEntityManager->GetEntityByID(m_iCharacterID))
 	{
-		//update camera
-		if(Entity* pkCharacter = m_pkEntityManager->GetEntityByID(m_iCharacterID))
-		{
-			if(P_Camera* pkCam = (P_Camera*)pkCharacter->GetProperty("P_Camera"))
-			{			
-				pkCam->Set3PYAngle(pkCam->Get3PYAngle() - (x/5.0));
-				pkCam->Set3PPAngle(pkCam->Get3PPAngle() + (z/5.0));			
-				pkCam->SetOffset(Vector3(0,0,0)); 
+		if(P_Camera* pkCam = (P_Camera*)pkCharacter->GetProperty("P_Camera"))
+		{			
+			pkCam->Set3PYAngle(pkCam->Get3PYAngle() - (x/5.0));
+			pkCam->Set3PPAngle(pkCam->Get3PPAngle() + (z/5.0));			
+			pkCam->SetOffset(Vector3(0,0,0)); 
 
-				float fDistance = pkCam->Get3PDistance();
-				if(m_pkInputHandle->VKIsDown("zoomin")) 	fDistance -= 0.5;
-				if(m_pkInputHandle->VKIsDown("zoomout"))	fDistance += 0.5;
-				
-				//make sure camera is nto to far away
-				if(fDistance > 8.0)
-					fDistance = 8.0;
-				
-				//make sure camera is not to close
-				if(fDistance < 0.2)
-					fDistance = 0.2;
-
-					
-				//select first or 3d view camera
-				if(fDistance < 0.3)	
-				{	
-					pkCam->SetType(CAM_TYPEFIRSTPERSON_NON_EA);
-					
-					//disable player model in first person
-					if(P_Mad* pkMad = (P_Mad*)pkCharacter->GetProperty("P_Mad"))
-						pkMad->SetVisible(false);					
-				}
-				else			
-				{
-					pkCam->SetType(CAM_TYPE3PERSON);
-					
-					//enable player model i 3d person
-					if(P_Mad* pkMad = (P_Mad*)pkCharacter->GetProperty("P_Mad"))
-						pkMad->SetVisible(true);				
-				}			 
-					
-				pkCam->Set3PDistance(fDistance);
+			float fDistance = pkCam->Get3PDistance();
+			if(m_pkInputHandle->VKIsDown("zoomin")) 	fDistance -= 0.5;
+			if(m_pkInputHandle->VKIsDown("zoomout"))	fDistance += 0.5;
 			
-				//rotate character
-				Matrix4 kRot;
-				kRot.Identity();
-				kRot.Rotate(0,pkCam->Get3PYAngle(),0);
-				kRot.Transponse();				
-				pkCharacter->SetLocalRotM(kRot);			
+			//make sure camera is nto to far away
+			if(fDistance > 8.0)
+				fDistance = 8.0;
+			
+			//make sure camera is not to close
+			if(fDistance < 0.2)
+				fDistance = 0.2;
 
+				
+			//select first or 3d view camera
+			if(fDistance < 0.3)	
+			{	
+				pkCam->SetType(CAM_TYPEFIRSTPERSON_NON_EA);
+				
+				//disable player model in first person
+				if(P_Mad* pkMad = (P_Mad*)pkCharacter->GetProperty("P_Mad"))
+					pkMad->SetVisible(false);					
 			}
+			else			
+			{
+				pkCam->SetType(CAM_TYPE3PERSON);
+				
+				//enable player model i 3d person
+				if(P_Mad* pkMad = (P_Mad*)pkCharacter->GetProperty("P_Mad"))
+					pkMad->SetVisible(true);				
+			}			 
+				
+			pkCam->Set3PDistance(fDistance);
+		
+			//rotate character
+			Matrix4 kRot;
+			kRot.Identity();
+			kRot.Rotate(0,pkCam->Get3PYAngle(),0);
+			kRot.Transponse();				
+			pkCharacter->SetLocalRotM(kRot);			
+
 		}
 	}
 }

@@ -33,7 +33,7 @@ public:
 	void CreateInternalControls();
 	virtual bool Render( ZGuiRender* renderer );
 	bool ProcessKBInput(int nKey);
-	void SetFocus();
+	void SetFocus(bool bSetCapture=true);
 	void KillFocus();
 	void SetText(char* strText, bool bResizeWnd=false); //överlagrad
 	void SetScrollbarSkin(ZGuiSkin* pkSkinScrollArea, 

@@ -84,7 +84,7 @@ public:
 	void Show();
 	void Hide();
 
-	virtual void SetFocus()	 { m_bHaveFocus = true;  }
+	virtual void SetFocus(bool bSetCapture=true)	 { m_bHaveFocus = true;  }
 	virtual void KillFocus() { m_bHaveFocus = false; }
 	virtual bool ProcessKBInput(int nKey) { return false; }
 	virtual bool IsInternalControl() { return m_bInternalControl; } 

@@ -140,7 +140,7 @@ public:
 		else
 			return NULL;
 	}
-	void SetFocus(ZGuiWnd* pkWnd);
+	void SetFocus(ZGuiWnd* pkWnd, bool bSetCapture=true);
 
 	struct MAIN_WINDOW
 	{

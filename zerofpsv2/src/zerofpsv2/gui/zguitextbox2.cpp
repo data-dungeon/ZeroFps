@@ -193,7 +193,7 @@ bool ZGuiTextbox::Render( ZGuiRender* pkRenderer )
 	return true;
 }
 
-void ZGuiTextbox::SetFocus()
+void ZGuiTextbox::SetFocus(bool bSetCapture)
 {
 	m_bBlinkCursor = true;
 
@@ -203,7 +203,7 @@ void ZGuiTextbox::SetFocus()
 		m_iCursorPos = 0;
 
 	printf("Set textboxfocus\n");
-	m_pkGUI->m_bForceGUICapture = true;
+	m_pkGUI->m_bForceGUICapture = bSetCapture;
 
 }
 

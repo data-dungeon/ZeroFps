@@ -469,7 +469,7 @@ ZGui::MAIN_WINDOW* ZGui::FindMainWnd(int x,int y)
 	return candidates.front();
 }
 
-void ZGui::SetFocus(ZGuiWnd* pkWnd)
+void ZGui::SetFocus(ZGuiWnd* pkWnd, bool bSetCapture)
 {	
    if(pkWnd == NULL)
       return;
@@ -488,14 +488,14 @@ void ZGui::SetFocus(ZGuiWnd* pkWnd)
 		// Försök sätta fokus på dess root parent istället.
 		ZGuiWnd* pkRootParent = pkWnd->GetParent();
 		if(pkRootParent)
-			SetFocus(pkRootParent);
+			SetFocus(pkRootParent, bSetCapture);
 		return;
 	}
 
 	ZGuiWnd::m_pkFocusWnd = pkWnd;
 
 	if(pkWnd)
-		pkWnd->SetFocus();
+		pkWnd->SetFocus(bSetCapture);
 	
 	if(pkWnd->GetWindowFlag(WF_TOPWINDOW))
 	{
@@ -565,8 +565,8 @@ bool ZGui::UpdateMouse(int x, int y, bool bLBnPressed, bool bRBnPressed, bool bM
 		if(bLBnPressed == false && bRBnPressed == false)
 			m_bHandledMouse = false;
 
-		if(m_bForceGUICapture)
-			m_bHandledMouse = true;
+	//	if(m_bForceGUICapture)
+	//		m_bHandledMouse = true;
 
 		if(bMenuOpen && (m_pkActiveMenu && m_pkActiveMenu->IsOpen() == false))
 		{
@@ -597,6 +597,21 @@ void ZGui::UpdateKeys(vector<KEY_INFO>& kKeysPressed, float time)
          bIsTextbox = true;
 
 		//printf("ZGuiWnd::m_pkFocusWnd = %s\n", ZGuiWnd::m_pkFocusWnd->GetName());
+   }
+
+   if(!kKeysPressed.empty())
+   {
+      KEY_INFO press_key = kKeysPressed.back();
+
+      if(press_key.pressed)
+      {
+			int kParams[1] = {press_key.key};
+			m_pkActiveMainWin->pkCallback(ZGuiWnd::m_pkFocusWnd,
+				ZGM_KEYPRESS,1,(int*) kParams);
+         
+         if(RunKeyCommand(press_key.key))
+				return;
+      }
    }
 
    if(/*bIsTextbox*/ZGuiWnd::m_pkFocusWnd)
@@ -639,19 +654,7 @@ void ZGui::UpdateKeys(vector<KEY_INFO>& kKeysPressed, float time)
       }
    }
 
-   if(!kKeysPressed.empty())
-   {
-      KEY_INFO press_key = kKeysPressed.back();
 
-      if(press_key.pressed)
-      {
-			int kParams[1] = {press_key.key};
-			m_pkActiveMainWin->pkCallback(ZGuiWnd::m_pkFocusWnd,
-				ZGM_KEYPRESS,1,(int*) kParams);
-         
-         RunKeyCommand(press_key.key);
-      }
-   }
 }
 
 bool ZGui::Activate(bool bActive)

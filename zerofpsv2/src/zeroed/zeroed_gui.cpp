@@ -115,7 +115,6 @@ void ZeroEd::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 				static bool state[2] = {0,0};
 				if( IsWndVisible("worktab") )
 				{
-					m_pkAudioSys->PlayAudio("/data/sound/close_window.wav");
 					GetWnd("worktab")->Hide(); 
 
 					state[0] = GetWnd("AddNewProperyWnd")->IsVisible();
@@ -128,7 +127,6 @@ void ZeroEd::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 				}
 				else 
 				{
-					m_pkAudioSys->PlayAudio("/data/sound/open_window.wav");
 					GetWnd("worktab")->Show(); 
 					m_pkGui->PlaceWndFrontBack(GetWnd("worktab"), true);
 
