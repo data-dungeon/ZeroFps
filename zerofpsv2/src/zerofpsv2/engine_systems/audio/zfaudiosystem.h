@@ -52,6 +52,8 @@ class ENGINE_SYSTEMS_API ZFSoundInfo
 		Vector3 m_kPos;
 		Vector3 m_kDir;
 		char m_acFile[128]; // ändra inte till string, då uppstår en kopiering bugg!!
+
+		int m_iID;
 			
 	private:
 		ZFSoundRes* m_pkResource;
@@ -82,13 +84,15 @@ public:
 	bool SetVolume(float fVolume);
 	float GetVolume() { return m_fVolume; }
 
-	bool StartSound(string strName, Vector3 pos=m_kPos, Vector3 dir=Vector3(0,0,1), bool bLoop=false);
+	int StartSound(string strName, Vector3 pos=m_kPos, Vector3 dir=Vector3(0,0,1), bool bLoop=false);
 	bool StopSound(string strName, Vector3 pos);
+	bool StopSound(int iID);
 
 	bool LoadSound(string strFileName);
 	bool UnLoadSound(string strFileName);
 
 	bool MoveSound(const char* szName, Vector3 kOldPos, Vector3 kNewPos, Vector3 kNewDir=Vector3(0,0,1));
+	bool MoveSound(int iID, Vector3 kNewPos, Vector3 kNewDir);
 
 	unsigned int GetNumSounds();
 	unsigned int GetNumActiveChannels();

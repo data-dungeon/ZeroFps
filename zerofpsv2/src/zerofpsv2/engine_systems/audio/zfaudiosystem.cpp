@@ -15,6 +15,7 @@
 
 Vector3 ZFAudioSystem::m_kPos = Vector3(0,0,0);
 
+long g_iIDCounter = 0;
 				        
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
@@ -180,6 +181,8 @@ ZFSoundInfo::ZFSoundInfo(const char* c_szFile, Vector3 pos,
 
 	m_pkResource = NULL;
 	m_bLoopingNoLongerHearable = false;
+
+	m_iID = 0;
 }
 
 ZFSoundInfo::~ZFSoundInfo()
@@ -218,7 +221,7 @@ ZFAudioSystem::~ZFAudioSystem()
 ///////////////////////////////////////////////////////////////////////////////
 // Skapa ett nytt och lägg till det till systemet.
 ///////////////////////////////////////////////////////////////////////////////
-bool ZFAudioSystem::StartSound(string strName, Vector3 pos, 
+int ZFAudioSystem::StartSound(string strName, Vector3 pos, 
 							   Vector3 dir, bool bLoop)
 {
 	ZFSoundInfo *pkSound = new ZFSoundInfo(strName.c_str(), pos, dir, bLoop);
@@ -227,15 +230,18 @@ bool ZFAudioSystem::StartSound(string strName, Vector3 pos,
 	{
 		delete pkSound; // delete sound again.
 		printf("Failed to start sound %s\n", strName.c_str());
-		return false;
+		return -1;
 	}
+
+	g_iIDCounter++;
+	pkSound->m_iID = g_iIDCounter;
 	
 	// Lägg till ljudet till vektorn med ljud.
 	m_kSoundList.push_back( pkSound );
 
 	//printf("Starting sound (priority: %i)\n", GetResHandlePriority(strName));
 
-	return true;
+	return g_iIDCounter;
 }
 
 
@@ -256,6 +262,36 @@ bool ZFAudioSystem::StopSound(string strName, Vector3 pos)
 	}
 
 	printf("Failed to stop sound %s\n", strName.c_str());
+
+	return false;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// Leta reda på det närmsta ljudet och ta bort det.
+///////////////////////////////////////////////////////////////////////////////
+bool ZFAudioSystem::StopSound(int iID)
+{
+	ZFSoundInfo *pkSound;
+
+	list<ZFSoundInfo*>::iterator itSound = m_kSoundList.begin();
+	for( ; itSound != m_kSoundList.end(); itSound++)  
+	{
+		if((*itSound)->m_iID == iID)
+		{
+			pkSound = (*itSound);
+			break;
+		}
+	}
+
+	if(pkSound != NULL)
+	{
+		if(DeleteSound(pkSound, true))
+		{
+			return true;
+		}
+	}
+
+	printf("Failed to stop sound with ID %i\n", iID);
 
 	return false;
 }
@@ -1105,6 +1141,37 @@ bool ZFAudioSystem::MoveSound(const char* szName, Vector3 kOldPos, Vector3 kNewP
 				fClosestDist = fDistance;
 				itFind = itSound;
 			}
+		}
+	}
+
+	if(itFind != m_kSoundList.end())
+	{
+		(*itFind)->m_kPos = kNewPos;
+		(*itFind)->m_kDir = kNewDir;
+		return true;
+	}
+
+	return false;
+}
+
+
+
+
+///////////////////////////////////////////////////////////////////////////////
+// Leta rätt på det närmsta ljudet med det namnet och flytta på det till ny postion
+///////////////////////////////////////////////////////////////////////////////
+
+bool ZFAudioSystem::MoveSound(int iID, Vector3 kNewPos, Vector3 kNewDir)
+{
+	list<ZFSoundInfo*>::iterator itFind = m_kSoundList.end();
+
+	list<ZFSoundInfo*>::iterator itSound = m_kSoundList.begin();
+	for( ; itSound != m_kSoundList.end(); itSound++)  
+	{
+		if((*itSound)->m_iID == iID)
+		{
+			itFind = itSound;
+			break;
 		}
 	}
 

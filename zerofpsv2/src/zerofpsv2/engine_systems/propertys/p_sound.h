@@ -21,6 +21,7 @@ private:
 
 	bool m_bStarted;
 	Vector3 m_kPrevpos;
+	int m_iID;
 
 public:
 	P_Sound();
@@ -39,24 +40,20 @@ public:
 	vector<PropertyValues> GetPropertyValues();
 };
 
-/*const int MAX_NUM_PROPERTY_SOUND = 5;
-
+/*
 class ENGINE_SYSTEMS_API P_Sound : public Property
 {
 private:
 	ZFAudioSystem* m_pkAudioSystem;
 	EntityManager* m_pEntityMan;
 
+	string m_strFileName;
+	bool m_bLoop;
+	
+	string m_strStopFileName;
+
+	bool m_bStarted;
 	Vector3 m_kPrevpos;
-
-	struct sound_info
-	{
-		string m_strFileName; ///< om strängen är tom finns inte ljudet.
-		bool m_bStarted; 
-		bool m_bLoop;
-	};
-
-	sound_info m_akSounds[MAX_NUM_PROPERTY_SOUND];
 
 public:
 	P_Sound();
@@ -73,6 +70,6 @@ public:
 	void Load(ZFIoInterface* pkFile,int iVersion);
 
 	vector<PropertyValues> GetPropertyValues();
-};*/
-
+};
+*/
 #endif // #ifndef _ENGINE_P_SOUND_H_
