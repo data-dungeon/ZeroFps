@@ -183,8 +183,7 @@ void MistServer::Input()
 	
 		if(pkInput->Pressed(MOUSELEFT))
 		{
-			AddZone();
-	
+			AddZone();	
 		}
 		if(pkInput->Pressed(MOUSERIGHT))
 		{
@@ -208,7 +207,7 @@ void MistServer::Input()
 		if(pkInput->Pressed(KEY_8)) m_kZoneSize.Set(4,8,16);				
 		if(pkInput->Pressed(KEY_9)) m_kZoneSize.Set(16,8,4);						
 		
-		if(pkInput->Pressed(KEY_Z))
+/*		if(pkInput->Pressed(KEY_Z))
 		{
 			int id = pkObjectMan->GetZoneIndex(m_kZoneMarkerPos,-1,false);
 			pkObjectMan->SetZoneModel("data/mad/zones/tcross.mad",id);		
@@ -225,7 +224,7 @@ void MistServer::Input()
 			int id = pkObjectMan->GetZoneIndex(m_kZoneMarkerPos,-1,false);
 			pkObjectMan->SetZoneModel("data/mad/zones/large_room_een.mad",id);		
 		}
-	
+	*/
 	
 	}
 };
@@ -480,8 +479,13 @@ void MistServer::OnCommand(int iID, ZGuiWnd *pkMainWnd)
 
 		if(strName == "OpenWorkTabButton")
 		{
-			pkScript->Call(m_pkScriptResHandle, "OpenWorkPad", 0, 0); 
+			if(m_bGuiHaveFocus == false)
+				m_bGuiHaveFocus = true;
+			else
+				m_bGuiHaveFocus = false;
 
+			pkScript->Call(m_pkScriptResHandle, "OpenWorkPad", 0, 0); 
+/*
 			if( IsWndVisible( "WorkTabWnd" ) )
 			{
 				m_bGuiHaveFocus = true;
@@ -489,7 +493,7 @@ void MistServer::OnCommand(int iID, ZGuiWnd *pkMainWnd)
 			else
 			{
 				m_bGuiHaveFocus = false;
-			}
+			}*/
 		}
 	}
 
@@ -505,6 +509,13 @@ void MistServer::OnClickListbox(ZGuiWnd *pkListBox, int iListboxIndex)
 		{
 			m_strActiveZoneName = 
 				((ZGuiListbox*) pkListBox)->GetItem(iListboxIndex)->GetText();
+
+			string strFullPath = "data/mad/zones/";
+			int pos = strFullPath.size();
+			strFullPath.insert(pos, m_strActiveZoneName);
+
+			int id = pkObjectMan->GetZoneIndex(m_kZoneMarkerPos,-1,false);
+			pkObjectMan->SetZoneModel(strFullPath.c_str(),id);
 		}
 	}
 }

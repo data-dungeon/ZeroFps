@@ -34,7 +34,7 @@ class MistServer :public Application , public ZGuiApp {
 			FID_SAVE,
 		};
 
-		string  m_strActiveZoneName;
+		string  m_strActiveZoneName, m_strPrevZoneName;
 		Object* m_pkCameraObject;
 		Camera* m_pkCamera;
 

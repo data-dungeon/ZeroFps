@@ -105,6 +105,8 @@ public:
 		bool bShiftIsPressed, int x, int y, bool bLBnPressed, bool bRBnPressed);
 	bool IsActive();
 
+	bool Render(); // Render the active main window
+
 	ZGuiResourceManager* GetResMan();
 
 	ZGuiWnd* GetWindow(unsigned int iID);
@@ -164,7 +166,7 @@ private:
 	ZGuiWnd* FindNextTabWnd(ZGuiWnd* pkCurrentWnd, bool bNext);
 	long m_iHighestZWndValue;
 	bool IgnoreKey(int Key);
-	bool Render(); // Render the active main window
+	
 	void OnKeyPress(int iKey);
 	bool OnKeyUpdate(int iKeyPressed, bool bLastButtonStillPressed, bool bShiftIsPressed, float fGameTime);
 	bool OnMouseUpdate(int x, int y, bool bLBnPressed, bool bRBnPressed, float fGameTime);

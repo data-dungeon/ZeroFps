@@ -754,7 +754,6 @@ bool ZGui::Update(float m_fGameTime, int iKeyPressed, bool bLastKeyStillPressed,
 		Render();
 	}
 
-	
 	m_kPointsToDraw.clear();
 	m_kRectsToDraw.clear(); 
 	m_kLinesToDraw.clear(); 
