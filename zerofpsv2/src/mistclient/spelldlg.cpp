@@ -30,7 +30,10 @@ void SpellDlg::Update()
 
 void SpellDlg::Init()
 {
-	m_pkApp->CreateWnd(Wnd, "SpellBookMainWnd", "MainWnd", "", 400, 0, 400, 484, 0);
+	int screen_w = m_pkApp->GetWidth(); 
+	int screen_h = m_pkApp->GetHeight();
+
+	m_pkApp->CreateWnd(Wnd, "SpellBookMainWnd", "MainWnd", "", screen_w-400, 0, 400, 484, 0);
 
 	char szName[50];
 

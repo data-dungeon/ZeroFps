@@ -680,19 +680,10 @@ void MistClient::OnCommand(int iID, ZGuiWnd *pkMainWnd)
 
 				ZGuiWnd* pkQuickItemMainWnd = GetWnd("QuickItemMainWnd");
 
-				if ( GetWnd("InfoBoxWnd")->IsVisible() )
-				{
+				if(GetWnd("InfoBoxWnd")->IsVisible() )
 					pkQuickItemMainWnd->SetPos(0, GetHeight()-21-48-85, true, true);
-				}
 				else
-				{
 					pkQuickItemMainWnd->SetPos(0, GetHeight()-21-44, true, true); 	
-					
-					pkQuickItemMainWnd->m_iZValue = -12121212212;
-					GetWnd("PanelBkWnd")->m_iZValue = 1212121-5;
-
-					GetWnd("MainWnd")->SortChilds(); 
-				}
 			}
 			else
 			if(strClickWndName == "SelectSpellBn")
