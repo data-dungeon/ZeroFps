@@ -103,6 +103,10 @@ SOURCE=.\quickboard.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\skilldlg.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\spelldlg.cpp
 # End Source File
 # End Group
@@ -124,6 +128,10 @@ SOURCE=.\mistclient.h
 # Begin Source File
 
 SOURCE=.\quickboard.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\skilldlg.h
 # End Source File
 # Begin Source File
 

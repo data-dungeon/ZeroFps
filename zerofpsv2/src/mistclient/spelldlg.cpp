@@ -63,7 +63,7 @@ void SpellDlg::Init()
 		for(int x=0; x<SPELL_COLS; x++)
 		{
 			char szName[50];
-			sprintf(szName, "asfasdf%i", y*10+x);
+			sprintf(szName, "SpellBookSpellSlot%i", y*10+x);
 			m_pkApp->CreateWnd(Button, szName, "SpellBookMainWnd", "", 32+x*64, 100+y*64, 64, 64, 0);
 
 			ZGuiButton* pkButton = (ZGuiButton*)m_pkApp->GetWnd(szName);
@@ -192,14 +192,21 @@ void SpellDlg::OnCommand(ZGuiWnd* pkWndClicked)
 		{
 			if(m_pkSpellButtons[y][x] == pkWndClicked)
 			{
-				int tex_id = FindSlot(x,y)->pkLabel->GetSkin()->m_iBkTexID;
+				SpellSlot* pkSlot = FindSlot(x,y);
 
-				const char* szID = m_pkTexMan->GetFileName(tex_id);
+				if(pkSlot)
+				{
+					int tex_id = FindSlot(x,y)->pkLabel->GetSkin()->m_iBkTexID;
 
-				m_pkQuickBoard->AddSlot( (char*) "data/textures/gui/spells/lightingball.bmp", NULL );
+					const char* szID = m_pkTexMan->GetFileName(tex_id);
 
-				m_pkAudioSys->StartSound( "/data/sound/turn_page.wav",
-						m_pkAudioSys->GetListnerPos(),m_pkAudioSys->GetListnerDir(),false);
+					m_pkQuickBoard->AddSlot( (char*) "data/textures/gui/spells/lightingball.bmp", NULL );
+
+					m_pkAudioSys->StartSound( "/data/sound/turn_page.wav",
+							m_pkAudioSys->GetListnerPos(),m_pkAudioSys->GetListnerDir(),false);
+				}
+
+				break;
 			}
 		}
 }

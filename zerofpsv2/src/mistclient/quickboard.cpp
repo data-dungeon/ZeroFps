@@ -111,7 +111,6 @@ void QuickBoard::AddSlot(char *szIcon, char* szIconAlpha)
 
 void QuickBoard::OnCommand(ZGuiWnd* pkWndClicked, bool bRightMBnClicked)
 {
-
 	for(int i=0; i<MAX_NUM_QUICK_ITEMS; i++)
 	{
 		if(m_vkQuickSlots[i]->pkButton == pkWndClicked)

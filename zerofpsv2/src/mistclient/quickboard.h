@@ -16,6 +16,13 @@ class QuickBoard
 {
 public:
 
+	enum ActionType
+	{
+		Spell,
+		Item,
+		Skill
+	};
+
 	struct QuickSlot
 	{
 		char szActionName[50];

@@ -81,6 +81,7 @@ MistClient::MistClient(char* aName,int iWidth,int iHeight,int iDepth)
 	m_pkQuickBoard				= NULL;
 	m_pkInventDlg				= NULL;
 	m_pkSpellDlg				= NULL;
+	m_pkSkillDlg				= NULL;
 	
 	g_ZFObjSys.Log_Create("mistclient");
 } 
@@ -640,8 +641,6 @@ bool MistClient::IsValid()	{ return true; }
 
 void MistClient::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 {
-	printf("OnCommand\n");
-
 	ZGuiWnd* pkWndClicked = GetWnd(iID);
 
 	if(pkWndClicked == NULL)
@@ -704,6 +703,11 @@ void MistClient::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 			if(strClickWndName == "SelectSpellBn")
 			{
 				m_pkSpellDlg->ToogleOpen();
+			}
+			else
+			if(strClickWndName == "SelectSkillBn")
+			{
+				m_pkSkillDlg->ToogleOpen();
 			}
 		}
 	}
@@ -835,6 +839,12 @@ void MistClient::OnCommand(int iID, bool bRMouseBnClick, ZGuiWnd *pkMainWnd)
 	{
 		m_pkSpellDlg->OnCommand(pkWndClicked);
 	}
+	else
+	if(strMainWndName == "SelectSkillsMainWnd")
+	{
+		m_pkSkillDlg->OnCommand(pkWndClicked);
+	}
+
 	if(m_pkInventDlg)
 	{
 		m_pkInventDlg->OnCommand(iID); 
@@ -1181,6 +1191,8 @@ void MistClient::CreateGuiInterface()
 	//m_pkQuickBoard->AddQuickItem("apple", NULL);
 	
 	m_pkSpellDlg = new SpellDlg(this, m_pkQuickBoard);
+
+	m_pkSkillDlg = new SkillDlg(this);
 
 	// give focus to main window
 	pkGui->SetFocus(GetWnd("PanelBkWnd")); 
