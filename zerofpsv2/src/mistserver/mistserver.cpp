@@ -30,6 +30,8 @@ MistServer::MistServer(char* aName,int iWidth,int iHeight,int iDepth)
 	: Application(aName,iWidth,iHeight,iDepth), ZGuiApp(GUIPROC)
 { 
 	g_ZFObjSys.Log_Create("mistserver");
+
+	m_pkServerInfoP = NULL;
 } 
 
 void MistServer::OnInit() 
@@ -82,8 +84,10 @@ void MistServer::Init()
 
 void MistServer::RegisterPropertys()
 {
+	pkPropertyFactory->Register("P_ServerInfo", Create_P_ServerInfo);
 	pkPropertyFactory->Register("P_Ml", Create_P_Ml);
 	pkPropertyFactory->Register("P_Event", Create_P_Event);
+	pkPropertyFactory->Register("P_CharStats", Create_P_CharStats);
 }
 
 void MistServer::OnIdle()
@@ -96,6 +100,14 @@ void MistServer::OnIdle()
 
 	UpdateZoneMarkerPos();
 	DrawZoneMarker(m_kZoneMarkerPos);
+	
+	
+	if(m_pkServerInfoP)
+	{
+		pkFps->DevPrintf("server","ServerName: %s", m_pkServerInfoP->m_sServerName.c_str());
+		pkFps->DevPrintf("server","Players: %d", m_pkServerInfoP->m_iNrOfPlayers);
+	
+	}
 }
 
 void MistServer::OnSystem()
@@ -227,7 +239,7 @@ void MistServer::RunCommand(int cmdid, const CmdArgument* kCommand)
 			}
 			
 			pkObjectMan->SetWorldDir(kCommand->m_kSplitCommand[1].c_str());
-			pkObjectMan->NewWorld();
+			pkObjectMan->Clear();
 			
 			GetSystem().RunCommand("server Default server",CSYS_SRC_SUBSYS);
 			break;
@@ -271,6 +283,8 @@ void MistServer::ClientInit()
 {
 	cout<<"Client Join granted"<<endl;
 	
+	m_pkServerInfoP->m_iNrOfPlayers++;
+	
 	cout<<"Join Complete"<<endl;
 }
 
@@ -288,6 +302,7 @@ void MistServer::OnServerClientJoin(ZFClient* pkClient,int iConID)
 
 void MistServer::OnServerClientPart(ZFClient* pkClient,int iConID)
 {
+	m_pkServerInfoP->m_iNrOfPlayers--;	
 	cout<<"Client "<<iConID<<" Parted"<<endl;	
 }
 
@@ -306,13 +321,21 @@ void MistServer::OnServerStart(void)
 		m_pkCameraObject->SetUseZones(false);		
 	}
 	
-	
-	
-	
-	
-	if(pkObjectMan->GetNumOfZones() != 0) {
-		pkConsole->Printf("Num of Zones: %d",pkObjectMan->GetNumOfZones());
+	//create server info object
+	m_pkServerInfo = pkObjectMan->CreateObjectFromScript("data/script/objects/t_serverinfo.lua");
+	if(m_pkServerInfo)
+	{
+		m_pkServerInfo->SetParent(pkObjectMan->GetGlobalObject());
+		m_pkServerInfoP = (P_ServerInfo*)m_pkServerInfo->GetProperty("P_ServerInfo");		
+		if(m_pkServerInfoP)
+		{
+			cout<<"Server info created"<<endl;
+			m_pkServerInfoP->m_sServerName = "Test Server";
+		}
+		else
+			cout<<"ERROR: No server P_ServerInfo property created, this is no good"<<endl;
 	}
+	
 }
 
 void MistServer::OnClientStart(void)
@@ -444,3 +467,6 @@ void MistServer::OnCommand(int iID, ZGuiWnd *pkMainWnd)
 			pkScript->Call(m_pkScriptResHandle, "OpenWorkPad", 0, 0); 
 	}
 }
+
+
+

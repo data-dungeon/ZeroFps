@@ -151,7 +151,7 @@ class ENGINE_API ObjectManager : public ZFSubSystem{
 		Object* GetWorldObject()	{	return m_pkWorldObject;				};
 		Object* GetZoneObject()		{	return m_pkZoneObject;					};		
 		Object* GetClientObject()	{	return m_pkClientObject;				};		
-		Object* GetGlobalbject()	{	return m_pkGlobalObject;				};				
+		Object* GetGlobalObject()	{	return m_pkGlobalObject;				};				
 		
 		int	GetNumOfObjects()		{	return m_akObjects.size();			}
 		int	GetActivePropertys() {	return m_iNrOfActivePropertys;	};

@@ -21,6 +21,7 @@
 #include "../mcommon/si_mistland.h"
 #include "../mcommon/p_ml.h"
 #include "../mcommon/p_charstats.h"
+#include "../mcommon/p_serverinfo.h"
 
 class MistServer :public Application , public ZGuiApp {
 	private:
@@ -35,6 +36,9 @@ class MistServer :public Application , public ZGuiApp {
 
 		Object* m_pkCameraObject;
 		Camera* m_pkCamera;
+
+		Object* m_pkServerInfo;
+		P_ServerInfo* m_pkServerInfoP;
 
 		Vector3	m_kZoneSize;
 		Vector3	m_kZoneMarkerPos;

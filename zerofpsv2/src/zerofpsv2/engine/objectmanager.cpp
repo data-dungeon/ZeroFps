@@ -97,9 +97,7 @@ bool ObjectManager::StartUp()
 	m_kWorldDirectory = "../data/testmap";
 
 	//create all base objects
-	CreateBaseObjects();
-
-	iNextObjectID = 100000;
+	Clear();
 
 	TESTVIM_LoadArcheTypes("zfoh.txt");
 
@@ -133,6 +131,8 @@ ObjectManager::~ObjectManager()
 
 void ObjectManager::CreateBaseObjects()
 {
+	iNextObjectID = 0;
+	
 	//top world object parent to all objects
 	m_pkWorldObject						=	new Object();	
 	m_pkWorldObject->GetName()			= "WorldObject";
@@ -159,6 +159,8 @@ void ObjectManager::CreateBaseObjects()
 	m_pkGlobalObject->GetName()		= "GlobalObject";
 	m_pkGlobalObject->m_eRole			= NETROLE_AUTHORITY;
 	m_pkGlobalObject->m_eRemoteRole	= NETROLE_NONE;
+
+	iNextObjectID = 100000;
 
 }
 
@@ -207,14 +209,27 @@ void ObjectManager::Delete(Object* pkObject)
 */
 void ObjectManager::Clear()
 {
-	for(list<Object*>::iterator it=m_akObjects.begin();it!=m_akObjects.end();it++) {
-		if((*it)->CheckLinks(false,0) == false)
+//	for(list<Object*>::iterator it=m_akObjects.begin();it!=m_akObjects.end();it++) {
+//		delete(*it);
+	
+/*		if((*it)->CheckLinks(false,0) == false)
 			cout << "Error in object manger" << endl;
 		else
-			cout << "Links ok" << endl;
-	} 
+			cout << "Links ok" << endl;*/
+//	} 
 	
-	m_pkWorldObject->DeleteAllChilds();
+	
+	//m_pkWorldObject->DeleteAllChilds();
+	
+	//delete all objects in world
+	while(m_akObjects.begin() != m_akObjects.end())
+		delete(*m_akObjects.begin());
+	
+	//clear all zones
+	m_kZones.clear();
+	
+	//recreate base objects
+	CreateBaseObjects();
 }
 
 
@@ -1146,7 +1161,7 @@ void ObjectManager::RunCommand(int cmdid, const CmdArgument* kCommand)
 			}
 		
 			SetWorldDir(kCommand->m_kSplitCommand[1].c_str());
-			NewWorld();
+			Clear();
 			break;
 	
 		case FID_LOADWORLD:
@@ -1480,6 +1495,7 @@ void ObjectManager::UpdateZones()
 	vector<ZoneData*>	m_kFloodZones;
 	int iZoneIndex;
 
+	//cout<<"nr of trackers:"<<m_kTrackedObjects.size()<<endl;
 	// For each tracker.
 	for(list<Object*>::iterator iT=m_kTrackedObjects.begin();iT!=m_kTrackedObjects.end();iT++) {
 		// Find Active Zone.
@@ -1625,7 +1641,7 @@ bool ObjectManager::LoadZones()
 		return false;
 	}
 
-	NewWorld();
+	Clear();
 
 	int iNumOfZone;
 	kFile.Read(&iNumOfZone,sizeof(int),1);
@@ -1819,20 +1835,13 @@ int ObjectManager::GetUnusedZoneID()
 	return m_kZones.size() - 1;
 }
 
-bool ObjectManager::NewWorld()
-{
-	GetZoneObject()->DeleteAllChilds();
-	m_kZones.clear();
-
-	return true;
-}
 
 bool ObjectManager::LoadWorld(const char* acDir)
 {
 	SetWorldDir(acDir);
 	
 	//clear the world
-	NewWorld();
+	Clear();
 
 	//load zones in acDir
 	return LoadZones();
