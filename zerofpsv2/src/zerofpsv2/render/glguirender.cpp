@@ -105,21 +105,18 @@ bool GLGuiRender::RenderQuad(Rect rc)
 	if(m_bClipperEnabled)
 	{
 		if(rc.Top < m_rcClipperArea.Top)
-		{
 			rc.Top = m_rcClipperArea.Top;
-		}
-
 		if(rc.Bottom > m_rcClipperArea.Bottom)
-		{
 			rc.Bottom = m_rcClipperArea.Bottom;
-		}
-
 		if(rc.Height() <= 0)
 			return true;
 
-/*		if(m_rcClipperArea.Left > rc.Left || m_rcClipperArea.Right < rc.Right || 
-			m_rcClipperArea.Top > rc.Top || m_rcClipperArea.Bottom < rc.Bottom)
-			return true;*/
+		if(rc.Left < m_rcClipperArea.Left)
+			rc.Left = m_rcClipperArea.Left;
+		if(rc.Right > m_rcClipperArea.Right)
+			rc.Right = m_rcClipperArea.Right;
+		if(rc.Width() <= 0)
+			return true;
 	}
 
 	// Don't render if skin is transparent.

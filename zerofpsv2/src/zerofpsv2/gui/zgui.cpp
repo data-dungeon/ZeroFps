@@ -575,7 +575,7 @@ bool ZGui::OnMouseUpdate(int x, int y, bool bLBnPressed,
 							m_pkActiveMainWin->pkCallback(m_pkActiveMainWin->pkWnd,
 								ZGM_COMMAND,2,pkParams);
 
-							m_bHaveInputFocus = true;
+							//m_bHaveInputFocus = true;
 						}
 					}
 					delete[] pkParams;
@@ -946,11 +946,11 @@ void ZGui::OnKeyPress(int iKey)
 		{
 			bMultiLine = ((ZGuiTextbox*) ZGuiWnd::m_pkFocusWnd)->IsMultiLine();
 
-			if(iKey == gKEY_RETURN)
-				m_bHaveInputFocus = false;
+/*			if(iKey == gKEY_RETURN)
+				m_bHaveInputFocus = false;*/
 		}
-		else
-			m_bHaveInputFocus = false;
+/*		else
+			m_bHaveInputFocus = false;*/
 
 		if((iKey==gKEY_DOWN || iKey==gKEY_UP) && !(bIsTextbox && bMultiLine))
 		{
