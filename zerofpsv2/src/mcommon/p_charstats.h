@@ -3,7 +3,7 @@
 
 #include "../zerofpsv2/engine/property.h"
 #include "mcommon_x.h"
-#include "../rulesystem/character/characterstats.h"
+#include "rulesystem/character/characterstats.h"
 #include "../zerofpsv2/basic/zfini.h"
 
 class MCOMMON_API CharacterProperty: public Property 

@@ -1,4 +1,4 @@
-#include "../rulesystem/character/characterfactory.h"
+#include "rulesystem/character/characterfactory.h"
 #include "p_charstats.h"
 #include "../zerofpsv2/engine/object.h"
 

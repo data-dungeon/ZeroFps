@@ -71,7 +71,24 @@ void PSystemProperty::SetPSType( string kName )
 }
 
 // ------------------------------------------------------------------------------------------
+/*
+void PSystemProperty::Save(ZFIoInterface* pkPackage)
+{
+   // PSType
+	pkPackage->Write ( (void*)&m_kPSType, sizeof(m_kPSType), 1 );
 
+   
+   // PSAge
+
+   // if PSystem lives forever...
+   if ( m_pkPSType->m_kPSystemBehaviour.m_fLifeTime == -1 )
+   {
+      int i
+      pkPackage->Write ( (void*)&m_pkPSystem->, sizeof(m_kPSType), 1 );
+   }
+}
+*/
+// ------------------------------------------------------------------------------------------
 
 Property* Create_PSystemProperty()
 {

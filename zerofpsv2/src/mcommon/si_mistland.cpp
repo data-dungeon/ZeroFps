@@ -1,5 +1,5 @@
 #include "si_mistland.h"
-#include "../rulesystem/character/characterstats.h"
+#include "rulesystem/character/characterstats.h"
 #include "p_charstats.h"
 #include <cmath>                    // for trigonometry functions
 
