@@ -1091,10 +1091,10 @@ void MistServer::OnNetworkMessage(NetPacket *PkNetMessage)
 					cout<<"picking up item from ground"<<endl;
 					
 					//try adding item from gound									
-					if(pkTargetContainer->AddMove(iItemID,iPosX,iPosY,iCount))
-						SendContainer(iTargetContainer,PkNetMessage->m_iClientID,false);											
-					else
-						SayToClients("You could not pick that up","Server",-1,PkNetMessage->m_iClientID);
+					if(!pkTargetContainer->AddMove(iItemID,iPosX,iPosY,iCount));
+						SayToClients("You could not pick that up","Server",-1,PkNetMessage->m_iClientID);					
+					
+					SendContainer(iTargetContainer,PkNetMessage->m_iClientID,false);											
 						
 					break;
 
@@ -1126,10 +1126,10 @@ void MistServer::OnNetworkMessage(NetPacket *PkNetMessage)
 					{
 						cout<<"no target container, moving within this container"<<endl;
 					
-						if(pkInContainer->AddMove(iItemID,iPosX,iPosY,iCount))
-							SendContainer(pkInContainer->GetEntity()->GetEntityID(),PkNetMessage->m_iClientID,false);											
-						else
+						if(!pkInContainer->AddMove(iItemID,iPosX,iPosY,iCount))
 							SayToClients("Could not move item","Server",-1,PkNetMessage->m_iClientID);				
+														
+						SendContainer(pkInContainer->GetEntity()->GetEntityID(),PkNetMessage->m_iClientID,false);																		
 							
 						break;		
 					}
@@ -1137,10 +1137,12 @@ void MistServer::OnNetworkMessage(NetPacket *PkNetMessage)
 					else
 					{
 						cout<<"got no position, droping item"<<endl;
-						if(pkInContainer->DropItem(iItemID,pkCharacter->GetWorldPosV()))
-							SendContainer(pkInContainer->GetEntity()->GetEntityID(),PkNetMessage->m_iClientID,false);											
-						else
-							SayToClients("Could not drop item","Server",-1,PkNetMessage->m_iClientID);														
+						
+						
+						if(!pkInContainer->DropItem(iItemID,pkCharacter->GetWorldPosV()))
+							SayToClients("Could not drop item","Server",-1,PkNetMessage->m_iClientID);																				
+						
+						SendContainer(pkInContainer->GetEntity()->GetEntityID(),PkNetMessage->m_iClientID,false);											
 							
 						break;
 					}
@@ -1156,13 +1158,11 @@ void MistServer::OnNetworkMessage(NetPacket *PkNetMessage)
 					}				
 				
 					cout<<"moving item to another container"<<endl;
-					if(pkTargetContainer->AddMove(iItemID,iPosX,iPosY,iCount))
-					{
-						SendContainer(pkInContainer->GetEntity()->GetEntityID(),PkNetMessage->m_iClientID,false);
-						SendContainer(iTargetContainer,PkNetMessage->m_iClientID,false);						
-					}
-					else
+					if(!pkTargetContainer->AddMove(iItemID,iPosX,iPosY,iCount))
 						SayToClients("Could not move item to that container","Server",-1,PkNetMessage->m_iClientID);	
+					
+					SendContainer(pkInContainer->GetEntity()->GetEntityID(),PkNetMessage->m_iClientID,false);
+					SendContainer(iTargetContainer,PkNetMessage->m_iClientID,false);						
 					
 					break;	
 		

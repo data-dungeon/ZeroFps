@@ -200,7 +200,7 @@ void P_CharacterProperty::SetupContainers()
 			m_iInventory = pkContainer->GetEntityID();
 			pkContainer->SetParent(GetEntity());			
 			pkCon = (P_Container*)pkContainer->AddProperty("P_Container");				
-				pkCon->SetSize(6,12);
+				pkCon->SetSize(6,9);
 				pkCon->SetContainerType(eInventory);
 				pkCon->SetOwnerID(GetEntity()->GetEntityID());
 				pkCon->SetStaticOwner(true);
@@ -211,7 +211,7 @@ void P_CharacterProperty::SetupContainers()
 			m_iBody = pkContainer->GetEntityID();
 			pkContainer->SetParent(GetEntity());			
 			pkCon = (P_Container*)pkContainer->AddProperty("P_Container");
-				pkCon->SetSize(4,4);
+				pkCon->SetSize(3,4);
 				pkCon->SetContainerType(eBody);
 				pkCon->SetOwnerID(GetEntity()->GetEntityID());
 				pkCon->SetStaticOwner(true);
@@ -223,7 +223,7 @@ void P_CharacterProperty::SetupContainers()
 			m_iHead = pkContainer->GetEntityID();		
 			pkContainer->SetParent(GetEntity());
 			pkCon = (P_Container*)pkContainer->AddProperty("P_Container");
-				pkCon->SetSize(4,4);
+				pkCon->SetSize(2,2);
 				pkCon->SetContainerType(eHead);
 				pkCon->SetOwnerID(GetEntity()->GetEntityID());
 				pkCon->SetStaticOwner(true);
@@ -235,7 +235,7 @@ void P_CharacterProperty::SetupContainers()
 			m_iLeftHand = pkContainer->GetEntityID();		
 			pkContainer->SetParent(GetEntity());
 			pkCon = (P_Container*)pkContainer->AddProperty("P_Container");
-				pkCon->SetSize(2,8);
+				pkCon->SetSize(2,4);
 				pkCon->SetContainerType(eLeftHand);
 				pkCon->SetOwnerID(GetEntity()->GetEntityID());
 				pkCon->SetStaticOwner(true);
@@ -248,7 +248,7 @@ void P_CharacterProperty::SetupContainers()
 			m_iRightHand = pkContainer->GetEntityID();
 			pkContainer->SetParent(GetEntity());
 			pkCon = (P_Container*)pkContainer->AddProperty("P_Container");				
-				pkCon->SetSize(2,8);
+				pkCon->SetSize(2,4);
 				pkCon->SetContainerType(eRightHand);
 				pkCon->SetOwnerID(GetEntity()->GetEntityID());
 				pkCon->SetStaticOwner(true);
@@ -297,7 +297,7 @@ void P_CharacterProperty::SetupContainers()
 			m_iBracers = pkContainer->GetEntityID();
 			pkContainer->SetParent(GetEntity());
 			pkCon = (P_Container*)pkContainer->AddProperty("P_Container");				
-				pkCon->SetSize(2,1);
+				pkCon->SetSize(1,2);
 				pkCon->SetContainerType(eBracers);
 				pkCon->SetOwnerID(GetEntity()->GetEntityID());
 				pkCon->SetStaticOwner(true);
