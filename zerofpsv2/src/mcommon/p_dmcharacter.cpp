@@ -144,7 +144,8 @@ void P_DMCharacter::Init()
 	m_pkBody->SetMaxItems(1);
 	m_pkBelt = 		new DMContainer(m_pkObjMan,m_pkObject->GetEntityID(),4,1);
 	m_pkBelt->AddItemType(DMITEM_GRENADE);
-	m_pkBelt->AddItemType(DMITEM_CLIP);			
+	m_pkBelt->AddItemType(DMITEM_CLIP);		
+	m_pkBelt->AddItemType(DMITEM_MEDKIT);
 	m_pkHand = 		new DMContainer(m_pkObjMan,m_pkObject->GetEntityID(),2,3,false);
 	m_pkHand = 		new DMContainer(m_pkObjMan,m_pkObject->GetEntityID(),3,2,false);
 	m_pkHand->AddItemType(DMITEM_GRENADE);	
@@ -423,8 +424,116 @@ void P_DMCharacter::UnEquip (P_DMItem* pkDMItem)
 // -----------------------------------------------------------------------------------------------
 
 
-void P_DMCharacter::UseQuickItem(int iItemIndex) // <- iItemIndex = 0,1,2,3 dvs slot (0,0), (0,1) osv
+void P_DMCharacter::UseQuickItem(int iItemIndex, bool bIndexIsItemType)
 {
+	int iBeltIndex = -1;
+	vector<ContainerInfo> kItemList;
+	m_pkBelt->GetItemList(&kItemList);
+
+	if(bIndexIsItemType == false)
+	{
+		for(unsigned int i=0; i<kItemList.size(); i++)
+		{
+			if(kItemList[i].m_iItemX == iItemIndex)
+			{
+				iBeltIndex = i;
+				break;
+			}
+		}
+	}
+	else
+	{
+		for(unsigned int i=0; i<kItemList.size(); i++)
+		{
+			if(kItemList[i].m_iType == iItemIndex)
+			{
+				iBeltIndex = i;
+				break;
+			}
+		}
+	}
+
+	if(iBeltIndex == -1)
+		return;
+
+	bool bSuccess = false;
+	int iObjectID = -1;
+	string strClipName;
+
+	printf("Character using quickitem %i %i\n", 
+		kItemList[iBeltIndex].m_iItemX, kItemList[iBeltIndex].m_iItemY);
+
+	switch(kItemList[iBeltIndex].m_iType)
+	{
+	case DMITEM_CLIP:
+		
+		strClipName = kItemList[iBeltIndex].m_strName;
+
+		// format string of clipname to lowercase
+		MakeStringLowerCase(strClipName);
+		
+		// check if character is equipped with at weapon
+		Entity* pkWeapon;
+		P_DMGun* pkP_Gun; pkP_Gun = NULL;
+
+		for ( int y = 0; y < 2; y++ )
+			for ( int x = 0; x < 3; x++ )
+				if ( *m_pkHand->GetItem(x,y) != -1 )
+				{
+					iObjectID = *m_pkHand->GetItem(x,y);
+
+					if( iObjectID != -1)
+					{
+						pkWeapon = m_pkObjMan->GetObjectByNetWorkID ( iObjectID );
+
+						string strGunItemName = 
+							((P_DMItem*)pkWeapon->GetProperty("P_DMItem"))->GetName();
+
+						MakeStringLowerCase(strGunItemName);
+						if(strClipName.find(strGunItemName) != string::npos)
+						{
+							pkP_Gun = (P_DMGun*)pkWeapon->GetProperty ("P_DMGun");
+							break;
+						}
+					}
+				}
+
+		if( pkP_Gun != NULL )
+		{
+			pkP_Gun->Reload();
+			bSuccess = true;
+		}
+		else
+		{
+			printf("Failed to reload weapon, not correct weapon in hand\n");
+			return; // return
+		}
+		break;
+
+	case DMITEM_MEDKIT:
+		printf("using medkit\n");
+		m_kStats.m_iLife = m_kStats.m_iMaxLife;
+		bSuccess = true;
+		break;
+	}
+
+	if(m_pkBelt->RemoveItem(kItemList[iBeltIndex].m_iItemX,
+		kItemList[iBeltIndex].m_iItemY))
+	{
+		printf("Removing quickitem\n");
+		return;
+	}
+	else
+	{
+		printf("Failed to remove quickitem\n");
+		return;
+	}
+}
+
+/*
+void P_DMCharacter::UseQuickItem(int iItemIndex, bool bIndex) // <- iItemIndex = 0,1,2,3 dvs slot (0,0), (0,1) osv
+{
+	ContainerInfo kFind;
 	vector<ContainerInfo> kItemList;
 	m_pkBelt->GetItemList(&kItemList);
 	
@@ -493,13 +602,25 @@ void P_DMCharacter::UseQuickItem(int iItemIndex) // <- iItemIndex = 0,1,2,3 dvs 
 					}
 
 					break;
+				} // END case DMITEM_CLIP:
+
+			case DMITEM_MEDKIT:
+				int iMedPack;
+				iMedPack = *m_pkBelt->GetItem(x,0);
+
+				if(iMedPack != -1)
+				{
+					m_kStats.m_iLife = m_kStats.m_iMaxLife;
 				}
+
+				break;
 			}
 
 			break;
 		}
 	}
 }
+*/
 
 void P_DMCharacter::MakeStringLowerCase(string& s)
 {
