@@ -26,9 +26,6 @@ void P_DMMission::Init()
 {
 	cout<< "New mission created:" << m_strName.c_str() << " : "
 		<< m_strMissionScript << endl;
-
-
-
 }
 
 

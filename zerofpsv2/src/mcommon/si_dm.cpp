@@ -14,7 +14,7 @@ void DMLua::Init(EntityManager* pkObjMan,ZFScriptSystem* pkScript)
 
 int DMLua::GetClosestDMCharacterLua(lua_State* pkLua) 
 {
-	g_pkScript->AddReturnValue(pkLua, "linux", strlen("linux") );
+	g_pkScript->AddReturnValue(pkLua, "mormor ond", strlen("mormor ond") );
 
 	return 1; // this function returns one (1) argument
 }

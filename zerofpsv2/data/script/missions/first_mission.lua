@@ -6,11 +6,9 @@ function IsMissionDone()
 
 	name = GetClosestDMCharacter();
 
---	Print(name)
-
---	if obj_id == "linux" then
---		Print("apan satt i grannen, skulle...\n");
---	end
+	if name == "mormor ond" then
+		Print("apan satt i grannen, skulle");
+	end
 
 end
 
