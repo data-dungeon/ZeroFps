@@ -100,7 +100,17 @@ void Input::ReleaseInput(void) {
 }
 	
 
+void Input::Reset(void) {
+	SDL_Event kTemp;
 
+	while(SDL_PollEvent(&kTemp)){
+//		cout<<"flushing"<<endl;
+	}
+	
+	for(int i =0;i<400;i++) 
+	m_akButtonList[i]=false;
+
+}
 
 
 

@@ -12,7 +12,7 @@ class ZeroFps;
 
 class Console {
 	private:
-//		ZeroFps* m_pkEngine;		
+		ZeroFps* m_pkEngine;		
 		CmdSystem* m_pkCmd;
 		Primitives* m_pkPrims;
 		TextureManager* m_pkTexMan;

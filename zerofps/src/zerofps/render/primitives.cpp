@@ -100,21 +100,23 @@ void Primitives::PrintChar(char cChar) {
 //	cout<<"Att texture position:"<<pos<<" "<<x<<" "<<y<<endl;
 	
 	
+	
 	glBlendFunc(GL_ONE,GL_ZERO); 		
  	m_pkTexMan->BindTexture(aCurentFont);  
 
-  glBegin(GL_QUADS);			
-		glColor4f(1.0,1.0,1.0,1.0);  	  
- 	  glNormal3f(0,1,0);
+	glPushMatrix();
+	  glBegin(GL_QUADS);			
+			glColor4f(1.0,1.0,1.0,1.0);  	  
+ 	  	glNormal3f(0,1,0);
  	  
-   	glTexCoord2f(x				,y);				glVertex3f(-.5,-0.5,0);		 
-   	glTexCoord2f(x+width	,y);				glVertex3f(.5,-0.5,0);		
-	  glTexCoord2f(x+width	,y+width);	glVertex3f(.5,0.5,0);    
-  	glTexCoord2f(x				,y+width);	glVertex3f(-0.5,0.5,0);    
-	glEnd();			
+	   	glTexCoord2f(x				,y);				glVertex3f(-.5,-0.5,0);		 
+  	 	glTexCoord2f(x+width	,y);				glVertex3f(.5,-0.5,0);		
+	  	glTexCoord2f(x+width	,y+width);	glVertex3f(.5,0.5,0);    
+	  	glTexCoord2f(x				,y+width);	glVertex3f(-0.5,0.5,0);    
+		glEnd();				
+	glPopMatrix();
 	
-	
-	
+	m_pkTexMan->BindTexture(0);
 	
 /*	char aTexture[255]="data/textures/text/ .bmp";
 		
@@ -152,7 +154,6 @@ void Primitives::Print(Vector3 kPos,Vector3 kHead,Vector3 kScale,char* aText) {
 		
 			i++;
 		}
-
 
 	glPopMatrix();
 }

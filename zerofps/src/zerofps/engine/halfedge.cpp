@@ -43,6 +43,9 @@ void HalfEdge::add(Polygon3* kPoly) {
 	}
 	f->edge=e[0];	//point to one of the vertexes
 	
+	
+	//this part sux..i should put this in a seperate funktion  to be called only once when
+	//all edges is loaded
 	for( i=0;i<3;i++) {
 		for(int j=0;j<m_kEdges.size();j++) {	
 			if(e[i]->vert->point==m_kEdges[j]->vert->point){

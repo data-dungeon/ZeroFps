@@ -3,6 +3,7 @@
 
 
 #include <iostream>
+#include <cmath>
 #include "../zerofps/base/application.h"
 
 class Test :public Application {

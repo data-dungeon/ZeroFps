@@ -33,6 +33,7 @@ enum Buttons {
 	PAGEDOWN=SDLK_PAGEDOWN,
 	HOME=SDLK_HOME,
 	END=SDLK_END,
+	TAB=SDLK_TAB,
 	
 	KEY_1=SDLK_1,
 	KEY_2=SDLK_2,
@@ -55,7 +56,7 @@ class Input {
 		bool m_akButtonList[400];
 		SDL_Event m_kEvent;
 		unsigned int m_iGrabtime;
-		
+			
 		void GrabInput(void);
 		void ReleaseInput(void);
 	
@@ -69,6 +70,8 @@ class Input {
 		void RelMouseXY(int &iX,int &iY);
 		void ToggleGrab(void);
 		void ToggleGrab(bool bGrab);		
+		void Reset(void);
+		
 //		inline unsigned int GetTicks(void) {return SDL_GetTicks();};
 };
 

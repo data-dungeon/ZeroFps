@@ -51,6 +51,7 @@ class ZeroFps {
 		void InitDisplay(int iWidth,int iHeight,int iDepth);		
 		void Swap(void);								//swap gl buffers
 		
+		inline unsigned int GetTicks(void) {return SDL_GetTicks();};
 		
 };
 

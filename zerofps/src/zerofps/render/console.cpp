@@ -2,7 +2,7 @@
 #include "../engine/zerofps.h"
 
 Console::Console(ZeroFps* pkEngine) {
-//	m_pkEngine=pkEngine;	
+	m_pkEngine=pkEngine;	
 	m_pkCmd=pkEngine->m_pkCmd;
 	m_pkPrims=pkEngine->m_pkPrims;
 	m_pkTexMan=pkEngine->m_pkTexMan;
@@ -24,6 +24,11 @@ void Console::Update(void) {
 		
 		//press keys
 		if(m_kEvent.type==SDL_KEYDOWN){
+
+			if(m_kEvent.key.keysym.sym==SDLK_TAB) {
+				m_pkEngine->m_iState=state_normal;
+				return;
+			}
 
 			if(m_kEvent.key.keysym.sym==SDLK_RETURN){
 				Execute(m_aCommand);

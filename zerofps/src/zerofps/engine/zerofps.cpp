@@ -33,17 +33,26 @@ void ZeroFps::Init(int iNrOfArgs, char** paArgs){
 	SetApp();															//setup class pointers	
 	InitDisplay(m_pkApp->m_iWidth,m_pkApp->m_iHeight,m_pkApp->m_iDepth);
 	
-	m_iState=state_console;								//init gamestate to normal		
+	m_iState=state_normal;								//init gamestate to normal		
 	
 	m_pkApp->OnInit();										//call the applications oninit funktion
 	MainLoop();														//jump to mainloop
 }
 
 void ZeroFps::MainLoop(void) {
+//	m_pkModMan->Load("horan/fuck/you");
+	m_pkModMan->Load("horan/fuck/ass.pMd");
+
 	while(m_iState!=state_exit) {		
 		switch(m_iState){
 			case state_normal:
 				m_pkInput->Update();
+				
+				//this changes mode to console
+				if(m_pkInput->Pressed(TAB)){
+					m_iState=state_console;
+					m_pkInput->Reset();
+				}
 				m_pkApp->OnIdle();			
 				Swap();								
 				break;			
