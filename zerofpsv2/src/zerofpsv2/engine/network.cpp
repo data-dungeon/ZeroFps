@@ -487,6 +487,9 @@ bool NetWork::Recv(NetPacket* pkNetPacket)
 
 bool NetWork::Send(NetPacket* pkNetPacket)
 {
+	if(pkNetPacket->m_kData.m_kHeader.m_iPacketType == 204)
+		assert(0);
+
 	UDPpacket kPacket;
 	kPacket.channel	= -1;
 	kPacket.data		= (unsigned char*)&pkNetPacket->m_kData;
@@ -738,8 +741,6 @@ void NetWork::Run()
 
 	if( m_eNetStatus == NET_NONE )	return;
 
-	//Logf("netpac", "Engine Time: %f\n", fEngineTime );
-
 	unsigned int i;
 	for(i=0; i<m_RemoteNodes.size(); i++) {
 		m_RemoteNodes[i].m_iNumOfBytesRecvNetFrame = 0;
@@ -763,11 +764,11 @@ void NetWork::Run()
 				m_RemoteNodes[iClientID].m_iOutOfOrderNetFrame ++;
 			m_RemoteNodes[iClientID].m_iLastRecvPacket = NetP.m_kData.m_kHeader.m_iOrder;
 			}
-		Logf("netpac", " From: %d Order: %d: Type: %d Size: %d\n",
+		/*Logf("netpac", " From: %d Order: %d: Type: %d Size: %d\n",
 			iClientID, 
 			NetP.m_kData.m_kHeader.m_iOrder,
 			NetP.m_kData.m_kHeader.m_iPacketType,
-			NetP.m_iLength);
+			NetP.m_iLength);*/
 		
 		switch(NetP.m_kData.m_kHeader.m_iPacketType) {
 			// If controll handle_controllpacket.
@@ -782,6 +783,13 @@ void NetWork::Run()
 				break;
 
 			default:
+				Logf("netpac", " UnKnown Packet: From: %d Order: %d: Type: %d Size: %d\n",
+					iClientID, 
+					NetP.m_kData.m_kHeader.m_iOrder,
+					NetP.m_kData.m_kHeader.m_iPacketType,
+					NetP.m_iLength);
+
+
 				cout << "Recv: Something :)" << endl;
 			}
 		}
@@ -811,9 +819,6 @@ void NetWork::Run()
 
 	Send_NetStrings();
 	NetString_Refresh();
-
-
-	//Logf("netpac", " Num of bytes total: %d\n", iRecvBytes);
 }
 
 bool NetWork::AddressToStr(IPaddress* pkAddress, char* szString)
@@ -836,7 +841,7 @@ void NetWork::SendToClient(int iClient, NetPacket* pkNetPacket)
 
 	pkNetPacket->m_kAddress = m_RemoteNodes[iClient].m_kAddress;
 	pkNetPacket->m_kData.m_kHeader.m_iOrder = m_RemoteNodes[iClient].m_iNumOfPacketsSent;
-	Logf("net", "SendToClient[%d] : Order = %d", iClient, m_RemoteNodes[iClient].m_iNumOfPacketsSent );
+//	Logf("net", "SendToClient[%d] : Order = %d", iClient, m_RemoteNodes[iClient].m_iNumOfPacketsSent );
 	
 	Send(pkNetPacket);
 }
@@ -853,7 +858,7 @@ void NetWork::SendToAllClients(NetPacket* pkNetPacket)
 
 		pkNetPacket->m_kAddress = m_RemoteNodes[i].m_kAddress;
 		pkNetPacket->m_kData.m_kHeader.m_iOrder = m_RemoteNodes[i].m_iNumOfPacketsSent;
-		Logf("net", "SendToAllClients[%d] : Order = %d", i, m_RemoteNodes[i].m_iNumOfPacketsSent );
+//		Logf("net", "SendToAllClients[%d] : Order = %d", i, m_RemoteNodes[i].m_iNumOfPacketsSent );
 		
 		Send(pkNetPacket);
 		}

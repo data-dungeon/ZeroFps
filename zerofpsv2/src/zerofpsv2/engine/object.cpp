@@ -448,6 +448,7 @@ void Object::GetAllObjects(vector<Object*> *pakObjects)
 */
 bool Object::IsNetWork()
 {
+	
 
 	if(m_strType == "ZoneObject")
 		return true;
@@ -472,7 +473,7 @@ bool Object::NeedToPack()
 	// We can only send data for object we own.
 	if( m_eRole != NETROLE_AUTHORITY)			return false;
 	// We only send object that the other side need to know about
-	if( m_eRemoteRole	== NETROLE_NONE)	return false;
+	if( m_eRemoteRole	== NETROLE_NONE)		return false;
 
 	int iUpdateFlags = m_iNetUpdateFlags | m_pkObjectMan->m_iForceNetUpdate;
 
@@ -518,29 +519,29 @@ void Object::PackTo(NetPacket* pkNetPacket)
 	pkNetPacket->Write(m_fRadius);
 
 	pkNetPacket->Write_NetStr(m_strName.c_str());
-	g_ZFObjSys.Logf("net", " .Name '%s':", m_strName.c_str() );
+//	g_ZFObjSys.Logf("net", " .Name '%s':", m_strName.c_str() );
 	
 //	char szPropertyName[256];
 
 	// Write propertys med Propery::bNetwork = true
 	for(vector<Property*>::iterator it=m_akPropertys.begin();it!=m_akPropertys.end();it++) {
-		g_ZFObjSys.Logf("net", " Check '%s': ",(*it)->m_acName );
+		//g_ZFObjSys.Logf("net", " Check '%s': ",(*it)->m_acName );
 		if((*it)->bNetwork) {
 			(*it)->m_iNetUpdateFlags |= m_pkObjectMan->m_iForceNetUpdate;
 
 			//Property* hora = (*it);
 			//strcpy(szPropertyName, (*it)->m_acName);
 			if((*it)->m_iNetUpdateFlags) {
-				g_ZFObjSys.Logf("net", "Add\n");
+				//g_ZFObjSys.Logf("net", "Add\n");
 				pkNetPacket->Write_NetStr((*it)->m_acName);
 				(*it)->PackTo(pkNetPacket);
 				}
 			else {
-				g_ZFObjSys.Logf("net", "Same as last year.\n");
+				//g_ZFObjSys.Logf("net", "Same as last year.\n");
 				}
 			}
-		else 
-			g_ZFObjSys.Logf("net", "Dont Add\n");
+		//else 
+			//g_ZFObjSys.Logf("net", "Dont Add\n");
 	}
 
 	pkNetPacket->Write_NetStr("");

@@ -137,7 +137,7 @@ class ENGINE_API Object
 {
 	private:
 		Object*						m_pkParent;							///< Parent Object. NULL If None
-		vector<GameMessage>		m_kGameMessages;					///< Messages that are waiting to be handled by this object.
+		vector<GameMessage>			m_kGameMessages;					///< Messages that are waiting to be handled by this object.
 
 	protected:
 		enum HAVE_DATA				//used in m_kGotData
