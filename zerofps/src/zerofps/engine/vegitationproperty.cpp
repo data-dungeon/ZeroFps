@@ -42,6 +42,8 @@ void VegitationProperty::Update()
 	Vector3 ObjectPos = m_pkObject->GetPos();
 	float t=m_pkFps->GetTicks();
 
+	cout<<"grass: "<<m_akPositions.size()<<endl;
+
 
 	for(int i=0;i<m_akPositions.size();i++){
 		if(m_fWind == 0)

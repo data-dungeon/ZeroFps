@@ -823,27 +823,39 @@ void ZeroEdit::Input()
 				}
 			}
 
-/*
-			if(pkInput->Pressed(KEY_SPACE))
+			if(pkInput->Pressed(KEY_P))
 			{
-				SelectParent();
-			}
-*/			
-			/*
-			if(pkInput->Pressed(KEY_V))
-			{
-				if(pkFps->GetTicks()-m_fTimer < .5)
-					break;			
-				m_fTimer=pkFps->GetTicks();
+				if(m_pkCurentChild != NULL)
+				{			
+					VegitationProperty* vp= static_cast<VegitationProperty*>(m_pkCurentChild->GetProperty("VegitationProperty"));
 				
-				Object *object = new ZoneObject();
-				object->GetPos()=m_kDrawPos-Vector3(0,1,0);
-				object->SetParent(pkObjectMan->GetWorldObject());
-//				pkObjectMan->Add(object);
-				m_pkCurentChild=object;								
-				m_pkCurentParent=object;
+					if(vp != NULL)
+					{
+						cout<<"adding"<<endl;
+						Vector3 kPos = m_kDrawPos - m_pkCurentChild->GetPos();
+						
+						cout<<"pos:"<<kPos.x<<" "<<kPos.y<<" "<<kPos.z<<endl;
+						vp->AddPos(kPos);						
+					}
+					else
+						cout<<"no VegitationProperty"<<endl;				
+				}				
 			}
-			*/
+			
+			if(pkInput->Pressed(KEY_O))
+			{
+				if(m_pkCurentChild != NULL)
+				{			
+					VegitationProperty* vp= static_cast<VegitationProperty*>(m_pkCurentChild->GetProperty("VegitationProperty"));
+				
+					if(vp != NULL)
+					{
+						vp->Clear();
+					}
+					else
+						cout<<"no VegitationProperty"<<endl;								
+				}
+			}
 			
 			if(pkInput->Pressed(KEY_Z))
 			{
