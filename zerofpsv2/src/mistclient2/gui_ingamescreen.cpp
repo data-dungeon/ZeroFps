@@ -16,7 +16,6 @@ void GuiMsgIngameScreen( string strMainWnd, string	strController,
 			if(strController == "IngameBackBn")
 			{
 				g_kMistClient.LoadStartScreenGui(false);
-				g_kMistClient.PositionActionButtons();
 			}
 			else
 			if(strController == "ToggleChatBn")
@@ -24,7 +23,6 @@ void GuiMsgIngameScreen( string strMainWnd, string	strController,
 				bool bOpen = !g_kMistClient.IsWndVisible("ChatDlgMainWnd");
 				g_kMistClient.SetText("SayTextbox",	"");
 				g_kMistClient.ToogleChatWnd(bOpen);
-				//g_kMistClient.PositionActionButtons();
 			}
 			else
 			if(strController == "ToggleInventoryBn")
@@ -44,9 +42,6 @@ void GuiMsgIngameScreen( string strMainWnd, string	strController,
 					g_kMistClient.SendRequestOpenEqipment();
 				else
 					g_kMistClient.m_pkEquipmentDlg->Close();
-
-				//g_kMistClient.m_pkEquipmentDlg->Open(); 
-				//g_kMistClient.PositionActionButtons();
 			}
 		}
 		else
@@ -55,7 +50,6 @@ void GuiMsgIngameScreen( string strMainWnd, string	strController,
 			if(strController == "CloseChatButton")
 			{
 				g_kMistClient.ToogleChatWnd(false);
-				g_kMistClient.PositionActionButtons();
 			}
 			else
 			if(strController == "ChangeSizeUpChatButton")
@@ -274,8 +268,6 @@ void MistClient::LoadInGameGui()
 
 	GetWnd("ChatTextbox")->SetTextColor(255,255,255); 
 	GetWnd("SayTextbox")->SetTextColor(255,255,255); 
-	GetWnd("SayTextbox")->SetFont(m_pkGui->GetResMan()->Font("defguifont") );
-	GetWnd("ChatTextbox")->SetFont(m_pkGui->GetResMan()->Font("chatboxfont") );
 
 	//GetWnd("ChatDlgMainWnd")->m_bUseAlhpaTest = false; // eftersom tex1a är helvit	(för att	kunna	ändra	trasparens med	färgvärdet)
 	GetWnd("SayTextbox")->m_bUseAlhpaTest =	false;
@@ -290,39 +282,5 @@ void MistClient::LoadInGameGui()
 
 	m_pkGui->SetFocus(GetWnd("GuiMainWnd"), false);
 
-	PositionActionButtons();
-}
 
-
-void MistClient::PositionActionButtons()
-{
-	return;
-
-	int x = 0, y = 0;
-	const int BUTTON_SIZE = 32 * GetScaleX();
-	const int NUM_BUTTONS = 4;
-
-	ZGuiWnd* pkOpenMenuBn = GetWnd("IngameBackBn");
-	ZGuiWnd* pkOpenInventoryBn = GetWnd("OpenInventoryBn");
-	ZGuiWnd* pkOpenEquipWndBn = GetWnd("OpenEquipWndBn");
-	ZGuiWnd* pkOpenChatButton = GetWnd("OpenChatButton");
-
-	if(pkOpenMenuBn == NULL)
-		return;
-
-	x = BUTTON_SIZE * (NUM_BUTTONS-1);
-
-	pkOpenMenuBn->SetPos(x,y,false,true);
-	if(pkOpenMenuBn->IsVisible()) 
-		x-=BUTTON_SIZE;
-
-	pkOpenInventoryBn->SetPos(x,y,false,true);
-	if(pkOpenInventoryBn->IsVisible()) 
-		x-=BUTTON_SIZE;
-
-	pkOpenEquipWndBn->SetPos(x,y,false,true);
-	if(pkOpenEquipWndBn->IsVisible()) 
-		x-=BUTTON_SIZE;
-
-	pkOpenChatButton->SetPos(x,y,false,true);
 }

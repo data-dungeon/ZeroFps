@@ -130,9 +130,10 @@ void DrawFont2(HDC hdc, HWND hwnd)
 	GetTextMetrics(hdc, &tm); 
 	g_iPixelsAboveBaseLine = tm.tmAscent;
 
-	
+	int xmarg = 5;
+	int ymarg = 5;
 
-	RECT rc = {0,0,0,0};
+	RECT rc = {xmarg,ymarg,0,0};
 
 	int i;
 	int oka=0;
@@ -181,7 +182,7 @@ void DrawFont2(HDC hdc, HWND hwnd)
 			GetTextExtentPoint32(hdc, text, 1, &char_size);
 			row_width += (char_size.cx + HORIZONTAL_OFFSET);
 
-			if(row_width > IMAGE_WIDTH)
+			if(row_width > IMAGE_WIDTH - xmarg*2)
 				break;
 
 			rc.right = rc.left + char_size.cx; 
@@ -202,8 +203,8 @@ void DrawFont2(HDC hdc, HWND hwnd)
 			oka++;
 		}
 
-		rc.left = 0;
-		rc.right = 0;
+		rc.left = xmarg;
+		rc.right = ymarg;
 		OffsetRect(&rc, 0, max_char_height);
 	}
 

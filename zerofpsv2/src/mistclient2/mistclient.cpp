@@ -130,16 +130,6 @@ void MistClient::OnInit()
 		GetWnd("MLStartWnd")->GetSkin()->m_bTransparent = false;
 	}
 
-	/*
-	if(m_bShowMenulevel)
-	{
-		Entity* pkEnt = m_pkEntityManager->CreateEntity();
-		pkEnt->SetParent(m_pkEntityManager->GetWorldEntity());
-		P_Enviroment* pkEnv = (P_Enviroment*)pkEnt->AddProperty("P_Enviroment");	
-		pkEnv->LoadEnviroment("data/enviroments/rain.env");
-	}
-	*/
-
 	if(m_bQuickStart)
 	{
 		g_kMistClient.m_pkZeroFps->StartClient(m_strLoginName, m_strLoginPW, m_strQuickStartAddress);		
@@ -684,11 +674,6 @@ void MistClient::UpdateCharacter()
 		}	
 	}
 }
-
-
-
-
-
 
 
 void MistClient::OnNetworkMessage(NetPacket *pkNetMessage)

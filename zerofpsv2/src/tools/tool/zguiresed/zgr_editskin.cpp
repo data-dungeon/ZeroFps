@@ -1,15 +1,15 @@
 #include "zgr_app.h"
 
 void ZGuiResEd::UpdatePreviewImage(const char* szFileName)
-{		
-	static string strPrevFile = "";
-
-	if(strPrevFile == szFileName)
-		return;
-
+{	
 	static ZGuiWnd* pkPreviewLabel = GetWnd("GuiEd_PreviewImageLabel");
 
 	pkPreviewLabel->Hide();
+
+	static string strPrevFile = "";
+
+	if(szFileName == NULL || strPrevFile == szFileName)
+		return;
 
 	if(szFileName != NULL && strlen(szFileName) > 1)
 	{

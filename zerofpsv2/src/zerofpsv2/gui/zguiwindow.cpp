@@ -424,6 +424,27 @@ void ZGuiWnd::SetSkin(const char* szSkinType, ZGuiSkin* pkSkin)
 void ZGuiWnd::SetFont(ZGuiFont* pkFont)
 {
 	m_pkFont = pkFont;
+
+	// Skala om höjden om den inte rymmer sin font
+	
+	const type_info& t = typeid(*this);
+
+	if(t == typeid(ZGuiButton))
+	{
+		if(m_pkFont)
+			if(m_pkFont->m_iRowHeight > GetScreenRect().Height())
+				Resize(-1, m_pkFont->m_iRowHeight);
+	}
+	else
+	if(t == typeid(ZGuiLabel))
+	{
+		if(m_pkFont)
+			if(m_pkFont->m_iRowHeight > GetScreenRect().Height())
+			{
+				if(((ZGuiLabel*) this)->m_bMultiLine == false)
+					Resize(-1, m_pkFont->m_iRowHeight);
+			}
+	}
 }
 
 void ZGuiWnd::SetGUI(ZGui* pkGui)

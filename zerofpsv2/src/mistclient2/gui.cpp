@@ -77,8 +77,89 @@ bool GUIPROC( ZGuiWnd* win, unsigned int msg, int numparms,	void *params )
 	return true;
 }
 
+void MistClient::InitGUIFonts()
+{
+	string strOldFont, strNewFont;
+	char szFontData[512], szFontTex[512];
+	int glyph = 0, w = GetWidth(), h = GetHeight();
+
+	enum ResMode { small, normal, big, very_big, extra_big } eResMode = normal;
+
+	if(w <=  640 && h <=  480) eResMode = small;
+	if(w >=  800 && h >=  600) eResMode = normal;
+	if(w >= 1024 && h >=  768) eResMode = big;
+	if(w >= 1280 && h >= 1024) eResMode = very_big;
+	if(w >= 1600 && h >= 1200) eResMode = extra_big;
+
+	// Init default font
+	switch(eResMode)
+	{
+		case small:     strNewFont = "verdana7"; break;
+		case normal:    strNewFont = "verdana10"; break;
+		case big:       strNewFont = "verdana12"; break;
+		case very_big:  strNewFont = "verdana14"; break;
+		case extra_big: strNewFont = "verdana16"; break;
+	}
+
+	glyph = 0;
+	strOldFont = "defguifont";
+	sprintf(szFontData, "data/textures/gui/fonts/%s.fnt", strNewFont.c_str());
+	sprintf(szFontTex, "data/textures/gui/fonts/%s.tga", strNewFont.c_str());
+	ZGuiFont* pkFont = new ZGuiFont((char*)strNewFont.c_str());
+	if(pkFont->Create(szFontData, m_pkTexMan->Load(szFontTex, 0), glyph))
+	{
+		m_pkGui->GetResMan()->RemoveFont(strOldFont);
+		m_pkGui->GetResMan()->Add(strOldFont, pkFont);	
+	}
+
+	// Init outlined font
+	switch(eResMode)
+	{
+		case small:     strNewFont = "book_antiqua_outlined8"; break;
+		case normal:    strNewFont = "book_antiqua_outlined10"; break;
+		case big:       strNewFont = "book_antiqua_outlined12"; break;
+		case very_big:  strNewFont = "book_antiqua_outlined14"; break;
+		case extra_big: strNewFont = "book_antiqua_outlined16"; break;
+	}
+	
+	glyph = 1;
+	strOldFont = "book_antiqua_outlined10";
+	sprintf(szFontData, "data/textures/gui/fonts/%s.fnt", strNewFont.c_str());
+	sprintf(szFontTex, "data/textures/gui/fonts/%s.tga", strNewFont.c_str());
+	pkFont = new ZGuiFont((char*)strNewFont.c_str());
+	if(pkFont->Create(szFontData, m_pkTexMan->Load(szFontTex, 0), glyph))
+	{
+		m_pkGui->GetResMan()->RemoveFont(strOldFont);
+		m_pkGui->GetResMan()->Add(strOldFont, pkFont);	
+	}
+
+	// Init small font
+	switch(eResMode)
+	{
+		case small:     strNewFont = "small6"; break;
+		case normal:    strNewFont = "small7"; break;
+		case big:       strNewFont = "verdana8"; break;
+		case very_big:  strNewFont = "verdana10"; break;
+		case extra_big: strNewFont = "verdana12"; break;
+	}
+	
+	glyph = 0;
+	strOldFont = "small7";
+	sprintf(szFontData, "data/textures/gui/fonts/%s.fnt", strNewFont.c_str());
+	sprintf(szFontTex, "data/textures/gui/fonts/%s.tga", strNewFont.c_str());
+	pkFont = new ZGuiFont((char*)strNewFont.c_str());
+	if(pkFont->Create(szFontData, m_pkTexMan->Load(szFontTex, 0), glyph))
+	{
+		m_pkGui->GetResMan()->RemoveFont(strOldFont);
+		m_pkGui->GetResMan()->Add(strOldFont, pkFont);	
+	}
+}
+
 void MistClient::SetupGUI()
 {
+	// Create new font based on resolution.
+	InitGUIFonts();
+
 	// Search the gui script folder and find the correct script for this app
 	// based on the resolution suffix of the file, like "800x600".
 	FindGUIScriptsByResSuffix();
@@ -86,14 +167,6 @@ void MistClient::SetupGUI()
 	// initialize gui system with default skins, font etc
 	g_kMistClient.InitGui(m_pkScript, "defguifont", "data/script/gui/defskins.lua", 
 		NULL, false, AUTO_SCALE); 
-
-   char szFontData[512], szFontTex[512];
-   sprintf(szFontData, "data/textures/gui/fonts/%s.fnt", "book_antiqua_10_bold_outlined");
-   sprintf(szFontTex, "data/textures/gui/fonts/%s.tga", "book_antiqua_10_bold_outlined");
-
-   ZGuiFont* font = new ZGuiFont("chatboxfont");
-   font->Create(szFontData, m_pkTexMan->Load(szFontTex, 0), 1);
-	g_kMistClient.m_pkGui->GetResMan()->Add("chatboxfont", font);
 
    // load startup screen 
    if(!g_kMistClient.LoadGuiFromScript(m_kGuiScrips[GSF_START].c_str()))
@@ -107,7 +180,7 @@ void MistClient::SetupGUI()
 	m_pkInventoryDlg = new InventoryDlg();
 	m_pkEquipmentDlg = new EquipmentDlg();
 
-	font = g_kMistClient.m_pkGui->GetResMan()->Font("chatboxfont");
+	ZGuiFont* font = g_kMistClient.m_pkGui->GetResMan()->Font("book_antiqua_outlined10");
 
 	g_kMistClient.GetWnd("StarNewGameBn")->SetFont(font);
 	g_kMistClient.GetWnd("StarNewGameBn")->SetTextColor(164,0,0); 
@@ -155,11 +228,7 @@ void MistClient::SetupGUI()
 
 	g_kMistClient.m_kGuiMsgProcs.insert( map<string, msgScreenProg>::value_type("EquipWnd", GuiMsgEquipmentDlg));
 
-
-
 	GetWnd("ContinueGameBn")->Hide();
-
-	
 
    // load software cursor
 	g_kMistClient.m_pkGui->SetCursor( 0,0, m_pkTexMan->Load("data/textures/gui/cursor.bmp", 0),
@@ -176,10 +245,15 @@ void MistClient::CloseActiveWindow()
 
 	if(IsWndVisible("OptionsWnd"))
 		ShowWnd("OptionsWnd", 0,0,0);
+	else
+	{
+		LoadStartScreenGui(false);
+		return;
+	}
 	
 	if(IsWndVisible("MLStartWnd"))
 		LoadInGameGui();
-
+	
 	if(IsWndVisible("SplitStockWnd"))
 		m_pkInventoryDlg->CloseSplitStockWnd(); 
 }
@@ -203,8 +277,6 @@ void MistClient::FindGUIScriptsByResSuffix()
 
 	SEARCH_INFO akInfo[] =
 	{
-	//	{ "ml_inventory_", GSF_INVENTORY },
-	//	{ "ml_equip_", GSF_EQUIPMENT },
 		{ "ml_gamegui_", GSF_GAMEGUI },
 		{ "ml_option_", GSF_OPTION },
 		{ "ml_start_", GSF_START },
@@ -287,8 +359,6 @@ void MistClient::FindGUIScriptsByResSuffix()
 		}
 	}
 
-	//printf("m_kGuiScrips[GSF_INVENTORY] = %s\n", m_kGuiScrips[GSF_INVENTORY].c_str());
-	//printf("m_kGuiScrips[GSF_EQUIPMENT] = %s\n", m_kGuiScrips[GSF_EQUIPMENT].c_str());
 	printf("m_kGuiScrips[GSF_GAMEGUI] = %s\n", m_kGuiScrips[GSF_GAMEGUI].c_str());
 	printf("m_kGuiScrips[GSF_OPTION] = %s\n", m_kGuiScrips[GSF_OPTION].c_str());
 	printf("m_kGuiScrips[GSF_START] = %s\n", m_kGuiScrips[GSF_START].c_str());

@@ -50,31 +50,12 @@ void ZGuiResEd::HandleInput()
 		}
 	}
 
-	if(m_pkInputHandle->Pressed(KEY_ESCAPE) && !s_bEscPressed)
+	if(m_pkInputHandle->Pressed(MOUSELEFT) && s_bLeftMouseButtonPressed == false)
 	{
-		m_pkGui->Activate(!m_pkGui->IsActive() );
+		int x,y;
+		m_pkInputHandle->SDLMouseXY(x,y);
 
-		if( m_pkGui->IsActive() )
-		{
-			m_bEditorMode = true;
-		}
-		else
-		{
-			m_bEditorMode = false;
-		}
-
-		s_bEscPressed = true;
-	}
-	else if(!m_pkInputHandle->Pressed(KEY_ESCAPE))
-		s_bEscPressed = false;
-
-	//if(m_pkInputHandle->Pressed(MOUSELEFT) && s_bLeftMouseButtonPressed == false)
-	if(m_bMouseClick)
-	{
-		//int x,y;
-		//m_pkInputHandle->SDLMouseXY(x,y);
-
-		MouseClick(true, m_iMouseX, m_iMouseY);//x,y);
+		MouseClick(true, x, y);
 		
 		if(m_pkInputHandle->Pressed(KEY_LCTRL))
 		{
@@ -99,15 +80,14 @@ void ZGuiResEd::HandleInput()
 	else if(!m_pkInputHandle->Pressed(MOUSERIGHT))
 		s_bRightMouseButtonPressed = false;
 
-	//if(m_pkInputHandle->Pressed(MOUSELEFT))
-	if(m_bMouseDown)
+	if(m_pkInputHandle->Pressed(MOUSELEFT))
 	{
-		//int x,y;
-		//m_pkInputHandle->SDLMouseXY(x,y);
-		MouseMove(true, m_iMouseX, m_iMouseY);//x,y);
+		int x,y;
+		m_pkInputHandle->SDLMouseXY(x,y);
+		MouseMove(true, x,y);
 	}
 
-	if(/*m_pkInputHandle->Pressed(KEY_LSHIFT)*/(m_pkGui->m_iKeyPressed == KEY_LSHIFT) && s_bLShiftPressed == false)
+	if(m_pkInputHandle->Pressed(KEY_LSHIFT)/*(m_pkGui->m_iKeyPressed == KEY_LSHIFT)*/ && s_bLShiftPressed == false)
 	{
 		s_bLShiftPressed = true;
 		if(m_bResize == false)
@@ -116,7 +96,7 @@ void ZGuiResEd::HandleInput()
 			m_bResize = true;
 		}
 	}
-	else if(!(m_pkGui->m_iKeyPressed == KEY_LSHIFT))
+	else if(!/*(m_pkGui->m_iKeyPressed == KEY_LSHIFT)*/m_pkInputHandle->Pressed(KEY_LSHIFT))
 	{
 		if(m_bResize == true && s_bLShiftPressed)
 		{
@@ -293,6 +273,9 @@ void ZGuiResEd::MouseMove(bool bLeft, int x, int y)
 
 void ZGuiResEd::OnCommand(string strCtrlID, int iCmdExtra)
 {	
+	if(m_bEditorMode == false)
+		return;
+
 	// Just skip all commands if in test mode
 	if(m_bTestGUI)
 		return;
@@ -639,6 +622,10 @@ void ZGuiResEd::OnCommand(string strCtrlID, int iCmdExtra)
 				m_pkFocusWnd->Show();
 			else
 				m_pkFocusWnd->Hide();
+
+			m_pkFocusWnd = NULL;
+			UpdateInfo();
+			UpdatePreviewImage(NULL);
 		}
 		return; 
 	}
@@ -1010,109 +997,14 @@ void ZGuiResEd::OnTextboxInput(string strFocusWnd, int iKey)
 	}
 }
 
-void ZGuiResEd::ManageGuiFocus()
-{
-	static ZGuiWnd* pkEditWnd;
-	static ZGuiWnd* pkNewWnd;
-	static ZGuiWnd* pkSelectFileWnd;
-	static ZGuiWnd* pkMsgBox;
-
-	if(pkEditWnd == NULL)
-		pkEditWnd = GetWnd("GuiEd_EditWnd");
-
-	if(pkNewWnd == NULL)
-		pkNewWnd = GetWnd("GuiEd_NewWnd");
-
-	if(pkSelectFileWnd == NULL)
-		pkSelectFileWnd = GetWnd("GuiEd_SelectFileWnd");
-
-	if(pkMsgBox == NULL)
-		pkMsgBox = GetWnd("GuiDefMsgBox");
-
-	if(m_bTestGUI)
-	{
-		if(m_pkInputHandle->Pressed(KEY_ESCAPE))
-			m_iTask = TASK_TEST_GUI;		
-		return;
-	}
-	else
-	{
-		if(m_pkInputHandle->Pressed(KEY_ESCAPE) && !DelayCommand())
-		{
-			if(pkNewWnd->IsVisible())
-			{
-				pkEditWnd->Hide();
-				pkNewWnd->Hide();
-			}
-			else
-			{
-				pkEditWnd->Show();
-				pkNewWnd->Show();
-
-			}
-
-			return;
-		}
-	}
-
-	if(m_pkInputHandle->Pressed(KEY_LSHIFT))
-		m_pkGui->m_iKeyPressed = KEY_LSHIFT;
-
-	int x=-1, y=-1;
-	SDL_GetMouseState(&x, &y);
-
-	m_iMouseX = x;
-	m_iMouseY = y;
-
-	bool bMouseLeftPressed;
-
-	if(SDL_GetMouseState(NULL,NULL) == SDL_BUTTON(SDL_BUTTON_LEFT))
-		bMouseLeftPressed = true;
-	else
-		bMouseLeftPressed = false;
-
-	m_bMouseDown = bMouseLeftPressed;
-
-	static int PREV_MOUSESTATE = -9999;
-
-	m_bMouseClick = false;
-
-	if(PREV_MOUSESTATE != (int) bMouseLeftPressed)
-	{
-		PREV_MOUSESTATE = bMouseLeftPressed;
-
-		if(bMouseLeftPressed)
-		{
-			if((pkEditWnd->IsVisible() && pkEditWnd->GetScreenRect().Inside(x,y)) ||
-				(pkNewWnd->IsVisible() && pkNewWnd->GetScreenRect().Inside(x,y)) ||
-				(pkSelectFileWnd->IsVisible() && pkSelectFileWnd->GetScreenRect().Inside(x,y) ||
-				(pkMsgBox && pkMsgBox->IsVisible() && pkMsgBox->GetScreenRect().Inside(x,y)) ))
-			{
-				m_bEditorMode = true;
-			}
-			else
-			{
-				m_bEditorMode = false;
-			}
-
-			m_pkGui->Activate(m_bEditorMode);
-
-			m_bMouseClick = true;
-		}
-	}
-}
-
 ZGuiWnd* ZGuiResEd::GetWndFromPoint(int x, int y)
 {
-	if(m_bEditorMode)
-		return NULL;
-
 	pair<ZGuiWnd*, int> kFind(NULL,0);
 	vector<pair<ZGuiWnd*, float> > vkCandidates;
 	map<string, ZGuiWnd*> kWindows;
 
 	GuiType eFilterType = FormatWndType(GetSelItem("GuiEd_WidgetTypeList"));
-	bool bFilter = IsButtonChecked("GuiEd_ForceCaptureToSel");
+	bool bFilter = IsButtonChecked("GuiEd_FilterToType");
 
 	ZGuiWnd* pkMainWnd = GetWnd("GuiMainWnd");
 
@@ -1121,7 +1013,7 @@ ZGuiWnd* ZGuiResEd::GetWndFromPoint(int x, int y)
 	{
 		ZGuiWnd* pkWnd = it->second;
 
-		if(pkWnd->GetScreenRect().Inside(x,y) && pkWnd->IsVisible() && !IsEditorWnd(pkWnd))
+		if(pkWnd->GetScreenRect().Inside(x,y) && pkWnd->IsVisible() && IsEditorWnd(pkWnd) == false)
 		{
 			GuiType eType = GetWndType(pkWnd);
 			if(bFilter == false || eType == eFilterType)
@@ -1142,8 +1034,15 @@ ZGuiWnd* ZGuiResEd::GetWndFromPoint(int x, int y)
 						if(dist_to_parent.Length() < length)
 							length = dist_to_parent.Length();
 					}
+					else
+					{
+						length = 9999;
+					}
 
 					value -= length;
+
+					if(pkWnd == pkMainWnd)  
+						value -= 9999;
 
 					vkCandidates.push_back(pair<ZGuiWnd*, int> (pkWnd, value));
 				}

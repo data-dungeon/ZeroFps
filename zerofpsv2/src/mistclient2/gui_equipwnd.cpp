@@ -110,10 +110,6 @@ void EquipmentDlg::Open()
 	m_pkEquipmentWnd->Show();
 	g_kMistClient.m_pkGui->SetFocus(m_pkEquipmentWnd, false);	
 
-	// dölj actionikonen och regruppera dom andra
-//	g_kMistClient.GetWnd("OpenEquipWndBn")->Hide();
-//	g_kMistClient.PositionActionButtons();
-
 	if(m_bSkillWndOpen)
 		g_kMistClient.GetWnd("SkillWnd")->Show();
 
@@ -133,11 +129,6 @@ void EquipmentDlg::Close()
 	g_kMistClient.GetWnd("SkillWnd")->Hide();
 	g_kMistClient.GetWnd("StatsWnd")->Hide();
 
-	// Show the button that opens the inventory again.
-//	g_kMistClient.GetWnd("OpenEquipWndBn")->Show();
-
-	// Reposition action buttons.
-//	g_kMistClient.PositionActionButtons();
 }
 
 void EquipmentDlg::OnCommand(string strController)

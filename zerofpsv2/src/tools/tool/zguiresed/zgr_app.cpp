@@ -3,7 +3,44 @@
 
 void ZGuiResEd::OnIdle()
 {
-	ManageGuiFocus();
+	if(m_pkInputHandle->Pressed(KEY_SPACE) && !DelayCommand())
+	{
+		m_bEditorMode = !m_bEditorMode;
+
+		if(m_bTestGUI)
+		{
+			ToggleTestGUI();
+			m_bEditorMode = true;
+		}
+
+		m_pkGui->Activate(m_bEditorMode); 
+
+		static ZGuiWnd* pkEditWnd;
+		static ZGuiWnd* pkNewWnd;
+
+		if(pkEditWnd == NULL)
+			pkEditWnd = GetWnd("GuiEd_EditWnd");
+
+		if(pkNewWnd == NULL)
+			pkNewWnd = GetWnd("GuiEd_NewWnd");
+
+		if(m_bEditorMode)
+		{
+			pkEditWnd->Show();
+			pkNewWnd->Show();
+
+			//pkEditWnd->GetSkin()->m_bTransparent = true;
+			//pkNewWnd->GetSkin()->m_bTransparent = true; 
+		}
+		else
+		{
+			pkEditWnd->Hide();
+			pkNewWnd->Hide();
+
+			//pkEditWnd->GetSkin()->m_bTransparent = false;
+			//pkNewWnd->GetSkin()->m_bTransparent = false; 
+		}
+	}
 
 	if(m_bTestGUI && m_iTask != 11)
 		return;
@@ -90,7 +127,7 @@ void ZGuiResEd::OnIdle()
 	}
 	if(m_iTask == TASK_TEST_GUI)
 	{
-		TestGUI();
+		ToggleTestGUI();
 		m_iTask = TASK_DO_NOTHING;
 	}
 	if(m_iTask == TASK_COPY_WND)
@@ -179,7 +216,7 @@ void ZGuiResEd::RenderInterface()
 	if(pkSelectFileWnd == NULL)
 		pkSelectFileWnd = GetWnd("GuiEd_SelectFileWnd");
 
-	if(m_pkFocusWnd && !m_bTestGUI && !pkSelectFileWnd->IsVisible() )
+	if(m_pkFocusWnd && !m_bTestGUI && !m_bEditorMode )
 	{
 		Rect rc = m_pkFocusWnd->GetScreenRect();
 		m_pkGui->SetLineColor(255,0,255);
@@ -971,7 +1008,7 @@ void ZGuiResEd::UpdateInfo()
 	UpdateSkinList();
 }
 
-void ZGuiResEd::TestGUI()
+void ZGuiResEd::ToggleTestGUI()
 {
 	m_bTestGUI = !m_bTestGUI;
 

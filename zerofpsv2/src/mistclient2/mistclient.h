@@ -102,6 +102,7 @@ class MistClient :public Application, public ZGuiApp {
 			
 		// gui stuff
 		void SetupGUI();
+		void InitGUIFonts();
 		void FindGUIScriptsByResSuffix();
 		bool NameIPFromServerList(string& strName, string& strIP);
 		void ToogleChatWnd(bool bOpen, bool bSetInputFocus=false);

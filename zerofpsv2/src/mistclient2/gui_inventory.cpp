@@ -149,10 +149,6 @@ void InventoryDlg::Open()
 	m_pkInventoryWnd->Show();
 	g_kMistClient.m_pkGui->SetFocus(m_pkInventoryWnd, false);	
 
-	// dölj actionikonen och regruppera dom andra
-	//g_kMistClient.GetWnd("ToggleInventoryBn")->Hide();
-	g_kMistClient.PositionActionButtons();
-
 	// Create tooltip
 	ZGuiSkin* pkToolTipSkin = new ZGuiSkin();
 	pkToolTipSkin->m_unBorderSize = 8;
@@ -163,7 +159,7 @@ void InventoryDlg::Open()
 	pkToolTipSkin->m_iBorderCornerTexID = m_pkTexMan->Load( "data/textures/gui/wndborder_corner.bmp", 0 );
 	  
 	g_kMistClient.m_pkGui->GetToolTip()->GetWnd()->SetFont(
-			g_kMistClient.m_pkGuiMan->Font("chatboxfont"));
+			g_kMistClient.m_pkGuiMan->Font("book_antiqua_outlined10"));
 	g_kMistClient.m_pkGui->GetToolTip()->GetWnd()->SetTextColor(255,255,255); 
 
 	g_kMistClient.m_pkGui->GetToolTip()->SetSkin(pkToolTipSkin);
@@ -183,12 +179,6 @@ void InventoryDlg::Close()
 
 	// Must set focus on mainwnd to recive SPACE intput for chatbox...
 	g_kMistClient.m_pkGui->SetFocus(g_kMistClient.GetWnd("GuiMainWnd"), false);	
-
-	// Show the button that opens the inventory again.
-	//g_kMistClient.GetWnd("OpenInventoryBn")->Show();
-
-	// Reposition action buttons.
-	g_kMistClient.PositionActionButtons();
 
 	m_iItemUnderCursor = -1;
 

@@ -573,6 +573,12 @@ bool ZGuiTextbox::UpdateScrollbar()
 void ZGuiTextbox::SetFont(ZGuiFont* pkFont)
 {
 	m_pkFont = pkFont;
+
+	// Skala om höjden om den inte rymmer sin font
+	if(m_bMultiLine == false)
+		if(m_pkFont)
+			if(m_pkFont->m_iRowHeight > GetScreenRect().Height())
+				Resize(-1, m_pkFont->m_iRowHeight);
 }
 
 void ZGuiTextbox::ToggleMultiLine(bool bMultiLine)

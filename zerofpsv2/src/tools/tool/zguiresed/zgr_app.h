@@ -118,7 +118,7 @@ private:
 	void SetTexture(bool bSet);
 	bool GetSelSkin(ZGuiSkin**& ppkSkin);
 	void UpdateWndSkins();
-	void TestGUI();
+	void ToggleTestGUI();
 	void ResizeWndToImage();
 	void OpenSelectFontDlg();
 	bool SaveScript(const char* szFileName, bool bConfirmOverwrite, bool bCreateBackUp=true);
@@ -143,7 +143,6 @@ private:
 		char* szExtension, bool bSearchForFolders);
 	void RenameSelWnd(char* text);
 	void OnChangeSkinColor();
-	void ManageGuiFocus();
 	void SwitchDesignRes(int w, int h, bool rescale);
 	void OnConfirmMsgBox(bool bAnswer);
 
