@@ -571,7 +571,7 @@ void DarkMetropolis::GUI_OnMoveSlider(int iID, int iPos, ZGuiWnd* pkMainWnd)
 			if(iPos < 1)
 				fSFXVolume = 0.001f;
 
-			m_pkAudioSys->SetVolume(fSFXVolume);
+//			m_pkAudioSys->SetVolume(fSFXVolume);
 		}
 	}
 }

@@ -70,6 +70,7 @@ void Mad_Modell::PlayAnimation(const char* szName, float fStartTime)
 
 	iActiveAnimation	=	iAnimNum;
 	fCurrentTime		=	fStartTime;
+
 //	fLastUpdate			=	fGameTime; 
 	m_bActive = true;
 //	SetLoopedStatus(true);

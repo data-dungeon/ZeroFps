@@ -35,18 +35,18 @@ P_CharacterProperty::P_CharacterProperty()
 	
 	//animations
 	m_strWalkForward		=	"run_foward";
-	m_strWalkBackward		=	"run_foward";
-	m_strWalkLeft			=	"run_foward";
-	m_strWalkRight			=	"run_foward";
+	m_strWalkBackward		=	"run_backward";
+	m_strWalkLeft			=	"run_left";
+	m_strWalkRight			=	"run_right";
 	m_strRunForward		=	"run_foward";
-	m_strRunBackward		=	"run_foward";
-	m_strRunLeft			=	"run_foward";
-	m_strRunRight			=	"run_foward";
+	m_strRunBackward		=	"run_backward";
+	m_strRunLeft			=	"run_left";
+	m_strRunRight			=	"run_right";
 	m_strSwimForward		=	"swim_f";
 	m_strSwimBackward		=	"swim_b";
 	m_strSwimLeft			=	"swim_l";
 	m_strSwimRight			=	"swim_r";
-	m_strJump				=	"attack";
+	m_strJump				=	"jump";
 	m_strIdleStanding		=	"idle";
 	m_strIdleSitting		=	"riding";
 	m_strIdleSWIMMING		=	"idle";
@@ -133,19 +133,19 @@ void P_CharacterProperty::UpdateAnimation()
 				{
 					case eMOVE_FORWARD:
 						if(pkMad->GetCurrentAnimationName() != m_strRunForward)
-							pkMad->SetAnimation(m_strRunForward.c_str(), 0);
+							pkMad->SetAnimation(m_strRunForward.c_str(), pkMad->fCurrentTime);
 						break;
 					case eMOVE_BACKWARD:
 						if(pkMad->GetCurrentAnimationName() != m_strRunBackward)
-							pkMad->SetAnimation(m_strRunBackward.c_str(), 0);
+							pkMad->SetAnimation(m_strRunBackward.c_str(), pkMad->fCurrentTime);
 						break;
 					case eMOVE_LEFT:
 						if(pkMad->GetCurrentAnimationName() != m_strRunLeft)
-							pkMad->SetAnimation(m_strRunLeft.c_str(), 0);
+							pkMad->SetAnimation(m_strRunLeft.c_str(), pkMad->fCurrentTime);
 						break;
 					case eMOVE_RIGHT:
 						if(pkMad->GetCurrentAnimationName() != m_strRunRight)
-							pkMad->SetAnimation(m_strRunRight.c_str(), 0);
+							pkMad->SetAnimation(m_strRunRight.c_str(), pkMad->fCurrentTime);
 						break;										
 				}			
 			}

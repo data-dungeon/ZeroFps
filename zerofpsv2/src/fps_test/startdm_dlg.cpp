@@ -158,7 +158,7 @@ void CStartDMDlg::OnCommand(ZGuiWnd *pkMainWnd, string strClickName,
 		LoadDlg("data/script/gui/dm_options.lua");
 		m_pkGui->SetCaptureToWnd(GetWnd("DMOptionsWnd"));
 		((ZGuiSlider*)GetWnd("MusicVolumeSlider"))->SetPos(int(m_pkDM->GetMusicVol()*10), true, false);
-		((ZGuiSlider*)GetWnd("SFXVolumeSlider"))->SetPos(int(m_pkAudioSys->GetVolume()*10), true, false);
+//		((ZGuiSlider*)GetWnd("SFXVolumeSlider"))->SetPos(int(m_pkAudioSys->GetVolume()*10), true, false);
 		m_pkAudioSys->StartSound("data/sound/computer beep 5.wav", 
 			m_pkAudioSys->GetListnerPos()); 
 
