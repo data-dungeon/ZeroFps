@@ -1608,21 +1608,6 @@ void ZeroEd::ToogleLight()
 }
 
 
-void ZeroEd::SetZoneEnviroment(const char* csEnviroment)
-{
-	//set default enviroment
-	m_strActiveEnviroment=csEnviroment;
-	
-	m_iCurrentMarkedZone = m_pkEntityManager->GetZoneIndex(m_kZoneMarkerPos,-1,false);
-	ZoneData* z = m_pkEntityManager->GetZoneData(m_iCurrentMarkedZone);
-		
-	if(z)
-	{
-		//cout<<"Setting enviroment to :"<<csEnviroment<<endl;
-		z->m_strEnviroment = csEnviroment;
-	}	
-}
-
 string ZeroEd::GetZoneEnviroment()
 {
 	string env;
@@ -1776,6 +1761,19 @@ void	ZeroEd::SendRotateZoneModel(int iZoneID)
 	kNp.Write(iZoneID);
 	
 	m_pkZeroFps->RouteEditCommand(&kNp);
+}
+
+void	ZeroEd::SendSetZoneEnviroment(string strEnviroment,int iZoneID)
+{
+	NetPacket kNp;
+	kNp.Clear();
+	kNp.Write((char) ZFGP_EDIT);
+	kNp.Write_Str("setzoneenviroment");
+	kNp.Write(iZoneID);
+	kNp.Write_Str(strEnviroment);	
+	
+	m_pkZeroFps->RouteEditCommand(&kNp);
+
 }
 
 void	ZeroEd::SendSetZoneModel(string strModel,int iZoneID)

@@ -1443,6 +1443,22 @@ void ZeroFps::HandleEditCommand(NetPacket* pkNetPacket)
 		pkNetPacket->Read(iZoneID);
 		RotateZoneModel(iZoneID,Vector3(0,90,0));
 	}		
+	
+	if( szCmd == string("setzoneenviroment") )	
+	{	
+		int 		iZoneID;
+		string	strEnviroment;
+		
+		pkNetPacket->Read(iZoneID);
+		pkNetPacket->Read_Str(strEnviroment);	
+		
+		if(ZoneData* z = m_pkEntityManager->GetZoneData(iZoneID))
+		{
+			z->m_strEnviroment = strEnviroment;
+			cout<<"Setting enviroment:"<<strEnviroment<<" on zone "<<iZoneID<<endl;
+		}			
+	}		
+	
 }
 
 

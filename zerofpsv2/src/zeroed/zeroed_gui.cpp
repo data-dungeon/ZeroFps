@@ -451,8 +451,15 @@ void ZeroEd::OnClickListbox(int iListBoxID, int iListboxIndex, ZGuiWnd* pkMain)
 			if(szPreset)
 			{
 				string szFull = "data/enviroments/" + string(szPreset);
-				printf("setting enviroment %s\n", szFull.c_str());
-				SetZoneEnviroment( szFull.c_str()  );  
+				//printf("setting enviroment %s\n", szFull.c_str());
+				
+				m_iCurrentMarkedZone = GetZoneID(m_kZoneMarkerPos);			
+				
+				if(m_iCurrentMarkedZone != -1)
+				{
+					SendSetZoneEnviroment(szFull,m_iCurrentMarkedZone);
+					//SetZoneEnviroment( szFull.c_str()  );  
+				}
 			}
 		}
 	}

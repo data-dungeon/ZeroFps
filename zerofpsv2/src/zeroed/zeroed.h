@@ -239,7 +239,6 @@ class ZeroEd :public Application , public ZGuiApp {
 		ZoneData*	GetZoneByEntityID(int iEntityID);
 		
 		//enviroment
-		void 		SetZoneEnviroment(const char* szEnviroment);
 		string 	GetZoneEnviroment();
 		char* 	GetSelEnviromentString();
 		
@@ -268,6 +267,7 @@ class ZeroEd :public Application , public ZGuiApp {
 		
 		//network
 		void	SendSetZoneModel(string strModel,int iZoneID);
+		void	SendSetZoneEnviroment(string strEnviroment,int iZoneID);
 		void	SendRotateZoneModel(int iZoneID);
 		void	SendZoneListRequest();
 		void	SendDeleteSelected();			// Removes selected entitys.

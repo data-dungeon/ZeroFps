@@ -194,8 +194,8 @@ void EnvSetting::Clear()
 
 ZSSEnviroment::ZSSEnviroment() : ZFSubSystem("ZSSEnviroment") 
 {
-	m_fEnviromentChange = 30;
-	m_fEnviromentTimeout = 120;
+	m_fEnviromentChange = 300;
+	m_fEnviromentTimeout = 300;
 }
 
 bool ZSSEnviroment::StartUp()
