@@ -1032,10 +1032,12 @@ void ZeroFps::DrawDevStrings()
 						float fPos = -1.1 + (iVal/100.0);
 						m_pkRender->Polygon4(Vector3(-1.1,fYOffset,-1),Vector3(fPos,fYOffset,-1),Vector3(fPos,fYOffset+fSize,-1),Vector3(-1.1,fYOffset+fSize,-1),  iGraphTexture);
 						m_pkRender->Polygon4(Vector3(-0.1,fYOffset,-1),Vector3(-0.09,fYOffset,-1),Vector3(-0.09,fYOffset+fSize,-1),Vector3(-0.1,fYOffset+fSize,-1),iMaxTexture);
+					
+						m_pkZShaderSystem->BindMaterial(m_pkDevPageMaterial);						
 					}
 				}
 				else
-				{			
+				{		
 					m_pkRender->Print(Vector3(-1.1,fYOffset,-1),m_DevStringPage[page].m_akDevString[i].c_str(),fSize);
 				}
 				//increse position
