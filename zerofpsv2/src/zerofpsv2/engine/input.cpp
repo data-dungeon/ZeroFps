@@ -952,16 +952,16 @@ void Input::SetupMapToKeyState()
 	m_akKeyState[KEY_RIGHT].m_strName			= "right";
 	m_akKeyState[KEY_DOWN].m_strName				= "down";
 
-	m_akKeyState[KEY_EXCLAIM].m_strName			= "";
-	m_akKeyState[KEY_QUOTEDBL].m_strName		= "";
-	m_akKeyState[KEY_HASH].m_strName				= "";
-	m_akKeyState[KEY_DOLLAR].m_strName			= "";
-	m_akKeyState[KEY_AMPERSAND].m_strName		= "";
-	m_akKeyState[KEY_QUOTE].m_strName			= "";
-	m_akKeyState[KEY_LEFTPAREN].m_strName		= "";
-	m_akKeyState[KEY_RIGHTPAREN].m_strName		= "";
+	m_akKeyState[KEY_EXCLAIM].m_strName			= "exc";
+	m_akKeyState[KEY_QUOTEDBL].m_strName		= "quotedbl";
+	m_akKeyState[KEY_HASH].m_strName				= "hash";
+	m_akKeyState[KEY_DOLLAR].m_strName			= "dollar";
+	m_akKeyState[KEY_AMPERSAND].m_strName		= "amp";
+	m_akKeyState[KEY_QUOTE].m_strName			= "quote";
+	m_akKeyState[KEY_LEFTPAREN].m_strName		= "(";
+	m_akKeyState[KEY_RIGHTPAREN].m_strName		= ")";
 	m_akKeyState[KEY_ASTERISK].m_strName		= "";
-	m_akKeyState[KEY_PLUS].m_strName				= "";
+	m_akKeyState[KEY_PLUS].m_strName				= "+";
 	m_akKeyState[KEY_COMMA].m_strName			= ",";
 	m_akKeyState[KEY_MINUS].m_strName			= "";
 	m_akKeyState[KEY_PERIOD].m_strName			= ".";
@@ -969,17 +969,17 @@ void Input::SetupMapToKeyState()
 
 	m_akKeyState[KEY_COLON].m_strName			= "";
 	m_akKeyState[KEY_SEMICOLON].m_strName		= "semicolon";
-	m_akKeyState[KEY_LESS].m_strName				= "";
-	m_akKeyState[KEY_EQUALS].m_strName			= "";
-	m_akKeyState[KEY_GREATER].m_strName			= "";
-	m_akKeyState[KEY_QUESTION].m_strName		= "";
-	m_akKeyState[KEY_AT].m_strName				= "";
+	m_akKeyState[KEY_LESS].m_strName				= "<";
+	m_akKeyState[KEY_EQUALS].m_strName			= "=";
+	m_akKeyState[KEY_GREATER].m_strName			= ">";
+	m_akKeyState[KEY_QUESTION].m_strName		= "que";
+	m_akKeyState[KEY_AT].m_strName				= "at";
 	m_akKeyState[KEY_LEFTBRACKET].m_strName	= "[";
 	m_akKeyState[KEY_BACKSLASH].m_strName		= "\\";
 	m_akKeyState[KEY_RIGHTBRACKET].m_strName	= "]";
-	m_akKeyState[KEY_CARET].m_strName			= "";
-	m_akKeyState[KEY_UNDERSCORE].m_strName		= "";
-	m_akKeyState[KEY_BACKQUOTE].m_strName		= "";
+	m_akKeyState[KEY_CARET].m_strName			= "-";
+	m_akKeyState[KEY_UNDERSCORE].m_strName		= "_";
+	m_akKeyState[KEY_BACKQUOTE].m_strName		= "backquote";
 
 	m_akKeyState[KEY_KP0].m_strName				= "kp0";
 	m_akKeyState[KEY_KP1].m_strName				= "kp1";

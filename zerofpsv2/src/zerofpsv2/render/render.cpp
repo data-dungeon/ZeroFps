@@ -589,6 +589,8 @@ void Render::DrawConsole(char* m_aCommand,vector<char*>* m_kText,int iStartLine,
 	SetFont("data/textures/text/devstr.bmp");
 
 	glColor3f(m_kConsoleColor.x,m_kConsoleColor.y,m_kConsoleColor.z);
+	SetClearColor(Vector4(0,0,0,0));
+	glClear(GL_COLOR_BUFFER_BIT);	
 
 	Print2(Vector3(8,8,0),m_aCommand);		
 	

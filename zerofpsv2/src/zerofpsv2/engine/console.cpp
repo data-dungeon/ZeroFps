@@ -72,7 +72,7 @@ void Console::AutoComplete()
 		else 
 		{
 			for(int i=0; i<kFoundCommands.size(); i++)
-				Printf(" %s", kFoundCommands[i].c_str());
+				Printf("    %s", kFoundCommands[i].c_str());
 		}
 	}
 }
@@ -278,9 +278,9 @@ void Console::Update(void)
 		if(kKey.m_iKey == KEY_LEFT)		eCmd = CONCMD_MARKERLEFT;
 		if(kKey.m_iKey == KEY_RIGHT)		eCmd = CONCMD_MARKERRIGHT;
 		if(kKey.m_iKey == KEY_INSERT)		eCmd = CONCMD_TOGGLEINSERT;
-		if(kKey.m_iKey == KEY_TAB)			eCmd = CONCMD_TOGGLE;
+		if(kKey.m_iKey == KEY_BACKQUOTE)	eCmd = CONCMD_TOGGLE;
 		if(kKey.m_iKey == KEY_RETURN)		eCmd = CONCMD_RUN;
-		if(kKey.m_iKey == KEY_F1)			
+		if(kKey.m_iKey == KEY_TAB)			
 		{
 			AutoComplete();
 			kKey.m_iKey = 0;
@@ -423,13 +423,14 @@ void Console::Update(void)
 }
 
 
-bool Console::Execute(char* aText) {
+bool Console::Execute(char* aText) 
+{
 	if(strlen(aText)==0){
 		Printf("");
 		return false;
 	}
 	
-	Printf("> %s", aText);				// Print command to screen.
+	Printf("] %s", aText);				// Print command to screen.
 
 	// Put into command history. New command are pushed on front and oldest are poped from back of deque
 	if(m_kCommandHistory.empty())
@@ -458,7 +459,7 @@ bool Console::Execute(char* aText) {
 
 	if(!GetSystem().RunCommand(aText,CSYS_SRC_CONSOLE))
 	{
-		Printf("No Command was Found for '%s'", aText);
+		Printf("Unknown command '%s'", aText);
 		return false;
 	}
 
