@@ -96,7 +96,7 @@ function GUICreate()
 	CreateWnd(0,"action_bar","GamePlayScreen","",42,512,256,64,0)
 	ChangeSkin("action_bar","Skin5","Window")
 
-	CreateWnd(1,"action_button","action_bar","",240,-5,32,64,0)
+	CreateWnd(1,"action_button","action_bar","",238,-5,32,64,0)
 	ChangeSkin("action_button","Skin6","Button up")
 	ChangeSkin("action_button","Skin20","Button down")
 	ChangeSkin("action_button","Skin6","Button focus")
