@@ -28,10 +28,17 @@ bool ZShaderSystem::StartUp()
 	m_iCurrentVertexProgram = 		-1;
 	m_iCurrentFragmentProgram = 	-1;
 	
+	m_bSupportVertexBuffers =		false;
 	
 	//check for vertex and fragment program support
-	m_bSupportVertexProgram = HaveExtension("GL_ARB_vertex_program");
-	m_iCurrentFragmentProgram = HaveExtension("GL_ARB_fragment_program");
+	if(!(m_bSupportVertexProgram = HaveExtension("GL_ARB_vertex_program")))
+		cout<<"ZSHADER: No vertex program support"<<endl;
+	if(!(m_iCurrentFragmentProgram = HaveExtension("GL_ARB_fragment_program")));
+		cout<<"ZSHADER: No fragment program support"<<endl;
+	
+	//check for vertexbuffer support
+	if(!(m_bSupportVertexBuffers = HaveExtension("GL_ARB_vertex_buffer_object")))
+		cout<<"ZSHADER: No vertexbuffer support"<<endl;
 	
 	return true;
 }

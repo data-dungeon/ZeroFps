@@ -18,6 +18,13 @@
 
 using namespace std;
 
+enum RENDER_API VERTEXTYPE
+{
+	VERTEXTYPE_2=	0,
+	VERTEXTYPE_3=	1,
+	VERTEXTYPE_4=	2,
+};
+
 enum RENDER_API STENCIL_FUNC
 {
 	STENCILFUNC_NEVER=		0,
@@ -178,6 +185,8 @@ class RENDER_API ZShaderSystem : public ZFSubSystem
 		int				m_iCurrentVertexProgram;
 		int				m_iCurrentFragmentProgram; 
 		
+		//vertex buffers
+		bool				m_bSupportVertexBuffers;
 		
 		//temporary geometry data		
 		vector<Vector2>	m_kVerties2D;
