@@ -356,6 +356,9 @@ bool P_Tcs::SetupMeshData()
 
 bool P_Tcs::LineVSMesh(Vector3 &kPos,Vector3 &kDir)
 {
+	if(!m_bHavePolygonData)
+		return false;
+
 	float		fDist = 9999999;
 	Vector3	kClosestColPos;
 	m_iColFace = -1;

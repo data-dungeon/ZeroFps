@@ -96,6 +96,7 @@ void Tcs::Update(float fAlphaTime)
 	if(fAlphaTime > 0.1) 
 		fAlphaTime = 0.1; 
 			
+		
 	float fStartTime = m_pkZeroFps->GetTicks();
 	float fRTime = fAlphaTime;
 	m_iNrOfCollissions = 0;
