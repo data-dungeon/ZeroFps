@@ -51,10 +51,10 @@ bool ZGui::RegisterWindow(ZGuiWnd* pkNewWindow)
 	if(pkNewWindow == NULL)
 		return false;
 
-	if(GetWindow(pkNewWindow->GetID()))
+/*	if(GetWindow(pkNewWindow->GetID()))
 	{
 		ZFAssert(0, "Tried to register a window with a ID that already exist.");
-	}
+	}*/
 
 	pkNewWindow->SetGUI(this);
 	if(pkNewWindow->GetFont() == NULL)
