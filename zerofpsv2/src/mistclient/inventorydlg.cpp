@@ -27,13 +27,10 @@ InventoryDlg::InventoryDlg(ZGuiWnd* pkDlgWnd)// : ZFSubSystem("InventoryDlg")
 	m_pkSelectionLabel->Hide();
 	m_iCurrentContainer = MAIN_CONTAINER;
 
-	m_pkBackButton = new ZGuiButton(Rect(472,259,472+28,259+19), m_pkDlgWnd, true, 33333);
-	m_pkBackButton->SetButtonUpSkin(new ZGuiSkin(-1,-1,-1,-1,  -1,-1,-1,-1, 155,0,0, 0,0,0, 0, 0, 0));
-	m_pkBackButton->SetButtonHighLightSkin(new ZGuiSkin(-1,-1,-1,-1,  -1,-1,-1,-1, 155,0,0, 255,255,255, 1, 0, 0));
-	m_pkBackButton->SetButtonDownSkin(new ZGuiSkin(-1,-1,-1,-1,  -1,-1,-1,-1, 0,255,0, 0,0,0, 0, 0, 0));
-	m_pkGui->RegisterWindow( m_pkBackButton, "BackPackBackButton" );
-
 	m_kContainerStack.push(m_iCurrentContainer); 
+
+	static_cast<ZGuiScrollbar*>(m_pkResMan->Wnd(
+		"SlotListScrollbar"))->SetScrollInfo(0,100,0.15f,0);
 }
 
 InventoryDlg::~InventoryDlg()
@@ -86,8 +83,6 @@ bool InventoryDlg::AddItems(vector<pair<pair<string, string>,ItemStats*> >&vkIte
 
 void InventoryDlg::OnClick(int x, int y, bool bMouseDown, bool bLeftButton)
 {
-	printf("Current container = %i\n", m_iCurrentContainer);
-
 	Point sqr = MousePosToSqr(x,y);
 
 	Slot* pkSlot = FindSlot(x,y);
@@ -104,8 +99,6 @@ void InventoryDlg::OnClick(int x, int y, bool bMouseDown, bool bLeftButton)
 			// ta tag i ett föremål?
 			if(bMouseDown)
 			{
-				printf("container = %i\n", pkSlot->m_iContainer);
-
 				strcpy(szPic, pkSlot->m_szPic[0]);
 				strcpy(szPicA, pkSlot->m_szPic[1]);
 				ItemStats* pkStats = pkSlot->m_pkItemStats;
@@ -230,6 +223,9 @@ void InventoryDlg::OnDClick(int x, int y, bool bLeftButton)
 				m_pkSelectedSlot = NULL;
 
 				m_kContainerStack.push(new_container);
+
+				m_pkAudioSys->StartSound("/data/sound/WoodenPanelClose.wav",
+					m_pkAudioSys->GetListnerPos(),m_pkAudioSys->GetListnerDir(),false);					
 			}
 		}
 	}
@@ -426,6 +422,9 @@ void InventoryDlg::OnCommand(int iID)
 			int new_container = m_kContainerStack.top();
 
 			SwitchContainer(new_container);		
+
+			m_pkAudioSys->StartSound("/data/sound/PickUpRusty.wav",
+				m_pkAudioSys->GetListnerPos(),m_pkAudioSys->GetListnerDir(),false);
 		}
 	}
 }
@@ -666,5 +665,4 @@ string InventoryDlg::GetWndByID(int iID)
 	}
 
 	return string("");
-
 }

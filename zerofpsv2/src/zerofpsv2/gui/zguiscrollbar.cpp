@@ -12,6 +12,7 @@
 // Static internal IDs for the scrollbar button
 const int SCROLLTHUMB_ID = 520;
 
+
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
@@ -49,14 +50,30 @@ bool ZGuiScrollbar::Render( ZGuiRender* pkRenderer )
 	pkRenderer->RenderQuad(GetScreenRect()); 
 	pkRenderer->RenderBorder(GetScreenRect()); 
 	m_pkThumbButton->Render( pkRenderer );
+	m_pkScrollUp->Render( pkRenderer );
+	m_pkScrollDown->Render( pkRenderer );
 	return true;
 }
 
 void ZGuiScrollbar::SetThumbButtonSkins(ZGuiSkin* pkSkinNormal, ZGuiSkin* pkSkinHighLight)
 {
 	m_pkThumbButton->SetButtonUpSkin(pkSkinNormal);
-	m_pkThumbButton->SetButtonDownSkin(pkSkinNormal);
+	m_pkThumbButton->SetButtonDownSkin(pkSkinHighLight);
 	m_pkThumbButton->SetButtonHighLightSkin(pkSkinHighLight);
+}
+
+void ZGuiScrollbar::SetScrollButtonUpSkins(ZGuiSkin* pkSkinUp, ZGuiSkin* pkSkinDown)
+{
+	m_pkScrollUp->SetButtonUpSkin(pkSkinUp);
+	m_pkScrollUp->SetButtonHighLightSkin(pkSkinUp);
+	m_pkScrollUp->SetButtonDownSkin(pkSkinDown);	
+}
+
+void ZGuiScrollbar::SetScrollButtonDownSkins(ZGuiSkin* pkSkinUp, ZGuiSkin* pkSkinDown)
+{
+	m_pkScrollDown->SetButtonUpSkin(pkSkinUp);
+	m_pkScrollDown->SetButtonHighLightSkin(pkSkinUp);
+	m_pkScrollDown->SetButtonDownSkin(pkSkinDown);	
 }
 
 void ZGuiScrollbar::GetScrollInfo(unsigned int& min, unsigned int& max, 
@@ -70,7 +87,7 @@ void ZGuiScrollbar::GetScrollInfo(unsigned int& min, unsigned int& max,
 // page_size är i procent och skall ligga i intervallet [0-1]
 // är värdet större så trunkeras det kring ramen
 void ZGuiScrollbar::SetScrollInfo(unsigned int min, unsigned int max, 
-								  float page_size, unsigned int pos)
+											 float page_size, unsigned int pos)
 {
 	m_nMax = max, m_nMin = min, m_nPos = pos;
 	m_fPageSize = page_size;
@@ -114,11 +131,15 @@ void ZGuiScrollbar::SetScrollInfo(unsigned int min, unsigned int max,
 		float size = (float) (max - min);
 		if(size <= 0) size = 1; // don´t devide by zero
 
-		y = ((float) pos / (float) (size)) * rc.Height()  - bn_width/2;	
+		y = ((float) pos / (float) (size)) * (rc.Height()-SCROLL_BUTTON_HEIGHT*2)  - bn_width/2;	
 	}
 
-	m_pkThumbButton->SetMoveArea(GetScreenRect());
-	m_pkThumbButton->SetPos((int)x,(int)y, false, false);
+	Rect rcMove = GetScreenRect();
+	rcMove.Top += SCROLL_BUTTON_HEIGHT;
+	rcMove.Bottom -= SCROLL_BUTTON_HEIGHT;
+	
+	m_pkThumbButton->SetMoveArea(rcMove);
+	m_pkThumbButton->SetPos((int)x,(int)y+SCROLL_BUTTON_HEIGHT+(real_bn_height/2), false, false);
 
 	if(m_bAutoHideScrollbar)
 	{
@@ -137,13 +158,22 @@ void ZGuiScrollbar::SetScrollInfo(unsigned int min, unsigned int max,
 
 bool ZGuiScrollbar::Notify(ZGuiWnd* pkWnd, int iCode)
 {
+	bool bSend = false;
+
 	if(iCode == NCODE_MOVE)
 	{
 		if(pkWnd->GetID() == SCROLLTHUMB_ID)
 		{
-			int iThumPos = m_pkThumbButton->GetWndRect().Top;
-			int iThumMax = GetWndRect().Bottom;
-			float fProcentAvMax = (float) iThumPos / (float) iThumMax;
+			Rect rcButton = pkWnd->GetScreenRect();
+
+			Rect rcArea = GetScreenRect();
+			rcArea.Top += SCROLL_BUTTON_HEIGHT;
+			rcArea.Bottom -= SCROLL_BUTTON_HEIGHT;
+
+			int size = rcArea.Height();
+			int y = rcButton.Top - rcArea.Top;
+
+			float fProcentAvMax = (float) y / (float) size;
 
 			static int POS_BEFORE;
 			POS_BEFORE = (int)m_nPos;
@@ -156,8 +186,49 @@ bool ZGuiScrollbar::Notify(ZGuiWnd* pkWnd, int iCode)
 				m_iScrollChange = change;
 			else
 				m_iScrollChange = -change;
+
+			bSend = true;
 		}
 
+	}
+	else
+	if(iCode == NCODE_CLICK_DOWN)
+	{
+		if(pkWnd->GetID() == SCROLLUP_ID)
+		{
+			printf("jugge\n");
+
+			if(m_nPos > m_nMin)
+			{
+				m_nPos--;
+				m_iScrollChange=-1;
+				bSend = true;
+				SetScrollInfo(m_nMin, m_nMax, m_fPageSize, m_nPos);
+			}
+			else
+			{
+				m_iScrollChange=0;
+			}
+		}
+		else
+		if(pkWnd->GetID() == SCROLLDOWN_ID)
+		{
+			if(m_nPos < m_nMax)
+			{
+				m_nPos++;
+				m_iScrollChange=1;
+				bSend = true;
+				SetScrollInfo(m_nMin, m_nMax, m_fPageSize, m_nPos);
+			}
+			else
+			{
+				m_iScrollChange=0;
+			}
+		}
+	}
+
+	if(bSend)
+	{
 		// Send a scroll message to the main winproc...
 		int* piParams = new int[3];
 		piParams[0] = GetID(); // id
@@ -178,7 +249,7 @@ bool ZGuiScrollbar::Notify(ZGuiWnd* pkWnd, int iCode)
 void ZGuiScrollbar::CreateInternalControls()
 {
 	m_bHorzintal = GetWndRect().Width() > GetWndRect().Height() ? true : false;
-	Rect rcThumb;
+	Rect rcThumb, rcUp, rcDown;
 	
 	if(m_bHorzintal)
 	{
@@ -186,16 +257,32 @@ void ZGuiScrollbar::CreateInternalControls()
 	}
 	else
 	{
-		m_usThumbSize = GetWndRect().Width();
+		m_usThumbSize = GetWndRect().Width()-(SCROLL_BUTTON_HEIGHT*2);
 	}
 
 	rcThumb.Left	= 0;
-	rcThumb.Top		= 0;
+	rcThumb.Top		= SCROLL_BUTTON_HEIGHT;
 	rcThumb.Right	= m_usThumbSize;
-	rcThumb.Bottom	= m_usThumbSize;
+	rcThumb.Bottom	= SCROLL_BUTTON_HEIGHT+m_usThumbSize;
+
+	rcUp.Left	= 0;
+	rcUp.Top		= 0;
+	rcUp.Right	= GetWndRect().Width();
+	rcUp.Bottom	= SCROLL_BUTTON_HEIGHT;
+
+	rcDown.Left		= 0;
+	rcDown.Top		= GetWndRect().Height()-SCROLL_BUTTON_HEIGHT;
+	rcDown.Right	= GetWndRect().Width();
+	rcDown.Bottom	= GetWndRect().Height();
 
 	m_pkThumbButton = new ZGuiButton(rcThumb, this, true, SCROLLTHUMB_ID);
 	m_pkThumbButton->SetInternalControlState(true);
+
+	m_pkScrollUp = new ZGuiButton(rcUp, this, true, SCROLLUP_ID);
+	m_pkScrollUp->SetInternalControlState(true);
+
+	m_pkScrollDown = new ZGuiButton(rcDown, this, true, SCROLLDOWN_ID);
+	m_pkScrollDown->SetInternalControlState(true);
 
 	SetScrollInfo(0,100,0.15f,0);
 }
@@ -204,6 +291,8 @@ void ZGuiScrollbar::SetZValue(int iValue)
 {
 	ZGuiWnd::SetZValue(iValue);
 	m_pkThumbButton->SetZValue(iValue-1);
+	m_pkScrollUp->SetZValue(iValue-2);
+	m_pkScrollDown->SetZValue(iValue-3);
 }
 
 void ZGuiScrollbar::GetWndSkinsDesc(vector<SKIN_DESC>& pkSkinDesc) const

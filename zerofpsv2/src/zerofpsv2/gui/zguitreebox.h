@@ -58,7 +58,9 @@ public:
 	unsigned int GetNumItemSkins();
 
 	void SetScrollbarSkin(ZGuiSkin* pkSkinScrollArea, 
-		ZGuiSkin* pkSkinThumbButton, ZGuiSkin* pkSkinThumbButtonHighLight);
+		ZGuiSkin* pkSkinThumbButton, ZGuiSkin* pkSkinThumbButtonHighLight,
+		ZGuiSkin* pkSkinTopBnUp, ZGuiSkin* pkSkinTopBnDown,
+		ZGuiSkin* pkSkinBottomBnUp, ZGuiSkin* pkSkinBottomBnDown);
 
 protected:
 	bool Notify(ZGuiWnd* pkWnd, int iCode);

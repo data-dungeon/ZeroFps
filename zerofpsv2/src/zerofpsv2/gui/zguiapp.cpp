@@ -183,9 +183,14 @@ bool ZGuiApp::CreateWnd(GuiType eType, char* szResourceName, char* szText, ZGuiW
 		static_cast<ZGuiCheckbox*>(pkWnd)->SetButtonCheckedSkin(GetSkin("DefCBnDSkin"));
 		break;
 	case Scrollbar:
+		int apa; apa = 2;
 		static_cast<ZGuiCheckbox*>(pkWnd)->SetSkin(GetSkin("DefSBrBkSkin"));
 		static_cast<ZGuiScrollbar*>(pkWnd)->SetThumbButtonSkins(GetSkin("DefSBrNSkin"), 
 			GetSkin("DefSBrFSkin"));
+		static_cast<ZGuiScrollbar*>(pkWnd)->SetScrollButtonUpSkins(
+			GetSkin("DefSBrScrollUpSkin_u"), GetSkin("DefSBrScrollUpSkin_d"));
+		static_cast<ZGuiScrollbar*>(pkWnd)->SetScrollButtonDownSkins(
+			GetSkin("DefSBrScrollDownSkin_u"), GetSkin("DefSBrScrollDownSkin_d"));
 		break;
 	case Slider:
 		static_cast<ZGuiSlider*>(pkWnd)->SetSliderSkin(GetSkin("DefSliderSkin"));
@@ -214,7 +219,10 @@ bool ZGuiApp::CreateWnd(GuiType eType, char* szResourceName, char* szText, ZGuiW
 		break;
 	case Treebox:
 		static_cast<ZGuiTreebox*>(pkWnd)->SetScrollbarSkin(GetSkin("DefSBrBkSkin"),
-			GetSkin("DefSBrNSkin"), GetSkin("DefSBrFSkin") );
+			GetSkin("DefSBrNSkin"), GetSkin("DefSBrFSkin"), 
+			GetSkin("DefSBrScrollUpSkin_u"), GetSkin("DefSBrScrollUpSkin_d"),
+			GetSkin("DefSBrScrollDownSkin_u"), GetSkin("DefSBrScrollDownSkin_d"));
+		
 		static_cast<ZGuiTreebox*>(pkWnd)->SetSkin(GetSkin("DefTreeboxBkSkin"));
 		static_cast<ZGuiTreebox*>(pkWnd)->InsertBranchSkin(0, GetSkin("DefTreeNodeChildSkin"));
 		static_cast<ZGuiTreebox*>(pkWnd)->InsertBranchSkin(1, GetSkin("DefTreeNodeParentClosedSkin"));
@@ -359,6 +367,8 @@ void ZGuiApp::InitTextures(ZFScriptSystem* pkScript)
 		"DefTabBnPrevUSkin",				"DefTabBnPrevDSkin",
 		"DefTabBnNextUSkin",				"DefTabBnNextDSkin",
 		"DefTabPageBackSkin",			"DefTabPageFrontSkin",
+		"DefSBrScrollDownSkin_u",		"DefSBrScrollDownSkin_d",
+		"DefSBrScrollUpSkin_u",			"DefSBrScrollUpSkin_d",
 	};
 
 	for(int i=0; i<sizeof(szDefNames)/sizeof(szDefNames[0]); i++) 

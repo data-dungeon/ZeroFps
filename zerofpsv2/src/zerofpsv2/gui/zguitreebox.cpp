@@ -377,6 +377,11 @@ bool ZGuiTreebox::Notify(ZGuiWnd* pkWnd, int iCode)
 			ScrollRows(true);
 		}		
 	}
+	else
+	if(iCode == NCODE_CLICK_DOWN)
+	{
+		ScrollRows(true);
+	}
 
 	return true;
 }
@@ -443,7 +448,7 @@ void ZGuiTreebox::ChangeScrollbarRange(int width, int height)
 
 	// Change range of vertical scrollbar
 	int iRows = (int) ((float) height / (BUTTON_SIZE+VERT_ROW_SPACE));
-	fPageSize = (float) m_pkVertScrollbar->GetScreenRect().Height() / height; 
+	fPageSize = (float) (m_pkVertScrollbar->GetScreenRect().Height()-SCROLL_BUTTON_HEIGHT*2) / height; 
 	if(fPageSize > 1.0f)
 		fPageSize = 1.0f;
 
@@ -496,7 +501,8 @@ void ZGuiTreebox::ScrollRows(bool bVertically)
 		PREV_VERT_SCROLLROW = m_iStartrow;
 	}
 
-	SetSelectionMarker(m_pkSelectedNode); // set selection marker pos
+	if(m_pkSelectedNode)
+		SetSelectionMarker(m_pkSelectedNode); // set selection marker pos
 }
 
 bool ZGuiTreebox::InsertBranchSkin(unsigned int uiIndex, ZGuiSkin* pkSkin)
@@ -523,13 +529,22 @@ bool ZGuiTreebox::InsertBranchSkin(unsigned int uiIndex, ZGuiSkin* pkSkin)
 }
 
 void ZGuiTreebox::SetScrollbarSkin(ZGuiSkin* pkSkinScrollArea, ZGuiSkin* pkSkinThumbButton, 
-								   ZGuiSkin* pkSkinThumbButtonHighLight)
+								   ZGuiSkin* pkSkinThumbButtonHighLight,
+									ZGuiSkin* pkSkinTopBnUp, ZGuiSkin* pkSkinTopBnDown,
+									ZGuiSkin* pkSkinBottomBnUp, ZGuiSkin* pkSkinBottomBnDown)
 {
 	m_pkVertScrollbar->SetSkin(pkSkinScrollArea);
 	m_pkVertScrollbar->SetThumbButtonSkins(pkSkinThumbButton, pkSkinThumbButtonHighLight);
 
 	m_pkHorzScrollbar->SetSkin(pkSkinScrollArea);
 	m_pkHorzScrollbar->SetThumbButtonSkins(pkSkinThumbButton, pkSkinThumbButtonHighLight);
+
+	m_pkVertScrollbar->SetScrollButtonUpSkins(pkSkinTopBnUp, pkSkinTopBnDown);
+	m_pkVertScrollbar->SetScrollButtonDownSkins(pkSkinBottomBnUp, pkSkinBottomBnDown);
+
+	m_pkHorzScrollbar->SetScrollButtonUpSkins(pkSkinTopBnUp, pkSkinTopBnDown);
+	m_pkHorzScrollbar->SetScrollButtonDownSkins(pkSkinBottomBnUp, pkSkinBottomBnDown);
+
 }
 
 unsigned int ZGuiTreebox::GetNumItemSkins()

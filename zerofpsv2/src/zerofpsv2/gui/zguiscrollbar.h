@@ -9,6 +9,10 @@
 
 class ZGuiButton;
 
+#define SCROLL_BUTTON_HEIGHT 16
+const int SCROLLUP_ID = 521;
+const int SCROLLDOWN_ID = 522;
+
 class GUI_API ZGuiScrollbar : public ZGuiWnd
 {
 public:
@@ -36,8 +40,13 @@ public:
 	ZGuiButton* GetButton() { return m_pkThumbButton; }
 	void CopyNonUniqueData(const ZGuiWnd* pkSrc);
 
+	void SetScrollButtonUpSkins(ZGuiSkin* pkSkinUp, ZGuiSkin* pkSkinDown);
+	void SetScrollButtonDownSkins(ZGuiSkin* pkSkinUp, ZGuiSkin* pkSkinDown);
+	
 private:
 	ZGuiButton* m_pkThumbButton;
+	ZGuiButton* m_pkScrollUp;
+	ZGuiButton* m_pkScrollDown;
 	bool m_bHorzintal;
 	bool m_bAutoHideScrollbar;
 	unsigned int m_nMax, m_nMin, m_nPos, m_usThumbSize;
