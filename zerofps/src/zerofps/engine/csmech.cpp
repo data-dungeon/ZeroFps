@@ -94,6 +94,7 @@ Collision* CSMech::Collide_CSSphere(CSSphere* kOther,float fTime)
 					newhit=false;
 					kPos2=kPos1;
 				}
+
 			
 			}
 		}

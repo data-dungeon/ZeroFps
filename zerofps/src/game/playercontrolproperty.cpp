@@ -82,7 +82,7 @@ void PlayerControlProperty::Update() {
 	walking=false;
 	Vector3 vel(0,m_pkObject->GetVel().y,0);	
 	
-	if(onGround && m_fGroundAngle >= 45)	{
+	if(onGround && m_fGroundAngle >= 60)	{
 		Vector3  res(GroundNormal.x,-1,GroundNormal.z);		
 		m_pkObject->GetAcc()+=res*50;
 	}	
@@ -119,7 +119,7 @@ void PlayerControlProperty::Update() {
 	}
 	
 	
-	if(onGround && m_fGroundAngle < 45)
+	if(onGround && m_fGroundAngle < 60)
 		m_pkObject->GetVel()=vel;	
 	
 
@@ -146,7 +146,7 @@ void PlayerControlProperty::Update() {
 		walk+=m_pkFps->GetFrameTime()*5;
 	else
 		walk*=0.99;
-	m_pkObject->GetRot().z = (sin(walk))*2.5;	
+//	m_pkObject->GetRot().z = (sin(walk))*2.5;	
 	
 	// Get mouse x,y		
 	int x,z;		
