@@ -182,6 +182,9 @@ void ZeroRTS::OnIdle()
 	if(m_pkMiniMap)
 		m_pkMiniMap->Draw(m_pkCamera, pkGui, m_pkFogRender, pkFps->GetGameTime()); 
 
+	if(m_pkUserPanel)
+		m_pkUserPanel->UpdateGraphic();
+
 	// Draw selection rectangle
 	if(m_kClickPos != NO_SELECTION)
 	{

@@ -89,7 +89,7 @@ void P_ServerUnit::GetClientUnitP()
 void P_ServerUnit::UpdateClient()
 {
 	//calculate client health bar
-	m_kInfo.m_Info2.m_cHealth = int((m_iHealth/m_iMaxHealth)*255);
+	m_kInfo.m_Info2.m_cHealth = int(((float)m_iHealth/m_iMaxHealth)*255.0f);
 
 
 

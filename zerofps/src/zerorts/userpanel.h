@@ -24,6 +24,7 @@ const int MAX_NUM_CMD_BNS = 18;
 class UserPanel : public DlgBox
 {
 public:
+	void UpdateGraphic();
 	void OnSelectObjects(Object* pkObjectInFocus);
 	bool PopLastButtonCommand(char* szCommand);
 	

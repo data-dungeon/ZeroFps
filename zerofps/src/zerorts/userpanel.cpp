@@ -392,10 +392,10 @@ void UserPanel::OnSelectObjects(Object* pkObjectInFocus)
 	{
 		int w, h;
 		Rect rc = m_pkGuiBuilder->Get("UnitHealthLB")->GetScreenRect();
-		float fHelth = (float) pkClientUnit->m_kInfo.m_Info2.m_cHealth / 255.0f;
+		float fHelth = (float) ((int) pkClientUnit->m_kInfo.m_Info2.m_cHealth) / 255.0f;
 
 		h = rc.Height();
-		w = (int) (float) ( fHelth * m_fOriginalHealthbarSize );
+		w = fHelth * m_fOriginalHealthbarSize;
 
 		m_pkGuiBuilder->Get("UnitHealthLB")->Resize(w,h);
 		printf("%s\n", (int) pkClientUnit->m_kInfo.m_cName);
@@ -457,4 +457,20 @@ bool ZeroRTS::MovePath(Object* pkObject)
 }
 */
 
+void UserPanel::UpdateGraphic()
+{	
+	if(!m_pkZeroRts->m_kSelectedObjects.empty())
+	{
+		P_ClientUnit* pkClientUnit = m_pkZeroRts->GetClientUnit(
+			m_pkZeroRts->m_kSelectedObjects.front());
 
+		if(pkClientUnit)
+		{
+			int h=178-153;
+			int w = (float) pkClientUnit->m_kInfo.m_Info2.m_cHealth / 255.0f * m_fOriginalHealthbarSize;
+
+			if(w >= 0)
+				m_pkGuiBuilder->Get("UnitHealthLB")->Resize(w,h);
+		}
+	}
+}

@@ -73,8 +73,6 @@ void ConstructionManager::Init()
 
 			m_kAllStructures.push_back(kNewStructure);
 		}
-
-		PrintAll();
 	}
 }
 
