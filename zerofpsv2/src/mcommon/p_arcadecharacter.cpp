@@ -1,0 +1,90 @@
+#include "p_arcadecharacter.h"
+#include "p_dmgun.h"
+
+P_ArcadeCharacter::P_ArcadeCharacter()
+{
+	strcpy(m_acName,"P_ArcadeCharacter");
+	m_iType=PROPERTY_TYPE_NORMAL;
+	m_iSide=PROPERTY_SIDE_SERVER;
+
+	bNetwork = true;
+
+	m_fSpeed = 30;
+	m_kDir.Set(0,0,-1);
+}
+
+P_ArcadeCharacter::~P_ArcadeCharacter()
+{
+	
+}
+
+
+void P_ArcadeCharacter::Init()
+{
+	cout<< "New character created"<<endl;
+
+
+}
+
+void P_ArcadeCharacter::Update()
+{
+	if(P_Tcs* pkTcs = (P_Tcs*)GetObject()->GetProperty("P_Tcs"))
+	{
+		//rotate player
+		Matrix4 kRot;		
+		kRot = GetObject()->GetWorldRotM();
+		kRot.LookDir(m_kDir,Vector3(0,1,0));		
+		kRot.Transponse();
+		GetObject()->SetLocalRotM(kRot);
+		
+			
+		//move character
+		Vector3 kVel(0,0,0);	
+		if(m_kActions[0])
+			kVel.z = -1;
+		if(m_kActions[1])
+			kVel.z =  1;
+		if(m_kActions[2])
+			kVel.x = -1;
+		if(m_kActions[3])
+			kVel.x =  1;
+
+						
+		if(kVel.Length() == 0)			
+			pkTcs->SetWalkVel(Vector3(0,0,0));
+		else
+		{
+			float fWalkRatio = (kVel.Unit().Dot(m_kDir.Unit()) / 2.0) + 0.5 ;
+			
+			kVel.Normalize();
+			kVel *= ( (m_fSpeed/2.0)*fWalkRatio) + (m_fSpeed/2.0);					
+				
+			pkTcs->SetWalkVel(kVel);
+		}
+	}
+	else
+		cout<<"error p_arcadecjaracter missing p_tcs"<<endl;			
+
+
+
+	//fire gun 
+	if(m_kActions[4])
+		Fire();
+}
+
+void P_ArcadeCharacter::Fire()
+{
+	if(P_DMGun* pkGun = (P_DMGun*)GetObject()->GetProperty ("P_DMGun"))
+	{
+		cout<<m_kDir.Length()<<endl;;
+		pkGun->Fire( GetObject()->GetWorldPosV() + m_kDir.Unit());
+	}
+
+}
+
+
+
+Property* Create_P_ArcadeCharacter()
+{
+	return new P_ArcadeCharacter;
+}
