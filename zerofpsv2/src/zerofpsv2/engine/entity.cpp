@@ -1437,19 +1437,18 @@ Vector3 Entity::GetIWorldPosV()
 		return GetWorldPosV();
 
 	if(m_bInterpolate)
-	{	
+	{				
+		m_kILocalPosV += (GetWorldPosV() - m_kILocalPosV)/3.0;// * (m_pkZeroFps->GetFrameTime()*3);
 		
-		m_kILocalPosV += (GetWorldPosV() - m_kILocalPosV) * (m_pkZeroFps->GetFrameTime()*3);
-		
+		return m_kILocalPosV;
 	}
 	else
 	{
 		//still calculate the interpolatet position, but return non interpolatet position
-		m_kILocalPosV += (GetWorldPosV() - m_kILocalPosV) * (m_pkZeroFps->GetFrameTime()*3);
+		m_kILocalPosV += (GetWorldPosV() - m_kILocalPosV)/3.0;// * (m_pkZeroFps->GetFrameTime()*3);
 		return GetWorldPosV();
 	}
 
-	return m_kILocalPosV;
 }
 
 Vector3 Entity::GetWorldPosV()

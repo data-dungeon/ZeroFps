@@ -245,7 +245,7 @@ void P_Enviroment::Update()
 
 void P_Enviroment::ZoneChange(int iCurrent,int iNew)
 {
-	cout<<"zonechange"<<endl;
+//	cout<<"zonechange"<<endl;
 	ZoneData* zd = m_pkObjectMan->GetZoneData(iNew);
 
 	if(zd)	
