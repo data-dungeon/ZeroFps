@@ -184,7 +184,8 @@ void MadProperty::Save(ZFMemPackage* pkPackage)
 	strcpy(temp,m_kMadFile.c_str());
 
 	pkPackage->Write((void*)temp,50);
-	pkPackage->Write(m_fScale);
+//	pkPackage->Write(m_fScale);
+	pkPackage->Write((void*)&m_fScale,4);
 }
 
 void MadProperty::Load(ZFMemPackage* pkPackage)
@@ -195,7 +196,8 @@ void MadProperty::Load(ZFMemPackage* pkPackage)
 	SetBase(temp);
 	
 	float scale;
-	pkPackage->Read(scale);
+//	pkPackage->Read(scale);
+	pkPackage->Read((void*)&scale,4);
 	SetScale(scale);
 }
 
