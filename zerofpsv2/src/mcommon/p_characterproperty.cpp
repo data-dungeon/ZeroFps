@@ -53,7 +53,10 @@ void P_CharacterProperty::PlayCharacterMovementSounds()
 		if(pkCC->GetCharacterState(eWALKING))
 		{
 			if(!m_kCurrentCharacterStates[eWALKING])
+			{
+				m_pkAudioSystem->StopSound(m_strWalkSound,GetEntity()->GetIWorldPosV());
 				m_pkAudioSystem->StartSound(m_strWalkSound,GetEntity()->GetIWorldPosV(),Vector3(0,0,0),true);
+			}
 			else
 				m_pkAudioSystem->MoveSound(m_strWalkSound.c_str(), GetEntity()->GetIWorldPosV(), GetEntity()->GetIWorldPosV());
 		}
@@ -67,7 +70,10 @@ void P_CharacterProperty::PlayCharacterMovementSounds()
 		if(pkCC->GetCharacterState(eRUNNING))
 		{
 			if(!m_kCurrentCharacterStates[eRUNNING])
+			{
+				m_pkAudioSystem->StopSound(m_strRunSound,GetEntity()->GetIWorldPosV());
 				m_pkAudioSystem->StartSound(m_strRunSound,GetEntity()->GetIWorldPosV(),Vector3(0,0,0),true);
+			}
 			else
 				m_pkAudioSystem->MoveSound(m_strRunSound.c_str(), GetEntity()->GetIWorldPosV(), GetEntity()->GetIWorldPosV());
 		}
@@ -81,7 +87,10 @@ void P_CharacterProperty::PlayCharacterMovementSounds()
 		if(pkCC->GetCharacterState(eSWIMING))
 		{
 			if(!m_kCurrentCharacterStates[eSWIMING])
+			{
+				m_pkAudioSystem->StopSound(m_strSwimSound,GetEntity()->GetIWorldPosV());
 				m_pkAudioSystem->StartSound(m_strSwimSound,GetEntity()->GetIWorldPosV(),Vector3(0,0,0),true);
+			}
 			else
 				m_pkAudioSystem->MoveSound(m_strSwimSound.c_str(), GetEntity()->GetIWorldPosV(), GetEntity()->GetIWorldPosV());
 		}
