@@ -1312,12 +1312,8 @@ void Tcs::TestSphereVsSphere(P_Tcs* pkBody1,P_Tcs* pkBody2,vector<Tcs_collission
 
 bool Tcs::CollideSphereVSSphere(P_Tcs* pkBody1,P_Tcs* pkBody2)
 {
-	float d = pkBody1->m_kNewPos.DistanceTo(pkBody2->m_kNewPos) - (pkBody1->m_fRadius + pkBody2->m_fRadius);
-				
-	if(d <= 0)
-		return true;
-				
-	return false;	
+	return (	pkBody1->m_kNewPos.DistanceTo(pkBody2->m_kNewPos) - 
+				(pkBody1->m_fRadius + pkBody2->m_fRadius) ) <= 0;
 }
 
 
