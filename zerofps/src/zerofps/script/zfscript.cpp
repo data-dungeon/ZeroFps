@@ -5,18 +5,22 @@
 #include "zfscript.h"
 #include <stdio.h>
 
+// package files
+#include "../basic/basicconsole.h"
+#include "../basic/basicconsole_script.h"
+
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 
 ZFScript::ZFScript()
 {
-	OpenLua();
+	Open();
 }
 
 ZFScript::~ZFScript()
 {
-	lua_close(m_pkLua);
+	Close();
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -25,13 +29,15 @@ ZFScript::~ZFScript()
 //				tag metoder som krävs för att kunna registrera globala variabler
 //				till Lua.
 //
-bool ZFScript::OpenLua()
+bool ZFScript::Open()
 {
 	// Open Lua
 	m_pkLua = lua_open(0);
 
 	// Open base lib for access to some useful functions.
 	lua_baselibopen(m_pkLua);
+
+	OpenPackageFiles();
 
 	// Create Lua tag for Int type.
 	m_iLuaTagInt = lua_newtag(m_pkLua);
@@ -63,6 +69,16 @@ bool ZFScript::OpenLua()
 	return true;	
 }
 
+void ZFScript::OpenPackageFiles()
+{
+	tolua_basicconsole_open(m_pkLua);
+}
+
+void ZFScript::Close()
+{
+	lua_close(m_pkLua);
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 // Name:		RunScript
 // Description:	Kör ett script från en fil.
@@ -73,32 +89,30 @@ bool ZFScript::RunScript(char* szFileName)
 	return (lua_dofile(m_pkLua, szFileName) == 0);
 }
 
-/*class TestKlass
+///////////////////////////////////////////////////////////////////////////////
+// Name:		RegisterClass
+// Description:	Registrera en C++ klass som Lua kan se.
+//
+bool ZFScript::RegisterClass(char *szName, LuaCallback o_LuaGet, 
+							 LuaCallback o_LuaSet)
 {
-public:
-	TestKlass(lua_State* L);
-	~TestKlass();
+	// Create Lua tag for Test type.
+	lua_pushcfunction(m_pkLua, o_LuaGet);
+	lua_settagmethod(m_pkLua, tolua_tag(m_pkLua,szName), "getglobal");
 
-	int Print(lua_State* L) { printf("hello from TestKlass!"); return 1; }
+	lua_pushcfunction(m_pkLua, o_LuaSet); 
+	lua_settagmethod(m_pkLua, tolua_tag(m_pkLua,szName), "setglobal");
+	return true;
+}
 
-	static const char className[];
-	static const ZFClassWrap<TestKlass>::RegType Register[];
-};
-
-const char TestKlass::className[] = "TestKlass";
-const ZFClassWrap<TestKlass>::RegType TestKlass::Register[] = 
-{
-	 {"print",  &TestKlass::Print},
-	 {0}
-};
-*/
 ///////////////////////////////////////////////////////////////////////////////
 // Name:		ExposeClass
 // Description:	Registrera en C++ klass som Lua kan se.
 //
-bool ZFScript::ExposeClass(const char *szName)
+bool ZFScript::ExposeObject(const char* szName, void* pkData, char* szClassName)
 {
-//	ZFClassWrap<TestKlass>::Register(m_pkLua);
+	lua_pushusertag(m_pkLua, pkData, tolua_tag(m_pkLua, szClassName));
+	lua_setglobal(m_pkLua, szName);
 	return true;
 }
 

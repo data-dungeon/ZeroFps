@@ -10,12 +10,13 @@
 #endif // _MSC_VER > 1000
 
 #include "script_x.h"
-//#include "zfclasswrap.h"
 
 extern "C"  {
 	#include <lua.h>
 	#include <lualib.h>
 }
+
+#include <tolua.h>
 
 enum VarType
 {
@@ -30,8 +31,11 @@ typedef int (*LuaCallback) (lua_State* lua);
 class SCRIPT_API ZFScript  
 {
 public:
+
+	bool RegisterClass(char *szName, 
+		LuaCallback o_LuaGet, LuaCallback o_LuaSet);
 	
-	bool ExposeClass(const char *szName);
+	bool ExposeObject(const char* szName, void* pkData, char* szClassName);
 	bool ExposeFunction(const char* szName, LuaCallback o_Function);
 	bool ExposeVariable(const char* szName, void* pkData, VarType eVariableType);
 	bool RunScript(char* szFileName);
@@ -50,7 +54,10 @@ private:
 	static int SetTypeString(lua_State* pkLua);
 	static int GetTypeString(lua_State* pkLua);
 
-	bool OpenLua();
+	void Close();
+	bool Open();
+	void OpenPackageFiles();
+
 	lua_State* m_pkLua;
 
 	int m_iLuaTagInt;

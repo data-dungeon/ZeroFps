@@ -257,7 +257,7 @@ void Game::SetupLevel()
 			//CameraProperty* pkCam = static_cast(m_pkPlayer->AddProperty(new CameraProperty()));
 			CameraProperty* pkCam = dynamic_cast<CameraProperty*>(m_pkPlayer->GetProperty("CameraProperty"));
 			pkCam->SetCamera(m_pkCamera);
-			m_pkPlayer->AttachToClosestZone();
+			m_pkPlayer->AttachToClosestZone();	
 			pkLevelMan->AddTracker(m_pkPlayer);
 
 			m_pfPlayerHealth = &static_cast<StatusProperty*>(m_pkPlayer->GetProperty("StatusProperty"))->m_fHealth;
@@ -265,7 +265,7 @@ void Game::SetupLevel()
 
 			po=(*it);
 
-			m_pkScript->ExposeVariable("player_pos_y", &m_pkPlayer->GetPos().y, tFLOAT); 
+			m_pkScript->ExposeVariable("player_pos_y", &m_pkPlayer->GetPos().y, tFLOAT);
 		}		
 	}
 	
