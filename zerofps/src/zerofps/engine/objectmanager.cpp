@@ -849,7 +849,7 @@ bool ObjectManager::TestLine(vector<Object*>* pkPPList,Vector3 kPos,Vector3 kVec
 		float Distance = sqrt((cdis*cdis)-(kdis*kdis));
 		
 		
-		float fRadius=2;//(*it)->GetRadius();
+		float fRadius=(*it)->GetRadius()*0.6;
 		
 		if(Distance < fRadius)
 		{			

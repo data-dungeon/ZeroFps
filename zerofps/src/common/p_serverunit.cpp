@@ -139,7 +139,6 @@ void P_ServerUnit::SetRadius()
 		m_pkObject->GetRadius()=mp->GetRadius();		
 		m_bHaveSetRadius = true;
 	}
-
 }
 
 void P_ServerUnit::Save(ZFMemPackage* pkPackage)
