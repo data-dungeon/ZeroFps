@@ -260,7 +260,8 @@ void ZeroTank::Input()
 
 	static float fRotate = 0;
 	static Vector3 kRotate(0,0,0); 
-
+	kRotate.Set(0,0,0);
+	
 	if(m_pkZeroTank_Modify) {
 		// Translate
 		newpos = m_pkZeroTank_Modify->GetLocalPosV();
@@ -280,7 +281,7 @@ void ZeroTank::Input()
 		if(pkInput->Pressed(KEY_O))	kRotate.z += fSpeedScale;			
 		if(pkInput->Pressed(KEY_L))	kRotate.z -= fSpeedScale;			
 
-		m_pkZeroTank_Modify->SetLocalRotV(kRotate);
+		m_pkZeroTank_Modify->RotateLocalRotV(kRotate);
 		}
 	
 	

@@ -1029,6 +1029,14 @@ void Object::SetWorldPosV(Vector3 kPos)
 	SetLocalPosV(newlocalpos);
 }
 
+void Object::RotateLocalRotV(Vector3 kRot)
+{
+	ResetChildsGotData();
+	
+	m_kLocalRotM.Rotate(kRot);
+}
+
+
 Vector3 Object::GetLocalRotV()
 {
 	if(!m_kGotData[LOCAL_ROT_V])
@@ -1160,4 +1168,7 @@ Matrix4 Object::GetLocalOriM()
 	
 	return m_kLocalOriM;
 }
+
+
+
 

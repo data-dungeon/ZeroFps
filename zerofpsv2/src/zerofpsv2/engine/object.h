@@ -289,6 +289,7 @@ class ENGINE_API Object
 		void			SetLocalPosV(Vector3);
 		void			SetWorldPosV(Vector3);
 		void			SetWorldRotV(Vector3);
+		void			RotateLocalRotV(Vector3 kRot);
 
 		void			ResetGotData(){m_kGotData.reset();};
 		void			ResetChildsGotData();
