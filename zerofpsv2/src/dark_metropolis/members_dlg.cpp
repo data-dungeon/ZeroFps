@@ -345,7 +345,7 @@ void CMembersDlg::OnMouseMove(int x, int y, bool bMouseDown, ZGuiWnd *pkMain)
 	if(bMouseDown == true && m_pkMoveInfo != NULL) 
 	{
 		m_pkMoveInfo->m_pkMoveButton->SetPos(x-m_iCursorRangeDiffX,
-			y-m_iCursorRangeDiffY,true,true);
+			y-m_iCursorRangeDiffY,true,false);
 	}
 }
 
@@ -480,6 +480,13 @@ void CMembersDlg::OnClick(int x, int y, bool bMouseDown, bool bLeftButton,
 						m_pkSelectInfo->m_kFromContainer = m_pkMoveInfo->m_kFromContainer;
 						m_pkSelectInfo->m_pkMoveButton = m_pkMoveInfo->m_pkMoveButton;
 						m_pkSelectInfo->m_pMoveObject = m_pkMoveInfo->m_pMoveObject;
+
+						// Move ikon to top and set movearea to parent window
+						static int s_okaZ = 10000;
+						m_pkMoveInfo->m_pkMoveButton->m_iZValue = s_okaZ++;
+						GetWnd("MembersWnd")->SortChilds(); 
+						m_pkMoveInfo->m_pkMoveButton->SetMoveArea(
+							GetWnd("MembersWnd")->GetScreenRect(), false); 
 
 						m_bNothingSelected = false;
 					}

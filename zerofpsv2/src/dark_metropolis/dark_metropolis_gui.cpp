@@ -199,7 +199,6 @@ void DarkMetropolis::GUI_OnCommand(int iID, bool bRMouseBnClick,
 void DarkMetropolis::GUI_OnClick(int x, int y, bool bMouseDown, 
 											bool bLeftButton, ZGuiWnd *pkMain)
 {
-
 	string strClickName;
 	string strMainWnd;
 
