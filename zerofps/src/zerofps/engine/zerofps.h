@@ -52,7 +52,6 @@ class ZeroFps {
 		void SetApp(void);
 		void Init(int iNrOfArgs, char** paArgs);	
 		void MainLoop(void);
-		void InGameCmd();
 		
 		void InitDisplay(int iWidth,int iHeight,int iDepth);		
 		void Swap(void);								//swap gl buffers

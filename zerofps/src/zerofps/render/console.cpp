@@ -50,7 +50,7 @@ void Console::Update(void) {
 
 			
 			//type text
-			if(strlen(m_aCommand)<TEXT_MAX_LENGHT) {
+			if(strlen(m_aCommand)<COMMAND_LENGHT) {
 				int code=m_kEvent.key.keysym.sym;
 				
 				//shift?
@@ -118,8 +118,8 @@ void Console::Print(char* aText) {
 }
 
 void Console::Execute(char* aText) {
-	string arg[20];
-	int args;
+	string arg[20];		//list of arguments
+	int args;					//number of arguments
 	
 	if(strlen(aText)==0){
 		Print("");
@@ -130,16 +130,21 @@ void Console::Execute(char* aText) {
 	//read input parameters 
 	args=0;
 	for(int i=0;i<strlen(aText);i++) {
-		while(int(aText[i])!=32 && i<strlen(aText)){			
-			arg[args].append(1,aText[i]);
+		while(int(aText[i])!=32 && i<strlen(aText)){	//loop until space
+			arg[args].append(1,aText[i]);			//add to argument nr args
 			i++;
 		}
-		if(arg[args].size()!=0)
+		if(arg[args].size()!=0)//if nothing was added to the argument use it in the next loop
 			args++;
 	}
 	
 	if(arg[0]=="quit"){
 		exit(1);
+		return;
+	}
+	
+	if(arg[0]=="version") {
+		Print("ZeroFps Beta 1.0");
 		return;
 	}
 	
@@ -202,16 +207,19 @@ void Console::Execute(char* aText) {
 		}
 		return;
 	}
-	
-	if(arg[0]=="cmdlist")==0) {
-		Print("");
-		Print("### funktion list ###");
-		for(int i=0;i<m_pkCmd->GetCmdList().size();i++){
-			Print(m_pkCmd->GetCmdList()[i]->aName);			
+
+	if(arg[0]=="music") {
+		if(args==1) {
+			Print("Syntax: music 1/0");		
+			return;
 		}
+		if(arg[1]=="1")
+			m_pkEngine->m_pkAudioMan->PlayMusic();
+		if(arg[1]=="0")
+			m_pkEngine->m_pkAudioMan->StopMusic();
+			
 		return;
 	}
-
 
 	Print("### unknown command ###");
 }
