@@ -41,7 +41,11 @@ void Application::SetEnginePointer(ZeroFps* pkZeroFps)
 
 }
 	
-	
+void Application::SetTitle(string strTitle)
+{
+	SDL_WM_SetCaption(strTitle.c_str(), NULL);
+}
+
 	
 	
 

@@ -242,7 +242,7 @@ bool P_Mad::HandleSetValue( string kValueName ,string kValue )
 	}
 	
 	if(strcmp(kValueName.c_str(), "m_fScale") == 0) {
-		m_fScale = atof(kValue.c_str());
+		m_fScale = float( atof(kValue.c_str()) );
 		m_pkObject->SetRadius(GetRadius());
 				
 		SetNetUpdateFlag(true);
@@ -270,7 +270,7 @@ bool P_Mad::LineVSSphere(Vector3 &kPos,Vector3 &kDir)
 	
 	float cdis=c.Length();
 	float kdis=k.Length();
-	float Distance = sqrt((cdis*cdis)-(kdis*kdis));
+	float Distance = float( sqrt((cdis*cdis)-(kdis*kdis)) );
 	
 	if(Distance < GetRadius())
 		return true;

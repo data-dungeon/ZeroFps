@@ -47,7 +47,8 @@ class ENGINE_API Application : public ZFSubSystem {
 		char* m_pTitle;																///< Windows Title.
 		
 		void SetEnginePointer(ZeroFps* pkZeroFps);							///< Set pointer to ZeroFps Engine.
-					
+		void SetTitle(string strTitle);		
+		
 		Application(char* pName,int iWidth,int iHeight,int iDepth);
 
 		virtual void OnInit(void)=0;

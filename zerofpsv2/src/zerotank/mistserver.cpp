@@ -105,11 +105,8 @@ void MistServer::Init()
 /*	pkGui->SetCursor(0,0, pkTexMan->Load("data/textures/gui/cursor.bmp", 0),
 	pkTexMan->Load("data/textures/gui/cursor_a.bmp", 0), 32, 32);*/
 
-	// hide cursor
-	SDL_ShowCursor(SDL_DISABLE);
-	pkGui->ShowCursor(false);
-
 	SDL_WM_SetCaption("MistServer", NULL);
+	pkGui->ShowCursor(false);
 
 	//CreateMenu("data/script/gui/menu.txt");
 

@@ -147,11 +147,10 @@ void MistServer::Init()
 	pkGui->SetCursor(0,0, pkTexMan->Load("data/textures/gui/cursor.bmp", 0),
 		pkTexMan->Load("data/textures/gui/cursor_a.bmp", 0), 32, 32);
 
-	// hide cursor
-	SDL_ShowCursor(SDL_DISABLE);
-
 	//setup caption
-	SDL_WM_SetCaption("MistServer", NULL);
+	SetTitle("MistServer");
+	// hide cursor
+	m_pkInput->ShowCursor(false);
 
 	// give focus to main window
 	//pkGui->SetFocus(GetWnd("MainWnd")); 
@@ -1446,16 +1445,16 @@ void MistServer::HandleOrders()
 		// Play Order
 		else if ( order->m_sOrderName == "ccPlay" )
       {
-			cout << "Player: " << order->m_iClientID << " wish to start play" << endl;
-			SpawnPlayer(order->m_iClientID);
+			cout << "Player: " << order->m_iConnectID << " wish to start play" << endl;
+			SpawnPlayer(order->m_iConnectID);
       }
 		else if ( order->m_sOrderName == "ccCharList" )
       {
-			cout << "Player: " << order->m_iClientID << " wish to know what char he have." << endl;
+			cout << "Player: " << int(order->m_iConnectID) << " wish to know what char he have." << endl;
 			vector<string> kChars;
-			kChars = m_pkPlayerDB->GetLoginCharacters(string("vim"));
+			kChars = m_pkPlayerDB->GetLoginCharacters( m_pkFps->m_kClient[order->m_iConnectID].m_strLogin.c_str() );
 			for(unsigned int i=0; i<kChars.size(); i++)
-				m_pkFps->PrintToClient(order->m_iClientID, kChars[i].c_str());
+				m_pkFps->PrintToClient(order->m_iConnectID, kChars[i].c_str());
       }
 		
 

@@ -183,12 +183,14 @@ void Input::ToggleGrab(bool bGrab) {
 }
 
 
-void Input::GrabInput(void) {
+void Input::GrabInput(void) 
+{
 	SDL_WM_GrabInput(SDL_GRAB_ON);
  	SDL_ShowCursor(SDL_DISABLE);
 }
 
-void Input::ReleaseInput(void) {
+void Input::ReleaseInput(void) 
+{
 	SDL_WM_GrabInput(SDL_GRAB_OFF);
  	SDL_ShowCursor(SDL_ENABLE);
 }
@@ -419,6 +421,14 @@ void Input::SetCursorInputPos(int x, int y)
 	m_iAbsMouseY=y;
 
 //	SDL_WarpMouse(x,y);
+}
+
+void Input::ShowCursor(bool bShow)
+{
+	if(bShow)
+		SDL_ShowCursor(SDL_ENABLE);
+	else
+		SDL_ShowCursor(SDL_DISABLE);
 }
 
 

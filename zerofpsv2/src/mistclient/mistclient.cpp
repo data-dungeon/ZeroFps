@@ -138,8 +138,9 @@ void MistClient::Init()
 	RegisterResources();
 
 	// set caption
-	SDL_WM_SetCaption("MistClient", NULL);
- 
+ 	SetTitle("MistClient");
+	//SDL_WM_SetCaption("MistClient", NULL);
+
 	// create gui script
 	GuiAppLua::Init(&g_kMistClient, m_pkScript);
 
@@ -159,7 +160,8 @@ void MistClient::Init()
 		pkTexMan->Load("data/textures/gui/cursor_a.bmp", 0), 32, 32);
 
 	// hide cursor
-	SDL_ShowCursor(SDL_DISABLE);
+	m_pkInput->ShowCursor(false);
+//	SDL_ShowCursor(SDL_DISABLE);
 
 	// Varde ljus!
 	m_pkLight->SetLighting(true);

@@ -52,9 +52,9 @@ void P_Light::Update()
 			if(m_pkZeroFps->GetTicks() - m_fTimer > 0.05)
 			{
 				m_fTimer = m_pkZeroFps->GetTicks();
-				float hora = ((rand() % 1000))/200000.0;
+				float hora = float( ((rand() % 1000)/200000.0) );
 	
-				m_pkLightSource->kDiffuse = Vector3(hora + 0.02,hora + 0.02 ,hora + 0.01);
+				m_pkLightSource->kDiffuse = Vector3(float(hora + 0.02), float(hora + 0.02) , float(hora + 0.01) );
 			}
 			break;		
 		}

@@ -66,9 +66,8 @@ void ZGResEdit::OnInit()
 		"data/textures/text/small.bmp",
 		"data/script/gui/gui_res_edit.lua");
 
-	SDL_WM_SetCaption("The Migthy GUI Editor!", NULL);
-
-	SDL_ShowCursor(SDL_DISABLE);
+	SetTitle("The Migthy GUI Editor!");
+	m_pkInput->ShowCursor(false);
 
 	pkGui->SetCursor(0,0, pkTexMan->Load("data/textures/gui/cursor.bmp", 0),
 		pkTexMan->Load("data/textures/gui/cursor_a.bmp", 0), 32, 32);

@@ -218,6 +218,7 @@ class ENGINE_API Input : public ZFSubSystem {
 		void SetInputEnabled(bool bInputEnabled) { m_bInputEnabled=bInputEnabled ;};
 		bool GetInputEnabled() { return m_bInputEnabled;};
 
+		void ShowCursor(bool bShow);
 
 		bool StartUp();
 		bool ShutDown();

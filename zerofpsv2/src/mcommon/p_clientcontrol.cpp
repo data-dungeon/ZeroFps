@@ -64,7 +64,7 @@ void P_ClientControl::PackFrom( NetPacket* pkNetPacket, int iConnectionID  )
 {
 	int iNrOO;
 	pkNetPacket->Read(&iNrOO,sizeof(iNrOO));
-	
+
 	//never process more orders then clients are allowed to do
 	if(iNrOO > m_iMaxOrders)
 		cout<<"Error client has added to many orders in queue:"<<endl;
@@ -82,6 +82,7 @@ void P_ClientControl::PackFrom( NetPacket* pkNetPacket, int iConnectionID  )
 		pkNetPacket->Read(&temporder.m_kPos,sizeof(temporder.m_kPos));						
 		pkNetPacket->Read(&temporder.m_iUseLess,sizeof(temporder.m_iUseLess));								
 		
+		temporder.m_iConnectID = pkNetPacket->m_iClientID;
 		//if we already gotten max nr of orders, dont add this one
 		if(i <= m_iMaxOrders)
 			if(CheckValidOrder(&temporder))

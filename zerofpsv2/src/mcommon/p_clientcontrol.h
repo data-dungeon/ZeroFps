@@ -39,15 +39,16 @@ class MCOMMON_API Controls
 class MCOMMON_API ClientOrder
 {
 	public:
-		string	m_sOrderName;
-		int		m_iObjectID;
-		int		m_iClientID;
+		string			m_sOrderName;		// Name of the order.
+		int				m_iObjectID;		
+		int				m_iClientID;		
+			
+		int				m_iCharacter;		
+			
+		Vector3			m_kPos;				
+		int				m_iUseLess;			
 		
-		int		m_iCharacter;
-		
-		Vector3	m_kPos;
-		int		m_iUseLess;
-		
+		unsigned char	m_iConnectID;		
 };
 
 /**	\brief	Da P_ClientControl
