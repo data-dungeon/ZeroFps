@@ -9,8 +9,8 @@ MissionInfo = { name="Dr Gun", difficulty=1, xp=100, cash=500 } -- difficulty = 
 
 MissionText = 
 { 
-	short = "Another mission",
-	long = "Walk around in the town and collect XX number of XXX, when you have collected all XXX return to base."
+	short = "Dr Gun",
+	long = "Mr. Wilhelm Von Leath wont you to work for him for a while. "
 }
 
 function OnMissionStart()
