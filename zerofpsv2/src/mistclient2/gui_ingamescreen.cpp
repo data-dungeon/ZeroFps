@@ -113,6 +113,9 @@ void MistClient::AddStringToChatBox(string strMsg)
 
 	((ZGuiTextbox*)g_kMistClient.GetWnd("ChatTextbox"))->ScrollRowIntoView(
 		((ZGuiTextbox*)g_kMistClient.GetWnd("ChatTextbox"))->GetRowCount());
+
+	m_pkAudioSys->StartSound("data/sound/gui/turn_page.wav");
+
 }
 
 void MistClient::ResizeChatDlg(bool	bMakeBigger)
