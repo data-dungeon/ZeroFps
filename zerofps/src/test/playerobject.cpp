@@ -9,7 +9,7 @@ PlayerObject::PlayerObject(HeightMap *pkMap,Input *pkInput)
 	AddProperty(new PlayerControlProperty(pkInput,pkMap));
 	AddProperty(new GravityProperty());
 	AddProperty(new FloatProperty());	
-//	AddProperty(new ModelProperty());
+	AddProperty(new ModelProperty());
 	
 	AddProperty("LightProperty");
 	LightProperty* pkJumpLight = dynamic_cast<LightProperty*>(GetProperty("LightProperty"));

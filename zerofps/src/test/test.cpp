@@ -1,13 +1,11 @@
 #include "test.h"
 #include "walker.h"
 
-
 Test olle("MegaGame",1024,768,16);
 
 Test::Test(char* aName,int iWidth,int iHeight,int iDepth): Application(aName,iWidth,iHeight,iDepth) {
 
 }
-
 
 void Test::OnInit(void) {
 	
@@ -100,7 +98,7 @@ void Test::OnInit(void) {
 	
 	int i;
 	
-/*	for( i=0;i<200;i++) {
+/*	for( i=0;i<1;i++) {
 		Object *ball=new WalkerObject();
 		float x=227;	// + rand()%200;
 		float y=785;	// + rand()%100;
@@ -111,7 +109,7 @@ void Test::OnInit(void) {
 
 
 	Object *sussi;
-	for(i=0;i<100;i++) {
+	for(i=0;i<1;i++) {
 		sussi=new BunnyObject();
 		float x=300 + rand()%100;
 		float y=750 + rand()%100;
@@ -141,15 +139,14 @@ void Test::OnInit(void) {
 	welcome->m_acFile="file:../data/sound/welcome.wav";
 	welcome->m_kPos.Set(300,25,785);
 	welcome->m_bLoop=true;
-	
 	pkAlSys->AddSound(welcome);
-	
-
 }
+
 
 void Test::OnIdle(void) {
 //	m_pkPlayer->GetPos().print();
 //	glFogCoordfEXT(-20);
+
 
 	m_kSpotpos->x=sin(SDL_GetTicks()/1000.0)*50.0+80;
 	m_kSpotpos->z=cos(SDL_GetTicks()/1000.0)*50.0+80;
@@ -213,6 +210,9 @@ void Test::OnHud(void) {
 
 
 void Test::input() {
+
+
+
 	if(pkInput->Pressed(RIGHT)){
 		pkFps->GetCam()->GetPos().x+=cos((pkFps->GetCam()->GetRot().y)/degtorad) *pkFps->GetFrameTime()*speed;			
 		pkFps->GetCam()->GetPos().z+=sin((pkFps->GetCam()->GetRot().y)/degtorad) *pkFps->GetFrameTime()*speed;				
@@ -238,7 +238,12 @@ void Test::input() {
 
 	if(pkInput->Pressed(HOME)) {
 		//pkFps->m_kPropertyFactory.Display();
-		g_ZFObjSys.PrintObjects();
+		cout << "Gaaaaaaaaaaaaa " << endl;
+		//g_ZFObjSys.PrintObjects();
+		NetPacket paket;
+		paket.Write_Str("Hello World :)");
+		paket.SetTarget("192.168.0.111:4242");
+		pkFps->m_pkNetWork->Send(&paket);
 		}
 		
 		

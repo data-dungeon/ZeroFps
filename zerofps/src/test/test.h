@@ -38,6 +38,7 @@ class Test :public Application {
 
 	public:
 		Test(char* aName,int iWidth,int iHeight,int iDepth);
+		~Test() {};
 	 	void OnInit(void);
 		void OnIdle(void);
 		void OnHud(void);

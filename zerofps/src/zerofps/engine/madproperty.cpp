@@ -11,6 +11,7 @@ void SetGameTime(void)
 
 MadProperty::MadProperty()
 {
+	bNetwork = true;
 	strcpy(m_acName,"MadProperty");
 	m_iType=PROPERTY_TYPE_STATIC;
 }

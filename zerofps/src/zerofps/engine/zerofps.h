@@ -13,10 +13,12 @@
 #include "propertyfactory.h"
 #include <cstdio>
 #include <cstdarg>
+#include "network.h"
 
 using namespace std;
 
 class Application;
+class NetPacket;
 
 enum enginestates 
 {
@@ -52,6 +54,9 @@ class ENGINE_API ZeroFps : public ZFObject {
 			{
 			FID_SETDISPLAY,
 			FID_QUIT,
+			FID_SLIST,			// List all servers
+			FID_CONNECT,		// Connect to server.
+			FID_SERVER,			// Start a Server.
 			};
 
 		void RunCommand(int cmdid, const CmdArgument* kCommand);
@@ -71,6 +76,7 @@ class ENGINE_API ZeroFps : public ZFObject {
 		CollisionManager*  m_pkCollisionMan;
 		SoundBufferManager* m_pkSBM;		
 		OpenAlSystem* m_pkOpenAlSystem;
+		NetWork* m_pkNetWork;
 
 
 		vector<Core>		akCoreModells;
@@ -116,6 +122,8 @@ class ENGINE_API ZeroFps : public ZFObject {
 		vector<string>	akDevString;
 		void DrawDevStrings();
 		void DevPrintf(const char *fmt, ...);
+
+		void HandleNetworkPacket(NetPacket* pkNetPacket);
 
 };
 

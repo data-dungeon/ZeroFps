@@ -14,8 +14,10 @@ class ENGINE_API ObjectManager : public ZFObject{
 
 	void RunCommand(int cmdid, const CmdArgument* kCommand) { }
 
+	int	iNextObjectID;
+
 	public:
-		ObjectManager() : ZFObject("ObjectManager") { };
+		ObjectManager();
 		~ObjectManager() { }
 
 		void Add(Object* pkNewObject);			//add object to the manager
@@ -25,7 +27,8 @@ class ENGINE_API ObjectManager : public ZFObject{
 		void Update(int iType);					//update all objects of specified type
 		void UpdateDelete();					//deletes objects in delete qeue	
 		
-
+		void UpdateState(char* pacData);		//Updates objects.
+		void PackToClients();					//Packs and Sends to ALL clients.
 };
 
 

@@ -9,6 +9,7 @@
 #include "property.h"
 #include "objectmanager.h"
 #include "propertyfactory.h"
+#include "network.h"
 
 using namespace std;
 
@@ -27,7 +28,7 @@ class ENGINE_API Object {
 		list<Property*> m_akPropertys;
 		ObjectManager* m_pkObjectMan; 
 	public:
-
+		int		iNetWorkID;		// ID used by network state code.
 
 		Object();		
 		~Object();
@@ -42,6 +43,10 @@ class ENGINE_API Object {
 		void Update(int iType);		
 		bool Update(char* acName);
 		
+		bool NeedToPack();				// Returns true if there is any netactive properys in object
+		void PackTo(NetPacket* pkNetPacket);
+		void PackFrom(NetPacket* pkNetPacket);
+
 		inline Vector3 &GetPos(){return m_kPos;};
 		inline Vector3 &GetRot(){return m_kRot;};
 		inline Vector3 &GetVel(){return m_kVel;};		
@@ -51,8 +56,8 @@ class ENGINE_API Object {
 		inline ObjectManager *GetObjectMan() {return m_pkObjectMan;};				
 		
 		virtual void HandleCollision(Object* pkObject,Vector3 kPos,bool bContinue);
-//		virtual void ObjectUpdate();		
 		virtual bool Save(void *pkData,int iSize);
+
 
 };
 

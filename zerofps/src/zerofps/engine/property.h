@@ -5,6 +5,7 @@
 #include <string>
 #include <iostream>
 #include "engine_x.h"
+#include "network.h"
 
 using namespace std;
 
@@ -21,14 +22,19 @@ class ENGINE_API Property
 	protected:
 		Object *m_pkObject;
 		int m_iType;			//property type, can be used when running update to update only selected types
-		
+
+
 	public:
 		Property();
+		
+		bool	bNetwork;
 		
 		char m_acName[50];
 			
 		virtual ~Property(){};
 		virtual void Update()=0;			
+		void PackTo(NetPacket* pkNetPacket) { };
+		void PackFrom(NetPacket* pkNetPacket) { };
 		
 		inline int GetType(){ return m_iType ;};
 		inline void SetObject(Object* pkObject){m_pkObject=pkObject;};

@@ -3,6 +3,7 @@
 
 
 ModelProperty::ModelProperty() {
+	bNetwork = true;
 	strcpy(m_acName,"ModelProperty");
 	m_iType=PROPERTY_TYPE_STATIC;
 	m_fRadius = 1.0;
@@ -26,6 +27,22 @@ void ModelProperty::Update() {
 	glPopAttrib();
 }
 
+void ModelProperty::PackTo( NetPacket* pkNetPacket ) {
+	pkNetPacket->Write( m_iType );		
+	pkNetPacket->Write( m_fRadius );		
+	pkNetPacket->Write( m_iSlices );		
+	pkNetPacket->Write( m_iStacks );		
+	pkNetPacket->Write( m_kColor );		
+}
+
+void ModelProperty::PackFrom( NetPacket* pkNetPacket ) {
+	pkNetPacket->Read( m_iType );		
+	pkNetPacket->Read( m_fRadius );		
+	pkNetPacket->Read( m_iSlices );		
+	pkNetPacket->Read( m_iStacks );		
+	pkNetPacket->Read( m_kColor );		
+	
+}
 
 Property* Create_ModelProperty()
 {

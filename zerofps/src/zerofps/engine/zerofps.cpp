@@ -1,4 +1,5 @@
 #include "zerofps.h"
+#include "network.h"
 
 //	extern PFNGLFOGCOORDFEXTPROC glFogCoordfEXT;		//glFogCoordsEXT
 
@@ -18,14 +19,15 @@ ZeroFps::ZeroFps(void)
 	m_pkCollisionMan=new CollisionManager();	
 	m_pkSBM=new SoundBufferManager(m_pkFile);	
 	m_pkOpenAlSystem= new OpenAlSystem();
+	m_pkNetWork = new NetWork;
+
+	m_pkNetWork->ServerStart();
 
 	m_iFullScreen=0;
 	m_fFrameTime=0;
 	m_fLastFrameTime=SDL_GetTicks();
 
-
 	akCoreModells.reserve(25);
-
 
 	//add some nice variables =)
 	m_pkCmd->Add(&m_iState,"G_State",type_int);
@@ -43,14 +45,18 @@ ZeroFps::ZeroFps(void)
 
 	g_ZFObjSys.Register_Cmd("setdisplay",FID_SETDISPLAY,this);
 	g_ZFObjSys.Register_Cmd("quit",FID_QUIT,this);
+	g_ZFObjSys.Register_Cmd("slist",FID_SLIST,this);
+	g_ZFObjSys.Register_Cmd("connect",FID_CONNECT,this);
+	g_ZFObjSys.Register_Cmd("server",FID_SERVER,this);
 
 	RegisterPropertys(this);
-
 
 }
 
 ZeroFps::~ZeroFps()
 {
+	m_pkNetWork->ServerEnd();
+
 	delete m_pkFile;
 	delete m_pkCmd;
 	delete m_pkTexMan;
@@ -61,19 +67,7 @@ ZeroFps::~ZeroFps()
 	delete m_pkLight;
 	delete m_pkObjectMan;
 	delete m_pkCollisionMan;
-
-/*	m_pkFile=new FileIo;
-	m_pkCmd=new CmdSystem;
-	m_pkTexMan=new TextureManager(m_pkFile);
-	m_pkRender=new Render(m_pkTexMan);
-	m_pkConsole=new Console(this);	
-	m_pkInput=new Input();
-	m_pkAudioMan=new AudioManager(this);
-	m_pkLight=new Light();
-	m_pkObjectMan=new ObjectManager();
-	m_pkCollisionMan=new CollisionManager();*/	
-
-
+	delete m_pkNetWork;
 }
 
 void ZeroFps::SetApp() {
@@ -135,7 +129,11 @@ void ZeroFps::Init(int iNrOfArgs, char** paArgs)
 }
 
 void ZeroFps::MainLoop(void) {
-	while(m_iState!=state_exit) {		
+
+	while(m_iState!=state_exit) {
+		m_pkNetWork->Run();
+		m_pkObjectMan->PackToClients();
+
 		switch(m_iState){
 			case state_normal:{
 
@@ -389,12 +387,27 @@ void ZeroFps::RunCommand(int cmdid, const CmdArgument* kCommand)
 			m_iState = state_exit;
 			break;
 
-			
+		case FID_SLIST:
+			m_pkConsole->Printf("List of servers");
+			m_pkNetWork->ServerList();
+			break;
 
+		case FID_CONNECT:
+			if(kCommand->m_kSplitCommand.size() <= 1)
+				return;
+			m_pkConsole->Printf("Connect to %s", kCommand->m_kSplitCommand[1].c_str());
+			break;
+
+		case FID_SERVER:
+			if(kCommand->m_kSplitCommand.size() <= 1) {
+				m_pkConsole->Printf("You need to give a name for your server.");
+				return;
+				}
+
+			m_pkConsole->Printf("Start a server with name %s", kCommand->m_kSplitCommand[1].c_str());
+			break;
 	}	
 }
-
-
 
 
 int ZeroFps::LoadMAD(const char* filename)
@@ -438,3 +451,8 @@ Core* ZeroFps::GetMADPtr(const char* filename)
 	return NULL;
 }
 
+
+void ZeroFps::HandleNetworkPacket(NetPacket* pkNetPacket)
+{
+
+}
