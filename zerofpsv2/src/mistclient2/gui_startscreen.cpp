@@ -326,6 +326,7 @@ void GuiMsgStartScreen( string strMainWnd, string strController,
 
 					string szMadFile = string("data/mad/") + string("player2.mad");
 					((P_Mad*)pkModellEnt->GetProperty("P_Mad"))->SetBase(szMadFile.c_str());	
+					((P_Mad*)pkModellEnt->GetProperty("P_Mad"))->SetAnimation("idle",0);
 
 					float aspect = (float) pkModelWnd->GetScreenRect().Width() /
 						(float) pkModelWnd->GetScreenRect().Height();
@@ -335,6 +336,8 @@ void GuiMsgStartScreen( string strMainWnd, string strController,
 					pkCam->SetClearViewPort(false);  
 					pkCam->SetRootEntityID(pkModellEnt->GetEntityID());
 					pkCam->SetForceLighting(0);
+					
+					cout<<"blubba mera"<<endl;
 					
 					pkModelWnd->SetRenderTarget(pkCam);
 

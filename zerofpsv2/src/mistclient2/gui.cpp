@@ -274,16 +274,16 @@ void MistClient::SetupGUI()
 			//pkModellEnt->AddProperty("P_LightUpdate");
 			pkModellEnt->AddProperty("P_Mad");
 
-			Vector4 kCurrentDiffuse(1,1,1,1);
-			Vector4 kCurrentAmbient(1,1,1,1);
-			Vector3 kSunPos(0,0,0);
-
-			P_Light* pkLight = (P_Light*)pkModellEnt->AddProperty("P_Light");
-
-			pkLight->SetType(DIRECTIONAL_LIGHT);
-			pkLight->SetDiffuse(kCurrentDiffuse);
-			pkLight->SetAmbient(kCurrentAmbient);		
-			pkLight->SetRot(kSunPos);	
+// 			Vector4 kCurrentDiffuse(1,1,1,1);
+// 			Vector4 kCurrentAmbient(1,1,1,1);
+// 			Vector3 kSunPos(0,0,0);
+// 
+// 			P_Light* pkLight = (P_Light*)pkModellEnt->AddProperty("P_Light");
+// 
+// 			pkLight->SetType(DIRECTIONAL_LIGHT);
+// 			pkLight->SetDiffuse(kCurrentDiffuse);
+// 			pkLight->SetAmbient(kCurrentAmbient);		
+// 			pkLight->SetRot(kSunPos);	
 
 			string szMadFile = string("data/mad/") + string("player2.mad");
 			((P_Mad*)pkModellEnt->GetProperty("P_Mad"))->SetBase(szMadFile.c_str());	
@@ -295,7 +295,8 @@ void MistClient::SetupGUI()
 			pkCam->SetDebugGraphs(false);
 			pkCam->SetClearViewPort(false);  
 			pkCam->SetRootEntityID(pkModellEnt->GetEntityID());
-
+			pkCam->SetForceLighting(0);
+						
 			pkModelWnd->SetRenderTarget(pkCam);
 
 			P_Mad* pkMad = ((P_Mad*)pkModellEnt->GetProperty("P_Mad"));					

@@ -589,7 +589,7 @@ void Camera::RenderView()
 
 	
 	//shuld be render shadowmaps?		
-	if((m_bShadowMap && m_pkZeroFps->GetShadowMap()))
+	if((m_bShadowMap && m_pkZeroFps->GetShadowMap() && (m_iForceLighing != 0) ))
 	{	
 		//scene center (use entity pos if any)
 		Matrix4 kTrans = m_kRotM;
