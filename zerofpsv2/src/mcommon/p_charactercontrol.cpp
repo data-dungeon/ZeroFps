@@ -61,8 +61,11 @@ void P_CharacterControl::Update()
 		if(kVel.Length() > 0)
 			kVel = kVel.Unit() * m_fSpeed;
 		
-		if(pkTcs->GetOnGround())
-			pkTcs->ApplyForce(Vector3(0,0,0),kVel);
+		//character moves slower while in the air
+		if(!pkTcs->GetOnGround())
+			kVel *= 0.25;
+		
+		pkTcs->ApplyForce(Vector3(0,0,0),kVel);
 		
 		if(m_kControls[eJUMP])
 			if(pkTcs->GetOnGround())

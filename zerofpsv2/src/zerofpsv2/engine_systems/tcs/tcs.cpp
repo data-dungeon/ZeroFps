@@ -269,11 +269,11 @@ void Tcs::HandleCollission(Tcs_collission* pkCol)
 					  ( 1/fMass1 + 1/fMass2)); 	
 		
 		
-/*		//increse force of theres a character involved
+		//increse force of theres a character involved
 		if(pkCol->pkBody1->m_bCharacter || pkCol->pkBody2->m_bCharacter)
 			if(j < 1.0)
 				j = 1.0;
-*/			
+			
 		//make sure the impact force is not to small					  
 		if(j < m_fMinForce)
 			j = m_fMinForce;  
