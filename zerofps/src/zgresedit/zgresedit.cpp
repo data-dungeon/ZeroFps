@@ -187,7 +187,7 @@ bool ZGResEdit::WinProc(ZGuiWnd* pkWnd,unsigned int uiMessage,
 			// Save File
 			else
 			{
-				SaveFile();
+				SaveFile(m_pkFileOpenDlg->m_szCurrentFile.c_str());
 			}
 			break;
 		
@@ -373,14 +373,14 @@ bool ZGResEdit::WinProc(ZGuiWnd* pkWnd,unsigned int uiMessage,
 							int MoveOffsetX = iNewPosXRectWnd-iOldPosXRectWnd;
 							int MoveOffsetY = iNewPosYRectWnd-iOldPosYRectWnd;
 
-							for(int i=0; i<m_pkMoveWnds.size(); i++)
+							for(unsigned int i=0; i<m_pkMoveWnds.size(); i++)
 							{
 								bool bSkip = false;
 
 								// Flytta inte på ett fönster om dess parent
 								// också skall flyttas (tårta-på-tårta).
 								ZGuiWnd* pkParent = m_pkMoveWnds[i]->GetParent();
-								for(int j=0; j<m_pkMoveWnds.size(); j++)
+								for(unsigned int j=0; j<m_pkMoveWnds.size(); j++)
 									if( m_pkMoveWnds[i] != m_pkMoveWnds[j] &&
 										m_pkMoveWnds[j] == pkParent)
 										{
@@ -411,7 +411,7 @@ bool ZGResEdit::WinProc(ZGuiWnd* pkWnd,unsigned int uiMessage,
 		{
 		case KEY_DELETE:
 
-			int i;
+			unsigned int i;
 
 			for( i=0; i<m_pkMoveWnds.size(); i++)
 				if(!IsGuiWnd(m_pkMoveWnds[i]))
@@ -495,7 +495,7 @@ bool ZGResEdit::WinProc(ZGuiWnd* pkWnd,unsigned int uiMessage,
 				}
 				else
 				{
-					for( int i=0; i<m_pkMoveWnds.size(); i++)
+					for(unsigned int i=0; i<m_pkMoveWnds.size(); i++)
 					{
 						int offset = 1;
 						if(m_bUseGrid)
@@ -534,7 +534,7 @@ bool ZGResEdit::WinProc(ZGuiWnd* pkWnd,unsigned int uiMessage,
 				}
 				else
 				{
-					for( int i=0; i<m_pkMoveWnds.size(); i++)
+					for(unsigned int i=0; i<m_pkMoveWnds.size(); i++)
 						if(!IsGuiWnd(m_pkMoveWnds[i]))
 						{
 							int offset = 1;
@@ -566,19 +566,19 @@ bool ZGResEdit::WinProc(ZGuiWnd* pkWnd,unsigned int uiMessage,
 	// Combobox select ok.
 	case ZGM_CBN_SELENDOK:
 		int iID = ((int*)pkParams)[0];
-		ZGuiListitem* pkSelItem;
+
 		switch(iID)
 		{
 			case ID_FILE_MENU:
 			{
 				ZGuiCombobox* pkCbox = (ZGuiCombobox*)
 					m_pkGuiBuilder->GetWnd("FileMenuCB");
-				pkSelItem = pkCbox->GetListbox()->GetSelItem();
-
+			
+				int iItemID = ((int*)pkParams)[1];
 				unsigned long flags = 0;
 
 				// Switch Menu Item
-				switch(pkSelItem->GetIndex())
+				switch(iItemID)
 				{	
 				case IDM_NEW:
 					m_pkControlBox->ClearAll(); 
@@ -597,7 +597,7 @@ bool ZGResEdit::WinProc(ZGuiWnd* pkWnd,unsigned int uiMessage,
 				case IDM_SAVEFILE:
 					if(m_pkFileOpenDlg)
 					{
-						SaveFile();
+						SaveFile(m_pkFileOpenDlg->m_szCurrentFile.c_str());
 					}
 					break;
 				case IDM_SAVEFILE_AS:
@@ -844,25 +844,70 @@ void ZGResEdit::EnableClickWnd()
 	}
 }
 
-void ZGResEdit::SaveFile()
+void ZGResEdit::SaveFile(const char* szFileName)
 {
+	char* szName = strdup(szFileName);
+
 	if(m_pkFileOpenDlg)
 	{
+		unsigned int i=0;
+
+		// Ta bort eventuella fil ändelser
+		bool bFoundExtension=false;
+		for(i=0; i<strlen(szName); i++)
+		{
+			if(szName[i] == '.')
+			{
+				szName[i] = '\0';
+				bFoundExtension = true;
+			}
+			else
+			if(szName[i] == ' ')
+			{
+				szName[i] = '_';
+			}
+			else
+			if(bFoundExtension)
+			{
+				szName[i] = 0;
+			}
+		}
+
+		char szIDName[50]; sprintf(szIDName, "%s_id.h", szName);
+		char szRCName[50]; sprintf(szRCName, "%s_rc.txt", szName);
+
 		char szFile[512];
-		sprintf(szFile, "%s/%s", m_pkFileOpenDlg->m_szSearchPath.c_str(),
-			"zgresource_id.h");
+		sprintf(szFile, "%s/%s", m_pkFileOpenDlg->m_szSearchPath.c_str(),szIDName);
+
+		// Create #define name
+		char szDefName[50];
+		strcpy(szDefName, szIDName);
+		for(i=0; i<strlen(szDefName); i++)
+		{
+			if(szDefName[i] >= 97 && szDefName[i] <= 122)
+				szDefName[i] = szDefName[i]-32;
+			else
+			if(szDefName[i] == '.')
+				szDefName[i] = '_';
+		}
+
+		char szTop[256], szBottom[256];
+		sprintf(szTop, "#ifndef _%s\n#define _%s\n\nenum %sID\n{\n", 
+			szDefName, szDefName, szName);
+		sprintf(szBottom, "};\n\n#endif // #ifndef _%s", szDefName);
 
 		Serialization kSaveIDs(szFile, m_pkINI, true);
-		kSaveIDs.Output("#ifndef _ZGRESOURCE_ID_H\n#define _ZGRESOURCE_ID_H\n\nenum WindowID\n{\n");
+		kSaveIDs.Output(szTop);
 		m_pkControlBox->PrintWindowIDs(&kSaveIDs);
-		kSaveIDs.Outputa("};\n\n#endif // #ifndef _ZGRESOURCE_ID_H");
+		kSaveIDs.Outputa(szBottom);
 
-		sprintf(szFile, "%s/%s", m_pkFileOpenDlg->m_szSearchPath.c_str(),
-			"zgresource_rc.txt");
+		sprintf(szFile, "%s/%s", m_pkFileOpenDlg->m_szSearchPath.c_str(), szRCName);
 
 		Serialization kSaveRC(szFile, m_pkINI, true);
 		kSaveRC.Output("; ZGui resource script.\n\n");
 		m_pkControlBox->PrintWindowRC(&kSaveRC, pkTexMan);
 	}
+
+	free(szName);
 }
 

@@ -48,7 +48,7 @@ private:
 
 	bool m_bResizeRectWnd;
 
-	void SaveFile();
+	void SaveFile(const char* szFileName);
 	void EnableClickWnd();
 	void DisableClickWnd();
 
