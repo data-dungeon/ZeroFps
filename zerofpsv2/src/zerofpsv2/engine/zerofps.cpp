@@ -297,7 +297,9 @@ void ZeroFps::Run_EngineShell()
 	DevPrintf("common","Res Size: %d", m_pkResourceDB->GetResSizeInBytes());
 
 	DevPrintf("common","shadows: %d", m_pkZShadow->GetCurrentShadows());
+	DevPrintf("common","active shadows: %d", m_pkZShadow->GetCurrentActiveShadows());
 	DevPrintf("common","shadow verts: %d", m_pkZShadow->GetCurrentVerts());
+	DevPrintf("common","shadow buffert: %d", m_pkZShadow->GetBuffertSize());
 
 	// Update Local Input.
 	m_pkInput->Update();
