@@ -53,7 +53,7 @@ bool PathFind::Rebuild(int iStartPosX, int iStartPosY, int iDestPosX, int iDestP
 			if( pkTile != NULL && pkTile->kUnits.size() > 0)
 			{
 				TEMP_TERRAIN[y*m_siMapWidth+x] = BLOCKED_VALUE;
-				printf("Blocked Tile Found!!\n");
+				//printf("Blocked Tile Found!!\n");
 			}
 		}
 

@@ -46,8 +46,10 @@ private:
 	int					m_iCurrentState;
 	bool					m_bTemp;
 	
+	float					m_fWaitTime;
+	
 	enum { 
-		UNIT_MOVE, 
+		UNIT_MOVE,
 		TEMP 
 	};
 
