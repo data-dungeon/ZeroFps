@@ -10,7 +10,8 @@ void StdLua::Init(ZFScriptSystem* pkScript)
 	pkScript->ExposeFunction("Print",	StdLua::PrintLua);
 	pkScript->ExposeFunction("Sin",	StdLua::SinLua);	
 	pkScript->ExposeFunction("Cos",	StdLua::CosLua);		
-	pkScript->ExposeFunction("Tan",	StdLua::TanLua);			
+	pkScript->ExposeFunction("Tan",	StdLua::TanLua);
+	pkScript->ExposeFunction("GetFilesInFolder", StdLua::GetFilesInFolderLua);		
 }
 
 
@@ -71,5 +72,28 @@ int StdLua::TanLua(lua_State* pkLua)
 	return 1;
 }
 
+// 1:st argument = Path to folder with files (char*)
+// 2:nd argument = Table to be filled with files (table)
 
+int StdLua::GetFilesInFolderLua(lua_State* pkLua)
+{
+	if(g_pkScript->GetNumArgs(pkLua) != 2)
+	{
+		printf("StdLua::GetFilesInFolderLua Failed!: Bad argumets\n");
+		return 0;
+	}
 
+	vector<TABLE_DATA> vkData;
+	g_pkScript->GetArgTable(pkLua, 1, vkData);
+
+/*
+	char* piss = (char*) vkData[0].pData;
+	delete[] piss;
+
+	vkData[0].pData = new char[50];
+	strcpy((char*)vkData[0].pData, "mamma");*/
+
+	g_pkScript->SetArgTable(pkLua, 1, vkData);
+
+	
+}

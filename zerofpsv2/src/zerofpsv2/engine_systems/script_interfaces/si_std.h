@@ -21,7 +21,9 @@ namespace StdLua
 	
 	int ENGINE_SYSTEMS_API SinLua(lua_State* pkLua);		
 	int ENGINE_SYSTEMS_API CosLua(lua_State* pkLua);			
-	int ENGINE_SYSTEMS_API TanLua(lua_State* pkLua);				
+	int ENGINE_SYSTEMS_API TanLua(lua_State* pkLua);
+
+	int ENGINE_SYSTEMS_API GetFilesInFolderLua(lua_State* pkLua);
 };
 
 #endif

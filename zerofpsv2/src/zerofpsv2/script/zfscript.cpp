@@ -364,6 +364,81 @@ bool ZFScriptSystem::GetArg(lua_State* state, int iIndex, void* data)
 	return false;
 }
 
+bool ZFScriptSystem::GetArgTable(lua_State* state, int iIndex, vector<TABLE_DATA>& vkData)
+{
+	int iLuaIndex = iIndex + 1;
+
+	if(lua_istable(state, iLuaIndex))
+	{
+		int iNumElements = lua_getn(state, iLuaIndex);
+
+		TABLE_DATA table_data;
+
+		for(int i=0; i<iNumElements; i++)
+		{
+			lua_rawgeti(state, iLuaIndex, 1+i);
+
+			if(lua_isnumber(state, 3+i))
+			{
+				table_data.bNumber = true;
+				table_data.pData = new double;
+				(*(double*) table_data.pData) = lua_tonumber(state, 3+i);
+
+		/*		lua_pushvalue(state, 22);
+				lua_rawseti(state, iLuaIndex, 1+i);*/
+			}
+			else
+			if(lua_isstring(state, 3+i))
+			{
+				const char* text = lua_tostring(state, 3+i);
+				table_data.bNumber = false;
+				table_data.pData = new char[strlen(text)+1];
+				strcpy( (char*) table_data.pData, text);
+
+	/*			lua_pushstring (state, "mamasdsadfasdfsadfsadf");
+				lua_rawseti(state, iLuaIndex, 1+i);*/
+			}
+
+			vkData.push_back(table_data);
+		}
+
+		return true;
+	}
+
+	return false;
+}
+
+bool ZFScriptSystem::SetArgTable(lua_State* state, int iIndex, vector<TABLE_DATA>& vkData)
+{
+	int iLuaIndex = iIndex + 1;
+
+	if(lua_istable(state, iLuaIndex))
+	{
+		for(unsigned int i=0; i<vkData.size(); i++)
+		{
+			TABLE_DATA current = vkData[i];
+
+			if(current.bNumber)
+			{
+				//lua_pushusertag(state, current.pData, m_iLuaTagDouble);
+				lua_pushnumber(state, 22);
+				lua_rawseti(state, iLuaIndex, 1+i);
+			}
+			else
+			if(lua_isstring(state, 3+i))
+			{
+				//lua_pushusertag(state, current.pData, m_iLuaTagString);
+				lua_pushstring(state, "uga");
+				lua_rawseti(state, iLuaIndex, 1+i);
+			}
+		}
+
+		return true;
+	}
+
+	return false;
+}
+
 bool ZFScriptSystem::GetArgNumber(lua_State* state, int iIndex, double* data)
 {
 	int iLuaIndex = iIndex + 1;

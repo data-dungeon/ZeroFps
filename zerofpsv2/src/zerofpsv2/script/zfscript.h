@@ -37,6 +37,12 @@ enum ScripObjectType
 	tVector3,
 };
 
+struct SCRIPT_API TABLE_DATA
+{
+	void* pData;
+	bool bNumber;
+};
+
 /// A Script in the Resource SubSystem
 class SCRIPT_API ZFScript : public ZFResource
 {
@@ -78,6 +84,8 @@ public:
 
 	bool GetArgNumber(lua_State* state, int iIndex, double* data);
 	bool GetArgString(lua_State* state, int iIndex, char* data);
+	bool GetArgTable(lua_State* state, int iIndex, vector<TABLE_DATA>& data);
+	bool SetArgTable(lua_State* state, int iIndex, vector<TABLE_DATA>& vkData);
 
 	bool ExposeClass(char *szName, ScripObjectType eType, 
 	lua_CFunction o_LuaGet, lua_CFunction o_LuaSet);
