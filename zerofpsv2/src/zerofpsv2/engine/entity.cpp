@@ -435,27 +435,31 @@ bool Entity::AttachToZone(const Vector3& kPos)
 
 void Entity::ZoneChange(int iCurrent,int iNew)
 {
+	static P_Track* pkTracker;
+
 	//lets fins out wich clients has this entity
 	for(list<P_Track*>::iterator it = m_pkEntityManager->m_kTrackedObjects.begin();it!= m_pkEntityManager->m_kTrackedObjects.end();it++)
-	{	
-		if((*it)->m_iConnectID != -1)
+	{
+		pkTracker = *it;
+		
+		if(pkTracker->m_iConnectID != -1)
 		{
 			//if this object is the tracker, dont remove it			
-			if((*it)->GetEntity() == this)
+			if(pkTracker->GetEntity() == this)
 				continue;
 			
-			if(GetExistOnClient((*it)->m_iConnectID))
+			if(GetExistOnClient(pkTracker->m_iConnectID))
 			{				
-				if( (*it)->m_iActiveZones.find(iCurrent) != (*it)->m_iActiveZones.end())
+				if( pkTracker->m_kActiveZones.find(iCurrent) != pkTracker->m_kActiveZones.end())
 				{
 					//cout<<"Connection "<<(*it)->m_iConnectID<<" has this entity"<<endl;				
-					if( (*it)->m_iActiveZones.find(iNew) == (*it)->m_iActiveZones.end())
+					if( pkTracker->m_kActiveZones.find(iNew) == pkTracker->m_kActiveZones.end())
 					{
 						
-						cout<<"Entity "<<m_iEntityID<< " has moved to an untracked zone for client "<<(*it)->m_iConnectID<<endl;
+						cout<<"Entity "<<m_iEntityID<< " has moved to an untracked zone for client "<<pkTracker->m_iConnectID<<endl;
 						
 						// send delete request to client here =)
-						m_pkEntityManager->AddEntityToClientDeleteQueue((*it)->m_iConnectID,m_iEntityID);
+						m_pkEntityManager->AddEntityToClientDeleteQueue(pkTracker->m_iConnectID,m_iEntityID);
 					}		
 				}
 			}

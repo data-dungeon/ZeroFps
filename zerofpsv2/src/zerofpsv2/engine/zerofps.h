@@ -84,8 +84,8 @@ public:
 
 	bool		m_bIsEditor;
 	
-	set<int>		m_iActiveZones;		// Activated Zones.
-	set<int>		m_iUnloadZones;		// Activated Zones.
+	set<int>		m_kActiveZones;		// Activated Zones.
+	set<int>		m_kUnloadZones;		// Activated Zones.
 	queue<int>	m_kDeleteQueue;		// clients delete queue (contains is of entitys that shuld be deleted on the client)
 };
 

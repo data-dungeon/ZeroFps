@@ -869,8 +869,8 @@ void EntityManager::PackToClients()
 	// Clear Active Zones for clients.
 	for(iClient=0; iClient < m_pkZeroFps->m_kClient.size(); iClient++)
 	{
-		m_pkZeroFps->m_kClient[iClient].m_iActiveZones.clear();
-		m_pkZeroFps->m_kClient[iClient].m_iUnloadZones.clear();		
+		m_pkZeroFps->m_kClient[iClient].m_kActiveZones.clear();
+		m_pkZeroFps->m_kClient[iClient].m_kUnloadZones.clear();		
 	}
 	
 	// Refresh list of active Zones for each tracker with a client.
@@ -879,13 +879,13 @@ void EntityManager::PackToClients()
 		if((*iT)->m_iConnectID != -1)
 		{
 			//setup active zones list
-			m_pkZeroFps->m_kClient[(*iT)->m_iConnectID].m_iActiveZones = (*iT)->m_iActiveZones;			
+			m_pkZeroFps->m_kClient[(*iT)->m_iConnectID].m_kActiveZones = (*iT)->m_kActiveZones;			
 					
 			//setup unload zones list
-			m_pkZeroFps->m_kClient[(*iT)->m_iConnectID].m_iUnloadZones = (*iT)->m_iUnloadZones;
+			m_pkZeroFps->m_kClient[(*iT)->m_iConnectID].m_kUnloadZones = (*iT)->m_kUnloadZones;
 					
 			//when object has been sent , reset list in tracker	
-			(*iT)->m_iUnloadZones.clear();					
+			(*iT)->m_kUnloadZones.clear();					
 					
 		}
 	}		
@@ -930,7 +930,7 @@ void EntityManager::PackToClients()
 
 
 		// Loop and clear send data flag for those zone to this client
-		for(set<int>::iterator itActiveZone = m_pkZeroFps->m_kClient[iClient].m_iUnloadZones.begin(); itActiveZone != m_pkZeroFps->m_kClient[iClient].m_iUnloadZones.end(); itActiveZone++ ) 
+		for(set<int>::iterator itActiveZone = m_pkZeroFps->m_kClient[iClient].m_kUnloadZones.begin(); itActiveZone != m_pkZeroFps->m_kClient[iClient].m_kUnloadZones.end(); itActiveZone++ ) 
 		{
 			int iZoneID = (*itActiveZone);
 			
@@ -959,7 +959,7 @@ void EntityManager::PackToClients()
 		// Loop all zones activated by client, featching all entitys in them
 		Entity* pkZoneE;
 		ZoneData* pkZoneD;
-		for(set<int>::iterator itActiveZone = m_pkZeroFps->m_kClient[iClient].m_iActiveZones.begin(); itActiveZone != m_pkZeroFps->m_kClient[iClient].m_iActiveZones.end(); itActiveZone++ ) 
+		for(set<int>::iterator itActiveZone = m_pkZeroFps->m_kClient[iClient].m_kActiveZones.begin(); itActiveZone != m_pkZeroFps->m_kClient[iClient].m_kActiveZones.end(); itActiveZone++ ) 
 		{
 			pkZoneD = GetZoneData((*itActiveZone));
 			if(pkZoneD)
@@ -2684,9 +2684,11 @@ void EntityManager::UpdateZoneSystem()
 
 void EntityManager::UpdateTrackers()
 {
-	Vector3 kTrackerPos;
-	int iZoneIndex;	
-	vector<ZoneData*>	kFloodZones;
+	static Vector3 kTrackerPos;
+	static int iZoneIndex;	
+	static vector<ZoneData*>	kFloodZones;
+	static set<int>				kNewActiveZones;
+	static P_Track*				pkTracker;
 	
 	// Set All Zones as untracked
 	for(int iZ=0;iZ<m_kZones.size();iZ++) 
@@ -2698,19 +2700,21 @@ void EntityManager::UpdateTrackers()
 	// For each tracker.
 	for(list<P_Track*>::iterator iT=m_kTrackedObjects.begin();iT!=m_kTrackedObjects.end();iT++) 
 	{
+		pkTracker = *iT;
+	
 		// Find Active Zone.
-		set<int>			kNewActiveZones;
+		kNewActiveZones.clear();
 		
 		//set initi range
 		for(int iZ=0;iZ<m_kZones.size();iZ++)
 			m_kZones[iZ].m_iRange = 10000;
 		
 		//get trackerpos
-		kTrackerPos = 	(*iT)->GetEntity()->GetWorldPosV();
+		kTrackerPos = 	pkTracker->GetEntity()->GetWorldPosV();
 			
 		//get current zone
-		iZoneIndex = GetZoneIndex((*iT)->GetEntity()->GetWorldPosV(),(*iT)->m_iCurrentTrackedZone,(*iT)->m_bClosestZone);		
-		(*iT)->m_iCurrentTrackedZone = iZoneIndex;
+		iZoneIndex = GetZoneIndex(pkTracker->GetEntity()->GetWorldPosV(),pkTracker->m_iCurrentTrackedZone,pkTracker->m_bClosestZone);		
+		pkTracker->m_iCurrentTrackedZone = iZoneIndex;
 		
 		if(iZoneIndex == -1)
 		{
@@ -2722,7 +2726,7 @@ void EntityManager::UpdateTrackers()
 		ZoneData* pkStartZone = GetZoneData(iZoneIndex);
 		pkStartZone->m_iRange = 0;						
 		
-		if( (*iT)->m_bOneZoneOnly )
+		if( pkTracker->m_bOneZoneOnly )
 		{
 			//add the one andonly zone to new active zones
 			kNewActiveZones.insert(iZoneIndex);
@@ -2734,7 +2738,7 @@ void EntityManager::UpdateTrackers()
 			kFloodZones.push_back(pkStartZone);						
 			
 			// Flood Zones in rage to active.
-			while(kFloodZones.size()) 
+			while(!kFloodZones.empty()) 
 			{
 				ZoneData* pkZone = kFloodZones.back();
 				kFloodZones.pop_back();
@@ -2767,15 +2771,15 @@ void EntityManager::UpdateTrackers()
 		
 					
 		//find new loaded zones  , compare new actives zones whit last update to find new loaded zones
-		(*iT)->m_iNewActiveZones.clear();
-		set_difference(kNewActiveZones.begin(),kNewActiveZones.end(),(*iT)->m_iActiveZones.begin(),(*iT)->m_iActiveZones.end(), inserter((*iT)->m_iNewActiveZones, (*iT)->m_iNewActiveZones.begin()));
+		pkTracker->m_kNewActiveZones.clear();
+		set_difference(kNewActiveZones.begin(),kNewActiveZones.end(),pkTracker->m_kActiveZones.begin(),pkTracker->m_kActiveZones.end(), inserter(pkTracker->m_kNewActiveZones, pkTracker->m_kNewActiveZones.begin()));
 		
 		//findout wich zones has been removed since last update, and add them to list to be sent to client (observer the list shuld not be cleared here, but in the code that sends the package)
-		if((*iT)->m_iConnectID != -1)
-			set_difference((*iT)->m_iActiveZones.begin(),(*iT)->m_iActiveZones.end(),kNewActiveZones.begin(),kNewActiveZones.end(), inserter((*iT)->m_iUnloadZones, (*iT)->m_iUnloadZones.begin()));		
+		if(pkTracker->m_iConnectID != -1)
+			set_difference(pkTracker->m_kActiveZones.begin(),pkTracker->m_kActiveZones.end(),kNewActiveZones.begin(),kNewActiveZones.end(), inserter(pkTracker->m_kUnloadZones, pkTracker->m_kUnloadZones.begin()));		
 		
 		//save new active zones in tracker
-		(*iT)->m_iActiveZones = kNewActiveZones;
+		pkTracker->m_kActiveZones = kNewActiveZones;
 	}
 }
 
@@ -2993,7 +2997,7 @@ void EntityManager::HandleDeleteQueue(NetPacket* pkNetPacket)
 
 void EntityManager::DeleteUnloadedZones(int iClient)
 {	
-	for(set<int>::iterator itActiveZone = m_pkZeroFps->m_kClient[iClient].m_iUnloadZones.begin(); itActiveZone != m_pkZeroFps->m_kClient[iClient].m_iUnloadZones.end(); itActiveZone++ ) 
+	for(set<int>::iterator itActiveZone = m_pkZeroFps->m_kClient[iClient].m_kUnloadZones.begin(); itActiveZone != m_pkZeroFps->m_kClient[iClient].m_kUnloadZones.end(); itActiveZone++ ) 
 	{
 		AddEntityToClientDeleteQueue(iClient,m_kZones[ (*itActiveZone) ].m_iZoneObjectID);		
 	}	

@@ -29,9 +29,9 @@ class ENGINE_SYSTEMS_API P_Track : public Property {
 		int				m_iCurrentTrackedZone;			//current zone
 		bool				m_bOneZoneOnly;
 
-		set<int>			m_iActiveZones;
-		set<int>			m_iNewActiveZones;		
-		set<int>			m_iUnloadZones;				//sent to client
+		set<int>			m_kActiveZones;
+		set<int>			m_kNewActiveZones;		
+		set<int>			m_kUnloadZones;				//sent to client
 
 		void Update();
 		void Init();
