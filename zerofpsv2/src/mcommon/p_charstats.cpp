@@ -19,6 +19,8 @@ vector<PropertyValues> CharacterProperty::GetPropertyValues()
 	kReturn[0].pkValue    = (void*)&m_kPSType;*/
 
 	return kReturn;
+
+	bNetwork = true;
 }
 
 // ------------------------------------------------------------------------------------------
@@ -30,6 +32,8 @@ CharacterProperty::CharacterProperty()
    m_pkCharStats = new CharacterStats( m_pkObject );
 
 	strcpy(m_acName,"P_CharStats");
+
+	bNetwork = true;
 }
 
 // ------------------------------------------------------------------------------------------
@@ -251,12 +255,14 @@ void CharacterProperty::Load(ZFIoInterface* pkPackage)
 
 void CharacterProperty::PackTo(NetPacket* pkNetPacket)
 {
+
 }
 
 // ------------------------------------------------------------------------------------------
 
 void CharacterProperty::PackFrom(NetPacket* pkNetPacket)
 {
+
 }
 
 // ------------------------------------------------------------------------------------------

@@ -65,6 +65,7 @@ MistClient::MistClient(char* aName,int iWidth,int iHeight,int iDepth)
 	m_pkClientObject			= NULL;
 	m_pkClientControlP		= NULL;
 	m_pkServerInfo				= NULL;
+	m_pkActiveCharacter		= NULL;
 	
 	g_ZFObjSys.Log_Create("mistclient");
 
@@ -198,6 +199,7 @@ void MistClient::OnIdle()
 		if(pi)
 			pkFps->DevPrintf("client","PlayerName: %s", pi->sPlayerName.c_str());		
 	}	
+
 }
 
 void MistClient::OnSystem() 
@@ -240,9 +242,35 @@ void MistClient::OnSystem()
 		}
 	};
 
+	if(m_pkServerInfo)
+	{		
+		PlayerInfo* pi = m_pkServerInfo->GetPlayerInfo(pkFps->GetConnectionID());
+		if(pi)
+		{
+			int id = pi->kControl[m_iActiveCaracter].first;	
+			Object* pkObj = pkObjectMan->GetObjectByNetWorkID(id);
+			
+			if(pkObj)
+			{
+				CameraProperty* cp = (CameraProperty*)pkObj->GetProperty("CameraProperty");
+			
+				if(!cp)
+					CameraProperty* cp = (CameraProperty*)pkObj->AddProperty("CameraProperty");
+		
+				if(cp)
+				{
+					cp->SetCamera(m_pkCamera);
+					cp->SetType(CAM_TYPE3PERSON);
+					m_pkCamProp = cp;
+				}
+
+				m_pkActiveCharacter = pkObj;
+			}		
+		}else
+			cout<<"cant find player object id"<<pkFps->GetConnectionID()<<endl;
+	}
 
 	SetActiveCaracter(0);
-
 }
 
 void MistClient::Input()
@@ -347,9 +375,10 @@ void MistClient::Input()
 				} 
 			}
 			
-			m_fClickDelay = pkFps->GetTicks();		
-			
+			m_fClickDelay = pkFps->GetTicks();					
 		}
+
+		PickUp();
 	}
 }
 
@@ -697,4 +726,23 @@ void MistClient::SetActiveCaracter(int iCaracter)
 }	
 
 
+void MistClient::PickUp()
+{
+	if(m_pkActiveCharacter)
+	{
+		CharacterProperty* cp = static_cast<CharacterProperty*>(
+			m_pkActiveCharacter->GetProperty("P_CharStats"));
 
+		if(cp)
+		{
+			CharacterStats* stats = cp->GetCharStats();
+			if(stats)
+			{
+				map<string, Object*>* items = stats->GetEquippedList();
+
+				int iNumItems = items->size();
+				printf("Number of items = %i\n", iNumItems);
+			}
+		}
+	}
+}

@@ -897,6 +897,8 @@ int MistServer::CreatePlayer(const char* csName,const char* csLocation,int iConI
 		TrackProperty* pkTrack = dynamic_cast<TrackProperty*>(pkObject->GetProperty("TrackProperty"));	
 		if(pkTrack)
 			pkTrack->SetClient(iConID);	
+
+		printf("id %i\n", pkObject->iNetWorkID);
 	}
 	else
 	{	
@@ -973,10 +975,17 @@ void MistServer::HandleOrders()
 				string strAction = "NoName";
 
 				if(ob->GetProperty("P_Item") != NULL)
+				{
 					strAction = "PickUp";
+				}
 
 				pe->SendEvent("Use", strAction.c_str() );
-			}			
+			}		
+			
+			if(ob->GetProperty("P_CharStats"))
+			{
+				printf("Mamma!\n");
+			}
 		}
 		
 		P_ClientControl::PopOrder();
