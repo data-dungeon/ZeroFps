@@ -404,7 +404,7 @@ void MistClient::OnClientStart(void)
 }
 
 bool MistClient::StartUp()	{ return true; }
-bool MistClient::ShutDown()	{ return true; }
+bool MistClient::ShutDown()	{ printf("MistClient::ShutDown\n"); return true; }
 bool MistClient::IsValid()	{ return true; }
 
 

@@ -45,15 +45,10 @@ bool ZGui::StartUp()
 	m_pkCursor->SetSkin(m_pkCursorSkin);
 
 	ZGuiFont* pkDefaultFont = new ZGuiFont(16,16,0,ZG_DEFAULT_GUI_FONT);
+
 	char defFontPath[] = "data/textures/text/paternoster8.bmp";
 	
-/*	ZFVFileSystem* pkFileSys;
-	pkFileSys = static_cast<ZFVFileSystem*>(g_ZFObjSys.GetObjectPtr("ZFVFileSystem"));		
-	string strFull = pkFileSys->GetFullPath(defFontPath);*/
-	
-	printf("\n\n\n----- MAMAMA! ------------\n\n\n");
-
-	pkDefaultFont->CreateFromFile("data/textures/text/paternoster8.bmp");		
+	pkDefaultFont->CreateFromFile(defFontPath);		
 	m_pkFonts.insert(map<int,ZGuiFont*>::value_type(pkDefaultFont->m_iID,
 		pkDefaultFont)); 
 
