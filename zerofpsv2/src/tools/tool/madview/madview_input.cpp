@@ -65,7 +65,7 @@ void MadView::Input()
 		m_pkInputHandle->SDLMouseXY(curr_pos.x, curr_pos.y);
 
 		m_fObjRotX = curr_pos.y - press_pos.y + prev_x;
-		m_fObjRotY = curr_pos.x - press_pos.x + prev_y;
+		m_fObjRotY = press_pos.x - curr_pos.x + prev_y;
 	}
 	else
 	{
@@ -88,14 +88,10 @@ void MadView::Input()
 		Point curr_pos;
 		m_pkInputHandle->SDLMouseXY(curr_pos.x, curr_pos.y);
 
-		if(m_pkInputHandle->Pressed(KEY_Z))
-			kCamerPos.z += (float)(curr_pos.y - press_pos2.y + prev_x2) / 1000.0f;
-
-		if(m_pkInputHandle->Pressed(KEY_X))
-			kCamerPos.x += (float)(curr_pos.x - press_pos2.x + prev_y2) / 1000.0f;
-
-		if(m_pkInputHandle->Pressed(KEY_C))
-			kCamerPos.y += (float)(curr_pos.y - press_pos2.y + prev_x2) / 1000.0f;
+		if(abs(curr_pos.x - press_pos2.x + prev_y2) > abs(curr_pos.y - press_pos2.y + prev_x2))
+			kCamerPos.x += (float)(curr_pos.x - press_pos2.x + prev_y2) / 10000.0f;
+		else
+			kCamerPos.z += (float)(curr_pos.y - press_pos2.y + prev_x2) / 5000.0f;
 	}
 	else
 	{
@@ -103,6 +99,31 @@ void MadView::Input()
 		prev_x2 = kCamerPos.x;
 		prev_y2 = kCamerPos.z;
 	}
+
+	static float prev_x3 = 0, prev_y3 = 0;
+	static Point press_pos3;
+	static bool pressed3 = false;
+	if(m_pkInputHandle->Pressed(MOUSEMIDDLE))
+	{
+		if(pressed3 == false)
+		{
+			m_pkInputHandle->SDLMouseXY(press_pos3.x, press_pos3.y);
+			pressed3 = true;
+		}
+
+		Point curr_pos;
+		m_pkInputHandle->SDLMouseXY(curr_pos.x, curr_pos.y);
+
+		kCamerPos.y += (float)(curr_pos.y - press_pos3.y + prev_x3) / 5000.0f;
+	}
+	else
+	{
+		pressed3 = false;
+		prev_x3 = kCamerPos.x;
+		prev_y3 = kCamerPos.z;
+	}
+
+
 
 	m_pkCameraObject->SetWorldPosV(kCamerPos);
 	
