@@ -673,6 +673,8 @@ void ZeroFps::RunCommand(int cmdid, const CmdArgument* kCommand)
 	vector<string> kFiles;
 	vector<string> kCreditsStrings;
 	DevStringPage* page;
+	string strLogin = "user";
+	string strPass  = "userpass";
 	
 	GameMessage gm;
 
@@ -693,11 +695,11 @@ void ZeroFps::RunCommand(int cmdid, const CmdArgument* kCommand)
 			break;
 
 		case FID_CONNECT:
-			if(kCommand->m_kSplitCommand.size() <= 1)
-				return;
+			if(kCommand->m_kSplitCommand.size() <= 1) {
 
-			m_pkConsole->Printf("Connect to %s", kCommand->m_kSplitCommand[1].c_str());
-			//m_pkNetWork->ClientStart(kCommand->m_kSplitCommand[1].c_str());
+				return;
+				}
+
 						
 			if(strcmp(kCommand->m_kSplitCommand[1].c_str(), "vim") == 0) {
 				strcpy(g_szIpPort, "192.168.0.153:4242");
@@ -723,9 +725,17 @@ void ZeroFps::RunCommand(int cmdid, const CmdArgument* kCommand)
 			else
 				sprintf(g_szIpPort, "%s:4242", kCommand->m_kSplitCommand[1].c_str());
 
+			if(kCommand->m_kSplitCommand.size() >= 3)
+				strLogin = kCommand->m_kSplitCommand[2];
+
+			if(kCommand->m_kSplitCommand.size() >= 4)
+				strPass = kCommand->m_kSplitCommand[3];
+
+			m_pkConsole->Printf("Connect: %s, %s, %s", g_szIpPort, 
+				strLogin.c_str(), strPass.c_str());
 			m_pkConsole->Printf("Connect to: %s", g_szIpPort);
 
-			m_pkNetWork->ClientStart(g_szIpPort, "vim", "fiskbow");
+			m_pkNetWork->ClientStart(g_szIpPort, strLogin.c_str(), strPass.c_str());
 			m_pkConsole->Printf("FID_CONNECT");
 			m_pkApp->OnClientStart();
 			m_bClientMode = true;

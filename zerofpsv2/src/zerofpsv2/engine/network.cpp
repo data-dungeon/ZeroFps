@@ -475,7 +475,7 @@ void NetWork::ServerEnd(void)
 	m_eNetStatus = NET_NONE;
 }
 
-void NetWork::ClientStart(const char* szIp, char* szLogin, char* szPass)
+void NetWork::ClientStart(const char* szIp, const char* szLogin, const char* szPass)
 {
 	if(m_eNetStatus == NET_SERVER)
 		return;

@@ -762,7 +762,7 @@ void MistClient::OnCommand(int iID, ZGuiWnd *pkMainWnd)
 			char* szIpName = GetWnd("IPNumberEditbox")->GetText();
 			char* szLoginName = GetWnd("UserEditbox")->GetText();
 			char* szPassName = GetWnd("PasswordEditbox")->GetText();
-			pkFps->m_pkNetWork->ClientStart(szIpName,szLoginName,szPassName);
+			pkFps->m_pkNetWork->ClientStart(szIpName, szLoginName, szPassName);
 			pkApp->OnClientStart();
 		}
 	}
