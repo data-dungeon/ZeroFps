@@ -27,8 +27,7 @@ private:
 	Mad_CoreSubMesh*	m_pkSubMesh;
 	int					m_iSubMesh;
 
-	int					m_aiReplaceTextures[256];
-	ZFResourceHandle	m_akReplaceTexturesHandles[256];				//ytterst in effektivt, o skapa 256 st res handles varje gång en modell skapas, blir många konstruktor anrop i onödan
+	ZFResourceHandle*	m_akReplaceTexturesHandles[256];				//ytterst in effektivt, o skapa 256 st res handles varje gång en modell skapas, blir många konstruktor anrop i onödan
 
 	void LoadTextures();
 	void DrawNormal(Vector3* pkVertex, Vector3* pkNormals);
@@ -71,6 +70,8 @@ public:
 	ZFResourceHandle	kMadHandle;
 	
 	Mad_Modell();
+	~Mad_Modell();	
+
 //	Mad_Modell(Mad_Core* pkModell);
 //	Mad_Modell(string strResName);
 

@@ -21,6 +21,18 @@ Mad_Modell::Mad_Modell()
 	m_fScale				= 1.0;
 	
 	m_iFirstMaterialID= -1;
+
+
+	for(int i = 0;i<256;i++)
+		m_akReplaceTexturesHandles[i] = NULL;
+
+}
+
+Mad_Modell::~Mad_Modell()
+{
+	for(int i = 0;i<256;i++)
+		if(m_akReplaceTexturesHandles[i] != NULL)
+			delete m_akReplaceTexturesHandles[i];
 }
 
 void Mad_Modell::SetBasePtr(string strResName)
@@ -391,10 +403,16 @@ void Mad_Modell::SetReplaceTexture(char* szOrgName, char* szNew)
 			SelectSubMesh(iSubM);
 			Mad_CoreTexture* pkTexInfo = GetTextureInfo();
 
-			if(strcmp(pkTexInfo->ucTextureName, szOrgName) == 0) {
+			if(strcmp(pkTexInfo->ucTextureName, szOrgName) == 0)
+			{
 				sprintf(szFullTexName, "data/textures/%s.bmp", szNew);
-				m_akReplaceTexturesHandles[ m_pkSubMesh->iTextureIndex ].SetRes(szFullTexName);
-				}
+				
+				//create resource handle if it does not exist
+				if(m_akReplaceTexturesHandles[ m_pkSubMesh->iTextureIndex ] == NULL)
+					m_akReplaceTexturesHandles[ m_pkSubMesh->iTextureIndex ] = new ZFResourceHandle;
+				
+				m_akReplaceTexturesHandles[ m_pkSubMesh->iTextureIndex ]->SetRes(szFullTexName);
+			}
 		}
 	}
 }
@@ -450,10 +468,13 @@ void Mad_Modell::Draw_All(int iDrawFlags)
 				iNumOfFaces = GetNumFaces();	// * g_fMadLODScale;
 
 				ZFResourceHandle* pkRes;
-				if(m_akReplaceTexturesHandles[ m_pkSubMesh->iTextureIndex ].IsValid()) 
+				
+				//denna IF sats kan vara väldigt EVIL men hoppas den fungerar. 
+				if(m_akReplaceTexturesHandles[ m_pkSubMesh->iTextureIndex ] != NULL &&
+					m_akReplaceTexturesHandles[ m_pkSubMesh->iTextureIndex ]->IsValid())
 				{
-					pkRes = &m_akReplaceTexturesHandles[m_pkSubMesh->iTextureIndex];
-				}
+					pkRes = m_akReplaceTexturesHandles[m_pkSubMesh->iTextureIndex];
+				}				
 				else 
 				{
 					pkRes = m_pkMesh->GetLODMesh(0)->GetTextureHandle(m_pkSubMesh->iTextureIndex);
