@@ -185,7 +185,10 @@ bool ZGuiTextbox::ProcessKBInput(int iKey)
 			m_iRenderDistFromTop = 0;
 
 			int length_counter = 0;
-			int length = m_iCursorPos; //strlen(m_strText);
+			int length = m_iCursorPos;
+			
+			if((unsigned) length > strlen(m_strText) )
+				length = strlen(m_strText);
 
 			for(int i=0; i<length; i++)
 			{
@@ -435,6 +438,11 @@ void ZGuiTextbox::SetFocus()
 		m_iCursorPos = strlen(m_strText);
 	}*/
 	m_bBlinkCursor = true;
+
+	if(m_strText)
+		m_iCursorPos = strlen(m_strText);
+	else
+		m_iCursorPos = 0;
 
 	return; //
 

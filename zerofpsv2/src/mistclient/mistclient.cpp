@@ -160,8 +160,30 @@ void MistClient::Init()
 	kIpSetupScript.SetRes("data/script/net/ipsetup.lua");
 	pkScript->Call(&kIpSetupScript, "SetupIP", 0, 0);	
 
+/*	CreateWnd(Button, "ActionButton1", "MainWnd", "", 400, 300, 32, 32, 0);
+	ZGuiButton* pkButton = static_cast<ZGuiButton*>(GetWnd("ActionButton1"));
 
-	//CreateWnd(Button, "ActionButton1", "MainWnd"
+	ZGuiSkin* pkSkin = new ZGuiSkin[3];
+
+	pkSkin[0].m_iBkTexID = pkTexMan->Load("data/textures/gui/actions/action_u.bmp", 0);
+	pkSkin[1].m_iBkTexID = pkTexMan->Load("data/textures/gui/actions/action_d.bmp", 0);
+	pkSkin[2].m_iBkTexID = pkTexMan->Load("data/textures/gui/actions/action_f.bmp", 0);
+
+	pkSkin[0].m_iBkTexAlphaID = pkTexMan->Load("data/textures/gui/actions/action_a.bmp", 0);
+	pkSkin[1].m_iBkTexAlphaID = pkTexMan->Load("data/textures/gui/actions/action_a.bmp", 0);
+	pkSkin[2].m_iBkTexAlphaID = pkTexMan->Load("data/textures/gui/actions/action_a.bmp", 0);
+
+	pkButton->SetButtonUpSkin(&pkSkin[0]);
+	pkButton->SetButtonDownSkin(&pkSkin[1]);
+	pkButton->SetButtonHighLightSkin(&pkSkin[2]);
+
+	CreateWnd(Label, "Action1Label", "ActionButton1", "", 0, 0, 32, 32, 0);
+
+	ZGuiSkin* pkSkin2 = new ZGuiSkin;
+	pkSkin2->m_iBkTexID = pkTexMan->Load("data/textures/gui/actions/action_test.bmp", 0);
+	pkSkin2->m_iBkTexAlphaID = pkTexMan->Load("data/textures/gui/actions/action_test_a.bmp", 0);
+
+	GetWnd("ActionButton1")->SetSkin(pkSkin2);*/
 }
 
 void MistClient::RegisterResources()
@@ -619,7 +641,7 @@ void MistClient::OnCommand(int iID, ZGuiWnd *pkMainWnd)
 			
 			pkInputWnd = GetWnd("InputBox");			
 			OnClientInputSend(pkInputWnd->GetText());
-			//pkInputWnd->SetText("");
+			pkInputWnd->SetText("");
 		}
 	}
 	else
