@@ -19,6 +19,7 @@ enum MLNM_ClientToServer
 	MLNM_CS_CHARADD,
 	MLNM_CS_REQ_ITEMINFO,
 	MLNM_CS_USESKILL,
+	MLNM_CS_RESPAWN_IN_TOWN,
 };
 
 //	A network message from the server to the client.
@@ -34,6 +35,8 @@ enum MLNM_ServerToClient
 	MLNM_SC_ITEMINFO,
 	MLNM_SC_CHARACTERSTATS,
 	MLNM_SC_DEAD,
+	MLNM_SC_ALIVE,
+	
 };
 
 //mistlands chatmessages ID's

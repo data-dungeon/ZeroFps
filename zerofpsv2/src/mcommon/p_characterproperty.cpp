@@ -441,7 +441,6 @@ P_CharacterProperty::P_CharacterProperty()
 	//initiate stuff
 	m_strBuffDir			=	"data/script/objects/game objects/buffs/";
 	
-// 	m_kCurrentCharacterStates.reset();
 	m_iCurrentCharacterState = eIDLE_STANDING;
 
 	
@@ -460,7 +459,8 @@ P_CharacterProperty::P_CharacterProperty()
 	m_fLegLength			=	0;
 	m_fMarkerSize			=	1;
 	m_bDead					=	false;
-	
+	m_bCombatMode			=	false;
+		
 	//container id's
 	m_iInventory	= -1;		
 	m_iHead			= -1;
@@ -694,19 +694,21 @@ void P_CharacterProperty::UpdateStats()
 }
 
 void P_CharacterProperty::MakeAlive()
-{
+{		
 	m_bDead = false;
 
 	//make sure character has some life
 	if(m_kCharacterStats.GetTotal("Health") <= 0)
 		m_kCharacterStats.SetStat("Health",1);
 	
-	
-	//disable character movement
+	//enable character movement
 	if(P_CharacterControl* pkCC = (P_CharacterControl*)m_pkEntity->GetProperty("P_CharacterControl"))
 	{
 		pkCC->SetEnabled(true);	
 	}
+
+	//send im alive info to client, if any
+	SendAliveInfo();
 }
 
 
@@ -1204,6 +1206,19 @@ void P_CharacterProperty::PlayCharacterMovementSounds()
 		m_iCurrentCharacterState =	iState;
 
 	}
+}
+
+void P_CharacterProperty::SendAliveInfo()
+{
+	if(m_iConID == -1)
+		return;
+
+	NetPacket kNp;
+	kNp.Write((char) MLNM_SC_ALIVE);	
+	
+	//send package
+	kNp.TargetSetClient(m_iConID);
+	m_pkApp->SendAppMessage(&kNp);	
 }
 
 void P_CharacterProperty::SendDeathInfo()

@@ -590,28 +590,6 @@ void MistClient::Input()
 		ToogleChatWnd(bOpen);
 	}
 			
-	// taunts
-// 	if ( m_pkInputHandle->VKIsDown("taunt1") || m_pkInputHandle->VKIsDown("taunt2")|| 
-// 		m_pkInputHandle->VKIsDown("taunt3") || m_pkInputHandle->VKIsDown("taunt4") || 
-// 		m_pkInputHandle->VKIsDown("taunt5") )
-// 	{					
-// 		if(!DelayCommand())
-// 		{
-// 			int iTauntID = 0;
-// 			if (m_pkInputHandle->VKIsDown("taunt1"))
-// 				iTauntID = 1;
-// 			if (m_pkInputHandle->VKIsDown("taunt2"))
-// 				iTauntID = 2;
-// 			if (m_pkInputHandle->VKIsDown("taunt3"))
-// 				iTauntID = 3;
-// 			if (m_pkInputHandle->VKIsDown("taunt4"))
-// 				iTauntID = 4;
-// 			if (m_pkInputHandle->VKIsDown("taunt5"))
-// 				iTauntID = 5;
-// 
-// 			SendTaunt(iTauntID);
-// 		}
-// 	}
 
 	//update picked object	
 	if(Entity* pkPickedEnt = GetTargetObject())	
@@ -687,6 +665,11 @@ void MistClient::Input()
 		}	
 	}	
 		
+	
+	//respawn knapp, i brist på gui
+	if(m_bDead && m_pkInputHandle->Pressed(KEY_BACKSPACE) && !DelayCommand())
+		SendRespawnRequest();
+	
 	//check buttons
 	m_kCharacterControls[eUP] = 	m_pkInputHandle->VKIsDown("move_forward");
 	m_kCharacterControls[eDOWN] =	m_pkInputHandle->VKIsDown("move_back");			
@@ -839,12 +822,14 @@ void MistClient::Input()
 			pkCam->Set3PDistance(fDistance);
 		
 			//rotate character
-			Matrix4 kRot;
-			kRot.Identity();
-			kRot.Rotate(0,pkCam->Get3PYAngle(),0);
-			kRot.Transponse();				
-			pkCharacter->SetLocalRotM(kRot);			
-
+			if(!m_bDead)
+			{
+				Matrix4 kRot;
+				kRot.Identity();
+				kRot.Rotate(0,pkCam->Get3PYAngle(),0);
+				kRot.Transponse();				
+				pkCharacter->SetLocalRotM(kRot);			
+			}
 		}
 	}
 }
@@ -965,7 +950,17 @@ void MistClient::OnNetworkMessage(NetPacket *pkNetMessage)
 			
 			break;
 		}		
+
+		case MLNM_SC_ALIVE:
+		{
+			cout<<"YOU ARE ALIVE AGAIN"<<endl;
 		
+			m_bDead = false;
+			
+			break;
+		}		
+		
+				
 		case MLNM_SC_ITEMINFO:
 		{
 			ITEM_INFO kInfo;
@@ -1250,7 +1245,7 @@ void MistClient::OnClientStart(void)
 	m_iCharacterID		=	-1;
 	m_iTargetID 		=	-1;
 	m_bFrontView		=	false;
-	m_bDead				= false;
+	m_bDead				=	false;
 }
 
 void MistClient::OnClientConnected() 
@@ -1375,6 +1370,16 @@ bool MistClient::ReadWriteServerList(bool bRead)
    }
 
    return true;
+}
+
+void MistClient::SendRespawnRequest()
+{
+	cout<<"respaawn me"<<endl;
+	
+	NetPacket kNp;			
+	kNp.Write((char) MLNM_CS_RESPAWN_IN_TOWN);
+	kNp.TargetSetClient(0);
+	SendAppMessage(&kNp);		
 }
 
 void MistClient::SendRequestKillMe()
