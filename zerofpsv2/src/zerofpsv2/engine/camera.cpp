@@ -365,6 +365,8 @@ void Camera::DrawGrid()
 	if(m_bDrawOrthoGrid == false)	return;
 	if(m_eMode == CAMMODE_PERSP)	return;
 
+	glPushAttrib(GL_LIGHTING_BIT|GL_ENABLE_BIT);
+	
 	Vector3 kStart, kEnd;
 	float		fStart;
 	int		iStart;
@@ -423,7 +425,8 @@ void Camera::DrawGrid()
 	glEnd();
 
 	glEnable(GL_TEXTURE_2D);
-	glEnable(GL_LIGHTING);
+	//glEnable(GL_LIGHTING);
+	glPopAttrib();
 }
 
 

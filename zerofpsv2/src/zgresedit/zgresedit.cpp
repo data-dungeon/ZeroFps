@@ -206,9 +206,9 @@ void ZGResEdit::OnInit()
 	m_pkZFVFileSystem->AddRootPath( string("../datafiles/mistlands/") ,"data/");
 //	m_pkZFVFileSystem->AddRootPath( string("../datafiles/dm/") ,"data/");
 
-	glEnable(GL_LIGHTING );
+// 	glEnable(GL_LIGHTING );
 
-	m_pkLight->SetLighting(true);
+// 	m_pkLight->SetLighting(true);
 
 	// create gui script
 	GuiAppLua::Init(&g_kResEdit, m_pkScript);

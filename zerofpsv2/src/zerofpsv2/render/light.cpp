@@ -37,13 +37,11 @@ Light::Light()
 	m_iNrOfLights=		8;							//this shuld never be greater than 8
 	m_bAmbientOnly =	false;
 	m_bEnabled = 		true;
-
+	m_iVersion = 		0;
 	
 	RegisterVariable("r_maxlights",		&m_iNrOfLights,CSYS_INT);
 	
 	
-	//enable lighting
-	SetLighting(true);
 }
 
 void Light::SetLighting(bool bOn)
@@ -83,7 +81,9 @@ void Light::SetStartUpValues()
 	float afAmbient[4] = {0,0,0,0};
 	glLightModelfv(GL_LIGHT_MODEL_AMBIENT, afAmbient);
 
+	//enable lighting
 	SetLighting(true);
+
 }
 
 void Light::SetCamera(Vector3 kCamPos) {
@@ -94,12 +94,26 @@ void Light::Add(LightSource *kNewLight)
 {
 	//cout << "Add Light" << endl;
 	m_kLights.push_back(kNewLight);
+	
+	m_iVersion++;
 }
 
 void Light::Remove(LightSource *kLight) 
 {
-	//cout << "Remove Light" << endl;
-	m_kLights.remove(kLight);
+
+	//loop trough all lightsources and find wich to view
+	for(vector<LightSource*>::iterator it =m_kLights.begin();it!=m_kLights.end();it++) 
+	{		
+		if(*it == kLight)
+		{
+			m_kLights.erase(it);
+			m_iVersion++;
+			return;
+		}
+		//m_kLights.remove(kLight);		
+	}
+	
+	m_iVersion++;	
 }
 
 bool comp(LightSource* x, LightSource* y)
@@ -116,35 +130,38 @@ void Light::Update(Vector3 kRefPos)
 
 	if(!m_bEnabled)
 		return;
-	
-	list<LightSource*>::iterator it;
+
 
 	//loop trough all lightsources and find wich to view
-	for(it=m_kLights.begin();it!=m_kLights.end();it++) {
-
+	for(int i = 0;i< m_kLights.size();i++) 
+	{
+		LightSource* pkL = m_kLights[i];
+	
 		//always add light with priority >10
-		if((*it)->iPriority>=10){
-			(*it)->fIntensity=999999;
-			m_kSorted.push_back(*it);
+		if(pkL->iPriority>=10){
+			pkL->fIntensity=999999;
+			m_kSorted.push_back(pkL);
 			continue;
 		}
 
 		//if its a directional light add it if there is space
-		if((*it)->iType==DIRECTIONAL_LIGHT){
-			(*it)->fIntensity=999999;
-			m_kSorted.push_back(*it);
+		if(pkL->iType==DIRECTIONAL_LIGHT)
+		{
+			pkL->fIntensity=999999;
+			m_kSorted.push_back(pkL);
 		//else add the light if it is bright enough
-		} else {
+		} else 
+		{
 			//		opengl LightIntesity equation	min(1, 1 / ((*it)-> + l*d + q*d*d))
 
-			Vector3 kPos = (*it)->kPos;
+			Vector3 kPos = pkL->kPos;
 			float fDistance = float(kRefPos.DistanceTo(kPos));
 			//float fIntensity = min(1 , 1 / ( (*it)->fConst_Atten + ((*it)->fLinear_Atten*fDistance) + ((*it)->fQuadratic_Atten*(fDistance*fDistance)) ));
-			float fIntensity = 1 / ( (*it)->fConst_Atten + ((*it)->fLinear_Atten*fDistance) + ((*it)->fQuadratic_Atten*(fDistance*fDistance)) );
+			float fIntensity = 1 / ( pkL->fConst_Atten + (pkL->fLinear_Atten*fDistance) + (pkL->fQuadratic_Atten*(fDistance*fDistance)) );
 
-			(*it)->fIntensity=fIntensity;
+			pkL->fIntensity=fIntensity;
 			//(*it)->fIntensity=-fDistance;
-			m_kSorted.push_back(*it);
+			m_kSorted.push_back(pkL);
 		}
 	}
 
@@ -285,28 +302,30 @@ void Light::GetClosestLights(vector<LightSource*>* pkLights,int iNrOfLights,Vect
 {
 	vector<LightSource*> kSorted;
 
-	for(list<LightSource*>::iterator it=m_kLights.begin();it!=m_kLights.end();it++)
+	for(int i = 0;i < m_kLights.size();i++)
 	{
+		LightSource* pkL = m_kLights[i];
+	
 		//skip spotlights
-		if((*it)->iType==SPOT_LIGHT)
+		if(pkL->iType==SPOT_LIGHT)
 			continue;
 	
 		//always add point lights
-		if((*it)->iType==DIRECTIONAL_LIGHT)
+		if(pkL->iType==DIRECTIONAL_LIGHT)
 		{
 			if(!bNoDirectional)
 			{
-				(*it)->fIntensity=999999;
-				kSorted.push_back(*it);
+				pkL->fIntensity=999999;
+				kSorted.push_back(pkL);
 			}
 		}
 		else
 		{
-			float fDistance = float(kPos.DistanceTo((*it)->kPos));
+			float fDistance = float(kPos.DistanceTo(pkL->kPos));
 
-			(*it)->fIntensity = float( 1.0 / ( (*it)->fConst_Atten + ((*it)->fLinear_Atten*fDistance) + ((*it)->fQuadratic_Atten*(fDistance*fDistance)) ) );
+			pkL->fIntensity = float( 1.0 / ( pkL->fConst_Atten + (pkL->fLinear_Atten*fDistance) + (pkL->fQuadratic_Atten*(fDistance*fDistance)) ) );
 
-			kSorted.push_back(*it);
+			kSorted.push_back(pkL);
 		}
 	}
 
@@ -322,10 +341,10 @@ void Light::GetClosestLights(vector<LightSource*>* pkLights,int iNrOfLights,Vect
 
 LightSource* Light::GetFirstDirectionalLight()
 {
-	for(list<LightSource*>::iterator it=m_kLights.begin();it!=m_kLights.end();it++)
+	for(int i = 0;i < m_kLights.size();i++)
 	{
-		if((*it)->iType==DIRECTIONAL_LIGHT)
-			return (*it);	
+		if(m_kLights[i]->iType==DIRECTIONAL_LIGHT)
+			return m_kLights[i];	
 	}
 	
 	return NULL;

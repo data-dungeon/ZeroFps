@@ -711,7 +711,7 @@ void Render::DrawBillboard(const Matrix4& kModelMatrix,const Vector3& kPos,float
 	Vector3 d;	
 	
 	glPushMatrix();
-	glPushAttrib(GL_LIGHTING_BIT);
+	glPushAttrib(GL_LIGHTING_BIT|GL_ENABLE_BIT);
 	glDisable(GL_CULL_FACE);	
 	glDisable(GL_LIGHTING);
 	glPolygonMode(GL_FRONT, GL_FILL);
@@ -1347,6 +1347,8 @@ void Render::DrawSolidAABB( const Vector3& kMin,const Vector3& kMax, const Vecto
 {
 	cout<<"Render::DrawSolidAABB"<<endl;
 
+	glPushAttrib(GL_LIGHTING_BIT);
+	
 	Vector3 kCubeNeg = kMin; 
 	Vector3 kCubePos = kMax; 
 
@@ -1387,9 +1389,9 @@ void Render::DrawSolidAABB( const Vector3& kMin,const Vector3& kMax, const Vecto
 	glEnd();
 
 	glEnable(GL_TEXTURE_2D);
-	glEnable(GL_LIGHTING);
+	//glEnable(GL_LIGHTING);
 
-
+	glPopAttrib();
 }
 
 
@@ -1397,6 +1399,8 @@ void Render::DrawAABB( float x, float y, float z, float sizex,float sizey,float 
 {
 	cout<<"Render::DrawAABB"<<endl;
 
+	glPushAttrib(GL_LIGHTING_BIT);	
+	
 	Vector3 kCubeNeg(x - sizex, y - sizey, z - sizez); 
 	Vector3 kCubePos(x + sizex, y + sizey, z + sizez); 
 
@@ -1433,8 +1437,8 @@ void Render::DrawAABB( float x, float y, float z, float sizex,float sizey,float 
 	glEnd();
 
 	glEnable(GL_TEXTURE_2D);
-	glEnable(GL_LIGHTING);
-
+	//glEnable(GL_LIGHTING);
+	glPopAttrib();
 }
 
 void Render::Draw_AxisIcon(float scale)

@@ -164,7 +164,7 @@ void MistClient::Init()
 //		m_pkTexMan->Load("data/textures/gui/blue_cursor_a.bmp", 0), 32, 32);
 
 	// Varde ljus!
-	m_pkLight->SetLighting(true);
+//	m_pkLight->SetLighting(true);
 	//pkZShader->SetForceLighting(ALWAYS_OFF);   //GE FAN I DENNA "#%)"#?=&(?!"=#(&!?#%)! =)
 
 	m_pkScript->Call(m_pkScriptResHandle, "CreateIntroScene", 0, 0);
