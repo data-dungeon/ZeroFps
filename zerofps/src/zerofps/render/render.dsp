@@ -82,7 +82,7 @@ LINK32=link.exe
 # Begin Special Build Tool
 ProjDir=.
 SOURCE="$(InputPath)"
-PostBuild_Cmds=copy         $(ProjDir)\debug\*.lib         ..\..\..\bin\ 
+PostBuild_Cmds=copy           $(ProjDir)\debug\*.lib           ..\..\..\bin\ 
 # End Special Build Tool
 
 !ENDIF 
@@ -94,6 +94,10 @@ PostBuild_Cmds=copy         $(ProjDir)\debug\*.lib         ..\..\..\bin\
 # Begin Group "Source Files"
 
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
+# Begin Source File
+
+SOURCE=.\landscape.cpp
+# End Source File
 # Begin Source File
 
 SOURCE=.\render.cpp
@@ -109,6 +113,10 @@ SOURCE=.\texturemanager.cpp
 # Begin Source File
 
 SOURCE=.\primitives.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\render.h
 # End Source File
 # Begin Source File
 

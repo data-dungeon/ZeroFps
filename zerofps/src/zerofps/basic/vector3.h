@@ -4,8 +4,9 @@
 #include <iostream>
 
 using namespace std;
+#include "basic_x.h"
 
-class Vector3 {
+class BASIC_API Vector3 {
 	public:
 		float x,y,z;
 	

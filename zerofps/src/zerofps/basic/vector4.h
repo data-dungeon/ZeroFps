@@ -4,12 +4,13 @@
 #include <iostream>
 #include "vector3.h"
 //#include "Matrix4.h"
+#include "basic_x.h"
 
 class Matrix4;
 
 using namespace std;
 
-class Vector4 {
+class BASIC_API Vector4 {
 	public:
 		float x,y,z,w;
 	

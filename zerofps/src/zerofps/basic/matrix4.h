@@ -3,9 +3,10 @@
 
 #include <iostream>
 #include "vector4.h"
+#include "basic_x.h"
 
 
-class Matrix4 {
+class BASIC_API Matrix4 {
 	private:	
 	
 	public:
