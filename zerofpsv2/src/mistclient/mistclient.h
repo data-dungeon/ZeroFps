@@ -95,6 +95,8 @@ class MistClient :public Application, public ZGuiApp {
 
 		void UpdateObjectList(PlayerInfo* pkPlayerInfo);
 
+		char* m_szInputText;
+
 	public:
 		void OnSelectCB(int ListBoxID, int iItemIndex, ZGuiWnd* pkWnd);
 		void PrintInfoBox(const char* strText);

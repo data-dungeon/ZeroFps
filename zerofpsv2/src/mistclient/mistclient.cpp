@@ -72,6 +72,7 @@ MistClient::MistClient(char* aName,int iWidth,int iHeight,int iDepth)
 	m_pkClientControlP		= NULL;
 	m_pkServerInfo				= NULL;
 	m_pkActiveCharacter		= NULL;
+	m_szInputText			   = NULL;
 	
 	m_fMaxCamDistance			= 8;
 	m_fMinCamDistance			= 2;
@@ -159,6 +160,9 @@ void MistClient::Init()
 	ZFResourceHandle kIpSetupScript;
 	kIpSetupScript.SetRes("data/script/net/ipsetup.lua");
 	pkScript->Call(&kIpSetupScript, "SetupIP", 0, 0);	
+
+
+	//CreateWnd(Button, "ActionButton1", "MainWnd"
 }
 
 void MistClient::RegisterResources()
@@ -610,8 +614,10 @@ void MistClient::OnCommand(int iID, ZGuiWnd *pkMainWnd)
 	{
 		if(strClickWndName == "SendInputBoxBn")
 		{
-			GetWnd("InputWnd")->Hide();
-			pkAudioSys->StartSound("/data/sound/close_window2.wav",pkAudioSys->GetListnerPos());  
+			ZGuiWnd* pkInputWnd = GetWnd("InputWnd");
+			pkInputWnd->Hide();
+			pkAudioSys->StartSound("/data/sound/close_window2.wav",pkAudioSys->GetListnerPos());
+			m_szInputText = pkInputWnd->GetText(); 
 		}
 	}
 	else
